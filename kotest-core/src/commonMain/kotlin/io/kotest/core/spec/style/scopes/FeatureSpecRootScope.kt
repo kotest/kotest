@@ -1,5 +1,6 @@
 package io.kotest.core.spec.style.scopes
 
+import io.kotest.core.test.DescriptionType
 import io.kotest.core.test.TestName
 
 /**
@@ -18,7 +19,7 @@ interface FeatureSpecRootScope : RootScope {
       val testName = TestName("Feature: ", name)
       registration().addContainerTest(testName, xdisabled = xdisabled) {
          FeatureScope(
-            description().append(testName),
+            description().append(testName, DescriptionType.Container),
             lifecycle(),
             this,
             defaultConfig(),

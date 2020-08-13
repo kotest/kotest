@@ -2,6 +2,7 @@ package io.kotest.core.spec.style.scopes
 
 import io.kotest.core.spec.style.KotestDsl
 import io.kotest.core.test.Description
+import io.kotest.core.test.DescriptionType
 import io.kotest.core.test.TestCaseConfig
 import io.kotest.core.test.TestContext
 import io.kotest.core.test.TestName
@@ -28,9 +29,10 @@ class FunSpecContextScope(
     * Adds a nested context scope to the scope.
     */
    suspend fun context(name: String, test: suspend FunSpecContextScope.() -> Unit) {
-      addContainerTest(TestName(name), xdisabled = false) {
+      val testName = TestName(name)
+      addContainerTest(testName, xdisabled = false) {
          FunSpecContextScope(
-            this@FunSpecContextScope.description.append(name),
+            this@FunSpecContextScope.description.append(testName, DescriptionType.Container),
             this@FunSpecContextScope.lifecycle,
             this,
             this@FunSpecContextScope.defaultConfig,

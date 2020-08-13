@@ -4,7 +4,7 @@ import io.kotest.core.Tags
 import io.kotest.core.engine.discovery.Discovery
 import io.kotest.core.engine.discovery.DiscoveryRequest
 import io.kotest.core.engine.discovery.DiscoverySelector
-import io.kotest.core.filters.TestCaseFilter
+import io.kotest.core.filters.TestFilter
 import io.kotest.core.spec.Spec
 import kotlin.reflect.KClass
 
@@ -13,11 +13,11 @@ import kotlin.reflect.KClass
  * It must remain a backwards compatible layer between the launchers and the engine.
  */
 class KotestEngineLauncher(
-   private val listener: TestEngineListener,
-   private val specs: List<KClass<out Spec>>,
-   private val filters: List<TestCaseFilter>,
-   private val tags: Tags?,
-   private val selectors: List<DiscoverySelector>
+    private val listener: TestEngineListener,
+    private val specs: List<KClass<out Spec>>,
+    private val filters: List<TestFilter>,
+    private val tags: Tags?,
+    private val selectors: List<DiscoverySelector>
 ) {
 
    constructor(listener: TestEngineListener) : this(listener, emptyList(), emptyList(), null, emptyList())
@@ -40,9 +40,9 @@ class KotestEngineLauncher(
       }
    }
 
-   fun addFilter(filter: TestCaseFilter) = addFilters(listOf(filter))
+   fun addFilter(filter: TestFilter) = addFilters(listOf(filter))
 
-   fun addFilters(filters: List<TestCaseFilter>): KotestEngineLauncher {
+   fun addFilters(filters: List<TestFilter>): KotestEngineLauncher {
       return KotestEngineLauncher(
          listener = listener,
          specs = specs,

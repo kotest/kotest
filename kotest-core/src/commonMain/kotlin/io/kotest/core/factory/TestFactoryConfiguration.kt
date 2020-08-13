@@ -117,10 +117,10 @@ abstract class TestFactoryConfiguration : TestConfiguration() {
     * into a [Spec] these tests will be added to the spec as root [TestCase]s.
     */
    internal fun addDynamicTest(
-      name: TestName,
-      test: suspend TestContext.() -> Unit,
-      config: TestCaseConfig,
-      type: TestType,
+       name: TestName,
+       test: suspend TestContext.() -> Unit,
+       config: TestCaseConfig,
+       type: TestType,
    ) {
       require(tests.none { it.name == name }) { "Cannot add test with duplicate name $name" }
       this.tests = this.tests + DynamicTest(name, test, config, type, sourceRef(), factoryId)

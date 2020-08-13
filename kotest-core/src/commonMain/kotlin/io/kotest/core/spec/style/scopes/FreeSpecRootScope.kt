@@ -5,6 +5,7 @@ import io.kotest.core.extensions.TestCaseExtension
 import io.kotest.core.test.EnabledIf
 import io.kotest.core.test.TestContext
 import io.kotest.core.test.TestName
+import io.kotest.core.test.TestType
 import io.kotest.core.test.deriveTestConfig
 import kotlin.time.Duration
 import kotlin.time.ExperimentalTime
@@ -13,9 +14,10 @@ interface FreeSpecRootScope : RootScope {
 
    // eg, "this test" - { } // adds a container test
    infix operator fun String.minus(test: suspend FreeScope.() -> Unit) {
-      registration().addContainerTest(TestName(this), xdisabled = false) {
+      val name = TestName(this)
+      registration().addContainerTest(name, xdisabled = false) {
          FreeScope(
-            description().append(this@minus),
+            description().append(name, TestType.Container),
             lifecycle(),
             this,
             defaultConfig(),

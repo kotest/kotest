@@ -1,5 +1,6 @@
 package io.kotest.core.spec.style.scopes
 
+import io.kotest.core.test.DescriptionType
 import io.kotest.core.test.TestName
 
 /**
@@ -35,7 +36,7 @@ interface BehaviorSpecRootScope : RootScope {
       val testName = TestName("Given: ", name)
       registration().addContainerTest(testName, xdisabled) {
          GivenScope(
-            description().append(testName),
+            description().append(testName, DescriptionType.Container),
             lifecycle(),
             this,
             defaultConfig(),

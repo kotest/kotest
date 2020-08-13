@@ -1,15 +1,14 @@
 package com.sksamuel.kotest
 
-import io.kotest.core.filters.TestCaseFilter
-import io.kotest.core.filters.TestFilterResult
-import io.kotest.core.test.Description
+import io.kotest.core.filters.TestFilter
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestStatus
 import io.kotest.matchers.shouldBe
 import io.kotest.core.spec.style.StringSpec
+import io.kotest.core.test.Description
 
-class TestCaseFilterTest : StringSpec() {
+class TestFilterTest : StringSpec() {
 
   var a = false
   var b = false
@@ -33,11 +32,11 @@ class TestCaseFilterTest : StringSpec() {
   }
 }
 
-object TestCaseFilterTestFilter : TestCaseFilter {
-  override fun filter(description: Description): TestFilterResult {
+object TestFilterTestFilter : TestFilter {
+  override fun filter(description: Description): Boolean {
     return when (description.name.displayName()) {
-      "bb should be ignored" -> TestFilterResult.Exclude
-      else -> TestFilterResult.Include
+      "bb should be ignored" -> false
+      else -> true
     }
   }
 }

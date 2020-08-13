@@ -2,6 +2,7 @@ package io.kotest.core.spec.style.scopes
 
 import io.kotest.core.spec.style.KotestDsl
 import io.kotest.core.test.Description
+import io.kotest.core.test.DescriptionType
 import io.kotest.core.test.TestCaseConfig
 import io.kotest.core.test.TestContext
 import io.kotest.core.test.TestName
@@ -25,7 +26,7 @@ class WordSpecWhenScope(
       val testName = TestName("$name should")
       addContainerTest(testName, xdisabled) {
          WordSpecShouldScope(
-            this@WordSpecWhenScope.description.append(testName),
+            this@WordSpecWhenScope.description.append(testName, DescriptionType.Container),
             this@WordSpecWhenScope.lifecycle,
             this,
             this@WordSpecWhenScope.defaultConfig,

@@ -173,7 +173,7 @@ fun Spec.createTestCase(
    type: TestType
 ): TestCase {
    return TestCase(
-      this::class.description().append(name),
+      Description.spec(this::class).append(name, type),
       this,
       test,
       sourceRef(),

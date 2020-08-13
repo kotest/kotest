@@ -2,10 +2,10 @@ package io.kotest.plugin.pitest
 
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
-import io.kotest.core.spec.description
 import io.kotest.core.spec.Spec
 import io.kotest.core.engine.KotestEngineLauncher
 import io.kotest.core.engine.TestEngineListener
+import io.kotest.core.test.toDescription
 import kotlinx.coroutines.runBlocking
 import org.pitest.testapi.Description
 import org.pitest.testapi.ResultCollector
@@ -14,7 +14,7 @@ import kotlin.reflect.KClass
 
 class KotestUnit(val klass: KClass<out Spec>) : TestUnit {
 
-   override fun getDescription(): Description = Description(klass.description().fullName(), klass.java)
+   override fun getDescription(): Description = Description(klass.toDescription().fullName(), klass.java)
 
    override fun execute(rc: ResultCollector) = runBlocking {
 

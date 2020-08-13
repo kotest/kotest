@@ -2,6 +2,7 @@ package io.kotest.core.spec.style.scopes
 
 import io.kotest.core.test.TestContext
 import io.kotest.core.test.TestName
+import io.kotest.core.test.TestType
 
 /**
  * Top level registration methods for ExpectSpec methods.
@@ -12,7 +13,7 @@ interface ExpectSpecRootScope : RootScope {
       val testName = TestName("Context: ", name)
       registration().addContainerTest(testName, xdisabled = false) {
          ExpectScope(
-            description().append(testName),
+            description().append(testName, TestType.Container),
             lifecycle(),
             this,
             defaultConfig(),
@@ -25,7 +26,7 @@ interface ExpectSpecRootScope : RootScope {
       val testName = TestName("Context: ", name)
       registration().addContainerTest(testName, xdisabled = true) {
          ExpectScope(
-            description().append(testName),
+            description().append(testName, TestType.Container),
             lifecycle(),
             this,
             defaultConfig(),

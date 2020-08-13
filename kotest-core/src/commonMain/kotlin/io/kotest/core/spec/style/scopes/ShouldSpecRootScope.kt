@@ -1,5 +1,6 @@
 package io.kotest.core.spec.style.scopes
 
+import io.kotest.core.test.DescriptionType
 import io.kotest.core.test.TestContext
 import io.kotest.core.test.TestName
 
@@ -26,7 +27,7 @@ interface ShouldSpecRootScope : RootScope {
    fun context(name: String, test: suspend ShouldSpecContextScope.() -> Unit) {
       registration().addContainerTest(TestName(name), xdisabled = false) {
          ShouldSpecContextScope(
-            description().append(name),
+            description().append(TestName(name), DescriptionType.Container),
             lifecycle(),
             this,
             defaultConfig(),

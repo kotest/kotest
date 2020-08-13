@@ -2,7 +2,6 @@ package io.kotest.core.test
 
 import io.kotest.core.config.Project
 import io.kotest.core.engine.KotestFrameworkSystemProperties
-import io.kotest.core.filters.TestFilterResult
 import io.kotest.core.spec.focusTests
 import io.kotest.core.spec.resolvedTags
 import io.kotest.mpp.log
@@ -19,7 +18,7 @@ import io.kotest.mpp.sysprop
  * - The name of the test is prefixed with "!" and System.getProperty("kotest.bang.disable") has a null value (ie, not defined)
  * - Excluded tags have been specified and this test has a [Tag] which is one of those excluded
  * - Included tags have been specified and this test either has no tags, or does not have a tag that is one of those included
- * - The test is filtered out via a [TestCaseFilter]
+ * - The test is filtered out via a [TestFilter]
  *
  * Note: tags are defined either through [TestCaseConfig] or in the [Spec] dsl.
  */
@@ -50,9 +49,9 @@ fun TestCase.isActive(): Boolean {
       return false
    }
 
-   val filterResults = Project.testCaseFilters().map { it to it.filter(description) }
-   if (filterResults.any { it.second == TestFilterResult.Exclude }) {
-      log("${description.fullName()} is excluded by test case filters [${filterResults}]")
+   val includedByFilters = Project.testFilters().all { it.filter(this.description) }
+   if (!includedByFilters) {
+      log("${description.fullName()} is excluded by test case filters")
       return false
    }
 

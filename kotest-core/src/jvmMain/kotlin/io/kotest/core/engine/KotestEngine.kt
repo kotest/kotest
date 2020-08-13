@@ -3,7 +3,7 @@ package io.kotest.core.engine
 import io.kotest.core.Tags
 import io.kotest.core.config.Project
 import io.kotest.core.extensions.SpecifiedTagsTagExtension
-import io.kotest.core.filters.TestCaseFilter
+import io.kotest.core.filters.TestFilter
 import io.kotest.core.internal.NamedThreadFactory
 import io.kotest.core.listeners.Listener
 import io.kotest.core.runtime.afterProject
@@ -19,32 +19,32 @@ import java.util.concurrent.TimeUnit
 import kotlin.reflect.KClass
 
 data class KotestEngineConfig(
-   val classes: List<KClass<out Spec>>,
-   val filters: List<TestCaseFilter>,
-   val listener: TestEngineListener,
-   val tags: Tags?
+    val classes: List<KClass<out Spec>>,
+    val filters: List<TestFilter>,
+    val listener: TestEngineListener,
+    val tags: Tags?
 )
 
 class KotestEngine(private val config: KotestEngineConfig) {
 
    @Deprecated("for backwards compatibility, do not use, will be removed as soon as possible")
    constructor(
-      classes: List<KClass<out Spec>>,
-      filters: List<TestCaseFilter>,
-      tags: Tags?,
-      listener: TestEngineListener,
+       classes: List<KClass<out Spec>>,
+       filters: List<TestFilter>,
+       tags: Tags?,
+       listener: TestEngineListener,
       // added to listeners statically added via Project.add
-      listeners: List<Listener> = emptyList()
+       listeners: List<Listener> = emptyList()
    ) : this(KotestEngineConfig(classes, filters, listener, tags))
 
    @Deprecated("for backwards compatibility, do not use, will be removed as soon as possible")
    constructor(
-      classes: List<KClass<out Spec>>,
-      filters: List<TestCaseFilter>,
-      parallelism: Int,
-      tags: Tags?,
-      listener: TestEngineListener,
-      listeners: List<Listener> = emptyList()
+       classes: List<KClass<out Spec>>,
+       filters: List<TestFilter>,
+       parallelism: Int,
+       tags: Tags?,
+       listener: TestEngineListener,
+       listeners: List<Listener> = emptyList()
    ) : this(classes, filters, tags, listener, listeners)
 
    private val specExecutor = SpecExecutor(config.listener)

@@ -1,7 +1,6 @@
 package io.kotest.core.engine
 
 import io.kotest.core.spec.Spec
-import io.kotest.core.spec.description
 import io.kotest.core.test.Description
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
@@ -33,7 +32,7 @@ class IsolationTestEngineListener(val listener: TestEngineListener) : TestEngine
    }
 
    override fun specInstantiated(spec: Spec) {
-      if (runningSpec.get() == spec::class.description()) {
+      if (runningSpec.get() == Description.spec(spec::class)) {
          listener.specInstantiated(spec)
       } else {
          queue {
@@ -43,7 +42,7 @@ class IsolationTestEngineListener(val listener: TestEngineListener) : TestEngine
    }
 
    override fun specInstantiationError(kclass: KClass<out Spec>, t: Throwable) {
-      if (runningSpec.get() == kclass.description()) {
+      if (runningSpec.get() == Description.spec(kclass)) {
          listener.specInstantiationError(kclass, t)
       } else {
          queue {
@@ -53,7 +52,7 @@ class IsolationTestEngineListener(val listener: TestEngineListener) : TestEngine
    }
 
    override fun testStarted(testCase: TestCase) {
-      if (runningSpec.get() == testCase.spec::class.description()) {
+      if (runningSpec.get() == Description.spec(testCase.spec::class)) {
          listener.testStarted(testCase)
       } else {
          queue {
@@ -63,7 +62,7 @@ class IsolationTestEngineListener(val listener: TestEngineListener) : TestEngine
    }
 
    override fun testIgnored(testCase: TestCase, reason: String?) {
-      if (runningSpec.get() == testCase.spec::class.description()) {
+      if (runningSpec.get() == Description.spec(testCase.spec::class)) {
          listener.testIgnored(testCase, reason)
       } else {
          queue {
@@ -73,7 +72,7 @@ class IsolationTestEngineListener(val listener: TestEngineListener) : TestEngine
    }
 
    override fun testFinished(testCase: TestCase, result: TestResult) {
-      if (runningSpec.get() == testCase.spec::class.description()) {
+      if (runningSpec.get() == Description.spec(testCase.spec::class)) {
          listener.testFinished(testCase, result)
       } else {
          queue {
@@ -83,7 +82,7 @@ class IsolationTestEngineListener(val listener: TestEngineListener) : TestEngine
    }
 
    override fun specStarted(kclass: KClass<out Spec>) {
-      if (runningSpec.compareAndSet(null, kclass.description())) {
+      if (runningSpec.compareAndSet(null, Description.spec(kclass))) {
          listener.specStarted(kclass)
       } else {
          queue {
@@ -92,9 +91,9 @@ class IsolationTestEngineListener(val listener: TestEngineListener) : TestEngine
       }
    }
 
-   private fun isRunning(klass: KClass<out Spec>): Boolean {
+   private fun isRunning(kclass: KClass<out Spec>): Boolean {
       val running = runningSpec.get()
-      val given = klass.description()
+      val given = Description.spec(kclass)
       return running == given
    }
 
@@ -103,7 +102,7 @@ class IsolationTestEngineListener(val listener: TestEngineListener) : TestEngine
       t: Throwable?,
       results: Map<TestCase, TestResult>
    ) {
-      if (runningSpec.get() == kclass.description()) {
+      if (runningSpec.get() == Description.spec(kclass)) {
          listener.specFinished(kclass, t, results)
          runningSpec.set(null)
          replay()

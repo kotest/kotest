@@ -2,94 +2,122 @@
 
 package io.kotest.core.test
 
+import io.kotest.core.spec.DisplayName
 import io.kotest.core.spec.Spec
-import io.kotest.core.spec.description
+import io.kotest.mpp.annotation
+import io.kotest.mpp.bestName
+import kotlin.js.JsName
 import kotlin.reflect.KClass
 
 /**
- * The description gives the full path to a [TestCase].
+ * The description is a pointer to a [Spec] or a [TestCase].
  *
- * It contains the name of every parent, with the root at index 0.
- * And it includes the name of the test case it represents.
+ * It contains the reference to it's own parent, and the name
+ * of the test case it represents.
+ *
+ * It contains a type: Spec, Container or Test.
  *
  * This is useful when you want to write generic extensions and you
  * need to be able to filter on certain tests only.
  *
- * @param parents each parent test case
+ * @param parent the parent of this descripton, unless this is a spec in which case the parent is null.
  * @param name the name of this test case
  */
 @Suppress("MemberVisibilityCanBePrivate")
-data class Description(val parents: List<TestName>, val name: TestName) {
+data class Description(
+   val parent: Description?,
+   val specClass: KClass<out Spec>,
+   val name: TestName,
+   val type: DescriptionType
+) {
 
-   private val PathSeperator = " -- "
+   private val TestPathSeperator = " -- "
 
    companion object {
-
-      operator fun invoke(parents: List<String>, name: String): Description =
-         Description(parents.map { TestName(null, it) }, TestName(null, name))
-
-      /**
-       * Creates a Spec level description object for the given name.
-       */
-      fun spec(name: String) = spec(TestName(null, name))
-
-      fun spec(name: TestName) = Description(emptyList(), name)
 
       /**
        * Creates a Spec level description from the given [Spec] instance.
        */
-      fun spec(spec: Spec): Description = spec::class.description()
+      fun spec(spec: Spec): Description = spec(spec::class)
 
-      fun spec(kclass: KClass<out Spec>) = kclass.description()
+      /**
+       * Returns a [Description] that can be used for a spec.
+       *
+       * If the spec has been annotated with @DisplayName (on supported platforms), then that will be used,
+       * otherwise the default is to use the fully qualified class name.
+       *
+       * Note: This name must be globally unique. Two specs, even in different packages,
+       * cannot share the same name, so if @DisplayName is used, developers must ensure it does not
+       * clash with another spec.
+       */
+      fun spec(kclass: KClass<out Spec>): Description {
+         val name = kclass.annotation<DisplayName>()?.name ?: kclass.bestName()
+         return Description(null, kclass, TestName(name), DescriptionType.Spec)
+      }
 
       /**
        * Creates a Spec level description from the given instance, with no guarantees the instance is a Spec.
        */
-      fun specUnsafe(spec: Any) = spec::class.description()
-
-      fun test(name: String) = Description(emptyList(), TestName(null, name))
+      fun specUnsafe(spec: Any) = spec(spec::class as KClass<out Spec>)
    }
 
-   fun append(name: String) = append(null, name)
-   fun append(prefix: String?, name: String) = append(TestName(prefix, name))
-   fun append(name: TestName) = Description(this.parents + this.name, name)
+   /**
+    * Returns a new [Description] with the name and type as specified, and this description as the parent
+    */
+   fun append(name: TestName, type: DescriptionType) = Description(this, specClass, name, type)
+
+   /**
+    * Returns a new [Description] with the name and type as specified, and this description as the parent
+    */
+   fun append(name: TestName, type: TestType) = Description(this, specClass, name, type.descriptionType())
+
+   fun appendTest(name: String) = append(TestName(name), DescriptionType.Test)
+
+   fun appendContainer(name: String) = append(TestName(name), DescriptionType.Container)
 
    /**
     * Returns the parent of this description, unless it is a spec then it will throw
     */
-   fun parent(): Description = if (isSpec()) error("Cannot call .parent() on a spec") else
-      Description(parents.dropLast(1), parents.last())
+   @JsName("getParent")
+   fun parent(): Description = parent ?: error("Cannot call .parent() on a spec")
 
    /**
     * Returns true if this description is for a spec.
     */
-   fun isSpec(): Boolean = parents.isEmpty()
+   fun isSpec(): Boolean = type == DescriptionType.Spec
 
    /**
-    * Returns a [Description] that models the spec that this description belongs to.
-    * Requires at least one parent, otherwise this description is a spec already.
+    * Returns the [Description] that represents the spec that _this_ description belongs to.
+    * This will recurse to the top of the description tree to find the spec.
+    * If this description is already a spec, will return itself.
     */
-   fun spec(): Description = spec(parents.first())
+   fun spec(): Description = parent?.spec() ?: this
+
+   /**
+    * Returns all descriptions in this tree, starting with the root element and proceeding to this description
+    * as the final element in the list.
+    */
+   fun chain(): List<Description> = if (parent == null) listOf(this) else parent.chain() + this
 
    /**
     * Returns the programmatic path of the description. This is all the components joined
-    * together with the test path seperator, without prefixes on the names.
+    * together with the [TestPathSeperator], without prefixes on the names.
     */
-   fun path(): String = (parents.map { it.name } + name.name).joinToString(PathSeperator)
-
-   fun tail() = if (parents.isEmpty()) throw NoSuchElementException() else
-      Description(parents.drop(1), name)
+   fun path(): String = if (parent == null) name.name else parent.path() + TestPathSeperator + name.name
 
    /**
     * Returns the full name including the spec.
     */
-   fun fullName(): String = (parents.map { it.displayName() } + name.displayName()).joinToString(" ")
+   fun fullName(): String = if (parent == null) name.displayName() else parent.fullName() + " " + name.displayName()
+
+   fun fullNameWithoutSpec(): String =
+      if (parent == null) "" else (parent.fullNameWithoutSpec() + " " + name.displayName()).trim()
 
    /**
-    * Returns a String version of this description, which is
+    * Returns a version of this description suitable for ids, which is
     * the parents + this name concatenated with slashes.
     */
-   fun id(): String = (parents.map { it.displayName() } + listOf(name.displayName())).joinToString("/")
+   fun id(): String = if (parent == null) name.displayName() else parent.id() + "/" + name.displayName()
 
    /**
     * Returns each component of this description as a [TestName].
@@ -101,9 +129,9 @@ data class Description(val parents: List<TestName>, val name: TestName) {
     *   }
     * }
     *
-    * Would return a list of four components - the spec, a context, and another, a test.
+    * Would return a list of four components - the name of the spec, 'a context', 'and another', 'a test'.
     */
-   fun names(): List<TestName> = parents + name
+   fun names(): List<TestName> = if (parent == null) listOf(name) else parent.names() + name
 
    fun depth() = names().size
 
@@ -148,9 +176,20 @@ data class Description(val parents: List<TestName>, val name: TestName) {
    fun isDescendentOf(description: Description): Boolean = description.isOnPath(this)
 
    /**
-    * Returns true if this test is a top level test. In other words, if the
+    * Returns true if this test is a top level / root test. In other words, if the
     * test has no parents other than the spec itself.
     * Ignores test prefixes when comparing.
     */
-   fun isTopLevel(): Boolean = parents.size == 1 && parent().isSpec()
+   fun isTopLevel(): Boolean = parent?.type == DescriptionType.Spec
+}
+
+fun KClass<out Spec>.toDescription() = Description.spec(this)
+
+enum class DescriptionType {
+   Spec, Container, Test
+}
+
+fun TestType.descriptionType(): DescriptionType = when (this) {
+   TestType.Container -> DescriptionType.Container
+   TestType.Test -> DescriptionType.Test
 }

@@ -2,11 +2,11 @@ package io.kotest.extensions.junitxml
 
 import io.kotest.core.listeners.TestListener
 import io.kotest.core.spec.Spec
-import io.kotest.core.spec.description
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestStatus
 import io.kotest.core.test.TestType
+import io.kotest.core.test.toDescription
 import org.jdom2.Element
 import org.jdom2.Document
 import org.jdom2.output.Format
@@ -18,7 +18,6 @@ import java.nio.file.Path
 import java.nio.file.Paths
 import java.nio.file.StandardOpenOption
 import java.time.Clock
-import java.time.Duration
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter.ISO_LOCAL_DATE_TIME
 import java.util.concurrent.ConcurrentHashMap
@@ -87,13 +86,13 @@ class JunitXmlReporter(
       testSuite.setAttribute("failures", filtered.filter { it.value.status == TestStatus.Failure }.size.toString())
       testSuite.setAttribute("skipped", filtered.filter { it.value.status == TestStatus.Ignored }.size.toString())
       testSuite.setAttribute("tests", filtered.size.toString())
-      testSuite.setAttribute("name", kclass.description().fullName())
+      testSuite.setAttribute("name", kclass.toDescription().fullName())
       document.addContent(testSuite)
 
       filtered.map { (testcase, result) ->
 
          val name = when (useTestPathAsName) {
-            true -> testcase.description.tail().fullName()
+            true -> testcase.description.fullNameWithoutSpec()
             false -> testcase.displayName
          }
 
@@ -129,7 +128,7 @@ class JunitXmlReporter(
    }
 
    private fun write(kclass: KClass<out Spec>, document: Document) {
-      val path = outputDir().resolve("TEST-" + kclass.description().name.name + ".xml")
+      val path = outputDir().resolve("TEST-" + kclass.toDescription().name.name + ".xml")
       path.parent.toFile().mkdirs()
       val outputter = XMLOutputter(Format.getPrettyFormat())
       val writer = Files.newBufferedWriter(path, StandardOpenOption.TRUNCATE_EXISTING, StandardOpenOption.CREATE)

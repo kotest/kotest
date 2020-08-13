@@ -2,6 +2,7 @@ package io.kotest.core.spec.style.scopes
 
 import io.kotest.core.spec.style.KotestDsl
 import io.kotest.core.test.Description
+import io.kotest.core.test.DescriptionType
 import io.kotest.core.test.TestCaseConfig
 import io.kotest.core.test.TestContext
 import io.kotest.core.test.TestName
@@ -34,7 +35,7 @@ class FeatureScope(
       val testName = TestName("Feature: ", name)
       addContainerTest(testName, xdisabled = false) {
          FeatureScope(
-            this@FeatureScope.description.append(testName),
+            this@FeatureScope.description.append(testName, DescriptionType.Container),
             this@FeatureScope.lifecycle,
             this,
             this@FeatureScope.defaultConfig,
@@ -47,7 +48,7 @@ class FeatureScope(
       val testName = TestName("Feature: ", name)
       addContainerTest(testName, xdisabled = true) {
          FeatureScope(
-            this@FeatureScope.description.append(testName),
+            this@FeatureScope.description.append(testName, DescriptionType.Container),
             this@FeatureScope.lifecycle,
             this,
             this@FeatureScope.defaultConfig,

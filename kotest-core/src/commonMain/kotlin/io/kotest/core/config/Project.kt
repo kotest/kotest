@@ -18,7 +18,7 @@ import io.kotest.core.extensions.TagExtension
 import io.kotest.core.extensions.TagsExcludedDiscoveryExtension
 import io.kotest.core.extensions.TestCaseExtension
 import io.kotest.core.filters.Filter
-import io.kotest.core.filters.TestCaseFilter
+import io.kotest.core.filters.TestFilter
 import io.kotest.core.listeners.Listener
 import io.kotest.core.listeners.ProjectListener
 import io.kotest.core.listeners.TestListener
@@ -173,10 +173,10 @@ object Project {
    }
 
    /**
-    * Returns all registered [TestCaseFilter].
+    * Returns all registered [TestFilter].
     */
-   fun testCaseFilters(): List<TestCaseFilter> = filters
-      .filterIsInstance<TestCaseFilter>()
+   fun testFilters(): List<TestFilter> = filters
+      .filterIsInstance<TestFilter>()
       .filterNot { autoScanIgnoredClasses().contains(it::class) }
 
    fun specExtensions(): List<SpecExtension> = extensions

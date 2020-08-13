@@ -35,7 +35,7 @@ class WhenScope(
       val testName = TestName("And: ", name)
       addContainerTest(testName, xdisabled) {
          WhenScope(
-            this@WhenScope.description.append(testName),
+            this@WhenScope.description.append(testName, DescriptionType.Container),
             this@WhenScope.lifecycle,
             this,
             this@WhenScope.defaultConfig,
