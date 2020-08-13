@@ -5,23 +5,16 @@ The official [Kotest plugin](https://plugins.jetbrains.com/plugin/14080-kotest) 
 
 ## Getting Started
 
-This plugin requires Kotest 4.1.0 as well as the `kotest-runner-console-jvm` module included in your build.
+This plugin requires Kotest 4.1.0 or above.
 
 ```kotlin
-  val kotestVersion = "4.1.0"
+  val kotestVersion = "4.1.3"
   
-  // you need to add the sonatype snapshots repository to your build
-  repositories {
-    ...
-    maven("https://oss.sonatype.org/content/repositories/snapshots/")
-  }
-
-  // and then the console runner required by the plugin
+  // and then the kotlin dependencies
   dependencies {
     ...
-    listOf("runner-junit5", "assertions-core", "runner-console"/*, "property"*/).forEach {
-        testImplementation("io.kotest:kotest-$it-jvm:$kotestVersion")
-    }
+    testImplementation("io.kotest:kotest-assertions-core-jvm:$kotestVersion") // optional, for kotest assertions
+    testImplementation("io.kotest:kotest-runner-junit5-jvm:$kotestVersion") // required
   }
   
   tasks.withType<Test> { useJUnitPlatform() }
