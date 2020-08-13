@@ -116,7 +116,7 @@ suspend fun <A> forAll(
 ) = forAll(computeDefaultIteration(genA), config, genA, property)
 
 @JvmName("forAllExt")
-suspend fun <A> Gen<A>.forAll(iterations: Int, config: PropTestConfig, suspend property: PropertyContext.(A) -> Boolean) =
+suspend fun <A> Gen<A>.forAll(iterations: Int, config: PropTestConfig, property: suspend PropertyContext.(A) -> Boolean) =
    forAll(iterations, config, this, property)
 
 suspend fun <A> forAll(
