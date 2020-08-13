@@ -1,17 +1,16 @@
 package io.kotest.core.spec.style.scopes
 
+import io.kotest.core.test.DescriptionType
 import io.kotest.core.test.TestName
-import kotlin.time.ExperimentalTime
 
 @Suppress("FunctionName")
-@OptIn(ExperimentalTime::class)
 interface WordSpecRootScope : RootScope {
 
    infix fun String.should(test: suspend WordSpecShouldScope.() -> Unit) {
       val testName = TestName("$this should")
       registration().addContainerTest(testName, xdisabled = false) {
          WordSpecShouldScope(
-            description().append(testName),
+            description().append(testName, DescriptionType.Container),
             lifecycle(),
             this,
             defaultConfig(),
@@ -24,7 +23,7 @@ interface WordSpecRootScope : RootScope {
       val testName = TestName("$this should")
       registration().addContainerTest(testName, xdisabled = true) {
          WordSpecShouldScope(
-            description().append(testName),
+            description().append(testName, DescriptionType.Container),
             lifecycle(),
             this,
             defaultConfig(),
@@ -40,7 +39,7 @@ interface WordSpecRootScope : RootScope {
       val testName = TestName("$name when")
       registration().addContainerTest(testName, xdisabled = false) {
          WordSpecWhenScope(
-            description().append(testName),
+            description().append(testName, DescriptionType.Container),
             lifecycle(),
             this,
             defaultConfig(),

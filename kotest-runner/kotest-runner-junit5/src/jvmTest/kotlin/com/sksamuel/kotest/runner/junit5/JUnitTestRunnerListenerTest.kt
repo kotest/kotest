@@ -2,11 +2,12 @@ package com.sksamuel.kotest.runner.junit5
 
 import io.kotest.core.sourceRef
 import io.kotest.core.spec.CompositeSpec
-import io.kotest.core.spec.description
 import io.kotest.core.spec.style.funSpec
 import io.kotest.core.test.TestCase
+import io.kotest.core.test.TestName
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestType
+import io.kotest.core.test.toDescription
 import io.kotest.matchers.shouldBe
 import io.kotest.runner.junit.platform.JUnitTestEngineListener
 import io.kotest.runner.junit.platform.KotestEngineDescriptor
@@ -15,7 +16,6 @@ import org.junit.platform.engine.TestDescriptor
 import org.junit.platform.engine.TestExecutionResult
 import org.junit.platform.engine.UniqueId
 import org.junit.platform.engine.reporting.ReportEntry
-import kotlin.time.Duration
 import kotlin.time.ExperimentalTime
 
 @OptIn(ExperimentalTime::class)
@@ -25,6 +25,7 @@ val childFailsParentTest = funSpec {
 
       val root = KotestEngineDescriptor(
          UniqueId.forEngine("kotest"),
+         emptyList(),
          emptyList()
       )
 
@@ -42,7 +43,7 @@ val childFailsParentTest = funSpec {
       }
 
       val test1 = TestCase(
-         JUnitTestRunnerListenerTests::class.description().append("test1"),
+         JUnitTestRunnerListenerTests::class.toDescription().append(TestName("test1"), TestType.Test),
          JUnitTestRunnerListenerTests(),
          { },
          sourceRef(),
@@ -50,7 +51,7 @@ val childFailsParentTest = funSpec {
       )
 
       val test2 = TestCase(
-         test1.description.append("test2"),
+         test1.description.append(TestName("test2"), TestType.Test),
          JUnitTestRunnerListenerTests(),
          { },
          sourceRef(),

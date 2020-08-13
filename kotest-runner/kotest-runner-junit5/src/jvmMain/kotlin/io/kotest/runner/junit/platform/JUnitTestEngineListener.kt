@@ -6,11 +6,13 @@ import io.kotest.core.internal.writeSpecFailures
 import io.kotest.core.runtime.AfterProjectListenerException
 import io.kotest.core.runtime.BeforeProjectListenerException
 import io.kotest.core.spec.Spec
-import io.kotest.core.spec.description
 import io.kotest.core.test.Description
 import io.kotest.core.test.TestCase
+import io.kotest.core.test.TestName
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestStatus
+import io.kotest.core.test.TestType
+import io.kotest.core.test.toDescription
 import io.kotest.mpp.log
 import org.junit.platform.engine.EngineExecutionListener
 import org.junit.platform.engine.TestDescriptor
@@ -127,7 +129,7 @@ class JUnitTestEngineListener(
       log("specStarted [${kclass.qualifiedName}]")
       try {
          val descriptor = kclass.descriptor(root)
-         descriptors[kclass.description()] = descriptor
+         descriptors[kclass.toDescription()] = descriptor
 
          log("Registering junit dynamic test and notifiying start: $descriptor")
          listener.dynamicTestRegistered(descriptor)
@@ -145,12 +147,12 @@ class JUnitTestEngineListener(
    ) {
       log("specFinished [$kclass]")
 
-      val descriptor = descriptors[kclass.description()]
+      val descriptor = descriptors[kclass.toDescription()]
          ?: throw RuntimeException("Error retrieving description for spec: ${kclass.qualifiedName}")
 
       // we are ignoring junit guidelines here and failing the spec if any of it's tests failed
       // this is because in gradle and intellij nested errors are not very obvious
-      val nestedFailure = findChildFailure(kclass.description())
+      val nestedFailure = findChildFailure(kclass.toDescription())
 
       (specException ?: t ?: nestedFailure?.error)?.apply {
          checkSpecVisiblity(kclass, this)
@@ -179,11 +181,11 @@ class JUnitTestEngineListener(
     * Checks that the spec has at least one test attached in case of failure.
     */
    private fun checkSpecVisiblity(kclass: KClass<out Spec>, t: Throwable) {
-      val description = kclass.description()
+      val description = kclass.toDescription()
       if (!isVisible(description)) {
          val spec = descriptors[description]!!
          val test = spec.append(
-            description.append("Spec execution failed"), TestDescriptor.Type.TEST, null,
+            description.append(TestName("Spec execution failed"), TestType.Test), TestDescriptor.Type.TEST, null,
             Segment.Test
          )
          listener.dynamicTestRegistered(test)

@@ -16,9 +16,10 @@ class FreeScope(
 ) : ContainerScope {
 
    suspend infix operator fun String.minus(test: suspend FreeScope.() -> Unit) {
-      addContainerTest(TestName(this), xdisabled = false) {
+      val name = TestName(this)
+      addContainerTest(name, xdisabled = false) {
          FreeScope(
-            this@FreeScope.description.append(this@minus),
+            this@FreeScope.description.append(name, TestType.Container),
             this@FreeScope.lifecycle,
             this,
             this@FreeScope.defaultConfig,

@@ -39,7 +39,7 @@ class GivenScope(
       val testName = TestName("And: ", name)
       addContainerTest(testName, xdisabled) {
          GivenScope(
-            this@GivenScope.description.append(testName),
+            this@GivenScope.description.append(testName, DescriptionType.Container),
             this@GivenScope.lifecycle,
             this,
             this@GivenScope.defaultConfig,
@@ -57,7 +57,7 @@ class GivenScope(
       val testName = TestName("When: ", name)
       addContainerTest(testName, xdisabled) {
          WhenScope(
-            this@GivenScope.description.append(testName),
+            this@GivenScope.description.append(testName, DescriptionType.Container),
             this@GivenScope.lifecycle,
             this,
             this@GivenScope.defaultConfig,

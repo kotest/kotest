@@ -2,7 +2,6 @@ package io.kotest.core.spec.style.scopes
 
 import io.kotest.core.Tag
 import io.kotest.core.extensions.TestCaseExtension
-import io.kotest.core.factory.TestFactoryId
 import io.kotest.core.test.*
 import kotlin.time.Duration
 import kotlin.time.ExperimentalTime

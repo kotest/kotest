@@ -5,12 +5,12 @@ import io.kotest.core.runtime.ExecutorExecutionContext
 import io.kotest.core.runtime.TestCaseExecutionListener
 import io.kotest.core.runtime.TestCaseExecutor
 import io.kotest.core.spec.style.FunSpec
-import io.kotest.core.test.Description
 import io.kotest.core.test.NestedTest
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestCaseConfig
 import io.kotest.core.test.TestContext
 import io.kotest.core.test.TestResult
+import io.kotest.core.test.toDescription
 import io.kotest.matchers.shouldBe
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
@@ -41,7 +41,10 @@ class TestCaseTimeoutListenerTest : FunSpec() {
             }
          }
 
-         val testCase = TestCase.test(Description.spec("wibble"), this@TestCaseTimeoutListenerTest) {
+         val testCase = TestCase.test(
+            TestCaseTimeoutListenerTest::class.toDescription().appendTest("wibble"),
+            this@TestCaseTimeoutListenerTest
+         ) {
             Thread.sleep(1000000)
          }.copy(
             config = TestCaseConfig(
@@ -63,7 +66,9 @@ class TestCaseTimeoutListenerTest : FunSpec() {
          executor.execute(testCase, context)
       }
 
-      test("tests which timeout during a suspending operation should still run the 'after test' listeners").config(timeout = 1000.milliseconds) {
+      test("tests which timeout during a suspending operation should still run the 'after test' listeners").config(
+         timeout = 1000.milliseconds
+      ) {
 
          // this listener will flick the flag to true so we know it ran
          val listener = object : TestListener {
@@ -72,7 +77,10 @@ class TestCaseTimeoutListenerTest : FunSpec() {
             }
          }
 
-         val testCase = TestCase.test(Description.spec("wibble"), this@TestCaseTimeoutListenerTest) {
+         val testCase = TestCase.test(
+            TestCaseTimeoutListenerTest::class.toDescription().appendTest("wibble"),
+            this@TestCaseTimeoutListenerTest
+         ) {
             delay(1000000)
          }.copy(
             config = TestCaseConfig(

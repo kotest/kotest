@@ -2,6 +2,7 @@ package io.kotest.core.spec.style.scopes
 
 import io.kotest.core.test.TestContext
 import io.kotest.core.test.TestName
+import io.kotest.core.test.TestType
 
 interface FunSpecRootScope : RootScope {
 
@@ -11,7 +12,7 @@ interface FunSpecRootScope : RootScope {
    fun context(name: String, test: suspend FunSpecContextScope.() -> Unit) {
       registration().addContainerTest(TestName(name), xdisabled = false) {
          FunSpecContextScope(
-            description().append(name),
+            description().append(TestName(name), TestType.Container),
             lifecycle(),
             this,
             defaultConfig(),

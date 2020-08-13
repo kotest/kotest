@@ -7,8 +7,8 @@ import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestCaseOrder
 import io.kotest.core.test.TestResult
 import io.kotest.core.spec.Spec
-import io.kotest.core.spec.description
 import io.kotest.core.spec.style.FunSpec
+import io.kotest.core.test.toDescription
 import io.kotest.extensions.locale.LocaleTestListener
 import io.kotest.extensions.locale.TimeZoneTestListener
 import java.util.Locale
@@ -29,11 +29,11 @@ class FunSpecExample : FunSpec() {
    }
 
    override fun beforeSpec(spec: Spec) {
-      println("Starting spec ${spec::class.description()}")
+      println("Starting spec ${spec::class.toDescription()}")
    }
 
    override fun afterSpec(spec: Spec) {
-      println("Completed spec ${spec::class.description()}")
+      println("Completed spec ${spec::class.toDescription()}")
    }
 
    override fun afterTest(testCase: TestCase, result: TestResult) {

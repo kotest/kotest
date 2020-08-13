@@ -15,7 +15,7 @@ object ProjectConfig : AbstractProjectConfig() {
 
    val intercepterLog = StringBuilder()
 
-   override fun filters(): List<Filter> = listOf(TestCaseFilterTestFilter)
+   override fun filters(): List<Filter> = listOf(TestFilterTestFilter)
 
    override fun specExecutionOrder(): SpecExecutionOrder = FailureFirstSpecExecutionOrder
 

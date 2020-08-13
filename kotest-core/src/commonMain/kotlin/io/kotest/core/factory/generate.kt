@@ -16,7 +16,7 @@ import io.kotest.core.test.TestCase
 fun TestFactory.generate(description: Description, spec: Spec): List<TestCase> {
    return tests.map { dyn ->
       TestCase(
-         description = description.append(dyn.name),
+         description = description.append(dyn.name, dyn.type),
          spec = spec,
          test = dyn.test,
          type = dyn.type,

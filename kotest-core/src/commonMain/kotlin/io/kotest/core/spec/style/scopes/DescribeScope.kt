@@ -2,6 +2,7 @@ package io.kotest.core.spec.style.scopes
 
 import io.kotest.core.spec.style.KotestDsl
 import io.kotest.core.test.Description
+import io.kotest.core.test.DescriptionType
 import io.kotest.core.test.TestCaseConfig
 import io.kotest.core.test.TestContext
 import io.kotest.core.test.TestName
@@ -56,7 +57,7 @@ class DescribeScope(
    ) {
       addContainerTest(testName, xdisabled = xdisabled) {
          DescribeScope(
-            this@DescribeScope.description.append(testName),
+            this@DescribeScope.description.append(testName, DescriptionType.Container),
             this@DescribeScope.lifecycle,
             this,
             this@DescribeScope.defaultConfig,

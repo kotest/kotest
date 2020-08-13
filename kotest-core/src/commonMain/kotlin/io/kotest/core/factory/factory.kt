@@ -28,10 +28,10 @@ data class TestFactory(
  * as fully fledged [TestCase]s.
  */
 data class DynamicTest(
-   val name: TestName,
-   val test: suspend TestContext.() -> Unit,
-   val config: TestCaseConfig,
-   val type: TestType,
-   val source: SourceRef,
-   val factoryId: TestFactoryId
+    val name: TestName,
+    val test: suspend TestContext.() -> Unit,
+    val config: TestCaseConfig,
+    val type: TestType,
+    val source: SourceRef,
+    val factoryId: TestFactoryId
 )

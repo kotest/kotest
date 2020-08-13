@@ -1,5 +1,6 @@
 package io.kotest.core.spec.style.scopes
 
+import io.kotest.core.test.DescriptionType
 import io.kotest.core.test.TestName
 import kotlin.time.ExperimentalTime
 
@@ -30,7 +31,7 @@ interface DescribeSpecRootScope : RootScope {
    private fun test(testName: TestName, test: suspend DescribeScope.() -> Unit) {
       registration().addContainerTest(testName, xdisabled = false) {
          DescribeScope(
-            this@DescribeSpecRootScope.description().append(testName),
+            this@DescribeSpecRootScope.description().append(testName, DescriptionType.Container),
             this@DescribeSpecRootScope.lifecycle(),
             this,
             this@DescribeSpecRootScope.defaultConfig(),

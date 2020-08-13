@@ -2,9 +2,9 @@ package io.kotest.extensions.system
 
 import io.kotest.core.config.AbstractProjectConfig
 import io.kotest.core.test.Description
-import io.kotest.core.spec.description
 import io.kotest.core.spec.Spec
 import io.kotest.core.listeners.TestListener
+import io.kotest.core.test.toDescription
 import java.io.FileDescriptor
 import java.net.InetAddress
 import java.security.Permission
@@ -55,13 +55,13 @@ object SpecSystemExitListener : TestListener {
    override suspend fun beforeSpec(spec: Spec) {
         val previous = System.getSecurityManager()
         if (previous != null)
-            previousSecurityManagers[spec::class.description()] = previous
+            previousSecurityManagers[spec::class.toDescription()] = previous
         System.setSecurityManager(NoExitSecurityManager(previous))
     }
 
    override suspend fun afterSpec(spec: Spec) {
-        if (previousSecurityManagers.contains(spec::class.description()))
-            System.setSecurityManager(previousSecurityManagers[spec::class.description()])
+        if (previousSecurityManagers.contains(spec::class.toDescription()))
+            System.setSecurityManager(previousSecurityManagers[spec::class.toDescription()])
         else
             System.setSecurityManager(null)
     }

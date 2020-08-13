@@ -59,7 +59,7 @@ data class NestedTest(
 
 fun NestedTest.toTestCase(spec: Spec, parent: Description): TestCase {
    return TestCase(
-      description = parent.append(this.name),
+      description = parent.append(this.name, type),
       spec = spec,
       test = test,
       source = sourceRef,

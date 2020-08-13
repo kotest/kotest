@@ -5,6 +5,7 @@ import io.kotest.core.test.Description
 import io.kotest.core.test.TestCaseConfig
 import io.kotest.core.test.TestContext
 import io.kotest.core.test.TestName
+import io.kotest.core.test.TestType
 import kotlin.coroutines.CoroutineContext
 
 /**
@@ -30,7 +31,7 @@ class ShouldSpecContextScope(
    suspend fun context(name: String, test: suspend ShouldSpecContextScope.() -> Unit) {
       addContainerTest(TestName(name), xdisabled = false) {
          ShouldSpecContextScope(
-            this@ShouldSpecContextScope.description.append(name),
+            this@ShouldSpecContextScope.description.append(TestName(name), TestType.Container),
             this@ShouldSpecContextScope.lifecycle,
             this,
             this@ShouldSpecContextScope.defaultConfig,

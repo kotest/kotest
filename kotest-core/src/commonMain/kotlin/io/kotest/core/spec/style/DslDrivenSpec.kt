@@ -4,7 +4,6 @@ import io.kotest.core.config.Project
 import io.kotest.core.factory.generate
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.createTestCase
-import io.kotest.core.spec.description
 import io.kotest.core.test.*
 
 abstract class DslDrivenSpec : Spec() {
@@ -15,7 +14,7 @@ abstract class DslDrivenSpec : Spec() {
    private var rootTestCases = emptyList<TestCase>()
 
    override fun materializeRootTests(): List<TestCase> {
-      return rootTestCases + factories.flatMap { it.generate(this::class.description(), this) }
+      return rootTestCases + factories.flatMap { it.generate(Description.spec(this::class), this) }
    }
 
    /**
