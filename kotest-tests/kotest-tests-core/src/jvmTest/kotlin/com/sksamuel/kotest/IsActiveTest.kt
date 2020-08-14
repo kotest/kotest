@@ -7,6 +7,8 @@ import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestCaseConfig
 import io.kotest.core.extensions.TagExtension
 import io.kotest.core.filters.TestFilter
+import io.kotest.core.filters.TestFilterResult
+import io.kotest.core.filters.toTestFilterResult
 import io.kotest.core.test.isActive
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.spec.style.StringSpec
@@ -149,8 +151,8 @@ class IsActiveTest : StringSpec() {
 
       "isActive should return false if a test filter excludes the test" {
          val filter = object : TestFilter {
-            override fun filter(description: Description): Boolean {
-               return description.name.name == "f"
+            override fun filter(description: Description): TestFilterResult {
+               return (description.name.name == "f").toTestFilterResult()
             }
          }
          Project.registerFilter(filter)

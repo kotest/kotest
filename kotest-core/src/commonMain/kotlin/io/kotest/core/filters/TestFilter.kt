@@ -15,5 +15,14 @@ interface TestFilter : Filter {
     * This method is invoked with a [TestCase] and the result
     * used to determine if the test should be included or not.
     */
-   fun filter(description: Description): Boolean
+   fun filter(description: Description): TestFilterResult
 }
+
+@Deprecated("Replaced with TestFilter")
+typealias TestCaseFilter = TestFilter
+
+enum class TestFilterResult {
+   Include, Exclude
+}
+
+fun Boolean.toTestFilterResult() = if (this) TestFilterResult.Include else TestFilterResult.Exclude

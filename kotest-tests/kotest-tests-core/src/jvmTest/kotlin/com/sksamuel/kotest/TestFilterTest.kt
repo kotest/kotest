@@ -1,6 +1,7 @@
 package com.sksamuel.kotest
 
 import io.kotest.core.filters.TestFilter
+import io.kotest.core.filters.TestFilterResult
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestStatus
@@ -33,10 +34,10 @@ class TestFilterTest : StringSpec() {
 }
 
 object TestFilterTestFilter : TestFilter {
-  override fun filter(description: Description): Boolean {
+  override fun filter(description: Description): TestFilterResult {
     return when (description.name.displayName()) {
-      "bb should be ignored" -> false
-      else -> true
+      "bb should be ignored" -> TestFilterResult.Exclude
+      else -> TestFilterResult.Include
     }
   }
 }

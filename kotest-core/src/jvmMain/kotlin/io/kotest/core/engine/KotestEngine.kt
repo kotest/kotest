@@ -3,6 +3,7 @@ package io.kotest.core.engine
 import io.kotest.core.Tags
 import io.kotest.core.config.Project
 import io.kotest.core.extensions.SpecifiedTagsTagExtension
+import io.kotest.core.filters.TestCaseFilter
 import io.kotest.core.filters.TestFilter
 import io.kotest.core.internal.NamedThreadFactory
 import io.kotest.core.listeners.Listener
@@ -30,7 +31,7 @@ class KotestEngine(private val config: KotestEngineConfig) {
    @Deprecated("for backwards compatibility, do not use, will be removed as soon as possible")
    constructor(
        classes: List<KClass<out Spec>>,
-       filters: List<TestFilter>,
+       filters: List<TestCaseFilter>,
        tags: Tags?,
        listener: TestEngineListener,
       // added to listeners statically added via Project.add
@@ -40,7 +41,7 @@ class KotestEngine(private val config: KotestEngineConfig) {
    @Deprecated("for backwards compatibility, do not use, will be removed as soon as possible")
    constructor(
        classes: List<KClass<out Spec>>,
-       filters: List<TestFilter>,
+       filters: List<TestCaseFilter>,
        parallelism: Int,
        tags: Tags?,
        listener: TestEngineListener,

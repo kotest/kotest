@@ -5,6 +5,7 @@ import io.kotest.core.engine.KotestEngineLauncher
 import io.kotest.core.engine.SynchronizedTestEngineListener
 import io.kotest.core.engine.discovery.Discovery
 import io.kotest.core.filters.TestFilter
+import io.kotest.core.filters.TestFilterResult
 import io.kotest.core.spec.Spec
 import io.kotest.core.test.toDescription
 import io.kotest.mpp.log
@@ -68,7 +69,8 @@ class KotestJunitPlatformTestEngine : TestEngine {
       // therefore, the presence of a MethodSelector means we must run no tests in KT.
       return if (request.getSelectorsByType(MethodSelector::class.java).isEmpty()) {
          val result = Discovery.discover(createDiscoveryRequest(request))
-         val classes = result.specs.filter { spec -> testFilters.none { !it.filter(spec.toDescription()) } }
+         val classes =
+            result.specs.filter { spec -> testFilters.all { it.filter(spec.toDescription()) == TestFilterResult.Include } }
          KotestEngineDescriptor(uniqueId, classes, testFilters)
       } else {
          KotestEngineDescriptor(uniqueId, emptyList(), emptyList())

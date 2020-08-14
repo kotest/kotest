@@ -1,7 +1,8 @@
 package io.kotest.core.test
 
-import io.kotest.core.*
+import io.kotest.core.SourceRef
 import io.kotest.core.factory.TestFactoryId
+import io.kotest.core.sourceRef
 import io.kotest.core.spec.Spec
 
 /**
@@ -32,21 +33,21 @@ import io.kotest.core.spec.Spec
  */
 data class TestCase(
    // the description contains the names of all parents, plus the name of this test case
-    val description: Description,
+   val description: Description,
    // the spec that contains this testcase
-    val spec: Spec,
+   val spec: Spec,
    // a closure of the test function
-    val test: suspend TestContext.() -> Unit,
-    val source: SourceRef,
-    val type: TestType,
+   val test: suspend TestContext.() -> Unit,
+   val source: SourceRef,
+   val type: TestType,
    // config used when running the test, such as number of
    // invocations, threads, etc
-    val config: TestCaseConfig = TestCaseConfig(),
+   val config: TestCaseConfig = TestCaseConfig(),
    // an optional factory id which is used to indicate which factory (if any) generated this test case.
-    val factoryId: TestFactoryId? = null,
+   val factoryId: TestFactoryId? = null,
    // assertion mode can be set to control errors/warnings in a test
    // if null, defaults will be applied
-    val assertionMode: AssertionMode? = null
+   val assertionMode: AssertionMode? = null
 ) {
 
    @Deprecated("use displayName(). Will be removed in 4.3")

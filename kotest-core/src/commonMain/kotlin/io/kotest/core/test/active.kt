@@ -2,6 +2,7 @@ package io.kotest.core.test
 
 import io.kotest.core.config.Project
 import io.kotest.core.engine.KotestFrameworkSystemProperties
+import io.kotest.core.filters.TestFilterResult
 import io.kotest.core.spec.focusTests
 import io.kotest.core.spec.resolvedTags
 import io.kotest.mpp.log
@@ -49,7 +50,7 @@ fun TestCase.isActive(): Boolean {
       return false
    }
 
-   val includedByFilters = Project.testFilters().all { it.filter(this.description) }
+   val includedByFilters = Project.testFilters().all { it.filter(this.description) == TestFilterResult.Include }
    if (!includedByFilters) {
       log("${description.fullName()} is excluded by test case filters")
       return false
