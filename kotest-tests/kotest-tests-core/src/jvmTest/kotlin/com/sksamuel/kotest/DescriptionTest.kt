@@ -73,6 +73,13 @@ class DescriptionTest : FunSpec({
       rootTest.isAncestorOf(spec) shouldBe false
    }
 
+   test("isAncestorOf with backwards compatible append") {
+      val testPath = "a context -- nested test"
+      val target = testPath.split(" -- ").fold(Description.spec(DescriptionTest::class)) { desc, name -> desc.append(name) }
+      container.isAncestorOf(target) shouldBe true
+      spec.isAncestorOf(target) shouldBe true
+   }
+
    test("isDescendentOf") {
       container.isDescendentOf(test) shouldBe false
       spec.isDescendentOf(test) shouldBe false
