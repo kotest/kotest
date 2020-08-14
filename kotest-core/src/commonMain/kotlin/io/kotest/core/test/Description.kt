@@ -71,6 +71,9 @@ data class Description(
     */
    fun append(name: TestName, type: TestType) = Description(this, specClass, name, type.descriptionType())
 
+   @Deprecated("this doesn't specify the type but is needed for backwards compatibility")
+   fun append(name: String) = Description(this, specClass, TestName(name), DescriptionType.Test)
+
    fun appendTest(name: String) = append(TestName(name), DescriptionType.Test)
 
    fun appendContainer(name: String) = append(TestName(name), DescriptionType.Container)

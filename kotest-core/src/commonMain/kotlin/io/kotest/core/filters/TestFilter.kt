@@ -19,7 +19,7 @@ interface TestFilter : Filter {
 }
 
 @Deprecated("Replaced with TestFilter")
-typealias TestCaseFilter = TestFilter
+interface TestCaseFilter : TestFilter
 
 enum class TestFilterResult {
    Include, Exclude
