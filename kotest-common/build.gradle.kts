@@ -64,22 +64,20 @@ kotlin {
          }
       }
 
+      val desktopMain by creating {
+         dependsOn(commonMain)
+      }
+
       val macosX64Main by getting {
-         dependencies {
-            implementation(Libs.Coroutines.coreMacos)
-         }
+         dependsOn(desktopMain)
       }
 
       val mingwX64Main by getting {
-         dependencies {
-            implementation(Libs.Coroutines.coreMingw)
-         }
+         dependsOn(desktopMain)
       }
 
       val linuxX64Main by getting {
-         dependencies {
-            implementation(Libs.Coroutines.coreLinux)
-         }
+         dependsOn(desktopMain)
       }
    }
 }

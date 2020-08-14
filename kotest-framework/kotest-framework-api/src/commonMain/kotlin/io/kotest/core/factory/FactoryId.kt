@@ -1,8 +1,9 @@
 package io.kotest.core.factory
 
-data class FactoryId(val value: Int) {
+data class FactoryId(val value: String) {
    companion object {
-      private var counter = 0
-      fun next(): FactoryId = FactoryId(counter++)
+      fun next(): FactoryId = FactoryId(uuid())
    }
 }
+
+expect fun uuid(): String
