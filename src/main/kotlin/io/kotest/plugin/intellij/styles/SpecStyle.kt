@@ -23,6 +23,7 @@ interface SpecStyle {
 
    companion object {
       val styles = listOf(
+         AnnotationSpecStyle,
          BehaviorSpecStyle,
          DescribeSpecStyle,
          ExpectSpecStyle,
