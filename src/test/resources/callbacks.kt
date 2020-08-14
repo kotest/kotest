@@ -23,4 +23,18 @@ class FunSpecCallbacks : FunSpec({
    test("") {
    }
 
+   afterEach { }
+
+   beforeEach {}
+
+   afterContainer {
+
+   }
+
+   beforeContainer {}
+
+   beforeAny {}
+
+   afterAny {}
+
 })

@@ -88,6 +88,8 @@ fun KtClassOrObject.callbacks(): List<Callback> {
 fun KtClassBody.callbacks(): List<Callback> {
    val init = getChildrenOfType<KtClassInitializer>().firstOrNull()
    if (init != null) {
+      // callbacks are in the form <callback> <block>, ie `afterTest { }` which are
+      // represented in kotlin's PSI as instance of KtBlockExpression
       val block = init.getChildrenOfType<KtBlockExpression>().firstOrNull()
       if (block != null) {
          return block.callbacks()
