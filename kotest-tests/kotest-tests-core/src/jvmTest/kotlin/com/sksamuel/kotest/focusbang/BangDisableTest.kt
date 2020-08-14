@@ -1,33 +1,26 @@
 package com.sksamuel.kotest.focusbang
 
 import io.kotest.assertions.fail
-import io.kotest.core.spec.CompositeSpec
-import io.kotest.core.spec.style.funSpec
-import io.kotest.core.spec.style.stringSpec
-import io.kotest.core.spec.style.wordSpec
+import io.kotest.core.spec.style.FunSpec
+import io.kotest.core.spec.style.StringSpec
+import io.kotest.core.spec.style.WordSpec
 
-val bangDisableFun = funSpec {
+class BangDisableFun : FunSpec({
    test("!should not run") {
       fail("boom")
    }
-}
+})
 
-val bangDisableString = stringSpec {
+class BangDisableString : StringSpec({
    "!should not run" {
       fail("boom")
    }
-}
+})
 
-val bangDisableWord = wordSpec {
+class BangDisableWord : WordSpec({
    "using the bang symbol" should {
       "!disable this test" {
          fail("boom")
       }
    }
-}
-
-class BangDisableTest : CompositeSpec(
-   bangDisableFun,
-   bangDisableWord,
-   bangDisableString
-)
+})

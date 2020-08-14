@@ -1,9 +1,9 @@
 package com.sksamuel.kotest.specs.funspec
 
 import io.kotest.core.annotation.Ignored
-import io.kotest.core.engine.SpecExecutor
-import io.kotest.core.engine.TestEngineListener
 import io.kotest.core.spec.Spec
+import io.kotest.engine.spec.SpecExecutor
+import io.kotest.engine.listener.TestEngineListener
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.spec.style.scopes.DslState
 import io.kotest.core.test.TestCase

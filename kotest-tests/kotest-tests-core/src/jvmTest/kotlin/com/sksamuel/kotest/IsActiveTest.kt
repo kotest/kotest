@@ -1,21 +1,20 @@
 package com.sksamuel.kotest
 
-import io.kotest.core.StringTag
+import io.kotest.core.NamedTag
 import io.kotest.core.Tags
-import io.kotest.core.config.Project
+import io.kotest.engine.config.Project
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestCaseConfig
 import io.kotest.core.extensions.TagExtension
-import io.kotest.core.filters.TestFilter
-import io.kotest.core.filters.TestFilterResult
-import io.kotest.core.filters.toTestFilterResult
-import io.kotest.core.test.isActive
+import io.kotest.core.filter.TestFilter
+import io.kotest.core.filter.TestFilterResult
+import io.kotest.core.filter.toTestFilterResult
+import io.kotest.engine.test.isActive
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.core.test.Description
 import io.kotest.core.test.TestName
-import io.kotest.core.test.TestType
-import io.kotest.core.test.toDescription
+import io.kotest.engine.test.toDescription
 import io.kotest.matchers.shouldBe
 
 class IsActiveTest : StringSpec() {
@@ -45,7 +44,7 @@ class IsActiveTest : StringSpec() {
 
       "isActive should return false if it has an excluded tag" {
 
-         val mytag = StringTag("mytag")
+         val mytag = NamedTag("mytag")
 
          val ext = object : TagExtension {
             override fun tags(): Tags =
@@ -64,7 +63,7 @@ class IsActiveTest : StringSpec() {
 
       "isActive should return false if it is excluded by a tag expression" {
 
-         val mytag = StringTag("mytag")
+         val mytag = NamedTag("mytag")
 
          val ext = object : TagExtension {
             override fun tags(): Tags = Tags("!mytag")
@@ -82,7 +81,7 @@ class IsActiveTest : StringSpec() {
 
       "isActive should return false if it has no tags and included tags are set" {
 
-         val yourtag = StringTag("yourtag")
+         val yourtag = NamedTag("yourtag")
 
          val ext = object : TagExtension {
             override fun tags(): Tags = Tags(setOf(yourtag), emptySet())
@@ -90,7 +89,7 @@ class IsActiveTest : StringSpec() {
 
          Project.registerExtension(ext)
 
-         val mytag = StringTag("mytag")
+         val mytag = NamedTag("mytag")
          val config = TestCaseConfig(tags = setOf(mytag))
          val test = TestCase.test(IsActiveTest::class.toDescription().appendTest("foo"), this@IsActiveTest) {}
             .copy(config = config)
@@ -107,7 +106,7 @@ class IsActiveTest : StringSpec() {
 
          Project.registerExtension(ext)
 
-         val mytag = StringTag("mytag")
+         val mytag = NamedTag("mytag")
          val config = TestCaseConfig(tags = setOf(mytag))
          val test = TestCase.test(IsActiveTest::class.toDescription().appendTest("foo"), this@IsActiveTest) {}
             .copy(config = config)
@@ -118,7 +117,7 @@ class IsActiveTest : StringSpec() {
 
       "isActive should return false if the test name begins with a !" {
          val test = TestCase.test(
-            IsActiveTest::class.toDescription().append(TestName("!my test"), TestType.Test),
+            IsActiveTest::class.toDescription().append(TestName("!my test"), io.kotest.core.test.TestType.Test),
             this@IsActiveTest
          ) {}
          test.isActive() shouldBe false

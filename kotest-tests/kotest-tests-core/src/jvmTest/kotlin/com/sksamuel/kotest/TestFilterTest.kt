@@ -1,7 +1,7 @@
 package com.sksamuel.kotest
 
-import io.kotest.core.filters.TestFilter
-import io.kotest.core.filters.TestFilterResult
+import io.kotest.core.filter.TestFilter
+import io.kotest.core.filter.TestFilterResult
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestStatus
@@ -25,7 +25,7 @@ class TestFilterTest : StringSpec() {
   }
 
   override fun afterTest(testCase: TestCase, result: TestResult) {
-    when (testCase.description.name.displayName()) {
+    when (testCase.description.name.name) {
       "aa should run" -> result.status shouldBe TestStatus.Success
       "bb should be ignored" -> result.status shouldBe TestStatus.Ignored
     }
@@ -35,7 +35,7 @@ class TestFilterTest : StringSpec() {
 
 object TestFilterTestFilter : TestFilter {
   override fun filter(description: Description): TestFilterResult {
-    return when (description.name.displayName()) {
+    return when (description.name.name) {
       "bb should be ignored" -> TestFilterResult.Exclude
       else -> TestFilterResult.Include
     }

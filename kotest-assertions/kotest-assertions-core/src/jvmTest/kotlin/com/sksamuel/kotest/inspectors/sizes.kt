@@ -2,14 +2,14 @@ package com.sksamuel.kotest.inspectors
 
 import io.kotest.assertions.shouldFail
 import io.kotest.assertions.throwables.shouldThrowAny
-import io.kotest.core.spec.CompositeSpec
-import io.kotest.core.spec.style.funSpec
+import io.kotest.core.spec.style.FunSpec
 import io.kotest.extensions.system.withSystemProperty
 import io.kotest.inspectors.forAll
 import io.kotest.matchers.ints.shouldBeLessThanOrEqual
 import io.kotest.matchers.shouldBe
 
-val tests = funSpec {
+class InspectorSizeTests : FunSpec({
+
    test("should error with large failure count #938") {
       shouldFail {
          List(10_000) { it }.forAll {
@@ -17,6 +17,7 @@ val tests = funSpec {
          }
       }
    }
+
    test("passed results are truncated when passed list length is over 10") {
       shouldThrowAny {
          (1..13).toList().forAll {
@@ -31,6 +32,7 @@ val tests = funSpec {
          "The following elements failed:\n" +
          "13 => 13 should be <= 12"
    }
+
    test("failed results are truncated when failed array size is over 10") {
       shouldThrowAny {
          arrayOf(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12).forAll {
@@ -54,6 +56,7 @@ val tests = funSpec {
          "10 => java.lang.NullPointerException\n" +
          "... and 2 more failed elements"
    }
+
    test("max results is controllable by sys prop") {
       withSystemProperty("kotest.assertions.output.max", "3") {
          shouldThrowAny {
@@ -72,6 +75,5 @@ val tests = funSpec {
             "... and 2 more failed elements"
       }
    }
-}
 
-class InspectorTests : CompositeSpec(tests)
+})

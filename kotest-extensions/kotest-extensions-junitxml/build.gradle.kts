@@ -34,7 +34,8 @@ kotlin {
 
       val jvmMain by getting {
          dependencies {
-            implementation(project(":kotest-core"))
+            implementation(project(Projects.Core))
+            implementation(project(Projects.Api))
             implementation(kotlin("stdlib-jdk8"))
             implementation(kotlin("reflect"))
             implementation(Libs.Jdom.jdom2)

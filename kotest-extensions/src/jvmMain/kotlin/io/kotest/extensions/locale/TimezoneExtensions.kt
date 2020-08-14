@@ -4,7 +4,6 @@ import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.core.listeners.ProjectListener
 import io.kotest.core.listeners.TestListener
-import io.kotest.core.test.TestType
 import java.util.TimeZone
 
 /**
@@ -71,7 +70,7 @@ class TimeZoneTestListener(timeZone: TimeZone) : TimeZoneListener(timeZone), Tes
  * change the timezone while it was already changed, the result may be inconsistent.
  */
 class TimeZoneProjectListener(timeZone: TimeZone) : TimeZoneListener(timeZone),
-   ProjectListener {
+    ProjectListener {
 
    override suspend fun beforeProject() {
       changeTimeZone()

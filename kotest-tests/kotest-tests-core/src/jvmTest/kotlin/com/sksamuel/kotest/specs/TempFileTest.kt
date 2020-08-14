@@ -1,7 +1,7 @@
 package com.sksamuel.kotest.specs
 
 import io.kotest.core.spec.style.FunSpec
-import io.kotest.core.spec.tempfile
+import io.kotest.engine.spec.tempfile
 import io.kotest.matchers.file.shouldExist
 import io.kotest.matchers.file.shouldNotExist
 

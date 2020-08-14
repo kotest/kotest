@@ -34,6 +34,7 @@ kotlin {
 
       jsTest {
          dependencies {
+            implementation(project(Projects.Api))
             implementation(project(Projects.AssertionsShared))
             implementation(project(Projects.Core))
             implementation(project(Projects.AssertionsCore))

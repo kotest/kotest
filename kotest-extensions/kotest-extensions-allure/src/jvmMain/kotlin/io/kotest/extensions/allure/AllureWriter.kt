@@ -1,9 +1,11 @@
 package io.kotest.extensions.allure
 
+import io.kotest.engine.config.Project
 import io.kotest.core.test.Description
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestStatus
+import io.kotest.core.test.format
 import io.kotest.mpp.log
 import io.qameta.allure.Allure
 import io.qameta.allure.AllureLifecycle
@@ -44,7 +46,9 @@ class AllureWriter {
       uuids[testCase.description] = uuid
 
       val labels = listOfNotNull(
-         ResultsUtils.createSuiteLabel(testCase.description.spec().name.displayName()),
+         ResultsUtils.createSuiteLabel(
+            testCase.description.spec().name.format(Project.testNameCase(), Project.includeTestScopePrefixes())
+         ),
          ResultsUtils.createThreadLabel(),
          ResultsUtils.createHostLabel(),
          ResultsUtils.createLanguageLabel("kotlin"),
@@ -60,11 +64,19 @@ class AllureWriter {
       val links = listOfNotNull(testCase.issue())
 
       val result = io.qameta.allure.model.TestResult()
-         .setFullName(testCase.description.fullName())
-         .setName(testCase.description.name.displayName())
+         .setFullName(
+            testCase.description.displayPath(
+               false,
+               Project.testNameCase(),
+               Project.includeTestScopePrefixes()
+            )
+         )
+         .setName(testCase.description.name.format(Project.testNameCase(), Project.includeTestScopePrefixes()))
          .setUuid(uuid.toString())
          .setTestCaseId(safeId(testCase.description))
-         .setHistoryId(testCase.description.name.displayName())
+         .setHistoryId(
+            testCase.description.name.format(Project.testNameCase(), Project.includeTestScopePrefixes())
+         )
          .setLabels(labels)
          .setLinks(links)
          .setDescription(testCase.description())
@@ -97,8 +109,7 @@ class AllureWriter {
    }
 
    // returns an id that's acceptable in format for allure
-   private fun safeId(description: Description): String =
-      description.id().replace('/', ' ').replace("[^\\sa-zA-Z0-9]".toRegex(), "")
+   private fun safeId(description: Description): String = description.id().value
 }
 
 fun TestCase.epic(): Label? = this.spec::class.findAnnotation<Epic>()?.let { ResultsUtils.createEpicLabel(it.value) }

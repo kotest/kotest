@@ -5,6 +5,7 @@ import io.kotest.core.test.TestResult
 import io.kotest.core.extensions.TestCaseExtension
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.core.test.TestStatus
+import io.kotest.engine.toTestResult
 import java.lang.AssertionError
 
 // this tests that we can manipulate the result of a test case from an extension
@@ -17,7 +18,7 @@ class TestCaseExtensionAroundAdviceTest : StringSpec() {
             "test2" ->
                when (execute(testCase).status) {
                   TestStatus.Error -> TestResult.success(0)
-                  else -> TestResult.throwable(AssertionError("boom"), 0)
+                  else -> AssertionError("boom").toTestResult(0)
                }
             "test3" -> if (testCase.config.enabled) throw RuntimeException() else execute(testCase)
             "test4" -> execute(testCase.copy(config = testCase.config.copy(enabled = false)))

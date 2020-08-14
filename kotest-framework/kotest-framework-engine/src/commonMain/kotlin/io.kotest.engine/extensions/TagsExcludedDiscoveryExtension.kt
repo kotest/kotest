@@ -1,0 +1,23 @@
+package io.kotest.engine.extensions
+
+import io.kotest.core.Tags
+import io.kotest.core.spec.Spec
+import io.kotest.engine.config.Project
+import io.kotest.engine.spec.AbstractSpec
+import io.kotest.engine.tags.isPotentiallyActive
+import io.kotest.engine.tags.parse
+import kotlin.reflect.KClass
+
+/**
+ * Filters any [AbstractSpec] that can be eagerly excluded based on the @[Tags] annotation at the class level.
+ */
+object TagsExcludedDiscoveryExtension : DiscoveryExtension {
+
+   fun afterScan(classes: List<KClass<out Spec>>, tags: Tags): List<KClass<out Spec>> {
+      return classes.filter { tags.parse().isPotentiallyActive(it) }
+   }
+
+   override fun afterScan(classes: List<KClass<out Spec>>): List<KClass<out Spec>> {
+      return afterScan(classes, Project.tags())
+   }
+}

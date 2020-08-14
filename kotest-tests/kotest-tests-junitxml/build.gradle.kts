@@ -32,8 +32,8 @@ kotlin {
 
       val jvmTest by getting {
          dependencies {
-            implementation(project(":kotest-core"))
-            implementation(project(":kotest-assertions:kotest-assertions-core"))
+            implementation(project(Projects.Core))
+            implementation(project(Projects.AssertionsCore))
             implementation(project(Projects.JunitRunner))
             implementation(project(Projects.JunitXmlExtension))
             implementation(Libs.Jdom.jdom2)

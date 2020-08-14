@@ -1,33 +1,32 @@
 package com.sksamuel.kotest
 
-import io.kotest.core.spec.Spec
+import io.kotest.engine.spec.AbstractSpec
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.test.Description
 import io.kotest.core.test.DescriptionType
 import io.kotest.core.test.TestName
+import io.kotest.engine.test.toDescription
 import io.kotest.matchers.shouldBe
 import kotlin.reflect.KClass
 
 class DescriptionTest : FunSpec({
 
-   val spec = Description.spec(DescriptionTest::class)
-   val container = spec.append(TestName("a context"), DescriptionType.Container)
-   val test = container.append(TestName("nested test"), DescriptionType.Test)
-   val testWithPrefix = container.append(TestName("given", "nested test"), DescriptionType.Test)
-   val rootTest = spec.append(TestName("root test"), DescriptionType.Test)
+   val spec = DescriptionTest::class.toDescription()
+   val container = spec.appendContainer(TestName("a context"))
+   val test = container.appendTest(TestName("nested test"))
+   val testWithPrefix = container.appendTest(TestName("given", "nested test"))
+   val rootTest = spec.appendTest(TestName("root test"))
 
-   test("full name") {
-      rootTest.fullName() shouldBe "com.sksamuel.kotest.DescriptionTest root test"
-      test.fullName() shouldBe "com.sksamuel.kotest.DescriptionTest a context nested test"
-      container.fullName() shouldBe "com.sksamuel.kotest.DescriptionTest a context"
-      spec.fullName() shouldBe "com.sksamuel.kotest.DescriptionTest"
-   }
+   test("displayPath") {
+      rootTest.displayPath() shouldBe "com.sksamuel.kotest.DescriptionTest root test"
+      test.displayPath() shouldBe "com.sksamuel.kotest.DescriptionTest a context nested test"
+      container.displayPath() shouldBe "com.sksamuel.kotest.DescriptionTest a context"
+      spec.displayPath() shouldBe "com.sksamuel.kotest.DescriptionTest"
 
-   test("full name without spec") {
-      rootTest.fullNameWithoutSpec() shouldBe "root test"
-      test.fullNameWithoutSpec() shouldBe "a context nested test"
-      container.fullNameWithoutSpec() shouldBe "a context"
-      spec.fullNameWithoutSpec() shouldBe ""
+      rootTest.displayPath(false) shouldBe "root test"
+      test.displayPath(false) shouldBe "a context nested test"
+      container.displayPath(false) shouldBe "a context"
+      spec.displayPath(false) shouldBe ""
    }
 
    test("path") {
@@ -39,16 +38,20 @@ class DescriptionTest : FunSpec({
 
    test("names") {
       rootTest.names() shouldBe listOf(TestName("com.sksamuel.kotest.DescriptionTest"), TestName("root test"))
-      test.names() shouldBe listOf(TestName("com.sksamuel.kotest.DescriptionTest"), TestName("a context"), TestName("nested test"))
+      test.names() shouldBe listOf(
+         TestName("com.sksamuel.kotest.DescriptionTest"),
+         TestName("a context"),
+         TestName("nested test")
+      )
       container.names() shouldBe listOf(TestName("com.sksamuel.kotest.DescriptionTest"), TestName("a context"))
       spec.names() shouldBe listOf(TestName("com.sksamuel.kotest.DescriptionTest"))
    }
 
    test("append") {
       container.append(TestName("foo"), DescriptionType.Container) shouldBe
-         Description(container, DescriptionTest::class as KClass<out Spec>, TestName("foo"), DescriptionType.Container)
+         Description(container, TestName("foo"), DescriptionType.Container, DescriptionTest::class as KClass<out AbstractSpec>)
       test.append(TestName("foo"), DescriptionType.Container) shouldBe
-         Description(test, DescriptionTest::class as KClass<out Spec>, TestName("foo"), DescriptionType.Container)
+         Description(test, TestName("foo"), DescriptionType.Container, DescriptionTest::class as KClass<out AbstractSpec>)
    }
 
    test("isParentOf") {
@@ -71,13 +74,6 @@ class DescriptionTest : FunSpec({
       container.isAncestorOf(spec) shouldBe false
       test.isAncestorOf(spec) shouldBe false
       rootTest.isAncestorOf(spec) shouldBe false
-   }
-
-   test("isAncestorOf with backwards compatible append") {
-      val testPath = "a context -- nested test"
-      val target = testPath.split(" -- ").fold(Description.spec(DescriptionTest::class)) { desc, name -> desc.append(name) }
-      container.isAncestorOf(target) shouldBe true
-      spec.isAncestorOf(target) shouldBe true
    }
 
    test("isDescendentOf") {

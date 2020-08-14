@@ -1,16 +1,16 @@
 package com.sksamuel.kotest.timeout
 
 import io.kotest.core.listeners.TestListener
-import io.kotest.core.runtime.ExecutorExecutionContext
-import io.kotest.core.runtime.TestCaseExecutionListener
-import io.kotest.core.runtime.TestCaseExecutor
+import io.kotest.engine.ExecutorExecutionContext
+import io.kotest.engine.test.TestCaseExecutionListener
+import io.kotest.engine.TestCaseExecutor
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.test.NestedTest
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestCaseConfig
 import io.kotest.core.test.TestContext
 import io.kotest.core.test.TestResult
-import io.kotest.core.test.toDescription
+import io.kotest.engine.test.toDescription
 import io.kotest.matchers.shouldBe
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
@@ -56,7 +56,7 @@ class TestCaseTimeoutListenerTest : FunSpec() {
             )
          )
 
-         val context = object : TestContext() {
+         val context = object : TestContext {
             override suspend fun registerTestCase(nested: NestedTest) {}
             override val coroutineContext: CoroutineContext = GlobalScope.coroutineContext
             override val testCase: TestCase = testCase
@@ -92,7 +92,7 @@ class TestCaseTimeoutListenerTest : FunSpec() {
             )
          )
 
-         val context = object : TestContext() {
+         val context = object : TestContext {
             override suspend fun registerTestCase(nested: NestedTest) {}
             override val coroutineContext: CoroutineContext = GlobalScope.coroutineContext
             override val testCase: TestCase = testCase

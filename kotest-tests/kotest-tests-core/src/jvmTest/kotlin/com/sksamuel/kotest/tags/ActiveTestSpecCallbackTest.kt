@@ -1,11 +1,11 @@
 package com.sksamuel.kotest.tags
 
-import io.kotest.core.StringTag
+import io.kotest.core.NamedTag
 import io.kotest.core.Tag
 import io.kotest.core.Tags
-import io.kotest.core.config.Project
-import io.kotest.core.engine.SpecExecutor
-import io.kotest.core.engine.TestEngineListener
+import io.kotest.engine.config.Project
+import io.kotest.engine.spec.SpecExecutor
+import io.kotest.engine.listener.TestEngineListener
 import io.kotest.core.extensions.TagExtension
 import io.kotest.core.listeners.TestListener
 import io.kotest.core.spec.Spec
@@ -63,8 +63,8 @@ class ActiveTestSpecCallbackTest : FreeSpec() {
    }
 }
 
-val bar = StringTag("bar")
-val foo = StringTag("bar")
+val bar = NamedTag("bar")
+val foo = NamedTag("bar")
 
 @io.kotest.core.annotation.Tags("foo")
 private class TaggedTests : FunSpec() {

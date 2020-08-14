@@ -33,7 +33,9 @@ kotlin {
 
       val jvmMain by getting {
          dependencies {
+            implementation(project(Projects.Common))
             implementation(project(Projects.Core))
+            implementation(project(Projects.Api))
             implementation(kotlin("stdlib-jdk8"))
             implementation(Libs.Coroutines.coreJvm)
             implementation(Libs.JUnitJupiter.api)

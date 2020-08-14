@@ -6,7 +6,7 @@ import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestStatus
 import io.kotest.core.test.TestType
-import io.kotest.core.test.toDescription
+import io.kotest.engine.test.toDescription
 import org.jdom2.Element
 import org.jdom2.Document
 import org.jdom2.output.Format
@@ -86,13 +86,13 @@ class JunitXmlReporter(
       testSuite.setAttribute("failures", filtered.filter { it.value.status == TestStatus.Failure }.size.toString())
       testSuite.setAttribute("skipped", filtered.filter { it.value.status == TestStatus.Ignored }.size.toString())
       testSuite.setAttribute("tests", filtered.size.toString())
-      testSuite.setAttribute("name", kclass.toDescription().fullName())
+      testSuite.setAttribute("name", kclass.toDescription().displayPath(false))
       document.addContent(testSuite)
 
       filtered.map { (testcase, result) ->
 
          val name = when (useTestPathAsName) {
-            true -> testcase.description.fullNameWithoutSpec()
+            true -> testcase.description.displayPath(false)
             false -> testcase.displayName
          }
 

@@ -1,8 +1,8 @@
 package com.sksamuel.kotest.tags
 
-import io.kotest.core.StringTag
+import io.kotest.core.NamedTag
 import io.kotest.core.annotation.Tags
-import io.kotest.core.extensions.TagsExcludedDiscoveryExtension
+import io.kotest.engine.extensions.TagsExcludedDiscoveryExtension
 import io.kotest.core.spec.style.BehaviorSpec
 import io.kotest.core.spec.style.ExpectSpec
 import io.kotest.core.spec.style.FunSpec
@@ -21,7 +21,7 @@ class TagsExcludedDiscoveryExtensionTest : FunSpec() {
                // will be included as we can must check the spec itself later to see if the test themselves have the include or exclude
                UntaggedSpec::class
             ),
-            io.kotest.core.Tags.Empty.include(StringTag("SpecIncluded")).exclude(StringTag("SpecExcluded"))
+            io.kotest.core.Tags.Empty.include(NamedTag("SpecIncluded")).exclude(NamedTag("SpecExcluded"))
          ) shouldBe listOf(IncludedSpec::class, UntaggedSpec::class)
       }
 
@@ -33,7 +33,7 @@ class TagsExcludedDiscoveryExtensionTest : FunSpec() {
                ExcludedSpec::class,
                UntaggedSpec::class
             ),
-            io.kotest.core.Tags.Empty.include(StringTag("SpecIncluded"))
+            io.kotest.core.Tags.Empty.include(NamedTag("SpecIncluded"))
          ) shouldBe listOf(IncludedSpec::class, ExcludedSpec::class, UntaggedSpec::class)
       }
 
@@ -47,7 +47,7 @@ class TagsExcludedDiscoveryExtensionTest : FunSpec() {
                // will be included as it is not explicitly excluded
                UntaggedSpec::class
             ),
-            io.kotest.core.Tags.Empty.exclude(StringTag("SpecExcluded"))
+            io.kotest.core.Tags.Empty.exclude(NamedTag("SpecExcluded"))
          ) shouldBe listOf(IncludedSpec::class, UntaggedSpec::class)
       }
    }

@@ -35,7 +35,9 @@ kotlin {
          dependencies {
             implementation(kotlin("stdlib-jdk8"))
             implementation(kotlin("reflect"))
-            implementation(project(":kotest-core"))
+            implementation(project(Projects.Common))
+            implementation(project(Projects.Api))
+            implementation(project(Projects.Core))
             implementation("org.pitest:pitest:1.4.11")
             implementation(Libs.Coroutines.coreJvm)
          }

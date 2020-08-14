@@ -55,6 +55,12 @@ object Libs {
       const val mockk = "io.mockk:mockk:1.9.3"
    }
 
+   object MockServer {
+      private const val version = "5.9.0"
+      const val netty = "org.mock-server:mockserver-netty:$version"
+      const val javaClient = "org.mock-server:mockserver-client-java:$version"
+   }
+
    object Mifmif {
       const val generex = "com.github.mifmif:generex:1.0.2"
    }
@@ -66,6 +72,17 @@ object Libs {
 
    object Wumpz {
       const val diffutils = "io.github.java-diff-utils:java-diff-utils:4.5"
+   }
+
+   object TestContainers {
+      private const val version = "1.14.3"
+      const val testcontainers = "org.testcontainers:testcontainers:$version"
+   }
+
+   object Spring {
+      private const val version = "5.2.4.RELEASE"
+      const val context = "org.springframework:spring-context:$version"
+      const val test = "org.springframework:spring-test:$version"
    }
 
    object Coroutines {

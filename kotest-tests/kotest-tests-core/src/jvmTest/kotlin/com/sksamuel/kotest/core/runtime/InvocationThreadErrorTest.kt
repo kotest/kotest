@@ -3,6 +3,7 @@ package com.sksamuel.kotest.core.runtime
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestStatus
+import io.kotest.engine.toTestResult
 
 class InvocationThreadErrorTest : FunSpec({
 
@@ -10,7 +11,7 @@ class InvocationThreadErrorTest : FunSpec({
       val result = process(testCase)
       when (result.status) {
          TestStatus.Error -> TestResult.success(0)
-         else -> TestResult.throwable(RuntimeException("should fail"), 0)
+         else -> RuntimeException("should fail").toTestResult(0)
       }
    }
 

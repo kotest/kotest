@@ -4,6 +4,7 @@ import io.kotest.core.spec.TestCaseExtensionFn
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestStatus
+import io.kotest.engine.toTestResult
 import kotlinx.coroutines.delay
 
 class GlobalTimeoutTest : StringSpec() {
@@ -31,6 +32,6 @@ val expectFailureExtension: TestCaseExtensionFn = { (testCase, execute) ->
    val result = execute(testCase)
    when (result.status) {
       TestStatus.Failure, TestStatus.Error -> TestResult.success(0)
-      else -> TestResult.throwable(AssertionError("${testCase.description.name.displayName()} passed but should fail"), 0)
+      else -> AssertionError("${testCase.description.name.name} passed but should fail").toTestResult(0)
    }
 }

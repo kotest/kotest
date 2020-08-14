@@ -1,9 +1,10 @@
 package io.kotest.extensions.testcontainers
 
+import io.kotest.engine.config.Project
 import io.kotest.core.listeners.TestListener
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
-import io.kotest.core.test.TestType
+import io.kotest.core.test.format
 import org.testcontainers.lifecycle.Startable
 import org.testcontainers.lifecycle.TestDescription
 import org.testcontainers.lifecycle.TestLifecycleAware
@@ -25,10 +26,11 @@ class TestLifecycleAwareListener(startable: Startable) : TestListener {
 private fun TestCase.toTestDescription() = object : TestDescription {
 
    override fun getFilesystemFriendlyName(): String {
-      return URLEncoder.encode(description.name.displayName(), "UTF-8")
+      return URLEncoder.encode(
+         description.name.format(Project.testNameCase(), Project.includeTestScopePrefixes()),
+         "UTF-8"
+      )
    }
 
-   override fun getTestId(): String {
-      return description.id()
-   }
+   override fun getTestId(): String = description.id().value
 }

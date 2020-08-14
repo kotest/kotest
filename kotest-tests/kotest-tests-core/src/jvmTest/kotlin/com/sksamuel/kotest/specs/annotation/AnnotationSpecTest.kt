@@ -7,6 +7,7 @@ import io.kotest.core.extensions.Extension
 import io.kotest.core.extensions.TestCaseExtension
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.style.AnnotationSpec
+import io.kotest.engine.toTestResult
 import io.kotest.matchers.shouldBe
 
 class AnnotationSpecTest : AnnotationSpec() {
@@ -55,11 +56,11 @@ class AnnotationSpecTest : AnnotationSpec() {
    private object IgnoreFailedTestExtension : TestCaseExtension {
 
       override suspend fun intercept(testCase: TestCase, execute: suspend (TestCase) -> TestResult): TestResult {
-         if (testCase.name !in listOf("test4", "test5")) return execute(testCase)
+         if (testCase.displayName !in listOf("test4", "test5")) return execute(testCase)
 
          val result = execute(testCase)
          if (result.error !is AssertionError) {
-            return TestResult.throwable(AssertionError("Expecting an assertion error!"), 0)
+            return AssertionError("Expecting an assertion error!").toTestResult(0)
          }
 
          val errorMessage = result.error!!.message
@@ -70,12 +71,12 @@ class AnnotationSpecTest : AnnotationSpec() {
             "test4" -> if (errorMessage == wrongExceptionMessage) {
                TestResult.success(0)
             } else {
-               TestResult.throwable(AssertionError("Wrong message."), 0)
+               AssertionError("Wrong message.").toTestResult(0)
             }
             "test5" -> if (errorMessage == noExceptionMessage) {
                TestResult.success(0)
             } else {
-               TestResult.throwable(AssertionError("Wrong message."), 0)
+               AssertionError("Wrong message.").toTestResult(0)
             }
             else -> fail("boom")
          }

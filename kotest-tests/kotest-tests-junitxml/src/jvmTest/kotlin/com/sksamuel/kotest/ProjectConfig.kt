@@ -1,13 +1,13 @@
 package com.sksamuel.kotest
 
+import io.kotest.core.spec.SpecExecutionOrder
 import io.kotest.core.config.AbstractProjectConfig
 import io.kotest.core.listeners.Listener
-import io.kotest.core.spec.AnnotatedSpecExecutionOrder
 import io.kotest.extensions.junitxml.JunitXmlReporter
 
 class ProjectConfig : AbstractProjectConfig() {
 
-   override val specExecutionOrder = AnnotatedSpecExecutionOrder
+   override val specExecutionOrder = SpecExecutionOrder.Annotated
 
    override fun listeners(): List<Listener> {
       return listOf(

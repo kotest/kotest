@@ -1,8 +1,8 @@
 package io.kotest.runner.junit.platform
 
-import io.kotest.core.filters.TestFilter
-import io.kotest.core.filters.TestFilterResult
-import io.kotest.core.filters.toTestFilterResult
+import io.kotest.core.filter.TestFilter
+import io.kotest.core.filter.TestFilterResult
+import io.kotest.core.filter.toTestFilterResult
 import io.kotest.core.test.Description
 import org.junit.platform.engine.UniqueId
 import org.junit.platform.launcher.PostDiscoveryFilter

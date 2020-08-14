@@ -1,19 +1,18 @@
 package com.sksamuel.kotest.core.runtime
 
 import io.kotest.assertions.throwables.shouldThrow
-import io.kotest.core.runtime.CallingThreadExecutionContext
-import io.kotest.core.runtime.TimeoutExecutionContext
-import io.kotest.core.runtime.ExecutorExecutionContext
-import io.kotest.core.runtime.TestCaseExecutionListener
-import io.kotest.core.runtime.TestCaseExecutor
-import io.kotest.core.runtime.TimeoutException
+import io.kotest.engine.CallingThreadExecutionContext
+import io.kotest.engine.TimeoutExecutionContext
+import io.kotest.engine.ExecutorExecutionContext
+import io.kotest.engine.test.TestCaseExecutionListener
+import io.kotest.engine.TestCaseExecutor
+import io.kotest.engine.TimeoutException
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.spec.style.funSpec
 import io.kotest.core.test.NestedTest
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestContext
 import io.kotest.core.test.TestResult
-import io.kotest.core.test.TestStatus
 import io.kotest.matchers.booleans.shouldBeTrue
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.types.shouldBeInstanceOf
@@ -26,7 +25,7 @@ import kotlin.time.milliseconds
 @OptIn(ExperimentalTime::class)
 fun testExecutorTests(context: TimeoutExecutionContext) = funSpec {
 
-   fun context(testCase: TestCase) = object : TestContext() {
+   fun context(testCase: TestCase) = object : TestContext {
       override val testCase: TestCase = testCase
       override suspend fun registerTestCase(nested: NestedTest) {}
       override val coroutineContext: CoroutineContext = GlobalScope.coroutineContext
@@ -43,12 +42,12 @@ fun testExecutorTests(context: TimeoutExecutionContext) = funSpec {
          override fun testIgnored(testCase: TestCase) {}
          override fun testFinished(testCase: TestCase, result: TestResult) {
             finished = true
-            result.status shouldBe TestStatus.Success
+            result.status shouldBe io.kotest.core.test.TestStatus.Success
          }
       }
       val executor = TestCaseExecutor(listener, context)
       val testCase = Tests().rootTests().first { it.testCase.name == "a" }.testCase
-      executor.execute(testCase, context(testCase)).status shouldBe TestStatus.Success
+      executor.execute(testCase, context(testCase)).status shouldBe io.kotest.core.test.TestStatus.Success
       started shouldBe true
       finished shouldBe true
    }
@@ -64,13 +63,13 @@ fun testExecutorTests(context: TimeoutExecutionContext) = funSpec {
          override fun testIgnored(testCase: TestCase) {}
          override fun testFinished(testCase: TestCase, result: TestResult) {
             finished = true
-            result.status shouldBe TestStatus.Error
+            result.status shouldBe io.kotest.core.test.TestStatus.Error
          }
       }
       val executor = TestCaseExecutor(listener, context)
       val testCase = Tests().rootTests().first { it.testCase.name == "b" }.testCase
       val result = executor.execute(testCase, context(testCase))
-      result.status shouldBe TestStatus.Error
+      result.status shouldBe io.kotest.core.test.TestStatus.Error
       result.error shouldBe TimeoutException(100)
       started shouldBe true
       finished shouldBe true
@@ -129,7 +128,7 @@ fun testExecutorTests(context: TimeoutExecutionContext) = funSpec {
       }, context)
       val testCase = BeforeTestWithException().rootTests().first().testCase
       val result = executor.execute(testCase, context(testCase))
-      result.status shouldBe TestStatus.Error
+      result.status shouldBe io.kotest.core.test.TestStatus.Error
       result.error.shouldBeInstanceOf<IllegalStateException>()
       started shouldBe true
       finished shouldBe true
@@ -150,7 +149,7 @@ fun testExecutorTests(context: TimeoutExecutionContext) = funSpec {
       }, context)
       val testCase = AfterTestWithException().rootTests().first().testCase
       val result = executor.execute(testCase, context(testCase))
-      result.status shouldBe TestStatus.Error
+      result.status shouldBe io.kotest.core.test.TestStatus.Error
       result.error.shouldBeInstanceOf<IllegalStateException>()
       started shouldBe true
       finished shouldBe true

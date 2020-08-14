@@ -1,12 +1,14 @@
 package io.kotest.runner.junit.platform
 
-import io.kotest.core.engine.KotestFrameworkSystemProperties
-import io.kotest.core.spec.Spec
+import io.kotest.engine.config.Project
+import io.kotest.engine.KotestEngineSystemProperties
 import io.kotest.core.test.Description
 import io.kotest.core.test.DescriptionType
+import io.kotest.core.spec.Spec
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestType
-import io.kotest.core.test.toDescription
+import io.kotest.core.test.format
+import io.kotest.extensions.system.toDescription2
 import org.junit.platform.engine.TestDescriptor
 import org.junit.platform.engine.TestSource
 import org.junit.platform.engine.UniqueId
@@ -29,7 +31,7 @@ fun UniqueId.append(description: Description): UniqueId {
       DescriptionType.Container -> Segment.Test
       DescriptionType.Test -> Segment.Test
    }
-   return this.append(segment.value, description.name.displayName())
+   return this.append(segment.value, description.name.format(Project.testNameCase(), Project.includeTestScopePrefixes()))
 }
 
 sealed class Segment {
@@ -50,7 +52,7 @@ sealed class Segment {
  */
 fun KClass<out Spec>.descriptor(parent: TestDescriptor): TestDescriptor {
    val source = ClassSource.from(java)
-   return parent.append(toDescription(), TestDescriptor.Type.CONTAINER, source, Segment.Spec)
+   return parent.append(toDescription2(), TestDescriptor.Type.CONTAINER, source, Segment.Spec)
 }
 
 /**
@@ -66,7 +68,7 @@ fun TestDescriptor.descriptor(testCase: TestCase): TestDescriptor {
    // so we can't use CONTAINER_AND_TEST for our test scopes, but simply container
    // update jan 2020: Seems we can use CONTAINER_AND_TEST now in gradle 6, and CONTAINER is invisible in output
    val type = when (testCase.type) {
-      TestType.Container -> if (System.getProperty(KotestFrameworkSystemProperties.gradle5) == "true") TestDescriptor.Type.CONTAINER else TestDescriptor.Type.CONTAINER_AND_TEST
+      TestType.Container -> if (System.getProperty(KotestEngineSystemProperties.gradle5) == "true") TestDescriptor.Type.CONTAINER else TestDescriptor.Type.CONTAINER_AND_TEST
       TestType.Test -> TestDescriptor.Type.TEST
    }
    return append(testCase.description, type, source, Segment.Test)
@@ -80,7 +82,7 @@ fun TestDescriptor.append(
    type: TestDescriptor.Type,
    source: TestSource?,
    segment: Segment
-): TestDescriptor = append(description.name.displayName(), type, source, segment)
+): TestDescriptor = append(description.name.format(Project.testNameCase(), Project.includeTestScopePrefixes()), type, source, segment)
 
 /**
  * Creates a new [TestDescriptor] appended to the receiver and adds it as a child of the receiver.
@@ -110,8 +112,8 @@ fun Description.toTestDescriptor(root: UniqueId): TestDescriptor {
 
    val source = when (this.type) {
       DescriptionType.Spec -> ClassSource.from(this.specClass.java)
-      DescriptionType.Container -> MethodSource.from(this.specClass.java.name, this.fullNameWithoutSpec())
-      DescriptionType.Test -> MethodSource.from(this.specClass.java.name, this.fullNameWithoutSpec())
+      DescriptionType.Container -> MethodSource.from(this.specClass.java.name, this.path().value)
+      DescriptionType.Test -> MethodSource.from(this.specClass.java.name, this.path().value)
    }
 
    val type = when (this.type) {
@@ -120,7 +122,7 @@ fun Description.toTestDescriptor(root: UniqueId): TestDescriptor {
       DescriptionType.Test -> TestDescriptor.Type.TEST
    }
 
-   return object : AbstractTestDescriptor(id, this.name.displayName(), source) {
+   return object : AbstractTestDescriptor(id, this.name.format(Project.testNameCase(), Project.includeTestScopePrefixes()), source) {
       override fun getType(): TestDescriptor.Type = type
    }
 }

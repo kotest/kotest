@@ -2,10 +2,10 @@ package com.sksamuel.kotest.tags
 
 import io.kotest.core.Tag
 import io.kotest.core.Tags
-import io.kotest.core.config.Project
+import io.kotest.engine.config.Project
 import io.kotest.core.extensions.TagExtension
 import io.kotest.core.spec.style.FunSpec
-import io.kotest.core.test.isActive
+import io.kotest.engine.test.isActive
 import io.kotest.matchers.shouldBe
 
 class TagsAnnotationInheritenceTest : FunSpec() {

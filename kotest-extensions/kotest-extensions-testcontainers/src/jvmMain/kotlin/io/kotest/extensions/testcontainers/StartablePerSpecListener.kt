@@ -4,7 +4,6 @@ import io.kotest.core.listeners.TestListener
 import io.kotest.core.spec.Spec
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
-import io.kotest.core.test.TestType
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.testcontainers.lifecycle.Startable

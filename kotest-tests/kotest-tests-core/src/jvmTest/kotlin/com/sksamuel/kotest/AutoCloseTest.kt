@@ -1,6 +1,7 @@
 package com.sksamuel.kotest
 
 import io.kotest.core.spec.Spec
+import io.kotest.engine.spec.AbstractSpec
 import io.kotest.core.spec.autoClose
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.shouldBe

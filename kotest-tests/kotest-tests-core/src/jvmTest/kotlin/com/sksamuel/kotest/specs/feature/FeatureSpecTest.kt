@@ -1,6 +1,5 @@
 package com.sksamuel.kotest.specs.feature
 
-import io.kotest.core.runtime.invokeAfterSpec
 import io.kotest.core.spec.style.FeatureSpec
 import io.kotest.matchers.ints.shouldBeLessThan
 import kotlinx.coroutines.delay

@@ -1,18 +1,19 @@
 package io.kotest.runner.junit.platform
 
-import io.kotest.core.config.Project
-import io.kotest.core.engine.TestEngineListener
-import io.kotest.core.internal.writeSpecFailures
-import io.kotest.core.runtime.AfterProjectListenerException
-import io.kotest.core.runtime.BeforeProjectListenerException
 import io.kotest.core.spec.Spec
+import io.kotest.engine.config.Project
+import io.kotest.engine.listener.TestEngineListener
+import io.kotest.engine.writeSpecFailures
+import io.kotest.engine.callbacks.AfterProjectListenerException
+import io.kotest.engine.callbacks.BeforeProjectListenerException
+import io.kotest.engine.spec.AbstractSpec
 import io.kotest.core.test.Description
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestName
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestStatus
 import io.kotest.core.test.TestType
-import io.kotest.core.test.toDescription
+import io.kotest.extensions.system.toDescription2
 import io.kotest.mpp.log
 import org.junit.platform.engine.EngineExecutionListener
 import org.junit.platform.engine.TestDescriptor
@@ -79,7 +80,7 @@ class JUnitTestEngineListener(
    private val results = mutableListOf<Pair<Description, TestResult>>()
 
    // contains any spec that failed so we can write out the failed specs file
-   private val failedSpecs = mutableSetOf<KClass<out Spec>>()
+   private val failedSpecs = mutableSetOf<KClass<out AbstractSpec>>()
 
    private var specException: Throwable? = null
 
@@ -129,7 +130,7 @@ class JUnitTestEngineListener(
       log("specStarted [${kclass.qualifiedName}]")
       try {
          val descriptor = kclass.descriptor(root)
-         descriptors[kclass.toDescription()] = descriptor
+         descriptors[kclass.toDescription2()] = descriptor
 
          log("Registering junit dynamic test and notifiying start: $descriptor")
          listener.dynamicTestRegistered(descriptor)
@@ -147,12 +148,12 @@ class JUnitTestEngineListener(
    ) {
       log("specFinished [$kclass]")
 
-      val descriptor = descriptors[kclass.toDescription()]
+      val descriptor = descriptors[kclass.toDescription2()]
          ?: throw RuntimeException("Error retrieving description for spec: ${kclass.qualifiedName}")
 
       // we are ignoring junit guidelines here and failing the spec if any of it's tests failed
       // this is because in gradle and intellij nested errors are not very obvious
-      val nestedFailure = findChildFailure(kclass.toDescription())
+      val nestedFailure = findChildFailure(kclass.toDescription2())
 
       (specException ?: t ?: nestedFailure?.error)?.apply {
          checkSpecVisiblity(kclass, this)
@@ -181,7 +182,7 @@ class JUnitTestEngineListener(
     * Checks that the spec has at least one test attached in case of failure.
     */
    private fun checkSpecVisiblity(kclass: KClass<out Spec>, t: Throwable) {
-      val description = kclass.toDescription()
+      val description = kclass.toDescription2()
       if (!isVisible(description)) {
          val spec = descriptors[description]!!
          val test = spec.append(
@@ -237,7 +238,7 @@ class JUnitTestEngineListener(
    }
 
    private fun createTestDescriptor(testCase: TestCase): TestDescriptor {
-      val parent = descriptors[testCase.description.parent()]
+      val parent = descriptors[testCase.description.parent]
       if (parent == null) {
          val msg = "Cannot find parent description for: ${testCase.description}"
          log(msg)
@@ -252,10 +253,10 @@ class JUnitTestEngineListener(
     * Returns a JUnit [TestExecutionResult] populated from the values of the Kotest [TestResult].
     */
    private fun TestResult.testExecutionResult(): TestExecutionResult = when (this.status) {
-      TestStatus.Ignored -> error("An ignored test cannot reach this state")
-      TestStatus.Success -> TestExecutionResult.successful()
-      TestStatus.Error -> TestExecutionResult.failed(this.error)
-      TestStatus.Failure -> TestExecutionResult.failed(this.error)
+      io.kotest.core.test.TestStatus.Ignored -> error("An ignored test cannot reach this state")
+      io.kotest.core.test.TestStatus.Success -> TestExecutionResult.successful()
+      io.kotest.core.test.TestStatus.Error -> TestExecutionResult.failed(this.error)
+      io.kotest.core.test.TestStatus.Failure -> TestExecutionResult.failed(this.error)
    }
 
    /**
@@ -267,7 +268,7 @@ class JUnitTestEngineListener(
          .filter { description.isAncestorOf(it.first) }
          .filter { it.second.status == TestStatus.Error || it.second.status == TestStatus.Failure }
          // the lowest level test should be what we pick
-         .sortedBy { it.first.depth() }
+         .sortedBy { it.first.chain().size }
          .reversed()
          .map { it.second }
          .firstOrNull()

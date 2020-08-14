@@ -1,6 +1,6 @@
 package com.sksamuel.kotest.core
 
-import io.kotest.core.internal.NamedThreadFactory
+import io.kotest.engine.NamedThreadFactory
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.string.shouldMatch
 

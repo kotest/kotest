@@ -33,7 +33,8 @@ kotlin {
 
       val jvmMain by getting {
          dependencies {
-            implementation(project(":kotest-core"))
+            implementation(project(Projects.Api))
+            implementation(project(Projects.Core))
             implementation(kotlin("stdlib-jdk8"))
             implementation("org.koin:koin-core:2.1.5")
             implementation("org.koin:koin-test:2.1.5") {

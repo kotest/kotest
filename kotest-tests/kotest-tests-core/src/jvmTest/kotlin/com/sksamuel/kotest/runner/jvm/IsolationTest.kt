@@ -1,8 +1,8 @@
 package com.sksamuel.kotest.runner.jvm
 
 import io.kotest.core.spec.style.WordSpec
-import io.kotest.core.engine.IsolationTestEngineListener
-import io.kotest.core.engine.TestEngineListener
+import io.kotest.engine.listener.IsolationTestEngineListener
+import io.kotest.engine.listener.TestEngineListener
 import io.mockk.mockk
 import io.mockk.verify
 import io.mockk.verifyOrder

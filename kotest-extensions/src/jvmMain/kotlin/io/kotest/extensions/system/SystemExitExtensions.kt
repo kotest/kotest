@@ -1,15 +1,24 @@
 package io.kotest.extensions.system
 
+import io.kotest.core.spec.DisplayName
+import io.kotest.core.test.DescriptionType
 import io.kotest.core.config.AbstractProjectConfig
 import io.kotest.core.test.Description
-import io.kotest.core.spec.Spec
 import io.kotest.core.listeners.TestListener
-import io.kotest.core.test.toDescription
+import io.kotest.core.spec.Spec
+import io.kotest.core.test.TestName
+import io.kotest.mpp.annotation
+import io.kotest.mpp.bestName
 import java.io.FileDescriptor
 import java.net.InetAddress
 import java.security.Permission
 import java.util.concurrent.ConcurrentHashMap
 import kotlin.reflect.KClass
+
+fun KClass<out Spec>.toDescription2(): Description {
+   val name = annotation<DisplayName>()?.name ?: bestName()
+   return Description(null, TestName(name), DescriptionType.Spec, this)
+}
 
 /**
  * Will replace the [SecurityManager] used by the Java runtime
@@ -21,7 +30,7 @@ import kotlin.reflect.KClass
  *
  * Note: This listener will change the security manager
  * for all tests. If you want to change the security manager
- * for just a single [Spec] then consider the
+ * for just a single [AbstractSpec] then consider the
  * alternative [SpecSystemExitListener]
  */
 object SystemExitListener : TestListener {
@@ -40,7 +49,7 @@ object SystemExitListener : TestListener {
  * After the spec has completed, the original security manager
  * will be set.
  *
- * To use this, override `listeners`() in your [Spec] class.
+ * To use this, override `listeners`() in your [AbstractSpec] class.
  *
  * Note: This listener is only suitable for use if parallelism is
  * set to 1 (the default) otherwise a race condition could occur.
@@ -55,13 +64,13 @@ object SpecSystemExitListener : TestListener {
    override suspend fun beforeSpec(spec: Spec) {
         val previous = System.getSecurityManager()
         if (previous != null)
-            previousSecurityManagers[spec::class.toDescription()] = previous
+            previousSecurityManagers[spec::class.toDescription2()] = previous
         System.setSecurityManager(NoExitSecurityManager(previous))
     }
 
    override suspend fun afterSpec(spec: Spec) {
-        if (previousSecurityManagers.contains(spec::class.toDescription()))
-            System.setSecurityManager(previousSecurityManagers[spec::class.toDescription()])
+        if (previousSecurityManagers.contains(spec::class.toDescription2()))
+            System.setSecurityManager(previousSecurityManagers[spec::class.toDescription2()])
         else
             System.setSecurityManager(null)
     }
