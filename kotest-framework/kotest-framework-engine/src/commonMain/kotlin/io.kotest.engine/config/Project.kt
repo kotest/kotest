@@ -8,7 +8,7 @@ import io.kotest.engine.config.Project.registerExtension
 import io.kotest.engine.config.Project.setFailOnIgnoredTests
 import io.kotest.engine.KotestEngineSystemProperties
 import io.kotest.core.extensions.ConstructorExtension
-import io.kotest.engine.extensions.DiscoveryExtension
+import io.kotest.core.extensions.DiscoveryExtension
 import io.kotest.core.extensions.Extension
 import io.kotest.engine.extensions.IgnoredSpecDiscoveryExtension
 import io.kotest.engine.extensions.RuntimeTagExpressionExtension

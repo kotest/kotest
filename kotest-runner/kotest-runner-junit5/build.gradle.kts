@@ -42,6 +42,7 @@ kotlin {
             api(project(Projects.Api))
             api(project(Projects.Common))
             api(project(Projects.Core))
+            api(project(Projects.Discovery))
             api(project(Projects.AssertionsCore))
             api(project(Projects.Extensions))
             api(Libs.Coroutines.coreJvm)

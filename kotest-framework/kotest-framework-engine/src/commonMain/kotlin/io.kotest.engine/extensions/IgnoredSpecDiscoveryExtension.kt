@@ -1,6 +1,7 @@
 package io.kotest.engine.extensions
 
 import io.kotest.core.annotation.Ignored
+import io.kotest.core.extensions.DiscoveryExtension
 import io.kotest.core.spec.Spec
 import io.kotest.engine.spec.AbstractSpec
 import io.kotest.mpp.hasAnnotation

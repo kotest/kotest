@@ -1,9 +1,9 @@
 package io.kotest.runner.junit.platform
 
-import io.kotest.core.engine.discovery.DiscoveryFilter
-import io.kotest.core.engine.discovery.DiscoveryRequest
-import io.kotest.core.engine.discovery.DiscoverySelector
-import io.kotest.core.engine.discovery.Modifier
+import io.kotest.discovery.DiscoveryFilter
+import io.kotest.discovery.DiscoveryRequest
+import io.kotest.discovery.DiscoverySelector
+import io.kotest.discovery.Modifier
 import org.junit.platform.engine.EngineDiscoveryRequest
 import org.junit.platform.engine.discovery.ClassNameFilter
 import org.junit.platform.engine.discovery.ClassSelector
@@ -38,25 +38,25 @@ import org.junit.platform.engine.discovery.UriSelector
  * - [UniqueIdSelector] - not supported becase kotest does not assign ids to tests
  * - [DirectorySelector] - not supported becase kotest is not directory based
  */
-internal fun createDiscoveryRequest(request: EngineDiscoveryRequest): DiscoveryRequest {
+internal fun EngineDiscoveryRequest.toKotestDiscoveryRequest(): DiscoveryRequest {
 
-   val packageSelectors = request.getSelectorsByType(PackageSelector::class.java).map {
+   val packageSelectors = getSelectorsByType(PackageSelector::class.java).map {
       DiscoverySelector.PackageDiscoverySelector(it.packageName)
    }
 
-   val classSelectors = request.getSelectorsByType(ClassSelector::class.java).map {
+   val classSelectors = getSelectorsByType(ClassSelector::class.java).map {
       DiscoverySelector.ClassDiscoverySelector(it.className)
    }
 
-   val classFilters = request.getFiltersByType(ClassNameFilter::class.java).map { filter ->
+   val classFilters = getFiltersByType(ClassNameFilter::class.java).map { filter ->
       DiscoveryFilter.ClassNameDiscoveryFilter { filter.toPredicate().test(it.value) }
    }
 
-   val packageFilters = request.getFiltersByType(PackageNameFilter::class.java).map { filter ->
+   val packageFilters = getFiltersByType(PackageNameFilter::class.java).map { filter ->
       DiscoveryFilter.PackageNameDiscoveryFilter { filter.toPredicate().test(it.value) }
    }
 
-   val private = if (request.configurationParameters.get("allow_private").isPresent) Modifier.Private else null
+   val private = if (configurationParameters.get("allow_private").isPresent) Modifier.Private else null
    val modifiers = listOfNotNull(Modifier.Public, Modifier.Internal, private)
    val modifiersFilter = DiscoveryFilter.ClassModifierDiscoveryFilter(modifiers.toSet())
 

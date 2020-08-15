@@ -1,6 +1,7 @@
 package io.kotest.engine.extensions
 
 import io.kotest.core.Tags
+import io.kotest.core.extensions.DiscoveryExtension
 import io.kotest.core.spec.Spec
 import io.kotest.engine.config.Project
 import io.kotest.engine.spec.AbstractSpec

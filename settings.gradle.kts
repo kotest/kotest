@@ -11,6 +11,7 @@ pluginManagement {
 include("kotest-common")
 include("kotest-framework:kotest-framework-engine")
 include("kotest-framework:kotest-framework-api")
+include("kotest-framework:kotest-framework-discovery")
 include("kotest-assertions:kotest-assertions-shared")
 include("kotest-assertions:kotest-assertions-core")
 include("kotest-assertions:kotest-assertions-arrow")

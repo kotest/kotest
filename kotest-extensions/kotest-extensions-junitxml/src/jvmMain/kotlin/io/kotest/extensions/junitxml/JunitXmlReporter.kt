@@ -49,7 +49,7 @@ class JunitXmlReporter(
       // sets the build directory, to which test-results will be appended
       const val BuildDirKey = "gradle.build.dir"
 
-      const val AttributeName = "Name"
+      const val AttributeName = "name"
    }
 
    private var marks = ConcurrentHashMap<KClass<out Spec>, Long>()

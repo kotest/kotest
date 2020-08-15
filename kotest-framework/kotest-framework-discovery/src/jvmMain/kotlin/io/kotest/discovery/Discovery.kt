@@ -1,16 +1,14 @@
-package io.kotest.core.engine.discovery
+package io.kotest.discovery
 
 import io.github.classgraph.ClassGraph
+import io.kotest.core.extensions.DiscoveryExtension
 import io.kotest.core.spec.Spec
-import io.kotest.engine.config.Project
-import io.kotest.engine.extensions.DiscoveryExtension
-import io.kotest.engine.spec.AbstractSpec
 import io.kotest.mpp.log
 import java.util.concurrent.ConcurrentHashMap
 import kotlin.reflect.KClass
 
 /**
- * Contains [AbstractSpec] classes discovered as part of a discovery request scan.
+ * Contains [Spec] classes discovered as part of a discovery request scan.
  */
 data class DiscoveryResult(val specs: List<KClass<out Spec>>)
 
@@ -19,7 +17,7 @@ data class DiscoveryResult(val specs: List<KClass<out Spec>>)
  * [DiscoveryExtension] `afterScan` functions are applied after the scan is complete to
  * optionally filter the returned classes.
  */
-object Discovery {
+class Discovery(private val discoveryExtensions: List<DiscoveryExtension>) {
 
    private val requests = ConcurrentHashMap<DiscoveryRequest, DiscoveryResult>()
 
@@ -50,6 +48,7 @@ object Discovery {
    }
 
    fun discover(request: DiscoveryRequest): DiscoveryResult = requests.getOrPut(request) {
+
       val specClasses =
          if (request.onlySelectsSingleClasses()) loadSelectedSpecs(request) else fromClassPaths
 
@@ -64,7 +63,7 @@ object Discovery {
 
       log("After filters there are ${filtered.size} spec classes")
 
-      val afterExtensions = Project.discoveryExtensions()
+      val afterExtensions = discoveryExtensions
          .fold(filtered) { cl, ext -> ext.afterScan(cl) }
          .sortedBy { it.simpleName }
       log("After discovery extensions there are ${filtered.size} spec classes")
@@ -124,9 +123,9 @@ object Discovery {
       log("Test discovery completed in ${duration}ms")
 
       return scanResult.use { result ->
-         result.getSubclasses(AbstractSpec::class.java.name)
+         result.getSubclasses(Spec::class.java.name)
             .map { Class.forName(it.name).kotlin }
-            .filterIsInstance<KClass<out AbstractSpec>>()
+            .filterIsInstance<KClass<out Spec>>()
       }
    }
 }

@@ -1,7 +1,7 @@
 package io.kotest.plugin.pitest
 
 import io.kotest.core.config.AbstractProjectConfig
-import io.kotest.engine.extensions.DiscoveryExtension
+import io.kotest.core.extensions.DiscoveryExtension
 import io.kotest.core.extensions.Extension
 import io.kotest.core.spec.Spec
 import kotlin.reflect.KClass
