@@ -103,16 +103,9 @@ data class TestCase(
  * Returns true if this test is a focused test.
  * That is, if the name starts with "f:".
  */
-fun TestCase.isFocused() = when (val name = this.description.name) {
-   is DescriptionName.TestName -> name.focus
-   else -> false
-}
+fun TestCase.isFocused() = description.name.focus
 
 /**
  * Returns true if this test is disabled by being prefixed with a !
  */
-fun TestCase.isBang(): Boolean = when (val name = this.description.name) {
-   is DescriptionName.TestName -> name.bang
-   else -> false
-}
-
+fun TestCase.isBang(): Boolean = description.name.bang

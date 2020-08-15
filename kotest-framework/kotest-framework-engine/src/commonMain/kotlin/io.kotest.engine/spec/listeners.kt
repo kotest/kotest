@@ -9,8 +9,7 @@ import io.kotest.core.spec.Spec
  * callback-dsl methods, and listeners defined in any included test factories.
  */
 fun Spec.resolvedTestListeners(): List<TestListener> {
-   return when (this) {
-      is AbstractSpec -> this._listeners + this.listeners() + this.functionOverrideCallbacks() + factories.flatMap { it.listeners }
-      else -> emptyList()
-   }
+   return listeners() + // listeners defined by overriding the listeners function
+      this.functionOverrideCallbacks() // listeners from the overrides
+   // + factories.flatMap { it.listeners }
 }

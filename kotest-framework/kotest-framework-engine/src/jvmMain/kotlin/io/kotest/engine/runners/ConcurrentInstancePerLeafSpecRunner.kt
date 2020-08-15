@@ -10,12 +10,13 @@ import io.kotest.core.test.DescriptionName
 import io.kotest.engine.listener.BufferedTestCaseExcecutionListener
 import io.kotest.engine.spec.SpecRunner
 import io.kotest.engine.listener.TestEngineListener
-import io.kotest.engine.spec.AbstractSpec
 import io.kotest.engine.ExecutorExecutionContext
 import io.kotest.engine.TestCaseExecutor
 import io.kotest.engine.listener.TestCaseListenerToTestEngineListenerAdapter
 import io.kotest.engine.callbacks.invokeAfterSpec
 import io.kotest.engine.callbacks.invokeBeforeSpec
+import io.kotest.engine.spec.resolvedRootTests
+import io.kotest.engine.spec.sort
 import io.kotest.fp.Try
 import io.kotest.mpp.log
 import kotlinx.coroutines.*
@@ -43,7 +44,7 @@ internal class ConcurrentInstancePerLeafSpecRunner(
    private val testCaseListener =
       BufferedTestCaseExcecutionListener(TestCaseListenerToTestEngineListenerAdapter(testEngineListener))
 
-   override suspend fun execute(spec: AbstractSpec): Try<Map<TestCase, TestResult>> {
+   override suspend fun execute(spec: Spec): Try<Map<TestCase, TestResult>> {
       return Try {
 
          /**
@@ -55,7 +56,7 @@ internal class ConcurrentInstancePerLeafSpecRunner(
          val dispatchers = List(threads) { Executors.newSingleThreadExecutor().asCoroutineDispatcher() }
 
          coroutineScope {
-            spec.rootTests().withIndex().forEach { (index, rootTest) ->
+            spec.resolvedRootTests().withIndex().forEach { (index, rootTest) ->
                log("InstancePerLeafConcurrentSpecRunner: Launching coroutine for root test [${rootTest.testCase.description.testPath()}]")
                launch(dispatchers[index % threads]) {
                   executeInCleanSpec(rootTest.testCase).getOrThrow()
@@ -82,7 +83,7 @@ internal class ConcurrentInstancePerLeafSpecRunner(
       require(targets.isNotEmpty())
       return Try {
          log("Created new spec instance $spec")
-         val root = spec.rootTests().first { it.testCase.description.name == targets.first() }
+         val root = spec.resolvedRootTests().first { it.testCase.description.name == targets.first() }
          run(root.testCase, targets.drop(1))
          spec
       }

@@ -6,7 +6,7 @@ import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestStatus
 import io.kotest.core.test.TestType
-import io.kotest.engine.test.toDescription
+import io.kotest.core.spec.toDescription
 import org.jdom2.Element
 import org.jdom2.Document
 import org.jdom2.output.Format

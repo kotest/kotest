@@ -1,7 +1,5 @@
 package com.sksamuel.kotest.property.arbitrary
 
-import io.kotest.assertions.assertSoftly
-import io.kotest.assertions.throwables.shouldThrowExactly
 import io.kotest.core.spec.style.WordSpec
 import io.kotest.matchers.comparables.beGreaterThan
 import io.kotest.matchers.shouldBe
@@ -14,7 +12,6 @@ import io.kotest.property.arbitrary.choice
 import io.kotest.property.arbitrary.int
 import io.kotest.property.arbitrary.map
 import io.kotest.property.arbitrary.negativeInts
-import io.kotest.property.arbitrary.next
 import io.kotest.property.arbitrary.positiveInts
 import io.kotest.property.forAll
 

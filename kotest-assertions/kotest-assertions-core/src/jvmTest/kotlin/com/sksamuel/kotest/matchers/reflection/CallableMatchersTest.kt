@@ -16,7 +16,6 @@ import io.kotest.matchers.reflection.shouldNotBeAbstract
 import io.kotest.matchers.reflection.shouldNotBeFinal
 import io.kotest.matchers.reflection.shouldNotBeOpen
 import io.kotest.matchers.reflection.shouldNotBeSuspendable
-import io.kotest.matchers.reflection.shouldNotHaveParametersWithName
 import io.kotest.matchers.reflection.shouldNotHaveVisibility
 import io.kotest.matchers.shouldBe
 import kotlin.reflect.KVisibility

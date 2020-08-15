@@ -1,16 +1,6 @@
 package io.kotest.assertions.arrow
 
-import arrow.core.Option
-import io.kotest.assertions.arrow.option.beNone
-import io.kotest.assertions.arrow.option.beSome
-import io.kotest.assertions.arrow.option.shouldBeNone
-import io.kotest.assertions.arrow.option.shouldBeSome
-import io.kotest.assertions.arrow.option.shouldNotBeNone
-import io.kotest.assertions.arrow.option.shouldNotBeSome
-import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.WordSpec
-import io.kotest.matchers.shouldBe
-import io.kotest.matchers.shouldNotBe
 
 class OptionMatchersTest : WordSpec() {
 

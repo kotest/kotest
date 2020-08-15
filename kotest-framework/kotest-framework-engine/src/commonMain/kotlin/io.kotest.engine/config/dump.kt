@@ -1,22 +1,23 @@
 package io.kotest.engine.config
 
+import io.kotest.core.config.Configuration
 import io.kotest.mpp.bestName
 
-fun Project.createConfigSummary(): String {
+fun Configuration.createConfigSummary(): String {
 
    val sb = StringBuilder()
 
-   sb.buildOutput("Parallelism", parallelism().toString() + " thread(s)")
-   sb.buildOutput("Default test timeout", timeout().toString() + "ms")
-   sb.buildOutput("Default test order", testCaseOrder().name)
-   sb.buildOutput("Default isolation mode", isolationMode().name)
-   sb.buildOutput("Global soft assertations", globalAssertSoftly().toString().capitalize())
-   sb.buildOutput("Write spec failure file", writeSpecFailureFile().toString().capitalize())
-   if (writeSpecFailureFile()) {
-      sb.buildOutput("Spec failure file path", specFailureFilePath().capitalize())
+   sb.buildOutput("Parallelization factor", parallelism.toString())
+   sb.buildOutput("Default test timeout", timeout.toString() + "ms")
+   sb.buildOutput("Default test order", testCaseOrder.name)
+   sb.buildOutput("Default isolation mode", isolationMode.name)
+   sb.buildOutput("Global soft assertations", globalAssertSoftly.toString().capitalize())
+   sb.buildOutput("Write spec failure file", writeSpecFailureFile.toString().capitalize())
+   if (writeSpecFailureFile) {
+      sb.buildOutput("Spec failure file path", specFailureFilePath.capitalize())
    }
-   sb.buildOutput("Fail on ignored tests", failOnIgnoredTests().toString().capitalize())
-   sb.buildOutput("Spec execution order", specExecutionOrder()::class.simpleName)
+   sb.buildOutput("Fail on ignored tests", failOnIgnoredTests.toString().capitalize())
+   sb.buildOutput("Spec execution order", specExecutionOrder::class.simpleName)
 
    if (extensions().isNotEmpty()) {
       sb.buildOutput("Extensions")
@@ -32,11 +33,11 @@ fun Project.createConfigSummary(): String {
       }
    }
 
-   tags().expression?.let { sb.buildOutput("Tags", it) }
+   tags?.expression?.let { sb.buildOutput("Tags", it) }
    return sb.toString()
 }
 
-fun Project.dumpProjectConfig() {
+fun Configuration.dumpProjectConfig() {
    println("~~~ Kotest Configuration ~~~")
    println(createConfigSummary())
 }

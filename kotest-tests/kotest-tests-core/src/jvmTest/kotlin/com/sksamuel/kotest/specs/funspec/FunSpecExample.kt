@@ -8,7 +8,7 @@ import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestCaseOrder
 import io.kotest.core.test.TestResult
 import io.kotest.core.spec.style.FunSpec
-import io.kotest.engine.test.toDescription
+import io.kotest.core.spec.toDescription
 import io.kotest.extensions.locale.LocaleTestListener
 import io.kotest.extensions.locale.TimeZoneTestListener
 import java.util.Locale

@@ -6,8 +6,6 @@ import io.kotest.core.test.DescriptionName
 import io.kotest.core.test.DisplayPath
 import io.kotest.core.test.TestPath
 import io.kotest.core.test.TestType
-import io.kotest.engine.test.toDescription
-import io.kotest.matchers.shouldBe
 
 class DescriptionTest : FunSpec({
 

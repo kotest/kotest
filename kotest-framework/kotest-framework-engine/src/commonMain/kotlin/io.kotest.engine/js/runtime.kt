@@ -1,11 +1,11 @@
 package io.kotest.engine.js
 
-import io.kotest.engine.spec.AbstractSpec
+import io.kotest.core.spec.Spec
 
 /**
  * This is invoked in the generated javascript test.
  */
-expect fun executeSpec(spec: AbstractSpec)
+expect fun executeSpec(spec: Spec)
 
 /**
  * Executed when the engine is first setup (by virtue of being assigned to a top level val), this

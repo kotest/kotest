@@ -10,7 +10,9 @@ import io.kotest.core.spec.Spec
 import io.kotest.core.test.Description
 import io.kotest.core.test.DescriptionName
 import io.kotest.discovery.Discovery
-import io.kotest.engine.config.Project
+import io.kotest.core.config.Project
+import io.kotest.core.config.configuration
+import io.kotest.core.extensions.DiscoveryExtension
 import io.kotest.mpp.annotation
 import io.kotest.mpp.bestName
 import io.kotest.mpp.log
@@ -78,7 +80,7 @@ class KotestJunitPlatformTestEngine : TestEngine {
       // and kotest will then run all other tests.
       // therefore, the presence of a MethodSelector means we must run no tests in KT.
       return if (request.getSelectorsByType(MethodSelector::class.java).isEmpty()) {
-         val discovery = Discovery(Project.discoveryExtensions())
+         val discovery = Discovery(configuration.extensions().filterIsInstance<DiscoveryExtension>())
          val result = discovery.discover(request.toKotestDiscoveryRequest())
          val classes =
             result.specs.filter { spec -> testFilters.all { it.filter(spec.toDescription2()) == TestFilterResult.Include } }

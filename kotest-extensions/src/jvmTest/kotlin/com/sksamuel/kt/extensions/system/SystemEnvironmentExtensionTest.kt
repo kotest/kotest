@@ -10,7 +10,6 @@ import io.kotest.core.spec.style.WordSpec
 import io.kotest.extensions.system.OverrideMode
 import io.kotest.extensions.system.SystemEnvironmentTestListener
 import io.kotest.extensions.system.withEnvironment
-import io.kotest.inspectors.forAll
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
 import io.mockk.every

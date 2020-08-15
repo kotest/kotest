@@ -7,21 +7,16 @@ import io.kotest.matchers.comparables.beGreaterThan
 import io.kotest.matchers.comparables.beGreaterThanOrEqualTo
 import io.kotest.matchers.comparables.beLessThan
 import io.kotest.matchers.comparables.beLessThanOrEqualTo
-import io.kotest.matchers.comparables.compareTo
 import io.kotest.matchers.comparables.gt
 import io.kotest.matchers.comparables.gte
 import io.kotest.matchers.comparables.lt
 import io.kotest.matchers.comparables.lte
-import io.kotest.matchers.comparables.shouldBeEqualComparingTo
 import io.kotest.matchers.comparables.shouldBeGreaterThan
 import io.kotest.matchers.comparables.shouldBeGreaterThanOrEqualTo
 import io.kotest.matchers.comparables.shouldBeLessThan
 import io.kotest.matchers.comparables.shouldBeLessThanOrEqualTo
-import io.kotest.matchers.comparables.shouldNotBeEqualComparingTo
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldBe
-import io.kotest.matchers.shouldNot
-import io.kotest.property.checkAll
 
 class ComparableMatchersTest : FreeSpec() {
 

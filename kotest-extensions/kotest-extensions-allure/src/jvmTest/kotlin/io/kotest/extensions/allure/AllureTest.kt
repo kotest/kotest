@@ -1,10 +1,7 @@
 package io.kotest.extensions.allure
 
 import io.kotest.core.spec.style.WordSpec
-import io.kotest.inspectors.forOne
-import io.kotest.matchers.shouldBe
 import io.qameta.allure.*
-import io.qameta.allure.util.ResultsUtils
 
 @Story("foo-story")
 @Owner("foo-owner")

@@ -14,9 +14,9 @@ import io.kotest.engine.test.TestCaseExecutionListener
 import io.kotest.engine.TestCaseExecutor
 import io.kotest.engine.callbacks.invokeAfterSpec
 import io.kotest.engine.callbacks.invokeBeforeSpec
-import io.kotest.engine.spec.AbstractSpec
 import io.kotest.engine.spec.resolvedThreads
 import io.kotest.core.test.*
+import io.kotest.engine.spec.resolvedRootTests
 import io.kotest.fp.Try
 import kotlinx.coroutines.coroutineScope
 import java.util.concurrent.ConcurrentHashMap
@@ -69,9 +69,9 @@ internal class InstancePerTestSpecRunner(listener: TestEngineListener) : SpecRun
     * Once the target is found it can be executed as normal, and any test lambdas it contains
     * can be registered back with the stack for execution later.
     */
-   override suspend fun execute(spec: AbstractSpec): Try<Map<TestCase, TestResult>> =
+   override suspend fun execute(spec: Spec): Try<Map<TestCase, TestResult>> =
       Try {
-         runParallel(spec.resolvedThreads(), spec.rootTests().map { it.testCase }) {
+         runParallel(spec.resolvedThreads(), spec.resolvedRootTests().map { it.testCase }) {
             executeInCleanSpec(it)
                .getOrThrow()
          }
@@ -100,7 +100,7 @@ internal class InstancePerTestSpecRunner(listener: TestEngineListener) : SpecRun
    private suspend fun interceptAndRun(spec: Spec, test: TestCase): Try<Spec> = Try {
       log("Created new spec instance $spec")
       // we need to find the same root test but in the newly created spec
-      val root = spec.rootTests().first { it.testCase.description.isOnPath(test.description) }
+      val root = spec.resolvedRootTests().first { it.testCase.description.isOnPath(test.description) }
       log("Starting root test ${root.testCase.description} in search of ${test.description}")
       run(root.testCase, test)
       spec

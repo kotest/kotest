@@ -1,7 +1,8 @@
 package io.kotest.engine.config
 
 /**
- * On the Javascript platform this returns default platform config.
- * Instead, config should be set using the setter methods on [Project].
+ * On the Javascript platform this returns an empty project config.
+ *
+ * Instead, users set set config directly on the [Configuration] singleton.
  */
-actual fun detectConfig(): ProjectConf = ProjectConf()
+actual fun detectConfig(): DetectedProjectConfig = DetectedProjectConfig()

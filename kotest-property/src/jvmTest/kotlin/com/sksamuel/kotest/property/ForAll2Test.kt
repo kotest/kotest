@@ -3,7 +3,6 @@ package com.sksamuel.kotest.property
 import io.kotest.assertions.throwables.shouldThrowAny
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
-import io.kotest.matchers.string.shouldStartWith
 import io.kotest.property.Exhaustive
 import io.kotest.property.Arb
 import io.kotest.property.PropTestConfig

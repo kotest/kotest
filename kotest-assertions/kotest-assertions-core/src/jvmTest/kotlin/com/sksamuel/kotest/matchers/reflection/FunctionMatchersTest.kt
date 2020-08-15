@@ -5,13 +5,11 @@ import com.sksamuel.kotest.matchers.reflection.classes.FancyItem
 import com.sksamuel.kotest.matchers.reflection.classes.SimpleItem
 import io.kotest.core.spec.style.FreeSpec
 import io.kotest.matchers.reflection.shouldBeAnnotatedWith
-import io.kotest.matchers.reflection.shouldBeInfix
 import io.kotest.matchers.reflection.shouldBeInline
 import io.kotest.matchers.reflection.shouldHaveAnnotations
 import io.kotest.matchers.reflection.shouldHaveFunction
 import io.kotest.matchers.reflection.shouldHaveReturnType
 import io.kotest.matchers.reflection.shouldNotBeAnnotatedWith
-import io.kotest.matchers.reflection.shouldNotBeInfix
 import io.kotest.matchers.reflection.shouldNotBeInline
 import io.kotest.matchers.reflection.shouldNotHaveAnnotations
 import io.kotest.matchers.reflection.shouldNotHaveReturnType

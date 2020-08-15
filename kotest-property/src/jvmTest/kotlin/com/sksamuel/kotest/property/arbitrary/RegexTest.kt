@@ -1,7 +1,6 @@
 package com.sksamuel.kotest.property.arbitrary
 
 import io.kotest.core.spec.style.FunSpec
-import io.kotest.property.Arb
 
 class RegexTest : FunSpec({
 

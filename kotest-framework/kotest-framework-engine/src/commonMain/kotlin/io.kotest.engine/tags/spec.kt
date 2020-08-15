@@ -6,7 +6,7 @@ import io.kotest.mpp.annotation
 import kotlin.reflect.KClass
 
 /**
- * Returns the tags specified on the given Kclass from the @Tags annotation if present.
+ * Returns the tags specified on the given class from the @Tags annotation if present.
  */
 fun KClass<*>.tags(): Set<Tag> {
    val annotation = annotation<io.kotest.core.annotation.Tags>() ?: return emptySet()

@@ -1,8 +1,8 @@
 package io.kotest.engine.test
 
-import io.kotest.engine.config.Project
+import io.kotest.core.config.Project
+import io.kotest.core.config.configuration
 import io.kotest.engine.KotestEngineSystemProperties
-import io.kotest.core.filter.TestFilterResult
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.isBang
 import io.kotest.core.test.isFocused
@@ -49,21 +49,22 @@ fun TestCase.isActive(): Boolean {
    }
 
    // if we have tags specified on this
-   val enabledInTags = Project.tags().parse().isActive(config.tags + spec.resolvedTags())
+   val enabledInTags = configuration.tags.parse().isActive(config.tags + spec.resolvedTags())
    if (!enabledInTags) {
       log("${description.testPath()} is disabled by tags")
       return false
    }
 
-   val includedByFilters = Project.testFilters().all { it.filter(this.description) == TestFilterResult.Include }
-   if (!includedByFilters) {
-      log("${description.testPath()} is excluded by test case filters")
-      return false
-   }
+   // TODO()
+//   val includedByFilters = Project.testFilters().all { it.filter(this.description) == TestFilterResult.Include }
+//   if (!includedByFilters) {
+//      log("${description.testPath()} is excluded by test case filters")
+//      return false
+//   }
 
-   // if the spec has focused tests, and this test is top level and not focused, then it's not active
+   // if the spec has focused tests, and this test is root and *not* focused, then it's not active
    val specHasFocusedTests = spec.focusTests().isNotEmpty()
-   if (isTopLevel() && !isFocused() && specHasFocusedTests) {
+   if (description.isRootTest() && !isFocused() && specHasFocusedTests) {
       log("${description.testPath()} is disabled by another test having focus")
       return false
    }

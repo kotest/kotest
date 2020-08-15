@@ -1,5 +1,6 @@
 package io.kotest.engine.runners
 
+import io.kotest.core.spec.Spec
 import io.kotest.core.test.DescriptionName
 import io.kotest.core.test.NestedTest
 import io.kotest.core.test.TestCase
@@ -8,12 +9,12 @@ import io.kotest.core.test.TestResult
 import io.kotest.core.test.toTestCase
 import io.kotest.engine.spec.SpecRunner
 import io.kotest.engine.listener.TestEngineListener
-import io.kotest.engine.spec.AbstractSpec
 import io.kotest.engine.spec.resolvedThreads
 import io.kotest.engine.ExecutorExecutionContext
 import io.kotest.engine.TestCaseExecutor
 import io.kotest.engine.callbacks.invokeAfterSpec
 import io.kotest.engine.callbacks.invokeBeforeSpec
+import io.kotest.engine.spec.resolvedRootTests
 import io.kotest.engine.test.TestCaseExecutionListener
 import io.kotest.fp.Try
 import io.kotest.mpp.log
@@ -71,10 +72,10 @@ internal class SingleInstanceSpecRunner(listener: TestEngineListener) : SpecRunn
       results[testCase] = result
    }
 
-   override suspend fun execute(spec: AbstractSpec): Try<Map<TestCase, TestResult>> {
+   override suspend fun execute(spec: Spec): Try<Map<TestCase, TestResult>> {
 
       suspend fun interceptAndRun(context: CoroutineContext) = Try {
-          val rootTests = spec.rootTests().map { it.testCase }
+          val rootTests = spec.resolvedRootTests().map { it.testCase }
           runParallel(spec.resolvedThreads(), rootTests) {
               log("Executing test $it")
               runTest(it, context)

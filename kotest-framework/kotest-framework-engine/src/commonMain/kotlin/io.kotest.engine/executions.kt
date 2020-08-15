@@ -1,7 +1,7 @@
 package io.kotest.engine
 
 import io.kotest.assertions.assertSoftly
-import io.kotest.engine.config.Project
+import io.kotest.core.config.configuration
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestContext
 import io.kotest.core.test.TestType
@@ -31,7 +31,7 @@ private suspend fun wrapTestWithAssertionModeCheck(testCase: TestCase, run: susp
  * Wraps an execution function with global assert mode if enabled at the project level.
  */
 private suspend fun wrapTestWithGlobalAssert(run: suspend () -> Unit) {
-   if (Project.globalAssertSoftly()) {
+   if (configuration.globalAssertSoftly) {
       assertSoftly {
          run()
       }

@@ -11,9 +11,10 @@ import io.kotest.mpp.sysprop
 
 /**
  * This [TagExtension] includes and excludes tags using the system properties:
- * [KotestEngineSystemProperties.tagExpression], [KotestEngineSystemProperties.includeTags] and [KotestEngineSystemProperties.excludeTags].
+ * [KotestEngineSystemProperties.tagExpression], [KotestEngineSystemProperties.includeTags]
+ * and [KotestEngineSystemProperties.excludeTags].
  *
- * Note: If 'kotest.tags' is used then the other two properties will be ignored.
+ * Note: If [KotestEngineSystemProperties.tagExpression] is used then the other two properties will be ignored.
  *
  * On non-JVM targets this extension will have no effect.
  */
@@ -23,9 +24,7 @@ object SystemPropertyTagExtension : TagExtension {
 
       fun readTagsProperty(name: String): List<Tag> =
          sysprop(name).toOption().getOrElse("").split(',').filter { it.isNotBlank() }.map {
-            NamedTag(
-               it.trim()
-            )
+            NamedTag(it.trim())
          }
 
       val includedTags = readTagsProperty(KotestEngineSystemProperties.includeTags)

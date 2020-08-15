@@ -1,7 +1,7 @@
 package com.sksamuel.kotest.core.runtime
 
 import io.kotest.assertions.assertSoftly
-import io.kotest.engine.config.Project
+import io.kotest.core.config.Project
 import io.kotest.engine.launcher.KotestEngineLauncher
 import io.kotest.engine.listener.TestEngineListener
 import io.kotest.core.listeners.ProjectListener

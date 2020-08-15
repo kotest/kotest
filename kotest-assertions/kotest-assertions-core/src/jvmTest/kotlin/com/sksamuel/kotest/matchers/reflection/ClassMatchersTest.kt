@@ -15,7 +15,6 @@ import io.kotest.matchers.reflection.shouldHaveAnnotations
 import io.kotest.matchers.reflection.shouldHaveFunction
 import io.kotest.matchers.reflection.shouldHaveMemberProperty
 import io.kotest.matchers.reflection.shouldHavePrimaryConstructor
-import io.kotest.matchers.reflection.shouldHaveVisibility
 import io.kotest.matchers.reflection.shouldNotBeAnnotatedWith
 import io.kotest.matchers.reflection.shouldNotBeCompanion
 import io.kotest.matchers.reflection.shouldNotBeData
@@ -26,11 +25,9 @@ import io.kotest.matchers.reflection.shouldNotHaveAnnotations
 import io.kotest.matchers.reflection.shouldNotHaveFunction
 import io.kotest.matchers.reflection.shouldNotHaveMemberProperty
 import io.kotest.matchers.reflection.shouldNotHavePrimaryConstructor
-import io.kotest.matchers.reflection.shouldNotHaveVisibility
 import io.kotest.matchers.shouldBe
 import java.io.FileNotFoundException
 import java.io.IOException
-import kotlin.reflect.KVisibility
 
 class ClassMatchersTest : FreeSpec() {
   init {

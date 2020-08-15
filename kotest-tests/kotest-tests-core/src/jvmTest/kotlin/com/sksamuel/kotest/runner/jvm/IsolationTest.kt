@@ -5,7 +5,6 @@ import io.kotest.engine.listener.IsolationTestEngineListener
 import io.kotest.engine.listener.TestEngineListener
 import io.mockk.mockk
 import io.mockk.verify
-import io.mockk.verifyOrder
 
 class IsolationTestEngineListenerTest : WordSpec({
 

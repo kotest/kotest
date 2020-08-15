@@ -1,7 +1,6 @@
 package com.sksamuel.kotest
 
 import io.kotest.core.spec.style.WordSpec
-import io.kotest.matchers.shouldBe
 
 class ShouldBeNumericTests : WordSpec({
   "should be" should {

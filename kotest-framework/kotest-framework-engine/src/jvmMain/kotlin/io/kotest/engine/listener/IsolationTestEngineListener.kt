@@ -4,7 +4,7 @@ import io.kotest.core.spec.Spec
 import io.kotest.core.test.Description
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
-import io.kotest.engine.test.toDescription
+import io.kotest.core.spec.toDescription
 import java.util.concurrent.atomic.AtomicReference
 import kotlin.reflect.KClass
 

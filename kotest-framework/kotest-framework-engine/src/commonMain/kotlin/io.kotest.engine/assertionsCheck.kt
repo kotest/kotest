@@ -2,17 +2,16 @@ package io.kotest.engine
 
 import io.kotest.assertions.assertionCounter
 import io.kotest.assertions.getAndReset
+import io.kotest.core.config.configuration
 import io.kotest.core.spec.Spec
-import io.kotest.engine.spec.AbstractSpec
 import io.kotest.core.test.AssertionMode
 import io.kotest.core.test.AssertionMode.Error
 import io.kotest.core.test.AssertionMode.None
 import io.kotest.core.test.AssertionMode.Warn
 import io.kotest.core.test.Description
 
-fun Spec.resolvedAssertionMode(): AssertionMode = when (this) {
-   is AbstractSpec -> this.assertions ?: this.assertionMode() ?: None // todo add project mode
-   else -> None
+fun Spec.resolvedAssertionMode(): AssertionMode {
+   return this.assertions ?: this.assertionMode() ?: configuration.assertionMode
 }
 
 /**

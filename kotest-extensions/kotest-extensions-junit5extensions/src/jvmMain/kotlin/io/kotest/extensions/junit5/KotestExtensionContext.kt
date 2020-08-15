@@ -2,7 +2,7 @@ package io.kotest.extensions.junit5
 
 import io.kotest.core.spec.Spec
 import io.kotest.core.test.TestCase
-import io.kotest.engine.test.toDescription
+import io.kotest.core.spec.toDescription
 import org.junit.jupiter.api.TestInstance
 import org.junit.jupiter.api.extension.ExtensionContext
 import org.junit.jupiter.api.extension.TestInstances

@@ -10,11 +10,12 @@ import io.kotest.core.test.TestResult
 import io.kotest.core.test.toTestCase
 import io.kotest.engine.spec.SpecRunner
 import io.kotest.engine.listener.TestEngineListener
-import io.kotest.engine.spec.AbstractSpec
 import io.kotest.engine.ExecutorExecutionContext
 import io.kotest.engine.TestCaseExecutor
 import io.kotest.engine.callbacks.invokeAfterSpec
 import io.kotest.engine.callbacks.invokeBeforeSpec
+import io.kotest.engine.spec.resolvedRootTests
+import io.kotest.engine.spec.sort
 import io.kotest.engine.test.TestCaseExecutionListener
 import io.kotest.fp.Try
 import io.kotest.mpp.log
@@ -41,7 +42,7 @@ internal class InstancePerLeafSpecRunner(listener: TestEngineListener) : SpecRun
    private val counter = AtomicInteger(0)
 
    // the queue contains tests discovered to run next. We always run the tests with the "furthest" path first.
-   private val queue = PriorityQueue<Enqueued>(Comparator<Enqueued> { o1, o2 ->
+   private val queue = PriorityQueue(Comparator<Enqueued> { o1, o2 ->
       val o1s = o1.testCase.description.names().size
       val o2s = o2.testCase.description.names().size
       if (o1s == o2s) o1.count.compareTo(o2.count) else o2s.compareTo(o1s)
@@ -61,9 +62,9 @@ internal class InstancePerLeafSpecRunner(listener: TestEngineListener) : SpecRun
     * of the containing [AbstractSpec] class. Therefore, when we begin executing a test case from
     * the queue, we must first instantiate a new spec, and begin execution on _that_ instance.
     */
-   override suspend fun execute(spec: AbstractSpec): Try<Map<TestCase, TestResult>> =
+   override suspend fun execute(spec: Spec): Try<Map<TestCase, TestResult>> =
       Try {
-         spec.rootTests().forEach { root ->
+         spec.resolvedRootTests().forEach { root ->
             enqueue(root.testCase)
          }
          while (queue.isNotEmpty()) {
@@ -83,7 +84,7 @@ internal class InstancePerLeafSpecRunner(listener: TestEngineListener) : SpecRun
    // we need to find the same root test but in the newly created spec
    private suspend fun interceptAndRun(spec: Spec, test: TestCase): Try<Spec> = Try {
       log("Created new spec instance $spec")
-      val root = spec.rootTests().first { it.testCase.description.isOnPath(test.description) }
+      val root = spec.resolvedRootTests().first { it.testCase.description.isOnPath(test.description) }
       log("Starting root test ${root.testCase.description} in search of ${test.description}")
       run(root.testCase, test)
       spec

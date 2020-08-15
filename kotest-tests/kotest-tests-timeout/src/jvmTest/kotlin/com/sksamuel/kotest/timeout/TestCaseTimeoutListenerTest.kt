@@ -10,7 +10,6 @@ import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestCaseConfig
 import io.kotest.core.test.TestContext
 import io.kotest.core.test.TestResult
-import io.kotest.engine.test.toDescription
 import io.kotest.matchers.shouldBe
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay

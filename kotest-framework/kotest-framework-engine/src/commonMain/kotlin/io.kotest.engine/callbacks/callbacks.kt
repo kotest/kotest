@@ -1,6 +1,9 @@
 package io.kotest.engine.callbacks
 
-import io.kotest.engine.config.Project
+import io.kotest.core.config.configuration
+import io.kotest.core.config.testCaseExtensions
+import io.kotest.core.config.testListeners
+import io.kotest.core.config.Project
 import io.kotest.engine.config.dumpProjectConfig
 import io.kotest.core.extensions.TestCaseExtension
 import io.kotest.core.listeners.Listener
@@ -8,7 +11,6 @@ import io.kotest.core.listeners.ProjectListener
 import io.kotest.core.spec.Spec
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
-import io.kotest.engine.spec.AbstractSpec
 import io.kotest.engine.spec.resolvedExtensions
 import io.kotest.engine.spec.resolvedTestListeners
 import io.kotest.fp.Try
@@ -138,8 +140,9 @@ suspend fun Spec.invokeBeforeSpec(): Try<Spec> = Try {
 suspend fun Spec.invokeAfterSpec(): Try<Spec> = Try {
    log("invokeAfterSpec $this")
 
-   when (this) {
-      is AbstractSpec -> autoCloseables.forEach { it.close() }
+   this.autocloseables().let { closeables ->
+      log("Closing ${closeables.size} autocloseables [$closeables]")
+      closeables.forEach { it.value.close() }
    }
 
    val listeners = resolvedTestListeners() + Project.testListeners()
@@ -155,5 +158,5 @@ suspend fun Spec.invokeAfterSpec(): Try<Spec> = Try {
 fun TestCase.extensions(): List<TestCaseExtension> {
    return config.extensions +
       spec.resolvedExtensions().filterIsInstance<TestCaseExtension>() +
-      Project.testCaseExtensions()
+      configuration.testCaseExtensions()
 }

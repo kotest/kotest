@@ -54,7 +54,6 @@ import kotlin.Double.Companion.MIN_VALUE
 import kotlin.Double.Companion.NEGATIVE_INFINITY
 import kotlin.Double.Companion.NaN
 import kotlin.Double.Companion.POSITIVE_INFINITY
-import kotlin.math.absoluteValue
 import kotlin.math.ulp
 
 class DoubleMatchersTest : FreeSpec() {

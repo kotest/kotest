@@ -1,7 +1,6 @@
 package com.sksamuel.kt.spring
 
 import io.kotest.core.spec.style.WordSpec
-import io.kotest.matchers.shouldBe
 import org.springframework.test.context.ContextConfiguration
 
 @ContextConfiguration(classes = [(Components::class)])

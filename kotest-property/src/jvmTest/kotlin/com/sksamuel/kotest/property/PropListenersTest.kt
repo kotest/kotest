@@ -2,7 +2,6 @@ package com.sksamuel.kotest.property
 
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
-import io.kotest.matchers.shouldNotBe
 import io.kotest.property.*
 import io.kotest.property.arbitrary.int
 import io.kotest.property.arbitrary.string

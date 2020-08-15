@@ -3,7 +3,10 @@ package io.kotest.core.factory
 import io.kotest.core.Tag
 import io.kotest.core.extensions.Extension
 import io.kotest.core.listeners.TestListener
+import io.kotest.core.spec.Spec
 import io.kotest.core.test.AssertionMode
+import io.kotest.core.test.Description
+import io.kotest.core.test.TestCase
 
 /**
  * A [TestFactory] is a generator of tests along with optional configuration and
@@ -17,6 +20,28 @@ data class TestFactory(
    val assertionMode: AssertionMode?,
    val listeners: List<TestListener>,
    val extensions: List<Extension>,
-   // nested test factories
-   val factories: List<TestFactory>
 )
+
+/**
+ * Creates and a returns a [TestCase] for each [DynamicTest] in this factory.
+ * Tags and assertion mode are applied to the tests.
+ * Any included factories are recursively called and their generated
+ * tests included in the returned list.
+ *
+ * @param description the parent description for the generated tests.
+ * @param spec the [Spec] that will contain the generated tests.
+ */
+internal fun TestFactory.createTestCases(description: Description.SpecDescription, spec: Spec): List<TestCase> {
+   return tests.map { dyn ->
+      TestCase(
+         description = description.append(dyn.name, dyn.type),
+         spec = spec,
+         test = dyn.test,
+         type = dyn.type,
+         source = dyn.source,
+         config = dyn.config.copy(tags = dyn.config.tags + this.tags),
+         factoryId = this.factoryId,
+         assertionMode = this.assertionMode
+      )
+   }
+}

@@ -6,14 +6,11 @@ import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.WordSpec
 import io.kotest.matchers.collections.atLeastSize
 import io.kotest.matchers.collections.atMostSize
-import io.kotest.matchers.collections.beEmpty
 import io.kotest.matchers.collections.beLargerThan
 import io.kotest.matchers.collections.beSameSizeAs
 import io.kotest.matchers.collections.beSmallerThan
 import io.kotest.matchers.collections.contain
 import io.kotest.matchers.collections.containDuplicates
-import io.kotest.matchers.collections.containExactly
-import io.kotest.matchers.collections.containExactlyInAnyOrder
 import io.kotest.matchers.collections.containNoNulls
 import io.kotest.matchers.collections.containNull
 import io.kotest.matchers.collections.containOnlyNulls
@@ -26,7 +23,6 @@ import io.kotest.matchers.collections.monotonicallyDecreasing
 import io.kotest.matchers.collections.monotonicallyDecreasingWith
 import io.kotest.matchers.collections.monotonicallyIncreasing
 import io.kotest.matchers.collections.monotonicallyIncreasingWith
-import io.kotest.matchers.collections.shouldBeEmpty
 import io.kotest.matchers.collections.shouldBeIn
 import io.kotest.matchers.collections.shouldBeLargerThan
 import io.kotest.matchers.collections.shouldBeMonotonicallyDecreasing
@@ -55,7 +51,6 @@ import io.kotest.matchers.collections.shouldHaveAtMostSize
 import io.kotest.matchers.collections.shouldHaveElementAt
 import io.kotest.matchers.collections.shouldHaveSingleElement
 import io.kotest.matchers.collections.shouldHaveSize
-import io.kotest.matchers.collections.shouldNotBeEmpty
 import io.kotest.matchers.collections.shouldNotBeIn
 import io.kotest.matchers.collections.shouldNotBeMonotonicallyDecreasing
 import io.kotest.matchers.collections.shouldNotBeMonotonicallyDecreasingWith
@@ -71,8 +66,6 @@ import io.kotest.matchers.collections.shouldNotBeStrictlyIncreasing
 import io.kotest.matchers.collections.shouldNotBeStrictlyIncreasingWith
 import io.kotest.matchers.collections.shouldNotContainAnyOf
 import io.kotest.matchers.collections.shouldNotContainDuplicates
-import io.kotest.matchers.collections.shouldNotContainExactly
-import io.kotest.matchers.collections.shouldNotContainExactlyInAnyOrder
 import io.kotest.matchers.collections.shouldNotContainNoNulls
 import io.kotest.matchers.collections.shouldNotContainNull
 import io.kotest.matchers.collections.shouldNotContainOnlyNulls
@@ -95,7 +88,6 @@ import io.kotest.matchers.shouldNot
 import io.kotest.matchers.shouldNotBe
 import io.kotest.matchers.shouldNotHave
 import io.kotest.matchers.throwable.shouldHaveMessage
-import java.util.ArrayList
 import java.util.Comparator
 
 class CollectionMatchersTest : WordSpec() {

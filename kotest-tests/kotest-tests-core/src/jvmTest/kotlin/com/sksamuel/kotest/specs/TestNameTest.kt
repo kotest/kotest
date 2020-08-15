@@ -1,6 +1,6 @@
 //package com.sksamuel.kotest.specs
 //
-//import io.kotest.engine.config.Project
+//import io.kotest.core.config.getProject
 //import io.kotest.core.test.TestNameCase
 //import io.kotest.core.spec.style.FunSpec
 //import io.kotest.core.test.DescriptionName

@@ -10,12 +10,8 @@ import io.kotest.property.arbitrary.localDate
 import io.kotest.property.arbitrary.localDateTime
 import io.kotest.property.arbitrary.localTime
 import io.kotest.property.arbitrary.period
-import io.kotest.property.arbitrary.instant
 import io.kotest.property.checkAll
 import java.time.LocalDate
-import java.time.LocalDateTime
-import java.time.LocalTime
-import java.time.Period
 
 class DateTest : WordSpec({
 

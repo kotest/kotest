@@ -1,6 +1,6 @@
 package com.sksamuel.kotest.runner.junit5
 
-import io.kotest.engine.config.Project
+import io.kotest.core.config.Project
 import io.kotest.core.listeners.ProjectListener
 import io.kotest.core.spec.DoNotParallelize
 import io.kotest.core.spec.style.FunSpec

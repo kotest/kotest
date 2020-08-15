@@ -1,7 +1,8 @@
 package io.kotest.engine.spec
 
 import io.kotest.mpp.log
-import io.kotest.engine.config.Project
+import io.kotest.core.config.configuration
+import io.kotest.core.config.testListeners
 import io.kotest.engine.runners.ConcurrentInstancePerLeafSpecRunner
 import io.kotest.engine.runners.InstancePerLeafSpecRunner
 import io.kotest.engine.runners.InstancePerTestSpecRunner
@@ -105,7 +106,7 @@ class SpecExecutor(private val listener: TestEngineListener) {
     * function is invoked.
     */
    private suspend fun runTestsIfAtLeastOneActive(spec: Spec): Try<Map<TestCase, TestResult>> {
-      val roots = spec.rootTests()
+      val roots = spec.materializeRootTests()
       val active = roots.any { it.testCase.isActive() }
       return if (active) runTests(spec) else emptyMap<TestCase, TestResult>().success()
    }
@@ -117,14 +118,16 @@ class SpecExecutor(private val listener: TestEngineListener) {
     */
    private suspend fun runTests(spec: Spec): Try<Map<TestCase, TestResult>> {
 
-      val extensions = spec.resolvedExtensions().filterIsInstance<SpecExtension>() + Project.specExtensions()
+      val extensions = spec.resolvedExtensions().filterIsInstance<SpecExtension>() +
+         configuration.extensions().filterIsInstance<SpecExtension>()
+
       var results: Try<Map<TestCase, TestResult>> = emptyMap<TestCase, TestResult>().success()
 
       // the terminal case after all (if any) extensions have been invoked
       val run: suspend () -> Unit = suspend {
          val runner = runner(spec)
          log("SpecExecutor: Using runner $runner")
-         results = runner.execute(spec as AbstractSpec)
+         results = runner.execute(spec)
       }
 
       return Try { interceptSpec(spec, extensions, run) }.map { results }.flatten()
@@ -146,6 +149,9 @@ class SpecExecutor(private val listener: TestEngineListener) {
       }
    }
 
+   private fun Spec.resolvedIsolationMode() =
+      this.isolationMode() ?: this.isolationMode ?: configuration.isolationMode
+
    private fun runner(spec: Spec): SpecRunner {
       return when (spec.resolvedIsolationMode()) {
          IsolationMode.SingleInstance -> SingleInstanceSpecRunner(listener)
@@ -166,7 +172,7 @@ class SpecExecutor(private val listener: TestEngineListener) {
       Try {
          // prepareSpec can only be registered at the project level
          // It makes no sense to call prepareSpec after a spec has already been instantiated.
-         val listeners = Project.testListeners()
+         val listeners = configuration.testListeners()
          log("Notifying ${listeners.size} test listeners of callback 'prepareSpec'")
          listeners.forEach {
             it.prepareSpec(kclass)
@@ -184,7 +190,7 @@ class SpecExecutor(private val listener: TestEngineListener) {
       log("Notifying finalizeSpec")
       // finalize spec's can be registered at the project level or using the dsl
       // dsl callbacks are just registered at the project level with a spec class check
-      Project.testListeners().forEach {
+      configuration.testListeners().forEach {
          it.finalizeSpec(kclass, results)
       }
       results

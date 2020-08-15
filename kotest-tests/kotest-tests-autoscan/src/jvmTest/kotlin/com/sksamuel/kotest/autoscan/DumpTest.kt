@@ -1,6 +1,6 @@
 package com.sksamuel.kotest.autoscan
 
-import io.kotest.engine.config.Project
+import io.kotest.core.config.Project
 import io.kotest.engine.config.createConfigSummary
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe

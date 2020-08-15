@@ -1,6 +1,7 @@
 package io.kotest.engine
 
-import io.kotest.engine.config.Project
+import io.kotest.core.config.configuration
+import io.kotest.core.extensions.ConstructorExtension
 import io.kotest.core.spec.Spec
 import io.kotest.fp.Try
 import kotlin.reflect.KClass
@@ -12,7 +13,7 @@ import kotlin.reflect.KClass
 fun <T : Spec> instantiateSpec(clazz: KClass<T>): Try<Spec> =
    Try {
       val nullSpec: Spec? = null
-      Project.constructorExtensions()
+      configuration.extensions().filterIsInstance<ConstructorExtension>()
          .fold(nullSpec) { spec, ext -> spec ?: ext.instantiate(clazz) } ?: javaReflectNewInstance(clazz)
    }
 

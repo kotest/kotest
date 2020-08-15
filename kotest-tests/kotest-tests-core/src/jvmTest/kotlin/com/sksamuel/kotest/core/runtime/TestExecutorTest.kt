@@ -13,6 +13,7 @@ import io.kotest.core.test.NestedTest
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestContext
 import io.kotest.core.test.TestResult
+import io.kotest.core.test.TestStatus
 import io.kotest.matchers.booleans.shouldBeTrue
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.types.shouldBeInstanceOf
@@ -42,12 +43,12 @@ fun testExecutorTests(context: TimeoutExecutionContext) = funSpec {
          override fun testIgnored(testCase: TestCase) {}
          override fun testFinished(testCase: TestCase, result: TestResult) {
             finished = true
-            result.status shouldBe io.kotest.core.test.TestStatus.Success
+            result.status shouldBe TestStatus.Success
          }
       }
       val executor = TestCaseExecutor(listener, context)
       val testCase = Tests().rootTests().first { it.testCase.name == "a" }.testCase
-      executor.execute(testCase, context(testCase)).status shouldBe io.kotest.core.test.TestStatus.Success
+      executor.execute(testCase, context(testCase)).status shouldBe TestStatus.Success
       started shouldBe true
       finished shouldBe true
    }
@@ -63,13 +64,13 @@ fun testExecutorTests(context: TimeoutExecutionContext) = funSpec {
          override fun testIgnored(testCase: TestCase) {}
          override fun testFinished(testCase: TestCase, result: TestResult) {
             finished = true
-            result.status shouldBe io.kotest.core.test.TestStatus.Error
+            result.status shouldBe TestStatus.Error
          }
       }
       val executor = TestCaseExecutor(listener, context)
       val testCase = Tests().rootTests().first { it.testCase.name == "b" }.testCase
       val result = executor.execute(testCase, context(testCase))
-      result.status shouldBe io.kotest.core.test.TestStatus.Error
+      result.status shouldBe TestStatus.Error
       result.error shouldBe TimeoutException(100)
       started shouldBe true
       finished shouldBe true
@@ -128,7 +129,7 @@ fun testExecutorTests(context: TimeoutExecutionContext) = funSpec {
       }, context)
       val testCase = BeforeTestWithException().rootTests().first().testCase
       val result = executor.execute(testCase, context(testCase))
-      result.status shouldBe io.kotest.core.test.TestStatus.Error
+      result.status shouldBe TestStatus.Error
       result.error.shouldBeInstanceOf<IllegalStateException>()
       started shouldBe true
       finished shouldBe true
@@ -149,7 +150,7 @@ fun testExecutorTests(context: TimeoutExecutionContext) = funSpec {
       }, context)
       val testCase = AfterTestWithException().rootTests().first().testCase
       val result = executor.execute(testCase, context(testCase))
-      result.status shouldBe io.kotest.core.test.TestStatus.Error
+      result.status shouldBe TestStatus.Error
       result.error.shouldBeInstanceOf<IllegalStateException>()
       started shouldBe true
       finished shouldBe true

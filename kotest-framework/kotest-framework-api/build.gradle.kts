@@ -38,12 +38,15 @@ kotlin {
       val commonMain by getting {
          dependencies {
             implementation(Libs.Coroutines.coreCommon)
+            implementation(project(Projects.Common))
          }
       }
 
       val jsMain by getting {
          dependsOn(commonMain)
          dependencies {
+            // this must be api as it's compiled into the final source
+            api(kotlin("test-js"))
          }
       }
 

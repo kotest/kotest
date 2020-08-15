@@ -2,7 +2,6 @@ package com.sksamuel.kotest
 
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.test.TestCase
-import io.kotest.engine.test.toDescription
 import io.kotest.core.test.isBang
 import io.kotest.core.test.isFocused
 import io.kotest.matchers.shouldBe

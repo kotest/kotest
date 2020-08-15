@@ -1,7 +1,9 @@
 package io.kotest.core.factory
 
 import io.kotest.core.SourceRef
+import io.kotest.core.spec.Spec
 import io.kotest.core.test.DescriptionName
+import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestCaseConfig
 import io.kotest.core.test.TestContext
 import io.kotest.core.test.TestType

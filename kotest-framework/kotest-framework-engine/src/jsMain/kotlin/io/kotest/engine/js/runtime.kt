@@ -1,7 +1,6 @@
 package io.kotest.engine.js
 
-import io.kotest.engine.config.Project
-import io.kotest.engine.spec.AbstractSpec
+import io.kotest.core.spec.Spec
 import io.kotest.core.test.NestedTest
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestContext
@@ -17,8 +16,8 @@ import kotlin.coroutines.CoroutineContext
 /**
  * Note: we need to use this: https://youtrack.jetbrains.com/issue/KT-22228
  */
-actual fun executeSpec(spec: AbstractSpec) {
-   spec.rootTests()
+actual fun executeSpec(spec: Spec) {
+   spec.materializeRootTests()
       .filter { it.testCase.isActive() }
       .forEach { root ->
          // we have to always start the test so that the framework doesn't exit before we return

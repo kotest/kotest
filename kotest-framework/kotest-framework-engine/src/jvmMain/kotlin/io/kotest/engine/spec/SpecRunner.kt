@@ -29,7 +29,7 @@ abstract class SpecRunner(val listener: TestEngineListener) {
     * Executes all the tests in this spec, returning a Failure if there was an exception in a listener
     * or class initializer. Otherwise returns the results for the tests in that spec.
     */
-   abstract suspend fun execute(spec: AbstractSpec): Try<Map<TestCase, TestResult>>
+   abstract suspend fun execute(spec: Spec): Try<Map<TestCase, TestResult>>
 
    /**
     * Creates an instance of the supplied [AbstractSpec] by delegating to the project constructors,

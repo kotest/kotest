@@ -11,7 +11,6 @@ import io.kotest.extensions.system.OverrideMode
 import io.kotest.extensions.system.SystemPropertyTestListener
 import io.kotest.extensions.system.withSystemProperties
 import io.kotest.extensions.system.withSystemProperty
-import io.kotest.inspectors.forAll
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
 import io.mockk.every

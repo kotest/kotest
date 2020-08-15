@@ -2,20 +2,14 @@ package com.sksamuel.kotest.matchers
 
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.FreeSpec
-import io.kotest.matchers.beInstanceOf
-import io.kotest.matchers.collections.haveSize
 import io.kotest.matchers.haveSameHashCodeAs
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNot
 import io.kotest.matchers.shouldNotBe
 import io.kotest.matchers.string.haveLength
-import java.util.*
 import kotlin.collections.HashMap
-import kotlin.collections.List
-import kotlin.collections.emptyList
 import kotlin.collections.emptyMap
-import kotlin.collections.listOf
 import kotlin.collections.mapOf
 import kotlin.collections.set
 

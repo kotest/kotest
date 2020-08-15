@@ -2,7 +2,7 @@ package com.sksamuel.kotest
 
 import io.kotest.core.NamedTag
 import io.kotest.core.Tags
-import io.kotest.engine.config.Project
+import io.kotest.core.config.Project
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestCaseConfig
 import io.kotest.core.extensions.TagExtension
@@ -14,7 +14,6 @@ import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.core.test.Description
 import io.kotest.core.test.DescriptionName
-import io.kotest.engine.test.toDescription
 import io.kotest.matchers.shouldBe
 
 class IsActiveTest : StringSpec() {

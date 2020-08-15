@@ -6,7 +6,6 @@ import io.kotest.core.test.DescriptionName
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestType
-import io.kotest.engine.test.toDescription
 import io.kotest.engine.toTestResult
 import io.kotest.matchers.shouldBe
 import io.kotest.runner.junit.platform.JUnitTestEngineListener

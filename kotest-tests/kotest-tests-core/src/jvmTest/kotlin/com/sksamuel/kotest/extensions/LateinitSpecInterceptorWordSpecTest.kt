@@ -3,7 +3,6 @@ package com.sksamuel.kotest.extensions
 import io.kotest.core.extensions.SpecExtension
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.style.WordSpec
-import io.kotest.matchers.shouldBe
 import kotlin.reflect.KClass
 
 class LateinitSpecInterceptorWordSpecTest : WordSpec() {
