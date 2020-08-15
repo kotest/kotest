@@ -1,11 +1,9 @@
 package io.kotest.extensions.allure
 
-import io.kotest.engine.config.Project
 import io.kotest.core.test.Description
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestStatus
-import io.kotest.core.test.format
 import io.kotest.mpp.log
 import io.qameta.allure.Allure
 import io.qameta.allure.AllureLifecycle
@@ -23,6 +21,11 @@ import java.util.UUID
 import kotlin.reflect.full.findAnnotation
 
 class AllureWriter {
+
+   companion object {
+      const val LanguageLabel = "kotlin"
+      const val FrameworkLabel = "kotest"
+   }
 
    /**
     * Loads the [AllureLifecycle] object which is used to report test lifecycle events.
@@ -46,37 +49,27 @@ class AllureWriter {
       uuids[testCase.description] = uuid
 
       val labels = listOfNotNull(
-         ResultsUtils.createSuiteLabel(
-            testCase.description.spec().name.format(Project.testNameCase(), Project.includeTestScopePrefixes())
-         ),
+         ResultsUtils.createSuiteLabel(testCase.description.spec().displayName()),
          ResultsUtils.createThreadLabel(),
          ResultsUtils.createHostLabel(),
-         ResultsUtils.createLanguageLabel("kotlin"),
-         ResultsUtils.createFrameworkLabel("kotest"),
+         ResultsUtils.createLanguageLabel(LanguageLabel),
+         ResultsUtils.createFrameworkLabel(FrameworkLabel),
          ResultsUtils.createPackageLabel(testCase.spec::class.java.`package`.name),
          testCase.epic(),
          testCase.story(),
          testCase.feature(),
          testCase.severity(),
-         testCase.owner()
+         testCase.owner(),
       )
 
       val links = listOfNotNull(testCase.issue())
 
       val result = io.qameta.allure.model.TestResult()
-         .setFullName(
-            testCase.description.displayPath(
-               false,
-               Project.testNameCase(),
-               Project.includeTestScopePrefixes()
-            )
-         )
-         .setName(testCase.description.name.format(Project.testNameCase(), Project.includeTestScopePrefixes()))
+         .setFullName(testCase.description.displayPath())
+         .setName(testCase.description.name.displayName())
          .setUuid(uuid.toString())
          .setTestCaseId(safeId(testCase.description))
-         .setHistoryId(
-            testCase.description.name.format(Project.testNameCase(), Project.includeTestScopePrefixes())
-         )
+         .setHistoryId(testCase.description.name.displayName())
          .setLabels(labels)
          .setLinks(links)
          .setDescription(testCase.description())

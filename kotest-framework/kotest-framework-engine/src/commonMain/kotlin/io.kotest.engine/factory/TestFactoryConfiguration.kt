@@ -12,10 +12,10 @@ import io.kotest.core.spec.BeforeAny
 import io.kotest.core.spec.BeforeContainer
 import io.kotest.core.spec.BeforeEach
 import io.kotest.core.spec.BeforeTest
+import io.kotest.core.test.DescriptionName
 import io.kotest.engine.spec.TestSuite
 import io.kotest.core.test.TestCaseConfig
 import io.kotest.core.test.TestContext
-import io.kotest.core.test.TestName
 import io.kotest.core.test.TestType
 
 /**
@@ -130,7 +130,7 @@ abstract class TestFactoryConfiguration : TestSuite() {
     * into a [Spec] these tests will be added to the spec as root [TestCase]s.
     */
    internal fun addDynamicTest(
-      name: TestName,
+      name: DescriptionName.TestName,
       test: suspend TestContext.() -> Unit,
       config: TestCaseConfig,
       type: TestType,

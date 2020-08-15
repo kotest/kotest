@@ -2,10 +2,10 @@ package io.kotest.engine.runners
 
 import io.kotest.core.spec.Spec
 import io.kotest.core.test.Description
+import io.kotest.core.test.DescriptionName
 import io.kotest.core.test.NestedTest
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestContext
-import io.kotest.core.test.TestName
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.toTestCase
 import io.kotest.engine.spec.SpecRunner
@@ -96,7 +96,7 @@ internal class InstancePerLeafSpecRunner(listener: TestEngineListener) : SpecRun
             var open = true
 
             // check for duplicate names in the same scope
-            val namesInScope = mutableSetOf<TestName>()
+            val namesInScope = mutableSetOf<DescriptionName.TestName>()
 
             override val testCase: TestCase = test
             override val coroutineContext: CoroutineContext = this@coroutineScope.coroutineContext

@@ -4,9 +4,9 @@ import io.kotest.core.test.Description
 import io.kotest.core.test.EnabledIf
 import io.kotest.core.test.TestCaseConfig
 import io.kotest.core.test.TestContext
-import io.kotest.core.test.TestName
 import io.kotest.core.Tag
 import io.kotest.core.extensions.TestCaseExtension
+import io.kotest.core.test.DescriptionName
 import kotlin.coroutines.CoroutineContext
 import kotlin.time.Duration
 import kotlin.time.ExperimentalTime
@@ -20,7 +20,7 @@ class FreeScope(
 ) : ContainerScope {
 
    suspend infix operator fun String.minus(test: suspend FreeScope.() -> Unit) {
-      val name = TestName(this)
+      val name = DescriptionName.TestName(this)
       addContainerTest(name, xdisabled = false) {
          FreeScope(
             this@FreeScope.description.append(name, io.kotest.core.test.TestType.Container),
@@ -33,7 +33,7 @@ class FreeScope(
    }
 
    suspend infix operator fun String.invoke(test: suspend TestContext.() -> Unit) =
-      addTest(TestName(this), xdisabled = false, test = test)
+      addTest(DescriptionName.TestName(this), xdisabled = false, test = test)
 
    @OptIn(ExperimentalTime::class)
    suspend fun String.config(
@@ -47,7 +47,7 @@ class FreeScope(
       invocationTimeout: Duration? = null,
       test: suspend TestContext.() -> Unit
    ) = TestWithConfigBuilder(
-      TestName(this),
+      DescriptionName.TestName(this),
       testContext,
       defaultConfig,
       xdisabled = false,

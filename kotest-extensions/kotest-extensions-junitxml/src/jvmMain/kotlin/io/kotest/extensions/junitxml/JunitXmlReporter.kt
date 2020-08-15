@@ -48,6 +48,8 @@ class JunitXmlReporter(
 
       // sets the build directory, to which test-results will be appended
       const val BuildDirKey = "gradle.build.dir"
+
+      const val AttributeName = "Name"
    }
 
    private var marks = ConcurrentHashMap<KClass<out Spec>, Long>()
@@ -86,18 +88,18 @@ class JunitXmlReporter(
       testSuite.setAttribute("failures", filtered.filter { it.value.status == TestStatus.Failure }.size.toString())
       testSuite.setAttribute("skipped", filtered.filter { it.value.status == TestStatus.Ignored }.size.toString())
       testSuite.setAttribute("tests", filtered.size.toString())
-      testSuite.setAttribute("name", kclass.toDescription().displayPath(false))
+      testSuite.setAttribute(AttributeName, kclass.toDescription().displayName())
       document.addContent(testSuite)
 
       filtered.map { (testcase, result) ->
 
          val name = when (useTestPathAsName) {
-            true -> testcase.description.displayPath(false)
-            false -> testcase.displayName
+            true -> testcase.description.displayPath()
+            false -> testcase.description.name.displayName()
          }
 
          val e = Element("testcase")
-         e.setAttribute("name", name)
+         e.setAttribute(AttributeName, name)
          e.setAttribute("classname", kclass.java.canonicalName)
          e.setAttribute("time", (result.duration / 1000).toString())
 
@@ -128,7 +130,7 @@ class JunitXmlReporter(
    }
 
    private fun write(kclass: KClass<out Spec>, document: Document) {
-      val path = outputDir().resolve("TEST-" + kclass.toDescription().name.name + ".xml")
+      val path = outputDir().resolve("TEST-" + kclass.toDescription().name.displayName + ".xml")
       path.parent.toFile().mkdirs()
       val outputter = XMLOutputter(Format.getPrettyFormat())
       val writer = Files.newBufferedWriter(path, StandardOpenOption.TRUNCATE_EXISTING, StandardOpenOption.CREATE)

@@ -1,14 +1,10 @@
 package io.kotest.runner.junit.platform
 
-import io.kotest.engine.config.Project
 import io.kotest.engine.KotestEngineSystemProperties
 import io.kotest.core.test.Description
-import io.kotest.core.test.DescriptionType
 import io.kotest.core.spec.Spec
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestType
-import io.kotest.core.test.format
-import io.kotest.extensions.system.toDescription2
 import org.junit.platform.engine.TestDescriptor
 import org.junit.platform.engine.TestSource
 import org.junit.platform.engine.UniqueId
@@ -26,12 +22,11 @@ fun engineId(): UniqueId = UniqueId.forEngine("kotest")
  * Returns a new [UniqueId] by appending this description to the receiver.
  */
 fun UniqueId.append(description: Description): UniqueId {
-   val segment = when (description.type) {
-      DescriptionType.Spec -> Segment.Spec
-      DescriptionType.Container -> Segment.Test
-      DescriptionType.Test -> Segment.Test
+   val segment = when (description) {
+      is Description.SpecDescription -> Segment.Spec
+      is Description.TestDescription -> Segment.Test
    }
-   return this.append(segment.value, description.name.format(Project.testNameCase(), Project.includeTestScopePrefixes()))
+   return this.append(segment.value, description.displayName())
 }
 
 sealed class Segment {
@@ -82,7 +77,12 @@ fun TestDescriptor.append(
    type: TestDescriptor.Type,
    source: TestSource?,
    segment: Segment
-): TestDescriptor = append(description.name.format(Project.testNameCase(), Project.includeTestScopePrefixes()), type, source, segment)
+): TestDescriptor = append(
+   description.displayName(),
+   type,
+   source,
+   segment
+)
 
 /**
  * Creates a new [TestDescriptor] appended to the receiver and adds it as a child of the receiver.
@@ -110,19 +110,20 @@ fun Description.toTestDescriptor(root: UniqueId): TestDescriptor {
 
    val id = this.chain().fold(root) { acc, op -> acc.append(op) }
 
-   val source = when (this.type) {
-      DescriptionType.Spec -> ClassSource.from(this.specClass.java)
-      DescriptionType.Container -> MethodSource.from(this.specClass.java.name, this.path().value)
-      DescriptionType.Test -> MethodSource.from(this.specClass.java.name, this.path().value)
+   val source = when (this) {
+      is Description.SpecDescription -> ClassSource.from(this.kclass.java)
+      is Description.TestDescription -> MethodSource.from(this.spec().kclass.java.name, this.testPath().value)
    }
 
-   val type = when (this.type) {
-      DescriptionType.Spec -> TestDescriptor.Type.CONTAINER
-      DescriptionType.Container -> TestDescriptor.Type.CONTAINER
-      DescriptionType.Test -> TestDescriptor.Type.TEST
+   val type = when (this) {
+      is Description.SpecDescription -> TestDescriptor.Type.CONTAINER
+      is Description.TestDescription -> when (this.type) {
+         TestType.Container -> TestDescriptor.Type.CONTAINER
+         TestType.Test -> TestDescriptor.Type.TEST
+      }
    }
 
-   return object : AbstractTestDescriptor(id, this.name.format(Project.testNameCase(), Project.includeTestScopePrefixes()), source) {
+   return object : AbstractTestDescriptor(id, this.displayName(), source) {
       override fun getType(): TestDescriptor.Type = type
    }
 }

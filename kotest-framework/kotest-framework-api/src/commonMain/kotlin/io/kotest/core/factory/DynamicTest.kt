@@ -1,9 +1,9 @@
 package io.kotest.core.factory
 
 import io.kotest.core.SourceRef
+import io.kotest.core.test.DescriptionName
 import io.kotest.core.test.TestCaseConfig
 import io.kotest.core.test.TestContext
-import io.kotest.core.test.TestName
 import io.kotest.core.test.TestType
 
 /**
@@ -12,7 +12,7 @@ import io.kotest.core.test.TestType
  * as fully fledged [TestCase]s.
  */
 data class DynamicTest(
-   val name: TestName,
+   val name: DescriptionName.TestName,
    val test: suspend TestContext.() -> Unit,
    val config: TestCaseConfig,
    val type: TestType,

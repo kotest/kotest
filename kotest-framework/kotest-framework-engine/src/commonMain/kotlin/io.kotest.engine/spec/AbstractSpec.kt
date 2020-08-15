@@ -55,7 +55,7 @@ abstract class AbstractSpec : TestSuite(), Spec {
          .withIndex()
          .map { RootTest(it.value, it.index) }
          .also {
-            log("Materialized roots: $it")
+            log("Materialized ${it.size} roots: $it")
          }
    }
 

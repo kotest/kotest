@@ -2,10 +2,10 @@ package io.kotest.core.spec.style.scopes
 
 import io.kotest.engine.factory.TestFactoryConfiguration
 import io.kotest.core.spec.style.DslDrivenSpec
+import io.kotest.core.test.DescriptionName
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestCaseConfig
 import io.kotest.core.test.TestContext
-import io.kotest.core.test.TestName
 import io.kotest.core.test.TestType
 import io.kotest.core.test.withXDisabled
 
@@ -19,14 +19,14 @@ interface RootTestRegistration {
    /**
     * Adds a new root [TestCase] to this scope with type [TestType.Container].
     */
-   fun addContainerTest(name: TestName, xdisabled: Boolean, test: suspend TestContext.() -> Unit) =
+   fun addContainerTest(name: DescriptionName.TestName, xdisabled: Boolean, test: suspend TestContext.() -> Unit) =
       addTest(name, xdisabled, defaultConfig, TestType.Container, test)
 
    /**
     * Adds a new root [TestCase] to this scope with type [TestType.Test].
     */
    fun addTest(
-      name: TestName,
+      name: DescriptionName.TestName,
       xdisabled: Boolean,
       test: suspend TestContext.() -> Unit
    ) = addTest(name, xdisabled, defaultConfig, TestType.Test, test)
@@ -35,7 +35,7 @@ interface RootTestRegistration {
     * Adds a new root [TestCase] to this scope with type [TestType.Test] and custom config.
     */
    fun addTest(
-      name: TestName,
+      name: DescriptionName.TestName,
       xdisabled: Boolean,
       config: TestCaseConfig,
       test: suspend TestContext.() -> Unit
@@ -47,7 +47,7 @@ interface RootTestRegistration {
     * @param xdisabled if true then this test has been disabled by using an xKeyword dsl method.
     */
    fun addTest(
-      name: TestName,
+      name: DescriptionName.TestName,
       xdisabled: Boolean,
       config: TestCaseConfig,
       type: TestType,
@@ -58,7 +58,7 @@ interface RootTestRegistration {
       fun from(factory: TestFactoryConfiguration): RootTestRegistration = object : RootTestRegistration {
          override val defaultConfig: TestCaseConfig = factory.resolvedDefaultConfig()
          override fun addTest(
-            name: TestName,
+            name: DescriptionName.TestName,
             xdisabled: Boolean,
             config: TestCaseConfig,
             type: TestType,
@@ -71,7 +71,7 @@ interface RootTestRegistration {
       fun from(spec: DslDrivenSpec): RootTestRegistration = object : RootTestRegistration {
          override val defaultConfig: TestCaseConfig = spec.resolvedDefaultConfig()
          override fun addTest(
-            name: TestName,
+            name: DescriptionName.TestName,
             xdisabled: Boolean,
             config: TestCaseConfig,
             type: TestType,

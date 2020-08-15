@@ -34,37 +34,37 @@ fun TestCase.isActive(): Boolean {
    // when it's not set, then we use ! to disable tests
    val bangEnabled = sysprop(KotestEngineSystemProperties.disableBangPrefix) == null
    if (isBang() && bangEnabled) {
-      log("${description.path()} is disabled by bang")
+      log("${description.testPath()} is disabled by bang")
       return false
    }
 
    if (!config.enabled) {
-      log("${description.path()} is disabled by enabled property in config")
+      log("${description.testPath()} is disabled by enabled property in config")
       return false
    }
 
    if (!config.enabledIf(this)) {
-      log("${description.path()} is disabled by enabledIf function in config")
+      log("${description.testPath()} is disabled by enabledIf function in config")
       return false
    }
 
    // if we have tags specified on this
    val enabledInTags = Project.tags().parse().isActive(config.tags + spec.resolvedTags())
    if (!enabledInTags) {
-      log("${description.path()} is disabled by tags")
+      log("${description.testPath()} is disabled by tags")
       return false
    }
 
    val includedByFilters = Project.testFilters().all { it.filter(this.description) == TestFilterResult.Include }
    if (!includedByFilters) {
-      log("${description.path()} is excluded by test case filters")
+      log("${description.testPath()} is excluded by test case filters")
       return false
    }
 
    // if the spec has focused tests, and this test is top level and not focused, then it's not active
    val specHasFocusedTests = spec.focusTests().isNotEmpty()
    if (isTopLevel() && !isFocused() && specHasFocusedTests) {
-      log("${description.path()} is disabled by another test having focus")
+      log("${description.testPath()} is disabled by another test having focus")
       return false
    }
 

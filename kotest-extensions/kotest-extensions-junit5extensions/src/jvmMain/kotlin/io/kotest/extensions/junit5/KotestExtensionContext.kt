@@ -1,14 +1,8 @@
 package io.kotest.extensions.junit5
 
-import io.kotest.core.spec.DisplayName
-import io.kotest.core.test.DescriptionType
-import io.kotest.core.test.TestNameCase
 import io.kotest.core.spec.Spec
-import io.kotest.core.test.Description
 import io.kotest.core.test.TestCase
-import io.kotest.core.test.TestName
-import io.kotest.mpp.annotation
-import io.kotest.mpp.bestName
+import io.kotest.engine.test.toDescription
 import org.junit.jupiter.api.TestInstance
 import org.junit.jupiter.api.extension.ExtensionContext
 import org.junit.jupiter.api.extension.TestInstances
@@ -16,12 +10,6 @@ import java.lang.reflect.AnnotatedElement
 import java.lang.reflect.Method
 import java.util.Optional
 import java.util.function.Function
-import kotlin.reflect.KClass
-
-fun KClass<*>.toDescription(): Description {
-   val name = annotation<DisplayName>()?.name ?: bestName()
-   return Description(null, TestName(name), DescriptionType.Spec, this)
-}
 
 class KotestExtensionContext(
    private val spec: Spec,
@@ -34,7 +22,7 @@ class KotestExtensionContext(
    override fun getUniqueId(): String = spec::class.toDescription().id().value
 
    override fun getDisplayName(): String = when (test) {
-      null -> spec::class.toDescription().displayPath(false, TestNameCase.AsIs, false)
+      null -> spec::class.toDescription().displayPath()
       else -> test.displayName
    }
 

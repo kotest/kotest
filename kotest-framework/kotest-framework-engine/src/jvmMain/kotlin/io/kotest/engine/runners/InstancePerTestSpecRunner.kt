@@ -3,7 +3,6 @@ package io.kotest.engine.runners
 import io.kotest.core.test.NestedTest
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestContext
-import io.kotest.core.test.TestName
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.toTestCase
 import io.kotest.core.spec.Spec
@@ -71,13 +70,13 @@ internal class InstancePerTestSpecRunner(listener: TestEngineListener) : SpecRun
     * can be registered back with the stack for execution later.
     */
    override suspend fun execute(spec: AbstractSpec): Try<Map<TestCase, TestResult>> =
-       Try {
-           runParallel(spec.resolvedThreads(), spec.rootTests().map { it.testCase }) {
-               executeInCleanSpec(it)
-                   .getOrThrow()
-           }
-           results
-       }
+      Try {
+         runParallel(spec.resolvedThreads(), spec.rootTests().map { it.testCase }) {
+            executeInCleanSpec(it)
+               .getOrThrow()
+         }
+         results
+      }
 
    /**
     * The intention of this runner is that each [TestCase] executes in it's own instance
@@ -98,22 +97,21 @@ internal class InstancePerTestSpecRunner(listener: TestEngineListener) : SpecRun
          .flatMap { it.invokeAfterSpec() }
    }
 
-   private suspend fun interceptAndRun(spec: Spec, test: TestCase): Try<Spec> =
-       Try {
-           log("Created new spec instance $spec")
-           // we need to find the same root test but in the newly created spec
-           val root = spec.rootTests().first { it.testCase.description.isOnPath(test.description) }
-           log("Starting root test ${root.testCase.description} in search of ${test.description}")
-           run(root.testCase, test)
-           spec
-       }
+   private suspend fun interceptAndRun(spec: Spec, test: TestCase): Try<Spec> = Try {
+      log("Created new spec instance $spec")
+      // we need to find the same root test but in the newly created spec
+      val root = spec.rootTests().first { it.testCase.description.isOnPath(test.description) }
+      log("Starting root test ${root.testCase.description} in search of ${test.description}")
+      run(root.testCase, test)
+      spec
+   }
 
    private suspend fun run(test: TestCase, target: TestCase) {
       val isTarget = test.description == target.description
       coroutineScope {
          val context = object : TestContext {
             // check for duplicate names in the same scope
-            val namesInScope = mutableSetOf<TestName>()
+            val namesInScope = mutableSetOf<DescriptionName.TestName>()
             override val testCase: TestCase = test
             override val coroutineContext: CoroutineContext = this@coroutineScope.coroutineContext
             override suspend fun registerTestCase(nested: NestedTest) {

@@ -1,11 +1,10 @@
 package io.kotest.core.spec.style.scopes
 
-import io.kotest.core.test.DescriptionType
 import io.kotest.core.spec.KotestDsl
 import io.kotest.core.test.Description
+import io.kotest.core.test.DescriptionName
 import io.kotest.core.test.TestCaseConfig
 import io.kotest.core.test.TestContext
-import io.kotest.core.test.TestName
 import kotlin.coroutines.CoroutineContext
 
 /**
@@ -40,10 +39,10 @@ class GivenScope(
    suspend fun xAnd(name: String, test: suspend GivenScope.() -> Unit) = addAnd(name, test, xdisabled = true)
 
    private suspend fun addAnd(name: String, test: suspend GivenScope.() -> Unit, xdisabled: Boolean) {
-      val testName = TestName("And: ", name)
+      val testName = DescriptionName.TestName("And: ", name, includePrefixByDefault = true)
       addContainerTest(testName, xdisabled) {
          GivenScope(
-            this@GivenScope.description.append(testName, DescriptionType.Container),
+            this@GivenScope.description.appendContainer(testName),
             this@GivenScope.lifecycle,
             this,
             this@GivenScope.defaultConfig,
@@ -58,10 +57,10 @@ class GivenScope(
    suspend fun xWhen(name: String, test: suspend WhenScope.() -> Unit) = addWhen(name, test, xdisabled = true)
 
    private suspend fun addWhen(name: String, test: suspend WhenScope.() -> Unit, xdisabled: Boolean) {
-      val testName = TestName("When: ", name)
+      val testName = DescriptionName.TestName("When: ", name, includePrefixByDefault = true)
       addContainerTest(testName, xdisabled) {
          WhenScope(
-            this@GivenScope.description.append(testName, DescriptionType.Container),
+            this@GivenScope.description.appendContainer(testName),
             this@GivenScope.lifecycle,
             this,
             this@GivenScope.defaultConfig,
@@ -70,10 +69,10 @@ class GivenScope(
       }
    }
 
-   fun Then(name: String) = TestWithConfigBuilder(TestName(name), testContext, defaultConfig, xdisabled = false)
-   fun then(name: String) = TestWithConfigBuilder(TestName(name), testContext, defaultConfig, xdisabled = false)
-   fun xthen(name: String) = TestWithConfigBuilder(TestName(name), testContext, defaultConfig, xdisabled = true)
-   fun xThen(name: String) = TestWithConfigBuilder(TestName(name), testContext, defaultConfig, xdisabled = true)
+   fun Then(name: String) = TestWithConfigBuilder(DescriptionName.TestName(name, includePrefixByDefault = true), testContext, defaultConfig, xdisabled = false)
+   fun then(name: String) = TestWithConfigBuilder(DescriptionName.TestName(name, includePrefixByDefault = true), testContext, defaultConfig, xdisabled = false)
+   fun xthen(name: String) = TestWithConfigBuilder(DescriptionName.TestName(name, includePrefixByDefault = true), testContext, defaultConfig, xdisabled = true)
+   fun xThen(name: String) = TestWithConfigBuilder(DescriptionName.TestName(name, includePrefixByDefault = true), testContext, defaultConfig, xdisabled = true)
 
    suspend fun Then(name: String, test: suspend TestContext.() -> Unit) = addThen(name, test, xdisabled = false)
    suspend fun then(name: String, test: suspend TestContext.() -> Unit) = addThen(name, test, xdisabled = false)
@@ -81,6 +80,6 @@ class GivenScope(
    suspend fun xThen(name: String, test: suspend TestContext.() -> Unit) = addThen(name, test, xdisabled = true)
 
    private suspend fun addThen(name: String, test: suspend TestContext.() -> Unit, xdisabled: Boolean) {
-      addTest(TestName("Then: ", name), xdisabled, test)
+      addTest(DescriptionName.TestName("Then: ", name, includePrefixByDefault = true), xdisabled, test)
    }
 }

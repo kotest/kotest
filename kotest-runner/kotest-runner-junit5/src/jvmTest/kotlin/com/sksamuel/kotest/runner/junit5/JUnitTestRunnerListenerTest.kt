@@ -1,18 +1,14 @@
 package com.sksamuel.kotest.runner.junit5
 
-import io.kotest.core.spec.DisplayName
-import io.kotest.core.test.DescriptionType
 import io.kotest.core.sourceRef
 import io.kotest.core.spec.style.FunSpec
-import io.kotest.core.test.Description
+import io.kotest.core.test.DescriptionName
 import io.kotest.core.test.TestCase
-import io.kotest.core.test.TestName
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestType
+import io.kotest.engine.test.toDescription
 import io.kotest.engine.toTestResult
 import io.kotest.matchers.shouldBe
-import io.kotest.mpp.annotation
-import io.kotest.mpp.bestName
 import io.kotest.runner.junit.platform.JUnitTestEngineListener
 import io.kotest.runner.junit.platform.KotestEngineDescriptor
 import org.junit.platform.engine.EngineExecutionListener
@@ -20,13 +16,7 @@ import org.junit.platform.engine.TestDescriptor
 import org.junit.platform.engine.TestExecutionResult
 import org.junit.platform.engine.UniqueId
 import org.junit.platform.engine.reporting.ReportEntry
-import kotlin.reflect.KClass
 import kotlin.time.ExperimentalTime
-
-fun KClass<*>.toDescription(): Description {
-   val name = annotation<DisplayName>()?.name ?: bestName()
-   return Description(null, TestName(name), DescriptionType.Spec, this)
-}
 
 @OptIn(ExperimentalTime::class)
 class JUnitTestRunnerListenerTests : FunSpec({
@@ -53,7 +43,7 @@ class JUnitTestRunnerListenerTests : FunSpec({
       }
 
       val test1 = TestCase(
-         JUnitTestRunnerListenerTests::class.toDescription().append(TestName("test1"), TestType.Test),
+         JUnitTestRunnerListenerTests::class.toDescription().append(DescriptionName.TestName("test1"), TestType.Test),
          JUnitTestRunnerListenerTests(),
          { },
          sourceRef(),
@@ -61,7 +51,7 @@ class JUnitTestRunnerListenerTests : FunSpec({
       )
 
       val test2 = TestCase(
-         test1.description.append(TestName("test2"), TestType.Test),
+         test1.description.append(DescriptionName.TestName("test2"), TestType.Test),
          JUnitTestRunnerListenerTests(),
          { },
          sourceRef(),

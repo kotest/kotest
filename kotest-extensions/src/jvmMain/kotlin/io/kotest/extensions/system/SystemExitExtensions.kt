@@ -1,24 +1,15 @@
 package io.kotest.extensions.system
 
-import io.kotest.core.spec.DisplayName
-import io.kotest.core.test.DescriptionType
 import io.kotest.core.config.AbstractProjectConfig
-import io.kotest.core.test.Description
 import io.kotest.core.listeners.TestListener
 import io.kotest.core.spec.Spec
-import io.kotest.core.test.TestName
-import io.kotest.mpp.annotation
-import io.kotest.mpp.bestName
+import io.kotest.core.test.Description
+import io.kotest.engine.test.toDescription
 import java.io.FileDescriptor
 import java.net.InetAddress
 import java.security.Permission
 import java.util.concurrent.ConcurrentHashMap
 import kotlin.reflect.KClass
-
-fun KClass<out Spec>.toDescription2(): Description {
-   val name = annotation<DisplayName>()?.name ?: bestName()
-   return Description(null, TestName(name), DescriptionType.Spec, this)
-}
 
 /**
  * Will replace the [SecurityManager] used by the Java runtime
@@ -64,13 +55,13 @@ object SpecSystemExitListener : TestListener {
    override suspend fun beforeSpec(spec: Spec) {
         val previous = System.getSecurityManager()
         if (previous != null)
-            previousSecurityManagers[spec::class.toDescription2()] = previous
+            previousSecurityManagers[spec::class.toDescription()] = previous
         System.setSecurityManager(NoExitSecurityManager(previous))
     }
 
    override suspend fun afterSpec(spec: Spec) {
-        if (previousSecurityManagers.contains(spec::class.toDescription2()))
-            System.setSecurityManager(previousSecurityManagers[spec::class.toDescription2()])
+        if (previousSecurityManagers.contains(spec::class.toDescription()))
+            System.setSecurityManager(previousSecurityManagers[spec::class.toDescription()])
         else
             System.setSecurityManager(null)
     }

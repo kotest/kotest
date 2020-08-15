@@ -9,7 +9,7 @@ import io.kotest.core.spec.Spec
  * a parent [TestCase].
  */
 data class NestedTest(
-   val name: TestName,
+   val name: DescriptionName.TestName,
    val test: suspend TestContext.() -> Unit,
    val config: TestCaseConfig,
    val type: TestType,

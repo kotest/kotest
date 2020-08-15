@@ -1,9 +1,9 @@
 package io.kotest.core.spec.style
 
+import io.kotest.core.test.DescriptionName
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestCaseConfig
 import io.kotest.core.test.TestContext
-import io.kotest.core.test.TestName
 import io.kotest.core.test.TestType
 import io.kotest.engine.config.Project
 import io.kotest.engine.factory.generateTests
@@ -26,7 +26,7 @@ abstract class DslDrivenSpec : AbstractSpec() {
     * Adds a new root-level [TestCase] to this [AbstractSpec].
     */
    internal fun addRootTestCase(
-      name: TestName,
+      name: DescriptionName.TestName,
       test: suspend TestContext.() -> Unit,
       config: TestCaseConfig,
       type: TestType

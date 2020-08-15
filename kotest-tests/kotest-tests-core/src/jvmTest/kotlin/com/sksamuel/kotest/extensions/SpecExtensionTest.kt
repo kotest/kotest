@@ -14,7 +14,7 @@ object SpecExtensionNumbers {
 
    val ext = object : SpecExtension {
       override suspend fun intercept(spec: KClass<out Spec>, process: suspend () -> Unit) {
-         if (spec.toDescription().name.name == SpecExtensionTest::class.java.name) {
+         if (spec.toDescription().name.qualifiedName == SpecExtensionTest::class.java.name) {
             before++
             process()
             after++

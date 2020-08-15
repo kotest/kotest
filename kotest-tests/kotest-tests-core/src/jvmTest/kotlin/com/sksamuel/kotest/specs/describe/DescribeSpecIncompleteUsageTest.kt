@@ -13,6 +13,7 @@ import io.kotest.matchers.shouldBe
 import kotlin.reflect.KClass
 
 @OptIn(kotlin.time.ExperimentalTime::class)
+@Ignored
 class DescribeSpecIncompleteUsageTest : FunSpec({
 
    test("it block without .config should error at runtime") {

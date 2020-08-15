@@ -2,10 +2,9 @@ package io.kotest.core.spec.style.scopes
 
 import io.kotest.core.spec.KotestDsl
 import io.kotest.core.test.Description
-import io.kotest.core.test.DescriptionType
+import io.kotest.core.test.DescriptionName
 import io.kotest.core.test.TestCaseConfig
 import io.kotest.core.test.TestContext
-import io.kotest.core.test.TestName
 import kotlin.coroutines.CoroutineContext
 
 /**
@@ -29,10 +28,10 @@ class FunSpecContextScope(
     * Adds a nested context scope to the scope.
     */
    suspend fun context(name: String, test: suspend FunSpecContextScope.() -> Unit) {
-      val testName = TestName(name)
+      val testName = DescriptionName.TestName(name)
       addContainerTest(testName, xdisabled = false) {
          FunSpecContextScope(
-            this@FunSpecContextScope.description.append(testName, DescriptionType.Container),
+            this@FunSpecContextScope.description.appendContainer(testName),
             this@FunSpecContextScope.lifecycle,
             this,
             this@FunSpecContextScope.defaultConfig,
@@ -42,14 +41,14 @@ class FunSpecContextScope(
    }
 
    fun test(name: String) =
-      TestWithConfigBuilder(TestName(name), testContext, defaultConfig, xdisabled = false)
+      TestWithConfigBuilder(DescriptionName.TestName(name), testContext, defaultConfig, xdisabled = false)
 
    fun xtest(name: String) =
-      TestWithConfigBuilder(TestName(name), testContext, defaultConfig, xdisabled = true)
+      TestWithConfigBuilder(DescriptionName.TestName(name), testContext, defaultConfig, xdisabled = true)
 
    suspend fun test(name: String, test: suspend TestContext.() -> Unit) =
-      addTest(TestName(name), xdisabled = false, test = test)
+      addTest(DescriptionName.TestName(name), xdisabled = false, test = test)
 
    suspend fun xtest(name: String, test: suspend TestContext.() -> Unit) =
-      addTest(TestName(name), xdisabled = true, test = test)
+      addTest(DescriptionName.TestName(name), xdisabled = true, test = test)
 }

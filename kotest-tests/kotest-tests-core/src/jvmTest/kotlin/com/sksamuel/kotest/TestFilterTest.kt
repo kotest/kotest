@@ -35,7 +35,7 @@ class TestFilterTest : StringSpec() {
 
 object TestFilterTestFilter : TestFilter {
   override fun filter(description: Description): TestFilterResult {
-    return when (description.name.name) {
+    return when (description.displayName()) {
       "bb should be ignored" -> TestFilterResult.Exclude
       else -> TestFilterResult.Include
     }

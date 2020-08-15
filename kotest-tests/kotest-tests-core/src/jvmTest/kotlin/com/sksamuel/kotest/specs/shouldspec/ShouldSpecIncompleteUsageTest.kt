@@ -27,7 +27,7 @@ class ShouldSpecIncompleteUsageTest : FunSpec({
 
       val executor = SpecExecutor(listener)
       executor.execute(IncompleteShouldSpec::class)
-      result!!.message shouldBe "Test 'should incomplete should usage' is incomplete"
+      result!!.message shouldBe "Test 'incomplete should usage' is incomplete"
       DslState.state = null
    }
 

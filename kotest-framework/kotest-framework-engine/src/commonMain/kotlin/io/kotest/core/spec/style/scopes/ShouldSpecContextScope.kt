@@ -2,9 +2,9 @@ package io.kotest.core.spec.style.scopes
 
 import io.kotest.core.spec.KotestDsl
 import io.kotest.core.test.Description
+import io.kotest.core.test.DescriptionName
 import io.kotest.core.test.TestCaseConfig
 import io.kotest.core.test.TestContext
-import io.kotest.core.test.TestName
 import kotlin.coroutines.CoroutineContext
 
 /**
@@ -28,9 +28,9 @@ class ShouldSpecContextScope(
     * Adds a nested context scope to this scope.
     */
    suspend fun context(name: String, test: suspend ShouldSpecContextScope.() -> Unit) {
-      addContainerTest(TestName(name), xdisabled = false) {
+      addContainerTest(DescriptionName.TestName(name), xdisabled = false) {
          ShouldSpecContextScope(
-            this@ShouldSpecContextScope.description.append(TestName(name), io.kotest.core.test.TestType.Container),
+            this@ShouldSpecContextScope.description.appendContainer(DescriptionName.TestName(name)),
             this@ShouldSpecContextScope.lifecycle,
             this,
             this@ShouldSpecContextScope.defaultConfig,
@@ -41,7 +41,7 @@ class ShouldSpecContextScope(
 
    fun should(name: String) =
       TestWithConfigBuilder(
-         TestName("should ", name),
+         DescriptionName.TestName("should ", name),
          testContext,
          defaultConfig,
          xdisabled = false,
@@ -49,15 +49,15 @@ class ShouldSpecContextScope(
 
    fun xshould(name: String) =
       TestWithConfigBuilder(
-         TestName("should ", name),
+         DescriptionName.TestName("should ", name),
          testContext,
          defaultConfig,
          xdisabled = true,
       )
 
    suspend fun should(name: String, test: suspend TestContext.() -> Unit) =
-      addTest(TestName("should ", name), xdisabled = false, test = test)
+      addTest(DescriptionName.TestName("should ", name), xdisabled = false, test = test)
 
    suspend fun xshould(name: String, test: suspend TestContext.() -> Unit) =
-      addTest(TestName("should ", name), xdisabled = true, test = test)
+      addTest(DescriptionName.TestName("should ", name), xdisabled = true, test = test)
 }

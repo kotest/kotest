@@ -1,10 +1,18 @@
 package io.kotest.core.annotation
 
-import io.kotest.core.spec.Ignored
-import io.kotest.core.spec.Tags
+/**
+ * Attach tag to [io.kotest.core.spec.Spec] and a spec excluded by a tag expression won't be instantiated.
+ * An unannotated spec will still be instantiated to order to check if root tests are included.
+ */
+// @Inherited TODO Not supported by Kotlin yet, better to have it so Tags can be added to base spec
+@Target(AnnotationTarget.CLASS)
+@Retention(AnnotationRetention.RUNTIME)
+annotation class Tags(vararg val values: String)
 
-@Deprecated("Moved to io.kotest.api.spec - this alias will be removed in 4.4")
-typealias Tags = Tags
-
-@Deprecated("Moved to io.kotest.api.spec - this alias will be removed in 4.4")
-typealias Ignored = Ignored
+/**
+ * Attach tag to [io.kotest.core.spec.Spec], and that spec won't be instantiated or executed.
+ */
+// @Inherited TODO Not supported by Kotlin yet, better to have it so Tags can be added to base spec
+@Target(AnnotationTarget.CLASS)
+@Retention(AnnotationRetention.RUNTIME)
+annotation class Ignored

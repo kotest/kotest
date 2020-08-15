@@ -33,7 +33,7 @@ import io.kotest.core.spec.Spec
  */
 data class TestCase(
    // the description contains the names of all parents, plus the name of this test case
-   val description: Description,
+   val description: Description.TestDescription,
    // the spec instance that contains this testcase
    val spec: Spec,
    // a closure of the test function
@@ -50,22 +50,23 @@ data class TestCase(
    val assertionMode: AssertionMode? = null
 ) {
 
-   val displayName = description.name.format(TestNameCase.AsIs, false)
+   val displayName = description.displayName()
 
-   @Deprecated("use displayName(). Will be removed in 4.3")
+   @Deprecated("use description.displayName(). Will be removed in 4.3")
    val name = displayName
 
    /**
     * Returns true if this test case is a root test inside a spec.
     */
-   fun isTopLevel(): Boolean = description.isTopLevel()
+   @Deprecated("use description.isRootTest(). Will be removed in 4.3")
+   fun isTopLevel(): Boolean = description.isRootTest()
 
    companion object {
 
       /**
        * Creates a [TestCase] of type [TestType.Test], with default config, and derived source ref.
        */
-      fun test(description: Description, spec: Spec, test: suspend TestContext.() -> Unit): TestCase =
+      fun test(description: Description.TestDescription, spec: Spec, test: suspend TestContext.() -> Unit): TestCase =
          TestCase(
             description,
             spec,
@@ -80,7 +81,11 @@ data class TestCase(
       /**
        * Creates a [TestCase] of type [TestType.Container], with default config, and derived source ref.
        */
-      fun container(description: Description, spec: Spec, test: suspend TestContext.() -> Unit): TestCase =
+      fun container(
+         description: Description.TestDescription,
+         spec: Spec,
+         test: suspend TestContext.() -> Unit
+      ): TestCase =
          TestCase(
             description,
             spec,
@@ -98,10 +103,16 @@ data class TestCase(
  * Returns true if this test is a focused test.
  * That is, if the name starts with "f:".
  */
-fun TestCase.isFocused() = this.description.name.focus
+fun TestCase.isFocused() = when (val name = this.description.name) {
+   is DescriptionName.TestName -> name.focus
+   else -> false
+}
 
 /**
  * Returns true if this test is disabled by being prefixed with a !
  */
-fun TestCase.isBang(): Boolean = this.description.name.bang
+fun TestCase.isBang(): Boolean = when (val name = this.description.name) {
+   is DescriptionName.TestName -> name.bang
+   else -> false
+}
 

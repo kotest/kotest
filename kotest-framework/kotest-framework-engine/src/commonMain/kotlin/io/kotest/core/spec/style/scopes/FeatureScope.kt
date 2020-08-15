@@ -2,10 +2,9 @@ package io.kotest.core.spec.style.scopes
 
 import io.kotest.core.spec.KotestDsl
 import io.kotest.core.test.Description
-import io.kotest.core.test.DescriptionType
+import io.kotest.core.test.DescriptionName
 import io.kotest.core.test.TestCaseConfig
 import io.kotest.core.test.TestContext
-import io.kotest.core.test.TestName
 import kotlin.coroutines.CoroutineContext
 
 /**
@@ -32,10 +31,10 @@ class FeatureScope(
 ) : ContainerScope {
 
    suspend fun feature(name: String, test: suspend FeatureScope.() -> Unit) {
-      val testName = TestName("Feature: ", name)
+      val testName = DescriptionName.TestName("Feature: ", name)
       addContainerTest(testName, xdisabled = false) {
          FeatureScope(
-            this@FeatureScope.description.append(testName, DescriptionType.Container),
+            this@FeatureScope.description.appendContainer(testName),
             this@FeatureScope.lifecycle,
             this,
             this@FeatureScope.defaultConfig,
@@ -45,10 +44,10 @@ class FeatureScope(
    }
 
    suspend fun xfeature(name: String, test: suspend FeatureScope.() -> Unit) {
-      val testName = TestName("Feature: ", name)
+      val testName = DescriptionName.TestName("Feature: ", name)
       addContainerTest(testName, xdisabled = true) {
          FeatureScope(
-            this@FeatureScope.description.append(testName, DescriptionType.Container),
+            this@FeatureScope.description.appendContainer(testName),
             this@FeatureScope.lifecycle,
             this,
             this@FeatureScope.defaultConfig,
@@ -58,16 +57,16 @@ class FeatureScope(
    }
 
    suspend fun scenario(name: String, test: suspend TestContext.() -> Unit) {
-      addContainerTest(TestName("Scenario: ", name), xdisabled = false, test = test)
+      addContainerTest(DescriptionName.TestName("Scenario: ", name), xdisabled = false, test = test)
    }
 
    suspend fun xscenario(name: String, test: suspend TestContext.() -> Unit) {
-      addContainerTest(TestName("Scenario: ", name), xdisabled = true, test = test)
+      addContainerTest(DescriptionName.TestName("Scenario: ", name), xdisabled = true, test = test)
    }
 
    fun scenario(name: String): TestWithConfigBuilder {
       return TestWithConfigBuilder(
-         TestName("Scenario: ", name),
+         DescriptionName.TestName("Scenario: ", name),
          testContext,
          defaultConfig,
          false,
@@ -76,7 +75,7 @@ class FeatureScope(
 
    fun xscenario(name: String): TestWithConfigBuilder {
       return TestWithConfigBuilder(
-         TestName("Scenario: ", name),
+         DescriptionName.TestName("Scenario: ", name),
          testContext,
          defaultConfig,
          true,

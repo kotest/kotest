@@ -3,17 +3,17 @@ package io.kotest.core.spec.style.scopes
 import io.kotest.core.test.EnabledIf
 import io.kotest.core.test.TestCaseConfig
 import io.kotest.core.test.TestContext
-import io.kotest.core.test.TestName
 import io.kotest.core.test.TestType
 import io.kotest.core.Tag
 import io.kotest.core.extensions.TestCaseExtension
+import io.kotest.core.test.DescriptionName
 import io.kotest.engine.test.deriveTestConfig
 import kotlin.time.Duration
 import kotlin.time.ExperimentalTime
 
 @OptIn(ExperimentalTime::class)
 class TestWithConfigBuilder(
-   private val name: TestName,
+   private val name: DescriptionName.TestName,
    private val context: TestContext,
    private val defaultTestConfig: TestCaseConfig,
    private val xdisabled: Boolean,

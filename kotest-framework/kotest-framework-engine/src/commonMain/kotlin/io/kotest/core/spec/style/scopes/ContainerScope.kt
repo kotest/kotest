@@ -4,12 +4,12 @@ import io.kotest.core.test.Description
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestCaseConfig
 import io.kotest.core.test.TestContext
-import io.kotest.core.test.TestName
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestType
 import io.kotest.core.Tuple2
 import io.kotest.core.listeners.TestListener
 import io.kotest.core.spec.*
+import io.kotest.core.test.DescriptionName
 import kotlinx.coroutines.CoroutineScope
 
 /**
@@ -39,14 +39,14 @@ interface ContainerScope : CoroutineScope {
    /**
     * Adds a new test case to this scope with type [TestType.Container].
     */
-   suspend fun addContainerTest(name: TestName, xdisabled: Boolean, test: suspend TestContext.() -> Unit) {
+   suspend fun addContainerTest(name: DescriptionName.TestName, xdisabled: Boolean, test: suspend TestContext.() -> Unit) {
       addTest(name, xdisabled, defaultConfig, TestType.Container, test)
    }
 
    /**
     * Adds a new test case to this scope with type [TestType.Test].
     */
-   suspend fun addTest(name: TestName, xdisabled: Boolean, test: suspend TestContext.() -> Unit) {
+   suspend fun addTest(name: DescriptionName.TestName, xdisabled: Boolean, test: suspend TestContext.() -> Unit) {
       addTest(name, xdisabled, defaultConfig, TestType.Test, test)
    }
 
@@ -54,7 +54,7 @@ interface ContainerScope : CoroutineScope {
     * Registerd a new test case to this scope with the given test type.
     */
    suspend fun addTest(
-      name: TestName,
+      name: DescriptionName.TestName,
       xdisabled: Boolean,
       config: TestCaseConfig,
       type: TestType,

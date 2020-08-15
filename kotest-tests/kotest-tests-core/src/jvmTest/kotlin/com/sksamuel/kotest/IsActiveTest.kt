@@ -13,7 +13,7 @@ import io.kotest.engine.test.isActive
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.core.test.Description
-import io.kotest.core.test.TestName
+import io.kotest.core.test.DescriptionName
 import io.kotest.engine.test.toDescription
 import io.kotest.matchers.shouldBe
 
@@ -117,7 +117,7 @@ class IsActiveTest : StringSpec() {
 
       "isActive should return false if the test name begins with a !" {
          val test = TestCase.test(
-            IsActiveTest::class.toDescription().append(TestName("!my test"), io.kotest.core.test.TestType.Test),
+            IsActiveTest::class.toDescription().appendTest(DescriptionName.TestName("!my test")),
             this@IsActiveTest
          ) {}
          test.isActive() shouldBe false
@@ -151,7 +151,7 @@ class IsActiveTest : StringSpec() {
       "isActive should return false if a test filter excludes the test" {
          val filter = object : TestFilter {
             override fun filter(description: Description): TestFilterResult {
-               return (description.name.name == "f").toTestFilterResult()
+               return (description.displayName() == "f").toTestFilterResult()
             }
          }
          Project.registerFilter(filter)

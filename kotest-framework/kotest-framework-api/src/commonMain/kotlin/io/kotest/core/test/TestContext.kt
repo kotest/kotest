@@ -30,7 +30,7 @@ interface TestContext : CoroutineScope {
     * Creates a [NestedTest] and then registers with the [TestContext].
     */
    suspend fun registerTestCase(
-      name: TestName,
+      name: DescriptionName.TestName,
       test: suspend TestContext.() -> Unit,
       config: TestCaseConfig,
       type: TestType

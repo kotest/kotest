@@ -1,7 +1,6 @@
 package io.kotest.runner.junit.platform
 
 import io.kotest.core.spec.DisplayName
-import io.kotest.core.test.DescriptionType
 import io.kotest.engine.listener.IsolationTestEngineListener
 import io.kotest.engine.launcher.KotestEngineLauncher
 import io.kotest.engine.listener.SynchronizedTestEngineListener
@@ -11,8 +10,7 @@ import io.kotest.core.filter.TestFilterResult
 import io.kotest.core.spec.Spec
 import io.kotest.engine.spec.AbstractSpec
 import io.kotest.core.test.Description
-import io.kotest.core.test.TestName
-import io.kotest.extensions.system.toDescription2
+import io.kotest.core.test.DescriptionName
 import io.kotest.mpp.annotation
 import io.kotest.mpp.bestName
 import io.kotest.mpp.log
@@ -27,9 +25,9 @@ import org.junit.platform.launcher.LauncherDiscoveryRequest
 import java.util.Optional
 import kotlin.reflect.KClass
 
-fun KClass<out AbstractSpec>.toDescription2(): Description {
+fun KClass<out Spec>.toDescription2(): Description {
    val name = annotation<DisplayName>()?.name ?: bestName()
-   return Description(null, TestName(name), DescriptionType.Spec, this)
+   return Description.SpecDescription(this, DescriptionName.SpecName(bestName(), name))
 }
 
 /**

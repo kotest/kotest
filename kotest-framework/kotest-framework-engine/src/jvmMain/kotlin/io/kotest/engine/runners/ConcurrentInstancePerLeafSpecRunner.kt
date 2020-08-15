@@ -3,10 +3,10 @@ package io.kotest.engine.runners
 import io.kotest.core.test.NestedTest
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestContext
-import io.kotest.core.test.TestName
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.toTestCase
 import io.kotest.core.spec.Spec
+import io.kotest.core.test.DescriptionName
 import io.kotest.engine.listener.BufferedTestCaseExcecutionListener
 import io.kotest.engine.spec.SpecRunner
 import io.kotest.engine.listener.TestEngineListener
@@ -56,7 +56,7 @@ internal class ConcurrentInstancePerLeafSpecRunner(
 
          coroutineScope {
             spec.rootTests().withIndex().forEach { (index, rootTest) ->
-               log("InstancePerLeafConcurrentSpecRunner: Launching coroutine for root test [${rootTest.testCase.description.path()}]")
+               log("InstancePerLeafConcurrentSpecRunner: Launching coroutine for root test [${rootTest.testCase.description.testPath()}]")
                launch(dispatchers[index % threads]) {
                   executeInCleanSpec(rootTest.testCase).getOrThrow()
                   testCaseListener.rootFinished(rootTest.testCase)
@@ -73,12 +73,12 @@ internal class ConcurrentInstancePerLeafSpecRunner(
       log("InstancePerLeafConcurrentSpecRunner: Executing target in clean spec")
       return createInstance(target.spec::class)
          .flatMap { it.invokeBeforeSpec() }
-         .flatMap { startTest(it, target.description.names().drop(1)) } // drop the spec name
+         .flatMap { startTest(it, target.description.testNames()) } // drop the spec name
          .flatMap { it.invokeAfterSpec() }
    }
 
    // we need to find the same root test but in the newly created spec and begin executing that
-   private suspend fun startTest(spec: Spec, targets: List<TestName>): Try<Spec> {
+   private suspend fun startTest(spec: Spec, targets: List<DescriptionName.TestName>): Try<Spec> {
       require(targets.isNotEmpty())
       return Try {
          log("Created new spec instance $spec")
@@ -94,7 +94,7 @@ internal class ConcurrentInstancePerLeafSpecRunner(
     * discovered, and it hasn't yet be seen on previous executions, then a coroutine is launched to
     * execute that test.
     */
-   private suspend fun run(test: TestCase, targets: List<TestName>) {
+   private suspend fun run(test: TestCase, targets: List<DescriptionName.TestName>) {
       coroutineScope {
          val context = object : TestContext {
 
@@ -102,7 +102,7 @@ internal class ConcurrentInstancePerLeafSpecRunner(
             val first = AtomicBoolean(true)
 
             // check for duplicate names in the same scope
-            val namesInScope = ConcurrentHashMap.newKeySet<TestName>()
+            val namesInScope = ConcurrentHashMap.newKeySet<DescriptionName.TestName>()
 
             override val testCase: TestCase = test
             override val coroutineContext: CoroutineContext = this@coroutineScope.coroutineContext

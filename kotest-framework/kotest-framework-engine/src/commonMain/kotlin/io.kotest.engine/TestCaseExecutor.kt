@@ -79,11 +79,11 @@ class TestCaseExecutor(
       // if the test case is active we execute it, otherwise we just invoke the callback with ignored
       return when (testCase.isActive()) {
          true -> {
-            log("${testCase.description.path()} is active")
+            log("${testCase.description.testPath()} is active")
             ifActive()
          }
          false -> {
-            log("${testCase.description.path()} is *not* active")
+            log("${testCase.description.testPath()} is *not* active")
             TestResult.Ignored
          }
       }

@@ -1,7 +1,6 @@
 package io.kotest.core.spec.style.scopes
 
-import io.kotest.core.test.DescriptionType
-import io.kotest.core.test.TestName
+import io.kotest.core.test.DescriptionName
 
 /**
  * A scope that allows root tests to be registered using the syntax:
@@ -16,10 +15,10 @@ interface FeatureSpecRootScope : RootScope {
    fun xfeature(name: String, test: suspend FeatureScope.() -> Unit) = addFeature(name, true, test)
 
    fun addFeature(name: String, xdisabled: Boolean, test: suspend FeatureScope.() -> Unit) {
-      val testName = TestName("Feature: ", name)
+      val testName = DescriptionName.TestName("Feature: ", name)
       registration().addContainerTest(testName, xdisabled = xdisabled) {
          FeatureScope(
-            description().append(testName, DescriptionType.Container),
+            description().appendContainer(testName),
             lifecycle(),
             this,
             defaultConfig(),

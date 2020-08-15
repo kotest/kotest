@@ -1,63 +1,58 @@
+@file:Suppress("MemberVisibilityCanBePrivate")
+
 package io.kotest.core.test
 
+import io.kotest.core.spec.Spec
 import kotlin.reflect.KClass
 
 /**
- * A description is a pointer to a [Spec] or a [TestCase].
- *
- * It contains the reference to it's own parent, and the name
- * of the test case it represents.
- *
- * It contains a [DescriptionType]: Spec, Container or Test, which can be used to write generic
- * extensions where you need to be able to filter on certain tests only.
- *
- * @param type specifies if this description points to a spec, container or test.
- * @param parent the parent of this description, unless this is a spec in which case the parent is null.
- * @param name the name of this test case.
- * @param specClass The class of the spec that this description describes, or the classname of the spec
- * that the test case is contained within.
+ * A description is an ADT that models a pointer to a [Spec] or a [TestCase].
  */
-data class Description(
-   val parent: Description?,
-   val name: TestName,
-   val type: DescriptionType,
-   val specClass: KClass<*>
-) {
+sealed class Description {
+
+   abstract val name: DescriptionName
+
+   data class SpecDescription(val kclass: KClass<out Spec>, override val name: DescriptionName.SpecName) : Description()
+
+   data class TestDescription(
+      val parent: Description,
+      override val name: DescriptionName.TestName,
+      val type: TestType
+   ) : Description()
+
+   fun isSpec() = this is SpecDescription
+   fun isContainer() = this is TestDescription && type == TestType.Container
+   fun isTest() = this is TestDescription && type == TestType.Container
+   fun isRootTest() = this is TestDescription && parent.isSpec()
+
+   fun parents(): List<Description> = when (this) {
+      is SpecDescription -> emptyList()
+      is TestDescription -> parent.parents() + listOf(this)
+   }
+
+   fun append(name: DescriptionName.TestName, type: TestType): TestDescription = when (type) {
+      TestType.Test -> appendTest(name)
+      TestType.Container -> appendContainer(name)
+   }
+
+   fun appendContainer(name: String): TestDescription = appendContainer(DescriptionName.TestName(name))
+   fun appendContainer(name: DescriptionName.TestName): TestDescription =
+      TestDescription(this, name, TestType.Container)
+
+   fun appendTest(name: String): TestDescription = appendTest(DescriptionName.TestName(name))
+   fun appendTest(name: DescriptionName.TestName): TestDescription = TestDescription(this, name, TestType.Test)
 
    /**
-    * Returns true if this description points to a [TestCase] that is a root test.
-    * A root test case is a description whose immediate parent is a spec.
+    * Returns all descriptions from the spec to this test, with the spec as the first element,
+    * and this description as the last.
     */
-   fun isRootTestCase(): Boolean = parent?.isSpec() ?: false
-
-   /**
-    * Returns true if this description points to a [Spec].
-    */
-   fun isSpec(): Boolean = type == DescriptionType.Spec
-
-   /**
-    * Returns true if this description points to a leaf test case.
-    */
-   fun isTest(): Boolean = type == DescriptionType.Test
-
-   /**
-    * Returns true if this description points to a container test case.
-    */
-   fun Description.isContainer(): Boolean = type == DescriptionType.Container
-
-   @Deprecated("use isRootTestCase(). Will be removed in 4.4")
-   fun isTopLevel() = isRootTestCase()
-
-   /**
-    * Return an a-zA-Z0-9_. name for this test that can be safely used as an id.
-    */
-   fun id(): TestId {
-      val id = names(false).joinToString("/") { it.name.replace(" ", "_").replace("[^a-zA-Z0-9_.]".toRegex(), "") }
-      return TestId(id)
+   fun chain(): List<Description> = when (this) {
+      is SpecDescription -> listOf(this)
+      is TestDescription -> parent.chain() + listOf(this)
    }
 
    /**
-    * Returns each level of this description as a [TestName], including the spec.
+    * Returns each level of this description as a [DescriptionName], including the spec.
     *
     * Eg,
     *
@@ -71,66 +66,69 @@ data class Description(
     *
     * @param includeSpec if true then the spec name is also included.
     */
-   fun names(includeSpec: Boolean = true): List<TestName> = chain().map { it.name }
+   fun names(): List<DescriptionName> = chain().map { it.name }
 
    /**
-    * Returns the all parent [Description]s for this this description, with the spec as the first element,
-    * and the immediate parent of this descripiton as the last.
+    * Returns a list of names for this description, from a root test to this description.
+    * In other words, all the names excluding the spec.
     */
-   fun parents(): List<Description> = if (parent == null) emptyList() else parent.parents() + parent
+   fun testNames(): List<DescriptionName.TestName> = names().filterIsInstance<DescriptionName.TestName>()
 
    /**
-    * Returns the [Description] that represents the spec that this description belongs to.
-    * This will recurse to the head of the description chain.
-    * If this description is already a spec, will return itself.
+    * Returns the [SpecDescription] that is the root for this description.
+    * If this description is already a spec, then will return itself.
     */
-   fun spec(): Description = parent?.spec() ?: this
+   fun spec(): SpecDescription = when (this) {
+      is SpecDescription -> this
+      is TestDescription -> parent.spec()
+   }
 
    /**
-    * Returns all descriptions from the spec to this test, with the spec as the first element,
-    * and this description as the last.
+    * Returns the name of this description formatted for display.
     */
-   fun chain(): List<Description> = if (parent == null) listOf(this) else parent.chain() + this
+   fun displayName() = when (this) {
+      is SpecDescription -> name.displayName
+      is TestDescription -> name.displayName()
+   }
 
    /**
-    * Returns a programatic test path for this description. The test path is a string that can be
-    * used to unambigiously refer to this test. This path is not suitable for display purposes as it
-    * takes no account of casing, prefixes, and uses a delimiter between test names.
+    * Returns a parsable path to the test excluding the spec name.
+    * The test path doesn't include prefix/suffix information.
     */
-   fun path(includeSpec: Boolean = true): TestPath =
-      TestPath(names(includeSpec).joinToString(TestPathSeperator) { it.name })
+   fun testPath(): TestPath = TestPath(testNames().joinToString(TestPathSeperator) { it.name })
 
    /**
-    * Returns a path formatted for display.
+    * Returns a path to this test excluding the spec, formatted for display.
+    * The display path includes prefix/suffix if enabled.
     */
-   fun displayPath(
-      includeSpec: Boolean = true,
-      testNameCase: TestNameCase = TestNameCase.AsIs,
-      includeTestScopePrefixes: Boolean = false
-   ): String = names(includeSpec).joinToString(" ") { it.format(testNameCase, includeTestScopePrefixes) }
+   fun displayPath(): String = testNames().joinToString(" ") { it.displayName() }
+
+   /**
+    * Returns a parseable consistent identifier for this description including the spec name.
+    */
+   fun id(): TestId {
+      val id = chain().joinToString("/") { it.displayName().replace(" ", "_").replace("[^a-zA-Z0-9_.]".toRegex(), "") }
+      return TestId(id)
+   }
 
    /**
     * Returns true if this description is the immediate parent of the given argument.
     * Ignores test prefixes when comparing.
     */
-   fun isParentOf(description: Description): Boolean {
-      // if the given arg is a spec, then nothing can be it's parent
-      if (description.isSpec()) return false
-      // I am the parent if my path is equal to this other descriptions parent's path
-      return path() == description.parent?.path()
+   fun isParentOf(description: Description): Boolean = when (description) {
+      // nothing can be the parent of a spec
+      is SpecDescription -> false
+      is TestDescription -> id() == description.parent.id()
    }
 
    /**
-    * Returns true if this instance is an ancestor (0..nth-parent) of the given argument.
+    * Returns true if this description is an ancestor (0..nth-parent) of the given argument.
     * Ignores test prefixes when comparing.
     */
-   fun isAncestorOf(description: Description): Boolean {
-      return when (val p = description.parent) {
-         // nothing can be an ancestor of a description without a parent
-         null -> false
-         // I am an ancestor of the arg if I am it's parent, or it's parent's parent recursively
-         else -> isParentOf(description) || isAncestorOf(p)
-      }
+   fun isAncestorOf(description: Description): Boolean = when (description) {
+      // nothing can be an ancestor of a spec
+      is SpecDescription -> false
+      is TestDescription -> isParentOf(description) || isAncestorOf(description.parent)
    }
 
    /**
@@ -144,47 +142,10 @@ data class Description(
     * instance is either an ancestor of, of the same as, the given description.
     * Ignores test prefixes when comparing.
     */
-   fun isOnPath(description: Description): Boolean =
-      this.path() == description.path() || this.isAncestorOf(description)
-
-   /**
-    * Returns a new [Description] with the name and type as specified, and this description as the parent.
-    */
-   fun append(name: TestName, type: DescriptionType) = Description(this, name, type, specClass)
-
-   /**
-    * Returns a new [Description] with the given name, type derived from the given [TestType],
-    * and this description as the parent.
-    */
-   fun append(name: TestName, type: TestType): Description {
-      return Description(
-         this, name, when (type) {
-            TestType.Container -> DescriptionType.Container
-            TestType.Test -> DescriptionType.Test
-         }, specClass
-      )
-   }
-
-   /**
-    * Returns a new [Description] with the given name, type set as [DescriptionType.Test],
-    * and this description as the parent.
-    */
-   fun appendTest(name: String) = append(TestName(name), DescriptionType.Test)
-   fun appendTest(name: TestName) = append(name, DescriptionType.Test)
-
-   /**
-    * Returns a new [Description] with the given name, type set as [DescriptionType.Container],
-    * and this description as the parent.
-    */
-   fun appendContainer(name: String) = append(TestName(name), DescriptionType.Container)
-   fun appendContainer(name: TestName) = append(name, DescriptionType.Container)
+   fun isOnPath(description: Description): Boolean = this.testPath() == description.testPath() || this.isAncestorOf(description)
 }
 
 data class TestId(val value: String)
 data class TestPath(val value: String)
 
 const val TestPathSeperator = " -- "
-
-enum class DescriptionType {
-   Spec, Container, Test
-}

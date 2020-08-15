@@ -3,10 +3,10 @@ package io.kotest.core.spec.style
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestCaseConfig
 import io.kotest.core.test.TestContext
-import io.kotest.core.test.TestName
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestType
 import io.kotest.core.spec.Spec
+import io.kotest.core.test.DescriptionName
 import io.kotest.engine.config.Project
 import io.kotest.engine.spec.AbstractSpec
 import io.kotest.engine.unwrapIfReflectionCall
@@ -58,9 +58,9 @@ abstract class AnnotationSpec : AbstractSpec() {
    private fun KFunction<*>.deriveTestCase(config: TestCaseConfig): TestCase {
       return if (this.isExpectingException()) {
          val expected = this.getExpectedException()
-         createTestCase(TestName(name), callExpectingException(expected), config, TestType.Test)
+         createTestCase(DescriptionName.TestName(name), callExpectingException(expected), config, TestType.Test)
       } else {
-         createTestCase(TestName(name), callNotExpectingException(), config, TestType.Test)
+         createTestCase(DescriptionName.TestName(name), callNotExpectingException(), config, TestType.Test)
       }
    }
 
