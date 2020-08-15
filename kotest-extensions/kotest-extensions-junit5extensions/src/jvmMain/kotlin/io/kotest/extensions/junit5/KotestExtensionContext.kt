@@ -22,7 +22,7 @@ class KotestExtensionContext(
    override fun getUniqueId(): String = spec::class.toDescription().id().value
 
    override fun getDisplayName(): String = when (test) {
-      null -> spec::class.toDescription().displayPath()
+      null -> spec::class.toDescription().testDisplayPath().value
       else -> test.displayName
    }
 

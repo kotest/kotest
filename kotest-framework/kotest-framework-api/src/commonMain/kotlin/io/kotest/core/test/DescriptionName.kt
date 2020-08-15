@@ -1,16 +1,23 @@
 package io.kotest.core.test
 
+import kotlin.js.JsName
+
 /**
  * An ADT that models the name of a [Description].
  */
 sealed class DescriptionName {
+
+   @JsName("getDisplayName")
+   abstract fun displayName(): String
 
    /**
     * Models the name of a spec.
     *
     * @param qualifiedName the full qualified class name of this spec
     */
-   data class SpecName(val qualifiedName: String, val displayName: String) : DescriptionName()
+   data class SpecName(val qualifiedName: String, val displayName: String) : DescriptionName() {
+      override fun displayName(): String = displayName
+   }
 
    /**
     * Models the name of a test case. A test case can sometimes have a prefix and or/ suffix set
@@ -47,7 +54,7 @@ sealed class DescriptionName {
        * and ends up with !when disable, so that it is correctly parsed by the test runtime.
        *
        */
-      fun displayName(): String {
+      override fun displayName(): String {
 
          val flattened = name.trim().replace("\n", "")
          val withPrefix = when (includeAffixesInDisplayName) {

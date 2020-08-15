@@ -69,7 +69,7 @@ sealed class Description {
    fun names(): List<DescriptionName> = chain().map { it.name }
 
    /**
-    * Returns a list of names for this description, from a root test to this description.
+    * Returns a list of names for this description without the spec, ie from a root test to this description.
     * In other words, all the names excluding the spec.
     */
    fun testNames(): List<DescriptionName.TestName> = names().filterIsInstance<DescriptionName.TestName>()
@@ -101,7 +101,13 @@ sealed class Description {
     * Returns a path to this test excluding the spec, formatted for display.
     * The display path includes prefix/suffix if enabled.
     */
-   fun displayPath(): String = testNames().joinToString(" ") { it.displayName() }
+   fun testDisplayPath(): DisplayPath = DisplayPath(testNames().joinToString(" ") { it.displayName() })
+
+   /**
+    * Returns a path to this test including the spec, formatted for display.
+    * The display path includes prefix/suffix if enabled.
+    */
+   fun displayPath(): DisplayPath = DisplayPath(names().joinToString(" ") { it.displayName() })
 
    /**
     * Returns a parseable consistent identifier for this description including the spec name.
@@ -142,10 +148,12 @@ sealed class Description {
     * instance is either an ancestor of, of the same as, the given description.
     * Ignores test prefixes when comparing.
     */
-   fun isOnPath(description: Description): Boolean = this.testPath() == description.testPath() || this.isAncestorOf(description)
+   fun isOnPath(description: Description): Boolean =
+      this.testPath() == description.testPath() || this.isAncestorOf(description)
 }
 
 data class TestId(val value: String)
 data class TestPath(val value: String)
+data class DisplayPath(val value: String)
 
 const val TestPathSeperator = " -- "

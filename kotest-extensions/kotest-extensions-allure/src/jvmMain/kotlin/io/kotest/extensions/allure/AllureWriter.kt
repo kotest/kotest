@@ -65,7 +65,7 @@ class AllureWriter {
       val links = listOfNotNull(testCase.issue())
 
       val result = io.qameta.allure.model.TestResult()
-         .setFullName(testCase.description.displayPath())
+         .setFullName(testCase.description.testDisplayPath().value)
          .setName(testCase.description.name.displayName())
          .setUuid(uuid.toString())
          .setTestCaseId(safeId(testCase.description))

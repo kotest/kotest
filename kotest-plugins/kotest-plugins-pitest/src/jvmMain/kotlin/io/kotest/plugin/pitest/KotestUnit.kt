@@ -14,7 +14,7 @@ import kotlin.reflect.KClass
 
 class KotestUnit(val klass: KClass<out AbstractSpec>) : TestUnit {
 
-   override fun getDescription(): Description = Description(klass.toDescription().displayPath(), klass.java)
+   override fun getDescription(): Description = Description(klass.toDescription().testDisplayPath().value, klass.java)
 
    override fun execute(rc: ResultCollector) = runBlocking {
 
@@ -25,11 +25,11 @@ class KotestUnit(val klass: KClass<out AbstractSpec>) : TestUnit {
 
          override fun testStarted(testCase: TestCase) {
             if (started.add(testCase.description))
-               rc.notifyStart(Description(testCase.description.displayPath(), klass.java))
+               rc.notifyStart(Description(testCase.description.testDisplayPath().value, klass.java))
          }
 
          override fun testFinished(testCase: TestCase, result: TestResult) {
-            val desc = Description(testCase.description.displayPath(), klass.java)
+            val desc = Description(testCase.description.testDisplayPath().value, klass.java)
             if (completed.add(testCase.description)) {
                when (result.error) {
                   null -> rc.notifyEnd(desc)

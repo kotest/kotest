@@ -94,7 +94,7 @@ class JunitXmlReporter(
       filtered.map { (testcase, result) ->
 
          val name = when (useTestPathAsName) {
-            true -> testcase.description.displayPath()
+            true -> testcase.description.testDisplayPath().value
             false -> testcase.description.name.displayName()
          }
 
