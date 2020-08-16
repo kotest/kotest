@@ -25,8 +25,6 @@ data class TestFactory(
 /**
  * Creates and a returns a [TestCase] for each [DynamicTest] in this factory.
  * Tags and assertion mode are applied to the tests.
- * Any included factories are recursively called and their generated
- * tests included in the returned list.
  *
  * @param description the parent description for the generated tests.
  * @param spec the [Spec] that will contain the generated tests.

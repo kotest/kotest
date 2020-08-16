@@ -24,7 +24,7 @@ class AfterTestInFactoryTest : FunSpec({
    }
 
    afterSpec {
-      specAfterTest.shouldContainExactly(listOf("c", "d", "root", "a", "b", "factory"))
+      specAfterTest.shouldContainExactly(listOf("a", "b", "factory", "c", "d", "root"))
       factoryAfterTest.shouldContainExactly(listOf("a", "b", "factory"))
    }
 

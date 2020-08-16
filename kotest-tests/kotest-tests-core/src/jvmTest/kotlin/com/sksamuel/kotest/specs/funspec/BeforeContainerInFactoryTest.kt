@@ -24,7 +24,7 @@ class BeforeContainerInFactoryTest : FunSpec({
    }
 
    afterSpec {
-      specBeforeContainer.shouldContainExactly(listOf("root", "factory"))
+      specBeforeContainer.shouldContainExactly(listOf("factory", "root"))
       factoryBeforeContainer.shouldContainExactly(listOf("factory"))
    }
 

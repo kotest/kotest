@@ -6,6 +6,7 @@ import io.kotest.core.TestConfiguration
 import io.kotest.core.config.configuration
 import io.kotest.core.js.JsTest
 import io.kotest.core.test.TestCase
+import io.kotest.core.test.TestCaseOrder
 import kotlin.js.JsName
 
 /**
@@ -15,14 +16,12 @@ import kotlin.js.JsName
  * Functions that can be overriden for lifecycle callbacks are found in [SpecFunctionCallbacks].
  * Functions to register [AutoCloseable] instances can be found in [AutoClosing].
  */
-abstract class Spec : TestConfiguration(),
-   SpecFunctionConfiguration,
-   SpecFunctionCallbacks {
+abstract class Spec : TestConfiguration(), SpecFunctionConfiguration, SpecFunctionCallbacks {
 
    /**
     * Returns the tests defined in this spec as [RootTest] instances.
     *
-    * If this spec does not create the tests cases upon instantiation, then this method
+    * If this spec does not create the test cases upon instantiation, then this method
     * will materialize the tests (Eg when a test is defined as a function as in annotation spec).
     */
    abstract fun materializeRootTests(): List<RootTest>
@@ -41,6 +40,17 @@ abstract class Spec : TestConfiguration(),
     */
    @JsName("threads_js")
    var threads: Int? = null
+
+   /**
+    * Sets the [TestCaseOrder] for root tests in this spec.
+    * If null, then the order is defined by the project default.
+    */
+   var testOrder: TestCaseOrder? = null
+
+   /**
+    * Returns the actual test order to use, taking into account spec config and global config.
+    */
+   fun resolvedTestCaseOrder(): TestCaseOrder = this.testCaseOrder() ?: this.testOrder ?: configuration.testCaseOrder
 
    /**
     * The annotation [JsTest] is intercepted by the kotlin.js compiler and invoked in the generated

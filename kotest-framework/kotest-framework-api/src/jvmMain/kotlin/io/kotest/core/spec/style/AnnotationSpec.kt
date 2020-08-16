@@ -31,8 +31,6 @@ abstract class AnnotationSpec : Spec() {
       type: TestType
    ) = TODO()
 
-   override fun resolvedTestCaseOrder(): TestCaseOrder = TODO()
-
    override fun beforeSpec(spec: Spec) {
       executeBeforeSpecFunctions()
    }

@@ -1,6 +1,5 @@
 package io.kotest.engine.callbacks
 
-import io.kotest.core.autoCloseables
 import io.kotest.core.config.configuration
 import io.kotest.core.config.testCaseExtensions
 import io.kotest.core.config.testListeners
@@ -141,7 +140,7 @@ suspend fun Spec.invokeBeforeSpec(): Try<Spec> = Try {
 suspend fun Spec.invokeAfterSpec(): Try<Spec> = Try {
    log("invokeAfterSpec $this")
 
-   this.autoCloseables().let { closeables ->
+   registeredAutoCloseables().let { closeables ->
       log("Closing ${closeables.size} autocloseables [$closeables]")
       closeables.forEach { it.value.close() }
    }

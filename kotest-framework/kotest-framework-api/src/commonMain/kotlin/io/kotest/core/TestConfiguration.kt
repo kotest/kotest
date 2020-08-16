@@ -46,7 +46,7 @@ abstract class TestConfiguration {
    @JsName("_extensions")
    internal var _extensions = emptyList<Extension>()
 
-   internal var _autoCloseables = emptyList<Lazy<AutoCloseable>>()
+   private var _autoCloseables = emptyList<Lazy<AutoCloseable>>()
 
    /**
     * Config applied to each test case if not overridden per test case.
@@ -61,12 +61,6 @@ abstract class TestConfiguration {
    var assertions: AssertionMode? = null
 
    /**
-    * Sets the [TestCaseOrder] for root tests in this spec or factory.
-    * If null, then the order is defined by the project default.
-    */
-   var testOrder: TestCaseOrder? = null
-
-   /**
     * Register a single [TestListener] of type T return that listener.
     */
    fun <T : TestListener> listener(listener: T): T {
@@ -77,9 +71,14 @@ abstract class TestConfiguration {
    /**
     * Register multiple [TestListener]s.
     */
-   fun listeners(vararg listener: TestListener) {
-      _listeners = _listeners + listener.toList()
+   fun listeners(listeners: List<TestListener>) {
+      _listeners = _listeners + listeners
    }
+
+   /**
+    * Register multiple [TestListener]s.
+    */
+   fun listeners(vararg listener: TestListener) = listeners(listener.toList())
 
    /**
     * Register a single [TestCaseExtension] of type T return that extension.
@@ -123,39 +122,12 @@ abstract class TestConfiguration {
       return closeable
    }
 
-   /**
-    * Returns the actual test order to use, taking into account spec config and global config.
-    */
-   abstract fun resolvedTestCaseOrder(): TestCaseOrder
-
    abstract fun addTest(
       name: DescriptionName.TestName,
       test: suspend TestContext.() -> Unit,
       config: TestCaseConfig,
       type: TestType
    )
-
-   /**
-    * Include the tests from the given [TestFactory] in this spec or factory.
-    * Tests are added in order from where this include was invoked using configuration and
-    * settings at the time the method was invoked.
-    */
-   fun include(factory: TestFactory) {
-      val tests = when (resolvedTestCaseOrder()) {
-         TestCaseOrder.Sequential -> factory.tests
-         TestCaseOrder.Random -> factory.tests.shuffled()
-         TestCaseOrder.Lexicographic -> factory.tests.sortedBy { it.name.displayName().toLowerCase() }
-      }
-      tests.forEach { addTest(it.name, it.test, it.config, it.type) }
-   }
-
-   /**
-    * Includes the tests from the given [TestFactory] in this spec or factory, with the given
-    * prefixed added to each of the test's name.
-    */
-   fun include(prefix: String, factory: TestFactory) {
-      include(factory.copy(tests = factory.tests.map { it.addPrefix(prefix) }))
-   }
 
    /**
     * Registers a callback to be executed before every [TestCase].
@@ -314,6 +286,12 @@ abstract class TestConfiguration {
       })
    }
 
+   fun registeredListeners() = _listeners
+
+   fun registeredAutoCloseables(): List<Lazy<AutoCloseable>> = _autoCloseables.toList()
+
+   fun registeredExtensions() = _extensions
+
    @Deprecated(
       "Cannot use inline version of prepare spec since this must run before the spec is created. Create a TestListener instance and register that globally.",
       level = DeprecationLevel.ERROR
@@ -321,5 +299,3 @@ abstract class TestConfiguration {
    fun prepareSpec(f: PrepareSpec) {
    }
 }
-
-fun TestConfiguration.autoCloseables(): List<Lazy<AutoCloseable>> = _autoCloseables.toList()

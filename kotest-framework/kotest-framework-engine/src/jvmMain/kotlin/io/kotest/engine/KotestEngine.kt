@@ -43,9 +43,7 @@ class KotestEngine(private val config: KotestEngineConfig) {
       configuration.registerExtensions(
          SystemPropertyTagExtension,
          RuntimeTagExtension,
-         RuntimeTagExpressionExtension,
-         IgnoredSpecDiscoveryExtension,
-         TagsExcludedDiscoveryExtension,
+         RuntimeTagExpressionExtension
       )
 
       Project.registerFilters(config.filters)
@@ -61,7 +59,7 @@ class KotestEngine(private val config: KotestEngineConfig) {
          .fold(
             { error ->
                // any exception here is swallowed, as we already have an exception to report
-               Project.listeners().afterProject().fold(
+               configuration.listeners().afterProject().fold(
                   { end(listOf(error, it)) },
                   {
                      end(it + error)
@@ -85,7 +83,7 @@ class KotestEngine(private val config: KotestEngineConfig) {
       Try { submitAll(plan) }
          .fold(
             { error ->
-               Project.listeners().afterProject().fold(
+               configuration.listeners().afterProject().fold(
                   { end(listOf(error, it)) },
                   { end(it + error) }
                )

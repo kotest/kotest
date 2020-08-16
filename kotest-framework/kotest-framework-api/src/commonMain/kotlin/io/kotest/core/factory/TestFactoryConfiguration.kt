@@ -5,7 +5,6 @@ import io.kotest.core.config.configuration
 import io.kotest.core.sourceRef
 import io.kotest.core.test.DescriptionName
 import io.kotest.core.test.TestCaseConfig
-import io.kotest.core.test.TestCaseOrder
 import io.kotest.core.test.TestContext
 import io.kotest.core.test.TestType
 
@@ -29,8 +28,6 @@ abstract class TestFactoryConfiguration : TestConfiguration() {
    internal var tests = emptyList<DynamicTest>()
 
    internal fun resolvedDefaultConfig(): TestCaseConfig = defaultTestConfig ?: configuration.defaultTestConfig
-
-   override fun resolvedTestCaseOrder(): TestCaseOrder = this.testOrder ?: configuration.testCaseOrder
 
    /**
     * Adds a new [DynamicTest] to this factory. When this factory is included

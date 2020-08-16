@@ -3,12 +3,14 @@ package io.kotest.core.spec
 import io.kotest.core.Tuple2
 import io.kotest.core.config.configuration
 import io.kotest.core.extensions.SpecExtension
+import io.kotest.core.factory.TestFactory
+import io.kotest.core.factory.addPrefix
+import io.kotest.core.factory.createTestCases
 import io.kotest.core.listeners.ProjectListener
 import io.kotest.core.listeners.TestListener
 import io.kotest.core.test.DescriptionName
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestCaseConfig
-import io.kotest.core.test.TestCaseOrder
 import io.kotest.core.test.TestContext
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestType
@@ -29,8 +31,29 @@ abstract class DslDrivenSpec : Spec() {
       return rootTestCases.withIndex().map { RootTest(it.value, it.index) }
    }
 
-   override fun resolvedTestCaseOrder(): TestCaseOrder =
-      this.testCaseOrder() ?: this.testOrder ?: configuration.testCaseOrder
+   /**
+    * Include the tests, listeners and extensions from the given [TestFactory] in this spec or factory.
+    * Tests are added in order from where this include was invoked using configuration and
+    * settings at the time the method was invoked.
+    */
+   fun include(factory: TestFactory) {
+      factory.createTestCases(this::class.toDescription(), this).forEach { addRootTest(it) }
+      listeners(factory.listeners)
+   }
+
+//   val ordered = when (resolvedTestCaseOrder()) {
+//      TestCaseOrder.Sequential -> tests
+//      TestCaseOrder.Random -> tests.shuffled()
+//      TestCaseOrder.Lexicographic -> tests.sortedBy { it.displayName.toLowerCase() }
+//   }
+
+   /**
+    * Includes the tests from the given [TestFactory] in this spec or factory, with the given
+    * prefixed added to each of the test's name.
+    */
+   fun include(prefix: String, factory: TestFactory) {
+      include(factory.copy(tests = factory.tests.map { it.addPrefix(prefix) }))
+   }
 
    /**
     * Registers a callback that will execute after all tests in this spec have completed.
@@ -76,8 +99,14 @@ abstract class DslDrivenSpec : Spec() {
       config: TestCaseConfig,
       type: TestType
    ) {
-      require(rootTestCases.none { it.description.name == name }) { "Cannot add test with duplicate name $name" }
-      //require(acceptingTopLevelRegistration) { "Cannot add nested test here. Please see documentation on testing styles for how to layout nested tests correctly" }
-      rootTestCases = rootTestCases + createRootTestCase(this, name, test, config, type)
+      addRootTest(createRootTestCase(this, name, test, config, type))
+   }
+
+   /**
+    * Adds a new root-level [TestCase] to this [Spec].
+    */
+   private fun addRootTest(testCase: TestCase) {
+      require(rootTestCases.none { it.description.name == testCase.description.name }) { "Cannot add test with duplicate name ${testCase.description.name}" }
+      rootTestCases = rootTestCases + testCase
    }
 }

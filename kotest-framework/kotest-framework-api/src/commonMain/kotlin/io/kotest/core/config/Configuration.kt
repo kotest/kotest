@@ -174,17 +174,17 @@ class Configuration {
    var specExecutionOrder: SpecExecutionOrder = Defaults.specExecutionOrder
 
    /**
-    * Returns all registered [Listener]s.
+    * Returns all globally registered [Listener]s.
     */
    fun listeners() = listeners.toList()
 
    /**
-    * Returns all registered [Extension]s.
+    * Returns all globally registered [Extension]s.
     */
    fun extensions() = extensions.toList()
 
    /**
-    * Returns all registered [Filter]s.
+    * Returns all globally registered [Filter]s.
     */
    fun filters() = filters.toList()
 
