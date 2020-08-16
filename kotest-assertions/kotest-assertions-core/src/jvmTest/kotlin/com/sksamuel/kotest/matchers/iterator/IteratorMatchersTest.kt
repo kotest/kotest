@@ -2,6 +2,7 @@ package com.sksamuel.kotest.matchers.iterator
 
 import io.kotest.core.spec.style.WordSpec
 import io.kotest.matchers.iterator.shouldBeEmpty
+import io.kotest.matchers.iterator.shouldNotBeEmpty
 
 class IteratorMatchersTest: WordSpec() {
 

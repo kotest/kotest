@@ -1,11 +1,13 @@
 package com.sksamuel.kotest.framework.api
 
 import io.kotest.core.spec.style.FunSpec
+import io.kotest.core.spec.toDescription
 import io.kotest.core.test.Description
 import io.kotest.core.test.DescriptionName
 import io.kotest.core.test.DisplayPath
 import io.kotest.core.test.TestPath
 import io.kotest.core.test.TestType
+import io.kotest.matchers.shouldBe
 
 class DescriptionTest : FunSpec({
 

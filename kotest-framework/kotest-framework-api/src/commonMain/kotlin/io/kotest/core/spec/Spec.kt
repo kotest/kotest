@@ -1,16 +1,23 @@
 package io.kotest.core.spec
 
-import io.kotest.core.AutoClosing
-import io.kotest.core.FunctionCallbacks
-import io.kotest.core.InlineCallbacks
-import io.kotest.core.InlineConfiguration
+import io.kotest.core.SpecFunctionCallbacks
 import io.kotest.core.SpecFunctionConfiguration
 import io.kotest.core.TestConfiguration
 import io.kotest.core.config.configuration
 import io.kotest.core.js.JsTest
 import io.kotest.core.test.TestCase
+import kotlin.js.JsName
 
-interface Spec : SpecFunctionConfiguration, AutoClosing, FunctionCallbacks, InlineCallbacks, InlineConfiguration {
+/**
+ * The base class of all specs.
+ *
+ * Functions that can be overriden to customize spec execution are found in [SpecFunctionConfiguration].
+ * Functions that can be overriden for lifecycle callbacks are found in [SpecFunctionCallbacks].
+ * Functions to register [AutoCloseable] instances can be found in [AutoClosing].
+ */
+abstract class Spec : TestConfiguration(),
+   SpecFunctionConfiguration,
+   SpecFunctionCallbacks {
 
    /**
     * Returns the tests defined in this spec as [RootTest] instances.
@@ -18,25 +25,35 @@ interface Spec : SpecFunctionConfiguration, AutoClosing, FunctionCallbacks, Inli
     * If this spec does not create the tests cases upon instantiation, then this method
     * will materialize the tests (Eg when a test is defined as a function as in annotation spec).
     */
-   fun materializeRootTests(): List<RootTest>
+   abstract fun materializeRootTests(): List<RootTest>
+
+   @JsName("isolation_js")
+   @Deprecated("Use isolationMode. This will be removed in 4.3")
+   var isolation: IsolationMode? = null
+
+   @JsName("isolation_mode_js")
+   var isolationMode: IsolationMode? = null
+
+   /**
+    * Sets the number of root test cases that can be executed concurrently in this spec.
+    * On the JVM this will result in multiple threads being used.
+    * On other platforms this setting will have no effect.
+    */
+   @JsName("threads_js")
+   var threads: Int? = null
 
    /**
     * The annotation [JsTest] is intercepted by the kotlin.js compiler and invoked in the generated
-    * javascript code. We need to hook into this function to invoke our test execution code which will
-    * run tests defined by kotest.
+    * javascript code.
     *
-    * Kotest automatically installs a Javascript test-adapter to intercept calls to all tests so we can
-    * avoid passing this special test-generating-test to the underyling javascript test framework so it
-    * doesn't appear in test output / reports.
+    * Kotest automatically installs a Javascript test-adapter to intercept calls to all tests and when
+    * this test is invoked, avoids passing it to the underlying javascript test framework. Instead it
+    * invokes the tests using the Kotest engine.
     */
    @JsTest
-   fun javascriptTestInterceptor() {
-      // TODO executeSpec(this)
-   }
+   fun javascriptTestInterceptor() = this
 }
 
-abstract class BaseSpec : TestConfiguration(), Spec {
-   fun resolvedDefaultConfig() = defaultTestCaseConfig() ?: defaultTestConfig ?: configuration.defaultTestConfig
-}
+fun Spec.resolvedDefaultConfig() = defaultTestCaseConfig() ?: defaultTestConfig ?: configuration.defaultTestConfig
 
 data class RootTest(val testCase: TestCase, val order: Int)

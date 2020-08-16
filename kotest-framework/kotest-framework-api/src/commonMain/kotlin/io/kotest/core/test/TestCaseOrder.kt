@@ -8,6 +8,7 @@ package io.kotest.core.test
  * [Lexicographic] will execute alphanumerically.
  */
 enum class TestCaseOrder {
+
    // the order in which the tests are defined in code
    Sequential,
 

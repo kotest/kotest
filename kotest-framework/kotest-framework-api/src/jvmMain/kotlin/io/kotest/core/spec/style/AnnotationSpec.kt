@@ -9,6 +9,7 @@ import io.kotest.core.test.TestContext
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestType
 import io.kotest.core.test.DescriptionName
+import io.kotest.core.test.TestCaseOrder
 import io.kotest.core.test.createRootTestCase
 import io.kotest.mpp.unwrapIfReflectionCall
 import kotlin.reflect.KClass
@@ -19,9 +20,18 @@ import kotlin.reflect.jvm.isAccessible
 
 typealias Test = AnnotationSpec.Test
 
-abstract class AnnotationSpec : Spec {
+abstract class AnnotationSpec : Spec() {
 
    private fun defaultConfig() = defaultTestConfig ?: defaultTestCaseConfig() ?: configuration.defaultTestConfig
+
+   override fun addTest(
+      name: DescriptionName.TestName,
+      test: suspend TestContext.() -> Unit,
+      config: TestCaseConfig,
+      type: TestType
+   ) = TODO()
+
+   override fun resolvedTestCaseOrder(): TestCaseOrder = TODO()
 
    override fun beforeSpec(spec: Spec) {
       executeBeforeSpecFunctions()

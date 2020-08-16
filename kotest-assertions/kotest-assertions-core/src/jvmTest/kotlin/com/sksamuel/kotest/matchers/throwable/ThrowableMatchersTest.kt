@@ -10,6 +10,7 @@ import io.kotest.matchers.throwable.shouldHaveCauseOfType
 import io.kotest.matchers.throwable.shouldHaveMessage
 import io.kotest.matchers.throwable.shouldNotHaveCause
 import io.kotest.matchers.throwable.shouldNotHaveCauseInstanceOf
+import io.kotest.matchers.throwable.shouldNotHaveCauseOfType
 import io.kotest.matchers.throwable.shouldNotHaveMessage
 import java.io.FileNotFoundException
 import java.io.IOException

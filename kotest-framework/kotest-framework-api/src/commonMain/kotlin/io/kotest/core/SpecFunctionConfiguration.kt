@@ -1,5 +1,6 @@
 package io.kotest.core
 
+import io.kotest.core.extensions.Extension
 import io.kotest.core.extensions.TestCaseExtension
 import io.kotest.core.listeners.TestListener
 import io.kotest.core.spec.IsolationMode
@@ -10,7 +11,7 @@ import io.kotest.core.test.TestCaseOrder
 
 /**
  * Defines functions which can be overriden to set configuration options at the spec level.
- * This is an alternative style to using [InlineConfiguration].
+ * This is an alternative style to using inline functions.
  */
 interface SpecFunctionConfiguration {
 
@@ -18,15 +19,18 @@ interface SpecFunctionConfiguration {
     * Override this function to register instances of [TestCaseExtension]
     * which will be invoked during execution of this spec.
     *
-    * If you wish to register an extension across the project
+    * If you wish to register an extension for all specs
     * then use [Configuration.registerExtension].
     */
-   fun extensions(): List<TestCaseExtension> = listOf()
+   fun extensions(): List<Extension> = listOf()
 
    /**
     * Override this function to register instances of
     * [TestListener] which will be notified of events during
     * execution of this spec.
+    *
+    * If you wish to register a listener for all specs
+    * then use [Configuration.registerListener].
     */
    fun listeners(): List<TestListener> = emptyList()
 
@@ -69,8 +73,8 @@ interface SpecFunctionConfiguration {
    fun invocationTimeout(): Long? = null
 
    /**
-    * Any tags added here will be in applied to all [TestCase]s defined
-    * in each [Spec] in addition to any defined on the individual tests themselves.
+    * Any tags added here will be in applied to all [TestCase]s defined in this spec
+    * in additional to any defined on the individual tests themselves.
     *
     * Note: The spec instance will still need to be instantiated to retrieve these tags.
     * If you want to exclude a Spec without an instance being created, use @Tags

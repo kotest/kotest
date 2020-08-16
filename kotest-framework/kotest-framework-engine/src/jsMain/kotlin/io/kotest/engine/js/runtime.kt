@@ -43,17 +43,10 @@ actual fun executeSpec(spec: Spec) {
                TestCaseExecutor(listener, CallingThreadExecutionContext).execute(root.testCase, context)
             }
 
-            // we don't want to return the promise as the js frameworks will use that for test resolution
-            // instead of the done callback and we prefer the callback as it allows for custom timeouts
+            // we don't want to return a promise here as the js frameworks will use that for test resolution
+            // instead of the done callback, and we prefer the callback as it allows for custom timeouts
             // without the need for the user to configure them on the js side.
             Unit
          }
       }
-}
-
-/**
- * Sets the [KotestAdapter] used to intercept javascript test calls so that we can re-route them to kotest.
- */
-actual fun configureRuntime() {
-   setAdapter(KotestAdapter)
 }

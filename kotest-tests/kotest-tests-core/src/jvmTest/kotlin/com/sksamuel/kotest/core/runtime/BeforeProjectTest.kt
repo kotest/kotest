@@ -1,7 +1,7 @@
 package com.sksamuel.kotest.core.runtime
 
 import io.kotest.assertions.assertSoftly
-import io.kotest.core.config.Project
+import io.kotest.core.config.configuration
 import io.kotest.engine.launcher.KotestEngineLauncher
 import io.kotest.engine.listener.TestEngineListener
 import io.kotest.core.listeners.ProjectListener
@@ -33,13 +33,13 @@ class BeforeProjectTest : FunSpec({
          }
       }
 
-      Project.registerListener(projectListener)
-      KotestEngineLauncher(listener).forSpec(DummySpec3::class).launch()
+      configuration.registerListener(projectListener)
+      KotestEngineLauncher(listener).withSpec(DummySpec3::class).launch()
       assertSoftly {
          errors shouldHaveSize 1
          errors[0].shouldBeInstanceOf<BeforeProjectListenerException>()
       }
-      Project.deregisterListener(projectListener)
+      configuration.deregisterListener(projectListener)
    }
 
    test("2 failed beforeProject listener should be collected") {
@@ -69,15 +69,15 @@ class BeforeProjectTest : FunSpec({
          }
       }
 
-      Project.registerListener(projectListener1)
-      Project.registerListener(projectListener2)
-      KotestEngineLauncher(listener).forSpec(DummySpec3::class).launch()
+      configuration.registerListener(projectListener1)
+      configuration.registerListener(projectListener2)
+      KotestEngineLauncher(listener).withSpec(DummySpec3::class).launch()
       assertSoftly {
          errors shouldHaveSize 2
          errors.filterIsInstance<BeforeProjectListenerException>() shouldHaveSize 2
       }
-      Project.deregisterListener(projectListener1)
-      Project.deregisterListener(projectListener2)
+      configuration.deregisterListener(projectListener1)
+      configuration.deregisterListener(projectListener2)
    }
 })
 

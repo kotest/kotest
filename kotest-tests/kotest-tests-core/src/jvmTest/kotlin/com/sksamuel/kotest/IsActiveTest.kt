@@ -12,6 +12,7 @@ import io.kotest.core.filter.toTestFilterResult
 import io.kotest.engine.test.isActive
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.spec.style.StringSpec
+import io.kotest.core.spec.toDescription
 import io.kotest.core.test.Description
 import io.kotest.core.test.DescriptionName
 import io.kotest.matchers.shouldBe

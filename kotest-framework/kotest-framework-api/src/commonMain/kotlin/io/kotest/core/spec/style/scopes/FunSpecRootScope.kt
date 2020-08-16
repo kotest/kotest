@@ -10,10 +10,10 @@ interface FunSpecRootScope : RootScope {
     * Adds a top level [FunSpecContextScope] to this root scope.
     */
    fun context(name: String, test: suspend FunSpecContextScope.() -> Unit) {
-      val dname = DescriptionName.TestName(name)
-      registration().addContainerTest(dname, xdisabled = false) {
+      val testName = DescriptionName.TestName(name)
+      registration().addContainerTest(testName, xdisabled = false) {
          FunSpecContextScope(
-            description().append(dname, TestType.Container),
+            description().append(testName, TestType.Container),
             lifecycle(),
             this,
             defaultConfig(),

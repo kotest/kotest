@@ -21,3 +21,5 @@ data class DynamicTest(
    val source: SourceRef,
    val factoryId: FactoryId
 )
+
+fun DynamicTest.addPrefix(prefix: String): DynamicTest = copy(name = name.copy(name = "$prefix $name"))

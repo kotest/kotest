@@ -10,10 +10,10 @@ internal fun TestFactoryConfiguration.build(): TestFactory {
    val factory = TestFactory(
       factoryId = factoryId,
       tests = this.tests,
-      tags = this.tags,
-      listeners = this.listeners,
-      extensions = this.extensions,
-      assertionMode = this.assertions,
+      tags = _tags,
+      listeners = _listeners,
+      extensions = _extensions,
+      assertionMode = assertions,
    )
 
    val callbacks = object : TestListener {

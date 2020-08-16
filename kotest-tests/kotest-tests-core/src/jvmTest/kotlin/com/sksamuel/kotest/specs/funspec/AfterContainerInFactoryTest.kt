@@ -17,7 +17,7 @@ private val factory = funSpec {
    }
 }
 
-class AfferContainerInFactoryTest : FunSpec({
+class AfterContainerInFactoryTest : FunSpec({
 
    afterContainer {
       specAfterContainer.add(it.a.displayName)

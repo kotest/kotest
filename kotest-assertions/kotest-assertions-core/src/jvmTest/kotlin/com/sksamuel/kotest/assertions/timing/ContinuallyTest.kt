@@ -1,5 +1,6 @@
 package com.sksamuel.kotest.assertions.timing
 
+import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.assertions.throwables.shouldThrowAny
 import io.kotest.assertions.throwables.shouldThrowExactly
 import io.kotest.assertions.timing.continually
@@ -8,6 +9,7 @@ import io.kotest.matchers.shouldBe
 import kotlin.time.ExperimentalTime
 import kotlin.time.hours
 import kotlin.time.milliseconds
+import kotlin.time.seconds
 
 @OptIn(ExperimentalTime::class)
 class ContinuallyTest : WordSpec() {

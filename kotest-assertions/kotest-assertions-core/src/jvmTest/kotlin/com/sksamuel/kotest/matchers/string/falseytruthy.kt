@@ -2,6 +2,10 @@ package com.sksamuel.kotest.matchers.string
 
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.FreeSpec
+import io.kotest.matchers.shouldBe
+import io.kotest.matchers.shouldNot
+import io.kotest.matchers.string.beFalsy
+import io.kotest.matchers.string.beTruthy
 import io.kotest.matchers.string.shouldBeFalsy
 import io.kotest.matchers.string.shouldBeTruthy
 

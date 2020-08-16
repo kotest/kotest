@@ -1,11 +1,11 @@
 package com.sksamuel.kotest.runner.junit5
 
-import io.kotest.core.engine.discovery.Discovery
-import io.kotest.core.engine.discovery.DiscoveryFilter
-import io.kotest.core.engine.discovery.DiscoverySelector
-import io.kotest.core.engine.discovery.DiscoveryRequest
-import io.kotest.core.engine.discovery.Modifier
 import io.kotest.core.spec.style.FunSpec
+import io.kotest.discovery.Discovery
+import io.kotest.discovery.DiscoveryFilter
+import io.kotest.discovery.DiscoveryRequest
+import io.kotest.discovery.DiscoverySelector
+import io.kotest.discovery.Modifier
 import io.kotest.matchers.shouldBe
 import io.kotest.runner.junit.platform.KotestJunitPlatformTestEngine
 import org.junit.platform.engine.UniqueId
@@ -229,7 +229,7 @@ class DiscoveryTest : FunSpec({
    }
 
    test("kotest should detect only public spec classes when internal flag is not set") {
-      Discovery.discover(
+      Discovery().discover(
          DiscoveryRequest(
             selectors = listOf(DiscoverySelector.PackageDiscoverySelector("com.sksamuel.kotest.runner.junit5.mypackage3")),
             filters = listOf(DiscoveryFilter.ClassModifierDiscoveryFilter(setOf(Modifier.Public)))
@@ -238,7 +238,7 @@ class DiscoveryTest : FunSpec({
    }
 
    test("kotest should detect internal spec classes when internal flag is set") {
-      Discovery.discover(
+      Discovery().discover(
          DiscoveryRequest(
             selectors = listOf(DiscoverySelector.PackageDiscoverySelector("com.sksamuel.kotest.runner.junit5.mypackage3")),
             filters = listOf(DiscoveryFilter.ClassModifierDiscoveryFilter(setOf(Modifier.Public, Modifier.Internal)))
@@ -247,7 +247,7 @@ class DiscoveryTest : FunSpec({
    }
 
    test("kotest should detect only internal specs if public is not set") {
-      Discovery.discover(
+      Discovery().discover(
          DiscoveryRequest(
             selectors = listOf(DiscoverySelector.PackageDiscoverySelector("com.sksamuel.kotest.runner.junit5.mypackage3")),
             filters = listOf(DiscoveryFilter.ClassModifierDiscoveryFilter(setOf(Modifier.Internal)))

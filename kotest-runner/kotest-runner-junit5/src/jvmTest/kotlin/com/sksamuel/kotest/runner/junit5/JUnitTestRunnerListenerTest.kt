@@ -2,6 +2,7 @@ package com.sksamuel.kotest.runner.junit5
 
 import io.kotest.core.sourceRef
 import io.kotest.core.spec.style.FunSpec
+import io.kotest.core.spec.toDescription
 import io.kotest.core.test.DescriptionName
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult

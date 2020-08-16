@@ -2,6 +2,8 @@ package com.sksamuel.kotest.matchers
 
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.FreeSpec
+import io.kotest.matchers.beInstanceOf
+import io.kotest.matchers.collections.haveSize
 import io.kotest.matchers.haveSameHashCodeAs
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldBe

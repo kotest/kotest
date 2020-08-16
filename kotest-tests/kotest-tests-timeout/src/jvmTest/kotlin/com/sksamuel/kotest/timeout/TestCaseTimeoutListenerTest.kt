@@ -5,6 +5,7 @@ import io.kotest.engine.ExecutorExecutionContext
 import io.kotest.engine.test.TestCaseExecutionListener
 import io.kotest.engine.TestCaseExecutor
 import io.kotest.core.spec.style.FunSpec
+import io.kotest.core.spec.toDescription
 import io.kotest.core.test.NestedTest
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestCaseConfig

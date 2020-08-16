@@ -2,6 +2,7 @@ package io.kotest.core.spec.style.scopes
 
 import io.kotest.core.factory.TestFactoryConfiguration
 import io.kotest.core.spec.DslDrivenSpec
+import io.kotest.core.spec.resolvedDefaultConfig
 import io.kotest.core.test.DescriptionName
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestCaseConfig
@@ -64,7 +65,7 @@ interface RootTestRegistration {
             type: TestType,
             test: suspend TestContext.() -> Unit
          ) {
-            factory.addDynamicTest(name, test, config.withXDisabled(xdisabled), type)
+            factory.addTest(name, test, config.withXDisabled(xdisabled), type)
          }
       }
 
@@ -77,7 +78,7 @@ interface RootTestRegistration {
             type: TestType,
             test: suspend TestContext.() -> Unit
          ) {
-            spec.addRootTestCase(name, test, config.withXDisabled(xdisabled), type)
+            spec.addTest(name, test, config.withXDisabled(xdisabled), type)
          }
       }
    }

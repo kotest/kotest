@@ -1,8 +1,10 @@
 package com.sksamuel.kotest
 
 import io.kotest.assertions.extracting
+import io.kotest.assertions.throwables.shouldThrowAny
 import io.kotest.core.spec.style.WordSpec
 import io.kotest.matchers.collections.shouldContainAll
+import io.kotest.matchers.shouldBe
 
 class ExtractTest : WordSpec() {
   init {

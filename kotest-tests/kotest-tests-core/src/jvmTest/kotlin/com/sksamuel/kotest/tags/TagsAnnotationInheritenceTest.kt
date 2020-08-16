@@ -2,9 +2,12 @@ package com.sksamuel.kotest.tags
 
 import io.kotest.core.Tag
 import io.kotest.core.Tags
-import io.kotest.core.config.Project
+import io.kotest.core.config.configuration
 import io.kotest.core.extensions.TagExtension
 import io.kotest.core.spec.style.FunSpec
+import io.kotest.engine.spec.resolvedRootTests
+import io.kotest.engine.test.isActive
+import io.kotest.matchers.shouldBe
 
 class TagsAnnotationInheritenceTest : FunSpec() {
    init {
@@ -13,71 +16,71 @@ class TagsAnnotationInheritenceTest : FunSpec() {
          val ext = object : TagExtension {
             override fun tags(): Tags = Tags.include(Linux)
          }
-         Project.registerExtension(ext)
-         MyTestClass().rootTests()
+         configuration.registerExtension(ext)
+         MyTestClass().resolvedRootTests()
             .filter { it.testCase.isActive() }
             .map { it.testCase.displayName } shouldBe listOf("a", "b", "c", "d")
-         Project.deregisterExtension(ext)
+         configuration.deregisterExtension(ext)
       }
 
       test("simple exclude tag") {
          val ext = object : TagExtension {
             override fun tags(): Tags = Tags.exclude(Linux)
          }
-         Project.registerExtension(ext)
+         configuration.registerExtension(ext)
          // all tests should be filtered out because of the @Tags
-         MyTestClass().rootTests()
+         MyTestClass().resolvedRootTests()
             .filter { it.testCase.isActive() }
             .map { it.testCase.displayName } shouldBe emptyList()
-         Project.deregisterExtension(ext)
+         configuration.deregisterExtension(ext)
       }
 
       test("inheritence with OR") {
          val ext = object : TagExtension {
             override fun tags(): Tags = Tags("Linux | Mysql")
          }
-         Project.registerExtension(ext)
+         configuration.registerExtension(ext)
          // linux is included for all and we're using an or
-         MyTestClass().rootTests()
+         MyTestClass().resolvedRootTests()
             .filter { it.testCase.isActive() }
             .map { it.testCase.displayName } shouldBe listOf("a", "b", "c", "d")
-         Project.deregisterExtension(ext)
+         configuration.deregisterExtension(ext)
       }
 
       test("inheritence with AND") {
          val ext = object : TagExtension {
             override fun tags(): Tags = Tags.include(Linux).exclude(Postgres)
          }
-         Project.registerExtension(ext)
+         configuration.registerExtension(ext)
          // linux should be included for all, but then postgres tests excluded as well
-         MyTestClass().rootTests()
+         MyTestClass().resolvedRootTests()
             .filter { it.testCase.isActive() }
             .map { it.testCase.displayName } shouldBe listOf("a", "d")
-         Project.deregisterExtension(ext)
+         configuration.deregisterExtension(ext)
       }
 
       test("@Tags should be ignored when not applicable to an exclude") {
          val ext = object : TagExtension {
             override fun tags(): Tags = Tags.exclude(Mysql)
          }
-         Project.registerExtension(ext)
+         configuration.registerExtension(ext)
          // Mysql tests should be excluded
-         MyTestClass().rootTests()
+         MyTestClass().resolvedRootTests()
             .filter { it.testCase.isActive() }
             .map { it.testCase.displayName } shouldBe listOf("b", "d")
-         Project.deregisterExtension(ext)
+         configuration.deregisterExtension(ext)
       }
 
       test("@Tags should be ignored when not applicable to an test") {
          val ext = object : TagExtension {
             override fun tags(): Tags = Tags.include(Postgres)
          }
-         Project.registerExtension(ext)
+         configuration.registerExtension(ext)
          // Mysql tests should be excluded
-         MyTestClass().rootTests()
+         MyTestClass().resolvedRootTests()
             .filter { it.testCase.isActive() }
             .map { it.testCase.displayName } shouldBe listOf("b", "c")
-         Project.deregisterExtension(ext)
+         configuration.deregisterExtension(ext)
       }
    }
 }

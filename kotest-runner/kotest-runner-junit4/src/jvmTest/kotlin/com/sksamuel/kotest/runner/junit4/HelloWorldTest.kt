@@ -3,6 +3,7 @@ package com.sksamuel.kotest.runner.junit4
 import io.kotest.core.spec.style.FreeSpec
 import io.kotest.matchers.ints.shouldBeLessThan
 import io.kotest.matchers.string.shouldContain
+import io.kotest.matchers.string.shouldStartWith
 import io.kotest.runner.junit.platform.KotestTestRunner
 import org.junit.runner.RunWith
 

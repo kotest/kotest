@@ -1,6 +1,7 @@
 package io.kotest.engine.config
 
 import io.kotest.core.Tags
+import io.kotest.core.config.Configuration
 import io.kotest.core.extensions.Extension
 import io.kotest.core.filter.Filter
 import io.kotest.core.listeners.Listener
@@ -68,4 +69,13 @@ fun DetectedProjectConfig.merge(other: DetectedProjectConfig): DetectedProjectCo
       includeTestScopeAffixes = this.includeTestScopeAffixes ?: other.includeTestScopeAffixes,
       testNameCase = this.testNameCase ?: other.testNameCase,
    )
+}
+
+/**
+ * Applies this config to the given [Configuration] instance.
+ */
+fun DetectedProjectConfig.apply(configuration: Configuration) {
+   configuration.registerListeners(listeners)
+   configuration.registerExtensions(extensions)
+   configuration.registerFilters(filters)
 }

@@ -15,4 +15,4 @@ fun Spec.resolvedThreads() = this.threads() ?: this.threads ?: 1
 /**
  * Returns all spec level tags associated with this spec instance.
  */
-fun Spec.resolvedTags(): Set<Tag> = this::class.tags() + this.tags() + this.inlinetags()
+fun Spec.resolvedTags(): Set<Tag> = this::class.tags() + this.tags() // TODO

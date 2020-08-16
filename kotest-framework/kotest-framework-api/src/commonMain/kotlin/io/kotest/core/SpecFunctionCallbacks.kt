@@ -8,14 +8,26 @@ import io.kotest.core.test.TestResult
  * Defines functions which can be overriden to register callbacks.
  * This is an alternative style to using [InlineCallbacks].
  */
-interface FunctionCallbacks {
+interface SpecFunctionCallbacks {
 
    fun beforeSpec(spec: Spec) {}
 
    fun afterSpec(spec: Spec) {}
 
+   /**
+    * This function is invoked before every [TestCase] in this Spec.
+    * Override this function to provide custom behavior.
+    *
+    * The [TestCase] about to be executed is provided as the parameter.
+    */
    fun beforeTest(testCase: TestCase) {}
 
+   /**
+    * This function is invoked after every [TestCase] in this Spec.
+    * Override this function to provide custom behavior.
+    *
+    * The [TestCase] about to be executed is provided as the parameter.
+    */
    fun afterTest(testCase: TestCase, result: TestResult) {}
 
    fun beforeContainer(testCase: TestCase) {}

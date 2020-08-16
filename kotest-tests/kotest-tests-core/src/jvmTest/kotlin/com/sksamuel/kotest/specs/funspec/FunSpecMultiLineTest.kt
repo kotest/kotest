@@ -2,6 +2,7 @@ package com.sksamuel.kotest.specs.funspec
 
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.test.TestResult
+import io.kotest.engine.toTestResult
 
 // tests that multi line test names are normalized
 class FunSpecMultiLineTest : FunSpec() {

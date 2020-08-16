@@ -1,6 +1,5 @@
 package com.sksamuel.kotest
 
-import io.kotest.core.spec.autoClose
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.booleans.shouldBeFalse
 import io.kotest.matchers.booleans.shouldBeTrue

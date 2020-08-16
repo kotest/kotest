@@ -7,6 +7,7 @@ import io.kotest.extensions.system.OverrideMode.SetOrError
 import io.kotest.extensions.system.OverrideMode.SetOrError.IllegalOverrideException
 import io.kotest.extensions.system.OverrideMode.SetOrIgnore
 import io.kotest.extensions.system.OverrideMode.SetOrOverride
+import io.kotest.inspectors.forAll
 import io.kotest.matchers.shouldBe
 
 class OverrideModeTest : WordSpec() {

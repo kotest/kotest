@@ -31,7 +31,7 @@ class AfterProjectTest : FunSpec({
       }
 
       Project.registerListener(projectListener)
-      KotestEngineLauncher(listener).forSpec(DummySpec2::class).launch()
+      KotestEngineLauncher(listener).withSpec(DummySpec2::class).launch()
       assertSoftly {
          errors shouldHaveSize 1
          errors[0].shouldBeInstanceOf<AfterProjectListenerException>()
@@ -63,7 +63,7 @@ class AfterProjectTest : FunSpec({
 
       Project.registerListener(projectListener1)
       Project.registerListener(projectListener2)
-      KotestEngineLauncher(listener).forSpec(DummySpec2::class).launch()
+      KotestEngineLauncher(listener).withSpec(DummySpec2::class).launch()
       assertSoftly {
          errors shouldHaveSize 2
          errors.filterIsInstance<AfterProjectListenerException>() shouldHaveSize 2

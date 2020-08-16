@@ -1,19 +1,24 @@
 package io.kotest.core.spec
 
-import io.kotest.core.factory.TestFactory
-import io.kotest.core.factory.createTestCases
+import io.kotest.core.Tuple2
+import io.kotest.core.config.configuration
+import io.kotest.core.extensions.SpecExtension
+import io.kotest.core.listeners.ProjectListener
+import io.kotest.core.listeners.TestListener
 import io.kotest.core.test.DescriptionName
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestCaseConfig
+import io.kotest.core.test.TestCaseOrder
 import io.kotest.core.test.TestContext
+import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestType
 import io.kotest.core.test.createRootTestCase
-import kotlin.js.JsName
+import kotlin.reflect.KClass
 
 /**
  * Base class for specs that allow for registration of tests via the DSL.
  */
-abstract class DslDrivenSpec : BaseSpec() {
+abstract class DslDrivenSpec : Spec() {
 
    /**
     * Contains the root [TestCase]s used in this spec.
@@ -24,14 +29,48 @@ abstract class DslDrivenSpec : BaseSpec() {
       return rootTestCases.withIndex().map { RootTest(it.value, it.index) }
    }
 
-   override fun include(factory: TestFactory) {
-      rootTestCases = rootTestCases + factory.createTestCases(this::class.toDescription(), this)
+   override fun resolvedTestCaseOrder(): TestCaseOrder =
+      this.testCaseOrder() ?: this.testOrder ?: configuration.testCaseOrder
+
+   /**
+    * Registers a callback that will execute after all tests in this spec have completed.
+    * This is a convenience method for creating a [TestListener] and registering it to only
+    * fire for this spec.
+    */
+   fun finalizeSpec(f: FinalizeSpec) {
+      configuration.registerListener(object : TestListener {
+         override suspend fun finalizeSpec(kclass: KClass<out Spec>, results: Map<TestCase, TestResult>) {
+            if (kclass == this@DslDrivenSpec::class) {
+               f(Tuple2(kclass, results))
+            }
+         }
+      })
+   }
+
+   /**
+    * Registers a callback that will execute after all specs have completed.
+    * This is a convenience method for creating a [ProjectListener] and registering it.
+    */
+   fun afterProject(f: AfterProject) {
+      configuration.registerListener(object : ProjectListener {
+         override suspend fun afterProject() {
+            f()
+         }
+      })
+   }
+
+   fun aroundSpec(aroundSpecFn: AroundSpecFn) {
+      extension(object : SpecExtension {
+         override suspend fun intercept(spec: KClass<out Spec>, process: suspend () -> Unit) {
+            aroundSpecFn(Tuple2(spec, process))
+         }
+      })
    }
 
    /**
     * Adds a new root-level [TestCase] to this [Spec].
     */
-   internal fun addRootTestCase(
+   override fun addTest(
       name: DescriptionName.TestName,
       test: suspend TestContext.() -> Unit,
       config: TestCaseConfig,

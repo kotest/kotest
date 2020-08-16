@@ -17,7 +17,7 @@ data class DiscoveryResult(val specs: List<KClass<out Spec>>)
  * [DiscoveryExtension] `afterScan` functions are applied after the scan is complete to
  * optionally filter the returned classes.
  */
-class Discovery(private val discoveryExtensions: List<DiscoveryExtension>) {
+class Discovery(private val discoveryExtensions: List<DiscoveryExtension> = emptyList()) {
 
    private val requests = ConcurrentHashMap<DiscoveryRequest, DiscoveryResult>()
 
