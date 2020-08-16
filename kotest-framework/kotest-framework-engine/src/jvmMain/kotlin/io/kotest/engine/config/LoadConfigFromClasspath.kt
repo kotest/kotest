@@ -38,7 +38,7 @@ private fun AbstractProjectConfig.toDetectedConfig(): DetectedProjectConfig {
 
    return DetectedProjectConfig(
       extensions = extensions(),
-      listeners = listeners() + listOf(beforeAfterAllListener),
+      listeners = listeners() + listOf(beforeAfterAllListener) + projectListeners(),
       filters = filters(),
       isolationMode = isolationMode.toOption().orElse(isolationMode().toOption()),
       assertionMode = assertionMode.toOption(),
