@@ -58,7 +58,8 @@ publishing {
 
    publications.withType<MavenPublication>().forEach {
       it.apply {
-         artifact(dokkaJar)
+         if (Ci.isRelease)
+            artifact(dokkaJar)
          pom {
             name.set("Kotest")
             description.set("Kotlin Test Framework")

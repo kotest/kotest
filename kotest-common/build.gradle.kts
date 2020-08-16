@@ -9,9 +9,6 @@ repositories {
    mavenCentral()
 }
 
-val ideaActive = System.getProperty("idea.active") == "true"
-val os = org.gradle.internal.os.OperatingSystem.current()
-
 kotlin {
 
    targets {
@@ -26,9 +23,9 @@ kotlin {
          browser()
          nodejs()
       }
-      linuxX64()
-      mingwX64()
-      macosX64()
+//      linuxX64()
+//      mingwX64()
+//      macosX64()
    }
 
    targets.all {
@@ -43,7 +40,6 @@ kotlin {
 
       val commonMain by getting {
          dependencies {
-            implementation(kotlin("stdlib-common"))
             implementation(Libs.Coroutines.coreCommon)
          }
       }
@@ -51,7 +47,6 @@ kotlin {
       val jsMain by getting {
          dependsOn(commonMain)
          dependencies {
-            implementation(kotlin("stdlib-js"))
             implementation(Libs.Coroutines.coreJs)
          }
       }
@@ -59,26 +54,25 @@ kotlin {
       val jvmMain by getting {
          dependsOn(commonMain)
          dependencies {
-            implementation(kotlin("stdlib-jdk8"))
             implementation(kotlin("reflect"))
          }
       }
 
-      val desktopMain by creating {
-         dependsOn(commonMain)
-      }
-
-      val macosX64Main by getting {
-         dependsOn(desktopMain)
-      }
-
-      val mingwX64Main by getting {
-         dependsOn(desktopMain)
-      }
-
-      val linuxX64Main by getting {
-         dependsOn(desktopMain)
-      }
+//      val desktopMain by creating {
+//         dependsOn(commonMain)
+//      }
+//
+//      val macosX64Main by getting {
+//         dependsOn(desktopMain)
+//      }
+//
+//      val mingwX64Main by getting {
+//         dependsOn(desktopMain)
+//      }
+//
+//      val linuxX64Main by getting {
+//         dependsOn(desktopMain)
+//      }
    }
 }
 

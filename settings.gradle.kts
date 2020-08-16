@@ -5,12 +5,13 @@ pluginManagement {
       mavenCentral()
       gradlePluginPortal()
       maven ("https://dl.bintray.com/kotlin/kotlin-eap")
+      jcenter()
    }
 }
 
 include("kotest-common")
-include("kotest-framework:kotest-framework-engine")
 include("kotest-framework:kotest-framework-api")
+include("kotest-framework:kotest-framework-engine")
 include("kotest-framework:kotest-framework-discovery")
 include("kotest-assertions:kotest-assertions-shared")
 include("kotest-assertions:kotest-assertions-core")
@@ -42,7 +43,6 @@ include("kotest-tests:kotest-tests-projectlistener")
 include("kotest-tests:kotest-tests-autoscan")
 include("kotest-tests:kotest-tests-junitxml")
 include("kotest-tests:kotest-tests-parallelism")
-include("kotest-tests:kotest-tests-js")
 include("kotest-examples:kotest-examples-javascript")
 include("kotest-examples:kotest-examples-jvm")
 include("kotest-examples:kotest-examples-allure")

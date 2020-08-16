@@ -1,3 +1,5 @@
+import org.jetbrains.dokka.ReflectDsl.get
+
 buildscript {
 
    repositories {
@@ -29,6 +31,14 @@ plugins {
 tasks.dokka {
    outputFormat = "html"
    outputDirectory = "$buildDir/javadoc"
+   configuration {
+      includeNonPublic = false
+      skipDeprecated = true
+      reportUndocumented = false
+      skipEmptyPackages = true
+      targets = listOf("JVM")
+      platform = "JVM"
+   }
 }
 
 // apply plugin: "io.kotest"
