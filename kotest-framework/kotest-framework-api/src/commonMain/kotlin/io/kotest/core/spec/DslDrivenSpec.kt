@@ -41,12 +41,6 @@ abstract class DslDrivenSpec : Spec() {
       listeners(factory.listeners)
    }
 
-//   val ordered = when (resolvedTestCaseOrder()) {
-//      TestCaseOrder.Sequential -> tests
-//      TestCaseOrder.Random -> tests.shuffled()
-//      TestCaseOrder.Lexicographic -> tests.sortedBy { it.displayName.toLowerCase() }
-//   }
-
    /**
     * Includes the tests from the given [TestFactory] in this spec or factory, with the given
     * prefixed added to each of the test's name.

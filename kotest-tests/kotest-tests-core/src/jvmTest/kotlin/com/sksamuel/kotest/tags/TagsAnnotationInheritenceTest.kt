@@ -5,7 +5,7 @@ import io.kotest.core.Tags
 import io.kotest.core.config.configuration
 import io.kotest.core.extensions.TagExtension
 import io.kotest.core.spec.style.FunSpec
-import io.kotest.engine.spec.resolvedRootTests
+import io.kotest.engine.spec.materializeAndOrderRootTests
 import io.kotest.engine.test.isActive
 import io.kotest.matchers.shouldBe
 
@@ -17,7 +17,7 @@ class TagsAnnotationInheritenceTest : FunSpec() {
             override fun tags(): Tags = Tags.include(Linux)
          }
          configuration.registerExtension(ext)
-         MyTestClass().resolvedRootTests()
+         MyTestClass().materializeAndOrderRootTests()
             .filter { it.testCase.isActive() }
             .map { it.testCase.displayName } shouldBe listOf("a", "b", "c", "d")
          configuration.deregisterExtension(ext)
@@ -29,7 +29,7 @@ class TagsAnnotationInheritenceTest : FunSpec() {
          }
          configuration.registerExtension(ext)
          // all tests should be filtered out because of the @Tags
-         MyTestClass().resolvedRootTests()
+         MyTestClass().materializeAndOrderRootTests()
             .filter { it.testCase.isActive() }
             .map { it.testCase.displayName } shouldBe emptyList()
          configuration.deregisterExtension(ext)
@@ -41,7 +41,7 @@ class TagsAnnotationInheritenceTest : FunSpec() {
          }
          configuration.registerExtension(ext)
          // linux is included for all and we're using an or
-         MyTestClass().resolvedRootTests()
+         MyTestClass().materializeAndOrderRootTests()
             .filter { it.testCase.isActive() }
             .map { it.testCase.displayName } shouldBe listOf("a", "b", "c", "d")
          configuration.deregisterExtension(ext)
@@ -53,7 +53,7 @@ class TagsAnnotationInheritenceTest : FunSpec() {
          }
          configuration.registerExtension(ext)
          // linux should be included for all, but then postgres tests excluded as well
-         MyTestClass().resolvedRootTests()
+         MyTestClass().materializeAndOrderRootTests()
             .filter { it.testCase.isActive() }
             .map { it.testCase.displayName } shouldBe listOf("a", "d")
          configuration.deregisterExtension(ext)
@@ -65,7 +65,7 @@ class TagsAnnotationInheritenceTest : FunSpec() {
          }
          configuration.registerExtension(ext)
          // Mysql tests should be excluded
-         MyTestClass().resolvedRootTests()
+         MyTestClass().materializeAndOrderRootTests()
             .filter { it.testCase.isActive() }
             .map { it.testCase.displayName } shouldBe listOf("b", "d")
          configuration.deregisterExtension(ext)
@@ -77,7 +77,7 @@ class TagsAnnotationInheritenceTest : FunSpec() {
          }
          configuration.registerExtension(ext)
          // Mysql tests should be excluded
-         MyTestClass().resolvedRootTests()
+         MyTestClass().materializeAndOrderRootTests()
             .filter { it.testCase.isActive() }
             .map { it.testCase.displayName } shouldBe listOf("b", "c")
          configuration.deregisterExtension(ext)

@@ -14,7 +14,7 @@ import io.kotest.engine.ExecutorExecutionContext
 import io.kotest.engine.TestCaseExecutor
 import io.kotest.engine.callbacks.invokeAfterSpec
 import io.kotest.engine.callbacks.invokeBeforeSpec
-import io.kotest.engine.spec.resolvedRootTests
+import io.kotest.engine.spec.materializeAndOrderRootTests
 import io.kotest.engine.test.TestCaseExecutionListener
 import io.kotest.fp.Try
 import io.kotest.mpp.log
@@ -75,7 +75,7 @@ internal class SingleInstanceSpecRunner(listener: TestEngineListener) : SpecRunn
    override suspend fun execute(spec: Spec): Try<Map<TestCase, TestResult>> {
 
       suspend fun interceptAndRun(context: CoroutineContext) = Try {
-          val rootTests = spec.resolvedRootTests().map { it.testCase }
+          val rootTests = spec.materializeAndOrderRootTests().map { it.testCase }
           runParallel(spec.resolvedThreads(), rootTests) {
               log("Executing test $it")
               runTest(it, context)

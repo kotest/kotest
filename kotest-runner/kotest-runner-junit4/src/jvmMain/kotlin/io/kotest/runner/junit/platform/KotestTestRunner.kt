@@ -3,7 +3,7 @@ package io.kotest.runner.junit.platform
 import io.kotest.core.spec.Spec
 import io.kotest.engine.KotestEngineLauncher
 import io.kotest.engine.instantiateSpec
-import io.kotest.engine.spec.resolvedRootTests
+import io.kotest.engine.spec.materializeAndOrderRootTests
 import io.kotest.fp.Try.Failure
 import io.kotest.fp.Try.Success
 import kotlinx.coroutines.runBlocking
@@ -27,7 +27,7 @@ class KotestTestRunner(
             is Success -> {
                val spec = it.value
                val desc = Description.createSuiteDescription(spec::class.java)
-               spec.resolvedRootTests().forEach { rootTest -> desc.addChild(describeTestCase(rootTest.testCase)) }
+               spec.materializeAndOrderRootTests().forEach { rootTest -> desc.addChild(describeTestCase(rootTest.testCase)) }
                desc
             }
          }

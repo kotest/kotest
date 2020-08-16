@@ -16,7 +16,7 @@ import io.kotest.engine.callbacks.invokeAfterSpec
 import io.kotest.engine.callbacks.invokeBeforeSpec
 import io.kotest.engine.spec.resolvedThreads
 import io.kotest.core.test.*
-import io.kotest.engine.spec.resolvedRootTests
+import io.kotest.engine.spec.materializeAndOrderRootTests
 import io.kotest.fp.Try
 import kotlinx.coroutines.coroutineScope
 import java.util.concurrent.ConcurrentHashMap
@@ -71,7 +71,7 @@ internal class InstancePerTestSpecRunner(listener: TestEngineListener) : SpecRun
     */
    override suspend fun execute(spec: Spec): Try<Map<TestCase, TestResult>> =
       Try {
-         runParallel(spec.resolvedThreads(), spec.resolvedRootTests().map { it.testCase }) {
+         runParallel(spec.resolvedThreads(), spec.materializeAndOrderRootTests().map { it.testCase }) {
             executeInCleanSpec(it)
                .getOrThrow()
          }
@@ -100,7 +100,7 @@ internal class InstancePerTestSpecRunner(listener: TestEngineListener) : SpecRun
    private suspend fun interceptAndRun(spec: Spec, test: TestCase): Try<Spec> = Try {
       log("Created new spec instance $spec")
       // we need to find the same root test but in the newly created spec
-      val root = spec.resolvedRootTests().first { it.testCase.description.isOnPath(test.description) }
+      val root = spec.materializeAndOrderRootTests().first { it.testCase.description.isOnPath(test.description) }
       log("Starting root test ${root.testCase.description} in search of ${test.description}")
       run(root.testCase, test)
       spec

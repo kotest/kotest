@@ -107,7 +107,7 @@ class SpecExecutor(private val listener: TestEngineListener) {
     * function is invoked.
     */
    private suspend fun runTestsIfAtLeastOneActive(spec: Spec): Try<Map<TestCase, TestResult>> {
-      val roots = spec.materializeRootTests()
+      val roots = spec.materializeAndOrderRootTests()
       val active = roots.any { it.testCase.isActive() }
       return if (active) runTests(spec) else emptyMap<TestCase, TestResult>().success()
    }

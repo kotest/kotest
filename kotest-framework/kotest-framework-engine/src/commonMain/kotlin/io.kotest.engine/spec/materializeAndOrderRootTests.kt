@@ -8,8 +8,8 @@ import io.kotest.core.test.TestCaseOrder
 /**
  * Returns the materialized tests from the receiver sorted according to the applicable [TestCaseOrder].
  */
-fun Spec.resolvedRootTests(): List<RootTest> {
-   val order = this.testCaseOrder() ?: configuration.testCaseOrder
+fun Spec.materializeAndOrderRootTests(): List<RootTest> {
+   val order = this.testCaseOrder() ?: this.testOrder ?: configuration.testCaseOrder
    val tests = materializeRootTests()
    return when (order) {
       TestCaseOrder.Sequential -> tests

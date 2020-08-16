@@ -7,6 +7,7 @@ import io.kotest.core.test.TestContext
 import io.kotest.core.test.TestResult
 import io.kotest.engine.CallingThreadExecutionContext
 import io.kotest.engine.TestCaseExecutor
+import io.kotest.engine.spec.materializeAndOrderRootTests
 import io.kotest.engine.test.TestCaseExecutionListener
 import io.kotest.engine.test.isActive
 import kotlinx.coroutines.GlobalScope
@@ -17,7 +18,7 @@ import kotlin.coroutines.CoroutineContext
  * Note: we need to use this: https://youtrack.jetbrains.com/issue/KT-22228
  */
 actual fun executeSpec(spec: Spec) {
-   spec.materializeRootTests()
+   spec.materializeAndOrderRootTests()
       .filter { it.testCase.isActive() }
       .forEach { root ->
          // we have to always start the test so that the framework doesn't exit before we return
