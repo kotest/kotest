@@ -1,4 +1,4 @@
-package com.sksamuel.kotest.runner.jvm
+package com.sksamuel.kotest.engine.internal
 
 import io.kotest.core.spec.style.WordSpec
 import io.kotest.engine.listener.IsolationTestEngineListener

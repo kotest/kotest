@@ -1,4 +1,4 @@
-package com.sksamuel.kotest
+package com.sksamuel.kotest.engine.autoclose
 
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.style.StringSpec
@@ -18,9 +18,9 @@ class AutoCloseTest : StringSpec() {
   }
 
    override fun afterSpec(spec: Spec) {
-      first.closed shouldBe 3
-      second.closed shouldBe 2
-      third.closed shouldBe 1
+      FirstAutoclose.closed shouldBe 3
+      SecondAutoclose.closed shouldBe 2
+      ThirdAutoclose.closed shouldBe 1
    }
 
 }

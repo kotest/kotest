@@ -1,4 +1,4 @@
-package com.sksamuel.kotest.extensions
+package com.sksamuel.kotest.tags
 
 import io.kotest.assertions.fail
 import io.kotest.core.Tag
