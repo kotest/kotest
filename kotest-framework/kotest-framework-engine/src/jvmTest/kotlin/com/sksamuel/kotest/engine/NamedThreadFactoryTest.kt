@@ -1,4 +1,4 @@
-package com.sksamuel.kotest.core
+package com.sksamuel.kotest.engine
 
 import io.kotest.engine.NamedThreadFactory
 import io.kotest.core.spec.style.StringSpec

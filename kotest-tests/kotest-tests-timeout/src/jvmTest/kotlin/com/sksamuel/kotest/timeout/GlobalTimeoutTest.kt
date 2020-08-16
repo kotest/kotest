@@ -11,12 +11,12 @@ class GlobalTimeoutTest : StringSpec() {
 
    init {
 
-      "a global timeout should interrupt a blocked thread" {
+      "!a global timeout should interrupt a blocked thread" {
          // high value to ensure its interrupted, we'd notice a test that runs for 10 weeks
          Thread.sleep(1000000)
       }
 
-      "a global timeout should interrupt a suspended coroutine" {
+      "!a global timeout should interrupt a suspended coroutine" {
          // high value to ensure its interrupted, we'd notice a test that runs for 10 weeks
          delay(1000000)
       }

@@ -1,9 +1,9 @@
-package com.sksamuel.kotest
+package com.sksamuel.kotest.engine
 
 import io.kotest.core.spec.style.ShouldSpec
 import io.kotest.matchers.shouldBe
 
-class SharedInstanceForTestsTest : ShouldSpec() {
+class ReusedVariableTest : ShouldSpec() {
 
   init {
     var count = 0

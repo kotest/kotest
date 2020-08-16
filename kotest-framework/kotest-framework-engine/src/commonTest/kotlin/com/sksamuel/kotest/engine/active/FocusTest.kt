@@ -1,15 +1,15 @@
-package com.sksamuel.kotest
+package com.sksamuel.kotest.engine.active
 
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.style.WordSpec
-import io.kotest.matchers.booleans.shouldBeTrue
+import io.kotest.matchers.shouldBe
 
 class FocusTest : WordSpec() {
 
   private var focus = false
 
   override fun afterSpec(spec: Spec) {
-    focus.shouldBeTrue()
+    focus shouldBe true
   }
 
   init {

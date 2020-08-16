@@ -1,10 +1,10 @@
-package com.sksamuel.kotest
+package com.sksamuel.kotest.engine
 
 import io.kotest.assertions.throwables.shouldThrowAny
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 
-class EmptyTestNameTest : FunSpec({
+class InvalidTestNameTest : FunSpec({
 
    test("empty test name should error") {
       shouldThrowAny {

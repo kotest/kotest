@@ -1,10 +1,11 @@
-package com.sksamuel.kotest.focusbang
+package com.sksamuel.kotest.engine.active
 
 import io.kotest.engine.KotestEngineSystemProperties
 import io.kotest.core.spec.style.WordSpec
 import io.kotest.matchers.booleans.shouldBeTrue
 
-class BangOverridenWordTest : WordSpec({
+class BangPropertyOverrideTest : WordSpec({
+
    "setting system property to override bang" should {
       var run = false
       System.setProperty(KotestEngineSystemProperties.disableBangPrefix, "true")
@@ -14,4 +15,5 @@ class BangOverridenWordTest : WordSpec({
       System.getProperties().remove(KotestEngineSystemProperties.disableBangPrefix)
       run.shouldBeTrue()
    }
+
 })
