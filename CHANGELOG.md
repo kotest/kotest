@@ -2,9 +2,28 @@ Changelog
 =========
 
 #### 4.2.0 - Prerelease
-* Change: kotest-core module has been replaced with kotest-framework-api and kotest-framework-engine. Tools authors can depend on api only. Engine should be used for JS testing. For JVM testing, continue to use kotest-runner-junit5-jvm.
-* Bugfix: Ignored tests were still being executed in Javascript tests.
+
+* Feature: Kotest upgraded to use Kotlin 1.4.0 #1511
+* Feature: Allow multiple project configs to be detected and merged #1632
+* Feature: Allow case control in test's reports #1458
+* Feature: Use expression for tags instead of include/exclude #863
+* Feature: Add new scoped callbacks #1584
+* Feature: Support order annotation for SpecOrder #1593
+* Improvement: Added exhaustive only mode to property tests #1596
+* Improvement: Change instance of matchers to use generic contracts #1510
+* Improvement: Allow to disable SpringListener on final class warning #1573
+* Improvement: Bundle console runner with intellij plugin #1567
+* Improvement: Improved error message for map should contain when key present #1587
+* Improvement: Allow allure to be customizable #1527
 * Improvement: Use the SPDX compliant license identifier "Apache-2.0" in POM files [#1517](https://github.com/kotest/kotest/issues/1517)
+* Improvement: Use forAll(1) suspend parameters #1626
+* Bugfix: Running all tests in a package doesn't run tests in subpackages #1621
+* Bugfix: Can't run a single test method from Gradle 6.5 #1531
+* Bugfix: TestFactory listeners not executing on nested tests #1613
+* Bugfix: Disabling test execution with x-methods doesn't work with kotest-core-js #1623
+* Bugfix: NoSuchFileException when using kotest-extensions-junitxml with Gradle #1581
+* Bugfix: Non complete junit report when using FunSpec #999
+* Breaking Change: kotest-core module has been replaced with kotest-framework-api and kotest-framework-engine. Tools authors can depend on api only. Engine should be used for JS testing. For JVM testing, continue to use kotest-runner-junit5-jvm.
 
 #### 4.1.2
 
