@@ -1,5 +1,7 @@
 package io.kotest.engine
 
+import kotlin.js.JsName
+
 object KotestEngineSystemProperties {
 
    const val gradle5 = "kotest.gradle5.compatibility"

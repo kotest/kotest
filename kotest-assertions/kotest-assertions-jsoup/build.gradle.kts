@@ -32,7 +32,7 @@ kotlin {
 
       val jvmMain by getting {
          dependencies {
-            implementation(project(Projects.Core))
+            implementation(project(Projects.Engine))
             implementation(project(Projects.AssertionsShared))
             implementation(kotlin("stdlib-jdk8"))
             implementation(kotlin("reflect"))

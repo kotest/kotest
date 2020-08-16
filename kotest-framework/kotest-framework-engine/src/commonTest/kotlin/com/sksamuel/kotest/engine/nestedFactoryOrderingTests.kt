@@ -3,7 +3,10 @@ package com.sksamuel.kotest.engine
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.spec.style.funSpec
 import io.kotest.core.test.TestCaseOrder
+import io.kotest.engine.js.useKotest
 import io.kotest.matchers.shouldBe
+
+val kotest = useKotest()
 
 private var output = ""
 

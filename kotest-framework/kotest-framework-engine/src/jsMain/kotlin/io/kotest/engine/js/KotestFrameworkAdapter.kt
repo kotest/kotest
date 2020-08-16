@@ -16,7 +16,7 @@ object KotestFrameworkAdapter : FrameworkAdapter {
       // if the test name is the special marker method, we just invoke the function rather
       // than delegating to the test framework. This is to avoid the marker method appearing in
       // test output.
-      if (name == Spec::javascriptTestInterceptor.name) {
+      if (name == Spec::kotestJavascript.name) {
          val spec = testFn() as Spec
          executeSpec(spec)
       }

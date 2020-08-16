@@ -1,7 +1,9 @@
 package io.kotest.fp
 
 sealed class Option<out T> {
+
    data class Some<T>(val value: T) : Option<T>()
+
    object None : Option<Nothing>()
 
    fun isDefined(): Boolean = this is Some

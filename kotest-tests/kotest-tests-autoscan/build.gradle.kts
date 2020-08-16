@@ -37,7 +37,7 @@ kotlin {
       val jvmTest by getting {
          dependencies {
             implementation(kotlin("reflect"))
-            implementation(project(Projects.Core))
+            implementation(project(Projects.Engine))
             implementation(project(Projects.AssertionsCore))
             implementation(project(Projects.JunitRunner))
             implementation(Libs.Coroutines.coreJvm)

@@ -33,7 +33,7 @@ kotlin {
 
       val jvmTest by getting {
          dependencies {
-            implementation(project(Projects.Core))
+            implementation(project(Projects.Engine))
             implementation(project(Projects.AssertionsShared))
             // we use the internals of the JVM project in the tests
             implementation(project(Projects.JunitRunner))

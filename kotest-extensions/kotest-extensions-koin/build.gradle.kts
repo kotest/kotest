@@ -34,7 +34,7 @@ kotlin {
       val jvmMain by getting {
          dependencies {
             implementation(project(Projects.Api))
-            implementation(project(Projects.Core))
+            implementation(project(Projects.Engine))
             implementation(kotlin("stdlib-jdk8"))
             implementation("org.koin:koin-core:2.1.5")
             implementation("org.koin:koin-test:2.1.5") {

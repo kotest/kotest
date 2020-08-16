@@ -1,6 +1,9 @@
 package com.sksamuel.kotest.js
 
 import io.kotest.core.spec.style.FunSpec
+import io.kotest.engine.js.useKotest
+
+val kotest = useKotest()
 
 class IgnoredTestsTest : FunSpec() {
    init {

@@ -32,7 +32,7 @@ kotlin {
       val jvmMain by getting {
          dependencies {
             implementation(project(Projects.Api))
-            implementation(project(Projects.Core))
+            implementation(project(Projects.Engine))
             implementation(project(Projects.Common))
             implementation(kotlin("stdlib-jdk8"))
             implementation("commons-io:commons-io:2.6")

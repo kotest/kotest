@@ -35,7 +35,7 @@ kotlin {
 
       val jvmMain by getting {
          dependencies {
-            implementation(project(Projects.Core))
+            implementation(project(Projects.Engine))
             implementation(project(Projects.Api))
             implementation(kotlin("stdlib-jdk8"))
             api(Libs.MockServer.netty)

@@ -54,14 +54,15 @@ abstract class Spec : TestConfiguration(), SpecFunctionConfiguration, SpecFuncti
 
    /**
     * The annotation [JsTest] is intercepted by the kotlin.js compiler and invoked in the generated
-    * javascript code.
+    * javascript code. If the kotest framework adapter is installed, this will intercept the call
+    * and invokes the tests using the kotest engine.
     *
     * Kotest automatically installs a Javascript test-adapter to intercept calls to all tests and when
     * this test is invoked, avoids passing it to the underlying javascript test framework. Instead it
     * invokes the tests using the Kotest engine.
     */
    @JsTest
-   fun javascriptTestInterceptor() = this
+   fun kotestJavascript() = this
 }
 
 fun Spec.resolvedDefaultConfig() = defaultTestCaseConfig() ?: defaultTestConfig ?: configuration.defaultTestConfig

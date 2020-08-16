@@ -17,7 +17,7 @@ kotlin {
       commonTest {
          dependencies {
             implementation(project(Projects.Api))
-            implementation(project(Projects.Core))
+            implementation(project(Projects.Engine))
             implementation(project(Projects.AssertionsCore))
          }
       }

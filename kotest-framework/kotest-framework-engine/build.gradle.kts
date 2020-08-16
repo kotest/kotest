@@ -39,9 +39,9 @@ kotlin {
 
       val commonMain by getting {
          dependencies {
-            implementation(project(Projects.Api))
             implementation(project(Projects.AssertionsShared))
             implementation(project(Projects.Common))
+            implementation(project(Projects.Api))
             implementation(Libs.Coroutines.coreCommon)
          }
       }
@@ -73,6 +73,11 @@ kotlin {
          }
       }
    }
+}
+
+tasks.named("compileKotlinJs") {
+   this as org.jetbrains.kotlin.gradle.dsl.KotlinJsCompile
+   kotlinOptions.moduleKind = "commonjs"
 }
 
 tasks.named<Test>("jvmTest") {

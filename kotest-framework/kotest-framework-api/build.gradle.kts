@@ -60,7 +60,7 @@ kotlin {
       val jvmTest by getting {
          dependencies {
             implementation(kotlin("reflect"))
-            implementation(project(Projects.Core))
+            implementation(project(Projects.Engine))
             implementation(project(Projects.AssertionsCore))
             // we use the internals of the JVM project in the tests
             implementation(project(Projects.JunitRunner))
@@ -75,6 +75,11 @@ kotlin {
          }
       }
    }
+}
+
+tasks.named("compileKotlinJs") {
+   this as org.jetbrains.kotlin.gradle.dsl.KotlinJsCompile
+   kotlinOptions.moduleKind = "umd"
 }
 
 tasks.named<Test>("jvmTest") {
