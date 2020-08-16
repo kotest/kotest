@@ -1,10 +1,10 @@
 package com.sksamuel.kotest.engine.active
 
 import io.kotest.core.spec.Spec
-import io.kotest.core.spec.style.WordSpec
+import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.shouldBe
 
-class FocusTest : WordSpec() {
+class FocusTest : StringSpec() {
 
   private var focus = false
 
@@ -13,15 +13,15 @@ class FocusTest : WordSpec() {
   }
 
   init {
-    "this should be ignored" should {
+    "this should be ignored" {
       throw RuntimeException("boom")
     }
 
-    "f:this is not ignored as it is focused" should {
+    "f:this is not ignored as it is focused" {
       focus = true
     }
 
-    "this should be ignored too!" should {
+    "this should be ignored too!" {
       throw RuntimeException("boom")
     }
   }
