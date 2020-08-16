@@ -1,3 +1,6 @@
+import org.gradle.api.tasks.testing.logging.TestExceptionFormat
+import org.gradle.api.tasks.testing.logging.TestLogEvent
+
 plugins {
    id("java")
    id("kotlin-multiplatform")
@@ -61,7 +64,29 @@ kotlin {
             api(Libs.JUnitJupiter.api)
          }
       }
+
+      val jvmTest by getting {
+         dependencies {
+            implementation(project(Projects.AssertionsCore))
+            // we use the internals of the JVM project in the tests
+            implementation(project(Projects.JunitRunner))
+         }
+      }
    }
 }
+
+tasks.named<Test>("jvmTest") {
+   useJUnitPlatform()
+   filter {
+      isFailOnNoMatchingTests = false
+   }
+   testLogging {
+      showExceptions = true
+      showStandardStreams = true
+      events = setOf(TestLogEvent.FAILED, TestLogEvent.PASSED)
+      exceptionFormat = TestExceptionFormat.FULL
+   }
+}
+
 
 apply(from = "../../publish-mpp.gradle.kts")

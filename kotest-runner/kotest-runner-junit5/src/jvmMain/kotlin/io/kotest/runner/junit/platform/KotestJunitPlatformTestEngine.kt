@@ -12,6 +12,7 @@ import io.kotest.core.test.DescriptionName
 import io.kotest.discovery.Discovery
 import io.kotest.core.config.configuration
 import io.kotest.core.extensions.DiscoveryExtension
+import io.kotest.engine.config.ConfigManager
 import io.kotest.engine.extensions.IgnoredSpecDiscoveryExtension
 import io.kotest.engine.extensions.TagsExcludedDiscoveryExtension
 import io.kotest.mpp.annotation
@@ -40,6 +41,10 @@ class KotestJunitPlatformTestEngine : TestEngine {
 
    companion object {
       const val EngineId = "kotest"
+   }
+
+   init {
+      ConfigManager.init()
    }
 
    override fun getId(): String = EngineId

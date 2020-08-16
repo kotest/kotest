@@ -1,18 +1,14 @@
 package io.kotest.engine
 
 import io.kotest.core.Tags
+import io.kotest.core.config.Project
 import io.kotest.core.config.configuration
-import io.kotest.core.extensions.RuntimeTagExtension
 import io.kotest.core.filter.TestFilter
 import io.kotest.core.spec.Spec
 import io.kotest.engine.callbacks.afterProject
 import io.kotest.engine.callbacks.beforeProject
-import io.kotest.core.config.Project
-import io.kotest.engine.config.apply
-import io.kotest.engine.config.detectConfig
-import io.kotest.engine.extensions.RuntimeTagExpressionExtension
+import io.kotest.engine.config.ConfigManager
 import io.kotest.engine.extensions.SpecifiedTagsTagExtension
-import io.kotest.engine.extensions.SystemPropertyTagExtension
 import io.kotest.engine.listener.TestEngineListener
 import io.kotest.engine.spec.SpecExecutor
 import io.kotest.engine.spec.isDoNotParallelize
@@ -23,7 +19,6 @@ import kotlinx.coroutines.runBlocking
 import java.util.Collections.emptyList
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
-import java.util.concurrent.atomic.AtomicBoolean
 import kotlin.reflect.KClass
 
 data class KotestEngineConfig(
@@ -36,26 +31,11 @@ data class TestPlan(val classes: List<KClass<out Spec>>)
 
 class KotestEngine(private val config: KotestEngineConfig) {
 
-   companion object {
-      // we only detect configuration once per jvm
-      val configDetected = AtomicBoolean(false)
-   }
-
    private val specExecutor = SpecExecutor(config.listener)
 
    init {
 
-      // detects project config from classpath/sysprops etc and then applies that to our configuration singleton
-      if (configDetected.compareAndSet(false, true)) {
-         detectConfig().apply(configuration)
-      }
-
-      // explicitly register default extensions
-      configuration.registerExtensions(
-         SystemPropertyTagExtension,
-         RuntimeTagExtension,
-         RuntimeTagExpressionExtension
-      )
+      ConfigManager.init()
 
       // if the engine was invoked with explicit tags, we register those via a tag extension
       config.tags?.let { configuration.registerExtension(SpecifiedTagsTagExtension(it)) }

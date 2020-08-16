@@ -4,6 +4,7 @@ import io.kotest.core.Tags
 import io.kotest.engine.listener.TestEngineListener
 import io.kotest.core.filter.TestFilter
 import io.kotest.core.spec.Spec
+import io.kotest.engine.config.ConfigManager
 import kotlin.reflect.KClass
 
 /**
@@ -18,6 +19,10 @@ class KotestEngineLauncher(
    private val filters: List<TestFilter>,
    private val tags: Tags?,
 ) {
+
+   init {
+      ConfigManager.init()
+   }
 
    constructor(listener: TestEngineListener) : this(listener, emptyList(), emptyList(), null)
 

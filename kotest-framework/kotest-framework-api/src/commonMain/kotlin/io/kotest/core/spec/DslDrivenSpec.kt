@@ -32,7 +32,7 @@ abstract class DslDrivenSpec : Spec() {
    }
 
    /**
-    * Include the tests, listeners and extensions from the given [TestFactory] in this spec or factory.
+    * Include the tests, listeners and extensions from the given [TestFactory] in this spec.
     * Tests are added in order from where this include was invoked using configuration and
     * settings at the time the method was invoked.
     */

@@ -27,6 +27,20 @@ abstract class TestFactoryConfiguration : TestConfiguration() {
     */
    internal var tests = emptyList<DynamicTest>()
 
+   private fun addDynamicTest(test: DynamicTest) {
+      require(tests.none { it.name == test.name }) { "Cannot add test with duplicate name ${test.name.name}" }
+      this.tests = this.tests + test
+   }
+
+   /**
+    * Include the tests, listeners and extensions from the given [TestFactory] in this factory.
+    * Tests are added in order from where this include was invoked using configuration and
+    * settings at the time the method was invoked.
+    */
+   fun include(factory: TestFactory) {
+      factory.tests.forEach { addDynamicTest(it) }
+   }
+
    internal fun resolvedDefaultConfig(): TestCaseConfig = defaultTestConfig ?: configuration.defaultTestConfig
 
    /**
@@ -38,8 +52,5 @@ abstract class TestFactoryConfiguration : TestConfiguration() {
       test: suspend TestContext.() -> Unit,
       config: TestCaseConfig,
       type: TestType,
-   ) {
-      require(tests.none { it.name == name }) { "Cannot add test with duplicate name $name" }
-      this.tests = this.tests + DynamicTest(name, test, config, type, sourceRef(), factoryId)
-   }
+   ) = addDynamicTest(DynamicTest(name, test, config, type, sourceRef(), factoryId))
 }
