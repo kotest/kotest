@@ -19,19 +19,19 @@ fun Arb.Companion.int(range: IntRange = Int.MIN_VALUE..Int.MAX_VALUE): Arb<Int> 
 
 /**
  * Returns an [Arb] where each value is a randomly chosen natural integer.
- * The edge cases are: [Int.MAX_VALUE]
+ * The edge cases are: [[Int.MAX_VALUE], 1]
  */
 fun Arb.Companion.nats(max: Int = Int.MAX_VALUE) = int(1..max).filter { it > 0 }
 
 /**
  * Returns an [Arb] where each value is a randomly chosen negative integer.
- * The edge cases are: [Int.MIN_VALUE]
+ * The edge cases are: [[Int.MIN_VALUE], -1]
  */
 fun Arb.Companion.negativeInts(min: Int = Int.MIN_VALUE) = int(min..0).filter { it < 0 }
 
 /**
  * Returns an [Arb] where each value is a randomly chosen positive integer.
- * The edge cases are: [Int.MAX_VALUE]
+ * The edge cases are: [[Int.MAX_VALUE], 1]
  */
 fun Arb.Companion.positiveInts(max: Int = Int.MAX_VALUE) = int(1..max).filter { it > 0 }
 
