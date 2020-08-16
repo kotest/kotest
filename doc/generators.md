@@ -8,14 +8,16 @@ An exhaustive will provide all the values over its sample space before looping i
 
 Most generators are available on all platforms. Some are JVM specific.
 
-| Integers    | Description | JVM | JS  | Native |
+| Numeric    | Description | JVM | JS  | Native |
 | -------- | ----------- | --- | --- | ------ |
 | `Arb.int(range)` | Randomly chosen ints in the given range. If the range is not specified then all integers are considered. The edgecases are `Int.MIN_VALUE`, `Int.MAX_VALUE`, 0, 1, -1 | ✓ | ✓ | ✓ |
 | `Arb.long(range)` | Randomly chosen longs in the given range. If the range is not specified then all longs are considered. The edgecases are `Long.MIN_VALUE`, `Long.MAX_VALUE`, 0, 1, -1 | ✓ | ✓ | ✓ |
 | `Arb.nats(range)` | Randomly chosen natural numbers in the given range. If range is not specified then the default is `Int.MAX_VALUE`. The edgecases are `Int.MAX_VALUE`, 1 | ✓ | ✓ | ✓ |
-| `Arb.negativeInts(range)` | Randomly chosen positive integers in the given range. The edgecases are `Long.MAX_VALUE`, 1 | ✓ | ✓ | ✓ |
-| `Arb.positiveInts(range)` | Randomly chosen negative integers in the given range. The edgecases are `Int.MIN_VALUE`, -1 | ✓ | ✓ | ✓ |
-| `Arb.double(range)` | Randomly chosen longs in the given range. The edgecases are `Long.MIN_VALUE`, `Long.MAX_VALUE`, 0, 1, -1 | ✓ | ✓ | ✓ |
+| `Arb.negativeInts(range)` | Randomly chosen negative integers in the given range. The edgecases are `Int.MIN_VALUE`, -1 | ✓ | ✓ | ✓ |
+| `Arb.positiveInts(range)` | Randomly chosen positive integers in the given range. The edgecases are `Int.MAX_VALUE`, 1 | ✓ | ✓ | ✓ |
+| `Arb.double(range)` | Randomly chosen doubles in the given range. The edgecases are `Double.MIN_VALUE`, `Double.MAX_VALUE`, `Double.NEGATIVE_INFINITY`, `Double.NaN`, `Double.POSITIVE_INFINITY`, 0.0, 1.0, -1.0, 1e300 | ✓ | ✓ | ✓ |
+| `Arb.positiveDoubles(range)` | Randomly chosen positive doubles in the given range. The edgecases are `Double.MIN_VALUE`, `Double.MAX_VALUE`, `Double.POSITIVE_INFINITY`, 1.0, 1e300 | ✓ | ✓ | ✓ |
+| `Arb.negativeDoubles(range)` | Randomly chosen negative doubles in the given range. The edgecases are `Double.NEGATIVE_INFINITY`, -1.0 | ✓ | ✓ | ✓ |
 | `Exhaustive.int(range)` | Returns all ints in the given range. | ✓ | ✓ | ✓ |
 | `Exhaustive.long(range)` | Returns all longs in the given range. | ✓ | ✓ | ✓ |
 | `Arb.multiples(k, max)` | Generates multiples of k up a max value. The edgecases are `0`. | ✓ | ✓ | ✓ |
