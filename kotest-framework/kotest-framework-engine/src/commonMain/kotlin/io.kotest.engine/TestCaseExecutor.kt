@@ -9,11 +9,11 @@ import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestStatus
 import io.kotest.core.test.TestType
 import io.kotest.engine.test.isActive
-import io.kotest.engine.callbacks.extensions
 import io.kotest.engine.callbacks.invokeAfterInvocation
 import io.kotest.engine.callbacks.invokeAllAfterTestCallbacks
 import io.kotest.engine.callbacks.invokeAllBeforeTestCallbacks
 import io.kotest.engine.callbacks.invokeBeforeInvocation
+import io.kotest.engine.extensions.resolvedTestCaseExtensions
 import io.kotest.engine.test.resolvedInvocationTimeout
 import io.kotest.engine.test.resolvedTimeout
 import io.kotest.fp.Try
@@ -47,7 +47,8 @@ class TestCaseExecutor(
    suspend fun execute(testCase: TestCase, context: TestContext): TestResult {
       validateTestCase(testCase)
       val start = timeInMillis()
-      return intercept(testCase, context, start, testCase.extensions()).apply {
+      val extensions = testCase.resolvedTestCaseExtensions()
+      return intercept(testCase, context, start, extensions).apply {
          when (status) {
             TestStatus.Ignored -> listener.testIgnored(testCase)
             else -> listener.testFinished(testCase, this)

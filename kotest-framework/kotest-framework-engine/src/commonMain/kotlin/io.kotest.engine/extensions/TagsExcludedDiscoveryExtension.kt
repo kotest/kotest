@@ -6,10 +6,11 @@ import io.kotest.core.extensions.DiscoveryExtension
 import io.kotest.core.spec.Spec
 import io.kotest.engine.tags.isPotentiallyActive
 import io.kotest.engine.tags.parse
+import io.kotest.engine.tags.resolvedTags
 import kotlin.reflect.KClass
 
 /**
- * Filters any [AbstractSpec] that can be eagerly excluded based on the @[Tags] annotation at the class level.
+ * Filters any [Spec] that can be eagerly excluded based on the @[Tags] annotation at the class level.
  */
 object TagsExcludedDiscoveryExtension : DiscoveryExtension {
 
@@ -18,6 +19,6 @@ object TagsExcludedDiscoveryExtension : DiscoveryExtension {
    }
 
    override fun afterScan(classes: List<KClass<out Spec>>): List<KClass<out Spec>> {
-      return afterScan(classes, configuration.tags)
+      return afterScan(classes, configuration.resolvedTags())
    }
 }

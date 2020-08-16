@@ -8,11 +8,11 @@ import io.kotest.core.spec.Spec
 import io.kotest.engine.callbacks.afterProject
 import io.kotest.engine.callbacks.beforeProject
 import io.kotest.core.config.Project
-import io.kotest.engine.extensions.IgnoredSpecDiscoveryExtension
+import io.kotest.engine.config.apply
+import io.kotest.engine.config.detectConfig
 import io.kotest.engine.extensions.RuntimeTagExpressionExtension
 import io.kotest.engine.extensions.SpecifiedTagsTagExtension
 import io.kotest.engine.extensions.SystemPropertyTagExtension
-import io.kotest.engine.extensions.TagsExcludedDiscoveryExtension
 import io.kotest.engine.listener.TestEngineListener
 import io.kotest.engine.spec.SpecExecutor
 import io.kotest.engine.spec.isDoNotParallelize
@@ -23,31 +23,45 @@ import kotlinx.coroutines.runBlocking
 import java.util.Collections.emptyList
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
+import java.util.concurrent.atomic.AtomicBoolean
 import kotlin.reflect.KClass
 
 data class KotestEngineConfig(
    val filters: List<TestFilter>,
    val listener: TestEngineListener,
-   val tags: Tags?
+   val tags: Tags?,
 )
 
 data class TestPlan(val classes: List<KClass<out Spec>>)
 
 class KotestEngine(private val config: KotestEngineConfig) {
 
+   companion object {
+      // we only detect configuration once per jvm
+      val configDetected = AtomicBoolean(false)
+   }
+
    private val specExecutor = SpecExecutor(config.listener)
 
    init {
 
-      // register default extensions with config
+      // detects project config from classpath/sysprops etc and then applies that to our configuration singleton
+      if (configDetected.compareAndSet(false, true)) {
+         detectConfig().apply(configuration)
+      }
+
+      // explicitly register default extensions
       configuration.registerExtensions(
          SystemPropertyTagExtension,
          RuntimeTagExtension,
          RuntimeTagExpressionExtension
       )
 
-      Project.registerFilters(config.filters)
-      config.tags?.let { Project.registerExtension(SpecifiedTagsTagExtension(it)) }
+      // if the engine was invoked with explicit tags, we register those via a tag extension
+      config.tags?.let { configuration.registerExtension(SpecifiedTagsTagExtension(it)) }
+
+      // if the engine was invoked with explicit filters, those are registered here
+      configuration.registerFilters(config.filters)
    }
 
    /**

@@ -14,17 +14,17 @@ import kotlin.time.ExperimentalTime
  *
  * If multiple instances are detected, they are merged together.
  */
-fun loadConfigFromAbstractProjectConfig(scanResult: ScanResult): DetectedProjectConfig {
+internal fun loadConfigFromAbstractProjectConfig(scanResult: ScanResult): DetectedProjectConfig {
    return scanResult
       .getSubclasses(AbstractProjectConfig::class.java.name)
       .map { Class.forName(it.name) as Class<out AbstractProjectConfig> }
       .mapNotNull { instantiate(it).getOrNull() }
       .map { it.toDetectedConfig() }
-      .reduce { a, b -> a.merge(b) }
+      .reduceOrNull { a, b -> a.merge(b) } ?: DetectedProjectConfig()
 }
 
 @OptIn(ExperimentalTime::class)
-fun AbstractProjectConfig.toDetectedConfig(): DetectedProjectConfig {
+private fun AbstractProjectConfig.toDetectedConfig(): DetectedProjectConfig {
 
    val beforeAfterAllListener = object : ProjectListener {
       override suspend fun beforeProject() {
@@ -42,18 +42,18 @@ fun AbstractProjectConfig.toDetectedConfig(): DetectedProjectConfig {
       filters = filters(),
       isolationMode = isolationMode.toOption().orElse(isolationMode().toOption()),
       assertionMode = assertionMode.toOption(),
-      testCaseOrder = testCaseOrder ?: testCaseOrder(),
-      specExecutionOrder = specExecutionOrder ?: specExecutionOrder(),
-      failOnIgnoredTests = failOnIgnoredTests,
-      globalAssertSoftly = globalAssertSoftly,
-      autoScanEnabled = autoScanEnabled ?: true,
+      testCaseOrder = testCaseOrder.toOption().orElse(testCaseOrder().toOption()),
+      specExecutionOrder = specExecutionOrder.toOption().orElse(specExecutionOrder().toOption()),
+      failOnIgnoredTests = failOnIgnoredTests.toOption(),
+      globalAssertSoftly = globalAssertSoftly.toOption(),
+      autoScanEnabled = autoScanEnabled.toOption(),
       autoScanIgnoredClasses = autoScanIgnoredClasses,
-      writeSpecFailureFile = writeSpecFailureFile ?: writeSpecFailureFile(),
+      writeSpecFailureFile = writeSpecFailureFile.toOption().orElse(writeSpecFailureFile().toOption()),
       parallelism = parallelism.toOption().orElse(parallelism().toOption()),
       timeout = timeout.toOption().map { it.toLongMilliseconds() },
       invocationTimeout = invocationTimeout.toOption(),
-      testCaseConfig = defaultTestCaseConfig,
-      includeTestScopeAffixes = includeTestScopePrefixes,
-      testNameCase = testNameCase
+      testCaseConfig = defaultTestCaseConfig.toOption(),
+      includeTestScopeAffixes = includeTestScopePrefixes.toOption(),
+      testNameCase = testNameCase.toOption()
    )
 }

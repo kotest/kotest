@@ -1,12 +1,9 @@
-package io.kotest.engine.launcher
+package io.kotest.engine
 
 import io.kotest.core.Tags
-import io.kotest.engine.KotestEngine
-import io.kotest.engine.KotestEngineConfig
 import io.kotest.engine.listener.TestEngineListener
 import io.kotest.core.filter.TestFilter
 import io.kotest.core.spec.Spec
-import io.kotest.engine.TestPlan
 import kotlin.reflect.KClass
 
 /**
@@ -19,7 +16,7 @@ class KotestEngineLauncher(
    private val listener: TestEngineListener,
    private val specs: List<KClass<out Spec>>,
    private val filters: List<TestFilter>,
-   private val tags: Tags?
+   private val tags: Tags?,
 ) {
 
    constructor(listener: TestEngineListener) : this(listener, emptyList(), emptyList(), null)
@@ -44,7 +41,7 @@ class KotestEngineLauncher(
          listener = listener,
          specs = specs,
          filters = this.filters + filters,
-         tags = tags
+         tags = tags,
       )
    }
 
@@ -54,7 +51,7 @@ class KotestEngineLauncher(
          listener = listener,
          specs = specs,
          filters = filters,
-         tags = tags
+         tags = tags,
       )
    }
 
@@ -63,7 +60,7 @@ class KotestEngineLauncher(
          listener = listener,
          specs = specs,
          filters = filters,
-         tags = tags
+         tags = tags,
       )
    }
 

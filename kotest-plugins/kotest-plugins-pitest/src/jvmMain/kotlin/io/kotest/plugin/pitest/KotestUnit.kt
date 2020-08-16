@@ -4,7 +4,7 @@ import io.kotest.core.spec.Spec
 import io.kotest.core.spec.toDescription
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
-import io.kotest.engine.launcher.KotestEngineLauncher
+import io.kotest.engine.KotestEngineLauncher
 import io.kotest.engine.listener.TestEngineListener
 import kotlinx.coroutines.runBlocking
 import org.pitest.testapi.Description

@@ -1,6 +1,5 @@
 package io.kotest.core.config
 
-import io.kotest.core.Tags
 import io.kotest.core.extensions.Extension
 import io.kotest.core.extensions.TestCaseExtension
 import io.kotest.core.filter.Filter
@@ -29,13 +28,6 @@ class Configuration {
    private val listeners = mutableListOf<Listener>()
    private val filters = mutableListOf<Filter>()
    private val extensions = mutableListOf<Extension>()
-
-   /**
-    * Sets the currently active tags expression (if any).
-    *
-    * Defaults to null.
-    */
-   var tags: Tags = Tags.Empty
 
    /**
     * If enabled, then all failing spec names will be written to a "failure file".
@@ -144,7 +136,7 @@ class Configuration {
     *
     * Defaults to null, which is spec specific behavior.
     */
-   var defaultIncludeTestScopeAffixes: Boolean? = Defaults.defaultIncludeTestScopeAffixes
+   var includeTestScopeAffixes: Boolean? = Defaults.defaultIncludeTestScopeAffixes
 
    /**
     * Controls the default [IsolationMode] that each spec will execute in.
@@ -227,6 +219,18 @@ class Configuration {
    @Deprecated("Use registerListener(Listener). Will be removed in 4.3")
    fun registerProjectListener(listener: Listener) {
       registerListener(listener)
+   }
+
+   fun removeListeners() {
+      listeners.clear()
+   }
+
+   fun removeExtensions() {
+      extensions.clear()
+   }
+
+   fun removeFilters() {
+      filters.clear()
    }
 }
 

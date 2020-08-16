@@ -82,6 +82,7 @@ abstract class DslDrivenSpec : Spec() {
       })
    }
 
+   @Deprecated("this makes no sense")
    fun aroundSpec(aroundSpecFn: AroundSpecFn) {
       extension(object : SpecExtension {
          override suspend fun intercept(spec: KClass<out Spec>, process: suspend () -> Unit) {

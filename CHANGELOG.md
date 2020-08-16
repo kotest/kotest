@@ -1,7 +1,9 @@
 Changelog
 =========
 
-#### 4.2.0 - Snapshots
+#### 4.2.0 - Prerelease
+* Change: kotest-core module has been replaced with kotest-framework-api and kotest-framework-engine. Tools authors can depend on api only. Engine should be used for JS testing. For JVM testing, continue to use kotest-runner-junit5-jvm.
+* Bugfix: Ignored tests were still being executed in Javascript tests.
 * Improvement: Use the SPDX compliant license identifier "Apache-2.0" in POM files [#1517](https://github.com/kotest/kotest/issues/1517)
 
 #### 4.1.2

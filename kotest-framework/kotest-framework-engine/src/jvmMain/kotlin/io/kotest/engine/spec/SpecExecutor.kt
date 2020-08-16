@@ -13,6 +13,7 @@ import io.kotest.core.spec.*
 import io.kotest.core.spec.style.scopes.DslState
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
+import io.kotest.engine.extensions.resolvedSpecExtensions
 import io.kotest.engine.instantiateSpec
 import io.kotest.engine.test.isActive
 import io.kotest.fp.Try
@@ -117,10 +118,6 @@ class SpecExecutor(private val listener: TestEngineListener) {
     * Before the tests are executed we invoke any spec extensions to intercept this spec.
     */
    private suspend fun runTests(spec: Spec): Try<Map<TestCase, TestResult>> {
-
-      val extensions = spec.resolvedExtensions().filterIsInstance<SpecExtension>() +
-         configuration.extensions().filterIsInstance<SpecExtension>()
-
       var results: Try<Map<TestCase, TestResult>> = emptyMap<TestCase, TestResult>().success()
 
       // the terminal case after all (if any) extensions have been invoked
@@ -130,6 +127,8 @@ class SpecExecutor(private val listener: TestEngineListener) {
          results = runner.execute(spec)
       }
 
+      val extensions = spec.resolvedSpecExtensions()
+      log("SpecExecutor: Intercepting spec with ${extensions.size} extensions [$extensions]")
       return Try { interceptSpec(spec, extensions, run) }.map { results }.flatten()
    }
 

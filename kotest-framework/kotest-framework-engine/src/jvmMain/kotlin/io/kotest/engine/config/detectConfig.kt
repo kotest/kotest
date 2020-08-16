@@ -24,7 +24,6 @@ actual fun detectConfig(): DetectedProjectConfig {
          .enableClassInfo()
          .enableAnnotationInfo()
          .enableExternalClasses()
-         .disableDirScanning()
          .disableNestedJarScanning()
          .rejectPackages("java.*", "javax.*", "sun.*", "com.sun.*", "kotlin.*", "kotlinx.*", "android.*")
          .scan()

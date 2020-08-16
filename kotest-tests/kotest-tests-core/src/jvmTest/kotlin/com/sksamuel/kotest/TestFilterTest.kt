@@ -15,11 +15,11 @@ class TestFilterTest : StringSpec() {
   var b = false
 
   init {
-    "aa should run" {
+    "!aa should run" {
       a = true
     }
     // this test will be ignored the test case filter that we have registered in project config
-    "bb should be ignored" {
+    "!bb should be ignored" {
       1 shouldBe 2
     }
   }

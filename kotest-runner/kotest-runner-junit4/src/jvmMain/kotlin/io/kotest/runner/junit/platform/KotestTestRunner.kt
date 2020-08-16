@@ -1,7 +1,7 @@
 package io.kotest.runner.junit.platform
 
 import io.kotest.core.spec.Spec
-import io.kotest.engine.launcher.KotestEngineLauncher
+import io.kotest.engine.KotestEngineLauncher
 import io.kotest.engine.instantiateSpec
 import io.kotest.engine.spec.resolvedRootTests
 import io.kotest.fp.Try.Failure

@@ -1,8 +1,8 @@
 package com.sksamuel.kotest.core.runtime
 
 import io.kotest.assertions.assertSoftly
-import io.kotest.core.config.Project
-import io.kotest.engine.launcher.KotestEngineLauncher
+import io.kotest.core.config.configuration
+import io.kotest.engine.KotestEngineLauncher
 import io.kotest.engine.listener.TestEngineListener
 import io.kotest.core.listeners.ProjectListener
 import io.kotest.engine.callbacks.AfterProjectListenerException
@@ -35,16 +35,16 @@ class BeforeAfterProjectTest : FunSpec({
          }
       }
 
-      Project.registerListener(projectListener1)
-      Project.registerListener(projectListener2)
+      configuration.registerListener(projectListener1)
+      configuration.registerListener(projectListener2)
       KotestEngineLauncher(listener).withSpec(DummySpec::class).launch()
       assertSoftly {
          errors shouldHaveSize 2
          errors.filterIsInstance<BeforeProjectListenerException>() shouldHaveSize 1
          errors.filterIsInstance<AfterProjectListenerException>() shouldHaveSize 1
       }
-      Project.deregisterListener(projectListener1)
-      Project.deregisterListener(projectListener2)
+      configuration.deregisterListener(projectListener1)
+      configuration.deregisterListener(projectListener2)
    }
 })
 

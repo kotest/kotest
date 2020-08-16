@@ -1,17 +1,13 @@
 package io.kotest.engine.callbacks
 
 import io.kotest.core.config.configuration
-import io.kotest.core.config.testCaseExtensions
 import io.kotest.core.config.testListeners
-import io.kotest.core.config.Project
-import io.kotest.engine.config.dumpProjectConfig
-import io.kotest.core.extensions.TestCaseExtension
 import io.kotest.core.listeners.Listener
 import io.kotest.core.listeners.ProjectListener
 import io.kotest.core.spec.Spec
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
-import io.kotest.engine.spec.resolvedExtensions
+import io.kotest.engine.config.dumpProjectConfig
 import io.kotest.engine.spec.resolvedTestListeners
 import io.kotest.fp.Try
 import io.kotest.mpp.log
@@ -48,7 +44,7 @@ suspend fun List<Listener>.afterProject(): Try<List<AfterProjectListenerExceptio
  */
 suspend fun List<Listener>.beforeProject(): Try<List<BeforeProjectListenerException>> = Try {
    log("invokeBeforeProject")
-   Project.dumpProjectConfig()
+   configuration.dumpProjectConfig()
 
    filterIsInstance<ProjectListener>()
       .resolveName()
@@ -68,7 +64,7 @@ suspend fun List<Listener>.beforeProject(): Try<List<BeforeProjectListenerExcept
  */
 suspend fun TestCase.invokeAllBeforeTestCallbacks(): Try<TestCase> =
    Try {
-      spec.resolvedTestListeners() + Project.testListeners()
+      spec.resolvedTestListeners() + configuration.testListeners()
    }.fold({
       Try.Failure(it)
    }, { listeners ->
@@ -90,7 +86,7 @@ suspend fun TestCase.invokeAllBeforeTestCallbacks(): Try<TestCase> =
  */
 suspend fun TestCase.invokeAllAfterTestCallbacks(result: TestResult): Try<TestCase> =
    Try {
-      this.config.listeners + spec.resolvedTestListeners() + Project.testListeners()
+      this.config.listeners + spec.resolvedTestListeners() + configuration.testListeners()
    }.fold({
       Try.Failure(it)
    }, { listeners ->
@@ -107,26 +103,26 @@ suspend fun TestCase.invokeAllAfterTestCallbacks(result: TestResult): Try<TestCa
    })
 
 suspend fun TestCase.invokeBeforeInvocation(k: Int) {
-   val listeners = spec.resolvedTestListeners() + Project.testListeners()
+   val listeners = spec.resolvedTestListeners() + configuration.testListeners()
    listeners.forEach {
       it.beforeInvocation(this, k)
    }
 }
 
 suspend fun TestCase.invokeAfterInvocation(k: Int) {
-   val listeners = spec.resolvedTestListeners() + Project.testListeners()
+   val listeners = spec.resolvedTestListeners() + configuration.testListeners()
    listeners.forEach {
       it.afterInvocation(this, k)
    }
 }
 
 /**
- * Notifies the user listeners that a [AbstractSpec] is starting.
+ * Notifies the user listeners that a [Spec] is starting.
  * This will be invoked for every instance of a spec.
  */
 suspend fun Spec.invokeBeforeSpec(): Try<Spec> = Try {
    log("invokeBeforeSpec $this")
-   val listeners = resolvedTestListeners() + Project.testListeners()
+   val listeners = resolvedTestListeners() + configuration.testListeners()
    listeners.forEach {
       it.beforeSpec(this)
    }
@@ -134,7 +130,7 @@ suspend fun Spec.invokeBeforeSpec(): Try<Spec> = Try {
 }
 
 /**
- * Notifies the user listeners that a [AbstractSpec] has finished.
+ * Notifies the user listeners that a [Spec] has finished.
  * This will be invoked for every instance of a spec.
  */
 suspend fun Spec.invokeAfterSpec(): Try<Spec> = Try {
@@ -145,18 +141,7 @@ suspend fun Spec.invokeAfterSpec(): Try<Spec> = Try {
       closeables.forEach { it.value.close() }
    }
 
-   val listeners = resolvedTestListeners() + Project.testListeners()
+   val listeners = resolvedTestListeners() + configuration.testListeners()
    listeners.forEach { it.afterSpec(this) }
    this
-}
-
-/**
- * Returns the runtime resolved [TestCaseExtension]s applicable for this [TestCase].
- * Those are extensions registered on the test case's own config, those registered
- * on the spec instance, and those registered at the project level.
- */
-fun TestCase.extensions(): List<TestCaseExtension> {
-   return config.extensions +
-      spec.resolvedExtensions().filterIsInstance<TestCaseExtension>() +
-      configuration.testCaseExtensions()
 }

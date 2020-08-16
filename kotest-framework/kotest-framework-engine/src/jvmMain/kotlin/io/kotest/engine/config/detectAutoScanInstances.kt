@@ -7,7 +7,7 @@ import io.kotest.core.listeners.Listener
 import io.kotest.core.spec.AutoScan
 import io.kotest.mpp.instantiate
 
-fun loadConfigFromAutoScanInstances(scanResult: ScanResult): DetectedProjectConfig {
+internal fun loadConfigFromAutoScanInstances(scanResult: ScanResult): DetectedProjectConfig {
 
    val autoscanned = scanResult
       .getClassesWithAnnotation(AutoScan::class.java.name)

@@ -2,7 +2,7 @@ package io.kotest.runner.junit.platform
 
 import io.kotest.core.spec.DisplayName
 import io.kotest.engine.listener.IsolationTestEngineListener
-import io.kotest.engine.launcher.KotestEngineLauncher
+import io.kotest.engine.KotestEngineLauncher
 import io.kotest.engine.listener.SynchronizedTestEngineListener
 import io.kotest.core.filter.TestFilter
 import io.kotest.core.filter.TestFilterResult

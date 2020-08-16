@@ -20,4 +20,8 @@ class RuntimeTagExtensionTest : StringSpec() {
    override fun beforeSpec(spec: Spec) {
       RuntimeTagExtension.excluded += MyRuntimeExcludedTag
    }
+
+   override fun afterSpec(spec: Spec) {
+      RuntimeTagExtension.excluded -= MyRuntimeExcludedTag
+   }
 }

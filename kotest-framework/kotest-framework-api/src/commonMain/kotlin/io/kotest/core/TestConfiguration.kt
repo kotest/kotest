@@ -4,8 +4,6 @@ package io.kotest.core
 
 import io.kotest.core.extensions.Extension
 import io.kotest.core.extensions.TestCaseExtension
-import io.kotest.core.factory.TestFactory
-import io.kotest.core.factory.addPrefix
 import io.kotest.core.listeners.TestListener
 import io.kotest.core.spec.AfterAny
 import io.kotest.core.spec.AfterContainer
@@ -26,7 +24,6 @@ import io.kotest.core.test.AssertionMode
 import io.kotest.core.test.DescriptionName
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestCaseConfig
-import io.kotest.core.test.TestCaseOrder
 import io.kotest.core.test.TestContext
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestType
@@ -286,10 +283,16 @@ abstract class TestConfiguration {
       })
    }
 
+   /**
+    * Returns any [TestListener] instances registered directly on this class.
+    */
    fun registeredListeners() = _listeners
 
    fun registeredAutoCloseables(): List<Lazy<AutoCloseable>> = _autoCloseables.toList()
 
+   /**
+    * Returns any [TestCaseExtension] instances registered directly on this class.
+    */
    fun registeredExtensions() = _extensions
 
    @Deprecated(

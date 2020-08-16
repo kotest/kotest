@@ -31,20 +31,20 @@ data class DetectedProjectConfig(
    val tags: Option<Tags> = Option.None,
    val isolationMode: Option<IsolationMode> = Option.None,
    val assertionMode: Option<AssertionMode> = Option.None,
-   val testCaseOrder: TestCaseOrder? = null,
-   val specExecutionOrder: SpecExecutionOrder? = null,
-   val failOnIgnoredTests: Boolean? = null,
-   val globalAssertSoftly: Boolean? = null,
-   val autoScanEnabled: Boolean? = null,
+   val testCaseOrder: Option<TestCaseOrder> = Option.None,
+   val specExecutionOrder: Option<SpecExecutionOrder> = Option.None,
+   val failOnIgnoredTests: Option<Boolean> = Option.None,
+   val globalAssertSoftly: Option<Boolean> = Option.None,
+   val autoScanEnabled: Option<Boolean> = Option.None,
    val autoScanIgnoredClasses: List<KClass<*>> = emptyList(),
-   val writeSpecFailureFile: Boolean? = null,
-   val specFailureFilePath: String? = null,
+   val writeSpecFailureFile: Option<Boolean> = Option.None,
+   val specFailureFilePath: Option<String> = Option.None,
    val parallelism: Option<Int> = Option.None,
    val timeout: Option<Long> = Option.None,
    val invocationTimeout: Option<Long> = Option.None,
-   val testCaseConfig: TestCaseConfig? = null,
-   val includeTestScopeAffixes: Boolean? = null,
-   val testNameCase: TestNameCase? = null
+   val testCaseConfig: Option<TestCaseConfig> = Option.None,
+   val includeTestScopeAffixes: Option<Boolean> = Option.None,
+   val testNameCase: Option<TestNameCase> = Option.None
 )
 
 fun DetectedProjectConfig.merge(other: DetectedProjectConfig): DetectedProjectConfig {
@@ -54,20 +54,20 @@ fun DetectedProjectConfig.merge(other: DetectedProjectConfig): DetectedProjectCo
       filters = this.filters + other.filters,
       isolationMode = this.isolationMode.orElse(other.isolationMode),
       assertionMode = this.assertionMode.orElse(other.assertionMode),
-      testCaseOrder = this.testCaseOrder ?: other.testCaseOrder,
-      specExecutionOrder = this.specExecutionOrder ?: other.specExecutionOrder,
-      failOnIgnoredTests = this.failOnIgnoredTests ?: other.failOnIgnoredTests,
-      globalAssertSoftly = this.globalAssertSoftly ?: other.globalAssertSoftly,
-      autoScanEnabled = this.autoScanEnabled ?: other.autoScanEnabled,
+      testCaseOrder = this.testCaseOrder.orElse(other.testCaseOrder),
+      specExecutionOrder = this.specExecutionOrder.orElse(other.specExecutionOrder),
+      failOnIgnoredTests = this.failOnIgnoredTests.orElse(other.failOnIgnoredTests),
+      globalAssertSoftly = this.globalAssertSoftly.orElse(other.globalAssertSoftly),
+      autoScanEnabled = this.autoScanEnabled.orElse(other.autoScanEnabled),
       autoScanIgnoredClasses = this.autoScanIgnoredClasses + other.autoScanIgnoredClasses,
-      writeSpecFailureFile = this.writeSpecFailureFile ?: other.writeSpecFailureFile,
-      specFailureFilePath = this.specFailureFilePath ?: other.specFailureFilePath,
+      writeSpecFailureFile = this.writeSpecFailureFile.orElse(other.writeSpecFailureFile),
+      specFailureFilePath = this.specFailureFilePath.orElse(other.specFailureFilePath),
       parallelism = this.parallelism.orElse(other.parallelism),
       timeout = this.timeout.orElse(other.timeout),
       invocationTimeout = this.invocationTimeout.orElse(other.invocationTimeout),
-      testCaseConfig = this.testCaseConfig ?: other.testCaseConfig,
-      includeTestScopeAffixes = this.includeTestScopeAffixes ?: other.includeTestScopeAffixes,
-      testNameCase = this.testNameCase ?: other.testNameCase,
+      testCaseConfig = this.testCaseConfig.orElse(other.testCaseConfig),
+      includeTestScopeAffixes = this.includeTestScopeAffixes.orElse(other.includeTestScopeAffixes),
+      testNameCase = this.testNameCase.orElse(other.testNameCase),
    )
 }
 
@@ -75,7 +75,22 @@ fun DetectedProjectConfig.merge(other: DetectedProjectConfig): DetectedProjectCo
  * Applies this config to the given [Configuration] instance.
  */
 fun DetectedProjectConfig.apply(configuration: Configuration) {
+
    configuration.registerListeners(listeners)
    configuration.registerExtensions(extensions)
    configuration.registerFilters(filters)
+
+   assertionMode.forEach { configuration.assertionMode = it }
+   testCaseOrder.forEach { configuration.testCaseOrder = it }
+   specExecutionOrder.forEach { configuration.specExecutionOrder = it }
+   isolationMode.forEach { configuration.isolationMode = it }
+   failOnIgnoredTests.forEach { configuration.failOnIgnoredTests = it }
+   globalAssertSoftly.forEach { configuration.globalAssertSoftly = it }
+   writeSpecFailureFile.forEach { configuration.writeSpecFailureFile = it }
+   specFailureFilePath.forEach { configuration.specFailureFilePath = it }
+   parallelism.forEach { configuration.parallelism = it }
+   invocationTimeout.forEach { configuration.invocationTimeout = it }
+   testCaseConfig.forEach { configuration.defaultTestConfig = it }
+   includeTestScopeAffixes.forEach { configuration.includeTestScopeAffixes = it }
+   testNameCase.forEach { configuration.testNameCase = it }
 }

@@ -16,7 +16,7 @@ object ProjectConfig : AbstractProjectConfig() {
 
    override fun filters(): List<Filter> = listOf(TestFilterTestFilter)
 
-   override fun specExecutionOrder(): SpecExecutionOrder = SpecExecutionOrder.Lexicographic
+   override val specExecutionOrder = SpecExecutionOrder.Lexicographic
 
    override fun extensions(): List<Extension> {
       return listOf(SpecExtensionNumbers.ext, TagFilteredDiscoveryExtensionExampleTest.ext)

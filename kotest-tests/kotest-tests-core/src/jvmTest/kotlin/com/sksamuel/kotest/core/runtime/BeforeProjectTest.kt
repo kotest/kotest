@@ -2,7 +2,7 @@ package com.sksamuel.kotest.core.runtime
 
 import io.kotest.assertions.assertSoftly
 import io.kotest.core.config.configuration
-import io.kotest.engine.launcher.KotestEngineLauncher
+import io.kotest.engine.KotestEngineLauncher
 import io.kotest.engine.listener.TestEngineListener
 import io.kotest.core.listeners.ProjectListener
 import io.kotest.engine.callbacks.BeforeProjectListenerException

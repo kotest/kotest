@@ -1,6 +1,5 @@
 package io.kotest.engine.test
 
-import io.kotest.core.config.Project
 import io.kotest.core.config.configuration
 import io.kotest.engine.KotestEngineSystemProperties
 import io.kotest.core.test.TestCase
@@ -10,6 +9,7 @@ import io.kotest.engine.spec.focusTests
 import io.kotest.engine.spec.resolvedTags
 import io.kotest.engine.tags.isActive
 import io.kotest.engine.tags.parse
+import io.kotest.engine.tags.resolvedTags
 import io.kotest.mpp.log
 import io.kotest.mpp.sysprop
 
@@ -48,8 +48,7 @@ fun TestCase.isActive(): Boolean {
       return false
    }
 
-   // if we have tags specified on this
-   val enabledInTags = configuration.tags.parse().isActive(config.tags + spec.resolvedTags())
+   val enabledInTags = configuration.resolvedTags().parse().isActive(config.tags + spec.resolvedTags())
    if (!enabledInTags) {
       log("${description.testPath()} is disabled by tags")
       return false

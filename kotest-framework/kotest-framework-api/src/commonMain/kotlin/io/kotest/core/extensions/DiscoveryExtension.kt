@@ -18,7 +18,7 @@ interface DiscoveryExtension : Extension {
 
    /**
     * Invoked as soon as the scan phase has completed. At this point,
-    * the [AbstractSpec] classes have been detected, but not yet
+    * the [Spec] classes have been detected, but not yet
     * instantiated or executed.
     *
     * Overriding this function gives implementations the possibility
