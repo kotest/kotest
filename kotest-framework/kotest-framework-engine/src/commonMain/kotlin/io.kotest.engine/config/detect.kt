@@ -89,6 +89,7 @@ fun DetectedProjectConfig.apply(configuration: Configuration) {
    writeSpecFailureFile.forEach { configuration.writeSpecFailureFile = it }
    specFailureFilePath.forEach { configuration.specFailureFilePath = it }
    parallelism.forEach { configuration.parallelism = it }
+   timeout.forEach { configuration.timeout = it }
    invocationTimeout.forEach { configuration.invocationTimeout = it }
    testCaseConfig.forEach { configuration.defaultTestConfig = it }
    includeTestScopeAffixes.forEach { configuration.includeTestScopeAffixes = it }
