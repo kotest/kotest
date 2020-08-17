@@ -228,6 +228,7 @@ For Android-specific matchers, take a look [here](android_matchers.md)
 
 | Dates ||
 | -------- | ---- |
+| **[KotlinX Time](https://github.com/Kotlin/kotlinx-datetime) is also supported** | Use `kotest-assertions-kotlinx-time` to enable matchers |
 | `date.shouldHaveSameYearAs(otherDate)` | Asserts that the date has the same year as the given date. |
 | `date.shouldHaveSameMonthAs(otherDate)` | Asserts that the date has the same month as the given date. |
 | `date.shouldHaveSameDayAs(otherDate)` | Asserts that the date has the same day of the month as the given date. |

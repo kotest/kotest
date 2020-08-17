@@ -110,4 +110,9 @@ object Libs {
       private const val version = "1.11.14"
       const val klock = "com.soywiz.korlibs.klock:klock:$version"
    }
+   
+   object KotlinTime {
+      private const val version = "0.1.0"
+      const val kotlintime = "org.jetbrains.kotlinx:kotlinx-datetime:$version"
+   }
 }
