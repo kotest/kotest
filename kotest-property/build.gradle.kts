@@ -70,12 +70,6 @@ kotlin {
             implementation(project(Projects.AssertionsCore))
          }
       }
-
-//      listOf("macosX64Main", "linuxX64Main", "mingwX64Main").forEach {
-//         get(it).dependencies {
-//            implementation(Libs.Coroutines.coreNative)
-//         }
-//      }
    }
 }
 

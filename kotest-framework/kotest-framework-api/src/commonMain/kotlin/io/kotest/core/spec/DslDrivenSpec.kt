@@ -1,5 +1,6 @@
 package io.kotest.core.spec
 
+import io.kotest.core.DuplicatedTestNameException
 import io.kotest.core.Tuple2
 import io.kotest.core.config.configuration
 import io.kotest.core.extensions.SpecExtension
@@ -101,7 +102,7 @@ abstract class DslDrivenSpec : Spec() {
     * Adds a new root-level [TestCase] to this [Spec].
     */
    private fun addRootTest(testCase: TestCase) {
-      require(rootTestCases.none { it.description.name == testCase.description.name }) { "Cannot add test with duplicate name ${testCase.description.name}" }
+      if (rootTestCases.any { it.description.name == testCase.description.name }) throw DuplicatedTestNameException(testCase.description.name)
       rootTestCases = rootTestCases + testCase
    }
 }

@@ -1,5 +1,6 @@
 package io.kotest.engine.runners
 
+import io.kotest.core.DuplicatedTestNameException
 import io.kotest.core.spec.Spec
 import io.kotest.core.test.DescriptionName
 import io.kotest.core.test.NestedTest
@@ -44,7 +45,7 @@ internal class SingleInstanceSpecRunner(listener: TestEngineListener) : SpecRunn
          log("Nested test case discovered $nested")
          val nestedTestCase = nested.toTestCase(testCase.spec, testCase.description)
          if (seen.contains(nested.name))
-            throw IllegalStateException("Cannot add duplicate test name ${nested.name.name}")
+            throw DuplicatedTestNameException(nested.name)
          seen.add(nested.name)
          runTest(nestedTestCase, coroutineContext)
       }

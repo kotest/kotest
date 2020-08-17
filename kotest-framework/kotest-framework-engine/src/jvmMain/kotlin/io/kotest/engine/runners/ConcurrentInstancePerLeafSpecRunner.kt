@@ -1,5 +1,6 @@
 package io.kotest.engine.runners
 
+import io.kotest.core.DuplicatedTestNameException
 import io.kotest.core.test.NestedTest
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestContext
@@ -110,7 +111,7 @@ internal class ConcurrentInstancePerLeafSpecRunner(
             override suspend fun registerTestCase(nested: NestedTest) {
 
                if (!namesInScope.add(nested.name))
-                  throw IllegalStateException("Cannot add duplicate test ${nested.name}")
+                  throw DuplicatedTestNameException(nested.name)
 
                val t = nested.toTestCase(test.spec, test.description)
 
