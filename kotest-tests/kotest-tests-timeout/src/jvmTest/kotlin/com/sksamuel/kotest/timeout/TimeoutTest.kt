@@ -4,10 +4,9 @@ import io.kotest.core.spec.style.StringSpec
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import java.util.concurrent.TimeUnit
 import kotlin.time.ExperimentalTime
+import kotlin.time.hours
 import kotlin.time.milliseconds
-import kotlin.time.toDuration
 
 @ExperimentalTime
 class TimeoutTest : StringSpec() {
@@ -29,7 +28,7 @@ class TimeoutTest : StringSpec() {
       "a testcase timeout should interupt a nested coroutine".config(timeout = 50.milliseconds) {
          launch {
             // a  high value to ensure its interrupted, we'd notice a test that runs for ever
-            delay(10.toDuration(TimeUnit.HOURS))
+            delay(10.hours)
          }
       }
 

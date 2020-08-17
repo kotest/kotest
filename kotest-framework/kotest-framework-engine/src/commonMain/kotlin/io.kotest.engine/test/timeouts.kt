@@ -1,20 +1,22 @@
 package io.kotest.engine.test
 
-import io.kotest.core.test.TestCase
-import io.kotest.core.test.TestCaseConfig
 import io.kotest.core.config.configuration
+import io.kotest.core.test.TestCase
 import kotlin.time.ExperimentalTime
 
 /**
- * Returns the resolved timeout for a [TestCase] taking into account project settings.
+ * Returns the resolved timeout for a [TestCase] taking into account test case config,
+ * spec overrides, and project defaults.
  */
 @OptIn(ExperimentalTime::class)
-fun TestCaseConfig.resolvedTimeout(): Long =
-   this.timeout?.toLongMilliseconds() ?: configuration.timeout
+fun TestCase.resolvedTimeout(): Long =
+   config.timeout?.toLongMilliseconds() ?: spec.timeout ?: spec.timeout() ?: configuration.timeout
 
 /**
- * Returns the timeout for a test invocation taking into account project settings.
+ * Returns the resolved timeout for a test invocation taking into account test case config,
+ * spec overrides, and project defaults.
  */
 @OptIn(ExperimentalTime::class)
-fun TestCaseConfig.resolvedInvocationTimeout(): Long =
-   this.invocationTimeout?.toLongMilliseconds() ?: configuration.invocationTimeout
+fun TestCase.resolvedInvocationTimeout(): Long =
+   config.invocationTimeout?.toLongMilliseconds() ?: spec.invocationTimeout() ?: spec.invocationTimeout
+   ?: configuration.invocationTimeout

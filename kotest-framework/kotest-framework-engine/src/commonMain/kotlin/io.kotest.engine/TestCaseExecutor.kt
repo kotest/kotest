@@ -23,11 +23,11 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.withTimeout
 import kotlin.coroutines.CoroutineContext
 
-data class TimeoutException constructor(val duration: Long) :
-   Exception("Test did not completed within ${duration}ms")
+data class TimeoutException constructor(val duration: Long) : Exception("Test did not complete within ${duration}ms")
 
 /**
- * Executes a single [TestCase]. Uses a [TestCaseExecutionListener] to notify callers of events in the test.
+ * Executes a single [TestCase].
+ * Uses a [TestCaseExecutionListener] to notify callers of events in the test.
  *
  * The [TimeoutExecutionContext] is used to provide a way of executing functions on the underlying platform
  * in a way that best utilizes threads or the lack of on that platform.
@@ -150,8 +150,7 @@ class TestCaseExecutor(
 
       val t = executeAndWait(ec, testCase, context)
 
-      val result =
-         if (t == null) TestResult.success(timeInMillis() - start) else t.toTestResult(timeInMillis() - start)
+      val result = t?.toTestResult(timeInMillis() - start) ?: TestResult.success(timeInMillis() - start)
       log("Test completed with result $result")
       result
    }
@@ -169,12 +168,12 @@ class TestCaseExecutor(
       // this timeout applies to the test itself. If the test has multiple invocations then
       // this timeout applies across all invocations. In other words, if a test has invocations = 3,
       // each test takes 300ms, and a timeout of 800ms, this would fail, becauase 3 x 300 > 800.
-      val timeout = testCase.config.resolvedTimeout()
+      val timeout = testCase.resolvedTimeout()
       log("Test will execute with timeout $timeout")
 
       // this timeout applies to each inovation. If a test has invocations = 3, and this timeout
       // is set to 300ms, then each individual invocation must complete in under 300ms.
-      val invocationTimeout = testCase.config.resolvedInvocationTimeout()
+      val invocationTimeout = testCase.resolvedInvocationTimeout()
       log("Test will execute with invocationTimeout $invocationTimeout")
 
       return try {
