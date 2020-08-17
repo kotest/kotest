@@ -1,4 +1,4 @@
-package com.sksamuel.kotest.specs.funspec
+package com.sksamuel.kotest.engine.spec.incomplete
 
 import io.kotest.core.annotation.Ignored
 import io.kotest.core.spec.Spec
@@ -11,7 +11,6 @@ import io.kotest.core.test.TestResult
 import io.kotest.matchers.shouldBe
 import kotlin.reflect.KClass
 
-@OptIn(kotlin.time.ExperimentalTime::class)
 class FunSpecIncompleteUsageTest : FunSpec({
 
    test("test block without .config should error at runtime") {

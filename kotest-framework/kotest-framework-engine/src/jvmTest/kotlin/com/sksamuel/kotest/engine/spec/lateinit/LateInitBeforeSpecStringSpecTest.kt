@@ -1,4 +1,4 @@
-package com.sksamuel.kotest.listeners
+package com.sksamuel.kotest.engine.spec.lateinit
 
 import io.kotest.core.spec.Spec
 import io.kotest.matchers.shouldBe

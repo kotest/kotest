@@ -1,4 +1,4 @@
-package com.sksamuel.kotest.specs.describe
+package com.sksamuel.kotest.engine.spec.incomplete
 
 import io.kotest.core.annotation.Ignored
 import io.kotest.core.spec.Spec
@@ -12,8 +12,6 @@ import io.kotest.core.test.TestResult
 import io.kotest.matchers.shouldBe
 import kotlin.reflect.KClass
 
-@OptIn(kotlin.time.ExperimentalTime::class)
-@Ignored
 class DescribeSpecIncompleteUsageTest : FunSpec({
 
    test("it block without .config should error at runtime") {
@@ -27,7 +25,7 @@ class DescribeSpecIncompleteUsageTest : FunSpec({
       }
 
       val executor = SpecExecutor(listener)
-      executor.execute(DescribeDslTestSpec::class)
+      executor.execute(IncompleteDescribeSpec::class)
       result!!.message shouldBe "Test 'incomplete it usage' is incomplete"
       DslState.state = null
    }
@@ -35,7 +33,7 @@ class DescribeSpecIncompleteUsageTest : FunSpec({
 })
 
 @Ignored
-class DescribeDslTestSpec : DescribeSpec({
+class IncompleteDescribeSpec : DescribeSpec({
    describe("foo") {
       it("incomplete it usage")
    }

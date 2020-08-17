@@ -1,4 +1,4 @@
-package com.sksamuel.kotest.timeout
+package com.sksamuel.kotest.engine.spec.timeouts
 
 import io.kotest.core.listeners.TestListener
 import io.kotest.engine.ExecutorExecutionContext
