@@ -7,6 +7,7 @@ plugins {
 
 repositories {
    mavenCentral()
+   maven(url = "https://kotlin.bintray.com/kotlinx/")
 }
 
 kotlin {
@@ -43,6 +44,8 @@ kotlin {
             implementation(kotlin("stdlib-common"))
             implementation(Libs.Coroutines.coreCommon)
             implementation(project(Projects.Common))
+            implementation(Libs.KotlinTime.kotlintime)
+
             // this is api because we want to expose `shouldBe` etc
             api(project(Projects.AssertionsShared))
          }
@@ -69,8 +72,13 @@ kotlin {
          }
       }
 
+      val commonTest by getting {
+         dependsOn(commonMain)
+      }
+
       val jvmTest by getting {
          dependsOn(jvmMain)
+         dependsOn(commonTest)
          dependencies {
             implementation(project(Projects.Property))
             implementation(project(Projects.JunitRunner))
