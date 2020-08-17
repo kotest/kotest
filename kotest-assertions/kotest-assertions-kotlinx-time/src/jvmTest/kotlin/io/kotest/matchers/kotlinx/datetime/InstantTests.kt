@@ -85,5 +85,5 @@ class InstantTests : FreeSpec({
 
         futureInstant.shouldNotBeBetween(pastInstant, currentInstant)
     }
-    
-}) 
+
+})

@@ -39,61 +39,18 @@ kotlin {
 
         val commonMain by getting {
             dependencies {
-                implementation(kotlin("stdlib-common"))
-                implementation(Libs.Coroutines.coreCommon)
                 implementation(project(Projects.Common))
+                implementation(Libs.Coroutines.coreCommon)
                 implementation(Libs.KotlinTime.kotlintime)
-
                 // this is api because we want to expose `shouldBe` etc
                 api(project(Projects.AssertionsShared))
             }
         }
 
-        val jsMain by getting {
-            dependsOn(commonMain)
-            dependencies {
-                implementation(kotlin("stdlib-js"))
-                implementation(Libs.Coroutines.coreJs)
-            }
-        }
-
-        val jvmMain by getting {
-            dependsOn(commonMain)
-            dependencies {
-                implementation(kotlin("stdlib-jdk8"))
-            }
-        }
-
-        val commonTest by getting {
-            dependsOn(commonMain)
-            dependencies {
-                implementation(project(Projects.Api))
-            }
-        }
-
         val jvmTest by getting {
-            dependsOn(jvmMain)
-            dependsOn(commonTest)
+            dependsOn(commonMain)
             dependencies {
                 implementation(project(Projects.JunitRunner))
-            }
-        }
-        
-        val macosX64Main by getting {
-            dependencies {
-                implementation(Libs.Coroutines.coreMacos)
-            }
-        }
-
-        val mingwX64Main by getting {
-            dependencies {
-                implementation(Libs.Coroutines.coreMingw)
-            }
-        }
-
-        val linuxX64Main by getting {
-            dependencies {
-                implementation(Libs.Coroutines.coreLinux)
             }
         }
     }

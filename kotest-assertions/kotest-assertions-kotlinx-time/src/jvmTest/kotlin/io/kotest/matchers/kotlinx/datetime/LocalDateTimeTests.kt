@@ -6,12 +6,20 @@ import io.kotest.matchers.should
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNot
 import io.kotest.matchers.shouldNotBe
-import kotlinx.datetime.*
+import kotlinx.datetime.Clock
+import kotlinx.datetime.DayOfWeek
+import kotlinx.datetime.LocalDate
+import kotlinx.datetime.LocalDateTime
+import kotlinx.datetime.Month
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toLocalDateTime
+import kotlinx.datetime.todayAt
 import kotlin.time.ExperimentalTime
 import kotlin.time.days
 
 @ExperimentalTime
 class LocalDateTimeTests : StringSpec({
+
     "LocalDateTime should have same year ignoring other fields" {
         LocalDateTime(2014, 1, 2, 4, 3, 2) should haveSameYear(LocalDateTime(2014, 5, 6, 3, 2, 1))
         LocalDateTime(2014, 1, 2, 3, 2, 1) shouldNot haveSameYear(LocalDateTime(2018, 5, 6, 3, 2, 1))
@@ -47,8 +55,8 @@ class LocalDateTimeTests : StringSpec({
         LocalDateTime(2014, 1, 2, 4, 3, 2).shouldHaveSameDayAs(LocalDateTime(2014, 1, 2, 3, 2, 1))
         LocalDateTime(2014, 1, 2, 3, 2, 1).shouldNotHaveSameDayAs(LocalDateTime(2014, 2, 6, 3, 2, 1))
     }
-    
-    
+
+
     "LocalDate shouldBe before" {
         LocalDate(2014, 1, 2) shouldBe before(LocalDate(2014, 1, 3))
         LocalDate(2014, 1, 2) shouldNotBe before(LocalDate(2014, 1, 1))
@@ -62,7 +70,7 @@ class LocalDateTimeTests : StringSpec({
         LocalDateTime(2014, 1, 2, 4, 3, 2).shouldBeBefore(LocalDateTime(2014, 2, 2, 3, 2, 1))
         LocalDateTime(2014, 1, 2, 3, 2, 1).shouldNotBeBefore(LocalDateTime(2014, 1, 1, 3, 2, 1))
     }
-    
+
     "LocalDate shouldBe after" {
         LocalDate(2014, 1, 2) shouldBe after(LocalDate(2013, 1, 3))
         LocalDate(2014, 1, 2) shouldNotBe after(LocalDate(2014, 1, 3))
@@ -76,17 +84,17 @@ class LocalDateTimeTests : StringSpec({
         LocalDateTime(2014, 1, 2, 4, 3, 2).shouldBeAfter(LocalDateTime(2014, 1, 1, 3, 2, 1))
         LocalDateTime(2014, 1, 2, 3, 2, 1).shouldNotBeAfter(LocalDateTime(2014, 1, 3, 3, 2, 1))
     }
-    
+
     "LocalDateTime shouldBe between" {
         LocalDateTime(2019, 2, 16, 12, 0, 0).shouldBeBetween(LocalDateTime(2019, 2, 15, 12, 0, 0), LocalDateTime(2019, 2, 17, 12, 0, 0))
         LocalDateTime(2019, 2, 16, 12, 0, 0).shouldBeBetween(LocalDateTime(2019, 2, 16, 10, 0, 0), LocalDateTime(2019, 2, 16, 14, 0, 0))
         LocalDateTime(2019, 2, 16, 12, 0, 0).shouldNotBeBetween(LocalDateTime(2019, 2, 17, 12, 0, 0), LocalDateTime(2019, 2, 18, 12, 0, 0))
         LocalDateTime(2019, 2, 16, 12, 0, 0).shouldNotBeBetween(LocalDateTime(2019, 2, 16, 18, 0, 0), LocalDateTime(2019, 2, 16, 20, 0, 0))
     }
-    
-    
+
+
     "LocalDate.shouldBeToday() should match today" {
-        Clock.System.todayAt(TimeZone.UTC).shouldBeToday(TimeZone.UTC)   
+        Clock.System.todayAt(TimeZone.UTC).shouldBeToday(TimeZone.UTC)
     }
 
     "LocalDateTime.shouldBeToday() should match today" {
@@ -151,5 +159,5 @@ class LocalDateTimeTests : StringSpec({
     "LocalDateTime should have nano" {
         LocalDateTime(2019, 2, 16, 12, 10, 0, 14) shouldHaveNano  14
     }
-    
-}) 
+
+})

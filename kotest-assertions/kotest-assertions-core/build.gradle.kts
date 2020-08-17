@@ -74,9 +74,6 @@ kotlin {
 
       val commonTest by getting {
          dependsOn(commonMain)
-         dependencies {
-            implementation(project(Projects.Core))
-         }
       }
 
       val jvmTest by getting {
@@ -88,8 +85,6 @@ kotlin {
             implementation(Libs.OpenTest4j.core)
          }
       }
-      
-
 
       val macosX64Main by getting {
          dependencies {
