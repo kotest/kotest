@@ -33,17 +33,16 @@ class RootTestWithConfigBuilder(
       test: suspend TestContext.() -> Unit
    ) {
       DslState.state = null
-      val derivedConfig = registration
-         .defaultConfig.deriveTestConfig(
-            enabled,
-            tags,
-            extensions,
-            timeout,
-            invocationTimeout,
-            enabledIf,
-            invocations,
-            threads
-         )
+      val derivedConfig = registration.defaultConfig.deriveTestConfig(
+         enabled,
+         tags,
+         extensions,
+         timeout,
+         invocationTimeout,
+         enabledIf,
+         invocations,
+         threads
+      )
       registration.addTest(name, xdisabled, derivedConfig, TestType.Test, test)
    }
 }

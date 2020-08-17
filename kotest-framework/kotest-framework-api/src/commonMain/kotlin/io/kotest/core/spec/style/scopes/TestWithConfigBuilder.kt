@@ -35,17 +35,16 @@ class TestWithConfigBuilder(
       test: suspend TestContext.() -> Unit
    ) {
       DslState.state = null
-      val derivedConfig =
-         defaultTestConfig.deriveTestConfig(
-            enabled,
-            tags,
-            extensions,
-            timeout,
-            invocationTimeout,
-            enabledIf,
-            invocations,
-            threads
-         )
+      val derivedConfig = defaultTestConfig.deriveTestConfig(
+         enabled,
+         tags,
+         extensions,
+         timeout,
+         invocationTimeout,
+         enabledIf,
+         invocations,
+         threads
+      )
       val activeConfig = if (xdisabled) derivedConfig.copy(enabled = false) else derivedConfig
       context.registerTestCase(name, test, activeConfig, TestType.Test)
    }
