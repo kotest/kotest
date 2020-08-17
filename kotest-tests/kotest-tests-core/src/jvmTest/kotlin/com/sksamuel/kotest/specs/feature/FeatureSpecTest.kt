@@ -13,12 +13,12 @@ class FeatureSpecTest : FeatureSpec() {
          scenario("can execute a scenario") {
             1.shouldBeLessThan(4)
          }
-         xfeature("should be ignored") {
+         xfeature("xfeature should be ignored") {
             scenario("parent is ignored") {
                error("Boom")
             }
          }
-         xscenario("should be ignored") {
+         xscenario("xscenario should be ignored") {
             error("Boom")
          }
          xscenario("ignored and has config").config(invocations = 3) {

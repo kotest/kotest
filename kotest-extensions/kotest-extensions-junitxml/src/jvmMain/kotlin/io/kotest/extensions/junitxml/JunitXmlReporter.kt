@@ -95,7 +95,7 @@ class JunitXmlReporter(
 
          val name = when (useTestPathAsName) {
             true -> testcase.description.testDisplayPath().value
-            false -> testcase.description.name.displayName()
+            false -> testcase.description.name.displayName
          }
 
          val e = Element("testcase")

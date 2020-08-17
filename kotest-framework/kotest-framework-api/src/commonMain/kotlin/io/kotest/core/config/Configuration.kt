@@ -122,17 +122,15 @@ class Configuration {
     *   }
     * }
     *
-    * Will result in:
+    * If prefixes are enabled, the output would be:
     *
     * Expect: this test 1
     *   Feature: this test 2
     *
-    * If this feature is enabled, and
+    * And if disabled, the output would be:
     *
     * this test 1
     *    test this 2
-    *
-    * If this feature is disabled.
     *
     * Defaults to null, which is spec specific behavior.
     */

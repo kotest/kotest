@@ -7,15 +7,16 @@ import io.kotest.core.test.DescriptionName
 import io.kotest.core.test.DisplayPath
 import io.kotest.core.test.TestPath
 import io.kotest.core.test.TestType
+import io.kotest.core.test.createTestName
 import io.kotest.matchers.shouldBe
 
 class DescriptionTest : FunSpec({
 
    val spec = DescriptionTest::class.toDescription()
-   val container = spec.appendContainer(DescriptionName.TestName("a context"))
-   val test = container.appendTest(DescriptionName.TestName("nested test"))
-   val testWithPrefix = container.appendTest(DescriptionName.TestName("given", "nested test"))
-   val rootTest = spec.appendTest(DescriptionName.TestName("root test"))
+   val container = spec.appendContainer("a context")
+   val test = container.appendTest("nested test")
+   val testWithPrefix = container.appendTest(createTestName("given", "nested test", true))
+   val rootTest = spec.appendTest("root test")
 
    test("displayPath should include the spec") {
       rootTest.testDisplayPath() shouldBe DisplayPath("root test")
@@ -40,48 +41,52 @@ class DescriptionTest : FunSpec({
 
    test("names should include the spec") {
       rootTest.names() shouldBe listOf(
-         DescriptionName.SpecName("com.sksamuel.kotest.framework.api.DescriptionTest", "com.sksamuel.kotest.framework.api.DescriptionTest"),
-         DescriptionName.TestName("root test")
+         DescriptionName.SpecName("com.sksamuel.kotest.framework.api.DescriptionTest", "DescriptionTest",
+            "com.sksamuel.kotest.framework.api.DescriptionTest"),
+         createTestName("root test")
       )
       test.names() shouldBe listOf(
-         DescriptionName.SpecName("com.sksamuel.kotest.framework.api.DescriptionTest", "com.sksamuel.kotest.framework.api.DescriptionTest"),
-         DescriptionName.TestName("a context"),
-         DescriptionName.TestName("nested test")
+         DescriptionName.SpecName("com.sksamuel.kotest.framework.api.DescriptionTest", "DescriptionTest",
+            "com.sksamuel.kotest.framework.api.DescriptionTest"),
+         createTestName("a context"),
+         createTestName("nested test")
       )
       container.names() shouldBe listOf(
-         DescriptionName.SpecName("com.sksamuel.kotest.framework.api.DescriptionTest", "com.sksamuel.kotest.framework.api.DescriptionTest"),
-         DescriptionName.TestName("a context")
+         DescriptionName.SpecName("com.sksamuel.kotest.framework.api.DescriptionTest", "DescriptionTest",
+            "com.sksamuel.kotest.framework.api.DescriptionTest"),
+         createTestName("a context")
       )
       spec.names() shouldBe listOf(
-         DescriptionName.SpecName("com.sksamuel.kotest.framework.api.DescriptionTest", "com.sksamuel.kotest.framework.api.DescriptionTest")
+         DescriptionName.SpecName("com.sksamuel.kotest.framework.api.DescriptionTest", "DescriptionTest",
+            "com.sksamuel.kotest.framework.api.DescriptionTest")
       )
    }
 
    test("test names should not include the spec") {
       rootTest.testNames() shouldBe listOf(
-         DescriptionName.TestName("root test")
+         createTestName("root test")
       )
       test.testNames() shouldBe listOf(
-         DescriptionName.TestName("a context"),
-         DescriptionName.TestName("nested test")
+         createTestName("a context"),
+         createTestName("nested test")
       )
       container.testNames() shouldBe listOf(
-         DescriptionName.TestName("a context")
+         createTestName("a context")
       )
       spec.testNames() shouldBe emptyList()
    }
 
    test("append") {
-      container.appendContainer(DescriptionName.TestName("foo")) shouldBe
+      container.appendContainer(createTestName("foo")) shouldBe
          Description.TestDescription(
             container,
-            DescriptionName.TestName("foo"),
+            createTestName("foo"),
             TestType.Container
          )
-      test.appendTest(DescriptionName.TestName("foo")) shouldBe
+      test.appendTest(createTestName("foo")) shouldBe
          Description.TestDescription(
             test,
-            DescriptionName.TestName("foo"),
+            createTestName("foo"),
             TestType.Test
          )
    }

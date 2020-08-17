@@ -14,7 +14,6 @@ import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.core.spec.toDescription
 import io.kotest.core.test.Description
-import io.kotest.core.test.DescriptionName
 import io.kotest.matchers.shouldBe
 
 class IsActiveTest : StringSpec() {
@@ -117,7 +116,7 @@ class IsActiveTest : StringSpec() {
 
       "isActive should return false if the test name begins with a !" {
          val test = TestCase.test(
-            IsActiveTest::class.toDescription().appendTest(DescriptionName.TestName("!my test")),
+            IsActiveTest::class.toDescription().appendTest("!my test"),
             this@IsActiveTest
          ) {}
          test.isActive() shouldBe false

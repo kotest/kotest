@@ -2,10 +2,10 @@ package io.kotest.core.spec.style.scopes
 
 import io.kotest.core.Tag
 import io.kotest.core.extensions.TestCaseExtension
-import io.kotest.core.test.DescriptionName
 import io.kotest.core.test.EnabledIf
 import io.kotest.core.test.TestContext
 import io.kotest.core.test.TestType
+import io.kotest.core.test.createTestName
 import io.kotest.core.test.deriveTestConfig
 import kotlin.time.Duration
 import kotlin.time.ExperimentalTime
@@ -14,7 +14,7 @@ interface FreeSpecRootScope : RootScope {
 
    // eg, "this test" - { } // adds a container test
    infix operator fun String.minus(test: suspend FreeScope.() -> Unit) {
-      val name = DescriptionName.TestName(this)
+      val name = createTestName(this)
       registration().addContainerTest(name, xdisabled = false) {
          FreeScope(
             description().append(name, TestType.Container),
@@ -28,7 +28,7 @@ interface FreeSpecRootScope : RootScope {
 
    // "this test" { } // adds a leaf test
    infix operator fun String.invoke(test: suspend TestContext.() -> Unit) {
-      registration().addTest(DescriptionName.TestName(this), xdisabled = false, test = test)
+      registration().addTest(createTestName(this), xdisabled = false, test = test)
    }
 
    // adds a leaf test with config
@@ -54,7 +54,7 @@ interface FreeSpecRootScope : RootScope {
          invocations,
          threads
       )
-      registration().addTest(DescriptionName.TestName(this), false, config, test)
+      registration().addTest(createTestName(this), false, config, test)
    }
 }
 

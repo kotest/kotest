@@ -66,10 +66,10 @@ class AllureWriter {
 
       val result = io.qameta.allure.model.TestResult()
          .setFullName(testCase.description.testDisplayPath().value)
-         .setName(testCase.description.name.displayName())
+         .setName(testCase.description.name.displayName)
          .setUuid(uuid.toString())
          .setTestCaseId(safeId(testCase.description))
-         .setHistoryId(testCase.description.name.displayName())
+         .setHistoryId(testCase.description.name.displayName)
          .setLabels(labels)
          .setLinks(links)
          .setDescription(testCase.description())

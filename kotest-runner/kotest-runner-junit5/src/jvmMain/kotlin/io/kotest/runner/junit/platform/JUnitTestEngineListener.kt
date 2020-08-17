@@ -2,17 +2,18 @@ package io.kotest.runner.junit.platform
 
 import io.kotest.core.spec.Spec
 import io.kotest.core.config.Project
+import io.kotest.core.config.configuration
 import io.kotest.engine.listener.TestEngineListener
 import io.kotest.engine.writeSpecFailures
 import io.kotest.engine.callbacks.AfterProjectListenerException
 import io.kotest.engine.callbacks.BeforeProjectListenerException
 import io.kotest.core.test.Description
-import io.kotest.core.test.DescriptionName
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestStatus
 import io.kotest.core.test.TestType
 import io.kotest.core.spec.toDescription
+import io.kotest.core.test.createTestName
 import io.kotest.mpp.log
 import org.junit.platform.engine.EngineExecutionListener
 import org.junit.platform.engine.TestDescriptor
@@ -96,8 +97,8 @@ class JUnitTestEngineListener(
    override fun engineFinished(t: List<Throwable>) {
       log("Engine finished; throwables=[${t.joinToString(separator = "\n", transform = { it.toString() })}]")
 
-      if (Project.writeSpecFailureFile)
-         writeSpecFailures(failedSpecs, Project.specFailureFilePath)
+      if (configuration.writeSpecFailureFile)
+         writeSpecFailures(failedSpecs, configuration.specFailureFilePath)
 
       val result = t.map {
          when (it) {
@@ -115,7 +116,7 @@ class JUnitTestEngineListener(
             }
             else -> TestExecutionResult.failed(it)
          }
-      }.find { it.status == TestExecutionResult.Status.FAILED } ?: if (Project.failOnIgnoredTests && hasIgnored()) {
+      }.find { it.status == TestExecutionResult.Status.FAILED } ?: if (configuration.failOnIgnoredTests && hasIgnored()) {
          TestExecutionResult.failed(RuntimeException("Build contained ignored test"))
       } else {
          TestExecutionResult.successful()
@@ -185,7 +186,7 @@ class JUnitTestEngineListener(
       if (!isVisible(description)) {
          val spec = descriptors[description]!!
          val test = spec.append(
-            description.append(DescriptionName.TestName("Spec execution failed"), TestType.Test), TestDescriptor.Type.TEST, null,
+            description.append(createTestName("Spec execution failed"), TestType.Test), TestDescriptor.Type.TEST, null,
             Segment.Test
          )
          listener.dynamicTestRegistered(test)

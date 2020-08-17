@@ -2,9 +2,9 @@ package io.kotest.core.spec.style.scopes
 
 import io.kotest.core.spec.KotestDsl
 import io.kotest.core.test.Description
-import io.kotest.core.test.DescriptionName
 import io.kotest.core.test.TestCaseConfig
 import io.kotest.core.test.TestContext
+import io.kotest.core.test.createTestName
 import kotlin.coroutines.CoroutineContext
 
 @Suppress("FunctionName")
@@ -22,7 +22,7 @@ class WordSpecWhenScope(
    suspend infix fun String.xshould(test: suspend WordSpecShouldScope.() -> Unit) = addShould(this, test, true)
 
    private suspend fun addShould(name: String, test: suspend WordSpecShouldScope.() -> Unit, xdisabled: Boolean) {
-      val testName = DescriptionName.TestName("$name should")
+      val testName = createTestName("$name should")
       addContainerTest(testName, xdisabled) {
          WordSpecShouldScope(
             this@WordSpecWhenScope.description.appendContainer(testName),

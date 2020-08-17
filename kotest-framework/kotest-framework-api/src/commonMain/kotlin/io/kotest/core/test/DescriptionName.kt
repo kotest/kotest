@@ -1,133 +1,119 @@
 package io.kotest.core.test
 
-import kotlin.js.JsName
+import io.kotest.core.config.configuration
 
 /**
  * An ADT that models the name of a [Description].
  */
 sealed class DescriptionName {
 
-   @JsName("getDisplayName")
-   abstract fun displayName(): String
+   abstract val name: String
+   abstract val displayName: String
 
    /**
     * Models the name of a spec.
     *
-    * @param qualifiedName the full qualified class name of this spec
+    * @param qualifiedName the fully qualified class name of this spec.
+    * @param name the simple class name for this spec
+    * @param displayName the name to be used for display purposes.
     */
-   data class SpecName(val qualifiedName: String, val displayName: String) : DescriptionName() {
-      override fun displayName(): String = displayName
-   }
+   data class SpecName(
+      val qualifiedName: String,
+      override val name: String,
+      override val displayName: String,
+   ) : DescriptionName()
 
    /**
     * Models the name of a test case. A test case can sometimes have a prefix and or/ suffix set
     * eg when using BehaviorSpec or WordSpec.
     *
-    * @param prefix optional prefix that some specs may specify, such as "Given:"
-    * @param name the user supplied name for the test
-    * @param suffix optional suffix that some specs may specify such as "should"
-    * @param focus if the test name was specified with f:
-    * @param bang if the test name was specified with the ! prefix
-    * @param testNameCase a [TestNameCase] parameter to adjust the captialize of the display name
-    * @param includeAffixesInDisplayName if true then the prefix and/or suffix will be included in the display name.
+    * @param name the name as the user entered it
+    * @param displayName the name to be used for display purposes
+    * @param focus if the test name was specified with a f: prefix
+    * @param bang if the test name was specified with a ! prefix
     */
    data class TestName(
-      val prefix: String?,
-      val name: String,
-      val suffix: String?,
+      override val name: String,
+      override val displayName: String,
       val focus: Boolean,
       val bang: Boolean,
-      val testNameCase: TestNameCase,
-      val includeAffixesInDisplayName: Boolean
    ) : DescriptionName() {
 
       init {
          require(name.isNotBlank() && name.isNotEmpty()) { "Cannot create test with blank or empty name" }
+         require(displayName.isNotBlank() && displayName.isNotEmpty()) { "Cannot create test with blank or empty displayName" }
          require(!focus || !bang) { "Bang and focus cannot both be true" }
       }
+   }
+}
 
-      /**
-       * Creates a display name correctly handling focus, bang, prefix and suffix.
-       * If a prefix is specified the focus/bang is moved to before the prefix.
-       *
-       * This means the user writes when("!disable") and the platform invokes ("when", "!disable")
-       * and ends up with !when disable, so that it is correctly parsed by the test runtime.
-       *
-       */
-      override fun displayName(): String {
+fun createTestName(name: String) = createTestName(null, name, false)
 
-         val flattened = name.trim().replace("\n", "")
-         val withPrefix = when (includeAffixesInDisplayName) {
-            true -> prefix ?: ""
-            false -> ""
-         }
+fun createTestName(prefix: String?, name: String, defaultIncludeAffix: Boolean): DescriptionName.TestName =
+   createTestName(
+      prefix,
+      name,
+      configuration.testNameCase,
+      configuration.includeTestScopeAffixes ?: defaultIncludeAffix
+   )
 
-         val name = if (withPrefix.isBlank()) {
-            when (testNameCase) {
-               TestNameCase.Sentence -> flattened.capitalize()
-               TestNameCase.InitialLowercase -> flattened.uncapitalize()
-               TestNameCase.Lowercase -> flattened.toLowerCase()
-               else -> flattened
-            }
-         } else {
-            when (testNameCase) {
-               TestNameCase.Sentence -> "${withPrefix.capitalize()}${flattened.uncapitalize()}"
-               TestNameCase.InitialLowercase -> "${withPrefix.uncapitalize()}${flattened.uncapitalize()}"
-               TestNameCase.Lowercase -> "${withPrefix.toLowerCase()}${flattened.toLowerCase()}"
-               else -> "$withPrefix$flattened"
-            }
-         }
+/**
+ * Creates a [DescriptionName.TestName] correctly handling focus, bang, prefix and suffix.
+ * If a prefix is specified the focus/bang is moved to before the prefix.
+ *
+ * This means the user writes when("!disable") and the platform invokes ("when", "!disable")
+ * and ends up with !when disable, so that it is correctly parsed by the test runtime.
+ *
+ * @param prefix optional prefix that some specs may specify, such as "Given:"
+ * @param name the user supplied name for the test
+ * @param suffix optional suffix that some specs may specify such as "should"
 
-         return when {
-            focus -> "f:$name"
-            bang -> "!$name"
-            else -> name
-         }
+ * @param testNameCase a [TestNameCase] parameter to adjust the capitalisation of the display name
+ * @param includeAffixesInDisplayName if true then the prefix and/or suffix will be included in the display name.
+ */
+fun createTestName(
+   prefix: String?,
+   name: String,
+   testNameCase: TestNameCase,
+   includeAffixesInDisplayName: Boolean,
+): DescriptionName.TestName {
+
+   val trimmedName = name.trim().replace("\n", "")
+
+   val (focus, bang, parsedName) = when {
+      trimmedName.startsWith("!") -> Triple(first = false, second = true, third = trimmedName.drop(1).trim())
+      trimmedName.startsWith("f:") -> Triple(first = true, second = false, third = trimmedName.drop(2).trim())
+      else -> Triple(first = false, second = false, third = trimmedName)
+   }
+
+   val withPrefix = when (includeAffixesInDisplayName) {
+      true -> prefix ?: ""
+      false -> ""
+   }
+
+   val formattedName = if (withPrefix.isBlank()) {
+      when (testNameCase) {
+         TestNameCase.Sentence -> parsedName.capitalize()
+         TestNameCase.InitialLowercase -> parsedName.uncapitalize()
+         TestNameCase.Lowercase -> parsedName.toLowerCase()
+         else -> parsedName
       }
-
-      companion object {
-
-         operator fun invoke(name: String) = invoke(null, name, false)
-
-         operator fun invoke(name: String, includePrefixByDefault: Boolean): TestName =
-            invoke(null, name, includePrefixByDefault)
-
-         operator fun invoke(prefix: String?, name: String): TestName =
-            invoke(prefix, name, false)
-
-         operator fun invoke(prefix: String?, name: String, includePrefixByDefault: Boolean): TestName {
-            return when {
-               name.trim().startsWith("!") -> TestName(
-                  prefix,
-                  name.trim().drop(1).trim(),
-                  null,
-                  focus = false,
-                  bang = true,
-                  testNameCase = TestNameCase.AsIs,
-                  includeAffixesInDisplayName = includePrefixByDefault,
-               )
-               name.trim().startsWith("f:") -> TestName(
-                  prefix,
-                  name.trim().drop(2).trim(),
-                  null,
-                  focus = true,
-                  bang = false,
-                  testNameCase = TestNameCase.AsIs,
-                  includeAffixesInDisplayName = includePrefixByDefault,
-               )
-               else -> TestName(
-                  prefix,
-                  name,
-                  null,
-                  focus = false,
-                  bang = false,
-                  testNameCase = TestNameCase.AsIs,
-                  includeAffixesInDisplayName = includePrefixByDefault,
-               )
-            }
-         }
+   } else {
+      when (testNameCase) {
+         TestNameCase.Sentence -> "${withPrefix.capitalize()}${parsedName.uncapitalize()}"
+         TestNameCase.InitialLowercase -> "${withPrefix.uncapitalize()}${parsedName.uncapitalize()}"
+         TestNameCase.Lowercase -> "${withPrefix.toLowerCase()}${parsedName.toLowerCase()}"
+         else -> "$withPrefix$parsedName"
       }
    }
+
+   val displayName = when {
+      focus -> "f:$formattedName"
+      bang -> "!$formattedName"
+      else -> formattedName
+   }
+
+   return DescriptionName.TestName(name, displayName, focus, bang)
 }
 
 private fun String.uncapitalize() =

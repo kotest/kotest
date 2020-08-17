@@ -31,7 +31,7 @@ import kotlin.reflect.KClass
 
 fun KClass<out Spec>.toDescription2(): Description {
    val name = annotation<DisplayName>()?.name ?: bestName()
-   return Description.SpecDescription(this, DescriptionName.SpecName(bestName(), name))
+   return Description.SpecDescription(this, DescriptionName.SpecName(bestName(), bestName().split('.').last(), name))
 }
 
 /**
@@ -67,7 +67,7 @@ class KotestJunitPlatformTestEngine : TestEngine {
 
    override fun discover(
       request: EngineDiscoveryRequest,
-      uniqueId: UniqueId
+      uniqueId: UniqueId,
    ): KotestEngineDescriptor {
       log("uniqueId=$uniqueId")
       log(request.string())
@@ -104,7 +104,7 @@ class KotestJunitPlatformTestEngine : TestEngine {
 class KotestEngineDescriptor(
    id: UniqueId,
    val classes: List<KClass<out Spec>>,
-   val testFilters: List<TestFilter>
+   val testFilters: List<TestFilter>,
 ) : EngineDescriptor(id, "Kotest") {
    override fun mayRegisterTests(): Boolean = true
 }

@@ -1,7 +1,7 @@
 package io.kotest.core.spec.style.scopes
 
-import io.kotest.core.test.DescriptionName
 import io.kotest.core.test.TestContext
+import io.kotest.core.test.createTestName
 
 /**
  * Top level registration methods for ExpectSpec methods.
@@ -9,7 +9,7 @@ import io.kotest.core.test.TestContext
 interface ExpectSpecRootScope : RootScope {
 
    fun context(name: String, test: suspend ExpectScope.() -> Unit) {
-      val testName = DescriptionName.TestName("Context: ", name)
+      val testName = createTestName("Context: ", name, false)
       registration().addContainerTest(testName, xdisabled = false) {
          ExpectScope(
             description().appendContainer(testName),
@@ -22,7 +22,7 @@ interface ExpectSpecRootScope : RootScope {
    }
 
    fun xcontext(name: String, test: suspend ExpectScope.() -> Unit) {
-      val testName = DescriptionName.TestName("Context: ", name)
+      val testName = createTestName("Context: ", name, false)
       registration().addContainerTest(testName, xdisabled = true) {
          ExpectScope(
             description().appendContainer(testName),
@@ -35,18 +35,18 @@ interface ExpectSpecRootScope : RootScope {
    }
 
    fun expect(name: String, test: suspend TestContext.() -> Unit) {
-      registration().addTest(DescriptionName.TestName("Expect: ", name), xdisabled = false, test = test)
+      registration().addTest(createTestName("Expect: ", name, false), xdisabled = false, test = test)
    }
 
    fun xexpect(name: String, test: suspend TestContext.() -> Unit) {
-      registration().addTest(DescriptionName.TestName("Expect: ", name), xdisabled = true, test = test)
+      registration().addTest(createTestName("Expect: ", name, false), xdisabled = true, test = test)
    }
 
    fun expect(name: String): RootTestWithConfigBuilder {
-      return RootTestWithConfigBuilder(DescriptionName.TestName("Expect: ", name), registration(), xdisabled = false)
+      return RootTestWithConfigBuilder(createTestName("Expect: ", name, false), registration(), xdisabled = false)
    }
 
    fun xexpect(name: String): RootTestWithConfigBuilder {
-      return RootTestWithConfigBuilder(DescriptionName.TestName("Expect: ", name), registration(), xdisabled = true)
+      return RootTestWithConfigBuilder(createTestName("Expect: ", name, false), registration(), xdisabled = true)
    }
 }

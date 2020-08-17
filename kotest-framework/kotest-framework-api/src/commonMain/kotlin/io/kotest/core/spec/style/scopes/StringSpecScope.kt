@@ -2,9 +2,9 @@ package io.kotest.core.spec.style.scopes
 
 import io.kotest.core.Tag
 import io.kotest.core.extensions.TestCaseExtension
-import io.kotest.core.test.DescriptionName
 import io.kotest.core.test.EnabledIf
 import io.kotest.core.test.TestContext
+import io.kotest.core.test.createTestName
 import kotlin.time.Duration
 import kotlin.time.ExperimentalTime
 
@@ -30,8 +30,8 @@ interface StringSpecScope : RootScope {
       extensions: List<TestCaseExtension>? = null,
       enabledIf: EnabledIf? = null,
       invocationTimeout: Duration? = null,
-      test: suspend TestContext.() -> Unit
-   ) = RootTestWithConfigBuilder(DescriptionName.TestName(this), registration(), false).config(
+      test: suspend TestContext.() -> Unit,
+   ) = RootTestWithConfigBuilder(createTestName(null, this, false), registration(), false).config(
       enabled,
       invocations,
       threads,
@@ -47,5 +47,5 @@ interface StringSpecScope : RootScope {
     * Adds a String Spec test using the default test case config.
     */
    operator fun String.invoke(test: suspend TestContext.() -> Unit) =
-      registration().addTest(DescriptionName.TestName(this), xdisabled = false, test = test)
+      registration().addTest(createTestName(null, this, false), xdisabled = false, test = test)
 }

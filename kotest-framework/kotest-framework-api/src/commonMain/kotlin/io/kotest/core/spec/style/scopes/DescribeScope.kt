@@ -5,6 +5,7 @@ import io.kotest.core.test.Description
 import io.kotest.core.test.DescriptionName
 import io.kotest.core.test.TestCaseConfig
 import io.kotest.core.test.TestContext
+import io.kotest.core.test.createTestName
 import kotlin.coroutines.CoroutineContext
 
 /**
@@ -30,29 +31,29 @@ class DescribeScope(
 ) : ContainerScope {
 
    suspend fun context(name: String, test: suspend DescribeScope.() -> Unit) {
-      val testName = DescriptionName.TestName("Context: ", name)
+      val testName = createTestName("Context: ", name, false)
       containerTest(testName, false, test)
    }
 
    suspend fun describe(name: String, test: suspend DescribeScope.() -> Unit) {
-      val testName = DescriptionName.TestName("Describe: ", name)
+      val testName = createTestName("Describe: ", name, false)
       containerTest(testName, false, test)
    }
 
    suspend fun xcontext(name: String, test: suspend DescribeScope.() -> Unit) {
-      val testName = DescriptionName.TestName("Context: ", name)
+      val testName = createTestName("Context: ", name, false)
       containerTest(testName, true, test)
    }
 
    suspend fun xdescribe(name: String, test: suspend DescribeScope.() -> Unit) {
-      val testName = DescriptionName.TestName("Describe: ", name)
+      val testName = createTestName("Describe: ", name, false)
       containerTest(testName, true, test)
    }
 
    private suspend fun containerTest(
       testName: DescriptionName.TestName,
       xdisabled: Boolean,
-      test: suspend DescribeScope.() -> Unit
+      test: suspend DescribeScope.() -> Unit,
    ) {
       addContainerTest(testName, xdisabled = xdisabled) {
          DescribeScope(
@@ -67,7 +68,7 @@ class DescribeScope(
 
    fun it(name: String) =
       TestWithConfigBuilder(
-         DescriptionName.TestName("It: ", name),
+         createTestName("It: ", name, false),
          testContext,
          defaultConfig,
          xdisabled = false,
@@ -75,15 +76,15 @@ class DescribeScope(
 
    fun xit(name: String) =
       TestWithConfigBuilder(
-         DescriptionName.TestName("It: ", name),
+         createTestName("It: ", name, false),
          testContext,
          defaultConfig,
          xdisabled = true,
       )
 
    suspend fun it(name: String, test: suspend TestContext.() -> Unit) =
-      addTest(DescriptionName.TestName(name), xdisabled = false, test = test)
+      addTest(createTestName(name), xdisabled = false, test = test)
 
    suspend fun xit(name: String, test: suspend TestContext.() -> Unit) =
-      addTest(DescriptionName.TestName(name), xdisabled = true, test = test)
+      addTest(createTestName(name), xdisabled = true, test = test)
 }

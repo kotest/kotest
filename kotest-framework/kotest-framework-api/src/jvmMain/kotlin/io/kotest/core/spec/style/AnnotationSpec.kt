@@ -11,6 +11,7 @@ import io.kotest.core.test.TestType
 import io.kotest.core.test.DescriptionName
 import io.kotest.core.test.TestCaseOrder
 import io.kotest.core.test.createRootTestCase
+import io.kotest.core.test.createTestName
 import io.kotest.mpp.unwrapIfReflectionCall
 import kotlin.reflect.KClass
 import kotlin.reflect.KFunction
@@ -68,7 +69,7 @@ abstract class AnnotationSpec : Spec() {
          val expected = this.getExpectedException()
          createRootTestCase(
             this@AnnotationSpec,
-            DescriptionName.TestName(name),
+            createTestName(name),
             callExpectingException(expected),
             config,
             TestType.Test,
@@ -76,7 +77,7 @@ abstract class AnnotationSpec : Spec() {
       } else {
          createRootTestCase(
             this@AnnotationSpec,
-            DescriptionName.TestName(name),
+            createTestName(name),
             callNotExpectingException(),
             config,
             TestType.Test,

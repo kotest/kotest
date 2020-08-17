@@ -17,7 +17,7 @@ sealed class Description {
    data class TestDescription(
       val parent: Description,
       override val name: DescriptionName.TestName,
-      val type: TestType
+      val type: TestType,
    ) : Description()
 
    fun isSpec() = this is SpecDescription
@@ -35,11 +35,11 @@ sealed class Description {
       TestType.Container -> appendContainer(name)
    }
 
-   fun appendContainer(name: String): TestDescription = appendContainer(DescriptionName.TestName(name))
+   fun appendContainer(name: String): TestDescription = appendContainer(createTestName(null, name, false))
    fun appendContainer(name: DescriptionName.TestName): TestDescription =
       TestDescription(this, name, TestType.Container)
 
-   fun appendTest(name: String): TestDescription = appendTest(DescriptionName.TestName(name))
+   fun appendTest(name: String): TestDescription = appendTest(createTestName(null, name, false))
    fun appendTest(name: DescriptionName.TestName): TestDescription = TestDescription(this, name, TestType.Test)
 
    /**
@@ -86,10 +86,7 @@ sealed class Description {
    /**
     * Returns the name of this description formatted for display.
     */
-   fun displayName() = when (this) {
-      is SpecDescription -> name.displayName
-      is TestDescription -> name.displayName()
-   }
+   fun displayName() = name.displayName
 
    /**
     * Returns a parsable path to the test excluding the spec name.
@@ -101,13 +98,13 @@ sealed class Description {
     * Returns a path to this test excluding the spec, formatted for display.
     * The display path includes prefix/suffix if enabled.
     */
-   fun testDisplayPath(): DisplayPath = DisplayPath(testNames().joinToString(" ") { it.displayName() })
+   fun testDisplayPath(): DisplayPath = DisplayPath(testNames().joinToString(" ") { it.displayName })
 
    /**
     * Returns a path to this test including the spec, formatted for display.
     * The display path includes prefix/suffix if enabled.
     */
-   fun displayPath(): DisplayPath = DisplayPath(names().joinToString(" ") { it.displayName() })
+   fun displayPath(): DisplayPath = DisplayPath(names().joinToString(" ") { it.displayName })
 
    /**
     * Returns a parseable consistent identifier for this description including the spec name.

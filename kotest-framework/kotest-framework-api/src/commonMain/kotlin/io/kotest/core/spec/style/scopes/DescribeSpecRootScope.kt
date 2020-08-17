@@ -1,6 +1,7 @@
 package io.kotest.core.spec.style.scopes
 
 import io.kotest.core.test.DescriptionName
+import io.kotest.core.test.createTestName
 import kotlin.time.ExperimentalTime
 
 /**
@@ -13,17 +14,17 @@ import kotlin.time.ExperimentalTime
 interface DescribeSpecRootScope : RootScope {
 
    fun context(name: String, test: suspend DescribeScope.() -> Unit) {
-      val testName = DescriptionName.TestName("Context: ", name)
+      val testName = createTestName("Context: ", name, false)
       test(testName, test)
    }
 
    fun xcontext(name: String, test: suspend DescribeScope.() -> Unit) {
-      val testName = DescriptionName.TestName("Context: ", name)
+      val testName = createTestName("Context: ", name, false)
       registration().addContainerTest(testName, xdisabled = true) {}
    }
 
    fun describe(name: String, test: suspend DescribeScope.() -> Unit) {
-      val testName = DescriptionName.TestName("Describe: ", name)
+      val testName = createTestName("Describe: ", name, false)
       test(testName, test)
    }
 
@@ -40,7 +41,7 @@ interface DescribeSpecRootScope : RootScope {
    }
 
    fun xdescribe(name: String, test: suspend DescribeScope.() -> Unit) {
-      val testName = DescriptionName.TestName("Describe: ", name)
+      val testName = createTestName("Describe: ", name, false)
       registration().addContainerTest(testName, xdisabled = true) {}
    }
 }
