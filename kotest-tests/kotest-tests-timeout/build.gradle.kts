@@ -1,6 +1,6 @@
 plugins {
    id("java")
-   kotlin("multiplatform")
+   kotlin("jvm")
    id("java-library")
 }
 
@@ -8,40 +8,14 @@ repositories {
    mavenCentral()
 }
 
-kotlin {
-
-   targets {
-      jvm {
-         compilations.all {
-            kotlinOptions {
-               jvmTarget = "1.8"
-            }
-         }
-      }
-   }
-
-   targets.all {
-      compilations.all {
-         kotlinOptions {
-            freeCompilerArgs = freeCompilerArgs + "-Xopt-in=kotlin.RequiresOptIn"
-         }
-      }
-   }
-
-   sourceSets {
-
-      val jvmTest by getting {
-         dependencies {
-            implementation(project(Projects.Engine))
-            implementation(project(Projects.AssertionsShared))
-            implementation(project(Projects.JunitRunner))
-            implementation(Libs.Coroutines.coreJvm)
-         }
-      }
-   }
+dependencies {
+   implementation(project(Projects.Engine))
+   implementation(project(Projects.AssertionsShared))
+   implementation(project(Projects.JunitRunner))
+   implementation(Libs.Coroutines.coreJvm)
 }
 
-tasks.named<Test>("jvmTest") {
+tasks.named<Test>("test") {
    useJUnitPlatform()
    filter {
       isFailOnNoMatchingTests = false

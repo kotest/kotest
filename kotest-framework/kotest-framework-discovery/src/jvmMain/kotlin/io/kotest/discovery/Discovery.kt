@@ -14,6 +14,7 @@ data class DiscoveryResult(val specs: List<KClass<out Spec>>)
 
 /**
  * Scans for tests as specified by a [DiscoveryRequest].
+ *
  * [DiscoveryExtension] `afterScan` functions are applied after the scan is complete to
  * optionally filter the returned classes.
  */
@@ -47,7 +48,9 @@ class Discovery(private val discoveryExtensions: List<DiscoveryExtension> = empt
       selectors.isEmpty() || selectors.any { it.test(kclass) }
    }
 
-   fun discover(request: DiscoveryRequest): DiscoveryResult = requests.getOrPut(request) {
+   fun discover(request: DiscoveryRequest): DiscoveryResult = requests.getOrPut(request) { doDiscovery(request) }
+
+   private fun doDiscovery(request: DiscoveryRequest): DiscoveryResult {
 
       val specClasses =
          if (request.onlySelectsSingleClasses()) loadSelectedSpecs(request) else fromClassPaths
@@ -66,10 +69,11 @@ class Discovery(private val discoveryExtensions: List<DiscoveryExtension> = empt
       val afterExtensions = discoveryExtensions
          .fold(filtered) { cl, ext -> ext.afterScan(cl) }
          .sortedBy { it.simpleName }
+
       log("After discovery extensions there are ${filtered.size} spec classes")
 
       log("Discovery is returning ${afterExtensions.size} specs")
-      DiscoveryResult(afterExtensions)
+      return DiscoveryResult(afterExtensions)
    }
 
    /**

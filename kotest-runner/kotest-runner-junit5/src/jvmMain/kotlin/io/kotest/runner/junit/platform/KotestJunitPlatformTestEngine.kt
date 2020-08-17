@@ -65,6 +65,16 @@ class KotestJunitPlatformTestEngine : TestEngine {
       KotestEngineLauncher(listener).withSpecs(root.classes).launch()
    }
 
+   /**
+    * gradlew --tests rules:
+    * Classname: adds classname selector and ClassMethodNameFilter post discovery filter
+    * Classname.method: adds classname selector and ClassMethodNameFilter post discovery filter
+    * org.Clsasname: doesn't seem to invoke the discover or execute methods.
+    *
+    * filter in gradle test block:
+    * includeTestsMatching("*Test") - class selectors and ClassMethodNameFilter with pattern
+    * includeTestsMatching("*Test") AND includeTestsMatching("org.gradle.internal.*") - class selectors and ClassMethodNameFilter with two patterns
+    */
    override fun discover(
       request: EngineDiscoveryRequest,
       uniqueId: UniqueId,
@@ -72,7 +82,7 @@ class KotestJunitPlatformTestEngine : TestEngine {
       log("uniqueId=$uniqueId")
       log(request.string())
 
-      // if we are excluded from the engines then we say goodnight
+      // if we are excluded from the engines then we say goodnight according to junit rules
       val isKotest = request.engineFilters().all { it.toPredicate().test(this) }
       if (!isKotest)
          return KotestEngineDescriptor(uniqueId, emptyList(), emptyList())
