@@ -1,12 +1,8 @@
 package io.kotest.plugin.intellij.run
 
-import com.intellij.execution.Executor
 import com.intellij.execution.JavaTestFrameworkRunnableState
 import com.intellij.execution.configurations.JavaParameters
 import com.intellij.execution.configurations.ParametersList
-import com.intellij.execution.process.KillableColoredProcessHandler
-import com.intellij.execution.process.OSProcessHandler
-import com.intellij.execution.process.ProcessTerminatedListener
 import com.intellij.execution.runners.ExecutionEnvironment
 import com.intellij.execution.testframework.TestSearchScope
 import com.intellij.openapi.module.Module
@@ -52,6 +48,9 @@ class KotestRunnableState(env: ExecutionEnvironment,
       val testPath = configuration.getTestPath()
       if (testPath != null && testPath.isNotBlank())
          params.programParametersList.add("--testpath", testPath)
+
+      // we want to specify to output in intellij compatible format
+      params.programParametersList.add("--writer", "teamcity")
 
       return params
    }

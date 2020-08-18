@@ -53,6 +53,9 @@ class KotestRunnableState(env: ExecutionEnvironment,
       if (testPath != null && testPath.isNotBlank())
          params.programParametersList.add("--testpath", testPath)
 
+      // we want to specify to output in intellij compatible format
+      params.programParametersList.add("--writer", "teamcity")
+
       return params
    }
 
