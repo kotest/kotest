@@ -37,7 +37,6 @@ kotlin {
 
       val jvmMain by getting {
          dependencies {
-            implementation(kotlin("reflect"))
             implementation(project(Projects.Api))
             implementation(project(Projects.Common))
             implementation(Libs.Classgraph.classgraph)
@@ -46,7 +45,6 @@ kotlin {
 
       val jvmTest by getting {
          dependencies {
-            implementation(kotlin("reflect"))
             implementation(project(Projects.Engine))
             implementation(project(Projects.AssertionsCore))
             // we use the internals of the JVM project in the tests

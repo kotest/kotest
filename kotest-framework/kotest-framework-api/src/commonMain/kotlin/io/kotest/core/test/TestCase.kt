@@ -33,21 +33,21 @@ import io.kotest.core.spec.Spec
  */
 data class TestCase(
    // the description contains the names of all parents, plus the name of this test case
-   val description: Description.TestDescription,
+    val description: Description.Test,
    // the spec instance that contains this testcase
-   val spec: Spec,
+    val spec: Spec,
    // a closure of the test function
-   val test: suspend TestContext.() -> Unit,
-   val source: SourceRef,
-   val type: TestType,
+    val test: suspend TestContext.() -> Unit,
+    val source: SourceRef,
+    val type: TestType,
    // config used when running the test, such as number of
    // invocations, threads, etc
-   val config: TestCaseConfig = TestCaseConfig(),
+    val config: TestCaseConfig = TestCaseConfig(),
    // an optional factory id which is used to indicate which factory (if any) generated this test case.
-   val factoryId: FactoryId? = null,
+    val factoryId: FactoryId? = null,
    // assertion mode can be set to control errors/warnings in a test
    // if null, defaults will be applied
-   val assertionMode: AssertionMode? = null
+    val assertionMode: AssertionMode? = null
 ) {
 
    val displayName = description.displayName()
@@ -66,7 +66,7 @@ data class TestCase(
       /**
        * Creates a [TestCase] of type [TestType.Test], with default config, and derived source ref.
        */
-      fun test(description: Description.TestDescription, spec: Spec, test: suspend TestContext.() -> Unit): TestCase =
+      fun test(description: Description.Test, spec: Spec, test: suspend TestContext.() -> Unit): TestCase =
          TestCase(
             description,
             spec,
@@ -82,9 +82,9 @@ data class TestCase(
        * Creates a [TestCase] of type [TestType.Container], with default config, and derived source ref.
        */
       fun container(
-         description: Description.TestDescription,
-         spec: Spec,
-         test: suspend TestContext.() -> Unit
+          description: Description.Test,
+          spec: Spec,
+          test: suspend TestContext.() -> Unit
       ): TestCase =
          TestCase(
             description,

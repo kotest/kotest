@@ -78,13 +78,13 @@ class DescriptionTest : FunSpec({
 
    test("append") {
       container.appendContainer(createTestName("foo")) shouldBe
-         Description.TestDescription(
+         Description.Test(
             container,
             createTestName("foo"),
             TestType.Container
          )
       test.appendTest(createTestName("foo")) shouldBe
-         Description.TestDescription(
+         Description.Test(
             test,
             createTestName("foo"),
             TestType.Test

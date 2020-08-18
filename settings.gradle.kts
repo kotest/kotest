@@ -4,16 +4,33 @@ pluginManagement {
    repositories {
       mavenCentral()
       gradlePluginPortal()
-      maven ("https://dl.bintray.com/kotlin/kotlin-eap")
+      maven("https://dl.bintray.com/kotlin/kotlin-eap")
       jcenter()
    }
 }
 
 include("kotest-common")
+
+// defines data classes and the spec styles; all classes needed to define specs/testcases live here
 include("kotest-framework:kotest-framework-api")
-include("kotest-framework:kotest-framework-engine")
+
+// contains writers for outputting test results to the console in various display formats such
+// as mocha-inspired format, and a team city compatible format.
+// brings in the API dependency for required data types
+include("kotest-framework:kotest-framework-console")
+
+// used to discovery specs from the classpath at runtime
+// brings in the API dependency for required data types
 include("kotest-framework:kotest-framework-discovery")
+include("kotest-framework:kotest-framework-engine")
+
+// contains basic assertion building block such as shouldBe which are used by both
+// framework and assertion libraries;
+// no user should need to depend on this
 include("kotest-assertions:kotest-assertions-shared")
+
+// the core assertions that cover things like collections, strings, etc
+// users should depend on this if they want to use kotest assertions in tests
 include("kotest-assertions:kotest-assertions-core")
 include("kotest-assertions:kotest-assertions-arrow")
 include("kotest-assertions:kotest-assertions-json")

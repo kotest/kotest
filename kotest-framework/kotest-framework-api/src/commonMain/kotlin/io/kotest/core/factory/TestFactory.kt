@@ -29,7 +29,7 @@ data class TestFactory(
  * @param description the parent description for the generated tests.
  * @param spec the [Spec] that will contain the generated tests.
  */
-internal fun TestFactory.createTestCases(description: Description.SpecDescription, spec: Spec): List<TestCase> {
+internal fun TestFactory.createTestCases(description: Description.Spec, spec: Spec): List<TestCase> {
    return tests.map { dyn ->
       TestCase(
          description = description.append(dyn.name, dyn.type),

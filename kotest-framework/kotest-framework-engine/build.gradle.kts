@@ -61,6 +61,8 @@ kotlin {
             implementation(kotlin("reflect"))
             implementation(Libs.Coroutines.coreJvm)
             implementation(Libs.Classgraph.classgraph)
+            implementation(Libs.Ajalt.mordant)
+            implementation(Libs.Ajalt.clikt)
             api(Libs.JUnitJupiter.api)
          }
       }

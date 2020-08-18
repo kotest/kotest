@@ -31,7 +31,7 @@ import kotlin.reflect.KClass
 
 fun KClass<out Spec>.toDescription2(): Description {
    val name = annotation<DisplayName>()?.name ?: bestName()
-   return Description.SpecDescription(this, DescriptionName.SpecName(bestName(), bestName().split('.').last(), name))
+   return Description.Spec(this, DescriptionName.SpecName(bestName(), bestName().split('.').last(), name))
 }
 
 /**

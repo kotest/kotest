@@ -23,8 +23,8 @@ fun engineId(): UniqueId = UniqueId.forEngine("kotest")
  */
 fun UniqueId.append(description: Description): UniqueId {
    val segment = when (description) {
-      is Description.SpecDescription -> Segment.Spec
-      is Description.TestDescription -> Segment.Test
+      is Description.Spec -> Segment.Spec
+      is Description.Test -> Segment.Test
    }
    return this.append(segment.value, description.displayName())
 }
@@ -111,13 +111,13 @@ fun Description.toTestDescriptor(root: UniqueId): TestDescriptor {
    val id = this.chain().fold(root) { acc, op -> acc.append(op) }
 
    val source = when (this) {
-      is Description.SpecDescription -> ClassSource.from(this.kclass.java)
-      is Description.TestDescription -> MethodSource.from(this.spec().kclass.java.name, this.testPath().value)
+      is Description.Spec -> ClassSource.from(this.kclass.java)
+      is Description.Test -> MethodSource.from(this.spec().kclass.java.name, this.testPath().value)
    }
 
    val type = when (this) {
-      is Description.SpecDescription -> TestDescriptor.Type.CONTAINER
-      is Description.TestDescription -> when (this.type) {
+      is Description.Spec -> TestDescriptor.Type.CONTAINER
+      is Description.Test -> when (this.type) {
          TestType.Container -> TestDescriptor.Type.CONTAINER
          TestType.Test -> TestDescriptor.Type.TEST
       }

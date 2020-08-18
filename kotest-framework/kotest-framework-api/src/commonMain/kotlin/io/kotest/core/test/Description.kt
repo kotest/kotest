@@ -2,7 +2,6 @@
 
 package io.kotest.core.test
 
-import io.kotest.core.spec.Spec
 import kotlin.reflect.KClass
 
 /**
@@ -12,43 +11,48 @@ sealed class Description {
 
    abstract val name: DescriptionName
 
-   data class SpecDescription(val kclass: KClass<out Spec>, override val name: DescriptionName.SpecName) : Description()
+   data class Spec(val kclass: KClass<out io.kotest.core.spec.Spec>, override val name: DescriptionName.SpecName) : Description()
 
-   data class TestDescription(
+   data class Test(
       val parent: Description,
       override val name: DescriptionName.TestName,
       val type: TestType,
    ) : Description()
 
-   fun isSpec() = this is SpecDescription
-   fun isContainer() = this is TestDescription && type == TestType.Container
-   fun isTest() = this is TestDescription && type == TestType.Container
-   fun isRootTest() = this is TestDescription && parent.isSpec()
+   fun isSpec() = this is Spec
+   fun isContainer() = this is Test && type == TestType.Container
+   fun isTest() = this is Test && type == TestType.Container
+   fun isRootTest() = this is Test && parent.isSpec()
+
+   /**
+    * Returns the depth of this description, where a [Spec] is 0, and a root test is 1, and so on.
+    */
+   fun depth() = parents().size
 
    fun parents(): List<Description> = when (this) {
-      is SpecDescription -> emptyList()
-      is TestDescription -> parent.parents() + listOf(this)
+      is Spec -> emptyList()
+      is Test -> parent.parents() + listOf(this)
    }
 
-   fun append(name: DescriptionName.TestName, type: TestType): TestDescription = when (type) {
+   fun append(name: DescriptionName.TestName, type: TestType): Test = when (type) {
       TestType.Test -> appendTest(name)
       TestType.Container -> appendContainer(name)
    }
 
-   fun appendContainer(name: String): TestDescription = appendContainer(createTestName(null, name, false))
-   fun appendContainer(name: DescriptionName.TestName): TestDescription =
-      TestDescription(this, name, TestType.Container)
+   fun appendContainer(name: String): Test = appendContainer(createTestName(null, name, false))
+   fun appendContainer(name: DescriptionName.TestName): Test =
+      Test(this, name, TestType.Container)
 
-   fun appendTest(name: String): TestDescription = appendTest(createTestName(null, name, false))
-   fun appendTest(name: DescriptionName.TestName): TestDescription = TestDescription(this, name, TestType.Test)
+   fun appendTest(name: String): Test = appendTest(createTestName(null, name, false))
+   fun appendTest(name: DescriptionName.TestName): Test = Test(this, name, TestType.Test)
 
    /**
     * Returns all descriptions from the spec to this test, with the spec as the first element,
     * and this description as the last.
     */
    fun chain(): List<Description> = when (this) {
-      is SpecDescription -> listOf(this)
-      is TestDescription -> parent.chain() + listOf(this)
+      is Spec -> listOf(this)
+      is Test -> parent.chain() + listOf(this)
    }
 
    /**
@@ -75,12 +79,12 @@ sealed class Description {
    fun testNames(): List<DescriptionName.TestName> = names().filterIsInstance<DescriptionName.TestName>()
 
    /**
-    * Returns the [SpecDescription] that is the root for this description.
+    * Returns the [Spec] that is the root for this description.
     * If this description is already a spec, then will return itself.
     */
-   fun spec(): SpecDescription = when (this) {
-      is SpecDescription -> this
-      is TestDescription -> parent.spec()
+   fun spec(): Spec = when (this) {
+      is Spec -> this
+      is Test -> parent.spec()
    }
 
    /**
@@ -120,8 +124,8 @@ sealed class Description {
     */
    fun isParentOf(description: Description): Boolean = when (description) {
       // nothing can be the parent of a spec
-      is SpecDescription -> false
-      is TestDescription -> id() == description.parent.id()
+      is Spec -> false
+      is Test -> id() == description.parent.id()
    }
 
    /**
@@ -130,8 +134,8 @@ sealed class Description {
     */
    fun isAncestorOf(description: Description): Boolean = when (description) {
       // nothing can be an ancestor of a spec
-      is SpecDescription -> false
-      is TestDescription -> isParentOf(description) || isAncestorOf(description.parent)
+      is Spec -> false
+      is Test -> isParentOf(description) || isAncestorOf(description.parent)
    }
 
    /**
