@@ -29,6 +29,9 @@ dependencies {
 
    // used to write to the console with fancy colours!
    implementation(Libs.Ajalt.mordant)
+
+   testImplementation(project(Projects.AssertionsCore))
+   testImplementation(project(Projects.JunitRunner))
 }
 
 tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
