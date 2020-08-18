@@ -13,20 +13,22 @@ repositories {
 
 dependencies {
 
-   implementation(project(Projects.Api))
+   // needed to compile against the engine launcher and discovery
+   // but runtime classes will be provided by the dependencies in the users own build
+   compileOnly(project(Projects.Api))
+   compileOnly(project(Projects.Engine))
+
+   // needed to scan for spec classes
+   implementation(project(Projects.Discovery))
+
+   // needed to check for opentest4j.AssertionFailedError so we can add a better error to team city
+   implementation(Libs.OpenTest4j.core)
 
    // needed to parse the command line args
    implementation(Libs.Ajalt.clikt)
 
    // used to write to the console with fancy colours!
    implementation(Libs.Ajalt.mordant)
-
-   // needed to check for opentest4j.AssertionFailedError so we can add a better error to team city
-   implementation(Libs.OpenTest4j.core)
-
-   testImplementation(project(Projects.AssertionsCore))
-   testImplementation(project(Projects.JunitRunner))
-   testImplementation(Libs.Mocking.mockk)
 }
 
 tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {

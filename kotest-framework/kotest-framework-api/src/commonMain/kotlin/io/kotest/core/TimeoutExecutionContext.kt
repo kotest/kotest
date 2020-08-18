@@ -13,6 +13,6 @@ interface TimeoutExecutionContext {
  * as the caller. This means we cannot detect a deadlock in a test as we can
  * on the JVM by running the test in a seperate thread.
  */
-internal object CallingThreadExecutionContext : TimeoutExecutionContext {
+object CallingThreadExecutionContext : TimeoutExecutionContext {
    override suspend fun <T> executeWithTimeoutInterruption(timeoutInMillis: Long, f: suspend () -> T): T = f()
 }

@@ -11,7 +11,8 @@ sealed class Description {
 
    abstract val name: DescriptionName
 
-   data class Spec(val kclass: KClass<out io.kotest.core.spec.Spec>, override val name: DescriptionName.SpecName) : Description()
+   data class Spec(val kclass: KClass<out io.kotest.core.spec.Spec>, override val name: DescriptionName.SpecName) :
+      Description()
 
    data class Test(
       val parent: Description,
@@ -93,10 +94,16 @@ sealed class Description {
    fun displayName() = name.displayName
 
    /**
+    * Returns a parsable path to the test including the spec name.
+    * The test path doesn't include prefix/suffix information.
+    */
+   fun path(): TestPath = TestPath(names().joinToString(TestPathSeparator) { it.name })
+
+   /**
     * Returns a parsable path to the test excluding the spec name.
     * The test path doesn't include prefix/suffix information.
     */
-   fun testPath(): TestPath = TestPath(testNames().joinToString(TestPathSeperator) { it.name })
+   fun testPath(): TestPath = TestPath(testNames().joinToString(TestPathSeparator) { it.name })
 
    /**
     * Returns a path to this test excluding the spec, formatted for display.
@@ -149,12 +156,11 @@ sealed class Description {
     * instance is either an ancestor of, of the same as, the given description.
     * Ignores test prefixes when comparing.
     */
-   fun isOnPath(description: Description): Boolean =
-      this.testPath() == description.testPath() || this.isAncestorOf(description)
+   fun isOnPath(description: Description): Boolean = this.path() == description.path() || this.isAncestorOf(description)
 }
 
 data class TestId(val value: String)
 data class TestPath(val value: String)
 data class DisplayPath(val value: String)
 
-const val TestPathSeperator = " -- "
+const val TestPathSeparator = " -- "

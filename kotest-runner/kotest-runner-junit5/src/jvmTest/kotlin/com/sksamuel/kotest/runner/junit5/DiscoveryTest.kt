@@ -1,11 +1,11 @@
 package com.sksamuel.kotest.runner.junit5
 
 import io.kotest.core.spec.style.FunSpec
-import io.kotest.discovery.Discovery
-import io.kotest.discovery.DiscoveryFilter
-import io.kotest.discovery.DiscoveryRequest
-import io.kotest.discovery.DiscoverySelector
-import io.kotest.discovery.Modifier
+import io.kotest.framework.discovery.Discovery
+import io.kotest.framework.discovery.DiscoveryFilter
+import io.kotest.framework.discovery.DiscoveryRequest
+import io.kotest.framework.discovery.DiscoverySelector
+import io.kotest.framework.discovery.Modifier
 import io.kotest.matchers.shouldBe
 import io.kotest.runner.junit.platform.KotestJunitPlatformTestEngine
 import org.junit.platform.engine.UniqueId

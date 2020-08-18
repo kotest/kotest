@@ -1,9 +1,9 @@
 package io.kotest.runner.junit.platform
 
-import io.kotest.discovery.DiscoveryFilter
-import io.kotest.discovery.DiscoveryRequest
-import io.kotest.discovery.DiscoverySelector
-import io.kotest.discovery.Modifier
+import io.kotest.framework.discovery.DiscoveryFilter
+import io.kotest.framework.discovery.DiscoveryRequest
+import io.kotest.framework.discovery.DiscoverySelector
+import io.kotest.framework.discovery.Modifier
 import org.junit.platform.engine.EngineDiscoveryRequest
 import org.junit.platform.engine.discovery.ClassNameFilter
 import org.junit.platform.engine.discovery.ClassSelector

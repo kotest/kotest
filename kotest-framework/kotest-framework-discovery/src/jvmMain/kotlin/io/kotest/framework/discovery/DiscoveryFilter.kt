@@ -1,4 +1,4 @@
-package io.kotest.discovery
+package io.kotest.framework.discovery
 
 import io.kotest.core.spec.Spec
 import kotlin.reflect.KClass

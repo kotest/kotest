@@ -1,9 +1,10 @@
-package io.kotest.discovery
+@file:Suppress("unused")
+
+package io.kotest.framework.discovery
 
 import io.github.classgraph.ClassGraph
 import io.kotest.core.extensions.DiscoveryExtension
 import io.kotest.core.spec.Spec
-import io.kotest.mpp.log
 import java.util.concurrent.ConcurrentHashMap
 import kotlin.reflect.KClass
 
@@ -26,11 +27,7 @@ class Discovery(private val discoveryExtensions: List<DiscoveryExtension> = empt
    private val isSpecSubclass: (KClass<*>) -> Boolean = { Spec::class.java.isAssignableFrom(it.java) }
    private val isAbstract: (KClass<*>) -> Boolean = { it.isAbstract }
    private val isClass: (KClass<*>) -> Boolean = { it.objectInstance == null }
-   private val fromClassPaths: List<KClass<out Spec>> by lazy {
-      scanUris().apply {
-         log("Scan discovered $size classes in the classpaths...")
-      }
-   }
+   private val fromClassPaths: List<KClass<out Spec>> by lazy { scanUris() }
 
    /**
     * Returns a function that applies all the [DiscoveryFilter]s to a given class.
@@ -131,5 +128,16 @@ class Discovery(private val discoveryExtensions: List<DiscoveryExtension> = empt
             .map { Class.forName(it.name).kotlin }
             .filterIsInstance<KClass<out Spec>>()
       }
+   }
+}
+
+private fun enabled() = System.getProperty("KOTEST_DEBUG") != null || System.getenv("KOTEST_DEBUG") != null
+
+fun log(msg: String) = log(msg, null)
+
+fun log(msg: String, t: Throwable?) {
+   if (enabled()) {
+      println(msg)
+      if (t != null) println(t)
    }
 }

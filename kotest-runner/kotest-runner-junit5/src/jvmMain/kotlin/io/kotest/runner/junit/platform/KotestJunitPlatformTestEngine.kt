@@ -6,13 +6,13 @@ import io.kotest.core.filter.TestFilter
 import io.kotest.core.filter.TestFilterResult
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.toDescription
-import io.kotest.discovery.Discovery
 import io.kotest.engine.KotestEngineLauncher
 import io.kotest.engine.config.ConfigManager
 import io.kotest.engine.extensions.IgnoredSpecDiscoveryExtension
 import io.kotest.engine.extensions.TagsExcludedDiscoveryExtension
 import io.kotest.engine.listener.IsolationTestEngineListener
 import io.kotest.engine.listener.SynchronizedTestEngineListener
+import io.kotest.framework.discovery.Discovery
 import io.kotest.mpp.log
 import kotlinx.coroutines.runBlocking
 import org.junit.platform.engine.EngineDiscoveryRequest

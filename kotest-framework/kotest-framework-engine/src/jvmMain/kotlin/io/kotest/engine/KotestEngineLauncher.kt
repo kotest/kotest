@@ -39,9 +39,9 @@ class KotestEngineLauncher(
       }
    }
 
-   fun addFilter(filter: TestFilter) = addFilters(listOf(filter))
+   fun withFilter(filter: TestFilter) = withFilters(listOf(filter))
 
-   fun addFilters(filters: List<TestFilter>): KotestEngineLauncher {
+   fun withFilters(filters: List<TestFilter>): KotestEngineLauncher {
       return KotestEngineLauncher(
          listener = listener,
          specs = specs,

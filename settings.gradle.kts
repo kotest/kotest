@@ -14,14 +14,17 @@ include("kotest-common")
 // defines data classes and the spec styles; all classes needed to define specs/testcases live here
 include("kotest-framework:kotest-framework-api")
 
-// contains writers for outputting test results to the console in various display formats such
-// as mocha-inspired format, and a team city compatible format.
-// brings in the API dependency for required data types
-include("kotest-framework:kotest-framework-console")
-
 // used to discovery specs from the classpath at runtime
 // brings in the API dependency for required data types
 include("kotest-framework:kotest-framework-discovery")
+
+// public api contract that tools can use to launch instances of the kotest engine
+// tools can depend on this module and it won't bring in other dependencies, instead requires
+// that user add the engine dependency at runtime
+include("kotest-framework:kotest-framework-launcher")
+
+// contains the JVM execution engine implementation
+// brings in the API dependency
 include("kotest-framework:kotest-framework-engine")
 
 // contains basic assertion building block such as shouldBe which are used by both

@@ -18,9 +18,6 @@ interface TestFilter : Filter {
    fun filter(description: Description): TestFilterResult
 }
 
-@Deprecated("Replaced with TestFilter")
-interface TestCaseFilter : TestFilter
-
 enum class TestFilterResult {
    Include, Exclude
 }

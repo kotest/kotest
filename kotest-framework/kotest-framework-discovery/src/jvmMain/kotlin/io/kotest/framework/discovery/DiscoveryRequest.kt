@@ -1,6 +1,4 @@
-package io.kotest.discovery
-
-import io.kotest.core.spec.Spec
+package io.kotest.framework.discovery
 
 /**
  * [DiscoveryRequest] describes how to discover test classes.
