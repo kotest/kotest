@@ -14,8 +14,6 @@ import java.io.File
 class KotestRunnableState(env: ExecutionEnvironment,
                           private val config: KotestConfiguration) : JavaTestFrameworkRunnableState<KotestConfiguration>(env) {
 
-   private val mainClass = "io.kotest.launcher.LauncherKt"
-
    private val requiredJars = listOf(
       "io.kotest.launcher.TeamCityMessages",
       "com.github.ajalt.clikt.core.CliktCommand",
@@ -33,7 +31,7 @@ class KotestRunnableState(env: ExecutionEnvironment,
       val params = super.createJavaParameters()
       // this main class is what will be executed by intellij when someone clicks run
       // it is a main function that will launch the KotestConsoleRunner
-      params.mainClass = mainClass
+      params.mainClass = determineKotestMainClass()
 
       val packageName = configuration.getPackageName()
       if (packageName != null && packageName.isNotBlank())

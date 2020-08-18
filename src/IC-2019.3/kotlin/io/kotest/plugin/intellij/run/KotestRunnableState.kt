@@ -37,7 +37,7 @@ class KotestRunnableState(env: ExecutionEnvironment,
       val params = super.createJavaParameters()
       // this main class is what will be executed by intellij when someone clicks run
       // it is a main function that will launch the KotestConsoleRunner
-      params.mainClass = mainClass
+      params.mainClass = determineKotestMainClass()
 
       val packageName = configuration.getPackageName()
       if (packageName != null && packageName.isNotBlank())
