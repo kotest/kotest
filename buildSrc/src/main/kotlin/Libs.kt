@@ -12,6 +12,11 @@ object Libs {
       const val validation = "io.arrow-kt:arrow-validation:$version"
    }
 
+   object Ajalt {
+      const val clikt = "com.github.ajalt:clikt:2.7.1"
+      const val mordant = "com.github.ajalt:mordant:1.2.1"
+   }
+
    object Allure {
       private const val version = "2.13.5"
       const val commons = "io.qameta.allure:allure-java-commons:$version"
@@ -86,7 +91,7 @@ object Libs {
    }
 
    object Coroutines {
-      private const val version = "1.3.8-1.4.0-rc"
+      private const val version = "1.3.9"
       const val coreCommon = "org.jetbrains.kotlinx:kotlinx-coroutines-core:$version"
       const val coreJvm = "org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm:$version"
       const val coreJs = "org.jetbrains.kotlinx:kotlinx-coroutines-core-js:$version"

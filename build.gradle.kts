@@ -23,7 +23,7 @@ plugins {
 
    // To get versions report, execute:
    // Win: .\gradlew.bat dependencyUpdates -Drevision=release
-   // Other: gradle dependencyUpdates -Drevision=release
+   // Other: ./gradlew dependencyUpdates -Drevision=release
    id("com.github.ben-manes.versions") version Libs.gradleVersionsPluginVersion
 }
 
