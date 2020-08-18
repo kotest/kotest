@@ -1,4 +1,4 @@
-package console
+package com.sksamuel.kotest.framework.console
 
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.spec.toDescription
@@ -32,7 +32,7 @@ class BasicConsoleWriterTest : FunSpec() {
             writer.testStarted(test2)
             writer.testFinished(test2, TestResult.error(RuntimeException("wibble boom"), 0))
             writer.testStarted(test3)
-            writer.testFinished(test3, TestResult.failure(AssertionError("wobble vablam"), 0))
+            writer.testFinished(test3, TestResult.failure(AssertionError("wobble blam"), 0))
             writer.testStarted(test4)
             writer.testFinished(test4, TestResult.ignored("don't like it"))
             writer.testStarted(test5)
@@ -41,9 +41,12 @@ class BasicConsoleWriterTest : FunSpec() {
             writer.engineFinished(emptyList())
          }
 
+         println(out)
+
          out.shouldContain("com.sksamuel.kotest.framework.console.BasicConsoleWriterTest")
          out.shouldContain("\ta test")
          out.shouldContain("\tcause: wibble boom (BasicConsoleWriterTest.kt:21)")
+         out.shouldContain("\tcause: wobble blam (BasicConsoleWriterTest.kt:22)")
          out.shouldContain("Kotest completed in")
          out.shouldContain("Specs: completed 1, tests 5")
          out.shouldContain("Tests: passed 2, failed 2, ignored 1")
@@ -94,8 +97,6 @@ class BasicConsoleWriterTest : FunSpec() {
             writer.specFinished(this@BasicConsoleWriterTest::class, null, emptyMap())
             writer.engineFinished(emptyList())
          }
-
-         //println(out)
 
          out.shouldContainInOrder(
             "\tfirst test",

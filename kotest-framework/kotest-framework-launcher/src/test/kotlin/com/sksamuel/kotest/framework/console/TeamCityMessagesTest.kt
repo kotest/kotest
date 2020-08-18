@@ -1,4 +1,4 @@
-package console
+package com.sksamuel.kotest.framework.console
 
 import io.kotest.core.spec.style.ShouldSpec
 import io.kotest.framework.console.TeamCityMessages

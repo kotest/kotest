@@ -1,4 +1,4 @@
-package console
+package com.sksamuel.kotest.framework.console
 
 import io.kotest.assertions.Actual
 import io.kotest.assertions.Expected
