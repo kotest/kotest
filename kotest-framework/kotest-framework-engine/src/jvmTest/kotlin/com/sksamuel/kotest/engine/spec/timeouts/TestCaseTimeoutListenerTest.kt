@@ -11,6 +11,7 @@ import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestCaseConfig
 import io.kotest.core.test.TestContext
 import io.kotest.core.test.TestResult
+import io.kotest.engine.toTestResult
 import io.kotest.matchers.shouldBe
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
@@ -62,7 +63,7 @@ class TestCaseTimeoutListenerTest : FunSpec() {
             override val testCase: TestCase = testCase
          }
          val testExecutionListener = object : TestCaseExecutionListener {}
-         val executor = TestCaseExecutor(testExecutionListener, ExecutorExecutionContext)
+         val executor = TestCaseExecutor(testExecutionListener, ExecutorExecutionContext, {}, ::toTestResult)
          executor.execute(testCase, context)
       }
 
@@ -98,7 +99,7 @@ class TestCaseTimeoutListenerTest : FunSpec() {
             override val testCase: TestCase = testCase
          }
          val testExecutionListener = object : TestCaseExecutionListener {}
-         val executor = TestCaseExecutor(testExecutionListener, ExecutorExecutionContext)
+         val executor = TestCaseExecutor(testExecutionListener, ExecutorExecutionContext, {}, ::toTestResult)
          executor.execute(testCase, context)
       }
    }
