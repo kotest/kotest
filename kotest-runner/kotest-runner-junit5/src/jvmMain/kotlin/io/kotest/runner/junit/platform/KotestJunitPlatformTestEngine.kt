@@ -1,22 +1,18 @@
 package io.kotest.runner.junit.platform
 
-import io.kotest.core.spec.DisplayName
-import io.kotest.engine.listener.IsolationTestEngineListener
-import io.kotest.engine.KotestEngineLauncher
-import io.kotest.engine.listener.SynchronizedTestEngineListener
+import io.kotest.core.config.configuration
+import io.kotest.core.extensions.DiscoveryExtension
 import io.kotest.core.filter.TestFilter
 import io.kotest.core.filter.TestFilterResult
 import io.kotest.core.spec.Spec
-import io.kotest.core.test.Description
-import io.kotest.core.test.DescriptionName
+import io.kotest.core.spec.toDescription
 import io.kotest.discovery.Discovery
-import io.kotest.core.config.configuration
-import io.kotest.core.extensions.DiscoveryExtension
+import io.kotest.engine.KotestEngineLauncher
 import io.kotest.engine.config.ConfigManager
 import io.kotest.engine.extensions.IgnoredSpecDiscoveryExtension
 import io.kotest.engine.extensions.TagsExcludedDiscoveryExtension
-import io.kotest.mpp.annotation
-import io.kotest.mpp.bestName
+import io.kotest.engine.listener.IsolationTestEngineListener
+import io.kotest.engine.listener.SynchronizedTestEngineListener
 import io.kotest.mpp.log
 import kotlinx.coroutines.runBlocking
 import org.junit.platform.engine.EngineDiscoveryRequest
@@ -28,11 +24,6 @@ import org.junit.platform.engine.support.descriptor.EngineDescriptor
 import org.junit.platform.launcher.LauncherDiscoveryRequest
 import java.util.Optional
 import kotlin.reflect.KClass
-
-fun KClass<out Spec>.toDescription2(): Description {
-   val name = annotation<DisplayName>()?.name ?: bestName()
-   return Description.Spec(this, DescriptionName.SpecName(bestName(), bestName().split('.').last(), name))
-}
 
 /**
  * A Kotest implementation of a Junit Platform [TestEngine].
@@ -103,7 +94,7 @@ class KotestJunitPlatformTestEngine : TestEngine {
          val discovery = Discovery(extensions)
          val result = discovery.discover(request.toKotestDiscoveryRequest())
          val classes =
-            result.specs.filter { spec -> testFilters.all { it.filter(spec.toDescription2()) == TestFilterResult.Include } }
+            result.specs.filter { spec -> testFilters.all { it.filter(spec.toDescription()) == TestFilterResult.Include } }
          KotestEngineDescriptor(uniqueId, classes, testFilters)
       } else {
          KotestEngineDescriptor(uniqueId, emptyList(), emptyList())

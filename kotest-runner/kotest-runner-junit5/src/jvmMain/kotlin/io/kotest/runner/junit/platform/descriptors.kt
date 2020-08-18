@@ -3,6 +3,7 @@ package io.kotest.runner.junit.platform
 import io.kotest.engine.KotestEngineSystemProperties
 import io.kotest.core.test.Description
 import io.kotest.core.spec.Spec
+import io.kotest.core.spec.toDescription
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestType
 import org.junit.platform.engine.TestDescriptor
@@ -47,7 +48,7 @@ sealed class Segment {
  */
 fun KClass<out Spec>.descriptor(parent: TestDescriptor): TestDescriptor {
    val source = ClassSource.from(java)
-   return parent.append(toDescription2(), TestDescriptor.Type.CONTAINER, source, Segment.Spec)
+   return parent.append(toDescription(), TestDescriptor.Type.CONTAINER, source, Segment.Spec)
 }
 
 /**
