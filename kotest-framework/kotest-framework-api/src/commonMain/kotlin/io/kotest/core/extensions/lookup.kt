@@ -1,9 +1,6 @@
-package io.kotest.engine.extensions
+package io.kotest.core.extensions
 
 import io.kotest.core.config.configuration
-import io.kotest.core.extensions.Extension
-import io.kotest.core.extensions.SpecExtension
-import io.kotest.core.extensions.TestCaseExtension
 import io.kotest.core.spec.Spec
 import io.kotest.core.test.TestCase
 

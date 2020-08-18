@@ -1,4 +1,4 @@
-package io.kotest.engine
+package io.kotest.mpp
 
 import kotlinx.coroutines.runBlocking
 import java.util.concurrent.Executors

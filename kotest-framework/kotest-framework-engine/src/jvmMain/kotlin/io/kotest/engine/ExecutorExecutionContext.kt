@@ -1,5 +1,7 @@
 package io.kotest.engine
 
+import io.kotest.core.TimeoutExecutionContext
+import io.kotest.mpp.NamedThreadFactory
 import io.kotest.mpp.log
 import kotlinx.coroutines.runBlocking
 import java.util.concurrent.Executors

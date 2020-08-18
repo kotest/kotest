@@ -1,19 +1,20 @@
 package io.kotest.engine
 
 import io.kotest.core.Tags
-import io.kotest.core.config.Project
 import io.kotest.core.config.configuration
 import io.kotest.core.filter.TestFilter
 import io.kotest.core.spec.Spec
-import io.kotest.engine.callbacks.afterProject
-import io.kotest.engine.callbacks.beforeProject
+import io.kotest.core.spec.afterProject
+import io.kotest.core.spec.beforeProject
 import io.kotest.engine.config.ConfigManager
+import io.kotest.engine.config.dumpProjectConfig
 import io.kotest.engine.extensions.SpecifiedTagsTagExtension
 import io.kotest.engine.listener.TestEngineListener
 import io.kotest.engine.spec.SpecExecutor
 import io.kotest.engine.spec.isDoNotParallelize
 import io.kotest.engine.spec.sort
 import io.kotest.fp.Try
+import io.kotest.mpp.NamedThreadFactory
 import io.kotest.mpp.log
 import kotlinx.coroutines.runBlocking
 import java.util.Collections.emptyList
@@ -42,6 +43,9 @@ class KotestEngine(private val config: KotestEngineConfig) {
 
       // if the engine was invoked with explicit filters, those are registered here
       configuration.registerFilters(config.filters)
+
+      // outputs the engine settings to the console
+      configuration.dumpProjectConfig()
    }
 
    /**
@@ -49,7 +53,7 @@ class KotestEngine(private val config: KotestEngineConfig) {
     */
    suspend fun execute(plan: TestPlan) {
       notifyListenerEngineStarted(plan)
-         .flatMap { Project.listeners().beforeProject() }
+         .flatMap { configuration.listeners().beforeProject() }
          .fold(
             { error ->
                // any exception here is swallowed, as we already have an exception to report
@@ -63,7 +67,7 @@ class KotestEngine(private val config: KotestEngineConfig) {
             },
             { errors ->
                if (errors.isNotEmpty()) {
-                  Project.listeners().afterProject().fold(
+                  configuration.listeners().afterProject().fold(
                      { end(errors + listOf(it)) },
                      { end(errors + it) }
                   )
@@ -84,7 +88,7 @@ class KotestEngine(private val config: KotestEngineConfig) {
             },
             {
                // any exception here is used to notify the listener
-               Project.listeners().afterProject().fold(
+               configuration.listeners().afterProject().fold(
                   { end(listOf(it)) },
                   { end(it) }
                )
@@ -94,7 +98,7 @@ class KotestEngine(private val config: KotestEngineConfig) {
    }
 
    fun cleanup() {
-      Project.deregisterFilters(config.filters)
+      configuration.deregisterFilters(config.filters)
    }
 
    private fun notifyListenerEngineStarted(plan: TestPlan) = Try { config.listener.engineStarted(plan.classes) }
@@ -103,16 +107,16 @@ class KotestEngine(private val config: KotestEngineConfig) {
       log("Submitting ${plan.classes.size} specs")
 
       // the classes are ordered using an instance of SpecExecutionOrder
-      val ordered = plan.classes.sort(Project.specExecutionOrder)
+      val ordered = plan.classes.sort(configuration.specExecutionOrder)
 
       // if parallelize is enabled, then we must order the specs into two sets, depending on if they
       // are thread safe or not.
-      val (single, parallel) = if (Project.parallelism == 1)
+      val (single, parallel) = if (configuration.parallelism == 1)
          ordered to emptyList()
       else
          ordered.partition { it.isDoNotParallelize() }
 
-      if (parallel.isNotEmpty()) submitBatch(parallel, Project.parallelism)
+      if (parallel.isNotEmpty()) submitBatch(parallel, configuration.parallelism)
       if (single.isNotEmpty()) submitBatch(single, 1)
    }
 

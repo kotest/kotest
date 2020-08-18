@@ -1,10 +1,10 @@
 package com.sksamuel.kotest.core.runtime
 
 import io.kotest.assertions.throwables.shouldThrow
-import io.kotest.engine.CallingThreadExecutionContext
-import io.kotest.engine.TimeoutExecutionContext
+import io.kotest.core.CallingThreadExecutionContext
+import io.kotest.core.TimeoutExecutionContext
 import io.kotest.engine.ExecutorExecutionContext
-import io.kotest.engine.test.TestCaseExecutionListener
+import io.kotest.core.test.TestCaseExecutionListener
 import io.kotest.engine.TestCaseExecutor
 import io.kotest.engine.TimeoutException
 import io.kotest.core.spec.style.FunSpec

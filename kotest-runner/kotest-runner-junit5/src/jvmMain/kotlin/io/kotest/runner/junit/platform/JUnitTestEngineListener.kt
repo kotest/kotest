@@ -1,12 +1,11 @@
 package io.kotest.runner.junit.platform
 
 import io.kotest.core.spec.Spec
-import io.kotest.core.config.Project
 import io.kotest.core.config.configuration
 import io.kotest.engine.listener.TestEngineListener
 import io.kotest.engine.writeSpecFailures
-import io.kotest.engine.callbacks.AfterProjectListenerException
-import io.kotest.engine.callbacks.BeforeProjectListenerException
+import io.kotest.core.listeners.AfterProjectListenerException
+import io.kotest.core.listeners.BeforeProjectListenerException
 import io.kotest.core.test.Description
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult

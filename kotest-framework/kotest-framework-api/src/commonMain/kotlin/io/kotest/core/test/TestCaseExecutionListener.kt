@@ -1,4 +1,4 @@
-package io.kotest.engine.test
+package io.kotest.core.test
 
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult

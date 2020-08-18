@@ -13,7 +13,7 @@ import io.kotest.core.spec.*
 import io.kotest.core.spec.style.scopes.DslState
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
-import io.kotest.engine.extensions.resolvedSpecExtensions
+import io.kotest.core.extensions.resolvedSpecExtensions
 import io.kotest.engine.instantiateSpec
 import io.kotest.engine.test.isActive
 import io.kotest.fp.Try

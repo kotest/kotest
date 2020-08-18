@@ -1,14 +1,13 @@
-package io.kotest.engine.callbacks
+package io.kotest.core.spec
 
 import io.kotest.core.config.configuration
 import io.kotest.core.config.testListeners
+import io.kotest.core.listeners.AfterProjectListenerException
+import io.kotest.core.listeners.BeforeProjectListenerException
 import io.kotest.core.listeners.Listener
 import io.kotest.core.listeners.ProjectListener
-import io.kotest.core.spec.Spec
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
-import io.kotest.engine.config.dumpProjectConfig
-import io.kotest.engine.spec.resolvedTestListeners
 import io.kotest.fp.Try
 import io.kotest.mpp.log
 
@@ -40,11 +39,10 @@ suspend fun List<Listener>.afterProject(): Try<List<AfterProjectListenerExceptio
 }.mapFailure { AfterProjectListenerException("afterProjectsInvocation", it) }
 
 /**
- * Invokes the beforeProject listeners, and prints project config using [dumpProjectConfig].
+ * Invokes the beforeProject listeners.
  */
 suspend fun List<Listener>.beforeProject(): Try<List<BeforeProjectListenerException>> = Try {
    log("invokeBeforeProject")
-   configuration.dumpProjectConfig()
 
    filterIsInstance<ProjectListener>()
       .resolveName()

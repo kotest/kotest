@@ -5,7 +5,7 @@ import io.kotest.core.config.Project
 import io.kotest.engine.KotestEngineLauncher
 import io.kotest.engine.listener.TestEngineListener
 import io.kotest.core.listeners.ProjectListener
-import io.kotest.engine.callbacks.AfterProjectListenerException
+import io.kotest.core.listeners.AfterProjectListenerException
 import io.kotest.core.spec.DoNotParallelize
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.collections.shouldHaveSize

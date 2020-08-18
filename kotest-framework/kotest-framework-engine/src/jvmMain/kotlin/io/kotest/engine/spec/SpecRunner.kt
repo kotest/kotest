@@ -5,7 +5,7 @@ import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.Spec
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
-import io.kotest.engine.NamedThreadFactory
+import io.kotest.mpp.NamedThreadFactory
 import io.kotest.engine.instantiateSpec
 import io.kotest.fp.Try
 import io.kotest.mpp.log

@@ -5,10 +5,10 @@ import io.kotest.core.test.NestedTest
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestContext
 import io.kotest.core.test.TestResult
-import io.kotest.engine.CallingThreadExecutionContext
+import io.kotest.core.CallingThreadExecutionContext
 import io.kotest.engine.TestCaseExecutor
 import io.kotest.engine.spec.materializeAndOrderRootTests
-import io.kotest.engine.test.TestCaseExecutionListener
+import io.kotest.core.test.TestCaseExecutionListener
 import io.kotest.engine.test.isActive
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.promise

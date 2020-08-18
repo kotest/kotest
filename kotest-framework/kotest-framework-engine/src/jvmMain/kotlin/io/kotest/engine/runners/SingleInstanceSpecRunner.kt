@@ -13,10 +13,10 @@ import io.kotest.engine.listener.TestEngineListener
 import io.kotest.engine.spec.resolvedThreads
 import io.kotest.engine.ExecutorExecutionContext
 import io.kotest.engine.TestCaseExecutor
-import io.kotest.engine.callbacks.invokeAfterSpec
-import io.kotest.engine.callbacks.invokeBeforeSpec
+import io.kotest.core.spec.invokeAfterSpec
+import io.kotest.core.spec.invokeBeforeSpec
 import io.kotest.engine.spec.materializeAndOrderRootTests
-import io.kotest.engine.test.TestCaseExecutionListener
+import io.kotest.core.test.TestCaseExecutionListener
 import io.kotest.fp.Try
 import io.kotest.mpp.log
 import kotlinx.coroutines.coroutineScope
