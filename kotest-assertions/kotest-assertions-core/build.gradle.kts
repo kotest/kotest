@@ -44,8 +44,6 @@ kotlin {
             implementation(kotlin("stdlib-common"))
             implementation(Libs.Coroutines.coreCommon)
             implementation(project(Projects.Common))
-            implementation(Libs.KotlinTime.kotlintime)
-
             // this is api because we want to expose `shouldBe` etc
             api(project(Projects.AssertionsShared))
          }
