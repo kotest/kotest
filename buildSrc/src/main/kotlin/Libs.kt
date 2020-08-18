@@ -1,6 +1,6 @@
 object Libs {
 
-   const val kotlinVersion = "1.4.0-rc"
+   const val kotlinVersion = "1.4.0"
    const val dokkaVersion = "0.10.1"
    const val adarshrTestLoggerVersion = "2.0.0"
    const val gradleVersionsPluginVersion = "0.28.0"
@@ -110,7 +110,7 @@ object Libs {
       private const val version = "1.11.14"
       const val klock = "com.soywiz.korlibs.klock:klock:$version"
    }
-   
+
    object KotlinTime {
       private const val version = "0.1.0"
       const val kotlintime = "org.jetbrains.kotlinx:kotlinx-datetime:$version"
