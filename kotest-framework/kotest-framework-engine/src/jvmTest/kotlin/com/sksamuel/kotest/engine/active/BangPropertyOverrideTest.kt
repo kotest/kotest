@@ -1,6 +1,6 @@
 package com.sksamuel.kotest.engine.active
 
-import io.kotest.engine.KotestEngineSystemProperties
+import io.kotest.core.internal.KotestEngineSystemProperties
 import io.kotest.core.spec.style.WordSpec
 import io.kotest.matchers.booleans.shouldBeTrue
 

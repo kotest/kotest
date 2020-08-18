@@ -1,20 +1,19 @@
-package io.kotest.engine
+package io.kotest.core.internal
 
 import io.kotest.core.TimeoutExecutionContext
 import io.kotest.core.extensions.TestCaseExtension
-import io.kotest.core.test.TestCaseExecutionListener
-import io.kotest.core.test.NestedTest
-import io.kotest.core.test.TestCase
-import io.kotest.core.test.TestContext
-import io.kotest.core.test.TestResult
-import io.kotest.core.test.TestStatus
-import io.kotest.core.test.TestType
-import io.kotest.engine.test.isActive
 import io.kotest.core.spec.invokeAfterInvocation
 import io.kotest.core.spec.invokeAllAfterTestCallbacks
 import io.kotest.core.spec.invokeAllBeforeTestCallbacks
 import io.kotest.core.spec.invokeBeforeInvocation
 import io.kotest.core.extensions.resolvedTestCaseExtensions
+import io.kotest.core.test.NestedTest
+import io.kotest.core.test.TestCase
+import io.kotest.core.test.TestCaseExecutionListener
+import io.kotest.core.test.TestContext
+import io.kotest.core.test.TestResult
+import io.kotest.core.test.TestStatus
+import io.kotest.core.test.TestType
 import io.kotest.core.test.resolvedInvocationTimeout
 import io.kotest.core.test.resolvedTimeout
 import io.kotest.fp.Try
@@ -29,22 +28,30 @@ import kotlin.coroutines.CoroutineContext
 data class TimeoutException constructor(val duration: Long) : Exception("Test did not complete within ${duration}ms")
 
 /**
+ * Validates that a [TestCase] is compatible on the actual platform. For example, in JS we can only
+ * support certain spec styles due to limitations in the underlying test runners.
+ */
+typealias ValidateTestCase = (TestCase) -> Unit
+
+/**
+ * Returns a [TestResult] for the given throwable and test execution duration.
+ */
+typealias ToTestResult = (Throwable?, Long) -> TestResult
+
+/**
  * Executes a single [TestCase].
  * Uses a [TestCaseExecutionListener] to notify callers of events in the test.
  *
  * The [TimeoutExecutionContext] is used to provide a way of executing functions on the underlying platform
  * in a way that best utilizes threads or the lack of on that platform.
  *
- * The [validateTestCase] function is invoked before a test is executed to ensure that the
- * test case is compatible on the actual platform. For example, in JS we can only support certain
- * spec styles due to limitations in the underlying test runners.
- *
- * If the given test case is invalid, then this method should throw an exception.
+ * If the given test case fails to validate via [validateTestCase], then this method throws.
  */
 class TestCaseExecutor(
    private val listener: TestCaseExecutionListener,
    private val executionContext: TimeoutExecutionContext,
-   private val validateTestCase: (TestCase) -> Unit = {}
+   private val validateTestCase: ValidateTestCase,
+   private val toTestResult: ToTestResult,
 ) {
 
    suspend fun execute(testCase: TestCase, context: TestContext): TestResult {
@@ -67,7 +74,7 @@ class TestCaseExecutor(
       testCase: TestCase,
       context: TestContext,
       start: Long,
-      extensions: List<TestCaseExtension>
+      extensions: List<TestCaseExtension>,
    ): TestResult {
       return when {
          extensions.isEmpty() -> executeIfActive(testCase) { executeActiveTest(testCase, context, start) }
@@ -112,7 +119,7 @@ class TestCaseExecutor(
    private suspend fun executeActiveTest(
       testCase: TestCase,
       context: TestContext,
-      start: Long
+      start: Long,
    ): TestResult {
 
       log("Executing active test $testCase")
@@ -123,14 +130,14 @@ class TestCaseExecutor(
          .flatMap { invokeTestCase(executionContext, it, context, start) }
          .fold(
             {
-               it.toTestResult(timeInMillis() - start).apply {
+               toTestResult(it, timeInMillis() - start).apply {
                   testCase.invokeAllAfterTestCallbacks(this)
                }
             },
             { result ->
                testCase.invokeAllAfterTestCallbacks(result)
                   .fold(
-                     { it.toTestResult(timeInMillis() - start) },
+                     { toTestResult(it, timeInMillis() - start) },
                      { result }
                   )
             }
@@ -144,7 +151,7 @@ class TestCaseExecutor(
       ec: TimeoutExecutionContext,
       testCase: TestCase,
       context: TestContext,
-      start: Long
+      start: Long,
    ): Try<TestResult> = Try {
       log("invokeTestCase $testCase")
 
@@ -153,7 +160,7 @@ class TestCaseExecutor(
 
       val t = executeAndWait(ec, testCase, context)
 
-      val result = t?.toTestResult(timeInMillis() - start) ?: TestResult.success(timeInMillis() - start)
+      val result = toTestResult(t, timeInMillis() - start)
       log("Test completed with result $result")
       result
    }
@@ -165,7 +172,7 @@ class TestCaseExecutor(
    private suspend fun executeAndWait(
       ec: TimeoutExecutionContext,
       testCase: TestCase,
-      context: TestContext
+      context: TestContext,
    ): Throwable? {
 
       // this timeout applies to the test itself. If the test has multiple invocations then

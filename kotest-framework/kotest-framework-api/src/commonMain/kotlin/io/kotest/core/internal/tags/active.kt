@@ -1,4 +1,4 @@
-package io.kotest.engine.tags
+package io.kotest.core.internal.tags
 
 import io.kotest.core.Tag
 import io.kotest.core.spec.Spec
@@ -8,7 +8,7 @@ import kotlin.reflect.KClass
  * Returns true if the given Spec class could contain an active test based on further tags.
  * Returns false if the spec should be explictly excluded
  */
-internal fun Expression?.isPotentiallyActive(kclass: KClass<out Spec>): Boolean {
+fun Expression?.isPotentiallyActive(kclass: KClass<out Spec>): Boolean {
    // nothing is excluded if the expression is null
    if (this == null) return true
 

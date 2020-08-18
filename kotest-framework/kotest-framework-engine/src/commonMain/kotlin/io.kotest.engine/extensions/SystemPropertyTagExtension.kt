@@ -4,7 +4,7 @@ import io.kotest.core.NamedTag
 import io.kotest.core.Tag
 import io.kotest.core.Tags
 import io.kotest.core.extensions.TagExtension
-import io.kotest.engine.KotestEngineSystemProperties
+import io.kotest.core.internal.KotestEngineSystemProperties
 import io.kotest.fp.getOrElse
 import io.kotest.fp.toOption
 import io.kotest.mpp.sysprop

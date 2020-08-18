@@ -1,4 +1,4 @@
-package io.kotest.engine.js
+package io.kotest.core.js
 
 import io.kotest.core.spec.Spec
 import kotlin.test.FrameworkAdapter
@@ -6,7 +6,7 @@ import kotlin.test.FrameworkAdapter
 /**
  * Kotest [FrameworkAdapter] for kotlin-js test support.
  */
-object KotestFrameworkAdapter : FrameworkAdapter {
+internal object KotestFrameworkAdapter : FrameworkAdapter {
 
    override fun suite(name: String, ignored: Boolean, suiteFn: () -> Unit) {
       describe(name, suiteFn)

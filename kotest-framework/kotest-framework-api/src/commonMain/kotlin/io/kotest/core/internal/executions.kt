@@ -1,4 +1,4 @@
-package io.kotest.engine
+package io.kotest.core.internal
 
 import io.kotest.assertions.assertSoftly
 import io.kotest.core.config.configuration

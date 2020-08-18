@@ -1,4 +1,4 @@
-package io.kotest.engine.js
+package io.kotest.core.js
 
 /**
  * Defines the jasmine/mocha/karma style test function names as external functions.

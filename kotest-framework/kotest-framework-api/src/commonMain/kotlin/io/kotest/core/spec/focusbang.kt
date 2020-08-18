@@ -1,6 +1,5 @@
-package io.kotest.engine.spec
+package io.kotest.core.spec
 
-import io.kotest.core.spec.Spec
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.isFocused
 

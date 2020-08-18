@@ -5,9 +5,16 @@ import io.kotest.core.SpecFunctionConfiguration
 import io.kotest.core.TestConfiguration
 import io.kotest.core.config.configuration
 import io.kotest.core.js.JsTest
+import io.kotest.core.js.useKotlinJs
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestCaseOrder
 import kotlin.js.JsName
+
+/**
+ * This is needed to initialize the JS support for Kotest
+ */
+@Suppress("unused")
+val initKotlinJsSupport = useKotlinJs()
 
 /**
  * The base class of all specs.

@@ -10,13 +10,14 @@ import io.kotest.core.test.TestResult
 import io.kotest.core.test.toTestCase
 import io.kotest.engine.spec.SpecRunner
 import io.kotest.engine.listener.TestEngineListener
-import io.kotest.engine.spec.resolvedThreads
+import io.kotest.core.internal.tags.resolvedThreads
 import io.kotest.engine.ExecutorExecutionContext
-import io.kotest.engine.TestCaseExecutor
+import io.kotest.core.internal.TestCaseExecutor
 import io.kotest.core.spec.invokeAfterSpec
 import io.kotest.core.spec.invokeBeforeSpec
-import io.kotest.engine.spec.materializeAndOrderRootTests
+import io.kotest.core.spec.materializeAndOrderRootTests
 import io.kotest.core.test.TestCaseExecutionListener
+import io.kotest.engine.toTestResult
 import io.kotest.fp.Try
 import io.kotest.mpp.log
 import kotlinx.coroutines.coroutineScope
@@ -34,7 +35,7 @@ internal class SingleInstanceSpecRunner(listener: TestEngineListener) : SpecRunn
 
    inner class Context(
       override val testCase: TestCase,
-      override val coroutineContext: CoroutineContext
+      override val coroutineContext: CoroutineContext,
    ) : TestContext {
 
       // these are the tests inside this context, so we can track for duplicates
@@ -53,7 +54,7 @@ internal class SingleInstanceSpecRunner(listener: TestEngineListener) : SpecRunn
 
    private suspend fun runTest(
       testCase: TestCase,
-      coroutineContext: CoroutineContext
+      coroutineContext: CoroutineContext,
    ) {
       val testExecutor = TestCaseExecutor(object : TestCaseExecutionListener {
          override fun testStarted(testCase: TestCase) {
@@ -67,7 +68,7 @@ internal class SingleInstanceSpecRunner(listener: TestEngineListener) : SpecRunn
          override fun testFinished(testCase: TestCase, result: TestResult) {
             listener.testFinished(testCase, result)
          }
-      }, ExecutorExecutionContext)
+      }, ExecutorExecutionContext, {}, ::toTestResult)
 
       val result = testExecutor.execute(testCase, Context(testCase, coroutineContext))
       results[testCase] = result
@@ -76,11 +77,11 @@ internal class SingleInstanceSpecRunner(listener: TestEngineListener) : SpecRunn
    override suspend fun execute(spec: Spec): Try<Map<TestCase, TestResult>> {
 
       suspend fun interceptAndRun(context: CoroutineContext) = Try {
-          val rootTests = spec.materializeAndOrderRootTests().map { it.testCase }
-          runParallel(spec.resolvedThreads(), rootTests) {
-              log("Executing test $it")
-              runTest(it, context)
-          }
+         val rootTests = spec.materializeAndOrderRootTests().map { it.testCase }
+         runParallel(spec.resolvedThreads(), rootTests) {
+            log("Executing test $it")
+            runTest(it, context)
+         }
       }
 
       return coroutineScope {

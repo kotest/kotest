@@ -9,7 +9,7 @@ import io.kotest.core.extensions.TagExtension
 import io.kotest.core.filter.TestFilter
 import io.kotest.core.filter.TestFilterResult
 import io.kotest.core.filter.toTestFilterResult
-import io.kotest.engine.test.isActive
+import io.kotest.core.internal.isActive
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.core.spec.toDescription

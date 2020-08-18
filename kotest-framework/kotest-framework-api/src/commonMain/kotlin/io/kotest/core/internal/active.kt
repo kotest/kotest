@@ -1,15 +1,13 @@
-package io.kotest.engine.test
+package io.kotest.core.internal
 
 import io.kotest.core.config.configuration
-import io.kotest.engine.KotestEngineSystemProperties
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.isBang
 import io.kotest.core.test.isFocused
-import io.kotest.engine.spec.focusTests
-import io.kotest.engine.spec.resolvedTags
-import io.kotest.engine.tags.isActive
-import io.kotest.engine.tags.parse
-import io.kotest.engine.tags.resolvedTags
+import io.kotest.core.spec.focusTests
+import io.kotest.core.internal.tags.resolvedTags
+import io.kotest.core.internal.tags.isActive
+import io.kotest.core.internal.tags.parse
 import io.kotest.mpp.log
 import io.kotest.mpp.sysprop
 

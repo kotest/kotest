@@ -1,6 +1,6 @@
 package io.kotest.runner.junit.platform
 
-import io.kotest.engine.KotestEngineSystemProperties
+import io.kotest.core.internal.KotestEngineSystemProperties
 import io.kotest.core.test.Description
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.toDescription

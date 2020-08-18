@@ -12,11 +12,12 @@ import io.kotest.engine.listener.BufferedTestCaseExcecutionListener
 import io.kotest.engine.spec.SpecRunner
 import io.kotest.engine.listener.TestEngineListener
 import io.kotest.engine.ExecutorExecutionContext
-import io.kotest.engine.TestCaseExecutor
+import io.kotest.core.internal.TestCaseExecutor
 import io.kotest.engine.listener.TestCaseListenerToTestEngineListenerAdapter
 import io.kotest.core.spec.invokeAfterSpec
 import io.kotest.core.spec.invokeBeforeSpec
-import io.kotest.engine.spec.materializeAndOrderRootTests
+import io.kotest.core.spec.materializeAndOrderRootTests
+import io.kotest.engine.toTestResult
 import io.kotest.fp.Try
 import io.kotest.mpp.log
 import kotlinx.coroutines.*
@@ -35,8 +36,8 @@ import kotlin.coroutines.CoroutineContext
  * All nested tests use the same dispatcher as their root test.
  */
 internal class ConcurrentInstancePerLeafSpecRunner(
-    testEngineListener: TestEngineListener,
-    private val threads: Int
+   testEngineListener: TestEngineListener,
+   private val threads: Int,
 ) : SpecRunner(testEngineListener) {
 
    private val results = ConcurrentHashMap<TestCase, TestResult>()
@@ -131,7 +132,7 @@ internal class ConcurrentInstancePerLeafSpecRunner(
             }
          }
 
-         val testExecutor = TestCaseExecutor(testCaseListener, ExecutorExecutionContext)
+         val testExecutor = TestCaseExecutor(testCaseListener, ExecutorExecutionContext, {}, ::toTestResult)
          val result = testExecutor.execute(test, context)
          results[test] = result
       }

@@ -3,7 +3,7 @@ package io.kotest.runner.junit.platform
 import io.kotest.core.spec.Spec
 import io.kotest.engine.KotestEngineLauncher
 import io.kotest.engine.instantiateSpec
-import io.kotest.engine.spec.materializeAndOrderRootTests
+import io.kotest.core.spec.materializeAndOrderRootTests
 import io.kotest.fp.Try.Failure
 import io.kotest.fp.Try.Success
 import kotlinx.coroutines.runBlocking

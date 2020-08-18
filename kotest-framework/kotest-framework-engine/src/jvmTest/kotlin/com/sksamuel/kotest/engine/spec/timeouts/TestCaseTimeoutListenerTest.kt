@@ -3,7 +3,7 @@ package com.sksamuel.kotest.engine.spec.timeouts
 import io.kotest.core.listeners.TestListener
 import io.kotest.engine.ExecutorExecutionContext
 import io.kotest.core.test.TestCaseExecutionListener
-import io.kotest.engine.TestCaseExecutor
+import io.kotest.core.internal.TestCaseExecutor
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.spec.toDescription
 import io.kotest.core.test.NestedTest

@@ -12,11 +12,12 @@ import io.kotest.core.test.toTestCase
 import io.kotest.engine.spec.SpecRunner
 import io.kotest.engine.listener.TestEngineListener
 import io.kotest.engine.ExecutorExecutionContext
-import io.kotest.engine.TestCaseExecutor
+import io.kotest.core.internal.TestCaseExecutor
 import io.kotest.core.spec.invokeAfterSpec
 import io.kotest.core.spec.invokeBeforeSpec
-import io.kotest.engine.spec.materializeAndOrderRootTests
+import io.kotest.core.spec.materializeAndOrderRootTests
 import io.kotest.core.test.TestCaseExecutionListener
+import io.kotest.engine.toTestResult
 import io.kotest.fp.Try
 import io.kotest.mpp.log
 import kotlinx.coroutines.coroutineScope
@@ -146,7 +147,7 @@ internal class InstancePerLeafSpecRunner(listener: TestEngineListener) : SpecRun
                   listener.testFinished(testCase, result)
                }
             }
-         }, ExecutorExecutionContext)
+         }, ExecutorExecutionContext, {}, ::toTestResult)
 
          val result = testExecutor.execute(test, context)
          results[test] = result

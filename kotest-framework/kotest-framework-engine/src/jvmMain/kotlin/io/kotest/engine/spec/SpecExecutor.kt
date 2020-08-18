@@ -14,8 +14,9 @@ import io.kotest.core.spec.style.scopes.DslState
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.core.extensions.resolvedSpecExtensions
+import io.kotest.core.internal.tags.resolvedThreads
 import io.kotest.engine.instantiateSpec
-import io.kotest.engine.test.isActive
+import io.kotest.core.internal.isActive
 import io.kotest.fp.Try
 import io.kotest.fp.flatten
 import io.kotest.fp.success

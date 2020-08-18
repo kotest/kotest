@@ -1,8 +1,6 @@
-package io.kotest.engine.spec
+package io.kotest.core.spec
 
 import io.kotest.core.config.configuration
-import io.kotest.core.spec.RootTest
-import io.kotest.core.spec.Spec
 import io.kotest.core.test.TestCaseOrder
 
 /**

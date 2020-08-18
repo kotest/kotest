@@ -12,12 +12,13 @@ import io.kotest.engine.listener.TestEngineListener
 import io.kotest.mpp.log
 import io.kotest.engine.ExecutorExecutionContext
 import io.kotest.core.test.TestCaseExecutionListener
-import io.kotest.engine.TestCaseExecutor
+import io.kotest.core.internal.TestCaseExecutor
 import io.kotest.core.spec.invokeAfterSpec
 import io.kotest.core.spec.invokeBeforeSpec
-import io.kotest.engine.spec.resolvedThreads
+import io.kotest.core.internal.tags.resolvedThreads
 import io.kotest.core.test.*
-import io.kotest.engine.spec.materializeAndOrderRootTests
+import io.kotest.core.spec.materializeAndOrderRootTests
+import io.kotest.engine.toTestResult
 import io.kotest.fp.Try
 import kotlinx.coroutines.coroutineScope
 import java.util.concurrent.ConcurrentHashMap
@@ -143,7 +144,8 @@ internal class InstancePerTestSpecRunner(listener: TestEngineListener) : SpecRun
             override fun testFinished(testCase: TestCase, result: TestResult) {
                if (isTarget) listener.testFinished(testCase, result)
             }
-         }, ExecutorExecutionContext)
+         }, ExecutorExecutionContext, {}, ::toTestResult)
+
          val result = testExecutor.execute(test, context)
          results[test] = result
       }

@@ -1,4 +1,4 @@
-package io.kotest.engine.tags
+package io.kotest.core.internal.tags
 
 fun Parser.primary(): Expression {
    return if (peek()?.type == TokenType.OpenParen) {

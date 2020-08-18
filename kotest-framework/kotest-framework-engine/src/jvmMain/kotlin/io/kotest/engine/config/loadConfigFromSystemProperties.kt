@@ -2,7 +2,7 @@ package io.kotest.engine.config
 
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.test.AssertionMode
-import io.kotest.engine.KotestEngineSystemProperties
+import io.kotest.core.internal.KotestEngineSystemProperties
 import io.kotest.fp.Option
 import io.kotest.fp.toOption
 import io.kotest.mpp.sysprop

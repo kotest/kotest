@@ -39,6 +39,7 @@ kotlin {
          dependencies {
             implementation(Libs.Coroutines.coreCommon)
             implementation(project(Projects.Common))
+            implementation(project(Projects.AssertionsShared))
          }
       }
 

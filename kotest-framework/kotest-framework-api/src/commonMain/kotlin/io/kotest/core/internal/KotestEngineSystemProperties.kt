@@ -1,6 +1,4 @@
-package io.kotest.engine
-
-import kotlin.js.JsName
+package io.kotest.core.internal
 
 object KotestEngineSystemProperties {
 

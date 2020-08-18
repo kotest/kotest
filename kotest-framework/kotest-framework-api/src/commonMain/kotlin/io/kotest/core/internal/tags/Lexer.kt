@@ -1,4 +1,4 @@
-package io.kotest.engine.tags
+package io.kotest.core.internal.tags
 
 class Lexer(private val input: String) {
 

@@ -62,7 +62,7 @@ class JUnitTestRunnerListenerTests : FunSpec({
       listener.specStarted(JUnitTestRunnerListenerTests::class)
       listener.testStarted(test1)
       listener.testStarted(test2)
-      listener.testFinished(test2, AssertionError("boom").toTestResult(0))
+      listener.testFinished(test2, toTestResult(AssertionError("boom"), 0))
       listener.testFinished(test1, TestResult.success(0))
       listener.specFinished(JUnitTestRunnerListenerTests::class, null, emptyMap())
       listener.engineFinished(emptyList())
