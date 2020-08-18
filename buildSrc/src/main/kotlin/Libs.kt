@@ -112,7 +112,7 @@ object Libs {
    }
 
    object Klock {
-      private const val version = "1.11.14"
+      private const val version = "1.12.0"
       const val klock = "com.soywiz.korlibs.klock:klock:$version"
    }
 
