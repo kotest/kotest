@@ -60,6 +60,13 @@ kotlin {
             implementation(Libs.Mifmif.generex)
          }
       }
+
+      val jvmTest by getting {
+         dependsOn(jvmMain)
+         dependencies {
+            implementation(project(Projects.JunitRunner))
+         }
+      }
    }
 }
 
