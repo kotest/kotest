@@ -40,7 +40,7 @@ kotlin {
 
       val commonMain by getting {
          dependencies {
-            implementation(kotlin("stdlib-common"))
+            implementation(project(Projects.AssertionsApi))
             implementation(project(Projects.Common))
             implementation(Libs.Coroutines.coreCommon)
          }
@@ -48,47 +48,16 @@ kotlin {
 
       val jsMain by getting {
          dependsOn(commonMain)
-         dependencies {
-            implementation(kotlin("stdlib-js"))
-            implementation(Libs.Coroutines.coreJs)
-         }
       }
 
       val jvmMain by getting {
          dependsOn(commonMain)
          dependencies {
-            implementation(kotlin("stdlib-jdk8"))
             implementation(kotlin("reflect"))
-            implementation(Libs.Coroutines.coreJvm)
             implementation(Libs.Coroutines.jdk8)
             implementation(Libs.Wumpz.diffutils)
             implementation("com.univocity:univocity-parsers:2.8.4")
             implementation(Libs.Mifmif.generex)
-         }
-      }
-
-      val jvmTest by getting {
-         dependsOn(jvmMain)
-         dependencies {
-            implementation(project(Projects.JunitRunner))
-         }
-      }
-
-      val macosX64Main by getting {
-         dependencies {
-            implementation(Libs.Coroutines.coreMacos)
-         }
-      }
-
-      val mingwX64Main by getting {
-         dependencies {
-            implementation(Libs.Coroutines.coreMingw)
-         }
-      }
-
-      val linuxX64Main by getting {
-         dependencies {
-            implementation(Libs.Coroutines.coreLinux)
          }
       }
    }

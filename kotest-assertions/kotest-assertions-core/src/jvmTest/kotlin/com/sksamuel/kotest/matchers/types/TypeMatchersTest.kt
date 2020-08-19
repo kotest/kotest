@@ -2,9 +2,9 @@ package com.sksamuel.kotest.matchers.types
 
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.WordSpec
-import io.kotest.matchers.beInstanceOf
-import io.kotest.matchers.beOfType
-import io.kotest.matchers.beTheSameInstanceAs
+import io.kotest.matchers.types.beInstanceOf
+import io.kotest.matchers.types.beOfType
+import io.kotest.matchers.types.beTheSameInstanceAs
 import io.kotest.matchers.nulls.beNull
 import io.kotest.matchers.nulls.shouldBeNull
 import io.kotest.matchers.nulls.shouldNotBeNull

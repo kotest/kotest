@@ -4,8 +4,8 @@ import io.kotest.fp.getOrElse
 import io.kotest.fp.toOption
 import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
-import io.kotest.matchers.Diff
-import io.kotest.matchers.stringify
+import io.kotest.matchers.string.Diff
+import io.kotest.matchers.string.stringify
 
 fun <K> haveKey(key: K): Matcher<Map<K, Any?>> = object : Matcher<Map<K, Any?>> {
   override fun test(value: Map<K, Any?>) = MatcherResult(value.containsKey(key),

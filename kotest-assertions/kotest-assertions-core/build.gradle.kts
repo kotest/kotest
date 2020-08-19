@@ -41,28 +41,18 @@ kotlin {
 
       val commonMain by getting {
          dependencies {
-            implementation(kotlin("stdlib-common"))
             implementation(Libs.Coroutines.coreCommon)
             implementation(project(Projects.Common))
+            implementation(project(Projects.AssertionsApi))
             // this is api because we want to expose `shouldBe` etc
             api(project(Projects.AssertionsShared))
-         }
-      }
-
-      val jsMain by getting {
-         dependsOn(commonMain)
-         dependencies {
-            implementation(kotlin("stdlib-js"))
-            implementation(Libs.Coroutines.coreJs)
          }
       }
 
       val jvmMain by getting {
          dependsOn(commonMain)
          dependencies {
-            implementation(kotlin("stdlib-jdk8"))
             implementation(kotlin("reflect"))
-            implementation(Libs.Coroutines.coreJvm)
             implementation(Libs.Coroutines.jdk8)
             implementation(Libs.Wumpz.diffutils)
             implementation("com.univocity:univocity-parsers:2.8.4")
@@ -70,35 +60,12 @@ kotlin {
          }
       }
 
-      val commonTest by getting {
-         dependsOn(commonMain)
-      }
-
       val jvmTest by getting {
          dependsOn(jvmMain)
-         dependsOn(commonTest)
          dependencies {
             implementation(project(Projects.Property))
             implementation(project(Projects.JunitRunner))
             implementation(Libs.OpenTest4j.core)
-         }
-      }
-
-      val macosX64Main by getting {
-         dependencies {
-            implementation(Libs.Coroutines.coreMacos)
-         }
-      }
-
-      val mingwX64Main by getting {
-         dependencies {
-            implementation(Libs.Coroutines.coreMingw)
-         }
-      }
-
-      val linuxX64Main by getting {
-         dependencies {
-            implementation(Libs.Coroutines.coreLinux)
          }
       }
    }

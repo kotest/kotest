@@ -1,4 +1,4 @@
-package io.kotest.matchers
+package io.kotest.matchers.string
 
 sealed class Diff {
   abstract fun isEmpty(): Boolean

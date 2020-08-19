@@ -27,6 +27,10 @@ include("kotest-framework:kotest-framework-launcher")
 // brings in the API dependency
 include("kotest-framework:kotest-framework-engine")
 
+// contains the matcher interface and is intended as a lightweight dependenc for librar authors
+// to depend on when writing matcher libraries
+include("kotest-assertions:kotest-assertions-api")
+
 // contains basic assertion building block such as shouldBe which are used by both
 // framework and assertion libraries;
 // no user should need to depend on this
