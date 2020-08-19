@@ -28,6 +28,7 @@ jobs:
 
    deploy-mac:
       runs-on: macOS-latest
+      needs: [deploy-linux-and-common]
 
       steps:
          -  name: Checkout the repo
@@ -46,6 +47,7 @@ jobs:
 
    deploy-windows:
       runs-on: windows-latest
+      needs: [deploy-mac]
 
       steps:
          -  name: Checkout the repo
