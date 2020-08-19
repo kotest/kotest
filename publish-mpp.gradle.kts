@@ -19,7 +19,8 @@ fun Project.publishing(action: PublishingExtension.() -> Unit) =
 fun Project.signing(configure: SigningExtension.() -> Unit): Unit =
    configure(configure)
 
-val dokka = tasks.named("dokka")
+//val dokka = tasks.named("dokka")
+val javadoc = tasks.named("javadoc")
 
 val publications: PublicationContainer = (extensions.getByName("publishing") as PublishingExtension).publications
 
@@ -35,11 +36,18 @@ signing {
 }
 
 // Create dokka Jar task from dokka task output
-val dokkaJar by tasks.creating(Jar::class) {
+//val dokkaJar by tasks.creating(Jar::class) {
+//   group = JavaBasePlugin.DOCUMENTATION_GROUP
+//   description = "Assembles Kotlin docs with Dokka"
+//   archiveClassifier.set("javadoc")
+//   from(dokka)
+//}
+
+val javadocJar by tasks.creating(Jar::class) {
    group = JavaBasePlugin.DOCUMENTATION_GROUP
-   description = "Assembles Kotlin docs with Dokka"
+   description = "Assembles java doc to jar"
    archiveClassifier.set("javadoc")
-   from(dokka)
+   from(javadoc)
 }
 
 publishing {
@@ -58,8 +66,8 @@ publishing {
 
    publications.withType<MavenPublication>().forEach {
       it.apply {
-         if (Ci.isRelease)
-            artifact(dokkaJar)
+         //if (Ci.isRelease)
+            artifact(javadocJar)
          pom {
             name.set("Kotest")
             description.set("Kotlin Test Framework")

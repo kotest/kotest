@@ -27,19 +27,25 @@ plugins {
    id("com.github.ben-manes.versions") version Libs.gradleVersionsPluginVersion
 }
 
-// Configure existing Dokka task to output HTML to typical Javadoc directory
-tasks.dokka {
-   outputFormat = "html"
-   outputDirectory = "$buildDir/javadoc"
-   configuration {
-      includeNonPublic = false
-      skipDeprecated = true
-      reportUndocumented = false
-      skipEmptyPackages = true
-      targets = listOf("JVM")
-      platform = "JVM"
+tasks {
+   javadoc {
    }
 }
+
+// Configure existing Dokka task to output HTML to typical Javadoc directory
+//tasks.dokka {
+//   outputFormat = "html"
+//   outputDirectory = "$buildDir/javadoc"
+//   configuration {
+//      includeNonPublic = false
+//      skipDeprecated = true
+//      reportUndocumented = false
+//      skipEmptyPackages = true
+//      targets = listOf("JVM")
+//      platform = "JVM"
+//      jdkVersion = 8
+//   }
+//}
 
 // apply plugin: "io.kotest"
 
