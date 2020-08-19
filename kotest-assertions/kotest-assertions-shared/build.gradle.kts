@@ -40,7 +40,7 @@ kotlin {
 
       val commonMain by getting {
          dependencies {
-            implementation(project(Projects.AssertionsApi))
+            api(project(Projects.AssertionsApi))
             implementation(project(Projects.Common))
             implementation(Libs.Coroutines.coreCommon)
          }
