@@ -21,6 +21,7 @@ kotlin {
       }
       js {
          browser()
+         nodejs()
       }
    }
 

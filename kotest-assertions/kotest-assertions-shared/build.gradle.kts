@@ -21,6 +21,7 @@ kotlin {
       }
       js {
          browser()
+         nodejs()
       }
       linuxX64()
       mingwX64()
@@ -43,10 +44,6 @@ kotlin {
             implementation(project(Projects.Common))
             implementation(Libs.Coroutines.coreCommon)
          }
-      }
-
-      val jsMain by getting {
-         dependsOn(commonMain)
       }
 
       val jvmMain by getting {

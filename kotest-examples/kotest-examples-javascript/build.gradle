@@ -22,15 +22,10 @@ kotlin {
 
    js {
       browser()
+      nodejs()
    }
 
    sourceSets {
-
-      jsMain {
-         dependencies {
-            implementation(kotlin("stdlib-js"))
-         }
-      }
 
       jsTest {
          dependencies {

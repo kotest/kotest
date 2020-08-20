@@ -23,6 +23,7 @@ kotlin {
       }
       js {
          browser()
+         nodejs()
       }
    }
 
@@ -50,7 +51,6 @@ kotlin {
          dependencies {
             // this must be api as it's compiled into the final source
             api(kotlin("test-js"))
-            implementation(Libs.Coroutines.coreJs)
          }
       }
 
@@ -58,7 +58,6 @@ kotlin {
          dependsOn(commonMain)
          dependencies {
             implementation(kotlin("reflect"))
-            implementation(Libs.Coroutines.coreJvm)
             implementation(Libs.Classgraph.classgraph)
             implementation(Libs.Ajalt.mordant)
             implementation(Libs.Ajalt.clikt)

@@ -21,6 +21,7 @@ kotlin {
       }
       js {
          browser()
+         nodejs()
       }
    }
 
@@ -36,18 +37,9 @@ kotlin {
 
       val commonMain by getting {
          dependencies {
-            implementation(kotlin("stdlib-common"))
             api(project(Projects.Common))
             api(project(Projects.AssertionsShared))
             implementation(Libs.Coroutines.coreCommon)
-         }
-      }
-
-      val jsMain by getting {
-         dependsOn(commonMain)
-         dependencies {
-            implementation(kotlin("stdlib-js"))
-            implementation(Libs.Coroutines.coreJs)
          }
       }
 
@@ -57,7 +49,6 @@ kotlin {
             implementation(kotlin("stdlib-jdk8"))
             implementation(kotlin("reflect"))
             implementation(Libs.Wumpz.diffutils)
-            implementation(Libs.Coroutines.coreJvm)
             implementation(Libs.Mifmif.generex)
          }
       }

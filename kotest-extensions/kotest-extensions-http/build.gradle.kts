@@ -21,6 +21,7 @@ kotlin {
       }
       js {
          browser()
+         nodejs()
       }
    }
 
@@ -36,7 +37,6 @@ kotlin {
 
       val commonMain by getting {
          dependencies {
-            implementation(kotlin("stdlib-common"))
             implementation(Libs.Coroutines.coreCommon)
             implementation(Libs.Ktor.clientCore)
          }
@@ -44,20 +44,10 @@ kotlin {
 
       val jsMain by getting {
          dependsOn(commonMain)
-         dependencies {
-            implementation(kotlin("stdlib-js"))
-            implementation(Libs.Coroutines.coreJs)
-            implementation(Libs.Ktor.clientJs)
-         }
       }
 
       val jvmMain by getting {
          dependsOn(commonMain)
-         dependencies {
-            implementation(kotlin("stdlib-jdk8"))
-            implementation(Libs.Coroutines.coreJvm)
-            implementation(Libs.Ktor.clientApache)
-         }
       }
 
 
