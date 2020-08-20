@@ -71,11 +71,15 @@ dependencies {
    implementation("javax.xml.bind:jaxb-api:2.2.12")
    implementation("javax.activation:activation:1.1.1")
 
-   // bundled with the plugin to ensure we don't need to add this dependency to the build
+   // we bundle this for 4.1 support
+   // in kotest 4.2 the launcher has moved to the framework modules
    implementation("io.kotest:kotest-launcher:1.0.9")
 
-   testImplementation("io.kotest:kotest-assertions-core-jvm:4.2.0.RC2")
-   testImplementation("io.kotest:kotest-core-jvm:4.2.0.RC2")
+   // this is needed to use the launcher in 4.2
+   implementation("io.kotest:kotest-framework-launcher-jvm:4.2.0.515-SNAPSHOT")
+
+   testImplementation("io.kotest:kotest-assertions-core-jvm:4.2.0.RC3")
+   testImplementation("io.kotest:kotest-core-jvm:4.2.0.RC3")
 }
 
 sourceSets {

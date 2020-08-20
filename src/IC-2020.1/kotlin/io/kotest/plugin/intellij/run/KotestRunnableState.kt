@@ -11,14 +11,10 @@ import io.kotest.plugin.intellij.Constants
 import io.kotest.plugin.intellij.KotestConfiguration
 import java.io.File
 
-class KotestRunnableState(env: ExecutionEnvironment,
-                          private val config: KotestConfiguration) : JavaTestFrameworkRunnableState<KotestConfiguration>(env) {
-
-   private val requiredJars = listOf(
-      "io.kotest.launcher.TeamCityMessages",
-      "com.github.ajalt.clikt.core.CliktCommand",
-      "com.github.ajalt.mordant.TermColors"
-   )
+class KotestRunnableState(
+   private val env: ExecutionEnvironment,
+   private val config: KotestConfiguration
+) : JavaTestFrameworkRunnableState<KotestConfiguration>(env) {
 
    override fun getForkMode(): String = "none"
    override fun getFrameworkId(): String = Constants.FrameworkId
@@ -29,9 +25,12 @@ class KotestRunnableState(env: ExecutionEnvironment,
 
    override fun createJavaParameters(): JavaParameters {
       val params = super.createJavaParameters()
+
+      val launcherConfig = determineKotestLauncher(env.project)
+
       // this main class is what will be executed by intellij when someone clicks run
       // it is a main function that will launch the KotestConsoleRunner
-      params.mainClass = determineKotestMainClass()
+      params.mainClass = launcherConfig.mainClass
 
       val packageName = configuration.getPackageName()
       if (packageName != null && packageName.isNotBlank())
@@ -55,7 +54,9 @@ class KotestRunnableState(env: ExecutionEnvironment,
 
    override fun configureRTClasspath(javaParameters: JavaParameters, module: Module?) {
       try {
-         requiredJars.forEach { javaParameters.classPath.addFirst(PathUtil.getJarPathForClass(Class.forName(it))) }
+         determineKotestLauncher(env.project).requiredJars.forEach {
+            javaParameters.classPath.addFirst(PathUtil.getJarPathForClass(Class.forName(it)))
+         }
       } catch (e: Throwable) {
          println(e)
          e.printStackTrace()
