@@ -3,6 +3,7 @@ package com.sksamuel.kotest
 import io.kotest.matchers.collections.singleElement
 import io.kotest.matchers.comparables.beGreaterThan
 import io.kotest.matchers.comparables.beLessThan
+import io.kotest.matchers.or
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldHave

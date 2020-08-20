@@ -4,6 +4,7 @@ import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.FreeSpec
 import io.kotest.matchers.types.beInstanceOf
 import io.kotest.matchers.collections.haveSize
+import io.kotest.matchers.or
 import io.kotest.matchers.types.haveSameHashCodeAs
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldBe
