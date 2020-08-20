@@ -144,7 +144,7 @@ internal class InstancePerTestSpecRunner(listener: TestEngineListener) : SpecRun
             override fun testFinished(testCase: TestCase, result: TestResult) {
                if (isTarget) listener.testFinished(testCase, result)
             }
-         }, ExecutorExecutionContext, {}, ::toTestResult)
+         }, ExecutorExecutionContext, {}, { t, duration -> toTestResult(t, duration) })
 
          val result = testExecutor.execute(test, context)
          results[test] = result

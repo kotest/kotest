@@ -132,7 +132,12 @@ internal class ConcurrentInstancePerLeafSpecRunner(
             }
          }
 
-         val testExecutor = TestCaseExecutor(testCaseListener, ExecutorExecutionContext, {}, ::toTestResult)
+         val testExecutor = TestCaseExecutor(
+            testCaseListener,
+            ExecutorExecutionContext,
+            {},
+            { t, duration -> toTestResult(t, duration) },
+         )
          val result = testExecutor.execute(test, context)
          results[test] = result
       }

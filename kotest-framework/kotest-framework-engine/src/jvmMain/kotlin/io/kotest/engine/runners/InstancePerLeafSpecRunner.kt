@@ -130,24 +130,27 @@ internal class InstancePerLeafSpecRunner(listener: TestEngineListener) : SpecRun
             }
          }
 
-         val testExecutor = TestCaseExecutor(object : TestCaseExecutionListener {
-            override fun testStarted(testCase: TestCase) {
-               if (started.add(testCase.description)) {
-                  listener.testStarted(testCase)
+         val testExecutor = TestCaseExecutor(
+            object : TestCaseExecutionListener {
+               override fun testStarted(testCase: TestCase) {
+                  if (started.add(testCase.description)) {
+                     listener.testStarted(testCase)
+                  }
                }
-            }
 
-            override fun testIgnored(testCase: TestCase) {
-               if (ignored.add(testCase.description))
-                  listener.testIgnored(testCase, null)
-            }
-
-            override fun testFinished(testCase: TestCase, result: TestResult) {
-               if (!queue.any { it.testCase.description.isDescendentOf(testCase.description) }) {
-                  listener.testFinished(testCase, result)
+               override fun testIgnored(testCase: TestCase) {
+                  if (ignored.add(testCase.description))
+                     listener.testIgnored(testCase, null)
                }
-            }
-         }, ExecutorExecutionContext, {}, ::toTestResult)
+
+               override fun testFinished(testCase: TestCase, result: TestResult) {
+                  if (!queue.any { it.testCase.description.isDescendentOf(testCase.description) }) {
+                     listener.testFinished(testCase, result)
+                  }
+               }
+            },
+            ExecutorExecutionContext, {}, { t, duration -> toTestResult(t, duration) },
+         )
 
          val result = testExecutor.execute(test, context)
          results[test] = result

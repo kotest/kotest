@@ -68,7 +68,7 @@ internal class SingleInstanceSpecRunner(listener: TestEngineListener) : SpecRunn
          override fun testFinished(testCase: TestCase, result: TestResult) {
             listener.testFinished(testCase, result)
          }
-      }, ExecutorExecutionContext, {}, ::toTestResult)
+      }, ExecutorExecutionContext, {}, { t, duration -> toTestResult(t, duration) })
 
       val result = testExecutor.execute(testCase, Context(testCase, coroutineContext))
       results[testCase] = result
