@@ -15,7 +15,7 @@ import io.kotest.plugin.intellij.Constants
 import io.kotest.plugin.intellij.KotestConfiguration
 import java.io.File
 
-class KotestRunnableState(env: ExecutionEnvironment,
+class KotestRunnableState(private val env: ExecutionEnvironment,
                           private val config: KotestConfiguration) : JavaTestFrameworkRunnableState<KotestConfiguration>(env) {
 
    override fun getForkMode(): String = "none"
