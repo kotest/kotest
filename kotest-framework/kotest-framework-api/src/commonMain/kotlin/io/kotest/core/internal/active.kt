@@ -1,6 +1,8 @@
 package io.kotest.core.internal
 
 import io.kotest.core.config.configuration
+import io.kotest.core.filter.TestFilter
+import io.kotest.core.filter.TestFilterResult
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.isBang
 import io.kotest.core.test.isFocused
@@ -52,12 +54,13 @@ fun TestCase.isActive(): Boolean {
       return false
    }
 
-   // TODO()
-//   val includedByFilters = Project.testFilters().all { it.filter(this.description) == TestFilterResult.Include }
-//   if (!includedByFilters) {
-//      log("${description.testPath()} is excluded by test case filters")
-//      return false
-//   }
+   val includedByFilters = configuration.filters().filterIsInstance<TestFilter>().all {
+      it.filter(this.description) == TestFilterResult.Include
+   }
+   if (!includedByFilters) {
+      log("${description.testPath()} is excluded by test case filters")
+      return false
+   }
 
    // if the spec has focused tests, and this test is root and *not* focused, then it's not active
    val specHasFocusedTests = spec.focusTests().isNotEmpty()

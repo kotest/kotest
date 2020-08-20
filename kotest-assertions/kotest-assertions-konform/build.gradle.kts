@@ -45,10 +45,16 @@ kotlin {
 
       val jvmMain by getting {
          dependsOn(commonMain)
+         dependencies {
+            implementation(Libs.Konform.KonformJvm)
+         }
       }
 
       val jsMain by getting {
          dependsOn(commonMain)
+         dependencies {
+            implementation(Libs.Konform.KonformJs)
+         }
       }
 
       val jvmTest by getting {
@@ -68,7 +74,8 @@ tasks.named<Test>("jvmTest") {
    testLogging {
       showExceptions = true
       showStandardStreams = true
-      events = setOf(org.gradle.api.tasks.testing.logging.TestLogEvent.FAILED, org.gradle.api.tasks.testing.logging.TestLogEvent.PASSED)
+      events = setOf(org.gradle.api.tasks.testing.logging.TestLogEvent.FAILED,
+         org.gradle.api.tasks.testing.logging.TestLogEvent.PASSED)
       exceptionFormat = org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
    }
 }
