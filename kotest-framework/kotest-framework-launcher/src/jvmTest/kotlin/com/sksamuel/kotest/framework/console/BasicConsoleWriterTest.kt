@@ -41,8 +41,6 @@ class BasicConsoleWriterTest : FunSpec() {
             writer.engineFinished(emptyList())
          }
 
-         println(out)
-
          out.shouldContain("com.sksamuel.kotest.framework.console.BasicConsoleWriterTest")
          out.shouldContain("\ta test")
          out.shouldContain("\tcause: wibble boom (BasicConsoleWriterTest.kt:21)")

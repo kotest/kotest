@@ -3,7 +3,7 @@ import org.gradle.api.tasks.testing.logging.TestLogEvent
 
 plugins {
    id("java")
-   kotlin("jvm")
+   id("kotlin-multiplatform")
    id("java-library")
 }
 
@@ -11,34 +11,60 @@ repositories {
    mavenCentral()
 }
 
-dependencies {
+kotlin {
 
-   // needed to compile against the engine launcher and discovery
-   // but runtime classes will be provided by the dependencies in the users own build
-   compileOnly(project(Projects.Api))
-   compileOnly(project(Projects.Engine))
+   targets {
+      jvm {
+         compilations.all {
+            kotlinOptions {
+               jvmTarget = "1.8"
+            }
+         }
+      }
+   }
 
-   // needed to scan for spec classes
-   implementation(project(Projects.Discovery))
+   targets.all {
+      compilations.all {
+         kotlinOptions {
+            freeCompilerArgs = freeCompilerArgs + "-Xopt-in=kotlin.RequiresOptIn"
+         }
+      }
+   }
 
-   // needed to check for opentest4j.AssertionFailedError so we can add a better error to team city
-   implementation(Libs.OpenTest4j.core)
+   sourceSets {
 
-   // needed to parse the command line args
-   implementation(Libs.Ajalt.clikt)
+      val jvmMain by getting {
+         dependencies {
 
-   // used to write to the console with fancy colours!
-   implementation(Libs.Ajalt.mordant)
+            // needed to compile against the engine launcher and discovery
+            // but runtime classes will be provided by the dependencies in the users own build
+            compileOnly(project(Projects.Api))
+            compileOnly(project(Projects.Engine))
 
-   testImplementation(project(Projects.AssertionsCore))
-   testImplementation(project(Projects.JunitRunner))
+            // needed to scan for spec classes
+            implementation(project(Projects.Discovery))
+
+            // needed to check for opentest4j.AssertionFailedError so we can add a better error to team city
+            implementation(Libs.OpenTest4j.core)
+
+            // needed to parse the command line args
+            implementation(Libs.Ajalt.clikt)
+
+            // used to write to the console with fancy colours!
+            implementation(Libs.Ajalt.mordant)
+         }
+      }
+
+      val jvmTest by getting {
+         dependencies {
+            implementation(project(Projects.AssertionsCore))
+            implementation(project(Projects.JunitRunner))
+         }
+      }
+   }
 }
 
-tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
-   kotlinOptions.jvmTarget = "1.8"
-}
-
-tasks.named<Test>("test") {
+tasks.named<Test>("jvmTest") {
    useJUnitPlatform()
    filter {
       isFailOnNoMatchingTests = false
@@ -50,6 +76,5 @@ tasks.named<Test>("test") {
       exceptionFormat = TestExceptionFormat.FULL
    }
 }
-
 
 apply(from = "../../publish-mpp.gradle.kts")
