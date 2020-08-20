@@ -79,7 +79,6 @@ dependencies {
    implementation("io.kotest:kotest-framework-launcher-jvm:4.2.0.515-SNAPSHOT")
 
    testImplementation("io.kotest:kotest-assertions-core-jvm:4.2.0.RC3")
-   testImplementation("io.kotest:kotest-core-jvm:4.2.0.RC3")
 }
 
 sourceSets {
