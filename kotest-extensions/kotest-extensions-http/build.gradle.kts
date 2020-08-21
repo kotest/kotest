@@ -44,12 +44,17 @@ kotlin {
 
       val jsMain by getting {
          dependsOn(commonMain)
+         dependencies {
+            implementation(Libs.Ktor.clientJs)
+         }
       }
 
       val jvmMain by getting {
          dependsOn(commonMain)
+         dependencies {
+            implementation(Libs.Ktor.clientApache)
+         }
       }
-
 
       val jvmTest by getting {
          dependsOn(jvmMain)
