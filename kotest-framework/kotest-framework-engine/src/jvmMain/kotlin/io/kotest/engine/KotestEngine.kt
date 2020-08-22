@@ -26,6 +26,7 @@ data class KotestEngineConfig(
    val filters: List<TestFilter>,
    val listener: TestEngineListener,
    val tags: Tags?,
+   val dumpConfig: Boolean,
 )
 
 data class TestPlan(val classes: List<KClass<out Spec>>)
@@ -43,15 +44,17 @@ class KotestEngine(private val config: KotestEngineConfig) {
 
       // if the engine was invoked with explicit filters, those are registered here
       configuration.registerFilters(config.filters)
-
-      // outputs the engine settings to the console
-      configuration.dumpProjectConfig()
    }
 
    /**
     * Starts execution of the given test plan.
     */
    suspend fun execute(plan: TestPlan) {
+
+      if (config.dumpConfig) {
+         dumpConfig()
+      }
+
       notifyListenerEngineStarted(plan)
          .flatMap { configuration.listeners().beforeProject() }
          .fold(
@@ -99,6 +102,11 @@ class KotestEngine(private val config: KotestEngineConfig) {
 
    fun cleanup() {
       configuration.deregisterFilters(config.filters)
+   }
+
+   fun dumpConfig() {
+      // outputs the engine settings to the console
+      configuration.dumpProjectConfig()
    }
 
    private fun notifyListenerEngineStarted(plan: TestPlan) = Try { config.listener.engineStarted(plan.classes) }

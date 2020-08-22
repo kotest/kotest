@@ -37,7 +37,10 @@ class BeforeAfterProjectTest : FunSpec({
 
       configuration.registerListener(projectListener1)
       configuration.registerListener(projectListener2)
-      KotestEngineLauncher(listener).withSpec(DummySpec::class).launch()
+      KotestEngineLauncher()
+         .withListener(listener)
+         .withSpec(DummySpec::class)
+         .launch()
       assertSoftly {
          errors shouldHaveSize 2
          errors.filterIsInstance<BeforeProjectListenerException>() shouldHaveSize 1

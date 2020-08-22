@@ -18,11 +18,6 @@ include("kotest-framework:kotest-framework-api")
 // brings in the API dependency for required data types
 include("kotest-framework:kotest-framework-discovery")
 
-// public api contract that tools can use to launch instances of the kotest engine
-// tools can depend on this module and it won't bring in other dependencies, instead requires
-// that user add the engine dependency at runtime
-include("kotest-framework:kotest-framework-launcher")
-
 // contains the JVM execution engine implementation
 // brings in the API dependency
 include("kotest-framework:kotest-framework-engine")

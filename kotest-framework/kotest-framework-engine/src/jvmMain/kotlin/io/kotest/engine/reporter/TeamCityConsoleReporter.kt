@@ -1,4 +1,4 @@
-package io.kotest.framework.console
+package io.kotest.engine.reporter
 
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.toDescription
@@ -11,7 +11,7 @@ import java.io.PrintWriter
 import java.io.StringWriter
 import kotlin.reflect.KClass
 
-class TeamCityConsoleWriter(private val prefix: String? = null) : ConsoleWriter {
+class TeamCityConsoleReporter(private val prefix: String? = null) : Reporter {
 
    private var errors = false
 
@@ -88,9 +88,6 @@ class TeamCityConsoleWriter(private val prefix: String? = null) : ConsoleWriter 
          val errors = t.joinToString("\n") { t.toString() }
          println(TeamCityMessages.testFailed(prefix, "Test failure").message(errors))
       }
-   }
-
-   override fun testIgnored(testCase: TestCase) {
    }
 
    override fun testFinished(testCase: TestCase, result: TestResult) {

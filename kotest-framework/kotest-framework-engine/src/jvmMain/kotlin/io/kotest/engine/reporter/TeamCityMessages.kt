@@ -1,4 +1,4 @@
-package io.kotest.framework.console
+package io.kotest.engine.reporter
 
 import java.io.PrintWriter
 import java.io.StringWriter

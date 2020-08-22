@@ -39,6 +39,9 @@ class KotestUnit(val klass: KClass<out Spec>) : TestUnit {
          }
       }
 
-      KotestEngineLauncher(listener).withSpec(klass).launch()
+      KotestEngineLauncher()
+         .withListener(listener)
+         .withSpec(klass)
+         .launch()
    }
 }

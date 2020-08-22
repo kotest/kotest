@@ -53,7 +53,11 @@ class KotestJunitPlatformTestEngine : TestEngine {
             )
          )
       )
-      KotestEngineLauncher(listener).withSpecs(root.classes).launch()
+      KotestEngineLauncher()
+         .withListener(listener)
+         .withSpecs(root.classes)
+         .withDumpConfig(true)
+         .launch()
    }
 
    /**

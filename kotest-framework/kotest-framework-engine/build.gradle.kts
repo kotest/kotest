@@ -59,9 +59,17 @@ kotlin {
          dependencies {
             implementation(kotlin("reflect"))
             implementation(Libs.Classgraph.classgraph)
-            implementation(Libs.Ajalt.mordant)
-            implementation(Libs.Ajalt.clikt)
+
+            // needed to scan for spec classes
+            implementation(project(Projects.Discovery))
+
             api(Libs.JUnitJupiter.api)
+
+            // needed to parse the command line args
+            implementation(Libs.Ajalt.clikt)
+
+            // used to write to the console with fancy colours!
+            implementation(Libs.Ajalt.mordant)
          }
       }
 

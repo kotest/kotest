@@ -17,7 +17,9 @@ class KotestTestRunner(
 
    override fun run(notifier: RunNotifier) = runBlocking {
       val listener = JUnitTestEngineListener(notifier)
-      KotestEngineLauncher(listener).withSpec(klass.kotlin).launch()
+      KotestEngineLauncher()
+         .withListener(listener)
+         .withSpec(klass.kotlin).launch()
    }
 
    override fun getDescription(): Description = klass.let { klass ->

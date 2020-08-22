@@ -1,7 +1,7 @@
 package com.sksamuel.kotest.core.runtime
 
 import io.kotest.assertions.assertSoftly
-import io.kotest.core.config.Project
+import io.kotest.core.config.configuration
 import io.kotest.engine.KotestEngineLauncher
 import io.kotest.engine.listener.TestEngineListener
 import io.kotest.core.listeners.ProjectListener
@@ -30,13 +30,16 @@ class AfterProjectTest : FunSpec({
          }
       }
 
-      Project.registerListener(projectListener)
-      KotestEngineLauncher(listener).withSpec(DummySpec2::class).launch()
+      configuration.registerListener(projectListener)
+      KotestEngineLauncher()
+         .withListener(listener)
+         .withSpec(DummySpec2::class)
+         .launch()
       assertSoftly {
          errors shouldHaveSize 1
          errors[0].shouldBeInstanceOf<AfterProjectListenerException>()
       }
-      Project.deregisterListener(projectListener)
+      configuration.deregisterListener(projectListener)
    }
 
    test("after project errors should have size 2") {
@@ -61,15 +64,18 @@ class AfterProjectTest : FunSpec({
          }
       }
 
-      Project.registerListener(projectListener1)
-      Project.registerListener(projectListener2)
-      KotestEngineLauncher(listener).withSpec(DummySpec2::class).launch()
+      configuration.registerListener(projectListener1)
+      configuration.registerListener(projectListener2)
+      KotestEngineLauncher()
+         .withListener(listener)
+         .withSpec(DummySpec2::class)
+         .launch()
       assertSoftly {
          errors shouldHaveSize 2
          errors.filterIsInstance<AfterProjectListenerException>() shouldHaveSize 2
       }
-      Project.deregisterListener(projectListener1)
-      Project.deregisterListener(projectListener2)
+      configuration.deregisterListener(projectListener1)
+      configuration.deregisterListener(projectListener2)
    }
 })
 

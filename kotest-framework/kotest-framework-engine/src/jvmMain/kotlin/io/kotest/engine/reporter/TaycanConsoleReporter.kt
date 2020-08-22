@@ -1,4 +1,4 @@
-package io.kotest.framework.console
+package io.kotest.engine.reporter
 
 import com.github.ajalt.mordant.TermColors
 import io.kotest.core.spec.Spec
@@ -13,7 +13,13 @@ import kotlin.reflect.KClass
 /**
  * Generates test output in the 'augustus' Kotest style.
  */
-class TaycanReporter(private val term: TermColors) : ConsoleWriter {
+class TaycanConsoleReporter : ConsoleReporter {
+
+   private var term: TermColors = TermColors()
+
+   override fun setTerm(term: TermColors) {
+      this.term = term
+   }
 
    private val isWindows = System.getProperty("os.name").contains("win")
    private val check = if (isWindows) "√" else "✔"
@@ -47,21 +53,27 @@ class TaycanReporter(private val term: TermColors) : ConsoleWriter {
    private fun whiteOnBrightRed(str: String) = term.white.on(term.brightRed).invoke(str)
 
    private val intros = listOf(
-      "Stoking the Kotest engine with power crystals",
+      "Powering the Kotest engine with freshly harvested tests",
       "Engaging Kotest at warp factor 9",
       "Preparing to sacrifice your code to the gods of test",
       "Initializing all Kotest subsystems",
       "Battle commanders are ready to declare war on bugs",
       "Be afraid - be very afraid - of failing tests",
+      "The point is, ladies and gentlemen, that green is good",
       "Lock test-foils in attack position",
+      "Lets crack open this test suite",
+      "Lets get testing, I'm on the clock here",
+      "Mirab, with tests unfurled",
+      "A test suite's gotta do what a test suite's gotta do",
       "I test code and chew bubblegum, and I'm all out of bubblegum"
    )
 
    override fun engineStarted(classes: List<KClass<out Spec>>) {
       print(bold(">> "))
       println(bold(intros.shuffled().first()))
+      print("Test plan has ")
       print(greenBold(classes.size.toString()))
-      println(white(" specs will be executed"))
+      println(white(" specs"))
       println()
    }
 
@@ -141,6 +153,8 @@ class TaycanReporter(private val term: TermColors) : ConsoleWriter {
    override fun specFinished(kclass: KClass<out Spec>, t: Throwable?, results: Map<TestCase, TestResult>) {
       if (t != null) {
          specsFailed += kclass.toDescription()
+         val msg = t.message
+         if (msg != null) println(brightRed(msg))
       }
       println()
    }
@@ -154,31 +168,35 @@ class TaycanReporter(private val term: TermColors) : ConsoleWriter {
    }
 
    override fun testFinished(testCase: TestCase, result: TestResult) {
-      if (testCase.type == TestType.Test) {
-         when (result.status) {
-            TestStatus.Success -> testsPassed++
-            TestStatus.Failure, TestStatus.Error -> {
-               testsFailed += Pair(testCase, result)
-               specsFailed += testCase.description.spec()
-            }
-            else -> testsIgnored++
+
+      // if this is a root level test, we can output the results, along with any child tests.
+
+      // only leaf tests or failed containers contribute to the counts
+      when (result.status) {
+         TestStatus.Success -> if (testCase.type == TestType.Test) {
+            testsPassed++
+            print(green(check))
+            print(" ")
+            println(testCase.displayName)
          }
-         print("".padEnd(testCase.description.depth() * 4, ' '))
-         when (result.status) {
-            TestStatus.Success -> print(green(check))
-            TestStatus.Error, TestStatus.Failure -> print(red(cross))
-            TestStatus.Ignored -> print(brightYellow(disabled))
+         TestStatus.Failure, TestStatus.Error -> {
+            testsFailed += Pair(testCase, result)
+            specsFailed += testCase.description.spec()
+            print(red(cross))
+            print(" ")
+            println(testCase.displayName)
          }
-         print(" ")
-         println(testCase.displayName)
+         TestStatus.Ignored -> testsIgnored++
       }
+
+      print("".padEnd(testCase.description.depth() * 4, ' '))
+      when (result.status) {
+         TestStatus.Success -> Unit
+         TestStatus.Error, TestStatus.Failure -> println()
+         TestStatus.Ignored -> print(brightYellow(disabled))
+      }
+
    }
 
-   override fun testStarted(testCase: TestCase) {
-      // containers get output immediately
-      if (testCase.type == TestType.Container) {
-         print("".padEnd(testCase.description.depth() * 4, ' '))
-         println(testCase.displayName)
-      }
-   }
+   override fun testStarted(testCase: TestCase) {}
 }

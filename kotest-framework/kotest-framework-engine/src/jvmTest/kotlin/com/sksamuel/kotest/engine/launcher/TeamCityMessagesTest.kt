@@ -1,7 +1,7 @@
-package com.sksamuel.kotest.framework.console
+package com.sksamuel.kotest.engine.launcher
 
 import io.kotest.core.spec.style.ShouldSpec
-import io.kotest.framework.console.TeamCityMessages
+import io.kotest.engine.reporter.TeamCityMessages
 import io.kotest.matchers.shouldBe
 
 class TeamCityMessagesTest : ShouldSpec({

@@ -1,11 +1,11 @@
 @file:Suppress("UNCHECKED_CAST")
 
-package io.kotest.framework.launcher
+package io.kotest.engine.launcher
 
 import io.kotest.core.Tags
 import io.kotest.core.spec.Spec
 import io.kotest.engine.KotestEngineLauncher
-import io.kotest.framework.console.ConsoleWriter
+import io.kotest.engine.reporter.Reporter
 import io.kotest.framework.discovery.Discovery
 import io.kotest.framework.discovery.DiscoveryRequest
 import io.kotest.framework.discovery.DiscoverySelector
@@ -19,7 +19,7 @@ import kotlin.coroutines.startCoroutine
  * Creates a kotest engine and launches the tests.
  */
 fun execute(
-   writer: ConsoleWriter,
+   reporter: Reporter,
    packageName: String?,
    specFQN: String?,
    testPath: String?,
@@ -45,19 +45,21 @@ fun execute(
    }
 
    try {
-      // this avoids us needing to bring in coroutine dependency, plus running inside the main
-      // thread is exactly what we want to do
       future {
-         KotestEngineLauncher(ConsoleWriterTestEngineListener(writer))
+         KotestEngineLauncher()
+            .withListener(ReporterTestEngineListener(reporter))
             .withSpecs(specs)
             .withTags(tags)
             .withFilters(listOfNotNull(filter))
+            .withDumpConfig(true)
             .launch()
       }
    } catch (e: Throwable) {
    }
 }
 
+// this avoids us needing to bring in the coroutine deps, plus running inside the main
+// thread is exactly what we want to do
 fun future(f: suspend () -> Unit): Future<Unit> =
    CompletableFuture<Unit>().apply {
       f.startCoroutine(Continuation(EmptyCoroutineContext) { res ->

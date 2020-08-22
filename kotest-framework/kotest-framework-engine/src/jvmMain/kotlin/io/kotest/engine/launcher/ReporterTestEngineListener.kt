@@ -1,42 +1,42 @@
-package io.kotest.framework.launcher
+package io.kotest.engine.launcher
 
 import io.kotest.core.spec.Spec
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.engine.listener.TestEngineListener
-import io.kotest.framework.console.ConsoleWriter
+import io.kotest.engine.reporter.Reporter
 import kotlin.reflect.KClass
 
 /**
- * A [TestEngineListener] that adapts a [ConsoleWriter]
+ * A [TestEngineListener] that adapts a [Reporter]
  */
-class ConsoleWriterTestEngineListener(private val writer: ConsoleWriter) : TestEngineListener {
+class ReporterTestEngineListener(private val reporter: Reporter) : TestEngineListener {
 
    override fun engineStarted(classes: List<KClass<out Spec>>) {
-      writer.engineStarted(classes)
+      reporter.engineStarted(classes)
    }
 
    override fun engineFinished(t: List<Throwable>) {
-      writer.engineFinished(t)
+      reporter.engineFinished(t)
    }
 
    override fun specStarted(kclass: KClass<out Spec>) {
-      writer.specStarted(kclass)
+      reporter.specStarted(kclass)
    }
 
    override fun specFinished(kclass: KClass<out Spec>, t: Throwable?, results: Map<TestCase, TestResult>) {
-      writer.specFinished(kclass, t, results)
+      reporter.specFinished(kclass, t, results)
    }
 
    override fun testStarted(testCase: TestCase) {
-      writer.testStarted(testCase)
+      reporter.testStarted(testCase)
    }
 
    override fun testFinished(testCase: TestCase, result: TestResult) {
-      writer.testFinished(testCase, result)
+      reporter.testFinished(testCase, result)
    }
 
    override fun testIgnored(testCase: TestCase, reason: String?) {
-      writer.testIgnored(testCase)
+      reporter.testFinished(testCase, TestResult.Ignored)
    }
 }

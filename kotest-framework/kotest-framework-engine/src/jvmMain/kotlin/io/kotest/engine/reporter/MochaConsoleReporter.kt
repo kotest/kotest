@@ -1,4 +1,4 @@
-package io.kotest.framework.console
+package io.kotest.engine.reporter
 
 import com.github.ajalt.mordant.TermColors
 import io.kotest.core.spec.Spec
@@ -28,11 +28,11 @@ object IgnoredSymbol : Symbol {
    override fun print(term: TermColors): String = term.gray("-")
 }
 
-class MochaConsoleWriter(
+class MochaConsoleReporter(
    private val term: TermColors,
    private val slow: Int = 1000,
    private val verySlow: Int = 3000
-) : ConsoleWriter {
+) : Reporter {
 
    private val margin = " ".repeat(2)
 
@@ -62,9 +62,6 @@ class MochaConsoleWriter(
          else -> ""
       }
       return "$margin${testCase.description.indent()} ${symbol.print(term)} $name $duration".padEnd(80, ' ')
-   }
-
-   override fun testIgnored(testCase: TestCase) {
    }
 
    private fun durationString(durationMs: Long): String {
