@@ -40,6 +40,9 @@ class BasicConsoleWriter : ConsoleWriter {
       tests.add(testCase)
    }
 
+   override fun testIgnored(testCase: TestCase) {
+   }
+
    override fun testFinished(testCase: TestCase, result: TestResult) {
       testResults[testCase.description] = result
    }

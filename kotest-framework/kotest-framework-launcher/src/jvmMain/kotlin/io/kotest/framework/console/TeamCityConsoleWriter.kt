@@ -90,6 +90,9 @@ class TeamCityConsoleWriter(private val prefix: String? = null) : ConsoleWriter 
       }
    }
 
+   override fun testIgnored(testCase: TestCase) {
+   }
+
    override fun testFinished(testCase: TestCase, result: TestResult) {
       val desc = testCase.description
       println()

@@ -64,6 +64,9 @@ class MochaConsoleWriter(
       return "$margin${testCase.description.indent()} ${symbol.print(term)} $name $duration".padEnd(80, ' ')
    }
 
+   override fun testIgnored(testCase: TestCase) {
+   }
+
    private fun durationString(durationMs: Long): String {
       return when {
          durationMs in slow..verySlow -> term.brightYellow("(${durationMs}ms)")

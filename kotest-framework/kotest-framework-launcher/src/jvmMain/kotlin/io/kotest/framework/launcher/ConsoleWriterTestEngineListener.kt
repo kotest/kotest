@@ -35,4 +35,8 @@ class ConsoleWriterTestEngineListener(private val writer: ConsoleWriter) : TestE
    override fun testFinished(testCase: TestCase, result: TestResult) {
       writer.testFinished(testCase, result)
    }
+
+   override fun testIgnored(testCase: TestCase, reason: String?) {
+      writer.testIgnored(testCase)
+   }
 }

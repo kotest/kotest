@@ -16,6 +16,9 @@ import kotlin.reflect.KClass
 class TaycanReporter(private val term: TermColors) : ConsoleWriter {
 
    private val isWindows = System.getProperty("os.name").contains("win")
+   private val check = if (isWindows) "√" else "✔"
+   private val cross = if (isWindows) "X" else "✘"
+   private val disabled = if (isWindows) "-" else 0x229D.toChar().toString()
 
    private var start = System.currentTimeMillis()
    private var testsFailed = emptyList<Pair<TestCase, TestResult>>()
@@ -32,6 +35,7 @@ class TaycanReporter(private val term: TermColors) : ConsoleWriter {
    private fun brightRedBold(str: String) = term.brightRed.plus(term.bold).invoke(str)
    private fun redBold(str: String) = term.red.plus(term.bold).invoke(str)
    private fun yellow(str: String) = term.yellow(str)
+   private fun brightYellow(str: String) = term.brightYellow(str)
    private fun yellowBold(str: String) = term.yellow.plus(term.bold).invoke(str)
    private fun black(str: String) = term.black(str)
    private fun white(str: String) = term.white(str)
@@ -141,6 +145,14 @@ class TaycanReporter(private val term: TermColors) : ConsoleWriter {
       println()
    }
 
+   override fun testIgnored(testCase: TestCase) {
+      testsIgnored++
+      print("".padEnd(testCase.description.depth() * 4, ' '))
+      print(brightYellow(disabled))
+      print(" ")
+      println(testCase.displayName)
+   }
+
    override fun testFinished(testCase: TestCase, result: TestResult) {
       if (testCase.type == TestType.Test) {
          when (result.status) {
@@ -153,9 +165,9 @@ class TaycanReporter(private val term: TermColors) : ConsoleWriter {
          }
          print("".padEnd(testCase.description.depth() * 4, ' '))
          when (result.status) {
-            TestStatus.Success -> print(green(if (isWindows) "√" else "✔"))
-            TestStatus.Error, TestStatus.Failure -> print(red(if (isWindows) "X" else "✘"))
-            else -> Unit
+            TestStatus.Success -> print(green(check))
+            TestStatus.Error, TestStatus.Failure -> print(red(cross))
+            TestStatus.Ignored -> print(brightYellow(disabled))
          }
          print(" ")
          println(testCase.displayName)

@@ -25,5 +25,6 @@ interface ConsoleWriter {
    fun specFinished(kclass: KClass<out Spec>, t: Throwable?, results: Map<TestCase, TestResult>)
 
    fun testStarted(testCase: TestCase)
+   fun testIgnored(testCase: TestCase)
    fun testFinished(testCase: TestCase, result: TestResult)
 }
