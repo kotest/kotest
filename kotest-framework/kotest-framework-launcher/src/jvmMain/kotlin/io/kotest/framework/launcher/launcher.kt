@@ -11,6 +11,7 @@ import io.kotest.core.Tags
 import io.kotest.framework.console.BasicConsoleWriter
 import io.kotest.framework.console.ConsoleWriter
 import io.kotest.framework.console.MochaConsoleWriter
+import io.kotest.framework.console.TaycanReporter
 import io.kotest.framework.console.TeamCityConsoleWriter
 import kotlin.system.exitProcess
 
@@ -37,6 +38,11 @@ class Execute : CliktCommand(name = "Kotest Launcher") {
       help = "Specify the fully qualified name of the spec class which contains the test to execute"
    )
 
+   private val termcolor by option(
+      "--termcolor",
+      help = "Specify true to force true colour on the terminal; auto to have autodefault"
+   )
+
    private val slowDuration by option(
       "--slow-duration",
       help = "Optional time in millis controlling when a test is marked as slow"
@@ -54,7 +60,11 @@ class Execute : CliktCommand(name = "Kotest Launcher") {
 
    override fun run() {
 
-      val term = if (source == "kotest-gradle-plugin") TermColors(TermColors.Level.ANSI256) else TermColors()
+      val term = when (termcolor) {
+         "true" -> TermColors(TermColors.Level.TRUECOLOR)
+         "ansi256" -> TermColors(TermColors.Level.ANSI256)
+         else -> TermColors()
+      }
 
       val tags = when {
          tagexpression != null -> Tags(tagexpression ?: "")
@@ -69,6 +79,7 @@ class Execute : CliktCommand(name = "Kotest Launcher") {
          "mocha" -> MochaConsoleWriter(term, slowDuration, verySlowDuration)
          "basic" -> BasicConsoleWriter()
          "teamcity" -> TeamCityConsoleWriter()
+         "taycan" -> TaycanReporter(term)
          else -> defaultWriter()
       }
 
