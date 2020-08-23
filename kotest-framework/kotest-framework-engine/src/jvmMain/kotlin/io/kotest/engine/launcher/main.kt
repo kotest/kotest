@@ -71,19 +71,15 @@ class Execute : CliktCommand(name = "Kotest Launcher") {
       help = "Set to true to output the configuration values when the Engine is created. Defaults to true."
    )
 
-   override fun run() {
+   private fun createReporter(): Reporter {
+      return try {
 
-      val tags = when {
-         tagexpression != null -> Tags(tagexpression ?: "")
-         includeTags.isEmpty() && excludeTags.isEmpty() -> Tags.Empty
-         else -> Tags(
-            included = includeTags.map { NamedTag(it) }.toSet(),
-            excluded = includeTags.map { NamedTag(it) }.toSet()
-         )
-      }
+         // for backwards compatibility, we support "teamcity" as a special value
+         val reporter = when (reporterClass ?: writerClass) {
+            "teamcity" -> TeamCityConsoleReporter()
+            else -> Class.forName(reporterClass ?: writerClass).getDeclaredConstructor().newInstance() as Reporter
+         }
 
-      val reporter = try {
-         val reporter = Class.forName(reporterClass ?: writerClass).getDeclaredConstructor().newInstance() as Reporter
          if (reporter is ConsoleReporter) {
 
             val term = when (termcolor) {
@@ -100,7 +96,20 @@ class Execute : CliktCommand(name = "Kotest Launcher") {
          t.printStackTrace()
          defaultReporter()
       }
+   }
 
+   override fun run() {
+
+      val tags = when {
+         tagexpression != null -> Tags(tagexpression ?: "")
+         includeTags.isEmpty() && excludeTags.isEmpty() -> Tags.Empty
+         else -> Tags(
+            included = includeTags.map { NamedTag(it) }.toSet(),
+            excluded = includeTags.map { NamedTag(it) }.toSet()
+         )
+      }
+
+      val reporter = createReporter()
       execute(reporter, packageName, spec, test, tags)
 
       // there could be threads in the background that will stop the launcher shutting down
