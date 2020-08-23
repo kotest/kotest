@@ -494,19 +494,6 @@ fun <T> exist(p: (T) -> Boolean) = object : Matcher<Collection<T>> {
       "Collection should not contain an element that matches the predicate $p"
    )
 }
-
-fun <T> Iterable<T>.shouldContainInOrder(vararg ts: T) = toList().shouldContainInOrder(ts)
-fun <T> Array<T>.shouldContainInOrder(vararg ts: T) = asList().shouldContainInOrder(ts)
-fun <T> List<T>.shouldContainInOrder(vararg ts: T) = this.shouldContainInOrder(ts.toList())
-infix fun <T> Iterable<T>.shouldContainInOrder(expected: List<T>) = toList().shouldContainInOrder(expected)
-infix fun <T> Array<T>.shouldContainInOrder(expected: List<T>) = asList().shouldContainInOrder(expected)
-infix fun <T> List<T>.shouldContainInOrder(expected: List<T>) = this should containsInOrder(expected)
-infix fun <T> Iterable<T>.shouldNotContainInOrder(expected: Iterable<T>) = toList().shouldNotContainInOrder(expected.toList())
-infix fun <T> Array<T>.shouldNotContainInOrder(expected: Array<T>) = asList().shouldNotContainInOrder(expected.asList())
-infix fun <T> Iterable<T>.shouldNotContainInOrder(expected: List<T>) = toList().shouldNotContainInOrder(expected)
-infix fun <T> Array<T>.shouldNotContainInOrder(expected: List<T>) = asList().shouldNotContainInOrder(expected)
-infix fun <T> List<T>.shouldNotContainInOrder(expected: List<T>) = this shouldNot containsInOrder(expected)
-
 fun <T> Iterable<T>.shouldExistInOrder(vararg ps: (T) -> Boolean) = toList().shouldExistInOrder(ps.toList())
 fun <T> Array<T>.shouldExistInOrder(vararg ps: (T) -> Boolean) = asList().shouldExistInOrder(ps.toList())
 fun <T> List<T>.shouldExistInOrder(vararg ps: (T) -> Boolean) = this.shouldExistInOrder(ps.toList())
