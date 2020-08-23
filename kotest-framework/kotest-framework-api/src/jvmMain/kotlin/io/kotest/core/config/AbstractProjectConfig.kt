@@ -16,7 +16,7 @@ import kotlin.time.ExperimentalTime
 
 /**
  * Project-wide configuration. Extensions returned by an
- * instance of this class will be applied to all [AbstractSpec] and [TestCase]s.
+ * instance of this class will be applied to all [Spec] and [TestCase]s.
  *
  * Create an object that is derived from this class and place it in your classpath.
  * It will be detected at runtime and the options specified here will be used to set
@@ -112,8 +112,8 @@ abstract class AbstractProjectConfig {
 
    /**
     * Sets the order of top level tests in a spec.
-    * The value set here will be used unless overriden in a [AbstractSpec].
-    * The value in a [AbstractSpec] is always taken in preference to the value here.
+    * The value set here will be used unless overriden in a [Spec].
+    * The value in a [Spec] is always taken in preference to the value here.
     * Nested tests will always be executed in discovery order.
     *
     * If this function returns null then the default of Sequential
@@ -149,7 +149,7 @@ abstract class AbstractProjectConfig {
 
    /**
     * Override this value to set a global [AssertionMode].
-    * If a [AbstractSpec] sets an assertion mode, then the spec will override.
+    * If a [Spec] sets an assertion mode, then the spec will override.
     */
    open val assertionMode: AssertionMode? = null
 

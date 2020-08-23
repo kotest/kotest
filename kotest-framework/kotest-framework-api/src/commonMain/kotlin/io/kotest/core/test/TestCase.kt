@@ -7,7 +7,7 @@ import io.kotest.core.spec.Spec
 
 /**
  * A [TestCase] describes an actual block of code that will be tested.
- * It contains a reference back to the [AbstractSpec] instance in which it
+ * It contains a reference back to the [Spec] instance in which it
  * is being executed.
  *
  * It also captures a closure of the body of the test case.
@@ -15,9 +15,9 @@ import io.kotest.core.spec.Spec
  * The context is used so that the test function can, at runtime,
  * register nested tests with the test engine. This allows
  * nested tests to be executed lazily as required, rather
- * than when the [AbstractSpec] instance is created.
+ * than when the [Spec] instance is created.
  *
- * A test can be nested inside other tests if the [AbstractSpec] supports it.
+ * A test can be nested inside other tests if the [Spec] supports it.
  *
  * For example, in the FunSpec we only allow top level tests.
  *

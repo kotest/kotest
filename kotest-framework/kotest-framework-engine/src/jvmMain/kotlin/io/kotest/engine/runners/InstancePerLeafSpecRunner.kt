@@ -60,7 +60,7 @@ internal class InstancePerLeafSpecRunner(listener: TestEngineListener) : SpecRun
 
    /**
     * The intention of this runner is that each [TestCase] executes in it's own instance
-    * of the containing [AbstractSpec] class. Therefore, when we begin executing a test case from
+    * of the containing [Spec] class. Therefore, when we begin executing a test case from
     * the queue, we must first instantiate a new spec, and begin execution on _that_ instance.
     */
    override suspend fun execute(spec: Spec): Try<Map<TestCase, TestResult>> =

@@ -16,7 +16,7 @@ import java.util.concurrent.TimeUnit
 import kotlin.reflect.KClass
 
 /**
- * The base class for executing all the tests inside a [AbstractSpec].
+ * The base class for executing all the tests inside a [Spec].
  *
  * Each spec can define how tests are isolated from each other, via an [IsolationMode].
  *
@@ -32,7 +32,7 @@ abstract class SpecRunner(val listener: TestEngineListener) {
    abstract suspend fun execute(spec: Spec): Try<Map<TestCase, TestResult>>
 
    /**
-    * Creates an instance of the supplied [AbstractSpec] by delegating to the project constructors,
+    * Creates an instance of the supplied [Spec] by delegating to the project constructors,
     * and notifies the [TestEngineListener] of the instantiation event.
     */
    protected fun createInstance(kclass: KClass<out Spec>): Try<Spec> =

@@ -23,7 +23,7 @@ import io.kotest.fp.success
 import kotlin.reflect.KClass
 
 /**
- * Handles the execution of a single [AbstractSpec] class.
+ * Handles the execution of a single [Spec] class.
  * Delegates to a [SpecRunner] which determines how and when
  * to instantiate fresh specs based on the [IsolationMode] of the spec.
  *
@@ -32,7 +32,7 @@ import kotlin.reflect.KClass
 class SpecExecutor(private val listener: TestEngineListener) {
 
    /**
-    * Executes the given [AbstractSpec].
+    * Executes the given [Spec].
     */
    suspend fun execute(kclass: KClass<out Spec>) {
       log("Executing spec $kclass")
@@ -59,7 +59,7 @@ class SpecExecutor(private val listener: TestEngineListener) {
    }
 
    /**
-    * Notifies the [TestEngineListener] that we are about to start execution of a [AbstractSpec].
+    * Notifies the [TestEngineListener] that we are about to start execution of a [Spec].
     * This is called only once per spec regardless of the number of instantiation events.
     */
    private fun notifySpecStarted(kclass: KClass<out Spec>) = Try {
@@ -80,7 +80,7 @@ class SpecExecutor(private val listener: TestEngineListener) {
       }
 
    /**
-    * Notifies the [TestEngineListener] that we have finished the execution of a [AbstractSpec].
+    * Notifies the [TestEngineListener] that we have finished the execution of a [Spec].
     * This is called once per spec regardless of the number of instantiation events.
     */
    private fun notifySpecFinished(
@@ -94,7 +94,7 @@ class SpecExecutor(private val listener: TestEngineListener) {
    }
 
    /**
-    * Creates an instance of the supplied [AbstractSpec] by delegating to the project constructors,
+    * Creates an instance of the supplied [Spec] by delegating to the project constructors,
     * and notifies the [TestEngineListener] of the instantiation event.
     */
    private fun createInstance(kclass: KClass<out Spec>): Try<Spec> =
@@ -164,7 +164,7 @@ class SpecExecutor(private val listener: TestEngineListener) {
    }
 
    /**
-    * Notifies the user listeners that a new [AbstractSpec] is starting.
+    * Notifies the user listeners that a new [Spec] is starting.
     * This is only invoked once per spec class, regardless of the number of invocations.
     * If this errors then no further callbacks or tests will be executed.
     */
@@ -181,7 +181,7 @@ class SpecExecutor(private val listener: TestEngineListener) {
       }
 
    /**
-    * Notifies the user listeners that a [AbstractSpec] has finished all tests.
+    * Notifies the user listeners that a [Spec] has finished all tests.
     */
    private suspend fun invokeFinalizeSpecListeners(
       kclass: KClass<out Spec>,

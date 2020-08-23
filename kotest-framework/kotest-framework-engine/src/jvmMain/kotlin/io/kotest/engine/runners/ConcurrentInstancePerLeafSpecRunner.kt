@@ -28,7 +28,7 @@ import kotlin.coroutines.CoroutineContext
 
 /**
  * A [SpecRunner] that executes each leaf [TestCase] in a seperate instance of the
- * containing [AbstractSpec] class, and each test inside it's own coroutine.
+ * containing [Spec] class, and each test inside it's own coroutine.
  *
  * Each root test is launched using a single threaded dispatcher. The user can specify the number
  * of dispatchers to use (round robin between root tests) by setting the threads value in a spec.

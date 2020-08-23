@@ -26,7 +26,7 @@ import kotlin.coroutines.CoroutineContext
 
 /**
  * Implementation of [SpecRunner] that executes all tests against the
- * same [AbstractSpec] instance. In other words, only a single instance of the spec class
+ * same [Spec] instance. In other words, only a single instance of the spec class
  * is instantiated for all the test cases.
  */
 internal class SingleInstanceSpecRunner(listener: TestEngineListener) : SpecRunner(listener) {

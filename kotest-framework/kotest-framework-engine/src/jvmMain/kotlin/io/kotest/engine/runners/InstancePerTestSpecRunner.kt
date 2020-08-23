@@ -26,7 +26,7 @@ import kotlin.coroutines.CoroutineContext
 
 /**
  * Implementation of [SpecRunner] that executes each [TestCase] in a fresh instance
- * of the [AbstractSpec] class.
+ * of the [Spec] class.
  *
  * This differs from the [InstancePerLeafSpecRunner] in that
  * every single test, whether of type [TestType.Test] or [TestType.Container], will be
@@ -61,7 +61,7 @@ internal class InstancePerTestSpecRunner(listener: TestEngineListener) : SpecRun
 
    /**
     * The intention of this runner is that each [TestCase] executes in it's own instance
-    * of the containing [AbstractSpec] class. Therefore, when we begin executing a test case from
+    * of the containing [Spec] class. Therefore, when we begin executing a test case from
     * the queue, we must first instantiate a new spec, and begin execution on _that_ instance.
     *
     * As test lambdas are executed, nested test cases will be registered, these should be ignored
@@ -82,7 +82,7 @@ internal class InstancePerTestSpecRunner(listener: TestEngineListener) : SpecRun
 
    /**
     * The intention of this runner is that each [TestCase] executes in it's own instance
-    * of the containing [AbstractSpec] class. Therefore, when we begin executing a test case from
+    * of the containing [Spec] class. Therefore, when we begin executing a test case from
     * the queue, we must first instantiate a new spec, and begin execution on _that_ instance.
     *
     * As test lambdas are executed, nested test cases will be registered, these should be ignored

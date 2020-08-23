@@ -21,7 +21,7 @@ import kotlin.reflect.KClass
  *
  * Note: This listener will change the security manager
  * for all tests. If you want to change the security manager
- * for just a single [AbstractSpec] then consider the
+ * for just a single [Spec] then consider the
  * alternative [SpecSystemExitListener]
  */
 object SystemExitListener : TestListener {
@@ -40,7 +40,7 @@ object SystemExitListener : TestListener {
  * After the spec has completed, the original security manager
  * will be set.
  *
- * To use this, override `listeners`() in your [AbstractSpec] class.
+ * To use this, override `listeners`() in your [Spec] class.
  *
  * Note: This listener is only suitable for use if parallelism is
  * set to 1 (the default) otherwise a race condition could occur.

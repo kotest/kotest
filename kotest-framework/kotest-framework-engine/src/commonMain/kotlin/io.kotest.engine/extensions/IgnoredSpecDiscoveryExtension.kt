@@ -7,7 +7,7 @@ import io.kotest.mpp.hasAnnotation
 import kotlin.reflect.KClass
 
 /**
- * Filters out any [AbstractSpec] annotated with @[Ignored].
+ * Filters out any [Spec] annotated with @[Ignored].
  */
 object IgnoredSpecDiscoveryExtension : DiscoveryExtension {
    override fun afterScan(classes: List<KClass<out Spec>>): List<KClass<out Spec>> {
