@@ -32,7 +32,7 @@ fun LeafPsiElement.enclosingClassClassOrObjectToken(): KtClass? {
  * Returns the simple name of the parent class of this class.
  * Is efficient, does not require resolve.
  */
-fun KtClass.getSuperClassSimpleName(): String? {
+fun KtClassOrObject.getSuperClassSimpleName(): String? {
    for (entry in superTypeListEntries) {
       if (entry is KtSuperTypeCallEntry) {
          val name = entry.typeAsUserType?.referencedName
@@ -41,6 +41,7 @@ fun KtClass.getSuperClassSimpleName(): String? {
    }
    return null
 }
+
 
 /**
  * Returns the [KtClass] from this light class, otherwise null.

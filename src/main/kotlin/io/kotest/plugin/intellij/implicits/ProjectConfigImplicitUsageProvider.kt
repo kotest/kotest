@@ -5,7 +5,7 @@ import com.intellij.psi.PsiElement
 import io.kotest.plugin.intellij.psi.getSuperClassSimpleName
 import io.kotest.plugin.intellij.psi.toKtClass
 import org.jetbrains.kotlin.asJava.classes.KtLightClass
-import org.jetbrains.kotlin.psi.KtClass
+import org.jetbrains.kotlin.psi.KtClassOrObject
 
 /**
  * Allows to disable highlighting of certain elements as unused when such elements are not referenced
@@ -23,7 +23,7 @@ class ProjectConfigImplicitUsageProvider : ImplicitUsageProvider {
     */
    override fun isImplicitUsage(element: PsiElement): Boolean {
       val parent = when (element) {
-         is KtClass -> element.getSuperClassSimpleName()
+         is KtClassOrObject -> element.getSuperClassSimpleName()
          is KtLightClass -> element.toKtClass()?.getSuperClassSimpleName()
          else -> null
       }
