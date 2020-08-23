@@ -33,7 +33,6 @@ kotlin {
 
       val jvmMain by getting {
          dependencies {
-            implementation(kotlin("stdlib-jdk8"))
             implementation(kotlin("reflect"))
             implementation(project(Projects.Common))
             implementation(project(Projects.Api))
@@ -47,7 +46,7 @@ kotlin {
          dependsOn(jvmMain)
          dependencies {
             implementation(project(Projects.JunitRunner))
-            implementation(project(":kotest-assertions:kotest-assertions-core"))
+            implementation(project(Projects.AssertionsCore))
          }
       }
    }

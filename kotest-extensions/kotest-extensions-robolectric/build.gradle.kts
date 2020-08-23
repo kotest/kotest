@@ -33,7 +33,6 @@ kotlin {
       val jvmMain by getting {
          dependencies {
             implementation(project(":kotest-core"))
-            implementation(kotlin("stdlib-jdk8"))
             implementation(kotlin("reflect"))
             implementation("org.robolectric:robolectric:4.3")
             implementation("junit:junit:4.12")

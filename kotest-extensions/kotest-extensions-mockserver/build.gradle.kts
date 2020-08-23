@@ -37,7 +37,6 @@ kotlin {
          dependencies {
             implementation(project(Projects.Engine))
             implementation(project(Projects.Api))
-            implementation(kotlin("stdlib-jdk8"))
             api(Libs.MockServer.netty)
             api(Libs.MockServer.javaClient)
          }

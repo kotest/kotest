@@ -31,7 +31,6 @@ kotlin {
    sourceSets {
       val jvmMain by getting {
          dependencies {
-            implementation(kotlin("stdlib-jdk8"))
             implementation(project(Projects.AssertionsShared))
             implementation(Libs.Tschuchortdev.kotlinCompileTesting)
          }

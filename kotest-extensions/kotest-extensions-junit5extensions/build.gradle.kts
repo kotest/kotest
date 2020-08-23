@@ -36,7 +36,6 @@ kotlin {
             implementation(project(Projects.Common))
             implementation(project(Projects.Engine))
             implementation(project(Projects.Api))
-            implementation(kotlin("stdlib-jdk8"))
             implementation(Libs.Coroutines.coreJvm)
             implementation(Libs.JUnitJupiter.api)
          }

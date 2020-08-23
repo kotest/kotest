@@ -36,7 +36,6 @@ kotlin {
          dependencies {
             implementation(project(Projects.Engine))
             implementation(project(Projects.Api))
-            implementation(kotlin("stdlib-jdk8"))
             implementation(kotlin("reflect"))
             implementation(Libs.Jdom.jdom2)
          }

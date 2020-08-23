@@ -32,7 +32,6 @@ kotlin {
    sourceSets {
       val jvmMain by getting {
          dependencies {
-            implementation(kotlin("stdlib-jdk8"))
             implementation(project(Projects.Engine))
             implementation(project(Projects.Api))
             api(Libs.TestContainers.testcontainers)

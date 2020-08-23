@@ -46,7 +46,6 @@ kotlin {
       val jvmMain by getting {
          dependsOn(commonMain)
          dependencies {
-            implementation(kotlin("stdlib-jdk8"))
             implementation(kotlin("reflect"))
             implementation(Libs.Wumpz.diffutils)
             implementation(Libs.Mifmif.generex)

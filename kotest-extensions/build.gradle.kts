@@ -34,7 +34,6 @@ kotlin {
             implementation(project(Projects.Api))
             implementation(project(Projects.Engine))
             implementation(project(Projects.Common))
-            implementation(kotlin("stdlib-jdk8"))
             implementation("commons-io:commons-io:2.6")
             implementation(Libs.Mocking.mockk)
          }

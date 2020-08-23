@@ -31,9 +31,8 @@ kotlin {
    sourceSets {
       val jvmTest by getting {
          dependencies {
-            api(kotlin("stdlib-jdk8"))
             implementation(project(Projects.JunitRunner))
-            implementation(project(":kotest-assertions:kotest-assertions-core"))
+            implementation(project(Projects.AssertionsCore))
             implementation(project(":kotest-extensions:kotest-extensions-allure"))
          }
       }
