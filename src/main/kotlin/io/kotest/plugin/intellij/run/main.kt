@@ -4,19 +4,19 @@ import com.intellij.openapi.project.Project
 import com.intellij.psi.JavaPsiFacade
 import com.intellij.psi.search.GlobalSearchScope
 
-// if we have the new launcher on the classpath we're on kotest 4.2+
-// if we have the old launcher on the classpath we're on kotest 4.1
-private const val mainClass42 = "io.kotest.framework.launcher.LauncherKt"
-private const val mainClass41 = "io.kotest.launcher.LauncherKt"
-private const val engine42 = "io.kotest.engine.KotestEngine"
+private const val mainClass421 = "io.kotest.engine.launcher.MainKt"
+private const val mainClass420 = "io.kotest.framework.launcher.LauncherKt"
+private const val mainClass41x = "io.kotest.launcher.LauncherKt"
+private const val test421 = "io.kotest.engine.launcher.MainKt"
+private const val test420 = "io.kotest.engine.KotestEngine"
 
-private val kotest41RequiredJars = listOf(
+private val kotest41xRequiredJars = listOf(
    "io.kotest.launcher.TeamCityMessages",
    "com.github.ajalt.clikt.core.CliktCommand",
    "com.github.ajalt.mordant.TermColors"
 )
 
-private val kotest42RequiredJars = listOf(
+private val kotest420RequiredJars = listOf(
    // the launcher and console writers
    "io.kotest.framework.console.TeamCityMessages",
    // for discovery of specs
@@ -27,16 +27,28 @@ private val kotest42RequiredJars = listOf(
    "com.github.ajalt.mordant.TermColors"
 )
 
+private fun is421(project: Project): Boolean {
+   val scope = GlobalSearchScope.allScope(project)
+   return JavaPsiFacade.getInstance(project).findClass(test421, scope) != null
+}
+
+private fun is420(project: Project): Boolean {
+   val scope = GlobalSearchScope.allScope(project)
+   return JavaPsiFacade.getInstance(project).findClass(test420, scope) != null
+}
+
 /**
- * In 4.2, the framework classes have moved packages. So we must determine which
- * launcher we want to use. We can do this by checking for a class that only
- * exists in the 4.2 engine.
+ *
+ * In 4.2.1, the launcher is part of engine to accomodate the gradle plugin
+ * In 4.2.0, the launcher was in it's own module - io.kotest.framework.launcher
+ * In 4.1.3, we included the launcher as a separate dependency explicitly
+ * In <4.1.3 users were required to add console dependency to the build
  */
 fun determineKotestLauncher(project: Project): LauncherConfig {
-   val scope = GlobalSearchScope.allScope(project)
-   return when (JavaPsiFacade.getInstance(project).findClass(engine42, scope)) {
-      null -> LauncherConfig(mainClass41, kotest41RequiredJars)
-      else -> LauncherConfig(mainClass42, kotest42RequiredJars)
+   return when {
+      is421(project) -> LauncherConfig(mainClass421, emptyList())
+      is420(project) -> LauncherConfig(mainClass420, kotest420RequiredJars)
+      else -> LauncherConfig(mainClass41x, kotest41xRequiredJars)
    }
 }
 
