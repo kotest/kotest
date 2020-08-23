@@ -46,7 +46,7 @@ kotlin {
 
 tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
    kotlinOptions.freeCompilerArgs += "-Xuse-experimental=kotlin.Experimental"
-   kotlinOptions.jvmTarget = "1.6"
+   kotlinOptions.jvmTarget = "1.8"
    kotlinOptions.apiVersion = "1.3"
 }
 
