@@ -18,12 +18,8 @@ import io.kotest.mpp.NamedThreadFactory
 import io.kotest.mpp.log
 import kotlinx.coroutines.runBlocking
 import java.util.Collections.emptyList
-import java.util.concurrent.CompletableFuture
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
-import kotlin.coroutines.Continuation
-import kotlin.coroutines.EmptyCoroutineContext
-import kotlin.coroutines.startCoroutine
 import kotlin.reflect.KClass
 
 data class KotestEngineConfig(
@@ -139,7 +135,7 @@ class KotestEngine(private val config: KotestEngineConfig) {
       )
       specs.forEach { klass ->
          executor.submit {
-            future {
+            runBlocking {
                specExecutor.execute(klass)
             }
          }
@@ -165,11 +161,4 @@ class KotestEngine(private val config: KotestEngineConfig) {
       // explicitly exit because we spin up test threads that the user may have put into deadlock
       // exitProcess(if (t == null) 0 else -1)
    }
-
-   private fun <A> future(f: suspend () -> A): java.util.concurrent.Future<A> =
-      CompletableFuture<A>().apply {
-         f.startCoroutine(Continuation(EmptyCoroutineContext) { res ->
-            res.fold(::complete, ::completeExceptionally)
-         })
-      }
 }

@@ -1,12 +1,9 @@
 package io.kotest.mpp
 
-import java.util.concurrent.CompletableFuture
+import kotlinx.coroutines.runBlocking
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicReference
-import kotlin.coroutines.Continuation
-import kotlin.coroutines.EmptyCoroutineContext
-import kotlin.coroutines.startCoroutine
 
 actual suspend fun replay(
    times: Int,
@@ -26,7 +23,7 @@ actual suspend fun replay(
       val error = AtomicReference<Throwable>(null)
       for (k in 0 until times) {
          executor.submit {
-            future {
+            runBlocking {
                try {
                   before(k)
                   action(k)
@@ -45,10 +42,3 @@ actual suspend fun replay(
          throw error.get()
    }
 }
-
-private fun <A> future(f: suspend () -> A): java.util.concurrent.Future<A> =
-   CompletableFuture<A>().apply {
-      f.startCoroutine(Continuation(EmptyCoroutineContext) { res ->
-         res.fold(::complete, ::completeExceptionally)
-      })
-   }
