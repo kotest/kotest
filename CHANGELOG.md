@@ -1,7 +1,15 @@
 Changelog
 =========
 
-#### 4.2.0 - Prerelease
+#### 4.2.1
+
+* Bugfix: Usage of a Kotlin 1.4 only method has been removed
+* Bugfix: KotlinReflectionInternalError fixed on java enums #1611
+* Bugfix: Erors in a DiscoveryExtension were not propagated to output #1634
+* Bugfix: Tags specified via inline tags dsl were not being picked up #1642
+* Improvement: Updated output of some collection matchers to format an element per line #1380
+
+#### 4.2.0
 
 * Feature: Kotest upgraded to use Kotlin 1.4.0 #1511
 * Feature: Allow multiple project configs to be detected and merged #1632
