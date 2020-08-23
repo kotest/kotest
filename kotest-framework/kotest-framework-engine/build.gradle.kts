@@ -88,6 +88,11 @@ tasks.named("compileKotlinJs") {
    kotlinOptions.moduleKind = "commonjs"
 }
 
+tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
+   kotlinOptions.jvmTarget = "1.6"
+   kotlinOptions.apiVersion = "1.3"
+}
+
 tasks.named<Test>("jvmTest") {
    useJUnitPlatform()
    filter {
