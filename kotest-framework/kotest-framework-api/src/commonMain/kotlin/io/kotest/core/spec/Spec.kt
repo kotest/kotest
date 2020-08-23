@@ -2,6 +2,7 @@ package io.kotest.core.spec
 
 import io.kotest.core.SpecFunctionCallbacks
 import io.kotest.core.SpecFunctionConfiguration
+import io.kotest.core.Tag
 import io.kotest.core.TestConfiguration
 import io.kotest.core.config.configuration
 import io.kotest.core.js.JsTest
@@ -72,7 +73,9 @@ abstract class Spec : TestConfiguration(), SpecFunctionConfiguration, SpecFuncti
    /**
     * Returns the actual test order to use, taking into account spec config and global config.
     */
-   fun resolvedTestCaseOrder(): TestCaseOrder = this.testCaseOrder() ?: this.testOrder ?: configuration.testCaseOrder
+   fun declaredTestCaseOrder(): TestCaseOrder = this.testCaseOrder() ?: this.testOrder ?: configuration.testCaseOrder
+
+   fun declaredTags(): Set<Tag> = tags() + _tags
 
    /**
     * The annotation [JsTest] is intercepted by the kotlin.js compiler and invoked in the generated

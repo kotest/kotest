@@ -1,7 +1,7 @@
 package io.kotest.engine.config
 
 import io.kotest.core.config.Configuration
-import io.kotest.core.internal.tags.resolvedTags
+import io.kotest.core.internal.tags.activeTags
 import io.kotest.mpp.bestName
 
 fun Configuration.createConfigSummary(): String {
@@ -34,7 +34,7 @@ fun Configuration.createConfigSummary(): String {
       }
    }
 
-   resolvedTags().expression?.let { sb.buildOutput("Tags", it) }
+   activeTags().expression?.let { sb.buildOutput("Tags", it) }
    return sb.toString()
 }
 

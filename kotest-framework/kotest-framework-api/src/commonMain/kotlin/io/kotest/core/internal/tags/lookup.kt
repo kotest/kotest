@@ -5,15 +5,15 @@ import io.kotest.core.Tag
 import io.kotest.core.Tags
 import io.kotest.core.config.Configuration
 import io.kotest.core.extensions.TagExtension
-import io.kotest.core.spec.Spec
+import io.kotest.core.test.TestCase
 import io.kotest.mpp.annotation
 import kotlin.reflect.KClass
 
 /**
- * Returns the current state of [Tags] by combining any tags returned from currently
+ * Returns the current active [Tags] by combining any tags returned from currently
  * registered [TagExtension]s.
  */
-fun Configuration.resolvedTags(): Tags {
+fun Configuration.activeTags(): Tags {
    val extensions = this.extensions().filterIsInstance<TagExtension>()
    return if (extensions.isEmpty()) Tags.Empty else extensions.map { it.tags() }.reduce { a, b -> a.combine(b) }
 }
@@ -26,9 +26,7 @@ fun KClass<*>.tags(): Set<Tag> {
    return annotation.values.map { NamedTag(it) }.toSet()
 }
 
-fun Spec.resolvedThreads() = this.threads() ?: this.threads ?: 1
-
 /**
- * Returns all spec level tags associated with this spec instance.
+ * Returns all tags assigned to a test case from either config or the spec.
  */
-fun Spec.resolvedTags(): Set<Tag> = this::class.tags() + this.tags() // TODO
+fun TestCase.allTags(): Set<Tag> = this.config.tags + this.spec.declaredTags()

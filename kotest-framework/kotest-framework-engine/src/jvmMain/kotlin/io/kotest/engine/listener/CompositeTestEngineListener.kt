@@ -7,6 +7,10 @@ import kotlin.reflect.KClass
 
 class CompositeTestEngineListener(private val listeners: List<TestEngineListener>) : TestEngineListener {
 
+   init {
+      require(listeners.isNotEmpty())
+   }
+
    override fun engineStarted(classes: List<KClass<out Spec>>) {
       listeners.forEach { it.engineStarted(classes) }
    }

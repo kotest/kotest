@@ -6,7 +6,7 @@ import io.kotest.core.extensions.DiscoveryExtension
 import io.kotest.core.spec.Spec
 import io.kotest.core.internal.tags.isPotentiallyActive
 import io.kotest.core.internal.tags.parse
-import io.kotest.core.internal.tags.resolvedTags
+import io.kotest.core.internal.tags.activeTags
 import kotlin.reflect.KClass
 
 /**
@@ -19,6 +19,6 @@ object TagsExcludedDiscoveryExtension : DiscoveryExtension {
    }
 
    override fun afterScan(classes: List<KClass<out Spec>>): List<KClass<out Spec>> {
-      return afterScan(classes, configuration.resolvedTags())
+      return afterScan(classes, configuration.activeTags())
    }
 }
