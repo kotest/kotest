@@ -83,7 +83,7 @@ class Execute : CliktCommand(name = "Kotest Launcher") {
       }
 
       val reporter = try {
-         val reporter = Class.forName(reporterClass ?: writerClass) as Reporter
+         val reporter = Class.forName(reporterClass ?: writerClass).getDeclaredConstructor().newInstance() as Reporter
          if (reporter is ConsoleReporter) {
 
             val term = when (termcolor) {
@@ -96,6 +96,8 @@ class Execute : CliktCommand(name = "Kotest Launcher") {
          }
          reporter
       } catch (t: Throwable) {
+         println(t.message)
+         t.printStackTrace()
          defaultReporter()
       }
 

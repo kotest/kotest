@@ -37,6 +37,6 @@ class ReporterTestEngineListener(private val reporter: Reporter) : TestEngineLis
    }
 
    override fun testIgnored(testCase: TestCase, reason: String?) {
-      reporter.testFinished(testCase, TestResult.Ignored)
+      reporter.testIgnored(testCase)
    }
 }

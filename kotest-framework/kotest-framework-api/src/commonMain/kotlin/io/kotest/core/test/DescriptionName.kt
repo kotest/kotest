@@ -78,9 +78,9 @@ fun createTestName(
    includeAffixesInDisplayName: Boolean,
 ): DescriptionName.TestName {
 
-   val trimmedName = name.trim().replace("\n", "")
+   val trimmedName = name.replace("\n", "").trim()
 
-   val (focus, bang, parsedName) = when {
+   val (focus, bang, croppedName) = when {
       trimmedName.startsWith("!") -> Triple(first = false, second = true, third = trimmedName.drop(1).trim())
       trimmedName.startsWith("f:") -> Triple(first = true, second = false, third = trimmedName.drop(2).trim())
       else -> Triple(first = false, second = false, third = trimmedName)
@@ -91,26 +91,20 @@ fun createTestName(
       false -> ""
    }
 
-   val formattedName = if (withPrefix.isBlank()) {
+   val displayName = if (withPrefix.isBlank()) {
       when (testNameCase) {
-         TestNameCase.Sentence -> parsedName.capitalize()
-         TestNameCase.InitialLowercase -> parsedName.uncapitalize()
-         TestNameCase.Lowercase -> parsedName.toLowerCase()
-         else -> parsedName
+         TestNameCase.Sentence -> croppedName.capitalize()
+         TestNameCase.InitialLowercase -> croppedName.uncapitalize()
+         TestNameCase.Lowercase -> croppedName.toLowerCase()
+         else -> croppedName
       }
    } else {
       when (testNameCase) {
-         TestNameCase.Sentence -> "${withPrefix.capitalize()}${parsedName.uncapitalize()}"
-         TestNameCase.InitialLowercase -> "${withPrefix.uncapitalize()}${parsedName.uncapitalize()}"
-         TestNameCase.Lowercase -> "${withPrefix.toLowerCase()}${parsedName.toLowerCase()}"
-         else -> "$withPrefix$parsedName"
+         TestNameCase.Sentence -> "${withPrefix.capitalize()}${croppedName.uncapitalize()}"
+         TestNameCase.InitialLowercase -> "${withPrefix.uncapitalize()}${croppedName.uncapitalize()}"
+         TestNameCase.Lowercase -> "${withPrefix.toLowerCase()}${croppedName.toLowerCase()}"
+         else -> "$withPrefix$croppedName"
       }
-   }
-
-   val displayName = when {
-      focus -> "f:$formattedName"
-      bang -> "!$formattedName"
-      else -> formattedName
    }
 
    return DescriptionName.TestName(name, displayName, focus, bang)

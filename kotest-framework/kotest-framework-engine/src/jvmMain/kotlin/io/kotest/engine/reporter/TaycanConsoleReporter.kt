@@ -15,16 +15,12 @@ import kotlin.reflect.KClass
  */
 class TaycanConsoleReporter : ConsoleReporter {
 
+   private val bullet = 0x2022.toChar().toString()
    private var term: TermColors = TermColors()
 
    override fun setTerm(term: TermColors) {
       this.term = term
    }
-
-   private val isWindows = System.getProperty("os.name").contains("win")
-   private val check = if (isWindows) "√" else "✔"
-   private val cross = if (isWindows) "X" else "✘"
-   private val disabled = if (isWindows) "-" else 0x229D.toChar().toString()
 
    private var start = System.currentTimeMillis()
    private var testsFailed = emptyList<Pair<TestCase, TestResult>>()
@@ -89,15 +85,9 @@ class TaycanConsoleReporter : ConsoleReporter {
          println(redBold(">> There were test failures"))
          println()
          specsFailed.distinct().forEach { spec ->
-            println(brightRedBold("   ${spec.displayName()}"))
+            println(brightRedBold(" ${spec.displayName()}"))
             testsFailed.filter { it.first.description.spec() == spec }.forEach { (testCase, result) ->
-               println(brightRed("   - ${testCase.description.testDisplayPath().value}"))
-               if (result.error != null) {
-                  println()
-                  println(brightRed(result.error.toString()).lines()
-                     .joinToString(System.lineSeparator()) { "     $it" })
-               }
-               println()
+               println(brightRed("  - ${testCase.description.testDisplayPath().value}"))
             }
          }
       }
@@ -107,6 +97,15 @@ class TaycanConsoleReporter : ConsoleReporter {
       printTestsCounts()
       print(white("Time:    "))
       println(bold("${seconds}s"))
+   }
+
+   private fun printThrowable(error: Throwable?, padding: Int) {
+      if (error != null) {
+         val stack = error.toString()
+            .lines()
+            .joinToString(System.lineSeparator()) { "".padStart(padding, ' ') + it }
+         println(brightRed(stack))
+      }
    }
 
    private fun printSpecCounts() {
@@ -153,8 +152,7 @@ class TaycanConsoleReporter : ConsoleReporter {
    override fun specFinished(kclass: KClass<out Spec>, t: Throwable?, results: Map<TestCase, TestResult>) {
       if (t != null) {
          specsFailed += kclass.toDescription()
-         val msg = t.message
-         if (msg != null) println(brightRed(msg))
+         printThrowable(t, 4)
       }
       println()
    }
@@ -162,41 +160,45 @@ class TaycanConsoleReporter : ConsoleReporter {
    override fun testIgnored(testCase: TestCase) {
       testsIgnored++
       print("".padEnd(testCase.description.depth() * 4, ' '))
-      print(brightYellow(disabled))
-      print(" ")
-      println(testCase.displayName)
+      print(bullet + " " + testCase.displayName)
+      println(brightYellow(" IGNORED"))
    }
 
    override fun testFinished(testCase: TestCase, result: TestResult) {
-
-      // if this is a root level test, we can output the results, along with any child tests.
-
       // only leaf tests or failed containers contribute to the counts
       when (result.status) {
-         TestStatus.Success -> if (testCase.type == TestType.Test) {
-            testsPassed++
-            print(green(check))
-            print(" ")
-            println(testCase.displayName)
-         }
+         TestStatus.Success -> if (testCase.type == TestType.Test) testsPassed++
          TestStatus.Failure, TestStatus.Error -> {
             testsFailed += Pair(testCase, result)
             specsFailed += testCase.description.spec()
-            print(red(cross))
-            print(" ")
-            println(testCase.displayName)
          }
-         TestStatus.Ignored -> testsIgnored++
+         else -> Unit
       }
 
-      print("".padEnd(testCase.description.depth() * 4, ' '))
-      when (result.status) {
-         TestStatus.Success -> Unit
-         TestStatus.Error, TestStatus.Failure -> println()
-         TestStatus.Ignored -> print(brightYellow(disabled))
+      // we only print the name for leafs, as containers are printed in advance
+      if (testCase.type == TestType.Test) {
+         print("".padEnd(testCase.description.depth() * 4, ' '))
+         print("- " + testCase.displayName)
+         when (result.status) {
+            TestStatus.Success -> println(greenBold(" OK"))
+            TestStatus.Error -> println(brightRed(" ERROR"))
+            TestStatus.Failure -> println(brightRed(" FAILED"))
+            TestStatus.Ignored -> println(brightYellow(" IGNORED"))
+         }
       }
 
+      if (result.error != null) {
+         println()
+         printThrowable(result.error, testCase.description.depth() * 4)
+         println()
+      }
    }
 
-   override fun testStarted(testCase: TestCase) {}
+   override fun testStarted(testCase: TestCase) {
+      // containers we display straight away without pass / fail message
+      if (testCase.type == TestType.Container) {
+         print("".padEnd(testCase.description.depth() * 4, ' '))
+         println("+ " + testCase.displayName)
+      }
+   }
 }
