@@ -52,8 +52,10 @@ fun <T, C : Collection<T>> containExactly(expected: C): Matcher<C?> = neverNullM
 
 @JvmName("shouldNotContainExactly_iterable")
 infix fun <T> Iterable<T>?.shouldNotContainExactly(expected: Iterable<T>) = this?.toList() shouldNot containExactly(expected.toList())
+
 @JvmName("shouldNotContainExactly_array")
 infix fun <T> Array<T>?.shouldNotContainExactly(expected: Array<T>) = this?.asList() shouldNot containExactly(*expected)
+
 fun <T> Iterable<T>?.shouldNotContainExactly(vararg expected: T) = this?.toList() shouldNot containExactly(*expected)
 fun <T> Array<T>?.shouldNotContainExactly(vararg expected: T) = this?.asList() shouldNot containExactly(*expected)
 
