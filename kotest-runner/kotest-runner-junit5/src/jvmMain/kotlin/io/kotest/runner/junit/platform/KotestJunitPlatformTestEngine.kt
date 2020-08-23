@@ -57,6 +57,7 @@ class KotestJunitPlatformTestEngine : TestEngine {
          .withListener(listener)
          .withSpecs(root.classes)
          .withDumpConfig(true)
+         .withFilters(root.testFilters)
          .launch()
    }
 

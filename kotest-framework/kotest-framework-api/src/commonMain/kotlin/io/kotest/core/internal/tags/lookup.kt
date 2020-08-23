@@ -27,6 +27,7 @@ fun KClass<*>.tags(): Set<Tag> {
 }
 
 /**
- * Returns all tags assigned to a test case from either config or the spec.
+ * Returns all tags assigned to a [TestCase], taken from the test case config, spec inline function,
+ * spec override function, or the spec class.
  */
-fun TestCase.allTags(): Set<Tag> = this.config.tags + this.spec.declaredTags()
+fun TestCase.allTags(): Set<Tag> = this.config.tags + this.spec.declaredTags() + this.spec::class.tags()

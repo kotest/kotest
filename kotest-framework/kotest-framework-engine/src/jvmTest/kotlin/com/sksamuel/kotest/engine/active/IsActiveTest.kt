@@ -147,8 +147,7 @@ class IsActiveTest : StringSpec() {
          test.isActive() shouldBe true
       }
 
-      // TODO restore with new test filters
-      "!isActive should return false if a test filter excludes the test" {
+      "isActive should return false if a test filter excludes the test" {
          val filter = object : TestFilter {
             override fun filter(description: Description): TestFilterResult {
                return (description.displayName() == "f").toTestFilterResult()

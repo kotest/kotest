@@ -1,4 +1,4 @@
-package com.sksamuel.kotest.tags
+package com.sksamuel.kotest.engine.tags
 
 import io.kotest.core.Tag
 import io.kotest.core.Tags
