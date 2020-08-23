@@ -49,7 +49,7 @@ class KotestRunnableState(private val env: ExecutionEnvironment,
          params.programParametersList.add("--testpath", testPath)
 
       // we want to specify to output in intellij compatible format
-      params.programParametersList.add("--writer", "teamcity")
+      params.programParametersList.add("--reporter", "teamcity")
 
       return params
    }
