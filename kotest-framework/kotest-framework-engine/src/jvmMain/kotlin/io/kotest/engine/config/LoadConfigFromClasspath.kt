@@ -15,12 +15,12 @@ import kotlin.time.ExperimentalTime
  * If multiple instances are detected, they are merged together.
  */
 internal fun loadConfigFromAbstractProjectConfig(scanResult: ScanResult): DetectedProjectConfig {
-   return scanResult
+   val configs = scanResult
       .getSubclasses(AbstractProjectConfig::class.java.name)
       .map { Class.forName(it.name) as Class<out AbstractProjectConfig> }
       .mapNotNull { instantiate(it).getOrNull() }
       .map { it.toDetectedConfig() }
-      .reduceOrNull { a, b -> a.merge(b) } ?: DetectedProjectConfig()
+   return if (configs.isEmpty()) DetectedProjectConfig() else configs.reduce { a, b -> a.merge(b) }
 }
 
 @OptIn(ExperimentalTime::class)
