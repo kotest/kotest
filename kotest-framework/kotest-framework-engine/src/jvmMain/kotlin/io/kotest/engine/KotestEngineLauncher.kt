@@ -30,6 +30,9 @@ class KotestEngineLauncher(
 
    suspend fun launch() {
 
+      if (listeners.isEmpty())
+         error("Cannot launch a KotestEngine without at least one TestEngineListener")
+
       val config = KotestEngineConfig(filters, CompositeTestEngineListener(listeners), tags, dumpConfig)
       val runner = KotestEngine(config)
       val plan = TestPlan(specs)
