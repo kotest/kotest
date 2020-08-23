@@ -15,13 +15,13 @@ import kotlin.reflect.KClass
  */
 class TaycanConsoleReporter : ConsoleReporter {
 
-   private val bullet = 0x2022.toChar().toString()
    private var term: TermColors = TermColors()
 
    override fun setTerm(term: TermColors) {
       this.term = term
    }
 
+   private var errors = 0
    private var start = System.currentTimeMillis()
    private var testsFailed = emptyList<Pair<TestCase, TestResult>>()
    private var testsIgnored = 0
@@ -29,6 +29,8 @@ class TaycanConsoleReporter : ConsoleReporter {
    private var specsFailed = emptyList<Description>()
    private var specsPassed = 0
    private var specCount = 0
+   private var slow = 500
+   private var verySlow = 5000
 
    private fun green(str: String) = term.green(str)
    private fun greenBold(str: String) = term.green.plus(term.bold).invoke(str)
@@ -38,21 +40,17 @@ class TaycanConsoleReporter : ConsoleReporter {
    private fun redBold(str: String) = term.red.plus(term.bold).invoke(str)
    private fun yellow(str: String) = term.yellow(str)
    private fun brightYellow(str: String) = term.brightYellow(str)
+   private fun brightYellowBold(str: String) = term.brightYellow.plus(term.bold).invoke(str)
    private fun yellowBold(str: String) = term.yellow.plus(term.bold).invoke(str)
-   private fun black(str: String) = term.black(str)
    private fun white(str: String) = term.white(str)
    private fun bold(str: String) = term.bold(str)
-   private fun blackOnGreen(str: String) = term.black.on(term.green).invoke(str)
-   private fun blackOnRed(str: String) = term.black.on(term.red).invoke(str)
-   private fun blackOnBrightRed(str: String) = term.black.on(term.brightRed).invoke(str)
-   private fun whiteOnGreen(str: String) = term.white.on(term.green).invoke(str)
-   private fun whiteOnBrightRed(str: String) = term.white.on(term.brightRed).invoke(str)
 
    private val intros = listOf(
-      "Powering the Kotest engine with freshly harvested tests",
-      "Engaging Kotest at warp factor 9",
+      "Feeding the kotest engine with freshly harvested tests",
+      "Engaging kotest engine at warp factor 9",
+      "Harvesting the test fields",
       "Preparing to sacrifice your code to the gods of test",
-      "Initializing all Kotest subsystems",
+      "Hamsters are turning the wheels of kotest",
       "Battle commanders are ready to declare war on bugs",
       "Be afraid - be very afraid - of failing tests",
       "The point is, ladies and gentlemen, that green is good",
@@ -60,34 +58,43 @@ class TaycanConsoleReporter : ConsoleReporter {
       "Lets crack open this test suite",
       "Lets get testing, I'm on the clock here",
       "Mirab, with tests unfurled",
+      "Dolly works 9 to 5. I test 24/7",
       "A test suite's gotta do what a test suite's gotta do",
       "I test code and chew bubblegum, and I'm all out of bubblegum"
    )
 
    override fun engineStarted(classes: List<KClass<out Spec>>) {
-      print(bold(">> "))
-      println(bold(intros.shuffled().first()))
-      print("Test plan has ")
+      println(bold(">> Kotest"))
+      println("- " + intros.shuffled().first())
+      print("- Test plan has ")
       print(greenBold(classes.size.toString()))
       println(white(" specs"))
       println()
    }
 
-   override fun hasErrors(): Boolean = testsFailed.isNotEmpty()
+   override fun hasErrors(): Boolean = errors > 0
 
    override fun engineFinished(t: List<Throwable>) {
+
+      if (t.isNotEmpty()) {
+         errors += t.size
+         t.forEach {
+            printThrowable(it, 0)
+         }
+      }
+
       val duration = System.currentTimeMillis() - start
       val seconds = duration / 1000
 
-      if (testsFailed.isEmpty()) {
+      if (errors == 0) {
          println(bold(">> All tests passed"))
       } else {
          println(redBold(">> There were test failures"))
          println()
          specsFailed.distinct().forEach { spec ->
             println(brightRedBold(" ${spec.displayName()}"))
-            testsFailed.filter { it.first.description.spec() == spec }.forEach { (testCase, result) ->
-               println(brightRed("  - ${testCase.description.testDisplayPath().value}"))
+            testsFailed.filter { it.first.description.spec() == spec }.forEach { (testCase, _) ->
+               println(brightRed(" - ${testCase.description.testDisplayPath().value}"))
             }
          }
       }
@@ -151,6 +158,7 @@ class TaycanConsoleReporter : ConsoleReporter {
 
    override fun specFinished(kclass: KClass<out Spec>, t: Throwable?, results: Map<TestCase, TestResult>) {
       if (t != null) {
+         errors++
          specsFailed += kclass.toDescription()
          printThrowable(t, 4)
       }
@@ -160,8 +168,16 @@ class TaycanConsoleReporter : ConsoleReporter {
    override fun testIgnored(testCase: TestCase) {
       testsIgnored++
       print("".padEnd(testCase.description.depth() * 4, ' '))
-      print(bullet + " " + testCase.displayName)
-      println(brightYellow(" IGNORED"))
+      print("- " + testCase.displayName)
+      println(brightYellowBold(" IGNORED"))
+   }
+
+   private fun durationString(durationMs: Long): String {
+      return when {
+         durationMs in slow..verySlow -> term.brightYellow("(${durationMs}ms)")
+         durationMs > verySlow -> term.brightRed("(${durationMs}ms)")
+         else -> ""
+      }
    }
 
    override fun testFinished(testCase: TestCase, result: TestResult) {
@@ -169,6 +185,7 @@ class TaycanConsoleReporter : ConsoleReporter {
       when (result.status) {
          TestStatus.Success -> if (testCase.type == TestType.Test) testsPassed++
          TestStatus.Failure, TestStatus.Error -> {
+            errors++
             testsFailed += Pair(testCase, result)
             specsFailed += testCase.description.spec()
          }
@@ -180,11 +197,13 @@ class TaycanConsoleReporter : ConsoleReporter {
          print("".padEnd(testCase.description.depth() * 4, ' '))
          print("- " + testCase.displayName)
          when (result.status) {
-            TestStatus.Success -> println(greenBold(" OK"))
-            TestStatus.Error -> println(brightRed(" ERROR"))
-            TestStatus.Failure -> println(brightRed(" FAILED"))
-            TestStatus.Ignored -> println(brightYellow(" IGNORED"))
+            TestStatus.Success -> print(greenBold(" OK"))
+            TestStatus.Error -> print(brightRed(" ERROR"))
+            TestStatus.Failure -> print(brightRed(" FAILED"))
+            TestStatus.Ignored -> print(brightYellow(" IGNORED"))
          }
+
+         println(" ${durationString(result.duration)}")
       }
 
       if (result.error != null) {
