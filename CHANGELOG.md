@@ -17,6 +17,7 @@ Changelog
 * Feature: Use expression for tags instead of include/exclude #863
 * Feature: Add new scoped callbacks #1584
 * Feature: Support order annotation for SpecOrder #1593
+* Feature: Spec level overrides for timeout and invocation timeout #1551
 * Improvement: Added exhaustive only mode to property tests #1596
 * Improvement: Change instance of matchers to use generic contracts #1510
 * Improvement: Allow to disable SpringListener on final class warning #1573
