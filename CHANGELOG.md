@@ -9,7 +9,7 @@ Changelog
 * Bugfix: Tags specified via inline tags dsl were not being picked up #1642
 * Improvement: Updated output of some collection matchers to format an element per line #1380
 
-#### 4.2.0
+#### 4.2.0 - [Blog](./blog/release_4.2.md)
 
 * Feature: Kotest upgraded to use Kotlin 1.4.0 #1511
 * Feature: Allow multiple project configs to be detected and merged #1632
@@ -52,7 +52,7 @@ Changelog
 * Bugfix: Issue with describe spec and the intellij plugin fixed [#1528](https://github.com/kotest/kotest/issues/1528)
 * Bugfix: Incorrect error message with Exhaustive's when under the min iteration count [#1526](https://github.com/kotest/kotest/issues/1526)
 
-#### 4.1.0
+#### 4.1.0 - [Blog](./blog/release_4.1.md)
 
 * Feature: The Kotest IntelliJ plugin has gone final. The plugin requires 4.1. or higher of Kotest. https://plugins.jetbrains.com/plugin/14080-kotest
 * Feature: Highlight diff when comparing data classes [#826](https://github.com/kotest/kotest/issues/826) [#1242](https://github.com/kotest/kotest/issues/1242)
