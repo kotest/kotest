@@ -56,38 +56,29 @@ class MyTest : StringSpec() {
 
 #### Running with Tags
 
-Then by invoking the test runner with a system property of `kotest.tags.include` and/or `kotest.tags.exclude`, you
-can control which tests are run:
+Then by invoking the test runner with a system property of `kotest.tags` you can control which tests are run. The expression to be
+passed in is a simple boolean expression using boolean operators: `&`, `|`, `!`, with parenthesis for association.
 
-* If no `kotest.tags.include` and/or `kotest.tags.exclude` are specified, all tests (both tagged and untagged ones) are run.
-* If only `kotest.tags.include` are specified, only tests with that tag are run (untagged test are *not* run).
-* If only `kotest.tags.exclude` are specified, only tests without that tag are run (untagged tests *are* run).
-* If you provide more than one tag for `kotest.tags.include` or `kotest.tags.exclude`, a test case with at least one of the given tags is included/excluded.
+For example, `Tag1 & (Tag2 | Tag3)`
 
 Provide the simple names of tag object (without package) when you run the tests.
 Please pay attention to the use of upper case and lower case! If two tag objects have the same simple name (in different name spaces) they are treated as the same tag.
+
 
 Example: To run only test tagged with `Linux`, but not tagged with `Database`, you would invoke
 Gradle like this:
 
 ```
-gradle test -Dkotest.tags.include=Linux -Dkotest.tags.exclude=Database
+gradle test -Dkotest.tags="Linux & !Database"
 ```
-
-If you use `kotest.tags.include` and `kotest.tags.exclude` in combination, only the tests tagged with a tag from
-`kotest.tags.include` but not tagged with a tag from `kotest.tags.exclude` are run. If you use only `kotest.tags.exclude`
-all tests but the tests tagged with the given tags are are run.
 
 Tags can also be included/excluded in runtime (for example, if you're running a project configuration instead of properties) through the `RuntimeTagExtension`:
 
 ```kotlin
-RuntimeTagExtension.included += MyTag
-RuntimeTagExtension.excluded += MyOtherTag
+RuntimeTagExpressionExtension.expression = "Linux & !Database"
 ```
 
-Everything else will work like the described above.
-
-#### Tag Expressions
+#### Tag Expression Operators
 
 Operators (in descending order of precedence)
 

@@ -5,11 +5,34 @@ import io.kotest.assertions.Expected
 import io.kotest.assertions.failure
 import io.kotest.assertions.show.Printed
 import io.kotest.assertions.throwables.shouldThrowAny
+import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldStartWith
 import io.kotest.matchers.types.shouldBeInstanceOf
 import org.opentest4j.AssertionFailedError
+
+class CallbacksTest : DescribeSpec({
+
+   beforeEach {
+      println("Test: " + it.displayName)
+   }
+
+   beforeContainer {
+      println("Container: " + it.displayName)
+   }
+
+   beforeTest {
+      println("All: " + it.displayName)
+   }
+
+   describe("I am a container scope") {
+      it("And I am a test scope") {
+
+      }
+   }
+
+})
 
 class FailuresTest : StringSpec({
 

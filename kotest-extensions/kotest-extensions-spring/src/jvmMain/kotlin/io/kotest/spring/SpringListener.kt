@@ -1,6 +1,7 @@
 package io.kotest.spring
 
 import io.kotest.core.extensions.ConstructorExtension
+import io.kotest.core.internal.KotestEngineSystemProperties
 import io.kotest.core.listeners.TestListener
 import io.kotest.core.spec.AutoScan
 import io.kotest.core.spec.Spec
@@ -59,7 +60,7 @@ object SpringListener : TestListener {
          val klass = this::class.java
 
          return if (Modifier.isFinal(klass.modifiers)) {
-            if (!ignoreSpringListenerOnFinalClassWarning || !sysprop("kotest.listener.spring.ignore.warning", "false").toBoolean()) {
+            if (!ignoreSpringListenerOnFinalClassWarning || !sysprop(KotestEngineSystemProperties.springIgnoreWarning, "false").toBoolean()) {
                println("Using SpringListener on a final class. If any Spring annotation fails to work, try making this class open.")
             }
             this@SpringListener::class.java.getMethod("afterSpec", Spec::class.java, Continuation::class.java)

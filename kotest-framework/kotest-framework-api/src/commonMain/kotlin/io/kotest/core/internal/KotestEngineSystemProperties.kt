@@ -2,6 +2,8 @@ package io.kotest.core.internal
 
 object KotestEngineSystemProperties {
 
+   const val springIgnoreWarning = "kotest.listener.spring.ignore.warning"
+
    const val gradle5 = "kotest.gradle5.compatibility"
 
    /**
