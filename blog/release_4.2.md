@@ -142,7 +142,7 @@ class TimeoutTest : DescribeSpec({
 ```
 
 Note: You can apply a spec level timeout and then override this per test case, as you can see in the example above.
-The same functionality exists for invocatoin timeouts.
+The same functionality exists for invocation timeouts.
 
 ### Exhaustive Specific forAll / checkAll
 
