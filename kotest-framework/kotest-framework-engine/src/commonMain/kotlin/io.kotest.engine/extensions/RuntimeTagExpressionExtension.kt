@@ -12,6 +12,6 @@ import io.kotest.core.extensions.TagExtension
  *
  */
 object RuntimeTagExpressionExtension : TagExtension {
-   val expression: String? = null
+   var expression: String? = null
    override fun tags(): Tags = if (expression == null) Tags.Empty else Tags(expression)
 }
