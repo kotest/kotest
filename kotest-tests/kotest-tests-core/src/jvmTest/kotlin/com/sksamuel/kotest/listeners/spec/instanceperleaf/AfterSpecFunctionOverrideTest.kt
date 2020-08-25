@@ -1,4 +1,4 @@
-package com.sksamuel.kotest.listeners.spec.singleinstance
+package com.sksamuel.kotest.listeners.spec.instanceperleaf
 
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.Spec
@@ -12,9 +12,9 @@ class AfterSpecFunctionOverrideTest : FunSpec() {
       private val counter = AtomicInteger(0)
    }
 
-   override fun isolationMode(): IsolationMode = IsolationMode.SingleInstance
+   override fun isolationMode(): IsolationMode = IsolationMode.InstancePerLeaf
 
-   // should be invoked once per whole Spec
+   // should be invoked once per isolated test
    override fun afterSpec(spec: Spec) {
       counter.incrementAndGet()
    }
@@ -22,7 +22,7 @@ class AfterSpecFunctionOverrideTest : FunSpec() {
    init {
 
       afterProject {
-         counter.get() shouldBe 1
+         counter.get() shouldBe 5
       }
 
       test("ignored test").config(enabled = false) {}
@@ -39,9 +39,9 @@ class AfterSpecFunctionOverrideTestWithNested : FunSpec() {
       private val counter = AtomicInteger(0)
    }
 
-   override fun isolationMode(): IsolationMode = IsolationMode.SingleInstance
+   override fun isolationMode(): IsolationMode = IsolationMode.InstancePerLeaf
 
-   // should be invoked once per whole Spec
+   // should be invoked once per isolated test
    override fun afterSpec(spec: Spec) {
       counter.incrementAndGet()
    }
@@ -49,7 +49,7 @@ class AfterSpecFunctionOverrideTestWithNested : FunSpec() {
    init {
 
       afterProject {
-         counter.get() shouldBe 1
+         counter.get() shouldBe 5
       }
 
       test("ignored test").config(enabled = false) {}

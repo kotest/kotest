@@ -32,3 +32,37 @@ class AfterSpecFunctionOverrideTest : FunSpec() {
       test("d") { }
    }
 }
+
+class AfterSpecFunctionOverrideTestWithNested : FunSpec() {
+
+   companion object {
+      private val counter = AtomicInteger(0)
+   }
+
+   override fun isolationMode(): IsolationMode = IsolationMode.InstancePerTest
+
+   // should be invoked once per isolated test and per context because it's test itself too
+   override fun afterSpec(spec: Spec) {
+      counter.incrementAndGet()
+   }
+
+   init {
+
+      afterProject {
+         counter.get() shouldBe 7
+      }
+
+      test("ignored test").config(enabled = false) {}
+
+      context("context 1") {
+         test("a") { }
+         test("b") { }
+      }
+
+      context("context 2") {
+         test("c") { }
+         test("d") { }
+      }
+   }
+}
+
