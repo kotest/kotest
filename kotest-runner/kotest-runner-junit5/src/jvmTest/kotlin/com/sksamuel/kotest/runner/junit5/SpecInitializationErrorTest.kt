@@ -3,7 +3,7 @@ package com.sksamuel.kotest.runner.junit5
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.runner.junit.platform.JUnitTestEngineListener
 import io.kotest.runner.junit.platform.KotestEngineDescriptor
-import io.kotest.core.engine.SpecExecutor
+import io.kotest.engine.spec.SpecExecutor
 import io.kotest.matchers.shouldBe
 import org.junit.platform.engine.EngineExecutionListener
 import org.junit.platform.engine.TestDescriptor
@@ -16,8 +16,9 @@ class SpecInitializationErrorTest : FunSpec({
    test("an error in a class field should fail spec") {
 
       val root = KotestEngineDescriptor(
-          UniqueId.forEngine("kotest"),
-          emptyList()
+         UniqueId.forEngine("kotest"),
+         emptyList(),
+         emptyList()
       )
       val finished = mutableMapOf<String, TestExecutionResult.Status>()
 
@@ -45,8 +46,9 @@ class SpecInitializationErrorTest : FunSpec({
    test("an error in a class initializer should fail spec") {
 
       val root = KotestEngineDescriptor(
-          UniqueId.forEngine("kotest"),
-          emptyList()
+         UniqueId.forEngine("kotest"),
+         emptyList(),
+         emptyList()
       )
       val finished = mutableMapOf<String, TestExecutionResult.Status>()
 

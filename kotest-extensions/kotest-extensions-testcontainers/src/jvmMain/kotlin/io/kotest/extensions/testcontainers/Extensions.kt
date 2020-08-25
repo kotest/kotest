@@ -1,6 +1,6 @@
 package io.kotest.extensions.testcontainers
 
-import io.kotest.core.spec.TestConfiguration
+import io.kotest.core.TestConfiguration
 import org.testcontainers.lifecycle.Startable
 
 fun <T : Startable> T.perTest(): StartablePerTestListener<T> = StartablePerTestListener<T>(this)

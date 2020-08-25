@@ -1,7 +1,7 @@
 package com.sksamuel.kotest.specs.isolation.test
 
-import io.kotest.core.engine.SpecExecutor
-import io.kotest.core.engine.TestEngineListener
+import io.kotest.engine.spec.SpecExecutor
+import io.kotest.engine.listener.TestEngineListener
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.style.*
 import io.kotest.core.test.TestCase

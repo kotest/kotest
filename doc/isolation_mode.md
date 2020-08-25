@@ -3,30 +3,56 @@ Isolation Modes
 
 Note: Isolation modes replace _One Instance Per Test_ which was a setting in version 3.1 and earlier.
 
-All specs allow you to control how the test engine creates new instances of Specs for test cases. By default, one instance of the Spec
-class is created and then each test _lambda_ is exected in turn until all tests have completed.
+All specs allow you to control how the test engine creates instances of Specs for test cases. This behavior is called the _isolation mode_ and is controlled
+by an enum `IsolationMode`. There are three values: `SingleInstance`, `InstancePerLeaf`, and `InstancePerTest`.
 
-For example, in the following spec, the output would be "Hello From Sam", as each test is executed in turn in the same instance.
+If you want tests to be executed inside fresh instances of the spec - to allow for state shared between tests to be reset -
+you can change the isolation mode.
+
+This can be done by using the DSL such as:
 
 ```kotlin
-class SingleInstanceExample : WordSpec({
-  "a" should {
-    println("Hello")
-    "b" {
-        println("From")
-    }
-    "c" {
-        println("Sam")
-    }
-  }
+class MyTestClass : WordSpec({
+ isolationMode = IsolationMode.SingleInstance
+ // tests here
 })
 ```
 
-If you wish to create variables inside nested contests, or as top level members of the Spec itself, and you want them to be reset
-for each test case, then you can change the isolation mode. To do this simply override the function `isolationMode(): IsolationMode`
-to return an instance of the `IsolationMode` enum.
+Or if you prefer function overrides, you can override `fun isolationMode(): IsolationMode`:
 
-If you do not override this function, then `IsolationMode.SingleInstance` will be used which is what was described above, where a single instance of the Spec class was created for all the tests.
+```kotlin
+class MyTestClass : WordSpec() {
+  override fun isolationMode() = IsolationMode.SingleInstance
+  init {
+    // tests here
+  }
+}
+```
+
+### Single Instance
+
+The default isolation mode is `SingleInstance` whereby one instance of the Spec class is created and then each test case
+is exected in turn until all tests have completed.
+
+For example, in the following spec, the same id would be printed three times as the same instance is used for all tests.
+
+```kotlin
+class SingleInstanceExample : WordSpec({
+   val id = UUID.randomUUID()
+   "a" should {
+      println(id)
+      "b" {
+         println(id)
+      }
+      "c" {
+         println(id)
+      }
+   }
+})
+```
+
+**Note**: This default is the same as ScalaTest (the inspiration for this framework), Jest, Jasmine, and other JS frameworks
+ but different to JUnit. Whichever default is chosen, some developers will consider it _wrong_.
 
 ### InstancePerTest
 
@@ -167,3 +193,18 @@ a=0
 b=1
 a=0
 c=1
+
+
+### Global Isolation Mode
+
+Rather than setting the isolation mode in every spec, we can set it globally in project config.
+
+See the docs on setting up [project wide config](project_config.md), and then add the isolation mode you want to be the default. For example:
+
+```kotlin
+class ProjectConfig: AbstractProjectConfig() {
+   override val isolationMode = IsolationMode.InstancePerLeaf
+}
+```
+
+Setting an isolation mode in a Spec will always override the project wide setting.

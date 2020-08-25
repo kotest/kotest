@@ -7,16 +7,25 @@ import io.kotest.property.PropertyTesting.computeDefaultIteration
 import io.kotest.property.arbitrary.default
 import io.kotest.property.internal.proptest
 
-suspend fun<A, B, C, D, E> checkAll(
+suspend fun <A, B, C, D, E> checkAll(
    genA: Gen<A>,
    genB: Gen<B>,
    genC: Gen<C>,
    genD: Gen<D>,
    genE: Gen<E>,
    property: suspend PropertyContext.(A, B, C, D, E) -> Unit
-): PropertyContext = proptest<A, B, C, D, E>(computeDefaultIteration(genA, genB, genC, genD, genE), genA, genB, genC, genD, genE, PropTestConfig(), property)
+): PropertyContext = proptest(
+   computeDefaultIteration(genA, genB, genC, genD, genE),
+   genA,
+   genB,
+   genC,
+   genD,
+   genE,
+   PropTestConfig(),
+   property
+)
 
-suspend fun<A, B, C, D, E> checkAll(
+suspend fun <A, B, C, D, E> checkAll(
    config: PropTestConfig,
    genA: Gen<A>,
    genB: Gen<B>,
@@ -24,9 +33,18 @@ suspend fun<A, B, C, D, E> checkAll(
    genD: Gen<D>,
    genE: Gen<E>,
    property: suspend PropertyContext.(A, B, C, D, E) -> Unit
-): PropertyContext = checkAll<A, B, C, D, E>(computeDefaultIteration(genA, genB, genC, genD, genE), config, genA, genB, genC, genD, genE, property)
+): PropertyContext = checkAll(
+   computeDefaultIteration(genA, genB, genC, genD, genE),
+   config,
+   genA,
+   genB,
+   genC,
+   genD,
+   genE,
+   property
+)
 
-suspend fun<A, B, C, D, E> checkAll(
+suspend fun <A, B, C, D, E> checkAll(
    iterations: Int,
    genA: Gen<A>,
    genB: Gen<B>,
@@ -34,9 +52,9 @@ suspend fun<A, B, C, D, E> checkAll(
    genD: Gen<D>,
    genE: Gen<E>,
    property: suspend PropertyContext.(A, B, C, D, E) -> Unit
-): PropertyContext = proptest<A, B, C, D, E>(iterations, genA, genB, genC, genD, genE, PropTestConfig(), property)
+): PropertyContext = proptest(iterations, genA, genB, genC, genD, genE, PropTestConfig(), property)
 
-suspend fun<A, B, C, D, E> checkAll(
+suspend fun <A, B, C, D, E> checkAll(
    iterations: Int,
    config: PropTestConfig,
    genA: Gen<A>,
@@ -45,18 +63,18 @@ suspend fun<A, B, C, D, E> checkAll(
    genD: Gen<D>,
    genE: Gen<E>,
    property: suspend PropertyContext.(A, B, C, D, E) -> Unit
-): PropertyContext = proptest<A, B, C, D, E>(iterations, genA, genB, genC, genD, genE, config, property)
+): PropertyContext = proptest(iterations, genA, genB, genC, genD, genE, config, property)
 
 
 suspend inline fun <reified A, reified B, reified C, reified D, reified E> checkAll(
    noinline property: suspend PropertyContext.(A, B, C, D, E) -> Unit
-) = proptest<A, B, C, D, E>(
+) = proptest(
    PropertyTesting.defaultIterationCount,
-   Arb.default<A>(),
-   Arb.default<B>(),
-   Arb.default<C>(),
-   Arb.default<D>(),
-   Arb.default<E>(),
+   Arb.default(),
+   Arb.default(),
+   Arb.default(),
+   Arb.default(),
+   Arb.default(),
    PropTestConfig(),
    property
 )
@@ -64,8 +82,37 @@ suspend inline fun <reified A, reified B, reified C, reified D, reified E> check
 suspend inline fun <reified A, reified B, reified C, reified D, reified E> checkAll(
    config: PropTestConfig,
    noinline property: suspend PropertyContext.(A, B, C, D, E) -> Unit
-) = proptest<A, B, C, D, E>(
+) = proptest(
    PropertyTesting.defaultIterationCount,
+   Arb.default(),
+   Arb.default(),
+   Arb.default(),
+   Arb.default(),
+   Arb.default(),
+   config,
+   property
+)
+
+suspend inline fun <reified A, reified B, reified C, reified D, reified E> checkAll(
+   iterations: Int,
+   noinline property: suspend PropertyContext.(A, B, C, D, E) -> Unit
+) = proptest(
+   iterations,
+   Arb.default(),
+   Arb.default(),
+   Arb.default(),
+   Arb.default(),
+   Arb.default(),
+   PropTestConfig(),
+   property
+)
+
+suspend inline fun <reified A, reified B, reified C, reified D, reified E> checkAll(
+   iterations: Int,
+   config: PropTestConfig,
+   noinline property: suspend PropertyContext.(A, B, C, D, E) -> Unit
+) = proptest<A, B, C, D, E>(
+   iterations,
    Arb.default<A>(),
    Arb.default<B>(),
    Arb.default<C>(),
@@ -75,46 +122,26 @@ suspend inline fun <reified A, reified B, reified C, reified D, reified E> check
    property
 )
 
-suspend inline fun <reified A, reified B, reified C, reified D, reified E> checkAll(
-   iterations: Int,
-   noinline property: suspend PropertyContext.(A, B, C, D, E) -> Unit
-) = proptest<A, B, C, D, E>(
-   iterations,
-   Arb.default<A>(),
-   Arb.default<B>(),
-   Arb.default<C>(),
-   Arb.default<D>(),
-   Arb.default<E>(),
-   PropTestConfig(),
-   property
-)
 
-suspend inline fun <reified A, reified B, reified C, reified D, reified E> checkAll(
-   iterations: Int,
-   config: PropTestConfig,
-   noinline property: suspend PropertyContext.(A, B, C, D, E) -> Unit
-) = proptest<A, B, C, D, E>(
-   iterations,
-   Arb.default<A>(),
-   Arb.default<B>(),
-   Arb.default<C>(),
-   Arb.default<D>(),
-   Arb.default<E>(),
-   config,
-   property
-)
-
-
-suspend fun<A, B, C, D, E> forAll(
+suspend fun <A, B, C, D, E> forAll(
    genA: Gen<A>,
    genB: Gen<B>,
    genC: Gen<C>,
    genD: Gen<D>,
    genE: Gen<E>,
    property: suspend PropertyContext.(A, B, C, D, E) -> Boolean
-) = forAll<A, B, C, D, E>(computeDefaultIteration(genA, genB, genC, genD, genE), PropTestConfig(), genA, genB, genC, genD, genE, property)
+) = forAll<A, B, C, D, E>(
+   computeDefaultIteration(genA, genB, genC, genD, genE),
+   PropTestConfig(),
+   genA,
+   genB,
+   genC,
+   genD,
+   genE,
+   property
+)
 
-suspend fun<A, B, C, D, E> forAll(
+suspend fun <A, B, C, D, E> forAll(
    config: PropTestConfig = PropTestConfig(),
    genA: Gen<A>,
    genB: Gen<B>,
@@ -122,9 +149,18 @@ suspend fun<A, B, C, D, E> forAll(
    genD: Gen<D>,
    genE: Gen<E>,
    property: suspend PropertyContext.(A, B, C, D, E) -> Boolean
-) = forAll<A, B, C, D, E>(computeDefaultIteration(genA, genB, genC, genD, genE), config, genA, genB, genC, genD, genE, property)
+) = forAll<A, B, C, D, E>(
+   computeDefaultIteration(genA, genB, genC, genD, genE),
+   config,
+   genA,
+   genB,
+   genC,
+   genD,
+   genE,
+   property
+)
 
-suspend fun<A, B, C, D, E> forAll(
+suspend fun <A, B, C, D, E> forAll(
    iterations: Int,
    genA: Gen<A>,
    genB: Gen<B>,
@@ -134,7 +170,7 @@ suspend fun<A, B, C, D, E> forAll(
    property: suspend PropertyContext.(A, B, C, D, E) -> Boolean
 ) = forAll<A, B, C, D, E>(iterations, PropTestConfig(), genA, genB, genC, genD, genE, property)
 
-suspend fun<A, B, C, D, E> forAll(
+suspend fun <A, B, C, D, E> forAll(
    iterations: Int,
    config: PropTestConfig,
    genA: Gen<A>,
@@ -143,7 +179,15 @@ suspend fun<A, B, C, D, E> forAll(
    genD: Gen<D>,
    genE: Gen<E>,
    property: suspend PropertyContext.(A, B, C, D, E) -> Boolean
-) = proptest<A, B, C, D, E>(iterations, genA, genB, genC, genD, genE, config) { a, b, c, d, e -> property(a, b, c, d, e) shouldBe true }
+) = proptest<A, B, C, D, E>(iterations, genA, genB, genC, genD, genE, config) { a, b, c, d, e ->
+   property(
+      a,
+      b,
+      c,
+      d,
+      e
+   ) shouldBe true
+}
 
 
 suspend inline fun <reified A, reified B, reified C, reified D, reified E> forAll(
@@ -153,18 +197,18 @@ suspend inline fun <reified A, reified B, reified C, reified D, reified E> forAl
 suspend inline fun <reified A, reified B, reified C, reified D, reified E> forAll(
    config: PropTestConfig = PropTestConfig(),
    crossinline property: PropertyContext.(A, B, C, D, E) -> Boolean
-): PropertyContext = forAll<A, B, C, D, E>(PropertyTesting.defaultIterationCount, config, property)
+): PropertyContext = forAll(PropertyTesting.defaultIterationCount, config, property)
 
 suspend inline fun <reified A, reified B, reified C, reified D, reified E> forAll(
    iterations: Int,
    crossinline property: PropertyContext.(A, B, C, D, E) -> Boolean
-) = forAll<A, B, C, D, E>(iterations, PropTestConfig(), property)
+) = forAll(iterations, PropTestConfig(), property)
 
 suspend inline fun <reified A, reified B, reified C, reified D, reified E> forAll(
    iterations: Int,
    config: PropTestConfig,
    crossinline property: PropertyContext.(A, B, C, D, E) -> Boolean
-) = proptest<A, B, C, D, E>(
+) = proptest(
    iterations,
    Arb.default<A>(),
    Arb.default<B>(),
@@ -173,3 +217,4 @@ suspend inline fun <reified A, reified B, reified C, reified D, reified E> forAl
    Arb.default<E>(),
    config
 ) { a, b, c, d, e -> property(a, b, c, d, e) shouldBe true }
+

@@ -3,7 +3,7 @@ package io.kotest.assertions.arrow.either
 import arrow.core.Either
 import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
-import io.kotest.matchers.beInstanceOf2
+import io.kotest.matchers.types.beInstanceOf2
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldNot
 import kotlin.contracts.ExperimentalContracts

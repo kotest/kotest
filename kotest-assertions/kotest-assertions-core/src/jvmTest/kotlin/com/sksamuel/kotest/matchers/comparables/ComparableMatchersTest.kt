@@ -21,7 +21,7 @@ import io.kotest.matchers.comparables.shouldNotBeEqualComparingTo
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNot
-import io.kotest.properties.assertAll
+import io.kotest.property.checkAll
 
 class ComparableMatchersTest : FreeSpec() {
 
@@ -143,7 +143,7 @@ class ComparableMatchersTest : FreeSpec() {
       "compareTo" - {
 
         "should pass for equal values" {
-          assertAll { a: Int, b: Int ->
+          checkAll { a: Int, b: Int ->
             if (a == b) {
               a should compareTo(b, Comparator { o1, o2 -> o1 - o2 })
               a.shouldBeEqualComparingTo(b, Comparator { o1, o2 -> o1 - o2 } )

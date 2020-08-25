@@ -2,20 +2,18 @@ package com.sksamuel.kotest.specs.funspec
 
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.test.TestResult
-import kotlin.time.ExperimentalTime
-import kotlin.time.seconds
+import io.kotest.engine.toTestResult
 
 // tests that multi line test names are normalized
-@ExperimentalTime
 class FunSpecMultiLineTest : FunSpec() {
 
    init {
 
       extension { (testCase, execute) ->
          execute(testCase)
-         when (testCase.name) {
-            "test    case    1", "test    case    2", "context" -> TestResult.success(0.seconds)
-            else -> TestResult.throwable(RuntimeException(testCase.name + " failed"), 0.seconds)
+         when (testCase.displayName) {
+            "test    case    1", "test    case    2", "context" -> TestResult.success(0)
+            else -> RuntimeException(testCase.displayName + " failed").toTestResult(0)
          }
       }
 

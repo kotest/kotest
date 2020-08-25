@@ -29,6 +29,9 @@ class ShouldSpecTest : ShouldSpec() {
          xshould("an ignored should test") {
             error("boom")
          }
+         xshould("ignored test with config").config(timeout = 12343.milliseconds) {
+            error("boom")
+         }
       }
       context("a context with delay in child coroutine") {
          launch { delay(1) }

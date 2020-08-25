@@ -29,11 +29,11 @@ class FibonacciInterval(private val base: Duration, private val offset: Int) : I
 }
 
 @OptIn(ExperimentalTime::class)
-@Deprecated("use duration.fibonacci()")
+@Deprecated("use duration.fibonacci(). Will be removed in 4.3")
 fun fibonacciInterval(base: Duration) = FibonacciInterval(base, 0)
 
 @OptIn(ExperimentalTime::class)
-@Deprecated("use duration.fibonacci()")
+@Deprecated("use duration.fibonacci(). Will be removed in 4.3")
 fun fibonacciInterval(offset: Int, base: Duration) = FibonacciInterval(base, offset)
 
 @OptIn(ExperimentalTime::class)

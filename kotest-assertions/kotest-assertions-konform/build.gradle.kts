@@ -20,11 +20,8 @@ kotlin {
          }
       }
       js {
-         val main by compilations.getting {
-            kotlinOptions {
-               moduleKind = "commonjs"
-            }
-         }
+         browser()
+         nodejs()
       }
    }
 
@@ -40,17 +37,15 @@ kotlin {
 
       val commonMain by getting {
          dependencies {
-            implementation(kotlin("stdlib-common"))
             implementation(Libs.Konform.Konform)
             implementation(project(Projects.AssertionsShared))
-            implementation(project(":kotest-assertions:kotest-assertions-core"))
+            implementation(project(Projects.AssertionsCore))
          }
       }
 
       val jvmMain by getting {
          dependsOn(commonMain)
          dependencies {
-            implementation(kotlin("stdlib-jdk8"))
             implementation(Libs.Konform.KonformJvm)
          }
       }
@@ -58,7 +53,6 @@ kotlin {
       val jsMain by getting {
          dependsOn(commonMain)
          dependencies {
-            implementation(kotlin("stdlib-js"))
             implementation(Libs.Konform.KonformJs)
          }
       }
@@ -80,7 +74,8 @@ tasks.named<Test>("jvmTest") {
    testLogging {
       showExceptions = true
       showStandardStreams = true
-      events = setOf(org.gradle.api.tasks.testing.logging.TestLogEvent.FAILED, org.gradle.api.tasks.testing.logging.TestLogEvent.PASSED)
+      events = setOf(org.gradle.api.tasks.testing.logging.TestLogEvent.FAILED,
+         org.gradle.api.tasks.testing.logging.TestLogEvent.PASSED)
       exceptionFormat = org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
    }
 }

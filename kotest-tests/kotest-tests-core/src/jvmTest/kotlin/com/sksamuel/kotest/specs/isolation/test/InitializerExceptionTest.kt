@@ -6,8 +6,8 @@ import io.kotest.core.spec.style.*
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.matchers.types.shouldBeInstanceOf
-import io.kotest.core.engine.TestEngineListener
-import io.kotest.core.engine.SpecExecutor
+import io.kotest.engine.listener.TestEngineListener
+import io.kotest.engine.spec.SpecExecutor
 import java.lang.reflect.InvocationTargetException
 import kotlin.reflect.KClass
 

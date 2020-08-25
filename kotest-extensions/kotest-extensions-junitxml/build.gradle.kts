@@ -2,7 +2,7 @@ plugins {
    id("java")
    kotlin("multiplatform")
    id("java-library")
-   id("org.jetbrains.kotlin.plugin.spring") version "1.3.72"
+   id("org.jetbrains.kotlin.plugin.spring") version Libs.kotlinVersion
    id("com.adarshr.test-logger")
 }
 
@@ -34,8 +34,8 @@ kotlin {
 
       val jvmMain by getting {
          dependencies {
-            implementation(project(":kotest-core"))
-            implementation(kotlin("stdlib-jdk8"))
+            implementation(project(Projects.Engine))
+            implementation(project(Projects.Api))
             implementation(kotlin("reflect"))
             implementation(Libs.Jdom.jdom2)
          }

@@ -1,11 +1,13 @@
 package io.kotest.spring
 
-import io.kotest.core.test.TestCase
-import io.kotest.core.test.TestResult
-import io.kotest.core.spec.Spec
 import io.kotest.core.extensions.ConstructorExtension
+import io.kotest.core.internal.KotestEngineSystemProperties
 import io.kotest.core.listeners.TestListener
 import io.kotest.core.spec.AutoScan
+import io.kotest.core.spec.Spec
+import io.kotest.core.test.TestCase
+import io.kotest.core.test.TestResult
+import io.kotest.mpp.sysprop
 import net.bytebuddy.ByteBuddy
 import net.bytebuddy.description.modifier.Visibility
 import net.bytebuddy.dynamic.loading.ClassLoadingStrategy
@@ -20,6 +22,8 @@ import kotlin.reflect.full.primaryConstructor
 
 object SpringListener : TestListener {
 
+   var ignoreSpringListenerOnFinalClassWarning: Boolean = false
+
    // Each Spec needs its own context. However, this listener is a singleton, so we need
    // to keep this map to separate those contexts instead of making this class non-singleton, thus
    // breaking client code
@@ -31,18 +35,19 @@ object SpringListener : TestListener {
       spec.testContext.prepareTestInstance(spec)
    }
 
-   override suspend fun beforeTest(testCase: TestCase) {
+   override suspend fun beforeAny(testCase: TestCase) {
       testCase.spec.testContext.beforeTestMethod(testCase.spec, testCase.spec.method)
       testCase.spec.testContext.beforeTestExecution(testCase.spec, testCase.spec.method)
    }
 
-   override suspend fun afterTest(testCase: TestCase, result: TestResult) {
+   override suspend fun afterAny(testCase: TestCase, result: TestResult) {
       testCase.spec.testContext.afterTestMethod(testCase.spec, testCase.spec.method, null as Throwable?)
       testCase.spec.testContext.afterTestExecution(testCase.spec, testCase.spec.method, null as Throwable?)
    }
 
    override suspend fun afterSpec(spec: Spec) {
       spec.testContext.afterTestClass()
+      testContexts.remove(spec)
    }
 
    private val Spec.testContext: TestContextManager
@@ -55,7 +60,9 @@ object SpringListener : TestListener {
          val klass = this::class.java
 
          return if (Modifier.isFinal(klass.modifiers)) {
-            println("Using SpringListener on a final class. If any Spring annotation fails to work, try making this class open.")
+            if (!ignoreSpringListenerOnFinalClassWarning || !sysprop(KotestEngineSystemProperties.springIgnoreWarning, "false").toBoolean()) {
+               println("Using SpringListener on a final class. If any Spring annotation fails to work, try making this class open.")
+            }
             this@SpringListener::class.java.getMethod("afterSpec", Spec::class.java, Continuation::class.java)
          } else {
             val fakeSpec = ByteBuddy()

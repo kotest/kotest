@@ -9,21 +9,21 @@ import org.junit.runner.RunWith
 
 @RunWith(KotestTestRunner::class)
 class HelloWorldTest : FreeSpec() {
-    
+
     init {
         "First Test" {
             1.shouldBeLessThan(2)
         }
-        
+
         "String tests #@!*!$" - {
             "substring" {
                 "helloworld".shouldContain("world")
             }
-            
+
             "startwith" {
                 "hello".shouldStartWith("he")
             }
         }
     }
-    
+
 }

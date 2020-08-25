@@ -207,7 +207,7 @@ class DataTestingTest : StringSpec() {
          }.message
          msg shouldBe """
 The following 2 assertions failed:
-1) Test failed for (name, null) with error kotlin.KotlinNullPointerException
+1) Test failed for (name, null) with error java.lang.NullPointerException
 	at com.sksamuel.kotest.data.DataTestingTest${'$'}12.invokeSuspend(DataTestingTest.kt:205)
 2) Test failed for (name, christian) with error "christian" should not equal "christian"
 	at com.sksamuel.kotest.data.DataTestingTest${'$'}12.invokeSuspend(DataTestingTest.kt:205)

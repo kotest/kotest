@@ -20,11 +20,8 @@ kotlin {
          }
       }
       js {
-         val main by compilations.getting {
-            kotlinOptions {
-               moduleKind = "commonjs"
-            }
-         }
+         browser()
+         nodejs()
       }
    }
 
@@ -40,7 +37,6 @@ kotlin {
 
       val commonMain by getting {
          dependencies {
-            implementation(kotlin("stdlib-common"))
             implementation(Libs.Coroutines.coreCommon)
             implementation(Libs.Ktor.clientCore)
          }
@@ -49,8 +45,6 @@ kotlin {
       val jsMain by getting {
          dependsOn(commonMain)
          dependencies {
-            implementation(kotlin("stdlib-js"))
-            implementation(Libs.Coroutines.coreJs)
             implementation(Libs.Ktor.clientJs)
          }
       }
@@ -58,12 +52,9 @@ kotlin {
       val jvmMain by getting {
          dependsOn(commonMain)
          dependencies {
-            implementation(kotlin("stdlib-jdk8"))
-            implementation(Libs.Coroutines.core)
             implementation(Libs.Ktor.clientApache)
          }
       }
-
 
       val jvmTest by getting {
          dependsOn(jvmMain)

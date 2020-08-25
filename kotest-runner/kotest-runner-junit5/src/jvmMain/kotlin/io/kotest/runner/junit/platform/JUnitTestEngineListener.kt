@@ -1,16 +1,18 @@
 package io.kotest.runner.junit.platform
 
-import io.kotest.core.config.Project
-import io.kotest.core.engine.TestEngineListener
-import io.kotest.core.internal.writeSpecFailures
-import io.kotest.core.runtime.AfterProjectListenerException
-import io.kotest.core.runtime.BeforeProjectListenerException
 import io.kotest.core.spec.Spec
-import io.kotest.core.spec.description
+import io.kotest.core.config.configuration
+import io.kotest.engine.listener.TestEngineListener
+import io.kotest.engine.writeSpecFailures
+import io.kotest.core.listeners.AfterProjectListenerException
+import io.kotest.core.listeners.BeforeProjectListenerException
 import io.kotest.core.test.Description
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestStatus
+import io.kotest.core.test.TestType
+import io.kotest.core.spec.toDescription
+import io.kotest.core.test.createTestName
 import io.kotest.mpp.log
 import org.junit.platform.engine.EngineExecutionListener
 import org.junit.platform.engine.TestDescriptor
@@ -94,8 +96,8 @@ class JUnitTestEngineListener(
    override fun engineFinished(t: List<Throwable>) {
       log("Engine finished; throwables=[${t.joinToString(separator = "\n", transform = { it.toString() })}]")
 
-      if (Project.writeSpecFailureFile())
-         writeSpecFailures(failedSpecs, Project.specFailureFilePath())
+      if (configuration.writeSpecFailureFile)
+         writeSpecFailures(failedSpecs, configuration.specFailureFilePath)
 
       val result = t.map {
          when (it) {
@@ -113,7 +115,7 @@ class JUnitTestEngineListener(
             }
             else -> TestExecutionResult.failed(it)
          }
-      }.find { it.status == TestExecutionResult.Status.FAILED } ?: if (Project.failOnIgnoredTests() && hasIgnored()) {
+      }.find { it.status == TestExecutionResult.Status.FAILED } ?: if (configuration.failOnIgnoredTests && hasIgnored()) {
          TestExecutionResult.failed(RuntimeException("Build contained ignored test"))
       } else {
          TestExecutionResult.successful()
@@ -127,7 +129,7 @@ class JUnitTestEngineListener(
       log("specStarted [${kclass.qualifiedName}]")
       try {
          val descriptor = kclass.descriptor(root)
-         descriptors[kclass.description()] = descriptor
+         descriptors[kclass.toDescription()] = descriptor
 
          log("Registering junit dynamic test and notifiying start: $descriptor")
          listener.dynamicTestRegistered(descriptor)
@@ -145,12 +147,12 @@ class JUnitTestEngineListener(
    ) {
       log("specFinished [$kclass]")
 
-      val descriptor = descriptors[kclass.description()]
+      val descriptor = descriptors[kclass.toDescription()]
          ?: throw RuntimeException("Error retrieving description for spec: ${kclass.qualifiedName}")
 
       // we are ignoring junit guidelines here and failing the spec if any of it's tests failed
       // this is because in gradle and intellij nested errors are not very obvious
-      val nestedFailure = findChildFailure(kclass.description())
+      val nestedFailure = findChildFailure(kclass.toDescription())
 
       (specException ?: t ?: nestedFailure?.error)?.apply {
          checkSpecVisiblity(kclass, this)
@@ -163,7 +165,7 @@ class JUnitTestEngineListener(
          else -> TestExecutionResult.successful()
       }
 
-      log("Notifying junit that execution has finished: $descriptor, $result")
+      log("Notifying junit that a spec has finished [$descriptor, $result]")
       listener.executionFinished(descriptor, result)
    }
 
@@ -179,11 +181,11 @@ class JUnitTestEngineListener(
     * Checks that the spec has at least one test attached in case of failure.
     */
    private fun checkSpecVisiblity(kclass: KClass<out Spec>, t: Throwable) {
-      val description = kclass.description()
+      val description = kclass.toDescription()
       if (!isVisible(description)) {
          val spec = descriptors[description]!!
          val test = spec.append(
-            description.append("Spec execution failed"), TestDescriptor.Type.TEST, null,
+            description.append(createTestName("Spec execution failed"), TestType.Test), TestDescriptor.Type.TEST, null,
             Segment.Test
          )
          listener.dynamicTestRegistered(test)
@@ -218,7 +220,7 @@ class JUnitTestEngineListener(
          else -> result
       }
 
-      log("Notifying junit that execution has finished: $descriptor")
+      log("Notifying junit that a test has finished [$descriptor]")
       listener.executionFinished(descriptor, resultp.testExecutionResult())
    }
 
@@ -235,7 +237,7 @@ class JUnitTestEngineListener(
    }
 
    private fun createTestDescriptor(testCase: TestCase): TestDescriptor {
-      val parent = descriptors[testCase.description.parent()]
+      val parent = descriptors[testCase.description.parent]
       if (parent == null) {
          val msg = "Cannot find parent description for: ${testCase.description}"
          log(msg)
@@ -264,8 +266,8 @@ class JUnitTestEngineListener(
       return results
          .filter { description.isAncestorOf(it.first) }
          .filter { it.second.status == TestStatus.Error || it.second.status == TestStatus.Failure }
-         // the lowest level test should be what we pick
-         .sortedBy { it.first.depth() }
+         // the lowest level failure should be what we pick
+         .sortedBy { it.first.chain().size }
          .reversed()
          .map { it.second }
          .firstOrNull()

@@ -7,11 +7,11 @@ import io.kotest.matchers.shouldBe
 class SsnTest : FunSpec({
 
    beforeTest {
-      println("Starting test ${it.name}!")
+      println("Starting test ${it.displayName}!")
    }
 
    afterTest {
-      println("Finished test ${it.a.name}!")
+      println("Finished test ${it.a.displayName}!")
    }
 
    test("valid ssns") {

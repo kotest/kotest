@@ -32,9 +32,10 @@ kotlin {
 
       val jvmTest by getting {
          dependencies {
-            implementation(project(":kotest-core"))
-            implementation(project(":kotest-assertions:kotest-assertions-core"))
+            implementation(project(Projects.Engine))
+            implementation(project(Projects.AssertionsCore))
             implementation(project(Projects.JunitRunner))
+            implementation(project(Projects.JunitXmlExtension))
             implementation(Libs.Jdom.jdom2)
          }
       }
@@ -43,13 +44,17 @@ kotlin {
 
 tasks.named<Test>("jvmTest") {
    useJUnitPlatform()
+   systemProperty("gradle.build.dir", project.buildDir)
    filter {
       isFailOnNoMatchingTests = false
    }
    testLogging {
       showExceptions = true
       showStandardStreams = true
-      events = setOf(org.gradle.api.tasks.testing.logging.TestLogEvent.FAILED, org.gradle.api.tasks.testing.logging.TestLogEvent.PASSED)
+      events = setOf(
+         org.gradle.api.tasks.testing.logging.TestLogEvent.FAILED,
+         org.gradle.api.tasks.testing.logging.TestLogEvent.PASSED
+      )
       exceptionFormat = org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
    }
 }

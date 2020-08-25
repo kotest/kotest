@@ -62,7 +62,11 @@ internal suspend fun handleException(
       println()
       throwPropertyTestAssertionError(shrinkfn(), e, context.attempts(), seed)
    } else if (context.failures() > config.maxFailure) {
-      val t = AssertionError("Property failed ${context.failures()} times (maxFailure rate was ${config.maxFailure})")
-      throwPropertyTestAssertionError(shrinkfn(), t, context.attempts(), seed)
+      var error = "Property failed ${context.failures()} times (maxFailure rate was ${config.maxFailure})\n"
+      error += "Last error was caused by args:\n"
+      inputs.withIndex().forEach { (index, value) ->
+         error += "  $index) ${value.show().value}\n"
+      }
+      throwPropertyTestAssertionError(shrinkfn(), AssertionError(error), context.attempts(), seed)
    }
 }

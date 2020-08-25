@@ -1,6 +1,5 @@
 package com.sksamuel.kotest.specs.feature
 
-import io.kotest.core.runtime.invokeAfterSpec
 import io.kotest.core.spec.style.FeatureSpec
 import io.kotest.matchers.ints.shouldBeLessThan
 import kotlinx.coroutines.delay
@@ -14,12 +13,12 @@ class FeatureSpecTest : FeatureSpec() {
          scenario("can execute a scenario") {
             1.shouldBeLessThan(4)
          }
-         xfeature("should be ignored") {
+         xfeature("xfeature should be ignored") {
             scenario("parent is ignored") {
                error("Boom")
             }
          }
-         xscenario("should be ignored") {
+         xscenario("xscenario should be ignored") {
             error("Boom")
          }
          xscenario("ignored and has config").config(invocations = 3) {

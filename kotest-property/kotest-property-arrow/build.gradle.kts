@@ -33,7 +33,6 @@ kotlin {
 
       val jvmMain by getting {
          dependencies {
-            implementation(kotlin("stdlib-jdk8"))
             implementation(kotlin("reflect"))
             api(project(Projects.AssertionsShared))
             api(project(Projects.Property))

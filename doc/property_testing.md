@@ -264,11 +264,11 @@ val personArb = arb { rs ->
 }
 ```
 
-Although in reality this Arb could have been easier written using bind, it demonstrates the principal.
+Although in reality this Arb could have been easier written using bind, it demonstrates the principle.
 
 ### Exhaustive
 
-When writing a custom exhaustive we can use the .exhaustive() extension function on a List. Nothing more to it than that really!.
+When writing a custom exhaustive we can use the .exhaustive() extension function on a List. Nothing more to it than that really!
 
 ```kotlin
 val singleDigitPrimes = listOf(2,3,5,7).exhaustive()

@@ -1,7 +1,7 @@
 package com.sksamuel.kotest.autoscan
 
-import io.kotest.core.extensions.ConstructorExtension
 import io.kotest.core.spec.AutoScan
+import io.kotest.core.extensions.ConstructorExtension
 import io.kotest.core.spec.Spec
 import kotlin.reflect.KClass
 import kotlin.reflect.full.primaryConstructor

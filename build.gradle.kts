@@ -4,10 +4,9 @@ buildscript {
       mavenCentral()
       mavenLocal()
       google()
-   }
-
-   dependencies {
-      // classpath "io.kotest:kotest-gradle-plugin:1.1.1-LOCAL"
+      maven("https://dl.bintray.com/kotlin/kotlin-eap")
+      maven("https://kotlin.bintray.com/kotlinx")
+      gradlePluginPortal()
    }
 }
 
@@ -22,15 +21,29 @@ plugins {
 
    // To get versions report, execute:
    // Win: .\gradlew.bat dependencyUpdates -Drevision=release
-   // Other: gradle dependencyUpdates -Drevision=release
+   // Other: ./gradlew dependencyUpdates -Drevision=release
    id("com.github.ben-manes.versions") version Libs.gradleVersionsPluginVersion
 }
 
-// Configure existing Dokka task to output HTML to typical Javadoc directory
-tasks.dokka {
-   outputFormat = "html"
-   outputDirectory = "$buildDir/javadoc"
+tasks {
+   javadoc {
+   }
 }
+
+// Configure existing Dokka task to output HTML to typical Javadoc directory
+//tasks.dokka {
+//   outputFormat = "html"
+//   outputDirectory = "$buildDir/javadoc"
+//   configuration {
+//      includeNonPublic = false
+//      skipDeprecated = true
+//      reportUndocumented = false
+//      skipEmptyPackages = true
+//      targets = listOf("JVM")
+//      platform = "JVM"
+//      jdkVersion = 8
+//   }
+//}
 
 // apply plugin: "io.kotest"
 
@@ -40,10 +53,29 @@ allprojects {
       mavenCentral()
       jcenter()
       google()
+      maven("https://dl.bintray.com/kotlin/kotlin-eap")
+      maven("https://kotlin.bintray.com/kotlinx")
    }
 
    group = "io.kotest"
    version = Ci.publishVersion
+}
+
+kotlin {
+   targets {
+      jvm {
+         compilations.all {
+            kotlinOptions {
+               jvmTarget = "1.8"
+            }
+         }
+      }
+   }
+}
+
+tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
+   kotlinOptions.jvmTarget = "1.8"
+   kotlinOptions.apiVersion = "1.3"
 }
 
 val publications: PublicationContainer = (extensions.getByName("publishing") as PublishingExtension).publications

@@ -4,10 +4,8 @@ import com.sksamuel.kotest.extensions.SpecExtensionNumbers
 import com.sksamuel.kotest.extensions.TagFilteredDiscoveryExtensionExampleTest
 import io.kotest.core.config.AbstractProjectConfig
 import io.kotest.core.extensions.Extension
-import io.kotest.core.filters.Filter
-import io.kotest.core.spec.FailureFirstSpecExecutionOrder
+import io.kotest.core.filter.Filter
 import io.kotest.core.spec.SpecExecutionOrder
-import io.kotest.properties.PropertyTesting
 
 object ProjectConfig : AbstractProjectConfig() {
 
@@ -16,9 +14,9 @@ object ProjectConfig : AbstractProjectConfig() {
 
    val intercepterLog = StringBuilder()
 
-   override fun filters(): List<Filter> = listOf(TestCaseFilterTestFilter)
+   override fun filters(): List<Filter> = listOf(TestFilterTestFilter)
 
-   override fun specExecutionOrder(): SpecExecutionOrder = FailureFirstSpecExecutionOrder
+   override val specExecutionOrder = SpecExecutionOrder.Lexicographic
 
    override fun extensions(): List<Extension> {
       return listOf(SpecExtensionNumbers.ext, TagFilteredDiscoveryExtensionExampleTest.ext)
@@ -26,9 +24,5 @@ object ProjectConfig : AbstractProjectConfig() {
 
    override fun beforeAll() {
       intercepterLog.append("B1.")
-   }
-
-   init {
-      PropertyTesting.shouldPrintShrinkSteps = false
    }
 }

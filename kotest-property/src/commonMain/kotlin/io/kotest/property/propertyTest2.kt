@@ -90,7 +90,6 @@ suspend inline fun <reified A, reified B> checkAll(
    property
 )
 
-
 suspend fun <A, B> forAll(
    genA: Gen<A>,
    genB: Gen<B>,

@@ -19,7 +19,7 @@ object JvmReflection : Reflection {
 
    override fun <T : Any> isDataClass(kclass: KClass<T>): Boolean = try {
       kclass.isData
-   } catch (e: Exception) {
+   } catch (e: Throwable) {
       false
    }
 

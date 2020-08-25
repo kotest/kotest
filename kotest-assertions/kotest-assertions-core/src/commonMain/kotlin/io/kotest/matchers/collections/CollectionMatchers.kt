@@ -23,25 +23,6 @@ fun <T> beEmpty(): Matcher<Collection<T>> = object : Matcher<Collection<T>> {
   )
 }
 
-fun <T> containsInOrder(vararg ts: T): Matcher<Collection<T>?> = containsInOrder(ts.asList())
-/** Assert that a collection contains a given subsequence, possibly with values in between. */
-fun <T> containsInOrder(subsequence: List<T>): Matcher<Collection<T>?> = neverNullMatcher { actual ->
-  require(subsequence.isNotEmpty()) { "expected values must not be empty" }
-
-  var subsequenceIndex = 0
-  val actualIterator = actual.iterator()
-
-  while (actualIterator.hasNext() && subsequenceIndex < subsequence.size) {
-    if (actualIterator.next() == subsequence[subsequenceIndex]) subsequenceIndex += 1
-  }
-
-  MatcherResult(
-    subsequenceIndex == subsequence.size,
-    { "${actual.show().value} did not contain the elements ${subsequence.show().value} in order" },
-    { "${actual.show().value} should not contain the elements ${subsequence.show().value} in order" }
-  )
-}
-
 fun <T> existInOrder(vararg ps: (T) -> Boolean): Matcher<Collection<T>?> = existInOrder(ps.asList())
 
 /**

@@ -1,0 +1,68 @@
+name: release
+
+on:
+   workflow_dispatch:
+      inputs:
+         version:
+            description: "The release version"
+            required: true
+
+jobs:
+   deploy-linux-and-common:
+      runs-on: ubuntu-latest
+
+      steps:
+         -  name: Checkout the repo
+            uses: actions/checkout@v2
+            with:
+               fetch-depth: 0
+
+         -  name: deploy to sonatype
+            run: ./gradlew publish
+            env:
+               RELEASE_VERSION: ${{ github.event.inputs.version }}
+               OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
+               OSSRH_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
+               ORG_GRADLE_PROJECT_signingKey: ${{ secrets.SIGNING_KEY }}
+               ORG_GRADLE_PROJECT_signingPassword: ${{ secrets.SIGNING_PASSWORD }}
+
+   deploy-mac:
+      runs-on: macOS-latest
+      needs: [deploy-linux-and-common]
+
+      steps:
+         -  name: Checkout the repo
+            uses: actions/checkout@v2
+            with:
+               fetch-depth: 0
+
+         -  name: deploy to sonatype
+            run: ./gradlew publishMacosX64PublicationToDeployRepository
+            env:
+               RELEASE_VERSION: ${{ github.event.inputs.version }}
+               OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
+               OSSRH_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
+               ORG_GRADLE_PROJECT_signingKey: ${{ secrets.SIGNING_KEY }}
+               ORG_GRADLE_PROJECT_signingPassword: ${{ secrets.SIGNING_PASSWORD }}
+
+   deploy-windows:
+      runs-on: windows-latest
+      needs: [deploy-mac]
+
+      steps:
+         -  name: Checkout the repo
+            uses: actions/checkout@v2
+            with:
+               fetch-depth: 0
+
+         -  name: deploy to sonatype
+            run: ./gradlew publishMingwX64PublicationToDeployRepository
+            env:
+               RELEASE_VERSION: ${{ github.event.inputs.version }}
+               OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
+               OSSRH_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
+               ORG_GRADLE_PROJECT_signingKey: ${{ secrets.SIGNING_KEY }}
+               ORG_GRADLE_PROJECT_signingPassword: ${{ secrets.SIGNING_PASSWORD }}
+
+env:
+   GRADLE_OPTS: -Dorg.gradle.configureondemand=true -Dorg.gradle.parallel=false -Dkotlin.incremental=false -Dorg.gradle.jvmargs="-Xmx3g -XX:MaxPermSize=2048m -XX:+HeapDumpOnOutOfMemoryError -Dfile.encoding=UTF-8"

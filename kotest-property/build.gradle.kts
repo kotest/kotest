@@ -20,16 +20,9 @@ kotlin {
          }
       }
       js {
-         val main by compilations.getting {
-            kotlinOptions {
-               moduleKind = "commonjs"
-            }
-         }
+         browser()
+         nodejs()
       }
-
-//      linuxX64()
-//      mingwX64()
-//      macosX64()
    }
 
    targets.all {
@@ -44,28 +37,17 @@ kotlin {
 
       val commonMain by getting {
          dependencies {
-            implementation(kotlin("stdlib-common"))
             api(project(Projects.Common))
             api(project(Projects.AssertionsShared))
             implementation(Libs.Coroutines.coreCommon)
          }
       }
 
-      val jsMain by getting {
-         dependsOn(commonMain)
-         dependencies {
-            implementation(kotlin("stdlib-js"))
-            implementation(Libs.Coroutines.coreJs)
-         }
-      }
-
       val jvmMain by getting {
          dependsOn(commonMain)
          dependencies {
-            implementation(kotlin("stdlib-jdk8"))
             implementation(kotlin("reflect"))
             implementation(Libs.Wumpz.diffutils)
-            implementation(Libs.Coroutines.core)
             implementation(Libs.Mifmif.generex)
          }
       }
@@ -75,15 +57,8 @@ kotlin {
          dependencies {
             implementation(project(Projects.JunitRunner))
             implementation(project(Projects.AssertionsCore))
-            implementation(project(Projects.ConsoleRunner))
          }
       }
-
-//      listOf("macosX64Main", "linuxX64Main", "mingwX64Main").forEach {
-//         get(it).dependencies {
-//            implementation(Libs.Coroutines.coreNative)
-//         }
-//      }
    }
 }
 

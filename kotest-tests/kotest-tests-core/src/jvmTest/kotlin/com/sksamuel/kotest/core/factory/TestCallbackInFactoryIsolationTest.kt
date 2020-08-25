@@ -9,14 +9,14 @@ private val factory = funSpec {
 
     // this before test should not apply to the tests in the class
     beforeTest {
-        it.description.name.displayName().shouldNotBe("a")
-        it.description.name.displayName().shouldBe("z")
+        it.description.name.name.shouldNotBe("a")
+        it.description.name.name.shouldBe("z")
     }
 
     // this after test should not apply to the tests in the class
     afterTest {
-        it.a.description.name.displayName().shouldNotBe("a")
-        it.a.description.name.displayName().shouldBe("z")
+        it.a.description.name.name.shouldNotBe("a")
+        it.a.description.name.name.shouldBe("z")
     }
 
     test("z") {

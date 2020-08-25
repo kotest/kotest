@@ -3,7 +3,6 @@ package com.sksamuel.kotest.eq
 import io.kotest.assertions.eq.isDataClassInstance
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.shouldBe
-import io.kotest.matchers.shouldNotBe
 import io.kotest.matchers.string.shouldNotStartWith
 import io.kotest.matchers.string.shouldStartWith
 import org.junit.jupiter.api.assertThrows

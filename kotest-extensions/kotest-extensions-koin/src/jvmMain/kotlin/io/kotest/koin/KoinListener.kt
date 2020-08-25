@@ -16,14 +16,14 @@ class KoinListener(
 
    constructor(module: Module, mockProvider: Provider<*>? = null) : this(listOf(module), mockProvider)
 
-   override suspend fun beforeTest(testCase: TestCase) {
+   override suspend fun beforeAny(testCase: TestCase) {
       startKoin {
          if(mockProvider != null) MockProvider.register(mockProvider)
          modules(modules)
       }
    }
 
-   override suspend fun afterTest(testCase: TestCase, result: TestResult) {
+   override suspend fun afterAny(testCase: TestCase, result: TestResult) {
       stopKoin()
    }
 }

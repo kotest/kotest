@@ -528,7 +528,6 @@ class SpecThreadSpecExtensionConcurrentInstancePerTestTest : FunSpec({
    isolationMode = IsolationMode.InstancePerTest
    threads = 3
 
-
    val lock = ReentrantLock()
 
    aroundSpec { (_, process) ->

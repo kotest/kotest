@@ -1,7 +1,7 @@
 package com.sksamuel.kotest.extensions
 
 import io.kotest.assertions.fail
-import io.kotest.core.StringTag
+import io.kotest.core.NamedTag
 import io.kotest.core.annotation.Tags
 import io.kotest.core.extensions.TagExtension
 import io.kotest.core.spec.style.StringSpec
@@ -12,7 +12,7 @@ class TagFilteredDiscoveryExtensionExampleTest : StringSpec() {
    companion object {
       val ext = object : TagExtension {
          override fun tags(): io.kotest.core.Tags =
-            io.kotest.core.Tags(emptySet(), setOf(StringTag("SpecExcluded")))
+            io.kotest.core.Tags(emptySet(), setOf(NamedTag("SpecExcluded")))
       }
    }
 

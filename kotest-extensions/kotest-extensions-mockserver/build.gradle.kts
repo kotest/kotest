@@ -35,10 +35,10 @@ kotlin {
 
       val jvmMain by getting {
          dependencies {
-            implementation(project(":kotest-core"))
-            implementation(kotlin("stdlib-jdk8"))
-            api("org.mock-server:mockserver-netty:5.9.0")
-            api("org.mock-server:mockserver-client-java:5.9.0")
+            implementation(project(Projects.Engine))
+            implementation(project(Projects.Api))
+            api(Libs.MockServer.netty)
+            api(Libs.MockServer.javaClient)
          }
       }
 

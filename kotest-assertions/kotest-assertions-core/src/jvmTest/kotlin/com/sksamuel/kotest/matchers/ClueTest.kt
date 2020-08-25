@@ -31,7 +31,7 @@ class ClueTest : FreeSpec({
             withClue("outer clue:") {
                assertSoftly {
                   "1" shouldBe withClueEcho("the details!")
-                  withClue("inner clue:") {"2" shouldBe "1"}
+                  withClue("inner clue:") { "2" shouldBe "1" }
                }
             }
          }
@@ -43,14 +43,14 @@ class ClueTest : FreeSpec({
 
       "should show all available nested clue contexts" {
          withClue("clue outer:") {
-            shouldThrow<AssertionError> {"1" shouldBe "2" }.message shouldBe "clue outer:\nexpected:<\"2\"> but was:<\"1\">"
+            shouldThrow<AssertionError> { "1" shouldBe "2" }.message shouldBe "clue outer:\nexpected:<\"2\"> but was:<\"1\">"
             withClue("clue inner:") {
-               shouldThrow<AssertionError> {"3" shouldBe "4" }.message shouldBe "clue outer:\nclue inner:\nexpected:<\"4\"> but was:<\"3\">"
+               shouldThrow<AssertionError> { "3" shouldBe "4" }.message shouldBe "clue outer:\nclue inner:\nexpected:<\"4\"> but was:<\"3\">"
             }
-            shouldThrow<AssertionError> {"5" shouldBe "6" }.message shouldBe "clue outer:\nexpected:<\"6\"> but was:<\"5\">"
+            shouldThrow<AssertionError> { "5" shouldBe "6" }.message shouldBe "clue outer:\nexpected:<\"6\"> but was:<\"5\">"
          }
          //And resets completely when leaving final clue block
-         shouldThrow<AssertionError> {"7" shouldBe "8" }.message shouldBe "expected:<\"8\"> but was:<\"7\">"
+         shouldThrow<AssertionError> { "7" shouldBe "8" }.message shouldBe "expected:<\"8\"> but was:<\"7\">"
       }
 
    }
@@ -67,7 +67,7 @@ class ClueTest : FreeSpec({
             "outer clue:".asClue {
                assertSoftly {
                   "1" shouldBe "the details"
-                  "inner clue:".asClue {"2" shouldBe "1"}
+                  "inner clue:".asClue { "2" shouldBe "1" }
                }
             }
          }
@@ -80,7 +80,7 @@ class ClueTest : FreeSpec({
       "should show all available nested clue contexts" {
          data class MyData(val a: Int, val b: String)
          MyData(10, "clue object").asClue {
-            shouldThrow<AssertionError> {it.b shouldBe "2" }.message shouldBe """MyData(a=10, b=clue object)
+            shouldThrow<AssertionError> { it.b shouldBe "2" }.message shouldBe """MyData(a=10, b=clue object)
 |expected:<"2"> but was:<"clue object">""".trimMargin()
          }
 

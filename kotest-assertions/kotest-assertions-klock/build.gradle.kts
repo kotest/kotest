@@ -32,7 +32,6 @@ kotlin {
 
       val commonMain by getting {
          dependencies {
-            implementation(kotlin("stdlib-common"))
             implementation(project(Projects.AssertionsShared))
             implementation(Libs.Klock.klock)
          }
@@ -40,9 +39,6 @@ kotlin {
 
       val jvmMain by getting {
          dependsOn(commonMain)
-         dependencies {
-            implementation(kotlin("stdlib-jdk8"))
-         }
       }
 
       val jvmTest by getting {

@@ -29,21 +29,21 @@ class KoinListenerTest : FunSpec(), KoinTest {
 }
 
 class KoinListenerMockTest : FunSpec(), KoinTest {
-   
+
    init {
       val genericService by inject<GenericService>()
 
       listeners(KoinListener(koinModule) { mockk<GenericRepository>() })
-      
+
       test("Should allow mocking correctly") {
-         
+
          declareMock<GenericRepository> {
             every { foo() } returns "DootyDoot"
          }
-         
+
          genericService.foo() shouldBe "DootyDoot"
       }
-      
+
       afterSpec {
          KoinContextHandler.getOrNull() shouldBe null // We should finish koin after test execution
       }

@@ -2,7 +2,7 @@ package com.sksamuel.kotest.matchers.result
 
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.FreeSpec
-import io.kotest.matchers.beInstanceOf
+import io.kotest.matchers.types.beInstanceOf
 import io.kotest.matchers.result.shouldBeFailure
 import io.kotest.matchers.result.shouldBeFailureOfType
 import io.kotest.matchers.result.shouldBeSuccess

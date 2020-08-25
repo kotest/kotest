@@ -6,7 +6,6 @@ import io.kotest.matchers.booleans.shouldBeFalse
 import io.kotest.matchers.booleans.shouldBeTrue
 import io.kotest.matchers.booleans.shouldNotBeFalse
 import io.kotest.matchers.booleans.shouldNotBeTrue
-import org.opentest4j.AssertionFailedError
 import io.kotest.matchers.shouldBe
 
 @Suppress("SimplifyBooleanWithConstants")

@@ -297,10 +297,10 @@ If any assertions inside the block failed, the test will continue to
 run. All failures will be reported in a single exception at the end of
 the block.
 
-`assertSoftly` also works with a receiver:
+Another version of `assertSoftly` takes an test target and lambda with test target as its receiver.
 
 ```kotlin
-foo.assertSoftly {
+assertSoftly(foo) {
     shouldNotEndWith("b")
     length shouldBe 3
 }
@@ -478,8 +478,14 @@ All specs allow you to control the isolation mode. Full instructions can be foun
 
 
 
+Clues
+------
 
+Sometimes a failed assertion does not convey enough information to be immediately useful.
 
+For example `user.name shouldNotBe null` would output simply `<null> should not equal <null>`.
+
+By using [clues](clues.md) we can add extra contextual information.
 
 
 Mocking

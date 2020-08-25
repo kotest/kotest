@@ -1,8 +1,9 @@
 package io.kotest.assertions
 
 import com.github.difflib.DiffUtils
+import com.github.difflib.algorithm.DiffAlgorithmListener
+import com.github.difflib.patch.AbstractDelta
 import com.github.difflib.patch.Chunk
-import com.github.difflib.patch.Delta
 import com.github.difflib.patch.DeltaType
 import kotlin.math.max
 
@@ -19,7 +20,11 @@ actual fun diffLargeString(expected: String, actual: String): Pair<String, Strin
       DeltaType.EQUAL -> ""
    }
 
-   fun diffs(lines: List<String>, deltas: List<Delta<String>>, chunker: (Delta<String>) -> Chunk<String>): String {
+   fun diffs(
+      lines: List<String>,
+      deltas: MutableList<AbstractDelta<String>>,
+      chunker: (AbstractDelta<String>) -> Chunk<String>
+   ): String {
       return deltas.joinToString("\n\n") { delta ->
          val chunk = chunker(delta)
          // include a line before and after to give some context on deletes
@@ -29,8 +34,13 @@ actual fun diffLargeString(expected: String, actual: String): Pair<String, Strin
    }
 
 
-   val patch = DiffUtils.diff(actual, expected)
+   val patch = DiffUtils.diff(actual, expected, object : DiffAlgorithmListener {
+      override fun diffStart() {}
+      override fun diffStep(value: Int, max: Int) {}
+      override fun diffEnd() {}
+   })
+
    return if (patch.deltas.isEmpty()) Pair(expected, actual) else {
-      Pair(diffs(expected.lines(), patch.deltas) { it.original }, diffs(actual.lines(), patch.deltas) { it.revised })
+      Pair(diffs(expected.lines(), patch.deltas) { it.source }, diffs(actual.lines(), patch.deltas) { it.target })
    }
 }

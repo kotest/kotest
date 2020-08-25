@@ -2,6 +2,7 @@ package com.sksamuel.kotest.matchers.maps
 
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.WordSpec
+import io.kotest.matchers.and
 import io.kotest.matchers.maps.*
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldBe
@@ -60,8 +61,14 @@ class MapMatchersTest : WordSpec() {
             map shouldContain (1 to "a")
             map shouldNotContain (3 to "A")
             shouldThrow<AssertionError> {
+               map.shouldContain(1, "c")
+            }.message.shouldBe("Map should contain mapping 1=c but was 1=a")
+            shouldThrow<AssertionError> {
+               map.shouldContain(4, "e")
+            }.message.shouldBe("Map should contain mapping 4=e but was {1=a, 2=b}")
+            shouldThrow<AssertionError> {
                map should contain(2, "a")
-            }
+            }.message.shouldBe("Map should contain mapping 2=a but was 2=b")
          }
       }
 

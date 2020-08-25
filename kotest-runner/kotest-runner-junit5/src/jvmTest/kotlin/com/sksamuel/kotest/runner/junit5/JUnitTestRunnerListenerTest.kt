@@ -1,12 +1,12 @@
 package com.sksamuel.kotest.runner.junit5
 
 import io.kotest.core.sourceRef
-import io.kotest.core.spec.CompositeSpec
-import io.kotest.core.spec.description
-import io.kotest.core.spec.style.funSpec
+import io.kotest.core.spec.style.FunSpec
+import io.kotest.core.spec.toDescription
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestType
+import io.kotest.engine.toTestResult
 import io.kotest.matchers.shouldBe
 import io.kotest.runner.junit.platform.JUnitTestEngineListener
 import io.kotest.runner.junit.platform.KotestEngineDescriptor
@@ -15,16 +15,16 @@ import org.junit.platform.engine.TestDescriptor
 import org.junit.platform.engine.TestExecutionResult
 import org.junit.platform.engine.UniqueId
 import org.junit.platform.engine.reporting.ReportEntry
-import kotlin.time.Duration
 import kotlin.time.ExperimentalTime
 
 @OptIn(ExperimentalTime::class)
-val childFailsParentTest = funSpec {
+class JUnitTestRunnerListenerTests : FunSpec({
 
    test("a bad test should fail parent and spec") {
 
       val root = KotestEngineDescriptor(
          UniqueId.forEngine("kotest"),
+         emptyList(),
          emptyList()
       )
 
@@ -42,7 +42,7 @@ val childFailsParentTest = funSpec {
       }
 
       val test1 = TestCase(
-         JUnitTestRunnerListenerTests::class.description().append("test1"),
+         JUnitTestRunnerListenerTests::class.toDescription().appendTest("test1"),
          JUnitTestRunnerListenerTests(),
          { },
          sourceRef(),
@@ -50,7 +50,7 @@ val childFailsParentTest = funSpec {
       )
 
       val test2 = TestCase(
-         test1.description.append("test2"),
+         test1.description.appendTest("test2"),
          JUnitTestRunnerListenerTests(),
          { },
          sourceRef(),
@@ -62,8 +62,8 @@ val childFailsParentTest = funSpec {
       listener.specStarted(JUnitTestRunnerListenerTests::class)
       listener.testStarted(test1)
       listener.testStarted(test2)
-      listener.testFinished(test2, TestResult.throwable(AssertionError("boom"), Duration.ZERO))
-      listener.testFinished(test1, TestResult.success(Duration.ZERO))
+      listener.testFinished(test2, toTestResult(AssertionError("boom"), 0))
+      listener.testFinished(test1, TestResult.success(0))
       listener.specFinished(JUnitTestRunnerListenerTests::class, null, emptyMap())
       listener.engineFinished(emptyList())
 
@@ -74,6 +74,5 @@ val childFailsParentTest = funSpec {
          "Kotest" to TestExecutionResult.Status.SUCCESSFUL
       )
    }
-}
 
-class JUnitTestRunnerListenerTests : CompositeSpec(childFailsParentTest)
+})

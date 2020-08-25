@@ -1,6 +1,6 @@
 object Libs {
 
-   const val kotlinVersion = "1.3.71"
+   const val kotlinVersion = "1.4.0"
    const val dokkaVersion = "0.10.1"
    const val adarshrTestLoggerVersion = "2.0.0"
    const val gradleVersionsPluginVersion = "0.28.0"
@@ -12,18 +12,18 @@ object Libs {
       const val validation = "io.arrow-kt:arrow-validation:$version"
    }
 
-   object Allure {
-      private const val version = "2.13.2"
-      const val commons = "io.qameta.allure:allure-java-commons:$version"
-   }
-
    object Ajalt {
-      const val clikt = "com.github.ajalt:clikt:2.6.0"
+      const val clikt = "com.github.ajalt:clikt:2.7.1"
       const val mordant = "com.github.ajalt:mordant:1.2.1"
    }
 
+   object Allure {
+      private const val version = "2.13.5"
+      const val commons = "io.qameta.allure:allure-java-commons:$version"
+   }
+
    object Tschuchortdev {
-      private const val version = "1.2.7"
+      private const val version = "1.2.9"
       const val kotlinCompileTesting = "com.github.tschuchortdev:kotlin-compile-testing:$version"
    }
 
@@ -53,11 +53,17 @@ object Libs {
    }
 
    object Classgraph {
-      const val classgraph = "io.github.classgraph:classgraph:4.8.69"
+      const val classgraph = "io.github.classgraph:classgraph:4.8.87"
    }
 
    object Mocking {
       const val mockk = "io.mockk:mockk:1.9.3"
+   }
+
+   object MockServer {
+      private const val version = "5.9.0"
+      const val netty = "org.mock-server:mockserver-netty:$version"
+      const val javaClient = "org.mock-server:mockserver-client-java:$version"
    }
 
    object Mifmif {
@@ -70,30 +76,48 @@ object Libs {
    }
 
    object Wumpz {
-      const val diffutils = "com.github.wumpz:diffutils:2.2"
+      const val diffutils = "io.github.java-diff-utils:java-diff-utils:4.5"
+   }
+
+   object TestContainers {
+      private const val version = "1.14.3"
+      const val testcontainers = "org.testcontainers:testcontainers:$version"
+   }
+
+   object Spring {
+      private const val version = "5.2.4.RELEASE"
+      const val context = "org.springframework:spring-context:$version"
+      const val test = "org.springframework:spring-test:$version"
    }
 
    object Coroutines {
-      private const val version = "1.3.6"
-      const val coreCommon = "org.jetbrains.kotlinx:kotlinx-coroutines-core-common:$version"
-      const val jdk8 = "org.jetbrains.kotlinx:kotlinx-coroutines-jdk8:$version"
-      const val core = "org.jetbrains.kotlinx:kotlinx-coroutines-core:$version"
+      private const val version = "1.3.9"
+      const val coreCommon = "org.jetbrains.kotlinx:kotlinx-coroutines-core:$version"
+      const val coreJvm = "org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm:$version"
       const val coreJs = "org.jetbrains.kotlinx:kotlinx-coroutines-core-js:$version"
       const val coreNative = "org.jetbrains.kotlinx:kotlinx-coroutines-core-native:$version"
+      const val coreLinux = "org.jetbrains.kotlinx:kotlinx-coroutines-core-linuxx64:$version"
+      const val coreMingw = "org.jetbrains.kotlinx:kotlinx-coroutines-core-mingwx64:$version"
+      const val coreMacos = "org.jetbrains.kotlinx:kotlinx-coroutines-core-macosx64:$version"
+      const val jdk8 = "org.jetbrains.kotlinx:kotlinx-coroutines-jdk8:$version"
    }
 
    object Ktor {
-      private const val version = "1.3.2"
+      private const val version = "1.3.2-1.4.0-rc"
       const val serverCore = "io.ktor:ktor-server-core:$version"
       const val serverTestHost = "io.ktor:ktor-server-test-host:$version"
       const val clientJs = "io.ktor:ktor-client-js:$version"
       const val clientCore = "io.ktor:ktor-client-core:$version"
       const val clientApache = "io.ktor:ktor-client-apache:$version"
-      const val clientCurl = "io.ktor:ktor-client-curl:$version"
    }
 
    object Klock {
-      private const val version = "1.10.5"
+      private const val version = "1.12.0"
       const val klock = "com.soywiz.korlibs.klock:klock:$version"
+   }
+
+   object KotlinTime {
+      private const val version = "0.1.0"
+      const val kotlintime = "org.jetbrains.kotlinx:kotlinx-datetime:$version"
    }
 }

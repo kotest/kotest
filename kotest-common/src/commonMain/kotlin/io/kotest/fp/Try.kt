@@ -6,18 +6,15 @@ sealed class Try<out T> {
    data class Failure(val error: Throwable) : Try<Nothing>()
 
    companion object {
-      operator fun invoke(t: Throwable): Try<Unit> =
-          Failure(t)
+      operator fun invoke(t: Throwable): Try<Unit> = Failure(t)
       inline operator fun <T> invoke(f: () -> T): Try<T> = try {
-          Success(f())
+         Success(f())
       } catch (e: Throwable) {
          if (nonFatal(e)) Failure(e) else throw e
       }
    }
 
-   inline fun <U> map(f: (T) -> U): Try<U> = flatMap {
-       Try { f(it) }
-   }
+   inline fun <U> map(f: (T) -> U): Try<U> = flatMap { Try { f(it) } }
 
    fun isSuccess() = this is Success
    fun isFailure() = this is Failure
@@ -53,11 +50,7 @@ sealed class Try<out T> {
       is Failure -> this
    }
 
-   fun toOption(): Option<T> = fold({ Option.None }, {
-       Option.Some(
-           it
-       )
-   })
+   fun toOption(): Option<T> = fold({ Option.None }, { Option.Some(it) })
 
    inline fun mapFailure(f: (Throwable) -> Throwable) = fold({ f(it).failure() }, { it.success() })
 
@@ -86,4 +79,4 @@ fun <U, T : U> Try<T>.recover(f: (Throwable) -> U): Try<U> = when (this) {
 
 fun <T> T.success(): Try<T> = Try.Success(this)
 fun Throwable.failure(): Try<Nothing> =
-    Try.Failure(this)
+   Try.Failure(this)

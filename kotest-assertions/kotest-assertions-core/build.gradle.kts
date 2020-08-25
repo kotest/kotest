@@ -7,6 +7,7 @@ plugins {
 
 repositories {
    mavenCentral()
+   maven(url = "https://kotlin.bintray.com/kotlinx/")
 }
 
 kotlin {
@@ -20,13 +21,9 @@ kotlin {
          }
       }
       js {
-         val main by compilations.getting {
-            kotlinOptions {
-               moduleKind = "commonjs"
-            }
-         }
+         browser()
+         nodejs()
       }
-
       linuxX64()
       mingwX64()
       macosX64()
@@ -44,28 +41,18 @@ kotlin {
 
       val commonMain by getting {
          dependencies {
-            implementation(kotlin("stdlib-common"))
             implementation(Libs.Coroutines.coreCommon)
             implementation(project(Projects.Common))
+            implementation(project(Projects.AssertionsApi))
             // this is api because we want to expose `shouldBe` etc
             api(project(Projects.AssertionsShared))
-         }
-      }
-
-      val jsMain by getting {
-         dependsOn(commonMain)
-         dependencies {
-            implementation(kotlin("stdlib-js"))
-            implementation(Libs.Coroutines.coreJs)
          }
       }
 
       val jvmMain by getting {
          dependsOn(commonMain)
          dependencies {
-            implementation(kotlin("stdlib-jdk8"))
             implementation(kotlin("reflect"))
-            implementation(Libs.Coroutines.core)
             implementation(Libs.Coroutines.jdk8)
             implementation(Libs.Wumpz.diffutils)
             implementation("com.univocity:univocity-parsers:2.8.4")
@@ -78,14 +65,7 @@ kotlin {
          dependencies {
             implementation(project(Projects.Property))
             implementation(project(Projects.JunitRunner))
-            implementation(project(Projects.ConsoleRunner))
             implementation(Libs.OpenTest4j.core)
-         }
-      }
-
-      listOf("macosX64Main", "linuxX64Main", "mingwX64Main").forEach {
-         get(it).dependencies {
-            implementation(Libs.Coroutines.coreNative)
          }
       }
    }
@@ -98,10 +78,13 @@ tasks.named<Test>("jvmTest") {
    }
    testLogging {
       showExceptions = true
-      showStandardStreams = true
       events = setOf(
+         org.gradle.api.tasks.testing.logging.TestLogEvent.STARTED,
+         org.gradle.api.tasks.testing.logging.TestLogEvent.SKIPPED,
          org.gradle.api.tasks.testing.logging.TestLogEvent.FAILED,
-         org.gradle.api.tasks.testing.logging.TestLogEvent.PASSED
+         org.gradle.api.tasks.testing.logging.TestLogEvent.PASSED,
+         org.gradle.api.tasks.testing.logging.TestLogEvent.STANDARD_OUT,
+         org.gradle.api.tasks.testing.logging.TestLogEvent.STANDARD_ERROR
       )
       exceptionFormat = org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
    }

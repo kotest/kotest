@@ -20,20 +20,18 @@ repositories {
 
 kotlin {
 
-   js()
+   js {
+      browser()
+      nodejs()
+   }
 
    sourceSets {
 
-      jsMain {
-         dependencies {
-            implementation(kotlin("stdlib-js"))
-         }
-      }
-
       jsTest {
          dependencies {
+            implementation(project(Projects.Api))
             implementation(project(Projects.AssertionsShared))
-            implementation(project(Projects.Core))
+            implementation(project(Projects.Engine))
             implementation(project(Projects.AssertionsCore))
          }
       }
