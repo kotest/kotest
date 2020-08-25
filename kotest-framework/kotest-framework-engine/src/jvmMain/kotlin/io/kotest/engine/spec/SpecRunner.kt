@@ -9,9 +9,12 @@ import io.kotest.mpp.NamedThreadFactory
 import io.kotest.engine.instantiateSpec
 import io.kotest.fp.Try
 import io.kotest.mpp.log
-import kotlinx.coroutines.runBlocking
+import kotlin.coroutines.AbstractCoroutineContextElement
+import kotlin.coroutines.ContinuationInterceptor
+import kotlin.coroutines.CoroutineContext
+import kotlin.coroutines.Continuation
+import kotlin.coroutines.startCoroutine
 import java.util.concurrent.*
-import kotlin.coroutines.*
 import kotlin.reflect.KClass
 
 /**
@@ -44,12 +47,9 @@ abstract class SpecRunner(val listener: TestEngineListener) {
 
    protected suspend fun runParallel(threads: Int, run: suspend () -> Unit) {
       val executor = Executors.newFixedThreadPool(threads, NamedThreadFactory("SpecRunner-%d"))
+      val ctx = ExecutorServiceContext(executor)
       val futures = (0 until threads).map {
-         executor.submit {
-            runBlocking {
-               run()
-            }
-         }
+         future(ctx) { run() }
       }
       executor.shutdown()
       log("Waiting for test case execution to terminate")
