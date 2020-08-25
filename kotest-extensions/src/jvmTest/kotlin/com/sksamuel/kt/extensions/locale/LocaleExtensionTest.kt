@@ -2,16 +2,17 @@ package com.sksamuel.kt.extensions.locale
 
 import io.kotest.assertions.throwables.shouldThrowAny
 import io.kotest.core.listeners.TestListener
+import io.kotest.core.spec.AutoScan
 import io.kotest.core.spec.Spec
-import io.kotest.core.test.TestCase
-import io.kotest.core.test.TestResult
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.core.spec.style.FunSpec
+import io.kotest.core.test.TestCase
+import io.kotest.core.test.TestResult
 import io.kotest.extensions.locale.LocaleTestListener
 import io.kotest.extensions.locale.withDefaultLocale
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
-import java.util.Locale
+import java.util.*
 import kotlin.reflect.KClass
 
 class LocaleExtensionFunctionTest : DescribeSpec() {
@@ -52,21 +53,30 @@ class LocaleExtensionFunctionTest : DescribeSpec() {
    }
 }
 
-class LocaleListenerTest : FunSpec() {
+@AutoScan
+object LocalLTL : TestListener {
+   private var defLocale: Locale? = null
 
-   override fun listeners() = listOf(LocaleTestListener(Locale.FRANCE), listener)
+   override val name: String
+      get() = "LocalLocaleTestListener"
 
-   private var deflocale: Locale? = null
-
-   private val listener = object : TestListener {
-      override suspend fun prepareSpec(kclass: KClass<out Spec>) {
-         deflocale = Locale.getDefault()
-      }
-
-      override suspend fun finalizeSpec(kclass: KClass<out Spec>, results: Map<TestCase, TestResult>) {
-         Locale.getDefault() shouldBe deflocale
+   override suspend fun prepareSpec(kclass: KClass<out Spec>) {
+      if (kclass == LocaleListenerTest::class) {
+         defLocale = Locale.getDefault()
       }
    }
+
+   override suspend fun finalizeSpec(kclass: KClass<out Spec>, results: Map<TestCase, TestResult>) {
+      if (kclass == LocaleListenerTest::class) {
+         Locale.getDefault() shouldBe defLocale
+      }
+   }
+}
+
+class LocaleListenerTest : FunSpec() {
+   private val ltl = LocaleTestListener(Locale.FRANCE)
+
+   override fun listeners() = listOf(ltl)
 
    init {
       test("locale default should be set, and then restored after") {

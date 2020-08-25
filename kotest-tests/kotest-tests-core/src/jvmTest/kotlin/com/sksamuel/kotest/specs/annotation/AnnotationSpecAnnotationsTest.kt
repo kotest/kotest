@@ -2,6 +2,7 @@ package com.sksamuel.kotest.specs.annotation
 
 import io.kotest.assertions.fail
 import io.kotest.core.listeners.TestListener
+import io.kotest.core.spec.AutoScan
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.style.AnnotationSpec
@@ -13,13 +14,13 @@ import java.util.concurrent.atomic.AtomicInteger
 import kotlin.reflect.KClass
 
 class AnnotationSpecAnnotationsTest : AnnotationSpec() {
+   companion object {
+      var counterBeforeAll = AtomicInteger(0)
+      var counterBeforeEach = AtomicInteger(0)
 
-   private var counterBeforeAll = AtomicInteger(0)
-   private var counterBeforeEach = AtomicInteger(0)
-
-   private var counterAfterAll = AtomicInteger(0)
-   private var counterAfterEach = AtomicInteger(0)
-
+      var counterAfterAll = AtomicInteger(0)
+      var counterAfterEach = AtomicInteger(0)
+   }
 
    // All annotations are repeated sometimes, to validate that all annotations are correctly read by the engine
 
@@ -92,19 +93,22 @@ class AnnotationSpecAnnotationsTest : AnnotationSpec() {
       fail("This should never execute as the test is marked with @Ignore")
    }
 
-   override fun listeners(): List<TestListener> {
-      return listOf(object : TestListener {
-         override suspend fun finalizeSpec(kclass: KClass<out Spec>, results: Map<TestCase, TestResult>) {
-            counterBeforeEach.get() shouldBe 6
-            counterBeforeAll.get() shouldBe 2
-
-            counterAfterEach.get() shouldBe 6
-            counterAfterAll.get() shouldBe 2
-         }
-      })
-   }
-
    override fun isolationMode() = IsolationMode.SingleInstance
 
    override fun testCaseOrder() = TestCaseOrder.Sequential
+
+}
+
+@AutoScan
+object AssertionListener : TestListener {
+   override suspend fun finalizeSpec(kclass: KClass<out Spec>, results: Map<TestCase, TestResult>) {
+      if (kclass == AnnotationSpecAnnotationsTest::class) {
+
+         AnnotationSpecAnnotationsTest.counterBeforeEach.get() shouldBe 6
+         AnnotationSpecAnnotationsTest.counterBeforeAll.get() shouldBe 2
+
+         AnnotationSpecAnnotationsTest.counterAfterEach.get() shouldBe 6
+         AnnotationSpecAnnotationsTest.counterAfterAll.get() shouldBe 2
+      }
+   }
 }
