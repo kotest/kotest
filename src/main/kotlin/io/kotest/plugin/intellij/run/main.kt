@@ -27,6 +27,18 @@ private val kotest420RequiredJars = listOf(
    "com.github.ajalt.mordant.TermColors"
 )
 
+private val kotest41xparams = listOf(
+   "--writer", "teamcity"
+)
+
+private val kotest420params = listOf(
+   "--writer", "teamcity"
+)
+
+private val kotest421params = listOf(
+   "--reporter", "teamcity"
+)
+
 private fun is421(project: Project): Boolean {
    val scope = GlobalSearchScope.allScope(project)
    return JavaPsiFacade.getInstance(project).findClass(test421, scope) != null
@@ -46,15 +58,16 @@ private fun is420(project: Project): Boolean {
  */
 fun determineKotestLauncher(project: Project): LauncherConfig {
    return when {
-      is421(project) -> LauncherConfig(mainClass421, emptyList())
-      is420(project) -> LauncherConfig(mainClass420, kotest420RequiredJars)
-      else -> LauncherConfig(mainClass41x, kotest41xRequiredJars)
+      is421(project) -> LauncherConfig(mainClass421, emptyList(), kotest421params)
+      is420(project) -> LauncherConfig(mainClass420, kotest420RequiredJars, kotest420params)
+      else -> LauncherConfig(mainClass41x, kotest41xRequiredJars, kotest41xparams)
    }
 }
 
 data class LauncherConfig(
    val mainClass: String,
-   val requiredJars: List<String>
+   val requiredJars: List<String>,
+   val params: List<String>
 )
 
 
