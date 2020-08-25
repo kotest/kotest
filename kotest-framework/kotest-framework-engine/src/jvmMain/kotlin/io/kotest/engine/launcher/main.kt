@@ -1,6 +1,7 @@
 package io.kotest.engine.launcher
 
 import com.github.ajalt.clikt.core.CliktCommand
+import com.github.ajalt.clikt.core.context
 import com.github.ajalt.clikt.parameters.options.default
 import com.github.ajalt.clikt.parameters.options.multiple
 import com.github.ajalt.clikt.parameters.options.option
@@ -23,6 +24,12 @@ import kotlin.system.exitProcess
 fun main(args: Array<String>) = Execute().main(args)
 
 class Execute : CliktCommand(name = "Kotest Launcher", treatUnknownOptionsAsArgs = true) {
+
+   init {
+      context {
+         allowInterspersedArgs = true
+      }
+   }
 
    private val test by option("--testpath", help = "A path to the test to execute. Nested tests will also be executed")
 
