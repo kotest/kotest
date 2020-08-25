@@ -75,7 +75,7 @@ dependencies {
    // in kotest 4.2 the launcher has moved to the framework modules
    implementation("io.kotest:kotest-launcher:1.0.9")
 
-   // this is needed to use the launcher in 4.2.0
+   // this is needed to use the launcher in 4.2.0, in 4.2.1 the launcher is built into the engine dep
    implementation("io.kotest:kotest-framework-launcher-jvm:4.2.0")
 
    testImplementation("io.kotest:kotest-assertions-core-jvm:4.2.0")
