@@ -2,17 +2,18 @@ package com.sksamuel.kt.extensions.locale
 
 import io.kotest.assertions.throwables.shouldThrowAny
 import io.kotest.core.listeners.TestListener
+import io.kotest.core.spec.AutoScan
 import io.kotest.core.spec.Spec
-import io.kotest.core.test.TestCase
-import io.kotest.core.test.TestResult
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.core.spec.style.FunSpec
+import io.kotest.core.test.TestCase
+import io.kotest.core.test.TestResult
 import io.kotest.extensions.locale.TimeZoneTestListener
 import io.kotest.extensions.locale.withDefaultTimeZone
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
 import java.time.ZoneId
-import java.util.TimeZone
+import java.util.*
 import kotlin.reflect.KClass
 
 class TimeZoneExtensionFunctionTest : DescribeSpec() {
@@ -56,21 +57,31 @@ class TimeZoneExtensionFunctionTest : DescribeSpec() {
 
 }
 
-class TimeZoneListenerTest : FunSpec() {
-
-   override fun listeners() = listOf(TimeZoneTestListener(TimeZone.getTimeZone(ZoneId.of("Africa/Dakar"))), listener)
-
+@AutoScan
+object DefaultZone : TestListener {
    private var deftz: TimeZone? = null
 
-   private val listener = object : TestListener {
-      override suspend fun prepareSpec(kclass: KClass<out Spec>) {
+   override val name: String
+      get() = "TimeZoneTestListener"
+
+   override suspend fun prepareSpec(kclass: KClass<out Spec>) {
+      if (kclass == TimeZoneListenerTest::class) {
          deftz = TimeZone.getDefault()
       }
+   }
 
-      override suspend fun finalizeSpec(kclass: KClass<out Spec>, results: Map<TestCase, TestResult>) {
+   override suspend fun finalizeSpec(kclass: KClass<out Spec>, results: Map<TestCase, TestResult>) {
+      if (kclass == TimeZoneListenerTest::class) {
          TimeZone.getDefault() shouldBe deftz
       }
    }
+}
+
+class TimeZoneListenerTest : FunSpec() {
+
+   val dakarTzl = TimeZoneTestListener(TimeZone.getTimeZone(ZoneId.of("Africa/Dakar")))
+
+   override fun listeners() = listOf(dakarTzl)
 
    init {
       test("time zone default should be set, and then restored after") {

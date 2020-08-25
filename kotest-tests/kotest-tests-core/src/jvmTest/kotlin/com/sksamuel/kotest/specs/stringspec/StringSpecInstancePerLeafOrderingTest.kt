@@ -1,14 +1,8 @@
 package com.sksamuel.kotest.specs.stringspec
 
-import io.kotest.core.listeners.TestListener
 import io.kotest.core.spec.IsolationMode
-import io.kotest.core.spec.Spec
-import io.kotest.core.test.TestCase
-import io.kotest.core.test.TestResult
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.shouldBe
-import java.util.concurrent.atomic.AtomicInteger
-import kotlin.reflect.KClass
 
 class StringSpecInstancePerLeafOrderingTest : StringSpec() {
 
@@ -18,15 +12,11 @@ class StringSpecInstancePerLeafOrderingTest : StringSpec() {
 
    override fun isolationMode(): IsolationMode? = IsolationMode.InstancePerLeaf
 
-   private var uniqueCount = AtomicInteger(0)
-
    init {
 
-      listener(object : TestListener {
-         override suspend fun finalizeSpec(kclass: KClass<out Spec>, results: Map<TestCase, TestResult>) {
-            string shouldBe "a_z_b_y_c_"
-         }
-      })
+      finalizeSpec {
+         string shouldBe "a_z_b_y_c_"
+      }
 
       "a" {
          string += "a_"
