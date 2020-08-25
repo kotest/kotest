@@ -22,7 +22,7 @@ import kotlin.system.exitProcess
  */
 fun main(args: Array<String>) = Execute().main(args)
 
-class Execute : CliktCommand(name = "Kotest Launcher") {
+class Execute : CliktCommand(name = "Kotest Launcher", treatUnknownOptionsAsArgs = true) {
 
    private val test by option("--testpath", help = "A path to the test to execute. Nested tests will also be executed")
 
