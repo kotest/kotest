@@ -27,7 +27,7 @@ class TaycanConsoleReporter : ConsoleReporter {
    private var testsIgnored = 0
    private var testsPassed = 0
    private var specsFailed = emptyList<Description>()
-   private var specsPassed = 0
+   private var specsSeen = emptyList<Description>()
    private var specCount = 0
    private var slow = 500
    private var verySlow = 5000
@@ -115,17 +115,20 @@ class TaycanConsoleReporter : ConsoleReporter {
    }
 
    private fun printSpecCounts() {
+      val specsSeenSize = specsSeen.distinct().size
+      val specsPassedSize = specsSeen.distinct().minus(specsFailed).size
+      val specsFailedSize = specsFailed.distinct().size
       print("Specs:   ")
-      print(greenBold("$specsPassed passed"))
+      print(greenBold("$specsPassedSize passed"))
       print(", ")
       if (specsFailed.isEmpty()) {
-         print(bold("${specsFailed.size} failed"))
+         print(bold("$specsFailedSize failed"))
          print(bold(", "))
       } else {
-         print(redBold("${specsFailed.size} failed"))
+         print(redBold("$specsFailedSize failed"))
          print(bold(", "))
       }
-      println("${specsFailed.size + specsPassed} total")
+      println("$specsSeenSize total")
    }
 
    private fun printTestsCounts() {
@@ -150,7 +153,7 @@ class TaycanConsoleReporter : ConsoleReporter {
    }
 
    override fun specStarted(kclass: KClass<out Spec>) {
-      specCount++
+      specsSeen += kclass.toDescription()
       print(bold("$specCount. ".padEnd(4, ' ')))
       println(bold(kclass.toDescription().displayName()))
    }
