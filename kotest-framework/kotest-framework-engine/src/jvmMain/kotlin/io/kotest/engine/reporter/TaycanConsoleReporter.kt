@@ -107,10 +107,13 @@ class TaycanConsoleReporter : ConsoleReporter {
 
    private fun printThrowable(error: Throwable?, padding: Int) {
       if (error != null) {
-         val stack = error.toString()
-            .lines()
-            .joinToString(System.lineSeparator()) { "".padStart(padding, ' ') + it }
-         println(brightRed(stack))
+         val message = error.message
+         if (message != null) {
+            println(brightRed(message))
+         }
+         error.stackTrace?.forEach {
+            println(red("".padStart(padding, ' ') + it))
+         }
       }
    }
 
