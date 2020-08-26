@@ -17,7 +17,7 @@ jobs:
             with:
                fetch-depth: 0
 
-         -  name: deploy to sonatype
+         -  name: publish linux and common release
             run: ./gradlew publish
             env:
                RELEASE_VERSION: ${{ github.event.inputs.version }}
@@ -28,7 +28,7 @@ jobs:
 
    deploy-mac:
       runs-on: macOS-latest
-      needs: [deploy-linux-and-common]
+      needs: [ deploy-linux-and-common ]
 
       steps:
          -  name: Checkout the repo
@@ -36,10 +36,65 @@ jobs:
             with:
                fetch-depth: 0
 
-         -  name: deploy to sonatype
+         -  name: publish macosx64 release
             run: ./gradlew publishMacosX64PublicationToDeployRepository
             env:
-               RELEASE_VERSION: ${{ github.event.inputs.version }}
+               OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
+               OSSRH_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
+               ORG_GRADLE_PROJECT_signingKey: ${{ secrets.SIGNING_KEY }}
+               ORG_GRADLE_PROJECT_signingPassword: ${{ secrets.SIGNING_PASSWORD }}
+
+         -  name: publish tvosX64 release
+            run: ./gradlew publishTvosX64PublicationToDeployRepository
+            env:
+               OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
+               OSSRH_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
+               ORG_GRADLE_PROJECT_signingKey: ${{ secrets.SIGNING_KEY }}
+               ORG_GRADLE_PROJECT_signingPassword: ${{ secrets.SIGNING_PASSWORD }}
+
+         -  name: publish tvosArm64 release
+            run: ./gradlew publishTvosArm64PublicationToDeployRepository
+            env:
+               OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
+               OSSRH_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
+               ORG_GRADLE_PROJECT_signingKey: ${{ secrets.SIGNING_KEY }}
+               ORG_GRADLE_PROJECT_signingPassword: ${{ secrets.SIGNING_PASSWORD }}
+
+         -  name: publish watchosX86 release
+            run: ./gradlew publishWatchosX86PublicationToDeployRepository
+            env:
+               OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
+               OSSRH_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
+               ORG_GRADLE_PROJECT_signingKey: ${{ secrets.SIGNING_KEY }}
+               ORG_GRADLE_PROJECT_signingPassword: ${{ secrets.SIGNING_PASSWORD }}
+
+         -  name: publish watchosArm64 release
+            run: ./gradlew publishWatchosArm64PublicationToDeployRepository
+            env:
+               OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
+               OSSRH_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
+               ORG_GRADLE_PROJECT_signingKey: ${{ secrets.SIGNING_KEY }}
+               ORG_GRADLE_PROJECT_signingPassword: ${{ secrets.SIGNING_PASSWORD }}
+
+         -  name: publish iosX64 release
+            run: ./gradlew publishIosX64PublicationToDeployRepository
+            env:
+               OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
+               OSSRH_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
+               ORG_GRADLE_PROJECT_signingKey: ${{ secrets.SIGNING_KEY }}
+               ORG_GRADLE_PROJECT_signingPassword: ${{ secrets.SIGNING_PASSWORD }}
+
+         -  name: publish iosArm64 release
+            run: ./gradlew publishIosArm64PublicationToDeployRepository
+            env:
+               OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
+               OSSRH_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
+               ORG_GRADLE_PROJECT_signingKey: ${{ secrets.SIGNING_KEY }}
+               ORG_GRADLE_PROJECT_signingPassword: ${{ secrets.SIGNING_PASSWORD }}
+
+         -  name: publish iosArm32 release
+            run: ./gradlew publishIosArm32PublicationToDeployRepository
+            env:
                OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
                OSSRH_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
                ORG_GRADLE_PROJECT_signingKey: ${{ secrets.SIGNING_KEY }}
@@ -47,7 +102,7 @@ jobs:
 
    deploy-windows:
       runs-on: windows-latest
-      needs: [deploy-mac]
+      needs: [ deploy-mac ]
 
       steps:
          -  name: Checkout the repo

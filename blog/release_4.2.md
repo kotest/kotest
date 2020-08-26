@@ -24,7 +24,7 @@ Finally this release of Kotest is fully compatible with Kotlin 1.4.
 
 The core assertions library is now published for ios, watchos and tvos. This brings the list of support platforms to:
 
-- linuxX64, mingwX64, macosX64, tvos, watchos, iosX64, iosArm64, iosArm32
+- linuxX64, mingwX64, macosX64, tvosX64, tvosArm64, watchosX86, watchosArm64, iosX64, iosArm64, iosArm32
 
 ### Kotlinx Date/Time Matchers
 
