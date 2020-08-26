@@ -4,9 +4,11 @@ import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldNot
+import io.ktor.http.ContentType
 import io.ktor.http.HttpStatusCode
 import io.ktor.response.ApplicationResponse
 import io.ktor.server.testing.TestApplicationResponse
+import io.ktor.server.testing.contentType
 
 infix fun TestApplicationResponse.shouldHaveStatus(httpStatusCode: HttpStatusCode) = this.shouldHaveStatus(httpStatusCode.value)
 infix fun TestApplicationResponse.shouldHaveStatus(code: Int) = this should haveStatus(code)
@@ -34,16 +36,32 @@ fun haveContent(content: String) = object : Matcher<TestApplicationResponse> {
   }
 }
 
+fun TestApplicationResponse.shouldHaveContentType(contentType: ContentType) =
+   this should haveContentType(contentType)
+
+fun TestApplicationResponse.shouldNotHaveContentType(contentType: ContentType) =
+   this shouldNot haveContentType(contentType)
+
+fun haveContentType(contentType: ContentType) = object : Matcher<TestApplicationResponse> {
+   override fun test(value: TestApplicationResponse): MatcherResult {
+      return MatcherResult(
+         value.contentType() == contentType,
+         "Response should have ContentType $contentType= but was ${value.contentType()}",
+         "Response should not have ContentType $contentType"
+      )
+   }
+}
+
 fun TestApplicationResponse.shouldHaveHeader(name: String, value: String) = this should haveHeader(name, value)
 fun TestApplicationResponse.shouldNotHaveHeader(name: String, value: String) = this shouldNot haveHeader(name, value)
 fun haveHeader(headerName: String, headerValue: String) = object : Matcher<TestApplicationResponse> {
-  override fun test(value: TestApplicationResponse): MatcherResult {
-    return MatcherResult(
-        value.headers[headerName] == headerValue,
-        "Response should have header $headerName=$value but $headerName=${value.headers[headerName]}",
-        "Response should not have header $headerName=$value"
-    )
-  }
+   override fun test(value: TestApplicationResponse): MatcherResult {
+      return MatcherResult(
+         value.headers[headerName] == headerValue,
+         "Response should have header $headerName=$value but $headerName=${value.headers[headerName]}",
+         "Response should not have header $headerName=$value"
+      )
+   }
 }
 
 fun TestApplicationResponse.shouldHaveCookie(name: String, cookieValue: String? = null) = this should haveCookie(name, cookieValue)

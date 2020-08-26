@@ -130,7 +130,7 @@ object Libs {
    }
 
    object Ktor {
-      private const val version = "1.3.2-1.4.0-rc"
+      private const val version = "1.4.0"
       const val serverCore = "io.ktor:ktor-server-core:$version"
       const val serverTestHost = "io.ktor:ktor-server-test-host:$version"
       const val clientJs = "io.ktor:ktor-client-js:$version"
