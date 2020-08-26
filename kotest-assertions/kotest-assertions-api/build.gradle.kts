@@ -23,9 +23,18 @@ kotlin {
          browser()
          nodejs()
       }
+
       linuxX64()
+
       mingwX64()
+
       macosX64()
+      tvos()
+      watchos()
+
+      iosX64()
+      iosArm64()
+      iosArm32()
    }
 
    targets.all {

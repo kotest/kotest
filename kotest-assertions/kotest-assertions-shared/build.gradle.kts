@@ -90,10 +90,6 @@ kotlin {
          dependsOn(desktopMain)
       }
 
-//      val linuxArm64Main by getting {
-//         dependsOn(desktopMain)
-//      }
-
       val iosX64Main by getting {
          dependsOn(desktopMain)
       }
