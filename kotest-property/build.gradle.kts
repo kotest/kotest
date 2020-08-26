@@ -24,8 +24,9 @@ kotlin {
          nodejs()
       }
 
-      linuxX64()
-      mingwX64()
+      // can't be MPP until https://youtrack.jetbrains.com/issue/KT-41388
+//      linuxX64()
+//      mingwX64()
    }
 
    targets.all {
@@ -61,18 +62,6 @@ kotlin {
             implementation(project(Projects.JunitRunner))
             implementation(project(Projects.AssertionsCore))
          }
-      }
-
-      val desktopMain by creating {
-         dependsOn(commonMain)
-      }
-
-      val mingwX64Main by getting {
-         dependsOn(desktopMain)
-      }
-
-      val linuxX64Main by getting {
-         dependsOn(desktopMain)
       }
    }
 }
