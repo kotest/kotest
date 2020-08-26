@@ -108,10 +108,10 @@ class TaycanConsoleReporter : ConsoleReporter {
       if (error != null) {
          val message = error.message
          if (message != null) {
-            println(brightRed(message))
+            println(brightRed(message.padStart(padding, ' ')))
          }
          error.stackTrace?.forEach {
-            println(red("".padStart(padding, ' ') + it))
+            println(red("".padStart(padding + 2, ' ') + it))
          }
       }
    }
