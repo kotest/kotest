@@ -1,4 +1,4 @@
-name: release_linux_and_common
+name: release_windows
 
 on:
    workflow_dispatch:
@@ -9,7 +9,7 @@ on:
 
 jobs:
    publish:
-      runs-on: ubuntu-latest
+      runs-on: windows-latest
 
       steps:
          -  name: Checkout the repo
@@ -17,8 +17,8 @@ jobs:
             with:
                fetch-depth: 0
 
-         -  name: publish linux and common release
-            run: ./gradlew publish
+         -  name: deploy to sonatype
+            run: ./gradlew publishMingwX64PublicationToDeployRepository
             env:
                RELEASE_VERSION: ${{ github.event.inputs.version }}
                OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}

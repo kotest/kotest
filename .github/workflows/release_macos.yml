@@ -8,7 +8,7 @@ on:
             required: true
 
 jobs:
-   deploy-mac:
+   publish:
       runs-on: macOS-latest
 
       steps:
@@ -20,6 +20,7 @@ jobs:
          -  name: publish macosx64 release
             run: ./gradlew publishMacosX64PublicationToDeployRepository
             env:
+               RELEASE_VERSION: ${{ github.event.inputs.version }}
                OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
                OSSRH_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
                ORG_GRADLE_PROJECT_signingKey: ${{ secrets.SIGNING_KEY }}
@@ -28,6 +29,7 @@ jobs:
          -  name: publish tvosX64 release
             run: ./gradlew publishTvosX64PublicationToDeployRepository
             env:
+               RELEASE_VERSION: ${{ github.event.inputs.version }}
                OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
                OSSRH_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
                ORG_GRADLE_PROJECT_signingKey: ${{ secrets.SIGNING_KEY }}
@@ -36,6 +38,7 @@ jobs:
          -  name: publish tvosArm64 release
             run: ./gradlew publishTvosArm64PublicationToDeployRepository
             env:
+               RELEASE_VERSION: ${{ github.event.inputs.version }}
                OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
                OSSRH_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
                ORG_GRADLE_PROJECT_signingKey: ${{ secrets.SIGNING_KEY }}
@@ -44,6 +47,7 @@ jobs:
          -  name: publish watchosX86 release
             run: ./gradlew publishWatchosX86PublicationToDeployRepository
             env:
+               RELEASE_VERSION: ${{ github.event.inputs.version }}
                OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
                OSSRH_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
                ORG_GRADLE_PROJECT_signingKey: ${{ secrets.SIGNING_KEY }}
@@ -52,6 +56,7 @@ jobs:
          -  name: publish watchosArm64 release
             run: ./gradlew publishWatchosArm64PublicationToDeployRepository
             env:
+               RELEASE_VERSION: ${{ github.event.inputs.version }}
                OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
                OSSRH_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
                ORG_GRADLE_PROJECT_signingKey: ${{ secrets.SIGNING_KEY }}
@@ -60,6 +65,7 @@ jobs:
          -  name: publish iosX64 release
             run: ./gradlew publishIosX64PublicationToDeployRepository
             env:
+               RELEASE_VERSION: ${{ github.event.inputs.version }}
                OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
                OSSRH_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
                ORG_GRADLE_PROJECT_signingKey: ${{ secrets.SIGNING_KEY }}
@@ -68,6 +74,7 @@ jobs:
          -  name: publish iosArm64 release
             run: ./gradlew publishIosArm64PublicationToDeployRepository
             env:
+               RELEASE_VERSION: ${{ github.event.inputs.version }}
                OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
                OSSRH_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
                ORG_GRADLE_PROJECT_signingKey: ${{ secrets.SIGNING_KEY }}
@@ -76,6 +83,7 @@ jobs:
          -  name: publish iosArm32 release
             run: ./gradlew publishIosArm32PublicationToDeployRepository
             env:
+               RELEASE_VERSION: ${{ github.event.inputs.version }}
                OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
                OSSRH_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
                ORG_GRADLE_PROJECT_signingKey: ${{ secrets.SIGNING_KEY }}
