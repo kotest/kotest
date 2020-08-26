@@ -35,7 +35,7 @@ kotlin {
             implementation(project(Projects.Engine))
             implementation(project(Projects.AssertionsShared))
             implementation(kotlin("reflect"))
-            implementation("org.jsoup:jsoup:1.13.1")
+            implementation(Libs.JSoup.jsoup)
          }
       }
 

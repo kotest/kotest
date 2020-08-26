@@ -37,7 +37,7 @@ kotlin {
             implementation(project(Projects.Common))
             implementation(project(Projects.Api))
             implementation(project(Projects.Engine))
-            implementation("org.pitest:pitest:1.4.11")
+            implementation(Libs.Pitest.pitest)
             implementation(Libs.Coroutines.coreJvm)
          }
       }
