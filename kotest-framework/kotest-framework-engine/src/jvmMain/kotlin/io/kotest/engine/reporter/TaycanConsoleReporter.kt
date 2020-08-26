@@ -42,7 +42,6 @@ class TaycanConsoleReporter : ConsoleReporter {
    private fun brightYellow(str: String) = term.brightYellow(str)
    private fun brightYellowBold(str: String) = term.brightYellow.plus(term.bold).invoke(str)
    private fun yellowBold(str: String) = term.yellow.plus(term.bold).invoke(str)
-   private fun white(str: String) = term.white(str)
    private fun bold(str: String) = term.bold(str)
 
    private val intros = listOf(
@@ -68,7 +67,7 @@ class TaycanConsoleReporter : ConsoleReporter {
       println("- " + intros.shuffled().first())
       print("- Test plan has ")
       print(greenBold(classes.size.toString()))
-      println(white(" specs"))
+      println(" specs")
       println()
    }
 
@@ -102,7 +101,7 @@ class TaycanConsoleReporter : ConsoleReporter {
       println()
       printSpecCounts()
       printTestsCounts()
-      print(white("Time:    "))
+      print("Time:    ")
       println(bold("${seconds}s"))
    }
 
