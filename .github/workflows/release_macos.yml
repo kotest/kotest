@@ -8,7 +8,6 @@ on:
             required: true
 
 jobs:
-   deploy-linux-and-common:
    deploy-mac:
       runs-on: macOS-latest
 
