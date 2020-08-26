@@ -18,6 +18,7 @@ plugins {
    signing
    id("com.adarshr.test-logger") version Libs.adarshrTestLoggerVersion
    id("org.jetbrains.dokka") version Libs.dokkaVersion
+   id("io.kotest") version Libs.kotestGradlePlugin
 
    // To get versions report, execute:
    // Win: .\gradlew.bat dependencyUpdates -Drevision=release
