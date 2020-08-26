@@ -32,6 +32,18 @@ jobs:
             if: matrix.os == 'macOS-latest'
             run: ./gradlew macosX64Test
 
+         -  name: Run tvosX64 tests
+            if: matrix.os == 'macOS-latest'
+            run: ./gradlew tvosX64Test
+
+         -  name: Run watchosX86 tests
+            if: matrix.os == 'macOS-latest'
+            run: ./gradlew watchosX86Test
+
+         -  name: Run watchosX64 tests
+            if: matrix.os == 'macOS-latest'
+            run: ./gradlew iosX64Test
+
          -  name: Bundle the build report
             if: failure()
             run: find . -type d -name 'reports' | zip -@ -r build-reports.zip
@@ -73,6 +85,30 @@ jobs:
 
          -  name: deploy to sonatype
             run: ./gradlew publishMacosX64PublicationToDeployRepository
+            env:
+               OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
+               OSSRH_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
+               ORG_GRADLE_PROJECT_signingKey: ${{ secrets.SIGNING_KEY }}
+               ORG_GRADLE_PROJECT_signingPassword: ${{ secrets.SIGNING_PASSWORD }}
+
+         -  name: deploy to sonatype
+            run: ./gradlew publishTvosX64PublicationToDeployRepository
+            env:
+               OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
+               OSSRH_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
+               ORG_GRADLE_PROJECT_signingKey: ${{ secrets.SIGNING_KEY }}
+               ORG_GRADLE_PROJECT_signingPassword: ${{ secrets.SIGNING_PASSWORD }}
+
+         -  name: deploy to sonatype
+            run: ./gradlew publishWatchosX64PublicationToDeployRepository
+            env:
+               OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
+               OSSRH_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
+               ORG_GRADLE_PROJECT_signingKey: ${{ secrets.SIGNING_KEY }}
+               ORG_GRADLE_PROJECT_signingPassword: ${{ secrets.SIGNING_PASSWORD }}
+
+         -  name: deploy to sonatype
+            run: ./gradlew publishIosX64PublicationToDeployRepository
             env:
                OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
                OSSRH_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
