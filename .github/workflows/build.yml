@@ -99,16 +99,16 @@ jobs:
                ORG_GRADLE_PROJECT_signingKey: ${{ secrets.SIGNING_KEY }}
                ORG_GRADLE_PROJECT_signingPassword: ${{ secrets.SIGNING_PASSWORD }}
 
-         -  name: publish watchosX64 snapshot
-            run: ./gradlew publishWatchosX64PublicationToDeployRepository
+         -  name: publish watchosX86 snapshot
+            run: ./gradlew publishWatchosX86PublicationToDeployRepository
             env:
                OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
                OSSRH_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
                ORG_GRADLE_PROJECT_signingKey: ${{ secrets.SIGNING_KEY }}
                ORG_GRADLE_PROJECT_signingPassword: ${{ secrets.SIGNING_PASSWORD }}
 
-         -  name: publish watchosX64 snapshot
-            run: ./gradlew publishWatchosX64PublicationToDeployRepository
+         -  name: publish watchosArm64 snapshot
+            run: ./gradlew publishWatchosArm64PublicationToDeployRepository
             env:
                OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
                OSSRH_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
