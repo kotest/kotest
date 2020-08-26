@@ -23,9 +23,23 @@ kotlin {
          browser()
          nodejs()
       }
+
       linuxX64()
+      linuxArm64()
+
       mingwX64()
       macosX64()
+
+      tvosX64()
+      tvosArm64()
+
+      watchosX86()
+      watchosArm64()
+      watchosArm32()
+
+      iosX64()
+      iosArm64()
+      iosArm32()
    }
 
    targets.all {
@@ -64,6 +78,42 @@ kotlin {
       }
 
       val linuxX64Main by getting {
+         dependsOn(desktopMain)
+      }
+
+      val linuxArm64Main by getting {
+         dependsOn(desktopMain)
+      }
+
+      val iosX64Main by getting {
+         dependsOn(desktopMain)
+      }
+
+      val iosArm64Main by getting {
+         dependsOn(desktopMain)
+      }
+
+      val iosArm32Main by getting {
+         dependsOn(desktopMain)
+      }
+
+      val watchosX86Main by getting {
+         dependsOn(desktopMain)
+      }
+
+      val watchosArm64Main by getting {
+         dependsOn(desktopMain)
+      }
+
+      val watchosArm32Main by getting {
+         dependsOn(desktopMain)
+      }
+
+      val tvosX64Main by getting {
+         dependsOn(desktopMain)
+      }
+
+      val tvosArm64Main by getting {
          dependsOn(desktopMain)
       }
    }
