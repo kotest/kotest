@@ -7,7 +7,8 @@ import org.mockserver.integration.ClientAndServer.startClientAndServer
 
 class MockServerListener(private val port: Int) : TestListener {
 
-   private var mockServer: ClientAndServer? = null
+   // this has to be a var because MockServer starts the server as soon as you instantiate the instance :(
+   var mockServer: ClientAndServer? = null
 
    override suspend fun beforeSpec(spec: Spec) {
       super.beforeSpec(spec)
