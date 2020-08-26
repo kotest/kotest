@@ -1,4 +1,4 @@
-name: release-macos
+name: release_macos
 
 on:
    workflow_dispatch:
