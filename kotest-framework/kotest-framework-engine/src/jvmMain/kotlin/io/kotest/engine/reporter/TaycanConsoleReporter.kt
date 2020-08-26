@@ -208,7 +208,9 @@ class TaycanConsoleReporter : ConsoleReporter {
             TestStatus.Ignored -> print(brightYellow(" IGNORED"))
          }
 
-         println(" ${durationString(result.duration)}")
+         if (result.duration > slow) {
+            println(" ${durationString(result.duration)}")
+         }
       }
 
       if (result.error != null) {
