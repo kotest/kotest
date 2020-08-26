@@ -20,6 +20,12 @@ you can add `kotest-framework-engine` to your `commonMain` sourceset or `kotest-
 Finally this release of Kotest is fully compatible with Kotlin 1.4.
 
 
+### Multiplatform improvements
+
+The core assertions library is now published for ios, watchos and tvos. This brings the list of support platforms to:
+
+- linuxX64, mingwX64, macosX64, tvos, watchos, iosX64, iosArm64, iosArm32
+
 ### Kotlinx Date/Time Matchers
 
 A new [assertions module](https://search.maven.org/search?q=kotest-assertions-kotlinx-time) has been created `kotest-assertions-kotlinx-time`

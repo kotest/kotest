@@ -8,6 +8,7 @@ Changelog
 * Bugfix: Errors in a DiscoveryExtension were not propagated to output #1634
 * Bugfix: Tags specified via inline tags dsl were not being picked up #1642
 * Improvement: Updated output of some collection matchers to format an element per line #1380
+* Feature: The assertion libraries are now also published for watchos, tvos, and ios in addition to the macos, windows, and linux targets previously.
 
 #### 4.2.0 - [Blog](./blog/release_4.2.md)
 
