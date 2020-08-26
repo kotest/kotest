@@ -28,7 +28,6 @@ class TaycanConsoleReporter : ConsoleReporter {
    private var testsPassed = 0
    private var specsFailed = emptyList<Description>()
    private var specsSeen = emptyList<Description>()
-   private var specCount = 0
    private var slow = 500
    private var verySlow = 5000
 
@@ -157,6 +156,7 @@ class TaycanConsoleReporter : ConsoleReporter {
 
    override fun specStarted(kclass: KClass<out Spec>) {
       specsSeen += kclass.toDescription()
+      val specCount = specsSeen.size
       print(bold("$specCount. ".padEnd(4, ' ')))
       println(bold(kclass.toDescription().displayName()))
    }
