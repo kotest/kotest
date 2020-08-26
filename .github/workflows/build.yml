@@ -92,7 +92,7 @@ jobs:
                ORG_GRADLE_PROJECT_signingPassword: ${{ secrets.SIGNING_PASSWORD }}
 
          -  name: deploy to sonatype
-            run: ./gradlew publishTvosX64PublicationToDeployRepository
+            run: ./gradlew publishTvosPublicationToDeployRepository
             env:
                OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
                OSSRH_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
@@ -100,7 +100,7 @@ jobs:
                ORG_GRADLE_PROJECT_signingPassword: ${{ secrets.SIGNING_PASSWORD }}
 
          -  name: deploy to sonatype
-            run: ./gradlew publishWatchosX64PublicationToDeployRepository
+            run: ./gradlew publishWatchosPublicationToDeployRepository
             env:
                OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
                OSSRH_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
@@ -108,7 +108,7 @@ jobs:
                ORG_GRADLE_PROJECT_signingPassword: ${{ secrets.SIGNING_PASSWORD }}
 
          -  name: deploy to sonatype
-            run: ./gradlew publishIosX64PublicationToDeployRepository
+            run: ./gradlew publishIosPublicationToDeployRepository
             env:
                OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
                OSSRH_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
