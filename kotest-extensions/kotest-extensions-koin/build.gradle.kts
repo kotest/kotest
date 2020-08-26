@@ -35,8 +35,8 @@ kotlin {
          dependencies {
             implementation(project(Projects.Api))
             implementation(project(Projects.Engine))
-            implementation("org.koin:koin-core:2.1.5")
-            implementation("org.koin:koin-test:2.1.5") {
+            implementation(Libs.Koin.core)
+            implementation(Libs.Koin.test) {
                exclude(group = "junit", module = "junit")
             }
 

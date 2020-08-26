@@ -41,7 +41,7 @@ kotlin {
             implementation(kotlin("reflect"))
             implementation(Libs.Spring.context)
             implementation(Libs.Spring.test)
-            implementation("net.bytebuddy:byte-buddy:1.10.9")
+            implementation(Libs.Bytebuddy.bytebuddy)
          }
       }
 

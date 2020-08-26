@@ -22,6 +22,16 @@ object Libs {
       const val commons = "io.qameta.allure:allure-java-commons:$version"
    }
 
+   object Jayway {
+      const val jsonpath = "com.jayway.jsonpath:json-path:2.4.0"
+   }
+
+   object Koin {
+      private const val version = "2.1.6"
+      const val core = "org.koin:koin-core:$version"
+      const val test = "org.koin:koin-test:$version"
+   }
+
    object Tschuchortdev {
       private const val version = "1.2.9"
       const val kotlinCompileTesting = "com.github.tschuchortdev:kotlin-compile-testing:$version"
@@ -53,11 +63,15 @@ object Libs {
    }
 
    object Classgraph {
-      const val classgraph = "io.github.classgraph:classgraph:4.8.87"
+      const val classgraph = "io.github.classgraph:classgraph:4.8.88"
    }
 
    object Mocking {
       const val mockk = "io.mockk:mockk:1.9.3"
+   }
+
+   object Apache {
+      const val commonsio = "commons-io:commons-io:2.6"
    }
 
    object MockServer {
@@ -85,9 +99,13 @@ object Libs {
    }
 
    object Spring {
-      private const val version = "5.2.4.RELEASE"
+      private const val version = "5.2.8.RELEASE"
       const val context = "org.springframework:spring-context:$version"
       const val test = "org.springframework:spring-test:$version"
+   }
+
+   object Bytebuddy {
+      const val bytebuddy = "net.bytebuddy:byte-buddy:1.10.14"
    }
 
    object Coroutines {
