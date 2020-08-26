@@ -10,7 +10,7 @@ jobs:
    build:
       strategy:
          matrix:
-            os: [macOS-latest, windows-latest, ubuntu-latest]
+            os: [ macOS-latest, windows-latest, ubuntu-latest ]
 
       runs-on: ${{matrix.os}}
 
@@ -93,6 +93,14 @@ jobs:
 
          -  name: publish tvosX64 snapshot
             run: ./gradlew publishTvosX64PublicationToDeployRepository
+            env:
+               OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
+               OSSRH_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
+               ORG_GRADLE_PROJECT_signingKey: ${{ secrets.SIGNING_KEY }}
+               ORG_GRADLE_PROJECT_signingPassword: ${{ secrets.SIGNING_PASSWORD }}
+
+         -  name: publish tvosArm64 snapshot
+            run: ./gradlew publishTvosArm64PublicationToDeployRepository
             env:
                OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
                OSSRH_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
