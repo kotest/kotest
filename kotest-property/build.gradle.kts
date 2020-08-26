@@ -25,16 +25,7 @@ kotlin {
       }
 
       linuxX64()
-
       mingwX64()
-
-      macosX64()
-      tvos()
-      watchos()
-
-      iosX64()
-      iosArm64()
-      iosArm32()
    }
 
    targets.all {
@@ -76,35 +67,11 @@ kotlin {
          dependsOn(commonMain)
       }
 
-      val macosX64Main by getting {
-         dependsOn(desktopMain)
-      }
-
       val mingwX64Main by getting {
          dependsOn(desktopMain)
       }
 
       val linuxX64Main by getting {
-         dependsOn(desktopMain)
-      }
-
-      val iosX64Main by getting {
-         dependsOn(desktopMain)
-      }
-
-      val iosArm64Main by getting {
-         dependsOn(desktopMain)
-      }
-
-      val iosArm32Main by getting {
-         dependsOn(desktopMain)
-      }
-
-      val watchosMain by getting {
-         dependsOn(desktopMain)
-      }
-
-      val tvosMain by getting {
          dependsOn(desktopMain)
       }
    }
