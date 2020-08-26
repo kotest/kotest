@@ -65,7 +65,7 @@ jobs:
             with:
                fetch-depth: 0
 
-         -  name: deploy linux to sonatype
+         -  name: publish linux and common snapshots
             run: ./gradlew publish
             env:
                OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
@@ -83,7 +83,7 @@ jobs:
             with:
                fetch-depth: 0
 
-         -  name: deploy macosx64 to sonatype
+         -  name: publish macosx64 snapshot
             run: ./gradlew publishMacosX64PublicationToDeployRepository
             env:
                OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
@@ -91,24 +91,24 @@ jobs:
                ORG_GRADLE_PROJECT_signingKey: ${{ secrets.SIGNING_KEY }}
                ORG_GRADLE_PROJECT_signingPassword: ${{ secrets.SIGNING_PASSWORD }}
 
-         -  name: deploy tvos to sonatype
-            run: ./gradlew publishTvosPublicationToDeployRepository
+         -  name: publish tvosX64 snapshot
+            run: ./gradlew publishTvosX64PublicationToDeployRepository
             env:
                OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
                OSSRH_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
                ORG_GRADLE_PROJECT_signingKey: ${{ secrets.SIGNING_KEY }}
                ORG_GRADLE_PROJECT_signingPassword: ${{ secrets.SIGNING_PASSWORD }}
 
-         -  name: deploy watchos to sonatype
-            run: ./gradlew publishWatchosPublicationToDeployRepository
+         -  name: publish watchosX64 snapshot
+            run: ./gradlew publishWatchosX64PublicationToDeployRepository
             env:
                OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
                OSSRH_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
                ORG_GRADLE_PROJECT_signingKey: ${{ secrets.SIGNING_KEY }}
                ORG_GRADLE_PROJECT_signingPassword: ${{ secrets.SIGNING_PASSWORD }}
 
-         -  name: deploy ios to sonatype
-            run: ./gradlew publishIosPublicationToDeployRepository
+         -  name: publish iosX64 snapshot
+            run: ./gradlew publishIosX64PublicationToDeployRepository
             env:
                OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
                OSSRH_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
@@ -125,7 +125,7 @@ jobs:
             with:
                fetch-depth: 0
 
-         -  name: deploy mingw64 to sonatype
+         -  name: publish mingw64 snapshot
             run: ./gradlew publishMingwX64PublicationToDeployRepository
             env:
                OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
