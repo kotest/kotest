@@ -1,4 +1,4 @@
-package io.kotest.runner.junit.platform
+package io.kotest.runner.junit4
 
 import io.kotest.core.test.TestCase
 import org.junit.runner.Description

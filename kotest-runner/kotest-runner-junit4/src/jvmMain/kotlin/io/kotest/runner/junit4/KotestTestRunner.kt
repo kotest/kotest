@@ -1,4 +1,4 @@
-package io.kotest.runner.junit.platform
+package io.kotest.runner.junit4
 
 import io.kotest.core.spec.Spec
 import io.kotest.engine.KotestEngineLauncher
