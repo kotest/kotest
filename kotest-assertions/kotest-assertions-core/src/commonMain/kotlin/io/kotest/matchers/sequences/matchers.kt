@@ -148,7 +148,7 @@ infix fun <T : Comparable<T>, C : Sequence<T>> C.shouldHaveUpperBound(t: T) = th
 
 fun <T : Comparable<T>, C : Sequence<T>> haveUpperBound(t: T) = object : Matcher<C> {
    override fun test(value: C) = MatcherResult(
-      (value.maxOrNull() ?: t) <= t,
+      (value.max() ?: t) <= t,
       { "Sequence should have upper bound $t" },
       { "Sequence should not have upper bound $t" }
    )
@@ -158,7 +158,7 @@ infix fun <T : Comparable<T>, C : Sequence<T>> C.shouldHaveLowerBound(t: T) = th
 
 fun <T : Comparable<T>, C : Sequence<T>> haveLowerBound(t: T) = object : Matcher<C> {
    override fun test(value: C) = MatcherResult(
-      (value.minOrNull() ?: t) >= t,
+      (value.min() ?: t) >= t,
       { "Sequence should have lower bound $t" },
       { "Sequence should not have lower bound $t" }
    )
