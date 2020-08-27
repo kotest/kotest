@@ -57,9 +57,9 @@ test {
 }
 
 dependencies {
-  testImplementation 'io.kotest:kotest-runner-junit5-jvm:<version>' // for kotest framework
-  testImplementation 'io.kotest:kotest-assertions-core-jvm:<version>' // for kotest core jvm assertions
-  testImplementation 'io.kotest:kotest-property-jvm:<version>' // for kotest property test
+  testImplementation 'io.kotest:kotest-runner-junit5:<version>' // for kotest framework
+  testImplementation 'io.kotest:kotest-assertions-core:<version>' // for kotest core jvm assertions
+  testImplementation 'io.kotest:kotest-property:<version>' // for kotest property test
 }
 ```
 
@@ -77,9 +77,9 @@ android.testOptions {
 }
 
 dependencies {
-    testImplementation 'io.kotest:kotest-runner-junit5-jvm:<version>' // for kotest framework
-    testImplementation 'io.kotest:kotest-assertions-core-jvm:<version>' // for kotest core jvm assertions
-    testImplementation 'io.kotest:kotest-property-jvm:<version>' // for kotest property test
+    testImplementation 'io.kotest:kotest-runner-junit5:<version>' // for kotest framework
+    testImplementation 'io.kotest:kotest-assertions-core:<version>' // for kotest core jvm assertions
+    testImplementation 'io.kotest:kotest-property:<version>' // for kotest property test
 }
 ```
 
@@ -96,9 +96,9 @@ tasks.withType<Test> {
 }
 
 dependencies {
-  testImplementation("io.kotest:kotest-runner-junit5-jvm:<version>") // for kotest framework
-  testImplementation("io.kotest:kotest-assertions-core-jvm:<version>") // for kotest core jvm assertions
-  testImplementation("io.kotest:kotest-property-jvm:<version>") // for kotest property test
+  testImplementation("io.kotest:kotest-runner-junit5:<version>") // for kotest framework
+  testImplementation("io.kotest:kotest-assertions-core:<version>") // for kotest core jvm assertions
+  testImplementation("io.kotest:kotest-property:<version>") // for kotest property test
 }
 ```
 

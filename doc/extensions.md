@@ -46,7 +46,7 @@ The ```kotest-assertions-ktor-jvm``` extension provides response matchers for a 
 To add Ktor matchers, add the following dependency to your project
 
 ```groovy
-testImplementation("io.kotest:kotest-assertions-ktor-jvm:${version}")
+testImplementation("io.kotest:kotest-assertions-ktor:${version}")
 ```
 
 Usage:
@@ -123,7 +123,7 @@ The [Koin DI Framework](https://insert-koin.io/) can be used with Kotest through
 
 To add the listener to your project, add the depency to your project:
 ```groovy
-testImplementation("io.kotest:kotest-extensions-koin-jvm:${version}")
+testImplementation("io.kotest:kotest-extensions-koin:${version}")
 ```
 
 With the dependency added, we can use Koin in our tests!
@@ -151,7 +151,7 @@ class KotestAndKoin : FunSpec(), KoinTest {
 To add this module to project you need spcify following in your `build.gradle`:
 
 ```groovy
-testImplementation 'io.kotest:kotest-extensions-robolectric-jvm:<version>'
+testImplementation 'io.kotest:kotest-extensions-robolectric:<version>'
 ```
 With this dependency added you should add extensions to your project config. For example if you have no such config yet it would look like
 
@@ -178,7 +178,7 @@ This extension is a wrapper over [kotlin-compile-testing](https://github.com/tsc
 To add the compilation matcher, add the following dependency to your project
 
 ```groovy
-testImplementation("io.kotest:kotest-assertions-compiler-jvm:${version}")
+testImplementation("io.kotest:kotest-assertions-compiler:${version}")
 ```
 
 Usage:
