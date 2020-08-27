@@ -28,21 +28,9 @@ jobs:
             if: matrix.os == 'windows-latest'
             run: ./gradlew mingwX64Test
 
-         -  name: Run macOS tests
+         -  name: Run mac tests
             if: matrix.os == 'macOS-latest'
-            run: ./gradlew macosX64Test
-
-         -  name: Run tvosX64 tests
-            if: matrix.os == 'macOS-latest'
-            run: ./gradlew tvosX64Test
-
-         -  name: Run watchosX86 tests
-            if: matrix.os == 'macOS-latest'
-            run: ./gradlew watchosX86Test
-
-         -  name: Run iosX64 tests
-            if: matrix.os == 'macOS-latest'
-            run: ./gradlew iosX64Test
+            run: ./gradlew watchosX86Test iosX64Test tvosX64Test macosX64Test
 
          -  name: Bundle the build report
             if: failure()
@@ -83,64 +71,8 @@ jobs:
             with:
                fetch-depth: 0
 
-         -  name: publish macosx64 snapshot
-            run: ./gradlew publishMacosX64PublicationToDeployRepository
-            env:
-               OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
-               OSSRH_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
-               ORG_GRADLE_PROJECT_signingKey: ${{ secrets.SIGNING_KEY }}
-               ORG_GRADLE_PROJECT_signingPassword: ${{ secrets.SIGNING_PASSWORD }}
-
-         -  name: publish tvosX64 snapshot
-            run: ./gradlew publishTvosX64PublicationToDeployRepository
-            env:
-               OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
-               OSSRH_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
-               ORG_GRADLE_PROJECT_signingKey: ${{ secrets.SIGNING_KEY }}
-               ORG_GRADLE_PROJECT_signingPassword: ${{ secrets.SIGNING_PASSWORD }}
-
-         -  name: publish tvosArm64 snapshot
-            run: ./gradlew publishTvosArm64PublicationToDeployRepository
-            env:
-               OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
-               OSSRH_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
-               ORG_GRADLE_PROJECT_signingKey: ${{ secrets.SIGNING_KEY }}
-               ORG_GRADLE_PROJECT_signingPassword: ${{ secrets.SIGNING_PASSWORD }}
-
-         -  name: publish watchosX86 snapshot
-            run: ./gradlew publishWatchosX86PublicationToDeployRepository
-            env:
-               OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
-               OSSRH_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
-               ORG_GRADLE_PROJECT_signingKey: ${{ secrets.SIGNING_KEY }}
-               ORG_GRADLE_PROJECT_signingPassword: ${{ secrets.SIGNING_PASSWORD }}
-
-         -  name: publish watchosArm64 snapshot
-            run: ./gradlew publishWatchosArm64PublicationToDeployRepository
-            env:
-               OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
-               OSSRH_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
-               ORG_GRADLE_PROJECT_signingKey: ${{ secrets.SIGNING_KEY }}
-               ORG_GRADLE_PROJECT_signingPassword: ${{ secrets.SIGNING_PASSWORD }}
-
-         -  name: publish iosX64 snapshot
-            run: ./gradlew publishIosX64PublicationToDeployRepository
-            env:
-               OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
-               OSSRH_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
-               ORG_GRADLE_PROJECT_signingKey: ${{ secrets.SIGNING_KEY }}
-               ORG_GRADLE_PROJECT_signingPassword: ${{ secrets.SIGNING_PASSWORD }}
-
-         -  name: publish iosArm64 snapshot
-            run: ./gradlew publishIosArm64PublicationToDeployRepository
-            env:
-               OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
-               OSSRH_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
-               ORG_GRADLE_PROJECT_signingKey: ${{ secrets.SIGNING_KEY }}
-               ORG_GRADLE_PROJECT_signingPassword: ${{ secrets.SIGNING_PASSWORD }}
-
-         -  name: publish iosArm32 snapshot
-            run: ./gradlew publishIosArm32PublicationToDeployRepository
+         -  name: publish snapshots
+            run: ./gradlew publishMacosX64PublicationToDeployRepository publishTvosX64PublicationToDeployRepository publishTvosArm64PublicationToDeployRepository publishWatchosX86PublicationToDeployRepository publishWatchosArm64PublicationToDeployRepository publishIosX64PublicationToDeployRepository publishIosArm64PublicationToDeployRepository publishIosArm32PublicationToDeployRepository
             env:
                OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
                OSSRH_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
