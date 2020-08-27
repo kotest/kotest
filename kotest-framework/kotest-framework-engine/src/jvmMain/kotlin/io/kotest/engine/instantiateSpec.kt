@@ -5,6 +5,7 @@ import io.kotest.core.extensions.ConstructorExtension
 import io.kotest.core.spec.Spec
 import io.kotest.fp.Try
 import kotlin.reflect.KClass
+import kotlin.reflect.jvm.isAccessible
 
 /**
  * Creates an instance of a [Spec] by delegating to constructor extensions, with
@@ -18,7 +19,12 @@ fun <T : Spec> instantiateSpec(clazz: KClass<T>): Try<Spec> =
    }
 
 fun <T : Spec> javaReflectNewInstance(clazz: KClass<T>): Spec {
-   val constructor = clazz.java.constructors[0]
-   constructor.isAccessible = true
-   return constructor.newInstance() as Spec
+   try {
+      val constructor = clazz.constructors.find { it.parameters.isEmpty() }
+         ?: error("Could not create instance of $clazz. Specs must have a public zero-arg constructor.")
+      constructor.isAccessible = true
+      return constructor.call()
+   } catch (t: Throwable) {
+      throw RuntimeException("Could not create instance of $clazz", t)
+   }
 }
