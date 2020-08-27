@@ -21,10 +21,13 @@ fun <T : Spec> instantiateSpec(clazz: KClass<T>): Try<Spec> =
 fun <T : Spec> javaReflectNewInstance(clazz: KClass<T>): Spec {
    try {
       val constructor = clazz.constructors.find { it.parameters.isEmpty() }
-         ?: error("Could not create instance of $clazz. Specs must have a public zero-arg constructor.")
+         ?: throw SpecInstantiationException("Could not create instance of $clazz. Specs must have a public zero-arg constructor.",
+            null)
       constructor.isAccessible = true
       return constructor.call()
    } catch (t: Throwable) {
-      throw RuntimeException("Could not create instance of $clazz", t)
+      throw SpecInstantiationException("Could not create instance of $clazz", t)
    }
 }
+
+class SpecInstantiationException(msg: String, t: Throwable?) : RuntimeException(msg, t)
