@@ -150,3 +150,66 @@ suspend inline fun <reified A> forAll(
    config
 ) { a -> property(a) shouldBe true }
 
+@JvmName("forNoneExt")
+suspend fun <A> Gen<A>.forNone(property: suspend PropertyContext.(A) -> Boolean) =
+   forNone(this, property)
+
+suspend fun <A> forNone(
+   genA: Gen<A>,
+   property: suspend PropertyContext.(A) -> Boolean
+) = forNone(computeDefaultIteration(genA), PropTestConfig(), genA, property)
+
+@JvmName("forNoneExt")
+suspend fun <A> Gen<A>.forNone(iterations: Int, property: suspend PropertyContext.(A) -> Boolean) =
+   forAll(iterations, this, property)
+
+suspend fun <A> forNone(
+   iterations: Int,
+   genA: Gen<A>,
+   property: suspend PropertyContext.(A) -> Boolean
+) = forNone(iterations, PropTestConfig(), genA, property)
+
+@JvmName("forNoneExt")
+suspend fun <A> Gen<A>.forNone(config: PropTestConfig, property: suspend PropertyContext.(A) -> Boolean) =
+   forNone(config, this, property)
+
+suspend fun <A> forNone(
+   config: PropTestConfig,
+   genA: Gen<A>,
+   property: suspend PropertyContext.(A) -> Boolean
+) = forNone(computeDefaultIteration(genA), config, genA, property)
+
+@JvmName("forNoneExt")
+suspend fun <A> Gen<A>.forNone(iterations: Int, config: PropTestConfig, property: suspend PropertyContext.(A) -> Boolean) =
+   forNone(iterations, config, this, property)
+
+suspend fun <A> forNone(
+   iterations: Int,
+   config: PropTestConfig,
+   genA: Gen<A>,
+   property: suspend PropertyContext.(A) -> Boolean
+) = proptest(iterations, genA, config) { a -> property(a) shouldBe false }
+
+suspend inline fun <reified A> forNone(
+   crossinline property: PropertyContext.(A) -> Boolean
+) = forNone(PropertyTesting.defaultIterationCount, PropTestConfig(), property)
+
+suspend inline fun <reified A> forNone(
+   iterations: Int,
+   crossinline property: PropertyContext.(A) -> Boolean
+) = forNone(iterations, PropTestConfig(), property)
+
+suspend inline fun <reified A> forNone(
+   config: PropTestConfig,
+   crossinline property: PropertyContext.(A) -> Boolean
+) = forNone(PropertyTesting.defaultIterationCount, config, property)
+
+suspend inline fun <reified A> forNone(
+   iterations: Int,
+   config: PropTestConfig,
+   crossinline property: PropertyContext.(A) -> Boolean
+) = proptest<A>(
+   iterations,
+   Arb.default<A>(),
+   config
+) { a -> property(a) shouldBe false }
