@@ -218,3 +218,79 @@ suspend inline fun <reified A, reified B, reified C, reified D, reified E> forAl
    config
 ) { a, b, c, d, e -> property(a, b, c, d, e) shouldBe true }
 
+suspend fun <A, B, C, D, E> forNone(
+   config: PropTestConfig = PropTestConfig(),
+   genA: Gen<A>,
+   genB: Gen<B>,
+   genC: Gen<C>,
+   genD: Gen<D>,
+   genE: Gen<E>,
+   property: suspend PropertyContext.(A, B, C, D, E) -> Boolean
+) = forNone<A, B, C, D, E>(
+   computeDefaultIteration(genA, genB, genC, genD, genE),
+   config,
+   genA,
+   genB,
+   genC,
+   genD,
+   genE,
+   property
+)
+
+suspend fun <A, B, C, D, E> forNone(
+   iterations: Int,
+   genA: Gen<A>,
+   genB: Gen<B>,
+   genC: Gen<C>,
+   genD: Gen<D>,
+   genE: Gen<E>,
+   property: suspend PropertyContext.(A, B, C, D, E) -> Boolean
+) = forNone<A, B, C, D, E>(iterations, PropTestConfig(), genA, genB, genC, genD, genE, property)
+
+suspend fun <A, B, C, D, E> forNone(
+   iterations: Int,
+   config: PropTestConfig,
+   genA: Gen<A>,
+   genB: Gen<B>,
+   genC: Gen<C>,
+   genD: Gen<D>,
+   genE: Gen<E>,
+   property: suspend PropertyContext.(A, B, C, D, E) -> Boolean
+) = proptest<A, B, C, D, E>(iterations, genA, genB, genC, genD, genE, config) { a, b, c, d, e ->
+   property(
+      a,
+      b,
+      c,
+      d,
+      e
+   ) shouldBe false
+}
+
+
+suspend inline fun <reified A, reified B, reified C, reified D, reified E> forNone(
+   crossinline property: PropertyContext.(A, B, C, D, E) -> Boolean
+): PropertyContext = forNone<A, B, C, D, E>(PropertyTesting.defaultIterationCount, PropTestConfig(), property)
+
+suspend inline fun <reified A, reified B, reified C, reified D, reified E> forNone(
+   config: PropTestConfig = PropTestConfig(),
+   crossinline property: PropertyContext.(A, B, C, D, E) -> Boolean
+): PropertyContext = forNone(PropertyTesting.defaultIterationCount, config, property)
+
+suspend inline fun <reified A, reified B, reified C, reified D, reified E> forNone(
+   iterations: Int,
+   crossinline property: PropertyContext.(A, B, C, D, E) -> Boolean
+) = forNone(iterations, PropTestConfig(), property)
+
+suspend inline fun <reified A, reified B, reified C, reified D, reified E> forNone(
+   iterations: Int,
+   config: PropTestConfig,
+   crossinline property: PropertyContext.(A, B, C, D, E) -> Boolean
+) = proptest(
+   iterations,
+   Arb.default<A>(),
+   Arb.default<B>(),
+   Arb.default<C>(),
+   Arb.default<D>(),
+   Arb.default<E>(),
+   config
+) { a, b, c, d, e -> property(a, b, c, d, e) shouldBe false }
