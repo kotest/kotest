@@ -26,9 +26,8 @@ class FunSpecEngineKitTest : FunSpec({
             failed().shouldHaveNames(
                "a failing test",
                "an erroring test",
-               "com.sksamuel.kotest.runner.junit5.FunSpecSample"
             )
-            succeeded().shouldHaveNames("a passing test", "Kotest")
+            succeeded().shouldHaveNames("a passing test", "com.sksamuel.kotest.runner.junit5.FunSpecSample", "Kotest")
             finished().shouldHaveNames(
                "a failing test",
                "a passing test",

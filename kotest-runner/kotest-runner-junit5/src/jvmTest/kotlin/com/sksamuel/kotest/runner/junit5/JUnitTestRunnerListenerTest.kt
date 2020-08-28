@@ -70,7 +70,7 @@ class JUnitTestRunnerListenerTests : FunSpec({
       finished.toMap() shouldBe mapOf(
          "test1" to TestExecutionResult.Status.FAILED,
          "test2" to TestExecutionResult.Status.FAILED,
-         "com.sksamuel.kotest.runner.junit5.JUnitTestRunnerListenerTests" to TestExecutionResult.Status.FAILED,
+         "com.sksamuel.kotest.runner.junit5.JUnitTestRunnerListenerTests" to TestExecutionResult.Status.SUCCESSFUL,
          "Kotest" to TestExecutionResult.Status.SUCCESSFUL
       )
    }

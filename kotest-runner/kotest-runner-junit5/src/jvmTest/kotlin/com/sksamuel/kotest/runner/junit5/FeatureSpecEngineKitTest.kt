@@ -38,11 +38,10 @@ class FeatureSpecEngineKitTest : FunSpec({
                "1.2",
                "1",
                "2.1",
-               "2",
-               "com.sksamuel.kotest.runner.junit5.FeatureSpecHappyPathSample"
+               "2"
             )
             succeeded().shouldHaveNames(
-               "1.1", "1.2.1", "1.2.2.1", "Kotest"
+               "1.1", "1.2.1", "1.2.2.1", "com.sksamuel.kotest.runner.junit5.FeatureSpecHappyPathSample", "Kotest"
             )
             finished().shouldHaveNames(
                "1.1",
@@ -91,10 +90,10 @@ class FeatureSpecEngineKitTest : FunSpec({
             aborted().shouldBeEmpty()
             skipped().shouldHaveNames()
             failed().shouldHaveNames(
-               "1.2", "1", "2", "com.sksamuel.kotest.runner.junit5.FeatureSpecSample"
+               "1.2", "1", "2",
             )
             succeeded().shouldHaveNames(
-               "1.1", "Kotest"
+               "1.1", "com.sksamuel.kotest.runner.junit5.FeatureSpecSample", "Kotest"
             )
             finished().shouldHaveNames(
                "1.1",

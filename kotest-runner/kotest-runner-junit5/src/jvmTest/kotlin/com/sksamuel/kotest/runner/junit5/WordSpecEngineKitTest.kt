@@ -44,8 +44,7 @@ class WordSpecEngineKitTest : FunSpec({
                "fail a test",
                "with a should container should",
                "a when container with a failing test when",
-               "a failing container should",
-               "com.sksamuel.kotest.runner.junit5.WordSpecSample"
+               "a failing container should"
             )
             succeeded().shouldHaveNames(
                "pass a test",
@@ -57,7 +56,8 @@ class WordSpecEngineKitTest : FunSpec({
                "pass a test",
                "with a should container should",
                "a when container when",
-               "Kotest"
+               "com.sksamuel.kotest.runner.junit5.WordSpecSample",
+               "Kotest",
             )
             finished().shouldHaveNames(
                "fail a test",
@@ -77,7 +77,7 @@ class WordSpecEngineKitTest : FunSpec({
                "a when container when",
                "a failing container should",
                "com.sksamuel.kotest.runner.junit5.WordSpecSample",
-               "Kotest"
+               "Kotest",
             )
             dynamicallyRegistered().shouldHaveNames(
                "com.sksamuel.kotest.runner.junit5.WordSpecSample",

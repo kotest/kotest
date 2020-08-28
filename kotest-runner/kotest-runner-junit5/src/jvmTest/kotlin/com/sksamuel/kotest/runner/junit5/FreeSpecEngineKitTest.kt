@@ -49,7 +49,6 @@ class FreeSpecEngineKitTest : FunSpec({
                "a erroring test",
                "an inner container with",
                "an outer container with",
-               "com.sksamuel.kotest.runner.junit5.FreeSpecSample"
             )
             succeeded().shouldHaveNames(
                "a simple passing test",
@@ -61,6 +60,7 @@ class FreeSpecEngineKitTest : FunSpec({
                "a passing test 1",
                "a passing test 2",
                "an outer container with only passing tests",
+               "com.sksamuel.kotest.runner.junit5.FreeSpecSample",
                "Kotest"
             )
             finished().shouldHaveNames(
