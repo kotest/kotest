@@ -3,8 +3,8 @@ Kotest
 
 [<img src="https://img.shields.io/maven-central/v/io.kotest/kotest-core.svg?label=latest%20release"/>](http://search.maven.org/#search|ga|1|kotest) [![GitHub license](https://img.shields.io/github/license/kotest/kotest.svg)]()
 
-This version of the document is for the 4.0.x release.
-For previous versions see [here](reference_3.3.md)
+This version of the document is for the 4.x releases.
+For version 3.3 see [here](reference_3.3.md)
 
 Project Rename!
 ------
