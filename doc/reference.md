@@ -707,12 +707,14 @@ Extensions
 
 Kotest provides you with several extensions and listeners to test execution out of the box.
 
-Some of them provide unique integrations with external systems, such as [Spring Boot](extensions.md#Spring) and [Arrow](extensions.md#Arrow).
+Some of them provide unique integrations with external systems, such as [Spring Boot](extensions.md#Spring), [MockServer](mockserver.md), and [Arrow](extensions.md#Arrow).
 Some others provides helpers to tricky System Testing situations, such as `System Environment`, `System Properties`, `System Exit` and `System Security Manager`.
 
 We also provide a `Locale Extension`, for locale-dependent code, and `Timezone Extension` for timezone-dependent code.
 
 Take a better look at all the extensions available in the [extensions-reference](extensions.md)
+
+
 
 
 Plugins

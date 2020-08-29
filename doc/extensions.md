@@ -39,28 +39,6 @@ point to a [specific application context file](https://docs.spring.io/spring-boo
 
 There are two ways to enable spring wiring depending on if you want to use constructor injection, or field injection.
 
-### Ktor
-
-The ```kotest-assertions-ktor-jvm``` extension provides response matchers for a [Ktor]("https://ktor.io/") test application.
-
-To add Ktor matchers, add the following dependency to your project
-
-```groovy
-testImplementation("io.kotest:kotest-assertions-ktor:${version}")
-```
-
-Usage:
-```kotlin
-withTestApplication({ module(testing = true) }) {
-   handleRequest(HttpMethod.Get, "/").apply {
-      response shouldHaveStatus HttpStatusCode.OK
-      response shouldNotHaveContent "failure"
-      response.shouldHaveHeader(name = "Authorization", value = "Bearer")
-      response.shouldNotHaveCookie(name = "Set-Cookie", cookieValue = "id=1234")
-   }
-}
-```
-
 #### Field Injection
 
 If you wish to use field injection, then the `SpringListener` must be registered with any
@@ -116,6 +94,45 @@ class SpringAutowiredConstructorTest(service: UserService) : WordSpec() {
   }
 }
 ```
+
+
+
+
+### Ktor
+
+The ```kotest-assertions-ktor``` module provides response matchers for a [Ktor]("https://ktor.io/") application. There are matchers
+for both `TestApplicationResponse` if you are using the server side test support, and for `HttpResponse` if you are using the ktor
+client classes.
+
+To add Ktor matchers, add the following dependency to your project
+
+```groovy
+testImplementation("io.kotest:kotest-assertions-ktor:${version}")
+```
+
+An example of using the matchers with the server side test support:
+```kotlin
+withTestApplication({ module(testing = true) }) {
+   handleRequest(HttpMethod.Get, "/").apply {
+      response shouldHaveStatus HttpStatusCode.OK
+      response shouldNotHaveContent "failure"
+      response.shouldHaveHeader(name = "Authorization", value = "Bearer")
+      response.shouldNotHaveCookie(name = "Set-Cookie", cookieValue = "id=1234")
+   }
+}
+```
+
+And an example of using the client support:
+```kotlin
+val client = HttpClient(CIO)
+val resp = client.post("http://mydomain.com/foo")
+response.shouldHaveStatus(HttpStatusCode.OK)
+response.shouldHaveHeader(name = "Authorization", value = "Bearer")
+
+```
+
+
+
 
 ### Koin
 
@@ -406,6 +423,21 @@ Or, with a listener for all the tests:
     ConstantNowTestListener(foreverNow)
   )
 ```
+
+
+
+
+### MockServer
+
+Kotest provides an extension for integration with the [MockServer](https://www.mock-server.com) library through the `kotest-extensions-mockserver` module.
+
+MockServer is described as an in process server that returns specific responses for different requests via HTTP or HTTPS.
+When MockServer receives a request it matches that request against the configured expectations. If a match is found it returns that response, otherwise a 404 is returned.
+
+Read integration instructions [here](mockserver.md).
+
+
+
 
 ### TestContainers
 
