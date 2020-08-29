@@ -46,12 +46,15 @@ kotlin {
          dependsOn(jvmMain)
          dependencies {
             implementation(project(Projects.JunitRunner))
+            implementation(project(Projects.AssertionsKtor))
+            implementation(Libs.Ktor.clientCoreJvm)
+            implementation(Libs.Ktor.clientCioJvm)
          }
       }
    }
 }
 
-tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
+tasks.withType<KotlinCompile>().configureEach {
    kotlinOptions.freeCompilerArgs += "-Xuse-experimental=kotlin.Experimental"
    kotlinOptions.jvmTarget = "1.8"
 }

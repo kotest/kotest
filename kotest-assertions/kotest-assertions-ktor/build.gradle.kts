@@ -31,9 +31,15 @@ kotlin {
 
    sourceSets {
 
-      val jvmMain by getting {
+      val commonMain by getting {
          dependencies {
             implementation(project(Projects.AssertionsShared))
+            implementation(Libs.Ktor.clientCore)
+         }
+      }
+
+      val jvmMain by getting {
+         dependencies {
             implementation(Libs.Ktor.serverCore)
             implementation(Libs.Ktor.serverTestHost)
          }
