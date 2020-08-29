@@ -151,7 +151,7 @@ suspend fun <A, B, C, D> proptest(
    // we must have enough iterations to cover the max(minsize).
 
    val minSize =
-      listOf(genA.minIterations(), genB.minIterations(), genC.minIterations(), genD.minIterations()).maxOrNull()!!
+      listOf(genA.minIterations(), genB.minIterations(), genC.minIterations(), genD.minIterations()).max() ?: 0
    require(iterations >= minSize) { "Require at least $minSize iterations to cover requirements" }
 
    val context = PropertyContext()
@@ -210,7 +210,7 @@ suspend fun <A, B, C, D, E> proptest(
       genC.minIterations(),
       genD.minIterations(),
       genE.minIterations()
-   ).maxOrNull()!!
+   ).max() ?: 0
    require(iterations >= minSize) { "Require at least $minSize iterations to cover requirements" }
 
    val context = PropertyContext()
@@ -274,7 +274,7 @@ suspend fun <A, B, C, D, E, F> proptest(
       genD.minIterations(),
       genE.minIterations(),
       genF.minIterations()
-   ).maxOrNull()!!
+   ).max() ?: 0
    require(iterations >= minSize) { "Require at least $minSize iterations to cover requirements" }
 
    val context = PropertyContext()
