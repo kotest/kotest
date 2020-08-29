@@ -5,12 +5,15 @@ import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.assertions.timing.eventually
 import io.kotest.core.spec.style.WordSpec
 import io.kotest.matchers.ints.shouldBeLessThan
+import io.kotest.matchers.longs.shouldBeGreaterThanOrEqual
+import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldMatch
 import kotlinx.coroutines.delay
 import java.io.FileNotFoundException
 import java.io.IOException
 import kotlin.time.ExperimentalTime
+import kotlin.time.TimeSource
 import kotlin.time.days
 import kotlin.time.milliseconds
 import kotlin.time.seconds
@@ -116,6 +119,16 @@ class EventuallyTest : WordSpec() {
                count += 1
             }
             count.shouldBeLessThan(6)
+         }
+         "handle shouldNotBeNull" {
+            val mark = TimeSource.Monotonic.markNow()
+            shouldThrow<java.lang.AssertionError> {
+               eventually(2.seconds) {
+                  val str: String? = null
+                  str.shouldNotBeNull()
+               }
+            }
+            mark.elapsedNow().toLongMilliseconds().shouldBeGreaterThanOrEqual(2000)
          }
       }
    }
