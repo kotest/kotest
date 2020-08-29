@@ -9,7 +9,7 @@ import kotlin.time.ExperimentalTime
 import kotlin.time.TimeSource
 
 /**
- * Retry the given lambda [f] in case of assertion error[AssertionError] and exception [Exception].
+ * Retry the given lambda [f] in case of assertion error [AssertionError] and exception [Exception].
  * Stops trying when [maxRetry] or [timeout] is reached.
  * */
 @OptIn(ExperimentalTime::class)
@@ -23,7 +23,7 @@ suspend fun <T> retry(
 
 
 /**
- * Retry the given lambda [f] in case of assertion error[AssertionError] and exception of type [exceptionClass].
+ * Retry the given lambda [f] in case of assertion error [AssertionError] and exception of type [exceptionClass].
  * Stops trying when [maxRetry] or [timeout] is reached. Or an exception other than [exceptionClass] is thrown
  * */
 @OptIn(ExperimentalTime::class)

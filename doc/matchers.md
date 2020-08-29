@@ -1,7 +1,7 @@
 Matchers
 ==========
 
-This page lists all current matchers in Kotlintest. Matchers can be used in two styles:
+This page lists all current matchers in Kotest. Matchers can be used in two styles:
 
  * Extension functions like `a.shouldBe(b)` or `a.shouldStartWith("foo")`
  * Infix functions like `a shouldBe b` or `a should startWith("foo")`
@@ -383,7 +383,7 @@ For Android-specific matchers, take a look [here](android_matchers.md)
 
 | JSoup |     |
 | ----- | --- |
-| JSoup matchers require `kotlintest-assertions-jsoup` |  [See More](jsoup-matchers.md) |
+| JSoup matchers require `Kotest-assertions-jsoup` |  [See More](jsoup-matchers.md) |
 
 
 | Regex |     |
