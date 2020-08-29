@@ -62,7 +62,7 @@ sealed class Gen<out A> {
  * In order to use an [Arb] inside a property test, one must invoke the [take] method, passing in the
  * number of iterations required and optionally a [ShrinkingMode].
  */
-abstract class Arb<A> : Gen<A>() {
+abstract class Arb<out A> : Gen<A>() {
 
    /**
     * Edgecase values for this type A.
@@ -90,7 +90,7 @@ abstract class Arb<A> : Gen<A>() {
  *
  * An exhaustive is less suitable when you have a large sample space you need to select values from.
  */
-abstract class Exhaustive<A> : Gen<A>() {
+abstract class Exhaustive<out A> : Gen<A>() {
 
    /**
     * Returns the values of this [Exhaustive].
