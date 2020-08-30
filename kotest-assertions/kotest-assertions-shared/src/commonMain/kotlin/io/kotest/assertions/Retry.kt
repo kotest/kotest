@@ -1,12 +1,12 @@
 package io.kotest.assertions
 
 import io.kotest.mpp.bestName
-import kotlinx.coroutines.delay
 import kotlin.reflect.KClass
 import kotlin.time.Duration
 import kotlin.time.DurationUnit
 import kotlin.time.ExperimentalTime
 import kotlin.time.TimeSource
+import kotlinx.coroutines.delay
 
 /**
  * Retry the given lambda [f] in case of assertion error [AssertionError] and exception [Exception].
@@ -18,7 +18,7 @@ suspend fun <T> retry(
    timeout: Duration,
    delay: Duration = timeout,
    multiplier: Int = 1,
-   f: () -> T
+   f: suspend () -> T
 ): T = retry(maxRetry, timeout, delay, multiplier, Exception::class, f)
 
 
@@ -33,7 +33,7 @@ suspend fun <T, E : Throwable> retry(
    delay: Duration = timeout,
    multiplier: Int = 1,
    exceptionClass: KClass<E>,
-   f: () -> T
+   f: suspend () -> T
 ): T {
    val mark = TimeSource.Monotonic.markNow()
    val end = mark.plus(timeout)
