@@ -23,7 +23,7 @@ interface Matcher<in T> {
    fun invert(): Matcher<T> = object : Matcher<T> {
       override fun test(value: T): MatcherResult {
          val result = this@Matcher.test(value)
-         return MatcherResult(!result.passed(), result.negatedFailureMessage(), result.failureMessage())
+         return MatcherResult(!result.passed(), { result.negatedFailureMessage() }, { result.failureMessage() })
       }
    }
 
