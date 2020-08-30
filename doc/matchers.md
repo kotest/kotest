@@ -44,9 +44,10 @@ For Android-specific matchers, take a look [here](android_matchers.md)
 | `comp.shouldBeGreaterThan(other)` | Uses `compareTo` to verify that `comp` is greater than `other` |
 | `comp.shouldBeGreaterThanOrEqualTo(other)` | Uses `compareTo` to verify that `comp` is greater than or equal to `other` |
 
-| Iterables ||
+| Iterator ||
 | ------- | ---- |
-| `iterable.shouldBeEmpty()` | Asserts that the iterable's iterator does not have a next value.
+| `iterator.shouldBeEmpty()`  | Asserts that the iterator does not have a next value. |
+| `iterator.shouldHaveNext()` | Asserts that the iterator has a next value |
 
 | Maps ||
 | -------- | ---- |
