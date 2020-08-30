@@ -300,6 +300,7 @@ For Android-specific matchers, take a look [here](android_matchers.md)
 | `result.shouldBeFailure(block)` | Asserts that the result is failure and then, runs the block with the exception. |
 
 | Optional | |
+| -------- | --- |
 | `optional.shouldBePresent()` | Asserts that this Optional is present |
 | `optional.shouldBePresent { value -> .. }` | Asserts that this Optional is present , then execute block with the value |
 | `optional.shouldBeEmpty()` | Asserts that this optional is empty |
