@@ -1,36 +1,61 @@
 package io.kotest.assertions
 
 import io.kotest.mpp.bestName
-import kotlinx.coroutines.delay
 import kotlin.reflect.KClass
 import kotlin.time.Duration
 import kotlin.time.DurationUnit
 import kotlin.time.ExperimentalTime
 import kotlin.time.TimeSource
+import kotlin.time.seconds
+import kotlinx.coroutines.delay
 
 /**
- * Retry the given lambda [f] in case of assertion error [AssertionError] and exception [Exception].
- * Stops trying when [maxRetry] or [timeout] is reached.
+ * Retry [f] until it's a success or [maxRetry]/[timeout] is reached
+ * 
+ * This will treat any Exception as a failure, along with [AssertionError].
+ * 
+ * Retry delay might increase exponentially if you choose a [multiplier] value. For example, if you want to configure
+ * 5 [maxRetry], with an initial [delay] of 1s between requests, the delay between requests will increase when you
+ * choose 2 as your [multiplier]:
+ * 1 - Failed (wait 1s before retrying)
+ * 2 - Failed (wait 2s before retrying)
+ * 3 - Failed (wait 4s before retrying)
+ * ..
+ * 
+ * If either timeout or max retries is reached, the execution will be aborted and an exception will be thrown.
+ * 
  * */
 @OptIn(ExperimentalTime::class)
 suspend fun <T> retry(
    maxRetry: Int,
    timeout: Duration,
-   delay: Duration = timeout,
+   delay: Duration = 1.seconds,
    multiplier: Int = 1,
    f: () -> T
 ): T = retry(maxRetry, timeout, delay, multiplier, Exception::class, f)
 
 
 /**
- * Retry the given lambda [f] in case of assertion error [AssertionError] and exception of type [exceptionClass].
- * Stops trying when [maxRetry] or [timeout] is reached. Or an exception other than [exceptionClass] is thrown
+ * Retry [f] until it's a success or [maxRetry]/[timeout] is reached
+ *
+ * This will treat only [exceptionClass] as a failure, along with [AssertionError].
+ *
+ * Retry delay might increase exponentially if you choose a [multiplier] value. For example, if you want to configure
+ * 5 [maxRetry], with an initial [delay] of 1s between requests, the delay between requests will increase when you
+ * choose 2 as your [multiplier]:
+ * 1 - Failed (wait 1s before retrying)
+ * 2 - Failed (wait 2s before retrying)
+ * 3 - Failed (wait 4s before retrying)
+ * ..
+ *
+ * If either timeout or max retries is reached, the execution will be aborted and an exception will be thrown.
+ *
  * */
 @OptIn(ExperimentalTime::class)
 suspend fun <T, E : Throwable> retry(
    maxRetry: Int,
    timeout: Duration,
-   delay: Duration = timeout,
+   delay: Duration = 1.seconds,
    multiplier: Int = 1,
    exceptionClass: KClass<E>,
    f: () -> T
