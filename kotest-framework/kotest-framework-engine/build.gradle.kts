@@ -58,7 +58,7 @@ kotlin {
          dependsOn(commonMain)
          dependencies {
             implementation(kotlin("reflect"))
-            implementation(Libs.Classgraph.classgraph)
+            api(Libs.Classgraph.classgraph)
 
             // needed to scan for spec classes
             implementation(project(Projects.Discovery))
