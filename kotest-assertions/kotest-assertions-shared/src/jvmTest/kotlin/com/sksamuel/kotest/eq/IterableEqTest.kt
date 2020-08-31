@@ -52,4 +52,34 @@ class IterableEqTest : FunSpec({
          error.message shouldBe """expected:<[1, [["a", "e"], "b"], [("a", [1, 2, 3])]]> but was:<[1, [["a", "c"], "b"], [("a", [1, 2, 3])]]>"""
       }
    }
+
+   test("should only perform one iteration") {
+
+      val actual = IterationCountSet(List(50) { it }.toSet())
+      val expected = IterationCountSet(List(50) { it }.toSet())
+
+      actual.count shouldBe 0
+      expected.count shouldBe 0
+
+      IterableEq.equals(actual, expected).shouldBeNull()
+
+      actual.count shouldBe 50  // one for each element in the Set
+      expected.count shouldBe 0
+   }
 })
+
+private class IterationCountSet<T>(val delegate: Set<T>) : Set<T> by delegate {
+
+   var count = 0
+
+   override fun iterator(): Iterator<T> {
+      return CountingIterator(delegate.iterator())
+   }
+
+   inner class CountingIterator(val delegateIterator: Iterator<T>) : Iterator<T> by delegateIterator {
+      override fun next(): T {
+         count++
+         return delegateIterator.next()
+      }
+   }
+}
