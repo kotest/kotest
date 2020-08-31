@@ -21,9 +21,7 @@ object IterableEq : Eq<Iterable<*>> {
 
    private fun equalsIgnoringOrder(actual: Set<*>, expected: Set<*>): Boolean {
       return actual.all { elementInActualSet ->
-         expected.any { elementInExpectedSet ->
-            eq(elementInActualSet, elementInExpectedSet) == null
-         }
+         expected.contains(elementInActualSet)
       }
    }
 
