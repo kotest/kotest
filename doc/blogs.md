@@ -15,3 +15,4 @@ These blogs and articles can be useful in addition to the official docs to show 
 * [KotlinTest and property-based testing by  Biju Kunjummen (2017)](https://dzone.com/articles/kotlintest-and-property-based-testing)
 * [Kotest migration guide by Paweł Weselak (2020)](https://pawelweselak.com/posts/kotest-migration-guide/)
 * [Micronaut and KotlinTest by Ben (2020)](https://www.nerd.vision/post/micronaut-and-kotlintest)
+* [Parameterized tests with Kotest (2020)](https://kotlintesting.com/kotest-parameterized/)
