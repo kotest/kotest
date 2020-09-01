@@ -22,7 +22,7 @@ Matchers for the [Kotlinx Datetime](https://github.com/Kotlin/kotlinx-datetime) 
 | `date.shouldHaveHour(hour)` | Asserts that the date have correct hour. |
 | `date.shouldHaveMinute(Minute)` | Asserts that the date have correct minute. |
 | `date.shouldHaveSecond(second)` | Asserts that the date have correct second. |
-| `date.shouldHaveNano(nao)` | Asserts that the date have correct nano second. |
+| `date.shouldHaveNano(nano)` | Asserts that the date have correct nano second. |
 
 
 | LocalDateTime ||
