@@ -20,7 +20,7 @@ jobs:
             with:
                fetch-depth: 0
 
-         -  name: Run ubuntu tests
+         -  name: Run linux and common tests
             if: matrix.os == 'ubuntu-latest'
             run: ./gradlew check
 
@@ -28,9 +28,21 @@ jobs:
             if: matrix.os == 'windows-latest'
             run: ./gradlew mingwX64Test
 
-         -  name: Run mac tests
+         -  name: Run macos tests
             if: matrix.os == 'macOS-latest'
-            run: ./gradlew watchosX86Test iosX64Test tvosX64Test macosX64Test
+            run: ./gradlew macosX64Test
+
+         -  name: Run ios tests
+            if: matrix.os == 'macOS-latest'
+            run: ./gradlew iosX64Test
+
+         -  name: Run tvos tests
+            if: matrix.os == 'macOS-latest'
+            run: ./gradlew tvosX64Test
+
+         -  name: Run watchos tests
+            if: matrix.os == 'macOS-latest'
+            run: ./gradlew watchosX86Test
 
          -  name: Bundle the build report
             if: failure()
