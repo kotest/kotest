@@ -1,13 +1,34 @@
 Changelog
 =========
 
-#### 4.2.1
+#### 4.2.3
+
+* Bugfix: Throwables of `Error` in the engine should be reported to test engine listeners
+* Bugfix: Switched classgraph to api
+* Bugfix: Make Set comparisons use .contains() instead of a linear search #1672
+* Bugfix: Change retry default delay to 1 #1670
+* Bugfix: removed 1.4 api usage from property tests
+* Improvement: Allow retry to call suspend functions #1669
+* Improvement: Add matcher alias for Iterator have next #1664
+* Improvement: Add java.util.Optional matchers #1662
+* Improvement: Expand ktor matchers to the client libraries #1658
+* Improvement: Add `forNone` assertion #1654
+* Improvement: Arb and Exhaustive should be covariant #1653
+* Improvement: Remove the annoying `executionError` extra test in gradle #1655
+* Improvement: Added more helpful error message when spec instantiation fails
+* Docs: Update Gradle dependencies docs removing unnecessary -jvm suffix #1650
+* Docs: MockServer extension documentation #1446
+
+#### 4.2.2
 
 * Bugfix: Usage of a Kotlin 1.4 only method has been removed
 * Bugfix: KotlinReflectionInternalError fixed on java enums #1611
 * Bugfix: Errors in a DiscoveryExtension were not propagated to output #1634
 * Bugfix: Tags specified via inline tags dsl were not being picked up #1642
 * Improvement: Updated output of some collection matchers to format an element per line #1380
+
+#### 4.2.1
+
 * Feature: The assertion libraries are now also published for watchos, tvos, and ios in addition to the macos, windows, and linux targets previously.
 
 #### 4.2.0 - [Blog](./blog/release_4.2.md)
