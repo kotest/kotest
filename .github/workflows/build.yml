@@ -5,6 +5,9 @@ on:
       branches:
          - master
          - release/*
+      paths-ignore:
+         - 'doc/**'
+         - '*.md'
 
 jobs:
    build:
