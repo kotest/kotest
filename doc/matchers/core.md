@@ -208,7 +208,6 @@ Matchers provided by the `kotest-assertions-core` module.
 
 | Dates ||
 | -------- | ---- |
-| **[KotlinX Time](https://github.com/Kotlin/kotlinx-datetime) is also supported** | Use `kotest-assertions-kotlinx-time` to enable matchers |
 | `date.shouldHaveSameYearAs(otherDate)` | Asserts that the date has the same year as the given date. |
 | `date.shouldHaveSameMonthAs(otherDate)` | Asserts that the date has the same month as the given date. |
 | `date.shouldHaveSameDayAs(otherDate)` | Asserts that the date has the same day of the month as the given date. |
@@ -241,6 +240,21 @@ Matchers provided by the `kotest-assertions-core` module.
 | `time.shouldBeBefore(otherTime)` | Asserts that the time is before the given time. |
 | `time.shouldBeAfter(otherTime)` | Asserts that the time is after the given time. |
 | `time.shouldBeBetween(firstTime, secondTime)` | Asserts that the time is between firstTime and secondTime. |
+
+
+
+| Instant ||
+| -------- | ---- |
+| `instant.shouldBeAfter(anotherInstant)` | Asserts that the instant is after anotherInstant |
+| `instant.shouldBeBefore(anotherInstant)` | Asserts that the instant is before anotherInstant |
+| `instant.shouldBeBetween(fromInstant, toInstant)` | Asserts that the instant is between fromInstant and toInstant |
+
+| Timestamp ||
+| -------- | ---- |
+| `timestamp.shouldBeAfter(anotherTimestamp)` | Asserts that the timestamp is after anotherTimestamp |
+| `timestamp.shouldBeBefore(anotherTimestamp)` | Asserts that the timestamp is before anotherTimestamp |
+| `timestamp.shouldBeBetween(fromTimestamp, toTimestamp)` | Asserts that the timestamp is between fromTimestamp and toTimestamp|
+
 
 | Concurrent ||
 | -------- | ---- |
@@ -344,17 +358,6 @@ Matchers provided by the `kotest-assertions-core` module.
 | `regex.shouldIncludeRegexOptions(regexOptions)`       | Asserts that regex include of the given regexOptions|
 
 
-| Instant ||
-| -------- | ---- |
-| `instant.shouldBeAfter(anotherInstant)` | Asserts that the instant is after anotherInstant |
-| `instant.shouldBeBefore(anotherInstant)` | Asserts that the instant is before anotherInstant |
-| `instant.shouldBeBetween(fromInstant, toInstant)` | Asserts that the instant is between fromInstant and toInstant |
-
-| Timestamp ||
-| -------- | ---- |
-| `timestamp.shouldBeAfter(anotherTimestamp)` | Asserts that the timestamp is after anotherTimestamp |
-| `timestamp.shouldBeBefore(anotherTimestamp)` | Asserts that the timestamp is before anotherTimestamp |
-| `timestamp.shouldBeBetween(fromTimestamp, toTimestamp)` | Asserts that the timestamp is between fromTimestamp and toTimestamp|
 
 | Selective Matchers ||
 | -------- | ---- |
