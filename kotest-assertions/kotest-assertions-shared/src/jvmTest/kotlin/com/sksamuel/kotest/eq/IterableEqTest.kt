@@ -66,6 +66,10 @@ class IterableEqTest : FunSpec({
       actual.count shouldBe 50  // one for each element in the Set
       expected.count shouldBe 0
    }
+
+   test("should return true for deeply nested arrays in sets") {
+      setOf(arrayListOf(1, 2, 3), 1, listOf(arrayListOf(1, 2, 3))) shouldBe setOf(arrayListOf(1, 2, 3), 1, listOf(arrayListOf(1, 2, 3)))
+   }
 })
 
 private class IterationCountSet<T>(val delegate: Set<T>) : Set<T> by delegate {
