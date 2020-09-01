@@ -121,6 +121,11 @@ fun beExecutable(): Matcher<Path> = object : Matcher<Path> {
 infix fun Path.shouldContainNFiles(n: Int) = this.toFile() shouldBe containNFiles(n)
 infix fun Path.shouldNotContainNFiles(n: Int) = this.toFile() shouldNotBe containNFiles(n)
 
+@Deprecated(message ="checks if a directory is empty", replaceWith = ReplaceWith("shouldBeEmptyDirectory()"))
+fun Path.shouldBeNonEmptyDirectory() = this.toFile() shouldNot beEmptyDirectory()
+@Deprecated(message ="checks if a directory is not empty", replaceWith = ReplaceWith("shouldBeNonEmptyDirectory()"))
+fun Path.shouldNotBeNonEmptyDirectory() = this.toFile() should beEmptyDirectory()
+
 fun Path.shouldBeEmptyDirectory() = this.toFile() should beEmptyDirectory()
 fun Path.shouldNotBeEmptyDirectory() = this.toFile() shouldNot beEmptyDirectory()
 
