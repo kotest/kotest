@@ -14,7 +14,6 @@ import io.kotest.framework.discovery.Discovery
 import io.kotest.framework.discovery.DiscoveryRequest
 import io.kotest.framework.discovery.DiscoverySelector
 import java.util.concurrent.CompletableFuture
-import java.util.concurrent.Future
 import kotlin.coroutines.Continuation
 import kotlin.coroutines.EmptyCoroutineContext
 import kotlin.coroutines.startCoroutine
