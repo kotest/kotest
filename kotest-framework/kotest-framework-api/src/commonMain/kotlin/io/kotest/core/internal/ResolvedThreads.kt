@@ -1,4 +1,4 @@
-package io.kotest.core.internal.tags
+package io.kotest.core.internal
 
 import io.kotest.core.spec.Spec
 

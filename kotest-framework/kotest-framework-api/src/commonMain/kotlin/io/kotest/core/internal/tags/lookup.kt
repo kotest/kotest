@@ -14,7 +14,7 @@ import kotlin.reflect.KClass
  * registered [TagExtension]s.
  */
 fun Configuration.activeTags(): Tags {
-   val extensions = this.extensions().filterIsInstance<TagExtension>()
+   val extensions = extensions().filterIsInstance<TagExtension>()
    return if (extensions.isEmpty()) Tags.Empty else extensions.map { it.tags() }.reduce { a, b -> a.combine(b) }
 }
 

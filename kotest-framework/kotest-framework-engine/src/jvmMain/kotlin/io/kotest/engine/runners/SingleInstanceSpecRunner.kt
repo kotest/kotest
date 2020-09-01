@@ -10,7 +10,7 @@ import io.kotest.core.test.TestResult
 import io.kotest.core.test.toTestCase
 import io.kotest.engine.spec.SpecRunner
 import io.kotest.engine.listener.TestEngineListener
-import io.kotest.core.internal.tags.resolvedThreads
+import io.kotest.core.internal.resolvedThreads
 import io.kotest.engine.ExecutorExecutionContext
 import io.kotest.core.internal.TestCaseExecutor
 import io.kotest.core.spec.invokeAfterSpec

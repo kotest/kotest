@@ -15,7 +15,7 @@ import io.kotest.core.test.TestCaseExecutionListener
 import io.kotest.core.internal.TestCaseExecutor
 import io.kotest.core.spec.invokeAfterSpec
 import io.kotest.core.spec.invokeBeforeSpec
-import io.kotest.core.internal.tags.resolvedThreads
+import io.kotest.core.internal.resolvedThreads
 import io.kotest.core.test.*
 import io.kotest.core.spec.materializeAndOrderRootTests
 import io.kotest.engine.toTestResult

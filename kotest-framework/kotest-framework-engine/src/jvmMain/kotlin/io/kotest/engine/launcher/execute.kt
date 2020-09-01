@@ -30,15 +30,15 @@ fun execute(
    testPath: String?,
    tags: Tags?,
 ) {
-   try {
+   future {
+      try {
 
-      val specClass = specFQN?.let { (Class.forName(it) as Class<Spec>).kotlin }
-      val specs = specs(specClass, packageName)
-      val filter = if (testPath == null || specClass == null) null else {
-         TestPathTestCaseFilter(testPath, specClass)
-      }
+         val specClass = specFQN?.let { (Class.forName(it) as Class<Spec>).kotlin }
+         val specs = specs(specClass, packageName)
+         val filter = if (testPath == null || specClass == null) null else {
+            TestPathTestCaseFilter(testPath, specClass)
+         }
 
-      future {
          KotestEngineLauncher()
             .withListener(ReporterTestEngineListener(reporter))
             .withSpecs(specs)
@@ -46,9 +46,12 @@ fun execute(
             .withFilters(listOfNotNull(filter))
             .withDumpConfig(true)
             .launch()
+
+      } catch (e: Throwable) {
+         println(e)
+         e.printStackTrace()
+         reporter.engineFinished(listOf(e))
       }
-   } catch (e: Throwable) {
-      reporter.engineFinished(listOf(e))
    }
 }
 
@@ -78,7 +81,7 @@ private fun scan(packageName: String?): List<KClass<out Spec>> {
 
 // this avoids us needing to bring in the coroutine deps, plus running inside the main
 // thread is exactly what we want to do
-private fun future(f: suspend () -> Unit): Future<Unit> =
+private fun future(f: suspend () -> Unit): CompletableFuture<Unit> =
    CompletableFuture<Unit>().apply {
       f.startCoroutine(Continuation(EmptyCoroutineContext) { res ->
          res.fold(::complete, ::completeExceptionally)
