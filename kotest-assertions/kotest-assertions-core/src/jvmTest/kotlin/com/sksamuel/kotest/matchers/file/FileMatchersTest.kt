@@ -24,6 +24,7 @@ import io.kotest.matchers.file.shouldNotHaveExtension
 import io.kotest.matchers.file.shouldNotHaveParent
 import io.kotest.matchers.file.shouldStartWithPath
 import io.kotest.matchers.file.startWithPath
+import io.kotest.matchers.paths.shouldBeEmptyDirectory
 import io.kotest.matchers.paths.shouldBeLarger
 import io.kotest.matchers.paths.shouldBeSmaller
 import io.kotest.matchers.paths.shouldBeSymbolicLink
@@ -31,6 +32,7 @@ import io.kotest.matchers.paths.shouldContainFile
 import io.kotest.matchers.paths.shouldContainFileDeep
 import io.kotest.matchers.paths.shouldContainFiles
 import io.kotest.matchers.paths.shouldHaveParent
+import io.kotest.matchers.paths.shouldNotBeEmptyDirectory
 import io.kotest.matchers.paths.shouldNotBeSymbolicLink
 import io.kotest.matchers.paths.shouldNotContainFile
 import io.kotest.matchers.paths.shouldNotContainFileDeep
@@ -145,6 +147,13 @@ class FileMatchersTest : FunSpec() {
       shouldThrow<AssertionError> {
         dir shouldBe aFile()
       }
+    }
+
+    test("directory should be empty") {
+       val dir = Files.createTempDirectory("testdir")
+       dir.shouldBeEmptyDirectory()
+       Files.write(dir.resolve("testfile.txt"), byteArrayOf(1, 2, 3))
+       dir.shouldNotBeEmptyDirectory()
     }
 
     test("directory contains file matching predicate") {

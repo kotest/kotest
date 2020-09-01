@@ -3,7 +3,7 @@ package io.kotest.matchers.paths
 import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
 import io.kotest.matchers.file.beLarger
-import io.kotest.matchers.file.beNonEmptyDirectory
+import io.kotest.matchers.file.beEmptyDirectory
 import io.kotest.matchers.file.containNFiles
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldBe
@@ -121,8 +121,8 @@ fun beExecutable(): Matcher<Path> = object : Matcher<Path> {
 infix fun Path.shouldContainNFiles(n: Int) = this.toFile() shouldBe containNFiles(n)
 infix fun Path.shouldNotContainNFiles(n: Int) = this.toFile() shouldNotBe containNFiles(n)
 
-fun Path.shouldBeNonEmptyDirectory() = this.toFile() should beNonEmptyDirectory()
-fun Path.shouldNotBeNonEmptyDirectory() = this.toFile() shouldNot beNonEmptyDirectory()
+fun Path.shouldBeEmptyDirectory() = this.toFile() should beEmptyDirectory()
+fun Path.shouldNotBeEmptyDirectory() = this.toFile() shouldNot beEmptyDirectory()
 
 fun Path.shouldBeHidden() = this should beHidden()
 fun Path.shouldNotBeHidden() = this shouldNot beHidden()

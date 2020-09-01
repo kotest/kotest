@@ -15,9 +15,9 @@ private fun File.safeList(): List<String> = this.list()?.toList() ?: emptyList()
 private fun File.safeListFiles(): List<File> = this.listFiles()?.toList() ?: emptyList()
 private fun File.safeListFiles(filter: FileFilter): List<File> = this.listFiles(filter)?.toList() ?: emptyList()
 
-fun File.shouldBeNonEmptyDirectory() = this should beNonEmptyDirectory()
-fun File.shouldNotBeNonEmptyDirectory() = this shouldNot beNonEmptyDirectory()
-fun beNonEmptyDirectory(): Matcher<File> = object : Matcher<File> {
+fun File.shouldBeEmptyDirectory() = this should beEmptyDirectory()
+fun File.shouldNotBeEmptyDirectory() = this shouldNot beEmptyDirectory()
+fun beEmptyDirectory(): Matcher<File> = object : Matcher<File> {
   override fun test(value: File): MatcherResult = MatcherResult(value.isDirectory && value.safeList().isEmpty(), "$value should be a non empty directory", "$value should not be a non empty directory")
 }
 
