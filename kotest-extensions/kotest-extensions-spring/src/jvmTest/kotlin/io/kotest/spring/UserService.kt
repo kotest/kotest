@@ -1,4 +1,4 @@
-package com.sksamuel.kt.spring
+package io.kotest.spring
 
 import org.springframework.stereotype.Component
 

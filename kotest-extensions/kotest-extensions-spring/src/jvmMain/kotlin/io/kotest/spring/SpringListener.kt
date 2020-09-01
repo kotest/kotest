@@ -36,13 +36,13 @@ object SpringListener : TestListener {
    }
 
    override suspend fun beforeAny(testCase: TestCase) {
-      testCase.spec.testContext.beforeTestMethod(testCase.spec, testCase.spec.method)
-      testCase.spec.testContext.beforeTestExecution(testCase.spec, testCase.spec.method)
+      testCase.spec.testContext.beforeTestMethod(testCase.spec, method(testCase))
+      testCase.spec.testContext.beforeTestExecution(testCase.spec, method(testCase))
    }
 
    override suspend fun afterAny(testCase: TestCase, result: TestResult) {
-      testCase.spec.testContext.afterTestMethod(testCase.spec, testCase.spec.method, null as Throwable?)
-      testCase.spec.testContext.afterTestExecution(testCase.spec, testCase.spec.method, null as Throwable?)
+      testCase.spec.testContext.afterTestMethod(testCase.spec, method(testCase), null as Throwable?)
+      testCase.spec.testContext.afterTestExecution(testCase.spec, method(testCase), null as Throwable?)
    }
 
    override suspend fun afterSpec(spec: Spec) {
@@ -53,29 +53,46 @@ object SpringListener : TestListener {
    private val Spec.testContext: TestContextManager
       get() = testContexts.getValue(this)
 
-   // Check https://github.com/kotest/kotest/issues/950#issuecomment-524127221
-   // for a in-depth explanation. Too much to write here
-   private val Spec.method: Method
-      get() {
-         val klass = this::class.java
+   /**
+    * Generates a fake [Method] for the given [TestCase].
+    *
+    * Check https://github.com/kotest/kotest/issues/950#issuecomment-524127221
+    * for a in-depth explanation. Too much to write here
+    */
+   private fun method(testCase: TestCase): Method {
+      val klass = testCase.spec::class.java
 
-         return if (Modifier.isFinal(klass.modifiers)) {
-            if (!ignoreSpringListenerOnFinalClassWarning || !sysprop(KotestEngineSystemProperties.springIgnoreWarning, "false").toBoolean()) {
-               println("Using SpringListener on a final class. If any Spring annotation fails to work, try making this class open.")
-            }
-            this@SpringListener::class.java.getMethod("afterSpec", Spec::class.java, Continuation::class.java)
-         } else {
-            val fakeSpec = ByteBuddy()
-               .subclass(klass)
-               .defineMethod("kotestDummyMethod", String::class.java, Visibility.PUBLIC)
-               .intercept(FixedValue.value("Foo"))
-               .make()
-               .load(this::class.java.classLoader, ClassLoadingStrategy.Default.CHILD_FIRST)
-               .loaded
-
-            fakeSpec.getMethod("kotestDummyMethod")
+      return if (Modifier.isFinal(klass.modifiers)) {
+         if (!ignoreFinalWarning) {
+            println("Using SpringListener on a final class. If any Spring annotation fails to work, try making this class open.")
          }
+         this@SpringListener::class.java.getMethod("afterSpec", Spec::class.java, Continuation::class.java)
+      } else {
+         val methodName = methodName(testCase)
+         val fakeSpec = ByteBuddy()
+            .subclass(klass)
+            .defineMethod(methodName, String::class.java, Visibility.PUBLIC)
+            .intercept(FixedValue.value("Foo"))
+            .make()
+            .load(this::class.java.classLoader, ClassLoadingStrategy.Default.CHILD_FIRST)
+            .loaded
+         fakeSpec.getMethod(methodName)
       }
+   }
+
+   /**
+    * Generates a fake method name for the given [TestCase].
+    * The method name is taken from the test case path.
+    */
+   fun methodName(testCase: TestCase): String {
+      return testCase.description.testPath().value.replace("[^a-zA-Z_0-9]".toRegex(), "_").let {
+         if (it.first().isLetter()) it else "_$it"
+      }
+   }
+
+   private val ignoreFinalWarning =
+      ignoreSpringListenerOnFinalClassWarning ||
+         !sysprop(KotestEngineSystemProperties.springIgnoreWarning, "false").toBoolean()
 }
 
 /**
