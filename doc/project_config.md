@@ -65,7 +65,7 @@ Runs top level tests in the order they are defined in code.
 
 ```kotlin
 object ProjectConfig : AbstractProjectConfig() {
-    override fun testCaseOrder(): TestCaseOrder? = TestCaseOrder.Sequential
+    override val testCaseOrder = TestCaseOrder.Sequential
 }
 ```
 
@@ -75,7 +75,7 @@ Runs top level tests in a random order every time.
 
 ```kotlin
 object ProjectConfig : AbstractProjectConfig() {
-    override fun testCaseOrder(): TestCaseOrder? = TestCaseOrder.Random
+    override val testCaseOrder = TestCaseOrder.Random
 }
 ```
 
@@ -85,7 +85,7 @@ Runs top level tests in in lexicographic (~alphabetical) order.
 
 ```kotlin
 object ProjectConfig : AbstractProjectConfig() {
-    override fun testCaseOrder(): TestCaseOrder? = TestCaseOrder.Lexicographic
+    override val testCaseOrder = TestCaseOrder.Lexicographic
 }
 ```
 
