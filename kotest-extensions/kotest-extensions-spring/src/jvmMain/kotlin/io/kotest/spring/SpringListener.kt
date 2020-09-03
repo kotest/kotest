@@ -7,6 +7,7 @@ import io.kotest.core.spec.AutoScan
 import io.kotest.core.spec.Spec
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
+import io.kotest.core.test.TestType
 import io.kotest.mpp.sysprop
 import net.bytebuddy.ByteBuddy
 import net.bytebuddy.description.modifier.Visibility
@@ -20,7 +21,20 @@ import kotlin.coroutines.Continuation
 import kotlin.reflect.KClass
 import kotlin.reflect.full.primaryConstructor
 
-object SpringListener : TestListener {
+val SpringListener = SpringTestListener(SpringTestLifecycleMode.Test)
+
+/**
+ * Determines how the spring test context lifecycle is mapped to test cases.
+ *
+ * [SpringTestLifecycleMode.Root] will setup and teardown the test context before and after root tests only.
+ * [SpringTestLifecycleMode.Test] will setup and teardown the test context only at leaf tests.
+ *
+ */
+enum class SpringTestLifecycleMode {
+   Root, Test
+}
+
+class SpringTestListener(private val mode: SpringTestLifecycleMode) : TestListener {
 
    var ignoreSpringListenerOnFinalClassWarning: Boolean = false
 
@@ -35,14 +49,21 @@ object SpringListener : TestListener {
       spec.testContext.prepareTestInstance(spec)
    }
 
-   override suspend fun beforeAny(testCase: TestCase) {
-      testCase.spec.testContext.beforeTestMethod(testCase.spec, method(testCase))
-      testCase.spec.testContext.beforeTestExecution(testCase.spec, method(testCase))
+   private fun TestCase.isApplicable() = (mode == SpringTestLifecycleMode.Root && description.isRootTest()) ||
+      (mode == SpringTestLifecycleMode.Test && type == TestType.Test)
+
+   override suspend fun beforeTest(testCase: TestCase) {
+      if (testCase.isApplicable()) {
+         testCase.spec.testContext.beforeTestMethod(testCase.spec, method(testCase))
+         testCase.spec.testContext.beforeTestExecution(testCase.spec, method(testCase))
+      }
    }
 
-   override suspend fun afterAny(testCase: TestCase, result: TestResult) {
-      testCase.spec.testContext.afterTestMethod(testCase.spec, method(testCase), null as Throwable?)
-      testCase.spec.testContext.afterTestExecution(testCase.spec, method(testCase), null as Throwable?)
+   override suspend fun afterTest(testCase: TestCase, result: TestResult) {
+      if (testCase.isApplicable()) {
+         testCase.spec.testContext.afterTestMethod(testCase.spec, method(testCase), null as Throwable?)
+         testCase.spec.testContext.afterTestExecution(testCase.spec, method(testCase), null as Throwable?)
+      }
    }
 
    override suspend fun afterSpec(spec: Spec) {
@@ -66,7 +87,7 @@ object SpringListener : TestListener {
          if (!ignoreFinalWarning) {
             println("Using SpringListener on a final class. If any Spring annotation fails to work, try making this class open.")
          }
-         this@SpringListener::class.java.getMethod("afterSpec", Spec::class.java, Continuation::class.java)
+         this@SpringTestListener::class.java.getMethod("afterSpec", Spec::class.java, Continuation::class.java)
       } else {
          val methodName = methodName(testCase)
          val fakeSpec = ByteBuddy()
