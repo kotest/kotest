@@ -10,42 +10,24 @@ on:
          - '*.md'
 
 jobs:
-   build:
-      strategy:
-         matrix:
-            os: [ macOS-latest, windows-latest, ubuntu-latest ]
-
-      runs-on: ${{matrix.os}}
-
+   linux:
+      runs-on: ubuntu-latest
       steps:
          -  name: Checkout the repo
             uses: actions/checkout@v2
             with:
                fetch-depth: 0
 
-         -  name: Run linux and common tests
-            if: matrix.os == 'ubuntu-latest'
+         -  name: Run tests
             run: ./gradlew check
 
-         -  name: Run windows tests
-            if: matrix.os == 'windows-latest'
-            run: ./gradlew mingwX64Test
-
-         -  name: Run macos tests
-            if: matrix.os == 'macOS-latest'
-            run: ./gradlew macosX64Test
-
-         -  name: Run ios tests
-            if: matrix.os == 'macOS-latest'
-            run: ./gradlew iosX64Test
-
-         -  name: Run tvos tests
-            if: matrix.os == 'macOS-latest'
-            run: ./gradlew tvosX64Test
-
-         -  name: Run watchos tests
-            if: matrix.os == 'macOS-latest'
-            run: ./gradlew watchosX86Test
+         -  name: publish snapshots
+            run: ./gradlew publish
+            env:
+               OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
+               OSSRH_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
+               ORG_GRADLE_PROJECT_signingKey: ${{ secrets.SIGNING_KEY }}
+               ORG_GRADLE_PROJECT_signingPassword: ${{ secrets.SIGNING_PASSWORD }}
 
          -  name: Bundle the build report
             if: failure()
@@ -58,33 +40,25 @@ jobs:
                name: error-report
                path: build-reports.zip
 
-   deploy-linux-and-common:
-      needs: build
-      runs-on: ubuntu-latest
-
-      steps:
-         -  name: Checkout the repo
-            uses: actions/checkout@v2
-            with:
-               fetch-depth: 0
-
-         -  name: publish linux and common snapshots
-            run: ./gradlew publish
-            env:
-               OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
-               OSSRH_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
-               ORG_GRADLE_PROJECT_signingKey: ${{ secrets.SIGNING_KEY }}
-               ORG_GRADLE_PROJECT_signingPassword: ${{ secrets.SIGNING_PASSWORD }}
-
-   deploy-mac:
-      needs: build
+   macos:
       runs-on: macOS-latest
-
       steps:
          -  name: Checkout the repo
             uses: actions/checkout@v2
             with:
                fetch-depth: 0
+
+         -  name: Run macos tests
+            run: ./gradlew macosX64Test
+
+         -  name: Run ios tests
+            run: ./gradlew iosX64Test
+
+         -  name: Run tvos tests
+            run: ./gradlew tvosX64Test
+
+         -  name: Run watchos tests
+            run: ./gradlew watchosX86Test
 
          -  name: publish macos snapshots
             run: ./gradlew publishMacosX64PublicationToDeployRepository
@@ -118,15 +92,27 @@ jobs:
                ORG_GRADLE_PROJECT_signingKey: ${{ secrets.SIGNING_KEY }}
                ORG_GRADLE_PROJECT_signingPassword: ${{ secrets.SIGNING_PASSWORD }}
 
-   deploy-windows:
-      needs: build
-      runs-on: windows-latest
+         -  name: Bundle the build report
+            if: failure()
+            run: find . -type d -name 'reports' | zip -@ -r build-reports.zip
 
+         -  name: Upload the build report
+            if: failure()
+            uses: actions/upload-artifact@master
+            with:
+               name: error-report
+               path: build-reports.zip
+
+   windows:
+      runs-on: windows-latest
       steps:
          -  name: Checkout the repo
             uses: actions/checkout@v2
             with:
                fetch-depth: 0
+
+         -  name: Run tests
+            run: ./gradlew mingwX64Test
 
          -  name: publish mingw64 snapshot
             run: ./gradlew publishMingwX64PublicationToDeployRepository
@@ -135,6 +121,18 @@ jobs:
                OSSRH_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
                ORG_GRADLE_PROJECT_signingKey: ${{ secrets.SIGNING_KEY }}
                ORG_GRADLE_PROJECT_signingPassword: ${{ secrets.SIGNING_PASSWORD }}
+
+         -  name: Bundle the build report
+            if: failure()
+            run: find . -type d -name 'reports' | zip -@ -r build-reports.zip
+
+         -  name: Upload the build report
+            if: failure()
+            uses: actions/upload-artifact@master
+            with:
+               name: error-report
+               path: build-reports.zip
+
 
 env:
    GRADLE_OPTS: -Dorg.gradle.configureondemand=true -Dorg.gradle.parallel=false -Dkotlin.incremental=false -Dorg.gradle.jvmargs="-Xmx3g -XX:MaxPermSize=2048m -XX:+HeapDumpOnOutOfMemoryError -Dfile.encoding=UTF-8"
