@@ -75,24 +75,20 @@ class JUnitTestEngineListener(
    // when we need to register a new test
    private val descriptors = mutableMapOf<Description, TestDescriptor>()
 
-   // contains all the results so we can fail a parent when a child has failed
-   private val results = mutableListOf<Pair<Description, TestResult>>()
-
    // contains any spec that failed so we can write out the failed specs file
    private val failedSpecs = mutableSetOf<KClass<out Spec>>()
 
    // contains an exception throw during beforeSpec or spec instantiation
    private var exceptionThrowBySpec: Throwable? = null
 
+   private var hasVisibleTest = false
+
+   private var hasIgnoredTest = false
+
    override fun engineStarted(classes: List<KClass<out Spec>>) {
       log("Engine started; classes=[$classes]")
       listener.executionStarted(root)
    }
-
-   /**
-    * Returns true if any test result has status of [TestStatus.Ignored].
-    */
-   private fun hasIgnored() = results.any { it.second.status == TestStatus.Ignored }
 
    override fun engineFinished(t: List<Throwable>) {
       log("Engine finished; throwables=[${t.joinToString(separator = "\n", transform = { it.toString() })}]")
@@ -117,7 +113,7 @@ class JUnitTestEngineListener(
             else -> TestExecutionResult.failed(it)
          }
       }.find { it.status == TestExecutionResult.Status.FAILED }
-         ?: if (configuration.failOnIgnoredTests && hasIgnored()) {
+         ?: if (configuration.failOnIgnoredTests && hasIgnoredTest) {
             TestExecutionResult.failed(RuntimeException("Build contained ignored test"))
          } else {
             TestExecutionResult.successful()
@@ -129,6 +125,10 @@ class JUnitTestEngineListener(
 
    override fun specStarted(kclass: KClass<out Spec>) {
       log("specStarted [${kclass.qualifiedName}]")
+
+      // reset the flags for this spec
+      hasVisibleTest = false
+
       try {
          val descriptor = kclass.descriptor(root)
          descriptors[kclass.toDescription()] = descriptor
@@ -181,7 +181,7 @@ class JUnitTestEngineListener(
     */
    private fun checkSpecVisiblity(kclass: KClass<out Spec>, t: Throwable) {
       val description = kclass.toDescription()
-      if (!isVisible(description)) {
+      if (!hasVisibleTest) {
          val spec = descriptors[description]!!
          val test = spec.append(
             description.append(createTestName("Spec execution failed"), TestType.Test), TestDescriptor.Type.TEST, null,
@@ -193,38 +193,25 @@ class JUnitTestEngineListener(
       }
    }
 
-   /**
-    * Returns true if the given description is visible.
-    * That means it must have at least one non container test attached to it.
-    */
-   private fun isVisible(description: Description) =
-      results.any { description.isAncestorOf(it.first) }
-
    override fun testStarted(testCase: TestCase) {
       val descriptor = createTestDescriptor(testCase)
       log("Registering junit dynamic test: $descriptor")
       listener.dynamicTestRegistered(descriptor)
       log("Notifying junit that execution has started: $descriptor")
       listener.executionStarted(descriptor)
+      hasVisibleTest = true
    }
 
    override fun testFinished(testCase: TestCase, result: TestResult) {
       val descriptor = descriptors[testCase.description]
          ?: throw RuntimeException("Error retrieving description for: ${testCase.description}")
-      results.add(Pair(testCase.description, result))
       log("Notifying junit that a test has finished [$descriptor]")
-
-      // even if this test was a success, if we have failed children, we consider this test to have failed as well
-      val resultp = when (result.status) {
-         TestStatus.Success -> findChildFailure(testCase.description) ?: result
-         else -> result
-      }
-
-      listener.executionFinished(descriptor, resultp.testExecutionResult())
+      listener.executionFinished(descriptor, result.testExecutionResult())
    }
 
    override fun testIgnored(testCase: TestCase, reason: String?) {
       val descriptor = createTestDescriptor(testCase)
+      hasIgnoredTest = true
       log("Notifying junit that a test was ignored [$descriptor]")
       listener.dynamicTestRegistered(descriptor)
       listener.executionSkipped(descriptor, reason)
@@ -256,20 +243,5 @@ class JUnitTestEngineListener(
       TestStatus.Success -> TestExecutionResult.successful()
       TestStatus.Error -> TestExecutionResult.failed(this.error)
       TestStatus.Failure -> TestExecutionResult.failed(this.error)
-   }
-
-   /**
-    * Returns a failed or errored [TestResult] for a given description's children by searching
-    * the results list.
-    */
-   private fun findChildFailure(description: Description): TestResult? {
-      return results
-         .filter { description.isAncestorOf(it.first) }
-         .filter { it.second.status == TestStatus.Error || it.second.status == TestStatus.Failure }
-         // the lowest level failure should be what we pick
-         .sortedBy { it.first.chain().size }
-         .reversed()
-         .map { it.second }
-         .firstOrNull()
    }
 }

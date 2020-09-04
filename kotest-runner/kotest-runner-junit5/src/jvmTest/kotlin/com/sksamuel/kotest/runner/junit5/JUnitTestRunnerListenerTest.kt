@@ -20,7 +20,7 @@ import kotlin.time.ExperimentalTime
 @OptIn(ExperimentalTime::class)
 class JUnitTestRunnerListenerTests : FunSpec({
 
-   test("a bad test should fail parent and spec") {
+   test("a bad test should fail test but not parent or spec") {
 
       val root = KotestEngineDescriptor(
          UniqueId.forEngine("kotest"),
@@ -68,8 +68,8 @@ class JUnitTestRunnerListenerTests : FunSpec({
       listener.engineFinished(emptyList())
 
       finished.toMap() shouldBe mapOf(
-         "test1" to TestExecutionResult.Status.FAILED,
          "test2" to TestExecutionResult.Status.FAILED,
+         "test1" to TestExecutionResult.Status.SUCCESSFUL,
          "com.sksamuel.kotest.runner.junit5.JUnitTestRunnerListenerTests" to TestExecutionResult.Status.SUCCESSFUL,
          "Kotest" to TestExecutionResult.Status.SUCCESSFUL
       )
