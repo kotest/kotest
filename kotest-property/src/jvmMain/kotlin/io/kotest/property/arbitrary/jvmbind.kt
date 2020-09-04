@@ -19,10 +19,12 @@ inline fun <reified T : Any> Arb.Companion.bind(): Arb<T> {
    return arb { rs ->
       val constructor = kclass.primaryConstructor ?: error("could not locate a primary constructor")
       val gens = constructor.parameters.map {
-         it to (defaultForClass<Any>(it.type.classifier as KClass<*>)
-            ?: error("Could not locate generator for parameter ${kclass.qualifiedName}.${it.name}"))
+         it to (
+            defaultForClass<Any>(it.type.classifier as KClass<*>)
+               ?: error("Could not locate generator for parameter ${kclass.qualifiedName}.${it.name}")
+            )
       }
-      val iters = gens.map { it.first to it.second.values(rs).iterator() }
+      val iters = gens.map { it.first to it.second.generate(rs).iterator() }
       generateSequence {
          val values = iters.map {
             if (it.second.hasNext()) it.second.next().value else error("The generator for ${kclass.qualifiedName}.${it.first.name} has no more elements")

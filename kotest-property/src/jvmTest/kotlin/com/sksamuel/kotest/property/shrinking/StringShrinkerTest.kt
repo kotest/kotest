@@ -47,7 +47,7 @@ class StringShrinkerTest : StringSpec({
                it.shouldEndWith("a".repeat(a.length / 2))
             }
             candidates.forAtLeastOne {
-              it.shouldStartWith("a".repeat(a.length / 2))
+               it.shouldStartWith("a".repeat(a.length / 2))
             }
          }
       }

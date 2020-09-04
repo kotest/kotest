@@ -16,48 +16,48 @@ import io.kotest.matchers.shouldBe
 
 class ValidatedMatchersTest : StringSpec({
 
-  "Validated shouldBe Valid" {
+   "Validated shouldBe Valid" {
 
-    shouldThrow<AssertionError> {
-      Invalid("error") should beValid()
-    }.message shouldBe "Invalid(e=error) should be Valid"
+      shouldThrow<AssertionError> {
+         Invalid("error") should beValid()
+      }.message shouldBe "Invalid(error) should be Valid"
 
-    Valid("ok") should beValid()
-    Valid("ok").shouldBeValid()
-    Valid("ok") shouldBeValid "ok"
-    Valid("ok") shouldBeValid { it.a == "ok" }
+      Valid("ok") should beValid()
+      Valid("ok").shouldBeValid()
+      Valid("ok") shouldBeValid "ok"
+      Valid("ok") shouldBeValid { it.a == "ok" }
 
-    shouldThrow<AssertionError> {
-      Valid("ok") shouldNotBeValid "ok"
-    }.message shouldBe "Valid(a=ok) should not be Valid(a=ok)"
+      shouldThrow<AssertionError> {
+         Valid("ok") shouldNotBeValid "ok"
+      }.message shouldBe "Valid(ok) should not be Valid(ok)"
 
-    shouldThrow<AssertionError> {
-      Invalid("error") should beValid("error")
-    }.message shouldBe "Invalid(e=error) should be Valid(a=error)"
-  }
+      shouldThrow<AssertionError> {
+         Invalid("error") should beValid("error")
+      }.message shouldBe "Invalid(error) should be Valid(error)"
+   }
 
-  "Validated should use contracts to smart cast Valids" {
-    val e = "boo".valid()
-    e.shouldBeValid()
-    e.a shouldBe "boo"
-  }
+   "Validated should use contracts to smart cast Valids" {
+      val e = "boo".valid()
+      e.shouldBeValid()
+      e.a shouldBe "boo"
+   }
 
-  "Validated shouldBe Invalid" {
+   "Validated shouldBe Invalid" {
 
-    shouldThrow<AssertionError> {
-      Valid("foo") should beInvalid()
-    }.message shouldBe "Valid(a=foo) should be Invalid"
+      shouldThrow<AssertionError> {
+         Valid("foo") should beInvalid()
+      }.message shouldBe "Valid(foo) should be Invalid"
 
-    Invalid("error") should beInvalid()
-    Invalid("error").shouldBeInvalid()
-    Invalid("error") shouldBeInvalid "error"
-    Invalid("error") shouldBeInvalid { it.e == "error" }
-    Invalid("error").shouldNotBeValid()
-  }
+      Invalid("error") should beInvalid()
+      Invalid("error").shouldBeInvalid()
+      Invalid("error") shouldBeInvalid "error"
+      Invalid("error") shouldBeInvalid { it.e == "error" }
+      Invalid("error").shouldNotBeValid()
+   }
 
-  "use contracts to smart cast Invalids" {
-    val e = "boo".invalid()
-    e.shouldBeInvalid()
-    e.e shouldBe "boo"
-  }
+   "use contracts to smart cast Invalids" {
+      val e = "boo".invalid()
+      e.shouldBeInvalid()
+      e.e shouldBe "boo"
+   }
 })

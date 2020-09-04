@@ -13,5 +13,4 @@ class IterationsTest : ShouldSpec({
          // If all of these execute, the exhaustive could infer the minimum iterations
       }
    }
-
 })

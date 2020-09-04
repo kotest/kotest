@@ -142,6 +142,5 @@ class DateTest : WordSpec({
       "Be the default generator for Duration" {
          checkAll(10) { _: Period -> /* No use. Won't reach here if unsupported */ }
       }
-
    }
 })

@@ -64,7 +64,10 @@ fun Arb.Companion.localDate(minYear: Int = 1970, maxYear: Int = 2030): Arb<Local
  * @see [localDateTime]
  * @see [localTime]
  */
-fun Arb.Companion.localDate(minDate: LocalDate = LocalDate.of(1970, 1, 1), maxDate: LocalDate = LocalDate.of(2030, 12, 31)): Arb<LocalDate> = object : Arb<LocalDate>() {
+fun Arb.Companion.localDate(
+   minDate: LocalDate = LocalDate.of(1970, 1, 1),
+   maxDate: LocalDate = LocalDate.of(2030, 12, 31)
+): Arb<LocalDate> = object : Arb<LocalDate>() {
 
    override fun edgecases(): List<LocalDate> {
       val yearRange = (minDate.year..maxDate.year)

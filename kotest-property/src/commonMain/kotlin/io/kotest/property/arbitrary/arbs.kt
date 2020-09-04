@@ -10,16 +10,28 @@ import io.kotest.property.map
 import io.kotest.property.sampleOf
 
 /**
+ * Returns a sequence from values generated from this arb.
+ * Edgecases will be ignored.
+ */
+fun <A> Arb<A>.randomSequence(rs: RandomSource = RandomSource.Default): Sequence<A> {
+   val valuesIterator = this.values(rs).iterator()
+   return if (valuesIterator.hasNext()) {
+      generateSequence { valuesIterator.next() }.map { it.value }
+   } else {
+      rs.sequence().map { value(it) }.map { it.value }
+   }
+}
+
+/**
  * Returns a sequence of size [count] from values generated from this arb.
  * Edgecases will be ignored.
  */
-fun <A> Arb<A>.take(count: Int, rs: RandomSource = RandomSource.Default): Sequence<A> =
-   values(rs).take(count).map { it.value }
+fun <A> Arb<A>.take(count: Int, rs: RandomSource = RandomSource.Default): Sequence<A> = randomSequence(rs).take(count)
 
 /**
  * Returns a single value generated from this arb ignoring edgecases.
  */
-fun <A> Arb<A>.single(rs: RandomSource = RandomSource.Default): A = values(rs).first().value
+fun <A> Arb<A>.single(rs: RandomSource = RandomSource.Default): A = randomSequence(rs).first()
 fun <A> Arb<A>.next(rs: RandomSource = RandomSource.Default): A = single(rs)
 
 /**
@@ -29,6 +41,7 @@ fun <A> Arb<A>.next(rs: RandomSource = RandomSource.Default): A = single(rs)
 fun <A> arb(edgecases: List<A> = emptyList(), f: (RandomSource) -> Sequence<A>) = object : Arb<A>() {
    override fun edgecases(): List<A> = edgecases
    override fun values(rs: RandomSource): Sequence<Sample<A>> = f(rs).map { Sample(it) }
+   override fun value(rs: RandomSource): Sample<A> = Sample(f(rs).first())
 }
 
 /**
@@ -42,6 +55,7 @@ fun <A> arb(
 ) = object : Arb<A>() {
    override fun edgecases(): List<A> = edgecases
    override fun values(rs: RandomSource): Sequence<Sample<A>> = f(rs).map { sampleOf(it, shrinker) }
+   override fun value(rs: RandomSource): Sample<A> = sampleOf(f(rs).first(), shrinker)
 }
 
 /**
@@ -54,6 +68,7 @@ fun <A> arb(
 ) = object : Arb<A>() {
    override fun edgecases(): List<A> = emptyList()
    override fun values(rs: RandomSource): Sequence<Sample<A>> = generateSequence { sampleOf(f(rs), shrinker) }
+   override fun value(rs: RandomSource): Sample<A> = sampleOf(f(rs), shrinker)
 }
 
 /**
@@ -67,6 +82,7 @@ fun <A> arb(
 ) = object : Arb<A>() {
    override fun edgecases(): List<A> = edgecases
    override fun values(rs: RandomSource): Sequence<Sample<A>> = generateSequence { sampleOf(f(rs), shrinker) }
+   override fun value(rs: RandomSource): Sample<A> = sampleOf(f(rs), shrinker)
 }
 
 /**
@@ -78,6 +94,9 @@ fun <A> Arb<A>.filter(predicate: (A) -> Boolean) = object : Arb<A>() {
    override fun edgecases(): List<A> = this@filter.edgecases().filter(predicate)
    override fun values(rs: RandomSource): Sequence<Sample<A>> =
       this@filter.values(rs).filter { predicate(it.value) }
+
+   override fun value(rs: RandomSource): Sample<A> =
+      rs.sequence().map { this@filter.value(it) }.filter { predicate(it.value) }.first()
 }
 
 /**
@@ -98,16 +117,22 @@ fun <A, B> Arb<A>.map(f: (A) -> B): Arb<B> = object : Arb<B>() {
    override fun values(rs: RandomSource): Sequence<Sample<B>> {
       return this@map.values(rs).map { Sample(f(it.value), it.shrinks.map(f)) }
    }
+
+   override fun value(rs: RandomSource): Sample<B> = Sample(f(this@map.value(rs).value))
 }
 
 /**
  * Returns a new [Arb] which takes its elements from the receiver and maps them using the supplied function.
  */
-fun <A, B> Arb<A>.flatMap(f: (A) -> List<B>): Arb<B> = object : Arb<B>() {
-   override fun edgecases(): List<B> = this@flatMap.edgecases().flatMap { f(it) }
-   override fun values(rs: RandomSource): Sequence<Sample<B>> {
-      return this@flatMap.values(rs).flatMap { a -> f(a.value).asSequence().map { Sample(it) } }
-   }
+fun <A, B> Arb<A>.flatMap(f: (A) -> Arb<B>): Arb<B> = object : Arb<B>() {
+   override fun edgecases(): List<B> = this@flatMap.edgecases().flatMap { f(it).edgecases() }
+   override fun values(rs: RandomSource): Sequence<Sample<B>> =
+      this@flatMap.randomSequence(rs).zip(generateSequence { rs.random.nextLong() }) { value, nextLong ->
+         Sample(f(value).next(RandomSource.seeded(nextLong)))
+      }
+
+   override fun value(rs: RandomSource): Sample<B> =
+      f(this@flatMap.value(rs).value).value(rs)
 }
 
 /**
@@ -126,9 +151,13 @@ fun <A> Arb<A>.distinct() = distinctBy { it }
  */
 fun <A, B> Arb<A>.distinctBy(selector: (A) -> B) = object : Arb<A>() {
    override fun edgecases(): List<A> = this@distinctBy.edgecases().distinctBy(selector)
+
    override fun values(rs: RandomSource): Sequence<Sample<A>> {
       return this@distinctBy.values(rs).distinctBy { selector(it.value) }
    }
+
+   override fun value(rs: RandomSource): Sample<A> =
+      rs.sequence().map { this@distinctBy.value(rs) }.distinctBy { selector(it.value) }.first()
 }
 
 fun <A> Arb.Companion.constant(a: A) = element(a)
@@ -145,18 +174,34 @@ fun <A> Arb.Companion.constant(a: A) = element(a)
  * @param other the arg to merge with this one
  * @return the merged arg.
  */
-
 fun <A, B : A> Arb<A>.merge(other: Gen<B>): Arb<A> = object : Arb<A>() {
    override fun edgecases(): List<A> = when (other) {
       is Arb -> this@merge.edgecases().zip(other.edgecases()).flatMap { listOf(it.first, it.second) }
-      else -> this@merge.edgecases()
+      is Exhaustive -> this@merge.edgecases()
    }
 
    override fun values(rs: RandomSource): Sequence<Sample<A>> {
-      val merged = when (other) {
-         is Arb -> this@merge.values(rs).zip(other.values(rs))
-         is Exhaustive -> this@merge.values(rs).zip(other.values.asSequence().map { Sample(it) })
+      val aIterator = this@merge.randomSequence(rs).iterator()
+      val bIterator = when (other) {
+         is Arb -> other.randomSequence(rs).iterator()
+         is Exhaustive -> other.toArb().randomSequence(rs).iterator()
       }
-      return merged.flatMap { sequenceOf(it.first, it.second) }
+      return generateSequence {
+         if (rs.random.nextBoolean()) {
+            Sample(aIterator.next())
+         } else {
+            Sample(bIterator.next())
+         }
+      }
    }
+
+   override fun value(rs: RandomSource): Sample<A> =
+      if (rs.random.nextBoolean()) {
+         this@merge.value(rs)
+      } else {
+         when (other) {
+            is Arb -> other.value(rs)
+            is Exhaustive -> other.toArb().value(rs)
+         }
+      }
 }

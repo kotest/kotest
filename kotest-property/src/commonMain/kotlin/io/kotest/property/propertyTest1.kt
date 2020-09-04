@@ -50,7 +50,6 @@ suspend fun <A> checkAll(
    property: suspend PropertyContext.(A) -> Unit
 ): PropertyContext = proptest(iterations, genA, config, property)
 
-
 suspend inline fun <reified A> checkAll(
    noinline property: suspend PropertyContext.(A) -> Unit
 ): PropertyContext = proptest(
@@ -180,7 +179,11 @@ suspend fun <A> forNone(
 ) = forNone(computeDefaultIteration(genA), config, genA, property)
 
 @JvmName("forNoneExt")
-suspend fun <A> Gen<A>.forNone(iterations: Int, config: PropTestConfig, property: suspend PropertyContext.(A) -> Boolean) =
+suspend fun <A> Gen<A>.forNone(
+   iterations: Int,
+   config: PropTestConfig,
+   property: suspend PropertyContext.(A) -> Boolean
+) =
    forNone(iterations, config, this, property)
 
 suspend fun <A> forNone(

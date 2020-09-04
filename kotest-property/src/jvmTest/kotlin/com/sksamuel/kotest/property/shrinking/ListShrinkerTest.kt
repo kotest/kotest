@@ -7,12 +7,17 @@ import io.kotest.matchers.collections.shouldHaveAtMostSize
 import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldContain
-import io.kotest.property.*
+import io.kotest.property.Arb
+import io.kotest.property.PropTestConfig
+import io.kotest.property.PropertyTesting
+import io.kotest.property.ShrinkingMode
 import io.kotest.property.arbitrary.ListShrinker
 import io.kotest.property.arbitrary.constant
 import io.kotest.property.arbitrary.int
 import io.kotest.property.arbitrary.list
+import io.kotest.property.checkAll
 import io.kotest.property.internal.doShrinking
+import io.kotest.property.rtree
 
 class ListShrinkerTest : FunSpec() {
    init {
@@ -98,7 +103,7 @@ class ListShrinkerTest : FunSpec() {
                list.shouldHaveAtMostSize(3)
             }
          }.message
-         msg.shouldContain("Arg 0: [0, 1, 90, 24]")
+         msg.shouldContain("Arg 0: [0, 1, 51, 24]")
       }
    }
 }
