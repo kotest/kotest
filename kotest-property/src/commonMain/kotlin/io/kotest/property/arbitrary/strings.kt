@@ -31,7 +31,7 @@ fun Arb.Companion.string(
 
    return arb(StringShrinker, edgecases) { rs ->
       val size = rs.random.nextInt(minSize..maxSize)
-      codepoints.randomSequence(rs).take(size).joinToString("") { it.asString() }
+      codepoints.take(size, rs).joinToString("") { it.asString() }
    }
 }
 

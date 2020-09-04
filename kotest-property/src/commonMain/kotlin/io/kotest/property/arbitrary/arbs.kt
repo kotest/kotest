@@ -10,28 +10,16 @@ import io.kotest.property.map
 import io.kotest.property.sampleOf
 
 /**
- * Returns a sequence from values generated from this arb.
- * Edgecases will be ignored.
- */
-fun <A> Arb<A>.randomSequence(rs: RandomSource = RandomSource.Default): Sequence<A> {
-   val valuesIterator = this.values(rs).iterator()
-   return if (valuesIterator.hasNext()) {
-      generateSequence { valuesIterator.next() }.map { it.value }
-   } else {
-      rs.sequence().map { value(it) }.map { it.value }
-   }
-}
-
-/**
  * Returns a sequence of size [count] from values generated from this arb.
  * Edgecases will be ignored.
  */
-fun <A> Arb<A>.take(count: Int, rs: RandomSource = RandomSource.Default): Sequence<A> = randomSequence(rs).take(count)
+fun <A> Arb<A>.take(count: Int, rs: RandomSource = RandomSource.Default): Sequence<A> =
+   randomSamples(rs).map { it.value }.take(count)
 
 /**
  * Returns a single value generated from this arb ignoring edgecases.
  */
-fun <A> Arb<A>.single(rs: RandomSource = RandomSource.Default): A = randomSequence(rs).first()
+fun <A> Arb<A>.single(rs: RandomSource = RandomSource.Default): A = this.randomSamples(rs).map { it.value }.first()
 fun <A> Arb<A>.next(rs: RandomSource = RandomSource.Default): A = single(rs)
 
 /**
@@ -92,11 +80,8 @@ fun <A> arb(
  */
 fun <A> Arb<A>.filter(predicate: (A) -> Boolean) = object : Arb<A>() {
    override fun edgecases(): List<A> = this@filter.edgecases().filter(predicate)
-   override fun values(rs: RandomSource): Sequence<Sample<A>> =
-      this@filter.values(rs).filter { predicate(it.value) }
-
-   override fun value(rs: RandomSource): Sample<A> =
-      rs.sequence().map { this@filter.value(it) }.filter { predicate(it.value) }.first()
+   override fun values(rs: RandomSource): Sequence<Sample<A>> = this@filter.values(rs).filter { predicate(it.value) }
+   override fun value(rs: RandomSource): Sample<A> = randomSamples(rs).filter { predicate(it.value) }.first()
 }
 
 /**
@@ -127,12 +112,11 @@ fun <A, B> Arb<A>.map(f: (A) -> B): Arb<B> = object : Arb<B>() {
 fun <A, B> Arb<A>.flatMap(f: (A) -> Arb<B>): Arb<B> = object : Arb<B>() {
    override fun edgecases(): List<B> = this@flatMap.edgecases().flatMap { f(it).edgecases() }
    override fun values(rs: RandomSource): Sequence<Sample<B>> =
-      this@flatMap.randomSequence(rs).zip(generateSequence { rs.random.nextLong() }) { value, nextLong ->
-         Sample(f(value).next(RandomSource.seeded(nextLong)))
+      this@flatMap.randomSamples(rs).zip(generateSequence { rs.random.nextLong() }) { sample, nextLong ->
+         Sample(f(sample.value).next(RandomSource.seeded(nextLong)))
       }
 
-   override fun value(rs: RandomSource): Sample<B> =
-      f(this@flatMap.value(rs).value).value(rs)
+   override fun value(rs: RandomSource): Sample<B> = f(this@flatMap.value(rs).value).value(rs)
 }
 
 /**
@@ -157,7 +141,7 @@ fun <A, B> Arb<A>.distinctBy(selector: (A) -> B) = object : Arb<A>() {
    }
 
    override fun value(rs: RandomSource): Sample<A> =
-      rs.sequence().map { this@distinctBy.value(rs) }.distinctBy { selector(it.value) }.first()
+      randomSamples(rs).distinctBy { selector(it.value) }.first()
 }
 
 fun <A> Arb.Companion.constant(a: A) = element(a)
@@ -181,17 +165,13 @@ fun <A, B : A> Arb<A>.merge(other: Gen<B>): Arb<A> = object : Arb<A>() {
    }
 
    override fun values(rs: RandomSource): Sequence<Sample<A>> {
-      val aIterator = this@merge.randomSequence(rs).iterator()
+      val aIterator = this@merge.randomSamples(rs).iterator()
       val bIterator = when (other) {
-         is Arb -> other.randomSequence(rs).iterator()
-         is Exhaustive -> other.toArb().randomSequence(rs).iterator()
+         is Arb -> other.randomSamples(rs).iterator()
+         is Exhaustive -> other.toArb().randomSamples(rs).iterator()
       }
       return generateSequence {
-         if (rs.random.nextBoolean()) {
-            Sample(aIterator.next())
-         } else {
-            Sample(bIterator.next())
-         }
+         if (rs.random.nextBoolean()) aIterator.next() else bIterator.next()
       }
    }
 
