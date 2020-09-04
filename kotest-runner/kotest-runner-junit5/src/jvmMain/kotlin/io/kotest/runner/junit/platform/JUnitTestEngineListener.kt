@@ -128,6 +128,7 @@ class JUnitTestEngineListener(
 
       // reset the flags for this spec
       hasVisibleTest = false
+      hasIgnoredTest = false
 
       try {
          val descriptor = kclass.descriptor(root)
@@ -155,7 +156,7 @@ class JUnitTestEngineListener(
       // if the spec itself had an error then we must make sure we add at least one nested test so that
       // the test shows up properly in intellij
       (exceptionThrowBySpec ?: t)?.apply {
-         checkSpecVisiblity(kclass, this)
+         ensureSpecIsVisible(kclass, this)
       }
 
       val result = when {
@@ -178,10 +179,11 @@ class JUnitTestEngineListener(
 
    /**
     * Checks that the spec has at least one test attached in case of failure.
+    * If it doesn't, then it will add a dummy test name to ensure it appears.
     */
-   private fun checkSpecVisiblity(kclass: KClass<out Spec>, t: Throwable) {
-      val description = kclass.toDescription()
+   private fun ensureSpecIsVisible(kclass: KClass<out Spec>, t: Throwable) {
       if (!hasVisibleTest) {
+         val description = kclass.toDescription()
          val spec = descriptors[description]!!
          val test = spec.append(
             description.append(createTestName("Spec execution failed"), TestType.Test), TestDescriptor.Type.TEST, null,

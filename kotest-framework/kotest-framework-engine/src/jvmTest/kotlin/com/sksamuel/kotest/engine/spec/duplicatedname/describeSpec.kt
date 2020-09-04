@@ -4,6 +4,7 @@ import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.DuplicatedTestNameException
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.style.DescribeSpec
+import io.kotest.matchers.shouldBe
 
 abstract class DescribeSpecDuplicateNameTest(iso: IsolationMode) : DescribeSpec() {
    init {
@@ -12,7 +13,7 @@ abstract class DescribeSpecDuplicateNameTest(iso: IsolationMode) : DescribeSpec(
          it("woo") {}
          shouldThrow<DuplicatedTestNameException> {
             it("woo") {}
-         }
+         }.message shouldBe "Cannot create test with duplicated name woo"
       }
       shouldThrow<DuplicatedTestNameException> {
          describe("foo") {}

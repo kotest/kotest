@@ -4,6 +4,7 @@ import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.DuplicatedTestNameException
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.style.StringSpec
+import io.kotest.matchers.shouldBe
 
 abstract class StringSpecDuplicateNameTest(iso: IsolationMode) : StringSpec() {
    init {
@@ -11,7 +12,7 @@ abstract class StringSpecDuplicateNameTest(iso: IsolationMode) : StringSpec() {
       "foo" {}
       shouldThrow<DuplicatedTestNameException> {
          "foo" {}
-      }
+      }.message shouldBe "Cannot create test with duplicated name foo"
    }
 }
 

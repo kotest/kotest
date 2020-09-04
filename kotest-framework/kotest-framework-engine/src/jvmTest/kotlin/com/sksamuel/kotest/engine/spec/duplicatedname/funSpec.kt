@@ -4,6 +4,7 @@ import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.DuplicatedTestNameException
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.style.FunSpec
+import io.kotest.matchers.shouldBe
 
 abstract class FunSpecDuplicateNameTest(iso: IsolationMode) : FunSpec() {
    init {
@@ -12,7 +13,7 @@ abstract class FunSpecDuplicateNameTest(iso: IsolationMode) : FunSpec() {
          test("wibble") { }
          shouldThrow<DuplicatedTestNameException> {
             test("wibble") {}
-         }
+         }.message shouldBe "Cannot create test with duplicated name wibble"
       }
       shouldThrow<DuplicatedTestNameException> {
          context("wobble") {}
