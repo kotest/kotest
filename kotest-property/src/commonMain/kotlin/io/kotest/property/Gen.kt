@@ -83,7 +83,7 @@ abstract class Arb<out A> : Gen<A>() {
       return if (valuesIterator.hasNext()) {
          generateSequence { valuesIterator.next() }
       } else {
-         generateSequence { sample(RandomSource.seeded(rs.random.nextLong())) }
+         generateSequence { sample(rs) }
       }
    }
 
