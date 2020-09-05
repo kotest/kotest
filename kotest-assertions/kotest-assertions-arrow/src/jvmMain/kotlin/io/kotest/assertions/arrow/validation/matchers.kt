@@ -46,11 +46,6 @@ fun Validated<*, *>.shouldBeInvalid() {
    this should beInvalid()
 }
 
-@Deprecated("use shouldBeValid() instead. Will be removed in 4.3")
-fun Validated<*, *>.shouldNotBeInvalid() = this shouldNot beInvalid()
-
-@Deprecated("use shouldBeValid() instead. Will be removed in 4.3")
-fun <T> Validated<*, T>.shouldNotBeInvalid(value: T) = this shouldNot beInvalid(value)
 infix fun <T> Validated<*, T>.shouldBeInvalid(value: T) = this should beInvalid(value)
 
 infix fun <T> Validated<T, *>.shouldBeInvalid(fn: (Invalid<T>) -> Unit) {

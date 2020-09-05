@@ -67,7 +67,7 @@ class AnnotationSpecTest : AnnotationSpec() {
          val wrongExceptionMessage = "Expected exception of class FooException, but BarException was thrown instead."
          val noExceptionMessage = "Expected exception of class FooException, but no exception was thrown."
 
-         return when (testCase.name) {
+         return when (testCase.displayName) {
             "test4" -> if (errorMessage == wrongExceptionMessage) {
                TestResult.success(0)
             } else {

@@ -20,7 +20,7 @@ class ShouldSpecInstancePerTestTest : ShouldSpec({
    }
 
    afterTest {
-      tests.add(it.a.name)
+      tests.add(it.a.displayName)
    }
 
    isolationMode = IsolationMode.InstancePerTest

@@ -49,7 +49,7 @@ fun testExecutorTests(context: TimeoutExecutionContext) = funSpec {
          }
       }
       val executor = TestCaseExecutor(listener, context, {}, ::toTestResult)
-      val testCase = Tests().materializeAndOrderRootTests().first { it.testCase.name == "a" }.testCase
+      val testCase = Tests().materializeAndOrderRootTests().first { it.testCase.displayName == "a" }.testCase
       executor.execute(testCase, context(testCase)).status shouldBe TestStatus.Success
       started shouldBe true
       finished shouldBe true
@@ -70,7 +70,7 @@ fun testExecutorTests(context: TimeoutExecutionContext) = funSpec {
          }
       }
       val executor = TestCaseExecutor(listener, context, {}, ::toTestResult)
-      val testCase = Tests().materializeAndOrderRootTests().first { it.testCase.name == "b" }.testCase
+      val testCase = Tests().materializeAndOrderRootTests().first { it.testCase.displayName == "b" }.testCase
       val result = executor.execute(testCase, context(testCase))
       result.status shouldBe TestStatus.Error
       result.error shouldBe TimeoutException(100)
@@ -85,7 +85,7 @@ fun testExecutorTests(context: TimeoutExecutionContext) = funSpec {
          override fun testFinished(testCase: TestCase, result: TestResult) {}
       }, context, { error("foo") }, ::toTestResult)
 
-      val testCase = Tests().materializeAndOrderRootTests().first { it.testCase.name == "a" }.testCase
+      val testCase = Tests().materializeAndOrderRootTests().first { it.testCase.displayName == "a" }.testCase
 
       shouldThrow<IllegalStateException> {
          executor.execute(testCase, context(testCase))
