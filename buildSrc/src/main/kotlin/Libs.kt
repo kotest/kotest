@@ -31,6 +31,11 @@ object Libs {
       const val jsonpath = "com.jayway.jsonpath:json-path:2.4.0"
    }
 
+   object Jackson {
+      private const val version = "2.10.2"
+      const val kotlin = "com.fasterxml.jackson.module:jackson-module-kotlin:$version"
+   }
+
    object Koin {
       private const val version = "2.1.6"
       const val core = "org.koin:koin-core:$version"

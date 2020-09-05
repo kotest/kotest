@@ -2,6 +2,7 @@ plugins {
    id("java")
    id("kotlin-multiplatform")
    id("java-library")
+   id("io.qameta.allure") version "2.8.1"
 }
 
 repositories {
@@ -20,23 +21,22 @@ kotlin {
       }
    }
 
-   targets.all {
-      compilations.all {
-         kotlinOptions {
-            freeCompilerArgs + "-Xopt-in=kotlin.RequiresOptIn"
-         }
-      }
-   }
-
    sourceSets {
       val jvmTest by getting {
          dependencies {
-            implementation(project(Projects.JunitRunner))
+            implementation(project(Projects.Engine))
             implementation(project(Projects.AssertionsCore))
-            implementation(project(":kotest-extensions:kotest-extensions-allure"))
+            implementation(project(Projects.JunitRunner))
+            implementation(project(Projects.Allure))
+            implementation(Libs.Jackson.kotlin)
          }
       }
    }
+}
+
+allure {
+   autoconfigure = false
+   version = "2.13.1"
 }
 
 tasks.named<Test>("jvmTest") {
@@ -54,3 +54,5 @@ tasks.named<Test>("jvmTest") {
       exceptionFormat = org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
    }
 }
+
+apply(from = "../../nopublish.gradle")

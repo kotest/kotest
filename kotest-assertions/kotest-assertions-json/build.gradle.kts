@@ -35,7 +35,7 @@ kotlin {
          dependencies {
             implementation(project(Projects.AssertionsShared))
             implementation(kotlin("reflect"))
-            implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.10.2")
+            implementation(Libs.Jackson.kotlin)
             implementation(Libs.Jayway.jsonpath)
          }
       }

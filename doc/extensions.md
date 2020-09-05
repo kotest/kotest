@@ -2,6 +2,20 @@ Kotest Extensions
 ====================
 
 
+Kotest integrates with many libraries and frameworks. This page outlines the extensions maintained by the Kotest team.
+
+* [Allure](#allure)
+* [Arrow](#arrow)
+* [Ktor](#ktor)
+* [Koin](#koin)
+* [Mockserver](#mockserver)
+* [Roboelectric](#roboelectric)
+* [Spring](#spring)
+* [System / Timezone](#system-extensions)
+* [Test Containers](#testcontainers)
+
+
+
 ### Arrow
 
 The arrow assertion module provives assertions for the functional programming library [arrow-kt](https://arrow-kt.io/) for types such as `Option`, `Try`, and so on.
@@ -161,7 +175,7 @@ class KotestAndKoin : FunSpec(), KoinTest {
 }
 ```
 
-### Roboelectric extension
+### Roboelectric
 
 [Robolectric](http://robolectric.org/) can be used with Kotest through the `RobolectricExtension` which can be found in `kotest-extensions-robolectric` module.
 
@@ -472,3 +486,15 @@ redis container before each test and stop's that after test. Similarly if you wa
 in a single spec class you can use ```perSpec()``` extension method which convert's container into a ```TestListener```
 which start's the container before running any test in spec and stop's that after all tests, thus a single container is
 used by all tests in spec class.
+
+
+
+
+
+### Allure
+
+[Allure](http://allure.qatools.ru) is an open-source framework designed to generate detailed and interactive test reports.
+It works by collecting test data as tests are executed and then compiling that into a final HTML report.
+
+Kotest provides an extenstion for Allure and full integration instructions are [here](allure.md).
+

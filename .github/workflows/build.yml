@@ -18,6 +18,11 @@ jobs:
             with:
                fetch-depth: 0
 
+         -  name: Setup JDK
+            uses: actions/setup-java@v1
+            with:
+               java-version: '11'
+
          -  name: Run tests
             run: ./gradlew check
 
