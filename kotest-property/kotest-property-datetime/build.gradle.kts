@@ -23,10 +23,6 @@ kotlin {
          browser()
          nodejs()
       }
-
-      linuxX64()
-      mingwX64()
-      macosX64()
    }
 
    targets.all {
@@ -52,22 +48,6 @@ kotlin {
          dependencies {
             implementation(project(Projects.JunitRunner))
          }
-      }
-
-      val desktopMain by creating {
-         dependsOn(commonMain)
-      }
-
-      val macosX64Main by getting {
-         dependsOn(desktopMain)
-      }
-
-      val mingwX64Main by getting {
-         dependsOn(desktopMain)
-      }
-
-      val linuxX64Main by getting {
-         dependsOn(desktopMain)
       }
    }
 }

@@ -2,8 +2,6 @@ package io.kotest.property.kotlinx.datetime
 
 import io.kotest.property.Arb
 import io.kotest.property.arbitrary.arbitrary
-import io.kotest.property.arbitrary.bind
-import io.kotest.property.arbitrary.int
 import io.kotest.property.arbitrary.next
 import kotlinx.datetime.Clock
 import kotlinx.datetime.DateTimeUnit
