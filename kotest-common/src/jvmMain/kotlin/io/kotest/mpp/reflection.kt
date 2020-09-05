@@ -32,6 +32,10 @@ object JvmReflection : Reflection {
          membersByName[param.name]?.let { callable -> Property(callable.name) { callable.call(it) } }
       }
    }
+
+   override fun <T : Any> newInstanceNoArgConstructor(klass: KClass<T>): T {
+      return klass.java.newInstance()
+   }
 }
 
 actual val reflection: Reflection = JvmReflection
