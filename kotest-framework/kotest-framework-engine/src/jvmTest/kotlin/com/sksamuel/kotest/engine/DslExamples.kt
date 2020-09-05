@@ -1,4 +1,4 @@
-package com.sksamuel.kotest
+package com.sksamuel.kotest.engine
 
 import io.kotest.matchers.collections.singleElement
 import io.kotest.matchers.comparables.beGreaterThan

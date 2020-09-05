@@ -8,6 +8,7 @@ import io.kotest.core.spec.Spec
 import io.kotest.core.spec.toDescription
 import io.kotest.engine.KotestEngineLauncher
 import io.kotest.engine.config.ConfigManager
+import io.kotest.engine.extensions.EnabledConditionSpecDiscoveryExtension
 import io.kotest.engine.extensions.IgnoredSpecDiscoveryExtension
 import io.kotest.engine.extensions.TagsExcludedDiscoveryExtension
 import io.kotest.engine.listener.IsolationTestEngineListener
@@ -94,6 +95,7 @@ class KotestJunitPlatformTestEngine : TestEngine {
       return if (request.getSelectorsByType(MethodSelector::class.java).isEmpty()) {
          val extensions = listOf(
             IgnoredSpecDiscoveryExtension,
+            EnabledConditionSpecDiscoveryExtension,
             TagsExcludedDiscoveryExtension,
          ) + configuration.extensions().filterIsInstance<DiscoveryExtension>()
          val discovery = Discovery(extensions)

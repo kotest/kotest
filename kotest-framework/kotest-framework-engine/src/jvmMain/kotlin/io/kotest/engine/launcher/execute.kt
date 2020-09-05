@@ -74,6 +74,7 @@ private fun scan(packageName: String?): List<KClass<out Spec>> {
    val extensions = listOf(
       IgnoredSpecDiscoveryExtension,
       EnabledConditionSpecDiscoveryExtension,
+      EnabledConditionSpecDiscoveryExtension,
       TagsExcludedDiscoveryExtension,
    ) + configuration.extensions().filterIsInstance<DiscoveryExtension>()
    val result = Discovery(extensions).discover(req)
