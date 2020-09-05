@@ -52,7 +52,6 @@ suspend fun <A, B, C, D> checkAll(
    property: suspend PropertyContext.(A, B, C, D) -> Unit
 ): PropertyContext = proptest<A, B, C, D>(iterations, genA, genB, genC, genD, config, property)
 
-
 suspend inline fun <reified A, reified B, reified C, reified D> checkAll(
    noinline property: suspend PropertyContext.(A, B, C, D) -> Unit
 ) = proptest<A, B, C, D>(
@@ -104,7 +103,6 @@ suspend inline fun <reified A, reified B, reified C, reified D> checkAll(
    config,
    property
 )
-
 
 suspend fun <A, B, C, D> forAll(
    genA: Gen<A>,
@@ -150,7 +148,6 @@ suspend fun <A, B, C, D> forAll(
    property: suspend PropertyContext.(A, B, C, D) -> Boolean
 ) =
    proptest<A, B, C, D>(iterations, genA, genB, genC, genD, config) { a, b, c, d -> property(a, b, c, d) shouldBe true }
-
 
 suspend inline fun <reified A, reified B, reified C, reified D> forAll(
    crossinline property: PropertyContext.(A, B, C, D) -> Boolean
@@ -224,7 +221,6 @@ suspend fun <A, B, C, D> forNone(
 ) =
    proptest<A, B, C, D>(iterations, genA, genB, genC, genD, config) { a, b, c, d -> property(a, b, c, d) shouldBe false }
 
-
 suspend inline fun <reified A, reified B, reified C, reified D> forNone(
    crossinline property: PropertyContext.(A, B, C, D) -> Boolean
 ): PropertyContext = forNone(PropertyTesting.defaultIterationCount, PropTestConfig(), property)
@@ -251,5 +247,3 @@ suspend inline fun <reified A, reified B, reified C, reified D> forNone(
    Arb.default<D>(),
    config
 ) { a, b, c, d -> property(a, b, c, d) shouldBe false }
-
-

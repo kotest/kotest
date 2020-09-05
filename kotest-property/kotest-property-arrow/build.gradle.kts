@@ -36,7 +36,7 @@ kotlin {
             implementation(kotlin("reflect"))
             api(project(Projects.AssertionsShared))
             api(project(Projects.Property))
-            implementation("io.arrow-kt:arrow-core:0.10.4")
+            implementation(Libs.Arrow.core)
          }
       }
 

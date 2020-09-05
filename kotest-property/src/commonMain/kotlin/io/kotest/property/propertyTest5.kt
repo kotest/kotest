@@ -65,7 +65,6 @@ suspend fun <A, B, C, D, E> checkAll(
    property: suspend PropertyContext.(A, B, C, D, E) -> Unit
 ): PropertyContext = proptest(iterations, genA, genB, genC, genD, genE, config, property)
 
-
 suspend inline fun <reified A, reified B, reified C, reified D, reified E> checkAll(
    noinline property: suspend PropertyContext.(A, B, C, D, E) -> Unit
 ) = proptest(
@@ -121,7 +120,6 @@ suspend inline fun <reified A, reified B, reified C, reified D, reified E> check
    config,
    property
 )
-
 
 suspend fun <A, B, C, D, E> forAll(
    genA: Gen<A>,
@@ -188,7 +186,6 @@ suspend fun <A, B, C, D, E> forAll(
       e
    ) shouldBe true
 }
-
 
 suspend inline fun <reified A, reified B, reified C, reified D, reified E> forAll(
    crossinline property: PropertyContext.(A, B, C, D, E) -> Boolean
@@ -265,7 +262,6 @@ suspend fun <A, B, C, D, E> forNone(
       e
    ) shouldBe false
 }
-
 
 suspend inline fun <reified A, reified B, reified C, reified D, reified E> forNone(
    crossinline property: PropertyContext.(A, B, C, D, E) -> Boolean

@@ -3,15 +3,15 @@ package com.sksamuel.kotest.property
 import io.kotest.assertions.throwables.shouldThrowAny
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
-import io.kotest.property.Exhaustive
 import io.kotest.property.Arb
+import io.kotest.property.Exhaustive
 import io.kotest.property.PropTestConfig
 import io.kotest.property.ShrinkingMode
 import io.kotest.property.arbitrary.int
 import io.kotest.property.arbitrary.map
+import io.kotest.property.exhaustive.constant
 import io.kotest.property.exhaustive.ints
 import io.kotest.property.exhaustive.longs
-import io.kotest.property.exhaustive.constant
 import io.kotest.property.forAll
 
 class ForAll2Test : FunSpec({

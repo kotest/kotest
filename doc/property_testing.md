@@ -316,4 +316,36 @@ val evens = Arb.int().filter { it.value % 2 == 0 }
 val odds = Arb.int().filter { it.value % 2 == 1 }
 ```
 
+#### Map
 
+If you have an arb and you want to transform the value generated, you can use map.
+```kotlin
+val integerStrings: Arb<String> = Arb.int().map { it.toString() }
+```
+
+#### FlatMap
+
+If you have an arb whose emission or edgecases depends on the emission of the previous arbitraries, you can use flatMap.
+```kotlin
+val dependentArbs: Arb<String> = Arb.of("foo", "bar").flatMap { prefix ->
+   Arb.int(1..10).map { integer ->
+      "${prefix}-${integer}"
+   }
+}
+```
+
+#### Bind
+
+Bind is useful if you want to apply multiple arbitraries. We can take a look at how we might construct the `Person`
+data class in the previous example using Bind.
+
+```kotlin
+data class Person(val name: String, val age: Int)
+val personArb: Arb<Person> =
+   Arb.bind(
+      Arb.string(),
+      Arb.int()
+   ) { name, age ->
+      Person(name, age)
+   }
+```

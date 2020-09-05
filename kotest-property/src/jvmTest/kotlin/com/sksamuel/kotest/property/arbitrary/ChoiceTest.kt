@@ -44,24 +44,26 @@ class ChoiceTest : WordSpec({
             Arb.int().map { X.C(it) }
          )
       }
-      "combines the provided Arb instances edgecases"{
+      "combines the provided Arb instances edgecases" {
          Arb.choice(
             arb(listOf(1, 2)) { emptySequence() },
             arb(listOf(3, 4)) { emptySequence() }
          ).edgecases() shouldBe listOf(1, 2, 3, 4)
       }
-      "provides both edgecases and values when used as a Gen"{
+      "provides both edgecases and values when used as a Gen" {
          val values = mutableSetOf<Int>()
-         forAll(Arb.choice(
-            arb(listOf(1)) { generateSequence { 2 } },
-            arb(listOf(3)) { generateSequence { 4 } }
-         )) { i ->
+         forAll(
+            Arb.choice(
+               arb(listOf(1)) { generateSequence { 2 } },
+               arb(listOf(3)) { generateSequence { 4 } }
+            )
+         ) { i ->
             values.add(i)
             listOf(1, 2, 3, 4).contains(i)
          }
          values shouldBe setOf(1, 2, 3, 4)
       }
-      "edgecases should not be in Arb.values"{
+      "edgecases should not be in Arb.values" {
          val valueSet = Arb.choice(
             arb(listOf(-1)) { generateSequence { 1 } },
             arb(listOf(-2)) { generateSequence { 2 } }

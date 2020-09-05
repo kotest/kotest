@@ -33,7 +33,7 @@ actual inline fun <reified A> targetDefaultForClass(): Arb<A>? {
       }
       A::class.isSubclassOf(Map::class) -> {
          val type = object : TypeReference<A>() {}.type as ParameterizedType
-         //map key type can have or have not variance
+         // map key type can have or have not variance
          val first = if (type.actualTypeArguments[0] is Class<*>) {
             type.actualTypeArguments[0] as Class<*>
          } else {
@@ -57,4 +57,3 @@ abstract class TypeReference<T> : Comparable<TypeReference<T>> {
 
    override fun compareTo(other: TypeReference<T>) = 0
 }
-

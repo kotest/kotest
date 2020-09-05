@@ -7,7 +7,8 @@ object Libs {
    const val kotestGradlePlugin = "0.1.3"
 
    object Arrow {
-      private const val version = "0.10.4"
+      private const val version = "0.10.5"
+      const val core = "io.arrow-kt:arrow-core:$version"
       const val fx = "io.arrow-kt:arrow-fx:$version"
       const val syntax = "io.arrow-kt:arrow-syntax:$version"
       const val validation = "io.arrow-kt:arrow-validation:$version"

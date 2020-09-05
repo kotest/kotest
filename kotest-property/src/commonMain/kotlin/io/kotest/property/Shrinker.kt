@@ -42,10 +42,13 @@ fun <A> Shrinker<A>.rtree(value: A): RTree<A> {
  * Generates an [RTree] of all shrinks from an initial lazy value.
  */
 fun <A> Shrinker<A>.rtree(value: () -> A): RTree<A> =
-   RTree(value, lazy {
-      val a = value()
-      shrink(a).distinct().filter { it != a }.map { rtree(it) }
-   })
+   RTree(
+      value,
+      lazy {
+         val a = value()
+         shrink(a).distinct().filter { it != a }.map { rtree(it) }
+      }
+   )
 
 data class RTree<out A>(val value: () -> A, val children: Lazy<List<RTree<A>>> = lazy { emptyList<RTree<A>>() })
 

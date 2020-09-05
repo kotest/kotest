@@ -1,6 +1,6 @@
 package io.kotest.property
 
-import io.kotest.property.arbitrary.arb
+import io.kotest.property.arbitrary.of
 import kotlin.random.Random
 
 /**
@@ -25,7 +25,7 @@ import kotlin.random.Random
 sealed class Gen<out A> {
 
    fun generate(rs: RandomSource): Sequence<Sample<A>> = when (this) {
-      is Arb -> this.edgecases().asSequence().map { Sample(it) } + this.values(rs)
+      is Arb -> this.edgecases().asSequence().map { Sample(it) } + this.samples(rs)
       is Exhaustive -> {
          check(this.values.isNotEmpty()) { "Exhaustive.values shouldn't be a empty list." }
 
@@ -69,7 +69,23 @@ abstract class Arb<out A> : Gen<A>() {
     */
    abstract fun edgecases(): List<A>
 
-   abstract fun values(rs: RandomSource): Sequence<Sample<A>>
+   open fun sample(rs: RandomSource): Sample<A> = values(rs).first()
+
+   @Deprecated("implement one value at a time using sample(rs)", ReplaceWith("sample(rs)"))
+   open fun values(rs: RandomSource): Sequence<Sample<A>> = emptySequence()
+
+   /**
+    * Returns a sequence from values generated from this arb.
+    * Edgecases will be ignored.
+    */
+   fun samples(rs: RandomSource = RandomSource.Default): Sequence<Sample<A>> {
+      val valuesIterator = values(rs).iterator()
+      return if (valuesIterator.hasNext()) {
+         generateSequence { valuesIterator.next() }
+      } else {
+         generateSequence { sample(rs) }
+      }
+   }
 
    companion object
 }
@@ -101,10 +117,7 @@ abstract class Exhaustive<out A> : Gen<A>() {
     * Converts this into an [Arb] where the generated values of the returned arb
     * are choosen randomly from the values provided by this exhausive.
     */
-   fun toArb(): Arb<A> = arb {
-      check(values.isNotEmpty())
-      values.shuffled(it.random).asSequence()
-   }
+   fun toArb(): Arb<A> = Arb.of(values)
 
    companion object
 }
