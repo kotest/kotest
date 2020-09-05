@@ -43,8 +43,16 @@ include("kotest-assertions:kotest-assertions-kotlinx-time")
 include("kotest-assertions:kotest-assertions-compiler")
 include("kotest-assertions:kotest-assertions-klock")
 include("kotest-assertions:kotest-assertions-sql")
+
+// base classes for property testing, plus std lib generators
 include("kotest-property")
+
+// property test generators for arrow-kt
 include("kotest-property:kotest-property-arrow")
+
+// property test generators for kotlinx.datetime
+include("kotest-property:kotest-property-datetime")
+
 include("kotest-runner:kotest-runner-junit5")
 include("kotest-runner:kotest-runner-junit4")
 include("kotest-extensions")
