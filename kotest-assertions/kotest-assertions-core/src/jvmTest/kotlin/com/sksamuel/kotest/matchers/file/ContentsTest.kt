@@ -11,15 +11,15 @@ class ContentsTest : FunSpec() {
       test("file contents match") {
          val a = Files.createTempFile("a", "txt")
          val b = Files.createTempFile("a", "txt")
-         Files.writeString(a, "foo\nbar\nbaz")
-         Files.writeString(b, "foo\nbar\nbaz")
+         Files.write(a, "foo\nbar\nbaz".lines())
+         Files.write(b, "foo\nbar\nbaz".lines())
          a.toFile().shouldHaveSameContentAs(b.toFile())
       }
       test("file contents differ") {
          val a = Files.createTempFile("a", "txt")
          val b = Files.createTempFile("a", "txt")
-         Files.writeString(a, "foo\nwoo\nbaz")
-         Files.writeString(b, "foo\nbar\nbaz")
+         Files.write(a, "foo\nwoo\nbaz".lines())
+         Files.write(b, "foo\nbar\nbaz".lines())
          shouldThrowAny {
             a.toFile().shouldHaveSameContentAs(b.toFile())
          }.shouldHaveMessage("""Files $a and $b should have the same content.
@@ -30,8 +30,8 @@ Instead they differ at line 2:
       test("file contents match but one has more lines") {
          val a = Files.createTempFile("a", "txt")
          val b = Files.createTempFile("a", "txt")
-         Files.writeString(a, "foo\nbar\nbaz")
-         Files.writeString(b, "foo\nbar")
+         Files.write(a, "foo\nbar\nbaz".lines())
+         Files.write(b, "foo\nbar".lines())
          shouldThrowAny {
             a.toFile().shouldHaveSameContentAs(b.toFile())
          }.shouldHaveMessage("""Files $a and $b should have the same content.
