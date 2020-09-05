@@ -15,7 +15,7 @@ import io.qameta.allure.Severity
 import io.qameta.allure.Story
 import io.qameta.allure.model.Label
 import io.qameta.allure.model.Status
-import io.qameta.allure.model.StatusDetails
+import io.qameta.allure.model.StepResult
 import io.qameta.allure.util.ResultsUtils
 import java.util.UUID
 import kotlin.reflect.full.findAnnotation
@@ -38,36 +38,33 @@ class AllureWriter {
       throw t
    }
 
-   private val uuids = mutableMapOf<Description, UUID>()
+   private val uuids = mutableMapOf<Description, String>()
 
-   fun id(testCase: TestCase) = uuids[testCase.description]
-
-   fun startAllureTestCase(testCase: TestCase) {
+   fun startTestCase(testCase: TestCase) {
       log("Allure beforeTest $testCase")
 
-      val uuid = UUID.randomUUID()
-      uuids[testCase.description] = uuid
-
       val labels = listOfNotNull(
-         ResultsUtils.createSuiteLabel(testCase.description.spec().displayName()),
-         ResultsUtils.createThreadLabel(),
+         testCase.epic(),
+         testCase.feature(),
+         ResultsUtils.createFrameworkLabel(FrameworkLabel),
          ResultsUtils.createHostLabel(),
          ResultsUtils.createLanguageLabel(LanguageLabel),
-         ResultsUtils.createFrameworkLabel(FrameworkLabel),
-         ResultsUtils.createPackageLabel(testCase.spec::class.java.`package`.name),
-         testCase.epic(),
-         testCase.story(),
-         testCase.feature(),
-         testCase.severity(),
          testCase.owner(),
+         ResultsUtils.createPackageLabel(testCase.spec::class.java.`package`.name),
+         ResultsUtils.createSuiteLabel(testCase.description.spec().displayName()),
+         testCase.severity(),
+         testCase.story(),
+         ResultsUtils.createThreadLabel(),
       )
 
       val links = listOfNotNull(testCase.issue())
+      val uuid = UUID.randomUUID().toString()
+      uuids[testCase.description] = uuid
 
       val result = io.qameta.allure.model.TestResult()
          .setFullName(testCase.description.testDisplayPath().value)
-         .setName(testCase.description.name.displayName)
-         .setUuid(uuid.toString())
+         .setName(testCase.description.testDisplayPath().value)
+         .setUuid(uuid)
          .setTestCaseId(safeId(testCase.description))
          .setHistoryId(testCase.description.name.displayName)
          .setLabels(labels)
@@ -75,30 +72,36 @@ class AllureWriter {
          .setDescription(testCase.description())
 
       allure.scheduleTestCase(result)
-      allure.startTestCase(uuid.toString())
+      allure.startTestCase(uuid)
    }
 
-   fun stopAllureTestCase(testCase: TestCase, result: TestResult) {
+   fun finishTestCase(testCase: TestCase, result: TestResult) {
       log("Allure afterTest $testCase")
-      val uuid = uuids[testCase.description]
-
       val status = when (result.status) {
-         // what we call an error, allure calls a failure
+         // what we call an error, allure calls broken
          TestStatus.Error -> Status.BROKEN
          TestStatus.Failure -> Status.FAILED
          TestStatus.Ignored -> Status.SKIPPED
          TestStatus.Success -> Status.PASSED
       }
 
-      val details = StatusDetails()
-      details.message = result.error?.message
+      val uuid = uuids[testCase.description]
+      val details = ResultsUtils.getStatusDetails(result.error)
 
-      allure.updateTestCase(uuid.toString()) {
+      allure.updateTestCase(uuid) {
          it.status = status
-         it.statusDetails = details
+         it.statusDetails = details.orElseGet { null }
+         testCase.description.parents().forEach { d ->
+            it.steps.add(StepResult()
+               .setName(d.displayName())
+               .setStatus(Status.PASSED)
+               .setStart(0L)
+               .setStop(0L)
+            )
+         }
       }
-      allure.stopTestCase(uuid.toString())
-      allure.writeTestCase(uuid.toString())
+      allure.stopTestCase(uuid)
+      allure.writeTestCase(uuid)
    }
 
    // returns an id that's acceptable in format for allure
