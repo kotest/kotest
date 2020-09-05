@@ -25,16 +25,8 @@ kotlin {
       }
 
       linuxX64()
-
       mingwX64()
-
       macosX64()
-      tvos()
-      watchos()
-
-      iosX64()
-      iosArm64()
-      iosArm32()
    }
 
    targets.all {
@@ -50,24 +42,13 @@ kotlin {
       val commonMain by getting {
          dependencies {
             api(project(Projects.AssertionsApi))
+            api(project(Projects.Property))
             implementation(project(Projects.Common))
-            implementation(Libs.Coroutines.coreCommon)
-         }
-      }
-
-      val jvmMain by getting {
-         dependsOn(commonMain)
-         dependencies {
-            implementation(kotlin("reflect"))
-            implementation(Libs.Coroutines.jdk8)
-            implementation(Libs.Wumpz.diffutils)
-            implementation("com.univocity:univocity-parsers:2.8.4")
-            implementation(Libs.Mifmif.generex)
+            implementation(Libs.KotlinTime.kotlintime)
          }
       }
 
       val jvmTest by getting {
-         dependsOn(jvmMain)
          dependencies {
             implementation(project(Projects.JunitRunner))
          }
@@ -88,32 +69,12 @@ kotlin {
       val linuxX64Main by getting {
          dependsOn(desktopMain)
       }
-
-      val iosX64Main by getting {
-         dependsOn(desktopMain)
-      }
-
-      val iosArm64Main by getting {
-         dependsOn(desktopMain)
-      }
-
-      val iosArm32Main by getting {
-         dependsOn(desktopMain)
-      }
-
-      val watchosMain by getting {
-         dependsOn(desktopMain)
-      }
-
-      val tvosMain by getting {
-         dependsOn(desktopMain)
-      }
    }
 }
 
 tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
+   kotlinOptions.freeCompilerArgs += "-Xuse-experimental=kotlin.Experimental"
    kotlinOptions.jvmTarget = "1.8"
-   kotlinOptions.apiVersion = "1.3"
 }
 
 tasks.named<Test>("jvmTest") {
