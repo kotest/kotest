@@ -30,6 +30,9 @@ sealed class Description {
     */
    fun depth() = parents().size
 
+   /**
+    * Returns all parents of this description, excluding the spec itself.
+    */
    fun parents(): List<Description> = when (this) {
       is Spec -> emptyList()
       is Test -> parent.parents() + listOf(this)
