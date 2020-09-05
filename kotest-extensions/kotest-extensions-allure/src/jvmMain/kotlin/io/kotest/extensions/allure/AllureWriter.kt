@@ -40,6 +40,8 @@ class AllureWriter {
 
    private val uuids = mutableMapOf<Description, String>()
 
+   fun id(testCase: TestCase) = uuids[testCase.description]
+
    fun startTestCase(testCase: TestCase) {
       log("Allure beforeTest $testCase")
 
