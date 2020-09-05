@@ -28,8 +28,8 @@ class AllureTestReporterTest : WordSpec() {
 
       "AllureTestReporter" should {
          "write out data" {
-            val json = findTestFile("Then: a final then")
-            json["name"].textValue() shouldBe "Then: a final then"
+            val json = findTestFile("Given: a given When: another when Then: a final then")
+            json["name"].textValue() shouldBe "Given: a given When: another when Then: a final then"
             json["fullName"].textValue() shouldBe "Given: a given When: another when Then: a final then"
             val labels = json.get("labels") as ArrayNode
             labels.toList().forOne {

@@ -41,7 +41,6 @@ allure {
 
 tasks.named<Test>("jvmTest") {
    useJUnitPlatform()
-   systemProperty("allure.results.directory", project.buildDir.toString() + "/allure-results")
    filter {
       isFailOnNoMatchingTests = false
    }
