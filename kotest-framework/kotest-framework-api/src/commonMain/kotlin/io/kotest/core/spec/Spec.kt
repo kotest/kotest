@@ -35,7 +35,7 @@ abstract class Spec : TestConfiguration(), SpecFunctionConfiguration, SpecFuncti
    abstract fun materializeRootTests(): List<RootTest>
 
    @JsName("isolation_js")
-   @Deprecated("Use isolationMode. This will be removed in 4.3")
+   @Deprecated("Use isolationMode. This will be removed in 4.4")
    var isolation: IsolationMode? = null
 
    @JsName("isolation_mode_js")

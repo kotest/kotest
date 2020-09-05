@@ -52,13 +52,10 @@ data class TestCase(
 
    val displayName = description.displayName()
 
-   @Deprecated("use description.displayName(). Will be removed in 4.3")
-   val name = displayName
-
    /**
     * Returns true if this test case is a root test inside a spec.
     */
-   @Deprecated("use description.isRootTest(). Will be removed in 4.3")
+   @Deprecated("use description.isRootTest(). Will be removed in 4.4")
    fun isTopLevel(): Boolean = description.isRootTest()
 
    companion object {

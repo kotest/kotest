@@ -87,7 +87,8 @@ abstract class Arb<out A> : Gen<A>() {
       }
    }
 
-   companion object
+   companion object {
+   }
 }
 
 /**
@@ -119,18 +120,8 @@ abstract class Exhaustive<out A> : Gen<A>() {
     */
    fun toArb(): Arb<A> = Arb.of(values)
 
-   companion object
-}
-
-data class RandomSource(val random: Random, val seed: Long) {
    companion object {
 
-      fun seeded(seed: Long): RandomSource = RandomSource(Random(seed), seed)
-
-      val Default = lazy {
-         val seed = Random.Default.nextLong()
-         RandomSource(Random(seed), seed)
-      }.value
    }
 }
 

@@ -35,12 +35,6 @@ abstract class AbstractProjectConfig {
    open fun listeners(): List<Listener> = emptyList()
 
    /**
-    * List of project wide [ProjectListener] instances.
-    */
-   @Deprecated("Override listeners() which now supports all type of listeners. Will be removed in 4.3")
-   open fun projectListeners(): List<ProjectListener> = emptyList()
-
-   /**
     * List of project wide [Filter] instances.
     */
    open fun filters(): List<Filter> = emptyList()
@@ -54,7 +48,7 @@ abstract class AbstractProjectConfig {
     *  - [FailureFirstSpecExecutionOrder]
     *  - [RandomSpecExecutionOrder]
     */
-   @Deprecated("use the val version. Will be removed in 4.3")
+   @Deprecated("use the val version. Will be removed in 4.4")
    open fun specExecutionOrder(): SpecExecutionOrder? = null
 
    /**
@@ -65,7 +59,7 @@ abstract class AbstractProjectConfig {
    /**
     * The [IsolationMode] set here will be applied if the isolation mode in a spec is null.
     */
-   @Deprecated("use the val version. Will be removed in 4.3")
+   @Deprecated("use the val version. Will be removed in 4.4")
    open fun isolationMode(): IsolationMode? = null
 
    open val isolationMode: IsolationMode? = null
@@ -93,7 +87,7 @@ abstract class AbstractProjectConfig {
     * An alternative way to enable this is the system property kotest.parallelism
     * which will always (if defined) take priority over the value here.
     */
-   @Deprecated("use the val version. Will be removed in 4.3")
+   @Deprecated("use the val version. Will be removed in 4.4")
    open fun parallelism(): Int? = null
 
    open val parallelism: Int? = null
@@ -105,7 +99,7 @@ abstract class AbstractProjectConfig {
     * To enable this feature, set this to true, or set the system property
     * 'kotest.write.specfailures=true'
     */
-   @Deprecated("use the val version. Will be removed in 4.3")
+   @Deprecated("use the val version. Will be removed in 4.4")
    open fun writeSpecFailureFile(): Boolean = false
 
    open val writeSpecFailureFile: Boolean? = null
@@ -119,7 +113,7 @@ abstract class AbstractProjectConfig {
     * If this function returns null then the default of Sequential
     * will be used.
     */
-   @Deprecated("use the val version. Will be removed in 4.3")
+   @Deprecated("use the val version. Will be removed in 4.4")
    open fun testCaseOrder(): TestCaseOrder? = null
 
    open val testCaseOrder: TestCaseOrder? = null

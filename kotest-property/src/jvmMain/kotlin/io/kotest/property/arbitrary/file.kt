@@ -23,18 +23,18 @@ fun Arb.Companion.file(directoryName: String, recursive: Boolean = false): Arb<F
 
    override fun edgecases(): List<File> = emptyList()
 
+   private fun randomiseFiles(files: Sequence<File>, random: Random): Sequence<Sample<File>> {
+      val allFiles = files.toList()
+      if (allFiles.isEmpty()) return emptySequence()
+      return generateSequence { allFiles.shuffled(random) }.flatten().map { Sample(it) }
+   }
+
    override fun values(rs: RandomSource): Sequence<Sample<File>> {
       val fileTreeWalk = File(directoryName).walk()
       return when (recursive) {
          true -> randomiseFiles(fileTreeWalk.maxDepth(Int.MAX_VALUE), rs.random)
          else -> randomiseFiles(fileTreeWalk.maxDepth(1), rs.random)
       }
-   }
-
-   private fun randomiseFiles(files: Sequence<File>, random: Random): Sequence<Sample<File>> {
-      val allFiles = files.toList()
-      if (allFiles.isEmpty()) return emptySequence()
-      return generateSequence { allFiles.shuffled(random) }.flatten().map { Sample(it) }
    }
 }
 

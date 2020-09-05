@@ -37,13 +37,14 @@ import kotlin.contracts.contract
  * @param block Lambda that receives typecasted instance as argument for further assertions.
  * @return The typecasted instance
  */
-@Deprecated("Use the smart contract version: a.shouldBeInstanceOf<B>(); a.bMethod(). Will be removed in 4.3")
+@Deprecated("Use the smart contract version: a.shouldBeInstanceOf<B>(); a.bMethod(). Will be removed in 4.4")
 inline fun <reified T : Any> Any?.shouldBeInstanceOf(block: (T) -> Unit = { }): T {
    val matcher = beInstanceOf<T>()
    this shouldBe matcher
    block(this as T)
    return this
 }
+
 
 @OptIn(ExperimentalContracts::class)
 inline fun <reified T : Any> Any?.shouldBeInstanceOf() {
@@ -101,7 +102,7 @@ inline fun <reified T : Any> Any?.shouldNotBeInstanceOf() {
  * @param block Lambda that receives typecasted instance  as argument for further assertions.
  * @return The typecasted instance
  */
-@Deprecated("Use the smart contract version: a.shouldBeTypeOf<B>(); a.bMethod(). Will be removed in 4.3")
+@Deprecated("Use the smart contract version: a.shouldBeTypeOf<B>(); a.bMethod(). Will be removed in 4.4")
 inline fun <reified T : Any> Any?.shouldBeTypeOf(block: (T) -> Unit = { }): T {
    val matcher = beOfType<T>()
    this shouldBe matcher

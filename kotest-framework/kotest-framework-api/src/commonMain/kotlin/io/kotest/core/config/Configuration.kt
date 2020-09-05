@@ -214,11 +214,6 @@ class Configuration {
       listeners.remove(listener)
    }
 
-   @Deprecated("Use registerListener(Listener). Will be removed in 4.3")
-   fun registerProjectListener(listener: Listener) {
-      registerListener(listener)
-   }
-
    fun removeListeners() {
       listeners.clear()
    }
