@@ -25,7 +25,7 @@ import kotlin.random.Random
 sealed class Gen<out A> {
 
    fun generate(rs: RandomSource): Sequence<Sample<A>> = when (this) {
-      is Arb -> this.edgecases().asSequence().map { Sample(it) } + this.randomSamples(rs)
+      is Arb -> this.edgecases().asSequence().map { Sample(it) } + this.samples(rs)
       is Exhaustive -> {
          check(this.values.isNotEmpty()) { "Exhaustive.values shouldn't be a empty list." }
 
@@ -69,21 +69,21 @@ abstract class Arb<out A> : Gen<A>() {
     */
    abstract fun edgecases(): List<A>
 
-   open fun value(rs: RandomSource): Sample<A> = values(rs).first()
+   open fun sample(rs: RandomSource): Sample<A> = values(rs).first()
 
-   @Deprecated("implement one value at a time using value(rs)", ReplaceWith("value(rs)"))
+   @Deprecated("implement one value at a time using sample(rs)", ReplaceWith("sample(rs)"))
    open fun values(rs: RandomSource): Sequence<Sample<A>> = emptySequence()
 
    /**
     * Returns a sequence from values generated from this arb.
     * Edgecases will be ignored.
     */
-   fun randomSamples(rs: RandomSource = RandomSource.Default): Sequence<Sample<A>> {
+   fun samples(rs: RandomSource = RandomSource.Default): Sequence<Sample<A>> {
       val valuesIterator = values(rs).iterator()
       return if (valuesIterator.hasNext()) {
          generateSequence { valuesIterator.next() }
       } else {
-         generateSequence { value(RandomSource.seeded(rs.random.nextLong())) }
+         generateSequence { sample(RandomSource.seeded(rs.random.nextLong())) }
       }
    }
 
@@ -123,7 +123,6 @@ abstract class Exhaustive<out A> : Gen<A>() {
 }
 
 data class RandomSource(val random: Random, val seed: Long) {
-
    companion object {
 
       fun seeded(seed: Long): RandomSource = RandomSource(Random(seed), seed)
