@@ -1,4 +1,4 @@
-package com.sksamuel.kotest
+package com.sksamuel.kotest.engine
 
 import io.kotest.core.filter.TestFilter
 import io.kotest.core.filter.TestFilterResult

@@ -14,8 +14,6 @@ object ProjectConfig : AbstractProjectConfig() {
 
    val intercepterLog = StringBuilder()
 
-   override fun filters(): List<Filter> = listOf(TestFilterTestFilter)
-
    override val specExecutionOrder = SpecExecutionOrder.Lexicographic
 
    override fun extensions(): List<Extension> {
