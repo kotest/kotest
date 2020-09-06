@@ -39,3 +39,4 @@ local.properties
 *.gpg.enc
 
 kotest-tests/kotest-tests-js/node_modules/
+docs/site/
