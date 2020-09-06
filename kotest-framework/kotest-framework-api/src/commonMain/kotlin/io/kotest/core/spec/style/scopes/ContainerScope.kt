@@ -37,9 +37,24 @@ interface ContainerScope : CoroutineScope {
    val defaultConfig: TestCaseConfig
 
    /**
+    * Registers a test to this scope, chosing the most specific type if this container supports
+    * both nested tests and terminal tests.
+    */
+   suspend fun addTest(
+      name: DescriptionName.TestName,
+      test: suspend TestContext.() -> Unit,
+   ) {
+      TODO()
+   }
+
+   /**
     * Adds a new test case to this scope with type [TestType.Container].
     */
-   suspend fun addContainerTest(name: DescriptionName.TestName, xdisabled: Boolean, test: suspend TestContext.() -> Unit) {
+   suspend fun addContainerTest(
+      name: DescriptionName.TestName,
+      xdisabled: Boolean,
+      test: suspend TestContext.() -> Unit,
+   ) {
       addTest(name, xdisabled, defaultConfig, TestType.Container, test)
    }
 
@@ -51,7 +66,7 @@ interface ContainerScope : CoroutineScope {
    }
 
    /**
-    * Registerd a new test case to this scope with the given test type.
+    * Registers a new test case to this scope with the given test type.
     */
    suspend fun addTest(
       name: DescriptionName.TestName,
