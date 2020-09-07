@@ -1,4 +1,5 @@
-## Kotest Plugins
+Plugins
+=========
 
 Sometimes there's a need for special integration with some tools. These integrations are available at the `Kotest-plugins` modules and they can be whatever it's necessary to integrate with a specific tool.
 

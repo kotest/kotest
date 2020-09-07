@@ -1,5 +1,6 @@
 Konform Matchers
-==============
+================
+
 
 
 Kotest provides various matchers for use with [Konform](https://github.com/konform-kt/konform).
@@ -48,3 +49,11 @@ validateUser.shouldBeInvalid(a) {
   it.shouldContainError(UserProfile::age, "must be at least '21'")
 }
 ```
+
+
+| Matcher | Description    |
+| ---------- | --- |
+| `validation.shouldBeValid(value)` | Asserts that the validation is valid for the given value |
+| `validation.shouldBeInvalid(value)` | Asserts that the validation is invalid for the given value |
+| `validation.shouldBeInvalid(value) { block }` | Asserts that the validation is invalid for the given value, and then, runs the block with invalid value |
+

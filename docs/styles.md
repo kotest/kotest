@@ -28,7 +28,7 @@ Some teams prefer to mandate usage of a single style, others mix and match. Do w
 
 
 
-### Fun Spec
+## Fun Spec
 
 `FunSpec` allows you to create tests by invoking a function called `test` with a string parameter to describe the test,
 and then the test itself as a lambda. If in doubt, this is the style to use.
@@ -61,7 +61,7 @@ class MyTests : DescribeSpec({
 ```
 
 
-### String Spec
+## String Spec
 
 `StringSpec` reduces the syntax to the absolute minimum.
  Just write a string followed by a lambda expression with your test code.
@@ -86,7 +86,7 @@ class MyTests : StringSpec({
 
 
 
-### Should Spec
+## Should Spec
 
 `ShouldSpec` is similar to fun spec, but uses the keyword `should` instead of `test`.
 
@@ -136,7 +136,7 @@ class MyTests : ShouldSpec({
 
 
 
-### Describe Spec
+## Describe Spec
 
 `DescribeSpec` offers a style familiar to those from a Ruby or Javascript background, as this testing style
  uses `describe` / `it` keywords. Tests must be nested in one or more `describe` blocks.
@@ -189,7 +189,7 @@ class MyTests : DescribeSpec({
 
 
 
-### Behavior Spec
+## Behavior Spec
 
 Popular with people who like to write tests in the _BDD_ style, `BehaviorSpec` allows you to use `given`, `when`, `then`.
 
@@ -257,7 +257,7 @@ class MyTests : DescribeSpec({
 ```
 
 
-### Word Spec
+## Word Spec
 
 `WordSpec` uses the keyword `should` and uses that to nest tests after a context string.
 
@@ -297,7 +297,7 @@ class MyTests : WordSpec({
 
 
 
-### Free Spec
+## Free Spec
 
 `FreeSpec` allows you to nest arbitrary levels of depth using the keyword `-` (minus), as such:
 
@@ -324,7 +324,7 @@ class MyTests : FreeSpec({
 
 
 
-### Feature Spec
+## Feature Spec
 
 `FeatureSpec` allows you to use `feature` and `scenario`, which will be familiar to those who have used [cucumber](http://docs.cucumber.io/gherkin/reference/).
 Although not intended to be exactly the same as cucumber, the keywords mimic the style.
@@ -363,7 +363,7 @@ class MyTests : FeatureSpec({
 
 
 
-### Expect Spec
+## Expect Spec
 
 `ExpectSpec` is similar to `FunSpec` and `ShouldSpec` but uses the `expect` keyword.
 
@@ -411,7 +411,7 @@ class MyTests : DescribeSpec({
 
 
 
-### Annotation Spec
+## Annotation Spec
 
 If you are migrating from JUnit then `AnnotationSpec` is a spec that uses annotations like JUnit 4/5.
 Just add the `@Test` annotation to any function defined in the spec class.

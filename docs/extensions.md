@@ -1,22 +1,24 @@
-Kotest Extensions
-====================
+Extensions
+==========
 
 
 Kotest integrates with many libraries and frameworks. This page outlines the extensions maintained by the Kotest team.
 
-* [Allure](#allure)
-* [Arrow](#arrow)
-* [Ktor](#ktor)
-* [Koin](#koin)
-* [Mockserver](#mockserver)
-* [Roboelectric](#roboelectric)
-* [Spring](#spring)
-* [System / Timezone](#system-extensions)
-* [Test Containers](#testcontainers)
 
 
 
-### Arrow
+## Allure
+
+[Allure](http://allure.qatools.ru) is an open-source framework designed to generate detailed and interactive test reports.
+It works by collecting test data as tests are executed and then compiling that into a final HTML report.
+
+Kotest provides an extenstion for Allure and full integration instructions are [here](allure.md).
+
+
+
+
+
+## Arrow
 
 The arrow assertion module provives assertions for the functional programming library [arrow-kt](https://arrow-kt.io/) for types such as `Option`, `Try`, and so on.
 To use this library you need to add `kotest-assertions-arrow` to your build.
@@ -42,7 +44,7 @@ list.forOne {
 
 Other inspectors include `forNone`, `forAll`, `forExactly(n)`, `forSome` and so on. See the section on [inspectors](https://github.com/kotest/kotest/blob/master/doc/reference.md#inspectors) for more details.
 
-### Spring
+## Spring
 
 Kotest offers a Spring extension that allows you to test code that wires dependencies using Spring.
 To use this extension add the `kotest-extensions-spring` module to your test compile path.
@@ -79,7 +81,7 @@ class SpringExampleSpec : WordSpec() {
 
 You could add the `SpringListener` project wide by registering the listener in [ProjectConfig](reference.md#project-config).
 
-#### Constructor Injection
+### Constructor Injection
 
 For constructor injection, we use a different implementation called `SpringAutowireConstructorExtension` which
  must be registered with [ProjectConfig](reference.md#project-config). This extension will intercept each call to create a Spec instance
@@ -112,7 +114,7 @@ class SpringAutowiredConstructorTest(service: UserService) : WordSpec() {
 
 
 
-### Ktor
+## Ktor
 
 The ```kotest-assertions-ktor``` module provides response matchers for a [Ktor]("https://ktor.io/") application. There are matchers
 for both `TestApplicationResponse` if you are using the server side test support, and for `HttpResponse` if you are using the ktor
@@ -148,7 +150,7 @@ response.shouldHaveHeader(name = "Authorization", value = "Bearer")
 
 
 
-### Koin
+## Koin
 
 The [Koin DI Framework](https://insert-koin.io/) can be used with Kotest through the `KoinListener` test listener and its own interface `KoinTest`.
 
@@ -175,7 +177,7 @@ class KotestAndKoin : FunSpec(), KoinTest {
 }
 ```
 
-### Roboelectric
+## Roboelectric
 
 [Robolectric](http://robolectric.org/) can be used with Kotest through the `RobolectricExtension` which can be found in `kotest-extensions-robolectric` module.
 
@@ -196,7 +198,11 @@ Of course you can just add this extension to another extensions you're already u
 
 After that done any class which should be ran with Robolectric should be annotated with `@RobolectricTest` annotation.
 
-### Compilation test
+
+
+
+
+## Compilation test
 
 The ```kotest-assertions-compiler``` extension provides matchers to assert that given kotlin code snippet compiles or not.
 This extension is a wrapper over [kotlin-compile-testing](https://github.com/tschuchortdev/kotlin-compile-testing) and provides following matchers
@@ -236,13 +242,17 @@ Usage:
 During checking of code snippet compilation the classpath of calling process is inherited, which means any dependencies which are available in calling process will also be available while compiling the code snippet.
 
 
-### System Extensions
+
+
+
+
+## System Extensions
 
 Sometimes your code might use some functionalities straight from the JVM, which are very hard to simulate. With Kotest System Extensions, these difficulties are made easy to mock and simulate, and your code can be tested correctly. After changing the system and using the extensions, the previous state will be restored.
 
-**Attention**: These code is very sensitive to concurrency. Due to the JVM specification there can only be one instance of these extensions running (For example: Only one Environment map must exist). If you try to run more than one instance at a time, the result is unknown.
+**Attention**: This code is sensitive to concurrency. Due to the JVM specification there can only be one instance of these extensions running (For example: Only one Environment map must exist). If you try to run more than one instance at a time, the result is unknown.
 
-#### System Environment
+### System Environment
 
 With *System Environment Extension* you can simulate how the System Environment is behaving. That is, what you're obtaining from `System.getenv()`.
 
@@ -293,7 +303,9 @@ class ProjectConfig : AbstractProjectConfig() {
 
 ```
 
-#### System Property Extension
+
+
+### System Property Extension
 
 In the same fashion as the Environment Extensions, you can override the System Properties (`System.getProperties()`):
 
@@ -319,7 +331,9 @@ And with similar Listeners:
     }
 ```
 
-#### System Security Manager
+
+
+### System Security Manager
 
 Similarly, with System Security Manager you can override the System Security Manager (`System.getSecurityManager()`)
 
@@ -345,7 +359,7 @@ And the Listeners:
         }
 ```
 
-#### System Exit Extensions
+### System Exit Extensions
 
 Sometimes you want to test that your code calls `System.exit`. For that you can use the `System Exit Listeners`. The Listener will throw an exception when the `System.exit` is called, allowing you to catch it and verify:
 
@@ -368,7 +382,7 @@ class MyTest : FreeSpec() {
 
 ```
 
-### No System Out listeners
+### No-stdout / no-stderr listeners
 
 Maybe you want to guarantee that you didn't leave any debug messages around, or that you're always using a Logger in your logging.
 
@@ -441,19 +455,19 @@ Or, with a listener for all the tests:
 
 
 
-### MockServer
+## MockServer
 
 Kotest provides an extension for integration with the [MockServer](https://www.mock-server.com) library through the `kotest-extensions-mockserver` module.
 
 MockServer is described as an in process server that returns specific responses for different requests via HTTP or HTTPS.
 When MockServer receives a request it matches that request against the configured expectations. If a match is found it returns that response, otherwise a 404 is returned.
 
-Read integration instructions [here](mockserver.md).
+Read [full instructions here](extensions/mockserver.md).
 
 
 
 
-### TestContainers
+## TestContainers
 
 [testcontainers-java](https://github.com/testcontainers/testcontainers-java) library that provide lightweight, throwaway instances of common databases, Selenium web browsers, or anything else that can run in a Docker container.
 
@@ -489,12 +503,4 @@ used by all tests in spec class.
 
 
 
-
-
-### Allure
-
-[Allure](http://allure.qatools.ru) is an open-source framework designed to generate detailed and interactive test reports.
-It works by collecting test data as tests are executed and then compiling that into a final HTML report.
-
-Kotest provides an extenstion for Allure and full integration instructions are [here](allure.md).
 

@@ -1,4 +1,7 @@
-![Kotest](images/logo_with_text.png)
+<img src="images/logo_cropped.png" alt="kotest logo" width="100"/> Welcome to Kotest
+==
+
+
 
 For latest updates see [Changelog](CHANGELOG.md).<br/>
 Read [full documentation](doc/reference.md) or a [quick start](doc/reference.md#getting-started) guide.

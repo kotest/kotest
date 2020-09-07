@@ -15,12 +15,17 @@ repo_url: https://github.com/kotest/kotest
 theme:
    name: material
    palette:
-      primary: blue grey
+      primary: indigo
+      accent: deep orange
    logo: 'images/logo.png'
    features:
       - search.highlight
+   font:
+      text: Nunito Sans
+
 plugins:
    - search
+
 extra:
    social:
       -  icon: fontawesome/brands/slack
@@ -28,3 +33,25 @@ extra:
       -  icon: fontawesome/brands/github
          link: https://github.com/kotest/kotest
 
+
+nav:
+   - "index.md"
+   - "styles.md"
+   - "assertions.md"
+   - "matchers.md"
+   - "inspectors.md"
+   - "extensions.md"
+   - "listeners.md"
+   - "property_testing.md"
+   - "data_driven_testing.md"
+   - "conditional_evaluation.md"
+   - "isolation_mode.md"
+   - "clues.md"
+   - "timeout.md"
+   - "project_config.md"
+   - "nondeterministic_testing.md"
+   - "test_factories.md"
+   - "mpp.md"
+   - "plugins.md"
+   - "blogs.md"
+   - "third_party_integrations.md"

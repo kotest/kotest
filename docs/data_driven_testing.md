@@ -1,5 +1,5 @@
-Data-driven Testing
---------------------
+Data Driven Testing
+===================
 
 To test your code with different parameter combinations, you can use a table of values as input for your test
 cases. This is called _data driven testing_ also known as _table driven testing_.
