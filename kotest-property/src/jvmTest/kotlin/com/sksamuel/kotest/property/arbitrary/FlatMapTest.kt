@@ -14,21 +14,21 @@ class FlatMapTest : FunSpec() {
          Arb.int(1..10).flatMap { Arb.int(1..it * it) }.take(15, RandomSource.seeded(3242344L))
             .toList() shouldContainExactly
             listOf(
-               9,
+               16,
                1,
-               33,
-               15,
-               1,
-               13,
-               15,
-               28,
+               6,
+               23,
+               6,
+               17,
+               3,
                1,
                44,
-               7,
-               23,
-               19,
                24,
-               1
+               25,
+               8,
+               2,
+               3,
+               22
             )
       }
    }

@@ -136,8 +136,8 @@ fun <A, B> Arb<A>.map(f: (A) -> B): Arb<B> = object : Arb<B>() {
 fun <A, B> Arb<A>.flatMap(f: (A) -> Arb<B>): Arb<B> = object : Arb<B>() {
    override fun edgecases(): List<B> = this@flatMap.edgecases().flatMap { f(it).edgecases() }
    override fun values(rs: RandomSource): Sequence<Sample<B>> =
-      this@flatMap.samples(rs).zip(generateSequence { rs.random.nextLong() }) { sample, nextLong ->
-         Sample(f(sample.value).next(RandomSource.seeded(nextLong)))
+      this@flatMap.samples(rs).map { sample ->
+         Sample(f(sample.value).next(rs))
       }
 
    override fun sample(rs: RandomSource): Sample<B> = f(this@flatMap.sample(rs).value).sample(rs)
