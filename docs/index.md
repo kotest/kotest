@@ -29,7 +29,7 @@ class MyTests : StringSpec({
 })
 ```
 
-Kotest comes with several [testing styles](doc/reference.md#testing-styles) so you can choose one that fits your needs.
+Kotest comes with several [testing styles](styles.md) so you can choose one that fits your needs.
 
 Multitude of Matchers
 ---------------------
@@ -61,12 +61,12 @@ response.asClue {
 
 Nesting is allowed in both cases and will show all available clues.
 
-Matchers are extension methods and so your IDE will auto complete. See the [full list of matchers](doc/matchers.md) or write your own.
+Matchers are extension methods and so your IDE will auto complete. See the [full list of matchers](matchers.md) or write your own.
 
 Let the Computer Generate Your Test Data
 ----------------------------------------
 
-Use [property based testing](doc/property_testing.md) to test your code with automatically generated test data:
+Use [property based testing](property_testing.md) to test your code with automatically generated test data:
 
 ```kotlin
 class PropertyExample: StringSpec({
@@ -81,7 +81,7 @@ class PropertyExample: StringSpec({
 Check all the Tricky Cases With Data Driven Testing
 --------------------------
 
-Handle even an enormous amount of input parameter combinations easily with [data driven tests](doc/data_driven_testing.md):
+Handle even an enormous amount of input parameter combinations easily with [data driven tests](data_driven_testing.md):
 
 ```kotlin
 class StringSpecExample : StringSpec({
@@ -100,7 +100,7 @@ class StringSpecExample : StringSpec({
 Test Exceptions
 ---------------
 
-Testing for [exceptions](doc/reference.md#exceptions) is easy with Kotest:
+Testing for [exceptions](assertions.md#exceptions) is easy with Kotest:
 
 ```kotlin
 val exception = shouldThrow<IllegalAccessException> {
@@ -114,7 +114,7 @@ Fine Tune Test Execution
 
 You can specify the number of invocations, parallelism, and a timeout for each test or for all tests.
 And you can group tests by tags or disable them conditionally.
-All you need is [`config`](doc/reference.md#config):
+All you need is [`config`](project_config.md):
 
 ```kotlin
 class MySpec : StringSpec({
@@ -129,17 +129,17 @@ And More ...
 
 This page gives you just a short overview of Kotest. There are many more features:
 
-* Test whole collections with [Inspectors](doc/reference.md#inspectors).
-* Write elegant conditions with the [matcher DSL](doc/reference.md#matchers-and-assertions): `"hello".shouldHaveSubstring("ell")`.
-* Reuse test logic for setup or tear down, with [Listeners](doc/reference.md#listeners).
-* Test asynchronous code with [`whenReady`](doc/reference.md#whenReady) and non-deterministic code with [`eventually`](doc/nondeterministic.md) or [`continually`](doc/nondeterministic.md)
+* Test whole collections with [Inspectors](assertions.md#inspectors).
+* Write elegant conditions with the [matcher DSL](assertions.md#matchers): `"hello".shouldHaveSubstring("ell")`.
+* Reuse test logic for setup or tear down, with [Listeners](listeners.md).
+* Test non-deterministic code with [`eventually`](nondeterministic_testing.md) or [`continually`](nondeterministic_testing.md)
 * Let Kotest [close resources automatically](doc/reference.md#autoclose): `val reader = autoClose(StringReader("xyz"))`
-* Create reusable parameterized tests via [test factories](doc/reference.md#test-factories)
-* Handle tricky scenarios such as System Environment with [extensions](doc/extensions.md)
-* Use the [Spring extension](doc/extensions.md#Spring) to automatically inject your spring test classes.
-* Test [Arrow](doc/extensions.md#Arrow) data types with the Arrow extension.
-* Make use of custom plugins for integrations with tools such as [Pitest](doc/plugins.md#Pitest)
+* Create reusable parameterized tests via [test factories](test_factories.md)
+* Handle tricky scenarios such as System Environment with [extensions](extensions.md)
+* Use the [Spring extension](extensions.md#spring) to automatically inject your spring test classes.
+* Test [Arrow](extensions.md#arrow) data types with the Arrow extension.
+* Make use of custom plugins for integrations with tools such as [Pitest](plugins.md#pitest)
 
-See our [getting started](doc/reference.md#getting-started) section or [full documentation](doc/reference.md).
+See our [quick start](quick_start.md) guide to get up and running.
 
 Read more about Kotest from third party [blogs and articles](doc/blogs.md).

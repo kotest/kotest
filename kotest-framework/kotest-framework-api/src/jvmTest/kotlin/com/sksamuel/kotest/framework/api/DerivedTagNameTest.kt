@@ -2,7 +2,6 @@ package com.sksamuel.kotest.framework.api
 
 import io.kotest.core.Tag
 import io.kotest.core.spec.style.FunSpec
-import io.kotest.core.test.AssertionMode
 import io.kotest.matchers.shouldBe
 
 object Foo : Tag()
