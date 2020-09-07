@@ -26,15 +26,15 @@ class NonEmptyListTest : FunSpec({
    test("Arb.nel should generate NonEmptyList") {
       val expected = listOf(
          NonEmptyList.of(1),
-         NonEmptyList.of(2, 3, 4, 9, 8),
+         NonEmptyList.of(2, 7, 5, 3),
+         NonEmptyList.of(9, 8, 9, 8),
          NonEmptyList.of(7, 1, 7),
-         NonEmptyList.of(5, 6, 9, 3),
-         NonEmptyList.of(2, 9),
-         NonEmptyList.of(1, 9),
-         NonEmptyList.of(1, 8, 7),
-         NonEmptyList.of(1, 2, 7),
-         NonEmptyList.of(1, 10, 8),
-         NonEmptyList.of(6, 10, 1, 7)
+         NonEmptyList.of(5, 9, 5, 6),
+         NonEmptyList.of(3, 5, 5, 7),
+         NonEmptyList.of(9, 4),
+         NonEmptyList.of(7),
+         NonEmptyList.of(9),
+         NonEmptyList.of(3, 3, 1)
       )
 
       Arb.nel(Arb.int(1..10), 1..5)
