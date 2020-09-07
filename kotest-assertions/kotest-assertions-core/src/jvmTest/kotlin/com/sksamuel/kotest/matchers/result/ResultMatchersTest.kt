@@ -35,19 +35,19 @@ class ResultMatchersTest : FreeSpec() {
     }
     "with error result" - {
       "shouldBeFailure" - {
-        Result.runCatching { throw TestException() }.shouldBeFailure()
-        Result.runCatching { throw TestException() }.shouldBeFailure { error ->
+        Result.runCatching<Any?, Any?> { throw TestException() }.shouldBeFailure()
+        Result.runCatching<Any?, Any?> { throw TestException() }.shouldBeFailure { error ->
           error should beInstanceOf<TestException>()
         }
       }
       "shouldBeFailureOfType" {
-        Result.runCatching { throw TestException() }.shouldBeFailureOfType<TestException>()
+        Result.runCatching<Any?, Any?> { throw TestException() }.shouldBeFailureOfType<TestException>()
       }
       "shouldNotBeFailureOfType" {
-        Result.runCatching { throw TestException() }.shouldNotBeFailureOfType<IOException>()
+        Result.runCatching<Any?, Any?> { throw TestException() }.shouldNotBeFailureOfType<IOException>()
       }
       "shouldNotBeSuccess" - {
-        Result.runCatching { throw TestException() }.shouldNotBeSuccess()
+        Result.runCatching<Any?, Any?> { throw TestException() }.shouldNotBeSuccess()
       }
     }
   }
