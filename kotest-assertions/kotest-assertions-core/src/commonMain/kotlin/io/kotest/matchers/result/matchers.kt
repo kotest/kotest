@@ -40,31 +40,31 @@ class BeSuccess<T>(val expected: T? = null) : Matcher<Result<T>> {
     MatcherResult(passed, "Result should be a success.", "Result should not be a success")
 }
 
-fun Result<Any>.shouldBeFailure(block: ((Throwable?) -> Unit)? = null) {
+fun Result<Any?>.shouldBeFailure(block: ((Throwable?) -> Unit)? = null) {
   test { BeFailure().test(this) }
   block?.invoke(exceptionOrNull())
 }
 
-fun Result<Any>.shouldNotBeFailure() = test(inverse = true) {
+fun Result<Any?>.shouldNotBeFailure() = test(inverse = true) {
   BeFailure().test(this)
 }
-class BeFailure : Matcher<Result<Any>> {
-  override fun test(value: Result<Any>) = MatcherResult(
+class BeFailure : Matcher<Result<Any?>> {
+  override fun test(value: Result<Any?>) = MatcherResult(
     value.isFailure,
     "Result should be a failure",
     "Result should not be a failure"
   )
 }
 
-inline fun <reified A : Throwable> Result<Any>.shouldBeFailureOfType() = test {
+inline fun <reified A : Throwable> Result<Any?>.shouldBeFailureOfType() = test {
   BeFailureOfType(A::class).test(this)
 }
-inline fun <reified A : Throwable> Result<Any>.shouldNotBeFailureOfType() = test(inverse = true) {
+inline fun <reified A : Throwable> Result<Any?>.shouldNotBeFailureOfType() = test(inverse = true) {
   BeFailureOfType(A::class).test(this)
 }
 
-class BeFailureOfType<A : Throwable>(private val clazz: KClass<A>) : Matcher<Result<Any>> {
-  override fun test(value: Result<Any>): MatcherResult {
+class BeFailureOfType<A : Throwable>(private val clazz: KClass<A>) : Matcher<Result<Any?>> {
+  override fun test(value: Result<Any?>): MatcherResult {
     val error = value.exceptionOrNull()
     return when {
       value.isSuccess -> MatcherResult(false, "Result should be a failure", "")
