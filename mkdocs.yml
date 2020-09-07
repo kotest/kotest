@@ -1,0 +1,30 @@
+site_name: Kotest
+
+# Meta tags (placed in header)
+site_description: Kotest test framework for Kotlin.
+site_author: Kotest organization
+site_url: https://kotest.io
+
+#Copyright (shown at the footer)
+copyright: 'Copyright &copy; 2017 Kotest Team'
+
+# Repository (add link to repository on each page)
+repo_name: Kotest
+repo_url: https://github.com/kotest/kotest
+
+theme:
+   name: material
+   palette:
+      primary: blue grey
+   logo: 'images/logo.png'
+   features:
+      - search.highlight
+plugins:
+   - search
+extra:
+   social:
+      -  icon: fontawesome/brands/slack
+         link: https://kotlinlang.slack.com/?redir=%2Farchives%2FCT0G9SD7Z
+      -  icon: fontawesome/brands/github
+         link: https://github.com/kotest/kotest
+

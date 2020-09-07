@@ -1,5 +1,3 @@
-# Welcome to Kotest
-
 ![Kotest](images/logo_with_text.png)
 
 For latest updates see [Changelog](CHANGELOG.md).<br/>
