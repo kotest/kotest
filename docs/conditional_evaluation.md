@@ -67,7 +67,7 @@ class FocusExample : StringSpec({
 })
 ```
 
-Note again that this **does not** work for nested tests.
+Note again that this **does not** work for nested tests due to the fact that nested tests are only discovered once the parent test has executed.
 
 ### Bang
 
@@ -114,3 +114,50 @@ class XMethodsExample : DescribeSpec({
 See which specs support this and the syntax required on the [specs styles guide](styles.md).
 
 
+
+
+### @Ignored
+
+If you wish to disable all tests in a Spec, we may use the @Ignored annotation. Then the spec will be skipped, and not even instantiated.
+
+```kotlin
+@Ignored
+class IgnoredSpec : FunSpec() {
+  init {
+    error("boom") // spec will not be created so this error will not happen
+  }
+}
+```
+
+Note: This is only available on the JVM target.
+
+
+### @EnabledIf
+
+Similar to @Ignored, we can use a function to determine if a spec should be created.
+The @EnabledIf annotation requires a class that implements `EnabledCondition`.
+
+For example, we may wish to only execute a test on Linux platforms if the name contains Linux.
+
+```kotlin
+class LinuxOnlyCondition : EnabledCondition() {
+   override fun enabled(specKlass: KClass<out Spec>): Boolean =
+      if (specKlass.simpleName?.contains("Linux") == true) IS_OS_LINUX else true
+}
+```
+
+Then we can apply that to one or more specs
+
+```kotlin
+@EnabledIf(LinuxOnlyCondition::class)
+class MyLinuxTest1 : FunSpec() {
+  ..
+}
+
+@EnabledIf(LinuxOnlyCondition::class)
+class MyLinuxTest2 : DescribeSpec() {
+  ..
+}
+```
+
+Note: This is only available on the JVM target.
