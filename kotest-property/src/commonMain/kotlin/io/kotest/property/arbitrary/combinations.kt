@@ -30,7 +30,7 @@ fun <A : Any> Arb.Companion.choose(a: Pair<Int, A>, b: Pair<Int, A>, vararg cs: 
       else pick(n - w, l.drop(1))
    }
 
-   return Arb.create {
+   return arbitrary {
       val total = weights.sum()
       val n = it.random.nextInt(1, total + 1)
       pick(n, allPairs.asSequence())
@@ -72,15 +72,13 @@ fun <A : Any> Arb.Companion.choose(a: Pair<Int, Arb<A>>, b: Pair<Int, Arb<A>>, v
       else pick(n - w, l.drop(1))
    }
 
-   return arb { rs ->
+   return arbitrary { rs ->
       // we must open up an iter stream for each arb
       val allIters = allPairs.map { (weight, arb) -> weight to arb.generate(rs).map { it.value }.iterator() }
-      generateSequence {
-         val total = weights.sum()
-         val n = rs.random.nextInt(1, total + 1)
-         val arb = pick(n, allIters)
-         arb.next()
-      }
+      val total = weights.sum()
+      val n = rs.random.nextInt(1, total + 1)
+      val arb = pick(n, allIters)
+      arb.next()
    }
 }
 
@@ -97,21 +95,17 @@ fun <A : Any> Arb.Companion.frequency(
 /**
  * Generates random permutations of a list.
  */
-fun <A> Arb.Companion.shuffle(list: List<A>) = arb {
-   generateSequence {
-      list.shuffled(it.random)
-   }
+fun <A> Arb.Companion.shuffle(list: List<A>) = arbitrary {
+   list.shuffled(it.random).first()
 }
 
 /**
  * Generates a random subsequence of the input list, including the empty list.
  * The returned list has the same order as the input list.
  */
-fun <A> Arb.Companion.subsequence(list: List<A>) = arb {
-   generateSequence {
-      val size = it.random.nextInt(0, list.size + 1)
-      list.take(size)
-   }
+fun <A> Arb.Companion.subsequence(list: List<A>) = arbitrary {
+   val size = it.random.nextInt(0, list.size + 1)
+   list.take(size)
 }
 
 /**

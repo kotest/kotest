@@ -80,11 +80,9 @@ fun Codepoint.asString(): String {
    return if (isBmpCodePoint) {
       value.toChar().toString()
    } else {
-      String(
-         charArrayOf(
-            highSurrogate,
-            lowSurrogate
-         )
-      )
+      charArrayOf(
+         highSurrogate,
+         lowSurrogate
+      ).concatToString()
    }
 }

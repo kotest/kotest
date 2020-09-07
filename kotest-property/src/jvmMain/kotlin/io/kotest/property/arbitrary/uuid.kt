@@ -1,9 +1,7 @@
 package io.kotest.property.arbitrary
 
 import io.kotest.property.Arb
-import io.kotest.property.RandomSource
-import io.kotest.property.Sample
-import java.util.UUID
+import java.util.*
 
 enum class UUIDVersion(
    val uuidRegex: Regex
@@ -19,13 +17,14 @@ enum class UUIDVersion(
 fun Arb.Companion.uuid(
    uuidVersion: UUIDVersion = UUIDVersion.V4,
    allowNilValue: Boolean = true
-): Arb<UUID> = object : Arb<UUID>() {
+): Arb<UUID> {
 
-   override fun edgecases() = if (allowNilValue)
+   val edgecases = if (allowNilValue)
       listOf(UUID.fromString("00000000-0000-0000-0000-000000000000"))
    else emptyList()
 
-   override fun values(rs: RandomSource): Sequence<Sample<UUID>> {
-      return Arb.stringPattern(uuidVersion.uuidRegex.pattern).values(rs).map { Sample(UUID.fromString(it.value)) }
+   return arbitrary(edgecases) {
+      val value = Arb.stringPattern(uuidVersion.uuidRegex.pattern).next(it)
+      UUID.fromString(value)
    }
 }
