@@ -3,9 +3,8 @@
 
 **Kotest is a flexible and comprehensive testing tool for Kotlin with multiplatform support.**
 
-
 For latest updates see [Changelog](CHANGELOG.md).<br/>
-Read [full documentation](doc/reference.md) or a [quick start](doc/reference.md#getting-started) guide.
+See our [quick start](quick_start.md) guide to get up and running.
 
 Community
 ---------
@@ -140,6 +139,5 @@ This page gives you just a short overview of Kotest. There are many more feature
 * Test [Arrow](extensions.md#arrow) data types with the Arrow extension.
 * Make use of custom plugins for integrations with tools such as [Pitest](plugins.md#pitest)
 
-See our [quick start](quick_start.md) guide to get up and running.
 
 Read more about Kotest from third party [blogs and articles](doc/blogs.md).
