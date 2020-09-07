@@ -12,7 +12,7 @@ Kotest integrates with many libraries and frameworks. This page outlines the ext
 [Allure](http://allure.qatools.ru) is an open-source framework designed to generate detailed and interactive test reports.
 It works by collecting test data as tests are executed and then compiling that into a final HTML report.
 
-Kotest provides an extenstion for Allure and full integration instructions are [here](allure.md).
+Kotest provides an extenstion for Allure and full integration instructions are [here](extensions/allure.md).
 
 
 

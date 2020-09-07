@@ -24,9 +24,9 @@ These are provided separately so you can pick and choose which parts to use if y
 
 |     |     |
 | --- | --- |
-| **Test Framework**<br/>Layout tests in a fluid way and execute them on the JVM or Javascript. | <img src="https://img.shields.io/maven-central/v/io.kotest/kotest-core.svg?label=release"/> [<img src="https://img.shields.io/nexus/s/https/oss.sonatype.org/io.kotest/kotest-core.svg?label=snapshot"/>](https://oss.sonatype.org/content/repositories/snapshots/io/kotest/) |
-| **Assertions Library**<br/>A Kotlin-first multi-platform enabled assertions library. | <img src="https://img.shields.io/maven-central/v/io.kotest/kotest-assertions-core.svg?label=release"/> [<img src="https://img.shields.io/nexus/s/https/oss.sonatype.org/io.kotest/kotest-core.svg?label=snapshot"/>](https://oss.sonatype.org/content/repositories/snapshots/io/kotest/) |
-| **Property Testing**<br/>An advanced multi-platform property test library with shrinking support. | <img src="https://img.shields.io/maven-central/v/io.kotest/kotest-property.svg?label=release"/> [<img src="https://img.shields.io/nexus/s/https/oss.sonatype.org/io.kotest/kotest-core.svg?label=snapshot"/>](https://oss.sonatype.org/content/repositories/snapshots/io/kotest/) |
+| **Test Framework**<br/>Layout tests in a fluid way and execute them on the JVM or Javascript. | <img src="https://img.shields.io/maven-central/v/io.kotest/kotest-framework-engine.svg?label=release"/> [<img src="https://img.shields.io/nexus/s/https/oss.sonatype.org/io.kotest/kotest-framework-engine.svg?label=snapshot"/>](https://oss.sonatype.org/content/repositories/snapshots/io/kotest/) |
+| **Assertions Library**<br/>A Kotlin-first multi-platform enabled assertions library. | <img src="https://img.shields.io/maven-central/v/io.kotest/kotest-assertions-core.svg?label=release"/> [<img src="https://img.shields.io/nexus/s/https/oss.sonatype.org/io.kotest/kotest-framework-engine.svg?label=snapshot"/>](https://oss.sonatype.org/content/repositories/snapshots/io/kotest/) |
+| **Property Testing**<br/>An advanced multi-platform property test library with shrinking support. | <img src="https://img.shields.io/maven-central/v/io.kotest/kotest-property.svg?label=release"/> [<img src="https://img.shields.io/nexus/s/https/oss.sonatype.org/io.kotest/kotest-framework-engine.svg?label=snapshot"/>](https://oss.sonatype.org/content/repositories/snapshots/io/kotest/) |
 
 #### Which subproject(s) to use?
 

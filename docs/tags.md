@@ -1,5 +1,5 @@
 Grouping Tests with Tags
-------------------------
+=======
 
 Sometimes you don't want to run all tests and Kotest provides tags to be able to determine which
 tests are executed at runtime. Tags are objects inheriting from `io.kotest.core.Tag`.
@@ -29,7 +29,7 @@ For example:
 val tag = StringTag("Linux")
 ```
 
-#### Marking Tests
+## Marking Tests
 
 Test cases can then be marked with tags using the `config` function:
 
@@ -54,7 +54,7 @@ class MyTest : StringSpec() {
 ```
 
 
-#### Running with Tags
+## Running with Tags
 
 Then by invoking the test runner with a system property of `kotest.tags` you can control which tests are run. The expression to be
 passed in is a simple boolean expression using boolean operators: `&`, `|`, `!`, with parenthesis for association.
@@ -78,7 +78,7 @@ Tags can also be included/excluded in runtime (for example, if you're running a 
 RuntimeTagExpressionExtension.expression = "Linux & !Database"
 ```
 
-#### Tag Expression Operators
+## Tag Expression Operators
 
 Operators (in descending order of precedence)
 
@@ -89,7 +89,10 @@ Operators (in descending order of precedence)
 |&#124;|or|windows &#124; microservice|
 
 
-#### Marking Specs
+
+
+
+## Marking Specs
 
 You can mark all tests in a spec using the tags function in the spec itself.
 
@@ -137,7 +140,10 @@ class MyTestClass : FunSpec({
 | kotest.tags=Linux & !Mysql         | yes | yes | B, C are executed only, because all tests inherit `Linux` from the annotation, but A is excluded by the `Mysql` tag |
 
 
-#### Gradle
+
+
+
+## Gradle
 
 **Special attention is needed in your gradle configuration**
 

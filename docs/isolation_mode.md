@@ -1,7 +1,6 @@
 Isolation Modes
 ===============
 
-Note: Isolation modes replace _One Instance Per Test_ which was a setting in version 3.1 and earlier.
 
 All specs allow you to control how the test engine creates instances of Specs for test cases. This behavior is called the _isolation mode_ and is controlled
 by an enum `IsolationMode`. There are three values: `SingleInstance`, `InstancePerLeaf`, and `InstancePerTest`.
@@ -29,7 +28,7 @@ class MyTestClass : WordSpec() {
 }
 ```
 
-### Single Instance
+## Single Instance
 
 The default isolation mode is `SingleInstance` whereby one instance of the Spec class is created and then each test case
 is exected in turn until all tests have completed.
@@ -54,7 +53,11 @@ class SingleInstanceExample : WordSpec({
 **Note**: This default is the same as ScalaTest (the inspiration for this framework), Jest, Jasmine, and other JS frameworks
  but different to JUnit. Whichever default is chosen, some developers will consider it _wrong_.
 
-### InstancePerTest
+
+
+
+
+## InstancePerTest
 
 The next mode is `IsolationMode.InstancePerTest` where a new spec will be created for every test case, including inner contexts.
 In other words, outer contexts will execute as a "stand alone" test in their own instance of the spec.
@@ -127,7 +130,10 @@ c=1
 
 
 
-### InstancePerLeaf
+
+
+
+## InstancePerLeaf
 
 The next mode is `IsolationMode.InstancePerLeaf` where a new spec will be created for every leaf test case - so excluding inner contexts.
 In other words, inner contexts are only executed as part of the "path" to an outer test.
@@ -195,7 +201,10 @@ a=0
 c=1
 
 
-### Global Isolation Mode
+
+
+
+## Global Isolation Mode
 
 Rather than setting the isolation mode in every spec, we can set it globally in project config.
 

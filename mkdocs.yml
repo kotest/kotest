@@ -36,6 +36,7 @@ extra:
 
 nav:
    - "index.md"
+   - "quick_start.md"
    - "styles.md"
    - "assertions.md"
    - "matchers.md"
@@ -43,11 +44,15 @@ nav:
    - "extensions.md"
    - "listeners.md"
    - "property_testing.md"
+   - "property_test_generators.md"
    - "data_driven_testing.md"
    - "conditional_evaluation.md"
    - "isolation_mode.md"
    - "clues.md"
    - "timeout.md"
+   - "tags.md"
+   - "test_ordering.md"
+   - "mocks.md"
    - "project_config.md"
    - "nondeterministic_testing.md"
    - "test_factories.md"

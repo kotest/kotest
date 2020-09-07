@@ -3,6 +3,8 @@ Test Factories
 
 Sometimes we may wish to write a set of generic tests and then reuse them for specific inputs. In Kotest we can do this via _test factories_ which create tests that can be _included_ into one or more specs.
 
+## Overview
+
 Say we wanted to build our own collections library. A slightly trite example, but one that serves the documentation purpose well.
 
 We could create an interface `IndexedSeq` which has two implementations, `List` and `Vector`.
