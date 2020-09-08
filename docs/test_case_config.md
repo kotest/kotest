@@ -54,7 +54,7 @@ class FunSpecTest : FunSpec() {
 
 You can also specify a default TestCaseConfig for all test cases of a Spec:
 
-Old way for KotlinTest version 3.3+.
+Overriding the defaultTestCaseConfig function:
 
 ```kotlin
 class MySpec : StringSpec() {
@@ -66,7 +66,8 @@ class MySpec : StringSpec() {
   }
 }
 ```
-New way for Kotest version 4.+
+
+Or via assignment to the defaultTestConfig val:
 
 ```kotlin
 class FunSpecTest : FunSpec() {
@@ -79,17 +80,4 @@ class FunSpecTest : FunSpec() {
     }
   }
 }
-```
-
-or
-
-```kotlin
-class FunSpecTest : FunSpec({
-
-    defaultTestConfig = TestCaseConfig(enabled = true, invocations = 3)
-
-    test("FunSpec should support Spec config syntax in FunSpec constructor block") {
-      // ...
-    }
-})
 ```

@@ -63,20 +63,29 @@ nav:
          - "isolation_mode.md"
          - "timeout.md"
          - "tags.md"
-         - "project_config.md"
+         -  "Test Case Config": test_case_config.md
          - "nondeterministic_testing.md"
          - "test_factories.md"
+         - "project_config.md"
+         - "Temporary Files": "tempfile.md"
+         - "Autoclose": "autoclose.md"
          - "mocks.md"
          - "mpp.md"
          - "plugins.md"
    -  "Assertions":
          - "assertions.md"
          - "matchers.md"
+         -  "Core Matchers": matchers/core.md
+         -  "Arrow Matchers": matchers/arrow.md
+         -  "Ktor Matchers": matchers/ktor.md
+         -  "Json Matchers": matchers/json.md
          - "inspectors.md"
+         - "clues.md"
    -  "Property Testing":
          -  "Introduction": property_testing.md
-         -  "Generators": property_generators.md
          -  "Generator Operations": property_ops.md
+         -  "List of Generators": property_generators.md
+         -  "Custom Generators": custom_gens.md
    -  Issues: "https://github.com/kotest/kotest/issues"
    -  More:
          - "blogs.md"

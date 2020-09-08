@@ -6,6 +6,7 @@ on:
          - 'docs/**'
          - 'docs/**'
          - '*.md'
+         - '*.yml'
       branches:
          - master
          - release/*

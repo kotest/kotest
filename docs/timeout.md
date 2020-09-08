@@ -20,6 +20,16 @@ class TimeoutTest : DescribeSpec({
 In this case, a _timeout_ of 2000 millis would cause the test to fail, because the total run time would be 4500 millis.
 Whereas an _invocation timeout_ of 2000 millis would not cause the test to fail, because each individual run is 1500 millis.
 
+
+
+!!! info
+    Timeouts include the time taken for nested tests.
+
+
+
+
+
+
 We can specify the timeout at three levels.
 
 ## Test Level Timeouts
@@ -56,12 +66,6 @@ class TimeoutTest : DescribeSpec({
 
 })
 ```
-
-
-!!! info
-    Timeouts include the time taken for nested tests.
-
-
 
 
 ## Global Timeouts
