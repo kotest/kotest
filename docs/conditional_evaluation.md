@@ -201,3 +201,5 @@ Or via the command line:
 
 See full Gradle documentation [here](https://docs.gradle.org/6.2.2/userguide/java_testing.html#test_filtering).
 
+!!! note
+    Because gradle's test support is method/class based, we cannot filter tests down to the individual test level, only the class level.
