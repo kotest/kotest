@@ -18,8 +18,14 @@ fun <A> Arb<A>.take(count: Int, rs: RandomSource = RandomSource.Default): Sequen
 
 /**
  * Returns a single value generated from this arb ignoring edgecases.
+ * Alias for next.
  */
 fun <A> Arb<A>.single(rs: RandomSource = RandomSource.Default): A = this.samples(rs).map { it.value }.first()
+
+/**
+ * Returns a single value generated from this arb ignoring edgecases.
+ * Alias for single.
+ */
 fun <A> Arb<A>.next(rs: RandomSource = RandomSource.Default): A = single(rs)
 
 /**
@@ -177,6 +183,9 @@ fun <A, B> Arb<A>.distinctBy(selector: (A) -> B) = object : Arb<A>() {
       samples(rs).distinctBy { selector(it.value) }.first()
 }
 
+/**
+ * Returns an [Arb] which repeatedly generates a single value.
+ */
 fun <A> Arb.Companion.constant(a: A) = element(a)
 
 /**
