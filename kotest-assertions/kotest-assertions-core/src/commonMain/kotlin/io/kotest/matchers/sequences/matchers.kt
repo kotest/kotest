@@ -116,7 +116,7 @@ fun <T> containExactlyInAnyOrder(vararg expected: T): Matcher<Sequence<T>?> =
    containAllInAnyOrder(expected.asSequence())
 
 @Deprecated("use containAllInAnyOrder", ReplaceWith("containAllInAnyOrder"))
-/** Assert that a sequence contains the given values and nothing else, in any order. */
+   /** Assert that a sequence contains the given values and nothing else, in any order. */
 fun <T, C : Sequence<T>> containExactlyInAnyOrder(expected: C): Matcher<C?> = containAllInAnyOrder(expected)
 
 infix fun <T, C : Sequence<T>> C?.shouldNotContainAllInAnyOrder(expected: C) =
@@ -250,10 +250,12 @@ fun <T> singleElement(t: T) = object : Matcher<Sequence<T>> {
 
 infix fun <T> Sequence<T>.shouldHaveCount(count: Int) = this should haveCount(count)
 infix fun <T> Sequence<T>.shouldNotHaveCount(count: Int) = this shouldNot haveCount(
-   count)
+   count
+)
 
 infix fun <T> Sequence<T>.shouldHaveSize(size: Int) = this should haveCount(size)
 infix fun <T> Sequence<T>.shouldNotHaveSize(size: Int) = this shouldNot haveCount(size)
+
 //fun <T> haveSize(size: Int) = haveCount(size)
 fun <T> haveSize(size: Int): Matcher<Sequence<T>> = haveCount(size)
 
@@ -288,7 +290,8 @@ fun <T, U> beSmallerThan(other: Sequence<U>) = object : Matcher<Sequence<T>> {
 }
 
 infix fun <T, U> Sequence<T>.shouldBeSameCountAs(other: Sequence<U>) = this should beSameCountAs(
-   other)
+   other
+)
 
 fun <T, U> beSameCountAs(other: Sequence<U>) = object : Matcher<Sequence<T>> {
    override fun test(value: Sequence<T>) = MatcherResult(
@@ -372,19 +375,28 @@ fun <T> beEmpty(): Matcher<Sequence<T>> = object : Matcher<Sequence<T>> {
 }
 
 
-fun <T> Sequence<T>.shouldContainAll(vararg ts: T) = this should containAll(ts.asSequence())
-infix fun <T> Sequence<T>.shouldContainAll(ts: Collection<T>) = this should containAll(ts.asSequence())
-
+fun <T> Sequence<T>.shouldContainAll(vararg ts: T) = this should containAll(ts.toList())
+infix fun <T> Sequence<T>.shouldContainAll(ts: Collection<T>) = this should containAll(ts.toList())
 infix fun <T> Sequence<T>.shouldContainAll(ts: Sequence<T>) = this should containAll(ts)
-fun <T> Sequence<T>.shouldNotContainAll(vararg ts: T) = this shouldNot containAll(ts.asSequence())
-infix fun <T> Sequence<T>.shouldNotContainAll(ts: Collection<T>) = this shouldNot containAll(ts.asSequence())
 
+fun <T> Sequence<T>.shouldNotContainAll(vararg ts: T) = this shouldNot containAll(ts.asList())
+infix fun <T> Sequence<T>.shouldNotContainAll(ts: Collection<T>) = this shouldNot containAll(ts.toList())
 infix fun <T> Sequence<T>.shouldNotContainAll(ts: Sequence<T>) = this shouldNot containAll(ts)
 
-fun <T, C : Sequence<T>> containAll(ts: C): Matcher<Sequence<T>> = object : Matcher<Sequence<T>> {
-   override fun test(value: Sequence<T>): MatcherResult = MatcherResult(
-      ts.all { value.contains(it) },
-      { "Sequence should contain all of ${value.joinToString(",", limit = 10)}" },
-      { "Sequence should not contain all of ${value.joinToString(",", limit = 10)}" }
-   )
+fun <T, C> containAll(ts: Sequence<C>): Matcher<Sequence<T>> = containAll(ts.toList())
+fun <T, C> containAll(ts: List<C>): Matcher<Sequence<T>> = object : Matcher<Sequence<T>> {
+   override fun test(value: Sequence<T>): MatcherResult {
+
+      val remaining = ts.toMutableSet()
+      val iter = value.iterator()
+      while (remaining.isNotEmpty() && iter.hasNext()) {
+         remaining.remove(iter.next())
+      }
+
+      return MatcherResult(
+         remaining.isEmpty(),
+         { "Sequence should contain all of ${value.joinToString(",", limit = 10)}" },
+         { "Sequence should not contain all of ${value.joinToString(",", limit = 10)}" }
+      )
+   }
 }
