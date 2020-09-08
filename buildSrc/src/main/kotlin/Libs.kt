@@ -44,7 +44,7 @@ object Libs {
    }
 
    object Tschuchortdev {
-      private const val version = "1.2.9"
+      private const val version = "1.2.10"
       const val kotlinCompileTesting = "com.github.tschuchortdev:kotlin-compile-testing:$version"
    }
 
