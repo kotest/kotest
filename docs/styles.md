@@ -210,8 +210,8 @@ class MyTests : BehaviorSpec({
 })
 ```
 
-Because `when` is a keyword in Kotlin, we must enclose it with backticks. Alternatively, there are title case versions
-available if you don't like the use of backticks, eg, `Given`, `When`, `Then`.
+!!! tip
+    Because `when` is a keyword in Kotlin, we must enclose it with backticks. Alternatively, there are title case versions available if you don't like the use of backticks, eg, `Given`, `When`, `Then`.
 
 You can also use the `And` keyword in `Given` and `When` to add an extra depth to it:
 
@@ -299,7 +299,7 @@ class MyTests : WordSpec({
 
 ## Free Spec
 
-`FreeSpec` allows you to nest arbitrary levels of depth using the keyword `-` (minus), as such:
+`FreeSpec` allows you to nest arbitrary levels of depth using the keyword `-` (minus) for outer tests, and just the test name for the final test:
 
 ```kotlin
 class MyTests : FreeSpec({
@@ -321,6 +321,8 @@ class MyTests : FreeSpec({
 })
 ```
 
+!!! warning
+    The innermost test must not use the `-` (minus) keyword after the test name.
 
 
 
@@ -418,8 +420,6 @@ Just add the `@Test` annotation to any function defined in the spec class.
 
 You can also add annotations to execute something before tests/specs and after tests/specs, similarly to JUnit's
 
-Although this spec doesn't offer any advantage over using JUnit itself, it allows you to migrate faster, as you typically just need to adjust imports.
-
 ```
 @BeforeAll / @BeforeClass
 @BeforeEach / @Before
@@ -428,6 +428,12 @@ Although this spec doesn't offer any advantage over using JUnit itself, it allow
 ```
 
 If you want to ignore a test, use `@Ignore`.
+
+
+!!! success
+    Although this spec doesn't offer much advantage over using JUnit, it allows you to migrate existing tests relatively easily, as you typically just need to adjust imports.
+
+
 
 ```kotlin
 class AnnotationSpecExample : AnnotationSpec() {

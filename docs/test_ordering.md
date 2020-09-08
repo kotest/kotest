@@ -6,9 +6,14 @@ When running multiple tests from a Spec, there's a certain order on how to execu
  By default, a **sequential** order is used (order that tests are defined in the spec), but it's also possible to configure them
  to be executed in a **random** order or **lexicographic** order.
 
-This setting can be configured in either a `Spec` or in [ProjectConfig](/doc/reference.md#project-config), by overriding the `testCaseOrder` function. If both exist, the `Spec`'s configuration will have priority.
+This setting can be configured in either a `Spec` or in [ProjectConfig](project_config.md) by overriding the `testCaseOrder` function.
+If both exist, the `Spec`'s configuration will have priority.
 
-**Note**: Nested tests will always run in discovery order (sequential)
+
+!!! note
+    Nested tests will always run in discovery order (sequential).
+
+
 
 ```kotlin
 class SequentialSpec : StringSpec() {
@@ -25,7 +30,9 @@ class SequentialSpec : StringSpec() {
       }
     }
 }
+```
 
+```kotlin
 class RandomSpec : StringSpec() {
 
     override fun testCaseOrder(): TestCaseOrder? = TestCaseOrder.Random
@@ -40,7 +47,9 @@ class RandomSpec : StringSpec() {
       }
     }
 }
+```
 
+```kotlin
 class LexicographicSpec : StringSpec() {
 
     override fun testCaseOrder(): TestCaseOrder? = TestCaseOrder.Lexicographic
@@ -57,5 +66,3 @@ class LexicographicSpec : StringSpec() {
 }
 ```
 
-
-_Note: Nested tests will always run in discovery order (sequential)_
