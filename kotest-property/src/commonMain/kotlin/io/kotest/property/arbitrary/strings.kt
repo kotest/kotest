@@ -27,7 +27,7 @@ fun Arb.Companion.string(
    val edgecases = if (minSize == maxSize)
       emptyList()
    else
-      listOfNotNull(min, minPlus1).filter { it.length >= minSize && it.length <= maxSize }
+      listOfNotNull(min, minPlus1).filter { it.length in minSize..maxSize }
 
    return arb(StringShrinker, edgecases) { rs ->
       val size = rs.random.nextInt(minSize..maxSize)

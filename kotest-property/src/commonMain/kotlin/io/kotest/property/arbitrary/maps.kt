@@ -72,10 +72,8 @@ class MapShrinker<K, V> : Shrinker<Map<K, V>> {
 /**
  * Returns an [Arb] that produces Pairs of K,V using the supplied arbs for K and V.
  */
-fun <K, V> Arb.Companion.pair(k: Arb<K>, v: Arb<V>) = arb { rs ->
-   val ks = k.values(rs)
-   val vs = v.values(rs)
-   ks.zip(vs).map {
-      Pair(it.first.value, it.second.value)
-   }
+fun <K, V> Arb.Companion.pair(k: Arb<K>, v: Arb<V>) = arbitrary { rs ->
+   val ks = k.sample(rs)
+   val vs = v.sample(rs)
+   Pair(ks.value, vs.value)
 }

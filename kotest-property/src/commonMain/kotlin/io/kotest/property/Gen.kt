@@ -130,4 +130,7 @@ abstract class Exhaustive<out A> : Gen<A>() {
  */
 data class Sample<out A>(val value: A, val shrinks: RTree<A> = RTree({ value }))
 
+/**
+ * Returns a [Sample] with shrinks by using the supplied [Shrinker] against the input value [a].
+ */
 fun <A> sampleOf(a: A, shrinker: Shrinker<A>) = Sample(a, shrinker.rtree(a))
