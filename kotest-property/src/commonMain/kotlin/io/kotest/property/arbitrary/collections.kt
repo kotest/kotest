@@ -64,19 +64,15 @@ fun <A> Arb.Companion.list(gen: Gen<A>, range: IntRange = 0..100): Arb<List<A>> 
    check(!range.isEmpty())
    check(range.first >= 0)
    val edgecases = if (range.contains(0)) listOf(emptyList<A>()) else emptyList()
-   return arb(edgecases, ListShrinker(range)) {
-      sequence {
-         val genIter = gen.generate(it).iterator()
-         while (true) {
-            val targetSize = it.random.nextInt(range)
-            val list = ArrayList<A>(targetSize)
-            while (list.size < targetSize && genIter.hasNext()) {
-               list.add(genIter.next().value)
-            }
-            check(list.size == targetSize)
-            yield(list)
-         }
+   return arbitrary(edgecases, ListShrinker(range)) {
+      val genIter = gen.generate(it).iterator()
+      val targetSize = it.random.nextInt(range)
+      val list = ArrayList<A>(targetSize)
+      while (list.size < targetSize && genIter.hasNext()) {
+         list.add(genIter.next().value)
       }
+      check(list.size == targetSize)
+      list
    }
 }
 

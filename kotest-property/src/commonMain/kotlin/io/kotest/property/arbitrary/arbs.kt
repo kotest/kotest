@@ -47,6 +47,24 @@ fun <A> arbitrary(edgecases: List<A>, fn: (RandomSource) -> A) = object : Arb<A>
 }
 
 /**
+ * Creates a new [Arb] that performs shrinking using the supplied [Shrinker], uses the given edge cases and
+ * generates values from the given function.
+ */
+fun <A> arbitrary(edgecases: List<A>, shrinker: Shrinker<A>, fn: (RandomSource) -> A) = object : Arb<A>() {
+   override fun edgecases(): List<A> = edgecases
+   override fun sample(rs: RandomSource): Sample<A> = sampleOf(fn(rs), shrinker)
+}
+
+/**
+ * Creates a new [Arb] that performs shrinking using the supplied [Shrinker], has no edge cases and
+ * generates values from the given function.
+ */
+fun <A> arbitrary(shrinker: Shrinker<A>, fn: (RandomSource) -> A) = object : Arb<A>() {
+   override fun edgecases(): List<A> = emptyList()
+   override fun sample(rs: RandomSource): Sample<A> = sampleOf(fn(rs), shrinker)
+}
+
+/**
  * Creates a new [Arb] that performs no shrinking, uses the supplied edge case values,
  * and generates values from the given function that is invoked once to return a sequence of values.
  */
@@ -80,6 +98,7 @@ fun <A> arb(
  * Creates a new [Arb] that performs shrinking using the supplied shrinker and generates each value
  * from successive invocations of the given function f.
  */
+@Deprecated("use arbitrary(). This function will be removed in 4.5.")
 fun <A> arb(
    shrinker: Shrinker<A>,
    f: (RandomSource) -> A
@@ -93,6 +112,7 @@ fun <A> arb(
  * Creates a new [Arb] with the given edgecases, that performs shrinking using the supplied shrinker and
  * generates each value from successive invocations of the given function f.
  */
+@Deprecated("use arbitrary(). This function will be removed in 4.5.")
 fun <A> arb(
    shrinker: Shrinker<A>,
    edgecases: List<A> = emptyList(),
