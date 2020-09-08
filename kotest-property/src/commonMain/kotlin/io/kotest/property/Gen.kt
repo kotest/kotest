@@ -1,7 +1,6 @@
 package io.kotest.property
 
 import io.kotest.property.arbitrary.of
-import kotlin.random.Random
 
 /**
  * A [Gen] is responsible for providing values to be used in property testing. You can think of it as like
@@ -71,7 +70,7 @@ abstract class Arb<out A> : Gen<A>() {
 
    open fun sample(rs: RandomSource): Sample<A> = values(rs).first()
 
-   @Deprecated("implement one value at a time using sample(rs)", ReplaceWith("sample(rs)"))
+   @Deprecated("implement one value at a time using sample(rs). This function will be removed in 4.5.", ReplaceWith("sample(rs)"))
    open fun values(rs: RandomSource): Sequence<Sample<A>> = emptySequence()
 
    /**
@@ -130,4 +129,7 @@ abstract class Exhaustive<out A> : Gen<A>() {
  */
 data class Sample<out A>(val value: A, val shrinks: RTree<A> = RTree({ value }))
 
+/**
+ * Returns a [Sample] with shrinks by using the supplied [Shrinker] against the input value [a].
+ */
 fun <A> sampleOf(a: A, shrinker: Shrinker<A>) = Sample(a, shrinker.rtree(a))

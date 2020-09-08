@@ -1,13 +1,6 @@
 package io.kotest.property.arbitrary
 
-import io.kotest.property.Arb
-import io.kotest.property.Exhaustive
-import io.kotest.property.Gen
-import io.kotest.property.RandomSource
-import io.kotest.property.Sample
-import io.kotest.property.Shrinker
-import io.kotest.property.map
-import io.kotest.property.sampleOf
+import io.kotest.property.*
 
 /**
  * Returns a sequence of size [count] from values generated from this arb.
@@ -18,84 +11,15 @@ fun <A> Arb<A>.take(count: Int, rs: RandomSource = RandomSource.Default): Sequen
 
 /**
  * Returns a single value generated from this arb ignoring edgecases.
+ * Alias for next.
  */
 fun <A> Arb<A>.single(rs: RandomSource = RandomSource.Default): A = this.samples(rs).map { it.value }.first()
+
+/**
+ * Returns a single value generated from this arb ignoring edgecases.
+ * Alias for single.
+ */
 fun <A> Arb<A>.next(rs: RandomSource = RandomSource.Default): A = single(rs)
-
-/**
- * Creates a new [Arb] that performs no shrinking, has no edge cases and generates values from the given function.
- */
-fun <A> arbitrary(fn: (RandomSource) -> A) = object : Arb<A>() {
-   override fun sample(rs: RandomSource): Sample<A> = Sample(fn(rs))
-   override fun values(rs: RandomSource): Sequence<Sample<A>> = generateSequence { Sample(fn(rs)) }
-   override fun edgecases(): List<A> = emptyList()
-}
-
-/**
- * Creates a new [Arb] that performs no shrinking, uses the supplied edge case values,
- * and generates values from the given function that is invoked once to return a sequence of values.
- */
-@Deprecated(
-   "This function will no longer accept Sequence<A>. Use Arb.create or arb with (RandomSource -> A) for compatibility. This function will be removed in 4.5."
-)
-fun <A> arb(edgecases: List<A> = emptyList(), f: (RandomSource) -> Sequence<A>) = object : Arb<A>() {
-   override fun edgecases(): List<A> = edgecases
-   override fun values(rs: RandomSource): Sequence<Sample<A>> = f(rs).map { Sample(it) }
-   override fun sample(rs: RandomSource): Sample<A> = Sample(f(rs).first())
-}
-
-/**
- * Creates a new [Arb] that performs shrinking using the supplier shrinker, uses the
- * supplied edge case values, and provides values from sequence returning function.
- */
-@Deprecated(
-   "This function will no longer accept Sequence<A>. Use Arb.create or arb with (RandomSource -> A) for compatibility. This function will be removed in 4.5."
-)
-fun <A> arb(
-   edgecases: List<A> = emptyList(),
-   shrinker: Shrinker<A>,
-   f: (RandomSource) -> Sequence<A>
-) = object : Arb<A>() {
-   override fun edgecases(): List<A> = edgecases
-   override fun values(rs: RandomSource): Sequence<Sample<A>> = f(rs).map { sampleOf(it, shrinker) }
-   override fun sample(rs: RandomSource): Sample<A> = sampleOf(f(rs).first(), shrinker)
-}
-
-/**
- * Creates a new [Arb] that performs shrinking using the supplied shrinker and generates each value
- * from successive invocations of the given function f.
- */
-fun <A> arb(
-   shrinker: Shrinker<A>,
-   f: (RandomSource) -> A
-) = object : Arb<A>() {
-   override fun edgecases(): List<A> = emptyList()
-   override fun values(rs: RandomSource): Sequence<Sample<A>> = generateSequence { sampleOf(f(rs), shrinker) }
-   override fun sample(rs: RandomSource): Sample<A> = sampleOf(f(rs), shrinker)
-}
-
-/**
- * Creates a new [Arb] with the given edgecases, that performs shrinking using the supplied shrinker and
- * generates each value from successive invocations of the given function f.
- */
-fun <A> arb(
-   shrinker: Shrinker<A>,
-   edgecases: List<A> = emptyList(),
-   f: (RandomSource) -> A
-) = object : Arb<A>() {
-   override fun edgecases(): List<A> = edgecases
-   override fun values(rs: RandomSource): Sequence<Sample<A>> = generateSequence { sampleOf(f(rs), shrinker) }
-   override fun sample(rs: RandomSource): Sample<A> = sampleOf(f(rs), shrinker)
-}
-
-/**
- * Returns an [Arb] where each value is generated from the given function.
- */
-fun <A> Arb.Companion.create(edgeCases: List<A> = emptyList(), fn: (RandomSource) -> A): Arb<A> = object : Arb<A>() {
-   override fun sample(rs: RandomSource): Sample<A> = Sample(fn(rs))
-   override fun values(rs: RandomSource): Sequence<Sample<A>> = generateSequence { Sample(fn(rs)) }
-   override fun edgecases(): List<A> = edgeCases
-}
 
 /**
  * Returns a new [Arb] which takes its elements from the receiver and filters them using the supplied
@@ -136,8 +60,8 @@ fun <A, B> Arb<A>.map(f: (A) -> B): Arb<B> = object : Arb<B>() {
 fun <A, B> Arb<A>.flatMap(f: (A) -> Arb<B>): Arb<B> = object : Arb<B>() {
    override fun edgecases(): List<B> = this@flatMap.edgecases().flatMap { f(it).edgecases() }
    override fun values(rs: RandomSource): Sequence<Sample<B>> =
-      this@flatMap.samples(rs).zip(generateSequence { rs.random.nextLong() }) { sample, nextLong ->
-         Sample(f(sample.value).next(RandomSource.seeded(nextLong)))
+      this@flatMap.samples(rs).map { sample ->
+         Sample(f(sample.value).next(rs))
       }
 
    override fun sample(rs: RandomSource): Sample<B> = f(this@flatMap.sample(rs).value).sample(rs)
@@ -167,8 +91,6 @@ fun <A, B> Arb<A>.distinctBy(selector: (A) -> B) = object : Arb<A>() {
    override fun sample(rs: RandomSource): Sample<A> =
       samples(rs).distinctBy { selector(it.value) }.first()
 }
-
-fun <A> Arb.Companion.constant(a: A) = element(a)
 
 /**
  * Returns a new [Arb] which will merge the values from this Arb and the values of

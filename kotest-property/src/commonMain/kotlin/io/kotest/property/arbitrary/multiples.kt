@@ -13,7 +13,7 @@ import io.kotest.property.Shrinker
  *
  */
 fun Arb.Companion.multiples(k: Int, max: Int): Arb<Int> =
-   arb(MultiplesShrinker(k)) { it.random.nextInt(0, max / k) * k }
+   arbitrary(MultiplesShrinker(k)) { it.random.nextInt(0, max / k) * k }
 
 class MultiplesShrinker(private val multiple: Int) : Shrinker<Int> {
    override fun shrink(value: Int): List<Int> = when (value) {
@@ -24,8 +24,10 @@ class MultiplesShrinker(private val multiple: Int) : Shrinker<Int> {
 }
 
 fun Arb.Companion.factors(k: Int): Arb<Int> {
-   return Arb.create(listOf(1)) {
-      generateSequence { it.random.nextInt(k) }.filter { it > 0 }
-         .filter { k % it == 0 }.first()
+   return arbitrary {
+      generateSequence { it.random.nextInt(k) }
+         .filter { it > 0 }
+         .filter { k % it == 0 }
+         .first()
    }
 }

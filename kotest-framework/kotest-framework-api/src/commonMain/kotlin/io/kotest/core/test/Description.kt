@@ -11,8 +11,10 @@ sealed class Description {
 
    abstract val name: DescriptionName
 
-   data class Spec(val kclass: KClass<out io.kotest.core.spec.Spec>, override val name: DescriptionName.SpecName) :
-      Description()
+   data class Spec(
+      val kclass: KClass<out io.kotest.core.spec.Spec>,
+      override val name: DescriptionName.SpecName
+   ) : Description()
 
    data class Test(
       val parent: Description,

@@ -14,7 +14,7 @@ fun Arb.Companion.int(min: Int, max: Int) = int(min..max)
  */
 fun Arb.Companion.int(range: IntRange = Int.MIN_VALUE..Int.MAX_VALUE): Arb<Int> {
    val edgecases = listOf(0, 1, -1, Int.MAX_VALUE, Int.MIN_VALUE).filter { it in range }
-   return arb(IntShrinker(range), edgecases) { it.random.nextInt(range) }
+   return arbitrary(edgecases, IntShrinker(range)) { it.random.nextInt(range) }
 }
 
 /**

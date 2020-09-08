@@ -2,12 +2,14 @@ name: build
 
 on:
    push:
+      paths-ignore:
+         - 'docs/**'
+         - 'docs/**'
+         - '*.md'
+         - '*.yml'
       branches:
          - master
          - release/*
-      paths-ignore:
-         - 'doc/**'
-         - '*.md'
 
 jobs:
    linux:
