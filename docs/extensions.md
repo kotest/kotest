@@ -30,7 +30,7 @@ val option: Option<String> = ...
 option shouldBe beSome("foo")
 ```
 
-For the full list of arrow matchers [click here](arrow-matchers.md).
+For the full list of arrow matchers [click here](matchers/arrow.md).
 
 Additionally, the module provides inspectors that work specifically for the `NonEmptyList` type.
 For example, we can test that a set of assertions hold only for a single element in a Nel by using the `forOne` inspector.
@@ -42,7 +42,7 @@ list.forOne {
 }
 ```
 
-Other inspectors include `forNone`, `forAll`, `forExactly(n)`, `forSome` and so on. See the section on [inspectors](https://github.com/kotest/kotest/blob/master/doc/reference.md#inspectors) for more details.
+Other inspectors include `forNone`, `forAll`, `forExactly(n)`, `forSome` and so on. See the section on [inspectors](inspectors.md) for more details.
 
 ## Spring
 
@@ -55,7 +55,7 @@ point to a [specific application context file](https://docs.spring.io/spring-boo
 
 There are two ways to enable spring wiring depending on if you want to use constructor injection, or field injection.
 
-#### Field Injection
+### Field Injection
 
 If you wish to use field injection, then the `SpringListener` must be registered with any
  Spec that uses spring beans. For example:
@@ -79,12 +79,12 @@ class SpringExampleSpec : WordSpec() {
 }
 ```
 
-You could add the `SpringListener` project wide by registering the listener in [ProjectConfig](reference.md#project-config).
+You could add the `SpringListener` project wide by registering the listener in [ProjectConfig](project_config.md).
 
 ### Constructor Injection
 
 For constructor injection, we use a different implementation called `SpringAutowireConstructorExtension` which
- must be registered with [ProjectConfig](reference.md#project-config). This extension will intercept each call to create a Spec instance
+ must be registered with [ProjectConfig](project_config.md). This extension will intercept each call to create a Spec instance
  and will autowire the beans declared in the primary constructor.
 
 First an example of the project config.
@@ -110,6 +110,16 @@ class SpringAutowiredConstructorTest(service: UserService) : WordSpec() {
   }
 }
 ```
+
+
+
+### Final Clases
+
+When using a final class, you may receive a warning from Kotest:
+
+`Using SpringListener on a final class. If any Spring annotation fails to work, try making this class open`
+
+If you wish, you can disable this warning by setting the system property `kotest.listener.spring.ignore.warning` to true.
 
 
 

@@ -1,9 +1,9 @@
-<img src="images/logo_cropped.png" alt="kotest logo" width="100"/> Welcome to Kotest
+<img src="images/logo_cropped.png" alt="kotest logo" width="75"/> Welcome to Kotest
 ==
 
-**Kotest is a flexible and comprehensive testing tool for Kotlin with multiplatform support.**
+**Kotest is a flexible and comprehensive testing platform for Kotlin with multiplatform support.**
 
-For latest updates see [Changelog](CHANGELOG.md).<br/>
+For latest updates see [Changelog](changelog.md).<br/>
 See our [quick start](quick_start.md) guide to get up and running.
 
 Community

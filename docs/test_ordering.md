@@ -3,7 +3,8 @@ Test Ordering
 
 When running multiple tests from a Spec, there's a certain order on how to execute them.
 
- By default, a **sequential** order is used (order that tests are defined in the spec), but it's also possible to configure them to be executed in a **random** order.
+ By default, a **sequential** order is used (order that tests are defined in the spec), but it's also possible to configure them
+ to be executed in a **random** order or **lexicographic** order.
 
 This setting can be configured in either a `Spec` or in [ProjectConfig](/doc/reference.md#project-config), by overriding the `testCaseOrder` function. If both exist, the `Spec`'s configuration will have priority.
 
@@ -38,7 +39,23 @@ class RandomSpec : StringSpec() {
         // Test
       }
     }
-
 }
 
+class LexicographicSpec : StringSpec() {
+
+    override fun testCaseOrder(): TestCaseOrder? = TestCaseOrder.Lexicographic
+
+    init {
+      "This test will run second" {
+        // Test
+      }
+
+      "Because this comes first when ordered lexicographically" {
+        // Test
+      }
+    }
+}
 ```
+
+
+_Note: Nested tests will always run in discovery order (sequential)_

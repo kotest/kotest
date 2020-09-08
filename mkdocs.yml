@@ -21,7 +21,7 @@ theme:
    features:
       - search.highlight
    font:
-      text: Nunito Sans
+      text: Heebo
 
 plugins:
    - search
@@ -37,6 +37,7 @@ extra:
 nav:
    - "index.md"
    - "quick_start.md"
+   - "changelog.md"
    - "styles.md"
    - "assertions.md"
    - "matchers.md"

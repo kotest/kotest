@@ -155,7 +155,7 @@ Both types of gens can be mixed and matched in property tests. For example,
 you could test a function with 100 random positive integers (arbitrary) alongside every
 even number from 0 to 200 (exhaustive).
 
-Some generators are only available on the JVM. See the full list [here](generators.md).
+Some generators are only available on the JVM. See the full list [here](property_test_generators.md).
 
 ### Arb
 
@@ -228,7 +228,7 @@ class PropertyExample: StringSpec({
 })
 ```
 
-See [here](generators.md) for a list of the built in generators.
+See [here](property_test_generators.md) for a list of the built in generators.
 
 
 ## Custom Generators
