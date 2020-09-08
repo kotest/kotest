@@ -206,7 +206,20 @@ c=1
 
 ## Global Isolation Mode
 
-Rather than setting the isolation mode in every spec, we can set it globally in project config.
+Rather than setting the isolation mode in every spec, we can set it globally in project config or via a system property.
+
+### System Property
+
+To set the global isolation mode at the command line, use the system property `kotest.framework.isolation.mode` with one of the values:
+
+* InstancePerTest
+* InstancePerLeaf
+* SingleInstance
+
+!!! info
+    The values are case sensitive.
+
+### Config
 
 See the docs on setting up [project wide config](project_config.md), and then add the isolation mode you want to be the default. For example:
 

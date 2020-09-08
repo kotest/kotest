@@ -162,7 +162,7 @@ Which isn't particularly helpful. We can add extra context to failure messages t
 ## Assertion Mode
 
 
-You can ask Kotest to fail the build, or output a warning to stderr, if a test is executed that does not use a Kotest assertion (other assertion libraries are not detected).
+If you are using Kotest framework alongside Kotest assertions, you can ask Kotest to fail the build, or output a warning to stderr, if a test is executed that does not execute an assertion.
 
 To do this, set `assertionMode` to `AssertionMode.Error` or `AssertionMode.Warn` inside a spec. For example.
 
@@ -184,4 +184,8 @@ Running this test will output something like:
 Test 'this test has no assertions' did not invoke any assertions
 ```
 
-If we want to set this globally, we can do so in [project config](project_config.md).
+If we want to set this globally, we can do so in [project config](project_config.md) or via the system property `kotest.framework.assertion.mode`.
+
+
+!!! warning
+    Assertion mode only works for Kotest assertions and not other assertion libraries.

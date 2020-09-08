@@ -70,6 +70,8 @@ class FocusExample : StringSpec({
 !!! tip
     Focus mode **does not** work for nested tests due to the fact that nested tests are only discovered once the parent test has executed.
 
+
+
 ### Bang
 
 The opposite of focus is possible, which is to prefix a test with an exclamation mark `!` and then that test (and any subtests defined inside that scope) will be skipped.
@@ -91,6 +93,12 @@ class BangExample : StringSpec({
   }
 })
 ```
+
+!!! tip
+    If you want to disable the use of ! then set the system property `kotest.bang.disable` to `true`.
+
+
+
 
 ### X-Methods
 

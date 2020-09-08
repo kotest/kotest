@@ -1,9 +1,12 @@
 Property-based Testing <a name="property-based"></a>
 ===========
 
+
+Kotest is split into several subprojects which can be used independently. One of these subprojects is the property test framework.
+
 ## Quick Start
 
-To use Kotest's property-based testing you need to add the module `io.kotest:kotest-property-jvm:<version>` to your build. If you are using a multiplatform project, then you can add `io.kotest:kotest-property:<version>` to your `commonTest` dependencies.
+To use Kotest's property-based testing you need to add the module `io.kotest:kotest-property:<version>` to your build.
 
 
 !!! info

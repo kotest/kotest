@@ -70,7 +70,16 @@ class TimeoutTest : DescribeSpec({
 
 ## Global Timeouts
 
-Finally, we can set a global default for both timeout and invocationTimeout inside [project config](project_config.md).
+We can set global config in two ways - via system properties or by project config.
+
+### System Property
+
+To set the global timeout or invocation timeout at the command line, use the system property `kotest.framework.timeout` and `kotest.framework.invocation.timeout` with a value in milliseconds.
+
+### Project Config
+
+
+We can set a global default for both timeout and invocationTimeout inside [project config](project_config.md).
 
 
 ```kotlin

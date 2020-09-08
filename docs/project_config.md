@@ -14,6 +14,10 @@ Any configuration set at the Spec level or directly on a test will override the 
 
 Some of the configuration options available in `ProjectConfig` include parallelism of tests, failing specs with ignored tests, global `AssertSoftly`, and reusable listeners or extensions.
 
+
+
+
+
 ## Parallelism
 
 You can ask Kotest to run specs in parallel to take advantage of modern cpus with several cores by setting the parallelism level (default is 1).. Tests inside a spec are always executed sequentially.
@@ -35,6 +39,9 @@ Some tests may not play nice in parallel, so you can opt out individual specs an
 
 !!! note
     This is only available on the JVM target.
+
+
+
 
 
 ## Assertion Mode
@@ -70,13 +77,17 @@ object ProjectConfig : AbstractProjectConfig {
 
 ## Fail On Ignored Tests
 
-You may wish to consider an ignored test as a failure. To enable this feature, set `failOnIgnoredTests` to true inside your project config. For example.
+You may wish to consider an ignored test as a failure.
+To enable this feature, set `failOnIgnoredTests` to true inside your project config. For example.
 
 ```kotlin
 object ProjectConfig : AbstractProjectConfig {
     override val failOnIgnoredTests = true
 }
 ```
+
+
+
 
 ## Test Ordering
 
