@@ -106,6 +106,9 @@ class HugeTestFile : FunSpec({
 
 Each included test appears in the test output and reports as if it was individually defined.
 
+!!! tip
+    tests from factories are included in the order they are defined in the spec class.
+
 ## Listeners
 
 Test factories support the usual before and after test callbacks. Any callback added to a factory, will in turn be added to the spec or specs where the factory is included.
