@@ -62,3 +62,8 @@ When running multiple tests from a Spec, there's a certain order on how to execu
 
 By default, a sequential order is used (the order that tests are defined in the spec), but this can be changed. For available options see [test ordering](test_ordering.md).
 
+
+## Spec Ordering
+
+
+By default, the ordering of Spec classes is not defined. This is often sufficient, when we have no preference, but if we need control over the execution order of specs, we can use [spec ordering](spec_ordering.md).

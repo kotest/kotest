@@ -18,4 +18,4 @@ Community
 * [Stack Overflow](http://stackoverflow.com/questions/tagged/kotest) (don't forget to use the tag "kotest".)
 * [Kotest channel](https://kotlinlang.slack.com/messages/kotest) in the Kotlin Slack (get an invite [here](http://slack.kotlinlang.org/))
 * [Contribute](https://github.com/kotest/kotest/wiki/contribute)
-* Read more about Kotest from third party [blogs and articles](doc/blogs.md).
+* Read more about Kotest from third party [blogs and articles](https://kotest.io/blogs/).
