@@ -24,8 +24,8 @@ There are no functional differences between the styles.
 All allow the same types of configuration &mdash; threads, tags, etc &mdash;
  it is simply a matter of preference how you structure your tests.
 
-Some teams prefer to mandate usage of a single style, others mix and match. Do whatever feels right for your team.
-
+!!! tip
+    Some teams prefer to mandate usage of a single style, others mix and match. There is no right or wrong - do whatever feels right for your team.
 
 
 ## Fun Spec

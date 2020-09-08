@@ -126,10 +126,36 @@ We can configure assert softly to be implicitly added to every test via [project
 ## Inspectors
 
 Inspectors allow us to test elements in a collection, and assert the quantity of elements that should be
-expected to pass (all, none, exactly k and so on)
+expected to pass (all, none, exactly k and so on). For example
+
+```kotlin
+mylist.forExactly(3) {
+    it.city shouldBe "Chicago"
+}
+```
 
 Read about [inspectors here](inspectors.md)
 
+
+
+
+## Clues
+
+Sometimes a failed assertion contains enough information in the error message to know what went wrong, and other times the failure just shows that two values didn't match up.
+
+For example,
+
+```kotlin
+user.name shouldNotBe null
+```
+
+If this failed, you would simply get:
+
+```
+<null> should not equal <null>
+```
+
+Which isn't particularly helpful. We can add extra context to failure messages through the use of [clues](clues.md).
 
 
 

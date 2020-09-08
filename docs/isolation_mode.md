@@ -50,9 +50,9 @@ class SingleInstanceExample : WordSpec({
 })
 ```
 
-**Note**: This default is the same as ScalaTest (the inspiration for this framework), Jest, Jasmine, and other JS frameworks
- but different to JUnit. Whichever default is chosen, some developers will consider it _wrong_.
 
+!!! warning
+    The default is the same as ScalaTest (the inspiration for this framework), Jest, Jasmine, and other Javascript frameworks, but different to JUnit.
 
 
 
@@ -216,4 +216,5 @@ class ProjectConfig: AbstractProjectConfig() {
 }
 ```
 
-Setting an isolation mode in a Spec will always override the project wide setting.
+!!! info
+    Setting an isolation mode in a Spec will always override the project wide setting.

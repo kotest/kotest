@@ -32,11 +32,14 @@ An alternative way to enable this is the system property kotest.parallelism whic
 
 Some tests may not play nice in parallel, so you can opt out individual specs and force them to be executed in isolation by using the `@DoNotParallelize` annotation on the spec.
 
-_Note: Parallelism is only supported on the JVM._
+
+!!! note
+    This is only available on the JVM target.
+
 
 ## Assertion Mode
 
-You can ask Kotest to fail the build, or warn in std err, if a test is executed that does not use a Kotest assertion (other assertion libraries are not detected).
+You can ask Kotest to fail the build, or warn in std err, if a test is executed that does not use a Kotest assertion.
 
 To do this, set `assertionMode` to `AssertionMode.Error` or `AssertionMode.Warn` inside your config. For example.
 
@@ -45,6 +48,11 @@ object ProjectConfig : AbstractProjectConfig {
     override val assertionMode = AssertionMode.Error
 }
 ```
+
+
+!!! warning
+    Assertion mode only works for Kotest assertions and not other assertion libraries.
+
 
 
 ## Global Assert Softly
@@ -56,7 +64,6 @@ object ProjectConfig : AbstractProjectConfig {
     override val globalAssertSoftly = true
 }
 ```
-
 
 
 

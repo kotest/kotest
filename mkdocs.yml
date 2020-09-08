@@ -5,6 +5,12 @@ site_description: Kotest test framework for Kotlin.
 site_author: Kotest organization
 site_url: https://kotest.io
 
+markdown_extensions:
+   - admonition
+   - attr_list
+   - pymdownx.highlight:
+        use_pygments: true
+
 #Copyright (shown at the footer)
 copyright: 'Copyright &copy; 2017 Kotest Team'
 
@@ -38,6 +44,7 @@ nav:
    - "index.md"
    - "quick_start.md"
    - "changelog.md"
+   - "issues.md"
    - "styles.md"
    - "assertions.md"
    - "matchers.md"
@@ -45,11 +52,10 @@ nav:
    - "extensions.md"
    - "listeners.md"
    - "property_testing.md"
-   - "property_test_generators.md"
+   - "property_generators.md"
    - "data_driven_testing.md"
    - "conditional_evaluation.md"
    - "isolation_mode.md"
-   - "clues.md"
    - "timeout.md"
    - "tags.md"
    - "test_ordering.md"

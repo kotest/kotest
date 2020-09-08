@@ -1,4 +1,4 @@
-Generators
+Property Test Generators
 ==========
 
 This page lists all current generators in Kotest. There are two types of generator - arbitrary and exhaustive.

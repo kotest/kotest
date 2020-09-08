@@ -58,6 +58,10 @@ class TimeoutTest : DescribeSpec({
 ```
 
 
+!!! info
+    Timeouts include the time taken for nested tests.
+
+
 
 
 ## Global Timeouts

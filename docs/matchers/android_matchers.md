@@ -1,11 +1,11 @@
 Android Matchers
 ==========
 
-This page lists all current Android matchers in Kotest. These are additional to the default [matchers](matchers.md) and are specific to Android.
+This page lists all current Android matchers in Kotest. These are additional to the default [matchers](../matchers.md) and are specific to Android.
 
 To use them, it's required to add an extra dependency to your project:
 ```
-implementation("io.kotest:kotest-assertions-android:{kotestVersion}")
+implementation("io.kotest:kotest-assertions-android:VERSION")
 ```
 
 | View | |
@@ -16,7 +16,7 @@ implementation("io.kotest:kotest-assertions-android:{kotestVersion}")
 | `view.shouldHaveContentDescription()` | Asserts that the view has any content description |
 | `view.shouldHaveContentDescription(desc)` | Asserts that the view has `desc` as Content Description |
 | `view.shouldHaveTag(key, value)` | Asserts that the view has a tag `key` with value `value` |
-| `view.shouldHaveTag(any)` | Asserts that the view's tag is `any` | 
+| `view.shouldHaveTag(any)` | Asserts that the view's tag is `any` |
 | `view.shouldBeEnabled()` | Asserts that the view is enabled |
 | `view.shouldBeFocused()` | Asserts that the view has focus |
 | `view.shouldBeFocusable()` | Asserts that the view is focusable |

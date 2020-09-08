@@ -22,8 +22,9 @@ These are provided separately so you can pick and choose which parts to use if y
 
 The following instructions give you the batteries included setup in gradle or maven. Omit any modules you don't wish to use.
 
-_Note: Kotest is a [multi-platform project](https://kotlinlang.org/docs/reference/multiplatform.html).
-If you are unfamilar with this, then Kotlin compiles to different targets - JVM, JS, Native, iOS and so on. If you are doing server side or android development then you want the modules that end with -JVM, such as `kotest-property-jvm`_
+!!! info
+    Kotest is a [multi-platform project](https://kotlinlang.org/docs/reference/multiplatform.html).
+    If you are unfamilar with this, then Kotlin compiles to different targets - JVM, JS, Native, iOS and so on. If you are doing server side or android development then you want the modules that end with JVM, such as `kotest-property-jvm`.
 
 
 #### Gradle

@@ -67,7 +67,8 @@ class FocusExample : StringSpec({
 })
 ```
 
-Note again that this **does not** work for nested tests due to the fact that nested tests are only discovered once the parent test has executed.
+!!! tip
+    Focus mode **does not** work for nested tests due to the fact that nested tests are only discovered once the parent test has executed.
 
 ### Bang
 
@@ -111,7 +112,7 @@ class XMethodsExample : DescribeSpec({
 })
 ```
 
-See which specs support this and the syntax required on the [specs styles guide](styles.md).
+See which specs support this, and the syntax required on the [specs styles guide](styles.md).
 
 
 
@@ -129,7 +130,9 @@ class IgnoredSpec : FunSpec() {
 }
 ```
 
-Note: This is only available on the JVM target.
+!!! note
+    This is only available on the JVM target.
+
 
 
 ### @EnabledIf
@@ -160,7 +163,8 @@ class MyLinuxTest2 : DescribeSpec() {
 }
 ```
 
-Note: This is only available on the JVM target.
+!!! note
+    This is only available on the JVM target.
 
 
 

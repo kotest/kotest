@@ -76,12 +76,13 @@ fun <T> indexedSeqTests(name: String, empty: IndexedSeq<T>) = wordSpec {
 
 And then to use this, we must include it one or more times into a spec (or several specs).
 
-Note: You can include any factory into any spec. You don't have to use a `funSpec` factory with a `FunSpec` test class.
+!!! tip
+    You can include any style factory into any style spec. For example, a fun spec factory can be included into a string spec class.
 
 ```kotlin
 class IndexedSeqTestSuite : WordSpec({
    include(indexedSeqTests("vector"), Vector())
-   include(indexedSeqTests("list"), List()))
+   include(indexedSeqTests("list"), List())
 })
 ```
 

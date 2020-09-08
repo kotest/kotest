@@ -4,8 +4,7 @@ Non-deterministic Tests
 Sometimes you have to work with code that is non-deterministic in nature. This is never the preferred scenario, but if you have no choice then
 Kotest has you covered with several functions that cater to tests which may take some time to pass.
 
-Eventually <a name="eventually"></a>
-------------------------
+## Eventually <a name="eventually"></a>
 
 When testing non-deterministic code, a common use case is "I expect this code to pass after a short period of time". For example, if you
 were testing a IO operation, you might need to wait until the IO operation has flushed.
@@ -23,6 +22,7 @@ test the code until it either passes, or the timeout is reached. This is perfect
 
 
 ### Examples
+
 
 #### Simple example
 
@@ -42,6 +42,11 @@ class MyTests : ShouldSpec() {
   }
 }
 ```
+
+
+
+
+
 
 #### Exceptions
 
@@ -69,8 +74,7 @@ class MyTests : ShouldSpec() {
 ```
 
 
-Continually <a name="continually"></a>
--------------------------------
+## Continually <a name="continually"></a>
 
 As the dual of eventually, `continually` allows you to assert that a block of code suceeds, and continues to succeed, for a period of time.
 For example you may want to check that a http connection is kept alive for 60 seconds after the last packet has been received.
@@ -105,8 +109,7 @@ class MyTests: ShouldSpec() {
 
 
 
-Retry <a name="retry"></a>
-------------------------
+## Retry <a name="retry"></a>
 
 
 Retry is similar to eventually, but rather than attempt a block of code for a period of time, it attempts a block of code a maximum number of times.
