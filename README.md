@@ -5,6 +5,7 @@
 [<img src="https://img.shields.io/maven-central/v/io.kotest/kotest-framework-api-jvm.svg?label=latest%20release"/>](http://search.maven.org/#search|ga|1|kotest)
 ![GitHub](https://img.shields.io/github/license/kotest/kotest)
 [![kotest @ kotlinlang.slack.com](https://img.shields.io/static/v1?label=kotlinlang&message=kotest&color=blue&logo=slack)](https://kotlinlang.slack.com/archives/CT0G9SD7Z)
+[![Average time to resolve an issue](http://isitmaintained.com/badge/resolution/kotest/kotest.svg)](http://isitmaintained.com/project/kotest/kotest "Average time to resolve an issue")
 [<img src="https://img.shields.io/nexus/s/https/oss.sonatype.org/io.kotest/kotest-framework-api.svg?label=latest%20snapshot"/>](https://oss.sonatype.org/content/repositories/snapshots/io/kotest/)
 
 __Kotest is a flexible and comprehensive testing tool for [Kotlin](https://kotlinlang.org/) with multiplatform support.__
