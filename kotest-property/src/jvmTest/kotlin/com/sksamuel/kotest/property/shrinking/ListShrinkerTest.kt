@@ -33,7 +33,7 @@ class ListShrinkerTest : FunSpec() {
       }
 
       test("ListShrinker should include bisected input") {
-         checkAll(Arb.list<Int>(Arb.int(0..1000))) { list ->
+         checkAll(Arb.list(Arb.int(0..1000))) { list ->
             if (list.size > 1) {
                val candidates = ListShrinker<Int>(0..100).shrink(list)
                candidates.forAtLeastOne {
@@ -44,7 +44,7 @@ class ListShrinkerTest : FunSpec() {
       }
 
       test("ListShrinker should include input minus head") {
-         checkAll(Arb.list<Int>(Arb.int(0..1000))) { list ->
+         checkAll(Arb.list(Arb.int(0..1000))) { list ->
             if (list.size > 1) {
                val candidates = ListShrinker<Int>(0..100).shrink(list)
                candidates.forAtLeastOne {
@@ -55,7 +55,7 @@ class ListShrinkerTest : FunSpec() {
       }
 
       test("ListShrinker should include input minus tail") {
-         checkAll(Arb.list<Int>(Arb.int(0..1000))) { list ->
+         checkAll(Arb.list(Arb.int(0..1000))) { list ->
             if (list.size > 1) {
                val candidates = ListShrinker<Int>(0..100).shrink(list)
                candidates.forAtLeastOne {
@@ -66,7 +66,7 @@ class ListShrinkerTest : FunSpec() {
       }
 
       test("ListShrinker should shrink to expected value") {
-         checkAll(Arb.list<Int>(Arb.int(0..1000))) { list ->
+         checkAll(Arb.list(Arb.int(0..1000))) { list ->
             if (list.isNotEmpty()) {
                val shrinks = ListShrinker<Int>(0..100).rtree(list)
                val shrunk = doShrinking(shrinks, ShrinkingMode.Unbounded) {
@@ -86,7 +86,7 @@ class ListShrinkerTest : FunSpec() {
 
       test("ListShrinker should observe range") {
 
-         checkAll(Arb.list<Int>(Arb.constant(0), range = 4..100)) { list ->
+         checkAll(Arb.list(Arb.constant(0), range = 4..100)) { list ->
             if (list.isNotEmpty()) {
                val shrinks = ListShrinker<Int>(4..100).rtree(list)
                val shrunk = doShrinking(shrinks, ShrinkingMode.Unbounded) {
@@ -98,12 +98,11 @@ class ListShrinkerTest : FunSpec() {
       }
 
       test("ListShrinker in action") {
-         val msg = shouldThrowAny {
-            checkAll(PropTestConfig(seed = 123132), Arb.list<Int>(Arb.int(0..100))) { list ->
+         shouldThrowAny {
+            checkAll(PropTestConfig(seed = 123132), Arb.list(Arb.int(0..100))) { list ->
                list.shouldHaveAtMostSize(3)
             }
-         }.message
-         msg.shouldContain("Arg 0: [0, 1, 51, 24]")
+         }.message.shouldContain("Arg 0: [0, 1, 51, 24")
       }
    }
 }
