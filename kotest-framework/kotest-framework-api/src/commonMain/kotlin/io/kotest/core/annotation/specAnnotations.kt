@@ -23,8 +23,8 @@ annotation class Ignored
 /**
  * Attach to [io.kotest.core.spec.Spec], and the logic inside [enabledIf] will be executed
  * to define if a Spec will be instantiated or executed.
- * 
- * [SpecEnabaledIf] must contain a no-arg constructor as it will be used via reflection.
+ *
+ * Implementations must contain a no-arg constructor as it will be created via reflection.
  */
 @Target(AnnotationTarget.CLASS)
 @Retention(AnnotationRetention.RUNTIME)
