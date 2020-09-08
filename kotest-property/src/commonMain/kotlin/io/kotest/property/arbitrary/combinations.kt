@@ -95,7 +95,7 @@ fun <A : Any> Arb.Companion.frequency(
 /**
  * Generates random permutations of a list.
  */
-fun <A> Arb.Companion.shuffle(list: List<A>) = arbitrary {
+fun <A> Arb.Companion.shuffle(list: List<A>): Arb<A> = arbitrary {
    list.shuffled(it.random).first()
 }
 
@@ -103,7 +103,7 @@ fun <A> Arb.Companion.shuffle(list: List<A>) = arbitrary {
  * Generates a random subsequence of the input list, including the empty list.
  * The returned list has the same order as the input list.
  */
-fun <A> Arb.Companion.subsequence(list: List<A>) = arbitrary {
+fun <A> Arb.Companion.subsequence(list: List<A>): Arb<List<A>> = arbitrary {
    val size = it.random.nextInt(0, list.size + 1)
    list.take(size)
 }
