@@ -25,21 +25,21 @@ class NonEmptyListTest : FunSpec({
    test("Arb.nel should not fail if generator arb has no edgecases") {
       Arb.nel(Arb.constant("a"), 1..5)
          .take(3, RandomSource.seeded(123123L))
-         .toList() shouldBe listOf(NonEmptyList.of("a"), NonEmptyList.of("a", "a", "a"), NonEmptyList.of("a", "a", "a"))
+         .toList() shouldBe listOf(NonEmptyList.of("a"), NonEmptyList.of("a", "a"), NonEmptyList.of("a", "a", "a", "a"))
    }
 
    test("Arb.nel should generate NonEmptyList") {
       val expected = listOf(
          NonEmptyList.of(1),
+         NonEmptyList.of(1, 4),
          NonEmptyList.of(1, 5, 4),
-         NonEmptyList.of(1, 9, 8),
-         NonEmptyList.of(1, 7, 5, 9),
+         NonEmptyList.of(1, 9, 9),
+         NonEmptyList.of(1, 8, 7),
+         NonEmptyList.of(1, 1),
+         NonEmptyList.of(1, 4, 9, 5, 6),
          NonEmptyList.of(1, 9, 5),
-         NonEmptyList.of(1, 2, 4, 6),
-         NonEmptyList.of(1, 9, 3),
-         NonEmptyList.of(1, 8),
-         NonEmptyList.of(1),
-         NonEmptyList.of(1, 4, 8, 1)
+         NonEmptyList.of(1, 5),
+         NonEmptyList.of(1, 2, 4, 6)
       )
 
       Arb.nel(Arb.int(1..10), 1..5)
