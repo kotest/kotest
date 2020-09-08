@@ -54,6 +54,7 @@ nav:
          - "changelog.md"
    -  Framework:
          - "styles.md"
+         -  "Intellij plugin": intellij.md
          - "extensions.md"
          - "listeners.md"
          - "data_driven_testing.md"
@@ -67,8 +68,8 @@ nav:
          - "nondeterministic_testing.md"
          - "test_factories.md"
          - "project_config.md"
-         - "Temporary Files": "tempfile.md"
-         - "Autoclose": "autoclose.md"
+         -  "Temporary Files": "tempfile.md"
+         -  "Autoclose": "autoclose.md"
          - "mocks.md"
          - "mpp.md"
          - "plugins.md"
