@@ -82,6 +82,8 @@ fun <A> Arb.Companion.list(gen: Gen<A>, range: IntRange = 0..100): Arb<List<A>> 
  *
  * Shrinking is performed by removing elements from the list until the empty list.
  *
+ * This function is a convenience for Arb.list(gen, range)
+ *
  * @param size minimum and maximum number of items in the lists produced by the returned [Arb]
  */
 fun <A> Arb<A>.chunked(size: IntRange): Arb<List<A>> = Arb.list(this, size)
@@ -91,6 +93,8 @@ fun <A> Arb<A>.chunked(size: IntRange): Arb<List<A>> = Arb.list(this, size)
  * The size of each list is determined randomly by the specified [minSize] and [maxSize].
  *
  * Shrinking is performed by removing elements from the list until the empty list.
+ *
+ * This function is a convenience for Arb.list(gen, range)
  *
  * @param minSize minimum number of items in the lists produced by the returned [Arb]
  * @param maxSize maximum number of items in the lists produced by the returned [Arb]
