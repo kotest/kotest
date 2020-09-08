@@ -8,7 +8,7 @@ The official [Kotest plugin](https://plugins.jetbrains.com/plugin/14080-kotest) 
 This plugin requires Kotest 4.1.0 or above.
 
 ```kotlin
-  val kotestVersion = "4.1.3" or "4.2.0"
+  val kotestVersion = "4.1.3" or "4.2.3"
   
   // and then the kotlin dependencies
   dependencies {
