@@ -24,8 +24,10 @@ class MultiplesShrinker(private val multiple: Int) : Shrinker<Int> {
 }
 
 fun Arb.Companion.factors(k: Int): Arb<Int> {
-   return Arb.create(listOf(1)) {
-      generateSequence { it.random.nextInt(k) }.filter { it > 0 }
-         .filter { k % it == 0 }.first()
+   return arbitrary(listOf(1)) {
+      generateSequence { it.random.nextInt(k) }
+         .filter { it > 0 }
+         .filter { k % it == 0 }
+         .first()
    }
 }
