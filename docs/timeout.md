@@ -1,23 +1,55 @@
 # Timeouts
 
-Tests can have timeouts applied in several ways.
+Tests have two types of timeout that can be applied. The first is the overall time for all invocations of a test. This is just called _timeout_.
+The second is per individual run of a test, and this is called _invocation timeout_.
 
-TODO
-
-It has always been possible to add a timeout to a test at the global level or via test case config for each specific test:
-
-```kotlin
- test("my test").config(timeout = 20.seconds) { }
-```
-
-But it has not previously been possible to override this as the spec level for all tests in that spec. Now you can.
+Kotest can be configured to invoke a test multiple times. For example,
 
 ```kotlin
 class TimeoutTest : DescribeSpec({
 
-   timeout = 1000
+   describe("my test context") {
+        it("run me three times").config(invocations = 3) {
+            // some slow network test that takes 1500 millis
+        }
+   }
 
-   describe("I will timeout in 1000 millis") {
+})
+```
+
+In this case, a _timeout_ of 2000 millis would cause the test to fail, because the total run time would be 4500 millis.
+Whereas an _invocation timeout_ of 2000 millis would not cause the test to fail, because each individual run is 1500 millis.
+
+We can specify the timeout at three levels.
+
+## Test Level Timeouts
+
+The most finely grained location for timeouts it on leaf tests directly.
+
+```kotlin
+class TimeoutTest : DescribeSpec({
+
+   describe("my test context") {
+        it("timeout after 750ms").config(timeout = 750.milliseconds, invocationTimeout = 250.milliseconds) {
+        }
+   }
+
+})
+```
+
+
+## Spec Level Timeouts
+
+
+Timeouts can be specified at the spec level for every test in that spec, unless overriden by the test case itself.
+
+
+```kotlin
+class TimeoutTest : DescribeSpec({
+
+   timeout = 1250.milliseconds
+
+   describe("I will timeout in 1250 millis") {
       it("And so will I") { }
       it("But I'm a little faster").config(timeout = 500.milliseconds) { }
    }
@@ -25,5 +57,19 @@ class TimeoutTest : DescribeSpec({
 })
 ```
 
-Note: You can apply a spec level timeout and then override this per test case, as you can see in the example above.
-The same functionality exists for invocatoin timeouts.
+
+
+
+## Global Timeouts
+
+Finally, we can set a global default for both timeout and invocationTimeout inside [project config](project_config.md).
+
+
+```kotlin
+object ProjectConfig : AbstractProjectConfig {
+    override val timeout = 2.seconds
+    override val invocationTimeout = 1.second
+}
+```
+
+Global config is overriden by spec level and test case level values.

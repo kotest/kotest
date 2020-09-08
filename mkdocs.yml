@@ -53,6 +53,7 @@ nav:
    - "timeout.md"
    - "tags.md"
    - "test_ordering.md"
+   - "spec_ordering.md"
    - "mocks.md"
    - "project_config.md"
    - "nondeterministic_testing.md"

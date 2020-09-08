@@ -46,6 +46,21 @@ object ProjectConfig : AbstractProjectConfig {
 }
 ```
 
+
+## Global Assert Softly
+
+Assert softly is very useful to batch up errors into a single failure. If we want to enable this for every test automatically, we can do this in config.
+
+```kotlin
+object ProjectConfig : AbstractProjectConfig {
+    override val globalAssertSoftly = true
+}
+```
+
+
+
+
+
 ## Fail On Ignored Tests
 
 You may wish to consider an ignored test as a failure. To enable this feature, set `failOnIgnoredTests` to true inside your project config. For example.
