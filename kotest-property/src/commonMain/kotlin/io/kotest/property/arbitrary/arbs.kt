@@ -41,11 +41,7 @@ fun <A> Arb<A>.filterNot(f: (A) -> Boolean): Arb<A> = filter { !f(it) }
  * Returns a new [Arb] which takes its elements from the receiver and maps them using the supplied function.
  */
 fun <A, B> Arb<A>.map(f: (A) -> B): Arb<B> = object : Arb<B>() {
-   override fun edgecases(): List<B> {
-
-      val edges = this@map.edgecases()
-      return if (edges.isEmpty()) emptyList() else edges.map(f)
-   }
+   override fun edgecases(): List<B> = this@map.edgecases().map(f)
 
    override fun values(rs: RandomSource): Sequence<Sample<B>> {
       return this@map.values(rs).map { Sample(f(it.value), it.shrinks.map(f)) }
@@ -131,3 +127,7 @@ fun <A, B : A> Arb<A>.merge(other: Gen<B>): Arb<A> = object : Arb<A>() {
          }
       }
 }
+
+fun <A> Arb<A>.withEdgecases(edgecases: List<A>): Arb<A> = arbitrary(edgecases) { this.next(it) }
+
+fun <A> Arb<A>.withEdgecases(vararg edgecases: A): Arb<A> = withEdgecases(edgecases.toList())
