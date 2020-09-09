@@ -128,6 +128,17 @@ fun <A, B : A> Arb<A>.merge(other: Gen<B>): Arb<A> = object : Arb<A>() {
       }
 }
 
+/**
+ * returns a new [Arb] with the supplied edgecases
+ */
 fun <A> Arb<A>.withEdgecases(edgecases: List<A>): Arb<A> = arbitrary(edgecases) { this.next(it) }
 
+/**
+ * returns a new [Arb] with the supplied edgecases
+ */
 fun <A> Arb<A>.withEdgecases(vararg edgecases: A): Arb<A> = withEdgecases(edgecases.toList())
+
+/**
+ * returns a new [Arb] with a new edgecases after applying the function on the initial edgecases
+ */
+fun <A> Arb<A>.modifyEdgecases(f: (List<A>) -> List<A>): Arb<A> = arbitrary(f(this.edgecases())) { this.next(it) }
