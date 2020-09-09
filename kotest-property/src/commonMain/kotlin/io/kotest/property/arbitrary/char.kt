@@ -38,11 +38,13 @@ fun Arb.Companion.char(ranges: List<CharRange> = CharSets.BASIC_LATIN): Arb<Char
    // Convert the list of CharRanges into a weighted Gen in which
    // the ranges are chosen from the list using the length of the
    // range as the weight.
-   val arbRange =
+   val arbRange: Arb<CharRange> =
       if (ranges.size == 1) Arb.constant(ranges.first())
       else makeRangeWeightedGen()
 
-   return Arb.create { arbRange.single(it).random(it.random) }
+   return arbRange.flatMap { charRange ->
+      arbitrary { charRange.random(it.random) }
+   }
 }
 
 private object CharSets {

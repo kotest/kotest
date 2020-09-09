@@ -16,10 +16,7 @@ fun Arb.Companion.byteArrays(generateArrayLength: Gen<Int>, generateContents: Ar
       is Exhaustive -> generateArrayLength.toArb()
    }
 
-   return arbLength.flatMap { length ->
-      val edge = sequence { yieldAll(generateContents.edgecases()) }.take(length).toList().toByteArray()
-      Arb.create(listOf(edge)) { rs ->
-         generateContents.take(length, rs).toList().toByteArray()
-      }
-   }
+   return arbLength
+      .flatMap { length -> Arb.list(generateContents, length..length) }
+      .map { it.toByteArray() }
 }

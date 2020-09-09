@@ -4,8 +4,8 @@ import io.kotest.property.Arb
 import kotlin.js.Date
 import kotlin.random.nextInt
 
-fun Arb.Companion.date(minYear: Int = 1970, maxYear: Int = 2030) = date(minYear..maxYear)
-fun Arb.Companion.date(yearRange: IntRange) = Arb.create {
+fun Arb.Companion.date(minYear: Int = 1970, maxYear: Int = 2030): Arb<Date> = date(minYear..maxYear)
+fun Arb.Companion.date(yearRange: IntRange): Arb<Date> = arbitrary {
    val randomMonth = it.random.nextInt(1, 12)
    val randomDay = when (randomMonth) {
       2 -> it.random.nextInt(1, 29)
@@ -16,8 +16,8 @@ fun Arb.Companion.date(yearRange: IntRange) = Arb.create {
    Date(randomYear, randomMonth, randomDay)
 }
 
-fun Arb.Companion.datetime(minYear: Int = 1970, maxYear: Int = 2030) = datetime(minYear..maxYear)
-fun Arb.Companion.datetime(yearRange: IntRange) = Arb.create {
+fun Arb.Companion.datetime(minYear: Int = 1970, maxYear: Int = 2030): Arb<Date> = datetime(minYear..maxYear)
+fun Arb.Companion.datetime(yearRange: IntRange): Arb<Date> = arbitrary {
    val randomMonth = it.random.nextInt(1, 12)
    val randomDay = when (randomMonth) {
       2 -> it.random.nextInt(1, 29)
