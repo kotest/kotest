@@ -51,7 +51,7 @@ fun failure(expected: Expected, actual: Actual, prependMessage: String = ""): Th
  * Returns a message formatted appropriately for intellij to show a diff.
  *
  * This is the format intellij requires to recognize:
- * https://github.com/JetBrains/intellij-community/blob/5422868682d7eb8511dda02cf615ff375f5b0324/java/java-runtime/src/com/intellij/rt/execution/testFrameworks/AbstractExpectedPatterns.java
+ * https://github.com/JetBrains/intellij-community/blob/d2ef69f336b62015bbefbb2c0a9900563c94062c/java/java-runtime/src/com/intellij/rt/execution/testFrameworks/AbstractExpectedPatterns.java
  *
  * From the above link:
  * private static final Pattern ASSERT_EQUALS_PATTERN = Pattern.compile("expected:<(.*)> but was:<(.*)>", Pattern.DOTALL | Pattern.CASE_INSENSITIVE);

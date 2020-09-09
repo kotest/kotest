@@ -132,7 +132,11 @@ sealed class Description {
    fun id(): TestId = id
 
    @JsName("id_val")
-   val id = TestId(chain().joinToString("/") { it.displayName().replace(" ", "_").replace(idRegex, "") })
+   val id: TestId by lazy {
+      TestId(chain().joinToString("/") {
+         it.displayName().replace(" ", "_").replace(idRegex, "")
+      })
+   }
 
    /**
     * Returns true if this description is the immediate parent of the given argument.
