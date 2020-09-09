@@ -17,9 +17,9 @@ class EitherTest : FunSpec({
    test("Arb.either should generate both left and right") {
       val eithers = Arb.either(Arb.char('a'..'z'), Arb.int(1..10)).take(10, RandomSource.seeded(123456L)).toList()
       eithers shouldContainExactly listOf(
-         Right(10),
+         Left('h'),
          Right(3),
-         Left('a'),
+         Right(10),
          Right(2),
          Left('x'),
          Left('s'),
