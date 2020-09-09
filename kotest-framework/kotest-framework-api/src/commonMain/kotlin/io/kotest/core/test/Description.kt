@@ -129,9 +129,9 @@ sealed class Description {
     * Returns a parseable consistent identifier for this description including the spec name.
     */
    @Deprecated("use the `id` val. Will be removed in 4.4")
-   @JsName("id_fun")
    fun id(): TestId = id
 
+   @JsName("id_val")
    val id = TestId(chain().joinToString("/") { it.displayName().replace(" ", "_").replace(idRegex, "") })
 
    /**
