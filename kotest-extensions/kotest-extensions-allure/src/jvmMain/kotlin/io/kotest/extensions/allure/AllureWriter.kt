@@ -107,7 +107,7 @@ class AllureWriter {
    }
 
    // returns an id that's acceptable in format for allure
-   private fun safeId(description: Description): String = description.id().value
+   private fun safeId(description: Description): String = description.id.value
 }
 
 fun TestCase.epic(): Label? = this.spec::class.findAnnotation<Epic>()?.let { ResultsUtils.createEpicLabel(it.value) }

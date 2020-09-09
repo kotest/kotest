@@ -3,16 +3,14 @@ package io.kotest.property.arbitrary
 import io.kotest.property.Arb
 
 /**
- * The minimum value of a
- * <a href="http://www.unicode.org/glossary/#code_point">
- * Unicode code point</a>, constant {@code U+0000}.
+ * The minimum value of a Unicode code point, constant {@code U+000000}.
+ * http://www.unicode.org/glossary/#code_point
  */
 internal const val MIN_CODE_POINT = 0x000000
 
 /**
- * The maximum value of a
- * <a href="http://www.unicode.org/glossary/#code_point">
- * Unicode code point</a>, constant {@code U+10FFFF}.
+ * The maximum value of a Unicode code point, constant {@code U+10FFFF}.
+ * http://www.unicode.org/glossary/#code_point
  */
 internal const val MAX_CODE_POINT = 0X10FFFF
 

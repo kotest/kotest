@@ -17,8 +17,8 @@ Read [full documentation](doc/reference.md) or a [quick start](doc/reference.md#
 
 Community
 ---------
-* [Stack Overflow](http://stackoverflow.com/questions/tagged/kotest) (don't forget to use the tag "kotest".)
 * [Kotest channel](https://kotlinlang.slack.com/messages/kotest) in the Kotlin Slack (get an invite [here](http://slack.kotlinlang.org/))
+* [Stack Overflow](http://stackoverflow.com/questions/tagged/kotest) (don't forget to use the tag "kotest".)
 * [Contribute](https://github.com/kotest/kotest/wiki/contribute)
 
 Test with Style

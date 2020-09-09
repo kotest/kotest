@@ -30,5 +30,5 @@ private fun TestCase.toTestDescription() = object : TestDescription {
       )
    }
 
-   override fun getTestId(): String = description.id().value
+   override fun getTestId(): String = description.id.value
 }
