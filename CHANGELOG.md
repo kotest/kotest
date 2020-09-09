@@ -1,6 +1,15 @@
 Changelog
 =========
 
+
+#### 4.2.4
+
+* Bugfix: Test time does not scale with number of tests #1685
+* Bugfix: Added spring listener lifecycle mode #1643
+* Bugfix: Fix and remove double negative in empty directory assertions
+* Improvement: Duplicated test name exception should include test name #1686
+* Improvement: SpringListener to generate meaningful method names #1591
+
 #### 4.2.3
 
 * Bugfix: Throwables of `Error` in the engine should be reported to test engine listeners

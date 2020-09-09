@@ -6,6 +6,9 @@ on:
          version:
             description: "The release version"
             required: true
+         branch:
+            description: "The branch to release from"
+            required: true
 
 jobs:
    publish:
@@ -16,6 +19,7 @@ jobs:
             uses: actions/checkout@v2
             with:
                fetch-depth: 0
+               ref: ${{ github.event.inputs.branch }}
 
          -  name: publish macosx64 release
             run: ./gradlew publishMacosX64PublicationToDeployRepository
