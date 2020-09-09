@@ -2,12 +2,17 @@
 
 package io.kotest.core.test
 
+import kotlin.js.JsName
 import kotlin.reflect.KClass
 
 /**
  * A description is an ADT that models a pointer to a [Spec] or a [TestCase].
  */
 sealed class Description {
+
+   companion object {
+      val idRegex = "[^a-zA-Z0-9_.]".toRegex()
+   }
 
    abstract val name: DescriptionName
 
@@ -125,10 +130,11 @@ sealed class Description {
    /**
     * Returns a parseable consistent identifier for this description including the spec name.
     */
-   fun id(): TestId {
-      val id = chain().joinToString("/") { it.displayName().replace(" ", "_").replace("[^a-zA-Z0-9_.]".toRegex(), "") }
-      return TestId(id)
-   }
+   @Deprecated("use the `id` val. Will be removed in 4.4")
+   @JsName("id_fun")
+   fun id(): TestId = id
+
+   val id = TestId(chain().joinToString("/") { it.displayName().replace(" ", "_").replace(idRegex, "") })
 
    /**
     * Returns true if this description is the immediate parent of the given argument.
@@ -137,7 +143,7 @@ sealed class Description {
    fun isParentOf(description: Description): Boolean = when (description) {
       // nothing can be the parent of a spec
       is Spec -> false
-      is Test -> id() == description.parent.id()
+      is Test -> id == description.parent.id
    }
 
    /**

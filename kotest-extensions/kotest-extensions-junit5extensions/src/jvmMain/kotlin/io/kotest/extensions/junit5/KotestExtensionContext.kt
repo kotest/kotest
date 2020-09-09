@@ -19,7 +19,7 @@ class KotestExtensionContext(
    override fun getParent(): Optional<ExtensionContext> = Optional.empty()
    override fun getRoot(): ExtensionContext = this
 
-   override fun getUniqueId(): String = spec::class.toDescription().id().value
+   override fun getUniqueId(): String = spec::class.toDescription().id.value
 
    override fun getDisplayName(): String = when (test) {
       null -> spec::class.toDescription().testDisplayPath().value
