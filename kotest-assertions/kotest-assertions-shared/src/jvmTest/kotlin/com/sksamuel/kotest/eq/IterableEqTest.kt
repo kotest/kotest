@@ -98,6 +98,11 @@ class IterableEqTest : FunSpec({
          List(1000) { it.toString() }.reversed().toSet()
       ) shouldBe null
    }
+
+   test("should work for empty lists") {
+      IterableEq.equals(emptyList<Int>(), listOf(1))?.message shouldBe "Unexpected element at index 0: 1"
+      IterableEq.equals(listOf(1), emptyList<Int>())?.message shouldBe "Element 1 expected at index 0 but there were no further elements"
+   }
 })
 
 private class IterationCountSet<T>(val delegate: Set<T>) : Set<T> by delegate {

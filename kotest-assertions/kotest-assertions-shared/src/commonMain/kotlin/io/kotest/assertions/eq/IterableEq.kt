@@ -38,14 +38,26 @@ object IterableEq : Eq<Iterable<*>> {
 
    private fun checkIterableEquality(actual: Iterable<*>, expected: Iterable<*>): Throwable? {
       var index = 0
-      actual.zip(expected) { a, b ->
-         val t = eq(a, b)
-         if (t != null) return failure(
-            Expected(expected.show()),
-            Actual(actual.show()),
-            "Elements differ at index $index: "
-         )
+      val iter1 = actual.iterator()
+      val iter2 = expected.iterator()
+      while (iter1.hasNext()) {
+         val a = iter1.next()
+         if (iter2.hasNext()) {
+            val b = iter2.next()
+            val t = eq(a, b)
+            if (t != null) return failure(
+               Expected(b.show()),
+               Actual(a.show()),
+               "Elements differ at index $index: ",
+            )
+         } else {
+            return failure("Unexpected element at index $index: ${a.show().value}")
+         }
          index++
+      }
+      if (iter2.hasNext()) {
+         val b = iter2.next()
+         return failure("Element ${b.show().value} expected at index $index but there were no further elements")
       }
       return null
    }
