@@ -61,15 +61,15 @@ kotlin {
             api(Libs.Classgraph.classgraph)
 
             // needed to scan for spec classes
-            implementation(project(Projects.Discovery))
+            api(project(Projects.Discovery))
 
             api(Libs.JUnitJupiter.api)
 
             // needed to parse the command line args
-            implementation(Libs.Ajalt.clikt)
+            api(Libs.Ajalt.clikt)
 
             // used to write to the console with fancy colours!
-            implementation(Libs.Ajalt.mordant)
+            api(Libs.Ajalt.mordant)
          }
       }
 
