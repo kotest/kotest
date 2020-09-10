@@ -15,7 +15,7 @@ object Libs {
    }
 
    object Ajalt {
-      const val clikt = "com.github.ajalt.clikt:clikt-jvm:3.0.1"
+      const val clikt = "com.github.ajalt:clikt:2.8.0"
       const val mordant = "com.github.ajalt:mordant:1.2.1"
    }
 
