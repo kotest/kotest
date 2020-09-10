@@ -34,7 +34,7 @@ class IterableEqTest : FunSpec({
 
       assertSoftly {
          error.shouldNotBeNull()
-         error.message shouldBe "Elements differ at index 0: expected:<[1, 2, 3]> but was:<[3]>"
+         error.message shouldBe "Elements differ at index 0: expected:<1> but was:<3>"
       }
    }
 
@@ -52,7 +52,7 @@ class IterableEqTest : FunSpec({
 
       assertSoftly {
          error.shouldNotBeNull()
-         error.message shouldBe """Elements differ at index 1: expected:<[1, [["a", "e"], "b"], [("a", [1, 2, 3])]]> but was:<[1, [["a", "c"], "b"], [("a", [1, 2, 3])]]>"""
+         error.message shouldBe """Elements differ at index 1: expected:<[["a", "e"], "b"]> but was:<[["a", "c"], "b"]>"""
       }
    }
 
@@ -100,8 +100,8 @@ class IterableEqTest : FunSpec({
    }
 
    test("should work for empty lists") {
-      IterableEq.equals(emptyList<Int>(), listOf(1))?.message shouldBe "Unexpected element at index 0: 1"
-      IterableEq.equals(listOf(1), emptyList<Int>())?.message shouldBe "Element 1 expected at index 0 but there were no further elements"
+      IterableEq.equals(emptyList<Int>(), listOf(1))?.message shouldBe "Element 1 expected at index 0 but there were no further elements"
+      IterableEq.equals(listOf(1), emptyList<Int>())?.message shouldBe "Unexpected element at index 0: 1"
    }
 })
 
