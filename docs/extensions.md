@@ -465,6 +465,17 @@ Or, with a listener for all the tests:
 
 
 
+
+## JUnit Format XML Report
+
+JUnit includes an XML report generator that it calls the [legacy xml report](https://junit.org/junit5/docs/5.5.0-RC2/api/org/junit/platform/reporting/legacy/xml/LegacyXmlReportGeneratingListener.html). Many tools integrate with this format so it is very useful.
+However, this report has no concept of nesting tests. Therefore when used with a nested [test style](styles.md) in Kotest, it will include parent tests as orphans.
+
+To solve this, Kotest has it's own [implementation of the same format](extensions/junit_xml.md), that is configurable on whether to include parent tests and/or collapse the names.
+
+
+
+
 ## MockServer
 
 Kotest provides an extension for integration with the [MockServer](https://www.mock-server.com) library through the `kotest-extensions-mockserver` module.
@@ -473,6 +484,11 @@ MockServer is described as an in process server that returns specific responses 
 When MockServer receives a request it matches that request against the configured expectations. If a match is found it returns that response, otherwise a 404 is returned.
 
 Read [full instructions here](extensions/mockserver.md).
+
+
+
+
+
 
 
 
