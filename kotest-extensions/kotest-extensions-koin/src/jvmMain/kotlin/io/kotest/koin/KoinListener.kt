@@ -24,14 +24,24 @@ enum class KoinLifecycleMode {
 class KoinListener(
    private val modules: List<Module>,
    private val mockProvider: Provider<*>? = null,
-   private val mode: KoinLifecycleMode = KoinLifecycleMode.Test
+   private val mode: KoinLifecycleMode
 ) : TestListener {
 
    constructor(
       module: Module,
       mockProvider: Provider<*>? = null,
-      mode: KoinLifecycleMode = KoinLifecycleMode.Test
+   ) : this(listOf(module), mockProvider, KoinLifecycleMode.Test)
+
+   constructor(
+      module: Module,
+      mockProvider: Provider<*>? = null,
+      mode: KoinLifecycleMode
    ) : this(listOf(module), mockProvider, mode)
+
+   constructor(
+      modules: List<Module>,
+      mockProvider: Provider<*>? = null,
+   ) : this(modules, mockProvider, KoinLifecycleMode.Test)
 
    private fun TestCase.isApplicable() = (mode == KoinLifecycleMode.Root && description.isRootTest()) ||
       (mode == KoinLifecycleMode.Test && type == TestType.Test)
