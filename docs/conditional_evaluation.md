@@ -1,7 +1,7 @@
 Conditional Evaluation
 ======================
 
-There are several ways to disable tests.
+There are several ways to disable tests. Some of these are hardcoded in your test, others are evaluated at runtime.
 
 ### By Config
 
