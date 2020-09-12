@@ -1,4 +1,4 @@
-package com.sksamuel.kotest.matchers
+package com.sksamuel.kotest.assertions
 
 import io.kotest.assertions.asClue
 import io.kotest.assertions.assertSoftly
