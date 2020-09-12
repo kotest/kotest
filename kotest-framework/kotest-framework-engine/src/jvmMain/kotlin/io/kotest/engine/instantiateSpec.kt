@@ -2,6 +2,7 @@ package io.kotest.engine
 
 import io.kotest.core.config.configuration
 import io.kotest.core.extensions.ConstructorExtension
+import io.kotest.core.extensions.PostInstantiationExtension
 import io.kotest.core.spec.Spec
 import io.kotest.fp.Try
 import kotlin.reflect.KClass
@@ -10,12 +11,16 @@ import kotlin.reflect.jvm.isAccessible
 /**
  * Creates an instance of a [Spec] by delegating to constructor extensions, with
  * a fallback to a reflection based zero-args constructor.
+ *
+ * After creation will execute any post process extensions.
  */
-fun <T : Spec> instantiateSpec(clazz: KClass<T>): Try<Spec> =
+fun <T : Spec> createAndInitializeSpec(clazz: KClass<T>): Try<Spec> =
    Try {
-      val nullSpec: Spec? = null
-      configuration.extensions().filterIsInstance<ConstructorExtension>()
-         .fold(nullSpec) { spec, ext -> spec ?: ext.instantiate(clazz) } ?: javaReflectNewInstance(clazz)
+      val initial: Spec? = null
+      val spec = configuration.extensions().filterIsInstance<ConstructorExtension>()
+         .fold(initial) { spec, ext -> spec ?: ext.instantiate(clazz) } ?: javaReflectNewInstance(clazz)
+      configuration.extensions().filterIsInstance<PostInstantiationExtension>()
+         .fold(spec) { acc, ext -> ext.process(acc) }
    }
 
 fun <T : Spec> javaReflectNewInstance(clazz: KClass<T>): Spec {

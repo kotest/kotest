@@ -14,7 +14,7 @@ import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.core.extensions.resolvedSpecExtensions
 import io.kotest.core.internal.resolvedThreads
-import io.kotest.engine.instantiateSpec
+import io.kotest.engine.createAndInitializeSpec
 import io.kotest.core.internal.isActive
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.Spec
@@ -100,7 +100,7 @@ class SpecExecutor(private val listener: TestEngineListener) {
     * and notifies the [TestEngineListener] of the instantiation event.
     */
    private fun createInstance(kclass: KClass<out Spec>): Try<Spec> =
-      instantiateSpec(kclass)
+      createAndInitializeSpec(kclass)
          .onFailure { notifySpecInstantiationError(kclass, it) }
          .onSuccess { notifySpecInstantiated(it) }
 

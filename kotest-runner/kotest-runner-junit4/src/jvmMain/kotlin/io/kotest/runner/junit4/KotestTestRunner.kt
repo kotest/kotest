@@ -2,7 +2,7 @@ package io.kotest.runner.junit4
 
 import io.kotest.core.spec.Spec
 import io.kotest.engine.KotestEngineLauncher
-import io.kotest.engine.instantiateSpec
+import io.kotest.engine.createAndInitializeSpec
 import io.kotest.core.spec.materializeAndOrderRootTests
 import io.kotest.fp.Try.Failure
 import io.kotest.fp.Try.Success
@@ -23,7 +23,7 @@ class KotestTestRunner(
    }
 
    override fun getDescription(): Description = klass.let { klass ->
-      instantiateSpec(klass.kotlin).let {
+      createAndInitializeSpec(klass.kotlin).let {
          when (it) {
             is Failure -> throw it.error
             is Success -> {

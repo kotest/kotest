@@ -6,6 +6,9 @@ import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestType
 import kotlin.reflect.KClass
 
+/**
+ * A [TestListener] contains functions that are invoked as part of the lifecycle of a [TestCase].
+ */
 interface TestListener : Listener {
 
    override val name: String
@@ -148,6 +151,13 @@ interface TestListener : Listener {
     * @param kclass the [Spec] class
     */
    suspend fun prepareSpec(kclass: KClass<out Spec>): Unit = Unit
+
+   suspend fun beforeBeforeEach(testCase: TestCase): Unit = Unit
+   suspend fun beforeBeforeTest(testCase: TestCase): Unit = Unit
+   suspend fun beforeBeforeContainer(testCase: TestCase): Unit = Unit
+   suspend fun beforeAfterEach(testCase: TestCase): Unit = Unit
+   suspend fun beforeAfterTest(testCase: TestCase): Unit = Unit
+   suspend fun beforeAfterContainer(testCase: TestCase): Unit = Unit
 
    /**
     * Called once per [Spec], after all tests have completed for that spec.

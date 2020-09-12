@@ -133,6 +133,9 @@ sealed class Description {
    @Deprecated("use the `id` val. Will be removed in 4.4")
    fun id(): TestId = id
 
+   /**
+    * Returns a parseable consistent identifier for this description including the spec name.
+    */
    @JsName("id_val")
    val id: TestId by lazy {
       TestId(chain().joinToString("/") {

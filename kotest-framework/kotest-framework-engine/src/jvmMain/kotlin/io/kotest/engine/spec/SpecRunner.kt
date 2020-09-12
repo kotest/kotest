@@ -6,7 +6,7 @@ import io.kotest.core.spec.Spec
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.mpp.NamedThreadFactory
-import io.kotest.engine.instantiateSpec
+import io.kotest.engine.createAndInitializeSpec
 import io.kotest.fp.Try
 import io.kotest.mpp.log
 import kotlinx.coroutines.runBlocking
@@ -36,7 +36,7 @@ abstract class SpecRunner(val listener: TestEngineListener) {
     * and notifies the [TestEngineListener] of the instantiation event.
     */
    protected fun createInstance(kclass: KClass<out Spec>): Try<Spec> =
-      instantiateSpec(kclass).onSuccess {
+      createAndInitializeSpec(kclass).onSuccess {
          Try { listener.specInstantiated(it) }
       }.onFailure {
          it.printStackTrace()

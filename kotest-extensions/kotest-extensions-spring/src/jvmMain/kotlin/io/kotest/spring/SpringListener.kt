@@ -117,10 +117,10 @@ class SpringTestListener(private val mode: SpringTestLifecycleMode) : TestListen
 }
 
 /**
- * A Kotest [ConstructorExtension] which will attempt to instantiate test classes if they have a
+ * A [ConstructorExtension] which will attempt to instantiate test classes if they have a
  * non-zero arg constructor.
  *
- * The extension wilil delegate to spring's [TestContextManager] to autowire the constructors.
+ * The extension will delegate to spring's [TestContextManager] to autowire the constructors.
  */
 @AutoScan
 object SpringAutowireConstructorExtension : ConstructorExtension {
