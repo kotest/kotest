@@ -13,9 +13,24 @@ import org.junit.jupiter.api.extension.BeforeEachCallback
 import org.junit.jupiter.api.extension.BeforeTestExecutionCallback
 import org.junit.jupiter.api.extension.Extension
 import org.junit.jupiter.api.extension.TestInstancePostProcessor
+import org.junit.jupiter.api.extension.TestInstancePreDestroyCallback
 import org.junit.jupiter.api.extension.TestWatcher
 import java.util.Optional
 
+/**
+ * Adapts JUnit Platform Extensions into Kotest Listeners.
+ *
+ * Supported JUnit Extensions:
+ * - [BeforeEachCallback]
+ * - [BeforeAllCallback]
+ * - [AfterEachCallback]
+ * - [AfterAllCallback]
+ * - [BeforeTestExecutionCallback]
+ * - [AfterTestExecutionCallback]
+ * - [TestInstancePostProcessor]
+ * - [TestWatcher]
+ * - [TestInstancePreDestroyCallback]
+ */
 class JUnitExtensionAdapter(private val extension: Extension) : TestListener {
 
    override suspend fun beforeAny(testCase: TestCase) {
@@ -38,21 +53,10 @@ class JUnitExtensionAdapter(private val extension: Extension) : TestListener {
       }
       if (extension is TestWatcher) {
          when (result.status) {
-            TestStatus.Ignored -> extension.testDisabled(
-               context,
-               Optional.ofNullable(result.reason)
-            )
-            TestStatus.Success -> extension.testSuccessful(
-               context
-            )
-            TestStatus.Error -> extension.testAborted(
-               context,
-               result.error
-            )
-            TestStatus.Failure -> extension.testFailed(
-               context,
-               result.error
-            )
+            TestStatus.Ignored -> extension.testDisabled(context, Optional.ofNullable(result.reason))
+            TestStatus.Success -> extension.testSuccessful(context)
+            TestStatus.Error -> extension.testAborted(context, result.error)
+            TestStatus.Failure -> extension.testFailed(context, result.error)
          }
       }
    }
@@ -69,6 +73,9 @@ class JUnitExtensionAdapter(private val extension: Extension) : TestListener {
    override suspend fun afterSpec(spec: Spec) {
       if (extension is AfterAllCallback) {
          extension.afterAll(KotestExtensionContext(spec, null))
+      }
+      if (extension is TestInstancePreDestroyCallback) {
+         extension.preDestroyTestInstance(KotestExtensionContext(spec, null))
       }
    }
 }

@@ -63,7 +63,11 @@ include("kotest-extensions:kotest-extensions-koin")
 include("kotest-extensions:kotest-extensions-mockserver")
 include("kotest-extensions:kotest-extensions-spring")
 include("kotest-extensions:kotest-extensions-testcontainers")
-include("kotest-extensions:kotest-extensions-junit5extensions")
+
+// extensions that adapt junit extensions into kotest extensions
+include("kotest-extensions:kotest-extensions-junit5")
+
+
 include("kotest-plugins:kotest-plugins-pitest")
 include("kotest-tests:kotest-tests-allure")
 include("kotest-tests:kotest-tests-autoscan")
