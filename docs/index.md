@@ -1,5 +1,8 @@
-<img src="images/logo_cropped.png" alt="kotest logo" width="75"/> Welcome to Kotest
+<img src="images/logo_with_text.png" alt="kotest logo" width="700"/>
 ==
+
+
+<img src="images/intro_gif.gif"/>
 
 **Kotest is a flexible and comprehensive testing project for Kotlin with multiplatform support.**
 
