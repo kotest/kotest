@@ -50,15 +50,7 @@ fun haveFileSize(size: Long): Matcher<Path> = object : Matcher<Path> {
    )
 }
 
-fun Path.shouldHaveExtension(vararg exts: String) = this should haveExtension(*exts)
-fun Path.shouldNotHaveExtension(vararg exts: String) = this shouldNot haveExtension(*exts)
-fun haveExtension(vararg exts: String) = object : Matcher<Path> {
-   override fun test(value: Path) = MatcherResult(
-      exts.any { value.fileName.toString().endsWith(it) },
-      "Path $value should end with one of ${exts.joinToString(",")}",
-      "Path $value should not end with one of ${exts.joinToString(",")}"
-   )
-}
+
 
 fun Path.shouldBeADirectory() = this should aDirectory()
 fun Path.shouldNotBeADirectory() = this shouldNot aDirectory()
