@@ -1,6 +1,16 @@
 Changelog
 =========
 
+
+#### 4.2.5
+
+* Bugfix: Fixed regression in shouldBe performance when using iterables/arrays #1707
+* Bugfix: Fixed performance issue when using 1000s of tests in gradle #1693
+* Feature: Added matchers for pair / triple components 1694
+* Feature: Added shouldHaveNameWithoutExtension matcher for files and paths #1696
+* Improvement: Added koin lifecycle mode #1710
+
+
 #### 4.2.4
 
 * Bugfix: Test time does not scale with number of tests #1685

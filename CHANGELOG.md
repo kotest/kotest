@@ -2,6 +2,9 @@ Changelog
 =========
 
 
+Changelog from 4.2.5 can be found [here](https://kotest.io/changelog/)
+
+
 #### 4.2.4
 
 * Bugfix: Test time does not scale with number of tests #1685
