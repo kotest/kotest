@@ -13,7 +13,7 @@ abstract class ShouldSpecDuplicateNameTest(iso: IsolationMode) : ShouldSpec() {
          should("woo") {}
          shouldThrow<DuplicatedTestNameException> {
             should("woo") {}
-         }.message shouldBe "Cannot create test with duplicated name woo"
+         }.message shouldBe "Cannot create test with duplicated name should woo"
       }
       shouldThrow<DuplicatedTestNameException> {
          context("foo") {}
