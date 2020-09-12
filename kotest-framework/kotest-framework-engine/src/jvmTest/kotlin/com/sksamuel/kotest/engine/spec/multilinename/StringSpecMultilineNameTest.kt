@@ -6,15 +6,15 @@ import io.kotest.matchers.shouldBe
 class StringSpecMultilineNameTest : StringSpec() {
    init {
 
-      var count = 0
+      val names = mutableSetOf<String>()
 
       afterSpec {
-         count shouldBe 1
+         names shouldBe setOf("multi line         name test")
       }
 
       """multi line
          name test""" {
-         count++
+         names.add(this.testCase.displayName)
       }
    }
 }
