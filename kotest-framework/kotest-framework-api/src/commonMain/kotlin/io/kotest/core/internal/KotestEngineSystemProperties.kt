@@ -16,6 +16,12 @@ object KotestEngineSystemProperties {
    const val includeTags = "kotest.tags.include"
 
    /**
+    * If set to true, then source ref's will not be created for test cases.
+    * This may reduce functionality (for example if using the intellij plugin).
+    */
+   const val disableSourceRef = "kotest.framework.sourceref.disable"
+
+   /**
     * If set to true, disables the use of '!' as a prefix to disable tests.
     */
    const val disableBangPrefix = "kotest.bang.disable"
