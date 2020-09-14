@@ -22,6 +22,9 @@ include("kotest-framework:kotest-framework-discovery")
 // brings in the API dependency
 include("kotest-framework:kotest-framework-engine")
 
+// contains optional perf improvements that require jdk9+
+include("kotest-framework:kotest-framework-jdk9")
+
 // contains the matcher interface and is intended as a lightweight dependency for library authors
 // to depend on when writing matcher libraries
 include("kotest-assertions:kotest-assertions-api")

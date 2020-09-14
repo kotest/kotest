@@ -19,6 +19,11 @@ sealed class Option<out T> {
       is Some -> f(this.value).some()
    }
 
+   inline fun <U> flatMap(f: (T) -> Option<U>): Option<U> = when (this) {
+      is None -> this
+      is Some -> f(this.value)
+   }
+
    fun forEach(f: (T) -> Unit) = fold({}, { f(it) })
 
    fun orNull(): T? = fold({ null }, { it })

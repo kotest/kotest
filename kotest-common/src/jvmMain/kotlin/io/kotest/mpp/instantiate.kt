@@ -1,3 +1,5 @@
+@file:Suppress("UNCHECKED_CAST")
+
 package io.kotest.mpp
 
 import io.kotest.fp.Try
