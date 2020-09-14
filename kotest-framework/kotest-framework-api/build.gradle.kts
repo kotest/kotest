@@ -63,7 +63,6 @@ kotlin {
             implementation(kotlin("reflect"))
             implementation(project(Projects.Engine))
             implementation(project(Projects.AssertionsCore))
-            implementation(project(Projects.FrameworkJdk9))
             // we use the internals of the JVM project in the tests
             implementation(project(Projects.JunitRunner))
             implementation(Libs.Coroutines.coreJvm)
