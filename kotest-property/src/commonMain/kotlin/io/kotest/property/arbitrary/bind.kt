@@ -48,7 +48,11 @@ fun <A, B, C, D, T : Any> Arb.Companion.bind(
 }
 
 fun <A, B, C, D, E, T : Any> Arb.Companion.bind(
-   genA: Arb<A>, genB: Arb<B>, genC: Arb<C>, genD: Arb<D>, genE: Arb<E>,
+   genA: Gen<A>,
+   genB: Gen<B>,
+   genC: Gen<C>,
+   genD: Gen<D>,
+   genE: Gen<E>,
    bindFn: (A, B, C, D, E) -> T
 ): Arb<T> = arb {
    val iterA = genA.generate(it).iterator()
