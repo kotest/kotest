@@ -24,6 +24,10 @@ class ShouldSpecContextScope(
    override val coroutineContext: CoroutineContext,
 ) : ContainerScope {
 
+   override suspend fun addTest(name: String, test: suspend TestContext.() -> Unit) {
+      should(name, test)
+   }
+
    /**
     * Adds a nested context scope to this scope.
     */

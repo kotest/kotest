@@ -37,11 +37,11 @@ interface ContainerScope : CoroutineScope {
    val defaultConfig: TestCaseConfig
 
    /**
-    * Registers a test to this scope, chosing the most specific type if this container supports
-    * both nested tests and terminal tests.
+    * Registers a test to this scope, wrapping the test in the most appropriate scope.
+    * For example, invoking this method on a [DescribeSpec] will choose the `it` scope.
     */
    suspend fun addTest(
-      name: DescriptionName.TestName,
+      name: String,
       test: suspend TestContext.() -> Unit,
    ) {
       TODO()

@@ -2,7 +2,6 @@ package io.kotest.core.spec.style.scopes
 
 import io.kotest.core.spec.KotestDsl
 import io.kotest.core.test.Description
-import io.kotest.core.test.DescriptionName
 import io.kotest.core.test.TestCaseConfig
 import io.kotest.core.test.TestContext
 import io.kotest.core.test.createTestName
@@ -41,8 +40,8 @@ class FunSpecContextScope(
       }
    }
 
-   override suspend fun addTest(name: DescriptionName.TestName, test: suspend TestContext.() -> Unit) {
-      addTest(name, false, test)
+   override suspend fun addTest(name: String, test: suspend TestContext.() -> Unit) {
+      test(name, test)
    }
 
    /**

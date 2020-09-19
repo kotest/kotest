@@ -30,6 +30,10 @@ class FeatureScope(
    override val coroutineContext: CoroutineContext,
 ) : ContainerScope {
 
+   override suspend fun addTest(name: String, test: suspend TestContext.() -> Unit) {
+      scenario(name, test)
+   }
+
    suspend fun feature(name: String, test: suspend FeatureScope.() -> Unit) {
       val testName = createTestName("Feature: ", name, false)
       addContainerTest(testName, xdisabled = false) {

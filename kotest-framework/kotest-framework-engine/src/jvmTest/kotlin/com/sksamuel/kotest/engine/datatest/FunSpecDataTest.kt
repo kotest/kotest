@@ -1,31 +1,49 @@
 package com.sksamuel.kotest.engine.datatest
 
-import io.kotest.assertions.throwables.shouldThrowAny
+import io.kotest.core.annotation.Ignored
 import io.kotest.core.spec.style.FunSpec
-import io.kotest.datatest.rollup
+import io.kotest.datatest.forAll
+import io.kotest.datatest.forNone
 import io.kotest.matchers.shouldBe
 
-class FunSpecDataTest : FunSpec() {
+@Ignored
+internal class FunSpecDataTest : FunSpec() {
    init {
       data class PythagTriple(val a: Int, val b: Int, val c: Int)
 
-      context("nested data test happy path") {
-         rollup(
+      context("datatest forAll") {
+         forAll(
             PythagTriple(3, 4, 5),
             PythagTriple(6, 8, 10),
-            PythagTriple(9, 12, 15),
          ) { (a, b, c) ->
             a * a + b * b shouldBe c * c
          }
       }
 
-      context("nested data test with failure") {
-         rollup(
-            PythagTriple(9, 12, 12),
+      context("datatest forAll failure") {
+         forAll(
+            PythagTriple(3, 2, 1),
+            PythagTriple(4, 3, 2),
          ) { (a, b, c) ->
-            shouldThrowAny {
-               a * a + b * b shouldBe c * c
-            }
+            a * a + b * b shouldBe c * c
+         }
+      }
+
+      context("datatest forNone") {
+         forNone(
+            PythagTriple(1, 2, 3),
+            PythagTriple(2, 3, 4),
+         ) { (a, b, c) ->
+            a * a + b * b shouldBe c * c
+         }
+      }
+
+      context("datatest forNone failure") {
+         forNone(
+            PythagTriple(13, 84, 85),
+            PythagTriple(16, 63, 65),
+         ) { (a, b, c) ->
+            a * a + b * b shouldBe c * c
          }
       }
    }

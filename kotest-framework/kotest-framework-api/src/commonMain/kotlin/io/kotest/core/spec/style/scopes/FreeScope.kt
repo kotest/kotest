@@ -3,7 +3,6 @@ package io.kotest.core.spec.style.scopes
 import io.kotest.core.Tag
 import io.kotest.core.extensions.TestCaseExtension
 import io.kotest.core.test.Description
-import io.kotest.core.test.DescriptionName
 import io.kotest.core.test.EnabledIf
 import io.kotest.core.test.TestCaseConfig
 import io.kotest.core.test.TestContext
@@ -21,8 +20,8 @@ class FreeScope(
    override val coroutineContext: CoroutineContext,
 ) : ContainerScope {
 
-   override suspend fun addTest(name: DescriptionName.TestName, test: suspend TestContext.() -> Unit) {
-      addTest(name, false, test)
+   override suspend fun addTest(name: String, test: suspend TestContext.() -> Unit) {
+      name(test)
    }
 
    suspend infix operator fun String.minus(test: suspend FreeScope.() -> Unit) {

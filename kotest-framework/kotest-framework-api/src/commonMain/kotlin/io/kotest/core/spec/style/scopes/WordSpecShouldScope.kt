@@ -28,6 +28,10 @@ class WordSpecShouldScope(
    override val coroutineContext: CoroutineContext,
 ) : ContainerScope {
 
+   override suspend fun addTest(name: String, test: suspend TestContext.() -> Unit) {
+      name(test)
+   }
+
    @OptIn(ExperimentalTime::class)
    suspend fun String.config(
       enabled: Boolean? = null,
