@@ -4,6 +4,7 @@ import io.kotest.property.Arb
 import java.lang.reflect.ParameterizedType
 import java.lang.reflect.Type
 import java.lang.reflect.WildcardType
+import java.math.BigDecimal
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
@@ -45,7 +46,8 @@ actual inline fun <reified A> targetDefaultForClass(): Arb<A>? {
       A::class == LocalDate::class -> Arb.localDate() as Arb<A>
       A::class == LocalDateTime::class -> Arb.localDateTime() as Arb<A>
       A::class == LocalTime::class -> Arb.localTime() as Arb<A>
-      A::class == Period::class -> Arb.period()as Arb<A>
+      A::class == Period::class -> Arb.period() as Arb<A>
+      A::class == BigDecimal::class -> Arb.bigDecimal() as Arb<A>
       else -> null
    }
 }
