@@ -36,7 +36,7 @@ private fun buildFailureMessage(actual: Map<*, *>?, expected: Map<*, *>?): Strin
    val keysDifferentAt = when {
       actual != null && expected != null -> {
          val keysHavingDifferentValues = actual.keys.filterNot { expected[it] == actual[it] }
-         "Values differed at keys ${keysHavingDifferentValues.joinToString(limit = 15)}"
+         "Values differed at keys ${keysHavingDifferentValues.joinToString(limit = 10)}"
       }
       else -> ""
    }
@@ -53,6 +53,6 @@ private fun Map<*, *>.toFormattedString(): String {
          separator = ",$newLine",
          prefix = "{$newLine",
          postfix = "$newLine}",
-         limit = 15
+         limit = 10
       ) { "$indentation${it.first.show().value} = ${it.second.show().value}" }
 }
