@@ -10,14 +10,18 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.testIntegration.TestFramework
 import io.kotest.plugin.intellij.psi.isContainedInSpec
+import io.kotest.plugin.intellij.psi.isSubclassOfSpec
+import org.jetbrains.kotlin.asJava.classes.KtLightClass
+import org.jetbrains.kotlin.asJava.classes.KtUltraLightClass
 import org.jetbrains.kotlin.idea.KotlinLanguage
+import org.jetbrains.kotlin.psi.KtClass
 import org.jetbrains.kotlin.psi.KtNameReferenceExpression
 import org.jetbrains.kotlin.psi.KtNamedFunction
 import org.jetbrains.kotlin.psi.psiUtil.getChildrenOfType
 import javax.swing.Icon
 
 /**
- * Used by various test utilties in the plugin sdk
+ * Used by various test related classes in intellij, such as GradleRunConfiguration.
  */
 class KotestTestFramework : TestFramework {
 
@@ -34,7 +38,13 @@ class KotestTestFramework : TestFramework {
    }
 
    override fun isTestClass(clazz: PsiElement): Boolean {
-      return clazz is PsiClass && clazz.isContainedInSpec()
+      val tc = when (clazz) {
+         is KtUltraLightClass -> clazz.isSubclassOfSpec()
+         is KtLightClass -> clazz.isSubclassOfSpec()
+         is KtClass -> clazz.isSubclassOfSpec()
+         else -> clazz.isContainedInSpec()
+      }
+      return tc
    }
 
    override fun getName(): String = Constants.FrameworkName
@@ -74,6 +84,7 @@ class KotestTestFramework : TestFramework {
    }
 
    override fun isTestMethod(element: PsiElement?): Boolean = false
+   override fun isTestMethod(element: PsiElement?, checkAbstract: Boolean): Boolean = false
 
    override fun getSetUpMethodFileTemplateDescriptor(): FileTemplateDescriptor? = null
    override fun getTearDownMethodFileTemplateDescriptor(): FileTemplateDescriptor? = null

@@ -4,6 +4,7 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import io.kotest.plugin.intellij.styles.SpecStyle
 import org.jetbrains.kotlin.asJava.classes.KtLightClass
+import org.jetbrains.kotlin.asJava.classes.KtUltraLightClass
 import org.jetbrains.kotlin.name.FqName
 import org.jetbrains.kotlin.psi.KtBlockExpression
 import org.jetbrains.kotlin.psi.KtCallExpression
@@ -34,6 +35,8 @@ fun PsiFile.specs(): List<KtClass> {
  * This method will recursively check parents.
  */
 fun KtClass.isSubclassOfSpec(): Boolean = this.specStyle() != null
+fun KtUltraLightClass.isSubclassOfSpec(): Boolean = this.specStyle() != null
+fun KtLightClass.isSubclassOfSpec(): Boolean = this.specStyle() != null
 
 /**
  * Returns true if this [KtClass] is a subclass of any Spec.
