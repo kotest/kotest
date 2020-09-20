@@ -67,10 +67,11 @@ fun <A, B> Arb<A>.flatMap(f: (A) -> Arb<B>): Arb<B> = object : Arb<B>() {
  * Returns a new [Arb] which ensures samples are drawn from uniformly distributed distinct elements from
  * the original distribution.
  *
- * The number of minimum sample size drawn randomly from the original distribution is determined by [minSampleSize].
- * Since resampling can be very expensive, the randomly sampled elements from the original distribution will be
- * cached unless [cacheSamples] is set to false.
+ * The number of minimum sample size drawn from the original distribution is determined by [minSampleSize].
+ * Since resampling can be very expensive, the randomly sampled elements from the original distribution are
+ * cached for reuse unless [cacheSamples] is set to false.
  */
+@Deprecated("distinct will be removed in 4.5.")
 fun <A> Arb<A>.distinct(minSampleSize: Int = 1000, cacheSamples: Boolean = true): Arb<A> =
    distinctBy(minSampleSize, cacheSamples) { it }
 
@@ -78,10 +79,11 @@ fun <A> Arb<A>.distinct(minSampleSize: Int = 1000, cacheSamples: Boolean = true)
  * Returns a new [Arb] which ensures samples are drawn from uniformly distributed distinct elements from
  * the original distribution based on the provided [selector] function.
  *
- * The number of minimum sample size drawn randomly from the original distribution is determined by [minSampleSize].
- * Since resampling can be very expensive, the randomly sampled elements from the original distribution will be
- * cached unless [cacheSamples] is set to false.
+ * The number of minimum sample size drawn from the original distribution is determined by [minSampleSize].
+ * Since resampling can be very expensive, the randomly sampled elements from the original distribution are
+ * cached for reuse unless [cacheSamples] is set to false.
  */
+@Deprecated("distinctBy will be removed in 4.5.")
 fun <A, B> Arb<A>.distinctBy(
    minSampleSize: Int = 1000,
    cacheSamples: Boolean = true,
@@ -89,23 +91,21 @@ fun <A, B> Arb<A>.distinctBy(
 ): Arb<A> = object : Arb<A>() {
    override fun edgecases(): List<A> = this@distinctBy.edgecases().distinctBy(selector)
    override fun sample(rs: RandomSource): Sample<A> {
-      val sampledPopulation = if (cacheSamples) {
-         if (sampledElements.size < minSampleSize) {
-            val sampled = sampleFromPopulation(rs)
-            sampledElements.addAll(sampled)
-            sampled
-         } else sampledElements
-      } else sampleFromPopulation(rs)
-
-      return Sample(sampledPopulation.distinctBy(selector).random(rs.random))
+      val distinctSamples = if (cacheSamples) sampledElements else sampleFromPopulation(rs)
+      return Sample(distinctSamples.random(rs.random))
    }
 
    override fun values(rs: RandomSource): Sequence<Sample<A>> = generateSequence { sample(rs) }
 
    private fun sampleFromPopulation(rs: RandomSource): List<A> =
-      this@distinctBy.generate(rs).map { it.value }.take(minSampleSize).toList()
+      this@distinctBy.generate(rs).map { it.value }.take(minSampleSize).toList().distinctBy(selector)
 
-   private val sampledElements: MutableList<A> = mutableListOf()
+   private val sampledElements: List<A> by lazy {
+      // The seed is provided such that the cached random sampling
+      // from the original population is repeatable across tests.
+      // This approach is unfortunately less than ideal.
+      sampleFromPopulation(RandomSource.seeded(1234L))
+   }
 }
 
 /**
