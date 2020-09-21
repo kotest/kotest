@@ -9,6 +9,8 @@ import io.kotest.core.spec.style.scopes.Lifecycle
 import io.kotest.core.spec.style.scopes.RootTestRegistration
 import io.kotest.core.spec.style.scopes.ShouldSpecRootScope
 import io.kotest.core.test.TestCaseConfig
+import io.kotest.matchers.Matcher
+import io.kotest.matchers.should as should2
 
 /**
  * Creates a [TestFactory] from the given block.
@@ -38,7 +40,7 @@ abstract class ShouldSpec(body: ShouldSpec.() -> Unit = {}) : DslDrivenSpec(), S
    override fun defaultConfig(): TestCaseConfig = resolvedDefaultConfig()
    override fun registration(): RootTestRegistration = RootTestRegistration.from(this)
 
-   // need to overload this so that when doing "string" should haveLength(5) in a word spec, we don't
+   // need to overload this so that when doing "string" should <matcher> in a should spec, we don't
    // clash with the other should method
-   // infix fun String.should(matcher: Matcher<String>) = TODO()
+   infix fun String.should(matcher: Matcher<String>) = this should2 matcher
 }
