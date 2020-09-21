@@ -13,79 +13,49 @@ import io.kotest.matchers.shouldBe
 class DataTest : FunSpec() {
    init {
 
-      test("free spec should support data tests") {
-         val results = mutableMapOf<DescriptionName.TestName, TestStatus>()
-         val listener = object : TestEngineListener {
-            override fun testFinished(testCase: TestCase, result: TestResult) {
-               results[testCase.description.name] = result.status
-            }
+      val results = mutableMapOf<DescriptionName.TestName, TestStatus>()
+
+      val listener = object : TestEngineListener {
+         override fun testFinished(testCase: TestCase, result: TestResult) {
+            results[testCase.description.name] = result.status
          }
+      }
+
+      beforeTest {
+         results.clear()
+      }
+
+      test("free spec should support data tests") {
          KotestEngineLauncher().withListener(listener).withSpec(FreeSpecDataTest::class).launch()
          assertResults(results)
       }
 
       test("describe spec should support data tests") {
-         val results = mutableMapOf<DescriptionName.TestName, TestStatus>()
-         val listener = object : TestEngineListener {
-            override fun testFinished(testCase: TestCase, result: TestResult) {
-               results[testCase.description.name] = result.status
-            }
-         }
          KotestEngineLauncher().withListener(listener).withSpec(DescribeSpecDataTest::class).launch()
          assertResults(results)
       }
 
       test("fun spec should support data tests") {
-         val results = mutableMapOf<DescriptionName.TestName, TestStatus>()
-         val listener = object : TestEngineListener {
-            override fun testFinished(testCase: TestCase, result: TestResult) {
-               results[testCase.description.name] = result.status
-            }
-         }
          KotestEngineLauncher().withListener(listener).withSpec(FunSpecDataTest::class).launch()
          assertResults(results)
       }
 
       test("expect spec should support data tests") {
-         val results = mutableMapOf<DescriptionName.TestName, TestStatus>()
-         val listener = object : TestEngineListener {
-            override fun testFinished(testCase: TestCase, result: TestResult) {
-               results[testCase.description.name] = result.status
-            }
-         }
          KotestEngineLauncher().withListener(listener).withSpec(ExpectSpecDataTest::class).launch()
          assertResults(results)
       }
 
       test("should spec should support data tests") {
-         val results = mutableMapOf<DescriptionName.TestName, TestStatus>()
-         val listener = object : TestEngineListener {
-            override fun testFinished(testCase: TestCase, result: TestResult) {
-               results[testCase.description.name] = result.status
-            }
-         }
          KotestEngineLauncher().withListener(listener).withSpec(ShouldSpecDataTest::class).launch()
          assertResults(results)
       }
 
       test("feature spec should support data tests") {
-         val results = mutableMapOf<DescriptionName.TestName, TestStatus>()
-         val listener = object : TestEngineListener {
-            override fun testFinished(testCase: TestCase, result: TestResult) {
-               results[testCase.description.name] = result.status
-            }
-         }
          KotestEngineLauncher().withListener(listener).withSpec(FeatureSpecDataTest::class).launch()
          assertResults(results)
       }
 
       test("word spec should support data tests") {
-         val results = mutableMapOf<DescriptionName.TestName, TestStatus>()
-         val listener = object : TestEngineListener {
-            override fun testFinished(testCase: TestCase, result: TestResult) {
-               results[testCase.description.name] = result.status
-            }
-         }
          KotestEngineLauncher().withListener(listener).withSpec(WordSpecDataTest::class).launch()
          results shouldBe mapOf(
             createTestName("datatest forAll should") to TestStatus.Success,
