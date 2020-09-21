@@ -30,7 +30,7 @@ abstract class AnnotationSpec : Spec() {
       test: suspend TestContext.() -> Unit,
       config: TestCaseConfig,
       type: TestType
-   ) = TODO()
+   ) = error("AnnotationSpec does not support dynamically adding tests")
 
    override fun beforeSpec(spec: Spec) {
       executeBeforeSpecFunctions()
