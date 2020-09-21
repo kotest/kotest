@@ -33,6 +33,10 @@ class GivenScope(
    override val coroutineContext: CoroutineContext,
 ) : ContainerScope {
 
+   override suspend fun addTest(name: String, test: suspend TestContext.() -> Unit) {
+      error("Cannot add a test at this scope. Use a should scope instead.")
+   }
+
    suspend fun And(name: String, test: suspend GivenScope.() -> Unit) = addAnd(name, test, xdisabled = false)
    suspend fun and(name: String, test: suspend GivenScope.() -> Unit) = addAnd(name, test, xdisabled = false)
    suspend fun xand(name: String, test: suspend GivenScope.() -> Unit) = addAnd(name, test, xdisabled = true)

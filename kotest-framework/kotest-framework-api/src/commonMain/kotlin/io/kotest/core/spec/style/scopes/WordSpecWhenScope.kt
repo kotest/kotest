@@ -17,6 +17,10 @@ class WordSpecWhenScope(
    override val coroutineContext: CoroutineContext,
 ) : ContainerScope {
 
+   override suspend fun addTest(name: String, test: suspend TestContext.() -> Unit) {
+      error("Cannot add a test at this scope. Use a should scope instead.")
+   }
+
    suspend infix fun String.Should(test: suspend WordSpecShouldScope.() -> Unit) = addShould(this, test, false)
    suspend infix fun String.should(test: suspend WordSpecShouldScope.() -> Unit) = addShould(this, test, false)
    suspend infix fun String.xshould(test: suspend WordSpecShouldScope.() -> Unit) = addShould(this, test, true)

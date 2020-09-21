@@ -20,6 +20,10 @@ class FreeScope(
    override val coroutineContext: CoroutineContext,
 ) : ContainerScope {
 
+   override suspend fun addTest(name: String, test: suspend TestContext.() -> Unit) {
+      name(test)
+   }
+
    suspend infix operator fun String.minus(test: suspend FreeScope.() -> Unit) {
       val name = createTestName(this)
       addContainerTest(name, xdisabled = false) {
@@ -46,7 +50,7 @@ class FreeScope(
       extensions: List<TestCaseExtension>? = null,
       enabledIf: EnabledIf? = null,
       invocationTimeout: Duration? = null,
-      test: suspend TestContext.() -> Unit
+      test: suspend TestContext.() -> Unit,
    ) = TestWithConfigBuilder(
       createTestName(this),
       testContext,

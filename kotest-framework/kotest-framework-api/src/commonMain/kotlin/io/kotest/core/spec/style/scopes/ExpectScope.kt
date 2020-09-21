@@ -30,6 +30,10 @@ class ExpectScope(
    override val coroutineContext: CoroutineContext,
 ) : ContainerScope {
 
+   override suspend fun addTest(name: String, test: suspend TestContext.() -> Unit) {
+      expect(name, test)
+   }
+
    suspend fun context(name: String, test: suspend ExpectScope.() -> Unit) {
       val testName = createTestName("Context: ", name, false)
       addContainerTest(testName, xdisabled = false) {

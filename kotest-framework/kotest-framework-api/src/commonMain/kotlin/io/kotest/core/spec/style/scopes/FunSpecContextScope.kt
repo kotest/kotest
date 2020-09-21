@@ -25,7 +25,7 @@ class FunSpecContextScope(
 ) : ContainerScope {
 
    /**
-    * Adds a nested context scope to the scope.
+    * Adds a container scope to this scope.
     */
    suspend fun context(name: String, test: suspend FunSpecContextScope.() -> Unit) {
       val testName = createTestName(name)
@@ -40,15 +40,31 @@ class FunSpecContextScope(
       }
    }
 
+   override suspend fun addTest(name: String, test: suspend TestContext.() -> Unit) {
+      test(name, test)
+   }
+
+   /**
+    * Adds a test scope to this scope, expecting config.
+    */
    fun test(name: String) =
       TestWithConfigBuilder(createTestName(name), testContext, defaultConfig, xdisabled = false)
 
+   /**
+    * Adds a disabled test scope to this scope, expecting config.
+    */
    fun xtest(name: String) =
       TestWithConfigBuilder(createTestName(name), testContext, defaultConfig, xdisabled = true)
 
+   /**
+    * Adds a test scope to this scope.
+    */
    suspend fun test(name: String, test: suspend TestContext.() -> Unit) =
       addTest(createTestName(name), xdisabled = false, test = test)
 
+   /**
+    * Adds a disabled test scope to this scope.
+    */
    suspend fun xtest(name: String, test: suspend TestContext.() -> Unit) =
       addTest(createTestName(name), xdisabled = true, test = test)
 }

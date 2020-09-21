@@ -29,6 +29,10 @@ class WhenScope(
    override val coroutineContext: CoroutineContext,
 ) : ContainerScope {
 
+   override suspend fun addTest(name: String, test: suspend TestContext.() -> Unit) {
+      then(name, test)
+   }
+
    suspend fun And(name: String, test: suspend WhenScope.() -> Unit) = addAnd(name, test, xdisabled = false)
    suspend fun and(name: String, test: suspend WhenScope.() -> Unit) = addAnd(name, test, xdisabled = false)
    suspend fun xand(name: String, test: suspend WhenScope.() -> Unit) = addAnd(name, test, xdisabled = true)

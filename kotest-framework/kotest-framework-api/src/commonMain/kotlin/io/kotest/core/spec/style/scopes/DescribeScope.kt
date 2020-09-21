@@ -30,6 +30,10 @@ class DescribeScope(
    override val coroutineContext: CoroutineContext,
 ) : ContainerScope {
 
+   override suspend fun addTest(name: String, test: suspend TestContext.() -> Unit) {
+      it(name, test)
+   }
+
    suspend fun context(name: String, test: suspend DescribeScope.() -> Unit) {
       val testName = createTestName("Context: ", name, false)
       containerTest(testName, false, test)
