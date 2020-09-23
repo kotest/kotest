@@ -10,6 +10,8 @@ import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.fp.Try
 import io.kotest.mpp.log
+import io.kotest.core.test.TestType
+import io.kotest.core.test.TestStatus
 
 fun List<ProjectListener>.resolveName() =
    groupBy { it.name }
@@ -68,8 +70,8 @@ suspend fun TestCase.invokeAllBeforeTestCallbacks(): Try<TestCase> =
    }, { listeners ->
       Try {
          listeners.forEach {
-            if (type == io.kotest.core.test.TestType.Container) it.beforeContainer(this)
-            if (type == io.kotest.core.test.TestType.Test) it.beforeEach(this)
+            if (type == TestType.Container) it.beforeContainer(this)
+            if (type == TestType.Test) it.beforeEach(this)
             it.beforeAny(this)
             it.beforeTest(this)
          }
@@ -89,12 +91,27 @@ suspend fun TestCase.invokeAllAfterTestCallbacks(result: TestResult): Try<TestCa
       Try.Failure(it)
    }, { listeners ->
       Try {
+         var currentResult = result
+         var currentException: Error? = null
          listeners.forEach {
-            it.afterTest(this, result)
-            it.afterAny(this, result)
-            if (type == io.kotest.core.test.TestType.Test) it.afterEach(this, result)
-            if (type == io.kotest.core.test.TestType.Container) it.afterContainer(this, result)
+            try {
+               it.afterTest(this, currentResult)
+               it.afterAny(this, currentResult)
+               if (type == TestType.Test) it.afterEach(this, currentResult)
+               if (type == TestType.Container) it.afterContainer(this, currentResult)
+            } catch (e: Error) {
+               if (!listOf(TestStatus.Failure, TestStatus.Error).contains(currentResult.status)) {
+                  currentResult = TestResult(
+                     status = TestStatus.Failure,
+                     error = e,
+                     reason = "AfterTest Failed: ${e.message}",
+                     duration = currentResult.duration
+                  )
+                  currentException = e
+               }
+            }
          }
+         currentException?.let { throw Error(it) }
 
          this
       }
