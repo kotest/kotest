@@ -1,7 +1,7 @@
 <idea-plugin>
 
    <id>kotest-plugin-intellij</id>
-   <name>kotest</name>
+   <name>Kotest</name>
 
    <vendor email="sam@sksamuel.com" url="http://github.com/kotest">Kotest</vendor>
 
