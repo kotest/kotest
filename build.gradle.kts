@@ -28,28 +28,35 @@ val plugins = listOf(
    ),
    plugin.PluginDescriptor(
       "201.6487",
-      "202.*",
+      "201.*",
       "IC-2020.1",
       "IC-2020.1",
       listOf("java", "org.jetbrains.kotlin:1.3.72-release-IJ2020.1-5")
    ),
    plugin.PluginDescriptor(
-      "193.5233.102",
-      "193.*",
-      "193.5233.102",
-      "AS-4.0",
-      listOf("gradle", "android", "java", "org.jetbrains.kotlin:1.3.72-release-Studio4.0-5")
-   ),
-   plugin.PluginDescriptor(
-      "201.7223.91",
-      "201.*",
-      "201.7223.91",
-      "AS-4.1",
-      listOf("gradle", "android", "java", "org.jetbrains.kotlin:1.3.72-release-Studio4.1-5")
+      "202.7319.50",
+      "202.*",
+      "IC-2020.2",
+      "IC-2020.2",
+      listOf("java", "org.jetbrains.kotlin:1.3.72-release-IJ2020.1-5")
    )
+//   plugin.PluginDescriptor(
+//      "193.5233.102",
+//      "193.*",
+//      "193.5233.102",
+//      "AS-4.0",
+//      listOf("gradle", "android", "java", "org.jetbrains.kotlin:1.3.72-release-Studio4.0-5")
+//   ),
+//   plugin.PluginDescriptor(
+//      "201.7223.91",
+//      "201.*",
+//      "201.7223.91",
+//      "AS-4.1",
+//      listOf("gradle", "android", "java", "org.jetbrains.kotlin:1.3.72-release-Studio4.1-5")
+//   )
 )
 
-val productName = System.getenv("PRODUCT_NAME") ?: "IC-2020.1"
+val productName = System.getenv("PRODUCT_NAME") ?: "IC-2020.2"
 val descriptor = plugins.first { it.productName == productName }
 
 val jetbrainsToken: String by project
@@ -78,6 +85,7 @@ dependencies {
    // this is needed to use the launcher in 4.2.0, in 4.2.1 the launcher is built into the engine dep
    implementation("io.kotest:kotest-framework-launcher-jvm:4.2.0")
 
+   // just needed for tests
    testImplementation("io.kotest:kotest-assertions-core-jvm:4.2.0")
 }
 
