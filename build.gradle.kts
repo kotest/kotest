@@ -34,7 +34,7 @@ val plugins = listOf(
       listOf("java", "org.jetbrains.kotlin:1.3.72-release-IJ2020.1-5")
    ),
    plugin.PluginDescriptor(
-      "202.7319.50",
+      "202.6397.94",
       "202.*",
       "IC-2020.2",
       "IC-2020.2",
