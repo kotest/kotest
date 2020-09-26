@@ -82,6 +82,8 @@ class TaycanConsoleReporter : ConsoleReporter {
 
    override fun engineFinished(t: List<Throwable>) {
 
+      if (specsSeen.isEmpty()) return
+
       if (t.isNotEmpty()) {
          errors += t.size
          t.forEach {
