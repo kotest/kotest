@@ -205,7 +205,7 @@ class TaycanConsoleReporter : ConsoleReporter {
          else -> Unit
       }
 
-      // we only print the name for leafs, as containers are printed in advance
+      // we only print the name and status for leafs, as containers are printed in advance
       if (testCase.type == TestType.Test) {
          print("".padEnd(testCase.description.depth() * 4, ' '))
          print("- " + testCase.displayName)
@@ -217,8 +217,9 @@ class TaycanConsoleReporter : ConsoleReporter {
          }
 
          if (result.duration > slow) {
-            println(" ${durationString(result.duration)}")
+            print(" ${durationString(result.duration)}")
          }
+         println()
       }
 
       if (result.error != null) {
