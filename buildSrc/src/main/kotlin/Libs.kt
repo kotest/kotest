@@ -4,7 +4,7 @@ object Libs {
    const val dokkaVersion = "0.10.1"
    const val adarshrTestLoggerVersion = "2.0.0"
    const val gradleVersionsPluginVersion = "0.28.0"
-   const val kotestGradlePlugin = "0.1.3"
+   const val kotestGradlePlugin = "0.1.4"
 
    object Arrow {
       private const val version = "0.10.5"

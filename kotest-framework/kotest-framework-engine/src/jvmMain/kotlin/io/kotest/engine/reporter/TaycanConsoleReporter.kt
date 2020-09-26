@@ -53,6 +53,7 @@ class TaycanConsoleReporter : ConsoleReporter {
       "Be afraid - be very afraid - of failing tests",
       "The point is, ladies and gentlemen, that green is good",
       "Lock test-foils in attack position",
+      "Fasten your seatbelts. It's going to be a bumpy test-run",
       "Lets crack open this test suite",
       "Lets get testing, I'm on the clock here",
       "Test time is the best time",
