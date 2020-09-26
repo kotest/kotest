@@ -142,7 +142,7 @@ fun <A, B, C, D, E, F, G, H, I, J, T> Arb.Companion.bind(
       bindFn(a, b, c, d, e, f, g, h, i, j)
    }
 
-fun <A, B, C> Gen<A>.bind(other: Gen<B>, fn: (A, B) -> C): Arb<C> {
+private fun <A, B, C> Gen<A>.bind(other: Gen<B>, fn: (A, B) -> C): Arb<C> {
    val arb = when (this) {
       is Arb -> this
       is Exhaustive -> this.toArb()
@@ -156,4 +156,4 @@ fun <A, B, C> Gen<A>.bind(other: Gen<B>, fn: (A, B) -> C): Arb<C> {
    }
 }
 
-fun <A, B> Gen<A>.bind(other: Gen<B>): Arb<Pair<A, B>> = this.bind(other, ::Pair)
+private fun <A, B> Gen<A>.bind(other: Gen<B>): Arb<Pair<A, B>> = this.bind(other, ::Pair)
