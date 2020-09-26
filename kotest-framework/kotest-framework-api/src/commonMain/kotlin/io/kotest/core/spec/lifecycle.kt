@@ -88,16 +88,15 @@ suspend fun TestCase.invokeAllAfterTestCallbacks(result: TestResult): Try<TestCa
    }.fold({
       Try.Failure(it)
    }, { listeners ->
-      Try {
-         listeners.forEach {
+      listeners.map {
+         Try {
             it.afterTest(this, result)
             it.afterAny(this, result)
             if (type == io.kotest.core.test.TestType.Test) it.afterEach(this, result)
             if (type == io.kotest.core.test.TestType.Container) it.afterContainer(this, result)
+            this
          }
-
-         this
-      }
+      }.find { it.isFailure() } ?: Try {this}
    })
 
 suspend fun TestCase.invokeBeforeInvocation(k: Int) {

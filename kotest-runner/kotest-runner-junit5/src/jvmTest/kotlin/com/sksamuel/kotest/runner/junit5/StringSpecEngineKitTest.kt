@@ -9,6 +9,7 @@ import io.kotest.core.test.TestResult
 import io.kotest.matchers.collections.shouldBeEmpty
 import io.kotest.matchers.collections.shouldContainExactly
 import io.kotest.matchers.shouldBe
+import org.junit.platform.engine.discovery.DiscoverySelectors
 import org.junit.platform.engine.discovery.DiscoverySelectors.selectClass
 import org.junit.platform.testkit.engine.EngineTestKit
 import org.junit.platform.testkit.engine.Events
@@ -438,6 +439,16 @@ class StringSpecEngineKitTest : FunSpec({
             )
          }
    }
+
+   test("should execute all after test callback even when one of them throw exception") {
+      EngineTestKit
+         .engine("kotest")
+         .selectors(DiscoverySelectors.selectClass(ExceptionInAfterTest::class.java))
+         .configurationParameter("allow_private", "true")
+         .execute()
+
+      ExceptionInAfterTest.counter shouldBe 4
+   }
 })
 
 private class StringSpecExceptionInBeforeSpecOverride : StringSpec() {
@@ -630,5 +641,20 @@ private class StringSpecExceptionInBeforeSpecForInstancePerLeaf : StringSpec({
 
    override fun beforeSpec(spec: Spec) {
       throw RuntimeException("zopp!!")
+   }
+}
+
+private class ExceptionInAfterTest : StringSpec() {
+   init {
+      afterTest { counter += 1 }
+      afterTest { throw RuntimeException("Bang") }
+      afterTest { counter += 1 }
+      afterAny { throw RuntimeException("Bang Bang") }
+      afterAny { counter += 1 }
+      "dummy test" { counter += 1}
+   }
+
+   companion object {
+      var counter = 0
    }
 }
