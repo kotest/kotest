@@ -16,20 +16,22 @@ import kotlin.reflect.full.primaryConstructor
  */
 inline fun <reified T : Any> Arb.Companion.bind(): Arb<T> {
    val kclass = T::class
-   return arb { rs ->
-      val constructor = kclass.primaryConstructor ?: error("could not locate a primary constructor")
-      val gens = constructor.parameters.map {
-         it to (
-            defaultForClass<Any>(it.type.classifier as KClass<*>)
-               ?: error("Could not locate generator for parameter ${kclass.qualifiedName}.${it.name}")
-            )
-      }
-      val iters = gens.map { it.first to it.second.generate(rs).iterator() }
-      generateSequence {
-         val values = iters.map {
-            if (it.second.hasNext()) it.second.next().value else error("The generator for ${kclass.qualifiedName}.${it.first.name} has no more elements")
+   val constructor = kclass.primaryConstructor ?: error("could not locate a primary constructor")
+   check(constructor.parameters.isNotEmpty()) { "${kclass.qualifiedName} constructor must contain at least 1 parameter" }
+
+   val arbs: List<Arb<List<Any>>> = constructor.parameters.map { param ->
+      val gen = defaultForClass<Any>(param.type.classifier as KClass<*>)
+         ?: error("Could not locate generator for parameter ${kclass.qualifiedName}.${param.name}")
+      gen.map { listOf(it) }
+   }
+
+   val arbParams: Arb<List<Any>> = arbs.reduce { acc, next ->
+      acc.flatMap { paramList ->
+         next.map { nextParam ->
+            paramList + nextParam
          }
-         constructor.call(*values.toTypedArray())
       }
    }
+
+   return arbParams.map { params -> constructor.call(*params.toTypedArray()) }
 }
