@@ -88,16 +88,17 @@ class Execute : CliktCommand(name = "Kotest Launcher", treatUnknownOptionsAsArgs
          }
 
          if (reporter is ConsoleReporter) {
-
             val term = when (termcolor) {
                "true" -> TermColors(TermColors.Level.TRUECOLOR)
                "ansi256" -> TermColors(TermColors.Level.ANSI256)
+               "ansi16" -> TermColors(TermColors.Level.ANSI16)
+               "auto" -> TermColors()
                else -> TermColors()
             }
-
             reporter.setTerm(term)
          }
          reporter
+
       } catch (t: Throwable) {
          println(t.message)
          t.printStackTrace()

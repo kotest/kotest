@@ -66,7 +66,7 @@ class KotestJunitPlatformTestEngine : TestEngine {
     * gradlew --tests rules:
     * Classname: adds classname selector and ClassMethodNameFilter post discovery filter
     * Classname.method: adds classname selector and ClassMethodNameFilter post discovery filter
-    * org.Clsasname: doesn't seem to invoke the discover or execute methods.
+    * org.Classname: doesn't seem to invoke the discover or execute methods.
     *
     * filter in gradle test block:
     * includeTestsMatching("*Test") - class selectors and ClassMethodNameFilter with pattern
