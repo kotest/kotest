@@ -6,6 +6,7 @@ import io.kotest.core.filter.TestFilter
 import io.kotest.core.spec.Spec
 import io.kotest.engine.config.ConfigManager
 import io.kotest.engine.listener.CompositeTestEngineListener
+import kotlinx.coroutines.runBlocking
 import kotlin.reflect.KClass
 
 /**
@@ -28,7 +29,7 @@ class KotestEngineLauncher(
 
    constructor() : this(emptyList(), emptyList(), emptyList(), null, true)
 
-   suspend fun launch() {
+   fun launch() {
 
       if (listeners.isEmpty())
          error("Cannot launch a KotestEngine without at least one TestEngineListener")
@@ -38,8 +39,10 @@ class KotestEngineLauncher(
       val plan = TestPlan(specs)
 
       try {
-         runner.execute(plan)
-         runner.cleanup()
+         runBlocking {
+            runner.execute(plan)
+            runner.cleanup()
+         }
       } catch (e: Exception) {
       }
    }
