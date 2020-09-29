@@ -187,11 +187,11 @@ class KotestAndKoin : FunSpec(), KoinTest {
 }
 ```
 
-## Roboelectric
+## Robolectric
 
 [Robolectric](http://robolectric.org/) can be used with Kotest through the `RobolectricExtension` which can be found in `kotest-extensions-robolectric` module.
 
-To add this module to project you need spcify following in your `build.gradle`:
+To add this module to project you need specify following in your `build.gradle`:
 
 ```groovy
 testImplementation 'io.kotest:kotest-extensions-robolectric:<version>'
