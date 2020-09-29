@@ -9,11 +9,10 @@ Kotest integrates with many libraries and frameworks. This page outlines the ext
 * [Ktor](#ktor)
 * [Koin](#koin)
 * [Mockserver](#mockserver)
-* [Roboelectric](#roboelectric)
+* [Robolectric](#robolectric)
 * [Spring](#spring)
 * [System / Timezone](#system-extensions)
 * [Test Containers](#testcontainers)
-
 
 
 ### Arrow
@@ -41,6 +40,7 @@ list.forOne {
 ```
 
 Other inspectors include `forNone`, `forAll`, `forExactly(n)`, `forSome` and so on. See the section on [inspectors](https://github.com/kotest/kotest/blob/master/doc/reference.md#inspectors) for more details.
+
 
 ### Spring
 
@@ -110,8 +110,6 @@ class SpringAutowiredConstructorTest(service: UserService) : WordSpec() {
 ```
 
 
-
-
 ### Ktor
 
 The ```kotest-assertions-ktor``` module provides response matchers for a [Ktor]("https://ktor.io/") application. There are matchers
@@ -146,8 +144,6 @@ response.shouldHaveHeader(name = "Authorization", value = "Bearer")
 ```
 
 
-
-
 ### Koin
 
 The [Koin DI Framework](https://insert-koin.io/) can be used with Kotest through the `KoinListener` test listener and its own interface `KoinTest`.
@@ -175,7 +171,8 @@ class KotestAndKoin : FunSpec(), KoinTest {
 }
 ```
 
-### Roboelectric
+
+### Robolectric
 
 [Robolectric](http://robolectric.org/) can be used with Kotest through the `RobolectricExtension` which can be found in `kotest-extensions-robolectric` module.
 
@@ -195,6 +192,7 @@ class MyProjectLevelConfig : AbstractProjectConfig() {
 Of course you can just add this extension to another extensions you're already using.
 
 After that done any class which should be ran with Robolectric should be annotated with `@RobolectricTest` annotation.
+
 
 ### Compilation test
 
@@ -368,6 +366,7 @@ class MyTest : FreeSpec() {
 
 ```
 
+
 ### No System Out listeners
 
 Maybe you want to guarantee that you didn't leave any debug messages around, or that you're always using a Logger in your logging.
@@ -378,6 +377,7 @@ For that, Kotest provides you with `NoSystemOutListener` and `NoSystemErrListene
     // In Project or in Spec
     override fun listeners() = listOf(NoSystemOutListener, NoSystemErrListener)
 ```
+
 
 ### Locale/Timezone listeners
 
@@ -405,6 +405,7 @@ And with the listeners
   )
 
 ```
+
 
 ### Current instant listeners
 
@@ -439,8 +440,6 @@ Or, with a listener for all the tests:
 ```
 
 
-
-
 ### MockServer
 
 Kotest provides an extension for integration with the [MockServer](https://www.mock-server.com) library through the `kotest-extensions-mockserver` module.
@@ -449,8 +448,6 @@ MockServer is described as an in process server that returns specific responses 
 When MockServer receives a request it matches that request against the configured expectations. If a match is found it returns that response, otherwise a 404 is returned.
 
 Read integration instructions [here](mockserver.md).
-
-
 
 
 ### TestContainers
@@ -488,13 +485,9 @@ which start's the container before running any test in spec and stop's that afte
 used by all tests in spec class.
 
 
-
-
-
 ### Allure
 
 [Allure](http://allure.qatools.ru) is an open-source framework designed to generate detailed and interactive test reports.
 It works by collecting test data as tests are executed and then compiling that into a final HTML report.
 
 Kotest provides an extenstion for Allure and full integration instructions are [here](allure.md).
-
