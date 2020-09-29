@@ -1,6 +1,6 @@
 Json Matchers
 =============
-
+Matchers for JSON are provided by the `kotest-assertions-json` module.
 
 
 | JSON | For convenience, JSONs are simply strings |
