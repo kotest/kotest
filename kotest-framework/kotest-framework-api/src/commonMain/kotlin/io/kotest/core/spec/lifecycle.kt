@@ -68,16 +68,15 @@ suspend fun TestCase.invokeAllBeforeTestCallbacks(): Try<TestCase> =
    }.fold({
       Try.Failure(it)
    }, { listeners ->
-      Try {
-         listeners.forEach {
+      listeners.map {
+         Try {
             if (type == TestType.Container) it.beforeContainer(this)
             if (type == TestType.Test) it.beforeEach(this)
             it.beforeAny(this)
             it.beforeTest(this)
+            this
          }
-
-         this
-      }
+      }.find { it.isFailure() } ?: Try { this }
    })
 
 /**
