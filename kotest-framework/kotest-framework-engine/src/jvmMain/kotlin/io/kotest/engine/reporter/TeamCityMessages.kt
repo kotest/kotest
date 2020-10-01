@@ -40,6 +40,9 @@ class TeamCityMessages(prefix: String?, command: String) {
    // sets a unique parsable id for this test
    fun id(value: String): TeamCityMessages = addAttribute(ATTRIBUTE_ID, value)
 
+   // adds a test-type flag to the message, indicating if this event is for a spec, container or test
+   fun testType(value: String): TeamCityMessages = addAttribute(ATTRIBUTE_TEST_TYPE, value)
+
    fun duration(durationInMillis: Long): TeamCityMessages = try {
       addAttribute(ATTRIBUTE_DURATION, durationInMillis.toString())
    } catch (e: IncompatibleClassChangeError) {
@@ -90,6 +93,7 @@ class TeamCityMessages(prefix: String?, command: String) {
       private const val ATTRIBUTE_MESSAGE = "message"
       private const val ATTRIBUTE_PARENT_ID = "parent_id"
       private const val ATTRIBUTE_ID = "id"
+      private const val ATTRIBUTE_TEST_TYPE = "test_type"
 
       fun testSuiteStarted(prefix: String?, name: String): TeamCityMessages {
          return TeamCityMessages(prefix, TEST_SUITE_STARTED).addAttribute(TEST_NAME, name)

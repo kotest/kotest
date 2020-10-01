@@ -47,8 +47,9 @@ class TeamCityConsoleReporter(private val prefix: String? = null) : Reporter {
       println(
          TeamCityMessages
             .testSuiteStarted(prefix, kclass.toDescription().name.displayName)
-            .id(kclass.toDescription().id.value)
             .locationHint(locationHint(kclass))
+            .id(kclass.toDescription().id.value)
+            .testType("spec")
       )
    }
 
@@ -60,6 +61,7 @@ class TeamCityConsoleReporter(private val prefix: String? = null) : Reporter {
             TeamCityMessages
                .testSuiteFinished(prefix, desc.name.displayName)
                .id(desc.id.value)
+               .testType("spec")
          )
       } else {
          errors = true
@@ -68,6 +70,7 @@ class TeamCityConsoleReporter(private val prefix: String? = null) : Reporter {
             TeamCityMessages
                .testSuiteFinished(prefix, desc.name.displayName)
                .id(desc.id.value)
+               .testType("Spec")
          )
       }
    }
@@ -81,6 +84,7 @@ class TeamCityConsoleReporter(private val prefix: String? = null) : Reporter {
                .id(testCase.description.id.value)
                .parent(testCase.description.parent.id.value)
                .locationHint(locationHint(testCase))
+               .testType(testCase.type.name)
          )
       } else {
          println()
@@ -90,6 +94,7 @@ class TeamCityConsoleReporter(private val prefix: String? = null) : Reporter {
                .id(testCase.description.id.value)
                .parent(testCase.description.parent.id.value)
                .locationHint(locationHint(testCase))
+               .testType(testCase.type.name)
          )
       }
    }
@@ -121,6 +126,7 @@ class TeamCityConsoleReporter(private val prefix: String? = null) : Reporter {
                         .id(desc.id.value)
                         .parent(testCase.description.parent.id.value)
                         .duration(result.duration)
+                        .testType(testCase.type.name)
                   )
                }
                TestType.Test -> {
@@ -132,6 +138,7 @@ class TeamCityConsoleReporter(private val prefix: String? = null) : Reporter {
                         .id(desc.id.value)
                         .parent(testCase.description.parent.id.value)
                         .duration(result.duration)
+                        .testType(testCase.type.name)
                   )
                }
             }
@@ -143,12 +150,14 @@ class TeamCityConsoleReporter(private val prefix: String? = null) : Reporter {
                      .testSuiteFinished(prefix, desc.name.displayName)
                      .id(desc.id.value)
                      .parent(testCase.description.parent.id.value)
+                     .testType(testCase.type.name)
                TestType.Test ->
                   TeamCityMessages
                      .testIgnored(prefix, desc.name.displayName)
                      .id(desc.id.value)
                      .parent(testCase.description.parent.id.value)
                      .message(result.reason ?: "No reason")
+                     .testType(testCase.type.name)
             }
             println(msg)
          }
@@ -160,12 +169,14 @@ class TeamCityConsoleReporter(private val prefix: String? = null) : Reporter {
                      .id(desc.id.value)
                      .parent(testCase.description.parent.id.value)
                      .duration(result.duration)
+                     .testType(testCase.type.name)
                TestType.Test ->
                   TeamCityMessages
                      .testFinished(prefix, desc.name.displayName)
                      .id(desc.id.value)
                      .parent(testCase.description.parent.id.value)
                      .duration(result.duration)
+                     .testType(testCase.type.name)
             }
             println(msg)
          }
