@@ -81,9 +81,10 @@ class Execute : CliktCommand(name = "Kotest Launcher", treatUnknownOptionsAsArgs
    private fun createReporter(): Reporter {
       return try {
 
-         // for backwards compatibility, we support "teamcity" as a special value
+         // for backwards compatibility, we support "teamcity" and "taycan" as special values
          val reporter = when (reporterClass ?: writerClass) {
             "teamcity" -> TeamCityConsoleReporter()
+            "taycan" -> TaycanConsoleReporter()
             else -> Class.forName(reporterClass ?: writerClass).getDeclaredConstructor().newInstance() as Reporter
          }
 
