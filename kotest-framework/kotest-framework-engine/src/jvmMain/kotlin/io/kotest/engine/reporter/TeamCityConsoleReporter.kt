@@ -45,7 +45,9 @@ class TeamCityConsoleReporter(private val prefix: String? = null) : Reporter {
    override fun specStarted(kclass: KClass<out Spec>) {
       println()
       println(
-         TeamCityMessages.testSuiteStarted(prefix, kclass.toDescription().name.displayName)
+         TeamCityMessages
+            .testSuiteStarted(prefix, kclass.toDescription().name.displayName)
+            .id(kclass.toDescription().id.value)
             .locationHint(locationHint(kclass))
       )
    }
@@ -54,11 +56,19 @@ class TeamCityConsoleReporter(private val prefix: String? = null) : Reporter {
       println()
       val desc = kclass.toDescription()
       if (t == null) {
-         println(TeamCityMessages.testSuiteFinished(prefix, desc.name.displayName))
+         println(
+            TeamCityMessages
+               .testSuiteFinished(prefix, desc.name.displayName)
+               .id(desc.id.value)
+         )
       } else {
          errors = true
          insertDummyFailure(desc, t)
-         println(TeamCityMessages.testSuiteFinished(prefix, desc.name.displayName))
+         println(
+            TeamCityMessages
+               .testSuiteFinished(prefix, desc.name.displayName)
+               .id(desc.id.value)
+         )
       }
    }
 
@@ -66,13 +76,19 @@ class TeamCityConsoleReporter(private val prefix: String? = null) : Reporter {
       if (testCase.type == TestType.Container) {
          println()
          println(
-            TeamCityMessages.testSuiteStarted(prefix, testCase.description.name.displayName)
+            TeamCityMessages
+               .testSuiteStarted(prefix, testCase.description.name.displayName)
+               .id(testCase.description.id.value)
+               .parent(testCase.description.parent.id.value)
                .locationHint(locationHint(testCase))
          )
       } else {
          println()
          println(
-            TeamCityMessages.testStarted(prefix, testCase.description.name.displayName)
+            TeamCityMessages
+               .testStarted(prefix, testCase.description.name.displayName)
+               .id(testCase.description.id.value)
+               .parent(testCase.description.parent.id.value)
                .locationHint(locationHint(testCase))
          )
       }
@@ -100,15 +116,21 @@ class TeamCityConsoleReporter(private val prefix: String? = null) : Reporter {
                TestType.Container -> {
                   insertDummyFailure(desc, result.error)
                   println(
-                     TeamCityMessages.testSuiteFinished(prefix, desc.name.displayName)
+                     TeamCityMessages
+                        .testSuiteFinished(prefix, desc.name.displayName)
+                        .id(desc.id.value)
+                        .parent(testCase.description.parent.id.value)
                         .duration(result.duration)
                   )
                }
                TestType.Test -> {
                   //result.error?.apply { printStackTrace(this) }
                   println(
-                     TeamCityMessages.testFailed(prefix, desc.name.displayName)
+                     TeamCityMessages
+                        .testFailed(prefix, desc.name.displayName)
                         .withException(result.error)
+                        .id(desc.id.value)
+                        .parent(testCase.description.parent.id.value)
                         .duration(result.duration)
                   )
                }
@@ -117,9 +139,15 @@ class TeamCityConsoleReporter(private val prefix: String? = null) : Reporter {
          TestStatus.Ignored -> {
             val msg = when (testCase.type) {
                TestType.Container ->
-                  TeamCityMessages.testSuiteFinished(prefix, desc.name.displayName)
+                  TeamCityMessages
+                     .testSuiteFinished(prefix, desc.name.displayName)
+                     .id(desc.id.value)
+                     .parent(testCase.description.parent.id.value)
                TestType.Test ->
-                  TeamCityMessages.testIgnored(prefix, desc.name.displayName)
+                  TeamCityMessages
+                     .testIgnored(prefix, desc.name.displayName)
+                     .id(desc.id.value)
+                     .parent(testCase.description.parent.id.value)
                      .message(result.reason ?: "No reason")
             }
             println(msg)
@@ -127,10 +155,16 @@ class TeamCityConsoleReporter(private val prefix: String? = null) : Reporter {
          TestStatus.Success -> {
             val msg = when (testCase.type) {
                TestType.Container ->
-                  TeamCityMessages.testSuiteFinished(prefix, desc.name.displayName)
+                  TeamCityMessages
+                     .testSuiteFinished(prefix, desc.name.displayName)
+                     .id(desc.id.value)
+                     .parent(testCase.description.parent.id.value)
                      .duration(result.duration)
                TestType.Test ->
-                  TeamCityMessages.testFinished(prefix, desc.name.displayName)
+                  TeamCityMessages
+                     .testFinished(prefix, desc.name.displayName)
+                     .id(desc.id.value)
+                     .parent(testCase.description.parent.id.value)
                      .duration(result.duration)
             }
             println(msg)

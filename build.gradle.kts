@@ -18,7 +18,6 @@ plugins {
    signing
    id("com.adarshr.test-logger") version Libs.adarshrTestLoggerVersion
    id("org.jetbrains.dokka") version Libs.dokkaVersion
-   id("io.kotest") version Libs.kotestGradlePlugin
 
    // To get versions report, execute:
    // Win: .\gradlew.bat dependencyUpdates -Drevision=release
@@ -50,12 +49,14 @@ tasks {
 
 allprojects {
 
+//   apply(plugin = "io.kotest")
+
    repositories {
       mavenCentral()
       jcenter()
       google()
-      maven("https://dl.bintray.com/kotlin/kotlin-eap")
       maven("https://kotlin.bintray.com/kotlinx")
+      maven("https://dl.bintray.com/kotlin/kotlin-eap")
    }
 
    group = "io.kotest"

@@ -34,6 +34,12 @@ class TeamCityMessages(prefix: String?, command: String) {
    fun expected(value: String): TeamCityMessages = addAttribute("expected", value.trim())
    fun locationHint(value: String): TeamCityMessages = addAttribute("locationHint", value)
 
+   // sets the test's parents id
+   fun parent(value: String): TeamCityMessages = addAttribute(ATTRIBUTE_PARENT_ID, value)
+
+   // sets a unique parsable id for this test
+   fun id(value: String): TeamCityMessages = addAttribute(ATTRIBUTE_ID, value)
+
    fun duration(durationInMillis: Long): TeamCityMessages = try {
       addAttribute(ATTRIBUTE_DURATION, durationInMillis.toString())
    } catch (e: IncompatibleClassChangeError) {
@@ -82,6 +88,8 @@ class TeamCityMessages(prefix: String?, command: String) {
       private const val ATTRIBUTE_TYPE = "type"
       private const val ATTRIBUTE_DETAILS = "details"
       private const val ATTRIBUTE_MESSAGE = "message"
+      private const val ATTRIBUTE_PARENT_ID = "parent_id"
+      private const val ATTRIBUTE_ID = "id"
 
       fun testSuiteStarted(prefix: String?, name: String): TeamCityMessages {
          return TeamCityMessages(prefix, TEST_SUITE_STARTED).addAttribute(TEST_NAME, name)
