@@ -1,5 +1,6 @@
 package io.kotest.engine.reporter
 
+import io.kotest.core.test.TestStatus
 import java.io.PrintWriter
 import java.io.StringWriter
 
@@ -33,6 +34,8 @@ class TeamCityMessages(prefix: String?, command: String) {
    fun actual(value: String): TeamCityMessages = addAttribute("actual", value.trim())
    fun expected(value: String): TeamCityMessages = addAttribute("expected", value.trim())
    fun locationHint(value: String): TeamCityMessages = addAttribute("locationHint", value)
+
+   fun resultStatus(value: TestStatus): TeamCityMessages = addAttribute(ATTRIBUTE_RESULT_STATUS, value.name)
 
    // sets the test's parents id
    fun parent(value: String): TeamCityMessages = addAttribute(ATTRIBUTE_PARENT_ID, value)
@@ -94,6 +97,7 @@ class TeamCityMessages(prefix: String?, command: String) {
       private const val ATTRIBUTE_PARENT_ID = "parent_id"
       private const val ATTRIBUTE_ID = "id"
       private const val ATTRIBUTE_TEST_TYPE = "test_type"
+      private const val ATTRIBUTE_RESULT_STATUS = "result_status"
 
       fun testSuiteStarted(prefix: String?, name: String): TeamCityMessages {
          return TeamCityMessages(prefix, TEST_SUITE_STARTED).addAttribute(TEST_NAME, name)

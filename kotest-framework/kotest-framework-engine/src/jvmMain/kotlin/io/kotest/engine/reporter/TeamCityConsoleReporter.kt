@@ -62,6 +62,7 @@ class TeamCityConsoleReporter(private val prefix: String? = null) : Reporter {
                .testSuiteFinished(prefix, desc.name.displayName)
                .id(desc.id.value)
                .testType("spec")
+               .resultStatus(TestStatus.Success)
          )
       } else {
          errors = true
@@ -71,6 +72,7 @@ class TeamCityConsoleReporter(private val prefix: String? = null) : Reporter {
                .testSuiteFinished(prefix, desc.name.displayName)
                .id(desc.id.value)
                .testType("Spec")
+               .resultStatus(TestStatus.Failure)
          )
       }
    }
@@ -127,10 +129,10 @@ class TeamCityConsoleReporter(private val prefix: String? = null) : Reporter {
                         .parent(testCase.description.parent.id.value)
                         .duration(result.duration)
                         .testType(testCase.type.name)
+                        .resultStatus(result.status)
                   )
                }
                TestType.Test -> {
-                  //result.error?.apply { printStackTrace(this) }
                   println(
                      TeamCityMessages
                         .testFailed(prefix, desc.name.displayName)
@@ -139,6 +141,7 @@ class TeamCityConsoleReporter(private val prefix: String? = null) : Reporter {
                         .parent(testCase.description.parent.id.value)
                         .duration(result.duration)
                         .testType(testCase.type.name)
+                        .resultStatus(result.status)
                   )
                }
             }
@@ -151,6 +154,7 @@ class TeamCityConsoleReporter(private val prefix: String? = null) : Reporter {
                      .id(desc.id.value)
                      .parent(testCase.description.parent.id.value)
                      .testType(testCase.type.name)
+                     .resultStatus(result.status)
                TestType.Test ->
                   TeamCityMessages
                      .testIgnored(prefix, desc.name.displayName)
@@ -158,6 +162,7 @@ class TeamCityConsoleReporter(private val prefix: String? = null) : Reporter {
                      .parent(testCase.description.parent.id.value)
                      .message(result.reason ?: "No reason")
                      .testType(testCase.type.name)
+                     .resultStatus(result.status)
             }
             println(msg)
          }
@@ -170,6 +175,7 @@ class TeamCityConsoleReporter(private val prefix: String? = null) : Reporter {
                      .parent(testCase.description.parent.id.value)
                      .duration(result.duration)
                      .testType(testCase.type.name)
+                     .resultStatus(result.status)
                TestType.Test ->
                   TeamCityMessages
                      .testFinished(prefix, desc.name.displayName)
@@ -177,6 +183,7 @@ class TeamCityConsoleReporter(private val prefix: String? = null) : Reporter {
                      .parent(testCase.description.parent.id.value)
                      .duration(result.duration)
                      .testType(testCase.type.name)
+                     .resultStatus(result.status)
             }
             println(msg)
          }
