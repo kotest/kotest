@@ -2,6 +2,8 @@
 
 package io.kotest.core.test
 
+import io.kotest.core.internal.KotestEngineSystemProperties
+import io.kotest.mpp.sysprop
 import kotlin.js.JsName
 import kotlin.reflect.KClass
 
@@ -101,7 +103,13 @@ sealed class Description {
    /**
     * Returns the name of this description formatted for display.
     */
-   fun displayName() = name.displayName
+   fun displayName(): String {
+      return if (sysprop(KotestEngineSystemProperties.allowMultilineTestName, "FALSE").toUpperCase() == "TRUE") {
+         val spaceCharacter = " "
+         val emptyCharacter = ""
+         name.displayName.split(spaceCharacter).filterNot { it == emptyCharacter }.joinToString(spaceCharacter)
+      } else name.displayName
+   }
 
    /**
     * Returns a parsable path to the test including the spec name.
@@ -128,7 +136,7 @@ sealed class Description {
    fun displayPath(): DisplayPath = DisplayPath(names().joinToString(" ") { it.displayName })
 
    /**
-    * Returns a parseable consistent identifier for this description including the spec name.
+    * Returns a parsable consistent identifier for this description including the spec name.
     */
    @Deprecated("use the `id` val. Will be removed in 4.4")
    fun id(): TestId = id
@@ -170,7 +178,7 @@ sealed class Description {
    fun isDescendentOf(description: Description): Boolean = description.isOnPath(this)
 
    /**
-    * Returns true if this instance is on the path to the given descripton. That is, if this
+    * Returns true if this instance is on the path to the given description. That is, if this
     * instance is either an ancestor of, of the same as, the given description.
     * Ignores test prefixes when comparing.
     */
