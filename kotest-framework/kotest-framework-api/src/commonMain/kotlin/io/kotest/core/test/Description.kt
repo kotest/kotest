@@ -103,13 +103,7 @@ sealed class Description {
    /**
     * Returns the name of this description formatted for display.
     */
-   fun displayName(): String {
-      return if (sysprop(KotestEngineSystemProperties.allowMultilineTestName, "FALSE").toUpperCase() == "TRUE") {
-         val spaceCharacter = " "
-         val emptyCharacter = ""
-         name.displayName.split(spaceCharacter).filterNot { it == emptyCharacter }.joinToString(spaceCharacter)
-      } else name.displayName
-   }
+   fun displayName() = name.displayName
 
    /**
     * Returns a parsable path to the test including the spec name.
