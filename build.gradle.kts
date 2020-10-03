@@ -28,17 +28,17 @@ val plugins = listOf(
    ),
    plugin.PluginDescriptor(
       "201.6487",
-      "201.*",
+      "202.*",
       "IC-2020.1",
       "IC-2020.1",
       listOf("java", "org.jetbrains.kotlin:1.3.72-release-IJ2020.1-5")
    ),
    plugin.PluginDescriptor(
-      "202.6397.94",
-      "202.*",
+      "202.1",
+      "203.*",
       "IC-2020.2",
       "IC-2020.2",
-      listOf("java", "org.jetbrains.kotlin:1.3.72-release-IJ2020.1-5")
+      listOf("java", "org.jetbrains.kotlin:1.4.10-release-IJ2020.2-1")
    )
 //   plugin.PluginDescriptor(
 //      "193.5233.102",
