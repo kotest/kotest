@@ -7,6 +7,7 @@ import io.kotest.core.test.EnabledIf
 import io.kotest.core.test.TestContext
 import io.kotest.core.test.TestType
 import io.kotest.core.test.deriveTestConfig
+import io.kotest.core.test.TestCaseSeverityLevel
 import kotlin.time.Duration
 import kotlin.time.ExperimentalTime
 
@@ -30,6 +31,7 @@ class RootTestWithConfigBuilder(
       extensions: List<TestCaseExtension>? = null,
       enabledIf: EnabledIf? = null,
       invocationTimeout: Duration? = null,
+      severity: TestCaseSeverityLevel? = null,
       test: suspend TestContext.() -> Unit
    ) {
       DslState.state = null
@@ -41,7 +43,8 @@ class RootTestWithConfigBuilder(
          invocationTimeout,
          enabledIf,
          invocations,
-         threads
+         threads,
+         severity
       )
       registration.addTest(name, xdisabled, derivedConfig, TestType.Test, test)
    }

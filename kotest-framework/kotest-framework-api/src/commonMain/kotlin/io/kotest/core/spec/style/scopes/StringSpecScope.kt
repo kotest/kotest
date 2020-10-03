@@ -3,6 +3,7 @@ package io.kotest.core.spec.style.scopes
 import io.kotest.core.Tag
 import io.kotest.core.extensions.TestCaseExtension
 import io.kotest.core.test.EnabledIf
+import io.kotest.core.test.TestCaseSeverityLevel
 import io.kotest.core.test.TestContext
 import io.kotest.core.test.createTestName
 import kotlin.time.Duration
@@ -30,6 +31,7 @@ interface StringSpecScope : RootScope {
       extensions: List<TestCaseExtension>? = null,
       enabledIf: EnabledIf? = null,
       invocationTimeout: Duration? = null,
+      severity: TestCaseSeverityLevel? = null,
       test: suspend TestContext.() -> Unit,
    ) = RootTestWithConfigBuilder(createTestName(null, this, false), registration(), false).config(
       enabled,
@@ -40,6 +42,7 @@ interface StringSpecScope : RootScope {
       extensions,
       enabledIf,
       invocationTimeout,
+      severity,
       test
    )
 

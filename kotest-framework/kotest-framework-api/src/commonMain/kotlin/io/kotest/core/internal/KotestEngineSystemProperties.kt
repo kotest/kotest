@@ -56,4 +56,9 @@ object KotestEngineSystemProperties {
    const val disableAutoScanClassPathScanning = "kotest.framework.classpath.scanning.autoscan.disable"
 
    const val allowMultilineTestName = "kotest.framework.testname.multiline"
+
+   /**
+   *  If set -> filter testCases by this severity level and higher, else running all
+   */
+   const val severityPrefix = "kotest.framework.test.severity"
 }

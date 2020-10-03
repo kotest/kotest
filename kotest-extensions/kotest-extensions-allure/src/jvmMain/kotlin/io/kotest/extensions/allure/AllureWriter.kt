@@ -13,6 +13,7 @@ import io.qameta.allure.Issue
 import io.qameta.allure.Owner
 import io.qameta.allure.Severity
 import io.qameta.allure.Story
+import io.qameta.allure.SeverityLevel
 import io.qameta.allure.model.Label
 import io.qameta.allure.model.Status
 import io.qameta.allure.model.StepResult
@@ -54,9 +55,9 @@ class AllureWriter {
          testCase.owner(),
          ResultsUtils.createPackageLabel(testCase.spec::class.java.`package`.name),
          ResultsUtils.createSuiteLabel(testCase.description.spec().displayName()),
-         testCase.severity(),
+         testCase.config.severity?.let { ResultsUtils.createSeverityLabel(it.name.convertToSeverity()) } ?: testCase.severity(),
          testCase.story(),
-         ResultsUtils.createThreadLabel(),
+         ResultsUtils.createThreadLabel()
       )
 
       val links = listOfNotNull(testCase.issue())
@@ -121,3 +122,12 @@ fun TestCase.story(): Label? = this.spec::class.findAnnotation<Story>()?.let { R
 fun TestCase.owner(): Label? = this.spec::class.findAnnotation<Owner>()?.let { ResultsUtils.createOwnerLabel(it.value) }
 fun TestCase.issue() = spec::class.findAnnotation<Issue>()?.let { ResultsUtils.createIssueLink(it.value) }
 fun TestCase.description() = spec::class.findAnnotation<io.qameta.allure.Description>()?.value
+
+fun String.convertToSeverity(): SeverityLevel? = when (this) {
+   "BLOCKER" -> SeverityLevel.BLOCKER
+   "CRITICAL" -> SeverityLevel.CRITICAL
+   "NORMAL" -> SeverityLevel.NORMAL
+   "MINOR" -> SeverityLevel.MINOR
+   "TRIVIAL" -> SeverityLevel.TRIVIAL
+   else -> null
+}
