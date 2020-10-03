@@ -1,6 +1,8 @@
 package io.kotest.core.test
 
 import io.kotest.core.config.configuration
+import io.kotest.core.internal.KotestEngineSystemProperties
+import io.kotest.mpp.sysprop
 
 /**
  * An ADT that models the name of a [Description].
@@ -78,7 +80,11 @@ fun createTestName(
    includeAffixesInDisplayName: Boolean,
 ): DescriptionName.TestName {
 
-   val trimmedName = name.replace("\n", "").trim()
+   val trimmedName = if (sysprop(KotestEngineSystemProperties.allowMultilineTestName, "FALSE").toUpperCase() == "TRUE") {
+      name.removeAllExtraWhitespaces()
+   } else {
+      name.removeNewLineCharacter()
+   }
 
    val (focus, bang, croppedName) = when {
       trimmedName.startsWith("!") -> Triple(first = false, second = true, third = trimmedName.drop(1).trim())
@@ -112,3 +118,6 @@ fun createTestName(
 
 private fun String.uncapitalize() =
    this[0].toLowerCase() + substring(1 until this.length)
+
+private fun String.removeAllExtraWhitespaces() = this.split(Regex("\\s")).filterNot { it == "" }.joinToString(" ")
+private fun String.removeNewLineCharacter() = this.replace("\n", "").trim()
