@@ -54,6 +54,7 @@ private fun AbstractProjectConfig.toDetectedConfig(): DetectedProjectConfig {
       invocationTimeout = invocationTimeout.toOption(),
       testCaseConfig = defaultTestCaseConfig.toOption(),
       includeTestScopeAffixes = includeTestScopePrefixes.toOption(),
-      testNameCase = testNameCase.toOption()
+      testNameCase = testNameCase.toOption(),
+      testNameRemoveWhitespace = testNameRemoveWhitespace.toOption()
    )
 }

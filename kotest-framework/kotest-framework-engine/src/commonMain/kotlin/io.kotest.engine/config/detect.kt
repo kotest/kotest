@@ -44,7 +44,8 @@ data class DetectedProjectConfig(
    val invocationTimeout: Option<Long> = Option.None,
    val testCaseConfig: Option<TestCaseConfig> = Option.None,
    val includeTestScopeAffixes: Option<Boolean> = Option.None,
-   val testNameCase: Option<TestNameCase> = Option.None
+   val testNameCase: Option<TestNameCase> = Option.None,
+   val testNameRemoveWhitespace:Option<Boolean> = Option.None
 )
 
 fun DetectedProjectConfig.merge(other: DetectedProjectConfig): DetectedProjectConfig {
@@ -68,6 +69,7 @@ fun DetectedProjectConfig.merge(other: DetectedProjectConfig): DetectedProjectCo
       testCaseConfig = this.testCaseConfig.orElse(other.testCaseConfig),
       includeTestScopeAffixes = this.includeTestScopeAffixes.orElse(other.includeTestScopeAffixes),
       testNameCase = this.testNameCase.orElse(other.testNameCase),
+      testNameRemoveWhitespace = this.testNameRemoveWhitespace.orElse(other.testNameRemoveWhitespace)
    )
 }
 
@@ -94,4 +96,5 @@ fun DetectedProjectConfig.apply(configuration: Configuration) {
    testCaseConfig.forEach { configuration.defaultTestConfig = it }
    includeTestScopeAffixes.forEach { configuration.includeTestScopeAffixes = it }
    testNameCase.forEach { configuration.testNameCase = it }
+   testNameRemoveWhitespace.forEach { configuration.removeTestNameWhitespace = it }
 }

@@ -163,6 +163,8 @@ class Configuration {
     */
    var specExecutionOrder: SpecExecutionOrder = Defaults.specExecutionOrder
 
+   var removeTestNameWhitespace: Boolean = false
+
    /**
     * Returns all globally registered [Listener]s.
     */

@@ -184,6 +184,8 @@ abstract class AbstractProjectConfig {
     */
    open val testNameCase: TestNameCase? = null
 
+   open val testNameRemoveWhitespace: Boolean? = null
+
    /**
     * Executed before the first test of the project, but after the
     * [ProjectListener.beforeProject] methods.

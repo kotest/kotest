@@ -21,6 +21,9 @@ internal fun timeout(): Option<Long> = sysprop(KotestEngineSystemProperties.time
 internal fun invocationTimeout(): Option<Long> =
    sysprop(KotestEngineSystemProperties.invocationTimeout).toOption().map { it.toLong() }
 
+internal fun allowMultilineTestName(): Option<Boolean> =
+   sysprop(KotestEngineSystemProperties.allowMultilineTestName).toOption().map { it.toUpperCase() == "TRUE" }
+
 /**
  * Returns a [DetectedProjectConfig] which is built from system properties where supported.
  */
@@ -30,6 +33,7 @@ internal fun loadConfigFromSystemProperties(): DetectedProjectConfig {
       assertionMode = assertionMode(),
       parallelism = parallelism(),
       timeout = timeout(),
-      invocationTimeout = invocationTimeout()
+      invocationTimeout = invocationTimeout(),
+      testNameRemoveWhitespace = allowMultilineTestName()
    )
 }
