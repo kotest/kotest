@@ -6,10 +6,36 @@ import io.kotest.assertions.failure
 import io.kotest.assertions.show.show
 
 object IterableEq : Eq<Iterable<*>> {
+
+   /**
+    * Returns true if this [Iterable] is an iterable that is supported by this typeclass.
+    *
+    * There are many third party libs that use Iterable as a base type (Jackson's Json Node, JDK's Path type, to
+    * name but two) and we cannot safely compare these simply using the IterableEq.
+    *
+    * Therefore only explicit types are accepted by our IterableEq.
+    */
+   fun isValidIterable(it: Any): Boolean {
+      return when (it) {
+         is List<*>, is Set<*>, is Array<*>, is Collection<*> -> true
+         else -> false
+      }
+   }
+
+   fun asIterable(it: Any): Iterable<*> {
+      return when (it) {
+         is Array<*> -> it.asList()
+         is List<*> -> it
+         is Set<*> -> it
+         is Collection<*> -> it
+         else -> error("Cannot convert $it to Iterable<*>")
+      }
+   }
+
    override fun equals(actual: Iterable<*>, expected: Iterable<*>): Throwable? {
       return when {
          actual is Set<*> && expected is Set<*> -> checkSetEquality(actual, expected)
-         else -> checkIterableEquality(actual, expected)
+         else -> checkEquality(actual, expected)
       }
    }
 
@@ -36,7 +62,7 @@ object IterableEq : Eq<Iterable<*>> {
       }
    }
 
-   private fun checkIterableEquality(actual: Iterable<*>, expected: Iterable<*>): Throwable? {
+   private fun checkEquality(actual: Iterable<*>, expected: Iterable<*>): Throwable? {
       var index = 0
       val iter1 = actual.iterator()
       val iter2 = expected.iterator()
