@@ -7,8 +7,7 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiWhiteSpace
 import com.intellij.psi.impl.source.tree.LeafPsiElement
 import io.kotest.plugin.intellij.psi.enclosingKtClass
-import io.kotest.plugin.intellij.psi.enclosingClassClassOrObjectToken
-import io.kotest.plugin.intellij.psi.isDirectSubclassOfSpec
+import io.kotest.plugin.intellij.psi.ktclassIfCanonicalSpecLeaf
 import io.kotest.plugin.intellij.psi.specStyle
 import io.kotest.plugin.intellij.Test
 import org.jetbrains.kotlin.psi.KtAnnotationEntry
@@ -18,6 +17,7 @@ import org.jetbrains.kotlin.psi.KtImportDirective
 import org.jetbrains.kotlin.psi.KtImportList
 import org.jetbrains.kotlin.psi.KtPackageDirective
 import com.intellij.util.Function
+import io.kotest.plugin.intellij.psi.isDirectSubclassOfSpec
 
 /**
  * Given an element, returns an [RunLineMarkerContributor.Info] if the elements line should have a gutter icon added.
@@ -40,8 +40,12 @@ class KotestRunLineMarkerContributor : RunLineMarkerContributor() {
       }
    }
 
-   private fun markerForSpec(element: LeafPsiElement): Info? {
-      val ktclass = element.enclosingClassClassOrObjectToken() ?: return null
+   /**
+    * Returns a market for a spec if this element is the leaf element whose immediate
+    * parent is the KtClass or KtObject.
+    */
+   private fun markerForSpec(leaf: LeafPsiElement): Info? {
+      val ktclass = leaf.ktclassIfCanonicalSpecLeaf() ?: return null
       return if (ktclass.isDirectSubclassOfSpec()) icon(ktclass) else null
    }
 
@@ -54,8 +58,8 @@ class KotestRunLineMarkerContributor : RunLineMarkerContributor() {
 
    private fun icon(ktclass: KtClassOrObject): Info {
       return Info(
-         AllIcons.RunConfigurations.TestState.Run_run,
-         Function<PsiElement, String> { "Run ${ktclass.fqName!!.shortName()}" },
+         AllIcons.RunConfigurations.TestState.Run,
+         Function<PsiElement, String> { "Run3 ${ktclass.fqName!!.shortName()}" },
          *ExecutorAction.getActions(1)
       )
    }
@@ -63,7 +67,7 @@ class KotestRunLineMarkerContributor : RunLineMarkerContributor() {
    private fun icon(test: Test): Info {
       return Info(
          AllIcons.RunConfigurations.TestState.Run,
-         Function<PsiElement, String> { "Run ${test.readableTestPath()}" },
+         Function<PsiElement, String> { "Run1 ${test.readableTestPath()}" },
          *ExecutorAction.getActions(1)
       )
    }

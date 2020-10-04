@@ -9,8 +9,8 @@ import com.intellij.psi.impl.source.tree.LeafPsiElement
 import io.kotest.plugin.intellij.KotestConfiguration
 import io.kotest.plugin.intellij.KotestConfigurationFactory
 import io.kotest.plugin.intellij.KotestConfigurationType
-import io.kotest.plugin.intellij.psi.enclosingClassClassOrObjectToken
 import io.kotest.plugin.intellij.psi.isDirectSubclassOfSpec
+import io.kotest.plugin.intellij.psi.ktclassIfCanonicalSpecLeaf
 
 /**
  * A run configuration contains the details of a particular run (in the drop down run box).
@@ -27,7 +27,7 @@ class SpecRunConfigurationProducer : LazyRunConfigurationProducer<KotestConfigur
                                               sourceElement: Ref<PsiElement>): Boolean {
       val element = sourceElement.get()
       if (element != null && element is LeafPsiElement) {
-         val ktclass = element.enclosingClassClassOrObjectToken()
+         val ktclass = element.ktclassIfCanonicalSpecLeaf()
          if (ktclass != null && ktclass.isDirectSubclassOfSpec()) {
             configuration.setSpec(ktclass)
             configuration.setModule(context.module)
@@ -44,7 +44,7 @@ class SpecRunConfigurationProducer : LazyRunConfigurationProducer<KotestConfigur
                                            context: ConfigurationContext): Boolean {
       val element = context.psiLocation
       if (element != null && element is LeafPsiElement) {
-         val ktclass = element.enclosingClassClassOrObjectToken()
+         val ktclass = element.ktclassIfCanonicalSpecLeaf()
          if (ktclass != null) {
             return configuration.getTestPath().isNullOrBlank()
                && configuration.getPackageName().isNullOrBlank()

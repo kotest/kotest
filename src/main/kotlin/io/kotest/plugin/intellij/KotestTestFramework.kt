@@ -9,12 +9,7 @@ import com.intellij.psi.PsiClass
 import com.intellij.psi.PsiElement
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.testIntegration.TestFramework
-import io.kotest.plugin.intellij.psi.isContainedInSpec
-import io.kotest.plugin.intellij.psi.isSubclassOfSpec
-import org.jetbrains.kotlin.asJava.classes.KtLightClass
-import org.jetbrains.kotlin.asJava.classes.KtUltraLightClass
 import org.jetbrains.kotlin.idea.KotlinLanguage
-import org.jetbrains.kotlin.psi.KtClass
 import org.jetbrains.kotlin.psi.KtNameReferenceExpression
 import org.jetbrains.kotlin.psi.KtNamedFunction
 import org.jetbrains.kotlin.psi.psiUtil.getChildrenOfType
@@ -37,14 +32,15 @@ class KotestTestFramework : TestFramework {
       return clazz is PsiClass && isUnderTestSources(clazz)
    }
 
+   // this always returns false, because we don't want intellij interfering with our own run producers.
    override fun isTestClass(clazz: PsiElement): Boolean {
-      val tc = when (clazz) {
-         is KtUltraLightClass -> clazz.isSubclassOfSpec()
-         is KtLightClass -> clazz.isSubclassOfSpec()
-         is KtClass -> clazz.isSubclassOfSpec()
-         else -> clazz.isContainedInSpec()
-      }
-      return tc
+      return false
+//      return when (clazz) {
+//         is KtUltraLightClass -> clazz.isSubclassOfSpec()
+//         is KtLightClass -> clazz.isSubclassOfSpec()
+//         is KtClass -> clazz.isSubclassOfSpec()
+//         else -> clazz.isContainedInSpec()
+//      }
    }
 
    override fun getName(): String = Constants.FrameworkName

@@ -15,6 +15,7 @@
 
    <depends>org.jetbrains.kotlin</depends>
    <depends>com.intellij.modules.java</depends>
+   <depends>org.jetbrains.plugins.gradle</depends>
 
    <actions>
       <action id="io.kotest.actions.NextTestAction"

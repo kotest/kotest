@@ -5,7 +5,6 @@ import com.intellij.psi.PsiFile
 import com.intellij.psi.impl.source.tree.LeafPsiElement
 import org.jetbrains.kotlin.asJava.classes.KtLightClass
 import org.jetbrains.kotlin.idea.references.mainReference
-import org.jetbrains.kotlin.lexer.KtKeywordToken
 import org.jetbrains.kotlin.name.FqName
 import org.jetbrains.kotlin.psi.KtClass
 import org.jetbrains.kotlin.psi.KtClassOrObject
@@ -15,15 +14,13 @@ import org.jetbrains.kotlin.psi.psiUtil.getChildrenOfType
 import org.jetbrains.kotlin.psi.psiUtil.getStrictParentOfType
 
 /**
- * Returns the [KtClassOrObject] if this [LeafPsiElement] has type [KtKeywordToken]
- * with the lexeme 'class' or 'object'
+ * Returns a [KtClass] if this [LeafPsiElement] is the first child of a [KtClass].
  */
-fun LeafPsiElement.enclosingClassClassOrObjectToken(): KtClass? {
-   if (elementType is KtKeywordToken && (text == "class" || text == "object")) {
-      val maybeKtClassOrObject = context
-      if (maybeKtClassOrObject is KtClass) {
+fun LeafPsiElement.ktclassIfCanonicalSpecLeaf(): KtClass? {
+   val maybeKtClassOrObject = parent
+   if (maybeKtClassOrObject is KtClass) {
+      if (parent.firstChild == this)
          return maybeKtClassOrObject
-      }
    }
    return null
 }

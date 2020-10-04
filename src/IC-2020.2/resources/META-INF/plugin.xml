@@ -15,6 +15,7 @@
 
    <depends>org.jetbrains.kotlin</depends>
    <depends>com.intellij.modules.java</depends>
+   <depends>org.jetbrains.plugins.gradle</depends>
 
    <actions>
       <action id="io.kotest.actions.NextTestAction"
@@ -80,6 +81,7 @@
       <runConfigurationProducer implementation="io.kotest.plugin.intellij.run.SpecRunConfigurationProducer"/>
       <runConfigurationProducer implementation="io.kotest.plugin.intellij.run.TestPathRunConfigurationProducer"/>
       <runConfigurationProducer implementation="io.kotest.plugin.intellij.run.PackageRunConfigurationProducer"/>
+      <runConfigurationProducer implementation="io.kotest.plugin.intellij.run.GradleSpecRunConfigurationProducer"/>
 
       <implicitUsageProvider implementation="io.kotest.plugin.intellij.implicits.SpecImplicitUsageProvider"/>
       <implicitUsageProvider implementation="io.kotest.plugin.intellij.implicits.ProjectConfigImplicitUsageProvider"/>
