@@ -63,8 +63,6 @@ kotlin {
             // needed to scan for spec classes
             api(project(Projects.Discovery))
 
-            api(Libs.JUnitJupiter.api)
-
             // used to write to the console with fancy colours!
             api(Libs.Ajalt.mordant)
          }
