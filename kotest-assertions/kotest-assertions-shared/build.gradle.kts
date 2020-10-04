@@ -61,8 +61,6 @@ kotlin {
             implementation(kotlin("reflect"))
             implementation(Libs.Coroutines.jdk8)
             implementation(Libs.Wumpz.diffutils)
-            implementation("com.univocity:univocity-parsers:2.8.4")
-            implementation(Libs.Mifmif.generex)
          }
       }
 
