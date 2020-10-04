@@ -78,7 +78,6 @@ class TestCaseExecutor(
       start: Long,
       extensions: List<TestCaseExtension>,
    ): TestResult {
-      println("Intercept context $context")
       return when {
          extensions.isEmpty() -> executeIfActive(testCase) { executeActiveTest(testCase, context, start) }
          else -> extensions.first().intercept(testCase) {
@@ -130,7 +129,6 @@ class TestCaseExecutor(
       start: Long,
    ): TestResult {
 
-      println("Executing active test with context $context")
       log("Executing active test $testCase with context $context")
       listener.testStarted(testCase)
 

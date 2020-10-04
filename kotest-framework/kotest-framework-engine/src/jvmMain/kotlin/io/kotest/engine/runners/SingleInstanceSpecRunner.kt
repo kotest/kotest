@@ -85,9 +85,7 @@ internal class SingleInstanceSpecRunner(listener: TestEngineListener) : SpecRunn
          }
       }
 
-      println("single instance coroutineContext $coroutineContext")
       return coroutineScope {
-         println("single instance coroutineContext $coroutineContext")
          spec.invokeBeforeSpec()
             .flatMap { interceptAndRun(coroutineContext) }
             .flatMap { spec.invokeAfterSpec() }
