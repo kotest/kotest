@@ -3,9 +3,13 @@ package com.sksamuel.kotest.eq
 import io.kotest.assertions.assertSoftly
 import io.kotest.assertions.eq.IterableEq
 import io.kotest.core.spec.style.FunSpec
+import io.kotest.inspectors.forAll
 import io.kotest.matchers.nulls.shouldBeNull
 import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldBe
+import io.kotest.matchers.shouldNotBe
+import java.nio.file.Paths
+import java.util.concurrent.ConcurrentLinkedQueue
 import kotlin.time.ExperimentalTime
 import kotlin.time.seconds
 
@@ -100,8 +104,35 @@ class IterableEqTest : FunSpec({
    }
 
    test("should work for empty lists") {
-      IterableEq.equals(emptyList<Int>(), listOf(1))?.message shouldBe "Element 1 expected at index 0 but there were no further elements"
+      IterableEq.equals(emptyList<Int>(), listOf(1))?.message shouldBe
+         "Element 1 expected at index 0 but there were no further elements"
       IterableEq.equals(listOf(1), emptyList<Int>())?.message shouldBe "Unexpected element at index 0: 1"
+   }
+
+   test("shouldNotBe should work for empty lists") {
+      listOf("hello") shouldNotBe emptyList<String>()
+      emptyList<String>() shouldNotBe listOf("hello")
+   }
+
+   test("IterableEq unsupported types") {
+      listOf(
+         Paths.get("foo/bar")
+      ).forAll {
+         IterableEq.isValidIterable(it) shouldBe false
+      }
+   }
+
+   test("IterableEq supported types") {
+      listOf(
+         setOf(1),
+         listOf(1),
+         java.util.ArrayList(listOf(1)),
+         java.util.HashSet(listOf(1)),
+         arrayOf(1),
+         ConcurrentLinkedQueue<Int>(),
+      ).forAll {
+         IterableEq.isValidIterable(it) shouldBe true
+      }
    }
 })
 
