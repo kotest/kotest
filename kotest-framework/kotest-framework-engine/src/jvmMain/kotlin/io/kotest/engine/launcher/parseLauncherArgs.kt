@@ -16,7 +16,7 @@ data class LauncherArgs(
    // Tag expression to control which tests are executed
    val tagExpression: String?,
    // true to output the configuration values when the Engine is created
-   val dumpconfig: Boolean
+   val dumpconfig: Boolean?
 )
 
 fun parseLauncherArgs(args: List<String>): LauncherArgs {
@@ -29,6 +29,6 @@ fun parseLauncherArgs(args: List<String>): LauncherArgs {
       // writer is for backwards compatibility
       reporter = a["reporter"] ?: a["writer"],
       tagExpression = a["tags"],
-      dumpconfig = a["dumpconfig"] ?: "true" == "true",
+      dumpconfig = a["dumpconfig"]?.toBoolean(),
    )
 }

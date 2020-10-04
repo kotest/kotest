@@ -9,7 +9,14 @@ fun main(args: Array<String>) {
    val tags = Tags(launcherArgs.tagExpression)
 
    val reporter = createReporter(launcherArgs)
-   execute(reporter, launcherArgs.packageName, launcherArgs.spec, launcherArgs.testpath, tags)
+   execute(
+      reporter,
+      launcherArgs.packageName,
+      launcherArgs.spec,
+      launcherArgs.testpath,
+      tags,
+      launcherArgs.dumpconfig ?: true
+   )
 
    // there could be threads in the background that will stop the launcher shutting down
    // for example if a test keeps a thread running

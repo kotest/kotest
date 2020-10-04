@@ -29,6 +29,7 @@ fun execute(
    specFQN: String?,
    testPath: String?,
    tags: Tags?,
+   dumpconfig: Boolean = true,
 ) {
    future {
       try {
@@ -44,7 +45,7 @@ fun execute(
             .withSpecs(specs)
             .withTags(tags)
             .withFilters(listOfNotNull(filter))
-            .withDumpConfig(true)
+            .withDumpConfig(dumpconfig)
             .launch()
 
       } catch (e: Throwable) {
