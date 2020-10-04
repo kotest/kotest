@@ -78,15 +78,23 @@ class TestCaseExecutor(
       start: Long,
       extensions: List<TestCaseExtension>,
    ): TestResult {
-      return when {
-         extensions.isEmpty() -> executeIfActive(testCase) { executeActiveTest(testCase, context, start) }
-         else -> extensions.first().intercept(testCase) {
-            // the user's intercept method is free to change the context of the coroutine
-            // to support this, we should switch the context used by the test case context
-            val newContext = context.withCoroutineContext(coroutineContext)
-            intercept(it, newContext, start, extensions.drop(1))
+
+      val innerExecute: suspend (TestCase, TestContext) -> TestResult = { tc, ctx ->
+         executeIfActive(tc) { executeActiveTest(tc, ctx, start) }
+      }
+
+      val execute = extensions.foldRight(innerExecute) { extension, execute ->
+         { testCase, context ->
+            extension.intercept(testCase) {
+               // the user's intercept method is free to change the context of the coroutine
+               // to support this, we should switch the context used by the test case context
+               val newContext = context.withCoroutineContext(coroutineContext)
+               execute(it, newContext)
+            }
          }
       }
+
+      return execute(testCase, context)
    }
 
    /**

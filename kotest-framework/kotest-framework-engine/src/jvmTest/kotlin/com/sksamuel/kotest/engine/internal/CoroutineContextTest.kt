@@ -15,7 +15,7 @@ class FooContext(val value: Any) : AbstractCoroutineContextElement(Key) {
 suspend fun foo(): Any? = coroutineContext[FooContext]?.value
 
 // the coroutine context used by a test case should inherit the context from a test case extension
-class ContextTest : FunSpec() {
+class CoroutineContextTest : FunSpec() {
    init {
       aroundTest { (testCase, execute) ->
          val fooValue = 42

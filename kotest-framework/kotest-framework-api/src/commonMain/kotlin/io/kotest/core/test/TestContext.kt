@@ -46,13 +46,20 @@ interface TestContext : CoroutineScope {
    suspend fun registerTestCase(nested: NestedTest)
 }
 
+private class TestContextWithCoroutineContext(
+   val delegate: TestContext,
+   override val coroutineContext: CoroutineContext
+) : TestContext by delegate {
+   override fun toString(): String = "TestCaseContext [$coroutineContext]"
+}
+
 /**
  * Returns a new [TestContext] which uses the given [coroutineContext] with the other methods
  * delegating to the receiver context.
  */
-internal fun TestContext.withCoroutineContext(coroutineContext: CoroutineContext) = object : TestContext {
-   override val testCase: TestCase = this@withCoroutineContext.testCase
-   override suspend fun registerTestCase(nested: NestedTest) = this@withCoroutineContext.registerTestCase(nested)
-   override val coroutineContext: CoroutineContext = coroutineContext
-   override fun toString(): String = "TestCaseContext [$coroutineContext]"
-}
+internal fun TestContext.withCoroutineContext(coroutineContext: CoroutineContext): TestContext =
+   if (this is TestContextWithCoroutineContext) {
+      TestContextWithCoroutineContext(delegate, coroutineContext)
+   } else {
+      TestContextWithCoroutineContext(this, coroutineContext)
+   }
