@@ -65,9 +65,6 @@ kotlin {
 
             api(Libs.JUnitJupiter.api)
 
-            // needed to parse the command line args
-            api(Libs.Ajalt.clikt)
-
             // used to write to the console with fancy colours!
             api(Libs.Ajalt.mordant)
          }
