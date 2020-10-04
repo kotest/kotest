@@ -3,6 +3,7 @@ package io.kotest.core.test
 import io.kotest.core.sourceRef
 import io.kotest.core.spec.KotestDsl
 import kotlinx.coroutines.CoroutineScope
+import kotlin.coroutines.CoroutineContext
 
 /**
  * A [TestContext] is used as the receiver of a closure that is associated with a [TestCase].
@@ -43,4 +44,15 @@ interface TestContext : CoroutineScope {
     * Notifies the test runner about a test in a nested scope.
     */
    suspend fun registerTestCase(nested: NestedTest)
+}
+
+/**
+ * Returns a new [TestContext] which uses the given [coroutineContext] with the other methods
+ * delegating to the receiver context.
+ */
+internal fun TestContext.withCoroutineContext(coroutineContext: CoroutineContext) = object : TestContext {
+   override val testCase: TestCase = this@withCoroutineContext.testCase
+   override suspend fun registerTestCase(nested: NestedTest) = this@withCoroutineContext.registerTestCase(nested)
+   override val coroutineContext: CoroutineContext = coroutineContext
+   override fun toString(): String = "TestCaseContext [$coroutineContext]"
 }

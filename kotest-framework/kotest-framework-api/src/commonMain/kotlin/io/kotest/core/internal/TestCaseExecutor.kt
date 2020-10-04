@@ -16,6 +16,7 @@ import io.kotest.core.test.TestStatus
 import io.kotest.core.test.TestType
 import io.kotest.core.test.resolvedInvocationTimeout
 import io.kotest.core.test.resolvedTimeout
+import io.kotest.core.test.withCoroutineContext
 import io.kotest.fp.Try
 import io.kotest.mpp.log
 import io.kotest.mpp.replay
@@ -24,6 +25,7 @@ import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.withTimeout
 import kotlin.coroutines.CoroutineContext
+import kotlin.coroutines.coroutineContext
 
 data class TimeoutException constructor(val duration: Long) : Exception("Test did not complete within ${duration}ms")
 
@@ -76,9 +78,15 @@ class TestCaseExecutor(
       start: Long,
       extensions: List<TestCaseExtension>,
    ): TestResult {
+      println("Intercept context $context")
       return when {
          extensions.isEmpty() -> executeIfActive(testCase) { executeActiveTest(testCase, context, start) }
-         else -> extensions.first().intercept(testCase) { intercept(it, context, start, extensions.drop(1)) }
+         else -> extensions.first().intercept(testCase) {
+            // the user's intercept method is free to change the context of the coroutine
+            // to support this, we should switch the context used by the test case context
+            val newContext = context.withCoroutineContext(coroutineContext)
+            intercept(it, newContext, start, extensions.drop(1))
+         }
       }
    }
 
@@ -122,7 +130,8 @@ class TestCaseExecutor(
       start: Long,
    ): TestResult {
 
-      log("Executing active test $testCase")
+      println("Executing active test with context $context")
+      log("Executing active test $testCase with context $context")
       listener.testStarted(testCase)
 
       return testCase

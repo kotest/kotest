@@ -23,6 +23,7 @@ import io.kotest.mpp.log
 import kotlinx.coroutines.coroutineScope
 import java.util.concurrent.ConcurrentHashMap
 import kotlin.coroutines.CoroutineContext
+import kotlin.coroutines.coroutineContext
 
 /**
  * Implementation of [SpecRunner] that executes all tests against the
@@ -84,7 +85,9 @@ internal class SingleInstanceSpecRunner(listener: TestEngineListener) : SpecRunn
          }
       }
 
+      println("single instance coroutineContext $coroutineContext")
       return coroutineScope {
+         println("single instance coroutineContext $coroutineContext")
          spec.invokeBeforeSpec()
             .flatMap { interceptAndRun(coroutineContext) }
             .flatMap { spec.invokeAfterSpec() }
