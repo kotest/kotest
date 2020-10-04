@@ -17,7 +17,7 @@ class ArgParseTest : FunSpec() {
 
       test("parsing args with spaces in a value mid stream") {
          val args = listOf("--reporter", "taycan", "--testname", "my test should be great", "--spec", "FooBarTest")
-         parseArgs(args) shouldBe listOf(
+         parseArgs(args) shouldBe mapOf(
             "reporter" to "taycan",
             "testname" to "my test should be great",
             "spec" to "FooBarTest",
@@ -26,7 +26,7 @@ class ArgParseTest : FunSpec() {
 
       test("parsing args with spaces in the final element") {
          val args = listOf("--reporter", "taycan", "--spec", "FooBarTest", "--testname", "my test should be great")
-         parseArgs(args) shouldBe listOf(
+         parseArgs(args) shouldBe mapOf(
             "reporter" to "taycan",
             "spec" to "FooBarTest",
             "testname" to "my test should be great",
@@ -35,7 +35,7 @@ class ArgParseTest : FunSpec() {
 
       test("parsing args with non alpha") {
          val args = listOf("--reporter", "taycan", "--spec", "FooBarTest", "--tags", "(Linux || Windows) && Hive")
-         parseArgs(args) shouldBe listOf(
+         parseArgs(args) shouldBe mapOf(
             "reporter" to "taycan",
             "spec" to "FooBarTest",
             "tags" to "(Linux || Windows) && Hive",
@@ -44,7 +44,7 @@ class ArgParseTest : FunSpec() {
 
       test("parsing args with empty value") {
          val args = listOf("--reporter", "taycan", "--spec", "FooBarTest", "--tags", "--testname", "wibble test")
-         parseArgs(args) shouldBe listOf(
+         parseArgs(args) shouldBe mapOf(
             "reporter" to "taycan",
             "spec" to "FooBarTest",
             "tags" to "",
