@@ -1,13 +1,14 @@
 package io.kotest.core.spec.style.scopes
 
+import io.kotest.core.Tag
+import io.kotest.core.extensions.TestCaseExtension
 import io.kotest.core.test.EnabledIf
 import io.kotest.core.test.TestCaseConfig
 import io.kotest.core.test.TestContext
 import io.kotest.core.test.TestType
-import io.kotest.core.Tag
-import io.kotest.core.extensions.TestCaseExtension
 import io.kotest.core.test.DescriptionName
 import io.kotest.core.test.deriveTestConfig
+import io.kotest.core.test.TestCaseSeverityLevel
 import kotlin.time.Duration
 import kotlin.time.ExperimentalTime
 
@@ -32,6 +33,7 @@ class TestWithConfigBuilder(
       extensions: List<TestCaseExtension>? = null,
       enabledIf: EnabledIf? = null,
       invocationTimeout: Duration? = null,
+      severity: TestCaseSeverityLevel? = null,
       test: suspend TestContext.() -> Unit
    ) {
       DslState.state = null
@@ -43,7 +45,8 @@ class TestWithConfigBuilder(
          invocationTimeout,
          enabledIf,
          invocations,
-         threads
+         threads,
+         severity
       )
       val activeConfig = if (xdisabled) derivedConfig.copy(enabled = false) else derivedConfig
       context.registerTestCase(name, test, activeConfig, TestType.Test)

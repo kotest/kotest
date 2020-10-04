@@ -8,6 +8,7 @@ import io.kotest.core.test.EnabledIf
 import io.kotest.core.test.TestCaseConfig
 import io.kotest.core.test.TestContext
 import io.kotest.core.test.createTestName
+import io.kotest.core.test.TestCaseSeverityLevel
 import kotlin.coroutines.CoroutineContext
 import kotlin.time.Duration
 import kotlin.time.ExperimentalTime
@@ -42,6 +43,7 @@ class WordSpecShouldScope(
       extensions: List<TestCaseExtension>? = null,
       enabledIf: EnabledIf? = null,
       invocationTimeout: Duration? = null,
+      severity: TestCaseSeverityLevel? = null,
       test: suspend TestContext.() -> Unit
    ) = TestWithConfigBuilder(
       createTestName(this),
@@ -57,6 +59,7 @@ class WordSpecShouldScope(
       extensions,
       enabledIf,
       invocationTimeout,
+      severity,
       test
    )
 

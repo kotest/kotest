@@ -11,6 +11,7 @@ import io.kotest.core.internal.tags.activeTags
 import io.kotest.core.internal.tags.allTags
 import io.kotest.core.internal.tags.isActive
 import io.kotest.core.internal.tags.parse
+import io.kotest.core.test.TestCaseSeverityLevel
 import io.kotest.mpp.log
 import io.kotest.mpp.sysprop
 
@@ -67,6 +68,14 @@ fun TestCase.isActive(): Boolean {
    val specHasFocusedTests = spec.focusTests().isNotEmpty()
    if (description.isRootTest() && !isFocused() && specHasFocusedTests) {
       log("${description.testPath()} is disabled by another test having focus")
+      return false
+   }
+
+   // if we have the severityLevel lower then in the sysprop -> we ignore this case
+   val severityEnabled = config.severity?.let {TestCaseSeverityLevel.valueOf(it.name).isEnabled()}
+      ?: TestCaseSeverityLevel.valueOf("NORMAL").isEnabled()
+   if(!severityEnabled) {
+      log("${description.testPath()} is disabled by severityLevel")
       return false
    }
 

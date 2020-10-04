@@ -32,7 +32,8 @@ data class TestCaseConfig(
    val tags: Set<Tag> = emptySet(),
    val listeners: List<TestListener> = emptyList(),
    val extensions: List<TestCaseExtension> = emptyList(),
-   val enabledIf: EnabledIf = { true }
+   val enabledIf: EnabledIf = { true },
+   val severity: TestCaseSeverityLevel? = null
 ) {
    init {
       require(invocations > 0) { "Number of invocations must be greater than 0" }
