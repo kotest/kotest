@@ -1,17 +1,24 @@
 Changelog
 =========
 
+#### 4.2.6 October 2020
 
-#### 4.2.5
+Bugfix: Fixed regression in shouldBe when using iterables/arrays #1707 #1727
+Bugfix: Fix first failure in `beforeTest` blocks #1736
+Bugfix: deprecate distinct #1730
+Bugfix: Fixed the empty allure result for tests with the failed afterTest block #1724
+Feature: Added per project listener for testcontainers #1731
 
-* Bugfix: Fixed regression in shouldBe performance when using iterables/arrays #1707
+
+#### 4.2.5 September 2020
+
 * Bugfix: Fixed performance issue when using 1000s of tests in gradle #1693
 * Feature: Added matchers for pair / triple components 1694
 * Feature: Added shouldHaveNameWithoutExtension matcher for files and paths #1696
 * Improvement: Added koin lifecycle mode #1710
 
 
-#### 4.2.4
+#### 4.2.4 September 2020
 
 * Bugfix: Test time does not scale with number of tests #1685
 * Bugfix: Added spring listener lifecycle mode #1643
@@ -20,7 +27,7 @@ Changelog
 * Improvement: SpringListener to generate meaningful method names #1591
 
 
-#### 4.2.3
+#### 4.2.3 September 2020
 
 * Bugfix: Throwables of `Error` in the engine should be reported to test engine listeners
 * Bugfix: Switched classgraph to api
@@ -38,7 +45,7 @@ Changelog
 * Docs: Update Gradle dependencies docs removing unnecessary -jvm suffix #1650
 * Docs: MockServer extension documentation #1446
 
-#### 4.2.2
+#### 4.2.2 August 2020
 
 * Bugfix: Usage of a Kotlin 1.4 only method has been removed
 * Bugfix: KotlinReflectionInternalError fixed on java enums #1611
@@ -46,11 +53,11 @@ Changelog
 * Bugfix: Tags specified via inline tags dsl were not being picked up #1642
 * Improvement: Updated output of some collection matchers to format an element per line #1380
 
-#### 4.2.1
+#### 4.2.1 August 2020
 
 * Feature: The assertion libraries are now also published for watchos, tvos, and ios in addition to the macos, windows, and linux targets previously.
 
-#### 4.2.0 - [Blog](blog/release_4.2.md)
+#### 4.2.0 August 2020 - [Blog](blog/release_4.2.md)
 
 * Feature: Kotest upgraded to use Kotlin 1.4.0 #1511
 * Feature: Allow multiple project configs to be detected and merged #1632
@@ -75,7 +82,7 @@ Changelog
 * Bugfix: Non complete junit report when using FunSpec #999
 * Breaking Change: kotest-core module has been replaced with kotest-framework-api and kotest-framework-engine. Tools authors can depend on api only. Engine should be used for JS testing. For JVM testing, continue to use kotest-runner-junit5-jvm.
 
-#### 4.1.2
+#### 4.1.2 July 2020
 
 * Bugfix: Dkotest.tags.include= only takes into account @Tags [#1536](https://github.com/kotest/kotest/issues/1536) sksamuel
 * Bugfix: Ensure exhaustive isn't build with an empty list [#1549](https://github.com/kotest/kotest/issues/1549) Cleidiano Oliveira
@@ -89,12 +96,12 @@ Changelog
 * Improvement: Restore context to describe [#1565](https://github.com/kotest/kotest/issues/1565) sksamuel
 * Breaking Change: Updates method signature of assertSoftly to take object under test as argument Ashish Kumar Joy
 
-#### 4.1.1
+#### 4.1.1 June 2020
 
 * Bugfix: Issue with describe spec and the intellij plugin fixed [#1528](https://github.com/kotest/kotest/issues/1528)
 * Bugfix: Incorrect error message with Exhaustive's when under the min iteration count [#1526](https://github.com/kotest/kotest/issues/1526)
 
-#### 4.1.0 - [Blog](blog/release_4.1.md)
+#### 4.1.0 June 2020 - [Blog](blog/release_4.1.md)
 
 * Feature: The Kotest IntelliJ plugin has gone final. The plugin requires 4.1. or higher of Kotest. https://plugins.jetbrains.com/plugin/14080-kotest
 * Feature: Highlight diff when comparing data classes [#826](https://github.com/kotest/kotest/issues/826) [#1242](https://github.com/kotest/kotest/issues/1242)
@@ -128,23 +135,23 @@ Changelog
 * Bugfix: Add Arb.choose that accepts weighted arbs [#1499](https://github.com/kotest/kotest/issues/1499)
 * Bugfix: Arb.list doesn't use ListShrinker [#1493](https://github.com/kotest/kotest/issues/1493)
 
-#### 4.0.6
+#### 4.0.6 June 2020
 
 * Bugfix: Dependencies of assertions-core are now included properly when not using junit runner [#1425](https://github.com/kotest/kotest/issues/1425)
 * Bugfix: checkAll would fail if exhaustive size was very large [#1456](https://github.com/kotest/kotest/issues/1456)
 * Bugfix: Show typeclass on java.nio.filePath would cause stack overflow [#1313](https://github.com/kotest/kotest/issues/1313)
 
-#### 4.0.5
+#### 4.0.5 April 2020
 
 * Bugfix: Focus mode would cause some nested tests to be ignored [#1376](https://github.com/kotest/kotest/issues/1376)
 * Bugfix: Arb.choice would include edgecases in the generated values [#1406](https://github.com/kotest/kotest/issues/1406)
 * Bugfix: Arb.int and Arb.long edgecases included values outside the specified ranged [#1405](https://github.com/kotest/kotest/issues/1405)
 
-#### 4.0.4
+#### 4.0.4 April 2020
 
 * Bugfix: Exceptions of type `LinkageError`, most commonly `ExceptionInInitializerError` were not being handled [#1381](https://github.com/kotest/kotest/issues/1381)
 
-#### 4.0.3
+#### 4.0.3 April 2020
 
 * Feature: Koin support now works for koin 2.1 [#1357](https://github.com/kotest/kotest/issues/1357)
 * Deprecation: String context is deprecated in ShouldSpec in favour of a context block. [#1356](https://github.com/kotest/kotest/issues/1356)
@@ -154,7 +161,7 @@ Changelog
 * Bugfix: Order of autoclose is restored to work like 3.4.x (was undefined in 4.0.x) [#1384](https://github.com/kotest/kotest/issues/1384)
 * Bugfix: Fix shouldContainExactly for arrays [#1364](https://github.com/kotest/kotest/issues/1364)
 
-#### 4.0.2
+#### 4.0.2 April 2020
 
 * Feature: Added filter and map to Exhaustives [#1343](https://github.com/kotest/kotest/issues/1343)
 * Feature: shouldBeInteger matcher using contracts [#1315](https://github.com/kotest/kotest/issues/1315)
@@ -169,12 +176,12 @@ Changelog
 * Bugfix: Fixed Arb.instant always returning same value [#1322](https://github.com/kotest/kotest/issues/1322)
 * Bugfix: Added workaround for gradle 5 bugs.
 
-#### 4.0.1
+#### 4.0.1 March 2020
 
 * Improvement: Bumped kotlin to 1.3.71
 * Feature: Aded latlong Arb [#1304](https://github.com/kotest/kotest/issues/1304)
 
-#### 4.0.0
+#### 4.0.0 March 2020
 
 The 4.0.0 release is a large release. With the project rename, the packages have changed and module names have changed.
 
