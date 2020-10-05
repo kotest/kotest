@@ -3,11 +3,11 @@ Changelog
 
 #### 4.2.6 October 2020
 
-Bugfix: Fixed regression in shouldBe when using iterables/arrays #1707 #1727
-Bugfix: Fix first failure in `beforeTest` blocks #1736
-Bugfix: deprecate distinct #1730
-Bugfix: Fixed the empty allure result for tests with the failed afterTest block #1724
-Feature: Added per project listener for testcontainers #1731
+* Bugfix: Fixed regression in shouldBe when using iterables/arrays #1707 #1727
+* Bugfix: Fix first failure in `beforeTest` blocks #1736
+* Bugfix: deprecate distinct #1730
+* Bugfix: Fixed the empty allure result for tests with the failed afterTest block #1724
+* Feature: Added per project listener for testcontainers #1731
 
 
 #### 4.2.5 September 2020
