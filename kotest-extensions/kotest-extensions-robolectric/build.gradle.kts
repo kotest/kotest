@@ -1,6 +1,6 @@
 plugins {
    id("java")
-   id("kotlin-multiplatform")
+   kotlin("multiplatform")
    id("java-library")
 }
 
@@ -34,12 +34,12 @@ kotlin {
             implementation(project(Projects.Engine))
             implementation(project(Projects.Api))
             implementation(kotlin("reflect"))
-            implementation("org.robolectric:robolectric:4.3")
-            implementation("junit:junit:4.12")
+            implementation(Libs.Robolectric.robolectric)
+            implementation(Libs.JUnit4.junit4)
          }
       }
 
-      named("jvmTest"){
+      getByName("jvmTest") {
          dependsOn(jvmMain)
          dependencies {
             implementation(project(Projects.JunitRunner))

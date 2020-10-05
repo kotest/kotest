@@ -47,6 +47,11 @@ object Libs {
       const val kotlinCompileTesting = "com.github.tschuchortdev:kotlin-compile-testing:$version"
    }
 
+   object JUnit4 {
+      private const val version = "4.12"
+      const val junit4 = "junit:junit:$version"
+   }
+
    object JUnitPlatform {
       private const val version = "1.6.2"
       const val commons = "org.junit.platform:junit-platform-commons:$version"
@@ -120,6 +125,11 @@ object Libs {
 
    object Bytebuddy {
       const val bytebuddy = "net.bytebuddy:byte-buddy:1.10.14"
+   }
+
+   object Robolectric {
+      private const val version = "4.4"
+      const val robolectric = "org.robolectric:robolectric:$version"
    }
 
    object Coroutines {
