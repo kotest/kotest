@@ -47,12 +47,13 @@ inline fun <reified T : Any> Any?.shouldBeInstanceOf(block: (T) -> Unit = { }): 
 
 
 @OptIn(ExperimentalContracts::class)
-inline fun <reified T : Any> Any?.shouldBeInstanceOf() {
+inline fun <reified T : Any> Any?.shouldBeInstanceOf(): T {
    contract {
       returns() implies (this@shouldBeInstanceOf is T)
    }
    val matcher = beInstanceOf<T>()
    this shouldBe matcher
+   return this as T
 }
 
 /**
@@ -111,12 +112,13 @@ inline fun <reified T : Any> Any?.shouldBeTypeOf(block: (T) -> Unit = { }): T {
 }
 
 @OptIn(ExperimentalContracts::class)
-inline fun <reified T : Any> Any?.shouldBeTypeOf() {
+inline fun <reified T : Any> Any?.shouldBeTypeOf(): T {
    contract {
       returns() implies (this@shouldBeTypeOf is T)
    }
    val matcher = beOfType<T>()
    this shouldBe matcher
+   return this as T
 }
 
 /**
