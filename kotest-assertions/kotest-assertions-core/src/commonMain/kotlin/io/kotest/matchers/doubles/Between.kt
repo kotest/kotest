@@ -20,7 +20,10 @@ import kotlin.math.abs
  * 0.5.shouldBeBetween(0.2, 0.3, 0.1)   // Assertion fails
  * ```
  */
-fun Double.shouldBeBetween(a: Double, b: Double, tolerance: Double) = this shouldBe between(a, b, tolerance)
+fun Double.shouldBeBetween(a: Double, b: Double, tolerance: Double): Double {
+   this shouldBe between(a, b, tolerance)
+   return this
+}
 
 /**
  * Asserts that this [Double] is NOT in the interval [[a]-[tolerance] , [b]+[tolerance]]
@@ -41,7 +44,10 @@ fun Double.shouldBeBetween(a: Double, b: Double, tolerance: Double) = this shoul
  * 0.5.shouldNotBeBetween(0.2, 0.3, 0.1)   // Assertion passes
  * ```
  */
-fun Double.shouldNotBeBetween(a: Double, b: Double, tolerance: Double) = this shouldNotBe between(a, b, tolerance)
+fun Double.shouldNotBeBetween(a: Double, b: Double, tolerance: Double): Double {
+   this shouldNotBe between(a, b, tolerance)
+   return this
+}
 
 /**
  * Matcher that matches doubles and intervals

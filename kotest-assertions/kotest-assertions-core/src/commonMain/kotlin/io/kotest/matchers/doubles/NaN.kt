@@ -20,7 +20,10 @@ import io.kotest.matchers.shouldNotBe
  * ```
  * @see [beNaN]
  */
-fun Double.shouldBeNaN() = this should beNaN()
+fun Double.shouldBeNaN(): Double {
+   this should beNaN()
+   return this
+}
 
 /**
  * Assert that this [Double] is not [Double.NaN]
@@ -35,7 +38,10 @@ fun Double.shouldBeNaN() = this should beNaN()
  * ```
  * @see [beNaN]
  */
-fun Double.shouldNotBeNaN() = this shouldNot beNaN()
+fun Double.shouldNotBeNaN(): Double {
+   this shouldNot beNaN()
+   return this
+}
 
 /**
  * Matcher that matches [Double.NaN]

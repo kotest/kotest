@@ -19,7 +19,10 @@ import io.kotest.matchers.shouldNotBe
  *
  * @see [Double.shouldNotBePositive]
  */
-fun Double.shouldBeNegative() = this shouldBe negative()
+fun Double.shouldBeNegative(): Double {
+   this shouldBe negative()
+   return this
+}
 
 /**
  * Asserts that this [Double] is not negative
@@ -35,7 +38,10 @@ fun Double.shouldBeNegative() = this shouldBe negative()
  *
  * @see [Double.shouldBePositive]
  */
-fun Double.shouldNotBeNegative() = this shouldNotBe negative()
+fun Double.shouldNotBeNegative(): Double {
+   this shouldNotBe negative()
+   return this
+}
 
 fun negative() = object : Matcher<Double> {
   override fun test(value: Double) = MatcherResult(value < 0.0, "$value should be < 0.0", "$value should not be < 0.0")
