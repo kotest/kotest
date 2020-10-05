@@ -5,8 +5,16 @@ import io.kotest.matchers.MatcherResult
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldNot
 
-fun <A> Triple<A, *, *>.shouldHaveFirst(a: A) = this should haveTripleFirst(a)
-fun <A> Triple<A, *, *>.shouldNotHaveFirst(a: A) = this shouldNot haveTripleFirst(a)
+fun <A> Triple<A, *, *>.shouldHaveFirst(a: A): Triple<A, *, *> {
+   this should haveTripleFirst(a)
+   return this
+}
+
+fun <A> Triple<A, *, *>.shouldNotHaveFirst(a: A): Triple<A, *, *> {
+   this shouldNot haveTripleFirst(a)
+   return this
+}
+
 fun <A> haveTripleFirst(a: A) = object : Matcher<Triple<A, *, *>> {
    override fun test(value: Triple<A, *, *>): MatcherResult {
       return MatcherResult(
@@ -17,8 +25,16 @@ fun <A> haveTripleFirst(a: A) = object : Matcher<Triple<A, *, *>> {
    }
 }
 
-fun <B> Triple<*, B, *>.shouldHaveSecond(b: B) = this should haveTripleSecond(b)
-fun <B> Triple<*, B, *>.shouldNotHaveSecond(b: B) = this shouldNot haveTripleSecond(b)
+fun <B> Triple<*, B, *>.shouldHaveSecond(b: B): Triple<*, B, *> {
+   this should haveTripleSecond(b)
+   return this
+}
+
+fun <B> Triple<*, B, *>.shouldNotHaveSecond(b: B): Triple<*, B, *> {
+   this shouldNot haveTripleSecond(b)
+   return this
+}
+
 fun <B> haveTripleSecond(b: B) = object : Matcher<Triple<*, B, *>> {
    override fun test(value: Triple<*, B, *>): MatcherResult {
       return MatcherResult(
@@ -30,8 +46,16 @@ fun <B> haveTripleSecond(b: B) = object : Matcher<Triple<*, B, *>> {
 }
 
 
-fun <C> Triple<*, *, C>.shouldHaveThird(c: C) = this should haveTripleThird(c)
-fun <C> Triple<*, *, C>.shouldNotHaveThird(c: C) = this shouldNot haveTripleThird(c)
+fun <C> Triple<*, *, C>.shouldHaveThird(c: C): Triple<*, *, C> {
+   this should haveTripleThird(c)
+   return this
+}
+
+fun <C> Triple<*, *, C>.shouldNotHaveThird(c: C): Triple<*, *, C> {
+   this shouldNot haveTripleThird(c)
+   return this
+}
+
 fun <C> haveTripleThird(c: C) = object : Matcher<Triple<*, *, C>> {
    override fun test(value: Triple<*, *, C>): MatcherResult {
       return MatcherResult(

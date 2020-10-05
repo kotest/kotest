@@ -5,8 +5,16 @@ import io.kotest.matchers.MatcherResult
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldNot
 
-fun <A> Pair<A, *>.shouldHaveFirst(a: A) = this should haveFirst(a)
-fun <A> Pair<A, *>.shouldNotHaveFirst(a: A) = this shouldNot haveFirst(a)
+fun <A> Pair<A, *>.shouldHaveFirst(a: A): Pair<A, *> {
+   this should haveFirst(a)
+   return this
+}
+
+fun <A> Pair<A, *>.shouldNotHaveFirst(a: A): Pair<A, *> {
+   this shouldNot haveFirst(a)
+   return this
+}
+
 fun <A> haveFirst(a: A) = object : Matcher<Pair<A, *>> {
    override fun test(value: Pair<A, *>): MatcherResult {
       return MatcherResult(
@@ -17,8 +25,16 @@ fun <A> haveFirst(a: A) = object : Matcher<Pair<A, *>> {
    }
 }
 
-fun <B> Pair<*, B>.shouldHaveSecond(b: B) = this should haveSecond(b)
-fun <B> Pair<*, B>.shouldNotHaveSecond(b: B) = this shouldNot haveSecond(b)
+fun <B> Pair<*, B>.shouldHaveSecond(b: B): Pair<*, B> {
+   this should haveSecond(b)
+   return this
+}
+
+fun <B> Pair<*, B>.shouldNotHaveSecond(b: B): Pair<*, B> {
+   this shouldNot haveSecond(b)
+   return this
+}
+
 fun <B> haveSecond(b: B) = object : Matcher<Pair<*, B>> {
    override fun test(value: Pair<*, B>): MatcherResult {
       return MatcherResult(
