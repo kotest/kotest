@@ -1,4 +1,4 @@
-package io.kotest.datatest
+package io.kotest.core.datatest
 
 import io.kotest.assertions.failure
 import io.kotest.core.spec.style.scopes.ContainerScope

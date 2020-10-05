@@ -2,8 +2,8 @@ package com.sksamuel.kotest.engine.datatest
 
 import io.kotest.core.annotation.Ignored
 import io.kotest.core.spec.style.FreeSpec
-import io.kotest.datatest.forAll
-import io.kotest.datatest.forNone
+import io.kotest.core.datatest.forAll
+import io.kotest.core.datatest.forNone
 import io.kotest.matchers.shouldBe
 
 @Ignored
