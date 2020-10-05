@@ -18,7 +18,7 @@ import org.junit.jupiter.api.extension.TestWatcher
 import java.util.Optional
 
 /**
- * Adapts JUnit Platform Extensions into Kotest Listeners.
+ * Adapts JUnit Platform Extensions into Kotest Listeners/Extensions.
  *
  * Supported JUnit Extensions:
  * - [BeforeEachCallback]

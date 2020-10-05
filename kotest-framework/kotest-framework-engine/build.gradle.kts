@@ -39,9 +39,11 @@ kotlin {
 
       val commonMain by getting {
          dependencies {
-            implementation(project(Projects.AssertionsShared))
+            api(project(Projects.AssertionsShared))
             implementation(project(Projects.Common))
-            implementation(project(Projects.Api))
+            // this is API because we want people to be able to use the functionality in their tests
+            // without needing to declare this dependency as well
+            api(project(Projects.Api))
             implementation(Libs.Coroutines.coreCommon)
          }
       }
