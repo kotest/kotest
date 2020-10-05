@@ -29,21 +29,20 @@ kotlin {
    }
 
    sourceSets {
-
       val jvmMain by getting {
          dependencies {
-            implementation(project(":kotest-core"))
+            implementation(project(Projects.Engine))
+            implementation(project(Projects.Api))
             implementation(kotlin("reflect"))
             implementation("org.robolectric:robolectric:4.3")
             implementation("junit:junit:4.12")
          }
       }
 
-      val jvmTest by getting {
+      named("jvmTest"){
          dependsOn(jvmMain)
          dependencies {
             implementation(project(Projects.JunitRunner))
-
          }
       }
    }
@@ -52,7 +51,7 @@ kotlin {
 tasks.named<Test>("jvmTest") {
    useJUnitPlatform()
    filter {
-      setFailOnNoMatchingTests(false)
+      isFailOnNoMatchingTests = false
    }
    testLogging {
       showExceptions = true
