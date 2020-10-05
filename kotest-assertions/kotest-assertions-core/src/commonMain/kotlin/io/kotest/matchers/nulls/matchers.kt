@@ -66,12 +66,13 @@ fun Any?.shouldBeNull() {
  * ```
  */
 @OptIn(ExperimentalContracts::class)
-fun Any?.shouldNotBeNull() {
-  contract {
-    returns() implies (this@shouldNotBeNull != null)
-  }
+fun <T> T?.shouldNotBeNull(): T {
+   contract {
+      returns() implies (this@shouldNotBeNull != null)
+   }
 
-  this shouldNot beNull()
+   this shouldNot beNull()
+   return this!!
 }
 
 

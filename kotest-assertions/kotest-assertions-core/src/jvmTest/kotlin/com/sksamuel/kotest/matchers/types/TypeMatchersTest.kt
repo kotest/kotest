@@ -7,7 +7,6 @@ import io.kotest.matchers.types.beOfType
 import io.kotest.matchers.types.beTheSameInstanceAs
 import io.kotest.matchers.nulls.beNull
 import io.kotest.matchers.nulls.shouldBeNull
-import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNot
@@ -187,29 +186,6 @@ class TypeMatchersTest : WordSpec() {
       "Fail for a non-null value" {
         shouldThrow<AssertionError> { nonNullString.shouldBeNull() }
         shouldThrow<AssertionError> { nonNullString should beNull() }
-      }
-    }
-
-    "notBeNull" should {
-      val nullString: String? = null
-      val nonNullString: String? = "Foo"
-
-      "Pass for a non-null value" {
-        nonNullString.shouldNotBeNull()
-        nonNullString shouldNot beNull()
-      }
-
-      "Fail for a null value" {
-        shouldThrow<AssertionError> { nullString.shouldNotBeNull() }
-        shouldThrow<AssertionError> { nullString shouldNot beNull() }
-      }
-
-      "Allow automatic type cast" {
-        fun useString(string: String) {}
-
-        nonNullString.shouldNotBeNull()
-        useString(nonNullString)
-        nonNullString shouldBe "Foo"
       }
     }
   }
