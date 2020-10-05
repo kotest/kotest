@@ -8,6 +8,8 @@ import kotlinx.coroutines.runBlocking
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicBoolean
+import kotlin.coroutines.ContinuationInterceptor
+import kotlin.coroutines.coroutineContext
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.suspendCoroutine
@@ -19,10 +21,11 @@ object ExecutorExecutionContext : TimeoutExecutionContext {
    // @see https://github.com/kotest/kotest/issues/447
    // this cannot be the main thread because we want to continue after a timeout, and
    // we can't interrupt a test doing `while (true) {}`
-   //private val executor = Executors.newSingleThreadExecutor(NamedThreadFactory("ExecutionContext-Worker-%d"))
 
    override suspend fun <T> executeWithTimeoutInterruption(timeoutInMillis: Long, f: suspend () -> T): T {
       log("Scheduler will interrupt this execution in ${timeoutInMillis}ms")
+
+      val context = coroutineContext
 
       val scheduler = Executors.newScheduledThreadPool(1, NamedThreadFactory("ExecutionContext-Scheduler-%d"))
       val hasResumed = AtomicBoolean(false)
@@ -42,7 +45,14 @@ object ExecutorExecutionContext : TimeoutExecutionContext {
          scheduler.shutdown()
 
          try {
-            runBlocking {
+            // we use the context from the caller, in order to allow context params to propogate down
+            // into the test case from test extensions
+            // According to the documentation of runBlocking if we give it a context that includes a CoroutineDispatcher,
+            // the coroutine will continue to run on the given dispatcher, and the runBlocking will just wait for it to finish.
+            // Since we want to be able to interrupt this thread,
+            // we would just interrupt the waiting but not the actual execution of the test
+            // see https://github.com/kotest/kotest/issues/1725
+            runBlocking(context.minusKey(ContinuationInterceptor)) {
                val t = f()
                if (hasResumed.compareAndSet(false, true)) {
                   scheduler.shutdownNow()
