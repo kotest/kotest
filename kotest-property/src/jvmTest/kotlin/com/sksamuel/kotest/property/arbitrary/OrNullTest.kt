@@ -1,5 +1,6 @@
 package com.sksamuel.kotest.property.arbitrary
 
+import io.kotest.assertions.retry
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.inspectors.forAll
@@ -14,7 +15,10 @@ import io.kotest.property.arbitrary.int
 import io.kotest.property.arbitrary.long
 import io.kotest.property.arbitrary.orNull
 import io.kotest.property.forAll
+import kotlin.time.ExperimentalTime
+import kotlin.time.seconds
 
+@ExperimentalTime
 class OrNullTest : FunSpec({
 
    test("Arb.orNull().edgecases() should contain null") {
@@ -33,16 +37,18 @@ class OrNullTest : FunSpec({
    }
 
    test("null probability values can be specified") {
-      listOf(0.0, 0.1, 0.25, 0.5, 0.75, 0.9, 1.0)
-         .forAll { p: Double ->
-            val nullCount = Arb.long().orNull(nullProbability = p).samples(RandomSource.Default)
-               .map(Sample<Long?>::value)
-               .take(1000)
-               .filter { it == null }
-               .count()
+      retry(3, timeout = 2.seconds, delay = 0.1.seconds) {
+         listOf(0.0, 0.1, 0.25, 0.5, 0.75, 0.9, 1.0)
+            .forAll { p: Double ->
+               val nullCount = Arb.long().orNull(nullProbability = p).samples(RandomSource.Default)
+                  .map(Sample<Long?>::value)
+                  .take(1000)
+                  .filter { it == null }
+                  .count()
 
-            (nullCount.toDouble() / 1000) shouldBe (p plusOrMinus 0.05)
-         }
+               (nullCount.toDouble() / 1000) shouldBe (p plusOrMinus 0.05)
+            }
+      }
    }
 
    test("invalid null probability raise an IllegalArgumentException") {
