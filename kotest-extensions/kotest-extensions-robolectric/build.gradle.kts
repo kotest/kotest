@@ -1,3 +1,6 @@
+import org.gradle.api.tasks.testing.logging.TestExceptionFormat
+import org.gradle.api.tasks.testing.logging.TestLogEvent
+
 plugins {
    id("java")
    kotlin("multiplatform")
@@ -9,7 +12,6 @@ repositories {
    google()
 }
 kotlin {
-
    targets {
       jvm {
          compilations.all {
@@ -31,9 +33,9 @@ kotlin {
    sourceSets {
       val jvmMain by getting {
          dependencies {
+            implementation(kotlin("reflect"))
             implementation(project(Projects.Engine))
             implementation(project(Projects.Api))
-            implementation(kotlin("reflect"))
             implementation(Libs.Robolectric.robolectric)
             implementation(Libs.JUnit4.junit4)
          }
@@ -56,8 +58,8 @@ tasks.named<Test>("jvmTest") {
    testLogging {
       showExceptions = true
       showStandardStreams = true
-      events = setOf(org.gradle.api.tasks.testing.logging.TestLogEvent.FAILED, org.gradle.api.tasks.testing.logging.TestLogEvent.PASSED)
-      exceptionFormat = org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
+      events = setOf(TestLogEvent.FAILED, TestLogEvent.PASSED)
+      exceptionFormat = TestExceptionFormat.FULL
    }
 }
 

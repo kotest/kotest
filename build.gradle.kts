@@ -8,6 +8,10 @@ buildscript {
       maven("https://kotlin.bintray.com/kotlinx")
       gradlePluginPortal()
    }
+
+   dependencies {
+      classpath("com.android.tools.build:gradle:4.1.0-rc03")
+   }
 }
 
 plugins {
