@@ -53,6 +53,7 @@ import io.kotest.matchers.string.shouldNotHaveLengthBetween
 import io.kotest.matchers.string.shouldNotHaveLengthIn
 import io.kotest.matchers.string.shouldNotHaveSameLengthAs
 import io.kotest.matchers.string.shouldNotMatch
+import org.opentest4j.AssertionFailedError
 
 class StringMatchersTest : FreeSpec() {
    init {
@@ -83,8 +84,10 @@ class StringMatchersTest : FreeSpec() {
          "should show diff when newline count differs" {
             shouldThrow<AssertionError> {
                "a\nb" shouldBe "a\n\nb"
-            }.message shouldBe """expected: a\n\nb but was: a\nb
-(contents match, but line-breaks differ; output has been escaped to show line-breaks)"""
+            }.message shouldBe """
+               |(contents match, but line-breaks differ; output has been escaped to show line-breaks)
+               |expected:<a\n\nb> but was:<a\nb>
+               """.trimMargin()
          }
       }
 
