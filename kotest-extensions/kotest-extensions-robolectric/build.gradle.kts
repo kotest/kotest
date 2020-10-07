@@ -1,5 +1,6 @@
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 import org.gradle.api.tasks.testing.logging.TestLogEvent
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
    id("java")
@@ -11,6 +12,7 @@ repositories {
    mavenCentral()
    google()
 }
+
 kotlin {
    targets {
       jvm {
@@ -36,6 +38,7 @@ kotlin {
             implementation(kotlin("reflect"))
             implementation(project(Projects.Engine))
             implementation(project(Projects.Api))
+            api(project(Projects.Extensions))
             implementation(Libs.Robolectric.robolectric)
             implementation(Libs.JUnit4.junit4)
          }
@@ -48,6 +51,11 @@ kotlin {
          }
       }
    }
+}
+
+tasks.withType<KotlinCompile>().configureEach {
+   kotlinOptions.freeCompilerArgs += "-Xuse-experimental=kotlin.Experimental"
+   kotlinOptions.jvmTarget = "1.8"
 }
 
 tasks.named<Test>("jvmTest") {

@@ -1,10 +1,10 @@
-package io.kotest.experimental.robolectric
+package io.kotest.extensions.robolectric
 
 import org.junit.runners.model.FrameworkMethod
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.internal.bytecode.InstrumentationConfiguration
 
-class ContainedRobolectricRunner : RobolectricTestRunner(PlaceholderTest::class.java) {
+public class ContainedRobolectricRunner : RobolectricTestRunner(PlaceholderTest::class.java) {
 
 
     private val placeHolderMethod by lazy {

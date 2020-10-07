@@ -23,7 +23,7 @@ android {
    }
 
    defaultConfig {
-      applicationId = "io.kotlintest.androidtests"
+      applicationId = "io.kotest.androidtests"
       minSdkVersion(21)
       targetSdkVersion(30)
 
@@ -59,8 +59,8 @@ dependencies {
    testImplementation(project(Projects.Engine))
    testImplementation(project(Projects.AssertionsShared))
    testImplementation(project(Projects.JunitRunner))
-   testImplementation(Libs.Robolectric.robolectric)
    testImplementation(project(Projects.extension("robolectric")))
+   testImplementation(Libs.Robolectric.robolectric)
 
    testImplementation("androidx.test:core:1.3.0")
    testImplementation("androidx.test:runner:1.3.0")

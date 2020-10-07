@@ -4,7 +4,7 @@ import android.widget.TextView
 import androidx.test.core.app.ActivityScenario
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.FunSpec
-import io.kotest.experimental.robolectric.RobolectricTest
+import io.kotest.extensions.robolectric.RobolectricTest
 import io.kotest.matchers.shouldBe
 
 @RobolectricTest
