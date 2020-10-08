@@ -1,4 +1,4 @@
-package io.kotest.experimental.robolectric
+package io.kotest.extensions.robolectric
 
 import io.kotest.core.extensions.ConstructorExtension
 import io.kotest.core.extensions.TestCaseExtension
@@ -9,7 +9,6 @@ import kotlin.reflect.KClass
 import kotlin.reflect.full.findAnnotation
 
 class RobolectricExtension : ConstructorExtension, TestCaseExtension {
-
    private val containedRobolectricRunner = ContainedRobolectricRunner()
 
    override fun <T : Spec> instantiate(clazz: KClass<T>): Spec? {
