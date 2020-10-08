@@ -19,7 +19,7 @@ object Libs {
    }
 
    object Allure {
-      private const val version = "2.13.5"
+      private const val version = "2.13.6"
       const val commons = "io.qameta.allure:allure-java-commons:$version"
    }
 
@@ -73,7 +73,7 @@ object Libs {
    }
 
    object Classgraph {
-      const val classgraph = "io.github.classgraph:classgraph:4.8.88"
+      const val classgraph = "io.github.classgraph:classgraph:4.8.90"
    }
 
    object Mocking {
@@ -109,7 +109,7 @@ object Libs {
    }
 
    object Spring {
-      private const val version = "5.2.8.RELEASE"
+      private const val version = "5.2.9.RELEASE"
       const val context = "org.springframework:spring-context:$version"
       const val test = "org.springframework:spring-test:$version"
    }
@@ -119,7 +119,7 @@ object Libs {
    }
 
    object Bytebuddy {
-      const val bytebuddy = "net.bytebuddy:byte-buddy:1.10.14"
+      const val bytebuddy = "net.bytebuddy:byte-buddy:1.10.17"
    }
 
    object Coroutines {
@@ -135,7 +135,7 @@ object Libs {
    }
 
    object Ktor {
-      private const val version = "1.4.0"
+      private const val version = "1.4.1"
       const val serverCore = "io.ktor:ktor-server-core:$version"
       const val serverTestHost = "io.ktor:ktor-server-test-host:$version"
       const val clientJs = "io.ktor:ktor-client-js:$version"
