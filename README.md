@@ -8,7 +8,7 @@ The official [Kotest plugin](https://plugins.jetbrains.com/plugin/14080-kotest) 
 This plugin requires Kotest 4.1.0 or above.
 
 ```kotlin
-  val kotestVersion = "4.1.3" or "4.2.3"
+  val kotestVersion = "4.1.3" or "4.2.6"
   
   // and then the kotlin dependencies
   dependencies {
@@ -20,7 +20,7 @@ This plugin requires Kotest 4.1.0 or above.
   tasks.withType<Test> { useJUnitPlatform() }
 ```
 
-This plugin has been tested with IDEA 2020.1.2 and 2019.3.1.
+This plugin has been tested with IDEA 2020.3, 2020.2, 2020.1 and 2019.3.1.
 
 ## Gutter Icons
 
