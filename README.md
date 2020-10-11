@@ -1,5 +1,6 @@
 # kotest-intellij-plugin
 ![build-master](https://github.com/kotest/kotest-intellij-plugin/workflows/build-master/badge.svg)
+![intellij-badge](https://img.shields.io/jetbrains/plugin/v/14080-kotest?label=intellij%20plugin)
 
 The official [Kotest plugin](https://plugins.jetbrains.com/plugin/14080-kotest) for Intellij and Android Studio
 
