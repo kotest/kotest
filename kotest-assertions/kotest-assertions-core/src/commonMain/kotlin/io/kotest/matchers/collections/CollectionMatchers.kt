@@ -5,23 +5,10 @@ import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
 import io.kotest.matchers.neverNullMatcher
 
-fun <T> haveSizeMatcher(size: Int) = object : Matcher<Collection<T>> {
-  override fun test(value: Collection<T>) =
-    MatcherResult(
-      value.size == size,
-      { "Collection should have size $size but has size ${value.size}. Values: ${value.show().value}" },
-      { "Collection should not have size $size. Values: ${value.show().value}" }
-    )
-}
 
 
-fun <T> beEmpty(): Matcher<Collection<T>> = object : Matcher<Collection<T>> {
-  override fun test(value: Collection<T>): MatcherResult = MatcherResult(
-    value.isEmpty(),
-    { "Collection should be empty but contained ${value.show().value}" },
-    { "Collection should not be empty" }
-  )
-}
+
+
 
 fun <T> existInOrder(vararg ps: (T) -> Boolean): Matcher<Collection<T>?> = existInOrder(ps.asList())
 
@@ -83,117 +70,5 @@ fun <T : Comparable<T>> sorted(): Matcher<List<T>> = object : Matcher<List<T>> {
   }
 }
 
-fun <T : Comparable<T>> beMonotonicallyIncreasing(): Matcher<List<T>> = monotonicallyIncreasing()
-fun <T : Comparable<T>> monotonicallyIncreasing(): Matcher<List<T>> = object : Matcher<List<T>> {
-  override fun test(value: List<T>): MatcherResult {
-    return testMonotonicallyIncreasingWith(value,
-      Comparator { a, b -> a.compareTo(b) })
-  }
-}
 
-fun <T> beMonotonicallyIncreasingWith(comparator: Comparator<in T>): Matcher<List<T>> =
-  monotonicallyIncreasingWith(comparator)
-fun <T> monotonicallyIncreasingWith(comparator: Comparator<in T>): Matcher<List<T>> = object : Matcher<List<T>> {
-  override fun test(value: List<T>): MatcherResult {
-    return testMonotonicallyIncreasingWith(value, comparator)
-  }
-}
-private fun<T> testMonotonicallyIncreasingWith(value: List<T>, comparator: Comparator<in T>): MatcherResult {
-  val failure = value.zipWithNext().withIndex().find { (_, pair) -> comparator.compare(pair.first, pair.second) > 0 }
-  val snippet = value.show().value
-  val elementMessage = when (failure) {
-    null -> ""
-    else -> ". Element ${failure.value.second} at index ${failure.index + 1} was not monotonically increased from previous element."
-  }
-  return MatcherResult(
-    failure == null,
-    { "List [$snippet] should be monotonically increasing$elementMessage" },
-    { "List [$snippet] should not be monotonically increasing" }
-  )
-}
-
-fun <T : Comparable<T>> beMonotonicallyDecreasing(): Matcher<List<T>> = monotonicallyDecreasing()
-fun <T : Comparable<T>> monotonicallyDecreasing(): Matcher<List<T>> = object : Matcher<List<T>> {
-  override fun test(value: List<T>): MatcherResult {
-    return testMonotonicallyDecreasingWith(value,
-      Comparator { a, b -> a.compareTo(b) })
-  }
-}
-
-fun <T> beMonotonicallyDecreasingWith(comparator: Comparator<in T>): Matcher<List<T>> = monotonicallyDecreasingWith(
-  comparator)
-fun <T> monotonicallyDecreasingWith(comparator: Comparator<in T>): Matcher<List<T>> = object : Matcher<List<T>> {
-  override fun test(value: List<T>): MatcherResult {
-    return testMonotonicallyDecreasingWith(value, comparator)
-  }
-}
-private fun <T> testMonotonicallyDecreasingWith(value: List<T>, comparator: Comparator<in T>): MatcherResult {
-  val failure = value.zipWithNext().withIndex().find { (_, pair) -> comparator.compare(pair.first, pair.second) < 0 }
-  val snippet = value.show().value
-  val elementMessage = when (failure) {
-    null -> ""
-    else -> ". Element ${failure.value.second} at index ${failure.index + 1} was not monotonically decreased from previous element."
-  }
-  return MatcherResult(
-    failure == null,
-    { "List [$snippet] should be monotonically decreasing$elementMessage" },
-    { "List [$snippet] should not be monotonically decreasing" }
-  )
-}
-
-fun <T : Comparable<T>> beStrictlyIncreasing(): Matcher<List<T>> = strictlyIncreasing()
-fun <T : Comparable<T>> strictlyIncreasing(): Matcher<List<T>> = object : Matcher<List<T>> {
-  override fun test(value: List<T>): MatcherResult {
-    return testStrictlyIncreasingWith(value, Comparator { a, b -> a.compareTo(b) })
-  }
-}
-
-fun <T> beStrictlyIncreasingWith(comparator: Comparator<in T>): Matcher<List<T>> = strictlyIncreasingWith(
-  comparator)
-fun <T> strictlyIncreasingWith(comparator: Comparator<in T>): Matcher<List<T>> = object : Matcher<List<T>> {
-  override fun test(value: List<T>): MatcherResult {
-    return testStrictlyIncreasingWith(value, comparator)
-  }
-}
-private fun <T> testStrictlyIncreasingWith(value: List<T>, comparator: Comparator<in T>): MatcherResult {
-  val failure = value.zipWithNext().withIndex().find { (_, pair) -> comparator.compare(pair.first, pair.second) >= 0 }
-  val snippet = value.show().value
-  val elementMessage = when (failure) {
-    null -> ""
-    else -> ". Element ${failure.value.second} at index ${failure.index + 1} was not strictly increased from previous element."
-  }
-  return MatcherResult(
-    failure == null,
-    { "List [$snippet] should be strictly increasing$elementMessage" },
-    { "List [$snippet] should not be strictly increasing" }
-  )
-}
-
-fun <T : Comparable<T>> beStrictlyDecreasing(): Matcher<List<T>> = strictlyDecreasing()
-fun <T : Comparable<T>> strictlyDecreasing(): Matcher<List<T>> = object : Matcher<List<T>> {
-  override fun test(value: List<T>): MatcherResult {
-    return testStrictlyDecreasingWith(value, Comparator { a, b -> a.compareTo(b) })
-  }
-}
-
-fun <T> beStrictlyDecreasingWith(comparator: Comparator<in T>): Matcher<List<T>> = strictlyDecreasingWith(
-  comparator)
-fun <T> strictlyDecreasingWith(comparator: Comparator<in T>): Matcher<List<T>> = object : Matcher<List<T>> {
-  override fun test(value: List<T>): MatcherResult {
-    return testStrictlyDecreasingWith(value, comparator)
-  }
-}
-private fun <T> testStrictlyDecreasingWith(value: List<T>, comparator: Comparator<in T>): MatcherResult {
-  val failure = value.zipWithNext().withIndex().find { (_, pair) -> comparator.compare(pair.first, pair.second) <= 0 }
-  val snippet = value.show().value
-  val elementMessage = when (failure) {
-    null -> ""
-    else -> ". Element ${failure.value.second} at index ${failure.index + 1} was not strictly decreased from previous element."
-  }
-  return MatcherResult(
-    failure == null,
-    { "List [$snippet] should be strictly decreasing$elementMessage" },
-    { "List [$snippet] should not be strictly decreasing" }
-  )
-}
 
