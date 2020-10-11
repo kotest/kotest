@@ -12,7 +12,7 @@
 
    <!-- correct values will be set by the build plugin -->
    <version>1.0.0</version>
-   <idea-version since-build="193"/>
+   <idea-version since-build="203.4449.2"/>
 
    <depends>org.jetbrains.kotlin</depends>
    <depends>com.intellij.modules.java</depends>

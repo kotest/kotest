@@ -3,10 +3,10 @@ package io.kotest.plugin.intellij.linemarker
 import com.intellij.codeInsight.daemon.LineMarkerInfo
 import com.intellij.codeInsight.daemon.LineMarkerProvider
 import com.intellij.icons.AllIcons
-import com.intellij.openapi.editor.markup.GutterIconRenderer
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiWhiteSpace
 import com.intellij.psi.impl.source.tree.LeafPsiElement
+import io.kotest.plugin.intellij.createLineMarker
 import io.kotest.plugin.intellij.psi.enclosingKtClass
 import io.kotest.plugin.intellij.psi.specStyle
 import org.jetbrains.kotlin.psi.KtAnnotationEntry
@@ -37,13 +37,6 @@ class IgnoredTestLineMarker : LineMarkerProvider {
       val ktclass = element.enclosingKtClass() ?: return null
       val style = ktclass.specStyle() ?: return null
       val test = style.test(element) ?: return null
-      return if (test.enabled) null else LineMarkerInfo<PsiElement>(
-         element,
-         element.textRange,
-         AllIcons.Nodes.TestIgnored,
-         { "Test is disabled" },
-         { _, _ -> },
-         GutterIconRenderer.Alignment.LEFT
-      )
+      return if (test.enabled) null else createLineMarker(element, "Test is disabled", AllIcons.Nodes.TestIgnored)
    }
 }
