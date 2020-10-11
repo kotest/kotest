@@ -29,10 +29,10 @@ You can use the same mechanism to run tests only under certain conditions.
 
 If you want to use a function that is based on the test rather than a value, then you can use `enabledIf`.
 
-For example, if we wanted to disable all tests that begin with the word "danger" when executing on Windows we could do this:
+For example, if we wanted to disable all tests that begin with the word "danger" unless we were executing on Linux, then we could do this:
 
 ```kotlin
-val disableDangerOnWindows: EnabledIf = { it.name.startsWith("danger") && IS_OS_LINUX }
+val disableDangerOnWindows: EnabledIf = { !it.name.startsWith("danger") || IS_OS_LINUX }
 
 "danger will robinson".config(enabledIf = disableDangerOnWindows) {
   // test here
