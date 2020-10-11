@@ -1,7 +1,7 @@
 Changelog
 =========
 
-#### 4.3.0 October 2020
+#### 4.3.0 October 2020 - [Blog](https://dev.to/kotest/kotest-release-4-3-2768)
 
 * Feature: New data driven test DSL with data classes #1537 (framework)
 * Feature: Option to strip whitespace from test names #1545 (framework)
