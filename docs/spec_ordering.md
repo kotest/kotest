@@ -14,10 +14,11 @@ class MyConfig: AbstractProjectConfig() {
 
 There are several options.
 
-* `Undefined` - The order of specs is undefined and will execute in the order they are discovered at runtime. Eg either from JVM classpath discovery, or the order they appear in javascript files.
+* `Undefined` - This is the default. The order of specs is undefined and will execute in the order they are discovered at runtime. Eg either from JVM classpath discovery, or the order they appear in javascript files.
 
-* `Lexicographic` - Specs are ordered lexicographically
+* `Lexicographic` - Specs are ordered lexicographically.
 
-* `Random` - Specs are explicitly executed in a random order
+* `Random` - Specs are explicitly executed in a random order.
 
-* `Annotated` - Specs are ordered using the `@Order` annotation. Any specs without such an annotation are considered "last". This option only works on the JVM. Any specs that tie will be executed arbitrarily.
+* `Annotated` - Specs are ordered using the `@Order` annotation added at the class level, with lowest values executed first. Any specs without such an annotation are considered "last".
+This option only works on the JVM. Any ties will be broken arbitrarily.
