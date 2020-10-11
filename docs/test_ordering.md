@@ -21,12 +21,12 @@ class SequentialSpec : StringSpec() {
     override fun testCaseOrder(): TestCaseOrder? = TestCaseOrder.Sequential
 
     init {
-      "This test runs first" {
-        // Test
+      "foo" {
+        // I run first as I'm defined first
       }
 
-      "This test runs second" {
-        // Test
+      "bar" {
+        // I run second as I'm defined second
       }
     }
 }
@@ -38,12 +38,12 @@ class RandomSpec : StringSpec() {
     override fun testCaseOrder(): TestCaseOrder? = TestCaseOrder.Random
 
     init {
-      "This test may run first or second" {
-        // Test
+      "foo" {
+        // This test may run first or second
       }
 
-      "This test may run first or second" {
-        // Test
+      "bar" {
+        // This test may run first or second
       }
     }
 }
@@ -55,12 +55,12 @@ class LexicographicSpec : StringSpec() {
     override fun testCaseOrder(): TestCaseOrder? = TestCaseOrder.Lexicographic
 
     init {
-      "This test will run second" {
-        // Test
+      "foo" {
+        // I run second as bar < foo
       }
 
-      "Because this comes first when ordered lexicographically" {
-        // Test
+      "bar" {
+        // I run first as bar < foo
       }
     }
 }
