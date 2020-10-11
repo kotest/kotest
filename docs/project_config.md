@@ -96,7 +96,39 @@ When running multiple tests from a Spec, there's a certain order on how to execu
 By default, a sequential order is used (the order that tests are defined in the spec), but this can be changed. For available options see [test ordering](test_ordering.md).
 
 
+
+
 ## Spec Ordering
 
 
 By default, the ordering of Spec classes is not defined. This is often sufficient, when we have no preference, but if we need control over the execution order of specs, we can use [spec ordering](spec_ordering.md).
+
+
+
+
+## Test name case
+
+The case of the test names can be controlled by changing the value of `testNameCase`.
+By default, the value is `TestNameCase.AsIs` which makes no change.
+
+By setting the value to `TestNameCase.Lowercase` a test's name will be lowercased in output.
+
+If you are using a spec that adds in prefixes to the test names (should as WordSpec or BehaviorSpec) then the values `TestNameCase.Sentence` and `TestNameCase.InitialLowercase` can be useful.
+
+
+
+
+
+## Test name whitespace
+
+If you define test names over several lines then `removeTestNameWhitespace` can be useful. Take this example:
+
+```kotlin
+"""this is
+   my test case""" {
+  // test here
+}
+```
+
+Then the test name in output will be `this is   my test case`. By setting `removeTestNameWhitespace` to true,
+then this name will be trimmed to `this is my test case`.
