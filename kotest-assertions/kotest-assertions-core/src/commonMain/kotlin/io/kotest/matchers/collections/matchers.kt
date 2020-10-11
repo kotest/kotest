@@ -26,42 +26,6 @@ fun <T, L : List<T>> haveElementAt(index: Int, element: T) = object : Matcher<L>
 
 
 
-infix fun <T> Array<T>.shouldNotContainExactlyInAnyOrder(expected: Array<T>) =
-   asList().shouldNotContainExactlyInAnyOrder(expected.asList())
-
-infix fun <T, C : Collection<T>> C?.shouldNotContainExactlyInAnyOrder(expected: C) =
-   this shouldNot containExactlyInAnyOrder(expected)
-
-fun <T, C : Collection<T>> C?.shouldNotContainExactlyInAnyOrder(vararg expected: T) =
-   this shouldNot containExactlyInAnyOrder(*expected)
-
-infix fun <T> Array<T>.shouldContainExactlyInAnyOrder(expected: Array<T>) =
-   asList().shouldContainExactlyInAnyOrder(expected.asList())
-
-infix fun <T, C : Collection<T>> C?.shouldContainExactlyInAnyOrder(expected: C) =
-   this should containExactlyInAnyOrder(expected)
-
-fun <T, C : Collection<T>> C?.shouldContainExactlyInAnyOrder(vararg expected: T) =
-   this should containExactlyInAnyOrder(*expected)
-
-fun <T> containExactlyInAnyOrder(vararg expected: T): Matcher<Collection<T>?> =
-   containExactlyInAnyOrder(expected.asList())
-
-/** Assert that a collection contains exactly the given values and nothing else, in any order. */
-fun <T, C : Collection<T>> containExactlyInAnyOrder(expected: C): Matcher<C?> = neverNullMatcher { value ->
-   val valueGroupedCounts: Map<T, Int> = value.groupBy { it }.mapValues { it.value.size }
-   val expectedGroupedCounts: Map<T, Int> = expected.groupBy { it }.mapValues { it.value.size }
-   val passed = expectedGroupedCounts.size == valueGroupedCounts.size
-      && expectedGroupedCounts.all { valueGroupedCounts[it.key] == it.value }
-
-   MatcherResult(
-      passed,
-      "Collection should contain ${expected.show().value} in any order, but was ${value.show().value}",
-      "Collection should not contain exactly ${expected.show().value} in any order"
-   )
-}
-
-
 infix fun <T> Iterable<T>.shouldHaveSingleElement(t: T): Iterable<T> {
    toList().shouldHaveSingleElement(t)
    return this
