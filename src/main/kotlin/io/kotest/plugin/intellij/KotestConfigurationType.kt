@@ -2,13 +2,7 @@ package io.kotest.plugin.intellij
 
 import com.intellij.execution.configurations.ConfigurationFactory
 import com.intellij.execution.configurations.ConfigurationType
-import com.intellij.openapi.util.IconLoader
 import javax.swing.Icon
-
-object Icons {
-   val Kotest16 = IconLoader.getIcon("/icon16.png")
-   val Kotest16Grey = IconLoader.getIcon("/icon16_greyscale.png")
-}
 
 object KotestConfigurationType : ConfigurationType {
 
