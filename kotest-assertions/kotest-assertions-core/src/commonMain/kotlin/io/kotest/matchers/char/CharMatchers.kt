@@ -11,14 +11,20 @@ import io.kotest.matchers.shouldNot
  * @see [shouldNotBeInRange]
  * @see [beInRange]
  * */
-infix fun Char.shouldBeInRange(range: CharRange) = this should beInRange(range)
+infix fun Char.shouldBeInRange(range: CharRange): Char {
+   this should beInRange(range)
+   return this
+}
 
 /**
  * Assert that [Char] is not in given range [CharRange].
  * @see [shouldBeInRange]
  * @see [beInRange]
  * */
-infix fun Char.shouldNotBeInRange(range: CharRange) = this shouldNot beInRange(range)
+infix fun Char.shouldNotBeInRange(range: CharRange): Char {
+   this shouldNot beInRange(range)
+   return this
+}
 
 fun beInRange(range: CharRange) = object : Matcher<Char> {
    override fun test(value: Char): MatcherResult =
@@ -35,14 +41,21 @@ fun beInRange(range: CharRange) = object : Matcher<Char> {
  * @see [shouldNotBeBetween]
  * @see [between]
  * */
-fun Char.shouldBeBetween(from: Char, to: Char) = this should between(from, to)
+fun Char.shouldBeBetween(from: Char, to: Char): Char {
+   this should between(from, to)
+   return this
+}
 
 /**
  * Assert that [Char] is not in between from and to.
  * @see [shouldBeBetween]
  * @see [between]
  * */
-fun Char.shouldNotBeBetween(from: Char, to: Char) = this shouldNot between(from, to)
+fun Char.shouldNotBeBetween(from: Char, to: Char): Char {
+   this shouldNot between(from, to)
+   return this
+}
+
 fun between(from: Char, to: Char) = object : Matcher<Char> {
    override fun test(value: Char) = MatcherResult(
       value in from..to,
@@ -56,14 +69,21 @@ fun between(from: Char, to: Char) = object : Matcher<Char> {
  * @see [shouldNotBeEqualToIgnoreCase]
  * @see [beEqualIgnoreCase]
  * */
-infix fun Char.shouldBeEqualToIgnoreCase(other: Char) = this should beEqualIgnoreCase(other)
+infix fun Char.shouldBeEqualToIgnoreCase(other: Char): Char {
+   this should beEqualIgnoreCase(other)
+   return this
+}
 
 /**
  * Assert that [Char] is not equal to [other] ignoring case sensitivity
  * @see [shouldBeEqualToIgnoreCase]
  * @see [beEqualIgnoreCase]
  * */
-infix fun Char.shouldNotBeEqualToIgnoreCase(other: Char) = this shouldNot beEqualIgnoreCase(other)
+infix fun Char.shouldNotBeEqualToIgnoreCase(other: Char): Char {
+   this shouldNot beEqualIgnoreCase(other)
+   return this
+}
+
 fun beEqualIgnoreCase(other: Char) = object : Matcher<Char> {
    override fun test(value: Char) = MatcherResult(
       value.equals(other, ignoreCase = true),
