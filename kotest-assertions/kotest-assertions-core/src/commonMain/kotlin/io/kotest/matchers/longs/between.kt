@@ -8,12 +8,18 @@ import io.kotest.matchers.shouldNot
 /**
  * Verifies that the given Long is between a and b inclusive.
  */
-fun Long.shouldBeBetween(a: Long, b: Long) = this shouldBe between(a, b)
+fun Long.shouldBeBetween(a: Long, b: Long): Long {
+   this shouldBe between(a, b)
+   return this
+}
 
 /**
  * Verifies that the given Long is NOT between a and b inclusive.
  */
-fun Long.shouldNotBeBetween(a: Long, b: Long) = this shouldNot between(a, b)
+fun Long.shouldNotBeBetween(a: Long, b: Long): Long {
+   this shouldNot between(a, b)
+   return this
+}
 
 /**
  * Verifies that the given Long is between a and b inclusive.
