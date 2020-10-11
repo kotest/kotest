@@ -1,6 +1,27 @@
 Changelog
 =========
 
+#### 4.3.0 October 2020
+
+* Feature: New data driven test DSL with data classes #1537 (framework)
+* Feature: Option to strip whitespace from test names #1545 (framework)
+* Feature: EnabledIf annotation for specs #1683 (framework)
+* Feature: Propagate coroutine context to tests #1725 (framework)
+* Feature: Option to suppress configuration dump #1742 (framework)
+* Feature: Added severity attribute for TestCase #1746 (framework)
+* Feature: Added kotest.framework.sourceref.disable option (framework)
+* Internal: Make Engine dependency free #1748 (framework)
+* Feature: Multi-line-string comparison for file contents #823 (assertions)
+* Feature: New assertion: Iterator.shouldHaveNext() #1660 (assertions)
+* Feature: New assertions: isEmpty / isDefined for java Optional #1661 (assertions)
+* Feature: Non infix matchers should return `this` for easy chaining #1744 (assertions)
+* Feature: Add property test module for kotlinx datetime #1679 (prop-testing)
+* Feature: Add Gen.forNone #1636 (prop-testing)
+* Feature: Arb should generate a single value #1754 (prop-testing)
+* Feature: Adds an arbitrary to generate bigdecimal #1705 (prop-testing)
+* Feature: Add steps and stack trace to allure, with full docs #460 (extensions)
+* Feature: Added roboelectric extension to main build (extensions)
+
 #### 4.2.6 October 2020
 
 * Bugfix: Fixed regression in shouldBe when using iterables/arrays #1707 #1727
