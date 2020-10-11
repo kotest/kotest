@@ -22,3 +22,25 @@ There are several options.
 
 * `Annotated` - Specs are ordered using the `@Order` annotation added at the class level, with lowest values executed first. Any specs without such an annotation are considered "last".
 This option only works on the JVM. Any ties will be broken arbitrarily.
+
+
+### Annotated Example
+
+Given the following specs annoated with @Order.
+
+```kotlin
+@Order(1)
+class FooTest : FunSpec() { }
+
+@Order(0)
+class BarTest: FunSpec() {}
+
+@Order(1)
+class FarTest : FunSpec() { }
+
+class BooTest : FunSpec() {}
+```
+
+`BarTest` will be executed first, as it has the lowest order value. `FooTest` and `FarTest` will be executed next, as they have the next lowest order values, although their values are both 1 so the order between them is undefined. Finally, `BooTest` will execute last, as it has no annotation.
+
+
