@@ -59,7 +59,7 @@ class KotestRunLineMarkerContributor : RunLineMarkerContributor() {
    private fun icon(ktclass: KtClassOrObject): Info {
       return Info(
          AllIcons.RunConfigurations.TestState.Run,
-         Function<PsiElement, String> { "Run3 ${ktclass.fqName!!.shortName()}" },
+         Function<PsiElement, String> { "Run ${ktclass.fqName!!.shortName()}" },
          *ExecutorAction.getActions(1)
       )
    }
@@ -67,7 +67,7 @@ class KotestRunLineMarkerContributor : RunLineMarkerContributor() {
    private fun icon(test: Test): Info {
       return Info(
          AllIcons.RunConfigurations.TestState.Run,
-         Function<PsiElement, String> { "Run1 ${test.readableTestPath()}" },
+         Function<PsiElement, String> { "Run ${test.readableTestPath()}" },
          *ExecutorAction.getActions(1)
       )
    }

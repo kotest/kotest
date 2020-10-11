@@ -9,13 +9,14 @@ buildscript {
 plugins {
    kotlin("jvm")
    java
-   id("org.jetbrains.intellij").version("0.4.22")
+   id("org.jetbrains.intellij").version("0.5.0")
 }
 
 repositories {
    mavenCentral()
    mavenLocal()
    maven("https://oss.sonatype.org/content/repositories/snapshots")
+   maven("https://www.jetbrains.com/intellij-repository/snapshots")
 }
 
 val plugins = listOf(
@@ -23,41 +24,34 @@ val plugins = listOf(
       "193.4099.13",
       "193.*",
       "IC-2019.3",
-      "IC-2019.3",
+      "IC-193",
       listOf("java", "org.jetbrains.plugins.gradle", "org.jetbrains.kotlin:1.3.72-release-IJ2019.3-5")
    ),
    plugin.PluginDescriptor(
       "201.6487",
-      "202.*",
+      "201.*",
       "IC-2020.1",
-      "IC-2020.1",
+      "IC-201",
       listOf("java", "org.jetbrains.plugins.gradle", "org.jetbrains.kotlin:1.3.72-release-IJ2020.1-5")
    ),
    plugin.PluginDescriptor(
       "202.1",
+      "202.*",
+      "IC-2020.2",
+      "IC-202",
+      listOf("java", "org.jetbrains.plugins.gradle", "org.jetbrains.kotlin:1.4.10-release-IJ2020.2-1")
+   ),
+   plugin.PluginDescriptor(
+      "203.4449.2",
       "203.*",
-      "IC-2020.2",
-      "IC-2020.2",
+      "203-EAP-SNAPSHOT",
+      "IC-203",
       listOf("java", "org.jetbrains.plugins.gradle", "org.jetbrains.kotlin:1.4.10-release-IJ2020.2-1")
    )
-//   plugin.PluginDescriptor(
-//      "193.5233.102",
-//      "193.*",
-//      "193.5233.102",
-//      "AS-4.0",
-//      listOf("gradle", "android", "java", "org.jetbrains.kotlin:1.3.72-release-Studio4.0-5")
-//   ),
-//   plugin.PluginDescriptor(
-//      "201.7223.91",
-//      "201.*",
-//      "201.7223.91",
-//      "AS-4.1",
-//      listOf("gradle", "android", "java", "org.jetbrains.kotlin:1.3.72-release-Studio4.1-5")
-//   )
 )
 
-val productName = System.getenv("PRODUCT_NAME") ?: "IC-2020.2"
-val descriptor = plugins.first { it.productName == productName }
+val productName = System.getenv("PRODUCT_NAME") ?: System.getenv("SOURCE_FOLDER") ?: "IC-203"
+val descriptor = plugins.first { it.sourceFolder == productName }
 
 val jetbrainsToken: String by project
 
@@ -79,23 +73,24 @@ dependencies {
    implementation("javax.activation:activation:1.1.1")
 
    // we bundle this for 4.1 support
-   // in kotest 4.2 the launcher has moved to the framework modules
+   // in kotest 4.2.0 the launcher has moved to a stand alone module
    implementation("io.kotest:kotest-launcher:1.0.9")
 
-   // this is needed to use the launcher in 4.2.0, in 4.2.1 the launcher is built into the engine dep
+   // this is needed to use the launcher in 4.2.0, in 4.2.1+ the launcher is built
+   // into the engine dep which should already be on the classpath
    implementation("io.kotest:kotest-framework-launcher-jvm:4.2.0")
 
    // just needed for tests
-   testImplementation("io.kotest:kotest-assertions-core-jvm:4.2.0")
+   testImplementation("io.kotest:kotest-assertions-core-jvm:4.2.6")
 }
 
 sourceSets {
    main {
       withConvention(KotlinSourceSet::class) {
-         kotlin.srcDirs("src/${descriptor.productName}/kotlin")
+         kotlin.srcDirs("src/${descriptor.sourceFolder}/kotlin")
       }
       resources {
-         srcDir("src/${descriptor.productName}/resources")
+         srcDir("src/${descriptor.sourceFolder}/resources")
       }
    }
 }

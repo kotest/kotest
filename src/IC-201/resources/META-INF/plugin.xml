@@ -11,12 +11,11 @@
     ]]></description>
 
    <version>1.0.0</version>
-   <idea-version since-build="202"/>
+   <idea-version since-build="193"/>
 
    <depends>org.jetbrains.kotlin</depends>
    <depends>com.intellij.modules.java</depends>
-   <depends>com.intellij.modules.androidstudio</depends>
-   <depends>org.jetbrains.android</depends>
+   <depends>org.jetbrains.plugins.gradle</depends>
 
    <actions>
       <action id="io.kotest.actions.NextTestAction"

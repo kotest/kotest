@@ -10,8 +10,9 @@
       This plugin requires the use of Kotest 4.2.0 or newer.
     ]]></description>
 
+   <!-- correct values will be set by the build plugin -->
    <version>1.0.0</version>
-   <idea-version since-build="202"/>
+   <idea-version since-build="193"/>
 
    <depends>org.jetbrains.kotlin</depends>
    <depends>com.intellij.modules.java</depends>

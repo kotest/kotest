@@ -4,8 +4,8 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.psi.impl.source.tree.LeafPsiElement
 import org.jetbrains.kotlin.asJava.classes.KtLightClass
-import org.jetbrains.kotlin.idea.references.mainReference
 import org.jetbrains.kotlin.name.FqName
+import org.jetbrains.kotlin.nj2k.postProcessing.resolve
 import org.jetbrains.kotlin.psi.KtClass
 import org.jetbrains.kotlin.psi.KtClassOrObject
 import org.jetbrains.kotlin.psi.KtPrimaryConstructor
@@ -96,7 +96,6 @@ fun KtClass.getSuperClass(): KtClass? {
 
          val ref = entry.calleeExpression
             .constructorReferenceExpression
-            ?.mainReference
             ?.resolve()
 
          if (ref is KtClass) return ref

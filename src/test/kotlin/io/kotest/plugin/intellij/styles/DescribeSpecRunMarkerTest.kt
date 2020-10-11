@@ -20,7 +20,7 @@ class DescribeSpecRunMarkerTest : LightJavaCodeInsightFixtureTestCase() {
       val gutters = myFixture.findAllGutters()
       gutters.size shouldBe 15
 
-      gutters[0].icon shouldBe AllIcons.RunConfigurations.TestState.Run_run
+      gutters[0].icon shouldBe AllIcons.RunConfigurations.TestState.Run
       gutters[0].tooltipText shouldBe "Run DescribeSpecExample"
       (gutters[0] as LineMarkerInfo.LineMarkerGutterIconRenderer<*>).lineMarkerInfo.startOffset shouldBe 91
 
