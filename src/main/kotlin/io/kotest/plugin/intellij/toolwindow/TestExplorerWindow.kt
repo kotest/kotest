@@ -74,7 +74,7 @@ class TestExplorerWindow(private val project: Project) : SimpleToolWindowPanel(t
    }
 
    private fun listenForDocumentChanges() {
-      PsiManager.getInstance(project).addPsiTreeChangeListener(object : PsiTreeAnyChangeAbstractAdapter() {
+      val listener = object : PsiTreeAnyChangeAbstractAdapter() {
          override fun onChange(file: PsiFile?) {
             if (file != null) {
                val selectedFile = fileEditorManager.selectedEditor?.file
@@ -85,7 +85,9 @@ class TestExplorerWindow(private val project: Project) : SimpleToolWindowPanel(t
                }
             }
          }
-      })
+      }
+      val manager = PsiManager.getInstance(project)
+      manager.addPsiTreeChangeListener(listener) { manager.removePsiTreeChangeListener(listener) }
    }
 
    private fun refreshContent() {
