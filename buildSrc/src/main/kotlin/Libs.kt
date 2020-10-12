@@ -142,6 +142,7 @@ object Libs {
       const val coreMingw = "org.jetbrains.kotlinx:kotlinx-coroutines-core-mingwx64:$version"
       const val coreMacos = "org.jetbrains.kotlinx:kotlinx-coroutines-core-macosx64:$version"
       const val jdk8 = "org.jetbrains.kotlinx:kotlinx-coroutines-jdk8:$version"
+      const val test = "org.jetbrains.kotlinx:kotlinx-coroutines-test:$version"
    }
 
    object Ktor {
@@ -163,5 +164,9 @@ object Libs {
    object KotlinTime {
       private const val version = "0.1.0"
       const val kotlintime = "org.jetbrains.kotlinx:kotlinx-datetime:$version"
+   }
+
+   object Android {
+      const val desugarJdk = "com.android.tools:desugar_jdk_libs:1.0.10"
    }
 }
