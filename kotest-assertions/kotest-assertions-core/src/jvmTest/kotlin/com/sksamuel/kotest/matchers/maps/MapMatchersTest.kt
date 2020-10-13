@@ -113,6 +113,37 @@ class MapMatchersTest : WordSpec() {
          }
       }
 
+      "containAnyKeys" should {
+       "test that a map contains any of the given keys"{
+          val map = mapOf("a" to 1, "b" to 2, "c" to 3)
+          map should containAnyKeys("a","x","y")
+          map should containAnyKeys("a","b","c")
+          map should containAnyKeys("a","b")
+          map.shouldContainAnyKeysOf("a","c")
+          shouldThrow<AssertionError>{
+             map should containAnyKeys("x","y","z")
+          }
+         shouldThrow<AssertionError>{
+            map.shouldContainAnyKeysOf("x","y")
+         }
+       }
+      }
+
+      "containAnyValues" should {
+         "test that a map contains any of the given values"{
+            val map = mapOf("a" to 1, "b" to 2, "c" to 3)
+            map should containAnyValues(1,23,24)
+            map should containAnyValues(1,2,3)
+            map should containAnyValues(3,2)
+            map.shouldContainAnyValuesOf(2,3)
+            shouldThrow<AssertionError>{
+               map should containAnyValues(9,8,7)
+            }
+            shouldThrow<AssertionError>{
+               map.shouldContainAnyValuesOf(4,5)
+            }
+         }
+      }
       "containAll" should {
          "test that a map contains all given pairs" {
             val map = mapOf(Pair(1, "a"), Pair(2, "b"), Pair(3, "c"))
