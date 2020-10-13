@@ -82,6 +82,7 @@ private fun scan(packageName: String?): List<KClass<out Spec>> {
    return result.specs
 }
 
+// runs a suspend future on the calling thread,
 // this avoids us needing to bring in the coroutine deps, plus running inside the main
 // thread is exactly what we want to do
 private fun future(f: suspend () -> Unit): CompletableFuture<Unit> =
