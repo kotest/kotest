@@ -82,3 +82,8 @@ interface FinalizeSpecListener : Listener {
       results: Map<TestCase, TestResult>
    ): Unit = Unit
 }
+
+interface SpecInstantiationListener : Listener {
+   fun specInstantiated(spec: Spec) {}
+   fun specInstantiationError(kclass: KClass<out Spec>, t: Throwable) {}
+}

@@ -2,6 +2,7 @@ package io.kotest.engine.spec
 
 import io.kotest.mpp.log
 import io.kotest.core.config.configuration
+import io.kotest.core.config.specInstantiationListeners
 import io.kotest.core.config.testListeners
 import io.kotest.engine.runners.ConcurrentInstancePerLeafSpecRunner
 import io.kotest.engine.runners.InstancePerLeafSpecRunner
@@ -71,14 +72,22 @@ class SpecExecutor(private val listener: TestEngineListener) {
 
    private fun notifySpecInstantiated(spec: Spec) = Try {
       log("Executing engine listener callback:specInstantiated spec:$spec")
+      val listeners = configuration.specInstantiationListeners()
       listener.specInstantiated(spec)
+      listeners.forEach {
+         it.specInstantiated(spec)
+      }
    }
 
    private fun notifySpecInstantiationError(kclass: KClass<out Spec>, t: Throwable) =
       Try {
+         val listeners = configuration.specInstantiationListeners()
          t.printStackTrace()
          log("Executing engine listener callback:specInstantiationError $kclass error:$t")
          listener.specInstantiationError(kclass, t)
+         listeners.forEach {
+            it.specInstantiationError(kclass, t)
+         }
       }
 
    /**
