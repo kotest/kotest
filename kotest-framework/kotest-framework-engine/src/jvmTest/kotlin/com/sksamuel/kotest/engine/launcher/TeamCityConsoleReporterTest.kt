@@ -5,6 +5,8 @@ import io.kotest.assertions.Expected
 import io.kotest.assertions.failure
 import io.kotest.assertions.shouldFail
 import io.kotest.assertions.show.Printed
+import io.kotest.core.annotation.EnabledCondition
+import io.kotest.core.annotation.EnabledIf
 import io.kotest.core.sourceRef
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.style.FunSpec
@@ -24,6 +26,13 @@ import io.kotest.matchers.string.shouldHaveLineCount
 import io.kotest.matchers.string.shouldStartWith
 import kotlin.reflect.KClass
 
+private val osName = System.getProperty("os.name").toLowerCase()
+
+class EnabledIfNotWindows : EnabledCondition {
+   override fun enabled(specKlass: KClass<out Spec>): Boolean = osName.contains("windows")
+}
+
+@EnabledIf(EnabledIfNotWindows::class)
 class TeamCityConsoleReporterTest : FunSpec() {
 
    private val kclass: KClass<out Spec> = TeamCityConsoleReporterTest::class

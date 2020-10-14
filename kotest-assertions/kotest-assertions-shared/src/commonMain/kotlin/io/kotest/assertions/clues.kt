@@ -11,6 +11,23 @@ inline fun <R> withClue(clue: Any, thunk: () -> R): R {
    return clue.asClue { thunk() }
 }
 
+
+/**
+ * Similar to [withClue] but accepts a lazy in the case that a clue is expensive or is only valid when an assertion fails.
+ * Can be nested, the error message will contain all available clues.
+ *
+ * @param thunk the code with assertions to be executed
+ * @return the return value of the supplied [thunk]
+ */
+inline fun <R> withClue(clue: Lazy<Any>, thunk: () -> R): R {
+   try {
+      errorCollector.pushClue { clue.value.toString() }
+      return thunk()
+   } finally {
+      errorCollector.popClue()
+   }
+}
+
 /**
  * Similar to `withClue`, but will add `this` as a clue to the assertion error message in case an assertion fails.
  * Can be nested, the error message will contain all available clues.
@@ -20,7 +37,7 @@ inline fun <R> withClue(clue: Any, thunk: () -> R): R {
  */
 inline fun <T : Any, R> T.asClue(block: (T) -> R): R {
    try {
-      errorCollector.pushClue(this)
+      errorCollector.pushClue { this.toString() }
       return block(this)
    } finally {
       errorCollector.popClue()

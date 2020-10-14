@@ -29,7 +29,7 @@ interface ErrorCollector {
     */
    fun clear()
 
-   fun pushClue(clue: Any)
+   fun pushClue(clue: () -> String)
 
    fun popClue()
 
@@ -37,14 +37,14 @@ interface ErrorCollector {
     * Returns the current clue context.
     * That is all the clues nested to this point.
     */
-   fun clueContext(): List<Any>
+   fun clueContext(): List<() -> String>
 }
 
 open class BasicErrorCollector : ErrorCollector {
 
    private val failures = mutableListOf<Throwable>()
    private var mode = ErrorCollectionMode.Hard
-   private val clues = mutableListOf<Any>()
+   private val clues = mutableListOf<() -> String>()
 
    override fun getCollectionMode(): ErrorCollectionMode = mode
 
@@ -52,7 +52,7 @@ open class BasicErrorCollector : ErrorCollector {
       this.mode = mode
    }
 
-   override fun pushClue(clue: Any) {
+   override fun pushClue(clue: () -> String) {
       clues.add(0, clue)
    }
 
@@ -60,7 +60,7 @@ open class BasicErrorCollector : ErrorCollector {
       clues.removeAt(0)
    }
 
-   override fun clueContext(): List<Any> = clues.toList()
+   override fun clueContext(): List<() -> String> = clues.toList()
 
    override fun pushError(t: Throwable) {
       failures.add(t)
@@ -72,7 +72,7 @@ open class BasicErrorCollector : ErrorCollector {
 }
 
 fun clueContextAsString() = errorCollector.clueContext().let {
-   if (it.isEmpty()) "" else it.joinToString("\n", postfix = "\n")
+   if (it.isEmpty()) "" else it.joinToString("\n", postfix = "\n") { f -> f.invoke() }
 }
 
 /**

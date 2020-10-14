@@ -45,14 +45,13 @@ import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNot
 import io.kotest.matchers.string.shouldEndWith
 import io.kotest.matchers.string.shouldMatch
+import sun.font.FontUtilities.isWindows
 import java.io.File
 import java.nio.file.Files
 import java.nio.file.Paths
 
 @Suppress("BlockingMethodInNonBlockingContext")
 class FileMatchersTest : FunSpec() {
-  private val osName = System.getProperty("os.name").toLowerCase()
-  private val isWindows = osName.contains("windows")
 
   init {
 
@@ -246,7 +245,7 @@ class FileMatchersTest : FunSpec() {
       }.message shouldBe "Files a.txt, b.gif should not exist in $testDir"
     }
 
-    test("shouldBeSymbolicLink should check if file is symbolic link") {
+    test("shouldBeSymbolicLink should check if file is symbolic link").config(enabled = isNotWindowsOrIsWindowsElevated(isWindows)) {
       val testDir = Files.createTempDirectory("testdir")
 
       val existingFile = Files.write(testDir.resolve("original.txt"), byteArrayOf(1, 2, 3, 4))
@@ -278,3 +277,18 @@ class FileMatchersTest : FunSpec() {
     }
   }
 }
+
+private fun isNotWindowsOrIsWindowsElevated(isWindows: Boolean): Boolean {
+   return if (!isWindows)
+      true
+   else
+      try {
+         val p = Runtime.getRuntime().exec("""reg query "HKU\S-1-5-19"""")
+         p.waitFor()
+         0 == p.exitValue()
+      } catch (ex: Exception) {
+         println("Failed to determine if process had elevated permissions, assuming it does not.")
+         false
+      }
+}
+
