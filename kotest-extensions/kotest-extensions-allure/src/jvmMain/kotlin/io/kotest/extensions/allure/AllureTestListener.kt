@@ -1,15 +1,18 @@
 package io.kotest.extensions.allure
 
 import io.kotest.core.listeners.ProjectListener
+import io.kotest.core.listeners.SpecInstantiationListener
 import io.kotest.core.listeners.TestListener
+import io.kotest.core.spec.Spec
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestType
+import kotlin.reflect.KClass
 
 @Deprecated("Use AllureTestReporter(); this will be removed in 4.4")
 val AllureTestListener = AllureTestReporter()
 
-class AllureTestReporter(private val includeContainers: Boolean = false) : TestListener, ProjectListener {
+class AllureTestReporter(private val includeContainers: Boolean = false) : TestListener, ProjectListener, SpecInstantiationListener {
 
    override val name = "AllureTestReporter"
 
@@ -25,5 +28,9 @@ class AllureTestReporter(private val includeContainers: Boolean = false) : TestL
       if (includeContainers || testCase.type == TestType.Test) {
          writer.finishTestCase(testCase, result)
       }
+   }
+
+   override fun specInstantiationError(kclass: KClass<out Spec>, t: Throwable) {
+      writer.allureResultSpecInitFailure(kclass, t)
    }
 }
