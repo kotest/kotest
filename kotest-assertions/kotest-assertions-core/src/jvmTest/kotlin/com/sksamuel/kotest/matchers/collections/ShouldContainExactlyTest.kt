@@ -12,8 +12,11 @@ import io.kotest.matchers.should
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNot
 import io.kotest.matchers.throwable.shouldHaveMessage
+import java.io.File
 import java.nio.file.Path
 import java.nio.file.Paths
+
+private val sep = File.separator
 
 class ShouldContainExactlyTest : WordSpec() {
 
@@ -102,15 +105,15 @@ Some elements were missing: [
                   Blonde("woo", true, 97821, Paths.get("a/b/c"))
                )
             }.message?.trim() shouldBe ("""Expecting: [
-  Blonde(a=foo, b=true, c=23423, p=a/b/c),
-  Blonde(a=woo, b=true, c=97821, p=a/b/c)
+  Blonde(a=foo, b=true, c=23423, p=a${sep}b${sep}c),
+  Blonde(a=woo, b=true, c=97821, p=a${sep}b${sep}c)
 ] but was: [
-  Blonde(a=foo, b=true, c=23423, p=a/b/c),
-  Blonde(a=woo, b=true, c=97821, p=a/b/c),
-  Blonde(a=goo, b=true, c=51984, p=a/b/c)
+  Blonde(a=foo, b=true, c=23423, p=a${sep}b${sep}c),
+  Blonde(a=woo, b=true, c=97821, p=a${sep}b${sep}c),
+  Blonde(a=goo, b=true, c=51984, p=a${sep}b${sep}c)
 ]
 Some elements were unexpected: [
-  Blonde(a=goo, b=true, c=51984, p=a/b/c)
+  Blonde(a=goo, b=true, c=51984, p=a${sep}b${sep}c)
 ]""")
          }
 
@@ -124,13 +127,13 @@ Some elements were unexpected: [
                )
             }.message?.trim() shouldBe (
                """Expecting: [
-  Blonde(a=foo, b=true, c=23423, p=a/b/c),
-  Blonde(a=woo, b=true, c=97821, p=a/b/c)
+  Blonde(a=foo, b=true, c=23423, p=a${sep}b${sep}c),
+  Blonde(a=woo, b=true, c=97821, p=a${sep}b${sep}c)
 ] but was: [
-  Blonde(a=foo, b=true, c=23423, p=a/b/c)
+  Blonde(a=foo, b=true, c=23423, p=a${sep}b${sep}c)
 ]
 Some elements were missing: [
-  Blonde(a=woo, b=true, c=97821, p=a/b/c)
+  Blonde(a=woo, b=true, c=97821, p=a${sep}b${sep}c)
 ]"""
                )
          }
@@ -144,16 +147,16 @@ Some elements were missing: [
                   Blonde("woo", true, 97821, Paths.get("a/b/c"))
                )
             }.message?.trim() shouldBe ("""Expecting: [
-  Blonde(a=woo, b=true, c=97821, p=a/b/c)
+  Blonde(a=woo, b=true, c=97821, p=a${sep}b${sep}c)
 ] but was: [
-  Blonde(a=foo, b=true, c=23423, p=a/b/c),
-  Blonde(a=hoo, b=true, c=96915, p=a/b/c)
+  Blonde(a=foo, b=true, c=23423, p=a${sep}b${sep}c),
+  Blonde(a=hoo, b=true, c=96915, p=a${sep}b${sep}c)
 ]
 Some elements were missing: [
-  Blonde(a=woo, b=true, c=97821, p=a/b/c)
+  Blonde(a=woo, b=true, c=97821, p=a${sep}b${sep}c)
 ] and some elements were unexpected: [
-  Blonde(a=foo, b=true, c=23423, p=a/b/c),
-  Blonde(a=hoo, b=true, c=96915, p=a/b/c)
+  Blonde(a=foo, b=true, c=23423, p=a${sep}b${sep}c),
+  Blonde(a=hoo, b=true, c=96915, p=a${sep}b${sep}c)
 ]""")
          }
 
@@ -167,18 +170,18 @@ Some elements were missing: [
                   Blonde("goo", true, 51984, Paths.get("a/b/c"))
                )
             }.message?.trim() shouldBe """Expecting: [
-  Blonde(a=woo, b=true, c=97821, p=a/b/c),
-  Blonde(a=goo, b=true, c=51984, p=a/b/c)
+  Blonde(a=woo, b=true, c=97821, p=a${sep}b${sep}c),
+  Blonde(a=goo, b=true, c=51984, p=a${sep}b${sep}c)
 ] but was: [
-  Blonde(a=foo, b=true, c=23423, p=a/b/c),
-  Blonde(a=hoo, b=true, c=96915, p=a/b/c)
+  Blonde(a=foo, b=true, c=23423, p=a${sep}b${sep}c),
+  Blonde(a=hoo, b=true, c=96915, p=a${sep}b${sep}c)
 ]
 Some elements were missing: [
-  Blonde(a=woo, b=true, c=97821, p=a/b/c),
-  Blonde(a=goo, b=true, c=51984, p=a/b/c)
+  Blonde(a=woo, b=true, c=97821, p=a${sep}b${sep}c),
+  Blonde(a=goo, b=true, c=51984, p=a${sep}b${sep}c)
 ] and some elements were unexpected: [
-  Blonde(a=foo, b=true, c=23423, p=a/b/c),
-  Blonde(a=hoo, b=true, c=96915, p=a/b/c)
+  Blonde(a=foo, b=true, c=23423, p=a${sep}b${sep}c),
+  Blonde(a=hoo, b=true, c=96915, p=a${sep}b${sep}c)
 ]"""
          }
       }
