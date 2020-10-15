@@ -4,6 +4,7 @@ import io.kotest.core.extensions.Extension
 import io.kotest.core.extensions.TestCaseExtension
 import io.kotest.core.filter.Filter
 import io.kotest.core.listeners.Listener
+import io.kotest.core.listeners.SpecInstantiationListener
 import io.kotest.core.listeners.TestListener
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.SpecExecutionOrder
@@ -231,3 +232,5 @@ class Configuration {
 
 fun Configuration.testListeners(): List<TestListener> = listeners().filterIsInstance<TestListener>()
 fun Configuration.testCaseExtensions(): List<TestCaseExtension> = listeners().filterIsInstance<TestCaseExtension>()
+fun Configuration.specInstantiationListeners(): List<SpecInstantiationListener> = listeners().filterIsInstance<SpecInstantiationListener>()
+
