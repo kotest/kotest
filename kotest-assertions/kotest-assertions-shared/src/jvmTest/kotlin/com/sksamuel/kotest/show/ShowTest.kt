@@ -9,6 +9,8 @@ import io.kotest.matchers.shouldBe
 import java.io.File
 import java.nio.file.Paths
 
+private val sep = File.separator
+
 class ShowTest : FunSpec() {
    init {
 
@@ -37,8 +39,8 @@ class ShowTest : FunSpec() {
       test("Detect show for any") {
          13.show().value shouldBe "13"
          true.show().value shouldBe "true"
-         File("/a/b/c").show().value shouldBe "/a/b/c"
-         Paths.get("/a/b/c").show().value shouldBe "/a/b/c"
+         File("/a/b/c").show().value shouldBe "${sep}a${sep}b${sep}c"
+         Paths.get("/a/b/c").show().value shouldBe "${sep}a${sep}b${sep}c"
       }
 
       test("detect show for boolean") {

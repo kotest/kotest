@@ -7,8 +7,11 @@ import io.kotest.assertions.withClue
 import io.kotest.core.spec.style.FreeSpec
 import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
+import io.kotest.matchers.nulls.shouldBeNull
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldContain
+import io.kotest.matchers.string.shouldStartWith
+import java.util.*
 
 class ClueTest : FreeSpec({
 
@@ -51,6 +54,28 @@ class ClueTest : FreeSpec({
          }
          //And resets completely when leaving final clue block
          shouldThrow<AssertionError> { "7" shouldBe "8" }.message shouldBe "expected:<\"8\"> but was:<\"7\">"
+      }
+
+      "should only invoke the lazy if an assertion fails" {
+         val expected = UUID.randomUUID()
+         var state: String? = null
+         val clue: Lazy<UUID> = lazy {
+            expected.also { state = it.toString() }
+         }
+
+         state.shouldBeNull()
+
+         withClue(clue) {
+            1 + 1 shouldBe 2
+         }
+
+         state.shouldBeNull()
+
+         withClue(clue) {
+            shouldThrow<AssertionError> { "1" shouldBe "2" }.message shouldStartWith expected.toString()
+         }
+
+         state shouldBe expected.toString()
       }
 
    }

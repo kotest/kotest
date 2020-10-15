@@ -72,6 +72,7 @@ kotlin {
             implementation(project(Projects.Property))
             implementation(project(Projects.JunitRunner))
             implementation(Libs.OpenTest4j.core)
+            implementation(Libs.Apache.commonslang)
          }
       }
    }
