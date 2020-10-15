@@ -111,6 +111,9 @@ object Libs {
    object TestContainers {
       private const val version = "1.14.3"
       const val testcontainers = "org.testcontainers:testcontainers:$version"
+      const val testcontainersSelenium = "org.testcontainers:selenium:$version"
+      const val testcontainersKafka = "org.testcontainers:kafka:$version"
+      const val testcontainersElasticsearch = "org.testcontainers:elasticsearch:$version"
    }
 
    object Spring {

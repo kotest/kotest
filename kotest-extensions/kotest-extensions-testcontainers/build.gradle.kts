@@ -35,6 +35,9 @@ kotlin {
             implementation(project(Projects.Engine))
             implementation(project(Projects.Api))
             api(Libs.TestContainers.testcontainers)
+            api(Libs.TestContainers.testcontainersSelenium)
+            api(Libs.TestContainers.testcontainersKafka)
+            api(Libs.TestContainers.testcontainersElasticsearch)
             api(Libs.Coroutines.coreJvm)
          }
       }
