@@ -8,8 +8,8 @@ actual val errorCollector: ErrorCollector = ThreadLocalErrorCollector
 
 object ThreadLocalErrorCollector : ErrorCollector {
 
-   private val clueContext = object : ThreadLocal<Stack<() -> String>>() {
-      override fun initialValue(): Stack<() -> String> = Stack()
+   private val clueContext = object : ThreadLocal<Stack<Clue>>() {
+      override fun initialValue(): Stack<Clue> = Stack()
    }
 
    private val failures = object : ThreadLocal<MutableList<Throwable>>() {
@@ -24,7 +24,7 @@ object ThreadLocalErrorCollector : ErrorCollector {
 
    override fun getCollectionMode(): ErrorCollectionMode = collectionMode.get()
 
-   override fun pushClue(clue: () -> String) {
+   override fun pushClue(clue: Clue) {
       clueContext.get().push(clue)
    }
 
@@ -32,7 +32,7 @@ object ThreadLocalErrorCollector : ErrorCollector {
       clueContext.get().pop()
    }
 
-   override fun clueContext(): List<() -> String> = clueContext.get()
+   override fun clueContext(): List<Clue> = clueContext.get()
 
    override fun errors(): List<Throwable> = failures.get().toList()
 

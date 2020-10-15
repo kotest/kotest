@@ -45,7 +45,7 @@ import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNot
 import io.kotest.matchers.string.shouldEndWith
 import io.kotest.matchers.string.shouldMatch
-import sun.font.FontUtilities.isWindows
+import org.apache.commons.lang3.SystemUtils.IS_OS_WINDOWS
 import java.io.File
 import java.nio.file.Files
 import java.nio.file.Paths
@@ -61,7 +61,7 @@ class FileMatchersTest : FunSpec() {
     }
 
     test("absolute() should match only absolute files") {
-      val root = if (isWindows) "C:/" else "/"
+      val root = if (IS_OS_WINDOWS) "C:/" else "/"
       File("${root}sammy/boy") shouldBe beAbsolute()
       File("${root}sammy/boy").shouldBeAbsolute()
     }
@@ -245,7 +245,7 @@ class FileMatchersTest : FunSpec() {
       }.message shouldBe "Files a.txt, b.gif should not exist in $testDir"
     }
 
-    test("shouldBeSymbolicLink should check if file is symbolic link").config(enabled = isNotWindowsOrIsWindowsElevated(isWindows)) {
+    test("shouldBeSymbolicLink should check if file is symbolic link").config(enabled = isNotWindowsOrIsWindowsElevated()) {
       val testDir = Files.createTempDirectory("testdir")
 
       val existingFile = Files.write(testDir.resolve("original.txt"), byteArrayOf(1, 2, 3, 4))
@@ -278,8 +278,8 @@ class FileMatchersTest : FunSpec() {
   }
 }
 
-private fun isNotWindowsOrIsWindowsElevated(isWindows: Boolean): Boolean {
-   return if (!isWindows)
+private fun isNotWindowsOrIsWindowsElevated(): Boolean {
+   return if (!IS_OS_WINDOWS)
       true
    else
       try {
@@ -291,4 +291,3 @@ private fun isNotWindowsOrIsWindowsElevated(isWindows: Boolean): Boolean {
          false
       }
 }
-

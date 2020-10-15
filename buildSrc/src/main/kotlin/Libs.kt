@@ -82,6 +82,7 @@ object Libs {
 
    object Apache {
       const val commonsio = "commons-io:commons-io:2.6"
+      const val commonslang = "org.apache.commons:commons-lang3:3.11"
    }
 
    object MockServer {
