@@ -3,6 +3,9 @@ MockServer
 
 Kotest provides an extension for integration with the [MockServer](https://www.mock-server.com) library.
 
+!!! note
+    Requires the `kotest-extensions-mockserver` module to be added to your build.
+
 Mockserver allows us to define an in process HTTP server which is hard coded for routes that we want to test against.
 
 To use in Kotest, we attach an instance of `MockServerListener` to the spec under test, and Kotest will control
