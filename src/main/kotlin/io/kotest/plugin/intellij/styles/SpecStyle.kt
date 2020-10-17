@@ -5,7 +5,7 @@ import com.intellij.psi.impl.source.tree.LeafPsiElement
 import io.kotest.plugin.intellij.Test
 import io.kotest.plugin.intellij.TestElement
 import io.kotest.plugin.intellij.TestType
-import io.kotest.plugin.intellij.psi.isContainedInSpec
+import io.kotest.plugin.intellij.psi.isContainedInSpecificSpec
 import org.jetbrains.kotlin.name.FqName
 import org.jetbrains.kotlin.psi.KtConstructorCalleeExpression
 import org.jetbrains.kotlin.psi.KtDeclarationModifierList
@@ -18,6 +18,8 @@ import org.jetbrains.kotlin.psi.KtStringTemplateExpression
 import org.jetbrains.kotlin.psi.KtTypeArgumentList
 import org.jetbrains.kotlin.psi.KtTypeParameterList
 import org.jetbrains.kotlin.psi.KtTypeReference
+
+val specStyleFqns = SpecStyle.styles.map { it.fqn() }
 
 interface SpecStyle {
 
@@ -40,7 +42,7 @@ interface SpecStyle {
     * Returns true if the given [PsiElement] is located within a class which extends
     * the spec class associated with this style instance.
     */
-   fun isContainedInSpec(element: PsiElement): Boolean = element.isContainedInSpec(fqn())
+   fun isContainedInSpec(element: PsiElement): Boolean = element.isContainedInSpecificSpec(fqn())
 
    /**
     * Returns a [Test] if this [PsiElement] is the canonical root of a test AST.

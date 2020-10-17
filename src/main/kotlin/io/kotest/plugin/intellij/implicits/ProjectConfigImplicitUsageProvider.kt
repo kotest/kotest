@@ -2,9 +2,10 @@ package io.kotest.plugin.intellij.implicits
 
 import com.intellij.codeInsight.daemon.ImplicitUsageProvider
 import com.intellij.psi.PsiElement
-import io.kotest.plugin.intellij.psi.getSuperClassSimpleName
+import io.kotest.plugin.intellij.psi.getAllSuperClasses
 import io.kotest.plugin.intellij.psi.toKtClass
 import org.jetbrains.kotlin.asJava.classes.KtLightClass
+import org.jetbrains.kotlin.name.FqName
 import org.jetbrains.kotlin.psi.KtClassOrObject
 
 /**
@@ -23,10 +24,10 @@ class ProjectConfigImplicitUsageProvider : ImplicitUsageProvider {
     */
    override fun isImplicitUsage(element: PsiElement): Boolean {
       val parent = when (element) {
-         is KtClassOrObject -> element.getSuperClassSimpleName()
-         is KtLightClass -> element.toKtClass()?.getSuperClassSimpleName()
+         is KtClassOrObject -> element.toKtClass()
+         is KtLightClass -> element.toKtClass()
          else -> null
       }
-      return parent == "AbstractProjectConfig"
+      return parent?.getAllSuperClasses()?.contains(FqName("io.kotest.core.config.AbstractProjectConfig")) ?: false
    }
 }

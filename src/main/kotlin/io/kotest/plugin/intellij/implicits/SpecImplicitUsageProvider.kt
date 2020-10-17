@@ -2,7 +2,7 @@ package io.kotest.plugin.intellij.implicits
 
 import com.intellij.codeInsight.daemon.ImplicitUsageProvider
 import com.intellij.psi.PsiElement
-import io.kotest.plugin.intellij.psi.isDirectSubclassOfSpec
+import io.kotest.plugin.intellij.psi.isSpec
 import org.jetbrains.kotlin.asJava.classes.KtLightClass
 import org.jetbrains.kotlin.psi.KtClass
 
@@ -27,6 +27,6 @@ class SpecImplicitUsageProvider : ImplicitUsageProvider {
          }
          else -> null
       }
-      return ktclass?.isDirectSubclassOfSpec() ?: false
+      return ktclass?.isSpec() ?: false
    }
 }

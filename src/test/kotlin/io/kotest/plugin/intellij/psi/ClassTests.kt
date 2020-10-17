@@ -23,11 +23,16 @@ class ClassTests : LightJavaCodeInsightFixtureTestCase() {
       ktclass.name shouldBe "FunSpecExampleTest"
    }
 
-   fun testSuperClassSimpleName() {
+   fun testSuperClasses() {
       val psiFile = myFixture.configureByFile("/funspec.kt")
-      val superclass = psiFile.elementAtLine(21)?.enclosingKtClass()?.getSuperClassSimpleName()
-      superclass.shouldNotBeNull()
-      superclass shouldBe "FunSpec"
+      val supers = psiFile.elementAtLine(21)?.enclosingKtClass()?.getAllSuperClasses()
+      supers shouldBe listOf("FunSpec")
+   }
+
+   fun testSuperSuperClasses() {
+      val psiFile = myFixture.configureByFile("/abstractspec.kt")
+      val supers = psiFile.elementAtLine(11)?.enclosingKtClass()?.getAllSuperClasses()
+      supers shouldBe listOf("FunSpec", "MyParentSpec")
    }
 
    fun testEnclosingClassOrObjectForClassOrObjectToken() {

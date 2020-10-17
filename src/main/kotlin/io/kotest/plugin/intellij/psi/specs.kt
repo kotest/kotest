@@ -3,8 +3,6 @@ package io.kotest.plugin.intellij.psi
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import io.kotest.plugin.intellij.styles.SpecStyle
-import org.jetbrains.kotlin.asJava.classes.KtLightClass
-import org.jetbrains.kotlin.asJava.classes.KtUltraLightClass
 import org.jetbrains.kotlin.name.FqName
 import org.jetbrains.kotlin.psi.KtBlockExpression
 import org.jetbrains.kotlin.psi.KtCallExpression
@@ -27,45 +25,20 @@ import org.jetbrains.kotlin.psi.psiUtil.getStrictParentOfType
  * Returns all [KtClass] children of this [PsiFile] that are instances of a spec class.
  */
 fun PsiFile.specs(): List<KtClass> {
-   return this.classes().filter { it.isDirectSubclassOfSpec() }
+   return this.classes().filter { it.isSpec() }
 }
 
 /**
- * Returns true if this [KtClass] is a descendent of any Spec.
- * This method will recursively check parents.
+ * Returns true if this class is subclass of a spec (including classes which themselves subclass spec).
  */
-fun KtClass.isSubclassOfSpec(): Boolean = this.specStyle() != null
-fun KtUltraLightClass.isSubclassOfSpec(): Boolean = this.specStyle() != null
-fun KtLightClass.isSubclassOfSpec(): Boolean = this.specStyle() != null
+fun KtClass.isSpec(): Boolean = this.specStyle() != null
 
 /**
- * Returns true if this [KtClass] is a subclass of any Spec.
- * This method will not recursively check parents, it will only check the immediate parent.
- * It relies on the simple name of spec classes, eg FunSpec rather than io.kotest....FunSpec
- */
-fun KtClass.isDirectSubclassOfSpec(): Boolean = this.specStyle() != null
-
-/**
- * Efficiently locates the [SpecStyle] for this class, or null if this class is not a spec.
+ * Returns the spec style for this class if it is a subclass of a spec, or null otherwise.
  */
 fun KtClass.specStyle(): SpecStyle? {
-   val supername = getSuperClassSimpleName()
-   val style = SpecStyle.styles.find { it.fqn().shortName().asString() == supername }
-   return style ?: getSuperClass()?.specStyle()
-}
-
-/**
- * Efficiently locates the [SpecStyle] for this class, or null if this class is not a spec.
- */
-fun KtLightClass.specStyle(): SpecStyle? {
-   val supername = superClass?.name ?: return null
-   val style = SpecStyle.styles.find { it.fqn().shortName().asString() == supername }
-   if (style != null) return style
-   return when (val s = superClass) {
-      is KtClass -> s.specStyle()
-      is KtLightClass -> s.specStyle()
-      else -> null
-   }
+   val supers = getAllSuperClasses()
+   return SpecStyle.styles.find { supers.contains(it.fqn()) }
 }
 
 fun KtCallExpression.isDslInvocation(): Boolean {
@@ -221,13 +194,30 @@ fun KtBlockExpression.callbacks(): List<Callback> {
 }
 
 /**
+ * Returns true if this [PsiElement] is contained within a class that is a subclass
+ * of the given spec FQN
+ */
+fun PsiElement.isContainedInSpecificSpec(fqn: FqName): Boolean {
+   val enclosingClass = getStrictParentOfType<KtClass>() ?: return false
+   return enclosingClass.isSubclass(fqn)
+}
+
+/**
+ * Returns true if this [PsiElement] is located inside a class that subclasses any spec.
+ */
+fun PsiElement.isContainedInSpec(): Boolean {
+   val enclosingClass = getStrictParentOfType<KtClass>() ?: return false
+   return enclosingClass.isSpec()
+}
+
+/**
  * Returns the Spec that contains this element, or null if this element is not located inside a spec class.
  */
 fun PsiElement.enclosingSpec(): KtClass? {
    val ktclass = this.getStrictParentOfType<KtClass>()
    return when {
       ktclass == null -> null
-      ktclass.isSubclassOfSpec() -> ktclass
+      ktclass.isSpec() -> ktclass
       else -> ktclass.enclosingSpec()
    }
 }
@@ -273,22 +263,5 @@ enum class CallbackType {
    };
 
    abstract val text: String
-}
-
-/**
- * Returns true if this [PsiElement] is contained within a class that is a subclass
- * of the given spec FQN
- */
-fun PsiElement.isContainedInSpec(fqn: FqName): Boolean {
-   val enclosingClass = getStrictParentOfType<KtClass>() ?: return false
-   return enclosingClass.isSubclass(fqn)
-}
-
-/**
- * Returns true if this [PsiElement] is located inside a class that subclasses any spec.
- */
-fun PsiElement.isContainedInSpec(): Boolean {
-   val enclosingClass = getStrictParentOfType<KtClass>() ?: return false
-   return enclosingClass.isSubclassOfSpec()
 }
 

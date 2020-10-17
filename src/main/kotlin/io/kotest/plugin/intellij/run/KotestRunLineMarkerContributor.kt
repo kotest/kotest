@@ -17,7 +17,7 @@ import org.jetbrains.kotlin.psi.KtImportDirective
 import org.jetbrains.kotlin.psi.KtImportList
 import org.jetbrains.kotlin.psi.KtPackageDirective
 import com.intellij.util.Function
-import io.kotest.plugin.intellij.psi.isDirectSubclassOfSpec
+import io.kotest.plugin.intellij.psi.isSpec
 
 /**
  * Given an element, returns an [RunLineMarkerContributor.Info] if the elements line should have a gutter icon added.
@@ -46,7 +46,7 @@ class KotestRunLineMarkerContributor : RunLineMarkerContributor() {
     */
    private fun markerForSpec(leaf: LeafPsiElement): Info? {
       val ktclass = leaf.ktclassIfCanonicalSpecLeaf() ?: return null
-      return if (ktclass.isDirectSubclassOfSpec()) icon(ktclass) else null
+      return if (ktclass.isSpec()) icon(ktclass) else null
    }
 
    private fun markerForTest(element: LeafPsiElement): Info? {

@@ -1,15 +1,15 @@
 package io.kotest.plugin.intellij.psi
 
+import com.intellij.psi.PsiClass
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.psi.impl.source.tree.LeafPsiElement
 import org.jetbrains.kotlin.asJava.classes.KtLightClass
+import org.jetbrains.kotlin.asJava.toLightClass
+import org.jetbrains.kotlin.idea.refactoring.fqName.getKotlinFqName
 import org.jetbrains.kotlin.name.FqName
-import org.jetbrains.kotlin.nj2k.postProcessing.resolve
 import org.jetbrains.kotlin.psi.KtClass
 import org.jetbrains.kotlin.psi.KtClassOrObject
-import org.jetbrains.kotlin.psi.KtPrimaryConstructor
-import org.jetbrains.kotlin.psi.KtSuperTypeCallEntry
 import org.jetbrains.kotlin.psi.psiUtil.getChildrenOfType
 import org.jetbrains.kotlin.psi.psiUtil.getStrictParentOfType
 
@@ -26,45 +26,14 @@ fun LeafPsiElement.ktclassIfCanonicalSpecLeaf(): KtClass? {
 }
 
 /**
- * Returns the simple name of the parent class of this class.
- * Is efficient, does not require resolve.
- */
-fun KtClassOrObject.getSuperClassSimpleName(): String? {
-   for (entry in superTypeListEntries) {
-      if (entry is KtSuperTypeCallEntry) {
-         val name = entry.typeAsUserType?.referencedName
-         if (name != null) return name
-      }
-   }
-   return null
-}
-
-
-/**
  * Returns the [KtClass] from this light class, otherwise null.
  */
 fun KtLightClass.toKtClass(): KtClass? = kotlinOrigin?.toKtClass()
 
 /**
- * Returns true if this [KtClass] is a direct subclass of the given fully qualified name.
+ * Returns true if this [KtClass] is a descendent of the given class,
  */
-private fun KtClass.isDirectSubclass(fqn: FqName): Boolean {
-   return when (val simpleName = getSuperClassSimpleName()) {
-      null -> false
-      else -> fqn.shortName().asString() == simpleName
-   }
-}
-
-/**
- * Returns true if this [KtClass] is a descendent of the given fully qualified name.
- * Recursively checks each parent.
- * Efficiently checks the first parent without requiring resolve, but requires resolve for
- * abstract parents.
- */
-fun KtClass.isSubclass(fqn: FqName): Boolean {
-   if (isDirectSubclass(fqn)) return true
-   return getSuperClass()?.isSubclass(fqn) ?: false
-}
+fun KtClass.isSubclass(fqn: FqName): Boolean = getAllSuperClasses().contains(fqn)
 
 /**
  * If this is an instance of [KtClass] returns this, otherwise returns null.
@@ -84,23 +53,10 @@ fun PsiFile.classes(): List<KtClass> {
 fun PsiElement.enclosingKtClass(): KtClass? = getStrictParentOfType()
 
 /**
- * Returns the superclass parent of this [KtClass].
- * If this class or object only implements interfaces then this function will
- * return null.
- *
- * This is slow because it will call resolve.
+ * Recursively returns the list of classes and interfaces extended or implemented by the class.
  */
-fun KtClass.getSuperClass(): KtClass? {
-   for (entry in superTypeListEntries) {
-      if (entry is KtSuperTypeCallEntry) {
-
-         val ref = entry.calleeExpression
-            .constructorReferenceExpression
-            ?.resolve()
-
-         if (ref is KtClass) return ref
-         if (ref is KtPrimaryConstructor) return ref.getContainingClassOrObject().toKtClass()
-      }
-   }
-   return null
+fun KtClass.getAllSuperClasses(): List<FqName> {
+   fun supers(psi: PsiClass): List<PsiClass> = listOf(psi) + psi.supers.flatMap { supers(it) }
+   val supers = toLightClass()?.supers?.flatMap { supers(it) } ?: emptyList()
+   return supers.mapNotNull { it.getKotlinFqName() }
 }
