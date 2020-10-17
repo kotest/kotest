@@ -1,6 +1,7 @@
 package io.kotest.core.internal
 
 import io.kotest.core.config.configuration
+import io.kotest.core.filter.SpecClassExecutionFilter
 import io.kotest.core.filter.TestFilter
 import io.kotest.core.filter.TestFilterResult
 import io.kotest.core.test.TestCase
@@ -11,9 +12,12 @@ import io.kotest.core.internal.tags.activeTags
 import io.kotest.core.internal.tags.allTags
 import io.kotest.core.internal.tags.isActive
 import io.kotest.core.internal.tags.parse
+import io.kotest.core.spec.Spec
 import io.kotest.core.test.TestCaseSeverityLevel
+import io.kotest.mpp.annotation
 import io.kotest.mpp.log
 import io.kotest.mpp.sysprop
+import kotlin.reflect.KClass
 
 /**
  * Returns true if the given [TestCase] is active.
@@ -76,6 +80,18 @@ fun TestCase.isActive(): Boolean {
       ?: TestCaseSeverityLevel.valueOf("NORMAL").isEnabled()
    if(!severityEnabled) {
       log("${description.testPath()} is disabled by severityLevel")
+      return false
+   }
+
+   return true
+}
+
+fun KClass<out Spec>.isActive(): Boolean {
+
+   val currentFilter = this.annotation<SpecClassExecutionFilter>()
+   val enabledByFilter = ( currentFilter != null && (sysprop(KotestEngineSystemProperties.specClassExecutionFilter) as List<String>)?.let { it.contains(currentFilter?.filter) } )
+   if(!enabledByFilter) {
+      log("${this.qualifiedName} is disabled by specClassFilter")
       return false
    }
 

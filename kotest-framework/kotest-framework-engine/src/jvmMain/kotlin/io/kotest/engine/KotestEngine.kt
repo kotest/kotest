@@ -3,6 +3,7 @@ package io.kotest.engine
 import io.kotest.core.Tags
 import io.kotest.core.config.configuration
 import io.kotest.core.filter.TestFilter
+import io.kotest.core.internal.isActive
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.afterProject
 import io.kotest.core.spec.beforeProject
@@ -133,7 +134,7 @@ class KotestEngine(private val config: KotestEngineConfig) {
          parallelism,
          NamedThreadFactory("kotest-engine-%d")
       )
-      specs.forEach { klass ->
+      specs.filter { it.isActive() }.forEach { klass ->
          executor.submit {
             runBlocking {
                specExecutor.execute(klass)
