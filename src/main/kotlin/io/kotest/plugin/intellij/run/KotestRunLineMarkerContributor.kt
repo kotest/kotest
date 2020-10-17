@@ -26,7 +26,7 @@ class KotestRunLineMarkerContributor : RunLineMarkerContributor() {
 
    override fun getInfo(element: PsiElement): Info? {
       // the docs say to only run a line marker for a leaf
-      return when (element) {
+      val info = when (element) {
          // ignoring white space elements will save a lot of lookups
          is PsiWhiteSpace -> null
          is LeafPsiElement -> {
@@ -38,6 +38,8 @@ class KotestRunLineMarkerContributor : RunLineMarkerContributor() {
          }
          else -> null
       }
+      println(info)
+      return info
    }
 
    /**
@@ -45,6 +47,7 @@ class KotestRunLineMarkerContributor : RunLineMarkerContributor() {
     * parent is the KtClass or KtObject.
     */
    private fun markerForSpec(leaf: LeafPsiElement): Info? {
+      //println("Is marker for spec ${leaf.parent} ${leaf.parent::class}")
       val ktclass = leaf.ktclassIfCanonicalSpecLeaf() ?: return null
       return if (ktclass.isSpec()) icon(ktclass) else null
    }

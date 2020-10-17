@@ -15,7 +15,7 @@ import org.jetbrains.kotlin.psi.KtImportDirective
 import org.jetbrains.kotlin.psi.KtImportList
 import org.jetbrains.kotlin.psi.KtPackageDirective
 
-class IgnoredTestLineMarker : LineMarkerProvider {
+class DisabledTestLineMarker : LineMarkerProvider {
 
    override fun getLineMarkerInfo(element: PsiElement): LineMarkerInfo<*>? {
       // the docs say to only run a line marker for a leaf

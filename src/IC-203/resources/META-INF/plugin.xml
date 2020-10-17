@@ -75,7 +75,7 @@
                   factoryClass="io.kotest.plugin.intellij.toolwindow.TestExplorerToolWindowFactory"/>
 
       <codeInsight.lineMarkerProvider language="kotlin"
-                                      implementationClass="io.kotest.plugin.intellij.linemarker.IgnoredTestLineMarker"/>
+                                      implementationClass="io.kotest.plugin.intellij.linemarker.DisabledTestLineMarker"/>
 
       <runLineMarkerContributor language="kotlin"
                                 implementationClass="io.kotest.plugin.intellij.run.KotestRunLineMarkerContributor"/>

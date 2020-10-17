@@ -26,6 +26,7 @@ class SpecRunConfigurationProducer : LazyRunConfigurationProducer<KotestConfigur
                                               context: ConfigurationContext,
                                               sourceElement: Ref<PsiElement>): Boolean {
       val element = sourceElement.get()
+      println("Setup from $element")
       if (element != null && element is LeafPsiElement) {
          val ktclass = element.ktclassIfCanonicalSpecLeaf()
          if (ktclass != null && ktclass.isSpec()) {
@@ -43,6 +44,7 @@ class SpecRunConfigurationProducer : LazyRunConfigurationProducer<KotestConfigur
    override fun isConfigurationFromContext(configuration: KotestConfiguration,
                                            context: ConfigurationContext): Boolean {
       val element = context.psiLocation
+      println("isConfigurationFromContext $element")
       if (element != null && element is LeafPsiElement) {
          val ktclass = element.ktclassIfCanonicalSpecLeaf()
          if (ktclass != null) {
