@@ -1,6 +1,7 @@
 package io.kotest.core.internal
 
 import io.kotest.core.config.configuration
+import io.kotest.core.filter.SpecClassExecutionFilter
 import io.kotest.core.filter.TestFilter
 import io.kotest.core.filter.TestFilterResult
 import io.kotest.core.test.TestCase
@@ -11,9 +12,14 @@ import io.kotest.core.internal.tags.activeTags
 import io.kotest.core.internal.tags.allTags
 import io.kotest.core.internal.tags.isActive
 import io.kotest.core.internal.tags.parse
+import io.kotest.core.spec.Spec
 import io.kotest.core.test.TestCaseSeverityLevel
+import io.kotest.fp.getOrElse
+import io.kotest.fp.toOption
+import io.kotest.mpp.annotation
 import io.kotest.mpp.log
 import io.kotest.mpp.sysprop
+import kotlin.reflect.KClass
 
 /**
  * Returns true if the given [TestCase] is active.
@@ -81,3 +87,21 @@ fun TestCase.isActive(): Boolean {
 
    return true
 }
+
+fun KClass<out Spec>.isActive(className: String?): Boolean {
+
+   val currentFilter = this.annotation<SpecClassExecutionFilter>()
+   val listOfFilters = sysprop(KotestEngineSystemProperties.specClassExecutionFilter)
+   val enabledByFilter = listOfFilters.isNullOrEmpty() || ( currentFilter != null && readProperty(listOfFilters)?.let { it.contains(currentFilter?.filter) } )
+   if(!enabledByFilter) {
+      log("$className is disabled by specClassFilter")
+      return false
+   }
+
+   return true
+}
+
+fun readProperty(prop: String): List<String> =
+   prop.toOption().getOrElse("").split(',').filter { it.isNotBlank() }.map {
+      it.trim()
+   }
