@@ -1,4 +1,4 @@
-package io.kotest.plugin
+package io.kotest.plugin.intellij
 
 import io.kotest.core.spec.style.FunSpec
 

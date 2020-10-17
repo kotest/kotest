@@ -15,7 +15,10 @@ class ExpectSpecStyleTest : LightJavaCodeInsightFixtureTestCase() {
 
    fun testGutterIcons() {
 
-      myFixture.configureByFile("/expectspec.kt")
+      myFixture.configureByFiles(
+         "/expectspec.kt",
+         "/io/kotest/core/spec/style/specs.kt"
+      )
 
       val gutters = myFixture.findAllGutters()
       gutters.size shouldBe 7

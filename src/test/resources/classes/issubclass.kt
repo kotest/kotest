@@ -2,6 +2,7 @@ package classes
 
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.string.shouldNotBeBlank
+import io.kotest.plugin.intellij.AbstractSpec
 
 abstract class AbstractSpec : FunSpec()
 

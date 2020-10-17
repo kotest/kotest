@@ -3,7 +3,6 @@ package io.kotest.plugin.intellij.psi
 import com.intellij.psi.PsiClass
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
-import com.intellij.psi.impl.source.tree.LeafPsiElement
 import org.jetbrains.kotlin.asJava.classes.KtLightClass
 import org.jetbrains.kotlin.asJava.toLightClass
 import org.jetbrains.kotlin.idea.refactoring.fqName.getKotlinFqName
@@ -14,18 +13,6 @@ import org.jetbrains.kotlin.psi.psiUtil.getChildrenOfType
 import org.jetbrains.kotlin.psi.psiUtil.getStrictParentOfType
 
 /**
- * Returns a [KtClass] if this [LeafPsiElement] is the first child of a [KtClass].
- */
-fun LeafPsiElement.ktclassIfCanonicalSpecLeaf(): KtClass? {
-   val maybeKtClassOrObject = parent
-   if (maybeKtClassOrObject is KtClass) {
-      if (parent.firstChild == this)
-         return maybeKtClassOrObject
-   }
-   return null
-}
-
-/**
  * Returns the [KtClass] from this light class, otherwise null.
  */
 fun KtLightClass.toKtClass(): KtClass? = kotlinOrigin?.toKtClass()
@@ -33,7 +20,7 @@ fun KtLightClass.toKtClass(): KtClass? = kotlinOrigin?.toKtClass()
 /**
  * Returns true if this [KtClass] is a descendent of the given class,
  */
-fun KtClass.isSubclass(fqn: FqName): Boolean = getAllSuperClasses().contains(fqn)
+fun KtClassOrObject.isSubclass(fqn: FqName): Boolean = getAllSuperClasses().contains(fqn)
 
 /**
  * If this is an instance of [KtClass] returns this, otherwise returns null.
@@ -55,7 +42,7 @@ fun PsiElement.enclosingKtClass(): KtClass? = getStrictParentOfType()
 /**
  * Recursively returns the list of classes and interfaces extended or implemented by the class.
  */
-fun KtClass.getAllSuperClasses(): List<FqName> {
+fun KtClassOrObject.getAllSuperClasses(): List<FqName> {
    fun supers(psi: PsiClass): List<PsiClass> = listOf(psi) + psi.supers.flatMap { supers(it) }
    val supers = toLightClass()?.supers?.flatMap { supers(it) } ?: emptyList()
    return supers.mapNotNull { it.getKotlinFqName() }

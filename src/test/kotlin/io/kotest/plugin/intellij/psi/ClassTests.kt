@@ -1,6 +1,10 @@
 package io.kotest.plugin.intellij.psi
 
+import com.intellij.openapi.projectRoots.Sdk
+import com.intellij.pom.java.LanguageLevel
 import com.intellij.psi.impl.source.tree.LeafPsiElement
+import com.intellij.testFramework.IdeaTestUtil
+import com.intellij.testFramework.LightProjectDescriptor
 import com.intellij.testFramework.fixtures.LightJavaCodeInsightFixtureTestCase
 import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldBe
@@ -9,46 +13,49 @@ import java.nio.file.Paths
 
 class ClassTests : LightJavaCodeInsightFixtureTestCase() {
 
+   private val descriptor = object : ProjectDescriptor(LanguageLevel.HIGHEST) {
+      override fun getSdk(): Sdk? {
+         return IdeaTestUtil.getMockJdk17()
+      }
+
+//      override fun configureModule(module: Module, model: ModifiableRootModel, contentEntry: ContentEntry) {
+//         PsiTestUtil.addLibrary(
+//            module,
+//            "kotest-framework-api-jvm-4.3.0.jar",
+//            "/home/sam/.gradle/caches/modules-2/files-2.1/io.kotest/kotest-framework-api-jvm/4.3.0/810fac77ecce307b58cfccc741965a4e87b09622",
+//            "kotest-framework-api-jvm-4.3.0.jar"
+//         )
+//      }
+   }
+
    override fun getTestDataPath(): String {
       val path = Paths.get("./src/test/resources/").toAbsolutePath()
       return path.toString()
    }
 
+   override fun getProjectDescriptor(): LightProjectDescriptor = descriptor
+
    fun testEnclosingClass() {
-      val psiFile = myFixture.configureByFile("/funspec.kt")
-      val element = psiFile.elementAtLine(21)
+
+      val psiFile = myFixture.configureByFiles(
+         "/funspec.kt",
+         "/io/kotest/core/spec/style/specs.kt"
+      )
+
+      val element = psiFile[0].elementAtLine(21)
       element.shouldNotBeNull()
       val ktclass = element.enclosingKtClass()
       ktclass.shouldNotBeNull()
-      ktclass.name shouldBe "FunSpecExampleTest"
+      ktclass.fqName?.asString() shouldBe "io.kotest.samples.gradle.FunSpecExampleTest"
    }
 
    fun testSuperClasses() {
-      val psiFile = myFixture.configureByFile("/funspec.kt")
-      val supers = psiFile.elementAtLine(21)?.enclosingKtClass()?.getAllSuperClasses()
-      supers shouldBe listOf("FunSpec")
-   }
-
-   fun testSuperSuperClasses() {
-      val psiFile = myFixture.configureByFile("/abstractspec.kt")
-      val supers = psiFile.elementAtLine(11)?.enclosingKtClass()?.getAllSuperClasses()
-      supers shouldBe listOf("FunSpec", "MyParentSpec")
-   }
-
-   fun testEnclosingClassOrObjectForClassOrObjectToken() {
-      val psiFile = myFixture.configureByFile("/funspec.kt")
-      val element = psiFile.findElementAt(229) as LeafPsiElement
-      val ktclass = element.ktclassIfCanonicalSpecLeaf()
-      ktclass.shouldNotBeNull()
-      ktclass.name shouldBe "FunSpecExampleTest"
-   }
-
-   fun testIsSubclass() {
-      val psiFile = myFixture.configureByFile("/classes/issubclass.kt")
-      val element = psiFile.findElementAt(255) as LeafPsiElement
-      element.enclosingKtClass()?.isSubclass(FqName("io.foo")) shouldBe false
-      element.enclosingKtClass()?.isSubclass(FqName("io.kotest.core.spec.style.FunSpec")) shouldBe true
-      element.enclosingKtClass()?.isSubclass(FqName("io.kotest.core.spec.style.StringSpec")) shouldBe false
+      val psiFile = myFixture.configureByFiles(
+         "/io/kotest/plugin/intellij/abstractspec.kt",
+         "/io/kotest/core/spec/style/specs.kt"
+      )[0]
+      val supers = psiFile.elementAtLine(11)?.enclosingKtClass()!!.getAllSuperClasses().map { it.asString() }
+      supers shouldBe listOf("io.kotest.plugin.intellij.MyParentSpec", "io.kotest.core.spec.style.FunSpec")
    }
 
    fun testClasses() {

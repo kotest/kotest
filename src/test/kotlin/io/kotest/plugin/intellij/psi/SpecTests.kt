@@ -1,7 +1,8 @@
 package io.kotest.plugin.intellij.psi
 
-import com.intellij.psi.PsiElement
+import com.intellij.psi.impl.source.tree.LeafPsiElement
 import com.intellij.testFramework.fixtures.LightJavaCodeInsightFixtureTestCase
+import io.kotest.matchers.nulls.shouldBeNull
 import io.kotest.matchers.shouldBe
 import java.nio.file.Paths
 
@@ -12,31 +13,66 @@ class SpecTests : LightJavaCodeInsightFixtureTestCase() {
       return path.toString()
    }
 
-   fun testIsContainedInSpec() {
-      val psiFile1 = myFixture.configureByFile("/funspec.kt")
-      psiFile1.elementAtLine(21)!!.isContainedInSpec() shouldBe true
-      val psiFile2 = myFixture.configureByFile("/stringspec.kt")
-      psiFile2.elementAtLine(11)!!.isContainedInSpec() shouldBe true
-      val psiFile3 = myFixture.configureByFile("/freespec.kt")
-      psiFile3.elementAtLine(18)!!.isContainedInSpec() shouldBe true
+   fun testIsContainedInSpecFunSpec() {
+
+      val psiFile = myFixture.configureByFiles(
+         "/funspec.kt",
+         "/io/kotest/core/spec/style/specs.kt"
+      )
+
+      psiFile[0].elementAtLine(6)!!.isContainedInSpec() shouldBe false
+      for (k in 10..40) {
+         psiFile[0].elementAtLine(k)!!.isContainedInSpec() shouldBe true
+      }
    }
 
-   fun testIsSubclassOfSpec() {
-      val psiFile = myFixture.configureByFile("/specs/issubclass.kt")
-      val element1 = psiFile.findElementAt(255) as PsiElement
-      element1.enclosingKtClass()?.name shouldBe "IsSubclassOfSpec1"
-      element1.enclosingKtClass()?.isSpec() shouldBe true
+   fun testIsContainedInSpecStringSpec() {
 
-      val element2 = psiFile.findElementAt(350) as PsiElement
-      element2.enclosingKtClass()?.name shouldBe "IsSubclassOfSpec2"
-      element2.enclosingKtClass()?.isSpec() shouldBe true
+      val psiFile = myFixture.configureByFiles(
+         "/stringspec.kt",
+         "/io/kotest/core/spec/style/specs.kt"
+      )
 
-      val element3 = psiFile.findElementAt(400) as PsiElement
-      element3.enclosingKtClass()?.name shouldBe "IsSubclassOfSpec3"
-      element3.enclosingKtClass()?.isSpec() shouldBe false
+      psiFile[0].elementAtLine(4)!!.isContainedInSpec() shouldBe false
+      for (k in 7..13) {
+         psiFile[0].elementAtLine(k)!!.isContainedInSpec() shouldBe true
+      }
+   }
 
-      val element4 = psiFile.findElementAt(450) as PsiElement
-      element4.enclosingKtClass()?.name shouldBe "IsSubclassOfSpec4"
-      element4.enclosingKtClass()?.isSpec() shouldBe false
+   fun testIsContainedInSpecFreeSpec() {
+
+      val psiFile = myFixture.configureByFiles(
+         "/freespec.kt",
+         "/io/kotest/core/spec/style/specs.kt"
+      )
+
+      psiFile[0].elementAtLine(4)!!.isContainedInSpec() shouldBe false
+      for (k in 7..21) {
+         psiFile[0].elementAtLine(k)!!.isContainedInSpec() shouldBe true
+      }
+   }
+
+   fun testGetSpecEntryPoint() {
+
+      val psiFile = myFixture.configureByFiles(
+         "/io/kotest/plugin/intellij/subclasses.kt",
+         "/io/kotest/core/spec/style/specs.kt"
+      )
+
+      (psiFile[0].findElementAt(626) as LeafPsiElement).getSpecEntryPoint()?.fqName?.asString() shouldBe "io.kotest.plugin.intellij.Spec1"
+      (psiFile[0].findElementAt(657) as LeafPsiElement).getSpecEntryPoint()?.fqName?.asString() shouldBe "io.kotest.plugin.intellij.Spec2"
+      (psiFile[0].findElementAt(693) as LeafPsiElement).getSpecEntryPoint()?.fqName?.asString() shouldBe "io.kotest.plugin.intellij.Spec3"
+      (psiFile[0].findElementAt(717) as LeafPsiElement).getSpecEntryPoint()?.fqName?.asString() shouldBe "io.kotest.plugin.intellij.Spec4"
+      (psiFile[0].findElementAt(743) as LeafPsiElement).getSpecEntryPoint()?.fqName?.asString() shouldBe "io.kotest.plugin.intellij.Spec5"
+      (psiFile[0].findElementAt(773) as LeafPsiElement).getSpecEntryPoint()?.fqName?.asString() shouldBe "io.kotest.plugin.intellij.Spec6"
+      (psiFile[0].findElementAt(803) as LeafPsiElement).getSpecEntryPoint()?.fqName?.asString() shouldBe "io.kotest.plugin.intellij.Spec7"
+      (psiFile[0].findElementAt(826) as LeafPsiElement).getSpecEntryPoint()?.fqName?.asString() shouldBe "io.kotest.plugin.intellij.Spec8"
+      (psiFile[0].findElementAt(852) as LeafPsiElement).getSpecEntryPoint()?.fqName?.asString() shouldBe "io.kotest.plugin.intellij.Spec9"
+      (psiFile[0].findElementAt(879) as LeafPsiElement).getSpecEntryPoint()?.fqName?.asString() shouldBe "io.kotest.plugin.intellij.Spec10"
+      (psiFile[0].findElementAt(909) as LeafPsiElement).getSpecEntryPoint()?.fqName?.asString() shouldBe "io.kotest.plugin.intellij.Spec11"
+      (psiFile[0].findElementAt(947) as LeafPsiElement).getSpecEntryPoint()?.fqName?.asString() shouldBe "io.kotest.plugin.intellij.Spec12"
+      (psiFile[0].findElementAt(975) as LeafPsiElement).getSpecEntryPoint()?.fqName?.asString().shouldBeNull()
+      (psiFile[0].findElementAt(1007) as LeafPsiElement).getSpecEntryPoint()?.fqName?.asString().shouldBeNull()
+      (psiFile[0].findElementAt(1035) as LeafPsiElement).getSpecEntryPoint()?.fqName?.asString().shouldBeNull()
    }
 }

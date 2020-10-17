@@ -9,8 +9,7 @@ import com.intellij.psi.impl.source.tree.LeafPsiElement
 import io.kotest.plugin.intellij.KotestConfiguration
 import io.kotest.plugin.intellij.KotestConfigurationFactory
 import io.kotest.plugin.intellij.KotestConfigurationType
-import io.kotest.plugin.intellij.psi.isSpec
-import io.kotest.plugin.intellij.psi.ktclassIfCanonicalSpecLeaf
+import io.kotest.plugin.intellij.psi.getSpecEntryPoint
 
 /**
  * A run configuration contains the details of a particular run (in the drop down run box).
@@ -28,11 +27,11 @@ class SpecRunConfigurationProducer : LazyRunConfigurationProducer<KotestConfigur
       val element = sourceElement.get()
       println("Setup from $element")
       if (element != null && element is LeafPsiElement) {
-         val ktclass = element.ktclassIfCanonicalSpecLeaf()
-         if (ktclass != null && ktclass.isSpec()) {
-            configuration.setSpec(ktclass)
+         val spec = element.getSpecEntryPoint()
+         if (spec != null) {
+            configuration.setSpec(spec)
             configuration.setModule(context.module)
-            configuration.name = generateName(ktclass, null)
+            configuration.name = generateName(spec, null)
             return true
          }
       }
@@ -46,11 +45,11 @@ class SpecRunConfigurationProducer : LazyRunConfigurationProducer<KotestConfigur
       val element = context.psiLocation
       println("isConfigurationFromContext $element")
       if (element != null && element is LeafPsiElement) {
-         val ktclass = element.ktclassIfCanonicalSpecLeaf()
-         if (ktclass != null) {
+         val spec = element.getSpecEntryPoint()
+         if (spec != null) {
             return configuration.getTestPath().isNullOrBlank()
                && configuration.getPackageName().isNullOrBlank()
-               && configuration.getSpecName() == ktclass.fqName?.asString()
+               && configuration.getSpecName() == spec.fqName?.asString()
          }
       }
       return false

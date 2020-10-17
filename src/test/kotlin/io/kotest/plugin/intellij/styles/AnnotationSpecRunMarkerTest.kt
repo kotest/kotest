@@ -15,7 +15,10 @@ class AnnotationSpecRunMarkerTest : LightJavaCodeInsightFixtureTestCase() {
 
    fun testGutterIcons() {
 
-      myFixture.configureByFile("/annotationspec.kt")
+      myFixture.configureByFiles(
+         "/annotationspec.kt",
+         "/io/kotest/core/spec/style/specs.kt"
+      )
 
       val gutters = myFixture.findAllGutters()
       println(gutters.map { it.tooltipText }.joinToString("\n"))

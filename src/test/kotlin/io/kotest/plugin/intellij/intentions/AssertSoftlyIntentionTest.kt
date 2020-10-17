@@ -9,27 +9,31 @@ import java.nio.file.Paths
 
 class AssertSoftlyIntentionTest : LightJavaCodeInsightFixtureTestCase() {
 
-  override fun getTestDataPath(): String {
-    val path = Paths.get("./src/test/resources/").toAbsolutePath()
-    return path.toString()
-  }
+   override fun getTestDataPath(): String {
+      val path = Paths.get("./src/test/resources/").toAbsolutePath()
+      return path.toString()
+   }
 
-  fun testIntentionForPartialLine() {
+   fun testIntentionForPartialLine() {
 
-    myFixture.configureByFile("/funspec.kt")
-    editor.moveCaret(885)
-    editor.selectionModel.setSelection(869, 912)
+      myFixture.configureByFiles(
+         "/funspec.kt",
+         "/io/kotest/core/spec/style/specs.kt"
+      )
 
-    val intention = myFixture.findSingleIntention("Surround statements with soft assert")
-    intention.familyName shouldBe "Surround statements with soft assert"
+      editor.moveCaret(885)
+      editor.selectionModel.setSelection(869, 912)
 
-    CommandProcessor.getInstance().runUndoTransparentAction {
-      runWriteAction {
-        intention.invoke(project, editor, file)
+      val intention = myFixture.findSingleIntention("Surround statements with soft assert")
+      intention.familyName shouldBe "Surround statements with soft assert"
+
+      CommandProcessor.getInstance().runUndoTransparentAction {
+         runWriteAction {
+            intention.invoke(project, editor, file)
+         }
       }
-    }
 
-    file.text shouldBe """package io.kotest.samples.gradle
+      file.text shouldBe """package io.kotest.samples.gradle
 
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.string.shouldBeLowerCase
@@ -74,24 +78,28 @@ class FunSpecExampleTest : FunSpec({
 
 })
 """
-  }
+   }
 
-  fun testIntentionForFullLine() {
+   fun testIntentionForFullLine() {
 
-    myFixture.configureByFile("/funspec.kt")
-    editor.moveCaret(511)
-    editor.selectionModel.setSelection(511, 544)
+      myFixture.configureByFiles(
+         "/funspec.kt",
+         "/io/kotest/core/spec/style/specs.kt"
+      )
 
-    val intention = myFixture.findSingleIntention("Surround statements with soft assert")
-    intention.familyName shouldBe "Surround statements with soft assert"
+      editor.moveCaret(511)
+      editor.selectionModel.setSelection(511, 544)
 
-    CommandProcessor.getInstance().runUndoTransparentAction {
-      runWriteAction {
-        intention.invoke(project, editor, file)
+      val intention = myFixture.findSingleIntention("Surround statements with soft assert")
+      intention.familyName shouldBe "Surround statements with soft assert"
+
+      CommandProcessor.getInstance().runUndoTransparentAction {
+         runWriteAction {
+            intention.invoke(project, editor, file)
+         }
       }
-    }
 
-    file.text shouldBe """package io.kotest.samples.gradle
+      file.text shouldBe """package io.kotest.samples.gradle
 
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.string.shouldBeLowerCase
@@ -136,5 +144,5 @@ class FunSpecExampleTest : FunSpec({
 
 })
 """
-  }
+   }
 }

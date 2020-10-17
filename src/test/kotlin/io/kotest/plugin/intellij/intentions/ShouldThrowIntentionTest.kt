@@ -16,7 +16,10 @@ class ShouldThrowIntentionTest : LightJavaCodeInsightFixtureTestCase() {
 
   fun testIntentionForPartialLine() {
 
-    myFixture.configureByFile("/behaviorspec.kt")
+     myFixture.configureByFiles(
+        "/behaviorspec.kt",
+        "/io/kotest/core/spec/style/specs.kt"
+     )
     editor.moveCaret(588)
     editor.selectionModel.setSelection(588, 592)
 
@@ -65,7 +68,11 @@ class BehaviorSpecExample : BehaviorSpec() {
 
   fun testIntentionForFullLine() {
 
-    myFixture.configureByFile("/behaviorspec.kt")
+     myFixture.configureByFiles(
+        "/behaviorspec.kt",
+        "/io/kotest/core/spec/style/specs.kt"
+     )
+
     editor.moveCaret(588)
     editor.selectionModel.setSelection(572, 598)
 

@@ -17,7 +17,10 @@ class FeatureSpecStyleTest : LightJavaCodeInsightFixtureTestCase() {
    @Ignore
    fun testGutterIcons() {
 
-      myFixture.configureByFile("/featurespec.kt")
+      myFixture.configureByFiles(
+         "/featurespec.kt",
+         "/io/kotest/core/spec/style/specs.kt"
+      )
 
       val gutters = myFixture.findAllGutters()
       gutters.size shouldBe 10

@@ -3,6 +3,7 @@ package io.kotest.plugin.intellij.run
 import io.kotest.plugin.intellij.Test
 import org.jetbrains.kotlin.name.FqName
 import org.jetbrains.kotlin.psi.KtClass
+import org.jetbrains.kotlin.psi.KtClassOrObject
 
 data class RunData(
    val specName: String?,
@@ -22,7 +23,7 @@ fun generateName(fqName: FqName, test: Test?): String {
    }
 }
 
-fun generateName(ktclass: KtClass, test: Test?): String {
+fun generateName(ktclass: KtClassOrObject, test: Test?): String {
    return if (test == null) {
       ktclass.fqName?.shortName()?.asString() ?: ktclass.toString()
    } else {

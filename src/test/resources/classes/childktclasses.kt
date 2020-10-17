@@ -9,6 +9,7 @@ import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.spec.style.ShouldSpec
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.core.spec.style.WordSpec
+import io.kotest.plugin.intellij.AbstractSpec
 
 class Child1 : AbstractSpec()
 class Child2 : FunSpec()

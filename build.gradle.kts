@@ -80,8 +80,9 @@ dependencies {
    // into the engine dep which should already be on the classpath
    implementation("io.kotest:kotest-framework-launcher-jvm:4.2.0")
 
-   // just needed for tests
-   testImplementation("io.kotest:kotest-assertions-core-jvm:4.2.6")
+   // needed for the resource files which are loaded into java light tests
+   testImplementation("io.kotest:kotest-framework-api:4.3.0")
+   testImplementation("io.kotest:kotest-assertions-core-jvm:4.3.0")
 }
 
 sourceSets {

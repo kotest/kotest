@@ -10,37 +10,40 @@ import java.nio.file.Paths
 
 class BangIntentionTest : LightJavaCodeInsightFixtureTestCase() {
 
-  override fun getTestDataPath(): String {
-    val path = Paths.get("./src/test/resources/").toAbsolutePath()
-    return path.toString()
-  }
+   override fun getTestDataPath(): String {
+      val path = Paths.get("./src/test/resources/").toAbsolutePath()
+      return path.toString()
+   }
 
-  fun testIntention() {
+   fun testIntention() {
 
-    myFixture.configureByFile("/behaviorspec.kt")
-    editor.moveCaret(366)
+      myFixture.configureByFiles(
+         "/behaviorspec.kt",
+         "/io/kotest/core/spec/style/specs.kt"
+      )
+      editor.moveCaret(366)
 
-    val intention = myFixture.findSingleIntention("Add/Remove bang to test name")
-    intention.familyName shouldBe "Add/Remove bang to test name"
-    CommandProcessor.getInstance().runUndoTransparentAction {
-      runWriteAction {
-        intention.invoke(project, editor, file)
+      val intention = myFixture.findSingleIntention("Add/Remove bang to test name")
+      intention.familyName shouldBe "Add/Remove bang to test name"
+      CommandProcessor.getInstance().runUndoTransparentAction {
+         runWriteAction {
+            intention.invoke(project, editor, file)
+         }
       }
-    }
-    file.findElementAt(366)?.text shouldBe "!another test"
+      file.findElementAt(366)?.text shouldBe "!another test"
 
-    CommandProcessor.getInstance().runUndoTransparentAction {
-      runWriteAction {
-        intention.invoke(project, editor, file)
+      CommandProcessor.getInstance().runUndoTransparentAction {
+         runWriteAction {
+            intention.invoke(project, editor, file)
+         }
       }
-    }
-    file.findElementAt(366)?.text shouldBe "another test"
-  }
+      file.findElementAt(366)?.text shouldBe "another test"
+   }
 
-  fun testIntentionShouldOnlyBeAvailableOnStrings() {
+   fun testIntentionShouldOnlyBeAvailableOnStrings() {
 
-    myFixture.configureByFile("/behaviorspec.kt")
-    editor.moveCaret(418)
-    myFixture.filterAvailableIntentions("Add/Remove bang to test name").shouldBeEmpty()
-  }
+      myFixture.configureByFile("/behaviorspec.kt")
+      editor.moveCaret(418)
+      myFixture.filterAvailableIntentions("Add/Remove bang to test name").shouldBeEmpty()
+   }
 }

@@ -12,7 +12,7 @@ import io.kotest.plugin.intellij.psi.specStyle
 import org.jetbrains.kotlin.idea.facet.KotlinFacet
 import org.jetbrains.kotlin.idea.refactoring.fqName.getKotlinFqName
 import org.jetbrains.kotlin.idea.util.projectStructure.allModules
-import org.jetbrains.kotlin.psi.KtClass
+import org.jetbrains.kotlin.psi.KtClassOrObject
 import javax.swing.tree.DefaultMutableTreeNode
 import javax.swing.tree.DefaultTreeModel
 import javax.swing.tree.TreeModel
@@ -22,7 +22,7 @@ import javax.swing.tree.TreeModel
  */
 fun createTreeModel(file: VirtualFile,
                     project: Project,
-                    specs: List<KtClass>,
+                    specs: List<KtClassOrObject>,
                     module: Module): TreeModel {
 
    val kotest = KotestRootNodeDescriptor(project)

@@ -17,7 +17,12 @@ class CallbacksTest : LightJavaCodeInsightFixtureTestCase() {
    }
 
    fun testCallbacks() {
-      val psiFile = myFixture.configureByFile("/callbacks.kt")
+
+      val psiFile = myFixture.configureByFiles(
+         "/callbacks.kt",
+         "/io/kotest/core/spec/style/specs.kt"
+      )[0]
+
       val ktclass = psiFile.specs()[0]
       val callbacks = ktclass.callbacks()
 

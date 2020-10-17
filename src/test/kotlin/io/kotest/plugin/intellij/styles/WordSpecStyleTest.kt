@@ -15,7 +15,10 @@ class WordSpecStyleTest : LightJavaCodeInsightFixtureTestCase() {
 
    fun testGutterIcons() {
 
-      myFixture.configureByFile("/wordspec.kt")
+      myFixture.configureByFiles(
+         "/wordspec.kt",
+         "/io/kotest/core/spec/style/specs.kt"
+      )
 
       val gutters = myFixture.findAllGutters()
       gutters.size shouldBe 8

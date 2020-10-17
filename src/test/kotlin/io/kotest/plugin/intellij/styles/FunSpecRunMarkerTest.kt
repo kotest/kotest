@@ -15,7 +15,10 @@ class FunSpecRunMarkerTest : LightJavaCodeInsightFixtureTestCase() {
 
    fun testGutterIcons() {
 
-      myFixture.configureByFile("/funspec.kt")
+      myFixture.configureByFiles(
+         "/funspec.kt",
+         "/io/kotest/core/spec/style/specs.kt"
+      )
 
       val gutters = myFixture.findAllGutters()
       gutters.size shouldBe 9

@@ -15,7 +15,10 @@ class BehaviorSpecRunMarkerTest : LightJavaCodeInsightFixtureTestCase() {
 
    fun testGutterIcons() {
 
-      myFixture.configureByFile("/behaviorspec.kt")
+      myFixture.configureByFiles(
+         "/behaviorspec.kt",
+         "/io/kotest/core/spec/style/specs.kt"
+      )
 
       val gutters = myFixture.findAllGutters()
       println(gutters.map { it.tooltipText }.joinToString("\n"))

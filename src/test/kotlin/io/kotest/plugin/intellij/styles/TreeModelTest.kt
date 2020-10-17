@@ -21,7 +21,12 @@ class TreeModelTest : LightJavaCodeInsightFixtureTestCase() {
    }
 
    fun testGutterIcons() {
-      myFixture.configureByFile("/funspec_callbacks.kt")
+
+      myFixture.configureByFiles(
+         "/funspec_callbacks.kt",
+         "/io/kotest/core/spec/style/specs.kt"
+      )
+
       val model = createTreeModel(myFixture.file.virtualFile, myFixture.project, myFixture.file.specs(), myFixture.module)
 
       val root = model.root as DefaultMutableTreeNode

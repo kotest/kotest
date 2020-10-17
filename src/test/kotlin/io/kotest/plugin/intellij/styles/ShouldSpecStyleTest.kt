@@ -15,7 +15,10 @@ class ShouldSpecStyleTest : LightJavaCodeInsightFixtureTestCase() {
 
    fun testGutterIcons() {
 
-      myFixture.configureByFile("/shouldspec.kt")
+      myFixture.configureByFiles(
+         "/shouldspec.kt",
+         "/io/kotest/core/spec/style/specs.kt"
+      )
 
       val gutters = myFixture.findAllGutters()
       println(gutters.map { it.tooltipText }.joinToString("\n"))

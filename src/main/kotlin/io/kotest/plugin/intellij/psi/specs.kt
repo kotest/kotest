@@ -2,7 +2,9 @@ package io.kotest.plugin.intellij.psi
 
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
+import com.intellij.psi.impl.source.tree.LeafPsiElement
 import io.kotest.plugin.intellij.styles.SpecStyle
+import org.jetbrains.kotlin.lexer.KtKeywordToken
 import org.jetbrains.kotlin.name.FqName
 import org.jetbrains.kotlin.psi.KtBlockExpression
 import org.jetbrains.kotlin.psi.KtCallExpression
@@ -22,21 +24,35 @@ import org.jetbrains.kotlin.psi.psiUtil.getChildrenOfType
 import org.jetbrains.kotlin.psi.psiUtil.getStrictParentOfType
 
 /**
- * Returns all [KtClass] children of this [PsiFile] that are instances of a spec class.
+ * Returns all [KtClassOrObject] children of this [PsiFile] that are instances of a spec class.
  */
-fun PsiFile.specs(): List<KtClass> {
+fun PsiFile.specs(): List<KtClassOrObject> {
    return this.classes().filter { it.isSpec() }
+}
+
+/**
+ * Returns a [KtClassOrObject] if this leaf element is the entry point to a spec.
+ * The entry point is the class or object keyword that defines a class or object,
+ * and that class or object must be a subclass of a spec style.
+ */
+fun LeafPsiElement.getSpecEntryPoint(): KtClassOrObject? {
+   return if (elementType is KtKeywordToken && (text == "class" || text == "object")) {
+      return when (val context = context) {
+         is KtClassOrObject -> if (context.isSpec()) context else null
+         else -> null
+      }
+   } else null
 }
 
 /**
  * Returns true if this class is subclass of a spec (including classes which themselves subclass spec).
  */
-fun KtClass.isSpec(): Boolean = this.specStyle() != null
+fun KtClassOrObject.isSpec(): Boolean = this.specStyle() != null
 
 /**
  * Returns the spec style for this class if it is a subclass of a spec, or null otherwise.
  */
-fun KtClass.specStyle(): SpecStyle? {
+fun KtClassOrObject.specStyle(): SpecStyle? {
    val supers = getAllSuperClasses()
    return SpecStyle.styles.find { supers.contains(it.fqn()) }
 }
