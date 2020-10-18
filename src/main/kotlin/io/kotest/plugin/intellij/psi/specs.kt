@@ -16,12 +16,14 @@ import org.jetbrains.kotlin.psi.KtFunctionLiteral
 import org.jetbrains.kotlin.psi.KtLambdaArgument
 import org.jetbrains.kotlin.psi.KtLambdaExpression
 import org.jetbrains.kotlin.psi.KtNameReferenceExpression
+import org.jetbrains.kotlin.psi.KtObjectDeclaration
 import org.jetbrains.kotlin.psi.KtSuperTypeCallEntry
 import org.jetbrains.kotlin.psi.KtSuperTypeList
 import org.jetbrains.kotlin.psi.KtValueArgument
 import org.jetbrains.kotlin.psi.KtValueArgumentList
 import org.jetbrains.kotlin.psi.psiUtil.getChildrenOfType
 import org.jetbrains.kotlin.psi.psiUtil.getStrictParentOfType
+import org.jetbrains.kotlin.psi.psiUtil.isAbstract
 
 /**
  * Returns all [KtClassOrObject] children of this [PsiFile] that are instances of a spec class.
@@ -38,7 +40,8 @@ fun PsiFile.specs(): List<KtClassOrObject> {
 fun LeafPsiElement.getSpecEntryPoint(): KtClassOrObject? {
    return if (elementType is KtKeywordToken && (text == "class" || text == "object")) {
       return when (val context = context) {
-         is KtClassOrObject -> if (context.isSpec()) context else null
+         is KtObjectDeclaration -> if (context.isSpec()) context else null
+         is KtClass -> if (context.isSpec() && !context.isAbstract()) context else null
          else -> null
       }
    } else null

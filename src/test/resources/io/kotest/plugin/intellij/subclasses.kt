@@ -38,3 +38,5 @@ class Spec13 : AbstractParent()
 class Spec14 : SomeInterface
 class Spec15
 
+abstract class AbstractSpec : FreeSpec()
+

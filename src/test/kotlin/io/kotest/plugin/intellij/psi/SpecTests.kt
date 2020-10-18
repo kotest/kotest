@@ -74,5 +74,6 @@ class SpecTests : LightJavaCodeInsightFixtureTestCase() {
       (psiFile[0].findElementAt(975) as LeafPsiElement).getSpecEntryPoint()?.fqName?.asString().shouldBeNull()
       (psiFile[0].findElementAt(1007) as LeafPsiElement).getSpecEntryPoint()?.fqName?.asString().shouldBeNull()
       (psiFile[0].findElementAt(1035) as LeafPsiElement).getSpecEntryPoint()?.fqName?.asString().shouldBeNull()
+      (psiFile[0].findElementAt(1060) as LeafPsiElement).getSpecEntryPoint()?.fqName?.asString().shouldBeNull()
    }
 }
