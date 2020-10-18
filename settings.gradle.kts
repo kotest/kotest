@@ -65,6 +65,7 @@ include("kotest-extensions:kotest-extensions-mockserver")
 include("kotest-extensions:kotest-extensions-robolectric")
 include("kotest-extensions:kotest-extensions-spring")
 include("kotest-extensions:kotest-extensions-testcontainers")
+include("kotest-extensions:kotest-extensions-livedata")
 
 // extensions that adapt junit extensions into kotest extensions
 include("kotest-extensions:kotest-extensions-junit5")

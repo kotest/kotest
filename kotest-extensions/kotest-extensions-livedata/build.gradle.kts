@@ -47,14 +47,9 @@ kotlin {
 
       val androidMain by getting {
          dependencies {
-            implementation(project(Projects.AssertionsShared))
-            implementation(project(Projects.AssertionsApi))
-            implementation(project(Projects.Engine))
-            implementation(project(Projects.extension("livedata")))
+            implementation(project(Projects.Api))
             implementation(AndroidLibs.AndroidX.coreKtx)
-            implementation(AndroidLibs.AndroidX.Lifecycle.runtimeKtx)
             implementation(AndroidLibs.AndroidX.Lifecycle.liveDataKtx)
-            implementation(AndroidLibs.AndroidX.Lifecycle.viewModelKtx)
             implementation(AndroidLibs.AndroidX.ArchCore.testing)
          }
       }
