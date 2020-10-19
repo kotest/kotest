@@ -1,4 +1,4 @@
-package io.kotest.matchers.livedata
+package io.kotest.assertions.livedata
 
 import androidx.lifecycle.LiveData
 import io.kotest.matchers.Matcher

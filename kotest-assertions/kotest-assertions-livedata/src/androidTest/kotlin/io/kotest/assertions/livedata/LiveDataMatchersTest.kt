@@ -1,7 +1,11 @@
-package io.kotest.matchers.livedata
+package io.kotest.assertions.livedata
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import io.kotest.assertions.livedata.shouldHaveValue
+import io.kotest.assertions.livedata.shouldNotHaveValue
+import io.kotest.assertions.livedata.willNotReceiveValue
+import io.kotest.assertions.livedata.willReceiveValue
 import io.kotest.assertions.throwables.shouldThrowMessage
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.style.FunSpec
