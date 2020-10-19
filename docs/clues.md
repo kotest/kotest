@@ -53,7 +53,7 @@ We can also use the `asClue` extension function to turn any object into the clue
 For example:
 
 ```kotlin
-data class HttpResponse(val status: Int, body: String)
+data class HttpResponse(val status: Int, val body: String)
 
 val response = HttpResponse(404, "the content")
 
@@ -63,12 +63,12 @@ response.asClue {
 }
 ```
 
-Would output something like:
+Would output:
 
 ```
-HttpResponse(status=200, body=the content)
-Expected :14
-Actual   :200
+HttpResponse(status=404, body=the content)
+Expected :200
+Actual   :404
 ```
 
 
