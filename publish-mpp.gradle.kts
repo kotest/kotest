@@ -1,5 +1,7 @@
-apply(plugin = "java")
-apply(plugin = "java-library")
+if(!pluginManager.hasPlugin("com.android.library")){
+   apply(plugin = "java")
+   apply(plugin = "java-library")
+}
 apply(plugin = "maven-publish")
 apply(plugin = "signing")
 apply(plugin = "org.jetbrains.dokka")
