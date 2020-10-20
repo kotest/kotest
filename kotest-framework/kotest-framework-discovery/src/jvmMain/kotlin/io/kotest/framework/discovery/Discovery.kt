@@ -24,7 +24,8 @@ class Discovery(private val discoveryExtensions: List<DiscoveryExtension> = empt
    private val requests = ConcurrentHashMap<DiscoveryRequest, DiscoveryResult>()
 
    // filter functions
-   private val isSpecSubclass: (KClass<*>) -> Boolean = { Spec::class.java.isAssignableFrom(it.java) }
+   private val isSpecSubclassKt: (KClass<*>) -> Boolean = { Spec::class.java.isAssignableFrom(it.java) }
+   private val isSpecSubclass: (Class<*>) -> Boolean = { Spec::class.java.isAssignableFrom(it) }
    private val isAbstract: (KClass<*>) -> Boolean = { it.isAbstract }
    private val isClass: (KClass<*>) -> Boolean = { it.objectInstance == null }
    private val fromClassPaths: List<KClass<out Spec>> by lazy { scanUris() }
@@ -56,7 +57,7 @@ class Discovery(private val discoveryExtensions: List<DiscoveryExtension> = empt
          .asSequence()
          .filter(selectorFn(request.selectors))
          .filter(filterFn(request.filters))
-         .filter(isSpecSubclass)
+         .filter(isSpecSubclassKt)
          .filter(isClass)
          .filterNot(isAbstract)
          .toList()
@@ -86,15 +87,20 @@ class Discovery(private val discoveryExtensions: List<DiscoveryExtension> = empt
     * selectors of type [DiscoverySelector.ClassDiscoverySelector].
     */
    private fun loadSelectedSpecs(request: DiscoveryRequest): List<KClass<out Spec>> {
-      log("Starting loading of selected tests...")
+      log("Loading specified classes...")
       val start = System.currentTimeMillis()
+
+      // first filter down to spec instances only, then load the full class
       val loadedClasses = request
          .selectors
-         .map { Class.forName((it as DiscoverySelector.ClassDiscoverySelector).className).kotlin }
+         .filterIsInstance<DiscoverySelector.ClassDiscoverySelector>()
+         .map { Class.forName(it.className, false, this::class.java.classLoader) }
          .filter(isSpecSubclass)
+         .map { Class.forName(it.name).kotlin }
          .filterIsInstance<KClass<out Spec>>()
+
       val duration = System.currentTimeMillis() - start
-      log("Loading of selected tests completed in ${duration}ms")
+      log("Loading of selected classes completed in ${duration}ms")
       return loadedClasses
    }
 
