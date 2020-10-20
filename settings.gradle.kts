@@ -9,6 +9,10 @@ pluginManagement {
    }
 }
 
+val ideaPlatformPrefix: String? = System.getProperty("idea.platform.prefix")
+val isIntelliJ = ideaPlatformPrefix.equals("idea", ignoreCase = true)
+println(ideaPlatformPrefix)
+
 include("kotest-common")
 
 // defines data classes and the spec styles; all classes needed to define specs/testcases live here
@@ -61,9 +65,9 @@ include("kotest-extensions:kotest-extensions-http")
 include("kotest-extensions:kotest-extensions-junitxml")
 include("kotest-extensions:kotest-extensions-koin")
 include("kotest-extensions:kotest-extensions-mockserver")
-include("kotest-extensions:kotest-extensions-robolectric")
 include("kotest-extensions:kotest-extensions-spring")
 include("kotest-extensions:kotest-extensions-testcontainers")
+if (!isIntelliJ) include("kotest-extensions:kotest-extensions-robolectric")
 
 // extensions that adapt junit extensions into kotest extensions
 include("kotest-extensions:kotest-extensions-junit5")
@@ -77,12 +81,11 @@ include("kotest-tests:kotest-tests-junitxml")
 include("kotest-tests:kotest-tests-multipleconfig")
 include("kotest-tests:kotest-tests-parallelism")
 include("kotest-tests:kotest-tests-projectlistener")
-include("kotest-tests:kotest-tests-robolectric")
 include("kotest-tests:kotest-tests-tagextension")
 include("kotest-tests:kotest-tests-timeout")
-//include("kotest-tests:kotest-tests-robolectric")
 include("kotest-tests:kotest-tests-timeout-sysprop")
 include("kotest-tests:kotest-tests-multiname-test-name-sysprop")
 include("kotest-examples:kotest-examples-jvm")
 include("kotest-examples:kotest-examples-allure")
 include("kotest-examples:kotest-examples-spring-webflux")
+if (!isIntelliJ) include("kotest-tests:kotest-tests-robolectric")
