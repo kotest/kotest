@@ -11,7 +11,6 @@ pluginManagement {
 
 val ideaPlatformPrefix: String? = System.getProperty("idea.platform.prefix")
 val isIntelliJ = ideaPlatformPrefix.equals("idea", ignoreCase = true)
-println(ideaPlatformPrefix)
 
 include("kotest-common")
 
