@@ -137,7 +137,7 @@ class Discovery(private val discoveryExtensions: List<DiscoveryExtension> = empt
    }
 }
 
-private fun enabled() = true // System.getProperty("KOTEST_DEBUG") != null || System.getenv("KOTEST_DEBUG") != null
+private fun enabled() = System.getProperty("KOTEST_DEBUG") != null || System.getenv("KOTEST_DEBUG") != null
 
 fun log(msg: String) = log(msg, null)
 
