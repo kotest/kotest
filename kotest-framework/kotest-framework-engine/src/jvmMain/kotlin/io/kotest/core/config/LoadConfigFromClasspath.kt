@@ -1,8 +1,9 @@
-package io.kotest.engine.config
+package io.kotest.core.config
 
 import io.github.classgraph.ScanResult
-import io.kotest.core.config.AbstractProjectConfig
 import io.kotest.core.listeners.ProjectListener
+import io.kotest.engine.config.DetectedProjectConfig
+import io.kotest.engine.config.merge
 import io.kotest.fp.orElse
 import io.kotest.fp.toOption
 import io.kotest.mpp.instantiate
@@ -37,8 +38,8 @@ private fun AbstractProjectConfig.toDetectedConfig(): DetectedProjectConfig {
    }
 
    return DetectedProjectConfig(
-      extensions = extensions(),
-      listeners = listeners() + listOf(beforeAfterAllListener),
+      extensions = extensions + extensions(),
+      listeners = listeners + listeners() + listOf(beforeAfterAllListener),
       filters = filters(),
       isolationMode = isolationMode.toOption().orElse(isolationMode().toOption()),
       assertionMode = assertionMode.toOption(),

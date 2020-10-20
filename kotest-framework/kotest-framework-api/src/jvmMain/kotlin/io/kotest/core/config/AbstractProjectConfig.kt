@@ -1,15 +1,15 @@
 package io.kotest.core.config
 
-import io.kotest.core.test.TestNameCase
 import io.kotest.core.extensions.Extension
 import io.kotest.core.filter.Filter
-import io.kotest.core.spec.SpecExecutionOrder
 import io.kotest.core.listeners.Listener
-import io.kotest.core.spec.IsolationMode
-import io.kotest.core.test.AssertionMode
-import io.kotest.core.test.TestCaseOrder
 import io.kotest.core.listeners.ProjectListener
+import io.kotest.core.spec.IsolationMode
+import io.kotest.core.spec.SpecExecutionOrder
+import io.kotest.core.test.AssertionMode
 import io.kotest.core.test.TestCaseConfig
+import io.kotest.core.test.TestCaseOrder
+import io.kotest.core.test.TestNameCase
 import kotlin.reflect.KClass
 import kotlin.time.Duration
 import kotlin.time.ExperimentalTime
@@ -24,11 +24,35 @@ import kotlin.time.ExperimentalTime
  */
 abstract class AbstractProjectConfig {
 
+   var extensions = emptyList<Extension>()
+   var listeners = emptyList<Listener>()
+
+   /**
+    * Add [extensions] to project extensions
+    */
+   fun extensions(vararg extensions: Extension) { this.extensions += extensions }
+
+   /**
+    * Add [extension] to project extensions
+    */
+   fun extension(extension: Extension): Extension = extension.also { this.extensions += it }
+   
    /**
     * List of project wide [Extension] instances.
     */
    open fun extensions(): List<Extension> = emptyList()
 
+
+   /**
+    * Add [listeners] to project listeners
+    */
+   fun listeners(vararg listeners: Listener) { this.listeners += listeners }
+
+   /**
+    * Add [listener] to project listeners
+    */
+   fun listener(listener: Listener): Listener = listener.also { this.listeners += it }
+   
    /**
     * List of project wide [Listener] instances.
     */
