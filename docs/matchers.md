@@ -1,7 +1,7 @@
 Matchers
 ==========
 
-A `Matcher` is the Kotest term for an assertion that performs a specifc test. For example, a matcher may test that a double is greater than zero.
+A `Matcher` is the Kotest term for an assertion that performs a specific test. For example, a matcher may test that a double is greater than zero.
 Or it it may test that a file is not empty.
 
 Kotest currently has approximately 325 matchers split across several modules. Most of these matchers are for standard library types.
