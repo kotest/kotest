@@ -130,7 +130,7 @@ val factory1 = funSpec {
 
 ```kotlin
 class LifecycleExample : FunSpec({
-   incude(factory1)
+   include(factory1)
    test("c")
    test("d")
 })
