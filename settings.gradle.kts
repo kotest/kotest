@@ -88,3 +88,6 @@ include("kotest-examples:kotest-examples-jvm")
 include("kotest-examples:kotest-examples-allure")
 include("kotest-examples:kotest-examples-spring-webflux")
 //if (!isIntelliJ) include("kotest-tests:kotest-tests-robolectric")
+
+// BOM for whole kotest project
+include("kotest-bom")
