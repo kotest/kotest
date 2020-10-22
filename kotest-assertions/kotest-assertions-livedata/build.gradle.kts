@@ -49,7 +49,6 @@ kotlin {
          dependencies {
             implementation(project(Projects.AssertionsShared))
             implementation(project(Projects.AssertionsApi))
-            implementation(project(Projects.Engine))
             implementation(project(Projects.extension("livedata")))
             implementation(AndroidLibs.AndroidX.coreKtx)
             implementation(AndroidLibs.AndroidX.Lifecycle.runtimeKtx)
@@ -61,7 +60,9 @@ kotlin {
 
       getByName("androidTest") {
          dependencies {
+            implementation(project(Projects.Engine))
             implementation(project(Projects.JunitRunner))
+            implementation("org.assertj:assertj-core:3.16.1")
          }
       }
    }
@@ -83,4 +84,4 @@ tasks.withType<Test> {
    }
 }
 
-apply(from = "../../publish-mpp.gradle.kts")
+//apply(from = "../../publish-mpp.gradle.kts")
