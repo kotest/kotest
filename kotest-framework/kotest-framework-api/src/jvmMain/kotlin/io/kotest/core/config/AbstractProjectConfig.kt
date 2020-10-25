@@ -141,6 +141,8 @@ abstract class AbstractProjectConfig {
     */
    open val failOnIgnoredTests: Boolean = false
 
+   open val concurrencyMode: ConcurrencyMode? = null
+
    /**
     * Override this value to set a global [AssertionMode].
     * If a [Spec] sets an assertion mode, then the spec will override.

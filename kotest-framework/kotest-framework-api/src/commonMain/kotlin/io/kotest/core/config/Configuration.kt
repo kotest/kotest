@@ -74,14 +74,47 @@ class Configuration {
    var assertionMode: AssertionMode = Defaults.assertionMode
 
    /**
-    * Returns the parallelization factor for executing specs.
-    * If 1 then all specs are executed in isolation (sequentially).
-    * If larger than 1, then k specs will be executed in parallel.
-    * Any specs that should be executed in isolation should be marked with @DoNotParallelize.
+    * Sets the number of threads to use for executing specs and tests.
+    *
+    * By setting this to a value > 1, multiple dispatchers will be used for executing specs and test cases. Each
+    * dispatcher is a single thread, and the dispatcher used will be selected in a round-robin fashion.
+    *
+    * Note: Setting this value to > 1 will implicitly set the concurrency mode to [ConcurrencyMode.Concurrent]
+    * if no override has been specified.
     *
     * Defaults to [Defaults.parallelism].
     */
    var parallelism: Int = Defaults.parallelism
+
+   /**
+    * Controls how specs and tests are executed concurrently.
+    *
+    * If set to [ConcurrencyMode.Isolated] then each spec and test will be executed sequentially, with the
+    * test engine waiting for each test to complete before starting the next test. Similarly the nest spec
+    * will only begin once all tests from the previous spec have completed.
+    *
+    * If a function suspends, the test engine will simply wait for that function to resume before continuing.
+    *
+    * If set to [ConcurrencyMode.Concurrent] then all specs will be launched at start up in
+    * separate coroutines, backed by the number of threads specified in the [parallelism] option.
+    *
+    * Tests inside each spec will continue to be executed sequentially.
+    *
+    * If a function suspends, then that thread will be allocated to another spec or test coroutine.
+    *
+    * Finally, [ConcurrencyMode.SpecAndTestConcurrent] will launch all specs and all tests in separate
+    * coroutines, backed by the number of threads specified in the [parallelism] option.
+    *
+    * If the parallelism count is set to 1 while the mode is set to [ConcurrencyMode.Concurrent] or
+    * [ConcurrencyMode.SpecAndTestConcurrent], then while all specs will be launched at start up,
+    * concurrency will only happen if a test suspends.
+    *
+    * Note: If a test uses a blocking method, then that thread cannot be allocated to another coroutine
+    * if the thread is blocked.
+    *
+    * Defaults to [ConcurrencyMode.Isolated] or if [parallelism] > 1 then [ConcurrencyMode.Concurrent].
+    */
+   var concurrencyMode: ConcurrencyMode? = null
 
    /**
     * Returns the timeout for the execution of a test case.
@@ -232,5 +265,6 @@ class Configuration {
 
 fun Configuration.testListeners(): List<TestListener> = listeners().filterIsInstance<TestListener>()
 fun Configuration.testCaseExtensions(): List<TestCaseExtension> = listeners().filterIsInstance<TestCaseExtension>()
-fun Configuration.specInstantiationListeners(): List<SpecInstantiationListener> = listeners().filterIsInstance<SpecInstantiationListener>()
+fun Configuration.specInstantiationListeners(): List<SpecInstantiationListener> =
+   listeners().filterIsInstance<SpecInstantiationListener>()
 

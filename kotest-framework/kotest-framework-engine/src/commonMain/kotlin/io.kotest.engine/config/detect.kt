@@ -1,6 +1,7 @@
 package io.kotest.engine.config
 
 import io.kotest.core.Tags
+import io.kotest.core.config.ConcurrencyMode
 import io.kotest.core.config.Configuration
 import io.kotest.core.extensions.Extension
 import io.kotest.core.filter.Filter
@@ -31,6 +32,7 @@ data class DetectedProjectConfig(
    val tags: Option<Tags> = Option.None,
    val isolationMode: Option<IsolationMode> = Option.None,
    val assertionMode: Option<AssertionMode> = Option.None,
+   val concurrencyMode: Option<ConcurrencyMode> = Option.None,
    val testCaseOrder: Option<TestCaseOrder> = Option.None,
    val specExecutionOrder: Option<SpecExecutionOrder> = Option.None,
    val failOnIgnoredTests: Option<Boolean> = Option.None,
@@ -55,6 +57,7 @@ fun DetectedProjectConfig.merge(other: DetectedProjectConfig): DetectedProjectCo
       filters = this.filters + other.filters,
       isolationMode = this.isolationMode.orElse(other.isolationMode),
       assertionMode = this.assertionMode.orElse(other.assertionMode),
+      concurrencyMode = this.concurrencyMode.orElse(other.concurrencyMode),
       testCaseOrder = this.testCaseOrder.orElse(other.testCaseOrder),
       specExecutionOrder = this.specExecutionOrder.orElse(other.specExecutionOrder),
       failOnIgnoredTests = this.failOnIgnoredTests.orElse(other.failOnIgnoredTests),
@@ -82,18 +85,31 @@ fun DetectedProjectConfig.apply(configuration: Configuration) {
    configuration.registerExtensions(extensions)
    configuration.registerFilters(filters)
 
-   assertionMode.forEach { configuration.assertionMode = it }
+   testCaseConfig.forEach { configuration.defaultTestConfig = it }
+
+   // concurrent options
+   concurrencyMode.forEach { configuration.concurrencyMode = it }
+   parallelism.forEach { configuration.parallelism = it }
+   isolationMode.forEach { configuration.isolationMode = it }
+
+   // ordering options
    testCaseOrder.forEach { configuration.testCaseOrder = it }
    specExecutionOrder.forEach { configuration.specExecutionOrder = it }
-   isolationMode.forEach { configuration.isolationMode = it }
-   failOnIgnoredTests.forEach { configuration.failOnIgnoredTests = it }
+
+   // assertion options
+   assertionMode.forEach { configuration.assertionMode = it }
    globalAssertSoftly.forEach { configuration.globalAssertSoftly = it }
+
+   // failure options
    writeSpecFailureFile.forEach { configuration.writeSpecFailureFile = it }
    specFailureFilePath.forEach { configuration.specFailureFilePath = it }
-   parallelism.forEach { configuration.parallelism = it }
+   failOnIgnoredTests.forEach { configuration.failOnIgnoredTests = it }
+
+   // timeout options
    timeout.forEach { configuration.timeout = it }
    invocationTimeout.forEach { configuration.invocationTimeout = it }
-   testCaseConfig.forEach { configuration.defaultTestConfig = it }
+
+   // naming/display options
    includeTestScopeAffixes.forEach { configuration.includeTestScopeAffixes = it }
    testNameCase.forEach { configuration.testNameCase = it }
    testNameRemoveWhitespace.forEach { configuration.removeTestNameWhitespace = it }

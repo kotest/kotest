@@ -1,5 +1,6 @@
 package io.kotest.engine.spec
 
+import io.kotest.core.config.ConcurrencyMode
 import io.kotest.engine.listener.TestEngineListener
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.Spec
@@ -43,6 +44,24 @@ abstract class SpecRunner(val listener: TestEngineListener) {
          Try { listener.specInstantiationError(kclass, it) }
       }
 
+   protected suspend fun run(
+      concurrencyMode: ConcurrencyMode,
+      testCases: Collection<TestCase>,
+      run: suspend (TestCase) -> Unit
+   ) = testCases.forEach { run(it) }
+//      when (concurrencyMode) {
+//         ConcurrencyMode.Isolated -> testCases.forEach { run(it) }
+//         ConcurrencyMode.Concurrent -> coroutineScope {
+//            testCases.map { testCase ->
+//               launch {
+//                  run(testCase)
+//               }
+//            }
+//         }
+//      }
+//   }
+
+   @Deprecated("Explicit thread mode will be removed in 4.6")
    protected suspend fun runParallel(threads: Int, testCases: Collection<TestCase>, run: suspend (TestCase) -> Unit) {
 
       val executor = Executors.newFixedThreadPool(threads, NamedThreadFactory("SpecRunner-%d"))

@@ -35,7 +35,7 @@ abstract class Spec : TestConfiguration(), SpecFunctionConfiguration, SpecFuncti
    abstract fun materializeRootTests(): List<RootTest>
 
    @JsName("isolation_js")
-   @Deprecated("Use isolationMode. This will be removed in 4.4")
+   @Deprecated("Use isolationMode. This will be removed in 4.6")
    var isolation: IsolationMode? = null
 
    @JsName("isolation_mode_js")
@@ -47,6 +47,7 @@ abstract class Spec : TestConfiguration(), SpecFunctionConfiguration, SpecFuncti
     * On other platforms this setting will have no effect.
     */
    @JsName("threads_js")
+   @Deprecated("Explicit thread mode will be removed in 4.6. Instead use ConcurrencyMode.SpecAndTestConcurrent")
    var threads: Int? = null
 
    /**

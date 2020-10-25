@@ -1,9 +1,11 @@
 package com.sksamuel.kotest.engine.coroutines
 
+import io.kotest.core.spec.Isolate
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.longs.shouldBeGreaterThan
 import kotlinx.coroutines.delay
 
+@Isolate
 class CallbackCoroutinesTest : FunSpec({
 
    var start: Long = 0
@@ -23,7 +25,6 @@ class CallbackCoroutinesTest : FunSpec({
    }
 
    afterSpec {
-      //delay(250)
       val end = System.currentTimeMillis()
       (end - start).shouldBeGreaterThan(250)
    }

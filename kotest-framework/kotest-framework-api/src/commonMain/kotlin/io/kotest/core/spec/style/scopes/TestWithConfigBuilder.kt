@@ -20,10 +20,6 @@ class TestWithConfigBuilder(
    private val xdisabled: Boolean,
 ) {
 
-   init {
-      DslState.state = "Test '${name.name}' is incomplete"
-   }
-
    suspend fun config(
       enabled: Boolean? = null,
       invocations: Int? = null,
@@ -36,7 +32,6 @@ class TestWithConfigBuilder(
       severity: TestCaseSeverityLevel? = null,
       test: suspend TestContext.() -> Unit
    ) {
-      DslState.state = null
       val derivedConfig = defaultTestConfig.deriveTestConfig(
          enabled,
          tags,

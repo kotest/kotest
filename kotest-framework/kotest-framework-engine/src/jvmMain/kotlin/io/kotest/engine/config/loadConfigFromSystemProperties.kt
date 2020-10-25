@@ -1,5 +1,6 @@
 package io.kotest.engine.config
 
+import io.kotest.core.config.ConcurrencyMode
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.test.AssertionMode
 import io.kotest.core.internal.KotestEngineSystemProperties
@@ -24,6 +25,9 @@ internal fun invocationTimeout(): Option<Long> =
 internal fun allowMultilineTestName(): Option<Boolean> =
    sysprop(KotestEngineSystemProperties.allowMultilineTestName).toOption().map { it.toUpperCase() == "TRUE" }
 
+internal fun concurrencyMode(): Option<ConcurrencyMode> =
+   sysprop(KotestEngineSystemProperties.concurrencyMode).toOption().map { ConcurrencyMode.valueOf(it) }
+
 /**
  * Returns a [DetectedProjectConfig] which is built from system properties where supported.
  */
@@ -32,6 +36,7 @@ internal fun loadConfigFromSystemProperties(): DetectedProjectConfig {
       isolationMode = isolationMode(),
       assertionMode = assertionMode(),
       parallelism = parallelism(),
+      concurrencyMode = concurrencyMode(),
       timeout = timeout(),
       invocationTimeout = invocationTimeout(),
       testNameRemoveWhitespace = allowMultilineTestName()

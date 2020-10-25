@@ -10,12 +10,14 @@ import io.kotest.core.filter.TestFilter
 import io.kotest.core.filter.TestFilterResult
 import io.kotest.core.filter.toTestFilterResult
 import io.kotest.core.internal.isActive
+import io.kotest.core.spec.Isolate
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.core.spec.toDescription
 import io.kotest.core.test.Description
 import io.kotest.matchers.shouldBe
 
+@Isolate
 class IsActiveTest : StringSpec() {
 
    init {
