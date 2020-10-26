@@ -1,6 +1,8 @@
 package com.sksamuel.kt.extensions.time
 
+import com.sksamuel.kt.extensions.system.SystemPropertyListenerTest
 import io.kotest.core.listeners.TestListener
+import io.kotest.core.spec.AutoScan
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.core.spec.style.StringSpec
@@ -8,6 +10,7 @@ import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.extensions.time.ConstantNowTestListener
 import io.kotest.extensions.time.withConstantNow
+import io.kotest.matchers.shouldBe
 import io.kotest.matchers.types.shouldBeSameInstanceAs
 import io.kotest.matchers.types.shouldNotBeSameInstanceAs
 import kotlinx.coroutines.delay
@@ -399,26 +402,38 @@ class ConstantNowExtensionFunctionsTest : DescribeSpec() {
    }
 }
 
+@AutoScan
+object Assertion : TestListener {
+   override suspend fun prepareSpec(kclass: KClass<out Spec>) {
+      if (kclass == SystemPropertyListenerTest::class) {
+         System.getProperty("bee") shouldBe null
+      }
+
+   }
+
+   override suspend fun finalizeSpec(kclass: KClass<out Spec>, results: Map<TestCase, TestResult>) {
+      if (kclass == SystemPropertyListenerTest::class) {
+         System.getProperty("bee") shouldBe null
+      }
+   }
+}
+
 class ConstantNowExtensionsListenerTest : StringSpec() {
 
    private val myNow = HijrahDate.now()
    private val myNow2 = LocalDateTime.now()
 
    init {
+      listeners(ConstantNowTestListener(myNow), ConstantNowTestListener(myNow2))
+
+      finalizeSpec {
+         HijrahDate.now() shouldNotBeSameInstanceAs myNow
+         LocalDateTime.now() shouldNotBeSameInstanceAs myNow2
+      }
+
       "Should use my now" {
          HijrahDate.now() shouldBeSameInstanceAs myNow
          LocalDateTime.now() shouldBeSameInstanceAs myNow2
       }
    }
-
-   override fun listeners() = listOf(
-      ConstantNowTestListener(myNow),
-      ConstantNowTestListener(myNow2),
-      object : TestListener {
-         override suspend fun finalizeSpec(kclass: KClass<out Spec>, results: Map<TestCase, TestResult>) {
-            HijrahDate.now() shouldNotBeSameInstanceAs myNow
-            LocalDateTime.now() shouldNotBeSameInstanceAs myNow2
-         }
-      }
-   )
 }

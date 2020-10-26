@@ -51,11 +51,11 @@ abstract class TimeZoneListener(private val timeZone: TimeZone) {
  */
 class TimeZoneTestListener(timeZone: TimeZone) : TimeZoneListener(timeZone), TestListener {
 
-   override suspend fun beforeTest(testCase: TestCase) {
+   override suspend fun beforeAny(testCase: TestCase) {
       changeTimeZone()
    }
 
-   override suspend fun afterTest(testCase: TestCase, result: TestResult) {
+   override suspend fun afterAny(testCase: TestCase, result: TestResult) {
       resetTimeZone()
    }
 }
@@ -70,7 +70,7 @@ class TimeZoneTestListener(timeZone: TimeZone) : TimeZoneListener(timeZone), Tes
  * change the timezone while it was already changed, the result may be inconsistent.
  */
 class TimeZoneProjectListener(timeZone: TimeZone) : TimeZoneListener(timeZone),
-   ProjectListener {
+    ProjectListener {
 
    override suspend fun beforeProject() {
       changeTimeZone()

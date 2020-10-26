@@ -30,13 +30,10 @@ kotlin {
 
    sourceSets {
       val jvmMain by getting {
-         dependencies {
-            api(kotlin("stdlib-jdk8"))
-         }
       }
+
       val jvmTest by getting {
          dependencies {
-            api(kotlin("stdlib-jdk8"))
             implementation(project(Projects.JunitRunner))
          }
       }

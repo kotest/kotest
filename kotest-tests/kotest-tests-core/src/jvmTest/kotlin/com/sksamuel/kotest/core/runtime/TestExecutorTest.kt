@@ -1,12 +1,12 @@
 package com.sksamuel.kotest.core.runtime
 
 import io.kotest.assertions.throwables.shouldThrow
-import io.kotest.core.runtime.CallingThreadExecutionContext
-import io.kotest.core.runtime.TimeoutExecutionContext
-import io.kotest.core.runtime.ExecutorExecutionContext
-import io.kotest.core.runtime.TestCaseExecutionListener
-import io.kotest.core.runtime.TestCaseExecutor
-import io.kotest.core.runtime.TimeoutException
+import io.kotest.core.CallingThreadExecutionContext
+import io.kotest.core.TimeoutExecutionContext
+import io.kotest.engine.ExecutorExecutionContext
+import io.kotest.core.test.TestCaseExecutionListener
+import io.kotest.core.internal.TestCaseExecutor
+import io.kotest.core.internal.TimeoutException
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.spec.style.funSpec
 import io.kotest.core.test.NestedTest
@@ -14,6 +14,8 @@ import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestContext
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestStatus
+import io.kotest.core.spec.materializeAndOrderRootTests
+import io.kotest.engine.toTestResult
 import io.kotest.matchers.booleans.shouldBeTrue
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.types.shouldBeInstanceOf
@@ -26,7 +28,7 @@ import kotlin.time.milliseconds
 @OptIn(ExperimentalTime::class)
 fun testExecutorTests(context: TimeoutExecutionContext) = funSpec {
 
-   fun context(testCase: TestCase) = object : TestContext() {
+   fun context(testCase: TestCase) = object : TestContext {
       override val testCase: TestCase = testCase
       override suspend fun registerTestCase(nested: NestedTest) {}
       override val coroutineContext: CoroutineContext = GlobalScope.coroutineContext
@@ -46,8 +48,8 @@ fun testExecutorTests(context: TimeoutExecutionContext) = funSpec {
             result.status shouldBe TestStatus.Success
          }
       }
-      val executor = TestCaseExecutor(listener, context)
-      val testCase = Tests().rootTests().first { it.testCase.name == "a" }.testCase
+      val executor = TestCaseExecutor(listener, context, {}, ::toTestResult)
+      val testCase = Tests().materializeAndOrderRootTests().first { it.testCase.displayName == "a" }.testCase
       executor.execute(testCase, context(testCase)).status shouldBe TestStatus.Success
       started shouldBe true
       finished shouldBe true
@@ -67,11 +69,11 @@ fun testExecutorTests(context: TimeoutExecutionContext) = funSpec {
             result.status shouldBe TestStatus.Error
          }
       }
-      val executor = TestCaseExecutor(listener, context)
-      val testCase = Tests().rootTests().first { it.testCase.name == "b" }.testCase
+      val executor = TestCaseExecutor(listener, context, {}, ::toTestResult)
+      val testCase = Tests().materializeAndOrderRootTests().first { it.testCase.displayName == "b" }.testCase
       val result = executor.execute(testCase, context(testCase))
       result.status shouldBe TestStatus.Error
-      result.error shouldBe TimeoutException(100.milliseconds)
+      result.error shouldBe TimeoutException(100)
       started shouldBe true
       finished shouldBe true
    }
@@ -81,9 +83,9 @@ fun testExecutorTests(context: TimeoutExecutionContext) = funSpec {
          override fun testStarted(testCase: TestCase) {}
          override fun testIgnored(testCase: TestCase) {}
          override fun testFinished(testCase: TestCase, result: TestResult) {}
-      }, context) { error("foo") }
+      }, context, { error("foo") }, ::toTestResult)
 
-      val testCase = Tests().rootTests().first { it.testCase.name == "a" }.testCase
+      val testCase = Tests().materializeAndOrderRootTests().first { it.testCase.displayName == "a" }.testCase
 
       shouldThrow<IllegalStateException> {
          executor.execute(testCase, context(testCase))
@@ -95,9 +97,9 @@ fun testExecutorTests(context: TimeoutExecutionContext) = funSpec {
          override fun testStarted(testCase: TestCase) {}
          override fun testIgnored(testCase: TestCase) {}
          override fun testFinished(testCase: TestCase, result: TestResult) {}
-      }, context)
+      }, context, {}, ::toTestResult)
       val spec = BeforeTest()
-      val testCase = spec.rootTests().first().testCase
+      val testCase = spec.materializeAndOrderRootTests().first().testCase
       executor.execute(testCase, context(testCase))
       spec.before.shouldBeTrue()
    }
@@ -107,9 +109,9 @@ fun testExecutorTests(context: TimeoutExecutionContext) = funSpec {
          override fun testStarted(testCase: TestCase) {}
          override fun testIgnored(testCase: TestCase) {}
          override fun testFinished(testCase: TestCase, result: TestResult) {}
-      }, context)
+      }, context, {}, ::toTestResult)
       val spec = AfterTest()
-      val testCase = spec.rootTests().first().testCase
+      val testCase = spec.materializeAndOrderRootTests().first().testCase
       executor.execute(testCase, context(testCase))
       spec.after.shouldBeTrue()
    }
@@ -126,8 +128,8 @@ fun testExecutorTests(context: TimeoutExecutionContext) = funSpec {
          override fun testFinished(testCase: TestCase, result: TestResult) {
             finished = true
          }
-      }, context)
-      val testCase = BeforeTestWithException().rootTests().first().testCase
+      }, context, {}, ::toTestResult)
+      val testCase = BeforeTestWithException().materializeAndOrderRootTests().first().testCase
       val result = executor.execute(testCase, context(testCase))
       result.status shouldBe TestStatus.Error
       result.error.shouldBeInstanceOf<IllegalStateException>()
@@ -147,8 +149,8 @@ fun testExecutorTests(context: TimeoutExecutionContext) = funSpec {
          override fun testFinished(testCase: TestCase, result: TestResult) {
             finished = true
          }
-      }, context)
-      val testCase = AfterTestWithException().rootTests().first().testCase
+      }, context, {}, ::toTestResult)
+      val testCase = AfterTestWithException().materializeAndOrderRootTests().first().testCase
       val result = executor.execute(testCase, context(testCase))
       result.status shouldBe TestStatus.Error
       result.error.shouldBeInstanceOf<IllegalStateException>()

@@ -16,7 +16,6 @@ object ProjectConfig : AbstractProjectConfig() {
       val duration = System.currentTimeMillis() - start
       // if we ran in parallel the tests should take approx 2 seconds, if there is a bug
       // with parallel then they'd take around 10 seconds
-      println("****** $duration")
       if (duration > 5000)
          error("Parallel execution failure")
    }

@@ -19,7 +19,10 @@ import io.kotest.matchers.shouldNotBe
  * 0.1 shouldBeExactly 0.2   // Assertion fails
  * ```
  */
-infix fun Double.shouldBeExactly(other: Double) = this shouldBe exactly(other)
+infix fun Double.shouldBeExactly(other: Double): Double {
+   this shouldBe exactly(other)
+   return this
+}
 
 /**
  * Asserts that this [Double] is not exactly [other]
@@ -33,7 +36,11 @@ infix fun Double.shouldBeExactly(other: Double) = this shouldBe exactly(other)
  * 0.1 shouldNotBeExactly 0.1   // Assertion fails
  * ```
  */
-infix fun Double.shouldNotBeExactly(other: Double) = this shouldNotBe exactly(other)
+infix fun Double.shouldNotBeExactly(other: Double): Double {
+   this shouldNotBe exactly(other)
+   return this
+}
+
 fun exactly(d: Double): Matcher<Double> = object : Matcher<Double> {
   override fun test(value: Double) = MatcherResult(value == d, "$value is not equal to expected value $d", "$value should not equal $d")
 }

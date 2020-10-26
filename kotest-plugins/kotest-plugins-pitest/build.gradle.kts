@@ -33,11 +33,12 @@ kotlin {
 
       val jvmMain by getting {
          dependencies {
-            implementation(kotlin("stdlib-jdk8"))
             implementation(kotlin("reflect"))
-            implementation(project(":kotest-core"))
-            implementation("org.pitest:pitest:1.4.11")
-            implementation(Libs.Coroutines.core)
+            implementation(project(Projects.Common))
+            implementation(project(Projects.Api))
+            implementation(project(Projects.Engine))
+            implementation(Libs.Pitest.pitest)
+            implementation(Libs.Coroutines.coreJvm)
          }
       }
 
@@ -45,7 +46,7 @@ kotlin {
          dependsOn(jvmMain)
          dependencies {
             implementation(project(Projects.JunitRunner))
-            implementation(project(":kotest-assertions:kotest-assertions-core"))
+            implementation(project(Projects.AssertionsCore))
          }
       }
    }

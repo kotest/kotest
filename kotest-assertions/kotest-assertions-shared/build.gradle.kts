@@ -20,16 +20,21 @@ kotlin {
          }
       }
       js {
-         val main by compilations.getting {
-            kotlinOptions {
-               moduleKind = "commonjs"
-            }
-         }
+         browser()
+         nodejs()
       }
 
       linuxX64()
+
       mingwX64()
+
       macosX64()
+      tvos()
+      watchos()
+
+      iosX64()
+      iosArm64()
+      iosArm32()
    }
 
    targets.all {
@@ -44,30 +49,18 @@ kotlin {
 
       val commonMain by getting {
          dependencies {
-            implementation(kotlin("stdlib-common"))
+            api(project(Projects.AssertionsApi))
             implementation(project(Projects.Common))
             implementation(Libs.Coroutines.coreCommon)
-         }
-      }
-
-      val jsMain by getting {
-         dependsOn(commonMain)
-         dependencies {
-            implementation(kotlin("stdlib-js"))
-            implementation(Libs.Coroutines.coreJs)
          }
       }
 
       val jvmMain by getting {
          dependsOn(commonMain)
          dependencies {
-            implementation(kotlin("stdlib-jdk8"))
             implementation(kotlin("reflect"))
-            implementation(Libs.Coroutines.core)
             implementation(Libs.Coroutines.jdk8)
             implementation(Libs.Wumpz.diffutils)
-            implementation("com.univocity:univocity-parsers:2.8.4")
-            implementation(Libs.Mifmif.generex)
          }
       }
 
@@ -78,12 +71,47 @@ kotlin {
          }
       }
 
-      listOf("macosX64Main", "linuxX64Main", "mingwX64Main").forEach {
-         get(it).dependencies {
-            implementation(Libs.Coroutines.coreNative)
-         }
+      val desktopMain by creating {
+         dependsOn(commonMain)
+      }
+
+      val macosX64Main by getting {
+         dependsOn(desktopMain)
+      }
+
+      val mingwX64Main by getting {
+         dependsOn(desktopMain)
+      }
+
+      val linuxX64Main by getting {
+         dependsOn(desktopMain)
+      }
+
+      val iosX64Main by getting {
+         dependsOn(desktopMain)
+      }
+
+      val iosArm64Main by getting {
+         dependsOn(desktopMain)
+      }
+
+      val iosArm32Main by getting {
+         dependsOn(desktopMain)
+      }
+
+      val watchosMain by getting {
+         dependsOn(desktopMain)
+      }
+
+      val tvosMain by getting {
+         dependsOn(desktopMain)
       }
    }
+}
+
+tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
+   kotlinOptions.jvmTarget = "1.8"
+   kotlinOptions.apiVersion = "1.3"
 }
 
 tasks.named<Test>("jvmTest") {

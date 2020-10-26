@@ -1,8 +1,8 @@
 package com.sksamuel.kotest.specs.annotation
 
-import io.kotest.core.engine.SpecExecutor
-import io.kotest.core.engine.TestEngineListener
 import io.kotest.core.spec.Spec
+import io.kotest.engine.spec.SpecExecutor
+import io.kotest.engine.listener.TestEngineListener
 import io.kotest.core.spec.style.AnnotationSpec
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.test.TestCase

@@ -4,6 +4,7 @@ import io.kotest.property.Arb
 import java.lang.reflect.ParameterizedType
 import java.lang.reflect.Type
 import java.lang.reflect.WildcardType
+import java.math.BigDecimal
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
@@ -33,7 +34,7 @@ actual inline fun <reified A> targetDefaultForClass(): Arb<A>? {
       }
       A::class.isSubclassOf(Map::class) -> {
          val type = object : TypeReference<A>() {}.type as ParameterizedType
-         //map key type can have or have not variance
+         // map key type can have or have not variance
          val first = if (type.actualTypeArguments[0] is Class<*>) {
             type.actualTypeArguments[0] as Class<*>
          } else {
@@ -45,7 +46,8 @@ actual inline fun <reified A> targetDefaultForClass(): Arb<A>? {
       A::class == LocalDate::class -> Arb.localDate() as Arb<A>
       A::class == LocalDateTime::class -> Arb.localDateTime() as Arb<A>
       A::class == LocalTime::class -> Arb.localTime() as Arb<A>
-      A::class == Period::class -> Arb.period()as Arb<A>
+      A::class == Period::class -> Arb.period() as Arb<A>
+      A::class == BigDecimal::class -> Arb.bigDecimal() as Arb<A>
       else -> null
    }
 }
@@ -57,4 +59,3 @@ abstract class TypeReference<T> : Comparable<TypeReference<T>> {
 
    override fun compareTo(other: TypeReference<T>) = 0
 }
-

@@ -11,6 +11,8 @@ import kotlin.jvm.JvmName
  */
 fun <A> exhaustive(`as`: List<A>): Exhaustive<A> = `as`.exhaustive()
 
+fun <A> Exhaustive.Companion.of(vararg elements: A): Exhaustive<A> = Exhaustive.collection(elements.asList())
+
 /**
  * Returns an [Exhaustive] which provides the values from the receiver.
  * @return [Exhaustive]
@@ -42,8 +44,9 @@ fun <A, B : A, C : A> Exhaustive<B>.merge(other: Exhaustive<C>): Exhaustive<A> =
 }
 
 /**
- * Returns a new [Exhaustive] which takes its elements from the receiver and filters them using the supplied
-   predicate. In other words this exhaustive is a subset of the elements as determined by the filter.
+ * Returns a new [Exhaustive] which takes its elements from the receiver and filters
+ * them using the supplied predicate.
+ * In other words this exhaustive is a subset of the elements as determined by the filter.
  */
 fun <A> Exhaustive<A>.filter(predicate: (A) -> Boolean) = object : Exhaustive<A>() {
    override val values: List<A> =

@@ -1,7 +1,6 @@
 package io.kotest.property
 
-import io.kotest.property.arbitrary.arb
-import kotlin.random.Random
+import io.kotest.property.arbitrary.of
 
 /**
  * A [Gen] is responsible for providing values to be used in property testing. You can think of it as like
@@ -25,7 +24,7 @@ import kotlin.random.Random
 sealed class Gen<out A> {
 
    fun generate(rs: RandomSource): Sequence<Sample<A>> = when (this) {
-      is Arb -> this.edgecases().asSequence().map { Sample(it) } + this.values(rs)
+      is Arb -> this.edgecases().asSequence().map { Sample(it) } + this.samples(rs)
       is Exhaustive -> {
          check(this.values.isNotEmpty()) { "Exhaustive.values shouldn't be a empty list." }
 
@@ -62,16 +61,33 @@ sealed class Gen<out A> {
  * In order to use an [Arb] inside a property test, one must invoke the [take] method, passing in the
  * number of iterations required and optionally a [ShrinkingMode].
  */
-abstract class Arb<A> : Gen<A>() {
+abstract class Arb<out A> : Gen<A>() {
 
    /**
     * Edgecase values for this type A.
     */
    abstract fun edgecases(): List<A>
 
-   abstract fun values(rs: RandomSource): Sequence<Sample<A>>
+   open fun sample(rs: RandomSource): Sample<A> = values(rs).first()
 
-   companion object
+   @Deprecated("implement one value at a time using sample(rs). This function will be removed in 4.5.", ReplaceWith("sample(rs)"))
+   open fun values(rs: RandomSource): Sequence<Sample<A>> = emptySequence()
+
+   /**
+    * Returns a sequence from values generated from this arb.
+    * Edgecases will be ignored.
+    */
+   fun samples(rs: RandomSource = RandomSource.Default): Sequence<Sample<A>> {
+      val valuesIterator = values(rs).iterator()
+      return if (valuesIterator.hasNext()) {
+         generateSequence { valuesIterator.next() }
+      } else {
+         generateSequence { sample(rs) }
+      }
+   }
+
+   companion object {
+   }
 }
 
 /**
@@ -90,7 +106,7 @@ abstract class Arb<A> : Gen<A>() {
  *
  * An exhaustive is less suitable when you have a large sample space you need to select values from.
  */
-abstract class Exhaustive<A> : Gen<A>() {
+abstract class Exhaustive<out A> : Gen<A>() {
 
    /**
     * Returns the values of this [Exhaustive].
@@ -101,23 +117,10 @@ abstract class Exhaustive<A> : Gen<A>() {
     * Converts this into an [Arb] where the generated values of the returned arb
     * are choosen randomly from the values provided by this exhausive.
     */
-   fun toArb(): Arb<A> = arb {
-      check(values.isNotEmpty())
-      values.shuffled(it.random).asSequence()
-   }
+   fun toArb(): Arb<A> = Arb.of(values)
 
-   companion object
-}
-
-data class RandomSource(val random: Random, val seed: Long) {
    companion object {
 
-      fun seeded(seed: Long): RandomSource = RandomSource(Random(seed), seed)
-
-      val Default = lazy {
-         val seed = Random.Default.nextLong()
-         RandomSource(Random(seed), seed)
-      }.value
    }
 }
 
@@ -126,4 +129,7 @@ data class RandomSource(val random: Random, val seed: Long) {
  */
 data class Sample<out A>(val value: A, val shrinks: RTree<A> = RTree({ value }))
 
+/**
+ * Returns a [Sample] with shrinks by using the supplied [Shrinker] against the input value [a].
+ */
 fun <A> sampleOf(a: A, shrinker: Shrinker<A>) = Sample(a, shrinker.rtree(a))

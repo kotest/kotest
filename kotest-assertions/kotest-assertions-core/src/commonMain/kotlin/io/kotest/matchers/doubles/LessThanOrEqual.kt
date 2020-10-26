@@ -21,7 +21,10 @@ import io.kotest.matchers.shouldNotBe
  * @see [Double.shouldBeLessThan]
  * @see [Double.shouldNotBeGreaterThanOrEqual]
  */
-infix fun Double.shouldBeLessThanOrEqual(x: Double) = this shouldBe lte(x)
+infix fun Double.shouldBeLessThanOrEqual(x: Double): Double {
+   this shouldBe lte(x)
+   return this
+}
 
 /**
  * Asserts that this [Double] is not less than [x] nor equal to [x]
@@ -37,7 +40,10 @@ infix fun Double.shouldBeLessThanOrEqual(x: Double) = this shouldBe lte(x)
  * @see [Double.shouldNotBeLessThan]
  * @see [Double.shouldBeGreaterThanOrEqual]
  */
-infix fun Double.shouldNotBeLessThanOrEqual(x: Double) = this shouldNotBe lte(x)
+infix fun Double.shouldNotBeLessThanOrEqual(x: Double): Double {
+   this shouldNotBe lte(x)
+   return this
+}
 
 fun lte(x: Double) = beLessThanOrEqualTo(x)
 fun beLessThanOrEqualTo(x: Double) = object : Matcher<Double> {

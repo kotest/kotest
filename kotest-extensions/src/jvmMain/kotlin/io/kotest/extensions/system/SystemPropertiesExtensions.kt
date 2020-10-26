@@ -185,11 +185,11 @@ class SystemPropertyTestListener(newProperties: Map<String, String?>, mode: Over
     */
    constructor(properties: Properties, mode: OverrideMode = SetOrError) : this(properties.toStringStringMap(), mode)
 
-   override suspend fun beforeTest(testCase: TestCase) {
+   override suspend fun beforeAny(testCase: TestCase) {
       changeSystemProperties()
    }
 
-   override suspend fun afterTest(testCase: TestCase, result: TestResult) {
+   override suspend fun afterAny(testCase: TestCase, result: TestResult) {
       resetSystemProperties()
    }
 }

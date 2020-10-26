@@ -31,8 +31,9 @@ fun parseHttpRequest(lines: List<String>): HttpRequestBuilder {
 }
 
 suspend fun runRequest(req: HttpRequestBuilder): HttpResponse {
-   val client = HttpClient()
-   return client.request<HttpResponse>(req)
+   return HttpClient().use {
+      it.request<HttpResponse>(req)
+   }
 }
 
 suspend fun runRequest(req: HttpRequestBuilder, timeout: Long): HttpResponse {

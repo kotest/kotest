@@ -2,6 +2,19 @@ Kotest Extensions
 ====================
 
 
+Kotest integrates with many libraries and frameworks. This page outlines the extensions maintained by the Kotest team.
+
+* [Allure](#allure)
+* [Arrow](#arrow)
+* [Ktor](#ktor)
+* [Koin](#koin)
+* [Mockserver](#mockserver)
+* [Robolectric](#robolectric)
+* [Spring](#spring)
+* [System / Timezone](#system-extensions)
+* [Test Containers](#testcontainers)
+
+
 ### Arrow
 
 The arrow assertion module provives assertions for the functional programming library [arrow-kt](https://arrow-kt.io/) for types such as `Option`, `Try`, and so on.
@@ -27,6 +40,7 @@ list.forOne {
 ```
 
 Other inspectors include `forNone`, `forAll`, `forExactly(n)`, `forSome` and so on. See the section on [inspectors](https://github.com/kotest/kotest/blob/master/doc/reference.md#inspectors) for more details.
+
 
 ### Spring
 
@@ -95,13 +109,48 @@ class SpringAutowiredConstructorTest(service: UserService) : WordSpec() {
 }
 ```
 
+
+### Ktor
+
+The ```kotest-assertions-ktor``` module provides response matchers for a [Ktor]("https://ktor.io/") application. There are matchers
+for both `TestApplicationResponse` if you are using the server side test support, and for `HttpResponse` if you are using the ktor
+client classes.
+
+To add Ktor matchers, add the following dependency to your project
+
+```groovy
+testImplementation("io.kotest:kotest-assertions-ktor:${version}")
+```
+
+An example of using the matchers with the server side test support:
+```kotlin
+withTestApplication({ module(testing = true) }) {
+   handleRequest(HttpMethod.Get, "/").apply {
+      response shouldHaveStatus HttpStatusCode.OK
+      response shouldNotHaveContent "failure"
+      response.shouldHaveHeader(name = "Authorization", value = "Bearer")
+      response.shouldNotHaveCookie(name = "Set-Cookie", cookieValue = "id=1234")
+   }
+}
+```
+
+And an example of using the client support:
+```kotlin
+val client = HttpClient(CIO)
+val resp = client.post("http://mydomain.com/foo")
+response.shouldHaveStatus(HttpStatusCode.OK)
+response.shouldHaveHeader(name = "Authorization", value = "Bearer")
+
+```
+
+
 ### Koin
 
 The [Koin DI Framework](https://insert-koin.io/) can be used with Kotest through the `KoinListener` test listener and its own interface `KoinTest`.
 
 To add the listener to your project, add the depency to your project:
 ```groovy
-testImplementation("io.kotest:kotest-extensions-koin-jvm:${version}")
+testImplementation("io.kotest:kotest-extensions-koin:${version}")
 ```
 
 With the dependency added, we can use Koin in our tests!
@@ -122,14 +171,15 @@ class KotestAndKoin : FunSpec(), KoinTest {
 }
 ```
 
-### Roboelectric extension
+
+### Robolectric
 
 [Robolectric](http://robolectric.org/) can be used with Kotest through the `RobolectricExtension` which can be found in `kotest-extensions-robolectric` module.
 
 To add this module to project you need spcify following in your `build.gradle`:
 
 ```groovy
-testImplementation 'io.kotest:kotest-extensions-robolectric-jvm:<version>'
+testImplementation 'io.kotest:kotest-extensions-robolectric:<version>'
 ```
 With this dependency added you should add extensions to your project config. For example if you have no such config yet it would look like
 
@@ -142,6 +192,7 @@ class MyProjectLevelConfig : AbstractProjectConfig() {
 Of course you can just add this extension to another extensions you're already using.
 
 After that done any class which should be ran with Robolectric should be annotated with `@RobolectricTest` annotation.
+
 
 ### Compilation test
 
@@ -156,7 +207,7 @@ This extension is a wrapper over [kotlin-compile-testing](https://github.com/tsc
 To add the compilation matcher, add the following dependency to your project
 
 ```groovy
-testImplementation("io.kotest:kotest-assertions-compiler-jvm:${version}")
+testImplementation("io.kotest:kotest-assertions-compiler:${version}")
 ```
 
 Usage:
@@ -315,6 +366,7 @@ class MyTest : FreeSpec() {
 
 ```
 
+
 ### No System Out listeners
 
 Maybe you want to guarantee that you didn't leave any debug messages around, or that you're always using a Logger in your logging.
@@ -325,6 +377,7 @@ For that, Kotest provides you with `NoSystemOutListener` and `NoSystemErrListene
     // In Project or in Spec
     override fun listeners() = listOf(NoSystemOutListener, NoSystemErrListener)
 ```
+
 
 ### Locale/Timezone listeners
 
@@ -352,6 +405,7 @@ And with the listeners
   )
 
 ```
+
 
 ### Current instant listeners
 
@@ -384,6 +438,17 @@ Or, with a listener for all the tests:
     ConstantNowTestListener(foreverNow)
   )
 ```
+
+
+### MockServer
+
+Kotest provides an extension for integration with the [MockServer](https://www.mock-server.com) library through the `kotest-extensions-mockserver` module.
+
+MockServer is described as an in process server that returns specific responses for different requests via HTTP or HTTPS.
+When MockServer receives a request it matches that request against the configured expectations. If a match is found it returns that response, otherwise a 404 is returned.
+
+Read integration instructions [here](mockserver.md).
+
 
 ### TestContainers
 
@@ -418,3 +483,11 @@ redis container before each test and stop's that after test. Similarly if you wa
 in a single spec class you can use ```perSpec()``` extension method which convert's container into a ```TestListener```
 which start's the container before running any test in spec and stop's that after all tests, thus a single container is
 used by all tests in spec class.
+
+
+### Allure
+
+[Allure](http://allure.qatools.ru) is an open-source framework designed to generate detailed and interactive test reports.
+It works by collecting test data as tests are executed and then compiling that into a final HTML report.
+
+Kotest provides an extenstion for Allure and full integration instructions are [here](allure.md).

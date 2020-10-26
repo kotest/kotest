@@ -2,7 +2,6 @@ package com.sksamuel.kotest.property
 
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
-import io.kotest.matchers.shouldNotBe
 import io.kotest.property.*
 import io.kotest.property.arbitrary.int
 import io.kotest.property.arbitrary.string
@@ -18,16 +17,18 @@ class PropListenersTest : FunSpec({
       total = 0
    }
 
-   val propConfig = PropTestConfig(listeners = listOf(object : PropTestListener {
-      override suspend fun beforeTest() {
-         previous = current
-         ++current
-      }
+   val propConfig = PropTestConfig(
+      listeners = listOf(object : PropTestListener {
+         override suspend fun beforeTest() {
+            previous = current
+            ++current
+         }
 
-      override suspend fun afterTest() {
-         ++total
-      }
-   }))
+         override suspend fun afterTest() {
+            ++total
+         }
+      })
+   )
 
    test("checkAll calls listener for param A") {
       val context = checkAll(10, propConfig, Arb.string()) {

@@ -11,6 +11,8 @@ import io.kotest.matchers.file.haveExtension
 import io.kotest.matchers.file.shouldBeADirectory
 import io.kotest.matchers.file.shouldBeAFile
 import io.kotest.matchers.file.shouldBeAbsolute
+import io.kotest.matchers.file.shouldBeEmptyDirectory
+import io.kotest.matchers.file.shouldBeNonEmptyDirectory
 import io.kotest.matchers.file.shouldBeRelative
 import io.kotest.matchers.file.shouldBeSymbolicLink
 import io.kotest.matchers.file.shouldExist
@@ -18,6 +20,8 @@ import io.kotest.matchers.file.shouldHaveExtension
 import io.kotest.matchers.file.shouldHaveParent
 import io.kotest.matchers.file.shouldNotBeADirectory
 import io.kotest.matchers.file.shouldNotBeAFile
+import io.kotest.matchers.file.shouldNotBeEmptyDirectory
+import io.kotest.matchers.file.shouldNotBeNonEmptyDirectory
 import io.kotest.matchers.file.shouldNotBeSymbolicLink
 import io.kotest.matchers.file.shouldNotExist
 import io.kotest.matchers.file.shouldNotHaveExtension
@@ -41,14 +45,13 @@ import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNot
 import io.kotest.matchers.string.shouldEndWith
 import io.kotest.matchers.string.shouldMatch
+import org.apache.commons.lang3.SystemUtils.IS_OS_WINDOWS
 import java.io.File
 import java.nio.file.Files
 import java.nio.file.Paths
 
 @Suppress("BlockingMethodInNonBlockingContext")
 class FileMatchersTest : FunSpec() {
-  private val osName = System.getProperty("os.name").toLowerCase()
-  private val isWindows = osName.contains("windows")
 
   init {
 
@@ -58,7 +61,7 @@ class FileMatchersTest : FunSpec() {
     }
 
     test("absolute() should match only absolute files") {
-      val root = if (isWindows) "C:/" else "/"
+      val root = if (IS_OS_WINDOWS) "C:/" else "/"
       File("${root}sammy/boy") shouldBe beAbsolute()
       File("${root}sammy/boy").shouldBeAbsolute()
     }
@@ -147,6 +150,20 @@ class FileMatchersTest : FunSpec() {
       }
     }
 
+    test("directory should be empty (deprecated)") {
+       val dir = Files.createTempDirectory("testdir").toFile()
+       dir.shouldNotBeNonEmptyDirectory()
+       dir.resolve("testfile.txt").writeBytes(byteArrayOf(1, 2, 3))
+       dir.shouldBeNonEmptyDirectory()
+    }
+
+    test("directory should be empty") {
+       val dir = Files.createTempDirectory("testdir").toFile()
+       dir.shouldBeEmptyDirectory()
+       dir.resolve("testfile.txt").writeBytes(byteArrayOf(1, 2, 3))
+       dir.shouldNotBeEmptyDirectory()
+    }
+
     test("directory contains file matching predicate") {
       val dir = Files.createTempDirectory("testdir")
       dir.resolve("a").toFile().createNewFile()
@@ -228,7 +245,7 @@ class FileMatchersTest : FunSpec() {
       }.message shouldBe "Files a.txt, b.gif should not exist in $testDir"
     }
 
-    test("shouldBeSymbolicLink should check if file is symbolic link") {
+    test("shouldBeSymbolicLink should check if file is symbolic link").config(enabled = isNotWindowsOrIsWindowsElevated()) {
       val testDir = Files.createTempDirectory("testdir")
 
       val existingFile = Files.write(testDir.resolve("original.txt"), byteArrayOf(1, 2, 3, 4))
@@ -259,4 +276,18 @@ class FileMatchersTest : FunSpec() {
       fileAsFile.shouldNotHaveParent("super_hyper_long_random_file_name")
     }
   }
+}
+
+private fun isNotWindowsOrIsWindowsElevated(): Boolean {
+   return if (!IS_OS_WINDOWS)
+      true
+   else
+      try {
+         val p = Runtime.getRuntime().exec("""reg query "HKU\S-1-5-19"""")
+         p.waitFor()
+         0 == p.exitValue()
+      } catch (ex: Exception) {
+         println("Failed to determine if process had elevated permissions, assuming it does not.")
+         false
+      }
 }

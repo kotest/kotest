@@ -4,7 +4,7 @@ import io.kotest.core.config.AbstractProjectConfig
 import io.kotest.core.listeners.ProjectListener
 
 class MyConfig : AbstractProjectConfig() {
-   override fun projectListeners(): List<ProjectListener> = listOf(TestProjectListener)
+   override fun listeners() = listOf(TestProjectListener)
 }
 
 object TestProjectListener : ProjectListener {

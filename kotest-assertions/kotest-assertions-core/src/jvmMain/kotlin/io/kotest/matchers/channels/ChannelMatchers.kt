@@ -4,6 +4,7 @@ import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldNot
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
@@ -18,6 +19,7 @@ import java.time.Duration
  */
 fun <T> Channel<T>.shouldBeClosed() = this should beClosed()
 
+@OptIn(ExperimentalCoroutinesApi::class)
 fun <T> beClosed() = object : Matcher<Channel<T>> {
   override fun test(value: Channel<T>) = MatcherResult(
     value.isClosedForSend && value.isClosedForReceive,
@@ -40,6 +42,7 @@ fun <T> Channel<T>.shouldBeOpen() = this shouldNot beClosed()
  */
 fun <T> Channel<T>.shouldBeEmpty() = this should beEmpty()
 
+@OptIn(ExperimentalCoroutinesApi::class)
 fun <T> beEmpty() = object : Matcher<Channel<T>> {
   override fun test(value: Channel<T>) = MatcherResult(
     value.isEmpty,

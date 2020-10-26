@@ -33,10 +33,10 @@ kotlin {
 
       val jvmMain by getting {
          dependencies {
-            implementation(project(":kotest-core"))
-            implementation(kotlin("stdlib-jdk8"))
-            implementation("org.koin:koin-core:2.1.5")
-            implementation("org.koin:koin-test:2.1.5") {
+            implementation(project(Projects.Api))
+            implementation(project(Projects.Engine))
+            implementation(Libs.Koin.core)
+            implementation(Libs.Koin.test) {
                exclude(group = "junit", module = "junit")
             }
 

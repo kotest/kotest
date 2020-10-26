@@ -1,73 +1,46 @@
 package io.kotest.property.arbitrary
 
 import io.kotest.property.Arb
+import io.kotest.property.Exhaustive
 import io.kotest.property.Gen
 
-fun <A, B, T : Any> Arb.Companion.bind(genA: Gen<A>, genB: Gen<B>, bindFn: (A, B) -> T): Arb<T> = arb {
-   val iterA = genA.generate(it).iterator()
-   val iterB = genB.generate(it).iterator()
-   generateSequence {
-      val a = iterA.next()
-      val b = iterB.next()
-      bindFn(a.value, b.value)
-   }
-}
+fun <A, B, T> Arb.Companion.bind(genA: Gen<A>, genB: Gen<B>, bindFn: (A, B) -> T): Arb<T> =
+   genA.bind(genB, bindFn)
 
-fun <A, B, C, T : Any> Arb.Companion.bind(
+fun <A, B, C, T> Arb.Companion.bind(
    genA: Gen<A>,
    genB: Gen<B>,
    genC: Gen<C>,
    bindFn: (A, B, C) -> T
-): Arb<T> = arb {
-   val iterA = genA.generate(it).iterator()
-   val iterB = genB.generate(it).iterator()
-   val iterC = genC.generate(it).iterator()
-   generateSequence {
-      val a = iterA.next()
-      val b = iterB.next()
-      val c = iterC.next()
-      bindFn(a.value, b.value, c.value)
-   }
+): Arb<T> = genA.bind(genB).bind(genC).map { (ab, c) ->
+   val (a, b) = ab
+   bindFn(a, b, c)
 }
 
-fun <A, B, C, D, T : Any> Arb.Companion.bind(
+fun <A, B, C, D, T> Arb.Companion.bind(
    genA: Gen<A>, genB: Gen<B>, genC: Gen<C>, genD: Gen<D>,
    bindFn: (A, B, C, D) -> T
-): Arb<T> = arb {
-   val iterA = genA.generate(it).iterator()
-   val iterB = genB.generate(it).iterator()
-   val iterC = genC.generate(it).iterator()
-   val iterD = genD.generate(it).iterator()
-   generateSequence {
-      val a = iterA.next()
-      val b = iterB.next()
-      val c = iterC.next()
-      val d = iterD.next()
-      bindFn(a.value, b.value, c.value, d.value)
-   }
+): Arb<T> = genA.bind(genB).bind(genC).bind(genD).map { (abc, d) ->
+   val (ab, c) = abc
+   val (a, b) = ab
+   bindFn(a, b, c, d)
 }
 
-fun <A, B, C, D, E, T : Any> Arb.Companion.bind(
-   genA: Arb<A>, genB: Arb<B>, genC: Arb<C>, genD: Arb<D>, genE: Arb<E>,
+fun <A, B, C, D, E, T> Arb.Companion.bind(
+   genA: Gen<A>,
+   genB: Gen<B>,
+   genC: Gen<C>,
+   genD: Gen<D>,
+   genE: Gen<E>,
    bindFn: (A, B, C, D, E) -> T
-): Arb<T> = arb {
-   val iterA = genA.generate(it).iterator()
-   val iterB = genB.generate(it).iterator()
-   val iterC = genC.generate(it).iterator()
-   val iterD = genD.generate(it).iterator()
-   val iterE = genE.generate(it).iterator()
-   generateSequence {
-      val a = iterA.next()
-      val b = iterB.next()
-      val c = iterC.next()
-      val d = iterD.next()
-      val e = iterE.next()
-      bindFn(a.value, b.value, c.value, d.value, e.value)
-   }
+): Arb<T> = genA.bind(genB).bind(genC).bind(genD).bind(genE).map { (abcd, e) ->
+   val (abc, d) = abcd
+   val (ab, c) = abc
+   val (a, b) = ab
+   bindFn(a, b, c, d, e)
 }
 
-
-fun <A, B, C, D, E, F, T : Any> Arb.Companion.bind(
+fun <A, B, C, D, E, F, T> Arb.Companion.bind(
    genA: Gen<A>,
    genB: Gen<B>,
    genC: Gen<C>,
@@ -75,26 +48,15 @@ fun <A, B, C, D, E, F, T : Any> Arb.Companion.bind(
    genE: Gen<E>,
    genF: Gen<F>,
    bindFn: (A, B, C, D, E, F) -> T
-): Arb<T> = arb {
-   val iterA = genA.generate(it).iterator()
-   val iterB = genB.generate(it).iterator()
-   val iterC = genC.generate(it).iterator()
-   val iterD = genD.generate(it).iterator()
-   val iterE = genE.generate(it).iterator()
-   val iterF = genF.generate(it).iterator()
-   generateSequence {
-      val a = iterA.next()
-      val b = iterB.next()
-      val c = iterC.next()
-      val d = iterD.next()
-      val e = iterE.next()
-      val f = iterF.next()
-      bindFn(a.value, b.value, c.value, d.value, e.value, f.value)
-   }
+): Arb<T> = genA.bind(genB).bind(genC).bind(genD).bind(genE).bind(genF).map { (abcde, f) ->
+   val (abcd, e) = abcde
+   val (abc, d) = abcd
+   val (ab, c) = abc
+   val (a, b) = ab
+   bindFn(a, b, c, d, e, f)
 }
 
-
-fun <A, B, C, D, E, F, G, T : Any> Arb.Companion.bind(
+fun <A, B, C, D, E, F, G, T> Arb.Companion.bind(
    genA: Gen<A>,
    genB: Gen<B>,
    genC: Gen<C>,
@@ -103,22 +65,95 @@ fun <A, B, C, D, E, F, G, T : Any> Arb.Companion.bind(
    genF: Gen<F>,
    genG: Gen<G>,
    bindFn: (A, B, C, D, E, F, G) -> T
-): Arb<T> = arb {
-   val seqA = genA.generate(it).iterator()
-   val seqB = genB.generate(it).iterator()
-   val seqC = genC.generate(it).iterator()
-   val seqD = genD.generate(it).iterator()
-   val seqE = genE.generate(it).iterator()
-   val seqF = genF.generate(it).iterator()
-   val seqG = genG.generate(it).iterator()
-   generateSequence {
-      val a = seqA.next()
-      val b = seqB.next()
-      val c = seqC.next()
-      val d = seqD.next()
-      val e = seqE.next()
-      val f = seqF.next()
-      val g = seqG.next()
-      bindFn(a.value, b.value, c.value, d.value, e.value, f.value, g.value)
+): Arb<T> = genA.bind(genB).bind(genC).bind(genD).bind(genE).bind(genF).bind(genG).map { (abcdef, g) ->
+   val (abcde, f) = abcdef
+   val (abcd, e) = abcde
+   val (abc, d) = abcd
+   val (ab, c) = abc
+   val (a, b) = ab
+   bindFn(a, b, c, d, e, f, g)
+}
+
+fun <A, B, C, D, E, F, G, H, T> Arb.Companion.bind(
+   genA: Gen<A>,
+   genB: Gen<B>,
+   genC: Gen<C>,
+   genD: Gen<D>,
+   genE: Gen<E>,
+   genF: Gen<F>,
+   genG: Gen<G>,
+   genH: Gen<H>,
+   bindFn: (A, B, C, D, E, F, G, H) -> T
+): Arb<T> = genA.bind(genB).bind(genC).bind(genD).bind(genE).bind(genF).bind(genG).bind(genH).map { (abcdefg, h) ->
+   val (abcdef, g) = abcdefg
+   val (abcde, f) = abcdef
+   val (abcd, e) = abcde
+   val (abc, d) = abcd
+   val (ab, c) = abc
+   val (a, b) = ab
+   bindFn(a, b, c, d, e, f, g, h)
+}
+
+fun <A, B, C, D, E, F, G, H, I, T> Arb.Companion.bind(
+   genA: Gen<A>,
+   genB: Gen<B>,
+   genC: Gen<C>,
+   genD: Gen<D>,
+   genE: Gen<E>,
+   genF: Gen<F>,
+   genG: Gen<G>,
+   genH: Gen<H>,
+   genI: Gen<I>,
+   bindFn: (A, B, C, D, E, F, G, H, I) -> T
+): Arb<T> = genA.bind(genB).bind(genC).bind(genD).bind(genE).bind(genF).bind(genG).bind(genH).bind(genI)
+   .map { (abcdefgh, i) ->
+      val (abcdefg, h) = abcdefgh
+      val (abcdef, g) = abcdefg
+      val (abcde, f) = abcdef
+      val (abcd, e) = abcde
+      val (abc, d) = abcd
+      val (ab, c) = abc
+      val (a, b) = ab
+      bindFn(a, b, c, d, e, f, g, h, i)
+   }
+
+fun <A, B, C, D, E, F, G, H, I, J, T> Arb.Companion.bind(
+   genA: Gen<A>,
+   genB: Gen<B>,
+   genC: Gen<C>,
+   genD: Gen<D>,
+   genE: Gen<E>,
+   genF: Gen<F>,
+   genG: Gen<G>,
+   genH: Gen<H>,
+   genI: Gen<I>,
+   genJ: Gen<J>,
+   bindFn: (A, B, C, D, E, F, G, H, I, J) -> T
+): Arb<T> = genA.bind(genB).bind(genC).bind(genD).bind(genE).bind(genF).bind(genG).bind(genH).bind(genI).bind(genJ)
+   .map { (abcdefghi, j) ->
+      val (abcdefgh, i) = abcdefghi
+      val (abcdefg, h) = abcdefgh
+      val (abcdef, g) = abcdefg
+      val (abcde, f) = abcdef
+      val (abcd, e) = abcde
+      val (abc, d) = abcd
+      val (ab, c) = abc
+      val (a, b) = ab
+      bindFn(a, b, c, d, e, f, g, h, i, j)
+   }
+
+private fun <A, B, C> Gen<A>.bind(other: Gen<B>, fn: (A, B) -> C): Arb<C> {
+   val arb = when (this) {
+      is Arb -> this
+      is Exhaustive -> this.toArb()
+   }
+
+   return arb.flatMap { a ->
+      when (other) {
+         is Arb -> other.map { fn(a, it) }
+         is Exhaustive -> other.toArb().map { fn(a, it) }
+      }
    }
 }
+
+private fun <A, B> Gen<A>.bind(other: Gen<B>): Arb<Pair<A, B>> = this.bind(other, ::Pair)

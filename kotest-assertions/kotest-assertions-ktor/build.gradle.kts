@@ -31,11 +31,17 @@ kotlin {
 
    sourceSets {
 
-      val jvmMain by getting {
+      val commonMain by getting {
          dependencies {
             implementation(project(Projects.AssertionsShared))
-            implementation("io.ktor:ktor-server-core:1.2.6")
-            implementation("io.ktor:ktor-server-test-host:1.2.6")
+            implementation(Libs.Ktor.clientCore)
+         }
+      }
+
+      val jvmMain by getting {
+         dependencies {
+            implementation(Libs.Ktor.serverCore)
+            implementation(Libs.Ktor.serverTestHost)
          }
       }
 
@@ -51,7 +57,7 @@ kotlin {
 tasks.named<Test>("jvmTest") {
    useJUnitPlatform()
    filter {
-      setFailOnNoMatchingTests(false)
+      isFailOnNoMatchingTests = false
    }
    testLogging {
       showExceptions = true

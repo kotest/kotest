@@ -1,11 +1,11 @@
 package com.sksamuel.kotest.runner.junit5
 
-import io.kotest.core.engine.discovery.Discovery
-import io.kotest.core.engine.discovery.DiscoveryFilter
-import io.kotest.core.engine.discovery.DiscoverySelector
-import io.kotest.core.engine.discovery.DiscoveryRequest
-import io.kotest.core.engine.discovery.Modifier
 import io.kotest.core.spec.style.FunSpec
+import io.kotest.framework.discovery.Discovery
+import io.kotest.framework.discovery.DiscoveryFilter
+import io.kotest.framework.discovery.DiscoveryRequest
+import io.kotest.framework.discovery.DiscoverySelector
+import io.kotest.framework.discovery.Modifier
 import io.kotest.matchers.shouldBe
 import io.kotest.runner.junit.platform.KotestJunitPlatformTestEngine
 import org.junit.platform.engine.UniqueId
@@ -37,7 +37,7 @@ class DiscoveryTest : FunSpec({
          .build()
       val engine = KotestJunitPlatformTestEngine()
       val descriptor = engine.discover(req, UniqueId.forEngine("testengine"))
-      descriptor.classes.size shouldBe 17
+      descriptor.classes.size shouldBe 24
    }
 
    test("kotest should return classes if request has no included or excluded test engines") {
@@ -48,7 +48,7 @@ class DiscoveryTest : FunSpec({
          .build()
       val engine = KotestJunitPlatformTestEngine()
       val descriptor = engine.discover(req, UniqueId.forEngine("testengine"))
-      descriptor.classes.size shouldBe 17
+      descriptor.classes.size shouldBe 24
    }
 
    test("kotest should support include package name filter") {
@@ -61,7 +61,9 @@ class DiscoveryTest : FunSpec({
       val descriptor = engine.discover(req, UniqueId.forEngine("testengine"))
       descriptor.classes.map { it.qualifiedName } shouldBe listOf(
          "com.sksamuel.kotest.runner.junit5.mypackage.DummySpec1",
-         "com.sksamuel.kotest.runner.junit5.mypackage.DummySpec2"
+         "com.sksamuel.kotest.runner.junit5.mypackage.mysubpackage.DummySpec1",
+         "com.sksamuel.kotest.runner.junit5.mypackage.DummySpec2",
+         "com.sksamuel.kotest.runner.junit5.mypackage.mysubpackage.DummySpec2",
       )
    }
 
@@ -129,7 +131,10 @@ class DiscoveryTest : FunSpec({
          .build()
       val engine = KotestJunitPlatformTestEngine()
       val descriptor = engine.discover(req, UniqueId.forEngine("testengine"))
-      descriptor.classes.map { it.qualifiedName } shouldBe listOf(com.sksamuel.kotest.runner.junit5.mypackage.DummySpec1::class.java.canonicalName)
+      descriptor.classes.map { it.qualifiedName } shouldBe listOf(
+         com.sksamuel.kotest.runner.junit5.mypackage.DummySpec1::class.java.canonicalName,
+         com.sksamuel.kotest.runner.junit5.mypackage.mysubpackage.DummySpec1::class.java.canonicalName,
+      )
    }
 
    test("kotest should support excluded fully qualified class name") {
@@ -141,7 +146,11 @@ class DiscoveryTest : FunSpec({
          .build()
       val engine = KotestJunitPlatformTestEngine()
       val descriptor = engine.discover(req, UniqueId.forEngine("testengine"))
-      descriptor.classes.map { it.qualifiedName } shouldBe listOf(com.sksamuel.kotest.runner.junit5.mypackage.DummySpec2::class.java.canonicalName)
+      descriptor.classes.map { it.qualifiedName } shouldBe listOf(
+         com.sksamuel.kotest.runner.junit5.mypackage.mysubpackage.DummySpec1::class.java.canonicalName,
+         com.sksamuel.kotest.runner.junit5.mypackage.DummySpec2::class.java.canonicalName,
+         com.sksamuel.kotest.runner.junit5.mypackage.mysubpackage.DummySpec2::class.java.canonicalName,
+      )
    }
 
    test("kotest should support selected class names") {
@@ -166,11 +175,11 @@ class DiscoveryTest : FunSpec({
       val descriptor = engine.discover(req, UniqueId.forEngine("testengine"))
       descriptor.classes.map { it.qualifiedName } shouldBe listOf(
          com.sksamuel.kotest.runner.junit5.mypackage.DummySpec1::class.java.canonicalName,
-         com.sksamuel.kotest.runner.junit5.mypackage.DummySpec2::class.java.canonicalName
+         com.sksamuel.kotest.runner.junit5.mypackage.DummySpec2::class.java.canonicalName,
       )
    }
 
-   test("kotest should support selected package names") {
+   test("package selector should include packages and subpackages") {
       val req = LauncherDiscoveryRequestBuilder.request()
          .selectors(
             DiscoverySelectors.selectPackage("com.sksamuel.kotest.runner.junit5.mypackage")
@@ -180,24 +189,26 @@ class DiscoveryTest : FunSpec({
       val descriptor = engine.discover(req, UniqueId.forEngine("testengine"))
       descriptor.classes.map { it.qualifiedName } shouldBe listOf(
          com.sksamuel.kotest.runner.junit5.mypackage.DummySpec1::class.java.canonicalName,
-         com.sksamuel.kotest.runner.junit5.mypackage.DummySpec2::class.java.canonicalName
+         com.sksamuel.kotest.runner.junit5.mypackage.mysubpackage.DummySpec1::class.java.canonicalName,
+         com.sksamuel.kotest.runner.junit5.mypackage.DummySpec2::class.java.canonicalName,
+         com.sksamuel.kotest.runner.junit5.mypackage.mysubpackage.DummySpec2::class.java.canonicalName,
       )
    }
 
-   test("kotest should support multiple selected package names") {
+   test("discovery should support multiple package selectors") {
       val req = LauncherDiscoveryRequestBuilder.request()
          .selectors(
-            DiscoverySelectors.selectPackage("com.sksamuel.kotest.runner.junit5.mypackage"),
-            DiscoverySelectors.selectPackage("com.sksamuel.kotest.runner.junit5.mypackage2")
+            DiscoverySelectors.selectPackage("com.sksamuel.kotest.runner.junit5.mypackage2"),
+            DiscoverySelectors.selectPackage("com.sksamuel.kotest.runner.junit5.mypackage3")
          )
          .build()
       val engine = KotestJunitPlatformTestEngine()
       val descriptor = engine.discover(req, UniqueId.forEngine("testengine"))
       descriptor.classes.map { it.qualifiedName } shouldBe listOf(
-         com.sksamuel.kotest.runner.junit5.mypackage.DummySpec1::class.java.canonicalName,
-         com.sksamuel.kotest.runner.junit5.mypackage.DummySpec2::class.java.canonicalName,
          com.sksamuel.kotest.runner.junit5.mypackage2.DummySpec3::class.java.canonicalName,
-         com.sksamuel.kotest.runner.junit5.mypackage2.DummySpec4::class.java.canonicalName
+         com.sksamuel.kotest.runner.junit5.mypackage2.DummySpec4::class.java.canonicalName,
+         com.sksamuel.kotest.runner.junit5.mypackage3.DummySpec6::class.java.canonicalName,
+         com.sksamuel.kotest.runner.junit5.mypackage3.DummySpec7::class.java.canonicalName,
       )
    }
 
@@ -218,7 +229,7 @@ class DiscoveryTest : FunSpec({
    }
 
    test("kotest should detect only public spec classes when internal flag is not set") {
-      Discovery.discover(
+      Discovery().discover(
          DiscoveryRequest(
             selectors = listOf(DiscoverySelector.PackageDiscoverySelector("com.sksamuel.kotest.runner.junit5.mypackage3")),
             filters = listOf(DiscoveryFilter.ClassModifierDiscoveryFilter(setOf(Modifier.Public)))
@@ -227,7 +238,7 @@ class DiscoveryTest : FunSpec({
    }
 
    test("kotest should detect internal spec classes when internal flag is set") {
-      Discovery.discover(
+      Discovery().discover(
          DiscoveryRequest(
             selectors = listOf(DiscoverySelector.PackageDiscoverySelector("com.sksamuel.kotest.runner.junit5.mypackage3")),
             filters = listOf(DiscoveryFilter.ClassModifierDiscoveryFilter(setOf(Modifier.Public, Modifier.Internal)))
@@ -236,7 +247,7 @@ class DiscoveryTest : FunSpec({
    }
 
    test("kotest should detect only internal specs if public is not set") {
-      Discovery.discover(
+      Discovery().discover(
          DiscoveryRequest(
             selectors = listOf(DiscoverySelector.PackageDiscoverySelector("com.sksamuel.kotest.runner.junit5.mypackage3")),
             filters = listOf(DiscoveryFilter.ClassModifierDiscoveryFilter(setOf(Modifier.Internal)))

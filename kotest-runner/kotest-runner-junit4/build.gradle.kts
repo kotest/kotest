@@ -37,14 +37,14 @@ kotlin {
 
       val jvmMain by getting {
          dependencies {
-            implementation(kotlin("stdlib-jdk8"))
             implementation(kotlin("reflect"))
             api(project(Projects.Common))
+            api(project(Projects.Api))
             api(project(Projects.AssertionsShared))
-            api(project(Projects.Core))
+            api(project(Projects.Engine))
             api(project(Projects.Extensions))
             api("junit:junit:4.13")
-            api(Libs.Coroutines.core)
+            api(Libs.Coroutines.coreJvm)
          }
       }
 

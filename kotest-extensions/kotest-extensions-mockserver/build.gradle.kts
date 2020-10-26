@@ -35,10 +35,10 @@ kotlin {
 
       val jvmMain by getting {
          dependencies {
-            implementation(project(":kotest-core"))
-            implementation(kotlin("stdlib-jdk8"))
-            api("org.mock-server:mockserver-netty:5.9.0")
-            api("org.mock-server:mockserver-client-java:5.9.0")
+            implementation(project(Projects.Engine))
+            implementation(project(Projects.Api))
+            api(Libs.MockServer.netty)
+            api(Libs.MockServer.javaClient)
          }
       }
 
@@ -46,12 +46,15 @@ kotlin {
          dependsOn(jvmMain)
          dependencies {
             implementation(project(Projects.JunitRunner))
+            implementation(project(Projects.AssertionsKtor))
+            implementation(Libs.Ktor.clientCoreJvm)
+            implementation(Libs.Ktor.clientCioJvm)
          }
       }
    }
 }
 
-tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
+tasks.withType<KotlinCompile>().configureEach {
    kotlinOptions.freeCompilerArgs += "-Xuse-experimental=kotlin.Experimental"
    kotlinOptions.jvmTarget = "1.8"
 }

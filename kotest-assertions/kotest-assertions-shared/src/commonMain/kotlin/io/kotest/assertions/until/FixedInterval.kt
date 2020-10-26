@@ -14,8 +14,4 @@ class FixedInterval(private val duration: Duration) : Interval {
 }
 
 @OptIn(ExperimentalTime::class)
-@Deprecated("use duration.fibonacci()")
-fun fixedInterval(duration: Duration) = FixedInterval(duration)
-
-@OptIn(ExperimentalTime::class)
 fun Duration.fixed() = FixedInterval(this)

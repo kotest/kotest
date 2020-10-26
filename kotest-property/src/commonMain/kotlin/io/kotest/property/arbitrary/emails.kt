@@ -6,7 +6,7 @@ import kotlin.random.nextInt
 
 fun Arb.Companion.email(usernameSize: IntRange = 3..10, domainSize: IntRange = 3..10): Arb<String> {
    val tlds = listOf("com", "net", "gov", "co.uk", "jp", "nl", "ru", "de", "com.br", "it", "pl", "io")
-   return Arb.create {
+   return arbitrary {
       val tld = tlds.random(it.random)
       val username = it.random.azstring(size = it.random.nextInt(usernameSize))
       val domain = it.random.azstring(size = it.random.nextInt(domainSize))

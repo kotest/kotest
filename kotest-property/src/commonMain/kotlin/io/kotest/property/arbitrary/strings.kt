@@ -27,12 +27,11 @@ fun Arb.Companion.string(
    val edgecases = if (minSize == maxSize)
       emptyList()
    else
-      listOfNotNull(min, minPlus1).filter { it.length >= minSize && it.length <= maxSize }
+      listOfNotNull(min, minPlus1).filter { it.length in minSize..maxSize }
 
    return arb(StringShrinker, edgecases) { rs ->
-      val codepointsIterator = codepoints.values(rs).iterator()
       val size = rs.random.nextInt(minSize..maxSize)
-      List(size) { codepointsIterator.next().value }.joinToString("") { it.asString() }
+      codepoints.take(size, rs).joinToString("") { it.asString() }
    }
 }
 
@@ -56,7 +55,6 @@ fun Arb.Companion.string(range: IntRange, codepoints: Arb<Codepoint> = Arb.ascii
  */
 fun Arb.Companion.string(size: Int, codepoints: Arb<Codepoint> = Arb.ascii()): Arb<String> =
    Arb.string(size, size, codepoints)
-
 
 object StringShrinker : Shrinker<String> {
 

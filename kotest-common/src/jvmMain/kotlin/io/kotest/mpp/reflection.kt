@@ -19,7 +19,7 @@ object JvmReflection : Reflection {
 
    override fun <T : Any> isDataClass(kclass: KClass<T>): Boolean = try {
       kclass.isData
-   } catch (e: Exception) {
+   } catch (e: Throwable) {
       false
    }
 
@@ -31,6 +31,10 @@ object JvmReflection : Reflection {
       return constructorParams.mapNotNull { param ->
          membersByName[param.name]?.let { callable -> Property(callable.name) { callable.call(it) } }
       }
+   }
+
+   override fun <T : Any> newInstanceNoArgConstructor(klass: KClass<T>): T {
+      return klass.java.newInstance()
    }
 }
 

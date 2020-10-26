@@ -1,6 +1,7 @@
 package com.sksamuel.kotest.specs.shouldspec
 
 import io.kotest.core.spec.style.ShouldSpec
+import io.kotest.matchers.string.haveLength
 
 class ShouldSpecExample : ShouldSpec() {
   init {
@@ -15,7 +16,8 @@ class ShouldSpecExample : ShouldSpec() {
            // test here
         }
         should("have config").config(enabled = true) {
-           // test here
+           // can use should here
+           "string" should haveLength(6)
         }
      }
      context("another context") {

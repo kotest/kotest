@@ -3,8 +3,8 @@ Kotest
 
 [<img src="https://img.shields.io/maven-central/v/io.kotest/kotest-core.svg?label=latest%20release"/>](http://search.maven.org/#search|ga|1|kotest) [![GitHub license](https://img.shields.io/github/license/kotest/kotest.svg)]()
 
-This version of the document is for the 4.0.x release.
-For previous versions see [here](reference_3.3.md)
+This version of the document is for the 4.x releases.
+For version 3.3 see [here](reference_3.3.md)
 
 Project Rename!
 ------
@@ -24,9 +24,9 @@ These are provided separately so you can pick and choose which parts to use if y
 
 |     |     |
 | --- | --- |
-| **Test Framework**<br/>Layout tests in a fluid way and execute them on the JVM or Javascript. | <img src="https://img.shields.io/maven-central/v/io.kotest/kotest-core.svg?label=release"/> [<img src="https://img.shields.io/nexus/s/https/oss.sonatype.org/io.kotest/kotest-core.svg?label=snapshot"/>](https://oss.sonatype.org/content/repositories/snapshots/io/kotest/) |
-| **Assertions Library**<br/>A Kotlin-first multi-platform enabled assertions library. | <img src="https://img.shields.io/maven-central/v/io.kotest/kotest-assertions-core.svg?label=release"/> [<img src="https://img.shields.io/nexus/s/https/oss.sonatype.org/io.kotest/kotest-core.svg?label=snapshot"/>](https://oss.sonatype.org/content/repositories/snapshots/io/kotest/) |
-| **Property Testing**<br/>An advanced multi-platform property test library with shrinking support. | <img src="https://img.shields.io/maven-central/v/io.kotest/kotest-property.svg?label=release"/> [<img src="https://img.shields.io/nexus/s/https/oss.sonatype.org/io.kotest/kotest-core.svg?label=snapshot"/>](https://oss.sonatype.org/content/repositories/snapshots/io/kotest/) |
+| **Test Framework**<br/>Layout tests in a fluid way and execute them on the JVM or Javascript. | <img src="https://img.shields.io/maven-central/v/io.kotest/kotest-framework-engine.svg?label=release"/> [<img src="https://img.shields.io/nexus/s/https/oss.sonatype.org/io.kotest/kotest-framework-engine.svg?label=snapshot"/>](https://oss.sonatype.org/content/repositories/snapshots/io/kotest/) |
+| **Assertions Library**<br/>A Kotlin-first multi-platform enabled assertions library. | <img src="https://img.shields.io/maven-central/v/io.kotest/kotest-assertions-core.svg?label=release"/> [<img src="https://img.shields.io/nexus/s/https/oss.sonatype.org/io.kotest/kotest-framework-engine.svg?label=snapshot"/>](https://oss.sonatype.org/content/repositories/snapshots/io/kotest/) |
+| **Property Testing**<br/>An advanced multi-platform property test library with shrinking support. | <img src="https://img.shields.io/maven-central/v/io.kotest/kotest-property.svg?label=release"/> [<img src="https://img.shields.io/nexus/s/https/oss.sonatype.org/io.kotest/kotest-framework-engine.svg?label=snapshot"/>](https://oss.sonatype.org/content/repositories/snapshots/io/kotest/) |
 
 #### Which subproject(s) to use?
 
@@ -57,9 +57,9 @@ test {
 }
 
 dependencies {
-  testImplementation 'io.kotest:kotest-runner-junit5-jvm:<version>' // for kotest framework
-  testImplementation 'io.kotest:kotest-assertions-core-jvm:<version>' // for kotest core jvm assertions
-  testImplementation 'io.kotest:kotest-property-jvm:<version>' // for kotest property test
+  testImplementation 'io.kotest:kotest-runner-junit5:<version>' // for kotest framework
+  testImplementation 'io.kotest:kotest-assertions-core:<version>' // for kotest core jvm assertions
+  testImplementation 'io.kotest:kotest-property:<version>' // for kotest property test
 }
 ```
 
@@ -77,9 +77,9 @@ android.testOptions {
 }
 
 dependencies {
-    testImplementation 'io.kotest:kotest-runner-junit5-jvm:<version>' // for kotest framework
-    testImplementation 'io.kotest:kotest-assertions-core-jvm:<version>' // for kotest core jvm assertions
-    testImplementation 'io.kotest:kotest-property-jvm:<version>' // for kotest property test
+    testImplementation 'io.kotest:kotest-runner-junit5:<version>' // for kotest framework
+    testImplementation 'io.kotest:kotest-assertions-core:<version>' // for kotest core jvm assertions
+    testImplementation 'io.kotest:kotest-property:<version>' // for kotest property test
 }
 ```
 
@@ -96,9 +96,9 @@ tasks.withType<Test> {
 }
 
 dependencies {
-  testImplementation("io.kotest:kotest-runner-junit5-jvm:<version>") // for kotest framework
-  testImplementation("io.kotest:kotest-assertions-core-jvm:<version>") // for kotest core jvm assertions
-  testImplementation("io.kotest:kotest-property-jvm:<version>") // for kotest property test
+  testImplementation("io.kotest:kotest-runner-junit5:<version>") // for kotest framework
+  testImplementation("io.kotest:kotest-assertions-core:<version>") // for kotest core jvm assertions
+  testImplementation("io.kotest:kotest-property:<version>") // for kotest property test
 }
 ```
 
@@ -297,10 +297,10 @@ If any assertions inside the block failed, the test will continue to
 run. All failures will be reported in a single exception at the end of
 the block.
 
-`assertSoftly` also works with a receiver:
+Another version of `assertSoftly` takes an test target and lambda with test target as its receiver.
 
 ```kotlin
-foo.assertSoftly {
+assertSoftly(foo) {
     shouldNotEndWith("b")
     length shouldBe 3
 }
@@ -478,8 +478,14 @@ All specs allow you to control the isolation mode. Full instructions can be foun
 
 
 
+Clues
+------
 
+Sometimes a failed assertion does not convey enough information to be immediately useful.
 
+For example `user.name shouldNotBe null` would output simply `<null> should not equal <null>`.
+
+By using [clues](clues.md) we can add extra contextual information.
 
 
 Mocking
@@ -701,12 +707,14 @@ Extensions
 
 Kotest provides you with several extensions and listeners to test execution out of the box.
 
-Some of them provide unique integrations with external systems, such as [Spring Boot](extensions.md#Spring) and [Arrow](extensions.md#Arrow).
+Some of them provide unique integrations with external systems, such as [Spring Boot](extensions.md#Spring), [MockServer](mockserver.md), and [Arrow](extensions.md#Arrow).
 Some others provides helpers to tricky System Testing situations, such as `System Environment`, `System Properties`, `System Exit` and `System Security Manager`.
 
 We also provide a `Locale Extension`, for locale-dependent code, and `Timezone Extension` for timezone-dependent code.
 
 Take a better look at all the extensions available in the [extensions-reference](extensions.md)
+
+
 
 
 Plugins

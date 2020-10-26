@@ -16,6 +16,6 @@ class StartableTestLifecycleAwareTest : StringSpec({
 
    "beforeTestCount for second test should be two" {
       startableTestLifecycleAwareForPerTest.testDescriptions shouldHaveSize 2
-      startableTestLifecycleAwareForPerTest.testDescriptions shouldHaveSize 2
+      startableTestLifecycleAwareForPerSpec.testDescriptions shouldHaveSize 2
    }
 })

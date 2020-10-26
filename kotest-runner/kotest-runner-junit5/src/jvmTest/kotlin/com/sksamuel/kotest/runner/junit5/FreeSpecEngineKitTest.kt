@@ -44,23 +44,23 @@ class FreeSpecEngineKitTest : FunSpec({
                "a simple erroring test",
                "a failing test",
                "a erroring test",
-               "a container with",
                "a failing test",
                "a erroring test",
-               "an inner container with",
-               "an outer container with",
-               "com.sksamuel.kotest.runner.junit5.FreeSpecSample"
             )
             succeeded().shouldHaveNames(
                "a simple passing test",
                "a passing test",
+               "a container with",
                "a passing test",
+               "an inner container with",
+               "an outer container with",
                "an empty outer container with",
                "an empty inner container",
                "an outer container that conatins",
                "a passing test 1",
                "a passing test 2",
                "an outer container with only passing tests",
+               "com.sksamuel.kotest.runner.junit5.FreeSpecSample",
                "Kotest"
             )
             finished().shouldHaveNames(

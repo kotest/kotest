@@ -5,10 +5,7 @@ import io.kotest.core.spec.style.AnnotationSpec
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.matchers.shouldBe
-import kotlin.time.Duration
-import kotlin.time.ExperimentalTime
 
-@ExperimentalTime
 class AnnotationSpecFailureTest : AnnotationSpec() {
    class FooException : Exception()
 
@@ -26,7 +23,7 @@ class AnnotationSpecFailureTest : AnnotationSpec() {
       override suspend fun intercept(testCase: TestCase, execute: suspend (TestCase) -> TestResult): TestResult {
          val result = execute(testCase)
          result.error shouldBe thrownException
-         return TestResult.success(Duration.ZERO)
+         return TestResult.success(0)
       }
    }
 }

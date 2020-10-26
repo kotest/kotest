@@ -30,12 +30,10 @@ fun <A : Any> Arb.Companion.choose(a: Pair<Int, A>, b: Pair<Int, A>, vararg cs: 
       else pick(n - w, l.drop(1))
    }
 
-   return arb {
-      generateSequence {
-         val total = weights.sum()
-         val n = it.random.nextInt(1, total + 1)
-         pick(n, allPairs.asSequence())
-      }
+   return arbitrary {
+      val total = weights.sum()
+      val n = it.random.nextInt(1, total + 1)
+      pick(n, allPairs.asSequence())
    }
 }
 
@@ -74,15 +72,13 @@ fun <A : Any> Arb.Companion.choose(a: Pair<Int, Arb<A>>, b: Pair<Int, Arb<A>>, v
       else pick(n - w, l.drop(1))
    }
 
-   return arb { rs ->
+   return arbitrary { rs ->
       // we must open up an iter stream for each arb
-      val allIters = allPairs.map { (weight, arb) -> weight to arb.values(rs).map { it.value }.iterator() }
-      generateSequence {
-         val total = weights.sum()
-         val n = rs.random.nextInt(1, total + 1)
-         val arb = pick(n, allIters)
-         arb.next()
-      }
+      val allIters = allPairs.map { (weight, arb) -> weight to arb.generate(rs).map { it.value }.iterator() }
+      val total = weights.sum()
+      val n = rs.random.nextInt(1, total + 1)
+      val arb = pick(n, allIters)
+      arb.next()
    }
 }
 
@@ -99,21 +95,17 @@ fun <A : Any> Arb.Companion.frequency(
 /**
  * Generates random permutations of a list.
  */
-fun <A> Arb.Companion.shuffle(list: List<A>) = arb {
-   generateSequence {
-      list.shuffled(it.random)
-   }
+fun <A> Arb.Companion.shuffle(list: List<A>): Arb<A> = arbitrary {
+   list.shuffled(it.random).first()
 }
 
 /**
  * Generates a random subsequence of the input list, including the empty list.
  * The returned list has the same order as the input list.
  */
-fun <A> Arb.Companion.subsequence(list: List<A>) = arb {
-   generateSequence {
-      val size = it.random.nextInt(0, list.size + 1)
-      list.take(size)
-   }
+fun <A> Arb.Companion.subsequence(list: List<A>): Arb<List<A>> = arbitrary {
+   val size = it.random.nextInt(0, list.size + 1)
+   list.take(size)
 }
 
 /**
@@ -122,7 +114,7 @@ fun <A> Arb.Companion.subsequence(list: List<A>) = arb {
  * The input gens must be infinite.
  */
 @Deprecated(
-   message = "Deprecated in favor of a function that returns an Arb instead of a Gen",
+   message = "Deprecated in favor of a function that returns an Arb instead of a Gen. Will be removed in 4.4",
    replaceWith = ReplaceWith("Arb.Companion.choice(vararg arbs: Arb<A>)")
 )
 fun <A> Arb.Companion.choice(vararg gens: Gen<A>): Gen<A> = arb { rs ->
@@ -151,19 +143,9 @@ fun <A> Arb.Companion.choice(vararg gens: Gen<A>): Gen<A> = arb { rs ->
  * @return A new Arb<A> that will randomly select values from the provided Arbs, and combine all of the provided
  * Arbs edgecases
  */
-fun <A> Arb.Companion.choice(vararg arbs: Arb<out A>): Arb<A> = arb(arbs.flatMap(Arb<out A>::edgecases)) { rs ->
-   require(arbs.isNotEmpty()) { "No Arb instances passed to Arb.choice()." }
-   val iters = arbs.map { it.values(rs).iterator() }
-   fun next(): Sample<A>? {
-      val iter = iters.shuffled(rs.random).first()
-      return if (iter.hasNext()) iter.next() else null
-   }
-   sequence {
-      while (true) {
-         var next: Sample<A>? = null
-         while (next == null)
-            next = next()
-         yield(next.value)
-      }
+fun <A> Arb.Companion.choice(arb: Arb<A>, vararg arbs: Arb<A>): Arb<A> {
+   val arbList = listOf(arb, *arbs)
+   return arbitrary(arbList.flatMap(Arb<A>::edgecases)) { rs ->
+      arbList.random(rs.random).next(rs)
    }
 }

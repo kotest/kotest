@@ -8,10 +8,6 @@ plugins {
    id("com.adarshr.test-logger")
 }
 
-repositories {
-   mavenCentral()
-}
-
 kotlin {
 
    targets {
@@ -37,12 +33,11 @@ kotlin {
       val jvmTest by getting {
          dependencies {
             implementation(kotlin("reflect"))
-            implementation(project(Projects.Core))
+            implementation(project(Projects.Engine))
             implementation(project(Projects.AssertionsCore))
             // we use the internals of the JVM project in the tests
             implementation(project(Projects.JunitRunner))
-            implementation(project(Projects.ConsoleRunner))
-            implementation(Libs.Coroutines.core)
+            implementation(Libs.Coroutines.coreJvm)
             implementation(Libs.Mocking.mockk)
             implementation(Libs.JUnitPlatform.engine)
             implementation(Libs.JUnitPlatform.api)

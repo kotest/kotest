@@ -37,13 +37,14 @@ kotlin {
 
       val jvmMain by getting {
          dependencies {
-            implementation(kotlin("stdlib-jdk8"))
             implementation(kotlin("reflect"))
+            api(project(Projects.Api))
             api(project(Projects.Common))
-            api(project(Projects.Core))
+            api(project(Projects.Engine))
+            api(project(Projects.Discovery))
             api(project(Projects.AssertionsCore))
             api(project(Projects.Extensions))
-            api(Libs.Coroutines.core)
+            api(Libs.Coroutines.coreJvm)
             api(Libs.JUnitPlatform.engine)
             api(Libs.JUnitPlatform.api)
             api(Libs.JUnitPlatform.launcher)
@@ -61,6 +62,11 @@ kotlin {
          }
       }
    }
+}
+
+tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
+   kotlinOptions.jvmTarget = "1.8"
+   kotlinOptions.apiVersion = "1.3"
 }
 
 tasks.named<Test>("jvmTest") {

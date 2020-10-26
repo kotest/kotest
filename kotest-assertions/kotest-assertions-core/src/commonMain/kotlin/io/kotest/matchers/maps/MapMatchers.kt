@@ -1,9 +1,11 @@
 package io.kotest.matchers.maps
 
+import io.kotest.fp.getOrElse
+import io.kotest.fp.toOption
 import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
-import io.kotest.matchers.Diff
-import io.kotest.matchers.stringify
+import io.kotest.matchers.string.Diff
+import io.kotest.matchers.string.stringify
 
 fun <K> haveKey(key: K): Matcher<Map<K, Any?>> = object : Matcher<Map<K, Any?>> {
   override fun test(value: Map<K, Any?>) = MatcherResult(value.containsKey(key),
@@ -35,10 +37,30 @@ fun <V> haveValues(vararg values: V): Matcher<Map<*, V>> = object : Matcher<Map<
   }
 }
 
+fun <K> containAnyKeys(vararg keys: K): Matcher<Map<K, Any?>> = object : Matcher<Map<K, Any?>> {
+   override fun test(value: Map<K, Any?>): MatcherResult {
+      val passed = keys.any { value.containsKey(it) }
+      return MatcherResult(passed,
+         "Map did not contain any of the keys ${keys.joinToString(", ")}",
+         "Map should not contain any of the keys ${keys.joinToString(", ")}")
+   }
+}
+
+fun <V> containAnyValues(vararg values: V): Matcher<Map<*, V>> = object : Matcher<Map<*, V>> {
+   override fun test(value: Map<*, V>): MatcherResult {
+      val passed = values.any { value.containsValue(it) }
+      return MatcherResult(passed,
+         "Map did not contain any of the values ${values.joinToString(", ")}",
+         "Map should not contain any of the values ${values.joinToString(", ")}")
+   }
+}
+
 fun <K, V> contain(key: K, v: V): Matcher<Map<K, V>> = object : Matcher<Map<K, V>> {
   override fun test(value: Map<K, V>) = MatcherResult(value[key] == v,
-    "Map should contain mapping $key=$v but was $value",
+    "Map should contain mapping $key=$v but was ${buildActualValue(value)}",
     "Map should not contain mapping $key=$v but was $value")
+
+   private fun buildActualValue(map: Map<K, V>) = map[key].toOption().map { "$key=$it" }.getOrElse(map)
 }
 
 fun <K, V> containAll(expected: Map<K, V>): Matcher<Map<K, V>> =

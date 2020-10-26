@@ -5,12 +5,12 @@ import io.kotest.data.blocking.forAll
 import io.kotest.data.row
 import io.kotest.inspectors.forAll
 import io.kotest.matchers.ints.shouldBeBetween
+import io.kotest.matchers.ints.shouldBeGreaterThan
+import io.kotest.matchers.ints.shouldBePositive
 import io.kotest.matchers.shouldBe
 import io.kotest.property.Arb
 import io.kotest.property.PropTest
-import io.kotest.property.arbitrary.int
-import io.kotest.property.arbitrary.long
-import io.kotest.property.arbitrary.single
+import io.kotest.property.arbitrary.*
 import io.kotest.property.checkAll
 import io.kotest.property.checkCoverage
 
@@ -59,5 +59,13 @@ class IntTest : FunSpec({
             }
          }
       }
+   }
+
+   test("Arb.nats should return positive ints only") {
+      val nats = Arb.nats().take(1000).toSet()
+      nats.forAll {
+         it.shouldBePositive()
+      }
+      nats.size.shouldBeGreaterThan(50)
    }
 })

@@ -2,6 +2,7 @@ package com.sksamuel.kotest.matchers.maps
 
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.WordSpec
+import io.kotest.matchers.and
 import io.kotest.matchers.maps.*
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldBe
@@ -60,8 +61,14 @@ class MapMatchersTest : WordSpec() {
             map shouldContain (1 to "a")
             map shouldNotContain (3 to "A")
             shouldThrow<AssertionError> {
+               map.shouldContain(1, "c")
+            }.message.shouldBe("Map should contain mapping 1=c but was 1=a")
+            shouldThrow<AssertionError> {
+               map.shouldContain(4, "e")
+            }.message.shouldBe("Map should contain mapping 4=e but was {1=a, 2=b}")
+            shouldThrow<AssertionError> {
                map should contain(2, "a")
-            }
+            }.message.shouldBe("Map should contain mapping 2=a but was 2=b")
          }
       }
 
@@ -106,6 +113,43 @@ class MapMatchersTest : WordSpec() {
          }
       }
 
+      "containAnyKeys" should {
+         "test that a map contains any of the given keys"{
+            val map = mapOf("a" to 1, "b" to 2, "c" to 3)
+            map should containAnyKeys("a", "x", "y")
+            map should containAnyKeys("a", "b", "c")
+            map should containAnyKeys("a", "b")
+            map.shouldContainAnyKeysOf("a", "c")
+            shouldThrow<AssertionError> {
+               map should containAnyKeys("x", "y", "z")
+            }
+            shouldThrow<AssertionError> {
+               map.shouldContainAnyKeysOf("x", "y")
+            }
+            shouldThrow<AssertionError> {
+               map.shouldNotContainAnyKeysOf("a", "y")
+            }
+         }
+      }
+
+      "containAnyValues" should {
+         "test that a map contains any of the given values"{
+            val map = mapOf("a" to 1, "b" to 2, "c" to 3)
+            map should containAnyValues(1, 23, 24)
+            map should containAnyValues(1, 2, 3)
+            map should containAnyValues(3, 2)
+            map.shouldContainAnyValuesOf(2, 3)
+            shouldThrow<AssertionError> {
+               map should containAnyValues(9, 8, 7)
+            }
+            shouldThrow<AssertionError> {
+               map.shouldContainAnyValuesOf(4, 5)
+            }
+            shouldThrow<AssertionError> {
+               map.shouldNotContainAnyValuesOf(1,5)
+            }
+         }
+      }
       "containAll" should {
          "test that a map contains all given pairs" {
             val map = mapOf(Pair(1, "a"), Pair(2, "b"), Pair(3, "c"))

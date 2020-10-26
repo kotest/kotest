@@ -31,7 +31,6 @@ kotlin {
    sourceSets {
       val jvmMain by getting {
          dependencies {
-            implementation(kotlin("stdlib-jdk8"))
             implementation(project(Projects.AssertionsShared))
             implementation(Libs.Tschuchortdev.kotlinCompileTesting)
          }
@@ -48,6 +47,7 @@ kotlin {
 tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
    kotlinOptions.freeCompilerArgs += "-Xuse-experimental=kotlin.Experimental"
    kotlinOptions.jvmTarget = "1.8"
+   kotlinOptions.apiVersion = "1.3"
 }
 
 tasks.named<Test>("jvmTest") {

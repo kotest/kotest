@@ -2,11 +2,10 @@ package io.kotest.matchers.types
 
 
 import io.kotest.matchers.should
-import io.kotest.matchers.beInstanceOf
-import io.kotest.matchers.beOfType
-import io.kotest.matchers.beTheSameInstanceAs
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
+import kotlin.contracts.ExperimentalContracts
+import kotlin.contracts.contract
 
 /**
  * Verifies that this is instanceof T
@@ -38,11 +37,23 @@ import io.kotest.matchers.shouldNotBe
  * @param block Lambda that receives typecasted instance as argument for further assertions.
  * @return The typecasted instance
  */
+@Deprecated("Use the smart contract version: a.shouldBeInstanceOf<B>(); a.bMethod(). Will be removed in 4.4")
 inline fun <reified T : Any> Any?.shouldBeInstanceOf(block: (T) -> Unit = { }): T {
    val matcher = beInstanceOf<T>()
    this shouldBe matcher
    block(this as T)
    return this
+}
+
+
+@OptIn(ExperimentalContracts::class)
+inline fun <reified T : Any> Any?.shouldBeInstanceOf(): T {
+   contract {
+      returns() implies (this@shouldBeInstanceOf is T)
+   }
+   val matcher = beInstanceOf<T>()
+   this shouldBe matcher
+   return this as T
 }
 
 /**
@@ -92,11 +103,22 @@ inline fun <reified T : Any> Any?.shouldNotBeInstanceOf() {
  * @param block Lambda that receives typecasted instance  as argument for further assertions.
  * @return The typecasted instance
  */
+@Deprecated("Use the smart contract version: a.shouldBeTypeOf<B>(); a.bMethod(). Will be removed in 4.4")
 inline fun <reified T : Any> Any?.shouldBeTypeOf(block: (T) -> Unit = { }): T {
    val matcher = beOfType<T>()
    this shouldBe matcher
    block(this as T)
    return this
+}
+
+@OptIn(ExperimentalContracts::class)
+inline fun <reified T : Any> Any?.shouldBeTypeOf(): T {
+   contract {
+      returns() implies (this@shouldBeTypeOf is T)
+   }
+   val matcher = beOfType<T>()
+   this shouldBe matcher
+   return this as T
 }
 
 /**

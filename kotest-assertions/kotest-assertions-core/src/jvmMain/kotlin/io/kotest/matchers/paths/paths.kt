@@ -3,7 +3,7 @@ package io.kotest.matchers.paths
 import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
 import io.kotest.matchers.file.beLarger
-import io.kotest.matchers.file.beNonEmptyDirectory
+import io.kotest.matchers.file.beEmptyDirectory
 import io.kotest.matchers.file.containNFiles
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldBe
@@ -50,15 +50,7 @@ fun haveFileSize(size: Long): Matcher<Path> = object : Matcher<Path> {
    )
 }
 
-fun Path.shouldHaveExtension(vararg exts: String) = this should haveExtension(*exts)
-fun Path.shouldNotHaveExtension(vararg exts: String) = this shouldNot haveExtension(*exts)
-fun haveExtension(vararg exts: String) = object : Matcher<Path> {
-   override fun test(value: Path) = MatcherResult(
-      exts.any { value.fileName.toString().endsWith(it) },
-      "Path $value should end with one of ${exts.joinToString(",")}",
-      "Path $value should not end with one of ${exts.joinToString(",")}"
-   )
-}
+
 
 fun Path.shouldBeADirectory() = this should aDirectory()
 fun Path.shouldNotBeADirectory() = this shouldNot aDirectory()
@@ -121,8 +113,13 @@ fun beExecutable(): Matcher<Path> = object : Matcher<Path> {
 infix fun Path.shouldContainNFiles(n: Int) = this.toFile() shouldBe containNFiles(n)
 infix fun Path.shouldNotContainNFiles(n: Int) = this.toFile() shouldNotBe containNFiles(n)
 
-fun Path.shouldBeNonEmptyDirectory() = this.toFile() should beNonEmptyDirectory()
-fun Path.shouldNotBeNonEmptyDirectory() = this.toFile() shouldNot beNonEmptyDirectory()
+@Deprecated(message ="checks if a directory is empty", replaceWith = ReplaceWith("shouldBeEmptyDirectory()"))
+fun Path.shouldBeNonEmptyDirectory() = this.toFile() shouldNot beEmptyDirectory()
+@Deprecated(message ="checks if a directory is not empty", replaceWith = ReplaceWith("shouldBeNonEmptyDirectory()"))
+fun Path.shouldNotBeNonEmptyDirectory() = this.toFile() should beEmptyDirectory()
+
+fun Path.shouldBeEmptyDirectory() = this.toFile() should beEmptyDirectory()
+fun Path.shouldNotBeEmptyDirectory() = this.toFile() shouldNot beEmptyDirectory()
 
 fun Path.shouldBeHidden() = this should beHidden()
 fun Path.shouldNotBeHidden() = this shouldNot beHidden()

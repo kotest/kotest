@@ -2,7 +2,7 @@ package com.sksamuel.kotest.matchers.result
 
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.FreeSpec
-import io.kotest.matchers.beInstanceOf
+import io.kotest.matchers.types.beInstanceOf
 import io.kotest.matchers.result.shouldBeFailure
 import io.kotest.matchers.result.shouldBeFailureOfType
 import io.kotest.matchers.result.shouldBeSuccess
@@ -35,19 +35,19 @@ class ResultMatchersTest : FreeSpec() {
     }
     "with error result" - {
       "shouldBeFailure" - {
-        Result.runCatching { throw TestException() }.shouldBeFailure()
-        Result.runCatching { throw TestException() }.shouldBeFailure { error ->
+        Result.runCatching<Any?, Any?> { throw TestException() }.shouldBeFailure()
+        Result.runCatching<Any?, Any?> { throw TestException() }.shouldBeFailure { error ->
           error should beInstanceOf<TestException>()
         }
       }
       "shouldBeFailureOfType" {
-        Result.runCatching { throw TestException() }.shouldBeFailureOfType<TestException>()
+        Result.runCatching<Any?, Any?> { throw TestException() }.shouldBeFailureOfType<TestException>()
       }
       "shouldNotBeFailureOfType" {
-        Result.runCatching { throw TestException() }.shouldNotBeFailureOfType<IOException>()
+        Result.runCatching<Any?, Any?> { throw TestException() }.shouldNotBeFailureOfType<IOException>()
       }
       "shouldNotBeSuccess" - {
-        Result.runCatching { throw TestException() }.shouldNotBeSuccess()
+        Result.runCatching<Any?, Any?> { throw TestException() }.shouldNotBeSuccess()
       }
     }
   }

@@ -14,7 +14,7 @@ object PropertyTesting {
    internal fun computeDefaultIteration(vararg gen: Gen<*>): Int {
       var iterations = defaultIterationCount
       gen.forEach {
-         if(it is Exhaustive<*> && it.minIterations() > iterations) {
+         if (it is Exhaustive<*> && it.minIterations() > iterations) {
             iterations = it.minIterations()
          }
       }

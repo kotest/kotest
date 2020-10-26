@@ -176,11 +176,11 @@ class SystemEnvironmentTestListener(environment: Map<String, String>, mode: Over
     */
    constructor(environment: Pair<String, String>, mode: OverrideMode = SetOrError) : this(mapOf(environment), mode)
 
-   override suspend fun beforeTest(testCase: TestCase) {
+   override suspend fun beforeAny(testCase: TestCase) {
       changeSystemEnvironment()
    }
 
-   override suspend fun afterTest(testCase: TestCase, result: TestResult) {
+   override suspend fun afterAny(testCase: TestCase, result: TestResult) {
       resetSystemEnvironment()
    }
 }

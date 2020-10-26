@@ -20,55 +20,58 @@ class FeatureSpecEngineKitTest : FunSpec({
             started().shouldHaveNames(
                "Kotest",
                "com.sksamuel.kotest.runner.junit5.FeatureSpecHappyPathSample",
-               "Feature: 1",
-               "Scenario: 1.1",
-               "Feature: 1.2",
-               "Scenario: 1.2.1",
-               "Feature: 1.2.2",
-               "Scenario: 1.2.2.1",
-               "Scenario: 1.2.2.2",
-               "Feature: 2",
-               "Feature: 2.1"
+               "1",
+               "1.1",
+               "1.2",
+               "1.2.1",
+               "1.2.2",
+               "1.2.2.1",
+               "1.2.2.2",
+               "2",
+               "2.1"
             )
             aborted().shouldBeEmpty()
-            skipped().shouldHaveNames("Scenario: 2.1.2")
+            skipped().shouldHaveNames("2.1.2")
             failed().shouldHaveNames(
-               "Scenario: 1.2.2.2",
-               "Feature: 1.2.2",
-               "Feature: 1.2",
-               "Feature: 1",
-               "Feature: 2.1",
-               "Feature: 2",
-               "com.sksamuel.kotest.runner.junit5.FeatureSpecHappyPathSample"
+               "1.2.2.2",
+               "2.1",
             )
             succeeded().shouldHaveNames(
-               "Scenario: 1.1", "Scenario: 1.2.1", "Scenario: 1.2.2.1", "Kotest"
+               "1.1",
+               "1.2.1",
+               "1.2.2.1",
+               "1.2.2",
+               "1.2",
+               "1",
+               "2",
+               "com.sksamuel.kotest.runner.junit5.FeatureSpecHappyPathSample",
+               "Kotest"
             )
             finished().shouldHaveNames(
-               "Scenario: 1.1",
-               "Scenario: 1.2.1",
-               "Scenario: 1.2.2.1",
-               "Scenario: 1.2.2.2",
-               "Feature: 1.2.2",
-               "Feature: 1.2",
-               "Feature: 1",
-               "Feature: 2.1",
-               "Feature: 2",
+               "1.1",
+               "1.2.1",
+               "1.2.2.1",
+               "1.2.2.2",
+               "1.2.2",
+               "1.2",
+               "1",
+               "2.1",
+               "2",
                "com.sksamuel.kotest.runner.junit5.FeatureSpecHappyPathSample",
                "Kotest"
             )
             dynamicallyRegistered().shouldHaveNames(
                "com.sksamuel.kotest.runner.junit5.FeatureSpecHappyPathSample",
-               "Feature: 1",
-               "Scenario: 1.1",
-               "Feature: 1.2",
-               "Scenario: 1.2.1",
-               "Feature: 1.2.2",
-               "Scenario: 1.2.2.1",
-               "Scenario: 1.2.2.2",
-               "Feature: 2",
-               "Feature: 2.1",
-               "Scenario: 2.1.2"
+               "1",
+               "1.1",
+               "1.2",
+               "1.2.1",
+               "1.2.2",
+               "1.2.2.1",
+               "1.2.2.2",
+               "2",
+               "2.1",
+               "2.1.2"
             )
          }
    }
@@ -83,33 +86,36 @@ class FeatureSpecEngineKitTest : FunSpec({
             started().shouldHaveNames(
                "Kotest",
                "com.sksamuel.kotest.runner.junit5.FeatureSpecSample",
-               "Feature: 1",
-               "Scenario: 1.1",
-               "Feature: 1.2",
-               "Feature: 2"
+               "1",
+               "1.1",
+               "1.2",
+               "2"
             )
             aborted().shouldBeEmpty()
             skipped().shouldHaveNames()
             failed().shouldHaveNames(
-               "Feature: 1.2", "Feature: 1", "Feature: 2", "com.sksamuel.kotest.runner.junit5.FeatureSpecSample"
+               "1.2", "2",
             )
             succeeded().shouldHaveNames(
-               "Scenario: 1.1", "Kotest"
+               "1.1",
+               "1",
+               "com.sksamuel.kotest.runner.junit5.FeatureSpecSample",
+               "Kotest"
             )
             finished().shouldHaveNames(
-               "Scenario: 1.1",
-               "Feature: 1.2",
-               "Feature: 1",
-               "Feature: 2",
+               "1.1",
+               "1.2",
+               "1",
+               "2",
                "com.sksamuel.kotest.runner.junit5.FeatureSpecSample",
                "Kotest"
             )
             dynamicallyRegistered().shouldHaveNames(
                "com.sksamuel.kotest.runner.junit5.FeatureSpecSample",
-               "Feature: 1",
-               "Scenario: 1.1",
-               "Feature: 1.2",
-               "Feature: 2"
+               "1",
+               "1.1",
+               "1.2",
+               "2"
             )
          }
    }

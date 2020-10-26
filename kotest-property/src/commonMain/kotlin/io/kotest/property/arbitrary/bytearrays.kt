@@ -1,6 +1,7 @@
 package io.kotest.property.arbitrary
 
 import io.kotest.property.Arb
+import io.kotest.property.Exhaustive
 import io.kotest.property.Gen
 
 /**
@@ -10,12 +11,12 @@ import io.kotest.property.Gen
  * @param generateContents [Arb] to produce random bytes as the values for the array.
  */
 fun Arb.Companion.byteArrays(generateArrayLength: Gen<Int>, generateContents: Arb<Byte>): Arb<ByteArray> {
-   return arb { rs ->
-      val lengths = generateArrayLength.generate(rs).iterator()
-      val bytes = generateContents.values(rs).iterator()
-      sequence<ByteArray> {
-         val length = lengths.next().value
-         ByteArray(length) { bytes.next().value }
-      }
+   val arbLength: Arb<Int> = when (generateArrayLength) {
+      is Arb -> generateArrayLength
+      is Exhaustive -> generateArrayLength.toArb()
    }
+
+   return arbLength
+      .flatMap { length -> Arb.list(generateContents, length..length) }
+      .map { it.toByteArray() }
 }

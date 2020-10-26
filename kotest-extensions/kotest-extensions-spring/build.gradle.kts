@@ -34,13 +34,14 @@ kotlin {
 
       val jvmMain by getting {
          dependencies {
-            implementation(project(":kotest-core"))
+            implementation(project(Projects.Common))
+            implementation(project(Projects.Api))
+            implementation(project(Projects.Engine))
             implementation(project(Projects.AssertionsShared))
-            implementation(kotlin("stdlib-jdk8"))
             implementation(kotlin("reflect"))
-            implementation("org.springframework:spring-test:5.2.4.RELEASE")
-            implementation("org.springframework:spring-context:5.2.4.RELEASE")
-            implementation("net.bytebuddy:byte-buddy:1.10.9")
+            implementation(Libs.Spring.context)
+            implementation(Libs.Spring.test)
+            implementation(Libs.Bytebuddy.bytebuddy)
          }
       }
 

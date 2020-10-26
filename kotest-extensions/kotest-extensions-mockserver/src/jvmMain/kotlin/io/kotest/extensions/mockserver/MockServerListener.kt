@@ -5,9 +5,10 @@ import io.kotest.core.spec.Spec
 import org.mockserver.integration.ClientAndServer
 import org.mockserver.integration.ClientAndServer.startClientAndServer
 
-class MockServerListener(private val port: Int) : TestListener {
+class MockServerListener(private val port: Int) : TestListener, AutoCloseable {
 
-   private var mockServer: ClientAndServer? = null
+   // this has to be a var because MockServer starts the server as soon as you instantiate the instance :(
+   var mockServer: ClientAndServer? = null
 
    override suspend fun beforeSpec(spec: Spec) {
       super.beforeSpec(spec)
@@ -15,6 +16,10 @@ class MockServerListener(private val port: Int) : TestListener {
    }
 
    override suspend fun afterSpec(spec: Spec) {
-      mockServer?.stop();
+      mockServer?.stop()
+   }
+
+   override fun close() {
+      mockServer?.stop()
    }
 }

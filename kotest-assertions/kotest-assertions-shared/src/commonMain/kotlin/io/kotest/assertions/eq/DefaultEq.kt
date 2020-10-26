@@ -9,7 +9,7 @@ import io.kotest.assertions.show.show
  * This [Eq] is used when there is no more specific eq available.
  *
  * This implementation will simply compare values using the kotlin == function,
- * and in the case of inquality, delegates to [failure].
+ * and in the case of inequality, delegates to [failure].
  */
 internal object DefaultEq : Eq<Any> {
    override fun equals(actual: Any, expected: Any): Throwable? {

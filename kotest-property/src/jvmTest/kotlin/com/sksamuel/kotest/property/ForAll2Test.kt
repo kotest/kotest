@@ -3,16 +3,15 @@ package com.sksamuel.kotest.property
 import io.kotest.assertions.throwables.shouldThrowAny
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
-import io.kotest.matchers.string.shouldStartWith
-import io.kotest.property.Exhaustive
 import io.kotest.property.Arb
+import io.kotest.property.Exhaustive
 import io.kotest.property.PropTestConfig
 import io.kotest.property.ShrinkingMode
 import io.kotest.property.arbitrary.int
 import io.kotest.property.arbitrary.map
+import io.kotest.property.exhaustive.constant
 import io.kotest.property.exhaustive.ints
 import io.kotest.property.exhaustive.longs
-import io.kotest.property.exhaustive.constant
 import io.kotest.property.forAll
 
 class ForAll2Test : FunSpec({
@@ -26,19 +25,6 @@ class ForAll2Test : FunSpec({
       ) { a, b ->
          a + b == b + a
       }
-
-      context.attempts() shouldBe 1000
-      context.successes() shouldBe 1000
-      context.failures() shouldBe 0
-   }
-
-   test("forAll with 2 exhaustives") {
-
-      val context = forAll(
-         1000,
-         Exhaustive.ints(0..100),
-         Exhaustive.longs(200L..300L)
-      ) { a, b -> a + b == b + a }
 
       context.attempts() shouldBe 1000
       context.successes() shouldBe 1000
@@ -93,14 +79,14 @@ class ForAll2Test : FunSpec({
             Exhaustive.ints(0..10),
             Exhaustive.ints(20..30)
          ) { a, b -> a > b }
-      }.message shouldStartWith """Property failed after 6 attempts
-
-	Arg 0: 5
-	Arg 1: 25
+      }.message shouldBe """Property failed after 6 attempts
 
 Repeat this test by using seed 1900646515
 
-Caused by: Property failed 6 times (maxFailure rate was 5)"""
+Caused by: Property failed 6 times (maxFailure rate was 5)
+Last error was caused by args:
+  0) 0
+  1) 25"""
    }
 
    test("forAll with minSuccess") {
@@ -110,13 +96,10 @@ Caused by: Property failed 6 times (maxFailure rate was 5)"""
             Exhaustive.ints(0..10),
             Exhaustive.constant(8)
          ) { a, b -> a < b }
-      }.message shouldStartWith """Property failed after 42 attempts
-
-	Arg 0: 8
-	Arg 1: 8
+      }.message shouldBe """Property failed after 11 attempts
 
 Repeat this test by using seed 1921315
 
-Caused by: Property failed 10 times (maxFailure rate was 9)"""
+Caused by: Property passed 8 times (minSuccess rate was 9)"""
    }
 })

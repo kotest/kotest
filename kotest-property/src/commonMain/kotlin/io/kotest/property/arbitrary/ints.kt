@@ -14,24 +14,24 @@ fun Arb.Companion.int(min: Int, max: Int) = int(min..max)
  */
 fun Arb.Companion.int(range: IntRange = Int.MIN_VALUE..Int.MAX_VALUE): Arb<Int> {
    val edgecases = listOf(0, 1, -1, Int.MAX_VALUE, Int.MIN_VALUE).filter { it in range }
-   return arb(IntShrinker(range), edgecases) { it.random.nextInt(range) }
+   return arbitrary(edgecases, IntShrinker(range)) { it.random.nextInt(range) }
 }
 
 /**
  * Returns an [Arb] where each value is a randomly chosen natural integer.
- * The edge cases are: [Int.MAX_VALUE]
+ * The edge cases are: [[Int.MAX_VALUE], 1]
  */
 fun Arb.Companion.nats(max: Int = Int.MAX_VALUE) = int(1..max).filter { it > 0 }
 
 /**
  * Returns an [Arb] where each value is a randomly chosen negative integer.
- * The edge cases are: [Int.MIN_VALUE]
+ * The edge cases are: [[Int.MIN_VALUE], -1]
  */
 fun Arb.Companion.negativeInts(min: Int = Int.MIN_VALUE) = int(min..0).filter { it < 0 }
 
 /**
  * Returns an [Arb] where each value is a randomly chosen positive integer.
- * The edge cases are: [Int.MAX_VALUE]
+ * The edge cases are: [[Int.MAX_VALUE], 1]
  */
 fun Arb.Companion.positiveInts(max: Int = Int.MAX_VALUE) = int(1..max).filter { it > 0 }
 

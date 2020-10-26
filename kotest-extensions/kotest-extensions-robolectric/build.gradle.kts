@@ -1,6 +1,10 @@
+import org.gradle.api.tasks.testing.logging.TestExceptionFormat
+import org.gradle.api.tasks.testing.logging.TestLogEvent
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+
 plugins {
    id("java")
-   id("kotlin-multiplatform")
+   kotlin("multiplatform")
    id("java-library")
 }
 
@@ -8,8 +12,8 @@ repositories {
    mavenCentral()
    google()
 }
-kotlin {
 
+kotlin {
    targets {
       jvm {
          compilations.all {
@@ -29,37 +33,41 @@ kotlin {
    }
 
    sourceSets {
-
       val jvmMain by getting {
          dependencies {
-            implementation(project(":kotest-core"))
-            implementation(kotlin("stdlib-jdk8"))
             implementation(kotlin("reflect"))
-            implementation("org.robolectric:robolectric:4.3")
-            implementation("junit:junit:4.12")
+            implementation(project(Projects.Engine))
+            implementation(project(Projects.Api))
+            api(project(Projects.Extensions))
+            implementation(Libs.Robolectric.robolectric)
+            implementation(Libs.JUnit4.junit4)
          }
       }
 
-      val jvmTest by getting {
+      getByName("jvmTest") {
          dependsOn(jvmMain)
          dependencies {
             implementation(project(Projects.JunitRunner))
-
          }
       }
    }
 }
 
+tasks.withType<KotlinCompile>().configureEach {
+   kotlinOptions.freeCompilerArgs += "-Xuse-experimental=kotlin.Experimental"
+   kotlinOptions.jvmTarget = "1.8"
+}
+
 tasks.named<Test>("jvmTest") {
    useJUnitPlatform()
    filter {
-      setFailOnNoMatchingTests(false)
+      isFailOnNoMatchingTests = false
    }
    testLogging {
       showExceptions = true
       showStandardStreams = true
-      events = setOf(org.gradle.api.tasks.testing.logging.TestLogEvent.FAILED, org.gradle.api.tasks.testing.logging.TestLogEvent.PASSED)
-      exceptionFormat = org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
+      events = setOf(TestLogEvent.FAILED, TestLogEvent.PASSED)
+      exceptionFormat = TestExceptionFormat.FULL
    }
 }
 

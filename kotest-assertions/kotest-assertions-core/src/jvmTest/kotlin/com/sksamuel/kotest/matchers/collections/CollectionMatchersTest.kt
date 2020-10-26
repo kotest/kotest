@@ -6,14 +6,11 @@ import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.WordSpec
 import io.kotest.matchers.collections.atLeastSize
 import io.kotest.matchers.collections.atMostSize
-import io.kotest.matchers.collections.beEmpty
 import io.kotest.matchers.collections.beLargerThan
 import io.kotest.matchers.collections.beSameSizeAs
 import io.kotest.matchers.collections.beSmallerThan
 import io.kotest.matchers.collections.contain
 import io.kotest.matchers.collections.containDuplicates
-import io.kotest.matchers.collections.containExactly
-import io.kotest.matchers.collections.containExactlyInAnyOrder
 import io.kotest.matchers.collections.containNoNulls
 import io.kotest.matchers.collections.containNull
 import io.kotest.matchers.collections.containOnlyNulls
@@ -26,7 +23,6 @@ import io.kotest.matchers.collections.monotonicallyDecreasing
 import io.kotest.matchers.collections.monotonicallyDecreasingWith
 import io.kotest.matchers.collections.monotonicallyIncreasing
 import io.kotest.matchers.collections.monotonicallyIncreasingWith
-import io.kotest.matchers.collections.shouldBeEmpty
 import io.kotest.matchers.collections.shouldBeIn
 import io.kotest.matchers.collections.shouldBeLargerThan
 import io.kotest.matchers.collections.shouldBeMonotonicallyDecreasing
@@ -55,7 +51,6 @@ import io.kotest.matchers.collections.shouldHaveAtMostSize
 import io.kotest.matchers.collections.shouldHaveElementAt
 import io.kotest.matchers.collections.shouldHaveSingleElement
 import io.kotest.matchers.collections.shouldHaveSize
-import io.kotest.matchers.collections.shouldNotBeEmpty
 import io.kotest.matchers.collections.shouldNotBeIn
 import io.kotest.matchers.collections.shouldNotBeMonotonicallyDecreasing
 import io.kotest.matchers.collections.shouldNotBeMonotonicallyDecreasingWith
@@ -71,8 +66,6 @@ import io.kotest.matchers.collections.shouldNotBeStrictlyIncreasing
 import io.kotest.matchers.collections.shouldNotBeStrictlyIncreasingWith
 import io.kotest.matchers.collections.shouldNotContainAnyOf
 import io.kotest.matchers.collections.shouldNotContainDuplicates
-import io.kotest.matchers.collections.shouldNotContainExactly
-import io.kotest.matchers.collections.shouldNotContainExactlyInAnyOrder
 import io.kotest.matchers.collections.shouldNotContainNoNulls
 import io.kotest.matchers.collections.shouldNotContainNull
 import io.kotest.matchers.collections.shouldNotContainOnlyNulls
@@ -95,7 +88,6 @@ import io.kotest.matchers.shouldNot
 import io.kotest.matchers.shouldNotBe
 import io.kotest.matchers.shouldNotHave
 import io.kotest.matchers.throwable.shouldHaveMessage
-import java.util.ArrayList
 import java.util.Comparator
 
 class CollectionMatchersTest : WordSpec() {
@@ -570,36 +562,6 @@ class CollectionMatchersTest : WordSpec() {
          }
       }
 
-      "containInOrder" should {
-         "test that a collection contains the same elements in the given order, duplicates permitted" {
-            val col = listOf(1, 1, 2, 2, 3, 3)
-
-            col should containsInOrder(1, 2, 3)
-            col should containsInOrder(1)
-
-            shouldThrow<AssertionError> {
-               col should containsInOrder(1, 2, 6)
-            }
-
-            shouldThrow<AssertionError> {
-               col should containsInOrder(4)
-            }
-
-            shouldThrow<AssertionError> {
-               col should containsInOrder(2, 1, 3)
-            }
-         }
-         "work with unsorted collections" {
-            val actual = listOf(5, 3, 1, 2, 4, 2)
-            actual should containsInOrder(3, 2, 2)
-         }
-         "print errors unambiguously"  {
-            shouldThrow<AssertionError> {
-               listOf<Number>(1L, 2L) should containsInOrder(listOf<Number>(1, 2))
-            }.shouldHaveMessage("[1L, 2L] did not contain the elements [1, 2] in order")
-         }
-      }
-
       "existInOrder" should {
          "test that a collection matches the predicates in the given order, duplicates permitted" {
             val col = listOf(1, 1, 2, 2, 3, 3)
@@ -641,37 +603,7 @@ class CollectionMatchersTest : WordSpec() {
          }
       }
 
-      "startWith" should {
-         "test that a list starts with the given collection" {
-            val col = listOf(1, 2, 3, 4, 5)
-            col.shouldStartWith(listOf(1))
-            col.shouldStartWith(listOf(1, 2))
-            col.shouldNotStartWith(listOf(2, 3))
-            col.shouldNotStartWith(listOf(4, 5))
-            col.shouldNotStartWith(listOf(1, 3))
-         }
-         "print errors unambiguously"  {
-            shouldThrow<AssertionError> {
-               listOf(1L, 2L) should startWith(listOf(1L, 3L))
-            }.shouldHaveMessage("List should start with [1L, 3L]")
-         }
-      }
 
-      "endWith" should {
-         "test that a list ends with the given collection" {
-            val col = listOf(1, 2, 3, 4, 5)
-            col.shouldEndWith(listOf(5))
-            col.shouldEndWith(listOf(4, 5))
-            col.shouldNotEndWith(listOf(2, 3))
-            col.shouldNotEndWith(listOf(3, 5))
-            col.shouldNotEndWith(listOf(1, 2))
-         }
-         "print errors unambiguously"  {
-            shouldThrow<AssertionError> {
-               listOf(1L, 2L) should endWith(listOf(1L, 3L))
-            }.shouldHaveMessage("List should end with [1L, 3L]")
-         }
-      }
 
       "Be one of" should {
          "Pass when the element instance is in the list" {
