@@ -5,53 +5,27 @@ plugins {
 
 version = Ci.publishVersion
 
-val bomProjectName = project.name
+val bomProject = project
+val excludeFromBom = listOf("kotest-examples", "kotest-tests")
+fun projectsFilter(candidateProject: Project) =
+   excludeFromBom.all { !candidateProject.name.contains(it) }
+      && candidateProject.name != bomProject.name
 
-rootProject.subprojects.filter { project ->
-   project.name != bomProjectName
-}.forEach {
-   evaluationDependsOn(it.path)
-}
-
+rootProject.subprojects.filter(::projectsFilter).forEach { bomProject.evaluationDependsOn(it.path) }
 
 dependencies {
    constraints {
       rootProject.subprojects.filter { project ->
-         project.name != bomProjectName &&
-            project.plugins.hasPlugin(MavenPublishPlugin::class)
-      }.forEach {
-
-         println(it)
-         it.publishing.publications.filterIsInstance<MavenPublication>()
-            .forEach { publication ->
-               println(publication.artifactId)
-            }
-      }
+         project.tasks.findByName("publish")?.enabled == true &&
+            projectsFilter(project)
+      }.forEach { api(project(it.path)) }
    }
 }
 
 publishing {
    publications {
-      create<MavenPublication>("kotest-bom") {
+      create<MavenPublication>("Bom") {
          from(components["javaPlatform"])
-      }
-   }
-}
-
-val listPublishingTasks by tasks.registering {
-   doLast {
-      println("List Publishing artifacts")
-      rootProject.subprojects.filter { project ->
-         project.tasks.findByName("publish")?.enabled == true &&
-            project.name != bomProjectName
-      }.forEach { project ->
-         println(project)
-         project.publishing.publications
-            .filterIsInstance<MavenPublication>()
-            .forEach {
-               println(it.artifactId)
-
-            }
       }
    }
 }
