@@ -44,15 +44,28 @@ suspend fun <T, E : Throwable> eventually(
             throw e
          if (firstError == null)
             firstError = e
-         lastError = e
+         else
+            lastError = e
       }
       times++
       delay(poll.toLongMilliseconds())
    }
-   val underlyingCause =
-      if (lastError == null) "" else "; first cause was ${firstError?.message}; last cause was ${lastError.message}"
+
+   val sb = StringBuilder()
+   sb.appendLine("Eventually block failed after ${duration}; attempted $times time(s); $poll delay between attempts")
+   sb.appendLine()
+
+   if (firstError != null) {
+      sb.appendLine("The first error was caused by: ${firstError.message}")
+      sb.appendLine(firstError.stackTraceToString())
+   }
+
+   if (lastError != null) {
+      sb.appendLine("The last error was caused by: ${lastError.message}")
+      sb.appendLine(lastError.stackTraceToString())
+   }
+
    throw failure(
-      "Test failed after ${duration.toLongMilliseconds()}ms; attempted $times times$underlyingCause",
-      lastError
+      sb.toString()
    )
 }
