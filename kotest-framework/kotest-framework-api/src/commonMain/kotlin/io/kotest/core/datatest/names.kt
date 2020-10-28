@@ -26,19 +26,25 @@ internal fun isStable(type: KType) = when (val classifier = type.classifier) {
    else -> false
 }
 
+internal val primitiveTypes = setOf(
+   String::class,
+   Int::class,
+   Long::class,
+   Double::class,
+   Float::class,
+   Byte::class,
+   Short::class,
+   Boolean::class
+)
+
+internal fun KClass<*>.hasStableMembers() = reflection.primaryConstructorMembers(this).let { members ->
+   members.isNotEmpty() && members.all { isStable(it.type) }
+}
+
 internal fun isStable(type: KClass<*>): Boolean {
-   return when (type) {
-      String::class -> true
-      Int::class -> true
-      Long::class -> true
-      Double::class -> true
-      Float::class -> true
-      Byte::class -> true
-      Short::class -> true
-      Boolean::class -> true
-      else -> reflection.isDataClass(type) &&
-         reflection.primaryConstructorMembers(type).let { members ->
-            members.isNotEmpty() && members.all { isStable(it.type) }
-         }
+   return when {
+      primitiveTypes.contains(type) -> true
+      reflection.isDataClass(type) && type.hasStableMembers() -> true
+      else -> false
    }
 }
