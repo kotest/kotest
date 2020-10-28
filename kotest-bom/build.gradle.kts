@@ -29,3 +29,5 @@ publishing {
       }
    }
 }
+
+apply(from = "$rootDir/signing-pom-details.gradle.kts")
