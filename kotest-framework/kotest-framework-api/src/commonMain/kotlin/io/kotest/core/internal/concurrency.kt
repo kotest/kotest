@@ -13,10 +13,6 @@ fun KClass<*>.isIsolate(): Boolean = annotation<DoNotParallelize>() != null || a
 @Deprecated("Explicit thread mode will be removed in 5.0; use parallelism setting with concurrency mode")
 fun Spec.resolvedThreads(): Int? = this.threads() ?: this.threads
 
-fun withTimeoutTest(f: () -> Any) {
-
-}
-
 /**
  * Returns the [ConcurrencyMode] to use for tests in this spec.
  *
