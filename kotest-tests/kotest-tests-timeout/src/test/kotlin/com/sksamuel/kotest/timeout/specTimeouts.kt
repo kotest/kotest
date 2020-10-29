@@ -35,7 +35,7 @@ class InlineTimeoutTest : FunSpec() {
 }
 
 @OptIn(ExperimentalTime::class)
-class InlineTimeoutPrecenceTest : FunSpec() {
+class InlineTimeoutFailurePrecedenceTest : FunSpec() {
    init {
       extension(expectFailureExtension)
 
@@ -43,6 +43,17 @@ class InlineTimeoutPrecenceTest : FunSpec() {
 
       test("test case config timeout should take precedence").config(timeout = 250.milliseconds) {
          delay(10.hours)
+      }
+   }
+}
+
+@OptIn(ExperimentalTime::class)
+class InlineTimeoutSuccessPrecedenceTest : FunSpec() {
+   init {
+      timeout = 1
+      test("test case config timeout should take precedence").config(timeout = 250.milliseconds) {
+         // this test should pass because 50 < 250, and 250 should override the 1 at the spec level
+         delay(50.milliseconds)
       }
    }
 }
@@ -71,7 +82,7 @@ class OverrideTimeoutTest : FunSpec() {
  * Tests that the timeout in a test case should take precedence over the timeout at a spec level.
  */
 @OptIn(ExperimentalTime::class)
-class OverrideTimeoutPrecenceTest : FunSpec() {
+class OverrideTimeoutFailurePrecenceTest : FunSpec() {
 
    override fun timeout(): Long = 1.hours.toLongMilliseconds()
 
@@ -83,3 +94,20 @@ class OverrideTimeoutPrecenceTest : FunSpec() {
       }
    }
 }
+
+/**
+ * Tests that the timeout in a test case should take precedence over the timeout at a spec level.
+ */
+@OptIn(ExperimentalTime::class)
+class OverrideTimeoutSuccessPrecenceTest : FunSpec() {
+
+   override fun timeout(): Long = 1.milliseconds.toLongMilliseconds()
+
+   init {
+      test("test case config timeout should take precedence").config(timeout = 250.milliseconds) {
+         // this test should pass because 50 < 250, and 250 should override the 1 at the spec level
+         delay(50.milliseconds)
+      }
+   }
+}
+
