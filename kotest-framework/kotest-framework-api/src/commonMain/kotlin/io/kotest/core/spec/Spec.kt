@@ -60,6 +60,9 @@ abstract class Spec : TestConfiguration(), SpecFunctionConfiguration, SpecFuncti
     * Sets an invocation timeout for each test case in this spec unless overriden in the test config itself.
     * If this value is null, and the [SpecFunctionConfiguration.invocationTimeout] is also null,
     * the project default will be used.
+    *
+    * When using a nested test style, this invocation timeout does not apply to container tests (parent tests)
+    * but only leaf tests (outer most tests).
     */
    @JsName("invocationTimeout_var")
    var invocationTimeout: Long? = null

@@ -1,4 +1,4 @@
-package com.sksamuel.kotest.engine.spec.timeouts
+package com.sksamuel.kotest.timeout
 
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.spec.style.funSpec
@@ -15,7 +15,7 @@ private val factory = funSpec {
 }
 
 /**
- * Tests invoation timeouts at the spec level using inline assignment.
+ * Tests invocation timeouts at the spec level using inline assignment.
  */
 @OptIn(ExperimentalTime::class)
 class InlineInvocationTimeoutTest : FunSpec() {
@@ -34,7 +34,28 @@ class InlineInvocationTimeoutTest : FunSpec() {
 }
 
 /**
- * Tests invoation timeouts at the spec level using inline assignment.
+ * Tests invocation timeouts at the spec level using inline assignment.
+ */
+@OptIn(ExperimentalTime::class)
+class FunctionOverrideInvocationPrecedenceTimeoutTest : FunSpec() {
+
+   override fun invocationTimeout(): Long? {
+      return 1000000000
+   }
+
+   init {
+      extension(expectFailureExtension)
+      test("test case config timeout should take precedence").config(
+         invocations = 3,
+         invocationTimeout = 150.milliseconds,
+      ) {
+         delay(10.hours)
+      }
+   }
+}
+
+/**
+ * Tests that a test case invocation timeout overrides spec level inline assignment.
  */
 @OptIn(ExperimentalTime::class)
 class InlineInvocationPrecedenceTimeoutTest : FunSpec() {
@@ -53,7 +74,7 @@ class InlineInvocationPrecedenceTimeoutTest : FunSpec() {
 }
 
 /**
- * Tests invoation timeouts at the spec level using function override.
+ * Tests that a test case invocation timeout overrides spec level.
  */
 @OptIn(ExperimentalTime::class)
 class FunctionOverrideInvocationTimeoutTest : FunSpec() {
@@ -70,26 +91,5 @@ class FunctionOverrideInvocationTimeoutTest : FunSpec() {
 
       // should apply to factories too
       include(factory)
-   }
-}
-
-/**
- * Tests invoation timeouts at the spec level using function override.
- */
-@OptIn(ExperimentalTime::class)
-class FunctionOverrideInvocationPrecedenceTimeoutTest : FunSpec() {
-
-   override fun invocationTimeout(): Long? {
-      return 1000000000
-   }
-
-   init {
-      extension(expectFailureExtension)
-      test("test case config timeout should take precedence").config(
-         invocations = 3,
-         invocationTimeout = 150.milliseconds,
-      ) {
-         delay(10.hours)
-      }
    }
 }
