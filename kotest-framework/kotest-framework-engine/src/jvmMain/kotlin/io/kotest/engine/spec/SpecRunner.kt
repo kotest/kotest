@@ -10,6 +10,8 @@ import io.kotest.mpp.NamedThreadFactory
 import io.kotest.engine.createAndInitializeSpec
 import io.kotest.fp.Try
 import io.kotest.mpp.log
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import java.util.concurrent.ExecutionException
 import java.util.concurrent.Executors
@@ -45,21 +47,21 @@ abstract class SpecRunner(val listener: TestEngineListener) {
       }
 
    protected suspend fun run(
-      concurrencyMode: ConcurrencyMode,
+      concurrencyMode: ConcurrencyMode?,
       testCases: Collection<TestCase>,
       run: suspend (TestCase) -> Unit
-   ) = testCases.forEach { run(it) }
-//      when (concurrencyMode) {
-//         ConcurrencyMode.Isolated -> testCases.forEach { run(it) }
-//         ConcurrencyMode.Concurrent -> coroutineScope {
-//            testCases.map { testCase ->
-//               launch {
-//                  run(testCase)
-//               }
-//            }
-//         }
-//      }
-//   }
+   ) {
+      when (concurrencyMode) {
+         null, ConcurrencyMode.None, ConcurrencyMode.Spec -> testCases.forEach { run(it) }
+         else -> coroutineScope {
+            testCases.map { testCase ->
+               launch {
+                  run(testCase)
+               }
+            }
+         }
+      }
+   }
 
    @Deprecated("Explicit thread mode will be removed in 4.6")
    protected suspend fun runParallel(threads: Int, testCases: Collection<TestCase>, run: suspend (TestCase) -> Unit) {

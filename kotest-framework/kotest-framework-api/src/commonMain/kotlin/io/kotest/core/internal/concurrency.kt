@@ -19,11 +19,6 @@ fun Spec.resolvedThreads(): Int? = this.threads() ?: this.threads
  * Note that if this spec is annotated @Isolate then the value will be [ConcurrencyMode.None]
  * regardless of the config setting.
  */
-fun Spec.resolvedConcurrencyMode(): ConcurrencyMode =
+fun Spec.resolvedConcurrencyMode(): ConcurrencyMode? =
    if (this::class.isIsolate()) ConcurrencyMode.None else
-      this.concurrencyMode() ?: configuration.concurrencyMode ?: defaultConcurrencyMode()
-
-internal fun defaultConcurrencyMode() =
-   if (configuration.parallelism > 1) ConcurrencyMode.Spec else ConcurrencyMode.None
-
-
+      this.concurrencyMode() ?: configuration.concurrencyMode
