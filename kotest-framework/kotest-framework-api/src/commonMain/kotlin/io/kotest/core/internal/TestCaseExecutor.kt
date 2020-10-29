@@ -26,8 +26,12 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.withTimeout
 import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.coroutineContext
+import kotlin.math.min
 
-data class TimeoutException constructor(val duration: Long) : Exception("Test did not complete within ${duration}ms")
+/**
+ * Thrown when a test times out.
+ */
+data class TimeoutException(val duration: Long) : Exception("Test did not complete within ${duration}ms")
 
 /**
  * Validates that a [TestCase] is compatible on the actual platform. For example, in JS we can only
@@ -204,31 +208,36 @@ class TestCaseExecutor(
       return try {
 
          // all platforms support coroutine based interruption
+         // this is the test level timeout
          withTimeout(timeout) {
-
-            // depending on the test type, we execute with an invocation timeout
-            when (testCase.type) {
-               TestType.Container -> executeInScope(testCase, context)
-               TestType.Test ->
-                  // not all platforms support executing with an interruption based timeout
-                  // because it uses background threads to interrupt
-                  ec.executeWithTimeoutInterruption(timeout) {
-                     withTimeout(invocationTimeout) {
-                        replay(
-                           testCase.config.invocations,
-                           testCase.config.threads,
-                           { testCase.invokeBeforeInvocation(it) },
-                           { testCase.invokeAfterInvocation(it) }) {
-                           executeInScope(testCase, context)
+            ec.executeWithTimeoutInterruption(timeout) {
+               // depending on the test type, we execute with an invocation timeout
+               when (testCase.type) {
+                  TestType.Container -> executeInScope(testCase, context)
+                  TestType.Test ->
+                     // not all platforms support executing with an interruption based timeout
+                     // because it uses background threads to interrupt
+                     replay(
+                        testCase.config.invocations,
+                        testCase.config.threads,
+                        { testCase.invokeBeforeInvocation(it) },
+                        { testCase.invokeAfterInvocation(it) }) {
+                        ec.executeWithTimeoutInterruption(invocationTimeout) {
+                           withTimeout(invocationTimeout) {
+                              executeInScope(testCase, context)
+                           }
                         }
                      }
-                  }
+               }
             }
          }
          null
       } catch (e: TimeoutCancellationException) {
          log("Timeout exception $e")
-         TimeoutException(timeout)
+         when (testCase.type) {
+            TestType.Container -> TimeoutException(timeout)
+            TestType.Test -> TimeoutException(min(timeout, invocationTimeout))
+         }
       } catch (t: Throwable) {
          t
       } catch (e: AssertionError) {
