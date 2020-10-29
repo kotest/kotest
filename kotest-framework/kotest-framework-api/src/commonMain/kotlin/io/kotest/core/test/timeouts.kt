@@ -12,8 +12,8 @@ fun TestCase.resolvedTimeout(): Long =
    config.timeout?.toLongMilliseconds() ?: spec.timeout ?: spec.timeout() ?: configuration.timeout
 
 /**
- * Returns the resolved timeout for a test invocation taking into account test case config,
- * spec overrides, and project defaults.
+ * Returns the resolved timeout for a test invocation taking into account config on the test case,
+ * values specified in the spec itself, and project wide defaults.
  */
 @OptIn(ExperimentalTime::class)
 fun TestCase.resolvedInvocationTimeout(): Long =

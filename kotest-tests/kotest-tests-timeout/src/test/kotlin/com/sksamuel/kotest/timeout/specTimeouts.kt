@@ -1,15 +1,12 @@
-package com.sksamuel.kotest.engine.spec.timeouts
+package com.sksamuel.kotest.timeout
 
-import io.kotest.core.spec.TestCaseExtensionFn
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.spec.style.funSpec
-import io.kotest.core.test.TestResult
-import io.kotest.core.test.TestStatus
-import io.kotest.engine.toTestResult
 import kotlinx.coroutines.delay
 import kotlin.time.ExperimentalTime
 import kotlin.time.hours
 import kotlin.time.milliseconds
+import kotlin.time.minutes
 
 @OptIn(ExperimentalTime::class)
 private val factory = funSpec {
@@ -19,14 +16,14 @@ private val factory = funSpec {
 }
 
 /**
- * Tests timeouts at the spec level using inline assignment.
+ * Tests timeouts at the spec level using inline assignment should be applied.
  */
 @OptIn(ExperimentalTime::class)
 class InlineTimeoutTest : FunSpec() {
    init {
       extension(expectFailureExtension)
 
-      timeout = 250
+      timeout = 10.milliseconds.toLongMilliseconds()
 
       test("should timeout from spec setting") {
          delay(10.hours)
@@ -51,12 +48,12 @@ class InlineTimeoutPrecenceTest : FunSpec() {
 }
 
 /**
- * Tests timeouts at the spec level using function override.
+ * Tests timeouts at the spec level (by function override) should be applied.
  */
 @OptIn(ExperimentalTime::class)
 class OverrideTimeoutTest : FunSpec() {
 
-   override fun timeout(): Long = 250
+   override fun timeout(): Long = 10.milliseconds.toLongMilliseconds()
 
    init {
       extension(expectFailureExtension)
@@ -70,27 +67,19 @@ class OverrideTimeoutTest : FunSpec() {
    }
 }
 
+/**
+ * Tests that the timeout in a test case should take precedence over the timeout at a spec level.
+ */
 @OptIn(ExperimentalTime::class)
 class OverrideTimeoutPrecenceTest : FunSpec() {
 
-   override fun timeout(): Long = 10000000000
+   override fun timeout(): Long = 1.hours.toLongMilliseconds()
 
    init {
       extension(expectFailureExtension)
 
       test("test case config timeout should take precedence").config(timeout = 250.milliseconds) {
-         delay(10.hours)
+         delay(2.minutes)
       }
-   }
-}
-
-/**
- * A Test Case extension that expects each test to fail, and will invert the test result.
- */
-val expectFailureExtension: TestCaseExtensionFn = { (testCase, execute) ->
-   val result = execute(testCase)
-   when (result.status) {
-      TestStatus.Failure, TestStatus.Error -> TestResult.success(0)
-      else -> AssertionError("${testCase.description.name.name} passed but should fail").toTestResult(0)
    }
 }
