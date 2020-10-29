@@ -26,10 +26,10 @@ fun <A> Arb<A>.next(rs: RandomSource = RandomSource.Default): A = single(rs)
  * predicate. This gen will continue to request elements from the underlying gen until one satisfies
  * the predicate.
  */
-fun <A> Arb<A>.filter(predicate: (A) -> Boolean) = object : Arb<A>() {
+fun <A> Arb<A>.filter(predicate: (A) -> Boolean): Arb<A> = object : Arb<A>() {
    override fun edgecases(): List<A> = this@filter.edgecases().filter(predicate)
    override fun values(rs: RandomSource): Sequence<Sample<A>> = this@filter.values(rs).filter { predicate(it.value) }
-   override fun sample(rs: RandomSource): Sample<A> = samples(rs).filter { predicate(it.value) }.first()
+   override fun sample(rs: RandomSource): Sample<A> = this@filter.samples(rs).filter { predicate(it.value) }.first()
 }
 
 /**
@@ -87,7 +87,7 @@ fun <A, B> Arb<A>.distinctBy(selector: (A) -> B) = object : Arb<A>() {
    }
 
    override fun sample(rs: RandomSource): Sample<A> =
-      samples(rs).distinctBy { selector(it.value) }.first()
+      this@distinctBy.samples(rs).distinctBy { selector(it.value) }.first()
 }
 
 /**
