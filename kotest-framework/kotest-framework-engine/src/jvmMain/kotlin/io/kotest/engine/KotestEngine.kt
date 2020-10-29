@@ -113,10 +113,16 @@ class KotestEngine(private val config: KotestEngineConfig) {
       // spec classes are ordered using an instance of SpecExecutionOrder
       val ordered = plan.classes.sort(configuration.specExecutionOrder)
 
-      val isParallel = configuration.parallelism > 1 || configuration.concurrencyMode == ConcurrencyMode.Concurrent
+      val isParallel = when (configuration.concurrencyMode) {
+         ConcurrencyMode.None -> false // explicitly deactivates all concurrency
+         ConcurrencyMode.Test -> false // explicitly deactivates spec concurrency
+         ConcurrencyMode.Spec -> true // explicitly activated spec concurrency
+         ConcurrencyMode.All -> true // explicitly activated all concurrency
+         else -> configuration.parallelism > 1 // implicitly activated concurrency
+      }
 
-      // if we are operating in parallel mode, then we partition the specs into those which
-      // can run in parallel (default) and those which cannot (see @Isolated)
+      // if we are operating in a concurrent mode, then we partition the specs into those which
+      // can run concurrently (default) and those which cannot (see @Isolated)
       if (isParallel) {
          val (sequential, parallel) = ordered.partition { it.isIsolate() }
          log("KotestEngine: Partitioned specs into ${parallel.size} parallel and ${sequential.size} sequential")
