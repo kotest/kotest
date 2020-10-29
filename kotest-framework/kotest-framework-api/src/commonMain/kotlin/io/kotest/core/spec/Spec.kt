@@ -50,14 +50,15 @@ abstract class Spec : TestConfiguration(), SpecFunctionConfiguration, SpecFuncti
    var threads: Int? = null
 
    /**
-    * Sets a timeout for each test case in this spec unless overriden in the test config itself.
+    * Sets a millisecond timeout for each test case in this spec unless overriden in the test config itself.
+    *
     * If this value is null, and the [SpecFunctionConfiguration.timeout] is also null, the project default will be used.
     */
    @JsName("timeout_var")
    var timeout: Long? = null
 
    /**
-    * Sets an invocation timeout for each test case in this spec unless overriden in the test config itself.
+    * Sets a millisecond invocation timeout for each test case in this spec unless overriden in the test config itself.
     * If this value is null, and the [SpecFunctionConfiguration.invocationTimeout] is also null,
     * the project default will be used.
     *

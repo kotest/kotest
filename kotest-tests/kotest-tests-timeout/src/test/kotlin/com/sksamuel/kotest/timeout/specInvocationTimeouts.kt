@@ -6,6 +6,7 @@ import kotlinx.coroutines.delay
 import kotlin.time.ExperimentalTime
 import kotlin.time.hours
 import kotlin.time.milliseconds
+import kotlin.time.seconds
 
 @OptIn(ExperimentalTime::class)
 private val factory = funSpec {
@@ -18,14 +19,14 @@ private val factory = funSpec {
  * Tests invocation timeouts at the spec level using inline assignment.
  */
 @OptIn(ExperimentalTime::class)
-class InlineInvocationTimeoutTest : FunSpec() {
+class SpecInlineInvocationTimeoutTest : FunSpec() {
    init {
       extension(expectFailureExtension)
 
-      invocationTimeout = 150
+      invocationTimeout = 50
 
       test("should take timeout from spec setting").config(invocations = 3) {
-         delay(10.hours)
+         delay(1.seconds)
       }
 
       // should apply to factories too
