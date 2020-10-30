@@ -51,7 +51,7 @@ private fun AbstractProjectConfig.toDetectedConfig(): DetectedProjectConfig {
       writeSpecFailureFile = writeSpecFailureFile.toOption().orElse(writeSpecFailureFile().toOption()),
       parallelism = parallelism.toOption().orElse(parallelism().toOption()),
       timeout = timeout.toOption().map { it.toLongMilliseconds() },
-      invocationTimeout = invocationTimeout.toOption(),
+      invocationTimeout = invocationTimeout.toOption().map { it.toLongMilliseconds() },
       testCaseConfig = defaultTestCaseConfig.toOption(),
       includeTestScopeAffixes = includeTestScopePrefixes.toOption(),
       testNameCase = testNameCase.toOption(),

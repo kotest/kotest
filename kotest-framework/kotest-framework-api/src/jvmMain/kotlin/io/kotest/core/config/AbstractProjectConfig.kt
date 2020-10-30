@@ -77,7 +77,7 @@ abstract class AbstractProjectConfig {
     * The value here is in millis
     */
    @OptIn(ExperimentalTime::class)
-   open val invocationTimeout: Long? = null
+   open val invocationTimeout: Duration? = null
 
    /**
     * Override this function and return a number greater than 1 if you wish to
