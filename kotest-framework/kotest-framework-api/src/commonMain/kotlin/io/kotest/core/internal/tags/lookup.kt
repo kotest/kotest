@@ -3,6 +3,8 @@ package io.kotest.core.internal.tags
 import io.kotest.core.NamedTag
 import io.kotest.core.Tag
 import io.kotest.core.Tags
+import io.kotest.core.annotation.EffectiveTags
+import io.kotest.core.annotation.LazyTags
 import io.kotest.core.config.Configuration
 import io.kotest.core.extensions.TagExtension
 import io.kotest.core.test.TestCase
@@ -19,11 +21,23 @@ fun Configuration.activeTags(): Tags {
 }
 
 /**
- * Returns the tags specified on the given class from the @Tags annotation if present.
+ * Returns the tags specified on the given class from the @Tags/@LazyTags annotation if present.
  */
 fun KClass<*>.tags(): Set<Tag> {
-   val annotation = annotation<io.kotest.core.annotation.Tags>() ?: return emptySet()
-   return annotation.values.map { NamedTag(it) }.toSet()
+   annotation<io.kotest.core.annotation.Tags>()?.let {
+      return it.values.map { value -> NamedTag(value) }.toSet()
+   } ?: annotation<io.kotest.core.annotation.LazyTags>()?.let {
+      return it.values.map { value -> NamedTag(value) }.toSet()
+   } ?: return emptySet()
+}
+
+/**
+ * Returns the tags specified on the given class from the @EffectiveTags annotation if present.
+ */
+fun KClass<*>.effectiveTags(): Set<Tag> {
+   annotation<io.kotest.core.annotation.EffectiveTags>()?.let {
+      return it.values.map { value -> NamedTag(value) }.toSet()
+   } ?: return emptySet()
 }
 
 /**

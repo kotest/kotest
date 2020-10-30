@@ -1,6 +1,8 @@
 package com.sksamuel.kotest.tags
 
 import io.kotest.core.NamedTag
+import io.kotest.core.annotation.EffectiveTags
+import io.kotest.core.annotation.LazyTags
 import io.kotest.core.annotation.Tags
 import io.kotest.engine.extensions.TagsExcludedDiscoveryExtension
 import io.kotest.core.spec.style.BehaviorSpec
@@ -50,6 +52,67 @@ class TagsExcludedDiscoveryExtensionTest : FunSpec() {
             io.kotest.core.Tags.Empty.exclude(NamedTag("SpecExcluded"))
          ) shouldBe listOf(IncludedSpec::class, UntaggedSpec::class)
       }
+
+      test("TagFilteredDiscoveryExtension should support exclude for effective tags") {
+         TagsExcludedDiscoveryExtension.afterScan(
+            listOf(
+               // will be included as it is not explicitly excluded
+               IncludedSpecWEffectiveSpec::class,
+               // will be excluded as it has been explicitly excluded
+               ExcludedSpecWEffectiveSpec::class,
+            ),
+            io.kotest.core.Tags.Empty.exclude(NamedTag("Excluded"))
+         ) shouldBe listOf(IncludedSpecWEffectiveSpec::class)
+      }
+
+      test("TagFilteredDiscoveryExtension should support include only for effective tags") {
+         TagsExcludedDiscoveryExtension.afterScan(
+            listOf(
+               // will be included as included tag
+               IncludedSpecWEffectiveSpec::class,
+               // will be excluded, because not in included tags
+               ExcludedSpecWEffectiveSpec::class,
+            ),
+            io.kotest.core.Tags.Empty.include(NamedTag("Included"))
+         ) shouldBe listOf(IncludedSpecWEffectiveSpec::class)
+      }
+
+      test("TagFilteredDiscoveryExtension should support include only for effective tags - empty list") {
+         TagsExcludedDiscoveryExtension.afterScan(
+            listOf(
+               // will be excluded, because not in included tags
+               IncludedSpecWEffectiveSpec::class,
+               // will be excluded, because not in included tags
+               ExcludedSpecWEffectiveSpec::class,
+            ),
+            io.kotest.core.Tags.Empty.include(NamedTag("Reincluded"))
+         ) shouldBe listOf()
+      }
+
+      test("TagFilteredDiscoveryExtension should support include only for effective tags - all classes") {
+         TagsExcludedDiscoveryExtension.afterScan(
+            listOf(
+               // will be included, because not in excluded tags
+               IncludedSpecWEffectiveSpec::class,
+               // will be included, because not in excluded tags
+               ExcludedSpecWEffectiveSpec::class,
+            ),
+            io.kotest.core.Tags.Empty.exclude(NamedTag("Reincluded"))
+         ) shouldBe listOf(IncludedSpecWEffectiveSpec::class, ExcludedSpecWEffectiveSpec::class)
+      }
+
+      test("Check forbidden to use lazy tags and effective tags for one spec") {
+         try {
+            TagsExcludedDiscoveryExtension.afterScan(
+               listOf(
+                  ForbiddenSpec::class
+               ),
+               io.kotest.core.Tags.Empty.include(NamedTag("Included"))
+            )
+         } catch (e: Error) {
+            e.message shouldBe "Forbidden to use together LazyTags and EffectiveTags for one spec"
+         }
+      }
    }
 }
 
@@ -60,3 +123,13 @@ private class ExcludedSpec : ExpectSpec()
 private class IncludedSpec : BehaviorSpec()
 
 private class UntaggedSpec : FunSpec()
+
+@EffectiveTags("Excluded")
+private class ExcludedSpecWEffectiveSpec : FunSpec()
+
+@EffectiveTags("Included")
+private class IncludedSpecWEffectiveSpec : FunSpec()
+
+@LazyTags("Any")
+@EffectiveTags("Any")
+private class ForbiddenSpec : FunSpec()

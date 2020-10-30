@@ -8,9 +8,27 @@ import kotlin.reflect.KClass
  * An unannotated spec will still be instantiated to order to check if root tests are included.
  */
 // @Inherited TODO Not supported by Kotlin yet, better to have it so Tags can be added to base spec
+@Deprecated("Use the LazyTags for the similar behavior", ReplaceWith("LazyTags"), DeprecationLevel.WARNING)
 @Target(AnnotationTarget.CLASS)
 @Retention(AnnotationRetention.RUNTIME)
 annotation class Tags(vararg val values: String)
+
+/**
+ * Attach tag to [io.kotest.core.spec.Spec] and a spec excluded by a tag expression won't be instantiated.
+ * An unannotated spec will still be instantiated to order to check if root tests are included.
+ */
+@Target(AnnotationTarget.CLASS)
+@Retention(AnnotationRetention.RUNTIME)
+annotation class LazyTags(vararg val values: String)
+
+/**
+ * Attach tag to [io.kotest.core.spec.Spec] and a spec excluded by a tag expression won't be instantiated.
+ * An unannotated spec will still be instantiated to order to check if root tests are included.
+ * In contrast of Tags/LazyTags the Spec with EffectiveTags will instantiate only if present
+ */
+@Target(AnnotationTarget.CLASS)
+@Retention(AnnotationRetention.RUNTIME)
+annotation class EffectiveTags(vararg val values: String)
 
 /**
  * Attach tag to [io.kotest.core.spec.Spec], and that spec won't be instantiated or executed.

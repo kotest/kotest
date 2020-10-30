@@ -13,10 +13,16 @@ fun Expression?.isPotentiallyActive(kclass: KClass<out Spec>): Boolean {
    if (this == null) return true
 
    // if the class is not tagged then it is not excluded
-   val tags = kclass.tags()
-   if (tags.isEmpty()) return true
+   val lazyTags = kclass.tags()
+   val effectiveTags = kclass.effectiveTags()
+   if (lazyTags.isNotEmpty() && effectiveTags.isNotEmpty()) throw Error("Forbidden to use together LazyTags and EffectiveTags for one spec")
+   if (lazyTags.isEmpty() && effectiveTags.isEmpty()) return true
 
-   return isPotentiallyActive(tags.toSet()) ?: true
+   return when {
+       lazyTags.isNotEmpty() -> {isPotentiallyActive(lazyTags.toSet()) ?: true}
+       effectiveTags.isNotEmpty() -> { isActiveByEffectiveTag(effectiveTags.toSet()) }
+       else -> true
+   }
 }
 
 internal fun Expression.isPotentiallyActive(tags: Set<Tag>): Boolean? {
@@ -25,6 +31,15 @@ internal fun Expression.isPotentiallyActive(tags: Set<Tag>): Boolean? {
       is Expression.And -> left.isPotentiallyActive(tags) ?: true && right.isPotentiallyActive(tags) ?: true
       is Expression.Not -> expr.isPotentiallyActive(tags)?.not()
       is Expression.Identifier -> if (tags.map { it.name }.contains(ident)) true else null
+   }
+}
+
+internal fun Expression.isActiveByEffectiveTag(tags: Set<Tag>): Boolean {
+   return when (this) {
+      is Expression.Or -> left.isActiveByEffectiveTag(tags) || right.isActiveByEffectiveTag(tags)
+      is Expression.And -> left.isActiveByEffectiveTag(tags) && right.isActiveByEffectiveTag(tags)
+      is Expression.Not -> expr.isActiveByEffectiveTag(tags).not()
+      is Expression.Identifier -> if(ident.isNotBlank() && ident.isNotEmpty()) tags.map { it.name }.contains(ident) else true
    }
 }
 
