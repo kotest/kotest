@@ -95,8 +95,8 @@ fun <A : Any> Arb.Companion.frequency(
 /**
  * Generates random permutations of a list.
  */
-fun <A> Arb.Companion.shuffle(list: List<A>): Arb<A> = arbitrary {
-   list.shuffled(it.random).first()
+fun <A> Arb.Companion.shuffle(list: List<A>): Arb<List<A>> = arbitrary {
+   list.shuffled(it.random)
 }
 
 /**
