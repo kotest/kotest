@@ -2,6 +2,7 @@ package com.sksamuel.kotest.engine.active
 
 import io.kotest.core.filter.TestFilter
 import io.kotest.core.filter.TestFilterResult
+import io.kotest.core.spec.Isolate
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.test.Description
 import io.kotest.core.test.TestCase
@@ -13,6 +14,7 @@ private var counter = 0
 /**
  * A [TestFilter] added via the launcher should filter tests out.
  */
+@Isolate
 class LauncherTestFilterTest : FunSpec() {
    init {
       test("filter added via launcher should filter test cases") {

@@ -1,5 +1,6 @@
 package com.sksamuel.kotest.engine.datatest
 
+import io.kotest.core.spec.Isolate
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.test.DescriptionName
 import io.kotest.core.test.TestCase
@@ -9,11 +10,14 @@ import io.kotest.core.test.createTestName
 import io.kotest.engine.KotestEngineLauncher
 import io.kotest.engine.listener.TestEngineListener
 import io.kotest.matchers.shouldBe
+import java.util.concurrent.ConcurrentHashMap
 
+@Isolate
 class DataTest : FunSpec() {
+
    init {
 
-      val results = mutableMapOf<DescriptionName.TestName, TestStatus>()
+      val results = ConcurrentHashMap<DescriptionName.TestName, TestStatus>()
 
       val listener = object : TestEngineListener {
          override fun testFinished(testCase: TestCase, result: TestResult) {

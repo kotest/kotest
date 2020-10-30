@@ -5,9 +5,8 @@ import io.kotest.assertions.Expected
 import io.kotest.assertions.failure
 import io.kotest.assertions.shouldFail
 import io.kotest.assertions.show.Printed
-import io.kotest.core.annotation.EnabledCondition
-import io.kotest.core.annotation.EnabledIf
 import io.kotest.core.sourceRef
+import io.kotest.core.spec.Isolate
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.spec.toDescription
@@ -28,6 +27,7 @@ import kotlin.reflect.KClass
 
 private val nl = System.lineSeparator()
 
+@Isolate
 class TeamCityConsoleReporterTest : FunSpec() {
 
    private val kclass: KClass<out Spec> = TeamCityConsoleReporterTest::class
@@ -78,7 +78,7 @@ class TeamCityConsoleReporterTest : FunSpec() {
          val err = captureStandardErr {
             captureStandardOut {
                TeamCityConsoleReporter("testcity").specFinished(kclass, AssertionError("boom"), emptyMap())
-            } shouldBe "${nl}" +
+            } shouldBe nl +
                "testcity[testStarted name='com.sksamuel.kotest.engine.launcher.TeamCityConsoleReporterTest <init>']${nl}" +
                "testcity[testFailed name='com.sksamuel.kotest.engine.launcher.TeamCityConsoleReporterTest <init>' message='boom']${nl}" +
                "testcity[testSuiteFinished name='com.sksamuel.kotest.engine.launcher.TeamCityConsoleReporterTest' id='com.sksamuel.kotest.engine.launcher.TeamCityConsoleReporterTest' test_type='Spec' result_status='Failure']${nl}"
@@ -100,7 +100,7 @@ class TeamCityConsoleReporterTest : FunSpec() {
                   testCaseContainer,
                   TestResult.failure(AssertionError("wibble"), 51)
                )
-            } shouldBe "${nl}" +
+            } shouldBe nl +
                "testcity[testStarted name='my test container <init>']${nl}" +
                "testcity[testFailed name='my test container <init>' message='wibble']${nl}" +
                "testcity[testSuiteFinished name='my test container' id='com.sksamuel.kotest.engine.launcher.TeamCityConsoleReporterTest/my_context/my_test_container' parent_id='com.sksamuel.kotest.engine.launcher.TeamCityConsoleReporterTest/my_context' duration='51' test_type='Container' result_status='Failure']${nl}"

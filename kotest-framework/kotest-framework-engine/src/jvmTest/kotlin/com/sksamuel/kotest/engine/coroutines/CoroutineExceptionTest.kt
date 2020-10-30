@@ -1,5 +1,6 @@
 package com.sksamuel.kotest.engine.coroutines
 
+import io.kotest.core.spec.Isolate
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
@@ -12,6 +13,7 @@ import kotlinx.coroutines.launch
 /**
  * Tests that an exception in a coroutine is caught and reports the test as failed.
  */
+@Isolate
 class CoroutineExceptionTest : FunSpec({
 
    test("exception in coroutine") {

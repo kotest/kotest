@@ -16,6 +16,7 @@ object Defaults {
    const val specFailureFilePath: String = "./.kotest/spec_failures"
 
    const val parallelism: Int = 1
+
    const val defaultTimeoutInMillis: Long = 600 * 1000L
    const val defaultInvocationTimeoutInMillis: Long = 600 * 1000L
 

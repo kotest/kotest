@@ -1,5 +1,6 @@
 package com.sksamuel.kotest.engine.launcher
 
+import io.kotest.core.spec.Isolate
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.test.TestCase
@@ -9,6 +10,7 @@ import io.kotest.engine.reporter.Reporter
 import io.kotest.matchers.collections.shouldHaveSize
 import kotlin.reflect.KClass
 
+@Isolate
 class ExecuteTest : FunSpec() {
    init {
       test("execute should report throwables during engine setup") {

@@ -42,6 +42,7 @@ private fun AbstractProjectConfig.toDetectedConfig(): DetectedProjectConfig {
       filters = filters(),
       isolationMode = isolationMode.toOption().orElse(isolationMode().toOption()),
       assertionMode = assertionMode.toOption(),
+      concurrencyMode = concurrencyMode.toOption(),
       testCaseOrder = testCaseOrder.toOption().orElse(testCaseOrder().toOption()),
       specExecutionOrder = specExecutionOrder.toOption().orElse(specExecutionOrder().toOption()),
       failOnIgnoredTests = failOnIgnoredTests.toOption(),

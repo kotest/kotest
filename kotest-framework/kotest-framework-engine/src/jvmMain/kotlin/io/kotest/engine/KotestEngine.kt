@@ -1,6 +1,7 @@
 package io.kotest.engine
 
 import io.kotest.core.Tags
+import io.kotest.core.config.ConcurrencyMode
 import io.kotest.core.config.configuration
 import io.kotest.core.filter.TestFilter
 import io.kotest.core.spec.Spec
@@ -11,15 +12,10 @@ import io.kotest.engine.config.dumpProjectConfig
 import io.kotest.engine.extensions.SpecifiedTagsTagExtension
 import io.kotest.engine.listener.TestEngineListener
 import io.kotest.engine.spec.SpecExecutor
-import io.kotest.engine.spec.isDoNotParallelize
+import io.kotest.core.internal.isIsolate
 import io.kotest.engine.spec.sort
 import io.kotest.fp.Try
-import io.kotest.mpp.NamedThreadFactory
 import io.kotest.mpp.log
-import kotlinx.coroutines.runBlocking
-import java.util.Collections.emptyList
-import java.util.concurrent.Executors
-import java.util.concurrent.TimeUnit
 import kotlin.reflect.KClass
 
 data class KotestEngineConfig(
@@ -33,7 +29,7 @@ data class TestPlan(val classes: List<KClass<out Spec>>)
 
 class KotestEngine(private val config: KotestEngineConfig) {
 
-   private val specExecutor = SpecExecutor(config.listener)
+   private val executor = SpecExecutor(config.listener)
 
    init {
 
@@ -111,54 +107,41 @@ class KotestEngine(private val config: KotestEngineConfig) {
 
    private fun notifyListenerEngineStarted(plan: TestPlan) = Try { config.listener.engineStarted(plan.classes) }
 
-   private fun submitAll(plan: TestPlan) = Try {
-      log("Submitting ${plan.classes.size} specs")
+   private suspend fun submitAll(plan: TestPlan) = Try {
+      log("KotestEngine: Beginning test plan [specs=${plan.classes.size}, parallelism=${configuration.parallelism}, concurrencyMode=${configuration.concurrencyMode}]")
 
-      // the classes are ordered using an instance of SpecExecutionOrder
+      // spec classes are ordered using an instance of SpecExecutionOrder
       val ordered = plan.classes.sort(configuration.specExecutionOrder)
 
-      // if parallelize is enabled, then we must order the specs into two sets, depending on if they
-      // are thread safe or not.
-      val (single, parallel) = if (configuration.parallelism == 1)
-         ordered to emptyList()
-      else
-         ordered.partition { it.isDoNotParallelize() }
-
-      if (parallel.isNotEmpty()) submitBatch(parallel, configuration.parallelism)
-      if (single.isNotEmpty()) submitBatch(single, 1)
-   }
-
-   private fun submitBatch(specs: List<KClass<out Spec>>, parallelism: Int) {
-      val executor = Executors.newFixedThreadPool(
-         parallelism,
-         NamedThreadFactory("kotest-engine-%d")
-      )
-      specs.forEach { klass ->
-         executor.submit {
-            runBlocking {
-               specExecutor.execute(klass)
-            }
-         }
+      val isParallel = when (configuration.concurrencyMode) {
+         ConcurrencyMode.None -> false // explicitly deactivates all concurrency
+         ConcurrencyMode.Test -> false // explicitly deactivates spec concurrency
+         ConcurrencyMode.Spec -> true // explicitly activated spec concurrency
+         ConcurrencyMode.All -> true // explicitly activated all concurrency
+         else -> configuration.parallelism > 1 // implicitly activated concurrency
       }
-      executor.shutdown()
-      log("Waiting for specs execution to terminate")
 
-      try {
-         executor.awaitTermination(1, TimeUnit.DAYS)
-         log("Spec executor has terminated")
-      } catch (t: InterruptedException) {
-         log("Spec executor interrupted", t)
-         throw t
+      // if we are operating in a concurrent mode, then we partition the specs into those which
+      // can run concurrently (default) and those which cannot (see @Isolated)
+      if (isParallel) {
+         val (sequential, parallel) = ordered.partition { it.isIsolate() }
+         log("KotestEngine: Partitioned specs into ${parallel.size} parallel and ${sequential.size} sequential")
+
+         if (parallel.isNotEmpty()) ConcurrentSpecLauncher(configuration.parallelism).submit(executor, parallel)
+         if (sequential.isNotEmpty()) SequentialSpecLauncher.submit(executor, sequential)
+
+      } else {
+         if (ordered.isNotEmpty()) SequentialSpecLauncher.submit(executor, ordered)
       }
    }
 
    private fun end(errors: List<Throwable>) {
       errors.forEach {
-         log("Error during test engine run", it)
+         log("KotestEngine: Error during test engine run", it)
          it.printStackTrace()
       }
       config.listener.engineFinished(errors)
       // explicitly exit because we spin up test threads that the user may have put into deadlock
-      // exitProcess(if (t == null) 0 else -1)
+      // exitProcess(if (errors.isEmpty()) 0 else -1)
    }
 }

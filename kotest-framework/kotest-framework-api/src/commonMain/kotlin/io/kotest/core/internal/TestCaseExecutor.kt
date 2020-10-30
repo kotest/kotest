@@ -61,6 +61,7 @@ class TestCaseExecutor(
 ) {
 
    suspend fun execute(testCase: TestCase, context: TestContext): TestResult {
+      log("TestCaseExecutor: execute entry point [testCase=${testCase.displayName}, context=$context]")
       validateTestCase(testCase)
       val start = timeInMillis()
       val extensions = testCase.resolvedTestCaseExtensions()

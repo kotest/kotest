@@ -92,12 +92,6 @@ class IsolationTestEngineListener(val listener: TestEngineListener) : TestEngine
       }
    }
 
-   private fun isRunning(kclass: KClass<out Spec>): Boolean {
-      val running = runningSpec.get()
-      val given = kclass.toDescription()
-      return running == given
-   }
-
    override fun specFinished(
       kclass: KClass<out Spec>,
       t: Throwable?,

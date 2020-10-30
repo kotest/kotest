@@ -3,6 +3,7 @@ package com.sksamuel.kotest.engine.spec.multilinename
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.shouldBe
 
+// tests that multi line test names are normalized
 class StringSpecMultilineNameTest : StringSpec() {
    init {
 

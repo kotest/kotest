@@ -49,8 +49,9 @@ class KotestJunitPlatformTestEngine : TestEngine {
       val listener = SynchronizedTestEngineListener(
          IsolationTestEngineListener(
             JUnitTestEngineListener(
-               SynchronizedEngineExecutionListener(request.engineExecutionListener),
-               root
+               SynchronizedEngineExecutionListener(
+                  request.engineExecutionListener
+               ), root
             )
          )
       )

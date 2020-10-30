@@ -1,12 +1,14 @@
 package com.sksamuel.kt.extensions.system
 
 import io.kotest.assertions.throwables.shouldThrow
+import io.kotest.core.spec.Isolate
 import io.kotest.extensions.system.NoSystemErrListener
 import io.kotest.extensions.system.NoSystemOutListener
 import io.kotest.extensions.system.SystemErrWriteException
 import io.kotest.extensions.system.SystemOutWriteException
 import io.kotest.core.spec.style.StringSpec
 
+@Isolate
 class NoSystemOutOrErrTest : StringSpec() {
 
   override fun listeners() = listOf(NoSystemOutListener, NoSystemErrListener)
