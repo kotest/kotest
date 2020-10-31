@@ -4,7 +4,7 @@ package io.kotest.core
  * Allows for the execution of a function with a timeout to wake blocked threads.
  */
 interface TimeoutExecutionContext {
-   suspend fun <T> executeWithTimeoutInterruption(timeoutInMillis: Long, f: suspend () -> T): T
+   suspend fun <T> executeWithTimeoutInterruption(timeoutInMillis: Long, f: suspend () -> T)
 }
 
 /**
@@ -14,5 +14,7 @@ interface TimeoutExecutionContext {
  * on the JVM by running the test in a seperate thread.
  */
 object CallingThreadExecutionContext : TimeoutExecutionContext {
-   override suspend fun <T> executeWithTimeoutInterruption(timeoutInMillis: Long, f: suspend () -> T): T = f()
+   override suspend fun <T> executeWithTimeoutInterruption(timeoutInMillis: Long, f: suspend () -> T) {
+      f()
+   }
 }
