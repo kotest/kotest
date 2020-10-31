@@ -178,7 +178,7 @@ but spec level callback methods such as `beforeSpec` and `afterSpec` are guarant
 #### ConcurrencyMode.All
 
 This setting launches each spec concurrently and each test inside each spec concurrently. In effect, this is like
-throwing all the tests into one giant pot and executing them all at the same time.
+throwing all the tests into one giant pot and launching them all at the same time.
 
 With the same example as before, in `ConcurrencyMode.All` mode, this would look like the following pseudo-code:
 
@@ -206,7 +206,7 @@ launch {
 
 Now you can see that every spec and all tests in those specs are launched immediately.
 
-All callback methods such as `beforeTest` and `afterSpec` can run concurrently. Users must ensure any callback is thread safe.
+All callback methods such as `beforeTest` and `afterSpec` can run concurrently. Users must ensure all callback is thread safe.
 
 !!! warning
     This setting will give the maximum possible performance, but every single test must be thread safe (see @Isolate)
