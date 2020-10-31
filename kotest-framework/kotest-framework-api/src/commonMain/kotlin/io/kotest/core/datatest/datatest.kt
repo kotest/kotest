@@ -10,9 +10,11 @@ suspend fun <T> ContainerScope.forAll(first: Pair<String, T>, vararg rest: Pair<
    }
 }
 
-suspend fun <T> ContainerScope.forAll(first: T, vararg rest: T, test: suspend (T) -> Unit) {
+suspend fun <T : Any> ContainerScope.forAll(first: T, vararg rest: T, test: suspend (T) -> Unit) {
+   val idents = Identifiers()
    (listOf(first) + rest).forEach { t ->
-      addTest(createTestName("$t"), false) { test(t) }
+      val name = idents.stableIdentifier(t)
+      addTest(createTestName(name), false) { test(t) }
    }
 }
 
@@ -29,9 +31,11 @@ suspend fun <T> ContainerScope.forNone(vararg data: Pair<String, T>, test: suspe
    }
 }
 
-suspend fun <T> ContainerScope.forNone(vararg data: T, test: suspend (T) -> Unit) {
+suspend fun <T : Any> ContainerScope.forNone(vararg data: T, test: suspend (T) -> Unit) {
+   val idents = Identifiers()
    data.forEach { t ->
-      addTest(createTestName("$t"), false) {
+      val name = idents.stableIdentifier(t)
+      addTest(createTestName(name), false) {
          try {
             test(t)
             null

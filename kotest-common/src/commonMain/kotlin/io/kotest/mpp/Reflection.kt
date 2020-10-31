@@ -1,6 +1,7 @@
 package io.kotest.mpp
 
 import kotlin.reflect.KClass
+import kotlin.reflect.KType
 
 expect val reflection: Reflection
 
@@ -33,7 +34,8 @@ interface Reflection {
    fun paramNames(fn: Function<*>): List<String>?
 
    /**
-    * Returns a list of the class member properties defined in the primary constructor, if supported.
+    * Returns a list of the class member properties defined in the primary constructor, if supported on
+    * the platform, otherwise returns an empty list.
     */
    fun <T : Any> primaryConstructorMembers(klass: KClass<T>) : List<Property>
 
@@ -68,4 +70,4 @@ inline fun <reified T> KClass<*>.hasAnnotation(): Boolean = reflection.annotatio
 
 fun <T : Any> KClass<T>.newInstanceNoArgConstructor(): T = reflection.newInstanceNoArgConstructor(this)
 
-data class Property(val name: String, val call: (Any) -> Any?)
+data class Property(val name: String, val type: KType, val call: (Any) -> Any?)
