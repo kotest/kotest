@@ -19,7 +19,6 @@ class DataTestingUnstableTestNameTest : FunSpec() {
 
       val listener = object : TestEngineListener {
          override fun testFinished(testCase: TestCase, result: TestResult) {
-            println(testCase.displayName + " " + result)
             results.add(result.status)
          }
       }
