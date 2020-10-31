@@ -19,7 +19,7 @@ By default, Kotest will execute each test case sequentially using a single threa
 This means if a test inside a spec suspends or blocks, the whole test run will suspend or block until that test case resumes.
 
 This is the safest default to use, since it places no burden or expectation on the user to write thread-safe tests. For example,
-tests can share state or use instance fields which are not thread safe. It won't subject your tests to race conditions or require you to know Java's memory model.
+tests can share state or use instance fields which are not thread safe. It won't subject your tests to race conditions or require you to know Java's memory model. Specs can use before and after methods confidently knowing they won't interfere with each other.
 
 However, it is understandable that many users will want to run tests concurrently to reduce the total execution time of their test suite.
 This is especially true when testing code that suspends or blocks - the performance gains from allowing tests to run concurrently can be significant.
@@ -38,10 +38,10 @@ We can configure this feature by setting the configuration field `concurrencyMod
 
 There are four values:
 
-* `None` - Launch specs and tests sequentially.
-* `Spec` - Launch specs concurrently, but tests within each spec sequentially.
-* `Test` - Launch specs sequentially, but tests within each spec concurrently.
-* `All` - Launch both specs and tests sequentially.
+* `None` - Launch specs and tests **sequentially**.
+* `Spec` - Launch specs **concurrently**, but tests within each spec **sequentially**.
+* `Test` - Launch specs **sequentially**, but tests within each spec **concurrently**.
+* `All` - Launch **both** specs and tests **concurrently**.
 
 !!! note "Caveats"
     This setting does not change the thread count, but allows for co-operative concurrency when using suspendable functions.
@@ -54,10 +54,6 @@ There are four values:
 
     One can either try to avoid the use of blocking calls in favour of suspendable equivalents or wrap blocking calls
     inside a `withContext` block to move the offending code onto another dispatcher, such as `Dispatchers.IO`.
-
-!!! tip "Default setting"
-    The default is `None` since it places no burden or expectation on the user to write thread-safe tests.
-
 
 
 
@@ -100,9 +96,8 @@ spec2.testc()
 spec2.testd()
 ```
 
-
-
-Suspension or blocking will suspend or block the entire test run.
+Suspension or blocking will suspend or block the entire test run. All callback methods such as `beforeTest` and `afterSpec` are
+guaranteed to run in isolation.
 
 
 #### ConcurrencyMode.Spec
@@ -134,7 +129,8 @@ but the tests inside any particular spec will still execute sequentially.
 If a test case suspends, only the containing spec will suspend until that test case resumes, but other spec coroutines are free to run.
 
 Specs must be thread-safe with respect to other specs, but tests inside each spec are free to use shared state and
-thread unsafe code that is contained within that spec.
+thread unsafe code that is contained within that spec. Test level callback methods such as `beforeTest` and `afterTest` are
+guaranteed to run in isolation, but spec level callback methods such as `beforeSpec` and `afterSpec` can run concurrently.
 
 
 #### ConcurrencyMode.Test
@@ -168,6 +164,9 @@ coroutineScope { // the scope ensures we wait for the whole spec to complete
 As you can see, the first spec will launch all of its tests at the same time, then suspend until they complete.
 Only after all the contained tests have completed, will the next spec launch.
 This mode is useful if you need thread safety between specs but tests inside each spec can run thread safe.
+
+Test level callback methods such as `beforeTest` and `afterTest` can run concurrently,
+but spec level callback methods such as `beforeSpec` and `afterSpec` are guaranteed to run in isolation.
 
 !!! warning "Isolation mode"
     The default isolation mode for specs is _single instance per class_ - which means the same instance of
@@ -207,6 +206,8 @@ launch {
 
 Now you can see that every spec and all tests in those specs are launched immediately.
 
+All callback methods such as `beforeTest` and `afterSpec` can run concurrently. Users must ensure any callback is thread safe.
+
 !!! warning
     This setting will give the maximum possible performance, but every single test must be thread safe (see @Isolate)
 
@@ -240,8 +241,11 @@ When we set this flag to a value greater than 1, multiple threads will be create
 
 For example, setting this to K will (subject to caveats around blocking tests) allow up to K tests to be executing in parallel.
 
+This setting has no effect on Javascript tests.
+
 !!! note "Thread stickiness"
-    When using multiple threads, all the tests of a particular spec (and the associated lifecycle callbacks) are guaranteed to be executed using the same thread.
+    When using multiple threads, all the tests of a particular spec (and the associated lifecycle callbacks) are guaranteed to be executed in the same thread.
+    In other words, different threads are only used across different specs.
 
 !!! tip "Blocking calls"
     Setting this value higher than the number of cores offers a benefit if you are testing code that is using
