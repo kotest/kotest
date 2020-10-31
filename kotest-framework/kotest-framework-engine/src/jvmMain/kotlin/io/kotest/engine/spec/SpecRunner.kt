@@ -53,10 +53,15 @@ abstract class SpecRunner(val listener: TestEngineListener) {
    ) {
       when (concurrencyMode) {
          null, ConcurrencyMode.None, ConcurrencyMode.Spec -> testCases.forEach { run(it) }
-         else -> coroutineScope {
-            testCases.map { testCase ->
-               launch {
-                  run(testCase)
+         else -> {
+            log("SpecRunner: Running tests concurrently")
+            coroutineScope {
+               testCases.map { testCase ->
+                  log("SpecRunner: Launching test ${testCase.displayName} in coroutine")
+                  launch {
+                     log("SpecRunner: Test ${testCase.displayName} launched as ${Thread.currentThread().name}")
+                     run(testCase)
+                  }
                }
             }
          }

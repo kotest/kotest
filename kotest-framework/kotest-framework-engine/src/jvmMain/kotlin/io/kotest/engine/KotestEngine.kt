@@ -120,6 +120,7 @@ class KotestEngine(private val config: KotestEngineConfig) {
          ConcurrencyMode.All -> true // explicitly activated all concurrency
          else -> configuration.parallelism > 1 // implicitly activated concurrency
       }
+      log("KotestEngine: spec_concurrency=$isParallel")
 
       // if we are operating in a concurrent mode, then we partition the specs into those which
       // can run concurrently (default) and those which cannot (see @Isolated)

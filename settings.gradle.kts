@@ -76,6 +76,8 @@ include("kotest-plugins:kotest-plugins-pitest")
 include("kotest-tests:kotest-tests-allure")
 include("kotest-tests:kotest-tests-autoscan")
 include("kotest-tests:kotest-tests-core")
+// tests around ConcurrencyMode.Test
+include("kotest-tests:kotest-tests-concurrency-test")
 include("kotest-tests:kotest-tests-junitxml")
 include("kotest-tests:kotest-tests-multipleconfig")
 include("kotest-tests:kotest-tests-parallelism")

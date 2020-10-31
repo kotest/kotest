@@ -110,11 +110,11 @@ class TestCaseExecutor(
       // if the test case is active we execute it, otherwise we just invoke the callback with ignored
       return when (testCase.isActive()) {
          true -> {
-            log("${testCase.description.testPath()} is active")
+            log("TestCaseExecutor: ${testCase.description.testPath()} is active")
             ifActive()
          }
          false -> {
-            log("${testCase.description.testPath()} is *not* active")
+            log("TestCaseExecutor: ${testCase.description.testPath()} is *not* active")
             TestResult.Ignored
          }
       }
@@ -142,7 +142,7 @@ class TestCaseExecutor(
       start: Long,
    ): TestResult {
 
-      log("Executing active test $testCase with context $context")
+      log("TestCaseExecutor: Executing active test $testCase with context $context")
       listener.testStarted(testCase)
 
       return testCase
@@ -173,7 +173,7 @@ class TestCaseExecutor(
       context: TestContext,
       start: Long,
    ): Try<TestResult> = Try {
-      log("invokeTestCase $testCase")
+      log("TestCaseExecutor: invokeTestCase $testCase")
 
       if (testCase.config.invocations > 1 && testCase.type == TestType.Container)
          error("Cannot execute multiple invocations in parent tests")
@@ -181,7 +181,7 @@ class TestCaseExecutor(
       val t = executeAndWait(ec, testCase, context)
 
       val result = toTestResult(t, timeInMillis() - start)
-      log("Test completed with result $result")
+      log("TestCaseExecutor: Test completed with result $result")
       result
    }
 
@@ -198,13 +198,13 @@ class TestCaseExecutor(
       // this timeout applies across all invocations. In other words, if a test has invocations = 3,
       // each test takes 300ms, and a timeout of 800ms, this would fail, becauase 3 x 300 > 800.
       val timeout = testCase.resolvedTimeout()
-      log("TestCaseExecutor: Test will execute with timeout $timeout")
 
       // this timeout applies to each inovation. If a test has invocations = 3, and this timeout
       // is set to 300ms, then each individual invocation must complete in under 300ms.
       // invocation timeouts are not applied to TestType.Container only TestType.Test
       val invocationTimeout = testCase.resolvedInvocationTimeout()
-      log("TestCaseExecutor: Test will execute with invocationTimeout $invocationTimeout")
+
+      log("TestCaseExecutor: Test will execute with timeouts [timeout=$timeout, invocationTimeout=$invocationTimeout]")
 
       return try {
 
@@ -232,16 +232,19 @@ class TestCaseExecutor(
                }
             }
          }
+         log("TestCaseExecutor: Test ${testCase.displayName} finished")
          null
       } catch (e: TimeoutCancellationException) {
-         log("Timeout exception $e")
+         log("TestCaseExecutor: Test ${testCase.displayName} timed out")
          when (testCase.type) {
             TestType.Container -> TimeoutException(timeout)
             TestType.Test -> TimeoutException(min(timeout, invocationTimeout))
          }
       } catch (t: Throwable) {
+         log("TestCaseExecutor: Test ${testCase.displayName} threw exception ${t::class.simpleName}")
          t
       } catch (e: AssertionError) {
+         log("TestCaseExecutor: Test ${testCase.displayName} threw assertion error")
          e
       }
    }
@@ -251,11 +254,10 @@ class TestCaseExecutor(
     * by the user's test case.
     */
    private suspend fun executeInScope(testCase: TestCase, context: TestContext) = coroutineScope {
-      val contextp = object : TestContext {
+      testCase.executeWithBehaviours(object : TestContext {
          override val testCase: TestCase = context.testCase
          override suspend fun registerTestCase(nested: NestedTest) = context.registerTestCase(nested)
          override val coroutineContext: CoroutineContext = this@coroutineScope.coroutineContext
-      }
-      testCase.executeWithBehaviours(contextp)
+      })
    }
 }

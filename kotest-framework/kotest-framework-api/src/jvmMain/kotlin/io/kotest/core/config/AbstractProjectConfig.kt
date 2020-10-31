@@ -87,7 +87,7 @@ abstract class AbstractProjectConfig {
     * An alternative way to enable this is the system property kotest.parallelism
     * which will always (if defined) take priority over the value here.
     */
-   @Deprecated("use the val version. Will be removed in 4.4")
+   @Deprecated("use the val version. Will be removed in 4.6")
    open fun parallelism(): Int? = null
 
    open val parallelism: Int? = null
@@ -99,7 +99,7 @@ abstract class AbstractProjectConfig {
     * To enable this feature, set this to true, or set the system property
     * 'kotest.write.specfailures=true'
     */
-   @Deprecated("use the val version. Will be removed in 4.4")
+   @Deprecated("use the val version. Will be removed in 4.6")
    open fun writeSpecFailureFile(): Boolean = false
 
    open val writeSpecFailureFile: Boolean? = null
@@ -113,7 +113,7 @@ abstract class AbstractProjectConfig {
     * If this function returns null then the default of Sequential
     * will be used.
     */
-   @Deprecated("use the val version. Will be removed in 4.4")
+   @Deprecated("use the val version. Will be removed in 4.6")
    open fun testCaseOrder(): TestCaseOrder? = null
 
    open val testCaseOrder: TestCaseOrder? = null
@@ -141,6 +141,7 @@ abstract class AbstractProjectConfig {
     */
    open val failOnIgnoredTests: Boolean = false
 
+   @ExperimentalKotest
    open val concurrencyMode: ConcurrencyMode? = null
 
    /**
