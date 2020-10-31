@@ -16,7 +16,7 @@ class SpecInvocationTimeoutExceptionTest : FunSpec() {
       invocationTimeout = 10 // millis
 
       test("timeout exception should use the value that caused the test to fail") {
-         delay(100.milliseconds)
+         delay(250.milliseconds)
       }
 
       aroundTest { (test, execute) ->
