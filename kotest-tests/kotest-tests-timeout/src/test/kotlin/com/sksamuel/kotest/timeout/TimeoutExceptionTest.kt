@@ -33,22 +33,22 @@ class TestInvocationTimeoutExceptionTest : FunSpec() {
    init {
 
       timeout = 965
-      invocationTimeout = 100 // millis
+      invocationTimeout = 800 // millis
 
-      test("timeout exception should use the value that caused the test to fail 1").config(invocationTimeout = 12.milliseconds) {
-         delay(100.milliseconds)
+      test("timeout exception should use the value that caused the test to fail 1").config(invocationTimeout = 44.milliseconds) {
+         delay(250.milliseconds)
       }
 
       test("timeout exception should use the value that caused the test to fail 2").config(
-         timeout = 24.milliseconds,
-         invocationTimeout = 12.milliseconds
+         timeout = 454.milliseconds,
+         invocationTimeout = 44.milliseconds
       ) {
-         delay(100.milliseconds)
+         delay(250.milliseconds)
       }
 
       aroundTest { (test, execute) ->
          val result = execute(test)
-         result.error?.message shouldBe "Test did not complete within 12ms"
+         result.error?.message shouldBe "Test did not complete within 44ms"
          TestResult.success(0)
       }
    }
