@@ -114,6 +114,7 @@ class Configuration {
     *
     * Defaults to [ConcurrencyMode.None] or if [parallelism] > 1 then [ConcurrencyMode.Spec].
     */
+   @ExperimentalKotest
    var concurrencyMode: ConcurrencyMode? = null
 
    /**
