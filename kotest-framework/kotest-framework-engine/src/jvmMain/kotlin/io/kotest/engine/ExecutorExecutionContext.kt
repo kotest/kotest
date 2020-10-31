@@ -3,20 +3,13 @@ package io.kotest.engine
 import io.kotest.core.TimeoutExecutionContext
 import io.kotest.mpp.NamedThreadFactory
 import io.kotest.mpp.log
-import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.launch
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicBoolean
-import kotlin.coroutines.coroutineContext
 
 object ExecutorExecutionContext : TimeoutExecutionContext {
 
    override suspend fun <T> executeWithTimeoutInterruption(timeoutInMillis: Long, f: suspend () -> T) {
-      log("ExecutorExecutionContext: Scheduler will interrupt this execution in ${timeoutInMillis}ms")
-
-      val context = coroutineContext
-
       val hasResumed = AtomicBoolean(false)
 
       // the test case may hang, so we need a way to interrupt it after the timeout has expired.
@@ -31,25 +24,18 @@ object ExecutorExecutionContext : TimeoutExecutionContext {
       // we schedule a task that will interrupt the thread used by the coroutine with a timeout exception
       // this task will only fail the coroutine if it has not already returned normally
       scheduler.schedule({
-         log("ExecutorExecutionContext: Interrupter is running")
          if (hasResumed.compareAndSet(false, true)) {
             log("ExecutorExecutionContext: Interrupting test")
             testThread.interrupt()
          }
       }, timeoutInMillis, TimeUnit.MILLISECONDS)
+
       scheduler.shutdown()
 
       // the actual test case is executed inside this coroutine, so that the same thread is used as for the callbacks
       // earlier in the stack. See https://github.com/kotest/kotest/issues/447
       try {
-         // we start a new coroutine so that cancellation doesn't cancel the parents used by the engine itself
-         return coroutineScope {
-            // we use the context from the caller, in order to allow context params to propogate down
-            // into the test case from test extensions. See https://github.com/kotest/kotest/issues/1725
-            launch(context) {
-               f()
-            }
-         }
+         f()
       } finally {
          scheduler.shutdownNow()
       }

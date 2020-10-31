@@ -23,11 +23,13 @@ actual suspend fun replay(
       val error = AtomicReference<Throwable>(null)
       for (k in 0 until times) {
          executor.submit {
+            log("ExecutorExecutionContext: Starting invocation $k")
             runBlocking {
                try {
                   before(k)
                   action(k)
                } catch (t: Throwable) {
+                  log("ExecutorExecutionContext: Invocation $k returned error ${t::class}")
                   error.compareAndSet(null, t)
                } finally {
                   after(k)
@@ -38,7 +40,9 @@ actual suspend fun replay(
       executor.shutdown()
       executor.awaitTermination(1, TimeUnit.DAYS)
 
-      if (error.get() != null)
+      if (error.get() != null) {
+         log("ExecutorExecutionContext: Invocations returned error ${error.get()::class}")
          throw error.get()
+      }
    }
 }

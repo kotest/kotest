@@ -110,11 +110,11 @@ class TestCaseExecutor(
       // if the test case is active we execute it, otherwise we just invoke the callback with ignored
       return when (testCase.isActive()) {
          true -> {
-            log("TestCaseExecutor: ${testCase.description.testPath()} is active")
+            log("TestCaseExecutor: ${testCase.description.testPath().value} is active")
             ifActive()
          }
          false -> {
-            log("TestCaseExecutor: ${testCase.description.testPath()} is *not* active")
+            log("TestCaseExecutor: ${testCase.description.testPath().value} is *not* active")
             TestResult.Ignored
          }
       }
@@ -142,7 +142,7 @@ class TestCaseExecutor(
       start: Long,
    ): TestResult {
 
-      log("TestCaseExecutor: Executing active test $testCase with context $context")
+      log("TestCaseExecutor: Executing active test ${testCase.displayName} with context $context")
       listener.testStarted(testCase)
 
       return testCase
@@ -173,7 +173,7 @@ class TestCaseExecutor(
       context: TestContext,
       start: Long,
    ): Try<TestResult> = Try {
-      log("TestCaseExecutor: invokeTestCase $testCase")
+      log("TestCaseExecutor: invokeTestCase [${testCase.displayName}]")
 
       if (testCase.config.invocations > 1 && testCase.type == TestType.Container)
          error("Cannot execute multiple invocations in parent tests")
@@ -181,7 +181,7 @@ class TestCaseExecutor(
       val t = executeAndWait(ec, testCase, context)
 
       val result = toTestResult(t, timeInMillis() - start)
-      log("TestCaseExecutor: Test completed with result $result")
+      log("TestCaseExecutor: Test [${testCase.displayName}] completed with result $result")
       result
    }
 
@@ -211,6 +211,8 @@ class TestCaseExecutor(
          // all platforms support coroutine based interruption
          // this is the test level timeout
          withTimeout(timeout) {
+            // this is an thread-interrupt based timeout, at the test level
+            log("TestCaseExecutor: Executing with interruption support [timeout=$timeout]")
             ec.executeWithTimeoutInterruption(timeout) {
                // depending on the test type, we execute with an invocation timeout
                when (testCase.type) {
@@ -218,11 +220,13 @@ class TestCaseExecutor(
                   TestType.Test ->
                      // not all platforms support executing with an interruption based timeout
                      // because it uses background threads to interrupt
+                     // this is an thread-interrupt based timeout, at the invocation level
                      replay(
                         testCase.config.invocations,
                         testCase.config.threads,
                         { testCase.invokeBeforeInvocation(it) },
                         { testCase.invokeAfterInvocation(it) }) {
+                        log("TestCaseExecutor: Executing with interruption support [invocationTimeout=$invocationTimeout]")
                         ec.executeWithTimeoutInterruption(invocationTimeout) {
                            withTimeout(invocationTimeout) {
                               executeInScope(testCase, context)
@@ -232,19 +236,19 @@ class TestCaseExecutor(
                }
             }
          }
-         log("TestCaseExecutor: Test ${testCase.displayName} finished")
+         log("TestCaseExecutor: Test [${testCase.displayName}] finished")
          null
       } catch (e: TimeoutCancellationException) {
-         log("TestCaseExecutor: Test ${testCase.displayName} timed out")
+         log("TestCaseExecutor: Test [${testCase.displayName}] timed out")
          when (testCase.type) {
             TestType.Container -> TimeoutException(timeout)
             TestType.Test -> TimeoutException(min(timeout, invocationTimeout))
          }
       } catch (t: Throwable) {
-         log("TestCaseExecutor: Test ${testCase.displayName} threw exception ${t::class.simpleName}")
+         log("TestCaseExecutor: Test [${testCase.displayName}] threw exception ${t::class.simpleName}")
          t
       } catch (e: AssertionError) {
-         log("TestCaseExecutor: Test ${testCase.displayName} threw assertion error")
+         log("TestCaseExecutor: Test [${testCase.displayName}] threw assertion error")
          e
       }
    }
