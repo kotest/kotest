@@ -63,7 +63,7 @@ class TestCaseTimeoutListenerTest : FunSpec() {
             override val testCase: TestCase = testCase
          }
          val testExecutionListener = object : TestCaseExecutionListener {}
-         val executor = TestCaseExecutor(testExecutionListener, ExecutorExecutionContext, {}, ::toTestResult)
+         val executor = TestCaseExecutor(testExecutionListener, ExecutorExecutionContext(), {}, ::toTestResult)
          executor.execute(testCase, context)
       }
 
@@ -99,7 +99,7 @@ class TestCaseTimeoutListenerTest : FunSpec() {
             override val testCase: TestCase = testCase
          }
          val testExecutionListener = object : TestCaseExecutionListener {}
-         val executor = TestCaseExecutor(testExecutionListener, ExecutorExecutionContext, {}, ::toTestResult)
+         val executor = TestCaseExecutor(testExecutionListener, ExecutorExecutionContext(), {}, ::toTestResult)
          executor.execute(testCase, context)
       }
    }

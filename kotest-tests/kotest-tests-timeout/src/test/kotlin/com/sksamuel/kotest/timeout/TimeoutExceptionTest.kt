@@ -36,14 +36,14 @@ class TestInvocationTimeoutExceptionTest : FunSpec() {
       invocationTimeout = 800 // millis
 
       test("timeout exception should use the value that caused the test to fail 1").config(invocationTimeout = 44.milliseconds) {
-         delay(250.milliseconds)
+         delay(500.milliseconds)
       }
 
       test("timeout exception should use the value that caused the test to fail 2").config(
          timeout = 454.milliseconds,
          invocationTimeout = 44.milliseconds
       ) {
-         delay(250.milliseconds)
+         delay(500.milliseconds)
       }
 
       aroundTest { (test, execute) ->

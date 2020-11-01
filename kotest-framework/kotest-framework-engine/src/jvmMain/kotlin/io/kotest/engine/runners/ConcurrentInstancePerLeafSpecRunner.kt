@@ -13,6 +13,7 @@ import io.kotest.engine.spec.SpecRunner
 import io.kotest.engine.listener.TestEngineListener
 import io.kotest.engine.ExecutorExecutionContext
 import io.kotest.core.internal.TestCaseExecutor
+import io.kotest.core.internal.ValidateAll
 import io.kotest.engine.listener.TestCaseListenerToTestEngineListenerAdapter
 import io.kotest.core.spec.invokeAfterSpec
 import io.kotest.core.spec.invokeBeforeSpec
@@ -131,14 +132,15 @@ internal class ConcurrentInstancePerLeafSpecRunner(
                }
             }
          }
-
+         val executionContext = ExecutorExecutionContext()
          val testExecutor = TestCaseExecutor(
             testCaseListener,
-            ExecutorExecutionContext,
-            {},
+            executionContext,
+            ValidateAll,
             { t, duration -> toTestResult(t, duration) },
          )
          val result = testExecutor.execute(test, context)
+         executionContext.close()
          results[test] = result
       }
    }

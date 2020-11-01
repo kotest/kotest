@@ -6,6 +6,6 @@ import kotlin.time.ExperimentalTime
 import kotlin.time.milliseconds
 
 @ExperimentalTime
-object ProjectConfig : AbstractProjectConfig() {
+class ProjectConfig : AbstractProjectConfig() {
    override val timeout: Duration? = 1000.milliseconds
 }

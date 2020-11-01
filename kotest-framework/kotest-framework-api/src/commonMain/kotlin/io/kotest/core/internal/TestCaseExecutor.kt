@@ -1,6 +1,6 @@
 package io.kotest.core.internal
 
-import io.kotest.core.TimeoutExecutionContext
+import io.kotest.core.ExecutionContext
 import io.kotest.core.extensions.TestCaseExtension
 import io.kotest.core.spec.invokeAfterInvocation
 import io.kotest.core.spec.invokeAllAfterTestCallbacks
@@ -39,6 +39,8 @@ data class TimeoutException(val duration: Long) : Exception("Test did not comple
  */
 typealias ValidateTestCase = (TestCase) -> Unit
 
+val ValidateAll: ValidateTestCase = {}
+
 /**
  * Returns a [TestResult] for the given throwable and test execution duration.
  */
@@ -48,14 +50,14 @@ typealias ToTestResult = (Throwable?, Long) -> TestResult
  * Executes a single [TestCase].
  * Uses a [TestCaseExecutionListener] to notify callers of events in the test.
  *
- * The [TimeoutExecutionContext] is used to provide a way of executing functions on the underlying platform
+ * The [ExecutionContext] is used to provide a way of executing functions on the underlying platform
  * in a way that best utilizes threads or the lack of on that platform.
  *
  * If the given test case fails to validate via [validateTestCase], then this method throws.
  */
 class TestCaseExecutor(
    private val listener: TestCaseExecutionListener,
-   private val executionContext: TimeoutExecutionContext,
+   private val executionContext: ExecutionContext,
    private val validateTestCase: ValidateTestCase,
    private val toTestResult: ToTestResult,
 ) {
@@ -110,11 +112,11 @@ class TestCaseExecutor(
       // if the test case is active we execute it, otherwise we just invoke the callback with ignored
       return when (testCase.isActive()) {
          true -> {
-            log("TestCaseExecutor: ${testCase.description.testPath().value} is active")
+            log("TestCaseExecutor: [${testCase.description.testPath().value}] is active")
             ifActive()
          }
          false -> {
-            log("TestCaseExecutor: ${testCase.description.testPath().value} is *not* active")
+            log("TestCaseExecutor: [${testCase.description.testPath().value}] is *not* active")
             TestResult.Ignored
          }
       }
@@ -142,7 +144,7 @@ class TestCaseExecutor(
       start: Long,
    ): TestResult {
 
-      log("TestCaseExecutor: Executing active test ${testCase.displayName} with context $context")
+      log("TestCaseExecutor: Executing active test [${testCase.description.displayPath().value}] with context [$context]")
       listener.testStarted(testCase)
 
       return testCase
@@ -168,7 +170,7 @@ class TestCaseExecutor(
     * Invokes the given [TestCase] on the given executor.
     */
    private suspend fun invokeTestCase(
-      ec: TimeoutExecutionContext,
+      ec: ExecutionContext,
       testCase: TestCase,
       context: TestContext,
       start: Long,
@@ -189,7 +191,7 @@ class TestCaseExecutor(
     * Invokes the given [TestCase] handling timeouts.
     */
    private suspend fun executeAndWait(
-      ec: TimeoutExecutionContext,
+      ec: ExecutionContext,
       testCase: TestCase,
       context: TestContext,
    ): Throwable? {
@@ -213,7 +215,7 @@ class TestCaseExecutor(
          withTimeout(timeout) {
             // this is an thread-interrupt based timeout, at the test level
             log("TestCaseExecutor: Executing with interruption support [timeout=$timeout]")
-            ec.executeWithTimeoutInterruption(timeout) {
+            ec.executeWithTimeout(timeout) {
                // depending on the test type, we execute with an invocation timeout
                when (testCase.type) {
                   TestType.Container -> executeInScope(testCase, context)
@@ -227,7 +229,7 @@ class TestCaseExecutor(
                         { testCase.invokeBeforeInvocation(it) },
                         { testCase.invokeAfterInvocation(it) }) {
                         log("TestCaseExecutor: Executing with interruption support [invocationTimeout=$invocationTimeout]")
-                        ec.executeWithTimeoutInterruption(invocationTimeout) {
+                        ec.executeWithTimeout(invocationTimeout) {
                            withTimeout(invocationTimeout) {
                               executeInScope(testCase, context)
                            }

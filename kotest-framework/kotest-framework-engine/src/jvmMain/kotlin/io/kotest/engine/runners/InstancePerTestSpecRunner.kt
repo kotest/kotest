@@ -13,6 +13,7 @@ import io.kotest.mpp.log
 import io.kotest.engine.ExecutorExecutionContext
 import io.kotest.core.test.TestCaseExecutionListener
 import io.kotest.core.internal.TestCaseExecutor
+import io.kotest.core.internal.ValidateAll
 import io.kotest.core.internal.resolvedConcurrencyMode
 import io.kotest.core.spec.invokeAfterSpec
 import io.kotest.core.spec.invokeBeforeSpec
@@ -141,6 +142,8 @@ internal class InstancePerTestSpecRunner(listener: TestEngineListener) : SpecRun
                }
             }
          }
+
+         val executionContext = ExecutorExecutionContext()
          val testExecutor = TestCaseExecutor(object : TestCaseExecutionListener {
             override fun testStarted(testCase: TestCase) {
                if (isTarget) listener.testStarted(testCase)
@@ -153,9 +156,10 @@ internal class InstancePerTestSpecRunner(listener: TestEngineListener) : SpecRun
             override fun testFinished(testCase: TestCase, result: TestResult) {
                if (isTarget) listener.testFinished(testCase, result)
             }
-         }, ExecutorExecutionContext, {}, { t, duration -> toTestResult(t, duration) })
+         }, executionContext, ValidateAll, { t, duration -> toTestResult(t, duration) })
 
          val result = testExecutor.execute(test, context)
+         executionContext.close()
          results[test] = result
       }
    }

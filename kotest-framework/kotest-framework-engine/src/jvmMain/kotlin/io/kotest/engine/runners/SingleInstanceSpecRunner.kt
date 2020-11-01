@@ -13,6 +13,7 @@ import io.kotest.engine.listener.TestEngineListener
 import io.kotest.core.internal.resolvedThreads
 import io.kotest.engine.ExecutorExecutionContext
 import io.kotest.core.internal.TestCaseExecutor
+import io.kotest.core.internal.ValidateAll
 import io.kotest.core.internal.resolvedConcurrencyMode
 import io.kotest.core.spec.invokeAfterSpec
 import io.kotest.core.spec.invokeBeforeSpec
@@ -35,7 +36,7 @@ internal class SingleInstanceSpecRunner(listener: TestEngineListener) : SpecRunn
    private val results = ConcurrentHashMap<TestCase, TestResult>()
 
    override suspend fun execute(spec: Spec): Try<Map<TestCase, TestResult>> {
-      log("SingleInstanceSpecRunner: executing spec [$spec]")
+      log("SingleInstanceSpecRunner: Executing spec [$spec]")
 
       suspend fun interceptAndRun(context: CoroutineContext) = Try {
          val rootTests = spec.materializeAndOrderRootTests().map { it.testCase }
@@ -49,7 +50,7 @@ internal class SingleInstanceSpecRunner(listener: TestEngineListener) : SpecRunn
             }
          } else {
             run(spec.resolvedConcurrencyMode(), rootTests) {
-               log("SingleInstanceSpecRunner: Executing test $it")
+               log("SingleInstanceSpecRunner: Executing test [${it.description.displayPath().value}]")
                runTest(it, context)
             }
          }
@@ -86,6 +87,7 @@ internal class SingleInstanceSpecRunner(listener: TestEngineListener) : SpecRunn
       testCase: TestCase,
       coroutineContext: CoroutineContext,
    ) {
+      val executionContext = ExecutorExecutionContext()
       val testExecutor = TestCaseExecutor(object : TestCaseExecutionListener {
          override fun testStarted(testCase: TestCase) {
             listener.testStarted(testCase)
@@ -98,9 +100,10 @@ internal class SingleInstanceSpecRunner(listener: TestEngineListener) : SpecRunn
          override fun testFinished(testCase: TestCase, result: TestResult) {
             listener.testFinished(testCase, result)
          }
-      }, ExecutorExecutionContext, {}, { t, duration -> toTestResult(t, duration) })
+      }, executionContext, ValidateAll, { t, duration -> toTestResult(t, duration) })
 
       val result = testExecutor.execute(testCase, Context(testCase, coroutineContext))
+      executionContext.close()
       results[testCase] = result
    }
 
