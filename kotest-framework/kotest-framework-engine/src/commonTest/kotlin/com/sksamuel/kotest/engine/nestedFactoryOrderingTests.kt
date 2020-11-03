@@ -5,35 +5,33 @@ import io.kotest.core.spec.style.funSpec
 import io.kotest.core.test.TestCaseOrder
 import io.kotest.matchers.shouldBe
 
-private var output = ""
-
-val factory1 = funSpec {
+fun factory1(writer: StringBuilder) = funSpec {
    test("o") {
-      output += this.testCase.displayName
+      writer.append(this.testCase.displayName)
    }
    test("r") {
-      output += this.testCase.displayName
+      writer.append(this.testCase.displayName)
    }
 }
 
-val factory2 = funSpec {
+fun factory2(writer: StringBuilder) = funSpec {
    test("w") {
-      output += this.testCase.displayName
+      writer.append(this.testCase.displayName)
    }
-   include(factory1)
+   include(factory1(writer))
    test("f") {
-      output += this.testCase.displayName
+      writer.append(this.testCase.displayName)
    }
 }
 
 class NestedFactoriesShouldInlineTest : FunSpec() {
    init {
 
-      include(factory2)
+      val writer = StringBuilder()
+      include(factory2(writer))
 
       afterSpec {
-         output shouldBe "worf"
-         output = ""
+         writer.toString() shouldBe "worf"
       }
    }
 }
@@ -44,11 +42,11 @@ class NestedFactoriesShouldRespectTestOrderFunctionOverrideTest : FunSpec() {
 
    init {
 
-      include(factory2)
+      val writer = StringBuilder()
+      include(factory2(writer))
 
       afterSpec {
-         output shouldBe "forw"
-         output = ""
+         writer.toString() shouldBe "forw"
       }
    }
 }
@@ -59,11 +57,11 @@ class NestedFactoriesShouldRespectTestOrderVarTest : FunSpec() {
 
       testOrder = TestCaseOrder.Lexicographic
 
-      include(factory2)
+      val writer = StringBuilder()
+      include(factory2(writer))
 
       afterSpec {
-         output shouldBe "forw"
-         output = ""
+         writer.toString() shouldBe "forw"
       }
    }
 }

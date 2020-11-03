@@ -41,7 +41,7 @@ class InlineTimeoutFailurePrecedenceTest : FunSpec() {
 
       timeout = 10000000000
 
-      test("test case config timeout should take precedence").config(timeout = 250.milliseconds) {
+      test("test case config timeout should take precedence").config(timeout = 500.milliseconds) {
          delay(10.hours)
       }
    }
@@ -51,7 +51,7 @@ class InlineTimeoutFailurePrecedenceTest : FunSpec() {
 class InlineTimeoutSuccessPrecedenceTest : FunSpec() {
    init {
       timeout = 1
-      test("test case config timeout should take precedence").config(timeout = 250.milliseconds) {
+      test("test case config timeout should take precedence").config(timeout = 500.milliseconds) {
          // this test should pass because 50 < 250, and 250 should override the 1 at the spec level
          delay(50.milliseconds)
       }

@@ -1,9 +1,31 @@
 Changelog
 =========
 
+
+#### 4.3.1 November 2020
+
+##### Features
+
+* Variation of clue / asClue to accept lazy #1766
+* Added Tuple2..Tuple22 for use in data testing #1773
+
+##### Improvements
+
+* Stacktrace recovery when an `eventually` block fails #1775
+* Performance improvements for Exceptions on the JVM #1787
+* Updated discovery to only initialize spec classes #1788
+
+##### Bugfix
+
+* Added stable identifiers when using new data-driven tests with non-data classes #1795
+* Wrong TimeoutException messages shown when test exceeds spec-level invocation timeout #1809
+* Invocation timeouts should not be applied to containers #1810
+* Arb.filter causing stackoverflow #1818
+* Arb.shuffle type signature change broken in 4.3.0 #1824
+
 #### 4.3.0 October 2020 - [Blog](https://dev.to/kotest/kotest-release-4-3-2768)
 
-##### Features:
+##### Features
 
 * New data driven test DSL with data classes #1537 (framework)
 * Option to strip whitespace from test names #1545 (framework)
@@ -30,12 +52,16 @@ Changelog
 
 #### 4.2.6 October 2020
 
-* Bugfix: Fixed regression in shouldBe when using iterables/arrays #1707 #1727
-* Bugfix: Fix first failure in `beforeTest` blocks #1736
-* Bugfix: deprecate distinct #1730
-* Bugfix: Fixed the empty allure result for tests with the failed afterTest block #1724
-* Feature: Added per project listener for testcontainers #1731
+##### Features
 
+* Added per project listener for testcontainers #1731
+
+##### Bugfix
+
+* Fixed regression in shouldBe when using iterables/arrays #1707 #1727
+* Fix first failure in `beforeTest` blocks #1736
+* Deprecate distinct #1730
+* Fixed the empty allure result for tests with the failed afterTest block #1724
 
 #### 4.2.5 September 2020
 

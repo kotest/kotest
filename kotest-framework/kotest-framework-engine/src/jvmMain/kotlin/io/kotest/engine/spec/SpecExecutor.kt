@@ -10,7 +10,6 @@ import io.kotest.engine.runners.InstancePerTestSpecRunner
 import io.kotest.engine.runners.SingleInstanceSpecRunner
 import io.kotest.engine.listener.TestEngineListener
 import io.kotest.core.extensions.SpecExtension
-import io.kotest.core.spec.style.scopes.DslState
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.core.extensions.resolvedSpecExtensions
@@ -38,27 +37,16 @@ class SpecExecutor(private val listener: TestEngineListener) {
     * Executes the given [Spec].
     */
    suspend fun execute(kclass: KClass<out Spec>) {
-      log("Executing spec $kclass")
+      log("SpecExecutor execute [$kclass]")
       notifySpecStarted(kclass)
          .flatMap { invokePrepareSpecListeners(kclass) }
          .flatMap { createInstance(kclass) }
          .flatMap { runTestsIfAtLeastOneActive(it) }
-         .flatMap { checkClosedTestCases(it) }
          .flatMap { invokeFinalizeSpecListeners(kclass, it) }
          .fold(
             { notifySpecFinished(kclass, it, emptyMap()) },
             { notifySpecFinished(kclass, null, it) }
          )
-   }
-
-   private fun checkClosedTestCases(results: Map<TestCase, TestResult>): Try<Map<TestCase, TestResult>> {
-      return when (val state = DslState.state) {
-         null -> results.success()
-         else -> {
-            DslState.state = null
-            Try.Failure(AssertionError(state))
-         }
-      }
    }
 
    /**
@@ -100,7 +88,7 @@ class SpecExecutor(private val listener: TestEngineListener) {
       results: Map<TestCase, TestResult>
    ) = Try {
       t?.printStackTrace()
-      log("Executing engine listener callback:specFinished $kclass")
+      log("Executing engine listener callback:specFinished $kclass $t")
       listener.specFinished(kclass, t, results)
    }
 
@@ -110,8 +98,15 @@ class SpecExecutor(private val listener: TestEngineListener) {
     */
    private fun createInstance(kclass: KClass<out Spec>): Try<Spec> =
       createAndInitializeSpec(kclass)
-         .onFailure { notifySpecInstantiationError(kclass, it) }
-         .onSuccess { notifySpecInstantiated(it) }
+         .fold(
+            {
+               notifySpecInstantiationError(kclass, it)
+               Try.Failure(it)
+            },
+            { spec ->
+               notifySpecInstantiated(spec).map { spec }
+            }
+         )
 
    /**
     * The root tests on this spec are retrieved, and if none are active, then no
@@ -119,6 +114,7 @@ class SpecExecutor(private val listener: TestEngineListener) {
     * function is invoked.
     */
    private suspend fun runTestsIfAtLeastOneActive(spec: Spec): Try<Map<TestCase, TestResult>> {
+      log("runTestsIfAtLeastOneActive [$spec]")
       val roots = spec.materializeAndOrderRootTests()
       val active = roots.any { it.testCase.isActive() }
       return if (active) runTests(spec) else emptyMap<TestCase, TestResult>().success()
@@ -167,11 +163,12 @@ class SpecExecutor(private val listener: TestEngineListener) {
       return when (spec.resolvedIsolationMode()) {
          IsolationMode.SingleInstance -> SingleInstanceSpecRunner(listener)
          IsolationMode.InstancePerTest -> InstancePerTestSpecRunner(listener)
-         IsolationMode.InstancePerLeaf -> when (spec.resolvedThreads()) {
-            0, 1 -> InstancePerLeafSpecRunner(listener) // topo restore per leaf
-            else -> ConcurrentInstancePerLeafSpecRunner(listener, spec.resolvedThreads())
+         IsolationMode.InstancePerLeaf -> when (val threads = spec.resolvedThreads()) {
+            null, 0, 1 -> InstancePerLeafSpecRunner(listener) // topo restore per leaf
+            else -> ConcurrentInstancePerLeafSpecRunner(listener, threads)
          }
       }
+//      return SingleInstanceSpecRunner(listener)
    }
 
    /**

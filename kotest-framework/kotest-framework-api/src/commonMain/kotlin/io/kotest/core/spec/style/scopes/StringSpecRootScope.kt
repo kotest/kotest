@@ -19,7 +19,7 @@ import kotlin.time.ExperimentalTime
  * }
  *
  */
-interface StringSpecScope : RootScope {
+interface StringSpecRootScope : RootScope {
 
    @OptIn(ExperimentalTime::class)
    fun String.config(

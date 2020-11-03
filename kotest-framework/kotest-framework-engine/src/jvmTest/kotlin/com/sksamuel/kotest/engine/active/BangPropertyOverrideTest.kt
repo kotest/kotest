@@ -1,9 +1,11 @@
 package com.sksamuel.kotest.engine.active
 
 import io.kotest.core.internal.KotestEngineSystemProperties
+import io.kotest.core.spec.Isolate
 import io.kotest.core.spec.style.WordSpec
 import io.kotest.matchers.booleans.shouldBeTrue
 
+@Isolate
 class BangPropertyOverrideTest : WordSpec({
 
    "setting system property to override bang" should {

@@ -13,6 +13,7 @@ import io.kotest.engine.listener.TestEngineListener
 import io.kotest.core.internal.resolvedThreads
 import io.kotest.engine.ExecutorExecutionContext
 import io.kotest.core.internal.TestCaseExecutor
+import io.kotest.core.internal.resolvedConcurrencyMode
 import io.kotest.core.spec.invokeAfterSpec
 import io.kotest.core.spec.invokeBeforeSpec
 import io.kotest.core.spec.materializeAndOrderRootTests
@@ -32,6 +33,35 @@ import kotlin.coroutines.CoroutineContext
 internal class SingleInstanceSpecRunner(listener: TestEngineListener) : SpecRunner(listener) {
 
    private val results = ConcurrentHashMap<TestCase, TestResult>()
+
+   override suspend fun execute(spec: Spec): Try<Map<TestCase, TestResult>> {
+      log("SingleInstanceSpecRunner: executing spec [$spec]")
+
+      suspend fun interceptAndRun(context: CoroutineContext) = Try {
+         val rootTests = spec.materializeAndOrderRootTests().map { it.testCase }
+         log("SingleInstanceSpecRunner: Materialized root tests: ${rootTests.size}")
+         val threads = spec.resolvedThreads()
+         if (threads != null && threads > 1) {
+            log("Warning - usage of deprecated thread count $threads")
+            runParallel(threads, rootTests) {
+               log("SingleInstanceSpecRunner: Executing test $it")
+               runTest(it, context)
+            }
+         } else {
+            run(spec.resolvedConcurrencyMode(), rootTests) {
+               log("SingleInstanceSpecRunner: Executing test $it")
+               runTest(it, context)
+            }
+         }
+      }
+
+      return coroutineScope {
+         spec.invokeBeforeSpec()
+            .flatMap { interceptAndRun(coroutineContext) }
+            .flatMap { spec.invokeAfterSpec() }
+            .map { results }
+      }
+   }
 
    inner class Context(
       override val testCase: TestCase,
@@ -74,21 +104,5 @@ internal class SingleInstanceSpecRunner(listener: TestEngineListener) : SpecRunn
       results[testCase] = result
    }
 
-   override suspend fun execute(spec: Spec): Try<Map<TestCase, TestResult>> {
 
-      suspend fun interceptAndRun(context: CoroutineContext) = Try {
-         val rootTests = spec.materializeAndOrderRootTests().map { it.testCase }
-         runParallel(spec.resolvedThreads(), rootTests) {
-            log("Executing test $it")
-            runTest(it, context)
-         }
-      }
-
-      return coroutineScope {
-         spec.invokeBeforeSpec()
-            .flatMap { interceptAndRun(coroutineContext) }
-            .flatMap { spec.invokeAfterSpec() }
-            .map { results }
-      }
-   }
 }

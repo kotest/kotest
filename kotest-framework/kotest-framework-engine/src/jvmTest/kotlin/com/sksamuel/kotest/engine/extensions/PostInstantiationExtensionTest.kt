@@ -2,12 +2,14 @@ package com.sksamuel.kotest.engine.extensions
 
 import io.kotest.core.config.configuration
 import io.kotest.core.extensions.PostInstantiationExtension
+import io.kotest.core.spec.Isolate
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.engine.KotestEngineLauncher
 import io.kotest.engine.listener.TestEngineListener
 import io.kotest.matchers.shouldBe
 
+@Isolate
 class PostInstantiationExtensionTest : FunSpec() {
    init {
 

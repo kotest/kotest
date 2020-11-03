@@ -15,6 +15,18 @@ annotation class DisplayName(val name: String)
 @DslMarker
 annotation class KotestDsl
 
+/**
+ * When added to a spec, will mark that spec to not run in parallel, regardless
+ * of the concurrency mode or parallelism settings.
+ */
 @Target(AnnotationTarget.CLASS)
 @Retention(AnnotationRetention.RUNTIME)
 annotation class DoNotParallelize
+
+/**
+ * When added to a spec, will mark that spec to not run in parallel, regardless
+ * of the concurrency mode or parallelism settings.
+ */
+@Target(AnnotationTarget.CLASS)
+@Retention(AnnotationRetention.RUNTIME)
+annotation class Isolate
