@@ -9,7 +9,7 @@ import kotlin.time.Duration
 import kotlin.time.ExperimentalTime
 
 @ExperimentalTime
-class LiveDataSpectator<T> internal constructor() : Observer<T>, Spectator<T> {
+class LiveDataSpectator<T> @PublishedApi internal constructor() : Observer<T>, Spectator<T> {
    private val _history = mutableListOf<T>()
 
    override val history: List<T>
@@ -37,6 +37,5 @@ class LiveDataSpectator<T> internal constructor() : Observer<T>, Spectator<T> {
  * Returns a [Spectator] which allows to test the receiver [LiveData].
  */
 @OptIn(ExperimentalTime::class)
-fun <T> LiveData<T>.spectate(): Spectator<T> =
-   LiveDataSpectator<T>().also { observeForever(it) }
-
+inline fun <T> LiveData<T>.spectate(block: Spectator<T>.() -> Unit = {}): Spectator<T> =
+   LiveDataSpectator<T>().also { observeForever(it) }.apply(block)

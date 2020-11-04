@@ -23,16 +23,17 @@ class LiveDataSpectatorTest : FunSpec({
    test("Last value") {
       val liveData = MutableLiveData(1)
 
-      val spectator = liveData.spectate()
+      // This test also demonstrates the use of the "spectating block"
+      liveData.spectate {
+         lastValue shouldBe 1
 
-      spectator.lastValue shouldBe 1
+         liveData.postValue(2)
 
-      liveData.postValue(2)
-
-      spectator.lastValue shouldBe 2
+         lastValue shouldBe 2
+      }
    }
 
-   context("Await next value"){
+   context("Await next value") {
       test("Value in range of timeout") {
          val liveData = MutableLiveData(1)
          val spectator = liveData.spectate()
@@ -59,7 +60,7 @@ class LiveDataSpectatorTest : FunSpec({
       }
    }
 
-   context("Await value"){
+   context("Await value") {
       test("No value, delayed") {
          val liveData = delayedLiveData(100.milliseconds, 10)
          val spectator = liveData.spectate()
@@ -95,7 +96,7 @@ class LiveDataSpectatorTest : FunSpec({
 })
 
 @OptIn(ExperimentalTime::class)
-fun <T>delayedLiveData(delay: Duration, valueEmitted: T): LiveData<T> {
+fun <T> delayedLiveData(delay: Duration, valueEmitted: T): LiveData<T> {
    return object : LiveData<T>() {
       override fun onActive() {
          super.onActive()
