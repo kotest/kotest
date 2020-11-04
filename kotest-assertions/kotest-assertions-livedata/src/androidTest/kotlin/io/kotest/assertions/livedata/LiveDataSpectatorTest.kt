@@ -1,5 +1,6 @@
 package io.kotest.assertions.livedata
 
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.IsolationMode
@@ -8,6 +9,7 @@ import io.kotest.extensions.livedata.ImmediateTaskExecutorListener
 import io.kotest.matchers.shouldBe
 import kotlinx.coroutines.TimeoutCancellationException
 import kotlin.concurrent.thread
+import kotlin.time.Duration
 import kotlin.time.ExperimentalTime
 import kotlin.time.milliseconds
 import kotlin.time.seconds
@@ -85,12 +87,22 @@ class LiveDataSpectatorTest : FunSpec({
          val liveData = MutableLiveData(10)
          val spectator = liveData.spectate()
 
-         thread(start = true) {
-            Thread.sleep(10)
-            liveData.postValue(11)
-         }
+         delayedLiveData(10.milliseconds, 11)
 
          spectator.awaitValue(2.seconds) shouldBe 10
       }
    }
 })
+
+@OptIn(ExperimentalTime::class)
+fun <T>delayedLiveData(delay: Duration, valueEmitted: T): LiveData<T> {
+   return object : LiveData<T>() {
+      override fun onActive() {
+         super.onActive()
+         thread(true) {
+            Thread.sleep(delay.toLongMilliseconds())
+            postValue(valueEmitted)
+         }
+      }
+   }
+}
