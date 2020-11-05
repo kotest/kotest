@@ -5,6 +5,7 @@ import io.kotest.core.Tag
 import io.kotest.core.Tags
 import io.kotest.core.config.configuration
 import io.kotest.core.extensions.TagExtension
+import io.kotest.core.spec.Isolate
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.core.test.TestCase
@@ -17,6 +18,7 @@ private object ExcludeTagExtension : TagExtension {
    override fun tags(): Tags = Tags.exclude(Exclude)
 }
 
+@Isolate
 class ExcludeTagExtensionTest : FunSpec() {
    init {
       test("tag extensions should be applied to tests with tag inherited from spec") {
@@ -29,6 +31,7 @@ class ExcludeTagExtensionTest : FunSpec() {
          KotestEngineLauncher()
             .withListener(listener)
             .withSpec(ExcludedSpec::class)
+            .launch()
          configuration.deregisterExtension(ExcludeTagExtension)
       }
    }

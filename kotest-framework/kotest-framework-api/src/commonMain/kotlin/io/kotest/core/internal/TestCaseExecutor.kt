@@ -26,8 +26,12 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.withTimeout
 import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.coroutineContext
+import kotlin.math.min
 
-data class TimeoutException constructor(val duration: Long) : Exception("Test did not complete within ${duration}ms")
+/**
+ * Thrown when a test times out.
+ */
+data class TimeoutException(val duration: Long) : Exception("Test did not complete within ${duration}ms")
 
 /**
  * Validates that a [TestCase] is compatible on the actual platform. For example, in JS we can only
@@ -57,6 +61,7 @@ class TestCaseExecutor(
 ) {
 
    suspend fun execute(testCase: TestCase, context: TestContext): TestResult {
+      log("TestCaseExecutor: execute entry point [testCase=${testCase.displayName}, context=$context]")
       validateTestCase(testCase)
       val start = timeInMillis()
       val extensions = testCase.resolvedTestCaseExtensions()
@@ -182,7 +187,6 @@ class TestCaseExecutor(
 
    /**
     * Invokes the given [TestCase] handling timeouts.
-    * We create a scope here so that our coroutine waits for any child coroutines created by user code.
     */
    private suspend fun executeAndWait(
       ec: TimeoutExecutionContext,
@@ -194,45 +198,64 @@ class TestCaseExecutor(
       // this timeout applies across all invocations. In other words, if a test has invocations = 3,
       // each test takes 300ms, and a timeout of 800ms, this would fail, becauase 3 x 300 > 800.
       val timeout = testCase.resolvedTimeout()
-      log("Test will execute with timeout $timeout")
+      log("TestCaseExecutor: Test will execute with timeout $timeout")
 
       // this timeout applies to each inovation. If a test has invocations = 3, and this timeout
       // is set to 300ms, then each individual invocation must complete in under 300ms.
+      // invocation timeouts are not applied to TestType.Container only TestType.Test
       val invocationTimeout = testCase.resolvedInvocationTimeout()
-      log("Test will execute with invocationTimeout $invocationTimeout")
+      log("TestCaseExecutor: Test will execute with invocationTimeout $invocationTimeout")
 
       return try {
 
          // all platforms support coroutine based interruption
+         // this is the test level timeout
          withTimeout(timeout) {
-            // not all platforms support executing with a timeout because it uses background threads to interrupt
             ec.executeWithTimeoutInterruption(timeout) {
-               withTimeout(invocationTimeout) {
-                  replay(
-                     testCase.config.invocations,
-                     testCase.config.threads,
-                     { testCase.invokeBeforeInvocation(it) },
-                     { testCase.invokeAfterInvocation(it) }) {
-                     coroutineScope {
-                        val contextp = object : TestContext {
-                           override val testCase: TestCase = context.testCase
-                           override suspend fun registerTestCase(nested: NestedTest) = context.registerTestCase(nested)
-                           override val coroutineContext: CoroutineContext = this@coroutineScope.coroutineContext
+               // depending on the test type, we execute with an invocation timeout
+               when (testCase.type) {
+                  TestType.Container -> executeInScope(testCase, context)
+                  TestType.Test ->
+                     // not all platforms support executing with an interruption based timeout
+                     // because it uses background threads to interrupt
+                     replay(
+                        testCase.config.invocations,
+                        testCase.config.threads,
+                        { testCase.invokeBeforeInvocation(it) },
+                        { testCase.invokeAfterInvocation(it) }) {
+                        ec.executeWithTimeoutInterruption(invocationTimeout) {
+                           withTimeout(invocationTimeout) {
+                              executeInScope(testCase, context)
+                           }
                         }
-                        testCase.executeWithBehaviours(contextp)
                      }
-                  }
                }
             }
          }
          null
       } catch (e: TimeoutCancellationException) {
          log("Timeout exception $e")
-         TimeoutException(timeout)
+         when (testCase.type) {
+            TestType.Container -> TimeoutException(timeout)
+            TestType.Test -> TimeoutException(min(timeout, invocationTimeout))
+         }
       } catch (t: Throwable) {
          t
       } catch (e: AssertionError) {
          e
       }
+   }
+
+   /**
+    * Execute the test case wrapped in a scope, so that we wait for any child coroutines created
+    * by the user's test case.
+    */
+   private suspend fun executeInScope(testCase: TestCase, context: TestContext) = coroutineScope {
+      val contextp = object : TestContext {
+         override val testCase: TestCase = context.testCase
+         override suspend fun registerTestCase(nested: NestedTest) = context.registerTestCase(nested)
+         override val coroutineContext: CoroutineContext = this@coroutineScope.coroutineContext
+      }
+      testCase.executeWithBehaviours(contextp)
    }
 }

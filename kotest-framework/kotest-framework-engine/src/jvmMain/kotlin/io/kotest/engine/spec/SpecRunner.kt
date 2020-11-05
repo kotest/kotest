@@ -1,5 +1,6 @@
 package io.kotest.engine.spec
 
+import io.kotest.core.config.ConcurrencyMode
 import io.kotest.engine.listener.TestEngineListener
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.Spec
@@ -9,6 +10,8 @@ import io.kotest.mpp.NamedThreadFactory
 import io.kotest.engine.createAndInitializeSpec
 import io.kotest.fp.Try
 import io.kotest.mpp.log
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import java.util.concurrent.ExecutionException
 import java.util.concurrent.Executors
@@ -43,33 +46,24 @@ abstract class SpecRunner(val listener: TestEngineListener) {
          Try { listener.specInstantiationError(kclass, it) }
       }
 
-   protected suspend fun runParallel(threads: Int, run: suspend () -> Unit) {
-      val executor = Executors.newFixedThreadPool(threads, NamedThreadFactory("SpecRunner-%d"))
-      val futures = (0 until threads).map {
-         executor.submit {
-            runBlocking {
-               run()
+   protected suspend fun run(
+      concurrencyMode: ConcurrencyMode?,
+      testCases: Collection<TestCase>,
+      run: suspend (TestCase) -> Unit
+   ) {
+      when (concurrencyMode) {
+         null, ConcurrencyMode.None, ConcurrencyMode.Spec -> testCases.forEach { run(it) }
+         else -> coroutineScope {
+            testCases.map { testCase ->
+               launch {
+                  run(testCase)
+               }
             }
          }
       }
-      executor.shutdown()
-      log("Waiting for test case execution to terminate")
-
-      try {
-         executor.awaitTermination(1, TimeUnit.DAYS)
-      } catch (t: InterruptedException) {
-         log("Test case execution interrupted", t)
-         throw t
-      }
-
-      //Handle Uncaught Exception in threads or they will just be swallowed
-      try {
-         futures.forEach { it.get() }
-      } catch (e: ExecutionException) {
-         throw e.cause ?: e
-      }
    }
 
+   @Deprecated("Explicit thread mode will be removed in 4.6")
    protected suspend fun runParallel(threads: Int, testCases: Collection<TestCase>, run: suspend (TestCase) -> Unit) {
 
       val executor = Executors.newFixedThreadPool(threads, NamedThreadFactory("SpecRunner-%d"))

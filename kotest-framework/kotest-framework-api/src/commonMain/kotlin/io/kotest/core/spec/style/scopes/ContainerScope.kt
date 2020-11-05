@@ -40,7 +40,7 @@ interface ContainerScope : CoroutineScope {
     * Registers a test to this scope, wrapping the test in the most appropriate scope.
     * For example, invoking this method on a [DescribeSpec] will choose the `it` scope.
     */
-   abstract suspend fun addTest(
+   suspend fun addTest(
       name: String,
       test: suspend TestContext.() -> Unit,
    )

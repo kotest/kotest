@@ -7,8 +7,10 @@ import io.kotest.core.extensions.TagExtension
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.spec.materializeAndOrderRootTests
 import io.kotest.core.internal.isActive
+import io.kotest.core.spec.Isolate
 import io.kotest.matchers.shouldBe
 
+@Isolate
 class TagsAnnotationInheritenceTest : FunSpec() {
    init {
 

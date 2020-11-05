@@ -1,10 +1,5 @@
 package io.kotest.assertions
 
-import io.kotest.fp.Option
-import io.kotest.fp.getOrElse
-import io.kotest.fp.orElse
-import io.kotest.fp.some
-
 actual object Exceptions {
 
    /**
@@ -12,6 +7,21 @@ actual object Exceptions {
     * is set to the given [cause].
     */
    actual fun createAssertionError(message: String, cause: Throwable?): AssertionError = AssertionError(message, cause)
+
+   private val junit5AssertionFailedError = findConstructor(
+      "org.opentest4j.AssertionFailedError",
+      String::class.java,
+      Object::class.java,
+      Object::class.java
+   )
+
+   private val junit5AssertionFailedErrorWithCause = findConstructor(
+      "org.opentest4j.AssertionFailedError",
+      String::class.java,
+      Object::class.java,
+      Object::class.java,
+      Throwable::class.java
+   )
 
    /**
     * If JUnit5 is present, return an org.opentest4j.AssertionFailedError using the given message
@@ -24,20 +34,21 @@ actual object Exceptions {
       expected: Expected,
       actual: Actual,
       cause: Throwable?
-   ): Option<Throwable> {
-      return when (cause) {
-         null -> callPublicConstructor<Throwable>(
-            "org.opentest4j.AssertionFailedError",
-            arrayOf(String::class.java, Object::class.java, Object::class.java),
-            arrayOf(message, expected.value.value, actual.value.value)
-         )
-         else -> callPublicConstructor<Throwable>(
-            "org.opentest4j.AssertionFailedError",
-            arrayOf(String::class.java, Object::class.java, Object::class.java, Throwable::class.java),
-            arrayOf(message, expected.value.value, actual.value.value, cause)
-         )
-      }
+   ): Throwable? = when (cause) {
+      null -> junit5AssertionFailedError?.invoke(
+         arrayOf(message, expected.value.value, actual.value.value)
+      )
+      else -> junit5AssertionFailedErrorWithCause?.invoke(
+         arrayOf(message, expected.value.value, actual.value.value, cause)
+      )
    }
+
+   private val junit4ComparisonFailureConstructor = findConstructor(
+      "org.junit.ComparisonFailure",
+      String::class.java,
+      String::class.java,
+      String::class.java
+   )
 
    /**
     * If JUnit4 is present, return a org.junit.ComparisonFailure
@@ -45,35 +56,8 @@ actual object Exceptions {
     *
     * https://junit.org/junit4/javadoc/latest/org/junit/ComparisonFailure.html
     */
-   private fun junit4ComparisonFailure(message: String, expected: Expected, actual: Actual): Option<Throwable> {
-      return callPublicConstructor<Throwable>(
-         "org.junit.ComparisonFailure",
-         arrayOf(String::class.java, String::class.java, String::class.java),
-         arrayOf(message, expected.value.value, actual.value.value)
-      )
-   }
-
-   /**
-    * Create an instance of the class named [className], with the [args] of type [parameterTypes]
-    *
-    * The constructor must be public.
-    *
-    * @return The constructed object, or None if any error occurred.
-    */
-   @Suppress("UNCHECKED_CAST")
-   private fun <T> callPublicConstructor(
-      className: String,
-      parameterTypes: Array<Class<*>>,
-      args: Array<Any?>
-   ): Option<T> {
-      return try {
-         val targetType = Class.forName(className)
-         val constructor = targetType.getConstructor(*parameterTypes)
-         constructor.newInstance(*args).some() as Option<T>
-      } catch (t: Throwable) {
-         Option.None
-      }
-   }
+   private fun junit4ComparisonFailure(message: String, expected: Expected, actual: Actual): Throwable? =
+      junit4ComparisonFailureConstructor?.invoke(arrayOf(message, expected.value.value, actual.value.value))
 
    /**
     * Creates an [AssertionError] from the given message and expected and actual values. If the platform
@@ -86,9 +70,29 @@ actual object Exceptions {
       cause: Throwable?,
       expected: Expected,
       actual: Actual
-   ): Throwable {
-      return junit5AssertionFailedError(message, expected, actual, cause)
-         .orElse(junit4ComparisonFailure(message, expected, actual))
-         .getOrElse(createAssertionError(message, cause))
-   }
+   ): Throwable = junit5AssertionFailedError(message, expected, actual, cause)
+      ?: junit4ComparisonFailure(message, expected, actual)
+      ?: createAssertionError(message, cause)
+
+   /**
+    * Tries to find the public constructor for class [className] with the given [parameterTypes]. Returns
+    * a function which will call the constructor with the passed argument array and return the instantiated
+    * object or `null` if there is an error during invocation.
+    *
+    * If no constructor is found, `null` is returned.
+    */
+   private fun findConstructor(className: String, vararg parameterTypes: Class<*>): ((Array<Any?>) -> Throwable?)? =
+      try {
+         val targetType = Class.forName(className)
+         val constructor = targetType.getConstructor(*parameterTypes);
+         {
+            try {
+               constructor.newInstance(*it) as Throwable
+            } catch (ignored: Throwable) {
+               null
+            }
+         }
+      } catch (ignored: Throwable) {
+         null
+      }
 }

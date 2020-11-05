@@ -8,7 +8,7 @@ import io.kotest.matchers.ints.shouldBeLessThan
 import io.kotest.matchers.longs.shouldBeGreaterThanOrEqual
 import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldBe
-import io.kotest.matchers.string.shouldMatch
+import io.kotest.matchers.string.shouldContain
 import kotlinx.coroutines.delay
 import java.io.FileNotFoundException
 import java.io.IOException
@@ -29,15 +29,15 @@ class EventuallyTest : WordSpec() {
             }
          }
          "pass tests that completed within the time allowed"  {
-            val end = System.currentTimeMillis() + 2000
-            eventually(3.seconds) {
+            val end = System.currentTimeMillis() + 250
+            eventually(1.seconds) {
                if (System.currentTimeMillis() < end)
                   throw RuntimeException("foo")
             }
          }
          "fail tests that do not complete within the time allowed" {
             shouldThrow<AssertionError> {
-               eventually(2.seconds) {
+               eventually(150.milliseconds) {
                   throw RuntimeException("foo")
                }
             }
@@ -49,14 +49,14 @@ class EventuallyTest : WordSpec() {
             result shouldBe 1
          }
          "pass tests that completed within the time allowed, AssertionError"  {
-            val end = System.currentTimeMillis() + 2000
+            val end = System.currentTimeMillis() + 250
             eventually(5.days) {
                if (System.currentTimeMillis() < end)
                   assert(false)
             }
          }
          "pass tests that completed within the time allowed, custom exception"  {
-            val end = System.currentTimeMillis() + 2000
+            val end = System.currentTimeMillis() + 250
             eventually(5.seconds, FileNotFoundException::class) {
                if (System.currentTimeMillis() < end)
                   throw FileNotFoundException()
@@ -70,7 +70,7 @@ class EventuallyTest : WordSpec() {
             }
          }
          "pass tests that throws FileNotFoundException for some time"  {
-            val end = System.currentTimeMillis() + 2000
+            val end = System.currentTimeMillis() + 150
             eventually(5.days) {
                if (System.currentTimeMillis() < end)
                   throw FileNotFoundException("foo")
@@ -96,7 +96,7 @@ class EventuallyTest : WordSpec() {
          }
          "display the first and last underlying failures" {
             var count = 0
-            shouldThrow<AssertionError> {
+            val message = shouldThrow<AssertionError> {
                eventually(100.milliseconds) {
                   if (count == 0) {
                      count = 1
@@ -105,17 +105,20 @@ class EventuallyTest : WordSpec() {
                      fail("last")
                   }
                }
-            }.message.shouldMatch("Test failed after 100ms; attempted \\d+ times; first cause was first; last cause was last".toRegex())
+            }.message
+            message.shouldContain("Eventually block failed after 100ms; attempted \\d+ time\\(s\\); 25.0ms delay between attempts".toRegex())
+            message.shouldContain("The first error was caused by: first")
+            message.shouldContain("The last error was caused by: last")
          }
          "allow suspendable functions" {
-            eventually(2.seconds) {
-               delay(1000)
+            eventually(100.milliseconds) {
+               delay(25)
                System.currentTimeMillis()
             }
          }
          "allow configuring poll delay" {
             var count = 0
-            eventually(2.seconds, 400.milliseconds) {
+            eventually(200.milliseconds, 40.milliseconds) {
                count += 1
             }
             count.shouldBeLessThan(6)
@@ -123,12 +126,12 @@ class EventuallyTest : WordSpec() {
          "handle shouldNotBeNull" {
             val mark = TimeSource.Monotonic.markNow()
             shouldThrow<java.lang.AssertionError> {
-               eventually(2.seconds) {
+               eventually(50.milliseconds) {
                   val str: String? = null
                   str.shouldNotBeNull()
                }
             }
-            mark.elapsedNow().toLongMilliseconds().shouldBeGreaterThanOrEqual(2000)
+            mark.elapsedNow().toLongMilliseconds().shouldBeGreaterThanOrEqual(50)
          }
       }
    }

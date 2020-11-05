@@ -1,4 +1,4 @@
-package com.sksamuel.kotest.engine.spec.timeouts
+package com.sksamuel.kotest.timeout
 
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.spec.style.funSpec
@@ -6,6 +6,7 @@ import kotlinx.coroutines.delay
 import kotlin.time.ExperimentalTime
 import kotlin.time.hours
 import kotlin.time.milliseconds
+import kotlin.time.seconds
 
 @OptIn(ExperimentalTime::class)
 private val factory = funSpec {
@@ -15,17 +16,17 @@ private val factory = funSpec {
 }
 
 /**
- * Tests invoation timeouts at the spec level using inline assignment.
+ * Tests invocation timeouts at the spec level using inline assignment.
  */
 @OptIn(ExperimentalTime::class)
-class InlineInvocationTimeoutTest : FunSpec() {
+class SpecInlineInvocationTimeoutTest : FunSpec() {
    init {
       extension(expectFailureExtension)
 
-      invocationTimeout = 150
+      invocationTimeout = 50
 
       test("should take timeout from spec setting").config(invocations = 3) {
-         delay(10.hours)
+         delay(1.seconds)
       }
 
       // should apply to factories too
@@ -34,7 +35,28 @@ class InlineInvocationTimeoutTest : FunSpec() {
 }
 
 /**
- * Tests invoation timeouts at the spec level using inline assignment.
+ * Tests invocation timeouts at the spec level using inline assignment.
+ */
+@OptIn(ExperimentalTime::class)
+class FunctionOverrideInvocationPrecedenceTimeoutTest : FunSpec() {
+
+   override fun invocationTimeout(): Long? {
+      return 1000000000
+   }
+
+   init {
+      extension(expectFailureExtension)
+      test("test case config timeout should take precedence").config(
+         invocations = 3,
+         invocationTimeout = 150.milliseconds,
+      ) {
+         delay(10.hours)
+      }
+   }
+}
+
+/**
+ * Tests that a test case invocation timeout overrides spec level inline assignment.
  */
 @OptIn(ExperimentalTime::class)
 class InlineInvocationPrecedenceTimeoutTest : FunSpec() {
@@ -53,7 +75,7 @@ class InlineInvocationPrecedenceTimeoutTest : FunSpec() {
 }
 
 /**
- * Tests invoation timeouts at the spec level using function override.
+ * Tests that a test case invocation timeout overrides spec level.
  */
 @OptIn(ExperimentalTime::class)
 class FunctionOverrideInvocationTimeoutTest : FunSpec() {
@@ -70,26 +92,5 @@ class FunctionOverrideInvocationTimeoutTest : FunSpec() {
 
       // should apply to factories too
       include(factory)
-   }
-}
-
-/**
- * Tests invoation timeouts at the spec level using function override.
- */
-@OptIn(ExperimentalTime::class)
-class FunctionOverrideInvocationPrecedenceTimeoutTest : FunSpec() {
-
-   override fun invocationTimeout(): Long? {
-      return 1000000000
-   }
-
-   init {
-      extension(expectFailureExtension)
-      test("test case config timeout should take precedence").config(
-         invocations = 3,
-         invocationTimeout = 150.milliseconds,
-      ) {
-         delay(10.hours)
-      }
    }
 }

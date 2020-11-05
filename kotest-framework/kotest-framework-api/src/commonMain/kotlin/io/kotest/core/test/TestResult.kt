@@ -3,7 +3,7 @@ package io.kotest.core.test
 data class TestResult(
    val status: TestStatus,
    val error: Throwable?,
-   val reason: String?,
+   val reason: String?, // the reason the test was ignored
    val duration: Long
 ) {
    companion object {

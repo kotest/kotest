@@ -39,11 +39,12 @@ class KotestEngineLauncher(
       val plan = TestPlan(specs)
 
       try {
-         runBlocking {
+         runBlocking { // blocks the calling thread while the engine runs
             runner.execute(plan)
             runner.cleanup()
          }
       } catch (e: Exception) {
+         e.printStackTrace()
       }
    }
 

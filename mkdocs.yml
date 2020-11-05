@@ -12,7 +12,7 @@ markdown_extensions:
          use_pygments: true
 
 #Copyright (shown at the footer)
-copyright: 'Copyright &copy; 2017 Kotest Team'
+copyright: 'Copyright &copy; 2016-2020 Kotest Team'
 
 # Repository (add link to repository on each page)
 repo_name: Kotest

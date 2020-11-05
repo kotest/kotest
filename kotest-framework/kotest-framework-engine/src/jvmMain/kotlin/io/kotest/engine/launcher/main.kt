@@ -3,6 +3,10 @@ package io.kotest.engine.launcher
 import io.kotest.core.Tags
 import kotlin.system.exitProcess
 
+/**
+ * The entry point for the launcher.
+ * Parses the cli args, creates the reporter and passes them to the [execute] method.
+ */
 fun main(args: Array<String>) {
 
    val launcherArgs = parseLauncherArgs(args.toList())

@@ -22,7 +22,7 @@ fun freeSpec(block: FreeSpecTestFactoryConfiguration.() -> Unit): TestFactory {
    return config.build()
 }
 
-class FreeSpecTestFactoryConfiguration : TestFactoryConfiguration(),   FreeSpecRootScope {
+class FreeSpecTestFactoryConfiguration : TestFactoryConfiguration(), FreeSpecRootScope {
    override fun lifecycle(): Lifecycle = Lifecycle.from(this)
    override fun defaultConfig(): TestCaseConfig = resolvedDefaultConfig()
    override fun registration(): RootTestRegistration = RootTestRegistration.from(this)

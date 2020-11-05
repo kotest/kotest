@@ -35,7 +35,7 @@ abstract class Spec : TestConfiguration(), SpecFunctionConfiguration, SpecFuncti
    abstract fun materializeRootTests(): List<RootTest>
 
    @JsName("isolation_js")
-   @Deprecated("Use isolationMode. This will be removed in 4.4")
+   @Deprecated("Use isolationMode. This will be removed in 4.6")
    var isolation: IsolationMode? = null
 
    @JsName("isolation_mode_js")
@@ -47,19 +47,24 @@ abstract class Spec : TestConfiguration(), SpecFunctionConfiguration, SpecFuncti
     * On other platforms this setting will have no effect.
     */
    @JsName("threads_js")
+   @Deprecated("Explicit thread mode will be removed in 4.6. Instead use ConcurrencyMode.SpecAndTestConcurrent")
    var threads: Int? = null
 
    /**
-    * Sets a timeout for each test case in this spec unless overriden in the test config itself.
+    * Sets a millisecond timeout for each test case in this spec unless overriden in the test config itself.
+    *
     * If this value is null, and the [SpecFunctionConfiguration.timeout] is also null, the project default will be used.
     */
    @JsName("timeout_var")
    var timeout: Long? = null
 
    /**
-    * Sets an invocation timeout for each test case in this spec unless overriden in the test config itself.
+    * Sets a millisecond invocation timeout for each test case in this spec unless overriden in the test config itself.
     * If this value is null, and the [SpecFunctionConfiguration.invocationTimeout] is also null,
     * the project default will be used.
+    *
+    * When using a nested test style, this invocation timeout does not apply to container tests (parent tests)
+    * but only leaf tests (outer most tests).
     */
    @JsName("invocationTimeout_var")
    var invocationTimeout: Long? = null

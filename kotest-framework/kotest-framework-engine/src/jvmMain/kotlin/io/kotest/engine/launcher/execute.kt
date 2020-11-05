@@ -14,10 +14,6 @@ import io.kotest.engine.reporter.Reporter
 import io.kotest.framework.discovery.Discovery
 import io.kotest.framework.discovery.DiscoveryRequest
 import io.kotest.framework.discovery.DiscoverySelector
-import java.util.concurrent.CompletableFuture
-import kotlin.coroutines.Continuation
-import kotlin.coroutines.EmptyCoroutineContext
-import kotlin.coroutines.startCoroutine
 import kotlin.reflect.KClass
 
 /**
@@ -31,28 +27,26 @@ fun execute(
    tags: Tags?,
    dumpconfig: Boolean = true,
 ) {
-   future {
-      try {
+   try {
 
-         val specClass = specFQN?.let { (Class.forName(it) as Class<Spec>).kotlin }
-         val specs = specs(specClass, packageName)
-         val filter = if (testPath == null || specClass == null) null else {
-            TestPathTestCaseFilter(testPath, specClass)
-         }
-
-         KotestEngineLauncher()
-            .withListener(ReporterTestEngineListener(reporter))
-            .withSpecs(specs)
-            .withTags(tags)
-            .withFilters(listOfNotNull(filter))
-            .withDumpConfig(dumpconfig)
-            .launch()
-
-      } catch (e: Throwable) {
-         println(e)
-         e.printStackTrace()
-         reporter.engineFinished(listOf(e))
+      val specClass = specFQN?.let { (Class.forName(it) as Class<Spec>).kotlin }
+      val specs = specs(specClass, packageName)
+      val filter = if (testPath == null || specClass == null) null else {
+         TestPathTestCaseFilter(testPath, specClass)
       }
+
+      KotestEngineLauncher()
+         .withListener(ReporterTestEngineListener(reporter))
+         .withSpecs(specs)
+         .withTags(tags)
+         .withFilters(listOfNotNull(filter))
+         .withDumpConfig(dumpconfig)
+         .launch()
+
+   } catch (e: Throwable) {
+      println(e)
+      e.printStackTrace()
+      reporter.engineFinished(listOf(e))
    }
 }
 
@@ -81,12 +75,3 @@ private fun scan(packageName: String?): List<KClass<out Spec>> {
    val result = Discovery(extensions).discover(req)
    return result.specs
 }
-
-// this avoids us needing to bring in the coroutine deps, plus running inside the main
-// thread is exactly what we want to do
-private fun future(f: suspend () -> Unit): CompletableFuture<Unit> =
-   CompletableFuture<Unit>().apply {
-      f.startCoroutine(Continuation(EmptyCoroutineContext) { res ->
-         res.fold(::complete, ::completeExceptionally)
-      })
-   }
