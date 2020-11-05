@@ -45,7 +45,7 @@ kotlin {
          }
       }
 
-      val androidMain by getting {
+      getByName("androidMain") {
          dependencies {
             implementation(project(Projects.Api))
             implementation(AndroidLibs.AndroidX.coreKtx)
@@ -54,7 +54,7 @@ kotlin {
          }
       }
 
-      val androidTest by getting {
+      getByName("androidTest") {
          dependencies {
             implementation(project(Projects.JunitRunner))
          }
@@ -78,4 +78,4 @@ tasks.withType<Test> {
    }
 }
 
-//apply(from = "../../publish-mpp.gradle.kts")
+apply(from = "../../publish-mpp.gradle.kts")

@@ -84,4 +84,4 @@ tasks.withType<Test> {
    }
 }
 
-//apply(from = "../../publish-mpp.gradle.kts")
+apply(from = "../../publish-mpp.gradle.kts")
