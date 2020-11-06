@@ -16,7 +16,7 @@ import org.jetbrains.kotlin.psi.psiUtil.getChildrenOfType
 import javax.swing.Icon
 
 /**
- * Used by various test related classes in intellij, such as GradleRunConfiguration.
+ * Used by various test related classes in intellij, such as GradleRunConfiguration and TestFinder.
  */
 class KotestTestFramework : TestFramework {
 
@@ -28,18 +28,25 @@ class KotestTestFramework : TestFramework {
       return ProjectRootManager.getInstance(clazz.project).fileIndex.isInTestSourceContent(vFile)
    }
 
+   /**
+    * Returns true if the given element could be a test class.
+    * Used to quickly filter out elements that are immediately clear are
+    * not test classes - such as elements in src/main or elements that are not class elements.
+    */
    override fun isPotentialTestClass(clazz: PsiElement): Boolean {
       return clazz is PsiClass && isUnderTestSources(clazz)
    }
 
-   // this always returns false, because we don't want intellij interfering with our own run producers.
+   // this always returns false, because we don't want intellij adding a run icon (we use our own).
+   // this does mean that the JavaTestFinder interface will not be able to find test subjects, so
+   // we need to implement that separately.
    override fun isTestClass(clazz: PsiElement): Boolean {
       return false
 //      return when (clazz) {
-//         is KtUltraLightClass -> clazz.isSubclassOfSpec()
-//         is KtLightClass -> clazz.isSubclassOfSpec()
-//         is KtClass -> clazz.isSubclassOfSpec()
-//         else -> clazz.isContainedInSpec()
+//         is KtUltraLightClass -> clazz.kotlinOrigin.isSpec()
+//         is KtLightClass -> clazz.kotlinOrigin?.isSpec() ?: false
+//         is KtClass -> clazz.isSpec()
+//         else -> false
 //      }
    }
 
@@ -51,6 +58,7 @@ class KotestTestFramework : TestFramework {
 
    override fun findOrCreateSetUpMethod(clazz: PsiElement): PsiElement? = null
 
+   // kotest does not use method as tests
    override fun isIgnoredMethod(element: PsiElement?): Boolean = false
 
    override fun findSetUpMethod(clazz: PsiElement): PsiElement? =
@@ -79,7 +87,10 @@ class KotestTestFramework : TestFramework {
          .firstOrNull { it.valueParameters.size == 1 }
    }
 
+   // kotest does not use method as tests
    override fun isTestMethod(element: PsiElement?): Boolean = false
+
+   // kotest does not use method as tests
    override fun isTestMethod(element: PsiElement?, checkAbstract: Boolean): Boolean = false
 
    override fun getSetUpMethodFileTemplateDescriptor(): FileTemplateDescriptor? = null

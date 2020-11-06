@@ -12,7 +12,7 @@
 
    <!-- correct values will be set by the build plugin -->
    <version>1.0.0</version>
-   <idea-version since-build="193"/>
+   <idea-version since-build="202.1"/>
 
    <depends>org.jetbrains.kotlin</depends>
    <depends>com.intellij.modules.java</depends>
@@ -92,6 +92,7 @@
       <implicitUsageProvider implementation="io.kotest.plugin.intellij.implicits.ProjectConfigImplicitUsageProvider"/>
       <implicitUsageProvider implementation="io.kotest.plugin.intellij.implicits.AutoScanUsageProvider"/>
 
+      <testFinder implementation="io.kotest.plugin.intellij.KotestTestFinder"/>
       <testFramework id="Kotest" implementation="io.kotest.plugin.intellij.KotestTestFramework"/>
       <testGenerator language="kotlin" implementationClass="io.kotest.plugin.intellij.KotestTestGenerator"/>
 

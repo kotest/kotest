@@ -92,6 +92,7 @@
       <implicitUsageProvider implementation="io.kotest.plugin.intellij.implicits.ProjectConfigImplicitUsageProvider"/>
       <implicitUsageProvider implementation="io.kotest.plugin.intellij.implicits.AutoScanUsageProvider"/>
 
+      <testFinder implementation="io.kotest.plugin.intellij.KotestTestFinder"/>
       <testFramework id="Kotest" implementation="io.kotest.plugin.intellij.KotestTestFramework"/>
       <testGenerator language="kotlin" implementationClass="io.kotest.plugin.intellij.KotestTestGenerator"/>
 
