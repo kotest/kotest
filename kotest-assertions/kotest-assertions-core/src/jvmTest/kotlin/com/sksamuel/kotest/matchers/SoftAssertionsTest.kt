@@ -185,7 +185,7 @@ class SoftAssertionsTest : FreeSpec({
          "work with enum in data class" {
             val source = WithSimpleEnum(enumValue = SimpleEnum.First)
             val result = WithSimpleEnum(enumValue = SimpleEnum.Second)
-            val errorMessage = shouldThrow<AssertionError> {
+            val error = shouldThrow<AssertionError> {
                assertSoftly {
                   withClue("simple strings") {
                      "a" shouldBe "b"
@@ -198,12 +198,12 @@ class SoftAssertionsTest : FreeSpec({
                }
             }
 
-            errorMessage.message shouldContain "1) simple strings\n" +
+            error.message shouldContain "1) simple strings\n" +
                "expected:<\"b\"> but was:<\"a\">"
-            errorMessage.message shouldContain "2) data class diff for com.sksamuel.kotest.matchers.WithSimpleEnum\n" +
+            error.message shouldContain "2) data class diff for com.sksamuel.kotest.matchers.WithSimpleEnum\n" +
                "└ enumValue: more complex with data class and enums\n" +
                "expected:<Second> but was:<First>"
-            errorMessage.message shouldNotContain "3) "
+            error.message shouldNotContain "3) "
          }
       }
    }
