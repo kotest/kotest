@@ -2,6 +2,8 @@ package com.sksamuel.kotest.matchers
 
 import io.kotest.assertions.assertSoftly
 import io.kotest.assertions.throwables.shouldThrow
+import io.kotest.assertions.throwables.shouldThrowAny
+import io.kotest.assertions.withClue
 import io.kotest.core.spec.style.FreeSpec
 import io.kotest.matchers.collections.containExactly
 import io.kotest.matchers.collections.shouldNotContainExactly
@@ -16,9 +18,7 @@ import io.kotest.matchers.should
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNot
 import io.kotest.matchers.shouldNotBe
-import io.kotest.matchers.string.contain
-import io.kotest.matchers.string.endWith
-import io.kotest.matchers.string.shouldNotEndWith
+import io.kotest.matchers.string.*
 
 class SoftAssertionsTest : FreeSpec({
 
@@ -174,5 +174,38 @@ class SoftAssertionsTest : FreeSpec({
             a shouldBe "foo"
          }
       }
+
+      "Assert softly with data classes" - {
+         // Added as a verification of https://github.com/kotest/kotest/issues/1831
+         "work with enum in data class" {
+            val source = WithSimpleEnum(enumValue = SimpleEnum.First)
+            val result = WithSimpleEnum(enumValue = SimpleEnum.Second)
+            val errorMessage = shouldThrowAny {
+               assertSoftly {
+                  withClue("simple strings") {
+                     "a" shouldBe "b"
+                     "a" shouldNotBe "b"
+                  }
+                  withClue("more complex with data class and enums") {
+                     source shouldBe result
+                     source shouldNotBe result
+                  }
+               }
+            }
+
+            errorMessage.message shouldContain "1) simple strings\n" +
+               "expected:<\"b\"> but was:<\"a\">"
+            errorMessage.message shouldContain "2) data class diff for com.sksamuel.kotest.matchers.WithSimpleEnum\n" +
+               "└ enumValue: more complex with data class and enums\n" +
+               "expected:<Second> but was:<First>"
+            errorMessage.message shouldNotContain "3) "
+         }
+      }
    }
 })
+
+enum class SimpleEnum {
+   First,
+   Second
+}
+data class WithSimpleEnum(val enumValue: SimpleEnum = SimpleEnum.First)
