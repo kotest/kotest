@@ -2,7 +2,6 @@ package com.sksamuel.kotest.matchers
 
 import io.kotest.assertions.assertSoftly
 import io.kotest.assertions.throwables.shouldThrow
-import io.kotest.assertions.throwables.shouldThrowAny
 import io.kotest.assertions.withClue
 import io.kotest.core.spec.style.FreeSpec
 import io.kotest.matchers.collections.containExactly
@@ -18,7 +17,11 @@ import io.kotest.matchers.should
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNot
 import io.kotest.matchers.shouldNotBe
-import io.kotest.matchers.string.*
+import io.kotest.matchers.string.shouldContain
+import io.kotest.matchers.string.shouldNotContain
+import io.kotest.matchers.string.contain
+import io.kotest.matchers.string.endWith
+import io.kotest.matchers.string.shouldNotEndWith
 
 class SoftAssertionsTest : FreeSpec({
 
@@ -123,9 +126,11 @@ class SoftAssertionsTest : FreeSpec({
 
       "should not have any receiver context" {
          data class Person(val name: String, val age: Int)
+
          fun verifier(person: Person, assertion: (Person) -> Unit) {
             assertion(person)
          }
+
          val person = Person("foo", 0)
          verifier(person) {
             it shouldBe person
@@ -180,7 +185,7 @@ class SoftAssertionsTest : FreeSpec({
          "work with enum in data class" {
             val source = WithSimpleEnum(enumValue = SimpleEnum.First)
             val result = WithSimpleEnum(enumValue = SimpleEnum.Second)
-            val errorMessage = shouldThrowAny {
+            val errorMessage = shouldThrow<AssertionError> {
                assertSoftly {
                   withClue("simple strings") {
                      "a" shouldBe "b"
@@ -208,4 +213,5 @@ enum class SimpleEnum {
    First,
    Second
 }
+
 data class WithSimpleEnum(val enumValue: SimpleEnum = SimpleEnum.First)
