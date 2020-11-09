@@ -12,6 +12,7 @@ import io.kotest.matchers.should
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNot
 import io.kotest.matchers.types.haveAnnotation
+import io.kotest.matchers.types.instanceOf
 import io.kotest.matchers.types.shouldBeInstanceOf
 import io.kotest.matchers.types.shouldBeSameInstanceAs
 import io.kotest.matchers.types.shouldBeTypeOf
@@ -52,19 +53,27 @@ class TypeMatchersTest : WordSpec() {
           val arrayList: List<Int> = arrayListOf(1, 2, 3)
 
           arrayList should beInstanceOf(ArrayList::class)
+          arrayList should beInstanceOf<ArrayList<*>>()
+          arrayList should instanceOf(ArrayList::class)
+          arrayList should instanceOf<ArrayList<*>>()
           arrayList.shouldBeInstanceOf<ArrayList<*>>()
 
           arrayList should beInstanceOf(List::class)
+          arrayList should beInstanceOf<List<*>>()
+          arrayList should instanceOf(List::class)
+          arrayList should instanceOf<List<*>>()
+          arrayList.shouldBeInstanceOf<List<*>>()
 
-          shouldThrow<AssertionError> {
-             arrayList should beInstanceOf(LinkedList::class)
-          }
+          shouldThrow<AssertionError> { arrayList should beInstanceOf(LinkedList::class) }
+          shouldThrow<AssertionError> { arrayList should beInstanceOf(LinkedList::class) }
+          shouldThrow<AssertionError> { arrayList should beInstanceOf<LinkedList<*>>() }
+          shouldThrow<AssertionError> { arrayList should instanceOf(LinkedList::class) }
+          shouldThrow<AssertionError> { arrayList should instanceOf<LinkedList<*>>() }
+          shouldThrow<AssertionError> { arrayList.shouldBeInstanceOf<LinkedList<*>>() }
 
           arrayList.shouldNotBeInstanceOf<LinkedList<*>>()
 
-          shouldThrow<AssertionError> {
-             arrayList.shouldNotBeInstanceOf<ArrayList<*>>()
-          }
+          shouldThrow<AssertionError> { arrayList.shouldNotBeInstanceOf<ArrayList<*>>() }
        }
 
        "use smart contracts to cast" {

@@ -9,6 +9,8 @@ import kotlin.reflect.KClass
 // alias for beInstanceOf
 fun instanceOf(expected: KClass<*>): Matcher<Any?> = beInstanceOf(expected)
 
+inline fun <reified T : Any> instanceOf(): Matcher<Any?> = instanceOf(T::class)
+
 fun beInstanceOf(expected: KClass<*>): Matcher<Any?> = neverNullMatcher { value ->
   MatcherResult(
      expected.isInstance(value),
