@@ -86,7 +86,7 @@ fun containJsonKey(path: String) = object : Matcher<String?> {
 }
 
 @OptIn(ExperimentalContracts::class)
-fun <T> String?.shouldContainJsonKeyValue(path: String, value: T) {
+inline fun <reified T> String?.shouldContainJsonKeyValue(path: String, value: T) {
   contract {
     returns() implies (this@shouldContainJsonKeyValue != null)
   }
@@ -94,8 +94,8 @@ fun <T> String?.shouldContainJsonKeyValue(path: String, value: T) {
   this should containJsonKeyValue(path, value)
 }
 
-fun <T> String.shouldNotContainJsonKeyValue(path: String, value: T) = this shouldNot containJsonKeyValue(path, value)
-fun <T> containJsonKeyValue(path: String, t: T) = object : Matcher<String?> {
+inline fun <reified T> String.shouldNotContainJsonKeyValue(path: String, value: T) = this shouldNot containJsonKeyValue(path, value)
+inline fun <reified T> containJsonKeyValue(path: String, t: T) = object : Matcher<String?> {
   override fun test(value: String?): MatcherResult {
     val sub = when (value) {
       null -> value
@@ -103,7 +103,7 @@ fun <T> containJsonKeyValue(path: String, t: T) = object : Matcher<String?> {
     }
 
     return MatcherResult(
-      value != null && JsonPath.read<T>(value, path) == t,
+      value != null && JsonPath.parse(value).read(path, T::class.java) == t,
       "$sub should contain the element $path = $t",
       "$sub should not contain the element $path = $t"
     )

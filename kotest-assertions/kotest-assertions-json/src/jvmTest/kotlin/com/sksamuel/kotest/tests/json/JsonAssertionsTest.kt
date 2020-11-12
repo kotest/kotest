@@ -31,7 +31,8 @@ const val json = """{
         ],
         "bicycle": {
             "color": "red",
-            "price": 19.95
+            "price": 19.95,
+            "code": 1
         }
     }
 }"""
@@ -97,6 +98,8 @@ class JsonAssertionsTest : StringSpec({
     json.shouldContainJsonKeyValue("$.store.book[0].category", "reference")
     json.shouldContainJsonKeyValue("$.store.book[0].price", 8.95)
     json.shouldContainJsonKeyValue("$.store.book[1].author", "Evelyn Waugh")
+    json.shouldContainJsonKeyValue("$.store.book[1].author", "Evelyn Waugh")
+    json.shouldContainJsonKeyValue("$.store.bicycle.code", 1L)
 
     json.shouldNotContainJsonKeyValue("$.store.book[1].author", "JK Rowling")
 
