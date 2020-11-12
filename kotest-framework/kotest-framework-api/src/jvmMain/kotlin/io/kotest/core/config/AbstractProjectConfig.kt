@@ -84,7 +84,7 @@ abstract class AbstractProjectConfig {
     * enable parallel execution of tests. The number returned is the number of
     * concurrently executing specs.
     *
-    * An alternative way to enable this is the system property kotest.parallelism
+    * An alternative way to enable this is the system property kotest.framework.parallelism
     * which will always (if defined) take priority over the value here.
     */
    @Deprecated("use the val version. Will be removed in 4.4")
