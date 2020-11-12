@@ -89,6 +89,14 @@ class DescribeSpecExample : DescribeSpec() {
       xcontext("disabled top level context") {
          fail("should not be invoked")
       }
+
+      it("test without describe") {
+         // test here
+      }
+
+      xit("disabled test without describe") {
+         fail("should not be invoked")
+      }
    }
 }
 
