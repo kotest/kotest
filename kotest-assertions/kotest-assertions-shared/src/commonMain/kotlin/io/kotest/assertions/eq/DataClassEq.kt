@@ -4,6 +4,7 @@ import io.kotest.assertions.Actual
 import io.kotest.assertions.Expected
 import io.kotest.assertions.failure
 import io.kotest.assertions.show.show
+import io.kotest.fp.toOption
 import io.kotest.matchers.shouldBe
 import io.kotest.mpp.Property
 import io.kotest.mpp.bestName
@@ -64,9 +65,12 @@ internal object DataClassEq : Eq<Any> {
             dataClassDiff(actualPropertyValue, expectedPropertyValue, depth + 1)?.let { diff ->
                Pair(prop, diff)
             }
-         else
-            runCatching { actualPropertyValue shouldBe expectedPropertyValue }
-               .fold(onSuccess = { null }, onFailure = { t -> Pair(prop, StandardDifference(t)) })
+         else {
+            eq(actualPropertyValue, expectedPropertyValue)
+               .toOption()
+               .map { Pair(prop, StandardDifference(it)) }
+               .orNull()
+         }
       }
 
    private fun formatDifferences(dataClassDiff: DataClassDifference, indentStyle: List<Boolean> = emptyList()): String {
