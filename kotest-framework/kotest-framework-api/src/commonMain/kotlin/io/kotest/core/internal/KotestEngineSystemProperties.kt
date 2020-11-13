@@ -63,4 +63,9 @@ object KotestEngineSystemProperties {
    *  If set -> filter testCases by this severity level and higher, else running all
    */
    const val severityPrefix = "kotest.framework.test.severity"
+
+   /**
+    * Enable assert softly globally.
+    * */
+   const val globalAssertSoftly = "kotest.framework.assertion.globalAssertSoftly"
 }
