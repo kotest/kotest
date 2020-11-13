@@ -67,5 +67,5 @@ object KotestEngineSystemProperties {
    /**
     * Enable assert softly globally.
     * */
-   const val globalAssertSoftly = "kotest.framework.assertion.globalAssertSoftly"
+   const val globalAssertSoftly = "kotest.framework.assertion.globalassertsoftly"
 }
