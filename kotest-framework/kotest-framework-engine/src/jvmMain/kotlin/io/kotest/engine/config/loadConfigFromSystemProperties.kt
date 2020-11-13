@@ -28,6 +28,9 @@ internal fun allowMultilineTestName(): Option<Boolean> =
 internal fun concurrencyMode(): Option<ConcurrencyMode> =
    sysprop(KotestEngineSystemProperties.concurrencyMode).toOption().map { ConcurrencyMode.valueOf(it) }
 
+internal fun globalAssertSoftly(): Option<Boolean> =
+   sysprop(KotestEngineSystemProperties.globalAssertSoftly).toOption().map { it.toUpperCase() == "TRUE" }
+
 /**
  * Returns a [DetectedProjectConfig] which is built from system properties where supported.
  */
@@ -39,6 +42,7 @@ internal fun loadConfigFromSystemProperties(): DetectedProjectConfig {
       concurrencyMode = concurrencyMode(),
       timeout = timeout(),
       invocationTimeout = invocationTimeout(),
-      testNameRemoveWhitespace = allowMultilineTestName()
+      testNameRemoveWhitespace = allowMultilineTestName(),
+      globalAssertSoftly = globalAssertSoftly()
    )
 }
