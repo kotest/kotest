@@ -67,7 +67,7 @@ object ProjectConfig : AbstractProjectConfig {
 ## Global Assert Softly
 
 Assert softly is very useful to batch up errors into a single failure. If we want to enable this for every test automatically, we can do this in a config.
-An alternative way to enable this is the system property `kotest.framework.assertion.globalassertsoftly` which will always (if defined) take priority over the value here.
+An alternative way to enable this is by setting system property `kotest.framework.assertion.globalassertsoftly` to `true` which will always (if defined) take priority over the value here.
 
 ```kotlin
 object ProjectConfig : AbstractProjectConfig {
@@ -114,7 +114,7 @@ By default, the ordering of Spec classes is not defined. This is often sufficien
 The case of the test names can be controlled by changing the value of `testNameCase`.
 By default, the value is `TestNameCase.AsIs` which makes no change.
 
-By setting the value to `TestNameCase.Lowercase` a test's name will be lowercased in output.
+By setting the value to `TestNameCase.Lowercase` a test's name will be lowercase in output.
 
 If you are using a spec that adds in prefixes to the test names (should as WordSpec or BehaviorSpec) then the values `TestNameCase.Sentence` and `TestNameCase.InitialLowercase` can be useful.
 
@@ -136,7 +136,7 @@ If you define test names over several lines then `removeTestNameWhitespace` can 
 Then the test name in output will be `this is   my test case`. By setting `removeTestNameWhitespace` to true,
 then this name will be trimmed to `this is my test case`.
 
-An alternative way to enable this is the system property `kotest.framework.testname.multiline` which will always (if defined) take priority over the value here.
+An alternative way to enable this is by setting system property `kotest.framework.testname.multiline` to `true` which will always (if defined) take priority over the value here.
 
 ```kotlin
 object ProjectConfig : AbstractProjectConfig {
