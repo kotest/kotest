@@ -136,7 +136,6 @@ If you define test names over several lines then `removeTestNameWhitespace` can 
 Then the test name in output will be `this is   my test case`. By setting `removeTestNameWhitespace` to true,
 then this name will be trimmed to `this is my test case`.
 
-To enable this feature, set `testNameRemoveWhitespace` to true inside your project config.
 An alternative way to enable this is the system property `kotest.framework.testname.multiline` which will always (if defined) take priority over the value here.
 
 ```kotlin
