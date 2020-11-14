@@ -130,6 +130,12 @@ fun <A, B : A> Arb<A>.merge(other: Gen<B>): Arb<A> = object : Arb<A>() {
       }
 }
 
+
+/**
+ * Returns a new [Arb] without any edgecases if present, otherwise returns the same instance.
+ */
+fun <A> Arb<A>.samplesOnly(): Arb<A> = if (this.edgecases().isEmpty()) this else withEdgecases(emptyList())
+
 /**
  * returns a new [Arb] with the supplied edgecases
  */
