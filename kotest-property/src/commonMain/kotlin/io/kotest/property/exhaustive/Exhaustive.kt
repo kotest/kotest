@@ -1,5 +1,6 @@
 package io.kotest.property.exhaustive
 
+import io.kotest.property.Arb
 import io.kotest.property.Exhaustive
 import kotlin.jvm.JvmName
 
@@ -72,4 +73,14 @@ fun <A, B> Exhaustive<A>.map(f: (A) -> B): Exhaustive<B> = object : Exhaustive<B
 fun <A, B> Exhaustive<A>.flatMap(f: (A) -> Exhaustive<B>): Exhaustive<B> = object : Exhaustive<B>() {
    override val values: List<B> =
       this@flatMap.values.flatMap { f(it).values }
+}
+
+/**
+ * Wraps a [Exhaustive] lazily. The given [f] is only evaluated once,
+ * and not until the wrapper [Exhaustive] is evaluated.
+ * */
+fun <A> Exhaustive.Companion.lzy(f: () -> Exhaustive<A>): Exhaustive<A> {
+   return object : Exhaustive<A>() {
+      override val values: List<A> by lazy { f().values }
+   }
 }
