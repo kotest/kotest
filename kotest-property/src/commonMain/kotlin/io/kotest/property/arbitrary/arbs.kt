@@ -144,3 +144,25 @@ fun <A> Arb<A>.withEdgecases(vararg edgecases: A): Arb<A> = withEdgecases(edgeca
  * returns a new [Arb] with a new edgecases after applying the function on the initial edgecases
  */
 fun <A> Arb<A>.modifyEdgecases(f: (List<A>) -> List<A>): Arb<A> = arbitrary(f(this.edgecases())) { this.next(it) }
+
+/**
+ * Wraps a [Arb] lazily. The given [f] is only evaluated once,
+ * and not until the wrapper [Arb] is evaluated.
+ * */
+fun <A> Arb.Companion.lzy(f: () -> Arb<A>): Arb<A> {
+   val arb by lazy { f() }
+
+   return object : Arb<A>() {
+      override fun edgecases(): List<A> {
+         return arb.edgecases()
+      }
+
+      override fun values(rs: RandomSource): Sequence<Sample<A>> {
+         return arb.values(rs)
+      }
+
+      override fun sample(rs: RandomSource): Sample<A> {
+         return arb.sample(rs)
+      }
+   }
+}
