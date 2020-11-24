@@ -102,7 +102,7 @@ class ListShrinkerTest : FunSpec() {
             checkAll(PropTestConfig(seed = 123132), Arb.list(Arb.int(0..100))) { list ->
                list.shouldHaveAtMostSize(3)
             }
-         }.message.shouldContain("Arg 0: [0, 1, 51, 24")
+         }.message.shouldContain("Shrink result (after 90 shrinks) => [0, 1, 51, 24]")
       }
    }
 }
