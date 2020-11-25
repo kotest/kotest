@@ -5,7 +5,7 @@ import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.doubles.plusOrMinus
 import io.kotest.matchers.shouldBe
 
-class DoubleTolerenceTest : FunSpec({
+class DoubleToleranceTest : FunSpec({
 
    test("double with tolerance should include tolerance in error message") {
       shouldThrowAny {
