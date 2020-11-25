@@ -1,19 +1,20 @@
 package com.sksamuel.kotest.property.arbitrary
 
 import io.kotest.core.spec.style.FunSpec
-import io.kotest.matchers.booleans.shouldBeTrue
 import io.kotest.matchers.shouldBe
 import io.kotest.property.Arb
 import io.kotest.property.RandomSource
 import io.kotest.property.Sample
 import io.kotest.property.arbitrary.int
-import io.kotest.property.arbitrary.lzy
+
+import io.kotest.property.arbitrary.lazy
 import io.kotest.property.arbitrary.take
 
 class LazyInitializationTest : FunSpec({
    test("Arb.lzy should not evaluate given arb provider when return arb is not used") {
       var callCount = 0
-      Arb.lzy {
+
+      Arb.lazy {
          callCount++
          Arb.int(0, 10)
       }
@@ -23,7 +24,8 @@ class LazyInitializationTest : FunSpec({
 
    test("Arb.lzy should evaluate given arb provider when return arb is used") {
       var callCount = 0
-      val lazyArb = Arb.lzy {
+
+      val lazyArb = Arb.lazy {
          callCount++
          MyDummyArb(2)
       }

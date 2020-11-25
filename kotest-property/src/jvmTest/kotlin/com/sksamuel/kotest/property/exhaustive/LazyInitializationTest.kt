@@ -3,13 +3,14 @@ package com.sksamuel.kotest.property.exhaustive
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.property.Exhaustive
-import io.kotest.property.exhaustive.lzy
+import io.kotest.property.exhaustive.lazy
 
 class LazyInitializationTest : FunSpec({
 
    test("Exhaustive.lzy should not evaluate given exhaustive provider when return arb is not used") {
       var callCount = 0
-      Exhaustive.lzy {
+
+      Exhaustive.lazy {
          callCount++
          MyDummyExhaustive(2)
       }
@@ -18,7 +19,8 @@ class LazyInitializationTest : FunSpec({
 
    test("Exhaustive.lzy should evaluate given exhaustive provider only once when return arb is used") {
       var callCount = 0
-      val lazyExhaustive = Exhaustive.lzy {
+     
+      val lazyExhaustive = Exhaustive.lazy {
          callCount++
          MyDummyExhaustive(2)
       }
