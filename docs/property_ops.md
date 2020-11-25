@@ -76,13 +76,13 @@ val personArb: Arb<Person> =
    }
 ```
 
-## Lazy(lzy)
+## Lazy
 
 Lazy let you delay initialization of generator till the time you actually need it. It needs a lambda which act as a
 provider of generator, when you need the generator then lazy uses that lambda to get your generator and then it memorises
 it for the future use.
 
 ```kotlin
-val lazyEvaluatedArb = Arb.lzy { MyResourceHeavyArb() }
-val lazyEvaluatedExhaustive = Exhaustive.lzy { MyResourceHeavyExhaustive() }
+val lazyEvaluatedArb = Arb.lazy { MyResourceHeavyArb() }
+val lazyEvaluatedExhaustive = Exhaustive.lazy { MyResourceHeavyExhaustive() }
 ```
