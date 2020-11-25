@@ -149,6 +149,7 @@ fun <A> Arb<A>.modifyEdgecases(f: (List<A>) -> List<A>): Arb<A> = arbitrary(f(th
  * Wraps a [Arb] lazily. The given [f] is only evaluated once,
  * and not until the wrapper [Arb] is evaluated.
  * */
+
 fun <A> Arb.Companion.lazy(f: () -> Arb<A>): Arb<A> {
    val arb by kotlin.lazy { f() }
 

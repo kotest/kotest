@@ -9,6 +9,7 @@ class LazyInitializationTest : FunSpec({
 
    test("Exhaustive.lzy should not evaluate given exhaustive provider when return arb is not used") {
       var callCount = 0
+
       Exhaustive.lazy {
          callCount++
          MyDummyExhaustive(2)
@@ -18,6 +19,7 @@ class LazyInitializationTest : FunSpec({
 
    test("Exhaustive.lzy should evaluate given exhaustive provider only once when return arb is used") {
       var callCount = 0
+     
       val lazyExhaustive = Exhaustive.lazy {
          callCount++
          MyDummyExhaustive(2)
