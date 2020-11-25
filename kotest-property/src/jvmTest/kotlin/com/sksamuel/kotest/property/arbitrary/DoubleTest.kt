@@ -41,7 +41,7 @@ class DoubleTest : FunSpec({
 
       // The results of these counts follow a binomial distribution with
       // n = 5000 and p = 0.5 (almost, due to NaN and the offset of 1.0).
-      // The probability of the conditions to be true is so close to one#
+      // The probability of the conditions to be true is so close to one
       // that Wolfram Alpha does actually print "1".
       // https://www.wolframalpha.com/input/?i=prob+x+%3E+2000+for+x+binomial+with+n+%3D+5000+and+p+%3D+0.5
 
