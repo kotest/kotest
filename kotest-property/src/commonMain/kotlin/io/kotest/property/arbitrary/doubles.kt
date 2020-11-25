@@ -11,16 +11,20 @@ import kotlin.math.round
 fun Arb.Companion.double(): Arb<Double> {
    val edgecases = listOf(
       0.0,
+      -0.0,
       1.0,
       -1.0,
       1e300,
+      -1e300,
       Double.MIN_VALUE,
+      -Double.MIN_VALUE,
       Double.MAX_VALUE,
+      -Double.MAX_VALUE,
+      Double.POSITIVE_INFINITY,
       Double.NEGATIVE_INFINITY,
-      Double.NaN,
-      Double.POSITIVE_INFINITY
+      Double.NaN
    )
-   return arb(DoubleShrinker, edgecases) { it.random.nextDouble() }
+   return arb(DoubleShrinker, edgecases) { it.random.nextDouble(-Double.MAX_VALUE, Double.MAX_VALUE) }
 }
 
 /**
