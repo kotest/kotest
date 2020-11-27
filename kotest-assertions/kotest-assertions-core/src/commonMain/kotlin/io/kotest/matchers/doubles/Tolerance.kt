@@ -14,14 +14,14 @@ import kotlin.math.abs
  * ```
  */
 infix fun Double.plusOrMinus(tolerance: Double): ToleranceMatcher {
-   require(tolerance >= 0)
+   require(tolerance >= 0 && tolerance.isFinite())
    return ToleranceMatcher(this, tolerance)
 }
 
 class ToleranceMatcher(private val expected: Double?, private val tolerance: Double) : Matcher<Double?> {
 
   override fun test(value: Double?): MatcherResult {
-    return if(value == null || expected == null) {
+    return if(value == null || expected == null || expected.isInfinite()) {
       MatcherResult(value == expected, "$value should be equal to $expected", "$value should not be equal to $expected")
     } else if (expected.isNaN() && value.isNaN()) {
        println("[WARN] By design, Double.Nan != Double.Nan; see https://stackoverflow.com/questions/8819738/why-does-double-nan-double-nan-return-false/8819776#8819776")
