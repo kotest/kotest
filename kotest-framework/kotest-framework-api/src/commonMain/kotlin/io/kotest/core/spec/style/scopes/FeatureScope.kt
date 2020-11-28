@@ -61,11 +61,11 @@ class FeatureScope(
    }
 
    suspend fun scenario(name: String, test: suspend TestContext.() -> Unit) {
-      addContainerTest(createTestName("Scenario: ", name, false), xdisabled = false, test = test)
+      addTest(createTestName("Scenario: ", name, false), xdisabled = false, test = test)
    }
 
    suspend fun xscenario(name: String, test: suspend TestContext.() -> Unit) {
-      addContainerTest(createTestName("Scenario: ", name, false), xdisabled = true, test = test)
+      addTest(createTestName("Scenario: ", name, false), xdisabled = true, test = test)
    }
 
    fun scenario(name: String): TestWithConfigBuilder {
