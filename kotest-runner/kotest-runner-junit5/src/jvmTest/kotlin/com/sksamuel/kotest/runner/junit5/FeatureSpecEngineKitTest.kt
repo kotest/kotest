@@ -2,6 +2,7 @@ package com.sksamuel.kotest.runner.junit5
 
 import io.kotest.core.spec.style.FeatureSpec
 import io.kotest.core.spec.style.FunSpec
+import io.kotest.core.test.AssertionMode
 import io.kotest.matchers.string.shouldHaveLength
 import io.kotest.matchers.shouldBe
 import org.junit.platform.engine.discovery.DiscoverySelectors.selectClass
@@ -119,6 +120,23 @@ class FeatureSpecEngineKitTest : FunSpec({
             )
          }
    }
+
+   test("verify failure on zero assertion and strict assertion mode enable") {
+      EngineTestKit
+         .engine("kotest")
+         .selectors(selectClass(FeatureSpecWithZeroAssertions::class.java))
+         .configurationParameter("allow_private", "true")
+         .execute()
+         .allEvents().apply {
+            failed().shouldHaveNames("no assertion")
+            succeeded().shouldHaveNames(
+               "one dummy assertion",
+               "assertion mode",
+               "com.sksamuel.kotest.runner.junit5.FeatureSpecWithZeroAssertions",
+               "Kotest"
+            )
+         }
+   }
 })
 
 private class FeatureSpecHappyPathSample : FeatureSpec() {
@@ -192,4 +210,18 @@ private class FeatureSpecSample : FeatureSpec() {
          }
       }
    }
+}
+
+private class FeatureSpecWithZeroAssertions : FeatureSpec() {
+   init {
+
+       feature("assertion mode") {
+          scenario("no assertion") {}
+          scenario("one dummy assertion") {
+             1 shouldBe 1
+          }
+       }
+   }
+
+   override fun assertionMode() = AssertionMode.Error
 }
