@@ -83,11 +83,6 @@ kotlin {
    }
 }
 
-tasks.named("compileKotlinJs") {
-   this as org.jetbrains.kotlin.gradle.dsl.KotlinJsCompile
-   kotlinOptions.moduleKind = "commonjs"
-}
-
 tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
    kotlinOptions.jvmTarget = "1.8"
    kotlinOptions.apiVersion = "1.3"
