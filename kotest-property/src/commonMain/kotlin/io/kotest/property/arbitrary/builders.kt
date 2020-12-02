@@ -7,11 +7,8 @@ import kotlin.jvm.JvmName
  * Creates a new [Arb] that performs no shrinking, has no edge cases and
  * generates values from the given function.
  */
-fun <A> arbitrary(fn: (RandomSource) -> A): Arb<A> = object : Arb<A>() {
-   override fun edgecases(): List<A> = emptyList()
-   override fun sample(rs: RandomSource): Sample<A> = Sample(fn(rs))
-   override fun values(rs: RandomSource): Sequence<Sample<A>> = generateSequence { Sample(fn(rs)) }
-}
+fun <A> arbitrary(fn: (RandomSource) -> A): Arb<A> =
+   arbitrary(emptyList(), fn)
 
 /**
  * Creates a new [Arb] that performs no shrinking, uses the given edge cases and
@@ -37,11 +34,8 @@ fun <A> arbitrary(edgecases: List<A>, shrinker: Shrinker<A>, fn: (RandomSource) 
  * Creates a new [Arb] that performs shrinking using the supplied [Shrinker], has no edge cases and
  * generates values from the given function.
  */
-fun <A> arbitrary(shrinker: Shrinker<A>, fn: (RandomSource) -> A): Arb<A> = object : Arb<A>() {
-   override fun edgecases(): List<A> = emptyList()
-   override fun sample(rs: RandomSource): Sample<A> = sampleOf(fn(rs), shrinker)
-   override fun values(rs: RandomSource): Sequence<Sample<A>> = generateSequence { Sample(fn(rs)) }
-}
+fun <A> arbitrary(shrinker: Shrinker<A>, fn: (RandomSource) -> A): Arb<A> =
+   arbitrary(emptyList(), shrinker, fn)
 
 /**
  * Creates a new [Arb] that performs shrinking using the supplied shrinker and generates each value
