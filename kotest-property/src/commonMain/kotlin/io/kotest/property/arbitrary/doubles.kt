@@ -42,7 +42,7 @@ fun Arb.Companion.numericDoubles(
    from: Double = -Double.MAX_VALUE,
    to: Double = Double.MAX_VALUE
 ): Arb<Double> {
-   val edgecases = finiteDoubleEdgecases.filter { it in (from..to) }
+   val edgecases = (finiteDoubleEdgecases + listOf(from, to)).filter { it in (from..to) }.distinct()
    return arb(DoubleShrinker, edgecases) { it.random.nextDouble(from, to) }
 }
 
