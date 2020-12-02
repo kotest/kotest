@@ -47,7 +47,10 @@ fun <A> arbitrary(shrinker: Shrinker<A>, fn: (RandomSource) -> A) = object : Arb
  * Creates a new [Arb] that performs shrinking using the supplied shrinker and generates each value
  * from successive invocations of the given function f.
  */
-@Deprecated("use arbitrary(). This function will be removed in 4.5")
+@Deprecated(
+   "use arbitrary(). This function will be removed in 4.5",
+   ReplaceWith("arbitrary(fn)")
+)
 fun <A> arb(fn: (RandomSource) -> A) = object : Arb<A>() {
    override fun edgecases(): List<A> = emptyList()
    override fun sample(rs: RandomSource): Sample<A> = Sample(fn(rs))
@@ -90,7 +93,10 @@ fun <A> arb(
  * Creates a new [Arb] that performs shrinking using the supplied shrinker and generates each value
  * from successive invocations of the given function f.
  */
-@Deprecated("Use arbitrary with (RandomSource -> A). This function will be removed in 4.5")
+@Deprecated(
+   "Use arbitrary with (RandomSource -> A). This function will be removed in 4.5",
+   ReplaceWith("arbitrary(shrinker, fn)")
+)
 fun <A> arb(
    shrinker: Shrinker<A>,
    fn: (RandomSource) -> A
@@ -104,7 +110,10 @@ fun <A> arb(
  * Creates a new [Arb] with the given edgecases, that performs shrinking using the supplied shrinker and
  * generates each value from successive invocations of the given function f.
  */
-@Deprecated("Use arbitrary with (RandomSource -> A). This function will be removed in 4.5")
+@Deprecated(
+   "Use arbitrary with (RandomSource -> A). This function will be removed in 4.5",
+   ReplaceWith("arbitrary(edgecases, shrinker, fn)")
+)
 fun <A> arb(
    shrinker: Shrinker<A>,
    edgecases: List<A> = emptyList(),
@@ -119,7 +128,10 @@ fun <A> arb(
  * Creates a new [Arb] with the given edgecases, that performs shrinking using the supplied shrinker and
  * generates each value from successive invocations of the given function f.
  */
-@Deprecated("Use arbitrary with (RandomSource -> A). This function will be removed in 4.5")
+@Deprecated(
+   "Use arbitrary with (RandomSource -> A). This function will be removed in 4.5",
+   ReplaceWith("arbitrary(edgecases, fn)")
+)
 fun <A> arb(
    edgecases: List<A> = emptyList(),
    fn: (RandomSource) -> A
@@ -132,7 +144,10 @@ fun <A> arb(
 /**
  * Returns an [Arb] where each value is generated from the given function.
  */
-@Deprecated("Use arbitrary with (RandomSource -> A). This function will be removed in 4.5")
+@Deprecated(
+   "Use arbitrary with (RandomSource -> A). This function will be removed in 4.5",
+   ReplaceWith("arbitrary(edgeCases, fn)")
+)
 fun <A> Arb.Companion.create(edgeCases: List<A> = emptyList(), fn: (RandomSource) -> A): Arb<A> = object : Arb<A>() {
    override fun sample(rs: RandomSource): Sample<A> = Sample(fn(rs))
    override fun values(rs: RandomSource): Sequence<Sample<A>> = generateSequence { Sample(fn(rs)) }
