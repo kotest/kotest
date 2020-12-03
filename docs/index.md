@@ -146,6 +146,6 @@ This page gives you just a short overview of Kotest. There are many more feature
 * Use the [Spring extension](extensions.md#spring) to automatically inject your spring test classes.
 * Test [Arrow](extensions.md#arrow) data types with the Arrow extension.
 * Make use of custom plugins for integrations with tools such as [Pitest](plugins.md#pitest)
-
+* Configurations inside framework you can see in [Framework Configuration Properties](framework_config_props.md)
 
 Read more about Kotest from third party [blogs and articles](doc/blogs.md).
