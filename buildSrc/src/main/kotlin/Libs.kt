@@ -1,6 +1,6 @@
 object Libs {
 
-   const val kotlinVersion = "1.4.20-M2"
+   const val kotlinVersion = "1.4.20"
    const val dokkaVersion = "0.10.1"
    const val adarshrTestLoggerVersion = "2.0.0"
    const val gradleVersionsPluginVersion = "0.28.0"
@@ -19,7 +19,7 @@ object Libs {
    }
 
    object Allure {
-      private const val version = "2.13.6"
+      private const val version = "2.13.7"
       const val commons = "io.qameta.allure:allure-java-commons:$version"
    }
 
@@ -32,7 +32,7 @@ object Libs {
    }
 
    object Jackson {
-      private const val version = "2.10.2"
+      private const val version = "2.10.4"
       const val kotlin = "com.fasterxml.jackson.module:jackson-module-kotlin:$version"
    }
 
@@ -78,7 +78,7 @@ object Libs {
    }
 
    object Classgraph {
-      const val classgraph = "io.github.classgraph:classgraph:4.8.90"
+      const val classgraph = "io.github.classgraph:classgraph:4.8.92"
    }
 
    object Mocking {
@@ -125,7 +125,7 @@ object Libs {
    }
 
    object Bytebuddy {
-      const val bytebuddy = "net.bytebuddy:byte-buddy:1.10.17"
+      const val bytebuddy = "net.bytebuddy:byte-buddy:1.10.18"
    }
 
    object Robolectric {
@@ -134,7 +134,7 @@ object Libs {
    }
 
    object Coroutines {
-      private const val version = "1.3.9"
+      private const val version = "1.4.2"
       const val coreCommon = "org.jetbrains.kotlinx:kotlinx-coroutines-core:$version"
       const val coreJvm = "org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm:$version"
       const val coreJs = "org.jetbrains.kotlinx:kotlinx-coroutines-core-js:$version"
@@ -147,7 +147,7 @@ object Libs {
    }
 
    object Ktor {
-      private const val version = "1.4.1"
+      private const val version = "1.4.2"
       const val serverCore = "io.ktor:ktor-server-core:$version"
       const val serverTestHost = "io.ktor:ktor-server-test-host:$version"
       const val clientJs = "io.ktor:ktor-client-js:$version"
@@ -163,7 +163,7 @@ object Libs {
    }
 
    object KotlinTime {
-      private const val version = "0.1.0"
+      private const val version = "0.1.1"
       const val kotlintime = "org.jetbrains.kotlinx:kotlinx-datetime:$version"
    }
 

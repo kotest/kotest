@@ -25,7 +25,7 @@ object ProjectConfig : AbstractProjectConfig() {
 }
 ```
 
-An alternative way to enable this is the system property kotest.parallelism which will always (if defined) take priority over the value here.
+An alternative way to enable this is the system property `kotest.framework.parallelism` which will always (if defined) take priority over the value here.
 
 Some tests may not play nice in parallel, so you can opt out individual specs and force them to be executed in isolation by using the `@DoNotParallelize` annotation on the spec.
 
