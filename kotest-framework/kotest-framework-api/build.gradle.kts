@@ -103,4 +103,56 @@ tasks.named<Test>("jvmTest") {
    }
 }
 
+tasks.create("buildConfigDocs") {
+   //find config files
+   val fileNames = listOf("KotestEngineSystemProperties.kt")
+
+   val foundFiles = File(project.rootDir.absolutePath).walk().maxDepth(25).map { file ->
+      if (fileNames.contains(file.name)) {
+         file
+      } else {
+         null
+      }
+   }.filterNotNull()
+      .toList()
+
+   if (foundFiles.size != fileNames.size)
+      throw RuntimeException("Fail to find files -> {$fileNames} in project, found only these files -> {$foundFiles}")
+
+   //replace in docs
+
+   val docName = "framework_config_props.md"
+   val docsFolder = File(project.rootDir.absolutePath, "docs")
+   val docFileFullPath = File(docsFolder.absolutePath, docName)
+
+   val configTemplate = """
+      Framework configuration properties
+      ===========
+
+   """.trimIndent()
+
+   val fileTemplate = """
+
+      ---
+      #### %s
+      ```kotlin
+      %s
+      ```
+
+   """.trimIndent()
+
+   val sb = StringBuilder(configTemplate)
+
+   foundFiles.forEach { file ->
+      val name = file.name
+      val content = file.readLines().joinToString(separator = System.lineSeparator())
+
+      sb.append(fileTemplate.format(name, content))
+   }
+
+   docFileFullPath.writeText(sb.toString())
+}
+
+tasks["jvmTest"].mustRunAfter(tasks["buildConfigDocs"].path)
+
 apply(from = "../../publish-mpp.gradle.kts")
