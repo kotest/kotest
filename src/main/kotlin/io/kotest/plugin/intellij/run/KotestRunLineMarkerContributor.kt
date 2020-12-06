@@ -27,20 +27,28 @@ class KotestRunLineMarkerContributor : RunLineMarkerContributor() {
             when (element.context) {
                // rule out some common entries that can't possibly be test markers for performance
                is KtAnnotationEntry, is KtDeclarationModifierList, is KtImportDirective, is KtImportList, is KtPackageDirective -> null
-               else -> markerForTest(element)
+               else -> markerForTestOrSpec(element)
             }
          }
          else -> null
       }
    }
 
-   private fun markerForTest(element: LeafPsiElement): Info? {
+   /**
+    * Returns an [Info] if this element is a test or a spec class.
+    */
+   private fun markerForTestOrSpec(element: LeafPsiElement): Info? {
       val ktclass = element.enclosingKtClass() ?: return null
       val style = ktclass.specStyle() ?: return null
       val test = style.test(element) ?: return null
+      // we cannot run interpolated names via the plugin
+      if (test.name.interpolated) return null
       return icon(test)
    }
 
+   /**
+    * Returns an [Info] to use for the given [Test].
+    */
    private fun icon(test: Test): Info {
       return Info(
          AllIcons.RunConfigurations.TestState.Run,

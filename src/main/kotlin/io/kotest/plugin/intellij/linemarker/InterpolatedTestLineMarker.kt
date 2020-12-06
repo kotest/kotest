@@ -9,16 +9,23 @@ import com.intellij.psi.impl.source.tree.LeafPsiElement
 import io.kotest.plugin.intellij.createLineMarker
 import io.kotest.plugin.intellij.psi.enclosingKtClass
 import io.kotest.plugin.intellij.psi.specStyle
+import org.jetbrains.kotlin.asJava.classes.KtLightClass
 import org.jetbrains.kotlin.psi.KtAnnotationEntry
+import org.jetbrains.kotlin.psi.KtClassOrObject
 import org.jetbrains.kotlin.psi.KtDeclarationModifierList
 import org.jetbrains.kotlin.psi.KtImportDirective
 import org.jetbrains.kotlin.psi.KtImportList
 import org.jetbrains.kotlin.psi.KtPackageDirective
 
 /**
- * Adds an icon to the gutter for tests which are disabled.
+ * Adds an icon to the gutter for tests which have an interpolated name.
  */
-class DisabledTestLineMarker : LineMarkerProvider {
+class InterpolatedTestLineMarker : LineMarkerProvider {
+
+   private val text = "Tests with an interpolated name cannot be run using the plugin."
+
+   // icons list https://jetbrains.design/intellij/resources/icons_list/
+   private val icon = AllIcons.RunConfigurations.TestUnknown
 
    override fun getLineMarkerInfo(element: PsiElement): LineMarkerInfo<*>? {
       // the docs say to only run a line marker for a leaf
@@ -27,8 +34,8 @@ class DisabledTestLineMarker : LineMarkerProvider {
          is PsiWhiteSpace -> null
          is LeafPsiElement -> {
             when (element.context) {
-               // rule out some common entries that can't possibly be test markers for performance
-               is KtAnnotationEntry, is KtDeclarationModifierList, is KtImportDirective, is KtImportList, is KtPackageDirective -> null
+               // rule out some common entries that can't be individual tests for performance
+               is KtAnnotationEntry, is KtDeclarationModifierList, is KtClassOrObject, is KtLightClass, is KtImportDirective, is KtImportList, is KtPackageDirective -> null
                else -> markerForTest(element)
             }
          }
@@ -40,6 +47,6 @@ class DisabledTestLineMarker : LineMarkerProvider {
       val ktclass = element.enclosingKtClass() ?: return null
       val style = ktclass.specStyle() ?: return null
       val test = style.test(element) ?: return null
-      return if (test.enabled) null else createLineMarker(element, "Test is disabled", AllIcons.Nodes.TestIgnored)
+      return if (test.name.interpolated) createLineMarker(element, text, icon) else null
    }
 }

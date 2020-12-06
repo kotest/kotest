@@ -35,7 +35,7 @@ data class TestName(
 data class TestPathEntry(val name: String)
 
 data class Test(
-   val name: TestName, // the human readable name for this test. Includes prefixes.
+   val name: TestName, // the human readable name for this test.
    val path: List<TestPathEntry>, // components for the path, should not include prefixes
    val testType: TestType,
    val xdisabled: Boolean, // if true then this test was defined using one of the x methods
