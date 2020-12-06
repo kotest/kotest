@@ -10,7 +10,7 @@ import io.kotest.property.checkAll
 
 class ShrinkingTest : FunSpec() {
    init {
-      test("!shrinking should show the exception raised by the shrunk values") {
+      test("shrinking should show the exception raised by the shrunk values") {
 
          val stdout = captureStandardOut {
             shouldThrowAny {
