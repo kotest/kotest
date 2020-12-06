@@ -72,7 +72,7 @@ fun <A : Any> Arb.Companion.choose(a: Pair<Int, Arb<A>>, b: Pair<Int, Arb<A>>, v
       else pick(n - w, l.drop(1))
    }
 
-   return arbitrary { rs ->
+   return arbitrary(allPairs.flatMap { it.second.edgecases() }) { rs ->
       // we must open up an iter stream for each arb
       val allIters = allPairs.map { (weight, arb) -> weight to arb.generate(rs).map { it.value }.iterator() }
       val total = weights.sum()
