@@ -1,12 +1,15 @@
 package io.kotest.plugin.intellij.psi
 
 import com.intellij.psi.impl.source.tree.LeafPsiElement
+import com.intellij.testFramework.LightProjectDescriptor
 import com.intellij.testFramework.fixtures.LightJavaCodeInsightFixtureTestCase
 import io.kotest.matchers.nulls.shouldBeNull
 import io.kotest.matchers.shouldBe
 import java.nio.file.Paths
 
 class SpecTests : LightJavaCodeInsightFixtureTestCase() {
+
+   override fun getProjectDescriptor(): LightProjectDescriptor = JAVA_11
 
    override fun getTestDataPath(): String {
       val path = Paths.get("./src/test/resources/").toAbsolutePath()

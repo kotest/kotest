@@ -9,7 +9,7 @@ buildscript {
 plugins {
    kotlin("jvm")
    java
-   id("org.jetbrains.intellij").version("0.5.0")
+   id("org.jetbrains.intellij").version("0.6.5")
 }
 
 repositories {
@@ -22,6 +22,8 @@ repositories {
 
 // useful link for plugin versions https://plugins.jetbrains.com/plugin/6954-kotlin/versions
 // https://jetbrains.org/intellij/sdk/docs/basics/getting_started/build_number_ranges.html
+// json output of versions: https://jb.gg/intellij-platform-builds-list
+// json for ultimate https://data.services.jetbrains.com/products?fields=code,name,releases.downloads,releases.version,releases.build,releases.type&code=IIU
 val plugins = listOf(
    plugin.PluginDescriptor(
       since = "193.4099.13",
@@ -45,7 +47,7 @@ val plugins = listOf(
       deps = listOf("java", "org.jetbrains.plugins.gradle", "org.jetbrains.kotlin:1.4.10-release-IJ2020.2-1")
    ),
    plugin.PluginDescriptor(
-      since = "203.4449.2",
+      since = "203.5981.155", // this version is 2020.3.1 final
       until = "203.*",
       sdkVersion = "IC-2020.3",
       sourceFolder = "IC-203",
