@@ -11,6 +11,12 @@ import com.intellij.testIntegration.JavaTestCreator
 import com.intellij.testIntegration.createTest.CreateTestAction
 import com.intellij.testIntegration.createTest.CreateTestDialog
 
+/**
+ * Implementations of this extension are used on generating tests while navigation using GotoTestOrCodeAction.
+ * Corresponding extension point qualified name is {@code com.intellij.testCreator}, see {@link com.intellij.testIntegration.LanguageTestCreators}
+ * <p>
+ * To decorate creating test action consider implementing {@link ItemPresentation}
+ */
 class KotestTestCreator : JavaTestCreator() {
 
   private fun findElement(file: PsiFile, offset: Int): PsiElement? {
@@ -19,6 +25,9 @@ class KotestTestCreator : JavaTestCreator() {
     return element
   }
 
+   /**
+    * Triggered when the user actually selects the "Create New Test..." action from the popup. Responsible for actually creating the test file.
+    */
   override fun createTest(project: Project, editor: Editor, file: PsiFile) {
     val action = object : CreateTestAction() {
       override fun createTestDialog(project: Project,

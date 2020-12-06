@@ -19,38 +19,41 @@ repositories {
    maven("https://www.jetbrains.com/intellij-repository/snapshots")
 }
 
+
+// useful link for plugin versions https://plugins.jetbrains.com/plugin/6954-kotlin/versions
+// https://jetbrains.org/intellij/sdk/docs/basics/getting_started/build_number_ranges.html
 val plugins = listOf(
    plugin.PluginDescriptor(
-      "193.4099.13",
-      "193.*",
-      "IC-2019.3",
-      "IC-193",
-      listOf("java", "org.jetbrains.plugins.gradle", "org.jetbrains.kotlin:1.3.72-release-IJ2019.3-5")
+      since = "193.4099.13",
+      until = "193.*",
+      sdkVersion = "IC-2019.3",
+      sourceFolder = "IC-193",
+      deps = listOf("java", "org.jetbrains.plugins.gradle", "org.jetbrains.kotlin:1.3.72-release-IJ2019.3-5")
    ),
    plugin.PluginDescriptor(
-      "201.6487",
-      "201.*",
-      "IC-2020.1",
-      "IC-201",
-      listOf("java", "org.jetbrains.plugins.gradle", "org.jetbrains.kotlin:1.3.72-release-IJ2020.1-5")
+      since = "201.6487",
+      until = "201.*",
+      sdkVersion = "IC-2020.1",
+      sourceFolder = "IC-201",
+      deps = listOf("java", "org.jetbrains.plugins.gradle", "org.jetbrains.kotlin:1.3.72-release-IJ2020.1-5")
    ),
    plugin.PluginDescriptor(
-      "202.1",
-      "202.*",
-      "IC-2020.2",
-      "IC-202",
-      listOf("java", "org.jetbrains.plugins.gradle", "org.jetbrains.kotlin:1.4.10-release-IJ2020.2-1")
+      since = "202.1",
+      until = "202.*",
+      sdkVersion = "IC-2020.2",
+      sourceFolder = "IC-202",
+      deps = listOf("java", "org.jetbrains.plugins.gradle", "org.jetbrains.kotlin:1.4.10-release-IJ2020.2-1")
    ),
    plugin.PluginDescriptor(
-      "203.4449.2",
-      "203.*",
-      "203-EAP-SNAPSHOT",
-      "IC-203",
-      listOf("java", "org.jetbrains.plugins.gradle", "org.jetbrains.kotlin:1.4.10-release-IJ2020.2-1")
+      since = "203.4449.2",
+      until = "203.*",
+      sdkVersion = "IC-2020.3",
+      sourceFolder = "IC-203",
+      deps = listOf("java", "org.jetbrains.plugins.gradle", "org.jetbrains.kotlin:1.4.10-release-IJ2020.2-1")
    )
 )
 
-val productName = System.getenv("PRODUCT_NAME") ?: System.getenv("SOURCE_FOLDER") ?: "IC-202"
+val productName = System.getenv("PRODUCT_NAME") ?: System.getenv("SOURCE_FOLDER") ?: "IC-203"
 val descriptor = plugins.first { it.sourceFolder == productName }
 
 val jetbrainsToken: String by project
@@ -81,8 +84,8 @@ dependencies {
    implementation("io.kotest:kotest-framework-launcher-jvm:4.2.0")
 
    // needed for the resource files which are loaded into java light tests
-   testImplementation("io.kotest:kotest-framework-api:4.3.0")
-   testImplementation("io.kotest:kotest-assertions-core-jvm:4.3.0")
+   testImplementation("io.kotest:kotest-framework-api:4.3.1")
+   testImplementation("io.kotest:kotest-assertions-core-jvm:4.3.1")
 }
 
 sourceSets {
