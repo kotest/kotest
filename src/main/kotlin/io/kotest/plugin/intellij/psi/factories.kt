@@ -22,11 +22,11 @@ val specBuilders = listOf(
  *
  * fun myfactory(...) = stringSpec { }
  */
-fun KtNamedFunction.getFactoryName(): String? {
-   return when (val call = this.bodyExpression) {
+fun getFactoryDefName(named: KtNamedFunction): String? {
+   return when (val call = named.bodyExpression) {
       is KtCallExpression -> {
          val specBuilder = call.getChildOfType<KtNameReferenceExpression>()?.text
-         if (specBuilders.contains(specBuilder)) this.name else null
+         if (specBuilders.contains(specBuilder)) named.name else null
       }
       else -> null
    }

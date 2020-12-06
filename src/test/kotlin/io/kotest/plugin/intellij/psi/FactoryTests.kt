@@ -7,7 +7,7 @@ import io.kotest.matchers.types.shouldBeInstanceOf
 import org.jetbrains.kotlin.psi.KtNamedFunction
 import java.nio.file.Paths
 
-fun foo(a:String) = funSpec {  }
+fun foo(a: String) = funSpec { }
 
 class FactoryTests : LightJavaCodeInsightFixtureTestCase() {
 
@@ -19,16 +19,14 @@ class FactoryTests : LightJavaCodeInsightFixtureTestCase() {
    fun testFactoryDetection() {
       val psiFile = myFixture.configureByFile("/factory_definition.kt")
       val leaf = psiFile.findElementAt(120)!!
-      val func = leaf.parent
-      func.shouldBeInstanceOf<KtNamedFunction>()
-      func.getFactoryName() shouldBe "factory"
+      val func = leaf.parent as KtNamedFunction
+      getFactoryDefName(func) shouldBe "factory"
    }
 
    fun testFactoryDetectionWithArgs() {
       val psiFile = myFixture.configureByFile("/factory_definition.kt")
       val leaf = psiFile.findElementAt(176)!!
-      val func = leaf.parent
-      func.shouldBeInstanceOf<KtNamedFunction>()
-      func.getFactoryName() shouldBe "factoryWithArgs"
+      val func = leaf.parent as KtNamedFunction
+      getFactoryDefName(func) shouldBe "factoryWithArgs"
    }
 }
