@@ -5,12 +5,14 @@ import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.data.forAll
 import io.kotest.data.row
+import io.kotest.matchers.collections.shouldContainExactly
 import io.kotest.matchers.doubles.plusOrMinus
 import io.kotest.matchers.shouldBe
 import io.kotest.property.Arb
 import io.kotest.property.arbitrary.choose
 import io.kotest.property.arbitrary.constant
 import io.kotest.property.arbitrary.single
+import io.kotest.property.arbitrary.withEdgecases
 import io.kotest.property.random
 
 class ChooseTest : FunSpec({
@@ -94,5 +96,16 @@ class ChooseTest : FunSpec({
 
    test("Arb.choose(arbs) should accept weights if at least one is non-zero") {
       shouldNotThrow<Exception> { Arb.choose(0 to Arb.constant('A'), 0 to Arb.constant('B'), 1 to Arb.constant('C')) }
+   }
+
+   test("Arb.choose(arbs) should collate edgecases") {
+      val arb = Arb.choose(
+         1 to Arb.constant('A').withEdgecases('a'),
+         3 to Arb.constant('B').withEdgecases('b'),
+         4 to Arb.constant('C').withEdgecases('c'),
+         5 to Arb.constant('D').withEdgecases('d')
+      )
+
+      arb.edgecases() shouldContainExactly listOf('a', 'b', 'c', 'd')
    }
 })
