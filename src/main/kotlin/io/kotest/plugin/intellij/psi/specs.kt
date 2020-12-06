@@ -161,7 +161,7 @@ fun KtCallExpression.include(): Include? {
 }
 
 /**
- * Returns any include operations defined in this class.
+ * Returns any test factory 'include' definitions defined in this class.
  */
 fun KtClassOrObject.includes(): List<Include> {
 
@@ -174,6 +174,9 @@ fun KtClassOrObject.includes(): List<Include> {
    return emptyList()
 }
 
+/**
+ * Returns any test factory 'include' functions defined in this class body.
+ */
 fun KtClassBody.includes(): List<Include> {
    val init = getChildrenOfType<KtClassInitializer>().firstOrNull()
    if (init != null) {
@@ -209,6 +212,9 @@ fun KtSuperTypeList.includes(): List<Include> {
    return emptyList()
 }
 
+/**
+ * Returns any test factory 'include' function calls defined in this block.
+ */
 fun KtBlockExpression.includes(): List<Include> {
    val calls = getChildrenOfType<KtCallExpression>()
    return calls.mapNotNull { it.include() }

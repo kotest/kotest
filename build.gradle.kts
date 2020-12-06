@@ -100,7 +100,14 @@ sourceSets {
 }
 
 tasks {
+
    compileKotlin {
+      kotlinOptions {
+         jvmTarget = "1.8"
+      }
+   }
+
+   withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
       kotlinOptions {
          jvmTarget = "1.8"
       }
