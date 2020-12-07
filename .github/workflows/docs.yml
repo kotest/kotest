@@ -26,4 +26,4 @@ jobs:
                cd documentation/build
                git add . -f
                git commit -m "Updated docs"
-               git push master:gh-pages --force
+               git push origin master:gh-pages --force
