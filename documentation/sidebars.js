@@ -1,6 +1,5 @@
 module.exports = {
    docs: [
-      'home',
       'quickstart',
       'changelog',
       'thirdparty',
