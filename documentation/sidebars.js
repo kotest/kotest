@@ -1,0 +1,57 @@
+module.exports = {
+   docs: [
+      'home',
+      'quickstart',
+      'changelog',
+      'thirdparty',
+   ],
+   proptest: [
+      'proptest/customgens',
+      'proptest/generators',
+   ],
+   assertions: [
+      'assertions/index',
+      'assertions/matchers',
+      'assertions/clues',
+      'assertions/nondeterministic',
+      'assertions/inspectors',
+      {
+         type: "category",
+         label: "Matcher Modules",
+         collapsed: false,
+         items: [
+            'assertions/android_matchers',
+            'assertions/arrow',
+            'assertions/compiler',
+            'assertions/core',
+            'assertions/json',
+            'assertions/jsoup',
+            'assertions/klock',
+            'assertions/konform',
+            'assertions/ktor',
+            'assertions/sql-matchers',
+         ]
+      }
+   ],
+   framework: [
+      'framework/index',
+      'framework/autoclose',
+      'framework/conditional_evaluation',
+      'framework/data_driven_testing',
+      'framework/extensions',
+      'framework/isolation_mode',
+      'framework/listeners',
+      'framework/mocks',
+      'framework/mpp',
+      'framework/project_config',
+      'framework/spec_ordering',
+      'framework/styles',
+      'framework/tags',
+      'framework/tempfile',
+      'framework/test_case_config',
+      'framework/test_extensions',
+      'framework/test_factories',
+      'framework/test_ordering',
+      'framework/timeout',
+   ],
+};

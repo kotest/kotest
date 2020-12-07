@@ -1,11 +1,78 @@
-Changelog
-=========
+---
+title: Changelog
+sidebar_label: Changelog
+---
+
+### 4.3.1 November 2020
+
+#### Features
+
+* Variation of clue / asClue to accept lazy #1766
+* Added Tuple2..Tuple22 for use in data testing #1773
+
+#### Improvements
+
+* Stacktrace recovery when an `eventually` block fails #1775
+* Performance improvements for Exceptions on the JVM #1787
+* Updated discovery to only initialize spec classes #1788
+
+#### Bugfix
+
+* Added stable identifiers when using new data-driven tests with non-data classes #1795
+* Wrong TimeoutException messages shown when test exceeds spec-level invocation timeout #1809
+* Invocation timeouts should not be applied to containers #1810
+* Arb.filter causing stackoverflow #1818
+* Arb.shuffle type signature change broken in 4.3.0 #1824
+
+### 4.3.0 October 2020 - [Blog](https://dev.to/kotest/kotest-release-4-3-2768)
+
+#### Features
+
+* New data driven test DSL with data classes #1537 (framework)
+* Option to strip whitespace from test names #1545 (framework)
+* EnabledIf annotation for specs #1683 (framework)
+* Propagate coroutine context to tests #1725 (framework)
+* Option to suppress configuration dump #1742 (framework)
+* Added severity attribute for TestCase #1746 (framework)
+* Added kotest.framework.sourceref.disable option (framework)
+* Make Engine dependency free #1748 (framework)
+* Multi-line-string comparison for file contents #823 (assertions)
+* New assertion: Iterator.shouldHaveNext() #1660 (assertions)
+* New assertions: isEmpty / isDefined for java Optional #1661 (assertions)
+* Non infix matchers should return `this` for easy chaining #1744 (assertions)
+* Add property test module for kotlinx datetime #1679 (prop-testing)
+* Add Gen.forNone #1636 (prop-testing)
+* Arb should generate a single value #1754 (prop-testing)
+* Adds an arbitrary to generate bigdecimal #1705 (prop-testing)
+* Add steps and stack trace to allure, with full docs #460 (extensions)
+* Added roboelectric extension to main build (extensions)
+
+#### Breaking Changes
+
+* The `kotest-extensions-junit5extensions` module is now called `kotest-extensions-junit5`
+
+### 4.2.6 October 2020
+
+#### Features
+
+* Added per project listener for testcontainers #1731
+
+#### Bugfix
+
+* Fixed regression in shouldBe when using iterables/arrays #1707 #1727
+* Fix first failure in `beforeTest` blocks #1736
+* Deprecate distinct #1730
+* Fixed the empty allure result for tests with the failed afterTest block #1724
+
+### 4.2.5 September 2020
+
+* Bugfix: Fixed performance issue when using 1000s of tests in gradle #1693
+* Feature: Added matchers for pair / triple components 1694
+* Feature: Added shouldHaveNameWithoutExtension matcher for files and paths #1696
+* Improvement: Added koin lifecycle mode #1710
 
 
-Changelog from 4.2.5 can be found [here](https://kotest.io/changelog/)
-
-
-#### 4.2.4
+### 4.2.4 September 2020
 
 * Bugfix: Test time does not scale with number of tests #1685
 * Bugfix: Added spring listener lifecycle mode #1643
@@ -13,7 +80,8 @@ Changelog from 4.2.5 can be found [here](https://kotest.io/changelog/)
 * Improvement: Duplicated test name exception should include test name #1686
 * Improvement: SpringListener to generate meaningful method names #1591
 
-#### 4.2.3
+
+### 4.2.3 September 2020
 
 * Bugfix: Throwables of `Error` in the engine should be reported to test engine listeners
 * Bugfix: Switched classgraph to api
@@ -31,7 +99,7 @@ Changelog from 4.2.5 can be found [here](https://kotest.io/changelog/)
 * Docs: Update Gradle dependencies docs removing unnecessary -jvm suffix #1650
 * Docs: MockServer extension documentation #1446
 
-#### 4.2.2
+### 4.2.2 August 2020
 
 * Bugfix: Usage of a Kotlin 1.4 only method has been removed
 * Bugfix: KotlinReflectionInternalError fixed on java enums #1611
@@ -39,11 +107,11 @@ Changelog from 4.2.5 can be found [here](https://kotest.io/changelog/)
 * Bugfix: Tags specified via inline tags dsl were not being picked up #1642
 * Improvement: Updated output of some collection matchers to format an element per line #1380
 
-#### 4.2.1
+### 4.2.1 August 2020
 
 * Feature: The assertion libraries are now also published for watchos, tvos, and ios in addition to the macos, windows, and linux targets previously.
 
-#### 4.2.0 - [Blog](./blog/release_4.2.md)
+### 4.2.0 August 2020 - [Blog](blog/release_4.2.md)
 
 * Feature: Kotest upgraded to use Kotlin 1.4.0 #1511
 * Feature: Allow multiple project configs to be detected and merged #1632
@@ -68,7 +136,7 @@ Changelog from 4.2.5 can be found [here](https://kotest.io/changelog/)
 * Bugfix: Non complete junit report when using FunSpec #999
 * Breaking Change: kotest-core module has been replaced with kotest-framework-api and kotest-framework-engine. Tools authors can depend on api only. Engine should be used for JS testing. For JVM testing, continue to use kotest-runner-junit5-jvm.
 
-#### 4.1.2
+### 4.1.2 July 2020
 
 * Bugfix: Dkotest.tags.include= only takes into account @Tags [#1536](https://github.com/kotest/kotest/issues/1536) sksamuel
 * Bugfix: Ensure exhaustive isn't build with an empty list [#1549](https://github.com/kotest/kotest/issues/1549) Cleidiano Oliveira
@@ -82,12 +150,12 @@ Changelog from 4.2.5 can be found [here](https://kotest.io/changelog/)
 * Improvement: Restore context to describe [#1565](https://github.com/kotest/kotest/issues/1565) sksamuel
 * Breaking Change: Updates method signature of assertSoftly to take object under test as argument Ashish Kumar Joy
 
-#### 4.1.1
+### 4.1.1 June 2020
 
 * Bugfix: Issue with describe spec and the intellij plugin fixed [#1528](https://github.com/kotest/kotest/issues/1528)
 * Bugfix: Incorrect error message with Exhaustive's when under the min iteration count [#1526](https://github.com/kotest/kotest/issues/1526)
 
-#### 4.1.0 - [Blog](./blog/release_4.1.md)
+### 4.1.0 June 2020 - [Blog](blog/release_4.1.md)
 
 * Feature: The Kotest IntelliJ plugin has gone final. The plugin requires 4.1. or higher of Kotest. https://plugins.jetbrains.com/plugin/14080-kotest
 * Feature: Highlight diff when comparing data classes [#826](https://github.com/kotest/kotest/issues/826) [#1242](https://github.com/kotest/kotest/issues/1242)
@@ -121,23 +189,23 @@ Changelog from 4.2.5 can be found [here](https://kotest.io/changelog/)
 * Bugfix: Add Arb.choose that accepts weighted arbs [#1499](https://github.com/kotest/kotest/issues/1499)
 * Bugfix: Arb.list doesn't use ListShrinker [#1493](https://github.com/kotest/kotest/issues/1493)
 
-#### 4.0.6
+### 4.0.6 June 2020
 
 * Bugfix: Dependencies of assertions-core are now included properly when not using junit runner [#1425](https://github.com/kotest/kotest/issues/1425)
 * Bugfix: checkAll would fail if exhaustive size was very large [#1456](https://github.com/kotest/kotest/issues/1456)
 * Bugfix: Show typeclass on java.nio.filePath would cause stack overflow [#1313](https://github.com/kotest/kotest/issues/1313)
 
-#### 4.0.5
+### 4.0.5 April 2020
 
 * Bugfix: Focus mode would cause some nested tests to be ignored [#1376](https://github.com/kotest/kotest/issues/1376)
 * Bugfix: Arb.choice would include edgecases in the generated values [#1406](https://github.com/kotest/kotest/issues/1406)
 * Bugfix: Arb.int and Arb.long edgecases included values outside the specified ranged [#1405](https://github.com/kotest/kotest/issues/1405)
 
-#### 4.0.4
+### 4.0.4 April 2020
 
 * Bugfix: Exceptions of type `LinkageError`, most commonly `ExceptionInInitializerError` were not being handled [#1381](https://github.com/kotest/kotest/issues/1381)
 
-#### 4.0.3
+### 4.0.3 April 2020
 
 * Feature: Koin support now works for koin 2.1 [#1357](https://github.com/kotest/kotest/issues/1357)
 * Deprecation: String context is deprecated in ShouldSpec in favour of a context block. [#1356](https://github.com/kotest/kotest/issues/1356)
@@ -147,7 +215,7 @@ Changelog from 4.2.5 can be found [here](https://kotest.io/changelog/)
 * Bugfix: Order of autoclose is restored to work like 3.4.x (was undefined in 4.0.x) [#1384](https://github.com/kotest/kotest/issues/1384)
 * Bugfix: Fix shouldContainExactly for arrays [#1364](https://github.com/kotest/kotest/issues/1364)
 
-#### 4.0.2
+### 4.0.2 April 2020
 
 * Feature: Added filter and map to Exhaustives [#1343](https://github.com/kotest/kotest/issues/1343)
 * Feature: shouldBeInteger matcher using contracts [#1315](https://github.com/kotest/kotest/issues/1315)
@@ -162,12 +230,12 @@ Changelog from 4.2.5 can be found [here](https://kotest.io/changelog/)
 * Bugfix: Fixed Arb.instant always returning same value [#1322](https://github.com/kotest/kotest/issues/1322)
 * Bugfix: Added workaround for gradle 5 bugs.
 
-#### 4.0.1
+### 4.0.1 March 2020
 
 * Improvement: Bumped kotlin to 1.3.71
 * Feature: Aded latlong Arb [#1304](https://github.com/kotest/kotest/issues/1304)
 
-#### 4.0.0
+### 4.0.0 March 2020
 
 The 4.0.0 release is a large release. With the project rename, the packages have changed and module names have changed.
 
@@ -200,11 +268,11 @@ Minor changes.
 * Feature: JDBC matcher support [#1221](https://github.com/kotest/kotest/issues/1221)
 
 
-#### 3.4.2
+### 3.4.2
 
 * Bugfix: Enhances SpringListener to work correctly with all Spring's Listeners [#950](https://github.com/kotest/kotest/issues/950)
 
-#### 3.4.1
+### 3.4.1
 
 * Internal: Remove JUnit redeclarations [#927](https://github.com/kotest/kotest/issues/927)
 * Feature: Add infix modifier to more Arrow matchers [#921](https://github.com/kotest/kotest/issues/921)
@@ -214,7 +282,7 @@ Minor changes.
 * Feature: Add overload to Ktor shouldHaveStatus matcher [#914](https://github.com/kotest/kotest/issues/914)
 * Feature: Fail parent tests when child tests fail [#935](https://github.com/kotest/kotest/issues/935)
 
-#### 3.4.0
+### 3.4.0
 
 * Feature: Support for running tests with Koin [#907](https://github.com/kotest/kotest/issues/907)
 * Feature: Global timeout option can be applied across all tests [#858](https://github.com/kotest/kotest/issues/858)
@@ -262,7 +330,7 @@ Minor changes.
 * Bugfix: Fixed test engine reporting when there is an exception in either the init block, beforeSpec or the afterSpec method [#771](https://github.com/kotest/kotest/issues/771)
 * Internal: io.kotlintest.Result renamed to io.kotlintest.MatcherResult to avoid conflict with new Kotlin class kotlin.Result [#898](https://github.com/kotest/kotest/issues/898)
 
-#### 3.3.0
+### 3.3.0
 
 * Feature: Intellij Plugin now available!
 * Feature: FunSpec now allows parent context blocks
@@ -296,7 +364,7 @@ Minor changes.
 * Internal: Remove all deprecated matchers/assertions ([#653](https://github.com/kotest/kotest/issues/653))
 
 
-#### 3.2.1
+### 3.2.1
 
 * Feature: AnnotationSpec now has a `expected` exception configuration [#527](https://github.com/kotest/kotest/issues/527) [#559](https://github.com/kotest/kotest/issues/559)
 * Feature: BehaviorSpec gained extra nesting possibilities, with `And` between any other keywords [#562](https://github.com/kotest/kotest/issues/562) [#593](https://github.com/kotest/kotest/issues/593)
@@ -304,7 +372,7 @@ Minor changes.
 * Improvement: Documentation on TestConfig.invocations clarified [#591](https://github.com/kotest/kotest/issues/591) [#592](https://github.com/kotest/kotest/issues/592)
 
 
-#### 3.2.0
+### 3.2.0
 
 * Feature: Support for coroutines directly from tests [#386](https://github.com/kotest/kotest/issues/386)
 * Feature: Isolation mode added to more finely control the instances in which tests execute [#379](https://github.com/kotest/kotest/issues/379)
@@ -323,7 +391,7 @@ Minor changes.
 * Internal: Build now uses Kotlin 1.3 [#379](https://github.com/kotest/kotest/issues/379)
 * Internal: Upgraded class scanning to use ClassGraph instead of Reflections [#459](https://github.com/kotest/kotest/issues/459)
 
-#### 3.1.11
+### 3.1.11
 
 * Feature: Infix support to String matchers [#443](https://github.com/kotest/kotest/issues/443)
 * Feature: Infix support to files, floats, sequences, types and uri matchers [#445](https://github.com/kotest/kotest/issues/445)
@@ -344,7 +412,7 @@ Minor changes.
 
 
 
-#### 3.1.10
+### 3.1.10
 
 * Feature: Infix version of some inline matchers, eg `date1 shouldHaveSameYearAs date2` ([#404](https://github.com/kotest/kotest/issues/404) [#407](https://github.com/kotest/kotest/issues/407) [#409](https://github.com/kotest/kotest/issues/409))
 * Feature: Infix support for int and long matchers ([#400](https://github.com/kotest/kotest/issues/400))
@@ -354,7 +422,7 @@ Minor changes.
 * Improvement: Added shouldThrowUnit variant of shouldThrow ([#387](https://github.com/kotest/kotest/issues/387))
 * Fix: shouldBe on arrays without static type ([#397](https://github.com/kotest/kotest/issues/397))
 
-#### 3.1.9
+### 3.1.9
 
 * Feature: Add soft assertions ([#373](https://github.com/kotest/kotest/issues/373))
 * Feature: `sortedWith` (and related) matchers. ([#383](https://github.com/kotest/kotest/issues/383))
@@ -364,7 +432,7 @@ Minor changes.
 * Bugfix: Fix beLeft is comparing against Either.Right instead of Either.Left ([#374](https://github.com/kotest/kotest/issues/374))
 * Internal: Naming executor services for jmx monitoring
 
-#### 3.1.8
+### 3.1.8
 
 * Bugfix: Skip tests when MethodSelector is set [#367](https://github.com/kotest/kotest/issues/367) (means can run a single test in intellij)
 * Bugfix: Fix error when running single test in kotlintest-tests ([#371](https://github.com/kotest/kotest/issues/371))
@@ -374,7 +442,7 @@ Minor changes.
 * Improvement: Improve String equality error messages ([#366](https://github.com/kotest/kotest/issues/366))
 * Internal: Update kotlin to 1.2.50 ([#365](https://github.com/kotest/kotest/issues/365))
 
-#### 3.1.7
+### 3.1.7
 
 * Feature: Added Int/Long.shouldBeNegative and Int/Long.shouldBePositive matchers [#325](https://github.com/kotest/kotest/issues/325)
 * Feature: Added Double.shouldBeNegative and Double.shouldBePositive matchers [#325](https://github.com/kotest/kotest/issues/325)
@@ -390,7 +458,7 @@ Minor changes.
 * Improvement: Allow nullable receivers for string matchers. ([#352](https://github.com/kotest/kotest/issues/352))
 * Improvement: Run tests for all rows in a table, even after errors. ([#351](https://github.com/kotest/kotest/issues/351))
 
-#### 3.1.6
+### 3.1.6
 
 * Specs now support co-routines [#332](https://github.com/kotest/kotest/issues/332)
 * Extension function version of inspectors.
@@ -401,7 +469,7 @@ Minor changes.
 * Allow nullable arguments to more matcher functions. [#350](https://github.com/kotest/kotest/issues/350)
 * Added extension functions for table tests [#349](https://github.com/kotest/kotest/issues/349)
 
-#### 3.1.5
+### 3.1.5
 
 * Fix for bug in gradle which doesn't support parallel test events
 * Bring back Duration extension properties [#343](https://github.com/kotest/kotest/issues/343)
@@ -412,17 +480,17 @@ Minor changes.
 * Make the Table & Row data classes covariant ([#342](https://github.com/kotest/kotest/issues/342))
 * Fixing argument names in ReplaceWith of deprecated matchers ([#341](https://github.com/kotest/kotest/issues/341))
 
-#### 3.1.4
+### 3.1.4
 
 * Fix eventually nanos conversion ([#340](https://github.com/kotest/kotest/issues/340))
 * Improve array shouldBe overloads ([#339](https://github.com/kotest/kotest/issues/339))
 
-#### 3.1.3
+### 3.1.3
 
 * Added workaround for gradle 4.7/4.8 error [#336](https://github.com/kotest/kotest/issues/336)
 * Fix URI path and URI parameter matchers ([#338](https://github.com/kotest/kotest/issues/338))
 
-#### 3.1.2
+### 3.1.2
 
 * Added arrow NonEmptyList isUnique matchers
 * Added Float and List Shrinker
@@ -430,7 +498,7 @@ Minor changes.
 * Allow tags to be added to specs for all test cases [#333](https://github.com/kotest/kotest/issues/333)
 * Support randomized order of top level tests [#328](https://github.com/kotest/kotest/issues/328)
 
-#### 3.1.1
+### 3.1.1
 
 * Focus option for top level tests [#329](https://github.com/kotest/kotest/issues/329)
 * Improve shrinkage [#331](https://github.com/kotest/kotest/issues/331)
@@ -1304,7 +1372,7 @@ forNone(table) { a, b ->
 
 * Now supports comparsion of arrays [#116](https://github.com/kotest/kotest/issues/116)
 
-* Added Gen.oneOf<Enum\> to create a generator that returns one of the values for the given Enum class.
+* Added Gen.oneOf<Enum/> to create a generator that returns one of the values for the given Enum class.
 
 ### Changed
 
@@ -1462,7 +1530,7 @@ map should contain(1, "a")
 
 ### Changed
 
-#### Replaced `timeout` + `timeUnit` with `Duration` ([#29](https://github.com/kotlintest/kotlintest/issues/29))
+### Replaced `timeout` + `timeUnit` with `Duration` ([#29](https://github.com/kotlintest/kotlintest/issues/29))
 
 You can now write `config(timeout = 2.seconds)` instead of
 `config(timeout = 2, timeoutUnit = TimeUnit.SECONDS)`.
@@ -1479,4 +1547,3 @@ nothing
 
 * Ignored tests now display properly. https://github.com/kotlintest/kotlintest/issues/43
 * Failing tests reported as a success AND a failure https://github.com/kotlintest/kotlintest/issues/42
-Ad
