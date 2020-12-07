@@ -3,6 +3,7 @@ module.exports = {
       'quickstart',
       'changelog',
       'thirdparty',
+      'blogs',
    ],
    proptest: [
       'proptest/index',
