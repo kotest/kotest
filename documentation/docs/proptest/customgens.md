@@ -14,8 +14,7 @@ When writing a custom arbitrary we can use the `arbitrary` builder which accepts
 The parameter to this lambda is a `RandomSource` parameter which contains the seed and the `Random` instance. We should typically
 use the provided `RandomSource` if we need access to a `kotlin.Random` instance, as this instance will have been seeded by the framework to allow for repeatable tests.
 
-For example, here is a custom arbitrary that randomly generates an int between 3 and 6 using the `arbitrary` builder. When using the `arbitrary` builder
-we can do setup code in the outer function if required.
+For example, here is a custom arb that generates a random int between 3 and 6 using the `arbitrary` builder.
 
 ```kotlin
 val sillyArb = arbitrary { rs: RandomSource ->
@@ -24,11 +23,13 @@ val sillyArb = arbitrary { rs: RandomSource ->
 
 ```
 
-We can also use this random if we are composing other arbitrary when building ours.
+We can also use this random if we are composing other arbs when building ours.
+
 For example, here is an `Arbitrary` that supports a custom class called `Person`, delegating to a String arbitrary and an Int arbitrary.
 
 ```kotlin
 data class Person(val name: String, val age: Int)
+
 val personArb = arbitrary { rs ->
    val names = Arb.string().values(rs)
    val ages = Arb.int().values(rs)
@@ -36,7 +37,7 @@ val personArb = arbitrary { rs ->
 }
 ```
 
-Although in reality this Arb could have been easier written using bind, it demonstrates the principle.
+Although in the real world this type of arb would use [bind](genops.md#bind), it demonstrates the principle of composing.
 
 
 ### Exhaustive

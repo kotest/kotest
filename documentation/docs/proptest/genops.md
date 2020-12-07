@@ -67,16 +67,13 @@ val merged = arbA.merge(arbB)
 
 ## Bind
 
-Bind is useful if you want to apply multiple arbitraries. We can take a look at how we might construct the `Person`
-data class in the previous example using Bind.
+Bind is useful if you want to apply multiple arbitraries. We can take a look at how we might construct values for a data class using bind.
 
 ```kotlin
 data class Person(val name: String, val age: Int)
-val personArb: Arb<Person> =
-   Arb.bind(
-      Arb.string(),
-      Arb.int()
-   ) { name, age ->
-      Person(name, age)
-   }
+
+val personArb: Arb<Person> = Arb.bind(
+   Arb.string(),
+   Arb.int()
+) { name, age -> Person(name, age) }
 ```
