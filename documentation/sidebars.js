@@ -14,11 +14,12 @@ module.exports = {
    assertions: [
       'assertions/index',
       'assertions/matchers',
+      'assertions/exceptions',
       'assertions/clues',
       'assertions/soft_assertions',
-      'assertions/assertion_mode',
       'assertions/nondeterministic',
       'assertions/inspectors',
+      'assertions/assertion_mode',
       {
          type: "category",
          label: "Matcher Modules",
