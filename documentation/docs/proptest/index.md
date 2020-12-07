@@ -15,7 +15,8 @@ To use Kotest's property-based testing you need to add the module `io.kotest:kot
 
 
 :::note
-_Upgrading from 3.x?_ The `kotest-property` module is only available in version 4.0+. It replaces the previous property test classes which are now deprecated.
+_Upgrading from 3.x?_ The `kotest-property` module is only available in version 4.0+.
+It replaced the previous property test classes which were deprecated in 4.0 and removed in 4.2.
 :::
 
 
