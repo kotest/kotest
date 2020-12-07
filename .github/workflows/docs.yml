@@ -16,26 +16,14 @@ jobs:
                node-version: '12.x'
          -  name: npm build
             run: |
-               if [ -e yarn.lock ]; then
-               yarn install --frozen-lockfile
-               elif [ -e package-lock.json ]; then
                npm --prefix documentation ci
-               else
-               npm --prefix documentation i
-               fi
                npm --prefix documentation run build
          -  name: Release to GitHub Pages
             env:
                USE_SSH: true
                GIT_USER: git
             run: |
-               git config --global user.email "actions@gihub.com"
-               git config --global user.name "gh-actions"
-               if [ -e yarn.lock ]; then
-               yarn install --frozen-lockfile
-               elif [ -e package-lock.json ]; then
-               npm ci
-               else
-               npm i
-               fi
-               npx --prefix docusaurus deploy
+               git config user.name github-actions
+               git config user.email github-actions@github.com
+               npm --prefix documentation ci
+               npx --prefix documentation docusaurus deploy
