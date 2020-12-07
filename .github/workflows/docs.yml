@@ -23,7 +23,7 @@ jobs:
                git config user.email github-actions@github.com
                npm --prefix documentation ci
                npm --prefix documentation run build
-               cd documentation/build
-               git add . -f
+               mv documentation/build docs
+               git add docs -f
                git commit -m "Updated docs"
                git push origin master:gh-pages --force
