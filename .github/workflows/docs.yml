@@ -24,6 +24,6 @@ jobs:
                npm --prefix documentation ci
                npm --prefix documentation run build
                cd documentation/build
-               git add .
+               git add . -f
                git commit -m "Updated docs"
                git push master:gh-pages --force
