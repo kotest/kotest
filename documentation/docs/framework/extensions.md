@@ -103,7 +103,7 @@ If you wish, you can disable this warning by setting the system property `kotest
 
 ## Ktor
 
-The ```kotest-assertions-ktor``` module provides response matchers for a [Ktor]("https://ktor.io/") application. There are matchers
+The ```kotest-assertions-ktor``` module provides response matchers for a [Ktor](https://ktor.io) application. There are matchers
 for both `TestApplicationResponse` if you are using the server side test support, and for `HttpResponse` if you are using the ktor
 client classes.
 

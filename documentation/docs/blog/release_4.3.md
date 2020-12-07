@@ -47,7 +47,7 @@ Kotest will automatically generate a test case for each input row, as if you had
 ![data test example output](images/datatest1.png)
 
 
-For full documentation [click here](../data_driven_testing.md).
+For full documentation [click here](../framework/data_driven_testing.md).
 
 
 

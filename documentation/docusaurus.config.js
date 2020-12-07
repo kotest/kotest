@@ -7,7 +7,7 @@ module.exports = {
    onBrokenMarkdownLinks: 'throw',
    favicon: 'img/favicon.ico',
    organizationName: 'kotest', // Usually your GitHub org/user name.
-   projectName: 'kotest', // Usually your repo name.
+   projectName: 'kotest.io', // Usually your repo name.
    themeConfig: {
       navbar: {
          title: 'Kotest',
@@ -61,15 +61,6 @@ module.exports = {
       footer: {
          style: 'dark',
          links: [
-            {
-               title: 'Docs',
-               items: [
-                  {
-                     label: 'Style Guide',
-                     to: 'docs/',
-                  }
-               ],
-            },
             {
                title: 'Community',
                items: [

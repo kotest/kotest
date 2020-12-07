@@ -62,7 +62,7 @@ test scopes (called tests in Kotest) or branch test scopes (called containers in
 So in 4.2.0 we've introduced `beforeEach`, `afterEach`, `beforeContainer`, and `afterContainer`. The `xxEach` functions are invoked only for leaf level test scopes.
 The `xxContainer` functions are invoked only for branch level test scopes.
 
-This distinction is only relevant to [test styles](../styles.md) that support nested scopes.
+This distinction is only relevant to [test styles](../framework/styles.md) that support nested scopes.
 
 For example:
 
@@ -118,7 +118,7 @@ Now, you are able to specfify full boolean expressions using the `kotest.tags` s
 
 `gradle test -Dkotest.tags="Linux & !Database"`.
 
-Expressions can be nested using parenthesis and can be arbitrarily complex. For full details see [Tags](../tags.md).
+Expressions can be nested using parenthesis and can be arbitrarily complex. For full details see [Tags](../framework/tags.md).
 
 Note: Existing system properties `kotest.tags.include` and `kotest.tags.exclude` are still supported, but the new functionality supersedes this.
 

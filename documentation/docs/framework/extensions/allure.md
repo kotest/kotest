@@ -16,7 +16,7 @@ compile that data into the interactive HTML report.
 Allure has data collectors for most test frameworks, and Kotest is no different. In order
 to activate allure for kotest, you first need to add the module `kotest-extensions-allure` to your build.
 
-Next, wire in the `AllureTestReporter` class globally using [project config](project_config.md).
+Next, wire in the `AllureTestReporter` class globally using [project config](../project_config.md).
 
 ```kotlin
 class MyConfig : AbstractProjectConfig {

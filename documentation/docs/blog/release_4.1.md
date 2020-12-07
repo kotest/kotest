@@ -122,14 +122,14 @@ class MyFunSpec : FunSpec({
 })
 ```
 
-See full details on the [styles page](../styles.md).
+See full details on the [styles page](../framework/styles.md).
 
 ### Removing test prefixes from test output
 
 Following on from the previous section, when you use certain specs, the test names are prefixed with `Describe:`, or `Feature:` and so on in the output.
 
 This adds extra noise to the output and in retrospect should not have been added. Starting with 4.1 you can now disable these
-_test prefixes_ by setting `includeTestScopePrefixes` to false in your [project config](../project_config.md).
+_test prefixes_ by setting `includeTestScopePrefixes` to false in your [project config](../framework/project_config.md).
 
 **Note:** In 4.2.0 this setting will be true by default.
 

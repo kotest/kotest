@@ -36,7 +36,7 @@ Kotest framework.
 | -------- | ---- | ---- |
 | [kotest-assertions-core](core.md) | Provides matchers for standard libary types. | Multiplatform |
 | [kotest-assertions-json](json.md) | Provides matchers for testing json objects. | JVM |
-| [kotest-assertions-kotlinx-time](kotlinx-time.md) | Provides matchers for Kotlin's date / time library. | Multiplatform |
+| [kotest-assertions-kotlinx-time](kotlinx-datetime.md) | Provides matchers for Kotlin's date / time library. | Multiplatform |
 | [kotest-assertions-sql](sql.md) | Provides matchers for JDBC. | JVM |
 | [kotest-assertions-ktor](ktor.md) | Provides matchers for Ktor server test and client libraries. | Multiplatform |
 
