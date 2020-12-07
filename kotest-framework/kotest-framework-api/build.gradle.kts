@@ -122,7 +122,7 @@ tasks.create("buildConfigDocs") {
    //replace in docs
 
    val docName = "config_props.md"
-   val docsFolder = File(project.rootDir.absolutePath, "documentation/framework")
+   val docsFolder = File(project.rootDir.absolutePath, "documentation/docs/framework")
    val docFileFullPath = File(docsFolder.absolutePath, docName)
 
    val configTemplate = """
