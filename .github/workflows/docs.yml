@@ -22,7 +22,7 @@ jobs:
                else
                npm i
                fi
-               npm run build
+               npm --prefix documentation run build
          -  name: Release to GitHub Pages
             env:
                USE_SSH: true
@@ -37,4 +37,4 @@ jobs:
                else
                npm i
                fi
-               npx docusaurus deploy
+               npx --prefix docusaurus deploy
