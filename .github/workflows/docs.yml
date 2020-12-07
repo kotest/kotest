@@ -24,6 +24,8 @@ jobs:
                npm --prefix documentation ci
                npm --prefix documentation run build
                mv documentation/build docs
+               echo "kotest.io" > docs/CNAME
+               echo "kotest.io" > CNAME
                git add docs -f
                git commit -m "Updated docs"
                git push origin master:gh-pages --force
