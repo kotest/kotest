@@ -13,6 +13,8 @@ Kotest is split into several subprojects which can be used independently. One of
 
 To use Kotest's property-based testing you need to add the module `io.kotest:kotest-property:<version>` to your build.
 
+[![version badge](https://img.shields.io/maven-central/v/io.kotest/kotest-property.svg?label=release)](https://search.maven.org/search?q=kotest)
+[![version badge](https://img.shields.io/nexus/s/https/oss.sonatype.org/io.kotest/kotest-framework-engine.svg?label=snapshot)](https://oss.sonatype.org/content/repositories/snapshots/io/kotest)
 
 :::note
 _Upgrading from 3.x?_ The `kotest-property` module is only available in version 4.0+.

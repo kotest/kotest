@@ -15,6 +15,9 @@ the comprehensive assertion / matchers support. These can be used with the [Kote
 or with another test framework like JUnit or Spock.
 
 
+[![version badge](https://img.shields.io/maven-central/v/io.kotest/kotest-assertions-core-jvm.svg?label=release)](https://search.maven.org/search?q=kotest)
+[![version badge](https://img.shields.io/nexus/s/https/oss.sonatype.org/io.kotest/kotest-assertions-core-jvm.svg?label=snapshot)](https://oss.sonatype.org/content/repositories/snapshots/io/kotest)
+
 
 ## Multitude of Matchers
 

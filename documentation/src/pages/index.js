@@ -23,18 +23,7 @@ const features = [
 
             <br/><br/>
 
-            <a href="https://search.maven.org/search?q=kotest">
-               <img src="https://img.shields.io/maven-central/v/io.kotest/kotest-framework-engine.svg?label=release"
-                    alt="version badge"/>
-            </a>
-
-            &nbsp;
-
-            <a href="https://oss.sonatype.org/content/repositories/snapshots/io/kotest">
-               <img
-                  src="https://img.shields.io/nexus/s/https/oss.sonatype.org/io.kotest/kotest-framework-engine.svg?label=snapshot"
-                  alt="version badge"/>
-            </a>
+            <a href="/docs/framework/framework.html">Read more</a>
          </>
       ),
    },
@@ -53,18 +42,7 @@ const features = [
 
             <br/><br/>
 
-            <a href="https://search.maven.org/search?q=kotest">
-               <img src="https://img.shields.io/maven-central/v/io.kotest/kotest-assertions-core.svg?label=release"
-                    alt="version badge"/>
-            </a>
-
-            &nbsp;
-
-            <a href="https://oss.sonatype.org/content/repositories/snapshots/io/kotest">
-               <img
-                  src="https://img.shields.io/nexus/s/https/oss.sonatype.org/io.kotest/kotest-framework-engine.svg?label=snapshot"
-                  alt="version badge"/>
-            </a>
+            <a href="/docs/assertions/assertions.html">Read more</a>
          </>
       ),
    },
@@ -84,19 +62,7 @@ const features = [
 
             <br/><br/>
 
-            <a href="https://search.maven.org/search?q=kotest">
-               <img src="https://img.shields.io/maven-central/v/io.kotest/kotest-property.svg?label=release"
-                    alt="version badge"/>
-            </a>
-
-
-            &nbsp;
-
-            <a href="https://oss.sonatype.org/content/repositories/snapshots/io/kotest">
-               <img
-                  src="https://img.shields.io/nexus/s/https/oss.sonatype.org/io.kotest/kotest-framework-engine.svg?label=snapshot"
-                  alt="version badge"/>
-            </a>
+            <a href="/docs/proptest/property-based-testing.html">Read more</a>
          </>
       ),
    },
@@ -144,47 +110,56 @@ function Home() {
             <section className={styles.features}>
                <div className="container">
                   <div className="row">
+                     <a href="https://kotlinlang.slack.com/archives/CT0G9SD7Z">
+                        <img
+                           src="https://img.shields.io/static/v1?label=kotlinlang&message=kotest&color=blue&logo=slack"
+                           alt="Slack"/>
+                     </a>
+
+                     &nbsp;
+
+                     <a href="https://search.maven.org/search?q=kotest">
+                        <img src="https://img.shields.io/maven-central/v/io.kotest/kotest-property.svg?label=release"
+                             alt="version badge"/>
+                     </a>
+
+                     &nbsp;
+
+                     <a href="https://oss.sonatype.org/content/repositories/snapshots/io/kotest">
+                        <img
+                           src="https://img.shields.io/nexus/s/https/oss.sonatype.org/io.kotest/kotest-framework-engine.svg?label=snapshot"
+                           alt="version badge"/>
+                     </a>
+
+                     &nbsp;
+
+                     <img
+                        src="https://img.shields.io/github/license/kotest/kotest?style=plastic"
+                        alt="license"/>
+
+                     &nbsp;
+
+                     <a href="http://stackoverflow.com/questions/tagged/kotest">
+                        <img
+                           src="https://img.shields.io/badge/stackoverflow-kotest-blue"
+                           alt="stack overflow"/>
+                     </a>
+
+                     &nbsp;
+
+                     <a href="https://GitHub.com/kotest/kotest/stargazers/">
+                        <img
+                           src="https://img.shields.io/github/stars/kotest/kotest.svg?style=social&label=Star&maxAge=2592000"
+                           alt="version badge"/>
+                     </a>
+                  </div>
+                  <div className="row">
                      {features.map((props, idx) => (
                         <Feature key={idx} {...props} />
                      ))}
                   </div>
                </div>
             </section>
-            <section className={styles.features}>
-               <div className="container">
-                  <div className="row">
-                     Each subproject is provided independently so you can pick and mix which modules to use if you
-                     don't want to go _all in_ on Kotest
-                  </div>
-                  <div>
-                     <div className="row">
-
-                        <a href="docs/changelog">See the changelog</a> for latest updates.<br/>
-                        See our quickstart guide to get up and running.
-
-                        [![GitHub
-                        stars](https://img.shields.io/github/stars/kotest/kotest.svg?style=social&label=Star&maxAge=2592000)](https://GitHub.com/kotest/kotest/stargazers/)
-                        [<img
-                        src="https://img.shields.io/maven-central/v/io.kotest/kotest-framework-api-jvm.svg?label=latest%20release"/>](http://search.maven.org/#search|ga|1|kotest)
-                        ![GitHub](https://img.shields.io/github/license/kotest/kotest)
-                        [![kotest @
-                        kotlinlang.slack.com](https://img.shields.io/static/v1?label=kotlinlang&message=kotest&color=blue&logo=slack)](https://kotlinlang.slack.com/archives/CT0G9SD7Z)
-
-                        Community
-                        ---------
-                        * [Stack Overflow](http://stackoverflow.com/questions/tagged/kotest) (don't forget to use the
-                        tag "kotest".)
-                        * [Kotest channel](https://kotlinlang.slack.com/messages/kotest) in the Kotlin Slack (get an
-                        invite [here](http://slack.kotlinlang.org/))
-                        * [Contribute](https://github.com/kotest/kotest/wiki/contribute)
-
-                        Read more about Kotest from third party [blogs and articles](doc/blogs.md).
-
-                     </div>
-                  </div>
-               </div>
-            </section>
-            .
          </main>
       </Layout>
    );
