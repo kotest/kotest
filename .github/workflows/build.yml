@@ -4,7 +4,7 @@ on:
    push:
       paths-ignore:
          - 'doc/**'
-         - 'docs/**'
+         - 'documentation/**'
          - '*.md'
          - '*.yml'
       branches:
