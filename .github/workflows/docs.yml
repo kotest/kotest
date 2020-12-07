@@ -27,7 +27,7 @@ jobs:
             env:
                USE_SSH: true
                GIT_USER: git
-         -  run: |
+            run: |
                git config --global user.email "actions@gihub.com"
                git config --global user.name "gh-actions"
                if [ -e yarn.lock ]; then
