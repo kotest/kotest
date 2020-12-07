@@ -19,9 +19,9 @@ jobs:
                if [ -e yarn.lock ]; then
                yarn install --frozen-lockfile
                elif [ -e package-lock.json ]; then
-               npm --prefix ci
+               npm --prefix documentation ci
                else
-               npm --prefix i
+               npm --prefix documentation i
                fi
                npm --prefix documentation run build
          -  name: Release to GitHub Pages
