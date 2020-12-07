@@ -1,10 +1,8 @@
 ---
 id: home
-title: Welcome to Kotest
 ---
 
 <img src="images/logo_with_text.png" alt="kotest logo" width="700"/>
-==
 
 
 <img src="docs/images/intro_gif.gif"/>
@@ -12,7 +10,7 @@ title: Welcome to Kotest
 **Kotest is a flexible and comprehensive testing project for Kotlin with multiplatform support.**
 
 For latest updates see [Changelog](changelog.md).<br/>
-See our [quick start](quick_start.md) guide to get up and running.
+See our [quick start](quick_start.mdx) guide to get up and running.
 
 [![GitHub stars](https://img.shields.io/github/stars/kotest/kotest.svg?style=social&label=Star&maxAge=2592000)](https://GitHub.com/kotest/kotest/stargazers/)
 [<img src="https://img.shields.io/maven-central/v/io.kotest/kotest-framework-api-jvm.svg?label=latest%20release"/>](http://search.maven.org/#search|ga|1|kotest)

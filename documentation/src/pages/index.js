@@ -23,9 +23,13 @@ const features = [
 
             <br/><br/>
 
-            <img src="https://img.shields.io/maven-central/v/io.kotest/kotest-framework-engine.svg?label=release"
-                 alt="version badge"/>
+            <a href="https://search.maven.org/search?q=kotest">
+               <img src="https://img.shields.io/maven-central/v/io.kotest/kotest-framework-engine.svg?label=release"
+                    alt="version badge"/>
+            </a>
+
             &nbsp;
+
             <a href="https://oss.sonatype.org/content/repositories/snapshots/io/kotest">
                <img
                   src="https://img.shields.io/nexus/s/https/oss.sonatype.org/io.kotest/kotest-framework-engine.svg?label=snapshot"
@@ -49,9 +53,13 @@ const features = [
 
             <br/><br/>
 
-            <img src="https://img.shields.io/maven-central/v/io.kotest/kotest-assertions-core.svg?label=release"
-                 alt="version badge"/>
+            <a href="https://search.maven.org/search?q=kotest">
+               <img src="https://img.shields.io/maven-central/v/io.kotest/kotest-assertions-core.svg?label=release"
+                    alt="version badge"/>
+            </a>
+
             &nbsp;
+
             <a href="https://oss.sonatype.org/content/repositories/snapshots/io/kotest">
                <img
                   src="https://img.shields.io/nexus/s/https/oss.sonatype.org/io.kotest/kotest-framework-engine.svg?label=snapshot"
@@ -76,9 +84,14 @@ const features = [
 
             <br/><br/>
 
-            <img src="https://img.shields.io/maven-central/v/io.kotest/kotest-property.svg?label=release"
-                 alt="version badge"/>
+            <a href="https://search.maven.org/search?q=kotest">
+               <img src="https://img.shields.io/maven-central/v/io.kotest/kotest-property.svg?label=release"
+                    alt="version badge"/>
+            </a>
+
+
             &nbsp;
+
             <a href="https://oss.sonatype.org/content/repositories/snapshots/io/kotest">
                <img
                   src="https://img.shields.io/nexus/s/https/oss.sonatype.org/io.kotest/kotest-framework-engine.svg?label=snapshot"

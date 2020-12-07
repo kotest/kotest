@@ -10,6 +10,9 @@ Kotest offers an [IntelliJ plugin](https://github.com/kotest/kotest-intellij-plu
 This plugin provides run icons for each test, a tool window for test navigation, duplicated test highlighting, assertion intentions, and more.
 
 
+:::note
+The Intellij plugin will not run common tests of a multiplatform project
+:::
 
 
 
