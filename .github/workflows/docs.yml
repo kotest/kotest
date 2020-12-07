@@ -4,14 +4,37 @@ on:
       branches:
          - master
       paths:
-         - 'docs/**'
+         - 'documentation/**'
 jobs:
    deploy:
       runs-on: ubuntu-latest
       steps:
          -  uses: actions/checkout@v2
-         -  uses: actions/setup-python@v2
+         -  uses: actions/setup-node@v1
             with:
-               python-version: 3.x
-         -  run: pip install mkdocs-material
-         -  run: mkdocs gh-deploy --force
+               node-version: '12.x'
+         -  name: npm build
+            run: |
+               if [ -e yarn.lock ]; then
+               yarn install --frozen-lockfile
+               elif [ -e package-lock.json ]; then
+               npm ci
+               else
+               npm i
+               fi
+               npm run build
+         -  name: Release to GitHub Pages
+            env:
+               USE_SSH: true
+               GIT_USER: git
+         -  run: |
+               git config --global user.email "actions@gihub.com"
+               git config --global user.name "gh-actions"
+               if [ -e yarn.lock ]; then
+               yarn install --frozen-lockfile
+               elif [ -e package-lock.json ]; then
+               npm ci
+               else
+               npm i
+               fi
+               npx docusaurus deploy
