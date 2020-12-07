@@ -35,7 +35,7 @@ Some teams prefer to mandate usage of a single style, others mix and match. Ther
 
 ## Fun Spec
 
-`FunSpec` allows you to create tests by invoking a function called `test` with a string parameter to describe the test,
+`FunSpec` allows you to create tests by invoking a function called `test` with a string argument to describe the test,
 and then the test itself as a lambda. If in doubt, this is the style to use.
 
 ```kotlin

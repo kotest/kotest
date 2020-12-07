@@ -1,5 +1,10 @@
-Framework configuration properties
-===========
+---
+id: framework_config_props
+title: Framework configuration properties
+sidebar_label: System properties
+slug: framework-config-props.html
+---
+
 
 ---
 #### KotestEngineSystemProperties.kt

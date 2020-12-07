@@ -1,6 +1,6 @@
 ---
-id: generators
-title: Property Test Generators
+id: gens
+title: Generators
 slug: property-test-generators.html
 ---
 

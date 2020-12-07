@@ -1,5 +1,10 @@
-Generator Operations
-====================
+---
+id: genops
+title: Generator Operations
+slug: generator-operations.html
+---
+
+
 
 
 ## Next

@@ -10,22 +10,18 @@ slug: inspectors.html
 
 
 Inspectors allow us to test elements in a collection. They are extension functions for collections and arrays that test
-that all, none or some of the elements pass the given assertions. For example, to test that all elements in a collection
-contain an underscore and start with "aa" we could do:
+that all, none or some of the elements pass the given assertions. For example, to test that a list of names contains
+at least two elements which have a length of 7 or more, we can do this:
+
 
 ```kotlin
-class StringSpecExample : StringSpec({
-  "your test case" {
-    val xs = listOf("aa_1", "aa_2", "aa_3")
-    xs.forAll {
-      it.shouldContain("_")
-      it.shouldStartWith("aa")
-    }
-  }
-})
+val xs = listOf("sam", "gareth", "timothy", "muhammad")
+xs.forAtLeast(2) {
+    it.shouldHaveMinLength(7)
+}
 ```
 
-Similarly, if we wanted to asset that *no* elements in a collection passed the assertions, we can do:
+Similarly, if we wanted to asset that *no* elements in a collection passed the assertions, we could do something like:
 
 ```kotlin
 xs.forNone {

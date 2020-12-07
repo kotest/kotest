@@ -10,7 +10,7 @@ slug: framework.html
 Test with Style
 ---------------
 
-Write simple and beautiful tests with the `StringSpec` style:
+Write simple and beautiful tests using one of the available styles:
 
 ```kotlin
 class MyTests : StringSpec({
@@ -44,17 +44,7 @@ class StringSpecExample : StringSpec({
 })
 ```
 
-Test Exceptions
----------------
 
-Testing for [exceptions](assertions.md#exceptions) is easy with Kotest:
-
-```kotlin
-val exception = shouldThrow<IllegalAccessException> {
-   // code in here that you expect to throw an IllegalAccessException
-}
-exception.message should startWith("Something went wrong")
-```
 
 Fine Tune Test Execution
 ------------------------
@@ -70,15 +60,3 @@ class MySpec : StringSpec({
 })
 ```
 
-And More ...
-------------
-
-This page gives you just a short overview of Kotest. There are many more features:
-
-* Reuse test logic for setup or tear down, with [Listeners](listeners.md).
-* Let Kotest [close resources automatically](doc/reference.md#autoclose): `val reader = autoClose(StringReader("xyz"))`
-* Create reusable parameterized tests via [test factories](test_factories.md)
-* Handle tricky scenarios such as System Environment with [extensions](extensions.md)
-* Use the [Spring extension](extensions.md#spring) to automatically inject your spring test classes.
-* Test [Arrow](extensions.md#arrow) data types with the Arrow extension.
-* Make use of custom plugins for integrations with tools such as [Pitest](plugins.md#pitest)

@@ -109,8 +109,11 @@ class MyTestClass : FunSpec({
 })
 ```
 
-!!! warning
-    When tagging tests in this way, the Spec will still need to be instantiated in order to retrieve the tags. If no root tests are active at runtime, the [beforeSpec](listeners.md) and [afterSpec](listeners.md) callbacks will _not_ be invoked.
+:::caution
+When tagging tests in this way, the Spec will still need to be instantiated in order to retrieve the tags. If no root tests are active at runtime, the [beforeSpec](listeners.md) and [afterSpec](listeners.md) callbacks will _not_ be invoked.
+:::
+
+
 
 If you wish to avoid creating the spec class at all then you can annotate a spec using `@Tags(tag1, ...)`.
 Any tags added using this annotation apply to all tests in the class, however this will not stop a class from

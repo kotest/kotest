@@ -11,8 +11,8 @@ slug: assertions.html
 
 
 Kotest is split into several subprojects which can be used independently. One of these subprojects is
-the comprehensive assertion / matchers support. These can be used with the Kotest test framework, or with
-another test framework like JUnit or Spock.
+the comprehensive assertion / matchers support. These can be used with the [Kotest test framework](../framework/index.md),
+or with another test framework like JUnit or Spock.
 
 
 
@@ -142,35 +142,6 @@ If you want to test that _any_ exception is thrown, then use `shouldThrowAny`.
 
 
 
-## Soft Assertions
-
-Normally, assertions like `shouldBe` throw an exception when they fail.
-But sometimes you want to perform multiple assertions in a test, and
-would like to see all of the assertions that failed. Kotest provides
-the `assertSoftly` function for this purpose.
-
-```kotlin
-assertSoftly {
-  foo shouldBe bar
-  foo should contain(baz)
-}
-```
-
-If any assertions inside the block failed, the test will continue to
-run. All failures will be reported in a single exception at the end of
-the block.
-
-Another version of `assertSoftly` takes a test target and lambda with test target as its receiver.
-
-```kotlin
-assertSoftly(foo) {
-    shouldNotEndWith("b")
-    length shouldBe 3
-}
-```
-
-
-We can configure assert softly to be implicitly added to every test via [project config](project_config.md).
 
 
 

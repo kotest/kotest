@@ -1,4 +1,5 @@
 ---
+id: assertion_mode
 title: Assertion Mode
 slug: assertion-mode.html
 ---
@@ -27,10 +28,10 @@ Running this test will output something like:
 Test 'this test has no assertions' did not invoke any assertions
 ```
 
-If we want to set this globally, we can do so in [project config](project_config.md) or via the system property `kotest.framework.assertion.mode`.
+If we want to set this globally, we can do so in [project config](../framework/project_config.md) or via the system property `kotest.framework.assertion.mode`.
 
 
-!!! warning
+:::note
 Assertion mode only works for Kotest assertions and not other assertion libraries.
-
+:::
 

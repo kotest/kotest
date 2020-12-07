@@ -4,7 +4,7 @@ module.exports = {
    url: 'https://kotest.io',
    baseUrl: '/',
    onBrokenLinks: 'throw',
-   onBrokenMarkdownLinks: 'warn',
+   onBrokenMarkdownLinks: 'throw',
    favicon: 'img/favicon.ico',
    organizationName: 'kotest', // Usually your GitHub org/user name.
    projectName: 'kotest', // Usually your repo name.
@@ -18,8 +18,8 @@ module.exports = {
          items: [
             {
                type: 'doc',
-               docId: 'quickstart',
-               label: 'Quick Start',
+               docId: 'home',
+               label: 'Overview',
                position: 'left'
             },
             {
@@ -42,7 +42,7 @@ module.exports = {
             },
             {
                type: 'doc',
-               docId: 'intellij/intelli',
+               docId: 'intellij/index',
                label: 'Intellij Plugin',
                position: 'left'
             },
@@ -52,7 +52,7 @@ module.exports = {
                position: 'right'
             },
             {
-               href: 'https://github.com/facebook/docusaurus',
+               href: 'https://github.com/kotest/kotest',
                label: 'GitHub',
                position: 'right',
             },

@@ -6,13 +6,18 @@ module.exports = {
       'thirdparty',
    ],
    proptest: [
+      'proptest/index',
+      'proptest/gens',
+      'proptest/genops',
+      'proptest/proptestconfig',
       'proptest/customgens',
-      'proptest/generators',
    ],
    assertions: [
       'assertions/index',
       'assertions/matchers',
       'assertions/clues',
+      'assertions/soft_assertions',
+      'assertions/assertion_mode',
       'assertions/nondeterministic',
       'assertions/inspectors',
       {
@@ -28,6 +33,7 @@ module.exports = {
             'assertions/jsoup',
             'assertions/klock',
             'assertions/konform',
+            'assertions/kotlinx_datetime',
             'assertions/ktor',
             'assertions/sql-matchers',
          ]
@@ -35,23 +41,45 @@ module.exports = {
    ],
    framework: [
       'framework/index',
-      'framework/autoclose',
-      'framework/conditional_evaluation',
-      'framework/data_driven_testing',
-      'framework/extensions',
-      'framework/isolation_mode',
-      'framework/listeners',
-      'framework/mocks',
-      'framework/mpp',
-      'framework/project_config',
-      'framework/spec_ordering',
       'framework/styles',
+      'framework/conditional_evaluation',
+      'framework/isolation_mode',
+      'framework/exceptions',
+      'framework/data_driven_testing',
+      'framework/listeners',
+      'framework/extensions',
+      'framework/mocks',
+      {
+         type: "category",
+         label: "Ordering",
+         collapsed: false,
+         items: [
+            'framework/spec_ordering',
+            'framework/test_ordering',
+         ]
+      },
       'framework/tags',
-      'framework/tempfile',
-      'framework/test_case_config',
+      {
+         type: "category",
+         label: "Resources",
+         collapsed: false,
+         items: [
+            'framework/autoclose',
+            'framework/tempfile',
+         ]
+      },
+      {
+         type: "category",
+         label: "Configuration",
+         collapsed: false,
+         items: [
+            'framework/test_case_config',
+            'framework/project_config',
+            'framework/framework_config_props',
+         ]
+      },
       'framework/test_extensions',
       'framework/test_factories',
-      'framework/test_ordering',
       'framework/timeout',
    ],
 };

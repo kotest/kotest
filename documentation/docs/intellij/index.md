@@ -1,5 +1,5 @@
 ---
-id: intelli
+id: index
 title: IntelliJ Plugin
 slug: intellij-plugin.html
 ---
