@@ -78,15 +78,6 @@ module.exports = {
                   },
                ],
             },
-            {
-               title: 'More',
-               items: [
-                  {
-                     label: 'B',
-                     href: 'https://github.com/kotest/kotest',
-                  },
-               ],
-            },
          ],
          copyright: `Copyright © ${new Date().getFullYear()} Kotest, Inc. Built with Docusaurus.`,
       },
