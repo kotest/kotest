@@ -1,6 +1,7 @@
 ---
 title: Changelog
 sidebar_label: Changelog
+slug: changelog.html
 ---
 
 ### 4.3.1 November 2020

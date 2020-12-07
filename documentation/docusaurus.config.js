@@ -93,4 +93,25 @@ module.exports = {
          },
       ],
    ],
+   plugins: [
+      [
+         '@docusaurus/plugin-client-redirects',
+         {
+            redirects: [
+               {
+                  to: '/docs/changelog.html',
+                  from: ['/changelog'],
+               },
+               {
+                  to: '/docs/assertions/clues.html',
+                  from: ['/clues'],
+               },
+               {
+                  to: '/docs/framework/testing-styles.html',
+                  from: ['/styles'],
+               },
+            ],
+         },
+      ],
+   ]
 };
