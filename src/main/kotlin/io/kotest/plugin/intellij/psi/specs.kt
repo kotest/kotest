@@ -1,5 +1,6 @@
 package io.kotest.plugin.intellij.psi
 
+import com.intellij.openapi.roots.ProjectRootManager
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.psi.impl.source.tree.LeafPsiElement
@@ -52,7 +53,9 @@ fun LeafPsiElement.getSpecEntryPoint(): KtClassOrObject? {
 /**
  * Returns true if this class is subclass of a spec (including classes which themselves subclass spec).
  */
-fun KtClassOrObject.isSpec(): Boolean = this.specStyle() != null
+fun KtClassOrObject.isSpec(): Boolean {
+   return if (isUnderTestSources(this)) this.specStyle() != null else false
+}
 
 /**
  * Returns true if this element is a kotlin class and it is a subclass of a spec.
@@ -139,7 +142,8 @@ fun KtSuperTypeList.callbacks(): List<Callback> {
 fun KtCallExpression.include(): Include? {
    if (children.isNotEmpty() &&
       children[0] is KtNameReferenceExpression &&
-      children[0].text == "include") {
+      children[0].text == "include"
+   ) {
       val args = valueArgumentList
       if (args != null) {
          val maybeKtValueArgument = args.arguments.firstOrNull()
@@ -233,11 +237,17 @@ fun KtBlockExpression.callbacks(): List<Callback> {
 
 /**
  * Returns true if this [PsiElement] is contained within a class that is a subclass
- * of the given spec FQN
+ * of the given spec FQN.
  */
 fun PsiElement.isContainedInSpecificSpec(fqn: FqName): Boolean {
    val enclosingClass = getStrictParentOfType<KtClass>() ?: return false
-   return enclosingClass.isSubclass(fqn)
+   return if (isUnderTestSources(enclosingClass)) enclosingClass.isSubclass(fqn) else false
+}
+
+fun isUnderTestSources(clazz: KtClassOrObject): Boolean {
+   val psiFile = clazz.containingFile
+   val vFile = psiFile.virtualFile ?: return false
+   return ProjectRootManager.getInstance(clazz.project).fileIndex.isInTestSourceContent(vFile)
 }
 
 /**
