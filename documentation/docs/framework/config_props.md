@@ -5,7 +5,6 @@ sidebar_label: System properties
 slug: framework-config-props.html
 ---
 
-
 ---
 #### KotestEngineSystemProperties.kt
 ```kotlin

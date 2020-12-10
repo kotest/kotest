@@ -112,14 +112,14 @@ function Home() {
                   <div className="row">
                      <a href="https://kotlinlang.slack.com/archives/CT0G9SD7Z">
                         <img
-                           src="https://img.shields.io/static/v1?label=kotlinlang&message=kotest&color=blue&logo=slack"
+                           src="https://img.shields.io/static/v1?label=kotlinlang&message=kotest&color=blue&logo=slack&style=for-the-badge"
                            alt="Slack"/>
                      </a>
 
                      &nbsp;
 
                      <a href="https://search.maven.org/search?q=kotest">
-                        <img src="https://img.shields.io/maven-central/v/io.kotest/kotest-property.svg?label=release"
+                        <img src="https://img.shields.io/maven-central/v/io.kotest/kotest-property.svg?label=release&style=for-the-badge"
                              alt="version badge"/>
                      </a>
 
@@ -127,21 +127,21 @@ function Home() {
 
                      <a href="https://oss.sonatype.org/content/repositories/snapshots/io/kotest">
                         <img
-                           src="https://img.shields.io/nexus/s/https/oss.sonatype.org/io.kotest/kotest-framework-engine.svg?label=snapshot"
+                           src="https://img.shields.io/nexus/s/https/oss.sonatype.org/io.kotest/kotest-framework-engine.svg?label=snapshot&style=for-the-badge"
                            alt="version badge"/>
                      </a>
 
                      &nbsp;
 
                      <img
-                        src="https://img.shields.io/github/license/kotest/kotest?style=plastic"
+                        src="https://img.shields.io/github/license/kotest/kotest?style=for-the-badge"
                         alt="license"/>
 
                      &nbsp;
 
                      <a href="http://stackoverflow.com/questions/tagged/kotest">
                         <img
-                           src="https://img.shields.io/badge/stackoverflow-kotest-blue"
+                           src="https://img.shields.io/badge/stackoverflow-kotest-blue?style=for-the-badge"
                            alt="stack overflow"/>
                      </a>
 
@@ -149,7 +149,7 @@ function Home() {
 
                      <a href="https://GitHub.com/kotest/kotest/stargazers/">
                         <img
-                           src="https://img.shields.io/github/stars/kotest/kotest.svg?style=social&label=Star&maxAge=2592000"
+                           src="https://img.shields.io/github/stars/kotest/kotest.svg?style=style=for-the-badge&label=Star&maxAge=2592000"
                            alt="version badge"/>
                      </a>
                   </div>
