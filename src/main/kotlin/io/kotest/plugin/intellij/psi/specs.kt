@@ -1,6 +1,8 @@
 package io.kotest.plugin.intellij.psi
 
 import com.intellij.openapi.roots.ProjectRootManager
+import com.intellij.openapi.roots.TestSourcesFilter
+import com.intellij.openapi.vfs.ex.temp.TempFileSystem
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.psi.impl.source.tree.LeafPsiElement
@@ -245,10 +247,14 @@ fun PsiElement.isContainedInSpecificSpec(fqn: FqName): Boolean {
 }
 
 fun isUnderTestSources(clazz: KtClassOrObject): Boolean {
-   return true
-//   val psiFile = clazz.containingFile
-//   val vFile = psiFile.virtualFile ?: return false
-//   return ProjectRootManager.getInstance(clazz.project).fileIndex.isInTestSourceContent(vFile)
+   val psiFile = clazz.containingFile
+   val vFile = psiFile.virtualFile ?: return false
+   return when {
+      ProjectRootManager.getInstance(clazz.project).fileIndex.isInTestSourceContent(vFile) -> true
+      // this just allows tests to pass
+      vFile.fileSystem is TempFileSystem -> true
+      else -> false
+   }
 }
 
 /**

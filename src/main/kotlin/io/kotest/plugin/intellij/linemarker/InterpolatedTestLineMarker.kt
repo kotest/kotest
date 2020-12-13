@@ -44,9 +44,13 @@ class InterpolatedTestLineMarker : LineMarkerProvider {
    }
 
    private fun markerForTest(element: LeafPsiElement): LineMarkerInfo<PsiElement>? {
-      val ktclass = element.enclosingKtClass() ?: return null
-      val style = ktclass.specStyle() ?: return null
-      val test = style.test(element) ?: return null
-      return if (test.name.interpolated) createLineMarker(element, text, icon) else null
+      return try {
+         val ktclass = element.enclosingKtClass() ?: return null
+         val style = ktclass.specStyle() ?: return null
+         val test = style.test(element) ?: return null
+         if (test.name.interpolated) createLineMarker(element, text, icon) else null
+      } catch (e: Exception) {
+         null
+      }
    }
 }
