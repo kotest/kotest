@@ -37,13 +37,13 @@ object Libs {
    }
 
    object Koin {
-      private const val version = "2.1.6"
+      private const val version = "2.2.1"
       const val core = "org.koin:koin-core:$version"
       const val test = "org.koin:koin-test:$version"
    }
 
    object Tschuchortdev {
-      private const val version = "1.2.10"
+      private const val version = "1.3.1"
       const val kotlinCompileTesting = "com.github.tschuchortdev:kotlin-compile-testing:$version"
    }
 
@@ -78,7 +78,7 @@ object Libs {
    }
 
    object Classgraph {
-      const val classgraph = "io.github.classgraph:classgraph:4.8.92"
+      const val classgraph = "io.github.classgraph:classgraph:4.8.94"
    }
 
    object Mocking {
@@ -91,7 +91,7 @@ object Libs {
    }
 
    object MockServer {
-      private const val version = "5.11.1"
+      private const val version = "5.11.2"
       const val netty = "org.mock-server:mockserver-netty:$version"
       const val javaClient = "org.mock-server:mockserver-client-java:$version"
    }
@@ -110,12 +110,12 @@ object Libs {
    }
 
    object TestContainers {
-      private const val version = "1.14.3"
+      private const val version = "1.15.1"
       const val testcontainers = "org.testcontainers:testcontainers:$version"
    }
 
    object Spring {
-      private const val version = "5.2.9.RELEASE"
+      private const val version = "5.2.12.RELEASE"
       const val context = "org.springframework:spring-context:$version"
       const val test = "org.springframework:spring-test:$version"
    }
