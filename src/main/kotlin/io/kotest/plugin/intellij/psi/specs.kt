@@ -245,7 +245,7 @@ fun PsiElement.isContainedInSpecificSpec(fqn: FqName): Boolean {
 }
 
 fun isUnderTestSources(clazz: KtClassOrObject): Boolean {
-   return false
+   return true
 //   val psiFile = clazz.containingFile
 //   val vFile = psiFile.virtualFile ?: return false
 //   return ProjectRootManager.getInstance(clazz.project).fileIndex.isInTestSourceContent(vFile)
