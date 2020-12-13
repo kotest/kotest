@@ -15,6 +15,7 @@ import io.kotest.engine.toTestResult
 import io.kotest.matchers.shouldBe
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
+import java.util.concurrent.atomic.AtomicInteger
 import kotlin.coroutines.CoroutineContext
 import kotlin.time.ExperimentalTime
 import kotlin.time.milliseconds
@@ -23,14 +24,14 @@ import kotlin.time.milliseconds
 @ExperimentalTime
 class TestCaseTimeoutListenerTest : FunSpec() {
 
-   private var blockingCount = 0
-   private var suspendingCount = 0
+   private val blockingCount = AtomicInteger(0)
+   private val suspendingCount = AtomicInteger(0)
 
    init {
 
       afterSpec {
-         blockingCount shouldBe 1
-         suspendingCount shouldBe 1
+         blockingCount.get() shouldBe 1
+         suspendingCount.get() shouldBe 1
       }
 
       test("tests which timeout during a blocking operation should still run the 'after test' listeners").config(timeout = 1000.milliseconds) {
@@ -38,7 +39,7 @@ class TestCaseTimeoutListenerTest : FunSpec() {
          // this listener will flick the flag to true so we know it ran
          val listener = object : TestListener {
             override suspend fun afterTest(testCase: TestCase, result: TestResult) {
-               blockingCount += 1
+               blockingCount.incrementAndGet()
             }
          }
 
@@ -74,7 +75,7 @@ class TestCaseTimeoutListenerTest : FunSpec() {
          // this listener will flick the flag to true so we know it ran
          val listener = object : TestListener {
             override suspend fun afterTest(testCase: TestCase, result: TestResult) {
-               suspendingCount += 1
+               suspendingCount.incrementAndGet()
             }
          }
 
