@@ -99,6 +99,10 @@ module.exports = {
          {
             redirects: [
                {
+                  to: '/docs/quickstart',
+                  from: ['/quick_start'],
+               },
+               {
                   to: '/docs/changelog.html',
                   from: ['/changelog'],
                },
