@@ -11,6 +11,7 @@ module.exports = {
       'proptest/genops',
       'proptest/proptestconfig',
       'proptest/customgens',
+      'proptest/globalconfig',
    ],
    assertions: [
       'assertions/index',

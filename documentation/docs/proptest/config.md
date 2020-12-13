@@ -9,7 +9,7 @@ slug: property-test-config.html
 
 ## Configuration
 
-Kotest provides for the ability to specify some configuration options when running a property test. We do this by passing
+Kotest provides for the  ability to specify some configuration options when running a property test. We do this by passing
 in an instance of `PropTestConfig` to the test methods.
 
 For example:
