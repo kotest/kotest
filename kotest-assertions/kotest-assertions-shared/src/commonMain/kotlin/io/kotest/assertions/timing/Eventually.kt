@@ -52,17 +52,22 @@ suspend fun <T, E : Throwable> eventually(
    }
 
    val sb = StringBuilder()
-   sb.appendLine("Eventually block failed after ${duration}; attempted $times time(s); $poll delay between attempts")
-   sb.appendLine()
+   sb.append("Eventually block failed after ${duration}; attempted $times time(s); $poll delay between attempts")
+   sb.append("\n")
+   sb.append("\n")
 
    if (firstError != null) {
-      sb.appendLine("The first error was caused by: ${firstError.message}")
-      sb.appendLine(firstError.stackTraceToString())
+      sb.append("The first error was caused by: ${firstError.message}")
+      sb.append("\n")
+      sb.append(firstError.toString())
+      sb.append("\n")
    }
 
    if (lastError != null) {
-      sb.appendLine("The last error was caused by: ${lastError.message}")
-      sb.appendLine(lastError.stackTraceToString())
+      sb.append("The last error was caused by: ${lastError.message}")
+      sb.append("\n")
+      sb.append(lastError.toString())
+      sb.append("\n")
    }
 
    throw failure(
