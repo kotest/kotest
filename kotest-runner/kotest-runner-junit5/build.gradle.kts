@@ -38,6 +38,7 @@ kotlin {
       val jvmMain by getting {
          dependencies {
             implementation(kotlin("reflect"))
+            implementation(Libs.Kotlin.kotlinScriptRuntime)
             api(project(Projects.Api))
             api(project(Projects.Common))
             api(project(Projects.Engine))

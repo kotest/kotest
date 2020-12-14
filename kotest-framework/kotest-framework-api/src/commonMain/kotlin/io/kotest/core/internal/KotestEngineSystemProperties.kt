@@ -6,6 +6,8 @@ object KotestEngineSystemProperties {
 
    const val gradle5 = "kotest.gradle5.compatibility"
 
+   const val scriptsEnabled = "kotest.framework.scripts.enabled"
+
    /**
     * Sets the tag expression that determines included/excluded tags.
     */

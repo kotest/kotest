@@ -1,6 +1,7 @@
 package io.kotest.engine.listener
 
 import io.kotest.core.spec.Spec
+import io.kotest.core.test.Description
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import kotlin.reflect.KClass
@@ -49,6 +50,10 @@ interface TestEngineListener {
     * Will not be invoked if the test is ignored.
     */
    fun testStarted(testCase: TestCase) {}
+
+   fun testStarted(description: Description) {}
+
+   fun testFinished(description: Description, result: TestResult) {}
 
    /**
     * Invoked if a [TestCase] will not be executed because it is ignored (not active).

@@ -60,6 +60,10 @@ kotlin {
          dependsOn(commonMain)
          dependencies {
             implementation(kotlin("reflect"))
+            api(Libs.Kotlin.kotlinScriptRuntime)
+            implementation("org.jetbrains.kotlin:kotlin-script-util:1.4.21")
+            implementation("org.jetbrains.kotlin:kotlin-scripting-jvm:1.4.21")
+
             api(Libs.Classgraph.classgraph)
 
             // needed to scan for spec classes

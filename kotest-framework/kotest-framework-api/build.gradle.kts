@@ -38,6 +38,7 @@ kotlin {
       val commonMain by getting {
          dependencies {
             implementation(Libs.Coroutines.coreCommon)
+            implementation(Libs.Kotlin.kotlinScriptRuntime)
             implementation(project(Projects.Common))
             api(project(Projects.AssertionsShared))
          }

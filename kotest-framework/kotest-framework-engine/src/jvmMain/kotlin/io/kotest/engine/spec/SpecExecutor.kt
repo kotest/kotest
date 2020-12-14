@@ -29,7 +29,7 @@ import kotlin.reflect.KClass
  * Delegates to a [SpecRunner] which determines how and when
  * to instantiate fresh specs based on the [IsolationMode] of the spec.
  *
- * @param listener a listener that is notified of events in the spec lifecycle
+ * @param listener a listener that is notified of events in the test lifecycle
  */
 class SpecExecutor(private val listener: TestEngineListener) {
 
