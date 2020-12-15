@@ -60,9 +60,16 @@ Two generators can be merged together, so that elements 0, 2, 4, ... are taken f
 val merged = arbA.merge(arbB)
 ```
 
+So with the following example:
 
+```kotlin
+val a = arbitrary { "a" }
+val b = arbitrary { "b" }
+val ab = a.merge(b)
+ab.take(10).forEach { println(it) }
+```
 
-
+Would ouput `ababababab`
 
 
 ## Bind
