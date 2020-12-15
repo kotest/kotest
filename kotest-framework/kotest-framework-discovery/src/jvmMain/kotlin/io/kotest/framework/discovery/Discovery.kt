@@ -5,6 +5,7 @@ package io.kotest.framework.discovery
 import io.github.classgraph.ClassGraph
 import io.kotest.core.extensions.DiscoveryExtension
 import io.kotest.core.spec.Spec
+import java.lang.management.ManagementFactory
 import java.util.concurrent.ConcurrentHashMap
 import kotlin.reflect.KClass
 
@@ -93,11 +94,13 @@ class Discovery(private val discoveryExtensions: List<DiscoveryExtension> = empt
       // first filter down to spec instances only, then load the full class
       val loadedClasses = request
          .selectors
+         .asSequence()
          .filterIsInstance<DiscoverySelector.ClassDiscoverySelector>()
          .map { Class.forName(it.className, false, this::class.java.classLoader) }
          .filter(isSpecSubclass)
          .map { Class.forName(it.name).kotlin }
          .filterIsInstance<KClass<out Spec>>()
+         .toList()
 
       val duration = System.currentTimeMillis() - start
       log("Loading of selected classes completed in ${duration}ms")
@@ -109,7 +112,8 @@ class Discovery(private val discoveryExtensions: List<DiscoveryExtension> = empt
     * locations specified by the uris param.
     */
    private fun scanUris(): List<KClass<out Spec>> {
-      log("Starting test discovery scan...")
+      val uptime = ManagementFactory.getRuntimeMXBean().uptime
+      log("Discovery: Starting test discovery scan... [uptime=$uptime]")
       val start = System.currentTimeMillis()
       val scanResult = ClassGraph()
          .enableClassInfo()
@@ -127,7 +131,7 @@ class Discovery(private val discoveryExtensions: List<DiscoveryExtension> = empt
          )
          .scan()
       val duration = System.currentTimeMillis() - start
-      log("Test discovery completed in ${duration}ms")
+      log("Discovery: Test discovery completed in ${duration}ms")
 
       return scanResult.use { result ->
          result.getSubclasses(Spec::class.java.name)
