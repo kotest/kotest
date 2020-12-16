@@ -156,7 +156,7 @@ class MyTestClass : FunSpec({
 To use System Properties (-Dx=y), your gradle must be configured to propagate them to the test executors, and an extra configuration must be added to your tests:
 
 Groovy:
-```
+```groovy
 test {
     //... Other configurations ...
     systemProperties = System.properties
@@ -164,7 +164,7 @@ test {
 ```
 
 Kotlin Gradle DSL:
-```
+```kotlin
 val test by tasks.getting(Test::class) {
     // ... Other configurations ...
     systemProperties = System.getProperties().map { it.key.toString() to it.value }.toMap()

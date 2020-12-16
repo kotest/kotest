@@ -9,7 +9,7 @@ slug: android-matchers.html
 This page lists all current Android matchers in Kotest. These are additional to the default [matchers](matchers.md) and are specific to Android.
 
 To use them, it's required to add an extra dependency to your project:
-```
+```kotlin
 implementation("io.kotest:kotest-assertions-android:VERSION")
 ```
 
