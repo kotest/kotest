@@ -49,7 +49,7 @@ kotlin {
          dependsOn(jvmMain)
          dependencies {
             implementation(project(Projects.JunitRunner))
-            implementation("org.springframework.boot:spring-boot-starter-test:2.2.5.RELEASE")
+            implementation("org.springframework.boot:spring-boot-starter-test:2.4.1")
          }
       }
    }
