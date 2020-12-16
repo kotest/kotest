@@ -26,7 +26,7 @@ dependencies {
       exclude(group = "org.junit.vintage", module = "junit-vintage-engine")
       exclude(module = "mockito-core")
    }
-   testImplementation("com.ninja-squad:springmockk:2.0.1")
+   testImplementation("com.ninja-squad:springmockk:3.0.0")
    testImplementation("io.projectreactor:reactor-test")
    testImplementation(project(Projects.JunitRunner))
    testImplementation(project(":kotest-extensions:kotest-extensions-spring"))
