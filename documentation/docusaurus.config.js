@@ -81,6 +81,9 @@ module.exports = {
          ],
          copyright: `Copyright © ${new Date().getFullYear()} Kotest, Inc. Built with Docusaurus.`,
       },
+      prism: {
+         additionalLanguages: ['kotlin', 'groovy'],
+      },
    },
    presets: [
       [
