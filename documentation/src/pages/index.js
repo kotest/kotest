@@ -144,7 +144,7 @@ function Home() {
 
                      &nbsp;
 
-                     <a href="http://stackoverflow.com/questions/tagged/kotest">
+                     <a href="https://github.com/kotest/kotest/blob/master/LICENSE">
                         <img
                            src="https://img.shields.io/badge/license-apache2.0-green?style=for-the-badge"
                            alt="license"/>
