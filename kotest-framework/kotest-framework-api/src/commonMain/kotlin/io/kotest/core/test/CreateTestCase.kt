@@ -14,7 +14,7 @@ fun createRootTestCase(
    config: TestCaseConfig,
    type: TestType
 ): TestCase {
-   return TestCase(
+   return TestCase.appendTagsInDisplayName(TestCase(
       spec::class.toDescription().append(name, type),
       spec,
       test,
@@ -23,5 +23,5 @@ fun createRootTestCase(
       config,
       null,
       null
-   )
+   ))
 }

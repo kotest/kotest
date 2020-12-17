@@ -21,7 +21,7 @@ data class NestedTest(
  * Returns a full [TestCase] from this nested test, attaching the nested test to the given spec.
  */
 fun NestedTest.toTestCase(spec: Spec, parent: Description): TestCase {
-   return TestCase(
+   return TestCase.appendTagsInDisplayName(TestCase(
       description = parent.append(this.name, type),
       spec = spec,
       test = test,
@@ -30,5 +30,5 @@ fun NestedTest.toTestCase(spec: Spec, parent: Description): TestCase {
       config = config,
       factoryId = factoryId,
       assertionMode = null
-   )
+   ))
 }
