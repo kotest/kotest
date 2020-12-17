@@ -92,17 +92,27 @@ function Home() {
          description="Flexible, powerful and elegant kotlin test framework with multiplatform support">
          <header className={clsx('hero hero--primary', styles.heroBanner)}>
             <div className="container">
-               <h1 className="hero__title">{siteConfig.title}</h1>
-               <p className="hero__subtitle">{siteConfig.tagline}</p>
+               <p className={clsx(styles.heroSlogan)}>Flexible and
+                  elegant <strong>multiplatform</strong> test <strong>framework</strong>, <strong>assertions</strong> library,
+                  and <strong>property
+                     test</strong> library for Kotlin
+               </p>
                <div className={styles.buttons}>
                   <Link
                      className={clsx(
                         'button button--outline button--secondary button--lg',
-                        styles.getStarted,
+                        styles.gettingStartedButton,
                      )}
                      to={useBaseUrl('docs/quickstart')}>
                      Get Started
                   </Link>
+
+                  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+
+                  <iframe
+                     src="https://ghbtns.com/github-btn.html?user=kotest&repo=kotest&type=star&count=true&size=large"
+                     frameBorder="0" scrolling="0" width="170" height="30" title="GitHub"/>
+
                </div>
             </div>
          </header>
@@ -119,8 +129,9 @@ function Home() {
                      &nbsp;
 
                      <a href="https://search.maven.org/search?q=kotest">
-                        <img src="https://img.shields.io/maven-central/v/io.kotest/kotest-property.svg?label=release&style=for-the-badge"
-                             alt="version badge"/>
+                        <img
+                           src="https://img.shields.io/maven-central/v/io.kotest/kotest-property.svg?label=release&style=for-the-badge"
+                           alt="version badge"/>
                      </a>
 
                      &nbsp;
@@ -133,9 +144,11 @@ function Home() {
 
                      &nbsp;
 
-                     <img
-                        src="https://img.shields.io/github/license/kotest/kotest?style=for-the-badge"
-                        alt="license"/>
+                     <a href="http://stackoverflow.com/questions/tagged/kotest">
+                        <img
+                           src="https://img.shields.io/badge/license-apache2.0-green?style=for-the-badge"
+                           alt="license"/>
+                     </a>
 
                      &nbsp;
 
@@ -143,14 +156,6 @@ function Home() {
                         <img
                            src="https://img.shields.io/badge/stackoverflow-kotest-blue?style=for-the-badge"
                            alt="stack overflow"/>
-                     </a>
-
-                     &nbsp;
-
-                     <a href="https://GitHub.com/kotest/kotest/stargazers/">
-                        <img
-                           src="https://img.shields.io/github/stars/kotest/kotest.svg?style=style=for-the-badge&label=Star&maxAge=2592000"
-                           alt="version badge"/>
                      </a>
                   </div>
                   <div className="row">
