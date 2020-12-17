@@ -31,6 +31,9 @@ internal fun concurrencyMode(): Option<ConcurrencyMode> =
 internal fun globalAssertSoftly(): Option<Boolean> =
    sysprop(KotestEngineSystemProperties.globalAssertSoftly).toOption().map { it.toUpperCase() == "TRUE" }
 
+internal fun appendTagsInTestName(): Option<Boolean> =
+   sysprop(KotestEngineSystemProperties.appendTagsInTestName).toOption().map { it.toUpperCase() == "TRUE" }
+
 /**
  * Returns a [DetectedProjectConfig] which is built from system properties where supported.
  */

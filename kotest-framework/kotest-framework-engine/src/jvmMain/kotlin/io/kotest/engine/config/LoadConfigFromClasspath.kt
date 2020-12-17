@@ -56,6 +56,7 @@ private fun AbstractProjectConfig.toDetectedConfig(): DetectedProjectConfig {
       testCaseConfig = defaultTestCaseConfig.toOption(),
       includeTestScopeAffixes = includeTestScopePrefixes.toOption(),
       testNameCase = testNameCase.toOption(),
-      testNameRemoveWhitespace = testNameRemoveWhitespace.toOption()
+      testNameRemoveWhitespace = testNameRemoveWhitespace.toOption(),
+      testNameAppendTags = testNameAppendTags.toOption()
    )
 }
