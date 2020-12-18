@@ -59,11 +59,11 @@ class JsonAssertionsTest : StringSpec({
   "should return correct error message on failure" {
     shouldThrow<AssertionError> {
       json1 shouldMatchJson json3
-    }.message shouldBe """expected: {"location":"chicago","name":"sam"} but was: {"name":"sam","location":"london"}"""
+    }.message shouldBe """expected:<{"location":"chicago","name":"sam"}> but was:<{"name":"sam","location":"london"}>"""
 
     shouldThrow<AssertionError> {
       json1 shouldNotMatchJson json2
-    }.message shouldBe """expected not to match with: {"location":"london","name":"sam"} but match: {"name":"sam","location":"london"}"""
+    }.message shouldBe """expected not to match with:<{"location":"london","name":"sam"}> but was:<{"name":"sam","location":"london"}>"""
   }
 
   "test json path" {
@@ -131,7 +131,7 @@ class JsonAssertionsTest : StringSpec({
 
     shouldThrow<AssertionError> {
       testJson2.shouldMatchJsonResource("/json1.json")
-    }.message shouldBe """expected: {"name":"sam","location":"chicago"} but was: {"name":"sam","location":"london"}"""
+    }.message shouldBe """expected:<{"name":"sam","location":"chicago"}> but was:<{"name":"sam","location":"london"}>"""
 
     shouldThrow<AssertionError> { null shouldMatchJsonResource "/json1.json" }
 
