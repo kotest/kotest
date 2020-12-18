@@ -53,13 +53,6 @@ fun LeafPsiElement.getSpecEntryPoint(): KtClassOrObject? {
 }
 
 /**
- * Returns true if this class is subclass of a spec (including classes which themselves subclass spec).
- */
-fun KtClassOrObject.isSpec(): Boolean {
-   return if (isUnderTestSources(this)) this.specStyle() != null else false
-}
-
-/**
  * Returns true if this element is a kotlin class and it is a subclass of a spec.
  * See [isSpec]
  */
@@ -243,18 +236,7 @@ fun KtBlockExpression.callbacks(): List<Callback> {
  */
 fun PsiElement.isContainedInSpecificSpec(fqn: FqName): Boolean {
    val enclosingClass = getStrictParentOfType<KtClass>() ?: return false
-   return if (isUnderTestSources(enclosingClass)) enclosingClass.isSubclass(fqn) else false
-}
-
-fun isUnderTestSources(clazz: KtClassOrObject): Boolean {
-   val psiFile = clazz.containingFile
-   val vFile = psiFile.virtualFile ?: return false
-   return when {
-      ProjectRootManager.getInstance(clazz.project).fileIndex.isInTestSourceContent(vFile) -> true
-      // this just allows tests to pass
-      vFile.fileSystem is TempFileSystem -> true
-      else -> false
-   }
+   return enclosingClass.isSubclass(fqn)
 }
 
 /**
