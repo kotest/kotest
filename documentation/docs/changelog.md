@@ -4,6 +4,27 @@ sidebar_label: Changelog
 slug: changelog.html
 ---
 
+### 4.3.2 December 2020
+
+#### Features
+
+* Assertions library now released for watchos32 in addition to all other targets
+* Allow using `it` for creating test outside of describe block
+* Added Arb.lazy and Exhaustive.lazy
+
+#### Bugfix
+
+* A Kotlin 1.4 specific method was added in 4.3.1 and reverted in 4.3.2
+* Arb.choose does not currently include edgecases from input arbs #1886
+* String shrinking is not being executed #1860
+* Arb.stringPattern slows down the test dramatically #1878
+* AssertionMode.Error doesn't work on FeatureSpec #1864
+* Incomplete edge cases with the double generator #1869
+* Unexpected ToleranceMatcher behavior at infinite doubles #1832
+* Wrong behavior when combining assertSoftly and shouldNotBe #1831
+* Fixed shouldContainJsonKeyValue to work with Long expected value and integer actual value #1790
+
+
 ### 4.3.1 November 2020
 
 #### Features
