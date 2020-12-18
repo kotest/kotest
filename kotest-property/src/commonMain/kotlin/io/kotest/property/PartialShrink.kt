@@ -125,7 +125,7 @@ fun <Original, A, B, C, D, E, F, G> ShrinkerBuilder<Original>.build(
       buildFn(a, b, c, d, e, f, g)
    }
 
-fun <Original, A, B, C, D, E, F, G, H, T> ShrinkerBuilder<Original>.build(
+fun <Original, A, B, C, D, E, F, G, H> ShrinkerBuilder<Original>.build(
    partialShrinkerA: PartialShrinker<Original, A>,
    partialShrinkerB: PartialShrinker<Original, B>,
    partialShrinkerC: PartialShrinker<Original, C>,
@@ -255,23 +255,23 @@ open class ShrinkerWithCache<T>(
    ) { shrinker.shrink(value) }
 }
 
-open class FlatmapShrinker<value1, value2>(
-   shrinker1: Shrinker<value1>,
-   shrinker2: Shrinker<value2>,
-) : Shrinker<Pair<value1, value2>> {
-   val shrinker1 = shrinker1.withCache()
-   val shrinker2 = shrinker2.withCache()
-   override fun shrink(value: Pair<value1, value2>): List<Pair<value1, value2>> {
-      val shrinks1 = shrinker1.shrink(value.first)
-      val shrinks2 = shrinker2.shrink(value.second)
+open class FlatmapShrinker<A, B>(
+   shrinkerA: Shrinker<A>,
+   shrinkerB: Shrinker<B>,
+) : Shrinker<Pair<A, B>> {
+   val shrinker1 = shrinkerA.withCache()
+   val shrinker2 = shrinkerB.withCache()
+   override fun shrink(value: Pair<A, B>): List<Pair<A, B>> {
+      val shrinksA = shrinkerA.shrink(value.first)
+      val shrinksB = shrinkerB.shrink(value.second)
 
-      if (shrinks1.isEmpty() && shrinks2.isEmpty()) return emptyList()
+      if (shrinksA.isEmpty() && shrinksB.isEmpty()) return emptyList()
 
-      val nonEmptyShrinks1 = shrinks1.ifEmpty { listOf(value.first) }
-      val nonEmptyShrinks2 = shrinks2.ifEmpty { listOf(value.second) }
-      return nonEmptyShrinks1.flatMap { value1 ->
-         nonEmptyShrinks2.map { value2 ->
-            value1 to value2
+      val nonEmptyShrinks1 = shrinksA.ifEmpty { listOf(value.first) }
+      val nonEmptyShrinks2 = shrinksB.ifEmpty { listOf(value.second) }
+      return nonEmptyShrinks1.flatMap { valueA ->
+         nonEmptyShrinks2.map { valueB ->
+            valueA to valueB
          }
       }
    }
