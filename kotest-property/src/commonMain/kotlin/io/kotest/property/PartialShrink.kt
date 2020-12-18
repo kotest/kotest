@@ -259,18 +259,18 @@ open class FlatmapShrinker<A, B>(
    shrinkerA: Shrinker<A>,
    shrinkerB: Shrinker<B>,
 ) : Shrinker<Pair<A, B>> {
-   val shrinker1 = shrinkerA.withCache()
-   val shrinker2 = shrinkerB.withCache()
+   val shrinkerA = shrinkerA.withCache()
+   val shrinkerB = shrinkerB.withCache()
    override fun shrink(value: Pair<A, B>): List<Pair<A, B>> {
       val shrinksA = shrinkerA.shrink(value.first)
       val shrinksB = shrinkerB.shrink(value.second)
 
       if (shrinksA.isEmpty() && shrinksB.isEmpty()) return emptyList()
 
-      val nonEmptyShrinks1 = shrinksA.ifEmpty { listOf(value.first) }
-      val nonEmptyShrinks2 = shrinksB.ifEmpty { listOf(value.second) }
-      return nonEmptyShrinks1.flatMap { valueA ->
-         nonEmptyShrinks2.map { valueB ->
+      val nonEmptyShrinksA = shrinksA.ifEmpty { listOf(value.first) }
+      val nonEmptyShrinksB = shrinksB.ifEmpty { listOf(value.second) }
+      return nonEmptyShrinksA.flatMap { valueA ->
+         nonEmptyShrinksB.map { valueB ->
             valueA to valueB
          }
       }
