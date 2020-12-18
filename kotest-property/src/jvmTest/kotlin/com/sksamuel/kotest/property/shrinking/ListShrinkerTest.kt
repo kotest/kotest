@@ -2,6 +2,7 @@ package com.sksamuel.kotest.property.shrinking
 
 import io.kotest.assertions.throwables.shouldThrowAny
 import io.kotest.core.spec.style.FunSpec
+import io.kotest.extensions.system.captureStandardOut
 import io.kotest.inspectors.forAtLeastOne
 import io.kotest.matchers.collections.shouldHaveAtMostSize
 import io.kotest.matchers.collections.shouldHaveSize
