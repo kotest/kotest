@@ -78,5 +78,10 @@ object KotestEngineSystemProperties {
     * Enable assert softly globally.
     * */
    const val globalAssertSoftly = "kotest.framework.assertion.globalassertsoftly"
+
+   /**
+    * Appends all tags associated with a test case to its display name.
+   * */
+   const val testNameAppendTags = "kotest.framework.testname.append.tags"
 }
 ```
