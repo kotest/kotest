@@ -53,6 +53,13 @@ fun LeafPsiElement.getSpecEntryPoint(): KtClassOrObject? {
 }
 
 /**
+ * Returns true if this class is subclass of a spec (including classes which themselves subclass spec).
+ */
+fun KtClassOrObject.isSpec(): Boolean {
+   return this.specStyle() != null
+}
+
+/**
  * Returns true if this element is a kotlin class and it is a subclass of a spec.
  * See [isSpec]
  */
