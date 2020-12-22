@@ -17,7 +17,7 @@ suspend fun <A, B, C, D, E, F, G, H, I> checkAll(
    genH: Gen<H>,
    genI: Gen<I>,
    property: suspend PropertyContext.(A, B, C, D, E, F, G, H, I) -> Unit
-): PropertyContext = proptest(computeDefaultIteration(genA, genB, genC, genD, genE, genF, genG), genA, genB, genC, genD, genE, genF, genG, genH, genI,  PropTestConfig(), property)
+): PropertyContext = proptest(computeDefaultIteration(genA, genB, genC, genD, genE, genF, genG, genH, genI), genA, genB, genC, genD, genE, genF, genG, genH, genI,  PropTestConfig(), property)
 
 suspend fun <A, B, C, D, E, F, G, H, I> checkAll(
    config: PropTestConfig,
@@ -31,7 +31,7 @@ suspend fun <A, B, C, D, E, F, G, H, I> checkAll(
    genH: Gen<H>,
    genI: Gen<I>,
    property: suspend PropertyContext.(A, B, C, D, E, F, G, H, I) -> Unit
-): PropertyContext = checkAll(computeDefaultIteration(genA, genB, genC, genD, genE, genF, genG), config, genA, genB, genC, genD, genE, genF, genG, genH, genI,  property)
+): PropertyContext = checkAll(computeDefaultIteration(genA, genB, genC, genD, genE, genF, genG, genH, genI), config, genA, genB, genC, genD, genE, genF, genG, genH, genI,  property)
 
 suspend fun <A, B, C, D, E, F, G, H, I> checkAll(
    iterations: Int,
@@ -145,7 +145,7 @@ suspend fun <A, B, C, D, E, F, G, H, I> forAll(
    genH: Gen<H>,
    genI: Gen<I>,
    property: suspend PropertyContext.(A, B, C, D, E, F, G, H, I) -> Boolean
-) = forAll(computeDefaultIteration(genA, genB, genC, genD, genE, genF, genG), PropTestConfig(), genA, genB, genC, genD, genE, genF, genG, genH, genI,  property)
+) = forAll(computeDefaultIteration(genA, genB, genC, genD, genE, genF, genG, genH, genI), PropTestConfig(), genA, genB, genC, genD, genE, genF, genG, genH, genI,  property)
 
 suspend fun <A, B, C, D, E, F, G, H, I> forAll(
    config: PropTestConfig = PropTestConfig(),
@@ -159,7 +159,7 @@ suspend fun <A, B, C, D, E, F, G, H, I> forAll(
    genH: Gen<H>,
    genI: Gen<I>,
    property: suspend PropertyContext.(A, B, C, D, E, F, G, H, I) -> Boolean
-) = forAll(computeDefaultIteration(genA, genB, genC, genD, genE, genF, genG), config, genA, genB, genC, genD, genE, genF, genG, genH, genI,  property)
+) = forAll(computeDefaultIteration(genA, genB, genC, genD, genE, genF, genG, genH, genI), config, genA, genB, genC, genD, genE, genF, genG, genH, genI,  property)
 
 suspend fun <A, B, C, D, E, F, G, H, I> forAll(
    iterations: Int,
@@ -233,7 +233,7 @@ suspend fun <A, B, C, D, E, F, G, H, I> forNone(
    genH: Gen<H>,
    genI: Gen<I>,
    property: suspend PropertyContext.(A, B, C, D, E, F, G, H, I) -> Boolean
-) = forNone(computeDefaultIteration(genA, genB, genC, genD, genE, genF, genG), PropTestConfig(), genA, genB, genC, genD, genE, genF, genG, genH, genI,  property)
+) = forNone(computeDefaultIteration(genA, genB, genC, genD, genE, genF, genG, genH, genI), PropTestConfig(), genA, genB, genC, genD, genE, genF, genG, genH, genI,  property)
 
 suspend fun <A, B, C, D, E, F, G, H, I> forNone(
    config: PropTestConfig = PropTestConfig(),
@@ -247,7 +247,7 @@ suspend fun <A, B, C, D, E, F, G, H, I> forNone(
    genH: Gen<H>,
    genI: Gen<I>,
    property: suspend PropertyContext.(A, B, C, D, E, F, G, H, I) -> Boolean
-) = forNone(computeDefaultIteration(genA, genB, genC, genD, genE, genF, genG), config, genA, genB, genC, genD, genE, genF, genG, genH, genI,  property)
+) = forNone(computeDefaultIteration(genA, genB, genC, genD, genE, genF, genG, genH, genI), config, genA, genB, genC, genD, genE, genF, genG, genH, genI,  property)
 
 suspend fun <A, B, C, D, E, F, G, H, I> forNone(
    iterations: Int,
