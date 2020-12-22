@@ -3,7 +3,6 @@
 package io.kotest.property
 
 import io.kotest.matchers.shouldBe
-import io.kotest.property.PropertyTesting.computeDefaultIteration
 import io.kotest.property.arbitrary.default
 import io.kotest.property.internal.proptest
 import kotlin.jvm.JvmName
