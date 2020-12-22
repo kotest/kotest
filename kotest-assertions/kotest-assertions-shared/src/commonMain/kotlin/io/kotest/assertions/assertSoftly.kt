@@ -21,8 +21,11 @@ inline fun <T> assertSoftly(assertions: () -> T): T {
    // outermost verifyAll block
    if (errorCollector.getCollectionMode() == ErrorCollectionMode.Soft) return assertions()
    errorCollector.setCollectionMode(ErrorCollectionMode.Soft)
-   return assertions().apply {
-      // set the collection mode back to the default
+   return try {
+      assertions()
+   } finally {
+      // In case if any exception is thrown from assertions block setting errorCollectionMode back to hard
+      // so that it won't remain soft for others tests. See https://github.com/kotest/kotest/issues/1932
       errorCollector.setCollectionMode(ErrorCollectionMode.Hard)
       errorCollector.throwCollectedErrors()
    }
