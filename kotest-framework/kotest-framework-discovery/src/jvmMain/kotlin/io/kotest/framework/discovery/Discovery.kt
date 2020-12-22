@@ -187,13 +187,6 @@ class Discovery(private val discoveryExtensions: List<DiscoveryExtension> = empt
             "org.jetbrains.kotlin.*",
             "org.junit.*"
          ).scan()
-      val duration = System.currentTimeMillis() - start
-      log("Discovery: Test discovery completed in ${duration}ms")
-
-      return scanResult.use { result ->
-         result.getSubclasses(Spec::class.java.name)
-            .map { Class.forName(it.name).kotlin }
-            .filterIsInstance<KClass<out Spec>>()
    }
 }
 
