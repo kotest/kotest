@@ -136,7 +136,7 @@ function Home() {
 
                      &nbsp;
 
-                     <a href="https://oss.sonatype.org/content/repositories/snapshots/io/kotest">
+                     <a href="https://oss.sonatype.org/content/repositories/snapshots/io/kotest/">
                         <img
                            src="https://img.shields.io/nexus/s/https/oss.sonatype.org/io.kotest/kotest-framework-engine.svg?label=snapshot&style=for-the-badge"
                            alt="version badge"/>
