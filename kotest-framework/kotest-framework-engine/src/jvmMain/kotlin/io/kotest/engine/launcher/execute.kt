@@ -11,8 +11,10 @@ import io.kotest.engine.extensions.EnabledConditionSpecDiscoveryExtension
 import io.kotest.engine.extensions.IgnoredSpecDiscoveryExtension
 import io.kotest.engine.extensions.TagsExcludedDiscoveryExtension
 import io.kotest.engine.reporter.Reporter
+import io.kotest.fp.Try
 import io.kotest.framework.discovery.Discovery
 import io.kotest.framework.discovery.DiscoveryRequest
+import io.kotest.framework.discovery.DiscoveryResult
 import io.kotest.framework.discovery.DiscoverySelector
 import kotlin.reflect.KClass
 
@@ -27,43 +29,62 @@ fun execute(
    tags: Tags?,
    dumpconfig: Boolean = true,
 ) {
-   try {
+   setupLauncher(specFQN, packageName, testPath, tags, dumpconfig, reporter)
+      .fold(
+         {
+            reporter.engineStarted(emptyList())
+            reporter.engineFinished(listOf(it))
+         },
+         { launcher ->
+            executeLauncher(launcher)
+               .onFailure { reporter.engineFinished(listOf(it)) }
+         }
+      )
+}
 
-      val specClass = specFQN?.let { (Class.forName(it) as Class<Spec>).kotlin }
-      val specs = specs(specClass, packageName)
-      val filter = if (testPath == null || specClass == null) null else {
-         TestPathTestCaseFilter(testPath, specClass)
-      }
+private fun executeLauncher(launcher: KotestEngineLauncher) = Try {
+   launcher.launch()
+}
 
-      KotestEngineLauncher()
-         .withListener(ReporterTestEngineListener(reporter))
-         .withSpecs(specs)
-         .withTags(tags)
-         .withFilters(listOfNotNull(filter))
-         .withDumpConfig(dumpconfig)
-         .launch()
+private fun setupLauncher(
+   specFQN: String?,
+   packageName: String?,
+   testPath: String?,
+   tags: Tags?,
+   dumpconfig: Boolean = true,
+   reporter: Reporter
+): Try<KotestEngineLauncher> = Try {
 
-   } catch (e: Throwable) {
-      println(e)
-      e.printStackTrace()
-      reporter.engineFinished(listOf(e))
+   val specClass = specFQN?.let { (Class.forName(it) as Class<Spec>).kotlin }
+   val (specs, _, error) = specs(specClass, packageName)
+   val filter = if (testPath == null || specClass == null) null else {
+      TestPathTestCaseFilter(testPath, specClass)
    }
+
+   if (error != null) throw error
+
+   KotestEngineLauncher()
+      .withListener(ReporterTestEngineListener(reporter))
+      .withSpecs(specs)
+      .withTags(tags)
+      .withFilters(listOfNotNull(filter))
+      .withDumpConfig(dumpconfig)
 }
 
 /**
  * Returns the spec classes to execute by using an FQN class name, a package scan,
  * or a full scan.
  */
-private fun specs(specClass: KClass<out Spec>?, packageName: String?): List<KClass<out Spec>> {
+private fun specs(specClass: KClass<out Spec>?, packageName: String?): DiscoveryResult {
    // if the spec class was null, then we perform discovery to locate all the classes
    // otherwise that specific spec class is used
    return when (specClass) {
       null -> scan(packageName)
-      else -> listOf(specClass)
+      else -> DiscoveryResult(listOf(specClass), emptyList(), null)
    }
 }
 
-private fun scan(packageName: String?): List<KClass<out Spec>> {
+private fun scan(packageName: String?): DiscoveryResult {
    val packageSelector = packageName?.let { DiscoverySelector.PackageDiscoverySelector(it) }
    val req = DiscoveryRequest(selectors = listOfNotNull(packageSelector))
    val extensions = listOf(
@@ -72,6 +93,5 @@ private fun scan(packageName: String?): List<KClass<out Spec>> {
       EnabledConditionSpecDiscoveryExtension,
       TagsExcludedDiscoveryExtension,
    ) + configuration.extensions().filterIsInstance<DiscoveryExtension>()
-   val result = Discovery(extensions).discover(req)
-   return result.specs
+   return Discovery(extensions).discover(req)
 }

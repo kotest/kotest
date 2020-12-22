@@ -13,10 +13,13 @@ import io.kotest.engine.extensions.SpecifiedTagsTagExtension
 import io.kotest.engine.listener.TestEngineListener
 import io.kotest.engine.spec.SpecExecutor
 import io.kotest.core.internal.isIsolate
+import io.kotest.core.script.ScriptSpec
+import io.kotest.engine.script.ScriptExecutor
 import io.kotest.engine.spec.sort
 import io.kotest.fp.Try
 import io.kotest.mpp.log
 import kotlin.reflect.KClass
+import kotlin.script.templates.standard.ScriptTemplateWithArgs
 
 data class KotestEngineConfig(
    val filters: List<TestFilter>,
@@ -25,7 +28,7 @@ data class KotestEngineConfig(
    val dumpConfig: Boolean,
 )
 
-data class TestPlan(val classes: List<KClass<out Spec>>)
+data class TestPlan(val classes: List<KClass<out Spec>>, val scripts: List<KClass<out ScriptTemplateWithArgs>>)
 
 class KotestEngine(private val config: KotestEngineConfig) {
 
@@ -80,6 +83,7 @@ class KotestEngine(private val config: KotestEngineConfig) {
       Try { submitAll(plan) }
          .fold(
             { error ->
+               log("KotestEngine: Error during submit all", error)
                configuration.listeners().afterProject().fold(
                   { end(listOf(error, it)) },
                   { end(it + error) }
@@ -108,7 +112,21 @@ class KotestEngine(private val config: KotestEngineConfig) {
    private fun notifyListenerEngineStarted(plan: TestPlan) = Try { config.listener.engineStarted(plan.classes) }
 
    private suspend fun submitAll(plan: TestPlan) = Try {
-      log("KotestEngine: Beginning test plan [specs=${plan.classes.size}, parallelism=${configuration.parallelism}, concurrencyMode=${configuration.concurrencyMode}]")
+      log("KotestEngine: Beginning test plan [specs=${plan.classes.size}, scripts=${plan.scripts.size}, parallelism=${configuration.parallelism}, concurrencyMode=${configuration.concurrencyMode}]")
+
+      // scripts always run sequentially
+      log("KotestEngine: Launching ${plan.scripts.size} scripts")
+      if (plan.scripts.isNotEmpty()) {
+         config.listener.specStarted(ScriptSpec::class)
+         plan.scripts.forEach { scriptKClass ->
+            log(scriptKClass.java.methods.toList().toString())
+            ScriptExecutor(config.listener)
+               .execute(scriptKClass)
+               .onFailure { config.listener.specFinished(ScriptSpec::class, it, emptyMap()) }
+         }
+         config.listener.specFinished(ScriptSpec::class, null, emptyMap())
+         log("KotestEngine: Script execution completed")
+      }
 
       // spec classes are ordered using an instance of SpecExecutionOrder
       val ordered = plan.classes.sort(configuration.specExecutionOrder)

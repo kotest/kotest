@@ -18,7 +18,9 @@ class SpecInitializationErrorTest : FunSpec({
       val root = KotestEngineDescriptor(
          UniqueId.forEngine("kotest"),
          emptyList(),
-         emptyList()
+         emptyList(),
+         emptyList(),
+         null,
       )
       val finished = mutableMapOf<String, TestExecutionResult.Status>()
 
@@ -48,7 +50,9 @@ class SpecInitializationErrorTest : FunSpec({
       val root = KotestEngineDescriptor(
          UniqueId.forEngine("kotest"),
          emptyList(),
-         emptyList()
+         emptyList(),
+         emptyList(),
+         null,
       )
       val finished = mutableMapOf<String, TestExecutionResult.Status>()
 

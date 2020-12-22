@@ -1,10 +1,14 @@
 object Libs {
 
-   const val kotlinVersion = "1.4.20"
+   const val kotlinVersion = "1.4.21"
    const val dokkaVersion = "0.10.1"
    const val adarshrTestLoggerVersion = "2.0.0"
    const val gradleVersionsPluginVersion = "0.28.0"
    const val kotestGradlePlugin = "0.1.4"
+
+   object Kotlin {
+      const val kotlinScriptRuntime = "org.jetbrains.kotlin:kotlin-script-runtime:$kotlinVersion"
+   }
 
    object Arrow {
       private const val version = "0.10.5"
