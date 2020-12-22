@@ -1,10 +1,11 @@
 ---
+id: plugins
 title: Plugins
 slug: plugins.html
 ---
 
 Sometimes there's a need for special integration with some tools that are more complex
-than using [Listeners](../listeners.md) or [Extensions](../extensions.md). In this situation plugins are necessary.
+than using [Listeners](listeners.md) or [Extensions](extensions.md). In this situation plugins are necessary.
 
 
 ## Pitest
