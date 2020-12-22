@@ -131,12 +131,12 @@ fun <A, B : A> Arb<A>.merge(other: Gen<B>): Arb<A> = object : Arb<A>() {
 }
 
 /**
- * returns a new [Arb] with the supplied edgecases
+ * Returns a new [Arb] with the supplied edgecases replacing any existing edgecases.
  */
 fun <A> Arb<A>.withEdgecases(edgecases: List<A>): Arb<A> = arbitrary(edgecases) { this.next(it) }
 
 /**
- * returns a new [Arb] with the supplied edgecases
+ * Returns a new [Arb] with the supplied edgecases replacing any existing edgecases.
  */
 fun <A> Arb<A>.withEdgecases(vararg edgecases: A): Arb<A> = withEdgecases(edgecases.toList())
 

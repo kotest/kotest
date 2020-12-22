@@ -121,9 +121,7 @@ abstract class Exhaustive<out A> : Gen<A>() {
     */
    fun toArb(): Arb<A> = Arb.of(values)
 
-   companion object {
-
-   }
+   companion object
 }
 
 /**
