@@ -23,7 +23,7 @@ import io.kotest.matchers.string.contain
 import io.kotest.matchers.string.endWith
 import io.kotest.matchers.string.shouldNotEndWith
 
-class SoftAssertionsTest : FreeSpec({
+class AssertSoftlyTest : FreeSpec({
 
    "assertSoftly" - {
 

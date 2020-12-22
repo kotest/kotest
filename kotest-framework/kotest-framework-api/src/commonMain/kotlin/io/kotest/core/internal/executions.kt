@@ -9,7 +9,7 @@ import io.kotest.core.test.TestType
 internal suspend fun TestCase.executeWithBehaviours(context: TestContext) {
    val fn = test
    wrapTestWithAssertionModeCheck(this) {
-      wrapTestWithGlobalAssert {
+      wrapTestWithGlobalAssert(this) {
          fn(context)
       }
    }
@@ -28,14 +28,14 @@ private suspend fun wrapTestWithAssertionModeCheck(testCase: TestCase, run: susp
 }
 
 /**
- * Wraps an execution function with global assert mode if enabled at the project level.
+ * Wraps an execution function with global assert mode if enabled at the project level and if
+ * this [testCase] is a [TestType.Test].
  */
-private suspend fun wrapTestWithGlobalAssert(run: suspend () -> Unit) {
-   if (configuration.globalAssertSoftly) {
-      assertSoftly {
+private suspend fun wrapTestWithGlobalAssert(testCase: TestCase, run: suspend () -> Unit) {
+   when {
+      testCase.type == TestType.Test && configuration.globalAssertSoftly -> assertSoftly {
          run()
       }
-   } else {
-      run()
+      else -> run()
    }
 }

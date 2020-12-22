@@ -2,7 +2,9 @@ package io.kotest.assertions
 
 import io.kotest.mpp.stacktraces
 
-/** An error that bundles multiple other [Throwable]s together */
+/**
+ * An error that bundles multiple other [Throwable]s together.
+ */
 class MultiAssertionError(errors: List<Throwable>) : AssertionError(createMessage(errors)) {
    companion object {
       private fun createMessage(errors: List<Throwable>) = buildString {
