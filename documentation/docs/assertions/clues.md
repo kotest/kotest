@@ -3,7 +3,9 @@ title: Clues
 slug: clues.html
 ---
 
-
+:::note
+Clues only work if you are using the Kotest test framework in conjuction with the assertions library
+:::
 
 
 Sometimes a failed assertion contains enough information in the error message to know what went wrong.
