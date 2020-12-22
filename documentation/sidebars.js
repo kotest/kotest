@@ -50,6 +50,7 @@ module.exports = {
       'framework/data_driven_testing',
       'framework/listeners',
       'framework/extensions',
+      'framework/plugins',
       'framework/mocks',
       {
          type: "category",
