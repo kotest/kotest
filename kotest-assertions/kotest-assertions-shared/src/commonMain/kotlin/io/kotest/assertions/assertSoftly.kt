@@ -1,10 +1,10 @@
 package io.kotest.assertions
 
 /**
- * Run multiple assertions and throw a single error after all are executed if any fail
+ * Runs multiple assertions and throw a composite error with all failures
  *
  * This method will run all the assertions inside [assertions] block, and will collect all failures that may happen.
- * It then compact all of them in a single throwable and throw it instead, or nothing if no assertion fail.
+ * It will then collect them into a single throwable and throw, or return the result if no assertions failed.
  *
  * ```
  *     // All assertions below are going to be executed, even when one or multiple fail.
@@ -17,20 +17,22 @@ package io.kotest.assertions
  * ```
  */
 inline fun <T> assertSoftly(assertions: () -> T): T {
-  // Handle the edge case of nested calls to this function by only calling throwCollectedErrors in the
-  // outermost verifyAll block
-  if (errorCollector.getCollectionMode() == ErrorCollectionMode.Soft) return assertions()
+   // Handle the edge case of nested calls to this function by only calling throwCollectedErrors in the
+   // outermost verifyAll block
+   if (errorCollector.getCollectionMode() == ErrorCollectionMode.Soft) return assertions()
    errorCollector.setCollectionMode(ErrorCollectionMode.Soft)
-  return assertions().apply {
-    errorCollector.throwCollectedErrors()
-  }
+   return assertions().apply {
+      // set the collection mode back to the default
+      errorCollector.setCollectionMode(ErrorCollectionMode.Hard)
+      errorCollector.throwCollectedErrors()
+   }
 }
 
 /**
- * Run multiple assertions and throw a single error after all are executed if any fail
+ * Runs multiple assertions and throw a composite error with all failures.
  *
  * This method will run all the assertions inside [assertions] block, and will collect all failures that may happen.
- * It then compact all of them in a single throwable and throw it instead, or nothing if no assertion fail.
+ * It will then collect them into a single throwable and throw, or return the result if no assertions failed.
  *
  * ```
  *     // All assertions below are going to be executed, even when one or multiple fail.

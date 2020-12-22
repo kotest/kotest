@@ -4,6 +4,11 @@ import io.kotest.mpp.stacktraces
 
 expect val errorCollector: ErrorCollector
 
+/**
+ * Specifies an assertion mode:
+ * - Hard: assertion errors are thrown immediately
+ * - Soft: assertion errors are collected and throw together
+ */
 enum class ErrorCollectionMode {
    Soft, Hard
 }
@@ -90,12 +95,9 @@ fun ErrorCollector.collectOrThrow(error: Throwable) {
 }
 
 /**
- * The errors for the current execution are thrown as a single
- * throwable.
+ * All errors currently collected in the [ErrorCollector] are throw as a single [MultiAssertionError].
  */
 fun ErrorCollector.throwCollectedErrors() {
-   // set the collection mode back to the default
-   setCollectionMode(ErrorCollectionMode.Hard)
    val failures = errors()
    clear()
    if (failures.isNotEmpty()) {
