@@ -12,7 +12,7 @@ documentation for the previous data test support, [click here](data_driven_testi
 When writing tests that are logic based, one or two directed examples that work through specific scenarios make sense.
 Other times we have tests that are example based, and we want to provide many combinations of parameters.
 
-In these situations, **data driven testing** (also called table driving testing) is an easy technique to avoid tedious
+In these situations, **data driven testing** (also called table driven testing) is an easy technique to avoid tedious
 boilerplate.
 
 Kotest has support for data driven testing built into the framework. This means it will automatically generate the test

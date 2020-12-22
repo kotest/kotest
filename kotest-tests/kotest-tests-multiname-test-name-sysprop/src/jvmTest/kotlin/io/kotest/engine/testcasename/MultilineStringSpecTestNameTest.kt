@@ -1,4 +1,4 @@
-package io.kotest.engine.timeout
+package io.kotest.engine.testcasename
 
 import io.kotest.assertions.assertSoftly
 import io.kotest.core.spec.style.StringSpec

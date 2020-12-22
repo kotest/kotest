@@ -2,6 +2,7 @@ package io.kotest.core.test
 
 import io.kotest.core.SourceRef
 import io.kotest.core.factory.FactoryId
+import io.kotest.core.internal.tags.allTags
 import io.kotest.core.sourceRef
 import io.kotest.core.spec.Spec
 
@@ -93,5 +94,18 @@ data class TestCase(
             null,
             null
          )
+
+      fun appendTagsInDisplayName(testCase: TestCase) : TestCase {
+         val tagNames = testCase.allTags().joinToString(", ")
+
+         return if (tagNames.isNotBlank()) {
+            val description = testCase.description
+            val originalName = description.name
+            val nameWithTagsAppended = originalName.copy(displayName = "${originalName.displayName}[tags = $tagNames]")
+            testCase.copy(description = description.copy(name = nameWithTagsAppended))
+         } else {
+            testCase
+         }
+      }
    }
 }

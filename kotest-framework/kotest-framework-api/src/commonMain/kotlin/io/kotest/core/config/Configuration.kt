@@ -200,6 +200,8 @@ class Configuration {
 
    var removeTestNameWhitespace: Boolean = false
 
+   var testNameAppendTags: Boolean = false
+
    /**
     * Returns all globally registered [Listener]s.
     */

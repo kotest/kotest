@@ -44,6 +44,7 @@ kotlin {
 tasks.named<Test>("jvmTest") {
    useJUnitPlatform()
    systemProperty("kotest.framework.testname.multiline", true)
+   systemProperty("kotest.framework.testname.append.tags", true)
    filter {
       isFailOnNoMatchingTests = false
    }

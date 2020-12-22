@@ -10,7 +10,7 @@
    text-align: center;
    position: relative;
    overflow: hidden;
-   background: #4aa041;
+   background: #2d3338;
 }
 
 @media screen and (max-width: 966px) {
@@ -35,4 +35,23 @@
 .featureImage {
    height: 200px;
    width: 200px;
+}
+
+.heroSlogan {
+   font-size: 60px;
+   line-height: normal;
+}
+
+
+.heroSlogan strong {
+   color: #4dbf4d;
+}
+
+.gettingStartedButton {
+   background: #ffffff;
+}
+
+.gettingStartedButton:hover {
+   background: #2d3338;
+   color: #ffffff;
 }

@@ -41,7 +41,7 @@ object Libs {
    }
 
    object Koin {
-      private const val version = "2.2.1"
+      private const val version = "2.2.2"
       const val core = "org.koin:koin-core:$version"
       const val test = "org.koin:koin-test:$version"
    }

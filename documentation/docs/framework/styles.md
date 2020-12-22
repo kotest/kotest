@@ -429,7 +429,7 @@ Just add the `@Test` annotation to any function defined in the spec class.
 
 You can also add annotations to execute something before tests/specs and after tests/specs, similarly to JUnit's
 
-```
+```kotlin
 @BeforeAll / @BeforeClass
 @BeforeEach / @Before
 @AfterAll / @AfterClass

@@ -68,6 +68,9 @@ abstract class Arb<out A> : Gen<A>() {
     */
    abstract fun edgecases(): List<A>
 
+   /**
+    * Returns a random [Sample] from this [Arb] using the supplied random source.
+    */
    open fun sample(rs: RandomSource): Sample<A> = values(rs).first()
 
    @Deprecated("implement one value at a time using sample(rs). This function will be removed in 4.5.", ReplaceWith("sample(rs)"))
@@ -86,8 +89,7 @@ abstract class Arb<out A> : Gen<A>() {
       }
    }
 
-   companion object {
-   }
+   companion object
 }
 
 /**

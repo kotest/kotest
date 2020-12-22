@@ -10,6 +10,7 @@ import io.kotest.core.internal.KotestEngineSystemProperties
 import io.kotest.core.spec.Spec
 import io.kotest.fp.Try
 import io.kotest.fp.getOrElse
+import java.lang.management.ManagementFactory
 import java.util.concurrent.ConcurrentHashMap
 import kotlin.reflect.KClass
 import kotlin.script.templates.standard.ScriptTemplateWithArgs
@@ -141,11 +142,13 @@ class Discovery(private val discoveryExtensions: List<DiscoveryExtension> = empt
       // first filter down to spec instances only, then load the full class
       val loadedClasses = request
          .selectors
+         .asSequence()
          .filterIsInstance<DiscoverySelector.ClassDiscoverySelector>()
          .map { Class.forName(it.className, false, this::class.java.classLoader) }
          .filter(isSpecSubclass)
          .map { Class.forName(it.name).kotlin }
          .filterIsInstance<KClass<out Spec>>()
+         .toList()
 
       val duration = System.currentTimeMillis() - start
       log("Discovery: Loading of selected classes completed in ${duration}ms")
@@ -157,7 +160,8 @@ class Discovery(private val discoveryExtensions: List<DiscoveryExtension> = empt
     * locations specified by the uris param.
     */
    private fun scanUris(): List<KClass<out Spec>> {
-      log("Discovery: Starting test discovery scan...")
+      val uptime = ManagementFactory.getRuntimeMXBean().uptime
+      log("Discovery: Starting test discovery scan... [uptime=$uptime]")
       val start = System.currentTimeMillis()
       val duration = System.currentTimeMillis() - start
       log("Discovery: Test discovery completed in ${duration}ms")
@@ -183,6 +187,13 @@ class Discovery(private val discoveryExtensions: List<DiscoveryExtension> = empt
             "org.jetbrains.kotlin.*",
             "org.junit.*"
          ).scan()
+      val duration = System.currentTimeMillis() - start
+      log("Discovery: Test discovery completed in ${duration}ms")
+
+      return scanResult.use { result ->
+         result.getSubclasses(Spec::class.java.name)
+            .map { Class.forName(it.name).kotlin }
+            .filterIsInstance<KClass<out Spec>>()
    }
 }
 

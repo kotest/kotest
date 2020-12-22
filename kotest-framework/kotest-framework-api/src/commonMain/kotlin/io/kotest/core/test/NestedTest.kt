@@ -2,6 +2,7 @@ package io.kotest.core.test
 
 import io.kotest.core.factory.FactoryId
 import io.kotest.core.SourceRef
+import io.kotest.core.config.configuration
 import io.kotest.core.spec.Spec
 
 /**
@@ -21,7 +22,7 @@ data class NestedTest(
  * Returns a full [TestCase] from this nested test, attaching the nested test to the given spec.
  */
 fun NestedTest.toTestCase(spec: Spec, parent: Description): TestCase {
-   return TestCase(
+   val testCase = TestCase(
       description = parent.append(this.name, type),
       spec = spec,
       test = test,
@@ -31,4 +32,9 @@ fun NestedTest.toTestCase(spec: Spec, parent: Description): TestCase {
       factoryId = factoryId,
       assertionMode = null
    )
+   return if (configuration.testNameAppendTags) {
+      TestCase.appendTagsInDisplayName(testCase)
+   } else {
+      testCase
+   }
 }

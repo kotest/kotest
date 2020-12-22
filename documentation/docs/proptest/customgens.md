@@ -31,9 +31,9 @@ For example, here is an `Arbitrary` that supports a custom class called `Person`
 data class Person(val name: String, val age: Int)
 
 val personArb = arbitrary { rs ->
-   val names = Arb.string().values(rs)
-   val ages = Arb.int().values(rs)
-   names.zip(ages).map { (name, age) -> Person(name.value, age.value) }
+   val name = Arb.string(10..12).next(rs)
+   val age = Arb.int(21, 150).next(rs)
+   Person(name, age)
 }
 ```
 

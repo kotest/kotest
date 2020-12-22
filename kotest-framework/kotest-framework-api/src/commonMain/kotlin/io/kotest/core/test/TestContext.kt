@@ -29,6 +29,8 @@ interface TestContext : CoroutineScope {
 
    /**
     * Creates a [NestedTest] and then registers with the [TestContext].
+    *
+    * This will throw if we are trying to add a nested test to a non-container.
     */
    suspend fun registerTestCase(
       name: DescriptionName.TestName,
@@ -36,8 +38,13 @@ interface TestContext : CoroutineScope {
       config: TestCaseConfig,
       type: TestType
    ) {
-      val nested = NestedTest(name, test, config, type, sourceRef(), testCase.factoryId)
-      registerTestCase(nested)
+      when (testCase.type) {
+         TestType.Container -> {
+            val nested = NestedTest(name, test, config, type, sourceRef(), testCase.factoryId)
+            registerTestCase(nested)
+         }
+         TestType.Test -> throw InvalidTestConstructionException("Cannot add a nested test to '${testCase.displayName}' because it is not a test container")
+      }
    }
 
    /**
@@ -45,6 +52,8 @@ interface TestContext : CoroutineScope {
     */
    suspend fun registerTestCase(nested: NestedTest)
 }
+
+class InvalidTestConstructionException(msg: String) : RuntimeException(msg)
 
 private class TestContextWithCoroutineContext(
    val delegate: TestContext,
