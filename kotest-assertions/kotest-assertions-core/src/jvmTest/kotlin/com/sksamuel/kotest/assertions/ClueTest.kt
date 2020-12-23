@@ -78,6 +78,12 @@ class ClueTest : FreeSpec({
          state shouldBe expected.toString()
       }
 
+      "clue can be nullable" {
+         val ex = shouldThrow<AssertionError> {
+            withClue(null) { 1 shouldBe 2 }
+         }
+         ex.message shouldBe "null\nexpected:<2> but was:<1>"
+      }
    }
    "asClue()" - {
       "should prepend clue to message with a newline" {
@@ -120,6 +126,13 @@ class ClueTest : FreeSpec({
             //after nesting, everything looks as before
             shouldThrow<AssertionError> {it.status shouldBe 200}.message shouldBe "HttpResponse(status=404, body=not found)\nexpected:<200> but was:<404>"
          }
+      }
+
+      "clue can be nullable" {
+         val ex = shouldThrow<AssertionError> {
+            null.asClue { 1 shouldBe 2 }
+         }
+         ex.message shouldBe "null\nexpected:<2> but was:<1>"
       }
    }
 
