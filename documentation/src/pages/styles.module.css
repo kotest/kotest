@@ -40,6 +40,7 @@
 .heroSlogan {
    font-size: 60px;
    line-height: normal;
+   color: var(--ifm-color-white) !important;
 }
 
 
@@ -49,6 +50,7 @@
 
 .gettingStartedButton {
    background: #ffffff;
+   color: var(--ifm-color-gray-900) !important;
 }
 
 .gettingStartedButton:hover {
