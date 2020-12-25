@@ -23,7 +23,7 @@ These blogs and articles can be useful in addition to the official docs to show 
 * [Micronaut and KotlinTest by Ben (2020)](https://www.nerd.vision/post/micronaut-and-kotlintest)
 * [Parameterized tests with Kotest (2020)](https://kotlintesting.com/kotest-parameterized/)
 * [Using Testcontainers with Micronaut and Kotest (2020)](https://akobor.me/posts/using-testcontainers-with-micronaut-and-kotest)
-* [Property-based testing in Android - Are we testing like it's 1999?](https://www.droidcon.com/media-detail?video=491022325)
+* [Property-based testing in Android - are we testing like it's 1999? (2020)](https://www.droidcon.com/media-detail?video=491022325)
 
 
 Please open a PR to add your blog or article here.
