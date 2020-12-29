@@ -10,6 +10,7 @@ object PropertyTesting {
    var shouldPrintGeneratedValues: Boolean = sysprop("kotest.proptest.output.generated-values", "false") == "true"
    var shouldPrintShrinkSteps: Boolean = sysprop("kotest.proptest.output.shrink-steps", "true") == "true"
    var defaultIterationCount: Int = sysprop("kotest.proptest.default.iteration.count", "1000").toInt()
+   var requireAtLeastOneSampleForArbs: Boolean = sysprop("kotest.proptest.arb.require-at-least-one-sample", "false") == "true"
 }
 
 /**
@@ -34,12 +35,7 @@ fun computeDefaultIteration(vararg gens: Gen<*>): Int =
 fun calculateMinimumIterations(vararg gens: Gen<*>): Int {
    return when {
       gens.all { it is Exhaustive } -> gens.fold(1) { acc, gen -> gen.minIterations() * acc }
-      else -> gens.fold(0) { acc, gen ->
-         when (gen) {
-            is Exhaustive -> max(acc, gen.values.size)
-            is Arb -> max(acc, gen.edgecases().size)
-         }
-      }
+      else -> gens.fold(0) { acc, gen -> max(acc, gen.minIterations()) }
    }
 }
 
