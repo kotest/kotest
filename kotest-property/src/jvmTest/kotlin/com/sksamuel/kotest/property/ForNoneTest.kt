@@ -49,10 +49,10 @@ class ForNoneTest : FunSpec({
       }.message shouldBe "Require at least 101 iterations to cover requirements"
    }
 
-   context("when kotest.proptest.arb.require-at-least-one-sample is enabled") {
-      val defaultRequireAtLeastOneSampleForArbs = PropertyTesting.requireAtLeastOneSampleForArbs
-      beforeTest { PropertyTesting.requireAtLeastOneSampleForArbs = true }
-      afterTest { PropertyTesting.requireAtLeastOneSampleForArbs = defaultRequireAtLeastOneSampleForArbs }
+   context("when kotest.proptest.arb.iterations.include.sample is enabled") {
+      val defaultRequireAtLeastOneSampleForArbs = PropertyTesting.includeAtLeastOneSampleForArbs
+      beforeTest { PropertyTesting.includeAtLeastOneSampleForArbs = true }
+      afterTest { PropertyTesting.includeAtLeastOneSampleForArbs = defaultRequireAtLeastOneSampleForArbs }
 
       test("should throw error if iterations is less than min") {
          val edgecases = { n: Int -> List(n) { it } }

@@ -10,7 +10,7 @@ object PropertyTesting {
    var shouldPrintGeneratedValues: Boolean = sysprop("kotest.proptest.output.generated-values", "false") == "true"
    var shouldPrintShrinkSteps: Boolean = sysprop("kotest.proptest.output.shrink-steps", "true") == "true"
    var defaultIterationCount: Int = sysprop("kotest.proptest.default.iteration.count", "1000").toInt()
-   var requireAtLeastOneSampleForArbs: Boolean = sysprop("kotest.proptest.arb.require-at-least-one-sample", "false") == "true"
+   var includeAtLeastOneSampleForArbs: Boolean = sysprop("kotest.proptest.arb.iterations.include.sample", "false") == "true"
 }
 
 /**
