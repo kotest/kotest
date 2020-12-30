@@ -37,7 +37,7 @@ sealed class Gen<out A> {
     * Requesting a property test with fewer than this will result in an exception.
     */
    fun minIterations(): Int = when (this) {
-      is Arb -> this.edgecases().size
+      is Arb -> if (PropertyTesting.includeAtLeastOneSampleForArbs) this.edgecases().size + 1 else this.edgecases().size
       is Exhaustive -> this.values.size
    }
 }
