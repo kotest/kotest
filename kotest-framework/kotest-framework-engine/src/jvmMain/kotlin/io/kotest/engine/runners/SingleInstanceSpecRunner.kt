@@ -13,7 +13,7 @@ import io.kotest.engine.listener.TestEngineListener
 import io.kotest.core.internal.resolvedThreads
 import io.kotest.engine.ExecutorExecutionContext
 import io.kotest.core.internal.TestCaseExecutor
-import io.kotest.core.internal.resolvedConcurrencyMode
+import io.kotest.core.internal.resolvedTestLaunchMode
 import io.kotest.core.spec.invokeAfterSpec
 import io.kotest.core.spec.invokeBeforeSpec
 import io.kotest.core.spec.materializeAndOrderRootTests
@@ -48,7 +48,7 @@ internal class SingleInstanceSpecRunner(listener: TestEngineListener) : SpecRunn
                runTest(it, context)
             }
          } else {
-            run(spec.resolvedConcurrencyMode(), rootTests) {
+            run(spec.resolvedTestLaunchMode(), rootTests) {
                log("SingleInstanceSpecRunner: Executing test $it")
                runTest(it, context)
             }
