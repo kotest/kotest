@@ -19,6 +19,7 @@ import io.kotest.core.internal.isActive
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.materializeAndOrderRootTests
+import io.kotest.engine.config.factory
 import io.kotest.fp.Try
 import io.kotest.fp.flatten
 import io.kotest.fp.success
@@ -161,10 +162,10 @@ class SpecExecutor(private val listener: TestEngineListener) {
 
    private fun runner(spec: Spec): SpecRunner {
       return when (spec.resolvedIsolationMode()) {
-         IsolationMode.SingleInstance -> SingleInstanceSpecRunner(listener)
-         IsolationMode.InstancePerTest -> InstancePerTestSpecRunner(listener)
+         IsolationMode.SingleInstance -> SingleInstanceSpecRunner(listener, factory.value)
+         IsolationMode.InstancePerTest -> InstancePerTestSpecRunner(listener, factory.value)
          IsolationMode.InstancePerLeaf -> when (val threads = spec.resolvedThreads()) {
-            null, 0, 1 -> InstancePerLeafSpecRunner(listener) // topo restore per leaf
+            null, 0, 1 -> InstancePerLeafSpecRunner(listener, factory.value) // topo restore per leaf
             else -> ConcurrentInstancePerLeafSpecRunner(listener, threads)
          }
       }

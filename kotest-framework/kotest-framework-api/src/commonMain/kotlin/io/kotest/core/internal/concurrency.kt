@@ -10,7 +10,7 @@ import kotlin.reflect.KClass
 
 fun KClass<*>.isIsolate(): Boolean = annotation<DoNotParallelize>() != null || annotation<Isolate>() != null
 
-@Deprecated("Explicit thread mode will be removed in 5.0; use parallelism setting with concurrency mode")
+@Deprecated("Explicit thread mode will be removed in 4.6; use parallelism setting with launch mode")
 fun Spec.resolvedThreads(): Int? = this.threads() ?: this.threads
 
 /**

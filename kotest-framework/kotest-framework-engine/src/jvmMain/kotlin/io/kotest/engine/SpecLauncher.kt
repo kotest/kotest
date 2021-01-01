@@ -2,9 +2,10 @@ package io.kotest.engine
 
 import io.kotest.core.config.LaunchMode
 import io.kotest.core.config.configuration
-import io.kotest.core.extensions.SpecDispatcherFactoryExtension
+import io.kotest.core.extensions.CoroutineDispatcherFactoryExtension
 import io.kotest.core.internal.isIsolate
 import io.kotest.core.spec.Spec
+import io.kotest.engine.config.factory
 import io.kotest.engine.listener.TestEngineListener
 import io.kotest.engine.spec.SpecExecutor
 import io.kotest.mpp.log
@@ -31,7 +32,7 @@ interface SpecLauncher {
  *
  * Each coroutine is launched on a single threaded dispatcher to ensure that all tests
  * inside that coroutine execute on the same thread without requiring tests to be thread
- * aware. The [SpecDispatcherFactoryExtension] assigns dispatchers to specs.
+ * aware. The [CoroutineDispatcherFactoryExtension] assigns dispatchers to specs.
  */
 object DefaultSpecLauncher : SpecLauncher {
 
@@ -45,11 +46,8 @@ object DefaultSpecLauncher : SpecLauncher {
 
       log("DefaultSpecLauncher: Partitioned specs into ${parallel.size} parallel and ${sequential.size} sequential")
 
-      val factory = configuration.extensions().filterIsInstance<SpecDispatcherFactoryExtension>().firstOrNull()
-         ?: DefaultSpecDispatcherFactory(configuration.parallelism)
-
-      if (parallel.isNotEmpty()) concurrent(parallel, listener, factory)
-      if (sequential.isNotEmpty()) sequential(sequential, listener, factory)
+      if (parallel.isNotEmpty()) concurrent(parallel, listener, factory.value)
+      if (sequential.isNotEmpty()) sequential(sequential, listener, factory.value)
    }
 
    /**
@@ -64,7 +62,7 @@ object DefaultSpecLauncher : SpecLauncher {
    private suspend fun sequential(
       specs: List<KClass<out Spec>>,
       listener: TestEngineListener,
-      factory: SpecDispatcherFactoryExtension
+      factory: CoroutineDispatcherFactoryExtension
    ) {
       val executor = SpecExecutor(listener)
       log("DefaultSpecLauncher: Launching ${specs.size} sequentially")
@@ -80,7 +78,7 @@ object DefaultSpecLauncher : SpecLauncher {
    private suspend fun concurrent(
       specs: List<KClass<out Spec>>,
       listener: TestEngineListener,
-      factory: SpecDispatcherFactoryExtension
+      factory: CoroutineDispatcherFactoryExtension
    ) {
       val executor = SpecExecutor(listener)
       log("DefaultSpecLauncher: Launching ${specs.size} spec(s) using $factory dispatcher(s)")

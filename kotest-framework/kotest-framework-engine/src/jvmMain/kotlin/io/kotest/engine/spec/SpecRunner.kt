@@ -1,6 +1,7 @@
 package io.kotest.engine.spec
 
 import io.kotest.core.config.LaunchMode
+import io.kotest.core.extensions.CoroutineDispatcherFactoryExtension
 import io.kotest.engine.listener.TestEngineListener
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.Spec
@@ -26,7 +27,10 @@ import kotlin.reflect.KClass
  * @param listener provides callbacks on tests as they are executed. These callbacks are used
  * to ultimately feed back into the test engine implementation.
  */
-abstract class SpecRunner(val listener: TestEngineListener) {
+abstract class SpecRunner(
+   val listener: TestEngineListener,
+   val factory: CoroutineDispatcherFactoryExtension
+) {
 
    /**
     * Executes all the tests in this spec, returning a Failure if there was an exception in a listener
@@ -52,10 +56,16 @@ abstract class SpecRunner(val listener: TestEngineListener) {
       run: suspend (TestCase) -> Unit
    ) {
       when (launchMode) {
-         LaunchMode.Consecutive -> testCases.forEach { run(it) }
+         LaunchMode.Consecutive -> testCases.forEach { testCase ->
+            coroutineScope {
+               launch(factory.dispatcherFor(testCase)) {
+                  run(testCase)
+               }
+            }
+         }
          else -> coroutineScope {
             testCases.map { testCase ->
-               launch {
+               launch(factory.dispatcherFor(testCase)) {
                   run(testCase)
                }
             }

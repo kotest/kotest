@@ -1,6 +1,7 @@
 package io.kotest.engine.runners
 
 import io.kotest.core.DuplicatedTestNameException
+import io.kotest.core.extensions.CoroutineDispatcherFactoryExtension
 import io.kotest.core.spec.Spec
 import io.kotest.core.test.DescriptionName
 import io.kotest.core.test.NestedTest
@@ -30,7 +31,10 @@ import kotlin.coroutines.CoroutineContext
  * same [Spec] instance. In other words, only a single instance of the spec class
  * is instantiated for all the test cases.
  */
-internal class SingleInstanceSpecRunner(listener: TestEngineListener) : SpecRunner(listener) {
+internal class SingleInstanceSpecRunner(
+   listener: TestEngineListener,
+   factory: CoroutineDispatcherFactoryExtension
+) : SpecRunner(listener, factory) {
 
    private val results = ConcurrentHashMap<TestCase, TestResult>()
 
