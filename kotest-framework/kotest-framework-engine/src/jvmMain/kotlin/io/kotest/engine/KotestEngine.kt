@@ -107,7 +107,7 @@ class KotestEngine(private val config: KotestEngineConfig) {
    private fun notifyListenerEngineStarted(plan: TestPlan) = Try { config.listener.engineStarted(plan.classes) }
 
    private suspend fun submitAll(plan: TestPlan) = Try {
-      log("KotestEngine: Beginning test plan [specs=${plan.classes.size}, scripts=${plan.scripts.size}, parallelism=${configuration.parallelism}, specConcurrentDispatch=${configuration.specConcurrentDispatch}, testConcurrentDispatch=${configuration.testConcurrentDispatch}]")
+      log("KotestEngine: Beginning test plan [specs=${plan.classes.size}, scripts=${plan.scripts.size}, parallelism=${configuration.parallelism}, specConcurrentDispatch=${configuration.specLaunchMode}, testConcurrentDispatch=${configuration.testLaunchMode}]")
 
       // scripts always run sequentially
       log("KotestEngine: Launching ${plan.scripts.size} scripts")

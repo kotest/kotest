@@ -1,5 +1,6 @@
 package io.kotest.engine
 
+import io.kotest.core.config.LaunchMode
 import io.kotest.core.config.configuration
 import io.kotest.core.extensions.SpecDispatcherFactoryExtension
 import io.kotest.core.internal.isIsolate
@@ -30,7 +31,7 @@ interface SpecLauncher {
  *
  * Each coroutine is launched on a single threaded dispatcher to ensure that all tests
  * inside that coroutine execute on the same thread without requiring tests to be thread
- * aware. The SpecDispatcherExtension [extension] assigns dispatchers to specs.
+ * aware. The [SpecDispatcherFactoryExtension] assigns dispatchers to specs.
  */
 object DefaultSpecLauncher : SpecLauncher {
 
@@ -54,10 +55,10 @@ object DefaultSpecLauncher : SpecLauncher {
    /**
     * Returns true if we should concurrently dispatch the specs.
     */
-   private fun isConcurrent() = when (configuration.specConcurrentDispatch) {
+   private fun isConcurrent() = when (configuration.specLaunchMode) {
       null -> configuration.parallelism > 1// implicitly controlled concurrency
-      false -> false  // explicitly deactivates spec concurrency
-      true -> true // explicitly activated spec concurrency
+      LaunchMode.Consecutive -> false  // explicitly deactivates spec concurrency
+      LaunchMode.Concurrent -> true // explicitly activated spec concurrency
    }
 
    private suspend fun sequential(

@@ -1,8 +1,8 @@
 package io.kotest.engine.config
 
 import io.kotest.core.Tags
-import io.kotest.core.config.ConcurrencyMode
 import io.kotest.core.config.Configuration
+import io.kotest.core.config.LaunchMode
 import io.kotest.core.extensions.Extension
 import io.kotest.core.filter.Filter
 import io.kotest.core.listeners.Listener
@@ -32,7 +32,8 @@ data class DetectedProjectConfig(
    val tags: Option<Tags> = Option.None,
    val isolationMode: Option<IsolationMode> = Option.None,
    val assertionMode: Option<AssertionMode> = Option.None,
-   val concurrencyMode: Option<ConcurrencyMode> = Option.None,
+   val testLaunchMode: Option<LaunchMode> = Option.None,
+   val specLaunchMode: Option<LaunchMode> = Option.None,
    val testCaseOrder: Option<TestCaseOrder> = Option.None,
    val specExecutionOrder: Option<SpecExecutionOrder> = Option.None,
    val failOnIgnoredTests: Option<Boolean> = Option.None,
@@ -58,7 +59,8 @@ fun DetectedProjectConfig.merge(other: DetectedProjectConfig): DetectedProjectCo
       filters = this.filters + other.filters,
       isolationMode = this.isolationMode.orElse(other.isolationMode),
       assertionMode = this.assertionMode.orElse(other.assertionMode),
-      concurrencyMode = this.concurrencyMode.orElse(other.concurrencyMode),
+      specLaunchMode = this.specLaunchMode.orElse(other.specLaunchMode),
+      testLaunchMode = this.testLaunchMode.orElse(other.testLaunchMode),
       testCaseOrder = this.testCaseOrder.orElse(other.testCaseOrder),
       specExecutionOrder = this.specExecutionOrder.orElse(other.specExecutionOrder),
       failOnIgnoredTests = this.failOnIgnoredTests.orElse(other.failOnIgnoredTests),
@@ -90,7 +92,8 @@ fun DetectedProjectConfig.apply(configuration: Configuration) {
    testCaseConfig.forEach { configuration.defaultTestConfig = it }
 
    // concurrent options
-   concurrencyMode.forEach { configuration.concurrencyMode = it }
+   testLaunchMode.forEach { configuration.testLaunchMode = it }
+   specLaunchMode.forEach { configuration.specLaunchMode = it }
    parallelism.forEach { configuration.parallelism = it }
    isolationMode.forEach { configuration.isolationMode = it }
 

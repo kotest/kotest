@@ -47,7 +47,9 @@ object KotestEngineSystemProperties {
 
    const val invocationTimeout = "kotest.framework.invocation.timeout"
 
-   const val concurrencyMode = "kotest.framework.concurrency.mode"
+   const val specLaunchMode = "kotest.framework.spec.launch.mode"
+
+   const val testLaunchMode = "kotest.framework.test.launch.mode"
 
    /**
     * Disable scanning the classpath for configuration classes by setting this property to true

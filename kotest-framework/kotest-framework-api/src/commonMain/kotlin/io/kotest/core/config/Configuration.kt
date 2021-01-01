@@ -91,7 +91,7 @@ class Configuration {
     * which will always (if defined) take priority over the value here.
     *
     * Note: For backwards compatibility, setting this value to > 1 will implicitly set
-    * [specConcurrentDispatch] to true unless that value has been explicitly set to false.
+    * [specLaunchMode] to true unless that value has been explicitly set to false.
     *
     * Defaults to [Defaults.parallelism].
     */
@@ -106,28 +106,28 @@ class Configuration {
     * Note: If a test uses a blocking method, then that thread cannot be allocated to another coroutine
     * if the thread is blocked. See [parallelism].
     *
-    * Tests inside each spec will continue to be launched sequentially, unless [testConcurrentDispatch]
-    * is set to true.
+    * Tests inside each spec will continue to be launched consecutively, unless [testLaunchMode]
+    * is set to [LaunchMode.Concurrent].
     *
     * Note: This setting can be true and specs can still choose to "opt out" by using the
     * [Isolate] annotation. This annotation ensures that the spec never runs concurrently
     * with any other.
     */
    @ExperimentalKotest
-   var specConcurrentDispatch: Boolean? = null
+   var specLaunchMode: LaunchMode? = null
 
    /**
     * Each root test is executed inside its own coroutine. By default, the test engine waits
     * for each test to complete before starting the next test. By setting this value to true,
     * all root tests are launched at the same time when the spec is first started.
     *
-    * Specs will continue to be launched sequentially, unless [specConcurrentDispatch] is set to true.
+    * Specs will continue to be launched consecutively, unless [specLaunchMode] is set to [LaunchMode.Concurrent].
     *
     * Note: If a test uses a blocking method, then that thread cannot be allocated to another coroutine
     * if the thread is blocked. See [parallelism].
     */
    @ExperimentalKotest
-   var testConcurrentDispatch: Boolean? = null
+   var testLaunchMode: LaunchMode? = null
 
    /**
     * Returns the timeout for the execution of a test case.
