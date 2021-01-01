@@ -10,6 +10,8 @@ import io.kotest.core.test.AssertionMode
 import io.kotest.core.test.TestCaseOrder
 import io.kotest.core.listeners.ProjectListener
 import io.kotest.core.test.TestCaseConfig
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
 import kotlin.reflect.KClass
 import kotlin.time.Duration
 import kotlin.time.ExperimentalTime
@@ -48,7 +50,7 @@ abstract class AbstractProjectConfig {
     *  - [FailureFirstSpecExecutionOrder]
     *  - [RandomSpecExecutionOrder]
     */
-   @Deprecated("use the val version. Will be removed in 4.4")
+   @Deprecated("use the val version. Will be removed in 4.5")
    open fun specExecutionOrder(): SpecExecutionOrder? = null
 
    /**
@@ -59,7 +61,7 @@ abstract class AbstractProjectConfig {
    /**
     * The [IsolationMode] set here will be applied if the isolation mode in a spec is null.
     */
-   @Deprecated("use the val version. Will be removed in 4.4")
+   @Deprecated("use the val version. Will be removed in 4.5")
    open fun isolationMode(): IsolationMode? = null
 
    open val isolationMode: IsolationMode? = null
@@ -76,20 +78,51 @@ abstract class AbstractProjectConfig {
     * Tests which define their own timeout will override this.
     * The value here is in millis
     */
-   @OptIn(ExperimentalTime::class)
    open val invocationTimeout: Long? = null
 
    /**
-    * Override this function and return a number greater than 1 if you wish to
-    * enable parallel execution of tests. The number returned is the number of
-    * concurrently executing specs.
+    * The parallelism factor determines how many threads are used to launch tests.
+    *
+    * The tests inside the same spec are always executed using the same thread, to ensure
+    * that callbacks all operate on the same thread. In other words, a spec is sticky
+    * with regards to the execution thread.
+    *
+    * Increasing this value to k > 1, means that k threads are created, allowing different
+    * specs to execute on different threads. For n specs, if you set this value to k, then
+    * on average, each thread will service n/k specs.
+    *
+    * The thread choosen for a particular thread can be determined by the ThreadAllocationExtension,
+    * which by default chooses in a round robin fashion.
     *
     * An alternative way to enable this is the system property kotest.framework.parallelism
     * which will always (if defined) take priority over the value here.
+    *
+    * Note: For backwards compatibility, setting this value to > 1 will implicitly set
+    * [specConcurrentDispatch] to true unless that value has been explicitly set to false.
     */
-   @Deprecated("use the val version. Will be removed in 4.4")
+   @Deprecated("use the val version. Will be removed in 4.5")
    open fun parallelism(): Int? = null
 
+   /**
+    * The parallelism factor determines how many threads are used to launch tests.
+    *
+    * The tests inside the same spec are always executed using the same thread, to ensure
+    * that callbacks all operate on the same thread. In other words, a spec is sticky
+    * with regards to the execution thread.
+    *
+    * Increasing this value to k > 1, means that k threads are created, allowing different
+    * specs to execute on different threads. For n specs, if you set this value to k, then
+    * on average, each thread will service n/k specs.
+    *
+    * The thread choosen for a particular thread can be determined by the ThreadAllocationExtension,
+    * which by default chooses in a round robin fashion.
+    *
+    * An alternative way to enable this is the system property kotest.framework.parallelism
+    * which will always (if defined) take priority over the value here.
+    *
+    * Note: For backwards compatibility, setting this value to > 1 will implicitly set
+    * [specConcurrentDispatch] to true unless that value has been explicitly set to false.
+    */
    open val parallelism: Int? = null
 
    /**
@@ -99,7 +132,7 @@ abstract class AbstractProjectConfig {
     * To enable this feature, set this to true, or set the system property
     * 'kotest.write.specfailures=true'
     */
-   @Deprecated("use the val version. Will be removed in 4.4")
+   @Deprecated("use the val version. Will be removed in 4.5")
    open fun writeSpecFailureFile(): Boolean = false
 
    open val writeSpecFailureFile: Boolean? = null
@@ -113,7 +146,7 @@ abstract class AbstractProjectConfig {
     * If this function returns null then the default of Sequential
     * will be used.
     */
-   @Deprecated("use the val version. Will be removed in 4.4")
+   @Deprecated("use the val version. Will be removed in 4.5")
    open fun testCaseOrder(): TestCaseOrder? = null
 
    open val testCaseOrder: TestCaseOrder? = null
@@ -141,7 +174,37 @@ abstract class AbstractProjectConfig {
     */
    open val failOnIgnoredTests: Boolean = false
 
-   open val concurrencyMode: ConcurrencyMode? = null
+   /**
+    * Each spec is executed inside its own coroutine. By default, each spec waits for the
+    * previous spec to finish before launching. By setting this value to true, then all specs
+    * are launched at the same time when the engine is started, backed by the number of threads
+    * specified in the [parallelism] option
+    *
+    * Note: If a test uses a blocking method, then that thread cannot be allocated to another coroutine
+    * if the thread is blocked. See [parallelism].
+    *
+    * Tests inside each spec will continue to be launched sequentially, unless [testConcurrentDispatch]
+    * is set to true.
+    *
+    * Note: This setting can be true and specs can still choose to "opt out" by using the
+    * [Isolate] annotation. This annotation ensures that the spec never runs concurrently
+    * with any other.
+    */
+   @ExperimentalKotest
+   open val specConcurrentDispatch: Boolean? = null
+
+   /**
+    * Each root test is executed inside its own coroutine. By default, the test engine waits
+    * for each test to complete before starting the next test. By setting this value to true,
+    * all root tests are launched at the same time when the spec is first started.
+    *
+    * Specs will continue to be launched sequentially, unless [specConcurrentDispatch] is set to true.
+    *
+    * Note: If a test uses a blocking method, then that thread cannot be allocated to another coroutine
+    * if the thread is blocked. See [parallelism].
+    */
+   @ExperimentalKotest
+   open val testConcurrentDispatch: Boolean? = null
 
    /**
     * Override this value to set a global [AssertionMode].

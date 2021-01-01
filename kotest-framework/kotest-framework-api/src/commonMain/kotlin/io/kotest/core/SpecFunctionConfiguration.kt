@@ -1,6 +1,5 @@
 package io.kotest.core
 
-import io.kotest.core.config.ConcurrencyMode
 import io.kotest.core.extensions.Extension
 import io.kotest.core.extensions.TestCaseExtension
 import io.kotest.core.listeners.TestListener
@@ -101,5 +100,5 @@ interface SpecFunctionConfiguration {
    @Deprecated("Explicit thread mode will be removed in 4.6. Instead use concurrencyMode = Parallel")
    fun threads(): Int? = null
 
-   fun concurrencyMode(): ConcurrencyMode? = null
+   fun specConcurrencyMode(): Boolean? = null
 }

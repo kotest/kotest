@@ -1,79 +1,102 @@
 package io.kotest.engine
 
+import io.kotest.core.config.configuration
+import io.kotest.core.extensions.SpecDispatcherFactoryExtension
+import io.kotest.core.internal.isIsolate
 import io.kotest.core.spec.Spec
+import io.kotest.engine.listener.TestEngineListener
 import io.kotest.engine.spec.SpecExecutor
 import io.kotest.mpp.log
-import kotlinx.coroutines.asCoroutineDispatcher
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
-import java.util.concurrent.Executors
-import java.util.concurrent.TimeUnit
 import kotlin.reflect.KClass
 
+/**
+ * Performs the execution of specs.
+ */
 interface SpecLauncher {
-   suspend fun submit(executor: SpecExecutor, specs: List<KClass<out Spec>>)
-}
 
-object SequentialSpecLauncher : SpecLauncher {
-   override suspend fun submit(executor: SpecExecutor, specs: List<KClass<out Spec>>) {
-      log("SequentialSpecLauncher: Launching ${specs.size} sequentially")
-      specs.forEach {
-         executor.execute(it)
-      }
-   }
+   /**
+    * Given the list of specs, this launcher should execute each of those specs.
+    * Spec and test lifecycle events should be reported back to the test engine listener.
+    *
+    * This method should suspend until all specs have completed.
+    */
+   suspend fun submit(listener: TestEngineListener, specs: List<KClass<out Spec>>)
 }
 
 /**
- * Executes the given set of specs concurrently by launching each spec in its own coroutine.
+ * The default [SpecLauncher] which supports concurrent dispatch of specs.
  *
- * Each coroutine is launched on a single threaded dispatcher to ensure that all tests inside that coroutine
- * execute on the same thread without requiring tests to be thread aware. The [threads] parameter determines
- * how many such dispatchers are created, and thus how many actual threads are created.
- *
- * The dispatcher allocated to a particular spec is selected in a round robin fashion.
- *
- * This method will suspend until all specs have completed.
+ * Each coroutine is launched on a single threaded dispatcher to ensure that all tests
+ * inside that coroutine execute on the same thread without requiring tests to be thread
+ * aware. The SpecDispatcherExtension [extension] assigns dispatchers to specs.
  */
-class ConcurrentSpecLauncher(private val threads: Int) : SpecLauncher {
+object DefaultSpecLauncher : SpecLauncher {
 
-   override suspend fun submit(executor: SpecExecutor, specs: List<KClass<out Spec>>) {
-      log("ConcurrentSpecLauncher: Launching ${specs.size} spec(s) using $threads dispatcher(s)")
+   override suspend fun submit(listener: TestEngineListener, specs: List<KClass<out Spec>>) {
+      // if we are launching specs concurrently, then we partition the specs into those which
+      // can run concurrently (default) and those which cannot (see @Isolated)
+      val (sequential, parallel) = when {
+         isConcurrent() -> specs.partition { it.isIsolate() }
+         else -> Pair(specs, emptyList())
+      }
 
-      var index = 0
-      val executors = List(threads) { Executors.newSingleThreadExecutor() }
-      val dispatchers = executors.map { it.asCoroutineDispatcher() }
+      log("DefaultSpecLauncher: Partitioned specs into ${parallel.size} parallel and ${sequential.size} sequential")
 
-      val errors = mutableListOf<Throwable>()
+      val factory = configuration.extensions().filterIsInstance<SpecDispatcherFactoryExtension>().firstOrNull()
+         ?: DefaultSpecDispatcherFactory(configuration.parallelism)
 
+      if (parallel.isNotEmpty()) concurrent(parallel, listener, factory)
+      if (sequential.isNotEmpty()) sequential(sequential, listener, factory)
+   }
+
+   /**
+    * Returns true if we should concurrently dispatch the specs.
+    */
+   private fun isConcurrent() = when (configuration.specConcurrentDispatch) {
+      null -> configuration.parallelism > 1// implicitly controlled concurrency
+      false -> false  // explicitly deactivates spec concurrency
+      true -> true // explicitly activated spec concurrency
+   }
+
+   private suspend fun sequential(
+      specs: List<KClass<out Spec>>,
+      listener: TestEngineListener,
+      factory: SpecDispatcherFactoryExtension
+   ) {
+      val executor = SpecExecutor(listener)
+      log("DefaultSpecLauncher: Launching ${specs.size} sequentially")
+      specs.forEach { spec ->
+         coroutineScope {
+            launch(factory.dispatcherFor(spec)) {
+               executor.execute(spec)
+            }
+         }
+      }
+   }
+
+   private suspend fun concurrent(
+      specs: List<KClass<out Spec>>,
+      listener: TestEngineListener,
+      factory: SpecDispatcherFactoryExtension
+   ) {
+      val executor = SpecExecutor(listener)
+      log("DefaultSpecLauncher: Launching ${specs.size} spec(s) using $factory dispatcher(s)")
       coroutineScope { // we want to suspend until all specs have completed
          specs.forEach { spec ->
-            // round robin picking a dispatcher
-            val dispatcher = dispatchers[index++ % threads]
-            log("ConcurrentSpecLauncher: Launching coroutine for spec [$spec] with dispatcher [$dispatcher]")
+            val dispatcher = factory.dispatcherFor(spec)
+            log("DefaultSpecLauncher: Launching coroutine for spec [$spec] with dispatcher [$dispatcher]")
             launch(dispatcher) {
                try {
                   executor.execute(spec)
                } catch (t: Throwable) {
                   log("ConcurrentSpecLauncher: Unhandled error during spec execution [$spec] [$t]")
-                  errors.add(t)
+                  throw t
                }
             }
          }
       }
-      log("ConcurrentSpecLauncher: All specs have completed")
-
-      executors.forEach { it.shutdown() }
-      log("ConcurrentSpecLauncher: Waiting for $threads executor(s) to terminate")
-      try {
-         executors.forEach { it.awaitTermination(1, TimeUnit.MINUTES) }
-      } catch (e: InterruptedException) {
-         log("ConcurrentSpecLauncher: Interrupted while waiting for dispatcher to terminate", e)
-         errors.add(e)
-      }
-
-      if (errors.isNotEmpty()) {
-         log("ConcurrentSpecLauncher: Unhandled errors in spec execution $errors")
-         error("$errors")
-      }
+      log("DefaultSpecLauncher: All specs have completed")
    }
 }
