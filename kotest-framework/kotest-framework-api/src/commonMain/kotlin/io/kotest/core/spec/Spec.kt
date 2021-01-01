@@ -47,7 +47,7 @@ abstract class Spec : TestConfiguration(), SpecFunctionConfiguration, SpecFuncti
     * On other platforms this setting will have no effect.
     */
    @JsName("threads_js")
-   @Deprecated("Explicit thread mode will be removed in 4.6. Instead use ConcurrencyMode.SpecAndTestConcurrent")
+   @Deprecated("Explicit thread mode will be removed in 4.6. Instead use launchMode")
    var threads: Int? = null
 
    /**

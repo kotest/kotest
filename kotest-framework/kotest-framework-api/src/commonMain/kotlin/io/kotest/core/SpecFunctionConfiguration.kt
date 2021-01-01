@@ -97,8 +97,6 @@ interface SpecFunctionConfiguration {
     *
     * Note: This does not affect how many specs are executed in parallel.
     */
-   @Deprecated("Explicit thread mode will be removed in 4.6. Instead use concurrencyMode = Parallel")
+   @Deprecated("Explicit thread mode will be removed in 4.6. Instead use testLaunchMode")
    fun threads(): Int? = null
-
-   fun specConcurrencyMode(): Boolean? = null
 }
