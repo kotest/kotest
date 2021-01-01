@@ -74,9 +74,9 @@ class Configuration {
    var assertionMode: AssertionMode = Defaults.assertionMode
 
    /**
-    * The parallelism factor determines how many threads are used to launch tests.
+    * The parallelism factor determines how many threads are used to launch specs.
     *
-    * The tests inside the same spec are always executed using the same thread, to ensure
+    * By default, tests inside the same spec are executed using the same thread to ensure
     * that callbacks all operate on the same thread. In other words, a spec is sticky
     * with regards to the execution thread.
     *
@@ -84,14 +84,14 @@ class Configuration {
     * specs to execute on different threads. For n specs, if you set this value to k, then
     * on average, each thread will service n/k specs.
     *
-    * The thread choosen for a particular thread can be determined by the ThreadAllocationExtension,
-    * which by default chooses in a round robin fashion.
+    * The thread choosen for a particular spec can be customized by a [CoroutineDispatcherFactoryExtension].
     *
-    * An alternative way to enable this is the system property kotest.framework.parallelism
+    * An alternative way to set this value is via system property kotest.framework.parallelism
     * which will always (if defined) take priority over the value here.
     *
     * Note: For backwards compatibility, setting this value to > 1 will implicitly set
-    * [specLaunchMode] to true unless that value has been explicitly set to false.
+    * [specLaunchMode] to [LaunchMode.Concurrent] unless that value has been explicitly
+    * set to [LaunchMode.Consecutive].
     *
     * Defaults to [Defaults.parallelism].
     */

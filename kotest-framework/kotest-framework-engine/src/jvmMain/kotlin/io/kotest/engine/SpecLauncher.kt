@@ -51,10 +51,11 @@ object DefaultSpecLauncher : SpecLauncher {
    }
 
    /**
-    * Returns true if we should concurrently dispatch the specs.
+    * Returns true if we should concurrently launch the specs.
     */
    private fun isConcurrent() = when (configuration.specLaunchMode) {
-      null -> configuration.parallelism > 1// implicitly controlled concurrency
+      // when spec launch mode is not specified, we use the value of the parallelism to infer
+      null -> configuration.parallelism > 1
       LaunchMode.Consecutive -> false  // explicitly deactivates spec concurrency
       LaunchMode.Concurrent -> true // explicitly activated spec concurrency
    }
