@@ -1,6 +1,6 @@
 package io.kotest.engine.spec
 
-import io.kotest.core.config.ConcurrencyMode
+import io.kotest.core.config.LaunchMode
 import io.kotest.engine.listener.TestEngineListener
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.Spec
@@ -47,12 +47,12 @@ abstract class SpecRunner(val listener: TestEngineListener) {
       }
 
    protected suspend fun run(
-      concurrencyMode: ConcurrencyMode?,
+      launchMode: LaunchMode?,
       testCases: Collection<TestCase>,
       run: suspend (TestCase) -> Unit
    ) {
-      when (concurrencyMode) {
-         null, ConcurrencyMode.None, ConcurrencyMode.Spec -> testCases.forEach { run(it) }
+      when (launchMode) {
+         LaunchMode.Consecutive -> testCases.forEach { run(it) }
          else -> coroutineScope {
             testCases.map { testCase ->
                launch {

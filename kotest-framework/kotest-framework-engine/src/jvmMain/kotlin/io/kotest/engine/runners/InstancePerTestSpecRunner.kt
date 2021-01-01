@@ -13,7 +13,7 @@ import io.kotest.mpp.log
 import io.kotest.engine.ExecutorExecutionContext
 import io.kotest.core.test.TestCaseExecutionListener
 import io.kotest.core.internal.TestCaseExecutor
-import io.kotest.core.internal.resolvedConcurrencyMode
+import io.kotest.core.internal.resolvedTestLaunchMode
 import io.kotest.core.spec.invokeAfterSpec
 import io.kotest.core.spec.invokeBeforeSpec
 import io.kotest.core.internal.resolvedThreads
@@ -81,7 +81,7 @@ internal class InstancePerTestSpecRunner(listener: TestEngineListener) : SpecRun
                   .getOrThrow()
             }
          } else {
-            run(spec.resolvedConcurrencyMode(), spec.materializeAndOrderRootTests().map { it.testCase }) {
+            run(spec.resolvedTestLaunchMode(), spec.materializeAndOrderRootTests().map { it.testCase }) {
                executeInCleanSpec(it)
                   .getOrThrow()
             }

@@ -1,5 +1,7 @@
 package io.kotest.core.internal
 
+import io.kotest.core.config.LaunchMode
+import io.kotest.core.config.configuration
 import io.kotest.core.spec.DoNotParallelize
 import io.kotest.core.spec.Isolate
 import io.kotest.core.spec.Spec
@@ -12,11 +14,11 @@ fun KClass<*>.isIsolate(): Boolean = annotation<DoNotParallelize>() != null || a
 fun Spec.resolvedThreads(): Int? = this.threads() ?: this.threads
 
 /**
- * Returns the [ConcurrencyMode] to use for tests in this spec.
+ * Returns the [LaunchMode] to use for tests in this spec.
  *
- * Note that if this spec is annotated @Isolate then the value will be [ConcurrencyMode.None]
+ * Note that if this spec is annotated with @Isolate then the value will be [LaunchMode.Consecutive]
  * regardless of the config setting.
  */
-//fun Spec.resolvedConcurrencyMode(): ConcurrencyMode? =
-//   if (this::class.isIsolate()) ConcurrencyMode.None else
-//      this.concurrencyMode() ?: configuration.concurrencyMode
+fun Spec.resolvedTestLaunchMode(): LaunchMode? =
+   if (this::class.isIsolate()) LaunchMode.Consecutive else
+      this.launchMode ?: configuration.testLaunchMode

@@ -10,8 +10,6 @@ import io.kotest.core.test.AssertionMode
 import io.kotest.core.test.TestCaseOrder
 import io.kotest.core.listeners.ProjectListener
 import io.kotest.core.test.TestCaseConfig
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
 import kotlin.reflect.KClass
 import kotlin.time.Duration
 import kotlin.time.ExperimentalTime
@@ -174,37 +172,11 @@ abstract class AbstractProjectConfig {
     */
    open val failOnIgnoredTests: Boolean = false
 
-   /**
-    * Each spec is executed inside its own coroutine. By default, each spec waits for the
-    * previous spec to finish before launching. By setting this value to true, then all specs
-    * are launched at the same time when the engine is started, backed by the number of threads
-    * specified in the [parallelism] option
-    *
-    * Note: If a test uses a blocking method, then that thread cannot be allocated to another coroutine
-    * if the thread is blocked. See [parallelism].
-    *
-    * Tests inside each spec will continue to be launched sequentially, unless [testConcurrentDispatch]
-    * is set to true.
-    *
-    * Note: This setting can be true and specs can still choose to "opt out" by using the
-    * [Isolate] annotation. This annotation ensures that the spec never runs concurrently
-    * with any other.
-    */
    @ExperimentalKotest
-   open val specConcurrentDispatch: Boolean? = null
+   open val specLaunchMode: LaunchMode? = null
 
-   /**
-    * Each root test is executed inside its own coroutine. By default, the test engine waits
-    * for each test to complete before starting the next test. By setting this value to true,
-    * all root tests are launched at the same time when the spec is first started.
-    *
-    * Specs will continue to be launched sequentially, unless [specConcurrentDispatch] is set to true.
-    *
-    * Note: If a test uses a blocking method, then that thread cannot be allocated to another coroutine
-    * if the thread is blocked. See [parallelism].
-    */
    @ExperimentalKotest
-   open val testConcurrentDispatch: Boolean? = null
+   open val testLaunchMode: LaunchMode? = null
 
    /**
     * Override this value to set a global [AssertionMode].
