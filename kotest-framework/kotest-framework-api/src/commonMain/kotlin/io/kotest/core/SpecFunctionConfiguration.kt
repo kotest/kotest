@@ -8,6 +8,7 @@ import io.kotest.core.test.AssertionMode
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestCaseConfig
 import io.kotest.core.test.TestCaseOrder
+import kotlinx.coroutines.CoroutineDispatcher
 
 /**
  * Defines functions which can be overriden to set configuration options at the spec level.
@@ -92,11 +93,23 @@ interface SpecFunctionConfiguration {
    fun assertionMode(): AssertionMode? = null
 
    /**
-    * Override this function to return a value of the number of threads to use when
-    * executing tests inside this spec.
+    * Sets the number of threads that will be used for executing root tests in this spec.
+    * Implicitly sets [launchMode] to [LaunchMode.Concurrent].
     *
-    * Note: This does not affect how many specs are executed in parallel.
+    * On the JVM this will result in multiple threads being used.
+    * On other platforms this setting will have no effect.
+    *
+    * Any value set here is overriden by specifying a value for [dispatcher].
     */
-   @Deprecated("Explicit thread mode will be removed in 4.6. Instead use testLaunchMode")
    fun threads(): Int? = null
+
+   /**
+    * Sets the [CoroutineDispatcher] that will be used to launch tests in this spec.
+    *
+    * If you wish tests to be launched concurrently in addition to using your own dispatcher,
+    * then also set [launchMode] to [LaunchMode.Concurrent].
+    *
+    * Setting this value will override any explicit [threads] count set.
+    */
+   fun dispatcher(): CoroutineDispatcher? = null
 }

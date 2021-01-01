@@ -78,17 +78,9 @@ internal class InstancePerTestSpecRunner(
     */
    override suspend fun execute(spec: Spec): Try<Map<TestCase, TestResult>> =
       Try {
-         val threads = spec.resolvedThreads()
-         if (threads != null && threads > 0) {
-            runParallel(threads, spec.materializeAndOrderRootTests().map { it.testCase }) {
-               executeInCleanSpec(it)
-                  .getOrThrow()
-            }
-         } else {
-            run(spec.resolvedTestLaunchMode(), spec.materializeAndOrderRootTests().map { it.testCase }) {
-               executeInCleanSpec(it)
-                  .getOrThrow()
-            }
+         run(spec.resolvedTestLaunchMode(), spec.materializeAndOrderRootTests().map { it.testCase }) {
+            executeInCleanSpec(it)
+               .getOrThrow()
          }
          results
       }

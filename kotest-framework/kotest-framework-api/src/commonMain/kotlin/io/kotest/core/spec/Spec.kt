@@ -9,6 +9,7 @@ import io.kotest.core.js.JsTest
 import io.kotest.core.js.useKotlinJs
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestCaseOrder
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlin.js.JsName
 
 /**
@@ -42,13 +43,26 @@ abstract class Spec : TestConfiguration(), SpecFunctionConfiguration, SpecFuncti
    var isolationMode: IsolationMode? = null
 
    /**
-    * Sets the number of root test cases that can be executed concurrently in this spec.
+    * Sets the number of threads that will be used for executing root tests in this spec.
+    * Implicitly sets [launchMode] to [LaunchMode.Concurrent].
+    *
     * On the JVM this will result in multiple threads being used.
     * On other platforms this setting will have no effect.
+    *
+    * Setting the [dispatcher] value will nullify any value set here.
     */
    @JsName("threads_js")
-   @Deprecated("Explicit thread mode will be removed in 4.6. Instead use launchMode")
    var threads: Int? = null
+
+   /**
+    * Sets the [CoroutineDispatcher] that will be used to launch tests in this spec.
+    * If you wish tests to be launched concurrently in addition to using your own dispatcher,
+    * then set [launchMode] to [LaunchMode.Concurrent].
+    *
+    * Setting this value will nullify any value set for [threads].
+    */
+   @JsName("dispatcher_var")
+   var dispatcher: CoroutineDispatcher? = null
 
    /**
     * Sets a millisecond timeout for each test case in this spec unless overriden in the test config itself.

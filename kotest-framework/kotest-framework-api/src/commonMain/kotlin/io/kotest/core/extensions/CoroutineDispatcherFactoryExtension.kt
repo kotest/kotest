@@ -23,7 +23,7 @@ interface CoroutineDispatcherFactoryExtension {
    /**
     * Called to retrive a [CoroutineDispatcher] for the given [TestCase].
     *
-    * Can return the same dispatcher for multiple specs or all specs, or can return
+    * Can return the same dispatcher for multiple tests or all tests, or can return
     * a new dispatcher every time, or some combination.
     */
    fun dispatcherFor(testCase: TestCase): CoroutineDispatcher

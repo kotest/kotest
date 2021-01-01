@@ -17,7 +17,7 @@ import io.kotest.engine.listener.TestCaseListenerToTestEngineListenerAdapter
 import io.kotest.core.spec.invokeAfterSpec
 import io.kotest.core.spec.invokeBeforeSpec
 import io.kotest.core.spec.materializeAndOrderRootTests
-import io.kotest.engine.DefaultSpecDispatcherFactory
+import io.kotest.engine.ExecutorCoroutineDispatcherFactory
 import io.kotest.engine.toTestResult
 import io.kotest.fp.Try
 import io.kotest.mpp.log
@@ -39,7 +39,7 @@ import kotlin.coroutines.CoroutineContext
 internal class ConcurrentInstancePerLeafSpecRunner(
    testEngineListener: TestEngineListener,
    private val threads: Int,
-) : SpecRunner(testEngineListener, DefaultSpecDispatcherFactory(1)) {
+) : SpecRunner(testEngineListener, ExecutorCoroutineDispatcherFactory(1)) {
 
    private val results = ConcurrentHashMap<TestCase, TestResult>()
 
