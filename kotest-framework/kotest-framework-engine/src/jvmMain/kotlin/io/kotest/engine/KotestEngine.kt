@@ -1,7 +1,6 @@
 package io.kotest.engine
 
 import io.kotest.core.Tags
-import io.kotest.core.config.Configuration
 import io.kotest.core.config.configuration
 import io.kotest.core.filter.TestFilter
 import io.kotest.core.internal.isIsolate
@@ -26,7 +25,6 @@ import io.kotest.fp.Try
 import io.kotest.fp.firstOrNone
 import io.kotest.fp.getOrElse
 import io.kotest.mpp.log
-import kotlin.math.max
 import kotlin.reflect.KClass
 import kotlin.script.templates.standard.ScriptTemplateWithArgs
 
@@ -139,11 +137,14 @@ class KotestEngine(private val config: KotestEngineConfig) {
       val ordered = plan.classes.sort(configuration.specExecutionOrder)
       val executor = SpecExecutor(config.listener)
 
+      val launcher = launcher()
+      log("KotestEngine: Will use spec launcher $launcher")
+
       // if we are launching specs concurrently, then we partition the specs into those which
       // can run concurrently (default) and those which cannot (see @Isolated)
       val (consecutive, concurrent) = ordered.partition { it.isIsolate() }
-      launcher().launch(executor, consecutive)
-      launcher().launch(executor, concurrent)
+      launcher.launch(executor, consecutive)
+      launcher.launch(executor, concurrent)
    }
 
    /**
@@ -169,9 +170,14 @@ class KotestEngine(private val config: KotestEngineConfig) {
     */
    private fun defaultSpecLauncher(): SpecLauncher {
       val factory = coroutineDispatcherFactory()
-      return when (configuration.concurrentSpecs) {
-         Configuration.Sequential -> SequentialSpecLauncher(factory)
-         else -> ConcurrentSpecLauncher(max(1, configuration.concurrentSpecs), factory)
+      return when {
+         // explicitly enabled concurrent specs
+         configuration.concurrentSpecs ?: 1 > 1 ->
+            ConcurrentSpecLauncher(configuration.concurrentSpecs ?: 1, factory)
+         // implicitly enabled concurrent specs
+         configuration.concurrentSpecs == null && configuration.parallelism > 1 ->
+            ConcurrentSpecLauncher(configuration.parallelism, factory)
+         else -> SequentialSpecLauncher(factory)
       }
    }
 

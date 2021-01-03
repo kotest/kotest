@@ -21,14 +21,19 @@ class ConcurrentSpecLauncher(
    private val factory: CoroutineDispatcherFactory
 ) : SpecLauncher {
 
-   private val semaphore = Semaphore(maxConcurrent)
+   private val semaphore = Semaphore(maxConcurrent).apply {
+      log("ConcurrentSpecLauncher: Will use $maxConcurrent permits")
+   }
 
    override suspend fun launch(executor: SpecExecutor, specs: List<KClass<out Spec>>) {
       coroutineScope {
          specs.forEach { spec ->
             semaphore.withPermit {
+               log("ConcurrentSpecLauncher: Acquired permit for $spec")
+
                val dispatcher = factory.dispatcherFor(spec)
                log("ConcurrentSpecLauncher: Launching coroutine for spec [$spec] with dispatcher [$dispatcher]")
+
                launch(dispatcher) {
                   try {
                      executor.execute(spec)

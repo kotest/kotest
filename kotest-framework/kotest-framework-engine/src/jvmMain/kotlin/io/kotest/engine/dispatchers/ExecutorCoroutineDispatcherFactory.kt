@@ -35,7 +35,9 @@ class ExecutorCoroutineDispatcherFactory(private val parallelism: Int) : Corouti
    private val dispatchersForSpecs = mutableMapOf<String, ExecutorCoroutineDispatcher>()
 
    override fun dispatcherFor(spec: KClass<out Spec>): CoroutineDispatcher {
-      return dispatchers[abs(spec.bestName().hashCode()) % parallelism].coroutineDispatcher
+      val dispatcher = dispatchers[abs(spec.bestName().hashCode()) % parallelism].coroutineDispatcher
+      log("ExecutorCoroutineDispatcherFactory: Selected dispatcher $dispatcher for ${spec::class}")
+      return dispatcher
    }
 
    override fun dispatcherFor(testCase: TestCase): CoroutineDispatcher {

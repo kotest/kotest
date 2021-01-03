@@ -29,5 +29,4 @@ object Defaults {
    val specExecutionOrder = SpecExecutionOrder.Lexicographic
 
    const val concurrentTests = Configuration.Sequential
-   const val concurrentSpecs = Configuration.Sequential
 }

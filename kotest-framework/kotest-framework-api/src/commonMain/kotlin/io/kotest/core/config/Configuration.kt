@@ -31,7 +31,7 @@ class Configuration {
 
    companion object {
       const val Sequential = 1
-      const val MaxConcurrency = 0
+      const val MaxConcurrency = Int.MAX_VALUE
    }
 
    private val listeners = mutableListOf<Listener>()
@@ -82,7 +82,7 @@ class Configuration {
    var assertionMode: AssertionMode = Defaults.assertionMode
 
    /**
-    * The parallelism factor determines how many threads are used to launch specs.
+    * The parallelism factor determines how many threads are used to execute specs and tests.
     *
     * By default, tests inside the same spec are executed using the same thread to ensure
     * that callbacks all operate on the same thread. In other words, a spec is sticky
@@ -130,7 +130,7 @@ class Configuration {
     * with any other regardless of the setting here.
     */
    @ExperimentalKotest
-   var concurrentSpecs: Int = Defaults.concurrentSpecs
+   var concurrentSpecs: Int? = null
 
    /**
     * Each root test is executed inside its own coroutine. By default, the test engine waits
