@@ -3,24 +3,19 @@ package io.kotest.engine
 import io.kotest.core.Tags
 import io.kotest.core.config.configuration
 import io.kotest.core.filter.TestFilter
+import io.kotest.core.script.ScriptSpec
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.afterProject
 import io.kotest.core.spec.beforeProject
 import io.kotest.engine.config.ConfigManager
 import io.kotest.engine.config.dumpProjectConfig
 import io.kotest.engine.extensions.SpecifiedTagsTagExtension
+import io.kotest.engine.launchers.specLauncher
 import io.kotest.engine.listener.TestEngineListener
-import io.kotest.core.script.ScriptSpec
-import io.kotest.engine.dispatchers.coroutineDispatcherFactory
-import io.kotest.engine.extensions.SpecLauncherExtension
-import io.kotest.engine.launchers.DefaultSpecLauncher
-import io.kotest.engine.launchers.SpecLauncher
 import io.kotest.engine.script.ScriptExecutor
 import io.kotest.engine.spec.SpecExecutor
 import io.kotest.engine.spec.sort
 import io.kotest.fp.Try
-import io.kotest.fp.firstOrNone
-import io.kotest.fp.getOrElse
 import io.kotest.mpp.log
 import kotlin.reflect.KClass
 import kotlin.script.templates.standard.ScriptTemplateWithArgs
@@ -137,24 +132,6 @@ class KotestEngine(private val config: KotestEngineConfig) {
       val launcher = specLauncher()
       log("KotestEngine: Will use spec launcher $launcher")
       launcher.launch(executor, ordered)
-   }
-
-   /**
-    * Returns a [SpecLauncher] to be used for launching specs.
-    *
-    * Will use a [SpecLauncherExtension] if provided otherwise will default to the
-    * [DefaultSpecLauncher] using values provided by configuration.
-    */
-   private fun specLauncher(): SpecLauncher {
-      return configuration.extensions().filterIsInstance<SpecLauncherExtension>()
-         .firstOrNone()
-         .map { it.launcher() }
-         .getOrElse {
-            DefaultSpecLauncher(
-               configuration.concurrentSpecs ?: configuration.parallelism,
-               coroutineDispatcherFactory()
-            )
-         }
    }
 
    private fun end(errors: List<Throwable>) {
