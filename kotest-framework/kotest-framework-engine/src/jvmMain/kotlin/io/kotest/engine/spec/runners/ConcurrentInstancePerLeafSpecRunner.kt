@@ -41,7 +41,7 @@ import kotlin.coroutines.CoroutineContext
 internal class ConcurrentInstancePerLeafSpecRunner(
    testEngineListener: TestEngineListener,
    private val threads: Int,
-) : SpecRunner(testEngineListener, SequentialTestLauncher(ExecutorCoroutineDispatcherFactory(1))) {
+) : SpecRunner(testEngineListener, SequentialTestLauncher(ExecutorCoroutineDispatcherFactory(1, true))) {
 
    private val results = ConcurrentHashMap<TestCase, TestResult>()
 
