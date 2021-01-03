@@ -3,7 +3,6 @@ package io.kotest.engine
 import io.kotest.core.Tags
 import io.kotest.core.config.configuration
 import io.kotest.core.filter.TestFilter
-import io.kotest.core.internal.isIsolate
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.afterProject
 import io.kotest.core.spec.beforeProject
@@ -12,11 +11,9 @@ import io.kotest.engine.config.dumpProjectConfig
 import io.kotest.engine.extensions.SpecifiedTagsTagExtension
 import io.kotest.engine.listener.TestEngineListener
 import io.kotest.core.script.ScriptSpec
-import io.kotest.engine.dispatchers.CoroutineDispatcherFactory
 import io.kotest.engine.dispatchers.coroutineDispatcherFactory
 import io.kotest.engine.extensions.SpecLauncherExtension
-import io.kotest.engine.launchers.ConcurrentSpecLauncher
-import io.kotest.engine.launchers.SequentialSpecLauncher
+import io.kotest.engine.launchers.DefaultSpecLauncher
 import io.kotest.engine.launchers.SpecLauncher
 import io.kotest.engine.script.ScriptExecutor
 import io.kotest.engine.spec.SpecExecutor
@@ -137,48 +134,27 @@ class KotestEngine(private val config: KotestEngineConfig) {
       val ordered = plan.classes.sort(configuration.specExecutionOrder)
       val executor = SpecExecutor(config.listener)
 
-      val launcher = launcher()
+      val launcher = specLauncher()
       log("KotestEngine: Will use spec launcher $launcher")
-
-      // if we are launching specs concurrently, then we partition the specs into those which
-      // can run concurrently (default) and those which cannot (see @Isolated)
-      val (consecutive, concurrent) = ordered.partition { it.isIsolate() }
-      launcher.launch(executor, consecutive)
-      launcher.launch(executor, concurrent)
+      launcher.launch(executor, ordered)
    }
 
    /**
     * Returns a [SpecLauncher] to be used for launching specs.
     *
     * Will use a [SpecLauncherExtension] if provided otherwise will default to the
-    * launcher provided by [defaultSpecLauncher].
+    * [DefaultSpecLauncher] using values provided by configuration.
     */
-   private fun launcher(): SpecLauncher {
+   private fun specLauncher(): SpecLauncher {
       return configuration.extensions().filterIsInstance<SpecLauncherExtension>()
          .firstOrNone()
          .map { it.launcher() }
-         .getOrElse { defaultSpecLauncher() }
-   }
-
-   /**
-    * The default [SpecLauncher] to use.
-    *
-    * Will return  either [SequentialSpecLauncher] or [ConcurrentSpecLauncher]
-    * depending on the value of [configuration.concurrentSpecs].
-    *
-    * Will use a [CoroutineDispatcherFactory] provided by [coroutineDispatcherFactory].
-    */
-   private fun defaultSpecLauncher(): SpecLauncher {
-      val factory = coroutineDispatcherFactory()
-      return when {
-         // explicitly enabled concurrent specs
-         configuration.concurrentSpecs ?: 1 > 1 ->
-            ConcurrentSpecLauncher(configuration.concurrentSpecs ?: 1, factory)
-         // implicitly enabled concurrent specs
-         configuration.concurrentSpecs == null && configuration.parallelism > 1 ->
-            ConcurrentSpecLauncher(configuration.parallelism, factory)
-         else -> SequentialSpecLauncher(factory)
-      }
+         .getOrElse {
+            DefaultSpecLauncher(
+               configuration.concurrentSpecs ?: configuration.parallelism,
+               coroutineDispatcherFactory()
+            )
+         }
    }
 
    private fun end(errors: List<Throwable>) {

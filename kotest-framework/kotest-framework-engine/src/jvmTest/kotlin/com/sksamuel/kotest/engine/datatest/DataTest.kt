@@ -12,7 +12,7 @@ import io.kotest.engine.listener.TestEngineListener
 import io.kotest.matchers.shouldBe
 import java.util.concurrent.ConcurrentHashMap
 
-@Isolate
+@Isolate // sets global values via configuration so must be isolated
 class DataTest : FunSpec() {
 
    init {

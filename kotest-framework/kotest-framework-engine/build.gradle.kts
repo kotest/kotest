@@ -105,7 +105,7 @@ tasks.named<Test>("jvmTest") {
    testLogging {
       showExceptions = true
       showStandardStreams = true
-      events = setOf(TestLogEvent.FAILED, TestLogEvent.PASSED)
+      events = setOf(TestLogEvent.FAILED, TestLogEvent.PASSED, TestLogEvent.STANDARD_ERROR, TestLogEvent.STANDARD_OUT)
       exceptionFormat = TestExceptionFormat.FULL
    }
 }

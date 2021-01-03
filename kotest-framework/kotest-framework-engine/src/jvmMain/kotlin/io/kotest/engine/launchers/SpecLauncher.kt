@@ -7,7 +7,7 @@ import kotlin.reflect.KClass
 /**
  * A [SpecLauncher] is responsible for launching the given list of specs into their own coroutines.
  *
- * See implementations [ConcurrentSpecLauncher] and [SequentialSpecLauncher].
+ * See [DefaultSpecLauncher] for the default implementation.
  */
 interface SpecLauncher {
    suspend fun launch(executor: SpecExecutor, specs: List<KClass<out Spec>>)
