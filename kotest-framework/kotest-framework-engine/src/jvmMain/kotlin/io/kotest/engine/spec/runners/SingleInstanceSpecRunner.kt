@@ -2,9 +2,11 @@ package io.kotest.engine.spec.runners
 
 import io.kotest.core.DuplicatedTestNameException
 import io.kotest.core.internal.TestCaseExecutor
+import io.kotest.core.internal.resolvedThreads
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.invokeAfterSpec
 import io.kotest.core.spec.invokeBeforeSpec
+import io.kotest.core.spec.materializeAndOrderRootTests
 import io.kotest.core.test.DescriptionName
 import io.kotest.core.test.NestedTest
 import io.kotest.core.test.TestCase
@@ -39,9 +41,20 @@ internal class SingleInstanceSpecRunner(
       log("SingleInstanceSpecRunner: executing spec [$spec]")
 
       suspend fun interceptAndRun(context: CoroutineContext) = Try {
-         launch(spec) {
-            log("SingleInstanceSpecRunner: Executing test $it")
-            runTest(it, context)
+         val rootTests = spec.materializeAndOrderRootTests().map { it.testCase }
+         log("SingleInstanceSpecRunner: Materialized root tests: ${rootTests.size}")
+         val threads = spec.resolvedThreads()
+         if (threads != null && threads > 1) {
+            log("Warning - usage of deprecated thread count $threads")
+            runParallel(threads, rootTests) {
+               log("SingleInstanceSpecRunner: Executing test $it")
+               runTest(it, context)
+            }
+         } else {
+            launch(spec) {
+               log("SingleInstanceSpecRunner: Executing test $it")
+               runTest(it, context)
+            }
          }
       }
 

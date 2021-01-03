@@ -97,8 +97,7 @@ interface SpecFunctionConfiguration {
     *
     * On the JVM this will result in multiple threads being used.
     * On other platforms this setting will have no effect.
-    *
-    * Any value set here is overriden by specifying a value for [dispatcher].
     */
+   @Deprecated("Use concurrency setting. This will be removed in 4.6")
    fun threads(): Int? = null
 }

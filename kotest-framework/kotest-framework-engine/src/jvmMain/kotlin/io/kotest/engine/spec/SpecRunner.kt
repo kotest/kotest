@@ -9,7 +9,12 @@ import io.kotest.engine.createAndInitializeSpec
 import io.kotest.engine.launchers.TestLauncher
 import io.kotest.engine.listener.TestEngineListener
 import io.kotest.fp.Try
+import io.kotest.mpp.NamedThreadFactory
 import io.kotest.mpp.log
+import kotlinx.coroutines.runBlocking
+import java.util.concurrent.ExecutionException
+import java.util.concurrent.Executors
+import java.util.concurrent.TimeUnit
 import kotlin.reflect.KClass
 
 /**
@@ -36,7 +41,7 @@ abstract class SpecRunner(
     */
    protected suspend fun launch(spec: Spec, run: suspend (TestCase) -> Unit) {
       val rootTests = spec.materializeAndOrderRootTests().map { it.testCase }
-      log("SingleInstanceSpecRunner: Materialized ${rootTests.size} root tests: ${rootTests}")
+      log("SingleInstanceSpecRunner: Materialized ${rootTests.size} root tests: $rootTests")
       launcher.launch(run, rootTests)
    }
 
@@ -51,4 +56,34 @@ abstract class SpecRunner(
          it.printStackTrace()
          Try { listener.specInstantiationError(kclass, it) }
       }
+
+   @Deprecated("Explicit thread mode will be removed in 4.6")
+   protected suspend fun runParallel(threads: Int, testCases: Collection<TestCase>, run: suspend (TestCase) -> Unit) {
+
+      val executor = Executors.newFixedThreadPool(threads, NamedThreadFactory("SpecRunner-%d"))
+
+      val futures = testCases.map { testCase ->
+         executor.submit {
+            runBlocking {
+               run(testCase)
+            }
+         }
+      }
+      executor.shutdown()
+      log("Waiting for test case execution to terminate")
+
+      try {
+         executor.awaitTermination(1, TimeUnit.DAYS)
+      } catch (t: InterruptedException) {
+         log("Test case execution interrupted", t)
+         throw t
+      }
+
+      //Handle Uncaught Exception in threads or they just be swallowed
+      try {
+         futures.forEach { it.get() }
+      } catch (e: ExecutionException) {
+         throw e.cause ?: e
+      }
+   }
 }

@@ -2,6 +2,7 @@ package io.kotest.engine.spec.runners
 
 import io.kotest.core.DuplicatedTestNameException
 import io.kotest.core.internal.TestCaseExecutor
+import io.kotest.core.internal.resolvedThreads
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.invokeAfterSpec
 import io.kotest.core.spec.invokeBeforeSpec
@@ -70,9 +71,17 @@ internal class InstancePerTestSpecRunner(
     */
    override suspend fun execute(spec: Spec): Try<Map<TestCase, TestResult>> =
       Try {
-         launch(spec) {
-            executeInCleanSpec(it)
-               .getOrThrow()
+         val threads = spec.resolvedThreads()
+         if (threads != null && threads > 0) {
+            runParallel(threads, spec.materializeAndOrderRootTests().map { it.testCase }) {
+               executeInCleanSpec(it)
+                  .getOrThrow()
+            }
+         } else {
+            launch(spec) {
+               executeInCleanSpec(it)
+                  .getOrThrow()
+            }
          }
          results
       }
