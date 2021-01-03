@@ -18,7 +18,7 @@ class SequentialTestLauncher(private val factory: CoroutineDispatcherFactory) : 
          coroutineScope { // will wait for the launched test to complete
             launch(factory.dispatcherFor(test)) {
                run(test)
-            }
+            }.invokeOnCompletion { factory.complete(test) }
          }
       }
    }

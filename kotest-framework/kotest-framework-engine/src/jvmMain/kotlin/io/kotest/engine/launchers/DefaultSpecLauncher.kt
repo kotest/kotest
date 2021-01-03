@@ -1,5 +1,6 @@
 package io.kotest.engine.launchers
 
+import io.kotest.core.config.ExperimentalKotest
 import io.kotest.core.internal.isIsolate
 import io.kotest.core.spec.DoNotParallelize
 import io.kotest.core.spec.Isolate
@@ -21,6 +22,7 @@ import kotlin.reflect.KClass
  * @param maxConcurrent The maximum number of concurrent coroutines.
  * @param factory a [CoroutineDispatcherFactory] used to allocate CoroutineDispatchers to specs.
  */
+@ExperimentalKotest
 class DefaultSpecLauncher(
    private val maxConcurrent: Int,
    private val factory: CoroutineDispatcherFactory

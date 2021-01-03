@@ -30,7 +30,10 @@ val configuration = Configuration()
 class Configuration {
 
    companion object {
+      @ExperimentalKotest
       const val Sequential = 1
+
+      @ExperimentalKotest
       const val MaxConcurrency = Int.MAX_VALUE
    }
 
@@ -116,6 +119,7 @@ class Configuration {
     *
     * Defaults to [Defaults.dispatcherAffinity].
     */
+   @ExperimentalKotest
    var dispatcherAffinity: Boolean = Defaults.dispatcherAffinity
 
    /**

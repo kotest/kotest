@@ -34,7 +34,7 @@ class ConcurrentTestLauncher(
                      log("ConcurrentTestLauncher: Unhandled error during test execution [$test] [$t]")
                      throw t
                   }
-               }
+               }.invokeOnCompletion { factory.complete(test) }
             }
          }
       }

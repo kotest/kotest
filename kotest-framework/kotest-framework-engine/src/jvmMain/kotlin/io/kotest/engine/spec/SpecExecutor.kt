@@ -24,6 +24,7 @@ import io.kotest.engine.dispatchers.coroutineDispatcherFactory
 import io.kotest.engine.launchers.ConcurrentTestLauncher
 import io.kotest.engine.launchers.SequentialTestLauncher
 import io.kotest.engine.launchers.TestLauncher
+import io.kotest.engine.launchers.testLauncher
 import io.kotest.fp.Try
 import io.kotest.fp.flatten
 import io.kotest.fp.success
@@ -165,20 +166,12 @@ class SpecExecutor(private val listener: TestEngineListener) {
    private fun Spec.resolvedIsolationMode() =
       this.isolationMode() ?: this.isolationMode ?: this.isolation ?: configuration.isolationMode
 
-   private fun launcher(spec: Spec): TestLauncher {
-      val factory = coroutineDispatcherFactory()
-      return when (val concurrentTests = spec.resolvedConcurrentTests()) {
-         Configuration.Sequential -> SequentialTestLauncher(factory)
-         else -> ConcurrentTestLauncher(max(1, concurrentTests), factory)
-      }
-   }
-
    private fun runner(spec: Spec): SpecRunner {
       return when (spec.resolvedIsolationMode()) {
-         IsolationMode.SingleInstance -> SingleInstanceSpecRunner(listener, launcher(spec))
-         IsolationMode.InstancePerTest -> InstancePerTestSpecRunner(listener, launcher(spec))
+         IsolationMode.SingleInstance -> SingleInstanceSpecRunner(listener, testLauncher(spec))
+         IsolationMode.InstancePerTest -> InstancePerTestSpecRunner(listener, testLauncher(spec))
          IsolationMode.InstancePerLeaf -> when (val threads = spec.resolvedThreads()) {
-            null, 0, 1 -> InstancePerLeafSpecRunner(listener, launcher(spec))
+            null, 0, 1 -> InstancePerLeafSpecRunner(listener, testLauncher(spec))
             else -> ConcurrentInstancePerLeafSpecRunner(listener, threads)
          }
       }

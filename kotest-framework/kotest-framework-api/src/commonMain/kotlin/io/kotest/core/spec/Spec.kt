@@ -83,6 +83,7 @@ abstract class Spec : TestConfiguration(), SpecFunctionConfiguration, SpecFuncti
     * Note: Setting this value alone will not increase the number of threads used. For that,
     * see [Configuration.parallelism].
     */
+   @ExperimentalKotest
    var dispatcherAffinity: Boolean? = null
 
    /**
