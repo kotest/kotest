@@ -1,5 +1,6 @@
 package io.kotest.engine.launchers
 
+import io.kotest.core.config.ExperimentalKotest
 import io.kotest.core.test.TestCase
 import io.kotest.engine.dispatchers.CoroutineDispatcherFactory
 import io.kotest.mpp.log
@@ -14,6 +15,7 @@ import kotlinx.coroutines.sync.withPermit
  * @param maxConcurrent The maximum number of coroutines to launch. Uses a semaphore to limit.
  * @param factory a [CoroutineDispatcherFactory] used to allocate dispatchers to tests.
  */
+@ExperimentalKotest
 class ConcurrentTestLauncher(
    maxConcurrent: Int,
    private val factory: CoroutineDispatcherFactory
