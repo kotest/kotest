@@ -1,5 +1,6 @@
 package io.kotest.engine.spec
 
+import io.kotest.core.SpecInstantiationException
 import io.kotest.core.config.configuration
 import io.kotest.core.extensions.ConstructorExtension
 import io.kotest.core.extensions.PostInstantiationExtension
@@ -37,4 +38,3 @@ internal fun <T : Spec> javaReflectNewInstance(clazz: KClass<T>): Spec {
    }
 }
 
-class SpecInstantiationException(msg: String, t: Throwable?) : RuntimeException(msg, t)
