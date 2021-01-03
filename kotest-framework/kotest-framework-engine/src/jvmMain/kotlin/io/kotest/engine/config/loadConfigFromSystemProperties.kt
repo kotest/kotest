@@ -1,6 +1,5 @@
 package io.kotest.engine.config
 
-import io.kotest.core.config.LaunchMode
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.test.AssertionMode
 import io.kotest.core.internal.KotestEngineSystemProperties
@@ -25,11 +24,11 @@ internal fun invocationTimeout(): Option<Long> =
 internal fun allowMultilineTestName(): Option<Boolean> =
    sysprop(KotestEngineSystemProperties.allowMultilineTestName).toOption().map { it.toUpperCase() == "TRUE" }
 
-internal fun specLaunchMode(): Option<LaunchMode> =
-   sysprop(KotestEngineSystemProperties.specLaunchMode).toOption().map { LaunchMode.valueOf(it) }
+internal fun concurrentSpecs(): Option<Int> =
+   sysprop(KotestEngineSystemProperties.concurrentSpecs).toOption().map { it.toInt() }
 
-internal fun testLaunchMode(): Option<LaunchMode> =
-   sysprop(KotestEngineSystemProperties.testLaunchMode).toOption().map { LaunchMode.valueOf(it) }
+internal fun concurrentTests(): Option<Int> =
+   sysprop(KotestEngineSystemProperties.concurrentTests).toOption().map { it.toInt() }
 
 internal fun globalAssertSoftly(): Option<Boolean> =
    sysprop(KotestEngineSystemProperties.globalAssertSoftly).toOption().map { it.toUpperCase() == "TRUE" }
@@ -45,8 +44,8 @@ internal fun loadConfigFromSystemProperties(): DetectedProjectConfig {
       isolationMode = isolationMode(),
       assertionMode = assertionMode(),
       parallelism = parallelism(),
-      testLaunchMode = testLaunchMode(),
-      specLaunchMode = specLaunchMode(),
+      concurrentTests = concurrentTests(),
+      concurrentSpecs = concurrentSpecs(),
       timeout = timeout(),
       invocationTimeout = invocationTimeout(),
       testNameRemoveWhitespace = allowMultilineTestName(),

@@ -1,16 +1,19 @@
 package io.kotest.core.internal
 
-import io.kotest.core.config.LaunchMode
+import io.kotest.core.config.Configuration
 import io.kotest.core.config.configuration
 import io.kotest.core.spec.DoNotParallelize
 import io.kotest.core.spec.Isolate
 import io.kotest.core.spec.Spec
 import io.kotest.mpp.annotation
+import kotlin.math.max
 import kotlin.reflect.KClass
 
 /**
  * Returns true if this class is annotated with either of the annotations used to indicate
  * this spec should not run concurrently regardless of config.
+ *
+ * Those annotations are [DoNotParallelize] and [Isolate].
  */
 fun KClass<*>.isIsolate(): Boolean = annotation<DoNotParallelize>() != null || annotation<Isolate>() != null
 
@@ -18,25 +21,27 @@ fun KClass<*>.isIsolate(): Boolean = annotation<DoNotParallelize>() != null || a
  * Returns the number of threads specified on this spec, which comes either from the
  * function overrides of the var overrides.
  */
+@Deprecated("Setting explicit thread count in a spec has been deprecated. Use the concurrency setting")
 fun Spec.resolvedThreads(): Int? = this.threads() ?: this.threads
 
 /**
- * Returns the explicit dispatcher set for tests in this spec, which comes either from the
- * function overrides of the var overrides.
- */
-fun Spec.resolvedDispatcher() = this.dispatcher() ?: this.dispatcher
-
-/**
- * Returns the [LaunchMode] to use for tests in this spec.
+ * Returns the concurrent tests count to use for tests in this spec.
+ *
+ * If threads is specified on the spec, then that will implicitly raise the concurrentTests
+ * count to the same value if concurrentTests is not specified.
  *
  * Note that if this spec is annotated with @Isolate then the value
- * will be [LaunchMode.Consecutive] regardless of the config setting.
+ * will be 1 regardless of the config setting.
  *
- * If the spec specifies a thread count greater than 1, then this will
- * implicitly activate [LaunchMode.Concurrent].
+ * spec.concurrency ?: configuration.concurrentTests
  */
-fun Spec.resolvedTestLaunchMode(): LaunchMode? = when {
-   this::class.isIsolate() -> LaunchMode.Consecutive
-   this.resolvedThreads() ?: 0 > 1 -> LaunchMode.Concurrent
-   else -> this.launchMode ?: configuration.testLaunchMode
+fun Spec.resolvedConcurrentTests(): Int {
+   val fromSpecConcurrency = this.concurrency
+   val fromSpecThreadCount = this.resolvedThreads()
+   return when {
+      this::class.isIsolate() -> Configuration.Sequential
+      fromSpecConcurrency != null -> max(1, fromSpecConcurrency)
+      fromSpecThreadCount != null -> max(1, fromSpecThreadCount)
+      else -> configuration.concurrentTests
+   }
 }

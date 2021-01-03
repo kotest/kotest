@@ -173,10 +173,10 @@ abstract class AbstractProjectConfig {
    open val failOnIgnoredTests: Boolean = false
 
    @ExperimentalKotest
-   open val specLaunchMode: LaunchMode? = null
+   open val concurrentSpecs: Int? = null
 
    @ExperimentalKotest
-   open val testLaunchMode: LaunchMode? = null
+   open val concurrentTests: Int? = null
 
    /**
     * Override this value to set a global [AssertionMode].

@@ -1,0 +1,107 @@
+launch each spec consecutively / all at once
+
+launch each test consecutively / all at once
+
+each test / spec to have their own completely new thread
+
+multiple re-used threads for tests / specs
+
+single thread used for everything
+
+launch more than 1 test but limit the number concurrently running
+
+launch more than 1 spec but limit the number concurrently running
+
+
+concurrentSpecs: Int => 1 for consecutive mode, 0 for all at once, > 1 for specific limit
+
+concurrentTests: Int => 1 for consecutive mode, 0 for all at once, > 1 for specific limit
+
+test threads inside a spec => 1 for a single thread for all tests (default), 0 for each test gets its own thread, and > 1 for a specific number of threads
+
+parallelism (renamed to threads?) => 1 for a single thread for all specs (default), 0 for each test spec its own thread, and > 1 for a specific number of threads
+
+
+launch x tests concurrently / each test is guaranteed exclusive use of the thread while executing
+launch all tests concurrently / x number of threads shared between tests
+launch one test at a time / new thread each time
+launch one test / single shared thread
+launch all tests / single shared thread
+
+
+thread use cases:
+
+new thread per spec / test (implicitly isolated)
+max number of threads and shared
+max number of threads and isolated
+single thread shared
+single thread isolated
+
+CoroutineDispatcherFactory:
+SingleThread - control shared / isolated by concurrentSpec flag
+FixedThreadsShared(4)
+FixedThreadsIsolated(4)
+UnlimitedThreads <- no need for stickiness
+
+Dispatchers are always sticky !!
+As soon as you activate multiple threads, those threads will be shared.
+If you don't want threads to be shared, write a custom CoroutineDispatcherFactory that does not
+allocate dispatchers to more than one spec at a time.
+
+Options - one dispatcher with multiple backing threads - means we can't guarantee that a single spec will always receive the same thread. If you want this, write a custom CoroutineDispatcherFactory.
+
+Options - multiple single threaded dispatchers <--- the answer
+
+Use case 1:
+
+Run 4 specs concurrently, each with its own thread without sharing.
+Tests inside specs should be run sequentially.
+
+concurrentSpecs = 4
+concurrentTests = 1 (default)
+parallelism = 4
+
+Use case 2:
+
+Run all specs sharing 4 threads, tests run sequentially
+
+concurrentSpecs = max
+concurrentTests = null
+parallelism = 4
+
+Use case 3:
+
+Default case - everything sequential
+
+concurrentSpecs = (default to 1)
+concurrentTests = (default to 1)
+parallelism = (default to 1)
+
+Use case 4:
+
+
+
+
+
+Use case 1:
+
+I want to launch all my specs at startup, using 4 threads.
+The tests inside the spec should use the same thread as the spec.
+It does not matter if a thread is shared between multiple specs and tests.
+
+Use case 2: (default)
+
+I want to launch specs and tests sequentially. The same single thread should be used throughout the test plan
+
+Use case 3:
+
+I want to launch 4 specs concurrently each with their own thread.
+The tests inside the spec should use the same thread as the spec.
+I do not want threads to be shared between specs so the max concurrency is going to be just the number of threads.
+
+Use case 4:
+
+I have 4 threads which I want to use to run tests.
+I want these to be used at maximum effciency so they should be shared between coroutines.
+But threads should be spec-sticky
+

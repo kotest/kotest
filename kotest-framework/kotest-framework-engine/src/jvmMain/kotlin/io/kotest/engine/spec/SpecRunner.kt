@@ -1,16 +1,15 @@
 package io.kotest.engine.spec
 
-import io.kotest.core.config.LaunchMode
-import io.kotest.core.extensions.CoroutineDispatcherFactoryExtension
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.Spec
+import io.kotest.core.spec.materializeAndOrderRootTests
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.engine.createAndInitializeSpec
+import io.kotest.engine.launchers.TestLauncher
 import io.kotest.engine.listener.TestEngineListener
 import io.kotest.fp.Try
-import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.launch
+import io.kotest.mpp.log
 import kotlin.reflect.KClass
 
 /**
@@ -23,7 +22,7 @@ import kotlin.reflect.KClass
  */
 abstract class SpecRunner(
    val listener: TestEngineListener,
-   val factory: CoroutineDispatcherFactoryExtension
+   val launcher: TestLauncher,
 ) {
 
    /**
@@ -31,6 +30,15 @@ abstract class SpecRunner(
     * or class initializer. Otherwise returns the results for the tests in that spec.
     */
    abstract suspend fun execute(spec: Spec): Try<Map<TestCase, TestResult>>
+
+   /**
+    * Executes all the tests in this spec.
+    */
+   protected suspend fun launch(spec: Spec, run: suspend (TestCase) -> Unit) {
+      val rootTests = spec.materializeAndOrderRootTests().map { it.testCase }
+      log("SingleInstanceSpecRunner: Materialized ${rootTests.size} root tests: ${rootTests}")
+      launcher.launch(run, rootTests)
+   }
 
    /**
     * Creates an instance of the supplied [Spec] by delegating to the project constructors,
@@ -43,27 +51,4 @@ abstract class SpecRunner(
          it.printStackTrace()
          Try { listener.specInstantiationError(kclass, it) }
       }
-
-   protected suspend fun run(
-      launchMode: LaunchMode?,
-      testCases: Collection<TestCase>,
-      run: suspend (TestCase) -> Unit
-   ) {
-      when (launchMode) {
-         LaunchMode.Consecutive -> testCases.forEach { testCase ->
-            coroutineScope {
-               launch(factory.dispatcherFor(testCase)) {
-                  run(testCase)
-               }
-            }
-         }
-         else -> coroutineScope {
-            testCases.map { testCase ->
-               launch(factory.dispatcherFor(testCase)) {
-                  run(testCase)
-               }
-            }
-         }
-      }
-   }
 }

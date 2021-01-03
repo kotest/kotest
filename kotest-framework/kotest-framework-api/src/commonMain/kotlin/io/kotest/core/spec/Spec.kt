@@ -4,12 +4,13 @@ import io.kotest.core.SpecFunctionCallbacks
 import io.kotest.core.SpecFunctionConfiguration
 import io.kotest.core.Tag
 import io.kotest.core.TestConfiguration
+import io.kotest.core.config.Configuration
+import io.kotest.core.config.ExperimentalKotest
 import io.kotest.core.config.configuration
 import io.kotest.core.js.JsTest
 import io.kotest.core.js.useKotlinJs
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestCaseOrder
-import kotlinx.coroutines.CoroutineDispatcher
 import kotlin.js.JsName
 
 /**
@@ -44,25 +45,29 @@ abstract class Spec : TestConfiguration(), SpecFunctionConfiguration, SpecFuncti
 
    /**
     * Sets the number of threads that will be used for executing root tests in this spec.
-    * Implicitly sets [launchMode] to [LaunchMode.Concurrent].
     *
     * On the JVM this will result in multiple threads being used.
     * On other platforms this setting will have no effect.
-    *
-    * Setting the [dispatcher] value will nullify any value set here.
     */
    @JsName("threads_js")
+   @Deprecated("Replaced with concurrency and parallelism. This parameter will be removed in 4.6")
    var threads: Int? = null
 
    /**
-    * Sets the [CoroutineDispatcher] that will be used to launch tests in this spec.
-    * If you wish tests to be launched concurrently in addition to using your own dispatcher,
-    * then set [launchMode] to [LaunchMode.Concurrent].
+    * Sets the number of tests that will be launched concurrently.
     *
-    * Setting this value will nullify any value set for [threads].
+    * Each test is launched into its own coroutine. This parameter determines how many test
+    * coroutines are executing concurrently inside of this spec.
+    *
+    * Setting this parameter to [Configuration.MaxConcurrency] will result in all tests of this spec
+    * being launched concurrently.
+    *
+    * Note: This value does not change the number of threads used by the test engine. By default
+    * all test coroutines will use the same single-threaded dispatcher. To run with multiple threads
+    * (and thus multiple dispatchers) see [Configuration.parallelism].
     */
-   @JsName("dispatcher_var")
-   var dispatcher: CoroutineDispatcher? = null
+   @ExperimentalKotest
+   var concurrency: Int? = null
 
    /**
     * Sets a millisecond timeout for each test case in this spec unless overriden in the test config itself.

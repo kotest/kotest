@@ -94,7 +94,6 @@ interface SpecFunctionConfiguration {
 
    /**
     * Sets the number of threads that will be used for executing root tests in this spec.
-    * Implicitly sets [launchMode] to [LaunchMode.Concurrent].
     *
     * On the JVM this will result in multiple threads being used.
     * On other platforms this setting will have no effect.
@@ -102,14 +101,4 @@ interface SpecFunctionConfiguration {
     * Any value set here is overriden by specifying a value for [dispatcher].
     */
    fun threads(): Int? = null
-
-   /**
-    * Sets the [CoroutineDispatcher] that will be used to launch tests in this spec.
-    *
-    * If you wish tests to be launched concurrently in addition to using your own dispatcher,
-    * then also set [launchMode] to [LaunchMode.Concurrent].
-    *
-    * Setting this value will override any explicit [threads] count set.
-    */
-   fun dispatcher(): CoroutineDispatcher? = null
 }

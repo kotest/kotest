@@ -1,8 +1,10 @@
 package io.kotest.engine
 
 import io.kotest.core.Tags
+import io.kotest.core.config.Configuration
 import io.kotest.core.config.configuration
 import io.kotest.core.filter.TestFilter
+import io.kotest.core.internal.isIsolate
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.afterProject
 import io.kotest.core.spec.beforeProject
@@ -11,10 +13,20 @@ import io.kotest.engine.config.dumpProjectConfig
 import io.kotest.engine.extensions.SpecifiedTagsTagExtension
 import io.kotest.engine.listener.TestEngineListener
 import io.kotest.core.script.ScriptSpec
+import io.kotest.engine.dispatchers.CoroutineDispatcherFactory
+import io.kotest.engine.dispatchers.coroutineDispatcherFactory
+import io.kotest.engine.extensions.SpecLauncherExtension
+import io.kotest.engine.launchers.ConcurrentSpecLauncher
+import io.kotest.engine.launchers.SequentialSpecLauncher
+import io.kotest.engine.launchers.SpecLauncher
 import io.kotest.engine.script.ScriptExecutor
+import io.kotest.engine.spec.SpecExecutor
 import io.kotest.engine.spec.sort
 import io.kotest.fp.Try
+import io.kotest.fp.firstOrNone
+import io.kotest.fp.getOrElse
 import io.kotest.mpp.log
+import kotlin.math.max
 import kotlin.reflect.KClass
 import kotlin.script.templates.standard.ScriptTemplateWithArgs
 
@@ -107,7 +119,7 @@ class KotestEngine(private val config: KotestEngineConfig) {
    private fun notifyListenerEngineStarted(plan: TestPlan) = Try { config.listener.engineStarted(plan.classes) }
 
    private suspend fun submitAll(plan: TestPlan) = Try {
-      log("KotestEngine: Beginning test plan [specs=${plan.classes.size}, scripts=${plan.scripts.size}, parallelism=${configuration.parallelism}, specConcurrentDispatch=${configuration.specLaunchMode}, testConcurrentDispatch=${configuration.testLaunchMode}]")
+      log("KotestEngine: Beginning test plan [specs=${plan.classes.size}, scripts=${plan.scripts.size}, parallelism=${configuration.parallelism}, concurrentSpecs=${configuration.concurrentSpecs}, testConcurrentDispatch=${configuration.concurrentTests}]")
 
       // scripts always run sequentially
       log("KotestEngine: Launching ${plan.scripts.size} scripts")
@@ -125,7 +137,42 @@ class KotestEngine(private val config: KotestEngineConfig) {
 
       // spec classes are ordered using an instance of SpecExecutionOrder
       val ordered = plan.classes.sort(configuration.specExecutionOrder)
-      DefaultSpecLauncher.submit(config.listener, ordered)
+      val executor = SpecExecutor(config.listener)
+
+      // if we are launching specs concurrently, then we partition the specs into those which
+      // can run concurrently (default) and those which cannot (see @Isolated)
+      val (consecutive, concurrent) = ordered.partition { it.isIsolate() }
+      launcher().launch(executor, consecutive)
+      launcher().launch(executor, concurrent)
+   }
+
+   /**
+    * Returns a [SpecLauncher] to be used for launching specs.
+    *
+    * Will use a [SpecLauncherExtension] if provided otherwise will default to the
+    * launcher provided by [defaultSpecLauncher].
+    */
+   private fun launcher(): SpecLauncher {
+      return configuration.extensions().filterIsInstance<SpecLauncherExtension>()
+         .firstOrNone()
+         .map { it.launcher() }
+         .getOrElse { defaultSpecLauncher() }
+   }
+
+   /**
+    * The default [SpecLauncher] to use.
+    *
+    * Will return  either [SequentialSpecLauncher] or [ConcurrentSpecLauncher]
+    * depending on the value of [configuration.concurrentSpecs].
+    *
+    * Will use a [CoroutineDispatcherFactory] provided by [coroutineDispatcherFactory].
+    */
+   private fun defaultSpecLauncher(): SpecLauncher {
+      val factory = coroutineDispatcherFactory()
+      return when (configuration.concurrentSpecs) {
+         Configuration.Sequential -> SequentialSpecLauncher(factory)
+         else -> ConcurrentSpecLauncher(max(1, configuration.concurrentSpecs), factory)
+      }
    }
 
    private fun end(errors: List<Throwable>) {

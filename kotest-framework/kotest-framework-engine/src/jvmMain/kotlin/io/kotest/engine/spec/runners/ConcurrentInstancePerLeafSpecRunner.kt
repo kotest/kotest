@@ -1,4 +1,4 @@
-package io.kotest.engine.runners
+package io.kotest.engine.spec.runners
 
 import io.kotest.core.DuplicatedTestNameException
 import io.kotest.core.test.NestedTest
@@ -17,7 +17,8 @@ import io.kotest.engine.listener.TestCaseListenerToTestEngineListenerAdapter
 import io.kotest.core.spec.invokeAfterSpec
 import io.kotest.core.spec.invokeBeforeSpec
 import io.kotest.core.spec.materializeAndOrderRootTests
-import io.kotest.engine.ExecutorCoroutineDispatcherFactory
+import io.kotest.engine.dispatchers.ExecutorCoroutineDispatcherFactory
+import io.kotest.engine.launchers.SequentialTestLauncher
 import io.kotest.engine.toTestResult
 import io.kotest.fp.Try
 import io.kotest.mpp.log
@@ -36,10 +37,11 @@ import kotlin.coroutines.CoroutineContext
  *
  * All nested tests use the same dispatcher as their root test.
  */
+@Deprecated("Should be replaced with a better InstancePerLeafSpecRunner runner")
 internal class ConcurrentInstancePerLeafSpecRunner(
    testEngineListener: TestEngineListener,
    private val threads: Int,
-) : SpecRunner(testEngineListener, ExecutorCoroutineDispatcherFactory(1)) {
+) : SpecRunner(testEngineListener, SequentialTestLauncher(ExecutorCoroutineDispatcherFactory(1))) {
 
    private val results = ConcurrentHashMap<TestCase, TestResult>()
 

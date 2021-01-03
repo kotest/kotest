@@ -61,7 +61,7 @@ kotlin {
          dependencies {
             implementation(project(Projects.JunitRunner))
             implementation(project(Projects.AssertionsCore))
-            implementation(project(":kotest-extensions:kotest-extensions-mockserver"))
+            implementation(project(Projects.MockServer))
          }
       }
    }

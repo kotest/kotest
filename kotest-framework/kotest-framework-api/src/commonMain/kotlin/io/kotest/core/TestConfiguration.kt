@@ -2,7 +2,6 @@
 
 package io.kotest.core
 
-import io.kotest.core.config.LaunchMode
 import io.kotest.core.extensions.Extension
 import io.kotest.core.extensions.TestCaseExtension
 import io.kotest.core.listeners.TestListener
@@ -57,12 +56,6 @@ abstract class TestConfiguration {
     * If null, then the the project default is used.
     */
    var assertions: AssertionMode? = null
-
-   /**
-    * Sets the [LaunchMode] to be used for root tests in this spec.
-    * If not specified then the global value will be used.
-    */
-   var launchMode: LaunchMode? = null
 
    /**
     * Register a single [TestListener] of type T return that listener.
