@@ -1,5 +1,6 @@
 package io.kotest.engine.dispatchers
 
+import io.kotest.core.config.ExperimentalKotest
 import io.kotest.core.internal.resolvedThreads
 import io.kotest.core.spec.Spec
 import io.kotest.core.test.TestCase
@@ -14,6 +15,7 @@ import java.util.concurrent.TimeUnit
 import kotlin.math.abs
 import kotlin.reflect.KClass
 
+@ExperimentalKotest
 data class ExecutorCoroutineDispatcher(
    val executor: ExecutorService,
    val coroutineDispatcher: CoroutineDispatcher,
@@ -29,6 +31,7 @@ data class ExecutorCoroutineDispatcher(
  *                           spec and all the tests in it will receive the same dispatcher.
  *                           This value is overriden if specified in the spec itself.
  */
+@ExperimentalKotest
 class ExecutorCoroutineDispatcherFactory(
    private val parallelism: Int,
    private val dispatcherAffinity: Boolean
