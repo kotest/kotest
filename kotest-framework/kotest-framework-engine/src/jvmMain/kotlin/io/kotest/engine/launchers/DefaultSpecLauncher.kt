@@ -52,7 +52,7 @@ class DefaultSpecLauncher(
          coroutineScope {
             launch(factory.dispatcherFor(spec)) {
                executor.execute(spec)
-            }
+            }.invokeOnCompletion { factory.complete(spec) }
          }
       }
    }
@@ -66,16 +66,17 @@ class DefaultSpecLauncher(
                val dispatcher = factory.dispatcherFor(spec)
                log("DefaultSpecLauncher: Launching coroutine for spec [$spec] with dispatcher [$dispatcher]")
 
-               launch(dispatcher) {
+                launch(dispatcher) {
                   try {
                      executor.execute(spec)
                   } catch (t: Throwable) {
                      log("DefaultSpecLauncher: Unhandled error during spec execution [$spec] [$t]")
                      throw t
                   }
-               }
+               }.invokeOnCompletion { factory.complete(spec) }
             }
          }
       }
+      factory.stop()
    }
 }
