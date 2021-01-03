@@ -4,12 +4,10 @@ import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 
 /**
- * Reusable extension that intercepts calls to a [TestCase].
+ * Extension point that intercepts calls to a [TestCase].
  *
- * These extensions can be registered project wide using
- * [AbstractProjectConfig.extensions], or on a per-spec basis
- * by setting `extensions()` in a [Spec] class, or finally
- * on individual tests themselves via [TestCaseConfig].
+ * This extension can be used to override the results of a test, or whether a test is invoked.
+ *
  */
 interface TestCaseExtension : Extension {
 
@@ -42,11 +40,11 @@ interface TestCaseExtension : Extension {
     * Or they may wish to run the test and then invoke complete with a different
     * result to that received.
     *
-    * Note: !!Failure to invoke the complete function will result in the test runnner
+    * Note: !!Failure to invoke the complete function can result in the test runnner
     * waiting indefinitely for the outcome of the test case!!
     *
     * Note: A test cannot be skipped after it has been executed. Executing a test
-    * and then returning [TestStatus.Ignored] can result in errors on the JUnit platform.
+    * and then returning [TestStatus.Ignored] can result in errors on some platforms.
     *
     * @param testCase the [TestCase] under interception - contains the [Spec]
     * instance containing this test case, the [TestCaseConfig] to be passed to the test
