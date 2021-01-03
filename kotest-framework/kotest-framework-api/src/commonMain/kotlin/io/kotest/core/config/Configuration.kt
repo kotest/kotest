@@ -113,8 +113,10 @@ class Configuration {
     *
     * Note: Setting this value alone will not increase the number of threads used. For that,
     * see [Configuration.parallelism].
+    *
+    * Defaults to [Defaults.dispatcherAffinity].
     */
-   var dispatcherAffinity: Boolean? = null
+   var dispatcherAffinity: Boolean = Defaults.dispatcherAffinity
 
    /**
     * Each spec is launched into its own coroutine. By default, the test engine waits for that

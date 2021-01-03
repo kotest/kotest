@@ -1,6 +1,5 @@
 package io.kotest.engine.dispatchers
 
-import io.kotest.core.config.configuration
 import io.kotest.core.internal.resolvedThreads
 import io.kotest.core.spec.Spec
 import io.kotest.core.test.TestCase
@@ -21,12 +20,19 @@ data class ExecutorCoroutineDispatcher(
 )
 
 /**
- * A [CoroutineDispatcherFactory] that will create single threaded dispatchers based on the parallelism
- * count specified in configuration. This factory guarantees dispatcher affinity - that is a particular
- * spec and all the tests in it will receive the same dispatcher, unless the spec overrides the
- * dispatcher.
+ * A [CoroutineDispatcherFactory] that will create single threaded dispatchers.
+ *
+ * @param parallelism how many threads to use. If > 1 then multiple dispatchers will be created each
+ *                    backed by a single thread).
+ *
+ * @param dispatcherAffinity if true then this factory guarantees dispatcher affinity - that is a particular
+ *                           spec and all the tests in it will receive the same dispatcher.
+ *                           This value is overriden if specified in the spec itself.
  */
-class ExecutorCoroutineDispatcherFactory(private val parallelism: Int) : CoroutineDispatcherFactory {
+class ExecutorCoroutineDispatcherFactory(
+   private val parallelism: Int,
+   private val dispatcherAffinity: Boolean
+) : CoroutineDispatcherFactory {
 
    // these are the global dispatchers which uses the given threadCount
    private val dispatchers = List(parallelism) { Executors.newSingleThreadExecutor() }
@@ -59,7 +65,7 @@ class ExecutorCoroutineDispatcherFactory(private val parallelism: Int) : Corouti
       }
 
       // if dispatcher affinity is set we use the same dispatcher as the spec
-      return when (testCase.spec.dispatcherAffinity ?: configuration.dispatcherAffinity ?: true) {
+      return when (testCase.spec.dispatcherAffinity ?: dispatcherAffinity) {
          true -> dispatcherFor(testCase.spec::class)
          else -> dispatchers.random().coroutineDispatcher
       }

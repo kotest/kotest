@@ -19,5 +19,5 @@ fun coroutineDispatcherFactory(): CoroutineDispatcherFactory {
 }
 
 fun defaultCoroutineDispatcherFactory(): ExecutorCoroutineDispatcherFactory {
-   return ExecutorCoroutineDispatcherFactory(configuration.parallelism)
+   return ExecutorCoroutineDispatcherFactory(configuration.parallelism, configuration.dispatcherAffinity)
 }

@@ -7,6 +7,9 @@ import kotlin.reflect.KClass
 
 /**
  * Allocates [CoroutineDispatcher]s to [Spec]s and [TestCase]s.
+ *
+ * To use a custom [CoroutineDispatcherFactory] implement the [CoroutineDispatcherFactoryExtension]
+ * extension point.
  */
 interface CoroutineDispatcherFactory {
 
