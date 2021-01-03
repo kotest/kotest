@@ -1,6 +1,5 @@
 package io.kotest.core
 
-import io.kotest.core.config.ConcurrencyMode
 import io.kotest.core.extensions.Extension
 import io.kotest.core.extensions.TestCaseExtension
 import io.kotest.core.listeners.TestListener
@@ -9,6 +8,7 @@ import io.kotest.core.test.AssertionMode
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestCaseConfig
 import io.kotest.core.test.TestCaseOrder
+import kotlinx.coroutines.CoroutineDispatcher
 
 /**
  * Defines functions which can be overriden to set configuration options at the spec level.
@@ -93,13 +93,11 @@ interface SpecFunctionConfiguration {
    fun assertionMode(): AssertionMode? = null
 
    /**
-    * Override this function to return a value of the number of threads to use when
-    * executing tests inside this spec.
+    * Sets the number of threads that will be used for executing root tests in this spec.
     *
-    * Note: This does not affect how many specs are executed in parallel.
+    * On the JVM this will result in multiple threads being used.
+    * On other platforms this setting will have no effect.
     */
-   @Deprecated("Explicit thread mode will be removed in 4.6. Instead use concurrencyMode = Parallel")
+   @Deprecated("Use concurrency setting. This will be removed in 4.6")
    fun threads(): Int? = null
-
-   fun concurrencyMode(): ConcurrencyMode? = null
 }

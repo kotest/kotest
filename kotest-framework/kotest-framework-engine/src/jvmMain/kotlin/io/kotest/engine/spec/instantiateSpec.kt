@@ -1,5 +1,6 @@
-package io.kotest.engine
+package io.kotest.engine.spec
 
+import io.kotest.core.SpecInstantiationException
 import io.kotest.core.config.configuration
 import io.kotest.core.extensions.ConstructorExtension
 import io.kotest.core.extensions.PostInstantiationExtension
@@ -12,7 +13,7 @@ import kotlin.reflect.jvm.isAccessible
  * Creates an instance of a [Spec] by delegating to constructor extensions, with
  * a fallback to a reflection based zero-args constructor.
  *
- * After creation will execute any post process extensions.
+ * After creation will execute any [PostInstantiationExtension]s.
  */
 fun <T : Spec> createAndInitializeSpec(clazz: KClass<T>): Try<Spec> =
    Try {
@@ -37,4 +38,3 @@ internal fun <T : Spec> javaReflectNewInstance(clazz: KClass<T>): Spec {
    }
 }
 
-class SpecInstantiationException(msg: String, t: Throwable?) : RuntimeException(msg, t)

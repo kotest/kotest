@@ -1,23 +1,23 @@
-package io.kotest.engine.runners
+package io.kotest.engine.spec.runners
 
 import io.kotest.core.DuplicatedTestNameException
-import io.kotest.core.spec.Spec
-import io.kotest.core.test.DescriptionName
-import io.kotest.core.test.NestedTest
-import io.kotest.core.test.TestCase
-import io.kotest.core.test.TestContext
-import io.kotest.core.test.TestResult
-import io.kotest.core.test.toTestCase
-import io.kotest.engine.spec.SpecRunner
-import io.kotest.engine.listener.TestEngineListener
-import io.kotest.core.internal.resolvedThreads
-import io.kotest.engine.ExecutorExecutionContext
 import io.kotest.core.internal.TestCaseExecutor
-import io.kotest.core.internal.resolvedConcurrencyMode
+import io.kotest.core.internal.resolvedThreads
+import io.kotest.core.spec.Spec
 import io.kotest.core.spec.invokeAfterSpec
 import io.kotest.core.spec.invokeBeforeSpec
 import io.kotest.core.spec.materializeAndOrderRootTests
+import io.kotest.core.test.DescriptionName
+import io.kotest.core.test.NestedTest
+import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestCaseExecutionListener
+import io.kotest.core.test.TestContext
+import io.kotest.core.test.TestResult
+import io.kotest.core.test.toTestCase
+import io.kotest.engine.ExecutorExecutionContext
+import io.kotest.engine.launchers.TestLauncher
+import io.kotest.engine.listener.TestEngineListener
+import io.kotest.engine.spec.SpecRunner
 import io.kotest.engine.toTestResult
 import io.kotest.fp.Try
 import io.kotest.mpp.log
@@ -30,7 +30,10 @@ import kotlin.coroutines.CoroutineContext
  * same [Spec] instance. In other words, only a single instance of the spec class
  * is instantiated for all the test cases.
  */
-internal class SingleInstanceSpecRunner(listener: TestEngineListener) : SpecRunner(listener) {
+internal class SingleInstanceSpecRunner(
+   listener: TestEngineListener,
+   launcher: TestLauncher,
+) : SpecRunner(listener, launcher) {
 
    private val results = ConcurrentHashMap<TestCase, TestResult>()
 
@@ -48,7 +51,7 @@ internal class SingleInstanceSpecRunner(listener: TestEngineListener) : SpecRunn
                runTest(it, context)
             }
          } else {
-            run(spec.resolvedConcurrencyMode(), rootTests) {
+            launch(spec) {
                log("SingleInstanceSpecRunner: Executing test $it")
                runTest(it, context)
             }

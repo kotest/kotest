@@ -1,26 +1,20 @@
-package io.kotest.engine.runners
+package io.kotest.engine.spec.runners
 
 import io.kotest.core.DuplicatedTestNameException
-import io.kotest.core.test.NestedTest
-import io.kotest.core.test.TestCase
-import io.kotest.core.test.TestContext
-import io.kotest.core.test.TestResult
-import io.kotest.core.test.toTestCase
-import io.kotest.core.spec.Spec
-import io.kotest.engine.spec.SpecRunner
-import io.kotest.engine.listener.TestEngineListener
-import io.kotest.mpp.log
-import io.kotest.engine.ExecutorExecutionContext
-import io.kotest.core.test.TestCaseExecutionListener
 import io.kotest.core.internal.TestCaseExecutor
-import io.kotest.core.internal.resolvedConcurrencyMode
+import io.kotest.core.internal.resolvedThreads
+import io.kotest.core.spec.Spec
 import io.kotest.core.spec.invokeAfterSpec
 import io.kotest.core.spec.invokeBeforeSpec
-import io.kotest.core.internal.resolvedThreads
-import io.kotest.core.test.*
 import io.kotest.core.spec.materializeAndOrderRootTests
+import io.kotest.core.test.*
+import io.kotest.engine.ExecutorExecutionContext
+import io.kotest.engine.launchers.TestLauncher
+import io.kotest.engine.listener.TestEngineListener
+import io.kotest.engine.spec.SpecRunner
 import io.kotest.engine.toTestResult
 import io.kotest.fp.Try
+import io.kotest.mpp.log
 import kotlinx.coroutines.coroutineScope
 import java.util.concurrent.ConcurrentHashMap
 import kotlin.coroutines.CoroutineContext
@@ -56,7 +50,10 @@ import kotlin.coroutines.CoroutineContext
  * spec3.outerTest
  * spec3.innerTestB
  */
-internal class InstancePerTestSpecRunner(listener: TestEngineListener) : SpecRunner(listener) {
+internal class InstancePerTestSpecRunner(
+   listener: TestEngineListener,
+   launcher: TestLauncher,
+) : SpecRunner(listener, launcher) {
 
    private val results = ConcurrentHashMap<TestCase, TestResult>()
 
@@ -81,7 +78,7 @@ internal class InstancePerTestSpecRunner(listener: TestEngineListener) : SpecRun
                   .getOrThrow()
             }
          } else {
-            run(spec.resolvedConcurrencyMode(), spec.materializeAndOrderRootTests().map { it.testCase }) {
+            launch(spec) {
                executeInCleanSpec(it)
                   .getOrThrow()
             }

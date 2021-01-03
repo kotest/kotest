@@ -1,4 +1,4 @@
-package io.kotest.engine.runners
+package io.kotest.engine.spec.runners
 
 import io.kotest.core.DuplicatedTestNameException
 import io.kotest.core.spec.Spec
@@ -17,6 +17,7 @@ import io.kotest.core.spec.invokeAfterSpec
 import io.kotest.core.spec.invokeBeforeSpec
 import io.kotest.core.spec.materializeAndOrderRootTests
 import io.kotest.core.test.TestCaseExecutionListener
+import io.kotest.engine.launchers.TestLauncher
 import io.kotest.engine.toTestResult
 import io.kotest.fp.Try
 import io.kotest.mpp.log
@@ -26,7 +27,10 @@ import java.util.concurrent.atomic.AtomicInteger
 import kotlin.Comparator
 import kotlin.coroutines.CoroutineContext
 
-internal class InstancePerLeafSpecRunner(listener: TestEngineListener) : SpecRunner(listener) {
+internal class InstancePerLeafSpecRunner(
+   listener: TestEngineListener,
+   launcher: TestLauncher
+) : SpecRunner(listener, launcher) {
 
    private val results = mutableMapOf<TestCase, TestResult>()
 

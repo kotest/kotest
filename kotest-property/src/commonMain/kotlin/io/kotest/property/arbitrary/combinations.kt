@@ -114,7 +114,7 @@ fun <A> Arb.Companion.subsequence(list: List<A>): Arb<List<A>> = arbitrary {
  * The input gens must be infinite.
  */
 @Deprecated(
-   message = "Deprecated in favor of a function that returns an Arb instead of a Gen. Will be removed in 4.4",
+   message = "Deprecated in favor of a function that returns an Arb instead of a Gen. Will be removed in 4.5",
    replaceWith = ReplaceWith("Arb.Companion.choice(vararg arbs: Arb<A>)")
 )
 fun <A> Arb.Companion.choice(vararg gens: Gen<A>): Gen<A> = arb { rs ->

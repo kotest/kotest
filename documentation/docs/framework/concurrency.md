@@ -1,11 +1,16 @@
-Concurrency
-===========
+---
+id: concurrency
+title: Concurrency
+slug: concurrency.html
+---
 
-Concurrency is at the heart of Kotlin, with the compiler support for continuations (suspend functions), enabling
+
+
+Concurrency is at the heart of Kotlin, with compiler support for continuations (suspend functions), enabling
 the powerful coroutines library, in addition to the standard Java concurrency tools.
 
-So it is expected that a Kotlin test framework should offer full support for executing tests concurrently, both through
-traditional blocking calls, as well as suspension methods.
+So it is expected that a Kotlin test framework should offer full support for executing tests concurrently, whether that is through
+traditional blocking calls or suspendable functions.
 
 Kotest offers the following features:
 
@@ -26,7 +31,7 @@ This is especially true when testing code that suspends or blocks - the performa
 
 
 
-### Concurrency Mode
+## Concurrency Mode
 
 Kotest offers the ability to launch each spec and/or test in separate coroutines that can run concurrently.
 Then, whenever a test suspends, another coroutine can be swapped onto that thread.
@@ -43,21 +48,22 @@ There are four values:
 * `Test` - Launch specs **sequentially**, but tests within each spec **concurrently**.
 * `All` - Launch **both** specs and tests **concurrently**.
 
-!!! note "Caveats"
-    This setting does not change the thread count, but allows for co-operative concurrency when using suspendable functions.
-    If you are testing code that does not use coroutines or uses frequent blocking calls then this setting alone is not sufficient.
-    See the section on multiple threads.
+:::note "Caveats"
+This setting does not change the thread count, but allows for co-operative concurrency when using suspendable functions.
+If you are testing code that does not use coroutines or uses frequent blocking calls then this setting alone is not sufficient.
+See the section on multiple threads.
+:::
 
-!!! warning "Blocking Methods"
-    Usage of blocking calls - such as those from Java's IO Api or Thread.sleep - will block the thread and not allow that
-    thread for other coroutines regardless of this setting.
+:::caution "Blocking Methods"
+Usage of blocking calls - such as those from Java's IO Api or Thread.sleep - will block the thread and not allow that
+thread for other coroutines regardless of this setting.
 
-    One can either try to avoid the use of blocking calls in favour of suspendable equivalents or wrap blocking calls
-    inside a `withContext` block to move the offending code onto another dispatcher, such as `Dispatchers.IO`.
+One can either try to avoid the use of blocking calls in favour of suspendable equivalents or wrap blocking calls
+inside a `withContext` block to move the offending code onto another dispatcher, such as `Dispatchers.IO`.
+:::
 
 
-
-#### ConcurrencyMode.None
+### ConcurrencyMode.None
 
 This is the default setting, which launches all specs and tests sequentially. That is, the next spec and test are launched
 only when the previous one completes.
@@ -100,7 +106,7 @@ Suspension or blocking will suspend or block the entire test run. All callback m
 guaranteed to run in isolation.
 
 
-#### ConcurrencyMode.Spec
+### ConcurrencyMode.Spec
 
 This setting launches each spec at once, but tests inside each coroutine sequentially.
 
@@ -133,7 +139,7 @@ thread unsafe code that is contained within that spec. Test level callback metho
 guaranteed to run in isolation, but spec level callback methods such as `beforeSpec` and `afterSpec` can run concurrently.
 
 
-#### ConcurrencyMode.Test
+### ConcurrencyMode.Test
 
 This setting launches each spec sequentially, but each root test inside a spec concurrently.
 
@@ -168,14 +174,14 @@ This mode is useful if you need thread safety between specs but tests inside eac
 Test level callback methods such as `beforeTest` and `afterTest` can run concurrently,
 but spec level callback methods such as `beforeSpec` and `afterSpec` are guaranteed to run in isolation.
 
-!!! warning "Isolation mode"
-    The default isolation mode for specs is _single instance per class_ - which means the same instance of
-    the spec class is used for all tests of that class. If you have top level variables in your class, they must
-    be thread safe.
+:::caution "Isolation mode"
+The default isolation mode for specs is _single instance per class_ - which means the same instance of
+the spec class is used for all tests of that class. If you have top level variables in your class, they must
+be thread safe.
+:::
 
 
-
-#### ConcurrencyMode.All
+### ConcurrencyMode.All
 
 This setting launches each spec concurrently and each test inside each spec concurrently. In effect, this is like
 throwing all the tests into one giant pot and launching them all at the same time.

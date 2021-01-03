@@ -6,10 +6,7 @@ import kotlin.reflect.jvm.jvmName
 import kotlin.script.templates.standard.ScriptTemplateWithArgs
 
 /**
- * Creates an instance of a [Spec] by delegating to constructor extensions, with
- * a fallback to a reflection based zero-args constructor.
- *
- * After creation will execute any post process extensions.
+ * Creates an instance of a kotlin script.
  */
 internal fun createAndInitializeScript(
    clazz: KClass<out ScriptTemplateWithArgs>,

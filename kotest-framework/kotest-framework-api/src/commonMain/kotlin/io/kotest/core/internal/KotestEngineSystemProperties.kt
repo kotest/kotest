@@ -47,7 +47,9 @@ object KotestEngineSystemProperties {
 
    const val invocationTimeout = "kotest.framework.invocation.timeout"
 
-   const val concurrencyMode = "kotest.framework.concurrency.mode"
+   const val concurrentSpecs = "kotest.framework.spec.concurrent"
+
+   const val concurrentTests = "kotest.framework.test.concurrent"
 
    /**
     * Disable scanning the classpath for configuration classes by setting this property to true
@@ -62,8 +64,8 @@ object KotestEngineSystemProperties {
    const val allowMultilineTestName = "kotest.framework.testname.multiline"
 
    /**
-   *  If set -> filter testCases by this severity level and higher, else running all
-   */
+    *  If set -> filter testCases by this severity level and higher, else running all
+    */
    const val severityPrefix = "kotest.framework.test.severity"
 
    /**
@@ -73,6 +75,6 @@ object KotestEngineSystemProperties {
 
    /**
     * Appends all tags associated with a test case to its display name.
-   * */
+    * */
    const val testNameAppendTags = "kotest.framework.testname.append.tags"
 }

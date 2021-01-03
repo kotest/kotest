@@ -1,27 +1,34 @@
 package io.kotest.engine.spec
 
+import io.kotest.core.config.Configuration
 import io.kotest.mpp.log
 import io.kotest.core.config.configuration
 import io.kotest.core.config.specInstantiationListeners
 import io.kotest.core.config.testListeners
-import io.kotest.engine.runners.ConcurrentInstancePerLeafSpecRunner
-import io.kotest.engine.runners.InstancePerLeafSpecRunner
-import io.kotest.engine.runners.InstancePerTestSpecRunner
-import io.kotest.engine.runners.SingleInstanceSpecRunner
+import io.kotest.engine.spec.runners.ConcurrentInstancePerLeafSpecRunner
+import io.kotest.engine.spec.runners.InstancePerLeafSpecRunner
+import io.kotest.engine.spec.runners.InstancePerTestSpecRunner
+import io.kotest.engine.spec.runners.SingleInstanceSpecRunner
 import io.kotest.engine.listener.TestEngineListener
 import io.kotest.core.extensions.SpecExtension
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.core.extensions.resolvedSpecExtensions
 import io.kotest.core.internal.resolvedThreads
-import io.kotest.engine.createAndInitializeSpec
 import io.kotest.core.internal.isActive
+import io.kotest.core.internal.resolvedConcurrentTests
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.materializeAndOrderRootTests
+import io.kotest.engine.dispatchers.coroutineDispatcherFactory
+import io.kotest.engine.launchers.ConcurrentTestLauncher
+import io.kotest.engine.launchers.SequentialTestLauncher
+import io.kotest.engine.launchers.TestLauncher
+import io.kotest.engine.launchers.testLauncher
 import io.kotest.fp.Try
 import io.kotest.fp.flatten
 import io.kotest.fp.success
+import kotlin.math.max
 import kotlin.reflect.KClass
 
 /**
@@ -161,14 +168,13 @@ class SpecExecutor(private val listener: TestEngineListener) {
 
    private fun runner(spec: Spec): SpecRunner {
       return when (spec.resolvedIsolationMode()) {
-         IsolationMode.SingleInstance -> SingleInstanceSpecRunner(listener)
-         IsolationMode.InstancePerTest -> InstancePerTestSpecRunner(listener)
+         IsolationMode.SingleInstance -> SingleInstanceSpecRunner(listener, testLauncher(spec))
+         IsolationMode.InstancePerTest -> InstancePerTestSpecRunner(listener, testLauncher(spec))
          IsolationMode.InstancePerLeaf -> when (val threads = spec.resolvedThreads()) {
-            null, 0, 1 -> InstancePerLeafSpecRunner(listener) // topo restore per leaf
+            null, 0, 1 -> InstancePerLeafSpecRunner(listener, testLauncher(spec))
             else -> ConcurrentInstancePerLeafSpecRunner(listener, threads)
          }
       }
-//      return SingleInstanceSpecRunner(listener)
    }
 
    /**

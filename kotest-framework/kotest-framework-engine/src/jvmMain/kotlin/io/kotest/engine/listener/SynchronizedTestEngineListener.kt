@@ -5,6 +5,9 @@ import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import kotlin.reflect.KClass
 
+/**
+ * Wraps a [TestEngineListener]s methods in synchronized calls to ensure no race conditions.
+ */
 class SynchronizedTestEngineListener(private val listener: TestEngineListener) : TestEngineListener {
 
    override fun engineStarted(classes: List<KClass<out Spec>>) {

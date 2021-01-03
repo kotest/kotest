@@ -41,5 +41,5 @@ abstract class Tag {
  */
 class NamedTag(override val name: String) : Tag()
 
-@Deprecated("Use NamedTag. This will be removed in 4.4")
+@Deprecated("Use NamedTag. This Will be removed in 4.5")
 class StringTag(override val name: String) : Tag()

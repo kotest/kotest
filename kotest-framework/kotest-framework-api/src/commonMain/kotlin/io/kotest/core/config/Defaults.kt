@@ -27,4 +27,7 @@ object Defaults {
 
    val defaultTestNameCase: TestNameCase = TestNameCase.AsIs
    val specExecutionOrder = SpecExecutionOrder.Lexicographic
+
+   const val concurrentTests = Configuration.Sequential
+   const val dispatcherAffinity = true
 }
