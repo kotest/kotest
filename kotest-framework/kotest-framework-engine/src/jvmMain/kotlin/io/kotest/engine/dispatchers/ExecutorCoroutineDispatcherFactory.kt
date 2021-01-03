@@ -1,5 +1,6 @@
 package io.kotest.engine.dispatchers
 
+import io.kotest.core.config.configuration
 import io.kotest.core.internal.resolvedThreads
 import io.kotest.core.spec.Spec
 import io.kotest.core.test.TestCase
@@ -57,8 +58,11 @@ class ExecutorCoroutineDispatcherFactory(private val parallelism: Int) : Corouti
          }.coroutineDispatcher
       }
 
-      // otherwise we use the same dispatcher as for the spec to guarantee dispatcher affinity.
-      return dispatcherFor(testCase.spec::class)
+      // if dispatcher affinity is set we use the same dispatcher as the spec
+      return when (testCase.spec.dispatcherAffinity ?: configuration.dispatcherAffinity ?: true) {
+         true -> dispatcherFor(testCase.spec::class)
+         else -> dispatchers.random().coroutineDispatcher
+      }
    }
 
    override fun stop() {
