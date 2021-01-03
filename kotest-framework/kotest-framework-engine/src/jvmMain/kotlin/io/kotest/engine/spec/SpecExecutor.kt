@@ -15,7 +15,6 @@ import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.core.extensions.resolvedSpecExtensions
 import io.kotest.core.internal.resolvedThreads
-import io.kotest.engine.createAndInitializeSpec
 import io.kotest.core.internal.isActive
 import io.kotest.core.internal.resolvedConcurrentTests
 import io.kotest.core.spec.IsolationMode
