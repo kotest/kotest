@@ -12,7 +12,7 @@ import kotlin.reflect.jvm.isAccessible
  * Creates an instance of a [Spec] by delegating to constructor extensions, with
  * a fallback to a reflection based zero-args constructor.
  *
- * After creation will execute any post process extensions.
+ * After creation will execute any [PostInstantiationExtension]s.
  */
 fun <T : Spec> createAndInitializeSpec(clazz: KClass<T>): Try<Spec> =
    Try {
