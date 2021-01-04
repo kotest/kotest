@@ -10,7 +10,7 @@ fun Configuration.createConfigSummary(): String {
 
    sb.buildOutput("Parallelization factor", parallelism.toString())
    sb.buildOutput("Concurrent specs", concurrentSpecs.toString())
-   sb.buildOutput("Concurrent tests", concurrentTests.toString())
+   sb.buildOutput("Global concurrent tests", concurrentTests.toString())
    sb.buildOutput("Dispatcher affinity", dispatcherAffinity.toString())
    sb.buildOutput("Default test timeout", timeout.toString() + "ms")
    sb.buildOutput("Default test order", testCaseOrder.name)

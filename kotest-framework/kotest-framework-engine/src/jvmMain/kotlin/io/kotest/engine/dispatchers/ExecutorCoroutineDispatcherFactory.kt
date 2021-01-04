@@ -68,7 +68,7 @@ class ExecutorCoroutineDispatcherFactory(
       }
 
       // if dispatcher affinity is set we use the same dispatcher as the spec
-      return when (testCase.spec.dispatcherAffinity ?: dispatcherAffinity) {
+      return when (testCase.spec.dispatcherAffinity ?: testCase.spec.dispatcherAffinity() ?: dispatcherAffinity) {
          true -> dispatcherFor(testCase.spec::class)
          else -> dispatchers.random().coroutineDispatcher
       }

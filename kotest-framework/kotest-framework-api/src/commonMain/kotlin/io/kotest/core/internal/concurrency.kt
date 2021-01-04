@@ -36,7 +36,7 @@ fun Spec.resolvedThreads(): Int? = this.threads() ?: this.threads
  * spec.concurrency ?: configuration.concurrentTests
  */
 fun Spec.resolvedConcurrentTests(): Int {
-   val fromSpecConcurrency = this.concurrency
+   val fromSpecConcurrency = this.concurrency ?: this.concurrency()
    val fromSpecThreadCount = this.resolvedThreads()
    return when {
       this::class.isIsolate() -> Configuration.Sequential

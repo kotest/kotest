@@ -198,13 +198,13 @@ class TestCaseExecutor(
       // this timeout applies across all invocations. In other words, if a test has invocations = 3,
       // each test takes 300ms, and a timeout of 800ms, this would fail, becauase 3 x 300 > 800.
       val timeout = testCase.resolvedTimeout()
-      log("TestCaseExecutor: Test will execute with timeout $timeout")
+      log("TestCaseExecutor: Test [${testCase.displayName}] will execute with timeout $timeout")
 
       // this timeout applies to each inovation. If a test has invocations = 3, and this timeout
       // is set to 300ms, then each individual invocation must complete in under 300ms.
       // invocation timeouts are not applied to TestType.Container only TestType.Test
       val invocationTimeout = testCase.resolvedInvocationTimeout()
-      log("TestCaseExecutor: Test will execute with invocationTimeout $invocationTimeout")
+      log("TestCaseExecutor: Test [${testCase.displayName}] will execute with invocationTimeout $invocationTimeout")
 
       return try {
 
