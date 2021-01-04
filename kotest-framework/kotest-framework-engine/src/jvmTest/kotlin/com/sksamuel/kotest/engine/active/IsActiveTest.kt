@@ -176,7 +176,7 @@ class IsActiveTest : StringSpec() {
 
          val ext = object : TestActiveExtension {
             override suspend fun isActive(node: TestNode.TestCaseNode): Boolean {
-               return true
+               return node.description.displayName().contains("!")
             }
          }
 
@@ -187,6 +187,12 @@ class IsActiveTest : StringSpec() {
             SomeTestClass::class.toDescription().appendTest("!disabledbybang"),
             SomeTestClass()
          ) {}.isActiveInternal() shouldBe true
+
+         // this should be inactive because the extension says it is, even though it's normally active
+         TestCase.test(
+            SomeTestClass::class.toDescription().appendTest("active"),
+            SomeTestClass()
+         ) {}.isActiveInternal() shouldBe false
 
          configuration.deregisterExtension(ext)
       }
