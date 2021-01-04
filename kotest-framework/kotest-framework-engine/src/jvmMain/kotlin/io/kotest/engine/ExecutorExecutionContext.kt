@@ -1,6 +1,7 @@
 package io.kotest.engine
 
 import io.kotest.core.TimeoutExecutionContext
+import io.kotest.core.internal.TimeoutException
 import io.kotest.mpp.NamedThreadFactory
 import io.kotest.mpp.log
 import kotlinx.coroutines.ThreadContextElement
@@ -72,7 +73,11 @@ object ExecutorExecutionContext : TimeoutExecutionContext {
       // nested tests will install their own tracker, but into a new coroutine, so there is no clash
       // then if this parent is cancelled, it will cancel the children ultimately
       return withContext(status) {
-         f()
+         try {
+            f()
+         } catch (t: InterruptedException) {
+            throw TimeoutException(timeoutInMillis)
+         }
       }
    }
 }

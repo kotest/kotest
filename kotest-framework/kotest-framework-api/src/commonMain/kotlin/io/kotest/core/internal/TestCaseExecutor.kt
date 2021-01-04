@@ -243,7 +243,6 @@ class TestCaseExecutor(
                TestType.Container -> TimeoutException(timeout)
                TestType.Test -> TimeoutException(min(timeout, invocationTimeout))
             }
-            e
          } catch (t: Throwable) {
             log("TestCaseExecutor: Throwable $t")
             t
