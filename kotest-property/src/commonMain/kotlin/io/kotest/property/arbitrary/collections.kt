@@ -39,14 +39,18 @@ fun <T> Arb.Companion.of(vararg collection: T): Arb<T> = element(*collection)
 fun <A> Arb.Companion.set(gen: Gen<A>, range: IntRange = 0..100): Arb<Set<A>> {
    check(!range.isEmpty())
    check(range.first >= 0)
+   val maxIterations = 1000
    return arbitrary {
       val genIter = gen.generate(it).iterator()
       val targetSize = it.random.nextInt(range)
       val set = mutableSetOf<A>()
-      while (set.size < targetSize && genIter.hasNext()) {
+      var iterations = 0
+      while (iterations++ < maxIterations && set.size < targetSize && genIter.hasNext()) {
          set.add(genIter.next().value)
       }
-      check(set.size == targetSize)
+      check(set.size == targetSize) {
+         "the target size requirement of $targetSize could not be satisfied after $maxIterations consecutive samples"
+      }
       set
    }
 }
