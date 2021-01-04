@@ -20,7 +20,7 @@ class AfterProjectListenerExceptionHandlingTest : FunSpec({
    test("an AfterProjectListenerException should add marker spec") {
       every { configuration.listeners() } returns listOf(
          object : ProjectListener {
-            override suspend fun afterProject() {WordSpecEngineKitTest
+            override suspend fun afterProject() {
                if (System.getenv("foo") == "true") error("too")
             }
          }
