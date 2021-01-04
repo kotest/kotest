@@ -1,5 +1,6 @@
 package com.sksamuel.kotest.runner.junit5
 
+import io.kotest.core.spec.Isolate
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.framework.discovery.Discovery
 import io.kotest.framework.discovery.DiscoveryFilter
@@ -16,6 +17,7 @@ import org.junit.platform.launcher.EngineFilter.excludeEngines
 import org.junit.platform.launcher.EngineFilter.includeEngines
 import org.junit.platform.launcher.core.LauncherDiscoveryRequestBuilder
 
+@Isolate
 class DiscoveryTest : FunSpec({
 
    test("kotest should return Nil if request excludes kotest engine") {

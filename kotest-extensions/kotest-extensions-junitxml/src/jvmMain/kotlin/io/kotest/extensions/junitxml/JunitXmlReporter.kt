@@ -23,7 +23,7 @@ import java.time.format.DateTimeFormatter.ISO_LOCAL_DATE_TIME
 import java.util.concurrent.ConcurrentHashMap
 import kotlin.reflect.KClass
 
-@Deprecated("Now called JunitXmlReporter")
+@Deprecated("Now called JunitXmlReporter. Will be removed in 4.6")
 typealias JunitXmlListener = JunitXmlReporter
 
 /**
@@ -105,12 +105,12 @@ class JunitXmlReporter(
 
          when (result.status) {
             TestStatus.Error -> {
-               val error = Element("error")
+               val err = Element("error")
                result.error?.let {
-                  error.setAttribute("type", it.javaClass.name)
-                  error.setText(it.message)
+                  err.setAttribute("type", it.javaClass.name)
+                  err.setText(it.message)
                }
-               e.addContent(error)
+               e.addContent(err)
             }
             TestStatus.Failure -> {
                val failure = Element("failure")

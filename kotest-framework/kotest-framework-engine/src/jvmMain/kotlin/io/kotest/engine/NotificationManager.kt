@@ -47,7 +47,7 @@ class NotificationManager(private val listener: TestEngineListener) {
       results: Map<TestCase, TestResult>
    ) {
       log("NotificationManager:specFinished $kclass $error")
-      userLevelSpecFinished(kclass, error, results).fold(
+      userLevelSpecFinished(kclass, results).fold(
          { testEngineSpecFinished(kclass, error ?: it, results) },
          { testEngineSpecFinished(kclass, error, results) }
       )
@@ -66,11 +66,10 @@ class NotificationManager(private val listener: TestEngineListener) {
    // dsl callbacks are just project level listeners with a spec class check
    private suspend fun userLevelSpecFinished(
       kclass: KClass<out Spec>,
-      error: Throwable?,
       results: Map<TestCase, TestResult>
    ) = Try {
       configuration.testListeners().forEach {
-         it.finalizeSpec(kclass, results, error)
+         it.finalizeSpec(kclass, results)
       }
    }
 

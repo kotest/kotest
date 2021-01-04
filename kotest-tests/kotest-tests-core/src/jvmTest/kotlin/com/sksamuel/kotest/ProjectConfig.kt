@@ -4,7 +4,6 @@ import com.sksamuel.kotest.extensions.SpecExtensionNumbers
 import com.sksamuel.kotest.extensions.TagFilteredDiscoveryExtensionExampleTest
 import io.kotest.core.config.AbstractProjectConfig
 import io.kotest.core.extensions.Extension
-import io.kotest.core.filter.Filter
 import io.kotest.core.spec.SpecExecutionOrder
 
 object ProjectConfig : AbstractProjectConfig() {

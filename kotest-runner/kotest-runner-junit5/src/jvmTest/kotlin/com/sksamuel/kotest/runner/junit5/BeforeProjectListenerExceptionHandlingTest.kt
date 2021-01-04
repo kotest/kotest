@@ -1,6 +1,6 @@
 package com.sksamuel.kotest.runner.junit5
 
-import io.kotest.core.config.Project
+import io.kotest.core.config.configuration
 import io.kotest.core.listeners.ProjectListener
 import io.kotest.core.spec.DoNotParallelize
 import io.kotest.core.spec.style.FunSpec
@@ -14,11 +14,11 @@ import org.junit.platform.testkit.engine.EngineTestKit
 @DoNotParallelize
 class BeforeProjectListenerExceptionHandlingTest : FunSpec({
 
-   beforeTest { mockkObject(Project) }
-   afterTest { unmockkObject(Project) }
+   beforeTest { mockkObject(configuration) }
+   afterTest { unmockkObject(configuration) }
 
    test("an BeforeProjectListenerException should add marker spec") {
-      every { Project.listeners() } returns listOf(
+      every { configuration.listeners() } returns listOf(
          object : ProjectListener {
             override suspend fun beforeProject() {
                if (System.getenv("foo") == "true") error("beforeProjectError")
@@ -55,7 +55,7 @@ class BeforeProjectListenerExceptionHandlingTest : FunSpec({
    }
 
    test("an BeforeProjectListener2Exception should add 2 markers spec") {
-      every { Project.listeners() } returns listOf(
+      every { configuration.listeners() } returns listOf(
          object : ProjectListener {
             override val name: String
                get() = "MyBeforeProjectListenerName1"
