@@ -47,7 +47,7 @@ object Libs {
    }
 
    object Tschuchortdev {
-      private const val version = "1.3.1"
+      private const val version = "1.3.4"
       const val kotlinCompileTesting = "com.github.tschuchortdev:kotlin-compile-testing:$version"
    }
 
@@ -82,7 +82,7 @@ object Libs {
    }
 
    object Classgraph {
-      const val classgraph = "io.github.classgraph:classgraph:4.8.94"
+      const val classgraph = "io.github.classgraph:classgraph:4.8.98"
    }
 
    object Mocking {
@@ -129,7 +129,7 @@ object Libs {
    }
 
    object Bytebuddy {
-      const val bytebuddy = "net.bytebuddy:byte-buddy:1.10.18"
+      const val bytebuddy = "net.bytebuddy:byte-buddy:1.10.19"
    }
 
    object Robolectric {
@@ -151,7 +151,7 @@ object Libs {
    }
 
    object Ktor {
-      private const val version = "1.4.1"
+      private const val version = "1.5.0"
       const val serverCore = "io.ktor:ktor-server-core:$version"
       const val serverTestHost = "io.ktor:ktor-server-test-host:$version"
       const val clientJs = "io.ktor:ktor-client-js:$version"
