@@ -6,7 +6,7 @@ import io.kotest.core.test.TestResult
 
 /**
  * Defines functions which can be overriden to register callbacks.
- * This is an alternative style to using [InlineCallbacks].
+ * This is an alternative style to using the inline DSL.
  */
 interface SpecFunctionCallbacks {
 
