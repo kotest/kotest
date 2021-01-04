@@ -39,7 +39,7 @@ include("kotest-assertions:kotest-assertions-shared")
 include("kotest-assertions:kotest-assertions-core")
 include("kotest-assertions:kotest-assertions-arrow")
 include("kotest-assertions:kotest-assertions-json")
-//include("kotest-assertions:kotest-assertions-ktor")
+include("kotest-assertions:kotest-assertions-ktor")
 include("kotest-assertions:kotest-assertions-jsoup")
 include("kotest-assertions:kotest-assertions-konform")
 include("kotest-assertions:kotest-assertions-kotlinx-time")
@@ -56,7 +56,10 @@ include("kotest-property:kotest-property-arrow")
 // property test generators for kotlinx.datetime
 include("kotest-property:kotest-property-datetime")
 
+// support for executing tests via junit platform through gradle
+// this will also bring in the required libs for the intellij plugin
 include("kotest-runner:kotest-runner-junit5")
+
 include("kotest-runner:kotest-runner-junit4")
 include("kotest-extensions")
 include("kotest-extensions:kotest-extensions-allure")
@@ -73,6 +76,10 @@ include("kotest-extensions:kotest-extensions-junit5")
 
 
 include("kotest-plugins:kotest-plugins-pitest")
+
+// the tests modules each test a piece of functionality
+// it is useful to have separate modules so each can set their own project config that
+// may be required as part of the tests
 include("kotest-tests:kotest-tests-allure")
 include("kotest-tests:kotest-tests-autoscan")
 include("kotest-tests:kotest-tests-core")
@@ -84,6 +91,7 @@ include("kotest-tests:kotest-tests-tagextension")
 include("kotest-tests:kotest-tests-timeout")
 include("kotest-tests:kotest-tests-timeout-sysprop")
 include("kotest-tests:kotest-tests-multiname-test-name-sysprop")
+
 include("kotest-examples:kotest-examples-jvm")
 include("kotest-examples:kotest-examples-allure")
 include("kotest-examples:kotest-examples-spring-webflux")
