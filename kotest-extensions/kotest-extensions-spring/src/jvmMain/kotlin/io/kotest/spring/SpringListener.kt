@@ -132,8 +132,8 @@ object SpringAutowireConstructorExtension : ConstructorExtension {
          null
       } else {
          val manager = TestContextManager(clazz.java)
-         val ac = manager.testContext.applicationContext
-         ac.autowireCapableBeanFactory.autowire(clazz.java, AUTOWIRE_CONSTRUCTOR, true) as Spec
+         val context = manager.testContext.applicationContext
+         context.autowireCapableBeanFactory.autowire(clazz.java, AUTOWIRE_CONSTRUCTOR, true) as Spec
       }
    }
 }

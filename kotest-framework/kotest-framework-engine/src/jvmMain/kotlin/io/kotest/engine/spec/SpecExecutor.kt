@@ -94,9 +94,10 @@ class SpecExecutor(private val listener: TestEngineListener) {
       when {
          remaining.isEmpty() -> run()
          else -> {
-            val rest = remaining.drop(1)
             remaining.first().intercept(spec::class) {
-               interceptSpec(spec, rest, run)
+               remaining.first().intercept(spec) {
+                  interceptSpec(spec, remaining.drop(1), run)
+               }
             }
          }
       }
