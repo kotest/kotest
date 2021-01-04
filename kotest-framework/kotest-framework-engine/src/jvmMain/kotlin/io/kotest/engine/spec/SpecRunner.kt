@@ -40,7 +40,7 @@ abstract class SpecRunner(
     */
    protected suspend fun launch(spec: Spec, run: suspend (TestCase) -> Unit) {
       val rootTests = spec.materializeAndOrderRootTests().map { it.testCase }
-      log("SingleInstanceSpecRunner: Materialized ${rootTests.size} root tests: $rootTests")
+      log("SingleInstanceSpecRunner: Launching ${rootTests.size} root tests with launcher $launcher")
       launcher.launch(run, rootTests)
    }
 

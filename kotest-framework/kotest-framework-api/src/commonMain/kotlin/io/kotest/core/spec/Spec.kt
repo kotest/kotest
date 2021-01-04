@@ -11,7 +11,6 @@ import io.kotest.core.js.JsTest
 import io.kotest.core.js.useKotlinJs
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestCaseOrder
-import kotlinx.coroutines.CoroutineDispatcher
 import kotlin.js.JsName
 
 /**
@@ -69,6 +68,7 @@ abstract class Spec : TestConfiguration(), SpecFunctionConfiguration, SpecFuncti
     * To change that behavior, see [dispatcherAffinity].
     */
    @ExperimentalKotest
+   @JsName("concurrency_var")
    var concurrency: Int? = null
 
    /**
@@ -84,6 +84,7 @@ abstract class Spec : TestConfiguration(), SpecFunctionConfiguration, SpecFuncti
     * see [Configuration.parallelism].
     */
    @ExperimentalKotest
+   @JsName("dispatcherAffinity_var")
    var dispatcherAffinity: Boolean? = null
 
    /**

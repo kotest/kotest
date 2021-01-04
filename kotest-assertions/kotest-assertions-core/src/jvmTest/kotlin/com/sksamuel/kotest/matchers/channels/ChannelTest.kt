@@ -5,6 +5,7 @@ import io.kotest.matchers.channels.*
 import io.kotest.matchers.ints.shouldBeExactly
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.shouldBe
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -50,7 +51,7 @@ class ChannelTest : StringSpec() {
      }
     "shouldReceiveWithin should not fail when elements are received later" {
       val channel: Channel<Int> = Channel()
-      launch {
+      launch(Dispatchers.IO) {
         delay(1000)
         channel.send(1)
       }
@@ -68,7 +69,7 @@ class ChannelTest : StringSpec() {
     }
     "shouldReceiveNoElementsWithin should fail when elements are sent" {
       val channel: Channel<Int> = Channel()
-      launch {
+       launch(Dispatchers.IO) {
         channel.send(1)
       }
       shouldFail {

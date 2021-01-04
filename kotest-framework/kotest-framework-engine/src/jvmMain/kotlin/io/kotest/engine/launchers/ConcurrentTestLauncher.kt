@@ -17,16 +17,18 @@ import kotlinx.coroutines.sync.withPermit
  */
 @ExperimentalKotest
 class ConcurrentTestLauncher(
-   maxConcurrent: Int,
+   private val maxConcurrent: Int,
    private val factory: CoroutineDispatcherFactory
 ) : TestLauncher {
 
    private val semaphore = Semaphore(maxConcurrent)
 
    override suspend fun launch(run: suspend (TestCase) -> Unit, tests: List<TestCase>) {
+      log("ConcurrentTestLauncher: Launching ${tests.size} tests with $maxConcurrent max concurrency")
       coroutineScope {
          tests.forEach { test ->
             semaphore.withPermit {
+               log("ConcurrentTestLauncher: Acquired permit for [$test]")
                val dispatcher = factory.dispatcherFor(test)
                log("ConcurrentTestLauncher: Launching coroutine for test [$test] with dispatcher [$dispatcher]")
                launch(dispatcher) {
@@ -36,7 +38,10 @@ class ConcurrentTestLauncher(
                      log("ConcurrentTestLauncher: Unhandled error during test execution [$test] [$t]")
                      throw t
                   }
-               }.invokeOnCompletion { factory.complete(test) }
+               }.invokeOnCompletion {
+                  log("ConcurrentTestLauncher: Test [$test] has completed")
+                  factory.complete(test)
+               }
             }
          }
       }

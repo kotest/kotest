@@ -83,6 +83,10 @@ include("kotest-plugins:kotest-plugins-pitest")
 include("kotest-tests:kotest-tests-allure")
 include("kotest-tests:kotest-tests-autoscan")
 include("kotest-tests:kotest-tests-core")
+
+include("kotest-tests:kotest-tests-concurrency-tests")
+include("kotest-tests:kotest-tests-concurrency-specs")
+
 include("kotest-tests:kotest-tests-junitxml")
 include("kotest-tests:kotest-tests-multipleconfig")
 include("kotest-tests:kotest-tests-parallelism")
