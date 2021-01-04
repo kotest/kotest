@@ -1,6 +1,7 @@
 package io.kotest.core.internal
 
 import io.kotest.core.config.configuration
+import io.kotest.core.extensions.TestActiveExtension
 import io.kotest.core.filter.TestFilter
 import io.kotest.core.filter.TestFilterResult
 import io.kotest.core.test.TestCase
@@ -12,11 +13,26 @@ import io.kotest.core.internal.tags.allTags
 import io.kotest.core.internal.tags.isActive
 import io.kotest.core.internal.tags.parse
 import io.kotest.core.test.TestCaseSeverityLevel
+import io.kotest.core.test.toNode
 import io.kotest.mpp.log
 import io.kotest.mpp.sysprop
 
 /**
- * Returns true if the given [TestCase] is active.
+ * Returns true if the given [TestCase] is active based on default rules at [isActiveInternal]
+ * or any registered [TestActiveExtension]s.
+ */
+suspend fun TestCase.isActive(): Boolean {
+   val defaultActive = isActiveInternal()
+   val node = this.toNode().copy(active = defaultActive)
+   return configuration.extensions().filterIsInstance<TestActiveExtension>().fold(node) { acc, op ->
+      acc.copy(active = op.isActive(acc))
+   }.active
+}
+
+/**
+ * Returns true if the given [TestCase] is active by the built in rules.
+ *
+ * Logic can be customized via [TestActiveExtension]s.
  *
  * A test can be active or inactive.
  *
@@ -30,7 +46,7 @@ import io.kotest.mpp.sysprop
  *
  * Note: tags are defined either through [TestCaseConfig] or in the [Spec] dsl.
  */
-fun TestCase.isActive(): Boolean {
+fun TestCase.isActiveInternal(): Boolean {
 
    // this sys property disables the use of !
    // when it's not set, then we use ! to disable tests
@@ -72,9 +88,9 @@ fun TestCase.isActive(): Boolean {
    }
 
    // if we have the severityLevel lower then in the sysprop -> we ignore this case
-   val severityEnabled = config.severity?.let {TestCaseSeverityLevel.valueOf(it.name).isEnabled()}
+   val severityEnabled = config.severity?.let { TestCaseSeverityLevel.valueOf(it.name).isEnabled() }
       ?: TestCaseSeverityLevel.valueOf("NORMAL").isEnabled()
-   if(!severityEnabled) {
+   if (!severityEnabled) {
       log("${description.testPath()} is disabled by severityLevel")
       return false
    }

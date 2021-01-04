@@ -1,10 +1,12 @@
 package io.kotest.core.test
 
 import io.kotest.core.SourceRef
+import io.kotest.core.Tag
 import io.kotest.core.factory.FactoryId
 import io.kotest.core.internal.tags.allTags
 import io.kotest.core.sourceRef
 import io.kotest.core.spec.Spec
+import kotlin.reflect.KClass
 
 /**
  * A [TestCase] describes an actual block of code that will be tested.
@@ -34,21 +36,21 @@ import io.kotest.core.spec.Spec
  */
 data class TestCase(
    // the description contains the names of all parents, plus the name of this test case
-    val description: Description.Test,
+   val description: Description.Test,
    // the spec instance that contains this testcase
-    val spec: Spec,
+   val spec: Spec,
    // a closure of the test function
-    val test: suspend TestContext.() -> Unit,
-    val source: SourceRef,
-    val type: TestType,
+   val test: suspend TestContext.() -> Unit,
+   val source: SourceRef,
+   val type: TestType,
    // config used when running the test, such as number of
    // invocations, threads, etc
-    val config: TestCaseConfig = TestCaseConfig(),
+   val config: TestCaseConfig = TestCaseConfig(),
    // an optional factory id which is used to indicate which factory (if any) generated this test case.
-    val factoryId: FactoryId? = null,
+   val factoryId: FactoryId? = null,
    // assertion mode can be set to control errors/warnings in a test
    // if null, defaults will be applied
-    val assertionMode: AssertionMode? = null
+   val assertionMode: AssertionMode? = null
 ) {
 
    val displayName = description.displayName()
@@ -80,9 +82,9 @@ data class TestCase(
        * Creates a [TestCase] of type [TestType.Container], with default config, and derived source ref.
        */
       fun container(
-          description: Description.Test,
-          spec: Spec,
-          test: suspend TestContext.() -> Unit
+         description: Description.Test,
+         spec: Spec,
+         test: suspend TestContext.() -> Unit
       ): TestCase =
          TestCase(
             description,
@@ -95,7 +97,7 @@ data class TestCase(
             null
          )
 
-      fun appendTagsInDisplayName(testCase: TestCase) : TestCase {
+      fun appendTagsInDisplayName(testCase: TestCase): TestCase {
          val tagNames = testCase.allTags().joinToString(", ")
 
          return if (tagNames.isNotBlank()) {
@@ -108,4 +110,36 @@ data class TestCase(
          }
       }
    }
+}
+
+fun TestCase.toNode(): TestNode.TestCaseNode {
+   return TestNode.TestCaseNode(description, type, spec::class, this.allTags(), source, false)
+}
+
+/**
+ * Lightweight descriptor for a node in the test plan.
+ * That is either a [TestCaseNode] or a [SpecNode].
+ */
+sealed class TestNode {
+
+   data class SpecNode(
+      val description: Description,
+      // the class of this spec.
+      val spec: KClass<out Spec>?,
+      // the runtime tags applied to this spec
+      val tags: Set<Tag>,
+   ) : TestNode()
+
+   data class TestCaseNode(
+      val description: Description,
+      val type: TestType,
+      // the class of the spec this test is contained in.
+      val spec: KClass<out Spec>?,
+      // the runtime tags applied to this test ref
+      val tags: Set<Tag>,
+      // link to the source ref where this test is defined
+      val source: SourceRef,
+      // true if this test case is active by the built in rules
+      val active: Boolean,
+   ) : TestNode()
 }
