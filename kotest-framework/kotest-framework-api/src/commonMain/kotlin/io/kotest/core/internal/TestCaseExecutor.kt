@@ -23,6 +23,7 @@ import io.kotest.mpp.replay
 import io.kotest.mpp.timeInMillis
 import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.supervisorScope
 import kotlinx.coroutines.withTimeout
 import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.coroutineContext
@@ -179,6 +180,7 @@ class TestCaseExecutor(
          error("Cannot execute multiple invocations in parent tests")
 
       val t = executeAndWait(ec, testCase, context)
+      log("TestCaseExecutor: Test returned with error $t")
 
       val result = toTestResult(t, timeInMillis() - start)
       log("Test completed with result $result")
@@ -206,43 +208,49 @@ class TestCaseExecutor(
       val invocationTimeout = testCase.resolvedInvocationTimeout()
       log("TestCaseExecutor: Test [${testCase.displayName}] will execute with invocationTimeout $invocationTimeout")
 
-      return try {
-
-         // all platforms support coroutine based interruption
-         // this is the test level timeout
-         withTimeout(timeout) {
-            ec.executeWithTimeoutInterruption(timeout) {
-               // depending on the test type, we execute with an invocation timeout
-               when (testCase.type) {
-                  TestType.Container -> executeInScope(testCase, context)
-                  TestType.Test ->
-                     // not all platforms support executing with an interruption based timeout
-                     // because it uses background threads to interrupt
-                     replay(
-                        testCase.config.invocations,
-                        testCase.config.threads,
-                        { testCase.invokeBeforeInvocation(it) },
-                        { testCase.invokeAfterInvocation(it) }) {
-                        ec.executeWithTimeoutInterruption(invocationTimeout) {
-                           withTimeout(invocationTimeout) {
-                              executeInScope(testCase, context)
+      // we don't want any errors in the test to propagate out and cancel all the coroutines used for
+      // the specs / parent tests, therefore we install a supervisor job
+      return supervisorScope {
+         try {
+            // all platforms support coroutine based interruption
+            // this is the test level timeout
+            withTimeout(timeout) {
+               ec.executeWithTimeoutInterruption(timeout) {
+                  // depending on the test type, we execute with an invocation timeout
+                  when (testCase.type) {
+                     TestType.Container -> executeInScope(testCase, context)
+                     TestType.Test ->
+                        // not all platforms support executing with an interruption based timeout
+                        // because it uses background threads to interrupt
+                        replay(
+                           testCase.config.invocations,
+                           testCase.config.threads,
+                           { testCase.invokeBeforeInvocation(it) },
+                           { testCase.invokeAfterInvocation(it) }) {
+                           ec.executeWithTimeoutInterruption(invocationTimeout) {
+                              withTimeout(invocationTimeout) {
+                                 executeInScope(testCase, context)
+                              }
                            }
                         }
-                     }
+                  }
                }
             }
+            null
+         } catch (e: TimeoutCancellationException) {
+            log("TestCaseExecutor: TimeoutCancellationException $e")
+            when (testCase.type) {
+               TestType.Container -> TimeoutException(timeout)
+               TestType.Test -> TimeoutException(min(timeout, invocationTimeout))
+            }
+            e
+         } catch (t: Throwable) {
+            log("TestCaseExecutor: Throwable $t")
+            t
+         } catch (e: AssertionError) {
+            log("TestCaseExecutor: AssertionError $e")
+            e
          }
-         null
-      } catch (e: TimeoutCancellationException) {
-         log("Timeout exception $e")
-         when (testCase.type) {
-            TestType.Container -> TimeoutException(timeout)
-            TestType.Test -> TimeoutException(min(timeout, invocationTimeout))
-         }
-      } catch (t: Throwable) {
-         t
-      } catch (e: AssertionError) {
-         e
       }
    }
 
