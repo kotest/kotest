@@ -37,5 +37,7 @@ interface SpecExtension : Extension {
     * [Spec] and all it's nested [TestCase]s are guaranteed
     * to have been completed.
     */
-   suspend fun intercept(spec: Spec, execute: suspend (Spec) -> Unit) {}
+   suspend fun intercept(spec: Spec, execute: suspend (Spec) -> Unit) {
+      execute(spec)
+   }
 }

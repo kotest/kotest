@@ -11,7 +11,7 @@ class StringSpecInstancePerTestOrderingTest : StringSpec() {
       var string = ""
    }
 
-   override fun isolationMode(): IsolationMode? = IsolationMode.InstancePerTest
+   override fun isolationMode() = IsolationMode.InstancePerTest
 
    private var uniqueCount = AtomicInteger(0)
 
