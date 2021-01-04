@@ -1,5 +1,6 @@
 package com.sksamuel.kotest.property.arbitrary
 
+import io.kotest.assertions.throwables.shouldThrowAny
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.collections.shouldHaveAtLeastSize
 import io.kotest.matchers.collections.shouldHaveAtMostSize
@@ -9,7 +10,9 @@ import io.kotest.property.Exhaustive
 import io.kotest.property.arbitrary.double
 import io.kotest.property.arbitrary.int
 import io.kotest.property.arbitrary.list
+import io.kotest.property.arbitrary.of
 import io.kotest.property.arbitrary.set
+import io.kotest.property.arbitrary.single
 import io.kotest.property.checkAll
 import io.kotest.property.exhaustive.constant
 import io.kotest.property.forAll
@@ -24,6 +27,13 @@ class CollectionsTest : FunSpec({
    test("Arb.set should not include empty edgecases as first sample") {
       val numGen = Arb.set(Arb.int(), 1..10)
       forAll(1, numGen) { it.isNotEmpty() }
+   }
+
+   test("Arb.set should throw when underlying arb cardinality is lower than expected set cardinality") {
+      val arbUnderlying = Arb.of("foo", "bar", "baz")
+      shouldThrowAny {
+         Arb.set(arbUnderlying, 5..100).single()
+      }
    }
 
    test("Arb.list should return lists of underlying generators") {
