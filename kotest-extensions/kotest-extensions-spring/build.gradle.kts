@@ -41,6 +41,7 @@ kotlin {
             implementation(kotlin("reflect"))
             implementation(Libs.Spring.context)
             implementation(Libs.Spring.test)
+            implementation(Libs.Coroutines.coreJvm)
             implementation(Libs.Bytebuddy.bytebuddy)
          }
       }

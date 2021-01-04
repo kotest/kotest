@@ -2,7 +2,7 @@ package com.sksamuel.kotest.runner.junit5
 
 import io.kotest.core.config.configuration
 import io.kotest.core.listeners.ProjectListener
-import io.kotest.core.spec.DoNotParallelize
+import io.kotest.core.spec.Isolate
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.extensions.system.withEnvironment
 import io.mockk.every
@@ -11,7 +11,7 @@ import io.mockk.unmockkObject
 import org.junit.platform.engine.discovery.DiscoverySelectors
 import org.junit.platform.testkit.engine.EngineTestKit
 
-@DoNotParallelize
+@Isolate
 class BeforeAfterProjectListenerExceptionHandlingTest : FunSpec({
 
    test("BeforeProjectListenerException and AfterProjectListenerException should add marker spec") {
