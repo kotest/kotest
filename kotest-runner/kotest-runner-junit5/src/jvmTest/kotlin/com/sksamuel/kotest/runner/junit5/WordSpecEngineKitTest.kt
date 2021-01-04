@@ -74,7 +74,7 @@ class WordSpecEngineKitTest : FunSpec({
                "a when container with a failing test when",
                "pass a test",
                "with a should container should",
-               "a when container when",BeforeAfterProjectListenerExceptionHandlingTest
+               "a when container when",
                "a failing container should",
                "com.sksamuel.kotest.runner.junit5.WordSpecSample",
                "Kotest",
