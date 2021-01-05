@@ -11,6 +11,15 @@ internal class WordSpecDataTest : WordSpec() {
    init {
       data class PythagTriple(val a: Int, val b: Int, val c: Int)
 
+      forAll(
+         PythagTriple(3, 4, 5),
+         PythagTriple(6, 8, 10),
+      ) { (a, b, c) ->
+         "root datatest forAll" should {
+            a * a + b * b shouldBe c * c
+         }
+      }
+
       "datatest forAll" should {
          forAll(
             PythagTriple(3, 4, 5),
