@@ -51,7 +51,15 @@ module.exports = {
       'framework/listeners',
       'framework/extensions',
       'framework/plugins',
-      'framework/mocks',
+      {
+         type: "category",
+         label: "Integrations",
+         collapsed: false,
+         items: [
+            'framework/integrations/mocks',
+            'framework/integrations/jacoco',
+         ]
+      },
       {
          type: "category",
          label: "Ordering",
