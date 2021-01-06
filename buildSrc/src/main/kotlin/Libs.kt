@@ -11,7 +11,7 @@ object Libs {
    }
 
    object Arrow {
-      private const val version = "0.10.5"
+      private const val version = "0.11.0"
       const val core = "io.arrow-kt:arrow-core:$version"
       const val fx = "io.arrow-kt:arrow-fx:$version"
       const val syntax = "io.arrow-kt:arrow-syntax:$version"
