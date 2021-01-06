@@ -4,6 +4,48 @@ sidebar_label: Changelog
 slug: changelog.html
 ---
 
+### 4.4.0 (RC1) January 2021
+
+Note: Release 4.4.0 bumps the minimum required version of Kotlin to 1.4
+
+#### Features / Improvements
+
+* Add lazy property test generator #1651
+* New map assertions #1697
+* Property test framework is now deployed for native targets #1747
+* Improve concurrency support for specs / tests #1760
+* Variation of clue / asClue to accept lazy #1766
+* New Map assertions shouldNotContainAnyKeysOf() shouldNotContainAnyValuesOf() #1769
+* Add matchers for Atomic Booleans #1791
+* Upgrade to Kotlin 1.4.20 #1800
+* Test cases should have their tags appended to the test name if so configured #1804
+* Removed superfluous whitespaces in freeSpec.kt #1819
+* Add functionality to use 'it' without surrounding 'describe' #1827
+* Added inline version for intanceOf alias #1838
+* Add Support for globalAssertSoftly from System Property #1843
+* Helper for temporary directory creation #1862
+* Output from reporters should be single threaded #1895
+* shouldBeBetween not defined for floats #1927
+* Increase arity of checkall / forall property tests to 12 #1929
+* Add more configurations to Email Generator #1941
+* not null matcher should show the value that was meant to be not null #1942
+* Add SpringTestExtension which exposes test context via coroutine context element #1956
+* Add active test extension #1959
+* Upgrade ktor matchers to use ktor 1.5 #1965
+* Allow data driven tests to register in root scope #1967
+* Add domain arbitrary #1969
+* Upgrade arrow matchers to 0.11.0 #1976
+
+#### Bugfixes
+
+* Performance improvements for Exceptions on the JVM #1787
+* Using a symbol or Japanese etc in the test name will change the behavior #1828
+* Wrong behavior when combining assertSoftly and shouldNotBe #1831
+* BehaviorSpec Then assertion shows green in Intellij but should show red #1857
+* AssertionMode.Error doesn't work on FeatureSpec #1864
+* Invalid test usage should throw at runtime #1882
+* Arb.set with a range hangs the test if the given gen inside the set cannot produce enough values for the range #1931
+
 ### 4.3.2 December 2020
 
 #### Features
