@@ -49,7 +49,23 @@ module.exports = {
       'framework/exceptions',
       'framework/data_driven_testing',
       'framework/listeners',
-      'framework/extensions',
+      {
+         type: "category",
+         label: "Extensions",
+         collapsed: false,
+         items: [
+            'framework/extensions/spring',
+            'framework/extensions/ktor',
+            'framework/extensions/system_extensions',
+            'framework/extensions/test_containers',
+            'framework/extensions/mockserver',
+            'framework/extensions/junit_xml',
+            'framework/extensions/allure',
+            'framework/extensions/instant',
+            'framework/extensions/koin',
+            'framework/extensions/robolectric',
+         ]
+      },
       'framework/plugins',
       {
          type: "category",

@@ -1,5 +1,12 @@
-JUnit XML Format Reporter
-=======
+---
+id: junit_xml
+title: JUnit XML Format Reporter
+sidebar_label: JUnit XML
+slug: junit_xml.html
+---
+
+
+
 
 
 JUnit includes an XML report generator that it calls the [legacy xml report](https://junit.org/junit5/docs/5.5.0-RC2/api/org/junit/platform/reporting/legacy/xml/LegacyXmlReportGeneratingListener.html).
