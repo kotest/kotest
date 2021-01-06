@@ -1,5 +1,10 @@
-Allure
-==========
+---
+id: allure
+title: Allure
+sidebar_label: Allure
+slug: allure.html
+---
+
 
 [Allure](http://allure.qatools.ru) is an open-source framework designed for detailed and interactive test reports.
 It works by generating report files which are then used to create the final HTML report.
