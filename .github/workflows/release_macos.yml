@@ -9,6 +9,7 @@ on:
          branch:
             description: "The branch to release from"
             required: true
+            default: 'master'
 
 jobs:
    publish:
