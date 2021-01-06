@@ -10,7 +10,7 @@ import io.kotest.matchers.shouldNot
 import kotlin.contracts.ExperimentalContracts
 import kotlin.contracts.contract
 
-@OptIn(ExperimentalContracts::class)
+@ExperimentalContracts
 fun Option<*>.shouldBeSome() {
   contract {
     returns() implies (this@shouldBeSome is Some<*>)
@@ -41,6 +41,7 @@ fun <T> beSome(t: T) = object : Matcher<Option<T>> {
   }
 }
 
+@ExperimentalContracts
 infix fun <T> Option<T>.shouldBeSome(fn: (T) -> Unit) {
   this.shouldBeSome()
   fn((this.t as T))
