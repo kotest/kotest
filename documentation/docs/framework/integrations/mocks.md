@@ -1,8 +1,9 @@
 ---
+id: mocks
 title: Mocking and Kotest
+sidebar_label: Mocking
 slug: mocking.html
 ---
-
 
 
 
@@ -52,7 +53,7 @@ The above snippet will cause an exception!
 >2 matching calls found, but needs at least 1 and at most 1 calls
 
 This will happen because the mocks are not restarted between invocations. By default, Kotest isolates tests by creating
-[a single instance of the spec](isolation_mode.md) for all the tests to run.
+[a single instance of the spec](../isolation_mode.md) for all the tests to run.
 
 This leads to mocks being reused. But how can we fix this?
 
@@ -131,7 +132,7 @@ class MyTest : FunSpec({
 ### Option 3 - Tweak the IsolationMode
 
 Depending on the usage, playing with the IsolationMode for a given Spec might be a good option as well.
-Head over to [isolation mode documentation](isolation_mode.md) if you want to understand it better.
+Head over to [isolation mode documentation](../isolation_mode.md) if you want to understand it better.
 
 ```kotlin
 class MyTest : FunSpec({
