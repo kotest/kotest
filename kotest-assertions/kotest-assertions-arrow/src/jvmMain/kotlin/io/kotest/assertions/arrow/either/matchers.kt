@@ -9,7 +9,7 @@ import io.kotest.matchers.shouldNot
 import kotlin.contracts.ExperimentalContracts
 import kotlin.contracts.contract
 
-@ExperimentalContracts
+@OptIn(ExperimentalContracts::class)
 fun <T> Either<*, T>.shouldBeRight() {
   contract {
     returns() implies (this@shouldBeRight is Either.Right<*>)
@@ -43,7 +43,7 @@ fun <B> beRight(b: B) = object : Matcher<Either<Any?, B>> {
   }
 }
 
-@ExperimentalContracts
+@OptIn(ExperimentalContracts::class)
 fun <T> Either<T, Any?>.shouldBeLeft() {
   contract {
     returns() implies (this@shouldBeLeft is Either.Left<*>)
