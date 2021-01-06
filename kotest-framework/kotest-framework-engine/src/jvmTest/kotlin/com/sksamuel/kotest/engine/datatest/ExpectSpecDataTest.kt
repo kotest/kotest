@@ -1,5 +1,6 @@
 package com.sksamuel.kotest.engine.datatest
 
+import io.kotest.assertions.withClue
 import io.kotest.core.annotation.Ignored
 import io.kotest.core.spec.style.ExpectSpec
 import io.kotest.core.datatest.forAll
@@ -10,6 +11,18 @@ import io.kotest.matchers.shouldBe
 internal class ExpectSpecDataTest : ExpectSpec() {
    init {
       data class PythagTriple(val a: Int, val b: Int, val c: Int)
+
+      forAll(2, 4, 6) {
+         withClue("$it is even check") {
+            it % 2 shouldBe 0
+         }
+      }
+
+      forNone(1, 3, 5) {
+         withClue("$it is even check") {
+            it % 2 shouldBe 0
+         }
+      }
 
       context("datatest forAll") {
          forAll(
