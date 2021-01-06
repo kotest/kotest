@@ -1,6 +1,7 @@
 package io.kotest.engine.launcher
 
 import io.kotest.core.Tags
+import io.kotest.engine.reporter.IsolatedReporter
 import kotlin.system.exitProcess
 
 /**
@@ -12,7 +13,7 @@ fun main(args: Array<String>) {
    val launcherArgs = parseLauncherArgs(args.toList())
    val tags = Tags(launcherArgs.tagExpression)
 
-   val reporter = createReporter(launcherArgs)
+   val reporter = IsolatedReporter(createReporter(launcherArgs))
    execute(
       reporter,
       launcherArgs.packageName,
