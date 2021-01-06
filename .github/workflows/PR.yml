@@ -4,8 +4,9 @@ on:
    pull_request:
       paths-ignore:
          - 'doc/**'
-         - 'docs/**'
+         - 'documentation/**'
          - '*.md'
+         - '*.yml'
 
 jobs:
    build:
