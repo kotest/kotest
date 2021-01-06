@@ -23,7 +23,7 @@ object Libs {
    }
 
    object Allure {
-      private const val version = "2.13.7"
+      private const val version = "2.13.8"
       const val commons = "io.qameta.allure:allure-java-commons:$version"
    }
 
@@ -36,7 +36,7 @@ object Libs {
    }
 
    object Jackson {
-      private const val version = "2.10.4"
+      private const val version = "2.10.5"
       const val kotlin = "com.fasterxml.jackson.module:jackson-module-kotlin:$version"
    }
 
