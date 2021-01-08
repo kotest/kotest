@@ -37,7 +37,7 @@ sealed class NodeName {
          val name = kclass.bestName()
          val displayName = kclass.annotation<DisplayName>()?.name ?: name
          val fullName = listOf(EngineName.name, name).joinToString(NodeNameSeparator)
-         return SpecName(name, displayName, fullName)
+         return SpecName(name, displayName, fullName, name)
       }
    }
 
@@ -70,11 +70,13 @@ sealed class NodeName {
     *
     * The [name] for a spec is usually the class name.
     * The [displayName] is also the class name, unless overriden by [DisplayName].
+    *
     */
    data class SpecName(
       override val name: String,
       override val displayName: String,
       override val fullName: String,
+      val fqn: String,
    ) : NodeName() {
 
       /**
