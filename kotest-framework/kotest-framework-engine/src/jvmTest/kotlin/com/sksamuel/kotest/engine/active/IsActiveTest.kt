@@ -6,17 +6,17 @@ import io.kotest.core.config.configuration
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestCaseConfig
 import io.kotest.core.extensions.TagExtension
-import io.kotest.core.extensions.TestActiveExtension
+import io.kotest.core.extensions.IsActiveExtension
 import io.kotest.core.filter.TestFilter
 import io.kotest.core.filter.TestFilterResult
 import io.kotest.core.filter.toTestFilterResult
 import io.kotest.core.internal.isActiveInternal
+import io.kotest.core.plan.TestPlanNode
 import io.kotest.core.spec.Isolate
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.core.spec.toDescription
 import io.kotest.core.test.Description
-import io.kotest.core.test.TestNode
 import io.kotest.matchers.shouldBe
 
 @Isolate
@@ -174,9 +174,9 @@ class IsActiveTest : StringSpec() {
 
       "isActive should use extensions when registered" {
 
-         val ext = object : TestActiveExtension {
-            override suspend fun isActive(node: TestNode.TestCaseNode): Boolean {
-               return node.description.displayName().contains("!")
+         val ext = object : IsActiveExtension {
+            override suspend fun isActive(node: TestPlanNode): Boolean {
+               return node.name.contains("!")
             }
          }
 

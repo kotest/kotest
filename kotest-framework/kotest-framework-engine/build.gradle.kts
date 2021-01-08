@@ -61,8 +61,8 @@ kotlin {
          dependencies {
             implementation(kotlin("reflect"))
             api(Libs.Kotlin.kotlinScriptRuntime)
-            implementation("org.jetbrains.kotlin:kotlin-script-util:1.4.21-2")
-            implementation("org.jetbrains.kotlin:kotlin-scripting-jvm:1.4.21-2")
+            implementation(Libs.Kotlin.kotlinScriptUtil)
+            implementation(Libs.Kotlin.kotlinScriptJvm)
 
             api(Libs.Classgraph.classgraph)
 
