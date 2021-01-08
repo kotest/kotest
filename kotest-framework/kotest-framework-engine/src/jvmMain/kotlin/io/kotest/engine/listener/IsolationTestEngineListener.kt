@@ -48,7 +48,7 @@ class IsolationTestEngineListener(val listener: TestEngineListener) : TestEngine
 
    override fun specInstantiated(spec: Spec) {
       synchronized(listener) {
-         if (runningSpec.get() == spec::class.toDescription().testPath().value) {
+         if (runningSpec.get() == spec::class.toDescription().path().value) {
             listener.specInstantiated(spec)
          } else {
             queue {
@@ -60,7 +60,7 @@ class IsolationTestEngineListener(val listener: TestEngineListener) : TestEngine
 
    override fun specInstantiationError(kclass: KClass<out Spec>, t: Throwable) {
       synchronized(listener) {
-         if (runningSpec.get() == kclass.toDescription().testPath().value) {
+         if (runningSpec.get() == kclass.toDescription().path().value) {
             listener.specInstantiationError(kclass, t)
          } else {
             queue {
@@ -72,7 +72,7 @@ class IsolationTestEngineListener(val listener: TestEngineListener) : TestEngine
 
    override fun testStarted(testCase: TestCase) {
       synchronized(listener) {
-         if (runningSpec.get() == testCase.spec::class.toDescription().testPath().value) {
+         if (runningSpec.get() == testCase.spec::class.toDescription().path().value) {
             listener.testStarted(testCase)
          } else {
             queue {
@@ -84,7 +84,7 @@ class IsolationTestEngineListener(val listener: TestEngineListener) : TestEngine
 
    override fun testIgnored(testCase: TestCase, reason: String?) {
       synchronized(listener) {
-         if (runningSpec.get() == testCase.spec::class.toDescription().testPath().value) {
+         if (runningSpec.get() == testCase.spec::class.toDescription().path().value) {
             listener.testIgnored(testCase, reason)
          } else {
             queue {
@@ -96,7 +96,7 @@ class IsolationTestEngineListener(val listener: TestEngineListener) : TestEngine
 
    override fun testFinished(testCase: TestCase, result: TestResult) {
       synchronized(listener) {
-         if (runningSpec.get() == testCase.spec::class.toDescription().testPath().value) {
+         if (runningSpec.get() == testCase.spec::class.toDescription().path().value) {
             listener.testFinished(testCase, result)
          } else {
             queue {
@@ -109,7 +109,7 @@ class IsolationTestEngineListener(val listener: TestEngineListener) : TestEngine
    override fun specStarted(kclass: KClass<out Spec>) {
       synchronized(listener) {
          log("IsolationTestEngineListener: specStarted $kclass")
-         if (runningSpec.compareAndSet(null, kclass.toDescription().testPath().value)) {
+         if (runningSpec.compareAndSet(null, kclass.toDescription().path().value)) {
             listener.specStarted(kclass)
          } else {
             queue {
@@ -121,7 +121,7 @@ class IsolationTestEngineListener(val listener: TestEngineListener) : TestEngine
 
    override fun testFinished(description: Description, result: TestResult) {
       synchronized(listener) {
-         if (runningSpec.get() == description.spec().testPath().value) {
+         if (runningSpec.get() == description.spec().path().value) {
             listener.testFinished(description, result)
          } else {
             queue {
@@ -133,7 +133,7 @@ class IsolationTestEngineListener(val listener: TestEngineListener) : TestEngine
 
    override fun testStarted(description: Description) {
       synchronized(listener) {
-         if (runningSpec.get() == description.spec().testPath().value) {
+         if (runningSpec.get() == description.spec().path().value) {
             listener.testStarted(description)
          } else {
             queue {
@@ -150,7 +150,7 @@ class IsolationTestEngineListener(val listener: TestEngineListener) : TestEngine
    ) {
       synchronized(listener) {
          log("IsolationTestEngineListener: specFinished $kclass")
-         if (runningSpec.get() == kclass.toDescription().testPath().value) {
+         if (runningSpec.get() == kclass.toDescription().path().value) {
             listener.specFinished(kclass, t, results)
             runningSpec.set(null)
             replay()
