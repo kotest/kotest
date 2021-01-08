@@ -129,6 +129,7 @@ fun parseTestName(parent: String, name: String, specAffixDefault: Boolean = fals
       name,
       null,
       configuration.testNameCase,
+      configuration.removeTestNameWhitespace,
       configuration.includeTestScopeAffixes ?: specAffixDefault
    )
 
@@ -155,10 +156,11 @@ fun parseTestName(
    name: String,
    suffix: String?,
    testNameCase: TestNameCase,
+   removeTestNameWhiteSpec: Boolean,
    includeAffixesInDisplayName: Boolean,
 ): NodeName.TestName {
 
-   val trimmedName = if (configuration.removeTestNameWhitespace) {
+   val trimmedName = if (removeTestNameWhiteSpec) {
       name.removeAllExtraWhitespaces()
    } else {
       name.removeNewLineCharacter()
