@@ -176,7 +176,7 @@ class IsActiveTest : StringSpec() {
 
          val ext = object : IsActiveExtension {
             override suspend fun isActive(node: TestPlanNode): Boolean {
-               return node.name.contains("!")
+               return node.name.name.contains("!")
             }
          }
 
