@@ -5,11 +5,11 @@ import io.kotest.core.spec.DisplayName
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 
-@DisplayName("ZZZZZ")
+@DisplayName("GGGGGGGGG")
 class SpecNameTest : FunSpec() {
    init {
       test("@DisplayName should be used when generating a spec name") {
-         NodeName.fromSpecClass(SpecNameTest::class).displayName shouldBe "ZZZZZ"
+         NodeName.fromSpecClass(SpecNameTest::class).displayName shouldBe "GGGGGGGGG"
       }
       test("fqn should be set when generating a spec name") {
          NodeName.fromSpecClass(SpecNameTest::class).fqn shouldBe "com.sksamuel.kotest.engine.plan.SpecNameTest"
