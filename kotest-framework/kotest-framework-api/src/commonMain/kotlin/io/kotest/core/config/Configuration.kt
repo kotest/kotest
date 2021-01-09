@@ -225,7 +225,7 @@ class Configuration {
     * this test 1
     *    test this 2
     *
-    * Defaults to null, which is spec specific behavior.
+    * Defaults to null, which is to use the default.
     */
    var includeTestScopeAffixes: Boolean? = Defaults.defaultIncludeTestScopeAffixes
 

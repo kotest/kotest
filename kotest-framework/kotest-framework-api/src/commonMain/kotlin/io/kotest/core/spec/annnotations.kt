@@ -6,6 +6,11 @@ package io.kotest.core.spec
  */
 annotation class AutoScan
 
+/**
+ * Note: This name must be globally unique. Two specs, even in different packages,
+ * cannot share the same name, so if @DisplayName is used, developers must ensure it does not
+ * clash with another spec.
+ */
 @Target(AnnotationTarget.CLASS)
 @Retention(AnnotationRetention.RUNTIME)
 annotation class DisplayName(val name: String)

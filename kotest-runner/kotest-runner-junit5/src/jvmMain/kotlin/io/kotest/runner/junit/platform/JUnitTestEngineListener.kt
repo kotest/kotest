@@ -6,12 +6,14 @@ import io.kotest.engine.listener.TestEngineListener
 import io.kotest.engine.writeSpecFailures
 import io.kotest.core.listeners.AfterProjectListenerException
 import io.kotest.core.listeners.BeforeProjectListenerException
+import io.kotest.core.plan.TestPlanNode
 import io.kotest.core.test.Description
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestStatus
 import io.kotest.core.test.TestType
 import io.kotest.core.spec.toDescription
+import io.kotest.core.test.TestId
 import io.kotest.core.test.createTestName
 import io.kotest.mpp.log
 import org.junit.platform.engine.EngineExecutionListener
@@ -74,6 +76,7 @@ class JUnitTestEngineListener(
    // contains a mapping of a Description to a junit TestDescription, so we can look up the parent
    // when we need to register a new test
    private val descriptors = mutableMapOf<Description, TestDescriptor>()
+   private val descriptorsByTestId = mutableMapOf<TestId, TestDescriptor>()
 
    // contains any spec that failed so we can write out the failed specs file
    private val failedSpecs = mutableSetOf<KClass<out Spec>>()
@@ -141,6 +144,55 @@ class JUnitTestEngineListener(
          log("Error in JUnit Platform listener", t)
          exceptionThrowBySpec = t
       }
+   }
+
+   override fun specStarted(spec: TestPlanNode.SpecNode) {
+      log("specStarted [${spec.name}]")
+
+      // reset the flags for this spec
+      hasVisibleTest = false
+      hasIgnoredTest = false
+
+      try {
+         val descriptor = spec.name.descriptor(root)
+
+         // we need to store the descriptor for later, because junit checks by identity
+         descriptorsByTestId[spec.id] = descriptor
+
+         log("Registering junit dynamic test and notifiying start: $descriptor")
+         listener.dynamicTestRegistered(descriptor)
+         listener.executionStarted(descriptor)
+      } catch (t: Throwable) {
+         log("Error in JUnit Platform listener", t)
+         exceptionThrowBySpec = t
+      }
+   }
+
+   override fun specFinished(
+      spec: TestPlanNode.SpecNode,
+      t: Throwable?,
+      results: Map<TestPlanNode.TestCaseNode, TestResult>
+   ) {
+      log("specFinished [${spec.name}]")
+
+      val descriptor = descriptorsByTestId[spec.id]
+         ?: throw RuntimeException("Error retrieving description for spec: ${spec.name}")
+
+      // if the spec itself had an error then we must make sure we add at least one nested test so that
+      // the test shows up properly in intellij
+      (exceptionThrowBySpec ?: t)?.apply {
+         // todo
+         //  ensureSpecIsVisible(kclass, this)
+      }
+
+      val result = when {
+         t != null -> TestExecutionResult.failed(t)
+         exceptionThrowBySpec != null -> TestExecutionResult.failed(exceptionThrowBySpec)
+         else -> TestExecutionResult.successful()
+      }
+
+      log("Notifying junit that a spec has finished [$descriptor, $result]")
+      listener.executionFinished(descriptor, result)
    }
 
    override fun specFinished(

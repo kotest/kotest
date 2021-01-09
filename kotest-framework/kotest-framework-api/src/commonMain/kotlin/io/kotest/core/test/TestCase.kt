@@ -1,12 +1,10 @@
 package io.kotest.core.test
 
 import io.kotest.core.SourceRef
-import io.kotest.core.Tag
 import io.kotest.core.factory.FactoryId
 import io.kotest.core.internal.tags.allTags
 import io.kotest.core.sourceRef
 import io.kotest.core.spec.Spec
-import kotlin.reflect.KClass
 
 /**
  * A [TestCase] describes an actual block of code that will be tested.
@@ -110,36 +108,4 @@ data class TestCase(
          }
       }
    }
-}
-
-fun TestCase.toNode(): TestNode.TestCaseNode {
-   return TestNode.TestCaseNode(description, type, spec::class, this.allTags(), source, false)
-}
-
-/**
- * Lightweight descriptor for a node in the test plan.
- * That is either a [TestCaseNode] or a [SpecNode].
- */
-sealed class TestNode {
-
-   data class SpecNode(
-      val description: Description,
-      // the class of this spec.
-      val spec: KClass<out Spec>?,
-      // the runtime tags applied to this spec
-      val tags: Set<Tag>,
-   ) : TestNode()
-
-   data class TestCaseNode(
-      val description: Description,
-      val type: TestType,
-      // the class of the spec this test is contained in.
-      val spec: KClass<out Spec>?,
-      // the runtime tags applied to this test ref
-      val tags: Set<Tag>,
-      // link to the source ref where this test is defined
-      val source: SourceRef,
-      // true if this test case is active by the built in rules
-      val active: Boolean,
-   ) : TestNode()
 }

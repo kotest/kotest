@@ -7,7 +7,10 @@ object Libs {
    const val kotestGradlePlugin = "0.1.4"
 
    object Kotlin {
+      private const val kotlinScriptVersion = "1.4.21-2"
       const val kotlinScriptRuntime = "org.jetbrains.kotlin:kotlin-script-runtime:$kotlinVersion"
+      const val kotlinScriptUtil = "org.jetbrains.kotlin:kotlin-script-util:$kotlinScriptVersion"
+      const val kotlinScriptJvm = "org.jetbrains.kotlin:kotlin-scripting-jvm:$kotlinScriptVersion"
    }
 
    object Arrow {

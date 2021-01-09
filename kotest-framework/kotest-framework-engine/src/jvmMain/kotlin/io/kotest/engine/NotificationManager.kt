@@ -3,6 +3,7 @@ package io.kotest.engine
 import io.kotest.core.config.configuration
 import io.kotest.core.config.specInstantiationListeners
 import io.kotest.core.config.testListeners
+import io.kotest.core.plan.TestPlanNode
 import io.kotest.core.spec.Spec
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
@@ -15,6 +16,27 @@ import kotlin.reflect.KClass
  * Used to send notifications to listeners and test engine listeners.
  */
 class NotificationManager(private val listener: TestEngineListener) {
+
+   /**
+    * Notifies listeners that we are about to start execution of a [TestPlanNode].
+    */
+   suspend fun specStarted(spec: TestPlanNode.SpecNode) = Try {
+      log("NotificationManager:specStarted $spec")
+      listener.specStarted(spec)
+
+      // todo call a new prepare spec listener interface
+   }
+
+   suspend fun specFinished(
+      spec: TestPlanNode.SpecNode,
+      error: Throwable?,
+      results: Map<TestPlanNode.TestCaseNode, TestResult>
+   ) = Try {
+      log("NotificationManager:specFinished $spec")
+      listener.specFinished(spec, error, results)
+
+      // todo call a new finalize spec listener interface
+   }
 
    /**
     * Notifies listeners that we are about to start execution of a [Spec].

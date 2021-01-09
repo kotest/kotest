@@ -1,7 +1,7 @@
 package io.kotest.core.internal
 
 import io.kotest.core.config.configuration
-import io.kotest.core.extensions.TestActiveExtension
+import io.kotest.core.extensions.IsActiveExtension
 import io.kotest.core.filter.TestFilter
 import io.kotest.core.filter.TestFilterResult
 import io.kotest.core.test.TestCase
@@ -12,19 +12,19 @@ import io.kotest.core.internal.tags.activeTags
 import io.kotest.core.internal.tags.allTags
 import io.kotest.core.internal.tags.isActive
 import io.kotest.core.internal.tags.parse
+import io.kotest.core.plan.toNode
 import io.kotest.core.test.TestCaseSeverityLevel
-import io.kotest.core.test.toNode
 import io.kotest.mpp.log
 import io.kotest.mpp.sysprop
 
 /**
  * Returns true if the given [TestCase] is active based on default rules at [isActiveInternal]
- * or any registered [TestActiveExtension]s.
+ * or any registered [IsActiveExtension]s.
  */
 suspend fun TestCase.isActive(): Boolean {
    val defaultActive = isActiveInternal()
-   val node = this.toNode().copy(active = defaultActive)
-   return configuration.extensions().filterIsInstance<TestActiveExtension>().fold(node) { acc, op ->
+   val node = this.toNode(defaultActive)
+   return configuration.extensions().filterIsInstance<IsActiveExtension>().fold(node) { acc, op ->
       acc.copy(active = op.isActive(acc))
    }.active
 }
@@ -32,7 +32,7 @@ suspend fun TestCase.isActive(): Boolean {
 /**
  * Returns true if the given [TestCase] is active by the built in rules.
  *
- * Logic can be customized via [TestActiveExtension]s.
+ * Logic can be customized via [IsActiveExtension]s.
  *
  * A test can be active or inactive.
  *
