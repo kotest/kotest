@@ -149,6 +149,28 @@ actual:
          )
       }
 
+      test("comparing objects with differing keys") {
+         val a = """ { "a" : "foo", "b" : "bar" } """
+         val b = """ { "a" : "foo", "c" : "bar" } """
+         shouldFail {
+            a shouldEqualJson b
+         }.shouldHaveMessage(
+            """The top level object was missing expected field(s) [c]
+
+expected:
+{
+  "a": "foo",
+  "c": "bar"
+}
+
+actual:
+{
+  "a": "foo",
+  "b": "bar"
+}"""
+         )
+      }
+
       test("comparing object with extra keys") {
          val a = """ { "a" : "foo", "b" : "bar", "c": "baz", "d": true } """
          val b = """ { "a" : "foo", "b" : "bar" } """
@@ -630,6 +652,54 @@ actual:
   }
 }"""
          )
+      }
+
+      test("key order should use CompareOrder enum") {
+         val a = """
+            {
+               "id": 32672932069455,
+               "title": "Default Title",
+               "sku": "RIND-TOTEO-001-MCF",
+               "requires_shipping": true,
+               "taxable": true,
+               "featured_image": null
+            }
+            """
+
+         val b = """
+            {
+               "sku": "RIND-TOTEO-001-MCF",
+               "id": 32672932069455,
+               "title": "Default Title",
+               "requires_shipping": true,
+               "taxable": true,
+               "featured_image": null
+            }
+            """
+         a.shouldEqualJson(b)
+         shouldFail {
+            a.shouldEqualJson(b, CompareOrder.Strict)
+         }.shouldHaveMessage("""The top level object expected field 0 to be 'sku' but was 'id'
+
+expected:
+{
+  "sku": "RIND-TOTEO-001-MCF",
+  "id": 32672932069455,
+  "title": "Default Title",
+  "requires_shipping": true,
+  "taxable": true,
+  "featured_image": null
+}
+
+actual:
+{
+  "id": 32672932069455,
+  "title": "Default Title",
+  "sku": "RIND-TOTEO-001-MCF",
+  "requires_shipping": true,
+  "taxable": true,
+  "featured_image": null
+}""")
       }
    }
 }

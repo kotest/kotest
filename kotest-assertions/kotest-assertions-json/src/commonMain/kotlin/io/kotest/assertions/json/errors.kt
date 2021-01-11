@@ -19,6 +19,13 @@ sealed class JsonError {
    data class UnequalValues(override val path: List<String>, val a: Any, val b: Any) : JsonError()
    data class IncompatibleTypes(override val path: List<String>, val a: JsonNode, val b: JsonNode) : JsonError()
    data class ExpectedNull(override val path: List<String>, val b: JsonNode) : JsonError()
+
+   data class NameOrderDiff(
+      override val path: List<String>,
+      val index: Int,
+      val expected: String,
+      val actual: String
+   ) : JsonError()
 }
 
 fun JsonError.asString(): String {
@@ -34,5 +41,6 @@ fun JsonError.asString(): String {
       is JsonError.UnequalValues -> "$dotpath expected $a but was $b"
       is JsonError.IncompatibleTypes -> "$dotpath expected ${a.type()} but was ${b.type()}"
       is JsonError.ExpectedNull -> "$dotpath expected null but was ${b.type()}"
+      is JsonError.NameOrderDiff -> "$dotpath object expected field $index to be '$expected' but was '$actual'"
    }
 }

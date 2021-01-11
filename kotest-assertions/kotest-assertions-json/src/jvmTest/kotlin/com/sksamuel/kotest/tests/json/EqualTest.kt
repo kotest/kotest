@@ -1,6 +1,7 @@
 package com.sksamuel.kotest.tests.json
 
 import io.kotest.assertions.json.CompareMode
+import io.kotest.assertions.json.CompareOrder
 import io.kotest.assertions.json.shouldEqualJson
 import io.kotest.assertions.shouldFail
 import io.kotest.core.spec.style.FunSpec
@@ -125,6 +126,28 @@ actual:
 {
   "a" : 123,
   "b" : 354
+}"""
+         )
+      }
+
+      test("comparing objects with differing keys") {
+         val a = """ { "a" : "foo", "b" : "bar" } """
+         val b = """ { "a" : "foo", "c" : "bar" } """
+         shouldFail {
+            a shouldEqualJson b
+         }.shouldHaveMessage(
+            """The top level object was missing expected field(s) [c]
+
+expected:
+{
+  "a" : "foo",
+  "c" : "bar"
+}
+
+actual:
+{
+  "a" : "foo",
+  "b" : "bar"
 }"""
          )
       }
@@ -624,7 +647,8 @@ actual:
          val b = this::class.java.getResourceAsStream("/shopify_without_field.json").bufferedReader().readText()
          shouldFail {
             a shouldEqualJson b
-         }.message.shouldStartWith("""At 'products.[0].variants.[0]' object was missing expected field(s) [sku]
+         }.message.shouldStartWith(
+            """At 'products.[0].variants.[0]' object was missing expected field(s) [sku]
 
 expected:
 {
@@ -633,7 +657,8 @@ expected:
     "title" : "RIND Fitted Hat",
     "handle" : "rind-fitted-hat",
     "body_html" : "<meta charset=\"utf-8\">Flexfit Ultra fiber Cap with Air Mesh Sides<br>Blue with Orange Embroidery",
-    "published_at" : "2020-10-22T17:13:25-04:00",""")
+    "published_at" : "2020-10-22T17:13:25-04:00","""
+         )
       }
 
       test("real world json diff string") {
@@ -641,7 +666,8 @@ expected:
          val b = this::class.java.getResourceAsStream("/shopify_diff_string.json").bufferedReader().readText()
          shouldFail {
             a shouldEqualJson b
-         }.message.shouldStartWith("""At 'products.[3].title' expected 'Love is RIND Tote Bageeee' but was 'Love is RIND Tote Bag'
+         }.message.shouldStartWith(
+            """At 'products.[3].title' expected 'Love is RIND Tote Bageeee' but was 'Love is RIND Tote Bag'
 
 expected:
 {
@@ -649,7 +675,8 @@ expected:
     "id" : 4815869968463,
     "title" : "RIND Fitted Hat",
     "handle" : "rind-fitted-hat",
-    "body_html" : "<meta charset=\"utf-""")
+    "body_html" : "<meta charset=\"utf-"""
+         )
       }
 
       test("real world json diff long") {
@@ -657,7 +684,8 @@ expected:
          val b = this::class.java.getResourceAsStream("/shopify_diff_long.json").bufferedReader().readText()
          shouldFail {
             a shouldEqualJson b
-         }.message.shouldStartWith("""At 'products.[1].variants.[0].id' expected 45715996239345 but was 32673115996239
+         }.message.shouldStartWith(
+            """At 'products.[1].variants.[0].id' expected 45715996239345 but was 32673115996239
 
 expected:
 {
@@ -667,7 +695,56 @@ expected:
     "handle" : "rind-fitted-hat",
     "body_html" : "<meta charset=\"utf-8\">Flexfit Ultra fiber Cap with Air Mesh Sides<br>Blue with Orange Embroidery",
     "published_at" : "2020-10-22T17:13:25-04:00",
-    "created_at" : "2020-10-22T17:13:23-04:00",""")
+    "created_at" : "2020-10-22T17:13:23-04:00","""
+         )
+      }
+
+      test("key order should use CompareOrder enum") {
+         val a = """
+            {
+               "id": 32672932069455,
+               "title": "Default Title",
+               "sku": "RIND-TOTEO-001-MCF",
+               "requires_shipping": true,
+               "taxable": true,
+               "featured_image": null
+            }
+            """
+
+         val b = """
+            {
+               "sku": "RIND-TOTEO-001-MCF",
+               "id": 32672932069455,
+               "title": "Default Title",
+               "requires_shipping": true,
+               "taxable": true,
+               "featured_image": null
+            }
+            """
+         a.shouldEqualJson(b)
+         shouldFail {
+            a.shouldEqualJson(b, CompareOrder.Strict)
+         }.shouldHaveMessage("""The top level object expected field 0 to be 'sku' but was 'id'
+
+expected:
+{
+  "sku" : "RIND-TOTEO-001-MCF",
+  "id" : 32672932069455,
+  "title" : "Default Title",
+  "requires_shipping" : true,
+  "taxable" : true,
+  "featured_image" : null
+}
+
+actual:
+{
+  "id" : 32672932069455,
+  "title" : "Default Title",
+  "sku" : "RIND-TOTEO-001-MCF",
+  "requires_shipping" : true,
+  "taxable" : true,
+  "featured_image" : null
+}""")
       }
    }
 }

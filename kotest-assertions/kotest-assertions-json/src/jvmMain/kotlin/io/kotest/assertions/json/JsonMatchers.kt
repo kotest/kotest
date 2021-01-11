@@ -39,18 +39,20 @@ fun matchJson(expected: String?) = object : Matcher<String?> {
  * regardless of order.
  *
  */
-actual fun String.shouldEqualJson(expected: String, mode: CompareMode) {
-   val anode = mapper.readTree(this)
-   val bnode = mapper.readTree(expected)
-   val a = JsonTree(anode.toJsonNode(), anode.toPrettyString())
-   val e = JsonTree(bnode.toJsonNode(), bnode.toPrettyString())
-   a should equalJson(e, mode)
+actual fun String.shouldEqualJson(expected: String, mode: CompareMode, order: CompareOrder) {
+   val (e, a) = parse(expected, this)
+   a should equalJson(e, mode, order)
 }
 
-actual fun String.shouldNotEqualJson(expected: String, mode: CompareMode) {
-   val anode = mapper.readTree(this)
-   val bnode = mapper.readTree(expected)
+actual fun String.shouldNotEqualJson(expected: String, mode: CompareMode, order: CompareOrder) {
+   val (e, a) = parse(expected, this)
+   a shouldNot equalJson(e, mode, order)
+}
+
+internal fun parse(expected: String, actual: String): Pair<JsonTree, JsonTree> {
+   val enode = mapper.readTree(expected)
+   val anode = mapper.readTree(actual)
+   val e = JsonTree(enode.toJsonNode(), enode.toPrettyString())
    val a = JsonTree(anode.toJsonNode(), anode.toPrettyString())
-   val e = JsonTree(bnode.toJsonNode(), bnode.toPrettyString())
-   a shouldNot equalJson(e, mode)
+   return Pair(e, a)
 }

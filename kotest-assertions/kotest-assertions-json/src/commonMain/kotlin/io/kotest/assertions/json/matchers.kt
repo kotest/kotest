@@ -14,9 +14,9 @@ import io.kotest.matchers.MatcherResult
  * regardless of order.
  *
  */
-fun equalJson(expected: JsonTree, mode: CompareMode) = object : Matcher<JsonTree> {
+fun equalJson(expected: JsonTree, mode: CompareMode, order: CompareOrder) = object : Matcher<JsonTree> {
    override fun test(value: JsonTree): MatcherResult {
-      val error = compare(expected.root, value.root, mode)?.asString()
+      val error = compare(expected.root, value.root, mode, order)?.asString()
       return MatcherResult(
          error == null,
          "$error\n\nexpected:\n${expected.raw}\n\nactual:\n${value.raw}\n",
@@ -27,8 +27,23 @@ fun equalJson(expected: JsonTree, mode: CompareMode) = object : Matcher<JsonTree
 
 data class JsonTree(val root: JsonNode, val raw: String)
 
-infix fun String.shouldEqualJson(expected: String): Unit = this.shouldEqualJson(expected, CompareMode.Strict)
-infix fun String.shouldNotEqualJson(expected: String): Unit = this.shouldNotEqualJson(expected, CompareMode.Strict)
+infix fun String.shouldEqualJson(expected: String): Unit =
+   this.shouldEqualJson(expected, CompareMode.Strict, CompareOrder.Lenient)
+
+infix fun String.shouldNotEqualJson(expected: String): Unit =
+   this.shouldNotEqualJson(expected, CompareMode.Strict, CompareOrder.Lenient)
+
+fun String.shouldEqualJson(expected: String, mode: CompareMode) =
+   shouldEqualJson(expected, mode, CompareOrder.Lenient)
+
+fun String.shouldNotEqualJson(expected: String, mode: CompareMode) =
+   shouldNotEqualJson(expected, mode, CompareOrder.Lenient)
+
+fun String.shouldEqualJson(expected: String, order: CompareOrder) =
+   shouldEqualJson(expected, CompareMode.Strict, order)
+
+fun String.shouldNotEqualJson(expected: String, order: CompareOrder) =
+   shouldNotEqualJson(expected, CompareMode.Strict, order)
 
 /**
  * Verifies that the [expected] string is valid json, and that it matches this string.
@@ -37,5 +52,5 @@ infix fun String.shouldNotEqualJson(expected: String): Unit = this.shouldNotEqua
  * regardless of order.
  *
  */
-expect fun String.shouldEqualJson(expected: String, mode: CompareMode)
-expect fun String.shouldNotEqualJson(expected: String, mode: CompareMode)
+expect fun String.shouldEqualJson(expected: String, mode: CompareMode, order: CompareOrder)
+expect fun String.shouldNotEqualJson(expected: String, mode: CompareMode, order: CompareOrder)

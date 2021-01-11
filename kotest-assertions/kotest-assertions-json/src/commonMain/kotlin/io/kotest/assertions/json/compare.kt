@@ -1,9 +1,10 @@
+@file:Suppress("unused")
+
 package io.kotest.assertions.json
 
 import kotlin.math.abs
 
 enum class CompareMode {
-   @Suppress("unused")
    Strict, Lenient
 }
 
@@ -14,23 +15,30 @@ enum class CompareOrder {
 /**
  * Compares two json trees, returning a detailed error message if they differ.
  */
-fun compare(a: JsonNode, b: JsonNode, mode: CompareMode) = compare(emptyList(), a, b, mode)
+fun compare(expected: JsonNode, actual: JsonNode, mode: CompareMode, order: CompareOrder) =
+   compare(emptyList(), expected, actual, mode, order)
 
-fun compare(path: List<String>, a: JsonNode, b: JsonNode, mode: CompareMode): JsonError? {
-   return when (a) {
-      is JsonNode.ObjectNode -> when (b) {
-         is JsonNode.ObjectNode -> compareObjects(path, a, b, mode)
-         else -> JsonError.ExpectedObject(path, b)
+fun compare(
+   path: List<String>,
+   expected: JsonNode,
+   actual: JsonNode,
+   mode: CompareMode,
+   order: CompareOrder
+): JsonError? {
+   return when (expected) {
+      is JsonNode.ObjectNode -> when (actual) {
+         is JsonNode.ObjectNode -> compareObjects(path, expected, actual, mode, order)
+         else -> JsonError.ExpectedObject(path, actual)
       }
-      is JsonNode.ArrayNode -> when (b) {
-         is JsonNode.ArrayNode -> compareArrays(path, a, b, mode)
-         else -> JsonError.ExpectedArray(path, b)
+      is JsonNode.ArrayNode -> when (actual) {
+         is JsonNode.ArrayNode -> compareArrays(path, expected, actual, mode, order)
+         else -> JsonError.ExpectedArray(path, actual)
       }
-      is JsonNode.BooleanNode -> compareBoolean(path, a, b, mode)
-      is JsonNode.StringNode -> compareString(path, a, b, mode)
-      is JsonNode.LongNode -> compareLong(path, a, b, mode)
-      is JsonNode.DoubleNode -> compareDouble(path, a, b, mode)
-      JsonNode.NullNode -> compareNull(path, b)
+      is JsonNode.BooleanNode -> compareBoolean(path, expected, actual, mode)
+      is JsonNode.StringNode -> compareString(path, expected, actual, mode)
+      is JsonNode.LongNode -> compareLong(path, expected, actual, mode)
+      is JsonNode.DoubleNode -> compareDouble(path, expected, actual, mode)
+      JsonNode.NullNode -> compareNull(path, actual)
    }
 }
 
@@ -39,9 +47,12 @@ fun compareObjects(
    expected: JsonNode.ObjectNode,
    actual: JsonNode.ObjectNode,
    mode: CompareMode,
+   order: CompareOrder,
 ): JsonError? {
+
    val keys1 = expected.elements.keys
    val keys2 = actual.elements.keys
+
    if (keys1.size < keys2.size) {
       val missing = keys2 - keys1
       return JsonError.ObjectMissingKeys(path, missing)
@@ -52,9 +63,20 @@ fun compareObjects(
       return JsonError.ObjectExtraKeys(path, extra)
    }
 
-   expected.elements.entries.zip(actual.elements.entries).forEach { (a, b) ->
-      val error = compare(path + a.key, a.value, b.value, mode)
-      if (error != null) return error
+   // when using strict order mode, the order of elements in json matters, normally, we don't care
+   when (order) {
+      CompareOrder.Strict ->
+         expected.elements.entries.withIndex().zip(actual.elements.entries).forEach { (e, a) ->
+            if (a.key != e.value.key) return JsonError.NameOrderDiff(path, e.index, e.value.key, a.key)
+            val error = compare(path + a.key, e.value.value, a.value, mode, order)
+            if (error != null) return error
+         }
+      CompareOrder.Lenient ->
+         expected.elements.entries.forEach { (name, e) ->
+            val a = actual.elements[name] ?: return JsonError.ObjectMissingKeys(path, setOf(name))
+            val error = compare(path + name, e, a, mode, order)
+            if (error != null) return error
+         }
    }
 
    return null
@@ -64,14 +86,15 @@ fun compareArrays(
    path: List<String>,
    expected: JsonNode.ArrayNode,
    actual: JsonNode.ArrayNode,
-   mode: CompareMode
+   mode: CompareMode,
+   order: CompareOrder,
 ): JsonError? {
 
    if (expected.elements.size != actual.elements.size)
       return JsonError.UnequalArrayLength(path, expected.elements.size, actual.elements.size)
 
    expected.elements.withIndex().zip(actual.elements.withIndex()).forEach { (a, b) ->
-      val error = compare(path + "[${a.index}]", a.value, b.value, mode)
+      val error = compare(path + "[${a.index}]", a.value, b.value, mode, order)
       if (error != null) return error
    }
 

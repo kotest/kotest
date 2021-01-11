@@ -12,17 +12,17 @@ import io.kotest.matchers.shouldNot
  * regardless of order.
  *
  */
-actual fun String.shouldEqualJson(expected: String, mode: CompareMode) {
-   val (e, a) = nodes(expected, this)
-   a should equalJson(e, mode)
+actual fun String.shouldEqualJson(expected: String, mode: CompareMode, order: CompareOrder) {
+   val (e, a) = parse(expected, this)
+   a should equalJson(e, mode, order)
 }
 
-actual fun String.shouldNotEqualJson(expected: String, mode: CompareMode) {
-   val (e, a) = nodes(expected, this)
-   a shouldNot equalJson(e, mode)
+actual fun String.shouldNotEqualJson(expected: String, mode: CompareMode, order: CompareOrder) {
+   val (e, a) = parse(expected, this)
+   a shouldNot equalJson(e, mode, order)
 }
 
-internal fun nodes(expected: String, actual: String): Pair<JsonTree, JsonTree> {
+internal fun parse(expected: String, actual: String): Pair<JsonTree, JsonTree> {
    val enode = toJsonNode(JSON.parse(expected))
    val anode = toJsonNode(JSON.parse(actual))
    val e = JsonTree(enode, JSON.stringify(JSON.parse(expected), space = 2))
