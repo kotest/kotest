@@ -1,9 +1,12 @@
 package com.sksamuel.kotest.property.arbitrary
 
 import io.kotest.core.spec.style.FunSpec
+import io.kotest.matchers.collections.shouldContainExactlyInAnyOrder
 import io.kotest.property.Arb
+import io.kotest.property.arbitrary.alphanumeric
 import io.kotest.property.arbitrary.arabic
 import io.kotest.property.arbitrary.armenian
+import io.kotest.property.arbitrary.asString
 import io.kotest.property.arbitrary.ascii
 import io.kotest.property.arbitrary.cyrillic
 import io.kotest.property.arbitrary.georgian
@@ -11,6 +14,7 @@ import io.kotest.property.arbitrary.greekCoptic
 import io.kotest.property.arbitrary.hebrew
 import io.kotest.property.arbitrary.hiragana
 import io.kotest.property.arbitrary.katakana
+import io.kotest.property.arbitrary.map
 import io.kotest.property.arbitrary.string
 import io.kotest.property.checkAll
 import io.kotest.property.forAll
@@ -52,6 +56,23 @@ class StringArbTest : FunSpec() {
                Character.isValidCodePoint(it)
             }
          }
+      }
+
+      test("all alphanumeric strings generated should be valid code points") {
+         checkAll(Arb.string(10..20, Arb.alphanumeric())) { a ->
+            a.codePoints().forEach {
+               Character.isValidCodePoint(it)
+            }
+
+         }
+      }
+
+      test("alphanumeric strings should generate all possible strings") {
+         val chars = mutableSetOf<Char>()
+         Arb.alphanumeric().map { it.asString().single() }.checkAll {
+            chars += it
+         }
+         chars shouldContainExactlyInAnyOrder (('a'..'z') + ('A'..'Z') + ('0'..'9')).toList()
       }
 
       test("all strings generated with georgian codepoints should be valid code codepoints") {
