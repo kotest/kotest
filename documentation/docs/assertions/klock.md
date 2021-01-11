@@ -1,6 +1,7 @@
 ---
 title: Klock Matchers
 slug: klock-matchers.html
+sidebar_label: Klock
 ---
 
 

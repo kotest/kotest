@@ -2,6 +2,7 @@
 id: android_matchers
 title: Android Matchers
 slug: android-matchers.html
+sidebar_label: Android
 ---
 
 

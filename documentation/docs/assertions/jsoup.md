@@ -1,6 +1,7 @@
 ---
 title: Jsoup Matchers
 slug: jsoup-matchers.html
+sidebar_label: Jsoup
 ---
 
 

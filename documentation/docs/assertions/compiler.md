@@ -1,6 +1,8 @@
 ---
+id: compiler
 title: Compiler Matchers
 slug: compiler-matchers.html
+sidebar_label: Compiler
 ---
 
 

@@ -2,6 +2,7 @@
 id: core
 title: Core Matchers
 slug: core-matchers.html
+sidebar_label: Core
 ---
 
 
