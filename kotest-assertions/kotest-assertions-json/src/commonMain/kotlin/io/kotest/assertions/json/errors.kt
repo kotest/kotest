@@ -10,13 +10,6 @@ sealed class JsonError {
       val actual: Int
    ) : JsonError()
 
-   data class ArrayElementsDoNotMatch(
-      override val path: List<String>,
-      val index: Int,
-      val expected: JsonNode,
-      val actual: JsonNode
-   ) : JsonError()
-
    data class ObjectMissingKeys(override val path: List<String>, val missing: Set<String>) : JsonError()
    data class ObjectExtraKeys(override val path: List<String>, val extra: Set<String>) : JsonError()
    data class ExpectedObject(override val path: List<String>, val b: JsonNode) : JsonError()
@@ -32,7 +25,6 @@ fun JsonError.asString(): String {
    val dotpath = if (path.isEmpty()) "The top level" else "At '" + path.joinToString(".") + "'"
    return when (this) {
       is JsonError.UnequalArrayLength -> "$dotpath expected array length ${this.expected} but was ${this.actual}"
-      is JsonError.ArrayElementsDoNotMatch -> "$dotpath[$index] expected ${this.expected} but was ${this.actual}"
       is JsonError.ObjectMissingKeys -> "$dotpath object was missing expected field(s) [${missing.joinToString(",")}]"
       is JsonError.ObjectExtraKeys -> "$dotpath object has extra field(s) [${extra.joinToString(",")}]"
       is JsonError.ExpectedObject -> "$dotpath expected object type but was ${b.type()}"

@@ -71,8 +71,8 @@ fun compareArrays(
       return JsonError.UnequalArrayLength(path, expected.elements.size, actual.elements.size)
 
    expected.elements.withIndex().zip(actual.elements.withIndex()).forEach { (a, b) ->
-      val error = compare(path, a.value, b.value, mode)
-      if (error != null) return JsonError.ArrayElementsDoNotMatch(path, a.index, a.value, b.value)
+      val error = compare(path + "[${a.index}]", a.value, b.value, mode)
+      if (error != null) return error
    }
 
    return null

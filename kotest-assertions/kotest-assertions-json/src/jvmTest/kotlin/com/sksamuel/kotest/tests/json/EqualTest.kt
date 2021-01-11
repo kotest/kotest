@@ -4,6 +4,7 @@ import io.kotest.assertions.json.CompareMode
 import io.kotest.assertions.json.shouldEqualJson
 import io.kotest.assertions.shouldFail
 import io.kotest.core.spec.style.FunSpec
+import io.kotest.matchers.string.shouldStartWith
 import io.kotest.matchers.throwable.shouldHaveMessage
 import io.kotest.property.Arb
 import io.kotest.property.Exhaustive
@@ -360,7 +361,8 @@ actual:
          val b = """ { "a" : "foo", "b" : { "c": true } } """
          shouldFail {
             a shouldEqualJson b
-         }.shouldHaveMessage("""At 'b' expected object type but was string
+         }.shouldHaveMessage(
+            """At 'b' expected object type but was string
 
 expected:
 {
@@ -374,7 +376,8 @@ actual:
 {
   "a" : "foo",
   "b" : "bar"
-}""")
+}"""
+         )
       }
 
       test("comparing boolean to object") {
@@ -382,7 +385,8 @@ actual:
          val b = """ { "a" : "foo", "b" : { "c": true } } """
          shouldFail {
             a shouldEqualJson b
-         }.shouldHaveMessage("""At 'b' expected object type but was boolean
+         }.shouldHaveMessage(
+            """At 'b' expected object type but was boolean
 
 expected:
 {
@@ -396,7 +400,8 @@ actual:
 {
   "a" : "foo",
   "b" : true
-}""")
+}"""
+         )
       }
 
       test("comparing double to object") {
@@ -404,7 +409,8 @@ actual:
          val b = """ { "a" : "foo", "b" : { "c": true } } """
          shouldFail {
             a shouldEqualJson b
-         }.shouldHaveMessage("""At 'b' expected object type but was double
+         }.shouldHaveMessage(
+            """At 'b' expected object type but was double
 
 expected:
 {
@@ -418,7 +424,8 @@ actual:
 {
   "a" : "foo",
   "b" : 12.45
-}""")
+}"""
+         )
       }
 
       test("comparing array to object") {
@@ -426,7 +433,8 @@ actual:
          val b = """ { "a" : "foo", "b" : { "c": true } } """
          shouldFail {
             a shouldEqualJson b
-         }.shouldHaveMessage("""At 'b' expected object type but was array
+         }.shouldHaveMessage(
+            """At 'b' expected object type but was array
 
 expected:
 {
@@ -440,7 +448,8 @@ actual:
 {
   "a" : "foo",
   "b" : [ 1, 2, 3 ]
-}""")
+}"""
+         )
       }
 
       test("comparing object to boolean") {
@@ -448,7 +457,8 @@ actual:
          val b = """ { "a" : "foo", "b" : true } """
          shouldFail {
             a shouldEqualJson b
-         }.shouldHaveMessage("""At 'b' expected boolean but was object
+         }.shouldHaveMessage(
+            """At 'b' expected boolean but was object
 
 expected:
 {
@@ -462,7 +472,8 @@ actual:
   "b" : {
     "c" : true
   }
-}""")
+}"""
+         )
       }
 
       test("comparing object to long") {
@@ -470,7 +481,8 @@ actual:
          val b = """ { "a" : "foo", "b" : 123 } """
          shouldFail {
             a shouldEqualJson b
-         }.shouldHaveMessage("""At 'b' expected long but was object
+         }.shouldHaveMessage(
+            """At 'b' expected long but was object
 
 expected:
 {
@@ -484,7 +496,8 @@ actual:
   "b" : {
     "c" : true
   }
-}""")
+}"""
+         )
       }
 
       test("comparing array to string") {
@@ -492,7 +505,8 @@ actual:
          val b = """ { "a" : "foo", "b" : "werqe" } """
          shouldFail {
             a shouldEqualJson b
-         }.shouldHaveMessage("""At 'b' expected string but was object
+         }.shouldHaveMessage(
+            """At 'b' expected string but was object
 
 expected:
 {
@@ -506,7 +520,154 @@ actual:
   "b" : {
     "c" : true
   }
-}""")
+}"""
+         )
+      }
+
+      test("deep comparison of objects should show full path to error") {
+         val a = """ { "a" : "foo", "b" : { "c": { "d": 123 } } } """
+         val b = """ { "a" : "foo", "b" : { "c": { "d": 534 } } } """
+         shouldFail {
+            a shouldEqualJson b
+         }.shouldHaveMessage(
+            """At 'b.c.d' expected 534 but was 123
+
+expected:
+{
+  "a" : "foo",
+  "b" : {
+    "c" : {
+      "d" : 534
+    }
+  }
+}
+
+actual:
+{
+  "a" : "foo",
+  "b" : {
+    "c" : {
+      "d" : 123
+    }
+  }
+}"""
+         )
+      }
+
+      test("deep comparison of arrays should show full path to error") {
+         val a = """ { "a" : "foo", "b" : { "c": { "d": [1,2,3] } } } """
+         val b = """ { "a" : "foo", "b" : { "c": { "d": [1,2,4] } } } """
+         shouldFail {
+            a shouldEqualJson b
+         }.shouldHaveMessage(
+            """At 'b.c.d.[2]' expected 4 but was 3
+
+expected:
+{
+  "a" : "foo",
+  "b" : {
+    "c" : {
+      "d" : [ 1, 2, 4 ]
+    }
+  }
+}
+
+actual:
+{
+  "a" : "foo",
+  "b" : {
+    "c" : {
+      "d" : [ 1, 2, 3 ]
+    }
+  }
+}"""
+         )
+      }
+
+      test("comparing arrays of different length") {
+         val a = """ { "a" : "foo", "b" : { "c": { "d": [1,2,3,4] } } } """
+         val b = """ { "a" : "foo", "b" : { "c": { "d": [1,2,4] } } } """
+         shouldFail {
+            a shouldEqualJson b
+         }.shouldHaveMessage(
+            """At 'b.c.d' expected array length 3 but was 4
+
+expected:
+{
+  "a" : "foo",
+  "b" : {
+    "c" : {
+      "d" : [ 1, 2, 4 ]
+    }
+  }
+}
+
+actual:
+{
+  "a" : "foo",
+  "b" : {
+    "c" : {
+      "d" : [ 1, 2, 3, 4 ]
+    }
+  }
+}"""
+         )
+      }
+
+      test("real world json test") {
+         val json = this::class.java.getResourceAsStream("/shopify.json").bufferedReader().readText()
+         json shouldEqualJson json
+      }
+
+      test("real world json without field") {
+         val a = this::class.java.getResourceAsStream("/shopify.json").bufferedReader().readText()
+         val b = this::class.java.getResourceAsStream("/shopify_without_field.json").bufferedReader().readText()
+         shouldFail {
+            a shouldEqualJson b
+         }.message.shouldStartWith("""At 'products.[0].variants.[0]' object was missing expected field(s) [sku]
+
+expected:
+{
+  "products" : [ {
+    "id" : 4815869968463,
+    "title" : "RIND Fitted Hat",
+    "handle" : "rind-fitted-hat",
+    "body_html" : "<meta charset=\"utf-8\">Flexfit Ultra fiber Cap with Air Mesh Sides<br>Blue with Orange Embroidery",
+    "published_at" : "2020-10-22T17:13:25-04:00",""")
+      }
+
+      test("real world json diff string") {
+         val a = this::class.java.getResourceAsStream("/shopify.json").bufferedReader().readText()
+         val b = this::class.java.getResourceAsStream("/shopify_diff_string.json").bufferedReader().readText()
+         shouldFail {
+            a shouldEqualJson b
+         }.message.shouldStartWith("""At 'products.[3].title' expected 'Love is RIND Tote Bageeee' but was 'Love is RIND Tote Bag'
+
+expected:
+{
+  "products" : [ {
+    "id" : 4815869968463,
+    "title" : "RIND Fitted Hat",
+    "handle" : "rind-fitted-hat",
+    "body_html" : "<meta charset=\"utf-""")
+      }
+
+      test("real world json diff long") {
+         val a = this::class.java.getResourceAsStream("/shopify.json").bufferedReader().readText()
+         val b = this::class.java.getResourceAsStream("/shopify_diff_long.json").bufferedReader().readText()
+         shouldFail {
+            a shouldEqualJson b
+         }.message.shouldStartWith("""At 'products.[1].variants.[0].id' expected 45715996239345 but was 32673115996239
+
+expected:
+{
+  "products" : [ {
+    "id" : 4815869968463,
+    "title" : "RIND Fitted Hat",
+    "handle" : "rind-fitted-hat",
+    "body_html" : "<meta charset=\"utf-8\">Flexfit Ultra fiber Cap with Air Mesh Sides<br>Blue with Orange Embroidery",
+    "published_at" : "2020-10-22T17:13:25-04:00",
+    "created_at" : "2020-10-22T17:13:23-04:00",""")
       }
    }
 }
