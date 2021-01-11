@@ -31,10 +31,19 @@ kotlin {
 
    sourceSets {
 
-      val jvmMain by getting {
+      val commonMain by getting {
          dependencies {
             implementation(project(Projects.AssertionsShared))
             implementation(kotlin("reflect"))
+            implementation(Libs.Jackson.databind)
+            implementation(Libs.Jackson.kotlin)
+            implementation(Libs.Jayway.jsonpath)
+         }
+      }
+
+      val jvmMain by getting {
+         dependencies {
+            implementation(Libs.Jackson.databind)
             implementation(Libs.Jackson.kotlin)
             implementation(Libs.Jayway.jsonpath)
          }
@@ -44,6 +53,7 @@ kotlin {
          dependsOn(jvmMain)
          dependencies {
             implementation(project(Projects.JunitRunner))
+            implementation(project(Projects.Property))
          }
       }
    }

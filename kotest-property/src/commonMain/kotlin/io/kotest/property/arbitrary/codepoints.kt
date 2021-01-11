@@ -21,6 +21,11 @@ fun Arb.Companion.codepoints(): Arb<Codepoint> =
       .withEdgecases(MIN_CODE_POINT, MAX_CODE_POINT)
       .map { Codepoint(it) }
 
+fun Arb.Companion.az(): Arb<Codepoint> =
+   Arb.int('a'.toInt()..'z'.toInt())
+      .map { Codepoint(it) }
+      .withEdgecases(Codepoint('a'.toInt()))
+
 fun Arb.Companion.ascii(): Arb<Codepoint> =
    Arb.int(' '.toInt()..'z'.toInt())
       .map { Codepoint(it) }
