@@ -19,7 +19,7 @@ kotlin {
             }
          }
       }
-      js(BOTH) {
+      js {
          browser()
          nodejs()
       }
@@ -45,6 +45,15 @@ kotlin {
          }
       }
 
+      val commonTest by getting {
+         dependencies {
+            implementation(project(Projects.AssertionsCore))
+            implementation(project(Projects.Api))
+            implementation(project(Projects.Engine))
+            implementation(project(Projects.Property))
+         }
+      }
+
       val jvmMain by getting {
          dependencies {
             implementation(Libs.Jackson.databind)
@@ -57,7 +66,6 @@ kotlin {
          dependsOn(jvmMain)
          dependencies {
             implementation(project(Projects.JunitRunner))
-            implementation(project(Projects.Property))
          }
       }
    }

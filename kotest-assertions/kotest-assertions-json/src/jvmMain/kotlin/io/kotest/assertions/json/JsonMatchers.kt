@@ -32,9 +32,6 @@ fun matchJson(expected: String?) = object : Matcher<String?> {
    }
 }
 
-infix fun String.shouldEqualJson(expected: String) = this.shouldEqualJson(expected, CompareMode.Strict)
-infix fun String.shouldNotEqualJson(expected: String) = this.shouldNotEqualJson(expected, CompareMode.Strict)
-
 /**
  * Verifies that the [expected] string is valid json, and that it matches this string.
  *
@@ -42,18 +39,18 @@ infix fun String.shouldNotEqualJson(expected: String) = this.shouldNotEqualJson(
  * regardless of order.
  *
  */
-fun String.shouldEqualJson(expected: String, mode: CompareMode) {
+actual fun String.shouldEqualJson(expected: String, mode: CompareMode) {
    val anode = mapper.readTree(this)
    val bnode = mapper.readTree(expected)
-   val a = Json(anode.toJsonNode(), anode.toPrettyString())
-   val e = Json(bnode.toJsonNode(), bnode.toPrettyString())
+   val a = JsonTree(anode.toJsonNode(), anode.toPrettyString())
+   val e = JsonTree(bnode.toJsonNode(), bnode.toPrettyString())
    a should equalJson(e, mode)
 }
 
-fun String.shouldNotEqualJson(expected: String, mode: CompareMode) {
+actual fun String.shouldNotEqualJson(expected: String, mode: CompareMode) {
    val anode = mapper.readTree(this)
    val bnode = mapper.readTree(expected)
-   val a = Json(anode.toJsonNode(), anode.toPrettyString())
-   val e = Json(bnode.toJsonNode(), bnode.toPrettyString())
+   val a = JsonTree(anode.toJsonNode(), anode.toPrettyString())
+   val e = JsonTree(bnode.toJsonNode(), bnode.toPrettyString())
    a shouldNot equalJson(e, mode)
 }
