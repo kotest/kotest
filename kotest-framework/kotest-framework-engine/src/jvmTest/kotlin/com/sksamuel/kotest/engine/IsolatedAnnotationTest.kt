@@ -19,7 +19,7 @@ class IsolatedAnnotationTest : FunSpec() {
 @AutoScan
 class IsolatedAnnotationTestAfterProject : ProjectListener {
    override suspend fun afterProject() {
-      //invoked.get() shouldBe true
+//      invoked.get() shouldBe true
    }
 }
 

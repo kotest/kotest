@@ -93,6 +93,9 @@ class KotestEngineLauncher(
    }
 
    fun withSpec(klass: KClass<out Spec>) = withSpecs(listOf(klass))
+
+   fun withSpecs(vararg specs: KClass<out Spec>) = withSpecs(specs.toList())
+
    fun withSpecs(specs: List<KClass<out Spec>>): KotestEngineLauncher {
       return KotestEngineLauncher(
          listeners = listeners,
