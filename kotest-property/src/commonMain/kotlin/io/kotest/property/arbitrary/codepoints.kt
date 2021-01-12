@@ -26,6 +26,9 @@ fun Arb.Companion.az(): Arb<Codepoint> =
       .map { Codepoint(it) }
       .withEdgecases(Codepoint('a'.toInt()))
 
+fun Arb.Companion.alphanumeric(): Arb<Codepoint> =
+   Arb.element((('a'..'z') + ('A'..'Z') + ('0'..'9')).toList()).map { Codepoint(it.toInt()) }
+
 fun Arb.Companion.ascii(): Arb<Codepoint> =
    Arb.int(' '.toInt()..'z'.toInt())
       .map { Codepoint(it) }
