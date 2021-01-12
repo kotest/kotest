@@ -1,12 +1,12 @@
 package io.kotest.engine.launchers
 
-import io.kotest.core.config.ExperimentalKotest
 import io.kotest.core.internal.isIsolate
 import io.kotest.core.spec.DoNotParallelize
 import io.kotest.core.spec.Isolate
 import io.kotest.core.spec.Spec
 import io.kotest.engine.dispatchers.CoroutineDispatcherFactory
 import io.kotest.engine.spec.SpecExecutor
+import io.kotest.mpp.bestName
 import io.kotest.mpp.log
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
@@ -22,15 +22,12 @@ import kotlin.reflect.KClass
  * @param maxConcurrent The maximum number of concurrent coroutines.
  * @param factory a [CoroutineDispatcherFactory] used to allocate CoroutineDispatchers to specs.
  */
-@ExperimentalKotest
 class DefaultSpecLauncher(
    private val maxConcurrent: Int,
    private val factory: CoroutineDispatcherFactory
 ) : SpecLauncher {
 
-   private val semaphore = Semaphore(maxConcurrent).apply {
-      log("DefaultSpecLauncher: Will use $maxConcurrent permits")
-   }
+   private val semaphore = Semaphore(maxConcurrent)
 
    override suspend fun launch(executor: SpecExecutor, specs: List<KClass<out Spec>>) {
       log("DefaultSpecLauncher: Launching ${specs.size} specs")
@@ -39,27 +36,34 @@ class DefaultSpecLauncher(
          // can run concurrently (default) and those which cannot (see @Isolated)
          maxConcurrent > 1 -> {
             val (sequential, concurrent) = specs.partition { it.isIsolate() }
-            log("DefaultSpecLauncher: Split specs based on annotations [$sequential isolated]")
+            log("DefaultSpecLauncher: Split specs based on annotations [${sequential.size} sequential ${concurrent.size} concurrent]")
             concurrent(executor, concurrent)
             sequential(executor, sequential)
          }
          // when not in concurrent mode, all specs are launched sequentially
-         else ->  sequential(executor, specs)
+         else -> sequential(executor, specs)
       }
       log("DefaultSpecLauncher: All specs have completed")
+      factory.stop()
    }
 
    private suspend fun sequential(executor: SpecExecutor, specs: List<KClass<out Spec>>) {
+      log("DefaultSpecLauncher: Launching ${specs.size} sequentially")
       specs.forEach { spec ->
          coroutineScope {
+            log("DefaultSpecLauncher: Launching ${spec.bestName()}")
             launch(factory.dispatcherFor(spec)) {
                executor.execute(spec)
-            }.invokeOnCompletion { factory.complete(spec) }
+            }.invokeOnCompletion {
+               log("DefaultSpecLauncher: ${spec.bestName()} has completed")
+               factory.complete(spec)
+            }
          }
       }
    }
 
    private suspend fun concurrent(executor: SpecExecutor, specs: List<KClass<out Spec>>) {
+      log("DefaultSpecLauncher: Launching $specs concurrently with $maxConcurrent permits")
       coroutineScope {
          specs.forEach { spec ->
             semaphore.withPermit {
@@ -68,7 +72,7 @@ class DefaultSpecLauncher(
                val dispatcher = factory.dispatcherFor(spec)
                log("DefaultSpecLauncher: Launching coroutine for spec [$spec] with dispatcher [$dispatcher]")
 
-                launch(dispatcher) {
+               launch(dispatcher) {2
                   try {
                      executor.execute(spec)
                   } catch (t: Throwable) {
@@ -79,6 +83,5 @@ class DefaultSpecLauncher(
             }
          }
       }
-      factory.stop()
    }
 }

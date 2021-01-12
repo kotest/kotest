@@ -126,11 +126,15 @@ class KotestEngine(private val config: KotestEngineConfig) {
       }
 
       // spec classes are ordered using an instance of SpecExecutionOrder
+      log("KotestEngine: Sorting specs by ${configuration.specExecutionOrder}")
       val ordered = plan.classes.sort(configuration.specExecutionOrder)
+
+      log("KotestEngine: Will use spec executor ${configuration.specExecutionOrder}")
       val executor = SpecExecutor(config.listener)
 
       val launcher = specLauncher()
       log("KotestEngine: Will use spec launcher $launcher")
+
       launcher.launch(executor, ordered)
    }
 

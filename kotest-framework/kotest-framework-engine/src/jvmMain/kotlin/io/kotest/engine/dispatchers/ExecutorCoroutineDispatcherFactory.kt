@@ -46,7 +46,7 @@ class ExecutorCoroutineDispatcherFactory(
 
    override fun dispatcherFor(spec: KClass<out Spec>): CoroutineDispatcher {
       val dispatcher = dispatchers[abs(spec.bestName().hashCode()) % parallelism].coroutineDispatcher
-      log("ExecutorCoroutineDispatcherFactory: Selected dispatcher $dispatcher for ${spec::class}")
+      log("ExecutorCoroutineDispatcherFactory: Selected dispatcher $dispatcher for ${spec.bestName()}")
       return dispatcher
    }
 

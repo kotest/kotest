@@ -10,6 +10,7 @@ import io.kotest.core.extensions.IsActiveExtension
 import io.kotest.core.filter.TestFilter
 import io.kotest.core.filter.TestFilterResult
 import io.kotest.core.filter.toTestFilterResult
+import io.kotest.core.internal.isActive
 import io.kotest.core.internal.isActiveInternal
 import io.kotest.core.plan.TestPlanNode
 import io.kotest.core.spec.Isolate
@@ -176,23 +177,23 @@ class IsActiveTest : StringSpec() {
 
          val ext = object : IsActiveExtension {
             override suspend fun isActive(node: TestPlanNode): Boolean {
-               return node.name.name.contains("!")
+               return node.name.name.contains("activateme")
             }
          }
 
          configuration.registerExtension(ext)
 
-         // this should be active because the extension says it is, even though it's disabled by a bang
-         TestCase.test(
-            SomeTestClass::class.toDescription().appendTest("!disabledbybang"),
-            SomeTestClass()
-         ) {}.isActiveInternal() shouldBe true
-
          // this should be inactive because the extension says it is, even though it's normally active
          TestCase.test(
             SomeTestClass::class.toDescription().appendTest("active"),
             SomeTestClass()
-         ) {}.isActiveInternal() shouldBe false
+         ) {}.isActive() shouldBe false
+
+         // this should be active because the extension says it is, even though it's disabled by a bang
+         TestCase.test(
+            SomeTestClass::class.toDescription().appendTest("!activateme"),
+            SomeTestClass()
+         ) {}.isActive() shouldBe true
 
          configuration.deregisterExtension(ext)
       }

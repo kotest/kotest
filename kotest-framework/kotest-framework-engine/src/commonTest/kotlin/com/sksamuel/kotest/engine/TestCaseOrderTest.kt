@@ -27,7 +27,7 @@ class TestCaseOrderTest : FunSpec() {
 
 private class SequentialSpec : StringSpec() {
 
-   override fun testCaseOrder(): TestCaseOrder? = TestCaseOrder.Sequential
+   override fun testCaseOrder() = TestCaseOrder.Sequential
 
    init {
       "c" {}
@@ -40,7 +40,7 @@ private class SequentialSpec : StringSpec() {
 
 private class LexicographicSpec : StringSpec() {
 
-   override fun testCaseOrder(): TestCaseOrder? = TestCaseOrder.Lexicographic
+   override fun testCaseOrder() = TestCaseOrder.Lexicographic
 
    init {
       "b" {}
@@ -53,7 +53,7 @@ private class LexicographicSpec : StringSpec() {
 
 
 class RandomSpec : StringSpec() {
-   override fun testCaseOrder(): TestCaseOrder? = TestCaseOrder.Random
+   override fun testCaseOrder() = TestCaseOrder.Random
 
    init {
       "a" {}
