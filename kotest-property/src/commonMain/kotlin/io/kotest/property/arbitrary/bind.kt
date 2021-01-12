@@ -142,6 +142,65 @@ fun <A, B, C, D, E, F, G, H, I, J, T> Arb.Companion.bind(
       bindFn(a, b, c, d, e, f, g, h, i, j)
    }
 
+fun <A, B, C, D, E, F, G, H, I, J, K, T> Arb.Companion.bind(
+   genA: Gen<A>,
+   genB: Gen<B>,
+   genC: Gen<C>,
+   genD: Gen<D>,
+   genE: Gen<E>,
+   genF: Gen<F>,
+   genG: Gen<G>,
+   genH: Gen<H>,
+   genI: Gen<I>,
+   genJ: Gen<J>,
+   genK: Gen<K>,
+   bindFn: (A, B, C, D, E, F, G, H, I, J, K) -> T
+): Arb<T> =
+   genA.bind(genB).bind(genC).bind(genD).bind(genE).bind(genF).bind(genG).bind(genH).bind(genI).bind(genJ).bind(genK)
+      .map { (abcdefghij, k) ->
+         val (abcdefghi, j) = abcdefghij
+         val (abcdefgh, i) = abcdefghi
+         val (abcdefg, h) = abcdefgh
+         val (abcdef, g) = abcdefg
+         val (abcde, f) = abcdef
+         val (abcd, e) = abcde
+         val (abc, d) = abcd
+         val (ab, c) = abc
+         val (a, b) = ab
+         bindFn(a, b, c, d, e, f, g, h, i, j, k)
+      }
+
+fun <A, B, C, D, E, F, G, H, I, J, K, L, T> Arb.Companion.bind(
+   genA: Gen<A>,
+   genB: Gen<B>,
+   genC: Gen<C>,
+   genD: Gen<D>,
+   genE: Gen<E>,
+   genF: Gen<F>,
+   genG: Gen<G>,
+   genH: Gen<H>,
+   genI: Gen<I>,
+   genJ: Gen<J>,
+   genK: Gen<K>,
+   genL: Gen<L>,
+   bindFn: (A, B, C, D, E, F, G, H, I, J, K, L) -> T
+): Arb<T> =
+   genA.bind(genB).bind(genC).bind(genD).bind(genE).bind(genF).bind(genG).bind(genH).bind(genI).bind(genJ).bind(genK)
+      .bind(genL)
+      .map { (abcdefghijk, l) ->
+         val (abcdefghij, k) = abcdefghijk
+         val (abcdefghi, j) = abcdefghij
+         val (abcdefgh, i) = abcdefghi
+         val (abcdefg, h) = abcdefgh
+         val (abcdef, g) = abcdefg
+         val (abcde, f) = abcdef
+         val (abcd, e) = abcde
+         val (abc, d) = abcd
+         val (ab, c) = abc
+         val (a, b) = ab
+         bindFn(a, b, c, d, e, f, g, h, i, j, k, l)
+      }
+
 private fun <A, B, C> Gen<A>.bind(other: Gen<B>, fn: (A, B) -> C): Arb<C> {
    val arb = when (this) {
       is Arb -> this
