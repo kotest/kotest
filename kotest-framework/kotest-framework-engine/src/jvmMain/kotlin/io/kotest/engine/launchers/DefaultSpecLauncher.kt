@@ -72,7 +72,7 @@ class DefaultSpecLauncher(
                val dispatcher = factory.dispatcherFor(spec)
                log("DefaultSpecLauncher: Launching coroutine for spec [$spec] with dispatcher [$dispatcher]")
 
-               launch(dispatcher) {2
+               launch(dispatcher) {
                   try {
                      executor.execute(spec)
                   } catch (t: Throwable) {
