@@ -375,6 +375,138 @@ class BindTest : StringSpec({
       }.edgecases() shouldContainExactlyInAnyOrder expectedEdgecases
    }
 
+   "Arb.bind(a,b,c,d,e,f,g,h,i,j,k) should compute the cartesian product of edgecases" {
+      val arbA = Arb.string().withEdgecases("a", "b")
+      val arbB = Arb.string().withEdgecases("a", "b")
+      val arbC = Arb.string().withEdgecases("a", "b")
+      val arbD = Arb.string().withEdgecases("a", "b")
+      val arbE = Arb.string().withEdgecases("a", "b")
+      val arbF = Arb.string().withEdgecases("a", "b")
+      val arbG = Arb.string().withEdgecases("a", "b")
+      val arbH = Arb.string().withEdgecases("a", "b")
+      val arbI = Arb.string().withEdgecases("a", "b")
+      val arbJ = Arb.string().withEdgecases("a", "b")
+      val arbK = Arb.string().withEdgecases("a", "b")
+      val expectedEdgecases =
+         arbA.edgecases()
+            .product(arbB.edgecases(), String::plus)
+            .product(arbC.edgecases(), String::plus)
+            .product(arbD.edgecases(), String::plus)
+            .product(arbE.edgecases(), String::plus)
+            .product(arbF.edgecases(), String::plus)
+            .product(arbG.edgecases(), String::plus)
+            .product(arbH.edgecases(), String::plus)
+            .product(arbI.edgecases(), String::plus)
+            .product(arbJ.edgecases(), String::plus)
+            .product(arbK.edgecases(), String::plus)
+
+      Arb.bind(arbA, arbB, arbC, arbD, arbE, arbF, arbG, arbH, arbI, arbJ, arbK) { a, b, c, d, e, f, g, h, i, j, k ->
+         "$a$b$c$d$e$f$g$h$i$j$k"
+      }.edgecases() shouldContainExactlyInAnyOrder expectedEdgecases
+   }
+
+   "Arb.bind(a,b,c,d,e,f,g,h,i,j,k,l) should compute the cartesian product of edgecases" {
+      val arbA = Arb.string().withEdgecases("a", "b")
+      val arbB = Arb.string().withEdgecases("a", "b")
+      val arbC = Arb.string().withEdgecases("a", "b")
+      val arbD = Arb.string().withEdgecases("a", "b")
+      val arbE = Arb.string().withEdgecases("a", "b")
+      val arbF = Arb.string().withEdgecases("a", "b")
+      val arbG = Arb.string().withEdgecases("a", "b")
+      val arbH = Arb.string().withEdgecases("a", "b")
+      val arbI = Arb.string().withEdgecases("a", "b")
+      val arbJ = Arb.string().withEdgecases("a", "b")
+      val arbK = Arb.string().withEdgecases("a", "b")
+      val arbL = Arb.string().withEdgecases("a", "b")
+      val expectedEdgecases =
+         arbA.edgecases()
+            .product(arbB.edgecases(), String::plus)
+            .product(arbC.edgecases(), String::plus)
+            .product(arbD.edgecases(), String::plus)
+            .product(arbE.edgecases(), String::plus)
+            .product(arbF.edgecases(), String::plus)
+            .product(arbG.edgecases(), String::plus)
+            .product(arbH.edgecases(), String::plus)
+            .product(arbI.edgecases(), String::plus)
+            .product(arbJ.edgecases(), String::plus)
+            .product(arbK.edgecases(), String::plus)
+            .product(arbL.edgecases(), String::plus)
+
+      Arb.bind(arbA, arbB, arbC, arbD, arbE, arbF, arbG, arbH, arbI, arbJ, arbK, arbL) { a, b, c, d, e, f, g, h, i, j, k, l ->
+         "$a$b$c$d$e$f$g$h$i$j$k$l"
+      }.edgecases() shouldContainExactlyInAnyOrder expectedEdgecases
+   }
+
+   "Arb.bind(a,b,c,d,e,f,g,h,i,j,k,l,m) should compute the cartesian product of edgecases" {
+      val arbA = Arb.string().withEdgecases("a", "b")
+      val arbB = Arb.string().withEdgecases("a", "b")
+      val arbC = Arb.string().withEdgecases("a", "b")
+      val arbD = Arb.string().withEdgecases("a", "b")
+      val arbE = Arb.string().withEdgecases("a", "b")
+      val arbF = Arb.string().withEdgecases("a", "b")
+      val arbG = Arb.string().withEdgecases("a", "b")
+      val arbH = Arb.string().withEdgecases("a", "b")
+      val arbI = Arb.string().withEdgecases("a", "b")
+      val arbJ = Arb.string().withEdgecases("a", "b")
+      val arbK = Arb.string().withEdgecases("a", "b")
+      val arbL = Arb.string().withEdgecases("a", "b")
+      val arbM = Arb.string().withEdgecases("a", "b")
+      val expectedEdgecases =
+         arbA.edgecases()
+            .product(arbB.edgecases(), String::plus)
+            .product(arbC.edgecases(), String::plus)
+            .product(arbD.edgecases(), String::plus)
+            .product(arbE.edgecases(), String::plus)
+            .product(arbF.edgecases(), String::plus)
+            .product(arbG.edgecases(), String::plus)
+            .product(arbH.edgecases(), String::plus)
+            .product(arbI.edgecases(), String::plus)
+            .product(arbJ.edgecases(), String::plus)
+            .product(arbK.edgecases(), String::plus)
+            .product(arbL.edgecases(), String::plus)
+            .product(arbM.edgecases(), String::plus)
+
+      Arb.bind(arbA, arbB, arbC, arbD, arbE, arbF, arbG, arbH, arbI, arbJ, arbK, arbL, arbM) { a, b, c, d, e, f, g, h, i, j, k, l, m ->
+         "$a$b$c$d$e$f$g$h$i$j$k$l$m"
+      }.edgecases() shouldContainExactlyInAnyOrder expectedEdgecases
+   }
+
+   "Arb.bind(a,b,c,d,e,f,g,h,i,j,k,l,m,n) should compute the cartesian product of edgecases" {
+      val arbA = Arb.string().withEdgecases("a", "b")
+      val arbB = Arb.string().withEdgecases("a", "b")
+      val arbC = Arb.string().withEdgecases("a", "b")
+      val arbD = Arb.string().withEdgecases("a", "b")
+      val arbE = Arb.string().withEdgecases("a", "b")
+      val arbF = Arb.string().withEdgecases("a", "b")
+      val arbG = Arb.string().withEdgecases("a", "b")
+      val arbH = Arb.string().withEdgecases("a", "b")
+      val arbI = Arb.string().withEdgecases("a", "b")
+      val arbJ = Arb.string().withEdgecases("a", "b")
+      val arbK = Arb.string().withEdgecases("a", "b")
+      val arbL = Arb.string().withEdgecases("a", "b")
+      val arbM = Arb.string().withEdgecases("a", "b")
+      val arbN = Arb.string().withEdgecases("a", "b")
+      val expectedEdgecases =
+         arbA.edgecases()
+            .product(arbB.edgecases(), String::plus)
+            .product(arbC.edgecases(), String::plus)
+            .product(arbD.edgecases(), String::plus)
+            .product(arbE.edgecases(), String::plus)
+            .product(arbF.edgecases(), String::plus)
+            .product(arbG.edgecases(), String::plus)
+            .product(arbH.edgecases(), String::plus)
+            .product(arbI.edgecases(), String::plus)
+            .product(arbJ.edgecases(), String::plus)
+            .product(arbK.edgecases(), String::plus)
+            .product(arbL.edgecases(), String::plus)
+            .product(arbM.edgecases(), String::plus)
+            .product(arbN.edgecases(), String::plus)
+
+      Arb.bind(arbA, arbB, arbC, arbD, arbE, arbF, arbG, arbH, arbI, arbJ, arbK, arbL, arbM, arbN) { a, b, c, d, e, f, g, h, i, j, k, l, m, n ->
+         "$a$b$c$d$e$f$g$h$i$j$k$l$m$n"
+      }.edgecases() shouldContainExactlyInAnyOrder expectedEdgecases
+   }
+
    "Arb.reflectiveBind" {
       val arb = Arb.bind<Wobble>()
       arb.take(10).toList().size shouldBe 10
