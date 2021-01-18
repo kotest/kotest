@@ -34,7 +34,7 @@ class MyTestClass : WordSpec() {
 ## Single Instance
 
 The default isolation mode is `SingleInstance` whereby one instance of the Spec class is created and then each test case
-is exected in turn until all tests have completed.
+is executed in turn until all tests have completed.
 
 For example, in the following spec, the same id would be printed three times as the same instance is used for all tests.
 
