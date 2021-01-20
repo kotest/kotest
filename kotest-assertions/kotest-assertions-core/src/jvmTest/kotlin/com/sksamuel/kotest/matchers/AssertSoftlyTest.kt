@@ -17,11 +17,12 @@ import io.kotest.matchers.should
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNot
 import io.kotest.matchers.shouldNotBe
-import io.kotest.matchers.string.shouldContain
-import io.kotest.matchers.string.shouldNotContain
 import io.kotest.matchers.string.contain
 import io.kotest.matchers.string.endWith
+import io.kotest.matchers.string.shouldContain
+import io.kotest.matchers.string.shouldNotContain
 import io.kotest.matchers.string.shouldNotEndWith
+import io.kotest.matchers.string.shouldStartWith
 
 class AssertSoftlyTest : FreeSpec({
 
