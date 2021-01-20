@@ -1,13 +1,12 @@
 package io.kotest.assertions.json
 
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldNot
+import kotlinx.serialization.json.Json
 
-val mapper by lazy { ObjectMapper().registerKotlinModule() }
+val pretty by lazy { Json { prettyPrint = true } }
 
 /**
  * Verifies that the [expected] string is valid json, and that it matches this string.
@@ -21,8 +20,8 @@ infix fun String?.shouldNotMatchJson(expected: String?) = this shouldNot matchJs
 fun matchJson(expected: String?) = object : Matcher<String?> {
 
    override fun test(value: String?): MatcherResult {
-      val actualJson = value?.let(mapper::readTree)
-      val expectedJson = expected?.let(mapper::readTree)
+      val actualJson = value?.let(pretty::parseToJsonElement)
+      val expectedJson = expected?.let(pretty::parseToJsonElement)
 
       return MatcherResult(
          actualJson == expectedJson,
@@ -50,9 +49,9 @@ actual fun String.shouldNotEqualJson(expected: String, mode: CompareMode, order:
 }
 
 internal fun parse(expected: String, actual: String): Pair<JsonTree, JsonTree> {
-   val enode = mapper.readTree(expected)
-   val anode = mapper.readTree(actual)
-   val e = JsonTree(enode.toJsonNode(), enode.toPrettyString())
-   val a = JsonTree(anode.toJsonNode(), anode.toPrettyString())
+   val enode = pretty.parseToJsonElement(expected)
+   val anode = pretty.parseToJsonElement(actual)
+   val e = JsonTree(enode.toJsonNode(), enode.toString())
+   val a = JsonTree(anode.toJsonNode(), anode.toString())
    return Pair(e, a)
 }

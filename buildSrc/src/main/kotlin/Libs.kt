@@ -154,6 +154,11 @@ object Libs {
       const val test = "org.jetbrains.kotlinx:kotlinx-coroutines-test:$version"
    }
 
+   object Serialization {
+      private const val version = "1.0.1"
+      const val json = "org.jetbrains.kotlinx:kotlinx-serialization-json:$version"
+   }
+
    object Ktor {
       private const val version = "1.5.0"
       const val serverCore = "io.ktor:ktor-server-core:$version"

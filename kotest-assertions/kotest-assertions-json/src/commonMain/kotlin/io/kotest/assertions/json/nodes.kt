@@ -9,6 +9,8 @@ sealed class JsonNode {
       is StringNode -> "string"
       is LongNode -> "long"
       is DoubleNode -> "double"
+      is IntNode -> "int"
+      is FloatNode -> "float"
       NullNode -> "null"
    }
 
@@ -22,9 +24,13 @@ sealed class JsonNode {
 
    data class StringNode(val value: String) : JsonNode(), ValueNode
 
+   data class FloatNode(val value: Float) : JsonNode(), ValueNode
+
    data class LongNode(val value: Long) : JsonNode(), ValueNode
 
    data class DoubleNode(val value: Double) : JsonNode(), ValueNode
+
+   data class IntNode(val value: Int) : JsonNode(), ValueNode
 
    object NullNode : JsonNode(), ValueNode
 }

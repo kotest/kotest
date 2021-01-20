@@ -15,11 +15,8 @@ enum class CompareOrder {
 /**
  * Compares two json trees, returning a detailed error message if they differ.
  */
-fun compare(expected: JsonNode, actual: JsonNode, mode: CompareMode, order: CompareOrder) =
-   compare(emptyList(), expected, actual, mode, order)
-
 fun compare(
-   path: List<String>,
+   path: List<String> = emptyList(),
    expected: JsonNode,
    actual: JsonNode,
    mode: CompareMode,
@@ -38,6 +35,8 @@ fun compare(
       is JsonNode.StringNode -> compareString(path, expected, actual, mode)
       is JsonNode.LongNode -> compareLong(path, expected, actual, mode)
       is JsonNode.DoubleNode -> compareDouble(path, expected, actual, mode)
+      is JsonNode.FloatNode -> compareFloat(path, expected, actual, mode)
+      is JsonNode.IntNode -> compareInt(path, expected, actual, mode)
       JsonNode.NullNode -> compareNull(path, actual)
    }
 }
@@ -182,6 +181,8 @@ fun compareDouble(path: List<String>, expected: JsonNode.DoubleNode, actual: Jso
    return when {
       actual is JsonNode.DoubleNode -> compareDoubles(path, expected.value, actual.value)
       actual is JsonNode.LongNode -> compareDoubles(path, expected.value, actual.value.toDouble())
+      actual is JsonNode.FloatNode -> compareDoubles(path, expected.value, actual.value.toDouble())
+      actual is JsonNode.IntNode -> compareDoubles(path, expected.value, actual.value.toDouble())
       mode == CompareMode.Lenient && actual is JsonNode.StringNode -> when (val d = actual.value.toDoubleOrNull()) {
          null -> JsonError.IncompatibleTypes(path, expected, actual)
          else -> compareDoubles(path, expected.value, d)
@@ -193,6 +194,48 @@ fun compareDouble(path: List<String>, expected: JsonNode.DoubleNode, actual: Jso
 fun compareDoubles(path: List<String>, expected: Double, actual: Double): JsonError? {
    return when {
       abs(expected - actual) <= Double.MIN_VALUE -> null
+      else -> JsonError.UnequalValues(path, expected, actual)
+   }
+}
+
+fun compareFloat(path: List<String>, expected: JsonNode.FloatNode, actual: JsonNode, mode: CompareMode): JsonError? {
+   return when {
+      actual is JsonNode.FloatNode -> compareFloats(path, expected.value, actual.value)
+      actual is JsonNode.LongNode -> compareFloats(path, expected.value, actual.value.toFloat())
+      actual is JsonNode.DoubleNode -> compareFloats(path, expected.value, actual.value.toFloat())
+      actual is JsonNode.IntNode -> compareFloats(path, expected.value, actual.value.toFloat())
+      mode == CompareMode.Lenient && actual is JsonNode.StringNode -> when (val d = actual.value.toFloatOrNull()) {
+         null -> JsonError.IncompatibleTypes(path, expected, actual)
+         else -> compareFloats(path, expected.value, d)
+      }
+      else -> JsonError.IncompatibleTypes(path, expected, actual)
+   }
+}
+
+fun compareFloats(path: List<String>, expected: Float, actual: Float): JsonError? {
+   return when {
+      abs(expected - actual) <= Float.MIN_VALUE -> null
+      else -> JsonError.UnequalValues(path, expected, actual)
+   }
+}
+
+fun compareInt(path: List<String>, expected: JsonNode.IntNode, actual: JsonNode, mode: CompareMode): JsonError? {
+   return when {
+      actual is JsonNode.IntNode -> compareInts(path, expected.value, actual.value)
+      actual is JsonNode.FloatNode -> compareInts(path, expected.value, actual.value.toInt())
+      actual is JsonNode.LongNode -> compareInts(path, expected.value, actual.value.toInt())
+      actual is JsonNode.DoubleNode -> compareInts(path, expected.value, actual.value.toInt())
+      mode == CompareMode.Lenient && actual is JsonNode.StringNode -> when (val d = actual.value.toIntOrNull()) {
+         null -> JsonError.IncompatibleTypes(path, expected, actual)
+         else -> compareInts(path, expected.value, d)
+      }
+      else -> JsonError.IncompatibleTypes(path, expected, actual)
+   }
+}
+
+fun compareInts(path: List<String>, expected: Int, actual: Int): JsonError? {
+   return when {
+      abs(expected - actual) <= Int.MIN_VALUE -> null
       else -> JsonError.UnequalValues(path, expected, actual)
    }
 }

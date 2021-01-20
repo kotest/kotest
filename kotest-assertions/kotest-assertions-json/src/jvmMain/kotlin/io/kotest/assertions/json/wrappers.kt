@@ -1,23 +1,28 @@
 package io.kotest.assertions.json
 
-import com.fasterxml.jackson.databind.JsonNode as JacksonNode
-import com.fasterxml.jackson.databind.node.ArrayNode as JacksonArray
-import com.fasterxml.jackson.databind.node.BooleanNode as JacksonBoolean
-import com.fasterxml.jackson.databind.node.DoubleNode as JacksonDouble
-import com.fasterxml.jackson.databind.node.LongNode as JacksonLong
-import com.fasterxml.jackson.databind.node.ObjectNode as JacksonObject
-import com.fasterxml.jackson.databind.node.TextNode as JacksonText
-import com.fasterxml.jackson.databind.node.NumericNode as JacksonNumber
-import com.fasterxml.jackson.databind.node.NullNode as JacksonNull
+import kotlinx.serialization.json.JsonArray
+import kotlinx.serialization.json.JsonElement
+import kotlinx.serialization.json.JsonNull
+import kotlinx.serialization.json.JsonObject
+import kotlinx.serialization.json.JsonPrimitive
+import kotlinx.serialization.json.booleanOrNull
+import kotlinx.serialization.json.contentOrNull
+import kotlinx.serialization.json.doubleOrNull
+import kotlinx.serialization.json.floatOrNull
+import kotlinx.serialization.json.intOrNull
+import kotlinx.serialization.json.longOrNull
 
-fun JacksonNode.toJsonNode(): JsonNode = when (this) {
-   is JacksonText -> JsonNode.StringNode(this.textValue())
-   is JacksonDouble -> JsonNode.DoubleNode(this.doubleValue())
-   is JacksonLong -> JsonNode.LongNode(this.longValue())
-   is JacksonBoolean -> JsonNode.BooleanNode(this.booleanValue())
-   is JacksonObject -> JsonNode.ObjectNode(this.fields().asSequence().map { it.key to it.value.toJsonNode() }.toMap())
-   is JacksonArray -> JsonNode.ArrayNode(this.elements().asSequence().toList().map { it.toJsonNode() })
-   is JacksonNumber -> if (this.isDouble) JsonNode.DoubleNode(this.doubleValue()) else JsonNode.LongNode(this.longValue())
-   is JacksonNull -> JsonNode.NullNode
-   else -> error("Unsupported jackson type ${this.nodeType}")
+fun JsonElement.toJsonNode(): JsonNode = when (this) {
+   JsonNull -> JsonNode.NullNode
+   is JsonObject -> JsonNode.ObjectNode(entries.map { it.key to it.value.toJsonNode() }.toMap())
+   is JsonArray -> JsonNode.ArrayNode(map { it.toJsonNode() })
+   is JsonPrimitive -> when {
+      intOrNull != null -> JsonNode.IntNode(intOrNull!!)
+      longOrNull != null -> JsonNode.LongNode(longOrNull!!)
+      doubleOrNull != null -> JsonNode.DoubleNode(doubleOrNull!!)
+      floatOrNull != null -> JsonNode.FloatNode(floatOrNull!!)
+      booleanOrNull != null -> JsonNode.BooleanNode(booleanOrNull!!)
+      contentOrNull != null -> JsonNode.StringNode(contentOrNull!!)
+      else -> error("Unsupported kotlinx-serialization type $this")
+   }
 }
