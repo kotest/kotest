@@ -35,11 +35,13 @@ class AssertSoftlyTest : FreeSpec({
       }
 
       "rethrows single failures" {
-         shouldThrow<AssertionError> {
+         val exception = shouldThrow<AssertionError> {
             assertSoftly {
                1 shouldBe 2
             }
-         }.message shouldBe "expected:<2> but was:<1>"
+         }
+         exception.message shouldBe "expected:<2> but was:<1>"
+         exception.stackTrace.first().className shouldStartWith "com.sksamuel.kotest.matchers.AssertSoftlyTest"
       }
 
       "groups multiple failures" {
@@ -52,6 +54,7 @@ class AssertSoftlyTest : FreeSpec({
          }.let {
             it.message should contain("1) expected:<2> but was:<1>")
             it.message should contain("2) \"foo\" should not equal \"foo\"")
+            it.stackTrace.first().className shouldStartWith "com.sksamuel.kotest.matchers.AssertSoftlyTest"
          }
       }
 

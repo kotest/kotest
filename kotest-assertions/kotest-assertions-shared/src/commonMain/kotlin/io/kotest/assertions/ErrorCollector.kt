@@ -101,8 +101,13 @@ fun ErrorCollector.throwCollectedErrors() {
    val failures = errors()
    clear()
    if (failures.isNotEmpty()) {
-      val t = if (failures.size == 1) failures[0] else MultiAssertionError(failures)
-      stacktraces.cleanStackTrace(t)
+      val t = if (failures.size == 1) {
+         failures[0]
+      } else {
+         MultiAssertionError(failures).also {
+            stacktraces.cleanStackTrace(it) //cleans the creation of MultiAssertionError
+         }
+      }
       throw t
    }
 }
