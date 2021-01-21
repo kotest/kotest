@@ -15,6 +15,10 @@ Kotest will scan for classes that extend this abstract class and instantiate the
 You can create more than one config class in different modules, and any on the current classpath will be detected and configs merged.
 This is effective for allowing common config to be placed into a root module. In the case of clashes, one value will be arbitrarily picked, so it is not recommended adding competing settings to different configs.
 
+:::note
+If your project specifies more than one project config, they will be merged, but the resolution of conflicting values is unspecified. It is advised that separate configs do not specify the same settings
+:::
+
 Any configuration set at the Spec level or directly on a test will override the config specified at the project level.
 
 Some configuration options available in `ProjectConfig` include parallelism of tests, failing specs with ignored tests, global `AssertSoftly`, and reusable listeners or extensions.
