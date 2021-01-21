@@ -17,11 +17,12 @@ import io.kotest.matchers.should
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNot
 import io.kotest.matchers.shouldNotBe
-import io.kotest.matchers.string.shouldContain
-import io.kotest.matchers.string.shouldNotContain
 import io.kotest.matchers.string.contain
 import io.kotest.matchers.string.endWith
+import io.kotest.matchers.string.shouldContain
+import io.kotest.matchers.string.shouldNotContain
 import io.kotest.matchers.string.shouldNotEndWith
+import io.kotest.matchers.string.shouldStartWith
 
 class AssertSoftlyTest : FreeSpec({
 
@@ -35,11 +36,13 @@ class AssertSoftlyTest : FreeSpec({
       }
 
       "rethrows single failures" {
-         shouldThrow<AssertionError> {
+         val exception = shouldThrow<AssertionError> {
             assertSoftly {
                1 shouldBe 2
             }
-         }.message shouldBe "expected:<2> but was:<1>"
+         }
+         exception.message shouldBe "expected:<2> but was:<1>"
+         exception.stackTrace.first().className shouldStartWith "com.sksamuel.kotest.matchers.AssertSoftlyTest"
       }
 
       "groups multiple failures" {
@@ -52,6 +55,7 @@ class AssertSoftlyTest : FreeSpec({
          }.let {
             it.message should contain("1) expected:<2> but was:<1>")
             it.message should contain("2) \"foo\" should not equal \"foo\"")
+            it.stackTrace.first().className shouldStartWith "com.sksamuel.kotest.matchers.AssertSoftlyTest"
          }
       }
 
