@@ -341,7 +341,7 @@ actual:
          shouldFail {
             a shouldEqualJson b
          }.shouldHaveMessage(
-            """At 'b' expected null but was long
+            """At 'b' expected null but was int
 
 expected:
 {
