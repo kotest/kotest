@@ -337,7 +337,7 @@ actual:
          shouldFail {
             a shouldEqualJson b
          }.shouldHaveMessage(
-            """At 'b' expected null but was long
+            """At 'b' expected null but was int
 
 expected:
 {
@@ -501,7 +501,7 @@ actual:
 
       test("comparing object to long") {
          val a = """ { "a" : "foo", "b" : { "c": true } } """
-         val b = """ { "a" : "foo", "b" : 123 } """
+         val b = """ { "a" : "foo", "b" : 2067120338512882656 } """
          shouldFail {
             a shouldEqualJson b
          }.shouldHaveMessage(
@@ -510,7 +510,7 @@ actual:
 expected:
 {
   "a": "foo",
-  "b": 123
+  "b": 2067120338512882656
 }
 
 actual:

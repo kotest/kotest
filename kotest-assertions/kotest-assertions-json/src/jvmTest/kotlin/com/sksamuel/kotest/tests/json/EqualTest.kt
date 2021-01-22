@@ -75,8 +75,8 @@ actual:
 
       test("comparing int in objects") {
 
-         checkAll<Int> { long ->
-            val a = """ { "a" : $long } """
+         checkAll<Int> { i ->
+            val a = """ { "a" : $i } """
             a shouldEqualJson a
          }
 
