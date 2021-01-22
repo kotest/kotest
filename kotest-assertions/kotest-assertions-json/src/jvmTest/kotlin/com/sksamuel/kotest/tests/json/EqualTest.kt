@@ -138,23 +138,23 @@ actual:
             a shouldEqualJson a
          }
 
-         val a = """ { "a" : 123, "b": 354 } """
-         val b = """ { "a" : 123, "b" : 9897 } """
+         val a = """ { "a" : 6.02E23, "b": 6.626E-34 } """
+         val b = """ { "a" : 6.02E23, "b" : 2.99E8 } """
          shouldFail {
             a shouldEqualJson b
          }.shouldHaveMessage(
-            """At 'b' expected 9897 but was 354
+            """At 'b' expected 2.99E8 but was 6.626E-34
 
 expected:
 {
-  "a": 123,
-  "b": 9897
+  "a": 6.02E23,
+  "b": 2.99E8
 }
 
 actual:
 {
-  "a": 123,
-  "b": 354
+  "a": 6.02E23,
+  "b": 6.626E-34
 }"""
          )
       }
@@ -532,9 +532,33 @@ actual:
          )
       }
 
-      test("comparing object to long") {
+      test("comparing object to int") {
          val a = """ { "a" : "foo", "b" : { "c": true } } """
          val b = """ { "a" : "foo", "b" : 123 } """
+         shouldFail {
+            a shouldEqualJson b
+         }.shouldHaveMessage(
+            """At 'b' expected int but was object
+
+expected:
+{
+  "a": "foo",
+  "b": 123
+}
+
+actual:
+{
+  "a": "foo",
+  "b": {
+    "c": true
+  }
+}"""
+         )
+      }
+
+      test("comparing object to long") {
+         val a = """ { "a" : "foo", "b" : { "c": true } } """
+         val b = """ { "a" : "foo", "b" : 2067120338512882656 } """
          shouldFail {
             a shouldEqualJson b
          }.shouldHaveMessage(
@@ -543,7 +567,7 @@ actual:
 expected:
 {
   "a": "foo",
-  "b": 123
+  "b": 2067120338512882656
 }
 
 actual:
@@ -623,7 +647,11 @@ expected:
   "a": "foo",
   "b": {
     "c": {
-      "d": [ 1, 2, 4 ]
+      "d": [
+        1,
+        2,
+        4
+      ]
     }
   }
 }
@@ -633,7 +661,11 @@ actual:
   "a": "foo",
   "b": {
     "c": {
-      "d": [ 1, 2, 3 ]
+      "d": [
+        1,
+        2,
+        3
+      ]
     }
   }
 }"""
@@ -653,7 +685,11 @@ expected:
   "a": "foo",
   "b": {
     "c": {
-      "d": [ 1, 2, 4 ]
+      "d": [
+        1,
+        2,
+        4
+      ]
     }
   }
 }
@@ -663,7 +699,12 @@ actual:
   "a": "foo",
   "b": {
     "c": {
-      "d": [ 1, 2, 3, 4 ]
+      "d": [
+        1,
+        2,
+        3,
+        4
+      ]
     }
   }
 }"""
@@ -685,12 +726,13 @@ actual:
 
 expected:
 {
-  "products": [ {
-    "id": 4815869968463,
-    "title": "RIND Fitted Hat",
-    "handle": "rind-fitted-hat",
-    "body_html": "<meta charset=\"utf-8\">Flexfit Ultra fiber Cap with Air Mesh Sides<br>Blue with Orange Embroidery",
-    "published_at": "2020-10-22T17:13:25-04:00","""
+  "products": [
+    {
+      "id": 4815869968463,
+      "title": "RIND Fitted Hat",
+      "handle": "rind-fitted-hat",
+      "body_html": "<meta charset=\"utf-8\">Flexfit Ultra fiber Cap with Air Mesh Sides<br>Blue with Orange Embroidery",
+      "published_at": "2020-10-22T17:13:25-04:00","""
          )
       }
 
@@ -704,11 +746,12 @@ expected:
 
 expected:
 {
-  "products": [ {
-    "id": 4815869968463,
-    "title": "RIND Fitted Hat",
-    "handle": "rind-fitted-hat",
-    "body_html": "<meta charset=\"utf-"""
+  "products": [
+    {
+      "id": 4815869968463,
+      "title": "RIND Fitted Hat",
+      "handle": "rind-fitted-hat",
+      "body_html": "<meta charset=\"utf-"""
          )
       }
 
@@ -722,13 +765,14 @@ expected:
 
 expected:
 {
-  "products": [ {
-    "id": 4815869968463,
-    "title": "RIND Fitted Hat",
-    "handle": "rind-fitted-hat",
-    "body_html": "<meta charset=\"utf-8\">Flexfit Ultra fiber Cap with Air Mesh Sides<br>Blue with Orange Embroidery",
-    "published_at": "2020-10-22T17:13:25-04:00",
-    "created_at": "2020-10-22T17:13:23-04:00","""
+  "products": [
+    {
+      "id": 4815869968463,
+      "title": "RIND Fitted Hat",
+      "handle": "rind-fitted-hat",
+      "body_html": "<meta charset=\"utf-8\">Flexfit Ultra fiber Cap with Air Mesh Sides<br>Blue with Orange Embroidery",
+      "published_at": "2020-10-22T17:13:25-04:00",
+      "created_at": "2020-10-22T17:13:23-04:00","""
          )
       }
 
