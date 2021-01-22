@@ -1,7 +1,7 @@
 plugins {
    id("java")
    kotlin("multiplatform")
-   kotlin("plugin.serialization") version "1.4.10"
+   kotlin("plugin.serialization") version "1.4.21"
    id("java-library")
    id("com.adarshr.test-logger")
 }

@@ -44,13 +44,3 @@ fun String.shouldEqualJson(expected: String, order: CompareOrder) =
 
 fun String.shouldNotEqualJson(expected: String, order: CompareOrder) =
    shouldNotEqualJson(expected, CompareMode.Strict, order)
-
-/**
- * Verifies that the [expected] string is valid json, and that it matches this string.
- *
- * This matcher will consider two json strings matched if they have the same key-values pairs,
- * regardless of order.
- *
- */
-//expect fun String.shouldEqualJson(expected: String, mode: CompareMode, order: CompareOrder)
-//expect fun String.shouldNotEqualJson(expected: String, mode: CompareMode, order: CompareOrder)

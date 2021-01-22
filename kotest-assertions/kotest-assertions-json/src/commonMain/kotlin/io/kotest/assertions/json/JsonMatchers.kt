@@ -9,7 +9,7 @@ import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 
 @OptIn(ExperimentalSerializationApi::class)
-val pretty by lazy { Json { prettyPrint = true; prettyPrintIndent = "  " } }
+internal val pretty by lazy { Json { prettyPrint = true; prettyPrintIndent = "  " } }
 
 /**
  * Verifies that the [expected] string is valid json, and that it matches this string.
