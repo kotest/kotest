@@ -52,5 +52,5 @@ fun String.shouldNotEqualJson(expected: String, order: CompareOrder) =
  * regardless of order.
  *
  */
-expect fun String.shouldEqualJson(expected: String, mode: CompareMode, order: CompareOrder)
-expect fun String.shouldNotEqualJson(expected: String, mode: CompareMode, order: CompareOrder)
+//expect fun String.shouldEqualJson(expected: String, mode: CompareMode, order: CompareOrder)
+//expect fun String.shouldNotEqualJson(expected: String, mode: CompareMode, order: CompareOrder)

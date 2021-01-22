@@ -8,7 +8,7 @@ import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 
-@ExperimentalSerializationApi
+@OptIn(ExperimentalSerializationApi::class)
 val pretty by lazy { Json { prettyPrint = true; prettyPrintIndent = "  " } }
 
 /**
@@ -41,12 +41,12 @@ fun matchJson(expected: String?) = object : Matcher<String?> {
  * regardless of order.
  *
  */
-actual fun String.shouldEqualJson(expected: String, mode: CompareMode, order: CompareOrder) {
+fun String.shouldEqualJson(expected: String, mode: CompareMode, order: CompareOrder) {
    val (e, a) = parse(expected, this)
    a should equalJson(e, mode, order)
 }
 
-actual fun String.shouldNotEqualJson(expected: String, mode: CompareMode, order: CompareOrder) {
+fun String.shouldNotEqualJson(expected: String, mode: CompareMode, order: CompareOrder) {
    val (e, a) = parse(expected, this)
    a shouldNot equalJson(e, mode, order)
 }
