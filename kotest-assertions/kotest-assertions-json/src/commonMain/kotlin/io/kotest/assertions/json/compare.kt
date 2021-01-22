@@ -234,9 +234,9 @@ fun compareInt(path: List<String>, expected: JsonNode.IntNode, actual: JsonNode,
 }
 
 fun compareInts(path: List<String>, expected: Int, actual: Int): JsonError? {
-   return when {
-      abs(expected - actual) <= Int.MIN_VALUE -> null
-      else -> JsonError.UnequalValues(path, expected, actual)
+   return when (expected) {
+       actual -> null
+       else -> JsonError.UnequalValues(path, expected, actual)
    }
 }
 
