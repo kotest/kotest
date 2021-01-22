@@ -4,9 +4,12 @@ import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldNot
+import kotlinx.serialization.ExperimentalSerializationApi
+import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 
-val pretty by lazy { Json { prettyPrint = true } }
+@ExperimentalSerializationApi
+val pretty by lazy { Json { prettyPrint = true; prettyPrintIndent = "  " } }
 
 /**
  * Verifies that the [expected] string is valid json, and that it matches this string.
@@ -51,7 +54,7 @@ actual fun String.shouldNotEqualJson(expected: String, mode: CompareMode, order:
 internal fun parse(expected: String, actual: String): Pair<JsonTree, JsonTree> {
    val enode = pretty.parseToJsonElement(expected)
    val anode = pretty.parseToJsonElement(actual)
-   val e = JsonTree(enode.toJsonNode(), enode.toString())
-   val a = JsonTree(anode.toJsonNode(), anode.toString())
+   val e = JsonTree(enode.toJsonNode(), pretty.encodeToString(enode))
+   val a = JsonTree(anode.toJsonNode(), pretty.encodeToString(anode))
    return Pair(e, a)
 }

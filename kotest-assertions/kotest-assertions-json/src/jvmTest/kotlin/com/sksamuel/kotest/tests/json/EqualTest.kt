@@ -699,7 +699,7 @@ expected:
          )
       }
 
-      test("key order should use CompareOrder enum") {
+      test("f:key order should use CompareOrder enum") {
          val a = """
             {
                "id": 32672932069455,
@@ -728,22 +728,22 @@ expected:
 
 expected:
 {
-  "sku" : "RIND-TOTEO-001-MCF",
-  "id" : 32672932069455,
-  "title" : "Default Title",
-  "requires_shipping" : true,
-  "taxable" : true,
-  "featured_image" : null
+  "sku": "RIND-TOTEO-001-MCF",
+  "id": 32672932069455,
+  "title": "Default Title",
+  "requires_shipping": true,
+  "taxable": true,
+  "featured_image": null
 }
 
 actual:
 {
-  "id" : 32672932069455,
-  "title" : "Default Title",
-  "sku" : "RIND-TOTEO-001-MCF",
-  "requires_shipping" : true,
-  "taxable" : true,
-  "featured_image" : null
+  "id": 32672932069455,
+  "title": "Default Title",
+  "sku": "RIND-TOTEO-001-MCF",
+  "requires_shipping": true,
+  "taxable": true,
+  "featured_image": null
 }""")
       }
    }
