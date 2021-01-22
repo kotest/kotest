@@ -73,7 +73,7 @@ actual:
          )
       }
 
-      test("f:comparing int in objects") {
+      test("comparing int in objects") {
 
          checkAll<Int> { long ->
             val a = """ { "a" : $long } """
@@ -98,6 +98,35 @@ actual:
 {
   "a": 123,
   "b": 354
+}"""
+         )
+      }
+
+      test("comparing long in objects") {
+
+         checkAll<Long> { long ->
+            val a = """ { "a" : $long } """
+            a shouldEqualJson a
+         }
+
+         val a = """ { "a" : 2067120338512882656, "b": 3333333333333333333 } """
+         val b = """ { "a" : 2067120338512882656, "b" : 2222222222222222222 } """
+         a shouldEqualJson a
+         shouldFail {
+            a shouldEqualJson b
+         }.shouldHaveMessage(
+            """At 'b' expected 2222222222222222222 but was 3333333333333333333
+
+expected:
+{
+  "a": 2067120338512882656,
+  "b": 2222222222222222222
+}
+
+actual:
+{
+  "a": 2067120338512882656,
+  "b": 3333333333333333333
 }"""
          )
       }
@@ -470,7 +499,11 @@ expected:
 actual:
 {
   "a": "foo",
-  "b": [ 1, 2, 3 ]
+  "b": [
+    1,
+    2,
+    3
+  ]
 }"""
          )
       }
