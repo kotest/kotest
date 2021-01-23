@@ -27,6 +27,8 @@ object KotestEngineSystemProperties {
 
    const val includeTags = "kotest.tags.include"
 
+   const val propertiesFilename = "kotest.properties.filename"
+
    /**
     * If set to true, then source ref's will not be created for test cases.
     * This may reduce functionality (for example if using the intellij plugin).
