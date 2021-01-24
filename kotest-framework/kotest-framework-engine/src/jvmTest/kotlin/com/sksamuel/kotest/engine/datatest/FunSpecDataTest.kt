@@ -7,7 +7,7 @@ import io.kotest.core.datatest.forAll
 import io.kotest.core.datatest.forNone
 import io.kotest.matchers.shouldBe
 
-@Ignored
+//@Ignored // this is used by the DataTest itself, rather than being a stand alone test
 internal class FunSpecDataTest : FunSpec() {
    init {
       data class PythagTriple(val a: Int, val b: Int, val c: Int)

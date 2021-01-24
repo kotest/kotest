@@ -2,6 +2,7 @@ package io.kotest.core.spec.style.scopes
 
 import io.kotest.core.Tag
 import io.kotest.core.extensions.TestCaseExtension
+import io.kotest.core.spec.KotestDsl
 import io.kotest.core.test.EnabledIf
 import io.kotest.core.test.TestCaseSeverityLevel
 import io.kotest.core.test.TestContext
@@ -19,6 +20,7 @@ import kotlin.time.ExperimentalTime
  * }
  *
  */
+@KotestDsl
 interface StringSpecRootScope : RootScope {
 
    @OptIn(ExperimentalTime::class)
@@ -49,6 +51,18 @@ interface StringSpecRootScope : RootScope {
    /**
     * Adds a String Spec test using the default test case config.
     */
-   operator fun String.invoke(test: suspend TestContext.() -> Unit) =
-      registration().addTest(createTestName(null, this, false), xdisabled = false, test = test)
+   operator fun String.invoke(test: suspend StringSpecScope.() -> Unit) =
+      registration().addTest(
+         createTestName(null, this, false),
+         xdisabled = false,
+         test = { StringSpecScope().test() }
+      )
+
+
 }
+
+/**
+ * This scope exists purely to stop nested string scopes.
+ */
+@KotestDsl
+class StringSpecScope
