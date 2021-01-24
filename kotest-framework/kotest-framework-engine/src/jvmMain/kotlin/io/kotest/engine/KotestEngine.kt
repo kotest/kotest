@@ -9,6 +9,7 @@ import io.kotest.core.spec.afterProject
 import io.kotest.core.spec.beforeProject
 import io.kotest.engine.config.ConfigManager
 import io.kotest.engine.config.dumpProjectConfig
+import io.kotest.engine.config.loadAndApplySystemProps
 import io.kotest.engine.extensions.SpecifiedTagsTagExtension
 import io.kotest.engine.launchers.specLauncher
 import io.kotest.engine.listener.TestEngineListener
@@ -40,6 +41,9 @@ class KotestEngine(private val config: KotestEngineConfig) {
 
       // if the engine was invoked with explicit filters, those are registered here
       configuration.registerFilters(config.filters)
+
+      // load and apply system properties from [KotestPropertiesFilename]
+      loadAndApplySystemProps()
    }
 
    /**

@@ -4,75 +4,54 @@ title: Generators
 slug: property-test-generators.html
 ---
 
+Generated values are provided by instances of the sealed class `Gen`.
+You can think of a `Gen` as kind of like an input stream but for property test values.
+Each Gen will provide a (usually) infinite stream of these values for one particular type.
+
+Kotest has two types of generators - `Arb` for generating arbitrary (random) values and `Exhaustive` for generating a finite set of values in a closed space.
+
+Both types of gens can be mixed and matched in property tests. For example,
+you could test a function with 100 random positive integers (an arb) alongside every
+even number from 0 to 200 (exhaustive).
+
+Some generators are only available on the JVM. See the full list [here](genslist.md).
 
 
 
-This page lists all current generators in Kotest. There are two types of generator - arbitrary and exhaustive.
+## Arbitrary
 
-An arbitrary will generate random values subject to its bounds (possibly with duplicates as is the nature of random selection).
-An exhaustive will provide all the values over its sample space before looping if more values are required.
+`Arb`s generate two types of values - a hard coded set of _edge cases_ and an infinite stream of _randomly chosen values_.
 
-Most generators are available on all platforms. Some are JVM specific.
+The random values may be repeated, and some values may never be generated at all.
+For example generating 1000 random integers between 0 and Int.MAX will clearly not return all possible values,
+and some values may happen to be generated more than once. Similarly, generating 1000 random integers between 0 and 500,
+will definitely result in some values appearing more than once.
 
-| Numeric    | Description | JVM | JS  | Native |
-| -------- | ----------- | --- | --- | ------ |
-| `Arb.int(range)` | Randomly chosen ints in the given range. If the range is not specified then all integers are considered. The edgecases are `Int.MIN_VALUE`, `Int.MAX_VALUE`, 0, 1, -1 | ✓ | ✓ | ✓ |
-| `Arb.long(range)` | Randomly chosen longs in the given range. If the range is not specified then all longs are considered. The edgecases are `Long.MIN_VALUE`, `Long.MAX_VALUE`, 0, 1, -1 | ✓ | ✓ | ✓ |
-| `Arb.nats(range)` | Randomly chosen natural numbers in the given range. If range is not specified then the default is `Int.MAX_VALUE`. The edgecases are `Int.MAX_VALUE`, 1 | ✓ | ✓ | ✓ |
-| `Arb.negativeInts(range)` | Randomly chosen negative integers in the given range. The edgecases are `Int.MIN_VALUE`, -1 | ✓ | ✓ | ✓ |
-| `Arb.positiveInts(range)` | Randomly chosen positive integers in the given range. The edgecases are `Int.MAX_VALUE`, 1 | ✓ | ✓ | ✓ |
-| `Arb.double(range)` | Randomly chosen doubles in the given range. The edgecases are `Double.MIN_VALUE`, `Double.MAX_VALUE`, `Double.NEGATIVE_INFINITY`, `Double.NaN`, `Double.POSITIVE_INFINITY`, 0.0, 1.0, -1.0, 1e300 | ✓ | ✓ | ✓ |
-| `Arb.positiveDoubles(range)` | Randomly chosen positive doubles in the given range. The edgecases are `Double.MIN_VALUE`, `Double.MAX_VALUE`, `Double.POSITIVE_INFINITY`, 1.0, 1e300 | ✓ | ✓ | ✓ |
-| `Arb.negativeDoubles(range)` | Randomly chosen negative doubles in the given range. The edgecases are `Double.NEGATIVE_INFINITY`, -1.0 | ✓ | ✓ | ✓ |
-| `Exhaustive.int(range)` | Returns all ints in the given range. | ✓ | ✓ | ✓ |
-| `Exhaustive.long(range)` | Returns all longs in the given range. | ✓ | ✓ | ✓ |
-| `Arb.multiples(k, max)` | Generates multiples of k up a max value. The edgecases are `0`. | ✓ | ✓ | ✓ |
+Typical arbs include numbers within a given range, strings in the unicode set,
+random lists, random data classes, emails, codepoints, chars and much more.
 
-| Booleans    | Description | JVM | JS  | Native |
-| -------- | ----------- | --- | --- | ------ |
-| `Exhaustive.boolean()` | Returns true and false. | ✓ | ✓ | ✓ |
+In addition to the random values, arbs may provide edge cases. One of the design features of Kotest's property testing is
+that values for some types will always include "common" edge cases that you probably want to make sure you test.
 
-| Enums    | Description | JVM | JS  | Native |
-| -------- | ----------- | --- | --- | ------ |
-| `Arb.enum<T>()` | Randomly selects constants from the given enum. | ✓ | ✓ | ✓ |
-| `Exhaustive.enum<T>()` | Returns all the constants defined in the given enum. | ✓ | ✓ | ✓ |
+For example, when testing a function that accepts any integer, you probably want to ensure that at the very least, it is tested with
+zero, a positive number and a negative number. So Kotest will always provide some "edge cases" for integers (unless you specify otherwise).
+
+Not all arbs have edge cases, but the arbs for the most common types do. Here are some examples of edge cases used by certain arbs:
+
+* ints: 0, 1, -1, Int.MAX_VALUE, Int.MIN_VALUE
+* strings: empty string, string of min length
+* lists: empty list
+* maps: empty map
+* nullable values: null
 
 
-| String    | Description | JVM | JS  | Native |
-| -------- | ----------- | --- | --- | ------ |
-| `Arb.string(range)` | Generates random printable strings with a randomly chosen size from the given range. If rangei s not specified then (0..100) is used. The edgecases include empty string, a blank string and a unicode string. | ✓ | ✓ | ✓ |
-| `Exhaustive.azstring(range)` | Returns all A-Z strings in the given range. For example if range was 1..2 then a, b, c, ...., yz, zz would be included. | ✓ | ✓ | ✓ |
-| `Arb.email(userRange, domainRange)` | Generates random emails where the username and domain are random strings with the size determined by the range parameters. | ✓ | ✓ | ✓ |
-| `Arb.uuid(type)` | Generates random UUIDs of the given type | ✓ |  |  |
+## Exhaustive
 
-| Builders    | Description | JVM | JS  | Native |
-| -------- | ----------- | --- | --- | ------ |
-| `Arb.create(fn)` | Generates values using the supplied function. | ✓ | ✓ | ✓ |
-| `Arb.bind(arbA, arbB, fn)` | Generates values by pulling a value from each of the two given arbs and then passing those values to the supplied function. | ✓ | ✓ | ✓ |
-| `Arb.bind(arbA, arbB, arbC, fn)` | Generates values by pulling a value from each of the three given arbs and then passing those values to the supplied function. | ✓ | ✓ | ✓ |
-| `Arb.bind(arbA, arbB, arbC, arbD, fn)` | Generates values by pulling a value from each of the four given arbs and then passing those values to the supplied function. | ✓ | ✓ | ✓ |
-| `Arb.bind(arbA, arbB, arbC, arbD, arbE, fn)` | Generates values by pulling a value from each of the five given arbs and then passing those values to the supplied function. | ✓ | ✓ | ✓ |
-| `Arb.bind(arbA, arbB, arbC, arbD, arbE, arbF, fn)` | Generates values by pulling a value from each of the six given arbs and then passing those values to the supplied function. | ✓ | ✓ | ✓ |
+`Exhaustive`s generate all values from a given space. This is useful when you want to ensure every
+value in that space is used. For example, for enum values, it is usually more helpful to ensure each
+enum is used, rather than picking randomly from the enums values and potentially missing some and duplicating others.
+
+Typical exhaustives include small collections, enums, boolean values, powerset of a list or set, pre-defined small integer ranges, and predefined string ranges.
 
 
-| Combinatorics    | Description | JVM | JS  | Native |
-| -------- | ----------- | --- | --- | ------ |
-| `Arb.choose(pairs)` | Generates values based on weights. For example, `Arb.choose(1 to 'A', 2 to 'B')` will generate 'A' 33% of the time and 'B' 66% of the time. | ✓ | ✓ | ✓ |
-| `Arb.shuffle(list)` | Generates random permutations of a list. For example, `Arb.shuffle(listOf(1,2,3))` could generate `listOf(3,1,2)`, `listOf(1,3,2)` and so on. | ✓ | ✓ | ✓ |
-| `Arb.choice(arbs)` | Randomly selects one of the given arbs and then uses that to generate the next element.  | ✓ | ✓ | ✓ |
-| `Arb.subsequence(list)` | Generates a random subsequence of the given list starting at index 0 and including the empty list. For example, `Arb.subsequence(listOf(1,2,3))` could generate `listOf(1)`, `listOf(1,2)`, and so on. | ✓ | ✓ | ✓ |
-| `arb.orNull()` | Generates random values from the arb instance, with null values mixed in. For example, `Arb.int().orNull()` could generate `1, -1, null, 8, 17`, and so on. Has overloaded versions to control the frequency of nulls being generated.| ✓ | ✓ | ✓ |
 
-|  Collections  | Description | JVM | JS  | Native |
-| -------- | ----------- | --- | --- | ------ |
-| `Arb.list(gen, range)` | Generates lists where values are generated by the given element generator. The size of each list is determined randomly by the specified range. | ✓ | ✓ | ✓ |
-| `Arb.set(gen, range)` | Generates sets where values are generated by the given element generator. The size of each set is determined randomly by the specified range. | ✓ | ✓ | ✓ |
-| `Arb.element(list)` | Randomly selects one of the elements of the given list. | ✓ | ✓ | ✓ |
-| `Exhaustive.collection(list)` | Enumerates each element of the list one by one. | ✓ | ✓ | ✓ |
-
-|  Dates  | Description | JVM | JS  | Native |
-| -------- | ----------- | --- | --- | ------ |
-| `Arb.date(ranges)` | Generates random dates with the year between the given range |  | ✓ |  |
-| `Arb.datetime(ranges)` | Generates random date times with the year between the given range |  | ✓ |  |
-| `Arb.localDateTime(ranges)` | Generates random LocalDateTime's with the year between the given range | ✓ |  |  |
-| `Arb.localDate(ranges)` | Generates random LocalDate's with the year between the given range | ✓ |  |  |

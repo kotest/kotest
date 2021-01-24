@@ -7,7 +7,9 @@ module.exports = {
    ],
    proptest: [
       'proptest/index',
+      'proptest/testfunctions',
       'proptest/gens',
+      'proptest/genslist',
       'proptest/genops',
       'proptest/proptestconfig',
       'proptest/customgens',
