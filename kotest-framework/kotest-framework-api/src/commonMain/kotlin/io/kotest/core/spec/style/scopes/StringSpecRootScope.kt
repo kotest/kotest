@@ -20,7 +20,6 @@ import kotlin.time.ExperimentalTime
  * }
  *
  */
-@KotestDsl
 interface StringSpecRootScope : RootScope {
 
    @OptIn(ExperimentalTime::class)
@@ -57,12 +56,14 @@ interface StringSpecRootScope : RootScope {
          xdisabled = false,
          test = { StringSpecScope().test() }
       )
-
-
 }
 
 /**
  * This scope exists purely to stop nested string scopes.
  */
-@KotestDsl
-class StringSpecScope
+class StringSpecScope {
+
+   @Deprecated("Cannot nest string scope tests", level = DeprecationLevel.ERROR)
+   operator fun String.invoke(test: suspend StringSpecScope.() -> Unit) {
+   }
+}

@@ -5,10 +5,8 @@ import io.kotest.core.listeners.TestListener
 import io.kotest.core.spec.AutoScan
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.style.DescribeSpec
-import io.kotest.core.spec.style.StringSpec
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
-import io.kotest.extensions.time.ConstantNowTestListener
 import io.kotest.extensions.time.withConstantNow
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.types.shouldBeSameInstanceAs
@@ -418,22 +416,3 @@ object Assertion : TestListener {
    }
 }
 
-class ConstantNowExtensionsListenerTest : StringSpec() {
-
-   private val myNow = HijrahDate.now()
-   private val myNow2 = LocalDateTime.now()
-
-   init {
-      listeners(ConstantNowTestListener(myNow), ConstantNowTestListener(myNow2))
-
-      finalizeSpec {
-         HijrahDate.now() shouldNotBeSameInstanceAs myNow
-         LocalDateTime.now() shouldNotBeSameInstanceAs myNow2
-      }
-
-      "Should use my now" {
-         HijrahDate.now() shouldBeSameInstanceAs myNow
-         LocalDateTime.now() shouldBeSameInstanceAs myNow2
-      }
-   }
-}
