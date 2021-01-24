@@ -9,6 +9,7 @@ import io.kotest.core.test.TestCaseSeverityLevel
 import io.kotest.core.test.TestContext
 import io.kotest.core.test.createTestName
 import kotlin.coroutines.CoroutineContext
+import kotlin.jvm.JvmName
 import kotlin.time.Duration
 import kotlin.time.ExperimentalTime
 
@@ -69,6 +70,7 @@ class StringSpecScope(
 ) : TestContext {
 
    @Deprecated("Cannot nest string scope tests", level = DeprecationLevel.ERROR)
+   @JvmName("nestedStringInvoke")
    operator fun String.invoke(test: suspend StringSpecScope.() -> Unit) {
    }
 
