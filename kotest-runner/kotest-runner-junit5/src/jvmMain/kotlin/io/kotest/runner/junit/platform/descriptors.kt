@@ -123,6 +123,8 @@ fun Description.toTestDescriptor(root: UniqueId): TestDescriptor {
 
    val source = when (this) {
       is Description.Spec -> ClassSource.from(this.kclass.java)
+      // this isn't a method, but we can use MethodSource with the test name so it's at least
+      // compatible for top level tests.
       is Description.Test -> MethodSource.from(this.spec().kclass.java.name, this.testPath().value)
    }
 
