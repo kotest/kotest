@@ -42,6 +42,6 @@ and the test will execute for a set number of _iterations_.
 Read more about
 
 * How [test functions](test_functions.md) are used.
-* The different types of [generators](gens.md) and [operations](genops) on them.
+* The different types of [generators](gens.md) and [operations](genops.md) on them.
 * How to write a [custom generator](customgens.md).
 * How to specify [config](config.md) for a test, including the seed.

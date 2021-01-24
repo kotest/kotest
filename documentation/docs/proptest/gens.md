@@ -27,14 +27,17 @@ For example generating 1000 random integers between 0 and Int.MAX will clearly n
 and some values may happen to be generated more than once. Similarly, generating 1000 random integers between 0 and 500,
 will definitely result in some values appearing more than once.
 
-Typical arbs include numbers within a given range, strings in the unicode set,
-random lists, random data classes, emails, codepoints, chars and much more.
+Typical arbs include numbers with or without a range, strings in the unicode set,
+random lists, data classes with random parameters, emails, codepoints, chars and much more.
 
 In addition to the random values, arbs may provide edge cases. One of the design features of Kotest's property testing is
-that values for some types will always include "common" edge cases that you probably want to make sure you test.
+that values for some types will always include "common" edge cases that you probably want to be included in your tests.
 
-For example, when testing a function that accepts any integer, you probably want to ensure that at the very least, it is tested with
-zero, a positive number and a negative number. So Kotest will always provide some "edge cases" for integers (unless you specify otherwise).
+For example, when testing a function that accepts an integer, you probably want to ensure that at the very least, it is tested with
+zero, a positive number and a negative number. If only random values were provided, the chances of zero appearing would be fairly low,
+so Kotest will always provide some "edge cases" for integers (unless you specify otherwise).
+
+These edge cases are enumerated first, then the random values are used.
 
 Not all arbs have edge cases, but the arbs for the most common types do. Here are some examples of edge cases used by certain arbs:
 
@@ -51,7 +54,8 @@ Not all arbs have edge cases, but the arbs for the most common types do. Here ar
 value in that space is used. For example, for enum values, it is usually more helpful to ensure each
 enum is used, rather than picking randomly from the enums values and potentially missing some and duplicating others.
 
-Typical exhaustives include small collections, enums, boolean values, powerset of a list or set, pre-defined small integer ranges, and predefined string ranges.
+Typical exhaustives include small collections, enums, boolean values, powerset of a list or set,
+pre-defined integer ranges, and predefined string ranges.
 
 
 
