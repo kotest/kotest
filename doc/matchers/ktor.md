@@ -12,7 +12,7 @@ The following matchers are used when testing via the ktor server testkit.
 | ---------- | --- |
 | `shouldHaveStatus(HttpStatusCode)`        | Tests that the response had the given http status code    |
 | `shouldHaveContent(content)`              | Tests that the response has the given body     |
-| `shouldHaveContentType(ContentType)       | Tests that the response has the given Content Type     |
+| `shouldHaveContentType(ContentType)`       | Tests that the response has the given Content Type     |
 | `shouldHaveHeader(name, value)`           | Tests that the response included the given name=value header     |
 | `shouldHaveCookie(name, value)`           | Tests that the response included the given cookie     |
 
@@ -23,6 +23,6 @@ The following matchers can be used against responses from the ktor http client.
 | Matcher | Description    |
 | ---------- | --- |
 | `shouldHaveStatus(HttpStatusCode)`        | Tests that the response had the given http status code    |
-| `shouldHaveContentType(ContentType)       | Tests that the response has the given Content Type     |
+| `shouldHaveContentType(ContentType)`       | Tests that the response has the given Content Type     |
 | `shouldHaveHeader(name, value)`           | Tests that the response included the given name=value header     |
 | `shouldHaveVersion(HttpProtocolVersion)`  | Tests that the response used the given protocol version     |
