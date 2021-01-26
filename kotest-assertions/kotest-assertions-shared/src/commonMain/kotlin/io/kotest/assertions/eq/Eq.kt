@@ -25,7 +25,6 @@ fun <T : Any?> eq(actual: T, expected: T): Throwable? {
       actual != null && expected == null && actual != expected -> expectedIsNull(actual)
       actual != null && expected != null -> when {
          actual is Map<*, *> && expected is Map<*, *> -> MapEq.equals(actual, expected)
-         actual is Throwable && expected is Throwable -> ThrowableEq.equals(actual, expected)
          actual is Regex && expected is Regex -> RegexEq.equals(actual, expected)
          actual is String && expected is String -> StringEq.equals(actual, expected)
          actual is Number && expected is Number -> NumberEq.equals(actual, expected)
@@ -33,6 +32,7 @@ fun <T : Any?> eq(actual: T, expected: T): Throwable? {
             IterableEq.equals(IterableEq.asIterable(actual), IterableEq.asIterable(expected))
          }
          shouldShowDataClassDiff(actual, expected) -> DataClassEq.equals(actual as Any, expected as Any)
+         actual is Throwable && expected is Throwable -> ThrowableEq.equals(actual, expected)
          else -> DefaultEq.equals(actual as Any, expected as Any)
       }
       else -> null
