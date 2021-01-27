@@ -260,7 +260,7 @@ fun <T : Any> beEqualToIgnoringFields(
       val fieldsExcludingGivenFields = value::class.memberProperties
          .filterNot { fieldNames.contains(it.name) }
 
-      val fieldsToBeConsidered: List<KProperty<*>> = if(ignorePrivateFields) {
+      val fieldsToBeConsidered: List<KProperty<*>> = if (ignorePrivateFields) {
          fieldsExcludingGivenFields.filter { it.visibility == KVisibility.PUBLIC }
       } else {
          fieldsExcludingGivenFields.onEach { it.isAccessible = true }
