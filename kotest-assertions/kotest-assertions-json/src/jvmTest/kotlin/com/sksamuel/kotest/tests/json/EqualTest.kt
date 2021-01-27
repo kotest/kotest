@@ -2,6 +2,7 @@ package com.sksamuel.kotest.tests.json
 
 import io.kotest.assertions.json.CompareMode
 import io.kotest.assertions.json.CompareOrder
+import io.kotest.assertions.json.pretty
 import io.kotest.assertions.json.shouldEqualJson
 import io.kotest.assertions.shouldFail
 import io.kotest.core.spec.style.FunSpec
@@ -14,6 +15,8 @@ import io.kotest.property.arbitrary.numericDoubles
 import io.kotest.property.arbitrary.string
 import io.kotest.property.checkAll
 import io.kotest.property.exhaustive.boolean
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
 
 class EqualTest : FunSpec() {
    init {
@@ -568,6 +571,54 @@ expected:
 {
   "a": "foo",
   "b": 2067120338512882656
+}
+
+actual:
+{
+  "a": "foo",
+  "b": {
+    "c": true
+  }
+}"""
+         )
+      }
+
+      test("comparing object to float-ish should parse as a double") {
+         val a = """ { "a" : "foo", "b" : { "c": true } } """
+         val b = """ { "a" : "foo", "b" : 6.02f } """
+         shouldFail {
+            a shouldEqualJson b
+         }.shouldHaveMessage(
+            """At 'b' expected double but was object
+
+expected:
+{
+  "a": "foo",
+  "b": 6.02
+}
+
+actual:
+{
+  "a": "foo",
+  "b": {
+    "c": true
+  }
+}"""
+         )
+      }
+
+      test("comparing object to double") {
+         val a = """ { "a" : "foo", "b" : { "c": true } } """
+         val b = """ { "a" : "foo", "b" : 6.02E23 } """
+         shouldFail {
+            a shouldEqualJson b
+         }.shouldHaveMessage(
+            """At 'b' expected double but was object
+
+expected:
+{
+  "a": "foo",
+  "b": 6.02E23
 }
 
 actual:

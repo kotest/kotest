@@ -16,7 +16,9 @@ import io.kotest.matchers.MatcherResult
  */
 fun equalJson(expected: JsonTree, mode: CompareMode, order: CompareOrder) = object : Matcher<JsonTree> {
    override fun test(value: JsonTree): MatcherResult {
-      val error = compare(expected = expected.root, actual = value.root,mode = mode, order = order)?.asString()
+      val error = compare(
+         path = listOf(), expected = expected.root, actual = value.root, mode = mode, order = order
+      )?.asString()
       return MatcherResult(
          error == null,
          "$error\n\nexpected:\n${expected.raw}\n\nactual:\n${value.raw}\n",

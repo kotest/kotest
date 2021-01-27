@@ -15,8 +15,8 @@ enum class CompareOrder {
 /**
  * Compares two json trees, returning a detailed error message if they differ.
  */
-fun compare(
-   path: List<String> = emptyList(),
+internal fun compare(
+   path: List<String>,
    expected: JsonNode,
    actual: JsonNode,
    mode: CompareMode,
@@ -41,7 +41,7 @@ fun compare(
    }
 }
 
-fun compareObjects(
+internal fun compareObjects(
    path: List<String>,
    expected: JsonNode.ObjectNode,
    actual: JsonNode.ObjectNode,
@@ -81,7 +81,7 @@ fun compareObjects(
    return null
 }
 
-fun compareArrays(
+internal fun compareArrays(
    path: List<String>,
    expected: JsonNode.ArrayNode,
    actual: JsonNode.ArrayNode,
@@ -103,7 +103,7 @@ fun compareArrays(
 /**
  * When comparing a string, if the [mode] is [CompareMode.Lenient] we can convert the actual node to a string.
  */
-fun compareString(path: List<String>, expected: JsonNode.StringNode, actual: JsonNode, mode: CompareMode): JsonError? {
+internal fun compareString(path: List<String>, expected: JsonNode.StringNode, actual: JsonNode, mode: CompareMode): JsonError? {
    return when {
       actual is JsonNode.StringNode -> compareStrings(path, expected.value, actual.value)
       mode == CompareMode.Lenient -> when (actual) {
@@ -116,7 +116,7 @@ fun compareString(path: List<String>, expected: JsonNode.StringNode, actual: Jso
    }
 }
 
-fun compareStrings(path: List<String>, expected: String, actual: String): JsonError? {
+internal fun compareStrings(path: List<String>, expected: String, actual: String): JsonError? {
    return when (expected) {
       actual -> null
       else -> JsonError.UnequalStrings(path, expected, actual)
@@ -127,7 +127,7 @@ fun compareStrings(path: List<String>, expected: String, actual: String): JsonEr
  * When comparing a boolean, if the [mode] is [CompareMode.Lenient] and the actual node is a text
  * node with "true" or "false", then we convert.
  */
-fun compareBoolean(
+internal fun compareBoolean(
    path: List<String>,
    expected: JsonNode.BooleanNode,
    actual: JsonNode,
@@ -144,7 +144,7 @@ fun compareBoolean(
    }
 }
 
-fun compareBooleans(path: List<String>, expected: Boolean, actual: Boolean): JsonError? {
+internal fun compareBooleans(path: List<String>, expected: Boolean, actual: Boolean): JsonError? {
    return when (expected) {
       actual -> null
       else -> JsonError.UnequalBooleans(path, expected, actual)
@@ -155,7 +155,7 @@ fun compareBooleans(path: List<String>, expected: Boolean, actual: Boolean): Jso
  * When comparing a boolean, if the [mode] is [CompareMode.Lenient] and the actual node is a text
  * node with "true" or "false", then we convert.
  */
-fun compareLong(path: List<String>, expected: JsonNode.LongNode, actual: JsonNode, mode: CompareMode): JsonError? {
+internal fun compareLong(path: List<String>, expected: JsonNode.LongNode, actual: JsonNode, mode: CompareMode): JsonError? {
    return when {
       actual is JsonNode.LongNode -> compareLongs(path, expected.value, actual.value)
       mode == CompareMode.Lenient && actual is JsonNode.StringNode -> when (val l = actual.value.toLongOrNull()) {
@@ -166,7 +166,7 @@ fun compareLong(path: List<String>, expected: JsonNode.LongNode, actual: JsonNod
    }
 }
 
-fun compareLongs(path: List<String>, expected: Long, actual: Long): JsonError? {
+internal fun compareLongs(path: List<String>, expected: Long, actual: Long): JsonError? {
    return when (expected) {
       actual -> null
       else -> JsonError.UnequalValues(path, expected, actual)
@@ -177,7 +177,7 @@ fun compareLongs(path: List<String>, expected: Long, actual: Long): JsonError? {
  * When comparing a boolean, if the [mode] is [CompareMode.Lenient] and the actual node is a text
  * node with "true" or "false", then we convert.
  */
-fun compareDouble(path: List<String>, expected: JsonNode.DoubleNode, actual: JsonNode, mode: CompareMode): JsonError? {
+internal fun compareDouble(path: List<String>, expected: JsonNode.DoubleNode, actual: JsonNode, mode: CompareMode): JsonError? {
    return when {
       actual is JsonNode.DoubleNode -> compareDoubles(path, expected.value, actual.value)
       actual is JsonNode.LongNode -> compareDoubles(path, expected.value, actual.value.toDouble())
@@ -191,14 +191,14 @@ fun compareDouble(path: List<String>, expected: JsonNode.DoubleNode, actual: Jso
    }
 }
 
-fun compareDoubles(path: List<String>, expected: Double, actual: Double): JsonError? {
+internal fun compareDoubles(path: List<String>, expected: Double, actual: Double): JsonError? {
    return when {
       abs(expected - actual) <= Double.MIN_VALUE -> null
       else -> JsonError.UnequalValues(path, expected, actual)
    }
 }
 
-fun compareFloat(path: List<String>, expected: JsonNode.FloatNode, actual: JsonNode, mode: CompareMode): JsonError? {
+internal fun compareFloat(path: List<String>, expected: JsonNode.FloatNode, actual: JsonNode, mode: CompareMode): JsonError? {
    return when {
       actual is JsonNode.FloatNode -> compareFloats(path, expected.value, actual.value)
       actual is JsonNode.LongNode -> compareFloats(path, expected.value, actual.value.toFloat())
@@ -212,14 +212,14 @@ fun compareFloat(path: List<String>, expected: JsonNode.FloatNode, actual: JsonN
    }
 }
 
-fun compareFloats(path: List<String>, expected: Float, actual: Float): JsonError? {
+internal fun compareFloats(path: List<String>, expected: Float, actual: Float): JsonError? {
    return when {
       abs(expected - actual) <= Float.MIN_VALUE -> null
       else -> JsonError.UnequalValues(path, expected, actual)
    }
 }
 
-fun compareInt(path: List<String>, expected: JsonNode.IntNode, actual: JsonNode, mode: CompareMode): JsonError? {
+internal fun compareInt(path: List<String>, expected: JsonNode.IntNode, actual: JsonNode, mode: CompareMode): JsonError? {
    return when {
       actual is JsonNode.IntNode -> compareInts(path, expected.value, actual.value)
       actual is JsonNode.FloatNode -> compareInts(path, expected.value, actual.value.toInt())
@@ -233,14 +233,14 @@ fun compareInt(path: List<String>, expected: JsonNode.IntNode, actual: JsonNode,
    }
 }
 
-fun compareInts(path: List<String>, expected: Int, actual: Int): JsonError? {
+internal fun compareInts(path: List<String>, expected: Int, actual: Int): JsonError? {
    return when (expected) {
        actual -> null
        else -> JsonError.UnequalValues(path, expected, actual)
    }
 }
 
-fun compareNull(path: List<String>, b: JsonNode): JsonError? {
+internal fun compareNull(path: List<String>, b: JsonNode): JsonError? {
    return when (b) {
       is JsonNode.NullNode -> null
       else -> JsonError.ExpectedNull(path, b)
