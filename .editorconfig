@@ -8,3 +8,8 @@ max_line_length = 120
 
 trim_trailing_whitespace = true
 insert_final_newline = true
+
+end_of_line = lf
+
+[*.bat]
+end_of_line = crlf

@@ -1,6 +1,7 @@
 package com.sksamuel.kotest.assertions.until
 
 import io.kotest.assertions.throwables.shouldThrow
+import io.kotest.assertions.timing.eventually
 import io.kotest.assertions.until.fibonacci
 import io.kotest.assertions.until.fixed
 import io.kotest.assertions.until.until

@@ -81,8 +81,12 @@ kotlin {
 }
 
 tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
-   kotlinOptions.jvmTarget = "1.8"
-   kotlinOptions.apiVersion = "1.4"
+   kotlinOptions {
+      freeCompilerArgs = freeCompilerArgs + listOf("-Xopt-in=kotlin.RequiresOptIn", "-Xopt-in=kotlin.time.ExperimentalTime")
+      jvmTarget = "1.8"
+      apiVersion = "1.4"
+   }
+
 }
 
 val publications: PublicationContainer = (extensions.getByName("publishing") as PublishingExtension).publications
