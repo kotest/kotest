@@ -2,7 +2,7 @@ Changelog
 =========
 
 
-Changelog from 4.2.5 can be found [here](https://kotest.io/changelog/)
+Changelog from 4.2.5 can be found [here](https://kotest.io/docs/changelog.html/)
 
 
 #### 4.2.4
@@ -358,7 +358,7 @@ Minor changes.
 
 * Feature: Add soft assertions ([#373](https://github.com/kotest/kotest/issues/373))
 * Feature: `sortedWith` (and related) matchers. ([#383](https://github.com/kotest/kotest/issues/383))
-* Improvement: Removed unnecessary `Comparable<T>` upper-bound from `sortedWith` matchers. ([#389](https://github.com/kotest/kotest/issues/389))
+* Improvement: Removed unnecessary `Comparable<T\>` upper-bound from `sortedWith` matchers. ([#389](https://github.com/kotest/kotest/issues/389))
 * Improvement: Improve StringShrinker algorithm ([#377](https://github.com/kotest/kotest/issues/377))
 * Bugfix: shouldBeBetween should be shouldBe instead of shouldNotBe ([#390](https://github.com/kotest/kotest/issues/390))
 * Bugfix: Fix beLeft is comparing against Either.Right instead of Either.Left ([#374](https://github.com/kotest/kotest/issues/374))
@@ -770,7 +770,7 @@ object SimpleTest : StringSpec({
 
 * **Discovery Extensions: instantiate()**
 
-Inside the `DiscoveryExtension` interface the function `fun <T : Spec> instantiate(clazz: KClass<T>): Spec?` has been added which
+Inside the `DiscoveryExtension` interface the function `fun <T : Spec> instantiate(clazz: KClass<T\>): Spec?` has been added which
 allows you to extend the way new instances of `Spec` are created. By default, a no-args constructor is assumed. However, if this
 function is overridden then it's possible to support `Spec` classes which have other constructors. For example, the Spring module
 now supports constructor injection using this extension. Other use cases might be when you want to always inject some config class,
@@ -1030,7 +1030,7 @@ to test against once it completes, then you can do this like this:
 val stringFuture: CompletableFuture<String> = ...
 
 "My future test" should {
-  "support CompletableFuture<T>" {
+  "support CompletableFuture<T\>" {
     whenReady(stringFuture) {
       it shouldBe "wibble"
     }
@@ -1040,9 +1040,9 @@ val stringFuture: CompletableFuture<String> = ...
 
 * **Breaking: Exception Matcher Changes**
 
-The `shouldThrow<T>` method has been changed to also test for subclasses. For example, `shouldThrow<IOException>` will also match
+The `shouldThrow<T\>` method has been changed to also test for subclasses. For example, `shouldThrow<IOException>` will also match
 exceptions of type `FileNotFoundException`. This is different to the behavior in all previous KotlinTest versions. If you wish to
-have functionality as before - testing exactly for that type - then you can use the newly added `shouldThrowExactly<T>`.
+have functionality as before - testing exactly for that type - then you can use the newly added `shouldThrowExactly<T\>`.
 
 * **JUnit XML Module**
 
@@ -1079,7 +1079,7 @@ then a warning message will be emitted on startup.
 
 * **New Matchers**
 
-`beInstanceOf<T>` has been added to easily test that a class is an instance of T. This is in addition to the more verbose `beInstanceOf(SomeType::class)`.
+`beInstanceOf<T\>` has been added to easily test that a class is an instance of T. This is in addition to the more verbose `beInstanceOf(SomeType::class)`.
 
 The following matchers have been added for maps: `containAll`, `haveKeys`, `haveValues`. These will output helpful error messages showing you
 which keys/values or entries were missing.
@@ -1284,11 +1284,11 @@ forNone(table) { a, b ->
 
 * Interceptors have been added. Interceptors allow code to be executed before and after a test. See the main readme for more info.
 
-* Simplified ability to add custom matchers. Simple implement `Matcher<T>` interface. See readme for more information.
+* Simplified ability to add custom matchers. Simple implement `Matcher<T\>` interface. See readme for more information.
 
 * Added `shouldNot` to invert matchers. Eg, `"hello" shouldNot include("hallo")`
 
-* Deprecated matchers which do not implement Matcher<T>. Eg, `should have substring(x)` has been deprecated in favour of `"hello" should include("l")`. This is because instances of Matcher<T> can be combined with `or` and `and` and can be negated with `shouldNot`.
+* Deprecated matchers which do not implement Matcher<T\>. Eg, `should have substring(x)` has been deprecated in favour of `"hello" should include("l")`. This is because instances of Matcher<T\> can be combined with `or` and `and` and can be negated with `shouldNot`.
 
 * Added `between` matcher for int and long, eg
 
@@ -1304,7 +1304,7 @@ forNone(table) { a, b ->
 
 * Now supports comparsion of arrays [#116](https://github.com/kotest/kotest/issues/116)
 
-* Added Gen.oneOf<Enum> to create a generator that returns one of the values for the given Enum class.
+* Added Gen.oneOf<Enum\> to create a generator that returns one of the values for the given Enum class.
 
 ### Changed
 

@@ -1,17 +1,31 @@
 name: docs
 on:
+   workflow_dispatch:
    push:
       branches:
          - master
       paths:
-         - 'docs/**'
+         - 'documentation/**'
 jobs:
    deploy:
       runs-on: ubuntu-latest
       steps:
          -  uses: actions/checkout@v2
-         -  uses: actions/setup-python@v2
+         -  uses: actions/setup-node@v1
             with:
-               python-version: 3.x
-         -  run: pip install mkdocs-material
-         -  run: mkdocs gh-deploy --force
+               node-version: '12.x'
+         -  name: Release to GitHub Pages
+            env:
+               USE_SSH: true
+               GIT_USER: git
+            run: |
+               git config user.name github-actions
+               git config user.email github-actions@github.com
+               npm --prefix documentation ci
+               npm --prefix documentation run build
+               mv documentation/build docs
+               echo "kotest.io" > docs/CNAME
+               echo "kotest.io" > CNAME
+               git add docs -f
+               git commit -m "Updated docs"
+               git push origin master:gh-pages --force

@@ -1,6 +1,8 @@
 package io.kotest.engine.listener
 
+import io.kotest.core.plan.TestPlanNode
 import io.kotest.core.spec.Spec
+import io.kotest.core.test.Description
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import kotlin.reflect.KClass
@@ -9,7 +11,7 @@ import kotlin.reflect.KClass
  * Implementations of this interface will be notified of events
  * that occur as part of the [KotestEngine] lifecycle.
  *
- * This is an internal listener liable to be changed.
+ * This is an internal interface liable to be changed without notice.
  */
 interface TestEngineListener {
 
@@ -32,7 +34,15 @@ interface TestEngineListener {
     * Is invoked once per [Spec] to indicate that this spec is about to
     * begin execution.
     */
-   fun specStarted(kclass: KClass<out Spec>) {}
+   @Deprecated("Moving to notifications by nodes")
+   fun specStarted(kclass: KClass<out Spec>) {
+   }
+
+   /**
+    * Is invoked once per [Spec] to indicate that this spec is about to
+    * begin execution.
+    */
+   fun specStarted(spec: TestPlanNode.SpecNode) {}
 
    /**
     * Is invoked once per [Spec] to indicate that all [TestCase] instances
@@ -42,13 +52,20 @@ interface TestEngineListener {
     * @param t if not null, then an error that occured when trying to execute this spec
     * @param results if t is null, then the results of the tests that were submitted.
     */
+   @Deprecated("Moving to notifications by nodes")
    fun specFinished(kclass: KClass<out Spec>, t: Throwable?, results: Map<TestCase, TestResult>) {}
+
+   fun specFinished(spec: TestPlanNode.SpecNode, t: Throwable?, results: Map<TestPlanNode.TestCaseNode, TestResult>) {}
 
    /**
     * Invoked if a [TestCase] is about to be executed (is active).
     * Will not be invoked if the test is ignored.
     */
    fun testStarted(testCase: TestCase) {}
+
+   fun testStarted(description: Description) {}
+
+   fun testFinished(description: Description, result: TestResult) {}
 
    /**
     * Invoked if a [TestCase] will not be executed because it is ignored (not active).

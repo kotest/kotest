@@ -72,7 +72,7 @@ fun <A : Any> Arb.Companion.choose(a: Pair<Int, Arb<A>>, b: Pair<Int, Arb<A>>, v
       else pick(n - w, l.drop(1))
    }
 
-   return arbitrary { rs ->
+   return arbitrary(allPairs.flatMap { it.second.edgecases() }) { rs ->
       // we must open up an iter stream for each arb
       val allIters = allPairs.map { (weight, arb) -> weight to arb.generate(rs).map { it.value }.iterator() }
       val total = weights.sum()
@@ -114,7 +114,7 @@ fun <A> Arb.Companion.subsequence(list: List<A>): Arb<List<A>> = arbitrary {
  * The input gens must be infinite.
  */
 @Deprecated(
-   message = "Deprecated in favor of a function that returns an Arb instead of a Gen. Will be removed in 4.4",
+   message = "Deprecated in favor of a function that returns an Arb instead of a Gen. Will be removed in 4.5",
    replaceWith = ReplaceWith("Arb.Companion.choice(vararg arbs: Arb<A>)")
 )
 fun <A> Arb.Companion.choice(vararg gens: Gen<A>): Gen<A> = arb { rs ->

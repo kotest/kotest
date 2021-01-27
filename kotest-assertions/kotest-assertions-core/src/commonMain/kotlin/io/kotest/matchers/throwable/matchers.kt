@@ -11,9 +11,9 @@ infix fun Throwable.shouldNotHaveMessage(message: String) = this shouldNot haveM
 
 fun haveMessage(message: String) = object : Matcher<Throwable> {
   override fun test(value: Throwable) = MatcherResult(
-    value.message == message,
-    "Throwable should have message ${message.show().value}, but instead got ${value.message.show().value}",
-    "Throwable should not have message ${message.show().value}"
+    value.message?.trim() == message.trim(),
+    "Throwable should have message:\n${message.trim().show().value}\n\nActual was:\n${value.message?.trim().show().value}\n",
+    "Throwable should not have message:\n${message.trim().show().value}"
   )
 }
 

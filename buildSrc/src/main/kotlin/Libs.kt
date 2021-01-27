@@ -1,13 +1,20 @@
 object Libs {
 
-   const val kotlinVersion = "1.4.20"
+   const val kotlinVersion = "1.4.21"
    const val dokkaVersion = "0.10.1"
    const val adarshrTestLoggerVersion = "2.0.0"
    const val gradleVersionsPluginVersion = "0.28.0"
    const val kotestGradlePlugin = "0.1.4"
 
+   object Kotlin {
+      private const val kotlinScriptVersion = "1.4.21-2"
+      const val kotlinScriptRuntime = "org.jetbrains.kotlin:kotlin-script-runtime:$kotlinVersion"
+      const val kotlinScriptUtil = "org.jetbrains.kotlin:kotlin-script-util:$kotlinScriptVersion"
+      const val kotlinScriptJvm = "org.jetbrains.kotlin:kotlin-scripting-jvm:$kotlinScriptVersion"
+   }
+
    object Arrow {
-      private const val version = "0.10.5"
+      private const val version = "0.11.0"
       const val core = "io.arrow-kt:arrow-core:$version"
       const val fx = "io.arrow-kt:arrow-fx:$version"
       const val syntax = "io.arrow-kt:arrow-syntax:$version"
@@ -19,7 +26,7 @@ object Libs {
    }
 
    object Allure {
-      private const val version = "2.13.7"
+      private const val version = "2.13.8"
       const val commons = "io.qameta.allure:allure-java-commons:$version"
    }
 
@@ -32,18 +39,19 @@ object Libs {
    }
 
    object Jackson {
-      private const val version = "2.10.4"
+      private const val version = "2.11.3"
       const val kotlin = "com.fasterxml.jackson.module:jackson-module-kotlin:$version"
+      const val databind = "com.fasterxml.jackson.core:jackson-databind:$version"
    }
 
    object Koin {
-      private const val version = "2.1.6"
+      private const val version = "2.2.2"
       const val core = "org.koin:koin-core:$version"
       const val test = "org.koin:koin-test:$version"
    }
 
    object Tschuchortdev {
-      private const val version = "1.2.10"
+      private const val version = "1.3.4"
       const val kotlinCompileTesting = "com.github.tschuchortdev:kotlin-compile-testing:$version"
    }
 
@@ -78,7 +86,7 @@ object Libs {
    }
 
    object Classgraph {
-      const val classgraph = "io.github.classgraph:classgraph:4.8.92"
+      const val classgraph = "io.github.classgraph:classgraph:4.8.98"
    }
 
    object Mocking {
@@ -91,7 +99,7 @@ object Libs {
    }
 
    object MockServer {
-      private const val version = "5.11.1"
+      private const val version = "5.11.2"
       const val netty = "org.mock-server:mockserver-netty:$version"
       const val javaClient = "org.mock-server:mockserver-client-java:$version"
    }
@@ -110,12 +118,12 @@ object Libs {
    }
 
    object TestContainers {
-      private const val version = "1.14.3"
+      private const val version = "1.15.1"
       const val testcontainers = "org.testcontainers:testcontainers:$version"
    }
 
    object Spring {
-      private const val version = "5.2.9.RELEASE"
+      private const val version = "5.2.12.RELEASE"
       const val context = "org.springframework:spring-context:$version"
       const val test = "org.springframework:spring-test:$version"
    }
@@ -125,7 +133,7 @@ object Libs {
    }
 
    object Bytebuddy {
-      const val bytebuddy = "net.bytebuddy:byte-buddy:1.10.18"
+      const val bytebuddy = "net.bytebuddy:byte-buddy:1.10.19"
    }
 
    object Robolectric {
@@ -147,7 +155,7 @@ object Libs {
    }
 
    object Ktor {
-      private const val version = "1.4.2"
+      private const val version = "1.5.0"
       const val serverCore = "io.ktor:ktor-server-core:$version"
       const val serverTestHost = "io.ktor:ktor-server-test-host:$version"
       const val clientJs = "io.ktor:ktor-client-js:$version"

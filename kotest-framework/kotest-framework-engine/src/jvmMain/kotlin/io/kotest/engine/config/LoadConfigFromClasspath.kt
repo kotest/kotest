@@ -42,7 +42,8 @@ private fun AbstractProjectConfig.toDetectedConfig(): DetectedProjectConfig {
       filters = filters(),
       isolationMode = isolationMode.toOption().orElse(isolationMode().toOption()),
       assertionMode = assertionMode.toOption(),
-      concurrencyMode = concurrencyMode.toOption(),
+      concurrentTests = concurrentTests.toOption(),
+      concurrentSpecs = concurrentSpecs.toOption(),
       testCaseOrder = testCaseOrder.toOption().orElse(testCaseOrder().toOption()),
       specExecutionOrder = specExecutionOrder.toOption().orElse(specExecutionOrder().toOption()),
       failOnIgnoredTests = failOnIgnoredTests.toOption(),
@@ -56,6 +57,7 @@ private fun AbstractProjectConfig.toDetectedConfig(): DetectedProjectConfig {
       testCaseConfig = defaultTestCaseConfig.toOption(),
       includeTestScopeAffixes = includeTestScopePrefixes.toOption(),
       testNameCase = testNameCase.toOption(),
-      testNameRemoveWhitespace = testNameRemoveWhitespace.toOption()
+      testNameRemoveWhitespace = testNameRemoveWhitespace.toOption(),
+      testNameAppendTags = testNameAppendTags.toOption()
    )
 }

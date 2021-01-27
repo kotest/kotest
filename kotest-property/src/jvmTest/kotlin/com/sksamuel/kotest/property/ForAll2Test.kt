@@ -6,7 +6,9 @@ import io.kotest.matchers.shouldBe
 import io.kotest.property.Arb
 import io.kotest.property.Exhaustive
 import io.kotest.property.PropTestConfig
+import io.kotest.property.PropertyTesting
 import io.kotest.property.ShrinkingMode
+import io.kotest.property.arbitrary.arbitrary
 import io.kotest.property.arbitrary.int
 import io.kotest.property.arbitrary.map
 import io.kotest.property.exhaustive.constant
@@ -38,7 +40,7 @@ class ForAll2Test : FunSpec({
       context.failures() shouldBe 0
    }
 
-   test("should throw error if iteratons is less than min") {
+   test("should throw error if iterations is less than min") {
       shouldThrowAny {
          forAll(
             10,
@@ -46,6 +48,23 @@ class ForAll2Test : FunSpec({
             Exhaustive.longs(200L..300L)
          ) { a, b -> a + b == b + a }
       }.message shouldBe "Require at least 101 iterations to cover requirements"
+   }
+
+   context("when kotest.proptest.arb.iterations.include.sample is enabled") {
+      val defaultRequireAtLeastOneSampleForArbs = PropertyTesting.includeAtLeastOneSampleForArbs
+      beforeTest { PropertyTesting.includeAtLeastOneSampleForArbs = true }
+      afterTest { PropertyTesting.includeAtLeastOneSampleForArbs = defaultRequireAtLeastOneSampleForArbs }
+
+      test("should throw error if iterations is less than min") {
+         val edgecases = { n: Int -> List(n) { it } }
+         shouldThrowAny {
+            forAll(
+               5,
+               arbitrary(edgecases(3)) { 1 },
+               arbitrary(edgecases(5)) { 1 }
+            ) { a, b -> a + b == b + a }
+         }.message shouldBe "Require at least 6 iterations to cover requirements"
+      }
    }
 
    test("forAll with mixed arbitrary and exhaustive") {

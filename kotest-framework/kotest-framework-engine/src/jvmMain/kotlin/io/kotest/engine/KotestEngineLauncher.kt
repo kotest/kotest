@@ -8,6 +8,7 @@ import io.kotest.engine.config.ConfigManager
 import io.kotest.engine.listener.CompositeTestEngineListener
 import kotlinx.coroutines.runBlocking
 import kotlin.reflect.KClass
+import kotlin.script.templates.standard.ScriptTemplateWithArgs
 
 /**
  * A builder class for creating and executing tests via the [KotestEngine].
@@ -21,13 +22,14 @@ class KotestEngineLauncher(
    private val filters: List<TestFilter>,
    private val tags: Tags?,
    private val dumpConfig: Boolean,
+   private val scripts: List<KClass<out ScriptTemplateWithArgs>>,
 ) {
 
    init {
       ConfigManager.init()
    }
 
-   constructor() : this(emptyList(), emptyList(), emptyList(), null, true)
+   constructor() : this(emptyList(), emptyList(), emptyList(), null, true, emptyList())
 
    fun launch() {
 
@@ -36,7 +38,7 @@ class KotestEngineLauncher(
 
       val config = KotestEngineConfig(filters, CompositeTestEngineListener(listeners), tags, dumpConfig)
       val runner = KotestEngine(config)
-      val plan = TestPlan(specs)
+      val plan = TestPlan(specs, scripts)
 
       try {
          runBlocking { // blocks the calling thread while the engine runs
@@ -56,6 +58,7 @@ class KotestEngineLauncher(
       filters = this.filters + filters,
       tags = tags,
       dumpConfig = dumpConfig,
+      scripts = scripts,
    )
 
    fun withDumpConfig(dump: Boolean) = KotestEngineLauncher(
@@ -64,6 +67,7 @@ class KotestEngineLauncher(
       filters = this.filters + filters,
       tags = tags,
       dumpConfig = dump,
+      scripts = scripts,
    )
 
    fun withFilters(filters: List<TestFilter>): KotestEngineLauncher {
@@ -73,10 +77,25 @@ class KotestEngineLauncher(
          filters = this.filters + filters,
          tags = tags,
          dumpConfig = dumpConfig,
+         scripts = scripts,
+      )
+   }
+
+   fun withScripts(scripts: List<KClass<out ScriptTemplateWithArgs>>): KotestEngineLauncher {
+      return KotestEngineLauncher(
+         listeners = listeners,
+         specs = specs,
+         filters = filters,
+         tags = tags,
+         dumpConfig = dumpConfig,
+         scripts = scripts,
       )
    }
 
    fun withSpec(klass: KClass<out Spec>) = withSpecs(listOf(klass))
+
+   fun withSpecs(vararg specs: KClass<out Spec>) = withSpecs(specs.toList())
+
    fun withSpecs(specs: List<KClass<out Spec>>): KotestEngineLauncher {
       return KotestEngineLauncher(
          listeners = listeners,
@@ -84,6 +103,7 @@ class KotestEngineLauncher(
          filters = filters,
          tags = tags,
          dumpConfig = dumpConfig,
+         scripts = scripts,
       )
    }
 
@@ -94,6 +114,7 @@ class KotestEngineLauncher(
          filters = filters,
          tags = tags,
          dumpConfig = dumpConfig,
+         scripts = scripts,
       )
    }
 

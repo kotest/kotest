@@ -3,11 +3,12 @@ package com.sksamuel.kotest.tags
 import io.kotest.core.NamedTag
 import io.kotest.core.Tag
 import io.kotest.core.Tags
-import io.kotest.core.config.Project
+import io.kotest.core.config.configuration
 import io.kotest.engine.spec.SpecExecutor
 import io.kotest.engine.listener.TestEngineListener
 import io.kotest.core.extensions.TagExtension
 import io.kotest.core.listeners.TestListener
+import io.kotest.core.spec.DoNotParallelize
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.style.FreeSpec
 import io.kotest.core.spec.style.FunSpec
@@ -15,6 +16,7 @@ import io.kotest.matchers.shouldBe
 import kotlin.time.ExperimentalTime
 
 @OptIn(ExperimentalTime::class)
+@DoNotParallelize
 class ActiveTestSpecCallbackTest : FreeSpec() {
    init {
 
@@ -40,24 +42,24 @@ class ActiveTestSpecCallbackTest : FreeSpec() {
             val ext = object : TagExtension {
                override fun tags(): Tags = Tags("!bar")
             }
-            Project.registerExtension(ext)
-            Project.registerListener(testListener)
+            configuration.registerExtension(ext)
+            configuration.registerListener(testListener)
             val runner = SpecExecutor(listener)
             runner.execute(TaggedTests::class)
-            Project.deregisterListener(testListener)
-            Project.deregisterExtension(ext)
+            configuration.deregisterListener(testListener)
+            configuration.deregisterExtension(ext)
          }
          "by a tag at the spec level" {
             val listener = object : TestEngineListener {}
             val ext = object : TagExtension {
                override fun tags(): Tags = Tags("!foo")
             }
-            Project.registerExtension(ext)
-            Project.registerListener(testListener)
+            configuration.registerExtension(ext)
+            configuration.registerListener(testListener)
             val runner = SpecExecutor(listener)
             runner.execute(TaggedTests::class)
-            Project.deregisterListener(testListener)
-            Project.deregisterExtension(ext)
+            configuration.deregisterListener(testListener)
+            configuration.deregisterExtension(ext)
          }
       }
    }

@@ -37,7 +37,7 @@ sealed class Gen<out A> {
     * Requesting a property test with fewer than this will result in an exception.
     */
    fun minIterations(): Int = when (this) {
-      is Arb -> this.edgecases().size
+      is Arb -> if (PropertyTesting.includeAtLeastOneSampleForArbs) this.edgecases().size + 1 else this.edgecases().size
       is Exhaustive -> this.values.size
    }
 }
@@ -68,6 +68,9 @@ abstract class Arb<out A> : Gen<A>() {
     */
    abstract fun edgecases(): List<A>
 
+   /**
+    * Returns a random [Sample] from this [Arb] using the supplied random source.
+    */
    open fun sample(rs: RandomSource): Sample<A> = values(rs).first()
 
    @Deprecated("implement one value at a time using sample(rs). This function will be removed in 4.5.", ReplaceWith("sample(rs)"))
@@ -86,8 +89,7 @@ abstract class Arb<out A> : Gen<A>() {
       }
    }
 
-   companion object {
-   }
+   companion object
 }
 
 /**
@@ -119,9 +121,7 @@ abstract class Exhaustive<out A> : Gen<A>() {
     */
    fun toArb(): Arb<A> = Arb.of(values)
 
-   companion object {
-
-   }
+   companion object
 }
 
 /**

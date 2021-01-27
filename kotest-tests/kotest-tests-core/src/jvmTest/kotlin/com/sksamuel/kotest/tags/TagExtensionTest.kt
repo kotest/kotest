@@ -2,13 +2,15 @@ package com.sksamuel.kotest.tags
 
 import io.kotest.core.Tag
 import io.kotest.core.Tags
-import io.kotest.core.config.Project
+import io.kotest.core.config.configuration
 import io.kotest.core.extensions.TagExtension
+import io.kotest.core.spec.Isolate
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.core.test.TestStatus
 import io.kotest.matchers.shouldBe
 
+@Isolate
 class TagExtensionTest : StringSpec() {
 
    object TagA : Tag()
@@ -21,11 +23,11 @@ class TagExtensionTest : StringSpec() {
 
 
    override fun beforeSpec(spec: Spec) {
-      Project.registerExtension(ext)
+      configuration.registerExtension(ext)
    }
 
    override fun afterSpec(spec: Spec) {
-      Project.deregisterExtension(ext)
+      configuration.deregisterExtension(ext)
    }
 
    init {

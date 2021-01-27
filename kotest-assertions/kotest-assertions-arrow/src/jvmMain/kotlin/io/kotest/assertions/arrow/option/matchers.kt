@@ -41,6 +41,7 @@ fun <T> beSome(t: T) = object : Matcher<Option<T>> {
   }
 }
 
+@OptIn(ExperimentalContracts::class)
 infix fun <T> Option<T>.shouldBeSome(fn: (T) -> Unit) {
   this.shouldBeSome()
   fn((this.t as T))

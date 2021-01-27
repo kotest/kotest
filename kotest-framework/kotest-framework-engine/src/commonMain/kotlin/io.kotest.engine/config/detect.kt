@@ -1,7 +1,6 @@
 package io.kotest.engine.config
 
 import io.kotest.core.Tags
-import io.kotest.core.config.ConcurrencyMode
 import io.kotest.core.config.Configuration
 import io.kotest.core.extensions.Extension
 import io.kotest.core.filter.Filter
@@ -32,7 +31,8 @@ data class DetectedProjectConfig(
    val tags: Option<Tags> = Option.None,
    val isolationMode: Option<IsolationMode> = Option.None,
    val assertionMode: Option<AssertionMode> = Option.None,
-   val concurrencyMode: Option<ConcurrencyMode> = Option.None,
+   val concurrentTests: Option<Int> = Option.None,
+   val concurrentSpecs: Option<Int> = Option.None,
    val testCaseOrder: Option<TestCaseOrder> = Option.None,
    val specExecutionOrder: Option<SpecExecutionOrder> = Option.None,
    val failOnIgnoredTests: Option<Boolean> = Option.None,
@@ -47,7 +47,8 @@ data class DetectedProjectConfig(
    val testCaseConfig: Option<TestCaseConfig> = Option.None,
    val includeTestScopeAffixes: Option<Boolean> = Option.None,
    val testNameCase: Option<TestNameCase> = Option.None,
-   val testNameRemoveWhitespace:Option<Boolean> = Option.None
+   val testNameRemoveWhitespace: Option<Boolean> = Option.None,
+   val testNameAppendTags: Option<Boolean> = Option.None
 )
 
 fun DetectedProjectConfig.merge(other: DetectedProjectConfig): DetectedProjectConfig {
@@ -57,7 +58,8 @@ fun DetectedProjectConfig.merge(other: DetectedProjectConfig): DetectedProjectCo
       filters = this.filters + other.filters,
       isolationMode = this.isolationMode.orElse(other.isolationMode),
       assertionMode = this.assertionMode.orElse(other.assertionMode),
-      concurrencyMode = this.concurrencyMode.orElse(other.concurrencyMode),
+      concurrentSpecs = this.concurrentSpecs.orElse(other.concurrentSpecs),
+      concurrentTests = this.concurrentTests.orElse(other.concurrentTests),
       testCaseOrder = this.testCaseOrder.orElse(other.testCaseOrder),
       specExecutionOrder = this.specExecutionOrder.orElse(other.specExecutionOrder),
       failOnIgnoredTests = this.failOnIgnoredTests.orElse(other.failOnIgnoredTests),
@@ -72,7 +74,8 @@ fun DetectedProjectConfig.merge(other: DetectedProjectConfig): DetectedProjectCo
       testCaseConfig = this.testCaseConfig.orElse(other.testCaseConfig),
       includeTestScopeAffixes = this.includeTestScopeAffixes.orElse(other.includeTestScopeAffixes),
       testNameCase = this.testNameCase.orElse(other.testNameCase),
-      testNameRemoveWhitespace = this.testNameRemoveWhitespace.orElse(other.testNameRemoveWhitespace)
+      testNameRemoveWhitespace = this.testNameRemoveWhitespace.orElse(other.testNameRemoveWhitespace),
+      testNameAppendTags = this.testNameAppendTags.orElse(other.testNameAppendTags)
    )
 }
 
@@ -88,7 +91,8 @@ fun DetectedProjectConfig.apply(configuration: Configuration) {
    testCaseConfig.forEach { configuration.defaultTestConfig = it }
 
    // concurrent options
-   concurrencyMode.forEach { configuration.concurrencyMode = it }
+   concurrentTests.forEach { configuration.concurrentTests = it }
+   concurrentSpecs.forEach { configuration.concurrentSpecs = it }
    parallelism.forEach { configuration.parallelism = it }
    isolationMode.forEach { configuration.isolationMode = it }
 
@@ -113,4 +117,5 @@ fun DetectedProjectConfig.apply(configuration: Configuration) {
    includeTestScopeAffixes.forEach { configuration.includeTestScopeAffixes = it }
    testNameCase.forEach { configuration.testNameCase = it }
    testNameRemoveWhitespace.forEach { configuration.removeTestNameWhitespace = it }
+   testNameAppendTags.forEach { configuration.testNameAppendTags = it }
 }

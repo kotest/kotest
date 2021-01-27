@@ -60,6 +60,10 @@ kotlin {
          dependsOn(commonMain)
          dependencies {
             implementation(kotlin("reflect"))
+            api(Libs.Kotlin.kotlinScriptRuntime)
+            implementation(Libs.Kotlin.kotlinScriptUtil)
+            implementation(Libs.Kotlin.kotlinScriptJvm)
+
             api(Libs.Classgraph.classgraph)
 
             // needed to scan for spec classes
@@ -85,7 +89,7 @@ kotlin {
 
 tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
    kotlinOptions.jvmTarget = "1.8"
-   kotlinOptions.apiVersion = "1.3"
+   kotlinOptions.apiVersion = "1.4"
 }
 
 tasks.named<Test>("jvmTest") {
@@ -96,7 +100,7 @@ tasks.named<Test>("jvmTest") {
    testLogging {
       showExceptions = true
       showStandardStreams = true
-      events = setOf(TestLogEvent.FAILED, TestLogEvent.PASSED)
+      events = setOf(TestLogEvent.FAILED, TestLogEvent.PASSED, TestLogEvent.STANDARD_ERROR, TestLogEvent.STANDARD_OUT)
       exceptionFormat = TestExceptionFormat.FULL
    }
 }

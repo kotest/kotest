@@ -31,7 +31,7 @@ class PropListenersTest : FunSpec({
    )
 
    test("checkAll calls listener for param A") {
-      val context = checkAll(10, propConfig, Arb.string()) {
+      checkAll(10, propConfig, Arb.string()) {
          current shouldBe (previous + 1)
          total shouldBe previous
       }
@@ -41,7 +41,7 @@ class PropListenersTest : FunSpec({
    }
 
    test("checkAll calls listener for params A, B") {
-      val context = checkAll(
+      checkAll(
          10,
          propConfig,
          Arb.string(),
@@ -56,7 +56,7 @@ class PropListenersTest : FunSpec({
    }
 
    test("checkAll calls listener for params A, B, C") {
-      val context = checkAll(
+      checkAll(
          10,
          propConfig,
          Arb.string(),
@@ -72,7 +72,7 @@ class PropListenersTest : FunSpec({
    }
 
    test("checkAll calls listener for params A, B, C, D") {
-      val context = checkAll(
+      checkAll(
          10,
          propConfig,
          Arb.string(),
@@ -89,7 +89,7 @@ class PropListenersTest : FunSpec({
    }
 
    test("checkAll calls listener for params A, B, C, D, E") {
-      val context = checkAll(
+      checkAll(
          10,
          propConfig,
          Arb.string(),
@@ -107,7 +107,7 @@ class PropListenersTest : FunSpec({
    }
 
    test("checkAll calls listener for params A, B, C, D, E, F") {
-      val context = checkAll(
+      checkAll(
          10,
          propConfig,
          Arb.string(),

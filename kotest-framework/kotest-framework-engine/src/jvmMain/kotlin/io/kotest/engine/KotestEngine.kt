@@ -1,22 +1,25 @@
 package io.kotest.engine
 
 import io.kotest.core.Tags
-import io.kotest.core.config.ConcurrencyMode
 import io.kotest.core.config.configuration
 import io.kotest.core.filter.TestFilter
+import io.kotest.core.script.ScriptSpec
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.afterProject
 import io.kotest.core.spec.beforeProject
 import io.kotest.engine.config.ConfigManager
 import io.kotest.engine.config.dumpProjectConfig
+import io.kotest.engine.config.loadAndApplySystemProps
 import io.kotest.engine.extensions.SpecifiedTagsTagExtension
+import io.kotest.engine.launchers.specLauncher
 import io.kotest.engine.listener.TestEngineListener
+import io.kotest.engine.script.ScriptExecutor
 import io.kotest.engine.spec.SpecExecutor
-import io.kotest.core.internal.isIsolate
 import io.kotest.engine.spec.sort
 import io.kotest.fp.Try
 import io.kotest.mpp.log
 import kotlin.reflect.KClass
+import kotlin.script.templates.standard.ScriptTemplateWithArgs
 
 data class KotestEngineConfig(
    val filters: List<TestFilter>,
@@ -25,11 +28,9 @@ data class KotestEngineConfig(
    val dumpConfig: Boolean,
 )
 
-data class TestPlan(val classes: List<KClass<out Spec>>)
+data class TestPlan(val classes: List<KClass<out Spec>>, val scripts: List<KClass<out ScriptTemplateWithArgs>>)
 
 class KotestEngine(private val config: KotestEngineConfig) {
-
-   private val executor = SpecExecutor(config.listener)
 
    init {
 
@@ -40,6 +41,9 @@ class KotestEngine(private val config: KotestEngineConfig) {
 
       // if the engine was invoked with explicit filters, those are registered here
       configuration.registerFilters(config.filters)
+
+      // load and apply system properties from [KotestPropertiesFilename]
+      loadAndApplySystemProps()
    }
 
    /**
@@ -80,6 +84,7 @@ class KotestEngine(private val config: KotestEngineConfig) {
       Try { submitAll(plan) }
          .fold(
             { error ->
+               log("KotestEngine: Error during submit all", error)
                configuration.listeners().afterProject().fold(
                   { end(listOf(error, it)) },
                   { end(it + error) }
@@ -108,31 +113,33 @@ class KotestEngine(private val config: KotestEngineConfig) {
    private fun notifyListenerEngineStarted(plan: TestPlan) = Try { config.listener.engineStarted(plan.classes) }
 
    private suspend fun submitAll(plan: TestPlan) = Try {
-      log("KotestEngine: Beginning test plan [specs=${plan.classes.size}, parallelism=${configuration.parallelism}, concurrencyMode=${configuration.concurrencyMode}]")
+      log("KotestEngine: Beginning test plan [specs=${plan.classes.size}, scripts=${plan.scripts.size}, parallelism=${configuration.parallelism}}]")
+
+      // scripts always run sequentially
+      log("KotestEngine: Launching ${plan.scripts.size} scripts")
+      if (plan.scripts.isNotEmpty()) {
+         config.listener.specStarted(ScriptSpec::class)
+         plan.scripts.forEach { scriptKClass ->
+            log(scriptKClass.java.methods.toList().toString())
+            ScriptExecutor(config.listener)
+               .execute(scriptKClass)
+               .onFailure { config.listener.specFinished(ScriptSpec::class, it, emptyMap()) }
+         }
+         config.listener.specFinished(ScriptSpec::class, null, emptyMap())
+         log("KotestEngine: Script execution completed")
+      }
 
       // spec classes are ordered using an instance of SpecExecutionOrder
+      log("KotestEngine: Sorting specs by ${configuration.specExecutionOrder}")
       val ordered = plan.classes.sort(configuration.specExecutionOrder)
 
-      val isParallel = when (configuration.concurrencyMode) {
-         ConcurrencyMode.None -> false // explicitly deactivates all concurrency
-         ConcurrencyMode.Test -> false // explicitly deactivates spec concurrency
-         ConcurrencyMode.Spec -> true // explicitly activated spec concurrency
-         ConcurrencyMode.All -> true // explicitly activated all concurrency
-         else -> configuration.parallelism > 1 // implicitly activated concurrency
-      }
+      log("KotestEngine: Will use spec executor ${configuration.specExecutionOrder}")
+      val executor = SpecExecutor(config.listener)
 
-      // if we are operating in a concurrent mode, then we partition the specs into those which
-      // can run concurrently (default) and those which cannot (see @Isolated)
-      if (isParallel) {
-         val (sequential, parallel) = ordered.partition { it.isIsolate() }
-         log("KotestEngine: Partitioned specs into ${parallel.size} parallel and ${sequential.size} sequential")
+      val launcher = specLauncher()
+      log("KotestEngine: Will use spec launcher $launcher")
 
-         if (parallel.isNotEmpty()) ConcurrentSpecLauncher(configuration.parallelism).submit(executor, parallel)
-         if (sequential.isNotEmpty()) SequentialSpecLauncher.submit(executor, sequential)
-
-      } else {
-         if (ordered.isNotEmpty()) SequentialSpecLauncher.submit(executor, ordered)
-      }
+      launcher.launch(executor, ordered)
    }
 
    private fun end(errors: List<Throwable>) {

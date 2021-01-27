@@ -2,13 +2,13 @@
 
 package io.kotest.core.test
 
-import io.kotest.core.internal.KotestEngineSystemProperties
-import io.kotest.mpp.sysprop
+import io.kotest.mpp.bestName
+import io.kotest.mpp.uniqueId
 import kotlin.js.JsName
 import kotlin.reflect.KClass
 
 /**
- * A description is an ADT that models a pointer to a [Spec] or a [TestCase].
+ * A [Description] is an ADT that models a pointer to a [Spec] or a [TestCase].
  */
 sealed class Description {
 
@@ -18,16 +18,26 @@ sealed class Description {
 
    abstract val name: DescriptionName
 
+   /**
+    * A unique identifier for this test. Should not be used for display as the id is not guaranteed
+    * to be human readable.
+    */
+   abstract val testId: TestId
+
    data class Spec(
       val kclass: KClass<out io.kotest.core.spec.Spec>,
       override val name: DescriptionName.SpecName
-   ) : Description()
+   ) : Description() {
+      override val testId: TestId = TestId(kclass.bestName())
+   }
 
    data class Test(
       val parent: Description,
       override val name: DescriptionName.TestName,
       val type: TestType,
-   ) : Description()
+   ) : Description() {
+      override val testId: TestId = TestId(uniqueId())
+   }
 
    fun isSpec() = this is Spec
    fun isContainer() = this is Test && type == TestType.Container
@@ -130,15 +140,10 @@ sealed class Description {
    fun displayPath(): DisplayPath = DisplayPath(names().joinToString(" ") { it.displayName })
 
    /**
-    * Returns a parsable consistent identifier for this description including the spec name.
-    */
-   @Deprecated("use the `id` val. Will be removed in 4.4")
-   fun id(): TestId = id
-
-   /**
     * Returns a parseable consistent identifier for this description including the spec name.
     */
    @JsName("id_val")
+   @Deprecated("This causes issues with tests that include characters that do not match the regex. This id will be removed in 4.6. Use testId instead.")
    val id: TestId by lazy {
       TestId(chain().joinToString("/") {
          it.displayName().replace(" ", "_").replace(idRegex, "")
@@ -152,7 +157,7 @@ sealed class Description {
    fun isParentOf(description: Description): Boolean = when (description) {
       // nothing can be the parent of a spec
       is Spec -> false
-      is Test -> id == description.parent.id
+      is Test -> path() == description.parent.path()
    }
 
    /**

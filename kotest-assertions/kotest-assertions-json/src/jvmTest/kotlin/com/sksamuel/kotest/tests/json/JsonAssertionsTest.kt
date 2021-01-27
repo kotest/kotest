@@ -43,19 +43,6 @@ class JsonAssertionsTest : StringSpec({
   val json2 = """ { "location": "london", "name" : "sam" } """
   val json3 = """ { "location": "chicago", "name" : "sam" } """
 
-  "test json equality" {
-    json1.shouldMatchJson(json2)
-    json1.shouldNotMatchJson(json3)
-
-    null.shouldMatchJson(null)
-    null.shouldNotMatchJson(json1)
-    json1.shouldNotMatchJson(null)
-
-    shouldThrow<AssertionError> { null.shouldNotMatchJson(null) }
-    shouldThrow<AssertionError> { null.shouldMatchJson(json1) }
-    shouldThrow<AssertionError> { json1.shouldMatchJson(null) }
-  }
-
   "should return correct error message on failure" {
     shouldThrow<AssertionError> {
       json1 shouldMatchJson json3
@@ -87,7 +74,7 @@ class JsonAssertionsTest : StringSpec({
     "contract should work".asClue {
       fun use(@Suppress("UNUSED_PARAMETER") json: String) {}
 
-      val nullableJson: String? = """{"data": "value"}"""
+      val nullableJson = """{"data": "value"}"""
       nullableJson.shouldContainJsonKey("data")
       use(nullableJson)
     }
@@ -115,7 +102,7 @@ class JsonAssertionsTest : StringSpec({
     "contract should work".asClue {
       fun use(@Suppress("UNUSED_PARAMETER") json: String) {}
 
-      val nullableJson: String? = """{"data": "value"}"""
+      val nullableJson = """{"data": "value"}"""
       nullableJson.shouldContainJsonKeyValue("data", "value")
       use(nullableJson)
     }
@@ -138,7 +125,7 @@ class JsonAssertionsTest : StringSpec({
     "contract should work".asClue {
       fun use(@Suppress("UNUSED_PARAMETER") json: String) {}
 
-      val nullableJson: String? = testJson1
+      val nullableJson = testJson1
       nullableJson.shouldMatchJsonResource("/json1.json")
       use(nullableJson)
     }

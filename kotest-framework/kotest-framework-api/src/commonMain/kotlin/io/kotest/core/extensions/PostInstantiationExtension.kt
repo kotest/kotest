@@ -3,7 +3,7 @@ package io.kotest.core.extensions
 import io.kotest.core.spec.Spec
 
 /**
- * An Extension that is used to post-process a spec class after it has been instantiated.
+ * An extension point that is used to post-process a spec class after it has been instantiated.
  *
  * This extension is useful for dependency injection or for invoking initialization logic.
  */

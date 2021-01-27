@@ -6,6 +6,11 @@ package io.kotest.core.spec
  */
 annotation class AutoScan
 
+/**
+ * Note: This name must be globally unique. Two specs, even in different packages,
+ * cannot share the same name, so if @DisplayName is used, developers must ensure it does not
+ * clash with another spec.
+ */
 @Target(AnnotationTarget.CLASS)
 @Retention(AnnotationRetention.RUNTIME)
 annotation class DisplayName(val name: String)
@@ -17,7 +22,7 @@ annotation class KotestDsl
 
 /**
  * When added to a spec, will mark that spec to not run in parallel, regardless
- * of the concurrency mode or parallelism settings.
+ * of concurrency or parallelism settings.
  */
 @Target(AnnotationTarget.CLASS)
 @Retention(AnnotationRetention.RUNTIME)
@@ -25,7 +30,7 @@ annotation class DoNotParallelize
 
 /**
  * When added to a spec, will mark that spec to not run in parallel, regardless
- * of the concurrency mode or parallelism settings.
+ * of concurrency or parallelism settings.
  */
 @Target(AnnotationTarget.CLASS)
 @Retention(AnnotationRetention.RUNTIME)

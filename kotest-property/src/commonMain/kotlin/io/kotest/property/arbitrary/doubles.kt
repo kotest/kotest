@@ -5,26 +5,32 @@ import io.kotest.property.Shrinker
 import kotlin.math.abs
 import kotlin.math.round
 
+private val finiteDoubleEdgecases = listOf(
+   0.0,
+   -0.0,
+   1.0,
+   -1.0,
+   1e300,
+   -1e300,
+   Double.MIN_VALUE,
+   -Double.MIN_VALUE,
+   Double.MAX_VALUE,
+   -Double.MAX_VALUE
+)
+
+private val nonFiniteDoubleEdgecases = listOf(
+   Double.POSITIVE_INFINITY,
+   Double.NEGATIVE_INFINITY,
+   Double.NaN
+)
+
+private val doubleEdgecases = finiteDoubleEdgecases + nonFiniteDoubleEdgecases
+
 /**
  * Returns an [Arb] where each value is a randomly chosen Double.
  */
 fun Arb.Companion.double(): Arb<Double> {
-   val edgecases = listOf(
-      0.0,
-      -0.0,
-      1.0,
-      -1.0,
-      1e300,
-      -1e300,
-      Double.MIN_VALUE,
-      -Double.MIN_VALUE,
-      Double.MAX_VALUE,
-      -Double.MAX_VALUE,
-      Double.POSITIVE_INFINITY,
-      Double.NEGATIVE_INFINITY,
-      Double.NaN
-   )
-   return arb(DoubleShrinker, edgecases) { it.random.nextDouble(-Double.MAX_VALUE, Double.MAX_VALUE) }
+   return arb(DoubleShrinker, doubleEdgecases) { it.random.nextDouble(-Double.MAX_VALUE, Double.MAX_VALUE) }
 }
 
 /**
@@ -36,7 +42,7 @@ fun Arb.Companion.numericDoubles(
    from: Double = -Double.MAX_VALUE,
    to: Double = Double.MAX_VALUE
 ): Arb<Double> {
-   val edgecases = listOf(0.0, 1.0, -1.0, 1e300, Double.MIN_VALUE, Double.MAX_VALUE).filter { it in (from..to) }
+   val edgecases = (finiteDoubleEdgecases + listOf(from, to)).filter { it in (from..to) }.distinct()
    return arb(DoubleShrinker, edgecases) { it.random.nextDouble(from, to) }
 }
 

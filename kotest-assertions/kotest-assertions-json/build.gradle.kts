@@ -19,6 +19,10 @@ kotlin {
             }
          }
       }
+      js {
+         browser()
+         nodejs()
+      }
    }
 
    targets.all {
@@ -31,10 +35,28 @@ kotlin {
 
    sourceSets {
 
-      val jvmMain by getting {
+      val commonMain by getting {
          dependencies {
             implementation(project(Projects.AssertionsShared))
             implementation(kotlin("reflect"))
+            implementation(Libs.Jackson.databind)
+            implementation(Libs.Jackson.kotlin)
+            implementation(Libs.Jayway.jsonpath)
+         }
+      }
+
+      val commonTest by getting {
+         dependencies {
+            implementation(project(Projects.AssertionsCore))
+            implementation(project(Projects.Api))
+            implementation(project(Projects.Engine))
+            implementation(project(Projects.Property))
+         }
+      }
+
+      val jvmMain by getting {
+         dependencies {
+            implementation(Libs.Jackson.databind)
             implementation(Libs.Jackson.kotlin)
             implementation(Libs.Jayway.jsonpath)
          }
@@ -62,7 +84,10 @@ tasks.named<Test>("jvmTest") {
    testLogging {
       showExceptions = true
       showStandardStreams = true
-      events = setOf(org.gradle.api.tasks.testing.logging.TestLogEvent.FAILED, org.gradle.api.tasks.testing.logging.TestLogEvent.PASSED)
+      events = setOf(
+         org.gradle.api.tasks.testing.logging.TestLogEvent.FAILED,
+         org.gradle.api.tasks.testing.logging.TestLogEvent.PASSED
+      )
       exceptionFormat = org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
    }
 }

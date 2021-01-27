@@ -79,7 +79,7 @@ interface FinalizeSpecListener : Listener {
     */
    suspend fun finalizeSpec(
       kclass: KClass<out Spec>,
-      results: Map<TestCase, TestResult>
+      results: Map<TestCase, TestResult>,
    ): Unit = Unit
 }
 

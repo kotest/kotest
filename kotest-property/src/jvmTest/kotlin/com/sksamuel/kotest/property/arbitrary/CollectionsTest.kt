@@ -1,6 +1,8 @@
 package com.sksamuel.kotest.property.arbitrary
 
+import io.kotest.assertions.throwables.shouldThrowAny
 import io.kotest.core.spec.style.FunSpec
+import io.kotest.matchers.collections.shouldContain
 import io.kotest.matchers.collections.shouldHaveAtLeastSize
 import io.kotest.matchers.collections.shouldHaveAtMostSize
 import io.kotest.matchers.shouldBe
@@ -9,7 +11,10 @@ import io.kotest.property.Exhaustive
 import io.kotest.property.arbitrary.double
 import io.kotest.property.arbitrary.int
 import io.kotest.property.arbitrary.list
+import io.kotest.property.arbitrary.of
+import io.kotest.property.arbitrary.positiveInts
 import io.kotest.property.arbitrary.set
+import io.kotest.property.arbitrary.single
 import io.kotest.property.checkAll
 import io.kotest.property.exhaustive.constant
 import io.kotest.property.forAll
@@ -26,6 +31,13 @@ class CollectionsTest : FunSpec({
       forAll(1, numGen) { it.isNotEmpty() }
    }
 
+   test("Arb.set should throw when underlying arb cardinality is lower than expected set cardinality") {
+      val arbUnderlying = Arb.of("foo", "bar", "baz")
+      shouldThrowAny {
+         Arb.set(arbUnderlying, 5..100).single()
+      }
+   }
+
    test("Arb.list should return lists of underlying generators") {
       val gen = Arb.list(Exhaustive.constant(1), 2..10)
       checkAll(gen) {
@@ -33,6 +45,17 @@ class CollectionsTest : FunSpec({
          it.shouldHaveAtMostSize(10)
          it.toSet() shouldBe setOf(1)
       }
+   }
+
+   test("Arb.list should include repeated elements in edge cases") {
+      val edgecase = Arb.positiveInts().edgecases().firstOrNull()
+      Arb.list(Arb.positiveInts()).edgecases() shouldContain listOf(edgecase, edgecase)
+      Arb.list(Arb.positiveInts(), 4..6).edgecases() shouldContain listOf(edgecase, edgecase, edgecase, edgecase)
+
+   }
+
+   test("Arb.list should include empty list in edge cases") {
+      Arb.list(Arb.positiveInts()).edgecases() shouldContain emptyList()
    }
 
    test("Arb.list should generate lists of length up to 100 by default") {

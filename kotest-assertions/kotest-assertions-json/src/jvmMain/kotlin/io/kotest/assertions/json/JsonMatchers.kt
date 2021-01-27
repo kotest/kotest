@@ -2,110 +2,57 @@ package io.kotest.assertions.json
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.registerKotlinModule
-import com.jayway.jsonpath.JsonPath
-import com.jayway.jsonpath.PathNotFoundException
 import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldNot
-import kotlin.contracts.ExperimentalContracts
-import kotlin.contracts.contract
 
-private val mapper by lazy { ObjectMapper().registerKotlinModule() }
+val mapper by lazy { ObjectMapper().registerKotlinModule() }
 
+/**
+ * Verifies that the [expected] string is valid json, and that it matches this string.
+ *
+ * This matcher will consider two json strings matched if they have the same key-values pairs,
+ * regardless of order.
+ *
+ */
 infix fun String?.shouldMatchJson(expected: String?) = this should matchJson(expected)
 infix fun String?.shouldNotMatchJson(expected: String?) = this shouldNot matchJson(expected)
 fun matchJson(expected: String?) = object : Matcher<String?> {
 
-  override fun test(value: String?): MatcherResult {
-    val actualJson = value?.let(mapper::readTree)
-    val expectedJson = expected?.let(mapper::readTree)
+   override fun test(value: String?): MatcherResult {
+      val actualJson = value?.let(mapper::readTree)
+      val expectedJson = expected?.let(mapper::readTree)
 
-    return MatcherResult(
-      actualJson == expectedJson,
-      "expected: $expectedJson but was: $actualJson",
-      "expected not to match with: $expectedJson but match: $actualJson"
-    )
-  }
+      return MatcherResult(
+         actualJson == expectedJson,
+         "expected: $expectedJson but was: $actualJson",
+         "expected not to match with: $expectedJson but match: $actualJson"
+      )
+   }
 }
 
-@OptIn(ExperimentalContracts::class)
-infix fun String?.shouldMatchJsonResource(resource: String) {
-  contract {
-    returns() implies (this@shouldMatchJsonResource != null)
-  }
-
-  this should matchJsonResource(resource)
+/**
+ * Verifies that the [expected] string is valid json, and that it matches this string.
+ *
+ * This matcher will consider two json strings matched if they have the same key-values pairs,
+ * regardless of order.
+ *
+ */
+actual fun String.shouldEqualJson(expected: String, mode: CompareMode, order: CompareOrder) {
+   val (e, a) = parse(expected, this)
+   a should equalJson(e, mode, order)
 }
 
-infix fun String.shouldNotMatchJsonResource(resource: String) = this shouldNot matchJsonResource(resource)
-fun matchJsonResource(resource: String) = object : Matcher<String?> {
-
-  override fun test(value: String?): MatcherResult {
-    val actualJson = value?.let(mapper::readTree)
-    val expectedJson = mapper.readTree(this.javaClass.getResourceAsStream(resource))
-
-    return MatcherResult(
-      actualJson == expectedJson,
-      "expected: $expectedJson but was: $actualJson",
-      "expected not to match with: $expectedJson but match: $actualJson"
-    )
-  }
+actual fun String.shouldNotEqualJson(expected: String, mode: CompareMode, order: CompareOrder) {
+   val (e, a) = parse(expected, this)
+   a shouldNot equalJson(e, mode, order)
 }
 
-@OptIn(ExperimentalContracts::class)
-infix fun String?.shouldContainJsonKey(path: String) {
-  contract {
-    returns() implies (this@shouldContainJsonKey != null)
-  }
-
-  this should containJsonKey(path)
-}
-
-infix fun String.shouldNotContainJsonKey(path: String) = this shouldNot containJsonKey(path)
-fun containJsonKey(path: String) = object : Matcher<String?> {
-
-  override fun test(value: String?): MatcherResult {
-    val sub = when (value) {
-      null -> value
-      else -> if (value.length < 50) value.trim() else value.substring(0, 50).trim() + "..."
-    }
-
-    val passed = try {
-      value != null && JsonPath.read<String>(value, path) != null
-    } catch (t: PathNotFoundException) {
-      false
-    }
-
-    return MatcherResult(
-      passed,
-      "$sub should contain the path $path",
-      "$sub should not contain the path $path"
-    )
-  }
-}
-
-@OptIn(ExperimentalContracts::class)
-inline fun <reified T> String?.shouldContainJsonKeyValue(path: String, value: T) {
-  contract {
-    returns() implies (this@shouldContainJsonKeyValue != null)
-  }
-
-  this should containJsonKeyValue(path, value)
-}
-
-inline fun <reified T> String.shouldNotContainJsonKeyValue(path: String, value: T) = this shouldNot containJsonKeyValue(path, value)
-inline fun <reified T> containJsonKeyValue(path: String, t: T) = object : Matcher<String?> {
-  override fun test(value: String?): MatcherResult {
-    val sub = when (value) {
-      null -> value
-      else -> if (value.length < 50) value.trim() else value.substring(0, 50).trim() + "..."
-    }
-
-    return MatcherResult(
-      value != null && JsonPath.parse(value).read(path, T::class.java) == t,
-      "$sub should contain the element $path = $t",
-      "$sub should not contain the element $path = $t"
-    )
-  }
+internal fun parse(expected: String, actual: String): Pair<JsonTree, JsonTree> {
+   val enode = mapper.readTree(expected)
+   val anode = mapper.readTree(actual)
+   val e = JsonTree(enode.toJsonNode(), enode.toPrettyString())
+   val a = JsonTree(anode.toJsonNode(), anode.toPrettyString())
+   return Pair(e, a)
 }

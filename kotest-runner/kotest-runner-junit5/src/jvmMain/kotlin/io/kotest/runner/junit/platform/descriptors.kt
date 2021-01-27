@@ -1,6 +1,7 @@
 package io.kotest.runner.junit.platform
 
 import io.kotest.core.internal.KotestEngineSystemProperties
+import io.kotest.core.plan.NodeName
 import io.kotest.core.test.Description
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.toDescription
@@ -49,6 +50,15 @@ sealed class Segment {
 fun KClass<out Spec>.descriptor(parent: TestDescriptor): TestDescriptor {
    val source = ClassSource.from(java)
    return parent.append(toDescription(), TestDescriptor.Type.CONTAINER, source, Segment.Spec)
+}
+
+/**
+ * Creates a new spec-level [TestDescriptor] from the given spec name, appending it to the
+ * parent [TestDescriptor]. The created descriptor will have segment type [Segment.Spec].
+ */
+fun NodeName.SpecName.descriptor(parent: TestDescriptor): TestDescriptor {
+   val source = ClassSource.from(this.fqn)
+   return parent.append(displayName, TestDescriptor.Type.CONTAINER, source, Segment.Spec)
 }
 
 /**
@@ -113,6 +123,8 @@ fun Description.toTestDescriptor(root: UniqueId): TestDescriptor {
 
    val source = when (this) {
       is Description.Spec -> ClassSource.from(this.kclass.java)
+      // this isn't a method, but we can use MethodSource with the test name so it's at least
+      // compatible for top level tests.
       is Description.Test -> MethodSource.from(this.spec().kclass.java.name, this.testPath().value)
    }
 

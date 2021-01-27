@@ -26,7 +26,9 @@ kotlin {
       val jvmMain by getting {
          dependencies {
             implementation(kotlin("reflect"))
+            implementation(Libs.Kotlin.kotlinScriptRuntime)
 
+            api(project(Projects.Common))
             // needed to compile against Spec
             // but runtime classes must be provided by modules using discovery
             compileOnly(project(Projects.Api))
@@ -40,7 +42,7 @@ kotlin {
 
 tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
    kotlinOptions.jvmTarget = "1.8"
-   kotlinOptions.apiVersion = "1.3"
+   kotlinOptions.apiVersion = "1.4"
 }
 
 apply(from = "../../publish-mpp.gradle.kts")

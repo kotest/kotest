@@ -11,7 +11,7 @@ buildscript {
 
    dependencies {
       // To be uncommented if adding any Android project
-      classpath("com.android.tools.build:gradle:4.1.0")
+      classpath("com.android.tools.build:gradle:4.1.1")
    }
 }
 
@@ -82,7 +82,7 @@ kotlin {
 
 tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
    kotlinOptions.jvmTarget = "1.8"
-   kotlinOptions.apiVersion = "1.3"
+   kotlinOptions.apiVersion = "1.4"
 }
 
 val publications: PublicationContainer = (extensions.getByName("publishing") as PublishingExtension).publications

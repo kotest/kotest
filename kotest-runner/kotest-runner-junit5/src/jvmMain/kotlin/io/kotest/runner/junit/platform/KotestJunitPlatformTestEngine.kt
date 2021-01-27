@@ -19,12 +19,14 @@ import kotlinx.coroutines.runBlocking
 import org.junit.platform.engine.EngineDiscoveryRequest
 import org.junit.platform.engine.ExecutionRequest
 import org.junit.platform.engine.TestEngine
+import org.junit.platform.engine.TestExecutionResult
 import org.junit.platform.engine.UniqueId
 import org.junit.platform.engine.discovery.MethodSelector
 import org.junit.platform.engine.support.descriptor.EngineDescriptor
 import org.junit.platform.launcher.LauncherDiscoveryRequest
 import java.util.Optional
 import kotlin.reflect.KClass
+import kotlin.script.templates.standard.ScriptTemplateWithArgs
 
 /**
  * A Kotest implementation of a Junit Platform [TestEngine].
@@ -46,6 +48,19 @@ class KotestJunitPlatformTestEngine : TestEngine {
    override fun execute(request: ExecutionRequest) = runBlocking {
       log("JUnit ExecutionRequest[${request::class.java.name}] [configurationParameters=${request.configurationParameters}; rootTestDescriptor=${request.rootTestDescriptor}]")
       val root = request.rootTestDescriptor as KotestEngineDescriptor
+      when (root.error) {
+          null -> execute(request, root)
+          else -> abortExecution(request, root.error)
+      }
+   }
+
+   private fun abortExecution(request: ExecutionRequest, e: Throwable) {
+      request.engineExecutionListener.executionStarted(request.rootTestDescriptor)
+      request.engineExecutionListener.executionFinished(request.rootTestDescriptor, TestExecutionResult.failed(e))
+   }
+
+   private fun execute(request: ExecutionRequest, root: KotestEngineDescriptor) {
+
       val listener = SynchronizedTestEngineListener(
          IsolationTestEngineListener(
             JUnitTestEngineListener(
@@ -55,9 +70,11 @@ class KotestJunitPlatformTestEngine : TestEngine {
             )
          )
       )
+
       KotestEngineLauncher()
          .withListener(listener)
          .withSpecs(root.classes)
+         .withScripts(root.scripts)
          .withDumpConfig(true)
          .withFilters(root.testFilters)
          .launch()
@@ -83,7 +100,7 @@ class KotestJunitPlatformTestEngine : TestEngine {
       // if we are excluded from the engines then we say goodnight according to junit rules
       val isKotest = request.engineFilters().all { it.toPredicate().test(this) }
       if (!isKotest)
-         return KotestEngineDescriptor(uniqueId, emptyList(), emptyList())
+         return KotestEngineDescriptor(uniqueId, emptyList(), emptyList(), emptyList(), null)
 
       val testFilters = request.postFilters().map {
          PostDiscoveryFilterAdapter(it, uniqueId)
@@ -94,18 +111,20 @@ class KotestJunitPlatformTestEngine : TestEngine {
       // and kotest will then run all other tests.
       // therefore, the presence of a MethodSelector means we must run no tests in KT.
       return if (request.getSelectorsByType(MethodSelector::class.java).isEmpty()) {
+
          val extensions = listOf(
             IgnoredSpecDiscoveryExtension,
             EnabledConditionSpecDiscoveryExtension,
             TagsExcludedDiscoveryExtension,
          ) + configuration.extensions().filterIsInstance<DiscoveryExtension>()
          val discovery = Discovery(extensions)
+
          val result = discovery.discover(request.toKotestDiscoveryRequest())
          val classes =
             result.specs.filter { spec -> testFilters.all { it.filter(spec.toDescription()) == TestFilterResult.Include } }
-         KotestEngineDescriptor(uniqueId, classes, testFilters)
+         KotestEngineDescriptor(uniqueId, classes, result.scripts, testFilters, result.error)
       } else {
-         KotestEngineDescriptor(uniqueId, emptyList(), emptyList())
+         KotestEngineDescriptor(uniqueId, emptyList(), emptyList(), emptyList(), null)
       }
    }
 }
@@ -113,7 +132,9 @@ class KotestJunitPlatformTestEngine : TestEngine {
 class KotestEngineDescriptor(
    id: UniqueId,
    val classes: List<KClass<out Spec>>,
+   val scripts: List<KClass<out ScriptTemplateWithArgs>>,
    val testFilters: List<TestFilter>,
+   val error: Throwable?, // an error during discovery
 ) : EngineDescriptor(id, "Kotest") {
    override fun mayRegisterTests(): Boolean = true
 }

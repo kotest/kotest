@@ -11,7 +11,7 @@ import io.kotest.core.extensions.RuntimeTagExtension.included
  * You can use the properties [included] and [excluded] to modify what behavior you should use for specific tests
  * at runtime. Any test tagged with tags in [included] will be included to run, and any tags in [excluded] will be excluded.
  */
-@Deprecated("Use RuntimeTagExpressionExtension. Will be removed in 4.4")
+@Deprecated("Use RuntimeTagExpressionExtension. Will be removed in 4.5")
 object RuntimeTagExtension : TagExtension {
 
    val included = mutableSetOf<Tag>()

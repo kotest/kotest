@@ -4,15 +4,40 @@ import io.kotest.core.TimeoutExecutionContext
 import io.kotest.core.internal.TimeoutException
 import io.kotest.mpp.NamedThreadFactory
 import io.kotest.mpp.log
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.ThreadContextElement
+import kotlinx.coroutines.withContext
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicBoolean
-import kotlin.coroutines.ContinuationInterceptor
-import kotlin.coroutines.coroutineContext
-import kotlin.coroutines.resume
-import kotlin.coroutines.resumeWithException
-import kotlin.coroutines.suspendCoroutine
+import kotlin.coroutines.CoroutineContext
+
+/**
+ * This element is used to track whether a coroutine is suspended or running, and if running,
+ * then the thread it is currently running on.
+ */
+class CoroutineStatus : ThreadContextElement<Unit> {
+
+   // declare companion object for a key of this element in coroutine context
+   companion object Key : CoroutineContext.Key<CoroutineStatus>
+
+   // provide the key of the corresponding context element
+   override val key: CoroutineContext.Key<CoroutineStatus> get() = Key
+
+   val suspended: AtomicBoolean = AtomicBoolean(true)
+
+   var thread: Thread? = null
+
+   // this is invoked before coroutine is resumed on current thread
+   override fun updateThreadContext(context: CoroutineContext) {
+      thread = Thread.currentThread()
+      suspended.set(false)
+   }
+
+   // this is invoked after coroutine has suspended on current thread
+   override fun restoreThreadContext(context: CoroutineContext, oldState: Unit) {
+      suspended.set(true)
+   }
+}
 
 object ExecutorExecutionContext : TimeoutExecutionContext {
 
@@ -22,53 +47,36 @@ object ExecutorExecutionContext : TimeoutExecutionContext {
    // this cannot be the main thread because we want to continue after a timeout, and
    // we can't interrupt a test doing `while (true) {}`
 
+   // this scheduler is used to interrupt coroutines after timeouts
+   private val scheduler =
+      Executors.newScheduledThreadPool(1, NamedThreadFactory("ExecutionContext-Scheduler-%d", daemon = true))
+
    override suspend fun <T> executeWithTimeoutInterruption(timeoutInMillis: Long, f: suspend () -> T): T {
-      log("Scheduler will interrupt this execution in ${timeoutInMillis}ms")
 
-      val context = coroutineContext
+      // the status coroutine context element will track whether the coroutine is suspended or resumed,
+      // so we know if we need to interrupt the thread or simply cancel the coroutine
+      val status = CoroutineStatus()
 
-      val scheduler = Executors.newScheduledThreadPool(1, NamedThreadFactory("ExecutionContext-Scheduler-%d"))
-      val hasResumed = AtomicBoolean(false)
-      return suspendCoroutine { cont ->
+      // we schedule a task that will interrupt the coroutine after the timeout has expired
+      // this task will use the values in the coroutine status element to know which thread to interrupt
+      log("ExecutorExecutionContext: Scheduler will interrupt this execution in ${timeoutInMillis}ms")
+      scheduler.schedule({
+         // if the coroutine is suspended we can cancel using co-operative coroutine cancellation
+         // otherwise if the coroutine is running, we will interrupt that thread
+         if (!status.suspended.get()) {
+            log("ExecutorExecutionContext: Interrupting blocked coroutine via thread interruption on thread ${status.thread}")
+            status.thread?.interrupt()
+         }
+      }, timeoutInMillis, TimeUnit.MILLISECONDS)
 
-         val thisThread = Thread.currentThread()
-
-         // we schedule a task that will resume the coroutine with a timeout exception
-         // this task will only fail the coroutine if it has not already returned normally
-         scheduler.schedule({
-            if (hasResumed.compareAndSet(false, true)) {
-               thisThread.interrupt()
-               val t = TimeoutException(timeoutInMillis)
-               cont.resumeWithException(t)
-            }
-         }, timeoutInMillis, TimeUnit.MILLISECONDS)
-         scheduler.shutdown()
-
+      // install the status tracker into this coroutine
+      // nested tests will install their own tracker, but into a new coroutine, so there is no clash
+      // then if this parent is cancelled, it will cancel the children ultimately
+      return withContext(status) {
          try {
-            // we use the context from the caller, in order to allow context params to propogate down
-            // into the test case from test extensions
-            // According to the documentation of runBlocking if we give it a context that includes a CoroutineDispatcher,
-            // the coroutine will continue to run on the given dispatcher, and the runBlocking will just wait for it to finish.
-            // Since we want to be able to interrupt this thread,
-            // we would just interrupt the waiting but not the actual execution of the test
-            // see https://github.com/kotest/kotest/issues/1725
-            runBlocking(context.minusKey(ContinuationInterceptor)) {
-               val t = f()
-               if (hasResumed.compareAndSet(false, true)) {
-                  scheduler.shutdownNow()
-                  cont.resume(t)
-               }
-            }
-         } catch (e: AssertionError) {
-            if (hasResumed.compareAndSet(false, true)) {
-               scheduler.shutdownNow()
-               cont.resumeWithException(e)
-            }
-         } catch (t: Throwable) {
-            if (hasResumed.compareAndSet(false, true)) {
-               scheduler.shutdownNow()
-               cont.resumeWithException(t)
-            }
+            f()
+         } catch (t: InterruptedException) {
+            throw TimeoutException(timeoutInMillis)
          }
       }
    }

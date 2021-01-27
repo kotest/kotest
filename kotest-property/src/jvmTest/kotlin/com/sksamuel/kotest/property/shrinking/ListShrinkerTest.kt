@@ -2,6 +2,7 @@ package com.sksamuel.kotest.property.shrinking
 
 import io.kotest.assertions.throwables.shouldThrowAny
 import io.kotest.core.spec.style.FunSpec
+import io.kotest.extensions.system.captureStandardOut
 import io.kotest.inspectors.forAtLeastOne
 import io.kotest.matchers.collections.shouldHaveAtMostSize
 import io.kotest.matchers.collections.shouldHaveSize
@@ -98,11 +99,16 @@ class ListShrinkerTest : FunSpec() {
       }
 
       test("ListShrinker in action") {
-         shouldThrowAny {
-            checkAll(PropTestConfig(seed = 123132), Arb.list(Arb.int(0..100))) { list ->
-               list.shouldHaveAtMostSize(3)
+         val stdout = captureStandardOut {
+            PropertyTesting.shouldPrintShrinkSteps = true
+            shouldThrowAny {
+               checkAll(PropTestConfig(seed = 123132), Arb.list(Arb.int(0..100))) { list ->
+                  list.shouldHaveAtMostSize(3)
+               }
             }
-         }.message.shouldContain("Arg 0: [0, 1, 51, 24")
+         }
+         println(stdout)
+         stdout.shouldContain("Shrink result (after 90 shrinks) => [0, 1, 51, 24]")
       }
    }
 }

@@ -28,7 +28,7 @@ kotlin {
    targets.all {
       compilations.all {
          kotlinOptions {
-            freeCompilerArgs = freeCompilerArgs + "-Xopt-in=kotlin.RequiresOptIn"
+            freeCompilerArgs = freeCompilerArgs + "-Xopt-in=kotlin.time.ExperimentalTime"
          }
       }
    }
@@ -38,6 +38,7 @@ kotlin {
       val commonMain by getting {
          dependencies {
             implementation(Libs.Coroutines.coreCommon)
+            implementation(Libs.Kotlin.kotlinScriptRuntime)
             implementation(project(Projects.Common))
             api(project(Projects.AssertionsShared))
          }
@@ -82,7 +83,7 @@ kotlin {
 
 tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
    kotlinOptions.jvmTarget = "1.8"
-   kotlinOptions.apiVersion = "1.3"
+   kotlinOptions.apiVersion = "1.4"
 }
 
 tasks.named<Test>("jvmTest") {
@@ -97,5 +98,61 @@ tasks.named<Test>("jvmTest") {
       exceptionFormat = org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
    }
 }
+
+tasks.create("buildConfigDocs") {
+   //find config files
+   val fileNames = listOf("KotestEngineSystemProperties.kt")
+
+   val foundFiles = File(project.rootDir.absolutePath).walk().maxDepth(25).map { file ->
+      if (fileNames.contains(file.name)) {
+         file
+      } else {
+         null
+      }
+   }.filterNotNull()
+      .toList()
+
+   if (foundFiles.size != fileNames.size)
+      throw RuntimeException("Fail to find files -> {$fileNames} in project, found only these files -> {$foundFiles}")
+
+   //replace in docs
+
+   val docName = "config_props.md"
+   val docsFolder = File(project.rootDir.absolutePath, "documentation/docs/framework")
+   val docFileFullPath = File(docsFolder.absolutePath, docName)
+
+   val configTemplate = """
+---
+id: framework_config_props
+title: Framework configuration properties
+sidebar_label: System properties
+slug: framework-config-props.html
+---
+
+   """.trimIndent()
+
+   val fileTemplate = """
+
+      ---
+      #### %s
+      ```kotlin
+      %s
+      ```
+
+   """.trimIndent()
+
+   val sb = StringBuilder(configTemplate)
+
+   foundFiles.forEach { file ->
+      val name = file.name
+      val content = file.readLines().joinToString(separator = System.lineSeparator())
+
+      sb.append(fileTemplate.format(name, content))
+   }
+
+   docFileFullPath.writeText(sb.toString())
+}
+
+tasks["jvmTest"].mustRunAfter(tasks["buildConfigDocs"].path)
 
 apply(from = "../../publish-mpp.gradle.kts")

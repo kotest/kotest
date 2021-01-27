@@ -11,12 +11,12 @@
 
 __Kotest is a flexible and comprehensive testing tool for [Kotlin](https://kotlinlang.org/) with multiplatform support.__
 
-To learn more about Kotest, visit [kotest.io](https://kotest.io) or see our [quick start](https://kotest.io/quick_start/) guide.
-Looking to upgrade? - see the [changelog](https://kotest.io/changelog/)
+To learn more about Kotest, visit [kotest.io](https://kotest.io) or see our [quick start](https://kotest.io/docs/quickstart/) guide.
+Looking to upgrade? - see the [changelog](https://kotest.io/docs/changelog.html)
 
 Community
 ---------
 * [Kotest channel](https://kotlinlang.slack.com/messages/kotest) in the Kotlin Slack (get an invite [here](http://slack.kotlinlang.org/))
 * [Stack Overflow](http://stackoverflow.com/questions/tagged/kotest) (don't forget to use the tag "kotest".)
 * [Contribute](https://github.com/kotest/kotest/wiki/contribute)
-* [Blogs and articles](https://kotest.io/blogs/).
+* [Blogs and articles](https://kotest.io/docs/blogs/).

@@ -2,6 +2,7 @@ package io.kotest.core.test
 
 import io.kotest.core.SourceRef
 import io.kotest.core.factory.FactoryId
+import io.kotest.core.internal.tags.allTags
 import io.kotest.core.sourceRef
 import io.kotest.core.spec.Spec
 
@@ -33,21 +34,21 @@ import io.kotest.core.spec.Spec
  */
 data class TestCase(
    // the description contains the names of all parents, plus the name of this test case
-    val description: Description.Test,
+   val description: Description.Test,
    // the spec instance that contains this testcase
-    val spec: Spec,
+   val spec: Spec,
    // a closure of the test function
-    val test: suspend TestContext.() -> Unit,
-    val source: SourceRef,
-    val type: TestType,
+   val test: suspend TestContext.() -> Unit,
+   val source: SourceRef,
+   val type: TestType,
    // config used when running the test, such as number of
    // invocations, threads, etc
-    val config: TestCaseConfig = TestCaseConfig(),
+   val config: TestCaseConfig = TestCaseConfig(),
    // an optional factory id which is used to indicate which factory (if any) generated this test case.
-    val factoryId: FactoryId? = null,
+   val factoryId: FactoryId? = null,
    // assertion mode can be set to control errors/warnings in a test
    // if null, defaults will be applied
-    val assertionMode: AssertionMode? = null
+   val assertionMode: AssertionMode? = null
 ) {
 
    val displayName = description.displayName()
@@ -55,7 +56,7 @@ data class TestCase(
    /**
     * Returns true if this test case is a root test inside a spec.
     */
-   @Deprecated("use description.isRootTest(). Will be removed in 4.4")
+   @Deprecated("use description.isRootTest(). Will be removed in 4.5")
    fun isTopLevel(): Boolean = description.isRootTest()
 
    companion object {
@@ -79,9 +80,9 @@ data class TestCase(
        * Creates a [TestCase] of type [TestType.Container], with default config, and derived source ref.
        */
       fun container(
-          description: Description.Test,
-          spec: Spec,
-          test: suspend TestContext.() -> Unit
+         description: Description.Test,
+         spec: Spec,
+         test: suspend TestContext.() -> Unit
       ): TestCase =
          TestCase(
             description,
@@ -93,5 +94,18 @@ data class TestCase(
             null,
             null
          )
+
+      fun appendTagsInDisplayName(testCase: TestCase): TestCase {
+         val tagNames = testCase.allTags().joinToString(", ")
+
+         return if (tagNames.isNotBlank()) {
+            val description = testCase.description
+            val originalName = description.name
+            val nameWithTagsAppended = originalName.copy(displayName = "${originalName.displayName}[tags = $tagNames]")
+            testCase.copy(description = description.copy(name = nameWithTagsAppended))
+         } else {
+            testCase
+         }
+      }
    }
 }

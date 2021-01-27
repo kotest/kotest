@@ -1,6 +1,7 @@
 package com.sksamuel.kotest.engine.datatest
 
 import io.kotest.core.datatest.forAll
+import io.kotest.core.spec.Isolate
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.test.TestCase
@@ -9,6 +10,7 @@ import io.kotest.engine.KotestEngineLauncher
 import io.kotest.engine.listener.TestEngineListener
 import io.kotest.matchers.shouldBe
 
+@Isolate // sets global values via configuration so must be isolated
 class DataTestingRepeatedTestNameTest : FunSpec() {
    init {
 

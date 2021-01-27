@@ -9,6 +9,7 @@ on:
          branch:
             description: "The branch to release from"
             required: true
+            default: 'master'
 
 jobs:
    publish:
@@ -20,15 +21,6 @@ jobs:
             with:
                fetch-depth: 0
                ref: ${{ github.event.inputs.branch }}
-
-         -  name: publish metadata release
-            run: ./gradlew publishMetadataPublicationToDeployRepository
-            env:
-               RELEASE_VERSION: ${{ github.event.inputs.version }}
-               OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
-               OSSRH_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
-               ORG_GRADLE_PROJECT_signingKey: ${{ secrets.SIGNING_KEY }}
-               ORG_GRADLE_PROJECT_signingPassword: ${{ secrets.SIGNING_PASSWORD }}
 
          -  name: publish multiplatform release
             run: ./gradlew publishKotlinMultiplatformPublicationToDeployRepository

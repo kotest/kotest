@@ -2,6 +2,7 @@ package com.sksamuel.kotest.timeout
 
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.test.TestResult
+import io.kotest.core.test.TestStatus
 import io.kotest.matchers.shouldBe
 import kotlinx.coroutines.delay
 import kotlin.time.ExperimentalTime
@@ -36,18 +37,19 @@ class TestInvocationTimeoutExceptionTest : FunSpec() {
       invocationTimeout = 800 // millis
 
       test("timeout exception should use the value that caused the test to fail 1").config(invocationTimeout = 44.milliseconds) {
-         delay(250.milliseconds)
+         delay(500.milliseconds)
       }
 
       test("timeout exception should use the value that caused the test to fail 2").config(
          timeout = 454.milliseconds,
          invocationTimeout = 44.milliseconds
       ) {
-         delay(250.milliseconds)
+         delay(500.milliseconds)
       }
 
       aroundTest { (test, execute) ->
          val result = execute(test)
+         (result.status == TestStatus.Failure || result.status == TestStatus.Error) shouldBe true
          result.error?.message shouldBe "Test did not complete within 44ms"
          TestResult.success(0)
       }

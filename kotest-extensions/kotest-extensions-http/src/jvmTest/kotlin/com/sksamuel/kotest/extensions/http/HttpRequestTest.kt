@@ -46,23 +46,29 @@ class HttpRequestTest : FunSpec({
    }
 
    test("post http request with params") {
-      http("/example_post_with_params.http",
-      mapOf("path" to "login", "username" to "foo")) {
+      http(
+         "/example_post_with_params.http",
+         mapOf("path" to "login", "username" to "foo")
+      ) {
          it.status shouldBe HttpStatusCode.Accepted
          it.headers["X-Test"] shouldBe "foo"
       }
    }
 
    test("post http request incorrect username") {
-      http("/example_post_with_params.http",
-      mapOf("path" to "login", "username" to "boo")) {
+      http(
+         "/example_post_with_params.http",
+         mapOf("path" to "login", "username" to "boo")
+      ) {
          it.status shouldBe HttpStatusCode.NotFound
       }
    }
 
    test("post http request unknown path") {
-      http("/example_post_with_params.http",
-      mapOf("path" to "loginAgain%$#", "username" to "foo")) {
+      http(
+         "/example_post_with_params.http",
+         mapOf("path" to "loginAgain%$#", "username" to "foo")
+      ) {
          it.status shouldBe HttpStatusCode.NotFound
       }
    }

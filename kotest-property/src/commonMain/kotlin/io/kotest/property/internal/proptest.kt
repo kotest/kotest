@@ -151,7 +151,7 @@ suspend fun <A, B, C, D> proptest(
    // we must have enough iterations to cover the max(minsize).
 
    val minSize =
-      listOf(genA.minIterations(), genB.minIterations(), genC.minIterations(), genD.minIterations()).max() ?: 0
+      listOf(genA.minIterations(), genB.minIterations(), genC.minIterations(), genD.minIterations()).maxOrNull() ?: 0
    require(iterations >= minSize) { "Require at least $minSize iterations to cover requirements" }
 
    val context = PropertyContext()
@@ -210,7 +210,7 @@ suspend fun <A, B, C, D, E> proptest(
       genC.minIterations(),
       genD.minIterations(),
       genE.minIterations()
-   ).max() ?: 0
+   ).maxOrNull() ?: 0
    require(iterations >= minSize) { "Require at least $minSize iterations to cover requirements" }
 
    val context = PropertyContext()
@@ -274,7 +274,7 @@ suspend fun <A, B, C, D, E, F> proptest(
       genD.minIterations(),
       genE.minIterations(),
       genF.minIterations()
-   ).max() ?: 0
+   ).maxOrNull() ?: 0
    require(iterations >= minSize) { "Require at least $minSize iterations to cover requirements" }
 
    val context = PropertyContext()
@@ -292,6 +292,401 @@ suspend fun <A, B, C, D, E, F> proptest(
          config.listeners.forEach { it.beforeTest() }
          test(context, config, shrinkfn, listOf(a.value, b.value, c.value, d.value, e.value, f.value), random.seed) {
             context.property(a.value, b.value, c.value, d.value, e.value, f.value)
+         }
+         config.listeners.forEach { it.afterTest() }
+      }
+   context.checkMaxSuccess(config, random.seed)
+   return context
+}
+
+suspend fun <A, B, C, D, E, F, G> proptest(
+   iterations: Int,
+   genA: Gen<A>,
+   genB: Gen<B>,
+   genC: Gen<C>,
+   genD: Gen<D>,
+   genE: Gen<E>,
+   genF: Gen<F>,
+   genG: Gen<G>,
+   config: PropTestConfig,
+   property: suspend PropertyContext.(A, B, C, D, E, F, G) -> Unit
+): PropertyContext {
+
+   // we must have enough iterations to cover the max(minsize).
+
+   val minSize = listOf(
+      genA.minIterations(),
+      genB.minIterations(),
+      genC.minIterations(),
+      genD.minIterations(),
+      genE.minIterations(),
+      genF.minIterations(),
+      genG.minIterations(),
+   ).maxOrNull() ?: 0
+   require(iterations >= minSize) { "Require at least $minSize iterations to cover requirements" }
+
+   val context = PropertyContext()
+   val random = config.seed?.random() ?: RandomSource.Default
+
+   genA.generate(random)
+      .zip(genB.generate(random))
+      .zip(genC.generate(random))
+      .zip(genD.generate(random))
+      .zip(genE.generate(random))
+      .zip(genF.generate(random))
+      .zip(genG.generate(random))
+      .take(iterations)
+      .forEach { (abcdef, g) ->
+         val (abcde, f) = abcdef
+         val (abcd, e) = abcde
+         val (abc, d) = abcd
+         val (ab, c) = abc
+         val (a, b) = ab
+         val shrinkfn = shrinkfn(a, b, c, d, e, f, g, property, config.shrinkingMode)
+         config.listeners.forEach { it.beforeTest() }
+         test(context, config, shrinkfn, listOf(a.value, b.value, c.value, d.value, e.value, f.value, g.value), random.seed) {
+            context.property(a.value, b.value, c.value, d.value, e.value, f.value, g.value)
+         }
+         config.listeners.forEach { it.afterTest() }
+      }
+   context.checkMaxSuccess(config, random.seed)
+   return context
+}
+
+suspend fun <A, B, C, D, E, F, G, H> proptest(
+   iterations: Int,
+   genA: Gen<A>,
+   genB: Gen<B>,
+   genC: Gen<C>,
+   genD: Gen<D>,
+   genE: Gen<E>,
+   genF: Gen<F>,
+   genG: Gen<G>,
+   genH: Gen<H>,
+   config: PropTestConfig,
+   property: suspend PropertyContext.(A, B, C, D, E, F, G, H) -> Unit
+): PropertyContext {
+
+   // we must have enough iterations to cover the max(minsize).
+
+   val minSize = listOf(
+      genA.minIterations(),
+      genB.minIterations(),
+      genC.minIterations(),
+      genD.minIterations(),
+      genE.minIterations(),
+      genF.minIterations(),
+      genG.minIterations(),
+      genH.minIterations(),
+   ).maxOrNull() ?: 0
+   require(iterations >= minSize) { "Require at least $minSize iterations to cover requirements" }
+
+   val context = PropertyContext()
+   val random = config.seed?.random() ?: RandomSource.Default
+
+   genA.generate(random)
+      .zip(genB.generate(random))
+      .zip(genC.generate(random))
+      .zip(genD.generate(random))
+      .zip(genE.generate(random))
+      .zip(genF.generate(random))
+      .zip(genG.generate(random))
+      .zip(genH.generate(random))
+      .take(iterations)
+      .forEach { (abcdefg, h) ->
+         val (abcdef, g) = abcdefg
+         val (abcde, f) = abcdef
+         val (abcd, e) = abcde
+         val (abc, d) = abcd
+         val (ab, c) = abc
+         val (a, b) = ab
+         val shrinkfn = shrinkfn(a, b, c, d, e, f, g, h, property, config.shrinkingMode)
+         config.listeners.forEach { it.beforeTest() }
+         test(context, config, shrinkfn, listOf(a.value, b.value, c.value, d.value, e.value, f.value, g.value, h.value), random.seed) {
+            context.property(a.value, b.value, c.value, d.value, e.value, f.value, g.value, h.value)
+         }
+         config.listeners.forEach { it.afterTest() }
+      }
+   context.checkMaxSuccess(config, random.seed)
+   return context
+}
+
+
+
+suspend fun <A, B, C, D, E, F, G, H, I> proptest(
+   iterations: Int,
+   genA: Gen<A>,
+   genB: Gen<B>,
+   genC: Gen<C>,
+   genD: Gen<D>,
+   genE: Gen<E>,
+   genF: Gen<F>,
+   genG: Gen<G>,
+   genH: Gen<H>,
+   genI: Gen<I>,
+   config: PropTestConfig,
+   property: suspend PropertyContext.(A, B, C, D, E, F, G, H, I) -> Unit
+): PropertyContext {
+
+   // we must have enough iterations to cover the max(minsize).
+
+   val minSize = listOf(
+      genA.minIterations(),
+      genB.minIterations(),
+      genC.minIterations(),
+      genD.minIterations(),
+      genE.minIterations(),
+      genF.minIterations(),
+      genG.minIterations(),
+      genH.minIterations(),
+      genI.minIterations(),
+   ).maxOrNull() ?: 0
+   require(iterations >= minSize) { "Require at least $minSize iterations to cover requirements" }
+
+   val context = PropertyContext()
+   val random = config.seed?.random() ?: RandomSource.Default
+
+   genA.generate(random)
+      .zip(genB.generate(random))
+      .zip(genC.generate(random))
+      .zip(genD.generate(random))
+      .zip(genE.generate(random))
+      .zip(genF.generate(random))
+      .zip(genG.generate(random))
+      .zip(genH.generate(random))
+      .zip(genI.generate(random))
+      .take(iterations)
+      .forEach { (abcdefgh, i) ->
+         val (abcdefg, h) = abcdefgh
+         val (abcdef, g) = abcdefg
+         val (abcde, f) = abcdef
+         val (abcd, e) = abcde
+         val (abc, d) = abcd
+         val (ab, c) = abc
+         val (a, b) = ab
+         val shrinkfn = shrinkfn(a, b, c, d, e, f, g, h, i, property, config.shrinkingMode)
+         config.listeners.forEach { it.beforeTest() }
+         test(context, config, shrinkfn, listOf(a.value, b.value, c.value, d.value, e.value, f.value, g.value, h.value, i.value), random.seed) {
+            context.property(a.value, b.value, c.value, d.value, e.value, f.value, g.value, h.value, i.value)
+         }
+         config.listeners.forEach { it.afterTest() }
+      }
+   context.checkMaxSuccess(config, random.seed)
+   return context
+}
+
+
+suspend fun <A, B, C, D, E, F, G, H, I, J> proptest(
+   iterations: Int,
+   genA: Gen<A>,
+   genB: Gen<B>,
+   genC: Gen<C>,
+   genD: Gen<D>,
+   genE: Gen<E>,
+   genF: Gen<F>,
+   genG: Gen<G>,
+   genH: Gen<H>,
+   genI: Gen<I>,
+   genJ: Gen<J>,
+   config: PropTestConfig,
+   property: suspend PropertyContext.(A, B, C, D, E, F, G, H, I, J) -> Unit
+): PropertyContext {
+
+   // we must have enough iterations to cover the max(minsize).
+
+   val minSize = listOf(
+      genA.minIterations(),
+      genB.minIterations(),
+      genC.minIterations(),
+      genD.minIterations(),
+      genE.minIterations(),
+      genF.minIterations(),
+      genG.minIterations(),
+      genH.minIterations(),
+      genI.minIterations(),
+      genJ.minIterations(),
+   ).maxOrNull() ?: 0
+   require(iterations >= minSize) { "Require at least $minSize iterations to cover requirements" }
+
+   val context = PropertyContext()
+   val random = config.seed?.random() ?: RandomSource.Default
+
+   genA.generate(random)
+      .zip(genB.generate(random))
+      .zip(genC.generate(random))
+      .zip(genD.generate(random))
+      .zip(genE.generate(random))
+      .zip(genF.generate(random))
+      .zip(genG.generate(random))
+      .zip(genH.generate(random))
+      .zip(genI.generate(random))
+      .zip(genJ.generate(random))
+      .take(iterations)
+      .forEach { (abcdefghi, j) ->
+         val (abcdefgh, i) = abcdefghi
+         val (abcdefg, h) = abcdefgh
+         val (abcdef, g) = abcdefg
+         val (abcde, f) = abcdef
+         val (abcd, e) = abcde
+         val (abc, d) = abcd
+         val (ab, c) = abc
+         val (a, b) = ab
+         val shrinkfn = shrinkfn(a, b, c, d, e, f, g, h, i, j, property, config.shrinkingMode)
+         config.listeners.forEach { it.beforeTest() }
+         test(context, config, shrinkfn, listOf(a.value, b.value, c.value, d.value, e.value, f.value, g.value, h.value, i.value, j.value), random.seed) {
+            context.property(a.value, b.value, c.value, d.value, e.value, f.value, g.value, h.value, i.value, j.value)
+         }
+         config.listeners.forEach { it.afterTest() }
+      }
+   context.checkMaxSuccess(config, random.seed)
+   return context
+}
+
+
+
+suspend fun <A, B, C, D, E, F, G, H, I, J, K> proptest(
+   iterations: Int,
+   genA: Gen<A>,
+   genB: Gen<B>,
+   genC: Gen<C>,
+   genD: Gen<D>,
+   genE: Gen<E>,
+   genF: Gen<F>,
+   genG: Gen<G>,
+   genH: Gen<H>,
+   genI: Gen<I>,
+   genJ: Gen<J>,
+   genK: Gen<K>,
+   config: PropTestConfig,
+   property: suspend PropertyContext.(A, B, C, D, E, F, G, H, I, J, K) -> Unit
+): PropertyContext {
+
+   // we must have enough iterations to cover the max(minsize).
+
+   val minSize = listOf(
+      genA.minIterations(),
+      genB.minIterations(),
+      genC.minIterations(),
+      genD.minIterations(),
+      genE.minIterations(),
+      genF.minIterations(),
+      genG.minIterations(),
+      genH.minIterations(),
+      genI.minIterations(),
+      genJ.minIterations(),
+      genK.minIterations(),
+   ).maxOrNull() ?: 0
+   require(iterations >= minSize) { "Require at least $minSize iterations to cover requirements" }
+
+   val context = PropertyContext()
+   val random = config.seed?.random() ?: RandomSource.Default
+
+   genA.generate(random)
+      .zip(genB.generate(random))
+      .zip(genC.generate(random))
+      .zip(genD.generate(random))
+      .zip(genE.generate(random))
+      .zip(genF.generate(random))
+      .zip(genG.generate(random))
+      .zip(genH.generate(random))
+      .zip(genI.generate(random))
+      .zip(genJ.generate(random))
+      .zip(genK.generate(random))
+      .take(iterations)
+      .forEach { (abcdefghij, k) ->
+         val (abcdefghi, j) = abcdefghij
+         val (abcdefgh, i) = abcdefghi
+         val (abcdefg, h) = abcdefgh
+         val (abcdef, g) = abcdefg
+         val (abcde, f) = abcdef
+         val (abcd, e) = abcde
+         val (abc, d) = abcd
+         val (ab, c) = abc
+         val (a, b) = ab
+         val shrinkfn = shrinkfn(a, b, c, d, e, f, g, h, i, j, k, property, config.shrinkingMode)
+         config.listeners.forEach { it.beforeTest() }
+         test(context, config, shrinkfn, listOf(a.value, b.value, c.value, d.value, e.value, f.value, g.value, h.value, i.value, j.value, k.value), random.seed) {
+            context.property(a.value, b.value, c.value, d.value, e.value, f.value, g.value, h.value, i.value, j.value, k.value)
+         }
+         config.listeners.forEach { it.afterTest() }
+      }
+   context.checkMaxSuccess(config, random.seed)
+   return context
+}
+
+
+
+
+
+
+
+suspend fun <A, B, C, D, E, F, G, H, I, J, K, L> proptest(
+   iterations: Int,
+   genA: Gen<A>,
+   genB: Gen<B>,
+   genC: Gen<C>,
+   genD: Gen<D>,
+   genE: Gen<E>,
+   genF: Gen<F>,
+   genG: Gen<G>,
+   genH: Gen<H>,
+   genI: Gen<I>,
+   genJ: Gen<J>,
+   genK: Gen<K>,
+   genL: Gen<L>,
+   config: PropTestConfig,
+   property: suspend PropertyContext.(A, B, C, D, E, F, G, H, I, J, K, L) -> Unit
+): PropertyContext {
+
+   // we must have enough iterations to cover the max(minsize).
+
+   val minSize = listOf(
+      genA.minIterations(),
+      genB.minIterations(),
+      genC.minIterations(),
+      genD.minIterations(),
+      genE.minIterations(),
+      genF.minIterations(),
+      genG.minIterations(),
+      genH.minIterations(),
+      genI.minIterations(),
+      genJ.minIterations(),
+      genK.minIterations(),
+      genL.minIterations(),
+   ).maxOrNull() ?: 0
+   require(iterations >= minSize) { "Require at least $minSize iterations to cover requirements" }
+
+   val context = PropertyContext()
+   val random = config.seed?.random() ?: RandomSource.Default
+
+   genA.generate(random)
+      .zip(genB.generate(random))
+      .zip(genC.generate(random))
+      .zip(genD.generate(random))
+      .zip(genE.generate(random))
+      .zip(genF.generate(random))
+      .zip(genG.generate(random))
+      .zip(genH.generate(random))
+      .zip(genI.generate(random))
+      .zip(genJ.generate(random))
+      .zip(genK.generate(random))
+      .zip(genL.generate(random))
+      .take(iterations)
+      .forEach { (abcdefghijk, l) ->
+         val (abcdefghij, k) = abcdefghijk
+         val (abcdefghi, j) = abcdefghij
+         val (abcdefgh, i) = abcdefghi
+         val (abcdefg, h) = abcdefgh
+         val (abcdef, g) = abcdefg
+         val (abcde, f) = abcdef
+         val (abcd, e) = abcde
+         val (abc, d) = abcd
+         val (ab, c) = abc
+         val (a, b) = ab
+         val shrinkfn = shrinkfn(a, b, c, d, e, f, g, h, i, j, k, l, property, config.shrinkingMode)
+         config.listeners.forEach { it.beforeTest() }
+         test(context, config, shrinkfn, listOf(a.value, b.value, c.value, d.value, e.value, f.value, g.value, h.value, i.value, j.value, k.value, l.value), random.seed) {
+            context.property(a.value, b.value, c.value, d.value, e.value, f.value, g.value, h.value, i.value, j.value, k.value, l.value)
          }
          config.listeners.forEach { it.afterTest() }
       }

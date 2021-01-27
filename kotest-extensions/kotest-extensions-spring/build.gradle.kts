@@ -2,7 +2,7 @@ plugins {
    id("java")
    kotlin("multiplatform")
    id("java-library")
-   id("org.jetbrains.kotlin.plugin.spring") version "1.3.72"
+   id("org.jetbrains.kotlin.plugin.spring") version "1.4.21-2"
    id("com.adarshr.test-logger")
 }
 
@@ -41,6 +41,7 @@ kotlin {
             implementation(kotlin("reflect"))
             implementation(Libs.Spring.context)
             implementation(Libs.Spring.test)
+            implementation(Libs.Coroutines.coreJvm)
             implementation(Libs.Bytebuddy.bytebuddy)
          }
       }

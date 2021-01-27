@@ -37,7 +37,7 @@ import kotlin.contracts.contract
  * @param block Lambda that receives typecasted instance as argument for further assertions.
  * @return The typecasted instance
  */
-@Deprecated("Use the smart contract version: a.shouldBeInstanceOf<B>(); a.bMethod(). Will be removed in 4.4")
+@Deprecated("Use the smart contract version: a.shouldBeInstanceOf<B>(); a.bMethod(). Will be removed in 4.5")
 inline fun <reified T : Any> Any?.shouldBeInstanceOf(block: (T) -> Unit = { }): T {
    val matcher = beInstanceOf<T>()
    this shouldBe matcher
@@ -46,6 +46,34 @@ inline fun <reified T : Any> Any?.shouldBeInstanceOf(block: (T) -> Unit = { }): 
 }
 
 
+/**
+ * Verifies that this is instanceof T
+ *
+ * Verifies that this value is an instance of T, which include any subclasses and smart casts to T.
+ *
+ * Opposite of [shouldNotBeInstanceOf]
+ *
+ * For an exact type, use [shouldBeTypeOf]
+ *
+ * ```
+ *
+ * val list: List<Int> = arraylistOf(1, 2, 3)
+ *
+ * // list will be smart casted to ArrayList
+ * list.shouldBeInstanceOf<ArrayList<Int>>()
+ *
+ * ```
+ * ```
+ *
+ * val list: List<Int> = arraylistOf(1, 2, 3)
+ *
+ * // arrayList is typecasted to ArrayList<Int>
+ * val arrayList = list.shouldBeInstanceOf<ArrayList<Int>>()
+ *
+ * ```
+ * @param block Lambda that receives typecasted instance as argument for further assertions.
+ * @return The typecasted instance
+ */
 @OptIn(ExperimentalContracts::class)
 inline fun <reified T : Any> Any?.shouldBeInstanceOf(): T {
    contract {
@@ -103,7 +131,7 @@ inline fun <reified T : Any> Any?.shouldNotBeInstanceOf() {
  * @param block Lambda that receives typecasted instance  as argument for further assertions.
  * @return The typecasted instance
  */
-@Deprecated("Use the smart contract version: a.shouldBeTypeOf<B>(); a.bMethod(). Will be removed in 4.4")
+@Deprecated("Use the smart contract version: a.shouldBeTypeOf<B>(); a.bMethod(). Will be removed in 4.5")
 inline fun <reified T : Any> Any?.shouldBeTypeOf(block: (T) -> Unit = { }): T {
    val matcher = beOfType<T>()
    this shouldBe matcher

@@ -101,6 +101,6 @@ fun beNull() = object : Matcher<Any?> {
   override fun test(value: Any?): MatcherResult {
     val passed = value == null
 
-    return MatcherResult(passed, "Expected value to be null, but was not-null.", "Expected value to not be null, but was null.")
+    return MatcherResult(passed, "Expected value to be null, but was $value.", "Expected value not be null, but was null.")
   }
 }

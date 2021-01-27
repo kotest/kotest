@@ -46,7 +46,7 @@ kotlin {
          dependsOn(jvmMain)
          dependencies {
             implementation(project(Projects.JunitRunner))
-            implementation(project(Projects.AssertionsKtor))
+//            implementation(project(Projects.AssertionsKtor))
             implementation(Libs.Ktor.clientCoreJvm)
             implementation(Libs.Ktor.clientCioJvm)
          }

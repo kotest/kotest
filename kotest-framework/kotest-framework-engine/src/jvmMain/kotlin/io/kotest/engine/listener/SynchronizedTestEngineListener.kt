@@ -1,10 +1,15 @@
 package io.kotest.engine.listener
 
+import io.kotest.core.plan.TestPlanNode
 import io.kotest.core.spec.Spec
+import io.kotest.core.test.Description
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import kotlin.reflect.KClass
 
+/**
+ * Wraps a [TestEngineListener]s methods in synchronized calls to ensure no race conditions.
+ */
 class SynchronizedTestEngineListener(private val listener: TestEngineListener) : TestEngineListener {
 
    override fun engineStarted(classes: List<KClass<out Spec>>) {
@@ -58,6 +63,34 @@ class SynchronizedTestEngineListener(private val listener: TestEngineListener) :
    override fun specInstantiationError(kclass: KClass<out Spec>, t: Throwable) {
       synchronized(listener) {
          listener.specInstantiationError(kclass, t)
+      }
+   }
+
+   override fun specFinished(
+      spec: TestPlanNode.SpecNode,
+      t: Throwable?,
+      results: Map<TestPlanNode.TestCaseNode, TestResult>
+   ) {
+      synchronized(listener) {
+         listener.specFinished(spec, t, results)
+      }
+   }
+
+   override fun specStarted(spec: TestPlanNode.SpecNode) {
+      synchronized(listener) {
+         listener.specStarted(spec)
+      }
+   }
+
+   override fun testFinished(description: Description, result: TestResult) {
+      synchronized(listener) {
+         listener.testFinished(description, result)
+      }
+   }
+
+   override fun testStarted(description: Description) {
+      synchronized(listener) {
+         listener.testStarted(description)
       }
    }
 }

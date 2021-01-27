@@ -1,5 +1,7 @@
 package io.kotest.core.test
 
+import io.kotest.core.config.configuration
+import io.kotest.core.internal.KotestEngineSystemProperties
 import io.kotest.core.sourceRef
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.toDescription
@@ -14,7 +16,7 @@ fun createRootTestCase(
    config: TestCaseConfig,
    type: TestType
 ): TestCase {
-   return TestCase(
+   val testCase = TestCase(
       spec::class.toDescription().append(name, type),
       spec,
       test,
@@ -24,4 +26,9 @@ fun createRootTestCase(
       null,
       null
    )
+   return if (configuration.testNameAppendTags) {
+      TestCase.appendTagsInDisplayName(testCase)
+   } else {
+      testCase
+   }
 }

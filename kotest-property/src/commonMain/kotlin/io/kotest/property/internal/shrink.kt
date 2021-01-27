@@ -6,7 +6,6 @@ import io.kotest.property.PropertyTesting
 import io.kotest.property.RTree
 import io.kotest.property.ShrinkingMode
 import io.kotest.property.isEmpty
-import kotlin.time.ExperimentalTime
 
 /**
  * Accepts a value of type A and a function that varies in type A (fixed in any other types) and attempts
@@ -19,7 +18,6 @@ import kotlin.time.ExperimentalTime
  * along with the reason for the failure.
  *
  */
-@OptIn(ExperimentalTime::class)
 suspend fun <A> doShrinking(
    initial: RTree<A>,
    mode: ShrinkingMode,

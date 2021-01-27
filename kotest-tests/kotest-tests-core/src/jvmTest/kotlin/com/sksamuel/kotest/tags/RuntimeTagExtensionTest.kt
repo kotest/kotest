@@ -4,8 +4,10 @@ import io.kotest.assertions.fail
 import io.kotest.core.Tag
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.core.extensions.RuntimeTagExtension
+import io.kotest.core.spec.Isolate
 import io.kotest.core.spec.Spec
 
+@Isolate
 class RuntimeTagExtensionTest : StringSpec() {
 
    object MyRuntimeExcludedTag : Tag()

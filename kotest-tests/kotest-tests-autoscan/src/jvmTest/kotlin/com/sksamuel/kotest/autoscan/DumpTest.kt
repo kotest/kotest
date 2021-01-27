@@ -1,13 +1,15 @@
 package com.sksamuel.kotest.autoscan
 
-import io.kotest.core.config.Project
+import io.kotest.core.config.configuration
+import io.kotest.core.spec.Isolate
 import io.kotest.engine.config.createConfigSummary
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 
+@Isolate
 class DumpTest : FunSpec({
    test("!dump should pick up auto scanned listeners") {
-      Project.createConfigSummary() shouldBe """-> Parallelism: 1 thread(s)
+      configuration.createConfigSummary() shouldBe """-> Parallelism: 1 thread(s)
 -> Default test timeout: 600000ms
 -> Default test order: Sequential
 -> Default isolation mode: SingleInstance

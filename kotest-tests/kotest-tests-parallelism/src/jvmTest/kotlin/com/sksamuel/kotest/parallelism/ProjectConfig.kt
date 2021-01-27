@@ -10,6 +10,7 @@ object ProjectConfig : AbstractProjectConfig() {
       start = System.currentTimeMillis()
    }
 
+   // set the number of threads so that each test runs in its own thread
    override val parallelism = 10
 
    override fun afterAll() {

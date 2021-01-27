@@ -1,24 +1,47 @@
 package io.kotest.core.internal
 
-import io.kotest.core.config.ConcurrencyMode
+import io.kotest.core.config.Configuration
 import io.kotest.core.config.configuration
 import io.kotest.core.spec.DoNotParallelize
 import io.kotest.core.spec.Isolate
 import io.kotest.core.spec.Spec
 import io.kotest.mpp.annotation
+import kotlin.math.max
 import kotlin.reflect.KClass
 
+/**
+ * Returns true if this class is annotated with either of the annotations used to indicate
+ * this spec should not run concurrently regardless of config.
+ *
+ * Those annotations are [DoNotParallelize] and [Isolate].
+ */
 fun KClass<*>.isIsolate(): Boolean = annotation<DoNotParallelize>() != null || annotation<Isolate>() != null
 
-@Deprecated("Explicit thread mode will be removed in 5.0; use parallelism setting with concurrency mode")
+/**
+ * Returns the number of threads specified on this spec, which comes either from the
+ * function overrides of the var overrides.
+ */
+@Deprecated("Setting explicit thread count in a spec has been deprecated. Use the concurrency setting")
 fun Spec.resolvedThreads(): Int? = this.threads() ?: this.threads
 
 /**
- * Returns the [ConcurrencyMode] to use for tests in this spec.
+ * Returns the concurrent tests count to use for tests in this spec.
  *
- * Note that if this spec is annotated @Isolate then the value will be [ConcurrencyMode.None]
- * regardless of the config setting.
+ * If threads is specified on the spec, then that will implicitly raise the concurrentTests
+ * count to the same value if concurrentTests is not specified.
+ *
+ * Note that if this spec is annotated with @Isolate then the value
+ * will be 1 regardless of the config setting.
+ *
+ * spec.concurrency ?: configuration.concurrentTests
  */
-fun Spec.resolvedConcurrencyMode(): ConcurrencyMode? =
-   if (this::class.isIsolate()) ConcurrencyMode.None else
-      this.concurrencyMode() ?: configuration.concurrencyMode
+fun Spec.resolvedConcurrentTests(): Int {
+   val fromSpecConcurrency = this.concurrency ?: this.concurrency()
+   val fromSpecThreadCount = this.resolvedThreads()
+   return when {
+      this::class.isIsolate() -> Configuration.Sequential
+      fromSpecConcurrency != null -> max(1, fromSpecConcurrency)
+      fromSpecThreadCount != null -> max(1, fromSpecThreadCount)
+      else -> configuration.concurrentTests
+   }
+}
