@@ -42,4 +42,10 @@ class SeedTest : FunSpec({
          forAll<Int, Int>(config = PropTestConfig(seed = 12345)) { a, b -> a + b == b + 1 }
       }.message.shouldContain("Repeat this test by using seed 12345")
    }
+
+   test("errored test should print seed") {
+      shouldThrowAny {
+         checkAll<Int, Int> { _, _ -> error("boom") }
+      }.message.shouldContain("Repeat this test by using seed")
+   }
 })
