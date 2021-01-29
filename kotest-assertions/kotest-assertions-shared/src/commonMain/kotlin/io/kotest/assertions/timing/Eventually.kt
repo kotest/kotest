@@ -1,6 +1,8 @@
 package io.kotest.assertions.timing
 
-import io.kotest.assertions.*
+import io.kotest.assertions.SuspendingPredicate
+import io.kotest.assertions.SuspendingProducer
+import io.kotest.assertions.failure
 import io.kotest.assertions.until.Interval
 import io.kotest.assertions.until.fixed
 import kotlinx.coroutines.delay
