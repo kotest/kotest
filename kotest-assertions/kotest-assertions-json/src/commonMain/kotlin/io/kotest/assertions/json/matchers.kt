@@ -16,7 +16,9 @@ import io.kotest.matchers.MatcherResult
  */
 fun equalJson(expected: JsonTree, mode: CompareMode, order: CompareOrder) = object : Matcher<JsonTree> {
    override fun test(value: JsonTree): MatcherResult {
-      val error = compare(expected.root, value.root, mode, order)?.asString()
+      val error = compare(
+         path = listOf(), expected = expected.root, actual = value.root, mode = mode, order = order
+      )?.asString()
       return MatcherResult(
          error == null,
          "$error\n\nexpected:\n${expected.raw}\n\nactual:\n${value.raw}\n",
@@ -44,13 +46,3 @@ fun String.shouldEqualJson(expected: String, order: CompareOrder) =
 
 fun String.shouldNotEqualJson(expected: String, order: CompareOrder) =
    shouldNotEqualJson(expected, CompareMode.Strict, order)
-
-/**
- * Verifies that the [expected] string is valid json, and that it matches this string.
- *
- * This matcher will consider two json strings matched if they have the same key-values pairs,
- * regardless of order.
- *
- */
-expect fun String.shouldEqualJson(expected: String, mode: CompareMode, order: CompareOrder)
-expect fun String.shouldNotEqualJson(expected: String, mode: CompareMode, order: CompareOrder)

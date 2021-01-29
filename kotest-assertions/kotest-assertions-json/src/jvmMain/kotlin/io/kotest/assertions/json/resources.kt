@@ -17,11 +17,14 @@ infix fun String?.shouldMatchJsonResource(resource: String) {
 }
 
 infix fun String.shouldNotMatchJsonResource(resource: String) = this shouldNot matchJsonResource(resource)
+
 fun matchJsonResource(resource: String) = object : Matcher<String?> {
 
    override fun test(value: String?): MatcherResult {
-      val actualJson = value?.let(mapper::readTree)
-      val expectedJson = mapper.readTree(this.javaClass.getResourceAsStream(resource))
+      val actualJson = value?.let(pretty::parseToJsonElement)
+      val expectedJson = this.javaClass.getResourceAsStream(resource).bufferedReader().use {
+         pretty.parseToJsonElement(it.readText())
+      }
 
       return MatcherResult(
          actualJson == expectedJson,

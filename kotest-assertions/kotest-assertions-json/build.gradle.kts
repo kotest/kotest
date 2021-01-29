@@ -1,6 +1,7 @@
 plugins {
    id("java")
    kotlin("multiplatform")
+   kotlin("plugin.serialization") version Libs.kotlinVersion
    id("java-library")
    id("com.adarshr.test-logger")
 }
@@ -37,10 +38,9 @@ kotlin {
 
       val commonMain by getting {
          dependencies {
+            implementation(Libs.Serialization.json)
             implementation(project(Projects.AssertionsShared))
             implementation(kotlin("reflect"))
-            implementation(Libs.Jackson.databind)
-            implementation(Libs.Jackson.kotlin)
             implementation(Libs.Jayway.jsonpath)
          }
       }
@@ -56,8 +56,6 @@ kotlin {
 
       val jvmMain by getting {
          dependencies {
-            implementation(Libs.Jackson.databind)
-            implementation(Libs.Jackson.kotlin)
             implementation(Libs.Jayway.jsonpath)
          }
       }

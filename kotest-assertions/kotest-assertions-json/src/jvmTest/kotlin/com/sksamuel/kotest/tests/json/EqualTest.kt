@@ -2,6 +2,7 @@ package com.sksamuel.kotest.tests.json
 
 import io.kotest.assertions.json.CompareMode
 import io.kotest.assertions.json.CompareOrder
+import io.kotest.assertions.json.pretty
 import io.kotest.assertions.json.shouldEqualJson
 import io.kotest.assertions.shouldFail
 import io.kotest.core.spec.style.FunSpec
@@ -14,6 +15,8 @@ import io.kotest.property.arbitrary.numericDoubles
 import io.kotest.property.arbitrary.string
 import io.kotest.property.checkAll
 import io.kotest.property.exhaustive.boolean
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
 
 class EqualTest : FunSpec() {
    init {
@@ -35,14 +38,14 @@ class EqualTest : FunSpec() {
 
 expected:
 {
-  "a" : "foo",
-  "b" : "baz"
+  "a": "foo",
+  "b": "baz"
 }
 
 actual:
 {
-  "a" : "foo",
-  "b" : "bar"
+  "a": "foo",
+  "b": "bar"
 }"""
          )
       }
@@ -61,22 +64,22 @@ actual:
 
 expected:
 {
-  "a" : true,
-  "b" : true
+  "a": true,
+  "b": true
 }
 
 actual:
 {
-  "a" : true,
-  "b" : false
+  "a": true,
+  "b": false
 }"""
          )
       }
 
-      test("comparing long in objects") {
+      test("comparing int in objects") {
 
-         checkAll<Long> { long ->
-            val a = """ { "a" : $long } """
+         checkAll<Int> { i ->
+            val a = """ { "a" : $i } """
             a shouldEqualJson a
          }
 
@@ -90,14 +93,43 @@ actual:
 
 expected:
 {
-  "a" : 123,
-  "b" : 326
+  "a": 123,
+  "b": 326
 }
 
 actual:
 {
-  "a" : 123,
-  "b" : 354
+  "a": 123,
+  "b": 354
+}"""
+         )
+      }
+
+      test("comparing long in objects") {
+
+         checkAll<Long> { long ->
+            val a = """ { "a" : $long } """
+            a shouldEqualJson a
+         }
+
+         val a = """ { "a" : 2067120338512882656, "b": 3333333333333333333 } """
+         val b = """ { "a" : 2067120338512882656, "b" : 2222222222222222222 } """
+         a shouldEqualJson a
+         shouldFail {
+            a shouldEqualJson b
+         }.shouldHaveMessage(
+            """At 'b' expected 2222222222222222222 but was 3333333333333333333
+
+expected:
+{
+  "a": 2067120338512882656,
+  "b": 2222222222222222222
+}
+
+actual:
+{
+  "a": 2067120338512882656,
+  "b": 3333333333333333333
 }"""
          )
       }
@@ -109,23 +141,23 @@ actual:
             a shouldEqualJson a
          }
 
-         val a = """ { "a" : 123, "b": 354 } """
-         val b = """ { "a" : 123, "b" : 9897 } """
+         val a = """ { "a" : 6.02E23, "b": 6.626E-34 } """
+         val b = """ { "a" : 6.02E23, "b" : 2.99E8 } """
          shouldFail {
             a shouldEqualJson b
          }.shouldHaveMessage(
-            """At 'b' expected 9897 but was 354
+            """At 'b' expected 2.99E8 but was 6.626E-34
 
 expected:
 {
-  "a" : 123,
-  "b" : 9897
+  "a": 6.02E23,
+  "b": 2.99E8
 }
 
 actual:
 {
-  "a" : 123,
-  "b" : 354
+  "a": 6.02E23,
+  "b": 6.626E-34
 }"""
          )
       }
@@ -140,14 +172,14 @@ actual:
 
 expected:
 {
-  "a" : "foo",
-  "c" : "bar"
+  "a": "foo",
+  "c": "bar"
 }
 
 actual:
 {
-  "a" : "foo",
-  "b" : "bar"
+  "a": "foo",
+  "b": "bar"
 }"""
          )
       }
@@ -162,15 +194,15 @@ actual:
 
 expected:
 {
-  "a" : "foo",
-  "b" : "bar"
+  "a": "foo",
+  "b": "bar"
 }
 
 actual:
 {
-  "a" : "foo",
-  "b" : "bar",
-  "c" : "baz"
+  "a": "foo",
+  "b": "bar",
+  "c": "baz"
 }"""
          )
       }
@@ -185,16 +217,16 @@ actual:
 
 expected:
 {
-  "a" : "foo",
-  "b" : "bar"
+  "a": "foo",
+  "b": "bar"
 }
 
 actual:
 {
-  "a" : "foo",
-  "b" : "bar",
-  "c" : "baz",
-  "d" : true
+  "a": "foo",
+  "b": "bar",
+  "c": "baz",
+  "d": true
 }"""
          )
       }
@@ -209,15 +241,15 @@ actual:
 
 expected:
 {
-  "a" : "foo",
-  "b" : "bar",
-  "c" : "baz"
+  "a": "foo",
+  "b": "bar",
+  "c": "baz"
 }
 
 actual:
 {
-  "a" : "foo",
-  "b" : "bar"
+  "a": "foo",
+  "b": "bar"
 }"""
          )
       }
@@ -232,16 +264,16 @@ actual:
 
 expected:
 {
-  "a" : "foo",
-  "b" : "bar",
-  "c" : "baz",
-  "d" : 123
+  "a": "foo",
+  "b": "bar",
+  "c": "baz",
+  "d": 123
 }
 
 actual:
 {
-  "a" : "foo",
-  "b" : "bar"
+  "a": "foo",
+  "b": "bar"
 }"""
          )
       }
@@ -301,14 +333,14 @@ actual:
 
 expected:
 {
-  "a" : "foo",
-  "b" : null
+  "a": "foo",
+  "b": null
 }
 
 actual:
 {
-  "a" : "foo",
-  "b" : "bar"
+  "a": "foo",
+  "b": "bar"
 }"""
          )
       }
@@ -323,14 +355,14 @@ actual:
 
 expected:
 {
-  "a" : "foo",
-  "b" : null
+  "a": "foo",
+  "b": null
 }
 
 actual:
 {
-  "a" : "foo",
-  "b" : true
+  "a": "foo",
+  "b": true
 }"""
          )
       }
@@ -341,18 +373,18 @@ actual:
          shouldFail {
             a shouldEqualJson b
          }.shouldHaveMessage(
-            """At 'b' expected null but was long
+            """At 'b' expected null but was int
 
 expected:
 {
-  "a" : "foo",
-  "b" : null
+  "a": "foo",
+  "b": null
 }
 
 actual:
 {
-  "a" : "foo",
-  "b" : 234
+  "a": "foo",
+  "b": 234
 }"""
          )
       }
@@ -367,14 +399,14 @@ actual:
 
 expected:
 {
-  "a" : "foo",
-  "b" : null
+  "a": "foo",
+  "b": null
 }
 
 actual:
 {
-  "a" : "foo",
-  "b" : 12.34
+  "a": "foo",
+  "b": 12.34
 }"""
          )
       }
@@ -389,16 +421,16 @@ actual:
 
 expected:
 {
-  "a" : "foo",
-  "b" : {
-    "c" : true
+  "a": "foo",
+  "b": {
+    "c": true
   }
 }
 
 actual:
 {
-  "a" : "foo",
-  "b" : "bar"
+  "a": "foo",
+  "b": "bar"
 }"""
          )
       }
@@ -413,16 +445,16 @@ actual:
 
 expected:
 {
-  "a" : "foo",
-  "b" : {
-    "c" : true
+  "a": "foo",
+  "b": {
+    "c": true
   }
 }
 
 actual:
 {
-  "a" : "foo",
-  "b" : true
+  "a": "foo",
+  "b": true
 }"""
          )
       }
@@ -437,16 +469,16 @@ actual:
 
 expected:
 {
-  "a" : "foo",
-  "b" : {
-    "c" : true
+  "a": "foo",
+  "b": {
+    "c": true
   }
 }
 
 actual:
 {
-  "a" : "foo",
-  "b" : 12.45
+  "a": "foo",
+  "b": 12.45
 }"""
          )
       }
@@ -461,16 +493,20 @@ actual:
 
 expected:
 {
-  "a" : "foo",
-  "b" : {
-    "c" : true
+  "a": "foo",
+  "b": {
+    "c": true
   }
 }
 
 actual:
 {
-  "a" : "foo",
-  "b" : [ 1, 2, 3 ]
+  "a": "foo",
+  "b": [
+    1,
+    2,
+    3
+  ]
 }"""
          )
       }
@@ -485,15 +521,39 @@ actual:
 
 expected:
 {
-  "a" : "foo",
-  "b" : true
+  "a": "foo",
+  "b": true
 }
 
 actual:
 {
-  "a" : "foo",
-  "b" : {
-    "c" : true
+  "a": "foo",
+  "b": {
+    "c": true
+  }
+}"""
+         )
+      }
+
+      test("comparing object to int") {
+         val a = """ { "a" : "foo", "b" : { "c": true } } """
+         val b = """ { "a" : "foo", "b" : 123 } """
+         shouldFail {
+            a shouldEqualJson b
+         }.shouldHaveMessage(
+            """At 'b' expected int but was object
+
+expected:
+{
+  "a": "foo",
+  "b": 123
+}
+
+actual:
+{
+  "a": "foo",
+  "b": {
+    "c": true
   }
 }"""
          )
@@ -501,7 +561,7 @@ actual:
 
       test("comparing object to long") {
          val a = """ { "a" : "foo", "b" : { "c": true } } """
-         val b = """ { "a" : "foo", "b" : 123 } """
+         val b = """ { "a" : "foo", "b" : 2067120338512882656 } """
          shouldFail {
             a shouldEqualJson b
          }.shouldHaveMessage(
@@ -509,15 +569,63 @@ actual:
 
 expected:
 {
-  "a" : "foo",
-  "b" : 123
+  "a": "foo",
+  "b": 2067120338512882656
 }
 
 actual:
 {
-  "a" : "foo",
-  "b" : {
-    "c" : true
+  "a": "foo",
+  "b": {
+    "c": true
+  }
+}"""
+         )
+      }
+
+      test("comparing object to float-ish should parse as a double") {
+         val a = """ { "a" : "foo", "b" : { "c": true } } """
+         val b = """ { "a" : "foo", "b" : 6.02f } """
+         shouldFail {
+            a shouldEqualJson b
+         }.shouldHaveMessage(
+            """At 'b' expected double but was object
+
+expected:
+{
+  "a": "foo",
+  "b": 6.02
+}
+
+actual:
+{
+  "a": "foo",
+  "b": {
+    "c": true
+  }
+}"""
+         )
+      }
+
+      test("comparing object to double") {
+         val a = """ { "a" : "foo", "b" : { "c": true } } """
+         val b = """ { "a" : "foo", "b" : 6.02E23 } """
+         shouldFail {
+            a shouldEqualJson b
+         }.shouldHaveMessage(
+            """At 'b' expected double but was object
+
+expected:
+{
+  "a": "foo",
+  "b": 6.02E23
+}
+
+actual:
+{
+  "a": "foo",
+  "b": {
+    "c": true
   }
 }"""
          )
@@ -533,15 +641,15 @@ actual:
 
 expected:
 {
-  "a" : "foo",
-  "b" : "werqe"
+  "a": "foo",
+  "b": "werqe"
 }
 
 actual:
 {
-  "a" : "foo",
-  "b" : {
-    "c" : true
+  "a": "foo",
+  "b": {
+    "c": true
   }
 }"""
          )
@@ -557,20 +665,20 @@ actual:
 
 expected:
 {
-  "a" : "foo",
-  "b" : {
-    "c" : {
-      "d" : 534
+  "a": "foo",
+  "b": {
+    "c": {
+      "d": 534
     }
   }
 }
 
 actual:
 {
-  "a" : "foo",
-  "b" : {
-    "c" : {
-      "d" : 123
+  "a": "foo",
+  "b": {
+    "c": {
+      "d": 123
     }
   }
 }"""
@@ -587,20 +695,28 @@ actual:
 
 expected:
 {
-  "a" : "foo",
-  "b" : {
-    "c" : {
-      "d" : [ 1, 2, 4 ]
+  "a": "foo",
+  "b": {
+    "c": {
+      "d": [
+        1,
+        2,
+        4
+      ]
     }
   }
 }
 
 actual:
 {
-  "a" : "foo",
-  "b" : {
-    "c" : {
-      "d" : [ 1, 2, 3 ]
+  "a": "foo",
+  "b": {
+    "c": {
+      "d": [
+        1,
+        2,
+        3
+      ]
     }
   }
 }"""
@@ -617,20 +733,29 @@ actual:
 
 expected:
 {
-  "a" : "foo",
-  "b" : {
-    "c" : {
-      "d" : [ 1, 2, 4 ]
+  "a": "foo",
+  "b": {
+    "c": {
+      "d": [
+        1,
+        2,
+        4
+      ]
     }
   }
 }
 
 actual:
 {
-  "a" : "foo",
-  "b" : {
-    "c" : {
-      "d" : [ 1, 2, 3, 4 ]
+  "a": "foo",
+  "b": {
+    "c": {
+      "d": [
+        1,
+        2,
+        3,
+        4
+      ]
     }
   }
 }"""
@@ -652,12 +777,13 @@ actual:
 
 expected:
 {
-  "products" : [ {
-    "id" : 4815869968463,
-    "title" : "RIND Fitted Hat",
-    "handle" : "rind-fitted-hat",
-    "body_html" : "<meta charset=\"utf-8\">Flexfit Ultra fiber Cap with Air Mesh Sides<br>Blue with Orange Embroidery",
-    "published_at" : "2020-10-22T17:13:25-04:00","""
+  "products": [
+    {
+      "id": 4815869968463,
+      "title": "RIND Fitted Hat",
+      "handle": "rind-fitted-hat",
+      "body_html": "<meta charset=\"utf-8\">Flexfit Ultra fiber Cap with Air Mesh Sides<br>Blue with Orange Embroidery",
+      "published_at": "2020-10-22T17:13:25-04:00","""
          )
       }
 
@@ -671,11 +797,12 @@ expected:
 
 expected:
 {
-  "products" : [ {
-    "id" : 4815869968463,
-    "title" : "RIND Fitted Hat",
-    "handle" : "rind-fitted-hat",
-    "body_html" : "<meta charset=\"utf-"""
+  "products": [
+    {
+      "id": 4815869968463,
+      "title": "RIND Fitted Hat",
+      "handle": "rind-fitted-hat",
+      "body_html": "<meta charset=\"utf-"""
          )
       }
 
@@ -689,13 +816,14 @@ expected:
 
 expected:
 {
-  "products" : [ {
-    "id" : 4815869968463,
-    "title" : "RIND Fitted Hat",
-    "handle" : "rind-fitted-hat",
-    "body_html" : "<meta charset=\"utf-8\">Flexfit Ultra fiber Cap with Air Mesh Sides<br>Blue with Orange Embroidery",
-    "published_at" : "2020-10-22T17:13:25-04:00",
-    "created_at" : "2020-10-22T17:13:23-04:00","""
+  "products": [
+    {
+      "id": 4815869968463,
+      "title": "RIND Fitted Hat",
+      "handle": "rind-fitted-hat",
+      "body_html": "<meta charset=\"utf-8\">Flexfit Ultra fiber Cap with Air Mesh Sides<br>Blue with Orange Embroidery",
+      "published_at": "2020-10-22T17:13:25-04:00",
+      "created_at": "2020-10-22T17:13:23-04:00","""
          )
       }
 
@@ -728,22 +856,22 @@ expected:
 
 expected:
 {
-  "sku" : "RIND-TOTEO-001-MCF",
-  "id" : 32672932069455,
-  "title" : "Default Title",
-  "requires_shipping" : true,
-  "taxable" : true,
-  "featured_image" : null
+  "sku": "RIND-TOTEO-001-MCF",
+  "id": 32672932069455,
+  "title": "Default Title",
+  "requires_shipping": true,
+  "taxable": true,
+  "featured_image": null
 }
 
 actual:
 {
-  "id" : 32672932069455,
-  "title" : "Default Title",
-  "sku" : "RIND-TOTEO-001-MCF",
-  "requires_shipping" : true,
-  "taxable" : true,
-  "featured_image" : null
+  "id": 32672932069455,
+  "title": "Default Title",
+  "sku": "RIND-TOTEO-001-MCF",
+  "requires_shipping": true,
+  "taxable": true,
+  "featured_image": null
 }""")
       }
    }
