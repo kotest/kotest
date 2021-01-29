@@ -74,8 +74,11 @@ expect fun <A : Any> platformShow(a: A): Show<A>?
 @Suppress("UNCHECKED_CAST")
 fun <T : Any> commonShowFor(t: T): Show<T> {
    // lookup a show from the registered typeclasses
-   val kclass = Shows.all().keys.firstOrNull { it.isInstance(t) }
-   if (kclass != null) Shows.all()[kclass] as Show<T>
+   val kclass: KClass<*>? = Shows.all().keys.firstOrNull { it.isInstance(t) }
+   if (kclass != null) {
+      val show: Show<*>? = Shows.all()[kclass]
+      return show as Show<T>
+   }
    // this won't work in JS or native, so they'll get the boring old toString version
    if (io.kotest.mpp.reflection.isDataClass(t::class)) return dataClassShow<T>()
    return DefaultShow
