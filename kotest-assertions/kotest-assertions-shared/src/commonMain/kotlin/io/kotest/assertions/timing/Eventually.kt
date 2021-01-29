@@ -1,9 +1,6 @@
 package io.kotest.assertions.timing
 
-import io.kotest.assertions.NondeterministicListener
-import io.kotest.assertions.SuspendingPredicate
-import io.kotest.assertions.SuspendingProducer
-import io.kotest.assertions.failure
+import io.kotest.assertions.*
 import io.kotest.assertions.until.Interval
 import io.kotest.assertions.until.fixed
 import kotlinx.coroutines.delay
@@ -33,14 +30,16 @@ data class Eventually<T, E : Throwable> (
       predicate: SuspendingPredicate<T> = { true },
       f: SuspendingProducer<T>,
    ): T {
-      val end = TimeSource.Monotonic.markNow().plus(duration)
+      val start = TimeSource.Monotonic.markNow()
+      val end = start.plus(duration)
       var times = 0
       var firstError: Throwable? = null
       var lastError: Throwable? = null
+
       while (end.hasNotPassedNow() && times < retries) {
          try {
             val result = f()
-            listener.onEval(result)
+            listener.onEval(result, NondeterministicState(start, end, times, firstError, lastError))
             if (predicate(result)) {
                return result
             }
@@ -60,7 +59,7 @@ data class Eventually<T, E : Throwable> (
       }
 
       val message = StringBuilder().apply {
-         append("Eventually block failed after ${duration}; attempted $times time(s); $interval delay between attempts")
+         append("Eventually block failed after ${duration}; attempted ${times} time(s); $interval delay between attempts")
 
          if (firstError != null) {
             appendLine("The first error was caused by: ${firstError.message}")

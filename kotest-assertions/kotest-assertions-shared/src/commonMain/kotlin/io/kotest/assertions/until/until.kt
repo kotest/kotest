@@ -2,7 +2,6 @@ package io.kotest.assertions.until
 
 import io.kotest.assertions.SuspendingPredicate
 import io.kotest.assertions.SuspendingProducer
-import io.kotest.assertions.nondeterministicListener
 import io.kotest.assertions.timing.eventually
 import kotlin.time.Duration
 import kotlin.time.ExperimentalTime
@@ -58,9 +57,9 @@ suspend fun <T> until(duration: Duration, interval: Interval, predicate: Suspend
 @OptIn(ExperimentalTime::class)
 @Deprecated(
    "Use eventually", ReplaceWith(
-      "eventually(duration, interval, listener = nondeterministicListener<T> { listener.onEval(it) }, predicate = predicate, f = f)",
+      "eventually(duration, interval, listener = { it, _ -> listener.onEval(it) }, predicate = predicate, f = f)",
       "io.kotest.assertions.timing.eventually"
    )
 )
 suspend fun <T> until(duration: Duration, interval: Interval, predicate: SuspendingPredicate<T>, listener: UntilListener<T>, f: SuspendingProducer<T>): T =
-   eventually(duration, interval, listener = nondeterministicListener<T> { listener.onEval(it) }, predicate = predicate, f = f)
+   eventually(duration, interval, listener = { it, _ -> listener.onEval(it) }, predicate = predicate, f = f)
