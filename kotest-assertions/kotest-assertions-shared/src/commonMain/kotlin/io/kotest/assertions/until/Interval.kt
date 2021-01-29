@@ -6,6 +6,7 @@ import kotlin.time.ExperimentalTime
 /**
  * A [Interval] determines how often Kotest will invoke the predicate function for an [until] block.
  */
+@OptIn(ExperimentalTime::class)
 interface Interval {
 
    /**
@@ -16,6 +17,5 @@ interface Interval {
     *
     * @return The duration of the next poll interval
     */
-   @OptIn(ExperimentalTime::class)
    fun next(count: Int): Duration
 }

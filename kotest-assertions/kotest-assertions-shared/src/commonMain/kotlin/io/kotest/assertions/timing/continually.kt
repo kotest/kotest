@@ -1,38 +1,45 @@
 package io.kotest.assertions.timing
 
-import io.kotest.assertions.NondeterministicListener
 import io.kotest.assertions.SuspendingProducer
 import io.kotest.assertions.failure
 import io.kotest.assertions.until.Interval
 import io.kotest.assertions.until.fixed
 import kotlinx.coroutines.delay
-import kotlin.time.Duration
-import kotlin.time.ExperimentalTime
-import kotlin.time.TimeSource
-import kotlin.time.milliseconds
+import kotlin.time.*
+
+@OptIn(ExperimentalTime::class)
+data class ContinuallyState(val start: TimeMark, val end: TimeMark, val times: Int)
+
+fun interface ContinuallyListener<in T> {
+   fun onEval(t: T, state: ContinuallyState)
+
+   companion object {
+      val noop = ContinuallyListener<Any?> { _, _ -> }
+   }
+}
 
 @OptIn(ExperimentalTime::class)
 data class Continually<T> (
    val duration: Duration = Duration.INFINITE,
    val interval: Interval = 25.milliseconds.fixed(),
-   val listener: NondeterministicListener<T> = NondeterministicListener.noop,
-) {
+   val listener: ContinuallyListener<T> = ContinuallyListener.noop,
+   ) {
    suspend operator fun invoke(f: SuspendingProducer<T>): T? {
-      val mark = TimeSource.Monotonic.markNow()
-      val end = mark.plus(duration)
+      val start = TimeSource.Monotonic.markNow()
+      val end = start.plus(duration)
       var times = 0
       var result: T? = null
       while (end.hasNotPassedNow()) {
          try {
             result = f()
-            listener.onEval(result)
+            listener.onEval(result, ContinuallyState(start, end, times))
          } catch (e: AssertionError) {
             // if this is the first time the check was executed then just rethrow the underlying error
             if (times == 0)
                throw e
             // if not the first attempt then include how many times/for how long the test passed
             throw failure(
-               "Test failed after ${mark.elapsedNow()}; expected to pass for ${duration.toLongMilliseconds()}ms; attempted $times times\nUnderlying failure was: ${e.message}",
+               "Test failed after ${start.elapsedNow()}; expected to pass for ${duration.toLongMilliseconds()}ms; attempted $times times\nUnderlying failure was: ${e.message}",
                e
             )
          }

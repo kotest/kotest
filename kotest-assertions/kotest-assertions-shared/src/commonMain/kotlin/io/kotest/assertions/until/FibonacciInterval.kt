@@ -21,6 +21,8 @@ class FibonacciInterval(private val base: Duration, private val offset: Int) : I
       require(offset >= 0) { "Offset must be greater than or equal to 0" }
    }
 
+   override fun toString() = "FibonacciInterval(${::base.name}=$base, ${::offset.name}=$offset)"
+
    override fun next(count: Int): Duration {
       val baseMs = base.toLongMilliseconds()
       val total = baseMs * fibonacci(offset + count)

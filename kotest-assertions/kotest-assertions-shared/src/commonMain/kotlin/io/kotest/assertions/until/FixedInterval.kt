@@ -8,6 +8,8 @@ import kotlin.time.ExperimentalTime
  */
 @OptIn(ExperimentalTime::class)
 class FixedInterval(private val duration: Duration) : Interval {
+   override fun toString() = "FixedInterval(${::duration.name}=$duration)"
+
    override fun next(count: Int): Duration {
       return duration
    }

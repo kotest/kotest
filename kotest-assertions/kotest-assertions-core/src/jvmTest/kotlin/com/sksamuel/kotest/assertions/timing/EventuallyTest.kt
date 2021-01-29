@@ -1,13 +1,10 @@
 package com.sksamuel.kotest.assertions.timing
 
 import io.kotest.assertions.fail
-import io.kotest.assertions.nondeterministicListener
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.assertions.timing.eventually
 import io.kotest.assertions.until.fibonacci
 import io.kotest.assertions.until.fixed
-import io.kotest.assertions.until.until
-import io.kotest.assertions.until.untilListener
 import io.kotest.core.spec.style.WordSpec
 import io.kotest.matchers.ints.shouldBeLessThan
 import io.kotest.matchers.longs.shouldBeGreaterThanOrEqual
@@ -78,9 +75,6 @@ class EventuallyTest : WordSpec() {
          }
          "pass tests that throws FileNotFoundException for some time"  {
             val end = System.currentTimeMillis() + 150
-            eventually(duration = 5.days) {
-
-            }
             eventually(5.days) {
                if (System.currentTimeMillis() < end)
                   throw FileNotFoundException("foo")
@@ -116,7 +110,7 @@ class EventuallyTest : WordSpec() {
                   }
                }
             }.message
-            message.shouldContain("Eventually block failed after 100ms; attempted \\d+ time\\(s\\); 25.0ms delay between attempts".toRegex())
+            message.shouldContain("Eventually block failed after 100ms; attempted \\d+ time\\(s\\); FixedInterval\\(duration=25.0ms\\) delay between attempts".toRegex())
             message.shouldContain("The first error was caused by: first")
             message.shouldContain("The last error was caused by: last")
          }
@@ -165,7 +159,7 @@ class EventuallyTest : WordSpec() {
 
          "eventually with T predicate and interval" {
             var t = ""
-            val result = eventually(5.seconds, 250.milliseconds.fixed(), { t == "xxxxxxxxxxx" }) {
+            val result = eventually(5.seconds, 250.milliseconds.fixed(), predicate = { t == "xxxxxxxxxxx" }) {
                t += "x"
                t
             }
@@ -175,8 +169,8 @@ class EventuallyTest : WordSpec() {
          "eventually with T predicate, interval, and listener" {
             var t = ""
             val latch = CountDownLatch(5)
-            val listener = nondeterministicListener<String> { latch.countDown() }
-            val result = eventually(5.seconds, 250.milliseconds.fixed(), listener, predicate = { t == "xxxxxxxxxxx" }) {
+            val result = eventually(5.seconds, 250.milliseconds.fixed(),
+               listener = { _, _ -> latch.countDown() }, predicate = { t == "xxxxxxxxxxx" }) {
                t += "x"
                t
             }
@@ -186,7 +180,7 @@ class EventuallyTest : WordSpec() {
 
          "fail tests that fail a predicate" {
             shouldThrow<AssertionError> {
-               eventually(1.seconds, { it == 2 }) {
+               eventually(1.seconds, predicate = { it == 2 }) {
                   1
                }
             }
@@ -195,8 +189,8 @@ class EventuallyTest : WordSpec() {
          "support fibonacci intervals" {
             var t = ""
             val latch = CountDownLatch(5)
-            val listener = nondeterministicListener<String> { latch.countDown() }
-            val result = eventually(10.seconds, 200.milliseconds.fibonacci(), listener, predicate = { t == "xxxxxx" }) {
+            val result = eventually(10.seconds, 200.milliseconds.fibonacci(),
+               listener = { _, _ -> latch.countDown() }, predicate = { t == "xxxxxx" }) {
                t += "x"
                t
             }

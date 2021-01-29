@@ -27,15 +27,19 @@ fun <T> untilListener(f: (T) -> Unit) = object : UntilListener<T> {
 
 @OptIn(ExperimentalTime::class)
 @Deprecated(
-   "Use eventually",
-   ReplaceWith("eventually(duration, interval, f = f)", "io.kotest.assertions.timing.eventually")
+   "Use eventually or Eventually.invoke",
+   ReplaceWith(
+      "eventually(duration, interval, f = f)",
+      "io.kotest.assertions.timing.eventually"
+   )
 )
 suspend fun until(duration: Duration, interval: Interval = 1.seconds.fixed(), f: suspend () -> Boolean) =
    eventually(duration, interval, f = f)
 
 @OptIn(ExperimentalTime::class)
 @Deprecated(
-   "Use eventually", ReplaceWith(
+   "Use eventually or Eventually.invoke",
+   ReplaceWith(
       "eventually(duration, 1.seconds.fixed(), predicate = predicate, f = f)",
       "io.kotest.assertions.timing.eventually",
       "kotlin.time.seconds"
@@ -46,12 +50,18 @@ suspend fun <T> until(duration: Duration, predicate: SuspendingPredicate<T>, f: 
 
 @OptIn(ExperimentalTime::class)
 @Deprecated(
-   "Use eventually", ReplaceWith(
+   "Use eventually or Eventually.invoke",
+   ReplaceWith(
       "eventually(duration, interval, predicate = predicate, f = f)",
       "io.kotest.assertions.timing.eventually"
    )
 )
-suspend fun <T> until(duration: Duration, interval: Interval, predicate: SuspendingPredicate<T>, f: SuspendingProducer<T>): T =
+suspend fun <T> until(
+   duration: Duration,
+   interval: Interval,
+   predicate: SuspendingPredicate<T>,
+   f: SuspendingProducer<T>
+): T =
    eventually(duration, interval, predicate = predicate, f = f)
 
 @OptIn(ExperimentalTime::class)
@@ -61,5 +71,11 @@ suspend fun <T> until(duration: Duration, interval: Interval, predicate: Suspend
       "io.kotest.assertions.timing.eventually"
    )
 )
-suspend fun <T> until(duration: Duration, interval: Interval, predicate: SuspendingPredicate<T>, listener: UntilListener<T>, f: SuspendingProducer<T>): T =
+suspend fun <T> until(
+   duration: Duration,
+   interval: Interval,
+   predicate: SuspendingPredicate<T>,
+   listener: UntilListener<T>,
+   f: SuspendingProducer<T>
+): T =
    eventually(duration, interval, listener = { it, _ -> listener.onEval(it) }, predicate = predicate, f = f)
