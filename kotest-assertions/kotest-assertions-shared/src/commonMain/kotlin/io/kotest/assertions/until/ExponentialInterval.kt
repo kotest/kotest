@@ -7,6 +7,8 @@ import kotlin.time.milliseconds
 
 @OptIn(ExperimentalTime::class)
 class ExponentialInterval(private val base: Duration) : Interval {
+   override fun toString() = "ExponentialInterval(${::base.name}=$base)"
+
    override fun next(count: Int): Duration {
       val amount = base.inMilliseconds.pow(count.toDouble()).toLong()
       return amount.milliseconds
