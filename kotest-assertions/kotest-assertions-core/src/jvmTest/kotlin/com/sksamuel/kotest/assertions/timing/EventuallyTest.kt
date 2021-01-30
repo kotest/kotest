@@ -3,7 +3,7 @@ package com.sksamuel.kotest.assertions.timing
 import io.kotest.assertions.assertSoftly
 import io.kotest.assertions.fail
 import io.kotest.assertions.throwables.shouldThrow
-import io.kotest.assertions.timing.Eventually
+import io.kotest.assertions.timing.EventuallyConfig
 import io.kotest.assertions.timing.eventually
 import io.kotest.assertions.until.fibonacci
 import io.kotest.assertions.until.fixed
@@ -25,17 +25,6 @@ class EventuallyTest : WordSpec() {
 
    init {
       "eventually" should {
-         "eventually configuration can be shared" {
-            val slow = Eventually<Int, Throwable>(duration = 5.seconds)
-            val fast = slow.copy(retries = 1)
-
-            assertSoftly {
-               slow.retries shouldBe Int.MAX_VALUE
-               fast.retries shouldBe 1
-               slow.duration shouldBe 5.seconds
-               fast.duration shouldBe 5.seconds
-            }
-         }
          "pass working tests" {
             eventually(5.days) {
                System.currentTimeMillis()
@@ -205,6 +194,29 @@ class EventuallyTest : WordSpec() {
             }
             latch.await(10, TimeUnit.SECONDS) shouldBe true
             result shouldBe "xxxxxx"
+         }
+
+         "eventually has a shareable configuration" {
+            val slow = EventuallyConfig<Int, Throwable>(duration = 5.seconds)
+            val fast = slow.copy(retries = 1)
+
+            assertSoftly {
+               slow.retries shouldBe Int.MAX_VALUE
+               fast.retries shouldBe 1
+               slow.duration shouldBe 5.seconds
+               fast.duration shouldBe 5.seconds
+            }
+
+            eventually(slow) {
+               5
+            }
+
+            var i = 0
+            eventually(fast, predicate = { i == 1 }) {
+               i++
+            }
+
+            i shouldBe 1
          }
       }
    }

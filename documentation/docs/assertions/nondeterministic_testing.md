@@ -97,7 +97,7 @@ and customize them per suite. This is also a perfect time to show off the listen
 into the current value of the result of your producer and the state of iterations!
 
 ```kotlin
-val slow = Eventually<APIResult, ExpectedException>(5.minutes, interval = 25.milliseconds.fibonacci(), exceptionClass = ExpectedException::class)
+val slow = EventuallyConfig<ServerResponse, ServerException>(5.minutes, interval = 25.milliseconds.fibonacci(), exceptionClass = ServerException::class)
 val fast = slow.copy(duration = 5.seconds)
 
 class FooTests : StringSpec({
@@ -105,29 +105,27 @@ class FooTests : StringSpec({
   val fSlow = slow.copy(listener = { i, t -> logger.info("Current $i after {${t.times} attempts")})
 
   "server eventually provides a result for /foo" {
-    fSlow.invoke {
-      server("/foo")
+    eventually(fSlow) {
+      fooApi()
     }
   }
 })
 
 class BarTests : StringSpec({
   val logger = logger("BarTests")
-  val fSlow = slow.copy(listener = { i, t -> logger.info("Current $i after {${t.times} attempts")})
+  val bFast = fast.copy(listener = { i, t -> logger.info("Current $i after {${t.times} attempts")})
 
   "server eventually provides a result for /bar" {
-    fSlow.invoke {
-      server("/bar")
+    eventually(bFast) {
+      barApi()
     }
   }
 })
+
 ```
 
 Here we can see sharing of configuration can be useful to reduce duplicate code while allowing flexibility for things like
 custom logging per test suite for clear test logs.
-
-The configuration data class `Eventually` is just a handy container for settings and doesn't execute anything,
-you must instead call the invoke function with your producer (and optional predicate).
 
 ## Continually <a name="continually"></a>
 
