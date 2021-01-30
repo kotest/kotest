@@ -218,6 +218,17 @@ class EventuallyTest : WordSpec() {
 
             i shouldBe 1
          }
+
+         "throws if retry limit is exceeded" {
+            val message = shouldThrow<AssertionError> {
+               eventually(EventuallyConfig(retries = 2)) {
+                  1 shouldBe 2
+               }
+            }.message
+
+            message.shouldContain("Eventually block failed after Infinity")
+            message.shouldContain("attempted 2 time(s)")
+         }
       }
    }
 }
