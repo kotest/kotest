@@ -1,7 +1,9 @@
 package com.sksamuel.kotest.assertions.timing
 
+import io.kotest.assertions.assertSoftly
 import io.kotest.assertions.fail
 import io.kotest.assertions.throwables.shouldThrow
+import io.kotest.assertions.timing.Eventually
 import io.kotest.assertions.timing.eventually
 import io.kotest.assertions.until.fibonacci
 import io.kotest.assertions.until.fixed
@@ -16,17 +18,24 @@ import java.io.FileNotFoundException
 import java.io.IOException
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.TimeUnit
-import kotlin.time.ExperimentalTime
-import kotlin.time.TimeSource
-import kotlin.time.days
-import kotlin.time.milliseconds
-import kotlin.time.seconds
+import kotlin.time.*
 
 @OptIn(ExperimentalTime::class)
 class EventuallyTest : WordSpec() {
 
    init {
       "eventually" should {
+         "eventually configuration can be shared" {
+            val slow = Eventually<Int, Throwable>(duration = 5.seconds)
+            val fast = slow.copy(retries = 1)
+
+            assertSoftly {
+               slow.retries shouldBe Int.MAX_VALUE
+               fast.retries shouldBe 1
+               slow.duration shouldBe 5.seconds
+               fast.duration shouldBe 5.seconds
+            }
+         }
          "pass working tests" {
             eventually(5.days) {
                System.currentTimeMillis()

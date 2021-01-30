@@ -14,6 +14,10 @@ suspend fun <T> eventually(duration: Duration, f: SuspendingProducer<T>): T =
    Eventually<T, Throwable>(duration = duration, exceptionClass = Throwable::class).invoke(f = f)
 
 @OptIn(ExperimentalTime::class)
+suspend fun <T> eventually(duration: Duration, predicate: SuspendingPredicate<T>, f: SuspendingProducer<T>): T =
+   Eventually<T, Throwable>(duration = duration, exceptionClass = Throwable::class).invoke(predicate, f)
+
+@OptIn(ExperimentalTime::class)
 @Deprecated("""
 Use eventually with an interval, using Duration based poll is deprecated.
 To convert an existing duration to an interval you can Duration.fixed(), Duration.exponential(), or Duration.fibonacci().
