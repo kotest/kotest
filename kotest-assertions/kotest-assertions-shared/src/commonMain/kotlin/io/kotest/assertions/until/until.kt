@@ -1,7 +1,7 @@
 package io.kotest.assertions.until
 
-import io.kotest.assertions.SuspendingPredicate
 import io.kotest.assertions.SuspendingProducer
+import io.kotest.assertions.timing.EventuallyPredicate
 import io.kotest.assertions.timing.eventually
 import kotlin.time.Duration
 import kotlin.time.seconds
@@ -42,7 +42,7 @@ suspend fun until(duration: Duration, interval: Interval = 1.seconds.fixed(), f:
       "kotlin.time.seconds"
    )
 )
-suspend fun <T> until(duration: Duration, predicate: SuspendingPredicate<T>, f: SuspendingProducer<T>): T =
+suspend fun <T> until(duration: Duration, predicate: EventuallyPredicate<T>, f: SuspendingProducer<T>): T =
    eventually(duration, 1.seconds.fixed(), predicate = predicate, f = f)
 
 @Deprecated(
@@ -55,7 +55,7 @@ suspend fun <T> until(duration: Duration, predicate: SuspendingPredicate<T>, f: 
 suspend fun <T> until(
    duration: Duration,
    interval: Interval,
-   predicate: SuspendingPredicate<T>,
+   predicate: EventuallyPredicate<T>,
    f: SuspendingProducer<T>
 ): T =
    eventually(duration, interval, predicate = predicate, f = f)
@@ -69,7 +69,7 @@ suspend fun <T> until(
 suspend fun <T> until(
    duration: Duration,
    interval: Interval,
-   predicate: SuspendingPredicate<T>,
+   predicate: EventuallyPredicate<T>,
    listener: UntilListener<T>,
    f: SuspendingProducer<T>
 ): T =

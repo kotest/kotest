@@ -1,3 +1,5 @@
+@file:Suppress("BlockingMethodInNonBlockingContext")
+
 package com.sksamuel.kotest.assertions.timing
 
 import io.kotest.assertions.assertSoftly
@@ -170,7 +172,7 @@ class EventuallyTest : WordSpec() {
                5.seconds,
                250.milliseconds.fixed(),
                predicate = { t == "xxxxxxxxxxx" },
-               listener = { _ -> latch.countDown() },
+               listener = { latch.countDown() },
             ) {
                t += "x"
                t
@@ -204,10 +206,10 @@ class EventuallyTest : WordSpec() {
          }
 
          "eventually has a shareable configuration" {
-            val slow = EventuallyConfig<Int>(duration = 5.seconds)
+            val slow = EventuallyConfig(duration = 5.seconds)
 
             var i = 0
-            val fast = slow.copy(retries = 1, predicate = { i == 1 })
+            val fast = slow.copy(retries = 1)
 
             assertSoftly {
                slow.retries shouldBe Int.MAX_VALUE
@@ -220,7 +222,7 @@ class EventuallyTest : WordSpec() {
                5
             }
 
-            eventually(fast) {
+            eventually(fast, predicate = { i == 1 }) {
                i++
             }
 
