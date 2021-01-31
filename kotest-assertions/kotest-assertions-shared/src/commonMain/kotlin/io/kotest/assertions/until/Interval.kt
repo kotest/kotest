@@ -1,12 +1,10 @@
 package io.kotest.assertions.until
 
 import kotlin.time.Duration
-import kotlin.time.ExperimentalTime
 
 /**
  * A [Interval] determines how often Kotest will invoke the predicate function for an [until] block.
  */
-@OptIn(ExperimentalTime::class)
 interface Interval {
 
    /**
