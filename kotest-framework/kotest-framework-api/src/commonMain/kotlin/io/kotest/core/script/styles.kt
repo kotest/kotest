@@ -20,7 +20,7 @@ fun test(name: String, test: suspend TestContext.() -> Unit) {
 fun context(name: String, test: suspend ContextScope.() -> Unit) {
    val testName = createTestName(name)
    val description = ScriptSpec().description().append(testName, TestType.Container)
-   ScriptRuntime.registerRootTest(testName, false, TestType.Test) { ContextScope(description, it).test() }
+   ScriptRuntime.registerRootTest(testName, false, TestType.Container) { ContextScope(description, it).test() }
 }
 
 class ContextScope(

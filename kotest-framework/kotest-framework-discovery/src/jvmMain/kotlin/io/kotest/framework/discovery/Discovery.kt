@@ -113,9 +113,11 @@ class Discovery(private val discoveryExtensions: List<DiscoveryExtension> = empt
 
       log("After discovery extensions there are ${filtered.size} spec classes")
 
+      val scriptsEnabled = System.getProperty(KotestEngineSystemProperties.scriptsEnabled) == "true" ||
+         System.getenv(KotestEngineSystemProperties.scriptsEnabled) == "true"
+
       val scripts = when {
-         System.getProperty(KotestEngineSystemProperties.scriptsEnabled) == "true" -> discoverScripts()
-         System.getenv(KotestEngineSystemProperties.scriptsEnabled) == "true" -> discoverScripts()
+         scriptsEnabled -> discoverScripts()
          else -> emptyList()
       }
 
