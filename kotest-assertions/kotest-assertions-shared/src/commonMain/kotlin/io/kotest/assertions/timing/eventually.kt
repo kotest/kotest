@@ -12,34 +12,40 @@ import kotlin.time.*
 /**
  * Runs a function until it doesn't throw as long as the specified duration hasn't passed
  */
-@OptIn(ExperimentalTime::class)
 suspend fun <T> eventually(duration: Duration, f: SuspendingProducer<T>): T =
    eventually(EventuallyConfig(duration = duration, exceptionClass = Throwable::class), f = f)
 
-/**
- * Runs a function until it doesn't throw and the result satisfies the predicate as long as the specified duration hasn't passed
- */
-@OptIn(ExperimentalTime::class)
-suspend fun <T> eventually(duration: Duration, predicate: SuspendingPredicate<T>, f: SuspendingProducer<T>): T =
-   eventually(EventuallyConfig(duration = duration, exceptionClass = Throwable::class), predicate, f)
+suspend fun <T : Any> eventually(
+   duration: Duration,
+   interval: Interval,
+   f: SuspendingProducer<T>
+): T = eventually(EventuallyConfig(duration, interval), f)
 
-@OptIn(ExperimentalTime::class)
-@Deprecated("""
+suspend fun <T> eventually(
+   duration: Duration,
+   interval: Interval,
+   listener: EventuallyListener<T>,
+   f: SuspendingProducer<T>
+): T = eventually(EventuallyConfig(duration = duration, interval, listener = listener), f)
+
+
+@Deprecated(
+   """
 Use eventually with an interval, using Duration based poll is deprecated.
 To convert an existing duration to an interval you can Duration.fixed(), Duration.exponential(), or Duration.fibonacci().
 """,
    ReplaceWith(
       "eventually(duration, interval = poll.fixed(), f = f)",
       "io.kotest.assertions.until.fixed"
-   ))
+   )
+)
 suspend fun <T> eventually(duration: Duration, poll: Duration, f: SuspendingProducer<T>): T =
    eventually(EventuallyConfig(duration = duration, interval = poll.fixed(), exceptionClass = Throwable::class), f = f)
 
 /**
  * Runs a function until it doesn't throw the specified exception as long as the specified duration hasn't passed
  */
-@OptIn(ExperimentalTime::class)
-suspend fun <T, E : Throwable> eventually(duration: Duration, exceptionClass: KClass<E>, f: SuspendingProducer<T>): T =
+suspend fun <T> eventually(duration: Duration, exceptionClass: KClass<out Throwable>, f: SuspendingProducer<T>): T =
    eventually(EventuallyConfig(duration = duration, exceptionClass = exceptionClass), f = f)
 
 /**
@@ -52,25 +58,22 @@ suspend fun <T, E : Throwable> eventually(duration: Duration, exceptionClass: KC
  * [eventually] will delay the specified [interval] between iterations, defaults to 25 [milliseconds]
  * [eventually] will pass the resulting value and state (see [EventuallyState]) into the optional [listener]
  */
-@OptIn(ExperimentalTime::class)
 suspend fun <T> eventually(
    duration: Duration = Duration.INFINITE,
    interval: Interval = 25.milliseconds.fixed(),
-   listener: EventuallyListener<T> = EventuallyListener.noop,
-   retries: Int = Int.MAX_VALUE,
-   exceptionClass: KClass<Throwable>? = Throwable::class,
    predicate: SuspendingPredicate<T> = { true },
+   listener: EventuallyListener<T> = EventuallyListener { },
+   retries: Int = Int.MAX_VALUE,
+   exceptionClass: KClass<out Throwable>? = null,
    f: SuspendingProducer<T>
-): T = eventually(EventuallyConfig(duration, interval, listener, retries, exceptionClass), predicate, f)
+): T = eventually(EventuallyConfig(duration, interval, predicate, listener, retries, exceptionClass), f)
 
 /**
  * Runs a function until it doesn't throw and the result satisfies the predicate as long as the specified duration hasn't passed
  * and uses [EventuallyConfig] to control the duration, interval, listener, retries, and exceptionClass.
  */
-@OptIn(ExperimentalTime::class)
-suspend fun <T, E : Throwable> eventually(
-   config: EventuallyConfig<T, E>,
-   predicate: SuspendingPredicate<T> = { true },
+suspend fun <T> eventually(
+   config: EventuallyConfig<T>,
    f: SuspendingProducer<T>,
 ): T {
    val start = TimeSource.Monotonic.markNow()
@@ -82,8 +85,8 @@ suspend fun <T, E : Throwable> eventually(
    while (end.hasNotPassedNow() && times < config.retries) {
       try {
          val result = f()
-         config.listener.onEval(result, EventuallyState(start, end, times, firstError, lastError))
-         if (predicate(result)) {
+         config.listener.onEval(EventuallyState(result, start, end, times, firstError, lastError))
+         if (config.predicate(result)) {
             return result
          }
       } catch (e: Throwable) {
@@ -118,28 +121,28 @@ suspend fun <T, E : Throwable> eventually(
    throw failure(message.toString())
 }
 
-@OptIn(ExperimentalTime::class)
-data class EventuallyConfig<T, E : Throwable> (
+data class EventuallyConfig<T>(
    val duration: Duration = Duration.INFINITE,
    val interval: Interval = 25.milliseconds.fixed(),
-   val listener: EventuallyListener<T> = EventuallyListener.noop,
+   val predicate: SuspendingPredicate<T> = { true },
+   val listener: EventuallyListener<T> = EventuallyListener {},
    val retries: Int = Int.MAX_VALUE,
-   val exceptionClass: KClass<E>? = null,
+   val exceptionClass: KClass<out Throwable>? = null,
 ) {
    init {
       require(retries > 0) { "Retries should not be less than one" }
    }
 }
 
-@OptIn(ExperimentalTime::class)
-data class EventuallyState (
-   val start: TimeMark, val end: TimeMark, val times: Int, val firstError: Throwable?, val lastError: Throwable?,
+data class EventuallyState<T>(
+   val result: T,
+   val start: TimeMark,
+   val end: TimeMark,
+   val times: Int,
+   val firstError: Throwable?,
+   val lastError: Throwable?,
 )
 
-fun interface EventuallyListener<in T> {
-   fun onEval(t: T, state: EventuallyState)
-
-   companion object {
-      val noop = EventuallyListener<Any?> { _, _ -> }
-   }
+fun interface EventuallyListener<T> {
+   fun onEval(state: EventuallyState<T>)
 }

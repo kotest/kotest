@@ -98,6 +98,11 @@ kotlin {
       val tvosMain by getting {
          dependsOn(desktopMain)
       }
+
+      all {
+         languageSettings.useExperimentalAnnotation("kotlin.time.ExperimentalTime")
+         languageSettings.useExperimentalAnnotation("kotlin.experimental.ExperimentalTypeInference")
+      }
    }
 }
 

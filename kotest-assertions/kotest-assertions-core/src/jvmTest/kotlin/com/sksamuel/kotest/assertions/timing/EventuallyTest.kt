@@ -20,7 +20,6 @@ import java.util.concurrent.CountDownLatch
 import java.util.concurrent.TimeUnit
 import kotlin.time.*
 
-@OptIn(ExperimentalTime::class)
 class EventuallyTest : WordSpec() {
 
    init {
@@ -167,8 +166,12 @@ class EventuallyTest : WordSpec() {
          "eventually with T predicate, interval, and listener" {
             var t = ""
             val latch = CountDownLatch(5)
-            val result = eventually(5.seconds, 250.milliseconds.fixed(),
-               listener = { _, _ -> latch.countDown() }, predicate = { t == "xxxxxxxxxxx" }) {
+            val result = eventually(
+               5.seconds,
+               250.milliseconds.fixed(),
+               predicate = { t == "xxxxxxxxxxx" },
+               listener = { _ -> latch.countDown() },
+            ) {
                t += "x"
                t
             }
@@ -187,8 +190,12 @@ class EventuallyTest : WordSpec() {
          "support fibonacci intervals" {
             var t = ""
             val latch = CountDownLatch(5)
-            val result = eventually(10.seconds, 200.milliseconds.fibonacci(),
-               listener = { _, _ -> latch.countDown() }, predicate = { t == "xxxxxx" }) {
+            val result = eventually(
+               duration = 10.seconds,
+               interval = 200.milliseconds.fibonacci(),
+               predicate = { t == "xxxxxx" },
+               listener = { latch.countDown() },
+            ) {
                t += "x"
                t
             }
@@ -197,8 +204,10 @@ class EventuallyTest : WordSpec() {
          }
 
          "eventually has a shareable configuration" {
-            val slow = EventuallyConfig<Int, Throwable>(duration = 5.seconds)
-            val fast = slow.copy(retries = 1)
+            val slow = EventuallyConfig<Int>(duration = 5.seconds)
+
+            var i = 0
+            val fast = slow.copy(retries = 1, predicate = { i == 1 })
 
             assertSoftly {
                slow.retries shouldBe Int.MAX_VALUE
@@ -211,8 +220,7 @@ class EventuallyTest : WordSpec() {
                5
             }
 
-            var i = 0
-            eventually(fast, predicate = { i == 1 }) {
+            eventually(fast) {
                i++
             }
 

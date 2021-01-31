@@ -1,7 +1,6 @@
 package io.kotest.assertions.until
 
 import kotlin.time.Duration
-import kotlin.time.ExperimentalTime
 import kotlin.time.milliseconds
 
 /**
@@ -14,7 +13,6 @@ import kotlin.time.milliseconds
  * @param offset   Added to the count, so if the offset is 4, then the first value will be the 4th fib number.
  * @param base The duration that is multiplied by the fibonacci value
  */
-@OptIn(ExperimentalTime::class)
 class FibonacciInterval(private val base: Duration, private val offset: Int) : Interval {
 
    init {
@@ -30,7 +28,6 @@ class FibonacciInterval(private val base: Duration, private val offset: Int) : I
    }
 }
 
-@OptIn(ExperimentalTime::class)
 fun Duration.fibonacci() = FibonacciInterval(this, 0)
 
 fun fibonacci(n: Int): Int {

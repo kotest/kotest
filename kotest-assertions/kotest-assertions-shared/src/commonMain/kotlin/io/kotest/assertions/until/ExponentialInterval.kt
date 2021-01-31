@@ -2,10 +2,8 @@ package io.kotest.assertions.until
 
 import kotlin.math.pow
 import kotlin.time.Duration
-import kotlin.time.ExperimentalTime
 import kotlin.time.milliseconds
 
-@OptIn(ExperimentalTime::class)
 class ExponentialInterval(private val base: Duration) : Interval {
    override fun toString() = "ExponentialInterval(${::base.name}=$base)"
 
@@ -15,5 +13,4 @@ class ExponentialInterval(private val base: Duration) : Interval {
    }
 }
 
-@OptIn(ExperimentalTime::class)
 fun Duration.exponential() = ExponentialInterval(this)
