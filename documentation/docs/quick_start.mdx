@@ -121,7 +121,7 @@ And then add the Kotest JUnit5 runner to your dependencies section.
    </TabItem>
    <TabItem value="Android">
 
-:::info 
+:::info
 Currently, only JVM tests are officially supported in Kotest. Experimental support for instrumented and Robolectric tests is currently under work.
 
 The following steps enable Kotest to be used for unit and integration tests, where the Android framework is not needed or is mocked that usually reside in the
@@ -178,7 +178,7 @@ For example, the JDBC matchers only work for JVM since JDBC is a Java library.
 
 Add the following dependency to your build:
 
-```
+```groovy
 testImplementation 'io.kotest:kotest-assertions-core:$version'
 ```
 
