@@ -19,11 +19,6 @@ suspend fun <T> eventually(duration: Duration, f: SuspendingProducer<T>): T =
 
 suspend fun <T : Any> eventually(
    duration: Duration,
-   f: SuspendingProducer<T>
-): T = eventually(EventuallyConfig(duration), f = f)
-
-suspend fun <T : Any> eventually(
-   duration: Duration,
    interval: Interval,
    f: SuspendingProducer<T>
 ): T = eventually(EventuallyConfig(duration, interval), f = f)
