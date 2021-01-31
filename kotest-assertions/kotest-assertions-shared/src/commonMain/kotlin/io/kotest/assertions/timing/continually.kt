@@ -7,7 +7,6 @@ import io.kotest.assertions.until.fixed
 import kotlinx.coroutines.delay
 import kotlin.time.*
 
-@OptIn(ExperimentalTime::class)
 data class ContinuallyState(val start: TimeMark, val end: TimeMark, val times: Int)
 
 fun interface ContinuallyListener<in T> {
@@ -18,7 +17,6 @@ fun interface ContinuallyListener<in T> {
    }
 }
 
-@OptIn(ExperimentalTime::class)
 data class Continually<T> (
    val duration: Duration = Duration.INFINITE,
    val interval: Interval = 25.milliseconds.fixed(),
@@ -50,13 +48,11 @@ data class Continually<T> (
    }
 }
 
-@OptIn(ExperimentalTime::class)
 @Deprecated("Use continually with an interval, using Duration based poll is deprecated",
    ReplaceWith("continually(duration, poll.fixed(), f = f)", "io.kotest.assertions.until.fixed")
 )
 suspend fun <T> continually(duration: Duration, poll: Duration, f: suspend () -> T) =
    continually(duration, poll.fixed(), f = f)
 
-@OptIn(ExperimentalTime::class)
 suspend fun <T> continually(duration: Duration, interval: Interval = 10.milliseconds.fixed(), f: suspend () -> T) =
    Continually<T>(duration, interval).invoke(f)

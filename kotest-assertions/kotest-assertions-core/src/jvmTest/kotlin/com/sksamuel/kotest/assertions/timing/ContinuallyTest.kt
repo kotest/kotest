@@ -11,7 +11,6 @@ import kotlin.time.hours
 import kotlin.time.milliseconds
 import kotlin.time.seconds
 
-@OptIn(ExperimentalTime::class)
 class ContinuallyTest : WordSpec() {
 
   init {
