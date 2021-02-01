@@ -2,15 +2,16 @@
 
 package io.kotest.engine.listener
 
-import io.kotest.core.plan.TestPlanNode
+import io.kotest.core.plan.Descriptor
+import io.kotest.core.script.ScriptSpec
 import io.kotest.core.spec.Spec
-import io.kotest.core.test.Description
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.core.spec.toDescription
 import io.kotest.framework.discovery.log
 import java.util.concurrent.atomic.AtomicReference
 import kotlin.reflect.KClass
+import kotlinx.coroutines.runBlocking
 
 /**
  * Wraps a [TestEngineListener] methods to ensure that only test notifications
@@ -82,6 +83,18 @@ class IsolationTestEngineListener(val listener: TestEngineListener) : TestEngine
       }
    }
 
+   override fun testStarted(descriptor: Descriptor.TestDescriptor) {
+      synchronized(listener) {
+         if (runningSpec.get() == descriptor.spec()?.classname || descriptor.spec()?.script == true) {
+            listener.testStarted(descriptor)
+         } else {
+            queue {
+               testStarted(descriptor)
+            }
+         }
+      }
+   }
+
    override fun testIgnored(testCase: TestCase, reason: String?) {
       synchronized(listener) {
          if (runningSpec.get() == testCase.spec::class.toDescription().path().value) {
@@ -89,6 +102,18 @@ class IsolationTestEngineListener(val listener: TestEngineListener) : TestEngine
          } else {
             queue {
                testIgnored(testCase, reason)
+            }
+         }
+      }
+   }
+
+   override fun testIgnored(descriptor: Descriptor.TestDescriptor, reason: String?) {
+      synchronized(listener) {
+         if (runningSpec.get() == descriptor.spec()?.classname || descriptor.spec()?.script == true) {
+            listener.testIgnored(descriptor, reason)
+         } else {
+            queue {
+               testIgnored(descriptor, reason)
             }
          }
       }
@@ -106,6 +131,18 @@ class IsolationTestEngineListener(val listener: TestEngineListener) : TestEngine
       }
    }
 
+   override fun testFinished(descriptor: Descriptor.TestDescriptor, result: TestResult) {
+      synchronized(listener) {
+         if (runningSpec.get() == descriptor.spec()?.classname || descriptor.spec()?.script == true) {
+            listener.testFinished(descriptor, result)
+         } else {
+            queue {
+               testFinished(descriptor, result)
+            }
+         }
+      }
+   }
+
    override fun specStarted(kclass: KClass<out Spec>) {
       synchronized(listener) {
          log("IsolationTestEngineListener: specStarted $kclass")
@@ -114,30 +151,6 @@ class IsolationTestEngineListener(val listener: TestEngineListener) : TestEngine
          } else {
             queue {
                specStarted(kclass)
-            }
-         }
-      }
-   }
-
-   override fun testFinished(description: Description, result: TestResult) {
-      synchronized(listener) {
-         if (runningSpec.get() == description.spec().path().value) {
-            listener.testFinished(description, result)
-         } else {
-            queue {
-               testFinished(description, result)
-            }
-         }
-      }
-   }
-
-   override fun testStarted(description: Description) {
-      synchronized(listener) {
-         if (runningSpec.get() == description.spec().path().value) {
-            listener.testStarted(description)
-         } else {
-            queue {
-               testStarted(description)
             }
          }
       }
@@ -162,15 +175,41 @@ class IsolationTestEngineListener(val listener: TestEngineListener) : TestEngine
       }
    }
 
-   override fun specFinished(
-      spec: TestPlanNode.SpecNode,
+   override suspend fun specFinished(
+      descriptor: Descriptor.SpecDescriptor,
       t: Throwable?,
-      results: Map<TestPlanNode.TestCaseNode, TestResult>
+      results: Map<Descriptor.TestDescriptor, TestResult>
    ) {
-      listener.specFinished(spec, t, results)
+      synchronized(listener) {
+         if (runningSpec.get() == descriptor.classname || descriptor.spec()?.script == true) {
+            runBlocking {
+               listener.specFinished(descriptor, t, results)
+            }
+            runningSpec.set(null)
+            replay()
+         } else {
+            queue {
+               runBlocking {
+                  listener.specFinished(descriptor, t, results)
+               }
+            }
+         }
+      }
    }
 
-   override fun specStarted(spec: TestPlanNode.SpecNode) {
-      listener.specStarted(spec)
+   override suspend fun specStarted(descriptor: Descriptor.SpecDescriptor) {
+      synchronized(listener) {
+         if (runningSpec.compareAndSet(null, descriptor.classname)) {
+            runBlocking {
+               listener.specStarted(descriptor)
+            }
+         } else {
+            queue {
+               runBlocking {
+                  listener.specStarted(descriptor)
+               }
+            }
+         }
+      }
    }
 }

@@ -2,7 +2,6 @@ package io.kotest.engine.script
 
 import io.kotest.fp.Try
 import kotlin.reflect.KClass
-import kotlin.reflect.jvm.jvmName
 import kotlin.script.templates.standard.ScriptTemplateWithArgs
 
 /**
@@ -12,7 +11,7 @@ internal fun createAndInitializeScript(
    clazz: KClass<out ScriptTemplateWithArgs>,
    loader: ClassLoader
 ): Try<ScriptTemplateWithArgs> = Try {
-   javaReflectNewInstance(clazz.jvmName, loader)
+   javaReflectNewInstance(clazz.qualifiedName!!, loader)
 }
 
 internal fun javaReflectNewInstance(name: String, loader: ClassLoader): ScriptTemplateWithArgs {

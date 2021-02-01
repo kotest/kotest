@@ -1,5 +1,10 @@
 package io.kotest.core.script
 
+import io.kotest.core.config.ExperimentalKotest
+import io.kotest.core.plan.Descriptor
+import io.kotest.core.plan.DisplayName
+import io.kotest.core.plan.Name
+import io.kotest.core.plan.Source
 import io.kotest.core.sourceRef
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.test.DescriptionName
@@ -9,11 +14,13 @@ import io.kotest.core.test.TestContext
 import io.kotest.core.test.TestType
 import io.kotest.mpp.log
 
+@ExperimentalKotest
 class ScriptSpec : FunSpec()
 
 /**
  * This is a global that scripts can use to gain access to configuration at runtime.
  */
+@ExperimentalKotest
 object ScriptRuntime {
 
    private var spec = ScriptSpec()
@@ -37,16 +44,23 @@ object ScriptRuntime {
    ) {
       log("ScriptRuntime: registerRootTest $name")
       val config = if (xdisabled) TestCaseConfig().copy(enabled = false) else TestCaseConfig()
+      val description = spec.description().append(name, type)
       rootTests.add(
          TestCase(
-            spec.description().append(name, type),
-            spec,
-            test,
-            sourceRef(),
-            type,
-            config,
-            null,
-            null
+            description = description,
+            spec = spec,
+            test = test,
+            source = sourceRef(),
+            type = type,
+            config = config,
+            factoryId = null,
+            assertionMode = null,
+            descriptor = Descriptor.fromScriptClass(ScriptSpec::class).append(
+               Name(description.name.name),
+               DisplayName(description.name.displayName),
+               TestType.Test,
+               Source.TestSource(sourceRef().fileName, sourceRef().lineNumber),
+            ),
          )
       )
    }
@@ -56,7 +70,11 @@ object ScriptRuntime {
       spec = ScriptSpec()
    }
 
-   fun materializeRootTests(): List<TestCase> {
-      return rootTests.toList()
+   fun materializeRootTests(parent: Descriptor.SpecDescriptor): List<TestCase> {
+      // the test cases will have been registered with a placeholder spec description, since we don't know
+      // what that is until runtime. So now we must replace that.
+      return rootTests.toList().map {
+         it.copy(descriptor = it.descriptor!!.copy(parent = parent))
+      }
    }
 }

@@ -1,7 +1,9 @@
 package io.kotest.runner.junit.platform
 
 import io.kotest.core.internal.KotestEngineSystemProperties
-import io.kotest.core.plan.NodeName
+import io.kotest.core.plan.Descriptor
+import io.kotest.core.plan.DisplayName
+import io.kotest.core.plan.Source
 import io.kotest.core.test.Description
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.toDescription
@@ -38,6 +40,10 @@ sealed class Segment {
       override val value: String = "spec"
    }
 
+   object Script : Segment() {
+      override val value: String = "script"
+   }
+
    object Test : Segment() {
       override val value: String = "test"
    }
@@ -56,9 +62,9 @@ fun KClass<out Spec>.descriptor(parent: TestDescriptor): TestDescriptor {
  * Creates a new spec-level [TestDescriptor] from the given spec name, appending it to the
  * parent [TestDescriptor]. The created descriptor will have segment type [Segment.Spec].
  */
-fun NodeName.SpecName.descriptor(parent: TestDescriptor): TestDescriptor {
-   val source = ClassSource.from(this.fqn)
-   return parent.append(displayName, TestDescriptor.Type.CONTAINER, source, Segment.Spec)
+fun Descriptor.SpecDescriptor.descriptor(parent: TestDescriptor): TestDescriptor {
+   val source = ClassSource.from(this.classname ?: "")
+   return parent.append(displayName.value, TestDescriptor.Type.CONTAINER, source, Segment.Script)
 }
 
 /**
@@ -81,6 +87,25 @@ fun TestDescriptor.descriptor(testCase: TestCase): TestDescriptor {
 }
 
 /**
+ * Creates a [TestDescriptor] for the given [Descriptor.TestDescriptor] and attaches it to the receiver as a child.
+ * The created descriptor will have segment type [Segment.Test].
+ */
+fun TestDescriptor.descriptor(desc: Descriptor.TestDescriptor): TestDescriptor {
+
+   val source = FileSource.from(File(desc.source.filename), FilePosition.from(desc.source.lineNumber))
+
+   // there is a bug in gradle 4.7+ whereby CONTAINER_AND_TEST breaks test reporting or hangs the build, as it is not handled
+   // see https://github.com/gradle/gradle/issues/4912
+   // so we can't use CONTAINER_AND_TEST for our test scopes, but simply container
+   // update jan 2020: Seems we can use CONTAINER_AND_TEST now in gradle 6, and CONTAINER is invisible in output
+   val type = when (desc.type) {
+      TestType.Container -> if (System.getProperty(KotestEngineSystemProperties.gradle5) == "true") TestDescriptor.Type.CONTAINER else TestDescriptor.Type.CONTAINER_AND_TEST
+      TestType.Test -> TestDescriptor.Type.TEST
+   }
+   return append(desc.displayName, type, source, Segment.Test)
+}
+
+/**
  * Creates a new [TestDescriptor] appended to the receiver and adds it as a child of the receiver.
  */
 fun TestDescriptor.append(
@@ -90,6 +115,21 @@ fun TestDescriptor.append(
    segment: Segment
 ): TestDescriptor = append(
    description.displayName(),
+   type,
+   source,
+   segment
+)
+
+/**
+ * Creates a new [TestDescriptor] appended to the receiver and adds it as a child of the receiver.
+ */
+fun TestDescriptor.append(
+   displayName: DisplayName,
+   type: TestDescriptor.Type,
+   source: TestSource?,
+   segment: Segment
+): TestDescriptor = append(
+   displayName.value,
    type,
    source,
    segment

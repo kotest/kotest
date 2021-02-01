@@ -1,5 +1,6 @@
 package io.kotest.core.test
 
+import io.kotest.core.plan.Descriptor
 import io.kotest.core.sourceRef
 import io.kotest.core.spec.KotestDsl
 import kotlinx.coroutines.CoroutineScope
@@ -36,11 +37,12 @@ interface TestContext : CoroutineScope {
       name: DescriptionName.TestName,
       test: suspend TestContext.() -> Unit,
       config: TestCaseConfig,
-      type: TestType
+      type: TestType,
+      descriptor: Descriptor.TestDescriptor? = null,
    ) {
       when (testCase.type) {
          TestType.Container -> {
-            val nested = NestedTest(name, test, config, type, sourceRef(), testCase.factoryId)
+            val nested = NestedTest(name, test, config, type, sourceRef(), testCase.factoryId, descriptor)
             registerTestCase(nested)
          }
          TestType.Test -> throw InvalidTestConstructionException("Cannot add a nested test to '${testCase.displayName}' because it is not a test container")
