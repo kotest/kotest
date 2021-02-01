@@ -3,7 +3,6 @@ package io.kotest.engine
 import io.kotest.core.Tags
 import io.kotest.core.config.configuration
 import io.kotest.core.filter.TestFilter
-import io.kotest.core.plan.Descriptor
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.afterProject
 import io.kotest.core.spec.beforeProject
