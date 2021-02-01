@@ -21,6 +21,13 @@ fun test(name: String, test: suspend TestContext.() -> Unit) {
 }
 
 /**
+ * Registers a root test, with the given name.
+ */
+fun should(name: String, test: suspend TestContext.() -> Unit) {
+   ScriptRuntime.registerRootTest(createTestName(name), false, TestType.Test, test)
+}
+
+/**
  * Registers a root context scope, which allows further tests to be registered with test and should keywords.
  */
 fun context(name: String, test: suspend ContextScope.() -> Unit) {
