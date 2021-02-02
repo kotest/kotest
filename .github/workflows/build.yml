@@ -25,7 +25,7 @@ jobs:
                java-version: '11'
 
          -  name: Run tests
-            run: ./gradlew check
+            run: ./gradlew check --scan
 
          -  name: Bundle the build report
             if: failure()
@@ -47,16 +47,16 @@ jobs:
                fetch-depth: 0
 
          -  name: Run macos tests
-            run: ./gradlew macosX64Test
+            run: ./gradlew macosX64Test --scan
 
          -  name: Run ios tests
-            run: ./gradlew iosX64Test
+            run: ./gradlew iosX64Test --scan
 
          -  name: Run tvos tests
-            run: ./gradlew tvosX64Test
+            run: ./gradlew tvosX64Test --scan
 
          -  name: Run watchos tests
-            run: ./gradlew watchosX86Test
+            run: ./gradlew watchosX86Test --scan
 
          -  name: Bundle the build report
             if: failure()
@@ -78,7 +78,7 @@ jobs:
                fetch-depth: 0
 
          -  name: Run tests
-            run: ./gradlew mingwX64Test
+            run: ./gradlew mingwX64Test --scan
 
          -  name: Bundle the build report
             if: failure()
