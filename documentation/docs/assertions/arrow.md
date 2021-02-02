@@ -1,6 +1,7 @@
 ---
 title: Arrow
 slug: arrow.html
+sidebar_label: Arrow
 ---
 
 

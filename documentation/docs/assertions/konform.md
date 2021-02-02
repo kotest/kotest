@@ -1,6 +1,7 @@
 ---
 title: Konform Matchers
 slug: konform-matchers.html
+sidebar_label: Konform
 ---
 
 
