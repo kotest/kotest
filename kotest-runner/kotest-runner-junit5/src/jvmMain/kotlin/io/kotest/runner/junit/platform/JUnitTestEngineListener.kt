@@ -14,7 +14,7 @@ import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestStatus
 import io.kotest.core.test.TestType
 import io.kotest.core.spec.toDescription
-import io.kotest.core.test.TestId
+import io.kotest.core.test.TestPath
 import io.kotest.core.test.createTestName
 import io.kotest.mpp.log
 import org.junit.platform.engine.EngineExecutionListener
@@ -74,9 +74,9 @@ class JUnitTestEngineListener(
    val root: EngineDescriptor,
 ) : TestEngineListener {
 
-   // contains a mapping of a TestId to a junit TestDescription, so we can look up the parent
+   // contains a mapping of junit TestDescriptors, so we can look up the parent
    // when we need to register a new test
-   private val descriptorsByTestId = mutableMapOf<TestId, TestDescriptor>()
+   private val descriptors = mutableMapOf<TestPath, TestDescriptor>()
 
    // contains any spec that failed so we can write out the failed specs file
    private val failedSpecs = mutableSetOf<KClass<out Spec>>()
@@ -135,7 +135,7 @@ class JUnitTestEngineListener(
 
       try {
          val descriptor = kclass.descriptor(root)
-         descriptorsByTestId[kclass.toDescription().toDescriptor(sourceRef()).id()] = descriptor
+         descriptors[kclass.toDescription().toDescriptor(sourceRef()).testPath()] = descriptor
 
          log("Registering junit dynamic test and notifiying start: $descriptor")
          listener.dynamicTestRegistered(descriptor)
@@ -157,7 +157,7 @@ class JUnitTestEngineListener(
          val descriptor = spec.descriptor(root)
 
          // we need to store the descriptor for later, because junit checks by identity so we can't just recreate it later
-         descriptorsByTestId[spec.id()] = descriptor
+         descriptors[spec.testPath()] = descriptor
 
          log("Registering junit dynamic test and notifiying start: $descriptor")
          listener.dynamicTestRegistered(descriptor)
@@ -175,7 +175,7 @@ class JUnitTestEngineListener(
    ) {
       log("specFinished [${spec.name}]")
 
-      val descriptor = descriptorsByTestId[spec.id()]
+      val descriptor = descriptors[spec.testPath()]
          ?: throw RuntimeException("Error retrieving description for spec: ${spec.name}")
 
       // if the spec itself had an error then we must make sure we add at least one nested test so that
@@ -202,7 +202,7 @@ class JUnitTestEngineListener(
    ) {
       log("specFinished [$kclass]")
 
-      val descriptor = descriptorsByTestId[kclass.toDescription().toDescriptor(sourceRef()).id()]
+      val descriptor = descriptors[kclass.toDescription().toDescriptor(sourceRef()).testPath()]
          ?: throw RuntimeException("Error retrieving description for spec: ${kclass.qualifiedName}")
 
       // if the spec itself had an error then we must make sure we add at least one nested test so that
@@ -236,7 +236,7 @@ class JUnitTestEngineListener(
    private fun ensureSpecIsVisible(kclass: KClass<out Spec>, t: Throwable) {
       if (!hasVisibleTest) {
          val description = kclass.toDescription()
-         val spec = descriptorsByTestId[description.toDescriptor(sourceRef()).id()]!!
+         val spec = descriptors[description.toDescriptor(sourceRef()).testPath()]!!
          val test = spec.append(
             description.append(createTestName("Spec execution failed"), TestType.Test), TestDescriptor.Type.TEST, null,
             Segment.Test
@@ -266,14 +266,14 @@ class JUnitTestEngineListener(
    }
 
    override fun testFinished(testCase: TestCase, result: TestResult) {
-      val descriptor = descriptorsByTestId[testCase.description.toDescriptor(testCase.source).id()]
+      val descriptor = descriptors[testCase.description.toDescriptor(testCase.source).testPath()]
          ?: throw RuntimeException("Error retrieving description for: ${testCase.description}")
       log("Notifying junit that a test has finished [$descriptor]")
       listener.executionFinished(descriptor, result.testExecutionResult())
    }
 
    override fun testFinished(descriptor: Descriptor.TestDescriptor, result: TestResult) {
-      val descriptor = descriptorsByTestId[descriptor.id()]
+      val descriptor = descriptors[descriptor.testPath()]
          ?: throw RuntimeException("Error retrieving description for: $descriptor")
       log("Notifying junit that a test has finished [$descriptor]")
       listener.executionFinished(descriptor, result.testExecutionResult())
@@ -302,26 +302,26 @@ class JUnitTestEngineListener(
    }
 
    private fun createTestDescriptor(testCase: TestCase): TestDescriptor {
-      val parent = descriptorsByTestId[testCase.description.parent.toDescriptor(testCase.source).id()]
+      val parent = descriptors[testCase.description.parent.toDescriptor(testCase.source).testPath()]
       if (parent == null) {
          val msg = "Cannot find parent description for: ${testCase.description}"
          log(msg)
          error(msg)
       }
       val descriptor = parent.descriptor(testCase)
-      descriptorsByTestId[testCase.description.toDescriptor(testCase.source).id()] = descriptor
+      descriptors[testCase.description.toDescriptor(testCase.source).testPath()] = descriptor
       return descriptor
    }
 
    private fun createTestDescriptor(descriptor: Descriptor.TestDescriptor): TestDescriptor {
-      val parent = descriptorsByTestId[descriptor.parent.id()]
+      val parent = descriptors[descriptor.parent.testPath()]
       if (parent == null) {
          val msg = "Cannot find parent description for: $descriptor"
          log(msg)
          error(msg)
       }
       val td = parent.descriptor(descriptor)
-      descriptorsByTestId[descriptor.id()] = td
+      descriptors[descriptor.testPath()] = td
       return td
    }
 
