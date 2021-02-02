@@ -60,6 +60,8 @@ object BasicReflection : Reflection {
  */
 fun KClass<*>.bestName(): String = reflection.fqn(this) ?: simpleName ?: this.toString()
 
+fun KClass<*>.qualifiedNameOrNull(): String? = reflection.fqn(this)
+
 /**
  * Finds the first annotation of type T on this class, or returns null if annotations
  * are not supported on this platform or the annotation is missing.

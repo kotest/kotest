@@ -1,11 +1,11 @@
 package io.kotest.engine.listener
 
-import io.kotest.core.plan.TestPlanNode
+import io.kotest.core.plan.Descriptor
 import io.kotest.core.spec.Spec
-import io.kotest.core.test.Description
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import kotlin.reflect.KClass
+import kotlinx.coroutines.runBlocking
 
 /**
  * Wraps a [TestEngineListener]s methods in synchronized calls to ensure no race conditions.
@@ -66,31 +66,41 @@ class SynchronizedTestEngineListener(private val listener: TestEngineListener) :
       }
    }
 
-   override fun specFinished(
-      spec: TestPlanNode.SpecNode,
+   override suspend fun specFinished(
+      spec: Descriptor.SpecDescriptor,
       t: Throwable?,
-      results: Map<TestPlanNode.TestCaseNode, TestResult>
+      results: Map<Descriptor.TestDescriptor, TestResult>
    ) {
       synchronized(listener) {
-         listener.specFinished(spec, t, results)
+         runBlocking {
+            listener.specFinished(spec, t, results)
+         }
       }
    }
 
-   override fun specStarted(spec: TestPlanNode.SpecNode) {
+   override suspend fun specStarted(spec: Descriptor.SpecDescriptor) {
       synchronized(listener) {
-         listener.specStarted(spec)
+         runBlocking {
+            listener.specStarted(spec)
+         }
       }
    }
 
-   override fun testFinished(description: Description, result: TestResult) {
+   override fun testFinished(descriptor: Descriptor.TestDescriptor, result: TestResult) {
       synchronized(listener) {
-         listener.testFinished(description, result)
+         listener.testFinished(descriptor, result)
       }
    }
 
-   override fun testStarted(description: Description) {
+   override fun testIgnored(descriptor: Descriptor.TestDescriptor, reason: String?) {
       synchronized(listener) {
-         listener.testStarted(description)
+         listener.testIgnored(descriptor, reason)
+      }
+   }
+
+   override fun testStarted(descriptor: Descriptor.TestDescriptor) {
+      synchronized(listener) {
+         listener.testStarted(descriptor)
       }
    }
 }

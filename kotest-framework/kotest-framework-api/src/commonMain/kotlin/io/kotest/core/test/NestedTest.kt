@@ -3,6 +3,7 @@ package io.kotest.core.test
 import io.kotest.core.factory.FactoryId
 import io.kotest.core.SourceRef
 import io.kotest.core.config.configuration
+import io.kotest.core.plan.Descriptor
 import io.kotest.core.spec.Spec
 
 /**
@@ -15,7 +16,8 @@ data class NestedTest(
    val config: TestCaseConfig,
    val type: TestType,
    val sourceRef: SourceRef,
-   val factoryId: FactoryId?
+   val factoryId: FactoryId?,
+   val descriptor: Descriptor.TestDescriptor?
 )
 
 /**
@@ -30,7 +32,8 @@ fun NestedTest.toTestCase(spec: Spec, parent: Description): TestCase {
       type = type,
       config = config,
       factoryId = factoryId,
-      assertionMode = null
+      assertionMode = null,
+      descriptor = descriptor,
    )
    return if (configuration.testNameAppendTags) {
       TestCase.appendTagsInDisplayName(testCase)

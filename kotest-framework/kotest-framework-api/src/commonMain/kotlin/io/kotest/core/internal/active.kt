@@ -12,7 +12,7 @@ import io.kotest.core.internal.tags.activeTags
 import io.kotest.core.internal.tags.allTags
 import io.kotest.core.internal.tags.isActive
 import io.kotest.core.internal.tags.parse
-import io.kotest.core.plan.toNode
+import io.kotest.core.plan.toDescriptor
 import io.kotest.core.test.TestCaseSeverityLevel
 import io.kotest.mpp.log
 import io.kotest.mpp.sysprop
@@ -22,11 +22,9 @@ import io.kotest.mpp.sysprop
  * or any registered [IsActiveExtension]s.
  */
 suspend fun TestCase.isActive(): Boolean {
-   val defaultActive = isActiveInternal()
-   val node = this.toNode(defaultActive)
-   return configuration.extensions().filterIsInstance<IsActiveExtension>().fold(node) { acc, op ->
-      acc.copy(active = op.isActive(acc))
-   }.active
+   val descriptor = this.descriptor ?: this.description.toDescriptor(this.source)
+   return isActiveInternal() && configuration.extensions().filterIsInstance<IsActiveExtension>()
+      .all { it.isActive(descriptor) }
 }
 
 /**

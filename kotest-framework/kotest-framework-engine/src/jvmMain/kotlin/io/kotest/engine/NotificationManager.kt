@@ -3,7 +3,7 @@ package io.kotest.engine
 import io.kotest.core.config.configuration
 import io.kotest.core.config.specInstantiationListeners
 import io.kotest.core.config.testListeners
-import io.kotest.core.plan.TestPlanNode
+import io.kotest.core.plan.Descriptor
 import io.kotest.core.spec.Spec
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
@@ -18,9 +18,9 @@ import kotlin.reflect.KClass
 class NotificationManager(private val listener: TestEngineListener) {
 
    /**
-    * Notifies listeners that we are about to start execution of a [TestPlanNode].
+    * Notifies listeners that we are about to start execution of a [Descriptor].
     */
-   suspend fun specStarted(spec: TestPlanNode.SpecNode) = Try {
+   suspend fun specStarted(spec: Descriptor.SpecDescriptor) = Try {
       log("NotificationManager:specStarted $spec")
       listener.specStarted(spec)
 
@@ -28,9 +28,9 @@ class NotificationManager(private val listener: TestEngineListener) {
    }
 
    suspend fun specFinished(
-      spec: TestPlanNode.SpecNode,
+      spec: Descriptor.SpecDescriptor,
       error: Throwable?,
-      results: Map<TestPlanNode.TestCaseNode, TestResult>
+      results: Map<Descriptor.TestDescriptor, TestResult>
    ) = Try {
       log("NotificationManager:specFinished $spec")
       listener.specFinished(spec, error, results)

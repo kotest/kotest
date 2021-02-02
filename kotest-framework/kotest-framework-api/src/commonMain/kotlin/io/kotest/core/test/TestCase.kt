@@ -1,8 +1,10 @@
 package io.kotest.core.test
 
 import io.kotest.core.SourceRef
+import io.kotest.core.config.ExperimentalKotest
 import io.kotest.core.factory.FactoryId
 import io.kotest.core.internal.tags.allTags
+import io.kotest.core.plan.Descriptor
 import io.kotest.core.sourceRef
 import io.kotest.core.spec.Spec
 
@@ -48,7 +50,10 @@ data class TestCase(
    val factoryId: FactoryId? = null,
    // assertion mode can be set to control errors/warnings in a test
    // if null, defaults will be applied
-   val assertionMode: AssertionMode? = null
+   val assertionMode: AssertionMode? = null,
+
+   // only set for scripts
+   @ExperimentalKotest val descriptor: Descriptor.TestDescriptor? = null,
 ) {
 
    val displayName = description.displayName()

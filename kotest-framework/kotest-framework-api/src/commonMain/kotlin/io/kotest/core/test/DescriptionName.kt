@@ -47,10 +47,8 @@ sealed class DescriptionName {
    }
 }
 
-@Deprecated("This is intended to be replaced by logic from NodeName")
 fun createTestName(name: String) = createTestName(null, name, false)
 
-@Deprecated("This is intended to be replaced by logic from NodeName")
 fun createTestName(prefix: String?, name: String, defaultIncludeAffix: Boolean): DescriptionName.TestName =
    createTestName(
       prefix,
@@ -73,7 +71,6 @@ fun createTestName(prefix: String?, name: String, defaultIncludeAffix: Boolean):
  * @param testNameCase a [TestNameCase] parameter to adjust the capitalisation of the display name
  * @param includeAffixesInDisplayName if true then the prefix and/or suffix will be included in the display name.
  */
-@Deprecated("This is intended to be replaced by logic from NodeName")
 fun createTestName(
    prefix: String?,
    name: String,

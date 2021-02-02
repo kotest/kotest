@@ -2,6 +2,8 @@ package io.kotest.engine.script
 
 import io.kotest.core.DuplicatedTestNameException
 import io.kotest.core.internal.TestCaseExecutor
+import io.kotest.core.plan.Descriptor
+import io.kotest.core.plan.toDescriptor
 import io.kotest.core.script.ScriptRuntime
 import io.kotest.core.test.DescriptionName
 import io.kotest.core.test.NestedTest
@@ -11,6 +13,7 @@ import io.kotest.core.test.TestContext
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.toTestCase
 import io.kotest.engine.ExecutorExecutionContext
+import io.kotest.engine.NotificationManager
 import io.kotest.engine.listener.TestEngineListener
 import io.kotest.engine.toTestResult
 import io.kotest.fp.Try
@@ -28,7 +31,8 @@ import kotlin.script.templates.standard.ScriptTemplateWithArgs
  */
 class ScriptExecutor(private val listener: TestEngineListener) {
 
-   private val results = ConcurrentHashMap<TestCase, TestResult>()
+   private val results = ConcurrentHashMap<Descriptor.TestDescriptor, TestResult>()
+   private val n = NotificationManager(listener)
 
    /**
     * Executes the given test [ScriptTemplateWithArgs].
@@ -36,38 +40,42 @@ class ScriptExecutor(private val listener: TestEngineListener) {
    suspend fun execute(kclass: KClass<out ScriptTemplateWithArgs>): Try<Unit> {
       log("ScriptExecutor: execute [$kclass]")
       ScriptRuntime.reset()
+      val descriptor = Descriptor.fromScriptClass(kclass)
       return createInstance(kclass)
-         .flatMap { runTests() }
+         .flatMap { n.specStarted(descriptor) }
+         .flatMap { runTests(descriptor) }
+         .onFailure { n.specFinished(descriptor, it, emptyMap()) }
+         .onSuccess { n.specFinished(descriptor, null, results.toMap()) }
    }
 
-   /**
-    * Invokes the script by finding and executing the generated main method.
-    */
-   private suspend fun runScript(script: ScriptTemplateWithArgs): Try<Unit> = Try {
-//      ScriptRuntime.reset()
-
-//      BasicJvmScriptEvaluator().invoke(
-//         KJvmCompiledScript(
-//            null,
-//            ScriptCompilationConfiguration.Default,
-//            script.javaClass.name,
-//            resultField = null,
-//            compiledModule = KJvmCompiledModuleFromClassLoader(this.javaClass.classLoader),
-//         ), ScriptEvaluationConfiguration()
-//      )
-
-      //
-      //val main = script.javaClass.getMethod("main", Array<String>::class.java)
-      //log("ScriptExecutor: Invoking script main [$main]")
-      //main.invoke(null, emptyArray<String>())
-   }
+//   /**
+//    * Invokes the script by finding and executing the generated main method.
+//    */
+//   private suspend fun runScript(script: ScriptTemplateWithArgs): Try<Unit> = Try {
+////      ScriptRuntime.reset()
+//
+////      BasicJvmScriptEvaluator().invoke(
+////         KJvmCompiledScript(
+////            null,
+////            ScriptCompilationConfiguration.Default,
+////            script.javaClass.name,
+////            resultField = null,
+////            compiledModule = KJvmCompiledModuleFromClassLoader(this.javaClass.classLoader),
+////         ), ScriptEvaluationConfiguration()
+////      )
+//
+//      //
+//      //val main = script.javaClass.getMethod("main", Array<String>::class.java)
+//      //log("ScriptExecutor: Invoking script main [$main]")
+//      //main.invoke(null, emptyArray<String>())
+//   }
 
    /**
     * Executes the tests registered with the script execution runtime.
     */
-   private suspend fun runTests() = Try {
+   private suspend fun runTests(descriptor: Descriptor.SpecDescriptor): Try<Unit> = Try {
       log("ScriptExecutor: Executing tests from script")
-      ScriptRuntime.materializeRootTests().forEach { testCase ->
+      ScriptRuntime.materializeRootTests(descriptor).forEach { testCase ->
          runTest(testCase, coroutineContext)
       }
    }
@@ -87,20 +95,20 @@ class ScriptExecutor(private val listener: TestEngineListener) {
    ) {
       val testExecutor = TestCaseExecutor(object : TestCaseExecutionListener {
          override fun testStarted(testCase: TestCase) {
-            listener.testStarted(testCase)
+            listener.testStarted(testCase.descriptor!!)
          }
 
          override fun testIgnored(testCase: TestCase) {
-            listener.testIgnored(testCase, null)
+            listener.testIgnored(testCase.descriptor!!, null)
          }
 
          override fun testFinished(testCase: TestCase, result: TestResult) {
-            listener.testFinished(testCase, result)
+            listener.testFinished(testCase.descriptor!!, result)
          }
       }, ExecutorExecutionContext, {}, { t, duration -> toTestResult(t, duration) })
 
       val result = testExecutor.execute(testCase, Context(testCase, coroutineContext))
-      results[testCase] = result
+      results[testCase.description.toDescriptor(testCase.source) as Descriptor.TestDescriptor] = result
    }
 
    inner class Context(
