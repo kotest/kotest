@@ -85,7 +85,7 @@ class IsolationTestEngineListener(val listener: TestEngineListener) : TestEngine
 
    override fun testStarted(descriptor: Descriptor.TestDescriptor) {
       synchronized(listener) {
-         if (runningSpec.get() == descriptor.spec()?.classname || descriptor.spec()?.script == true) {
+         if (runningSpec.get() == descriptor.spec()?.classname) {
             listener.testStarted(descriptor)
          } else {
             queue {
@@ -109,7 +109,7 @@ class IsolationTestEngineListener(val listener: TestEngineListener) : TestEngine
 
    override fun testIgnored(descriptor: Descriptor.TestDescriptor, reason: String?) {
       synchronized(listener) {
-         if (runningSpec.get() == descriptor.spec()?.classname || descriptor.spec()?.script == true) {
+         if (runningSpec.get() == descriptor.spec()?.classname) {
             listener.testIgnored(descriptor, reason)
          } else {
             queue {
@@ -133,7 +133,7 @@ class IsolationTestEngineListener(val listener: TestEngineListener) : TestEngine
 
    override fun testFinished(descriptor: Descriptor.TestDescriptor, result: TestResult) {
       synchronized(listener) {
-         if (runningSpec.get() == descriptor.spec()?.classname || descriptor.spec()?.script == true) {
+         if (runningSpec.get() == descriptor.spec()?.classname) {
             listener.testFinished(descriptor, result)
          } else {
             queue {
@@ -181,7 +181,7 @@ class IsolationTestEngineListener(val listener: TestEngineListener) : TestEngine
       results: Map<Descriptor.TestDescriptor, TestResult>
    ) {
       synchronized(listener) {
-         if (runningSpec.get() == descriptor.classname || descriptor.spec()?.script == true) {
+         if (runningSpec.get() == descriptor.classname) {
             runBlocking {
                listener.specFinished(descriptor, t, results)
             }
