@@ -103,3 +103,14 @@ include("kotest-examples:kotest-examples-spring-webflux")
 
 // BOM for whole kotest project
 include("kotest-bom")
+
+plugins {
+   id("com.gradle.enterprise") version "3.5.1"
+}
+
+gradleEnterprise {
+   buildScan {
+      termsOfServiceUrl = "https://gradle.com/terms-of-service"
+      termsOfServiceAgree = "yes"
+   }
+}

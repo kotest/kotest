@@ -22,15 +22,15 @@ jobs:
 
          -  name: Run ubuntu tests
             if: matrix.os == 'ubuntu-latest'
-            run: ./gradlew check
+            run: ./gradlew check --scan
 
          -  name: Run windows tests
             if: matrix.os == 'windows-latest'
-            run: ./gradlew mingwX64Test
+            run: ./gradlew mingwX64Test --scan
 
          -  name: Run macOS tests
             if: matrix.os == 'macOS-latest'
-            run: ./gradlew macosX64Test
+            run: ./gradlew macosX64Test --scan
 
          -  name: Bundle the build report
             if: failure()

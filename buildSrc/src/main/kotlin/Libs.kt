@@ -4,6 +4,7 @@ object Libs {
    const val dokkaVersion = "0.10.1"
    const val adarshrTestLoggerVersion = "2.0.0"
    const val gradleVersionsPluginVersion = "0.28.0"
+   const val gradleEnterprisePluginVersion = "3.5.1"
    const val kotestGradlePlugin = "0.1.4"
 
    object Kotlin {
