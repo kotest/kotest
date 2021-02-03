@@ -4,7 +4,7 @@ sidebar_label: Changelog
 slug: changelog.html
 ---
 
-### 4.4.0 (RC1) January 2021
+### 4.4.0 January 2021
 
 Note: Release 4.4.0 bumps the minimum required version of Kotlin to 1.4
 
