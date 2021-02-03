@@ -4,6 +4,8 @@ package io.kotest.mpp
 
 import kotlin.reflect.KCallable
 import kotlin.reflect.KClass
+import kotlin.reflect.full.createType
+import kotlin.reflect.full.isSubclassOf
 import kotlin.reflect.full.primaryConstructor
 import kotlin.reflect.jvm.reflect
 
@@ -22,6 +24,8 @@ object JvmReflection : Reflection {
    } catch (e: Throwable) {
       false
    }
+
+   override fun <T : Any> isEnumClass(kclass: KClass<T>): Boolean = kclass.isSubclassOf(Enum::class)
 
    override fun paramNames(fn: Function<*>): List<String>? = fn.reflect()?.parameters?.mapNotNull { it.name }
 

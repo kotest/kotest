@@ -52,7 +52,7 @@ internal fun KClass<*>.hasStableMembers() = reflection.primaryConstructorMembers
 internal fun isStable(type: KClass<*>): Boolean {
    return when {
       primitiveTypes.contains(type) -> true
-      reflection.isDataClass(type) && type.hasStableMembers() -> true
+      (reflection.isEnumClass(type) || reflection.isDataClass(type)) && type.hasStableMembers() -> true
       else -> false
    }
 }
