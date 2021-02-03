@@ -10,11 +10,11 @@ import io.kotest.mpp.reflection
 fun <A> forAll(vararg rows: Row1<A>, testfn: (A) -> Unit) {
    val params = reflection.paramNames(testfn) ?: emptyList<String>()
    val paramA = params.getOrElse(0) { "a" }
-   table(headers(paramA), *rows).forAll { a -> testfn(a) }
+   table(headers(paramA), *rows).forAll(testfn)
 }
 
 fun <A> forNone(vararg rows: Row1<A>, testfn: (A) -> Unit) {
    val params = reflection.paramNames(testfn) ?: emptyList<String>()
    val paramA = params.getOrElse(0) { "a" }
-   table(headers(paramA), *rows).forNone { a -> testfn(a) }
+   table(headers(paramA), *rows).forNone(testfn)
 }

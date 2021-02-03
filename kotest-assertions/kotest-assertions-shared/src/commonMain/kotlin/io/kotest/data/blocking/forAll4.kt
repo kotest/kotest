@@ -13,7 +13,7 @@ fun <A, B, C, D> forAll(vararg rows: Row4<A, B, C, D>, testfn: (A, B, C, D) -> U
    val paramB = params.getOrElse(1) { "b" }
    val paramC = params.getOrElse(2) { "c" }
    val paramD = params.getOrElse(2) { "d" }
-   table(headers(paramA, paramB, paramC, paramD), *rows).forAll { A, B, C, D -> testfn(A, B, C, D) }
+   table(headers(paramA, paramB, paramC, paramD), *rows).forAll(testfn)
 }
 
 fun <A, B, C, D> forNone(vararg rows: Row4<A, B, C, D>, testfn: (A, B, C, D) -> Unit) {
@@ -22,5 +22,5 @@ fun <A, B, C, D> forNone(vararg rows: Row4<A, B, C, D>, testfn: (A, B, C, D) -> 
    val paramB = params.getOrElse(1) { "b" }
    val paramC = params.getOrElse(2) { "c" }
    val paramD = params.getOrElse(2) { "d" }
-   table(headers(paramA, paramB, paramC, paramD), *rows).forNone { A, B, C, D -> testfn(A, B, C, D) }
+   table(headers(paramA, paramB, paramC, paramD), *rows).forNone(testfn)
 }
