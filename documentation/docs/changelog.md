@@ -19,12 +19,10 @@ Note: Release 4.4.0 bumps the minimum required version of Kotlin to 1.4
 * Add matchers for Atomic Booleans #1791
 * Upgrade to Kotlin 1.4.20 #1800
 * Test cases should have their tags appended to the test name if so configured #1804
-* Removed superfluous whitespaces in freeSpec.kt #1819
 * Add functionality to use 'it' without surrounding 'describe' #1827
 * Added inline version for intanceOf alias #1838
 * Add Support for globalAssertSoftly from System Property #1843
 * Helper for temporary directory creation #1862
-* Output from reporters should be single threaded #1895
 * shouldBeBetween not defined for floats #1927
 * Increase arity of checkall / forall property tests to 12 #1929
 * Add more configurations to Email Generator #1941
@@ -44,6 +42,7 @@ Note: Release 4.4.0 bumps the minimum required version of Kotlin to 1.4
 * BehaviorSpec Then assertion shows green in Intellij but should show red #1857
 * AssertionMode.Error doesn't work on FeatureSpec #1864
 * Invalid test usage should throw at runtime #1882
+* Output from reporters should be single threaded #1895
 * Arb.set with a range hangs the test if the given gen inside the set cannot produce enough values for the range #1931
 
 ### 4.3.2 December 2020
