@@ -25,8 +25,118 @@ class MatchTest : StringSpec() {
          shouldThrow<AssertionError> { json1.shouldMatchJson(null) }
       }
 
-      "test json equality with lenient mode" {
+      "test json equality with invalid json" {
+         """
+                  {
+                    "merchant_or_brand": "BIGJIMS",
+                    "input_source": "Scraper",
+                    "source_url": "scraper:Test1.0",
+                    "timestamp": "2019-10-30T06:02:03.000+00:00",
+                    "item_sku": "123",
+                    "product_sku": "789",
+                    "name": "MY TRAINERS",
+                    "brand": "NIKE",
+                    "description": "Great pair of super cool sneakers",
+                    "url": "https://www.ae.com/us/en/p/men/shoes/sneakers/aeo-knit-runner-shoe",
+                    "status": "Active",
+                    "attributes": [
+                      {
+                        "name": "gender",
+                        "value": "Male",
+                        "type": "INTERNAL"
+                      },
+                      {
+                        "name": "color",
+                        "value": "blue",
+                        "type": "INTERNAL"
+                      },
+                      {
+                        "name": "pattern",
+                        "value": "striped",
+                        "type": "INTERNAL"
+                      },
+                      {
+                        "name": "material",
+                        "value": "sneaker material",
+                        "type": "INTERNAL"
+                      }
+                    ]
+                  }
 
+                  {
+                    "merchant_or_brand": "BIGJIMS",
+                    "input_source": "Scraper",
+                    "source_url": "scraper:Test1.0",
+                    "timestamp": "2019-10-30T06:02:03.000+00:00",
+                    "item_sku": "123",
+                    "product_sku": "789",
+                    "name": "MY TRAINERS",
+                    "brand": "NIKE",
+                    "description": "Great pair of super cool sneakers",
+                    "url": "https://www.ae.com/us/en/p/men/shoes/sneakers/aeo-knit-runner-shoe",
+                    "status": "Active",
+                    "attributes": [
+                      {
+                        "name": "gender",
+                        "value": "Male",
+                        "type": "INTERNAL"
+                      },
+                      {
+                        "name": "color",
+                        "value": "blue",
+                        "type": "INTERNAL"
+                      },
+                      {
+                        "name": "pattern",
+                        "value": "striped",
+                        "type": "INTERNAL"
+                      },
+                      {
+                        "name": "material",
+                        "value": "sneaker material",
+                        "type": "INTERNAL"
+                      }
+                    ]
+                  }
+            """.shouldMatchJson(
+            """
+                 {
+                    "merchant_or_brand": "BIGJIMS",
+                    "input_source": "Scraper",
+                    "source_url": "scraper:Test1.0",
+                    "timestamp": "2019-10-30T06:02:03.000+00:00",
+                    "item_sku": "123",
+                    "product_sku": "789",
+                    "name": "MY TRAINERS",
+                    "brand": "NIKE",
+                    "description": "Great pair of super cool sneakers",
+                    "url": "https://www.ae.com/us/en/p/men/shoes/sneakers/aeo-knit-runner-shoe",
+                    "status": "Active",
+                    "attributes": [
+                      {
+                        "name": "gender",
+                        "value": "Male",
+                        "type": "INTERNAL"
+                      },
+                      {
+                        "name": "color",
+                        "value": "blue",
+                        "type": "INTERNAL"
+                      },
+                      {
+                        "name": "pattern",
+                        "value": "striped",
+                        "type": "INTERNAL"
+                      },
+                      {
+                        "name": "material",
+                        "value": "sneaker material",
+                        "type": "INTERNAL"
+                      }
+                    ]
+                  }
+            """
+         )
       }
    }
 }
