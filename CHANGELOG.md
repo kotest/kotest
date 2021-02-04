@@ -2,7 +2,7 @@ Changelog
 =========
 
 
-Changelog from 4.2.5 can be found [here](https://kotest.io/docs/changelog.html/)
+Changelog from 4.2.5 can be found [here](https://kotest.io/docs/changelog.html)
 
 
 #### 4.2.4
