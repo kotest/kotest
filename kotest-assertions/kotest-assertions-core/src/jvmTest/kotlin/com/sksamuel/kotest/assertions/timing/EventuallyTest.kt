@@ -7,6 +7,7 @@ import io.kotest.assertions.fail
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.assertions.timing.EventuallyConfig
 import io.kotest.assertions.timing.eventually
+import io.kotest.assertions.timing.eventuallyPredicate
 import io.kotest.assertions.until.fibonacci
 import io.kotest.assertions.until.fixed
 import io.kotest.core.spec.style.WordSpec
@@ -20,7 +21,10 @@ import java.io.FileNotFoundException
 import java.io.IOException
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.TimeUnit
-import kotlin.time.*
+import kotlin.time.TimeSource
+import kotlin.time.days
+import kotlin.time.milliseconds
+import kotlin.time.seconds
 
 class EventuallyTest : WordSpec() {
 
@@ -113,6 +117,15 @@ class EventuallyTest : WordSpec() {
             message.shouldContain("The first error was caused by: first")
             message.shouldContain("The last error was caused by: last")
          }
+         "display the number of times the predicate failed" {
+            var count = 0
+            val maximumRetries = 3
+            val message = shouldThrow<AssertionError> {
+               eventuallyPredicate(500.milliseconds, retries = maximumRetries) { count++ >= maximumRetries + 1 }
+            }.message
+            message.shouldContain("Eventually block failed after 500ms; attempted \\d+ time\\(s\\); FixedInterval\\(duration=25.0ms\\) delay between attempts".toRegex())
+            message.shouldContain("The provided predicate failed $maximumRetries times")
+         }
          "allow suspendable functions" {
             eventually(100.milliseconds) {
                delay(25)
@@ -179,6 +192,13 @@ class EventuallyTest : WordSpec() {
             }
             latch.await(15, TimeUnit.SECONDS) shouldBe true
             result shouldBe "xxxxxxxxxxx"
+         }
+
+         "eventually with a more succinct predicate" {
+            var i = 0
+            eventuallyPredicate(2.seconds) {
+               i++ == 2
+            }
          }
 
          "fail tests that fail a predicate" {
