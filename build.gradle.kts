@@ -59,7 +59,7 @@ val plugins = listOf(
       until = "211.*",
       sdkVersion = "IC-211-EAP-SNAPSHOT",
       sourceFolder = "IC-211",
-      deps = listOf("java", "org.jetbrains.plugins.gradle", "org.jetbrains.kotlin:211-1.4.21-release-IJ4961.1")
+      deps = listOf("java", "org.jetbrains.plugins.gradle", "org.jetbrains.kotlin:211-1.4.21-release-IJ5538.2")
    )
 )
 
