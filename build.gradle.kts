@@ -24,6 +24,7 @@ repositories {
 // https://jetbrains.org/intellij/sdk/docs/basics/getting_started/build_number_ranges.html
 // json output of versions: https://jb.gg/intellij-platform-builds-list
 // json for ultimate https://data.services.jetbrains.com/products?fields=code,name,releases.downloads,releases.version,releases.build,releases.type&code=IIU
+// when releasing for an EAP, look at snapshots: https://www.jetbrains.com/intellij-repository/snapshots and use eg IC-211.5538.20-EAP-SNAPSHOT
 val plugins = listOf(
    plugin.PluginDescriptor(
       since = "193.4099.13",
@@ -52,10 +53,17 @@ val plugins = listOf(
       sdkVersion = "IC-2020.3",
       sourceFolder = "IC-203",
       deps = listOf("java", "org.jetbrains.plugins.gradle", "org.jetbrains.kotlin:1.4.10-release-IJ2020.2-1")
+   ),
+   plugin.PluginDescriptor(
+      since = "211.4961.30", // this version is 2021.1 EAP
+      until = "211.*",
+      sdkVersion = "IC-211.4961.30-EAP-SNAPSHOT",
+      sourceFolder = "IC-211",
+      deps = listOf("java", "org.jetbrains.plugins.gradle", "org.jetbrains.kotlin:211-1.4.21-release-IJ4961.1")
    )
 )
 
-val productName = System.getenv("PRODUCT_NAME") ?: System.getenv("SOURCE_FOLDER") ?: "IC-203"
+val productName = System.getenv("PRODUCT_NAME") ?: System.getenv("SOURCE_FOLDER") ?: "IC-211"
 val descriptor = plugins.first { it.sourceFolder == productName }
 
 val jetbrainsToken: String by project
