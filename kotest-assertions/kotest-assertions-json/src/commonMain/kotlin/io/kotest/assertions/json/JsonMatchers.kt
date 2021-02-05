@@ -1,5 +1,6 @@
 package io.kotest.assertions.json
 
+import io.kotest.assertions.fail
 import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
 import io.kotest.matchers.should
@@ -7,6 +8,7 @@ import io.kotest.matchers.shouldNot
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonElement
 
 @OptIn(ExperimentalSerializationApi::class)
 internal val pretty by lazy { Json { prettyPrint = true; prettyPrintIndent = "  " } }
@@ -21,10 +23,26 @@ internal val pretty by lazy { Json { prettyPrint = true; prettyPrintIndent = "  
 infix fun String?.shouldMatchJson(expected: String?) = this should matchJson(expected)
 infix fun String?.shouldNotMatchJson(expected: String?) = this shouldNot matchJson(expected)
 fun matchJson(expected: String?) = object : Matcher<String?> {
-
    override fun test(value: String?): MatcherResult {
-      val actualJson = value?.let(pretty::parseToJsonElement)
-      val expectedJson = expected?.let(pretty::parseToJsonElement)
+      val actualJson = try {
+         value?.let(pretty::parseToJsonElement)
+      } catch (ex: Exception) {
+         return MatcherResult(
+            false,
+            "expected: actual json to be valid json: $value",
+            "expected: actual json to be invalid json: $value"
+         )
+      }
+
+      val expectedJson = try {
+         expected?.let(pretty::parseToJsonElement)
+      } catch (ex: Exception) {
+         return MatcherResult(
+            false,
+            "expected: expected json to be valid json: $expected",
+            "expected: expected json to be invalid json: $expected"
+         )
+      }
 
       return MatcherResult(
          actualJson == expectedJson,
