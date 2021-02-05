@@ -207,13 +207,11 @@ class DataTestingTest : StringSpec() {
                it!! shouldNotBe "christian"
             }
          }.message
-         msg shouldBe """
-The following 2 assertions failed:
-1) Test failed for (name, null) with error java.lang.NullPointerException
-	at com.sksamuel.kotest.data.DataTestingTest${'$'}12.invokeSuspend(DataTestingTest.kt:205)
-2) Test failed for (name, "christian") with error "christian" should not equal "christian"
-	at com.sksamuel.kotest.data.DataTestingTest${'$'}12.invokeSuspend(DataTestingTest.kt:205)
-"""
+
+         assertSoftly {
+            msg shouldContain "1) Test failed for (name, null) with error java.lang.NullPointerException"
+            msg shouldContain "2) Test failed for (name, \"christian\") with error \"christian\" should not equal \"christian\""
+         }
       }
 
       "display error message in readable format using" {
