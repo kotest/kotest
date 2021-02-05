@@ -1,6 +1,5 @@
 package io.kotest.assertions.json
 
-import io.kotest.assertions.fail
 import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
 import io.kotest.matchers.should
@@ -8,7 +7,6 @@ import io.kotest.matchers.shouldNot
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.JsonElement
 
 @OptIn(ExperimentalSerializationApi::class)
 internal val pretty by lazy { Json { prettyPrint = true; prettyPrintIndent = "  " } }
