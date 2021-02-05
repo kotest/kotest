@@ -27,32 +27,25 @@ repositories {
 // when releasing for an EAP, look at snapshots: https://www.jetbrains.com/intellij-repository/snapshots and use eg 211-EAP-SNAPSHOT
 val plugins = listOf(
    plugin.PluginDescriptor(
-      since = "193.4099.13",
-      until = "193.*",
-      sdkVersion = "IC-2019.3",
-      sourceFolder = "IC-193",
-      deps = listOf("java", "org.jetbrains.plugins.gradle", "org.jetbrains.kotlin:1.3.72-release-IJ2019.3-5")
-   ),
-   plugin.PluginDescriptor(
       since = "201.6487",
       until = "201.*",
       sdkVersion = "IC-2020.1",
       sourceFolder = "IC-201",
-      deps = listOf("java", "org.jetbrains.plugins.gradle", "org.jetbrains.kotlin:1.3.72-release-IJ2020.1-5")
+      deps = listOf("java", "org.jetbrains.plugins.gradle", "org.jetbrains.kotlin:1.4.21-release-IJ2020.1-1")
    ),
    plugin.PluginDescriptor(
       since = "202.1",
       until = "202.*",
       sdkVersion = "IC-2020.2",
       sourceFolder = "IC-202",
-      deps = listOf("java", "org.jetbrains.plugins.gradle", "org.jetbrains.kotlin:1.4.10-release-IJ2020.2-1")
+      deps = listOf("java", "org.jetbrains.plugins.gradle", "org.jetbrains.kotlin:1.4.21-release-IJ2020.2-1")
    ),
    plugin.PluginDescriptor(
       since = "203.5981.155", // this version is 2020.3.1 final
       until = "203.*",
       sdkVersion = "IC-2020.3",
       sourceFolder = "IC-203",
-      deps = listOf("java", "org.jetbrains.plugins.gradle", "org.jetbrains.kotlin:1.4.10-release-IJ2020.2-1")
+      deps = listOf("java", "org.jetbrains.plugins.gradle", "org.jetbrains.kotlin:1.4.21-release-IJ2020.2-1")
    ),
    plugin.PluginDescriptor(
       since = "211.4961.30", // this version is 2021.1 EAP
