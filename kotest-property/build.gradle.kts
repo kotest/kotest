@@ -12,6 +12,7 @@ repositories {
 kotlin {
 
    targets {
+
       jvm {
          compilations.all {
             kotlinOptions {
@@ -19,7 +20,8 @@ kotlin {
             }
          }
       }
-      js {
+
+      js(BOTH) {
          browser()
          nodejs()
       }
