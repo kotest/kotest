@@ -5,11 +5,9 @@ import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestStatus
 import io.kotest.matchers.shouldBe
 import kotlinx.coroutines.delay
-import kotlin.time.ExperimentalTime
 import kotlin.time.milliseconds
 
 // tests that the values in the timeout exception are populated correctly
-@OptIn(ExperimentalTime::class)
 class SpecInvocationTimeoutExceptionTest : FunSpec() {
    init {
 
@@ -29,7 +27,6 @@ class SpecInvocationTimeoutExceptionTest : FunSpec() {
 }
 
 // tests that the values in the timeout exception are populated correctly
-@OptIn(ExperimentalTime::class)
 class TestInvocationTimeoutExceptionTest : FunSpec() {
    init {
 
@@ -58,7 +55,6 @@ class TestInvocationTimeoutExceptionTest : FunSpec() {
 
 
 // tests that the values in the timeout exception are populated correctly
-@OptIn(ExperimentalTime::class)
 class SpecTimeoutExceptionTest : FunSpec() {
    init {
 
@@ -78,7 +74,6 @@ class SpecTimeoutExceptionTest : FunSpec() {
 
 
 // tests that the values in the timeout exception are populated correctly
-@OptIn(ExperimentalTime::class)
 class TestTimeoutExceptionTest : FunSpec() {
    init {
 

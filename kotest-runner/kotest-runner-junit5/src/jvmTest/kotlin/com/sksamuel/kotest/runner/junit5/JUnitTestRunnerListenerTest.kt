@@ -15,9 +15,7 @@ import org.junit.platform.engine.TestDescriptor
 import org.junit.platform.engine.TestExecutionResult
 import org.junit.platform.engine.UniqueId
 import org.junit.platform.engine.reporting.ReportEntry
-import kotlin.time.ExperimentalTime
 
-@OptIn(ExperimentalTime::class)
 class JUnitTestRunnerListenerTests : FunSpec({
 
    test("a bad test should fail test but not parent or spec") {

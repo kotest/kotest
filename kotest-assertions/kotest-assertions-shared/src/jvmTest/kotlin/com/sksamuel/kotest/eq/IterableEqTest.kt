@@ -10,10 +10,8 @@ import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
 import java.nio.file.Paths
 import java.util.concurrent.ConcurrentLinkedQueue
-import kotlin.time.ExperimentalTime
 import kotlin.time.seconds
 
-@OptIn(ExperimentalTime::class)
 class IterableEqTest : FunSpec({
 
    test("should give null for two equal sets") {

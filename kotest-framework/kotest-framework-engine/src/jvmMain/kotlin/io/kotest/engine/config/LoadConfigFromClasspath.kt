@@ -6,7 +6,6 @@ import io.kotest.core.listeners.ProjectListener
 import io.kotest.fp.orElse
 import io.kotest.fp.toOption
 import io.kotest.mpp.instantiate
-import kotlin.time.ExperimentalTime
 
 /**
  * Returns a [DetectedProjectConfig] which is built scanning the classpath for
@@ -23,7 +22,6 @@ internal fun loadConfigFromAbstractProjectConfig(scanResult: ScanResult): Detect
    return if (configs.isEmpty()) DetectedProjectConfig() else configs.reduce { a, b -> a.merge(b) }
 }
 
-@OptIn(ExperimentalTime::class)
 private fun AbstractProjectConfig.toDetectedConfig(): DetectedProjectConfig {
 
    val beforeAfterAllListener = object : ProjectListener {

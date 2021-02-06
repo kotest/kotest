@@ -9,9 +9,7 @@ import io.kotest.core.test.TestType
 import io.kotest.core.test.deriveTestConfig
 import io.kotest.core.test.TestCaseSeverityLevel
 import kotlin.time.Duration
-import kotlin.time.ExperimentalTime
 
-@OptIn(ExperimentalTime::class)
 class RootTestWithConfigBuilder(
    private val name: DescriptionName.TestName,
    private val registration: RootTestRegistration,

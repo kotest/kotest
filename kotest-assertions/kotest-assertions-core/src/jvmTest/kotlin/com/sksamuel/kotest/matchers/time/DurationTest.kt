@@ -11,12 +11,10 @@ import io.kotest.matchers.time.shouldNotHaveHours
 import io.kotest.matchers.time.shouldNotHaveMillis
 import io.kotest.matchers.time.shouldNotHaveMinutes
 import io.kotest.matchers.time.shouldNotHaveSeconds
-import kotlin.time.ExperimentalTime
 import kotlin.time.hours
 import kotlin.time.minutes
 import kotlin.time.seconds
 
-@ExperimentalTime
 class DurationTest : FunSpec({
    test("should have minutes") {
       2.hours.shouldHaveMinutes(120)

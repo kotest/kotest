@@ -15,6 +15,15 @@ dependencies {
    implementation(Libs.Coroutines.coreJvm)
 }
 
+kotlin {
+   sourceSets {
+      all {
+         languageSettings.useExperimentalAnnotation("kotlin.time.ExperimentalTime")
+         languageSettings.useExperimentalAnnotation("kotlin.experimental.ExperimentalTypeInference")
+      }
+   }
+}
+
 tasks.named<Test>("test") {
    useJUnitPlatform()
    filter {

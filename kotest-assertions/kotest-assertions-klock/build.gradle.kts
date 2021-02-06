@@ -22,14 +22,6 @@ kotlin {
          }
       }
 
-      targets.all {
-         compilations.all {
-            kotlinOptions {
-               freeCompilerArgs += "-Xopt-in=kotlin.RequiresOptIn"
-            }
-         }
-      }
-
       val commonMain by getting {
          dependencies {
             implementation(project(Projects.AssertionsShared))
@@ -46,6 +38,11 @@ kotlin {
          dependencies {
             implementation(project(Projects.JunitRunner))
          }
+      }
+
+      all {
+         languageSettings.useExperimentalAnnotation("kotlin.time.ExperimentalTime")
+         languageSettings.useExperimentalAnnotation("kotlin.experimental.ExperimentalTypeInference")
       }
    }
 }

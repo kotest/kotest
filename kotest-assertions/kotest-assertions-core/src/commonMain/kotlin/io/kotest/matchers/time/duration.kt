@@ -7,15 +7,11 @@ import io.kotest.matchers.should
 import io.kotest.matchers.shouldNot
 import kotlin.time.Duration
 import kotlin.time.DurationUnit
-import kotlin.time.ExperimentalTime
 
-@OptIn(ExperimentalTime::class)
 infix fun Duration.shouldHaveSeconds(seconds: Long) = this should haveSeconds(seconds)
 
-@OptIn(ExperimentalTime::class)
 infix fun Duration.shouldNotHaveSeconds(seconds: Long) = this shouldNot haveSeconds(seconds)
 
-@OptIn(ExperimentalTime::class)
 fun haveSeconds(seconds: Long) = neverNullMatcher<Duration> { value ->
    MatcherResult(
       value.toLong(DurationUnit.SECONDS) == seconds,
@@ -25,14 +21,11 @@ fun haveSeconds(seconds: Long) = neverNullMatcher<Duration> { value ->
 }
 
 
-@OptIn(ExperimentalTime::class)
 infix fun Duration.shouldHaveMillis(millis: Long) = this should haveMillis(millis)
 
-@OptIn(ExperimentalTime::class)
 infix fun Duration.shouldNotHaveMillis(millis: Long) = this shouldNot haveMillis(millis)
 
 
-@OptIn(ExperimentalTime::class)
 fun haveMillis(millis: Long) = neverNullMatcher<Duration> { value ->
    MatcherResult(
       value.toLong(DurationUnit.MILLISECONDS) == millis,
@@ -41,13 +34,10 @@ fun haveMillis(millis: Long) = neverNullMatcher<Duration> { value ->
    )
 }
 
-@OptIn(ExperimentalTime::class)
 infix fun Duration.shouldHaveMinutes(minutes: Long) = this should haveMinutes(minutes)
 
-@OptIn(ExperimentalTime::class)
 infix fun Duration.shouldNotHaveMinutes(minutes: Long) = this shouldNot haveMinutes(minutes)
 
-@OptIn(ExperimentalTime::class)
 fun haveMinutes(minutes: Long) = neverNullMatcher<Duration> { value ->
    MatcherResult(
       value.toLong(DurationUnit.MINUTES) == minutes,
@@ -57,14 +47,11 @@ fun haveMinutes(minutes: Long) = neverNullMatcher<Duration> { value ->
 }
 
 
-@OptIn(ExperimentalTime::class)
 infix fun Duration.shouldHaveHours(hours: Long) = this should haveHours(hours)
 
-@OptIn(ExperimentalTime::class)
 infix fun Duration.shouldNotHaveHours(hours: Long) = this shouldNot haveHours(hours)
 
 
-@OptIn(ExperimentalTime::class)
 fun haveHours(hours: Long) = neverNullMatcher<Duration> { value ->
    MatcherResult(
       value.toLong(DurationUnit.HOURS) == hours,

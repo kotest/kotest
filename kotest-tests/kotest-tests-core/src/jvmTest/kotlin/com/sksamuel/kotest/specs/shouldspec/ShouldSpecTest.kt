@@ -4,10 +4,8 @@ import io.kotest.core.spec.style.ShouldSpec
 import io.kotest.matchers.ints.shouldBeLessThan
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import kotlin.time.ExperimentalTime
 import kotlin.time.milliseconds
 
-@OptIn(ExperimentalTime::class)
 class ShouldSpecTest : ShouldSpec() {
 
    init {

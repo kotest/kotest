@@ -6,9 +6,7 @@ import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestStatus
 import io.kotest.engine.toTestResult
 import kotlinx.coroutines.delay
-import kotlin.time.ExperimentalTime
 
-@OptIn(ExperimentalTime::class)
 class SystemPropertyTimeoutTest : FunSpec() {
    init {
       extension(expectFailureExtension)

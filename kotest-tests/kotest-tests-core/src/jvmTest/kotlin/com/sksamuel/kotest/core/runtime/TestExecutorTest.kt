@@ -22,10 +22,8 @@ import io.kotest.matchers.types.shouldBeInstanceOf
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlin.coroutines.CoroutineContext
-import kotlin.time.ExperimentalTime
 import kotlin.time.milliseconds
 
-@OptIn(ExperimentalTime::class)
 fun testExecutorTests(context: TimeoutExecutionContext) = funSpec {
 
    fun context(testCase: TestCase) = object : TestContext {
@@ -164,7 +162,6 @@ class TestExecutorTest : FunSpec({
    include("executor:", testExecutorTests(ExecutorExecutionContext))
 })
 
-@OptIn(ExperimentalTime::class)
 private class Tests : FunSpec({
    test("a") {}
    test("b").config(timeout = 100.milliseconds) { delay(1000000) }

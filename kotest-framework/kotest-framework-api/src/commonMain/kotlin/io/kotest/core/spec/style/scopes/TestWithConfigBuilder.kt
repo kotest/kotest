@@ -10,9 +10,7 @@ import io.kotest.core.test.DescriptionName
 import io.kotest.core.test.deriveTestConfig
 import io.kotest.core.test.TestCaseSeverityLevel
 import kotlin.time.Duration
-import kotlin.time.ExperimentalTime
 
-@OptIn(ExperimentalTime::class)
 class TestWithConfigBuilder(
    private val name: DescriptionName.TestName,
    private val context: TestContext,

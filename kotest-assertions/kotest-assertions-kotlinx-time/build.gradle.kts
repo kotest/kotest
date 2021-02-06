@@ -35,14 +35,6 @@ kotlin {
       iosArm32()
    }
 
-   targets.all {
-      compilations.all {
-         kotlinOptions {
-            freeCompilerArgs = freeCompilerArgs + "-Xopt-in=kotlin.RequiresOptIn"
-         }
-      }
-   }
-
    sourceSets {
 
       val commonMain by getting {
@@ -60,6 +52,11 @@ kotlin {
          dependencies {
             implementation(project(Projects.JunitRunner))
          }
+      }
+
+      all {
+         languageSettings.useExperimentalAnnotation("kotlin.time.ExperimentalTime")
+         languageSettings.useExperimentalAnnotation("kotlin.experimental.ExperimentalTypeInference")
       }
    }
 }

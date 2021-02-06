@@ -11,7 +11,6 @@ import io.kotest.core.test.createTestName
 import kotlin.coroutines.CoroutineContext
 import kotlin.jvm.JvmName
 import kotlin.time.Duration
-import kotlin.time.ExperimentalTime
 
 /**
  * Defines the DSL for creating tests in the 'StringSpec' style.
@@ -25,7 +24,6 @@ import kotlin.time.ExperimentalTime
  */
 interface StringSpecRootScope : RootScope {
 
-   @OptIn(ExperimentalTime::class)
    fun String.config(
       enabled: Boolean? = null,
       invocations: Int? = null,

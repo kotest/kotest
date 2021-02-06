@@ -4,11 +4,9 @@ import io.kotest.core.Tag
 import io.kotest.core.extensions.TestCaseExtension
 import io.kotest.core.listeners.TestListener
 import kotlin.time.Duration
-import kotlin.time.ExperimentalTime
 
 typealias EnabledIf = (TestCase) -> Boolean
 
-@OptIn(ExperimentalTime::class)
 data class TestCaseConfig(
    val enabled: Boolean = true,
    val invocations: Int = 1,

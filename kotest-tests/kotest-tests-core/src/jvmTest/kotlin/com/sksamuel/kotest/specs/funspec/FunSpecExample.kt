@@ -13,10 +13,8 @@ import io.kotest.extensions.locale.LocaleTestListener
 import io.kotest.extensions.locale.TimeZoneTestListener
 import java.util.Locale
 import java.util.TimeZone
-import kotlin.time.ExperimentalTime
 import kotlin.time.milliseconds
 
-@OptIn(ExperimentalTime::class)
 class FunSpecExample : FunSpec() {
 
    private val linuxTag = Tag("linux")

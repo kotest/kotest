@@ -15,10 +15,8 @@ import io.kotest.property.arbitrary.int
 import io.kotest.property.arbitrary.long
 import io.kotest.property.arbitrary.orNull
 import io.kotest.property.forAll
-import kotlin.time.ExperimentalTime
 import kotlin.time.seconds
 
-@ExperimentalTime
 class OrNullTest : FunSpec({
 
    test("Arb.orNull().edgecases() should contain null") {

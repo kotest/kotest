@@ -14,10 +14,8 @@ import kotlinx.datetime.Month
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 import kotlinx.datetime.todayAt
-import kotlin.time.ExperimentalTime
 import kotlin.time.days
 
-@ExperimentalTime
 class LocalDateTimeTests : StringSpec({
 
     "LocalDateTime should have same year ignoring other fields" {

@@ -22,14 +22,6 @@ kotlin {
       }
    }
 
-   targets.all {
-      compilations.all {
-         kotlinOptions {
-            freeCompilerArgs = freeCompilerArgs + "-Xopt-in=kotlin.RequiresOptIn"
-         }
-      }
-   }
-
    sourceSets {
 
       val jvmMain by getting {
@@ -52,6 +44,11 @@ kotlin {
             implementation(project(Projects.JunitRunner))
             implementation("org.springframework.boot:spring-boot-starter-test:2.2.5.RELEASE")
          }
+      }
+
+      all {
+         languageSettings.useExperimentalAnnotation("kotlin.time.ExperimentalTime")
+         languageSettings.useExperimentalAnnotation("kotlin.experimental.ExperimentalTypeInference")
       }
    }
 }

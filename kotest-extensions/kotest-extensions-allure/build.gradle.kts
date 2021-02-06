@@ -21,15 +21,8 @@ kotlin {
       }
    }
 
-   targets.all {
-      compilations.all {
-         kotlinOptions {
-            freeCompilerArgs = freeCompilerArgs + "-Xuse-experimental=kotlin.Experimental"
-         }
-      }
-   }
-
    sourceSets {
+
       val jvmMain by getting {
          dependencies {
             implementation(kotlin("reflect"))
@@ -49,6 +42,11 @@ kotlin {
             implementation(project(Projects.JunitRunner))
             implementation(project(Projects.AssertionsCore))
          }
+      }
+
+      all {
+         languageSettings.useExperimentalAnnotation("kotlin.time.ExperimentalTime")
+         languageSettings.useExperimentalAnnotation("kotlin.experimental.ExperimentalTypeInference")
       }
    }
 }

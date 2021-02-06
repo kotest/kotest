@@ -25,14 +25,6 @@ kotlin {
       }
    }
 
-   targets.all {
-      compilations.all {
-         kotlinOptions {
-            freeCompilerArgs = freeCompilerArgs + "-Xopt-in=kotlin.time.ExperimentalTime"
-         }
-      }
-   }
-
    sourceSets {
 
       val commonMain by getting {
@@ -78,12 +70,12 @@ kotlin {
             implementation(Libs.JUnitJupiter.engine)
          }
       }
-   }
-}
 
-tasks.named("compileKotlinJs") {
-   this as org.jetbrains.kotlin.gradle.dsl.KotlinJsCompile
-   kotlinOptions.moduleKind = "umd"
+      all {
+         languageSettings.useExperimentalAnnotation("kotlin.time.ExperimentalTime")
+         languageSettings.useExperimentalAnnotation("kotlin.experimental.ExperimentalTypeInference")
+      }
+   }
 }
 
 tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {

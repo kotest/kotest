@@ -17,11 +17,9 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import java.util.concurrent.atomic.AtomicInteger
 import kotlin.coroutines.CoroutineContext
-import kotlin.time.ExperimentalTime
 import kotlin.time.milliseconds
 
 @Suppress("BlockingMethodInNonBlockingContext")
-@ExperimentalTime
 class TestCaseTimeoutListenerTest : FunSpec() {
 
    private val blockingCount = AtomicInteger(0)

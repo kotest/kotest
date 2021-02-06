@@ -11,7 +11,6 @@ import io.kotest.core.test.createTestName
 import io.kotest.core.test.TestCaseSeverityLevel
 import kotlin.coroutines.CoroutineContext
 import kotlin.time.Duration
-import kotlin.time.ExperimentalTime
 
 class FreeScope(
    override val description: Description,
@@ -41,7 +40,6 @@ class FreeScope(
    suspend infix operator fun String.invoke(test: suspend TestContext.() -> Unit) =
       addTest(createTestName(this), xdisabled = false, test = test)
 
-   @OptIn(ExperimentalTime::class)
    suspend fun String.config(
       enabled: Boolean? = null,
       invocations: Int? = null,
