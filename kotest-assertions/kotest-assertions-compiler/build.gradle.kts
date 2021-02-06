@@ -22,9 +22,17 @@ kotlin {
 
    sourceSets {
 
+      val commonMain by getting {
+         dependencies {
+            implementation(kotlin("stdlib"))
+            implementation(kotlin("reflect"))
+         }
+      }
+
       val jvmMain by getting {
          dependencies {
             implementation(project(Projects.AssertionsShared))
+            implementation(Libs.Kotlin.compilerEmbeddable)
             implementation(Libs.Tschuchortdev.kotlinCompileTesting)
          }
       }

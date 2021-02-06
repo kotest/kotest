@@ -40,15 +40,14 @@ kotlin {
 
       val commonMain by getting {
          dependencies {
+            implementation(kotlin("stdlib"))
+            implementation(kotlin("reflect"))
             implementation(Libs.Coroutines.coreCommon)
          }
       }
 
       val jvmMain by getting {
          dependsOn(commonMain)
-         dependencies {
-            implementation(kotlin("reflect"))
-         }
       }
 
       val desktopMain by creating {

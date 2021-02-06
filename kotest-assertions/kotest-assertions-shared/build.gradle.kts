@@ -41,6 +41,8 @@ kotlin {
 
       val commonMain by getting {
          dependencies {
+            implementation(kotlin("reflect"))
+            implementation(kotlin("stdlib"))
             api(project(Projects.AssertionsApi))
             implementation(project(Projects.Common))
             implementation(Libs.Coroutines.coreCommon)
@@ -50,7 +52,6 @@ kotlin {
       val jvmMain by getting {
          dependsOn(commonMain)
          dependencies {
-            implementation(kotlin("reflect"))
             implementation(Libs.Coroutines.jdk8)
             implementation(Libs.Wumpz.diffutils)
          }

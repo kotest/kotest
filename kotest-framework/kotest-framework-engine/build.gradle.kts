@@ -31,6 +31,8 @@ kotlin {
 
       val commonMain by getting {
          dependencies {
+            implementation(kotlin("reflect"))
+            implementation(kotlin("stdlib"))
             api(project(Projects.AssertionsShared))
             implementation(project(Projects.Common))
             // this is API because we want people to be able to use the functionality in their tests
@@ -51,7 +53,6 @@ kotlin {
       val jvmMain by getting {
          dependsOn(commonMain)
          dependencies {
-            implementation(kotlin("reflect"))
             api(Libs.Kotlin.kotlinScriptRuntime)
             implementation(Libs.Kotlin.kotlinScriptUtil)
             implementation(Libs.Kotlin.kotlinScriptJvm)

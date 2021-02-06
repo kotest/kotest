@@ -29,6 +29,8 @@ kotlin {
 
       val commonMain by getting {
          dependencies {
+            implementation(kotlin("reflect"))
+            implementation(kotlin("stdlib"))
             implementation(Libs.Coroutines.coreCommon)
             implementation(Libs.Kotlin.kotlinScriptRuntime)
             implementation(project(Projects.Common))
@@ -48,7 +50,6 @@ kotlin {
       val jvmMain by getting {
          dependsOn(commonMain)
          dependencies {
-            implementation(kotlin("reflect"))
             implementation(Libs.Coroutines.coreJvm)
          }
       }

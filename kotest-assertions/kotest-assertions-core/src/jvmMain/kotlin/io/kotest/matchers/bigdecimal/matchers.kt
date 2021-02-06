@@ -22,20 +22,14 @@ infix fun BigDecimal.shouldHaveScale(scale: Int) = this.scale() shouldBe scale
 infix fun BigDecimal.shouldNotHaveScale(scale: Int) = this.scale() shouldNotBe scale
 
 infix fun BigDecimal.shouldBeLessThan(other: BigDecimal) = this shouldBe lt(other)
-infix fun BigDecimal.shouldBeLessThanOrEquals(other: BigDecimal) = this shouldBe lte(
-  other)
-infix fun BigDecimal.shouldNotBeLessThan(other: BigDecimal) = this shouldNotBe lt(
-  other)
-infix fun BigDecimal.shouldNotBeLessThanOrEquals(other: BigDecimal) = this shouldNotBe lte(
-  other)
+infix fun BigDecimal.shouldBeLessThanOrEquals(other: BigDecimal) = this shouldBe lte(other)
+infix fun BigDecimal.shouldNotBeLessThan(other: BigDecimal) = this shouldNotBe lt(other)
+infix fun BigDecimal.shouldNotBeLessThanOrEquals(other: BigDecimal) = this shouldNotBe lte(other)
 
 infix fun BigDecimal.shouldBeGreaterThan(other: BigDecimal) = this shouldBe gt(other)
-infix fun BigDecimal.shouldBeGreaterThanOrEquals(other: BigDecimal) = this shouldBe gte(
-  other)
-infix fun BigDecimal.shouldNotBeGreaterThan(other: BigDecimal) = this shouldNotBe gt(
-  other)
-infix fun BigDecimal.shouldNotBeGreaterThanOrEquals(other: BigDecimal) = this shouldNotBe gte(
-  other)
+infix fun BigDecimal.shouldBeGreaterThanOrEquals(other: BigDecimal) = this shouldBe gte(other)
+infix fun BigDecimal.shouldNotBeGreaterThan(other: BigDecimal) = this shouldNotBe gt(other)
+infix fun BigDecimal.shouldNotBeGreaterThanOrEquals(other: BigDecimal) = this shouldNotBe gte(other)
 
 infix fun BigDecimal.shouldBeInRange(range: ClosedRange<BigDecimal>) = this should beInClosedRange(range)
 infix fun BigDecimal.shouldNotBeInRange(range: ClosedRange<BigDecimal>) = this shouldNot beInClosedRange(range)
