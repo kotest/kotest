@@ -44,20 +44,22 @@ fun <A> Arb.Companion.set(gen: Gen<A>, range: IntRange = 0..100): Arb<Set<A>> {
    check(range.first >= 0)
    // we may generate duplicates, but we don't know if the underlying gen has sufficient cardinality
    // to satisfy our range, so we can try for a while, but must not try for ever
-   // the slippage factor controls how many times we will try for an element before giving up, which
-   // is the number of elements in the target set * slippage
+   // the slippage factor controls how many times we will accept a non unique element before giving up,
+   // which is the number of elements in the target set * slippage
    val slippage = 10
    return arbitrary {
       val genIter = gen.generate(it).iterator()
       val targetSize = it.random.nextInt(range)
-      val maxIterations = targetSize * slippage
+      val maxMisses = targetSize * slippage
       val set = mutableSetOf<A>()
       var iterations = 0
-      while (iterations++ < maxIterations && set.size < targetSize && genIter.hasNext()) {
+      while (iterations < maxMisses && set.size < targetSize && genIter.hasNext()) {
+         val size = set.size
          set.add(genIter.next().value)
+         if (set.size == size) iterations++
       }
       check(set.size == targetSize) {
-         "the target size requirement of $targetSize could not be satisfied after $maxIterations consecutive samples"
+         "the target size requirement of $targetSize could not be satisfied after $iterations consecutive samples"
       }
       set
    }
