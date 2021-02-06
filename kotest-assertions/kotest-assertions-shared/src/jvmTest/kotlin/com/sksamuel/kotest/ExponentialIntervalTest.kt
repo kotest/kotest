@@ -1,31 +1,20 @@
-package com.sksamuel.kotest.assertions.until
+package com.sksamuel.kotest
 
-import io.kotest.assertions.until.FibonacciInterval
-import io.kotest.assertions.until.fibonacci
+import io.kotest.assertions.until.ExponentialInterval
+import io.kotest.assertions.until.exponential
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.comparables.shouldBeGreaterThan
 import io.kotest.matchers.comparables.shouldBeLessThan
 import io.kotest.matchers.shouldBe
-import kotlin.time.minutes
+import kotlin.time.hours
+import kotlin.time.milliseconds
 
-class FibonacciIntervalTest : FunSpec() {
-
+class ExponentialIntervalTest : FunSpec() {
    init {
-      test("fib correctness") {
-         fibonacci(0) shouldBe 0
-         fibonacci(1) shouldBe 1
-         fibonacci(2) shouldBe 1
-         fibonacci(3) shouldBe 2
-         fibonacci(4) shouldBe 3
-         fibonacci(5) shouldBe 5
-         fibonacci(6) shouldBe 8
-         fibonacci(7) shouldBe 13
-      }
-
-      test("fibonacci interval should have a reasonable default cap") {
-         val cap = FibonacciInterval.defaultCap
-         val default = 10.minutes.fibonacci()
-         val unbounded = 10.minutes.fibonacci(null)
+      test("exponential interval should have a reasonable default cap") {
+         val cap = ExponentialInterval.defaultCap
+         val default = 25.milliseconds.exponential()
+         val unbounded = 25.milliseconds.exponential(null)
 
          val first = 0
          val last = 20
@@ -46,10 +35,10 @@ class FibonacciIntervalTest : FunSpec() {
          }
       }
 
-      test("fibonacci interval should respect user specified cap") {
-         val cap = FibonacciInterval.defaultCap.plus(15.minutes)
-         val bounded = 10.minutes.fibonacci(cap)
-         val unbounded = 10.minutes.fibonacci(null)
+      test("exponential interval should respect user specified cap") {
+         val cap = 278.hours
+         val bounded = 25.milliseconds.exponential(cap = cap)
+         val unbounded = 25.milliseconds.exponential(null)
 
          val first = 0
          val last = 20
