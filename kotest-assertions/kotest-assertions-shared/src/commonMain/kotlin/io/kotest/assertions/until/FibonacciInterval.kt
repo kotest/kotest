@@ -1,6 +1,7 @@
 package io.kotest.assertions.until
 
 import kotlin.time.Duration
+import kotlin.time.hours
 import kotlin.time.milliseconds
 
 /**
@@ -29,7 +30,7 @@ class FibonacciInterval(private val base: Duration, private val offset: Int, pri
    }
 }
 
-fun Duration.fibonacci(cap: Duration? = null) = FibonacciInterval(this, 0, cap)
+fun Duration.fibonacci(cap: Duration? = 2.hours) = FibonacciInterval(this, 0, cap)
 
 fun fibonacci(n: Int): Int {
    tailrec fun fib(k: Int, current: Int, previous: Int): Int = when (k) {

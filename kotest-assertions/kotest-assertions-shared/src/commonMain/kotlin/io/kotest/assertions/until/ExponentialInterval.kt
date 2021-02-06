@@ -2,6 +2,7 @@ package io.kotest.assertions.until
 
 import kotlin.math.pow
 import kotlin.time.Duration
+import kotlin.time.hours
 import kotlin.time.milliseconds
 
 class ExponentialInterval(private val base: Duration, private val cap: Duration?) : Interval {
@@ -9,8 +10,9 @@ class ExponentialInterval(private val base: Duration, private val cap: Duration?
 
    override fun next(count: Int): Duration {
       val amount = base.inMilliseconds.pow(count.toDouble()).toLong()
-      return amount.milliseconds
+      val result = amount.milliseconds
+      return if (cap == null) result else minOf(cap, result)
    }
 }
 
-fun Duration.exponential(cap: Duration? = null) = ExponentialInterval(this, cap)
+fun Duration.exponential(cap: Duration = 2.hours) = ExponentialInterval(this, cap)
