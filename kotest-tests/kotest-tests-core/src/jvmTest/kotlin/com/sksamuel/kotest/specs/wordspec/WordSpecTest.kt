@@ -4,10 +4,8 @@ import io.kotest.core.spec.style.WordSpec
 import io.kotest.matchers.ints.shouldBeGreaterThan
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import kotlin.time.ExperimentalTime
 import kotlin.time.milliseconds
 
-@OptIn(ExperimentalTime::class)
 class WordSpecTest : WordSpec() {
 
    init {

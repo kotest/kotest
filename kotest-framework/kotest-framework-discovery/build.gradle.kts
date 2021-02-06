@@ -37,6 +37,11 @@ kotlin {
             implementation(Libs.Classgraph.classgraph)
          }
       }
+
+      all {
+         languageSettings.useExperimentalAnnotation("kotlin.time.ExperimentalTime")
+         languageSettings.useExperimentalAnnotation("kotlin.experimental.ExperimentalTypeInference")
+      }
    }
 }
 

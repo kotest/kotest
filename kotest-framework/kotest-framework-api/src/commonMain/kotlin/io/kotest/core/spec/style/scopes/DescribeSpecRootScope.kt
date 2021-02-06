@@ -3,7 +3,6 @@ package io.kotest.core.spec.style.scopes
 import io.kotest.core.test.DescriptionName
 import io.kotest.core.test.TestContext
 import io.kotest.core.test.createTestName
-import kotlin.time.ExperimentalTime
 
 /**
  * A context that allows root tests to be registered using the syntax:
@@ -11,7 +10,6 @@ import kotlin.time.ExperimentalTime
  * describe("some test")
  * xdescribe("some disabled test")
  */
-@OptIn(ExperimentalTime::class)
 interface DescribeSpecRootScope : RootScope {
 
    fun context(name: String, test: suspend DescribeScope.() -> Unit) {

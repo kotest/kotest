@@ -3,12 +3,10 @@ package com.sksamuel.kotest.timeout
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.spec.style.funSpec
 import kotlinx.coroutines.delay
-import kotlin.time.ExperimentalTime
 import kotlin.time.hours
 import kotlin.time.milliseconds
 import kotlin.time.seconds
 
-@ExperimentalTime
 private val factory = funSpec {
    test("long running test") {
       delay(10.hours)
@@ -18,7 +16,6 @@ private val factory = funSpec {
 /**
  * Tests invocation timeouts at the spec level using inline assignment.
  */
-@ExperimentalTime
 class SpecInlineInvocationTimeoutTest : FunSpec() {
    init {
       extension(expectFailureExtension)
@@ -37,7 +34,6 @@ class SpecInlineInvocationTimeoutTest : FunSpec() {
 /**
  * Tests invocation timeouts at the spec level using inline assignment.
  */
-@ExperimentalTime
 class FunctionOverrideInvocationPrecedenceTimeoutTest : FunSpec() {
 
    override fun invocationTimeout(): Long {
@@ -58,7 +54,6 @@ class FunctionOverrideInvocationPrecedenceTimeoutTest : FunSpec() {
 /**
  * Tests that a test case invocation timeout overrides spec level inline assignment.
  */
-@ExperimentalTime
 class InlineInvocationPrecedenceTimeoutTest : FunSpec() {
    init {
       extension(expectFailureExtension)
@@ -77,7 +72,6 @@ class InlineInvocationPrecedenceTimeoutTest : FunSpec() {
 /**
  * Tests that a test case invocation timeout overrides spec level.
  */
-@ExperimentalTime
 class FunctionOverrideInvocationTimeoutTest : FunSpec() {
 
    override fun invocationTimeout(): Long {

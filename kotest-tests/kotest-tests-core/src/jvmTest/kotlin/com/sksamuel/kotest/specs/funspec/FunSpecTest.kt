@@ -11,10 +11,8 @@ import io.kotest.matchers.string.shouldStartWith
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.nio.file.Paths
-import kotlin.time.ExperimentalTime
 import kotlin.time.milliseconds
 
-@OptIn(ExperimentalTime::class)
 class FunSpecTest : FunSpec() {
 
    var count = 0

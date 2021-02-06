@@ -9,7 +9,6 @@ import io.kotest.core.test.createTestName
 import io.kotest.core.test.deriveTestConfig
 import io.kotest.core.test.TestCaseSeverityLevel
 import kotlin.time.Duration
-import kotlin.time.ExperimentalTime
 
 interface FreeSpecRootScope : RootScope {
 
@@ -33,7 +32,6 @@ interface FreeSpecRootScope : RootScope {
    }
 
    // adds a leaf test with config
-   @OptIn(ExperimentalTime::class)
    fun String.config(
       enabled: Boolean? = null,
       invocations: Int? = null,

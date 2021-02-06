@@ -5,10 +5,8 @@ import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
 import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant
-import kotlin.time.ExperimentalTime
 import kotlin.time.milliseconds
 
-@ExperimentalTime
 class InstantTests : FreeSpec({
 
     "same instance of instant should be same" {

@@ -3,10 +3,8 @@ package com.sksamuel.kotest.framework.api
 import io.kotest.core.annotation.Ignored
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
-import kotlin.time.ExperimentalTime
 import kotlin.time.seconds
 
-@OptIn(ExperimentalTime::class)
 @Ignored
 class TestCaseSourceRefTest : FunSpec() {
    init {

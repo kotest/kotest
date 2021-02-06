@@ -20,6 +20,6 @@ fun Arb.Companion.ushort() = arb(UShortShrinker, listOf(0.toUShort(), UShort.MIN
 
 val ShortShrinker = IntShrinker(Short.MIN_VALUE..Short.MAX_VALUE).bimap({ it.toInt() }, { it.toShort() })
 
-@OptIn(ExperimentalUnsignedTypes::class)
+@ExperimentalUnsignedTypes
 val UShortShrinker =
    IntShrinker(UShort.MIN_VALUE.toShort()..UShort.MAX_VALUE.toShort()).bimap({ it.toInt() }, { it.toUShort() })

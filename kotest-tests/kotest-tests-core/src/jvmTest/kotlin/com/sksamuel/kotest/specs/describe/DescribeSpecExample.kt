@@ -2,10 +2,8 @@ package com.sksamuel.kotest.specs.describe
 
 import io.kotest.assertions.fail
 import io.kotest.core.spec.style.DescribeSpec
-import kotlin.time.ExperimentalTime
 import kotlin.time.milliseconds
 
-@OptIn(ExperimentalTime::class)
 class DescribeSpecExample : DescribeSpec() {
    init {
       describe("some thing") {

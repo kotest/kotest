@@ -11,7 +11,6 @@ import io.kotest.core.test.createTestName
 import io.kotest.core.test.TestCaseSeverityLevel
 import kotlin.coroutines.CoroutineContext
 import kotlin.time.Duration
-import kotlin.time.ExperimentalTime
 
 /**
  * A scope that allows tests to be registered using the syntax:
@@ -33,7 +32,6 @@ class WordSpecShouldScope(
       name(test)
    }
 
-   @OptIn(ExperimentalTime::class)
    suspend fun String.config(
       enabled: Boolean? = null,
       invocations: Int? = null,

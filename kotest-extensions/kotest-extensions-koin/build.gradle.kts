@@ -21,14 +21,6 @@ kotlin {
       }
    }
 
-   targets.all {
-      compilations.all {
-         kotlinOptions {
-            freeCompilerArgs + "-Xuse-experimental=kotlin.Experimental"
-         }
-      }
-   }
-
    sourceSets {
 
       val jvmMain by getting {
@@ -49,6 +41,11 @@ kotlin {
             implementation(project(Projects.JunitRunner))
             implementation(Libs.Mocking.mockk)
          }
+      }
+
+      all {
+         languageSettings.useExperimentalAnnotation("kotlin.time.ExperimentalTime")
+         languageSettings.useExperimentalAnnotation("kotlin.experimental.ExperimentalTypeInference")
       }
    }
 }

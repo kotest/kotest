@@ -12,7 +12,6 @@ import io.kotest.core.listeners.ProjectListener
 import io.kotest.core.test.TestCaseConfig
 import kotlin.reflect.KClass
 import kotlin.time.Duration
-import kotlin.time.ExperimentalTime
 
 /**
  * Project-wide configuration. Extensions returned by an
@@ -68,7 +67,6 @@ abstract class AbstractProjectConfig {
     * A global timeout that is applied to all tests if not null.
     * Tests which define their own timeout will override this.
     */
-   @OptIn(ExperimentalTime::class)
    open val timeout: Duration? = null
 
    /**

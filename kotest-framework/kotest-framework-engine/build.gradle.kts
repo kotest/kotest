@@ -27,14 +27,6 @@ kotlin {
       }
    }
 
-   targets.all {
-      compilations.all {
-         kotlinOptions {
-            freeCompilerArgs = freeCompilerArgs + "-Xopt-in=kotlin.RequiresOptIn"
-         }
-      }
-   }
-
    sourceSets {
 
       val commonMain by getting {
@@ -84,12 +76,12 @@ kotlin {
             implementation(Libs.Mocking.mockk)
          }
       }
-   }
-}
 
-tasks.named("compileKotlinJs") {
-   this as org.jetbrains.kotlin.gradle.dsl.KotlinJsCompile
-   kotlinOptions.moduleKind = "commonjs"
+      all {
+         languageSettings.useExperimentalAnnotation("kotlin.time.ExperimentalTime")
+         languageSettings.useExperimentalAnnotation("kotlin.experimental.ExperimentalTypeInference")
+      }
+   }
 }
 
 tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {

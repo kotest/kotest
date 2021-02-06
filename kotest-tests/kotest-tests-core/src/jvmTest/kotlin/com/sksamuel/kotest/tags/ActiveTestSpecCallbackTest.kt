@@ -13,9 +13,7 @@ import io.kotest.core.spec.Spec
 import io.kotest.core.spec.style.FreeSpec
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
-import kotlin.time.ExperimentalTime
 
-@OptIn(ExperimentalTime::class)
 @DoNotParallelize
 class ActiveTestSpecCallbackTest : FreeSpec() {
    init {

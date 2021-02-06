@@ -25,14 +25,6 @@ kotlin {
       }
    }
 
-   targets.all {
-      compilations.all {
-         kotlinOptions {
-            freeCompilerArgs = freeCompilerArgs + "-Xuse-experimental=kotlin.Experimental"
-         }
-      }
-   }
-
    sourceSets {
 
       val commonMain by getting {
@@ -63,6 +55,11 @@ kotlin {
             implementation(project(Projects.AssertionsCore))
             implementation(project(Projects.MockServer))
          }
+      }
+
+      all {
+         languageSettings.useExperimentalAnnotation("kotlin.time.ExperimentalTime")
+         languageSettings.useExperimentalAnnotation("kotlin.experimental.ExperimentalTypeInference")
       }
    }
 }

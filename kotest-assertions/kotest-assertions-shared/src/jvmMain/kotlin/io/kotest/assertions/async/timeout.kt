@@ -5,9 +5,7 @@ import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.withTimeout
 import java.util.concurrent.TimeUnit
 import kotlin.time.Duration
-import kotlin.time.ExperimentalTime
 
-@ExperimentalTime
 suspend fun <A> shouldTimeout(duration: Duration, thunk: suspend () -> A) =
    shouldTimeout(duration.toLongMilliseconds(), TimeUnit.MILLISECONDS, thunk)
 

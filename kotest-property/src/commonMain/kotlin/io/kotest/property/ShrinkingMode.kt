@@ -1,8 +1,5 @@
 package io.kotest.property
 
-import kotlin.time.ExperimentalTime
-
-@OptIn(ExperimentalTime::class)
 sealed class ShrinkingMode {
 
    /**

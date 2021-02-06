@@ -2,11 +2,9 @@ package com.sksamuel.kotest.timeout
 
 import io.kotest.core.spec.style.FreeSpec
 import kotlinx.coroutines.delay
-import kotlin.time.ExperimentalTime
 import kotlin.time.milliseconds
 import kotlin.time.minutes
 
-@ExperimentalTime
 class SpecLevelInvocationTimeoutContainerTest : FreeSpec({
 
    timeout = 1.minutes.toLongMilliseconds()

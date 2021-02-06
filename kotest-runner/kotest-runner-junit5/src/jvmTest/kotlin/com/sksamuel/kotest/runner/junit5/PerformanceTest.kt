@@ -5,10 +5,8 @@ import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 import org.junit.platform.engine.discovery.DiscoverySelectors
 import org.junit.platform.testkit.engine.EngineTestKit
-import kotlin.time.ExperimentalTime
 import kotlin.time.seconds
 
-@OptIn(ExperimentalTime::class)
 class PerformanceTest : FunSpec() {
    init {
       test("performance of multiple tests").config(timeout = 20.seconds) {

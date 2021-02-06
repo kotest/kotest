@@ -4,14 +4,12 @@ import io.kotest.assertions.retry
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.longs.shouldBeGreaterThanOrEqual
 import io.kotest.matchers.shouldBe
-import kotlin.time.ExperimentalTime
 import kotlin.time.milliseconds
 import kotlinx.coroutines.delay
 
-@OptIn(ExperimentalTime::class)
 class RetryTest : StringSpec() {
    init {
-      
+
       "should allow execution of suspend functions" {
          retry(5, 500.milliseconds, 100.milliseconds) {
             dummySuspend()
@@ -21,7 +19,7 @@ class RetryTest : StringSpec() {
             dummySuspend()
          }
       }
-      
+
       "should call given assertion when until it pass in given number of times" {
          val testClass = TestClass(4)
          retry(5, 500.milliseconds, 100.milliseconds) {
@@ -99,7 +97,7 @@ class RetryTest : StringSpec() {
          // Eating other exception
       }
    }
-   
+
    private suspend fun dummySuspend() {
       delay(0)
    }
