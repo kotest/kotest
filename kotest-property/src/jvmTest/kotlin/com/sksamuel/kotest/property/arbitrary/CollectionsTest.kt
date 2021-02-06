@@ -38,6 +38,18 @@ class CollectionsTest : FunSpec({
       }
    }
 
+   test("Arb.set should generate when sufficient cardinality is available, even if dups are periodically generated") {
+      // this arb will generate 100 ints, but the first 1000 we take are almost certain to not be unique,
+      // so this test will ensure, as long as the arb can still complete, it does.
+      val arbUnderlying = Arb.int(0..1000)
+      Arb.set(arbUnderlying, 1000).single()
+   }
+
+   test("Arb.set should generate when sufficient cardinality is available, regardless of size") {
+      val arbUnderlying = Arb.int()
+      Arb.set(arbUnderlying, 1000000).single()
+   }
+
    test("Arb.list should return lists of underlying generators") {
       val gen = Arb.list(Exhaustive.constant(1), 2..10)
       checkAll(gen) {
