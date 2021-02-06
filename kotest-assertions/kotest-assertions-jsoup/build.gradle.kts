@@ -20,14 +20,6 @@ kotlin {
       }
    }
 
-   targets.all {
-      compilations.all {
-         kotlinOptions {
-            freeCompilerArgs = freeCompilerArgs + "-Xopt-in=kotlin.RequiresOptIn"
-         }
-      }
-   }
-
    sourceSets {
 
       val jvmMain by getting {
@@ -45,12 +37,12 @@ kotlin {
             implementation(project(Projects.JunitRunner))
          }
       }
-   }
-}
 
-tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
-   kotlinOptions.freeCompilerArgs += "-Xopt-in=kotlin.RequiresOptIn"
-   kotlinOptions.jvmTarget = "1.8"
+      all {
+         languageSettings.useExperimentalAnnotation("kotlin.time.ExperimentalTime")
+         languageSettings.useExperimentalAnnotation("kotlin.experimental.ExperimentalTypeInference")
+      }
+   }
 }
 
 tasks.named<Test>("jvmTest") {

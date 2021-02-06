@@ -20,26 +20,25 @@ kotlin {
       }
    }
 
-   targets.all {
-      compilations.all {
-         kotlinOptions {
-            freeCompilerArgs = freeCompilerArgs + "-Xopt-in=kotlin.RequiresOptIn"
-         }
-      }
-   }
-
    sourceSets {
+
       val jvmMain by getting {
          dependencies {
             implementation(project(Projects.AssertionsShared))
             implementation(Libs.Tschuchortdev.kotlinCompileTesting)
          }
       }
+
       val jvmTest by getting {
          dependsOn(jvmMain)
          dependencies {
             implementation(project(Projects.JunitRunner))
          }
+      }
+
+      all {
+         languageSettings.useExperimentalAnnotation("kotlin.time.ExperimentalTime")
+         languageSettings.useExperimentalAnnotation("kotlin.experimental.ExperimentalTypeInference")
       }
    }
 }

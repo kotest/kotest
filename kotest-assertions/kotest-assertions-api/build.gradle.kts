@@ -38,10 +38,12 @@ kotlin {
    }
 
    sourceSets {
+
       val commonMain by getting {
          dependencies {
          }
       }
+
       all {
          languageSettings.useExperimentalAnnotation("kotlin.time.ExperimentalTime")
          languageSettings.useExperimentalAnnotation("kotlin.experimental.ExperimentalTypeInference")
