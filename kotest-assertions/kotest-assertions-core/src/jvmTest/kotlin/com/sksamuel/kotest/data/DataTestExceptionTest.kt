@@ -17,8 +17,8 @@ class DataTestExceptionTest : FunSpec({
             a.toInt()
          }
       }
-      t.message shouldContain """Test failed for (a, a) with error java.lang.NumberFormatException: For input string: "a""""
-      t.message shouldContain """Test failed for (a, simple) with error java.lang.NumberFormatException: For input string: "simple""""
-      t.message shouldContain """Test failed for (a, data test) with error java.lang.NumberFormatException: For input string: "data test""""
+      t.message shouldContain """Test failed for (a, "a") with error java.lang.NumberFormatException: For input string: "a""""
+      t.message shouldContain """Test failed for (a, "simple") with error java.lang.NumberFormatException: For input string: "simple""""
+      t.message shouldContain """Test failed for (a, "data test") with error java.lang.NumberFormatException: For input string: "data test""""
    }
 })

@@ -1,6 +1,7 @@
 package com.sksamuel.kotest.data
 
 import io.kotest.assertions.MultiAssertionError
+import io.kotest.assertions.assertSoftly
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.assertions.throwables.shouldThrowAny
 import io.kotest.core.spec.style.StringSpec
@@ -14,6 +15,7 @@ import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNot
 import io.kotest.matchers.shouldNotBe
 import io.kotest.matchers.string.contain
+import io.kotest.matchers.string.shouldContain
 import io.kotest.matchers.types.shouldNotBeInstanceOf
 
 class DataTestingTest : StringSpec() {
@@ -168,8 +170,8 @@ class DataTestingTest : StringSpec() {
             }
          }.let {
             it.message shouldNotBe null
-            it.message should contain("1) Test failed for (name, sam) with error expected:<\"christian\"> but was:<\"sam\">")
-            it.message should contain("2) Test failed for (name, billy) with error expected:<\"christian\"> but was:<\"billy\">")
+            it.message should contain("1) Test failed for (name, \"sam\") with error expected:<\"christian\"> but was:<\"sam\">")
+            it.message should contain("2) Test failed for (name, \"billy\") with error expected:<\"christian\"> but was:<\"billy\">")
             it.message shouldNot contain("3) Test failed")
          }
       }
@@ -188,7 +190,7 @@ class DataTestingTest : StringSpec() {
             }
          }.let {
             it.shouldNotBeInstanceOf<MultiAssertionError>()
-            it.message shouldBe "Test failed for (name, christian) with error \"christian\" should not equal \"christian\""
+            it.message shouldBe "Test failed for (name, \"christian\") with error \"christian\" should not equal \"christian\""
          }
       }
 
@@ -205,13 +207,27 @@ class DataTestingTest : StringSpec() {
                it!! shouldNotBe "christian"
             }
          }.message
-         msg shouldBe """
-The following 2 assertions failed:
-1) Test failed for (name, null) with error java.lang.NullPointerException
-	at com.sksamuel.kotest.data.DataTestingTest${'$'}12.invokeSuspend(DataTestingTest.kt:205)
-2) Test failed for (name, christian) with error "christian" should not equal "christian"
-	at com.sksamuel.kotest.data.DataTestingTest${'$'}12.invokeSuspend(DataTestingTest.kt:205)
-"""
+
+         assertSoftly {
+            msg shouldContain "1) Test failed for (name, null) with error java.lang.NullPointerException"
+            msg shouldContain "2) Test failed for (name, \"christian\") with error \"christian\" should not equal \"christian\""
+         }
+      }
+
+      "display error message in readable format using" {
+         val errorMessage = shouldThrow<AssertionError> {
+            forAll(
+               row(intArrayOf(2,3,1,1,4), 2),
+               row(intArrayOf(0), 0),
+            ) { nums, result ->
+               nums shouldBe result
+            }
+         }.message
+
+         assertSoftly {
+            errorMessage shouldContain "1) Test failed for (nums, [2, 3, 1, 1, 4]), (result, 2) with error expected:<2> but was:<[2, 3, 1, 1, 4]>"
+            errorMessage shouldContain "2) Test failed for (nums, [0]), (result, 0) with error expected:<0> but was:<[0]>"
+         }
       }
    }
 }
