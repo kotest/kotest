@@ -42,7 +42,6 @@ object Libs {
    object Jackson {
       private const val version = "2.11.3"
       const val kotlin = "com.fasterxml.jackson.module:jackson-module-kotlin:$version"
-      const val databind = "com.fasterxml.jackson.core:jackson-databind:$version"
    }
 
    object Koin {
@@ -115,7 +114,7 @@ object Libs {
    }
 
    object Wumpz {
-      const val diffutils = "io.github.java-diff-utils:java-diff-utils:4.5"
+      const val diffutils = "io.github.java-diff-utils:java-diff-utils:4.9"
    }
 
    object TestContainers {
@@ -161,7 +160,7 @@ object Libs {
    }
 
    object Ktor {
-      private const val version = "1.5.0"
+      private const val version = "1.5.1"
       const val serverCore = "io.ktor:ktor-server-core:$version"
       const val serverTestHost = "io.ktor:ktor-server-test-host:$version"
       const val clientJs = "io.ktor:ktor-client-js:$version"
