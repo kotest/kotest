@@ -7,7 +7,9 @@ import io.kotest.matchers.nulls.beNull
 import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNot
+import io.kotest.matchers.string.shouldEndWith
 import io.kotest.matchers.string.shouldHaveLength
+import io.kotest.matchers.string.shouldStartWith
 
 class ShouldNotBeNullTest : WordSpec() {
    init {
@@ -39,6 +41,14 @@ class ShouldNotBeNullTest : WordSpec() {
 
             val b: String? = null
             shouldFail { b.shouldNotBeNull() }
+         }
+
+         "allow fluent chaining" {
+            val a: String? = "foo"
+            a.shouldNotBeNull()
+               .shouldHaveLength(3)
+               .shouldStartWith("fo")
+               .shouldEndWith("oo")
          }
       }
    }
