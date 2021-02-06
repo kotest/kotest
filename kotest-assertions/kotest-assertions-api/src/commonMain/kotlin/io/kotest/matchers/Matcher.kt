@@ -30,6 +30,18 @@ interface Matcher<in T> {
    infix fun <U> compose(fn: (U) -> T): Matcher<U> = object : Matcher<U> {
       override fun test(value: U): MatcherResult = this@Matcher.test(fn(value))
    }
+
+   companion object {
+
+      /**
+       * Returns a [Matcher] for type T that will always fail with the given [error] message.
+       */
+      fun <T> failure(error: String) = object : Matcher<T> {
+         override fun test(value: T): MatcherResult {
+            return MatcherResult(false, "", error)
+         }
+      }
+   }
 }
 
 infix fun <T> Matcher<T>.and(other: Matcher<T>): Matcher<T> = object : Matcher<T> {

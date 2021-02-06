@@ -28,11 +28,16 @@ infix fun <T> T.shouldNotBe(any: Any?) {
 
 infix fun <T> T.shouldHave(matcher: Matcher<T>) = should(matcher)
 infix fun <T> T.should(matcher: Matcher<T>) {
+   invokeMatcher(this, matcher)
+}
+
+fun <T> invokeMatcher(t: T, matcher: Matcher<T>): T {
    assertionCounter.inc()
-   val result = matcher.test(this)
+   val result = matcher.test(t)
    if (!result.passed()) {
       errorCollector.collectOrThrow(failure(result.failureMessage()))
    }
+   return t
 }
 
 infix fun <T> T.shouldNotHave(matcher: Matcher<T>) = shouldNot(matcher)

@@ -79,33 +79,7 @@ class SequenceMatchersTest : WordSpec() {
 
    /* tests */
    init {
-      "empty" should {
-         succeed("for empty") {
-            empty.shouldBeEmpty()
-         }
 
-         fail("for single") {
-            single.shouldBeEmpty()
-         }
-
-         fail("for nulls") {
-            nulls.shouldBeEmpty()
-         }
-      }
-
-      "non-empty" should {
-         fail("for empty") {
-            empty.shouldNotBeEmpty()
-         }
-
-         succeed("for single") {
-            single.shouldNotBeEmpty()
-         }
-
-         succeed("for multiple") {
-            nulls.shouldNotBeEmpty()
-         }
-      }
 
       /* count */
       "have count" should {
