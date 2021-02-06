@@ -13,6 +13,10 @@ class ExponentialInterval(private val base: Duration, private val cap: Duration?
       val result = amount.milliseconds
       return if (cap == null) result else minOf(cap, result)
    }
+
+   companion object {
+      val defaultCap = 2.hours
+   }
 }
 
-fun Duration.exponential(cap: Duration = 2.hours) = ExponentialInterval(this, cap)
+fun Duration.exponential(cap: Duration? = ExponentialInterval.defaultCap) = ExponentialInterval(this, cap)

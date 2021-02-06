@@ -28,9 +28,13 @@ class FibonacciInterval(private val base: Duration, private val offset: Int, pri
       val result = total.milliseconds
       return if (cap == null) result else minOf(cap, result)
    }
+
+   companion object {
+      val defaultCap = 2.hours
+   }
 }
 
-fun Duration.fibonacci(cap: Duration? = 2.hours) = FibonacciInterval(this, 0, cap)
+fun Duration.fibonacci(cap: Duration? = FibonacciInterval.defaultCap) = FibonacciInterval(this, 0, cap)
 
 fun fibonacci(n: Int): Int {
    tailrec fun fib(k: Int, current: Int, previous: Int): Int = when (k) {
