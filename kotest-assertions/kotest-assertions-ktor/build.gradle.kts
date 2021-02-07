@@ -25,6 +25,7 @@ kotlin {
 
       val commonMain by getting {
          dependencies {
+            implementation(kotlin("stdlib"))
             implementation(project(Projects.AssertionsShared))
             implementation(Libs.Ktor.clientCore)
          }

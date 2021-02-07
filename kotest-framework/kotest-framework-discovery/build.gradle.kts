@@ -25,6 +25,7 @@ kotlin {
 
       val jvmMain by getting {
          dependencies {
+            implementation(kotlin("stdlib"))
             implementation(kotlin("reflect"))
             implementation(Libs.Kotlin.kotlinScriptRuntime)
 

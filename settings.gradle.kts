@@ -37,13 +37,13 @@ include("kotest-assertions:kotest-assertions-shared")
 // the core assertions that cover things like collections, strings, etc
 // users should depend on this if they want to use kotest assertions in tests
 include("kotest-assertions:kotest-assertions-core")
+include("kotest-assertions:kotest-assertions-compiler")
 include("kotest-assertions:kotest-assertions-arrow")
 include("kotest-assertions:kotest-assertions-json")
 include("kotest-assertions:kotest-assertions-ktor")
 include("kotest-assertions:kotest-assertions-jsoup")
 include("kotest-assertions:kotest-assertions-konform")
 include("kotest-assertions:kotest-assertions-kotlinx-time")
-include("kotest-assertions:kotest-assertions-compiler")
 include("kotest-assertions:kotest-assertions-klock")
 include("kotest-assertions:kotest-assertions-sql")
 
@@ -96,9 +96,9 @@ include("kotest-tests:kotest-tests-timeout")
 include("kotest-tests:kotest-tests-timeout-sysprop")
 include("kotest-tests:kotest-tests-multiname-test-name-sysprop")
 
-include("kotest-examples:kotest-examples-jvm")
-include("kotest-examples:kotest-examples-allure")
-include("kotest-examples:kotest-examples-spring-webflux")
+//include("kotest-examples:kotest-examples-jvm")
+//include("kotest-examples:kotest-examples-allure")
+//include("kotest-examples:kotest-examples-spring-webflux")
 //if (!isIntelliJ) include("kotest-tests:kotest-tests-robolectric")
 
 // BOM for whole kotest project

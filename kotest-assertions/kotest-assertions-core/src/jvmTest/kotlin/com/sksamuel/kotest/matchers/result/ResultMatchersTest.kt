@@ -28,6 +28,7 @@ class ResultMatchersTest : FreeSpec() {
       }
       "shouldNotBeFailure" - {
         Result.success("Test 01").shouldNotBeFailure()
+        Result.success(null).shouldNotBeFailure()
       }
       "shouldNotBeSuccess" {
         Result.runCatching { "Test 01" } shouldNotBeSuccess "Test 02"
@@ -35,19 +36,19 @@ class ResultMatchersTest : FreeSpec() {
     }
     "with error result" - {
       "shouldBeFailure" - {
-        Result.runCatching<Any?, Any?> { throw TestException() }.shouldBeFailure()
-        Result.runCatching<Any?, Any?> { throw TestException() }.shouldBeFailure { error ->
+        Result.runCatching { throw TestException() }.shouldBeFailure()
+        Result.runCatching { throw TestException() }.shouldBeFailure { error ->
           error should beInstanceOf<TestException>()
         }
       }
       "shouldBeFailureOfType" {
-        Result.runCatching<Any?, Any?> { throw TestException() }.shouldBeFailureOfType<TestException>()
+        Result.runCatching { throw TestException() }.shouldBeFailureOfType<TestException>()
       }
       "shouldNotBeFailureOfType" {
-        Result.runCatching<Any?, Any?> { throw TestException() }.shouldNotBeFailureOfType<IOException>()
+        Result.runCatching { throw TestException() }.shouldNotBeFailureOfType<IOException>()
       }
       "shouldNotBeSuccess" - {
-        Result.runCatching<Any?, Any?> { throw TestException() }.shouldNotBeSuccess()
+        Result.runCatching { throw TestException() }.shouldNotBeSuccess()
       }
     }
   }

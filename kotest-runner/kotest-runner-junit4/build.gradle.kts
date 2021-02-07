@@ -27,9 +27,15 @@ kotlin {
 
    sourceSets {
 
+      val commonMain by getting {
+         dependencies {
+            implementation(kotlin("stdlib"))
+            implementation(kotlin("reflect"))
+         }
+      }
+
       val jvmMain by getting {
          dependencies {
-            implementation(kotlin("reflect"))
             api(project(Projects.Common))
             api(project(Projects.Api))
             api(project(Projects.AssertionsShared))
