@@ -85,7 +85,7 @@ class AllureWriter {
          .setName(testCase.description.testDisplayPath().value)
          .setUuid(uuid)
          .setTestCaseId(safeId(testCase.description))
-         .setHistoryId(testCase.description.path().value)
+         .setHistoryId(safeId(testCase.description))
          .setLabels(labels)
          .setLinks(links)
          .setDescription(testCase.description())

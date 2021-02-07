@@ -1,6 +1,5 @@
 package com.sksamuel.kotest
 
-import io.kotest.assertions.fail
 import io.kotest.core.spec.style.ShouldSpec
 import io.kotest.matchers.booleans.shouldBeTrue
 
