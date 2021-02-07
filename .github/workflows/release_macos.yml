@@ -49,7 +49,7 @@ jobs:
                ORG_GRADLE_PROJECT_signingKey: ${{ secrets.SIGNING_KEY }}
                ORG_GRADLE_PROJECT_signingPassword: ${{ secrets.SIGNING_PASSWORD }}
 
-         -  name: publish watchosX86 release
+         -  name: publish watchosX64 release
             run: ./gradlew publishWatchosX64PublicationToDeployRepository
             env:
                RELEASE_VERSION: ${{ github.event.inputs.version }}

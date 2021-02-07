@@ -55,8 +55,8 @@ jobs:
          -  name: Run tvos tests
             run: ./gradlew tvosX64Test --scan
 
-         -  name: Run watchos tests
-            run: ./gradlew watchosX64Test --scan
+#         -  name: Run watchos tests
+#            run: ./gradlew watchosX64Test --scan
 
          -  name: Bundle the build report
             if: failure()
