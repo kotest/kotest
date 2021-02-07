@@ -129,7 +129,7 @@ abstract class Spec : TestConfiguration(), SpecFunctionConfiguration, SpecFuncti
     * invokes the tests using the Kotest engine.
     */
    @JsTest
-   fun kotestJavascript() = this
+   public fun kotestJavascript() = this
 }
 
 fun Spec.resolvedDefaultConfig() = defaultTestCaseConfig() ?: defaultTestConfig ?: configuration.defaultTestConfig
