@@ -1,6 +1,10 @@
 ---
-id: gens title: Generators slug: property-test-generators.html
+id: gens
+title: Generators
+slug: property-test-generators.html
+sidebar_label: Generators
 ---
+
 
 Generated values are provided by instances of the sealed class `Gen`. You can think of a `Gen` as kind of like an input
 stream but for property test values. Each Gen will provide a (usually) infinite stream of these values for one
