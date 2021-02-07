@@ -1,6 +1,5 @@
 package io.kotest.assertions.until
 
-import io.kotest.assertions.SuspendingProducer
 import io.kotest.assertions.failure
 import kotlin.time.Duration
 import kotlin.time.TimeSource
@@ -70,12 +69,13 @@ suspend fun <T> until(
    f: suspend () -> T
 ): T = until(duration = duration, interval = interval, predicate = predicate, listener = {}, f = f)
 
+@Deprecated("Simply move the listener code into the predicate code. Will be removed in 4.7 or 5.0")
 suspend fun <T> until(
    duration: Duration,
    interval: Interval = 1.seconds.fixed(),
    predicate: suspend (T) -> Boolean,
    listener: UntilListener<T>,
-   f: SuspendingProducer<T>
+   f: suspend () -> T
 ): T {
 
    val start = TimeSource.Monotonic.markNow()
