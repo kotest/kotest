@@ -1,4 +1,4 @@
-package com.sksamuel.kotest
+package com.sksamuel.kotest.assertions.until
 
 import io.kotest.assertions.until.ExponentialInterval
 import io.kotest.assertions.until.exponential
