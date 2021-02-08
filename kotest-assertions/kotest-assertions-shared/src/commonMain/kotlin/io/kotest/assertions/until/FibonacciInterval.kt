@@ -13,6 +13,7 @@ import kotlin.time.milliseconds
  *
  * @param offset   Added to the count, so if the offset is 4, then the first value will be the 4th fib number.
  * @param base The duration that is multiplied by the fibonacci value
+ * @param cap the cap to clamp the resulting duration to defaults to [ExponentialInterval.defaultCap]
  */
 class FibonacciInterval(private val base: Duration, private val offset: Int, private val cap: Duration?) : Interval {
 
