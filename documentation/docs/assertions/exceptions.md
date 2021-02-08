@@ -24,9 +24,23 @@ val exception = shouldThrow<IllegalAccessException> {
 exception.message should startWith("Something went wrong")
 ```
 
-If you want to test that _exactly_ a type of exception is thrown, then use `shouldThrowExactly<E>`.
-If you want to test that _any_ exception is thrown, then use `shouldThrowAny`.
+If you want to test that a specific type of exception is thrown, then use `shouldThrowExactly<E>`. For example, the
+following block would catch a `FileNotFoundException` but not a `IOException` even though `FileNotFoundException`
+extends from `IOException`.
+
+```kotlin
+val exception = shouldThrowExactly<FileNotFoundException> {
+  // test here
+}
+```
+
+If you simply want to test that _any_ exception is thrown, regardles of type, then use `shouldThrowAny`.
 
 
+```kotlin
+val exception = shouldThrowAny {
+  // test here can throw any type of Throwable!
+}
+```
 
 
