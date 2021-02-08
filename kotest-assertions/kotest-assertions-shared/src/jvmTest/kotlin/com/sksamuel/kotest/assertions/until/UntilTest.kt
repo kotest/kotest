@@ -1,14 +1,13 @@
 package com.sksamuel.kotest.assertions.until
 
 import io.kotest.assertions.throwables.shouldThrow
+import io.kotest.assertions.until.PatienceConfig
 import io.kotest.assertions.until.fibonacci
 import io.kotest.assertions.until.fixed
 import io.kotest.assertions.until.until
-import io.kotest.assertions.until.untilListener
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.comparables.shouldBeGreaterThan
 import io.kotest.matchers.comparables.shouldBeLessThan
-import io.kotest.matchers.longs.shouldBeBetween
 import io.kotest.matchers.shouldBe
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.TimeUnit
@@ -39,6 +38,15 @@ class UntilTest : FunSpec({
    test("until with boolean predicate and interval") {
       var attempts = 0
       until(2.seconds, 10.milliseconds.fixed()) {
+         attempts++
+         attempts == 100
+      }
+      attempts shouldBe 100
+   }
+
+   test("until with patience config") {
+      var attempts = 0
+      until(PatienceConfig(2.seconds, 10.milliseconds.fixed())) {
          attempts++
          attempts == 100
       }
