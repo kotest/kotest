@@ -1,7 +1,8 @@
 ---
 id: index
 title: Property-based Testing
-slug: introduction.html
+slug: property-based-testing.html
+sidebar_label: introduction.html
 ---
 
 
