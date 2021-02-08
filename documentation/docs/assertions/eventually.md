@@ -49,7 +49,7 @@ class MyTests : ShouldSpec() {
 
 #### Exceptions
 
-By default, `eventually` will ignore any exception that is thrown inside the function (note, that means it won't catch `Error`).
+By default, `eventually` will ignore any `AssertionError` that is thrown inside the function (note, that means it won't catch `Error`).
 If you want to be more specific, you can tell `eventually` to ignore specific exceptions and any others will immediately fail the test.
 
 Let's assume that our example from before throws a `UserNotFoundException` while the user is not found in the database.
