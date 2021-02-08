@@ -21,7 +21,17 @@ module.exports = {
       'assertions/exceptions',
       'assertions/clues',
       'assertions/soft_assertions',
-      'assertions/nondeterministic',
+      {
+         type: "category",
+         label: "Non-deterministic Testing",
+         collapsed: false,
+         items: [
+            'assertions/eventually',
+            'assertions/continually',
+            'assertions/until',
+            'assertions/retry',
+         ]
+      },
       'assertions/inspectors',
       'assertions/assertion_mode',
       {
@@ -50,6 +60,17 @@ module.exports = {
       'framework/isolation_mode',
       'framework/exceptions',
       'framework/data_driven_testing',
+      {
+         type: "category",
+         label: "Non-deterministic Testing",
+         collapsed: false,
+         items: [
+            'assertions/eventually',
+            'assertions/continually',
+            'assertions/until',
+            'assertions/retry',
+         ]
+      },
       'framework/listeners',
       {
          type: "category",
