@@ -1,7 +1,9 @@
 ---
-id: genslist title: Generators List slug: property-test-generators-list.html sidebar_label: Generators List
+id: genslist
+title: Generators List
+slug: property-test-generators-list.html
+sidebar_label: Generators List
 ---
-
 
 This page lists all current generators in Kotest. There are two types of generator - [arbitrary](gens.md#arbitrary)
 and [exhaustive](gens.md#exhaustive).
