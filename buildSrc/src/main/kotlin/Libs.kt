@@ -87,7 +87,7 @@ object Libs {
    }
 
    object Classgraph {
-      const val classgraph = "io.github.classgraph:classgraph:4.8.98"
+      const val classgraph = "io.github.classgraph:classgraph:4.8.102"
    }
 
    object Mocking {
