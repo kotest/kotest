@@ -53,6 +53,18 @@ class AllureTestReporterTest : WordSpec() {
                it["value"].textValue() shouldBe "com.sksamuel.kotest"
             }
          }
+         "set correct historyId" {
+            val json = findTestFile("context a should work")
+            json["historyId"].textValue() shouldBe "com.sksamuel.kotest.DummyShouldSpec/context_a/should_work"
+         }
+         "set correct testCaseId" {
+            val json = findTestFile("context a should work")
+            json["testCaseId"].textValue() shouldBe "com.sksamuel.kotest.DummyShouldSpec/context_a/should_work"
+         }
+         "set correct fullName" {
+            val json = findTestFile("context a should work")
+            json["fullName"].textValue() shouldBe "context a should work"
+         }
       }
    }
 

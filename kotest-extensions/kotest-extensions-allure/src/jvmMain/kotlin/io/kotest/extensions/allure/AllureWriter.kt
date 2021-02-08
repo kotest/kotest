@@ -3,6 +3,7 @@ package io.kotest.extensions.allure
 import io.kotest.core.spec.Spec
 import io.kotest.core.test.Description
 import io.kotest.core.test.TestCase
+import io.kotest.core.test.TestPath
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestStatus
 import io.kotest.mpp.log
@@ -45,9 +46,9 @@ class AllureWriter {
       throw t
    }
 
-   private val uuids = mutableMapOf<Description, String>()
+   private val uuids = mutableMapOf<TestPath, String>()
 
-   fun id(testCase: TestCase) = uuids[testCase.description]
+   fun id(testCase: TestCase) = uuids[testCase.description.testPath()]
 
    fun startTestCase(testCase: TestCase) {
       log("Allure beforeTest $testCase")
@@ -77,14 +78,14 @@ class AllureWriter {
          links.add(ResultsUtils.createLink(it))
       }
       val uuid = UUID.randomUUID().toString()
-      uuids[testCase.description] = uuid
+      uuids[testCase.description.testPath()] = uuid
 
       val result = io.qameta.allure.model.TestResult()
          .setFullName(testCase.description.testDisplayPath().value)
          .setName(testCase.description.testDisplayPath().value)
          .setUuid(uuid)
          .setTestCaseId(safeId(testCase.description))
-         .setHistoryId(testCase.description.name.displayName)
+         .setHistoryId(safeId(testCase.description))
          .setLabels(labels)
          .setLinks(links)
          .setDescription(testCase.description())
@@ -103,7 +104,7 @@ class AllureWriter {
          TestStatus.Success -> Status.PASSED
       }
 
-      val uuid = uuids[testCase.description]
+      val uuid = uuids[testCase.description.testPath()]
       val details = ResultsUtils.getStatusDetails(result.error)
 
       allure.updateTestCase(uuid) {
@@ -163,13 +164,13 @@ class AllureWriter {
       allure.startTestCase(uuid.toString())
 
       log("Allure finish for failure test init")
-      val instanceError = (t.cause as InvocationTargetException)?.targetException
+      val instanceError = (t.cause as InvocationTargetException).targetException
 
       val details = StatusDetails()
       details.message = instanceError?.message ?: "Unknown error"
       var trace = ""
       instanceError.stackTrace?.forEach {
-         trace += "${it.toString()}\n"
+         trace += "$it\n"
       }
       details.trace = trace
 
@@ -197,7 +198,7 @@ fun TestCase.owner(): Label? = this.spec::class.findAnnotation<Owner>()?.let { R
 fun TestCase.issue() = spec::class.findAnnotation<Issue>()?.let { ResultsUtils.createIssueLink(it.value) }
 fun TestCase.description() = spec::class.findAnnotation<io.qameta.allure.Description>()?.value
 fun TestCase.link() = spec::class.findAnnotation<Link>()?.let { ResultsUtils.createLink(it) }
-fun TestCase.links() = spec::class.findAnnotation<Links>()?.let { it.value }
+fun TestCase.links() = spec::class.findAnnotation<Links>()?.value
 
 fun String.convertToSeverity(): SeverityLevel? = when (this) {
    "BLOCKER" -> SeverityLevel.BLOCKER
@@ -215,5 +216,5 @@ fun KClass<out Spec>.story(): Label? = this.findAnnotation<Story>()?.let { Resul
 fun KClass<out Spec>.owner(): Label? = this.findAnnotation<Owner>()?.let { ResultsUtils.createOwnerLabel(it.value) }
 fun KClass<out Spec>.issue() = this.findAnnotation<Issue>()?.let { ResultsUtils.createIssueLink(it.value) }
 fun KClass<out Spec>.link() = this.findAnnotation<Link>()?.let { ResultsUtils.createLink(it) }
-fun KClass<out Spec>.links() = this.findAnnotation<Links>()?.let { it.value }
+fun KClass<out Spec>.links() = this.findAnnotation<Links>()?.value
 fun KClass<out Spec>.description() = this.findAnnotation<io.qameta.allure.Description>()?.value

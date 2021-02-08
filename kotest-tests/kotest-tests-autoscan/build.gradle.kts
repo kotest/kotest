@@ -41,6 +41,11 @@ kotlin {
             implementation(Libs.Coroutines.coreJvm)
          }
       }
+
+      all {
+         languageSettings.useExperimentalAnnotation("kotlin.time.ExperimentalTime")
+         languageSettings.useExperimentalAnnotation("kotlin.experimental.ExperimentalTypeInference")
+      }
    }
 }
 
