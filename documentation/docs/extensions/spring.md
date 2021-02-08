@@ -9,7 +9,7 @@ Kotest offers a Spring extension that allows you to test code that wires depende
 To use this extension add the `kotest-extensions-spring` module to your test compile path.
 
 The Spring extension requires you to activate it for all test classes, or per test class. To activate it globally,
-register the `SpringExtension` in [project config](../project_config.md):
+register the `SpringExtension` in [project config](../framework/project_config.md):
 
 ```kotlin
 class ProjectConfig : AbstractProjectConfig() {
@@ -84,7 +84,7 @@ class MySpec(service: UserService) : WordSpec() {
 Spring has various test callbacks such as `beforeTestMethod` that are based around the idea that tests are methods.
 This assumption is fine for legacy test frameworks like JUnit but not applicable to modern test frameworks like Kotest where tests are functions.
 
-Therefore, when using a [spec style](../styles.md) that is nested, you can customize when the test method callbacks are fired.
+Therefore, when using a [spec style](../framework/styles.md) that is nested, you can customize when the test method callbacks are fired.
 By default, this is on the leaf node. You can set these to fire on the root nodes by passing a SpringTestLifecycleMode argument to the extension:
 
 ```kotlin

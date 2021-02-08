@@ -2,7 +2,6 @@ module.exports = {
    docs: [
       'quickstart',
       'changelog',
-      'thirdparty',
       'blogs',
    ],
    proptest: [
@@ -14,6 +13,19 @@ module.exports = {
       'proptest/proptestconfig',
       'proptest/customgens',
       'proptest/globalconfig',
+   ],
+   extensions: [
+      'extensions/index',
+      'extensions/spring',
+      'extensions/ktor',
+      'extensions/system_extensions',
+      'extensions/test_containers',
+      'extensions/mockserver',
+      'extensions/junit_xml',
+      'extensions/allure',
+      'extensions/instant',
+      'extensions/koin',
+      'extensions/robolectric',
    ],
    assertions: [
       'assertions/index',
@@ -72,23 +84,6 @@ module.exports = {
          ]
       },
       'framework/listeners',
-      {
-         type: "category",
-         label: "Extensions",
-         collapsed: false,
-         items: [
-            'framework/extensions/spring',
-            'framework/extensions/ktor',
-            'framework/extensions/system_extensions',
-            'framework/extensions/test_containers',
-            'framework/extensions/mockserver',
-            'framework/extensions/junit_xml',
-            'framework/extensions/allure',
-            'framework/extensions/instant',
-            'framework/extensions/koin',
-            'framework/extensions/robolectric',
-         ]
-      },
       'framework/plugins',
       {
          type: "category",

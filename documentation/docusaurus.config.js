@@ -30,6 +30,12 @@ module.exports = {
             },
             {
                type: 'doc',
+               docId: 'extensions/index',
+               label: 'Extensions',
+               position: 'left'
+            },
+            {
+               type: 'doc',
                docId: 'assertions/index',
                label: 'Assertions',
                position: 'left'

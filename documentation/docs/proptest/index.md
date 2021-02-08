@@ -2,7 +2,7 @@
 id: index
 title: Property-based Testing
 slug: property-based-testing.html
-sidebar_label: introduction.html
+sidebar_label: Introduction
 ---
 
 
