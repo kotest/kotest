@@ -34,12 +34,12 @@ Most generators are available on all platforms. Some are JVM or JS specific.
 | **Booleans** |
 | `Arb.boolean()` | Returns random true and false values. | ✓ | ✓ | ✓ |
 | `Exhaustive.boolean()` | Alternatives between true and false. | ✓ | ✓ | ✓ |
-| **Chars**|
+| **Chars** |
 | `Arb.char(range1, range2,...)` | Returns random char's generated from one or more given ranges. By supporting multiple ranges, it is possible to specific non-consecutive ranges of characters to populate values from. | ✓ | ✓ | ✓ |
 | **Enums** |
 | `Arb.enum<T>()` | Randomly selects constants from the given enum. | ✓ | ✓ | ✓ |
 | `Exhaustive.enum<T>()` | Iterates all the constants defined in the given enum. | ✓ | ✓ | ✓ |
-| **Geo**
+| **Geo** |
 | `Arb.latlong()` | Generates random pair's of doubles, where each double is in the range -180 to 180. | ✓ | ✓ | ✓ |
 | **Strings** |
 | `Arb.string(range)` | Generates random printable strings with a randomly chosen size from the given range. If rangei s not specified then (0..100) is used. The edgecases include empty string, a blank string and a unicode string. | ✓ | ✓ | ✓ |
