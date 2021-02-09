@@ -5,9 +5,10 @@ import io.kotest.assertions.until.ExponentialInterval
 import io.kotest.assertions.until.exponential
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.comparables.shouldBeGreaterThan
+import io.kotest.matchers.comparables.shouldBeGreaterThanOrEqualTo
 import io.kotest.matchers.comparables.shouldBeLessThan
 import io.kotest.matchers.shouldBe
-import kotlin.time.hours
+import kotlin.math.pow
 import kotlin.time.milliseconds
 import kotlin.time.seconds
 
@@ -17,15 +18,15 @@ class ExponentialIntervalTest : FunSpec() {
          val identity = 2.seconds
 
          assertSoftly(identity.exponential()) {
-            next(0) shouldBe identity
-            next(1) shouldBe 4.seconds
-            next(2) shouldBe 8.seconds
+            next(0) shouldBe identity * 1
+            next(1) shouldBe identity * 2
+            next(2) shouldBe identity * 4
          }
 
          assertSoftly(identity.exponential(factor = 3.0)) {
-            next(0) shouldBe identity
-            next(1) shouldBe 6.seconds
-            next(2) shouldBe 9.seconds
+            next(0) shouldBe identity * 1
+            next(1) shouldBe identity * 3
+            next(2) shouldBe identity * 9
          }
       }
 
@@ -54,9 +55,11 @@ class ExponentialIntervalTest : FunSpec() {
       }
 
       test("exponential interval should respect user specified cap") {
-         val cap = 278.hours
-         val bounded = 25.milliseconds.exponential(cap = cap)
-         val unbounded = 25.milliseconds.exponential(cap = null)
+         val base = 25.milliseconds
+         val n = 5
+         val cap = base * ExponentialInterval.defaultFactor.pow(n)
+         val bounded = base.exponential(cap = cap)
+         val unbounded = base.exponential(cap = null)
 
          val first = 0
          val last = 20
@@ -70,9 +73,11 @@ class ExponentialIntervalTest : FunSpec() {
 
             if (u < cap) {
                b shouldBe u
+               i shouldBeLessThan n
             } else {
+               i shouldBeGreaterThanOrEqualTo n
                b shouldBe cap
-               u shouldBeGreaterThan cap
+               u shouldBeGreaterThanOrEqualTo cap
             }
          }
       }
