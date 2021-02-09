@@ -70,7 +70,7 @@ suspend fun <T> eventually(duration: Duration, exceptionClass: KClass<out Throwa
 suspend fun <T> eventually(
    duration: Duration = Duration.INFINITE,
    interval: Interval = 25.milliseconds.fixed(),
-   predicate: EventuallyPredicate<T> = EventuallyPredicate { true },
+   predicate: EventuallyPredicate<T> = { true },
    listener: EventuallyListener<T> = EventuallyListener { },
    retries: Int = Int.MAX_VALUE,
    exceptionClass: KClass<out Throwable>? = null,
@@ -83,7 +83,7 @@ suspend fun <T> eventually(
  */
 suspend fun <T> eventually(
    config: EventuallyConfig,
-   predicate: EventuallyPredicate<T> = EventuallyPredicate { true },
+   predicate: EventuallyPredicate<T> = { true },
    listener: EventuallyListener<T> = EventuallyListener { },
    f: SuspendingProducer<T>,
 ): T {
@@ -92,13 +92,16 @@ suspend fun <T> eventually(
    var times = 0
    var firstError: Throwable? = null
    var lastError: Throwable? = null
+   var predicateFailedTimes = 0
 
    while (end.hasNotPassedNow() && times < config.retries) {
       try {
          val result = f()
          listener.onEval(EventuallyState(result, start, end, times, firstError, lastError))
-         if (predicate.test(result)) {
+         if (predicate(result)) {
             return result
+         } else {
+            predicateFailedTimes++
          }
       } catch (e: Throwable) {
          if (AssertionError::class.isInstance(e) || config.exceptionClass?.isInstance(e) == true) {
@@ -117,6 +120,10 @@ suspend fun <T> eventually(
 
    val message = StringBuilder().apply {
       appendLine("Eventually block failed after ${config.duration}; attempted $times time(s); ${config.interval} delay between attempts")
+
+      if (predicateFailedTimes > 0) {
+         appendLine("The provided predicate failed $predicateFailedTimes times")
+      }
 
       if (firstError != null) {
          appendLine("The first error was caused by: ${firstError.message}")
@@ -153,9 +160,7 @@ data class EventuallyState<T>(
    val thisError: Throwable?,
 )
 
-fun interface EventuallyPredicate<T> {
-   fun test(result: T): Boolean
-}
+typealias EventuallyPredicate<T> = (T) -> Boolean
 
 fun interface EventuallyListener<T> {
    fun onEval(state: EventuallyState<T>)

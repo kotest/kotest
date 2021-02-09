@@ -20,7 +20,10 @@ import java.io.FileNotFoundException
 import java.io.IOException
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.TimeUnit
-import kotlin.time.*
+import kotlin.time.TimeSource
+import kotlin.time.days
+import kotlin.time.milliseconds
+import kotlin.time.seconds
 
 class EventuallyTest : WordSpec() {
 
