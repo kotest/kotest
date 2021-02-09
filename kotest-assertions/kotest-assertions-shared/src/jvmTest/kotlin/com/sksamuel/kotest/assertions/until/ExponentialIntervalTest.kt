@@ -30,54 +30,54 @@ class ExponentialIntervalTest : FunSpec() {
          }
       }
 
-      test("exponential interval should have a reasonable default cap") {
-         val cap = ExponentialInterval.defaultCap
+      test("exponential interval should have a reasonable default max") {
+         val max = ExponentialInterval.defaultMax
          val default = 25.milliseconds.exponential()
-         val unbounded = 25.milliseconds.exponential(cap = null)
+         val unbounded = 25.milliseconds.exponential(max = null)
 
          val first = 0
          val last = 20
 
-         unbounded.next(first) shouldBeLessThan cap
-         unbounded.next(last) shouldBeGreaterThan cap
+         unbounded.next(first) shouldBeLessThan max
+         unbounded.next(last) shouldBeGreaterThan max
 
          for (i in first..last) {
             val u = unbounded.next(i)
             val d = default.next(i)
 
-            if (u < cap) {
+            if (u < max) {
                d shouldBe u
             } else {
-               d shouldBe cap
-               u shouldBeGreaterThan cap
+               d shouldBe max
+               u shouldBeGreaterThan max
             }
          }
       }
 
-      test("exponential interval should respect user specified cap") {
+      test("exponential interval should respect user specified max") {
          val base = 25.milliseconds
          val n = 5
-         val cap = base * ExponentialInterval.defaultFactor.pow(n)
-         val bounded = base.exponential(cap = cap)
-         val unbounded = base.exponential(cap = null)
+         val max = base * ExponentialInterval.defaultFactor.pow(n)
+         val bounded = base.exponential(max = max)
+         val unbounded = base.exponential(max = null)
 
          val first = 0
          val last = 20
 
-         unbounded.next(first) shouldBeLessThan cap
-         unbounded.next(last) shouldBeGreaterThan cap
+         unbounded.next(first) shouldBeLessThan max
+         unbounded.next(last) shouldBeGreaterThan max
 
          for (i in first..last) {
             val u = unbounded.next(i)
             val b = bounded.next(i)
 
-            if (u < cap) {
+            if (u < max) {
                b shouldBe u
                i shouldBeLessThan n
             } else {
                i shouldBeGreaterThanOrEqualTo n
-               b shouldBe cap
-               u shouldBeGreaterThanOrEqualTo cap
+               b shouldBe max
+               u shouldBeGreaterThanOrEqualTo max
             }
          }
       }

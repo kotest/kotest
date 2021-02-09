@@ -22,50 +22,50 @@ class FibonacciIntervalTest : FunSpec() {
          fibonacci(7) shouldBe 13
       }
 
-      test("fibonacci interval should have a reasonable default cap") {
-         val cap = FibonacciInterval.defaultCap
+      test("fibonacci interval should have a reasonable default max") {
+         val max= FibonacciInterval.defaultMax
          val default = 10.minutes.fibonacci()
          val unbounded = 10.minutes.fibonacci(null)
 
          val first = 0
          val last = 20
 
-         unbounded.next(first) shouldBeLessThan cap
-         unbounded.next(last) shouldBeGreaterThan cap
+         unbounded.next(first) shouldBeLessThan max
+         unbounded.next(last) shouldBeGreaterThan max
 
          for (i in first..last) {
             val u = unbounded.next(i)
             val d = default.next(i)
 
-            if (u < cap) {
+            if (u < max) {
                d shouldBe u
             } else {
-               d shouldBe cap
-               u shouldBeGreaterThan cap
+               d shouldBe max
+               u shouldBeGreaterThan max
             }
          }
       }
 
-      test("fibonacci interval should respect user specified cap") {
-         val cap = FibonacciInterval.defaultCap.plus(15.minutes)
-         val bounded = 10.minutes.fibonacci(cap)
+      test("fibonacci interval should respect user specified max") {
+         val max = FibonacciInterval.defaultMax.plus(15.minutes)
+         val bounded = 10.minutes.fibonacci(max)
          val unbounded = 10.minutes.fibonacci(null)
 
          val first = 0
          val last = 20
 
-         unbounded.next(first) shouldBeLessThan cap
-         unbounded.next(last) shouldBeGreaterThan cap
+         unbounded.next(first) shouldBeLessThan max
+         unbounded.next(last) shouldBeGreaterThan max
 
          for (i in first..last) {
             val u = unbounded.next(i)
             val b = bounded.next(i)
 
-            if (u < cap) {
+            if (u < max) {
                b shouldBe u
             } else {
-               b shouldBe cap
-               u shouldBeGreaterThan cap
+               b shouldBe max
+               u shouldBeGreaterThan max
             }
          }
       }

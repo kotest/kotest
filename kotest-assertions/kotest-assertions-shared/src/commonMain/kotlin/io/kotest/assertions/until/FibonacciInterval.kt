@@ -13,29 +13,29 @@ import kotlin.time.milliseconds
  *
  * @param offset   Added to the count, so if the offset is 4, then the first value will be the 4th fib number.
  * @param base The duration that is multiplied by the fibonacci value
- * @param cap the cap to clamp the resulting duration to defaults to [ExponentialInterval.defaultCap]
+ * @param max the maximum duration to clamp the resulting duration to defaults to [FibonacciInterval.defaultMax]
  */
-class FibonacciInterval(private val base: Duration, private val offset: Int, private val cap: Duration?) : Interval {
+class FibonacciInterval(private val base: Duration, private val offset: Int, private val max: Duration?) : Interval {
 
    init {
       require(offset >= 0) { "Offset must be greater than or equal to 0" }
    }
 
-   override fun toString() = "FibonacciInterval(${::base.name}=$base, ${::offset.name}=$offset, ${::cap.name}=${cap?.toString()})"
+   override fun toString() = "FibonacciInterval(${::base.name}=$base, ${::offset.name}=$offset, ${::max.name}=${max?.toString()})"
 
    override fun next(count: Int): Duration {
       val baseMs = base.toLongMilliseconds()
       val total = baseMs * fibonacci(offset + count)
       val result = total.milliseconds
-      return if (cap == null) result else minOf(cap, result)
+      return if (max == null) result else minOf(max, result)
    }
 
    companion object {
-      val defaultCap = 2.hours
+      val defaultMax = 2.hours
    }
 }
 
-fun Duration.fibonacci(cap: Duration? = FibonacciInterval.defaultCap) = FibonacciInterval(this, 0, cap)
+fun Duration.fibonacci(max: Duration? = FibonacciInterval.defaultMax) = FibonacciInterval(this, 0, max)
 
 fun fibonacci(n: Int): Int {
    tailrec fun fib(k: Int, current: Int, previous: Int): Int = when (k) {
