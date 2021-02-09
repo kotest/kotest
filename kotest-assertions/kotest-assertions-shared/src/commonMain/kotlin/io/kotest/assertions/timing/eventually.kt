@@ -58,18 +58,6 @@ suspend fun <T> eventually(duration: Duration, exceptionClass: KClass<out Throwa
    eventually(EventuallyConfig(duration = duration, exceptionClass = exceptionClass), f = f)
 
 /**
- * Runs a predicate until the predicate returns true as long as the specified duration hasn't passed
- */
-suspend fun eventuallyPredicate(
-   duration: Duration,
-   interval: Interval = 25.milliseconds.fixed(),
-   retries: Int = Int.MAX_VALUE,
-   predicate: EventuallyPredicate<Unit>
-) {
-   eventually(EventuallyConfig(duration, interval, retries), predicate, f = { })
-}
-
-/**
  * Runs a function until the following constraints are eventually met:
  * the optional [predicate] must be satisfied, defaults to true
  * the optional [duration] has not passed now, defaults to [Duration.INFINITE]
