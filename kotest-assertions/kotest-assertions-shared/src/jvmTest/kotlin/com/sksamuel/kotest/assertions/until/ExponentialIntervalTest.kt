@@ -1,60 +1,83 @@
 package com.sksamuel.kotest.assertions.until
 
+import io.kotest.assertions.assertSoftly
 import io.kotest.assertions.until.ExponentialInterval
 import io.kotest.assertions.until.exponential
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.comparables.shouldBeGreaterThan
+import io.kotest.matchers.comparables.shouldBeGreaterThanOrEqualTo
 import io.kotest.matchers.comparables.shouldBeLessThan
 import io.kotest.matchers.shouldBe
-import kotlin.time.hours
+import kotlin.math.pow
 import kotlin.time.milliseconds
+import kotlin.time.seconds
 
 class ExponentialIntervalTest : FunSpec() {
    init {
-      test("exponential interval should have a reasonable default cap") {
-         val cap = ExponentialInterval.defaultCap
+      test("exponential interval should have a reasonable default next") {
+         val identity = 2.seconds
+
+         assertSoftly(identity.exponential()) {
+            next(0) shouldBe identity * 1
+            next(1) shouldBe identity * 2
+            next(2) shouldBe identity * 4
+         }
+
+         assertSoftly(identity.exponential(factor = 3.0)) {
+            next(0) shouldBe identity * 1
+            next(1) shouldBe identity * 3
+            next(2) shouldBe identity * 9
+         }
+      }
+
+      test("exponential interval should have a reasonable default max") {
+         val max = ExponentialInterval.defaultMax
          val default = 25.milliseconds.exponential()
-         val unbounded = 25.milliseconds.exponential(null)
+         val unbounded = 25.milliseconds.exponential(max = null)
 
          val first = 0
          val last = 20
 
-         unbounded.next(first) shouldBeLessThan cap
-         unbounded.next(last) shouldBeGreaterThan cap
+         unbounded.next(first) shouldBeLessThan max
+         unbounded.next(last) shouldBeGreaterThan max
 
          for (i in first..last) {
             val u = unbounded.next(i)
             val d = default.next(i)
 
-            if (u < cap) {
+            if (u < max) {
                d shouldBe u
             } else {
-               d shouldBe cap
-               u shouldBeGreaterThan cap
+               d shouldBe max
+               u shouldBeGreaterThan max
             }
          }
       }
 
-      test("exponential interval should respect user specified cap") {
-         val cap = 278.hours
-         val bounded = 25.milliseconds.exponential(cap = cap)
-         val unbounded = 25.milliseconds.exponential(null)
+      test("exponential interval should respect user specified max") {
+         val base = 25.milliseconds
+         val n = 5
+         val max = base * ExponentialInterval.defaultFactor.pow(n)
+         val bounded = base.exponential(max = max)
+         val unbounded = base.exponential(max = null)
 
          val first = 0
          val last = 20
 
-         unbounded.next(first) shouldBeLessThan cap
-         unbounded.next(last) shouldBeGreaterThan cap
+         unbounded.next(first) shouldBeLessThan max
+         unbounded.next(last) shouldBeGreaterThan max
 
          for (i in first..last) {
             val u = unbounded.next(i)
             val b = bounded.next(i)
 
-            if (u < cap) {
+            if (u < max) {
                b shouldBe u
+               i shouldBeLessThan n
             } else {
-               b shouldBe cap
-               u shouldBeGreaterThan cap
+               i shouldBeGreaterThanOrEqualTo n
+               b shouldBe max
+               u shouldBeGreaterThanOrEqualTo max
             }
          }
       }
