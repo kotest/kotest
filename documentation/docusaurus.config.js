@@ -97,7 +97,7 @@ module.exports = {
          {
             docs: {
                sidebarPath: require.resolve('./sidebars.js'),
-               editUrl: 'https://github.com/kotest/kotest',
+               editUrl: 'https://github.com/kotest/kotest/blob/master/documentation',
             }
          },
       ],
