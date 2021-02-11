@@ -13,33 +13,46 @@ import kotlin.time.TimeSource
 import kotlin.time.milliseconds
 
 /**
- * Runs a function until it doesn't throw as long as the specified duration hasn't passed
+ * Runs function [f] until it doesn't throw, as long as the specified [duration] hasn't passed.
+ * @return the result of [f] or fails if [f] never completed without throwing
  */
 suspend fun <T> eventually(duration: Duration, f: suspend () -> T): T =
-   eventually(EventuallyConfig(duration = duration, exceptionClass = Throwable::class), f = f)
+   eventually(EventuallyConfig(duration), f = f)
 
+/**
+ * Runs function [f] with the specified [interval] until it doesn't throw, as long as the specified [duration] hasn't passed.
+ * @return the result of [f] or fails if [f] never completed without throwing
+ */
 suspend fun <T : Any> eventually(
    duration: Duration,
    interval: Interval,
    f: suspend () -> T
 ): T = eventually(EventuallyConfig(duration, interval), f = f)
 
+/**
+ * Runs function [f] until it matches [predicate], as long as the specified [duration] hasn't passed.
+ */
 suspend fun <T> eventually(
    duration: Duration,
    interval: Interval,
    predicate: EventuallyPredicate<T>,
    f: suspend () -> T,
-): T = eventually(EventuallyConfig(duration = duration, interval), predicate = predicate, f = f)
+): T = eventually(EventuallyConfig(duration, interval), predicate = predicate, f = f)
 
+/**
+ * Runs function [f] with the specified [interval] until it doesn't throw, as long as the specified [duration] hasn't passed.
+ * @param listener will be notified at every iteration
+ * @return the result of [f] or fails if [f] never completed without throwing
+ */
 suspend fun <T> eventually(
    duration: Duration,
    interval: Interval,
    listener: EventuallyListener<T>,
    f: suspend () -> T,
-): T = eventually(EventuallyConfig(duration = duration, interval), listener = listener, f = f)
+): T = eventually(EventuallyConfig(duration, interval), listener = listener, f = f)
 
 suspend fun <T> eventually(duration: Duration, poll: Duration, f: suspend () -> T): T =
-   eventually(EventuallyConfig(duration = duration, interval = poll.fixed(), exceptionClass = Throwable::class), f = f)
+   eventually(EventuallyConfig(duration = duration, interval = poll.fixed()), f = f)
 
 /**
  * Runs a function until it doesn't throw the specified exception as long as the specified duration hasn't passed
@@ -49,13 +62,16 @@ suspend fun <T> eventually(duration: Duration, exceptionClass: KClass<out Throwa
 
 /**
  * Runs a function until the following constraints are eventually met:
- * the optional [predicate] must be satisfied, defaults to true
- * the optional [duration] has not passed now, defaults to [Duration.INFINITE]
- * the number of iterations does not exceed the optional [retries], defaults to [Int.MAX_VALUE]
+ * - the optional [predicate] must be satisfied, defaults to true
+ * - the optional [duration] has not passed now, defaults to [Duration.INFINITE]
+ * - the number of iterations does not exceed the optional [retries], defaults to [Int.MAX_VALUE]
  *
- * [eventually] will catch the specified optional [exceptionClass] and (or when not specified) [AssertionError], defaults to [Throwable]
- * [eventually] will delay the specified [interval] between iterations, defaults to 25 [milliseconds]
- * [eventually] will pass the resulting value and state (see [EventuallyState]) into the optional [listener]
+ * eventually will
+ * - catch the specified optional [exceptionClass] and (or when not specified) [AssertionError]
+ * - delay the specified [interval] between iterations, defaults to 25 [milliseconds]
+ * - pass the resulting value and state (see [EventuallyState]) into the optional [listener]
+ *
+ * @return the first accepted result of [f]
  */
 suspend fun <T> eventually(
    duration: Duration = Duration.INFINITE,
@@ -68,8 +84,8 @@ suspend fun <T> eventually(
 ): T = eventually(EventuallyConfig(duration, interval, retries, exceptionClass), predicate, listener, f)
 
 /**
- * Runs a function until it doesn't throw and the result satisfies the predicate as long as the specified duration hasn't passed
- * and uses [EventuallyConfig] to control the duration, interval, listener, retries, and exceptionClass.
+ * Runs a function until it doesn't throw and the result satisfies the predicate, as long as the specified duration hasn't passed.
+ * @param config controls the duration, interval, listener, retries, and exceptionClass
  */
 suspend fun <T> eventually(
    config: EventuallyConfig,

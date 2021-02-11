@@ -18,11 +18,10 @@ Or you can roll a loop and sleep and retry and sleep and retry, but this is just
 Another common approach is to use countdown latches and this works fine if you are able to inject the latches in the appropriate places but it isn't always
 possible to have the code under test trigger a latch.
 
+### Usage
+
 As an alternative, Kotest provides the `eventually` function which will periodically
 test the code until it either passes, or the timeout is reached. This is perfect for nondeterministic code.
-
-
-### Examples
 
 #### Simple example
 
@@ -45,16 +44,13 @@ class MyTests : ShouldSpec() {
 
 #### Exceptions
 
-By default, `eventually` will ignore any exception that is thrown inside the function (note, that means it won't catch `Error`).
-If you want to be more specific, you can tell `eventually` to ignore specific exceptions and any others will immediately fail the test.
+By default, `eventually` will ignore any AssertionError thrown inside the function,
+while any others will then immediately fail the test.
 
-Let's assume that our example from before throws a `UserNotFoundException` while the user is not found in the database.
+You can also tell `eventually` to ignore other exceptions:
+Let's assume that our example from before throws a `UserNotFoundException` when the user is not found in the database.
 It will eventually return the user when the message is processed by the system.
-
-In this scenario, we can explicitly skip the exception that we expect to happen until the test passed, but any other exceptions would
-not be ignored. Note, this example is similar to the former, but if there was some other error, say a ConnectionException for example, this would cause
-the eventually block to immediately exit with a failure message.
-
+However, if there is another error, `eventually` will fail immediately.
 
 ```kotlin
 class MyTests : ShouldSpec() {
@@ -68,18 +64,17 @@ class MyTests : ShouldSpec() {
 }
 ```
 
-**ATTENTION**: `eventually` does not works well with `assertSoftly`. In `assertSoftly` if an `eventually` fails any
-assertion followed by it won't be executed. Example:
+**ATTENTION**: `eventually` currently does not works well within `assertSoftly`, since assertions aren't thrown normally in there:
 
 ```kotlin
 class MyTests : ShouldSpec() {
   init {
     should("some test with eventually inside assert softly") {
-      assertSoftly{
+      assertSoftly {
         eventually(1.seconds) {
           1 shouldBe 2
         }
-        1 shouldBe 2 // Never get executed.
+        1 shouldBe 2 // Never gets executed
       }
     }
   }
