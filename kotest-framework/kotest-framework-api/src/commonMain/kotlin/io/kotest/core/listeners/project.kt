@@ -13,6 +13,9 @@ interface ProjectListener : BeforeProjectListener, AfterProjectListener {
 
 interface BeforeProjectListener : Listener {
 
+   override val name: String
+      get() = "defaultBeforeProjectListener"
+
    /**
     * Callback which is invoked before the first test of the project.
     */
@@ -20,6 +23,9 @@ interface BeforeProjectListener : Listener {
 }
 
 interface AfterProjectListener : Listener {
+
+   override val name: String
+      get() = "defaultAfterProjectListener"
 
    /**
     * Callback which is invoked after the last test of the project.

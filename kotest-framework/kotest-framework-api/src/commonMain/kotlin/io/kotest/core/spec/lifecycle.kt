@@ -2,10 +2,11 @@ package io.kotest.core.spec
 
 import io.kotest.core.config.configuration
 import io.kotest.core.config.testListeners
+import io.kotest.core.listeners.AfterProjectListener
 import io.kotest.core.listeners.AfterProjectListenerException
+import io.kotest.core.listeners.BeforeProjectListener
 import io.kotest.core.listeners.BeforeProjectListenerException
 import io.kotest.core.listeners.Listener
-import io.kotest.core.listeners.ProjectListener
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.fp.Try
@@ -13,7 +14,7 @@ import io.kotest.mpp.log
 import io.kotest.core.test.TestType
 import io.kotest.core.test.TestStatus
 
-fun List<ProjectListener>.resolveName() =
+fun <T : Listener> List<T>.resolveName(): List<Pair<String, T>> =
    groupBy { it.name }
       .flatMap { entry ->
          if (entry.value.size > 1) {
@@ -28,7 +29,7 @@ fun List<ProjectListener>.resolveName() =
  */
 suspend fun List<Listener>.afterProject(): Try<List<AfterProjectListenerException>> = Try {
    log("invokeAfterProject")
-   filterIsInstance<ProjectListener>()
+   filterIsInstance<AfterProjectListener>()
       .resolveName()
       .map { it.first to Try { it.second.afterProject() } }
       .filter { it.second.isFailure() }
@@ -45,8 +46,7 @@ suspend fun List<Listener>.afterProject(): Try<List<AfterProjectListenerExceptio
  */
 suspend fun List<Listener>.beforeProject(): Try<List<BeforeProjectListenerException>> = Try {
    log("invokeBeforeProject")
-
-   filterIsInstance<ProjectListener>()
+   filterIsInstance<BeforeProjectListener>()
       .resolveName()
       .map { it.first to Try { it.second.beforeProject() } }
       .filter { it.second.isFailure() }
