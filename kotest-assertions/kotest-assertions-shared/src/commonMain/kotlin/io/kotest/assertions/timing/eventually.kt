@@ -1,6 +1,5 @@
 package io.kotest.assertions.timing
 
-import io.kotest.assertions.SuspendingProducer
 import io.kotest.assertions.failure
 import io.kotest.assertions.until.Interval
 import io.kotest.assertions.until.fixed
@@ -14,47 +13,36 @@ import kotlin.time.milliseconds
 /**
  * Runs a function until it doesn't throw as long as the specified duration hasn't passed
  */
-suspend fun <T> eventually(duration: Duration, f: SuspendingProducer<T>): T =
+suspend fun <T> eventually(duration: Duration, f: suspend () -> T): T =
    eventually(EventuallyConfig(duration = duration, exceptionClass = Throwable::class), f = f)
 
 suspend fun <T : Any> eventually(
    duration: Duration,
    interval: Interval,
-   f: SuspendingProducer<T>
+   f: suspend () -> T
 ): T = eventually(EventuallyConfig(duration, interval), f = f)
 
 suspend fun <T> eventually(
    duration: Duration,
    interval: Interval,
    predicate: EventuallyPredicate<T>,
-   f: SuspendingProducer<T>
+   f: suspend () -> T,
 ): T = eventually(EventuallyConfig(duration = duration, interval), predicate = predicate, f = f)
 
 suspend fun <T> eventually(
    duration: Duration,
    interval: Interval,
    listener: EventuallyListener<T>,
-   f: SuspendingProducer<T>
+   f: suspend () -> T,
 ): T = eventually(EventuallyConfig(duration = duration, interval), listener = listener, f = f)
 
-
-@Deprecated(
-   """
-Use eventually with an interval, using Duration based poll is deprecated.
-To convert an existing duration to an interval you can Duration.fixed(), Duration.exponential(), or Duration.fibonacci().
-""",
-   ReplaceWith(
-      "eventually(duration, interval = poll.fixed(), f = f)",
-      "io.kotest.assertions.until.fixed"
-   )
-)
-suspend fun <T> eventually(duration: Duration, poll: Duration, f: SuspendingProducer<T>): T =
+suspend fun <T> eventually(duration: Duration, poll: Duration, f: suspend () -> T): T =
    eventually(EventuallyConfig(duration = duration, interval = poll.fixed(), exceptionClass = Throwable::class), f = f)
 
 /**
  * Runs a function until it doesn't throw the specified exception as long as the specified duration hasn't passed
  */
-suspend fun <T> eventually(duration: Duration, exceptionClass: KClass<out Throwable>, f: SuspendingProducer<T>): T =
+suspend fun <T> eventually(duration: Duration, exceptionClass: KClass<out Throwable>, f: suspend () -> T): T =
    eventually(EventuallyConfig(duration = duration, exceptionClass = exceptionClass), f = f)
 
 /**
@@ -74,7 +62,7 @@ suspend fun <T> eventually(
    listener: EventuallyListener<T> = EventuallyListener { },
    retries: Int = Int.MAX_VALUE,
    exceptionClass: KClass<out Throwable>? = null,
-   f: SuspendingProducer<T>
+   f: suspend () -> T,
 ): T = eventually(EventuallyConfig(duration, interval, retries, exceptionClass), predicate, listener, f)
 
 /**
@@ -85,7 +73,7 @@ suspend fun <T> eventually(
    config: EventuallyConfig,
    predicate: EventuallyPredicate<T> = { true },
    listener: EventuallyListener<T> = EventuallyListener { },
-   f: SuspendingProducer<T>,
+   f: suspend () -> T,
 ): T {
    val start = TimeSource.Monotonic.markNow()
    val end = start.plus(config.duration)
