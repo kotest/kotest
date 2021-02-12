@@ -39,26 +39,14 @@ suspend fun <T> eventually(
    f: suspend () -> T,
 ): T = eventually(EventuallyConfig(duration, interval), predicate = predicate, f = f)
 
-/**
- * Runs function [f] with the specified [interval] until it doesn't throw, as long as the specified [duration] hasn't passed.
- * @param listener will be notified at every iteration
- * @return the result of [f] or fails if [f] never completed without throwing
- */
-suspend fun <T> eventually(
-   duration: Duration,
-   interval: Interval,
-   listener: EventuallyListener<T>,
-   f: suspend () -> T,
-): T = eventually(EventuallyConfig(duration, interval), listener = listener, f = f)
-
 suspend fun <T> eventually(duration: Duration, poll: Duration, f: suspend () -> T): T =
-   eventually(EventuallyConfig(duration = duration, interval = poll.fixed()), f = f)
+   eventually(EventuallyConfig(duration, interval = poll.fixed()), f = f)
 
 /**
  * Runs a function until it doesn't throw the specified exception as long as the specified duration hasn't passed
  */
 suspend fun <T> eventually(duration: Duration, exceptionClass: KClass<out Throwable>, f: suspend () -> T): T =
-   eventually(EventuallyConfig(duration = duration, exceptionClass = exceptionClass), f = f)
+   eventually(EventuallyConfig(duration, exceptionClass = exceptionClass), f = f)
 
 /**
  * Runs a function until the following constraints are eventually met:
@@ -69,7 +57,6 @@ suspend fun <T> eventually(duration: Duration, exceptionClass: KClass<out Throwa
  * eventually will
  * - catch the specified optional [exceptionClass] and (or when not specified) [AssertionError]
  * - delay the specified [interval] between iterations, defaults to 25 [milliseconds]
- * - pass the resulting value and state (see [EventuallyState]) into the optional [listener]
  *
  * @return the first accepted result of [f]
  */
@@ -77,20 +64,18 @@ suspend fun <T> eventually(
    duration: Duration = Duration.INFINITE,
    interval: Interval = 25.milliseconds.fixed(),
    predicate: EventuallyPredicate<T> = { true },
-   listener: EventuallyListener<T> = EventuallyListener { },
    retries: Int = Int.MAX_VALUE,
    exceptionClass: KClass<out Throwable>? = null,
    f: suspend () -> T,
-): T = eventually(EventuallyConfig(duration, interval, retries, exceptionClass), predicate, listener, f)
+): T = eventually(EventuallyConfig(duration, interval, retries, exceptionClass), predicate, f)
 
 /**
  * Runs a function until it doesn't throw and the result satisfies the predicate, as long as the specified duration hasn't passed.
- * @param config controls the duration, interval, listener, retries, and exceptionClass
+ * @param config controls the duration, interval, retries, and exceptionClass
  */
 suspend fun <T> eventually(
    config: EventuallyConfig,
    predicate: EventuallyPredicate<T> = { true },
-   listener: EventuallyListener<T> = EventuallyListener { },
    f: suspend () -> T,
 ): T {
 
@@ -115,8 +100,7 @@ suspend fun <T> eventually(
    while (attemptsLeft() || isLongWait()) {
       try {
          val result = f()
-         listener.onEval(EventuallyState(result, start, end, times, firstError, lastError))
-         if (predicate(result)) {
+         if (predicate(EventuallyState(result, start, end, times, firstError, lastError))) {
             errorCollector.setCollectionMode(originalAssertionMode)
             return result
          } else {
@@ -186,8 +170,4 @@ data class EventuallyState<T>(
    val thisError: Throwable?,
 )
 
-typealias EventuallyPredicate<T> = (T) -> Boolean
-
-fun interface EventuallyListener<T> {
-   fun onEval(state: EventuallyState<T>)
-}
+typealias EventuallyPredicate<T> = (state: EventuallyState<T>) -> Boolean
