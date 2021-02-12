@@ -68,6 +68,24 @@ class MyTests : ShouldSpec() {
 }
 ```
 
+**ATTENTION**: `eventually` does not works well with `assertSoftly`. In `assertSoftly` if an `eventually` fails any
+assertion followed by it won't be executed. Example:
+
+```kotlin
+class MyTests : ShouldSpec() {
+  init {
+    should("some test with eventually inside assert softly") {
+      assertSoftly{
+        eventually(1.seconds) {
+          1 shouldBe 2
+        }
+        1 shouldBe 2 // Never get executed.
+      }
+    }
+  }
+}
+```
+
 
 Continually <a name="continually"></a>
 -------------------------------
