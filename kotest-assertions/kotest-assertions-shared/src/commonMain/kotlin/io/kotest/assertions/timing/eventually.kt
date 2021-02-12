@@ -1,5 +1,7 @@
 package io.kotest.assertions.timing
 
+import io.kotest.assertions.ErrorCollectionMode
+import io.kotest.assertions.errorCollector
 import io.kotest.assertions.failure
 import io.kotest.assertions.until.Interval
 import io.kotest.assertions.until.fixed
@@ -81,12 +83,15 @@ suspend fun <T> eventually(
    var firstError: Throwable? = null
    var lastError: Throwable? = null
    var predicateFailedTimes = 0
+   val originalAssertionMode = errorCollector.getCollectionMode()
+   errorCollector.setCollectionMode(ErrorCollectionMode.Hard)
 
    while (end.hasNotPassedNow() && times < config.retries) {
       try {
          val result = f()
          listener.onEval(EventuallyState(result, start, end, times, firstError, lastError))
          if (predicate(result)) {
+            errorCollector.setCollectionMode(originalAssertionMode)
             return result
          } else {
             predicateFailedTimes++
@@ -105,6 +110,8 @@ suspend fun <T> eventually(
       times++
       delay(config.interval.next(times))
    }
+
+   errorCollector.setCollectionMode(originalAssertionMode)
 
    val message = StringBuilder().apply {
       appendLine("Eventually block failed after ${config.duration}; attempted $times time(s); ${config.interval} delay between attempts")

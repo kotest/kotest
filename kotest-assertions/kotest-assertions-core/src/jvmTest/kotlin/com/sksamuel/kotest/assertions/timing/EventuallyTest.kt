@@ -9,8 +9,10 @@ import io.kotest.assertions.timing.EventuallyConfig
 import io.kotest.assertions.timing.eventually
 import io.kotest.assertions.until.fibonacci
 import io.kotest.assertions.until.fixed
+import io.kotest.assertions.withClue
 import io.kotest.core.spec.style.WordSpec
 import io.kotest.matchers.ints.shouldBeLessThan
+import io.kotest.matchers.longs.shouldBeGreaterThan
 import io.kotest.matchers.longs.shouldBeGreaterThanOrEqual
 import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldBe
@@ -241,6 +243,28 @@ class EventuallyTest : WordSpec() {
 
             message.shouldContain("Eventually block failed after Infinity")
             message.shouldContain("attempted 2 time(s)")
+         }
+
+         "override assertion to hard assertion before executing assertion and reset it after executing" {
+            val target = System.currentTimeMillis() + 1000
+            val message = shouldThrow<AssertionError> {
+               assertSoftly {
+                  withClue("Eventually which should pass") {
+                     eventually(2.seconds) {
+                        System.currentTimeMillis() shouldBeGreaterThan target
+                     }
+                  }
+                  withClue("1 should never be 2") {
+                     1 shouldBe 2
+                  }
+                  withClue("2 should never be 3") {
+                     2 shouldBe 3
+                  }
+               }
+            }.message
+
+            message shouldContain "1) 1 should never be 2"
+            message shouldContain "2) 2 should never be 3"
          }
       }
    }
