@@ -17,16 +17,11 @@ Others were created just for Kotest.
 | [Expect Spec](#expect-spec) | A Kotest original |
 | [Annotation Spec](#annotation-spec) | JUnit |
 
-
-
-
 There are no functional differences between the styles.
 All allow the same types of configuration &mdash; threads, tags, etc &mdash;
  it is simply a matter of preference how you structure your tests.
 
 Some teams prefer to mandate usage of a single style, others mix and match. Do whatever feels right for your team.
-
-
 
 ### Fun Spec
 
@@ -41,7 +36,6 @@ class MyTests : FunSpec({
 	}
 })
 ```
-
 
 Tests can be disabled using the `xcontext` and `xtest` variants (in addition to the [usual ways](conditional_evaluation.md))
 
@@ -84,7 +78,7 @@ class MyTests : StringSpec({
 })
 ```
 
-
+Note that this is the only Spec that does not support nesting.
 
 ### Should Spec
 
@@ -113,9 +107,6 @@ class MyTests : ShouldSpec({
 })
 ```
 
-
-
-
 Tests can be disabled using the `xcontext` and `xshould` variants (in addition to the [usual ways](conditional_evaluation.md))
 
 ```kotlin
@@ -132,9 +123,6 @@ class MyTests : ShouldSpec({
     }
 })
 ```
-
-
-
 
 ### Describe Spec
 
@@ -182,13 +170,6 @@ class MyTests : DescribeSpec({
 })
 ```
 
-
-
-
-
-
-
-
 ### Behavior Spec
 
 Popular with people who like to write tests in the _BDD_ style, `BehaviorSpec` allows you to use `given`, `when`, `then`.
@@ -231,9 +212,7 @@ class MyTests : BehaviorSpec({
 })
 ```
 
-Note: `Then` scope doesn't have an `and` scope due to a Gradle bug. For more information, see #594
-
-
+Note: `Then` scope doesn't have an `and` scope due to a Gradle bug. For more information, see [#594](https://github.com/kotest/kotest/issues/594).
 
 Tests can be disabled using the `xgiven`, `xwhen`, and `xthen` variants (in addition to the [usual ways](conditional_evaluation.md))
 
@@ -255,7 +234,6 @@ class MyTests : DescribeSpec({
     }
 })
 ```
-
 
 ### Word Spec
 
@@ -292,11 +270,6 @@ class MyTests : WordSpec({
 })
 ```
 
-
-
-
-
-
 ### Free Spec
 
 `FreeSpec` allows you to nest arbitrary levels of depth using the keyword `-` (minus), as such:
@@ -321,9 +294,6 @@ class MyTests : FreeSpec({
 })
 ```
 
-
-
-
 ### Feature Spec
 
 `FeatureSpec` allows you to use `feature` and `scenario`, which will be familiar to those who have used [cucumber](http://docs.cucumber.io/gherkin/reference/).
@@ -342,8 +312,6 @@ class MyTests : FeatureSpec({
 })
 ```
 
-
-
 Tests can be disabled using the `xfeature` and `xscenario` variants (in addition to the [usual ways](conditional_evaluation.md))
 
 ```kotlin
@@ -360,8 +328,6 @@ class MyTests : FeatureSpec({
     }
 })
 ```
-
-
 
 ### Expect Spec
 
@@ -390,7 +356,6 @@ class MyTests : ExpectSpec({
 })
 ```
 
-
 Tests can be disabled using the `xcontext` and `xexpect` variants (in addition to the [usual ways](conditional_evaluation.md))
 
 ```kotlin
@@ -408,15 +373,12 @@ class MyTests : DescribeSpec({
 })
 ```
 
-
-
-
 ### Annotation Spec
 
 If you are migrating from JUnit then `AnnotationSpec` is a spec that uses annotations like JUnit 4/5.
 Just add the `@Test` annotation to any function defined in the spec class.
 
-You can also add annotations to execute something before tests/specs and after tests/specs, similarly to JUnit's
+You can also add annotations to execute something before tests/specs and after tests/specs, similarly to JUnit.
 
 Although this spec doesn't offer any advantage over using JUnit itself, it allows you to migrate faster, as you typically just need to adjust imports.
 
