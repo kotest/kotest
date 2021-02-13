@@ -18,22 +18,20 @@ or with another test framework like JUnit or Spock.
 [![version badge](https://img.shields.io/maven-central/v/io.kotest/kotest-assertions-core-jvm.svg?label=release)](https://search.maven.org/search?q=kotest)
 [![version badge](https://img.shields.io/nexus/s/https/oss.sonatype.org/io.kotest/kotest-assertions-core-jvm.svg?label=snapshot)](https://oss.sonatype.org/content/repositories/snapshots/io/kotest)
 
+The core functionality of the assertion modules are functions that test state. Kotest calls these types of state
+assertion functions _matchers_. There are [core](matchers.md) matchers and matchers for third party libraries.
+
+There are also many other utilities for writing tests, such as [testing for exceptions](exceptions.md), functions to
+help test [non-determistic code](nondeterministic_testing.md), [inspectors](inspectors.md) for collections, and
+[soft assertions](soft_assertions.md) to group assertions.
 
 ## Multitude of Matchers
 
-The core functionality of the assertion modules are functions that test state.
-For example, to assert that a variable has an expected value, we
-can use the `shouldBe` function.
-
+For example, to assert that a variable has an expected value, we can use the `shouldBe` function.
 
 ```kotlin
 name shouldBe "sam"
 ```
-
-Kotest calls these types of state assertion functions _matchers_.
-
-
-
 
 There are general purpose matchers, such as `shouldBe` as well as matchers for many other specific scenarios,
 such as `str.shouldHaveLength(10)` for testing the length of a string, and `file.shouldBeDirectory()` which test
