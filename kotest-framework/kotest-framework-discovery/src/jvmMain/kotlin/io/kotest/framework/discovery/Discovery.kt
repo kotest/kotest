@@ -49,7 +49,6 @@ class Discovery(private val discoveryExtensions: List<DiscoveryExtension> = empt
    private val isSpecSubclassKt: (KClass<*>) -> Boolean = { Spec::class.java.isAssignableFrom(it.java) }
    private val isSpecSubclass: (Class<*>) -> Boolean = { Spec::class.java.isAssignableFrom(it) }
    private val isAbstract: (KClass<*>) -> Boolean = { it.isAbstract }
-   private val isClass: (KClass<*>) -> Boolean = { it.objectInstance == null }
    private val fromClassPaths: List<KClass<out Spec>> by lazy { scanUris() }
 
    /**
@@ -100,8 +99,9 @@ class Discovery(private val discoveryExtensions: List<DiscoveryExtension> = empt
          .asSequence()
          .filter(selectorFn(request.selectors))
          .filter(filterFn(request.filters))
+         // all classes must subclass one of the spec parents
          .filter(isSpecSubclassKt)
-         .filter(isClass)
+         // we don't want abstract classes
          .filterNot(isAbstract)
          .toList()
 
