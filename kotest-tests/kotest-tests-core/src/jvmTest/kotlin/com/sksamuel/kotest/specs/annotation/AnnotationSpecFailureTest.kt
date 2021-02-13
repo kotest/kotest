@@ -5,11 +5,13 @@ import io.kotest.core.spec.style.AnnotationSpec
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.matchers.shouldBe
+import io.kotest.matchers.throwable.shouldHaveMessage
+import io.kotest.matchers.types.shouldBeInstanceOf
 
 class AnnotationSpecFailureTest : AnnotationSpec() {
-   class FooException : Exception()
+   class FooException(override val message: String) : Exception()
 
-   private val thrownException = FooException()
+   private val thrownException = FooException("thrown exception")
 
    @Test
    fun foo() {
@@ -22,7 +24,8 @@ class AnnotationSpecFailureTest : AnnotationSpec() {
 
       override suspend fun intercept(testCase: TestCase, execute: suspend (TestCase) -> TestResult): TestResult {
          val result = execute(testCase)
-         result.error shouldBe thrownException
+         result.error!! shouldHaveMessage  "thrown exception"
+         result.error.shouldBeInstanceOf<FooException>()
          return TestResult.success(0)
       }
    }
