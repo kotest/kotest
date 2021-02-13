@@ -25,7 +25,11 @@ class NonEmptyListTest : FunSpec({
    test("Arb.nel should not fail if generator arb has no edgecases") {
       Arb.nel(Arb.constant("a"), 1..5)
          .take(3, RandomSource.seeded(123123L))
-         .toList() shouldBe listOf(NonEmptyList.of("a"), NonEmptyList.of("a", "a"), NonEmptyList.of("a", "a", "a", "a"))
+         .toList() shouldContainExactly listOf(
+         NonEmptyList.of("a", "a", "a", "a"),
+         NonEmptyList.of("a", "a", "a", "a"),
+         NonEmptyList.of("a", "a")
+      )
    }
 
    test("Arb.nel should generate NonEmptyList") {

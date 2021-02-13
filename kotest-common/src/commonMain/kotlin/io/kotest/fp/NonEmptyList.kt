@@ -27,6 +27,8 @@ data class NonEmptyList<out A>(val head: A, val tail: List<A>) {
    fun <B> fold(acc: B, fn: (acc: B, next: A) -> B): B = this.tail.fold(fn(acc, this.head), fn)
 
    fun reduce(fn: (first: A, second: A) -> @UnsafeVariance A): A = this.tail.fold(head, fn)
+
+   override fun toString(): String = all.toString()
 }
 
 fun <A> A.nel(): NonEmptyList<A> = NonEmptyList.of(this)
