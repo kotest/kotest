@@ -1,5 +1,7 @@
 package io.kotest.property
 
+import io.kotest.fp.NonEmptyList
+import io.kotest.fp.getOrElse
 import io.kotest.property.arbitrary.of
 
 /**
@@ -24,7 +26,7 @@ import io.kotest.property.arbitrary.of
 sealed class Gen<out A> {
 
    fun generate(rs: RandomSource): Sequence<Sample<A>> = when (this) {
-      is Arb -> this.edgecases().asSequence().map { Sample(it) } + this.samples(rs)
+      is Arb -> this.edges().values(rs).asSequence().map { Sample(it) } + this.samples(rs)
       is Exhaustive -> {
          check(this.values.isNotEmpty()) { "Exhaustive.values shouldn't be a empty list." }
 
@@ -67,6 +69,11 @@ abstract class Arb<out A> : Gen<A>() {
     * Edgecase values for this type A.
     */
    abstract fun edgecases(): List<A>
+
+   open fun edges(): EdgeCases<A> =
+      NonEmptyList.fromList(edgecases())
+         .map { values -> EdgeCases.Static(values) }
+         .getOrElse(EdgeCases.random { sample(it).value })
 
    /**
     * Returns a random [Sample] from this [Arb] using the supplied random source.

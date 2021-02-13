@@ -1,10 +1,14 @@
 package com.sksamuel.kotest.property.arbitrary
 
 import io.kotest.core.spec.style.FunSpec
+import io.kotest.matchers.collections.shouldContainExactly
 import io.kotest.matchers.ints.shouldBeBetween
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldHaveLengthBetween
+import io.kotest.matchers.types.shouldBeInstanceOf
 import io.kotest.property.Arb
+import io.kotest.property.EdgeCases
+import io.kotest.property.RandomSource
 import io.kotest.property.arbitrary.arbitrary
 import io.kotest.property.arbitrary.int
 import io.kotest.property.arbitrary.next
@@ -32,6 +36,19 @@ class BuilderTest : FunSpec() {
 
          personArb.next().name.shouldHaveLengthBetween(10, 12)
          personArb.next().age.shouldBeBetween(21, 150)
+      }
+
+      context("edges and edgecases") {
+         test("should assign static edges") {
+            val arb = arbitrary(listOf(1, 2, 3)) { it.random.nextInt() }
+            arb.edges() shouldBe EdgeCases.of(1, 2, 3)
+         }
+
+         test("should assign random edges when no edgecases were specified") {
+            val arb = arbitrary { it.random.nextInt() }
+            arb.edges().shouldBeInstanceOf<EdgeCases.Random<Int>>()
+            arb.edges().values(RandomSource.seeded(1234L)) shouldContainExactly listOf(345130239)
+         }
       }
    }
 }

@@ -38,6 +38,8 @@ fun <T> Option<T>.orElse(other: Option<T>): Option<T> = when (this) {
    else -> this
 }
 
+fun <T> Option<T>.toList(): List<T> = this.fold({ emptyList() }, { listOf(it) })
+
 fun <T> T.some(): Option<T> = Option.Some(this)
 
 fun <T> Collection<T>.firstOption(): Option<T> = if (this.isEmpty()) Option.None else Option.Some(first())

@@ -1,6 +1,7 @@
 package io.kotest.property.arbitrary
 
 import io.kotest.property.Arb
+import io.kotest.property.EdgeCases
 import io.kotest.property.Exhaustive
 import io.kotest.property.Gen
 
@@ -275,12 +276,14 @@ private fun <A, B, C> Gen<A>.bind(other: Gen<B>, fn: (A, B) -> C): Arb<C> {
       is Exhaustive -> this.toArb()
    }
 
-   return arb.flatMap { a ->
-      when (other) {
-         is Arb -> other.map { fn(a, it) }
-         is Exhaustive -> other.toArb().map { fn(a, it) }
-      }
+   val otherArb = when (other) {
+      is Arb -> other
+      is Exhaustive -> other.toArb()
    }
+
+   return arb
+      .flatMap { a -> otherArb.map { b -> fn(a, b) } }
+      .withEdges(EdgeCases.bind(arb.edges(), otherArb.edges(), fn))
 }
 
 private fun <A, B> Gen<A>.bind(other: Gen<B>): Arb<Pair<A, B>> = this.bind(other, ::Pair)

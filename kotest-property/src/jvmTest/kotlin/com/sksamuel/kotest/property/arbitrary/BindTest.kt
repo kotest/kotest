@@ -9,9 +9,11 @@ import io.kotest.matchers.should
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
 import io.kotest.property.Arb
+import io.kotest.property.RandomSource
 import io.kotest.property.arbitrary.bind
 import io.kotest.property.arbitrary.bool
 import io.kotest.property.arbitrary.double
+import io.kotest.property.arbitrary.edgecases
 import io.kotest.property.arbitrary.filter
 import io.kotest.property.arbitrary.map
 import io.kotest.property.arbitrary.negativeInts
@@ -19,6 +21,7 @@ import io.kotest.property.arbitrary.positiveInts
 import io.kotest.property.arbitrary.string
 import io.kotest.property.arbitrary.take
 import io.kotest.property.arbitrary.withEdgecases
+import io.kotest.property.arbitrary.withEdges
 import io.kotest.property.checkAll
 import io.kotest.matchers.doubles.beGreaterThan as gtd
 
@@ -432,7 +435,20 @@ class BindTest : StringSpec({
             .product(arbK.edgecases(), String::plus)
             .product(arbL.edgecases(), String::plus)
 
-      Arb.bind(arbA, arbB, arbC, arbD, arbE, arbF, arbG, arbH, arbI, arbJ, arbK, arbL) { a, b, c, d, e, f, g, h, i, j, k, l ->
+      Arb.bind(
+         arbA,
+         arbB,
+         arbC,
+         arbD,
+         arbE,
+         arbF,
+         arbG,
+         arbH,
+         arbI,
+         arbJ,
+         arbK,
+         arbL
+      ) { a, b, c, d, e, f, g, h, i, j, k, l ->
          "$a$b$c$d$e$f$g$h$i$j$k$l"
       }.edgecases() shouldContainExactlyInAnyOrder expectedEdgecases
    }
@@ -466,7 +482,21 @@ class BindTest : StringSpec({
             .product(arbL.edgecases(), String::plus)
             .product(arbM.edgecases(), String::plus)
 
-      Arb.bind(arbA, arbB, arbC, arbD, arbE, arbF, arbG, arbH, arbI, arbJ, arbK, arbL, arbM) { a, b, c, d, e, f, g, h, i, j, k, l, m ->
+      Arb.bind(
+         arbA,
+         arbB,
+         arbC,
+         arbD,
+         arbE,
+         arbF,
+         arbG,
+         arbH,
+         arbI,
+         arbJ,
+         arbK,
+         arbL,
+         arbM
+      ) { a, b, c, d, e, f, g, h, i, j, k, l, m ->
          "$a$b$c$d$e$f$g$h$i$j$k$l$m"
       }.edgecases() shouldContainExactlyInAnyOrder expectedEdgecases
    }
@@ -502,9 +532,390 @@ class BindTest : StringSpec({
             .product(arbM.edgecases(), String::plus)
             .product(arbN.edgecases(), String::plus)
 
-      Arb.bind(arbA, arbB, arbC, arbD, arbE, arbF, arbG, arbH, arbI, arbJ, arbK, arbL, arbM, arbN) { a, b, c, d, e, f, g, h, i, j, k, l, m, n ->
+      Arb.bind(
+         arbA,
+         arbB,
+         arbC,
+         arbD,
+         arbE,
+         arbF,
+         arbG,
+         arbH,
+         arbI,
+         arbJ,
+         arbK,
+         arbL,
+         arbM,
+         arbN
+      ) { a, b, c, d, e, f, g, h, i, j, k, l, m, n ->
          "$a$b$c$d$e$f$g$h$i$j$k$l$m$n"
       }.edgecases() shouldContainExactlyInAnyOrder expectedEdgecases
+   }
+
+   "Arb.bind(a,b) should compute the cartesian product of edges" {
+      val arbA = Arb.string(1)
+      val arbB = Arb.string().withEdgecases("a", "b")
+      val edges = Arb.bind(arbA, arbB) { a, b -> a + b }.edges()
+
+      edges.values(RandomSource.seeded(1234L)) shouldContainExactlyInAnyOrder listOf(
+         "Ua",
+         "%b"
+      )
+   }
+
+   "Arb.bind(a,b,c) should compute the cartesian product of edges" {
+      val arbA = Arb.string(1)
+      val arbB = Arb.string().withEdgecases("a", "b")
+      val arbC = Arb.string(1)
+      val edges = Arb.bind(arbA, arbB, arbC) { a, b, c -> a + b + c }.edges()
+
+      edges.values(RandomSource.seeded(1234L)) shouldContainExactlyInAnyOrder listOf(
+         "Uak", "%bc"
+      )
+   }
+
+   "Arb.bind(a,b,c,d) should compute the cartesian product of edges" {
+      val arbA = Arb.string(1)
+      val arbB = Arb.string().withEdges(edgecases("a", "b"))
+      val arbC = Arb.string(1)
+      val arbD = Arb.string().withEdges(edgecases("a", "b"))
+      val edges = Arb.bind(arbA, arbB, arbC, arbD) { a, b, c, d -> a + b + c + d }.edges()
+      edges.values(RandomSource.seeded(1234L)) shouldContainExactlyInAnyOrder listOf(
+         "Uaka", "%bca", "?aCb", "KbGb"
+      )
+   }
+
+   "Arb.bind(a,b,c,d,e) should compute the cartesian product of edges" {
+      val arbA = Arb.string(1)
+      val arbB = Arb.string().withEdgecases("a", "b")
+      val arbC = Arb.string(1)
+      val arbD = Arb.string().withEdgecases("a", "b")
+      val arbE = Arb.string(1)
+      val edges = Arb.bind(arbA, arbB, arbC, arbD, arbE) { a, b, c, d, e -> a + b + c + d + e }.edges()
+      edges.values(RandomSource.seeded(1234L)) shouldContainExactlyInAnyOrder listOf(
+         "Uakaz", "%bcaP", "?aCb-", "KbGbw"
+      )
+   }
+
+   "Arb.bind(a,b,c,d,e,f) should compute the cartesian product of edges" {
+      val arbA = Arb.string(1)
+      val arbB = Arb.string().withEdges(edgecases("a", "b"))
+      val arbC = Arb.string(1)
+      val arbD = Arb.string().withEdges(edgecases("a", "b"))
+      val arbE = Arb.string(1)
+      val arbF = Arb.string().withEdges(edgecases("x"))
+      val edges = Arb.bind(arbA, arbB, arbC, arbD, arbE, arbF) { a, b, c, d, e, f -> a + b + c + d + e + f }.edges()
+      edges.values(RandomSource.seeded(1234L)) shouldContainExactlyInAnyOrder listOf(
+         "Uakazx", "%bcaPx", "?aCb-x", "KbGbwx"
+      )
+   }
+
+   "Arb.bind(a,b,c,d,e,f,g) should compute the cartesian product of edges" {
+      val arbA = Arb.string(1)
+      val arbB = Arb.string().withEdgecases("a", "b")
+      val arbC = Arb.string(1)
+      val arbD = Arb.string().withEdgecases("a", "b")
+      val arbE = Arb.string(1)
+      val arbF = Arb.string().withEdgecases("x")
+      val arbG = Arb.string().withEdgecases("g")
+      val edges = Arb.bind(
+         arbA,
+         arbB,
+         arbC,
+         arbD,
+         arbE,
+         arbF,
+         arbG
+      ) { a, b, c, d, e, f, g -> a + b + c + d + e + f + g }.edges()
+      edges.values(RandomSource.seeded(1234L)) shouldContainExactlyInAnyOrder listOf(
+         "Uakazxg", "%bcaPxg", "?aCb-xg", "KbGbwxg"
+      )
+   }
+
+   "Arb.bind(a,b,c,d,e,f,g,h) should compute the cartesian product of edges" {
+      val arbA = Arb.string(1)
+      val arbB = Arb.string().withEdgecases("a", "b")
+      val arbC = Arb.string(1)
+      val arbD = Arb.string().withEdgecases("a", "b")
+      val arbE = Arb.string(1)
+      val arbF = Arb.string().withEdgecases("x")
+      val arbG = Arb.string().withEdgecases("g", "h")
+      val arbH = Arb.string(1)
+      val edges = Arb.bind(
+         arbA,
+         arbB,
+         arbC,
+         arbD,
+         arbE,
+         arbF,
+         arbG,
+         arbH
+      ) { a, b, c, d, e, f, g, h -> a + b + c + d + e + f + g + h }.edges()
+      edges.values(RandomSource.seeded(1234L)) shouldContainExactlyInAnyOrder listOf(
+         "Uakazxg;", "%bcaPxgj", "?aCb-xgB", "KbGbwxgP", "'a/aexh ", "dbsasxh'", "da`bixhB", ";bLb`xhh"
+      )
+   }
+
+   "Arb.bind(a,b,c,d,e,f,g,h,i) should compute the cartesian product of edges" {
+      val arbA = Arb.string(1)
+      val arbB = Arb.string().withEdgecases("a", "b")
+      val arbC = Arb.string(1)
+      val arbD = Arb.string().withEdgecases("a", "b")
+      val arbE = Arb.string(1)
+      val arbF = Arb.string().withEdgecases("x")
+      val arbG = Arb.string().withEdgecases("g", "h")
+      val arbH = Arb.string(1)
+      val arbI = Arb.string(1)
+      val edges = Arb.bind(
+         arbA,
+         arbB,
+         arbC,
+         arbD,
+         arbE,
+         arbF,
+         arbG,
+         arbH,
+         arbI
+      ) { a, b, c, d, e, f, g, h, i -> a + b + c + d + e + f + g + h + i }.edges()
+      edges.values(RandomSource.seeded(1234L)) shouldContainExactlyInAnyOrder listOf(
+         "Uakazxg;0", "%bcaPxgj*", "?aCb-xgB?", "KbGbwxgP ", "'a/aexh O", "dbsasxh'7", "da`bixhB?", ";bLb`xhh0"
+      )
+   }
+
+
+   "Arb.bind(a,b,c,d,e,f,g,h,i,j) should compute the cartesian product of edges" {
+      val arbA = Arb.string(1)
+      val arbB = Arb.string().withEdgecases("a", "b")
+      val arbC = Arb.string(1)
+      val arbD = Arb.string().withEdgecases("a", "b")
+      val arbE = Arb.string(1)
+      val arbF = Arb.string().withEdgecases("x")
+      val arbG = Arb.string().withEdgecases("g", "h")
+      val arbH = Arb.string(1)
+      val arbI = Arb.string(1)
+      val arbJ = Arb.string().withEdgecases("j", "k")
+      val edges = Arb.bind(
+         arbA,
+         arbB,
+         arbC,
+         arbD,
+         arbE,
+         arbF,
+         arbG,
+         arbH,
+         arbI,
+         arbJ
+      ) { a, b, c, d, e, f, g, h, i, j -> a + b + c + d + e + f + g + h + i + j }.edges()
+      edges.values(RandomSource.seeded(1234L)) shouldContainExactlyInAnyOrder listOf(
+         "Uakazxg;0j",
+         "%bcaPxgj*j",
+         "?aCb-xgB?j",
+         "KbGbwxgP j",
+         "'a/aexh Oj",
+         "dbsasxh'7j",
+         "da`bixhB?j",
+         ";bLb`xhh0j",
+         "JaHa^xgsHk",
+         "Gbqa<xgMGk",
+         "va0b6xgdrk",
+         "pb:b xgI0k",
+         "YaSa0xh3+k",
+         "tb\\aVxhI(k",
+         "MajbNxhx'k",
+         "kbtb-xhKUk"
+      )
+   }
+
+   "Arb.bind(a,b,c,d,e,f,g,h,i,j,k) should compute the cartesian product of edges" {
+      val arbA = Arb.string(1)
+      val arbB = Arb.string().withEdgecases("a", "b")
+      val arbC = Arb.string(1)
+      val arbD = Arb.string().withEdgecases("a", "b")
+      val arbE = Arb.string(1)
+      val arbF = Arb.string().withEdgecases("x")
+      val arbG = Arb.string().withEdgecases("g", "h")
+      val arbH = Arb.string(1)
+      val arbI = Arb.string(1)
+      val arbJ = Arb.string().withEdgecases("j", "k")
+      val arbK = Arb.string().withEdgecases("edge")
+      val edges = Arb.bind(
+         arbA,
+         arbB,
+         arbC,
+         arbD,
+         arbE,
+         arbF,
+         arbG,
+         arbH,
+         arbI,
+         arbJ,
+         arbK
+      ) { a, b, c, d, e, f, g, h, i, j, k -> a + b + c + d + e + f + g + h + i + j + k }.edges()
+      edges.values(RandomSource.seeded(1234L)) shouldContainExactlyInAnyOrder listOf(
+         "Uakazxg;0jedge",
+         "%bcaPxgj*jedge",
+         "?aCb-xgB?jedge",
+         "KbGbwxgP jedge",
+         "'a/aexh Ojedge",
+         "dbsasxh'7jedge",
+         "da`bixhB?jedge",
+         ";bLb`xhh0jedge",
+         "JaHa^xgsHkedge",
+         "Gbqa<xgMGkedge",
+         "va0b6xgdrkedge",
+         "pb:b xgI0kedge",
+         "YaSa0xh3+kedge",
+         "tb\\aVxhI(kedge",
+         "MajbNxhx'kedge",
+         "kbtb-xhKUkedge"
+      )
+   }
+
+   "Arb.bind(a,b,c,d,e,f,g,h,i,j,k,l) should compute the cartesian product of edges" {
+      val arbA = Arb.string(1)
+      val arbB = Arb.string().withEdgecases("a", "b")
+      val arbC = Arb.string(1)
+      val arbD = Arb.string().withEdgecases("a", "b")
+      val arbE = Arb.string(1)
+      val arbF = Arb.string().withEdgecases("x")
+      val arbG = Arb.string().withEdgecases("g", "h")
+      val arbH = Arb.string(1)
+      val arbI = Arb.string(1)
+      val arbJ = Arb.string().withEdgecases("j", "k")
+      val arbK = Arb.string().withEdgecases("edge")
+      val arbL = Arb.string(1)
+      val edges = Arb.bind(
+         arbA,
+         arbB,
+         arbC,
+         arbD,
+         arbE,
+         arbF,
+         arbG,
+         arbH,
+         arbI,
+         arbJ,
+         arbK,
+         arbL
+      ) { a, b, c, d, e, f, g, h, i, j, k, l -> a + b + c + d + e + f + g + h + i + j + k + l }.edges()
+      edges.values(RandomSource.seeded(1234L)) shouldContainExactlyInAnyOrder listOf(
+         "Uakazxg;0jedge(",
+         "%bcaPxgj*jedgej",
+         "?aCb-xgB?jedge_",
+         "KbGbwxgP jedge#",
+         "'a/aexh Ojedge9",
+         "dbsasxh'7jedgeZ",
+         "da`bixhB?jedgee",
+         ";bLb`xhh0jedgey",
+         "JaHa^xgsHkedgeJ",
+         "Gbqa<xgMGkedgeT",
+         "va0b6xgdrkedgea",
+         "pb:b xgI0kedge)",
+         "YaSa0xh3+kedgeN",
+         "tb\\aVxhI(kedge=",
+         "MajbNxhx'kedge&",
+         "kbtb-xhKUkedge\$"
+      )
+   }
+
+   "Arb.bind(a,b,c,d,e,f,g,h,i,j,k,l,m) should compute the cartesian product of edges" {
+      val arbA = Arb.string(1)
+      val arbB = Arb.string().withEdgecases("a", "b")
+      val arbC = Arb.string(1)
+      val arbD = Arb.string().withEdgecases("a", "b")
+      val arbE = Arb.string(1)
+      val arbF = Arb.string().withEdgecases("x")
+      val arbG = Arb.string().withEdgecases("g", "h")
+      val arbH = Arb.string(1)
+      val arbI = Arb.string(1)
+      val arbJ = Arb.string().withEdgecases("j", "k")
+      val arbK = Arb.string().withEdgecases("edge")
+      val arbL = Arb.string(1)
+      val arbM = Arb.string(1)
+      val edges = Arb.bind(
+         arbA,
+         arbB,
+         arbC,
+         arbD,
+         arbE,
+         arbF,
+         arbG,
+         arbH,
+         arbI,
+         arbJ,
+         arbK,
+         arbL,
+         arbM
+      ) { a, b, c, d, e, f, g, h, i, j, k, l, m -> a + b + c + d + e + f + g + h + i + j + k + l + m }.edges()
+      edges.values(RandomSource.seeded(1234L)) shouldContainExactlyInAnyOrder listOf(
+         "Uakazxg;0jedge(b",
+         "%bcaPxgj*jedgej_",
+         "?aCb-xgB?jedge_s",
+         "KbGbwxgP jedge#T",
+         "'a/aexh Ojedge9w",
+         "dbsasxh'7jedgeZH",
+         "da`bixhB?jedgee-",
+         ";bLb`xhh0jedgey&",
+         "JaHa^xgsHkedgeJ?",
+         "Gbqa<xgMGkedgeTl",
+         "va0b6xgdrkedgeaf",
+         "pb:b xgI0kedge)o",
+         "YaSa0xh3+kedgeNT",
+         "tb\\aVxhI(kedge=h",
+         "MajbNxhx'kedge&l",
+         "kbtb-xhKUkedge\$L"
+      )
+   }
+
+   "Arb.bind(a,b,c,d,e,f,g,h,i,j,k,l,m,n) should compute the cartesian product of edges" {
+      val arbA = Arb.string(1)
+      val arbB = Arb.string().withEdgecases("a", "b")
+      val arbC = Arb.string(1)
+      val arbD = Arb.string().withEdgecases("a", "b")
+      val arbE = Arb.string(1)
+      val arbF = Arb.string().withEdgecases("x")
+      val arbG = Arb.string().withEdgecases("g", "h")
+      val arbH = Arb.string(1)
+      val arbI = Arb.string(1)
+      val arbJ = Arb.string().withEdgecases("j", "k")
+      val arbK = Arb.string().withEdgecases("edge")
+      val arbL = Arb.string(1)
+      val arbM = Arb.string(1)
+      val arbN = Arb.string(1).withEdgecases("_edgeN")
+      val edges = Arb.bind(
+         arbA,
+         arbB,
+         arbC,
+         arbD,
+         arbE,
+         arbF,
+         arbG,
+         arbH,
+         arbI,
+         arbJ,
+         arbK,
+         arbL,
+         arbM,
+         arbN
+      ) { a, b, c, d, e, f, g, h, i, j, k, l, m, n -> a + b + c + d + e + f + g + h + i + j + k + l + m + n }.edges()
+      edges.values(RandomSource.seeded(1234L)) shouldContainExactlyInAnyOrder listOf(
+         "Uakazxg;0jedge(b_edgeN",
+         "%bcaPxgj*jedgej__edgeN",
+         "?aCb-xgB?jedge_s_edgeN",
+         "KbGbwxgP jedge#T_edgeN",
+         "'a/aexh Ojedge9w_edgeN",
+         "dbsasxh'7jedgeZH_edgeN",
+         "da`bixhB?jedgee-_edgeN",
+         ";bLb`xhh0jedgey&_edgeN",
+         "JaHa^xgsHkedgeJ?_edgeN",
+         "Gbqa<xgMGkedgeTl_edgeN",
+         "va0b6xgdrkedgeaf_edgeN",
+         "pb:b xgI0kedge)o_edgeN",
+         "YaSa0xh3+kedgeNT_edgeN",
+         "tb\\aVxhI(kedge=h_edgeN",
+         "MajbNxhx'kedge&l_edgeN",
+         "kbtb-xhKUkedge\$L_edgeN"
+      )
    }
 
    "Arb.reflectiveBind" {
