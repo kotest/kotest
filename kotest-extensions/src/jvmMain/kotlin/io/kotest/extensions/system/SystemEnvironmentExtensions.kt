@@ -61,7 +61,12 @@ inline fun <T> withEnvironment(environment: Pair<String, String?>, mode: Overrid
  * already changed, the result is inconsistent, as the System Environment Map is a single map.
  */
 inline fun <T> withEnvironment(environment: Map<String, String?>, mode: OverrideMode = SetOrError, block: () -> T): T {
-   val originalEnvironment = System.getenv().toMap() // Using to map to guarantee it's not modified
+   val isWindows = "windows" in System.getProperty("os.name").orEmpty()
+   val originalEnvironment = if (isWindows) {
+      System.getenv().toSortedMap(String.CASE_INSENSITIVE_ORDER)
+   } else {
+      System.getenv()
+   }
 
    setEnvironmentMap(mode.override(originalEnvironment, environment))
 
