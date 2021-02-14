@@ -25,7 +25,7 @@ data class NestedTest(
  */
 fun NestedTest.toTestCase(spec: Spec, parent: TestCase): TestCase {
    val testCase = TestCase(
-      description = parent.description.parent.append(this.name, type),
+      description = parent.description.append(this.name, type),
       spec = spec,
       test = test,
       source = sourceRef,
