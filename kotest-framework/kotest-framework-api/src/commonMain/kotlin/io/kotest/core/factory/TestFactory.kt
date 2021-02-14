@@ -15,7 +15,7 @@ import io.kotest.core.test.TestCase
  */
 data class TestFactory(
    val factoryId: FactoryId,
-   val tests: List<DynamicTest>,
+   val tests: List<DynamicRootTest>,
    val tags: Set<Tag>,
    val assertionMode: AssertionMode?,
    val listeners: List<TestListener>,
@@ -23,7 +23,7 @@ data class TestFactory(
 )
 
 /**
- * Creates and a returns a [TestCase] for each [DynamicTest] in this factory.
+ * Creates and a returns a [TestCase] for each [DynamicRootTest] in this factory.
  * Tags and assertion mode are applied to the tests.
  *
  * @param description the parent description for the generated tests.
@@ -39,7 +39,8 @@ internal fun TestFactory.createTestCases(description: Description.Spec, spec: Sp
          source = dyn.source,
          config = dyn.config.copy(tags = dyn.config.tags + this.tags),
          factoryId = this.factoryId,
-         assertionMode = this.assertionMode
+         assertionMode = this.assertionMode,
+         parent = null,
       )
    }
 }

@@ -11,7 +11,7 @@ import io.kotest.core.test.TestType
 
 /**
  * A [TestFactoryConfiguration] extends [TestConfiguration] with the ability to register
- * [DynamicTest]s. This class shouldn't be used directly, but as the base for a particular
+ * [DynamicRootTest]s. This class shouldn't be used directly, but as the base for a particular
  * layout style, eg [FunSpecTestFactoryConfiguration].
  */
 abstract class TestFactoryConfiguration : TestConfiguration() {
@@ -24,11 +24,11 @@ abstract class TestFactoryConfiguration : TestConfiguration() {
    val factoryId: FactoryId = FactoryId.next()
 
    /**
-    * Contains the [DynamicTest]s that have been added to this configuration.
+    * Contains the [DynamicRootTest]s that have been added to this configuration.
     */
-   internal var tests = emptyList<DynamicTest>()
+   internal var tests = emptyList<DynamicRootTest>()
 
-   private fun addDynamicTest(test: DynamicTest) {
+   private fun addDynamicTest(test: DynamicRootTest) {
       if (tests.any { it.name == test.name }) throw DuplicatedTestNameException(test.name)
       this.tests = this.tests + test
    }
@@ -45,7 +45,7 @@ abstract class TestFactoryConfiguration : TestConfiguration() {
    internal fun resolvedDefaultConfig(): TestCaseConfig = defaultTestConfig ?: configuration.defaultTestConfig
 
    /**
-    * Adds a new [DynamicTest] to this factory. When this factory is included
+    * Adds a new [DynamicRootTest] to this factory. When this factory is included
     * into a [Spec] these tests will be materialized as [TestCase]s.
     */
    override fun addTest(
@@ -53,5 +53,5 @@ abstract class TestFactoryConfiguration : TestConfiguration() {
       test: suspend TestContext.() -> Unit,
       config: TestCaseConfig,
       type: TestType,
-   ) = addDynamicTest(DynamicTest(name, test, config, type, sourceRef(), factoryId))
+   ) = addDynamicTest(DynamicRootTest(name, test, config, type, sourceRef(), factoryId))
 }

@@ -77,7 +77,7 @@ internal class SingleInstanceSpecRunner(
       // in the single instance runner we execute each nested test as soon as they are registered
       override suspend fun registerTestCase(nested: NestedTest) {
          log("Nested test case discovered $nested")
-         val nestedTestCase = nested.toTestCase(testCase.spec, testCase.description)
+         val nestedTestCase = nested.toTestCase(testCase.spec, testCase)
          if (seen.contains(nested.name))
             throw DuplicatedTestNameException(nested.name)
          seen.add(nested.name)

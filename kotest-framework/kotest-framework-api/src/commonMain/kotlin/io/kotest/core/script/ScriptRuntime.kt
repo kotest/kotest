@@ -61,6 +61,7 @@ object ScriptRuntime {
                TestType.Test,
                Source.TestSource(sourceRef().fileName, sourceRef().lineNumber),
             ),
+            parent = null,
          )
       )
    }
