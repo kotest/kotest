@@ -49,7 +49,7 @@ class FlatMapTest : FunSpec() {
             }
          }
 
-         val allEdges = arbContainer.edges().values(RandomSource.seeded(112314L))
+         val allEdges = arbContainer.edgecases(RandomSource.seeded(112314L))
          allEdges shouldContainExactly listOf(
             Container(a = 1, b = 1.0, c = -1887002662852004761),
             Container(a = 1, b = 2.0, c = 7648245381918712633),

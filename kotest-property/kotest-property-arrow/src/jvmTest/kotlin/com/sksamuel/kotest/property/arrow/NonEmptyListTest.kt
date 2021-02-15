@@ -26,9 +26,9 @@ class NonEmptyListTest : FunSpec({
       Arb.nel(Arb.constant("a"), 1..5)
          .take(3, RandomSource.seeded(123123L))
          .toList() shouldContainExactly listOf(
-         NonEmptyList.of("a", "a", "a", "a"),
-         NonEmptyList.of("a", "a", "a", "a"),
-         NonEmptyList.of("a", "a")
+         NonEmptyList.of("a"),
+         NonEmptyList.of("a", "a"),
+         NonEmptyList.of("a", "a", "a", "a")
       )
    }
 

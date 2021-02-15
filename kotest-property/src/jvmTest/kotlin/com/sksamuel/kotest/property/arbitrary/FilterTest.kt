@@ -4,7 +4,6 @@ import io.kotest.assertions.throwables.shouldNotThrow
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.collections.shouldContainExactly
 import io.kotest.property.Arb
-import io.kotest.property.EdgeCases
 import io.kotest.property.RandomSource
 import io.kotest.property.Sample
 import io.kotest.property.arbitrary.filter
@@ -12,7 +11,6 @@ import io.kotest.property.arbitrary.int
 import io.kotest.property.arbitrary.of
 import io.kotest.property.arbitrary.take
 import io.kotest.property.arbitrary.withEdgecases
-import io.kotest.property.arbitrary.withEdges
 
 class FilterTest : FunSpec({
 
@@ -35,13 +33,13 @@ class FilterTest : FunSpec({
 
    test("should filter edges") {
       Arb.int(1..10).withEdgecases(1, 2, 3, 4).filter { it % 2 == 0 }
-         .edges().values(RandomSource.seeded(1234L)) shouldContainExactly listOf(2, 4)
+         .edgecases(RandomSource.seeded(1234L)) shouldContainExactly listOf(2, 4)
    }
 
    test("should filter random edges") {
       Arb.int(1..10)
-         .withEdges(EdgeCases.random { rs -> Arb.of(1, 2, 3, 4, 5).sample(rs).value })
+         .withEdgecases { rs -> listOf(Arb.of(1, 2, 3, 4, 5).sample(rs).value) }
          .filter { it % 2 == 0 }
-         .edges().values(RandomSource.seeded(32341L)) shouldContainExactly listOf(4, 2)
+         .edgecases(RandomSource.seeded(32341L)) shouldContainExactly listOf(4, 2)
    }
 })

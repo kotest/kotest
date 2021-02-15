@@ -1,7 +1,5 @@
 package io.kotest.property
 
-import io.kotest.fp.NonEmptyList
-import io.kotest.fp.getOrElse
 import io.kotest.property.arbitrary.of
 
 /**
@@ -26,7 +24,7 @@ import io.kotest.property.arbitrary.of
 sealed class Gen<out A> {
 
    fun generate(rs: RandomSource): Sequence<Sample<A>> = when (this) {
-      is Arb -> this.edges().values(rs).asSequence().map { Sample(it) } + this.samples(rs)
+      is Arb -> this.edgecases(rs).map { Sample(it) }.asSequence() + this.samples(rs)
       is Exhaustive -> {
          check(this.values.isNotEmpty()) { "Exhaustive.values shouldn't be a empty list." }
 
@@ -70,17 +68,17 @@ abstract class Arb<out A> : Gen<A>() {
     */
    abstract fun edgecases(): List<A>
 
-   open fun edges(): EdgeCases<A> =
-      NonEmptyList.fromList(edgecases())
-         .map { values -> EdgeCases.Static(values) }
-         .getOrElse(EdgeCases.random { sample(it).value })
+   open fun edgecases(rs: RandomSource): List<A> = edgecases()
 
    /**
     * Returns a random [Sample] from this [Arb] using the supplied random source.
     */
    open fun sample(rs: RandomSource): Sample<A> = values(rs).first()
 
-   @Deprecated("implement one value at a time using sample(rs). This function will be removed in 4.5.", ReplaceWith("sample(rs)"))
+   @Deprecated(
+      "implement one value at a time using sample(rs). This function will be removed in 4.5.",
+      ReplaceWith("sample(rs)")
+   )
    open fun values(rs: RandomSource): Sequence<Sample<A>> = emptySequence()
 
    /**

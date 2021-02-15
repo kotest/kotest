@@ -31,22 +31,16 @@ fun <A> Arb<A>.next(rs: RandomSource = RandomSource.Default): A = single(rs)
  */
 fun <A> Arb<A>.filter(predicate: (A) -> Boolean): Arb<A> = object : Arb<A>() {
    override fun edgecases(): List<A> = this@filter.edgecases().filter(predicate)
-   override fun edges(): EdgeCases<A> = when (val edges = this@filter.edges()) {
-      is EdgeCases.Static ->
-         NonEmptyList
-            .fromList(edges.values.all.filter(predicate))
-            .map { EdgeCases.Static(it) }
-            .getOrElse { EdgeCases.Random { rs -> sample(rs).value.nel() } }
 
-      is EdgeCases.Random -> EdgeCases.Random { rs ->
-         // sample the random edgecase generator 100 times and sift those values that satisfies the given predicate
-         // otherwise fallback to Arb's sample.
-         val filteredEdges = generateSequence { edges.generate(rs).all }.take(100).flatten().filter(predicate)
-         NonEmptyList
-            .fromList(filteredEdges.distinct().toList())
-            .getOrElse(sample(rs).value.nel())
-      }
-   }
+   // sample the random edgecase generator 10 times and sift those values that satisfies the given predicate
+   // otherwise fallback to Arb's sample.
+   override fun edgecases(rs: RandomSource): List<A> =
+      generateSequence { this@filter.edgecases(rs) }
+         .take(10)
+         .flatten()
+         .filter(predicate)
+         .distinct()
+         .toList()
 
    override fun values(rs: RandomSource): Sequence<Sample<A>> = this@filter.values(rs).filter { predicate(it.value) }
    override fun sample(rs: RandomSource): Sample<A> = this@filter.samples(rs).filter { predicate(it.value) }.first()
@@ -63,7 +57,7 @@ fun <A> Arb<A>.filterNot(f: (A) -> Boolean): Arb<A> = filter { !f(it) }
 fun <A, B> Arb<A>.map(f: (A) -> B): Arb<B> = object : Arb<B>() {
    override fun edgecases(): List<B> = this@map.edgecases().map(f)
 
-   override fun edges(): EdgeCases<B> = this@map.edges().map { f(it) }
+   override fun edgecases(rs: RandomSource): List<B> = this@map.edgecases(rs).map(f)
 
    override fun values(rs: RandomSource): Sequence<Sample<B>> {
       return this@map.values(rs).map { Sample(f(it.value), it.shrinks.map(f)) }
@@ -78,7 +72,17 @@ fun <A, B> Arb<A>.map(f: (A) -> B): Arb<B> = object : Arb<B>() {
 fun <A, B> Arb<A>.flatMap(f: (A) -> Arb<B>): Arb<B> = object : Arb<B>() {
    override fun edgecases(): List<B> = this@flatMap.edgecases().flatMap { f(it).edgecases() }
 
-   override fun edges(): EdgeCases<B> = this@flatMap.edges().flatMap { f(it).edges() }
+   override fun edgecases(rs: RandomSource): List<B> =
+      NonEmptyList
+         .fromList(this@flatMap.edgecases(rs))
+         .getOrElse { this@flatMap.single(rs).nel() }
+         .flatMap { a: A ->
+            val arbB = f(a)
+            NonEmptyList
+               .fromList(arbB.edgecases(rs))
+               .getOrElse { arbB.single(rs).nel() }
+         }
+         .all
 
    override fun values(rs: RandomSource): Sequence<Sample<B>> =
       this@flatMap.samples(rs).map { sample ->
@@ -133,9 +137,9 @@ fun <A, B : A> Arb<A>.merge(other: Gen<B>): Arb<A> = object : Arb<A>() {
       is Exhaustive -> this@merge.edgecases()
    }
 
-   override fun edges(): EdgeCases<A> = when (other) {
-      is Arb -> this@merge.edges() + other.edges()
-      is Exhaustive -> this@merge.edges()
+   override fun edgecases(rs: RandomSource): List<A> = when (other) {
+      is Arb -> this@merge.edgecases(rs) + other.edgecases(rs)
+      is Exhaustive -> this@merge.edgecases(rs)
    }
 
    override fun values(rs: RandomSource): Sequence<Sample<A>> {
@@ -173,7 +177,8 @@ fun <A> Arb<A>.withEdgecases(vararg edgecases: A): Arb<A> = withEdgecases(edgeca
 /**
  * Returns a new [Arb] with the supplied edgecases replacing any existing edgecases.
  */
-fun <A> Arb<A>.withEdges(edges: EdgeCases<A>): Arb<A> = arbitrary(edges) { this.next(it) }
+fun <A> Arb<A>.withEdgecases(edgecasesGenerator: (RandomSource) -> List<A>): Arb<A> =
+   arbitrary(edgecasesGenerator) { this.next(it) }
 
 /**
  * returns a new [Arb] with a new edgecases after applying the function on the initial edgecases
@@ -183,7 +188,8 @@ fun <A> Arb<A>.modifyEdgecases(f: (List<A>) -> List<A>): Arb<A> = arbitrary(f(th
 /**
  * returns a new [Arb] with a new edges after applying the function on the initial edges
  */
-fun <A> Arb<A>.modifyEdges(f: (EdgeCases<A>) -> EdgeCases<A>): Arb<A> = arbitrary(f(this.edges())) { this.next(it) }
+fun <A> Arb<A>.modifyEdgecasesWithRandom(f: (initial: List<A>, randomSource: RandomSource) -> List<A>): Arb<A> =
+   arbitrary({ rs -> f(this.edgecases(rs), rs) }, { this.next(it) })
 
 /**
  * Wraps a [Arb] lazily. The given [f] is only evaluated once,
@@ -196,7 +202,7 @@ fun <A> Arb.Companion.lazy(f: () -> Arb<A>): Arb<A> {
    return object : Arb<A>() {
       override fun edgecases(): List<A> = arb.edgecases()
 
-      override fun edges(): EdgeCases<A> = arb.edges()
+      override fun edgecases(rs: RandomSource): List<A> = arb.edgecases(rs)
 
       override fun values(rs: RandomSource): Sequence<Sample<A>> = arb.values(rs)
 
