@@ -1,8 +1,10 @@
 package io.kotest.assertions.timing
 
+import io.kotest.assertions.SuspendingProducer
 import io.kotest.assertions.ErrorCollectionMode
 import io.kotest.assertions.errorCollector
 import io.kotest.assertions.failure
+import io.kotest.assertions.plural_s
 import io.kotest.assertions.until.Interval
 import io.kotest.assertions.until.fixed
 import kotlinx.coroutines.delay
@@ -16,21 +18,21 @@ import kotlin.time.milliseconds
  * Runs function [f] until it doesn't throw, as long as the specified [duration] hasn't passed.
  * @return the result of [f] or fails if [f] never completed without throwing
  */
-suspend fun <T> eventually(duration: Duration, f: suspend () -> T): T =
+suspend fun <T> eventually(duration: Duration, f: SuspendingProducer<T>): T =
    eventually(EventuallyConfig(duration), f = f)
 
 /**
  * Runs function [f] with the specified [interval] until it doesn't throw, as long as the specified [duration] hasn't passed.
  * @return the result of [f] or fails if [f] never completed without throwing
  */
-suspend fun <T : Any> eventually(duration: Duration, interval: Interval, f: suspend () -> T): T =
+suspend fun <T : Any> eventually(duration: Duration, interval: Interval, f: SuspendingProducer<T>): T =
    eventually(EventuallyConfig(duration, interval), f = f)
 
-suspend fun <T> eventually(duration: Duration, poll: Duration, f: suspend () -> T): T =
+suspend fun <T> eventually(duration: Duration, poll: Duration, f: SuspendingProducer<T>): T =
    eventually(EventuallyConfig(duration, interval = poll.fixed()), f = f)
 
 /** Runs a function until it doesn't throw the specified exception as long as the specified duration hasn't passed. */
-suspend fun <T> eventually(duration: Duration, exceptionClass: KClass<out Throwable>, f: suspend () -> T): T =
+suspend fun <T> eventually(duration: Duration, exceptionClass: KClass<out Throwable>, f: SuspendingProducer<T>): T =
    eventually(EventuallyConfig(duration, exceptionClass = exceptionClass), f = f)
 
 /**
@@ -40,7 +42,7 @@ suspend fun <T> eventually(
    duration: Duration,
    interval: Interval,
    predicate: EventuallyPredicate<T>,
-   f: suspend () -> T,
+   f: SuspendingProducer<T>,
 ): T = eventually(EventuallyConfig(duration, interval), predicate = predicate, f = f)
 
 /**
@@ -54,7 +56,7 @@ suspend fun <T> eventually(
    duration: Duration,
    interval: Interval,
    listener: EventuallyListener<T>,
-   f: suspend () -> T,
+   f: SuspendingProducer<T>,
 ): T = eventually(EventuallyConfig(duration, interval), listener = listener, f = f)
 
 @Deprecated("Merge listener and predicate",
@@ -66,7 +68,7 @@ suspend fun <T> eventually(
    listener: EventuallyListener<T> = EventuallyListener { },
    retries: Int = Int.MAX_VALUE,
    exceptionClass: KClass<out Throwable>? = null,
-   f: suspend () -> T,
+   f: SuspendingProducer<T>,
 ): T = eventually(EventuallyConfig(duration, interval, retries, exceptionClass), predicate, listener, f)
 
 /**
@@ -87,7 +89,7 @@ suspend fun <T> eventually(
    predicate: EventuallyPredicate<T> = { true },
    retries: Int = Int.MAX_VALUE,
    exceptionClass: KClass<out Throwable>? = null,
-   f: suspend () -> T,
+   f: SuspendingProducer<T>,
 ): T = eventually(EventuallyConfig(duration, interval, retries, exceptionClass), predicate, f)
 
 @Deprecated("Merge listener and predicate")
@@ -95,7 +97,7 @@ suspend fun <T> eventually(
    config: EventuallyConfig,
    predicate: EventuallyPredicate<T> = { true },
    listener: EventuallyListener<T> = EventuallyListener { },
-   f: suspend () -> T,
+   f: SuspendingProducer<T>,
 ): T = eventually(config, { listener.onEval(it); predicate(it)}, f)
 /**
  * Runs a function until it doesn't throw and the result satisfies the predicate, as long as the specified duration hasn't passed.
@@ -104,7 +106,7 @@ suspend fun <T> eventually(
 suspend fun <T> eventually(
    config: EventuallyConfig,
    predicate: EventuallyPredicate<T> = { true },
-   f: suspend () -> T,
+   f: SuspendingProducer<T>,
 ): T {
 
    val start = TimeSource.Monotonic.markNow()
@@ -157,7 +159,7 @@ suspend fun <T> eventually(
    errorCollector.setCollectionMode(originalAssertionMode)
 
    val message = StringBuilder().apply {
-      appendLine("Eventually block failed after ${config.duration}; attempted $times time(s); ${config.interval} delay between attempts")
+      appendLine("Eventually block failed after ${config.duration}; attempted $times time${plural_s(times)}; ${config.interval} delay between attempts")
 
       if (predicateFailedTimes > 0) {
          appendLine("The provided predicate failed $predicateFailedTimes times")

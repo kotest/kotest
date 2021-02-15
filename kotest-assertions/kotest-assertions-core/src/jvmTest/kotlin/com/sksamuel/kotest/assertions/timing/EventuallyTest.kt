@@ -224,7 +224,7 @@ class EventuallyTest : WordSpec() {
 
          "fail tests that fail a predicate" {
             shouldThrow<AssertionError> {
-               eventually(1.seconds, predicate = { it == 2 }) {
+               eventually(1.seconds, predicate = { (result) -> result == 2 }) {
                   1
                }
             }
@@ -278,7 +278,7 @@ class EventuallyTest : WordSpec() {
             }.message
 
             message.shouldContain("Eventually block failed after Infinity")
-            message.shouldContain("attempted 2 time(s)")
+            message.shouldContain("attempted 2 times")
          }
 
          "override assertion to hard assertion before executing assertion and reset it after executing" {

@@ -29,7 +29,7 @@ suspend fun <T> retry(
    timeout: Duration,
    delay: Duration = 1.seconds,
    multiplier: Int = 1,
-   f: suspend () -> T
+   f: SuspendingProducer<T>
 ): T = retry(maxRetry, timeout, delay, multiplier, Exception::class, f)
 
 
@@ -55,7 +55,7 @@ suspend fun <T, E : Throwable> retry(
    delay: Duration = 1.seconds,
    multiplier: Int = 1,
    exceptionClass: KClass<E>,
-   f: suspend () -> T
+   f: SuspendingProducer<T>
 ): T {
    val mark = TimeSource.Monotonic.markNow()
    val end = mark.plus(timeout)

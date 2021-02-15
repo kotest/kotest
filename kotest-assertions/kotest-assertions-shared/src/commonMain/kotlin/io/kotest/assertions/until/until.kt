@@ -1,6 +1,8 @@
 package io.kotest.assertions.until
 
+import io.kotest.assertions.SuspendingProducer
 import io.kotest.assertions.failure
+import io.kotest.assertions.plural_s
 import kotlin.time.Duration
 import kotlin.time.TimeSource
 import kotlin.time.seconds
@@ -71,7 +73,7 @@ suspend fun until(patience: PatienceConfig, f: suspend () -> Boolean) =
 suspend fun <T> until(
    duration: Duration,
    predicate: suspend (T) -> Boolean,
-   f: suspend () -> T
+   f: SuspendingProducer<T>
 ): T = until(duration, interval = 1.seconds.fixed(), predicate = predicate, f = f)
 
 /**
@@ -86,7 +88,7 @@ suspend fun <T> until(
    duration: Duration,
    interval: Interval,
    predicate: suspend (T) -> Boolean,
-   f: suspend () -> T
+   f: SuspendingProducer<T>
 ): T = until(duration = duration, interval = interval, predicate = predicate, listener = {}, f = f)
 
 /**
@@ -103,7 +105,7 @@ suspend fun <T> until(
 suspend fun <T> until(
    patience: PatienceConfig,
    predicate: suspend (T) -> Boolean,
-   f: suspend () -> T
+   f: SuspendingProducer<T>
 ): T = until(duration = patience.duration, interval = patience.interval, predicate = predicate, listener = {}, f = f)
 
 @Deprecated("Simply move the listener code into the predicate code. Will be removed in 4.7 or 5.0")
@@ -112,7 +114,7 @@ suspend fun <T> until(
    interval: Interval = 1.seconds.fixed(),
    predicate: suspend (T) -> Boolean,
    listener: UntilListener<T>,
-   f: suspend () -> T
+   f: SuspendingProducer<T>
 ): T {
 
    val start = TimeSource.Monotonic.markNow()
@@ -130,6 +132,6 @@ suspend fun <T> until(
    }
 
    val runtime = start.elapsedNow()
-   val message = "Until block failed after ${runtime}; attempted $times time(s); $interval delay between attempts"
+   val message = "Until block failed after ${runtime}; attempted $times time${plural_s(times)}; $interval delay between attempts"
    throw failure(message)
 }

@@ -51,8 +51,8 @@ data class Continually<T> (
 @Deprecated("Use continually with an interval, using Duration based poll is deprecated",
    ReplaceWith("continually(duration, poll.fixed(), f = f)", "io.kotest.assertions.until.fixed")
 )
-suspend fun <T> continually(duration: Duration, poll: Duration, f: suspend () -> T) =
+suspend fun <T> continually(duration: Duration, poll: Duration, f: SuspendingProducer<T>) =
    continually(duration, poll.fixed(), f = f)
 
-suspend fun <T> continually(duration: Duration, interval: Interval = 10.milliseconds.fixed(), f: suspend () -> T) =
+suspend fun <T> continually(duration: Duration, interval: Interval = 10.milliseconds.fixed(), f: SuspendingProducer<T>) =
    Continually<T>(duration, interval).invoke(f)
