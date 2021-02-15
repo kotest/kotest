@@ -23,11 +23,15 @@ suspend fun <T> eventually(duration: Duration, f: suspend () -> T): T =
  * Runs function [f] with the specified [interval] until it doesn't throw, as long as the specified [duration] hasn't passed.
  * @return the result of [f] or fails if [f] never completed without throwing
  */
-suspend fun <T : Any> eventually(
-   duration: Duration,
-   interval: Interval,
-   f: suspend () -> T
-): T = eventually(EventuallyConfig(duration, interval), f = f)
+suspend fun <T : Any> eventually(duration: Duration, interval: Interval, f: suspend () -> T): T =
+   eventually(EventuallyConfig(duration, interval), f = f)
+
+suspend fun <T> eventually(duration: Duration, poll: Duration, f: suspend () -> T): T =
+   eventually(EventuallyConfig(duration, interval = poll.fixed()), f = f)
+
+/** Runs a function until it doesn't throw the specified exception as long as the specified duration hasn't passed. */
+suspend fun <T> eventually(duration: Duration, exceptionClass: KClass<out Throwable>, f: suspend () -> T): T =
+   eventually(EventuallyConfig(duration, exceptionClass = exceptionClass), f = f)
 
 /**
  * Runs function [f] until it matches [predicate], as long as the specified [duration] hasn't passed.
@@ -39,14 +43,31 @@ suspend fun <T> eventually(
    f: suspend () -> T,
 ): T = eventually(EventuallyConfig(duration, interval), predicate = predicate, f = f)
 
-suspend fun <T> eventually(duration: Duration, poll: Duration, f: suspend () -> T): T =
-   eventually(EventuallyConfig(duration, interval = poll.fixed()), f = f)
-
 /**
- * Runs a function until it doesn't throw the specified exception as long as the specified duration hasn't passed
+ * Runs function [f] with the specified [interval] until it doesn't throw, as long as the specified [duration] hasn't passed.
+ * @param listener will be notified at every iteration
+ * @return the result of [f] or fails if [f] never completed without throwing
  */
-suspend fun <T> eventually(duration: Duration, exceptionClass: KClass<out Throwable>, f: suspend () -> T): T =
-   eventually(EventuallyConfig(duration, exceptionClass = exceptionClass), f = f)
+@Deprecated("Use predicate instead of listener",
+   ReplaceWith("eventually(duration, interval, predicate = { listener.onEval(it); true }, f)"))
+suspend fun <T> eventually(
+   duration: Duration,
+   interval: Interval,
+   listener: EventuallyListener<T>,
+   f: suspend () -> T,
+): T = eventually(EventuallyConfig(duration, interval), listener = listener, f = f)
+
+@Deprecated("Merge listener and predicate",
+   ReplaceWith("eventually(duration, interval, predicate = { listener.onEval(it); predicate(it) }, retries, exceptionClass, f)"))
+suspend fun <T> eventually(
+   duration: Duration = Duration.INFINITE,
+   interval: Interval = 25.milliseconds.fixed(),
+   predicate: EventuallyPredicate<T> = { true },
+   listener: EventuallyListener<T> = EventuallyListener { },
+   retries: Int = Int.MAX_VALUE,
+   exceptionClass: KClass<out Throwable>? = null,
+   f: suspend () -> T,
+): T = eventually(EventuallyConfig(duration, interval, retries, exceptionClass), predicate, listener, f)
 
 /**
  * Runs a function until the following constraints are eventually met:
@@ -69,6 +90,13 @@ suspend fun <T> eventually(
    f: suspend () -> T,
 ): T = eventually(EventuallyConfig(duration, interval, retries, exceptionClass), predicate, f)
 
+@Deprecated("Merge listener and predicate")
+suspend fun <T> eventually(
+   config: EventuallyConfig,
+   predicate: EventuallyPredicate<T> = { true },
+   listener: EventuallyListener<T> = EventuallyListener { },
+   f: suspend () -> T,
+): T = eventually(config, { listener.onEval(it); predicate(it)}, f)
 /**
  * Runs a function until it doesn't throw and the result satisfies the predicate, as long as the specified duration hasn't passed.
  * @param config controls the duration, interval, retries, and exceptionClass
@@ -171,3 +199,8 @@ data class EventuallyState<T>(
 )
 
 typealias EventuallyPredicate<T> = (state: EventuallyState<T>) -> Boolean
+
+@Deprecated("Use EventuallyPredicate")
+fun interface EventuallyListener<T> {
+   fun onEval(state: EventuallyState<T>)
+}
