@@ -12,6 +12,7 @@ import io.kotest.core.test.TestCaseConfig
 import io.kotest.matchers.Matcher
 import io.kotest.matchers.should as should2
 
+@Deprecated("Use funSpec")
 /**
  * Creates a [TestFactory] from the given block.
  *
@@ -30,6 +31,7 @@ class ShouldSpecTestFactoryConfiguration : TestFactoryConfiguration(), ShouldSpe
    override fun registration(): RootTestRegistration = RootTestRegistration.from(this)
 }
 
+@Deprecated("Use FunSpec")
 abstract class ShouldSpec(body: ShouldSpec.() -> Unit = {}) : DslDrivenSpec(), ShouldSpecRootScope {
 
    init {

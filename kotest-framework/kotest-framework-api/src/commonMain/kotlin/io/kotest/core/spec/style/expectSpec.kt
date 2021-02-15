@@ -10,6 +10,7 @@ import io.kotest.core.spec.style.scopes.Lifecycle
 import io.kotest.core.spec.style.scopes.RootTestRegistration
 import io.kotest.core.test.TestCaseConfig
 
+@Deprecated("Use funSpec")
 /**
  * Creates a [TestFactory] from the given block.
  *
@@ -28,6 +29,7 @@ class ExpectSpecTestFactoryConfiguration : TestFactoryConfiguration(), ExpectSpe
    override fun registration(): RootTestRegistration = RootTestRegistration.from(this)
 }
 
+@Deprecated("Use FunSpec")
 abstract class ExpectSpec(body: ExpectSpec.() -> Unit = {}) : DslDrivenSpec(), ExpectSpecRootScope {
 
    init {

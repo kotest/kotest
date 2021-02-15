@@ -9,6 +9,8 @@ import io.kotest.core.spec.style.scopes.FunSpecRootScope
 import io.kotest.core.spec.style.scopes.Lifecycle
 import io.kotest.core.spec.style.scopes.RootTestRegistration
 import io.kotest.core.test.TestCaseConfig
+import io.kotest.matchers.Matcher
+import io.kotest.matchers.should as shouldMatch
 
 /**
  * Creates a [TestFactory] from the given block.
@@ -24,8 +26,8 @@ fun funSpec(block: FunSpecTestFactoryConfiguration.() -> Unit): TestFactory {
 
 class FunSpecTestFactoryConfiguration : TestFactoryConfiguration(), FunSpecRootScope {
    override fun lifecycle(): Lifecycle = Lifecycle.from(this)
-   override fun registration(): RootTestRegistration = RootTestRegistration.from(this)
    override fun defaultConfig(): TestCaseConfig = resolvedDefaultConfig()
+   override fun registration(): RootTestRegistration = RootTestRegistration.from(this)
 }
 
 abstract class FunSpec(body: FunSpec.() -> Unit = {}) : DslDrivenSpec(), FunSpecRootScope {
@@ -38,4 +40,7 @@ abstract class FunSpec(body: FunSpec.() -> Unit = {}) : DslDrivenSpec(), FunSpec
    override fun defaultConfig(): TestCaseConfig = resolvedDefaultConfig()
    override fun registration(): RootTestRegistration = RootTestRegistration.from(this)
 
+   // need to overload this so that when doing "string" should <matcher>
+   // we don't clash with the other should method
+   infix fun String.should(matcher: Matcher<String>) = this shouldMatch matcher
 }

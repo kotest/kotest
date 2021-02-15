@@ -1,6 +1,5 @@
 package io.kotest.core.spec.style.scopes
 
-import io.kotest.core.test.DescriptionName
 import io.kotest.core.test.createTestName
 
 @Suppress("FunctionName")

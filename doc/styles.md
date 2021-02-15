@@ -6,15 +6,13 @@ Others were created just for Kotest.
 
 | Test Style | Inspired By |
 | --- | --- |
-| [Fun Spec](#fun-spec) | ScalaTest |
+| [Fun Spec](#fun-spec) | ScalaTest & more |
 | [Describe Spec](#describe-spec) | Javascript frameworks and RSpec |
-| [Should Spec](#should-spec) | A Kotest original |
 | [String Spec](#string-spec) | A Kotest original |
 | [Behavior Spec](#behavior-spec) | BDD frameworks |
 | [Free Spec](#free-spec) | ScalaTest |
 | [Word Spec](#word-spec) | ScalaTest |
 | [Feature Spec](#feature-spec) | Cucumber |
-| [Expect Spec](#expect-spec) | A Kotest original |
 | [Annotation Spec](#annotation-spec) | JUnit |
 
 There are no functional differences between the styles.
@@ -25,8 +23,9 @@ Some teams prefer to mandate usage of a single style, others mix and match. Do w
 
 ### Fun Spec
 
-`FunSpec` allows you to create tests by invoking a function called `test` with a string parameter to describe the test,
-and then the test itself as a lambda. If in doubt, this is the style to use.
+`FunSpec` allows you to create tests by invoking `test`, `should` or `expect`
+with the name of the test followed by the test itself as a lambda.
+If in doubt, this is the style to use.
 
 ```kotlin
 class MyTests : FunSpec({
@@ -34,13 +33,23 @@ class MyTests : FunSpec({
 		"sammy".length shouldBe 5
 		"".length shouldBe 0
 	}
+  expect("logic") {
+    1 shouldNotBe 2
+  }
 })
 ```
 
-Tests can be disabled using the `xcontext` and `xtest` variants (in addition to the [usual ways](conditional_evaluation.md))
+Tests can be nested using `context` and disabled by prefixing the function with `x`
+(in addition to the [usual ways](conditional_evaluation.md))
 
 ```kotlin
 class MyTests : DescribeSpec({
+    context("String.length") {
+      should("return the length of the string") {
+        "sammy".length shouldBe 5
+        "".length shouldBe 0
+      }
+    }
     context("this outer block is enabled") {
         xtest("this test is disabled") {
             // test here
@@ -53,7 +62,6 @@ class MyTests : DescribeSpec({
     }
 })
 ```
-
 
 ### String Spec
 
@@ -79,50 +87,6 @@ class MyTests : StringSpec({
 ```
 
 Note that this is the only Spec that does not support nesting.
-
-### Should Spec
-
-`ShouldSpec` is similar to fun spec, but uses the keyword `should` instead of `test`.
-
-```kotlin
-class MyTests : ShouldSpec({
-	should("return the length of the string") {
-		"sammy".length shouldBe 5
-		"".length shouldBe 0
-	}
-})
-```
-
-
-Tests can be nested in one or more context blocks as well:
-
-```kotlin
-class MyTests : ShouldSpec({
-	context("String.length") {
-		should("return the length of the string") {
-			"sammy".length shouldBe 5
-			"".length shouldBe 0
-		}
-	}
-})
-```
-
-Tests can be disabled using the `xcontext` and `xshould` variants (in addition to the [usual ways](conditional_evaluation.md))
-
-```kotlin
-class MyTests : ShouldSpec({
-    context("this outer block is enabled") {
-        xshould("this test is disabled") {
-            // test here
-        }
-    }
-    xcontext("this block is disabled") {
-      should("disabled by inheritance from the parent") {
-        // test here
-      }
-    }
-})
-```
 
 ### Describe Spec
 
@@ -250,8 +214,8 @@ class MyTests : WordSpec({
 })
 ```
 
-It also supports the keyword `When` allowing to add another level of nesting. Note, since `when` is a keyword
-in Kotlin, we must use backticks or the uppercase variant.
+It additionally supports the keyword `When` to add another level of nesting.
+Note that `when` is a keyword in Kotlin, so we must use backticks or the uppercase variant.
 
 ```kotlin
 class MyTests : WordSpec({
@@ -323,50 +287,6 @@ class MyTests : FeatureSpec({
     }
     xfeature("this block is disabled") {
       scenario("disabled by inheritance from the parent") {
-        // test here
-      }
-    }
-})
-```
-
-### Expect Spec
-
-`ExpectSpec` is similar to `FunSpec` and `ShouldSpec` but uses the `expect` keyword.
-
-```kotlin
-class MyTests : ExpectSpec({
-    expect("my test") {
-        // test here
-    }
-})
-```
-
-Tests can be nested in one or more context blocks as well:
-
-```kotlin
-class MyTests : ExpectSpec({
-    context("a calculator") {
-        expect("simple addition") {
-            // test here
-        }
-        expect("integer overflow") {
-            // test here
-        }
-    }
-})
-```
-
-Tests can be disabled using the `xcontext` and `xexpect` variants (in addition to the [usual ways](conditional_evaluation.md))
-
-```kotlin
-class MyTests : DescribeSpec({
-    context("this outer block is enabled") {
-        xexpect("this test is disabled") {
-            // test here
-        }
-    }
-    xcontext("this block is disabled") {
-      expect("disabled by inheritance from the parent") {
         // test here
       }
     }
