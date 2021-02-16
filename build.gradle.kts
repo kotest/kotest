@@ -55,11 +55,11 @@ val plugins = listOf(
       deps = listOf("java", "org.jetbrains.plugins.gradle", "org.jetbrains.kotlin:1.4.10-release-IJ2020.2-1")
    ),
    plugin.PluginDescriptor(
-      since = "211.5787.15", // this version is 2021.1 EAP
-      until = "211.*",
-      sdkVersion = "IC-211-EAP-SNAPSHOT",
+      since = "211.6085", // this version is 2021.1 EAP
+      until = "212.*",
+      sdkVersion = "IC-211.6085-EAP-CANDIDATE-SNAPSHOT",
       sourceFolder = "IC-211",
-      deps = listOf("java", "org.jetbrains.plugins.gradle", "org.jetbrains.kotlin:211-1.4.21-release-IJ5538.2")
+      deps = listOf("java", "org.jetbrains.plugins.gradle", "org.jetbrains.kotlin:211-1.4.21-release-IJ6085.1")
    )
 )
 
