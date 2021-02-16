@@ -86,8 +86,8 @@ class MapMatchersTest : WordSpec() {
                map should haveKeys(1, 4)
             }
             shouldThrow<AssertionError> {
-               map.shouldContainKeys(1, 4)
-            }.message.shouldBe("Map did not contain the keys 1, 4")
+               map.shouldContainKeys(1, 4, 5, 6)
+            }.message.shouldBe("Map did not contain the keys 4, 5, 6")
          }
       }
 
