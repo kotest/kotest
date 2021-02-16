@@ -21,11 +21,16 @@ import kotlinx.coroutines.delay
 import java.io.FileNotFoundException
 import java.io.IOException
 import java.util.concurrent.CountDownLatch
+import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
+import java.util.concurrent.atomic.AtomicInteger
 import kotlin.time.TimeSource
 import kotlin.time.days
 import kotlin.time.milliseconds
 import kotlin.time.seconds
+import kotlinx.coroutines.asCoroutineDispatcher
+import kotlinx.coroutines.async
+import kotlinx.coroutines.withContext
 
 class EventuallyTest : WordSpec() {
 
@@ -36,7 +41,7 @@ class EventuallyTest : WordSpec() {
                System.currentTimeMillis()
             }
          }
-         "pass tests that completed within the time allowed"  {
+         "pass tests that completed within the time allowed" {
             val end = System.currentTimeMillis() + 250
             eventually(1.seconds) {
                if (System.currentTimeMillis() < end)
@@ -130,6 +135,37 @@ class EventuallyTest : WordSpec() {
                count += 1
             }
             count.shouldBeLessThan(6)
+         }
+         "do one final iteration if we never executed before interval expired" {
+            val dispatcher = Executors.newSingleThreadExecutor().asCoroutineDispatcher()
+            async(dispatcher) {
+               Thread.sleep(2000)
+            }
+            val counter = AtomicInteger(0)
+            withContext(dispatcher) {
+               // we won't be able to run in here
+               eventually(1.seconds, 100.milliseconds) {
+                  counter.incrementAndGet()
+               }
+            }
+            counter.get().shouldBe(1)
+         }
+         "do one final iteration if we only executed once and the last delay > interval" {
+            val dispatcher = Executors.newSingleThreadExecutor().asCoroutineDispatcher()
+            // this will start immediately, free the dispatcher to allow eventually to run once, then block the thread
+            async(dispatcher) {
+               delay(100.milliseconds)
+               Thread.sleep(500)
+            }
+            val counter = AtomicInteger(0)
+            withContext(dispatcher) {
+               // this will execute once immediately, then the earlier async will steal the thread
+               // and then since the delay has been > interval and times == 1, we will execute once more
+               eventually(250.milliseconds, 25.milliseconds) {
+                  counter.incrementAndGet() shouldBe 2
+               }
+            }
+            counter.get().shouldBe(2)
          }
          "handle shouldNotBeNull" {
             val mark = TimeSource.Monotonic.markNow()

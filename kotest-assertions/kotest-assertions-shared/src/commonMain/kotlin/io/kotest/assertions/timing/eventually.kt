@@ -77,6 +77,7 @@ suspend fun <T> eventually(
    listener: EventuallyListener<T> = EventuallyListener { },
    f: suspend () -> T,
 ): T {
+
    val start = TimeSource.Monotonic.markNow()
    val end = start.plus(config.duration)
    var times = 0
@@ -86,7 +87,16 @@ suspend fun <T> eventually(
    val originalAssertionMode = errorCollector.getCollectionMode()
    errorCollector.setCollectionMode(ErrorCollectionMode.Hard)
 
-   while (end.hasNotPassedNow() && times < config.retries) {
+   var lastDelayPeriod = Duration.ZERO
+   var lastInterval = Duration.ZERO
+
+   fun attemptsLeft() = end.hasNotPassedNow() && times < config.retries
+
+   // if we only executed once, and the last delay was > last interval, we didn't get a chance to run again
+   // so we run once more before exiting
+   fun isLongWait() = times == 1 && lastDelayPeriod > lastInterval
+
+   while (attemptsLeft() || isLongWait()) {
       try {
          val result = f()
          listener.onEval(EventuallyState(result, start, end, times, firstError, lastError))
@@ -108,7 +118,12 @@ suspend fun <T> eventually(
          }
       }
       times++
-      delay(config.interval.next(times))
+      lastInterval = config.interval.next(times)
+      println("sleeping for $lastInterval")
+      val delayMark = TimeSource.Monotonic.markNow()
+      delay(lastInterval)
+      lastDelayPeriod = delayMark.elapsedNow()
+      println("actual sleep $lastDelayPeriod")
    }
 
    errorCollector.setCollectionMode(originalAssertionMode)
