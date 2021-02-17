@@ -184,4 +184,9 @@ object Libs {
    object Android {
       const val desugarJdk = "com.android.tools:desugar_jdk_libs:1.0.10"
    }
+
+   object Wiremock {
+      const val version = "2.27.2"
+      const val wiremock = "com.github.tomakehurst:wiremock:$version"
+   }
 }
