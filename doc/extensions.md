@@ -12,3 +12,4 @@ Kotest integrates with many libraries and frameworks. This page outlines the ext
 * [Spring](https://kotest.io/docs/framework/extensions/spring.html)
 * [System / Timezone](https://kotest.io/docs/framework/extensions/system_extensions.html)
 * [Test Containers](https://kotest.io/docs/framework/extensions/test_containers.html)
+* [WireMock](https://kotest.io/docs/framework/extensions/wiremock.html)
