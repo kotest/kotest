@@ -18,7 +18,7 @@ import java.net.URL
 class WiremockListenerPerSpecTest : FunSpec({
    val wireMockServer = WireMockServer(9000)
 
-   listener(wireMockServer.listenerPerSpec())
+   listener(WireMockListener.perSpec(wireMockServer))
 
    listener(object : TestListener {
       override suspend fun afterTest(testCase: TestCase, result: TestResult) {
