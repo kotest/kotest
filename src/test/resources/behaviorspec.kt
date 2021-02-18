@@ -24,6 +24,13 @@ class BehaviorSpecExample : BehaviorSpec() {
           1 + 1 shouldBe 2
         }
       }
+      and("an and") {
+        `when`("a when") {
+          then("a test") {
+            //test here
+          }
+        }
+      }
     }
   }
 }

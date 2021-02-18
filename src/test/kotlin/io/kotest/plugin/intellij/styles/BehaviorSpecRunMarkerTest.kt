@@ -22,7 +22,7 @@ class BehaviorSpecRunMarkerTest : LightJavaCodeInsightFixtureTestCase() {
 
       val gutters = myFixture.findAllGutters()
       println(gutters.map { it.tooltipText }.joinToString("\n"))
-      gutters.size shouldBe 8
+      gutters.size shouldBe 11
 
       gutters[0].icon shouldBe AllIcons.RunConfigurations.TestState.Run
       gutters[0].tooltipText shouldBe "Run BehaviorSpecExample"
@@ -55,6 +55,18 @@ class BehaviorSpecRunMarkerTest : LightJavaCodeInsightFixtureTestCase() {
       gutters[7].icon shouldBe AllIcons.RunConfigurations.TestState.Run
       gutters[7].tooltipText shouldBe "Run a given another when a test with config"
       (gutters[7] as LineMarkerInfo.LineMarkerGutterIconRenderer<*>).lineMarkerInfo.startOffset shouldBe 545
+
+      gutters[8].icon shouldBe AllIcons.RunConfigurations.TestState.Run
+      gutters[8].tooltipText shouldBe "Run a given an and"
+      (gutters[8] as LineMarkerInfo.LineMarkerGutterIconRenderer<*>).lineMarkerInfo.startOffset shouldBe 637
+
+      gutters[9].icon shouldBe AllIcons.RunConfigurations.TestState.Run
+      gutters[9].tooltipText shouldBe "Run a given an and a when"
+      (gutters[9] as LineMarkerInfo.LineMarkerGutterIconRenderer<*>).lineMarkerInfo.startOffset shouldBe 664
+
+      gutters[10].icon shouldBe AllIcons.RunConfigurations.TestState.Run
+      gutters[10].tooltipText shouldBe "Run a given an and a when a test"
+      (gutters[10] as LineMarkerInfo.LineMarkerGutterIconRenderer<*>).lineMarkerInfo.startOffset shouldBe 691
    }
 
    fun testMethodGeneration() {

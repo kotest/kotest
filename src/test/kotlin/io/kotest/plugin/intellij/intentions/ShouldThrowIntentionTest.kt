@@ -61,9 +61,17 @@ class BehaviorSpecExample : BehaviorSpec() {
           }
         }
       }
+      and("an and") {
+        `when`("a when") {
+          then("a test") {
+            //test here
+          }
+        }
+      }
     }
   }
-}"""
+}
+"""
   }
 
   fun testIntentionForFullLine() {
@@ -114,8 +122,16 @@ class BehaviorSpecExample : BehaviorSpec() {
           }
         }
       }
+      and("an and") {
+        `when`("a when") {
+          then("a test") {
+            //test here
+          }
+        }
+      }
     }
   }
-}"""
+}
+"""
   }
 }
