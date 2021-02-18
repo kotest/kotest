@@ -18,9 +18,8 @@ For using ```kotest-extensions-wiremock``` add the below dependency in your buil
 testImplementation("io.kotest:kotest-extensions-wiremock:${version}")
 ```
 
-Having this dependency in test classpath brings in extension method's in scope which let you convert a WireMockServer
-into a kotest TestListener, which you can then register with Kotest and then Kotest will manage lifecycle of
-WireMockServer for you.
+Having this dependency in test classpath brings in WireMockListener in scope. WireMockListener manage life cycle of
+WireMockServer during your test.
 
 For example:
 
@@ -28,7 +27,7 @@ For example:
 
 class SomeTest : FunSpec({
   val customerServiceServer = WireMockServer(9000)
-  listener(customerServiceServer.listenerPerSpec()) //converts WireMockServer to WiremockPerSpecListener
+  listener(WireMockListener(customerServiceServer, ListenerMode.PER_SPEC))
 
   test("let me get customer information") {
     customerServiceServer.stubFor(
@@ -39,11 +38,36 @@ class SomeTest : FunSpec({
     val connection = URL("http://localhost:9000/customers/123").openConnection() as HttpURLConnection
     connection.responseCode shouldBe 200
   }
+
+    //  ------------OTHER TEST BELOW ----------------
 })
 ```
 
-In above example ```listenerPerSpec()``` extension method converts the WireMockServer into a ```WiremockPerSpecListener```
-which start's the WireMockServer before starting any test spec and stop's that after all test are completed.
+In above example we created an instance of `WireMockListener` which starts given `WireMockServer` before running any test in
+spec and stops it after completing all test in the spec. You can use `WireMockServer.perSpec(customerServiceServer)` to
+achieve same result.
 
-In case you want to stop/start your WireMockServer before/after each test use ```listenerPerTest()``` extension method
-with converts the WireMockServer into a ```WiremockPerTestListener```.
+```kotlin
+
+class SomeTest : FunSpec({
+  val customerServiceServer = WireMockServer(9000)
+  listener(WireMockListener(customerServiceServer, ListenerMode.PER_TEST))
+
+  test("let me get customer information") {
+    customerServiceServer.stubFor(
+      WireMock.get(WireMock.urlEqualTo("/customers/123"))
+        .willReturn(WireMock.ok())
+    )
+
+    val connection = URL("http://localhost:9000/customers/123").openConnection() as HttpURLConnection
+    connection.responseCode shouldBe 200
+  }
+
+  //  ------------OTHER TEST BELOW ----------------
+})
+```
+
+
+In above example we created an instance of `WireMockListener` which starts given `WireMockServer` before running every test in
+spec and stops it after completing every test in the spec. You can use `WireMockServer.perTest(customerServiceServer)` to
+achieve same result.
