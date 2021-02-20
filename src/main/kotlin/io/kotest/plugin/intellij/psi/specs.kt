@@ -1,8 +1,5 @@
 package io.kotest.plugin.intellij.psi
 
-import com.intellij.openapi.roots.ProjectRootManager
-import com.intellij.openapi.roots.TestSourcesFilter
-import com.intellij.openapi.vfs.ex.temp.TempFileSystem
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.psi.impl.source.tree.LeafPsiElement

@@ -55,15 +55,15 @@ val plugins = listOf(
       deps = listOf("java", "org.jetbrains.plugins.gradle", "org.jetbrains.kotlin:1.4.10-release-IJ2020.2-1")
    ),
    plugin.PluginDescriptor(
-      since = "211.6085", // this version is 2021.1 EAP
+      since = "211.6085.26", // this version is 2021.1 EAP
       until = "212.*",
-      sdkVersion = "IC-211.6085-EAP-CANDIDATE-SNAPSHOT",
+      sdkVersion = "IC-211-EAP-SNAPSHOT",
       sourceFolder = "IC-211",
-      deps = listOf("java", "org.jetbrains.plugins.gradle", "org.jetbrains.kotlin:211-1.4.21-release-IJ6085.1")
+      deps = listOf("java", "org.jetbrains.plugins.gradle", "org.jetbrains.kotlin:211-1.4.21-release-IJ6085.14")
    )
 )
 
-val productName = System.getenv("PRODUCT_NAME") ?: System.getenv("SOURCE_FOLDER") ?: "IC-203"
+val productName = System.getenv("PRODUCT_NAME") ?: System.getenv("SOURCE_FOLDER") ?: "IC-211"
 val descriptor = plugins.first { it.sourceFolder == productName }
 
 val jetbrainsToken: String by project
@@ -94,8 +94,8 @@ dependencies {
    implementation("io.kotest:kotest-framework-launcher-jvm:4.2.0")
 
    // needed for the resource files which are loaded into java light tests
-   testImplementation("io.kotest:kotest-framework-api:4.3.1")
-   testImplementation("io.kotest:kotest-assertions-core-jvm:4.3.1")
+   testImplementation("io.kotest:kotest-framework-api:4.4.1")
+   testImplementation("io.kotest:kotest-assertions-core-jvm:4.4.1")
 }
 
 sourceSets {
