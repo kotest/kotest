@@ -10,17 +10,36 @@ repositories {
 }
 
 kotlin {
-   sourceSets {
 
-      targets {
-         jvm {
-            compilations.all {
-               kotlinOptions {
-                  jvmTarget = "1.8"
-               }
+   targets {
+
+      jvm {
+         compilations.all {
+            kotlinOptions {
+               jvmTarget = "1.8"
             }
          }
       }
+
+      js(BOTH) {
+         browser()
+         nodejs()
+      }
+
+      linuxX64()
+
+      mingwX64()
+
+      macosX64()
+      tvos()
+      watchos()
+
+      iosX64()
+      iosArm64()
+      iosArm32()
+   }
+
+   sourceSets {
 
       val commonMain by getting {
          dependencies {
@@ -38,6 +57,42 @@ kotlin {
          dependencies {
             implementation(project(Projects.JunitRunner))
          }
+      }
+
+      val desktopMain by creating {
+         dependsOn(commonMain)
+      }
+
+      val macosX64Main by getting {
+         dependsOn(desktopMain)
+      }
+
+      val mingwX64Main by getting {
+         dependsOn(desktopMain)
+      }
+
+      val linuxX64Main by getting {
+         dependsOn(desktopMain)
+      }
+
+      val iosX64Main by getting {
+         dependsOn(desktopMain)
+      }
+
+      val iosArm64Main by getting {
+         dependsOn(desktopMain)
+      }
+
+      val iosArm32Main by getting {
+         dependsOn(desktopMain)
+      }
+
+      val watchosMain by getting {
+         dependsOn(desktopMain)
+      }
+
+      val tvosMain by getting {
+         dependsOn(desktopMain)
       }
 
       all {
