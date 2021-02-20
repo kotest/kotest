@@ -25,6 +25,7 @@ class TestFileTree(private val project: Project) : com.intellij.ui.treeStructure
       showsRootHandles = true
       isRootVisible = false
       cellRenderer = NodeRenderer()
+      // listens to changes in the selections
       addTreeSelectionListener(TestExplorerTreeSelectionListener)
    }
 

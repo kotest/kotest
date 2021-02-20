@@ -4,10 +4,16 @@ import com.intellij.psi.NavigatablePsiElement
 import javax.swing.event.TreeSelectionEvent
 import javax.swing.event.TreeSelectionListener
 
+/**
+ * Listens to [TreeSelectionEvent]s which are fired when the user clicks on nodes in
+ * the test file tree.
+ */
 object TestExplorerTreeSelectionListener : TreeSelectionListener {
 
    override fun valueChanged(e: TreeSelectionEvent) {
-      if (TestExplorerState.autoscrollToSource) {
+      // this event is also fired when the path is "unselected" by clicking inside the editor
+      // and isAddedPath will return false for that scenario (which we don't want to react to)
+      if (e.isAddedPath && TestExplorerState.autoscrollToSource) {
          val psi = when (val node = e.path.nodeDescriptor()) {
             is SpecNodeDescriptor -> node.psi
             is CallbackNodeDescriptor -> node.psi

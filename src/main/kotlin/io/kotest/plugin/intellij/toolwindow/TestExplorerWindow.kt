@@ -17,6 +17,9 @@ import java.awt.Color
 import java.awt.event.MouseAdapter
 import java.awt.event.MouseEvent
 
+/**
+ * The main panel for the test explorer 'tool window'.
+ */
 class TestExplorerWindow(private val project: Project) : SimpleToolWindowPanel(true, false) {
 
    private val fileEditorManager = FileEditorManager.getInstance(project)
@@ -59,6 +62,10 @@ class TestExplorerWindow(private val project: Project) : SimpleToolWindowPanel(t
       )
    }
 
+   /**
+    * Listens for [FileEditorManagerEvent]s that are fired whenever the open editor changes (eg by opening
+    * a new file or tabbing into an already open file)
+    */
    private fun listenForSelectedEditorChanges() {
       project.messageBus.connect().subscribe(
          FileEditorManagerListener.FILE_EDITOR_MANAGER,
