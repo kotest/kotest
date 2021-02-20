@@ -13,7 +13,7 @@ jobs:
       strategy:
          matrix:
             product: [ "IC-193", "IC-201", "IC-202", "IC-203", "IC-211" ]
-         max-parallel: 2
+         max-parallel: 5
 
       steps:
          -  name: Checkout the repo
