@@ -14,6 +14,10 @@ module.exports = {
       'proptest/customgens',
       'proptest/globalconfig',
    ],
+   intellij: [
+      'intellij/index',
+      'intellij/props',
+   ],
    extensions: [
       'extensions/index',
       'extensions/spring',

@@ -2,6 +2,7 @@
 id: index
 title: IntelliJ Plugin
 slug: intellij-plugin.html
+sidebar_label: Introduction
 ---
 
 
