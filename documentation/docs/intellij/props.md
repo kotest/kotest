@@ -30,3 +30,12 @@ class FooTest : DescribeSpec() {
   }
 }
 ```
+
+
+### Specifying the properties filename
+
+If you don't wish to name the file `kotest.properties`, or perhaps you want to support different files based on an environment,
+then you can use the system property `kotest.properties.filename` to set the properties filename.
+
+For example, you could launch tests with `kotest.properties.filename=cluster.prd.properties` then the key value file named
+`cluster.prd.properties` would be loaded before any tests are executed.
