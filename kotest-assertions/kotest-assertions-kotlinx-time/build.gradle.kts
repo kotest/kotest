@@ -28,7 +28,7 @@ kotlin {
 
       macosX64()
       tvos()
-      watchos()
+//      watchos()
 
       iosX64()
       iosArm64()
