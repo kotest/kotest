@@ -1,0 +1,32 @@
+---
+id: props
+title: Properties
+slug: intellij-properties.html
+---
+
+
+
+When running tests via the intellij runner, properties set using `gradle.properties` or in a gradle build file won't be picked up of course.
+
+To support runtime System properties, the Kotest framework will always look for key value pairs inside a `kotest.properties` file located on the classpath.
+Any key value pairs located in this file will be set as a system property before any tests execute.
+
+For example, after adding this file to your classpath as `kotest.properties`:
+
+```
+foo=bar
+```
+
+The following test would pass:
+
+```kotlin
+class FooTest : DescribeSpec() {
+  init {
+    describe("after adding kotest.properties") {
+      it("foo should be set") {
+         System.getProperty("foo") shouldBe "bar"
+      }
+    }
+  }
+}
+```
