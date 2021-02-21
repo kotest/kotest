@@ -5,7 +5,7 @@ import io.kotest.property.Gen
 import io.kotest.property.azstring
 import kotlin.random.nextInt
 
-@Deprecated("This function is deprecated and will be replaced. To be removed in 4.5")
+@Deprecated("This function is deprecated and will be replaced. To be removed in 4.6")
 fun Arb.Companion.email(usernameSize: IntRange = 3..10, domainSize: IntRange): Arb<String> {
    val tlds = listOf("com", "net", "gov", "co.uk", "jp", "nl", "ru", "de", "com.br", "it", "pl", "io")
    return arbitrary {
