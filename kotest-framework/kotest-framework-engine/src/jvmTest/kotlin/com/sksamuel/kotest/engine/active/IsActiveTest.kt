@@ -27,22 +27,25 @@ class IsActiveTest : StringSpec() {
 
       "isActiveInternal should return false if the test is disabled in config" {
          val config = TestCaseConfig(enabled = false)
-         val test = TestCase.test(IsActiveTest::class.toDescription().appendTest("foo"), this@IsActiveTest) {}
-            .copy(config = config)
+         val test =
+            TestCase.test(IsActiveTest::class.toDescription().appendTest("foo"), this@IsActiveTest, parent = null) {}
+               .copy(config = config)
          test.isActiveInternal() shouldBe false
       }
 
       "isActiveInternal should return false if the test is disabled using the isEnabledFn" {
          val config = TestCaseConfig(enabledIf = { false })
-         val test = TestCase.test(IsActiveTest::class.toDescription().appendTest("foo"), this@IsActiveTest) {}
-            .copy(config = config)
+         val test =
+            TestCase.test(IsActiveTest::class.toDescription().appendTest("foo"), this@IsActiveTest, parent = null) {}
+               .copy(config = config)
          test.isActiveInternal() shouldBe false
       }
 
       "isActiveInternal should return true if the test is disabled using the isEnabledFn" {
          val config = TestCaseConfig(enabledIf = { true })
-         val test = TestCase.test(IsActiveTest::class.toDescription().appendTest("foo"), this@IsActiveTest) {}
-            .copy(config = config)
+         val test =
+            TestCase.test(IsActiveTest::class.toDescription().appendTest("foo"), this@IsActiveTest, parent = null) {}
+               .copy(config = config)
          test.isActiveInternal() shouldBe true
       }
 
@@ -58,8 +61,9 @@ class IsActiveTest : StringSpec() {
          configuration.registerExtension(ext)
 
          val config = TestCaseConfig(tags = setOf(mytag))
-         val test = TestCase.test(IsActiveTest::class.toDescription().appendTest("foo"), this@IsActiveTest) {}
-            .copy(config = config)
+         val test =
+            TestCase.test(IsActiveTest::class.toDescription().appendTest("foo"), this@IsActiveTest, parent = null) {}
+               .copy(config = config)
          test.isActiveInternal() shouldBe false
 
          configuration.deregisterExtension(ext)
@@ -76,8 +80,9 @@ class IsActiveTest : StringSpec() {
          configuration.registerExtension(ext)
 
          val config = TestCaseConfig(tags = setOf(mytag))
-         val test = TestCase.test(IsActiveTest::class.toDescription().appendTest("foo"), this@IsActiveTest) {}
-            .copy(config = config)
+         val test =
+            TestCase.test(IsActiveTest::class.toDescription().appendTest("foo"), this@IsActiveTest, parent = null) {}
+               .copy(config = config)
          test.isActiveInternal() shouldBe false
 
          configuration.deregisterExtension(ext)
@@ -95,7 +100,11 @@ class IsActiveTest : StringSpec() {
 
          val mytag = NamedTag("mytag")
          val config = TestCaseConfig(tags = setOf(mytag))
-         val test = TestCase.test(IsActiveTest::class.toDescription().appendTest("foo"), this@IsActiveTest) {}
+         val test = TestCase.test(
+            IsActiveTest::class.toDescription().appendTest("foo"),
+            this@IsActiveTest,
+            parent = null
+         ) {}
             .copy(config = config)
          test.isActiveInternal() shouldBe false
 
@@ -112,7 +121,11 @@ class IsActiveTest : StringSpec() {
 
          val mytag = NamedTag("mytag")
          val config = TestCaseConfig(tags = setOf(mytag))
-         val test = TestCase.test(IsActiveTest::class.toDescription().appendTest("foo"), this@IsActiveTest) {}
+         val test = TestCase.test(
+            IsActiveTest::class.toDescription().appendTest("foo"),
+            this@IsActiveTest,
+            parent = null
+         ) {}
             .copy(config = config)
          test.isActiveInternal() shouldBe false
 
@@ -122,7 +135,8 @@ class IsActiveTest : StringSpec() {
       "isActiveInternal should return false if the test name begins with a !" {
          val test = TestCase.test(
             IsActiveTest::class.toDescription().appendTest("!my test"),
-            this@IsActiveTest
+            this@IsActiveTest,
+            parent = null
          ) {}
          test.isActiveInternal() shouldBe false
       }
@@ -130,7 +144,8 @@ class IsActiveTest : StringSpec() {
       "isActiveInternal should return false if the test is not focused and the spec contains OTHER focused tests" {
          val test = TestCase.test(
             IsActiveWithFocusTest::class.toDescription().appendTest("my test"),
-            IsActiveWithFocusTest()
+            IsActiveWithFocusTest(),
+            parent = null
          ) {}
          test.isActiveInternal() shouldBe false
       }
@@ -138,7 +153,8 @@ class IsActiveTest : StringSpec() {
       "isActiveInternal should return true if the test is focused and top level" {
          val test = TestCase.test(
             IsActiveWithFocusTest::class.toDescription().appendTest("f:my test"),
-            IsActiveWithFocusTest()
+            IsActiveWithFocusTest(),
+            parent = null
          ) {}
          test.isActiveInternal() shouldBe true
       }
@@ -147,7 +163,8 @@ class IsActiveTest : StringSpec() {
          val test =
             TestCase.test(
                IsActiveWithFocusTest::class.toDescription().appendTest("f:my test").appendTest("foo"),
-               IsActiveWithFocusTest()
+               IsActiveWithFocusTest(),
+               parent = null
             ) {}
          test.isActiveInternal() shouldBe true
       }
@@ -162,12 +179,14 @@ class IsActiveTest : StringSpec() {
 
          TestCase.test(
             SomeTestClass::class.toDescription().appendTest("f"),
-            SomeTestClass()
+            SomeTestClass(),
+            parent = null
          ) {}.isActiveInternal() shouldBe true
 
          TestCase.test(
             SomeTestClass::class.toDescription().appendTest("g"),
-            SomeTestClass()
+            SomeTestClass(),
+            parent = null
          ) {}.isActiveInternal() shouldBe false
 
          configuration.deregisterFilter(filter)
@@ -186,7 +205,8 @@ class IsActiveTest : StringSpec() {
          // this should be inactive because the extension says it is, even though it's normally active
          TestCase.test(
             SomeTestClass::class.toDescription().appendTest("active"),
-            SomeTestClass()
+            SomeTestClass(),
+            parent = null
          ) {}.isActive() shouldBe false
 
 //         // this should be active because the extension says it is, even though it's disabled by a bang

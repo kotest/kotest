@@ -112,7 +112,7 @@ internal class InstancePerLeafSpecRunner(
                if (!namesInScope.add(nested.name))
                   throw DuplicatedTestNameException(nested.name)
 
-               val t = nested.toTestCase(test.spec, test.description)
+               val t = nested.toTestCase(test.spec, test)
 
                // if this test is our target then we definitely run it
                // or if the test is on the path to our target we must run it

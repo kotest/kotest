@@ -46,7 +46,8 @@ class JUnitTestRunnerListenerTests : FunSpec({
          JUnitTestRunnerListenerTests(),
          { },
          sourceRef(),
-         TestType.Container
+         TestType.Container,
+         parent = null,
       )
 
       val test2 = TestCase(
@@ -54,7 +55,8 @@ class JUnitTestRunnerListenerTests : FunSpec({
          JUnitTestRunnerListenerTests(),
          { },
          sourceRef(),
-         TestType.Container
+         TestType.Container,
+         parent = null,
       )
 
       val listener = JUnitTestEngineListener(engineListener, root)

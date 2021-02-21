@@ -127,7 +127,7 @@ internal class InstancePerTestSpecRunner(
                if (!namesInScope.add(nested.name))
                   throw DuplicatedTestNameException(nested.name)
 
-               val t = nested.toTestCase(test.spec, test.description)
+               val t = nested.toTestCase(test.spec, test)
                // if we are currently executing the target, then any registered tests are new, and we
                // should begin execution of them in fresh specs
                // otherwise if the test is on the path we can continue in the same spec

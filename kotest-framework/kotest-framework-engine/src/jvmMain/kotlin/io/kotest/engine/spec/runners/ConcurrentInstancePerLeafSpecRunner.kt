@@ -117,7 +117,7 @@ internal class ConcurrentInstancePerLeafSpecRunner(
                if (!namesInScope.add(nested.name))
                   throw DuplicatedTestNameException(nested.name)
 
-               val t = nested.toTestCase(test.spec, test.description)
+               val t = nested.toTestCase(test.spec, test)
 
                when {
                   // if the nested test is the next entry that we are looking for, we launch straight into that
