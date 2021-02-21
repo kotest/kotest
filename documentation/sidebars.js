@@ -16,6 +16,7 @@ module.exports = {
    ],
    intellij: [
       'intellij/index',
+      'intellij/test_explorer',
       'intellij/props',
    ],
    extensions: [
