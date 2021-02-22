@@ -44,8 +44,8 @@ class MyTests : ShouldSpec() {
 
 #### Exceptions
 
-By default, `eventually` will ignore any AssertionError thrown inside the function,
-while any others will then immediately fail the test.
+By default, `eventually` ignores AssertionErrors thrown inside the function
+while any other Throwable will immediately fail the test.
 
 You can also tell `eventually` to ignore other exceptions:
 Let's assume that our example from before throws a `UserNotFoundException` when the user is not found in the database.
@@ -64,7 +64,8 @@ class MyTests : ShouldSpec() {
 }
 ```
 
-**ATTENTION**: `eventually` currently does not works well within `assertSoftly`, since assertions aren't thrown normally in there:
+**ATTENTION**: `eventually` currently does not work well within `assertSoftly`,
+since assertions aren't thrown normally in there:
 
 ```kotlin
 class MyTests : ShouldSpec() {
