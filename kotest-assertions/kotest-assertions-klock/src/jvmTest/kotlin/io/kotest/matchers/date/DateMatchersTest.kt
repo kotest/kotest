@@ -2,6 +2,7 @@ package io.kotest.matchers.date
 
 import com.soywiz.klock.Date
 import com.soywiz.klock.DateTime
+import com.soywiz.klock.DayOfWeek.*
 import com.soywiz.klock.Time
 import io.kotest.assertions.shouldFail
 import io.kotest.core.spec.style.StringSpec
@@ -118,6 +119,11 @@ class DateMatchersTest : StringSpec() {
          Date(2014, 1, 2) shouldNot haveDay(6)
          Date(2014, 1, 2) shouldHaveDay (2)
          Date(2014, 1, 2) shouldNotHaveDay (6)
+
+         Date(2014, 1, 2) should haveDayOfWeek(Thursday)
+         Date(2014, 1, 2) shouldNot haveDayOfWeek(Monday)
+         Date(2014, 1, 2) shouldHaveDayOfWeek (Thursday)
+         Date(2014, 1, 2) shouldNotHaveDayOfWeek (Tuesday)
       }
 
       "Date.shouldBeToday() should match today" {

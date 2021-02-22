@@ -2,6 +2,7 @@ package io.kotest.matchers.date
 
 import com.soywiz.klock.Date
 import com.soywiz.klock.DateTime
+import com.soywiz.klock.DayOfWeek
 import io.kotest.matchers.*
 
 infix fun Date.shouldHaveSameYearAs(date: Date) = this should haveSameYear(date)
@@ -66,6 +67,19 @@ fun haveSameDay(date: Date) = object : Matcher<Date> {
          value.day == date.day,
          { "$value should have day ${date.day}" },
          { "$value should not have day ${date.day}" }
+      )
+}
+
+infix fun Date.shouldHaveDayOfWeek(day: DayOfWeek) = this should haveDayOfWeek(day)
+
+infix fun Date.shouldNotHaveDayOfWeek(day: DayOfWeek) = this shouldNot haveDayOfWeek(day)
+
+fun haveDayOfWeek(day: DayOfWeek) = object : Matcher<Date> {
+   override fun test(value: Date) =
+      MatcherResult(
+         value.dayOfWeek == day,
+         { "$value should be on $day" },
+         { "$value should not be on $day" }
       )
 }
 
