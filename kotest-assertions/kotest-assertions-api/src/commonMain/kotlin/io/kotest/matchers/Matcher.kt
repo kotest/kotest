@@ -16,52 +16,43 @@ interface Matcher<in T> {
 
    fun test(value: T): MatcherResult
 
-   fun <U> contramap(f: (U) -> T): Matcher<U> = object : Matcher<U> {
-      override fun test(value: U): MatcherResult = this@Matcher.test(f(value))
-   }
+   fun <U> contramap(f: (U) -> T): Matcher<U> = Matcher { this@Matcher.test(f(it)) }
 
-   fun invert(): Matcher<T> = object : Matcher<T> {
-      override fun test(value: T): MatcherResult {
-         val result = this@Matcher.test(value)
-         return MatcherResult(!result.passed(), { result.negatedFailureMessage() }, { result.failureMessage() })
+   fun invert(): Matcher<T> = Matcher {
+      with(test(it)) {
+         MatcherResult(!passed(), { negatedFailureMessage() }, { failureMessage() })
       }
    }
 
-   infix fun <U> compose(fn: (U) -> T): Matcher<U> = object : Matcher<U> {
-      override fun test(value: U): MatcherResult = this@Matcher.test(fn(value))
-   }
+   infix fun <U> compose(fn: (U) -> T): Matcher<U> = Matcher { this@Matcher.test(fn(it)) }
 
    companion object {
-
       /**
        * Returns a [Matcher] for type T that will always fail with the given [error] message.
        */
-      fun <T> failure(error: String) = object : Matcher<T> {
-         override fun test(value: T): MatcherResult {
-            return MatcherResult(false, "", error)
-         }
+      fun <T> failure(error: String) = Matcher<T> { MatcherResult(false, "", error) }
+
+      /**
+       * Create matcher with the given function to evaluate the value and return a MatcherResult
+       *
+       * @param tester The function that evaluates a value and returns a MatcherResult
+       */
+      inline operator fun <T> invoke(crossinline tester: (T) -> MatcherResult) = object: Matcher<T> {
+         override fun test(value: T) = tester(value)
       }
    }
 }
 
-infix fun <T> Matcher<T>.and(other: Matcher<T>): Matcher<T> = object : Matcher<T> {
-   override fun test(value: T): MatcherResult {
-      val r = this@and.test(value)
-      return if (!r.passed())
-         r
-      else
-         other.test(value)
-   }
+infix fun <T> Matcher<T>.and(other: Matcher<T>): Matcher<T> = Matcher {
+   test(it)
+      .takeUnless(MatcherResult::passed)
+      ?: other.test(it)
 }
 
-infix fun <T> Matcher<T>.or(other: Matcher<T>): Matcher<T> = object : Matcher<T> {
-   override fun test(value: T): MatcherResult {
-      val r = this@or.test(value)
-      return if (r.passed())
-         r
-      else
-         other.test(value)
-   }
+infix fun <T> Matcher<T>.or(other: Matcher<T>): Matcher<T> = Matcher {
+   test(it)
+      .takeIf(MatcherResult::passed)
+      ?: other.test(it)
 }
 
 /**
@@ -84,6 +75,17 @@ internal abstract class NeverNullMatcher<T : Any> : Matcher<T?> {
    }
 
    abstract fun testNotNull(value: T): MatcherResult
+
+   companion object {
+      /**
+       * Create matcher with the given function to evaluate the value and return a MatcherResult
+       *
+       * @param tester The function that evaluates a value and returns a MatcherResult
+       */
+      inline operator fun <T: Any> invoke(crossinline tester: (T) -> MatcherResult) = object: NeverNullMatcher<T>() {
+         override fun testNotNull(value: T) = tester(value)
+      }
+   }
 }
 
 fun <T : Any> neverNullMatcher(test: (T) -> MatcherResult): Matcher<T?> {
