@@ -14,11 +14,10 @@ test("computeDefaultIteration should use default if larger than an arbs edge cas
    computeDefaultIteration(Arb.string()) shouldBe PropertyTesting.defaultIterationCount
 }
 
-test("computeDefaultIteration should use arbs edge cases if larger than default " +
-   "iff kotest.proptest.arb.iterations.include.sample is disabled") {
+test("computeDefaultIteration should yield 1 for arbitraries") {
    val edgecases = List(234234) { it }
    val arb = arbitrary(edgecases) { 1 }
-   computeDefaultIteration(arb) shouldBe 234234
+   computeDefaultIteration(arb) shouldBe 1
 }
 
 test("computeDefaultIteration should use exhaustive values") {
