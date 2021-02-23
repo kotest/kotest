@@ -10,7 +10,7 @@ object PropertyTesting {
    var shouldPrintGeneratedValues: Boolean = sysprop("kotest.proptest.output.generated-values", "false") == "true"
    var shouldPrintShrinkSteps: Boolean = sysprop("kotest.proptest.output.shrink-steps", "true") == "true"
    var defaultIterationCount: Int = sysprop("kotest.proptest.default.iteration.count", "1000").toInt()
-   var includeAtLeastOneSampleForArbs: Boolean = sysprop("kotest.proptest.arb.iterations.include.sample", "false") == "true"
+   var edgecasesGenerationProbability: Double = sysprop("kotest.proptest.arb.edgecases-generation-probability", "0.1").toDouble()
 }
 
 /**
@@ -45,7 +45,8 @@ data class PropTest(
    val maxFailure: Int = 0,
    val shrinkingMode: ShrinkingMode = ShrinkingMode.Bounded(1000),
    val iterations: Int? = null,
-   val listeners: List<PropTestListener> = listOf()
+   val listeners: List<PropTestListener> = listOf(),
+   val edgecasesProbability: Double = PropertyTesting.edgecasesGenerationProbability
 )
 
 fun PropTest.toPropTestConfig() =
@@ -55,7 +56,8 @@ fun PropTest.toPropTestConfig() =
       maxFailure = maxFailure,
       iterations = iterations,
       shrinkingMode = shrinkingMode,
-      listeners = listeners
+      listeners = listeners,
+      edgecasesProbability = edgecasesProbability
    )
 
 data class PropTestConfig(
@@ -64,7 +66,8 @@ data class PropTestConfig(
    val maxFailure: Int = 0,
    val shrinkingMode: ShrinkingMode = ShrinkingMode.Bounded(1000),
    val iterations: Int? = null,
-   val listeners: List<PropTestListener> = listOf()
+   val listeners: List<PropTestListener> = listOf(),
+   val edgecasesProbability: Double = PropertyTesting.edgecasesGenerationProbability
 )
 
 interface PropTestListener {

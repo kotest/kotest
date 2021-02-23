@@ -9,6 +9,7 @@ import io.kotest.matchers.collections.shouldContainExactly
 import io.kotest.matchers.doubles.plusOrMinus
 import io.kotest.matchers.shouldBe
 import io.kotest.property.Arb
+import io.kotest.property.RandomSource
 import io.kotest.property.arbitrary.choose
 import io.kotest.property.arbitrary.constant
 import io.kotest.property.arbitrary.single
@@ -105,7 +106,20 @@ class ChooseTest : FunSpec({
          4 to Arb.constant('C').withEdgecases('c'),
          5 to Arb.constant('D').withEdgecases('d')
       )
+      val rs = RandomSource.seeded(1234L)
+      val edgecases = generateSequence { arb.generateEdgecase(rs) }.take(10).toList()
 
-      arb.edgecases() shouldContainExactly listOf('a', 'b', 'c', 'd')
+      edgecases shouldContainExactly listOf(
+         'd',
+         'd',
+         'b',
+         'a',
+         'c',
+         'b',
+         'd',
+         'b',
+         'd',
+         'b'
+      )
    }
 })

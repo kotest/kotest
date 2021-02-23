@@ -16,7 +16,6 @@ fun <A> Arb.Companion.nel(
    return Arb
       .list(arbA, range)
       .map { NonEmptyList.fromListUnsafe(it) }
-      .withEdgecases(NonEmptyList.fromList(arbA.edgecases()).toList())
 }
 
 fun <A> Arb.Companion.nonEmptyList(arb: Arb<A>, range: IntRange = 1..100): Arb<NonEmptyList<A>> = nel(arb, range)

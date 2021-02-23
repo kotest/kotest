@@ -36,6 +36,30 @@ class FlatMapTest : FunSpec() {
          )
       }
 
+      test("Arb.flatMap should compute probabilistic edgecases") {
+         val arbString = Arb.int(1..10).withEdgecases(1, 2).flatMap { a ->
+            Arb.double().withEdgecases(1.0, 2.0).flatMap { b ->
+               Arb.string().withEdgecases("foo", "bar").map { c ->
+                  "$a $b $c"
+               }
+            }
+         }
+         val rs = RandomSource.seeded(1234L)
+         val edges = generateSequence { arbString.generateEdgecase(rs) }.take(10).toList()
+         edges shouldContainExactly listOf(
+            "1 2.0 bar",
+            "2 2.0 foo",
+            "2 2.0 bar",
+            "2 1.0 foo",
+            "1 1.0 foo",
+            "2 1.0 foo",
+            "2 1.0 bar",
+            "1 2.0 foo",
+            "2 1.0 foo",
+            "2 1.0 bar"
+         )
+      }
+
       test("Arb.flatMap should generate dependent Arb") {
          Arb.int(1..10).flatMap { Arb.int(1..it * it) }.take(15, RandomSource.seeded(3242344L))
             .toList() shouldContainExactly

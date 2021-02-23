@@ -1,8 +1,8 @@
 package io.kotest.property.arbitrary
 
 import io.kotest.property.Arb
+import io.kotest.property.Exhaustive
 import io.kotest.property.Gen
-import io.kotest.property.Sample
 import kotlin.jvm.JvmName
 
 /**
@@ -59,6 +59,7 @@ fun <A : Any> Arb.Companion.frequency(
 fun <A : Any> Arb.Companion.choose(a: Pair<Int, Arb<A>>, b: Pair<Int, Arb<A>>, vararg cs: Pair<Int, Arb<A>>): Arb<A> {
    val allPairs = listOf(a, b) + cs
    val weights = allPairs.map { it.first }
+   val total = weights.sum()
    require(weights.all { it >= 0 }) { "Negative weights not allowed" }
    require(weights.any { it > 0 }) { "At least one weight must be greater than zero" }
 
@@ -66,20 +67,24 @@ fun <A : Any> Arb.Companion.choose(a: Pair<Int, Arb<A>>, b: Pair<Int, Arb<A>>, v
    // the algorithm from Haskell QuickCheck
    // http://hackage.haskell.org/package/QuickCheck
    // See function frequency in the package Test.QuickCheck
-   tailrec fun pick(n: Int, l: List<Pair<Int, Iterator<A>>>): Iterator<A> {
+   tailrec fun pick(n: Int, l: List<Pair<Int, Arb<A>>>): Arb<A> {
       val (w, e) = l.first()
       return if (n <= w) e
       else pick(n - w, l.drop(1))
    }
 
-   return arbitrary(allPairs.flatMap { it.second.edgecases() }) { rs ->
-      // we must open up an iter stream for each arb
-      val allIters = allPairs.map { (weight, arb) -> weight to arb.generate(rs).map { it.value }.iterator() }
-      val total = weights.sum()
-      val n = rs.random.nextInt(1, total + 1)
-      val arb = pick(n, allIters)
-      arb.next()
-   }
+   return arbitrary(
+      edgecaseGenerator = { rs ->
+         val n = rs.random.nextInt(1, total + 1)
+         val arb = pick(n, allPairs)
+         arb.generateEdgecase(rs)
+      },
+      sampleGenerator = { rs ->
+         val n = rs.random.nextInt(1, total + 1)
+         val arb = pick(n, allPairs)
+         arb.single(rs)
+      }
+   )
 }
 
 /**
@@ -117,20 +122,17 @@ fun <A> Arb.Companion.subsequence(list: List<A>): Arb<List<A>> = arbitrary {
    message = "Deprecated in favor of a function that returns an Arb instead of a Gen. Will be removed in 4.6",
    replaceWith = ReplaceWith("Arb.Companion.choice(vararg arbs: Arb<A>)")
 )
-fun <A> Arb.Companion.choice(vararg gens: Gen<A>): Gen<A> = arb { rs ->
-   val iters = gens.map { it.generate(rs).iterator() }
-   fun next(): Sample<A>? {
-      val iter = iters.shuffled(rs.random).first()
-      return if (iter.hasNext()) iter.next() else null
-   }
-   sequence {
-      while (true) {
-         var next: Sample<A>? = null
-         while (next == null)
-            next = next()
-         yield(next.value)
+fun <A> Arb.Companion.choice(vararg gens: Gen<A>): Gen<A> {
+   check(gens.isNotEmpty()) { "at least one gen needs to be provided for choice" }
+
+   val arbs = gens.toList().map { gen ->
+      when (gen) {
+         is Arb -> gen
+         is Exhaustive -> gen.toArb()
       }
    }
+
+   return choice(arbs.first(), *arbs.drop(1).toTypedArray())
 }
 
 /**
@@ -145,7 +147,8 @@ fun <A> Arb.Companion.choice(vararg gens: Gen<A>): Gen<A> = arb { rs ->
  */
 fun <A> Arb.Companion.choice(arb: Arb<A>, vararg arbs: Arb<A>): Arb<A> {
    val arbList = listOf(arb, *arbs)
-   return arbitrary(arbList.flatMap(Arb<A>::edgecases)) { rs ->
-      arbList.random(rs.random).next(rs)
-   }
+   return arbitrary(
+      edgecaseGenerator = { rs -> arbList.random(rs.random).generateEdgecase(rs) },
+      sampleGenerator = { rs -> arbList.random(rs.random).next(rs) }
+   )
 }

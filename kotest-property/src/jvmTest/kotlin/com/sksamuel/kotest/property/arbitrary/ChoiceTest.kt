@@ -1,10 +1,12 @@
 package com.sksamuel.kotest.property.arbitrary
 
 import io.kotest.core.spec.style.WordSpec
+import io.kotest.matchers.collections.shouldContainExactly
 import io.kotest.matchers.comparables.beGreaterThan
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
 import io.kotest.property.Arb
+import io.kotest.property.RandomSource
 import io.kotest.property.arbitrary.arbitrary
 import io.kotest.property.arbitrary.choice
 import io.kotest.property.arbitrary.int
@@ -41,10 +43,24 @@ class ChoiceTest : WordSpec({
          )
       }
       "combines the provided Arb instances edgecases" {
-         Arb.choice(
+         val arbs = Arb.choice(
             arbitrary(listOf(1, 2)) { 5 },
             arbitrary(listOf(3, 4)) { 6 }
-         ).edgecases() shouldBe listOf(1, 2, 3, 4)
+         )
+         val rs = RandomSource.seeded(1234L)
+         val edgecases = generateSequence { arbs.generateEdgecase(rs) }.take(10).toList()
+         edgecases shouldContainExactly listOf(
+            2,
+            4,
+            3,
+            4,
+            4,
+            1,
+            1,
+            2,
+            1,
+            3
+         )
       }
       "provides both edgecases and values when used as a Gen" {
          val values = mutableSetOf<Int>()

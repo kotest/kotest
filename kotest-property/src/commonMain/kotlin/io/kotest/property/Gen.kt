@@ -1,6 +1,8 @@
 package io.kotest.property
 
+import io.kotest.fp.NonEmptyList
 import io.kotest.property.arbitrary.of
+import io.kotest.property.arbitrary.single
 
 /**
  * A [Gen] is responsible for providing values to be used in property testing. You can think of it as like
@@ -23,8 +25,19 @@ import io.kotest.property.arbitrary.of
  */
 sealed class Gen<out A> {
 
-   fun generate(rs: RandomSource): Sequence<Sample<A>> = when (this) {
-      is Arb -> this.edgecases().asSequence().map { Sample(it) } + this.samples(rs)
+   fun generate(
+      rs: RandomSource,
+      edgecasesProbability: Double = PropertyTesting.edgecasesGenerationProbability
+   ): Sequence<Sample<A>> = when (this) {
+      is Arb -> {
+         check(edgecasesProbability in 0.0..1.0) { "provided edgecases probability $edgecasesProbability is outside of the permitted range [0.0 - 1.0]" }
+
+         val samples = this.samples(rs).iterator()
+         generateSequence {
+            val p = rs.random.nextDouble(0.0, 1.0)
+            if (p < edgecasesProbability) Sample(this.generateEdgecase(rs)) else samples.next()
+         }
+      }
       is Exhaustive -> {
          check(this.values.isNotEmpty()) { "Exhaustive.values shouldn't be a empty list." }
 
@@ -37,7 +50,7 @@ sealed class Gen<out A> {
     * Requesting a property test with fewer than this will result in an exception.
     */
    fun minIterations(): Int = when (this) {
-      is Arb -> if (PropertyTesting.includeAtLeastOneSampleForArbs) this.edgecases().size + 1 else this.edgecases().size
+      is Arb -> 1
       is Exhaustive -> this.values.size
    }
 }
@@ -66,7 +79,17 @@ abstract class Arb<out A> : Gen<A>() {
    /**
     * Edgecase values for this type A.
     */
+   @Deprecated("implement one value at a time using generateEdgecase(rs) or use Arb<T>.withEdgecases(...) instead")
    abstract fun edgecases(): List<A>
+
+   /**
+    * Returns a random edgecase value using the supplied random source
+    */
+   open fun generateEdgecase(rs: RandomSource): A =
+      NonEmptyList.fromList(edgecases()).fold(
+         { single(rs) },
+         { it.all.random(rs.random) }
+      )
 
    /**
     * Returns a random [Sample] from this [Arb] using the supplied random source.
