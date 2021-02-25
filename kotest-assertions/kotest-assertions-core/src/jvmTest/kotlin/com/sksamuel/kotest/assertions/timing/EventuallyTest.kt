@@ -42,15 +42,14 @@ class EventuallyTest : WordSpec() {
             }
          }
          "pass tests that completed within the time allowed" {
-            val end = System.currentTimeMillis() + 250
+            val end = System.currentTimeMillis() + 200
             eventually(1.seconds) {
-               if (System.currentTimeMillis() < end)
-                  throw RuntimeException("foo")
+               System.currentTimeMillis() shouldBeGreaterThan end
             }
          }
          "fail tests that do not complete within the time allowed" {
             shouldThrow<AssertionError> {
-               eventually(150.milliseconds) {
+               eventually(100.milliseconds, Throwable::class) {
                   throw RuntimeException("foo")
                }
             }
@@ -61,15 +60,8 @@ class EventuallyTest : WordSpec() {
             }
             result shouldBe 1
          }
-         "pass tests that completed within the time allowed, AssertionError"  {
-            val end = System.currentTimeMillis() + 250
-            eventually(5.days) {
-               if (System.currentTimeMillis() < end)
-                  assert(false)
-            }
-         }
          "pass tests that completed within the time allowed, custom exception"  {
-            val end = System.currentTimeMillis() + 250
+            val end = System.currentTimeMillis() + 200
             eventually(5.seconds, FileNotFoundException::class) {
                if (System.currentTimeMillis() < end)
                   throw FileNotFoundException()
@@ -80,13 +72,6 @@ class EventuallyTest : WordSpec() {
                eventually(2.seconds, exceptionClass = IOException::class) {
                   (null as String?)!!.length
                }
-            }
-         }
-         "pass tests that throws FileNotFoundException for some time"  {
-            val end = System.currentTimeMillis() + 150
-            eventually(5.days) {
-               if (System.currentTimeMillis() < end)
-                  throw FileNotFoundException("foo")
             }
          }
          "handle kotlin assertion errors" {
@@ -119,11 +104,11 @@ class EventuallyTest : WordSpec() {
                   }
                }
             }.message
-            message.shouldContain("Eventually block failed after 100ms; attempted \\d+ time\\(s\\); FixedInterval\\(duration=25.0ms\\) delay between attempts".toRegex())
+            message.shouldContain("Eventually block failed after 100ms; attempted \\d+ times; FixedInterval\\(duration=25.0ms\\) delay between attempts".toRegex())
             message.shouldContain("The first error was caused by: first")
             message.shouldContain("The last error was caused by: last")
          }
-         "allow suspendable functions" {
+         "allow suspend functions" {
             eventually(100.milliseconds) {
                delay(25)
                System.currentTimeMillis()
@@ -212,8 +197,7 @@ class EventuallyTest : WordSpec() {
             val result = eventually(
                5.seconds,
                250.milliseconds.fixed(),
-               predicate = { t == "xxxxxxxxxxx" },
-               listener = { latch.countDown() },
+               { latch.countDown(); t == "xxxxxxxxxxx" }
             ) {
                t += "x"
                t
@@ -234,10 +218,9 @@ class EventuallyTest : WordSpec() {
             var t = ""
             val latch = CountDownLatch(5)
             val result = eventually(
-               duration = 10.seconds,
-               interval = 200.milliseconds.fibonacci(),
-               predicate = { t == "xxxxxx" },
-               listener = { latch.countDown() },
+               10.seconds,
+               200.milliseconds.fibonacci(),
+               { latch.countDown(); t == "xxxxxx" }
             ) {
                t += "x"
                t

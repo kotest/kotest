@@ -143,6 +143,7 @@ private class WordSpecSample : WordSpec({
 
    "a failing container" should {
       throw RuntimeException()
+      @Suppress("UNREACHABLE_CODE")
       "not reach this test" {}
    }
 })

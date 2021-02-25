@@ -38,6 +38,7 @@ class ConcurrentTestsSingleInstanceTest : FunSpec() {
    override fun afterSpec(spec: Spec) {
       val end = System.currentTimeMillis()
       // total of delays is 1500 but should run concurrently
+      // FIXME this regularly fails
       (end - start).shouldBeLessThan(1000)
       befores.shouldHaveLength(4)
       // beforeTest should be called in declaration order

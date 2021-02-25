@@ -21,9 +21,8 @@ private val externalMultipleThreadCounter =
    PersistentThreadLocal<Int>()
 
 class SpecThreadInstancePerLeafTest : FunSpec({
-
    isolationMode = IsolationMode.InstancePerLeaf
-   threads = 3
+   concurrency = 3
 
    val internalThreadCounter =
       PersistentThreadLocal<Int>()
