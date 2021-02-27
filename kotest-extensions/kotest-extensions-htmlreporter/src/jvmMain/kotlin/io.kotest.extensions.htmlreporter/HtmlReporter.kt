@@ -13,7 +13,6 @@ import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.Paths
 import java.nio.file.StandardOpenOption
-import kotlin.io.path.writeText
 
 class HtmlReporter(
    private val outputDir: String = "reports/tests/test"
@@ -30,18 +29,14 @@ class HtmlReporter(
    override suspend fun afterProject() {
       super.afterProject()
 
-      val summaryList: MutableList<List<String>> = mutableListOf()
+      val testsData: MutableList<List<String>> = mutableListOf()
 
-      File(DefaultResultsLocation)
-         .walk()
-         .filter { Files.isRegularFile(it.toPath())}
-         .filter { it.toString().endsWith(".xml") }
-         .forEach {
+      getTestResults().forEach {
          val builder = SAXBuilder()
          val doc = builder.build(it.path)
          val root = doc.rootElement
 
-         summaryList.add(
+         testsData.add(
             listOf(
                root.getAttributeValue("name"),
                root.getAttributeValue("tests"),
@@ -57,7 +52,7 @@ class HtmlReporter(
          )
       }
 
-      write(buildSummaryDocument(summaryList), "index.html")
+      write(buildSummaryDocument(testsData), "index.html")
       write({}.javaClass.getResource("/style.css").readText(), "css/style.css")
    }
 
@@ -88,7 +83,7 @@ class HtmlReporter(
       return withDocument { body ->
          body.addContent(Element("h1").setContent(Text("Test Summary")))
          body.addContent(
-            buildSummaryTable(
+            generateTestSummaryTable(
                listOf("Class", "Tests", "Errors", "Failures", "Skipped"),
                summaryList
             )
@@ -100,15 +95,13 @@ class HtmlReporter(
       return withDocument { body ->
          body.addContent(Element("h1").setContent(Text("Class $name")))
          body.addContent(Element("a").setText("Home").setAttribute("href", "../index.html"))
-         body.addContent(buildTestsTable(testcases))
+         body.addContent(generateTestClassTable(testcases))
       }
    }
 
-   private fun addColumn(row: Element, doc: Document, attributeName: String) = row.addContent(Element("td").setContent(Text(doc.rootElement.getAttributeValue(attributeName))))
-
    private fun addHeaderColumn(row: Element, value: String) = row.addContent(Element("th").setContent(Text(value)))
 
-   private fun buildSummaryTable(headers: List<String>, content: List<List<String>>): Element {
+   private fun generateTestSummaryTable(headers: List<String>, content: List<List<String>>): Element {
       val table = Element("table")
       val headerRow = Element("tr")
 
@@ -143,7 +136,7 @@ class HtmlReporter(
       return table
    }
 
-   private fun buildTestsTable(testcases: List<Element>): Element {
+   private fun generateTestClassTable(testcases: List<Element>): Element {
       val table = Element("table")
       val headerRow = Element("tr")
 
@@ -179,6 +172,13 @@ class HtmlReporter(
          Paths.get(buildDir).resolve(outputDir)
       else
          Paths.get(DefaultLocation)
+   }
+
+   private fun getTestResults(): Sequence<File> {
+      return File(DefaultResultsLocation)
+         .walk()
+         .filter { Files.isRegularFile(it.toPath())}
+         .filter { it.toString().endsWith(".xml") }
    }
 
    private fun write(document: Document, path: String) {
