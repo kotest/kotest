@@ -1,5 +1,5 @@
 plugins {
-   id 'maven-publish'
+    id 'maven-publish'
 }
 
 publish.enabled = false
