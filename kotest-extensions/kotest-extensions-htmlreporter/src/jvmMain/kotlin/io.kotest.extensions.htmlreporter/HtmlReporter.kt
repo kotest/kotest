@@ -13,6 +13,7 @@ import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.Paths
 import java.nio.file.StandardOpenOption
+import kotlin.io.path.writeText
 
 class HtmlReporter(
    private val outputDir: String = "reports/tests/test"
@@ -57,59 +58,50 @@ class HtmlReporter(
       }
 
       write(buildSummaryDocument(summaryList), "index.html")
+      write({}.javaClass.getResource("/style.css").readText(), "css/style.css")
+   }
+
+   private fun withDocument(block: (Element) -> Unit): Document {
+      val document = Document()
+      document.docType = DocType("html")
+
+      val html = Element("html")
+      val head = Element("head")
+      val body = Element("body")
+
+      head.addContent(
+         Element("link")
+            .setAttribute("rel", "stylesheet")
+            .setAttribute("href", outputDir().resolve("css/style.css").toString())
+      )
+
+      block(body)
+
+      html.addContent(head)
+      html.addContent(body)
+      document.addContent(html)
+
+      return document
    }
 
    private fun buildSummaryDocument(summaryList: MutableList<List<String>>): Document {
-      val document = Document()
-      document.setDocType(DocType("html"))
-
-      val html = Element("html")
-      val body = Element("body")
-
-      body.addContent(Element("h1").setContent(Text("Test Summary")))
-
-      body.addContent(
-         buildSummaryTable(
+      return withDocument { body ->
+         body.addContent(Element("h1").setContent(Text("Test Summary")))
+         body.addContent(
+            buildSummaryTable(
                listOf("Class", "Tests", "Errors", "Failures", "Skipped"),
-            summaryList
+               summaryList
+            )
          )
-      )
-      html.addContent(body)
-      document.addContent(html)
-      return document
+      }
    }
 
    private fun buildClassDocument(name: String, testcases: List<Element>): Document {
-      val document = Document()
-      document.setDocType(DocType("html"))
-
-      val html = Element("html")
-      val body = Element("body")
-
-      body.addContent(Element("h1").setContent(Text("Class $name")))
-
-      body.addContent(buildTestsTable(testcases))
-
-      html.addContent(body)
-      document.addContent(html)
-      return document
-   }
-
-   private fun outputDir(): Path {
-      val buildDir = System.getProperty(BuildDirKey)
-      return if (buildDir != null)
-         Paths.get(buildDir).resolve(outputDir)
-      else
-         Paths.get(DefaultLocation)
-   }
-
-   private fun write(document: Document, path: String) {
-      val path = outputDir().resolve(path)
-      path.parent.toFile().mkdirs()
-      val outputter = XMLOutputter(Format.getPrettyFormat().setOmitDeclaration(true))
-      val writer = Files.newBufferedWriter(path, StandardOpenOption.TRUNCATE_EXISTING, StandardOpenOption.CREATE)
-      outputter.output(document, writer)
-      writer.close()
+      return withDocument { body ->
+         body.addContent(Element("h1").setContent(Text("Class $name")))
+         body.addContent(Element("a").setText("Home").setAttribute("href", "../index.html"))
+         body.addContent(buildTestsTable(testcases))
+      }
    }
 
    private fun addColumn(row: Element, doc: Document, attributeName: String) = row.addContent(Element("td").setContent(Text(doc.rootElement.getAttributeValue(attributeName))))
@@ -130,11 +122,21 @@ class HtmlReporter(
       content.forEach {
          val row = Element("tr")
          val anchor = Element("a").setContent(Text(it[0])).setAttribute("href", "./classes/${it[0]}.html")
+
+         val tests = it[1].toIntOrNull() ?: 0
+         val errors = it[2].toIntOrNull() ?: 0
+         val failures = it[3].toIntOrNull() ?: 0
+         val skipped = it[4].toIntOrNull() ?: 0
+
          row.addContent(Element("td").setContent(anchor))
-         row.addContent(Element("td").setContent(Text(it[1])))
-         row.addContent(Element("td").setContent(Text(it[2])))
-         row.addContent(Element("td").setContent(Text(it[3])))
-         row.addContent(Element("td").setContent(Text(it[4])))
+         row.addContent(Element("td").setContent(Text(tests.toString())))
+         row.addContent(Element("td").setContent(Text(errors.toString())))
+         row.addContent(Element("td").setContent(Text(failures.toString())))
+         row.addContent(Element("td").setContent(Text(skipped.toString())))
+
+         if((errors + failures + skipped) == 0) row.setAttribute("class", "success")
+         if (failures > 0) row.setAttribute("class", "failure")
+
          table.addContent(row)
       }
 
@@ -159,11 +161,39 @@ class HtmlReporter(
          row.addContent(Element("td").setContent(Text(it.getAttributeValue("time"))))
          row.addContent(Element("td").setContent(Text(result)))
 
+         if (result == "Passed") {
+            row.setAttribute("class", "success")
+         } else {
+            row.setAttribute("class", "failure")
+         }
+
          table.addContent(row)
       }
 
       return table
    }
 
+   private fun outputDir(): Path {
+      val buildDir = System.getProperty(BuildDirKey)
+      return if (buildDir != null)
+         Paths.get(buildDir).resolve(outputDir)
+      else
+         Paths.get(DefaultLocation)
+   }
+
+   private fun write(document: Document, path: String) {
+      val path = outputDir().resolve(path)
+      path.parent.toFile().mkdirs()
+      val outputter = XMLOutputter(Format.getPrettyFormat().setOmitDeclaration(true))
+      val writer = Files.newBufferedWriter(path, StandardOpenOption.TRUNCATE_EXISTING, StandardOpenOption.CREATE)
+      outputter.output(document, writer)
+      writer.close()
+   }
+
+   private fun write(text: String, path: String) {
+      val path = outputDir().resolve(path)
+      path.parent.toFile().mkdirs()
+      File(path.toUri()).writeText(text)
+   }
 }
 
