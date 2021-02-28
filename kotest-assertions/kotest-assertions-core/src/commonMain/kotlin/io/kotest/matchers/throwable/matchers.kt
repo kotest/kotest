@@ -30,11 +30,11 @@ fun haveCause() = object : Matcher<Throwable> {
 inline fun <reified T : Throwable> Throwable.shouldHaveCauseInstanceOf() = this should haveCauseInstanceOf<T>()
 inline fun <reified T : Throwable> Throwable.shouldNotHaveCauseInstanceOf() = this shouldNot haveCauseInstanceOf<T>()
 inline fun <reified T : Throwable> haveCauseInstanceOf() = object : Matcher<Throwable> {
-  override fun test(value: Throwable) = when {
-    value.cause == null -> resultForThrowable(value.cause)
+  override fun test(value: Throwable) = when (val cause = value.cause) {
+    null -> resultForThrowable(null)
     else -> MatcherResult(
-      value.cause is T,
-      "Throwable cause should be of type ${T::class}, but instead got ${value.cause!!::class}",
+      cause is T,
+      "Throwable cause should be of type ${T::class}, but instead got ${cause::class}",
       "Throwable cause should not be of type ${T::class}"
     )
   }
@@ -43,11 +43,11 @@ inline fun <reified T : Throwable> haveCauseInstanceOf() = object : Matcher<Thro
 inline fun <reified T : Throwable> Throwable.shouldHaveCauseOfType() = this should haveCauseOfType<T>()
 inline fun <reified T : Throwable> Throwable.shouldNotHaveCauseOfType() = this shouldNot haveCauseOfType<T>()
 inline fun <reified T : Throwable> haveCauseOfType() = object : Matcher<Throwable> {
-  override fun test(value: Throwable) = when (value.cause) {
-    null -> resultForThrowable(value.cause)
+  override fun test(value: Throwable) = when (val cause = value.cause) {
+    null -> resultForThrowable(null)
     else -> MatcherResult(
-      value.cause!!::class == T::class,
-      "Throwable cause should be of type ${T::class}, but instead got ${value.cause!!::class}",
+      cause::class == T::class,
+      "Throwable cause should be of type ${T::class}, but instead got ${cause::class}",
       "Throwable cause should not be of type ${T::class}"
     )
   }
@@ -55,7 +55,7 @@ inline fun <reified T : Throwable> haveCauseOfType() = object : Matcher<Throwabl
 
 @PublishedApi
 internal fun resultForThrowable(value: Throwable?) = MatcherResult(
-    value != null,
-    "Throwable should have a cause",
-    "Throwable should not have a cause"
+  value != null,
+  "Throwable should have a cause",
+  "Throwable should not have a cause"
 )
