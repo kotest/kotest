@@ -33,9 +33,9 @@ inline fun <reified T : Throwable> haveCauseInstanceOf() = object : Matcher<Thro
   override fun test(value: Throwable) = when {
     value.cause == null -> resultForThrowable(value.cause)
     else -> MatcherResult(
-        value.cause is T,
-        "Throwable cause should be of type ${T::class}, but instead got ${value.cause!!::class}",
-        "Throwable cause should be of type ${T::class}"
+      value.cause is T,
+      "Throwable cause should be of type ${T::class}, but instead got ${value.cause!!::class}",
+      "Throwable cause should not be of type ${T::class}"
     )
   }
 }
@@ -44,12 +44,12 @@ inline fun <reified T : Throwable> Throwable.shouldHaveCauseOfType() = this shou
 inline fun <reified T : Throwable> Throwable.shouldNotHaveCauseOfType() = this shouldNot haveCauseOfType<T>()
 inline fun <reified T : Throwable> haveCauseOfType() = object : Matcher<Throwable> {
   override fun test(value: Throwable) = when (value.cause) {
-      null -> resultForThrowable(value.cause)
-      else -> MatcherResult(
-         value.cause!!::class == T::class,
-         "Throwable cause should be of type ${T::class}, but instead got ${value.cause!!::class}",
-         "Throwable cause should be of type ${T::class}"
-      )
+    null -> resultForThrowable(value.cause)
+    else -> MatcherResult(
+      value.cause!!::class == T::class,
+      "Throwable cause should be of type ${T::class}, but instead got ${value.cause!!::class}",
+      "Throwable cause should not be of type ${T::class}"
+    )
   }
 }
 
