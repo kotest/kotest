@@ -5,6 +5,7 @@ import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldNot
+import io.kotest.mpp.bestName
 
 infix fun Throwable.shouldHaveMessage(message: String) = this should haveMessage(message)
 infix fun Throwable.shouldNotHaveMessage(message: String) = this shouldNot haveMessage(message)
@@ -34,8 +35,8 @@ inline fun <reified T : Throwable> haveCauseInstanceOf() = object : Matcher<Thro
     null -> resultForThrowable(null)
     else -> MatcherResult(
       cause is T,
-      "Throwable cause should be of type ${T::class}, but instead got ${cause::class}",
-      "Throwable cause should not be of type ${T::class}"
+      "Throwable cause should be of type ${T::class.bestName()}, but instead got ${cause::class.bestName()}",
+      "Throwable cause should not be of type ${T::class.bestName()}"
     )
   }
 }
@@ -47,8 +48,8 @@ inline fun <reified T : Throwable> haveCauseOfType() = object : Matcher<Throwabl
     null -> resultForThrowable(null)
     else -> MatcherResult(
       cause::class == T::class,
-      "Throwable cause should be of type ${T::class}, but instead got ${cause::class}",
-      "Throwable cause should not be of type ${T::class}"
+      "Throwable cause should be of type ${T::class.bestName()}, but instead got ${cause::class.bestName()}",
+      "Throwable cause should not be of type ${T::class.bestName()}"
     )
   }
 }
