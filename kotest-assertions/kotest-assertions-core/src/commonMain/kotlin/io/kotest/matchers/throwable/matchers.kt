@@ -34,7 +34,7 @@ inline fun <reified T : Throwable> haveCauseInstanceOf() = object : Matcher<Thro
     value.cause == null -> resultForThrowable(value.cause)
     else -> MatcherResult(
         value.cause is T,
-        "Throwable cause should be of type ${T::class}, but instead got ${value::class}",
+        "Throwable cause should be of type ${T::class}, but instead got ${value.cause!!::class}",
         "Throwable cause should be of type ${T::class}"
     )
   }
@@ -47,7 +47,7 @@ inline fun <reified T : Throwable> haveCauseOfType() = object : Matcher<Throwabl
       null -> resultForThrowable(value.cause)
       else -> MatcherResult(
          value.cause!!::class == T::class,
-         "Throwable cause should be of type ${T::class}, but instead got ${value::class}",
+         "Throwable cause should be of type ${T::class}, but instead got ${value.cause!!::class}",
          "Throwable cause should be of type ${T::class}"
       )
   }
