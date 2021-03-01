@@ -85,12 +85,12 @@ class ThrowableMatchersTest : FreeSpec() {
         shouldThrow<CompleteTestException> { throw CompleteTestException() }.shouldHaveCauseInstanceOf<FileNotFoundException>()
         shouldThrow<CompleteTestException> { throw CompleteTestException() }.shouldHaveCauseInstanceOf<IOException>()
         shouldThrow<AssertionError> { CompleteTestException().shouldHaveCauseInstanceOf<RuntimeException>() }
-          .shouldHaveMessage("Throwable cause should be of type java.lang.RuntimeException, but instead got java.io.FileNotFoundException")
+          .shouldHaveMessage("Throwable cause should be of type java.lang.RuntimeException or it's descendant, but instead got java.io.FileNotFoundException")
       }
       "shouldNotHaveCauseInstanceOf" {
         shouldThrow<CompleteTestException> { throw CompleteTestException() }.shouldNotHaveCauseInstanceOf<TestException>()
         shouldThrow<AssertionError> { CompleteTestException().shouldNotHaveCauseInstanceOf<FileNotFoundException>() }
-          .shouldHaveMessage("Throwable cause should not be of type java.io.FileNotFoundException")
+          .shouldHaveMessage("Throwable cause should not be of type java.io.FileNotFoundException or it's descendant")
       }
       "shouldHaveCauseOfType" {
         shouldThrow<CompleteTestException> { throw CompleteTestException() }.shouldHaveCauseOfType<FileNotFoundException>()

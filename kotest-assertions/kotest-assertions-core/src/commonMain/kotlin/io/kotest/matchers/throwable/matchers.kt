@@ -35,8 +35,8 @@ inline fun <reified T : Throwable> haveCauseInstanceOf() = object : Matcher<Thro
     null -> resultForThrowable(null)
     else -> MatcherResult(
       cause is T,
-      "Throwable cause should be of type ${T::class.bestName()}, but instead got ${cause::class.bestName()}",
-      "Throwable cause should not be of type ${T::class.bestName()}"
+      "Throwable cause should be of type ${T::class.bestName()} or it's descendant, but instead got ${cause::class.bestName()}",
+      "Throwable cause should not be of type ${T::class.bestName()} or it's descendant"
     )
   }
 }
