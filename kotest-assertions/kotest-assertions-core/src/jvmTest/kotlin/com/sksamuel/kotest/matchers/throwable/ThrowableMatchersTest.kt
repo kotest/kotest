@@ -99,7 +99,7 @@ class ThrowableMatchersTest : FreeSpec() {
       }
       "shouldNotHaveCauseOfType" {
         shouldThrow<CompleteTestException> { throw CompleteTestException() }.shouldNotHaveCauseOfType<IOException>()
-        shouldThrow<AssertionError> { CompleteTestException().shouldNotHaveCauseInstanceOf<FileNotFoundException>() }
+        shouldThrow<AssertionError> { CompleteTestException().shouldNotHaveCauseOfType<FileNotFoundException>() }
           .shouldHaveMessage("Throwable cause should not be of type java.io.FileNotFoundException")
       }
     }
