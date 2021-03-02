@@ -5,6 +5,61 @@ slug: changelog.html
 ---
 
 
+### [Unreleased]
+
+Note: This changelog mentions the changes which are not yet released in stable version.
+      You can still use snapshot release to tryout changes and provide us your's valuable
+      feedback. Docs updates are available at kotest.io though.
+
+#### Features / Improvement
+* Added new matcher for DayOfWeek in `kotest-assertion-clock` module. #2124
+* Added factory method to simplify creating new matchers. #2122
+* Added method in `Exhaustive` to create a new `Exhaustive` which will be a cartesian product of given two `Exhaustive`. #2120
+* Added support for writing test inside a object instead of creating a class. #2097
+* Added suspend version of `shouldCompleteWithin`, `shouldCompleteBetween` and `shouldTimeOut`. #2107
+* Added `kotest-extensions-wiremock` module for managing lifecycle of `WireMockServer` in Kotest test. #2108
+* Upgrade `klock` dependency to 2.0.6 and added `browser`, `nodejs`, `linuxX64`, `mingwX64`, `macosX64`, `tvos`,
+  `iosX64`, `iosArm64` and `iosArm32` platform targets for `kotest-assertions-klock`. #2116
+* Run eventually one final time if iterations is one and delay is greater than the interval #2105
+* Updates `withEnvironment` function to ignore environment variable key case sensitivity on Windows platform. #2099
+* Some improvement around `eventually`
+  1. Makes EventuallyPredicate<T> a type alias instead of interface for better user experiance.
+  2. Update failure message to inform the user about failure of given EventaullyPredicate.
+  3. Adds an overload of `eventually` which does not takes `EventuallyPredicate` so that it give feel
+     of `util` function. #2046
+
+
+
+#### BugFixes.
+* Corrects a message for `haveCauseOfType` matcher to include the name expected and actual cause type. #2131
+* Fix `IncorrectDereferenceException` when calling assertions on a background thread in a native platform. #2128
+* Corrects error message for shouldContainKeys matcher to includes keys which are not present in given map. #2106
+* Updates Throwable eq to check throwable cause as well while checking throwable equality. #2094
+* Fixes eventually failing inside assert softly block without retrying the given lambda. #2092
+* Fixes any other implementation of `Listener` apart from `ProjectListener` not getting picked by Kotest framework. #2088
+
+
+#### Deprecations
+* Deprecated `instanceOf`, `beInstanceOf`, `beTheSameInstanceAs`, `beOfType` of package `io.kotest.matchers` these will
+  be removed permanently in 4.6 release, you can import these same assertion from `io.kotest.matchers.types`
+  package.
+
+* Undeprecated eventually that uses durations for intervals. #2086
+
+
+#### Docs Updates
+* Corrects generators docs to have correct name of Exhaustive. #2110
+* Update docs to highlight eventually does work properly with assert softly. #2091
+* Adds note about StringSpec does not support nesting tests. #2090
+* Adds docs for `Arb.stringPattern`. #2125
+
+
+#### Contributors
+AJ Alt (ajalt), Ashish Kumar Joy (ashishkujoy), Dale King (dalewking), Janek (xerus2000),
+Jim Schneidereit (jschneidereit), Nikita Klimenko (DisPony), Rustam Musin (jvmusin),
+Sam Sam (sksamuel), Sean Flanigan (seanf), Sebastian Schuberth (sschuberth).
+
+
 ### 4.4.1 January 2021
 
 Note: Release 4.4.1 bumps the minimum required version of Kotlin to 1.4.30
