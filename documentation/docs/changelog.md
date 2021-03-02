@@ -23,14 +23,14 @@ Note: This changelog mentions the changes which are not yet released in stable v
 * Run eventually one final time if iterations is one and delay is greater than the interval #2105
 * Updates `withEnvironment` function to ignore environment variable key case sensitivity on Windows platform. #2099
 * Some improvement around `eventually`
-  1. Makes EventuallyPredicate<T> a type alias instead of interface for better user experiance.
-  2. Update failure message to inform the user about failure of given EventaullyPredicate.
-  3. Adds an overload of `eventually` which does not takes `EventuallyPredicate` so that it give feel
-     of `util` function. #2046
+  1. Makes EventuallyPredicate<T> a type alias instead of interface for better user experience.
+  2. Update failure message to inform the user about failure of given `EventaullyPredicate`.
+  3. Adds an overload of `eventually` which does not takes `EventuallyPredicate` so that it gives a feel
+     of `utill` function. #2046
 
 
 
-#### BugFixes.
+#### Bugfixes.
 * Corrects a message for `haveCauseOfType` matcher to include the name expected and actual cause type. #2131
 * Fix `IncorrectDereferenceException` when calling assertions on a background thread in a native platform. #2128
 * Corrects error message for shouldContainKeys matcher to includes keys which are not present in given map. #2106
@@ -44,7 +44,7 @@ Note: This changelog mentions the changes which are not yet released in stable v
   be removed permanently in 4.6 release, you can import these same assertion from `io.kotest.matchers.types`
   package.
 
-* Undeprecated eventually that uses durations for intervals. #2086
+* Remove deprecation eventually that uses durations for intervals. #2086
 
 
 #### Docs Updates
