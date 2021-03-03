@@ -103,6 +103,7 @@ Note: Release 4.4.0 bumps the minimum required version of Kotlin to 1.4.21
 * Allow data driven tests to register in root scope #1967
 * Add domain arbitrary #1969
 * Upgrade arrow matchers to 0.11.0 #1976
+* Add alphanumeric codepoint arb #1989
 
 #### Bugfixes
 
