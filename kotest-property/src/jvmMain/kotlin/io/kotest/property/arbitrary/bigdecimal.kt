@@ -14,7 +14,11 @@ private val bigDecimalEdgecases = listOf(
 
 fun Arb.Companion.bigDecimal(): Arb<BigDecimal> {
    return arbitrary(bigDecimalEdgecases) {
-      BigDecimal(it.random.nextInt() * it.random.nextDouble())
+      if (it.random.nextInt() % 2 == 0) {
+         BigDecimal(it.random.nextLong()) * BigDecimal(it.random.nextDouble())
+      } else {
+         BigDecimal(it.random.nextInt()) * BigDecimal(it.random.nextDouble())
+      }
    }
 }
 
