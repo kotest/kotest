@@ -22,11 +22,10 @@ Note: This changelog mentions the changes which are not yet released in stable v
   `iosX64`, `iosArm64` and `iosArm32` platform targets for `kotest-assertions-klock`. #2116
 * Run eventually one final time if iterations is one and delay is greater than the interval #2105
 * Updates `withEnvironment` function to ignore environment variable key case sensitivity on Windows platform. #2099
-* Some improvement around `eventually`
-  1. Makes EventuallyPredicate<T> a type alias instead of interface for better user experience.
-  2. Update failure message to inform the user about failure of given `EventaullyPredicate`.
-  3. Adds an overload of `eventually` which does not takes `EventuallyPredicate` so that it gives a feel
-     of `utill` function. #2046
+* Some improvement around `eventually`.
+  (1) Makes `EventuallyPredicate` a type alias instead of interface for better user experience.
+  (2) Update failure message to inform the user about failure of given `EventuallyPredicate`.
+  (3) Adds an overload of `eventually` which does not takes `EventuallyPredicate` so that it gives a feel of `utill` function. 2046
 
 
 
