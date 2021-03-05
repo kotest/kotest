@@ -13,11 +13,13 @@ import kotlin.reflect.full.isSubclassOf
 import kotlin.reflect.full.isSuperclassOf
 import kotlin.reflect.full.primaryConstructor
 
-fun KClass<*>.shouldHaveAnnotations() = this should haveClassAnnontations()
-fun KClass<*>.shouldNotHaveAnnotations() = this shouldNot haveClassAnnontations()
-infix fun KClass<*>.shouldHaveAnnotations(count: Int) = this should haveClassAnnontations(count)
-infix fun KClass<*>.shouldNotHaveAnnotations(count: Int) = this shouldNot haveClassAnnontations(count)
-fun haveClassAnnontations(count: Int = -1) = object : Matcher<KClass<*>> {
+fun KClass<*>.shouldHaveAnnotations() = this should haveClassAnnotations()
+fun KClass<*>.shouldNotHaveAnnotations() = this shouldNot haveClassAnnotations()
+infix fun KClass<*>.shouldHaveAnnotations(count: Int) = this should haveClassAnnotations(count)
+infix fun KClass<*>.shouldNotHaveAnnotations(count: Int) = this shouldNot haveClassAnnotations(count)
+@Deprecated("This method has a typo in its name, use the one without the typo", ReplaceWith("haveClassAnnotations(count)"))
+fun haveClassAnnontations(count: Int = -1) = haveClassAnnotations(count)
+fun haveClassAnnotations(count: Int = -1) = object : Matcher<KClass<*>> {
   override fun test(value: KClass<*>) = if (count < 0) {
     MatcherResult(
        value.annotations.isNotEmpty(),
