@@ -98,4 +98,4 @@ object ProjectConfig : AbstractProjectConfig {
 }
 ```
 
-Global config is overriden by spec level and test case level values.
+Global config is overridden by spec level and test case level values.

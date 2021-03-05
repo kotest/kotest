@@ -17,7 +17,7 @@ To begin you need to add the module `io.kotest:kotest-property:<version>` to you
 
 Developers typically write example-based tests. These are your garden variety unit tests you know and love.
 You provide some inputs, and some expected results, and a test framework like Kotest or JUnit checks that the actual
-resutls meet the expecations.
+results meet the expectations.
 
 One problem with this approach is that it is very easy to miss errors due to edge cases that the developer didn't think about,
 or lack of coverage in the chosen inputs. Instead, with property testing, hundreds or thousands of values are fed into the same test,

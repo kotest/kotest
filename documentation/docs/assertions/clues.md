@@ -77,5 +77,3 @@ HttpResponse(status=404, body=the content)
 Expected :200
 Actual   :404
 ```
-
-
