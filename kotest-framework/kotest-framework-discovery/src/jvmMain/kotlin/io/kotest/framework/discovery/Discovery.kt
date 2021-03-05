@@ -42,7 +42,7 @@ class Discovery(private val discoveryExtensions: List<DiscoveryExtension> = empt
    private val requests = ConcurrentHashMap<DiscoveryRequest, DiscoveryResult>()
 
    // the results of a classpath scan, lazily executed and memoized.
-   private val scanResult by lazy { scan() }
+   private val scanResult = lazy { scan() }
 
    // filter functions
    private val isScript: (KClass<*>) -> Boolean = { ScriptTemplateWithArgs::class.java.isAssignableFrom(it.java) }
@@ -76,12 +76,16 @@ class Discovery(private val discoveryExtensions: List<DiscoveryExtension> = empt
     */
    private fun discoverScripts(): List<KClass<out ScriptTemplateWithArgs>> {
       log("Discovery: Running script scan")
-      return scanResult
+      return scanResult.value
          .allClasses
          .filter { it.extendsSuperclass(ScriptTemplateWithArgs::class.java.name) }
          .map { it.load(false) }
          .filter(isScript)
          .filterIsInstance<KClass<out ScriptTemplateWithArgs>>()
+   }
+
+   fun close() {
+      if (scanResult.isInitialized()) scanResult.value.close()
    }
 
    /**
@@ -168,7 +172,7 @@ class Discovery(private val discoveryExtensions: List<DiscoveryExtension> = empt
       val duration = System.currentTimeMillis() - start
       log("Discovery: Test discovery completed in ${duration}ms")
 
-      return scanResult
+      return scanResult.value
          .getSubclasses(Spec::class.java.name)
          .map { Class.forName(it.name).kotlin }
          .filterIsInstance<KClass<out Spec>>()
