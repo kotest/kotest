@@ -35,12 +35,8 @@ class DatabaseRepositoryTest : FunSpec({
 })
 ```
 
-In above example ```perTest()``` extension method converts the container into a ```TestListener``` which start's the
-redis container before each test and stop's that after test. Similarly if you want to reuse the container for all tests
-in a single spec class you can use ```perSpec()``` extension method which convert's container into a ```TestListener```
-which start's the container before running any test in spec and stop's that after all tests, thus a single container is
+In above example ```perTest()``` extension method converts the container into a ```TestListener``` which starts the
+redis container before each test and stops that after test. Similarly if you want to reuse the container for all tests
+in a single spec class you can use ```perSpec()``` extension method which converts container into a ```TestListener```
+which starts the container before running any test in spec and stop's that after all tests, thus a single container is
 used by all tests in spec class.
-
-
-
-

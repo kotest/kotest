@@ -34,7 +34,7 @@ Most generators are available on all platforms. Some are JVM specific.
 
 | String    | Description | JVM | JS  | Native |
 | -------- | ----------- | --- | --- | ------ |
-| `Arb.string(range)` | Generates random printable strings with a randomly chosen size from the given range. If rangei s not specified then (0..100) is used. The edgecases include empty string, a blank string and a unicode string. | ✓ | ✓ | ✓ |
+| `Arb.string(range)` | Generates random printable strings with a randomly chosen size from the given range. If range is not specified then (0..100) is used. The edgecases include empty string, a blank string and a unicode string. | ✓ | ✓ | ✓ |
 | `Exhaustive.azstring(range)` | Returns all A-Z strings in the given range. For example if range was 1..2 then a, b, c, ...., yz, zz would be included. | ✓ | ✓ | ✓ |
 | `Arb.email(userRange, domainRange)` | Generates random emails where the username and domain are random strings with the size determined by the range parameters. | ✓ | ✓ | ✓ |
 | `Arb.uuid(type)` | Generates random UUIDs of the given type | ✓ |  |  |

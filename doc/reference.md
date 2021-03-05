@@ -421,7 +421,7 @@ should evaluate to. For instance, `"ko" + "test" should have length 6` is a sing
 A more powerful approach is to allow a test framework to generate the examples for you, randomly or exhaustively,
 and the developer provides _properties_ which should always be _true_ or _false_ given the inputs.
 
-Kotest has a comprehesive and powerful property support out of the box which is described in detail [here](property_testing.md).
+Kotest has a comprehensive and powerful property support out of the box which is described in detail [here](property_testing.md).
 
 
 
@@ -520,10 +520,10 @@ check [mock documentation](mocks.md)
 Temporary File
 ---------------
 
-Sometimes it is requires for a test to create a file and delete it after test, deleting it manually may lead to flaky
+Sometimes it is required for a test to create a file and delete it after test, deleting it manually may lead to flaky
 test.
 For example you may be trying to delete temporary file after some assertion, if the assertion passes all good, file
-is got deleted and next time you run's your tests you create a fresh file.
+is got deleted and next time you run your tests you create a fresh file.
 But in case the assertion fails or any other error occurs, due to which file did not deleted, you will get a stale file
 which might effect your test.
 
@@ -688,14 +688,14 @@ class MyTests : StringSpec({
 
 
 
-Non-determinstic Tests
+Non-deterministic Tests
 ----------------------
 
 Sometimes you have to work with code that are non-deterministic in nature. This is never ideal, but if you have no choice then
 Kotest has this covered with two functions called `eventually` and `continually`.
 
 Eventually will repeatedly run a code block either it either succeeds or the given duration has expired.
-Continually is kind of the opposite - it will repeatedly run a code block requiring that it suceeds every time until the given duration has expired.
+Continually is kind of the opposite - it will repeatedly run a code block requiring that it succeeds every time until the given duration has expired.
 
 See full docs [here](nondeterministic.md)
 
@@ -720,7 +720,7 @@ Take a better look at all the extensions available in the [extensions-reference]
 Plugins
 ----------
 
-Sometimes it's not enough to use Extensions or Listeners to integrat with external systems or tools, and for this we use custom Plugins, available at `kotest-plugins` module.
+Sometimes it's not enough to use Extensions or Listeners to integrate with external systems or tools, and for this we use custom Plugins, available at `kotest-plugins` module.
 
 Integrations such as `Pitest` require a more complex solution, and thus the plugins module was necessary.
 

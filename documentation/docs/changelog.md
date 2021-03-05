@@ -645,7 +645,7 @@ Version 3.1.0
 
 * **Simplified Setup**
 
-In KotlinTest 3.1.x it is sufficent to enable JUnit in the test block of your gradle build
+In KotlinTest 3.1.x it is sufficient to enable JUnit in the test block of your gradle build
  instead of using the gradle junit plugin. This step is the same as for any test framework
  that uses the JUnit Platform.
 
@@ -673,7 +673,7 @@ test {
 In the 3.0.x train, the ability to allow an instance per test was removed from some spec styles due to
 implementation difficulties. This has been addressed in 3.1.x and so all spec styles now allow instance
 per test as in the 2.0.x releases. Note: The default value is false, so tests will use a single shared
-instance of the spec for all tests unless the `isInstancePerTest()` function is overriden to return true.
+instance of the spec for all tests unless the `isInstancePerTest()` function is overridden to return true.
 
 * **Breaking Change: Config Syntax**
 

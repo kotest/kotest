@@ -116,7 +116,7 @@ Matchers provided by the `kotest-assertions-core` module.
 | `bigDecimal.shouldBeNegative()` | Asserts that the bigDecimal is negative |
 | `bigDecimal.shouldBeZero()` | Asserts that the bigDecimal is zero |
 | `bigDecimal.shouldBeLessThan(n)` | Asserts that the bigDecimal is less than the given value n |
-| `bigDecimal.shouldBeLessThanOrEquals(n)` | Asserts that the bigDecimal is less than or equ
+| `bigDecimal.shouldBeLessThanOrEquals(n)` | Asserts that the bigDecimal is less than or equal the given value n |
 | `bigDecimal.shouldBeGreaterThan(n)` | Asserts that the bigDecimal is greater than the given value n |
 | `bigDecimal.shouldBeGreaterThanOrEquals(n)` | Asserts that the bigDecimal is greater than or equals to the given value n |
 | `bigDecimal.shouldBeInRange(r)` | Asserts that the bigDecimal is in the given range |
@@ -202,7 +202,7 @@ Matchers provided by the `kotest-assertions-core` module.
 | `file.shouldHavePath(path)` | Asserts that the file's path matches the given path. |
 | `file.shouldStartWithPath(prefix)` | Asserts that the file's path starts with the given prefix. |
 | `dir.shouldContainFileDeep(name)` | Assert that file is a directory and that it or any sub directory contains a file with the given name. |
-| `dir.shouldContainFiles(name1, name2, ..., nameN)` | Asserts that the file is a directory and that it contains al files with the given name. |
+| `dir.shouldContainFiles(name1, name2, ..., nameN)` | Asserts that the file is a directory and that it contains all files with the given name. |
 | `file.shouldBeSymbolicLink()` | Asserts that the file is a symbolic link. |
 | `file.shouldHaveParent(name)` |  Assert that the file has a parent with the given name |
 
@@ -224,7 +224,7 @@ Matchers provided by the `kotest-assertions-core` module.
 | `date.shouldHaveHour(hour)` | Asserts that the date have correct hour. |
 | `date.shouldHaveMinute(Minute)` | Asserts that the date have correct minute. |
 | `date.shouldHaveSecond(second)` | Asserts that the date have correct second. |
-| `date.shouldHaveNano(nao)` | Asserts that the date have correct nano second. |
+| `date.shouldHaveNano(nano)` | Asserts that the date have correct nano second. |
 
 | ZonedDateTime ||
 | -------- | ---- |

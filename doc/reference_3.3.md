@@ -621,11 +621,11 @@ types in the test function.
 }
 ```
 
-In the above example, the `root` and `square` parameters are automatically inferrred to be integers.
+In the above example, the `root` and `square` parameters are automatically inferred to be integers.
 
 If there is an error for any particular input row, then the test will fail and KotlinTest will automatically
 match up each input to the corresponding parameter names. For example, if we change the previous example to include the row `row(5,55)`
-then the test will be marked as a failure with the following erorr message.
+then the test will be marked as a failure with the following error message.
 
 ```
 Test failed for (root, 5), (square, 55) with error expected: 55 but was: 25
@@ -1029,7 +1029,7 @@ Sometimes you have to work with code that are non-deterministic in nature. This 
 KotlinTest has this covered with two functions called `eventually` and `continually`.
 
 Eventually will repeatedly run a code block either it either succeeds or the given duration has expired.
-Continually is kind of the opposite - it will repeatedly run a code block requiring that it suceeds every time until the given duration has expired.
+Continually is kind of the opposite - it will repeatedly run a code block requiring that it succeeds every time until the given duration has expired.
 
 See full docs [here](nondeterministic.md)
 
@@ -1052,7 +1052,7 @@ Take a better look at all the extensions available in the [extensions-reference]
 Plugins
 ----------
 
-Sometimes it's not enough to use Extensions or Listeners to integrat with external systems or tools, and for this we use custom Plugins, available at `kotlintest-plugins` module.
+Sometimes it's not enough to use Extensions or Listeners to integrate with external systems or tools, and for this we use custom Plugins, available at `kotlintest-plugins` module.
 
 Integrations such as `Pitest` require a more complex solution, and thus the plugins module was necessary.
 
