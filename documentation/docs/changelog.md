@@ -63,7 +63,7 @@ Sam Sam (sksamuel), Sean Flanigan (seanf), Sebastian Schuberth (sschuberth).
 
 ### 4.4.2 March 2021
 
-Note: Release 4.4.1 is compiled against Kotlin 1.4.31 and coroutines 1.4.3
+Note: Release 4.4.2 is compiled against Kotlin 1.4.31 and coroutines 1.4.3
 
 * Bugfix: `BeforeProjectListener` was not always being detected
 * Bugfix: Using `shouldBe` with throwables would compare using the message only #2094
