@@ -64,5 +64,5 @@ This is a list of projects that provide Kotest matchers. They are maintained out
 
 | Library | Description |
 | -------- | ---- |
-| [Http4k](https://github.com/http4k/http4k/tree/master/http4k-testing-kotest) | Functional toolkit for Kotlin HTTP applications |
+| [Http4k](https://github.com/http4k/http4k/tree/master/http4k-testing/kotest) | Functional toolkit for Kotlin HTTP applications |
 | [Micronaut](https://github.com/micronaut-projects/micronaut-test) | JVM-based, full-stack framework for building modular, easily testable microservice |
