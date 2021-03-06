@@ -1,6 +1,6 @@
 object Libs {
 
-   const val kotlinVersion = "1.4.30"
+   const val kotlinVersion = "1.4.31"
    const val dokkaVersion = "0.10.1"
    const val adarshrTestLoggerVersion = "2.0.0"
    const val gradleVersionsPluginVersion = "0.28.0"
@@ -8,7 +8,7 @@ object Libs {
    const val kotestGradlePlugin = "0.1.4"
 
    object Kotlin {
-      private const val kotlinScriptVersion = "1.4.30"
+      private const val kotlinScriptVersion = "1.4.31"
       const val kotlinScriptRuntime = "org.jetbrains.kotlin:kotlin-script-runtime:$kotlinVersion"
       const val kotlinScriptUtil = "org.jetbrains.kotlin:kotlin-script-util:$kotlinScriptVersion"
       const val kotlinScriptJvm = "org.jetbrains.kotlin:kotlin-scripting-jvm:$kotlinScriptVersion"
@@ -143,7 +143,7 @@ object Libs {
    }
 
    object Coroutines {
-      private const val version = "1.4.2"
+      private const val version = "1.4.3"
       const val coreCommon = "org.jetbrains.kotlinx:kotlinx-coroutines-core:$version"
       const val coreJvm = "org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm:$version"
       const val coreJs = "org.jetbrains.kotlinx:kotlinx-coroutines-core-js:$version"
