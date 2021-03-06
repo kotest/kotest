@@ -65,15 +65,15 @@ Sam Sam (sksamuel), Sean Flanigan (seanf), Sebastian Schuberth (sschuberth).
 
 Note: Release 4.4.2 is compiled against Kotlin 1.4.31 and coroutines 1.4.3
 
+* Feature: The Javascript test artifacts are now compiled against the IR compiler in addition to current #2037
 * Bugfix: `BeforeProjectListener` was not always being detected
 * Bugfix: Using `shouldBe` with throwables would compare using the message only #2094
-* Bugfix: Fix withEnvironment() to be case-insensitve on Windows #2099
-* Bugfix: Fix IncorrectDereferenceException when calling assertions on backgrond thread on native #2128
-* Bugfix: Fix Arb.bigdecimal hanging for some combinations of min and maxvalues #2135
-* Improvement: Eventually sometimes only checks a single time despite short scheduled intervals #2089
-* Improvement: Updates error message for shouldContainKeys matcher to includes keys which are not present in given map #2106
-* Improvement: haveCauseOfType shows exception type instead of cause type #2131
-* Feature: The Javascript test artifacts are now compiled against the IR compiler in addition to current #2037
+* Bugfix: Fix `withEnvironment()` to be case-insensitve on Windows #2099
+* Bugfix: Fix `IncorrectDereferenceException` when calling assertions on background thread on native #2128
+* Bugfix: Fix `Arb.bigdecimal` hanging for some combinations of min and maxvalues #2135
+* Improvement: `eventually` sometimes only checks a single time despite short scheduled intervals #2089
+* Improvement: Updates error message for `shouldContainKeys` matcher to includes keys which are not present in given map #2106
+* Improvement: `haveCauseOfType` shows exception type instead of cause type #2131
 
 ### 4.4.1 February 2021
 
