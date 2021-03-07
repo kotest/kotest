@@ -5,6 +5,7 @@ import io.kotest.core.listeners.TestListener
 import io.kotest.core.spec.Spec
 import io.kotest.core.test.Description
 import io.kotest.core.spec.toDescription
+import io.kotest.matchers.shouldBe
 import java.io.FileDescriptor
 import java.net.InetAddress
 import java.security.Permission
@@ -50,21 +51,27 @@ object SystemExitListener : TestListener {
  */
 object SpecSystemExitListener : TestListener {
 
-    private val previousSecurityManagers = ConcurrentHashMap<Description, SecurityManager>()
+   private val previousSecurityManagers = ConcurrentHashMap<Description, SecurityManager>()
 
    override suspend fun beforeSpec(spec: Spec) {
-        val previous = System.getSecurityManager()
-        if (previous != null)
-            previousSecurityManagers[spec::class.toDescription()] = previous
-        System.setSecurityManager(NoExitSecurityManager(previous))
-    }
+      val previous = System.getSecurityManager()
+      if (previous != null)
+         previousSecurityManagers[spec::class.toDescription()] = previous
+      System.setSecurityManager(NoExitSecurityManager(previous))
+   }
 
    override suspend fun afterSpec(spec: Spec) {
-        if (previousSecurityManagers.contains(spec::class.toDescription()))
-            System.setSecurityManager(previousSecurityManagers[spec::class.toDescription()])
-        else
-            System.setSecurityManager(null)
-    }
+      if (previousSecurityManagers.contains(spec::class.toDescription()))
+         System.setSecurityManager(previousSecurityManagers[spec::class.toDescription()])
+      else
+         System.setSecurityManager(null)
+   }
+
+   fun shouldHaveExitCode(code: Int) {
+      when (val manager = System.getSecurityManager()) {
+         is NoExitSecurityManager -> manager.lastExitCode shouldBe code
+      }
+   }
 }
 
 class SystemExitException(val exitCode: Int) : RuntimeException()
@@ -80,7 +87,12 @@ class SystemExitException(val exitCode: Int) : RuntimeException()
 @Suppress("OverridingDeprecatedMember", "DEPRECATION")
 class NoExitSecurityManager(private val originalSecurityManager: SecurityManager?) : SecurityManager() {
 
-    override fun checkExit(status: Int) = throw SystemExitException(status)
+   var lastExitCode: Int = -1
+
+   override fun checkExit(status: Int) {
+      lastExitCode = status
+      throw SystemExitException(status)
+   }
 
     override fun getSecurityContext(): Any {
         return if (originalSecurityManager == null)
