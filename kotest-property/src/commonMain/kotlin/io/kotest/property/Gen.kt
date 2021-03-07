@@ -1,8 +1,8 @@
 package io.kotest.property
 
 import io.kotest.fp.NonEmptyList
+import io.kotest.fp.Option
 import io.kotest.property.arbitrary.of
-import io.kotest.property.arbitrary.single
 
 /**
  * A [Gen] is responsible for providing values to be used in property testing. You can think of it as like
@@ -25,17 +25,20 @@ import io.kotest.property.arbitrary.single
  */
 sealed class Gen<out A> {
 
-   fun generate(
-      rs: RandomSource,
-      edgecasesProbability: Double = PropertyTesting.edgecasesGenerationProbability
-   ): Sequence<Sample<A>> = when (this) {
+   fun generate(rs: RandomSource, edgeConfig: EdgeConfig = EdgeConfig.default()): Sequence<Sample<A>> = when (this) {
       is Arb -> {
-         check(edgecasesProbability in 0.0..1.0) { "provided edgecases probability $edgecasesProbability is outside of the permitted range [0.0 - 1.0]" }
-
          val samples = this.samples(rs).iterator()
          generateSequence {
-            val p = rs.random.nextDouble(0.0, 1.0)
-            if (p < edgecasesProbability) Sample(this.generateEdgecase(rs)) else samples.next()
+            this.edges().fold(
+               { samples.next() },
+               { edge ->
+                  val p = rs.random.nextDouble(0.0, 1.0)
+                  if (p < edgeConfig.edgecasesGenerationProbability)
+                     Sample(edge.generate(rs, edgeConfig))
+                  else
+                     samples.next()
+               }
+            )
          }
       }
       is Exhaustive -> {
@@ -79,17 +82,12 @@ abstract class Arb<out A> : Gen<A>() {
    /**
     * Edgecase values for this type A.
     */
-   @Deprecated("implement one value at a time using generateEdgecase(rs) or use Arb<T>.withEdgecases(...) instead")
    abstract fun edgecases(): List<A>
 
-   /**
-    * Returns a random edgecase value using the supplied random source
-    */
-   open fun generateEdgecase(rs: RandomSource): A =
-      NonEmptyList.fromList(edgecases()).fold(
-         { single(rs) },
-         { it.all.random(rs.random) }
-      )
+   internal open fun edges(): Option<Edgecase<A>> =
+      NonEmptyList
+         .fromList(edgecases())
+         .map { Edgecase { rs, _ -> it.all.random(rs.random) } }
 
    /**
     * Returns a random [Sample] from this [Arb] using the supplied random source.
@@ -156,3 +154,37 @@ data class Sample<out A>(val value: A, val shrinks: RTree<A> = RTree({ value }))
  * Returns a [Sample] with shrinks by using the supplied [Shrinker] against the input value [a].
  */
 fun <A> sampleOf(a: A, shrinker: Shrinker<A>) = Sample(a, shrinker.rtree(a))
+
+internal data class Edgecase<out A>(val generate: (rs: RandomSource, config: EdgeConfig) -> A) {
+   constructor(generate: (RandomSource) -> A) : this({ rs, _ -> generate(rs) })
+
+   companion object;
+
+   fun <B> map(fn: (A) -> B): Edgecase<B> = Edgecase { rs, config ->
+      fn(this@Edgecase.generate(rs, config))
+   }
+
+   fun <B> flatMap(fn: (A) -> Edgecase<B>): Edgecase<B> = Edgecase { rs, config ->
+      this@Edgecase.generate(rs, config)
+         .let(fn)
+         .generate(rs, config)
+   }
+
+   fun plus(other: Edgecase<@UnsafeVariance A>): Edgecase<A> = Edgecase { rs, config ->
+      if (rs.random.nextBoolean()) this@Edgecase.generate(rs, config) else other.generate(rs, config)
+   }
+}
+
+data class EdgeConfig(
+   val determinism: Double = PropertyTesting.edgecasesBindDeterminism,
+   val edgecasesGenerationProbability: Double = PropertyTesting.edgecasesGenerationProbability
+) {
+   companion object;
+
+   init {
+      check(determinism in 0.0..1.0) { "provided determinism $determinism is not between 0.0 and 1.0" }
+      check(edgecasesGenerationProbability in 0.0..1.0) {
+         "provided edgecasesProbability $edgecasesGenerationProbability is not between 0.0 and 1.0"
+      }
+   }
+}

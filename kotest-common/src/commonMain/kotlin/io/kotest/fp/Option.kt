@@ -24,9 +24,9 @@ sealed class Option<out T> {
       is Some -> f(this.value)
    }
 
-   inline fun filter(predicate: (T) -> Boolean): Option<T> = when(this) {
+   inline fun filter(predicate: (T) -> Boolean): Option<T> = when (this) {
       is None -> this
-      is Some -> if(predicate(this.value)) this else None
+      is Some -> if (predicate(this.value)) this else None
    }
 
    fun forEach(f: (T) -> Unit) = fold({}, { f(it) })
@@ -42,6 +42,13 @@ fun <T> Option<T>.orElse(other: Option<T>): Option<T> = when (this) {
    is Option.None -> other
    else -> this
 }
+
+fun <T> Option<T>.combineWith(other: Option<T>, combineValue: (T, T) -> T): Option<T> = this.fold(
+   { other },
+   { a -> other.fold({ a.some() }, { b -> combineValue(a, b).some() }) }
+)
+
+fun <T> none(): Option<T> = Option.None
 
 fun <T> Option<T>.toList(): List<T> = this.fold({ emptyList() }, { listOf(it) })
 

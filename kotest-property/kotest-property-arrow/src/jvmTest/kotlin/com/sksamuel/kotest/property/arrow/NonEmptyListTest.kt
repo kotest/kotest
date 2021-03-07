@@ -4,7 +4,6 @@ import arrow.core.NonEmptyList
 import io.kotest.assertions.throwables.shouldThrowMessage
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.collections.shouldContainExactly
-import io.kotest.matchers.shouldBe
 import io.kotest.property.Arb
 import io.kotest.property.RandomSource
 import io.kotest.property.arbitrary.*
@@ -27,7 +26,7 @@ class NonEmptyListTest : FunSpec({
          .take(3, RandomSource.seeded(123123L))
          .toList() shouldContainExactly listOf(
          NonEmptyList.of("a", "a"),
-         NonEmptyList.of("a", "a", "a", "a"),
+         NonEmptyList.of("a", "a"),
          NonEmptyList.of("a", "a", "a", "a")
       )
    }

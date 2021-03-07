@@ -9,6 +9,7 @@ import io.kotest.matchers.should
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
 import io.kotest.property.Arb
+import io.kotest.property.EdgeConfig
 import io.kotest.property.RandomSource
 import io.kotest.property.arbitrary.bind
 import io.kotest.property.arbitrary.bool
@@ -186,13 +187,16 @@ class BindTest : StringSpec({
       val arbA = Arb.string(1).withEdgecases("a")
       val arbB = Arb.string(1).withEdgecases("a", "b")
       val arb = Arb.bind(arbA, arbB) { a, b -> a + b }
-      val rs = RandomSource.seeded(1234L)
-      val edgecases = generateSequence { arb.generateEdgecase(rs) }.take(5).toList()
+      val edgecases = arb
+         .generate(RandomSource.seeded(1234L), EdgeConfig(edgecasesGenerationProbability = 1.0))
+         .take(5)
+         .map { it.value }
+         .toList()
       edgecases shouldContainExactly listOf(
-         "a ",
-         "ab",
-         "#b",
          "aa",
+         "ab",
+         "ab",
+         "ab",
          "aa"
       )
    }
@@ -202,14 +206,17 @@ class BindTest : StringSpec({
       val arbB = Arb.string(1).withEdgecases("a", "b")
       val arbC = Arb.string(1).withEdgecases("a", "b")
       val arb = Arb.bind(arbA, arbB, arbC) { a, b, c -> a + b + c }
-      val rs = RandomSource.seeded(1234L)
-      val edgecases = generateSequence { arb.generateEdgecase(rs) }.take(5).toList()
+      val edgecases = arb
+         .generate(RandomSource.seeded(1234L), EdgeConfig(edgecasesGenerationProbability = 1.0))
+         .take(5)
+         .map { it.value }
+         .toList()
       edgecases shouldContainExactly listOf(
-         "a b",
+         "xbb",
          "aba",
          "aaa",
-         "aaa",
-         "aaa"
+         "aba",
+         "aba"
       )
    }
 
@@ -219,14 +226,17 @@ class BindTest : StringSpec({
       val arbC = Arb.string(1).withEdgecases("a", "b")
       val arbD = Arb.string(1).withEdgecases("a", "b")
       val arb = Arb.bind(arbA, arbB, arbC, arbD) { a, b, c, d -> "$a$b$c$d" }
-      val rs = RandomSource.seeded(1234L)
-      val edgecases = generateSequence { arb.generateEdgecase(rs) }.take(5).toList()
+      val edgecases = arb
+         .generate(RandomSource.seeded(1234L), EdgeConfig(edgecasesGenerationProbability = 1.0))
+         .take(5)
+         .map { it.value }
+         .toList()
       edgecases shouldContainExactly listOf(
-         "a ba",
-         "aLbb",
-         "aa7b",
-         "abbb",
-         "abab"
+         "abba",
+         "ajab",
+         "abaa",
+         "aaba",
+         "abaa"
       )
    }
 
@@ -237,14 +247,17 @@ class BindTest : StringSpec({
       val arbD = Arb.string(1).withEdgecases("a", "b")
       val arbE = Arb.string(1).withEdgecases("a", "b")
       val arb = Arb.bind(arbA, arbB, arbC, arbD, arbE) { a, b, c, d, e -> "$a$b$c$d$e" }
-      val rs = RandomSource.seeded(1234L)
-      val edgecases = generateSequence { arb.generateEdgecase(rs) }.take(5).toList()
+      val edgecases = arb
+         .generate(RandomSource.seeded(1234L), EdgeConfig(edgecasesGenerationProbability = 1.0))
+         .take(5)
+         .map { it.value }
+         .toList()
       edgecases shouldContainExactly listOf(
-         "a bab",
-         "aabbb",
-         "abbba",
-         "aaaab",
-         "aaaab"
+         "aabaa",
+         "jaba0",
+         "aabab",
+         "abbab",
+         "abbbb"
       )
    }
 
@@ -258,13 +271,17 @@ class BindTest : StringSpec({
       val arbF = Arb.string(1).withEdgecases("a", "b")
       val arb = Arb.bind(arbA, arbB, arbC, arbD, arbE, arbF) { a, b, c, d, e, f -> "$a$b$c$d$e$f" }
       val rs = RandomSource.seeded(1234L)
-      val edgecases = generateSequence { arb.generateEdgecase(rs) }.take(5).toList()
+      val edgecases = arb
+         .generate(RandomSource.seeded(1234L), EdgeConfig(edgecasesGenerationProbability = 1.0))
+         .take(5)
+         .map { it.value }
+         .toList()
       edgecases shouldContainExactly listOf(
-         "b babb",
-         "baba=b",
-         "bbbaaa",
-         "abaatb",
-         "aababa"
+         "aaebab",
+         "aba0aa",
+         "]abaab",
+         "aababb",
+         "bbbaba"
       )
    }
 
@@ -279,13 +296,17 @@ class BindTest : StringSpec({
       val arbG = Arb.string(1).withEdgecases("a", "b")
       val arb = Arb.bind(arbA, arbB, arbC, arbD, arbE, arbF, arbG) { a, b, c, d, e, f, g -> "$a$b$c$d$e$f$g" }
       val rs = RandomSource.seeded(1234L)
-      val edgecases = generateSequence { arb.generateEdgecase(rs) }.take(5).toList()
+      val edgecases = arb
+         .generate(RandomSource.seeded(1234L), EdgeConfig(edgecasesGenerationProbability = 1.0))
+         .take(5)
+         .map { it.value }
+         .toList()
       edgecases shouldContainExactly listOf(
-         "b babba",
-         "Lbbbaab",
-         "7baaabb",
-         "bababaa",
-         "bababba"
+         "babbabb",
+         "ba0aaba",
+         "aabbbab",
+         "baaabab",
+         "babaabb"
       )
    }
 
@@ -301,14 +322,17 @@ class BindTest : StringSpec({
       val arbH = Arb.string(1).withEdgecases("a", "b")
       val arb =
          Arb.bind(arbA, arbB, arbC, arbD, arbE, arbF, arbG, arbH) { a, b, c, d, e, f, g, h -> "$a$b$c$d$e$f$g$h" }
-      val rs = RandomSource.seeded(1234L)
-      val edgecases = generateSequence { arb.generateEdgecase(rs) }.take(5).toList()
+      val edgecases = arb
+         .generate(RandomSource.seeded(1234L), EdgeConfig(edgecasesGenerationProbability = 1.0))
+         .take(5)
+         .map { it.value }
+         .toList()
       edgecases shouldContainExactly listOf(
-         "b babbab",
-         "abbbaaba",
-         "bbaaabbb",
-         "abaabbba",
-         "babaabaa"
+         "baabbaBb",
+         "a0aabaab",
+         "aaaabaab",
+         "aab0abba",
+         "bab\$aTba"
       )
    }
 
@@ -333,14 +357,17 @@ class BindTest : StringSpec({
          arbH,
          arbI
       ) { a, b, c, d, e, f, g, h, i -> "$a$b$c$d$e$f$g$h$i" }
-      val rs = RandomSource.seeded(1234L)
-      val edgecases = generateSequence { arb.generateEdgecase(rs) }.take(5).toList()
+      val edgecases = arb
+         .generate(RandomSource.seeded(1234L), EdgeConfig(edgecasesGenerationProbability = 1.0))
+         .take(5)
+         .map { it.value }
+         .toList()
       edgecases shouldContainExactly listOf(
-         "b babbabb",
-         "aba=bbbaa",
-         "baaabbbaa",
-         "atbaaLbaa",
-         "abbabbbab"
+         "ebabbabbb",
+         "0aabaabaa",
+         "abaaEbbba",
+         "babaabaab",
+         "b\$aTbabab"
       )
    }
 
@@ -358,14 +385,17 @@ class BindTest : StringSpec({
       val arb = Arb.bind(arbA, arbB, arbC, arbD, arbE, arbF, arbG, arbH, arbI, arbJ) { a, b, c, d, e, f, g, h, i, j ->
          "$a$b$c$d$e$f$g$h$i$j"
       }
-      val rs = RandomSource.seeded(1234L)
-      val edgecases = generateSequence { arb.generateEdgecase(rs) }.take(5).toList()
+      val edgecases = arb
+         .generate(RandomSource.seeded(1234L), EdgeConfig(edgecasesGenerationProbability = 1.0))
+         .take(5)
+         .map { it.value }
+         .toList()
       edgecases shouldContainExactly listOf(
-         "b babbabba",
-         "bibaaba#bb",
-         "aHaababaab",
-         "a4aaababba",
-         "ajbbbabaab"
+         "bSabbabaja",
+         "b baabaaba",
+         "b aabbbaba",
+         "b(abbbbaba",
+         "a)abababba"
       )
    }
 
@@ -385,14 +415,17 @@ class BindTest : StringSpec({
          Arb.bind(arbA, arbB, arbC, arbD, arbE, arbF, arbG, arbH, arbI, arbJ, arbK) { a, b, c, d, e, f, g, h, i, j, k ->
             "$a$b$c$d$e$f$g$h$i$j$k"
          }
-      val rs = RandomSource.seeded(1234L)
-      val edgecases = generateSequence { arb.generateEdgecase(rs) }.take(5).toList()
+      val edgecases = arb
+         .generate(RandomSource.seeded(1234L), EdgeConfig(edgecasesGenerationProbability = 1.0))
+         .take(5)
+         .map { it.value }
+         .toList()
       edgecases shouldContainExactly listOf(
-         "b baCawabdb",
-         "bbaa=babb\\a",
-         "ab0buaabasa",
-         "aLbaHbababb",
-         "baba)b5ab-b"
+         "abbaebbYbBa",
+         "bbaa6ababFb",
+         "Ebbbdbabbra",
+         "abbboaba5eT",
+         "ababLbbba-W"
       )
    }
 
@@ -426,14 +459,17 @@ class BindTest : StringSpec({
          "$a$b$c$d$e$f$g$h$i$j$k$l"
       }
 
-      val rs = RandomSource.seeded(1234L)
-      val edgecases = generateSequence { arb.generateEdgecase(rs) }.take(5).toList()
+      val edgecases = arb
+         .generate(RandomSource.seeded(1234L), EdgeConfig(edgecasesGenerationProbability = 1.0))
+         .take(5)
+         .map { it.value }
+         .toList()
       edgecases shouldContainExactly listOf(
-         "b babbabbab`",
-         "bbjaba#bbba=",
-         "abbbaaaaaba0",
-         "aLbaaababaaj",
-         "bababa&abba-"
+         "aabbabajabau",
+         "bbaaabbbaaaS",
+         "Ebbbabaaabab",
+         "abbbabaabbas",
+         "aaaabaabaa>b"
       )
    }
 
@@ -469,14 +505,17 @@ class BindTest : StringSpec({
          "$a$b$c$d$e$f$g$h$i$j$k$l$m"
       }
 
-      val rs = RandomSource.seeded(1234L)
-      val edgecases = generateSequence { arb.generateEdgecase(rs) }.take(5).toList()
+      val edgecases = arb
+         .generate(RandomSource.seeded(1234L), EdgeConfig(edgecasesGenerationProbability = 1.0))
+         .take(5)
+         .map { it.value }
+         .toList()
       edgecases shouldContainExactly listOf(
-         "b babbabbabbB",
-         "bbaaba#bbbaaG",
-         "aababaabaatbR",
-         "Lbaaababaaba9",
-         "babab5abababV"
+         "abbabbbaaba0?",
+         "aaabaababaabM",
+         "abbbabaaabab'",
+         "bbbababa5abaH",
+         "ababaMaa>aWbp"
       )
    }
 
@@ -513,15 +552,17 @@ class BindTest : StringSpec({
       ) { a, b, c, d, e, f, g, h, i, j, k, l, m, n ->
          "$a$b$c$d$e$f$g$h$i$j$k$l$m$n"
       }
-
-      val rs = RandomSource.seeded(1234L)
-      val edgecases = generateSequence { arb.generateEdgecase(rs) }.take(5).toList()
+      val edgecases = arb
+         .generate(RandomSource.seeded(1234L), EdgeConfig(edgecasesGenerationProbability = 1.0))
+         .take(5)
+         .map { it.value }
+         .toList()
       edgecases shouldContainExactly listOf(
-         "b babbabbabbas",
-         "a=bbbaaaa7baa6",
-         "ababaabaatbaaL",
-         "baaababaabaaby",
-         "baabbababababI"
+         "baBbajaba0aab=",
+         "baababaabaaEb-",
+         "abaaababaabaah",
+         "abab\$aTbababbl",
+         "bbbaJa\\baaabaQ"
       )
    }
 
@@ -531,16 +572,25 @@ class BindTest : StringSpec({
    }
 
    "Arb.reflectiveBind should generate probabilistic edgecases" {
-      val arb = Arb.bind<Wobble>(edgecaseDeterminism = 0.9)
+      val arb = Arb.bind<Wobble>()
+      val edgecases = arb
+         .generate(RandomSource.seeded(1234L), EdgeConfig(edgecasesGenerationProbability = 1.0))
+         .take(5)
+         .map { it.value }
+         .toList()
 
-      val rs = RandomSource.seeded(1234L)
-      val edgecases = generateSequence { arb.generateEdgecase(rs) }.take(5).toList()
       edgecases shouldContainExactly listOf(
-         Wobble(a = "a", b = false, c = -2147483648, d = 1.0E300, e = -1.0f),
-         Wobble(a = "", b = false, c = 2147483647, d = -1.0, e = Float.NaN),
-         Wobble(a = "a", b = true, c = 1676707938, d = 1.0E300, e = 3.4028235E38f),
-         Wobble(a = "a", b = true, c = 1, d = Double.NEGATIVE_INFINITY, e = Float.NEGATIVE_INFINITY),
-         Wobble(a = "", b = true, c = 1, d = 0.0, e = 0.15432036f)
+         Wobble(a = "a", b = true, c = 1, d = -1.0E300, e = Float.NEGATIVE_INFINITY),
+         Wobble(a = "", b = true, c = -1, d = -8.353207029454685E306, e = 0.27004498f),
+         Wobble(a = "", b = false, c = Integer.MAX_VALUE, d = -1.5032913633841E308, e = 0.0f),
+         Wobble(a = "", b = true, c = Integer.MAX_VALUE, d = 0.0, e = Float.POSITIVE_INFINITY),
+         Wobble(
+            a = "hL+8ow?83LiKCx*n[=CY1623wj&HmQ1Gw` ,P!F-<Ralc9<4/Dw.V90za",
+            b = false,
+            c = 2016148584,
+            d = 3.407355728129291E307,
+            e = 1.0f
+         )
       )
    }
 })

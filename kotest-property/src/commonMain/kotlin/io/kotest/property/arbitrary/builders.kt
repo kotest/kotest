@@ -1,6 +1,7 @@
 package io.kotest.property.arbitrary
 
-import io.kotest.fp.NonEmptyList
+import io.kotest.fp.Option
+import io.kotest.fp.some
 import io.kotest.property.*
 import kotlin.jvm.JvmName
 
@@ -17,11 +18,6 @@ fun <A> arbitrary(fn: (RandomSource) -> A): Arb<A> =
  */
 fun <A> arbitrary(edgecases: List<A>, fn: (RandomSource) -> A): Arb<A> = object : Arb<A>() {
    override fun edgecases(): List<A> = edgecases
-   override fun generateEdgecase(rs: RandomSource): A = NonEmptyList.fromList(edgecases).fold(
-      { single(rs) },
-      { it.all.random(rs.random) }
-   )
-
    override fun sample(rs: RandomSource): Sample<A> = Sample(fn(rs))
    override fun values(rs: RandomSource): Sequence<Sample<A>> = generateSequence { Sample(fn(rs)) }
 }
@@ -32,11 +28,6 @@ fun <A> arbitrary(edgecases: List<A>, fn: (RandomSource) -> A): Arb<A> = object 
  */
 fun <A> arbitrary(edgecases: List<A>, shrinker: Shrinker<A>, fn: (RandomSource) -> A): Arb<A> = object : Arb<A>() {
    override fun edgecases(): List<A> = edgecases
-   override fun generateEdgecase(rs: RandomSource): A = NonEmptyList.fromList(edgecases).fold(
-      { single(rs) },
-      { it.all.random(rs.random) }
-   )
-
    override fun sample(rs: RandomSource): Sample<A> = sampleOf(fn(rs), shrinker)
    override fun values(rs: RandomSource): Sequence<Sample<A>> = generateSequence { sampleOf(fn(rs), shrinker) }
 }
@@ -44,10 +35,13 @@ fun <A> arbitrary(edgecases: List<A>, shrinker: Shrinker<A>, fn: (RandomSource) 
 /**
  * Creates a new [Arb] using the given edgecase generator and generates samples from the given sample generator.
  */
-fun <A> arbitrary(edgecaseGenerator: (RandomSource) -> A, sampleGenerator: (RandomSource) -> A): Arb<A> =
+fun <A> arbitrary(edgecaseGenerator: EdgeConfig.(RandomSource) -> A, sampleGenerator: (RandomSource) -> A): Arb<A> =
    object : Arb<A>() {
       override fun edgecases(): List<A> = emptyList()
-      override fun generateEdgecase(rs: RandomSource): A = edgecaseGenerator(rs)
+      override fun edges(): Option<Edgecase<A>> = Edgecase { rs, config ->
+         config.edgecaseGenerator(rs)
+      }.some()
+
       override fun sample(rs: RandomSource): Sample<A> = Sample(sampleGenerator(rs))
       override fun values(rs: RandomSource): Sequence<Sample<A>> = generateSequence { Sample(sampleGenerator(rs)) }
    }
@@ -57,14 +51,16 @@ fun <A> arbitrary(edgecaseGenerator: (RandomSource) -> A, sampleGenerator: (Rand
  * generates edgecases using the given edgecase generator,
  * and generates samples from the given sample generator.
  */
-fun <A> arbitrary(
+internal fun <A> arbitrary(
    shrinker: Shrinker<A>,
-   edgecaseGenerator: (RandomSource) -> A,
+   edgecaseGenerator: EdgeConfig.(RandomSource) -> A,
    sampleGenerator: (RandomSource) -> A
 ): Arb<A> =
    object : Arb<A>() {
       override fun edgecases(): List<A> = emptyList()
-      override fun generateEdgecase(rs: RandomSource): A = edgecaseGenerator(rs)
+      override fun edges(): Option<Edgecase<A>> = Edgecase { rs, config ->
+         config.edgecaseGenerator(rs)
+      }.some()
       override fun sample(rs: RandomSource): Sample<A> = sampleOf(sampleGenerator(rs), shrinker)
       override fun values(rs: RandomSource): Sequence<Sample<A>> = generateSequence { Sample(sampleGenerator(rs)) }
    }
@@ -97,11 +93,6 @@ fun <A> arb(fn: (RandomSource) -> A): Arb<A> =
 @JvmName("arbSequence")
 fun <A> arb(edgecases: List<A> = emptyList(), fn: (RandomSource) -> Sequence<A>) = object : Arb<A>() {
    override fun edgecases(): List<A> = edgecases
-   override fun generateEdgecase(rs: RandomSource): A = NonEmptyList.fromList(edgecases).fold(
-      { single(rs) },
-      { it.all.random(rs.random) }
-   )
-
    override fun values(rs: RandomSource): Sequence<Sample<A>> = fn(rs).map { Sample(it) }
    override fun sample(rs: RandomSource): Sample<A> = Sample(fn(rs).first())
 }
@@ -120,11 +111,6 @@ fun <A> arb(
    fn: (RandomSource) -> Sequence<A>
 ) = object : Arb<A>() {
    override fun edgecases(): List<A> = edgecases
-   override fun generateEdgecase(rs: RandomSource): A = NonEmptyList.fromList(edgecases).fold(
-      { single(rs) },
-      { it.all.random(rs.random) }
-   )
-
    override fun values(rs: RandomSource): Sequence<Sample<A>> = fn(rs).map { sampleOf(it, shrinker) }
    override fun sample(rs: RandomSource): Sample<A> = sampleOf(fn(rs).first(), shrinker)
 }

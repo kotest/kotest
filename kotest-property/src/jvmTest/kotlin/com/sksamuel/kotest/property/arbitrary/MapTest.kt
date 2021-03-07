@@ -4,6 +4,7 @@ import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.collections.shouldContainExactly
 import io.kotest.matchers.shouldBe
 import io.kotest.property.Arb
+import io.kotest.property.EdgeConfig
 import io.kotest.property.RandomSource
 import io.kotest.property.arbitrary.IntShrinker
 import io.kotest.property.arbitrary.arbitrary
@@ -25,7 +26,7 @@ class MapTest : FunSpec({
 
    test("should transform edgecases") {
       val arb = Arb.int(1, 10).withEdgecases(1).map { "$it" }
-      arb.generateEdgecase(RandomSource.Default) shouldBe "1"
+      arb.generate(RandomSource.Default, EdgeConfig(edgecasesGenerationProbability = 1.0)).single().value shouldBe "1"
    }
 
    test("should preserve shrinking") {

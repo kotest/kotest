@@ -29,7 +29,7 @@ fun Arb.Companion.string(
    else
       listOfNotNull(min, minPlus1).filter { it.length in minSize..maxSize }
 
-   return arb(StringShrinker, edgecases) { rs ->
+   return arbitrary(edgecases, StringShrinker) { rs ->
       val size = rs.random.nextInt(minSize..maxSize)
       codepoints.take(size, rs).joinToString("") { it.asString() }
    }

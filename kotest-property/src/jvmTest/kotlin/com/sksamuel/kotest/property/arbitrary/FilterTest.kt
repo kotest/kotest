@@ -3,8 +3,8 @@ package com.sksamuel.kotest.property.arbitrary
 import io.kotest.assertions.throwables.shouldNotThrow
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.collections.shouldContainExactly
-import io.kotest.matchers.sequences.shouldContainExactly
 import io.kotest.property.Arb
+import io.kotest.property.EdgeConfig
 import io.kotest.property.RandomSource
 import io.kotest.property.Sample
 import io.kotest.property.arbitrary.filter
@@ -22,14 +22,12 @@ class FilterTest : FunSpec({
 
    test("should filter edgecases") {
       val arb = Arb.int(1..10).withEdgecases(1, 2, 3).filter { it % 2 == 0 }
-      val rs = RandomSource.seeded(1234L)
-      generateSequence { arb.generateEdgecase(rs) }.take(5).toList() shouldContainExactly listOf(
-         2,
-         2,
-         4,
-         2,
-         10
-      )
+      val edgecases = arb
+         .generate(RandomSource.seeded(1234L), EdgeConfig(edgecasesGenerationProbability = 1.0))
+         .take(5)
+         .map { it.value }
+         .toList()
+      edgecases shouldContainExactly listOf(2, 2, 2, 2, 2)
    }
 
    test("should be stack safe") {

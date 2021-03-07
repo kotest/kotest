@@ -6,6 +6,7 @@ import io.kotest.matchers.comparables.beGreaterThan
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
 import io.kotest.property.Arb
+import io.kotest.property.EdgeConfig
 import io.kotest.property.RandomSource
 import io.kotest.property.arbitrary.arbitrary
 import io.kotest.property.arbitrary.choice
@@ -36,30 +37,33 @@ class ChoiceTest : WordSpec({
          positiveNumbers shouldBe beGreaterThan(1)
       }
       "support covariance" {
-         val arbs: Arb<X> = Arb.choice(
+         Arb.choice(
             Arb.int().map { X.A(it) },
             Arb.int().map { X.B(it) },
             Arb.int().map { X.C(it) }
          )
       }
       "combines the provided Arb instances edgecases" {
-         val arbs = Arb.choice(
+         val arb = Arb.choice(
             arbitrary(listOf(1, 2)) { 5 },
             arbitrary(listOf(3, 4)) { 6 }
          )
-         val rs = RandomSource.seeded(1234L)
-         val edgecases = generateSequence { arbs.generateEdgecase(rs) }.take(10).toList()
+         val edgecases = arb
+            .generate(RandomSource.seeded(1234L), EdgeConfig(edgecasesGenerationProbability = 1.0))
+            .take(10)
+            .map { it.value }
+            .toList()
          edgecases shouldContainExactly listOf(
-            2,
             4,
+            4,
+            1,
             3,
-            4,
-            4,
-            1,
-            1,
             2,
-            1,
-            3
+            2,
+            3,
+            2,
+            2,
+            1
          )
       }
       "provides both edgecases and values when used as a Gen" {

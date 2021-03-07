@@ -1,13 +1,15 @@
 package io.kotest.property.arbitrary
 
+import io.kotest.fp.Option
+import io.kotest.fp.some
 import io.kotest.property.Arb
+import io.kotest.property.Edgecase
 import io.kotest.property.Exhaustive
 import io.kotest.property.Gen
 import io.kotest.property.RandomSource
 import io.kotest.property.Sample
 
 fun <A, B, T> Arb.Companion.bind(
-   edgecaseDeterminism: Double,
    genA: Gen<A>,
    genB: Gen<B>,
    bindFn: (A, B) -> T
@@ -26,20 +28,12 @@ fun <A, B, T> Arb.Companion.bind(
       Arb.unit(),
       Arb.unit(),
       Arb.unit(),
-      Arb.unit(),
-      edgecaseDeterminism
+      Arb.unit()
    ) { a, b, _, _, _, _, _, _, _, _, _, _, _, _ ->
       bindFn(a, b)
    }
 
-fun <A, B, T> Arb.Companion.bind(
-   genA: Gen<A>,
-   genB: Gen<B>,
-   bindFn: (A, B) -> T
-): Arb<T> = bind(defaultDeterminism, genA, genB, bindFn)
-
 fun <A, B, C, T> Arb.Companion.bind(
-   edgecaseDeterminism: Double,
    genA: Gen<A>,
    genB: Gen<B>,
    genC: Gen<C>,
@@ -58,21 +52,12 @@ fun <A, B, C, T> Arb.Companion.bind(
    Arb.unit(),
    Arb.unit(),
    Arb.unit(),
-   Arb.unit(),
-   edgecaseDeterminism
+   Arb.unit()
 ) { a, b, c, _, _, _, _, _, _, _, _, _, _, _ ->
    bindFn(a, b, c)
 }
 
-fun <A, B, C, T> Arb.Companion.bind(
-   genA: Gen<A>,
-   genB: Gen<B>,
-   genC: Gen<C>,
-   bindFn: (A, B, C) -> T
-): Arb<T> = bind(defaultDeterminism, genA, genB, genC, bindFn)
-
 fun <A, B, C, D, T> Arb.Companion.bind(
-   edgecaseDeterminism: Double,
    genA: Gen<A>,
    genB: Gen<B>,
    genC: Gen<C>,
@@ -92,22 +77,12 @@ fun <A, B, C, D, T> Arb.Companion.bind(
    Arb.unit(),
    Arb.unit(),
    Arb.unit(),
-   Arb.unit(),
-   edgecaseDeterminism
+   Arb.unit()
 ) { a, b, c, d, _, _, _, _, _, _, _, _, _, _ ->
    bindFn(a, b, c, d)
 }
 
-fun <A, B, C, D, T> Arb.Companion.bind(
-   genA: Gen<A>,
-   genB: Gen<B>,
-   genC: Gen<C>,
-   genD: Gen<D>,
-   bindFn: (A, B, C, D) -> T
-): Arb<T> = bind(defaultDeterminism, genA, genB, genC, genD, bindFn)
-
 fun <A, B, C, D, E, T> Arb.Companion.bind(
-   edgecaseDeterminism: Double,
    genA: Gen<A>,
    genB: Gen<B>,
    genC: Gen<C>,
@@ -128,23 +103,12 @@ fun <A, B, C, D, E, T> Arb.Companion.bind(
    Arb.unit(),
    Arb.unit(),
    Arb.unit(),
-   Arb.unit(),
-   edgecaseDeterminism
+   Arb.unit()
 ) { a, b, c, d, e, _, _, _, _, _, _, _, _, _ ->
    bindFn(a, b, c, d, e)
 }
 
-fun <A, B, C, D, E, T> Arb.Companion.bind(
-   genA: Gen<A>,
-   genB: Gen<B>,
-   genC: Gen<C>,
-   genD: Gen<D>,
-   genE: Gen<E>,
-   bindFn: (A, B, C, D, E) -> T
-): Arb<T> = bind(defaultDeterminism, genA, genB, genC, genD, genE, bindFn)
-
 fun <A, B, C, D, E, F, T> Arb.Companion.bind(
-   edgecaseDeterminism: Double,
    genA: Gen<A>,
    genB: Gen<B>,
    genC: Gen<C>,
@@ -166,24 +130,12 @@ fun <A, B, C, D, E, F, T> Arb.Companion.bind(
    Arb.unit(),
    Arb.unit(),
    Arb.unit(),
-   Arb.unit(),
-   edgecaseDeterminism
+   Arb.unit()
 ) { a, b, c, d, e, f, _, _, _, _, _, _, _, _ ->
    bindFn(a, b, c, d, e, f)
 }
 
-fun <A, B, C, D, E, F, T> Arb.Companion.bind(
-   genA: Gen<A>,
-   genB: Gen<B>,
-   genC: Gen<C>,
-   genD: Gen<D>,
-   genE: Gen<E>,
-   genF: Gen<F>,
-   bindFn: (A, B, C, D, E, F) -> T
-): Arb<T> = bind(defaultDeterminism, genA, genB, genC, genD, genE, genF, bindFn)
-
 fun <A, B, C, D, E, F, G, T> Arb.Companion.bind(
-   edgecaseDeterminism: Double,
    genA: Gen<A>,
    genB: Gen<B>,
    genC: Gen<C>,
@@ -206,25 +158,12 @@ fun <A, B, C, D, E, F, G, T> Arb.Companion.bind(
    Arb.unit(),
    Arb.unit(),
    Arb.unit(),
-   Arb.unit(),
-   edgecaseDeterminism
+   Arb.unit()
 ) { a, b, c, d, e, f, g, _, _, _, _, _, _, _ ->
    bindFn(a, b, c, d, e, f, g)
 }
 
-fun <A, B, C, D, E, F, G, T> Arb.Companion.bind(
-   genA: Gen<A>,
-   genB: Gen<B>,
-   genC: Gen<C>,
-   genD: Gen<D>,
-   genE: Gen<E>,
-   genF: Gen<F>,
-   genG: Gen<G>,
-   bindFn: (A, B, C, D, E, F, G) -> T
-): Arb<T> = bind(defaultDeterminism, genA, genB, genC, genD, genE, genF, genG, bindFn)
-
 fun <A, B, C, D, E, F, G, H, T> Arb.Companion.bind(
-   edgecaseDeterminism: Double,
    genA: Gen<A>,
    genB: Gen<B>,
    genC: Gen<C>,
@@ -248,26 +187,12 @@ fun <A, B, C, D, E, F, G, H, T> Arb.Companion.bind(
    Arb.unit(),
    Arb.unit(),
    Arb.unit(),
-   Arb.unit(),
-   edgecaseDeterminism
+   Arb.unit()
 ) { a, b, c, d, e, f, g, h, _, _, _, _, _, _ ->
    bindFn(a, b, c, d, e, f, g, h)
 }
 
-fun <A, B, C, D, E, F, G, H, T> Arb.Companion.bind(
-   genA: Gen<A>,
-   genB: Gen<B>,
-   genC: Gen<C>,
-   genD: Gen<D>,
-   genE: Gen<E>,
-   genF: Gen<F>,
-   genG: Gen<G>,
-   genH: Gen<H>,
-   bindFn: (A, B, C, D, E, F, G, H) -> T
-): Arb<T> = bind(defaultDeterminism, genA, genB, genC, genD, genE, genF, genG, genH, bindFn)
-
 fun <A, B, C, D, E, F, G, H, I, T> Arb.Companion.bind(
-   edgecaseDeterminism: Double,
    genA: Gen<A>,
    genB: Gen<B>,
    genC: Gen<C>,
@@ -292,27 +217,12 @@ fun <A, B, C, D, E, F, G, H, I, T> Arb.Companion.bind(
    Arb.unit(),
    Arb.unit(),
    Arb.unit(),
-   Arb.unit(),
-   edgecaseDeterminism
+   Arb.unit()
 ) { a, b, c, d, e, f, g, h, i, _, _, _, _, _ ->
    bindFn(a, b, c, d, e, f, g, h, i)
 }
 
-fun <A, B, C, D, E, F, G, H, I, T> Arb.Companion.bind(
-   genA: Gen<A>,
-   genB: Gen<B>,
-   genC: Gen<C>,
-   genD: Gen<D>,
-   genE: Gen<E>,
-   genF: Gen<F>,
-   genG: Gen<G>,
-   genH: Gen<H>,
-   genI: Gen<I>,
-   bindFn: (A, B, C, D, E, F, G, H, I) -> T
-): Arb<T> = bind(defaultDeterminism, genA, genB, genC, genD, genE, genF, genG, genH, genI, bindFn)
-
 fun <A, B, C, D, E, F, G, H, I, J, T> Arb.Companion.bind(
-   edgecaseDeterminism: Double,
    genA: Gen<A>,
    genB: Gen<B>,
    genC: Gen<C>,
@@ -338,28 +248,12 @@ fun <A, B, C, D, E, F, G, H, I, J, T> Arb.Companion.bind(
    Arb.unit(),
    Arb.unit(),
    Arb.unit(),
-   Arb.unit(),
-   edgecaseDeterminism
+   Arb.unit()
 ) { a, b, c, d, e, f, g, h, i, j, _, _, _, _ ->
    bindFn(a, b, c, d, e, f, g, h, i, j)
 }
 
-fun <A, B, C, D, E, F, G, H, I, J, T> Arb.Companion.bind(
-   genA: Gen<A>,
-   genB: Gen<B>,
-   genC: Gen<C>,
-   genD: Gen<D>,
-   genE: Gen<E>,
-   genF: Gen<F>,
-   genG: Gen<G>,
-   genH: Gen<H>,
-   genI: Gen<I>,
-   genJ: Gen<J>,
-   bindFn: (A, B, C, D, E, F, G, H, I, J) -> T
-): Arb<T> = bind(defaultDeterminism, genA, genB, genC, genD, genE, genF, genG, genH, genI, genJ, bindFn)
-
 fun <A, B, C, D, E, F, G, H, I, J, K, T> Arb.Companion.bind(
-   edgecaseDeterminism: Double,
    genA: Gen<A>,
    genB: Gen<B>,
    genC: Gen<C>,
@@ -386,29 +280,12 @@ fun <A, B, C, D, E, F, G, H, I, J, K, T> Arb.Companion.bind(
    genK,
    Arb.unit(),
    Arb.unit(),
-   Arb.unit(),
-   edgecaseDeterminism
+   Arb.unit()
 ) { a, b, c, d, e, f, g, h, i, j, k, _, _, _ ->
    bindFn(a, b, c, d, e, f, g, h, i, j, k)
 }
 
-fun <A, B, C, D, E, F, G, H, I, J, K, T> Arb.Companion.bind(
-   genA: Gen<A>,
-   genB: Gen<B>,
-   genC: Gen<C>,
-   genD: Gen<D>,
-   genE: Gen<E>,
-   genF: Gen<F>,
-   genG: Gen<G>,
-   genH: Gen<H>,
-   genI: Gen<I>,
-   genJ: Gen<J>,
-   genK: Gen<K>,
-   bindFn: (A, B, C, D, E, F, G, H, I, J, K) -> T
-): Arb<T> = bind(defaultDeterminism, genA, genB, genC, genD, genE, genF, genG, genH, genI, genJ, genK, bindFn)
-
 fun <A, B, C, D, E, F, G, H, I, J, K, L, T> Arb.Companion.bind(
-   edgecaseDeterminism: Double,
    genA: Gen<A>,
    genB: Gen<B>,
    genC: Gen<C>,
@@ -436,30 +313,12 @@ fun <A, B, C, D, E, F, G, H, I, J, K, L, T> Arb.Companion.bind(
    genK,
    genL,
    Arb.unit(),
-   Arb.unit(),
-   edgecaseDeterminism
+   Arb.unit()
 ) { a, b, c, d, e, f, g, h, i, j, k, l, _, _ ->
    bindFn(a, b, c, d, e, f, g, h, i, j, k, l)
 }
 
-fun <A, B, C, D, E, F, G, H, I, J, K, L, T> Arb.Companion.bind(
-   genA: Gen<A>,
-   genB: Gen<B>,
-   genC: Gen<C>,
-   genD: Gen<D>,
-   genE: Gen<E>,
-   genF: Gen<F>,
-   genG: Gen<G>,
-   genH: Gen<H>,
-   genI: Gen<I>,
-   genJ: Gen<J>,
-   genK: Gen<K>,
-   genL: Gen<L>,
-   bindFn: (A, B, C, D, E, F, G, H, I, J, K, L) -> T
-): Arb<T> = bind(defaultDeterminism, genA, genB, genC, genD, genE, genF, genG, genH, genI, genJ, genK, genL, bindFn)
-
 fun <A, B, C, D, E, F, G, H, I, J, K, L, M, T> Arb.Companion.bind(
-   edgecaseDeterminism: Double,
    genA: Gen<A>,
    genB: Gen<B>,
    genC: Gen<C>,
@@ -488,32 +347,12 @@ fun <A, B, C, D, E, F, G, H, I, J, K, L, M, T> Arb.Companion.bind(
    genK,
    genL,
    genM,
-   Arb.unit(),
-   edgecaseDeterminism
+   Arb.unit()
 ) { a, b, c, d, e, f, g, h, i, j, k, l, m, _ ->
    bindFn(a, b, c, d, e, f, g, h, i, j, k, l, m)
 }
 
-fun <A, B, C, D, E, F, G, H, I, J, K, L, M, T> Arb.Companion.bind(
-   genA: Gen<A>,
-   genB: Gen<B>,
-   genC: Gen<C>,
-   genD: Gen<D>,
-   genE: Gen<E>,
-   genF: Gen<F>,
-   genG: Gen<G>,
-   genH: Gen<H>,
-   genI: Gen<I>,
-   genJ: Gen<J>,
-   genK: Gen<K>,
-   genL: Gen<L>,
-   genM: Gen<M>,
-   bindFn: (A, B, C, D, E, F, G, H, I, J, K, L, M) -> T
-): Arb<T> =
-   bind(defaultDeterminism, genA, genB, genC, genD, genE, genF, genG, genH, genI, genJ, genK, genL, genM, bindFn)
-
 fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, T> Arb.Companion.bind(
-   edgecaseDeterminism: Double,
    genA: Gen<A>,
    genB: Gen<B>,
    genC: Gen<C>,
@@ -544,28 +383,8 @@ fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, T> Arb.Companion.bind(
    genL,
    genM,
    genN,
-   edgecaseDeterminism,
    bindFn
 )
-
-fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, T> Arb.Companion.bind(
-   genA: Gen<A>,
-   genB: Gen<B>,
-   genC: Gen<C>,
-   genD: Gen<D>,
-   genE: Gen<E>,
-   genF: Gen<F>,
-   genG: Gen<G>,
-   genH: Gen<H>,
-   genI: Gen<I>,
-   genJ: Gen<J>,
-   genK: Gen<K>,
-   genL: Gen<L>,
-   genM: Gen<M>,
-   genN: Gen<N>,
-   bindFn: (A, B, C, D, E, F, G, H, I, J, K, L, M, N) -> T
-): Arb<T> =
-   bind(defaultDeterminism, genA, genB, genC, genD, genE, genF, genG, genH, genI, genJ, genK, genL, genM, genN, bindFn)
 
 private fun Arb.Companion.unit(): Arb<Unit> = arbitrary { }
 
@@ -584,11 +403,8 @@ private fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, T> Arb.Companion.bindN(
    genL: Gen<L>,
    genM: Gen<M>,
    genN: Gen<N>,
-   edgecaseDeterminism: Double,
    bindFn: (A, B, C, D, E, F, G, H, I, J, K, L, M, N) -> T
 ): Arb<T> {
-   check(edgecaseDeterminism in 0.0..1.0) { "provided edgecaseDeterminism $edgecaseDeterminism is not between 0.0 and 1.0" }
-
    val arbA = genA.toArb()
    val arbB = genB.toArb()
    val arbC = genC.toArb()
@@ -607,23 +423,24 @@ private fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, T> Arb.Companion.bindN(
    return object : Arb<T>() {
       override fun edgecases(): List<T> = emptyList()
 
-      override fun generateEdgecase(rs: RandomSource): T {
-         val a = arbA.edgeOrSample(rs)
-         val b = arbB.edgeOrSample(rs)
-         val c = arbC.edgeOrSample(rs)
-         val d = arbD.edgeOrSample(rs)
-         val e = arbE.edgeOrSample(rs)
-         val f = arbF.edgeOrSample(rs)
-         val g = arbG.edgeOrSample(rs)
-         val h = arbH.edgeOrSample(rs)
-         val i = arbI.edgeOrSample(rs)
-         val j = arbJ.edgeOrSample(rs)
-         val k = arbK.edgeOrSample(rs)
-         val l = arbL.edgeOrSample(rs)
-         val m = arbM.edgeOrSample(rs)
-         val n = arbN.edgeOrSample(rs)
-         return bindFn(a, b, c, d, e, f, g, h, i, j, k, l, m, n)
-      }
+      override fun edges(): Option<Edgecase<T>> = Edgecase { rs, config ->
+         val a = arbA.edgeOrSample().generate(rs, config)
+         val b = arbB.edgeOrSample().generate(rs, config)
+         val c = arbC.edgeOrSample().generate(rs, config)
+         val d = arbD.edgeOrSample().generate(rs, config)
+         val e = arbE.edgeOrSample().generate(rs, config)
+         val f = arbF.edgeOrSample().generate(rs, config)
+         val g = arbG.edgeOrSample().generate(rs, config)
+         val h = arbH.edgeOrSample().generate(rs, config)
+         val i = arbI.edgeOrSample().generate(rs, config)
+         val j = arbJ.edgeOrSample().generate(rs, config)
+         val k = arbK.edgeOrSample().generate(rs, config)
+         val l = arbL.edgeOrSample().generate(rs, config)
+         val m = arbM.edgeOrSample().generate(rs, config)
+         val n = arbN.edgeOrSample().generate(rs, config)
+
+         bindFn(a, b, c, d, e, f, g, h, i, j, k, l, m, n)
+      }.some()
 
       override fun sample(rs: RandomSource): Sample<T> {
          val a = arbA.sample(rs).value
@@ -645,9 +462,13 @@ private fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, T> Arb.Companion.bindN(
 
       override fun values(rs: RandomSource): Sequence<Sample<T>> = generateSequence { sample(rs) }
 
-      private fun <X> Arb<X>.edgeOrSample(rs: RandomSource): X {
+      private fun <X> Arb<X>.edgeOrSample(): Edgecase<X> = Edgecase { rs, config ->
          val p = rs.random.nextDouble(0.0, 1.0)
-         return if (p < edgecaseDeterminism) this@edgeOrSample.generateEdgecase(rs) else this.next(rs)
+         val edgeX: X = this@edgeOrSample.edges().fold(
+            { this.next(rs) },
+            { it.generate(rs, config) }
+         )
+         if (p < config.determinism) edgeX else this.next(rs)
       }
    }
 }
@@ -656,5 +477,3 @@ private fun <T> Gen<T>.toArb(): Arb<T> = when (this) {
    is Arb -> this
    is Exhaustive -> this.toArb()
 }
-
-private const val defaultDeterminism = 0.9

@@ -1,5 +1,6 @@
 package io.kotest.property.arbitrary
 
+import io.kotest.fp.getOrElse
 import io.kotest.property.Arb
 import io.kotest.property.Exhaustive
 import io.kotest.property.Gen
@@ -77,7 +78,9 @@ fun <A : Any> Arb.Companion.choose(a: Pair<Int, Arb<A>>, b: Pair<Int, Arb<A>>, v
       edgecaseGenerator = { rs ->
          val n = rs.random.nextInt(1, total + 1)
          val arb = pick(n, allPairs)
-         arb.generateEdgecase(rs)
+         arb.edges()
+            .map { it.generate(rs, this) }
+            .getOrElse { arb.single(rs) }
       },
       sampleGenerator = { rs ->
          val n = rs.random.nextInt(1, total + 1)
@@ -148,7 +151,10 @@ fun <A> Arb.Companion.choice(vararg gens: Gen<A>): Gen<A> {
 fun <A> Arb.Companion.choice(arb: Arb<A>, vararg arbs: Arb<A>): Arb<A> {
    val arbList = listOf(arb, *arbs)
    return arbitrary(
-      edgecaseGenerator = { rs -> arbList.random(rs.random).generateEdgecase(rs) },
+      edgecaseGenerator = { rs ->
+         val arbA = arbList.random(rs.random)
+         arbA.edges().map { it.generate(rs, this) }.getOrElse { arbA.single(rs) }
+      },
       sampleGenerator = { rs -> arbList.random(rs.random).next(rs) }
    )
 }

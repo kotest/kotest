@@ -23,7 +23,7 @@ suspend fun <A> proptest(
 
    when (genA) {
       is Arb -> {
-         genA.generate(random, config.edgecasesProbability)
+         genA.generate(random, config.edgeConfig)
             .take(iterations)
             .forEach { a ->
                val shrinkfn = shrinkfn(a, property, config.shrinkingMode)
@@ -75,8 +75,8 @@ suspend fun <A, B> proptest(
          }
       }
    } else {
-      genA.generate(random, config.edgecasesProbability)
-         .zip(genB.generate(random, config.edgecasesProbability))
+      genA.generate(random, config.edgeConfig)
+         .zip(genB.generate(random, config.edgeConfig))
          .take(iterations)
          .forEach { (a, b) ->
             val shrinkfn = shrinkfn(a, b, property, config.shrinkingMode)
@@ -121,9 +121,9 @@ suspend fun <A, B, C> proptest(
          }
       }
    } else {
-      genA.generate(random, config.edgecasesProbability)
-         .zip(genB.generate(random, config.edgecasesProbability))
-         .zip(genC.generate(random, config.edgecasesProbability))
+      genA.generate(random, config.edgeConfig)
+         .zip(genB.generate(random, config.edgeConfig))
+         .zip(genC.generate(random, config.edgeConfig))
          .take(iterations)
          .forEach { (ab, c) ->
             val (a, b) = ab
@@ -175,10 +175,10 @@ suspend fun <A, B, C, D> proptest(
       }
    } else {
 
-      genA.generate(random, config.edgecasesProbability)
-         .zip(genB.generate(random, config.edgecasesProbability))
-         .zip(genC.generate(random, config.edgecasesProbability))
-         .zip(genD.generate(random, config.edgecasesProbability))
+      genA.generate(random, config.edgeConfig)
+         .zip(genB.generate(random, config.edgeConfig))
+         .zip(genC.generate(random, config.edgeConfig))
+         .zip(genD.generate(random, config.edgeConfig))
          .take(iterations)
          .forEach { (abc, d) ->
             val (ab, c) = abc
@@ -238,11 +238,11 @@ suspend fun <A, B, C, D, E> proptest(
          }
       }
    } else {
-      genA.generate(random, config.edgecasesProbability)
-         .zip(genB.generate(random, config.edgecasesProbability))
-         .zip(genC.generate(random, config.edgecasesProbability))
-         .zip(genD.generate(random, config.edgecasesProbability))
-         .zip(genE.generate(random, config.edgecasesProbability))
+      genA.generate(random, config.edgeConfig)
+         .zip(genB.generate(random, config.edgeConfig))
+         .zip(genC.generate(random, config.edgeConfig))
+         .zip(genD.generate(random, config.edgeConfig))
+         .zip(genE.generate(random, config.edgeConfig))
          .take(iterations)
          .forEach { (abcd, e) ->
             val (abc, d) = abcd
@@ -288,12 +288,12 @@ suspend fun <A, B, C, D, E, F> proptest(
    val context = PropertyContext()
    val random = config.seed?.random() ?: RandomSource.Default
 
-   genA.generate(random, config.edgecasesProbability)
-      .zip(genB.generate(random, config.edgecasesProbability))
-      .zip(genC.generate(random, config.edgecasesProbability))
-      .zip(genD.generate(random, config.edgecasesProbability))
-      .zip(genE.generate(random, config.edgecasesProbability))
-      .zip(genF.generate(random, config.edgecasesProbability))
+   genA.generate(random, config.edgeConfig)
+      .zip(genB.generate(random, config.edgeConfig))
+      .zip(genC.generate(random, config.edgeConfig))
+      .zip(genD.generate(random, config.edgeConfig))
+      .zip(genE.generate(random, config.edgeConfig))
+      .zip(genF.generate(random, config.edgeConfig))
       .take(iterations)
       .forEach { (abcde, f) ->
          val (abcd, e) = abcde
@@ -340,13 +340,13 @@ suspend fun <A, B, C, D, E, F, G> proptest(
    val context = PropertyContext()
    val random = config.seed?.random() ?: RandomSource.Default
 
-   genA.generate(random, config.edgecasesProbability)
-      .zip(genB.generate(random, config.edgecasesProbability))
-      .zip(genC.generate(random, config.edgecasesProbability))
-      .zip(genD.generate(random, config.edgecasesProbability))
-      .zip(genE.generate(random, config.edgecasesProbability))
-      .zip(genF.generate(random, config.edgecasesProbability))
-      .zip(genG.generate(random, config.edgecasesProbability))
+   genA.generate(random, config.edgeConfig)
+      .zip(genB.generate(random, config.edgeConfig))
+      .zip(genC.generate(random, config.edgeConfig))
+      .zip(genD.generate(random, config.edgeConfig))
+      .zip(genE.generate(random, config.edgeConfig))
+      .zip(genF.generate(random, config.edgeConfig))
+      .zip(genG.generate(random, config.edgeConfig))
       .take(iterations)
       .forEach { (abcdef, g) ->
          val (abcde, f) = abcdef
@@ -402,14 +402,14 @@ suspend fun <A, B, C, D, E, F, G, H> proptest(
    val context = PropertyContext()
    val random = config.seed?.random() ?: RandomSource.Default
 
-   genA.generate(random, config.edgecasesProbability)
-      .zip(genB.generate(random, config.edgecasesProbability))
-      .zip(genC.generate(random, config.edgecasesProbability))
-      .zip(genD.generate(random, config.edgecasesProbability))
-      .zip(genE.generate(random, config.edgecasesProbability))
-      .zip(genF.generate(random, config.edgecasesProbability))
-      .zip(genG.generate(random, config.edgecasesProbability))
-      .zip(genH.generate(random, config.edgecasesProbability))
+   genA.generate(random, config.edgeConfig)
+      .zip(genB.generate(random, config.edgeConfig))
+      .zip(genC.generate(random, config.edgeConfig))
+      .zip(genD.generate(random, config.edgeConfig))
+      .zip(genE.generate(random, config.edgeConfig))
+      .zip(genF.generate(random, config.edgeConfig))
+      .zip(genG.generate(random, config.edgeConfig))
+      .zip(genH.generate(random, config.edgeConfig))
       .take(iterations)
       .forEach { (abcdefg, h) ->
          val (abcdef, g) = abcdefg
@@ -468,15 +468,15 @@ suspend fun <A, B, C, D, E, F, G, H, I> proptest(
    val context = PropertyContext()
    val random = config.seed?.random() ?: RandomSource.Default
 
-   genA.generate(random, config.edgecasesProbability)
-      .zip(genB.generate(random, config.edgecasesProbability))
-      .zip(genC.generate(random, config.edgecasesProbability))
-      .zip(genD.generate(random, config.edgecasesProbability))
-      .zip(genE.generate(random, config.edgecasesProbability))
-      .zip(genF.generate(random, config.edgecasesProbability))
-      .zip(genG.generate(random, config.edgecasesProbability))
-      .zip(genH.generate(random, config.edgecasesProbability))
-      .zip(genI.generate(random, config.edgecasesProbability))
+   genA.generate(random, config.edgeConfig)
+      .zip(genB.generate(random, config.edgeConfig))
+      .zip(genC.generate(random, config.edgeConfig))
+      .zip(genD.generate(random, config.edgeConfig))
+      .zip(genE.generate(random, config.edgeConfig))
+      .zip(genF.generate(random, config.edgeConfig))
+      .zip(genG.generate(random, config.edgeConfig))
+      .zip(genH.generate(random, config.edgeConfig))
+      .zip(genI.generate(random, config.edgeConfig))
       .take(iterations)
       .forEach { (abcdefgh, i) ->
          val (abcdefg, h) = abcdefgh
@@ -538,16 +538,16 @@ suspend fun <A, B, C, D, E, F, G, H, I, J> proptest(
    val context = PropertyContext()
    val random = config.seed?.random() ?: RandomSource.Default
 
-   genA.generate(random, config.edgecasesProbability)
-      .zip(genB.generate(random, config.edgecasesProbability))
-      .zip(genC.generate(random, config.edgecasesProbability))
-      .zip(genD.generate(random, config.edgecasesProbability))
-      .zip(genE.generate(random, config.edgecasesProbability))
-      .zip(genF.generate(random, config.edgecasesProbability))
-      .zip(genG.generate(random, config.edgecasesProbability))
-      .zip(genH.generate(random, config.edgecasesProbability))
-      .zip(genI.generate(random, config.edgecasesProbability))
-      .zip(genJ.generate(random, config.edgecasesProbability))
+   genA.generate(random, config.edgeConfig)
+      .zip(genB.generate(random, config.edgeConfig))
+      .zip(genC.generate(random, config.edgeConfig))
+      .zip(genD.generate(random, config.edgeConfig))
+      .zip(genE.generate(random, config.edgeConfig))
+      .zip(genF.generate(random, config.edgeConfig))
+      .zip(genG.generate(random, config.edgeConfig))
+      .zip(genH.generate(random, config.edgeConfig))
+      .zip(genI.generate(random, config.edgeConfig))
+      .zip(genJ.generate(random, config.edgeConfig))
       .take(iterations)
       .forEach { (abcdefghi, j) ->
          val (abcdefgh, i) = abcdefghi
@@ -612,17 +612,17 @@ suspend fun <A, B, C, D, E, F, G, H, I, J, K> proptest(
    val context = PropertyContext()
    val random = config.seed?.random() ?: RandomSource.Default
 
-   genA.generate(random, config.edgecasesProbability)
-      .zip(genB.generate(random, config.edgecasesProbability))
-      .zip(genC.generate(random, config.edgecasesProbability))
-      .zip(genD.generate(random, config.edgecasesProbability))
-      .zip(genE.generate(random, config.edgecasesProbability))
-      .zip(genF.generate(random, config.edgecasesProbability))
-      .zip(genG.generate(random, config.edgecasesProbability))
-      .zip(genH.generate(random, config.edgecasesProbability))
-      .zip(genI.generate(random, config.edgecasesProbability))
-      .zip(genJ.generate(random, config.edgecasesProbability))
-      .zip(genK.generate(random, config.edgecasesProbability))
+   genA.generate(random, config.edgeConfig)
+      .zip(genB.generate(random, config.edgeConfig))
+      .zip(genC.generate(random, config.edgeConfig))
+      .zip(genD.generate(random, config.edgeConfig))
+      .zip(genE.generate(random, config.edgeConfig))
+      .zip(genF.generate(random, config.edgeConfig))
+      .zip(genG.generate(random, config.edgeConfig))
+      .zip(genH.generate(random, config.edgeConfig))
+      .zip(genI.generate(random, config.edgeConfig))
+      .zip(genJ.generate(random, config.edgeConfig))
+      .zip(genK.generate(random, config.edgeConfig))
       .take(iterations)
       .forEach { (abcdefghij, k) ->
          val (abcdefghi, j) = abcdefghij
@@ -702,18 +702,18 @@ suspend fun <A, B, C, D, E, F, G, H, I, J, K, L> proptest(
    val context = PropertyContext()
    val random = config.seed?.random() ?: RandomSource.Default
 
-   genA.generate(random, config.edgecasesProbability)
-      .zip(genB.generate(random, config.edgecasesProbability))
-      .zip(genC.generate(random, config.edgecasesProbability))
-      .zip(genD.generate(random, config.edgecasesProbability))
-      .zip(genE.generate(random, config.edgecasesProbability))
-      .zip(genF.generate(random, config.edgecasesProbability))
-      .zip(genG.generate(random, config.edgecasesProbability))
-      .zip(genH.generate(random, config.edgecasesProbability))
-      .zip(genI.generate(random, config.edgecasesProbability))
-      .zip(genJ.generate(random, config.edgecasesProbability))
-      .zip(genK.generate(random, config.edgecasesProbability))
-      .zip(genL.generate(random, config.edgecasesProbability))
+   genA.generate(random, config.edgeConfig)
+      .zip(genB.generate(random, config.edgeConfig))
+      .zip(genC.generate(random, config.edgeConfig))
+      .zip(genD.generate(random, config.edgeConfig))
+      .zip(genE.generate(random, config.edgeConfig))
+      .zip(genF.generate(random, config.edgeConfig))
+      .zip(genG.generate(random, config.edgeConfig))
+      .zip(genH.generate(random, config.edgeConfig))
+      .zip(genI.generate(random, config.edgeConfig))
+      .zip(genJ.generate(random, config.edgeConfig))
+      .zip(genK.generate(random, config.edgeConfig))
+      .zip(genL.generate(random, config.edgeConfig))
       .take(iterations)
       .forEach { (abcdefghijk, l) ->
          val (abcdefghij, k) = abcdefghijk
