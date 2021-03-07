@@ -26,7 +26,7 @@ class MapTest : FunSpec({
 
    test("should transform edgecases") {
       val arb = Arb.int(1, 10).withEdgecases(1).map { "$it" }
-      arb.generate(RandomSource.Default, EdgeConfig(edgecasesGenerationProbability = 1.0)).single().value shouldBe "1"
+      arb.generate(RandomSource.Default, EdgeConfig(edgecasesGenerationProbability = 1.0)).first().value shouldBe "1"
    }
 
    test("should preserve shrinking") {
