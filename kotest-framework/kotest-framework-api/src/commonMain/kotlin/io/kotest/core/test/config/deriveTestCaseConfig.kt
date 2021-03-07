@@ -1,15 +1,18 @@
-package io.kotest.core.test
+package io.kotest.core.test.config
 
 import io.kotest.core.Tag
 import io.kotest.core.extensions.TestCaseExtension
 import io.kotest.core.listeners.TestListener
+import io.kotest.core.test.EnabledIf
+import io.kotest.core.test.TestCaseConfig
+import io.kotest.core.test.TestCaseSeverityLevel
 import kotlin.time.Duration
 
 /**
  * Creates and returns a new [TestCaseConfig] from the given parameters, using values
  * from the receiver as defaults.
  */
-fun TestCaseConfig.deriveTestConfig(
+internal fun TestCaseConfig.deriveTestCaseConfig(
    enabled: Boolean? = null,
    tags: Set<Tag>? = null,
    extensions: List<TestCaseExtension>? = null,

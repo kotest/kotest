@@ -6,7 +6,7 @@ import io.kotest.core.test.EnabledIf
 import io.kotest.core.test.TestContext
 import io.kotest.core.test.TestType
 import io.kotest.core.test.createTestName
-import io.kotest.core.test.deriveTestConfig
+import io.kotest.core.test.config.deriveTestCaseConfig
 import io.kotest.core.test.TestCaseSeverityLevel
 import kotlin.time.Duration
 
@@ -44,7 +44,7 @@ interface FreeSpecRootScope : RootScope {
       severity: TestCaseSeverityLevel? = null,
       test: suspend TestContext.() -> Unit
    ) {
-      val config = defaultConfig().deriveTestConfig(
+      val config = defaultConfig().deriveTestCaseConfig(
          enabled,
          tags,
          extensions,

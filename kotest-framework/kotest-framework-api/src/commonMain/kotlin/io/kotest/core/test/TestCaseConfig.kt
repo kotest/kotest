@@ -7,7 +7,14 @@ import kotlin.time.Duration
 
 typealias EnabledIf = (TestCase) -> Boolean
 
+/**
+ * Contains config that is applicable to leaf tests.
+ */
 data class TestCaseConfig(
+
+   /**
+    * If set to false, this test and any nested tests will be disabled.
+    */
    val enabled: Boolean = true,
    val invocations: Int = 1,
    val threads: Int = 1,
@@ -27,10 +34,20 @@ data class TestCaseConfig(
     * has the same effect as timeout. To set a timeout across all invocations then see [timeout].
     */
    val invocationTimeout: Duration? = null,
+
+   /**
+    * [Tag]s that are applied to this test case only, in addition to any tags declared on
+    * the containing spec or parent tests.
+    */
    val tags: Set<Tag> = emptySet(),
    val listeners: List<TestListener> = emptyList(),
    val extensions: List<TestCaseExtension> = emptyList(),
+
+   /**
+    * If this function evaluates to false, then this test and any nested tests will be disabled.
+    */
    val enabledIf: EnabledIf = { true },
+
    val severity: TestCaseSeverityLevel? = null
 ) {
    init {
@@ -39,6 +56,9 @@ data class TestCaseConfig(
       require(threads <= invocations) { "Number of threads must be <= number of invocations" }
    }
 }
+
+fun TestCaseConfig.toTestContainerConfig() =
+   TestContainerConfig(enabled = enabled, enabledIf = enabledIf, tags = tags, timeout = timeout)
 
 /**
  * Returns a copy of this test config with the enabled flag set to false, if [xdisabled] is true.

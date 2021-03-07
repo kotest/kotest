@@ -29,6 +29,12 @@ interface FunSpecRootScope : RootScope {
       registration().addContainerTest(createTestName(name), xdisabled = true) {}
    }
 
+   fun context(name: String) =
+      FunSpecRootContainerBuilder(createTestName(name), description(), registration(), lifecycle(), false)
+
+   fun xcontext(name: String) =
+      FunSpecRootContainerBuilder(createTestName(name), description(), registration(), lifecycle(), true)
+
    /**
     * Adds a top level test case to this root scope.
     */

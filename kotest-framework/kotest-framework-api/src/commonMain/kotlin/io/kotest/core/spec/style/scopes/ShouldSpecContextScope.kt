@@ -5,6 +5,7 @@ import io.kotest.core.test.Description
 import io.kotest.core.test.TestCaseConfig
 import io.kotest.core.test.TestContext
 import io.kotest.core.test.createTestName
+import io.kotest.core.test.toTestContainerConfig
 import kotlin.coroutines.CoroutineContext
 
 /**
@@ -32,9 +33,10 @@ class ShouldSpecContextScope(
     * Adds a nested context scope to this scope.
     */
    suspend fun context(name: String, test: suspend ShouldSpecContextScope.() -> Unit) {
-      addContainerTest(createTestName(name), xdisabled = false) {
+      val testName = createTestName(name)
+      addContainerTest(testName, xdisabled = false) {
          ShouldSpecContextScope(
-            this@ShouldSpecContextScope.description.appendContainer(createTestName(name)),
+            this@ShouldSpecContextScope.description.appendContainer(testName),
             this@ShouldSpecContextScope.lifecycle,
             this,
             this@ShouldSpecContextScope.defaultConfig,
@@ -42,6 +44,26 @@ class ShouldSpecContextScope(
          ).test()
       }
    }
+
+   fun context(name: String) =
+      ShouldSpecContextConfigBuilder(
+         createTestName(name),
+         description,
+         testContext,
+         defaultConfig.toTestContainerConfig(),
+         lifecycle,
+         false
+      )
+
+   fun xcontext(name: String) =
+      ShouldSpecContextConfigBuilder(
+         createTestName(name),
+         description,
+         testContext,
+         defaultConfig.toTestContainerConfig(),
+         lifecycle,
+         true
+      )
 
    fun should(name: String) =
       TestWithConfigBuilder(

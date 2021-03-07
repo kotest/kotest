@@ -35,7 +35,8 @@ interface StringSpecRootScope : RootScope {
       invocationTimeout: Duration? = null,
       severity: TestCaseSeverityLevel? = null,
       test: suspend TestContext.() -> Unit,
-   ) = RootTestWithConfigBuilder(createTestName(null, this, false), registration(), false).config(
+   ) = RootTestWithConfigBuilder(createTestName(null, this, false), registration(), false)
+      .config(
       enabled,
       invocations,
       threads,
