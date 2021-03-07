@@ -1,8 +1,6 @@
 package io.kotest.property.arbitrary
 
 import io.kotest.property.Arb
-import kotlin.math.exp
-import kotlin.math.ln
 import kotlin.reflect.KClass
 import kotlin.reflect.full.primaryConstructor
 
@@ -26,15 +24,11 @@ inline fun <reified T : Any> Arb.Companion.bind(): Arb<T> {
          ?: error("Could not locate generator for parameter ${kclass.qualifiedName}.${param.name}")
    }
 
-   return when (constructor.parameters.size) {
-      1 -> arbs[0].map { constructor.call(it) }
-      else -> {
-         val arbParams: Arb<List<Any>> = arbs.fold(Arb.constant(emptyList())) { arbList, arbNext ->
-            Arb.bind(arbList, arbNext) { list, next ->
-               list + next
-            }
-         }
-         arbParams.map { constructor.call(*it.toTypedArray()) }
+   val arbParams: Arb<List<Any>> = arbs.fold(Arb.constant(emptyList())) { arbList, arbNext ->
+      Arb.bind(arbList, arbNext) { list, next ->
+         list + next
       }
    }
+
+   return arbParams.map { constructor.call(*it.toTypedArray()) }
 }
