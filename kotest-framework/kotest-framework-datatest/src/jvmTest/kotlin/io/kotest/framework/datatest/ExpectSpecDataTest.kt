@@ -1,14 +1,14 @@
-package com.sksamuel.kotest.engine.datatest
+package io.kotest.framework.datatest
 
 import io.kotest.assertions.withClue
 import io.kotest.core.annotation.Ignored
-import io.kotest.core.spec.style.FunSpec
+import io.kotest.core.spec.style.ExpectSpec
 import io.kotest.core.datatest.forAll
 import io.kotest.core.datatest.forNone
 import io.kotest.matchers.shouldBe
 
-@Ignored // this is used by the DataTest itself, rather than being a stand alone test
-internal class FunSpecDataTest : FunSpec() {
+@Ignored// this is used by the DataTest itself, rather than being a stand alone test
+internal class ExpectSpecDataTest : ExpectSpec() {
    init {
       data class PythagTriple(val a: Int, val b: Int, val c: Int)
 

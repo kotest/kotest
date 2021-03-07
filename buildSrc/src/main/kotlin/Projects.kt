@@ -1,6 +1,7 @@
 object Projects {
    const val Common = ":kotest-common"
    const val Api = ":kotest-framework:kotest-framework-api"
+   const val DataTest = ":kotest-framework:kotest-framework-datatest"
    const val Engine = ":kotest-framework:kotest-framework-engine"
    const val Discovery = ":kotest-framework:kotest-framework-discovery"
    const val AssertionsApi = ":kotest-assertions:kotest-assertions-api"

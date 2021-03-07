@@ -1,4 +1,4 @@
-package com.sksamuel.kotest.engine.datatest
+package io.kotest.framework.datatest
 
 import io.kotest.assertions.withClue
 import io.kotest.core.annotation.Ignored

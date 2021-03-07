@@ -1,4 +1,4 @@
-package com.sksamuel.kotest.engine.datatest
+package io.kotest.framework.datatest
 
 import io.kotest.core.datatest.forAll
 import io.kotest.core.spec.Isolate

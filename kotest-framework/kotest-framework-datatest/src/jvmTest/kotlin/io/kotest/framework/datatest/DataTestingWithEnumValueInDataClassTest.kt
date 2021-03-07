@@ -1,4 +1,4 @@
-package com.sksamuel.kotest.engine.datatest
+package io.kotest.framework.datatest
 
 import io.kotest.core.datatest.forAll
 import io.kotest.core.spec.Spec
@@ -16,7 +16,7 @@ class DataTestingWithEnumValueInDataClassTest : FunSpec({
    }
    context("Data class having enum where enum has non data class value") {
       forAll(
-         FooClass(a = Bar.Bar1, b =Bar.Bar2)
+         FooClass(a = Bar.Bar1, b = Bar.Bar2)
       ) {}
    }
 }) {
@@ -29,7 +29,7 @@ class DataTestingWithEnumValueInDataClassTest : FunSpec({
          "PythagTriple(a=Three, b=Four, c=Five)",
          "PythagTriple(a=Four, b=Three, c=Five)",
          "Pythag triples tests",
-         "com.sksamuel.kotest.engine.datatest.FooClass",
+         "io.kotest.framework.datatest.FooClass",
          "Data class having enum where enum has non data class value"
       )
    }
