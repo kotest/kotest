@@ -24,11 +24,5 @@ inline fun <reified T : Any> Arb.Companion.bind(): Arb<T> {
          ?: error("Could not locate generator for parameter ${kclass.qualifiedName}.${param.name}")
    }
 
-   val arbParams: Arb<List<Any>> = arbs.fold(Arb.constant(emptyList())) { arbList, arbNext ->
-      Arb.bind(arbList, arbNext) { list, next ->
-         list + next
-      }
-   }
-
-   return arbParams.map { constructor.call(*it.toTypedArray()) }
+   return Arb.bind(arbs) { params -> constructor.call(*params.toTypedArray()) }
 }

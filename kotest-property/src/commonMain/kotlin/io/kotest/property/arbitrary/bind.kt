@@ -473,7 +473,79 @@ private fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, T> Arb.Companion.bindN(
    }
 }
 
+fun <A, B> Arb.Companion.bind(arbs: List<Arb<A>>, fn: (List<A>) -> B): Arb<B> = bind(arbs).map(fn)
+
 private fun <T> Gen<T>.toArb(): Arb<T> = when (this) {
    is Arb -> this
    is Exhaustive -> this.toArb()
 }
+
+private fun <A> Arb.Companion.bind(arbs: List<Arb<A>>): Arb<List<A>> = when (arbs.size) {
+   0 -> Arb.constant(emptyList())
+   1 -> arbs[0].map { listOf(it) }
+   else -> {
+      val listOfArbs: List<Arb<List<A>>> = arbs.chunked(14) { el ->
+         check(el.size <= 14) { "reached an impossible state" }
+
+         when (el.size) {
+            0 -> Arb.constant(emptyList())
+            1 -> el[0].map { listOf(it) }
+            2 -> Arb.bind(el[0], el[1]) { a, b -> listOf(a, b) }
+            3 -> Arb.bind(el[0], el[1], el[2]) { a, b, c -> listOf(a, b, c) }
+            4 -> Arb.bind(el[0], el[1], el[2], el[3]) { a, b, c, d -> listOf(a, b, c, d) }
+            5 -> Arb.bind(el[0], el[1], el[2], el[3], el[4]) { a, b, c, d, e -> listOf(a, b, c, d, e) }
+            6 -> Arb.bind(el[0], el[1], el[2], el[3], el[4], el[5]) { a, b, c, d, e, f ->
+               listOf(a, b, c, d, e, f)
+            }
+            7 -> Arb.bind(el[0], el[1], el[2], el[3], el[4], el[5], el[6]) { a, b, c, d, e, f, g ->
+               listOf(a, b, c, d, e, f, g)
+            }
+            8 -> Arb.bind(el[0], el[1], el[2], el[3], el[4], el[5], el[6], el[7]) { a, b, c, d, e, f, g, h ->
+               listOf(a, b, c, d, e, f, g, h)
+            }
+            9 -> Arb.bind(el[0], el[1], el[2], el[3], el[4], el[5], el[6], el[7], el[8]) { a, b, c, d, e, f, g, h, i ->
+               listOf(a, b, c, d, e, f, g, h, i)
+            }
+            10 -> Arb.bind(
+               el[0], el[1], el[2], el[3], el[4],
+               el[5], el[6], el[7], el[8], el[9]
+            ) { a, b, c, d, e, f, g, h, i, j ->
+               listOf(a, b, c, d, e, f, g, h, i, j)
+            }
+            11 -> Arb.bind(
+               el[0], el[1], el[2], el[3], el[4],
+               el[5], el[6], el[7], el[8], el[9],
+               el[10]
+            ) { a, b, c, d, e, f, g, h, i, j, k ->
+               listOf(a, b, c, d, e, f, g, h, i, j, k)
+            }
+            12 -> Arb.bind(
+               el[0], el[1], el[2], el[3], el[4],
+               el[5], el[6], el[7], el[8], el[9],
+               el[10], el[11]
+            ) { a, b, c, d, e, f, g, h, i, j, k, l ->
+               listOf(a, b, c, d, e, f, g, h, i, j, k, l)
+            }
+            13 -> Arb.bind(
+               el[0], el[1], el[2], el[3], el[4],
+               el[5], el[6], el[7], el[8], el[9],
+               el[10], el[11], el[12]
+            ) { a, b, c, d, e, f, g, h, i, j, k, l, m ->
+               listOf(a, b, c, d, e, f, g, h, i, j, k, l, m)
+            }
+            14 -> Arb.bind(
+               el[0], el[1], el[2], el[3], el[4],
+               el[5], el[6], el[7], el[8], el[9],
+               el[10], el[11], el[12], el[13]
+            ) { a, b, c, d, e, f, g, h, i, j, k, l, m, n ->
+               listOf(a, b, c, d, e, f, g, h, i, j, k, l, m, n)
+            }
+            else -> Arb.constant(emptyList())
+         }
+      }
+
+      Arb.bind(listOfArbs).map { it.flatten() }
+   }
+}
+
+

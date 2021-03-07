@@ -566,6 +566,25 @@ class BindTest : StringSpec({
       )
    }
 
+   "Arb.bind list" {
+      val arbs: List<Arb<String>> = generateSequence { Arb.string(1).withEdgecases("a") }.take(100).toList()
+      val arb: Arb<String> = Arb.bind(arbs) { it.joinToString("") }
+
+      val edgecases = arb
+         .generate(RandomSource.seeded(1234L), EdgeConfig(edgecasesGenerationProbability = 1.0))
+         .take(5)
+         .map { it.value }
+         .toList()
+
+      edgecases shouldContainExactly listOf(
+         "aaaaaaaaaa>aWaaaaaaaaa^aaaaa!aa#aaaaaaaaaa@aaaaaa5aaaXaa7aaaPaaaaaaOa aaraa5aaaaaaaaaaaaaaaaaafa<aaa",
+         "aAaaaaaa;aaaa'_aaaaaaaaaaaaaW1e\\d_B]\\u)3ivaaaaaaaa1aaaaaaaaaaaaaaaaaaaaaaaaaaa>maaaa_aaa!aaaaaaaa@aa",
+         "aazaaaaaaaaaaaaaaaaaaEaaaaaaaaaawaaaaaaaa)aaaa`aaaaavaaaaaaaaYAaaa\\.aaaaaaaaaaaaaaaaaMaaaaaaaaaaaaaa",
+         "aaaaaaaaaeaaaaaaaaaaaaaaaNaaaaaaaaaaaabaaaaBaa5aaaaaaaaWaaaaaaQa=aa0aaaaaaaaaaaaabaaa?aaaaaaaaaaaaaa",
+         "aaaaaahaaaaaaaaaaaaaaaaaa?asaaaaamaaaaaaaaaaaaaaaaaaaaaaaa^a_aaaaaaaaaLT(LhOVxH@36^Aaaaaaaa`aaataaaa"
+      )
+   }
+
    "Arb.reflectiveBind" {
       val arb = Arb.bind<Wobble>()
       arb.take(10).toList().size shouldBe 10
@@ -580,17 +599,11 @@ class BindTest : StringSpec({
          .toList()
 
       edgecases shouldContainExactly listOf(
-         Wobble(a = "a", b = true, c = 1, d = -1.0E300, e = Float.NEGATIVE_INFINITY),
-         Wobble(a = "", b = true, c = -1, d = -8.353207029454685E306, e = 0.27004498f),
-         Wobble(a = "", b = false, c = Integer.MAX_VALUE, d = -1.5032913633841E308, e = 0.0f),
-         Wobble(a = "", b = true, c = Integer.MAX_VALUE, d = 0.0, e = Float.POSITIVE_INFINITY),
-         Wobble(
-            a = "hL+8ow?83LiKCx*n[=CY1623wj&HmQ1Gw` ,P!F-<Ralc9<4/Dw.V90za",
-            b = false,
-            c = 2016148584,
-            d = 3.407355728129291E307,
-            e = 1.0f
-         )
+         Wobble(a = "", b = false, c = -1, d = 1.7976931348623157E308, e = 1.4E-45f),
+         Wobble(a = "", b = true, c = -2147483648, d = 1.0, e = -1.0f),
+         Wobble(a = "", b = true, c = 1, d = 1.0E300, e = 3.4028235E38f),
+         Wobble(a = "a", b = false, c = -2147483648, d = Double.POSITIVE_INFINITY, e = 1.4E-45f),
+         Wobble(a = "a", b = false, c = 1, d = -1.0E300, e = 0.0f)
       )
    }
 })
