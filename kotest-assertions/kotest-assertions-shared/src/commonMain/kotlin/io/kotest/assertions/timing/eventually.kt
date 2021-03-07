@@ -119,11 +119,9 @@ suspend fun <T> eventually(
       }
       times++
       lastInterval = config.interval.next(times)
-      println("sleeping for $lastInterval")
       val delayMark = TimeSource.Monotonic.markNow()
       delay(lastInterval)
       lastDelayPeriod = delayMark.elapsedNow()
-      println("actual sleep $lastDelayPeriod")
    }
 
    errorCollector.setCollectionMode(originalAssertionMode)
