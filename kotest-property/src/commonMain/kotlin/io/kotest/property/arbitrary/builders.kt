@@ -35,7 +35,7 @@ fun <A> arbitrary(edgecases: List<A>, shrinker: Shrinker<A>, fn: (RandomSource) 
 /**
  * Creates a new [Arb] using the given edgecase generator and generates samples from the given sample generator.
  */
-fun <A> arbitrary(edgecaseGenerator: EdgeConfig.(RandomSource) -> A, sampleGenerator: (RandomSource) -> A): Arb<A> =
+internal fun <A> arbitrary(edgecaseGenerator: EdgeConfig.(RandomSource) -> A, sampleGenerator: (RandomSource) -> A): Arb<A> =
    object : Arb<A>() {
       override fun edgecases(): List<A> = emptyList()
       override fun edges(): Option<Edgecase<A>> = Edgecase { rs, config ->
