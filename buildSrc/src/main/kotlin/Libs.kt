@@ -171,11 +171,6 @@ object Libs {
       const val clientApache = "io.ktor:ktor-client-apache:$version"
    }
 
-   object Klock {
-      private const val version = "2.0.6"
-      const val klock = "com.soywiz.korlibs.klock:klock:$version"
-   }
-
    object KotlinTime {
       private const val version = "0.1.1"
       const val kotlintime = "org.jetbrains.kotlinx:kotlinx-datetime:$version"

@@ -44,7 +44,6 @@ include("kotest-assertions:kotest-assertions-ktor")
 include("kotest-assertions:kotest-assertions-jsoup")
 include("kotest-assertions:kotest-assertions-konform")
 include("kotest-assertions:kotest-assertions-kotlinx-time")
-include("kotest-assertions:kotest-assertions-klock")
 include("kotest-assertions:kotest-assertions-sql")
 
 // base classes for property testing, plus std lib generators
