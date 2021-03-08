@@ -6,7 +6,7 @@ slug: framework-config-props.html
 ---
 
 ---
-#### KotestEngineSystemProperties.kt
+#### KotestEngineProperties.kt
 ```kotlin
 package io.kotest.core.internal
 
