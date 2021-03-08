@@ -31,6 +31,7 @@ module.exports = {
       'extensions/allure',
       'extensions/instant',
       'extensions/koin',
+      'extensions/wiremock',
       'extensions/robolectric',
    ],
    assertions: [
