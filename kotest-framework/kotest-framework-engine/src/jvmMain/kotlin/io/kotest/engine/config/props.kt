@@ -1,6 +1,6 @@
 package io.kotest.engine.config
 
-import io.kotest.core.internal.KotestEngineSystemProperties
+import io.kotest.core.internal.KotestEngineProperties
 import java.util.Properties
 
 const val DefaultKotestPropertiesFilename = "kotest.properties"
@@ -18,7 +18,7 @@ fun loadAndApplySystemProps() {
 }
 
 fun systemPropsFilename() =
-   System.getProperty(KotestEngineSystemProperties.propertiesFilename) ?: DefaultKotestPropertiesFilename
+   System.getProperty(KotestEngineProperties.propertiesFilename) ?: DefaultKotestPropertiesFilename
 
 internal fun loadSystemProps(): Properties {
    val props = Properties()
