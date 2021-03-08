@@ -10,16 +10,16 @@ slug: wiremock.html
 [WireMock](https://github.com/tomakehurst/wiremock) is a library which provides HTTP response stubbing, matchable on
 URL, header and body content patterns etc.
 
-```kotest-extensions-wiremock``` provides integration for using wiremock with kotest.
+Kotest provides a module ```kotest-extensions-wiremock``` for integration with wiremock.
 
-For using ```kotest-extensions-wiremock``` add the below dependency in your build file.
+To begin, add the following dependency to your build:
 
-```groovy
-testImplementation("io.kotest:kotest-extensions-wiremock:${version}")
+```
+io.kotest:kotest-extensions-wiremock:{version}
 ```
 
-Having this dependency in test classpath brings in WireMockListener in scope. WireMockListener manage life cycle of
-WireMockServer during your test.
+Having this dependency in the classpath brings `WireMockListener` into scope.
+`WireMockListener` manages  the lifecycle of a `WireMockServer` during your test.
 
 For example:
 
@@ -43,9 +43,10 @@ class SomeTest : FunSpec({
 })
 ```
 
-In above example we created an instance of `WireMockListener` which starts given `WireMockServer` before running any test in
-spec and stops it after completing all test in the spec. You can use `WireMockServer.perSpec(customerServiceServer)` to
-achieve same result.
+In above example we created an instance of `WireMockListener` which starts a `WireMockServer` before running the tests
+in the spec and stops it after completing all the tests in the spec.
+
+You can use `WireMockServer.perSpec(customerServiceServer)` to achieve same result.
 
 ```kotlin
 
@@ -68,6 +69,6 @@ class SomeTest : FunSpec({
 ```
 
 
-In above example we created an instance of `WireMockListener` which starts given `WireMockServer` before running every test in
-spec and stops it after completing every test in the spec. You can use `WireMockServer.perTest(customerServiceServer)` to
-achieve same result.
+In above example we created an instance of `WireMockListener` which starts a `WireMockServer` before running every test
+in the spec and stops it after completing every test in the spec.
+You can use `WireMockServer.perTest(customerServiceServer)` to achieve same result.
