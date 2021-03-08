@@ -67,10 +67,13 @@ object SpecSystemExitListener : TestListener {
          System.setSecurityManager(null)
    }
 
+   fun lastExitCode(): Int? = when (val manager = System.getSecurityManager()) {
+      is NoExitSecurityManager -> manager.lastExitCode
+      else -> null
+   }
+
    fun shouldHaveExitCode(code: Int) {
-      when (val manager = System.getSecurityManager()) {
-         is NoExitSecurityManager -> manager.lastExitCode shouldBe code
-      }
+      lastExitCode() shouldBe code
    }
 }
 
@@ -87,7 +90,7 @@ class SystemExitException(val exitCode: Int) : RuntimeException()
 @Suppress("OverridingDeprecatedMember", "DEPRECATION")
 class NoExitSecurityManager(private val originalSecurityManager: SecurityManager?) : SecurityManager() {
 
-   var lastExitCode: Int = -1
+   var lastExitCode: Int? = null
 
    override fun checkExit(status: Int) {
       lastExitCode = status
