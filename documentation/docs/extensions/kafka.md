@@ -8,7 +8,7 @@ slug: embedded-kafka.html
 Kotest offers an extension that spins up an embedded Kafka instance. This can help in situations
 where using the kafka docker images are an issue.
 
-To use this extension add the `io.kotest:kotest-extensions-embedded-kafka` module to your test compile path.
+To use this extension add the `io.kotest.extensions:kotest-extensions-embedded-kafka` module to your test compile path.
 
 ### Getting started:
 

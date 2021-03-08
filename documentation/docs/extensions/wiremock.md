@@ -15,7 +15,7 @@ Kotest provides a module ```kotest-extensions-wiremock``` for integration with w
 To begin, add the following dependency to your build:
 
 ```
-io.kotest:kotest-extensions-wiremock:{version}
+io.kotest.extensions:kotest-extensions-wiremock:{version}
 ```
 
 Having this dependency in the classpath brings `WireMockListener` into scope.
