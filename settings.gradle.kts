@@ -38,7 +38,6 @@ include("kotest-assertions:kotest-assertions-shared")
 // users should depend on this if they want to use kotest assertions in tests
 include("kotest-assertions:kotest-assertions-core")
 include("kotest-assertions:kotest-assertions-compiler")
-include("kotest-assertions:kotest-assertions-arrow")
 include("kotest-assertions:kotest-assertions-json")
 include("kotest-assertions:kotest-assertions-ktor")
 include("kotest-assertions:kotest-assertions-konform")

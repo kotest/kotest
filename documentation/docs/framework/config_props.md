@@ -10,7 +10,7 @@ slug: framework-config-props.html
 ```kotlin
 package io.kotest.core.internal
 
-object KotestEngineSystemProperties {
+object KotestEngineProperties {
 
    const val springIgnoreWarning = "kotest.listener.spring.ignore.warning"
 
