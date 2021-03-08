@@ -3,7 +3,7 @@ package io.kotest.engine.config
 import io.kotest.core.internal.KotestEngineSystemProperties
 import java.util.Properties
 
-const val KotestPropertiesFilename = "kotest.properties"
+const val DefaultKotestPropertiesFilename = "kotest.properties"
 
 /**
  * When you have system properties you want to use for tests launched by both gradle and
@@ -18,7 +18,7 @@ fun loadAndApplySystemProps() {
 }
 
 fun systemPropsFilename() =
-   System.getProperty(KotestEngineSystemProperties.propertiesFilename) ?: KotestPropertiesFilename
+   System.getProperty(KotestEngineSystemProperties.propertiesFilename) ?: DefaultKotestPropertiesFilename
 
 internal fun loadSystemProps(): Properties {
    val props = Properties()

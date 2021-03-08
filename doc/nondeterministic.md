@@ -90,7 +90,7 @@ class MyTests : ShouldSpec() {
 Continually <a name="continually"></a>
 -------------------------------
 
-As the dual of eventually, `continually` allows you to assert that a block of code suceeds, and continues to succeed, for a period of time.
+As the dual of eventually, `continually` allows you to assert that a block of code succeeds, and continues to succeed, for a period of time.
 For example you may want to check that a http connection is kept alive for 60 seconds after the last packet has been received.
 You could sleep for 60 seconds, and then check, but if the connection was terminated after 5 seconds, your test will sit idle for a further 55 seconds before then failing.
 Better to fail fast.

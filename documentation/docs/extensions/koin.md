@@ -11,7 +11,7 @@ slug: koin.html
 
 The [Koin DI Framework](https://insert-koin.io/) can be used with Kotest through the `KoinListener` test listener and its own interface `KoinTest`.
 
-To add the listener to your project, add the depency to your project:
+To add the listener to your project, add the dependency to your project:
 ```groovy
 testImplementation("io.kotest:kotest-extensions-koin:${version}")
 ```

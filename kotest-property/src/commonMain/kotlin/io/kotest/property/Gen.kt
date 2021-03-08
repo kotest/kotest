@@ -73,7 +73,7 @@ abstract class Arb<out A> : Gen<A>() {
     */
    open fun sample(rs: RandomSource): Sample<A> = values(rs).first()
 
-   @Deprecated("implement one value at a time using sample(rs). This function will be removed in 4.5.", ReplaceWith("sample(rs)"))
+   @Deprecated("implement one value at a time using sample(rs). This function will be removed in 4.6", ReplaceWith("sample(rs)"))
    open fun values(rs: RandomSource): Sequence<Sample<A>> = emptySequence()
 
    /**

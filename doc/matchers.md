@@ -1,14 +1,14 @@
 Matchers
 ==========
 
-A `Matcher` is the Kotest term for an assertion that performs a specifc test. For example, a matcher may test that a double is greater than zero.
+A `Matcher` is the Kotest term for an assertion that performs a specific test. For example, a matcher may test that a double is greater than zero.
 Or it it may test that a file is not empty.
 
 Kotest currently has approximately 325 matchers split across several modules. Most of these matchers are for standard library types.
 Others are project specific. Additionally, there are matchers provided by third party libraries.
 
 Kotest matchers are _framework agnostic_. You can use them with the Kotest framework, or with any other framework. If you are happy with JUnit,
-you can still use the powerful matchers provided by the kotest assertion modules.
+you can still use the powerful matchers provided by the Kotest assertion modules.
 
 Matchers can be used in two styles:
 
@@ -64,5 +64,5 @@ This is a list of projects that provide Kotest matchers. They are maintained out
 
 | Library | Description |
 | -------- | ---- |
-| [Http4k](https://github.com/http4k/http4k/tree/master/http4k-testing-kotest) | Functional toolkit for Kotlin HTTP applications |
+| [Http4k](https://github.com/http4k/http4k/tree/master/http4k-testing/kotest) | Functional toolkit for Kotlin HTTP applications |
 | [Micronaut](https://github.com/micronaut-projects/micronaut-test) | JVM-based, full-stack framework for building modular, easily testable microservice |

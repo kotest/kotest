@@ -17,15 +17,15 @@ data class NestedTest(
    val type: TestType,
    val sourceRef: SourceRef,
    val factoryId: FactoryId?,
-   val descriptor: Descriptor.TestDescriptor?
+   val descriptor: Descriptor.TestDescriptor?,
 )
 
 /**
  * Returns a full [TestCase] from this nested test, attaching the nested test to the given spec.
  */
-fun NestedTest.toTestCase(spec: Spec, parent: Description): TestCase {
+fun NestedTest.toTestCase(spec: Spec, parent: TestCase): TestCase {
    val testCase = TestCase(
-      description = parent.append(this.name, type),
+      description = parent.description.append(this.name, type),
       spec = spec,
       test = test,
       source = sourceRef,
@@ -34,6 +34,7 @@ fun NestedTest.toTestCase(spec: Spec, parent: Description): TestCase {
       factoryId = factoryId,
       assertionMode = null,
       descriptor = descriptor,
+      parent = parent,
    )
    return if (configuration.testNameAppendTags) {
       TestCase.appendTagsInDisplayName(testCase)

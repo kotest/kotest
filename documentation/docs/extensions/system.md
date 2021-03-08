@@ -24,7 +24,7 @@ Kotest provides some extension functions that provides a System Environment in a
 
 ```kotlin
 withEnvironment("FooKey", "BarValue") {
-    System.getenv("FooKey") shouldBe "BarValue" // System environment overriden!
+    System.getenv("FooKey") shouldBe "BarValue" // System environment overridden!
 }
 ```
 

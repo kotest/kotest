@@ -10,14 +10,14 @@ Kotest is split into several subprojects which can be used independently. One of
 To begin you need to add the module `io.kotest:kotest-property:<version>` to your build.
 
 [![version badge](https://img.shields.io/maven-central/v/io.kotest/kotest-property.svg?label=release)](https://search.maven.org/search?q=kotest)
-[![version badge](https://img.shields.io/nexus/s/https/oss.sonatype.org/io.kotest/kotest-framework-engine.svg?label=snapshot)](https://oss.sonatype.org/content/repositories/snapshots/io/kotest)
+[![version badge](https://img.shields.io/nexus/s/https/oss.sonatype.org/io.kotest/kotest-framework-engine.svg?label=snapshot)](https://oss.sonatype.org/content/repositories/snapshots/io/kotest/)
 
 
 ## What is Property Testing?
 
 Developers typically write example-based tests. These are your garden variety unit tests you know and love.
 You provide some inputs, and some expected results, and a test framework like Kotest or JUnit checks that the actual
-resutls meet the expecations.
+results meet the expectations.
 
 One problem with this approach is that it is very easy to miss errors due to edge cases that the developer didn't think about,
 or lack of coverage in the chosen inputs. Instead, with property testing, hundreds or thousands of values are fed into the same test,

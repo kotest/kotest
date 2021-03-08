@@ -93,5 +93,8 @@ private fun scan(packageName: String?): DiscoveryResult {
       EnabledConditionSpecDiscoveryExtension,
       TagsExcludedDiscoveryExtension,
    ) + configuration.extensions().filterIsInstance<DiscoveryExtension>()
-   return Discovery(extensions).discover(req)
+   val discovery = Discovery(extensions)
+   val result = discovery.discover(req)
+   discovery.close()
+   return result
 }

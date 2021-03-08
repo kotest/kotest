@@ -73,8 +73,16 @@ class AssertSoftlyTest : FreeSpec({
                arrayOf("foo") shouldBe arrayOf("bar")
             }
          }.let {
+            it.message should contain("1) expected:<[false]> but was:<[true]>")
             it.message should contain("2) expected:<[2]> but was:<[1]>")
-            it.message should contain("9) Elements differ at index 0: expected:<\"bar\"> but was:<\"foo\">")
+            it.message should contain("3) expected:<[2]> but was:<[1]>")
+            it.message should contain("4) expected:<[2.0f]> but was:<[1.0f]>")
+            it.message should contain("5) expected:<[2.0]> but was:<[1.0]>")
+            it.message should contain("6) expected:<[2L]> but was:<[1L]>")
+            it.message should contain("7) expected:<[2]> but was:<[1]>")
+            it.message should contain("8) expected:<['b']> but was:<['a']>")
+            it.message should contain("""9) Element differ at index: [0]
+                                                |expected:<["bar"]> but was:<["foo"]>""".trimMargin())
             it.message shouldNot contain("10) ")
          }
       }

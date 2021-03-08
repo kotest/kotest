@@ -57,34 +57,50 @@ class ThrowableMatchersTest : FreeSpec() {
         shouldThrow<IOException> { throw FileNotFoundException("this_file.txt not found") } shouldHaveMessage "this_file.txt not found"
         shouldThrow<TestException> { throw TestException() } shouldHaveMessage "This is a test exception"
         shouldThrow<CompleteTestException> { throw CompleteTestException() } shouldHaveMessage "This is a complete test exception"
+        shouldThrow<AssertionError> { TestException() shouldHaveMessage "random message" }
+          .shouldHaveMessage("Throwable should have message:\n\"random message\"\n\nActual was:\n\"This is a test exception\"")
       }
       "shouldNotHaveMessage" {
         shouldThrow<IOException> { throw FileNotFoundException("this_file.txt not found") } shouldNotHaveMessage "random message"
         shouldThrow<TestException> { throw TestException() } shouldNotHaveMessage "This is a complete test exception"
         shouldThrow<CompleteTestException> { throw CompleteTestException() } shouldNotHaveMessage "This is a test exception"
+        shouldThrow<AssertionError> { TestException() shouldNotHaveMessage "This is a test exception" }
+          .shouldHaveMessage("Throwable should not have message:\n\"This is a test exception\"")
       }
       "shouldHaveCause" {
         shouldThrow<CompleteTestException> { throw CompleteTestException() }.shouldHaveCause()
         shouldThrow<CompleteTestException> { throw CompleteTestException() }.shouldHaveCause {
           it shouldHaveMessage "file.txt not found"
         }
+        shouldThrow<AssertionError> { TestException().shouldHaveCause() }
+          .shouldHaveMessage("Throwable should have a cause")
       }
       "shouldNotHaveCause" {
         shouldThrow<TestException> { throw TestException() }.shouldNotHaveCause()
         shouldThrow<IOException> { throw FileNotFoundException("this_file.txt not found") }.shouldNotHaveCause()
+        shouldThrow<AssertionError> { CompleteTestException().shouldNotHaveCause() }
+          .shouldHaveMessage("Throwable should not have a cause")
       }
       "shouldHaveCauseInstanceOf" {
         shouldThrow<CompleteTestException> { throw CompleteTestException() }.shouldHaveCauseInstanceOf<FileNotFoundException>()
         shouldThrow<CompleteTestException> { throw CompleteTestException() }.shouldHaveCauseInstanceOf<IOException>()
+        shouldThrow<AssertionError> { CompleteTestException().shouldHaveCauseInstanceOf<RuntimeException>() }
+          .shouldHaveMessage("Throwable cause should be of type java.lang.RuntimeException or it's descendant, but instead got java.io.FileNotFoundException")
       }
       "shouldNotHaveCauseInstanceOf" {
         shouldThrow<CompleteTestException> { throw CompleteTestException() }.shouldNotHaveCauseInstanceOf<TestException>()
+        shouldThrow<AssertionError> { CompleteTestException().shouldNotHaveCauseInstanceOf<FileNotFoundException>() }
+          .shouldHaveMessage("Throwable cause should not be of type java.io.FileNotFoundException or it's descendant")
       }
       "shouldHaveCauseOfType" {
         shouldThrow<CompleteTestException> { throw CompleteTestException() }.shouldHaveCauseOfType<FileNotFoundException>()
+        shouldThrow<AssertionError> { CompleteTestException().shouldHaveCauseOfType<RuntimeException>() }
+          .shouldHaveMessage("Throwable cause should be of type java.lang.RuntimeException, but instead got java.io.FileNotFoundException")
       }
       "shouldNotHaveCauseOfType" {
         shouldThrow<CompleteTestException> { throw CompleteTestException() }.shouldNotHaveCauseOfType<IOException>()
+        shouldThrow<AssertionError> { CompleteTestException().shouldNotHaveCauseOfType<FileNotFoundException>() }
+          .shouldHaveMessage("Throwable cause should not be of type java.io.FileNotFoundException")
       }
     }
     "shouldThrowExactly" - {

@@ -43,7 +43,8 @@ class TestCaseTimeoutListenerTest : FunSpec() {
 
          val testCase = TestCase.test(
             TestCaseTimeoutListenerTest::class.toDescription().appendTest("wibble"),
-            this@TestCaseTimeoutListenerTest
+            this@TestCaseTimeoutListenerTest,
+            parent = null,
          ) {
             Thread.sleep(1000000)
          }.copy(
@@ -79,7 +80,8 @@ class TestCaseTimeoutListenerTest : FunSpec() {
 
          val testCase = TestCase.test(
             TestCaseTimeoutListenerTest::class.toDescription().appendTest("wibble"),
-            this@TestCaseTimeoutListenerTest
+            this@TestCaseTimeoutListenerTest,
+            parent = null,
          ) {
             delay(1000000)
          }.copy(

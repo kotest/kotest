@@ -14,12 +14,18 @@ module.exports = {
       'proptest/customgens',
       'proptest/globalconfig',
    ],
+   intellij: [
+      'intellij/index',
+      'intellij/test_explorer',
+      'intellij/props',
+   ],
    extensions: [
       'extensions/index',
       'extensions/spring',
       'extensions/ktor',
       'extensions/system_extensions',
       'extensions/test_containers',
+      'extensions/kafka',
       'extensions/mockserver',
       'extensions/junit_xml',
       'extensions/allure',

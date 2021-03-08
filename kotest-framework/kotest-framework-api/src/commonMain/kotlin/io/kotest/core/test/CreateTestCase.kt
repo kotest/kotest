@@ -1,7 +1,6 @@
 package io.kotest.core.test
 
 import io.kotest.core.config.configuration
-import io.kotest.core.internal.KotestEngineSystemProperties
 import io.kotest.core.sourceRef
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.toDescription
@@ -17,14 +16,15 @@ fun createRootTestCase(
    type: TestType
 ): TestCase {
    val testCase = TestCase(
-      spec::class.toDescription().append(name, type),
-      spec,
-      test,
-      sourceRef(),
-      type,
-      config,
-      null,
-      null
+      description = spec::class.toDescription().append(name, type),
+      spec = spec,
+      test = test,
+      source = sourceRef(),
+      type = type,
+      config = config,
+      factoryId = null,
+      assertionMode = null,
+      parent = null, // root tests do not have a parent test case
    )
    return if (configuration.testNameAppendTags) {
       TestCase.appendTagsInDisplayName(testCase)

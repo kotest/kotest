@@ -69,7 +69,7 @@ fun <A, B> Arb<A>.flatMap(f: (A) -> Arb<B>): Arb<B> = object : Arb<B>() {
  *
  * Note: This arb can result in an infinite loop if more elements are requested than can be generated uniquely.
  */
-@Deprecated("distinct will be removed in 4.5.")
+@Deprecated("distinct will be removed in 4.6")
 fun <A> Arb<A>.distinct() = distinctBy { it }
 
 /**
@@ -78,7 +78,7 @@ fun <A> Arb<A>.distinct() = distinctBy { it }
  *
  * Note: This arb can result in an infinite loop if more elements are requested than can be generated uniquely.
  */
-@Deprecated("distinctBy will be removed in 4.5.")
+@Deprecated("distinctBy will be removed in 4.6")
 fun <A, B> Arb<A>.distinctBy(selector: (A) -> B) = object : Arb<A>() {
    override fun edgecases(): List<A> = this@distinctBy.edgecases().distinctBy(selector)
 

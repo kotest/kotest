@@ -79,7 +79,7 @@ class InstancePerTestExample : WordSpec() {
 }
 ```
 
-Do you see how we've overriden the `isolationMode` function here.
+Do you see how we've overridden the `isolationMode` function here.
 
 When this is executed, the following will be printed:
 

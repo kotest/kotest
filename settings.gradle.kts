@@ -69,6 +69,7 @@ include("kotest-extensions:kotest-extensions-koin")
 include("kotest-extensions:kotest-extensions-mockserver")
 include("kotest-extensions:kotest-extensions-spring")
 include("kotest-extensions:kotest-extensions-testcontainers")
+
 //if (!isIntelliJ) include("kotest-extensions:kotest-extensions-robolectric")
 
 // extensions that adapt junit extensions into kotest extensions
@@ -95,6 +96,7 @@ include("kotest-tests:kotest-tests-tagextension")
 include("kotest-tests:kotest-tests-timeout")
 include("kotest-tests:kotest-tests-timeout-sysprop")
 include("kotest-tests:kotest-tests-multiname-test-name-sysprop")
+include("kotest-tests:kotest-tests-native")
 
 //include("kotest-examples:kotest-examples-jvm")
 //include("kotest-examples:kotest-examples-allure")

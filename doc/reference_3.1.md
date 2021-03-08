@@ -242,7 +242,7 @@ Inspectors
 
 Inspectors allow us to test elements in a collection. They are extension functions for collections and arrays that test
 that all, none or some of the elements pass the given assertions. For example, to test that all elements in a collection
-contain an undercore and start with "aa" we could do:
+contain an underscore and start with "aa" we could do:
 
 ```kotlin
 class StringSpecExample : StringSpec({
@@ -577,11 +577,11 @@ types in the test function.
 }
 ```
 
-In the above example, the `root` and `square` parameters are automatically inferrred to be integers.
+In the above example, the `root` and `square` parameters are automatically inferred to be integers.
 
 If there is an error for any particular input row, then the test will fail and KotlinTest will automatically
 match up each input to the corresponding parameter names. For example, if we change the previous example to include the row `row(5,55)`
-then the test will be marked as a failure with the following erorr message.
+then the test will be marked as a failure with the following error message.
 
 ```
 Test failed for (root, 5), (square, 55) with error expected: 55 but was: 25
@@ -979,7 +979,7 @@ class MyTests : ShouldSpec() {
   init {
     should("do something") {
       eventually(5.seconds) {
-        // code here that should complete in 5 seconds but takes an non-determistic amount of time.
+        // code here that should complete in 5 seconds but takes an non-deterministic amount of time.
       }
     }
   }
@@ -1086,4 +1086,3 @@ class SpringAutowiredConstructorTest(service: UserService) : WordSpec() {
   }
 }
 ```
-
