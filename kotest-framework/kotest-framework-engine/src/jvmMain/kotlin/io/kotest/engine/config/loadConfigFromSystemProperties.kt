@@ -2,39 +2,39 @@ package io.kotest.engine.config
 
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.test.AssertionMode
-import io.kotest.core.internal.KotestEngineSystemProperties
+import io.kotest.core.internal.KotestEngineProperties
 import io.kotest.fp.Option
 import io.kotest.fp.toOption
 import io.kotest.mpp.sysprop
 
 internal fun isolationMode(): Option<IsolationMode> =
-   sysprop(KotestEngineSystemProperties.isolationMode).toOption().map { IsolationMode.valueOf(it) }
+   sysprop(KotestEngineProperties.isolationMode).toOption().map { IsolationMode.valueOf(it) }
 
 internal fun assertionMode(): Option<AssertionMode> =
-   sysprop(KotestEngineSystemProperties.assertionMode).toOption().map { AssertionMode.valueOf(it) }
+   sysprop(KotestEngineProperties.assertionMode).toOption().map { AssertionMode.valueOf(it) }
 
 internal fun parallelism(): Option<Int> =
-   sysprop(KotestEngineSystemProperties.parallelism).toOption().map { it.toInt() }
+   sysprop(KotestEngineProperties.parallelism).toOption().map { it.toInt() }
 
-internal fun timeout(): Option<Long> = sysprop(KotestEngineSystemProperties.timeout).toOption().map { it.toLong() }
+internal fun timeout(): Option<Long> = sysprop(KotestEngineProperties.timeout).toOption().map { it.toLong() }
 
 internal fun invocationTimeout(): Option<Long> =
-   sysprop(KotestEngineSystemProperties.invocationTimeout).toOption().map { it.toLong() }
+   sysprop(KotestEngineProperties.invocationTimeout).toOption().map { it.toLong() }
 
 internal fun allowMultilineTestName(): Option<Boolean> =
-   sysprop(KotestEngineSystemProperties.allowMultilineTestName).toOption().map { it.toUpperCase() == "TRUE" }
+   sysprop(KotestEngineProperties.allowMultilineTestName).toOption().map { it.toUpperCase() == "TRUE" }
 
 internal fun concurrentSpecs(): Option<Int> =
-   sysprop(KotestEngineSystemProperties.concurrentSpecs).toOption().map { it.toInt() }
+   sysprop(KotestEngineProperties.concurrentSpecs).toOption().map { it.toInt() }
 
 internal fun concurrentTests(): Option<Int> =
-   sysprop(KotestEngineSystemProperties.concurrentTests).toOption().map { it.toInt() }
+   sysprop(KotestEngineProperties.concurrentTests).toOption().map { it.toInt() }
 
 internal fun globalAssertSoftly(): Option<Boolean> =
-   sysprop(KotestEngineSystemProperties.globalAssertSoftly).toOption().map { it.toUpperCase() == "TRUE" }
+   sysprop(KotestEngineProperties.globalAssertSoftly).toOption().map { it.toUpperCase() == "TRUE" }
 
 internal fun testNameAppendTags(): Option<Boolean> =
-   sysprop(KotestEngineSystemProperties.testNameAppendTags).toOption().map { it.toUpperCase() == "TRUE" }
+   sysprop(KotestEngineProperties.testNameAppendTags).toOption().map { it.toUpperCase() == "TRUE" }
 
 /**
  * Returns a [DetectedProjectConfig] which is built from system properties where supported.

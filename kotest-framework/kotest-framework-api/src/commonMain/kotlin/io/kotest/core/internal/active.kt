@@ -48,7 +48,7 @@ fun TestCase.isActiveInternal(): Boolean {
 
    // this sys property disables the use of !
    // when it's not set, then we use ! to disable tests
-   val bangEnabled = sysprop(KotestEngineSystemProperties.disableBangPrefix) == null
+   val bangEnabled = sysprop(KotestEngineProperties.disableBangPrefix) == null
    if (isBang() && bangEnabled) {
       log("${description.testPath()} is disabled by bang")
       return false

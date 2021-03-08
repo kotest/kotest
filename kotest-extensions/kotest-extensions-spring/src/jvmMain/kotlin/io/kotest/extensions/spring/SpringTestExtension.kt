@@ -4,7 +4,7 @@ package io.kotest.extensions.spring
 
 import io.kotest.core.extensions.SpecExtension
 import io.kotest.core.extensions.TestCaseExtension
-import io.kotest.core.internal.KotestEngineSystemProperties
+import io.kotest.core.internal.KotestEngineProperties
 import io.kotest.core.spec.Spec
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
@@ -110,5 +110,5 @@ class SpringTestExtension(private val mode: SpringTestLifecycleMode) : TestCaseE
 
    private val ignoreFinalWarning =
       ignoreSpringListenerOnFinalClassWarning ||
-         !sysprop(KotestEngineSystemProperties.springIgnoreWarning, "false").toBoolean()
+         !sysprop(KotestEngineProperties.springIgnoreWarning, "false").toBoolean()
 }
