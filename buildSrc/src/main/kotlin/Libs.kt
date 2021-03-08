@@ -32,10 +32,6 @@ object Libs {
       const val commons = "io.qameta.allure:allure-java-commons:$version"
    }
 
-   object JSoup {
-      const val jsoup = "org.jsoup:jsoup:1.13.1"
-   }
-
    object Jayway {
       const val jsonpath = "com.jayway.jsonpath:json-path:2.4.0"
    }
