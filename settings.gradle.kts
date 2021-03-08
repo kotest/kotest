@@ -69,7 +69,6 @@ include("kotest-extensions:kotest-extensions-koin")
 include("kotest-extensions:kotest-extensions-mockserver")
 include("kotest-extensions:kotest-extensions-spring")
 include("kotest-extensions:kotest-extensions-testcontainers")
-include("kotest-extensions:kotest-extensions-wiremock")
 
 //if (!isIntelliJ) include("kotest-extensions:kotest-extensions-robolectric")
 
