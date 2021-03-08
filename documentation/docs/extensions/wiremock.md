@@ -12,11 +12,20 @@ URL, header and body content patterns etc.
 
 Kotest provides a module ```kotest-extensions-wiremock``` for integration with wiremock.
 
+
+[<img src="https://img.shields.io/maven-central/v/io.kotest.extensions/kotest-extensions-wiremock.svg?label=latest%20release"/>](http://search.maven.org/#search|ga|1|kotest-extensions-wiremock)
+[<img src="https://img.shields.io/nexus/s/https/oss.sonatype.org/io.kotest.extensions/kotest-extensions-wiremock.svg?label=latest%20snapshot"/>](https://oss.sonatype.org/content/repositories/snapshots/io/kotest/extensions/kotest-extensions-wiremock/)
+
+
 To begin, add the following dependency to your build:
 
 ```
 io.kotest.extensions:kotest-extensions-wiremock:{version}
 ```
+
+
+
+
 
 Having this dependency in the classpath brings `WireMockListener` into scope.
 `WireMockListener` manages  the lifecycle of a `WireMockServer` during your test.
