@@ -76,12 +76,6 @@ object Libs {
       const val engine = "org.junit.jupiter:junit-jupiter-engine:$version"
    }
 
-   object Konform {
-      const val Konform = "io.konform:konform:0.2.0"
-      const val KonformJs = "io.konform:konform-js:0.2.0"
-      const val KonformJvm = "io.konform:konform-jvm:0.2.0"
-   }
-
    object Classgraph {
       const val classgraph = "io.github.classgraph:classgraph:4.8.102"
    }
