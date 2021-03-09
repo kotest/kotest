@@ -167,11 +167,6 @@ object Libs {
       const val clientApache = "io.ktor:ktor-client-apache:$version"
    }
 
-   object KotlinTime {
-      private const val version = "0.1.1"
-      const val kotlintime = "org.jetbrains.kotlinx:kotlinx-datetime:$version"
-   }
-
    object Android {
       const val desugarJdk = "com.android.tools:desugar_jdk_libs:1.0.10"
    }

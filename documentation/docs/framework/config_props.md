@@ -10,6 +10,9 @@ slug: framework-config-props.html
 ```kotlin
 package io.kotest.core.internal
 
+@Deprecated("Renamed to KotestEngineProperties. Will be replaced in 4.7")
+val KotestEngineSystemProperties = KotestEngineProperties
+
 object KotestEngineProperties {
 
    const val springIgnoreWarning = "kotest.listener.spring.ignore.warning"
