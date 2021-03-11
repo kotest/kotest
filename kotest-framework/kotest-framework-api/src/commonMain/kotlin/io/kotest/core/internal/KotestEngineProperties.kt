@@ -1,6 +1,9 @@
 package io.kotest.core.internal
 
-object KotestEngineSystemProperties {
+@Deprecated("Renamed to KotestEngineProperties. Will be replaced in 4.7")
+val KotestEngineSystemProperties = KotestEngineProperties
+
+object KotestEngineProperties {
 
    const val springIgnoreWarning = "kotest.listener.spring.ignore.warning"
 

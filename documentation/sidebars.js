@@ -25,11 +25,13 @@ module.exports = {
       'extensions/ktor',
       'extensions/system_extensions',
       'extensions/test_containers',
+      'extensions/kafka',
       'extensions/mockserver',
       'extensions/junit_xml',
       'extensions/allure',
       'extensions/instant',
       'extensions/koin',
+      'extensions/wiremock',
       'extensions/robolectric',
    ],
    assertions: [

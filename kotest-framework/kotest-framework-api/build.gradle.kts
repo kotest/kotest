@@ -99,7 +99,7 @@ tasks.named<Test>("jvmTest") {
 
 tasks.create("buildConfigDocs") {
    //find config files
-   val fileNames = listOf("KotestEngineSystemProperties.kt")
+   val fileNames = listOf("KotestEngineProperties.kt")
 
    val foundFiles = File(project.rootDir.absolutePath).walk().maxDepth(25).map { file ->
       if (fileNames.contains(file.name)) {

@@ -1,9 +1,8 @@
 package io.kotest.runner.junit.platform
 
-import io.kotest.core.internal.KotestEngineSystemProperties
+import io.kotest.core.internal.KotestEngineProperties
 import io.kotest.core.plan.Descriptor
 import io.kotest.core.plan.DisplayName
-import io.kotest.core.plan.Source
 import io.kotest.core.test.Description
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.toDescription
@@ -80,7 +79,7 @@ fun TestDescriptor.descriptor(testCase: TestCase): TestDescriptor {
    // so we can't use CONTAINER_AND_TEST for our test scopes, but simply container
    // update jan 2020: Seems we can use CONTAINER_AND_TEST now in gradle 6, and CONTAINER is invisible in output
    val type = when (testCase.type) {
-      TestType.Container -> if (System.getProperty(KotestEngineSystemProperties.gradle5) == "true") TestDescriptor.Type.CONTAINER else TestDescriptor.Type.CONTAINER_AND_TEST
+      TestType.Container -> if (System.getProperty(KotestEngineProperties.gradle5) == "true") TestDescriptor.Type.CONTAINER else TestDescriptor.Type.CONTAINER_AND_TEST
       TestType.Test -> TestDescriptor.Type.TEST
    }
    return append(testCase.description, type, source, Segment.Test)
@@ -99,7 +98,7 @@ fun TestDescriptor.descriptor(desc: Descriptor.TestDescriptor): TestDescriptor {
    // so we can't use CONTAINER_AND_TEST for our test scopes, but simply container
    // update jan 2020: Seems we can use CONTAINER_AND_TEST now in gradle 6, and CONTAINER is invisible in output
    val type = when (desc.type) {
-      TestType.Container -> if (System.getProperty(KotestEngineSystemProperties.gradle5) == "true") TestDescriptor.Type.CONTAINER else TestDescriptor.Type.CONTAINER_AND_TEST
+      TestType.Container -> if (System.getProperty(KotestEngineProperties.gradle5) == "true") TestDescriptor.Type.CONTAINER else TestDescriptor.Type.CONTAINER_AND_TEST
       TestType.Test -> TestDescriptor.Type.TEST
    }
    return append(desc.displayName, type, source, Segment.Test)
