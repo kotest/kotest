@@ -64,8 +64,6 @@ include("kotest-extensions:kotest-extensions-mockserver")
 include("kotest-extensions:kotest-extensions-spring")
 include("kotest-extensions:kotest-extensions-testcontainers")
 
-//if (!isIntelliJ) include("kotest-extensions:kotest-extensions-robolectric")
-
 // extensions that adapt junit extensions into kotest extensions
 include("kotest-extensions:kotest-extensions-junit5")
 
@@ -95,7 +93,6 @@ include("kotest-tests:kotest-tests-native")
 //include("kotest-examples:kotest-examples-jvm")
 //include("kotest-examples:kotest-examples-allure")
 //include("kotest-examples:kotest-examples-spring-webflux")
-//if (!isIntelliJ) include("kotest-tests:kotest-tests-robolectric")
 
 // BOM for whole kotest project
 include("kotest-bom")

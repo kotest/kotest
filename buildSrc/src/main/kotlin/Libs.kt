@@ -127,11 +127,6 @@ object Libs {
       const val bytebuddy = "net.bytebuddy:byte-buddy:1.10.19"
    }
 
-   object Robolectric {
-      private const val version = "4.4"
-      const val robolectric = "org.robolectric:robolectric:$version"
-   }
-
    object Coroutines {
       private const val version = "1.4.3"
       const val coreCommon = "org.jetbrains.kotlinx:kotlinx-coroutines-core:$version"
@@ -164,9 +159,5 @@ object Libs {
    object KotlinTime {
       private const val version = "0.1.1"
       const val kotlintime = "org.jetbrains.kotlinx:kotlinx-datetime:$version"
-   }
-
-   object Android {
-      const val desugarJdk = "com.android.tools:desugar_jdk_libs:1.0.10"
    }
 }
