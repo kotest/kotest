@@ -17,6 +17,7 @@ import org.springframework.beans.factory.config.AutowireCapableBeanFactory.AUTOW
 import org.springframework.test.context.TestContextManager
 import java.lang.reflect.Method
 import java.lang.reflect.Modifier
+import java.util.Collections.synchronizedMap
 import kotlin.coroutines.Continuation
 import kotlin.reflect.KClass
 import kotlin.reflect.full.primaryConstructor
@@ -41,7 +42,7 @@ class SpringTestListener(private val mode: SpringTestLifecycleMode) : TestListen
    // Each Spec needs its own context. However, this listener is a singleton, so we need
    // to keep this map to separate those contexts instead of making this class non-singleton, thus
    // breaking client code
-   private val testContexts = mutableMapOf<Spec, TestContextManager>()
+   private val testContexts = synchronizedMap(mutableMapOf<Spec, TestContextManager>())
 
    override suspend fun beforeSpec(spec: Spec) {
       testContexts[spec] = TestContextManager(spec.javaClass)
