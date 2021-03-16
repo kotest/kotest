@@ -60,6 +60,9 @@ Sam Sam (sksamuel), Sean Flanigan (seanf), Sebastian Schuberth (sschuberth).
 
 
 
+### 4.4.3 March 2021
+
+* Removed verbose debugging statements that were erroneously left in the 4.4.2 release.
 
 ### 4.4.2 March 2021
 
