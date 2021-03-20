@@ -11,7 +11,6 @@ class DummyFunSpecTest : FunSpec() {
       context("context") {
          test("a") {
             1 + 1 shouldBe 2
-            true shouldBe false
          }
          test("b") {
             1 + 1 shouldBe 2

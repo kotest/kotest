@@ -1,10 +1,7 @@
 package io.kotest.extensions.htmlreporter
 
 import io.kotest.core.listeners.ProjectListener
-import org.jdom2.DocType
 import org.jdom2.Document
-import org.jdom2.Element
-import org.jdom2.Text
 import org.jdom2.input.SAXBuilder
 import org.jdom2.output.Format
 import org.jdom2.output.XMLOutputter
@@ -20,150 +17,56 @@ class HtmlReporter(
 
    companion object {
       const val DefaultLocation = "./reports/tests/test/"
-
       const val DefaultResultsLocation = "./build/test-results/test"
-
       const val BuildDirKey = "gradle.build.dir"
    }
 
    override suspend fun afterProject() {
       super.afterProject()
 
-      val testsData: MutableList<List<String>> = mutableListOf()
+      val writer = HtmlWriter(outputDir())
+      val testResults = getTestResults()
+      val testClasses: MutableList<TestClassInfo> = mutableListOf()
 
-      getTestResults().forEach {
+      testResults.forEach {
          val builder = SAXBuilder()
          val doc = builder.build(it.path)
-         val root = doc.rootElement
 
-         testsData.add(
-            listOf(
-               root.getAttributeValue("name"),
-               root.getAttributeValue("tests"),
-               root.getAttributeValue("errors"),
-               root.getAttributeValue("failures"),
-               root.getAttributeValue("skipped")
+         with(doc.rootElement) {
+            testClasses.add(
+               TestClassInfo(
+                  this.getAttributeValue("name"),
+                  SummaryInfo(
+                     this.getAttributeValue("tests"),
+                     this.getAttributeValue("errors"),
+                     this.getAttributeValue("failures"),
+                     this.getAttributeValue("skipped")
+                  ),
+                  this.getChildren("testcase").map { elem ->
+                     TestCase(
+                        elem.getAttributeValue("name"),
+                        elem.getAttributeValue("time"),
+                        if(elem.getChild("failure") != null) "Failed" else "Passed"
+                     )
+                  }
+               )
             )
-         )
-
-         write(
-            buildClassDocument(root.getAttributeValue("name"), root.getChildren("testcase")),
-            "classes/${root.getAttributeValue("name")}.html"
-         )
+         }
       }
 
-      write(buildSummaryDocument(testsData), "index.html")
+      write(writer.buildSummaryDocument(testClasses), "index.html")
+      testClasses.forEach { testClass ->
+         write(writer.buildClassDocument(testClass, "../index.html"), "classes/${testClass.name}.html")
+      }
+
       write({}.javaClass.getResource("/style.css").readText(), "css/style.css")
    }
 
-   private fun withDocument(block: (Element) -> Unit): Document {
-      val document = Document()
-      document.docType = DocType("html")
-
-      val html = Element("html")
-      val head = Element("head")
-      val body = Element("body")
-
-      head.addContent(
-         Element("link")
-            .setAttribute("rel", "stylesheet")
-            .setAttribute("href", outputDir().resolve("css/style.css").toString())
-      )
-
-      block(body)
-
-      html.addContent(head)
-      html.addContent(body)
-      document.addContent(html)
-
-      return document
-   }
-
-   private fun buildSummaryDocument(summaryList: MutableList<List<String>>): Document {
-      return withDocument { body ->
-         body.addContent(Element("h1").setContent(Text("Test Summary")))
-         body.addContent(
-            generateTestSummaryTable(
-               listOf("Class", "Tests", "Errors", "Failures", "Skipped"),
-               summaryList
-            )
-         )
-      }
-   }
-
-   private fun buildClassDocument(name: String, testcases: List<Element>): Document {
-      return withDocument { body ->
-         body.addContent(Element("h1").setContent(Text("Class $name")))
-         body.addContent(Element("a").setText("Home").setAttribute("href", "../index.html"))
-         body.addContent(generateTestClassTable(testcases))
-      }
-   }
-
-   private fun addHeaderColumn(row: Element, value: String) = row.addContent(Element("th").setContent(Text(value)))
-
-   private fun generateTestSummaryTable(headers: List<String>, content: List<List<String>>): Element {
-      val table = Element("table")
-      val headerRow = Element("tr")
-
-
-      headers.forEach {
-         addHeaderColumn(headerRow, it)
-      }
-
-      table.addContent(headerRow)
-
-      content.forEach {
-         val row = Element("tr")
-         val anchor = Element("a").setContent(Text(it[0])).setAttribute("href", "./classes/${it[0]}.html")
-
-         val tests = it[1].toIntOrNull() ?: 0
-         val errors = it[2].toIntOrNull() ?: 0
-         val failures = it[3].toIntOrNull() ?: 0
-         val skipped = it[4].toIntOrNull() ?: 0
-
-         row.addContent(Element("td").setContent(anchor))
-         row.addContent(Element("td").setContent(Text(tests.toString())))
-         row.addContent(Element("td").setContent(Text(errors.toString())))
-         row.addContent(Element("td").setContent(Text(failures.toString())))
-         row.addContent(Element("td").setContent(Text(skipped.toString())))
-
-         if((errors + failures + skipped) == 0) row.setAttribute("class", "success")
-         if (failures > 0) row.setAttribute("class", "failure")
-
-         table.addContent(row)
-      }
-
-      return table
-   }
-
-   private fun generateTestClassTable(testcases: List<Element>): Element {
-      val table = Element("table")
-      val headerRow = Element("tr")
-
-      listOf("Test", "Duration", "Result").forEach {
-         addHeaderColumn(headerRow, it)
-      }
-
-      table.addContent(headerRow)
-
-      testcases.forEach {
-         val row = Element("tr")
-         val result = if(it.getChild("failure") != null) "Failed" else "Passed"
-
-         row.addContent(Element("td").setContent(Text(it.getAttributeValue("name"))))
-         row.addContent(Element("td").setContent(Text(it.getAttributeValue("time"))))
-         row.addContent(Element("td").setContent(Text(result)))
-
-         if (result == "Passed") {
-            row.setAttribute("class", "success")
-         } else {
-            row.setAttribute("class", "failure")
-         }
-
-         table.addContent(row)
-      }
-
-      return table
+   private fun getTestResults(): Sequence<File> {
+      return File(DefaultResultsLocation)
+         .walk()
+         .filter { Files.isRegularFile(it.toPath())}
+         .filter { it.toString().endsWith(".xml") }
    }
 
    private fun outputDir(): Path {
@@ -174,26 +77,38 @@ class HtmlReporter(
          Paths.get(DefaultLocation)
    }
 
-   private fun getTestResults(): Sequence<File> {
-      return File(DefaultResultsLocation)
-         .walk()
-         .filter { Files.isRegularFile(it.toPath())}
-         .filter { it.toString().endsWith(".xml") }
+   private fun write(text: String, path: String) {
+      val absolutePath = outputDir().resolve(path)
+      absolutePath.parent.toFile().mkdirs()
+      val writer = Files.newBufferedWriter(absolutePath, StandardOpenOption.TRUNCATE_EXISTING, StandardOpenOption.CREATE)
+      writer.use { out ->
+         out.write(text)
+      }
    }
 
    private fun write(document: Document, path: String) {
-      val path = outputDir().resolve(path)
-      path.parent.toFile().mkdirs()
-      val outputter = XMLOutputter(Format.getPrettyFormat().setOmitDeclaration(true))
-      val writer = Files.newBufferedWriter(path, StandardOpenOption.TRUNCATE_EXISTING, StandardOpenOption.CREATE)
-      outputter.output(document, writer)
-      writer.close()
-   }
-
-   private fun write(text: String, path: String) {
-      val path = outputDir().resolve(path)
-      path.parent.toFile().mkdirs()
-      File(path.toUri()).writeText(text)
+      with(XMLOutputter(Format.getPrettyFormat().setOmitDeclaration(true))) {
+         write(this.outputString(document), path)
+      }
    }
 }
+
+data class TestClassInfo(
+   val name: String,
+   val summary: SummaryInfo,
+   val testcases: List<TestCase>
+)
+
+data class SummaryInfo(
+   val tests: String,
+   val errors: String,
+   val failures: String,
+   val skipped: String
+)
+
+data class TestCase(
+   val name: String,
+   val duration: String,
+   val result: String
+)
 

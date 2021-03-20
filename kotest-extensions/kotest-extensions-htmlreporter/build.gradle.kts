@@ -2,7 +2,6 @@ plugins {
    id("java")
    kotlin("multiplatform")
    id("java-library")
-   id("org.jetbrains.kotlin.plugin.spring") version Libs.kotlinVersion
    id("com.adarshr.test-logger")
 }
 
