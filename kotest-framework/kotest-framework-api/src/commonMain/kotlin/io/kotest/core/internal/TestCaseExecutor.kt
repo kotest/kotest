@@ -2,12 +2,11 @@ package io.kotest.core.internal
 
 import io.kotest.core.TimeoutExecutionContext
 import io.kotest.core.extensions.TestCaseExtension
+import io.kotest.core.extensions.resolvedTestCaseExtensions
 import io.kotest.core.spec.invokeAfterInvocation
 import io.kotest.core.spec.invokeAllAfterTestCallbacks
 import io.kotest.core.spec.invokeAllBeforeTestCallbacks
 import io.kotest.core.spec.invokeBeforeInvocation
-import io.kotest.core.extensions.resolvedTestCaseExtensions
-import io.kotest.core.listeners.TestListener
 import io.kotest.core.test.NestedTest
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestCaseExecutionListener
@@ -110,14 +109,16 @@ class TestCaseExecutor(
     */
    private suspend fun executeIfActive(testCase: TestCase, ifActive: suspend () -> TestResult): TestResult {
       // if the test case is active we execute it, otherwise we just invoke the callback with ignored
-      return when (testCase.isActive()) {
+      val isActive = testCase.isActive()
+
+      return when (isActive.active) {
          true -> {
             log("${testCase.description.testPath()} is active")
             ifActive()
          }
          false -> {
             log("${testCase.description.testPath()} is *not* active")
-            TestResult.Ignored
+            TestResult.ignored(isActive)
          }
       }
    }

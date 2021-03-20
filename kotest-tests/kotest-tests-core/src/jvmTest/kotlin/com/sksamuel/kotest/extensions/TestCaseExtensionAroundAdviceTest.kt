@@ -4,13 +4,15 @@ import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.core.extensions.TestCaseExtension
 import io.kotest.core.spec.style.StringSpec
+import io.kotest.core.test.IsActive
 import io.kotest.core.test.TestStatus
 import io.kotest.engine.toTestResult
 import java.lang.AssertionError
 
+private const val reason = "this test is skipped cause it's skipped"
+
 // this tests that we can manipulate the result of a test case from an extension
 class TestCaseExtensionAroundAdviceTest : StringSpec() {
-
    object MyExt : TestCaseExtension {
       override suspend fun intercept(testCase: TestCase, execute: suspend (TestCase) -> TestResult): TestResult {
          return when (testCase.description.name.name) {
@@ -22,6 +24,14 @@ class TestCaseExtensionAroundAdviceTest : StringSpec() {
                }
             "test3" -> if (testCase.config.enabled) throw RuntimeException() else execute(testCase)
             "test4" -> execute(testCase.copy(config = testCase.config.copy(enabled = false)))
+            "test5" -> {
+               val active = testCase.config.enabledOrCause
+               if (active.active || active.reason != reason) throw RuntimeException() else execute(testCase)
+            }
+            "test6" -> {
+               val active = testCase.config.enabledOrCauseIf(testCase)
+               if (active.active || active.reason != reason) throw RuntimeException() else execute(testCase)
+            }
             else -> execute(testCase)
          }
       }
@@ -46,5 +56,7 @@ class TestCaseExtensionAroundAdviceTest : StringSpec() {
       "test4".config(enabled = true) {
          throw RuntimeException()
       }
+      "test5".config(enabledOrCause = IsActive.inactive(reason)) {} // the extension should throw if this test is enabled
+      "test6".config(enabledOrCauseIf = { IsActive.inactive(reason) }) {} // the extension should throw if this test is enabled}
    }
 }

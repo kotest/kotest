@@ -19,7 +19,9 @@ fun TestCaseConfig.deriveTestConfig(
    invocations: Int? = null,
    threads: Int? = null,
    severity: TestCaseSeverityLevel? = null,
-   listeners: List<TestListener>? = null
+   listeners: List<TestListener>? = null,
+   enabledOrCause: IsActive? = null,
+   enabledOrCauseIf: EnabledOrCauseIf? = null,
 ) = TestCaseConfig(
    enabled = enabled ?: this.enabled,
    tags = tags ?: this.tags,
@@ -30,5 +32,7 @@ fun TestCaseConfig.deriveTestConfig(
    enabledIf = enabledIf ?: this.enabledIf,
    invocations = invocations ?: this.invocations,
    threads = threads ?: this.threads,
-   severity = severity ?: this.severity
+   severity = severity ?: this.severity,
+   enabledOrCause = enabledOrCause ?: this.enabledOrCause,
+   enabledOrCauseIf = enabledOrCauseIf ?: this.enabledOrCauseIf,
 )

@@ -4,10 +4,10 @@ import io.kotest.core.Tag
 import io.kotest.core.Tags
 import io.kotest.core.config.configuration
 import io.kotest.core.extensions.TagExtension
-import io.kotest.core.spec.style.FunSpec
-import io.kotest.core.spec.materializeAndOrderRootTests
 import io.kotest.core.internal.isActiveInternal
 import io.kotest.core.spec.Isolate
+import io.kotest.core.spec.materializeAndOrderRootTests
+import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 
 @Isolate
@@ -20,7 +20,7 @@ class TagsAnnotationInheritenceTest : FunSpec() {
          }
          configuration.registerExtension(ext)
          MyTestClass().materializeAndOrderRootTests()
-            .filter { it.testCase.isActiveInternal() }
+            .filter { it.testCase.isActiveInternal().active }
             .map { it.testCase.displayName } shouldBe listOf("a", "b", "c", "d")
          configuration.deregisterExtension(ext)
       }
@@ -32,7 +32,7 @@ class TagsAnnotationInheritenceTest : FunSpec() {
          configuration.registerExtension(ext)
          // all tests should be filtered out because of the @Tags
          MyTestClass().materializeAndOrderRootTests()
-            .filter { it.testCase.isActiveInternal() }
+            .filter { it.testCase.isActiveInternal().active }
             .map { it.testCase.displayName } shouldBe emptyList()
          configuration.deregisterExtension(ext)
       }
@@ -44,7 +44,7 @@ class TagsAnnotationInheritenceTest : FunSpec() {
          configuration.registerExtension(ext)
          // linux is included for all and we're using an or
          MyTestClass().materializeAndOrderRootTests()
-            .filter { it.testCase.isActiveInternal() }
+            .filter { it.testCase.isActiveInternal().active }
             .map { it.testCase.displayName } shouldBe listOf("a", "b", "c", "d")
          configuration.deregisterExtension(ext)
       }
@@ -56,7 +56,7 @@ class TagsAnnotationInheritenceTest : FunSpec() {
          configuration.registerExtension(ext)
          // linux should be included for all, but then postgres tests excluded as well
          MyTestClass().materializeAndOrderRootTests()
-            .filter { it.testCase.isActiveInternal() }
+            .filter { it.testCase.isActiveInternal().active }
             .map { it.testCase.displayName } shouldBe listOf("a", "d")
          configuration.deregisterExtension(ext)
       }
@@ -68,7 +68,7 @@ class TagsAnnotationInheritenceTest : FunSpec() {
          configuration.registerExtension(ext)
          // Mysql tests should be excluded
          MyTestClass().materializeAndOrderRootTests()
-            .filter { it.testCase.isActiveInternal() }
+            .filter { it.testCase.isActiveInternal().active }
             .map { it.testCase.displayName } shouldBe listOf("b", "d")
          configuration.deregisterExtension(ext)
       }
@@ -80,7 +80,7 @@ class TagsAnnotationInheritenceTest : FunSpec() {
          configuration.registerExtension(ext)
          // Mysql tests should be excluded
          MyTestClass().materializeAndOrderRootTests()
-            .filter { it.testCase.isActiveInternal() }
+            .filter { it.testCase.isActiveInternal().active }
             .map { it.testCase.displayName } shouldBe listOf("b", "c")
          configuration.deregisterExtension(ext)
       }

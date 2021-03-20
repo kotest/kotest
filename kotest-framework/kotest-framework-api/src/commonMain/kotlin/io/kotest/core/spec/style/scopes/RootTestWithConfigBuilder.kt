@@ -4,6 +4,8 @@ import io.kotest.core.Tag
 import io.kotest.core.extensions.TestCaseExtension
 import io.kotest.core.test.DescriptionName
 import io.kotest.core.test.EnabledIf
+import io.kotest.core.test.EnabledOrCauseIf
+import io.kotest.core.test.IsActive
 import io.kotest.core.test.TestContext
 import io.kotest.core.test.TestType
 import io.kotest.core.test.deriveTestConfig
@@ -26,7 +28,9 @@ class RootTestWithConfigBuilder(
       enabledIf: EnabledIf? = null,
       invocationTimeout: Duration? = null,
       severity: TestCaseSeverityLevel? = null,
-      test: suspend TestContext.() -> Unit
+      enabledOrCause: IsActive? = null,
+      enabledOrCauseIf: EnabledOrCauseIf? = null,
+      test: suspend TestContext.() -> Unit,
    ) {
       val derivedConfig = registration.defaultConfig.deriveTestConfig(
          enabled,
@@ -37,7 +41,9 @@ class RootTestWithConfigBuilder(
          enabledIf,
          invocations,
          threads,
-         severity
+         severity,
+         enabledOrCause = enabledOrCause,
+         enabledOrCauseIf = enabledOrCauseIf,
       )
       registration.addTest(name, xdisabled, derivedConfig, TestType.Test, test)
    }

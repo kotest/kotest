@@ -56,6 +56,16 @@ data class TestResult(
       )
 
       /**
+       * Returns a [TestResult] with status [TestStatus.Ignored] and a reason string resolved from [TestCase.isActive].
+       *
+       * @param isActive a inactive [IsActive] that contains the reason for the test being ignored.
+       */
+      fun ignored(isActive: IsActive): TestResult {
+         require(!isActive.active) { "An ignored test must not be active" }
+         return ignored(isActive.reason)
+      }
+
+      /**
        * Returns a [TestResult] with status [TestStatus.Ignored] and a custom reason string.
        *
        * @param reason an optional string describing why the test was ignored.

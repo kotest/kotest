@@ -22,7 +22,7 @@ import kotlin.coroutines.CoroutineContext
  */
 internal fun executeSpec(spec: Spec) {
    spec.materializeAndOrderRootTests()
-      .filter { it.testCase.isActiveInternal() }
+      .filter { it.testCase.isActiveInternal().active }
       .forEach { root ->
          // we have to always start the test so that the framework doesn't exit before we return
          // also it gives us a handle to the done callback

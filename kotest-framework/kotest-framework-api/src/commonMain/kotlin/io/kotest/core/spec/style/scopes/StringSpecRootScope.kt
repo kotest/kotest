@@ -3,6 +3,8 @@ package io.kotest.core.spec.style.scopes
 import io.kotest.core.Tag
 import io.kotest.core.extensions.TestCaseExtension
 import io.kotest.core.test.EnabledIf
+import io.kotest.core.test.EnabledOrCauseIf
+import io.kotest.core.test.IsActive
 import io.kotest.core.test.NestedTest
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestCaseSeverityLevel
@@ -34,6 +36,8 @@ interface StringSpecRootScope : RootScope {
       enabledIf: EnabledIf? = null,
       invocationTimeout: Duration? = null,
       severity: TestCaseSeverityLevel? = null,
+      enabledOrCause: IsActive? = null,
+      enabledOrCauseIf: EnabledOrCauseIf? = null,
       test: suspend TestContext.() -> Unit,
    ) = RootTestWithConfigBuilder(createTestName(null, this, false), registration(), false).config(
       enabled,
@@ -45,6 +49,8 @@ interface StringSpecRootScope : RootScope {
       enabledIf,
       invocationTimeout,
       severity,
+      enabledOrCause,
+      enabledOrCauseIf,
       test
    )
 
