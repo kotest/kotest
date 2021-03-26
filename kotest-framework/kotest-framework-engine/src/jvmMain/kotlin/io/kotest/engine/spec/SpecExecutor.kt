@@ -63,6 +63,12 @@ class SpecExecutor(private val listener: TestEngineListener) {
       log("runTestsIfAtLeastOneActive [$spec]")
       val roots = spec.materializeAndOrderRootTests()
       val active = roots.any { it.testCase.isActive().active }
+
+      if (!active) {
+         val results = roots.map { it.testCase to TestResult.ignored(it.testCase.isActive()) }.toMap()
+         notifications.specSkipped(spec, results)
+      }
+
       return if (active) runTests(spec) else emptyMap<TestCase, TestResult>().success()
    }
 

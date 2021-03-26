@@ -43,7 +43,7 @@ private val skippedExtension = object : IsActiveExtension {
 }
 
 private val skippedListener = object : TestListener {
-   override val name = "Ignored Test Reason Listner"
+   override val name = "Ignored Test Reason Listener"
 
    val reasons = mutableSetOf<String>()
 
