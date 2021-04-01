@@ -22,7 +22,6 @@ infix fun <T, A : T, B : T> T.shouldBeEither(either: Pair<A, B>) {
    }
 }
 
-
 infix fun <T, A : T> T.shouldBeThis(thing: A): Pair<T, A> = this to thing
 
-infix fun <T, A : T, B : T> Pair<T, A>.orThat(that: B) = this.first.shouldBeEither(this.second to that)
+infix fun <T, A : T, B : T> Pair<T, A>.orThat(thing: B) = this.first.shouldBeEither(this.second to thing)
