@@ -55,6 +55,8 @@ sealed class Try<out T> {
    inline fun mapFailure(f: (Throwable) -> Throwable) = fold({ f(it).failure() }, { it.success() })
 
    fun getOrNull(): T? = fold({ null }, { it })
+
+   fun errorOrNull(): Throwable? = fold({ it }, { null })
 }
 
 fun <T> Try<Try<T>>.flatten(): Try<T> = when (this) {
