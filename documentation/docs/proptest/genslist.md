@@ -21,8 +21,8 @@ Most generators are available on all platforms. Some are JVM or JS specific.
 | `Arb.double(range)` | Randomly chosen doubles in the given range. The edgecases are `Double.MIN_VALUE`, `Double.MAX_VALUE`, `Double.NEGATIVE_INFINITY`, `Double.NaN`, `Double.POSITIVE_INFINITY`, 0.0, 1.0, -1.0, 1e300 | ✓ | ✓ | ✓ |
 | `Arb.positiveDoubles(range)` | Randomly chosen positive doubles in the given range. The edgecases are `Double.MIN_VALUE`, `Double.MAX_VALUE`, `Double.POSITIVE_INFINITY`, 1.0, 1e300 | ✓ | ✓ | ✓ |
 | `Arb.negativeDoubles(range)` | Randomly chosen negative doubles in the given range. The edgecases are `Double.NEGATIVE_INFINITY`, -1.0 | ✓ | ✓ | ✓ |
-| `Exhaustive.int(range)` | Returns all ints in the given range. | ✓ | ✓ | ✓ |
-| `Exhaustive.long(range)` | Returns all longs in the given range. | ✓ | ✓ | ✓ |
+| `Exhaustive.ints(range)` | Returns all ints in the given range. | ✓ | ✓ | ✓ |
+| `Exhaustive.longs(range)` | Returns all longs in the given range. | ✓ | ✓ | ✓ |
 | `Arb.multiples(k, max)` | Generates multiples of k up a max value. The edgecases are `0`. | ✓ | ✓ | ✓ |
 | `Arb.factors(k)` | Generates factors of k. | ✓ | ✓ | ✓ |
 | **Nulls** |
