@@ -66,21 +66,21 @@ class DefaultSpecLauncher(
       log("DefaultSpecLauncher: Launching $specs concurrently with $maxConcurrent permits")
       coroutineScope {
          specs.forEach { spec ->
-            semaphore.withPermit {
-               log("DefaultSpecLauncher: Acquired permit for $spec")
+            val dispatcher = factory.dispatcherFor(spec)
+            log("DefaultSpecLauncher: Launching coroutine for spec [$spec] with dispatcher [$dispatcher]")
 
-               val dispatcher = factory.dispatcherFor(spec)
-               log("DefaultSpecLauncher: Launching coroutine for spec [$spec] with dispatcher [$dispatcher]")
+            launch(dispatcher) {
+               semaphore.withPermit {
+                  log("DefaultSpecLauncher: Acquired permit for $spec")
 
-               launch(dispatcher) {
                   try {
                      executor.execute(spec)
                   } catch (t: Throwable) {
                      log("DefaultSpecLauncher: Unhandled error during spec execution [$spec] [$t]")
                      throw t
                   }
-               }.invokeOnCompletion { factory.complete(spec) }
-            }
+               }
+            }.invokeOnCompletion { factory.complete(spec) }
          }
       }
    }
