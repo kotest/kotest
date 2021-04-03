@@ -1,20 +1,20 @@
 package com.sksamuel.kotest
 
-import io.kotest.assertions.errorCollector
-import io.kotest.assertions.orThat
-import io.kotest.assertions.orThis
-import io.kotest.assertions.shouldBeEither
-import io.kotest.assertions.shouldBeThis
-import io.kotest.assertions.shouldFail
+import io.kotest.assertions.*
+import io.kotest.core.spec.Isolate
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.collections.shouldBeEmpty
+import io.kotest.matchers.nulls.shouldNotBeNull
+import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.endWith
 import io.kotest.matchers.string.shouldContain
 import io.kotest.matchers.string.startWith
+import io.kotest.matchers.types.shouldBeSameInstanceAs
 import java.math.BigInteger
 
 private const val helloThere = "hello there"
 
+@Isolate
 class OrTests : FunSpec({
    test("if both aren't equal shouldBeEither and shouldBeThis should fail") {
       listOf(
@@ -76,5 +76,40 @@ class OrTests : FunSpec({
 
       42F shouldBeThis b orThat a
       errorCollector.errors().shouldBeEmpty()
+   }
+
+   test("should not destroy collected errors from previous assertions") {
+      val expectedMessage = """expected:<"bar"> but was:<"foo">"""
+
+      val beforeCount = errorCollector.errors().size
+      var before: Throwable? = null
+
+      var afterCount: Int? = null
+      var after: Throwable? = null
+
+      shouldFail {
+         assertSoftly {
+            "foo" shouldBe "bar"
+            before = errorCollector.errors().lastOrNull()
+
+            "foo" shouldBeThis "foo" orThat "bar"
+            after = errorCollector.errors().lastOrNull()
+            afterCount = errorCollector.errors().size
+         }
+      }.message shouldBe expectedMessage
+
+      withClue("the last error in the collector before shouldBeThis should be the same as after") {
+         before.shouldNotBeNull()
+         before?.message shouldBe expectedMessage
+         
+         after.shouldNotBeNull()
+         after?.message shouldBe expectedMessage
+
+         before shouldBeSameInstanceAs after
+      }
+
+      withClue("the number of errors before the assertSoftly block with shouldBeTHis should be one less than after") {
+         beforeCount shouldBe afterCount?.minus(1)
+      }
    }
 })

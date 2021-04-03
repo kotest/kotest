@@ -24,6 +24,8 @@ infix fun <T, A : T, B : T> T.shouldBeEither(either: Pair<A, B>) {
    }
 }
 
-infix fun <T, A : T> T.shouldBeThis(thing: A): Pair<T, A> = this to thing
+data class Or<out A, out B>(val first: A, val second: B)
 
-infix fun <T, A : T, B : T> Pair<T, A>.orThat(thing: B) = this.first.shouldBeEither(this.second to thing)
+infix fun <T, A : T> T.shouldBeThis(thing: A): Or<T, A> = Or(this, thing)
+
+infix fun <T, A : T, B : T> Or<T, A>.orThat(thing: B) = this.first.shouldBeEither(this.second to thing)
