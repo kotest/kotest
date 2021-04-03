@@ -6,6 +6,7 @@ import io.kotest.matchers.shouldBe
 infix fun <A, B> A.orThis(that: B): Pair<A, B> = this to that
 
 infix fun <T, A : T, B : T> T.shouldBeEither(either: Pair<A, B>) {
+   val errors = errorCollector.errors()
    val previous = errorCollector.getCollectionMode()
    errorCollector.setCollectionMode(ErrorCollectionMode.Hard)
 
@@ -17,8 +18,9 @@ infix fun <T, A : T, B : T> T.shouldBeEither(either: Pair<A, B>) {
    if (l.isFailure() && r.isFailure()) {
       val combined = MultiAssertionError(listOfNotNull(l.errorOrNull(), r.errorOrNull()))
       errorCollector.collectOrThrow(combined)
-   } else {
-      errorCollector.clear()
+   } else if (l.isFailure() || r.isFailure()) {
+      errorCollector.clear() // clear the error that the left or right check produced
+      errors.forEach(errorCollector::pushError)
    }
 }
 
