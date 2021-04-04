@@ -50,7 +50,7 @@ context("Pythag triples tests") {
 Because we are using data classes, the input row can be destructured into the member properties.
 
 :::note
-Data driven testing can be used within any spec but must always be invoked inside a container test.
+Data driven testing can be used within any spec except for SpringSpec but must always be invoked inside a container test.
 :::
 
 Kotest will automatically generate a test case for each input row, as if you had manually written a seperate test case
