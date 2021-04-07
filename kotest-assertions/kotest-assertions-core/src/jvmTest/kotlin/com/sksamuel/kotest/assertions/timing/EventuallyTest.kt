@@ -305,7 +305,6 @@ class EventuallyTest : WordSpec() {
             message shouldContain "2) 2 should never be 3"
          }
 
-
          "call the listener when an exception is thrown in the producer function" {
             var state: EventuallyState<Unit>? = null
 

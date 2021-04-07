@@ -113,10 +113,10 @@ suspend fun <T> eventually(
             } else {
                lastError = e
             }
+            listener.onEval(EventuallyState(null, start, end, times, firstError, lastError))
          } else {
             throw e
          }
-         listener.onEval(EventuallyState(null, start, end, times, firstError, lastError))
       }
       times++
       lastInterval = config.interval.next(times)
