@@ -116,6 +116,7 @@ suspend fun <T> eventually(
          } else {
             throw e
          }
+         listener.onEval(EventuallyState(null, start, end, times, firstError, lastError))
       }
       times++
       lastInterval = config.interval.next(times)
@@ -160,7 +161,7 @@ data class EventuallyConfig(
 }
 
 data class EventuallyState<T>(
-   val result: T,
+   val result: T?,
    val start: TimeMark,
    val end: TimeMark,
    val iteration: Int,

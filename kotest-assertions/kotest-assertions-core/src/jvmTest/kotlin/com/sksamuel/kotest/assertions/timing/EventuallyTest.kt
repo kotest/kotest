@@ -6,6 +6,7 @@ import io.kotest.assertions.assertSoftly
 import io.kotest.assertions.fail
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.assertions.timing.EventuallyConfig
+import io.kotest.assertions.timing.EventuallyState
 import io.kotest.assertions.timing.eventually
 import io.kotest.assertions.until.fibonacci
 import io.kotest.assertions.until.fixed
@@ -14,10 +15,14 @@ import io.kotest.core.spec.style.WordSpec
 import io.kotest.matchers.ints.shouldBeLessThan
 import io.kotest.matchers.longs.shouldBeGreaterThan
 import io.kotest.matchers.longs.shouldBeGreaterThanOrEqual
+import io.kotest.matchers.nulls.shouldBeNull
 import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldContain
+import kotlinx.coroutines.asCoroutineDispatcher
+import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.withContext
 import java.io.FileNotFoundException
 import java.io.IOException
 import java.util.concurrent.CountDownLatch
@@ -28,9 +33,6 @@ import kotlin.time.TimeSource
 import kotlin.time.days
 import kotlin.time.milliseconds
 import kotlin.time.seconds
-import kotlinx.coroutines.asCoroutineDispatcher
-import kotlinx.coroutines.async
-import kotlinx.coroutines.withContext
 
 class EventuallyTest : WordSpec() {
 
@@ -301,6 +303,22 @@ class EventuallyTest : WordSpec() {
 
             message shouldContain "1) 1 should never be 2"
             message shouldContain "2) 2 should never be 3"
+         }
+
+
+         "call the listener when an exception is thrown in the producer function" {
+            var state: EventuallyState<Unit>? = null
+
+            shouldThrow<Throwable> {
+               eventually(retries = 1, listener = { if (state == null) { state = it } }) {
+                  withClue("1 should never be 2") { 1 shouldBe 2 }
+               }
+            }
+
+            state.shouldNotBeNull()
+            state?.result.shouldBeNull()
+
+            state?.firstError?.message shouldContain "1 should never be 2"
          }
       }
    }
