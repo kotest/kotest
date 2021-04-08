@@ -113,6 +113,7 @@ suspend fun <T> eventually(
             } else {
                lastError = e
             }
+            listener.onEval(EventuallyState(null, start, end, times, firstError, lastError))
          } else {
             throw e
          }
@@ -160,7 +161,7 @@ data class EventuallyConfig(
 }
 
 data class EventuallyState<T>(
-   val result: T,
+   val result: T?,
    val start: TimeMark,
    val end: TimeMark,
    val iteration: Int,

@@ -8,8 +8,14 @@ slug: changelog.html
 ### [Unreleased]
 
 Note: This changelog mentions the changes which are not yet released in stable version.
-      You can still use snapshot release to tryout changes and provide us your's valuable
-      feedback. Docs updates are available at kotest.io though.
+      You can still use a snapshot release to try out these changes and provide us with your valuable feedback.
+      Docs updates are available at kotest.io.
+
+#### Breaking Changes
+* In order to ensure the `EventuallyListener` is called in `eventually` when an exception is thrown the `ListenerState` field `result` was changed
+  from type `T` to type `T?`. This will allow insight into when the eventually producer function is failing for whatever reason
+  instead of appearing as if it is hanging. #2190
+
 
 #### Features / Improvement
 * Added new matcher for DayOfWeek in `kotest-assertion-clock` module. #2124
@@ -25,8 +31,7 @@ Note: This changelog mentions the changes which are not yet released in stable v
 * Some improvement around `eventually`.
   (1) Makes `EventuallyPredicate` a type alias instead of interface for better user experience.
   (2) Update failure message to inform the user about failure of given `EventuallyPredicate`.
-  (3) Adds an overload of `eventually` which does not takes `EventuallyPredicate` so that it gives a feel of `utill` function. 2046
-
+  (3) Adds an overload of `eventually` which does not accept `EventuallyPredicate` so that it gives a feel of `until` function. 2046
 
 
 #### Bugfixes.
@@ -36,6 +41,7 @@ Note: This changelog mentions the changes which are not yet released in stable v
 * Updates Throwable eq to check throwable cause as well while checking throwable equality. #2094
 * Fixes eventually failing inside assert softly block without retrying the given lambda. #2092
 * Fixes any other implementation of `Listener` apart from `ProjectListener` not getting picked by Kotest framework. #2088
+* Fixes `EventuallyListener` not being called in `eventually` when the producer function throws an exception. #2190
 
 
 #### Deprecations
