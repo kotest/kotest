@@ -20,7 +20,7 @@ class ExhaustiveTest : FunSpec() {
          }
 
          shouldThrow<IllegalStateException> {
-            exhaustive.generate(RandomSource.Default)
+            exhaustive.generate(RandomSource.default())
          }
       }
    }

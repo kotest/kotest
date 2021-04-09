@@ -14,7 +14,7 @@ class MapTest : FunSpec({
       val intArb = Arb.int(1, 10).map {
          counter.getAndIncrement()
       }
-      intArb.values(RandomSource.Default).take(1).toList()
+      intArb.values(RandomSource.default()).take(1).toList()
       counter.get().shouldBe(1)
    }
 })
