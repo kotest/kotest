@@ -1,5 +1,6 @@
 package io.kotest.matchers.equality
 
+import io.kotest.assertions.show.show
 import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
 import io.kotest.matchers.should
@@ -295,12 +296,95 @@ fun <T : Any> beEqualToIgnoringFields(
    }
 }
 
+
+fun <T : Any> T.shouldBeEqualToComparingFields(other: T, ignorePrivateFields: Boolean) {
+   this should beEqualComparingFieldByField(other, ignorePrivateFields, emptyList())
+}
+
+fun <T : Any> T.shouldBeEqualToComparingFieldExcept(
+   other: T,
+   ignorePrivateFields: Boolean,
+   ignoreProperty: KProperty<*>,
+   vararg ignoreProperties: KProperty<*>
+) {
+   this should beEqualComparingFieldByField(other, ignorePrivateFields, listOf(ignoreProperty) + ignoreProperties)
+}
+
+fun <T : Any> T.shouldNotBeEqualToComparingFieldByFieldExcept(
+   other: T,
+   ignorePrivateFields: Boolean,
+   ignoreProperty: KProperty<*>,
+   vararg ignoreProperties: KProperty<*>
+) {
+   this shouldNot beEqualComparingFieldByField(other, ignorePrivateFields, listOf(ignoreProperty) + ignoreProperties)
+}
+
+fun <T : Any> T.shouldBeEqualToComparingFieldExcept(
+   other: T,
+   ignoreProperty: KProperty<*>,
+   vararg ignoreProperties: KProperty<*>
+) {
+   this should beEqualComparingFieldByField(other, true, listOf(ignoreProperty) + ignoreProperties)
+}
+
+fun <T : Any> T.shouldNotBeEqualToComparingFieldByFieldExcept(
+   other: T,
+   ignoreProperty: KProperty<*>,
+   vararg ignoreProperties: KProperty<*>
+) {
+   this should beEqualComparingFieldByField(other, true, listOf(ignoreProperty) + ignoreProperties)
+}
+
+infix fun <T : Any> T.shouldBeEqualToComparingFields(other: T) {
+   this.shouldBeEqualToComparingFields(other, true)
+}
+
+infix fun <T : Any> T.shouldNotBeEqualToComparingField(other: T) {
+   this shouldNot beEqualComparingFieldByField(other, true, emptyList())
+}
+
+fun <T : Any> T.shouldNotBeEqualToComparingField(other: T, ignorePrivateFields: Boolean) {
+   this shouldNot beEqualComparingFieldByField(other, ignorePrivateFields, emptyList())
+}
+
+fun <T : Any> beEqualComparingFieldByField(
+   other: T,
+   ignorePrivateFields: Boolean,
+   propertiesToExclude: List<KProperty<*>>
+) = object : Matcher<T> {
+   override fun test(value: T): MatcherResult {
+      val allFields = if (ignorePrivateFields) {
+         value::class.memberProperties.filter { it.visibility == KVisibility.PUBLIC }
+      } else {
+         value::class.memberProperties.onEach { it.isAccessible = true }
+      }.toList().filterNot { propertiesToExclude.contains(it) }
+
+      val failed = checkEqualityOfFields(allFields, value, other)
+
+      return MatcherResult(
+         failed.isEmpty(),
+         {
+            """Expected ${value.show().value} to equal ${other.show().value}
+            | Using fields: ${allFields.joinToString(", ") { it.name }}
+            | Value differ at:
+            | ${failed.withIndex().joinToString("\n") { "${it.index + 1}) ${it.value}" }}
+         """.trimMargin()
+         },
+         {
+            """Expected ${value.show().value} to not equal ${other.show().value}
+            | Using fields: ${allFields.joinToString(", ") { it.name }}
+         """.trimMargin()
+         }
+      )
+   }
+}
+
 private fun <T> checkEqualityOfFields(fields: List<KProperty<*>>, value: T, other: T): List<String> {
    return fields.mapNotNull {
       val actual = it.getter.call(value)
       val expected = it.getter.call(other)
       if (actual == expected) null else {
-         "${it.name}: $actual != $expected"
+         "${it.name}: ${actual.show().value} != ${expected.show().value}"
       }
    }
 }
