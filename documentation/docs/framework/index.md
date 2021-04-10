@@ -1,6 +1,6 @@
 ---
 id: index
-title: Test Framework
+title: Introduction
 slug: framework.html
 ---
 
@@ -12,7 +12,7 @@ slug: framework.html
 Test with Style
 ---------------
 
-Write simple and beautiful tests using one of the available styles:
+Write [simple and beautiful tests](writing_tests.md) using one of the available styles:
 
 ```kotlin
 class MyTests : StringSpec({
@@ -25,7 +25,7 @@ class MyTests : StringSpec({
 })
 ```
 
-Kotest comes with several [testing styles](styles.md) so you can choose one that fits your needs.
+Kotest allows tests to be created in several styles, so you can choose the style that suits you best.
 
 Check all the Tricky Cases With Data Driven Testing
 --------------------------

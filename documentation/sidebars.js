@@ -72,6 +72,7 @@ module.exports = {
    ],
    framework: [
       'framework/index',
+      'framework/writing_tests',
       'framework/styles',
       'framework/conditional_evaluation',
       'framework/isolation_mode',
