@@ -55,6 +55,19 @@ class ShouldSpecContextScope(
          false
       )
 
+   suspend fun xcontext(name: String, test: suspend ShouldSpecContextScope.() -> Unit) {
+      val testName = createTestName(name)
+      addContainerTest(testName, xdisabled = true) {
+         ShouldSpecContextScope(
+            this@ShouldSpecContextScope.description.appendContainer(testName),
+            this@ShouldSpecContextScope.lifecycle,
+            this,
+            this@ShouldSpecContextScope.defaultConfig,
+            this@ShouldSpecContextScope.coroutineContext,
+         ).test()
+      }
+   }
+
    fun xcontext(name: String) =
       ShouldSpecContextConfigBuilder(
          createTestName(name),
