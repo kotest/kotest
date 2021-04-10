@@ -66,26 +66,40 @@ object IterableEq : Eq<Iterable<*>> {
       var index = 0
       val iter1 = actual.iterator()
       val iter2 = expected.iterator()
+      val elementDifferAtIndex = mutableListOf<Int>()
+      var unexpectedElementAtIndex: Int? = null
+      var missingElementAt: Int? = null
       while (iter1.hasNext()) {
          val a = iter1.next()
          if (iter2.hasNext()) {
             val b = iter2.next()
             val t = eq(a, b)
-            if (t != null) return failure(
-               Expected(b.show()),
-               Actual(a.show()),
-               "Elements differ at index $index: ",
-            )
+            if (t != null) {
+               elementDifferAtIndex.add(index)
+            }
          } else {
-            return failure("Unexpected element at index $index: ${a.show().value}")
+            unexpectedElementAtIndex = index
          }
          index++
       }
       if (iter2.hasNext()) {
-         val b = iter2.next()
-         return failure("Element ${b.show().value} expected at index $index but there were no further elements")
+         missingElementAt = index
       }
-      return null
+      val detailErrorMessage = StringBuilder().apply {
+         if (elementDifferAtIndex.isNotEmpty()) {
+            append("Element differ at index: ${elementDifferAtIndex.show().value}\n")
+         }
+         if (unexpectedElementAtIndex != null) {
+            append("Unexpected elements from index $unexpectedElementAtIndex\n")
+         }
+         if (missingElementAt != null) {
+            append("Missing elements from index $missingElementAt\n")
+         }
+      }.toString()
+
+      return if (detailErrorMessage.isNotBlank()) {
+         failure(Expected(expected.show()), Actual(actual.show()), detailErrorMessage)
+      } else null
    }
 
    private fun generateError(actual: Any, expected: Any) = failure(Expected(expected.show()), Actual(actual.show()))

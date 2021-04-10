@@ -81,7 +81,8 @@ class MatchersTest : FreeSpec({
       "format array errors" {
          shouldThrow<AssertionError> {
             arrayOf("a") shouldBe arrayOf("b")
-         }.message shouldBe "Elements differ at index 0: expected:<\"b\"> but was:<\"a\">"
+         }.message shouldBe """Element differ at index: [0]
+                              |expected:<["b"]> but was:<["a"]>""".trimMargin()
       }
 
       "format float array errors" {
@@ -144,13 +145,15 @@ class MatchersTest : FreeSpec({
 
          shouldThrow<AssertionError> {
             listOf('a') shouldBe listOf('b')
-         }.message shouldBe "Elements differ at index 0: expected:<'b'> but was:<'a'>"
+         }.message shouldBe """Element differ at index: [0]
+                                                              |expected:<['b']> but was:<['a']>""".trimMargin()
 
          shouldThrow<AssertionError> {
             val l = ArrayList<Any>()
             l.add(l)
             l shouldBe emptyList<Any>()
-         }.message shouldBe "Unexpected element at index 0: [[(this Collection)]]"
+         }.message shouldBe """Unexpected elements from index 0
+                                                              |expected:<[]> but was:<[[(this Collection)]]>""".trimMargin()
       }
    }
 

@@ -32,10 +32,6 @@ object Libs {
       const val commons = "io.qameta.allure:allure-java-commons:$version"
    }
 
-   object JSoup {
-      const val jsoup = "org.jsoup:jsoup:1.13.1"
-   }
-
    object Jayway {
       const val jsonpath = "com.jayway.jsonpath:json-path:2.4.0"
    }
@@ -78,12 +74,6 @@ object Libs {
       private const val version = "5.6.2"
       const val api = "org.junit.jupiter:junit-jupiter-api:$version"
       const val engine = "org.junit.jupiter:junit-jupiter-engine:$version"
-   }
-
-   object Konform {
-      const val Konform = "io.konform:konform:0.2.0"
-      const val KonformJs = "io.konform:konform-js:0.2.0"
-      const val KonformJvm = "io.konform:konform-jvm:0.2.0"
    }
 
    object Classgraph {
@@ -137,11 +127,6 @@ object Libs {
       const val bytebuddy = "net.bytebuddy:byte-buddy:1.10.19"
    }
 
-   object Robolectric {
-      private const val version = "4.4"
-      const val robolectric = "org.robolectric:robolectric:$version"
-   }
-
    object Coroutines {
       private const val version = "1.4.3"
       const val coreCommon = "org.jetbrains.kotlinx:kotlinx-coroutines-core:$version"
@@ -171,22 +156,8 @@ object Libs {
       const val clientApache = "io.ktor:ktor-client-apache:$version"
    }
 
-   object Klock {
-      private const val version = "2.0.6"
-      const val klock = "com.soywiz.korlibs.klock:klock:$version"
-   }
-
    object KotlinTime {
       private const val version = "0.1.1"
       const val kotlintime = "org.jetbrains.kotlinx:kotlinx-datetime:$version"
-   }
-
-   object Android {
-      const val desugarJdk = "com.android.tools:desugar_jdk_libs:1.0.10"
-   }
-
-   object Wiremock {
-      const val version = "2.27.2"
-      const val wiremock = "com.github.tomakehurst:wiremock:$version"
    }
 }

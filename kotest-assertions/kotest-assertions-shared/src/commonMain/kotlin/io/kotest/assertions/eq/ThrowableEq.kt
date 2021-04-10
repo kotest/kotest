@@ -7,7 +7,7 @@ import io.kotest.assertions.show.show
 
 object ThrowableEq : Eq<Throwable> {
    override fun equals(actual: Throwable, expected: Throwable): Throwable? {
-      return if (actual.message == expected.message && actual.cause == expected.cause && expected::class == actual::class)
+      return if (actual.message == expected.message && expected::class == actual::class)
          null
       else
          failure(Expected(expected.show()), Actual(actual.show()))

@@ -54,12 +54,6 @@ class ReflectionKtTest : FunSpec() {
          }.message shouldBe "Foo(a=sammy, b=13, c=true) should be equal to Foo(a=stef, b=13, c=false) ignoring fields [c]; Failed for [a: sammy != stef]"
       }
 
-      test("shouldBeEqualToIgnoringFields should throw exception when no field is mentioned") {
-         assertThrows<IllegalArgumentException>("At-least one field is required to be mentioned to be ignore for checking the equality") {
-            Foo("sammy", 23, false).shouldBeEqualToIgnoringFields(Foo("danny", 23, false))
-         }
-      }
-
       test("shouldBeEqualToIgnoringFields should compare equality for class having private fields") {
          val car1 = Car("C1", 10000, 430)
          val car2 = Car("C1", 123423, 123)

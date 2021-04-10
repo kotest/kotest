@@ -18,5 +18,15 @@ class SystemExitTest : StringSpec() {
         exitProcess(123)
       }.exitCode shouldBe 123
     }
+
+     "SpecSystemExitListener should expose last exit code" {
+        shouldThrow<SystemExitException> {
+           exitProcess(111)
+        }
+        SpecSystemExitListener.shouldHaveExitCode(111)
+        shouldThrow<AssertionError> {
+           SpecSystemExitListener.shouldHaveExitCode(123)
+        }
+     }
   }
 }

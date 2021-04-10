@@ -1,6 +1,6 @@
 package io.kotest.core.test
 
-import io.kotest.core.internal.KotestEngineSystemProperties
+import io.kotest.core.internal.KotestEngineProperties
 import io.kotest.mpp.sysprop
 
 enum class TestCaseSeverityLevel(val level: Int) {
@@ -11,6 +11,6 @@ enum class TestCaseSeverityLevel(val level: Int) {
    TRIVIAL(0);
 
    fun isEnabled(): Boolean {
-      return level >= valueOf(sysprop(KotestEngineSystemProperties.severityPrefix) ?: "TRIVIAL").level
+      return level >= valueOf(sysprop(KotestEngineProperties.severityPrefix) ?: "TRIVIAL").level
    }
 }

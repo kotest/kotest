@@ -36,7 +36,9 @@ class IterableEqTest : FunSpec({
 
       assertSoftly {
          error.shouldNotBeNull()
-         error.message shouldBe "Elements differ at index 0: expected:<1> but was:<3>"
+         error.message shouldBe """Element differ at index: [0]
+                                  |Missing elements from index 1
+                                  |expected:<[1, 2, 3]> but was:<[3]>""".trimMargin()
       }
    }
 
@@ -54,7 +56,8 @@ class IterableEqTest : FunSpec({
 
       assertSoftly {
          error.shouldNotBeNull()
-         error.message shouldBe """Elements differ at index 1: expected:<[["a", "e"], "b"]> but was:<[["a", "c"], "b"]>"""
+         error.message shouldBe """Element differ at index: [1]
+                                  |expected:<[1, [["a", "e"], "b"], [("a", [1, 2, 3])]]> but was:<[1, [["a", "c"], "b"], [("a", [1, 2, 3])]]>""".trimMargin()
       }
    }
 
@@ -102,9 +105,13 @@ class IterableEqTest : FunSpec({
    }
 
    test("should work for empty lists") {
-      IterableEq.equals(emptyList<Int>(), listOf(1))?.message shouldBe
-         "Element 1 expected at index 0 but there were no further elements"
-      IterableEq.equals(listOf(1), emptyList<Int>())?.message shouldBe "Unexpected element at index 0: 1"
+      val errorMessage1 = IterableEq.equals(emptyList<Int>(), listOf(1))?.message
+      errorMessage1 shouldBe """Missing elements from index 0
+                               |expected:<[1]> but was:<[]>""".trimMargin()
+
+      val errorMessage2 = IterableEq.equals(listOf(1, 2), emptyList<Int>())?.message
+      errorMessage2 shouldBe """Unexpected elements from index 1
+                               |expected:<[]> but was:<[1, 2]>""".trimMargin()
    }
 
    test("shouldNotBe should work for empty lists") {

@@ -24,4 +24,5 @@ import io.kotest.property.RandomSource
  * val filteredValue: String = gen.next { it != "hello" }
  * ```
  */
-fun <A> Arb<A>.next(predicate: (A) -> Boolean = { true }, rs: RandomSource = RandomSource.Default): A = filter(predicate).next(rs)
+fun <A> Arb<A>.next(predicate: (A) -> Boolean = { true }, rs: RandomSource = RandomSource.default()): A =
+   filter(predicate).next(rs)

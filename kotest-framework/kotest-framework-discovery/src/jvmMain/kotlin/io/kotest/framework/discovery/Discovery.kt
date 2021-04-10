@@ -6,7 +6,7 @@ import io.github.classgraph.ClassGraph
 import io.github.classgraph.ClassInfo
 import io.github.classgraph.ScanResult
 import io.kotest.core.extensions.DiscoveryExtension
-import io.kotest.core.internal.KotestEngineSystemProperties
+import io.kotest.core.internal.KotestEngineProperties
 import io.kotest.core.spec.Spec
 import io.kotest.fp.Try
 import io.kotest.fp.getOrElse
@@ -117,8 +117,8 @@ class Discovery(private val discoveryExtensions: List<DiscoveryExtension> = empt
 
       log("After discovery extensions there are ${filtered.size} spec classes")
 
-      val scriptsEnabled = System.getProperty(KotestEngineSystemProperties.scriptsEnabled) == "true" ||
-         System.getenv(KotestEngineSystemProperties.scriptsEnabled) == "true"
+      val scriptsEnabled = System.getProperty(KotestEngineProperties.scriptsEnabled) == "true" ||
+         System.getenv(KotestEngineProperties.scriptsEnabled) == "true"
 
       val scripts = when {
          scriptsEnabled -> discoverScripts()

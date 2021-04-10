@@ -101,7 +101,7 @@ abstract class Arb<out A> : Gen<A>() {
     * Returns a sequence from values generated from this arb.
     * Edgecases will be ignored.
     */
-   fun samples(rs: RandomSource = RandomSource.Default): Sequence<Sample<A>> {
+   fun samples(rs: RandomSource = RandomSource.default()): Sequence<Sample<A>> {
       val valuesIterator = values(rs).iterator()
       return if (valuesIterator.hasNext()) {
          generateSequence { valuesIterator.next() }
