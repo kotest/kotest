@@ -1,5 +1,7 @@
 package io.kotest.property.arbitrary
 
+import io.kotest.fp.Option
+import io.kotest.fp.some
 import io.kotest.property.*
 import kotlin.jvm.JvmName
 
@@ -29,6 +31,39 @@ fun <A> arbitrary(edgecases: List<A>, shrinker: Shrinker<A>, fn: (RandomSource) 
    override fun sample(rs: RandomSource): Sample<A> = sampleOf(fn(rs), shrinker)
    override fun values(rs: RandomSource): Sequence<Sample<A>> = generateSequence { sampleOf(fn(rs), shrinker) }
 }
+
+/**
+ * Creates a new [Arb] using the given edgecase generator and generates samples from the given sample generator.
+ */
+internal fun <A> arbitrary(edgecaseGenerator: EdgeConfig.(RandomSource) -> A, sampleGenerator: (RandomSource) -> A): Arb<A> =
+   object : Arb<A>() {
+      override fun edgecases(): List<A> = emptyList()
+      override fun edges(): Option<Edgecase<A>> = Edgecase { rs, config ->
+         config.edgecaseGenerator(rs)
+      }.some()
+
+      override fun sample(rs: RandomSource): Sample<A> = Sample(sampleGenerator(rs))
+      override fun values(rs: RandomSource): Sequence<Sample<A>> = generateSequence { Sample(sampleGenerator(rs)) }
+   }
+
+/**
+ * Creates a new [Arb] that performs shrinking using the supplied [Shrinker],
+ * generates edgecases using the given edgecase generator,
+ * and generates samples from the given sample generator.
+ */
+internal fun <A> arbitrary(
+   shrinker: Shrinker<A>,
+   edgecaseGenerator: EdgeConfig.(RandomSource) -> A,
+   sampleGenerator: (RandomSource) -> A
+): Arb<A> =
+   object : Arb<A>() {
+      override fun edgecases(): List<A> = emptyList()
+      override fun edges(): Option<Edgecase<A>> = Edgecase { rs, config ->
+         config.edgecaseGenerator(rs)
+      }.some()
+      override fun sample(rs: RandomSource): Sample<A> = sampleOf(sampleGenerator(rs), shrinker)
+      override fun values(rs: RandomSource): Sequence<Sample<A>> = generateSequence { Sample(sampleGenerator(rs)) }
+   }
 
 /**
  * Creates a new [Arb] that performs shrinking using the supplied [Shrinker], has no edge cases and

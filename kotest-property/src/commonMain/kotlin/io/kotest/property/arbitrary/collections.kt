@@ -98,15 +98,9 @@ fun <A> Arb.Companion.list(gen: Gen<A>, range: IntRange = 0..100): Arb<List<A>> 
 
    val edgecases = listOfNotNull(emptyList, repeatedList)
 
-   return arbitrary(edgecases, ListShrinker(range)) {
-      val genIter = gen.generate(it).iterator()
-      val targetSize = it.random.nextInt(range)
-      val list = ArrayList<A>(targetSize)
-      while (list.size < targetSize && genIter.hasNext()) {
-         list.add(genIter.next().value)
-      }
-      check(list.size == targetSize)
-      list
+   return arbitrary(edgecases, ListShrinker(range)) { rs ->
+      val targetSize = rs.random.nextInt(range)
+      gen.generate(rs).take(targetSize).toList().map { it.value }
    }
 }
 

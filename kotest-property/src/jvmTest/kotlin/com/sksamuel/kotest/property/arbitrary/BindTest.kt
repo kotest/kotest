@@ -1,7 +1,7 @@
 package com.sksamuel.kotest.property.arbitrary
 
 import io.kotest.core.spec.style.StringSpec
-import io.kotest.matchers.collections.shouldContainExactlyInAnyOrder
+import io.kotest.matchers.collections.shouldContainExactly
 import io.kotest.matchers.collections.shouldHaveAtLeastSize
 import io.kotest.matchers.comparables.beGreaterThan
 import io.kotest.matchers.comparables.beLessThan
@@ -9,6 +9,8 @@ import io.kotest.matchers.should
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
 import io.kotest.property.Arb
+import io.kotest.property.EdgeConfig
+import io.kotest.property.RandomSource
 import io.kotest.property.arbitrary.bind
 import io.kotest.property.arbitrary.bool
 import io.kotest.property.arbitrary.double
@@ -181,159 +183,170 @@ class BindTest : StringSpec({
       }.take(1000).toSet().shouldHaveAtLeastSize(100)
    }
 
-   "Arb.bind(a,b) should compute the cartesian product of edgecases" {
-      val arbA = Arb.string().withEdgecases("a")
-      val arbB = Arb.string().withEdgecases("a", "b")
-      Arb.bind(arbA, arbB) { a, b -> a + b }.edgecases() shouldContainExactlyInAnyOrder listOf(
+   "Arb.bind(a,b) should compute the probabilistic edgecases" {
+      val arbA = Arb.string(1).withEdgecases("a")
+      val arbB = Arb.string(1).withEdgecases("a", "b")
+      val arb = Arb.bind(arbA, arbB) { a, b -> a + b }
+      val edgecases = arb
+         .generate(RandomSource.seeded(1234L), EdgeConfig(edgecasesGenerationProbability = 1.0))
+         .take(5)
+         .map { it.value }
+         .toList()
+      edgecases shouldContainExactly listOf(
          "aa",
-         "ab"
+         "ab",
+         "ab",
+         "ab",
+         "aa"
       )
    }
 
-   "Arb.bind(a,b,c) should compute the cartesian product of edgecases" {
-      val arbA = Arb.string().withEdgecases("a")
-      val arbB = Arb.string().withEdgecases("a", "b")
-      val arbC = Arb.string().withEdgecases("a", "b")
-      Arb.bind(arbA, arbB, arbC) { a, b, c -> a + b + c }.edgecases() shouldContainExactlyInAnyOrder listOf(
-         "aaa",
-         "aab",
+   "Arb.bind(a,b,c) should compute probabilistic edgecases" {
+      val arbA = Arb.string(1).withEdgecases("a")
+      val arbB = Arb.string(1).withEdgecases("a", "b")
+      val arbC = Arb.string(1).withEdgecases("a", "b")
+      val arb = Arb.bind(arbA, arbB, arbC) { a, b, c -> a + b + c }
+      val edgecases = arb
+         .generate(RandomSource.seeded(1234L), EdgeConfig(edgecasesGenerationProbability = 1.0))
+         .take(5)
+         .map { it.value }
+         .toList()
+      edgecases shouldContainExactly listOf(
+         "xbb",
          "aba",
-         "abb",
+         "aaa",
+         "aba",
+         "aba"
       )
    }
 
-   "Arb.bind(a,b,c,d) should compute the cartesian product of edgecases" {
-      val arbA = Arb.string().withEdgecases("a")
-      val arbB = Arb.string().withEdgecases("a", "b")
-      val arbC = Arb.string().withEdgecases("a", "b")
-      val arbD = Arb.string().withEdgecases("a", "b")
-      Arb.bind(arbA, arbB, arbC, arbD) { a, b, c, d -> "$a$b$c$d" }.edgecases() shouldContainExactlyInAnyOrder listOf(
-         "aaaa",
-         "aaba",
-         "abaa",
+   "Arb.bind(a,b,c,d) should compute probabilistic edgecases" {
+      val arbA = Arb.string(1).withEdgecases("a")
+      val arbB = Arb.string(1).withEdgecases("a", "b")
+      val arbC = Arb.string(1).withEdgecases("a", "b")
+      val arbD = Arb.string(1).withEdgecases("a", "b")
+      val arb = Arb.bind(arbA, arbB, arbC, arbD) { a, b, c, d -> "$a$b$c$d" }
+      val edgecases = arb
+         .generate(RandomSource.seeded(1234L), EdgeConfig(edgecasesGenerationProbability = 1.0))
+         .take(5)
+         .map { it.value }
+         .toList()
+      edgecases shouldContainExactly listOf(
          "abba",
-         "aaab",
-         "aabb",
-         "abab",
-         "abbb"
+         "ajab",
+         "abaa",
+         "aaba",
+         "abaa"
       )
    }
 
-   "Arb.bind(a,b,c,d,e) should compute the cartesian product of edgecases" {
-      val arbA = Arb.string().withEdgecases("a")
-      val arbB = Arb.string().withEdgecases("a", "b")
-      val arbC = Arb.string().withEdgecases("a", "b")
-      val arbD = Arb.string().withEdgecases("a", "b")
-      val arbE = Arb.string().withEdgecases("a", "b")
-      Arb.bind(arbA, arbB, arbC, arbD, arbE) { a, b, c, d, e -> "$a$b$c$d$e" }
-         .edgecases() shouldContainExactlyInAnyOrder listOf(
-         "aaaaa",
+   "Arb.bind(a,b,c,d,e) should compute probabilistic edgecases" {
+      val arbA = Arb.string(1).withEdgecases("a")
+      val arbB = Arb.string(1).withEdgecases("a", "b")
+      val arbC = Arb.string(1).withEdgecases("a", "b")
+      val arbD = Arb.string(1).withEdgecases("a", "b")
+      val arbE = Arb.string(1).withEdgecases("a", "b")
+      val arb = Arb.bind(arbA, arbB, arbC, arbD, arbE) { a, b, c, d, e -> "$a$b$c$d$e" }
+      val edgecases = arb
+         .generate(RandomSource.seeded(1234L), EdgeConfig(edgecasesGenerationProbability = 1.0))
+         .take(5)
+         .map { it.value }
+         .toList()
+      edgecases shouldContainExactly listOf(
          "aabaa",
-         "abaaa",
-         "abbaa",
-         "aaaba",
-         "aabba",
-         "ababa",
-         "abbba",
-         "aaaab",
+         "jaba0",
          "aabab",
-         "abaab",
          "abbab",
-         "aaabb",
-         "aabbb",
-         "ababb",
          "abbbb"
       )
    }
 
 
-   "Arb.bind(a,b,c,d,e,f) should compute the cartesian product of edgecases" {
-      val arbA = Arb.string().withEdgecases("a", "b")
-      val arbB = Arb.string().withEdgecases("a", "b")
-      val arbC = Arb.string().withEdgecases("a", "b")
-      val arbD = Arb.string().withEdgecases("a", "b")
-      val arbE = Arb.string().withEdgecases("a", "b")
-      val arbF = Arb.string().withEdgecases("a", "b")
-      val expectedEdgecases =
-         arbA.edgecases()
-            .product(arbB.edgecases(), String::plus)
-            .product(arbC.edgecases(), String::plus)
-            .product(arbD.edgecases(), String::plus)
-            .product(arbE.edgecases(), String::plus)
-            .product(arbF.edgecases(), String::plus)
-
-      Arb.bind(arbA, arbB, arbC, arbD, arbE, arbF) { a, b, c, d, e, f -> "$a$b$c$d$e$f" }
-         .edgecases() shouldContainExactlyInAnyOrder expectedEdgecases
+   "Arb.bind(a,b,c,d,e,f) should compute probabilistic edgecases" {
+      val arbA = Arb.string(1).withEdgecases("a", "b")
+      val arbB = Arb.string(1).withEdgecases("a", "b")
+      val arbC = Arb.string(1).withEdgecases("a", "b")
+      val arbD = Arb.string(1).withEdgecases("a", "b")
+      val arbE = Arb.string(1).withEdgecases("a", "b")
+      val arbF = Arb.string(1).withEdgecases("a", "b")
+      val arb = Arb.bind(arbA, arbB, arbC, arbD, arbE, arbF) { a, b, c, d, e, f -> "$a$b$c$d$e$f" }
+      val rs = RandomSource.seeded(1234L)
+      val edgecases = arb
+         .generate(RandomSource.seeded(1234L), EdgeConfig(edgecasesGenerationProbability = 1.0))
+         .take(5)
+         .map { it.value }
+         .toList()
+      edgecases shouldContainExactly listOf(
+         "aaebab",
+         "aba0aa",
+         "]abaab",
+         "aababb",
+         "bbbaba"
+      )
    }
 
 
-   "Arb.bind(a,b,c,d,e,f,g) should compute the cartesian product of edgecases" {
-      val arbA = Arb.string().withEdgecases("a", "b")
-      val arbB = Arb.string().withEdgecases("a", "b")
-      val arbC = Arb.string().withEdgecases("a", "b")
-      val arbD = Arb.string().withEdgecases("a", "b")
-      val arbE = Arb.string().withEdgecases("a", "b")
-      val arbF = Arb.string().withEdgecases("a", "b")
-      val arbG = Arb.string().withEdgecases("a", "b")
-      val expectedEdgecases =
-         arbA.edgecases()
-            .product(arbB.edgecases(), String::plus)
-            .product(arbC.edgecases(), String::plus)
-            .product(arbD.edgecases(), String::plus)
-            .product(arbE.edgecases(), String::plus)
-            .product(arbF.edgecases(), String::plus)
-            .product(arbG.edgecases(), String::plus)
-
-      Arb.bind(arbA, arbB, arbC, arbD, arbE, arbF, arbG) { a, b, c, d, e, f, g -> "$a$b$c$d$e$f$g" }
-         .edgecases() shouldContainExactlyInAnyOrder expectedEdgecases
+   "Arb.bind(a,b,c,d,e,f,g) should compute probabilistic edgecases" {
+      val arbA = Arb.string(1).withEdgecases("a", "b")
+      val arbB = Arb.string(1).withEdgecases("a", "b")
+      val arbC = Arb.string(1).withEdgecases("a", "b")
+      val arbD = Arb.string(1).withEdgecases("a", "b")
+      val arbE = Arb.string(1).withEdgecases("a", "b")
+      val arbF = Arb.string(1).withEdgecases("a", "b")
+      val arbG = Arb.string(1).withEdgecases("a", "b")
+      val arb = Arb.bind(arbA, arbB, arbC, arbD, arbE, arbF, arbG) { a, b, c, d, e, f, g -> "$a$b$c$d$e$f$g" }
+      val rs = RandomSource.seeded(1234L)
+      val edgecases = arb
+         .generate(RandomSource.seeded(1234L), EdgeConfig(edgecasesGenerationProbability = 1.0))
+         .take(5)
+         .map { it.value }
+         .toList()
+      edgecases shouldContainExactly listOf(
+         "babbabb",
+         "ba0aaba",
+         "aabbbab",
+         "baaabab",
+         "babaabb"
+      )
    }
 
 
-   "Arb.bind(a,b,c,d,e,f,g,h) should compute the cartesian product of edgecases" {
-      val arbA = Arb.string().withEdgecases("a", "b")
-      val arbB = Arb.string().withEdgecases("a", "b")
-      val arbC = Arb.string().withEdgecases("a", "b")
-      val arbD = Arb.string().withEdgecases("a", "b")
-      val arbE = Arb.string().withEdgecases("a", "b")
-      val arbF = Arb.string().withEdgecases("a", "b")
-      val arbG = Arb.string().withEdgecases("a", "b")
-      val arbH = Arb.string().withEdgecases("a", "b")
-      val expectedEdgecases =
-         arbA.edgecases()
-            .product(arbB.edgecases(), String::plus)
-            .product(arbC.edgecases(), String::plus)
-            .product(arbD.edgecases(), String::plus)
-            .product(arbE.edgecases(), String::plus)
-            .product(arbF.edgecases(), String::plus)
-            .product(arbG.edgecases(), String::plus)
-            .product(arbH.edgecases(), String::plus)
-
-      Arb.bind(arbA, arbB, arbC, arbD, arbE, arbF, arbG, arbH) { a, b, c, d, e, f, g, h -> "$a$b$c$d$e$f$g$h" }
-         .edgecases() shouldContainExactlyInAnyOrder expectedEdgecases
+   "Arb.bind(a,b,c,d,e,f,g,h) should compute probabilistic edgecases" {
+      val arbA = Arb.string(1).withEdgecases("a", "b")
+      val arbB = Arb.string(1).withEdgecases("a", "b")
+      val arbC = Arb.string(1).withEdgecases("a", "b")
+      val arbD = Arb.string(1).withEdgecases("a", "b")
+      val arbE = Arb.string(1).withEdgecases("a", "b")
+      val arbF = Arb.string(1).withEdgecases("a", "b")
+      val arbG = Arb.string(1).withEdgecases("a", "b")
+      val arbH = Arb.string(1).withEdgecases("a", "b")
+      val arb =
+         Arb.bind(arbA, arbB, arbC, arbD, arbE, arbF, arbG, arbH) { a, b, c, d, e, f, g, h -> "$a$b$c$d$e$f$g$h" }
+      val edgecases = arb
+         .generate(RandomSource.seeded(1234L), EdgeConfig(edgecasesGenerationProbability = 1.0))
+         .take(5)
+         .map { it.value }
+         .toList()
+      edgecases shouldContainExactly listOf(
+         "baabbaBb",
+         "a0aabaab",
+         "aaaabaab",
+         "aab0abba",
+         "bab\$aTba"
+      )
    }
 
-   "Arb.bind(a,b,c,d,e,f,g,h,i) should compute the cartesian product of edgecases" {
-      val arbA = Arb.string().withEdgecases("a", "b")
-      val arbB = Arb.string().withEdgecases("a", "b")
-      val arbC = Arb.string().withEdgecases("a", "b")
-      val arbD = Arb.string().withEdgecases("a", "b")
-      val arbE = Arb.string().withEdgecases("a", "b")
-      val arbF = Arb.string().withEdgecases("a", "b")
-      val arbG = Arb.string().withEdgecases("a", "b")
-      val arbH = Arb.string().withEdgecases("a", "b")
-      val arbI = Arb.string().withEdgecases("a", "b")
-      val expectedEdgecases =
-         arbA.edgecases()
-            .product(arbB.edgecases(), String::plus)
-            .product(arbC.edgecases(), String::plus)
-            .product(arbD.edgecases(), String::plus)
-            .product(arbE.edgecases(), String::plus)
-            .product(arbF.edgecases(), String::plus)
-            .product(arbG.edgecases(), String::plus)
-            .product(arbH.edgecases(), String::plus)
-            .product(arbI.edgecases(), String::plus)
-
-      Arb.bind(
+   "Arb.bind(a,b,c,d,e,f,g,h,i) should compute probabilistic edgecases" {
+      val arbA = Arb.string(1).withEdgecases("a", "b")
+      val arbB = Arb.string(1).withEdgecases("a", "b")
+      val arbC = Arb.string(1).withEdgecases("a", "b")
+      val arbD = Arb.string(1).withEdgecases("a", "b")
+      val arbE = Arb.string(1).withEdgecases("a", "b")
+      val arbF = Arb.string(1).withEdgecases("a", "b")
+      val arbG = Arb.string(1).withEdgecases("a", "b")
+      val arbH = Arb.string(1).withEdgecases("a", "b")
+      val arbI = Arb.string(1).withEdgecases("a", "b")
+      val arb = Arb.bind(
          arbA,
          arbB,
          arbC,
@@ -344,180 +357,255 @@ class BindTest : StringSpec({
          arbH,
          arbI
       ) { a, b, c, d, e, f, g, h, i -> "$a$b$c$d$e$f$g$h$i" }
-         .edgecases() shouldContainExactlyInAnyOrder expectedEdgecases
+      val edgecases = arb
+         .generate(RandomSource.seeded(1234L), EdgeConfig(edgecasesGenerationProbability = 1.0))
+         .take(5)
+         .map { it.value }
+         .toList()
+      edgecases shouldContainExactly listOf(
+         "ebabbabbb",
+         "0aabaabaa",
+         "abaaEbbba",
+         "babaabaab",
+         "b\$aTbabab"
+      )
    }
 
-   "Arb.bind(a,b,c,d,e,f,g,h,i,j) should compute the cartesian product of edgecases" {
-      val arbA = Arb.string().withEdgecases("a", "b")
-      val arbB = Arb.string().withEdgecases("a", "b")
-      val arbC = Arb.string().withEdgecases("a", "b")
-      val arbD = Arb.string().withEdgecases("a", "b")
-      val arbE = Arb.string().withEdgecases("a", "b")
-      val arbF = Arb.string().withEdgecases("a", "b")
-      val arbG = Arb.string().withEdgecases("a", "b")
-      val arbH = Arb.string().withEdgecases("a", "b")
-      val arbI = Arb.string().withEdgecases("a", "b")
-      val arbJ = Arb.string().withEdgecases("a", "b")
-      val expectedEdgecases =
-         arbA.edgecases()
-            .product(arbB.edgecases(), String::plus)
-            .product(arbC.edgecases(), String::plus)
-            .product(arbD.edgecases(), String::plus)
-            .product(arbE.edgecases(), String::plus)
-            .product(arbF.edgecases(), String::plus)
-            .product(arbG.edgecases(), String::plus)
-            .product(arbH.edgecases(), String::plus)
-            .product(arbI.edgecases(), String::plus)
-            .product(arbJ.edgecases(), String::plus)
-
-      Arb.bind(arbA, arbB, arbC, arbD, arbE, arbF, arbG, arbH, arbI, arbJ) { a, b, c, d, e, f, g, h, i, j ->
+   "Arb.bind(a,b,c,d,e,f,g,h,i,j) should compute probabilistic edgecases" {
+      val arbA = Arb.string(1).withEdgecases("a", "b")
+      val arbB = Arb.string(1).withEdgecases(emptyList())
+      val arbC = Arb.string(1).withEdgecases("a", "b")
+      val arbD = Arb.string(1).withEdgecases("a", "b")
+      val arbE = Arb.string(1).withEdgecases("a", "b")
+      val arbF = Arb.string(1).withEdgecases("a", "b")
+      val arbG = Arb.string(1).withEdgecases("a", "b")
+      val arbH = Arb.string(1).withEdgecases("a", "b")
+      val arbI = Arb.string(1).withEdgecases("a", "b")
+      val arbJ = Arb.string(1).withEdgecases("a", "b")
+      val arb = Arb.bind(arbA, arbB, arbC, arbD, arbE, arbF, arbG, arbH, arbI, arbJ) { a, b, c, d, e, f, g, h, i, j ->
          "$a$b$c$d$e$f$g$h$i$j"
-      }.edgecases() shouldContainExactlyInAnyOrder expectedEdgecases
+      }
+      val edgecases = arb
+         .generate(RandomSource.seeded(1234L), EdgeConfig(edgecasesGenerationProbability = 1.0))
+         .take(5)
+         .map { it.value }
+         .toList()
+      edgecases shouldContainExactly listOf(
+         "bSabbabaja",
+         "b baabaaba",
+         "b aabbbaba",
+         "b(abbbbaba",
+         "a)abababba"
+      )
    }
 
-   "Arb.bind(a,b,c,d,e,f,g,h,i,j,k) should compute the cartesian product of edgecases" {
-      val arbA = Arb.string().withEdgecases("a", "b")
-      val arbB = Arb.string().withEdgecases("a", "b")
-      val arbC = Arb.string().withEdgecases("a", "b")
-      val arbD = Arb.string().withEdgecases("a", "b")
-      val arbE = Arb.string().withEdgecases("a", "b")
-      val arbF = Arb.string().withEdgecases("a", "b")
-      val arbG = Arb.string().withEdgecases("a", "b")
-      val arbH = Arb.string().withEdgecases("a", "b")
-      val arbI = Arb.string().withEdgecases("a", "b")
-      val arbJ = Arb.string().withEdgecases("a", "b")
-      val arbK = Arb.string().withEdgecases("a", "b")
-      val expectedEdgecases =
-         arbA.edgecases()
-            .product(arbB.edgecases(), String::plus)
-            .product(arbC.edgecases(), String::plus)
-            .product(arbD.edgecases(), String::plus)
-            .product(arbE.edgecases(), String::plus)
-            .product(arbF.edgecases(), String::plus)
-            .product(arbG.edgecases(), String::plus)
-            .product(arbH.edgecases(), String::plus)
-            .product(arbI.edgecases(), String::plus)
-            .product(arbJ.edgecases(), String::plus)
-            .product(arbK.edgecases(), String::plus)
-
-      Arb.bind(arbA, arbB, arbC, arbD, arbE, arbF, arbG, arbH, arbI, arbJ, arbK) { a, b, c, d, e, f, g, h, i, j, k ->
-         "$a$b$c$d$e$f$g$h$i$j$k"
-      }.edgecases() shouldContainExactlyInAnyOrder expectedEdgecases
+   "Arb.bind(a,b,c,d,e,f,g,h,i,j,k) should compute probabilistic edgecases" {
+      val arbA = Arb.string(1).withEdgecases("a", "b")
+      val arbB = Arb.string(1).withEdgecases("a", "b")
+      val arbC = Arb.string(1).withEdgecases("a", "b")
+      val arbD = Arb.string(1).withEdgecases("a", "b")
+      val arbE = Arb.string(1).withEdgecases(emptyList())
+      val arbF = Arb.string(1).withEdgecases("a", "b")
+      val arbG = Arb.string(1).withEdgecases("a", "b")
+      val arbH = Arb.string(1).withEdgecases("a", "b")
+      val arbI = Arb.string(1).withEdgecases("a", "b")
+      val arbJ = Arb.string(1).withEdgecases(emptyList())
+      val arbK = Arb.string(1).withEdgecases("a", "b")
+      val arb =
+         Arb.bind(arbA, arbB, arbC, arbD, arbE, arbF, arbG, arbH, arbI, arbJ, arbK) { a, b, c, d, e, f, g, h, i, j, k ->
+            "$a$b$c$d$e$f$g$h$i$j$k"
+         }
+      val edgecases = arb
+         .generate(RandomSource.seeded(1234L), EdgeConfig(edgecasesGenerationProbability = 1.0))
+         .take(5)
+         .map { it.value }
+         .toList()
+      edgecases shouldContainExactly listOf(
+         "abbaebbYbBa",
+         "bbaa6ababFb",
+         "Ebbbdbabbra",
+         "abbboaba5eT",
+         "ababLbbba-W"
+      )
    }
 
-   "Arb.bind(a,b,c,d,e,f,g,h,i,j,k,l) should compute the cartesian product of edgecases" {
-      val arbA = Arb.string().withEdgecases("a", "b")
-      val arbB = Arb.string().withEdgecases("a", "b")
-      val arbC = Arb.string().withEdgecases("a", "b")
-      val arbD = Arb.string().withEdgecases("a", "b")
-      val arbE = Arb.string().withEdgecases("a", "b")
-      val arbF = Arb.string().withEdgecases("a", "b")
-      val arbG = Arb.string().withEdgecases("a", "b")
-      val arbH = Arb.string().withEdgecases("a", "b")
-      val arbI = Arb.string().withEdgecases("a", "b")
-      val arbJ = Arb.string().withEdgecases("a", "b")
-      val arbK = Arb.string().withEdgecases("a", "b")
-      val arbL = Arb.string().withEdgecases("a", "b")
-      val expectedEdgecases =
-         arbA.edgecases()
-            .product(arbB.edgecases(), String::plus)
-            .product(arbC.edgecases(), String::plus)
-            .product(arbD.edgecases(), String::plus)
-            .product(arbE.edgecases(), String::plus)
-            .product(arbF.edgecases(), String::plus)
-            .product(arbG.edgecases(), String::plus)
-            .product(arbH.edgecases(), String::plus)
-            .product(arbI.edgecases(), String::plus)
-            .product(arbJ.edgecases(), String::plus)
-            .product(arbK.edgecases(), String::plus)
-            .product(arbL.edgecases(), String::plus)
-
-      Arb.bind(arbA, arbB, arbC, arbD, arbE, arbF, arbG, arbH, arbI, arbJ, arbK, arbL) { a, b, c, d, e, f, g, h, i, j, k, l ->
+   "Arb.bind(a,b,c,d,e,f,g,h,i,j,k,l) should compute probabilistic edgecases" {
+      val arbA = Arb.string(1).withEdgecases("a", "b")
+      val arbB = Arb.string(1).withEdgecases("a", "b")
+      val arbC = Arb.string(1).withEdgecases("a", "b")
+      val arbD = Arb.string(1).withEdgecases("a", "b")
+      val arbE = Arb.string(1).withEdgecases("a", "b")
+      val arbF = Arb.string(1).withEdgecases("a", "b")
+      val arbG = Arb.string(1).withEdgecases("a", "b")
+      val arbH = Arb.string(1).withEdgecases("a", "b")
+      val arbI = Arb.string(1).withEdgecases("a", "b")
+      val arbJ = Arb.string(1).withEdgecases("a", "b")
+      val arbK = Arb.string(1).withEdgecases("a", "b")
+      val arbL = Arb.string(1).withEdgecases(emptyList())
+      val arb = Arb.bind(
+         arbA,
+         arbB,
+         arbC,
+         arbD,
+         arbE,
+         arbF,
+         arbG,
+         arbH,
+         arbI,
+         arbJ,
+         arbK,
+         arbL
+      ) { a, b, c, d, e, f, g, h, i, j, k, l ->
          "$a$b$c$d$e$f$g$h$i$j$k$l"
-      }.edgecases() shouldContainExactlyInAnyOrder expectedEdgecases
+      }
+
+      val edgecases = arb
+         .generate(RandomSource.seeded(1234L), EdgeConfig(edgecasesGenerationProbability = 1.0))
+         .take(5)
+         .map { it.value }
+         .toList()
+      edgecases shouldContainExactly listOf(
+         "aabbabajabau",
+         "bbaaabbbaaaS",
+         "Ebbbabaaabab",
+         "abbbabaabbas",
+         "aaaabaabaa>b"
+      )
    }
 
-   "Arb.bind(a,b,c,d,e,f,g,h,i,j,k,l,m) should compute the cartesian product of edgecases" {
-      val arbA = Arb.string().withEdgecases("a", "b")
-      val arbB = Arb.string().withEdgecases("a", "b")
-      val arbC = Arb.string().withEdgecases("a", "b")
-      val arbD = Arb.string().withEdgecases("a", "b")
-      val arbE = Arb.string().withEdgecases("a", "b")
-      val arbF = Arb.string().withEdgecases("a", "b")
-      val arbG = Arb.string().withEdgecases("a", "b")
-      val arbH = Arb.string().withEdgecases("a", "b")
-      val arbI = Arb.string().withEdgecases("a", "b")
-      val arbJ = Arb.string().withEdgecases("a", "b")
-      val arbK = Arb.string().withEdgecases("a", "b")
-      val arbL = Arb.string().withEdgecases("a", "b")
-      val arbM = Arb.string().withEdgecases("a", "b")
-      val expectedEdgecases =
-         arbA.edgecases()
-            .product(arbB.edgecases(), String::plus)
-            .product(arbC.edgecases(), String::plus)
-            .product(arbD.edgecases(), String::plus)
-            .product(arbE.edgecases(), String::plus)
-            .product(arbF.edgecases(), String::plus)
-            .product(arbG.edgecases(), String::plus)
-            .product(arbH.edgecases(), String::plus)
-            .product(arbI.edgecases(), String::plus)
-            .product(arbJ.edgecases(), String::plus)
-            .product(arbK.edgecases(), String::plus)
-            .product(arbL.edgecases(), String::plus)
-            .product(arbM.edgecases(), String::plus)
-
-      Arb.bind(arbA, arbB, arbC, arbD, arbE, arbF, arbG, arbH, arbI, arbJ, arbK, arbL, arbM) { a, b, c, d, e, f, g, h, i, j, k, l, m ->
+   "Arb.bind(a,b,c,d,e,f,g,h,i,j,k,l,m) should compute probabilistic edgecases" {
+      val arbA = Arb.string(1).withEdgecases("a", "b")
+      val arbB = Arb.string(1).withEdgecases("a", "b")
+      val arbC = Arb.string(1).withEdgecases("a", "b")
+      val arbD = Arb.string(1).withEdgecases("a", "b")
+      val arbE = Arb.string(1).withEdgecases("a", "b")
+      val arbF = Arb.string(1).withEdgecases("a", "b")
+      val arbG = Arb.string(1).withEdgecases("a", "b")
+      val arbH = Arb.string(1).withEdgecases("a", "b")
+      val arbI = Arb.string(1).withEdgecases("a", "b")
+      val arbJ = Arb.string(1).withEdgecases("a", "b")
+      val arbK = Arb.string(1).withEdgecases("a", "b")
+      val arbL = Arb.string(1).withEdgecases("a", "b")
+      val arbM = Arb.string(1).withEdgecases(emptyList())
+      val arb = Arb.bind(
+         arbA,
+         arbB,
+         arbC,
+         arbD,
+         arbE,
+         arbF,
+         arbG,
+         arbH,
+         arbI,
+         arbJ,
+         arbK,
+         arbL,
+         arbM
+      ) { a, b, c, d, e, f, g, h, i, j, k, l, m ->
          "$a$b$c$d$e$f$g$h$i$j$k$l$m"
-      }.edgecases() shouldContainExactlyInAnyOrder expectedEdgecases
+      }
+
+      val edgecases = arb
+         .generate(RandomSource.seeded(1234L), EdgeConfig(edgecasesGenerationProbability = 1.0))
+         .take(5)
+         .map { it.value }
+         .toList()
+      edgecases shouldContainExactly listOf(
+         "abbabbbaaba0?",
+         "aaabaababaabM",
+         "abbbabaaabab'",
+         "bbbababa5abaH",
+         "ababaMaa>aWbp"
+      )
    }
 
-   "Arb.bind(a,b,c,d,e,f,g,h,i,j,k,l,m,n) should compute the cartesian product of edgecases" {
-      val arbA = Arb.string().withEdgecases("a", "b")
-      val arbB = Arb.string().withEdgecases("a", "b")
-      val arbC = Arb.string().withEdgecases("a", "b")
-      val arbD = Arb.string().withEdgecases("a", "b")
-      val arbE = Arb.string().withEdgecases("a", "b")
-      val arbF = Arb.string().withEdgecases("a", "b")
-      val arbG = Arb.string().withEdgecases("a", "b")
-      val arbH = Arb.string().withEdgecases("a", "b")
-      val arbI = Arb.string().withEdgecases("a", "b")
-      val arbJ = Arb.string().withEdgecases("a", "b")
-      val arbK = Arb.string().withEdgecases("a", "b")
-      val arbL = Arb.string().withEdgecases("a", "b")
-      val arbM = Arb.string().withEdgecases("a", "b")
-      val arbN = Arb.string().withEdgecases("a", "b")
-      val expectedEdgecases =
-         arbA.edgecases()
-            .product(arbB.edgecases(), String::plus)
-            .product(arbC.edgecases(), String::plus)
-            .product(arbD.edgecases(), String::plus)
-            .product(arbE.edgecases(), String::plus)
-            .product(arbF.edgecases(), String::plus)
-            .product(arbG.edgecases(), String::plus)
-            .product(arbH.edgecases(), String::plus)
-            .product(arbI.edgecases(), String::plus)
-            .product(arbJ.edgecases(), String::plus)
-            .product(arbK.edgecases(), String::plus)
-            .product(arbL.edgecases(), String::plus)
-            .product(arbM.edgecases(), String::plus)
-            .product(arbN.edgecases(), String::plus)
-
-      Arb.bind(arbA, arbB, arbC, arbD, arbE, arbF, arbG, arbH, arbI, arbJ, arbK, arbL, arbM, arbN) { a, b, c, d, e, f, g, h, i, j, k, l, m, n ->
+   "Arb.bind(a,b,c,d,e,f,g,h,i,j,k,l,m,n) should compute probabilistic edgecases" {
+      val arbA = Arb.string(1).withEdgecases("a", "b")
+      val arbB = Arb.string(1).withEdgecases("a", "b")
+      val arbC = Arb.string(1).withEdgecases("a", "b")
+      val arbD = Arb.string(1).withEdgecases("a", "b")
+      val arbE = Arb.string(1).withEdgecases("a", "b")
+      val arbF = Arb.string(1).withEdgecases("a", "b")
+      val arbG = Arb.string(1).withEdgecases("a", "b")
+      val arbH = Arb.string(1).withEdgecases("a", "b")
+      val arbI = Arb.string(1).withEdgecases("a", "b")
+      val arbJ = Arb.string(1).withEdgecases("a", "b")
+      val arbK = Arb.string(1).withEdgecases("a", "b")
+      val arbL = Arb.string(1).withEdgecases("a", "b")
+      val arbM = Arb.string(1).withEdgecases("a", "b")
+      val arbN = Arb.string(1).withEdgecases(emptyList())
+      val arb = Arb.bind(
+         arbA,
+         arbB,
+         arbC,
+         arbD,
+         arbE,
+         arbF,
+         arbG,
+         arbH,
+         arbI,
+         arbJ,
+         arbK,
+         arbL,
+         arbM,
+         arbN
+      ) { a, b, c, d, e, f, g, h, i, j, k, l, m, n ->
          "$a$b$c$d$e$f$g$h$i$j$k$l$m$n"
-      }.edgecases() shouldContainExactlyInAnyOrder expectedEdgecases
+      }
+      val edgecases = arb
+         .generate(RandomSource.seeded(1234L), EdgeConfig(edgecasesGenerationProbability = 1.0))
+         .take(5)
+         .map { it.value }
+         .toList()
+      edgecases shouldContainExactly listOf(
+         "baBbajaba0aab=",
+         "baababaabaaEb-",
+         "abaaababaabaah",
+         "abab\$aTbababbl",
+         "bbbaJa\\baaabaQ"
+      )
+   }
+
+   "Arb.bind list" {
+      val arbs: List<Arb<String>> = generateSequence { Arb.string(1).withEdgecases("a") }.take(100).toList()
+      val arb: Arb<String> = Arb.bind(arbs) { it.joinToString("") }
+
+      val edgecases = arb
+         .generate(RandomSource.seeded(1234L), EdgeConfig(edgecasesGenerationProbability = 1.0))
+         .take(5)
+         .map { it.value }
+         .toList()
+
+      edgecases shouldContainExactly listOf(
+         "aaaaaaaaaa>aWaaaaaaaaa^aaaaa!aa#aaaaaaaaaa@aaaaaa5aaaXaa7aaaPaaaaaaOa aaraa5aaaaaaaaaaaaaaaaaafa<aaa",
+         "aAaaaaaa;aaaa'_aaaaaaaaaaaaaW1e\\d_B]\\u)3ivaaaaaaaa1aaaaaaaaaaaaaaaaaaaaaaaaaaa>maaaa_aaa!aaaaaaaa@aa",
+         "aazaaaaaaaaaaaaaaaaaaEaaaaaaaaaawaaaaaaaa)aaaa`aaaaavaaaaaaaaYAaaa\\.aaaaaaaaaaaaaaaaaMaaaaaaaaaaaaaa",
+         "aaaaaaaaaeaaaaaaaaaaaaaaaNaaaaaaaaaaaabaaaaBaa5aaaaaaaaWaaaaaaQa=aa0aaaaaaaaaaaaabaaa?aaaaaaaaaaaaaa",
+         "aaaaaahaaaaaaaaaaaaaaaaaa?asaaaaamaaaaaaaaaaaaaaaaaaaaaaaa^a_aaaaaaaaaLT(LhOVxH@36^Aaaaaaaa`aaataaaa"
+      )
    }
 
    "Arb.reflectiveBind" {
       val arb = Arb.bind<Wobble>()
       arb.take(10).toList().size shouldBe 10
    }
+
+   "Arb.reflectiveBind should generate probabilistic edgecases" {
+      val arb = Arb.bind<Wobble>()
+      val edgecases = arb
+         .generate(RandomSource.seeded(1234L), EdgeConfig(edgecasesGenerationProbability = 1.0))
+         .take(5)
+         .map { it.value }
+         .toList()
+
+      edgecases shouldContainExactly listOf(
+         Wobble(a = "", b = false, c = -1, d = 1.7976931348623157E308, e = 1.4E-45f),
+         Wobble(a = "", b = true, c = -2147483648, d = 1.0, e = -1.0f),
+         Wobble(a = "", b = true, c = 1, d = 1.0E300, e = 3.4028235E38f),
+         Wobble(a = "a", b = false, c = -2147483648, d = Double.POSITIVE_INFINITY, e = 1.4E-45f),
+         Wobble(a = "a", b = false, c = 1, d = -1.0E300, e = 0.0f)
+      )
+   }
 })
 
 data class Wobble(val a: String, val b: Boolean, val c: Int, val d: Double, val e: Float)
-
-private fun <A, B, C> List<A>.product(listB: List<B>, fn: (A, B) -> C): List<C> =
-   this.flatMap { a ->
-      listB.map { b ->
-         fn(a, b)
-      }
-   }

@@ -15,12 +15,12 @@ class ClassifyTest : StringSpec() {
             classify(a == 0, "zero")
             classify(a % 2 == 0, "even number", "odd number")
             a + a == 2 * a
-         }.classifications() shouldBe mapOf("zero" to 1, "even number" to 499, "odd number" to 501)
+         }.classifications() shouldBe mapOf("odd number" to 497, "even number" to 503, "zero" to 25)
 
          forAll(PropTestConfig(seed = 1234), Arb.string()) { a ->
             classify(a.contains(" "), "has whitespace", "no whitespace")
             a + "" == "" + a
-         }.classifications() shouldBe mapOf("no whitespace" to 621, "has whitespace" to 379)
+         }.classifications() shouldBe mapOf("no whitespace" to 647, "has whitespace" to 353)
       }
    }
 }

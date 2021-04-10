@@ -19,19 +19,10 @@ inline fun <reified T : Any> Arb.Companion.bind(): Arb<T> {
    val constructor = kclass.primaryConstructor ?: error("could not locate a primary constructor")
    check(constructor.parameters.isNotEmpty()) { "${kclass.qualifiedName} constructor must contain at least 1 parameter" }
 
-   val arbs: List<Arb<List<Any>>> = constructor.parameters.map { param ->
-      val gen = defaultForClass<Any>(param.type.classifier as KClass<*>)
+   val arbs: List<Arb<Any>> = constructor.parameters.map { param ->
+      defaultForClass<Any>(param.type.classifier as KClass<*>)
          ?: error("Could not locate generator for parameter ${kclass.qualifiedName}.${param.name}")
-      gen.map { listOf(it) }
    }
 
-   val arbParams: Arb<List<Any>> = arbs.reduce { acc, next ->
-      acc.flatMap { paramList ->
-         next.map { nextParam ->
-            paramList + nextParam
-         }
-      }
-   }
-
-   return arbParams.map { params -> constructor.call(*params.toTypedArray()) }
+   return Arb.bind(arbs) { params -> constructor.call(*params.toTypedArray()) }
 }
