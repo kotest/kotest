@@ -128,3 +128,42 @@ class ShouldSpecRootContainerBuilder(
    }
 }
 
+@ExperimentalKotest
+class DescribeSpecRootScopeConfigBuilder(
+   private val name: DescriptionName.TestName,
+   private val description: Description,
+   private val registration: RootTestRegistration,
+   private val lifecycle: Lifecycle,
+   private val xdisabled: Boolean
+) {
+
+   @ExperimentalKotest
+   fun config(
+      enabled: Boolean? = null,
+      enabledIf: EnabledIf? = null,
+      tags: Set<Tag>? = null,
+      timeout: Duration? = null,
+      test: suspend DescribeScope.() -> Unit
+   ) {
+      val derivedConfig = registration.defaultConfig.toTestContainerConfig().deriveTestContainerConfig(
+         enabled,
+         enabledIf,
+         tags,
+         timeout,
+      )
+      registration.addTest(
+         name,
+         xdisabled,
+         derivedConfig.toTestConfig(),
+         TestType.Container
+      ) {
+         DescribeScope(
+            description,
+            lifecycle,
+            this,
+            registration.defaultConfig,
+            coroutineContext
+         ).test()
+      }
+   }
+}

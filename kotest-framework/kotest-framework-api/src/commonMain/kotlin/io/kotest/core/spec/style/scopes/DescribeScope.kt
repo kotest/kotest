@@ -6,6 +6,7 @@ import io.kotest.core.test.DescriptionName
 import io.kotest.core.test.TestCaseConfig
 import io.kotest.core.test.TestContext
 import io.kotest.core.test.createTestName
+import io.kotest.core.test.toTestContainerConfig
 import kotlin.coroutines.CoroutineContext
 
 /**
@@ -39,20 +40,56 @@ class DescribeScope(
       containerTest(testName, false, test)
    }
 
-   suspend fun describe(name: String, test: suspend DescribeScope.() -> Unit) {
-      val testName = createTestName("Describe: ", name, false)
-      containerTest(testName, false, test)
-   }
+   fun context(name: String) = DescribeSpecScopeConfigBuilder(
+      createTestName(name),
+      description,
+      testContext,
+      defaultConfig.toTestContainerConfig(),
+      lifecycle,
+      false
+   )
 
    suspend fun xcontext(name: String, test: suspend DescribeScope.() -> Unit) {
       val testName = createTestName("Context: ", name, false)
       containerTest(testName, true, test)
    }
 
+   fun xcontext(name: String) = DescribeSpecScopeConfigBuilder(
+      createTestName(name),
+      description,
+      testContext,
+      defaultConfig.toTestContainerConfig(),
+      lifecycle,
+      true
+   )
+
+   suspend fun describe(name: String, test: suspend DescribeScope.() -> Unit) {
+      val testName = createTestName("Describe: ", name, false)
+      containerTest(testName, false, test)
+   }
+
+   fun describe(name: String) = DescribeSpecScopeConfigBuilder(
+      createTestName(name),
+      description,
+      testContext,
+      defaultConfig.toTestContainerConfig(),
+      lifecycle,
+      false
+   )
+
    suspend fun xdescribe(name: String, test: suspend DescribeScope.() -> Unit) {
       val testName = createTestName("Describe: ", name, false)
       containerTest(testName, true, test)
    }
+
+   fun xdescribe(name: String) = DescribeSpecScopeConfigBuilder(
+      createTestName(name),
+      description,
+      testContext,
+      defaultConfig.toTestContainerConfig(),
+      lifecycle,
+      true
+   )
 
    private suspend fun containerTest(
       testName: DescriptionName.TestName,
@@ -70,6 +107,9 @@ class DescribeScope(
       }
    }
 
+   suspend fun it(name: String, test: suspend TestContext.() -> Unit) =
+      addTest(createTestName(name), xdisabled = false, test = test)
+
    fun it(name: String) =
       TestWithConfigBuilder(
          createTestName("It: ", name, false),
@@ -78,6 +118,9 @@ class DescribeScope(
          xdisabled = false,
       )
 
+   suspend fun xit(name: String, test: suspend TestContext.() -> Unit) =
+      addTest(createTestName(name), xdisabled = true, test = test)
+
    fun xit(name: String) =
       TestWithConfigBuilder(
          createTestName("It: ", name, false),
@@ -85,10 +128,4 @@ class DescribeScope(
          defaultConfig,
          xdisabled = true,
       )
-
-   suspend fun it(name: String, test: suspend TestContext.() -> Unit) =
-      addTest(createTestName(name), xdisabled = false, test = test)
-
-   suspend fun xit(name: String, test: suspend TestContext.() -> Unit) =
-      addTest(createTestName(name), xdisabled = true, test = test)
 }
