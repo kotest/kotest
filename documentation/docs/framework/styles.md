@@ -8,6 +8,14 @@ slug: testing-styles.html
 Kotest offers 10 different styles of test layout. Some are inspired from other popular test frameworks to make you feel right at home.
 Others were created just for Kotest.
 
+To use Kotest, create a class file that extends one of the test styles. Then inside an `init { }` block,
+create your test cases. The following table contains the test styles you can pick from along with examples.
+
+There are no functional differences between the styles.
+All allow the same types of configuration &mdash; threads, tags, etc &mdash;
+it is simply a matter of preference how you structure your tests.
+
+
 | Test Style | Inspired By |
 | --- | --- |
 | [Fun Spec](#fun-spec) | ScalaTest |
@@ -22,11 +30,6 @@ Others were created just for Kotest.
 | [Annotation Spec](#annotation-spec) | JUnit |
 
 
-
-
-There are no functional differences between the styles.
-All allow the same types of configuration &mdash; threads, tags, etc &mdash;
- it is simply a matter of preference how you structure your tests.
 
 :::tip
 Some teams prefer to mandate usage of a single style, others mix and match. There is no right or wrong - do whatever feels right for your team.
