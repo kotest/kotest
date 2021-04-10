@@ -3,6 +3,7 @@ package com.sksamuel.kotest.matchers.collections
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.WordSpec
 import io.kotest.matchers.collections.containsInOrder
+import io.kotest.matchers.collections.shouldContainInOrder
 import io.kotest.matchers.should
 import io.kotest.matchers.throwable.shouldHaveMessage
 
@@ -41,6 +42,14 @@ class InOrderTest : WordSpec() {
   1,
   2
 ] in order""")
+         }
+         "support iterables with vararg" {
+            val actual = listOf(1, 2, 3, 4, 5).asIterable()
+            actual.shouldContainInOrder(2, 3, 4)
+         }
+         "support arrays with vararg" {
+            val actual = arrayOf(1, 2, 3, 4, 5)
+            actual.shouldContainInOrder(2, 3, 4)
          }
       }
    }

@@ -27,8 +27,8 @@ fun <T> containsInOrder(subsequence: List<T>): Matcher<Collection<T>?> = neverNu
    )
 }
 
-fun <T> Iterable<T>.shouldContainInOrder(vararg ts: T) = toList().shouldContainInOrder(ts)
-fun <T> Array<T>.shouldContainInOrder(vararg ts: T) = asList().shouldContainInOrder(ts)
+fun <T> Iterable<T>.shouldContainInOrder(vararg ts: T) = toList().shouldContainInOrder(*ts)
+fun <T> Array<T>.shouldContainInOrder(vararg ts: T) = asList().shouldContainInOrder(*ts)
 fun <T> List<T>.shouldContainInOrder(vararg ts: T) = this.shouldContainInOrder(ts.toList())
 infix fun <T> Iterable<T>.shouldContainInOrder(expected: List<T>) = toList().shouldContainInOrder(expected)
 infix fun <T> Array<T>.shouldContainInOrder(expected: List<T>) = asList().shouldContainInOrder(expected)
