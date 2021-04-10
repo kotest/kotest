@@ -8,6 +8,6 @@ import io.kotest.property.arbitrary.multiples
 
 class MultipleTest : FunSpec({
    test("multiples of k") {
-      Arb.multiples(3, 99999).generate(RandomSource.Default).take(100).forEach { it.value % 3 shouldBe 0 }
+      Arb.multiples(3, 99999).generate(RandomSource.default()).take(100).forEach { it.value % 3 shouldBe 0 }
    }
 })

@@ -19,7 +19,7 @@ suspend fun <A> proptest(
    require(iterations >= genA.minIterations()) { "Require at least ${genA.minIterations()} iterations to cover requirements" }
 
    val context = PropertyContext()
-   val random = config.seed?.random() ?: RandomSource.Default
+   val random = config.seed?.random() ?: RandomSource.default()
 
    when (genA) {
       is Arb -> {
@@ -62,7 +62,7 @@ suspend fun <A, B> proptest(
    require(iterations >= minSize) { "Require at least $minSize iterations to cover requirements" }
 
    val context = PropertyContext()
-   val random = config.seed?.random() ?: RandomSource.Default
+   val random = config.seed?.random() ?: RandomSource.default()
 
    if (genA is Exhaustive && genB is Exhaustive) {
       genA.values.forEach { a ->
@@ -106,7 +106,7 @@ suspend fun <A, B, C> proptest(
    require(iterations >= minSize) { "Require at least $minSize iterations to cover requirements" }
 
    val context = PropertyContext()
-   val random = config.seed?.random() ?: RandomSource.Default
+   val random = config.seed?.random() ?: RandomSource.default()
 
    if (genA is Exhaustive && genB is Exhaustive && genC is Exhaustive) {
       genA.values.forEach { a ->
@@ -155,7 +155,7 @@ suspend fun <A, B, C, D> proptest(
    require(iterations >= minSize) { "Require at least $minSize iterations to cover requirements" }
 
    val context = PropertyContext()
-   val random = config.seed?.random() ?: RandomSource.Default
+   val random = config.seed?.random() ?: RandomSource.default()
 
    if (genA is Exhaustive && genB is Exhaustive && genC is Exhaustive && genD is Exhaustive) {
       genA.values.forEach { a ->
@@ -214,7 +214,7 @@ suspend fun <A, B, C, D, E> proptest(
    require(iterations >= minSize) { "Require at least $minSize iterations to cover requirements" }
 
    val context = PropertyContext()
-   val random = config.seed?.random() ?: RandomSource.Default
+   val random = config.seed?.random() ?: RandomSource.default()
 
    if (genA is Exhaustive && genB is Exhaustive && genC is Exhaustive && genD is Exhaustive && genE is Exhaustive) {
       genA.values.forEach { a ->
@@ -278,7 +278,7 @@ suspend fun <A, B, C, D, E, F> proptest(
    require(iterations >= minSize) { "Require at least $minSize iterations to cover requirements" }
 
    val context = PropertyContext()
-   val random = config.seed?.random() ?: RandomSource.Default
+   val random = config.seed?.random() ?: RandomSource.default()
 
    genA.generate(random).zip(genB.generate(random)).zip(genC.generate(random)).zip(genD.generate(random))
       .zip(genE.generate(random)).zip(genF.generate(random))
@@ -326,7 +326,7 @@ suspend fun <A, B, C, D, E, F, G> proptest(
    require(iterations >= minSize) { "Require at least $minSize iterations to cover requirements" }
 
    val context = PropertyContext()
-   val random = config.seed?.random() ?: RandomSource.Default
+   val random = config.seed?.random() ?: RandomSource.default()
 
    genA.generate(random)
       .zip(genB.generate(random))
@@ -382,7 +382,7 @@ suspend fun <A, B, C, D, E, F, G, H> proptest(
    require(iterations >= minSize) { "Require at least $minSize iterations to cover requirements" }
 
    val context = PropertyContext()
-   val random = config.seed?.random() ?: RandomSource.Default
+   val random = config.seed?.random() ?: RandomSource.default()
 
    genA.generate(random)
       .zip(genB.generate(random))
@@ -444,7 +444,7 @@ suspend fun <A, B, C, D, E, F, G, H, I> proptest(
    require(iterations >= minSize) { "Require at least $minSize iterations to cover requirements" }
 
    val context = PropertyContext()
-   val random = config.seed?.random() ?: RandomSource.Default
+   val random = config.seed?.random() ?: RandomSource.default()
 
    genA.generate(random)
       .zip(genB.generate(random))
@@ -509,7 +509,7 @@ suspend fun <A, B, C, D, E, F, G, H, I, J> proptest(
    require(iterations >= minSize) { "Require at least $minSize iterations to cover requirements" }
 
    val context = PropertyContext()
-   val random = config.seed?.random() ?: RandomSource.Default
+   val random = config.seed?.random() ?: RandomSource.default()
 
    genA.generate(random)
       .zip(genB.generate(random))
@@ -579,7 +579,7 @@ suspend fun <A, B, C, D, E, F, G, H, I, J, K> proptest(
    require(iterations >= minSize) { "Require at least $minSize iterations to cover requirements" }
 
    val context = PropertyContext()
-   val random = config.seed?.random() ?: RandomSource.Default
+   val random = config.seed?.random() ?: RandomSource.default()
 
    genA.generate(random)
       .zip(genB.generate(random))
@@ -657,7 +657,7 @@ suspend fun <A, B, C, D, E, F, G, H, I, J, K, L> proptest(
    require(iterations >= minSize) { "Require at least $minSize iterations to cover requirements" }
 
    val context = PropertyContext()
-   val random = config.seed?.random() ?: RandomSource.Default
+   val random = config.seed?.random() ?: RandomSource.default()
 
    genA.generate(random)
       .zip(genB.generate(random))

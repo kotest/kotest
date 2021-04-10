@@ -21,7 +21,7 @@ class DateTest : WordSpec({
 
    "Arb.localDate(minYear, maxYear)" should {
       "generate valid LocalDates (no exceptions)" {
-         Arb.localDate().generate(RandomSource.Default).take(10_000).toList()
+         Arb.localDate().generate(RandomSource.default()).take(10_000).toList()
       }
 
       "generate LocalDates between minYear and maxYear" {
@@ -59,7 +59,7 @@ class DateTest : WordSpec({
 
    "Arb.localTime()" should {
       "generate N valid LocalTimes(no exceptions)" {
-         Arb.localTime().generate(RandomSource.Default).take(10_000).toList()
+         Arb.localTime().generate(RandomSource.default()).take(10_000).toList()
             .size shouldBe 10_000
       }
 
@@ -70,7 +70,7 @@ class DateTest : WordSpec({
 
    "Arb.localDateTime(minYear, maxYear)" should {
       "generate N valid LocalDateTimes(no exceptions)" {
-         Arb.localDateTime().generate(RandomSource.Default).take(10_000).toList()
+         Arb.localDateTime().generate(RandomSource.default()).take(10_000).toList()
             .size shouldBe 10_000
       }
 
@@ -106,7 +106,7 @@ class DateTest : WordSpec({
 
    "Arb.instant()" should {
       "generate N valid Instants(no exceptions)" {
-         Arb.instant().generate(RandomSource.Default).take(10_000).toList().size shouldBe 10_000
+         Arb.instant().generate(RandomSource.default()).take(10_000).toList().size shouldBe 10_000
       }
    }
 

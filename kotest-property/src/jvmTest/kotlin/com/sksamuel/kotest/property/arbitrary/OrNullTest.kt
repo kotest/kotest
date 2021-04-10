@@ -38,7 +38,7 @@ class OrNullTest : FunSpec({
       retry(3, timeout = 2.seconds, delay = 0.1.seconds) {
          listOf(0.0, 0.1, 0.25, 0.5, 0.75, 0.9, 1.0)
             .forAll { p: Double ->
-               val nullCount = Arb.long().orNull(nullProbability = p).samples(RandomSource.Default)
+               val nullCount = Arb.long().orNull(nullProbability = p).samples(RandomSource.default())
                   .map(Sample<Long?>::value)
                   .take(1000)
                   .filter { it == null }
@@ -58,7 +58,7 @@ class OrNullTest : FunSpec({
 
    test("functions can be supplied to determine null frequency") {
       listOf(true, false).forAll { isNextNull: Boolean ->
-         val allNull = Arb.int().orNull(isNextNull = { isNextNull }).samples(RandomSource.Default)
+         val allNull = Arb.int().orNull(isNextNull = { isNextNull }).samples(RandomSource.default())
             .map(Sample<Int?>::value)
             .take(100)
             .all { it == null }
