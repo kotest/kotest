@@ -28,16 +28,16 @@ object Libs {
    }
 
    object Allure {
-      private const val version = "2.13.8"
+      private const val version = "2.13.9"
       const val commons = "io.qameta.allure:allure-java-commons:$version"
    }
 
    object Jayway {
-      const val jsonpath = "com.jayway.jsonpath:json-path:2.4.0"
+      const val jsonpath = "com.jayway.jsonpath:json-path:2.5.0"
    }
 
    object Jackson {
-      private const val version = "2.11.3"
+      private const val version = "2.12.2"
       const val kotlin = "com.fasterxml.jackson.module:jackson-module-kotlin:$version"
    }
 
@@ -77,7 +77,7 @@ object Libs {
    }
 
    object Classgraph {
-      const val classgraph = "io.github.classgraph:classgraph:4.8.102"
+      const val classgraph = "io.github.classgraph:classgraph:4.8.104"
    }
 
    object Mocking {
@@ -109,7 +109,7 @@ object Libs {
    }
 
    object TestContainers {
-      private const val version = "1.15.1"
+      private const val version = "1.15.2"
       const val testcontainers = "org.testcontainers:testcontainers:$version"
    }
 
@@ -124,7 +124,7 @@ object Libs {
    }
 
    object Bytebuddy {
-      const val bytebuddy = "net.bytebuddy:byte-buddy:1.10.19"
+      const val bytebuddy = "net.bytebuddy:byte-buddy:1.10.22"
    }
 
    object Coroutines {
@@ -146,7 +146,7 @@ object Libs {
    }
 
    object Ktor {
-      private const val version = "1.5.1"
+      private const val version = "1.5.3"
       const val serverCore = "io.ktor:ktor-server-core:$version"
       const val serverTestHost = "io.ktor:ktor-server-test-host:$version"
       const val clientJs = "io.ktor:ktor-client-js:$version"
