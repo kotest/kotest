@@ -142,16 +142,16 @@ If we want to extract common code, we can create a named function and re-use it 
 For example, say we wanted to reset a database before every test in more than one file, we could do this:
 
 ```kotlin
-val resetDatabase: BeforeTest = { ... truncate all tables here .. }
-
-...
+val resetDatabase: BeforeTest = {
+  // truncate all tables here
+}
 
 class ReusableCallbacks : FunSpec({
 
    beforeTest(resetDatabase)
 
    test("this test will have a sparkling clean database!") {
-       ...
+       // test logic here
    }
 })
 ```
