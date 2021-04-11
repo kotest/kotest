@@ -32,7 +32,8 @@ Note: This changelog mentions the changes which are not yet released in stable v
   (1) Makes `EventuallyPredicate` a type alias instead of interface for better user experience.
   (2) Update failure message to inform the user about failure of given `EventuallyPredicate`.
   (3) Adds an overload of `eventually` which does not accept `EventuallyPredicate` so that it gives a feel of `until` function. 2046
-
+* Added `shouldBeEqualToComparingFields` and `shouldBeEqualToComparingFieldsExcept` matchers which check equality of
+  actual and expected by comparing their fields instead of using `equals` method. #2197
 
 #### Bugfixes.
 * Corrects a message for `haveCauseOfType` matcher to include the name expected and actual cause type. #2131
