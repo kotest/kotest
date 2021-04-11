@@ -14,6 +14,7 @@ object Projects {
    const val JunitXmlExtension = ":kotest-extensions:kotest-extensions-junitxml"
    const val JunitRunner = ":kotest-runner:kotest-runner-junit5"
    const val Property = ":kotest-property"
+   const val HtmlReporter = ":kotest-extensions:kotest-extensions-htmlreporter"
 
    fun extension(name: String) = ":kotest-extensions:kotest-extensions-$name"
 }
