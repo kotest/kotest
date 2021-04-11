@@ -105,7 +105,7 @@ class DescribeSpecContainerContext(
             name = createTestName(name),
             xdisabled = false,
             config = testCase.spec.resolvedDefaultConfig(),
-            type = TestType.Container,
+            type = TestType.Test,
             descriptor = null,
             factoryId = null
          ) { DescribeSpecContainerContext(this).test() }
@@ -117,7 +117,7 @@ class DescribeSpecContainerContext(
             name = createTestName(name),
             xdisabled = true,
             config = testCase.spec.resolvedDefaultConfig(),
-            type = TestType.Container,
+            type = TestType.Test,
             descriptor = null,
             factoryId = null
          ) { DescribeSpecContainerContext(this).test() }

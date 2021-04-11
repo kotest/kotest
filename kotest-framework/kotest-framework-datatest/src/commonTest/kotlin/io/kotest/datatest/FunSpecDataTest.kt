@@ -1,7 +1,6 @@
 package io.kotest.datatest
 
 import io.kotest.assertions.withClue
-import io.kotest.core.datatest.forNone
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldHaveLength
