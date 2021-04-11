@@ -23,7 +23,7 @@ typealias FunSpecContextScope = FunSpecContainerContext
  */
 @KotestDsl
 class FunSpecContainerContext(
-   val testContext: TestContext,
+   private val testContext: TestContext,
 ) : ContainerContext {
 
    override val testCase: TestCase = testContext.testCase

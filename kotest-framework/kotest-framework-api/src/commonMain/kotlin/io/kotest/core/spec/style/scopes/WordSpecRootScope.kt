@@ -24,10 +24,10 @@ interface WordSpecRootScope : RootScope {
    infix fun String.When(init: suspend WordSpecWhenScope.() -> Unit) = addWhenContext(this, init)
    infix fun String.`when`(init: suspend WordSpecWhenScope.() -> Unit) = addWhenContext(this, init)
 
-   private fun addWhenContext(name: String, init: suspend WordSpecWhenScope.() -> Unit) {
+   private fun addWhenContext(name: String, test: suspend WordSpecWhenScope.() -> Unit) {
       val testName = createTestName("$name when")
       registration().addContainerTest(testName, xdisabled = false) {
-         WordSpecWhenScope(this).init()
+         WordSpecWhenScope(this).test()
       }
    }
 }

@@ -70,16 +70,16 @@ class WordSpecShouldScope(
       test
    )
 
-   suspend infix operator fun String.invoke(test: suspend WordSpecTerminalScope.() -> Unit) {
+   suspend infix operator fun String.invoke(test: suspend WordSpecTerminalContext.() -> Unit) {
       registerTestCase(
          createNestedTest(
             name = createTestName(this),
-            xdisabled = true,
+            xdisabled = false,
             config = testCase.spec.resolvedDefaultConfig(),
-            type = TestType.Container,
+            type = TestType.Test,
             descriptor = null,
             factoryId = null,
-            test = { WordSpecTerminalScope(this).test() }
+            test = { WordSpecTerminalContext(this).test() }
          )
       )
    }
