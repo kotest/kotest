@@ -4,8 +4,9 @@ import io.kotest.core.test.TestCase
 
 /**
  * A [TestListener] contains functions that are invoked as part of the lifecycle of a [TestCase].
- * Brings together the various test-case related listeners. Exists for historical reasons.
- * Users can choose to extend this, or the constituent interfaces seperately.
+ *
+ * This interface is a union of the various test related listeners interfaces.
+ * Users can choose to extend this interface, or the constituent interfaces separately.
  */
 interface TestListener :
    BeforeTestListener,

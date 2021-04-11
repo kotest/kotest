@@ -10,22 +10,19 @@ import io.kotest.core.test.createNestedTest
 import io.kotest.core.test.createTestName
 import kotlin.coroutines.CoroutineContext
 
+@Deprecated("This interface has been renamed to ShouldSpecContainerContext. This alias will be removed in 4.7")
+typealias ShouldSpecContextScope = ShouldSpecContainerContext
+
 /**
- * A context that allows tests to be registered using the syntax:
+ * A scope that allows tests to be registered using the syntax:
  *
- * context("some test")
- * xcontext("some disabled test")
- *
- * and
- *
- * expect("some test")
- * expect("some test").config(...)
- * xexpect("some test")
- * xexpect("some test").config(...)
+ * context("some context")
+ * should("some test")
+ * should("some test").config(...)
  *
  */
 @KotestDsl
-class ExpectScope(
+class ShouldSpecContainerContext(
    val testContext: TestContext,
 ) : ContainerContext {
 
@@ -36,81 +33,83 @@ class ExpectScope(
    override suspend fun addTest(name: String, type: TestType, test: suspend TestContext.() -> Unit) {
       when (type) {
          TestType.Container -> context(name, test)
-         TestType.Test -> expect(name, test)
+         TestType.Test -> should(name, test)
       }
-
    }
 
-   suspend fun context(name: String, test: suspend ExpectScope.() -> Unit) {
+   /**
+    * Adds a nested context scope to this scope.
+    */
+   suspend fun context(name: String, test: suspend ShouldSpecContainerContext.() -> Unit) {
       registerTestCase(
          createNestedTest(
-            name = createTestName("Context: ", name, false),
+            name = createTestName(name),
             xdisabled = false,
             config = testCase.spec.resolvedDefaultConfig(),
             type = TestType.Container,
             descriptor = null,
-            factoryId = null
-         ) { ExpectScope(this).test() }
+            factoryId = null,
+            test = { ShouldSpecContainerContext(this).test() }
+         )
       )
    }
 
-   suspend fun xcontext(name: String, test: suspend ExpectScope.() -> Unit) {
+   /**
+    * Adds a disabled nested context scope to this scope.
+    */
+   suspend fun xcontext(name: String, test: suspend ShouldSpecContainerContext.() -> Unit) {
       registerTestCase(
          createNestedTest(
-            name = createTestName("Context: ", name, false),
+            name = createTestName(name),
             xdisabled = true,
             config = testCase.spec.resolvedDefaultConfig(),
             type = TestType.Container,
             descriptor = null,
-            factoryId = null
-         ) { ExpectScope(this).test() }
-      )
-   }
-
-   suspend fun expect(name: String, test: suspend TestContext.() -> Unit) {
-      registerTestCase(
-         createNestedTest(
-            name = createTestName("Expect: ", name, false),
-            xdisabled = false,
-            config = testCase.spec.resolvedDefaultConfig(),
-            type = TestType.Test,
-            descriptor = null,
             factoryId = null,
-            test = test
+            test = { ShouldSpecContainerContext(this).test() }
          )
       )
    }
 
-   suspend fun xexpect(name: String, test: suspend TestContext.() -> Unit) {
-      registerTestCase(
-         createNestedTest(
-            name = createTestName("Expect: ", name, false),
-            xdisabled = true,
-            config = testCase.spec.resolvedDefaultConfig(),
-            type = TestType.Test,
-            descriptor = null,
-            factoryId = null,
-            test = test
-         )
-      )
-   }
-
-   fun expect(name: String): TestWithConfigBuilder {
-      return TestWithConfigBuilder(
-         createTestName("Expect: ", name, false),
+   fun should(name: String) =
+      TestWithConfigBuilder(
+         createTestName("should ", name, false),
          testContext,
          testCase.spec.resolvedDefaultConfig(),
          xdisabled = false,
       )
-   }
 
-   fun xexpect(name: String): TestWithConfigBuilder {
-      return TestWithConfigBuilder(
-         createTestName("Expect: ", name, false),
+   fun xshould(name: String) =
+      TestWithConfigBuilder(
+         createTestName("should ", name, false),
          testContext,
          testCase.spec.resolvedDefaultConfig(),
          xdisabled = true,
       )
-   }
 
+   suspend fun should(name: String, test: suspend TestContext.() -> Unit) =
+      registerTestCase(
+         createNestedTest(
+            name = createTestName("should ", name, true),
+            xdisabled = false,
+            config = testCase.spec.resolvedDefaultConfig(),
+            type = TestType.Test,
+            descriptor = null,
+            factoryId = null,
+            test = { ShouldSpecContainerContext(this).test() }
+         )
+      )
+
+   suspend fun xshould(name: String, test: suspend TestContext.() -> Unit) =
+      registerTestCase(
+         createNestedTest(
+            name = createTestName("should ", name, true),
+            xdisabled = true,
+            config = testCase.spec.resolvedDefaultConfig(),
+            type = TestType.Test,
+            descriptor = null,
+            factoryId = null,
+            test = { ShouldSpecContainerContext(this).test() }
+         )
+      )
 }

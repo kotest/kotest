@@ -1,5 +1,6 @@
 package io.kotest.core.spec.style.scopes
 
+import io.kotest.core.spec.KotestDsl
 import io.kotest.core.test.createTestName
 
 /**
@@ -9,6 +10,7 @@ import io.kotest.core.test.createTestName
  * xfeature("some test")
  *
  */
+@KotestDsl
 interface FeatureSpecRootScope : RootScope {
 
    fun feature(name: String, test: suspend FeatureScope.() -> Unit) = addFeature(name, false, test)
@@ -17,13 +19,7 @@ interface FeatureSpecRootScope : RootScope {
    fun addFeature(name: String, xdisabled: Boolean, test: suspend FeatureScope.() -> Unit) {
       val testName = createTestName("Feature: ", name, false)
       registration().addContainerTest(testName, xdisabled = xdisabled) {
-         FeatureScope(
-            description().appendContainer(testName),
-            lifecycle(),
-            this,
-            defaultConfig(),
-            this.coroutineContext,
-         ).test()
+         FeatureScope(this).test()
       }
    }
 }

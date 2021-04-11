@@ -25,6 +25,9 @@ include("kotest-framework:kotest-framework-discovery")
 // brings in the API dependency
 include("kotest-framework:kotest-framework-engine")
 
+// contains data driven testing that builds on top of the kotest test framework
+include("kotest-framework:kotest-framework-datatest")
+
 // contains the matcher interface and is intended as a lightweight dependency for library authors
 // to depend on when writing matcher libraries
 include("kotest-assertions:kotest-assertions-api")

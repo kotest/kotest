@@ -6,7 +6,6 @@ import io.kotest.core.factory.build
 import io.kotest.core.spec.DslDrivenSpec
 import io.kotest.core.spec.resolvedDefaultConfig
 import io.kotest.core.spec.style.scopes.ExpectSpecRootScope
-import io.kotest.core.spec.style.scopes.Lifecycle
 import io.kotest.core.spec.style.scopes.RootTestRegistration
 import io.kotest.core.test.TestCaseConfig
 
@@ -24,7 +23,6 @@ fun expectSpec(block: ExpectSpecTestFactoryConfiguration.() -> Unit): TestFactor
 
 class ExpectSpecTestFactoryConfiguration : TestFactoryConfiguration(), ExpectSpecRootScope {
    override fun defaultConfig(): TestCaseConfig = resolvedDefaultConfig()
-   override fun lifecycle(): Lifecycle = Lifecycle.from(this)
    override fun registration(): RootTestRegistration = RootTestRegistration.from(this)
 }
 
@@ -35,6 +33,5 @@ abstract class ExpectSpec(body: ExpectSpec.() -> Unit = {}) : DslDrivenSpec(), E
    }
 
    override fun defaultConfig(): TestCaseConfig = resolvedDefaultConfig()
-   override fun lifecycle(): Lifecycle = Lifecycle.from(this)
    override fun registration(): RootTestRegistration = RootTestRegistration.from(this)
 }

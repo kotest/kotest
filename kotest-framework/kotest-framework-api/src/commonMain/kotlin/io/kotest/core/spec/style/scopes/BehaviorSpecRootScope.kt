@@ -1,5 +1,6 @@
 package io.kotest.core.spec.style.scopes
 
+import io.kotest.core.spec.KotestDsl
 import io.kotest.core.test.createTestName
 
 /**
@@ -9,6 +10,7 @@ import io.kotest.core.test.createTestName
  * xgiven("some disabled test")
  */
 @Suppress("FunctionName")
+@KotestDsl
 interface BehaviorSpecRootScope : RootScope {
 
    /**
@@ -34,13 +36,7 @@ interface BehaviorSpecRootScope : RootScope {
    private fun addGiven(name: String, xdisabled: Boolean, test: suspend GivenScope.() -> Unit) {
       val testName = createTestName("Given: ", name, true)
       registration().addContainerTest(testName, xdisabled) {
-         GivenScope(
-            description().appendContainer(testName),
-            lifecycle(),
-            this,
-            defaultConfig(),
-            this.coroutineContext,
-         ).test()
+         GivenScope(this).test()
       }
    }
 }

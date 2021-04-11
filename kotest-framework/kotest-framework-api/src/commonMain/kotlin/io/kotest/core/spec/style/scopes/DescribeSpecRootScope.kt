@@ -8,21 +8,24 @@ import io.kotest.core.test.createTestName
  * A context that allows root tests to be registered using the syntax:
  *
  * describe("some test")
+ *
+ * or
+ *
  * xdescribe("some disabled test")
  */
 interface DescribeSpecRootScope : RootScope {
 
-   fun context(name: String, test: suspend DescribeScope.() -> Unit) {
+   fun context(name: String, test: suspend DescribeSpecContainerContext.() -> Unit) {
       val testName = createTestName("Context: ", name, false)
       test(testName, test)
    }
 
-   fun xcontext(name: String, test: suspend DescribeScope.() -> Unit) {
+   fun xcontext(name: String, test: suspend DescribeSpecContainerContext.() -> Unit) {
       val testName = createTestName("Context: ", name, false)
       registration().addContainerTest(testName, xdisabled = true) {}
    }
 
-   fun describe(name: String, test: suspend DescribeScope.() -> Unit) {
+   fun describe(name: String, test: suspend DescribeSpecContainerContext.() -> Unit) {
       val testName = createTestName("Describe: ", name, false)
       test(testName, test)
    }
@@ -35,19 +38,13 @@ interface DescribeSpecRootScope : RootScope {
       registration().addTest(name = createTestName(name), xdisabled = true, test = test)
    }
 
-   private fun test(testName: DescriptionName.TestName, test: suspend DescribeScope.() -> Unit) {
+   private fun test(testName: DescriptionName.TestName, test: suspend DescribeSpecContainerContext.() -> Unit) {
       registration().addContainerTest(testName, xdisabled = false) {
-         DescribeScope(
-            this@DescribeSpecRootScope.description().appendContainer(testName),
-            this@DescribeSpecRootScope.lifecycle(),
-            this,
-            this@DescribeSpecRootScope.defaultConfig(),
-            this.coroutineContext,
-         ).test()
+         DescribeSpecContainerContext(this).test()
       }
    }
 
-   fun xdescribe(name: String, test: suspend DescribeScope.() -> Unit) {
+   fun xdescribe(name: String, test: suspend DescribeSpecContainerContext.() -> Unit) {
       val testName = createTestName("Describe: ", name, false)
       registration().addContainerTest(testName, xdisabled = true) {}
    }

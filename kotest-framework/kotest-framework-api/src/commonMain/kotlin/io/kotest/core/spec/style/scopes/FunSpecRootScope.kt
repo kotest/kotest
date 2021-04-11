@@ -1,31 +1,24 @@
 package io.kotest.core.spec.style.scopes
 
 import io.kotest.core.test.TestContext
-import io.kotest.core.test.TestType
 import io.kotest.core.test.createTestName
 
 interface FunSpecRootScope : RootScope {
 
    /**
-    * Adds a top level [FunSpecContextScope] to this root scope.
+    * Adds a top level [FunSpecContainerContext] to this root scope.
     */
-   fun context(name: String, test: suspend FunSpecContextScope.() -> Unit) {
+   fun context(name: String, test: suspend FunSpecContainerContext.() -> Unit) {
       val testName = createTestName(name)
       registration().addContainerTest(testName, xdisabled = false) {
-         FunSpecContextScope(
-            description().append(testName, TestType.Container),
-            lifecycle(),
-            this,
-            defaultConfig(),
-            this.coroutineContext,
-         ).test()
+         FunSpecContainerContext(this).test()
       }
    }
 
    /**
-    * Adds a disabled top level [FunSpecContextScope] this root scope.
+    * Adds a disabled top level [FunSpecContainerContext] this root scope.
     */
-   fun xcontext(name: String, test: suspend FunSpecContextScope.() -> Unit) {
+   fun xcontext(name: String, test: suspend FunSpecContainerContext.() -> Unit) {
       registration().addContainerTest(createTestName(name), xdisabled = true) {}
    }
 

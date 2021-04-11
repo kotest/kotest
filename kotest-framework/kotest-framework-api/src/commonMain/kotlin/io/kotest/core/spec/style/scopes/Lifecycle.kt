@@ -6,7 +6,7 @@ import io.kotest.core.spec.DslDrivenSpec
 import io.kotest.core.test.TestContext
 
 /**
- * Contains methods to register callbacks and tests in the current scope, whether
+ * Contains methods to register callbacks and tests in the current context, whether
  * that be top level tests in a [DslDrivenSpec], top level tests in a [TestFactoryConfiguration],
  * or nested tests via a [TestContext].
  */

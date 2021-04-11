@@ -1,8 +1,13 @@
-package io.kotest.core.datatest
+package io.kotest.datatest
 
 import io.kotest.mpp.bestName
 import io.kotest.mpp.isStable
 
+/**
+ * Used to generate stable identifers for data tests.
+ *
+ * Maintains an internal list of identifers generated, and will append a count if repeated names are generated.
+ */
 internal class Identifiers {
 
    private var names = mutableListOf<String>()

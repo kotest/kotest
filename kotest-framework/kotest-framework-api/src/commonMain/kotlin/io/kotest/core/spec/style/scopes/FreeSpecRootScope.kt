@@ -2,27 +2,22 @@ package io.kotest.core.spec.style.scopes
 
 import io.kotest.core.Tag
 import io.kotest.core.extensions.TestCaseExtension
+import io.kotest.core.spec.KotestDsl
 import io.kotest.core.test.EnabledIf
+import io.kotest.core.test.TestCaseSeverityLevel
 import io.kotest.core.test.TestContext
-import io.kotest.core.test.TestType
 import io.kotest.core.test.createTestName
 import io.kotest.core.test.deriveTestConfig
-import io.kotest.core.test.TestCaseSeverityLevel
 import kotlin.time.Duration
 
+@KotestDsl
 interface FreeSpecRootScope : RootScope {
 
    // eg, "this test" - { } // adds a container test
    infix operator fun String.minus(test: suspend FreeScope.() -> Unit) {
       val name = createTestName(this)
       registration().addContainerTest(name, xdisabled = false) {
-         FreeScope(
-            description().append(name, TestType.Container),
-            lifecycle(),
-            this,
-            defaultConfig(),
-            this.coroutineContext,
-         ).test()
+         FreeScope(this).test()
       }
    }
 

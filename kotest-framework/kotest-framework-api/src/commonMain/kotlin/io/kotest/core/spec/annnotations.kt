@@ -16,7 +16,7 @@ annotation class AutoScan
 annotation class DisplayName(val name: String)
 
 @Target(AnnotationTarget.CLASS, AnnotationTarget.FUNCTION, AnnotationTarget.TYPE)
-@Retention(AnnotationRetention.RUNTIME)
+@Retention(AnnotationRetention.SOURCE)
 @DslMarker
 annotation class KotestDsl
 

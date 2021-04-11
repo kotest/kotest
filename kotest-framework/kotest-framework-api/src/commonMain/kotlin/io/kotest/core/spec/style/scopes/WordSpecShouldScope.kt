@@ -3,12 +3,15 @@ package io.kotest.core.spec.style.scopes
 import io.kotest.core.Tag
 import io.kotest.core.extensions.TestCaseExtension
 import io.kotest.core.spec.KotestDsl
-import io.kotest.core.test.Description
+import io.kotest.core.spec.resolvedDefaultConfig
 import io.kotest.core.test.EnabledIf
-import io.kotest.core.test.TestCaseConfig
-import io.kotest.core.test.TestContext
-import io.kotest.core.test.createTestName
+import io.kotest.core.test.NestedTest
+import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestCaseSeverityLevel
+import io.kotest.core.test.TestContext
+import io.kotest.core.test.TestType
+import io.kotest.core.test.createNestedTest
+import io.kotest.core.test.createTestName
 import kotlin.coroutines.CoroutineContext
 import kotlin.time.Duration
 
@@ -16,20 +19,26 @@ import kotlin.time.Duration
  * A scope that allows tests to be registered using the syntax:
  *
  * "some context" { }
+ *
+ * or
+ *
  * "some context".config(...) { }
  *
  */
 @KotestDsl
 class WordSpecShouldScope(
-   override val description: Description,
-   override val lifecycle: Lifecycle,
-   override val testContext: TestContext,
-   override val defaultConfig: TestCaseConfig,
-   override val coroutineContext: CoroutineContext,
-) : ContainerScope {
+   val testContext: TestContext,
+) : ContainerContext {
 
-   override suspend fun addTest(name: String, test: suspend TestContext.() -> Unit) {
-      name(test)
+   override val testCase: TestCase = testContext.testCase
+   override val coroutineContext: CoroutineContext = testContext.coroutineContext
+   override suspend fun registerTestCase(nested: NestedTest) = testContext.registerTestCase(nested)
+
+   override suspend fun addTest(name: String, type: TestType, test: suspend TestContext.() -> Unit) {
+      when (type) {
+         TestType.Container -> error("Containers cannot be added to this context")
+         TestType.Test -> name(test)
+      }
    }
 
    suspend fun String.config(
@@ -46,7 +55,7 @@ class WordSpecShouldScope(
    ) = TestWithConfigBuilder(
       createTestName(this),
       testContext,
-      defaultConfig,
+      testCase.spec.resolvedDefaultConfig(),
       false,
    ).config(
       enabled,
@@ -62,7 +71,17 @@ class WordSpecShouldScope(
    )
 
    suspend infix operator fun String.invoke(test: suspend WordSpecTerminalScope.() -> Unit) {
-      addTest(createTestName(this), xdisabled = false, test = { WordSpecTerminalScope(this).test() })
+      registerTestCase(
+         createNestedTest(
+            name = createTestName(this),
+            xdisabled = true,
+            config = testCase.spec.resolvedDefaultConfig(),
+            type = TestType.Container,
+            descriptor = null,
+            factoryId = null,
+            test = { WordSpecTerminalScope(this).test() }
+         )
+      )
    }
 
    // we need to override the should method to stop people nesting a should inside a should

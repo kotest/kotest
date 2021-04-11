@@ -2,26 +2,21 @@ package io.kotest.core.test
 
 import io.kotest.core.plan.Descriptor
 import io.kotest.core.sourceRef
-import io.kotest.core.spec.KotestDsl
 import kotlinx.coroutines.CoroutineScope
 import kotlin.coroutines.CoroutineContext
 
 /**
- * A [TestContext] is used as the receiver of a closure that is associated with a [TestCase].
+ * A [TestContext] is used as the receiver in a test function.
  *
- * This allows the scope body to interact with the test engine, for instance, adding metadata
- * during a test, inspecting the current [TestCaseConfig], or notifying the runtime of a nested test.
+ * This allows the test function to interact with the test engine at runtime.
+ * For instance fetching details of the executing test case( such as timeouts, tags),
+ * registering a dynamic nested test, or adding a test lifecycle callback.
  *
- * The test context extends [CoroutineScope] giving the ability for any test closure to launch
- * coroutines directly, without requiring them to create a scope.
+ * This context extends [CoroutineScope] giving the ability for any test function to launch
+ * coroutines directly, without requiring them to supply a coroutine scope, and to retrieve
+ * elements from the current [CoroutineContext] via [CoroutineContext.get]
  */
-@KotestDsl
 interface TestContext : CoroutineScope {
-
-   // this is added to stop the string spec from allowing nested tests
-   infix operator fun String.invoke(@Suppress("UNUSED_PARAMETER") ignored: suspend TestContext.() -> Unit) {
-      throw Exception("Nested tests are not allowed to be defined here. Please see the documentation for the spec styles")
-   }
 
    /**
     * The currently executing [TestCase].
@@ -29,30 +24,32 @@ interface TestContext : CoroutineScope {
    val testCase: TestCase
 
    /**
-    * Creates a [NestedTest] and then registers with the [TestContext].
+    * Registers a [NestedTest] with the engine.
     *
-    * This will throw if we are trying to add a nested test to a non-container.
-    */
-   suspend fun registerTestCase(
-      name: DescriptionName.TestName,
-      test: suspend TestContext.() -> Unit,
-      config: TestCaseConfig,
-      type: TestType,
-      descriptor: Descriptor.TestDescriptor? = null,
-   ) {
-      when (testCase.type) {
-         TestType.Container -> {
-            val nested = NestedTest(name, test, config, type, sourceRef(), testCase.factoryId, descriptor)
-            registerTestCase(nested)
-         }
-         TestType.Test -> throw InvalidTestConstructionException("Cannot add a nested test to '${testCase.displayName}' because it is not a test container")
-      }
-   }
-
-   /**
-    * Notifies the test runner about a test in a nested scope.
+    * Will throw if the current test is not a container test.
     */
    suspend fun registerTestCase(nested: NestedTest)
+}
+
+/**
+ * Registers a [NestedTest] with the engine.
+ *
+ * Will throw if the current test is not a container test.
+ */
+suspend fun TestContext.registerTestCase(
+   name: DescriptionName.TestName,
+   test: suspend TestContext.() -> Unit,
+   config: TestCaseConfig,
+   type: TestType,
+   descriptor: Descriptor.TestDescriptor? = null,
+) {
+   when (testCase.type) {
+      TestType.Container -> {
+         val nested = NestedTest(name, test, config, type, sourceRef(), testCase.factoryId, descriptor)
+         registerTestCase(nested)
+      }
+      TestType.Test -> throw InvalidTestConstructionException("Cannot add a nested test to '${testCase.displayName}' because it is not a test container")
+   }
 }
 
 class InvalidTestConstructionException(msg: String) : RuntimeException(msg)

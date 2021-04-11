@@ -1,9 +1,12 @@
 package io.kotest.core.spec.style.scopes
 
 import io.kotest.core.spec.KotestDsl
-import io.kotest.core.test.Description
-import io.kotest.core.test.TestCaseConfig
+import io.kotest.core.spec.resolvedDefaultConfig
+import io.kotest.core.test.NestedTest
+import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestContext
+import io.kotest.core.test.TestType
+import io.kotest.core.test.createNestedTest
 import io.kotest.core.test.createTestName
 import kotlin.coroutines.CoroutineContext
 
@@ -23,56 +26,79 @@ import kotlin.coroutines.CoroutineContext
  */
 @KotestDsl
 class FeatureScope(
-   override val description: Description,
-   override val lifecycle: Lifecycle,
-   override val testContext: TestContext,
-   override val defaultConfig: TestCaseConfig,
-   override val coroutineContext: CoroutineContext,
-) : ContainerScope {
+   val testContext: TestContext,
+) : ContainerContext {
 
-   override suspend fun addTest(name: String, test: suspend TestContext.() -> Unit) {
-      scenario(name, test)
+   override val testCase: TestCase = testContext.testCase
+   override val coroutineContext: CoroutineContext = testContext.coroutineContext
+   override suspend fun registerTestCase(nested: NestedTest) = testContext.registerTestCase(nested)
+
+   override suspend fun addTest(name: String, type: TestType, test: suspend TestContext.() -> Unit) {
+      when (type) {
+         TestType.Container -> feature(name, test)
+         TestType.Test -> scenario(name, test)
+      }
    }
 
    suspend fun feature(name: String, test: suspend FeatureScope.() -> Unit) {
-      val testName = createTestName("Feature: ", name, false)
-      addContainerTest(testName, xdisabled = false) {
-         FeatureScope(
-            this@FeatureScope.description.appendContainer(testName),
-            this@FeatureScope.lifecycle,
-            this,
-            this@FeatureScope.defaultConfig,
-            this@FeatureScope.coroutineContext,
-         ).test()
-      }
+      registerTestCase(
+         createNestedTest(
+            name = createTestName("Feature: ", name, false),
+            xdisabled = false,
+            config = testCase.spec.resolvedDefaultConfig(),
+            type = TestType.Container,
+            descriptor = null,
+            factoryId = null
+         ) { FeatureScope(this).test() }
+      )
    }
 
    suspend fun xfeature(name: String, test: suspend FeatureScope.() -> Unit) {
-      val testName = createTestName("Feature: ", name, false)
-      addContainerTest(testName, xdisabled = true) {
-         FeatureScope(
-            this@FeatureScope.description.appendContainer(testName),
-            this@FeatureScope.lifecycle,
-            this,
-            this@FeatureScope.defaultConfig,
-            this@FeatureScope.coroutineContext,
-         ).test()
-      }
+      registerTestCase(
+         createNestedTest(
+            name = createTestName("Feature: ", name, false),
+            xdisabled = true,
+            config = testCase.spec.resolvedDefaultConfig(),
+            type = TestType.Test,
+            descriptor = null,
+            factoryId = null
+         ) { FeatureScope(this).test() }
+      )
    }
 
    suspend fun scenario(name: String, test: suspend TestContext.() -> Unit) {
-      addTest(createTestName("Scenario: ", name, false), xdisabled = false, test = test)
+      registerTestCase(
+         createNestedTest(
+            name = createTestName("Scenario: ", name, false),
+            xdisabled = false,
+            config = testCase.spec.resolvedDefaultConfig(),
+            type = TestType.Test,
+            descriptor = null,
+            factoryId = null,
+            test = test
+         )
+      )
    }
 
    suspend fun xscenario(name: String, test: suspend TestContext.() -> Unit) {
-      addTest(createTestName("Scenario: ", name, false), xdisabled = true, test = test)
+      registerTestCase(
+         createNestedTest(
+            name = createTestName("Scenario: ", name, false),
+            xdisabled = true,
+            config = testCase.spec.resolvedDefaultConfig(),
+            type = TestType.Container,
+            descriptor = null,
+            factoryId = null,
+            test = test
+         )
+      )
    }
 
    fun scenario(name: String): TestWithConfigBuilder {
       return TestWithConfigBuilder(
          createTestName("Scenario: ", name, false),
          testContext,
-         defaultConfig,
+         testCase.spec.resolvedDefaultConfig(),
          false,
       )
    }
@@ -81,7 +107,7 @@ class FeatureScope(
       return TestWithConfigBuilder(
          createTestName("Scenario: ", name, false),
          testContext,
-         defaultConfig,
+         testCase.spec.resolvedDefaultConfig(),
          true,
       )
    }

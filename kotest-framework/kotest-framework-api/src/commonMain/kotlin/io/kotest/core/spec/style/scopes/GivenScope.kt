@@ -1,9 +1,12 @@
 package io.kotest.core.spec.style.scopes
 
 import io.kotest.core.spec.KotestDsl
-import io.kotest.core.test.Description
-import io.kotest.core.test.TestCaseConfig
+import io.kotest.core.spec.resolvedDefaultConfig
+import io.kotest.core.test.NestedTest
+import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestContext
+import io.kotest.core.test.TestType
+import io.kotest.core.test.createNestedTest
 import io.kotest.core.test.createTestName
 import kotlin.coroutines.CoroutineContext
 
@@ -26,15 +29,18 @@ import kotlin.coroutines.CoroutineContext
 @Suppress("FunctionName")
 @KotestDsl
 class GivenScope(
-   override val description: Description,
-   override val lifecycle: Lifecycle,
-   override val testContext: TestContext,
-   override val defaultConfig: TestCaseConfig,
-   override val coroutineContext: CoroutineContext,
-) : ContainerScope {
+   val testContext: TestContext,
+) : ContainerContext {
 
-   override suspend fun addTest(name: String, test: suspend TestContext.() -> Unit) {
-      error("Cannot add a test at this scope. Use a should scope instead.")
+   override val testCase: TestCase = testContext.testCase
+   override val coroutineContext: CoroutineContext = testContext.coroutineContext
+   override suspend fun registerTestCase(nested: NestedTest) = testContext.registerTestCase(nested)
+
+   override suspend fun addTest(name: String, type: TestType, test: suspend TestContext.() -> Unit) {
+      when (type) {
+         TestType.Container -> `when`(name, test)
+         TestType.Test -> then(name, test)
+      }
    }
 
    suspend fun And(name: String, test: suspend GivenScope.() -> Unit) = addAnd(name, test, xdisabled = false)
@@ -43,16 +49,17 @@ class GivenScope(
    suspend fun xAnd(name: String, test: suspend GivenScope.() -> Unit) = addAnd(name, test, xdisabled = true)
 
    private suspend fun addAnd(name: String, test: suspend GivenScope.() -> Unit, xdisabled: Boolean) {
-      val testName = createTestName("And: ", name, true)
-      addContainerTest(testName, xdisabled) {
-         GivenScope(
-            this@GivenScope.description.appendContainer(testName),
-            this@GivenScope.lifecycle,
-            this,
-            this@GivenScope.defaultConfig,
-            this@GivenScope.coroutineContext,
-         ).test()
-      }
+      registerTestCase(
+         createNestedTest(
+            name = createTestName("And: ", name, true),
+            xdisabled = xdisabled,
+            config = testCase.spec.resolvedDefaultConfig(),
+            type = TestType.Container,
+            descriptor = null,
+            factoryId = null,
+            test = { GivenScope(this).test() }
+         )
+      )
    }
 
    suspend fun When(name: String, test: suspend WhenScope.() -> Unit) = addWhen(name, test, xdisabled = false)
@@ -61,41 +68,46 @@ class GivenScope(
    suspend fun xWhen(name: String, test: suspend WhenScope.() -> Unit) = addWhen(name, test, xdisabled = true)
 
    private suspend fun addWhen(name: String, test: suspend WhenScope.() -> Unit, xdisabled: Boolean) {
-      val testName = createTestName("When: ", name, true)
-      addContainerTest(testName, xdisabled) {
-         WhenScope(
-            this@GivenScope.description.appendContainer(testName),
-            this@GivenScope.lifecycle,
-            this,
-            this@GivenScope.defaultConfig,
-            this@GivenScope.coroutineContext,
-         ).test()
-      }
+      registerTestCase(
+         createNestedTest(
+            name = createTestName("When: ", name, true),
+            xdisabled = xdisabled,
+            config = testCase.spec.resolvedDefaultConfig(),
+            type = TestType.Container,
+            descriptor = null,
+            factoryId = null,
+            test = { WhenScope(this).test() }
+         )
+      )
    }
 
    fun Then(name: String) = TestWithConfigBuilder(
       createTestName("Then: ", name, true),
       testContext,
-      defaultConfig,
-      xdisabled = false)
+      testCase.spec.resolvedDefaultConfig(),
+      xdisabled = false
+   )
 
    fun then(name: String) = TestWithConfigBuilder(
       createTestName("Then: ", name, true),
       testContext,
-      defaultConfig,
-      xdisabled = false)
+      testCase.spec.resolvedDefaultConfig(),
+      xdisabled = false
+   )
 
    fun xthen(name: String) = TestWithConfigBuilder(
       createTestName("Then: ", name, true),
       testContext,
-      defaultConfig,
-      xdisabled = true)
+      testCase.spec.resolvedDefaultConfig(),
+      xdisabled = true
+   )
 
    fun xThen(name: String) = TestWithConfigBuilder(
       createTestName("Then: ", name, true),
       testContext,
-      defaultConfig,
-      xdisabled = true)
+      testCase.spec.resolvedDefaultConfig(),
+      xdisabled = true
+   )
 
    suspend fun Then(name: String, test: suspend TestContext.() -> Unit) = addThen(name, test, xdisabled = false)
    suspend fun then(name: String, test: suspend TestContext.() -> Unit) = addThen(name, test, xdisabled = false)
@@ -103,6 +115,16 @@ class GivenScope(
    suspend fun xThen(name: String, test: suspend TestContext.() -> Unit) = addThen(name, test, xdisabled = true)
 
    private suspend fun addThen(name: String, test: suspend TestContext.() -> Unit, xdisabled: Boolean) {
-      addTest(createTestName("Then: ", name, true), xdisabled, test)
+      registerTestCase(
+         createNestedTest(
+            name = createTestName("Then: ", name, true),
+            xdisabled = xdisabled,
+            config = testCase.spec.resolvedDefaultConfig(),
+            type = TestType.Test,
+            descriptor = null,
+            factoryId = null,
+            test = { WhenScope(this).test() }
+         )
+      )
    }
 }

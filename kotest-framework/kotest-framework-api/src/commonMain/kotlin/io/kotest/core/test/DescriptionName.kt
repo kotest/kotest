@@ -47,7 +47,7 @@ sealed class DescriptionName {
    }
 }
 
-fun createTestName(name: String) = createTestName(null, name, false)
+fun createTestName(name: String): DescriptionName.TestName = createTestName(null, name, false)
 
 fun createTestName(prefix: String?, name: String, defaultIncludeAffix: Boolean): DescriptionName.TestName =
    createTestName(

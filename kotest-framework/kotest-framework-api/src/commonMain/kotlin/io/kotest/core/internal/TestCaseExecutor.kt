@@ -7,6 +7,7 @@ import io.kotest.core.spec.invokeAllAfterTestCallbacks
 import io.kotest.core.spec.invokeAllBeforeTestCallbacks
 import io.kotest.core.spec.invokeBeforeInvocation
 import io.kotest.core.extensions.resolvedTestCaseExtensions
+import io.kotest.core.listeners.TestListener
 import io.kotest.core.test.NestedTest
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestCaseExecutionListener
@@ -260,8 +261,8 @@ class TestCaseExecutor(
    private suspend fun executeInScope(testCase: TestCase, context: TestContext) = coroutineScope {
       val contextp = object : TestContext {
          override val testCase: TestCase = context.testCase
-         override suspend fun registerTestCase(nested: NestedTest) = context.registerTestCase(nested)
          override val coroutineContext: CoroutineContext = this@coroutineScope.coroutineContext
+         override suspend fun registerTestCase(nested: NestedTest) = context.registerTestCase(nested)
       }
       testCase.executeWithBehaviours(contextp)
    }
