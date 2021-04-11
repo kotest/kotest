@@ -2,10 +2,9 @@ package com.sksamuel.kotest.matchers.equality
 
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.FunSpec
-import io.kotest.matchers.equality.shouldBeEqualToIgnoringFields
-import io.kotest.matchers.equality.shouldBeEqualToUsingFields
-import io.kotest.matchers.equality.shouldNotBeEqualToIgnoringFields
+import io.kotest.matchers.equality.*
 import io.kotest.matchers.shouldBe
+import io.kotest.matchers.string.shouldContain
 import org.junit.jupiter.api.assertThrows
 import kotlin.reflect.KVisibility
 import kotlin.reflect.full.memberProperties
@@ -15,6 +14,14 @@ class ReflectionKtTest : FunSpec() {
    data class Foo(val a: String, val b: Int, val c: Boolean)
 
    data class Car(val name: String, val price: Int, private val modelNumber: Int)
+
+   class Person(val name: String) {
+      var isExhausted: Boolean = false
+      private var address: String = ""
+      fun setAddress(newAddress: String) {
+         this.address = newAddress
+      }
+   }
 
    init {
 
@@ -34,7 +41,7 @@ class ReflectionKtTest : FunSpec() {
 
          shouldThrow<AssertionError> {
             Foo("sammy", 13, true).shouldBeEqualToUsingFields(Foo("stef", 13, false), Foo::a, Foo::c)
-         }.message shouldBe "Foo(a=sammy, b=13, c=true) should be equal to Foo(a=stef, b=13, c=false) using fields [a, c]; Failed for [a: sammy != stef, c: true != false]"
+         }.message shouldBe "Foo(a=sammy, b=13, c=true) should be equal to Foo(a=stef, b=13, c=false) using fields [a, c]; Failed for [a: \"sammy\" != \"stef\", c: true != false]"
       }
 
       test("shouldBeEqualToIgnoringFields") {
@@ -51,7 +58,7 @@ class ReflectionKtTest : FunSpec() {
 
          shouldThrow<AssertionError> {
             Foo("sammy", 13, true).shouldBeEqualToIgnoringFields(Foo("stef", 13, false), Foo::c)
-         }.message shouldBe "Foo(a=sammy, b=13, c=true) should be equal to Foo(a=stef, b=13, c=false) ignoring fields [c]; Failed for [a: sammy != stef]"
+         }.message shouldBe "Foo(a=sammy, b=13, c=true) should be equal to Foo(a=stef, b=13, c=false) ignoring fields [c]; Failed for [a: \"sammy\" != \"stef\"]"
       }
 
       test("shouldBeEqualToIgnoringFields should compare equality for class having private fields") {
@@ -98,6 +105,74 @@ class ReflectionKtTest : FunSpec() {
          val car2 = Car("car", 9000, 700)
 
          car1.shouldBeEqualToIgnoringFields(car2, true, Car::price)
+      }
+
+      test("shouldBeEqualToComparingFieldByField check equality comparing field by field") {
+         Person("foo") shouldBeEqualToComparingFields Person("foo")
+      }
+
+      test("shouldBeEqualToComparingFields check equality comparing field by field including private fields") {
+         val person = Person("foo")
+         person.setAddress("new address")
+
+         val errorMessage = shouldThrow<AssertionError> {
+            person.shouldBeEqualToComparingFields(Person("foo"), ignorePrivateFields = false)
+         }.message
+
+         errorMessage shouldContain """ Using fields: address, isExhausted, name
+            | Value differ at:
+            | 1) address: "new address" != <empty string>""".trimMargin()
+      }
+
+      test("shouldBeEqualToComparingFieldsExcept check equality comparing field by field excluding given fields and private fields") {
+         val person = Person("foo")
+         person.isExhausted = true
+         person.setAddress("new address")
+
+         person.shouldBeEqualToComparingFieldsExcept(
+            Person("foo"),
+            Person::isExhausted
+         )
+         person.shouldBeEqualToComparingFieldsExcept(
+            Person("foo"),
+            true,
+            Person::isExhausted
+         )
+      }
+
+      test("shouldBeEqualToComparingFieldsExcept check equality comparing field by field excluding given fields and without ignoring private fields") {
+         val person = Person("foo")
+         person.isExhausted = true
+         person.setAddress("new address")
+
+         shouldThrow<AssertionError> {
+            person.shouldBeEqualToComparingFieldsExcept(
+               Person("foo"),
+               false,
+               Person::isExhausted
+            )
+         }.message shouldContain """Using fields: address, name
+                                   | Value differ at:
+                                   | 1) address: "new address" != <empty string>""".trimMargin()
+      }
+
+      test("shouldNotBeEqualToComparingFields check all fields of expected and actual are not equal") {
+         val person = Person("foo")
+         person.isExhausted = true
+
+         person shouldNotBeEqualToComparingFields Person("foo")
+      }
+
+      test("shouldNotBeEqualToComparingFields fails when expected and actual have equal fields") {
+         shouldThrow<AssertionError> {
+            Person("foo") shouldNotBeEqualToComparingFields Person("foo")
+         }.message shouldContain "Using fields: isExhausted, name"
+      }
+
+      test("shouldNotBeEqualToComparingFields should consider private fields") {
+         shouldThrow<AssertionError> {
+            Person("foo").shouldNotBeEqualToComparingFields(Person("foo"), false)
+         }.message shouldContain "Using fields: address, isExhausted, name"
       }
    }
 }
