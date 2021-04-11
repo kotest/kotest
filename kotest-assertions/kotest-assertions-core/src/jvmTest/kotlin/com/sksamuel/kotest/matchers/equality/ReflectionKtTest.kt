@@ -111,7 +111,7 @@ class ReflectionKtTest : FunSpec() {
          Person("foo") shouldBeEqualToComparingFields Person("foo")
       }
 
-      test("shouldBeEqualToComparingFieldByField check equality comparing field by field including private fields") {
+      test("shouldBeEqualToComparingFields check equality comparing field by field including private fields") {
          val person = Person("foo")
          person.setAddress("new address")
 
@@ -124,29 +124,29 @@ class ReflectionKtTest : FunSpec() {
             | 1) address: "new address" != <empty string>""".trimMargin()
       }
 
-      test("shouldBeEqualToComparingFieldExcept check equality comparing field by field excluding given fields and private fields") {
+      test("shouldBeEqualToComparingFieldsExcept check equality comparing field by field excluding given fields and private fields") {
          val person = Person("foo")
          person.isExhausted = true
          person.setAddress("new address")
 
-         person.shouldBeEqualToComparingFieldExcept(
+         person.shouldBeEqualToComparingFieldsExcept(
             Person("foo"),
             Person::isExhausted
          )
-         person.shouldBeEqualToComparingFieldExcept(
+         person.shouldBeEqualToComparingFieldsExcept(
             Person("foo"),
             true,
             Person::isExhausted
          )
       }
 
-      test("shouldBeEqualToComparingFieldExcept check equality comparing field by field excluding given fields and without ignoring private fields") {
+      test("shouldBeEqualToComparingFieldsExcept check equality comparing field by field excluding given fields and without ignoring private fields") {
          val person = Person("foo")
          person.isExhausted = true
          person.setAddress("new address")
 
          shouldThrow<AssertionError> {
-            person.shouldBeEqualToComparingFieldExcept(
+            person.shouldBeEqualToComparingFieldsExcept(
                Person("foo"),
                false,
                Person::isExhausted
@@ -156,22 +156,22 @@ class ReflectionKtTest : FunSpec() {
                                    | 1) address: "new address" != <empty string>""".trimMargin()
       }
 
-      test("shouldNotBeEqualToComparingField check all fields of expected and actual are not equal") {
+      test("shouldNotBeEqualToComparingFields check all fields of expected and actual are not equal") {
          val person = Person("foo")
          person.isExhausted = true
 
-         person shouldNotBeEqualToComparingField Person("foo")
+         person shouldNotBeEqualToComparingFields Person("foo")
       }
 
-      test("shouldNotBeEqualToComparingField fails when expected and actual have equal fields") {
+      test("shouldNotBeEqualToComparingFields fails when expected and actual have equal fields") {
          shouldThrow<AssertionError> {
-            Person("foo") shouldNotBeEqualToComparingField Person("foo")
+            Person("foo") shouldNotBeEqualToComparingFields Person("foo")
          }.message shouldContain "Using fields: isExhausted, name"
       }
 
-      test("shouldNotBeEqualToComparingField should consider private fields") {
+      test("shouldNotBeEqualToComparingFields should consider private fields") {
          shouldThrow<AssertionError> {
-            Person("foo").shouldNotBeEqualToComparingField(Person("foo"), false)
+            Person("foo").shouldNotBeEqualToComparingFields(Person("foo"), false)
          }.message shouldContain "Using fields: address, isExhausted, name"
       }
    }

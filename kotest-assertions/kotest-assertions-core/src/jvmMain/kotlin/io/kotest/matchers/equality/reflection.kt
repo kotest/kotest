@@ -298,56 +298,56 @@ fun <T : Any> beEqualToIgnoringFields(
 
 
 fun <T : Any> T.shouldBeEqualToComparingFields(other: T, ignorePrivateFields: Boolean) {
-   this should beEqualComparingFieldByField(other, ignorePrivateFields, emptyList())
+   this should beEqualComparingFields(other, ignorePrivateFields, emptyList())
 }
 
-fun <T : Any> T.shouldBeEqualToComparingFieldExcept(
+fun <T : Any> T.shouldBeEqualToComparingFieldsExcept(
    other: T,
    ignorePrivateFields: Boolean,
    ignoreProperty: KProperty<*>,
    vararg ignoreProperties: KProperty<*>
 ) {
-   this should beEqualComparingFieldByField(other, ignorePrivateFields, listOf(ignoreProperty) + ignoreProperties)
+   this should beEqualComparingFields(other, ignorePrivateFields, listOf(ignoreProperty) + ignoreProperties)
 }
 
-fun <T : Any> T.shouldNotBeEqualToComparingFieldByFieldExcept(
+fun <T : Any> T.shouldNotBeEqualToComparingFieldsExcept(
    other: T,
    ignorePrivateFields: Boolean,
    ignoreProperty: KProperty<*>,
    vararg ignoreProperties: KProperty<*>
 ) {
-   this shouldNot beEqualComparingFieldByField(other, ignorePrivateFields, listOf(ignoreProperty) + ignoreProperties)
+   this shouldNot beEqualComparingFields(other, ignorePrivateFields, listOf(ignoreProperty) + ignoreProperties)
 }
 
-fun <T : Any> T.shouldBeEqualToComparingFieldExcept(
+fun <T : Any> T.shouldBeEqualToComparingFieldsExcept(
    other: T,
    ignoreProperty: KProperty<*>,
    vararg ignoreProperties: KProperty<*>
 ) {
-   this should beEqualComparingFieldByField(other, true, listOf(ignoreProperty) + ignoreProperties)
+   this should beEqualComparingFields(other, true, listOf(ignoreProperty) + ignoreProperties)
 }
 
-fun <T : Any> T.shouldNotBeEqualToComparingFieldByFieldExcept(
+fun <T : Any> T.shouldNotBeEqualToComparingFieldsExcept(
    other: T,
    ignoreProperty: KProperty<*>,
    vararg ignoreProperties: KProperty<*>
 ) {
-   this should beEqualComparingFieldByField(other, true, listOf(ignoreProperty) + ignoreProperties)
+   this should beEqualComparingFields(other, true, listOf(ignoreProperty) + ignoreProperties)
 }
 
 infix fun <T : Any> T.shouldBeEqualToComparingFields(other: T) {
    this.shouldBeEqualToComparingFields(other, true)
 }
 
-infix fun <T : Any> T.shouldNotBeEqualToComparingField(other: T) {
-   this shouldNot beEqualComparingFieldByField(other, true, emptyList())
+infix fun <T : Any> T.shouldNotBeEqualToComparingFields(other: T) {
+   this shouldNot beEqualComparingFields(other, true, emptyList())
 }
 
-fun <T : Any> T.shouldNotBeEqualToComparingField(other: T, ignorePrivateFields: Boolean) {
-   this shouldNot beEqualComparingFieldByField(other, ignorePrivateFields, emptyList())
+fun <T : Any> T.shouldNotBeEqualToComparingFields(other: T, ignorePrivateFields: Boolean) {
+   this shouldNot beEqualComparingFields(other, ignorePrivateFields, emptyList())
 }
 
-fun <T : Any> beEqualComparingFieldByField(
+fun <T : Any> beEqualComparingFields(
    other: T,
    ignorePrivateFields: Boolean,
    propertiesToExclude: List<KProperty<*>>
