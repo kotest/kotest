@@ -22,18 +22,18 @@ testImplementation("io.kotest:kotest-extensions-testcontainers:${kotest.version}
 For Maven, you will need these dependencies:
 
 ```xml
-            <dependency>
-                <groupId>io.kotest</groupId>
-                <artifactId>kotest-extensions-testcontainers</artifactId>
-                <version>${kotest.version}</version>
-                <scope>test</scope>
-            </dependency>
-            <dependency>
-                <groupId>io.kotest</groupId>
-                <artifactId>kotest-extensions-testcontainers-jvm</artifactId>
-                <version>${kotest.version}</version>
-                <scope>test</scope>
-            </dependency>
+<dependency>
+    <groupId>io.kotest</groupId>
+    <artifactId>kotest-extensions-testcontainers</artifactId>
+    <version>${kotest.version}</version>
+    <scope>test</scope>
+</dependency>
+<dependency>
+    <groupId>io.kotest</groupId>
+    <artifactId>kotest-extensions-testcontainers-jvm</artifactId>
+    <version>${kotest.version}</version>
+    <scope>test</scope>
+</dependency>
 ```
 
 
