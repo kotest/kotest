@@ -3,7 +3,7 @@ package io.kotest.engine.spec
 import io.kotest.core.config.configuration
 import io.kotest.core.extensions.SpecExtension
 import io.kotest.core.extensions.resolvedSpecExtensions
-import io.kotest.core.internal.isActive
+import io.kotest.core.internal.isEnabled
 import io.kotest.core.internal.resolvedThreads
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.Spec
@@ -62,10 +62,10 @@ class SpecExecutor(private val listener: TestEngineListener) {
    private suspend fun runTestsIfAtLeastOneActive(spec: Spec): Try<Map<TestCase, TestResult>> {
       log("runTestsIfAtLeastOneActive [$spec]")
       val roots = spec.materializeAndOrderRootTests()
-      val active = roots.any { it.testCase.isActive().active }
+      val active = roots.any { it.testCase.isEnabled().isEnabled }
 
       if (!active) {
-         val results = roots.map { it.testCase to TestResult.ignored(it.testCase.isActive()) }.toMap()
+         val results = roots.map { it.testCase to TestResult.ignored(it.testCase.isEnabled()) }.toMap()
          notifications.specSkipped(spec, results)
       }
 

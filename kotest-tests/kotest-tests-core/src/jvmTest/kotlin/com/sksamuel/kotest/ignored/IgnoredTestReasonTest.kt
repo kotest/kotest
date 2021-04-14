@@ -4,14 +4,14 @@ import io.kotest.assertions.withClue
 import io.kotest.core.NamedTag
 import io.kotest.core.config.ExperimentalKotest
 import io.kotest.core.config.configuration
-import io.kotest.core.extensions.IsActiveExtension
+import io.kotest.core.extensions.EnabledExtension
 import io.kotest.core.listeners.TestListener
 import io.kotest.core.plan.Descriptor
 import io.kotest.core.spec.Isolate
 import io.kotest.core.spec.Order
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.style.FunSpec
-import io.kotest.core.test.IsActive
+import io.kotest.core.test.Enabled
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestCaseConfig
 import io.kotest.core.test.TestCaseOrder
@@ -29,17 +29,17 @@ private val tag = NamedTag("SkippedReason")
 private const val isActiveExtensionTestName = "is active extension should report why a test was skipped"
 
 private var fakeRan = false
-private val ignoredWithValue = "This test was ignored by enabledOrCause due to: ${UUID.randomUUID()}"
-private val ignoredWithFunction = "This test was ignored by enabledOrCauseIf due to: ${UUID.randomUUID()}"
-private val ignoredWithExtension = "This test was ignored by isActiveExtension due to: ${UUID.randomUUID()}"
+private val ignoredWithValue = "This test was ignored by enabledOrReason due to: ${UUID.randomUUID()}"
+private val ignoredWithFunction = "This test was ignored by enabledOrReasonIf due to: ${UUID.randomUUID()}"
+private val ignoredWithExtension = "This test was ignored by EnabledExtension due to: ${UUID.randomUUID()}"
 
 @OptIn(ExperimentalKotest::class)
-private val skippedExtension = object : IsActiveExtension {
-   override suspend fun isActive(descriptor: Descriptor): IsActive =
+private val skippedExtension = object : EnabledExtension {
+   override suspend fun isEnabled(descriptor: Descriptor): Enabled =
       if (descriptor.name.value==isActiveExtensionTestName)
-         IsActive.inactive(ignoredWithExtension)
+         Enabled.disabled(ignoredWithExtension)
       else
-         IsActive.active
+         Enabled.enabled
 }
 
 private val skippedListener = object : TestListener {
@@ -69,11 +69,11 @@ class IgnoredTestReasonFake : FunSpec({
       skippedListener.reasons.shouldBeEmpty()
    }
 
-   test("expected to be ignored by enabledOrCause").config(enabledOrCause = IsActive.inactive(ignoredWithValue)) {
+   test("expected to be ignored by enabledOrReason").config(enabledOrReason = Enabled.disabled(ignoredWithValue)) {
       throw RuntimeException()
    }
 
-   test("expected to be ignored by enabledOrCauseIf").config(enabledOrCauseIf = { IsActive.inactive(ignoredWithFunction) }) {
+   test("expected to be ignored by enabledOrReasonIf").config(enabledOrReasonIf = { Enabled.disabled(ignoredWithFunction) }) {
       throw RuntimeException()
    }
 
@@ -101,19 +101,19 @@ class IgnoredTestReasonFake : FunSpec({
 @Order(1)
 class IgnoredTestReasonSpec : FunSpec({
    tags(tag)
-   defaultTestConfig = TestCaseConfig(enabledOrCauseIf = {
-      if (fakeRan) IsActive.active else IsActive.inactive("The spec this depends on [IgnoredTestReasonFake] didn't run")
+   defaultTestConfig = TestCaseConfig(enabledOrReasonIf = {
+      if (fakeRan) Enabled.enabled else Enabled.disabled("The spec this depends on [IgnoredTestReasonFake] didn't run")
    })
 
    test("IgnoredTestReasonFake should have six skipped tests") {
       skippedListener.reasons.shouldHaveSize(6)
    }
 
-   test("enabledOrCause should report the reason for skipping") {
+   test("enabledOrReason should report the reason for skipping") {
       skippedListener.reasons.shouldContain(ignoredWithValue)
    }
 
-   test("enabledOrCauseIf should report the reason for skipping") {
+   test("enabledOrReasonIf should report the reason for skipping") {
       skippedListener.reasons.shouldContain(ignoredWithFunction)
    }
 
@@ -122,7 +122,7 @@ class IgnoredTestReasonSpec : FunSpec({
    }
 
    test("xdisabled should report the reason for skipping") {
-      skippedListener.reasons.shouldContain(xdisabledMessage)
+      skippedListener.reasons.shouldContain(xdisabledMessage.reason)
    }
 
    test("enabled should report some reason for skipping") {

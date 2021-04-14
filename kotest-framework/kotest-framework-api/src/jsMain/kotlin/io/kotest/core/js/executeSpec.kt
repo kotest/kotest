@@ -2,7 +2,7 @@ package io.kotest.core.js
 
 import io.kotest.core.CallingThreadExecutionContext
 import io.kotest.core.internal.TestCaseExecutor
-import io.kotest.core.internal.isActiveInternal
+import io.kotest.core.internal.isEnabledInternal
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.materializeAndOrderRootTests
 import io.kotest.core.spec.style.FunSpec
@@ -22,7 +22,7 @@ import kotlin.coroutines.CoroutineContext
  */
 internal fun executeSpec(spec: Spec) {
    spec.materializeAndOrderRootTests()
-      .filter { it.testCase.isActiveInternal().active }
+      .filter { it.testCase.isEnabledInternal().isEnabled }
       .forEach { root ->
          // we have to always start the test so that the framework doesn't exit before we return
          // also it gives us a handle to the done callback

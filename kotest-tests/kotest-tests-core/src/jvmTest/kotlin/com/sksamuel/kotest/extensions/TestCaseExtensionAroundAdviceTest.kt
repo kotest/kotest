@@ -4,7 +4,7 @@ import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.core.extensions.TestCaseExtension
 import io.kotest.core.spec.style.StringSpec
-import io.kotest.core.test.IsActive
+import io.kotest.core.test.Enabled
 import io.kotest.core.test.TestStatus
 import io.kotest.engine.toTestResult
 import java.lang.AssertionError
@@ -25,12 +25,12 @@ class TestCaseExtensionAroundAdviceTest : StringSpec() {
             "test3" -> if (testCase.config.enabled) throw RuntimeException() else execute(testCase)
             "test4" -> execute(testCase.copy(config = testCase.config.copy(enabled = false)))
             "test5" -> {
-               val active = testCase.config.enabledOrCause
-               if (active.active || active.reason != reason) throw RuntimeException() else execute(testCase)
+               val active = testCase.config.enabledOrReason
+               if (active.isEnabled || active.reason != reason) throw RuntimeException() else execute(testCase)
             }
             "test6" -> {
-               val active = testCase.config.enabledOrCauseIf(testCase)
-               if (active.active || active.reason != reason) throw RuntimeException() else execute(testCase)
+               val active = testCase.config.enabledOrReasonIf(testCase)
+               if (active.isEnabled || active.reason != reason) throw RuntimeException() else execute(testCase)
             }
             else -> execute(testCase)
          }
@@ -56,7 +56,7 @@ class TestCaseExtensionAroundAdviceTest : StringSpec() {
       "test4".config(enabled = true) {
          throw RuntimeException()
       }
-      "test5".config(enabledOrCause = IsActive.inactive(reason)) {} // the extension should throw if this test is enabled
-      "test6".config(enabledOrCauseIf = { IsActive.inactive(reason) }) {} // the extension should throw if this test is enabled}
+      "test5".config(enabledOrReason = Enabled.disabled(reason)) {} // the extension should throw if this test is enabled
+      "test6".config(enabledOrReasonIf = { Enabled.disabled(reason) }) {} // the extension should throw if this test is enabled}
    }
 }

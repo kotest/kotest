@@ -104,21 +104,21 @@ class TestCaseExecutor(
    }
 
    /**
-    * Checks the active status of a [TestCase] before invoking it.
-    * If the test is inactive, then [TestResult.ignored] is returned.
+    * Checks the enabled status of a [TestCase] before invoking it.
+    * If the test is disabled, then [TestResult.ignored] is returned.
     */
-   private suspend fun executeIfActive(testCase: TestCase, ifActive: suspend () -> TestResult): TestResult {
+   private suspend fun executeIfActive(testCase: TestCase, ifEnabled: suspend () -> TestResult): TestResult {
       // if the test case is active we execute it, otherwise we just invoke the callback with ignored
-      val isActive = testCase.isActive()
+      val enabled = testCase.isEnabled()
 
-      return when (isActive.active) {
+      return when (enabled.isEnabled) {
          true -> {
-            log("${testCase.description.testPath()} is active")
-            ifActive()
+            log("${testCase.description.testPath()} is enabled")
+            ifEnabled()
          }
          false -> {
-            log("${testCase.description.testPath()} is *not* active")
-            TestResult.ignored(isActive)
+            log("${testCase.description.testPath()} is disabled")
+            TestResult.ignored(enabled)
          }
       }
    }
