@@ -1,5 +1,7 @@
 package io.kotest.assertions
 
+import io.kotest.assertions.all
+
 /**
  * Runs multiple assertions and throw a composite error with all failures
  *
@@ -9,14 +11,14 @@ package io.kotest.assertions
  * ```
  *     // All assertions below are going to be executed, even when one or multiple fail.
  *     // All the failures are then collected and thrown in one single throwable.
- *     assertSoftly {
+ *     all {
  *         "foo" shouldBe "bar"
  *         "foo" shouldBe "foo
  *         "foo" shouldBe "baz"
  *     }
  * ```
  */
-inline fun <T> assertSoftly(assertions: () -> T): T {
+suspend inline fun <T> all(crossinline assertions: suspend () -> T): T {
    // Handle the edge case of nested calls to this function by only calling throwCollectedErrors in the
    // outermost verifyAll block
    if (errorCollector.getCollectionMode() == ErrorCollectionMode.Soft) return assertions()
@@ -30,6 +32,8 @@ inline fun <T> assertSoftly(assertions: () -> T): T {
       errorCollector.throwCollectedErrors()
    }
 }
+
+suspend inline fun <T> assertSoftly(crossinline assertions: suspend () -> T) = all(assertions = assertions)
 
 /**
  * Runs multiple assertions and throw a composite error with all failures.
@@ -46,9 +50,11 @@ inline fun <T> assertSoftly(assertions: () -> T): T {
  *     }
  * ```
  */
-inline fun <T> assertSoftly(t: T, assertions: T.(T) -> Unit): T {
+suspend inline fun <T> all(t: T, crossinline assertions: suspend T.(T) -> Unit): T {
    return assertSoftly {
       t.assertions(t)
       t
    }
 }
+
+suspend inline fun <T> assertSoftly(t: T, crossinline assertions: suspend T.(T) -> Unit) = all(t, assertions)

@@ -78,6 +78,15 @@ open class BasicErrorCollector : ErrorCollector {
    override fun clear() = failures.clear()
 }
 
+internal fun ErrorCollector.getAndReplace(errors: Collection<Throwable>): List<Throwable> {
+   val old = errors()
+
+   clear()
+   errors.forEach { pushError(it) }
+
+   return old
+}
+
 fun clueContextAsString() = errorCollector.clueContext().let {
    if (it.isEmpty()) "" else it.joinToString("\n", postfix = "\n") { f -> f.invoke() }
 }
@@ -91,6 +100,14 @@ fun ErrorCollector.collectOrThrow(error: Throwable) {
    when (getCollectionMode()) {
       ErrorCollectionMode.Soft -> pushError(error)
       ErrorCollectionMode.Hard -> throw error
+   }
+}
+
+fun ErrorCollector.collectOrThrow(errors: Collection<Throwable>) {
+   errors.forEach(::pushError)
+
+   if (getCollectionMode() == ErrorCollectionMode.Hard) {
+      throwCollectedErrors()
    }
 }
 
