@@ -114,7 +114,7 @@ object Libs {
    }
 
    object Spring {
-      private const val version = "5.2.12.RELEASE"
+      private const val version = "5.3.6"
       const val context = "org.springframework:spring-context:$version"
       const val test = "org.springframework:spring-test:$version"
    }
