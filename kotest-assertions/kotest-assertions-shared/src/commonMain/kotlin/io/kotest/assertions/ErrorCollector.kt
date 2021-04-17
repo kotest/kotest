@@ -103,8 +103,12 @@ fun ErrorCollector.collectOrThrow(error: Throwable) {
    }
 }
 
-fun ErrorCollector.collectOrThrow(errors: Collection<Throwable>) {
+fun ErrorCollector.pushErrors(errors: Collection<Throwable>) {
    errors.forEach(::pushError)
+}
+
+fun ErrorCollector.collectOrThrow(errors: Collection<Throwable>) {
+   pushErrors(errors)
 
    if (getCollectionMode() == ErrorCollectionMode.Hard) {
       throwCollectedErrors()

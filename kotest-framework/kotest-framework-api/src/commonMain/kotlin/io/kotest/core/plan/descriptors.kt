@@ -3,7 +3,7 @@
 package io.kotest.core.plan
 
 import io.kotest.core.SourceRef
-import io.kotest.core.config.ExperimentalKotest
+import io.kotest.common.ExperimentalKotest
 import io.kotest.core.plan.Descriptor.EngineDescriptor
 import io.kotest.core.plan.Descriptor.SpecDescriptor
 import io.kotest.core.script.ScriptSpec

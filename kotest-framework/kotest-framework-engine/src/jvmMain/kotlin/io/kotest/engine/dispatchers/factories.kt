@@ -1,6 +1,6 @@
 package io.kotest.engine.dispatchers
 
-import io.kotest.core.config.ExperimentalKotest
+import io.kotest.common.ExperimentalKotest
 import io.kotest.core.config.configuration
 import io.kotest.engine.extensions.CoroutineDispatcherFactoryExtension
 import io.kotest.fp.firstOrNone

@@ -33,7 +33,7 @@ open class BasicAssertionCounter : AssertionCounter {
    }
 }
 
-fun AssertionCounter.set(count: Int) = repeat(count) { inc() }
+fun AssertionCounter.inc(count: Int) = repeat(count) { inc() }
 
 fun AssertionCounter.getAndReset(): Int {
    val c = get()

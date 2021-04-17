@@ -1,7 +1,7 @@
 package io.kotest.core
 
 import io.kotest.core.config.Configuration
-import io.kotest.core.config.ExperimentalKotest
+import io.kotest.common.ExperimentalKotest
 import io.kotest.core.extensions.Extension
 import io.kotest.core.extensions.TestCaseExtension
 import io.kotest.core.listeners.TestListener

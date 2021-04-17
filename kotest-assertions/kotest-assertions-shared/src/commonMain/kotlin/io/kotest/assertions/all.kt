@@ -1,7 +1,5 @@
 package io.kotest.assertions
 
-import io.kotest.assertions.all
-
 /**
  * Runs multiple assertions and throw a composite error with all failures
  *
@@ -51,7 +49,7 @@ suspend inline fun <T> assertSoftly(crossinline assertions: suspend () -> T) = a
  * ```
  */
 suspend inline fun <T> all(t: T, crossinline assertions: suspend T.(T) -> Unit): T {
-   return assertSoftly {
+   return all {
       t.assertions(t)
       t
    }

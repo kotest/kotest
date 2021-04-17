@@ -1,6 +1,6 @@
 //package io.kotest.core.plan
 //
-//import io.kotest.core.config.ExperimentalKotest
+//import io.kotest.common.ExperimentalKotest
 //import io.kotest.core.config.configuration
 //import io.kotest.core.spec.DisplayName
 //import io.kotest.core.test.DescriptionName

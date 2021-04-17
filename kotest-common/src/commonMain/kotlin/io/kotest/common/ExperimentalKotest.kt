@@ -1,6 +1,7 @@
-package io.kotest.core.config
+package io.kotest.common
 
 @MustBeDocumented
 @Retention(value = AnnotationRetention.BINARY)
 @RequiresOptIn(level = RequiresOptIn.Level.WARNING)
 annotation class ExperimentalKotest
+

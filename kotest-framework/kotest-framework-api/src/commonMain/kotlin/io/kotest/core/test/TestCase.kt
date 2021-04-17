@@ -1,7 +1,7 @@
 package io.kotest.core.test
 
 import io.kotest.core.SourceRef
-import io.kotest.core.config.ExperimentalKotest
+import io.kotest.common.ExperimentalKotest
 import io.kotest.core.factory.FactoryId
 import io.kotest.core.internal.tags.allTags
 import io.kotest.core.plan.Descriptor

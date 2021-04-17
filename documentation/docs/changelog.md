@@ -12,6 +12,8 @@ Note: This changelog mentions the changes which are not yet released in stable v
       Docs updates are available at kotest.io.
 
 #### Breaking Changes
+* In order to use `ExperimentalKotest` more broadly,
+  it was moved from `io.kotest.core.config.ExperimentalKotest` to `io.kotest.common.ExperimentalKotest`. #1950
 * In order to ensure the `EventuallyListener` is called in `eventually` when an exception is thrown the `ListenerState` field `result` was changed
   from type `T` to type `T?`. This will allow insight into when the eventually producer function is failing for whatever reason
   instead of appearing as if it is hanging. #2190

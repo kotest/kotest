@@ -1,6 +1,6 @@
 package io.kotest.engine.extensions
 
-import io.kotest.core.config.ExperimentalKotest
+import io.kotest.common.ExperimentalKotest
 import io.kotest.core.extensions.Extension
 import io.kotest.engine.dispatchers.CoroutineDispatcherFactory
 
