@@ -1,5 +1,7 @@
 package io.kotest.assertions
 
+import io.kotest.common.ExperimentalKotest
+
 /**
  * Runs multiple assertions and throw a composite error with all failures
  *
@@ -16,6 +18,7 @@ package io.kotest.assertions
  *     }
  * ```
  */
+@ExperimentalKotest
 suspend inline fun <T> all(crossinline assertions: suspend () -> T): T {
    // Handle the edge case of nested calls to this function by only calling throwCollectedErrors in the
    // outermost verifyAll block
@@ -31,7 +34,20 @@ suspend inline fun <T> all(crossinline assertions: suspend () -> T): T {
    }
 }
 
-suspend inline fun <T> assertSoftly(crossinline assertions: suspend () -> T) = all(assertions = assertions)
+inline fun <T> assertSoftly(assertions: () -> T): T {
+   // Handle the edge case of nested calls to this function by only calling throwCollectedErrors in the
+   // outermost verifyAll block
+   if (errorCollector.getCollectionMode() == ErrorCollectionMode.Soft) return assertions()
+   errorCollector.setCollectionMode(ErrorCollectionMode.Soft)
+   return try {
+      assertions()
+   } finally {
+      // In case if any exception is thrown from assertions block setting errorCollectionMode back to hard
+      // so that it won't remain soft for others tests. See https://github.com/kotest/kotest/issues/1932
+      errorCollector.setCollectionMode(ErrorCollectionMode.Hard)
+      errorCollector.throwCollectedErrors()
+   }
+}
 
 /**
  * Runs multiple assertions and throw a composite error with all failures.
@@ -48,6 +64,7 @@ suspend inline fun <T> assertSoftly(crossinline assertions: suspend () -> T) = a
  *     }
  * ```
  */
+@ExperimentalKotest
 suspend inline fun <T> all(t: T, crossinline assertions: suspend T.(T) -> Unit): T {
    return all {
       t.assertions(t)
@@ -55,4 +72,9 @@ suspend inline fun <T> all(t: T, crossinline assertions: suspend T.(T) -> Unit):
    }
 }
 
-suspend inline fun <T> assertSoftly(t: T, crossinline assertions: suspend T.(T) -> Unit) = all(t, assertions)
+inline fun <T> assertSoftly(t: T, assertions: T.(T) -> Unit): T {
+   return assertSoftly {
+      t.assertions(t)
+      t
+   }
+}
