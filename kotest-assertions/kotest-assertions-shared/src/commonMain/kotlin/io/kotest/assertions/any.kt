@@ -25,7 +25,7 @@ suspend inline fun <T> any(crossinline assertions: suspend () -> T): T? {
    }
 
    errorCollector.pushErrors(failures)
-   errorCollector.collectOrThrow(failure("Any expected at least one assertion to succeed but they all failed"))
+   errorCollector.pushErrorAndMaybeThrow(failure("Any expected at least one assertion to succeed but they all failed"))
    return null
 }
 

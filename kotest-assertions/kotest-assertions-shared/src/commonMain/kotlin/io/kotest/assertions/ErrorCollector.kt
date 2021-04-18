@@ -104,7 +104,9 @@ fun ErrorCollector.collectOrThrow(error: Throwable) {
 }
 
 fun ErrorCollector.pushErrors(errors: Collection<Throwable>) {
-   errors.forEach(::pushError)
+   errors.forEach {
+      pushError(it)
+   }
 }
 
 fun ErrorCollector.collectOrThrow(errors: Collection<Throwable>) {

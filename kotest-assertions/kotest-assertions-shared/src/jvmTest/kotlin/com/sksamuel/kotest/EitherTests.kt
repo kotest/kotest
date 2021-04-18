@@ -1,6 +1,7 @@
 package com.sksamuel.kotest
 
 import io.kotest.assertions.*
+import io.kotest.common.ExperimentalKotest
 import io.kotest.core.spec.Isolate
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.collections.shouldContainAll
@@ -10,8 +11,8 @@ import io.kotest.matchers.string.shouldContainOnlyOnce
 
 private fun matcherState() = Pair(errorCollector.errors(), assertionCounter.get())
 
-@Isolate // TODO: try this without isolate
-//@OptIn(ExperimentalKotest::class)
+@Isolate
+@OptIn(ExperimentalKotest::class)
 class EitherTests : FunSpec({
    test("either adds errors and assertions to their respective trackers on failure") {
       var beforeState: Pair<List<Throwable>, Int>? = null
@@ -22,8 +23,8 @@ class EitherTests : FunSpec({
             beforeState = matcherState()
 
             either { // error 3
-               "a" shouldBe "a" // error 1
-               "b" shouldBe "b" // error 2
+               1 shouldBe 2 // error 1
+               2 shouldBe 3 // error 2
             }
 
             afterState = matcherState()
@@ -38,10 +39,10 @@ class EitherTests : FunSpec({
       }
 
       withClue("throwables are added to the error collector for the matchers and the either") {
-         val before = beforeState?.first.shouldNotBeNull().size
-         val after = afterState?.first.shouldNotBeNull().size
+         val before = beforeState?.first.shouldNotBeNull()
+         val after = afterState?.first.shouldNotBeNull()
 
-         after - before shouldBe 3
+         after.size - before.size shouldBe 3
       }
    }
 

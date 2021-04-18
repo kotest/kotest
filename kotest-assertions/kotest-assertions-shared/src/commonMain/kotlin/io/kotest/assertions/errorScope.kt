@@ -23,3 +23,11 @@ suspend fun <T> errorScope(block: suspend () -> T): Triple<Try<T>, Failures, Ass
 
    return Triple(result, resultFailures, resultAssertions)
 }
+
+fun ErrorCollector.pushErrorAndMaybeThrow(error: Throwable) {
+   pushError(error)
+
+   if (getCollectionMode() == ErrorCollectionMode.Hard) {
+      throwCollectedErrors()
+   }
+}

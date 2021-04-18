@@ -36,7 +36,7 @@ suspend inline fun <T> either(crossinline assertions: suspend () -> T): T? {
       else -> failure("Either expected a single assertion to succeed, but there were more failures than assertions.")
    }
 
-   errorCollector.collectOrThrow(f)
+   errorCollector.pushErrorAndMaybeThrow(f)
    return null
 }
 
