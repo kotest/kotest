@@ -108,6 +108,6 @@ abstract class DslDrivenSpec : Spec() {
          rootTestCases.map { it.description.name.name }.toSet()
       )
       val description = testCase.description.copy(name = createTestName(uniqueName))
-      rootTestCases += testCase.copy(description = description)
+      rootTestCases += if (uniqueName == testCase.description.name.name) testCase else testCase.copy(description = description)
    }
 }

@@ -81,7 +81,8 @@ internal class SingleInstanceSpecRunner(
          val uniqueName = Identifiers.uniqueTestName(nested.name.name, seen)
          seen.add(uniqueName)
 
-         val nestedTestCase = nested.copy(name = createTestName(uniqueName)).toTestCase(testCase.spec, testCase)
+         val nested2 = if (uniqueName == nested.name.name) nested else nested.copy(name = createTestName(uniqueName))
+         val nestedTestCase = nested2.toTestCase(testCase.spec, testCase)
          runTest(nestedTestCase, coroutineContext)
       }
    }

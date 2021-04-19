@@ -11,6 +11,6 @@ enum class TestCaseSeverityLevel(val level: Int) {
    TRIVIAL(0);
 
    fun isEnabled(): Boolean {
-      return level >= valueOf(sysprop(KotestEngineProperties.severityPrefix) ?: "TRIVIAL").level
+      return level >= valueOf(sysprop(KotestEngineProperties.testSeverity) ?: "TRIVIAL").level
    }
 }

@@ -1,5 +1,6 @@
-package io.kotest.core.spec.style
+package com.sksamuel.kotest.engine.spec.style
 
+import io.kotest.core.spec.style.WordSpec
 import io.kotest.core.test.TestType
 import io.kotest.matchers.shouldBe
 
