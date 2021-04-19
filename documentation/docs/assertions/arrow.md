@@ -5,11 +5,12 @@ sidebar_label: Arrow
 ---
 
 
+This page lists all current matchers in the Kotest arrow matchers extension library. 
 
+To use this library you need to add `io.kotest.extensions:kotest-assertions-arrow` to your build.
 
+Note: The maven group id differs from the main project as this is an optional extension module.
 
-This page lists all current matchers in the Kotest arrow matchers extension library. To use this library
- you need to add `kotest-assertions-arrow` to your build.
 
 | Option | |
 | -------- | ---- |
