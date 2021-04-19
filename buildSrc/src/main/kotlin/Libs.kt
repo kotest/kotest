@@ -41,12 +41,6 @@ object Libs {
       const val kotlin = "com.fasterxml.jackson.module:jackson-module-kotlin:$version"
    }
 
-   object Koin {
-      private const val version = "2.2.2"
-      const val core = "org.koin:koin-core:$version"
-      const val test = "org.koin:koin-test:$version"
-   }
-
    object Tschuchortdev {
       private const val version = "1.3.4"
       const val kotlinCompileTesting = "com.github.tschuchortdev:kotlin-compile-testing:$version"

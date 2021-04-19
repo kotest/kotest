@@ -63,7 +63,6 @@ include("kotest-extensions:kotest-extensions-allure")
 include("kotest-extensions:kotest-extensions-http")
 include("kotest-extensions:kotest-extensions-junitxml")
 include("kotest-extensions:kotest-extensions-htmlreporter")
-include("kotest-extensions:kotest-extensions-koin")
 include("kotest-extensions:kotest-extensions-mockserver")
 include("kotest-extensions:kotest-extensions-testcontainers")
 
