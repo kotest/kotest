@@ -119,10 +119,6 @@ object Libs {
       const val test = "org.springframework:spring-test:$version"
    }
 
-   object Pitest {
-      const val pitest = "org.pitest:pitest:1.4.11"
-   }
-
    object Bytebuddy {
       const val bytebuddy = "net.bytebuddy:byte-buddy:1.10.22"
    }

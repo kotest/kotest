@@ -71,9 +71,6 @@ include("kotest-extensions:kotest-extensions-testcontainers")
 // extensions that adapt junit extensions into kotest extensions
 include("kotest-extensions:kotest-extensions-junit5")
 
-
-include("kotest-plugins:kotest-plugins-pitest")
-
 // the tests modules each test a piece of functionality
 // it is useful to have separate modules so each can set their own project config that
 // may be required as part of the tests
