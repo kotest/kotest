@@ -82,7 +82,7 @@ kotlin {
          dependsOn(desktopMain)
       }
 
-      val watchosx86Main by getting {
+      val watchosX86Main by getting {
          dependsOn(desktopMain)
       }
 
