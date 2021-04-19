@@ -50,15 +50,9 @@ kotlin {
          }
       }
 
-      val commonTest by getting {
-         dependencies {
-            implementation(project(Projects.Api))
-            implementation(project(Projects.AssertionsCore))
-         }
-      }
-
       val jvmTest by getting {
          dependencies {
+            implementation(project(Projects.AssertionsCore))
             implementation(project(Projects.Engine))
             implementation(project(Projects.JunitRunner))
          }

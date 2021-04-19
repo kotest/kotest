@@ -1,6 +1,6 @@
 package io.kotest.engine.spec.runners
 
-import io.kotest.core.DuplicatedTestNameException
+import io.kotest.core.datatest.Identifiers
 import io.kotest.core.test.NestedTest
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestContext
@@ -17,6 +17,7 @@ import io.kotest.engine.listener.TestCaseListenerToTestEngineListenerAdapter
 import io.kotest.core.spec.invokeAfterSpec
 import io.kotest.core.spec.invokeBeforeSpec
 import io.kotest.core.spec.materializeAndOrderRootTests
+import io.kotest.core.test.createTestName
 import io.kotest.engine.dispatchers.ExecutorCoroutineDispatcherFactory
 import io.kotest.engine.launchers.SequentialTestLauncher
 import io.kotest.engine.toTestResult
@@ -106,18 +107,18 @@ internal class ConcurrentInstancePerLeafSpecRunner(
             // the first discovered test should be executed using the same spec
             val first = AtomicBoolean(true)
 
-            // check for duplicate names in the same scope
-            val namesInScope = ConcurrentHashMap.newKeySet<DescriptionName.TestName>()
+            // names in the same scope
+            val namesInScope = ConcurrentHashMap.newKeySet<String>()
 
             override val testCase: TestCase = test
             override val coroutineContext: CoroutineContext = this@coroutineScope.coroutineContext
 
             override suspend fun registerTestCase(nested: NestedTest) {
 
-               if (!namesInScope.add(nested.name))
-                  throw DuplicatedTestNameException(nested.name)
+               val uniqueName = Identifiers.uniqueTestName(nested.name.name, namesInScope.toList())
+               namesInScope.add(nested.name.name)
 
-               val t = nested.toTestCase(test.spec, test)
+               val t = nested.copy(name = createTestName(uniqueName)).toTestCase(test.spec, test)
 
                when {
                   // if the nested test is the next entry that we are looking for, we launch straight into that

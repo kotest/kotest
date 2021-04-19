@@ -3,9 +3,10 @@ package io.kotest.core.datatest
 import io.kotest.mpp.bestName
 import io.kotest.mpp.isStable
 
-internal class Identifiers {
-
-   private var names = mutableListOf<String>()
+/**
+ * Used to generate stable identifers for data tests and to ensure test names are unique.
+ */
+object Identifiers {
 
    /**
     * Each test name must be unique. We can use the toString if we determine the instance is stable.
@@ -16,13 +17,15 @@ internal class Identifiers {
     * Note: If the user has overridden toString() and the returned value is not stable, tests may not appear.
     */
    fun stableIdentifier(t: Any): String {
-      val name = if (isStable(t::class)) {
+      return if (isStable(t::class)) {
          t.toString()
       } else {
          t::class.bestName()
       }
-      val count = names.count { it == name }
-      names.add(name)
+   }
+
+   fun uniqueTestName(name: String, testNames: List<String>): String {
+      val count = testNames.count { it == name }
       return if (count == 0) name else "$name ($count)"
    }
 }

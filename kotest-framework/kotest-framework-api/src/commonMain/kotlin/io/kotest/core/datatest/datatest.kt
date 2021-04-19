@@ -11,8 +11,7 @@ suspend fun <T> ContainerScope.forNone(vararg data: Pair<String, T>, test: suspe
    forNone(data.toList(), test)
 
 suspend fun <T : Any> ContainerScope.forNone(vararg data: T, test: suspend (T) -> Unit) {
-   val identifiers = Identifiers()
-   forNone(data.map { Pair(identifiers.stableIdentifier(it), it) }, test)
+   forNone(data.map { Pair(Identifiers.stableIdentifier(it), it) }, test)
 }
 
 suspend fun <T> ContainerScope.forNone(data: List<Pair<String, T>>, test: suspend (T) -> Unit) {
@@ -34,8 +33,7 @@ suspend fun <T : Any> ContainerScope.forAll(vararg data: Pair<String, T>, test: 
    forAll(data.toList(), test)
 
 suspend fun <T : Any> ContainerScope.forAll(ts: List<T>, test: suspend (T) -> Unit) {
-   val identifiers = Identifiers()
-   forAll(ts.map { Pair(identifiers.stableIdentifier(it), it) }, test)
+   forAll(ts.map { Pair(Identifiers.stableIdentifier(it), it) }, test)
 }
 
 @JvmName("forAllWithNames")
@@ -48,8 +46,7 @@ suspend fun <T : Any> ContainerScope.forAll(data: List<Pair<String, T>>, test: s
 fun <T> RootScope.forNone(vararg data: Pair<String, T>, test: suspend (T) -> Unit) = this.forNone(data.toList(), test)
 
 fun <T : Any> RootScope.forNone(vararg data: T, test: suspend (T) -> Unit) {
-   val identifiers = Identifiers()
-   this.forNone(data.map { Pair(identifiers.stableIdentifier(it), it) }, test)
+   this.forNone(data.map { Pair(Identifiers.stableIdentifier(it), it) }, test)
 }
 
 fun <T> RootScope.forNone(data: List<Pair<String, T>>, test: suspend (T) -> Unit) {
@@ -71,8 +68,7 @@ fun <T : Any> RootScope.forAll(vararg data: Pair<String, T>, test: suspend (T) -
    this.forAll(data.toList(), test)
 
 fun <T : Any> RootScope.forAll(ts: List<T>, test: suspend (T) -> Unit) {
-   val identifiers = Identifiers()
-   this.forAll(ts.map { Pair(identifiers.stableIdentifier(it), it) }, test)
+   this.forAll(ts.map { Pair(Identifiers.stableIdentifier(it), it) }, test)
 }
 
 @JvmName("forAllWithNames")
