@@ -1,4 +1,4 @@
-package io.kotest.core.datatest
+package io.kotest.core.test
 
 import io.kotest.mpp.bestName
 import io.kotest.mpp.isStable
@@ -24,8 +24,12 @@ object Identifiers {
       }
    }
 
-   fun uniqueTestName(name: String, testNames: List<String>): String {
-      val count = testNames.count { it == name }
-      return if (count == 0) name else "$name ($count)"
+   fun uniqueTestName(name: String, testNames: Set<String>): String {
+      if (!testNames.contains(name)) return name
+      var n = 1
+      fun nextName() = "$name ($n)"
+      while (testNames.contains(nextName()))
+         n++
+      return nextName()
    }
 }

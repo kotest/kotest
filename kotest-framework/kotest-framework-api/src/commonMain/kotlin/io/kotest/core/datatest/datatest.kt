@@ -3,6 +3,7 @@ package io.kotest.core.datatest
 import io.kotest.assertions.failure
 import io.kotest.core.spec.style.scopes.ContainerScope
 import io.kotest.core.spec.style.scopes.RootScope
+import io.kotest.core.test.Identifiers
 import io.kotest.core.test.TestType
 import io.kotest.core.test.createTestName
 import kotlin.jvm.*

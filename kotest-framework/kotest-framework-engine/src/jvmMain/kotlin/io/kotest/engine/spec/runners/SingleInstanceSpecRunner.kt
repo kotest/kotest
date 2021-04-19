@@ -1,6 +1,6 @@
 package io.kotest.engine.spec.runners
 
-import io.kotest.core.datatest.Identifiers
+import io.kotest.core.test.Identifiers
 import io.kotest.core.internal.TestCaseExecutor
 import io.kotest.core.internal.resolvedThreads
 import io.kotest.core.spec.Spec
@@ -72,14 +72,14 @@ internal class SingleInstanceSpecRunner(
    ) : TestContext {
 
       // these are the tests inside this context, so we can track for duplicates
-      private val seen = mutableListOf<String>()
+      private val seen = mutableSetOf<String>()
 
       // in the single instance runner we execute each nested test as soon as they are registered
       override suspend fun registerTestCase(nested: NestedTest) {
          log("Nested test case discovered $nested")
 
          val uniqueName = Identifiers.uniqueTestName(nested.name.name, seen)
-         seen.add(nested.name.name)
+         seen.add(uniqueName)
 
          val nestedTestCase = nested.copy(name = createTestName(uniqueName)).toTestCase(testCase.spec, testCase)
          runTest(nestedTestCase, coroutineContext)

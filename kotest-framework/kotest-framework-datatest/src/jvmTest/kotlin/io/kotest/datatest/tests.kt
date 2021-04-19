@@ -20,26 +20,40 @@ fun RootScope.registerRootTests(): MutableList<String> {
    }
 
    forAll(
-      PythagTriple(8, 15, 17),
-      PythagTriple(9, 12, 15),
-      PythagTriple(15, 20, 25),
+      sequenceOf(
+         PythagTriple(8, 15, 17),
+         PythagTriple(9, 12, 15),
+         PythagTriple(15, 20, 25),
+      )
    ) { (a, b, c) ->
       a * a + b * b shouldBe c * c
    }
 
-   forAll("a", "b") { a->
-      forAll(sequenceOf("x", "y")) { b ->
-         a + b shouldHaveLength 2
-         results.add(a + b)
-      }
-   }
-
-   // testing repeated names get mapped
    forAll("a", "b") { a ->
       forAll(sequenceOf("x", "y")) { b ->
          a + b shouldHaveLength 2
          results.add(a + b)
       }
+   }
+
+   // testing repeated names get mangled
+   forAll("a", "b") { a ->
+      forAll(sequenceOf("x", "y")) { b ->
+         a + b shouldHaveLength 2
+         results.add(a + b)
+      }
+   }
+
+   // we already had a / b so the names should be mangled
+   forAll(
+      mapOf(
+         "a" to 2,
+         "b" to 4,
+      )
+   ) { a ->
+      a % 2 shouldBe 0
+      if (a == 2) this.testCase.displayName shouldBe "a (2)"
+      if (a == 4) this.testCase.displayName shouldBe "b (2)"
    }
 
    forAll("p", "q") { a ->
@@ -73,6 +87,17 @@ suspend fun TestContext.registerContextTests(): MutableList<String> {
       a * a + b * b shouldBe c * c
    }
 
+   forAll(
+      mapOf(
+         "foo" to 2,
+         "foo" to 4,
+      )
+   ) { a ->
+      a % 2 shouldBe 0
+      if (a == 2) this.testCase.displayName shouldBe "foo"
+      //if (a == 4) this.testCase.displayName shouldBe "foo2"
+   }
+
    forAll("a", "b") { a ->
       forAll(sequenceOf("x", "y")) { b ->
          a + b shouldHaveLength 2
@@ -86,6 +111,18 @@ suspend fun TestContext.registerContextTests(): MutableList<String> {
          a + b shouldHaveLength 2
          results.add(a + b)
       }
+   }
+
+   // we already had a / b so the names should be mangled
+   forAll(
+      mapOf(
+         "a" to 2,
+         "b" to 4,
+      )
+   ) { a ->
+      a % 2 shouldBe 0
+      if (a == 2) this.testCase.displayName shouldBe "a (2)"
+      if (a == 4) this.testCase.displayName shouldBe "b (2)"
    }
 
    forAll("p", "q") { a ->

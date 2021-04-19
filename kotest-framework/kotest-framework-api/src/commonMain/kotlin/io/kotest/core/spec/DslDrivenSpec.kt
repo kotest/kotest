@@ -2,7 +2,7 @@ package io.kotest.core.spec
 
 import io.kotest.core.Tuple2
 import io.kotest.core.config.configuration
-import io.kotest.core.datatest.Identifiers
+import io.kotest.core.test.Identifiers
 import io.kotest.core.extensions.SpecExtension
 import io.kotest.core.factory.TestFactory
 import io.kotest.core.factory.addPrefix
@@ -105,7 +105,7 @@ abstract class DslDrivenSpec : Spec() {
    private fun addRootTest(testCase: TestCase) {
       val uniqueName = Identifiers.uniqueTestName(
          testCase.description.name.name,
-         rootTestCases.map { it.description.name.name }
+         rootTestCases.map { it.description.name.name }.toSet()
       )
       val description = testCase.description.copy(name = createTestName(uniqueName))
       rootTestCases += testCase.copy(description = description)

@@ -1,6 +1,6 @@
 package io.kotest.engine.script
 
-import io.kotest.core.datatest.Identifiers
+import io.kotest.core.test.Identifiers
 import io.kotest.core.internal.TestCaseExecutor
 import io.kotest.core.plan.Descriptor
 import io.kotest.core.plan.toDescriptor
@@ -10,6 +10,7 @@ import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestCaseExecutionListener
 import io.kotest.core.test.TestContext
 import io.kotest.core.test.TestResult
+import io.kotest.core.test.createTestName
 import io.kotest.core.test.toTestCase
 import io.kotest.engine.ExecutorExecutionContext
 import io.kotest.engine.NotificationManager
@@ -116,14 +117,15 @@ class ScriptExecutor(private val listener: TestEngineListener) {
    ) : TestContext {
 
       // these are the tests inside this context, so we can track for duplicates
-      private val seen = mutableListOf<String>()
+      private val seen = mutableSetOf<String>()
 
       // in the single instance runner we execute each nested test as soon as they are registered
       override suspend fun registerTestCase(nested: NestedTest) {
          log("Nested test case discovered $nested")
-         val nestedTestCase = nested.toTestCase(spec = testCase.spec, parent = testCase)
          val uniqueName = Identifiers.uniqueTestName(nested.name.name, seen)
-         seen.add(nested.name.name)
+         seen.add(uniqueName)
+         val nestedTestCase =
+            nested.copy(name = createTestName(uniqueName)).toTestCase(spec = testCase.spec, parent = testCase)
          runTest(nestedTestCase, coroutineContext)
       }
    }

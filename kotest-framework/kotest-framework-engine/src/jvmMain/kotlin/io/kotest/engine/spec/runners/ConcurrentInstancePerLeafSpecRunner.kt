@@ -1,6 +1,6 @@
 package io.kotest.engine.spec.runners
 
-import io.kotest.core.datatest.Identifiers
+import io.kotest.core.test.Identifiers
 import io.kotest.core.test.NestedTest
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestContext
@@ -115,8 +115,8 @@ internal class ConcurrentInstancePerLeafSpecRunner(
 
             override suspend fun registerTestCase(nested: NestedTest) {
 
-               val uniqueName = Identifiers.uniqueTestName(nested.name.name, namesInScope.toList())
-               namesInScope.add(nested.name.name)
+               val uniqueName = Identifiers.uniqueTestName(nested.name.name, namesInScope)
+               namesInScope.add(uniqueName)
 
                val t = nested.copy(name = createTestName(uniqueName)).toTestCase(test.spec, test)
 

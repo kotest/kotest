@@ -1,6 +1,6 @@
 package io.kotest.engine.spec.runners
 
-import io.kotest.core.datatest.Identifiers
+import io.kotest.core.test.Identifiers
 import io.kotest.core.internal.TestCaseExecutor
 import io.kotest.core.internal.resolvedThreads
 import io.kotest.core.spec.Spec
@@ -119,14 +119,14 @@ internal class InstancePerTestSpecRunner(
       coroutineScope {
          val context = object : TestContext {
 
-            val namesInScope = mutableListOf<String>()
+            val namesInScope = mutableSetOf<String>()
 
             override val testCase: TestCase = test
             override val coroutineContext: CoroutineContext = this@coroutineScope.coroutineContext
             override suspend fun registerTestCase(nested: NestedTest) {
 
                val uniqueName = Identifiers.uniqueTestName(nested.name.name, namesInScope)
-               namesInScope.add(nested.name.name)
+               namesInScope.add(uniqueName)
 
                val t = nested.copy(name = createTestName(uniqueName)).toTestCase(test.spec, test)
                // if we are currently executing the target, then any registered tests are new, and we
