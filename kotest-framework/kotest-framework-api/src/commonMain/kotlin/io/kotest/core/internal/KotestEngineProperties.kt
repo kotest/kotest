@@ -1,10 +1,11 @@
 package io.kotest.core.internal
 
-@Deprecated("Renamed to KotestEngineProperties. Will be replaced in 4.7")
+@Deprecated("Renamed to KotestEngineProperties. Will be removed in 4.7")
 val KotestEngineSystemProperties = KotestEngineProperties
 
 object KotestEngineProperties {
 
+   @Deprecated("Use the val from the spring extension module (io.kotest.extensions:kotest-extensions-spring")
    const val springIgnoreWarning = "kotest.listener.spring.ignore.warning"
 
    const val gradle5 = "kotest.gradle5.compatibility"

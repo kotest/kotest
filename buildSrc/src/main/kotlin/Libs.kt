@@ -113,16 +113,6 @@ object Libs {
       const val testcontainers = "org.testcontainers:testcontainers:$version"
    }
 
-   object Spring {
-      private const val version = "5.2.12.RELEASE"
-      const val context = "org.springframework:spring-context:$version"
-      const val test = "org.springframework:spring-test:$version"
-   }
-
-   object Bytebuddy {
-      const val bytebuddy = "net.bytebuddy:byte-buddy:1.10.22"
-   }
-
    object Coroutines {
       private const val version = "1.4.3"
       const val coreCommon = "org.jetbrains.kotlinx:kotlinx-coroutines-core:$version"

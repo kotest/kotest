@@ -65,7 +65,6 @@ include("kotest-extensions:kotest-extensions-junitxml")
 include("kotest-extensions:kotest-extensions-htmlreporter")
 include("kotest-extensions:kotest-extensions-koin")
 include("kotest-extensions:kotest-extensions-mockserver")
-include("kotest-extensions:kotest-extensions-spring")
 include("kotest-extensions:kotest-extensions-testcontainers")
 
 // extensions that adapt junit extensions into kotest extensions
