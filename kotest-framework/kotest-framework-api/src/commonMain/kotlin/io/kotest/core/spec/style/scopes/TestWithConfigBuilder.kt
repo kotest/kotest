@@ -47,7 +47,7 @@ class TestWithConfigBuilder(
             name = name,
             xdisabled = xdisabled,
             config = derivedConfig,
-            type = TestType.Container,
+            type = TestType.Test,
             descriptor = null,
             factoryId = null,
             test = test,
