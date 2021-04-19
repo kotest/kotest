@@ -6,7 +6,9 @@ slug: spring.html
 ---
 
 Kotest offers a Spring extension that allows you to test code that wires dependencies using Spring.
-To use this extension add the `kotest-extensions-spring-jvm` module to your test compile path.
+To use this extension add the `io.kotest.extensions:kotest-extensions-spring` module to your test compile path.
+
+Note: The maven group id differs from the core test framework (io.kotest.extensions).
 
 The Spring extension requires you to activate it for all test classes, or per test class. To activate it globally,
 register the `SpringExtension` in [project config](../framework/project_config.md):
