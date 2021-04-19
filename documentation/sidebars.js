@@ -33,6 +33,7 @@ module.exports = {
       'extensions/koin',
       'extensions/wiremock',
       'extensions/robolectric',
+      'extensions/pitest',
    ],
    assertions: [
       'assertions/index',
@@ -92,7 +93,6 @@ module.exports = {
          ]
       },
       'framework/listeners',
-      'framework/plugins',
       {
          type: "category",
          label: "Integrations",
