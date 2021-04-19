@@ -54,6 +54,23 @@ class FunSpecContainerContext(
    }
 
    /**
+    * Adds a disabled container test to this context.
+    */
+   suspend fun xcontext(name: String, test: suspend FunSpecContainerContext.() -> Unit) {
+      registerTestCase(
+         createNestedTest(
+            name = createTestName(name),
+            xdisabled = true,
+            config = testCase.spec.resolvedDefaultConfig(),
+            type = TestType.Container,
+            descriptor = null,
+            factoryId = null,
+            test = { FunSpecContainerContext(this).test() }
+         )
+      )
+   }
+
+   /**
     * Adds a test case to this context, expecting config.
     */
    fun test(name: String) =
@@ -88,7 +105,7 @@ class FunSpecContainerContext(
       registerTestCase(
          createNestedTest(
             name = createTestName(name),
-            xdisabled = false,
+            xdisabled = true,
             config = testCase.spec.resolvedDefaultConfig(),
             type = TestType.Test,
             descriptor = null,

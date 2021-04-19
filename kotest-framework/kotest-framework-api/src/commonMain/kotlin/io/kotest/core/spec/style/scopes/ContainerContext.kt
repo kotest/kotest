@@ -38,9 +38,10 @@ interface ContainerContext : TestContext {
     * Only affects tests registered after a call to this function.
     */
    fun beforeTest(f: BeforeTest) {
+      val thisTestCase = this.testCase
       addListener(object : TestListener {
          override suspend fun beforeTest(testCase: TestCase) {
-            if (testCase.description.isAncestorOf(testCase.description)) f(testCase)
+            if (thisTestCase.description.isAncestorOf(testCase.description)) f(testCase)
          }
       })
    }
@@ -50,9 +51,10 @@ interface ContainerContext : TestContext {
     * Only affects tests registered after a call to this function.
     */
    fun afterTest(f: AfterTest) {
+      val thisTestCase = this.testCase
       addListener(object : TestListener {
          override suspend fun afterTest(testCase: TestCase, result: TestResult) {
-            if (testCase.description.isAncestorOf(testCase.description)) f(Tuple2(testCase, result))
+            if (thisTestCase.description.isAncestorOf(testCase.description)) f(Tuple2(testCase, result))
          }
       })
    }
@@ -64,9 +66,10 @@ interface ContainerContext : TestContext {
     * Only affects test conatiners registered after a call to this function.
     */
    fun beforeContainer(f: BeforeContainer) {
+      val thisTestCase = this.testCase
       addListener(object : TestListener {
          override suspend fun beforeContainer(testCase: TestCase) {
-            if (testCase.description.isAncestorOf(testCase.description)) {
+            if (thisTestCase.description.isAncestorOf(testCase.description)) {
                f(testCase)
             }
          }
@@ -80,9 +83,10 @@ interface ContainerContext : TestContext {
     * Only affects test conatiners registered after a call to this function.
     */
    fun afterContainer(f: AfterContainer) {
+      val thisTestCase = this.testCase
       addListener(object : TestListener {
          override suspend fun afterContainer(testCase: TestCase, result: TestResult) {
-            if (testCase.description.isAncestorOf(testCase.description)) {
+            if (thisTestCase.description.isAncestorOf(testCase.description)) {
                f(Tuple2(testCase, result))
             }
          }
@@ -93,9 +97,10 @@ interface ContainerContext : TestContext {
     * Registers a [BeforeEach] function that executes before every test with type [TestType.Test] in this scope.
     */
    fun beforeEach(f: BeforeEach) {
+      val thisTestCase = this.testCase
       addListener(object : TestListener {
          override suspend fun beforeEach(testCase: TestCase) {
-            if (testCase.description.isAncestorOf(testCase.description)) {
+            if (thisTestCase.description.isAncestorOf(testCase.description)) {
                f(testCase)
             }
          }
@@ -106,9 +111,10 @@ interface ContainerContext : TestContext {
     * Registers an [AfterEach] function that executes after every test with type [TestType.Test] in this scope.
     */
    fun afterEach(f: AfterEach) {
+      val thisTestCase = this.testCase
       addListener(object : TestListener {
          override suspend fun afterEach(testCase: TestCase, result: TestResult) {
-            if (testCase.description.isAncestorOf(testCase.description)) {
+            if (thisTestCase.description.isAncestorOf(testCase.description)) {
                f(Tuple2(testCase, result))
             }
          }
@@ -119,9 +125,10 @@ interface ContainerContext : TestContext {
     * Registers a [BeforeAny] function that executes before every test with any [TestType] in this scope.
     */
    fun beforeAny(f: BeforeAny) {
+      val thisTestCase = this.testCase
       addListener(object : TestListener {
          override suspend fun beforeAny(testCase: TestCase) {
-            if (testCase.description.isAncestorOf(testCase.description)) f(testCase)
+            if (thisTestCase.description.isAncestorOf(testCase.description)) f(testCase)
          }
       })
    }
@@ -130,9 +137,10 @@ interface ContainerContext : TestContext {
     * Registers an [AfterAny] function that executes after every test with any [TestType] in this scope.
     */
    fun afterAny(f: AfterAny) {
+      val thisTestCase = this.testCase
       addListener(object : TestListener {
          override suspend fun afterAny(testCase: TestCase, result: TestResult) {
-            if (testCase.description.isAncestorOf(testCase.description)) f(Tuple2(testCase, result))
+            if (thisTestCase.description.isAncestorOf(testCase.description)) f(Tuple2(testCase, result))
          }
       })
    }
