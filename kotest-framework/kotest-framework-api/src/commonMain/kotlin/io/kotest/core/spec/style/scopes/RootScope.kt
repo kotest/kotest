@@ -7,7 +7,6 @@ import io.kotest.core.test.Description
 import io.kotest.core.test.TestCaseConfig
 import kotlin.reflect.KClass
 
-@KotestDsl
 interface RootScope {
    fun defaultConfig(): TestCaseConfig
    fun description(): Description = (this::class as KClass<out Spec>).toDescription()

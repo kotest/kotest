@@ -10,7 +10,6 @@ import io.kotest.core.test.createTestName
  * xgiven("some disabled test")
  */
 @Suppress("FunctionName")
-@KotestDsl
 interface BehaviorSpecRootScope : RootScope {
 
    /**

@@ -21,7 +21,6 @@ typealias FunSpecContextScope = FunSpecContainerContext
  * test("some test").config(...)
  *
  */
-@KotestDsl
 class FunSpecContainerContext(
    private val testContext: TestContext,
 ) : ContainerContext {

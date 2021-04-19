@@ -14,6 +14,15 @@ import io.kotest.core.test.createTestName
 import kotlin.coroutines.CoroutineContext
 import kotlin.time.Duration
 
+class FreeSpecTerminalContext(
+   val testContext: TestContext,
+) : TestContext {
+
+   override val testCase: TestCase = testContext.testCase
+   override val coroutineContext: CoroutineContext = testContext.coroutineContext
+   override suspend fun registerTestCase(nested: NestedTest) = error("Cannot nest a test inside a terminal scope")
+}
+
 class FreeScope(
    val testContext: TestContext,
 ) : ContainerContext {
@@ -37,10 +46,10 @@ class FreeScope(
    }
 
    /**
-    * Creates a new test scope inside this spec.
+    * Creates a new terminal test scope inside this spec.
     */
-   suspend infix operator fun String.invoke(test: suspend TestContext.() -> Unit) {
-      registerTestCase(createNestedTest(this, TestType.Test, test))
+   suspend infix operator fun String.invoke(test: suspend FreeSpecTerminalContext.() -> Unit) {
+      registerTestCase(createNestedTest(this, TestType.Test) { FreeSpecTerminalContext(this).test() })
    }
 
    private fun createNestedTest(name: String, type: TestType, test: suspend TestContext.() -> Unit): NestedTest {

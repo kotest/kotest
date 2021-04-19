@@ -18,6 +18,6 @@ object ProjectConfig : AbstractProjectConfig() {
       val duration = System.currentTimeMillis() - start
       // each of the specs has a 500 milli delay, so the overall time without concurrency would be 1500
       // with concurrency it should be ~500
-      duration.shouldBeLessThan(999)
+      duration.shouldBeLessThan(1499)
    }
 }
