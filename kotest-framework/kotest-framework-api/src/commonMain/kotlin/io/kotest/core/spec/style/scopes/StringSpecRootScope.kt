@@ -73,6 +73,6 @@ class StringSpecScope(
    }
 
    override suspend fun registerTestCase(nested: NestedTest) {
-      error("Invalid state")
+      error("Cannot add nested tests using StringSpec")
    }
 }

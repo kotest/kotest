@@ -154,7 +154,7 @@ class StrictThrowableHandlingTest : FreeSpec() {
     val throwable = catchThrowable(block)
 
     throwable.shouldBeInstanceOf<AssertionError>()
-    throwable!!.message shouldBe "Expected exception ${expectedClass.qualifiedName} but no exception was thrown."
+    throwable.message shouldBe "Expected exception ${expectedClass.qualifiedName} but no exception was thrown."
   }
 
 
@@ -167,7 +167,7 @@ class StrictThrowableHandlingTest : FreeSpec() {
     val throwable = catchThrowable(block)
 
     throwable.shouldBeInstanceOf<AssertionError>()
-    throwable!!.message shouldBe "Expected exception ${expectedClass.qualifiedName} but a ${incorrectClass.simpleName} was thrown instead."
+    throwable.message shouldBe "Expected exception ${expectedClass.qualifiedName} but a ${incorrectClass.simpleName} was thrown instead."
     (throwable.cause === thrownInstance).shouldBeTrue()
   }
 

@@ -3,9 +3,8 @@ package com.sksamuel.kotest.matchers.collections
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.assertions.throwables.shouldThrowAny
 import io.kotest.core.spec.style.WordSpec
-import io.kotest.core.spec.style.scopes.WordSpecTerminalScope
-import io.kotest.core.spec.style.scopes.WordSpecShouldScope
-import io.kotest.matchers.sequences.shouldBeEmpty
+import io.kotest.core.spec.style.scopes. WordSpecTerminalContext
+import io.kotest.core.spec.style.scopes.WordSpecShouldContainerContext
 import io.kotest.matchers.sequences.shouldBeLargerThan
 import io.kotest.matchers.sequences.shouldBeSameCountAs
 import io.kotest.matchers.sequences.shouldBeSmallerThan
@@ -29,7 +28,6 @@ import io.kotest.matchers.sequences.shouldHaveElementAt
 import io.kotest.matchers.sequences.shouldHaveLowerBound
 import io.kotest.matchers.sequences.shouldHaveSingleElement
 import io.kotest.matchers.sequences.shouldHaveUpperBound
-import io.kotest.matchers.sequences.shouldNotBeEmpty
 import io.kotest.matchers.sequences.shouldNotBeSorted
 import io.kotest.matchers.sequences.shouldNotBeSortedWith
 import io.kotest.matchers.sequences.shouldNotBeUnique
@@ -45,22 +43,22 @@ import io.kotest.matchers.sequences.shouldNotHaveElementAt
 class SequenceMatchersTest : WordSpec() {
 
    /* PassFail */
-   private suspend fun WordSpecShouldScope.pass(name: String, test: suspend WordSpecTerminalScope.() -> Unit) {
+   private suspend fun WordSpecShouldContainerContext.pass(name: String, test: suspend WordSpecTerminalContext.() -> Unit) {
       ("succeed $name")(test)
    }
 
-   private suspend fun WordSpecShouldScope.succeed(name: String, test: suspend WordSpecTerminalScope.() -> Unit) = pass(name, test)
+   private suspend fun WordSpecShouldContainerContext.succeed(name: String, test: suspend WordSpecTerminalContext.() -> Unit) = pass(name, test)
 
-   fun WordSpecShouldScope.fail(msg: String): Nothing = io.kotest.assertions.fail(msg)
-   suspend fun WordSpecShouldScope.fail(name: String, test: () -> Any?) {
+   fun WordSpecShouldContainerContext.fail(msg: String): Nothing = io.kotest.assertions.fail(msg)
+   suspend fun WordSpecShouldContainerContext.fail(name: String, test: () -> Any?) {
       ("fail $name") { shouldThrowAny(test) }
    }
 
-   suspend inline fun <reified E : Throwable> WordSpecShouldScope.abort(name: String, crossinline test: () -> Any?) {
+   suspend inline fun <reified E : Throwable> WordSpecShouldContainerContext.abort(name: String, crossinline test: () -> Any?) {
       ("abort $name") { shouldThrow<E>(test) }
    }
 
-   suspend inline fun <reified E : Throwable> WordSpecShouldScope.`throw`(name: String, crossinline test: () -> Any?) = abort<E>(
+   suspend inline fun <reified E : Throwable> WordSpecShouldContainerContext.`throw`(name: String, crossinline test: () -> Any?) = abort<E>(
       name,
       test)
 

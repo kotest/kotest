@@ -1,36 +1,26 @@
 package io.kotest.core.spec.style.scopes
 
+import io.kotest.core.spec.KotestDsl
 import io.kotest.core.test.TestContext
 import io.kotest.core.test.createTestName
 
 /**
  * Top level registration methods for ExpectSpec methods.
  */
+@KotestDsl
 interface ExpectSpecRootScope : RootScope {
 
-   fun context(name: String, test: suspend ExpectScope.() -> Unit) {
+   fun context(name: String, test: suspend ExpectSpecContainerContext.() -> Unit) {
       val testName = createTestName("Context: ", name, false)
       registration().addContainerTest(testName, xdisabled = false) {
-         ExpectScope(
-            description().appendContainer(testName),
-            lifecycle(),
-            this,
-            defaultConfig(),
-            this.coroutineContext,
-         ).test()
+         ExpectSpecContainerContext(this).test()
       }
    }
 
-   fun xcontext(name: String, test: suspend ExpectScope.() -> Unit) {
+   fun xcontext(name: String, test: suspend ExpectSpecContainerContext.() -> Unit) {
       val testName = createTestName("Context: ", name, false)
       registration().addContainerTest(testName, xdisabled = true) {
-         ExpectScope(
-            description().appendContainer(testName),
-            lifecycle(),
-            this,
-            defaultConfig(),
-            this.coroutineContext,
-         ).test()
+         ExpectSpecContainerContext(this).test()
       }
    }
 

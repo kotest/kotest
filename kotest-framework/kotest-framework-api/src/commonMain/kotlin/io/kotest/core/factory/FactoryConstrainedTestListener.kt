@@ -4,11 +4,14 @@ import io.kotest.core.listeners.TestListener
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 
+@Deprecated("renamed to FactorySpecificTestListener")
+typealias FactorySpecificTestListener = FactoryConstrainedTestListener
+
 /**
- * Wraps an existing [TestListener] and forwards calls only if the [TestCase] in question was
- * defined in the given factory.
+ * Wraps an existing [TestListener] and forwards calls only if the [TestCase] in question
+ * was defined in the given factory.
  */
-class FactorySpecificTestListener(
+class FactoryConstrainedTestListener(
    private val factoryId: FactoryId,
    private val delegate: TestListener
 ) : TestListener {

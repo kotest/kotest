@@ -1,9 +1,8 @@
 package io.kotest.engine.spec.runners
 
-import io.kotest.core.DuplicatedTestNameException
+import io.kotest.core.test.Identifiers
 import io.kotest.core.spec.Spec
 import io.kotest.core.test.Description
-import io.kotest.core.test.DescriptionName
 import io.kotest.core.test.NestedTest
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestContext
@@ -17,6 +16,7 @@ import io.kotest.core.spec.invokeAfterSpec
 import io.kotest.core.spec.invokeBeforeSpec
 import io.kotest.core.spec.materializeAndOrderRootTests
 import io.kotest.core.test.TestCaseExecutionListener
+import io.kotest.core.test.createTestName
 import io.kotest.engine.launchers.TestLauncher
 import io.kotest.engine.toTestResult
 import io.kotest.fp.Try
@@ -102,17 +102,17 @@ internal class InstancePerLeafSpecRunner(
 
             var open = true
 
-            // check for duplicate names in the same scope
-            val namesInScope = mutableSetOf<DescriptionName.TestName>()
+            // names in the same scope
+            val namesInScope = mutableSetOf<String>()
 
             override val testCase: TestCase = test
             override val coroutineContext: CoroutineContext = this@coroutineScope.coroutineContext
             override suspend fun registerTestCase(nested: NestedTest) {
 
-               if (!namesInScope.add(nested.name))
-                  throw DuplicatedTestNameException(nested.name)
+               val uniqueName = Identifiers.uniqueTestName(nested.name.name, namesInScope)
+               namesInScope.add(uniqueName)
 
-               val t = nested.toTestCase(test.spec, test)
+               val t = nested.copy(name = createTestName(uniqueName)).toTestCase(test.spec, test)
 
                // if this test is our target then we definitely run it
                // or if the test is on the path to our target we must run it

@@ -2,13 +2,14 @@ package io.kotest.core.spec.style.scopes
 
 import io.kotest.core.Tag
 import io.kotest.core.extensions.TestCaseExtension
+import io.kotest.core.test.DescriptionName
 import io.kotest.core.test.EnabledIf
 import io.kotest.core.test.TestCaseConfig
+import io.kotest.core.test.TestCaseSeverityLevel
 import io.kotest.core.test.TestContext
 import io.kotest.core.test.TestType
-import io.kotest.core.test.DescriptionName
+import io.kotest.core.test.createNestedTest
 import io.kotest.core.test.deriveTestConfig
-import io.kotest.core.test.TestCaseSeverityLevel
 import kotlin.time.Duration
 
 class TestWithConfigBuilder(
@@ -41,7 +42,16 @@ class TestWithConfigBuilder(
          threads,
          severity
       )
-      val activeConfig = if (xdisabled) derivedConfig.copy(enabled = false) else derivedConfig
-      context.registerTestCase(name, test, activeConfig, TestType.Test)
+      context.registerTestCase(
+         createNestedTest(
+            name = name,
+            xdisabled = xdisabled,
+            config = derivedConfig,
+            type = TestType.Test,
+            descriptor = null,
+            factoryId = null,
+            test = test,
+         )
+      )
    }
 }

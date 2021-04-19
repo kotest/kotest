@@ -70,11 +70,12 @@ fun TestCase.isActiveInternal(): Boolean {
       return false
    }
 
-   val includedByFilters = configuration.filters().filterIsInstance<TestFilter>().all {
+   val filters = configuration.filters().filterIsInstance<TestFilter>()
+   val includedByFilters = filters.all {
       it.filter(this.description) == TestFilterResult.Include
    }
    if (!includedByFilters) {
-      log("${description.testPath()} is excluded by test case filters")
+      log("${description.testPath()} is excluded by test case filters (${filters.size} filters found)")
       return false
    }
 

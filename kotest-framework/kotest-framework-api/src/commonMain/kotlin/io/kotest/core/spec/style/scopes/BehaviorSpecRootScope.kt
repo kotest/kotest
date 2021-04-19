@@ -12,35 +12,29 @@ import io.kotest.core.test.createTestName
 interface BehaviorSpecRootScope : RootScope {
 
    /**
-    * Adds a top level [GivenScope] to this spec.
+    * Adds a top level [BehaviorSpecGivenContainerContext] to this spec.
     */
-   fun Given(name: String, test: suspend GivenScope.() -> Unit) = addGiven(name, false, test)
+   fun Given(name: String, test: suspend BehaviorSpecGivenContainerContext.() -> Unit) = addGiven(name, false, test)
 
    /**
-    * Adds a top level [GivenScope] to this spec.
+    * Adds a top level [BehaviorSpecGivenContainerContext] to this spec.
     */
-   fun given(name: String, test: suspend GivenScope.() -> Unit) = addGiven(name, false, test)
+   fun given(name: String, test: suspend BehaviorSpecGivenContainerContext.() -> Unit) = addGiven(name, false, test)
 
    /**
-    * Adds a top level disabled [GivenScope] to this spec.
+    * Adds a top level disabled [BehaviorSpecGivenContainerContext] to this spec.
     */
-   fun xgiven(name: String, test: suspend GivenScope.() -> Unit) = addGiven(name, true, test)
+   fun xgiven(name: String, test: suspend BehaviorSpecGivenContainerContext.() -> Unit) = addGiven(name, true, test)
 
    /**
-    * Adds a top level disabled [GivenScope] to this spec.
+    * Adds a top level disabled [BehaviorSpecGivenContainerContext] to this spec.
     */
-   fun xGiven(name: String, test: suspend GivenScope.() -> Unit) = addGiven(name, true, test)
+   fun xGiven(name: String, test: suspend BehaviorSpecGivenContainerContext.() -> Unit) = addGiven(name, true, test)
 
-   private fun addGiven(name: String, xdisabled: Boolean, test: suspend GivenScope.() -> Unit) {
+   private fun addGiven(name: String, xdisabled: Boolean, test: suspend BehaviorSpecGivenContainerContext.() -> Unit) {
       val testName = createTestName("Given: ", name, true)
       registration().addContainerTest(testName, xdisabled) {
-         GivenScope(
-            description().appendContainer(testName),
-            lifecycle(),
-            this,
-            defaultConfig(),
-            this.coroutineContext,
-         ).test()
+         BehaviorSpecGivenContainerContext(this).test()
       }
    }
 }

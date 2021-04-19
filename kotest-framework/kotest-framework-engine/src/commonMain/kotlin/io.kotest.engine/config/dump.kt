@@ -22,7 +22,10 @@ fun Configuration.createConfigSummary(): String {
    }
    sb.buildOutput("Fail on ignored tests", failOnIgnoredTests.toString())
    sb.buildOutput("Spec execution order", specExecutionOrder::class.simpleName)
-   sb.buildOutput("Include test scope affixes", includeTestScopeAffixes.toString())
+
+   if (includeTestScopeAffixes != null)
+      sb.buildOutput("Include test scope affixes", includeTestScopeAffixes.toString())
+
    sb.buildOutput("Remove test name whitespace", removeTestNameWhitespace.toString())
    sb.buildOutput("Append tags to test names", testNameAppendTags.toString())
 

@@ -1,8 +1,8 @@
 package io.kotest.core.spec
 
-import io.kotest.core.DuplicatedTestNameException
 import io.kotest.core.Tuple2
 import io.kotest.core.config.configuration
+import io.kotest.core.test.Identifiers
 import io.kotest.core.extensions.SpecExtension
 import io.kotest.core.factory.TestFactory
 import io.kotest.core.factory.addPrefix
@@ -16,6 +16,7 @@ import io.kotest.core.test.TestContext
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestType
 import io.kotest.core.test.createRootTestCase
+import io.kotest.core.test.createTestName
 import kotlin.reflect.KClass
 
 /**
@@ -102,7 +103,11 @@ abstract class DslDrivenSpec : Spec() {
     * Adds a new root-level [TestCase] to this [Spec].
     */
    private fun addRootTest(testCase: TestCase) {
-      if (rootTestCases.any { it.description.name == testCase.description.name }) throw DuplicatedTestNameException(testCase.description.name)
-      rootTestCases = rootTestCases + testCase
+      val uniqueName = Identifiers.uniqueTestName(
+         testCase.description.name.name,
+         rootTestCases.map { it.description.name.name }.toSet()
+      )
+      val description = testCase.description.copy(name = createTestName(uniqueName))
+      rootTestCases += if (uniqueName == testCase.description.name.name) testCase else testCase.copy(description = description)
    }
 }

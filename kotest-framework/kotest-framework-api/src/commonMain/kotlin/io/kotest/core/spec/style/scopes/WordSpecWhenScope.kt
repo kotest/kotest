@@ -1,41 +1,47 @@
 package io.kotest.core.spec.style.scopes
 
 import io.kotest.core.spec.KotestDsl
-import io.kotest.core.test.Description
-import io.kotest.core.test.TestCaseConfig
+import io.kotest.core.spec.resolvedDefaultConfig
+import io.kotest.core.test.NestedTest
+import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestContext
+import io.kotest.core.test.TestType
+import io.kotest.core.test.createNestedTest
 import io.kotest.core.test.createTestName
 import kotlin.coroutines.CoroutineContext
 
 @Suppress("FunctionName")
 @KotestDsl
 class WordSpecWhenScope(
-   override val description: Description,
-   override val lifecycle: Lifecycle,
-   override val testContext: TestContext,
-   override val defaultConfig: TestCaseConfig,
-   override val coroutineContext: CoroutineContext,
-) : ContainerScope {
+   val testContext: TestContext,
+) : ContainerContext {
 
-   override suspend fun addTest(name: String, test: suspend TestContext.() -> Unit) {
-      error("Cannot add a test at this scope. Use a should scope instead.")
-   }
+   override val testCase: TestCase = testContext.testCase
+   override val coroutineContext: CoroutineContext = testContext.coroutineContext
+   override suspend fun registerTestCase(nested: NestedTest) = testContext.registerTestCase(nested)
 
-   suspend infix fun String.Should(test: suspend WordSpecShouldScope.() -> Unit) = addShould(this, test, false)
-   suspend infix fun String.should(test: suspend WordSpecShouldScope.() -> Unit) = addShould(this, test, false)
-   suspend infix fun String.xshould(test: suspend WordSpecShouldScope.() -> Unit) = addShould(this, test, true)
-
-   private suspend fun addShould(name: String, test: suspend WordSpecShouldScope.() -> Unit, xdisabled: Boolean) {
-      val testName = createTestName("$name should")
-      addContainerTest(testName, xdisabled) {
-         WordSpecShouldScope(
-            this@WordSpecWhenScope.description.appendContainer(testName),
-            this@WordSpecWhenScope.lifecycle,
-            this,
-            this@WordSpecWhenScope.defaultConfig,
-            this@WordSpecWhenScope.coroutineContext,
-         ).test()
+   override suspend fun addTest(name: String, type: TestType, test: suspend TestContext.() -> Unit) {
+      when (type) {
+         TestType.Container -> addShould(name, { WordSpecShouldContainerContext(this).test() }, false)
+         TestType.Test -> error("Cannot add a test case here")
       }
    }
 
+   suspend infix fun String.Should(test: suspend WordSpecShouldContainerContext.() -> Unit) = addShould(this, test, false)
+   suspend infix fun String.should(test: suspend WordSpecShouldContainerContext.() -> Unit) = addShould(this, test, false)
+   suspend infix fun String.xshould(test: suspend WordSpecShouldContainerContext.() -> Unit) = addShould(this, test, true)
+
+   private suspend fun addShould(name: String, test: suspend WordSpecShouldContainerContext.() -> Unit, xdisabled: Boolean) {
+      registerTestCase(
+         createNestedTest(
+            name = createTestName("$name should"),
+            xdisabled = xdisabled,
+            config = testCase.spec.resolvedDefaultConfig(),
+            type = TestType.Container,
+            descriptor = null,
+            factoryId = testCase.factoryId,
+            test = { WordSpecShouldContainerContext(this).test() }
+         )
+      )
+   }
 }

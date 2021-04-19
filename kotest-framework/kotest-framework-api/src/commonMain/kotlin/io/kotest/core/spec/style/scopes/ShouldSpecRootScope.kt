@@ -1,5 +1,6 @@
 package io.kotest.core.spec.style.scopes
 
+import io.kotest.core.spec.KotestDsl
 import io.kotest.core.test.TestContext
 import io.kotest.core.test.createTestName
 
@@ -18,27 +19,22 @@ import io.kotest.core.test.createTestName
  *    // test here
  *  }
  */
+@KotestDsl
 interface ShouldSpecRootScope : RootScope {
 
    /**
     * Adds a top level context scope to the spec.
     */
-   fun context(name: String, test: suspend ShouldSpecContextScope.() -> Unit) {
+   fun context(name: String, test: suspend ShouldSpecContainerContext.() -> Unit) {
       registration().addContainerTest(createTestName(name), xdisabled = false) {
-         ShouldSpecContextScope(
-            description().appendContainer(createTestName(name)),
-            lifecycle(),
-            this,
-            defaultConfig(),
-            this.coroutineContext,
-         ).test()
+         ShouldSpecContainerContext(this).test()
       }
    }
 
    /**
     * Adds a top level context scope to the spec.
     */
-   fun xcontext(name: String, test: suspend ShouldSpecContextScope.() -> Unit) {
+   fun xcontext(name: String, test: suspend ShouldSpecContainerContext.() -> Unit) {
       registration().addContainerTest(createTestName(name), xdisabled = true) {}
    }
 

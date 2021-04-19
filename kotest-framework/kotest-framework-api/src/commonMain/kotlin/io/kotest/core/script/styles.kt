@@ -11,6 +11,7 @@ import io.kotest.core.test.DescriptionName
 import io.kotest.core.test.TestCaseConfig
 import io.kotest.core.test.TestContext
 import io.kotest.core.test.TestType
+import io.kotest.core.test.createNestedTest
 import io.kotest.core.test.createTestName
 
 /**
@@ -166,6 +167,15 @@ private suspend fun registerNestedTest(
    type: TestType,
    descriptor: Descriptor.TestDescriptor,
 ) {
-   val activeConfig = if (xdisabled) config.copy(enabled = false) else config
-   testContext.registerTestCase(name = name, test = test, config = activeConfig, type = type, descriptor = descriptor)
+   testContext.registerTestCase(
+      createNestedTest(
+         name = name,
+         xdisabled = xdisabled,
+         config = config,
+         type = type,
+         descriptor = descriptor,
+         factoryId = null,
+         test = test,
+      )
+   )
 }

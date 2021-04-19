@@ -1,18 +1,18 @@
 package io.kotest.engine.spec.runners
 
-import io.kotest.core.DuplicatedTestNameException
+import io.kotest.core.test.Identifiers
 import io.kotest.core.internal.TestCaseExecutor
 import io.kotest.core.internal.resolvedThreads
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.invokeAfterSpec
 import io.kotest.core.spec.invokeBeforeSpec
 import io.kotest.core.spec.materializeAndOrderRootTests
-import io.kotest.core.test.DescriptionName
 import io.kotest.core.test.NestedTest
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestCaseExecutionListener
 import io.kotest.core.test.TestContext
 import io.kotest.core.test.TestResult
+import io.kotest.core.test.createTestName
 import io.kotest.core.test.toTestCase
 import io.kotest.engine.ExecutorExecutionContext
 import io.kotest.engine.launchers.TestLauncher
@@ -72,15 +72,17 @@ internal class SingleInstanceSpecRunner(
    ) : TestContext {
 
       // these are the tests inside this context, so we can track for duplicates
-      private val seen = mutableSetOf<DescriptionName.TestName>()
+      private val seen = mutableSetOf<String>()
 
       // in the single instance runner we execute each nested test as soon as they are registered
       override suspend fun registerTestCase(nested: NestedTest) {
          log("Nested test case discovered $nested")
-         val nestedTestCase = nested.toTestCase(testCase.spec, testCase)
-         if (seen.contains(nested.name))
-            throw DuplicatedTestNameException(nested.name)
-         seen.add(nested.name)
+
+         val uniqueName = Identifiers.uniqueTestName(nested.name.name, seen)
+         seen.add(uniqueName)
+
+         val nested2 = if (uniqueName == nested.name.name) nested else nested.copy(name = createTestName(uniqueName))
+         val nestedTestCase = nested2.toTestCase(testCase.spec, testCase)
          runTest(nestedTestCase, coroutineContext)
       }
    }

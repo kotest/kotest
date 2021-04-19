@@ -4,7 +4,6 @@ package io.kotest.mpp
 
 import kotlin.reflect.KCallable
 import kotlin.reflect.KClass
-import kotlin.reflect.full.createType
 import kotlin.reflect.full.isSubclassOf
 import kotlin.reflect.full.primaryConstructor
 import kotlin.reflect.jvm.reflect

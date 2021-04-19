@@ -1,6 +1,6 @@
 package io.kotest.engine.spec.runners
 
-import io.kotest.core.DuplicatedTestNameException
+import io.kotest.core.test.Identifiers
 import io.kotest.core.internal.TestCaseExecutor
 import io.kotest.core.internal.resolvedThreads
 import io.kotest.core.spec.Spec
@@ -118,16 +118,17 @@ internal class InstancePerTestSpecRunner(
       val isTarget = test.description == target.description
       coroutineScope {
          val context = object : TestContext {
-            // check for duplicate names in the same scope
-            val namesInScope = mutableSetOf<DescriptionName.TestName>()
+
+            val namesInScope = mutableSetOf<String>()
+
             override val testCase: TestCase = test
             override val coroutineContext: CoroutineContext = this@coroutineScope.coroutineContext
             override suspend fun registerTestCase(nested: NestedTest) {
 
-               if (!namesInScope.add(nested.name))
-                  throw DuplicatedTestNameException(nested.name)
+               val uniqueName = Identifiers.uniqueTestName(nested.name.name, namesInScope)
+               namesInScope.add(uniqueName)
 
-               val t = nested.toTestCase(test.spec, test)
+               val t = nested.copy(name = createTestName(uniqueName)).toTestCase(test.spec, test)
                // if we are currently executing the target, then any registered tests are new, and we
                // should begin execution of them in fresh specs
                // otherwise if the test is on the path we can continue in the same spec

@@ -170,7 +170,7 @@ class CovariantThrowableHandlingTest : FreeSpec() {
     val throwable = catchThrowable(block)
 
     throwable.shouldBeInstanceOf<AssertionError>()
-    throwable!!.message shouldBe "Expected exception ${expectedClass.qualifiedName} but no exception was thrown."
+    throwable.message shouldBe "Expected exception ${expectedClass.qualifiedName} but no exception was thrown."
   }
 
   private fun verifyThrowsAssertionErrorInstance(assertionErrorInstance: AssertionError, block: () -> Unit) {
@@ -182,7 +182,7 @@ class CovariantThrowableHandlingTest : FreeSpec() {
     val throwable = catchThrowable(block)
 
     throwable.shouldBeInstanceOf<AssertionError>()
-    throwable!!.message shouldBe "Expected exception ${expectedClass.qualifiedName} but a ${incorrectClass.simpleName} was thrown instead."
+    throwable.message shouldBe "Expected exception ${expectedClass.qualifiedName} but a ${incorrectClass.simpleName} was thrown instead."
     (throwable.cause === thrownInstance).shouldBeTrue()
   }
 
@@ -201,7 +201,7 @@ class CovariantThrowableHandlingTest : FreeSpec() {
     val thrown = catchThrowable(block)
 
     thrown.shouldBeInstanceOf<AssertionError>()
-    thrown!!.message shouldBe "No exception expected, but a ${exception::class.simpleName} was thrown."
+    thrown.message shouldBe "No exception expected, but a ${exception::class.simpleName} was thrown."
     thrown.cause shouldBeSameInstanceAs exception
   }
 

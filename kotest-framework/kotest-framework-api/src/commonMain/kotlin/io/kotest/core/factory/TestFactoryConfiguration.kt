@@ -1,12 +1,16 @@
 package io.kotest.core.factory
 
-import io.kotest.core.DuplicatedTestNameException
 import io.kotest.core.TestConfiguration
+import io.kotest.core.Tuple2
 import io.kotest.core.config.configuration
+import io.kotest.core.listeners.TestListener
 import io.kotest.core.sourceRef
+import io.kotest.core.spec.AfterEach
 import io.kotest.core.test.DescriptionName
+import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestCaseConfig
 import io.kotest.core.test.TestContext
+import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestType
 
 /**
@@ -29,7 +33,6 @@ abstract class TestFactoryConfiguration : TestConfiguration() {
    internal var tests = emptyList<DynamicRootTest>()
 
    private fun addDynamicTest(test: DynamicRootTest) {
-      if (tests.any { it.name == test.name }) throw DuplicatedTestNameException(test.name)
       this.tests = this.tests + test
    }
 

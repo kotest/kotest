@@ -45,7 +45,7 @@ interface RootTestRegistration {
    /**
     * Adds a new root [TestCase] to this scope with the given test type and config.
     *
-    * @param xdisabled if true then this test has been disabled by using an xKeyword dsl method.
+    * @param xdisabled if true then this test has been disabled by using an x-keyword via the dsl.
     */
    fun addTest(
       name: DescriptionName.TestName,
