@@ -32,8 +32,7 @@ This should point to a class annotated with the Spring `@Configuration` annotati
 point to a [specific application context file](https://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-profiles.html).
 
 :::note
-In Kotest 4.3 and earlier, the Spring extension was called `SpringListener`. In 4.4 and later, this extension has been deprecated
-and `SpringExtension` is used instead.
+In Kotest 4.3 and earlier, the Spring extension was called `SpringListener`. This extension has now been deprecated in favour of `SpringExtension`. The usage is the same, but the SpringExtension has more functionality. 
 :::
 
 ### Constructor Injection
