@@ -29,7 +29,7 @@ class DataTestingWithEnumValueInDataClassTest : FunSpec({
          "PythagTriple(a=Three, b=Four, c=Five)",
          "PythagTriple(a=Four, b=Three, c=Five)",
          "Pythag triples tests",
-         "com.sksamuel.kotest.engine.datatest.FooClass",
+         "FooClass(a=Bar1, b=Bar2)",
          "Data class having enum where enum has non data class value"
       )
    }

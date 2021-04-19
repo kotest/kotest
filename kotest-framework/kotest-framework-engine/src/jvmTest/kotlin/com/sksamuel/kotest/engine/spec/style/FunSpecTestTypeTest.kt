@@ -6,6 +6,9 @@ import io.kotest.matchers.shouldBe
 
 class FunSpecTestTypeTest : FunSpec() {
    init {
+
+      finalizeSpec { it.b.size shouldBe 4 }
+
       context("context") {
          this.testCase.type shouldBe TestType.Container
          context("context 2") {

@@ -49,10 +49,10 @@ class DataTest : FunSpec() {
          assertResults(results)
       }
 
-      test("should spec should support data tests") {
-         KotestEngineLauncher().withListener(listener).withSpec(ShouldSpecDataTest::class).launch()
-         assertResults(results)
-      }
+//      test("should spec should support data tests") {
+//         KotestEngineLauncher().withListener(listener).withSpec(ShouldSpecDataTest::class).launch()
+//         assertResults(results)
+//      }
 
       test("feature spec should support data tests") {
          KotestEngineLauncher().withListener(listener).withSpec(FeatureSpecDataTest::class).launch()
