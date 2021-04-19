@@ -78,7 +78,7 @@ class DescribeSpecContainerContext(
             config = testCase.spec.resolvedDefaultConfig(),
             type = TestType.Container,
             descriptor = null,
-            factoryId = null
+            factoryId = testCase.factoryId
          ) { DescribeSpecContainerContext(this).test() }
       )
    }
@@ -107,7 +107,7 @@ class DescribeSpecContainerContext(
             config = testCase.spec.resolvedDefaultConfig(),
             type = TestType.Test,
             descriptor = null,
-            factoryId = null
+            factoryId = testCase.factoryId
          ) { DescribeSpecContainerContext(this).test() }
       )
 
@@ -119,7 +119,7 @@ class DescribeSpecContainerContext(
             config = testCase.spec.resolvedDefaultConfig(),
             type = TestType.Test,
             descriptor = null,
-            factoryId = null
+            factoryId = testCase.factoryId
          ) { DescribeSpecContainerContext(this).test() }
       )
 }

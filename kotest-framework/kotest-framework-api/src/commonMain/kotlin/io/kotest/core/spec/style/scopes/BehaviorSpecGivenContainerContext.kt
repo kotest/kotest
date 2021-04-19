@@ -10,6 +10,9 @@ import io.kotest.core.test.createNestedTest
 import io.kotest.core.test.createTestName
 import kotlin.coroutines.CoroutineContext
 
+@Deprecated("This interface has been renamed to BehaviorSpecGivenContainerContext. This alias will be removed in 4.7")
+typealias GivenScope = BehaviorSpecGivenContainerContext
+
 /**
  * A context that allows tests to be registered using the syntax:
  *
@@ -28,7 +31,7 @@ import kotlin.coroutines.CoroutineContext
  */
 @Suppress("FunctionName")
 @KotestDsl
-class GivenScope(
+class BehaviorSpecGivenContainerContext(
    val testContext: TestContext,
 ) : ContainerContext {
 
@@ -43,12 +46,23 @@ class GivenScope(
       }
    }
 
-   suspend fun And(name: String, test: suspend GivenScope.() -> Unit) = addAnd(name, test, xdisabled = false)
-   suspend fun and(name: String, test: suspend GivenScope.() -> Unit) = addAnd(name, test, xdisabled = false)
-   suspend fun xand(name: String, test: suspend GivenScope.() -> Unit) = addAnd(name, test, xdisabled = true)
-   suspend fun xAnd(name: String, test: suspend GivenScope.() -> Unit) = addAnd(name, test, xdisabled = true)
+   suspend fun And(name: String, test: suspend BehaviorSpecGivenContainerContext.() -> Unit) =
+      addAnd(name, test, xdisabled = false)
 
-   private suspend fun addAnd(name: String, test: suspend GivenScope.() -> Unit, xdisabled: Boolean) {
+   suspend fun and(name: String, test: suspend BehaviorSpecGivenContainerContext.() -> Unit) =
+      addAnd(name, test, xdisabled = false)
+
+   suspend fun xand(name: String, test: suspend BehaviorSpecGivenContainerContext.() -> Unit) =
+      addAnd(name, test, xdisabled = true)
+
+   suspend fun xAnd(name: String, test: suspend BehaviorSpecGivenContainerContext.() -> Unit) =
+      addAnd(name, test, xdisabled = true)
+
+   private suspend fun addAnd(
+      name: String,
+      test: suspend BehaviorSpecGivenContainerContext.() -> Unit,
+      xdisabled: Boolean
+   ) {
       registerTestCase(
          createNestedTest(
             name = createTestName("And: ", name, true),
@@ -56,18 +70,18 @@ class GivenScope(
             config = testCase.spec.resolvedDefaultConfig(),
             type = TestType.Container,
             descriptor = null,
-            factoryId = null,
-            test = { GivenScope(this).test() }
+            factoryId = testCase.factoryId,
+            test = { BehaviorSpecGivenContainerContext(this).test() }
          )
       )
    }
 
-   suspend fun When(name: String, test: suspend WhenScope.() -> Unit) = addWhen(name, test, xdisabled = false)
-   suspend fun `when`(name: String, test: suspend WhenScope.() -> Unit) = addWhen(name, test, xdisabled = false)
-   suspend fun xwhen(name: String, test: suspend WhenScope.() -> Unit) = addWhen(name, test, xdisabled = true)
-   suspend fun xWhen(name: String, test: suspend WhenScope.() -> Unit) = addWhen(name, test, xdisabled = true)
+   suspend fun When(name: String, test: suspend BehaviorSpecWhenContainerContext.() -> Unit) = addWhen(name, test, xdisabled = false)
+   suspend fun `when`(name: String, test: suspend BehaviorSpecWhenContainerContext.() -> Unit) = addWhen(name, test, xdisabled = false)
+   suspend fun xwhen(name: String, test: suspend BehaviorSpecWhenContainerContext.() -> Unit) = addWhen(name, test, xdisabled = true)
+   suspend fun xWhen(name: String, test: suspend BehaviorSpecWhenContainerContext.() -> Unit) = addWhen(name, test, xdisabled = true)
 
-   private suspend fun addWhen(name: String, test: suspend WhenScope.() -> Unit, xdisabled: Boolean) {
+   private suspend fun addWhen(name: String, test: suspend BehaviorSpecWhenContainerContext.() -> Unit, xdisabled: Boolean) {
       registerTestCase(
          createNestedTest(
             name = createTestName("When: ", name, true),
@@ -76,7 +90,7 @@ class GivenScope(
             type = TestType.Container,
             descriptor = null,
             factoryId = null,
-            test = { WhenScope(this).test() }
+            test = { BehaviorSpecWhenContainerContext(this).test() }
          )
       )
    }
@@ -122,8 +136,8 @@ class GivenScope(
             config = testCase.spec.resolvedDefaultConfig(),
             type = TestType.Test,
             descriptor = null,
-            factoryId = null,
-            test = { WhenScope(this).test() }
+            factoryId = testCase.factoryId,
+            test = { BehaviorSpecWhenContainerContext(this).test() }
          )
       )
    }

@@ -5,7 +5,7 @@ import io.kotest.core.spec.AutoScan
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.style.FreeSpec
 import io.kotest.core.spec.style.WordSpec
-import io.kotest.core.spec.style.scopes.FreeScope
+import io.kotest.core.spec.style.scopes.FreeSpecContainerContext
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.extensions.system.OverrideMode
@@ -55,7 +55,7 @@ class SystemEnvironmentExtensionTest : FreeSpec() {
       }
    }
 
-   private suspend fun <T> FreeScope.executeOnAllEnvironmentOverloads(block: suspend () -> T): List<T> {
+   private suspend fun <T> FreeSpecContainerContext.executeOnAllEnvironmentOverloads(block: suspend () -> T): List<T> {
       val results = mutableListOf<T>()
 
       "String String overload" {

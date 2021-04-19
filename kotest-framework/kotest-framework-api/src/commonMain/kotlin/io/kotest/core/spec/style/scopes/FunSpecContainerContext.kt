@@ -47,7 +47,7 @@ class FunSpecContainerContext(
             config = testCase.spec.resolvedDefaultConfig(),
             type = TestType.Container,
             descriptor = null,
-            factoryId = null,
+            factoryId = testCase.factoryId,
             test = { FunSpecContainerContext(this).test() }
          )
       )
@@ -64,7 +64,7 @@ class FunSpecContainerContext(
             config = testCase.spec.resolvedDefaultConfig(),
             type = TestType.Container,
             descriptor = null,
-            factoryId = null,
+            factoryId = testCase.factoryId,
             test = { FunSpecContainerContext(this).test() }
          )
       )
@@ -93,7 +93,7 @@ class FunSpecContainerContext(
             config = testCase.spec.resolvedDefaultConfig(),
             type = TestType.Test,
             descriptor = null,
-            factoryId = null,
+            factoryId = testCase.factoryId,
             test = test,
          )
       )
@@ -109,7 +109,7 @@ class FunSpecContainerContext(
             config = testCase.spec.resolvedDefaultConfig(),
             type = TestType.Test,
             descriptor = null,
-            factoryId = null,
+            factoryId = testCase.factoryId,
             test = test,
          )
       )

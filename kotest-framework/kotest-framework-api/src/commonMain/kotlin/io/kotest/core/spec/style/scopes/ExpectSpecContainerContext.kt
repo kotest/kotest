@@ -10,6 +10,9 @@ import io.kotest.core.test.createNestedTest
 import io.kotest.core.test.createTestName
 import kotlin.coroutines.CoroutineContext
 
+@Deprecated("This interface has been renamed to ExpectSpecContainerContext. This alias will be removed in 4.7")
+typealias ExpectScope = ExpectSpecContainerContext
+
 /**
  * A context that allows tests to be registered using the syntax:
  *
@@ -25,7 +28,7 @@ import kotlin.coroutines.CoroutineContext
  *
  */
 @KotestDsl
-class ExpectScope(
+class ExpectSpecContainerContext(
    val testContext: TestContext,
 ) : ContainerContext {
 
@@ -41,7 +44,7 @@ class ExpectScope(
 
    }
 
-   suspend fun context(name: String, test: suspend ExpectScope.() -> Unit) {
+   suspend fun context(name: String, test: suspend ExpectSpecContainerContext.() -> Unit) {
       registerTestCase(
          createNestedTest(
             name = createTestName("Context: ", name, false),
@@ -49,12 +52,12 @@ class ExpectScope(
             config = testCase.spec.resolvedDefaultConfig(),
             type = TestType.Container,
             descriptor = null,
-            factoryId = null
-         ) { ExpectScope(this).test() }
+            factoryId = testCase.factoryId
+         ) { ExpectSpecContainerContext(this).test() }
       )
    }
 
-   suspend fun xcontext(name: String, test: suspend ExpectScope.() -> Unit) {
+   suspend fun xcontext(name: String, test: suspend ExpectSpecContainerContext.() -> Unit) {
       registerTestCase(
          createNestedTest(
             name = createTestName("Context: ", name, false),
@@ -62,8 +65,8 @@ class ExpectScope(
             config = testCase.spec.resolvedDefaultConfig(),
             type = TestType.Container,
             descriptor = null,
-            factoryId = null
-         ) { ExpectScope(this).test() }
+            factoryId = testCase.factoryId
+         ) { ExpectSpecContainerContext(this).test() }
       )
    }
 
@@ -75,7 +78,7 @@ class ExpectScope(
             config = testCase.spec.resolvedDefaultConfig(),
             type = TestType.Test,
             descriptor = null,
-            factoryId = null,
+            factoryId = testCase.factoryId,
             test = test
          )
       )
@@ -89,7 +92,7 @@ class ExpectScope(
             config = testCase.spec.resolvedDefaultConfig(),
             type = TestType.Test,
             descriptor = null,
-            factoryId = null,
+            factoryId = testCase.factoryId,
             test = test
          )
       )

@@ -7,17 +7,17 @@ import io.kotest.core.test.createTestName
 @KotestDsl
 interface WordSpecRootScope : RootScope {
 
-   infix fun String.should(test: suspend WordSpecShouldScope.() -> Unit) {
+   infix fun String.should(test: suspend WordSpecShouldContainerContext.() -> Unit) {
       val testName = createTestName("$this should")
       registration().addContainerTest(testName, xdisabled = false) {
-         WordSpecShouldScope(this).test()
+         WordSpecShouldContainerContext(this).test()
       }
    }
 
-   infix fun String.xshould(test: suspend WordSpecShouldScope.() -> Unit) {
+   infix fun String.xshould(test: suspend WordSpecShouldContainerContext.() -> Unit) {
       val testName = createTestName("$this should")
       registration().addContainerTest(testName, xdisabled = true) {
-         WordSpecShouldScope(this).test()
+         WordSpecShouldContainerContext(this).test()
       }
    }
 

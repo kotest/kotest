@@ -28,7 +28,10 @@ class FreeSpecTerminalContext(
    }
 }
 
-class FreeScope(
+@Deprecated("renamed to FreeSpecContainerContext")
+typealias FreeScope = FreeSpecContainerContext
+
+class FreeSpecContainerContext(
    val testContext: TestContext,
 ) : ContainerContext {
 
@@ -46,8 +49,8 @@ class FreeScope(
    /**
     * Creates a new container scope inside this spec.
     */
-   suspend infix operator fun String.minus(test: suspend FreeScope.() -> Unit) {
-      registerTestCase(createNestedTest(this, TestType.Container) { FreeScope(this).test() })
+   suspend infix operator fun String.minus(test: suspend FreeSpecContainerContext.() -> Unit) {
+      registerTestCase(createNestedTest(this, TestType.Container) { FreeSpecContainerContext(this).test() })
    }
 
    /**
@@ -59,12 +62,12 @@ class FreeScope(
 
    private fun createNestedTest(name: String, type: TestType, test: suspend TestContext.() -> Unit): NestedTest {
       return createNestedTest(
-         name = this@FreeScope.testCase.description.append(createTestName(name), type).name,
+         name = this@FreeSpecContainerContext.testCase.description.append(createTestName(name), type).name,
          xdisabled = false,
          config = testCase.spec.resolvedDefaultConfig(),
          type = type,
          descriptor = null,
-         factoryId = null,
+         factoryId = testCase.factoryId,
          test = test
       )
    }

@@ -69,7 +69,7 @@ abstract class TestConfiguration {
     * Register multiple [TestListener]s.
     */
    fun listeners(listeners: List<TestListener>) {
-      _listeners = _listeners + listeners
+      _listeners += listeners
    }
 
    /**
@@ -89,7 +89,7 @@ abstract class TestConfiguration {
     * Register multiple [TestCaseExtension]s.
     */
    fun extensions(vararg extensions: Extension) {
-      _extensions = _extensions + extensions.toList()
+      _extensions += extensions.toList()
    }
 
    /**

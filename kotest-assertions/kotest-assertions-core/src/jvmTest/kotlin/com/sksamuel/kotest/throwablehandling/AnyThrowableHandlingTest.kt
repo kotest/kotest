@@ -67,7 +67,7 @@ class AnyThrowableHandlingTest : FreeSpec() {
     val thrown = catchThrowable(block)
 
     thrown.shouldBeInstanceOf<AssertionError>()
-    thrown!!.message shouldBe "Expected a throwable, but nothing was thrown."
+    thrown.message shouldBe "Expected a throwable, but nothing was thrown."
   }
 
   private fun verifyReturnsExactly(thrownInstance: Throwable, block: () -> Any?) {
@@ -85,7 +85,7 @@ class AnyThrowableHandlingTest : FreeSpec() {
     val thrownException = catchThrowable(block)
 
     thrownException.shouldBeInstanceOf<AssertionError>()
-    thrownException!!.message shouldBe "No exception expected, but a ${throwable::class.simpleName} was thrown."
+    thrownException.message shouldBe "No exception expected, but a ${throwable::class.simpleName} was thrown."
     thrownException.cause shouldBeSameInstanceAs throwable
   }
 

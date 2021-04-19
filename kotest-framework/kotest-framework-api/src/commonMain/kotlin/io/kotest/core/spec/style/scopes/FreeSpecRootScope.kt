@@ -14,10 +14,10 @@ import kotlin.time.Duration
 interface FreeSpecRootScope : RootScope {
 
    // eg, "this test" - { } // adds a container test
-   infix operator fun String.minus(test: suspend FreeScope.() -> Unit) {
+   infix operator fun String.minus(test: suspend FreeSpecContainerContext.() -> Unit) {
       val name = createTestName(this)
       registration().addContainerTest(name, xdisabled = false) {
-         FreeScope(this).test()
+         FreeSpecContainerContext(this).test()
       }
    }
 

@@ -8,12 +8,17 @@ var specAfterEach = mutableListOf<String>()
 var factoryAfterEach = mutableListOf<String>()
 
 private val factory = funSpec {
+
    afterEach {
       factoryAfterEach.add(it.a.displayName)
    }
+
+   test("a") {}
+   test("b") {}
+
    context("factory") {
-      test("a") { }
-      test("b") { }
+      test("c") { }
+      test("d") { }
    }
 }
 
@@ -24,15 +29,18 @@ class AfterEachInFactoryTest : FunSpec({
    }
 
    afterSpec {
-      specAfterEach.shouldContainExactly(listOf("a", "b", "c", "d"))
-      factoryAfterEach.shouldContainExactly(listOf("a", "b"))
+      specAfterEach.shouldContainExactly(listOf("a", "b", "c", "d", "e", "f", "g", "h"))
+      factoryAfterEach.shouldContainExactly(listOf("a", "b", "c", "d"))
    }
 
    include(factory)
 
+   test("e") { }
+   test("f") { }
+
    context("root") {
-      test("c") { }
-      test("d") { }
+      test("g") { }
+      test("h") { }
    }
 
 })

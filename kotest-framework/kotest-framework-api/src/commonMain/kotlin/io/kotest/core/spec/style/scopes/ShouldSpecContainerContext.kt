@@ -48,7 +48,7 @@ class ShouldSpecContainerContext(
             config = testCase.spec.resolvedDefaultConfig(),
             type = TestType.Container,
             descriptor = null,
-            factoryId = null,
+            factoryId = testCase.factoryId,
             test = { ShouldSpecContainerContext(this).test() }
          )
       )
@@ -65,7 +65,7 @@ class ShouldSpecContainerContext(
             config = testCase.spec.resolvedDefaultConfig(),
             type = TestType.Container,
             descriptor = null,
-            factoryId = null,
+            factoryId = testCase.factoryId,
             test = { ShouldSpecContainerContext(this).test() }
          )
       )
@@ -95,7 +95,7 @@ class ShouldSpecContainerContext(
             config = testCase.spec.resolvedDefaultConfig(),
             type = TestType.Test,
             descriptor = null,
-            factoryId = null,
+            factoryId = testCase.factoryId,
             test = { ShouldSpecContainerContext(this).test() }
          )
       )
@@ -108,7 +108,7 @@ class ShouldSpecContainerContext(
             config = testCase.spec.resolvedDefaultConfig(),
             type = TestType.Test,
             descriptor = null,
-            factoryId = null,
+            factoryId = testCase.factoryId,
             test = { ShouldSpecContainerContext(this).test() }
          )
       )

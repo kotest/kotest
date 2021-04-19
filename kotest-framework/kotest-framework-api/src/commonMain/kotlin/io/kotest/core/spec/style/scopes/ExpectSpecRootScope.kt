@@ -10,17 +10,17 @@ import io.kotest.core.test.createTestName
 @KotestDsl
 interface ExpectSpecRootScope : RootScope {
 
-   fun context(name: String, test: suspend ExpectScope.() -> Unit) {
+   fun context(name: String, test: suspend ExpectSpecContainerContext.() -> Unit) {
       val testName = createTestName("Context: ", name, false)
       registration().addContainerTest(testName, xdisabled = false) {
-         ExpectScope(this).test()
+         ExpectSpecContainerContext(this).test()
       }
    }
 
-   fun xcontext(name: String, test: suspend ExpectScope.() -> Unit) {
+   fun xcontext(name: String, test: suspend ExpectSpecContainerContext.() -> Unit) {
       val testName = createTestName("Context: ", name, false)
       registration().addContainerTest(testName, xdisabled = true) {
-         ExpectScope(this).test()
+         ExpectSpecContainerContext(this).test()
       }
    }
 

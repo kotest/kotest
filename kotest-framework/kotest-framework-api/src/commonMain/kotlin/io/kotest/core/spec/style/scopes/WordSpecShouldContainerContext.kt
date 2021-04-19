@@ -15,6 +15,9 @@ import io.kotest.core.test.createTestName
 import kotlin.coroutines.CoroutineContext
 import kotlin.time.Duration
 
+@Deprecated("This interface has been renamed to WordSpecShouldContainerContext. This alias will be removed in 4.7")
+typealias WordSpecShouldScope = WordSpecShouldContainerContext
+
 /**
  * A scope that allows tests to be registered using the syntax:
  *
@@ -26,7 +29,7 @@ import kotlin.time.Duration
  *
  */
 @KotestDsl
-class WordSpecShouldScope(
+class WordSpecShouldContainerContext(
    val testContext: TestContext,
 ) : ContainerContext {
 
@@ -78,7 +81,7 @@ class WordSpecShouldScope(
             config = testCase.spec.resolvedDefaultConfig(),
             type = TestType.Test,
             descriptor = null,
-            factoryId = null,
+            factoryId = testCase.factoryId,
             test = { WordSpecTerminalContext(this).test() }
          )
       )

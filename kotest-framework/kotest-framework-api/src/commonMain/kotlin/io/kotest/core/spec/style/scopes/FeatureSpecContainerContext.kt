@@ -10,6 +10,10 @@ import io.kotest.core.test.createNestedTest
 import io.kotest.core.test.createTestName
 import kotlin.coroutines.CoroutineContext
 
+@Deprecated("renamed to FeatureSpecContainerContext")
+typealias FeatureScope = FeatureSpecContainerContext
+
+
 /**
  * A scope that allows tests to be registered using the syntax:
  *
@@ -25,7 +29,7 @@ import kotlin.coroutines.CoroutineContext
  *
  */
 @KotestDsl
-class FeatureScope(
+class FeatureSpecContainerContext(
    val testContext: TestContext,
 ) : ContainerContext {
 
@@ -40,7 +44,7 @@ class FeatureScope(
       }
    }
 
-   suspend fun feature(name: String, test: suspend FeatureScope.() -> Unit) {
+   suspend fun feature(name: String, test: suspend FeatureSpecContainerContext.() -> Unit) {
       registerTestCase(
          createNestedTest(
             name = createTestName("Feature: ", name, false),
@@ -48,12 +52,12 @@ class FeatureScope(
             config = testCase.spec.resolvedDefaultConfig(),
             type = TestType.Container,
             descriptor = null,
-            factoryId = null
-         ) { FeatureScope(this).test() }
+            factoryId = testCase.factoryId
+         ) { FeatureSpecContainerContext(this).test() }
       )
    }
 
-   suspend fun xfeature(name: String, test: suspend FeatureScope.() -> Unit) {
+   suspend fun xfeature(name: String, test: suspend FeatureSpecContainerContext.() -> Unit) {
       registerTestCase(
          createNestedTest(
             name = createTestName("Feature: ", name, false),
@@ -61,8 +65,8 @@ class FeatureScope(
             config = testCase.spec.resolvedDefaultConfig(),
             type = TestType.Test,
             descriptor = null,
-            factoryId = null
-         ) { FeatureScope(this).test() }
+            factoryId = testCase.factoryId
+         ) { FeatureSpecContainerContext(this).test() }
       )
    }
 

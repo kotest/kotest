@@ -22,16 +22,16 @@ class WordSpecWhenScope(
 
    override suspend fun addTest(name: String, type: TestType, test: suspend TestContext.() -> Unit) {
       when (type) {
-         TestType.Container -> addShould(name, { WordSpecShouldScope(this).test() }, false)
+         TestType.Container -> addShould(name, { WordSpecShouldContainerContext(this).test() }, false)
          TestType.Test -> error("Cannot add a test case here")
       }
    }
 
-   suspend infix fun String.Should(test: suspend WordSpecShouldScope.() -> Unit) = addShould(this, test, false)
-   suspend infix fun String.should(test: suspend WordSpecShouldScope.() -> Unit) = addShould(this, test, false)
-   suspend infix fun String.xshould(test: suspend WordSpecShouldScope.() -> Unit) = addShould(this, test, true)
+   suspend infix fun String.Should(test: suspend WordSpecShouldContainerContext.() -> Unit) = addShould(this, test, false)
+   suspend infix fun String.should(test: suspend WordSpecShouldContainerContext.() -> Unit) = addShould(this, test, false)
+   suspend infix fun String.xshould(test: suspend WordSpecShouldContainerContext.() -> Unit) = addShould(this, test, true)
 
-   private suspend fun addShould(name: String, test: suspend WordSpecShouldScope.() -> Unit, xdisabled: Boolean) {
+   private suspend fun addShould(name: String, test: suspend WordSpecShouldContainerContext.() -> Unit, xdisabled: Boolean) {
       registerTestCase(
          createNestedTest(
             name = createTestName("$name should"),
@@ -39,8 +39,8 @@ class WordSpecWhenScope(
             config = testCase.spec.resolvedDefaultConfig(),
             type = TestType.Container,
             descriptor = null,
-            factoryId = null,
-            test = { WordSpecShouldScope(this).test() }
+            factoryId = testCase.factoryId,
+            test = { WordSpecShouldContainerContext(this).test() }
          )
       )
    }

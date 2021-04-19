@@ -8,7 +8,7 @@ internal fun TestFactoryConfiguration.build(): TestFactory {
       factoryId = factoryId,
       tests = tests,
       tags = _tags,
-      listeners = _listeners.map { FactorySpecificTestListener(factoryId, it) },
+      listeners = _listeners.map { FactoryConstrainedTestListener(factoryId, it) },
       extensions = _extensions,
       assertionMode = assertions,
    )
