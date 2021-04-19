@@ -12,13 +12,22 @@ abstract class DescribeSpecDuplicateNameTest(iso: IsolationMode) : DescribeSpec(
          it("woo") {
             this.testCase.displayName shouldBe "woo (1)"
          }
+         it("woo") {
+            this.testCase.displayName shouldBe "woo (2)"
+         }
       }
       describe("foo") {
          this.testCase.displayName shouldBe "foo (1)"
       }
+      describe("foo") {
+         this.testCase.displayName shouldBe "foo (2)"
+      }
       context("goo") {}
       context("goo") {
          this.testCase.displayName shouldBe "goo (1)"
+      }
+      context("goo") {
+         this.testCase.displayName shouldBe "goo (2)"
       }
    }
 }

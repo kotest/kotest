@@ -40,5 +40,11 @@ interface SpecFunctionCallbacks {
 
    fun beforeAny(testCase: TestCase) {}
 
+   /**
+    * This function is invoked after every [TestCase] in this Spec.
+    * Override this function to provide custom behavior.
+    *
+    * The [TestCase] and it's [TestResult] are provided as parameters.
+    */
    fun afterAny(testCase: TestCase, result: TestResult) {}
 }

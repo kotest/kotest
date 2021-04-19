@@ -36,8 +36,10 @@ fun <T : Any> RootScope.forAll(ts: Sequence<T>, test: suspend TestContext.(T) ->
  */
 @ExperimentalKotest
 fun <T : Any> RootScope.forAll(ts: Collection<T>, test: suspend TestContext.(T) -> Unit) {
-   val map = ts.associateBy { Identifiers.stableIdentifier(it) }
-   this.forAll(map, test)
+   ts.forEach { t ->
+      val name = Identifiers.stableIdentifier(t)
+      registration().addContainerTest(createTestName(name), false) { test(t) }
+   }
 }
 
 /**
@@ -78,8 +80,12 @@ suspend fun <T : Any> TestContext.forAll(first: T, second: T, vararg rest: T, te
  */
 @ExperimentalKotest
 suspend fun <T : Any> TestContext.forAll(ts: Collection<T>, test: suspend TestContext.(T) -> Unit) {
-   val pairs = ts.associateBy { Identifiers.stableIdentifier(it) }
-   forAll(pairs, test)
+   ts.forEach { t ->
+      val name = Identifiers.stableIdentifier(t)
+      this.registerTestCase(
+         createNestedTest(createTestName(name), false, TestCaseConfig(), TestType.Container, null, null) { test(t) }
+      )
+   }
 }
 
 
