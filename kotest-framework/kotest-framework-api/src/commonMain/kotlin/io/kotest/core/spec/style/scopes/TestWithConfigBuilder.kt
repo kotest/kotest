@@ -42,13 +42,11 @@ class TestWithConfigBuilder(
          threads,
          severity
       )
-      val activeConfig = if (xdisabled) derivedConfig.copy(enabled = false) else derivedConfig
-
       context.registerTestCase(
          createNestedTest(
             name = name,
-            xdisabled = true,
-            config = activeConfig,
+            xdisabled = xdisabled,
+            config = derivedConfig,
             type = TestType.Container,
             descriptor = null,
             factoryId = null,

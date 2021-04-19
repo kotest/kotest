@@ -40,9 +40,9 @@ class SeverityPropertyOverrideTest : WordSpec({
       run.shouldBeTrue()
    }
 
-   "Critical severity, prefix normal" should {
+   "Critical severity, prefix NORMAL" should {
       var run = false
-      System.setProperty(KotestEngineProperties.testSeverity, "NORMAL")
+       System.setProperty(KotestEngineProperties.testSeverity, "NORMAL")
       "allow this test to run".config(severity = TestCaseSeverityLevel.CRITICAL) {
          run = true
       }
@@ -50,17 +50,17 @@ class SeverityPropertyOverrideTest : WordSpec({
       run.shouldBeTrue()
    }
 
-   "Critical severity, prefix blocker" should {
+   "Critical severity, prefix BLOCKER" should {
       var run = false
       System.setProperty(KotestEngineProperties.testSeverity, "BLOCKER")
-      "allow this test to run".config(severity = TestCaseSeverityLevel.CRITICAL) {
+      "not allow this test to run".config(severity = TestCaseSeverityLevel.CRITICAL) {
          run = true
       }
       System.getProperties().remove(KotestEngineProperties.testSeverity)
       run.shouldBeFalse()
    }
 
-   "MINOR severity, prefix trivial" should {
+   "MINOR severity, prefix TRIVIAL" should {
       var run = false
       System.setProperty(KotestEngineProperties.testSeverity, "TRIVIAL")
       "allow this test to run".config(severity = TestCaseSeverityLevel.MINOR) {
@@ -73,7 +73,7 @@ class SeverityPropertyOverrideTest : WordSpec({
 
    "MINOR severity, prefix NORMAL" should {
       var run = false
-      System.setProperty(KotestEngineProperties.testSeverity, "TRIVIAL")
+      System.setProperty(KotestEngineProperties.testSeverity, "NORMAL")
       "allow this test to run".config(severity = TestCaseSeverityLevel.MINOR) {
          run = true
       }
@@ -88,5 +88,4 @@ class SeverityPropertyOverrideTest : WordSpec({
       }
       run.shouldBeTrue()
    }
-}
-)
+})
