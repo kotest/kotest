@@ -30,7 +30,11 @@ kotlin {
 
       macosX64()
       tvos()
-//      watchos()
+
+      watchosArm32()
+      watchosArm64()
+      watchosX86()
+
       iosX64()
       iosArm64()
       iosArm32()
@@ -78,9 +82,17 @@ kotlin {
          dependsOn(desktopMain)
       }
 
-//      val watchosMain by getting {
-//         dependsOn(desktopMain)
-//      }
+      val watchosx86Main by getting {
+         dependsOn(desktopMain)
+      }
+
+      val watchosArm32Main by getting {
+         dependsOn(desktopMain)
+      }
+
+      val watchosArm64Main by getting {
+         dependsOn(desktopMain)
+      }
 
       val tvosMain by getting {
          dependsOn(desktopMain)
