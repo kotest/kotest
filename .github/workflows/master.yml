@@ -64,7 +64,7 @@ jobs:
             run: ./gradlew tvosX64Test --scan
 
          -  name: Run watchos tests
-            run: ./gradlew watchosArm32 watchosArm64 watchosX86Test --scan
+            run: ./gradlew watchosArm32Test watchosArm64Test watchosX86Test --scan
 
          -  name: publish macos snapshots
             run: ./gradlew publishMacosX64PublicationToDeployRepository
