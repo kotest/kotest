@@ -25,8 +25,8 @@ class TestCaseExtensionAroundAdviceTest : StringSpec() {
             "test3" -> if (testCase.config.enabled) throw RuntimeException() else execute(testCase)
             "test4" -> execute(testCase.copy(config = testCase.config.copy(enabled = false)))
             "test5" -> {
-               val active = testCase.config.enabledOrReasonIf(testCase)
-               if (active.isEnabled || active.reason != reason) throw RuntimeException() else execute(testCase)
+               val enabled = testCase.config.enabledOrReasonIf(testCase)
+               if (enabled.isEnabled || enabled.reason != reason) throw RuntimeException() else execute(testCase)
             }
             else -> execute(testCase)
          }

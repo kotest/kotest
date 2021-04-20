@@ -26,7 +26,7 @@ import kotlin.reflect.KClass
 
 private val tag = NamedTag("SkippedReason")
 
-private const val isActiveExtensionTestName = "is active extension should report why a test was skipped"
+private const val isEnabledExtensionTestName = "is enabled extension should report why a test was skipped"
 
 private var fakeRan = false
 private val ignoredWithFunction = "This test was ignored by enabledOrReasonIf due to: ${UUID.randomUUID()}"
@@ -35,7 +35,7 @@ private val ignoredWithExtension = "This test was ignored by EnabledExtension du
 @OptIn(ExperimentalKotest::class)
 private val skippedExtension = object : EnabledExtension {
    override suspend fun isEnabled(descriptor: Descriptor): Enabled =
-      if (descriptor.name.value==isActiveExtensionTestName)
+      if (descriptor.name.value == isEnabledExtensionTestName)
          Enabled.disabled(ignoredWithExtension)
       else
          Enabled.enabled
@@ -80,7 +80,7 @@ class IgnoredTestReasonFake : FunSpec({
       throw RuntimeException()
    }
 
-   test(isActiveExtensionTestName) {
+   test(isEnabledExtensionTestName) {
       throw RuntimeException()
    }
 
@@ -108,7 +108,7 @@ class IgnoredTestReasonSpec : FunSpec({
       skippedListener.reasons.shouldContain(ignoredWithFunction)
    }
 
-   test("isActiveExtension should report the reason for skipping") {
+   test("EnabledExtension should report the reason for skipping") {
       skippedListener.reasons.shouldContain(ignoredWithExtension)
    }
 
