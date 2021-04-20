@@ -27,7 +27,7 @@ suspend fun TestCase.isActive(): Boolean = this.isEnabled().isEnabled
  * or any registered [EnabledExtension]s.
  */
 @OptIn(ExperimentalKotest::class)
-internal suspend fun TestCase.isEnabled(): Enabled {
+suspend fun TestCase.isEnabled(): Enabled {
    val descriptor = this.descriptor ?: this.description.toDescriptor(this.source)
    val internal = isEnabledInternal()
    return if (!internal.isEnabled) {
