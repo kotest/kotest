@@ -8,12 +8,12 @@ import kotlin.time.Duration
 typealias EnabledIf = (TestCase) -> Boolean
 typealias EnabledOrReasonIf = (TestCase) -> Enabled
 
-class Enabled private constructor(val isEnabled: Boolean, reason: String) {
-   private val builder = StringBuilder(reason)
+class Enabled private constructor(val isEnabled: Boolean, reason: String? = null) {
+   private val builder = StringBuilder(reason ?: "")
    val reason get() = builder.trim().toString()
 
    companion object {
-      val enabled = Enabled(true, "")
+      val enabled = Enabled(true)
       fun disabled(reason: String) = Enabled(false, reason)
 
       fun fold(es: Iterable<Enabled>): Enabled {
@@ -54,7 +54,6 @@ data class TestCaseConfig(
    val extensions: List<TestCaseExtension> = emptyList(),
    val enabledIf: EnabledIf = { true },
    val severity: TestCaseSeverityLevel? = null,
-   val enabledOrReason: Enabled = Enabled.enabled,
    val enabledOrReasonIf: EnabledOrReasonIf = { Enabled.enabled },
 ) {
    init {
@@ -69,4 +68,4 @@ val xdisabledMessage = Enabled.disabled("Test was disabled using xdisabled")
 /**
  * Returns a copy of this test config with the enabled flag set to false, if [xdisabled] is true.
  */
-fun TestCaseConfig.withXDisabled(xdisabled: Boolean) = if (xdisabled) copy(enabledOrReason = xdisabledMessage) else this
+fun TestCaseConfig.withXDisabled(xdisabled: Boolean) = if (xdisabled) copy(enabledOrReasonIf = { xdisabledMessage }) else this

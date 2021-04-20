@@ -36,7 +36,6 @@ interface StringSpecRootScope : RootScope {
       enabledIf: EnabledIf? = null,
       invocationTimeout: Duration? = null,
       severity: TestCaseSeverityLevel? = null,
-      enabledOrReason: Enabled? = null,
       enabledOrReasonIf: EnabledOrReasonIf? = null,
       test: suspend TestContext.() -> Unit,
    ) = RootTestWithConfigBuilder(createTestName(null, this, false), registration(), false).config(
@@ -49,7 +48,6 @@ interface StringSpecRootScope : RootScope {
       enabledIf,
       invocationTimeout,
       severity,
-      enabledOrReason,
       enabledOrReasonIf,
       test
    )

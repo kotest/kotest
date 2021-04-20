@@ -45,7 +45,6 @@ suspend fun TestCase.isEnabled(): Enabled {
  *
  * A test is inactive if:
  *
- * - The `enabledOrReason` property is set to [Enabled.disabled] in the [TestCaseConfig] associated with the test.
  * - The `enabledOrReasonIf` function evaluates to [Enabled.disabled] in the [TestCaseConfig] associated with the test.
  * - The `enabled` property is set to false in the [TestCaseConfig] associated with the test.
  * - The `enabledIf` function evaluates to [false] in the [TestCaseConfig] associated with the test.
@@ -63,10 +62,6 @@ fun TestCase.isEnabledInternal(): Enabled {
    val bangEnabled = sysprop(KotestEngineProperties.disableBangPrefix) == null
    if (isBang() && bangEnabled) {
       return Enabled.disabled("${description.testPath()} is disabled by bang" ).also { log(it.reason) }
-   }
-
-   if (!config.enabledOrReason.isEnabled) {
-      return config.enabledOrReason
    }
 
    val enabledOrReasonIf = config.enabledOrReasonIf(this)

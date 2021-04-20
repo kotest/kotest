@@ -25,10 +25,6 @@ class TestCaseExtensionAroundAdviceTest : StringSpec() {
             "test3" -> if (testCase.config.enabled) throw RuntimeException() else execute(testCase)
             "test4" -> execute(testCase.copy(config = testCase.config.copy(enabled = false)))
             "test5" -> {
-               val active = testCase.config.enabledOrReason
-               if (active.isEnabled || active.reason != reason) throw RuntimeException() else execute(testCase)
-            }
-            "test6" -> {
                val active = testCase.config.enabledOrReasonIf(testCase)
                if (active.isEnabled || active.reason != reason) throw RuntimeException() else execute(testCase)
             }
@@ -56,7 +52,6 @@ class TestCaseExtensionAroundAdviceTest : StringSpec() {
       "test4".config(enabled = true) {
          throw RuntimeException()
       }
-      "test5".config(enabledOrReason = Enabled.disabled(reason)) {} // the extension should throw if this test is enabled
       "test6".config(enabledOrReasonIf = { Enabled.disabled(reason) }) {} // the extension should throw if this test is enabled}
    }
 }

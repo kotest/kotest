@@ -29,7 +29,6 @@ private val tag = NamedTag("SkippedReason")
 private const val isActiveExtensionTestName = "is active extension should report why a test was skipped"
 
 private var fakeRan = false
-private val ignoredWithValue = "This test was ignored by enabledOrReason due to: ${UUID.randomUUID()}"
 private val ignoredWithFunction = "This test was ignored by enabledOrReasonIf due to: ${UUID.randomUUID()}"
 private val ignoredWithExtension = "This test was ignored by EnabledExtension due to: ${UUID.randomUUID()}"
 
@@ -69,10 +68,6 @@ class IgnoredTestReasonFake : FunSpec({
       skippedListener.reasons.shouldBeEmpty()
    }
 
-   test("expected to be ignored by enabledOrReason").config(enabledOrReason = Enabled.disabled(ignoredWithValue)) {
-      throw RuntimeException()
-   }
-
    test("expected to be ignored by enabledOrReasonIf").config(enabledOrReasonIf = { Enabled.disabled(ignoredWithFunction) }) {
       throw RuntimeException()
    }
@@ -106,11 +101,7 @@ class IgnoredTestReasonSpec : FunSpec({
    })
 
    test("IgnoredTestReasonFake should have six skipped tests") {
-      skippedListener.reasons.shouldHaveSize(6)
-   }
-
-   test("enabledOrReason should report the reason for skipping") {
-      skippedListener.reasons.shouldContain(ignoredWithValue)
+      skippedListener.reasons.shouldHaveSize(5)
    }
 
    test("enabledOrReasonIf should report the reason for skipping") {

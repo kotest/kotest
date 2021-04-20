@@ -46,7 +46,7 @@ interface AfterSpecListener : Listener {
    suspend fun afterSpec(spec: Spec): Unit = Unit
 }
 
-interface SkipSpecListner : Listener {
+interface SpecIgnoredListner : Listener {
 
    /**
     * Called once per [Spec] iff all tests in the spec are inactive.
@@ -54,7 +54,7 @@ interface SkipSpecListner : Listener {
     * @param spec the [Spec] instance.
     * @param results a map of each test case mapped to its skipped result.
     */
-   suspend fun skipSpec(spec: Spec, results: Map<TestCase, TestResult>): Unit = Unit
+   suspend fun specIgnored(spec: Spec, results: Map<TestCase, TestResult>): Unit = Unit
 }
 
 interface PrepareSpecListener : Listener {

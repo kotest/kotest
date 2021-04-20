@@ -28,7 +28,6 @@ class RootTestWithConfigBuilder(
       enabledIf: EnabledIf? = null,
       invocationTimeout: Duration? = null,
       severity: TestCaseSeverityLevel? = null,
-      enabledOrReason: Enabled? = null,
       enabledOrReasonIf: EnabledOrReasonIf? = null,
       test: suspend TestContext.() -> Unit,
    ) {
@@ -42,7 +41,6 @@ class RootTestWithConfigBuilder(
          invocations,
          threads,
          severity,
-         enabledOrReason = enabledOrReason,
          enabledOrReasonIf = enabledOrReasonIf,
       )
       registration.addTest(name, xdisabled, derivedConfig, TestType.Test, test)

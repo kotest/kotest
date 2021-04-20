@@ -80,7 +80,7 @@ class NotificationManager(private val listener: TestEngineListener) {
       results: Map<TestCase, TestResult>
    ) = Try {
       configuration.testListeners().forEach {
-         it.skipSpec(spec, results)
+         it.specIgnored(spec, results)
       }
    }
 
