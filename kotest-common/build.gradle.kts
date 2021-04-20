@@ -78,9 +78,17 @@ kotlin {
          dependsOn(desktopMain)
       }
 
-//      val watchosMain by getting {
-//         dependsOn(desktopMain)
-//      }
+      val watchosX86Main by getting {
+         dependsOn(desktopMain)
+      }
+
+      val watchosArm32Main by getting {
+         dependsOn(desktopMain)
+      }
+
+      val watchosArm64Main by getting {
+         dependsOn(desktopMain)
+      }
 
       val tvosMain by getting {
          dependsOn(desktopMain)
