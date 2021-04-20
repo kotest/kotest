@@ -38,7 +38,7 @@ class SpecExecutor(private val listener: TestEngineListener) {
       log("SpecExecutor execute [$kclass]")
       notifications.specStarted(kclass)
          .flatMap { createInstance(kclass) }
-         .flatMap { runTestsIfAtLeastOneActive(it) }
+         .flatMap { runTestsIfAtLeastOneEnabled(it) }
          .fold(
             { notifications.specFinished(kclass, it, emptyMap()) },
             { notifications.specFinished(kclass, null, it) }
@@ -59,7 +59,7 @@ class SpecExecutor(private val listener: TestEngineListener) {
     * execution step takes place. Otherwise if at least one active, the [runTests]
     * function is invoked.
     */
-   private suspend fun runTestsIfAtLeastOneActive(spec: Spec): Try<Map<TestCase, TestResult>> {
+   private suspend fun runTestsIfAtLeastOneEnabled(spec: Spec): Try<Map<TestCase, TestResult>> {
       log("runTestsIfAtLeastOneActive [$spec]")
       val roots = spec.materializeAndOrderRootTests()
       val active = roots.any { it.testCase.isEnabled().isEnabled }

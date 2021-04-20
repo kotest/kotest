@@ -20,12 +20,14 @@ import io.kotest.core.test.isFocused
 import io.kotest.mpp.log
 import io.kotest.mpp.sysprop
 
+suspend fun TestCase.isActive(): Boolean = this.isEnabled().isEnabled
+
 /**
- * Returns [Enabled.isEnabled] if the given [TestCase] is active based on default rules at [isEnabledInternal]
+ * Returns [Enabled.isEnabled] if the given [TestCase] is enabled based on default rules at [isEnabledInternal]
  * or any registered [EnabledExtension]s.
  */
 @OptIn(ExperimentalKotest::class)
-suspend fun TestCase.isEnabled(): Enabled {
+internal suspend fun TestCase.isEnabled(): Enabled {
    val descriptor = this.descriptor ?: this.description.toDescriptor(this.source)
    val internal = isEnabledInternal()
    return if (!internal.isEnabled) {
@@ -37,13 +39,13 @@ suspend fun TestCase.isEnabled(): Enabled {
 }
 
 /**
- * Returns [Enabled.isEnabled] if the given [TestCase] is active by the built in rules.
+ * Returns [Enabled.isEnabled] if the given [TestCase] is enabled by the built in rules.
  *
  * Logic can be customized via [EnabledExtension]s.
  *
- * A test can be active or inactive.
+ * A test can be enabled or disabled.
  *
- * A test is inactive if:
+ * A test is disabled if:
  *
  * - The `enabledOrReasonIf` function evaluates to [Enabled.disabled] in the [TestCaseConfig] associated with the test.
  * - The `enabled` property is set to false in the [TestCaseConfig] associated with the test.
@@ -55,7 +57,7 @@ suspend fun TestCase.isEnabled(): Enabled {
  *
  * Note: tags are defined either through [TestCaseConfig] or in the [Spec] dsl.
  */
-fun TestCase.isEnabledInternal(): Enabled {
+internal fun TestCase.isEnabledInternal(): Enabled {
 
    // this sys property disables the use of !
    // when it's not set, then we use ! to disable tests
