@@ -1,6 +1,7 @@
 package com.sksamuel.kotest.matchers.doubles
 
 import io.kotest.assertions.throwables.shouldThrow
+import io.kotest.core.config.Configuration
 import io.kotest.core.spec.style.FreeSpec
 import io.kotest.matchers.doubles.beGreaterThan
 import io.kotest.matchers.doubles.beGreaterThanOrEqualTo
@@ -10,7 +11,6 @@ import io.kotest.matchers.doubles.beNaN
 import io.kotest.matchers.doubles.beNegativeInfinity
 import io.kotest.matchers.doubles.bePositiveInfinity
 import io.kotest.matchers.doubles.between
-import io.kotest.matchers.doubles.exactly
 import io.kotest.matchers.doubles.gt
 import io.kotest.matchers.doubles.gte
 import io.kotest.matchers.doubles.lt
@@ -18,7 +18,6 @@ import io.kotest.matchers.doubles.lte
 import io.kotest.matchers.doubles.negative
 import io.kotest.matchers.doubles.positive
 import io.kotest.matchers.doubles.shouldBeBetween
-import io.kotest.matchers.doubles.shouldBeExactly
 import io.kotest.matchers.doubles.shouldBeGreaterThan
 import io.kotest.matchers.doubles.shouldBeGreaterThanOrEqual
 import io.kotest.matchers.doubles.shouldBeLessThan
@@ -30,7 +29,6 @@ import io.kotest.matchers.doubles.shouldBePositive
 import io.kotest.matchers.doubles.shouldBePositiveInfinity
 import io.kotest.matchers.doubles.shouldBeZero
 import io.kotest.matchers.doubles.shouldNotBeBetween
-import io.kotest.matchers.doubles.shouldNotBeExactly
 import io.kotest.matchers.doubles.shouldNotBeGreaterThan
 import io.kotest.matchers.doubles.shouldNotBeGreaterThanOrEqual
 import io.kotest.matchers.doubles.shouldNotBeLessThan
@@ -45,8 +43,6 @@ import io.kotest.matchers.should
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNot
 import io.kotest.matchers.shouldNotBe
-import io.kotest.property.Arb
-import io.kotest.property.arbitrary.double
 import io.kotest.property.arbitrary.filterNot
 import io.kotest.property.checkAll
 import kotlin.Double.Companion.MAX_VALUE
@@ -55,126 +51,10 @@ import kotlin.Double.Companion.NEGATIVE_INFINITY
 import kotlin.Double.Companion.NaN
 import kotlin.Double.Companion.POSITIVE_INFINITY
 import kotlin.math.absoluteValue
-import kotlin.math.ulp
 
 class DoubleMatchersTest : FreeSpec() {
 
-  private val nonNumericDoubles = listOf(NaN, POSITIVE_INFINITY, NEGATIVE_INFINITY)
-
-  private val numericDoubles = Arb.double().filterNot { it in nonNumericDoubles }
-  private val nonMinNorMaxValueDoubles = numericDoubles.filterNot { it in listOf(MAX_VALUE, MIN_VALUE) }
-
   init {
-    "Exactly Matcher" - {
-
-      "Every numeric Double" - {
-
-        "Should be exactly" - {
-
-          "Itself" {
-            checkAll(numericDoubles) {
-              it shouldExactlyMatch it
-            }
-          }
-        }
-
-
-        "Should not be exactly" - {
-
-          "Any number smaller than itself" {
-            checkAll(nonMinNorMaxValueDoubles) {
-              it shouldNotMatchExactly it.slightlySmaller()
-            }
-          }
-
-          "Any number bigger than itself" {
-            checkAll(nonMinNorMaxValueDoubles) {
-              it shouldNotMatchExactly it.slightlyGreater()
-            }
-          }
-
-          "Anything that's not numeric" {
-            checkAll(numericDoubles) {
-              nonNumericDoubles.forEach { nonNumeric ->
-                it shouldNotMatchExactly nonNumeric
-              }
-            }
-          }
-        }
-
-      }
-
-      "The non-numeric double" - {
-        "NaN" - {
-
-          "Should not be exactly" - {
-
-            "Any number" {
-              checkAll(numericDoubles) {
-                NaN shouldNotMatchExactly it
-              }
-            }
-
-            "NaN" {
-              NaN shouldNotMatchExactly NaN
-            }
-
-            "The infinities" {
-              NaN shouldNotMatchExactly POSITIVE_INFINITY
-              NaN shouldNotMatchExactly NEGATIVE_INFINITY
-            }
-          }
-        }
-
-        "Positive Infinity" - {
-
-          "Should be exactly" - {
-            "Itself" {
-              POSITIVE_INFINITY shouldExactlyMatch POSITIVE_INFINITY
-            }
-          }
-
-          "Should not be exactly" - {
-
-            "Any numeric double" {
-              checkAll(numericDoubles) {
-                POSITIVE_INFINITY shouldNotMatchExactly it
-              }
-            }
-
-            "Any other non-numeric double" {
-              POSITIVE_INFINITY shouldNotMatchExactly NEGATIVE_INFINITY
-              POSITIVE_INFINITY shouldNotMatchExactly NaN
-            }
-          }
-
-        }
-
-        "Negative Infinity" - {
-
-          "Should be exactly" - {
-            "Itself" {
-              NEGATIVE_INFINITY shouldExactlyMatch NEGATIVE_INFINITY
-            }
-          }
-
-          "Should not be exactly" - {
-
-            "Any numeric double" {
-              checkAll(numericDoubles) {
-                NEGATIVE_INFINITY shouldNotMatchExactly it
-              }
-            }
-
-            "Any other non-numeric double" {
-              NEGATIVE_INFINITY shouldNotMatchExactly POSITIVE_INFINITY
-              NEGATIVE_INFINITY shouldNotMatchExactly NaN
-            }
-          }
-        }
-      }
-
-    }
 
     "Between matcher" - {
 
@@ -889,57 +769,11 @@ class DoubleMatchersTest : FreeSpec() {
     }
   }
 
-  private fun Double.toleranceValue(): Double {
-    return ulp
-  }
-
-  private fun Double.slightlyGreater(): Double {
-    return this + (2 * ulp)
-  }
-
-  private fun Double.muchGreater(): Double {
-    return this + (3 * ulp)
-  }
-
-  private fun Double.slightlySmaller(): Double {
-    return this - (2 * ulp)
-  }
-
-  private fun Double.muchSmaller(): Double {
-    return this - (3 * ulp)
-  }
-
   private fun shouldThrowAssertionError(message: String, vararg expression: () -> Any?) {
     expression.forEach {
       val exception = shouldThrow<AssertionError>(it)
       exception.message shouldBe message
     }
-  }
-
-  private infix fun Double.shouldExactlyMatch(other: Double) {
-    this shouldBeExactly other
-    this shouldBe exactly(other)
-    this shouldThrowExceptionOnNotExactly other
-  }
-
-  private infix fun Double.shouldThrowExceptionOnNotExactly(other: Double) {
-    shouldThrowAssertionError("$this should not equal $other",
-                              { this shouldNotBeExactly other },
-                              { this shouldNotBe exactly(other) }
-    )
-  }
-
-  private infix fun Double.shouldNotMatchExactly(other: Double) {
-    this shouldNotBe exactly(other)
-    this shouldNotBeExactly other
-    this shouldThrowExceptionOnExactly other
-  }
-
-  private infix fun Double.shouldThrowExceptionOnExactly(other: Double) {
-    shouldThrowAssertionError("$this is not equal to expected value $other",
-                              { this shouldBeExactly other },
-                              { this shouldBe exactly(other) }
-    )
   }
 
   private fun Double.shouldMatchBetween(a: Double, b: Double, tolerance: Double) {

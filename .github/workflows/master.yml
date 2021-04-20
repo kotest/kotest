@@ -47,7 +47,7 @@ jobs:
                path: build-reports.zip
 
    macos:
-      runs-on: macOS-latest
+      runs-on: macos-latest
       steps:
          -  name: Checkout the repo
             uses: actions/checkout@v2
