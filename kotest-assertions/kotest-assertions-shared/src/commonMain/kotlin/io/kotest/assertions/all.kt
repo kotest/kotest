@@ -19,7 +19,7 @@ import io.kotest.common.ExperimentalKotest
  * ```
  */
 @ExperimentalKotest
-suspend inline fun <T> all(crossinline assertions: suspend () -> T): T {
+suspend fun <T> all(assertions: suspend () -> T): T {
    // Handle the edge case of nested calls to this function by only calling throwCollectedErrors in the
    // outermost verifyAll block
    if (errorCollector.getCollectionMode() == ErrorCollectionMode.Soft) return assertions()
@@ -65,7 +65,7 @@ inline fun <T> assertSoftly(assertions: () -> T): T {
  * ```
  */
 @ExperimentalKotest
-suspend inline fun <T> all(t: T, crossinline assertions: suspend T.(T) -> Unit): T {
+suspend fun <T> all(t: T, assertions: suspend T.(T) -> Unit): T {
    return all {
       t.assertions(t)
       t

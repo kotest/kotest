@@ -2,7 +2,7 @@ package com.sksamuel.kotest.ignored
 
 import io.kotest.assertions.withClue
 import io.kotest.core.NamedTag
-import io.kotest.core.config.ExperimentalKotest
+import io.kotest.common.ExperimentalKotest
 import io.kotest.core.config.configuration
 import io.kotest.core.extensions.EnabledExtension
 import io.kotest.core.listeners.TestListener

@@ -5,8 +5,6 @@ import io.kotest.common.ExperimentalKotest
 /**
  * Runs multiple assertions and expects exactly one to succeed, will suppress all exceptions otherwise.
  *
- * TODO: add experimental annotation
- *
  * ```
  *   either {
  *      "foo" shouldBe "bar"
@@ -16,8 +14,8 @@ import io.kotest.common.ExperimentalKotest
  * ```
  */
 @ExperimentalKotest
-suspend inline fun <T> either(crossinline assertions: suspend () -> T): T? {
-   val (result, failures, assertionsCount) = errorScope { assertions() }
+suspend fun <T> either(assertions: suspend () -> T): T? {
+   val (result, failures, assertionsCount) = errorAndAssertionsScope { assertions() }
    assertionCounter.inc(assertionsCount)
 
    if (assertionsCount < 2) {
@@ -45,7 +43,7 @@ suspend inline fun <T> either(crossinline assertions: suspend () -> T): T? {
  * Returns the original value [t] on success for use in subsequent assertions.
  */
 @ExperimentalKotest
-suspend inline fun <T> either(t: T, crossinline assertions: suspend T.(T) -> Unit) = either {
+suspend fun <T> either(t: T, assertions: suspend T.(T) -> Unit) = either {
    t.assertions(t)
    t
 }
