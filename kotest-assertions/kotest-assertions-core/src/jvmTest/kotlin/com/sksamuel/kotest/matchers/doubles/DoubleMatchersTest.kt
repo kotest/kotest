@@ -1,7 +1,6 @@
 package com.sksamuel.kotest.matchers.doubles
 
 import io.kotest.assertions.throwables.shouldThrow
-import io.kotest.core.config.Configuration
 import io.kotest.core.spec.style.FreeSpec
 import io.kotest.matchers.doubles.beGreaterThan
 import io.kotest.matchers.doubles.beGreaterThanOrEqualTo

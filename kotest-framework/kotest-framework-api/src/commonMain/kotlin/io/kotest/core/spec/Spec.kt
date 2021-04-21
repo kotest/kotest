@@ -50,7 +50,7 @@ abstract class Spec : TestConfiguration(), SpecFunctionConfiguration, SpecFuncti
     * On other platforms this setting will have no effect.
     */
    @JsName("threads_js")
-   @Deprecated("Replaced with concurrency and parallelism. This parameter will be removed in 4.6")
+   @Deprecated("Replaced with concurrency and parallelism. This parameter will be removed in 4.7")
    var threads: Int? = null
 
    /**
