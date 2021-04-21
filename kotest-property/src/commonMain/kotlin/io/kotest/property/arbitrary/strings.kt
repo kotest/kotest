@@ -96,34 +96,29 @@ class StringShrinkerWithMin(
 
       return when {
          isShortest && isSimplest -> emptyList()
-         !isShortest -> shorterVariants(value)
-         !isSimplest -> simplerVariants(value)
-         else -> (simplerVariants(value) + shorterVariants(value)).distinct()
-      }.map { it.padEnd(minLength, simplestChar) }
+         isShortest -> simplerVariants(value)
+         isSimplest -> shorterVariants(value)
+         else -> shorterVariants(value) + simplerVariants(value)
+      }.map { it.padEnd(minLength, simplestChar) }.distinct()
    }
 
    private fun simplerVariants(value: String) =
-      listOf(
-         value.replaceChar(simplestChar, value.indexOfFirst { it != simplestChar }),
-         value.replaceChar(simplestChar, value.indexOfLast { it != simplestChar }),
-         value.replaceChar(simplestChar, value.getMidPoint()),
-      )
+      listOfNotNull(replaceFirst(value, simplestChar), replaceLast(value, simplestChar))
 
    private fun shorterVariants(value: String) =
       listOf(
-         value.take(value.getMidPoint()),
-         value.takeLast(value.getMidPoint()),
+         value.take(value.length / 2 + value.length % 2),
+         value.takeLast(value.length / 2),
          value.drop(1),
          value.dropLast(1),
       )
 
-   private fun String.getMidPoint() =
-      length.div(2).coerceIn(0..length)
+   private fun replaceFirst(value: String, newChar: Char): String? =
+      replace(value, newChar, value.indexOfFirst { it != simplestChar })
 
-   private fun String.replaceChar(
-      newChar: Char,
-      index: Int,
-   ): String {
-      return replaceRange(index..index, newChar.toString())
-   }
+   private fun replaceLast(value: String, newChar: Char): String? =
+      replace(value, newChar, value.indexOfLast { it != simplestChar })
+
+   private fun replace(value: String, newChar: Char, index: Int) =
+      if (index == -1) null else value.replaceRange(index..index, newChar.toString())
 }
