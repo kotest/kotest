@@ -1,6 +1,6 @@
 package io.kotest.core.extensions
 
-import io.kotest.core.config.ExperimentalKotest
+import io.kotest.common.ExperimentalKotest
 import io.kotest.core.plan.Descriptor
 import io.kotest.core.test.Enabled
 
