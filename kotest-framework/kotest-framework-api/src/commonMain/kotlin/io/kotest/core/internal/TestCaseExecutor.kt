@@ -2,12 +2,11 @@ package io.kotest.core.internal
 
 import io.kotest.core.TimeoutExecutionContext
 import io.kotest.core.extensions.TestCaseExtension
+import io.kotest.core.extensions.resolvedTestCaseExtensions
 import io.kotest.core.spec.invokeAfterInvocation
 import io.kotest.core.spec.invokeAllAfterTestCallbacks
 import io.kotest.core.spec.invokeAllBeforeTestCallbacks
 import io.kotest.core.spec.invokeBeforeInvocation
-import io.kotest.core.extensions.resolvedTestCaseExtensions
-import io.kotest.core.listeners.TestListener
 import io.kotest.core.test.NestedTest
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestCaseExecutionListener
@@ -87,7 +86,7 @@ class TestCaseExecutor(
    ): TestResult {
 
       val innerExecute: suspend (TestCase, TestContext) -> TestResult = { tc, ctx ->
-         executeIfActive(tc) { executeActiveTest(tc, ctx, start) }
+         executeIfEnabled(tc) { executeActiveTest(tc, ctx, start) }
       }
 
       val execute = extensions.foldRight(innerExecute) { extension, execute ->
@@ -105,19 +104,21 @@ class TestCaseExecutor(
    }
 
    /**
-    * Checks the active status of a [TestCase] before invoking it.
-    * If the test is inactive, then [TestResult.ignored] is returned.
+    * Checks the enabled status of a [TestCase] before invoking it.
+    * If the test is disabled, then [TestResult.ignored] is returned.
     */
-   private suspend fun executeIfActive(testCase: TestCase, ifActive: suspend () -> TestResult): TestResult {
+   private suspend fun executeIfEnabled(testCase: TestCase, ifEnabled: suspend () -> TestResult): TestResult {
       // if the test case is active we execute it, otherwise we just invoke the callback with ignored
-      return when (testCase.isActive()) {
+      val enabled = testCase.isEnabled()
+
+      return when (enabled.isEnabled) {
          true -> {
-            log("${testCase.description.testPath()} is active")
-            ifActive()
+            log("${testCase.description.testPath()} is enabled")
+            ifEnabled()
          }
          false -> {
-            log("${testCase.description.testPath()} is *not* active")
-            TestResult.Ignored
+            log("${testCase.description.testPath()} is disabled")
+            TestResult.ignored(enabled)
          }
       }
    }

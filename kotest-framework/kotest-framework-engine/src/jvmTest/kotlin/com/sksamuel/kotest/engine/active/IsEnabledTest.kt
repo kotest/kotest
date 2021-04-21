@@ -3,53 +3,54 @@ package com.sksamuel.kotest.engine.active
 import io.kotest.core.NamedTag
 import io.kotest.core.Tags
 import io.kotest.core.config.configuration
-import io.kotest.core.test.TestCase
-import io.kotest.core.test.TestCaseConfig
+import io.kotest.core.extensions.EnabledExtension
 import io.kotest.core.extensions.TagExtension
-import io.kotest.core.extensions.IsActiveExtension
 import io.kotest.core.filter.TestFilter
 import io.kotest.core.filter.TestFilterResult
 import io.kotest.core.filter.toTestFilterResult
-import io.kotest.core.internal.isActive
-import io.kotest.core.internal.isActiveInternal
+import io.kotest.core.internal.isEnabled
+import io.kotest.core.internal.isEnabledInternal
 import io.kotest.core.plan.Descriptor
 import io.kotest.core.spec.Isolate
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.core.spec.toDescription
 import io.kotest.core.test.Description
+import io.kotest.core.test.Enabled
+import io.kotest.core.test.TestCase
+import io.kotest.core.test.TestCaseConfig
 import io.kotest.matchers.shouldBe
 
 @Isolate
-class IsActiveTest : StringSpec() {
+class IsEnabledTest : StringSpec() {
 
    init {
 
       "isActiveInternal should return false if the test is disabled in config" {
          val config = TestCaseConfig(enabled = false)
          val test =
-            TestCase.test(IsActiveTest::class.toDescription().appendTest("foo"), this@IsActiveTest, parent = null) {}
+            TestCase.test(IsEnabledTest::class.toDescription().appendTest("foo"), this@IsEnabledTest, parent = null) {}
                .copy(config = config)
-         test.isActiveInternal() shouldBe false
+         test.isEnabledInternal().isEnabled shouldBe false
       }
 
       "isActiveInternal should return false if the test is disabled using the isEnabledFn" {
          val config = TestCaseConfig(enabledIf = { false })
          val test =
-            TestCase.test(IsActiveTest::class.toDescription().appendTest("foo"), this@IsActiveTest, parent = null) {}
+            TestCase.test(IsEnabledTest::class.toDescription().appendTest("foo"), this@IsEnabledTest, parent = null) {}
                .copy(config = config)
-         test.isActiveInternal() shouldBe false
+         test.isEnabledInternal().isEnabled shouldBe false
       }
 
-      "isActiveInternal should return true if the test is disabled using the isEnabledFn" {
+      "isEnabledInternal should return true if the test is disabled using the isEnabledFn" {
          val config = TestCaseConfig(enabledIf = { true })
          val test =
-            TestCase.test(IsActiveTest::class.toDescription().appendTest("foo"), this@IsActiveTest, parent = null) {}
+            TestCase.test(IsEnabledTest::class.toDescription().appendTest("foo"), this@IsEnabledTest, parent = null) {}
                .copy(config = config)
-         test.isActiveInternal() shouldBe true
+         test.isEnabledInternal().isEnabled shouldBe true
       }
 
-      "isActiveInternal should return false if it has an excluded tag" {
+      "isEnabledInternal should return false if it has an excluded tag" {
 
          val mytag = NamedTag("mytag")
 
@@ -62,14 +63,14 @@ class IsActiveTest : StringSpec() {
 
          val config = TestCaseConfig(tags = setOf(mytag))
          val test =
-            TestCase.test(IsActiveTest::class.toDescription().appendTest("foo"), this@IsActiveTest, parent = null) {}
+            TestCase.test(IsEnabledTest::class.toDescription().appendTest("foo"), this@IsEnabledTest, parent = null) {}
                .copy(config = config)
-         test.isActiveInternal() shouldBe false
+         test.isEnabledInternal().isEnabled shouldBe false
 
          configuration.deregisterExtension(ext)
       }
 
-      "isActiveInternal should return false if it is excluded by a tag expression" {
+      "isEnabledInternal should return false if it is excluded by a tag expression" {
 
          val mytag = NamedTag("mytag")
 
@@ -81,14 +82,14 @@ class IsActiveTest : StringSpec() {
 
          val config = TestCaseConfig(tags = setOf(mytag))
          val test =
-            TestCase.test(IsActiveTest::class.toDescription().appendTest("foo"), this@IsActiveTest, parent = null) {}
+            TestCase.test(IsEnabledTest::class.toDescription().appendTest("foo"), this@IsEnabledTest, parent = null) {}
                .copy(config = config)
-         test.isActiveInternal() shouldBe false
+         test.isEnabledInternal().isEnabled shouldBe false
 
          configuration.deregisterExtension(ext)
       }
 
-      "isActiveInternal should return false if it has no tags and included tags are set" {
+      "isEnabledInternal should return false if it has no tags and included tags are set" {
 
          val yourtag = NamedTag("yourtag")
 
@@ -101,17 +102,17 @@ class IsActiveTest : StringSpec() {
          val mytag = NamedTag("mytag")
          val config = TestCaseConfig(tags = setOf(mytag))
          val test = TestCase.test(
-            IsActiveTest::class.toDescription().appendTest("foo"),
-            this@IsActiveTest,
+            IsEnabledTest::class.toDescription().appendTest("foo"),
+            this@IsEnabledTest,
             parent = null
          ) {}
             .copy(config = config)
-         test.isActiveInternal() shouldBe false
+         test.isEnabledInternal().isEnabled shouldBe false
 
          configuration.deregisterExtension(ext)
       }
 
-      "isActiveInternal should return false if it has no tags and a tag expression with include is set" {
+      "isEnabledInternal should return false if it has no tags and a tag expression with include is set" {
 
          val ext = object : TagExtension {
             override fun tags(): Tags = Tags("yourtag")
@@ -122,54 +123,54 @@ class IsActiveTest : StringSpec() {
          val mytag = NamedTag("mytag")
          val config = TestCaseConfig(tags = setOf(mytag))
          val test = TestCase.test(
-            IsActiveTest::class.toDescription().appendTest("foo"),
-            this@IsActiveTest,
+            IsEnabledTest::class.toDescription().appendTest("foo"),
+            this@IsEnabledTest,
             parent = null
          ) {}
             .copy(config = config)
-         test.isActiveInternal() shouldBe false
+         test.isEnabledInternal().isEnabled shouldBe false
 
          configuration.deregisterExtension(ext)
       }
 
-      "isActiveInternal should return false if the test name begins with a !" {
+      "isEnabledInternal should return false if the test name begins with a !" {
          val test = TestCase.test(
-            IsActiveTest::class.toDescription().appendTest("!my test"),
-            this@IsActiveTest,
+            IsEnabledTest::class.toDescription().appendTest("!my test"),
+            this@IsEnabledTest,
             parent = null
          ) {}
-         test.isActiveInternal() shouldBe false
+         test.isEnabledInternal().isEnabled shouldBe false
       }
 
-      "isActiveInternal should return false if the test is not focused and the spec contains OTHER focused tests" {
+      "isEnabledInternal should return false if the test is not focused and the spec contains OTHER focused tests" {
          val test = TestCase.test(
-            IsActiveWithFocusTest::class.toDescription().appendTest("my test"),
-            IsActiveWithFocusTest(),
+            IsEnabledWithFocusTest::class.toDescription().appendTest("my test"),
+            IsEnabledWithFocusTest(),
             parent = null
          ) {}
-         test.isActiveInternal() shouldBe false
+         test.isEnabledInternal().isEnabled shouldBe false
       }
 
-      "isActiveInternal should return true if the test is focused and top level" {
+      "isEnabledInternal should return true if the test is focused and top level" {
          val test = TestCase.test(
-            IsActiveWithFocusTest::class.toDescription().appendTest("f:my test"),
-            IsActiveWithFocusTest(),
+            IsEnabledWithFocusTest::class.toDescription().appendTest("f:my test"),
+            IsEnabledWithFocusTest(),
             parent = null
          ) {}
-         test.isActiveInternal() shouldBe true
+         test.isEnabledInternal().isEnabled shouldBe true
       }
 
-      "isActiveInternal should return true if not top level even if spec has top level focused tests" {
+      "isEnabledInternal should return true if not top level even if spec has top level focused tests" {
          val test =
             TestCase.test(
-               IsActiveWithFocusTest::class.toDescription().appendTest("f:my test").appendTest("foo"),
-               IsActiveWithFocusTest(),
+               IsEnabledWithFocusTest::class.toDescription().appendTest("f:my test").appendTest("foo"),
+               IsEnabledWithFocusTest(),
                parent = null
             ) {}
-         test.isActiveInternal() shouldBe true
+         test.isEnabledInternal().isEnabled shouldBe true
       }
 
-      "isActiveInternal should return false if a test filter excludes the test" {
+      "isEnabledInternal should return false if a test filter excludes the test" {
          val filter = object : TestFilter {
             override fun filter(description: Description): TestFilterResult {
                return (description.displayName() == "f").toTestFilterResult()
@@ -181,39 +182,41 @@ class IsActiveTest : StringSpec() {
             SomeTestClass::class.toDescription().appendTest("f"),
             SomeTestClass(),
             parent = null
-         ) {}.isActiveInternal() shouldBe true
+         ) {}.isEnabledInternal().isEnabled shouldBe true
 
          TestCase.test(
             SomeTestClass::class.toDescription().appendTest("g"),
             SomeTestClass(),
             parent = null
-         ) {}.isActiveInternal() shouldBe false
+         ) {}.isEnabledInternal().isEnabled shouldBe false
 
          configuration.deregisterFilter(filter)
       }
 
-      "isActive should use extensions when registered" {
+      "isEnabled should use extensions when registered" {
 
-         val ext = object : IsActiveExtension {
-            override suspend fun isActive(descriptor: Descriptor): Boolean {
-               return descriptor.name.value.contains("activateme")
-            }
+         val ext = object : EnabledExtension {
+            override suspend fun isEnabled(descriptor: Descriptor) =
+               if (descriptor.name.value.contains("activateme"))
+                  Enabled.enabled
+               else
+                  Enabled.disabled("descriptor name does not contain activateme")
          }
 
          configuration.registerExtension(ext)
 
-         // this should be inactive because the extension says it is, even though it's normally active
+         // this should be disabled because the extension says it is, even though it's normally enabled
          TestCase.test(
-            SomeTestClass::class.toDescription().appendTest("active"),
+            SomeTestClass::class.toDescription().appendTest("enabled"),
             SomeTestClass(),
             parent = null
-         ) {}.isActive() shouldBe false
+         ) {}.isEnabled().isEnabled shouldBe false
 
-//         // this should be active because the extension says it is, even though it's disabled by a bang
+//         // this should be isEnabled because the extension says it is, even though it's disabled by a bang
 //         TestCase.test(
 //            SomeTestClass::class.toDescription().appendTest("!activateme"),
 //            SomeTestClass()
-//         ) {}.isActive() shouldBe true
+//         ) {}.isEnabled() shouldBe true
 
          configuration.deregisterExtension(ext)
       }
@@ -226,7 +229,7 @@ class SomeTestClass : FunSpec({
 })
 
 
-class IsActiveWithFocusTest : FunSpec({
+class IsEnabledWithFocusTest : FunSpec({
    test("f: focused") {}
    test("not focused") {}
 })

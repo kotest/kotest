@@ -6,6 +6,28 @@ import io.kotest.core.listeners.TestListener
 import kotlin.time.Duration
 
 typealias EnabledIf = (TestCase) -> Boolean
+typealias EnabledOrReasonIf = (TestCase) -> Enabled
+
+class Enabled private constructor(val isEnabled: Boolean, reason: String? = null) {
+   private val builder = StringBuilder(reason ?: "")
+   val reason get() = builder.trim().toString()
+
+   companion object {
+      val enabled = Enabled(true)
+      fun disabled(reason: String) = Enabled(false, reason)
+
+      fun fold(es: Iterable<Enabled>): Enabled {
+         return es.fold(enabled) { acc, e ->
+            Enabled(acc.isEnabled && e.isEnabled, acc.reason).also {
+               if (!e.isEnabled) {
+                  it.builder.appendLine()
+                  it.builder.append(e.reason)
+               }
+            }
+         }
+      }
+   }
+}
 
 data class TestCaseConfig(
    val enabled: Boolean = true,
@@ -31,7 +53,8 @@ data class TestCaseConfig(
    val listeners: List<TestListener> = emptyList(),
    val extensions: List<TestCaseExtension> = emptyList(),
    val enabledIf: EnabledIf = { true },
-   val severity: TestCaseSeverityLevel? = null
+   val severity: TestCaseSeverityLevel? = null,
+   val enabledOrReasonIf: EnabledOrReasonIf = { Enabled.enabled },
 ) {
    init {
       require(invocations > 0) { "Number of invocations must be greater than 0" }
@@ -40,7 +63,9 @@ data class TestCaseConfig(
    }
 }
 
+val xdisabledMessage = Enabled.disabled("Test was disabled using xdisabled")
+
 /**
  * Returns a copy of this test config with the enabled flag set to false, if [xdisabled] is true.
  */
-fun TestCaseConfig.withXDisabled(xdisabled: Boolean) = if (xdisabled) copy(enabled = false) else this
+fun TestCaseConfig.withXDisabled(xdisabled: Boolean) = if (xdisabled) copy(enabledOrReasonIf = { xdisabledMessage }) else this

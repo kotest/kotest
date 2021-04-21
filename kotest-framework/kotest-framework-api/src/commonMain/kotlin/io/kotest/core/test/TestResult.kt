@@ -56,6 +56,16 @@ data class TestResult(
       )
 
       /**
+       * Returns a [TestResult] with status [TestStatus.Ignored] and a reason string resolved from [TestCase.isEnabled].
+       *
+       * @param enabled a disabled [Enabled] that contains the reason for the test being ignored.
+       */
+      fun ignored(enabled: Enabled): TestResult {
+         require(!enabled.isEnabled) { "An ignored test must not be enabled" }
+         return ignored(enabled.reason)
+      }
+
+      /**
        * Returns a [TestResult] with status [TestStatus.Ignored] and a custom reason string.
        *
        * @param reason an optional string describing why the test was ignored.

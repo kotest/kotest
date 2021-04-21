@@ -3,7 +3,7 @@ package io.kotest.engine.spec
 import io.kotest.core.config.configuration
 import io.kotest.core.extensions.SpecExtension
 import io.kotest.core.extensions.resolvedSpecExtensions
-import io.kotest.core.internal.isActive
+import io.kotest.core.internal.isEnabled
 import io.kotest.core.internal.resolvedThreads
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.Spec
@@ -38,7 +38,7 @@ class SpecExecutor(private val listener: TestEngineListener) {
       log("SpecExecutor execute [$kclass]")
       notifications.specStarted(kclass)
          .flatMap { createInstance(kclass) }
-         .flatMap { runTestsIfAtLeastOneActive(it) }
+         .flatMap { runTestsIfAtLeastOneEnabled(it) }
          .fold(
             { notifications.specFinished(kclass, it, emptyMap()) },
             { notifications.specFinished(kclass, null, it) }
@@ -59,10 +59,16 @@ class SpecExecutor(private val listener: TestEngineListener) {
     * execution step takes place. Otherwise if at least one active, the [runTests]
     * function is invoked.
     */
-   private suspend fun runTestsIfAtLeastOneActive(spec: Spec): Try<Map<TestCase, TestResult>> {
+   private suspend fun runTestsIfAtLeastOneEnabled(spec: Spec): Try<Map<TestCase, TestResult>> {
       log("runTestsIfAtLeastOneActive [$spec]")
       val roots = spec.materializeAndOrderRootTests()
-      val active = roots.any { it.testCase.isActive() }
+      val active = roots.any { it.testCase.isEnabled().isEnabled }
+
+      if (!active) {
+         val results = roots.map { it.testCase to TestResult.ignored(it.testCase.isEnabled()) }.toMap()
+         notifications.specSkipped(spec, results)
+      }
+
       return if (active) runTests(spec) else emptyMap<TestCase, TestResult>().success()
    }
 

@@ -4,13 +4,15 @@ import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.core.extensions.TestCaseExtension
 import io.kotest.core.spec.style.StringSpec
+import io.kotest.core.test.Enabled
 import io.kotest.core.test.TestStatus
 import io.kotest.engine.toTestResult
 import java.lang.AssertionError
 
+private const val reason = "this test is skipped cause it's skipped"
+
 // this tests that we can manipulate the result of a test case from an extension
 class TestCaseExtensionAroundAdviceTest : StringSpec() {
-
    object MyExt : TestCaseExtension {
       override suspend fun intercept(testCase: TestCase, execute: suspend (TestCase) -> TestResult): TestResult {
          return when (testCase.description.name.name) {
@@ -22,6 +24,10 @@ class TestCaseExtensionAroundAdviceTest : StringSpec() {
                }
             "test3" -> if (testCase.config.enabled) throw RuntimeException() else execute(testCase)
             "test4" -> execute(testCase.copy(config = testCase.config.copy(enabled = false)))
+            "test5" -> {
+               val enabled = testCase.config.enabledOrReasonIf(testCase)
+               if (enabled.isEnabled || enabled.reason != reason) throw RuntimeException() else execute(testCase)
+            }
             else -> execute(testCase)
          }
       }
@@ -46,5 +52,6 @@ class TestCaseExtensionAroundAdviceTest : StringSpec() {
       "test4".config(enabled = true) {
          throw RuntimeException()
       }
+      "test6".config(enabledOrReasonIf = { Enabled.disabled(reason) }) {} // the extension should throw if this test is enabled}
    }
 }

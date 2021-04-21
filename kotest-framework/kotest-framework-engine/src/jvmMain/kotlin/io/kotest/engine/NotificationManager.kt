@@ -75,6 +75,15 @@ class NotificationManager(private val listener: TestEngineListener) {
       )
    }
 
+   suspend fun specSkipped(
+      spec: Spec,
+      results: Map<TestCase, TestResult>
+   ) = Try {
+      configuration.testListeners().forEach {
+         it.specIgnored(spec, results)
+      }
+   }
+
    private fun testEngineSpecFinished(
       kclass: KClass<out Spec>,
       error: Throwable?,
