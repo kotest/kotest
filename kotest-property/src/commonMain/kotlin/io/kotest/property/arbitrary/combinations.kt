@@ -1,10 +1,19 @@
 package io.kotest.property.arbitrary
 
-import io.kotest.fp.getOrElse
 import io.kotest.property.Arb
 import io.kotest.property.Exhaustive
 import io.kotest.property.Gen
 import kotlin.jvm.JvmName
+
+/**
+ * An alias to [choose] to aid in discoverability for those used to Haskell's QuickCheck.
+ */
+fun <A : Any> Arb.Companion.frequency(
+   a: Pair<Int, A>,
+   b: Pair<Int, A>,
+   vararg cs: Pair<Int, A>
+): Arb<A> = choose(a, b, *cs)
+
 
 /**
  * Returns a stream of values based on weights:
@@ -41,17 +50,18 @@ fun <A : Any> Arb.Companion.choose(a: Pair<Int, A>, b: Pair<Int, A>, vararg cs: 
 /**
  * An alias to [choose] to aid in discoverability for those used to Haskell's QuickCheck.
  */
+@JvmName("frequencyArbs")
 fun <A : Any> Arb.Companion.frequency(
-   a: Pair<Int, A>,
-   b: Pair<Int, A>,
-   vararg cs: Pair<Int, A>
+   a: Pair<Int, Arb<A>>,
+   b: Pair<Int, Arb<A>>,
+   vararg cs: Pair<Int, Arb<A>>
 ): Arb<A> = choose(a, b, *cs)
 
 /**
- * Returns a stream of values based on weights:
+ * Generates values from the given arbs, with ratio of values approximately in line with the given weights.
  *
- * Arb.choose(1 to arbA, 2 to arbB) will generate a value from arbA 33% of the time
- * and from arbB 66% of the time.
+ * For example: Arb.choose(1 to arbA, 2 to arbB) will generate values from arbA and arb2 with the
+ * ratio approximately 1:2
  *
  * @throws IllegalArgumentException If any negative weight is given or only
  * weights of zero are given.
@@ -59,6 +69,7 @@ fun <A : Any> Arb.Companion.frequency(
 @JvmName("chooseArbs")
 fun <A : Any> Arb.Companion.choose(a: Pair<Int, Arb<A>>, b: Pair<Int, Arb<A>>, vararg cs: Pair<Int, Arb<A>>): Arb<A> {
    val allPairs = listOf(a, b) + cs
+   val allArbs = allPairs.map { it.second }
    val weights = allPairs.map { it.first }
    val total = weights.sum()
    require(weights.all { it >= 0 }) { "Negative weights not allowed" }
@@ -75,30 +86,14 @@ fun <A : Any> Arb.Companion.choose(a: Pair<Int, Arb<A>>, b: Pair<Int, Arb<A>>, v
    }
 
    return arbitrary(
-      edgecaseGenerator = { rs ->
+      edgecaseFn = { allArbs.edgecases(it) },
+      sampleFn = { rs ->
          val n = rs.random.nextInt(1, total + 1)
          val arb = pick(n, allPairs)
-         arb.edges()
-            .map { it.generate(rs, this) }
-            .getOrElse { arb.single(rs) }
-      },
-      sampleGenerator = { rs ->
-         val n = rs.random.nextInt(1, total + 1)
-         val arb = pick(n, allPairs)
-         arb.single(rs)
+         arb.sample(rs).value
       }
    )
 }
-
-/**
- * An alias to [choose] to aid in discoverability for those used to Haskell's QuickCheck.
- */
-@JvmName("frequencyArbs")
-fun <A : Any> Arb.Companion.frequency(
-   a: Pair<Int, Arb<A>>,
-   b: Pair<Int, Arb<A>>,
-   vararg cs: Pair<Int, Arb<A>>
-): Arb<A> = choose(a, b, *cs)
 
 /**
  * Generates random permutations of a list.
@@ -118,8 +113,9 @@ fun <A> Arb.Companion.subsequence(list: List<A>): Arb<List<A>> = arbitrary {
 
 /**
  * Randomly selects one of the given gens to generate the next element.
- * The input must be non-empty.
  * The input gens must be infinite.
+ *
+ * @throws IllegalArgumentException if no arbs have been passed to this function
  */
 @Deprecated(
    message = "Deprecated in favor of a function that returns an Arb instead of a Gen. Will be removed in 4.6",
@@ -140,21 +136,37 @@ fun <A> Arb.Companion.choice(vararg gens: Gen<A>): Gen<A> {
 
 /**
  * Uses the Arbs provided to randomly generate the next element.
- * The returned Arb.edgecases() contains all of edgecases of the provided arbs
+ * The returned Arb's edgecases contains the edgecases of the input arbs.
+ *
  * The input must be non-empty.
  * The input arbs must be infinite.
  *
- * @throws IllegalArgumentException if no arbs have been passed to this function
  * @return A new Arb<A> that will randomly select values from the provided Arbs, and combine all of the provided
  * Arbs edgecases
  */
 fun <A> Arb.Companion.choice(arb: Arb<A>, vararg arbs: Arb<A>): Arb<A> {
    val arbList = listOf(arb, *arbs)
    return arbitrary(
-      edgecaseGenerator = { rs ->
-         val arbA = arbList.random(rs.random)
-         arbA.edges().map { it.generate(rs, this) }.getOrElse { arbA.single(rs) }
-      },
-      sampleGenerator = { rs -> arbList.random(rs.random).next(rs) }
+      edgecaseFn = { arbList.edgecases(it) },
+      sampleFn = { arbList.random(it.random).next(it) }
    )
 }
+
+/**
+ * Uses the Arbs provided to randomly generate the next element.
+ * The returned Arb's edgecases contains the edgecases of the input arbs.
+ * The input arbs must be infinite.
+ *
+ * @throws IllegalArgumentException if no arbs have been passed to this function
+ *
+ * @return A new Arb<A> that will randomly select values from the provided Arbs, and combine all of the provided
+ * Arbs edgecases
+ */
+fun <A> Arb.Companion.choice(arbs: List<Arb<A>>): Arb<A> {
+   return arbitrary(
+      edgecaseFn = { arbs.edgecases(it) },
+      sampleFn = { arbs.random(it.random).next(it) }
+   )
+}
+
+

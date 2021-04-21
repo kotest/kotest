@@ -1,7 +1,5 @@
 package io.kotest.property.arbitrary
 
-import io.kotest.fp.Option
-import io.kotest.fp.some
 import io.kotest.property.*
 import kotlin.jvm.JvmName
 
@@ -18,6 +16,7 @@ fun <A> arbitrary(fn: (RandomSource) -> A): Arb<A> =
  */
 fun <A> arbitrary(edgecases: List<A>, fn: (RandomSource) -> A): Arb<A> = object : Arb<A>() {
    override fun edgecases(): List<A> = edgecases
+   override fun edgecases(rs: RandomSource): Sequence<A> = edgecases.shuffled(rs.random).asSequence()
    override fun sample(rs: RandomSource): Sample<A> = Sample(fn(rs))
    override fun values(rs: RandomSource): Sequence<Sample<A>> = generateSequence { Sample(fn(rs)) }
 }
@@ -28,42 +27,36 @@ fun <A> arbitrary(edgecases: List<A>, fn: (RandomSource) -> A): Arb<A> = object 
  */
 fun <A> arbitrary(edgecases: List<A>, shrinker: Shrinker<A>, fn: (RandomSource) -> A): Arb<A> = object : Arb<A>() {
    override fun edgecases(): List<A> = edgecases
+   override fun edgecases(rs: RandomSource): Sequence<A> = edgecases.shuffled(rs.random).asSequence()
    override fun sample(rs: RandomSource): Sample<A> = sampleOf(fn(rs), shrinker)
    override fun values(rs: RandomSource): Sequence<Sample<A>> = generateSequence { sampleOf(fn(rs), shrinker) }
 }
 
 /**
- * Creates a new [Arb] using the given edgecase generator and generates samples from the given sample generator.
+ * Creates a new [Arb] that generates edgecases from the given [edgecaseFn] function
+ * and generates samples from the given [sampleFn] function.
  */
-internal fun <A> arbitrary(edgecaseGenerator: EdgeConfig.(RandomSource) -> A, sampleGenerator: (RandomSource) -> A): Arb<A> =
+internal fun <A> arbitrary(edgecaseFn: (RandomSource) -> Sequence<A>, sampleFn: (RandomSource) -> A): Arb<A> =
    object : Arb<A>() {
-      override fun edgecases(): List<A> = emptyList()
-      override fun edges(): Option<Edgecase<A>> = Edgecase { rs, config ->
-         config.edgecaseGenerator(rs)
-      }.some()
-
-      override fun sample(rs: RandomSource): Sample<A> = Sample(sampleGenerator(rs))
-      override fun values(rs: RandomSource): Sequence<Sample<A>> = generateSequence { Sample(sampleGenerator(rs)) }
+      override fun edgecases(rs: RandomSource): Sequence<A> = edgecaseFn(rs)
+      override fun sample(rs: RandomSource): Sample<A> = Sample(sampleFn(rs))
+      override fun values(rs: RandomSource): Sequence<Sample<A>> = generateSequence { Sample(sampleFn(rs)) }
    }
 
-/**
- * Creates a new [Arb] that performs shrinking using the supplied [Shrinker],
- * generates edgecases using the given edgecase generator,
- * and generates samples from the given sample generator.
- */
-internal fun <A> arbitrary(
-   shrinker: Shrinker<A>,
-   edgecaseGenerator: EdgeConfig.(RandomSource) -> A,
-   sampleGenerator: (RandomSource) -> A
-): Arb<A> =
-   object : Arb<A>() {
-      override fun edgecases(): List<A> = emptyList()
-      override fun edges(): Option<Edgecase<A>> = Edgecase { rs, config ->
-         config.edgecaseGenerator(rs)
-      }.some()
-      override fun sample(rs: RandomSource): Sample<A> = sampleOf(sampleGenerator(rs), shrinker)
-      override fun values(rs: RandomSource): Sequence<Sample<A>> = generateSequence { Sample(sampleGenerator(rs)) }
-   }
+///**
+// * Creates a new [Arb] that performs shrinking using the supplied [Shrinker],
+// * generates edgecases using the given [edgecaseFn] function,
+// * and generates samples from the given [sampleGenerator] function.
+// */
+//internal fun <A> arbitrary(
+//   edgecaseFn: EdgeConfig.(RandomSource) -> A,
+//   shrinker: Shrinker<A>,
+//   sampleGenerator: (RandomSource) -> A
+//): Arb<A> =
+//   object : Arb<A>() {
+//      override fun sample(rs: RandomSource): Sample<A> = sampleOf(sampleGenerator(rs), shrinker)
+//      override fun values(rs: RandomSource): Sequence<Sample<A>> = generateSequence { Sample(sampleGenerator(rs)) }
+//   }
 
 /**
  * Creates a new [Arb] that performs shrinking using the supplied [Shrinker], has no edge cases and

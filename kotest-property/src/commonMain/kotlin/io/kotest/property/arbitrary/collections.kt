@@ -49,9 +49,9 @@ fun <A> Arb.Companion.set(gen: Gen<A>, size: Int, slippage: Int = 10): Arb<Set<A
 fun <A> Arb.Companion.set(gen: Gen<A>, range: IntRange = 0..100, slippage: Int = 10): Arb<Set<A>> {
    check(!range.isEmpty())
    check(range.first >= 0)
-   // we may generate duplicates, but we don't know if the underlying gen has sufficient cardinality
-   // to satisfy our range, so we can try for a while, but must not try for ever
-   // the slippage factor controls how many times we will accept a non unique element before giving up,
+   // We may generate duplicates, but we don't know if the underlying gen has sufficient cardinality
+   // to satisfy our range, so we can try for a while, but must not try forever.
+   // The slippage factor controls how many times we will accept a non unique element before giving up,
    // which is the number of elements in the target set * slippage
    return arbitrary {
       val genIter = gen.generate(it).iterator()

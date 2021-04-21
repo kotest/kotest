@@ -54,16 +54,16 @@ class ChoiceTest : WordSpec({
             .map { it.value }
             .toList()
          edgecases shouldContainExactly listOf(
-            4,
+            1,
+            2,
+            3,
             4,
             1,
-            3,
-            2,
             2,
             3,
-            2,
-            2,
-            1
+            4,
+            1,
+            2
          )
       }
       "provides both edgecases and values when used as a Gen" {

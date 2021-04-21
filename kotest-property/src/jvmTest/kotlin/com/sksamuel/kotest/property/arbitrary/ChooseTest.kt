@@ -114,16 +114,16 @@ class ChooseTest : FunSpec({
          .toList()
 
       edgecases shouldContainExactly listOf(
-         'b',
-         'c',
-         'd',
-         'd',
-         'b',
-         'c',
-         'd',
-         'c',
          'a',
-         'd'
+         'b',
+         'c',
+         'd',
+         'a',
+         'b',
+         'c',
+         'd',
+         'a',
+         'b'
       )
    }
 })

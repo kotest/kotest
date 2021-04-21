@@ -4,17 +4,17 @@ import io.kotest.property.Arb
 import kotlin.random.nextInt
 
 /**
- * The edge cases are [[Short.MIN_VALUE], [Short.MAX_VALUE], 0]
+ * The edge cases are [[Short.MIN_VALUE], [Short.MAX_VALUE], 0, -1, 1]
  */
-fun Arb.Companion.short() = arb(ShortShrinker, listOf(0, Short.MIN_VALUE, Short.MAX_VALUE)) {
+fun Arb.Companion.short() = arbitrary(listOf(0, -1, 1, Short.MIN_VALUE, Short.MAX_VALUE), ShortShrinker) {
    it.random.nextInt(Short.MIN_VALUE..Short.MAX_VALUE).toShort()
 }
 
 /**
- * The edge cases are [[Short.MIN_VALUE], [Short.MAX_VALUE], 0]
+ * The edge cases are [[Short.MIN_VALUE], [Short.MAX_VALUE], 0, -1, 1]
  */
 @ExperimentalUnsignedTypes
-fun Arb.Companion.ushort() = arb(UShortShrinker, listOf(0.toUShort(), UShort.MIN_VALUE, UShort.MAX_VALUE)) {
+fun Arb.Companion.ushort() = arb(UShortShrinker, listOf(0.toUShort(), 1.toUShort(), UShort.MIN_VALUE, UShort.MAX_VALUE)) {
    it.random.nextInt().toUInt().shr(UInt.SIZE_BITS - UShort.SIZE_BITS).toUShort()
 }
 

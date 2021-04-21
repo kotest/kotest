@@ -41,7 +41,6 @@ fun calculateMinimumIterations(vararg gens: Gen<*>): Int {
 }
 
 fun EdgeConfig.Companion.default(): EdgeConfig = EdgeConfig(
-   determinism = PropertyTesting.edgecasesBindDeterminism,
    edgecasesGenerationProbability = PropertyTesting.edgecasesGenerationProbability
 )
 

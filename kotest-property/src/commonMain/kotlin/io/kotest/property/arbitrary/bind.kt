@@ -1,9 +1,7 @@
 package io.kotest.property.arbitrary
 
-import io.kotest.fp.Option
-import io.kotest.fp.some
+import io.kotest.collections.loopedIterator
 import io.kotest.property.Arb
-import io.kotest.property.Edgecase
 import io.kotest.property.Exhaustive
 import io.kotest.property.Gen
 import io.kotest.property.RandomSource
@@ -405,6 +403,7 @@ private fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, T> Arb.Companion.bindN(
    genN: Gen<N>,
    bindFn: (A, B, C, D, E, F, G, H, I, J, K, L, M, N) -> T
 ): Arb<T> {
+
    val arbA = genA.toArb()
    val arbB = genB.toArb()
    val arbC = genC.toArb()
@@ -421,26 +420,67 @@ private fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, T> Arb.Companion.bindN(
    val arbN = genN.toArb()
 
    return object : Arb<T>() {
+
       override fun edgecases(): List<T> = emptyList()
 
-      override fun edges(): Option<Edgecase<T>> = Edgecase { rs, config ->
-         val a = arbA.edgeOrSample().generate(rs, config)
-         val b = arbB.edgeOrSample().generate(rs, config)
-         val c = arbC.edgeOrSample().generate(rs, config)
-         val d = arbD.edgeOrSample().generate(rs, config)
-         val e = arbE.edgeOrSample().generate(rs, config)
-         val f = arbF.edgeOrSample().generate(rs, config)
-         val g = arbG.edgeOrSample().generate(rs, config)
-         val h = arbH.edgeOrSample().generate(rs, config)
-         val i = arbI.edgeOrSample().generate(rs, config)
-         val j = arbJ.edgeOrSample().generate(rs, config)
-         val k = arbK.edgeOrSample().generate(rs, config)
-         val l = arbL.edgeOrSample().generate(rs, config)
-         val m = arbM.edgeOrSample().generate(rs, config)
-         val n = arbN.edgeOrSample().generate(rs, config)
+      fun <A> nextOrSample(a: Iterator<A>, arbA: Arb<A>, rs: RandomSource): A {
+         return if (a.hasNext()) a.next() else arbA.next(rs)
+      }
 
-         bindFn(a, b, c, d, e, f, g, h, i, j, k, l, m, n)
-      }.some()
+      override fun edgecases(rs: RandomSource): Sequence<T> {
+         val a = arbA.edgecases(rs).loopedIterator()
+         val b = arbB.edgecases(rs).loopedIterator()
+         val c = arbC.edgecases(rs).loopedIterator()
+         val d = arbD.edgecases(rs).loopedIterator()
+         val e = arbE.edgecases(rs).loopedIterator()
+         val f = arbF.edgecases(rs).loopedIterator()
+         val g = arbG.edgecases(rs).loopedIterator()
+         val h = arbH.edgecases(rs).loopedIterator()
+         val i = arbI.edgecases(rs).loopedIterator()
+         val j = arbJ.edgecases(rs).loopedIterator()
+         val k = arbK.edgecases(rs).loopedIterator()
+         val l = arbL.edgecases(rs).loopedIterator()
+         val m = arbM.edgecases(rs).loopedIterator()
+         val n = arbN.edgecases(rs).loopedIterator()
+         return sequence {
+            // as long as one element has a next edgecase, we'll use that and fill in the gaps with samples
+            if (
+               a.hasNext() ||
+               b.hasNext() ||
+               c.hasNext() ||
+               d.hasNext() ||
+               e.hasNext() ||
+               f.hasNext() ||
+               g.hasNext() ||
+               h.hasNext() ||
+               i.hasNext() ||
+               j.hasNext() ||
+               k.hasNext() ||
+               l.hasNext() ||
+               m.hasNext() ||
+               n.hasNext()
+            ) {
+               yield(
+                  bindFn(
+                     nextOrSample(a, arbA, rs),
+                     nextOrSample(b, arbB, rs),
+                     nextOrSample(c, arbC, rs),
+                     nextOrSample(d, arbD, rs),
+                     nextOrSample(e, arbE, rs),
+                     nextOrSample(f, arbF, rs),
+                     nextOrSample(g, arbG, rs),
+                     nextOrSample(h, arbH, rs),
+                     nextOrSample(i, arbI, rs),
+                     nextOrSample(j, arbJ, rs),
+                     nextOrSample(k, arbK, rs),
+                     nextOrSample(l, arbL, rs),
+                     nextOrSample(m, arbM, rs),
+                     nextOrSample(n, arbN, rs),
+                  )
+               )
+            }
+         }
+      }
 
       override fun sample(rs: RandomSource): Sample<T> {
          val a = arbA.sample(rs).value
@@ -461,15 +501,6 @@ private fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, T> Arb.Companion.bindN(
       }
 
       override fun values(rs: RandomSource): Sequence<Sample<T>> = generateSequence { sample(rs) }
-
-      private fun <X> Arb<X>.edgeOrSample(): Edgecase<X> = Edgecase { rs, config ->
-         val p = rs.random.nextDouble(0.0, 1.0)
-         val edgeX: X = this@edgeOrSample.edges().fold(
-            { this.next(rs) },
-            { it.generate(rs, config) }
-         )
-         if (p < config.determinism) edgeX else this.next(rs)
-      }
    }
 }
 
