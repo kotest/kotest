@@ -29,7 +29,7 @@ fun Arb.Companion.string(
    else
       listOfNotNull(min, minPlus1).filter { it.length in minSize..maxSize }
 
-   return arbitrary(edgecases, StringShrinker) { rs ->
+   return arbitrary(edgecases, StringShrinkerWithMin(minSize)) { rs ->
       val size = rs.random.nextInt(minSize..maxSize)
       codepoints.take(size, rs).joinToString("") { it.asString() }
    }
@@ -56,6 +56,7 @@ fun Arb.Companion.string(range: IntRange, codepoints: Arb<Codepoint> = Arb.ascii
 fun Arb.Companion.string(size: Int, codepoints: Arb<Codepoint> = Arb.ascii()): Arb<String> =
    Arb.string(size, size, codepoints)
 
+@Deprecated("use StringShrinkerWithMin. This will be removed in 4.7")
 object StringShrinker : Shrinker<String> {
 
    override fun shrink(value: String): List<String> {
@@ -80,5 +81,49 @@ object StringShrinker : Shrinker<String> {
             )
          }
       }
+   }
+}
+
+class StringShrinkerWithMin(
+   private val minLength: Int = 0,
+   private val simplestChar: Char = 'a',
+) : Shrinker<String> {
+
+   override fun shrink(value: String): List<String> {
+
+      val isShortest = value.length == minLength
+      val isSimplest = value.all { it == simplestChar }
+
+      return when {
+         isShortest && isSimplest -> emptyList()
+         !isShortest -> shorterVariants(value)
+         !isSimplest -> simplerVariants(value)
+         else -> (simplerVariants(value) + shorterVariants(value)).distinct()
+      }.map { it.padEnd(minLength, simplestChar) }
+   }
+
+   private fun simplerVariants(value: String) =
+      listOf(
+         value.replaceChar(simplestChar, value.indexOfFirst { it != simplestChar }),
+         value.replaceChar(simplestChar, value.indexOfLast { it != simplestChar }),
+         value.replaceChar(simplestChar, value.getMidPoint()),
+      )
+
+   private fun shorterVariants(value: String) =
+      listOf(
+         value.take(value.getMidPoint()),
+         value.takeLast(value.getMidPoint()),
+         value.drop(1),
+         value.dropLast(1),
+      )
+
+   private fun String.getMidPoint() =
+      length.div(2).coerceIn(0..length)
+
+   private fun String.replaceChar(
+      newChar: Char,
+      index: Int,
+   ): String {
+      return replaceRange(index..index, newChar.toString())
    }
 }
