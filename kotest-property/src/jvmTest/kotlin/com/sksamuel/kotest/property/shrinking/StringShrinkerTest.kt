@@ -115,10 +115,11 @@ class StringShrinkerTest : DescribeSpec({
          stdout.shouldContain(
             """
 Attempting to shrink arg ")E2v${'$'}"
-Shrink #1: ")Eaa" fail
-Shrink #2: "aEaa" fail
-Shrink #3: "aaaa" fail
-Shrink result (after 3 shrinks) => "aaaa"
+Shrink #1: ")E2a" fail
+Shrink #2: "aE2a" fail
+Shrink #3: "aa2a" fail
+Shrink #4: "aaaa" fail
+Shrink result (after 4 shrinks) => "aaaa"
             """.trim()
          )
          PropertyTesting.shouldPrintShrinkSteps = prt
