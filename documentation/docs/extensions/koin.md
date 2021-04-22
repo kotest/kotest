@@ -12,8 +12,11 @@ slug: koin.html
 The [Koin DI Framework](https://insert-koin.io/) can be used with Kotest through the `KoinListener` test listener and its own interface `KoinTest`.
 
 To add the listener to your project, add the dependency to your project:
-```groovy
-testImplementation("io.kotest:kotest-extensions-koin:${version}")
+
+[<img src="https://img.shields.io/maven-central/v/io.kotest.extensions/kotest-extensions-koin.svg?label=latest%20release"/>](http://search.maven.org/#search|ga|1|kotest-extensions-koin)
+
+```kotlin
+testImplementation("io.kotest.extensions:kotest-extensions-koin:${version}")
 ```
 
 With the dependency added, we can use Koin in our tests!
@@ -27,7 +30,7 @@ class KotestAndKoin : FunSpec(), KoinTest {
 
     init {
       test("Use user service") {
-        userService.getUser().username shouldBe "Kerooker"
+        userService.getUser().username shouldBe "LeoColman"
       }
     }
 
