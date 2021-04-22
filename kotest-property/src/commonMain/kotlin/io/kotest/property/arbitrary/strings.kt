@@ -29,7 +29,7 @@ fun Arb.Companion.string(
    else
       listOfNotNull(min, minPlus1).filter { it.length in minSize..maxSize }
 
-   return arbitrary(edgecases, StringShrinker) { rs ->
+   return arbitrary(edgecases, StringShrinkerWithMin(minSize)) { rs ->
       val size = rs.random.nextInt(minSize..maxSize)
       codepoints.take(size, rs).joinToString("") { it.asString() }
    }
@@ -56,6 +56,7 @@ fun Arb.Companion.string(range: IntRange, codepoints: Arb<Codepoint> = Arb.ascii
 fun Arb.Companion.string(size: Int, codepoints: Arb<Codepoint> = Arb.ascii()): Arb<String> =
    Arb.string(size, size, codepoints)
 
+@Deprecated("use StringShrinkerWithMin. This will be removed in 4.7")
 object StringShrinker : Shrinker<String> {
 
    override fun shrink(value: String): List<String> {
@@ -81,4 +82,43 @@ object StringShrinker : Shrinker<String> {
          }
       }
    }
+}
+
+class StringShrinkerWithMin(
+   private val minLength: Int = 0,
+   private val simplestChar: Char = 'a',
+) : Shrinker<String> {
+
+   override fun shrink(value: String): List<String> {
+
+      val isShortest = value.length == minLength
+      val isSimplest = value.all { it == simplestChar }
+
+      return when {
+         isShortest && isSimplest -> emptyList()
+         isShortest -> simplerVariants(value)
+         isSimplest -> shorterVariants(value)
+         else -> shorterVariants(value) + simplerVariants(value)
+      }.map { it.padEnd(minLength, simplestChar) }.distinct()
+   }
+
+   private fun simplerVariants(value: String) =
+      listOfNotNull(replaceFirst(value, simplestChar), replaceLast(value, simplestChar))
+
+   private fun shorterVariants(value: String) =
+      listOf(
+         value.take(value.length / 2 + value.length % 2),
+         value.takeLast(value.length / 2),
+         value.drop(1),
+         value.dropLast(1),
+      )
+
+   private fun replaceFirst(value: String, newChar: Char): String? =
+      replace(value, newChar, value.indexOfFirst { it != simplestChar })
+
+   private fun replaceLast(value: String, newChar: Char): String? =
+      replace(value, newChar, value.indexOfLast { it != simplestChar })
+
+   private fun replace(value: String, newChar: Char, index: Int) =
+      if (index == -1) null else value.replaceRange(index..index, newChar.toString())
 }
