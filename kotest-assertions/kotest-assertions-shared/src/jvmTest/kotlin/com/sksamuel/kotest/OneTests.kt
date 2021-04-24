@@ -22,7 +22,7 @@ class EitherTests : FunSpec({
          all {
             beforeState = matcherState()
 
-            either { // error 3
+            one { // error 3
                1 shouldBe 2 // error 1
                2 shouldBe 3 // error 2
             }
@@ -38,7 +38,7 @@ class EitherTests : FunSpec({
          after - before shouldBe 2
       }
 
-      withClue("throwables are added to the error collector for the matchers and the either") {
+      withClue("throwables are added to the error collector for the matchers and the one") {
          val before = beforeState?.first.shouldNotBeNull()
          val after = afterState?.first.shouldNotBeNull()
 
@@ -49,14 +49,14 @@ class EitherTests : FunSpec({
    test("either restores the error tracker and sets the assertion tracker correctly on success") {
       val (beforeErrors, beforeAssertions) = matcherState()
 
-      either {
+      one {
          "a" shouldBe "b"
          "a" shouldBe "a"
       }
 
       val (afterErrors, afterAssertions) = matcherState()
 
-      withClue("the assertions counter should be updated with how many assertions were used in either") {
+      withClue("the assertions counter should be updated with how many assertions were used in one") {
          afterAssertions shouldBe beforeAssertions + 2
       }
 
@@ -68,36 +68,36 @@ class EitherTests : FunSpec({
    test("either fails if less than two assertions are executed") {
       val (_, beforeAssertions) = matcherState()
       val message = shouldFail {
-         either { "a" shouldBe "a" }
+         one { "a" shouldBe "a" }
       }.message
 
       withClue("either should maintain the assertion that was executed in the counter") {
          assertionCounter.get() shouldBe beforeAssertions + 2
       }
 
-      message shouldContainOnlyOnce  "Either cannot ensure a mutual exclusion with less than two assertions"
+      message shouldContainOnlyOnce  "One cannot ensure a mutual exclusion with less than two assertions"
    }
 
    test("either fails if more than one assertion succeeds") {
       shouldFail {
-         either {
+         one {
             "a" shouldBe "a"
             "b" shouldBe "b"
          }
-      }.message shouldContainOnlyOnce "Either expected a single assertion to succeed, but more than one succeeded."
+      }.message shouldContainOnlyOnce "One expected a single assertion to succeed, but more than one succeeded."
    }
 
-   test("either fails if all assertions fail") {
+   test("one fails if all assertions fail") {
       shouldFail {
-         either {
+         one {
             "a" shouldBe "b"
             "b" shouldBe "c"
          }
-      }.message shouldContainOnlyOnce "Either expected a single assertion to succeed, but none succeeded."
+      }.message shouldContainOnlyOnce "One expected a single assertion to succeed, but none succeeded."
    }
 
-   test("either succeeds when a single assertion succeeds and many fail") {
-      either {
+   test("one succeeds when a single assertion succeeds and many fail") {
+      one {
          (0..9).forEach { it shouldBe it + 1 }
          1 shouldBe 1
       }
