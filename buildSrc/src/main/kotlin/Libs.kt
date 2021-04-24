@@ -15,6 +15,12 @@ object Libs {
       const val compilerEmbeddable = "org.jetbrains.kotlin:kotlin-compiler-embeddable:$kotlinVersion"
    }
 
+   object Kotest {
+      object Extensions {
+         const val MockServer = "io.kotest.extensions:kotest-extensions-mockserver:1.0.0"
+      }
+   }
+
    object Ajalt {
       const val mordant = "com.github.ajalt:mordant:1.2.1"
    }

@@ -55,7 +55,8 @@ kotlin {
          dependencies {
             implementation(project(Projects.JunitRunner))
             implementation(project(Projects.AssertionsCore))
-            implementation(project(Projects.MockServer))
+            implementation(Libs.MockServer.netty)
+            implementation(Libs.Kotest.Extensions.MockServer)
          }
       }
 
