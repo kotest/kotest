@@ -1,6 +1,6 @@
 package com.sksamuel.kotest.property.arrow
 
-import arrow.core.NonEmptyList
+import arrow.core.nonEmptyListOf
 import io.kotest.assertions.throwables.shouldThrowMessage
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.collections.shouldContainExactly
@@ -25,24 +25,24 @@ class NonEmptyListTest : FunSpec({
       Arb.nel(Arb.constant("a"), 1..5)
          .take(3, RandomSource.seeded(123123L))
          .toList() shouldContainExactly listOf(
-         NonEmptyList.of("a", "a"),
-         NonEmptyList.of("a", "a"),
-         NonEmptyList.of("a", "a", "a", "a")
+         nonEmptyListOf("a", "a"),
+         nonEmptyListOf("a", "a"),
+         nonEmptyListOf("a", "a", "a", "a")
       )
    }
 
    test("Arb.nel should generate NonEmptyList") {
       val expected = listOf(
-         NonEmptyList.of(1, 4),
-         NonEmptyList.of(8, 1, 5, 6),
-         NonEmptyList.of(3, 1, 7, 3),
-         NonEmptyList.of(3, 9, 2),
-         NonEmptyList.of(4, 8),
-         NonEmptyList.of(9),
-         NonEmptyList.of(1, 1, 7, 3, 2),
-         NonEmptyList.of(7, 1, 4),
-         NonEmptyList.of(5, 4, 1, 4),
-         NonEmptyList.of(6, 6, 4, 6)
+         nonEmptyListOf(1, 4),
+         nonEmptyListOf(8, 1, 5, 6),
+         nonEmptyListOf(3, 1, 7, 3),
+         nonEmptyListOf(3, 9, 2),
+         nonEmptyListOf(4, 8),
+         nonEmptyListOf(9),
+         nonEmptyListOf(1, 1, 7, 3, 2),
+         nonEmptyListOf(7, 1, 4),
+         nonEmptyListOf(5, 4, 1, 4),
+         nonEmptyListOf(6, 6, 4, 6)
       )
 
       Arb.nel(Arb.int(1..10), 1..5)
