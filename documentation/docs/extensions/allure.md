@@ -13,15 +13,21 @@ You can think of it as like the traditional junit report but more advanced and d
 There are two steps to allure. The first is to generate the raw data when executing tests, the second is to
 compile that data into the interactive HTML report.
 
+This module provides integration for using allure with kotest.
+To start, add the below dependency to your Gradle build file.
 
+```groovy
+testImplementation("io.kotest.extensions:kotest-extensions-allure:${kotest.version}")
+```
+
+Note: The group id is different (io.kotest.extensions) from the main kotest dependencies (io.kotest).
 
 
 ### Collect Data
 
-Allure has data collectors for most test frameworks, and Kotest is no different. In order
-to activate allure for kotest, you first need to add the module `kotest-extensions-allure` to your build.
-
-Next, wire in the `AllureTestReporter` class globally using [project config](../framework/project_config.md).
+Allure has data collectors for most test frameworks and this module provides the integration for Kotest.
+Once the module has been added to your buld, wire in the `AllureTestReporter` class globally
+using [project config](../framework/project_config.md).
 
 ```kotlin
 class MyConfig : AbstractProjectConfig {
@@ -30,9 +36,6 @@ class MyConfig : AbstractProjectConfig {
 ```
 
 Now, whenever tests are executed, Kotest will write out test data in the allure json format.
-
-
-
 
 
 ### Gradle Plugin
