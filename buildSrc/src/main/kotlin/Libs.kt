@@ -15,11 +15,6 @@ object Libs {
       const val compilerEmbeddable = "org.jetbrains.kotlin:kotlin-compiler-embeddable:$kotlinVersion"
    }
 
-   object Arrow {
-      private const val version = "0.13.1"
-      const val core = "io.arrow-kt:arrow-core:$version"
-   }
-
    object Ajalt {
       const val mordant = "com.github.ajalt:mordant:1.2.1"
    }
