@@ -14,7 +14,7 @@ import io.kotest.property.arbitrary.withEdgecases
 
 class FilterTest : FunSpec({
 
-   test("filter should filter elements") {
+   test("should filter elements") {
       Arb.int(1..10).withEdgecases(2, 4, 6).filter { it % 2 == 0 }
          .take(1000, RandomSource.seeded(3242344L))
          .toList().distinct().sorted() shouldContainExactly listOf(2, 4, 6, 8, 10)
@@ -32,7 +32,7 @@ class FilterTest : FunSpec({
 
    test("should be stack safe") {
       val arb = object : Arb<Int>() {
-         override fun edgecases(): List<Int> = emptyList()
+         override fun edgecase(rs: RandomSource): Int? = null
          override fun sample(rs: RandomSource): Sample<Int> = Sample(rs.random.nextInt())
       }
 

@@ -1,9 +1,6 @@
 package io.kotest.property.arbitrary
 
-import io.kotest.fp.Option
-import io.kotest.fp.some
 import io.kotest.property.Arb
-import io.kotest.property.Edgecase
 import io.kotest.property.Exhaustive
 import io.kotest.property.Gen
 import io.kotest.property.RandomSource
@@ -405,6 +402,7 @@ private fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, T> Arb.Companion.bindN(
    genN: Gen<N>,
    bindFn: (A, B, C, D, E, F, G, H, I, J, K, L, M, N) -> T
 ): Arb<T> {
+
    val arbA = genA.toArb()
    val arbB = genB.toArb()
    val arbC = genC.toArb()
@@ -421,26 +419,25 @@ private fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, T> Arb.Companion.bindN(
    val arbN = genN.toArb()
 
    return object : Arb<T>() {
-      override fun edgecases(): List<T> = emptyList()
 
-      override fun edges(): Option<Edgecase<T>> = Edgecase { rs, config ->
-         val a = arbA.edgeOrSample().generate(rs, config)
-         val b = arbB.edgeOrSample().generate(rs, config)
-         val c = arbC.edgeOrSample().generate(rs, config)
-         val d = arbD.edgeOrSample().generate(rs, config)
-         val e = arbE.edgeOrSample().generate(rs, config)
-         val f = arbF.edgeOrSample().generate(rs, config)
-         val g = arbG.edgeOrSample().generate(rs, config)
-         val h = arbH.edgeOrSample().generate(rs, config)
-         val i = arbI.edgeOrSample().generate(rs, config)
-         val j = arbJ.edgeOrSample().generate(rs, config)
-         val k = arbK.edgeOrSample().generate(rs, config)
-         val l = arbL.edgeOrSample().generate(rs, config)
-         val m = arbM.edgeOrSample().generate(rs, config)
-         val n = arbN.edgeOrSample().generate(rs, config)
-
-         bindFn(a, b, c, d, e, f, g, h, i, j, k, l, m, n)
-      }.some()
+      override fun edgecase(rs: RandomSource): T? {
+         return bindFn(
+            arbA.edgecase(rs) ?: arbA.next(rs),
+            arbB.edgecase(rs) ?: arbB.next(rs),
+            arbC.edgecase(rs) ?: arbC.next(rs),
+            arbD.edgecase(rs) ?: arbD.next(rs),
+            arbE.edgecase(rs) ?: arbE.next(rs),
+            arbF.edgecase(rs) ?: arbF.next(rs),
+            arbG.edgecase(rs) ?: arbG.next(rs),
+            arbH.edgecase(rs) ?: arbH.next(rs),
+            arbI.edgecase(rs) ?: arbI.next(rs),
+            arbJ.edgecase(rs) ?: arbJ.next(rs),
+            arbK.edgecase(rs) ?: arbK.next(rs),
+            arbL.edgecase(rs) ?: arbL.next(rs),
+            arbM.edgecase(rs) ?: arbM.next(rs),
+            arbN.edgecase(rs) ?: arbN.next(rs),
+         )
+      }
 
       override fun sample(rs: RandomSource): Sample<T> {
          val a = arbA.sample(rs).value
@@ -461,15 +458,6 @@ private fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, T> Arb.Companion.bindN(
       }
 
       override fun values(rs: RandomSource): Sequence<Sample<T>> = generateSequence { sample(rs) }
-
-      private fun <X> Arb<X>.edgeOrSample(): Edgecase<X> = Edgecase { rs, config ->
-         val p = rs.random.nextDouble(0.0, 1.0)
-         val edgeX: X = this@edgeOrSample.edges().fold(
-            { this.next(rs) },
-            { it.generate(rs, config) }
-         )
-         if (p < config.determinism) edgeX else this.next(rs)
-      }
    }
 }
 

@@ -1,6 +1,7 @@
 package io.kotest.property.arbitrary
 
 import io.kotest.property.Arb
+import io.kotest.property.Exhaustive
 import io.kotest.property.Gen
 import io.kotest.property.Shrinker
 import kotlin.jvm.JvmOverloads
@@ -49,9 +50,9 @@ fun <A> Arb.Companion.set(gen: Gen<A>, size: Int, slippage: Int = 10): Arb<Set<A
 fun <A> Arb.Companion.set(gen: Gen<A>, range: IntRange = 0..100, slippage: Int = 10): Arb<Set<A>> {
    check(!range.isEmpty())
    check(range.first >= 0)
-   // we may generate duplicates, but we don't know if the underlying gen has sufficient cardinality
-   // to satisfy our range, so we can try for a while, but must not try for ever
-   // the slippage factor controls how many times we will accept a non unique element before giving up,
+   // We may generate duplicates, but we don't know if the underlying gen has sufficient cardinality
+   // to satisfy our range, so we can try for a while, but must not try forever.
+   // The slippage factor controls how many times we will accept a non unique element before giving up,
    // which is the number of elements in the target set * slippage
    return arbitrary {
       val genIter = gen.generate(it).iterator()
@@ -85,23 +86,27 @@ fun <A> Arb.Companion.list(gen: Gen<A>, range: IntRange = 0..100): Arb<List<A>> 
    check(!range.isEmpty())
    check(range.first >= 0)
 
-   val emptyList = if (range.contains(0)) emptyList<A>() else null
-   val repeatedList = when {
-      range.last < 2 -> null // too small for repeats
-      gen is Arb && gen.edgecases().isEmpty() -> null
-      gen is Arb -> {
-         val a = gen.edgecases().first()
-         List(max(2, range.first)) { a }
+   return arbitrary(
+      edgecaseFn = { rs ->
+         val emptyList = emptyList<A>()
+         val singleList: List<A>? = when (gen) {
+            is Arb -> (gen.edgecase(rs) ?: gen.next(rs))?.let { listOf(it) }
+            is Exhaustive -> gen.values.firstOrNull()?.let { listOf(it) }
+         }
+         val repeatedList: List<A>? = when {
+            range.last < 2 -> null // too small for repeats
+            gen is Arb -> (gen.edgecase(rs) ?: gen.next(rs))?.let { a -> List(max(2, range.first)) { a } }
+            gen is Exhaustive -> gen.values.firstOrNull()?.let { a -> List(max(2, range.first)) { a } }
+            else -> null
+         }
+         listOfNotNull(emptyList, singleList, repeatedList).filter { it.size in range }.distinct().random(rs.random)
+      },
+      shrinker = ListShrinker(range),
+      sampleFn = { rs ->
+         val targetSize = rs.random.nextInt(range)
+         gen.generate(rs).take(targetSize).toList().map { it.value }
       }
-      else -> null
-   }
-
-   val edgecases = listOfNotNull(emptyList, repeatedList)
-
-   return arbitrary(edgecases, ListShrinker(range)) { rs ->
-      val targetSize = rs.random.nextInt(range)
-      gen.generate(rs).take(targetSize).toList().map { it.value }
-   }
+   )
 }
 
 /**

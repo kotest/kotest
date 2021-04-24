@@ -29,11 +29,10 @@ fun <A> Arb<A>.orNull(nullProbability: Double): Arb<A?> {
  * By default this uses a random boolean so should result in roughly half nulls,
  * half values from the source arb.
  *
- * The edgecases will also include the previous arbs edgecases plus a null.
- *
  * @returns an Arb<A?> that can produce null values.
  */
 fun <A> Arb<A>.orNull(isNextNull: (RandomSource) -> Boolean = { it.random.nextBoolean() }): Arb<A?> =
-   arbitrary(this.edgecases().plus(null as A?)) {
-      if (isNextNull(it)) null else this@orNull.next(it)
-   }
+   arbitrary(
+      edgecaseFn = { this@orNull.edgecase(it) },
+      sampleFn = { if (isNextNull(it)) null else this@orNull.next(it) }
+   )

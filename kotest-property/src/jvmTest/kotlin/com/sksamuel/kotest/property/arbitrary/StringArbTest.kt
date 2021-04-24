@@ -58,12 +58,11 @@ class StringArbTest : FunSpec() {
          }
       }
 
-      test("all alphanumeric strings generated should be valid code points") {
+      test("all alphanumeric strings generated should be valid codepoints") {
          checkAll(Arb.string(10..20, Arb.alphanumeric())) { a ->
             a.codePoints().forEach {
                Character.isValidCodePoint(it)
             }
-
          }
       }
 

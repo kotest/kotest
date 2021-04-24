@@ -193,10 +193,10 @@ class BindTest : StringSpec({
          .map { it.value }
          .toList()
       edgecases shouldContainExactly listOf(
+         "ab",
          "aa",
          "ab",
-         "ab",
-         "ab",
+         "aa",
          "aa"
       )
    }
@@ -204,7 +204,7 @@ class BindTest : StringSpec({
    "Arb.bind(a,b,c) should compute probabilistic edgecases" {
       val arbA = Arb.string(1).withEdgecases("a")
       val arbB = Arb.string(1).withEdgecases("a", "b")
-      val arbC = Arb.string(1).withEdgecases("a", "b")
+      val arbC = Arb.string(1).withEdgecases(emptyList())
       val arb = Arb.bind(arbA, arbB, arbC) { a, b, c -> a + b + c }
       val edgecases = arb
          .generate(RandomSource.seeded(1234L), EdgeConfig(edgecasesGenerationProbability = 1.0))
@@ -212,11 +212,11 @@ class BindTest : StringSpec({
          .map { it.value }
          .toList()
       edgecases shouldContainExactly listOf(
-         "xbb",
-         "aba",
-         "aaa",
-         "aba",
-         "aba"
+         "abK",
+         "abz",
+         "aaw",
+         "ab/",
+         "ab;"
       )
    }
 
@@ -224,7 +224,7 @@ class BindTest : StringSpec({
       val arbA = Arb.string(1).withEdgecases("a")
       val arbB = Arb.string(1).withEdgecases("a", "b")
       val arbC = Arb.string(1).withEdgecases("a", "b")
-      val arbD = Arb.string(1).withEdgecases("a", "b")
+      val arbD = Arb.string(1).withEdgecases(emptyList())
       val arb = Arb.bind(arbA, arbB, arbC, arbD) { a, b, c, d -> "$a$b$c$d" }
       val edgecases = arb
          .generate(RandomSource.seeded(1234L), EdgeConfig(edgecasesGenerationProbability = 1.0))
@@ -232,18 +232,18 @@ class BindTest : StringSpec({
          .map { it.value }
          .toList()
       edgecases shouldContainExactly listOf(
-         "abba",
-         "ajab",
-         "abaa",
-         "aaba",
-         "abaa"
+         "aaa#",
+         "aba-",
+         "aaaS",
+         "abb;",
+         "aaa\\"
       )
    }
 
    "Arb.bind(a,b,c,d,e) should compute probabilistic edgecases" {
       val arbA = Arb.string(1).withEdgecases("a")
       val arbB = Arb.string(1).withEdgecases("a", "b")
-      val arbC = Arb.string(1).withEdgecases("a", "b")
+      val arbC = Arb.string(1).withEdgecases(emptyList())
       val arbD = Arb.string(1).withEdgecases("a", "b")
       val arbE = Arb.string(1).withEdgecases("a", "b")
       val arb = Arb.bind(arbA, arbB, arbC, arbD, arbE) { a, b, c, d, e -> "$a$b$c$d$e" }
@@ -253,11 +253,11 @@ class BindTest : StringSpec({
          .map { it.value }
          .toList()
       edgecases shouldContainExactly listOf(
-         "aabaa",
-         "jaba0",
-         "aabab",
-         "abbab",
-         "abbbb"
+         "aaGaa",
+         "aawba",
+         "absbb",
+         "abLab",
+         "ab`ba"
       )
    }
 
@@ -265,61 +265,59 @@ class BindTest : StringSpec({
    "Arb.bind(a,b,c,d,e,f) should compute probabilistic edgecases" {
       val arbA = Arb.string(1).withEdgecases("a", "b")
       val arbB = Arb.string(1).withEdgecases("a", "b")
-      val arbC = Arb.string(1).withEdgecases("a", "b")
+      val arbC = Arb.string(1).withEdgecases(emptyList())
       val arbD = Arb.string(1).withEdgecases("a", "b")
       val arbE = Arb.string(1).withEdgecases("a", "b")
-      val arbF = Arb.string(1).withEdgecases("a", "b")
+      val arbF = Arb.string(1).withEdgecases(emptyList())
       val arb = Arb.bind(arbA, arbB, arbC, arbD, arbE, arbF) { a, b, c, d, e, f -> "$a$b$c$d$e$f" }
-      val rs = RandomSource.seeded(1234L)
       val edgecases = arb
          .generate(RandomSource.seeded(1234L), EdgeConfig(edgecasesGenerationProbability = 1.0))
          .take(5)
          .map { it.value }
          .toList()
       edgecases shouldContainExactly listOf(
-         "aaebab",
-         "aba0aa",
-         "]abaab",
-         "aababb",
-         "bbbaba"
+         "abzba-",
+         "badabs",
+         "ba`aae",
+         "bb`baj",
+         "ab abB"
       )
    }
 
 
    "Arb.bind(a,b,c,d,e,f,g) should compute probabilistic edgecases" {
-      val arbA = Arb.string(1).withEdgecases("a", "b")
+      val arbA = Arb.string(1).withEdgecases(emptyList())
       val arbB = Arb.string(1).withEdgecases("a", "b")
-      val arbC = Arb.string(1).withEdgecases("a", "b")
+      val arbC = Arb.string(1).withEdgecases("a")
       val arbD = Arb.string(1).withEdgecases("a", "b")
       val arbE = Arb.string(1).withEdgecases("a", "b")
-      val arbF = Arb.string(1).withEdgecases("a", "b")
+      val arbF = Arb.string(1).withEdgecases(emptyList())
       val arbG = Arb.string(1).withEdgecases("a", "b")
       val arb = Arb.bind(arbA, arbB, arbC, arbD, arbE, arbF, arbG) { a, b, c, d, e, f, g -> "$a$b$c$d$e$f$g" }
-      val rs = RandomSource.seeded(1234L)
       val edgecases = arb
          .generate(RandomSource.seeded(1234L), EdgeConfig(edgecasesGenerationProbability = 1.0))
          .take(5)
          .map { it.value }
          .toList()
       edgecases shouldContainExactly listOf(
-         "babbabb",
-         "ba0aaba",
-         "aabbbab",
-         "baaabab",
-         "babaabb"
+         "zbabawb",
+         "Sbaabba",
+         "Laabbia",
+         "=aabaEb",
+         "Baaaa*a"
       )
    }
 
 
    "Arb.bind(a,b,c,d,e,f,g,h) should compute probabilistic edgecases" {
       val arbA = Arb.string(1).withEdgecases("a", "b")
-      val arbB = Arb.string(1).withEdgecases("a", "b")
+      val arbB = Arb.string(1).withEdgecases("a")
       val arbC = Arb.string(1).withEdgecases("a", "b")
       val arbD = Arb.string(1).withEdgecases("a", "b")
-      val arbE = Arb.string(1).withEdgecases("a", "b")
+      val arbE = Arb.string(1).withEdgecases(emptyList())
       val arbF = Arb.string(1).withEdgecases("a", "b")
       val arbG = Arb.string(1).withEdgecases("a", "b")
-      val arbH = Arb.string(1).withEdgecases("a", "b")
+      val arbH = Arb.string(1).withEdgecases(emptyList())
       val arb =
          Arb.bind(arbA, arbB, arbC, arbD, arbE, arbF, arbG, arbH) { a, b, c, d, e, f, g, h -> "$a$b$c$d$e$f$g$h" }
       val edgecases = arb
@@ -328,21 +326,21 @@ class BindTest : StringSpec({
          .map { it.value }
          .toList()
       edgecases shouldContainExactly listOf(
-         "baabbaBb",
-         "a0aabaab",
-         "aaaabaab",
-         "aab0abba",
-         "bab\$aTba"
+         "babawbad",
+         "aabb;bbL",
+         "babb`baj",
+         "aabb'abh",
+         "aaab bb7"
       )
    }
 
    "Arb.bind(a,b,c,d,e,f,g,h,i) should compute probabilistic edgecases" {
       val arbA = Arb.string(1).withEdgecases("a", "b")
-      val arbB = Arb.string(1).withEdgecases("a", "b")
-      val arbC = Arb.string(1).withEdgecases("a", "b")
+      val arbB = Arb.string(1).withEdgecases(emptyList())
+      val arbC = Arb.string(1).withEdgecases("a")
       val arbD = Arb.string(1).withEdgecases("a", "b")
       val arbE = Arb.string(1).withEdgecases("a", "b")
-      val arbF = Arb.string(1).withEdgecases("a", "b")
+      val arbF = Arb.string(1).withEdgecases(emptyList())
       val arbG = Arb.string(1).withEdgecases("a", "b")
       val arbH = Arb.string(1).withEdgecases("a", "b")
       val arbI = Arb.string(1).withEdgecases("a", "b")
@@ -363,11 +361,11 @@ class BindTest : StringSpec({
          .map { it.value }
          .toList()
       edgecases shouldContainExactly listOf(
-         "ebabbabbb",
-         "0aabaabaa",
-         "abaaEbbba",
-         "babaabaab",
-         "b\$aTbabab"
+         "b8abadaba",
+         "b;abaBbbb",
+         "aAabaBabb",
+         "bBaaaubab",
+         "b\\aaa0aaa"
       )
    }
 
@@ -376,10 +374,10 @@ class BindTest : StringSpec({
       val arbB = Arb.string(1).withEdgecases(emptyList())
       val arbC = Arb.string(1).withEdgecases("a", "b")
       val arbD = Arb.string(1).withEdgecases("a", "b")
-      val arbE = Arb.string(1).withEdgecases("a", "b")
+      val arbE = Arb.string(1).withEdgecases("a")
       val arbF = Arb.string(1).withEdgecases("a", "b")
       val arbG = Arb.string(1).withEdgecases("a", "b")
-      val arbH = Arb.string(1).withEdgecases("a", "b")
+      val arbH = Arb.string(1).withEdgecases(emptyList())
       val arbI = Arb.string(1).withEdgecases("a", "b")
       val arbJ = Arb.string(1).withEdgecases("a", "b")
       val arb = Arb.bind(arbA, arbB, arbC, arbD, arbE, arbF, arbG, arbH, arbI, arbJ) { a, b, c, d, e, f, g, h, i, j ->
@@ -391,17 +389,17 @@ class BindTest : StringSpec({
          .map { it.value }
          .toList()
       edgecases shouldContainExactly listOf(
-         "bSabbabaja",
-         "b baabaaba",
-         "b aabbbaba",
-         "b(abbbbaba",
-         "a)abababba"
+         "beaaaabsbb",
+         "byaaabbiab",
+         "bYbaabb'ab",
+         "aubaabaOab",
+         "b=aaaabqab"
       )
    }
 
    "Arb.bind(a,b,c,d,e,f,g,h,i,j,k) should compute probabilistic edgecases" {
       val arbA = Arb.string(1).withEdgecases("a", "b")
-      val arbB = Arb.string(1).withEdgecases("a", "b")
+      val arbB = Arb.string(1).withEdgecases("a")
       val arbC = Arb.string(1).withEdgecases("a", "b")
       val arbD = Arb.string(1).withEdgecases("a", "b")
       val arbE = Arb.string(1).withEdgecases(emptyList())
@@ -421,25 +419,25 @@ class BindTest : StringSpec({
          .map { it.value }
          .toList()
       edgecases shouldContainExactly listOf(
-         "abbaebbYbBa",
-         "bbaa6ababFb",
-         "Ebbbdbabbra",
-         "abbboaba5eT",
-         "ababLbbba-W"
+         "baab/aabb;b",
+         "aabbQbabb=a",
+         "aabb'abaa0a",
+         "baab\\baab=a",
+         "aaaavbaab:b"
       )
    }
 
    "Arb.bind(a,b,c,d,e,f,g,h,i,j,k,l) should compute probabilistic edgecases" {
       val arbA = Arb.string(1).withEdgecases("a", "b")
       val arbB = Arb.string(1).withEdgecases("a", "b")
-      val arbC = Arb.string(1).withEdgecases("a", "b")
+      val arbC = Arb.string(1).withEdgecases(emptyList())
       val arbD = Arb.string(1).withEdgecases("a", "b")
       val arbE = Arb.string(1).withEdgecases("a", "b")
       val arbF = Arb.string(1).withEdgecases("a", "b")
       val arbG = Arb.string(1).withEdgecases("a", "b")
       val arbH = Arb.string(1).withEdgecases("a", "b")
       val arbI = Arb.string(1).withEdgecases("a", "b")
-      val arbJ = Arb.string(1).withEdgecases("a", "b")
+      val arbJ = Arb.string(1).withEdgecases("a")
       val arbK = Arb.string(1).withEdgecases("a", "b")
       val arbL = Arb.string(1).withEdgecases(emptyList())
       val arb = Arb.bind(
@@ -465,25 +463,25 @@ class BindTest : StringSpec({
          .map { it.value }
          .toList()
       edgecases shouldContainExactly listOf(
-         "aabbabajabau",
-         "bbaaabbbaaaS",
-         "Ebbbabaaabab",
-         "abbbabaabbas",
-         "aaaabaabaa>b"
+         "ab/aabbbaabL",
+         "bbiabbabaabP",
+         "abBaaaaabab ",
+         "ab?baaaababq",
+         "ba0babaaaaa "
       )
    }
 
    "Arb.bind(a,b,c,d,e,f,g,h,i,j,k,l,m) should compute probabilistic edgecases" {
-      val arbA = Arb.string(1).withEdgecases("a", "b")
+      val arbA = Arb.string(1).withEdgecases(emptyList())
       val arbB = Arb.string(1).withEdgecases("a", "b")
       val arbC = Arb.string(1).withEdgecases("a", "b")
-      val arbD = Arb.string(1).withEdgecases("a", "b")
+      val arbD = Arb.string(1).withEdgecases("a")
       val arbE = Arb.string(1).withEdgecases("a", "b")
       val arbF = Arb.string(1).withEdgecases("a", "b")
-      val arbG = Arb.string(1).withEdgecases("a", "b")
+      val arbG = Arb.string(1).withEdgecases(emptyList())
       val arbH = Arb.string(1).withEdgecases("a", "b")
       val arbI = Arb.string(1).withEdgecases("a", "b")
-      val arbJ = Arb.string(1).withEdgecases("a", "b")
+      val arbJ = Arb.string(1).withEdgecases("a")
       val arbK = Arb.string(1).withEdgecases("a", "b")
       val arbL = Arb.string(1).withEdgecases("a", "b")
       val arbM = Arb.string(1).withEdgecases(emptyList())
@@ -511,23 +509,23 @@ class BindTest : StringSpec({
          .map { it.value }
          .toList()
       edgecases shouldContainExactly listOf(
-         "abbabbbaaba0?",
-         "aaabaababaabM",
-         "abbbabaaabab'",
-         "bbbababa5abaH",
-         "ababaMaa>aWbp"
+         "/aaabb:baaabs",
+         "`baaabmbbaabB",
+         "0ababbbbaaaa0",
+         "Gabaaa]aaaba^",
+         "6aaaaapbbaaak"
       )
    }
 
    "Arb.bind(a,b,c,d,e,f,g,h,i,j,k,l,m,n) should compute probabilistic edgecases" {
-      val arbA = Arb.string(1).withEdgecases("a", "b")
+      val arbA = Arb.string(1).withEdgecases("a")
       val arbB = Arb.string(1).withEdgecases("a", "b")
       val arbC = Arb.string(1).withEdgecases("a", "b")
       val arbD = Arb.string(1).withEdgecases("a", "b")
       val arbE = Arb.string(1).withEdgecases("a", "b")
       val arbF = Arb.string(1).withEdgecases("a", "b")
       val arbG = Arb.string(1).withEdgecases("a", "b")
-      val arbH = Arb.string(1).withEdgecases("a", "b")
+      val arbH = Arb.string(1).withEdgecases(emptyList())
       val arbI = Arb.string(1).withEdgecases("a", "b")
       val arbJ = Arb.string(1).withEdgecases("a", "b")
       val arbK = Arb.string(1).withEdgecases("a", "b")
@@ -558,11 +556,11 @@ class BindTest : StringSpec({
          .map { it.value }
          .toList()
       edgecases shouldContainExactly listOf(
-         "baBbajaba0aab=",
-         "baababaabaaEb-",
-         "abaaababaabaah",
-         "abab\$aTbababbl",
-         "bbbaJa\\baaabaQ"
+         "aabbbabyaabbbi",
+         "aababbaEbababh",
+         "ababbab\\baabaJ",
+         "abaaabbIbbaba<",
+         "aabaabawaaabaj"
       )
    }
 
@@ -577,11 +575,11 @@ class BindTest : StringSpec({
          .toList()
 
       edgecases shouldContainExactly listOf(
-         "aaaaaaaaaa>aWaaaaaaaaa^aaaaa!aa#aaaaaaaaaa@aaaaaa5aaaXaa7aaaPaaaaaaOa aaraa5aaaaaaaaaaaaaaaaaafa<aaa",
-         "aAaaaaaa;aaaa'_aaaaaaaaaaaaaW1e\\d_B]\\u)3ivaaaaaaaa1aaaaaaaaaaaaaaaaaaaaaaaaaaa>maaaa_aaa!aaaaaaaa@aa",
-         "aazaaaaaaaaaaaaaaaaaaEaaaaaaaaaawaaaaaaaa)aaaa`aaaaavaaaaaaaaYAaaa\\.aaaaaaaaaaaaaaaaaMaaaaaaaaaaaaaa",
-         "aaaaaaaaaeaaaaaaaaaaaaaaaNaaaaaaaaaaaabaaaaBaa5aaaaaaaaWaaaaaaQa=aa0aaaaaaaaaaaaabaaa?aaaaaaaaaaaaaa",
-         "aaaaaahaaaaaaaaaaaaaaaaaa?asaaaaamaaaaaaaaaaaaaaaaaaaaaaaa^a_aaaaaaaaaLT(LhOVxH@36^Aaaaaaaa`aaataaaa"
+         "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+         "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+         "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+         "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+         "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
       )
    }
 
@@ -599,11 +597,11 @@ class BindTest : StringSpec({
          .toList()
 
       edgecases shouldContainExactly listOf(
-         Wobble(a = "", b = false, c = -1, d = 1.7976931348623157E308, e = 1.4E-45f),
-         Wobble(a = "", b = true, c = -2147483648, d = 1.0, e = -1.0f),
-         Wobble(a = "", b = true, c = 1, d = 1.0E300, e = 3.4028235E38f),
-         Wobble(a = "a", b = false, c = -2147483648, d = Double.POSITIVE_INFINITY, e = 1.4E-45f),
-         Wobble(a = "a", b = false, c = 1, d = -1.0E300, e = 0.0f)
+         Wobble(a = "", b = true, c = -2147483648, d = -4.9E-324, e = Float.NEGATIVE_INFINITY),
+         Wobble(a = "", b = false, c = 0, d = 1.7976931348623157E308, e = Float.NEGATIVE_INFINITY),
+         Wobble(a = "", b = true, c = 1, d = 1.0, e = Float.NEGATIVE_INFINITY),
+         Wobble(a = "", b = true, c = 0, d = -1.7976931348623157E308, e = 0.0F),
+         Wobble(a = "", b = false, c = 1, d = -1.0E300, e = 1.4E-45f)
       )
    }
 })
