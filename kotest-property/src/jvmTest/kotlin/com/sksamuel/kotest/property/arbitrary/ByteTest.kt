@@ -8,6 +8,7 @@ import io.kotest.matchers.bytes.shouldBeBetween
 import io.kotest.matchers.shouldBe
 import io.kotest.property.Arb
 import io.kotest.property.arbitrary.byte
+import io.kotest.property.arbitrary.edgecases
 import io.kotest.property.arbitrary.take
 
 class ByteTest : DescribeSpec() {

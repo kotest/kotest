@@ -1,6 +1,5 @@
 package io.kotest.property.arbitrary
 
-import io.kotest.fp.firstOption
 import io.kotest.property.Arb
 import io.kotest.property.Shrinker
 import kotlin.random.nextInt
@@ -20,19 +19,23 @@ fun Arb.Companion.string(
    codepoints: Arb<Codepoint> = Arb.ascii()
 ): Arb<String> {
 
-   val lowCodePoint = codepoints.edgecases().firstOption()
-   val min = lowCodePoint.map { cp -> List(minSize) { cp.asString() }.joinToString("") }.orNull()
-   val minPlus1 = lowCodePoint.map { cp -> List(minSize + 1) { cp.asString() }.joinToString("") }.orNull()
-
-   val edgecases = if (minSize == maxSize)
-      emptyList()
-   else
-      listOfNotNull(min, minPlus1).filter { it.length in minSize..maxSize }
-
-   return arbitrary(edgecases, StringShrinkerWithMin(minSize)) { rs ->
-      val size = rs.random.nextInt(minSize..maxSize)
-      codepoints.take(size, rs).joinToString("") { it.asString() }
-   }
+   return arbitrary(
+      edgecaseFn = { rs ->
+         if (minSize == maxSize) null else {
+            val lowCodePoint = codepoints.edgecase(rs)
+            val min = lowCodePoint?.let { cp -> List(minSize) { cp.asString() }.joinToString("") }
+            val minPlus1 = lowCodePoint?.let { cp -> List(minSize + 1) { cp.asString() }.joinToString("") }
+            val edgecases = listOfNotNull(min, minPlus1)
+               .filter { it.length in minSize..maxSize }
+            if (edgecases.isEmpty()) null else edgecases.random(rs.random)
+         }
+      },
+      shrinker = StringShrinkerWithMin(minSize),
+      sampleFn = { rs ->
+         val size = rs.random.nextInt(minSize..maxSize)
+         codepoints.take(size, rs).joinToString("") { it.asString() }
+      }
+   )
 }
 
 /**

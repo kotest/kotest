@@ -4,6 +4,7 @@ import io.kotest.core.spec.style.FunSpec
 import io.kotest.inspectors.forAll
 import io.kotest.matchers.longs.shouldBeBetween
 import io.kotest.property.Arb
+import io.kotest.property.arbitrary.edgecases
 import io.kotest.property.arbitrary.long
 import io.kotest.property.checkAll
 import io.kotest.property.checkCoverage

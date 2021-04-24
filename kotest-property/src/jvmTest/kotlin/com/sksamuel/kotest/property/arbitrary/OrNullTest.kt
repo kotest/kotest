@@ -4,7 +4,6 @@ import io.kotest.assertions.retry
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.inspectors.forAll
-import io.kotest.matchers.collections.shouldContain
 import io.kotest.matchers.doubles.plusOrMinus
 import io.kotest.matchers.ints.shouldBeBetween
 import io.kotest.matchers.shouldBe
@@ -18,10 +17,6 @@ import io.kotest.property.forAll
 import kotlin.time.seconds
 
 class OrNullTest : FunSpec({
-
-   test("Arb.orNull().edgecases() should contain null") {
-      Arb.int().orNull().edgecases() shouldContain null
-   }
 
    test("Arb.orNull() should add null values to those generated") {
       val iterations = 1000

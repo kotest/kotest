@@ -7,6 +7,7 @@ import kotlin.math.max
  * Global object for containing settings for property testing.
  */
 object PropertyTesting {
+   var maxFilterAttempts: Int = 10
    var shouldPrintGeneratedValues: Boolean = sysprop("kotest.proptest.output.generated-values", "false") == "true"
    var shouldPrintShrinkSteps: Boolean = sysprop("kotest.proptest.output.shrink-steps", "true") == "true"
    var defaultIterationCount: Int = sysprop("kotest.proptest.default.iteration.count", "1000").toInt()

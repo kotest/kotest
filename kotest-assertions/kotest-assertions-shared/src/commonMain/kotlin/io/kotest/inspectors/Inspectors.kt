@@ -77,7 +77,7 @@ fun <T> Array<T>.forNone(fn: (T) -> Unit) = toList().forNone(fn)
 fun <T> Collection<T>.forNone(f: (T) -> Unit) {
    val results = runTests(this, f)
    val passed = results.filterIsInstance<ElementPass<T>>()
-   if (passed.size != 0) {
+   if (passed.isNotEmpty()) {
     val msg = "${passed.size} elements passed but expected ${0}"
     buildAssertionError(msg, results)
   }

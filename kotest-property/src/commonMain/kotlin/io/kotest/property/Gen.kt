@@ -1,6 +1,5 @@
 package io.kotest.property
 
-import io.kotest.collections.loopedIterator
 import io.kotest.property.arbitrary.of
 
 /**
@@ -27,11 +26,9 @@ sealed class Gen<out A> {
    /**
     * Returns values from this generator as a lazily generated sequence.
     *
-    * If this gen is an [Arb], then values will be selected from either the random samples or the
-    * available edgecases (if any).
-    *
-    * The bias towards edgecases or samples is given by the value of
-    * [EdgeConfig.edgecasesGenerationProbability] inside the [edgeConfig] parameter.
+    * If this gen is an [Arb], then each value will either be a sample or an edgecase. The bias
+    * towards edgecases or samples is given by the value of [EdgeConfig.edgecasesGenerationProbability]
+    * inside the [edgeConfig] parameter.
     *
     * If this gen is an [Exhaustive], then the returned values will iterate in turn, repeating
     * once exhausted as required.
@@ -44,13 +41,11 @@ sealed class Gen<out A> {
       when (this) {
          is Arb -> {
             val samples = this.samples(rs).iterator()
-            val edgecases = this.edgecases(rs).loopedIterator()
             generateSequence {
-               if (edgecases.hasNext() && rs.random.nextDouble(0.0, 1.0) < edgeConfig.edgecasesGenerationProbability) {
-                  Sample(edgecases.next())
-               } else {
-                  samples.next()
-               }
+               val isEdgeCase = rs.random.nextDouble(0.0, 1.0) < edgeConfig.edgecasesGenerationProbability
+               if (isEdgeCase) {
+                  this.edgecase(rs)?.asSample() ?: samples.next()
+               } else samples.next()
             }
          }
          is Exhaustive -> {
@@ -91,31 +86,11 @@ sealed class Gen<out A> {
 abstract class Arb<out A> : Gen<A>() {
 
    /**
-    * Edgecase values for this arbitrary.
-    * Can be empty if no edgecases are provided.
+    * Returns a single edgecase for this arbitrary.
+    * If this arb provides mutliple edgecases, then one should be chosen randomly.
+    * Can return null if no edgecases are available.
     */
-   @Deprecated("Replaced with edgecases(RandomSource). Will be removed in 4.7")
-   open fun edgecases(): List<A> = emptyList()
-
-   /**
-    * Edgecase values for this arbitrary.
-    *
-    * Can return an empty sequence if no edgecases are available.
-    *
-    * @param rs RandomSource that can be used to randomize the edgecases if required.
-    *           For example, in an arbitrary that provides random strings, you may consider a good
-    *           edge case to be a single character string, but it doesn't really matter what that
-    *           single character is. Therefore, it could be randomized.
-    *
-    * Cannot be a List because in Bind, we may need to bind together 14 different arbs,
-    * and even if the edgecases list is only 5, that's still 5^14 - boom.
-    *
-    * Cannot be a single element A? because filter cannot know when the end is, and therefore
-    * must arbitrarily give up after say 10 elements.
-    *
-    * could be a sequence???
-    */
-   open fun edgecases(rs: RandomSource): Sequence<A> = emptySequence()
+   abstract fun edgecase(rs: RandomSource): A?
 
    /**
     * Returns a random [Sample] from this [Arb] using the supplied random source.
@@ -180,6 +155,8 @@ abstract class Exhaustive<out A> : Gen<A>() {
  * Contains a single generated value from a [Gen] and an [RTree] of lazily evaluated shrinks.
  */
 data class Sample<out A>(val value: A, val shrinks: RTree<A> = RTree({ value }))
+
+fun <A> A.asSample(): Sample<A> = Sample(this)
 
 /**
  * Returns a [Sample] with shrinks by using the supplied [Shrinker] against the input value [a].

@@ -86,7 +86,7 @@ fun <A : Any> Arb.Companion.choose(a: Pair<Int, Arb<A>>, b: Pair<Int, Arb<A>>, v
    }
 
    return arbitrary(
-      edgecaseFn = { allArbs.edgecases(it) },
+      edgecaseFn = { allArbs.edgecase(it) },
       sampleFn = { rs ->
          val n = rs.random.nextInt(1, total + 1)
          val arb = pick(n, allPairs)
@@ -147,7 +147,7 @@ fun <A> Arb.Companion.choice(vararg gens: Gen<A>): Gen<A> {
 fun <A> Arb.Companion.choice(arb: Arb<A>, vararg arbs: Arb<A>): Arb<A> {
    val arbList = listOf(arb, *arbs)
    return arbitrary(
-      edgecaseFn = { arbList.edgecases(it) },
+      edgecaseFn = { arbList.edgecase(it) },
       sampleFn = { arbList.random(it.random).next(it) }
    )
 }
@@ -164,7 +164,7 @@ fun <A> Arb.Companion.choice(arb: Arb<A>, vararg arbs: Arb<A>): Arb<A> {
  */
 fun <A> Arb.Companion.choice(arbs: List<Arb<A>>): Arb<A> {
    return arbitrary(
-      edgecaseFn = { arbs.edgecases(it) },
+      edgecaseFn = { arbs.edgecase(it) },
       sampleFn = { arbs.random(it.random).next(it) }
    )
 }

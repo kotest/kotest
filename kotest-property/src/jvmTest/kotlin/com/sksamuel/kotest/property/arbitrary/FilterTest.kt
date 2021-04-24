@@ -32,7 +32,7 @@ class FilterTest : FunSpec({
 
    test("should be stack safe") {
       val arb = object : Arb<Int>() {
-         override fun edgecases(): List<Int> = emptyList()
+         override fun edgecase(rs: RandomSource): Int? = null
          override fun sample(rs: RandomSource): Sample<Int> = Sample(rs.random.nextInt())
       }
 

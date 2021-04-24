@@ -6,6 +6,7 @@ import io.kotest.matchers.collections.shouldContainAll
 import io.kotest.matchers.shouldBe
 import io.kotest.property.Arb
 import io.kotest.property.RandomSource
+import io.kotest.property.arbitrary.edgecases
 import io.kotest.property.arbitrary.instant
 import io.kotest.property.arbitrary.localDate
 import io.kotest.property.arbitrary.localDateTime
