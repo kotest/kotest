@@ -10,11 +10,13 @@ import io.kotest.property.Sample
  * If the chosen arb has no edgecases, then another arb will be chosen.
  * If all arbs have no edgecases, then returns null.
  */
-fun <A> List<Arb<A>>.edgecase(rs: RandomSource): A? {
+tailrec fun <A> List<Arb<A>>.edgecase(rs: RandomSource): A? {
    if (this.isEmpty()) return null
    val shuffled = this.shuffled(rs.random)
-   val edge = shuffled.first().edgecase(rs)
-   return edge ?: this.drop(1).edgecase(rs)
+   return when (val edge = shuffled.first().edgecase(rs)) {
+      null -> this.drop(1).edgecase(rs)
+      else -> edge
+   }
 }
 
 /**
