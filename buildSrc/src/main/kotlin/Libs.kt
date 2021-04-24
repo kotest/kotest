@@ -94,11 +94,6 @@ object Libs {
       const val diffutils = "io.github.java-diff-utils:java-diff-utils:4.9"
    }
 
-   object TestContainers {
-      private const val version = "1.15.2"
-      const val testcontainers = "org.testcontainers:testcontainers:$version"
-   }
-
    object Coroutines {
       private const val version = "1.4.3"
       const val coreCommon = "org.jetbrains.kotlinx:kotlinx-coroutines-core:$version"
