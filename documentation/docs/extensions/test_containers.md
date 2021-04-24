@@ -9,27 +9,28 @@ slug: test_containers.html
 
 ## Test Containers
 
-[testcontainers-java](https://github.com/testcontainers/testcontainers-java) library that provide lightweight, throwaway instances of common databases, Selenium web browsers, or anything else that can run in a Docker container.
+The [testcontainers](https://github.com/testcontainers/testcontainers-java) project provides lightweight, ephemeral instances of common databases, elasticsearch, kafka, Selenium web browsers, or anything else that can run in a Docker container, ideal for use inside tests.
 
-```kotest-extensions-testcontainers``` provides integration for using testcontainers-java with kotest.
-
-To use ```kotest-extensions-testcontainers```, add the below dependency to your Gradle build file.
+This module provides integration for using testcontainers with kotest. 
+To use add the below dependency to your Gradle build file.
 
 ```groovy
-testImplementation("io.kotest:kotest-extensions-testcontainers:${kotest.version}")
+testImplementation("io.kotest.extensions:kotest-extensions-testcontainers:${kotest.version}")
 ```
+
+Note: The group id is different (io.kotest.extensions) from the main kotest dependencies (io.kotest).
 
 For Maven, you will need these dependencies:
 
 ```xml
 <dependency>
-    <groupId>io.kotest</groupId>
+    <groupId>io.kotest.extensions</groupId>
     <artifactId>kotest-extensions-testcontainers</artifactId>
     <version>${kotest.version}</version>
     <scope>test</scope>
 </dependency>
 <dependency>
-    <groupId>io.kotest</groupId>
+    <groupId>io.kotest.extensions</groupId>
     <artifactId>kotest-extensions-testcontainers-jvm</artifactId>
     <version>${kotest.version}</version>
     <scope>test</scope>
