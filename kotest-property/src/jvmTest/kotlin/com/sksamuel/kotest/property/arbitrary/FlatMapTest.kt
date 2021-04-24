@@ -45,7 +45,7 @@ class FlatMapTest : FunSpec() {
          )
       }
 
-      test("f:Arb.flatMap should replace null edgecases with samples") {
+      test("Arb.flatMap should replace null edgecases with samples") {
 
          val arbString = Arb.int(1..2).withEdgecases(emptyList()).flatMap { a ->
             Arb.int(3..4).withEdgecases(emptyList()).flatMap { b ->
