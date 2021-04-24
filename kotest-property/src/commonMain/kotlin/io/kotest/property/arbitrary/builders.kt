@@ -34,7 +34,7 @@ fun <A> arbitrary(edgecases: List<A>, shrinker: Shrinker<A>, fn: (RandomSource) 
  * Creates a new [Arb] that generates edgecases from the given [edgecaseFn] function
  * and generates samples from the given [sampleFn] function.
  */
-internal fun <A> arbitrary(edgecaseFn: (RandomSource) -> A?, sampleFn: (RandomSource) -> A): Arb<A> =
+fun <A> arbitrary(edgecaseFn: (RandomSource) -> A?, sampleFn: (RandomSource) -> A): Arb<A> =
    object : Arb<A>() {
       override fun edgecase(rs: RandomSource): A? = edgecaseFn(rs)
       override fun sample(rs: RandomSource): Sample<A> = Sample(sampleFn(rs))
@@ -45,7 +45,7 @@ internal fun <A> arbitrary(edgecaseFn: (RandomSource) -> A?, sampleFn: (RandomSo
  * Creates a new [Arb] that generates edgecases from the given [edgecaseFn] function,
  * performs shrinking using the supplied [Shrinker, and generates samples from the given [sampleFn] function.
  */
-internal fun <A> arbitrary(
+fun <A> arbitrary(
    edgecaseFn: (RandomSource) -> A?,
    shrinker: Shrinker<A>,
    sampleFn: (RandomSource) -> A
