@@ -420,10 +420,6 @@ private fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, T> Arb.Companion.bindN(
 
    return object : Arb<T>() {
 
-      fun <A> nextOrSample(a: Iterator<A>, arbA: Arb<A>, rs: RandomSource): A {
-         return if (a.hasNext()) a.next() else arbA.next(rs)
-      }
-
       override fun edgecase(rs: RandomSource): T? {
          return bindFn(
             arbA.edgecase(rs) ?: arbA.next(rs),
