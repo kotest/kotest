@@ -28,7 +28,7 @@ kotlin {
 
       val commonMain by getting {
          dependencies {
-            implementation(kotlin("stdlib"))
+            compileOnly(kotlin("stdlib"))
             implementation(kotlin("reflect"))
          }
       }

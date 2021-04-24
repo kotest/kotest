@@ -32,6 +32,7 @@ kotlin {
 
       val jvmMain by getting {
          dependencies {
+            compileOnly(kotlin("stdlib"))
             implementation(project(Projects.AssertionsShared))
             implementation(project(Projects.AssertionsCore))
          }
