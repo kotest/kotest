@@ -64,7 +64,7 @@ jobs:
             run: ./gradlew tvosX64Test --scan
 
          -  name: Run watchos tests
-            run: ./gradlew watchosArm32TestKlibrary watchosArm64TestKlibrary watchosX86Test watchosX64Test --scan
+            run: ./gradlew watchosArm32TestKlibrary watchosArm64TestKlibrary watchosX86Test --scan
 
          -  name: publish macos snapshots
             run: ./gradlew publishMacosX64PublicationToDeployRepository
@@ -83,7 +83,7 @@ jobs:
                ORG_GRADLE_PROJECT_signingPassword: ${{ secrets.SIGNING_PASSWORD }}
 
          -  name: publish watchos snapshots
-            run: ./gradlew publishWatchosX86PublicationToDeployRepository publishWatchosX64PublicationToDeployRepository publishWatchosArm32PublicationToDeployRepository publishWatchosArm64PublicationToDeployRepository
+            run: ./gradlew publishWatchosX86PublicationToDeployRepository publishWatchosArm32PublicationToDeployRepository publishWatchosArm64PublicationToDeployRepository
             env:
                OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
                OSSRH_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
