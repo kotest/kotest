@@ -56,11 +56,9 @@ include("kotest-runner:kotest-runner-junit5")
 
 include("kotest-runner:kotest-runner-junit4")
 include("kotest-extensions")
-include("kotest-extensions:kotest-extensions-allure")
 include("kotest-extensions:kotest-extensions-http")
 include("kotest-extensions:kotest-extensions-junitxml")
 include("kotest-extensions:kotest-extensions-htmlreporter")
-include("kotest-extensions:kotest-extensions-mockserver")
 
 // extensions that adapt junit extensions into kotest extensions
 include("kotest-extensions:kotest-extensions-junit5")
@@ -68,7 +66,6 @@ include("kotest-extensions:kotest-extensions-junit5")
 // the tests modules each test a piece of functionality
 // it is useful to have separate modules so each can set their own project config that
 // may be required as part of the tests
-include("kotest-tests:kotest-tests-allure")
 include("kotest-tests:kotest-tests-autoscan")
 include("kotest-tests:kotest-tests-core")
 

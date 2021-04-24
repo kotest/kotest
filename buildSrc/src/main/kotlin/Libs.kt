@@ -19,18 +19,8 @@ object Libs {
       const val mordant = "com.github.ajalt:mordant:1.2.1"
    }
 
-   object Allure {
-      private const val version = "2.13.9"
-      const val commons = "io.qameta.allure:allure-java-commons:$version"
-   }
-
    object Jayway {
       const val jsonpath = "com.jayway.jsonpath:json-path:2.5.0"
-   }
-
-   object Jackson {
-      private const val version = "2.12.2"
-      const val kotlin = "com.fasterxml.jackson.module:jackson-module-kotlin:$version"
    }
 
    object Tschuchortdev {
