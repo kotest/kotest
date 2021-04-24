@@ -65,6 +65,12 @@ object Libs {
       const val commonslang = "org.apache.commons:commons-lang3:3.11"
    }
 
+   object MockServer {
+      private const val version = "5.11.2"
+      const val netty = "org.mock-server:mockserver-netty:$version"
+      const val javaClient = "org.mock-server:mockserver-client-java:$version"
+   }
+
    object Mifmif {
       const val generex = "com.github.mifmif:generex:1.0.2"
    }
