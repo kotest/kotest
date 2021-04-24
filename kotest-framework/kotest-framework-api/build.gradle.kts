@@ -29,8 +29,8 @@ kotlin {
 
       val commonMain by getting {
          dependencies {
+            compileOnly(kotlin("stdlib"))
             implementation(kotlin("reflect"))
-            implementation(kotlin("stdlib"))
             implementation(Libs.Coroutines.coreCommon)
             implementation(Libs.Kotlin.kotlinScriptRuntime)
             implementation(project(Projects.Common))

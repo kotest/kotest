@@ -31,8 +31,8 @@ kotlin {
 
       val commonMain by getting {
          dependencies {
+            compileOnly(kotlin("stdlib"))
             implementation(kotlin("reflect"))
-            implementation(kotlin("stdlib"))
             api(project(Projects.AssertionsShared))
             implementation(project(Projects.Common))
             // this is API because we want people to be able to use the functionality in their tests

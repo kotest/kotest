@@ -29,12 +29,10 @@ kotlin {
 
       val commonMain by getting {
          dependencies {
-            implementation(kotlin("reflect"))
-            implementation(kotlin("stdlib"))
+            compileOnly(kotlin("stdlib"))
             implementation(Libs.Coroutines.coreCommon)
             implementation(project(Projects.Common))
             implementation(project(Projects.Api))
-            api(project(Projects.AssertionsShared))
          }
       }
 

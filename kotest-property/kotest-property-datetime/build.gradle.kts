@@ -29,8 +29,7 @@ kotlin {
 
       val commonMain by getting {
          dependencies {
-            implementation(kotlin("stdlib"))
-            implementation(kotlin("reflect"))
+            compileOnly(kotlin("stdlib"))
             api(project(Projects.AssertionsApi))
             api(project(Projects.Property))
             implementation(project(Projects.Common))

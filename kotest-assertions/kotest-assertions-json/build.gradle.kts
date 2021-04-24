@@ -30,9 +30,9 @@ kotlin {
 
       val commonMain by getting {
          dependencies {
+            compileOnly(kotlin("stdlib"))
             implementation(Libs.Serialization.json)
             implementation(project(Projects.AssertionsShared))
-            implementation(kotlin("reflect"))
             implementation(Libs.Jayway.jsonpath)
          }
       }
