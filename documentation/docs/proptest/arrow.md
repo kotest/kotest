@@ -8,6 +8,8 @@ sidebar_label: Arrow Generators
 
 An optional module provides generators for [Arrow](https://arrow-kt.io). These generators are JVM only.
 
+To use, add `io.kotest.extensions:kotest-property-arrow:version` to your build.
+
 | Generator    | Description |
 | -------- | ----------- |
 | **Either** |
