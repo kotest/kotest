@@ -6,6 +6,9 @@ sidebar_label: Introduction
 ---
 
 
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
 Kotest is split into several subprojects which can be used independently. One of these subprojects is the property test framework.
 To begin you need to add the module `io.kotest:kotest-property:<version>` to your build.
 
@@ -34,6 +37,87 @@ That is where the term _property testing_ originates.
 
 However, you do not have to use property tests to only test things like monad laws or basic numeric functions. Any test that
 would benefit from a wide array of input values is a good candidate.
+
+
+## Getting Started
+
+The property test framework is supported on all targets.
+
+<Tabs
+defaultValue="JVM/Gradle"
+values={[
+{label: 'JVM/Gradle', value: 'JVM/Gradle'},
+{label: 'JVM/Maven', value: 'JVM/Maven'},
+{label: 'Multiplatform', value: 'Multiplatform'},
+]}>
+
+<TabItem value="JVM/Gradle">
+
+Add the following dependency to your build:
+
+```kotlin
+dependencies {
+   testImplementation("io.kotest:kotest-property:$version")
+}
+```
+
+</TabItem>
+
+<TabItem value="JVM/Maven">
+
+Add the following dependency to your build.
+
+```xml
+<dependency>
+   <groupId>io.kotest</groupId>
+   <artifactId>kotest-property-jvm</artifactId>
+   <version>${version}</version>
+   <scope>test</scope>
+</dependency>
+```
+
+</TabItem>
+<TabItem value="Multiplatform">
+
+   Add the following dependency to your `commonTest` sourceset:
+
+```kotlin
+kotlin {
+  sourceSets {
+    val commonTest by getting {
+      dependencies {
+        implementation("io.kotest:kotest-property:$version")
+      }
+    }
+  }
+}
+```
+
+Alternatively, add the dependency to a specific target.
+   For example, we could add to the Javascript target only be using the `jsTest` sourceset.
+
+```kotlin
+kotlin {
+   targets {
+      js {
+         browser()
+         nodejs()
+      }
+   }
+   sourceSets {
+      val jsTest by getting {
+         dependencies {
+            implementation("io.kotest:kotest-property:$version")
+         }
+      }
+   }
+}
+```
+
+</TabItem>
+</Tabs>
+
+
 
 ## Next Steps
 
