@@ -5,7 +5,7 @@ import io.kotest.core.SpecFunctionConfiguration
 import io.kotest.core.Tag
 import io.kotest.core.TestConfiguration
 import io.kotest.core.config.Configuration
-import io.kotest.core.config.ExperimentalKotest
+import io.kotest.common.ExperimentalKotest
 import io.kotest.core.config.configuration
 import io.kotest.core.js.JsTest
 import io.kotest.core.js.useKotlinJs

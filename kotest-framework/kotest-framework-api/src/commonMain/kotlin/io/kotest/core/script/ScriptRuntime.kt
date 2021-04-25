@@ -1,6 +1,6 @@
 package io.kotest.core.script
 
-import io.kotest.core.config.ExperimentalKotest
+import io.kotest.common.ExperimentalKotest
 import io.kotest.core.plan.Descriptor
 import io.kotest.core.plan.DisplayName
 import io.kotest.core.plan.Name

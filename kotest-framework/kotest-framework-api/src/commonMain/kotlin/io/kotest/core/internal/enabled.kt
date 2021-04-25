@@ -1,6 +1,6 @@
 package io.kotest.core.internal
 
-import io.kotest.core.config.ExperimentalKotest
+import io.kotest.common.ExperimentalKotest
 import io.kotest.core.config.configuration
 import io.kotest.core.extensions.EnabledExtension
 import io.kotest.core.extensions.resolvedExtensions

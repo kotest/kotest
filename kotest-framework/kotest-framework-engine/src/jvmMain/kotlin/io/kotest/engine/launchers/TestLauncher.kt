@@ -1,7 +1,7 @@
 package io.kotest.engine.launchers
 
 import io.kotest.core.config.Configuration
-import io.kotest.core.config.ExperimentalKotest
+import io.kotest.common.ExperimentalKotest
 import io.kotest.core.internal.resolvedConcurrentTests
 import io.kotest.core.spec.Spec
 import io.kotest.core.test.TestCase

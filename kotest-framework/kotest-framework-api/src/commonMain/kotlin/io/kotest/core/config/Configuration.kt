@@ -2,6 +2,7 @@
 
 package io.kotest.core.config
 
+import io.kotest.common.ExperimentalKotest
 import io.kotest.core.extensions.Extension
 import io.kotest.core.extensions.TestCaseExtension
 import io.kotest.core.filter.Filter

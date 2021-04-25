@@ -1,6 +1,6 @@
 package io.kotest.engine.dispatchers
 
-import io.kotest.core.config.ExperimentalKotest
+import io.kotest.common.ExperimentalKotest
 import io.kotest.core.internal.resolvedThreads
 import io.kotest.core.spec.Spec
 import io.kotest.core.test.TestCase

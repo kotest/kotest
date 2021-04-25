@@ -1,6 +1,6 @@
 package io.kotest.datatest
 
-import io.kotest.core.config.ExperimentalKotest
+import io.kotest.common.ExperimentalKotest
 import io.kotest.core.spec.style.scopes.RootScope
 import io.kotest.core.test.Identifiers
 import io.kotest.core.test.TestCaseConfig

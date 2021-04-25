@@ -1,6 +1,6 @@
 package io.kotest.engine.launchers
 
-import io.kotest.core.config.ExperimentalKotest
+import io.kotest.common.ExperimentalKotest
 import io.kotest.core.test.TestCase
 import io.kotest.engine.dispatchers.CoroutineDispatcherFactory
 import io.kotest.mpp.log
