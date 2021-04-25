@@ -10,7 +10,7 @@ and [exhaustive](gens.md#exhaustive).
 
 Most generators are available on all platforms. Some are JVM or JS specific.
 
-We also provide generators for [Arrow](https://github.com/kotest/kotest-assertions-arrow) as a separate module.
+We also provide generators for [Arrow](https://github.com/kotest/kotest-property-arrow) as a separate module.
 
 | Generator    | Description | JVM | JS | Native |
 | -------- | ----------- | --- | --- | ------ |
