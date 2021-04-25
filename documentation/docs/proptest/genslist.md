@@ -5,10 +5,12 @@ slug: property-test-generators-list.html
 sidebar_label: Generators List
 ---
 
-This page lists all current generators in Kotest. There are two types of generator - [arbitrary](gens.md#arbitrary)
+This page lists all current generators in Kotest. There are two types of generator: [arbitrary](gens.md#arbitrary)
 and [exhaustive](gens.md#exhaustive).
 
 Most generators are available on all platforms. Some are JVM or JS specific.
+
+We also provide generators for [Arrow](https://github.com/kotest/kotest-assertions-arrow) as a separate module.
 
 | Generator    | Description | JVM | JS | Native |
 | -------- | ----------- | --- | --- | ------ |
