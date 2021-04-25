@@ -15,7 +15,7 @@ class ClassifyTest : StringSpec() {
             classify(a == 0, "zero")
             classify(a % 2 == 0, "even number", "odd number")
             a + a == 2 * a
-         }.classifications() shouldBe mapOf("odd number" to 517, "even number" to 483, "zero" to 24)
+         }.classifications() shouldBe mapOf("odd number" to 507, "even number" to 493, "zero" to 9)
 
          forAll(PropTestConfig(seed = 1234), Arb.string()) { a ->
             classify(a.contains(" "), "has whitespace", "no whitespace")
