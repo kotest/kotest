@@ -21,33 +21,35 @@ Some generators are only available on the JVM. See the full list [here](genslist
 ## Arbitrary
 
 `Arb`s generate two types of values - a hard coded set of _edge cases_ and an infinite stream of _randomly chosen
-values_.
+samples_.
 
-The random values may be repeated, and some values may never be generated at all. For example generating 1000 random
-integers between 0 and Int.MAX will clearly not return all possible values, and some values may happen to be generated
-more than once. Similarly, generating 1000 random integers between 0 and 500, will definitely result in some values
+The samples may be repeated, and some values may never be generated at all. For example generating 1000
+integers between 0 and Int.MAX cannot return all possible values, and some values may happen to be generated
+more than once. Similarly, generating 1000 random integers between 0 and 500 will definitely result in some values
 appearing more than once.
 
-Typical arbs include numbers with or without a range, strings in the unicode set, random lists, data classes with random
-parameters, emails, codepoints, chars and much more.
+Some common arbitraries include numbers with or without a range, strings in the unicode set, random lists,
+data classes with random parameters, emails, codepoints, chars and so on.
 
 In addition to the random values, arbs may provide edge cases. One of the design features of Kotest's property testing
 is that values for some types will always include "common" edge cases that you probably want to be included in your
 tests.
 
-For example, when testing a function that accepts an integer, you probably want to ensure that at the very least, it is
+For example, when testing a function that accepts an integer, you probably want to ensure that, at the very least, it is
 tested with zero, a positive number and a negative number. If only random values were provided, the chances of zero
 appearing would be fairly low, so Kotest will always provide some "edge cases" for integers (unless you specify
 otherwise).
 
-These edge cases are enumerated first, then the random values are used.
+When executing tests, the framework will alternate randomly between samples and edgecases. The split is determined
+by a configuration value which defaults to 2% edgecases.
 
-Not all arbs have edge cases, but the arbs for the most common types do. Here are some examples of edge cases used by
-certain arbs:
+Not all arbs have edge cases, but the arbs for the most common types do.
+Here are some examples of edge cases used by some arbs:
 
 * ints: 0, 1, -1, Int.MAX_VALUE, Int.MIN_VALUE
-* strings: empty string, string of min length
-* lists: empty list
+* doubles: 0, 1, -1, Double.MAX_VALUE, Double.MIN_VALUE, Double.POSITIVE_INFINITY, Double.NEGATIVE_INFINITY, Double.NaN
+* strings: empty string, string of min length, lowest codepoint
+* lists: empty list, list of a single element, list with duplicate elements
 * maps: empty map
 * nullable values: null
 
