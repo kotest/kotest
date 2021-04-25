@@ -13,6 +13,7 @@ module.exports = {
       'proptest/proptestconfig',
       'proptest/customgens',
       'proptest/globalconfig',
+      'proptest/arrow',
    ],
    intellij: [
       'intellij/index',
