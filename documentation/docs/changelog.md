@@ -5,11 +5,20 @@ slug: changelog.html
 ---
 
 
-### [Unreleased]
+### 4.5.0.RC1 April 2021
 
-Note: This changelog mentions the changes which are not yet released in stable version.
-      You can still use a snapshot release to try out these changes and provide us with your valuable feedback.
-      Docs updates are available at kotest.io.
+Note: This version will be released as 4.5.0 if no major bugs are reported.
+
+As part of this release, third party extensions were promoted to top level repositories instead of modules inside the main kotest repo.
+This allows the extensions to iterate quickly, without needing to wait for a full Kotest release.
+
+From 4.5 onwards, the namespace for all extensions has changed to `io.kotest.extensions` and the versioning reset to 1.0.0.
+
+So, for example, if you used the Spring extension, you would previously have added `io.kotest:kotest-extensions-spring:4.x.y` to your build.
+Now you would use `io.kotest.extensions:kotest-extensions-spring:1.x.y`
+
+See the full list of [extension modules](https://kotest.io/docs/extensions/extensions.html).
+
 
 #### Breaking Changes
 * In order to use `ExperimentalKotest` more broadly,
@@ -17,56 +26,77 @@ Note: This changelog mentions the changes which are not yet released in stable v
 * In order to ensure the `EventuallyListener` is called in `eventually` when an exception is thrown the `ListenerState` field `result` was changed
   from type `T` to type `T?`. This will allow insight into when the eventually producer function is failing for whatever reason
   instead of appearing as if it is hanging. #2190
+* Property tests now randomly cycle between edgecases and samples, rather than iterating all edgecases first. This allows greater number of edgecases to be used and avoids a combinatoral explosion. If you are implementing custom Arb's by extending the Arb class (instead of using the `arbitrary` builders), then you will need to adjust your edgecases method from `fun edgecases(): List<A>` to `fun edgecase(rs: RandomSource): A?`.
+* Because of the above property test change, if you are setting a seed in a property test you may need to adjust the value.
+* The kotlin stdlib dependencies are now marked as `compileOnly`, meaning the version in your build will be used. Kotest tries to maintain compatibility across multiple versions by not relying on features only available in the latest releases.
 
 
 #### Features / Improvement
+* A new data testing module has been added `kotest-framework-datatest` which properly supports runtime nesting of data tests. #2078
 * Added new matcher for DayOfWeek in `kotest-assertion-clock` module. #2124
 * Added factory method to simplify creating new matchers. #2122
 * Added method in `Exhaustive` to create a new `Exhaustive` which will be a cartesian product of given two `Exhaustive`. #2120
-* Added support for writing test inside a object instead of creating a class. #2097
+* Added support for writing tests inside an object as well as class. #1970
 * Added suspend version of `shouldCompleteWithin`, `shouldCompleteBetween` and `shouldTimeOut`. #2107
-* Added `kotest-extensions-wiremock` module for managing lifecycle of `WireMockServer` in Kotest test. #2108
+* Added [kotest-extensions-wiremock](https://github.com/kotest/kotest-extensions-wiremock) project for managing lifecycle of `WireMockServer` in Kotest test. #2108
+* Added [kotest-extensions-kafka](https://github.com/kotest/kotest-extensions-embedded-kafka) project for using embedded kafka in your tests
 * Upgrade `klock` dependency to 2.0.6 and added `browser`, `nodejs`, `linuxX64`, `mingwX64`, `macosX64`, `tvos`,
   `iosX64`, `iosArm64` and `iosArm32` platform targets for `kotest-assertions-klock`. #2116
 * Run eventually one final time if iterations is one and delay is greater than the interval #2105
-* Updates `withEnvironment` function to ignore environment variable key case sensitivity on Windows platform. #2099
-* Some improvement around `eventually`.
-  (1) Makes `EventuallyPredicate` a type alias instead of interface for better user experience.
-  (2) Update failure message to inform the user about failure of given `EventuallyPredicate`.
-  (3) Adds an overload of `eventually` which does not accept `EventuallyPredicate` so that it gives a feel of `until` function. 2046
+* Some improvement around `eventually`.<br/>
+  (1) Makes `EventuallyPredicate` a type alias instead of interface for better user experience.<br/>
+  (2) Update failure message to inform the user about failure of given `EventuallyPredicate`.<br/>
+  (3) Adds an overload of `eventually` which does not accept `EventuallyPredicate` so that it gives a feel of `until` function.
 * Added `shouldBeEqualToComparingFields` and `shouldBeEqualToComparingFieldsExcept` matchers which check equality of
   actual and expected by comparing their fields instead of using `equals` method. #2197
+* `one` and `any` have been added as alternatives to `assertSoftly`. These are suspending methods that will check that only a single
+  assertion succeeded (in the case of `one`) or that at least one assertion succeeded (in the case of `any`). #1950
+* New reporter added to generate HTML reports #2011
+* `Exhaustive.cartesian` has been added #2119
+* `kotest.tags` can now be set via ENV Vars #2098
+* Edgecases are now probabilistic based #2112
+* TestResult should support a reason why tests were skipped #2172
+* Add watchos support back for x86 #2204
+
 
 #### Bugfixes.
-* Corrects a message for `haveCauseOfType` matcher to include the name expected and actual cause type. #2131
-* Fix `IncorrectDereferenceException` when calling assertions on a background thread in a native platform. #2128
-* Corrects error message for shouldContainKeys matcher to includes keys which are not present in given map. #2106
-* Updates Throwable eq to check throwable cause as well while checking throwable equality. #2094
 * Fixes eventually failing inside assert softly block without retrying the given lambda. #2092
 * Fixes any other implementation of `Listener` apart from `ProjectListener` not getting picked by Kotest framework. #2088
 * Fixes `EventuallyListener` not being called in `eventually` when the producer function throws an exception. #2190
+* Use the classname as the default prefix for temporary files #2140
+* Fix for `SystemExitListener` and _picocli_ framework #2156
+* Fix for `Arb.choose(arb, arb2, ...)` not generating random values #2176
+* Using checkAll, forAll and using take on an Arb cause an InvalidMutabilityException on XorWowRandom for Ios #2198
+* Fix issues of passing vararg to another function in containsInOrder #2200
+* The StringShrinker ignored min size limit #2213
+* Fix for unlimited concurrency in spec execution when using experimental concurrency support #2177
+* Synchronize access to Spring test contexts #2166
+* Fixed typo in `haveClassAnnontations` matcher. Existing incorrect spelling is deprecated. #2133
+
 
 
 #### Deprecations
 * Deprecated `instanceOf`, `beInstanceOf`, `beTheSameInstanceAs`, `beOfType` of package `io.kotest.matchers` these will
-  be removed permanently in 4.6 release, you can import these same assertion from `io.kotest.matchers.types`
+  be removed permanently in 4.7 release, you can import these same assertion from `io.kotest.matchers.types`
   package.
-
-* Remove deprecation eventually that uses durations for intervals. #2086
-
-
-#### Docs Updates
-* Corrects generators docs to have correct name of Exhaustive. #2110
-* Update docs to highlight eventually does work properly with assert softly. #2091
-* Adds note about StringSpec does not support nesting tests. #2090
-* Adds docs for `Arb.stringPattern`. #2125
+* Remove deprecated eventually that uses durations for intervals. #2086
+* Receivers used in test scopes have been renamed. For example, `DescribeScope` has become `DescribeSpecContainerContext`.
+  The previous names exist as typealiases but are deprecated.
+  This is only of importance if you implement custom spec types that inherit from the builtin specs or have defined
+  extension methods on those scopes.
 
 
 #### Contributors
-AJ Alt (ajalt), Ashish Kumar Joy (ashishkujoy), Dale King (dalewking), Janek (xerus2000),
-Jim Schneidereit (jschneidereit), Nikita Klimenko (DisPony), Rustam Musin (jvmusin),
-Sam Sam (sksamuel), Sean Flanigan (seanf), Sebastian Schuberth (sschuberth).
 
+Alex Ordóñez
+(a-p-o), AJ Alt (ajalt), Andreas Deininger
+(deining), Ashish Kumar Joy (ashishkujoy), Dale King (dalewking), Hirotaka Kawata
+(techno), Janek (xerus2000),
+Jim Schneidereit (jschneidereit), Mateusz Kwieciński
+(mateuszkwiecinski), Niklas Lochschmidt
+(nlochschmidt), Nikita Klimenko (DisPony), Rustam Musin (jvmusin),
+Sam Sam (sksamuel), Sean Flanigan (seanf), Sebastian Schuberth (sschuberth), Yoonho Sean Lee
+(yoonho-sean-lee), Zak Henry (zakhenry)
 
 
 ### 4.4.3 March 2021
