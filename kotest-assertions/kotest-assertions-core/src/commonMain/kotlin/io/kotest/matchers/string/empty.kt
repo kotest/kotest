@@ -6,12 +6,12 @@ import io.kotest.matchers.neverNullMatcher
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldNot
 
-fun <A : CharSequence> A?.shouldBeEmpty(): A? {
+fun <A : CharSequence> A.shouldBeEmpty(): A {
    this.toString() should beEmpty()
    return this
 }
 
-fun <A : CharSequence> A?.shouldNotBeEmpty(): A? {
+fun <A : CharSequence> A.shouldNotBeEmpty(): A {
    this.toString() shouldNot beEmpty()
    return this
 }
@@ -24,12 +24,12 @@ fun beEmpty() = neverNullMatcher<String> { value ->
    )
 }
 
-fun <A : CharSequence> A?.shouldBeBlank(): A? {
+fun <A : CharSequence> A.shouldBeBlank(): A {
    this.toString() should beBlank()
    return this
 }
 
-fun <A : CharSequence> A?.shouldNotBeBlank(): A? {
+fun <A : CharSequence> A.shouldNotBeBlank(): A {
    this.toString() shouldNot beBlank()
    return this
 }
