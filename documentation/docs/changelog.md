@@ -88,16 +88,29 @@ See the full list of [extension modules](https://kotest.io/docs/extensions/exten
 
 #### Contributors
 
-Alex Ordóñez
-(a-p-o), AJ Alt (ajalt), Andreas Deininger
-(deining), Ashish Kumar Joy (ashishkujoy), Dale King (dalewking), Hirotaka Kawata
-(techno), Janek (xerus2000),
-Jim Schneidereit (jschneidereit), Mateusz Kwieciński
-(mateuszkwiecinski), Mitchell Yuwono
-(myuwono), Niklas Lochschmidt
-(nlochschmidt), Nikita Klimenko (DisPony), Rustam Musin (jvmusin),
-Sam Sam (sksamuel), Sean Flanigan (seanf), Sebastian Schuberth (sschuberth), Yoonho Sean Lee
-(yoonho-sean-lee), Zak Henry (zakhenry)
+* AJ Alt
+* Alex Ordóñez
+* Andreas Deininger
+* Ashish Kumar Joy
+* Dale King
+* Hirotaka Kawata
+* Hugo Martins
+* Janek
+* Jim Schneidereit
+* Leonardo Colman
+* Malte Esch
+* Mateusz Kwieciński
+* Mitchell Yuwono
+* Nikita Klimenko
+* Niklas Lochschmidt
+* Rustam Musin
+* Sean Flanigan
+* Sebastian Schuberth
+* Yoonho Sean Lee
+* Zak Henry
+* deining
+* sksamuel
+* tbcs
 
 
 ### 4.4.3 March 2021
