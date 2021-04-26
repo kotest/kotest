@@ -108,7 +108,6 @@ See the full list of [extension modules](https://kotest.io/docs/extensions/exten
 * Sebastian Schuberth
 * Yoonho Sean Lee
 * Zak Henry
-* deining
 * sksamuel
 * tbcs
 
