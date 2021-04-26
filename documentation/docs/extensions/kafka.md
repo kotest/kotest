@@ -41,7 +41,7 @@ Note: The underlying [embedded kafka library](https://github.com/kotest/kotest-e
 
 ### Consumer / Producer
 
-To create a consumer and producer we can use methods on the listener
+To create a consumer and producer we can use convenience methods on the listener:
 
 ```kotlin
 class EmbeddedKafkaListenerTest : FunSpec({
@@ -62,6 +62,24 @@ class EmbeddedKafkaListenerTest : FunSpec({
    }
 
 })
+```
+
+The `stringStringProducer` and `stringStringConsumer` methods return a producer / consumer that accept strings for the keys and values. Similar methods exist for byte pairs.
+
+Alternatively, you can access the host/port the Kafka instance was deployed on and create the clients yourself:
+
+```kotlin
+class EmbeddedKafkaListenerTest : FunSpec({
+
+   listener(embeddedKafkaListener)
+   
+   val props = Properties().apply {
+      put(CommonClientConfigs.BOOTSTRAP_SERVERS_CONFIG, "${embeddedKafkaListener.host}:${embeddedKafkaListener.port}")
+   }
+   
+   val producer = KafkaProducer<String, String>(props)
+   
+}
 ```
 
 
