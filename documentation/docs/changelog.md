@@ -93,7 +93,8 @@ Alex Ordóñez
 (deining), Ashish Kumar Joy (ashishkujoy), Dale King (dalewking), Hirotaka Kawata
 (techno), Janek (xerus2000),
 Jim Schneidereit (jschneidereit), Mateusz Kwieciński
-(mateuszkwiecinski), Niklas Lochschmidt
+(mateuszkwiecinski), Mitchell Yuwono
+(myuwono), Niklas Lochschmidt
 (nlochschmidt), Nikita Klimenko (DisPony), Rustam Musin (jvmusin),
 Sam Sam (sksamuel), Sean Flanigan (seanf), Sebastian Schuberth (sschuberth), Yoonho Sean Lee
 (yoonho-sean-lee), Zak Henry (zakhenry)
