@@ -6,23 +6,23 @@ import io.kotest.matchers.neverNullMatcher
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldNot
 
-fun String?.shouldBeSingleLine(): String? {
-   this should haveLineCount(1)
+fun <A : CharSequence> A?.shouldBeSingleLine(): A? {
+   this.toString() should haveLineCount(1)
    return this
 }
 
-fun String?.shouldNotBeSingleLine(): String? {
-   this shouldNot haveLineCount(1)
+fun <A : CharSequence> A?.shouldNotBeSingleLine(): A? {
+   this.toString() shouldNot haveLineCount(1)
    return this
 }
 
-infix fun String?.shouldHaveLineCount(count: Int): String? {
-   this should haveLineCount(count)
+infix fun <A : CharSequence> A?.shouldHaveLineCount(count: Int): A? {
+   this.toString() should haveLineCount(count)
    return this
 }
 
-infix fun String?.shouldNotHaveLineCount(count: Int): String? {
-   this shouldNot haveLineCount(count)
+infix fun <A : CharSequence> A?.shouldNotHaveLineCount(count: Int): A? {
+   this.toString() shouldNot haveLineCount(count)
    return this
 }
 

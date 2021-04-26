@@ -7,13 +7,13 @@ import io.kotest.matchers.neverNullMatcher
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldNot
 
-infix fun String?.shouldHaveMaxLength(length: Int): String? {
-   this should haveMaxLength(length)
+infix fun <A : CharSequence> A?.shouldHaveMaxLength(length: Int): A? {
+   this.toString() should haveMaxLength(length)
    return this
 }
 
-infix fun String?.shouldNotHaveMaxLength(length: Int): String? {
-   this shouldNot haveMaxLength(length)
+infix fun <A : CharSequence> A?.shouldNotHaveMaxLength(length: Int): A? {
+   this.toString() shouldNot haveMaxLength(length)
    return this
 }
 
@@ -25,13 +25,13 @@ fun haveMaxLength(length: Int) = neverNullMatcher<String> { value ->
    )
 }
 
-infix fun String?.shouldHaveMinLength(length: Int): String? {
-   this should haveMinLength(length)
+infix fun <A : CharSequence> A?.shouldHaveMinLength(length: Int): A? {
+   this.toString() should haveMinLength(length)
    return this
 }
 
-infix fun String?.shouldNotHaveMinLength(length: Int): String? {
-   this shouldNot haveMinLength(length)
+infix fun <A : CharSequence> A?.shouldNotHaveMinLength(length: Int): A? {
+   this.toString() shouldNot haveMinLength(length)
    return this
 }
 
@@ -44,13 +44,13 @@ fun haveMinLength(length: Int) = neverNullMatcher<String> { value ->
 }
 
 
-fun String?.shouldHaveLengthBetween(min: Int, max: Int): String? {
-   this should haveLengthBetween(min, max)
+fun <A : CharSequence> A?.shouldHaveLengthBetween(min: Int, max: Int): A? {
+   this.toString() should haveLengthBetween(min, max)
    return this
 }
 
-fun String?.shouldNotHaveLengthBetween(min: Int, max: Int): String? {
-   this shouldNot haveLengthBetween(min, max)
+fun <A : CharSequence> A?.shouldNotHaveLengthBetween(min: Int, max: Int): A? {
+   this.toString() shouldNot haveLengthBetween(min, max)
    return this
 }
 
@@ -66,13 +66,13 @@ fun haveLengthBetween(min: Int, max: Int): Matcher<String?> {
 }
 
 
-fun String?.shouldHaveLengthIn(range: IntRange): String? {
-   this should haveLengthIn(range)
+fun <A : CharSequence> A?.shouldHaveLengthIn(range: IntRange): A? {
+   this.toString() should haveLengthIn(range)
    return this
 }
 
-fun String?.shouldNotHaveLengthIn(range: IntRange): String? {
-   this shouldNot haveLengthIn(range)
+fun <A : CharSequence> A?.shouldNotHaveLengthIn(range: IntRange): A? {
+   this.toString() shouldNot haveLengthIn(range)
    return this
 }
 
@@ -87,24 +87,24 @@ fun haveLengthIn(range: IntRange): Matcher<String?> {
 }
 
 
-infix fun String?.shouldHaveLength(length: Int): String? {
-   this should haveLength(length)
+infix fun <A : CharSequence> A?.shouldHaveLength(length: Int): A? {
+   this.toString() should haveLength(length)
    return this
 }
 
-infix fun String?.shouldNotHaveLength(length: Int): String? {
-   this shouldNot haveLength(length)
+infix fun <A : CharSequence> A?.shouldNotHaveLength(length: Int): A? {
+   this.toString() shouldNot haveLength(length)
    return this
 }
 
 
-infix fun String?.shouldHaveSameLengthAs(other: String): String? {
-   this should haveSameLengthAs(other)
+infix fun <A : CharSequence> A?.shouldHaveSameLengthAs(other: String): A? {
+   this.toString() should haveSameLengthAs(other)
    return this
 }
 
-infix fun String?.shouldNotHaveSameLengthAs(other: String): String? {
-   this shouldNot haveSameLengthAs(other)
+infix fun <A : CharSequence> A?.shouldNotHaveSameLengthAs(other: String): A? {
+   this.toString() shouldNot haveSameLengthAs(other)
    return this
 }
 

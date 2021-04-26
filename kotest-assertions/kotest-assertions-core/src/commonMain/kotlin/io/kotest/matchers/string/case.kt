@@ -6,13 +6,13 @@ import io.kotest.matchers.neverNullMatcher
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldNot
 
-fun String?.shouldBeUpperCase(): String? {
-   this should beUpperCase()
+fun <A : CharSequence> A?.shouldBeUpperCase(): A? {
+   this.toString() should beUpperCase()
    return this
 }
 
-fun String?.shouldNotBeUpperCase(): String? {
-   this shouldNot beUpperCase()
+fun <A : CharSequence> A?.shouldNotBeUpperCase(): A? {
+   this.toString() shouldNot beUpperCase()
    return this
 }
 
@@ -24,13 +24,13 @@ fun beUpperCase() = neverNullMatcher<String> { value ->
    )
 }
 
-fun String?.shouldBeLowerCase(): String? {
-   this should beLowerCase()
+fun <A : CharSequence> A?.shouldBeLowerCase(): A? {
+   this.toString() should beLowerCase()
    return this
 }
 
-fun String?.shouldNotBeLowerCase(): String? {
-   this shouldNot beLowerCase()
+fun <A : CharSequence> A?.shouldNotBeLowerCase(): A? {
+   this.toString() shouldNot beLowerCase()
    return this
 }
 

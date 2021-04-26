@@ -9,13 +9,13 @@ import kotlin.contracts.ExperimentalContracts
 import kotlin.contracts.contract
 import kotlin.text.RegexOption.IGNORE_CASE
 
-fun String?.shouldContainOnlyDigits(): String? {
-   this should containOnlyDigits()
+fun <A : CharSequence> A?.shouldContainOnlyDigits(): A? {
+   this.toString() should containOnlyDigits()
    return this
 }
 
-fun String?.shouldNotContainOnlyDigits(): String? {
-   this shouldNot containOnlyDigits()
+fun <A : CharSequence> A?.shouldNotContainOnlyDigits(): A? {
+   this.toString() shouldNot containOnlyDigits()
    return this
 }
 
@@ -27,13 +27,13 @@ fun containOnlyDigits() = neverNullMatcher<String> { value ->
    )
 }
 
-fun String?.shouldContainADigit(): String? {
-   this should containADigit()
+fun <A : CharSequence> A?.shouldContainADigit(): A? {
+   this.toString() should containADigit()
    return this
 }
 
-fun String?.shouldNotContainADigit(): String? {
-   this shouldNot containADigit()
+fun <A : CharSequence> A?.shouldNotContainADigit(): A? {
+   this.toString() shouldNot containADigit()
    return this
 }
 
@@ -45,181 +45,20 @@ fun containADigit() = neverNullMatcher<String> { value ->
    )
 }
 
-infix fun String?.shouldContainOnlyOnce(substr: String): String? {
-   this should containOnlyOnce(substr)
-   return this
-}
-
-infix fun String?.shouldNotContainOnlyOnce(substr: String): String? {
-   this shouldNot containOnlyOnce(substr)
-   return this
-}
-
-fun containOnlyOnce(substring: String) = neverNullMatcher<String> { value ->
-   MatcherResult(
-      value.indexOf(substring) >= 0 && value.indexOf(substring) == value.lastIndexOf(substring),
-      "${value.show().value} should contain the substring ${substring.show().value} exactly once",
-      "${value.show().value} should not contain the substring ${substring.show().value} exactly once"
-   )
-}
-
-fun String?.shouldBeEmpty(): String? {
-   this should beEmpty()
-   return this
-}
-
-fun String?.shouldNotBeEmpty(): String? {
-   this shouldNot beEmpty()
-   return this
-}
-
-fun beEmpty() = neverNullMatcher<String> { value ->
-   MatcherResult(
-      value.isEmpty(),
-      "${value.show().value} should be empty",
-      "${value.show().value} should not be empty"
-   )
-}
-
-fun String?.shouldBeBlank(): String? {
-   this should beBlank()
-   return this
-}
-
-fun String?.shouldNotBeBlank(): String? {
-   this shouldNot beBlank()
-   return this
-}
-
-fun containOnlyWhitespace() = beBlank()
-fun beBlank() = neverNullMatcher<String> { value ->
-   MatcherResult(
-      value.isBlank(),
-      { "${value.show().value} should contain only whitespace" },
-      { "${value.show().value} should not contain only whitespace" }
-   )
-}
-
-infix fun String?.shouldContainIgnoringCase(substr: String): String? {
-   this should containIgnoringCase(substr)
-   return this
-}
-
-infix fun String?.shouldNotContainIgnoringCase(substr: String): String? {
-   this shouldNot containIgnoringCase(substr)
-   return this
-}
-
-fun containIgnoringCase(substr: String) = neverNullMatcher<String> { value ->
-   MatcherResult(
-      value.toLowerCase().indexOf(substr.toLowerCase()) >= 0,
-      { "${value.show().value} should contain the substring ${substr.show().value} (case insensitive)" },
-      { "${value.show().value} should not contain the substring ${substr.show().value} (case insensitive)" }
-   )
-}
-
-infix fun String?.shouldContain(regex: Regex): String? {
-   this should contain(regex)
-   return this
-}
-
-infix fun String?.shouldNotContain(regex: Regex): String? {
-   this shouldNot contain(regex)
-   return this
-}
-
-fun contain(regex: Regex) = neverNullMatcher<String> { value ->
-   MatcherResult(
-      value.contains(regex),
-      { "${value.show().value} should contain regex $regex" },
-      { "${value.show().value} should not contain regex $regex" })
-}
-
-fun String?.shouldContainInOrder(vararg substrings: String): String? {
-   this should containInOrder(*substrings)
-   return this
-}
-
-fun String?.shouldNotContainInOrder(vararg substrings: String): String? {
-   this shouldNot containInOrder(*substrings)
-   return this
-}
-
-fun containInOrder(vararg substrings: String) = neverNullMatcher<String> { value ->
-   fun recTest(str: String, subs: List<String>): Boolean =
-      subs.isEmpty() || str.indexOf(subs.first()).let { it > -1 && recTest(str.substring(it + 1), subs.drop(1)) }
-
-   MatcherResult(
-      recTest(value, substrings.filter { it.isNotEmpty() }),
-      { "${value.show().value} should include substrings ${substrings.show().value} in order" },
-      { "${value.show().value} should not include substrings ${substrings.show().value} in order" })
-}
-
-infix fun String?.shouldContain(substr: String): String? {
-   this should contain(substr)
-   return this
-}
-
-infix fun String?.shouldNotContain(substr: String): String? {
-   this shouldNot contain(substr)
-   return this
-}
-
-fun contain(substr: String) = include(substr)
-
-infix fun String?.shouldInclude(substr: String): String? {
-   this should include(substr)
-   return this
-}
-
-infix fun String?.shouldNotInclude(substr: String): String? {
-   this shouldNot include(substr)
-   return this
-}
-
-fun include(substr: String) = neverNullMatcher<String> { value ->
-   MatcherResult(
-      value.contains(substr),
-      "${value.show().value} should include substring ${substr.show().value}",
-      "${value.show().value} should not include substring ${substr.show().value}"
-   )
-}
-
 infix fun String?.shouldMatch(regex: String): String? {
    this should match(regex)
    return this
 }
 
-infix fun String?.shouldMatch(regex: Regex): String? {
-   this should match(regex)
+infix fun <A : CharSequence> A?.shouldMatch(regex: Regex): A? {
+   this.toString() should match(regex)
    return this
 }
 
-infix fun String?.shouldNotMatch(regex: String): String? {
-   this shouldNot match(regex)
+infix fun <A : CharSequence> A?.shouldNotMatch(regex: String): A? {
+   this.toString() shouldNot match(regex)
    return this
 }
-
-infix fun String?.shouldEndWith(suffix: String): String? {
-   this should endWith(suffix)
-   return this
-}
-
-infix fun String?.shouldNotEndWith(suffix: String): String? {
-   this shouldNot endWith(suffix)
-   return this
-}
-
-infix fun String?.shouldStartWith(prefix: String): String? {
-   this should startWith(prefix)
-   return this
-}
-
-infix fun String?.shouldNotStartWith(prefix: String): String? {
-   this shouldNot startWith(prefix)
-   return this
-}
-
 
 /**
  * Asserts that [this] is equal to [other] (ignoring case)

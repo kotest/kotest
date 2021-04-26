@@ -21,8 +21,8 @@ import io.kotest.matchers.should
  *
  * ```
  */
-fun String?.shouldBeTruthy(): String? {
-   this should beTruthy()
+fun <A : CharSequence> A?.shouldBeTruthy(): A? {
+   this.toString() should beTruthy()
    return this
 }
 
@@ -42,8 +42,8 @@ fun String?.shouldBeTruthy(): String? {
  *
  * ```
  */
-fun String?.shouldBeFalsy(): String? {
-   this should beFalsy()
+fun <A : CharSequence> A?.shouldBeFalsy(): A? {
+   this.toString() should beFalsy()
    return this
 }
 
