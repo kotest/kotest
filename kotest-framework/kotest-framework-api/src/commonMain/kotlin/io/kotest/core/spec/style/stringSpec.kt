@@ -6,7 +6,7 @@ import io.kotest.core.factory.build
 import io.kotest.core.spec.DslDrivenSpec
 import io.kotest.core.spec.resolvedDefaultConfig
 import io.kotest.core.spec.style.scopes.RootTestRegistration
-import io.kotest.core.spec.style.scopes.StringSpecRootScope
+import io.kotest.core.spec.style.scopes.StringSpecRootContext
 import io.kotest.core.test.TestCaseConfig
 
 /**
@@ -24,12 +24,12 @@ fun stringSpec(block: StringSpecTestFactoryConfiguration.() -> Unit): TestFactor
 /**
  * Decorates a [TestFactoryConfiguration] with the StringSpec DSL.
  */
-class StringSpecTestFactoryConfiguration : TestFactoryConfiguration(), StringSpecRootScope {
+class StringSpecTestFactoryConfiguration : TestFactoryConfiguration(), StringSpecRootContext {
    override fun defaultConfig(): TestCaseConfig = resolvedDefaultConfig()
    override fun registration(): RootTestRegistration = RootTestRegistration.from(this)
 }
 
-abstract class StringSpec(body: StringSpec.() -> Unit = {}) : DslDrivenSpec(), StringSpecRootScope {
+abstract class StringSpec(body: StringSpec.() -> Unit = {}) : DslDrivenSpec(), StringSpecRootContext {
 
    init {
       body()

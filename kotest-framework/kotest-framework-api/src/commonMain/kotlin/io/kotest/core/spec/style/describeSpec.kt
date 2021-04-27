@@ -5,7 +5,7 @@ import io.kotest.core.factory.TestFactoryConfiguration
 import io.kotest.core.factory.build
 import io.kotest.core.spec.DslDrivenSpec
 import io.kotest.core.spec.resolvedDefaultConfig
-import io.kotest.core.spec.style.scopes.DescribeSpecRootScope
+import io.kotest.core.spec.style.scopes.DescribeSpecRootContext
 import io.kotest.core.spec.style.scopes.RootTestRegistration
 import io.kotest.core.test.TestCaseConfig
 
@@ -21,12 +21,12 @@ fun describeSpec(block: DescribeSpecTestFactoryConfiguration.() -> Unit): TestFa
    return config.build()
 }
 
-class DescribeSpecTestFactoryConfiguration : TestFactoryConfiguration(), DescribeSpecRootScope {
+class DescribeSpecTestFactoryConfiguration : TestFactoryConfiguration(), DescribeSpecRootContext {
    override fun defaultConfig(): TestCaseConfig = resolvedDefaultConfig()
    override fun registration(): RootTestRegistration = RootTestRegistration.from(this)
 }
 
-abstract class DescribeSpec(body: DescribeSpec.() -> Unit = {}) : DslDrivenSpec(), DescribeSpecRootScope {
+abstract class DescribeSpec(body: DescribeSpec.() -> Unit = {}) : DslDrivenSpec(), DescribeSpecRootContext {
 
    init {
       body()

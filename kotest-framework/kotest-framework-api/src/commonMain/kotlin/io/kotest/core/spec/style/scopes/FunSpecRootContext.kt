@@ -3,7 +3,10 @@ package io.kotest.core.spec.style.scopes
 import io.kotest.core.test.TestContext
 import io.kotest.core.test.createTestName
 
-interface FunSpecRootScope : RootContext {
+@Deprecated("Renamed to FunSpecRootContext. This typealias will be removed in 4.8")
+typealias FunSpecRootScope = FunSpecRootContext
+
+interface FunSpecRootContext : RootContext {
 
    /**
     * Adds a top level [FunSpecContainerContext] to this root scope.

@@ -6,7 +6,7 @@ import io.kotest.core.factory.build
 import io.kotest.core.spec.DslDrivenSpec
 import io.kotest.core.spec.resolvedDefaultConfig
 import io.kotest.core.spec.style.scopes.RootTestRegistration
-import io.kotest.core.spec.style.scopes.WordSpecRootScope
+import io.kotest.core.spec.style.scopes.WordSpecRootContext
 import io.kotest.core.test.TestCaseConfig
 
 /**
@@ -24,12 +24,12 @@ fun wordSpec(block: WordSpecTestFactoryConfiguration.() -> Unit): TestFactory {
 /**
  * Decorates a [TestFactoryConfiguration] with the WordSpec DSL.
  */
-class WordSpecTestFactoryConfiguration : TestFactoryConfiguration(), WordSpecRootScope {
+class WordSpecTestFactoryConfiguration : TestFactoryConfiguration(), WordSpecRootContext {
    override fun defaultConfig(): TestCaseConfig = resolvedDefaultConfig()
    override fun registration(): RootTestRegistration = RootTestRegistration.from(this)
 }
 
-abstract class WordSpec(body: WordSpec.() -> Unit = {}) : DslDrivenSpec(), WordSpecRootScope {
+abstract class WordSpec(body: WordSpec.() -> Unit = {}) : DslDrivenSpec(), WordSpecRootContext {
 
    init {
       body()

@@ -6,7 +6,7 @@ import io.kotest.core.factory.build
 import io.kotest.core.spec.DslDrivenSpec
 import io.kotest.core.spec.resolvedDefaultConfig
 import io.kotest.core.spec.style.scopes.RootTestRegistration
-import io.kotest.core.spec.style.scopes.ShouldSpecRootScope
+import io.kotest.core.spec.style.scopes.ShouldSpecRootContext
 import io.kotest.core.test.TestCaseConfig
 import io.kotest.matchers.Matcher
 import io.kotest.matchers.should as should2
@@ -23,12 +23,12 @@ fun shouldSpec(block: ShouldSpecTestFactoryConfiguration.() -> Unit): TestFactor
    return config.build()
 }
 
-class ShouldSpecTestFactoryConfiguration : TestFactoryConfiguration(), ShouldSpecRootScope {
+class ShouldSpecTestFactoryConfiguration : TestFactoryConfiguration(), ShouldSpecRootContext {
    override fun defaultConfig(): TestCaseConfig = resolvedDefaultConfig()
    override fun registration(): RootTestRegistration = RootTestRegistration.from(this)
 }
 
-abstract class ShouldSpec(body: ShouldSpec.() -> Unit = {}) : DslDrivenSpec(), ShouldSpecRootScope {
+abstract class ShouldSpec(body: ShouldSpec.() -> Unit = {}) : DslDrivenSpec(), ShouldSpecRootContext {
 
    init {
       body()

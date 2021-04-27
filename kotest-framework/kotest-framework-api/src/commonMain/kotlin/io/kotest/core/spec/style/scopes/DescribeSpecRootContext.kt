@@ -4,6 +4,10 @@ import io.kotest.core.test.DescriptionName
 import io.kotest.core.test.TestContext
 import io.kotest.core.test.createTestName
 
+@Deprecated("Renamed to DescribeSpecRootContext. This typealias will be removed in 4.8")
+typealias DescribeSpecRootScope = DescribeSpecRootContext
+
+
 /**
  * A context that allows root tests to be registered using the syntax:
  *
@@ -13,7 +17,7 @@ import io.kotest.core.test.createTestName
  *
  * xdescribe("some disabled test")
  */
-interface DescribeSpecRootScope : RootContext {
+interface DescribeSpecRootContext : RootContext {
 
    fun context(name: String, test: suspend DescribeSpecContainerContext.() -> Unit) {
       val testName = createTestName("Context: ", name, false)

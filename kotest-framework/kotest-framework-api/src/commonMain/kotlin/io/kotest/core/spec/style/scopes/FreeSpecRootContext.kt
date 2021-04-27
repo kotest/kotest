@@ -10,8 +10,11 @@ import io.kotest.core.test.createTestName
 import io.kotest.core.test.deriveTestConfig
 import kotlin.time.Duration
 
+@Deprecated("Renamed to FreeSpecRootContext. This typealias will be removed in 4.8")
+typealias FreeSpecRootScope = FreeSpecRootContext
+
 @KotestDsl
-interface FreeSpecRootScope : RootContext {
+interface FreeSpecRootContext : RootContext {
 
    // eg, "this test" - { } // adds a container test
    infix operator fun String.minus(test: suspend FreeSpecContainerContext.() -> Unit) {

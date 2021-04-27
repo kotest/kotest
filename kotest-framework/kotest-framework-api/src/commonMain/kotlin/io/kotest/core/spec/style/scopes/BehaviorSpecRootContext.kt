@@ -2,6 +2,9 @@ package io.kotest.core.spec.style.scopes
 
 import io.kotest.core.test.createTestName
 
+@Deprecated("Renamed to BehaviorSpecRootContext. This typealias will be removed in 4.8")
+typealias BehaviorSpecRootScope = BehaviorSpecRootContext
+
 /**
  * A context that allows tests to be registered using the syntax:
  *
@@ -9,7 +12,7 @@ import io.kotest.core.test.createTestName
  * xgiven("some disabled test")
  */
 @Suppress("FunctionName")
-interface BehaviorSpecRootScope : RootContext {
+interface BehaviorSpecRootContext : RootContext {
 
    /**
     * Adds a top level [BehaviorSpecGivenContainerContext] to this spec.

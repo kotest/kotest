@@ -20,7 +20,7 @@ class ClassifyTest : StringSpec() {
          forAll(PropTestConfig(seed = 1234), Arb.string()) { a ->
             classify(a.contains(" "), "has whitespace", "no whitespace")
             a + "" == "" + a
-         }.classifications() shouldBe mapOf("no whitespace" to 640, "has whitespace" to 360)
+         }.classifications() shouldBe mapOf("no whitespace" to 631, "has whitespace" to 369)
       }
    }
 }

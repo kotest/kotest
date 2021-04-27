@@ -5,7 +5,7 @@ import io.kotest.core.factory.TestFactoryConfiguration
 import io.kotest.core.factory.build
 import io.kotest.core.spec.DslDrivenSpec
 import io.kotest.core.spec.resolvedDefaultConfig
-import io.kotest.core.spec.style.scopes.FreeSpecRootScope
+import io.kotest.core.spec.style.scopes.FreeSpecRootContext
 import io.kotest.core.spec.style.scopes.RootTestRegistration
 import io.kotest.core.test.TestCaseConfig
 
@@ -21,12 +21,12 @@ fun freeSpec(block: FreeSpecTestFactoryConfiguration.() -> Unit): TestFactory {
    return config.build()
 }
 
-class FreeSpecTestFactoryConfiguration : TestFactoryConfiguration(), FreeSpecRootScope {
+class FreeSpecTestFactoryConfiguration : TestFactoryConfiguration(), FreeSpecRootContext {
    override fun defaultConfig(): TestCaseConfig = resolvedDefaultConfig()
    override fun registration(): RootTestRegistration = RootTestRegistration.from(this)
 }
 
-abstract class FreeSpec(body: FreeSpec.() -> Unit = {}) : DslDrivenSpec(), FreeSpecRootScope {
+abstract class FreeSpec(body: FreeSpec.() -> Unit = {}) : DslDrivenSpec(), FreeSpecRootContext {
 
    init {
       body()

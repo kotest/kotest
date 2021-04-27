@@ -4,6 +4,9 @@ import io.kotest.core.spec.KotestDsl
 import io.kotest.core.test.TestContext
 import io.kotest.core.test.createTestName
 
+@Deprecated("Renamed to ShouldSpecRootContext. This typealias will be removed in 4.8")
+typealias ShouldSpecRootScope = ShouldSpecRootContext
+
 /**
  * Allows tests to be registered in the 'ShouldSpec' fashion.
  *
@@ -20,7 +23,7 @@ import io.kotest.core.test.createTestName
  *  }
  */
 @KotestDsl
-interface ShouldSpecRootScope : RootContext {
+interface ShouldSpecRootContext : RootContext {
 
    /**
     * Adds a top level context scope to the spec.
