@@ -20,7 +20,7 @@ import io.kotest.core.test.createTestName
  *  }
  */
 @KotestDsl
-interface ShouldSpecRootScope : RootScope {
+interface ShouldSpecRootScope : RootContext {
 
    /**
     * Adds a top level context scope to the spec.

@@ -1,7 +1,7 @@
 package io.kotest.datatest
 
 import io.kotest.common.ExperimentalKotest
-import io.kotest.core.spec.style.scopes.RootScope
+import io.kotest.core.spec.style.scopes.RootContext
 import io.kotest.core.test.Identifiers
 import io.kotest.core.test.TestCaseConfig
 import io.kotest.core.test.TestContext
@@ -16,7 +16,7 @@ import kotlin.jvm.JvmName
  * The test name will be generated from the stable properties of the elements. See [Identifiers].
  */
 @ExperimentalKotest
-fun <T : Any> RootScope.forAll(first: T, second: T, vararg rest: T, test: suspend TestContext.(T) -> Unit) =
+fun <T : Any> RootContext.forAll(first: T, second: T, vararg rest: T, test: suspend TestContext.(T) -> Unit) =
    forAll(listOf(first, second) + rest, test)
 
 /**
@@ -25,7 +25,7 @@ fun <T : Any> RootScope.forAll(first: T, second: T, vararg rest: T, test: suspen
  * The test name will be generated from the stable properties of the elements. See [Identifiers].
  */
 @ExperimentalKotest
-fun <T : Any> RootScope.forAll(ts: Sequence<T>, test: suspend TestContext.(T) -> Unit) {
+fun <T : Any> RootContext.forAll(ts: Sequence<T>, test: suspend TestContext.(T) -> Unit) {
    forAll(ts.toList(), test)
 }
 
@@ -35,7 +35,7 @@ fun <T : Any> RootScope.forAll(ts: Sequence<T>, test: suspend TestContext.(T) ->
  * The test name will be generated from the stable properties of the elements. See [Identifiers].
  */
 @ExperimentalKotest
-fun <T : Any> RootScope.forAll(ts: Collection<T>, test: suspend TestContext.(T) -> Unit) {
+fun <T : Any> RootContext.forAll(ts: Collection<T>, test: suspend TestContext.(T) -> Unit) {
    ts.forEach { t ->
       val name = Identifiers.stableIdentifier(t)
       registration().addContainerTest(createTestName(name), false) { test(t) }
@@ -48,7 +48,7 @@ fun <T : Any> RootScope.forAll(ts: Collection<T>, test: suspend TestContext.(T) 
  */
 @ExperimentalKotest
 @JvmName("forAllWithNames")
-fun <T : Any> RootScope.forAll(data: Map<String, T>, test: suspend TestContext.(T) -> Unit) {
+fun <T : Any> RootContext.forAll(data: Map<String, T>, test: suspend TestContext.(T) -> Unit) {
    data.forEach { (name, t) ->
       registration().addContainerTest(createTestName(name), false) { test(t) }
    }

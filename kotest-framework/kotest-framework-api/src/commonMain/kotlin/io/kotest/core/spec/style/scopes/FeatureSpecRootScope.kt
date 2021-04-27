@@ -11,7 +11,7 @@ import io.kotest.core.test.createTestName
  *
  */
 @KotestDsl
-interface FeatureSpecRootScope : RootScope {
+interface FeatureSpecRootScope : RootContext {
 
    fun feature(name: String, test: suspend FeatureSpecContainerContext.() -> Unit) = addFeature(name, false, test)
    fun xfeature(name: String, test: suspend FeatureSpecContainerContext.() -> Unit) = addFeature(name, true, test)

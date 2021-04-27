@@ -11,7 +11,7 @@ import io.kotest.core.test.TestType
 import io.kotest.core.test.withXDisabled
 
 /**
- * Handles registration of top level tests inside a [RootScope].
+ * Handles registration of top level tests inside a [RootContext].
  */
 interface RootTestRegistration {
 

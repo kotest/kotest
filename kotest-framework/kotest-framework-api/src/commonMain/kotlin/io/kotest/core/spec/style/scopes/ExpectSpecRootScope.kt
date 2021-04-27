@@ -8,7 +8,7 @@ import io.kotest.core.test.createTestName
  * Top level registration methods for ExpectSpec methods.
  */
 @KotestDsl
-interface ExpectSpecRootScope : RootScope {
+interface ExpectSpecRootScope : RootContext {
 
    fun context(name: String, test: suspend ExpectSpecContainerContext.() -> Unit) {
       val testName = createTestName("Context: ", name, false)

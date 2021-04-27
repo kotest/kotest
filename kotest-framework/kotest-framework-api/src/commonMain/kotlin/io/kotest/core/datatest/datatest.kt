@@ -43,13 +43,13 @@ suspend fun <T : Any> ContainerContext.forAll(data: List<Pair<String, T>>, test:
    }
 }
 
-fun <T> RootScope.forNone(vararg data: Pair<String, T>, test: suspend (T) -> Unit) = this.forNone(data.toList(), test)
+fun <T> RootContext.forNone(vararg data: Pair<String, T>, test: suspend (T) -> Unit) = this.forNone(data.toList(), test)
 
-fun <T : Any> RootScope.forNone(vararg data: T, test: suspend (T) -> Unit) {
+fun <T : Any> RootContext.forNone(vararg data: T, test: suspend (T) -> Unit) {
    this.forNone(data.map { Pair(Identifiers.stableIdentifier(it), it) }, test)
 }
 
-fun <T> RootScope.forNone(data: List<Pair<String, T>>, test: suspend (T) -> Unit) {
+fun <T> RootContext.forNone(data: List<Pair<String, T>>, test: suspend (T) -> Unit) {
    data.forEach { (name, t) ->
       registration().addTest(createTestName(name), false) {
          try {
@@ -62,17 +62,17 @@ fun <T> RootScope.forNone(data: List<Pair<String, T>>, test: suspend (T) -> Unit
    }
 }
 
-fun <T : Any> RootScope.forAll(vararg ts: T, test: suspend (T) -> Unit) = this.forAll(ts.toList(), test)
+fun <T : Any> RootContext.forAll(vararg ts: T, test: suspend (T) -> Unit) = this.forAll(ts.toList(), test)
 
-fun <T : Any> RootScope.forAll(vararg data: Pair<String, T>, test: suspend (T) -> Unit) =
+fun <T : Any> RootContext.forAll(vararg data: Pair<String, T>, test: suspend (T) -> Unit) =
    this.forAll(data.toList(), test)
 
-fun <T : Any> RootScope.forAll(ts: List<T>, test: suspend (T) -> Unit) {
+fun <T : Any> RootContext.forAll(ts: List<T>, test: suspend (T) -> Unit) {
    this.forAll(ts.map { Pair(Identifiers.stableIdentifier(it), it) }, test)
 }
 
 @JvmName("forAllWithNames")
-fun <T : Any> RootScope.forAll(data: List<Pair<String, T>>, test: suspend (T) -> Unit) {
+fun <T : Any> RootContext.forAll(data: List<Pair<String, T>>, test: suspend (T) -> Unit) {
    data.forEach { (name, t) ->
       registration().addTest(createTestName(name), false) { test(t) }
    }

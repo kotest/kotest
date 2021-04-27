@@ -13,7 +13,7 @@ import io.kotest.core.test.createTestName
  *
  * xdescribe("some disabled test")
  */
-interface DescribeSpecRootScope : RootScope {
+interface DescribeSpecRootScope : RootContext {
 
    fun context(name: String, test: suspend DescribeSpecContainerContext.() -> Unit) {
       val testName = createTestName("Context: ", name, false)

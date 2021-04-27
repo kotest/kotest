@@ -5,7 +5,7 @@ import io.kotest.core.test.createTestName
 
 @Suppress("FunctionName")
 @KotestDsl
-interface WordSpecRootScope : RootScope {
+interface WordSpecRootScope : RootContext {
 
    infix fun String.should(test: suspend WordSpecShouldContainerContext.() -> Unit) {
       val testName = createTestName("$this should")

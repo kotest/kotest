@@ -3,7 +3,7 @@ package io.kotest.core.spec.style.scopes
 import io.kotest.core.test.TestContext
 import io.kotest.core.test.createTestName
 
-interface FunSpecRootScope : RootScope {
+interface FunSpecRootScope : RootContext {
 
    /**
     * Adds a top level [FunSpecContainerContext] to this root scope.

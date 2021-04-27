@@ -9,7 +9,7 @@ import io.kotest.core.test.createTestName
  * xgiven("some disabled test")
  */
 @Suppress("FunctionName")
-interface BehaviorSpecRootScope : RootScope {
+interface BehaviorSpecRootScope : RootContext {
 
    /**
     * Adds a top level [BehaviorSpecGivenContainerContext] to this spec.

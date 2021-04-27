@@ -11,7 +11,7 @@ import io.kotest.core.test.deriveTestConfig
 import kotlin.time.Duration
 
 @KotestDsl
-interface FreeSpecRootScope : RootScope {
+interface FreeSpecRootScope : RootContext {
 
    // eg, "this test" - { } // adds a container test
    infix operator fun String.minus(test: suspend FreeSpecContainerContext.() -> Unit) {
