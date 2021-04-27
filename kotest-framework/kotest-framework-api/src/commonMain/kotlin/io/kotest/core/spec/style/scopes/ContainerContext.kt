@@ -8,7 +8,7 @@ import io.kotest.core.test.TestContext
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestType
 
-@Deprecated("use ContainerContext. This alias will be removed in 4.7")
+@Deprecated("Use ContainerContext. This alias will be removed in 4.8")
 typealias ContainerScope = ContainerContext
 
 /**

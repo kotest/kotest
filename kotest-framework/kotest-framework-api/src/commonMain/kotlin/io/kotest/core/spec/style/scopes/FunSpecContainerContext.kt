@@ -1,6 +1,5 @@
 package io.kotest.core.spec.style.scopes
 
-import io.kotest.core.spec.KotestDsl
 import io.kotest.core.spec.resolvedDefaultConfig
 import io.kotest.core.test.NestedTest
 import io.kotest.core.test.TestCase
@@ -10,7 +9,7 @@ import io.kotest.core.test.createNestedTest
 import io.kotest.core.test.createTestName
 import kotlin.coroutines.CoroutineContext
 
-@Deprecated("This interface has been renamed to FunSpecContainerContext. This alias will be removed in 4.7")
+@Deprecated("This interface has been renamed to FunSpecContainerContext. This alias will be removed in 4.8")
 typealias FunSpecContextScope = FunSpecContainerContext
 
 /**

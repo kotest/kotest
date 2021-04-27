@@ -3,7 +3,6 @@ package io.kotest.core.spec.style.scopes
 import io.kotest.core.Tag
 import io.kotest.core.extensions.TestCaseExtension
 import io.kotest.core.test.DescriptionName
-import io.kotest.core.test.Enabled
 import io.kotest.core.test.EnabledIf
 import io.kotest.core.test.EnabledOrReasonIf
 import io.kotest.core.test.TestCaseSeverityLevel
