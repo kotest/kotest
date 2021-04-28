@@ -4,6 +4,8 @@ sidebar_label: Changelog
 slug: changelog.html
 ---
 
+### Unreleased
+- Add overload to `Double.plusOrMinus` that accepts a percentage value instead of an absolute one. `1.0.plusOrMinus(10.percent)`
 
 ### 4.5.0.RC1 April 2021
 

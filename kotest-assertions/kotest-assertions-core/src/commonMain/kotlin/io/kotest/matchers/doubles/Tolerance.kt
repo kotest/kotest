@@ -18,6 +18,28 @@ infix fun Double.plusOrMinus(tolerance: Double): ToleranceMatcher {
    return ToleranceMatcher(this, tolerance)
 }
 
+val Number.percent get() = toDouble().percent
+val Double.percent: Percentage
+get() {
+   require(this >= 0 && this.isFinite())
+   return Percentage(this)
+}
+data class Percentage(val value: Double)
+
+/**
+ * Creates a matcher for the interval [[this] - [tolerance] , [this] + [tolerance]]
+ *
+ *
+ * ```
+ * 1.5 shouldBe (1.0 plusOrMinus 50.percent )   // Assertion passes
+ * 1.5 shouldBe (1.0 plusOrMinus 10.percent)   // Assertion fails
+ * ```
+ */
+infix fun Double.plusOrMinus(tolerance: Percentage): ToleranceMatcher {
+   val realValue = this * tolerance.value / 100
+   return ToleranceMatcher(this, realValue)
+}
+
 class ToleranceMatcher(private val expected: Double?, private val tolerance: Double) : Matcher<Double?> {
 
   override fun test(value: Double?): MatcherResult {
