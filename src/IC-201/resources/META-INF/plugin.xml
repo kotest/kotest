@@ -6,7 +6,7 @@
    <vendor email="sam@sksamuel.com" url="http://github.com/kotest">Kotest</vendor>
 
    <description><![CDATA[
-      Official IntelliJ IDEA plugin for <a href="https://github.com/kotest/kotest">Kotest</a>.<br/><br/>
+      Official IntelliJ-based IDEA plugin for <a href="https://github.com/kotest/kotest">Kotest</a>.<br/><br/>
       This plugin requires the use of Kotest 4.1.0 or newer.
     ]]></description>
 
