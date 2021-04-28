@@ -4,33 +4,82 @@ import io.kotest.core.spec.style.DescribeSpec
 
 class DescribeSpecExample : DescribeSpec() {
    init {
-      describe("some thing") {
-         it("test name") {
+      describe("describe block") {
+         it("it block") {
             // test here
          }
-         xdescribe("xignored describe") {
-
+         xit("xit block") {
+            // test here
          }
-         describe("with some context") {
-            it("test name") {
+         it("it with config").config(invocations = 2) {
+            // test here
+         }
+         xit("xit block with config").config(invocations = 2) {
+            // test here
+         }
+         describe("nested describe block") {
+            it("it block") {
                // test here
             }
-            it("test name 2").config(invocations = 2) {
+         }
+         xdescribe("nested xdescribe block") {
+            it("it block") {
                // test here
             }
-            describe("yet another context") {
-               it("test name") {
+         }
+      }
+      xdescribe("xdescribe block") {
+         it("it block") {
+            // test here
+         }
+         xit("xit block") {
+            // test here
+         }
+         it("it with config").config(invocations = 2) {
+            // test here
+         }
+         xit("xit block with config").config(invocations = 2) {
+            // test here
+         }
+         describe("nested describe block") {
+            it("it block") {
+               // test here
+            }
+         }
+         xdescribe("nested xdescribe block") {
+            it("it block") {
+               // test here
+            }
+         }
+      }
+      context("context block") {
+         context("nested context block") {
+            describe("nested describe block") {
+               it("it block") {
                   // test here
                }
-               xit("xignored test") {
+            }
+            xdescribe("nested xdescribe block") {
+               it("it block") {
                   // test here
                }
-               it("test name 2").config(invocations = 2) {
+            }
+         }
+         xcontext("nested xcontext block") {
+            describe("nested describe block") {
+               it("it block") {
                   // test here
                }
-               xit("xignored test with config").config(invocations = 2) {
+            }
+            xdescribe("nested xdescribe block") {
+               it("it block") {
                   // test here
                }
+            }
+         }
+         describe("nested describe block") {
+            it("it block") {
+               // test here
             }
          }
       }

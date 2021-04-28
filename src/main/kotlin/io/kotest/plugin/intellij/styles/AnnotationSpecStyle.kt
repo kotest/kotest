@@ -4,7 +4,6 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.impl.source.tree.LeafPsiElement
 import io.kotest.plugin.intellij.Test
 import io.kotest.plugin.intellij.TestName
-import io.kotest.plugin.intellij.TestPathEntry
 import io.kotest.plugin.intellij.TestType
 import org.jetbrains.kotlin.name.FqName
 import org.jetbrains.kotlin.psi.KtNamedFunction
@@ -30,10 +29,9 @@ object AnnotationSpecStyle : SpecStyle {
             val name = element.name ?: return null
             return Test(
                TestName(null, name, focus = false, bang = false, interpolated = false),
-               listOf(TestPathEntry(name)),
+               null,
                TestType.Test,
                xdisabled = false,
-               root = true,
                psi = element
             )
          }

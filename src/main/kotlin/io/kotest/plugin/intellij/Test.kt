@@ -35,27 +35,39 @@ data class TestName(
 data class TestPathEntry(val name: String)
 
 data class Test(
-   val name: TestName, // the human readable name for this test.
-   val path: List<TestPathEntry>, // components for the path, should not include prefixes
+   val name: TestName, // the name as entered by the user
+   val parent: Test?, // can be null if this is a root test
    val testType: TestType,
    val xdisabled: Boolean, // if true then this test was defined using one of the x methods
-   val root: Boolean, // true if this test is a top level test
    val psi: PsiElement // the canonical element that identifies this test
 ) {
 
+   // true if this test is not xdisabled and not disabled by a bang and not nested inside another disabled test
+   val enabled: Boolean = !xdisabled && !name.bang && (parent == null || parent.enabled)
+
+   // true if this is a top level test (aka has no parents)
+   val root = parent == null
+
+   // true if this is not a top level test (aka is nested inside another test case)
    val isNested: Boolean = !root
 
-   val enabled: Boolean = !xdisabled && !name.bang
+   /**
+    * Full path to this test is all parents plus this test
+    */
+   fun path(): List<TestPathEntry> = when (parent) {
+      null -> listOf(TestPathEntry(name.name))
+      else -> parent.path() + TestPathEntry(name.name)
+   }
 
    /**
     * Returns the test path with delimiters so that the launcher can parse into components
     */
-   fun testPath(): String = path.joinToString(" -- ") { it.name }
+   fun testPath(): String = path().joinToString(" -- ") { it.name }
 
    /**
     * Returns the test path without delimiters for display to a user.
     */
-   fun readableTestPath() = path.joinToString(" ") { it.name }
+   fun readableTestPath() = path().joinToString(" ") { it.name }
 }
 
 enum class TestType {

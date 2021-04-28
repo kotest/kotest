@@ -3,8 +3,16 @@ package io.kotest.plugin.intellij.styles
 import com.intellij.codeInsight.daemon.LineMarkerInfo
 import com.intellij.icons.AllIcons
 import com.intellij.testFramework.fixtures.LightJavaCodeInsightFixtureTestCase
+import io.kotest.assertions.assertSoftly
 import io.kotest.matchers.shouldBe
 import java.nio.file.Paths
+import javax.swing.Icon
+
+data class Gutter(
+   val tooltip: String,
+   val offset: Int = 0,
+   val icon: Icon = AllIcons.RunConfigurations.TestState.Run
+)
 
 class DescribeSpecRunMarkerTest : LightJavaCodeInsightFixtureTestCase() {
 
@@ -21,67 +29,51 @@ class DescribeSpecRunMarkerTest : LightJavaCodeInsightFixtureTestCase() {
       )
 
       val gutters = myFixture.findAllGutters()
-      gutters.size shouldBe 15
 
-      gutters[0].icon shouldBe AllIcons.RunConfigurations.TestState.Run
-      gutters[0].tooltipText shouldBe "Run DescribeSpecExample"
-      (gutters[0] as LineMarkerInfo.LineMarkerGutterIconRenderer<*>).lineMarkerInfo.startOffset shouldBe 91
+      val expected = listOf(
+         Gutter("Run DescribeSpecExample", 91),
+         Gutter("Run describe block", 179),
+         Gutter("Run describe block it block", 205),
+         Gutter("Disabled - describe block xit block", 269, AllIcons.RunConfigurations.IgnoredTest),
+         Gutter("Run describe block it with config", 336),
+         Gutter("Disabled - describe block xit block with config", 436, AllIcons.RunConfigurations.IgnoredTest),
+         Gutter("Run describe block nested describe block", 542),
+         Gutter("Run describe block nested describe block it block", 571),
+         Gutter("Disabled - describe block nested xdescribe block", 671, AllIcons.RunConfigurations.IgnoredTest),
+         Gutter("Disabled - describe block nested xdescribe block it block", 700, AllIcons.RunConfigurations.IgnoredTest),
+         Gutter("Disabled - xdescribe block", 798, AllIcons.RunConfigurations.IgnoredTest),
+         Gutter("Disabled - xdescribe block it block", 824, AllIcons.RunConfigurations.IgnoredTest),
+         Gutter("Disabled - xdescribe block xit block", 888, AllIcons.RunConfigurations.IgnoredTest),
+         Gutter("Disabled - xdescribe block it with config", 955, AllIcons.RunConfigurations.IgnoredTest),
+         Gutter("Disabled - xdescribe block xit block with config", 1055, AllIcons.RunConfigurations.IgnoredTest),
+         Gutter("Disabled - xdescribe block nested describe block", 1161, AllIcons.RunConfigurations.IgnoredTest),
+         Gutter("Disabled - xdescribe block nested describe block it block", 1190, AllIcons.RunConfigurations.IgnoredTest),
+         Gutter("Disabled - xdescribe block nested xdescribe block", 1290, AllIcons.RunConfigurations.IgnoredTest),
+         Gutter("Disabled - xdescribe block nested xdescribe block it block", 1319, AllIcons.RunConfigurations.IgnoredTest),
+         Gutter("Run context block", 1413),
+         Gutter("Run context block nested context block", 1456),
+         Gutter("Run context block nested context block nested describe block", 1504),
+         Gutter("Run context block nested context block nested describe block it block", 1536),
+         Gutter("Disabled - context block nested context block nested xdescribe block", 1648, AllIcons.RunConfigurations.IgnoredTest),
+         Gutter("Disabled - context block nested context block nested xdescribe block it block", 1680, AllIcons.RunConfigurations.IgnoredTest),
+         Gutter("Disabled - context block nested xcontext block", 1798, AllIcons.RunConfigurations.IgnoredTest),
+         Gutter("Disabled - context block nested xcontext block nested describe block", 1846, AllIcons.RunConfigurations.IgnoredTest),
+         Gutter("Disabled - context block nested xcontext block nested describe block it block", 1878, AllIcons.RunConfigurations.IgnoredTest),
+         Gutter("Disabled - context block nested xcontext block nested xdescribe block", 1990, AllIcons.RunConfigurations.IgnoredTest),
+         Gutter("Disabled - context block nested xcontext block nested xdescribe block it block", 2022, AllIcons.RunConfigurations.IgnoredTest),
+         Gutter("Run context block nested describe block", 2140),
+         Gutter("Run context block nested describe block it block", 2169),
+      )
 
-      gutters[1].icon shouldBe AllIcons.RunConfigurations.TestState.Run
-      gutters[1].tooltipText shouldBe "Run some thing"
-      (gutters[1] as LineMarkerInfo.LineMarkerGutterIconRenderer<*>).lineMarkerInfo.startOffset shouldBe 175
+      expected.size shouldBe gutters.size
 
-      gutters[2].icon shouldBe AllIcons.RunConfigurations.TestState.Run
-      gutters[2].tooltipText shouldBe "Run some thing test name"
-      (gutters[2] as LineMarkerInfo.LineMarkerGutterIconRenderer<*>).lineMarkerInfo.startOffset shouldBe 202
-
-      gutters[3].icon shouldBe AllIcons.Nodes.TestIgnored
-      gutters[3].tooltipText shouldBe "Test is disabled"
-      (gutters[3] as LineMarkerInfo.LineMarkerGutterIconRenderer<*>).lineMarkerInfo.startOffset shouldBe 280
-
-      gutters[4].icon shouldBe AllIcons.RunConfigurations.TestState.Run
-      gutters[4].tooltipText shouldBe "Run some thing xignored describe"
-      (gutters[4] as LineMarkerInfo.LineMarkerGutterIconRenderer<*>).lineMarkerInfo.startOffset shouldBe 280
-
-      gutters[5].icon shouldBe AllIcons.RunConfigurations.TestState.Run
-      gutters[5].tooltipText shouldBe "Run some thing with some context"
-      (gutters[5] as LineMarkerInfo.LineMarkerGutterIconRenderer<*>).lineMarkerInfo.startOffset shouldBe 333
-
-      gutters[6].icon shouldBe AllIcons.RunConfigurations.TestState.Run
-      gutters[6].tooltipText shouldBe "Run some thing with some context test name"
-      (gutters[6] as LineMarkerInfo.LineMarkerGutterIconRenderer<*>).lineMarkerInfo.startOffset shouldBe 363
-
-      gutters[7].icon shouldBe AllIcons.RunConfigurations.TestState.Run
-      gutters[7].tooltipText shouldBe "Run some thing with some context test name 2"
-      (gutters[7] as LineMarkerInfo.LineMarkerGutterIconRenderer<*>).lineMarkerInfo.startOffset shouldBe 436
-
-      gutters[8].icon shouldBe AllIcons.RunConfigurations.TestState.Run
-      gutters[8].tooltipText shouldBe "Run some thing with some context yet another context"
-      (gutters[8] as LineMarkerInfo.LineMarkerGutterIconRenderer<*>).lineMarkerInfo.startOffset shouldBe 549
-
-      gutters[9].icon shouldBe AllIcons.RunConfigurations.TestState.Run
-      gutters[9].tooltipText shouldBe "Run some thing with some context yet another context test name"
-      (gutters[9] as LineMarkerInfo.LineMarkerGutterIconRenderer<*>).lineMarkerInfo.startOffset shouldBe 582
-
-      gutters[10].icon shouldBe AllIcons.Nodes.TestIgnored
-      gutters[10].tooltipText shouldBe "Test is disabled"
-      (gutters[10] as LineMarkerInfo.LineMarkerGutterIconRenderer<*>).lineMarkerInfo.startOffset shouldBe 668
-
-      gutters[11].icon shouldBe AllIcons.RunConfigurations.TestState.Run
-      gutters[11].tooltipText shouldBe "Run some thing with some context yet another context xignored test"
-      (gutters[11] as LineMarkerInfo.LineMarkerGutterIconRenderer<*>).lineMarkerInfo.startOffset shouldBe 668
-
-      gutters[12].icon shouldBe AllIcons.RunConfigurations.TestState.Run
-      gutters[12].tooltipText shouldBe "Run some thing with some context yet another context test name 2"
-      (gutters[12] as LineMarkerInfo.LineMarkerGutterIconRenderer<*>).lineMarkerInfo.startOffset shouldBe 750
-
-      gutters[13].icon shouldBe AllIcons.Nodes.TestIgnored
-      gutters[13].tooltipText shouldBe "Test is disabled"
-      (gutters[13] as LineMarkerInfo.LineMarkerGutterIconRenderer<*>).lineMarkerInfo.startOffset shouldBe 872
-
-      gutters[14].icon shouldBe AllIcons.RunConfigurations.TestState.Run
-      gutters[14].tooltipText shouldBe "Run some thing with some context yet another context xignored test with config"
-      (gutters[14] as LineMarkerInfo.LineMarkerGutterIconRenderer<*>).lineMarkerInfo.startOffset shouldBe 872
+      assertSoftly {
+         expected.withIndex().forEach { (index, a) ->
+            gutters[index].tooltipText shouldBe a.tooltip
+            (gutters[index] as LineMarkerInfo.LineMarkerGutterIconRenderer<*>).lineMarkerInfo.startOffset shouldBe a.offset
+            gutters[index].icon shouldBe a.icon
+         }
+      }
    }
 
    fun testMethodGeneration() {

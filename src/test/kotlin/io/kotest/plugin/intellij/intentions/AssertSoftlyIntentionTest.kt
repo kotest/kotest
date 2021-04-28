@@ -14,15 +14,15 @@ class AssertSoftlyIntentionTest : LightJavaCodeInsightFixtureTestCase() {
       return path.toString()
    }
 
-   fun testIntentionForPartialLine() {
+   fun testIntentionForPartialSelectedMultipleLines() {
 
       myFixture.configureByFiles(
-         "/funspec.kt",
+         "/intentions/assert_softly.kt",
          "/io/kotest/core/spec/style/specs.kt"
       )
 
-      editor.moveCaret(885)
-      editor.selectionModel.setSelection(869, 912)
+      editor.moveCaret(905)
+      editor.selectionModel.setSelection(905, 955)
 
       val intention = myFixture.findSingleIntention("Surround statements with soft assert")
       intention.familyName shouldBe "Surround statements with soft assert"
@@ -43,38 +43,38 @@ import io.kotest.assertions.assert.assertSoftly
 
 class FunSpecExampleTest : FunSpec({
 
-  test("a string cannot be blank") {
-    "wibble".shouldNotBeBlank()
-  }
-
-  test("a string should be lower case").config(enabled = true) {
-    "wibble".shouldBeLowerCase()
-  }
-
-  context("some context") {
-
-    test("a string cannot be blank") {
+   test("a string cannot be blank") {
       "wibble".shouldNotBeBlank()
-    }
+   }
 
-    test("a string should be lower case").config(enabled = true) {
+   test("a string should be lower case").config(enabled = true) {
       "wibble".shouldBeLowerCase()
-    }
+   }
 
-    context("another context") {
+   context("some context") {
 
       test("a string cannot be blank") {
-        "wibble".shouldNotBeBlank()
+         "wibble".shouldNotBeBlank()
       }
 
       test("a string should be lower case").config(enabled = true) {
-        assertSoftly {
-          "wibble".shouldBeLowerCase()
-          "WOBBLE".shouldBeUpperCase()
-        }
+         "wibble".shouldBeLowerCase()
       }
-    }
-  }
+
+      context("another context") {
+
+         test("a string cannot be blank") {
+            "wibble".shouldNotBeBlank()
+         }
+
+         test("a string should be lower case").config(enabled = true) {
+            assertSoftly {
+              "wibble".shouldBeLowerCase()
+              "WOBBLE".shouldBeUpperCase()
+            }
+         }
+      }
+   }
 
 })
 """
@@ -83,12 +83,12 @@ class FunSpecExampleTest : FunSpec({
    fun testIntentionForFullLine() {
 
       myFixture.configureByFiles(
-         "/funspec.kt",
+         "/intentions/assert_softly.kt",
          "/io/kotest/core/spec/style/specs.kt"
       )
 
-      editor.moveCaret(511)
-      editor.selectionModel.setSelection(511, 544)
+      editor.moveCaret(523)
+      editor.selectionModel.setSelection(523, 558)
 
       val intention = myFixture.findSingleIntention("Surround statements with soft assert")
       intention.familyName shouldBe "Surround statements with soft assert"
@@ -109,38 +109,38 @@ import io.kotest.assertions.assert.assertSoftly
 
 class FunSpecExampleTest : FunSpec({
 
-  test("a string cannot be blank") {
-    "wibble".shouldNotBeBlank()
-  }
+   test("a string cannot be blank") {
+      "wibble".shouldNotBeBlank()
+   }
 
-  test("a string should be lower case").config(enabled = true) {
-    "wibble".shouldBeLowerCase()
-  }
-
-  context("some context") {
-
-    test("a string cannot be blank") {
-      assertSoftly {
-        "wibble".shouldNotBeBlank()
-      }
-    }
-
-    test("a string should be lower case").config(enabled = true) {
+   test("a string should be lower case").config(enabled = true) {
       "wibble".shouldBeLowerCase()
-    }
+   }
 
-    context("another context") {
+   context("some context") {
 
       test("a string cannot be blank") {
-        "wibble".shouldNotBeBlank()
+         assertSoftly {
+           "wibble".shouldNotBeBlank()
+         }
       }
 
       test("a string should be lower case").config(enabled = true) {
-        "wibble".shouldBeLowerCase()
-        "WOBBLE".shouldBeUpperCase()
+         "wibble".shouldBeLowerCase()
       }
-    }
-  }
+
+      context("another context") {
+
+         test("a string cannot be blank") {
+            "wibble".shouldNotBeBlank()
+         }
+
+         test("a string should be lower case").config(enabled = true) {
+            "wibble".shouldBeLowerCase()
+            "WOBBLE".shouldBeUpperCase()
+         }
+      }
+   }
 
 })
 """

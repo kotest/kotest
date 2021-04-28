@@ -20,6 +20,8 @@ import org.jetbrains.kotlin.psi.KtPackageDirective
  */
 class DisabledTestLineMarker : LineMarkerProvider {
 
+   private val icon = AllIcons.RunConfigurations.IgnoredTest
+
    override fun getLineMarkerInfo(element: PsiElement): LineMarkerInfo<*>? {
       // the docs say to only run a line marker for a leaf
       return when (element) {
@@ -40,6 +42,6 @@ class DisabledTestLineMarker : LineMarkerProvider {
       val ktclass = element.enclosingKtClass() ?: return null
       val style = ktclass.specStyle() ?: return null
       val test = style.test(element) ?: return null
-      return if (test.enabled) null else createLineMarker(element, "Test is disabled", AllIcons.Nodes.TestIgnored)
+      return if (test.enabled) null else createLineMarker(element, "Disabled - ${test.readableTestPath()}" , icon)
    }
 }

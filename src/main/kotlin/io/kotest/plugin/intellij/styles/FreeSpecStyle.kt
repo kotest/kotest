@@ -4,7 +4,6 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.impl.source.tree.LeafPsiElement
 import io.kotest.plugin.intellij.Test
 import io.kotest.plugin.intellij.TestName
-import io.kotest.plugin.intellij.TestPathEntry
 import io.kotest.plugin.intellij.TestType
 import io.kotest.plugin.intellij.psi.extractStringForStringExtensionFunctonWithRhsFinalLambda
 import io.kotest.plugin.intellij.psi.extractStringFromStringInvokeWithLambda
@@ -29,11 +28,13 @@ object FreeSpecStyle : SpecStyle {
 
    override fun isTestElement(element: PsiElement): Boolean = test(element) != null
 
-   private fun locateParentContainers(element: PsiElement): List<Test> {
+   private fun locateParent(element: PsiElement): Test? {
       // if parent is null then we have hit the end
-      val p = element.parent ?: return emptyList()
-      val context = if (p is KtBinaryExpression) listOfNotNull(p.tryContainer()) else emptyList()
-      return locateParentContainers(p) + context
+      return when (val p = element.parent) {
+         null -> null
+         is KtBinaryExpression -> p.tryContainer()
+         else -> locateParent(p)
+      }
    }
 
    /**
@@ -68,9 +69,7 @@ object FreeSpecStyle : SpecStyle {
    }
 
    private fun buildTest(testName: TestName, element: PsiElement, type: TestType): Test {
-      val contexts = locateParentContainers(element)
-      val path = (contexts.map { it.name } + testName)
-      return Test(testName, path.map { TestPathEntry(it.name) }, type, false, path.size == 1, element)
+      return Test(testName, locateParent(element), type, false, element)
    }
 
    override fun test(element: PsiElement): Test? {

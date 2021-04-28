@@ -4,7 +4,6 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.impl.source.tree.LeafPsiElement
 import io.kotest.plugin.intellij.Test
 import io.kotest.plugin.intellij.TestName
-import io.kotest.plugin.intellij.TestPathEntry
 import io.kotest.plugin.intellij.TestType
 import io.kotest.plugin.intellij.psi.extractLhsStringArgForDotExpressionWithRhsFinalLambda
 import io.kotest.plugin.intellij.psi.extractStringArgForFunctionWithStringAndLambdaArgs
@@ -42,7 +41,7 @@ object BehaviorSpecStyle : SpecStyle {
       val given = this.extractStringArgForFunctionWithStringAndLambdaArgs(givens)
       return if (given == null) null else {
          val name = TestName("Given: ", given.text, given.interpolated)
-         Test(name, listOf(TestPathEntry(given.text)), TestType.Container, xdisabled = false, root = true, psi = this)
+         Test(name, null, TestType.Container, xdisabled = false, psi = this)
       }
    }
 
@@ -50,9 +49,8 @@ object BehaviorSpecStyle : SpecStyle {
       val w = this.extractStringArgForFunctionWithStringAndLambdaArgs(whens)
       return if (w == null) null else {
          val name = TestName("When: ", w.text, w.interpolated)
-         val parents = locateParent()?.path ?: emptyList()
-         val path = parents + TestPathEntry(w.text)
-         Test(name, path, TestType.Container, xdisabled = false, root = false, psi = this)
+         val parents = locateParent()
+         Test(name, parents, TestType.Container, xdisabled = false, psi = this)
       }
    }
 
@@ -60,29 +58,26 @@ object BehaviorSpecStyle : SpecStyle {
       val a = this.extractStringArgForFunctionWithStringAndLambdaArgs(ands)
       return if (a == null) null else {
          val name = TestName("And: ", a.text, a.interpolated)
-         val parents = locateParent()?.path ?: emptyList()
-         val path = parents + TestPathEntry(a.text)
-         Test(name, path, TestType.Container, xdisabled = false, root = false, psi = this)
+         val parents = locateParent()
+         Test(name, parents, TestType.Container, xdisabled = false, psi = this)
       }
    }
 
    private fun KtDotQualifiedExpression.tryThenWithConfig(): Test? {
       val then = extractLhsStringArgForDotExpressionWithRhsFinalLambda(thens, listOf("config"))
       return if (then == null) null else {
-         val parents = locateParent()?.path ?: emptyList()
+         val parents = locateParent()
          val name = TestName("Then: ", then.text, then.interpolated)
-         val path = parents + TestPathEntry(then.text)
-         Test(name, path, TestType.Test, xdisabled = false, root = false, psi = this)
+         Test(name, parents, TestType.Test, xdisabled = false, psi = this)
       }
    }
 
    private fun KtCallExpression.tryThen(): Test? {
       val then = this.extractStringArgForFunctionWithStringAndLambdaArgs(thens)
       return if (then == null) null else {
-         val parents = locateParent()?.path ?: emptyList()
+         val parents = locateParent()
          val name = TestName("Then: ", then.text, then.interpolated)
-         val path = parents + TestPathEntry(then.text)
-         Test(name, path, TestType.Test, xdisabled = false, root = false, psi = this)
+         Test(name, parents, TestType.Test, xdisabled = false, psi = this)
       }
    }
 

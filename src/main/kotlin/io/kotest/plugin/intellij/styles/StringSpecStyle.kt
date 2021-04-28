@@ -4,7 +4,6 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.impl.source.tree.LeafPsiElement
 import io.kotest.plugin.intellij.Test
 import io.kotest.plugin.intellij.TestName
-import io.kotest.plugin.intellij.TestPathEntry
 import io.kotest.plugin.intellij.TestType
 import io.kotest.plugin.intellij.psi.extractStringForStringExtensionFunctonWithRhsFinalLambda
 import io.kotest.plugin.intellij.psi.extractStringFromStringInvokeWithLambda
@@ -33,7 +32,7 @@ object StringSpecStyle : SpecStyle {
    private fun KtCallExpression.tryTest(): Test? {
       val name = extractStringFromStringInvokeWithLambda() ?: return null
       val testName = TestName(null, name.text, name.interpolated)
-      return Test(testName, listOf(TestPathEntry(name.text)), TestType.Test, xdisabled = false, root = true, psi = this)
+      return Test(testName, null, TestType.Test, xdisabled = false, psi = this)
    }
 
    /**
@@ -44,7 +43,7 @@ object StringSpecStyle : SpecStyle {
    private fun KtDotQualifiedExpression.tryTestWithConfig(): Test? {
       val name = extractStringForStringExtensionFunctonWithRhsFinalLambda("config") ?: return null
       val testName = TestName(null, name.text, name.interpolated)
-      return Test(testName, listOf(TestPathEntry(name.text)), TestType.Test, xdisabled = false, root = true, psi = this)
+      return Test(testName, null, TestType.Test, xdisabled = false, psi = this)
    }
 
    /**

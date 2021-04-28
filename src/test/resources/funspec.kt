@@ -1,41 +1,70 @@
 package io.kotest.samples.gradle
 
 import io.kotest.core.spec.style.FunSpec
-import io.kotest.matchers.string.shouldBeLowerCase
-import io.kotest.matchers.string.shouldBeUpperCase
-import io.kotest.matchers.string.shouldNotBeBlank
 
 class FunSpecExampleTest : FunSpec({
 
-  test("a string cannot be blank") {
-    "wibble".shouldNotBeBlank()
-  }
+   test("a test") {
+   }
 
-  test("a string should be lower case").config(enabled = true) {
-    "wibble".shouldBeLowerCase()
-  }
+   test("a test with config").config(enabled = true) {
+   }
 
-  context("some context") {
+   xtest("an xtest") {
+   }
 
-    test("a string cannot be blank") {
-      "wibble".shouldNotBeBlank()
-    }
+   xtest("an xtest with config").config(enabled = true) {
+   }
 
-    test("a string should be lower case").config(enabled = true) {
-      "wibble".shouldBeLowerCase()
-    }
+   context("some context") {
 
-    context("another context") {
-
-      test("a string cannot be blank") {
-        "wibble".shouldNotBeBlank()
+      test("a nested test") {
       }
 
-      test("a string should be lower case").config(enabled = true) {
-        "wibble".shouldBeLowerCase()
-        "WOBBLE".shouldBeUpperCase()
+      test("a nested test with config").config(enabled = true) {
       }
-    }
-  }
+
+      xtest("a nested xtest") {
+      }
+
+      xtest("a nested xtest with config").config(enabled = true) {
+      }
+
+      context("a nested context") {
+
+         test("a test") {
+         }
+
+         xcontext("a nested xcontext") {
+            test("a test") {
+            }
+            context("a nested context") {
+               test("a test") {
+               }
+            }
+         }
+      }
+
+      xcontext("an xcontext") {
+         test("a test") {
+         }
+         xtest("an xtest") {
+
+         }
+         xcontext("a nested xcontext") {
+            test("a test") {
+            }
+         }
+      }
+   }
+
+   xcontext("an xcontext") {
+      test("a test") {
+      }
+      context("a nested xcontext") {
+         test("a test") {
+         }
+      }
+   }
 
 })

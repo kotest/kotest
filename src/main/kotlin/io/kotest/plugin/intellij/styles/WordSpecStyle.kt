@@ -4,7 +4,6 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.impl.source.tree.LeafPsiElement
 import io.kotest.plugin.intellij.Test
 import io.kotest.plugin.intellij.TestName
-import io.kotest.plugin.intellij.TestPathEntry
 import io.kotest.plugin.intellij.TestType
 import io.kotest.plugin.intellij.psi.StringArg
 import io.kotest.plugin.intellij.psi.extractStringForStringExtensionFunctonWithRhsFinalLambda
@@ -50,7 +49,7 @@ object WordSpecStyle : SpecStyle {
       val name = extractStringLiteralFromLhsOfInfixFunction(listOf("when", "When"))
       return if (name == null) null else {
          val testName = TestName(null, name.text, name.interpolated)
-         Test(testName, listOf(TestPathEntry(name.text)), TestType.Container, xdisabled = false, root = true, psi = this)
+         Test(testName, null, TestType.Container, xdisabled = false, psi = this)
       }
    }
 
@@ -60,14 +59,13 @@ object WordSpecStyle : SpecStyle {
          val testName = TestName(null, name.text, name.interpolated)
          val w = locateParentWhen()
          return if (w == null) {
-            Test(testName, listOf(TestPathEntry(name.text + " should")), TestType.Container, xdisabled = false, root = true, psi = this)
+            Test(testName, null, TestType.Container, xdisabled = false, psi = this)
          } else {
             Test(
                testName,
-               listOf(TestPathEntry("${w.name.name} when"), TestPathEntry(name.text)),
+               w,
                TestType.Container,
                xdisabled = false,
-               root = false,
                psi = this
             )
          }
@@ -91,26 +89,23 @@ object WordSpecStyle : SpecStyle {
          when {
             should != null && w != null -> Test(
                TestName(null, subject.text, subject.interpolated),
-               listOf(TestPathEntry("${w.name.name} when"), TestPathEntry("${should.name.name} should"), TestPathEntry(subject.text)),
+               w,
                TestType.Test,
                xdisabled = false,
-               root = false,
                psi = psi
             )
             should != null -> Test(
                TestName(null, subject.text, subject.interpolated),
-               listOf(TestPathEntry("${should.name.name} should"), TestPathEntry(subject.text)),
+               should,
                TestType.Test,
                xdisabled = false,
-               root = false,
                psi = psi
             )
             else -> Test(
                TestName(null, subject.text, subject.interpolated),
-               listOf(TestPathEntry(subject.text)),
+               null,
                TestType.Test,
                xdisabled = false,
-               root = true,
                psi = psi
             )
          }

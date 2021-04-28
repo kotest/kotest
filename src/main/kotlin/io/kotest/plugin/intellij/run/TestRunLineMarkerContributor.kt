@@ -16,9 +16,9 @@ import org.jetbrains.kotlin.psi.KtPackageDirective
 import com.intellij.util.Function
 
 /**
- * Given an element, returns an [RunLineMarkerContributor.Info] if the elements line should have a gutter icon added.
+ * Given an element, returns a [RunLineMarkerContributor.Info] if the element is a test case.
  */
-class KotestRunLineMarkerContributor : RunLineMarkerContributor() {
+class TestRunLineMarkerContributor : RunLineMarkerContributor() {
 
    override fun getInfo(element: PsiElement): Info? {
       // the docs say to only run a line marker for a leaf
@@ -27,7 +27,7 @@ class KotestRunLineMarkerContributor : RunLineMarkerContributor() {
             when (element.context) {
                // rule out some common entries that can't possibly be test markers for performance
                is KtAnnotationEntry, is KtDeclarationModifierList, is KtImportDirective, is KtImportList, is KtPackageDirective -> null
-               else -> markerForTestOrSpec(element)
+               else -> markerIfTest(element)
             }
          }
          else -> null
@@ -35,14 +35,17 @@ class KotestRunLineMarkerContributor : RunLineMarkerContributor() {
    }
 
    /**
-    * Returns an [Info] if this element is a test or a spec class.
+    * Returns an [Info] if this element is a test that is enabled.
+    * Disabled tests are handled by the [DisabledTestLineMarker].
     */
-   private fun markerForTestOrSpec(element: LeafPsiElement): Info? {
+   private fun markerIfTest(element: LeafPsiElement): Info? {
       val ktclass = element.enclosingKtClass() ?: return null
       val style = ktclass.specStyle() ?: return null
       val test = style.test(element) ?: return null
       // we cannot run interpolated names via the plugin
       if (test.name.interpolated) return null
+      // disabled tests are handled by another line marker
+      if (!test.enabled) return null
       return icon(test)
    }
 

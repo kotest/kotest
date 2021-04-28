@@ -78,7 +78,7 @@
                                       implementationClass="io.kotest.plugin.intellij.linemarker.DisabledTestLineMarker"/>
 
       <runLineMarkerContributor language="kotlin"
-                                implementationClass="io.kotest.plugin.intellij.run.KotestRunLineMarkerContributor"/>
+                                implementationClass="io.kotest.plugin.intellij.run.TestRunLineMarkerContributor"/>
 
       <runLineMarkerContributor language="kotlin"
                                 implementationClass="io.kotest.plugin.intellij.run.SpecRunLineMarkerContributor"/>

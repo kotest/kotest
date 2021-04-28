@@ -4,7 +4,6 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.impl.source.tree.LeafPsiElement
 import io.kotest.plugin.intellij.Test
 import io.kotest.plugin.intellij.TestName
-import io.kotest.plugin.intellij.TestPathEntry
 import io.kotest.plugin.intellij.TestType
 import io.kotest.plugin.intellij.psi.extractLhsStringArgForDotExpressionWithRhsFinalLambda
 import io.kotest.plugin.intellij.psi.extractStringArgForFunctionWithStringAndLambdaArgs
@@ -26,11 +25,13 @@ object FeatureSpecStyle : SpecStyle {
 
    override fun isTestElement(element: PsiElement): Boolean = test(element) != null
 
-   private fun PsiElement.locateParentTests(): List<Test> {
+   private fun locateParent(element: PsiElement): Test? {
       // if parent is null then we have hit the end
-      val p = parent ?: return emptyList()
-      val context = if (p is KtCallExpression) listOfNotNull(p.tryFeature()) else emptyList()
-      return parent.locateParentTests() + context
+      return when (val p = element.context) {
+         null -> null
+         is KtCallExpression -> p.tryFeature()
+         else -> locateParent(p)
+      }
    }
 
    private fun KtCallExpression.tryFeature(): Test? {
@@ -49,9 +50,8 @@ object FeatureSpecStyle : SpecStyle {
    }
 
    private fun buildTest(testName: TestName, element: PsiElement, type: TestType): Test {
-      val parents = element.locateParentTests()
-      val path = (parents.map { it.name } + testName)
-      return Test(testName, path.map { TestPathEntry(it.name) }, type, false, path.size == 1, element)
+      val parents = locateParent(element)
+      return Test(testName, parents, type, false, element)
    }
 
    override fun test(element: PsiElement): Test? {

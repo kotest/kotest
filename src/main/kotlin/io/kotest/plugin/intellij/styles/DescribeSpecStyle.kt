@@ -4,7 +4,6 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.impl.source.tree.LeafPsiElement
 import io.kotest.plugin.intellij.Test
 import io.kotest.plugin.intellij.TestName
-import io.kotest.plugin.intellij.TestPathEntry
 import io.kotest.plugin.intellij.TestType
 import io.kotest.plugin.intellij.psi.extractLhsStringArgForDotExpressionWithRhsFinalLambda
 import io.kotest.plugin.intellij.psi.extractStringArgForFunctionWithStringAndLambdaArgs
@@ -26,14 +25,13 @@ object DescribeSpecStyle : SpecStyle {
 
    override fun isTestElement(element: PsiElement): Boolean = test(element) != null
 
-   /**
-    * For a given PsiElement that we know to be a test, we iterate up the stack looking for parent tests.
-    */
-   private fun locateParentTests(element: PsiElement): List<Test> {
+   private fun locateParent(element: PsiElement): Test? {
       // if parent is null then we have hit the end
-      val p = element.parent ?: return emptyList()
-      val context = if (p is KtCallExpression) listOfNotNull(p.tryDescribe() ?: p.tryXDescribe()) else emptyList()
-      return locateParentTests(p) + context
+      return when (val p = element.parent) {
+         null -> null
+         is KtCallExpression -> p.tryDescribe() ?: p.tryXDescribe() ?: p.tryContext() ?: p.tryXContent()
+         else -> locateParent(p)
+      }
    }
 
    /**
@@ -44,7 +42,28 @@ object DescribeSpecStyle : SpecStyle {
     */
    private fun KtCallExpression.tryDescribe(): Test? {
       val name = extractStringArgForFunctionWithStringAndLambdaArgs("describe") ?: return null
-      return buildTest(TestName(null,name.text, name.interpolated), name.text.startsWith("!"), this, TestType.Container)
+      return buildTest(
+         TestName(null, name.text, name.interpolated),
+         name.text.startsWith("!"),
+         this,
+         TestType.Container
+      )
+   }
+
+   /**
+    * Finds tests in the form:
+    *
+    *   context("test name") { }
+    *
+    */
+   private fun KtCallExpression.tryContext(): Test? {
+      val name = extractStringArgForFunctionWithStringAndLambdaArgs("context") ?: return null
+      return buildTest(
+         TestName(null, name.text, name.interpolated),
+         name.text.startsWith("!"),
+         this,
+         TestType.Container
+      )
    }
 
    /**
@@ -83,12 +102,23 @@ object DescribeSpecStyle : SpecStyle {
    /**
     * Finds tests in the form:
     *
+    *   xcontext("test name") { }
+    *
+    */
+   private fun KtCallExpression.tryXContent(): Test? {
+      val name = extractStringArgForFunctionWithStringAndLambdaArgs("xcontext") ?: return null
+      return buildTest(TestName(null, name.text, name.interpolated), true, this, TestType.Container)
+   }
+
+   /**
+    * Finds tests in the form:
+    *
     *   it("test name").config { }
     *
     */
    private fun KtDotQualifiedExpression.tryItWithConfig(): Test? {
       val name = extractLhsStringArgForDotExpressionWithRhsFinalLambda("it", "config") ?: return null
-      return buildTest(TestName(null,name.text, name.interpolated), name.text.startsWith("!"), this, TestType.Test)
+      return buildTest(TestName(null, name.text, name.interpolated), name.text.startsWith("!"), this, TestType.Test)
    }
 
    /**
@@ -103,14 +133,13 @@ object DescribeSpecStyle : SpecStyle {
    }
 
    private fun buildTest(testName: TestName, xdisabled: Boolean, element: PsiElement, testType: TestType): Test {
-      val contexts = locateParentTests(element)
-      val path = (contexts.map { it.name } + testName)
-      return Test(testName, path.map { TestPathEntry(it.name) }, testType, xdisabled, path.size == 1, element)
+      return Test(testName, locateParent(element), testType, xdisabled, element)
    }
 
    override fun test(element: PsiElement): Test? {
       return when (element) {
          is KtCallExpression -> element.tryIt() ?: element.tryXIt() ?: element.tryDescribe() ?: element.tryXDescribe()
+         ?: element.tryContext() ?: element.tryXContent()
          is KtDotQualifiedExpression -> element.tryItWithConfig() ?: element.tryXItWithConfig()
          else -> null
       }

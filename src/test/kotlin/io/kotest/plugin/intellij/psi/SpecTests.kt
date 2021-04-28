@@ -23,7 +23,7 @@ class SpecTests : LightJavaCodeInsightFixtureTestCase() {
          "/io/kotest/core/spec/style/specs.kt"
       )
 
-      psiFile[0].elementAtLine(6)!!.isContainedInSpec() shouldBe false
+      psiFile[0].elementAtLine(3)!!.isContainedInSpec() shouldBe false
       for (k in 10..40) {
          psiFile[0].elementAtLine(k)!!.isContainedInSpec() shouldBe true
       }

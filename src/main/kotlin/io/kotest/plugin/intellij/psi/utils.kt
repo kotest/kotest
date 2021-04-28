@@ -53,20 +53,7 @@ fun KtCallExpression.hasFinalLambdaArg(): Boolean {
 }
 
 /**
- * Matches code in the form:
- *
- *   function("some string") { }
- *
- * The structure in PSI for this is:
- *
- *  KtCallExpression (the function invocation)
- *    - KtNameReferenceExpression (the name of the function)
- *    - KtValueArgumentList
- *      - KtValueArgument (container wrapper for an argument, in this case the string name)
- *        - KtStringTemplateExpression (the expression for the string arg)
- *          - KtLiteralStringTemplateEntry (the raw string value, safe to call .text on)
- *    - KtLambdaArgument (the test closure)
- *      - KtLambdaArgument
+ * Convenience call for [extractStringArgForFunctionWithStringAndLambdaArgs] with list of names.
  */
 fun KtCallExpression.extractStringArgForFunctionWithStringAndLambdaArgs(vararg names: String): StringArg? =
    extractStringArgForFunctionWithStringAndLambdaArgs(names.asList())
