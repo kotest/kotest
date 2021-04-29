@@ -27,48 +27,48 @@ class FunSpecRunMarkerTest : LightJavaCodeInsightFixtureTestCase() {
          Gutter("Run FunSpecExampleTest", 76),
          Gutter("Run a test", 132),
          Gutter("Run a test with config", 169),
-         Gutter("Disabled - an xtest", 222, AllIcons.RunConfigurations.IgnoredTest),
-         Gutter("Disabled - an xtest with config", 262, AllIcons.RunConfigurations.IgnoredTest),
+         Gutter("Disabled - an xtest", 222, AllIcons.RunConfigurations.TestIgnored),
+         Gutter("Disabled - an xtest with config", 262, AllIcons.RunConfigurations.TestIgnored),
          Gutter("Run some context", 321),
          Gutter("Run some context a nested test", 352),
          Gutter("Run some context a nested test with config", 402),
-         Gutter("Disabled - some context a nested xtest", 467, AllIcons.RunConfigurations.IgnoredTest),
-         Gutter("Disabled - some context a nested xtest with config", 519, AllIcons.RunConfigurations.IgnoredTest),
+         Gutter("Disabled - some context a nested xtest", 467, AllIcons.RunConfigurations.TestIgnored),
+         Gutter("Disabled - some context a nested xtest with config", 519, AllIcons.RunConfigurations.TestIgnored),
          Gutter("Run some context a nested context", 588),
          Gutter("Run some context a nested context a test", 615),
          Gutter(
             "Disabled - some context a nested context a nested xcontext",
             668,
-            AllIcons.RunConfigurations.IgnoredTest
+            AllIcons.RunConfigurations.TestIgnored
          ),
          Gutter(
             "Disabled - some context a nested context a nested xcontext a test",
             697,
-            AllIcons.RunConfigurations.IgnoredTest
+            AllIcons.RunConfigurations.TestIgnored
          ),
          Gutter(
             "Disabled - some context a nested context a nested xcontext a nested context",
             753,
-            AllIcons.RunConfigurations.IgnoredTest
+            AllIcons.RunConfigurations.TestIgnored
          ),
          Gutter(
             "Disabled - some context a nested context a nested xcontext a nested context a test",
             785,
-            AllIcons.RunConfigurations.IgnoredTest
+            AllIcons.RunConfigurations.TestIgnored
          ),
-         Gutter("Disabled - some context an xcontext", 868, AllIcons.RunConfigurations.IgnoredTest),
-         Gutter("Disabled - some context an xcontext a test", 894, AllIcons.RunConfigurations.IgnoredTest),
-         Gutter("Disabled - some context an xcontext an xtest", 934, AllIcons.RunConfigurations.IgnoredTest),
-         Gutter("Disabled - some context an xcontext a nested xcontext", 987, AllIcons.RunConfigurations.IgnoredTest),
+         Gutter("Disabled - some context an xcontext", 868, AllIcons.RunConfigurations.TestIgnored),
+         Gutter("Disabled - some context an xcontext a test", 894, AllIcons.RunConfigurations.TestIgnored),
+         Gutter("Disabled - some context an xcontext an xtest", 934, AllIcons.RunConfigurations.TestIgnored),
+         Gutter("Disabled - some context an xcontext a nested xcontext", 987, AllIcons.RunConfigurations.TestIgnored),
          Gutter(
             "Disabled - some context an xcontext a nested xcontext a test",
             1016,
-            AllIcons.RunConfigurations.IgnoredTest
+            AllIcons.RunConfigurations.TestIgnored
          ),
-         Gutter("Disabled - an xcontext", 1084, AllIcons.RunConfigurations.IgnoredTest),
-         Gutter("Disabled - an xcontext a test", 1107, AllIcons.RunConfigurations.IgnoredTest),
-         Gutter("Disabled - an xcontext a nested xcontext", 1152, AllIcons.RunConfigurations.IgnoredTest),
-         Gutter("Disabled - an xcontext a nested xcontext a test", 1178, AllIcons.RunConfigurations.IgnoredTest),
+         Gutter("Disabled - an xcontext", 1084, AllIcons.RunConfigurations.TestIgnored),
+         Gutter("Disabled - an xcontext a test", 1107, AllIcons.RunConfigurations.TestIgnored),
+         Gutter("Disabled - an xcontext a nested xcontext", 1152, AllIcons.RunConfigurations.TestIgnored),
+         Gutter("Disabled - an xcontext a nested xcontext a test", 1178, AllIcons.RunConfigurations.TestIgnored),
       )
 
       expected.size shouldBe gutters.size
