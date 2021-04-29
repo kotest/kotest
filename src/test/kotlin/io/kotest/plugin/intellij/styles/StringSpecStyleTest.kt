@@ -1,8 +1,8 @@
 package io.kotest.plugin.intellij.styles
 
 import com.intellij.codeInsight.daemon.LineMarkerInfo
-import com.intellij.icons.AllIcons
 import com.intellij.testFramework.fixtures.LightJavaCodeInsightFixtureTestCase
+import io.kotest.assertions.assertSoftly
 import io.kotest.matchers.shouldBe
 import java.nio.file.Paths
 
@@ -21,20 +21,23 @@ class StringSpecStyleTest : LightJavaCodeInsightFixtureTestCase() {
       )
 
       val gutters = myFixture.findAllGutters()
-      println(gutters.map { it.tooltipText }.joinToString("\n"))
       gutters.size shouldBe 3
 
-      gutters[0].icon shouldBe AllIcons.RunConfigurations.TestState.Run
-      gutters[0].tooltipText shouldBe "Run StringSpecExample"
-      (gutters[0] as LineMarkerInfo.LineMarkerGutterIconRenderer<*>).lineMarkerInfo.startOffset shouldBe 91
+      val expected = listOf(
+         Gutter("Run StringSpecExample", 91),
+         Gutter("Run test", 145),
+         Gutter("Run test with config", 201),
+      )
 
-      gutters[1].icon shouldBe AllIcons.RunConfigurations.TestState.Run
-      gutters[1].tooltipText shouldBe "Run this is a test"
-      (gutters[1] as LineMarkerInfo.LineMarkerGutterIconRenderer<*>).lineMarkerInfo.startOffset shouldBe 145
+      expected.size shouldBe gutters.size
 
-      gutters[2].icon shouldBe AllIcons.RunConfigurations.TestState.Run
-      gutters[2].tooltipText shouldBe "Run this test has config"
-      (gutters[2] as LineMarkerInfo.LineMarkerGutterIconRenderer<*>).lineMarkerInfo.startOffset shouldBe 215
+      assertSoftly {
+         expected.withIndex().forEach { (index, a) ->
+            gutters[index].tooltipText shouldBe a.tooltip
+            (gutters[index] as LineMarkerInfo.LineMarkerGutterIconRenderer<*>).lineMarkerInfo.startOffset shouldBe a.offset
+            gutters[index].icon shouldBe a.icon
+         }
+      }
 
    }
 

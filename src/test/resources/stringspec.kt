@@ -4,10 +4,10 @@ import io.kotest.core.spec.style.StringSpec
 
 class StringSpecExample : StringSpec() {
   init {
-    "this is a test" {
+    "test" {
       // test here
     }
-    "this test has config".config(enabled = false) {
+    "test with config".config(enabled = false) {
 
     }
   }
