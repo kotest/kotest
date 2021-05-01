@@ -20,6 +20,7 @@ import org.jetbrains.kotlin.psi.KtPackageDirective
  */
 class DisabledTestLineMarker : LineMarkerProvider {
 
+   // icons list https://jetbrains.design/intellij/resources/icons_list/
    private val icon = AllIcons.RunConfigurations.TestIgnored
 
    override fun getLineMarkerInfo(element: PsiElement): LineMarkerInfo<*>? {

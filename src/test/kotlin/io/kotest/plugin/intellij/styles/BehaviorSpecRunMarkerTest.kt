@@ -1,6 +1,7 @@
 package io.kotest.plugin.intellij.styles
 
 import com.intellij.codeInsight.daemon.LineMarkerInfo
+import com.intellij.icons.AllIcons
 import com.intellij.testFramework.fixtures.LightJavaCodeInsightFixtureTestCase
 import io.kotest.assertions.assertSoftly
 import io.kotest.matchers.shouldBe
@@ -22,20 +23,36 @@ class BehaviorSpecRunMarkerTest : LightJavaCodeInsightFixtureTestCase() {
 
       val gutters = myFixture.findAllGutters()
       println(gutters.map { it.tooltipText }.joinToString("\n"))
-      gutters.size shouldBe 11
+      gutters.size shouldBe 27
 
       val expected = listOf(
-         Gutter("Run BehaviorSpecExample", 175),
-         Gutter("Run a given", 251),
-         Gutter("Run a given a when", 276),
-         Gutter("Run a given a when a test", 301),
-         Gutter("Run a given a when another test", 379),
-         Gutter("Run a given another when", 451),
-         Gutter("Run a given another when a test", 476),
-         Gutter("Run a given another when a test with config", 545),
-         Gutter("Run a given an and", 637),
-         Gutter("Run a given an and a when", 664),
-         Gutter("Run a given an and a when a test", 691),
+         Gutter("Run BehaviorSpecExample", 91),
+         Gutter("Run a given", 170),
+         Gutter("Run a given a when", 198),
+         Gutter("Run a given a when a test", 227),
+         Gutter("Run a given a when another test", 276),
+         Gutter("Disabled - a given a when a disabled then", 329, AllIcons.RunConfigurations.TestIgnored),
+         Gutter("Disabled - a given disabled when", 388, AllIcons.RunConfigurations.TestIgnored),
+         Gutter("Disabled - a given disabled when this then should be disabled from its parent", 455, AllIcons.RunConfigurations.TestIgnored),
+         Gutter("Disabled - a given disabled when this then should be disabled with config", 531, AllIcons.RunConfigurations.TestIgnored),
+         Gutter("Run a given an and", 606),
+         Gutter("Run a given an and a when", 637),
+         Gutter("Run a given an and a when a test", 669),
+         Gutter("Run a given an and an and in an and", 738),
+         Gutter("Run a given an and an and in an and a test", 770),
+         Gutter("Disabled - a given an and disabled when", 838, AllIcons.RunConfigurations.TestIgnored),
+         Gutter("Disabled - a given an and disabled when this then should be disabled by nesting", 903, AllIcons.RunConfigurations.TestIgnored),
+         Gutter("Disabled - a given an and disabled when an xdisabled then", 964, AllIcons.RunConfigurations.TestIgnored),
+         Gutter("Disabled - a given disabled and", 1038, AllIcons.RunConfigurations.TestIgnored),
+         Gutter("Disabled - a given disabled and a nested when", 1076, AllIcons.RunConfigurations.TestIgnored),
+         Gutter("Disabled - a given disabled and a nested when a test", 1108, AllIcons.RunConfigurations.TestIgnored),
+         Gutter("Disabled - disabled given", 1191, AllIcons.RunConfigurations.TestIgnored),
+         Gutter("Disabled - disabled given disabled when", 1224, AllIcons.RunConfigurations.TestIgnored),
+         Gutter("Disabled - disabled given disabled when a disabled then", 1262, AllIcons.RunConfigurations.TestIgnored),
+         Gutter("Disabled - disabled given disabled and", 1318, AllIcons.RunConfigurations.TestIgnored),
+         Gutter("Disabled - disabled given disabled and a test", 1347, AllIcons.RunConfigurations.TestIgnored),
+         Gutter("Disabled - disabled given", 1413, AllIcons.RunConfigurations.TestIgnored),
+         Gutter("Disabled - disabled given a nested then", 1446, AllIcons.RunConfigurations.TestIgnored),
       )
 
       expected.size shouldBe gutters.size

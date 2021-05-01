@@ -20,6 +20,9 @@ import com.intellij.util.Function
  */
 class TestRunLineMarkerContributor : RunLineMarkerContributor() {
 
+   // icons list https://jetbrains.design/intellij/resources/icons_list/
+   private val icon = AllIcons.RunConfigurations.TestState.Run
+
    override fun getInfo(element: PsiElement): Info? {
       // the docs say to only run a line marker for a leaf
       return when (element) {
@@ -54,7 +57,7 @@ class TestRunLineMarkerContributor : RunLineMarkerContributor() {
     */
    private fun icon(test: Test): Info {
       return Info(
-         AllIcons.RunConfigurations.TestState.Run,
+         icon,
          Function<PsiElement, String> { "Run ${test.readableTestPath()}" },
          *ExecutorAction.getActions(1)
       )

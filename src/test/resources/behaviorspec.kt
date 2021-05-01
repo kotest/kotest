@@ -1,36 +1,60 @@
 package com.sksamuel.kotest.specs.behavior
 
 import io.kotest.core.spec.style.BehaviorSpec
-import io.kotest.matchers.string.shouldStartWith
-import io.kotest.matchers.shouldBe
 
 class BehaviorSpecExample : BehaviorSpec() {
 
-  init {
-    given("a given") {
-      `when`("a when") {
-        then("a test") {
-          "sam".shouldStartWith("s")
-        }
-        then("another test") {
-          // test here
-        }
+   init {
+      given("a given") {
+         `when`("a when") {
+            then("a test") {
+            }
+            then("another test") {
+            }
+            xthen("a disabled then") {
+            }
+         }
+         xwhen("disabled when") {
+            then("this then should be disabled from its parent") {
+            }
+            then("this then should be disabled with config").config(invocations = 3) {
+            }
+         }
+         and("an and") {
+            `when`("a when") {
+               then("a test") {
+               }
+            }
+            and("an and in an and") {
+               then("a test") {
+               }
+            }
+            xWhen("disabled when") {
+               then("this then should be disabled by nesting") {
+               }
+               xThen("an xdisabled then") {
+               }
+            }
+         }
+         xand("disabled and") {
+            `when`("a nested when") {
+               then("a test") {
+               }
+            }
+         }
       }
-      `when`("another when") {
-        then("a test") {
-          // test here
-        }
-        then("a test with config").config(invocations = 3) {
-          1 + 1 shouldBe 2
-        }
+      xgiven("disabled given") {
+         When("disabled when") {
+            then("a disabled then") {
+            }
+         }
+         and("disabled and") {
+            then("a test") {
+            }
+         }
       }
-      and("an and") {
-        `when`("a when") {
-          then("a test") {
-            //test here
-          }
-        }
+      xGiven("disabled given") {
+         then("a nested then") {
       }
-    }
-  }
+   }
 }

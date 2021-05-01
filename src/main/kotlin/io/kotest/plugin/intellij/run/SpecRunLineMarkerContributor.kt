@@ -17,6 +17,9 @@ import org.jetbrains.kotlin.psi.KtClassOrObject
  */
 class SpecRunLineMarkerContributor : RunLineMarkerContributor() {
 
+   // icons list https://jetbrains.design/intellij/resources/icons_list/
+   private val icon = AllIcons.RunConfigurations.TestState.Run
+
    override fun getInfo(element: PsiElement): Info? {
       when (element) {
          // the docs say to only run a line marker for a leaf
@@ -24,7 +27,7 @@ class SpecRunLineMarkerContributor : RunLineMarkerContributor() {
             val spec = element.getSpecEntryPoint()
             if (spec != null) {
                return Info(
-                  AllIcons.RunConfigurations.TestState.Run,
+                  icon,
                   com.intellij.util.Function<PsiElement, String> { "Run ${spec.fqName?.shortName()}" },
                   *ExecutorAction.getActions(1)
                )
