@@ -31,5 +31,5 @@ config/
 config-test/
 plugins/
 plugins-test/
-system/
 system-test/
+/system/
