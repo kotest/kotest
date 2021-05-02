@@ -8,16 +8,6 @@ import com.intellij.psi.PsiElement
 import com.intellij.util.Functions
 import javax.swing.Icon
 
-fun createLineMarker(element: PsiElement, text: String, icon: Icon) = LineMarkerInfo(
-   element,
-   element.textRange,
-   icon,
-   Functions.constant(text),
-   { _, _ -> },
-   GutterIconRenderer.Alignment.LEFT,
-   { text }
-)
-
 /**
  * A Line marker that does not appear in diffs
  */
