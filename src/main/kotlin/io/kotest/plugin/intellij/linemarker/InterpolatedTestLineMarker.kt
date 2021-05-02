@@ -6,7 +6,7 @@ import com.intellij.icons.AllIcons
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiWhiteSpace
 import com.intellij.psi.impl.source.tree.LeafPsiElement
-import io.kotest.plugin.intellij.createLineMarker
+import io.kotest.plugin.intellij.MainEditorLineMarkerInfo
 import io.kotest.plugin.intellij.psi.enclosingKtClass
 import io.kotest.plugin.intellij.psi.specStyle
 import org.jetbrains.kotlin.asJava.classes.KtLightClass
@@ -28,6 +28,7 @@ class InterpolatedTestLineMarker : LineMarkerProvider {
    private val icon = AllIcons.RunConfigurations.TestUnknown
 
    override fun getLineMarkerInfo(element: PsiElement): LineMarkerInfo<*>? {
+
       // the docs say to only run a line marker for a leaf
       return when (element) {
          // ignoring white space elements will save a lot of lookups
@@ -48,7 +49,7 @@ class InterpolatedTestLineMarker : LineMarkerProvider {
          val ktclass = element.enclosingKtClass() ?: return null
          val style = ktclass.specStyle() ?: return null
          val test = style.test(element) ?: return null
-         if (test.name.interpolated) createLineMarker(element, text, icon) else null
+         if (test.name.interpolated) MainEditorLineMarkerInfo(element, text, icon) else null
       } catch (e: Exception) {
          null
       }
