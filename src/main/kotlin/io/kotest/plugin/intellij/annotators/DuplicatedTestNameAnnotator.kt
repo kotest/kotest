@@ -9,24 +9,29 @@ import io.kotest.plugin.intellij.psi.isTestFile
 import io.kotest.plugin.intellij.psi.specStyle
 
 class DuplicatedTestNameAnnotator : Annotator {
+
    override fun annotate(element: PsiElement, holder: AnnotationHolder) {
       // we only care about test files
       if (!element.containingFile.isTestFile()) return
 
-      val ktclass = element.enclosingKtClass()
-      if (ktclass != null) {
-         val style = ktclass.specStyle()
-         if (style != null) {
-            val test = style.test(element)
-            // if the name is interpolated we can't run checks as it could be anything
-            if (test != null && !test.name.interpolated) {
-               val tests = style.tests(ktclass)
-               val duplicated = tests.count { it.test.name == test.name } > 1
-               if (duplicated) {
-                  holder.createWarnAnnotation(test.psi, "Duplicated test name")
-               }
-            }
-         }
+      val ktclass = element.enclosingKtClass() ?: return
+      val style = ktclass.specStyle() ?: return
+
+      // returns a test description if this element is the anchor for a test
+      val test = style.test(element) ?: return
+
+      // if the name is interpolated we can't run checks as we don't know the runtime name
+      if (test.name.interpolated) return
+
+      // locate all tests for this style
+      val tests = style.tests(ktclass)
+
+      // generate the full path as nested tests may be unique if inside differently named parents
+      // this test is duplicated if any other test has the same full path
+      val duplicated = tests.count { it.test.testPath() == test.testPath() } > 1
+
+      if (duplicated) {
+         holder.createWarnAnnotation(test.psi, "Duplicated test name")
       }
    }
 }
