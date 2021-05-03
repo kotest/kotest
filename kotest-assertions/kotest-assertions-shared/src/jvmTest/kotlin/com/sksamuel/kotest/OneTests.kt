@@ -7,64 +7,14 @@ import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.collections.shouldContainAll
 import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldBe
+import io.kotest.matchers.string.match
 import io.kotest.matchers.string.shouldContainOnlyOnce
 
 private fun matcherState() = Pair(errorCollector.errors(), assertionCounter.get())
 
 @Isolate
 @OptIn(ExperimentalKotest::class)
-class EitherTests : FunSpec({
-   test("either adds errors and assertions to their respective trackers on failure") {
-      var beforeState: Pair<List<Throwable>, Int>? = null
-      var afterState: Pair<List<Throwable>, Int>? = null
-
-      shouldFail {
-         all {
-            beforeState = matcherState()
-
-            one { // error 3
-               1 shouldBe 2 // error 1
-               2 shouldBe 3 // error 2
-            }
-
-            afterState = matcherState()
-         }
-      }
-
-      withClue("an assertion is added for each of the matchers") {
-         val before = beforeState?.second.shouldNotBeNull()
-         val after = afterState?.second.shouldNotBeNull()
-
-         after - before shouldBe 2
-      }
-
-      withClue("throwables are added to the error collector for the matchers and the one") {
-         val before = beforeState?.first.shouldNotBeNull()
-         val after = afterState?.first.shouldNotBeNull()
-
-         after.size - before.size shouldBe 3
-      }
-   }
-
-   test("either restores the error tracker and sets the assertion tracker correctly on success") {
-      val (beforeErrors, beforeAssertions) = matcherState()
-
-      one {
-         "a" shouldBe "b"
-         "a" shouldBe "a"
-      }
-
-      val (afterErrors, afterAssertions) = matcherState()
-
-      withClue("the assertions counter should be updated with how many assertions were used in one") {
-         afterAssertions shouldBe beforeAssertions + 2
-      }
-
-      withClue("since the either was successful there should be no new errors in the error tracker") {
-         afterErrors shouldContainAll beforeErrors
-      }
-   }
-
+class OneTests : FunSpec({
    test("either fails if less than two assertions are executed") {
       val (_, beforeAssertions) = matcherState()
       val message = shouldFail {
