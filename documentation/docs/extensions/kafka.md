@@ -37,7 +37,7 @@ class EmbeddedKafkaListenerTest : FunSpec() {
 
 And the broker will be started once the spec is created and stopped once the spec completes.
 
-Note: The underlying [embedded kafka library](https://github.com/kotest/kotest-extension-embedded-kafka) uses a global object for state. Do not start multiple kafka instances at the same time.
+Note: The underlying [embedded kafka library](https://github.com/embeddedkafka/embedded-kafka) uses a global object for state. Do not start multiple kafka instances at the same time.
 
 ### Consumer / Producer
 
