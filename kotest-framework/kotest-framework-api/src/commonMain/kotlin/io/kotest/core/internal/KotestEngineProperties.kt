@@ -83,4 +83,6 @@ object KotestEngineProperties {
     * Appends all tags associated with a test case to its display name.
     * */
    const val testNameAppendTags = "kotest.framework.testname.append.tags"
+
+   const val duplicateTestNameMode = "kotest.framework.testname.duplicate.mode"
 }

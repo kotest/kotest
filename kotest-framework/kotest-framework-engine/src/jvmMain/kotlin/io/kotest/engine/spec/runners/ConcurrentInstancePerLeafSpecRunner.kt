@@ -1,5 +1,6 @@
 package io.kotest.engine.spec.runners
 
+import io.kotest.core.config.configuration
 import io.kotest.core.test.Identifiers
 import io.kotest.core.test.NestedTest
 import io.kotest.core.test.TestCase
@@ -20,6 +21,7 @@ import io.kotest.core.spec.materializeAndOrderRootTests
 import io.kotest.core.test.createTestName
 import io.kotest.engine.dispatchers.ExecutorCoroutineDispatcherFactory
 import io.kotest.engine.launchers.SequentialTestLauncher
+import io.kotest.engine.test.DuplicateTestNameHandler
 import io.kotest.engine.toTestResult
 import io.kotest.fp.Try
 import io.kotest.mpp.log
@@ -107,18 +109,15 @@ internal class ConcurrentInstancePerLeafSpecRunner(
             // the first discovered test should be executed using the same spec
             val first = AtomicBoolean(true)
 
-            // names in the same scope
-            val namesInScope = ConcurrentHashMap.newKeySet<String>()
+            private val handler = DuplicateTestNameHandler(configuration.duplicateTestNameMode)
 
             override val testCase: TestCase = test
             override val coroutineContext: CoroutineContext = this@coroutineScope.coroutineContext
 
             override suspend fun registerTestCase(nested: NestedTest) {
 
-               val uniqueName = Identifiers.uniqueTestName(nested.name.name, namesInScope)
-               namesInScope.add(uniqueName)
-
-               val t = nested.copy(name = createTestName(uniqueName)).toTestCase(test.spec, test)
+               val overrideName = handler.handle(testCase)?.let { createTestName(it) }
+               val t = nested.toTestCase(test.spec, test, overrideName)
 
                when {
                   // if the nested test is the next entry that we are looking for, we launch straight into that

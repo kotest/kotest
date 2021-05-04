@@ -8,6 +8,7 @@ import io.kotest.core.listeners.Listener
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.SpecExecutionOrder
 import io.kotest.core.test.AssertionMode
+import io.kotest.core.test.DuplicateTestNameMode
 import io.kotest.core.test.TestCaseConfig
 import io.kotest.core.test.TestCaseOrder
 import io.kotest.core.test.TestNameCase
@@ -48,7 +49,8 @@ data class DetectedProjectConfig(
    val includeTestScopeAffixes: Option<Boolean> = Option.None,
    val testNameCase: Option<TestNameCase> = Option.None,
    val testNameRemoveWhitespace: Option<Boolean> = Option.None,
-   val testNameAppendTags: Option<Boolean> = Option.None
+   val testNameAppendTags: Option<Boolean> = Option.None,
+   val duplicateTestNameMode: Option<DuplicateTestNameMode> = Option.None,
 )
 
 fun DetectedProjectConfig.merge(other: DetectedProjectConfig): DetectedProjectConfig {
@@ -75,7 +77,8 @@ fun DetectedProjectConfig.merge(other: DetectedProjectConfig): DetectedProjectCo
       includeTestScopeAffixes = this.includeTestScopeAffixes.orElse(other.includeTestScopeAffixes),
       testNameCase = this.testNameCase.orElse(other.testNameCase),
       testNameRemoveWhitespace = this.testNameRemoveWhitespace.orElse(other.testNameRemoveWhitespace),
-      testNameAppendTags = this.testNameAppendTags.orElse(other.testNameAppendTags)
+      testNameAppendTags = this.testNameAppendTags.orElse(other.testNameAppendTags),
+      duplicateTestNameMode = this.duplicateTestNameMode.orElse(other.duplicateTestNameMode),
    )
 }
 
@@ -118,4 +121,6 @@ fun DetectedProjectConfig.apply(configuration: Configuration) {
    testNameCase.forEach { configuration.testNameCase = it }
    testNameRemoveWhitespace.forEach { configuration.removeTestNameWhitespace = it }
    testNameAppendTags.forEach { configuration.testNameAppendTags = it }
+
+   duplicateTestNameMode.forEach { configuration.duplicateTestNameMode = it }
 }

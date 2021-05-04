@@ -27,7 +27,7 @@ object Identifiers {
    fun uniqueTestName(name: String, testNames: Set<String>): String {
       if (!testNames.contains(name)) return name
       var n = 1
-      fun nextName() = "$name ($n)"
+      fun nextName() = "($n) $name"
       while (testNames.contains(nextName()))
          n++
       return nextName()

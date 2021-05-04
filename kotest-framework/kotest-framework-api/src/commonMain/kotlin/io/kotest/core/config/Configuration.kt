@@ -12,6 +12,7 @@ import io.kotest.core.listeners.TestListener
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.SpecExecutionOrder
 import io.kotest.core.test.AssertionMode
+import io.kotest.core.test.DuplicateTestNameMode
 import io.kotest.core.test.TestCaseConfig
 import io.kotest.core.test.TestCaseOrder
 import io.kotest.core.test.TestNameCase
@@ -260,6 +261,14 @@ class Configuration {
    var removeTestNameWhitespace: Boolean = false
 
    var testNameAppendTags: Boolean = false
+
+   /**
+    * Controls what to do when a duplicated test name is discovered.
+    * See possible settings in [DuplicateTestNameMode].
+    *
+    * Defaults to [Defaults.duplicateTestNameMode]
+    */
+   var duplicateTestNameMode: DuplicateTestNameMode = Defaults.duplicateTestNameMode
 
    /**
     * Returns all globally registered [Listener]s.
