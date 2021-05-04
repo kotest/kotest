@@ -133,7 +133,7 @@ internal class InstancePerTestSpecRunner(
             override val coroutineContext: CoroutineContext = this@coroutineScope.coroutineContext
             override suspend fun registerTestCase(nested: NestedTest) {
 
-               val overrideName = handler.handle(testCase)?.let { createTestName(it) }
+               val overrideName = handler.handle(nested.name)?.let { createTestName(it) }
                val t = nested.toTestCase(testCase.spec, testCase, overrideName)
 
                // if we are currently executing the target, then any registered tests are new, and we

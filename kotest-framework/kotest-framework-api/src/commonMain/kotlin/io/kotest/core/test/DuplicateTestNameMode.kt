@@ -20,5 +20,5 @@ enum class DuplicateTestNameMode {
     * Silently adjusts the name of a test when a duplicate is discovered so that the name is unique.
     * The name is prepended with a counter, so a duplicated test `foo` would become `(1) foo`.
     */
-   None
+   Silent
 }

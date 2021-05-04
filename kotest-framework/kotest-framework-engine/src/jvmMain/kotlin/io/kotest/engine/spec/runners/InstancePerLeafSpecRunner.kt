@@ -108,7 +108,7 @@ internal class InstancePerLeafSpecRunner(
             override val coroutineContext: CoroutineContext = this@coroutineScope.coroutineContext
             override suspend fun registerTestCase(nested: NestedTest) {
 
-               val overrideName = handler.handle(testCase)?.let { createTestName(it) }
+               val overrideName = handler.handle(nested.name)?.let { createTestName(it) }
                val t = nested.toTestCase(test.spec, test, overrideName)
 
                // if this test is our target then we definitely run it

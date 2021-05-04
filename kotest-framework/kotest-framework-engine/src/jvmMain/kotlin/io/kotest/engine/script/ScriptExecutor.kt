@@ -122,7 +122,7 @@ class ScriptExecutor(private val listener: TestEngineListener) {
       // in the single instance runner we execute each nested test as soon as they are registered
       override suspend fun registerTestCase(nested: NestedTest) {
          log("Nested test case discovered $nested")
-         val overrideName = handler.handle(testCase)?.let { createTestName(it) }
+         val overrideName = handler.handle(nested.name)?.let { createTestName(it) }
          val nestedTestCase = nested.toTestCase(testCase.spec, testCase, overrideName)
          runTest(nestedTestCase, coroutineContext)
       }

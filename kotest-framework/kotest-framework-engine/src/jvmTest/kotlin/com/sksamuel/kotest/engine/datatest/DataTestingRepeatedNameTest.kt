@@ -38,9 +38,9 @@ class DataTestingRepeatedTestNameTest : FunSpec() {
             "Foo(name=sam)",
             "Foo(name=ham)",
             "Foo(name=sham)",
-            "Foo(name=sham) (1)",
-            "Foo(name=ham) (1)",
-            "Foo(name=ham) (2)",
+            "(1) Foo(name=sham)",
+            "(1) Foo(name=ham)",
+            "(2) Foo(name=ham)",
             "foo",
          )
       }

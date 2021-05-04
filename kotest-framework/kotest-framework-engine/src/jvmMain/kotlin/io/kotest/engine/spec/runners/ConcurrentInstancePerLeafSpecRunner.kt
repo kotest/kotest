@@ -1,7 +1,6 @@
 package io.kotest.engine.spec.runners
 
 import io.kotest.core.config.configuration
-import io.kotest.core.test.Identifiers
 import io.kotest.core.test.NestedTest
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestContext
@@ -116,7 +115,7 @@ internal class ConcurrentInstancePerLeafSpecRunner(
 
             override suspend fun registerTestCase(nested: NestedTest) {
 
-               val overrideName = handler.handle(testCase)?.let { createTestName(it) }
+               val overrideName = handler.handle(nested.name)?.let { createTestName(it) }
                val t = nested.toTestCase(test.spec, test, overrideName)
 
                when {
