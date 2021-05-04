@@ -1,6 +1,7 @@
 package io.kotest.assertions
 
 import io.kotest.common.ExperimentalKotest
+import kotlin.coroutines.coroutineContext
 
 /**
  * Executes the given lambda and expects exactly one assertion to succeed.
@@ -15,7 +16,7 @@ import io.kotest.common.ExperimentalKotest
  * ```
  */
 @ExperimentalKotest
-suspend fun <T> one(assertions: suspend () -> T): T? {
+suspend fun <T> one(assertions: suspend () -> T): T {
    val (result, failures, assertionsCount) = errorAndAssertionsScope { assertions() }
    assertionCounter.inc(assertionsCount)
 
@@ -24,7 +25,7 @@ suspend fun <T> one(assertions: suspend () -> T): T? {
    }
 
    if (assertionsCount == failures.size + 1) {
-      return result.getOrNull()
+      return result.getOrThrow()
    }
 
    errorCollector.pushErrors(failures)
@@ -36,7 +37,7 @@ suspend fun <T> one(assertions: suspend () -> T): T? {
    }
 
    errorCollector.pushErrorAndMaybeThrow(f)
-   return null
+   throw f // one/all/any won't respect softly for now
 }
 
 /**

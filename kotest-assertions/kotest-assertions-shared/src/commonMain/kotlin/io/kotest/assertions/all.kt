@@ -1,6 +1,8 @@
 package io.kotest.assertions
 
 import io.kotest.common.ExperimentalKotest
+import kotlinx.coroutines.withContext
+import kotlin.coroutines.coroutineContext
 
 /**
  * Runs multiple assertions and throw a composite error with all failures
@@ -20,12 +22,18 @@ import io.kotest.common.ExperimentalKotest
  */
 @ExperimentalKotest
 suspend fun <T> all(assertions: suspend () -> T): T {
+   if (coroutineContext[AssertionBlockContextElement] != null) { // TODO: refactor all to use errorAndAssertionsScope
+      throw IllegalStateException("Assertion block functions one, any, and all are limited to a depth of 1")
+   }
+
    // Handle the edge case of nested calls to this function by only calling throwCollectedErrors in the
    // outermost verifyAll block
    if (errorCollector.getCollectionMode() == ErrorCollectionMode.Soft) return assertions()
    errorCollector.setCollectionMode(ErrorCollectionMode.Soft)
    return try {
-      assertions()
+      withContext(AssertionBlockContextElement()) {
+         assertions()
+      }
    } finally {
       // In case if any exception is thrown from assertions block setting errorCollectionMode back to hard
       // so that it won't remain soft for others tests. See https://github.com/kotest/kotest/issues/1932

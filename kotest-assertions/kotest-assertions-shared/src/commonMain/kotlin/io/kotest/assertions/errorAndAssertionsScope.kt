@@ -2,9 +2,17 @@ package io.kotest.assertions
 
 import io.kotest.common.ExperimentalKotest
 import io.kotest.fp.Try
+import kotlinx.coroutines.withContext
+import kotlin.coroutines.AbstractCoroutineContextElement
+import kotlin.coroutines.CoroutineContext
+import kotlin.coroutines.coroutineContext
 
 internal typealias Failures = List<Throwable>
 internal typealias Assertions = Int
+
+internal class AssertionBlockContextElement : AbstractCoroutineContextElement(Key) {
+   companion object Key : CoroutineContext.Key<AssertionBlockContextElement>
+}
 
 /**
  * [errorAndAssertionsScope] runs [block] in a "clean" scope.
@@ -18,12 +26,20 @@ internal typealias Assertions = Int
  */
 @ExperimentalKotest
 internal suspend fun <T> errorAndAssertionsScope(block: suspend () -> T): Triple<Try<T>, Failures, Assertions> {
+   if (coroutineContext[AssertionBlockContextElement] != null) {
+      throw IllegalStateException("Assertion block functions one, any, and all are limited to a depth of 1")
+   }
+
    val originalFailures = errorCollector.getAndReplace(listOf())
    val originalAssertions = assertionCounter.getAndReset()
    val originalMode = errorCollector.getCollectionMode()
    errorCollector.setCollectionMode(ErrorCollectionMode.Soft)
 
-   val result = Try { block() }
+   val result = Try {
+      withContext(AssertionBlockContextElement()) {
+         block()
+      }
+   }
 
    errorCollector.setCollectionMode(originalMode)
    val resultFailures = errorCollector.getAndReplace(originalFailures)

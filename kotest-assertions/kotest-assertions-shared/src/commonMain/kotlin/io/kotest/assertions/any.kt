@@ -1,6 +1,7 @@
 package io.kotest.assertions
 
 import io.kotest.common.ExperimentalKotest
+import kotlin.coroutines.coroutineContext
 
 /**
  * Runs multiple assertions and expects at least one to succeed, will suppress all exceptions otherwise.
@@ -14,17 +15,18 @@ import io.kotest.common.ExperimentalKotest
  * ```
  */
 @ExperimentalKotest
-suspend fun <T> any(assertions: suspend () -> T): T? {
+suspend fun <T> any(assertions: suspend () -> T): T {
    val (result, failures, assertionCount) = errorAndAssertionsScope { assertions() }
    assertionCounter.inc(assertionCount)
 
    if (assertionCount > failures.size || failures.isEmpty() && assertionCount == 0) {
-      return result.getOrNull()
+      return result.getOrThrow()
    }
 
+   val f = failure("Any expected at least one assertion to succeed but they all failed")
    errorCollector.pushErrors(failures)
-   errorCollector.pushErrorAndMaybeThrow(failure("Any expected at least one assertion to succeed but they all failed"))
-   return null
+   errorCollector.pushErrorAndMaybeThrow(f)
+   throw f
 }
 
 @ExperimentalKotest
