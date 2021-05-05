@@ -32,7 +32,7 @@ class EnumValueInDataClassNamingTest : FunSpec() {
 
    init {
       context("data class with enum with field") {
-         forAll(
+         withData(
             PythTriple(PythagNumber.Three, PythagNumber.Four, PythagNumber.Five),
             PythTriple(PythagNumber.Four, PythagNumber.Three, PythagNumber.Five),
             PythTriple(PythagNumber.Four, PythagNumber.Three, PythagNumber.Five),
@@ -40,7 +40,7 @@ class EnumValueInDataClassNamingTest : FunSpec() {
       }
 
       context("data class with enum with class field") {
-         forAll(
+         withData(
             FooClass(a = Bar.Bar1, b = Bar.Bar2),
             FooClass(a = Bar.Bar1, b = Bar.Bar2),
          ) {}

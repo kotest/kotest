@@ -72,7 +72,7 @@ private class RegularClassAndLeafIsolation : DescribeSpec() {
    init {
       isolationMode = IsolationMode.InstancePerLeaf
 
-      forAll(
+      withData(
          NotADataClass(1),
          NotADataClass(2),
          NotADataClass(3),
@@ -81,7 +81,7 @@ private class RegularClassAndLeafIsolation : DescribeSpec() {
       }
 
       describe("foo") {
-         forAll(
+         withData(
             NotADataClass(1),
             NotADataClass(2),
             NotADataClass(3),
@@ -97,7 +97,7 @@ private class DataClassWithNonDataParameterAndLeafIsolation : DescribeSpec() {
    init {
       isolationMode = IsolationMode.InstancePerLeaf
 
-      forAll(
+      withData(
          DataClassWithNonDataParameter(1, NotADataClass(1)),
          DataClassWithNonDataParameter(1, NotADataClass(2)),
          DataClassWithNonDataParameter(1, NotADataClass(3)),
@@ -106,7 +106,7 @@ private class DataClassWithNonDataParameterAndLeafIsolation : DescribeSpec() {
       }
 
       describe("foo") {
-         forAll(
+         withData(
             DataClassWithNonDataParameter(1, NotADataClass(1)),
             DataClassWithNonDataParameter(1, NotADataClass(2)),
             DataClassWithNonDataParameter(1, NotADataClass(3)),
