@@ -112,7 +112,7 @@ object Libs {
    }
 
    object KotlinTime {
-      private const val version = "0.1.1"
+      private const val version = "0.2.0"
       const val kotlintime = "org.jetbrains.kotlinx:kotlinx-datetime:$version"
    }
 }
