@@ -3,6 +3,7 @@ package io.kotest.engine.config
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.test.AssertionMode
 import io.kotest.core.internal.KotestEngineProperties
+import io.kotest.core.test.DuplicateTestNameMode
 import io.kotest.fp.Option
 import io.kotest.fp.toOption
 import io.kotest.mpp.sysprop
@@ -36,6 +37,9 @@ internal fun globalAssertSoftly(): Option<Boolean> =
 internal fun testNameAppendTags(): Option<Boolean> =
    sysprop(KotestEngineProperties.testNameAppendTags).toOption().map { it.toUpperCase() == "TRUE" }
 
+internal fun duplicateTestNameMode(): Option<DuplicateTestNameMode> =
+   sysprop(KotestEngineProperties.testNameAppendTags).toOption().map { DuplicateTestNameMode.valueOf(it) }
+
 /**
  * Returns a [DetectedProjectConfig] which is built from system properties where supported.
  */
@@ -50,6 +54,7 @@ internal fun loadConfigFromSystemProperties(): DetectedProjectConfig {
       invocationTimeout = invocationTimeout(),
       testNameRemoveWhitespace = allowMultilineTestName(),
       globalAssertSoftly = globalAssertSoftly(),
-      testNameAppendTags = testNameAppendTags()
+      testNameAppendTags = testNameAppendTags(),
+      duplicateTestNameMode = duplicateTestNameMode(),
    )
 }

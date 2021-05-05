@@ -3,6 +3,7 @@ package io.kotest.core.config
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.SpecExecutionOrder
 import io.kotest.core.test.AssertionMode
+import io.kotest.core.test.DuplicateTestNameMode
 import io.kotest.core.test.TestCaseConfig
 import io.kotest.core.test.TestCaseOrder
 import io.kotest.core.test.TestNameCase
@@ -13,6 +14,8 @@ object Defaults {
    val testCaseConfig: TestCaseConfig = TestCaseConfig()
    val testCaseOrder: TestCaseOrder = TestCaseOrder.Sequential
    val isolationMode: IsolationMode = IsolationMode.SingleInstance
+   val duplicateTestNameMode: DuplicateTestNameMode = DuplicateTestNameMode.Warn
+
    const val specFailureFilePath: String = "./.kotest/spec_failures"
 
    const val parallelism: Int = 1

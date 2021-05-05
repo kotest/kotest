@@ -4,34 +4,34 @@ import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.matchers.shouldBe
 
-abstract class DescribeSpecDuplicateNameTest(iso: IsolationMode) : DescribeSpec() {
+abstract class DescribeSpecDuplicateTestNameModeInfoTest(iso: IsolationMode) : DescribeSpec() {
    init {
       isolationMode = iso
       describe("foo") {
          it("woo") {}
          it("woo") {
-            this.testCase.displayName shouldBe "woo (1)"
+            this.testCase.displayName shouldBe "(1) woo"
          }
          it("woo") {
-            this.testCase.displayName shouldBe "woo (2)"
+            this.testCase.displayName shouldBe "(2) woo"
          }
       }
       describe("foo") {
-         this.testCase.displayName shouldBe "foo (1)"
+         this.testCase.displayName shouldBe "(1) foo"
       }
       describe("foo") {
-         this.testCase.displayName shouldBe "foo (2)"
+         this.testCase.displayName shouldBe "(2) foo"
       }
       context("goo") {}
       context("goo") {
-         this.testCase.displayName shouldBe "goo (1)"
+         this.testCase.displayName shouldBe "(1) goo"
       }
       context("goo") {
-         this.testCase.displayName shouldBe "goo (2)"
+         this.testCase.displayName shouldBe "(2) goo"
       }
    }
 }
 
-class DescribeSpecSingleInstanceDuplicateNameTest : DescribeSpecDuplicateNameTest(IsolationMode.SingleInstance)
-class DescribeSpecInstancePerLeafDuplicateNameTest : DescribeSpecDuplicateNameTest(IsolationMode.InstancePerLeaf)
-class DescribeSpecInstancePerTestDuplicateNameTest : DescribeSpecDuplicateNameTest(IsolationMode.InstancePerTest)
+class DescribeSpecSingleInstanceDuplicateTestNameModeInfoTest : DescribeSpecDuplicateTestNameModeInfoTest(IsolationMode.SingleInstance)
+class DescribeSpecInstancePerLeafDuplicateTestNameModeInfoTest : DescribeSpecDuplicateTestNameModeInfoTest(IsolationMode.InstancePerLeaf)
+class DescribeSpecInstancePerTestDuplicateTestNameModeInfoTest : DescribeSpecDuplicateTestNameModeInfoTest(IsolationMode.InstancePerTest)

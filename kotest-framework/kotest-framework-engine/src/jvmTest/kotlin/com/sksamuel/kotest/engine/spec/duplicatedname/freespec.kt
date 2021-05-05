@@ -5,24 +5,29 @@ import io.kotest.core.spec.style.FreeSpec
 import io.kotest.matchers.shouldBe
 
 abstract class FreeSpecDuplicateNameTest(iso: IsolationMode) : FreeSpec() {
-
    init {
       isolationMode = iso
 
       "foo" { }
-      "foo" {
-         this.testCase.displayName shouldBe "foo (1)"
-      }
+      "foo" { this.testCase.displayName shouldBe "(1) foo" }
+      "foo" { this.testCase.displayName shouldBe "(2) foo" }
 
       "woo" - {
          "goo" { }
          "goo" {
-            this.testCase.displayName shouldBe "goo (1)"
+            this.testCase.displayName shouldBe "(1) goo"
+         }
+         "goo" {
+            this.testCase.displayName shouldBe "(2) goo"
          }
       }
 
       "woo" - {
-         this.testCase.displayName shouldBe "woo (1)"
+         this.testCase.displayName shouldBe "(1) woo"
+      }
+
+      "woo" - {
+         this.testCase.displayName shouldBe "(2) woo"
       }
    }
 }

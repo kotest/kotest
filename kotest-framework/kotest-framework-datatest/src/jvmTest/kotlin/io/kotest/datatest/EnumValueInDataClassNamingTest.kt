@@ -22,10 +22,10 @@ class EnumValueInDataClassNamingTest : FunSpec() {
       names shouldBe listOf(
          "PythTriple(a=Three, b=Four, c=Five)",
          "PythTriple(a=Four, b=Three, c=Five)",
-         "PythTriple(a=Four, b=Three, c=Five) (1)",
+         "(1) PythTriple(a=Four, b=Three, c=Five)",
          "data class with enum with field",
          "FooClass(a=Bar1, b=Bar2)",
-         "FooClass(a=Bar1, b=Bar2) (1)",
+         "(1) FooClass(a=Bar1, b=Bar2)",
          "data class with enum with class field"
       )
    }

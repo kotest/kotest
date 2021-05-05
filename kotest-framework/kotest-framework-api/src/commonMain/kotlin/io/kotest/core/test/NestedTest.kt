@@ -41,10 +41,12 @@ fun createNestedTest(
 
 /**
  * Returns a full [TestCase] from this nested test, attaching the nested test to the given spec.
+ *
+ * @param name override the name or can be null to use the original name
  */
-fun NestedTest.toTestCase(spec: Spec, parent: TestCase): TestCase {
+fun NestedTest.toTestCase(spec: Spec, parent: TestCase, name: DescriptionName.TestName? = null): TestCase {
    val testCase = TestCase(
-      description = parent.description.append(this.name, type),
+      description = parent.description.append(name ?: this.name, type),
       spec = spec,
       test = test,
       source = sourceRef,

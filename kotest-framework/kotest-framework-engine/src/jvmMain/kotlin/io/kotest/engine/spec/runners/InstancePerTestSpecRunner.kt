@@ -1,17 +1,25 @@
 package io.kotest.engine.spec.runners
 
-import io.kotest.core.test.Identifiers
+import io.kotest.core.config.configuration
 import io.kotest.core.internal.TestCaseExecutor
 import io.kotest.core.internal.resolvedThreads
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.invokeAfterSpec
 import io.kotest.core.spec.invokeBeforeSpec
 import io.kotest.core.spec.materializeAndOrderRootTests
-import io.kotest.core.test.*
+import io.kotest.core.test.NestedTest
+import io.kotest.core.test.TestCase
+import io.kotest.core.test.TestCaseExecutionListener
+import io.kotest.core.test.TestContext
+import io.kotest.core.test.TestResult
+import io.kotest.core.test.TestType
+import io.kotest.core.test.createTestName
+import io.kotest.core.test.toTestCase
 import io.kotest.engine.ExecutorExecutionContext
 import io.kotest.engine.launchers.TestLauncher
 import io.kotest.engine.listener.TestEngineListener
 import io.kotest.engine.spec.SpecRunner
+import io.kotest.engine.test.DuplicateTestNameHandler
 import io.kotest.engine.toTestResult
 import io.kotest.fp.Try
 import io.kotest.mpp.log
@@ -119,16 +127,15 @@ internal class InstancePerTestSpecRunner(
       coroutineScope {
          val context = object : TestContext {
 
-            val namesInScope = mutableSetOf<String>()
+            private val handler = DuplicateTestNameHandler(configuration.duplicateTestNameMode)
 
             override val testCase: TestCase = test
             override val coroutineContext: CoroutineContext = this@coroutineScope.coroutineContext
             override suspend fun registerTestCase(nested: NestedTest) {
 
-               val uniqueName = Identifiers.uniqueTestName(nested.name.name, namesInScope)
-               namesInScope.add(uniqueName)
+               val overrideName = handler.handle(nested.name)?.let { createTestName(it) }
+               val t = nested.toTestCase(testCase.spec, testCase, overrideName)
 
-               val t = nested.copy(name = createTestName(uniqueName)).toTestCase(test.spec, test)
                // if we are currently executing the target, then any registered tests are new, and we
                // should begin execution of them in fresh specs
                // otherwise if the test is on the path we can continue in the same spec

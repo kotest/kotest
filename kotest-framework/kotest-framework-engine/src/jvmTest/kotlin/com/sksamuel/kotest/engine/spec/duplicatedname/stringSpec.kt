@@ -8,9 +8,8 @@ abstract class StringSpecDuplicateNameTest(iso: IsolationMode) : StringSpec() {
    init {
       isolationMode = iso
       "foo" {}
-      "foo" {
-         this.testCase.displayName shouldBe "foo (1)"
-      }
+      "foo" { this.testCase.displayName shouldBe "(1) foo" }
+      "foo" { this.testCase.displayName shouldBe "(2) foo" }
    }
 }
 
