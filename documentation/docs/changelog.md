@@ -4,9 +4,6 @@ sidebar_label: Changelog
 slug: changelog.html
 ---
 
-### Unreleased
-- Add overload to `Double.plusOrMinus` that accepts a percentage value instead of an absolute one. `1.0.plusOrMinus(10.percent)`
-
 ### 4.5.0 May 2021
 
 As part of this release, third party extensions were promoted to top level repositories instead of modules inside the main kotest repo.
@@ -57,6 +54,7 @@ See the full list of [extension modules](https://kotest.io/docs/extensions/exten
 * Edgecases are now probabilistic based #2112
 * TestResult should support a reason why tests were skipped #2172
 * Add watchos support back for x86 #2204
+* Add overload to `Double.plusOrMinus` that accepts a percentage value instead of an absolute one. `1.0.plusOrMinus(10.percent)`
 
 
 #### Bugfixes.
