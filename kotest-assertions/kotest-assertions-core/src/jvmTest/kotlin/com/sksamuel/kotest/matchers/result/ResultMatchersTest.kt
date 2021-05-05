@@ -18,13 +18,14 @@ class ResultMatchersTest : FreeSpec() {
   init {
     "with success result" - {
       "shouldBeSuccess" - {
-        shouldThrow<AssertionError> {
-           Result.runCatching { throw TestException() }.shouldBeSuccess<Unit>()
-        }
-        Result.runCatching { "Test 01" }.shouldBeSuccess { data ->
-          data shouldBe "Test 01"
-        }
-        Result.runCatching { "Test 01" } shouldBeSuccess "Test 01"
+         shouldThrow<AssertionError> {
+            Result.runCatching { throw TestException() }.shouldBeSuccess<Unit>()
+         }
+         Result.runCatching { "Test 01" }.shouldBeSuccess { data ->
+            data shouldBe "Test 01"
+         }
+         val r = Result.runCatching { "Test 01" }
+         r.shouldBeSuccess("Test 01")
       }
       "shouldNotBeFailure" - {
         Result.success("Test 01").shouldNotBeFailure()
