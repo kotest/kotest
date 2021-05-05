@@ -1,6 +1,6 @@
 object Libs {
 
-   const val kotlinVersion = "1.4.31"
+   const val kotlinVersion = "1.5.0"
    const val dokkaVersion = "0.10.1"
    const val adarshrTestLoggerVersion = "2.0.0"
    const val gradleVersionsPluginVersion = "0.28.0"
@@ -8,7 +8,7 @@ object Libs {
    const val kotestGradlePlugin = "0.1.4"
 
    object Kotlin {
-      private const val kotlinScriptVersion = "1.4.31"
+      private const val kotlinScriptVersion = "1.5.0"
       const val kotlinScriptRuntime = "org.jetbrains.kotlin:kotlin-script-runtime:$kotlinVersion"
       const val kotlinScriptUtil = "org.jetbrains.kotlin:kotlin-script-util:$kotlinScriptVersion"
       const val kotlinScriptJvm = "org.jetbrains.kotlin:kotlin-scripting-jvm:$kotlinScriptVersion"
@@ -59,7 +59,7 @@ object Libs {
    }
 
    object Classgraph {
-      const val classgraph = "io.github.classgraph:classgraph:4.8.104"
+      const val classgraph = "io.github.classgraph:classgraph:4.8.105"
    }
 
    object Mocking {
@@ -74,7 +74,6 @@ object Libs {
    object MockServer {
       private const val version = "5.11.2"
       const val netty = "org.mock-server:mockserver-netty:$version"
-      const val javaClient = "org.mock-server:mockserver-client-java:$version"
    }
 
    object Mifmif {
@@ -91,14 +90,11 @@ object Libs {
    }
 
    object Coroutines {
-      private const val version = "1.4.3"
+      private const val version = "1.5.0"
       const val coreCommon = "org.jetbrains.kotlinx:kotlinx-coroutines-core:$version"
       const val coreJvm = "org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm:$version"
       const val coreJs = "org.jetbrains.kotlinx:kotlinx-coroutines-core-js:$version"
       const val coreNative = "org.jetbrains.kotlinx:kotlinx-coroutines-core-native:$version"
-      const val coreLinux = "org.jetbrains.kotlinx:kotlinx-coroutines-core-linuxx64:$version"
-      const val coreMingw = "org.jetbrains.kotlinx:kotlinx-coroutines-core-mingwx64:$version"
-      const val coreMacos = "org.jetbrains.kotlinx:kotlinx-coroutines-core-macosx64:$version"
       const val jdk8 = "org.jetbrains.kotlinx:kotlinx-coroutines-jdk8:$version"
       const val test = "org.jetbrains.kotlinx:kotlinx-coroutines-test:$version"
    }
@@ -110,12 +106,8 @@ object Libs {
 
    object Ktor {
       private const val version = "1.5.3"
-      const val serverCore = "io.ktor:ktor-server-core:$version"
-      const val serverTestHost = "io.ktor:ktor-server-test-host:$version"
       const val clientJs = "io.ktor:ktor-client-js:$version"
       const val clientCore = "io.ktor:ktor-client-core:$version"
-      const val clientCoreJvm = "io.ktor:ktor-client-core-jvm:$version"
-      const val clientCioJvm = "io.ktor:ktor-client-cio-jvm:$version"
       const val clientApache = "io.ktor:ktor-client-apache:$version"
    }
 
