@@ -1,9 +1,17 @@
 package io.kotest.core.plan
 
+/**
+ * An ADT that describes where a spec or test is defined.
+ */
 sealed class Source {
 
-   abstract val filename: String
+   /**
+    * Links only to a file.
+    */
+   data class File(val filename: String) : Source()
 
-   data class ClassSource(override val filename: String) : Source()
-   data class TestSource(override val filename: String, val lineNumber: Int) : Source()
+   /**
+    * Links to a file and line number.
+    */
+   data class Line(val filename: String, val lineNumber: Int) : Source()
 }

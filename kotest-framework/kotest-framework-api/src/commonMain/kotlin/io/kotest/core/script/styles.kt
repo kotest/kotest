@@ -38,7 +38,7 @@ fun context(name: String, test: suspend ContextScope.() -> Unit) {
       Name(testName.name),
       DisplayName(testName.displayName),
       TestType.Container,
-      Source.TestSource(sourceRef().fileName, sourceRef().lineNumber),
+      Source.Line(sourceRef().fileName, sourceRef().lineNumber),
    )
    ScriptRuntime.registerRootTest(testName, false, TestType.Container) {
       ContextScope(
@@ -68,7 +68,7 @@ class ContextScope(
             Name(testName.name),
             DisplayName(testName.displayName),
             TestType.Test,
-            Source.TestSource(sourceRef().fileName, sourceRef().lineNumber),
+            Source.Line(sourceRef().fileName, sourceRef().lineNumber),
          ),
       )
    }
@@ -86,7 +86,7 @@ class ContextScope(
             Name(testName.name),
             DisplayName(testName.displayName),
             TestType.Test,
-            Source.TestSource(sourceRef().fileName, sourceRef().lineNumber),
+            Source.Line(sourceRef().fileName, sourceRef().lineNumber),
          ),
       )
    }
@@ -102,7 +102,7 @@ fun describe(name: String, test: suspend DescribeScope.() -> Unit) {
       Name(testName.name),
       DisplayName(testName.displayName),
       TestType.Container,
-      Source.TestSource(sourceRef().fileName, sourceRef().lineNumber),
+      Source.Line(sourceRef().fileName, sourceRef().lineNumber),
    )
    ScriptRuntime.registerRootTest(
       testName,
@@ -126,7 +126,7 @@ class DescribeScope(
          Name(testName.name),
          DisplayName(testName.displayName),
          TestType.Container,
-         Source.TestSource(sourceRef().fileName, sourceRef().lineNumber),
+         Source.Line(sourceRef().fileName, sourceRef().lineNumber),
       )
       registerNestedTest(
          name = testName,
@@ -152,7 +152,7 @@ class DescribeScope(
             Name(testName.name),
             DisplayName(testName.displayName),
             TestType.Test,
-            Source.TestSource(sourceRef().fileName, sourceRef().lineNumber),
+            Source.Line(sourceRef().fileName, sourceRef().lineNumber),
          ),
       )
    }

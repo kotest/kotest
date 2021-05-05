@@ -63,7 +63,7 @@ sealed class Descriptor {
             displayName = DisplayName(display),
             classname = kclass.qualifiedNameOrNull(),
             script = false,
-            source = Source.ClassSource(kclass.bestName() + ".kt")
+            source = Source.File(kclass.bestName() + ".kt")
          )
       }
 
@@ -79,7 +79,7 @@ sealed class Descriptor {
             displayName = DisplayName(display),
             classname = fqn,
             script = true,
-            source = Source.ClassSource(kclass.bestName() + ".kt")
+            source = Source.File(kclass.bestName() + ".kt")
          )
       }
    }
@@ -217,12 +217,12 @@ sealed class Descriptor {
       is TestDescriptor -> parent.testPath().append(this.name.value)
    }
 
-   abstract fun append(name: Name, displayName: DisplayName, type: TestType, source: Source.TestSource): TestDescriptor
+   abstract fun append(name: Name, displayName: DisplayName, type: TestType, source: Source.Line): TestDescriptor
 
    object EngineDescriptor : Descriptor() {
       override val name: Name = Name("kotest")
       override val displayName: DisplayName = DisplayName("kotest")
-      override fun append(name: Name, displayName: DisplayName, type: TestType, source: Source.TestSource) =
+      override fun append(name: Name, displayName: DisplayName, type: TestType, source: Source.Line) =
          error("Cannot register a test on the engine")
    }
 
@@ -240,9 +240,9 @@ sealed class Descriptor {
       override val displayName: DisplayName,
       val classname: String?,
       val script: Boolean,
-      val source: Source.ClassSource,
+      val source: Source.File,
    ) : Descriptor() {
-      override fun append(name: Name, displayName: DisplayName, type: TestType, source: Source.TestSource) =
+      override fun append(name: Name, displayName: DisplayName, type: TestType, source: Source.Line) =
          TestDescriptor(this, name, displayName, type, source)
    }
 
@@ -251,13 +251,13 @@ sealed class Descriptor {
       override val name: Name,
       override val displayName: DisplayName,
       val type: TestType,
-      val source: Source.TestSource,
+      val source: Source.Line,
    ) : Descriptor() {
       override fun append(
          name: Name,
          displayName: DisplayName,
          type: TestType,
-         source: Source.TestSource
+         source: Source.Line
       ): TestDescriptor {
          if (this@TestDescriptor.type == TestType.Test) error("Cannot register test on TestType.Test")
          return TestDescriptor(this, name, displayName, type, source)
@@ -280,12 +280,9 @@ fun Description.toDescriptor(sourceRef: SourceRef): Descriptor {
          name = Name(this.name.name),
          displayName = DisplayName(this.name.displayName),
          type = this.type,
-         source = Source.TestSource(sourceRef.fileName, sourceRef.lineNumber)
+         source = Source.Line(sourceRef.fileName, sourceRef.lineNumber)
       )
    }
 }
-
-data class Name(val value: String)
-data class DisplayName(val value: String)
 
 fun TestPath.append(component: String) = TestPath(listOf(this.value, component).joinToString("/"))

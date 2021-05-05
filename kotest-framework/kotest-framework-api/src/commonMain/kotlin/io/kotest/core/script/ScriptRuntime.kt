@@ -59,7 +59,7 @@ object ScriptRuntime {
                Name(description.name.name),
                DisplayName(description.name.displayName),
                TestType.Test,
-               Source.TestSource(sourceRef().fileName, sourceRef().lineNumber),
+               Source.Line(sourceRef().fileName, sourceRef().lineNumber),
             ),
             parent = null,
          )
