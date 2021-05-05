@@ -12,14 +12,14 @@ fun RootContext.registerRootTests(): MutableList<String> {
 
    val results = mutableListOf<String>()
 
-   forAll(
+   withData(
       PythagTriple(3, 4, 5),
       PythagTriple(6, 8, 10),
    ) { (a, b, c) ->
       a * a + b * b shouldBe c * c
    }
 
-   forAll(
+   withData(
       sequenceOf(
          PythagTriple(8, 15, 17),
          PythagTriple(9, 12, 15),
@@ -29,23 +29,23 @@ fun RootContext.registerRootTests(): MutableList<String> {
       a * a + b * b shouldBe c * c
    }
 
-   forAll("a", "b") { a ->
-      forAll(sequenceOf("x", "y")) { b ->
+   withData("a", "b") { a ->
+      withData(sequenceOf("x", "y")) { b ->
          a + b shouldHaveLength 2
          results.add(a + b)
       }
    }
 
    // testing repeated names get mangled
-   forAll("a", "b") { a ->
-      forAll(sequenceOf("x", "y")) { b ->
+   withData("a", "b") { a ->
+      withData(sequenceOf("x", "y")) { b ->
          a + b shouldHaveLength 2
          results.add(a + b)
       }
    }
 
    // we already had a / b so the names should be mangled
-   forAll(
+   withData(
       mapOf(
          "a" to 2,
          "b" to 4,
@@ -56,9 +56,9 @@ fun RootContext.registerRootTests(): MutableList<String> {
       if (a == 4) this.testCase.displayName shouldBe "(2) b"
    }
 
-   forAll("p", "q") { a ->
-      forAll(listOf("r", "s")) { b ->
-         forAll(sequenceOf("x", "y")) { c ->
+   withData("p", "q") { a ->
+      withData(listOf("r", "s")) { b ->
+         withData(sequenceOf("x", "y")) { c ->
             a + b + c shouldHaveLength 3
             results.add(a + b + c)
          }
@@ -72,14 +72,14 @@ suspend fun TestContext.registerContextTests(): MutableList<String> {
 
    val results = mutableListOf<String>()
 
-   forAll(
+   withData(
       PythagTriple(3, 4, 5),
       PythagTriple(6, 8, 10),
    ) { (a, b, c) ->
       a * a + b * b shouldBe c * c
    }
 
-   forAll(
+   withData(
       PythagTriple(8, 15, 17),
       PythagTriple(9, 12, 15),
       PythagTriple(15, 20, 25),
@@ -87,7 +87,7 @@ suspend fun TestContext.registerContextTests(): MutableList<String> {
       a * a + b * b shouldBe c * c
    }
 
-   forAll(
+   withData(
       mapOf(
          "foo" to 2,
          "foo" to 4,
@@ -98,23 +98,23 @@ suspend fun TestContext.registerContextTests(): MutableList<String> {
       //if (a == 4) this.testCase.displayName shouldBe "foo2"
    }
 
-   forAll("a", "b") { a ->
-      forAll(sequenceOf("x", "y")) { b ->
+   withData("a", "b") { a ->
+      withData(sequenceOf("x", "y")) { b ->
          a + b shouldHaveLength 2
          results.add(a + b)
       }
    }
 
    // testing repeated names get mapped
-   forAll("a", "b") { a ->
-      forAll(sequenceOf("x", "y")) { b ->
+   withData("a", "b") { a ->
+      withData(sequenceOf("x", "y")) { b ->
          a + b shouldHaveLength 2
          results.add(a + b)
       }
    }
 
    // we already had a / b so the names should be mangled
-   forAll(
+   withData(
       mapOf(
          "a" to 2,
          "b" to 4,
@@ -125,9 +125,9 @@ suspend fun TestContext.registerContextTests(): MutableList<String> {
       if (a == 4) this.testCase.displayName shouldBe "(2) b"
    }
 
-   forAll("p", "q") { a ->
-      forAll(listOf("r", "s")) { b ->
-         forAll(sequenceOf("x", "y")) { c ->
+   withData("p", "q") { a ->
+      withData(listOf("r", "s")) { b ->
+         withData(sequenceOf("x", "y")) { c ->
             a + b + c shouldHaveLength 3
             results.add(a + b + c)
          }
