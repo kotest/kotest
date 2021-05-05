@@ -7,14 +7,15 @@ import io.kotest.matchers.shouldNot
 import kotlin.reflect.KClass
 
 fun <T> Result<T>.shouldBeSuccess(block: ((T?) -> Unit)? = null) {
-   this should BeSuccess()
-   block?.invoke(getOrNull())
+   this should beSuccess()
+   if (block != null)
+      fold({ block(it) }, {})
 }
 
-fun <T> Result<T>.shouldNotBeSuccess() = this shouldNot BeSuccess()
+fun <T> Result<T>.shouldNotBeSuccess() = this shouldNot beSuccess()
 
-infix fun <T> Result<T>.shouldBeSuccess(expected: T) = this should BeSuccess(expected)
-infix fun <T> Result<T>.shouldNotBeSuccess(expected: T) = this shouldNot BeSuccess(expected)
+infix fun <T> Result<T>.shouldBeSuccess(expected: T) = this should beSuccess(expected)
+infix fun <T> Result<T>.shouldNotBeSuccess(expected: T) = this shouldNot beSuccess(expected)
 
 fun Result<Any?>.shouldBeFailure(block: ((Throwable?) -> Unit)? = null) {
    this should BeFailure()
@@ -26,23 +27,38 @@ fun <T> Result<T>.shouldNotBeFailure() = this shouldNot BeFailure()
 inline fun <reified A : Throwable> Result<Any?>.shouldBeFailureOfType() = this should BeFailureOfType(A::class)
 inline fun <reified A : Throwable> Result<Any?>.shouldNotBeFailureOfType() = this shouldNot BeFailureOfType(A::class)
 
-class BeSuccess<T>(val expected: T? = null) : Matcher<Result<T>> {
+fun <T> beSuccess(): Matcher<Result<T>> = object : Matcher<Result<T>> {
    override fun test(value: Result<T>): MatcherResult {
-      return when {
-         !value.isSuccess -> defaultResult(false)
-         expected == null -> defaultResult(true)
-         else -> MatcherResult(
-            value.getOrNull() == expected,
-            "Result should be a Success($expected), but instead got Succes(${value.getOrNull()}).",
-            "Result should not be a Success($expected)"
-         )
-      }
+      return MatcherResult(
+         value.isSuccess,
+         "Result should be a Success but was $value",
+         "Result should not be a Success"
+      )
+   }
+}
+
+fun <T> beSuccess(expected: T?): BeSuccess<T> = BeSuccess(expected)
+class BeSuccess<T>(val expected: T?) : Matcher<Result<T>> {
+   override fun test(value: Result<T>): MatcherResult {
+      return value.fold(
+         {
+            MatcherResult(
+               it == expected,
+               "Result should be a Success($expected), but instead got Success($it).",
+               "Result should not be a Success($expected)"
+            )
+         },
+         {
+            defaultResult(false)
+         }
+      )
    }
 
    private fun defaultResult(passed: Boolean) =
       MatcherResult(passed, "Result should be a success.", "Result should not be a success")
 }
 
+fun beFailure(): BeFailure = BeFailure()
 class BeFailure : Matcher<Result<Any?>> {
    override fun test(value: Result<Any?>) = MatcherResult(
       value.isFailure,

@@ -1,3 +1,5 @@
+@file:Suppress("unused")
+
 package io.kotest.matchers.sequences
 
 import io.kotest.matchers.*
@@ -148,7 +150,7 @@ infix fun <T : Comparable<T>, C : Sequence<T>> C.shouldHaveUpperBound(t: T) = th
 
 fun <T : Comparable<T>, C : Sequence<T>> haveUpperBound(t: T) = object : Matcher<C> {
    override fun test(value: C) = MatcherResult(
-      (value.max() ?: t) <= t,
+      (value.maxOrNull() ?: t) <= t,
       { "Sequence should have upper bound $t" },
       { "Sequence should not have upper bound $t" }
    )
@@ -158,7 +160,7 @@ infix fun <T : Comparable<T>, C : Sequence<T>> C.shouldHaveLowerBound(t: T) = th
 
 fun <T : Comparable<T>, C : Sequence<T>> haveLowerBound(t: T) = object : Matcher<C> {
    override fun test(value: C) = MatcherResult(
-      (value.min() ?: t) >= t,
+      (value.minOrNull() ?: t) >= t,
       { "Sequence should have lower bound $t" },
       { "Sequence should not have lower bound $t" }
    )
@@ -383,8 +385,8 @@ fun <T> Sequence<T>.shouldNotContainAll(vararg ts: T) = this shouldNot containAl
 infix fun <T> Sequence<T>.shouldNotContainAll(ts: Collection<T>) = this shouldNot containAll(ts.toList())
 infix fun <T> Sequence<T>.shouldNotContainAll(ts: Sequence<T>) = this shouldNot containAll(ts)
 
-fun <T, C> containAll(ts: Sequence<C>): Matcher<Sequence<T>> = containAll(ts.toList())
-fun <T, C> containAll(ts: List<C>): Matcher<Sequence<T>> = object : Matcher<Sequence<T>> {
+fun <T> containAll(ts: Sequence<T>): Matcher<Sequence<T>> = containAll(ts.toList())
+fun <T> containAll(ts: List<T>): Matcher<Sequence<T>> = object : Matcher<Sequence<T>> {
    override fun test(value: Sequence<T>): MatcherResult {
 
       val remaining = ts.toMutableSet()
