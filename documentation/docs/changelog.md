@@ -7,9 +7,7 @@ slug: changelog.html
 ### Unreleased
 - Add overload to `Double.plusOrMinus` that accepts a percentage value instead of an absolute one. `1.0.plusOrMinus(10.percent)`
 
-### 4.5.0.RC1 April 2021
-
-Note: This version will be released as 4.5.0 if no major bugs are reported.
+### 4.5.0 May 2021
 
 As part of this release, third party extensions were promoted to top level repositories instead of modules inside the main kotest repo.
 This allows the extensions to iterate quickly, without needing to wait for a full Kotest release.
@@ -31,7 +29,7 @@ See the full list of [extension modules](https://kotest.io/docs/extensions/exten
 * Property tests now randomly cycle between edgecases and samples, rather than iterating all edgecases first. This allows greater number of edgecases to be used and avoids a combinatoral explosion. If you are implementing custom Arb's by extending the Arb class (instead of using the `arbitrary` builders), then you will need to adjust your edgecases method from `fun edgecases(): List<A>` to `fun edgecase(rs: RandomSource): A?`.
 * Because of the above property test change, if you are setting a seed in a property test you may need to adjust the value.
 * The kotlin stdlib dependencies are now marked as `compileOnly`, meaning the version in your build will be used. Kotest tries to maintain compatibility across multiple versions by not relying on features only available in the latest releases.
-
+* Duplicated test names no longer throw an automatic error, but now mangle the name. So two tests of name 'foo' will appear as 'foo' and '(1) foo'. This enables data driven testing to work properly in javascript. To restore the original behavior, set the configuration value `Configuration.duplicateTestNameMode = Error`.
 
 #### Features / Improvement
 * A new data testing module has been added `kotest-framework-datatest` which properly supports runtime nesting of data tests. #2078
