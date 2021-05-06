@@ -72,13 +72,13 @@ Alternatively, you can access the host/port the Kafka instance was deployed on a
 class EmbeddedKafkaListenerTest : FunSpec({
 
    listener(embeddedKafkaListener)
-   
+
    val props = Properties().apply {
       put(CommonClientConfigs.BOOTSTRAP_SERVERS_CONFIG, "${embeddedKafkaListener.host}:${embeddedKafkaListener.port}")
    }
-   
+
    val producer = KafkaProducer<String, String>(props)
-   
+
 }
 ```
 
@@ -108,3 +108,10 @@ class EmbeddedKafkaCustomPortTest : FunSpec({
    }
 })
 ```
+
+You can also do specify the zookeeper port using an alternative overload.
+
+```
+val listener = EmbeddedKafkaListener(kafkaPort = 6005, zookeeperPort = 9005)
+```
+
