@@ -285,4 +285,7 @@ fun Description.toDescriptor(sourceRef: SourceRef): Descriptor {
    }
 }
 
+data class Name(val value: String)
+data class DisplayName(val value: String)
+
 fun TestPath.append(component: String) = TestPath(listOf(this.value, component).joinToString("/"))

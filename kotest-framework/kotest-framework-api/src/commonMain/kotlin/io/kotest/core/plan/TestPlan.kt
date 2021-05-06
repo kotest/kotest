@@ -5,11 +5,16 @@ import io.kotest.core.Tag
 import io.kotest.core.plan.Descriptor.EngineDescriptor
 import io.kotest.core.plan.Descriptor.SpecDescriptor
 import io.kotest.core.plan.Descriptor.TestDescriptor
+import io.kotest.core.sourceRef
+import io.kotest.core.spec.Spec
+import io.kotest.core.spec.isSpecEnabled
 import io.kotest.core.test.Description
 import io.kotest.core.test.Enabled
-import io.kotest.core.test.TestId
+import io.kotest.core.test.TestCaseSeverityLevel
 import io.kotest.core.test.TestPath
 import io.kotest.core.test.TestType
+import io.kotest.mpp.qualifiedNameOrNull
+import kotlin.reflect.KClass
 
 /**
  *  A [TestPlan] is a tree that contains the tests for a project, generated at runtime.
@@ -48,29 +53,10 @@ data class TestPlan(val root: EngineNode)
 sealed class Node {
 
    /**
-    * Returns an ephemeral id that can be used to uniquely refer to this test during a test run.
-    *
+    * Returns information about the names used for this node.
+    * See [NodeName] for full details of the available fields.
     */
-   abstract val id: TestId
-
-   /**
-    * Returns a parsable name for this node that is consistent across test runs.
-    *
-    * This should be used to refer to tests outside of the run, for example, as an identifer
-    * in a test reporting system where you want to track the results of a test over time.
-    *
-    * The intellij plugin also uses this name to refer to tests when invoking individual
-    * tests from the IDE.
-    *
-    * Any particular name is not guaranteed to be unique, but the combination of all names
-    * in the form of the [testPath] is guaranteed to be unique.
-    */
-   abstract val name: Name
-
-   /**
-    * Returns a human readable name used for reports and displays.
-    */
-   abstract val displayName: DisplayName
+   abstract val name: NodeName
 
    /**
     * Returns true if this node is for a spec.
@@ -94,16 +80,18 @@ sealed class Node {
 }
 
 /**
- * Returns a parseable path to this node.
+ * Returns a unique path to this node.
+ * All test paths from the same test case form an equivalence relation.
+ *
  * Includes the engine, spec, and all tests, in that order.
  * This path is safe to be used programmatically.
  * The test path doesn't include prefix/suffix information added by some spec styles.
  */
 @ExperimentalKotest
 fun Node.testPath(): TestPath = when (this) {
-   EngineNode -> TestPath(this.name.value)
-   is SpecNode -> EngineDescriptor.testPath().append(this.name.value)
-   is TestNode -> parent.testPath().append(this.name.value)
+   EngineNode -> TestPath(this.name.name)
+   is SpecNode -> EngineDescriptor.testPath().append(this.name.name)
+   is TestNode -> parent.testPath().append(this.name.name)
 }
 
 /**
@@ -126,7 +114,7 @@ fun Node.isParentOf(node: Node): Boolean = when (node) {
    // the only parent of a spec node can be the engine itself
    is SpecNode -> this is EngineNode
    // if the parameter is a test node, then its parent should be me
-   is TestNode -> this.id == node.parent.id
+   is TestNode -> this.testPath() == node.parent.testPath()
 }
 
 /**
@@ -156,7 +144,7 @@ fun Node.isContainer() = when (this) {
  * instance is either an ancestor of, of the same as, the given node.
  */
 @ExperimentalKotest
-fun Node.contains(node: Node): Boolean = this.id == node.id || this.isAncestorOf(node)
+fun Node.contains(node: Node): Boolean = this.testPath() == node.testPath() || this.isAncestorOf(node)
 
 /**
  * Returns true if this node is ancestor of the given [node]. An ancestor means that it is
@@ -167,7 +155,7 @@ fun Node.contains(node: Node): Boolean = this.id == node.id || this.isAncestorOf
 @ExperimentalKotest
 fun Node.isAncestorOf(node: Node): Boolean {
    // nodes cannot be ancestors of themselves.
-   if (node.id == this.id) return false
+   if (node.testPath() == this.testPath()) return false
    return when (node) {
       // nothing can be an ancestor of the engine node
       EngineNode -> false
@@ -182,63 +170,16 @@ fun Node.isAncestorOf(node: Node): Boolean {
  */
 @ExperimentalKotest
 object EngineNode : Node() {
-   override val id: TestId = TestId("kotest")
-   override val name: Name = Name("kotest")
-   override val displayName: DisplayName = DisplayName("kotest")
+   override val name: NodeName = EngineName
 }
-
-/**
- * A [Node] for a [Spec]. A spec is a container of tests, for instance a class, an object
- * or a Kotlin Script.
- *
- * @param name the fully qualified class name if available, otherwise the simple class name.
- * @param displayName the simple class name unless overriden by a @DisplayName annotation.
- * @param classname the fully qualified class name if available, or null.
- * @param type specs can be three types - classes, objects or scripts
- * @param source a [Source] for the definition of this spec.
- * @param tags all runtime tags applicable to this test
- * @param enabled describes whether a test is enabled at runtime, and if not with the reason if provided.
- */
-@ExperimentalKotest
-data class SpecNode(
-   override val id: TestId,
-   override val name: Name,
-   override val displayName: DisplayName,
-   val classname: String?,
-   val type: SpecType,
-   val source: Source,
-   val tags: Set<Tag>,
-   val enabled: Enabled,
-) : Node()
-
-/**
- * Adds a root level test to this [SpecNode].
- */
-@ExperimentalKotest
-fun SpecNode.append(
-   name: Name,
-   displayName: DisplayName,
-   type: TestType,
-   source: Source,
-   tags: Set<Tag>,
-   enabled: Enabled
-): TestNode =
-   TestNode(
-      id = TestId.generate(),
-      parent = this,
-      name = name,
-      displayName = displayName,
-      type = type,
-      source = source,
-      tags = tags, enabled = enabled
-   )
 
 /**
  * A [Node] for a [TestCase]. A test may contain other nested tests, in which case its type is
  * set to [TestType.Container]. If a test does not allow nested tests, then it's type is [TestType.Test].
  *
- * Note: Just because a test is set to container does not mean it contains nested tests. It just means
- * that the DSL permits it to accept nested tests.
+ * Note: Just because a type has the value container does not mean it contains nested tests. It just means
+ * that the DSL permits it to accept nested tests. Because tests are simply functions, there is no way to know
+ * if nested tests exist until that function has been executed at runtime.
  *
  * @param parent all tests have a parent - either another [TestNode] or a [SpecNode].
  * @param source a [Source] for the definition of this test.
@@ -247,41 +188,98 @@ fun SpecNode.append(
  */
 @ExperimentalKotest
 data class TestNode(
-   override val id: TestId,
    val parent: Node,
-   override val name: Name,
-   override val displayName: DisplayName,
+   override val name: NodeName,
    val type: TestType,
+   val source: Source,
+   val tags: Set<Tag>,
+   val enabled: Enabled,
+   val severity: TestCaseSeverityLevel?,
+) : Node()
+
+/**
+ * A [Node] for a [Spec]. A spec is a container of tests, for instance a class, an object
+ * or a Kotlin Script.
+ *
+ * @param name the [Name] for this spec.
+ * @param qualifiedName the fully qualified class name if available, or null.
+ * @param type specs can be three types - classes, objects or scripts
+ * @param source a [Source] for the definition of this spec.
+ * @param tags all tags applied to the definition of this spec - does not include tags nested in the constructor
+ * @param enabled describes whether a test is enabled at runtime, and if not with the reason if provided.
+ */
+@ExperimentalKotest
+data class SpecNode(
+   override val name: NodeName,
+   val qualifiedName: String?,
+   val type: SpecType,
    val source: Source,
    val tags: Set<Tag>,
    val enabled: Enabled,
 ) : Node()
 
 /**
+ * Creates a root level [TestNode] by appending to the this [SpecNode].
+ */
+@ExperimentalKotest
+fun SpecNode.append(
+   name: NodeName,
+   type: TestType,
+   source: Source,
+   tags: Set<Tag>,
+   enabled: Enabled,
+   severity: TestCaseSeverityLevel?,
+): TestNode =
+   TestNode(
+      parent = this,
+      name = name,
+      type = type,
+      source = source,
+      tags = tags,
+      enabled = enabled,
+      severity = severity,
+   )
+
+
+/**
  * Adds a nested test to this [TestNode].
  */
 @ExperimentalKotest
 fun TestNode.append(
-   name: Name,
-   displayName: DisplayName,
+   name: NodeName,
    type: TestType,
    source: Source,
    tags: Set<Tag>,
-   enabled: Enabled
+   enabled: Enabled,
+   severity: TestCaseSeverityLevel?,
 ): TestNode =
    TestNode(
-      id = TestId.generate(),
       parent = this,
       name = name,
-      displayName = displayName,
       type = type,
       source = source,
-      tags = tags, enabled = enabled
+      tags = tags,
+      enabled = enabled,
+      severity = severity,
    )
-
-data class Name(val value: String)
-data class DisplayName(val value: String)
 
 enum class SpecType {
    Class, Object, Script
+}
+
+/**
+ * Returns a [SpecNode] for this kclass.
+ *
+ * See [SpecName] for rules on how the name is generated.
+ */
+@ExperimentalKotest
+fun KClass<out Spec>.toNode(): SpecNode {
+   return SpecNode(
+      name = NodeName.fromSpec(this),
+      qualifiedName = this.qualifiedNameOrNull(),
+      type = SpecType.Class,
+      source = Source.Line(sourceRef().fileName, sourceRef().lineNumber),
+      tags = emptySet(),
+      enabled = isSpecEnabled(this),
+   )
 }

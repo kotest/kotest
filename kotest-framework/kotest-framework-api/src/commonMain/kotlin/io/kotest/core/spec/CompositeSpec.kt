@@ -7,7 +7,7 @@ abstract class CompositeSpec(private vararg val factories: TestFactory) : Spec()
 
    private val testCases = factories.flatMap { it.createTestCases(this::class.toDescription(), this) }
 
-   override fun materializeRootTests(): List<RootTest> {
+   override suspend fun materializeRootTests(): List<RootTest> {
       return testCases.withIndex().map { RootTest(it.value, it.index) }
    }
 }

@@ -5,6 +5,7 @@ import io.kotest.common.ExperimentalKotest
 import io.kotest.core.factory.FactoryId
 import io.kotest.core.internal.tags.allTags
 import io.kotest.core.plan.Descriptor
+import io.kotest.core.plan.TestNode
 import io.kotest.core.sourceRef
 import io.kotest.core.spec.Spec
 
@@ -57,6 +58,9 @@ data class TestCase(
 
    // not null if this test has a parent test
    @ExperimentalKotest val parent: TestCase? = null,
+
+   // might not be set everywhere yet
+   @ExperimentalKotest val node: TestNode? = null,
 ) {
 
    val displayName = description.displayName()
@@ -72,6 +76,7 @@ data class TestCase(
       /**
        * Creates a [TestCase] of type [TestType.Test], with default config, and derived source ref.
        */
+      @Deprecated("internal usage only - instead use the TestCase constructor. Will be removed in 4.8")
       fun test(
          description: Description.Test,
          spec: Spec,
@@ -93,6 +98,7 @@ data class TestCase(
       /**
        * Creates a [TestCase] of type [TestType.Container], with default config, and derived source ref.
        */
+      @Deprecated("internal usage only - instead use the TestCase constructor. Will be removed in 4.8")
       fun container(
          description: Description.Test,
          spec: Spec,

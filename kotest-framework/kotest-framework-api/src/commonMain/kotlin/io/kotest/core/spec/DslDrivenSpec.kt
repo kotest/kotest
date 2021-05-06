@@ -1,22 +1,27 @@
 package io.kotest.core.spec
 
+import io.kotest.core.SourceRef
 import io.kotest.core.Tuple2
 import io.kotest.core.config.configuration
-import io.kotest.core.test.Identifiers
 import io.kotest.core.extensions.SpecExtension
 import io.kotest.core.factory.TestFactory
 import io.kotest.core.factory.addPrefix
-import io.kotest.core.factory.createTestCases
+import io.kotest.core.internal.isEnabled
+import io.kotest.core.internal.tags.tags
 import io.kotest.core.listeners.ProjectListener
 import io.kotest.core.listeners.TestListener
+import io.kotest.core.plan.NodeName
+import io.kotest.core.plan.Source
+import io.kotest.core.plan.append
+import io.kotest.core.plan.toNode
+import io.kotest.core.source
+import io.kotest.core.sourceRef
 import io.kotest.core.test.DescriptionName
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestCaseConfig
 import io.kotest.core.test.TestContext
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestType
-import io.kotest.core.test.createRootTestCase
-import io.kotest.core.test.createTestName
 import kotlin.reflect.KClass
 
 /**
@@ -25,12 +30,15 @@ import kotlin.reflect.KClass
 abstract class DslDrivenSpec : Spec() {
 
    /**
-    * Contains the root [TestCase]s used in this spec.
+    * Contains the root [RootTestCase]s defined in this spec.
     */
-   private var rootTestCases = emptyList<TestCase>()
+   private var rootTestCases = emptyList<RootTestCase>()
 
-   override fun materializeRootTests(): List<RootTest> {
-      return rootTestCases.withIndex().map { RootTest(it.value, it.index) }
+   override suspend fun materializeRootTests(): List<RootTest> {
+      return rootTestCases.withIndex().map {
+         val tc = it.value.toTestCase(this)
+         RootTest(tc, it.index)
+      }
    }
 
    /**
@@ -39,7 +47,8 @@ abstract class DslDrivenSpec : Spec() {
     * settings at the time the method was invoked.
     */
    fun include(factory: TestFactory) {
-      factory.createTestCases(this::class.toDescription(), this).forEach { addRootTest(it) }
+      // todo factory.createTestCases(this::class.toDescription(), this).forEach { registerRootTest(it) }
+      TODO()
       listeners(factory.listeners)
    }
 
@@ -87,27 +96,78 @@ abstract class DslDrivenSpec : Spec() {
       })
    }
 
-   /**
-    * Adds a new root-level [TestCase] to this [Spec].
-    */
    override fun addTest(
       name: DescriptionName.TestName,
       test: suspend TestContext.() -> Unit,
       config: TestCaseConfig,
       type: TestType
-   ) {
-      addRootTest(createRootTestCase(this, name, test, config, type))
-   }
+   ) = registerRootTest(name, test, config, type)
 
    /**
-    * Adds a new root-level [TestCase] to this [Spec].
+    * Adds a new root-level test to this [Spec] which will be inflated into a [TestCase]
+    * by the framework when the spec is executed.
     */
-   private fun addRootTest(testCase: TestCase) {
-      val uniqueName = Identifiers.uniqueTestName(
-         testCase.description.name.name,
-         rootTestCases.map { it.description.name.name }.toSet()
+   fun registerRootTest(
+      name: DescriptionName.TestName,
+      test: suspend TestContext.() -> Unit,
+      config: TestCaseConfig,
+      type: TestType
+   ) {
+      val rtc = RootTestCase(
+         name = name,
+         test = test,
+         config = config,
+         type = type,
+         sourceRef = sourceRef(),
+         source = source(),
       )
-      val description = testCase.description.copy(name = createTestName(uniqueName))
-      rootTestCases += if (uniqueName == testCase.description.name.name) testCase else testCase.copy(description = description)
+      rootTestCases = rootTestCases + rtc
+   }
+}
+
+internal data class RootTestCase(
+   @Deprecated("Will be removed")
+   val name: DescriptionName.TestName,
+   val test: suspend TestContext.() -> Unit,
+   val config: TestCaseConfig,
+   val type: TestType,
+   @Deprecated("Will be removed")
+   val sourceRef: SourceRef,
+   val source: Source,
+)
+
+internal suspend fun RootTestCase.toTestCase(spec: Spec): TestCase {
+
+   val tags = config.tags + spec.declaredTags() + spec::class.tags()
+
+   val testCase = TestCase(
+      description = spec::class.toDescription().append(name, type),
+      spec = spec,
+      test = test,
+      source = sourceRef(),
+      type = type,
+      config = config,
+      factoryId = null,
+      assertionMode = null,
+      parent = null, // root tests do not have a parent test case
+   )
+
+   val enabled = testCase.isEnabled()
+
+   val node = spec::class.toNode().append(
+      name = NodeName.fromTestName(this.name),
+      type = type,
+      source = source(),
+      tags = tags,
+      enabled = enabled,
+      severity = config.severity,
+   )
+
+   val testCase2 = testCase.copy(node = node)
+
+   return if (configuration.testNameAppendTags) {
+      TestCase.appendTagsInDisplayName(testCase2)
+   } else {
+      testCase2
    }
 }

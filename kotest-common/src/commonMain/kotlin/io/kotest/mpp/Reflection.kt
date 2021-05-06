@@ -40,7 +40,7 @@ interface Reflection {
    fun <T : Any> primaryConstructorMembers(klass: KClass<T>) : List<Property>
 
    /**
-    * Returns a new instan created from the no arg constructor, if supported
+    * Returns a new instance created from the no arg constructor, if supported
     */
    fun <T : Any> newInstanceNoArgConstructor(klass: KClass<T>) : T
 

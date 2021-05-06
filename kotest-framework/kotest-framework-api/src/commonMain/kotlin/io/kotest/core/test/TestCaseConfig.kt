@@ -14,6 +14,7 @@ class Enabled private constructor(val isEnabled: Boolean, reason: String? = null
 
    companion object {
       val enabled = Enabled(true)
+      val disabled = Enabled(false, null)
       fun disabled(reason: String?) = Enabled(false, reason)
 
       fun fold(es: Iterable<Enabled>): Enabled {

@@ -9,8 +9,6 @@ import io.kotest.core.test.TestContext
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestType
 import io.kotest.core.test.DescriptionName
-import io.kotest.core.test.TestCaseOrder
-import io.kotest.core.test.createRootTestCase
 import io.kotest.core.test.createTestName
 import io.kotest.mpp.unwrapIfReflectionCall
 import kotlin.reflect.KClass
@@ -65,27 +63,28 @@ abstract class AnnotationSpec : Spec() {
    }
 
    private fun KFunction<*>.deriveTestCase(config: TestCaseConfig): TestCase {
-      return if (this.isExpectingException()) {
-         val expected = this.getExpectedException()
-         createRootTestCase(
-            this@AnnotationSpec,
-            createTestName(name),
-            callExpectingException(expected),
-            config,
-            TestType.Test,
-         )
-      } else {
-         createRootTestCase(
-            this@AnnotationSpec,
-            createTestName(name),
-            callNotExpectingException(),
-            config,
-            TestType.Test,
-         )
-      }
+      TODO()
+//      return if (this.isExpectingException()) {
+//         val expected = this.getExpectedException()
+//         createRootTestCase(
+//            this@AnnotationSpec,
+//            createTestName(name),
+//            callExpectingException(expected),
+//            config,
+//            TestType.Test,
+//         )
+//      } else {
+//         createRootTestCase(
+//            this@AnnotationSpec,
+//            createTestName(name),
+//            callNotExpectingException(),
+//            config,
+//            TestType.Test,
+//         )
+//      }
    }
 
-   override fun materializeRootTests(): List<RootTest> {
+   override suspend fun materializeRootTests(): List<RootTest> {
       return this::class.findTestFunctions().withIndex().map { (index, f) ->
          f.isAccessible = true
          if (f.isIgnoredTest()) {

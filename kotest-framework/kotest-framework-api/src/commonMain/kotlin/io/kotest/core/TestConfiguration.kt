@@ -119,6 +119,7 @@ abstract class TestConfiguration {
       return closeable
    }
 
+   @Deprecated("Removed to registerRootTest. This will be removed in 4.8")
    abstract fun addTest(
       name: DescriptionName.TestName,
       test: suspend TestContext.() -> Unit,

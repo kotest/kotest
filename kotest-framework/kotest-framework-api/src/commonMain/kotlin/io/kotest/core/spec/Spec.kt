@@ -34,7 +34,7 @@ abstract class Spec : TestConfiguration(), SpecFunctionConfiguration, SpecFuncti
     * If this spec does not create the test cases upon instantiation, then this method
     * will materialize the tests (Eg when a test is defined as a function as in annotation spec).
     */
-   abstract fun materializeRootTests(): List<RootTest>
+   abstract suspend fun materializeRootTests(): List<RootTest>
 
    @JsName("isolation_js")
    @Deprecated("Use isolationMode. This will be removed in 4.6")

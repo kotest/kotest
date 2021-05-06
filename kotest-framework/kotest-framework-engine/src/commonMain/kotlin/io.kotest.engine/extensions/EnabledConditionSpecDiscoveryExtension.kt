@@ -3,8 +3,6 @@ package io.kotest.engine.extensions
 import io.kotest.core.annotation.EnabledIf
 import io.kotest.core.extensions.DiscoveryExtension
 import io.kotest.core.spec.Spec
-import io.kotest.mpp.annotation
-import io.kotest.mpp.newInstanceNoArgConstructor
 import kotlin.reflect.KClass
 
 /**
@@ -13,10 +11,10 @@ import kotlin.reflect.KClass
 object EnabledConditionSpecDiscoveryExtension : DiscoveryExtension {
    override fun afterScan(classes: List<KClass<out Spec>>): List<KClass<out Spec>> {
       return classes
-         .filterNot { !it.isEnabled() }
+//         .filterNot { !it.isEnabled() }
    }
 
-   private fun <T : Spec> KClass<T>.isEnabled(): Boolean {
-      return annotation<EnabledIf>()?.enabledIf?.newInstanceNoArgConstructor()?.enabled(this) ?: true
-   }
+//   private fun <T : Spec> KClass<T>.isEnabled(): Boolean {
+//      return annotation<EnabledIf>()?.enabledIf?.newInstanceNoArgConstructor()?.enabled(this) ?: true
+//   }
 }

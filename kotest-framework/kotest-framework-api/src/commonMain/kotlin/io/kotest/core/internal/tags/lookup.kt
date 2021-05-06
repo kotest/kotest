@@ -5,7 +5,9 @@ import io.kotest.core.Tag
 import io.kotest.core.Tags
 import io.kotest.core.config.Configuration
 import io.kotest.core.extensions.TagExtension
+import io.kotest.core.spec.Spec
 import io.kotest.core.test.TestCase
+import io.kotest.core.test.TestCaseConfig
 import io.kotest.mpp.annotation
 import kotlin.reflect.KClass
 
@@ -27,7 +29,14 @@ fun KClass<*>.tags(): Set<Tag> {
 }
 
 /**
+ * Returns all tags for the given spec and test case config.
+ */
+@PublishedApi
+internal fun tags(spec: Spec, config: TestCaseConfig): Set<Tag> =
+   config.tags + spec.declaredTags() + spec::class.tags()
+
+/**
  * Returns all tags assigned to a [TestCase], taken from the test case config, spec inline function,
  * spec override function, or the spec class.
  */
-fun TestCase.allTags(): Set<Tag> = this.config.tags + this.spec.declaredTags() + this.spec::class.tags()
+fun TestCase.allTags(): Set<Tag> = tags(this.spec, this.config)

@@ -184,11 +184,7 @@ sealed class Description {
    fun isOnPath(description: Description): Boolean = this.path() == description.path() || this.isAncestorOf(description)
 }
 
-data class TestId(val value: String) {
-   companion object {
-      fun generate(): TestId = TestId(uniqueId())
-   }
-}
+data class TestId(val value: String)
 
 data class TestPath(val value: String)
 data class DisplayPath(val value: String)

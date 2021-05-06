@@ -31,5 +31,5 @@ annotation class Ignored
 annotation class EnabledIf(val enabledIf: KClass<out EnabledCondition>)
 
 interface EnabledCondition {
-    fun enabled(specKlass: KClass<out Spec>): Boolean
+   fun enabled(specKlass: KClass<out Spec>): Boolean
 }
