@@ -108,3 +108,11 @@ class EmbeddedKafkaCustomPortTest : FunSpec({
    }
 })
 ```
+
+You can also do specify the zookeeper port using an alternative overload.
+
+```
+val listener = EmbeddedKafkaListener(kafkaPort = 6005, zookeeperPort = 9005)
+```
+
+
