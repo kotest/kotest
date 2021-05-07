@@ -13,10 +13,14 @@ The [Koin DI Framework](https://insert-koin.io/) can be used with Kotest through
 
 To add the listener to your project, add the dependency to your project:
 
+
 [<img src="https://img.shields.io/maven-central/v/io.kotest.extensions/kotest-extensions-koin.svg?label=latest%20release"/>](http://search.maven.org/#search|ga|1|kotest-extensions-koin)
+[<img src="https://img.shields.io/nexus/s/https/oss.sonatype.org/io.kotest.extensions/kotest-extensions-koin.svg?label=latest%20snapshot"/>](https://oss.sonatype.org/content/repositories/snapshots/io/kotest/extensions/kotest-extensions-koin/)
+
+
 
 ```kotlin
-testImplementation("io.kotest.extensions:kotest-extensions-koin:${version}")
+io.kotest.extensions:kotest-extensions-koin:${version}
 ```
 
 With the dependency added, we can use Koin in our tests!
