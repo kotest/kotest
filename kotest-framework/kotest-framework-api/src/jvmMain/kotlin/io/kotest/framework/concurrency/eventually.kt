@@ -2,8 +2,10 @@ package io.kotest.framework.concurrency
 
 import io.kotest.assertions.ErrorCollectionMode
 import io.kotest.assertions.errorCollector
+import io.kotest.assertions.failure
 import io.kotest.common.ExperimentalKotest
 import io.kotest.mpp.timeInMillis
+import kotlinx.coroutines.delay
 import kotlin.reflect.KClass
 
 @ExperimentalKotest
@@ -39,7 +41,22 @@ fun interface EventuallyListener<T> {
 }
 
 @ExperimentalKotest
-suspend fun <T> eventually(config: EventuallyConfig = EventuallyConfig(), listener: EventuallyListener<T> = EventuallyListener { it.thisError == null }, f: ConcurrencyProducer<T>): T {
+suspend fun <T> eventually(
+   duration: Millis,
+   interval: Interval = 25L.fixed(),
+   retries: Int = Int.MAX_VALUE,
+   exceptions: Set<KClass<out Throwable>> = setOf(),
+   listener: EventuallyListener<T> = EventuallyListener { it.thisError == null },
+   f: ConcurrencyProducer<T>
+): T =
+   eventually(EventuallyConfig(duration, interval, retries, exceptions), listener, f)
+
+@ExperimentalKotest
+suspend fun <T> eventually(
+   config: EventuallyConfig = EventuallyConfig(),
+   listener: EventuallyListener<T> = EventuallyListener { it.thisError == null },
+   f: ConcurrencyProducer<T>
+): T {
    val start = Instant(timeInMillis())
    val end = Instant(timeInMillis() + config.duration)
    var times = 0
@@ -48,5 +65,65 @@ suspend fun <T> eventually(config: EventuallyConfig = EventuallyConfig(), listen
    var predicateFailedTimes = 0
    val originalAssertionMode = errorCollector.getCollectionMode()
    errorCollector.setCollectionMode(ErrorCollectionMode.Hard)
+
+   var lastDelayPeriod: Millis = 0L
+   var lastInterval: Millis = 0L
+
+   fun attemptsLeft() = timeInMillis() < end.timeInMillis && times < config.retries
+
+   // if we only executed once, and the last delay was > last interval, we didn't get a chance to run again
+   // so we run once more before exiting
+   fun isLongWait() = times == 1 && lastDelayPeriod > lastInterval
+
+   while (attemptsLeft() || isLongWait()) {
+      try {
+         val result = f()
+         val listenerResult = listener.onEval(EventuallyState(result, start, end, times, firstError, lastError))
+         if (listenerResult) {
+            errorCollector.setCollectionMode(originalAssertionMode)
+            return result
+         } else {
+            predicateFailedTimes++
+         }
+      } catch (e: Throwable) {
+         if (AssertionError::class.isInstance(e) || config.exceptions.any { it.isInstance(e) }) {
+            if (firstError == null) {
+               firstError = e
+            } else {
+               lastError = e
+            }
+            listener.onEval(EventuallyState(null, start, end, times, firstError, lastError))
+         } else {
+            throw e
+         }
+      }
+      times++
+      lastInterval = config.interval.next(times)
+      val delayMark = timeInMillis()
+      delay(lastInterval)
+      lastDelayPeriod = timeInMillis() - delayMark
+   }
+
+   errorCollector.setCollectionMode(originalAssertionMode)
+
+   val message = StringBuilder().apply {
+      appendLine("Eventually block failed after ${config.duration}; attempted $times time(s); ${config.interval} delay between attempts")
+
+      if (predicateFailedTimes > 0) {
+         appendLine("The provided predicate failed $predicateFailedTimes times")
+      }
+
+      if (firstError != null) {
+         appendLine("The first error was caused by: ${firstError.message}")
+         appendLine(firstError.stackTraceToString())
+      }
+
+      if (lastError != null) {
+         appendLine("The last error was caused by: ${lastError.message}")
+         appendLine(lastError.stackTraceToString())
+      }
+   }
+
+   throw failure(message.toString())
 
 }

@@ -13,14 +13,26 @@ fun interface ContinuallyListener<in T> {
    fun onEval(t: T, state: ContinuallyState)
 
    companion object {
-      val noop = ContinuallyListener<Any?> { _, _ -> }
+      val default = ContinuallyListener<Any?> { _, _ -> }
    }
 }
 
 @ExperimentalKotest
-suspend fun <T> continually(config: PatienceConfig = PatienceConfig.default, listener: ContinuallyListener<T> = ContinuallyListener.noop, f: ConcurrencyProducer<T>): T? {
+suspend fun <T> continually(
+   duration: Millis,
+   interval: Interval = 25L.fixed(),
+   listener: ContinuallyListener<T> = ContinuallyListener.default,
+   f: ConcurrencyProducer<T>
+): T? = continually(PatienceConfig(duration, interval), listener, f)
+
+@ExperimentalKotest
+suspend fun <T> continually(
+   config: PatienceConfig = PatienceConfig.default,
+   listener: ContinuallyListener<T> = ContinuallyListener.default,
+   f: ConcurrencyProducer<T>
+): T? {
    val start = Instant(timeInMillis())
-   val end = Instant(timeInMillis() + config.duration)
+   val end = Instant(start.timeInMillis + config.duration)
    var times = 0
    var result: T? = null
 
