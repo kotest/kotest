@@ -8,13 +8,17 @@ slug: ktor.html
 
 The ```kotest-assertions-ktor``` module provides response matchers for a [Ktor](https://ktor.io) application. There are matchers
 for both `TestApplicationResponse` if you are using the server side test support, and for `HttpResponse` if you are using the ktor
-client classes.
+HTTP client.
 
 To add Ktor matchers, add the following dependency to your project
 
 ```groovy
-testImplementation("io.kotest:kotest-assertions-ktor:${version}")
+"io.kotest:kotest-assertions-ktor:${version}
 ```
+
+[<img src="https://img.shields.io/maven-central/v/io.kotest.extensions/kotest-extensions-ktor.svg?label=latest%20release"/>](http://search.maven.org/#search|ga|1|kotest-extensions-ktor)
+[<img src="https://img.shields.io/nexus/s/https/oss.sonatype.org/io.kotest.extensions/kotest-extensions-ktor.svg?label=latest%20snapshot"/>](https://oss.sonatype.org/content/repositories/snapshots/io/kotest/extensions/kotest-extensions-ktor/)
+
 
 An example of using the matchers with the server side test support:
 ```kotlin
