@@ -9,8 +9,13 @@ slug: mockserver.html
 Kotest provides an extension for integration with the [MockServer](https://www.mock-server.com) library.
 
 :::note
-Requires the `kotest-extensions-mockserver` module to be added to your build.
+Requires the `io.kotest.extensions:kotest-extensions-mockserver` module to be added to your build.
 :::
+
+
+[<img src="https://img.shields.io/maven-central/v/io.kotest.extensions/kotest-extensions-mockserver.svg?label=latest%20release"/>](http://search.maven.org/#search|ga|1|kotest-extensions-mockserver)
+[<img src="https://img.shields.io/nexus/s/https/oss.sonatype.org/io.kotest.extensions/kotest-extensions-mockserver.svg?label=latest%20snapshot"/>](https://oss.sonatype.org/content/repositories/snapshots/io/kotest/extensions/kotest-extensions-mockserver/)
+
 
 
 Mockserver allows us to define an in process HTTP server which is hard coded for routes that we want to test against.
