@@ -1,5 +1,6 @@
 package io.kotest.core.test
 
+import io.kotest.core.datatest.WithDataTestName
 import io.kotest.mpp.bestName
 import io.kotest.mpp.isStable
 
@@ -14,13 +15,16 @@ object Identifiers {
     * An instance is considered stable if it is a data class where each parameter is either a data class itself,
     * or one of the [primitiveTypes].
     *
+    * If instance is a type which implements [WithDataTestName], then test name return by [dataTestName] method
+    * will be consider as stableIdentifier.
+    *
     * Note: If the user has overridden toString() and the returned value is not stable, tests may not appear.
     */
    fun stableIdentifier(t: Any): String {
-      return if (isStable(t::class)) {
-         t.toString()
-      } else {
-         t::class.bestName()
+      return when {
+         t is WithDataTestName -> t.dataTestName()
+         isStable(t::class)    -> t.toString()
+         else                  -> t::class.bestName()
       }
    }
 
