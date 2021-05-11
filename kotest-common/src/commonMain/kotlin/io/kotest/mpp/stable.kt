@@ -46,7 +46,8 @@ private val primitiveTypes = setOf(
 )
 
 private val nonPrimitiveStableTypes = setOf(
-   Pair::class
+   Pair::class,
+   Triple::class
 )
 
 
