@@ -4,7 +4,7 @@ import io.kotest.mpp.bestName
 import io.kotest.mpp.isStable
 
 /**
- * Used to generate stable identifers for data tests and to ensure test names are unique.
+ * Used to generate stable identifiers for data tests and to ensure test names are unique.
  */
 object Identifiers {
 

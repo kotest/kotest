@@ -55,7 +55,3 @@ enum class Bar(val baz: Baz) {
    Bar1(Baz("Baz1")),
    Bar2(Baz("Baz2"))
 }
-
-fun isPythagTriple(a: PythagNumber, b: PythagNumber, c: PythagNumber): Boolean =
-   a.num * a.num + b.num * b.num == c.num * c.num
-
