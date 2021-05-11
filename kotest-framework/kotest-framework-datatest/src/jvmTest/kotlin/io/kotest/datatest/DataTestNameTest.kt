@@ -1,7 +1,6 @@
-package com.sksamuel.kotest.engine.datatest
+package io.kotest.datatest
 
-import io.kotest.core.datatest.IsStableType
-import io.kotest.core.datatest.WithDataTestName
+import io.kotest.common.ExperimentalKotest
 import io.kotest.core.datatest.forAll
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.style.FunSpec
@@ -9,27 +8,28 @@ import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.matchers.shouldBe
 
+@OptIn(ExperimentalKotest::class)
 class DataTestNameTest: FunSpec({
    context("Data test with pair") {
-      forAll(
+      withData(
          Pair(2,1),
          Pair(1,2),
       ) {}
    }
    context("Data test with triple") {
-      forAll(
+      withData(
          Triple(1,2,3),
          Triple(3,2,1),
       ) {}
    }
    context("Data test for type extending WithDataTestName") {
-      forAll(
+      withData(
          ADummyClass("a1", "b1"),
          ADummyClass("a2", "b2")
       ) {}
    }
    context("Data test for type annotated with IsStableType") {
-      forAll(
+      withData(
          AnotherDummyClass("a1", "b1"),
          AnotherDummyClass("a2", "b2")
       ) {}

@@ -1,4 +1,4 @@
-package io.kotest.core.datatest
+package io.kotest.datatest
 
 interface WithDataTestName {
    fun dataTestName(): String

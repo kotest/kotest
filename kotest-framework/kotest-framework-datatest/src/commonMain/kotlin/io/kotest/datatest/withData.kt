@@ -37,8 +37,8 @@ fun <T : Any> RootContext.withData(ts: Sequence<T>, test: suspend TestContext.(T
 @ExperimentalKotest
 fun <T : Any> RootContext.withData(ts: Collection<T>, test: suspend TestContext.(T) -> Unit) {
    ts.forEach { t ->
-      val name = Identifiers.stableIdentifier(t)
-      registration().addContainerTest(createTestName(name), false) { test(t) }
+      val stableIdentifier = getStableIdentifier(t)
+      registration().addContainerTest(createTestName(stableIdentifier), false) { test(t) }
    }
 }
 
@@ -81,9 +81,16 @@ suspend fun <T : Any> TestContext.withData(first: T, second: T, vararg rest: T, 
 @ExperimentalKotest
 suspend fun <T : Any> TestContext.withData(ts: Collection<T>, test: suspend TestContext.(T) -> Unit) {
    ts.forEach { t ->
-      val name = Identifiers.stableIdentifier(t)
+      val stableIdentifier = getStableIdentifier(t)
       this.registerTestCase(
-         createNestedTest(createTestName(name), false, TestCaseConfig(), TestType.Container, null, null) { test(t) }
+         createNestedTest(
+            name = createTestName(name = stableIdentifier),
+            xdisabled = false,
+            config = TestCaseConfig(),
+            type = TestType.Container,
+            descriptor = null,
+            factoryId = null
+         ) { test(t) }
       )
    }
 }

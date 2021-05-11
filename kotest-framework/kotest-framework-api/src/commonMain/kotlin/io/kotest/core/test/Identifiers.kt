@@ -1,9 +1,6 @@
 package io.kotest.core.test
 
-import io.kotest.core.datatest.IsStableType
-import io.kotest.core.datatest.WithDataTestName
 import io.kotest.mpp.bestName
-import io.kotest.mpp.hasAnnotation
 import io.kotest.mpp.isStable
 
 /**
@@ -23,10 +20,10 @@ object Identifiers {
     * Note: If the user has overridden toString() and the returned value is not stable, tests may not appear.
     */
    fun stableIdentifier(t: Any): String {
-      return when {
-         t::class.hasAnnotation<IsStableType>() || isStable(t::class) -> t.toString()
-         t is WithDataTestName -> t.dataTestName()
-         else -> t::class.bestName()
+      return if (isStable(t::class)) {
+         t.toString()
+      } else {
+         t::class.bestName()
       }
    }
 

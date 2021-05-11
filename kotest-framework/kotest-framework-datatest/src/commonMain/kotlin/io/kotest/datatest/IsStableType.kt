@@ -1,4 +1,4 @@
-package io.kotest.core.datatest
+package io.kotest.datatest
 
 @Target(AnnotationTarget.CLASS)
 annotation class IsStableType
