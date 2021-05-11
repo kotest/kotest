@@ -4,6 +4,12 @@ sidebar_label: Changelog
 slug: changelog.html
 ---
 
+### [Unreleased]
+
+#### Bugfixes.
+* Fixed false negative results by Inspectors when used inside assertSoftly. #2245
+
+
 ### 4.5.0 May 2021
 
 As part of this release, third party extensions were promoted to top level repositories instead of modules inside the main kotest repo.
