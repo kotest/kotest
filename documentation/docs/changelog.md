@@ -9,6 +9,9 @@ slug: changelog.html
 #### Bugfixes.
 * Fixed false negative results by Inspectors when used inside assertSoftly. #2245
 
+#### Features / Improvement
+* Adds `IsStableType` annotation which when use on a type, kotest will call `toString` method on that type for creating test name in data test. #2248
+* Adds `WithDataTestName` interface which allow a type to modify the test name generated when use in data test. #2248
 
 ### 4.5.0 May 2021
 
