@@ -4,7 +4,7 @@ import io.kotest.mpp.bestName
 import io.kotest.mpp.isStable
 
 /**
- * Used to generate stable identifers for data tests and to ensure test names are unique.
+ * Used to generate stable identifiers for data tests and to ensure test names are unique.
  */
 object Identifiers {
 
@@ -12,7 +12,10 @@ object Identifiers {
     * Each test name must be unique. We can use the toString if we determine the instance is stable.
     *
     * An instance is considered stable if it is a data class where each parameter is either a data class itself,
-    * or one of the [primitiveTypes].
+    * or one of the [primitiveTypes]. Or if the type of instance is annotated with [IsStableType].
+    *
+    * If instance is a type which implements [WithDataTestName], then test name return by [dataTestName] method
+    * will be consider as stableIdentifier.
     *
     * Note: If the user has overridden toString() and the returned value is not stable, tests may not appear.
     */

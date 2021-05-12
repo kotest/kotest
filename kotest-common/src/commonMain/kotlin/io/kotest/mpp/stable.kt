@@ -20,31 +20,34 @@ fun isStable(type: KType) = when (val classifier = type.classifier) {
  *  - a data class that only contains stable classes as members
  */
 fun isStable(kclass: KClass<*>): Boolean {
-
-   val primitiveTypes = setOf(
-      String::class,
-      Int::class,
-      Long::class,
-      Double::class,
-      Float::class,
-      Byte::class,
-      Short::class,
-      Boolean::class
-   )
-
-   /**
-    * Returns true if all members of this class are "stable".
-    */
-   fun hasStableMembers(kclass: KClass<*>) = reflection.primaryConstructorMembers(kclass).let { members ->
-      members.isNotEmpty() && members.all { isStable(it.type) }
-   }
-
    return when {
-      primitiveTypes.contains(kclass) -> true
+      primitiveTypes.contains(kclass) || nonPrimitiveStableTypes.contains(kclass) -> true
       reflection.isEnumClass(kclass) || (reflection.isDataClass(kclass) && hasStableMembers(kclass)) -> true
       else -> false
    }
 }
 
+/**
+ * Returns true if all members of this class are "stable".
+ */
+private fun hasStableMembers(kclass: KClass<*>) = reflection.primaryConstructorMembers(kclass).let { members ->
+   members.isNotEmpty() && members.all { isStable(it.type) }
+}
+
+private val primitiveTypes = setOf(
+   String::class,
+   Int::class,
+   Long::class,
+   Double::class,
+   Float::class,
+   Byte::class,
+   Short::class,
+   Boolean::class
+)
+
+private val nonPrimitiveStableTypes = setOf(
+   Pair::class,
+   Triple::class
+)
 
 
