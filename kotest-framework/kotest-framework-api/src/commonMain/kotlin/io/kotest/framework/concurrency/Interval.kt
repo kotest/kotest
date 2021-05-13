@@ -14,7 +14,7 @@ interface Interval {
    /**
     * Returns the next delay as a [Millis].
     *
-    * @param count        The number of times the condition has been polled (evaluated) so far.
+    * @param count The number of times the condition has been polled (evaluated) so far.
     * Always a positive integer.
     *
     * @return The duration of the next poll interval
@@ -84,7 +84,7 @@ fun fibonacci(n: Int): Int {
  * of an exponent of the default [ExponentialInterval.defaultFactor] or a user specified factor.
  *
  * You should start at 0 to get the base value back and at 1 for the second value in the series, e.g.:
- * val interval = 2.seconds.exponential(max = Duration.INFINITE) which will produce 2s, 4s, 8s, etc.
+ * val interval = 2.seconds.exponential(max = Long.MAX_VALUE) which will produce 2s, 4s, 8s, etc.
  *
  * @param base the duration that is multiplied by the exponentiated factor
  * @param factor the factor to exponentiate by the current iteration value
