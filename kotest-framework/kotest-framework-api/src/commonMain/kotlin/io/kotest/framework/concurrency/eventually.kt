@@ -10,7 +10,7 @@ import kotlin.reflect.KClass
 
 @ExperimentalKotest
 data class EventuallyConfig(
-   val duration: Millis = Long.MAX_VALUE,
+   val duration: Millis = defaultDuration,
    val interval: Interval = 25L.fixed(),
    val retries: Int = Int.MAX_VALUE,
    val exceptions: Set<KClass<out Throwable>> = setOf(),
@@ -18,6 +18,10 @@ data class EventuallyConfig(
    init {
       require(retries > 0) { "Retries should not be less than one" }
       require(duration > 0L) { "Duration cannot be negative" }
+   }
+
+   companion object {
+      const val defaultDuration: Millis = 3_600_000L
    }
 }
 
@@ -46,7 +50,7 @@ suspend fun <T> eventually(
    interval: Interval = 25L.fixed(),
    retries: Int = Int.MAX_VALUE,
    exceptions: Set<KClass<out Throwable>> = setOf(),
-   listener: EventuallyListener<T> = EventuallyListener { it.thisError == null },
+   listener: EventuallyListener<T>? = null,
    f: ConcurrencyProducer<T>
 ): T =
    eventually(EventuallyConfig(duration, interval, retries, exceptions), listener, f)
@@ -54,7 +58,7 @@ suspend fun <T> eventually(
 @ExperimentalKotest
 suspend fun <T> eventually(
    config: EventuallyConfig = EventuallyConfig(),
-   listener: EventuallyListener<T> = EventuallyListener { it.thisError == null },
+   listener: EventuallyListener<T>? = null,
    f: ConcurrencyProducer<T>
 ): T {
    val start = Instant(timeInMillis())
@@ -78,12 +82,17 @@ suspend fun <T> eventually(
    while (attemptsLeft() || isLongWait()) {
       try {
          val result = f()
-         val listenerResult = listener.onEval(EventuallyState(result, start, end, times, firstError, lastError))
-         if (listenerResult) {
+         if (listener != null) {
+            val success = listener.onEval(EventuallyState(result, start, end, times, firstError, lastError))
+            if (success) {
+               errorCollector.setCollectionMode(originalAssertionMode)
+               return result
+            } else {
+               predicateFailedTimes++
+            }
+         } else {
             errorCollector.setCollectionMode(originalAssertionMode)
             return result
-         } else {
-            predicateFailedTimes++
          }
       } catch (e: Throwable) {
          if (AssertionError::class.isInstance(e) || config.exceptions.any { it.isInstance(e) }) {
@@ -92,7 +101,7 @@ suspend fun <T> eventually(
             } else {
                lastError = e
             }
-            listener.onEval(EventuallyState(null, start, end, times, firstError, lastError))
+            listener?.onEval(EventuallyState(null, start, end, times, firstError, lastError))
          } else {
             throw e
          }
@@ -107,7 +116,7 @@ suspend fun <T> eventually(
    errorCollector.setCollectionMode(originalAssertionMode)
 
    val message = StringBuilder().apply {
-      appendLine("Eventually block failed after ${config.duration}; attempted $times time(s); ${config.interval} delay between attempts")
+      appendLine("Eventually block failed after ${config.duration}ms; attempted $times time(s); ${config.interval} delay between attempts")
 
       if (predicateFailedTimes > 0) {
          appendLine("The provided predicate failed $predicateFailedTimes times")
