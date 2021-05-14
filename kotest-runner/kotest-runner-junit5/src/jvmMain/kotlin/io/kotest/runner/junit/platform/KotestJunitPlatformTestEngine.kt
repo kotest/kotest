@@ -46,7 +46,7 @@ class KotestJunitPlatformTestEngine : TestEngine {
    override fun getGroupId(): Optional<String> = Optional.of("io.kotest")
 
    override fun execute(request: ExecutionRequest) = runBlocking {
-      log("JUnit ExecutionRequest[${request::class.java.name}] [configurationParameters=${request.configurationParameters}; rootTestDescriptor=${request.rootTestDescriptor}]")
+      log { "JUnit ExecutionRequest[${request::class.java.name}] [configurationParameters=${request.configurationParameters}; rootTestDescriptor=${request.rootTestDescriptor}]" }
       val root = request.rootTestDescriptor as KotestEngineDescriptor
       when (root.error) {
           null -> execute(request, root)
@@ -94,8 +94,8 @@ class KotestJunitPlatformTestEngine : TestEngine {
       request: EngineDiscoveryRequest,
       uniqueId: UniqueId,
    ): KotestEngineDescriptor {
-      log("uniqueId=$uniqueId")
-      log(request.string())
+      log { "uniqueId=$uniqueId" }
+      log { request.string() }
 
       // if we are excluded from the engines then we say goodnight according to junit rules
       val isKotest = request.engineFilters().all { it.toPredicate().test(this) }

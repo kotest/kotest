@@ -88,10 +88,10 @@ internal class InstancePerLeafSpecRunner(
 
    // we need to find the same root test but in the newly created spec
    private suspend fun interceptAndRun(spec: Spec, test: TestCase): Try<Spec> = Try {
-      log("InstancePerLeafSpecRunner: Created new spec instance $spec")
+      log { "InstancePerLeafSpecRunner: Created new spec instance $spec" }
       val root = spec.materializeAndOrderRootTests().firstOrNull { it.testCase.description.isOnPath(test.description) }
          ?: throw error("Unable to locate root test ${test.description.testPath()}")
-      log("InstancePerLeafSpecRunner: Starting root test ${root.testCase.description} in search of ${test.description}")
+      log { "InstancePerLeafSpecRunner: Starting root test ${root.testCase.description} in search of ${test.description}" }
       run(root.testCase, test)
       spec
    }

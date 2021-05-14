@@ -63,7 +63,7 @@ internal class ConcurrentInstancePerLeafSpecRunner(
 
          coroutineScope {
             spec.materializeAndOrderRootTests().withIndex().forEach { (index, rootTest) ->
-               log("InstancePerLeafConcurrentSpecRunner: Launching coroutine for root test [${rootTest.testCase.description.testPath()}]")
+               log { "InstancePerLeafConcurrentSpecRunner: Launching coroutine for root test [${rootTest.testCase.description.testPath()}]" }
                launch(dispatchers[index % threads]) {
                   executeInCleanSpec(rootTest.testCase).getOrThrow()
                   testCaseListener.rootFinished(rootTest.testCase)
@@ -71,13 +71,13 @@ internal class ConcurrentInstancePerLeafSpecRunner(
             }
          }
 
-         log("InstancePerLeafConcurrentSpecRunner: Root scope has completed, returning ${results.size} test results")
+         log { "InstancePerLeafConcurrentSpecRunner: Root scope has completed, returning ${results.size} test results" }
          results
       }
    }
 
    private suspend fun executeInCleanSpec(target: TestCase): Try<Spec> {
-      log("InstancePerLeafConcurrentSpecRunner: Executing target in clean spec")
+      log { "InstancePerLeafConcurrentSpecRunner: Executing target in clean spec" }
       return createInstance(target.spec::class)
          .flatMap { it.invokeBeforeSpec() }
          .flatMap { startTest(it, target.description.testNames()) } // drop the spec name
@@ -88,7 +88,7 @@ internal class ConcurrentInstancePerLeafSpecRunner(
    private suspend fun startTest(spec: Spec, targets: List<DescriptionName.TestName>): Try<Spec> {
       require(targets.isNotEmpty())
       return Try {
-         log("Created new spec instance $spec")
+         log { "Created new spec instance $spec" }
          val root = spec.materializeAndOrderRootTests().first { it.testCase.description.name == targets.first() }
          run(root.testCase, targets.drop(1))
          spec

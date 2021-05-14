@@ -59,12 +59,12 @@ object ExecutorExecutionContext : TimeoutExecutionContext {
 
       // we schedule a task that will interrupt the coroutine after the timeout has expired
       // this task will use the values in the coroutine status element to know which thread to interrupt
-      log("ExecutorExecutionContext: Scheduler will interrupt this execution in ${timeoutInMillis}ms")
+      log { "ExecutorExecutionContext: Scheduler will interrupt this execution in ${timeoutInMillis}ms" }
       scheduler.schedule({
          // if the coroutine is suspended we can cancel using co-operative coroutine cancellation
          // otherwise if the coroutine is running, we will interrupt that thread
          if (!status.suspended.get()) {
-            log("ExecutorExecutionContext: Interrupting blocked coroutine via thread interruption on thread ${status.thread}")
+            log { "ExecutorExecutionContext: Interrupting blocked coroutine via thread interruption on thread ${status.thread}" }
             status.thread?.interrupt()
          }
       }, timeoutInMillis, TimeUnit.MILLISECONDS)

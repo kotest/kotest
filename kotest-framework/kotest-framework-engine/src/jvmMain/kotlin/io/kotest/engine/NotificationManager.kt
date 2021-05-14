@@ -21,7 +21,7 @@ class NotificationManager(private val listener: TestEngineListener) {
     * Notifies listeners that we are about to start execution of a [Descriptor].
     */
    suspend fun specStarted(spec: Descriptor.SpecDescriptor) = Try {
-      log("NotificationManager:specStarted $spec")
+      log { "NotificationManager:specStarted $spec" }
       listener.specStarted(spec)
 
       // todo call a new prepare spec listener interface
@@ -32,7 +32,7 @@ class NotificationManager(private val listener: TestEngineListener) {
       error: Throwable?,
       results: Map<Descriptor.TestDescriptor, TestResult>
    ) = Try {
-      log("NotificationManager:specFinished $spec")
+      log { "NotificationManager:specFinished $spec" }
       listener.specFinished(spec, error, results)
 
       // todo call a new finalize spec listener interface
@@ -44,7 +44,7 @@ class NotificationManager(private val listener: TestEngineListener) {
     * This is called only once per spec regardless of the number of instantiation events.
     */
    suspend fun specStarted(kclass: KClass<out Spec>) = Try {
-      log("NotificationManager:specStarted $kclass")
+      log { "NotificationManager:specStarted $kclass" }
 
       listener.specStarted(kclass)
 
@@ -52,11 +52,11 @@ class NotificationManager(private val listener: TestEngineListener) {
       // It makes no sense to call prepareSpec after a spec has already been instantiated.
       // Therefore we only look for listeners at the global level only
       val listeners = configuration.testListeners()
-      log("Notifying ${listeners.size} listeners of callback 'prepareSpec'")
+      log { "Notifying ${listeners.size} listeners of callback 'prepareSpec'" }
       listeners.forEach {
          it.prepareSpec(kclass)
       }
-      log("'prepareSpec' callbacks complete")
+      log { "'prepareSpec' callbacks complete" }
    }
 
    /**
@@ -68,7 +68,7 @@ class NotificationManager(private val listener: TestEngineListener) {
       error: Throwable?,
       results: Map<TestCase, TestResult>
    ) {
-      log("NotificationManager:specFinished $kclass $error")
+      log { "NotificationManager:specFinished $kclass $error" }
       userLevelSpecFinished(kclass, results).fold(
          { testEngineSpecFinished(kclass, error ?: it, results) },
          { testEngineSpecFinished(kclass, error, results) }
@@ -105,7 +105,7 @@ class NotificationManager(private val listener: TestEngineListener) {
    }
 
    fun specInstantiated(spec: Spec) = Try {
-      log("NotificationManager:specInstantiated spec:$spec")
+      log { "NotificationManager:specInstantiated spec:$spec" }
       val listeners = configuration.specInstantiationListeners()
       listener.specInstantiated(spec)
       listeners.forEach {
@@ -114,7 +114,7 @@ class NotificationManager(private val listener: TestEngineListener) {
    }
 
    fun specInstantiationError(kclass: KClass<out Spec>, t: Throwable) = Try {
-      log("NotificationManager:specInstantiationError $kclass error:$t")
+      log { "NotificationManager:specInstantiationError $kclass error:$t" }
       val listeners = configuration.specInstantiationListeners()
       t.printStackTrace()
       listener.specInstantiationError(kclass, t)

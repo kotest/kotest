@@ -166,7 +166,7 @@ class TaycanConsoleReporter : ConsoleReporter {
    }
 
    override fun specStarted(kclass: KClass<out Spec>) {
-      specsSeen += kclass.toDescription()
+      specsSeen = specsSeen + kclass.toDescription()
       val specCount = specsSeen.size
       print(bold("$specCount. ".padEnd(4, ' ')))
       println(bold(kclass.toDescription().displayName()))
@@ -175,7 +175,7 @@ class TaycanConsoleReporter : ConsoleReporter {
    override fun specFinished(kclass: KClass<out Spec>, t: Throwable?, results: Map<TestCase, TestResult>) {
       if (t != null) {
          errors++
-         specsFailed += kclass.toDescription()
+         specsFailed = specsFailed + kclass.toDescription()
          printThrowable(t, 4)
       }
       println()
@@ -202,8 +202,8 @@ class TaycanConsoleReporter : ConsoleReporter {
          TestStatus.Success -> if (testCase.type == TestType.Test) testsPassed++
          TestStatus.Failure, TestStatus.Error -> {
             errors++
-            testsFailed += Pair(testCase, result)
-            specsFailed += testCase.description.spec()
+            testsFailed = testsFailed + Pair(testCase, result)
+            specsFailed = specsFailed + testCase.description.spec()
          }
          else -> Unit
       }

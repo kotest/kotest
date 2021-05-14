@@ -62,7 +62,7 @@ class TestCaseExecutor(
 ) {
 
    suspend fun execute(testCase: TestCase, context: TestContext): TestResult {
-      log("TestCaseExecutor: execute entry point [testCase=${testCase.displayName}, context=$context]")
+      log { "TestCaseExecutor: execute entry point [testCase=${testCase.displayName}, context=$context]" }
       validateTestCase(testCase)
       val start = timeInMillis()
       val extensions = testCase.resolvedTestCaseExtensions()
@@ -113,11 +113,11 @@ class TestCaseExecutor(
 
       return when (enabled.isEnabled) {
          true -> {
-            log("${testCase.description.testPath()} is enabled")
+            log { "${testCase.description.testPath()} is enabled" }
             ifEnabled()
          }
          false -> {
-            log("${testCase.description.testPath()} is disabled")
+            log { "${testCase.description.testPath()} is disabled" }
             TestResult.ignored(enabled)
          }
       }
@@ -145,7 +145,7 @@ class TestCaseExecutor(
       start: Long,
    ): TestResult {
 
-      log("Executing active test $testCase with context $context")
+      log { "Executing active test $testCase with context $context" }
       listener.testStarted(testCase)
 
       return testCase
@@ -176,16 +176,16 @@ class TestCaseExecutor(
       context: TestContext,
       start: Long,
    ): Try<TestResult> = Try {
-      log("invokeTestCase $testCase")
+      log { "invokeTestCase $testCase" }
 
       if (testCase.config.invocations > 1 && testCase.type == TestType.Container)
          error("Cannot execute multiple invocations in parent tests")
 
       val t = executeAndWait(ec, testCase, context)
-      log("TestCaseExecutor: Test returned with error $t")
+      log { "TestCaseExecutor: Test returned with error $t" }
 
       val result = toTestResult(t, timeInMillis() - start)
-      log("Test completed with result $result")
+      log { "Test completed with result $result" }
       result
    }
 
@@ -202,13 +202,13 @@ class TestCaseExecutor(
       // this timeout applies across all invocations. In other words, if a test has invocations = 3,
       // each test takes 300ms, and a timeout of 800ms, this would fail, becauase 3 x 300 > 800.
       val timeout = testCase.resolvedTimeout()
-      log("TestCaseExecutor: Test [${testCase.displayName}] will execute with timeout $timeout")
+      log { "TestCaseExecutor: Test [${testCase.displayName}] will execute with timeout $timeout" }
 
       // this timeout applies to each inovation. If a test has invocations = 3, and this timeout
       // is set to 300ms, then each individual invocation must complete in under 300ms.
       // invocation timeouts are not applied to TestType.Container only TestType.Test
       val invocationTimeout = testCase.resolvedInvocationTimeout()
-      log("TestCaseExecutor: Test [${testCase.displayName}] will execute with invocationTimeout $invocationTimeout")
+      log { "TestCaseExecutor: Test [${testCase.displayName}] will execute with invocationTimeout $invocationTimeout" }
 
       // we don't want any errors in the test to propagate out and cancel all the coroutines used for
       // the specs / parent tests, therefore we install a supervisor job
@@ -240,16 +240,16 @@ class TestCaseExecutor(
             }
             null
          } catch (e: TimeoutCancellationException) {
-            log("TestCaseExecutor: TimeoutCancellationException $e")
+            log { "TestCaseExecutor: TimeoutCancellationException $e" }
             when (testCase.type) {
                TestType.Container -> TimeoutException(timeout)
                TestType.Test -> TimeoutException(min(timeout, invocationTimeout))
             }
          } catch (t: Throwable) {
-            log("TestCaseExecutor: Throwable $t")
+            log { "TestCaseExecutor: Throwable $t" }
             t
          } catch (e: AssertionError) {
-            log("TestCaseExecutor: AssertionError $e")
+            log { "TestCaseExecutor: AssertionError $e" }
             e
          }
       }

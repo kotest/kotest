@@ -42,7 +42,7 @@ object ScriptRuntime {
       type: TestType,
       test: suspend (TestContext) -> Unit
    ) {
-      log("ScriptRuntime: registerRootTest $name")
+      log { "ScriptRuntime: registerRootTest $name" }
       val config = if (xdisabled) TestCaseConfig().copy(enabled = false) else TestCaseConfig()
       val description = spec.description().append(name, type)
       rootTests.add(

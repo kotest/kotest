@@ -28,7 +28,7 @@ fun <T : Listener> List<T>.resolveName(): List<Pair<String, T>> =
  * Invokes any afterProject functions from the given listeners.
  */
 suspend fun List<Listener>.afterProject(): Try<List<AfterProjectListenerException>> = Try {
-   log("invokeAfterProject")
+   log { "invokeAfterProject" }
    filterIsInstance<AfterProjectListener>()
       .resolveName()
       .map { it.first to Try { it.second.afterProject() } }
@@ -45,7 +45,7 @@ suspend fun List<Listener>.afterProject(): Try<List<AfterProjectListenerExceptio
  * Invokes the beforeProject listeners.
  */
 suspend fun List<Listener>.beforeProject(): Try<List<BeforeProjectListenerException>> = Try {
-   log("invokeBeforeProject")
+   log { "invokeBeforeProject" }
    filterIsInstance<BeforeProjectListener>()
       .resolveName()
       .map { it.first to Try { it.second.beforeProject() } }
@@ -135,7 +135,7 @@ suspend fun TestCase.invokeAfterInvocation(k: Int) {
  * This will be invoked for every instance of a spec.
  */
 suspend fun Spec.invokeBeforeSpec(): Try<Spec> = Try {
-   log("invokeBeforeSpec $this")
+   log { "invokeBeforeSpec $this" }
    val listeners = resolvedTestListeners() + configuration.testListeners()
    listeners.forEach {
       it.beforeSpec(this)
@@ -148,10 +148,10 @@ suspend fun Spec.invokeBeforeSpec(): Try<Spec> = Try {
  * This will be invoked for every instance of a spec.
  */
 suspend fun Spec.invokeAfterSpec(): Try<Spec> = Try {
-   log("invokeAfterSpec $this")
+   log { "invokeAfterSpec $this" }
 
    registeredAutoCloseables().let { closeables ->
-      log("Closing ${closeables.size} autocloseables [$closeables]")
+      log { "Closing ${closeables.size} autocloseables [$closeables]" }
       closeables.forEach { it.value.close() }
    }
 

@@ -40,7 +40,7 @@ abstract class SpecRunner(
     */
    protected suspend fun launch(spec: Spec, run: suspend (TestCase) -> Unit) {
       val rootTests = spec.materializeAndOrderRootTests().map { it.testCase }
-      log("SingleInstanceSpecRunner: Launching ${rootTests.size} root tests with launcher $launcher")
+      log { "SingleInstanceSpecRunner: Launching ${rootTests.size} root tests with launcher $launcher" }
       launcher.launch(run, rootTests)
    }
 
@@ -69,12 +69,12 @@ abstract class SpecRunner(
          }
       }
       executor.shutdown()
-      log("Waiting for test case execution to terminate")
+      log { "Waiting for test case execution to terminate" }
 
       try {
          executor.awaitTermination(1, TimeUnit.DAYS)
       } catch (t: InterruptedException) {
-         log("Test case execution interrupted", t)
+         log(t) { "Test case execution interrupted" }
          throw t
       }
 
