@@ -57,13 +57,11 @@ object BasicReflection : Reflection {
    override fun <T : Any> newInstanceNoArgConstructor(klass: KClass<T>): T = TODO("UNSUPPORTED")
 }
 
-private val names = mutableMapOf<KClass<*>, String>()
-
 /**
  * Returns the longest possible name available for this class.
  * That is, in order, the FQN, the simple name, or toString.
  */
-fun KClass<*>.bestName(): String = names.getOrPut(this) { reflection.fqn(this) ?: simpleName ?: this.toString() }
+fun KClass<*>.bestName(): String = reflection.fqn(this) ?: simpleName ?: this.toString()
 
 fun KClass<*>.qualifiedNameOrNull(): String? = reflection.fqn(this)
 
