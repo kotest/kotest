@@ -12,7 +12,9 @@ slug: changelog.html
 #### Features / Improvement
 * Adds `IsStableType` annotation which when use on a type, kotest will call `toString` method on that type for creating test name in data test. #2248
 * Adds `WithDataTestName` interface which allow a type to modify the test name generated when use in data test. #2248
-
+* All internal logging now uses lazy functions which offers a significant speed up on large test suites
+* Reflection methods are cached to avoid slow reflection calls.
+ 
 ### 4.5.0 May 2021
 
 As part of this release, third party extensions were promoted to top level repositories instead of modules inside the main kotest repo.
