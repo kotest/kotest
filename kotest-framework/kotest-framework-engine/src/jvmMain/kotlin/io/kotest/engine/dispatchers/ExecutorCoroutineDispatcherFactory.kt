@@ -46,7 +46,7 @@ class ExecutorCoroutineDispatcherFactory(
 
    override fun dispatcherFor(spec: KClass<out Spec>): CoroutineDispatcher {
       val dispatcher = dispatchers[abs(spec.bestName().hashCode()) % parallelism].coroutineDispatcher
-      log("ExecutorCoroutineDispatcherFactory: Selected dispatcher $dispatcher for ${spec.bestName()}")
+      log { "ExecutorCoroutineDispatcherFactory: Selected dispatcher $dispatcher for ${spec.bestName()}" }
       return dispatcher
    }
 
@@ -54,7 +54,7 @@ class ExecutorCoroutineDispatcherFactory(
 
       // deprecated option - if this test specifies a thread count, then we use dispatchers created solely for this spec
       val resolvedThreadCount = testCase.spec.resolvedThreads() ?: 0
-      log("ExecutorCoroutineDispatcherFactory: resolvedThreadCount for ${testCase.spec::class} is $resolvedThreadCount")
+      log { "ExecutorCoroutineDispatcherFactory: resolvedThreadCount for ${testCase.spec::class} is $resolvedThreadCount" }
 
       // deprecated option - if this test specifies a thread count, then we use dispatchers created solely for this spec
       if (resolvedThreadCount > 1) {
@@ -81,7 +81,7 @@ class ExecutorCoroutineDispatcherFactory(
          dispatchers.forEach { it.executor.awaitTermination(1, TimeUnit.MINUTES) }
          dispatchersForSpecs.values.forEach { it.executor.awaitTermination(1, TimeUnit.MINUTES) }
       } catch (e: InterruptedException) {
-         log("ExecutorCoroutineDispatcherFactory: Interrupted while waiting for dispatcher to terminate", e)
+         log(e) { "ExecutorCoroutineDispatcherFactory: Interrupted while waiting for dispatcher to terminate" }
          throw e
       }
    }

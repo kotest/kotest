@@ -39,21 +39,21 @@ internal class SingleInstanceSpecRunner(
    private val results = ConcurrentHashMap<TestCase, TestResult>()
 
    override suspend fun execute(spec: Spec): Try<Map<TestCase, TestResult>> {
-      log("SingleInstanceSpecRunner: executing spec [$spec]")
+      log { "SingleInstanceSpecRunner: executing spec [$spec]" }
 
       suspend fun interceptAndRun(context: CoroutineContext) = Try {
          val rootTests = spec.materializeAndOrderRootTests().map { it.testCase }
-         log("SingleInstanceSpecRunner: Materialized root tests: ${rootTests.size}")
+         log { "SingleInstanceSpecRunner: Materialized root tests: ${rootTests.size}" }
          val threads = spec.resolvedThreads()
          if (threads != null && threads > 1) {
-            log("Warning - usage of deprecated thread count $threads")
+            log { "Warning - usage of deprecated thread count $threads" }
             runParallel(threads, rootTests) {
-               log("SingleInstanceSpecRunner: Executing test $it")
+               log { "SingleInstanceSpecRunner: Executing test $it" }
                runTest(it, context)
             }
          } else {
             launch(spec) {
-               log("SingleInstanceSpecRunner: Executing test $it")
+               log { "SingleInstanceSpecRunner: Executing test $it" }
                runTest(it, context)
             }
          }
@@ -76,7 +76,7 @@ internal class SingleInstanceSpecRunner(
 
       // in the single instance runner we execute each nested test as soon as they are registered
       override suspend fun registerTestCase(nested: NestedTest) {
-         log("Nested test case discovered $nested")
+         log { "Nested test case discovered $nested" }
          val overrideName = handler.handle(nested.name)?.let { createTestName(it) }
          val nestedTestCase = nested.toTestCase(testCase.spec, testCase, overrideName)
          runTest(nestedTestCase, coroutineContext)

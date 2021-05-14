@@ -35,7 +35,7 @@ class SpecExecutor(private val listener: TestEngineListener) {
    private val notifications = NotificationManager(listener)
 
    suspend fun execute(kclass: KClass<out Spec>) {
-      log("SpecExecutor execute [$kclass]")
+      log { "SpecExecutor execute [$kclass]" }
       notifications.specStarted(kclass)
          .flatMap { createInstance(kclass) }
          .flatMap { runTestsIfAtLeastOneEnabled(it) }
@@ -60,7 +60,7 @@ class SpecExecutor(private val listener: TestEngineListener) {
     * function is invoked.
     */
    private suspend fun runTestsIfAtLeastOneEnabled(spec: Spec): Try<Map<TestCase, TestResult>> {
-      log("runTestsIfAtLeastOneActive [$spec]")
+      log { "runTestsIfAtLeastOneActive [$spec]" }
       val roots = spec.materializeAndOrderRootTests()
       val active = roots.any { it.testCase.isEnabled().isEnabled }
 
@@ -83,12 +83,12 @@ class SpecExecutor(private val listener: TestEngineListener) {
       // the terminal case after all (if any) extensions have been invoked
       val run: suspend () -> Unit = suspend {
          val runner = runner(spec)
-         log("SpecExecutor: Using runner $runner")
+         log { "SpecExecutor: Using runner $runner" }
          results = runner.execute(spec)
       }
 
       val extensions = spec.resolvedSpecExtensions()
-      log("SpecExecutor: Intercepting spec with ${extensions.size} extensions [$extensions]")
+      log { "SpecExecutor: Intercepting spec with ${extensions.size} extensions [$extensions]" }
       return Try { interceptSpec(spec, extensions, run) }.map { results }.flatten()
    }
 

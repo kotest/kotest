@@ -15,7 +15,7 @@ import kotlinx.coroutines.launch
 @ExperimentalKotest
 class SequentialTestLauncher(private val factory: CoroutineDispatcherFactory) : TestLauncher {
    override suspend fun launch(run: suspend (TestCase) -> Unit, tests: List<TestCase>) {
-      log("SequentialTestLauncher: Launching ${tests.size} sequentially")
+      log { "SequentialTestLauncher: Launching ${tests.size} sequentially" }
       tests.forEach { test ->
          coroutineScope { // will wait for the launched test to complete
             launch(factory.dispatcherFor(test)) {

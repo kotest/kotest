@@ -63,7 +63,7 @@ fun TestCase.isEnabledInternal(): Enabled {
    // when it's not set, then we use ! to disable tests
    val bangEnabled = sysprop(KotestEngineProperties.disableBangPrefix) == null
    if (isBang() && bangEnabled) {
-      return Enabled.disabled("${description.testPath()} is disabled by bang" ).also { log(it.reason) }
+      return Enabled.disabled("${description.testPath()} is disabled by bang" ).also { log { it.reason } }
    }
 
    val enabledOrReasonIf = config.enabledOrReasonIf(this)
@@ -72,16 +72,18 @@ fun TestCase.isEnabledInternal(): Enabled {
    }
 
    if (!config.enabled) {
-      return Enabled.disabled("${description.testPath()} is disabled by enabled property in config").also { log(it.reason) }
+      return Enabled.disabled("${description.testPath()} is disabled by enabled property in config")
+         .also { log { it.reason } }
    }
 
    if (!config.enabledIf(this)) {
-      return Enabled.disabled("${description.testPath()} is disabled by enabledIf function in config").also { log(it.reason) }
+      return Enabled.disabled("${description.testPath()} is disabled by enabledIf function in config")
+         .also { log { it.reason } }
    }
 
    val enabledInTags = configuration.activeTags().parse().isActive(this.allTags())
    if (!enabledInTags) {
-      return Enabled.disabled("${description.testPath()} is disabled by tags").also { log(it.reason) }
+      return Enabled.disabled("${description.testPath()} is disabled by tags").also { log { it.reason } }
    }
 
    val filters = configuration.filters().filterIsInstance<TestFilter>()
@@ -89,20 +91,22 @@ fun TestCase.isEnabledInternal(): Enabled {
       it.filter(this.description) == TestFilterResult.Include
    }
    if (!includedByFilters) {
-      return Enabled.disabled("${description.testPath()} is excluded by test case filters (${filters.size} filters found)").also { log(it.reason) }
+      return Enabled.disabled("${description.testPath()} is excluded by test case filters (${filters.size} filters found)")
+         .also { log { it.reason } }
    }
 
    // if the spec has focused tests, and this test is root and *not* focused, then it's not active
    val specHasFocusedTests = spec.focusTests().isNotEmpty()
    if (description.isRootTest() && !isFocused() && specHasFocusedTests) {
-      return Enabled.disabled("${description.testPath()} is disabled by another test having focus").also { log(it.reason) }
+      return Enabled.disabled("${description.testPath()} is disabled by another test having focus")
+         .also { log { it.reason } }
    }
 
    // if we have the severityLevel lower then in the sysprop -> we ignore this case
    val severityEnabled = config.severity?.let { TestCaseSeverityLevel.valueOf(it.name).isEnabled() }
       ?: TestCaseSeverityLevel.valueOf("NORMAL").isEnabled()
    if (!severityEnabled) {
-      return Enabled.disabled("${description.testPath()} is disabled by severityLevel").also { log(it.reason) }
+      return Enabled.disabled("${description.testPath()} is disabled by severityLevel").also { log { it.reason } }
    }
 
    return Enabled.enabled

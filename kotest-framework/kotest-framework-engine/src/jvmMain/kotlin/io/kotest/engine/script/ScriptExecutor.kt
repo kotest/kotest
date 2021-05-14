@@ -39,7 +39,7 @@ class ScriptExecutor(private val listener: TestEngineListener) {
     * Executes the given test [ScriptTemplateWithArgs].
     */
    suspend fun execute(kclass: KClass<out ScriptTemplateWithArgs>): Try<Unit> {
-      log("ScriptExecutor: execute [$kclass]")
+      log { "ScriptExecutor: execute [$kclass]" }
       ScriptRuntime.reset()
       val descriptor = Descriptor.fromScriptClass(kclass)
       return createInstance(kclass)
@@ -75,7 +75,7 @@ class ScriptExecutor(private val listener: TestEngineListener) {
     * Executes the tests registered with the script execution runtime.
     */
    private suspend fun runTests(descriptor: Descriptor.SpecDescriptor): Try<Unit> = Try {
-      log("ScriptExecutor: Executing tests from script")
+      log { "ScriptExecutor: Executing tests from script" }
       ScriptRuntime.materializeRootTests(descriptor).forEach { testCase ->
          runTest(testCase, coroutineContext)
       }
@@ -86,7 +86,7 @@ class ScriptExecutor(private val listener: TestEngineListener) {
     * and notifies the [TestEngineListener] of the instantiation event.
     */
    private fun createInstance(kclass: KClass<out ScriptTemplateWithArgs>): Try<ScriptTemplateWithArgs> {
-      log("ScriptExecutor: Creating instance of $kclass")
+      log { "ScriptExecutor: Creating instance of $kclass" }
       return createAndInitializeScript(kclass, this.javaClass.classLoader)
    }
 
@@ -121,7 +121,7 @@ class ScriptExecutor(private val listener: TestEngineListener) {
 
       // in the single instance runner we execute each nested test as soon as they are registered
       override suspend fun registerTestCase(nested: NestedTest) {
-         log("Nested test case discovered $nested")
+         log { "Nested test case discovered $nested" }
          val overrideName = handler.handle(nested.name)?.let { createTestName(it) }
          val nestedTestCase = nested.toTestCase(testCase.spec, testCase, overrideName)
          runTest(nestedTestCase, coroutineContext)

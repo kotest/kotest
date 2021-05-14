@@ -83,7 +83,7 @@ class KotestEngine(private val config: KotestEngineConfig) {
       Try { submitAll(plan) }
          .fold(
             { error ->
-               log("KotestEngine: Error during submit all", error)
+               log(error) { "KotestEngine: Error during submit all" }
                configuration.listeners().afterProject().fold(
                   { end(listOf(error, it)) },
                   { end(it + error) }
@@ -112,35 +112,35 @@ class KotestEngine(private val config: KotestEngineConfig) {
    private fun notifyListenerEngineStarted(plan: TestPlan) = Try { config.listener.engineStarted(plan.classes) }
 
    private suspend fun submitAll(plan: TestPlan) = Try {
-      log("KotestEngine: Beginning test plan [specs=${plan.classes.size}, scripts=${plan.scripts.size}, parallelism=${configuration.parallelism}}]")
+      log { "KotestEngine: Beginning test plan [specs=${plan.classes.size}, scripts=${plan.scripts.size}, parallelism=${configuration.parallelism}}]" }
 
       // scripts always run sequentially
-      log("KotestEngine: Launching ${plan.scripts.size} scripts")
+      log { "KotestEngine: Launching ${plan.scripts.size} scripts" }
       if (plan.scripts.isNotEmpty()) {
          plan.scripts.forEach { scriptKClass ->
-            log(scriptKClass.java.methods.toList().toString())
+            log { scriptKClass.java.methods.toList().toString() }
             ScriptExecutor(config.listener)
                .execute(scriptKClass)
          }
-         log("KotestEngine: Script execution completed")
+         log { "KotestEngine: Script execution completed" }
       }
 
       // spec classes are ordered using an instance of SpecExecutionOrder
-      log("KotestEngine: Sorting specs by ${configuration.specExecutionOrder}")
+      log { "KotestEngine: Sorting specs by ${configuration.specExecutionOrder}" }
       val ordered = plan.classes.sort(configuration.specExecutionOrder)
 
-      log("KotestEngine: Will use spec executor ${configuration.specExecutionOrder}")
       val executor = SpecExecutor(config.listener)
+      log { "KotestEngine: Will use spec executor $executor" }
 
       val launcher = specLauncher()
-      log("KotestEngine: Will use spec launcher $launcher")
+      log { "KotestEngine: Will use spec launcher $launcher" }
 
       launcher.launch(executor, ordered)
    }
 
    private fun end(errors: List<Throwable>) {
       errors.forEach {
-         log("KotestEngine: Error during test engine run", it)
+         log(it) { "KotestEngine: Error during test engine run" }
          it.printStackTrace()
       }
       config.listener.engineFinished(errors)

@@ -10,6 +10,7 @@ import io.kotest.core.internal.KotestEngineProperties
 import io.kotest.core.spec.Spec
 import io.kotest.fp.Try
 import io.kotest.fp.getOrElse
+import io.kotest.mpp.log
 import java.lang.management.ManagementFactory
 import java.util.concurrent.ConcurrentHashMap
 import kotlin.reflect.KClass
@@ -74,7 +75,7 @@ class Discovery(private val discoveryExtensions: List<DiscoveryExtension> = empt
     * Scans the classpaths for kotlin script files.
     */
    private fun discoverScripts(): List<KClass<out ScriptTemplateWithArgs>> {
-      log("Discovery: Running script scan")
+      log { "Discovery: Running script scan" }
       return scanResult.value
          .allClasses
          .filter { it.extendsSuperclass(ScriptTemplateWithArgs::class.java.name) }
@@ -109,13 +110,13 @@ class Discovery(private val discoveryExtensions: List<DiscoveryExtension> = empt
          .filterNot(isAbstract)
          .toList()
 
-      log("After filters there are ${filtered.size} spec classes")
+      log { "After filters there are ${filtered.size} spec classes" }
 
       val afterExtensions = discoveryExtensions
          .fold(filtered) { cl, ext -> ext.afterScan(cl) }
          .sortedBy { it.simpleName }
 
-      log("After discovery extensions there are ${filtered.size} spec classes")
+      log { "After discovery extensions there are ${filtered.size} spec classes" }
 
       val scriptsEnabled = System.getProperty(KotestEngineProperties.scriptsEnabled) == "true" ||
          System.getenv(KotestEngineProperties.scriptsEnabled) == "true"
@@ -125,7 +126,7 @@ class Discovery(private val discoveryExtensions: List<DiscoveryExtension> = empt
          else -> emptyList()
       }
 
-      log("Discovery result [${afterExtensions.size} specs; ${scripts.size} scripts]")
+      log { "Discovery result [${afterExtensions.size} specs; ${scripts.size} scripts]" }
       DiscoveryResult(afterExtensions, scripts, null)
    }
 
@@ -142,7 +143,7 @@ class Discovery(private val discoveryExtensions: List<DiscoveryExtension> = empt
     * selectors of type [DiscoverySelector.ClassDiscoverySelector].
     */
    private fun loadSelectedSpecs(request: DiscoveryRequest): List<KClass<out Spec>> {
-      log("Discovery: Loading specified classes...")
+      log { "Discovery: Loading specified classes..." }
       val start = System.currentTimeMillis()
 
       // first filter down to spec instances only, then load the full class
@@ -157,7 +158,7 @@ class Discovery(private val discoveryExtensions: List<DiscoveryExtension> = empt
          .toList()
 
       val duration = System.currentTimeMillis() - start
-      log("Discovery: Loading of selected classes completed in ${duration}ms")
+      log { "Discovery: Loading of selected classes completed in ${duration}ms" }
       return loadedClasses
    }
 
@@ -166,16 +167,24 @@ class Discovery(private val discoveryExtensions: List<DiscoveryExtension> = empt
     * locations specified by the uris param.
     */
    private fun scanUris(): List<KClass<out Spec>> {
-      val uptime = ManagementFactory.getRuntimeMXBean().uptime
-      log("Discovery: Starting test discovery scan... [uptime=$uptime]")
-      val start = System.currentTimeMillis()
-      val duration = System.currentTimeMillis() - start
-      log("Discovery: Test discovery completed in ${duration}ms")
 
-      return scanResult.value
+      log {
+         val uptime = ManagementFactory.getRuntimeMXBean().uptime
+         "Discovery: Starting test discovery scan... [uptime=$uptime]"
+      }
+
+      val result = scanResult.value
          .getSubclasses(Spec::class.java.name)
          .map { Class.forName(it.name).kotlin }
          .filterIsInstance<KClass<out Spec>>()
+
+      log {
+         val start = System.currentTimeMillis()
+         val duration = System.currentTimeMillis() - start
+         "Discovery: Test discovery completed in ${duration}ms"
+      }
+
+      return result
    }
 
    private fun scan(): ScanResult {
@@ -193,16 +202,5 @@ class Discovery(private val discoveryExtensions: List<DiscoveryExtension> = empt
             "org.jetbrains.kotlin.*",
             "org.junit.*"
          ).scan()
-   }
-}
-
-private fun enabled() = System.getProperty("KOTEST_DEBUG") != null || System.getenv("KOTEST_DEBUG") != null
-
-fun log(msg: String) = log(msg, null)
-
-fun log(msg: String, t: Throwable?) {
-   if (enabled()) {
-      println(msg)
-      if (t != null) println(t)
    }
 }
