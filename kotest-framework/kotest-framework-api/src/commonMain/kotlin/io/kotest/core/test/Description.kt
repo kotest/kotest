@@ -49,13 +49,17 @@ sealed class Description {
     */
    fun depth() = parents().size
 
+   private val _parents by lazy {
+      when (this) {
+         is Spec -> emptyList()
+         is Test -> parent.parents() + listOf(this)
+      }
+   }
+
    /**
     * Returns all parents of this description, excluding the spec itself.
     */
-   fun parents(): List<Description> = when (this) {
-      is Spec -> emptyList()
-      is Test -> parent.parents() + listOf(this)
-   }
+   fun parents(): List<Description> = _parents
 
    fun append(name: DescriptionName.TestName, type: TestType): Test = when (type) {
       TestType.Test -> appendTest(name)
@@ -69,14 +73,20 @@ sealed class Description {
    fun appendTest(name: String): Test = appendTest(createTestName(null, name, false))
    fun appendTest(name: DescriptionName.TestName): Test = Test(this, name, TestType.Test)
 
+   private val _chain by lazy {
+      when (this) {
+         is Spec -> listOf(this)
+         is Test -> parent.chain() + listOf(this)
+      }
+   }
+
    /**
     * Returns all descriptions from the spec to this test, with the spec as the first element,
     * and this description as the last.
     */
-   fun chain(): List<Description> = when (this) {
-      is Spec -> listOf(this)
-      is Test -> parent.chain() + listOf(this)
-   }
+   fun chain(): List<Description> = _chain
+
+   private val _names by lazy { chain().map { it.name } }
 
    /**
     * Returns each level of this description as a [DescriptionName], including the spec.
@@ -93,13 +103,15 @@ sealed class Description {
     *
     * @param includeSpec if true then the spec name is also included.
     */
-   fun names(): List<DescriptionName> = chain().map { it.name }
+   fun names(): List<DescriptionName> = _names
+
+   private val _testNames by lazy { names().filterIsInstance<DescriptionName.TestName>() }
 
    /**
     * Returns a list of names for this description without the spec, ie from a root test to this description.
     * In other words, all the names excluding the spec.
     */
-   fun testNames(): List<DescriptionName.TestName> = names().filterIsInstance<DescriptionName.TestName>()
+   fun testNames(): List<DescriptionName.TestName> = _testNames
 
    /**
     * Returns the [Spec] that is the root for this description.
@@ -115,29 +127,37 @@ sealed class Description {
     */
    fun displayName() = name.displayName
 
+   private val _path by lazy { TestPath(names().joinToString(TestPathSeparator) { it.name }) }
+
    /**
     * Returns a parsable path to the test including the spec name.
     * The test path doesn't include prefix/suffix information.
     */
-   fun path(): TestPath = TestPath(names().joinToString(TestPathSeparator) { it.name })
+   fun path(): TestPath = _path
+
+   private val _testPath by lazy { TestPath(testNames().joinToString(TestPathSeparator) { it.name }) }
 
    /**
     * Returns a parsable path to the test excluding the spec name.
     * The test path doesn't include prefix/suffix information.
     */
-   fun testPath(): TestPath = TestPath(testNames().joinToString(TestPathSeparator) { it.name })
+   fun testPath(): TestPath = _testPath
+
+   private val _testDisplayPath by lazy { DisplayPath(testNames().joinToString(" ") { it.displayName }) }
 
    /**
     * Returns a path to this test excluding the spec, formatted for display.
     * The display path includes prefix/suffix if enabled.
     */
-   fun testDisplayPath(): DisplayPath = DisplayPath(testNames().joinToString(" ") { it.displayName })
+   fun testDisplayPath(): DisplayPath = _testDisplayPath
+
+   private val _displayPath by lazy { DisplayPath(names().joinToString(" ") { it.displayName }) }
 
    /**
     * Returns a path to this test including the spec, formatted for display.
     * The display path includes prefix/suffix if enabled.
     */
-   fun displayPath(): DisplayPath = DisplayPath(names().joinToString(" ") { it.displayName })
+   fun displayPath(): DisplayPath = _displayPath
 
    /**
     * Returns a parseable consistent identifier for this description including the spec name.
