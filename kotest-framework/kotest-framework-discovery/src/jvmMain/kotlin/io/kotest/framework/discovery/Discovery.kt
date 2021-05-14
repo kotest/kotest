@@ -167,16 +167,24 @@ class Discovery(private val discoveryExtensions: List<DiscoveryExtension> = empt
     * locations specified by the uris param.
     */
    private fun scanUris(): List<KClass<out Spec>> {
-      val uptime = ManagementFactory.getRuntimeMXBean().uptime
-      log { "Discovery: Starting test discovery scan... [uptime=$uptime]" }
-      val start = System.currentTimeMillis()
-      val duration = System.currentTimeMillis() - start
-      log { "Discovery: Test discovery completed in ${duration}ms" }
 
-      return scanResult.value
+      log {
+         val uptime = ManagementFactory.getRuntimeMXBean().uptime
+         "Discovery: Starting test discovery scan... [uptime=$uptime]"
+      }
+
+      val result = scanResult.value
          .getSubclasses(Spec::class.java.name)
          .map { Class.forName(it.name).kotlin }
          .filterIsInstance<KClass<out Spec>>()
+
+      log {
+         val start = System.currentTimeMillis()
+         val duration = System.currentTimeMillis() - start
+         "Discovery: Test discovery completed in ${duration}ms"
+      }
+
+      return result
    }
 
    private fun scan(): ScanResult {
