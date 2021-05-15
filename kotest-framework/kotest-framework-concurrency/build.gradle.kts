@@ -1,11 +1,7 @@
-import org.gradle.api.tasks.testing.logging.TestExceptionFormat
-import org.gradle.api.tasks.testing.logging.TestLogEvent
-
 plugins {
    id("java")
-   kotlin("multiplatform")
+   id("kotlin-multiplatform")
    id("java-library")
-   id("maven-publish")
    id("com.adarshr.test-logger")
 }
 
@@ -23,6 +19,10 @@ kotlin {
             }
          }
       }
+      js(BOTH) {
+         browser()
+         nodejs()
+      }
    }
 
    sourceSets {
@@ -30,35 +30,25 @@ kotlin {
       val commonMain by getting {
          dependencies {
             compileOnly(kotlin("stdlib"))
-            implementation(kotlin("reflect"))
+            implementation(Libs.Coroutines.coreCommon)
+            implementation(project(Projects.Common))
+            implementation(project(Projects.Api))
          }
+      }
+
+      val jsMain by getting {
+         dependsOn(commonMain)
       }
 
       val jvmMain by getting {
-         dependencies {
-            implementation(Libs.Kotlin.kotlinScriptRuntime)
-            api(project(Projects.Api))
-            api(project(Projects.Common))
-            api(project(Projects.Engine))
-            api(project(Projects.Discovery))
-            api(project(Projects.AssertionsCore))
-            api(project(Projects.Extensions))
-            api(project(Projects.FrameworkConcurrency))
-            api(Libs.Coroutines.coreJvm)
-            api(Libs.JUnitPlatform.engine)
-            api(Libs.JUnitPlatform.api)
-            api(Libs.JUnitPlatform.launcher)
-            api(Libs.JUnitJupiter.api)
-         }
+         dependsOn(commonMain)
       }
 
       val jvmTest by getting {
-         dependsOn(jvmMain)
          dependencies {
-            implementation(project(Projects.JunitRunner))
             implementation(project(Projects.AssertionsCore))
-            implementation(Libs.JUnitPlatform.testkit)
-            implementation(Libs.Mocking.mockk)
+            implementation(project(Projects.Engine))
+            implementation(project(Projects.JunitRunner))
          }
       }
 
@@ -82,10 +72,9 @@ tasks.named<Test>("jvmTest") {
    testLogging {
       showExceptions = true
       showStandardStreams = true
-      events = setOf(TestLogEvent.FAILED, TestLogEvent.PASSED)
-      exceptionFormat = TestExceptionFormat.FULL
+      events = setOf(org.gradle.api.tasks.testing.logging.TestLogEvent.FAILED, org.gradle.api.tasks.testing.logging.TestLogEvent.PASSED)
+      exceptionFormat = org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
    }
 }
 
 apply(from = "../../publish-mpp.gradle.kts")
-

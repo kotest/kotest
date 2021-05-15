@@ -95,5 +95,7 @@ object KotestEngineProperties {
    const val testNameAppendTags = "kotest.framework.testname.append.tags"
 
    const val duplicateTestNameMode = "kotest.framework.testname.duplicate.mode"
+
+   const val disableJarDiscovery = "kotest.framework.discovery.jar.scan.disable"
 }
 ```

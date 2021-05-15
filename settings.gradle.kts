@@ -17,6 +17,9 @@ include("kotest-common")
 // defines data classes and the spec styles; all classes needed to define specs/testcases live here
 include("kotest-framework:kotest-framework-api")
 
+// async / parallel / concurrency / non-determistic test helpers
+include("kotest-framework:kotest-framework-concurrency")
+
 // used to discovery specs from the classpath at runtime
 // brings in the API dependency for required data types
 include("kotest-framework:kotest-framework-discovery")
