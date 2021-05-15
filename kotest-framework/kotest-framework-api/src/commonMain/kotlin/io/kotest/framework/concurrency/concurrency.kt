@@ -2,19 +2,19 @@ package io.kotest.framework.concurrency
 
 import io.kotest.common.ExperimentalKotest
 
-typealias Millis = Long // TODO: inline class this in 4.6.x (when we have kotlin 1.5)
-
-typealias ConcurrencyProducer<T> = suspend () -> T
-
 /**
  * Will be replaced with [kotlin.time.Duration] when that API is no longer experimental
  */
-@ExperimentalKotest
-data class Instant(val timeInMillis: Millis)
+typealias Millis = Long // TODO: inline class this in 4.6.x (when we have kotlin 1.5)
+
+typealias ConcurrencyProducer<T> = suspend () -> T
+typealias ConcurrencyConsumer<T> = suspend (T) -> Boolean
 
 @ExperimentalKotest
-data class PatienceConfig constructor(val duration: Millis, val interval: Interval) {
+data class PatienceConfig constructor(val duration: Millis = defaultDuration, val interval: Interval = defaultInterval) {
    companion object {
-      val default = PatienceConfig(Long.MAX_VALUE, 25L.fixed())
+      const val defaultDuration: Millis = 3_600_000L
+      val defaultInterval = 25L.fixed()
+      val default = PatienceConfig(defaultDuration, defaultInterval)
    }
 }

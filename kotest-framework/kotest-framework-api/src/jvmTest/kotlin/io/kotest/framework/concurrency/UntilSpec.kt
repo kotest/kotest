@@ -87,7 +87,7 @@ class UntilSpec : FunSpec({
 
    test("until should throw when the predicate doesn't equal true in the time period") {
       shouldThrow<AssertionError> {
-         until(1.seconds(), listener = { it == 2 }) {
+         until(1.seconds(), listener = { it.result == 2 }) {
             1
          }
       }

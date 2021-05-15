@@ -25,6 +25,7 @@ import java.util.concurrent.CountDownLatch
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicInteger
+import kotlin.reflect.full.createInstance
 import kotlin.system.measureTimeMillis
 
 private fun Int.seconds(): Millis = Duration.ofSeconds(this.toLong()).toMillis()
@@ -71,7 +72,7 @@ class EventuallySpec : FunSpec({
 
    test("eventually fails tests throw unexpected exception type") {
       shouldThrow<NullPointerException> {
-         eventually(2.seconds(), exceptions = setOf(IOException::class)) {
+         eventually(2.seconds()).allowExceptions(IOException::class) {
             (null as String?)!!.length
          }
       }
@@ -79,7 +80,7 @@ class EventuallySpec : FunSpec({
 
    test("eventually passes tests that throws FileNotFoundException for some time") {
       val end = System.currentTimeMillis() + 250
-      eventually(5.seconds(), exceptions = setOf(FileNotFoundException::class)) {
+      eventually(5.seconds()).allowExceptions(FileNotFoundException::class, listener = { true }) {
          if (System.currentTimeMillis() < end)
             throw FileNotFoundException("foo")
       }
@@ -261,8 +262,8 @@ class EventuallySpec : FunSpec({
       assertSoftly {
          slow.retries shouldBe Int.MAX_VALUE
          fast.retries shouldBe 1
-         slow.duration shouldBe 5.seconds()
-         fast.duration shouldBe 5.seconds()
+         slow.patience.duration shouldBe 5.seconds()
+         fast.patience.duration shouldBe 5.seconds()
       }
 
       eventually(slow) {
@@ -314,7 +315,7 @@ class EventuallySpec : FunSpec({
       var state: EventuallyState<Unit>? = null
 
       shouldThrow<Throwable> {
-         eventually(250.milliseconds(), retries = 1, listener = {
+         eventually(250.milliseconds()).withRetries(1, listener = {
             if (state == null) {
                state = it
             }
@@ -330,5 +331,29 @@ class EventuallySpec : FunSpec({
       state?.result.shouldBeNull()
 
       state?.firstError?.message shouldContain "1 should never be 2"
+   }
+
+   test("allows exception based on predicate") {
+      var i = 0
+      eventually(2.seconds()).allowExceptionIf({
+         it.message == "foo"
+      }) {
+         if (i++ < 3) {
+            throw AssertionError("foo")
+         }
+      }
+   }
+
+   test("allows a set of exceptions") {
+      val exceptions = setOf(FileNotFoundException::class, AssertionError::class, java.lang.RuntimeException::class)
+      var i = 0
+
+      eventually(5.seconds()).allowExceptions(*exceptions.toTypedArray()) {
+         exceptions.elementAtOrNull(i++)?.run {
+            throw this.createInstance()
+         }
+      }
+
+      i shouldBe exceptions.size + 1
    }
 })
