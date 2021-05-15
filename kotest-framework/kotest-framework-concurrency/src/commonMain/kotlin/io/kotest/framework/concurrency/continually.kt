@@ -27,9 +27,9 @@ suspend fun <T> continually(
 
 @ExperimentalKotest
 suspend fun <T> continually(
-   config: PatienceConfig = PatienceConfig.default,
-   listener: ContinuallyListener<T> = ContinuallyListener.default,
-   f: ConcurrencyProducer<T>
+    config: PatienceConfig = PatienceConfig.default,
+    listener: ContinuallyListener<T> = ContinuallyListener.default,
+    f: ConcurrencyProducer<T>
 ): T? {
    val start = timeInMillis()
    val end = start + config.duration

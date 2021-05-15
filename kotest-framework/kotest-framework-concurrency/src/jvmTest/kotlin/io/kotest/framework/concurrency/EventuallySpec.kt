@@ -72,7 +72,7 @@ class EventuallySpec : FunSpec({
 
    test("eventually fails tests that throw unexpected exception type") {
       shouldThrow<NullPointerException> {
-         eventually(2.seconds()).allowExceptions(IOException::class) {
+         eventually(2.seconds()).suppressExceptions(IOException::class) {
             (null as String?)!!.length
          }
       }
@@ -80,7 +80,7 @@ class EventuallySpec : FunSpec({
 
    test("eventually passes tests that throws FileNotFoundException for some time") {
       val end = System.currentTimeMillis() + 250
-      eventually(5.seconds()).allowExceptions(FileNotFoundException::class, listener = { true }) {
+      eventually(5.seconds()).suppressExceptions(FileNotFoundException::class, listener = { true }) {
          if (System.currentTimeMillis() < end)
             throw FileNotFoundException("foo")
       }
@@ -198,7 +198,7 @@ class EventuallySpec : FunSpec({
 
    test("eventually with T predicate") {
       var t = ""
-      eventually(5.seconds(), listener = { t=="xxxx" }) {
+      eventually(5.seconds()).withListener({ t=="xxxx" }) {
          t += "x"
       }
    }
@@ -207,8 +207,7 @@ class EventuallySpec : FunSpec({
       var t = ""
       val result = eventually(
          5.seconds(),
-         250.milliseconds().fixed(),
-         listener = { it.result=="xxxxxxxxxxx" }) {
+         250.milliseconds().fixed()).withListener({ it.result=="xxxxxxxxxxx" }) {
          t += "x"
          t
       }
@@ -218,21 +217,18 @@ class EventuallySpec : FunSpec({
    test("eventually with T predicate, interval, and listener") {
       var t = ""
       val latch = CountDownLatch(5)
-      val result = eventually(
-         5.seconds(),
-         250.milliseconds().fixed(),
-         listener = { latch.countDown(); t=="xxxxxxxxxxx" },
-      ) {
+      val result = eventually(5.seconds(), 250.milliseconds().fixed()).withListener({ latch.countDown(); it.result=="xxxxxxxxxxx" }) {
          t += "x"
          t
       }
+
       latch.await(15, TimeUnit.SECONDS) shouldBe true
       result shouldBe "xxxxxxxxxxx"
    }
 
    test("eventually fails tests that fail a predicate") {
       shouldThrow<AssertionError> {
-         eventually(1.seconds(), listener = { it.result==2 }) {
+         eventually(1.seconds()).withListener({ it.result == 2 }) {
             1
          }
       }
@@ -241,14 +237,12 @@ class EventuallySpec : FunSpec({
    test("eventually supports fibonacci intervals") {
       var t = ""
       val latch = CountDownLatch(5)
-      val result = eventually(
-         duration = 10.seconds(),
-         interval = 200.milliseconds().fibonacci(),
-         listener = { latch.countDown(); t=="xxxxxx" },
-      ) {
+
+      val result = eventually(10.seconds(), 200.milliseconds().fixed()).withListener({ latch.countDown(); it.result=="xxxxxx" }) {
          t += "x"
          t
       }
+
       latch.await(10, TimeUnit.SECONDS) shouldBe true
       result shouldBe "xxxxxx"
    }
@@ -266,11 +260,11 @@ class EventuallySpec : FunSpec({
          fast.patience.duration shouldBe 5.seconds()
       }
 
-      eventually(slow) {
+      slow {
          5
       }
 
-      eventually(fast, listener = { i==1 }) {
+      fast(listener = { i==1 }) {
          i++
       }
 
@@ -279,7 +273,7 @@ class EventuallySpec : FunSpec({
 
    test("eventually throws if retry limit is exceeded") {
       val message = shouldThrow<AssertionError> {
-         eventually(EventuallyConfig(retries = 2)) {
+         eventually().withRetries(2) {
             1 shouldBe 2
          }
       }.message
@@ -335,7 +329,7 @@ class EventuallySpec : FunSpec({
 
    test("allows exception based on predicate") {
       var i = 0
-      eventually(2.seconds()).allowExceptionIf({ it.message=="foo" }) {
+      eventually(2.seconds()).suppressExceptionIf({ it.message=="foo" }) {
          if (i++ < 3) {
             throw AssertionError("foo")
          }
@@ -345,7 +339,7 @@ class EventuallySpec : FunSpec({
    test("does not allow an exception based on predicate") {
       shouldThrow<AssertionError> {
          var i = 0
-         eventually(2.seconds()).allowExceptionIf({ it.message=="bar" }) {
+         eventually(2.seconds()).suppressExceptionIf({ it.message=="bar" }) {
             if (i++ < 3) {
                throw AssertionError("foo")
             }
@@ -357,7 +351,7 @@ class EventuallySpec : FunSpec({
       val exceptions = setOf(FileNotFoundException::class, AssertionError::class, java.lang.RuntimeException::class)
       var i = 0
 
-      eventually(5.seconds()).allowExceptions(*exceptions.toTypedArray()) {
+      eventually(5.seconds()).suppressExceptions(*exceptions.toTypedArray()) {
          exceptions.elementAtOrNull(i++)?.run {
             throw this.createInstance()
          }
