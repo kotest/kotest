@@ -5,7 +5,7 @@ import io.kotest.common.ExperimentalKotest
 /**
  * Will be replaced with [kotlin.time.Duration] when that API is no longer experimental
  */
-typealias Millis = Long // TODO: inline class this in 4.6.x (when we have kotlin 1.5)
+typealias Millis = Long
 
 typealias ConcurrencyProducer<T> = suspend () -> T
 typealias ConcurrencyConsumer<T> = suspend (T) -> Boolean
