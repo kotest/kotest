@@ -11,7 +11,7 @@ import kotlin.reflect.KClass
 typealias ThrowablePredicate = (Throwable) -> Boolean
 
 @ExperimentalKotest
-data class EventuallyConfig (
+data class EventuallyConfig(
    val patience: PatienceConfig = PatienceConfig(),
    val exceptions: Set<KClass<out Throwable>> = setOf(),
    val allowExceptionIf: ThrowablePredicate? = null,
@@ -34,35 +34,37 @@ data class EventuallyConfig (
 
    fun allowExceptions(vararg exceptions: KClass<out Throwable>) = copy(exceptions = this.exceptions + exceptions)
    suspend fun <T> allowExceptions(
-      vararg exceptions: KClass<out Throwable>, listener: EventuallyListener<T>? = null, shortCircuit: ConcurrencyConsumer<T>? = null, f: ConcurrencyProducer<T>
+      vararg exceptions: KClass<out Throwable>, listener: EventuallyListener<T>? = null, shortCircuit: ConcurrencyConsumer<T>? = null, f: ConcurrencyProducer<T>,
    ): T = copy(exceptions = this.exceptions + exceptions).invoke(listener, shortCircuit, f)
 
    fun allowExceptionIf(allowExceptionIf: ThrowablePredicate) = copy(allowExceptionIf = allowExceptionIf)
    suspend fun <T> allowExceptionIf(
-      allowExceptionIf: ThrowablePredicate, listener: EventuallyListener<T>? = null, shortCircuit: ConcurrencyConsumer<T>? = null, f: ConcurrencyProducer<T>
+      allowExceptionIf: ThrowablePredicate, listener: EventuallyListener<T>? = null, shortCircuit: ConcurrencyConsumer<T>? = null, f: ConcurrencyProducer<T>,
    ): T = allowExceptionIf(allowExceptionIf).invoke(listener, shortCircuit, f)
 
    fun withInitialDelay(initialDelay: Millis) = copy(initialDelay = maxOf(initialDelay, 0L))
    suspend fun <T> withInitialDelay(
-      initialDelay: Millis, listener: EventuallyListener<T>? = null, shortCircuit: ConcurrencyConsumer<T>? = null, f: ConcurrencyProducer<T>
+      initialDelay: Millis, listener: EventuallyListener<T>? = null, shortCircuit: ConcurrencyConsumer<T>? = null, f: ConcurrencyProducer<T>,
    ): T = withInitialDelay(initialDelay).invoke(listener, shortCircuit, f)
 
    fun withRetries(retries: Int) = copy(retries = maxOf(retries, 0))
    suspend fun <T> withRetries(
-      retries: Int, listener: EventuallyListener<T>? = null, shortCircuit: ConcurrencyConsumer<T>? = null, f: ConcurrencyProducer<T>
+      retries: Int, listener: EventuallyListener<T>? = null, shortCircuit: ConcurrencyConsumer<T>? = null, f: ConcurrencyProducer<T>,
    ): T = withRetries(retries).invoke(listener, shortCircuit, f)
 }
 
 // region overloads
 
 @ExperimentalKotest
-suspend fun <T> eventually(config: EventuallyConfig, listener: EventuallyListener<T>? = null, shortCircuit: ConcurrencyConsumer<T>? = null, f: ConcurrencyProducer<T>) = config.allowExceptions(AssertionError::class).invoke(listener, shortCircuit, f)
+suspend fun <T> eventually(config: EventuallyConfig, listener: EventuallyListener<T>? = null, shortCircuit: ConcurrencyConsumer<T>? = null, f: ConcurrencyProducer<T>) =
+   config.allowExceptions(AssertionError::class).invoke(listener, shortCircuit, f)
 
 @ExperimentalKotest
 fun eventually(patience: PatienceConfig) = EventuallyConfig(patience).allowExceptions(AssertionError::class)
 
 @ExperimentalKotest
-fun eventually(duration: Millis, interval: Interval = PatienceConfig.defaultInterval) = eventually(PatienceConfig(duration, interval)).allowExceptions(AssertionError::class)
+fun eventually(duration: Millis, interval: Interval = PatienceConfig.defaultInterval) =
+   eventually(PatienceConfig(duration, interval)).allowExceptions(AssertionError::class)
 
 @ExperimentalKotest
 suspend fun <T> eventually(patience: PatienceConfig, listener: EventuallyListener<T>? = null, shortCircuit: ConcurrencyConsumer<T>? = null, f: ConcurrencyProducer<T>) =
@@ -76,13 +78,16 @@ suspend fun <T> eventually(duration: Millis, interval: Interval = PatienceConfig
 fun until(patience: PatienceConfig) = EventuallyConfig(patience)
 
 @ExperimentalKotest
-suspend fun until(patience: PatienceConfig, booleanProducer: ConcurrencyProducer<Boolean>) = until(patience).invoke(listener = { it.result == true }, f = booleanProducer)
+suspend fun until(patience: PatienceConfig, booleanProducer: ConcurrencyProducer<Boolean>) =
+   until(patience).invoke(listener = { it.result==true }, f = booleanProducer)
 
 @ExperimentalKotest
-fun until(duration: Millis, interval: Interval = PatienceConfig.defaultInterval) = until(PatienceConfig(duration, interval))
+fun until(duration: Millis, interval: Interval = PatienceConfig.defaultInterval) =
+   until(PatienceConfig(duration, interval))
 
 @ExperimentalKotest
-suspend fun until(duration: Millis, interval: Interval = PatienceConfig.defaultInterval, booleanProducer: ConcurrencyProducer<Boolean>) = until(duration, interval).invoke(listener = { it.result == true }, f = booleanProducer)
+suspend fun until(duration: Millis, interval: Interval = PatienceConfig.defaultInterval, booleanProducer: ConcurrencyProducer<Boolean>) =
+   until(duration, interval).invoke(listener = { it.result==true }, f = booleanProducer)
 
 @ExperimentalKotest
 suspend fun <T> until(patience: PatienceConfig, listener: EventuallyListener<T>? = null, shortCircuit: ConcurrencyConsumer<T>? = null, f: ConcurrencyProducer<T>) =
@@ -112,7 +117,7 @@ fun interface EventuallyListener<T> {
    fun onEval(state: EventuallyState<T>): Boolean
 
    companion object {
-      val default = EventuallyListener<Any?> { it.thisError == null }
+      val default = EventuallyListener<Any?> { it.thisError==null }
    }
 }
 
@@ -131,7 +136,7 @@ private class EventuallyControl(val config: EventuallyConfig) {
    var lastInterval: Millis = 0L
 
    fun exceptionIsNotAllowed(e: Throwable): Boolean {
-      if (firstError == null) {
+      if (firstError==null) {
          firstError = e
       } else {
          lastError = e
@@ -141,7 +146,7 @@ private class EventuallyControl(val config: EventuallyConfig) {
          return true
       }
 
-      if (config.allowExceptionIf?.invoke(e) == false) {
+      if (config.allowExceptionIf?.invoke(e)==false) {
          return true
       }
 
@@ -160,7 +165,7 @@ private class EventuallyControl(val config: EventuallyConfig) {
    /**
     * if we only executed once, and the last delay was > last interval, we didn't get a chance to run again so we run once more before exiting
     */
-   fun isLongWait() = times == 1 && lastDelayPeriod > lastInterval
+   fun isLongWait() = times==1 && lastDelayPeriod > lastInterval
 
    fun buildFailureMessage() = StringBuilder().apply {
       val patienceConfig = config.patience
@@ -184,7 +189,7 @@ private class EventuallyControl(val config: EventuallyConfig) {
 
 @ExperimentalKotest
 suspend operator fun <T> EventuallyConfig.invoke(
-   listener: EventuallyListener<T>? = null, shortCircuit: ConcurrencyConsumer<T>? = null, f: ConcurrencyProducer<T>
+   listener: EventuallyListener<T>? = null, shortCircuit: ConcurrencyConsumer<T>? = null, f: ConcurrencyProducer<T>,
 ): T {
    delay(initialDelay) // TODO: should the initialDelay count against the patienceConfig.duration?
 
@@ -220,7 +225,7 @@ suspend operator fun <T> EventuallyConfig.invoke(
          control.step()
       }
    } finally {
-       errorCollector.setCollectionMode(originalAssertionMode)
+      errorCollector.setCollectionMode(originalAssertionMode)
    }
 
    throw failure(control.buildFailureMessage())

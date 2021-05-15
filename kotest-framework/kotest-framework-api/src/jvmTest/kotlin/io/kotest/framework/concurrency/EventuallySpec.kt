@@ -70,7 +70,7 @@ class EventuallySpec : FunSpec({
       }
    }
 
-   test("eventually fails tests throw unexpected exception type") {
+   test("eventually fails tests that throw unexpected exception type") {
       shouldThrow<NullPointerException> {
          eventually(2.seconds()).allowExceptions(IOException::class) {
             (null as String?)!!.length
@@ -110,7 +110,7 @@ class EventuallySpec : FunSpec({
       var count = 0
       val message = shouldThrow<AssertionError> {
          eventually(100.milliseconds()) {
-            if (count == 0) {
+            if (count==0) {
                count = 1
                fail("first")
             } else {
@@ -198,7 +198,7 @@ class EventuallySpec : FunSpec({
 
    test("eventually with T predicate") {
       var t = ""
-      eventually(5.seconds(), listener = { t == "xxxx" }) {
+      eventually(5.seconds(), listener = { t=="xxxx" }) {
          t += "x"
       }
    }
@@ -208,7 +208,7 @@ class EventuallySpec : FunSpec({
       val result = eventually(
          5.seconds(),
          250.milliseconds().fixed(),
-         listener = { it.result == "xxxxxxxxxxx" }) {
+         listener = { it.result=="xxxxxxxxxxx" }) {
          t += "x"
          t
       }
@@ -221,7 +221,7 @@ class EventuallySpec : FunSpec({
       val result = eventually(
          5.seconds(),
          250.milliseconds().fixed(),
-         listener = { latch.countDown(); t == "xxxxxxxxxxx" },
+         listener = { latch.countDown(); t=="xxxxxxxxxxx" },
       ) {
          t += "x"
          t
@@ -232,7 +232,7 @@ class EventuallySpec : FunSpec({
 
    test("eventually fails tests that fail a predicate") {
       shouldThrow<AssertionError> {
-         eventually(1.seconds(), listener = { it.result == 2 }) {
+         eventually(1.seconds(), listener = { it.result==2 }) {
             1
          }
       }
@@ -244,7 +244,7 @@ class EventuallySpec : FunSpec({
       val result = eventually(
          duration = 10.seconds(),
          interval = 200.milliseconds().fibonacci(),
-         listener = { latch.countDown(); t == "xxxxxx" },
+         listener = { latch.countDown(); t=="xxxxxx" },
       ) {
          t += "x"
          t
@@ -270,7 +270,7 @@ class EventuallySpec : FunSpec({
          5
       }
 
-      eventually(fast, listener = { i == 1 }) {
+      eventually(fast, listener = { i==1 }) {
          i++
       }
 
@@ -316,7 +316,7 @@ class EventuallySpec : FunSpec({
 
       shouldThrow<Throwable> {
          eventually(250.milliseconds()).withRetries(1, listener = {
-            if (state == null) {
+            if (state==null) {
                state = it
             }
             true
@@ -335,13 +335,22 @@ class EventuallySpec : FunSpec({
 
    test("allows exception based on predicate") {
       var i = 0
-      eventually(2.seconds()).allowExceptionIf({
-         it.message == "foo"
-      }) {
+      eventually(2.seconds()).allowExceptionIf({ it.message=="foo" }) {
          if (i++ < 3) {
             throw AssertionError("foo")
          }
       }
+   }
+
+   test("does not allow an exception based on predicate") {
+      shouldThrow<AssertionError> {
+         var i = 0
+         eventually(2.seconds()).allowExceptionIf({ it.message=="bar" }) {
+            if (i++ < 3) {
+               throw AssertionError("foo")
+            }
+         }
+      }.message shouldBe "foo"
    }
 
    test("allows a set of exceptions") {
