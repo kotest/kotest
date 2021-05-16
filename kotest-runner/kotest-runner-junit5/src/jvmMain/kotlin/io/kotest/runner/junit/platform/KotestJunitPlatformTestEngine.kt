@@ -122,7 +122,6 @@ class KotestJunitPlatformTestEngine : TestEngine {
          val classes = result.specs.filter { spec ->
             testFilters.all { it.filter(spec.toDescription()) == TestFilterResult.Include }
          }
-         discovery.close()
          KotestEngineDescriptor(uniqueId, classes, result.scripts, testFilters, result.error)
       } else {
          KotestEngineDescriptor(uniqueId, emptyList(), emptyList(), emptyList(), null)

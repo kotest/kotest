@@ -4,7 +4,6 @@ package io.kotest.framework.discovery
 
 import io.github.classgraph.ClassGraph
 import io.github.classgraph.ClassInfo
-import io.github.classgraph.ScanResult
 import io.kotest.core.extensions.DiscoveryExtension
 import io.kotest.core.internal.KotestEngineProperties
 import io.kotest.core.spec.Spec
@@ -45,7 +44,7 @@ class Discovery(private val discoveryExtensions: List<DiscoveryExtension> = empt
    private val requests = ConcurrentHashMap<DiscoveryRequest, DiscoveryResult>()
 
    // the results of a classpath scan, lazily executed and memoized.
-   private val scanResult = lazy { scan() }
+   private val scanResult = lazy { classgraph().scan() }
 
    // filter functions
    private val isScript: (KClass<*>) -> Boolean = { ScriptTemplateWithArgs::class.java.isAssignableFrom(it.java) }
@@ -86,10 +85,6 @@ class Discovery(private val discoveryExtensions: List<DiscoveryExtension> = empt
          .filterIsInstance<KClass<out ScriptTemplateWithArgs>>()
    }
 
-   fun close() {
-      if (scanResult.isInitialized()) scanResult.value.close()
-   }
-
    /**
     * Loads a class reference from a [ClassInfo].
     * @param init set to false to avoid initializing the class
@@ -127,6 +122,8 @@ class Discovery(private val discoveryExtensions: List<DiscoveryExtension> = empt
          scriptsEnabled -> discoverScripts()
          else -> emptyList()
       }
+
+      if (scanResult.isInitialized()) Try { scanResult.value.close() }
 
       log { "Discovery result [${afterExtensions.size} specs; ${scripts.size} scripts]" }
       DiscoveryResult(afterExtensions, scripts, null)
@@ -189,8 +186,8 @@ class Discovery(private val discoveryExtensions: List<DiscoveryExtension> = empt
       return result
    }
 
-   private fun scan(): ScanResult {
-      val graph = ClassGraph()
+   private fun classgraph(): ClassGraph {
+      return ClassGraph()
          .enableClassInfo()
          .enableExternalClasses()
          .ignoreClassVisibility()
@@ -205,12 +202,12 @@ class Discovery(private val discoveryExtensions: List<DiscoveryExtension> = empt
             "androidx.*",
             "org.jetbrains.kotlin.*",
             "org.junit.*"
-         )
-      if (env(KotestEngineProperties.disableJarDiscovery) == "true" ||
-         sysprop(KotestEngineProperties.disableJarDiscovery) == "true"
-      ) {
-         graph.disableJarScanning()
-      }
-      return graph.scan()
+         ).apply {
+            if (env(KotestEngineProperties.disableJarDiscovery) == "true" ||
+               sysprop(KotestEngineProperties.disableJarDiscovery) == "true"
+            ) {
+               disableJarScanning()
+            }
+         }
    }
 }
