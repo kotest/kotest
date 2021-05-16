@@ -32,8 +32,3 @@ assertSoftly(foo) {
 
 
 We can configure assert softly to be implicitly added to every test via [project config](../framework/project_config.md).
-
-:::note
-`assertSoftly` currently does not works when use inside `eventually`, `until`, `continually` or `retry`.
-:::
-
