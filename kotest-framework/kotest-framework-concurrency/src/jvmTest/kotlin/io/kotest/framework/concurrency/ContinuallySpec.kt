@@ -9,9 +9,9 @@ import io.kotest.matchers.shouldBe
 import kotlinx.coroutines.delay
 import java.time.Duration
 
-private fun Int.hours(): Millis = Duration.ofDays(this.toLong()).toMillis()
-private fun Int.seconds(): Millis = Duration.ofSeconds(this.toLong()).toMillis()
-private fun Int.milliseconds(): Millis = this.toLong()
+private fun Int.hours(): Long = Duration.ofDays(this.toLong()).toMillis()
+private fun Int.seconds(): Long = Duration.ofSeconds(this.toLong()).toMillis()
+private fun Int.milliseconds(): Long = this.toLong()
 
 @OptIn(ExperimentalKotest::class)
 class ContinuallySpec : FunSpec({

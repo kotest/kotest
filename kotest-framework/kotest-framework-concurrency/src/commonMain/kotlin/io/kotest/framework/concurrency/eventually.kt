@@ -15,7 +15,7 @@ sealed class EventuallyConfig<out T> {
    abstract val patience: PatienceConfig
    abstract val exceptions: Set<KClass<out Throwable>>
    abstract val suppressExceptionIf: ThrowablePredicate?
-   abstract val initialDelay: Millis
+   abstract val initialDelay: Long
    abstract val retries: Int
 }
 
@@ -24,15 +24,15 @@ data class BasicEventuallyConfig(
    override val patience: PatienceConfig = PatienceConfig(),
    override val exceptions: Set<KClass<out Throwable>> = setOf(),
    override val suppressExceptionIf: ThrowablePredicate? = null,
-   override val initialDelay: Millis = 0L,
+   override val initialDelay: Long = 0L,
    override val retries: Int = Int.MAX_VALUE,
 ) : EventuallyConfig<Nothing>() {
    constructor(
-      duration: Millis,
+      duration: Long,
       interval: Interval = PatienceConfig.defaultInterval,
       exceptions: Set<KClass<out Throwable>> = setOf(),
       allowExceptionIf: ThrowablePredicate? = null,
-      initialDelay: Millis = 0L,
+      initialDelay: Long = 0L,
       retries: Int = Int.MAX_VALUE,
    ) : this(PatienceConfig(duration, interval), exceptions, allowExceptionIf, initialDelay, retries)
 
@@ -41,13 +41,29 @@ data class BasicEventuallyConfig(
       require(retries >= 0) { "Value 'retries' should be a non-negative number" }
    }
 
-   fun withDuration(duration: Millis) = copy(patience = patience.copy(duration = duration))
+   fun withDuration(duration: Long) = copy(patience = patience.copy(duration = duration))
+   suspend fun <T> withDuration(duration: Long, f: suspend () -> T): T = withDuration(duration).invoke(f)
+
    fun withInterval(interval: Interval) = copy(patience = patience.copy(interval = interval))
-   fun withSupressExceptionIf(suppressExceptionIf: ThrowablePredicate) = copy(suppressExceptionIf = suppressExceptionIf)
-   fun withInitialDelay(initialDelay: Millis) = copy(initialDelay = initialDelay)
+   suspend fun <T> withInterval(interval: Interval, f: suspend () -> T): T = withInterval(interval).invoke(f)
+
+   fun withSuppressExceptionIf(suppressExceptionIf: ThrowablePredicate) = copy(suppressExceptionIf = suppressExceptionIf)
+   suspend fun <T> withSuppressExceptionIf(suppressExceptionIf: ThrowablePredicate, f: suspend () -> T): T = withSuppressExceptionIf(suppressExceptionIf).invoke(f)
+
+   fun withInitialDelay(initialDelay: Long) = copy(initialDelay = initialDelay)
+   suspend fun <T> withInitialDelay(initialDelay: Long, f: suspend () -> T): T = withInitialDelay(initialDelay).invoke(f)
+
    fun withRetries(retries: Int) = copy(retries = retries)
+   suspend fun <T> withRetries(retries: Int, f: suspend () -> T): T = withRetries(retries).invoke(f)
+
+   fun suppressExceptions(vararg exceptions: KClass<out Throwable>) = copy(exceptions = this.exceptions + exceptions)
+   suspend fun <T> suppressExceptions(vararg exceptions: KClass<out Throwable>, f: suspend () -> T): T = copy(exceptions = this.exceptions + exceptions).invoke(f)
+
    fun <T> withListener(listener: EventuallyListener<T>) = GenericEventuallyConfig(patience, exceptions, suppressExceptionIf, initialDelay, retries, listener = listener)
+   suspend fun <T> withListener(listener: EventuallyListener<T>, f: suspend () -> T): T = withListener(listener).invoke(f)
+
    fun <T> withShortCircuit(shortCircuit: EventuallyListener<T>) = GenericEventuallyConfig(patience, exceptions, suppressExceptionIf, initialDelay, retries, shortCircuit = shortCircuit)
+   suspend fun <T> withShortCircuit(shortCircuit: EventuallyListener<T>, f: suspend () -> T): T = withShortCircuit(shortCircuit).invoke(f)
 }
 
 @ExperimentalKotest
@@ -55,17 +71,17 @@ data class GenericEventuallyConfig<T>(
    override val patience: PatienceConfig = PatienceConfig(),
    override val exceptions: Set<KClass<out Throwable>> = setOf(),
    override val suppressExceptionIf: ThrowablePredicate? = null,
-   override val initialDelay: Millis = 0L,
+   override val initialDelay: Long = 0L,
    override val retries: Int = Int.MAX_VALUE,
    val listener: EventuallyListener<T>? = null,
    val shortCircuit: EventuallyListener<T>? = null,
 ) : EventuallyConfig<T>() {
    constructor(
-      duration: Millis,
+      duration: Long,
       interval: Interval = PatienceConfig.defaultInterval,
       exceptions: Set<KClass<out Throwable>> = setOf(),
       allowExceptionIf: ThrowablePredicate? = null,
-      initialDelay: Millis = 0L,
+      initialDelay: Long = 0L,
       retries: Int = Int.MAX_VALUE,
       listener: EventuallyListener<T>? = null,
       shortCircuit: EventuallyListener<T>? = null,
@@ -84,86 +100,58 @@ data class GenericEventuallyConfig<T>(
       require(retries >= 0) { "Value 'retries' should be a non-negative number" }
    }
 
-   fun withDuration(duration: Millis) = copy(patience = patience.copy(duration = duration))
+   fun withDuration(duration: Long) = copy(patience = patience.copy(duration = duration))
+   suspend fun withDuration(duration: Long, f: suspend () -> T): T = withDuration(duration).invoke(f)
+
    fun withInterval(interval: Interval) = copy(patience = patience.copy(interval = interval))
-   fun withSupressExceptionIf(suppressExceptionIf: ThrowablePredicate) = copy(suppressExceptionIf = suppressExceptionIf)
-   fun withInitialDelay(initialDelay: Millis) = copy(initialDelay = initialDelay)
+   suspend fun withInterval(interval: Interval, f: suspend () -> T): T = withInterval(interval).invoke(f)
+
+   fun withSuppressExceptionIf(suppressExceptionIf: ThrowablePredicate) = copy(suppressExceptionIf = suppressExceptionIf)
+   suspend fun withSuppressExceptionIf(suppressExceptionIf: ThrowablePredicate, f: suspend () -> T): T = withSuppressExceptionIf(suppressExceptionIf).invoke(f)
+
+   fun withInitialDelay(initialDelay: Long) = copy(initialDelay = initialDelay)
+   suspend fun withInitialDelay(initialDelay: Long, f: suspend () -> T): T = withInitialDelay(initialDelay).invoke(f)
+
    fun withRetries(retries: Int) = copy(retries = retries)
+   suspend fun withRetries(retries: Int, f: suspend () -> T): T = withRetries(retries).invoke(f)
+
+   fun suppressExceptions(vararg exceptions: KClass<out Throwable>) = copy(exceptions = this.exceptions + exceptions)
+   suspend fun suppressExceptions(vararg exceptions: KClass<out Throwable>, f: suspend () -> T): T = copy(exceptions = this.exceptions + exceptions).invoke(f)
+
    fun withListener(listener: EventuallyListener<T>) = copy(listener = listener)
+   suspend fun withListener(listener: EventuallyListener<T>, f: suspend () -> T): T = withListener(listener).invoke(f)
+
    fun withShortCircuit(shortCircuit: EventuallyListener<T>) = copy(shortCircuit = shortCircuit)
+   suspend fun withShortCircuit(shortCircuit: EventuallyListener<T>, f: suspend () -> T): T = withShortCircuit(shortCircuit).invoke(f)
 }
-
-suspend fun <T> EventuallyConfig<T>.withDuration(duration: Millis, f: suspend () -> T): T = when (this) {
-   is BasicEventuallyConfig -> withDuration(duration).invoke(f)
-   is GenericEventuallyConfig -> TODO()
-}
-
-@ExperimentalKotest
-fun <T> EventuallyConfig<T>.withDuration(duration: Millis):  = when (this) {
-   is BasicEventuallyConfig -> copy(patience = patience.copy(duration = duration))
-   is GenericEventuallyConfig<T> -> copy(patience = patience.copy(duration = duration))
-}
-
-fun withInterval(interval: Interval) = copy(patience = patience.copy(interval = interval))
-suspend fun <T> withInterval(interval: Interval, f: suspend () -> T) = withInterval(interval).invoke(f = f)
-
-fun suppressExceptions(vararg exceptions: KClass<out Throwable>): BasicEventuallyConfig =
-   copy(exceptions = this.exceptions + exceptions)
-
-suspend fun <T> suppressExceptions(vararg exceptions: KClass<out Throwable>, f: suspend () -> T): T =
-   copy(exceptions = this.exceptions + exceptions).invoke(f = f)
-
-fun suppressExceptionIf(allowExceptionIf: ThrowablePredicate) = copy(allowExceptionIf = allowExceptionIf)
-suspend fun <T> suppressExceptionIf(allowExceptionIf: ThrowablePredicate, f: suspend () -> T): T =
-   suppressExceptionIf(allowExceptionIf).invoke(f = f)
-
-fun withInitialDelay(initialDelay: Millis) = copy(initialDelay = maxOf(initialDelay, 0L))
-suspend fun <T> withInitialDelay(initialDelay: Millis, f: suspend () -> T): T =
-   withInitialDelay(initialDelay).invoke(f = f)
-
-fun withRetries(retries: Int) = copy(retries = maxOf(retries, 0))
-suspend fun <T> withRetries(retries: Int, f: suspend () -> T): T = withRetries(retries).invoke(f = f)
-
-fun <T> withShortCircuit(shortCircuit: ConcurrencyConsumer<T>) =
-   GenericEventuallyConfig<T>(shortCircuit = shortCircuit)
-
-suspend fun <T> withShortCircuit(shortCircuit: ConcurrencyConsumer<T>, f: ConcurrencyProducer<T>) =
-   GenericEventuallyConfig<T>(shortCircuit = shortCircuit).invoke(f = f)
-
-fun <T> withListener(listener: EventuallyListener<T>) =
-   GenericEventuallyConfig<T>(patience = patience, listener = listener)
-
-suspend fun <T> withListener(listener: EventuallyListener<T>, f: suspend () -> T) =
-   GenericEventuallyConfig(listener = listener).invoke(f = f)
-
-
-// region stuff
 
 @ExperimentalKotest
 fun eventually(patience: PatienceConfig) = BasicEventuallyConfig(patience).suppressExceptions(AssertionError::class)
 
 @ExperimentalKotest
-fun eventually(duration: Millis) =
-   eventually(PatienceConfig(duration)).suppressExceptions(AssertionError::class)
+suspend fun <T> eventually(patience: PatienceConfig, f: suspend () -> T) = eventually(patience).invoke(f)
 
 @ExperimentalKotest
-fun eventually(duration: Millis, f: ConcurrencyProducer<Unit>) =
-   eventually(PatienceConfig(duration)).suppressExceptions(AssertionError::class)
+fun eventually(duration: Long) = eventually(PatienceConfig(duration)).suppressExceptions(AssertionError::class)
 
 @ExperimentalKotest
-fun eventually(duration: Millis, interval: Interval) =
-   eventually(PatienceConfig(duration, interval)).suppressExceptions(AssertionError::class)
+suspend fun <T> eventually(duration: Long, f: suspend () -> T) = eventually(duration).invoke(f)
 
 @ExperimentalKotest
-fun eventually(duration: Millis, interval: Interval, f: ConcurrencyProducer<Unit>) =
-   eventually(PatienceConfig(duration, interval)).suppressExceptions(AssertionError::class)
+fun eventually(duration: Long, interval: Interval) = eventually(PatienceConfig(duration, interval)).suppressExceptions(AssertionError::class)
 
 @ExperimentalKotest
-suspend fun until(patience: PatienceConfig, booleanProducer: ConcurrencyProducer<Boolean>) =
-   BasicEventuallyConfig(patience).withListener<Boolean>({ it.result == true }).invoke(f = booleanProducer)
+suspend fun <T> eventually(duration: Long, interval: Interval, f: suspend () -> T) = eventually(duration, interval).invoke(f)
 
 @ExperimentalKotest
-suspend fun until(duration: Millis = PatienceConfig.defaultDuration, interval: Interval = PatienceConfig.defaultInterval, booleanProducer: ConcurrencyProducer<Boolean>) =
+suspend fun until(patience: PatienceConfig, booleanProducer: suspend () -> Boolean) = eventually(patience).withListener<Boolean>({ it.result == true }).invoke(f = booleanProducer)
+
+@ExperimentalKotest
+suspend fun until(
+   duration: Long,
+   interval: Interval = PatienceConfig.defaultInterval,
+   booleanProducer: suspend () -> Boolean
+) =
    until(PatienceConfig(duration, interval), booleanProducer)
 
 @ExperimentalKotest
@@ -172,8 +160,8 @@ class EventuallyShortCircuitException(override val message: String) : Throwable(
 @ExperimentalKotest
 data class EventuallyState<T>(
    val result: T?,
-   val start: Millis,
-   val end: Millis,
+   val start: Long,
+   val end: Long,
    val iteration: Int,
    val firstError: Throwable?,
    val thisError: Throwable?,
@@ -199,11 +187,11 @@ private class EventuallyControl(val config: EventuallyConfig<*>) {
    var firstError: Throwable? = null
    var lastError: Throwable? = null
 
-   var lastDelayPeriod: Millis = 0L
-   var lastInterval: Millis = 0L
+   var lastDelayPeriod: Long = 0L
+   var lastInterval: Long = 0L
 
-   fun exceptionIsNotAllowed(e: Throwable): Boolean {
-      if (firstError==null) {
+   fun exceptionIsNotSuppressable(e: Throwable): Boolean {
+      if (firstError == null) {
          firstError = e
       } else {
          lastError = e
@@ -213,7 +201,7 @@ private class EventuallyControl(val config: EventuallyConfig<*>) {
          return true
       }
 
-      if (config.suppressExceptionIf?.invoke(e)==false) {
+      if (config.suppressExceptionIf?.invoke(e) == false) {
          return true
       }
 
@@ -232,7 +220,7 @@ private class EventuallyControl(val config: EventuallyConfig<*>) {
    /**
     * if we only executed once, and the last delay was > last interval, we didn't get a chance to run again so we run once more before exiting
     */
-   fun isLongWait() = times==1 && lastDelayPeriod > lastInterval
+   fun isLongWait() = times == 1 && lastDelayPeriod > lastInterval
 
    fun buildFailureMessage() = StringBuilder().apply {
       val patienceConfig = config.patience
@@ -254,8 +242,6 @@ private class EventuallyControl(val config: EventuallyConfig<*>) {
    }.toString()
 }
 
-// endregion
-
 @ExperimentalKotest
 suspend operator fun <T> EventuallyConfig<T>.invoke(f: suspend () -> T): T {
    delay(initialDelay)
@@ -269,7 +255,8 @@ suspend operator fun <T> EventuallyConfig<T>.invoke(f: suspend () -> T): T {
       while (control.attemptsRemaining() || control.isLongWait()) {
          try {
             val result = f()
-            val state = EventuallyState<T>(result, control.start, control.end, control.times, control.firstError, control.lastError)
+            val state =
+               EventuallyState(result, control.start, control.end, control.times, control.firstError, control.lastError)
 
             when (this) {
                is BasicEventuallyConfig -> return result
@@ -286,24 +273,23 @@ suspend operator fun <T> EventuallyConfig<T>.invoke(f: suspend () -> T): T {
                }
             }
          } catch (e: Throwable) {
-            val notAllowed = control.exceptionIsNotAllowed(e)
+            val notSuppressable = control.exceptionIsNotSuppressable(e)
             when (this) {
                is BasicEventuallyConfig -> Unit
                is GenericEventuallyConfig -> {
-                  listener?.onEval(
-                     EventuallyState(
-                        null,
-                        control.start,
-                        control.end,
-                        control.times,
-                        control.firstError,
-                        control.lastError
-                     )
+                  val state = EventuallyState<T>(
+                     null,
+                     control.start,
+                     control.end,
+                     control.times,
+                     control.firstError,
+                     control.lastError
                   )
+                  listener?.onEval(state)
                }
             }
 
-            if (notAllowed) {
+            if (notSuppressable) {
                throw e
             }
          }
@@ -316,85 +302,3 @@ suspend operator fun <T> EventuallyConfig<T>.invoke(f: suspend () -> T): T {
 
    throw failure(control.buildFailureMessage())
 }
-//
-//@ExperimentalKotest
-//suspend operator fun <T> BasicEventuallyConfig.invoke(f: suspend () -> T): T {
-//   delay(initialDelay) // TODO: should the initialDelay count against the patienceConfig.duration?
-//
-//   val originalAssertionMode = errorCollector.getCollectionMode()
-//   errorCollector.setCollectionMode(ErrorCollectionMode.Hard)
-//
-//   val control = EventuallyControl(this)
-//
-//   try {
-//      while (control.attemptsRemaining() || control.isLongWait()) {
-//         try {
-//            return f()
-//         } catch (e: Throwable) {
-//            val notAllowed = control.exceptionIsNotAllowed(e)
-//
-//            if (notAllowed) {
-//               throw e
-//            }
-//         }
-//
-//         control.step()
-//      }
-//   } finally {
-//      errorCollector.setCollectionMode(originalAssertionMode)
-//   }
-//
-//   throw failure(control.buildFailureMessage())
-//}
-//
-//@ExperimentalKotest
-//suspend operator fun <T> GenericEventuallyConfig<T>.invoke(f: ConcurrencyProducer<T>): T {
-//   delay(initialDelay) // TODO: should the initialDelay count against the patienceConfig.duration?
-//
-//   val originalAssertionMode = errorCollector.getCollectionMode()
-//   errorCollector.setCollectionMode(ErrorCollectionMode.Hard)
-//
-//   val control = EventuallyControl(this)
-//
-//   try {
-//      while (control.attemptsRemaining() || control.isLongWait()) {
-//         try {
-//            val result = f()
-//            val state =
-//               EventuallyState(result, control.start, control.end, control.times, control.firstError, control.lastError)
-//
-//            when (shortCircuit?.invoke(result)) {
-//               null, false -> Unit
-//               true -> throw EventuallyShortCircuitException("The provided 'shortCircuit' function was triggered: $state")
-//            }
-//
-//            when (listener?.onEval(state)) {
-//               null, true -> return result
-//               false -> control.predicateFailedTimes++
-//            }
-//         } catch (e: Throwable) {
-//            val notAllowed = control.exceptionIsNotAllowed(e)
-//            listener?.onEval(
-//               EventuallyState(
-//                  null,
-//                  control.start,
-//                  control.end,
-//                  control.times,
-//                  control.firstError,
-//                  control.lastError
-//               )
-//            )
-//
-//            if (notAllowed) {
-//               throw e
-//            }
-//         }
-//
-//         control.step()
-//      }
-//   } finally {
-//      errorCollector.setCollectionMode(originalAssertionMode)
-//   }
-//
-//   throw failure(control.buildFailureMessage())
-//}

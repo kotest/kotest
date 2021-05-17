@@ -6,7 +6,7 @@ import io.kotest.mpp.timeInMillis
 import kotlinx.coroutines.delay
 
 @ExperimentalKotest
-data class ContinuallyState(val start: Millis, val end: Millis, val times: Int)
+data class ContinuallyState(val start: Long, val end: Long, val times: Int)
 
 @ExperimentalKotest
 fun interface ContinuallyListener<in T> {
@@ -19,7 +19,7 @@ fun interface ContinuallyListener<in T> {
 
 @ExperimentalKotest
 suspend fun <T> continually(
-   duration: Millis,
+   duration: Long,
    interval: Interval = 25L.fixed(),
    listener: ContinuallyListener<T> = ContinuallyListener.default,
    f: ConcurrencyProducer<T>

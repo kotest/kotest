@@ -19,23 +19,23 @@ interface Interval {
     *
     * @return The duration of the next poll interval
     */
-   fun next(count: Int): Millis
+   fun next(count: Int): Long
 }
 
 /**
  * Generates a fixed (linear) poll interval based on the supplied duration
  */
 @ExperimentalKotest
-class FixedInterval(private val duration: Millis) : Interval {
+class FixedInterval(private val duration: Long) : Interval {
    override fun toString() = "FixedInterval(${::duration.name}=$duration)"
 
-   override fun next(count: Int): Millis {
+   override fun next(count: Int): Long {
       return duration
    }
 }
 
 @ExperimentalKotest
-fun Millis.fixed(): FixedInterval = FixedInterval(this)
+fun Long.fixed(): FixedInterval = FixedInterval(this)
 
 /**
  * Fibonacci delay implements a delay where each duration is calculated as a multiplier
@@ -49,25 +49,27 @@ fun Millis.fixed(): FixedInterval = FixedInterval(this)
  * @param max the maximum duration to clamp the resulting duration to defaults to [FibonacciInterval.defaultMax]
  */
 @ExperimentalKotest
-class FibonacciInterval(private val base: Millis, private val offset: Int, private val max: Millis?) : Interval {
+class FibonacciInterval(private val base: Long, private val offset: Int, private val max: Long?) :
+   Interval {
    init {
       require(offset >= 0) { "Offset must be greater than or equal to 0" }
    }
 
-   override fun toString() = "FibonacciInterval(${::base.name}=$base, ${::offset.name}=$offset, ${::max.name}=${max?.toString() ?: "null"})"
+   override fun toString() =
+      "FibonacciInterval(${::base.name}=$base, ${::offset.name}=$offset, ${::max.name}=${max?.toString() ?: "null"})"
 
-   override fun next(count: Int): Millis {
+   override fun next(count: Int): Long {
       val total = base * fibonacci(offset + count)
       return if (max == null) total else minOf(max, total)
    }
 
    companion object {
-      const val defaultMax: Millis = hour * 2
+      const val defaultMax: Long = hour * 2
    }
 }
 
 @ExperimentalKotest
-fun Millis.fibonacci(max: Millis? = FibonacciInterval.defaultMax) = FibonacciInterval(this, 0, max)
+fun Long.fibonacci(max: Long? = FibonacciInterval.defaultMax) = FibonacciInterval(this, 0, max)
 
 @ExperimentalKotest
 fun fibonacci(n: Int): Int {
@@ -91,23 +93,27 @@ fun fibonacci(n: Int): Int {
  * @param max the maximum duration to clamp the resulting duration to defaults to [ExponentialInterval.defaultMax]
  */
 @ExperimentalKotest
-class ExponentialInterval(private val base: Millis, private val factor: Double, private val max: Millis?) : Interval {
+class ExponentialInterval(private val base: Long, private val factor: Double, private val max: Long?) :
+   Interval {
    override fun toString() = "ExponentialInterval(${::base.name}=$base, ${::factor.name}=$factor, ${::max.name}=$max)"
 
-   override fun next(count: Int): Millis {
+   override fun next(count: Int): Long {
       val total = base * factor.pow(count)
       val duration = total.toLong()
       return if (max == null) duration else minOf(max, duration)
    }
 
    companion object {
-      const val defaultMax: Millis = hour * 2
+      const val defaultMax: Long = hour * 2
       const val defaultFactor = 2.0
    }
 }
 
 @ExperimentalKotest
-fun Millis.exponential(factor: Double = ExponentialInterval.defaultFactor, max: Millis? = ExponentialInterval.defaultMax) =
+fun Long.exponential(
+   factor: Double = ExponentialInterval.defaultFactor,
+   max: Long? = ExponentialInterval.defaultMax
+) =
    ExponentialInterval(this, factor, max)
 
 

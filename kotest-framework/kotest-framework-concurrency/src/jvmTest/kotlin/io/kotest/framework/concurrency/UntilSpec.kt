@@ -7,12 +7,10 @@ import io.kotest.matchers.comparables.shouldBeGreaterThan
 import io.kotest.matchers.comparables.shouldBeLessThan
 import io.kotest.matchers.shouldBe
 import java.time.Duration
-import java.util.concurrent.CountDownLatch
-import java.util.concurrent.TimeUnit
 import kotlin.system.measureTimeMillis
 
-private fun Int.seconds(): Millis = Duration.ofSeconds(this.toLong()).toMillis()
-private fun Int.milliseconds(): Millis = this.toLong()
+private fun Int.seconds(): Long = Duration.ofSeconds(this.toLong()).toMillis()
+private fun Int.milliseconds(): Long = this.toLong()
 
 @OptIn(ExperimentalKotest::class)
 class UntilSpec : FunSpec({
@@ -55,9 +53,10 @@ class UntilSpec : FunSpec({
    test("until with predicate") {
       var attempts = 0
       var t = ""
-      until(5.seconds(), listener = { t == "xxx" }) {
+      until(5.seconds()) {
          attempts++
          t += "x"
+         t == "xxx"
       }
       attempts shouldBe 3
    }
@@ -66,29 +65,19 @@ class UntilSpec : FunSpec({
       measureTimeMillis {
          var attempts = 0
          var t = ""
-         until(1.seconds(), 10.milliseconds().fixed(), { t == "xxxx" }) {
+         until(1.seconds(), 10.milliseconds().fixed()) {
             attempts++
             t += "x"
+            t == "xxxx"
          }
          attempts shouldBe 4
       }.shouldBeLessThan(100)
    }
 
-   test("until with predicate, interval, and listener") {
-      var t = ""
-      val latch = CountDownLatch(5)
-      val result = until(1.seconds(), 10.milliseconds().fixed(), listener = { latch.countDown(); t == "xxxxx" }) {
-         t += "x"
-         t
-      }
-      latch.await(15, TimeUnit.SECONDS) shouldBe true
-      result shouldBe "xxxxx"
-   }
-
    test("until should throw when the predicate doesn't equal true in the time period") {
       shouldThrow<AssertionError> {
-         until(1.seconds(), listener = { it.result == 2 }) {
-            1
+         until(1.seconds()) {
+            false
          }
       }
    }
@@ -97,13 +86,13 @@ class UntilSpec : FunSpec({
       measureTimeMillis {
          var t = ""
          var attempts = 0
-         val result = until(10.seconds(), 10.milliseconds().fibonacci(), { t == "xxxxxx" }) {
+         until(10.seconds(), 10.milliseconds().fibonacci()) {
             attempts++
             t += "x"
-            t
+            t == "xxxxxx"
          }
          attempts shouldBe 6
-         result shouldBe "xxxxxx"
+         t shouldBe "xxxxxx"
       }.shouldBeGreaterThan(100)
    }
 

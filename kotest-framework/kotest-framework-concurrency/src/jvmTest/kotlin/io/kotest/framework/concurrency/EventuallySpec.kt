@@ -25,11 +25,10 @@ import java.util.concurrent.CountDownLatch
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicInteger
-import kotlin.reflect.full.createInstance
 import kotlin.system.measureTimeMillis
 
-private fun Int.seconds(): Millis = Duration.ofSeconds(this.toLong()).toMillis()
-private fun Int.milliseconds(): Millis = this.toLong()
+private fun Int.seconds(): Long = Duration.ofSeconds(this.toLong()).toMillis()
+private fun Int.milliseconds(): Long = this.toLong()
 
 @OptIn(ExperimentalKotest::class)
 class EventuallySpec : FunSpec({
@@ -110,7 +109,7 @@ class EventuallySpec : FunSpec({
       var count = 0
       val message = shouldThrow<AssertionError> {
          eventually(100.milliseconds()) {
-            if (count==0) {
+            if (count == 0) {
                count = 1
                fail("first")
             } else {
@@ -198,7 +197,7 @@ class EventuallySpec : FunSpec({
 
    test("eventually with T predicate") {
       var t = ""
-      eventually(5.seconds()).withListener({ t=="xxxx" }) {
+      eventually(5.seconds()).withListener({ t == "xxxx" }) {
          t += "x"
       }
    }
@@ -207,7 +206,8 @@ class EventuallySpec : FunSpec({
       var t = ""
       val result = eventually(
          5.seconds(),
-         250.milliseconds().fixed()).withListener({ it.result=="xxxxxxxxxxx" }) {
+         250.milliseconds().fixed()
+      ).withListener({ it.result == "xxxxxxxxxxx" }) {
          t += "x"
          t
       }
@@ -217,7 +217,10 @@ class EventuallySpec : FunSpec({
    test("eventually with T predicate, interval, and listener") {
       var t = ""
       val latch = CountDownLatch(5)
-      val result = eventually(5.seconds(), 250.milliseconds().fixed()).withListener({ latch.countDown(); it.result=="xxxxxxxxxxx" }) {
+      val result = eventually(
+         5.seconds(),
+         250.milliseconds().fixed()
+      ).withListener({ latch.countDown(); it.result == "xxxxxxxxxxx" }) {
          t += "x"
          t
       }
@@ -238,7 +241,10 @@ class EventuallySpec : FunSpec({
       var t = ""
       val latch = CountDownLatch(5)
 
-      val result = eventually(10.seconds(), 200.milliseconds().fixed()).withListener({ latch.countDown(); it.result=="xxxxxx" }) {
+      val result = eventually(
+         10.seconds(),
+         200.milliseconds().fixed()
+      ).withListener({ latch.countDown(); it.result == "xxxxxx" }) {
          t += "x"
          t
       }
@@ -260,7 +266,6 @@ class EventuallySpec : FunSpec({
          fast.patience.duration shouldBe 5.seconds()
       }
 
-      slow.invok
       slow {
          5
       }
@@ -330,7 +335,7 @@ class EventuallySpec : FunSpec({
 
    test("allows exception based on predicate") {
       var i = 0
-      eventually(2.seconds()).suppressExceptionIf({ it.message=="foo" }) {
+      eventually(2.seconds()).withSuppressExceptionIf({ it.message == "foo" }) {
          if (i++ < 3) {
             throw AssertionError("foo")
          }
@@ -340,7 +345,7 @@ class EventuallySpec : FunSpec({
    test("does not allow an exception based on predicate") {
       shouldThrow<AssertionError> {
          var i = 0
-         eventually(2.seconds()).suppressExceptionIf({ it.message=="bar" }) {
+         eventually(2.seconds()).withSuppressExceptionIf({ it.message == "bar" }) {
             if (i++ < 3) {
                throw AssertionError("foo")
             }
@@ -349,12 +354,16 @@ class EventuallySpec : FunSpec({
    }
 
    test("allows a set of exceptions") {
-      val exceptions = setOf(FileNotFoundException::class, AssertionError::class, java.lang.RuntimeException::class)
+      val exceptions = setOf(
+         Pair(FileNotFoundException::class, FileNotFoundException()),
+         Pair(AssertionError::class, AssertionError()),
+         Pair(java.lang.RuntimeException::class, java.lang.RuntimeException())
+      )
       var i = 0
 
-      eventually(5.seconds()).suppressExceptions(*exceptions.toTypedArray()) {
+      eventually(5.seconds()).suppressExceptions(*exceptions.map { it.first }.toTypedArray()) {
          exceptions.elementAtOrNull(i++)?.run {
-            throw this.createInstance()
+            throw this.second
          }
       }
 
