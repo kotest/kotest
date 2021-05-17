@@ -3,7 +3,7 @@ package io.kotest.framework.concurrency
 import io.kotest.common.ExperimentalKotest
 
 @ExperimentalKotest
-data class PatienceConfig constructor(
+data class PatienceConfig(
    val duration: Long = defaultDuration,
    val interval: Interval = defaultInterval
 ) {
