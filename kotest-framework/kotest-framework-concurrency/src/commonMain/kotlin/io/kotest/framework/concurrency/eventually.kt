@@ -93,8 +93,9 @@ data class GenericEventuallyConfig<T>(
    fun withShortCircuit(shortCircuit: EventuallyListener<T>) = copy(shortCircuit = shortCircuit)
 }
 
-fun <T> EventuallyConfig<T>.withDuration(duration: Millis, f: suspend () -> T): T = when (this) {
+suspend fun <T> EventuallyConfig<T>.withDuration(duration: Millis, f: suspend () -> T): T = when (this) {
    is BasicEventuallyConfig -> withDuration(duration).invoke(f)
+   is GenericEventuallyConfig -> TODO()
 }
 
 @ExperimentalKotest
