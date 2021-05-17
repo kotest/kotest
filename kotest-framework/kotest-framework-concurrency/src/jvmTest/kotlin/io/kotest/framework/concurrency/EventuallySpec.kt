@@ -260,6 +260,7 @@ class EventuallySpec : FunSpec({
          fast.patience.duration shouldBe 5.seconds()
       }
 
+      slow.invok
       slow {
          5
       }
