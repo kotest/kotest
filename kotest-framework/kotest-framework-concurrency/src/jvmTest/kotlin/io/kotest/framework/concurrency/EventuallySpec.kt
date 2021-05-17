@@ -79,7 +79,7 @@ class EventuallySpec : FunSpec({
 
    test("eventually passes tests that throws FileNotFoundException for some time") {
       val end = System.currentTimeMillis() + 250
-      eventually(5.seconds()).suppressExceptions(FileNotFoundException::class).withListener(listener = { true }) {
+      eventually(5.seconds()).suppressExceptions(FileNotFoundException::class) {
          if (System.currentTimeMillis() < end)
             throw FileNotFoundException("foo")
       }
@@ -133,7 +133,7 @@ class EventuallySpec : FunSpec({
 
    test("eventually allows configuring interval delay") {
       var count = 0
-      eventually(200.milliseconds(), 40.milliseconds().fixed()) {
+      eventually(200.milliseconds()).withInterval(40.milliseconds().fixed()) {
          count += 1
       }
       count.shouldBeLessThan(6)
@@ -147,7 +147,7 @@ class EventuallySpec : FunSpec({
       val counter = AtomicInteger(0)
       withContext(dispatcher) {
          // we won't be able to run in here
-         eventually(1.seconds(), 100.milliseconds().fixed()) {
+         eventually(1.seconds()).withInterval(100.milliseconds().fixed()) {
             counter.incrementAndGet()
          }
       }
@@ -165,7 +165,7 @@ class EventuallySpec : FunSpec({
       withContext(dispatcher) {
          // this will execute once immediately, then the earlier async will steal the thread
          // and then since the delay has been > interval and times == 1, we will execute once more
-         eventually(250.milliseconds(), 25.milliseconds().fixed()) {
+         eventually(250.milliseconds()).withInterval(25.milliseconds().fixed()) {
             counter.incrementAndGet() shouldBe 2
          }
       }
@@ -190,7 +190,7 @@ class EventuallySpec : FunSpec({
    }
 
    test("eventually with boolean predicate and interval") {
-      eventually(5.seconds(), 1.seconds().fixed()) {
+      eventually(5.seconds()).withInterval(1.seconds().fixed()) {
          System.currentTimeMillis() > 0
       }
    }
@@ -204,26 +204,22 @@ class EventuallySpec : FunSpec({
 
    test("eventually with T predicate and interval") {
       var t = ""
-      val result = eventually(
-         5.seconds(),
-         250.milliseconds().fixed()
-      ).withListener({ it.result == "xxxxxxxxxxx" }) {
-         t += "x"
-         t
-      }
+      val result =
+         eventually(5.seconds()).withInterval(250.milliseconds().fixed()).withListener({ it.result == "xxxxxxxxxxx" }) {
+            t += "x"
+            t
+         }
       result shouldBe "xxxxxxxxxxx"
    }
 
    test("eventually with T predicate, interval, and listener") {
       var t = ""
       val latch = CountDownLatch(5)
-      val result = eventually(
-         5.seconds(),
-         250.milliseconds().fixed()
-      ).withListener({ latch.countDown(); it.result == "xxxxxxxxxxx" }) {
-         t += "x"
-         t
-      }
+      val result = eventually(5.seconds()).withInterval(250.milliseconds().fixed())
+         .withListener({ latch.countDown(); it.result == "xxxxxxxxxxx" }) {
+            t += "x"
+            t
+         }
 
       latch.await(15, TimeUnit.SECONDS) shouldBe true
       result shouldBe "xxxxxxxxxxx"
@@ -241,13 +237,11 @@ class EventuallySpec : FunSpec({
       var t = ""
       val latch = CountDownLatch(5)
 
-      val result = eventually(
-         10.seconds(),
-         200.milliseconds().fixed()
-      ).withListener({ latch.countDown(); it.result == "xxxxxx" }) {
-         t += "x"
-         t
-      }
+      val result = eventually(10.seconds()).withInterval(200.milliseconds().fixed())
+         .withListener({ latch.countDown(); it.result == "xxxxxx" }) {
+            t += "x"
+            t
+         }
 
       latch.await(10, TimeUnit.SECONDS) shouldBe true
       result shouldBe "xxxxxx"

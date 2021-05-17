@@ -138,20 +138,11 @@ fun eventually(duration: Long) = eventually(PatienceConfig(duration)).suppressEx
 suspend fun <T> eventually(duration: Long, f: suspend () -> T) = eventually(duration).invoke(f)
 
 @ExperimentalKotest
-fun eventually(duration: Long, interval: Interval) = eventually(PatienceConfig(duration, interval)).suppressExceptions(AssertionError::class)
+suspend fun until(patience: PatienceConfig, booleanProducer: suspend () -> Boolean) =
+   eventually(patience).withListener<Boolean>({ it.result == true }).invoke(f = booleanProducer)
 
 @ExperimentalKotest
-suspend fun <T> eventually(duration: Long, interval: Interval, f: suspend () -> T) = eventually(duration, interval).invoke(f)
-
-@ExperimentalKotest
-suspend fun until(patience: PatienceConfig, booleanProducer: suspend () -> Boolean) = eventually(patience).withListener<Boolean>({ it.result == true }).invoke(f = booleanProducer)
-
-@ExperimentalKotest
-suspend fun until(
-   duration: Long,
-   interval: Interval = PatienceConfig.defaultInterval,
-   booleanProducer: suspend () -> Boolean
-) =
+suspend fun until(duration: Long, interval: Interval = PatienceConfig.defaultInterval, booleanProducer: suspend () -> Boolean) =
    until(PatienceConfig(duration, interval), booleanProducer)
 
 @ExperimentalKotest
