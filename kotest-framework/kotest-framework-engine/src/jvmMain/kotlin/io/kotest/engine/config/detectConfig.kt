@@ -40,6 +40,7 @@ internal fun classgraph(): ClassGraph {
    return ClassGraph()
       .enableClassInfo()
       .enableExternalClasses()
+      .enableAnnotationInfo()
       .ignoreClassVisibility()
       .disableNestedJarScanning()
       .rejectPackages(
