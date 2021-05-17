@@ -11,7 +11,7 @@ import kotlin.reflect.KClass
 typealias ThrowablePredicate = (Throwable) -> Boolean
 
 @ExperimentalKotest
-sealed class EventuallyConfig<T> {
+sealed class EventuallyConfig<out T> {
    abstract val patience: PatienceConfig
    abstract val exceptions: Set<KClass<out Throwable>>
    abstract val suppressExceptionIf: ThrowablePredicate?
@@ -26,7 +26,7 @@ data class BasicEventuallyConfig(
    override val suppressExceptionIf: ThrowablePredicate? = null,
    override val initialDelay: Millis = 0L,
    override val retries: Int = Int.MAX_VALUE,
-) : EventuallyConfig<Any>() {
+) : EventuallyConfig<Nothing>() {
    constructor(
       duration: Millis,
       interval: Interval = PatienceConfig.defaultInterval,
@@ -57,8 +57,8 @@ data class GenericEventuallyConfig<T>(
    override val suppressExceptionIf: ThrowablePredicate? = null,
    override val initialDelay: Millis = 0L,
    override val retries: Int = Int.MAX_VALUE,
-   val listener: EventuallyListener<in T>? = null,
-   val shortCircuit: EventuallyListener<in T>? = null,
+   val listener: EventuallyListener<T>? = null,
+   val shortCircuit: EventuallyListener<T>? = null,
 ) : EventuallyConfig<T>() {
    constructor(
       duration: Millis,
