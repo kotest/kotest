@@ -80,7 +80,7 @@ class EventuallySpec : FunSpec({
 
    test("eventually passes tests that throws FileNotFoundException for some time") {
       val end = System.currentTimeMillis() + 250
-      eventually(5.seconds()).suppressExceptions(FileNotFoundException::class, listener = { true }) {
+      eventually(5.seconds()).suppressExceptions(FileNotFoundException::class).withListener(listener = { true }) {
          if (System.currentTimeMillis() < end)
             throw FileNotFoundException("foo")
       }
@@ -248,7 +248,7 @@ class EventuallySpec : FunSpec({
    }
 
    test("eventually has a shareable configuration") {
-      val slow = EventuallyConfig(duration = 5.seconds())
+      val slow = BasicEventuallyConfig(duration = 5.seconds())
 
       var i = 0
       val fast = slow.copy(retries = 1)
@@ -264,7 +264,7 @@ class EventuallySpec : FunSpec({
          5
       }
 
-      fast(listener = { i==1 }) {
+      fast.withListener(listener = { i == 1 }) {
          i++
       }
 
@@ -273,7 +273,7 @@ class EventuallySpec : FunSpec({
 
    test("eventually throws if retry limit is exceeded") {
       val message = shouldThrow<AssertionError> {
-         eventually().withRetries(2) {
+         eventually(100000).withRetries(2) {
             1 shouldBe 2
          }
       }.message
@@ -309,8 +309,8 @@ class EventuallySpec : FunSpec({
       var state: EventuallyState<Unit>? = null
 
       shouldThrow<Throwable> {
-         eventually(250.milliseconds()).withRetries(1, listener = {
-            if (state==null) {
+         eventually(250.milliseconds()).withRetries(1).withListener(listener = {
+            if (state == null) {
                state = it
             }
             true
