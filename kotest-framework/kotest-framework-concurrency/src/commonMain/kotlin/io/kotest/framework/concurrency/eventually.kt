@@ -225,7 +225,9 @@ suspend fun <T> eventually(duration: Long, test: suspend () -> T): T = eventuall
 suspend fun until(
    config: EventuallyConfig<Boolean>, configure: EventuallyBuilder<Boolean>.() -> Unit, @BuilderInference test: suspend () -> Boolean
 ) {
-   val builder = config.toBuilder().apply(configure)
+   val builder = config.toBuilder()
+   builder.predicate = { it.result == true }
+   builder.apply(configure)
    builder.build().invoke(test)
 }
 
@@ -233,7 +235,9 @@ suspend fun until(
 suspend fun until(
    configure: EventuallyBuilder<Boolean>.() -> Unit, @BuilderInference test: suspend () -> Boolean
 ) {
-   val builder = EventuallyBuilder<Boolean>().apply(configure)
+   val builder = EventuallyBuilder<Boolean>()
+   builder.predicate = { it.result == true }
+   builder.apply(configure)
    builder.build().invoke(test)
 }
 
