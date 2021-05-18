@@ -256,7 +256,7 @@ class EventuallySpec : FunSpec({
       var t = ""
       val latch = CountDownLatch(5)
 
-      val result = eventually(10.seconds()).withInterval(200.milliseconds().fixed())
+      val result = eventually(10.seconds()).withInterval(200.milliseconds())
          .withPredicate({ latch.countDown(); it.result == "xxxxxx" }) {
             t += "x"
             t
@@ -343,7 +343,7 @@ class EventuallySpec : FunSpec({
       state?.firstError?.message shouldContain "1 should never be 2"
    }
 
-   test("allows exception based on predicate") {
+   test("allows exception if predicate is satisfied") {
       var i = 0
       eventually(2.seconds()).withSuppressExceptionIf({ it.message == "foo" }) {
          if (i++ < 3) {
@@ -352,7 +352,7 @@ class EventuallySpec : FunSpec({
       }
    }
 
-   test("does not allow an exception based on predicate") {
+   test("does not allow an exception if predicate is not satisfied") {
       shouldThrow<AssertionError> {
          var i = 0
          eventually(2.seconds()).withSuppressExceptionIf({ it.message == "bar" }) {
@@ -378,5 +378,13 @@ class EventuallySpec : FunSpec({
       }
 
       i shouldBe exceptions.size + 1
+   }
+
+   test("short circuit exception cannot be suppressed") {
+      shouldThrow<EventuallyShortCircuitException> {
+         eventually(5.seconds()).suppressExceptions(EventuallyShortCircuitException::class).withShortCircuit({ true }) {
+            1 shouldBe 1
+         }
+      }
    }
 })

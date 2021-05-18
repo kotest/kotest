@@ -24,6 +24,8 @@ data class BasicContinuallyConfig(
 
    fun withInterval(interval: Interval) = copy(patience = patience.copy(interval = interval))
    suspend fun <T> withInterval(interval: Interval, f: suspend () -> T): T? = withInterval(interval).invoke(f)
+   fun withInterval(interval: Long) = withInterval(interval.fixed())
+   suspend fun <T> withInterval(interval: Long, f: suspend () -> T): T? = withInterval(interval).invoke(f)
 
    fun <T> withListener(listener: ContinuallyListener<T>) = GenericContinuallyConfig(patience = patience, listener = listener)
    suspend fun <T> withListener(listener: ContinuallyListener<T>, f: suspend () -> T): T? = withListener(listener).invoke(f)

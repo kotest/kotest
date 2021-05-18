@@ -44,6 +44,9 @@ data class BasicEventuallyConfig(
    fun withDuration(duration: Long) = copy(patience = patience.copy(duration = duration))
    suspend fun <T> withDuration(duration: Long, f: suspend () -> T): T = withDuration(duration).invoke(f)
 
+   fun withInterval(interval: Long) = withInterval(interval.fixed())
+   suspend fun <T> withInterval(interval: Long, f: suspend () -> T): T = withInterval(interval).invoke(f)
+
    fun withInterval(interval: Interval) = copy(patience = patience.copy(interval = interval))
    suspend fun <T> withInterval(interval: Interval, f: suspend () -> T): T = withInterval(interval).invoke(f)
 
@@ -107,7 +110,10 @@ data class GenericEventuallyConfig<T>(
    fun withDuration(duration: Long) = copy(patience = patience.copy(duration = duration))
    suspend fun withDuration(duration: Long, f: suspend () -> T): T = withDuration(duration).invoke(f)
 
+   fun withInterval(interval: Long) = withInterval(interval.fixed())
    fun withInterval(interval: Interval) = copy(patience = patience.copy(interval = interval))
+
+   suspend fun withInterval(interval: Long, f: suspend () -> T): T = withInterval(interval).invoke(f)
    suspend fun withInterval(interval: Interval, f: suspend () -> T): T = withInterval(interval).invoke(f)
 
    fun withSuppressExceptionIf(suppressExceptionIf: ThrowablePredicate) = copy(suppressExceptionIf = suppressExceptionIf)
