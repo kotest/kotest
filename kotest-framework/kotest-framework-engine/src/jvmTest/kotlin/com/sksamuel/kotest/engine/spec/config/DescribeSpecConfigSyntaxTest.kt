@@ -16,7 +16,7 @@ class DescribeSpecConfigSyntaxTest : DescribeSpec() {
       val counter = AtomicInteger(0)
 
       afterSpec {
-         counter.get() shouldBe 22
+         counter.get() shouldBe 24
       }
 
       describe("a describe with timeout").config(timeout = 2.seconds) {
