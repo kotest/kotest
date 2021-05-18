@@ -6,15 +6,18 @@ slug: changelog.html
 
 ### [Unreleased]
 
+This is a small release which **adds support for Kotlin 1.5** while remaining compatible with Kotlin 1.4.x
+
 #### Bugfixes.
 * Fixed false negative results by Inspectors when used inside assertSoftly. #2245
 
 #### Features / Improvement
-* Adds `IsStableType` annotation which when use on a type, kotest will call `toString` method on that type for creating test name in data test. #2248
-* Adds `WithDataTestName` interface which allow a type to modify the test name generated when use in data test. #2248
+* Test config can now be specified at the test container level in addition to the leaf level #1370 #2050 #2065
+* In data driven tests, added `IsStableType` annotation which when use on a type, kotest will call `toString` method on that type for creating test name. #2248
+* In data driven tests, added `WithDataTestName` interface which allow a type to modify the test name generated. #2248
 * All internal logging now uses lazy functions which offers a significant speed up on large test suites
 * Reflection methods are cached to avoid slow reflection calls.
- 
+
 ### 4.5.0 May 2021
 
 As part of this release, third party extensions were promoted to top level repositories instead of modules inside the main kotest repo.
