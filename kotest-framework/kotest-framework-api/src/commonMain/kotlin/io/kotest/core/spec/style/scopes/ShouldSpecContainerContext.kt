@@ -1,5 +1,6 @@
 package io.kotest.core.spec.style.scopes
 
+import io.kotest.common.ExperimentalKotest
 import io.kotest.core.spec.KotestDsl
 import io.kotest.core.spec.resolvedDefaultConfig
 import io.kotest.core.test.NestedTest
@@ -54,6 +55,13 @@ class ShouldSpecContainerContext(
       )
    }
 
+   @ExperimentalKotest
+   fun context(name: String) = ContainerContextConfigBuilder(
+      createTestName(name),
+      testContext,
+      false
+   ) { ShouldSpecContainerContext(it) }
+
    /**
     * Adds a disabled nested context scope to this scope.
     */
@@ -70,6 +78,13 @@ class ShouldSpecContainerContext(
          )
       )
    }
+
+   @ExperimentalKotest
+   fun xcontext(name: String) = ContainerContextConfigBuilder(
+      createTestName(name),
+      testContext,
+      true
+   ) { ShouldSpecContainerContext(it) }
 
    fun should(name: String) =
       TestWithConfigBuilder(

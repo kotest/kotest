@@ -1,5 +1,6 @@
 package io.kotest.core.test
 
+import io.kotest.common.ExperimentalKotest
 import io.kotest.core.Tag
 import io.kotest.core.extensions.TestCaseExtension
 import io.kotest.core.listeners.TestListener
@@ -30,6 +31,10 @@ class Enabled private constructor(val isEnabled: Boolean, reason: String? = null
 }
 
 data class TestCaseConfig(
+
+   /**
+    * If set to false, this test and any nested tests will be disabled.
+    */
    val enabled: Boolean = true,
    val invocations: Int = 1,
    val threads: Int = 1,
@@ -49,9 +54,18 @@ data class TestCaseConfig(
     * has the same effect as timeout. To set a timeout across all invocations then see [timeout].
     */
    val invocationTimeout: Duration? = null,
+
+   /**
+    * [Tag]s that are applied to this test case, in addition to any tags declared on
+    * the containing spec or parent tests.
+    */
    val tags: Set<Tag> = emptySet(),
    val listeners: List<TestListener> = emptyList(),
    val extensions: List<TestCaseExtension> = emptyList(),
+
+   /**
+    * If this function evaluates to false, then this test and any nested tests will be disabled.
+    */
    val enabledIf: EnabledIf = { true },
    val severity: TestCaseSeverityLevel? = null,
    val enabledOrReasonIf: EnabledOrReasonIf = { Enabled.enabled },
@@ -69,3 +83,54 @@ val xdisabledMessage = Enabled.disabled("Test was disabled using xdisabled")
  * Returns a copy of this test config with the enabled flag set to false, if [xdisabled] is true.
  */
 fun TestCaseConfig.withXDisabled(xdisabled: Boolean) = if (xdisabled) copy(enabledOrReasonIf = { xdisabledMessage }) else this
+
+
+/**
+ * Contains config that is applicable to container tests.
+ */
+@ExperimentalKotest
+data class TestContainerConfig(
+
+   /**
+    * If set to false, this test and any nested tests will be disabled.
+    */
+   val enabled: Boolean = true,
+
+   /**
+    * If this function evaluates to false, then this test and any nested tests will be disabled.
+    */
+   val enabledIf: EnabledIf = { true },
+
+   /**
+    * If this function evaluates to false, then this test and any nested tests will be disabled.
+    */
+   val enabledOrReasonIf: EnabledOrReasonIf = { Enabled.enabled },
+
+   /**
+    * A timeout that applies to the total runtime of this test and any nested tests.
+    *
+    * Nested tests can set their own timeout value which will apply to their segment of the test tree.
+    */
+   val timeout: Duration? = null,
+
+   /**
+    * [Tag]s that are applied to this test case and nested tests.
+    */
+   val tags: Set<Tag> = emptySet(),
+)
+
+@ExperimentalKotest
+fun TestCaseConfig.toTestContainerConfig() =
+   TestContainerConfig(enabled = enabled, enabledOrReasonIf = enabledOrReasonIf, tags = tags, timeout = timeout)
+
+@ExperimentalKotest
+fun TestContainerConfig.toTestCaseConfig() =
+   TestCaseConfig(
+      enabled = this.enabled,
+      enabledOrReasonIf = this.enabledOrReasonIf,
+      tags = this.tags,
+      timeout = this.timeout,
+      invocationTimeout = null,
+      listeners = emptyList(),
+      extensions = emptyList()
+   )

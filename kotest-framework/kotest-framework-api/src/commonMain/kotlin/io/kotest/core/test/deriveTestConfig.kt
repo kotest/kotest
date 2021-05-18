@@ -9,7 +9,7 @@ import kotlin.time.Duration
  * Creates and returns a new [TestCaseConfig] from the given parameters, using values
  * from the receiver as defaults.
  */
-fun TestCaseConfig.deriveTestConfig(
+internal fun TestCaseConfig.deriveTestCaseConfig(
    enabled: Boolean? = null,
    tags: Set<Tag>? = null,
    extensions: List<TestCaseExtension>? = null,
@@ -32,5 +32,23 @@ fun TestCaseConfig.deriveTestConfig(
    invocations = invocations ?: this.invocations,
    threads = threads ?: this.threads,
    severity = severity ?: this.severity,
+   enabledOrReasonIf = enabledOrReasonIf ?: this.enabledOrReasonIf,
+)
+
+/**
+ * Creates and returns a new [TestContainerConfig] from the given parameters, using values
+ * from the receiver as defaults.
+ */
+internal fun TestContainerConfig.deriveTestContainerConfig(
+   enabled: Boolean? = null,
+   enabledIf: EnabledIf? = null,
+   enabledOrReasonIf: EnabledOrReasonIf? = null,
+   tags: Set<Tag>? = null,
+   timeout: Duration? = null,
+) = TestContainerConfig(
+   enabled = enabled ?: this.enabled,
+   tags = tags ?: this.tags,
+   timeout = timeout ?: this.timeout,
+   enabledIf = enabledIf ?: this.enabledIf,
    enabledOrReasonIf = enabledOrReasonIf ?: this.enabledOrReasonIf,
 )

@@ -1,5 +1,6 @@
 package io.kotest.core.spec.style.scopes
 
+import io.kotest.common.ExperimentalKotest
 import io.kotest.core.spec.KotestDsl
 import io.kotest.core.spec.resolvedDefaultConfig
 import io.kotest.core.test.DescriptionName
@@ -51,20 +52,36 @@ class DescribeSpecContainerContext(
       containerTest(testName, false, test)
    }
 
-   suspend fun describe(name: String, test: suspend DescribeSpecContainerContext.() -> Unit) {
-      val testName = createTestName("Describe: ", name, false)
-      containerTest(testName, false, test)
-   }
+   @ExperimentalKotest
+   fun context(name: String) =
+      ContainerContextConfigBuilder(createTestName(name), this, false) { DescribeSpecContainerContext(it) }
 
    suspend fun xcontext(name: String, test: suspend DescribeSpecContainerContext.() -> Unit) {
       val testName = createTestName("Context: ", name, false)
       containerTest(testName, true, test)
    }
 
+   @ExperimentalKotest
+   fun xcontext(name: String) =
+      ContainerContextConfigBuilder(createTestName("Context: ", name, false), this, true) { DescribeSpecContainerContext(it) }
+
+   suspend fun describe(name: String, test: suspend DescribeSpecContainerContext.() -> Unit) {
+      val testName = createTestName("Describe: ", name, false)
+      containerTest(testName, false, test)
+   }
+
+   @ExperimentalKotest
+   fun describe(name: String) =
+      ContainerContextConfigBuilder(createTestName("Describe: ", name, false), this, false) { DescribeSpecContainerContext(it) }
+
    suspend fun xdescribe(name: String, test: suspend DescribeSpecContainerContext.() -> Unit) {
       val testName = createTestName("Describe: ", name, false)
       containerTest(testName, true, test)
    }
+
+   @ExperimentalKotest
+   fun xdescribe(name: String) =
+      ContainerContextConfigBuilder(createTestName("Describe: ", name, false), this, true) { DescribeSpecContainerContext(it) }
 
    private suspend fun containerTest(
       testName: DescriptionName.TestName,
