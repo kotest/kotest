@@ -197,15 +197,16 @@ class EventuallySpec : FunSpec({
 
    test("eventually with T predicate") {
       var t = ""
-      eventually(5.seconds()).withListener({ t == "xxxx" }) {
+      eventually(5.seconds()).withPredicate<String>({ it.result == "xxxx" }) {
          t += "x"
+         t
       }
    }
 
    test("eventually with T predicate and interval") {
       var t = ""
       val result =
-         eventually(5.seconds()).withInterval(250.milliseconds().fixed()).withListener({ it.result == "xxxxxxxxxxx" }) {
+         eventually(5.seconds()).withInterval(250.milliseconds().fixed()).withPredicate({ it.result == "xxxxxxxxxxx" }) {
             t += "x"
             t
          }
@@ -216,7 +217,8 @@ class EventuallySpec : FunSpec({
       var t = ""
       val latch = CountDownLatch(5)
       val result = eventually(5.seconds()).withInterval(250.milliseconds().fixed())
-         .withListener({ latch.countDown(); it.result == "xxxxxxxxxxx" }) {
+         .withListener<String>({ latch.countDown() })
+         .withPredicate({ it.result == "xxxxxxxxxxx" }) {
             t += "x"
             t
          }
@@ -225,9 +227,26 @@ class EventuallySpec : FunSpec({
       result shouldBe "xxxxxxxxxxx"
    }
 
+   test("eventually with T predicate, listener, and shortCircuit") {
+      var t = ""
+      val message = shouldThrow<EventuallyShortCircuitException> {
+         eventually(5.seconds()).withInterval(250.milliseconds().fixed())
+            .withShortCircuit<String>({ it.result == "xx" })
+            .withPredicate({ it.result == "xxxxxxxxxxx" }) {
+               t += "x"
+               t
+            }
+      }.message
+
+      all(message) {
+         this.shouldContain("The provided shortCircuit function caused eventually to exit early")
+         this.shouldContain("EventuallyState(result=xx")
+      }
+   }
+
    test("eventually fails tests that fail a predicate") {
       shouldThrow<AssertionError> {
-         eventually(1.seconds()).withListener({ it.result == 2 }) {
+         eventually(1.seconds()).withPredicate({ it.result == 2 }) {
             1
          }
       }
@@ -238,7 +257,7 @@ class EventuallySpec : FunSpec({
       val latch = CountDownLatch(5)
 
       val result = eventually(10.seconds()).withInterval(200.milliseconds().fixed())
-         .withListener({ latch.countDown(); it.result == "xxxxxx" }) {
+         .withPredicate({ latch.countDown(); it.result == "xxxxxx" }) {
             t += "x"
             t
          }
@@ -247,15 +266,13 @@ class EventuallySpec : FunSpec({
       result shouldBe "xxxxxx"
    }
 
-   test("eventually has a shareable configuration") {
+   test("eventually has a shareable configuration and can be converted from basic config to generic config") {
       val slow = BasicEventuallyConfig(duration = 5.seconds())
-
-      var i = 0
-      val fast = slow.copy(retries = 1)
+      val fast = slow.copy(retries = 5)
 
       assertSoftly {
          slow.retries shouldBe Int.MAX_VALUE
-         fast.retries shouldBe 1
+         fast.retries shouldBe 5
          slow.patience.duration shouldBe 5.seconds()
          fast.patience.duration shouldBe 5.seconds()
       }
@@ -264,11 +281,13 @@ class EventuallySpec : FunSpec({
          5
       }
 
-      fast.withListener(listener = { i == 1 }) {
-         i++
+      var t = ""
+      fast.withPredicate(predicate = { it.result == "xxx" }) {
+         t += "x"
+         t
       }
 
-      i shouldBe 1
+      t shouldBe "xxx"
    }
 
    test("eventually throws if retry limit is exceeded") {
@@ -313,7 +332,6 @@ class EventuallySpec : FunSpec({
             if (state == null) {
                state = it
             }
-            true
          }) {
             withClue("1 should never be 2") {
                1 shouldBe 2
@@ -322,8 +340,6 @@ class EventuallySpec : FunSpec({
       }
 
       state.shouldNotBeNull()
-      state?.result.shouldBeNull()
-
       state?.firstError?.message shouldContain "1 should never be 2"
    }
 

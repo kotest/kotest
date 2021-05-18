@@ -45,19 +45,14 @@ data class GenericContinuallyConfig<T>(
 
    fun withListener(listener: ContinuallyListener<T>) = copy(listener = listener)
    suspend fun withListener(listener: ContinuallyListener<T>, f: suspend () -> T): T? = withListener(listener).invoke(f)
-
 }
 
 @ExperimentalKotest
-data class ContinuallyState(val start: Long, val end: Long, val times: Int)
+data class ContinuallyState<T>(val result: T, val start: Long, val end: Long, val times: Int)
 
 @ExperimentalKotest
-fun interface ContinuallyListener<in T> {
-   fun onEval(t: T, state: ContinuallyState)
-
-   companion object {
-      val default = ContinuallyListener<Any?> { _, _ -> }
-   }
+fun interface ContinuallyListener<T> {
+   fun onEval(state: ContinuallyState<T>)
 }
 
 @ExperimentalKotest
@@ -79,7 +74,7 @@ suspend fun <T> ContinuallyConfig<T>.invoke(f: suspend () -> T): T? {
 
          when (this) {
             is BasicContinuallyConfig -> Unit
-            is GenericContinuallyConfig -> listener?.onEval(result, ContinuallyState(start, end, times))
+            is GenericContinuallyConfig -> listener?.onEval(ContinuallyState(result, start, end, times))
          }
       } catch (e: AssertionError) {
          // if this is the first time the check was executed then just rethrow the underlying error

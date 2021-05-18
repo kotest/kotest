@@ -62,8 +62,11 @@ data class BasicEventuallyConfig(
    fun <T> withListener(listener: EventuallyListener<T>) = GenericEventuallyConfig(patience, exceptions, suppressExceptionIf, initialDelay, retries, listener = listener)
    suspend fun <T> withListener(listener: EventuallyListener<T>, f: suspend () -> T): T = withListener(listener).invoke(f)
 
-   fun <T> withShortCircuit(shortCircuit: EventuallyListener<T>) = GenericEventuallyConfig(patience, exceptions, suppressExceptionIf, initialDelay, retries, shortCircuit = shortCircuit)
-   suspend fun <T> withShortCircuit(shortCircuit: EventuallyListener<T>, f: suspend () -> T): T = withShortCircuit(shortCircuit).invoke(f)
+   fun <T> withPredicate(predicate: EventuallyPredicate<T>) = GenericEventuallyConfig(patience, exceptions, suppressExceptionIf, initialDelay, retries, predicate = predicate)
+   suspend fun <T> withPredicate(predicate: EventuallyPredicate<T>, f: suspend () -> T): T = withPredicate(predicate).invoke(f)
+
+   fun <T> withShortCircuit(shortCircuit: EventuallyPredicate<T>) = GenericEventuallyConfig(patience, exceptions, suppressExceptionIf, initialDelay, retries, shortCircuit = shortCircuit)
+   suspend fun <T> withShortCircuit(shortCircuit: EventuallyPredicate<T>, f: suspend () -> T): T = withShortCircuit(shortCircuit).invoke(f)
 }
 
 @ExperimentalKotest
@@ -74,7 +77,8 @@ data class GenericEventuallyConfig<T>(
    override val initialDelay: Long = 0L,
    override val retries: Int = Int.MAX_VALUE,
    val listener: EventuallyListener<T>? = null,
-   val shortCircuit: EventuallyListener<T>? = null,
+   val predicate: EventuallyPredicate<T>? = null,
+   val shortCircuit: EventuallyPredicate<T>? = null,
 ) : EventuallyConfig<T>() {
    constructor(
       duration: Long,
@@ -84,7 +88,7 @@ data class GenericEventuallyConfig<T>(
       initialDelay: Long = 0L,
       retries: Int = Int.MAX_VALUE,
       listener: EventuallyListener<T>? = null,
-      shortCircuit: EventuallyListener<T>? = null,
+      shortCircuit: EventuallyPredicate<T>? = null,
    ) : this(
       PatienceConfig(duration, interval),
       exceptions,
@@ -121,8 +125,11 @@ data class GenericEventuallyConfig<T>(
    fun withListener(listener: EventuallyListener<T>) = copy(listener = listener)
    suspend fun withListener(listener: EventuallyListener<T>, f: suspend () -> T): T = withListener(listener).invoke(f)
 
-   fun withShortCircuit(shortCircuit: EventuallyListener<T>) = copy(shortCircuit = shortCircuit)
-   suspend fun withShortCircuit(shortCircuit: EventuallyListener<T>, f: suspend () -> T): T = withShortCircuit(shortCircuit).invoke(f)
+   fun withPredicate(predicate: EventuallyPredicate<T>) = copy(predicate = predicate)
+   suspend fun withPredicate(predicate: EventuallyPredicate<T>, f: suspend () -> T): T = withPredicate(predicate).invoke(f)
+
+   fun withShortCircuit(shortCircuit: EventuallyPredicate<T>) = copy(shortCircuit = shortCircuit)
+   suspend fun withShortCircuit(shortCircuit: EventuallyPredicate<T>, f: suspend () -> T): T = withShortCircuit(shortCircuit).invoke(f)
 }
 
 @ExperimentalKotest
@@ -153,18 +160,23 @@ data class EventuallyState<T>(
    val result: T?,
    val start: Long,
    val end: Long,
-   val iteration: Int,
+   val times: Int,
    val firstError: Throwable?,
    val thisError: Throwable?,
 )
 
 @ExperimentalKotest
-fun interface EventuallyListener<T> {
+fun interface EventuallyPredicate<T> {
    fun onEval(state: EventuallyState<T>): Boolean
 
    companion object {
-      val default = EventuallyListener<Any?> { it.thisError==null }
+      val default = EventuallyPredicate<Any?> { it.thisError==null }
    }
+}
+
+@ExperimentalKotest
+fun interface EventuallyListener<T> {
+   fun onEval(state: EventuallyState<T>)
 }
 
 @ExperimentalKotest
@@ -199,7 +211,10 @@ private class EventuallyControl(val config: EventuallyConfig<*>) {
       return !config.exceptions.any { it.isInstance(e) }
    }
 
+   fun <T> toState(result: T?) = EventuallyState<T>(result = result, start = start, end = end, times = times, firstError = firstError, thisError = lastError)
+
    suspend fun step() {
+
       lastInterval = config.patience.interval.next(++times)
       val delayMark = timeInMillis()
       delay(lastInterval)
@@ -246,18 +261,19 @@ suspend operator fun <T> EventuallyConfig<T>.invoke(f: suspend () -> T): T {
       while (control.attemptsRemaining() || control.isLongWait()) {
          try {
             val result = f()
-            val state =
-               EventuallyState(result, control.start, control.end, control.times, control.firstError, control.lastError)
+            val state = control.toState(result)
 
             when (this) {
                is BasicEventuallyConfig -> return result
                is GenericEventuallyConfig -> {
+                  listener?.onEval(state)
+
                   when (shortCircuit?.onEval(state)) {
                      null, false -> Unit
-                     true -> throw EventuallyShortCircuitException("The provided 'shortCircuit' function caused eventually to exit early: $state")
+                     true -> throw EventuallyShortCircuitException("The provided shortCircuit function caused eventually to exit early: $state")
                   }
 
-                  when (listener?.onEval(state)) {
+                  when (predicate?.onEval(state)) {
                      null, true -> return result
                      false -> control.predicateFailedTimes++
                   }
@@ -267,17 +283,7 @@ suspend operator fun <T> EventuallyConfig<T>.invoke(f: suspend () -> T): T {
             val notSuppressable = control.exceptionIsNotSuppressable(e)
             when (this) {
                is BasicEventuallyConfig -> Unit
-               is GenericEventuallyConfig -> {
-                  val state = EventuallyState<T>(
-                     null,
-                     control.start,
-                     control.end,
-                     control.times,
-                     control.firstError,
-                     control.lastError
-                  )
-                  listener?.onEval(state)
-               }
+               is GenericEventuallyConfig -> listener?.onEval(control.toState(null))
             }
 
             if (notSuppressable) {

@@ -6,7 +6,7 @@ import kotlin.math.pow
 private const val hour = 3_600_000L
 
 /**
- * A [Interval] determines how often Kotest will invoke the predicate function for an [until] block.
+ * An [Interval] determines how often Kotest will invoke a predicate function for an [eventually], [until], or [continually] block.
  */
 @ExperimentalKotest
 interface Interval {
@@ -22,9 +22,6 @@ interface Interval {
    fun next(count: Int): Long
 }
 
-/**
- * Generates a fixed (linear) poll interval based on the supplied duration
- */
 @ExperimentalKotest
 class FixedInterval(private val duration: Long) : Interval {
    override fun toString() = "FixedInterval(${::duration.name}=$duration)"
