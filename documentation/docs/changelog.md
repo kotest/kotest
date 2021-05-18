@@ -17,6 +17,7 @@ This is a small release which **adds support for Kotlin 1.5** while remaining co
 * In data driven tests, added `WithDataTestName` interface which allow a type to modify the test name generated. #2248
 * All internal logging now uses lazy functions which offers a significant speed up on large test suites
 * Reflection methods are cached to avoid slow reflection calls.
+* Added experimental versions of `eventually`, `until`, and `continually` that don't use `kotlin.time` internally. #2149
 
 ### 4.5.0 May 2021
 
