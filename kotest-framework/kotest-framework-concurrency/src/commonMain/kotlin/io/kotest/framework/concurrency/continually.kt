@@ -16,11 +16,7 @@ data class ContinuallyConfig<T>(
    val interval: Interval = defaultInterval,
    val initialDelay: Long = defaultDelay,
    val listener: ContinuallyListener<T>? = null,
-) {
-   fun <U> override(other: ContinuallyConfig<U>): ContinuallyConfig<U> = ContinuallyConfig(
-      duration = other.duration, interval = other.interval, initialDelay = other.initialDelay, listener = other.listener
-   )
-}
+)
 
 @ExperimentalKotest
 class ContinuallyBuilder<T> {
@@ -40,12 +36,6 @@ class ContinuallyBuilder<T> {
       interval = config.interval
       initialDelay = config.initialDelay
       listener = config.listener
-   }
-
-   constructor(config: ContinuallyConfig<Nothing>) {
-      duration = config.duration
-      interval = config.interval
-      initialDelay = config.initialDelay
    }
 }
 
@@ -84,19 +74,9 @@ private suspend fun <T> ContinuallyConfig<T>.invoke(f: suspend () -> T): T? {
 
 @ExperimentalKotest
 suspend fun <T> continually(
-   config: ContinuallyConfig<Nothing>, configure: ContinuallyBuilder<T>.() -> Unit, @BuilderInference test: suspend () -> T
-): T? {
-   val builder = ContinuallyBuilder<T>(config)
-   builder.configure()
-   return builder.toConfig().invoke(test)
-}
-
-@ExperimentalKotest
-suspend fun <T> continually(
    config: ContinuallyConfig<T>, configure: ContinuallyBuilder<T>.() -> Unit, @BuilderInference test: suspend () -> T
 ): T? {
-   val builder = ContinuallyBuilder(config)
-   builder.configure()
+   val builder = ContinuallyBuilder(config).apply(configure)
    return builder.toConfig().invoke(test)
 }
 
@@ -104,14 +84,13 @@ suspend fun <T> continually(
 suspend fun <T> continually(
    configure: ContinuallyBuilder<T>.() -> Unit, @BuilderInference test: suspend () -> T
 ): T? {
-   val builder = ContinuallyBuilder<T>()
-   builder.configure()
+   val builder = ContinuallyBuilder<T>().apply(configure)
    return builder.toConfig().invoke(test)
 }
 
 @ExperimentalTime
 @ExperimentalKotest
-suspend fun <T> continually(duration: Duration, test: suspend () -> T): T? = continually(duration.inWholeMilliseconds, test)
+suspend fun <T> continually(duration: Duration, test: suspend () -> T): T? = continually(duration.toLongMilliseconds(), test)
 
 @ExperimentalKotest
 suspend fun <T> continually(duration: Long, test: suspend () -> T): T? = continually({ this.duration = duration }, test)

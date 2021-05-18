@@ -25,34 +25,7 @@ data class EventuallyConfig<T>(
    val listener: EventuallyStateFunction<T, Unit>? = null,
    val predicate: EventuallyStateFunction<T, Boolean>? = null,
    val shortCircuit: EventuallyStateFunction<T, Boolean>? = null,
-) {
-   fun <U> override(other: EventuallyConfig<U>): EventuallyConfig<U> = EventuallyConfig(
-      duration = other.duration, interval = other.interval, initialDelay = other.initialDelay, retries = other.retries,
-      suppressExceptions = other.suppressExceptions, suppressExceptionIf = other.suppressExceptionIf,
-      listener = other.listener, predicate = other.predicate, shortCircuit = other.shortCircuit
-   )
-
-   fun <U> override(other: EventuallyConfig<Nothing>): EventuallyConfig<U> = EventuallyConfig(
-      duration = other.duration, interval = other.interval, initialDelay = other.initialDelay, retries = other.retries,
-      suppressExceptions = other.suppressExceptions, suppressExceptionIf = other.suppressExceptionIf,
-   )
-}
-
-fun <T> EventuallyConfig<Unit>.withPredicate(predicate: EventuallyStateFunction<T, Boolean>) = EventuallyConfig<T>(
-   duration = duration,
-   interval = interval,
-   predicate = predicate,
 )
-
-@ExperimentalKotest
-private fun <T> EventuallyConfig<Nothing>.toBuilder() = EventuallyBuilder<T>().apply {
-   duration = this@toBuilder.duration
-   interval = this@toBuilder.interval
-   initialDelay = this@toBuilder.initialDelay
-   retries = this@toBuilder.retries
-   suppressExceptions = this@toBuilder.suppressExceptions
-   suppressExceptionIf = this@toBuilder.suppressExceptionIf
-}
 
 @ExperimentalKotest
 private fun <T> EventuallyConfig<T>.toBuilder() = EventuallyBuilder<T>().apply {
@@ -79,14 +52,12 @@ class EventuallyBuilder<T> {
    var predicate: EventuallyStateFunction<T, Boolean>? = null
    var shortCircuit: EventuallyStateFunction<T, Boolean>? = null
 
-   fun toConfig() = EventuallyConfig(
+   fun build() = EventuallyConfig(
       duration = duration, interval = interval, initialDelay = initialDelay, retries = retries,
       suppressExceptions = suppressExceptions, suppressExceptionIf = suppressExceptionIf,
       listener = listener, predicate = predicate, shortCircuit = shortCircuit
    )
 }
-
-
 
 @ExperimentalKotest
 class EventuallyShortCircuitException(override val message: String) : Throwable()
@@ -169,13 +140,7 @@ private class EventuallyControl(val config: EventuallyConfig<*>) {
 }
 
 @ExperimentalKotest
-suspend operator fun <T> EventuallyConfig<Nothing>.invoke(f: suspend () -> T): T = this.toBuilder<T>().toConfig().runEventually(f)
-
-@ExperimentalKotest
-suspend operator fun <T> EventuallyConfig<T>.invoke(f: suspend () -> T): T = this.toBuilder().toConfig().runEventually(f)
-
-@ExperimentalKotest
-suspend fun <T> EventuallyConfig<T>.runEventually(f: suspend () -> T): T {
+suspend operator fun <T> EventuallyConfig<T>.invoke(f: suspend () -> T): T {
    delay(initialDelay)
 
    val originalAssertionMode = errorCollector.getCollectionMode()
@@ -225,16 +190,16 @@ suspend fun <T> eventually(
    configure: EventuallyBuilder<T>.() -> Unit,
    @BuilderInference test: suspend () -> T
 ): T {
-   val builder = config.toBuilder().apply(configure)
-   return builder.toConfig().invoke(test)
+   val resolvedConfig = config.toBuilder().apply(configure).build()
+   return resolvedConfig.invoke(test)
 }
 
 @ExperimentalKotest
 suspend fun <T> eventually(
    configure: EventuallyBuilder<T>.() -> Unit, @BuilderInference test: suspend () -> T
 ): T {
-   val builder = EventuallyBuilder<T>().apply(configure)
-   return builder.toConfig().invoke(test)
+   val config = EventuallyBuilder<T>().apply(configure).build()
+   return config.invoke(test)
 }
 
 @ExperimentalKotest
@@ -247,7 +212,7 @@ suspend fun <T> eventually(
 @ExperimentalTime
 @ExperimentalKotest
 suspend fun <T> eventually(duration: Duration, test: suspend () -> T): T =
-   eventually(duration.inWholeMilliseconds, test)
+   eventually(duration.toLongMilliseconds(), test)
 
 @ExperimentalKotest
 suspend fun <T> eventually(duration: Long, test: suspend () -> T): T = eventually({ this.duration = duration }, test)
@@ -258,19 +223,10 @@ suspend fun <T> eventually(duration: Long, test: suspend () -> T): T = eventuall
 
 @ExperimentalKotest
 suspend fun until(
-   config: EventuallyConfig<Nothing>, configure: EventuallyBuilder<Boolean>.() -> Unit, @BuilderInference test: suspend () -> Boolean
-) {
-   val builder = config.toBuilder<Boolean>().apply(configure)
-   builder.predicate = { it.result == true }
-   builder.toConfig().invoke(test)
-}
-
-@ExperimentalKotest
-suspend fun until(
    config: EventuallyConfig<Boolean>, configure: EventuallyBuilder<Boolean>.() -> Unit, @BuilderInference test: suspend () -> Boolean
 ) {
    val builder = config.toBuilder().apply(configure)
-   builder.toConfig().invoke(test)
+   builder.build().invoke(test)
 }
 
 @ExperimentalKotest
@@ -278,14 +234,14 @@ suspend fun until(
    configure: EventuallyBuilder<Boolean>.() -> Unit, @BuilderInference test: suspend () -> Boolean
 ) {
    val builder = EventuallyBuilder<Boolean>().apply(configure)
-   builder.toConfig().invoke(test)
+   builder.build().invoke(test)
 }
 
 @ExperimentalTime
 @ExperimentalKotest
-suspend fun until(duration: Duration, test: suspend () -> Boolean) = until(duration.inWholeMilliseconds, test)
+suspend fun until(duration: Duration, test: suspend () -> Boolean) = until(millis = duration.toLongMilliseconds(), test)
 
 @ExperimentalKotest
-suspend fun until(duration: Long, test: suspend () -> Boolean) = until({ this.duration = duration }, test)
+suspend fun until(millis: Long, test: suspend () -> Boolean) = until({ this.duration = millis }, test)
 
 // endregion

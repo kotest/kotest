@@ -304,53 +304,31 @@ class EventuallySpec : FunSpec({
       result shouldBe "xxxxxx"
    }
 
-   test("eventually can accept shareable configuration with Unit as the type argument") {
-      val slow = EventuallyConfig<Unit>(duration = 5.seconds())
-
-      val a = eventually(slow) {
-         5
-      }
-
-      a shouldBe 5
-   }
+   fun <T> slow() = EventuallyConfig<T>(interval = 250.seconds().fixed())
 
    test("eventually can accept shareable configuration with Unit as the type and overrides") {
-      val slow = EventuallyConfig<Unit>(5.seconds())
-
-      val a = eventually(slow, { interval = 250.seconds().fixed() }) {
+      val a = eventually(slow()) {
          5
       }
 
       a shouldBe 5
+
+      val b = eventually(slow(), {
+         predicate = { it.result == "hi" }
+      }) {
+         "hi"
+      }
+
+      b shouldBe "hi"
    }
 
-   test("eventually has a shareable configuration and can be converted from basic config to generic config") {
-      val slow = BasicEventuallyConfig(duration = 5.seconds())
-      val fast = slow.copy(retries = 5)
-
-      assertSoftly {
-         slow.retries shouldBe Int.MAX_VALUE
-         fast.retries shouldBe 5
-         slow.patience.duration shouldBe 5.seconds()
-         fast.patience.duration shouldBe 5.seconds()
-      }
-
-      slow {
-         5
-      }
-
-      var t = ""
-      fast.withPredicate(predicate = { it.result == "xxx" }) {
-         t += "x"
-         t
-      }
-
-      t shouldBe "xxx"
-   }
 
    test("eventually throws if retry limit is exceeded") {
       val message = shouldThrow<AssertionError> {
-         eventually(100000).withRetries(2) {
+         eventually({
+            duration = 100000
+            retries = 2
+         }) {
             1 shouldBe 2
          }
       }.message
@@ -364,7 +342,7 @@ class EventuallySpec : FunSpec({
       val target = System.currentTimeMillis() + 1000
       val message = shouldThrow<AssertionError> {
          all {
-            withClue("Eventually which should pass") {
+            withClue("Eventually that should pass") {
                eventually(2.seconds()) {
                   System.currentTimeMillis() shouldBeGreaterThan target
                }
