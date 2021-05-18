@@ -38,6 +38,12 @@ data class EventuallyConfig<T>(
    )
 }
 
+fun <T> EventuallyConfig<Unit>.withPredicate(predicate: EventuallyStateFunction<T, Boolean>) = EventuallyConfig<T>(
+   duration = duration,
+   interval = interval,
+   predicate = predicate,
+)
+
 @ExperimentalKotest
 private fun <T> EventuallyConfig<Nothing>.toBuilder() = EventuallyBuilder<T>().apply {
    duration = this@toBuilder.duration
@@ -215,15 +221,9 @@ suspend fun <T> EventuallyConfig<T>.runEventually(f: suspend () -> T): T {
 
 @ExperimentalKotest
 suspend fun <T> eventually(
-   config: EventuallyConfig<Nothing>, configure: EventuallyBuilder<T>.() -> Unit, @BuilderInference test: suspend () -> T
-): T {
-   val builder = config.toBuilder<T>().apply(configure)
-   return builder.toConfig().invoke(test)
-}
-
-@ExperimentalKotest
-suspend fun <T> eventually(
-   config: EventuallyConfig<T>, configure: EventuallyBuilder<T>.() -> Unit, @BuilderInference test: suspend () -> T
+   config: EventuallyConfig<T>,
+   configure: EventuallyBuilder<T>.() -> Unit,
+   @BuilderInference test: suspend () -> T
 ): T {
    val builder = config.toBuilder().apply(configure)
    return builder.toConfig().invoke(test)
@@ -237,9 +237,17 @@ suspend fun <T> eventually(
    return builder.toConfig().invoke(test)
 }
 
+@ExperimentalKotest
+suspend fun <T> eventually(
+   config: EventuallyConfig<T>, @BuilderInference test: suspend () -> T
+): T {
+   return config.invoke(test)
+}
+
 @ExperimentalTime
 @ExperimentalKotest
-suspend fun <T> eventually(duration: Duration, test: suspend () -> T): T = eventually(duration.inWholeMilliseconds, test)
+suspend fun <T> eventually(duration: Duration, test: suspend () -> T): T =
+   eventually(duration.inWholeMilliseconds, test)
 
 @ExperimentalKotest
 suspend fun <T> eventually(duration: Long, test: suspend () -> T): T = eventually({ this.duration = duration }, test)

@@ -32,7 +32,8 @@ private fun Int.milliseconds(): Long = this.toLong()
 
 @OptIn(ExperimentalKotest::class)
 class EventuallySpec : FunSpec({
-   test("eventually pass working tests") {
+
+   test("eventually should immediately pass working tests") {
       eventually(5.seconds()) {
          System.currentTimeMillis()
       }
@@ -303,16 +304,24 @@ class EventuallySpec : FunSpec({
       result shouldBe "xxxxxx"
    }
 
-   test("eventually can accept shareable configuration with Nothing as the type argument") {
-      val slow = EventuallyConfig<Nothing>(5.seconds())
+   test("eventually can accept shareable configuration with Unit as the type argument") {
+      val slow = EventuallyConfig<Unit>(duration = 5.seconds())
 
-      val a = slow {
+      val a = eventually(slow) {
          5
       }
 
       a shouldBe 5
+   }
 
+   test("eventually can accept shareable configuration with Unit as the type and overrides") {
+      val slow = EventuallyConfig<Unit>(5.seconds())
 
+      val a = eventually(slow, { interval = 250.seconds().fixed() }) {
+         5
+      }
+
+      a shouldBe 5
    }
 
    test("eventually has a shareable configuration and can be converted from basic config to generic config") {
