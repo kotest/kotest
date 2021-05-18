@@ -46,9 +46,9 @@ internal fun TestContainerConfig.deriveTestContainerConfig(
    tags: Set<Tag>? = null,
    timeout: Duration? = null,
 ) = TestContainerConfig(
-   enabled = enabled ?: this.enabled,
    tags = tags ?: this.tags,
    timeout = timeout ?: this.timeout,
+   enabled = enabled ?: this.enabled,
    enabledIf = enabledIf ?: this.enabledIf,
    enabledOrReasonIf = enabledOrReasonIf ?: this.enabledOrReasonIf,
 )

@@ -1,6 +1,7 @@
 package com.sksamuel.kotest.engine.spec.config
 
 import io.kotest.core.spec.style.DescribeSpec
+import io.kotest.core.test.Enabled
 import io.kotest.matchers.shouldBe
 import java.util.concurrent.atomic.AtomicInteger
 import kotlin.time.seconds
@@ -43,6 +44,11 @@ class DescribeSpecConfigSyntaxTest : DescribeSpec() {
       }
 
       describe("a describe disabled by an enabled function").config(enabledIf = { System.currentTimeMillis() == 0L }) {
+         error("boom")
+         it("an inner test") { error("boom") }
+      }
+
+      describe("a describe disabled by an enabled function with reason").config(enabledOrReasonIf = { Enabled.disabled }) {
          error("boom")
          it("an inner test") { error("boom") }
       }

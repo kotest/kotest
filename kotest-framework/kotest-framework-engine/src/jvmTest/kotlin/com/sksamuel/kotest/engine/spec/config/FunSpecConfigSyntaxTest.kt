@@ -19,7 +19,7 @@ class FunSpecConfigSyntaxTest : FunSpec() {
       val counter = AtomicInteger(0)
 
       afterSpec {
-         counter.get() shouldBe 20
+         counter.get() shouldBe 21
       }
 
       test("a test disabled by an enabled flag").config(enabled = false) {
@@ -66,7 +66,9 @@ class FunSpecConfigSyntaxTest : FunSpec() {
 
       context("an outer context with multiple tags").config(tags = setOf(Tag1, Tag2)) {
          counter.incrementAndGet()
-         test("an inner test") {}
+         test("an inner test") {
+            counter.incrementAndGet()
+         }
       }
 
       context("an outer context disabled by an enabled flag").config(enabled = false) {

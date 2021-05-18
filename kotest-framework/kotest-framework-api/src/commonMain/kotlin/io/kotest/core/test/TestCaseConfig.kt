@@ -15,6 +15,7 @@ class Enabled private constructor(val isEnabled: Boolean, reason: String? = null
 
    companion object {
       val enabled = Enabled(true)
+      val disabled = Enabled(false, null)
       fun disabled(reason: String) = Enabled(false, reason)
 
       fun fold(es: Iterable<Enabled>): Enabled {
@@ -121,12 +122,19 @@ data class TestContainerConfig(
 
 @ExperimentalKotest
 fun TestCaseConfig.toTestContainerConfig() =
-   TestContainerConfig(enabled = enabled, enabledOrReasonIf = enabledOrReasonIf, tags = tags, timeout = timeout)
+   TestContainerConfig(
+      enabled = enabled,
+      enabledIf = enabledIf,
+      enabledOrReasonIf = enabledOrReasonIf,
+      tags = tags,
+      timeout = timeout
+   )
 
 @ExperimentalKotest
 fun TestContainerConfig.toTestCaseConfig() =
    TestCaseConfig(
       enabled = this.enabled,
+      enabledIf = this.enabledIf,
       enabledOrReasonIf = this.enabledOrReasonIf,
       tags = this.tags,
       timeout = this.timeout,

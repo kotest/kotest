@@ -43,11 +43,11 @@ class ContainerContextConfigBuilder<T>(
       context.registerTestCase(
          createNestedTest(
             name = name,
-            xdisabled = true,
+            xdisabled = xdisabled,
             config = activeConfig.toTestCaseConfig(),
             type = TestType.Container,
             descriptor = null,
-            factoryId = null,
+            factoryId = context.testCase.factoryId,
             test = { contextFn(this).test() }
          )
       )
