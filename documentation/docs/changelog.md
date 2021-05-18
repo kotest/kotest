@@ -4,11 +4,12 @@ sidebar_label: Changelog
 slug: changelog.html
 ---
 
-### [Unreleased]
+### 4.6.0 May 2021
 
 This is a small release which **adds support for Kotlin 1.5** while remaining compatible with Kotlin 1.4.x
 
 #### Bugfixes.
+
 * Fixed false negative results by Inspectors when used inside assertSoftly. #2245
 
 #### Features / Improvement
@@ -18,6 +19,8 @@ This is a small release which **adds support for Kotlin 1.5** while remaining co
 * All internal logging now uses lazy functions which offers a significant speed up on large test suites
 * Reflection methods are cached to avoid slow reflection calls.
 * Added experimental versions of `eventually`, `until`, and `continually` that don't use `kotlin.time` internally. #2149
+* Coroutines upgraded to 1.5 which also allows us to release assertions/property tests for watchosX64
+* WatchosX64 artifacts released for assertions and property tests.
 
 ### 4.5.0 May 2021
 
