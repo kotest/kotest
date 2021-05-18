@@ -292,13 +292,13 @@ suspend operator fun <T> EventuallyConfig<T>.invoke(f: suspend () -> T): T {
                }
             }
          } catch (e: Throwable) {
-            val notSuppressable = control.exceptionIsNotSuppressible(e)
+            val notSuppressible = control.exceptionIsNotSuppressible(e)
             when (this) {
                is BasicEventuallyConfig -> Unit
                is GenericEventuallyConfig -> listener?.onEval(control.toState(null))
             }
 
-            if (notSuppressable) {
+            if (notSuppressible) {
                throw e
             }
          }
