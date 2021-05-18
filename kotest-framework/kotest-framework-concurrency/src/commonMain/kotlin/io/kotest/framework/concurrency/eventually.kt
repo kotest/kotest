@@ -139,10 +139,16 @@ data class GenericEventuallyConfig<T>(
 }
 
 @ExperimentalKotest
+fun <T> eventually(patience: PatienceConfig) = GenericEventuallyConfig<T>(patience).suppressExceptions(AssertionError::class)
+
+@ExperimentalKotest
 fun eventually(patience: PatienceConfig) = BasicEventuallyConfig(patience).suppressExceptions(AssertionError::class)
 
 @ExperimentalKotest
 suspend fun <T> eventually(patience: PatienceConfig, f: suspend () -> T) = eventually(patience).invoke(f)
+
+@ExperimentalKotest
+fun <T> eventually(duration: Long) = GenericEventuallyConfig<T>(duration).suppressExceptions(AssertionError::class)
 
 @ExperimentalKotest
 fun eventually(duration: Long) = eventually(PatienceConfig(duration)).suppressExceptions(AssertionError::class)
