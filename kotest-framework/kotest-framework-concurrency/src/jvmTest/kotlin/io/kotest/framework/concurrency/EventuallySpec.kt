@@ -197,7 +197,7 @@ class EventuallySpec : FunSpec({
 
    test("eventually with T predicate") {
       var t = ""
-      eventually(5.seconds()).withPredicate<String>({ it.result == "xxxx" }) {
+      eventually<String>(5.seconds()).withPredicate({ it.result == "xxxx" }) {
          t += "x"
          t
       }
@@ -217,7 +217,7 @@ class EventuallySpec : FunSpec({
       var t = ""
       val latch = CountDownLatch(5)
       val result = eventually<String>(5.seconds()).withInterval(250.milliseconds().fixed())
-         .withListener({ latch.countDown() })
+         .withListener { latch.countDown() }
          .withPredicate({ it.result == "xxxxxxxxxxx" }) {
             t += "x"
             t
@@ -231,7 +231,7 @@ class EventuallySpec : FunSpec({
       var t = ""
       val message = shouldThrow<EventuallyShortCircuitException> {
          eventually<String>(5.seconds()).withInterval(250.milliseconds().fixed())
-            .withShortCircuit({ it.result == "xx" })
+            .withShortCircuit { it.result == "xx" }
             .withPredicate({ it.result == "xxxxxxxxxxx" }) {
                t += "x"
                t
