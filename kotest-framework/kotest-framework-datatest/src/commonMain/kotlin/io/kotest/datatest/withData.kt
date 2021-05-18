@@ -19,15 +19,14 @@ import kotlin.jvm.JvmName
 fun <T : Any> RootContext.withData(first: T, second: T, vararg rest: T, test: suspend TestContext.(T) -> Unit) =
    withData(listOf(first, second) + rest, test)
 
-/**
- * Registers tests at the root level for each element of [ts].
- *
- * The test name will be generated from the stable properties of the elements. See [Identifiers].
- */
 @ExperimentalKotest
-fun <T : Any> RootContext.withData(ts: Sequence<T>, test: suspend TestContext.(T) -> Unit) {
-   withData(ts.toList(), test)
-}
+fun <T : Any> RootContext.withData(
+   nameFn: (T) -> String,
+   first: T,
+   second: T,
+   vararg rest: T,
+   test: suspend TestContext.(T) -> Unit
+) = withData(nameFn, listOf(first, second) + rest, test)
 
 /**
  * Registers tests at the root level for each element of [ts].
@@ -35,10 +34,36 @@ fun <T : Any> RootContext.withData(ts: Sequence<T>, test: suspend TestContext.(T
  * The test name will be generated from the stable properties of the elements. See [Identifiers].
  */
 @ExperimentalKotest
-fun <T : Any> RootContext.withData(ts: Collection<T>, test: suspend TestContext.(T) -> Unit) {
+fun <T : Any> RootContext.withData(ts: Sequence<T>, test: suspend TestContext.(T) -> Unit) =
+   withData(ts.toList(), test)
+
+/**
+ * Registers tests at the root level for each element of [ts].
+ *
+ * The test name will be generated from the stable properties of the elements. See [Identifiers].
+ */
+@ExperimentalKotest
+fun <T : Any> RootContext.withData(nameFn: (T) -> String, ts: Sequence<T>, test: suspend TestContext.(T) -> Unit) =
+   withData(nameFn, ts.toList(), test)
+
+/**
+ * Registers tests at the root level for each element of [ts].
+ *
+ * The test name will be generated from the stable properties of the elements. See [Identifiers].
+ */
+@ExperimentalKotest
+fun <T : Any> RootContext.withData(ts: Collection<T>, test: suspend TestContext.(T) -> Unit) =
+   withData({ getStableIdentifier(it) }, ts, test)
+
+/**
+ * Registers tests at the root level for each element of [ts].
+ *
+ * The test name will be generated from the given [nameFn] function.
+ */
+@ExperimentalKotest
+fun <T : Any> RootContext.withData(nameFn: (T) -> String, ts: Collection<T>, test: suspend TestContext.(T) -> Unit) {
    ts.forEach { t ->
-      val stableIdentifier = getStableIdentifier(t)
-      registration().addContainerTest(createTestName(stableIdentifier), false) { test(t) }
+      registration().addContainerTest(createTestName(nameFn(t)), false) { test(t) }
    }
 }
 
@@ -65,6 +90,20 @@ suspend fun <T : Any> TestContext.withData(ts: Sequence<T>, test: suspend TestCo
 }
 
 /**
+ * Registers tests inside the given test context for each element of [ts].
+ *
+ * The test name will be generated from the given [nameFn] function.
+ */
+@ExperimentalKotest
+suspend fun <T : Any> TestContext.withData(
+   nameFn: (T) -> String,
+   ts: Sequence<T>,
+   test: suspend TestContext.(T) -> Unit
+) {
+   withData(nameFn, ts.toList(), test)
+}
+
+/**
  * Registers tests inside the given test context for each element.
  *
  * The test name will be generated from the stable properties of the elements. See [Identifiers].
@@ -74,17 +113,45 @@ suspend fun <T : Any> TestContext.withData(first: T, second: T, vararg rest: T, 
    withData(listOf(first, second) + rest, test)
 
 /**
+ * Registers tests inside the given test context for each element.
+ *
+ * The test name will be generated from the stable properties of the elements. See [Identifiers].
+ */
+@ExperimentalKotest
+suspend fun <T : Any> TestContext.withData(
+   nameFn: (T) -> String,
+   first: T,
+   second: T,
+   vararg rest: T,
+   test: suspend TestContext.(T) -> Unit
+) = withData(nameFn, listOf(first, second) + rest, test)
+
+/**
  * Registers tests inside the given test context for each element of [ts].
  *
  * The test name will be generated from the stable properties of the elements. See [Identifiers].
  */
 @ExperimentalKotest
 suspend fun <T : Any> TestContext.withData(ts: Collection<T>, test: suspend TestContext.(T) -> Unit) {
+   withData({ getStableIdentifier(it) }, ts, test)
+}
+
+
+/**
+ * Registers tests inside the given test context for each element of [ts].
+ *
+ * The test name will be generated from the stable properties of the elements. See [Identifiers].
+ */
+@ExperimentalKotest
+suspend fun <T : Any> TestContext.withData(
+   nameFn: (T) -> String,
+   @BuilderInference ts: Collection<T>,
+   @BuilderInference test: suspend TestContext.(T) -> Unit
+) {
    ts.forEach { t ->
-      val stableIdentifier = getStableIdentifier(t)
       this.registerTestCase(
          createNestedTest(
-            name = createTestName(name = stableIdentifier),
+            name = createTestName(name = nameFn(t)),
             xdisabled = false,
             config = TestCaseConfig(),
             type = TestType.Container,
@@ -94,7 +161,6 @@ suspend fun <T : Any> TestContext.withData(ts: Collection<T>, test: suspend Test
       )
    }
 }
-
 
 /**
  * Registers tests inside the given test context for each tuple of [data], with the first value
