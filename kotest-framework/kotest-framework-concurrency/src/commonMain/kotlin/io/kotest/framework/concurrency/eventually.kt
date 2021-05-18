@@ -46,7 +46,7 @@ class EventuallyBuilder<T> {
    var interval: Interval = defaultInterval
    var initialDelay: Long = defaultDelay
    var retries: Int = Int.MAX_VALUE
-   var suppressExceptions: Set<KClass<out Throwable>> = setOf()
+   var suppressExceptions: Set<KClass<out Throwable>> = setOf(AssertionError::class)
    var suppressExceptionIf: ThrowablePredicate? = null
    var listener: EventuallyStateFunction<T, Unit>? = null
    var predicate: EventuallyStateFunction<T, Boolean>? = null

@@ -39,7 +39,7 @@ class EventuallySpec : FunSpec({
       }
    }
 
-   test("eventually passes tests that completed within the time allowed") {
+   test("eventually passes tests that complete within the time allowed") {
       val end = System.currentTimeMillis() + 250L
       eventually(5.seconds()) {
          if (System.currentTimeMillis() < end)
