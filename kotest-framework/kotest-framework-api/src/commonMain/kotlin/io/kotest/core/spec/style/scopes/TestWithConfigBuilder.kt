@@ -9,7 +9,7 @@ import io.kotest.core.test.TestCaseSeverityLevel
 import io.kotest.core.test.TestContext
 import io.kotest.core.test.TestType
 import io.kotest.core.test.createNestedTest
-import io.kotest.core.test.deriveTestConfig
+import io.kotest.core.test.deriveTestCaseConfig
 import kotlin.time.Duration
 
 class TestWithConfigBuilder(
@@ -31,7 +31,7 @@ class TestWithConfigBuilder(
       severity: TestCaseSeverityLevel? = null,
       test: suspend TestContext.() -> Unit
    ) {
-      val derivedConfig = defaultTestConfig.deriveTestConfig(
+      val derivedConfig = defaultTestConfig.deriveTestCaseConfig(
          enabled,
          tags,
          extensions,

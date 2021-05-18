@@ -8,7 +8,7 @@ import io.kotest.core.test.EnabledOrReasonIf
 import io.kotest.core.test.TestCaseSeverityLevel
 import io.kotest.core.test.TestContext
 import io.kotest.core.test.TestType
-import io.kotest.core.test.deriveTestConfig
+import io.kotest.core.test.deriveTestCaseConfig
 import kotlin.time.Duration
 
 class RootTestWithConfigBuilder(
@@ -30,7 +30,7 @@ class RootTestWithConfigBuilder(
       enabledOrReasonIf: EnabledOrReasonIf? = null,
       test: suspend TestContext.() -> Unit,
    ) {
-      val derivedConfig = registration.defaultConfig.deriveTestConfig(
+      val derivedConfig = registration.defaultConfig.deriveTestCaseConfig(
          enabled,
          tags,
          extensions,

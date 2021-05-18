@@ -65,7 +65,7 @@ class SpecExecutor(private val listener: TestEngineListener) {
       val active = roots.any { it.testCase.isEnabled().isEnabled }
 
       if (!active) {
-         val results = roots.map { it.testCase to TestResult.ignored(it.testCase.isEnabled()) }.toMap()
+         val results = roots.associate { it.testCase to TestResult.ignored(it.testCase.isEnabled()) }
          notifications.specSkipped(spec, results)
       }
 

@@ -1,5 +1,7 @@
 package io.kotest.core.spec.style.scopes
 
+import io.kotest.common.ExperimentalKotest
+import io.kotest.core.spec.KotestDsl
 import io.kotest.core.spec.resolvedDefaultConfig
 import io.kotest.core.test.NestedTest
 import io.kotest.core.test.TestCase
@@ -20,6 +22,7 @@ typealias FunSpecContextScope = FunSpecContainerContext
  * test("some test").config(...)
  *
  */
+@KotestDsl
 class FunSpecContainerContext(
    private val testContext: TestContext,
 ) : ContainerContext {
@@ -53,6 +56,16 @@ class FunSpecContainerContext(
    }
 
    /**
+    * Adds a container test to this context.
+    */
+   @ExperimentalKotest
+   fun context(name: String) = ContainerContextConfigBuilder(
+      createTestName(name),
+      testContext,
+      false
+   ) { FunSpecContainerContext(this) }
+
+   /**
     * Adds a disabled container test to this context.
     */
    suspend fun xcontext(name: String, test: suspend FunSpecContainerContext.() -> Unit) {
@@ -68,6 +81,13 @@ class FunSpecContainerContext(
          )
       )
    }
+
+   @ExperimentalKotest
+   fun xcontext(name: String) = ContainerContextConfigBuilder(
+      createTestName(name),
+      testContext,
+      true
+   ) { FunSpecContainerContext(this) }
 
    /**
     * Adds a test case to this context, expecting config.

@@ -1,11 +1,14 @@
 package io.kotest.core.spec.style.scopes
 
+import io.kotest.common.ExperimentalKotest
+import io.kotest.core.spec.KotestDsl
 import io.kotest.core.test.TestContext
 import io.kotest.core.test.createTestName
 
 @Deprecated("Renamed to FunSpecRootContext. This typealias will be removed in 4.8")
 typealias FunSpecRootScope = FunSpecRootContext
 
+@KotestDsl
 interface FunSpecRootContext : RootContext {
 
    /**
@@ -18,12 +21,20 @@ interface FunSpecRootContext : RootContext {
       }
    }
 
+   @ExperimentalKotest
+   fun context(name: String) =
+      RootContextConfigBuilder(createTestName(name), registration(), false) { FunSpecContainerContext(it) }
+
    /**
     * Adds a disabled top level [FunSpecContainerContext] this root scope.
     */
    fun xcontext(name: String, test: suspend FunSpecContainerContext.() -> Unit) {
       registration().addContainerTest(createTestName(name), xdisabled = true) {}
    }
+
+   @ExperimentalKotest
+   fun xcontext(name: String) =
+      RootContextConfigBuilder(createTestName(name), registration(), true) { FunSpecContainerContext(it) }
 
    /**
     * Adds a top level test case to this root scope.
