@@ -34,19 +34,13 @@ class UntilSpec : FunSpec({
 
    test("until with boolean predicate and interval") {
       var attempts = 0
-      until(2.seconds(), 10.milliseconds().fixed()) {
-         attempts++
-         attempts == 100
+      until({
+         duration = 2.seconds()
+         interval = 10.milliseconds().fixed()
+      }) {
+         ++attempts == 100
       }
-      attempts shouldBe 100
-   }
 
-   test("until with patience config") {
-      var attempts = 0
-      until(PatienceConfig(2.seconds(), 10.milliseconds().fixed())) {
-         attempts++
-         attempts == 100
-      }
       attempts shouldBe 100
    }
 
@@ -65,11 +59,15 @@ class UntilSpec : FunSpec({
       measureTimeMillis {
          var attempts = 0
          var t = ""
-         until(1.seconds(), 10.milliseconds().fixed()) {
+         until({
+            duration = 1.seconds()
+            interval = 10.milliseconds().fixed()
+         }) {
             attempts++
             t += "x"
             t == "xxxx"
          }
+
          attempts shouldBe 4
       }.shouldBeLessThan(100)
    }
@@ -86,7 +84,10 @@ class UntilSpec : FunSpec({
       measureTimeMillis {
          var t = ""
          var attempts = 0
-         until(10.seconds(), 10.milliseconds().fibonacci()) {
+         until({
+            duration = 10.seconds()
+            interval = 10.milliseconds().fibonacci()
+         }) {
             attempts++
             t += "x"
             t == "xxxxxx"

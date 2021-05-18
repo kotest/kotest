@@ -7,162 +7,80 @@ import io.kotest.common.ExperimentalKotest
 import io.kotest.mpp.timeInMillis
 import kotlinx.coroutines.delay
 import kotlin.reflect.KClass
+import kotlin.time.Duration
+import kotlin.time.ExperimentalTime
 
+@OptIn(ExperimentalKotest::class)
+typealias EventuallyStateFunction<T, U> = (EventuallyState<T>) -> U
 typealias ThrowablePredicate = (Throwable) -> Boolean
 
 @ExperimentalKotest
-sealed class EventuallyConfig<out T> {
-   abstract val patience: PatienceConfig
-   abstract val exceptions: Set<KClass<out Throwable>>
-   abstract val suppressExceptionIf: ThrowablePredicate?
-   abstract val initialDelay: Long
-   abstract val retries: Int
-}
-
-@ExperimentalKotest
-data class BasicEventuallyConfig(
-   override val patience: PatienceConfig = PatienceConfig(),
-   override val exceptions: Set<KClass<out Throwable>> = setOf(),
-   override val suppressExceptionIf: ThrowablePredicate? = null,
-   override val initialDelay: Long = 0L,
-   override val retries: Int = Int.MAX_VALUE,
-) : EventuallyConfig<Nothing>() {
-   constructor(
-      duration: Long,
-      interval: Interval = PatienceConfig.defaultInterval,
-      exceptions: Set<KClass<out Throwable>> = setOf(),
-      allowExceptionIf: ThrowablePredicate? = null,
-      initialDelay: Long = 0L,
-      retries: Int = Int.MAX_VALUE,
-   ) : this(PatienceConfig(duration, interval), exceptions, allowExceptionIf, initialDelay, retries)
-
-   init {
-      require(initialDelay >= 0L) { "Value 'initialDelay' should be a non-negative number" }
-      require(retries >= 0) { "Value 'retries' should be a non-negative number" }
-   }
-
-   fun withDuration(duration: Long) = copy(patience = patience.copy(duration = duration))
-   suspend fun <T> withDuration(duration: Long, f: suspend () -> T): T = withDuration(duration).invoke(f)
-
-   fun withInterval(interval: Long) = withInterval(interval.fixed())
-   suspend fun <T> withInterval(interval: Long, f: suspend () -> T): T = withInterval(interval).invoke(f)
-
-   fun withInterval(interval: Interval) = copy(patience = patience.copy(interval = interval))
-   suspend fun <T> withInterval(interval: Interval, f: suspend () -> T): T = withInterval(interval).invoke(f)
-
-   fun withSuppressExceptionIf(suppressExceptionIf: ThrowablePredicate) = copy(suppressExceptionIf = suppressExceptionIf)
-   suspend fun <T> withSuppressExceptionIf(suppressExceptionIf: ThrowablePredicate, f: suspend () -> T): T = withSuppressExceptionIf(suppressExceptionIf).invoke(f)
-
-   fun withInitialDelay(initialDelay: Long) = copy(initialDelay = initialDelay)
-   suspend fun <T> withInitialDelay(initialDelay: Long, f: suspend () -> T): T = withInitialDelay(initialDelay).invoke(f)
-
-   fun withRetries(retries: Int) = copy(retries = retries)
-   suspend fun <T> withRetries(retries: Int, f: suspend () -> T): T = withRetries(retries).invoke(f)
-
-   fun suppressExceptions(vararg exceptions: KClass<out Throwable>) = copy(exceptions = this.exceptions + exceptions)
-   suspend fun <T> suppressExceptions(vararg exceptions: KClass<out Throwable>, f: suspend () -> T): T = copy(exceptions = this.exceptions + exceptions).invoke(f)
-
-   fun <T> withListener(listener: EventuallyListener<T>) = GenericEventuallyConfig(patience, exceptions, suppressExceptionIf, initialDelay, retries, listener = listener)
-   suspend fun <T> withListener(listener: EventuallyListener<T>, f: suspend () -> T): T = withListener(listener).invoke(f)
-
-   fun <T> withPredicate(predicate: EventuallyPredicate<T>) = GenericEventuallyConfig(patience, exceptions, suppressExceptionIf, initialDelay, retries, predicate = predicate)
-   suspend fun <T> withPredicate(predicate: EventuallyPredicate<T>, f: suspend () -> T): T = withPredicate(predicate).invoke(f)
-
-   fun <T> withShortCircuit(shortCircuit: EventuallyPredicate<T>) = GenericEventuallyConfig(patience, exceptions, suppressExceptionIf, initialDelay, retries, shortCircuit = shortCircuit)
-   suspend fun <T> withShortCircuit(shortCircuit: EventuallyPredicate<T>, f: suspend () -> T): T = withShortCircuit(shortCircuit).invoke(f)
-}
-
-@ExperimentalKotest
-data class GenericEventuallyConfig<T>(
-   override val patience: PatienceConfig = PatienceConfig(),
-   override val exceptions: Set<KClass<out Throwable>> = setOf(),
-   override val suppressExceptionIf: ThrowablePredicate? = null,
-   override val initialDelay: Long = 0L,
-   override val retries: Int = Int.MAX_VALUE,
-   val listener: EventuallyListener<T>? = null,
-   val predicate: EventuallyPredicate<T>? = null,
-   val shortCircuit: EventuallyPredicate<T>? = null,
-) : EventuallyConfig<T>() {
-   constructor(
-      duration: Long,
-      interval: Interval = PatienceConfig.defaultInterval,
-      exceptions: Set<KClass<out Throwable>> = setOf(),
-      allowExceptionIf: ThrowablePredicate? = null,
-      initialDelay: Long = 0L,
-      retries: Int = Int.MAX_VALUE,
-      listener: EventuallyListener<T>? = null,
-      shortCircuit: EventuallyPredicate<T>? = null,
-   ) : this(
-      PatienceConfig(duration, interval),
-      exceptions,
-      allowExceptionIf,
-      initialDelay,
-      retries,
-      listener,
-      shortCircuit
+data class EventuallyConfig<T>(
+   val duration: Long = defaultDuration,
+   val interval: Interval = defaultInterval,
+   val initialDelay: Long = defaultDelay,
+   val retries: Int = Int.MAX_VALUE,
+   val suppressExceptions: Set<KClass<out Throwable>> = setOf(),
+   val suppressExceptionIf: ThrowablePredicate? = null,
+   val listener: EventuallyStateFunction<T, Unit>? = null,
+   val predicate: EventuallyStateFunction<T, Boolean>? = null,
+   val shortCircuit: EventuallyStateFunction<T, Boolean>? = null,
+) {
+   fun <U> override(other: EventuallyConfig<U>): EventuallyConfig<U> = EventuallyConfig(
+      duration = other.duration, interval = other.interval, initialDelay = other.initialDelay, retries = other.retries,
+      suppressExceptions = other.suppressExceptions, suppressExceptionIf = other.suppressExceptionIf,
+      listener = other.listener, predicate = other.predicate, shortCircuit = other.shortCircuit
    )
 
-   init {
-      require(initialDelay >= 0L) { "Value 'initialDelay' should be a non-negative number" }
-      require(retries >= 0) { "Value 'retries' should be a non-negative number" }
-   }
-
-   fun withDuration(duration: Long) = copy(patience = patience.copy(duration = duration))
-   suspend fun withDuration(duration: Long, f: suspend () -> T): T = withDuration(duration).invoke(f)
-
-   fun withInterval(interval: Long) = withInterval(interval.fixed())
-   fun withInterval(interval: Interval) = copy(patience = patience.copy(interval = interval))
-
-   suspend fun withInterval(interval: Long, f: suspend () -> T): T = withInterval(interval).invoke(f)
-   suspend fun withInterval(interval: Interval, f: suspend () -> T): T = withInterval(interval).invoke(f)
-
-   fun withSuppressExceptionIf(suppressExceptionIf: ThrowablePredicate) = copy(suppressExceptionIf = suppressExceptionIf)
-   suspend fun withSuppressExceptionIf(suppressExceptionIf: ThrowablePredicate, f: suspend () -> T): T = withSuppressExceptionIf(suppressExceptionIf).invoke(f)
-
-   fun withInitialDelay(initialDelay: Long) = copy(initialDelay = initialDelay)
-   suspend fun withInitialDelay(initialDelay: Long, f: suspend () -> T): T = withInitialDelay(initialDelay).invoke(f)
-
-   fun withRetries(retries: Int) = copy(retries = retries)
-   suspend fun withRetries(retries: Int, f: suspend () -> T): T = withRetries(retries).invoke(f)
-
-   fun suppressExceptions(vararg exceptions: KClass<out Throwable>) = copy(exceptions = this.exceptions + exceptions)
-   suspend fun suppressExceptions(vararg exceptions: KClass<out Throwable>, f: suspend () -> T): T = copy(exceptions = this.exceptions + exceptions).invoke(f)
-
-   fun withListener(listener: EventuallyListener<T>) = copy(listener = listener)
-   suspend fun withListener(listener: EventuallyListener<T>, f: suspend () -> T): T = withListener(listener).invoke(f)
-
-   fun withPredicate(predicate: EventuallyPredicate<T>) = copy(predicate = predicate)
-   suspend fun withPredicate(predicate: EventuallyPredicate<T>, f: suspend () -> T): T = withPredicate(predicate).invoke(f)
-
-   fun withShortCircuit(shortCircuit: EventuallyPredicate<T>) = copy(shortCircuit = shortCircuit)
-   suspend fun withShortCircuit(shortCircuit: EventuallyPredicate<T>, f: suspend () -> T): T = withShortCircuit(shortCircuit).invoke(f)
+   fun <U> override(other: EventuallyConfig<Nothing>): EventuallyConfig<U> = EventuallyConfig(
+      duration = other.duration, interval = other.interval, initialDelay = other.initialDelay, retries = other.retries,
+      suppressExceptions = other.suppressExceptions, suppressExceptionIf = other.suppressExceptionIf,
+   )
 }
 
 @ExperimentalKotest
-fun <T> eventually(patience: PatienceConfig) = GenericEventuallyConfig<T>(patience).suppressExceptions(AssertionError::class)
+private fun <T> EventuallyConfig<Nothing>.toBuilder() = EventuallyBuilder<T>().apply {
+   duration = this@toBuilder.duration
+   interval = this@toBuilder.interval
+   initialDelay = this@toBuilder.initialDelay
+   retries = this@toBuilder.retries
+   suppressExceptions = this@toBuilder.suppressExceptions
+   suppressExceptionIf = this@toBuilder.suppressExceptionIf
+}
 
 @ExperimentalKotest
-fun eventually(patience: PatienceConfig) = BasicEventuallyConfig(patience).suppressExceptions(AssertionError::class)
+private fun <T> EventuallyConfig<T>.toBuilder() = EventuallyBuilder<T>().apply {
+   duration = this@toBuilder.duration
+   interval = this@toBuilder.interval
+   initialDelay = this@toBuilder.initialDelay
+   retries = this@toBuilder.retries
+   suppressExceptions = this@toBuilder.suppressExceptions
+   suppressExceptionIf = this@toBuilder.suppressExceptionIf
+   listener = this@toBuilder.listener
+   predicate = this@toBuilder.predicate
+   shortCircuit = this@toBuilder.shortCircuit
+}
 
 @ExperimentalKotest
-suspend fun <T> eventually(patience: PatienceConfig, f: suspend () -> T) = eventually(patience).invoke(f)
+class EventuallyBuilder<T> {
+   var duration: Long = defaultDuration
+   var interval: Interval = defaultInterval
+   var initialDelay: Long = defaultDelay
+   var retries: Int = Int.MAX_VALUE
+   var suppressExceptions: Set<KClass<out Throwable>> = setOf()
+   var suppressExceptionIf: ThrowablePredicate? = null
+   var listener: EventuallyStateFunction<T, Unit>? = null
+   var predicate: EventuallyStateFunction<T, Boolean>? = null
+   var shortCircuit: EventuallyStateFunction<T, Boolean>? = null
 
-@ExperimentalKotest
-fun <T> eventually(duration: Long) = GenericEventuallyConfig<T>(duration).suppressExceptions(AssertionError::class)
+   fun toConfig() = EventuallyConfig(
+      duration = duration, interval = interval, initialDelay = initialDelay, retries = retries,
+      suppressExceptions = suppressExceptions, suppressExceptionIf = suppressExceptionIf,
+      listener = listener, predicate = predicate, shortCircuit = shortCircuit
+   )
+}
 
-@ExperimentalKotest
-fun eventually(duration: Long) = eventually(PatienceConfig(duration)).suppressExceptions(AssertionError::class)
 
-@ExperimentalKotest
-suspend fun <T> eventually(duration: Long, f: suspend () -> T) = eventually(duration).invoke(f)
-
-@ExperimentalKotest
-suspend fun until(patience: PatienceConfig, booleanProducer: suspend () -> Boolean) =
-   eventually(patience).withListener<Boolean>({ it.result == true }).invoke(f = booleanProducer)
-
-@ExperimentalKotest
-suspend fun until(duration: Long, interval: Interval = PatienceConfig.defaultInterval, booleanProducer: suspend () -> Boolean) =
-   until(PatienceConfig(duration, interval), booleanProducer)
 
 @ExperimentalKotest
 class EventuallyShortCircuitException(override val message: String) : Throwable()
@@ -178,23 +96,9 @@ data class EventuallyState<T>(
 )
 
 @ExperimentalKotest
-fun interface EventuallyPredicate<T> {
-   fun onEval(state: EventuallyState<T>): Boolean
-
-   companion object {
-      val default = EventuallyPredicate<Any?> { it.thisError==null }
-   }
-}
-
-@ExperimentalKotest
-fun interface EventuallyListener<T> {
-   fun onEval(state: EventuallyState<T>)
-}
-
-@ExperimentalKotest
 private class EventuallyControl(val config: EventuallyConfig<*>) {
    val start = timeInMillis()
-   val end = start + config.patience.duration
+   val end = start + config.duration
 
    var times = 0
    var predicateFailedTimes = 0
@@ -220,14 +124,13 @@ private class EventuallyControl(val config: EventuallyConfig<*>) {
          return true
       }
 
-      return !config.exceptions.any { it.isInstance(e) }
+      return !config.suppressExceptions.any { it.isInstance(e) }
    }
 
    fun <T> toState(result: T?) = EventuallyState<T>(result = result, start = start, end = end, times = times, firstError = firstError, thisError = lastError)
 
    suspend fun step() {
-
-      lastInterval = config.patience.interval.next(++times)
+      lastInterval = config.interval.next(++times)
       val delayMark = timeInMillis()
       delay(lastInterval)
       lastDelayPeriod = timeInMillis() - delayMark
@@ -241,8 +144,7 @@ private class EventuallyControl(val config: EventuallyConfig<*>) {
    fun isLongWait() = times == 1 && lastDelayPeriod > lastInterval
 
    fun buildFailureMessage() = StringBuilder().apply {
-      val patienceConfig = config.patience
-      appendLine("Eventually block failed after ${patienceConfig.duration}ms; attempted $times time(s); ${patienceConfig.interval} delay between attempts")
+      appendLine("Eventually block failed after ${config.duration}ms; attempted $times time(s); ${config.interval} delay between attempts")
 
       if (predicateFailedTimes > 0) {
          appendLine("The provided predicate failed $predicateFailedTimes times")
@@ -261,7 +163,13 @@ private class EventuallyControl(val config: EventuallyConfig<*>) {
 }
 
 @ExperimentalKotest
-suspend operator fun <T> EventuallyConfig<T>.invoke(f: suspend () -> T): T {
+suspend operator fun <T> EventuallyConfig<Nothing>.invoke(f: suspend () -> T): T = this.toBuilder<T>().toConfig().runEventually(f)
+
+@ExperimentalKotest
+suspend operator fun <T> EventuallyConfig<T>.invoke(f: suspend () -> T): T = this.toBuilder().toConfig().runEventually(f)
+
+@ExperimentalKotest
+suspend fun <T> EventuallyConfig<T>.runEventually(f: suspend () -> T): T {
    delay(initialDelay)
 
    val originalAssertionMode = errorCollector.getCollectionMode()
@@ -273,31 +181,22 @@ suspend operator fun <T> EventuallyConfig<T>.invoke(f: suspend () -> T): T {
       while (control.attemptsRemaining() || control.isLongWait()) {
          try {
             val result = f()
-            val state = control.toState(result)
+            val state = control.toState<T>(result)
 
-            when (this) {
-               is BasicEventuallyConfig -> return result
-               is GenericEventuallyConfig -> {
-                  listener?.onEval(state)
+            listener?.invoke(state)
 
-                  when (shortCircuit?.onEval(state)) {
-                     null, false -> Unit
-                     true -> throw EventuallyShortCircuitException("The provided shortCircuit function caused eventually to exit early: $state")
-                  }
+            when (shortCircuit?.invoke(state)) {
+               null, false -> Unit
+               true -> throw EventuallyShortCircuitException("The provided shortCircuit function caused eventually to exit early: $state")
+            }
 
-                  when (predicate?.onEval(state)) {
-                     null, true -> return result
-                     false -> control.predicateFailedTimes++
-                  }
-               }
+            when (predicate?.invoke(state)) {
+               null, true -> return result
+               false -> control.predicateFailedTimes++
             }
          } catch (e: Throwable) {
             val notSuppressible = control.exceptionIsNotSuppressible(e)
-            when (this) {
-               is BasicEventuallyConfig -> Unit
-               is GenericEventuallyConfig -> listener?.onEval(control.toState(null))
-            }
-
+            listener?.invoke(control.toState(null))
             if (notSuppressible) {
                throw e
             }
@@ -311,3 +210,74 @@ suspend operator fun <T> EventuallyConfig<T>.invoke(f: suspend () -> T): T {
 
    throw failure(control.buildFailureMessage())
 }
+
+// region eventually
+
+@ExperimentalKotest
+suspend fun <T> eventually(
+   config: EventuallyConfig<Nothing>, configure: EventuallyBuilder<T>.() -> Unit, @BuilderInference test: suspend () -> T
+): T {
+   val builder = config.toBuilder<T>().apply(configure)
+   return builder.toConfig().invoke(test)
+}
+
+@ExperimentalKotest
+suspend fun <T> eventually(
+   config: EventuallyConfig<T>, configure: EventuallyBuilder<T>.() -> Unit, @BuilderInference test: suspend () -> T
+): T {
+   val builder = config.toBuilder().apply(configure)
+   return builder.toConfig().invoke(test)
+}
+
+@ExperimentalKotest
+suspend fun <T> eventually(
+   configure: EventuallyBuilder<T>.() -> Unit, @BuilderInference test: suspend () -> T
+): T {
+   val builder = EventuallyBuilder<T>().apply(configure)
+   return builder.toConfig().invoke(test)
+}
+
+@ExperimentalTime
+@ExperimentalKotest
+suspend fun <T> eventually(duration: Duration, test: suspend () -> T): T = eventually(duration.inWholeMilliseconds, test)
+
+@ExperimentalKotest
+suspend fun <T> eventually(duration: Long, test: suspend () -> T): T = eventually({ this.duration = duration }, test)
+
+// endregion
+
+// region until
+
+@ExperimentalKotest
+suspend fun until(
+   config: EventuallyConfig<Nothing>, configure: EventuallyBuilder<Boolean>.() -> Unit, @BuilderInference test: suspend () -> Boolean
+) {
+   val builder = config.toBuilder<Boolean>().apply(configure)
+   builder.predicate = { it.result == true }
+   builder.toConfig().invoke(test)
+}
+
+@ExperimentalKotest
+suspend fun until(
+   config: EventuallyConfig<Boolean>, configure: EventuallyBuilder<Boolean>.() -> Unit, @BuilderInference test: suspend () -> Boolean
+) {
+   val builder = config.toBuilder().apply(configure)
+   builder.toConfig().invoke(test)
+}
+
+@ExperimentalKotest
+suspend fun until(
+   configure: EventuallyBuilder<Boolean>.() -> Unit, @BuilderInference test: suspend () -> Boolean
+) {
+   val builder = EventuallyBuilder<Boolean>().apply(configure)
+   builder.toConfig().invoke(test)
+}
+
+@ExperimentalTime
+@ExperimentalKotest
+suspend fun until(duration: Duration, test: suspend () -> Boolean) = until(duration.inWholeMilliseconds, test)
+
+@ExperimentalKotest
+suspend fun until(duration: Long, test: suspend () -> Boolean) = until({ this.duration = duration }, test)
+
+// endregion

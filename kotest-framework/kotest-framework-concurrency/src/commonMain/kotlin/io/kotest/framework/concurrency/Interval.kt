@@ -2,6 +2,8 @@ package io.kotest.framework.concurrency
 
 import io.kotest.common.ExperimentalKotest
 import kotlin.math.pow
+import kotlin.time.Duration
+import kotlin.time.ExperimentalTime
 
 private const val hour = 3_600_000L
 
@@ -33,6 +35,11 @@ class FixedInterval(private val duration: Long) : Interval {
 
 @ExperimentalKotest
 fun Long.fixed(): FixedInterval = FixedInterval(this)
+
+@ExperimentalTime
+@ExperimentalKotest
+fun Duration.fixed() = this.inWholeMilliseconds.fixed()
+
 
 /**
  * Fibonacci delay implements a delay where each duration is calculated as a multiplier
@@ -67,6 +74,10 @@ class FibonacciInterval(private val base: Long, private val offset: Int, private
 
 @ExperimentalKotest
 fun Long.fibonacci(max: Long? = FibonacciInterval.defaultMax) = FibonacciInterval(this, 0, max)
+
+@ExperimentalTime
+@ExperimentalKotest
+fun Duration.fibonacci(max: Duration? = null) = this.inWholeMilliseconds.fibonacci(max?.inWholeMilliseconds ?: FibonacciInterval.defaultMax)
 
 @ExperimentalKotest
 fun fibonacci(n: Int): Int {
@@ -107,10 +118,12 @@ class ExponentialInterval(private val base: Long, private val factor: Double, pr
 }
 
 @ExperimentalKotest
-fun Long.exponential(
-   factor: Double = ExponentialInterval.defaultFactor,
-   max: Long? = ExponentialInterval.defaultMax
-) =
+fun Long.exponential(factor: Double = ExponentialInterval.defaultFactor, max: Long? = ExponentialInterval.defaultMax) =
    ExponentialInterval(this, factor, max)
+
+@ExperimentalTime
+@ExperimentalKotest
+fun Duration.exponential(factor: Double = ExponentialInterval.defaultFactor, max: Duration? = null) =
+   this.inWholeMilliseconds.exponential(factor, max?.inWholeMilliseconds ?: FibonacciInterval.defaultMax)
 
 

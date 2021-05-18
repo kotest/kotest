@@ -4,92 +4,116 @@ import io.kotest.assertions.failure
 import io.kotest.common.ExperimentalKotest
 import io.kotest.mpp.timeInMillis
 import kotlinx.coroutines.delay
+import kotlin.time.Duration
+import kotlin.time.ExperimentalTime
+
+@OptIn(ExperimentalKotest::class)
+typealias ContinuallyListener<T> = (ContinuallyState<T>) -> Unit
 
 @ExperimentalKotest
-sealed class ContinuallyConfig<out T> {
-   abstract val patience: PatienceConfig
+data class ContinuallyConfig<T>(
+   val duration: Long = defaultDuration,
+   val interval: Interval = defaultInterval,
+   val initialDelay: Long = defaultDelay,
+   val listener: ContinuallyListener<T>? = null,
+) {
+   fun <U> override(other: ContinuallyConfig<U>): ContinuallyConfig<U> = ContinuallyConfig(
+      duration = other.duration, interval = other.interval, initialDelay = other.initialDelay, listener = other.listener
+   )
 }
 
 @ExperimentalKotest
-data class BasicContinuallyConfig(
-   override val patience: PatienceConfig = PatienceConfig(),
-) : ContinuallyConfig<Nothing>() {
-   constructor(
-      duration: Long,
-      interval: Interval = PatienceConfig.defaultInterval,
-   ) : this(PatienceConfig(duration, interval))
+class ContinuallyBuilder<T> {
+   var duration: Long = defaultDuration
+   var interval: Interval = defaultInterval
+   var initialDelay: Long = defaultDelay
+   var listener: ContinuallyListener<T>? = null
 
-   fun withDuration(duration: Long) = copy(patience = patience.copy(duration = duration))
-   suspend fun <T> withDuration(duration: Long, f: suspend () -> T): T? = withDuration(duration).invoke(f)
+   fun toConfig() = ContinuallyConfig(
+      duration = duration, interval = interval, initialDelay = initialDelay, listener = listener
+   )
 
-   fun withInterval(interval: Interval) = copy(patience = patience.copy(interval = interval))
-   suspend fun <T> withInterval(interval: Interval, f: suspend () -> T): T? = withInterval(interval).invoke(f)
-   fun withInterval(interval: Long) = withInterval(interval.fixed())
-   suspend fun <T> withInterval(interval: Long, f: suspend () -> T): T? = withInterval(interval).invoke(f)
+   constructor()
 
-   fun <T> withListener(listener: ContinuallyListener<T>) = GenericContinuallyConfig(patience = patience, listener = listener)
-   suspend fun <T> withListener(listener: ContinuallyListener<T>, f: suspend () -> T): T? = withListener(listener).invoke(f)
-}
+   constructor(config: ContinuallyConfig<T>) {
+      duration = config.duration
+      interval = config.interval
+      initialDelay = config.initialDelay
+      listener = config.listener
+   }
 
-@ExperimentalKotest
-data class GenericContinuallyConfig<T>(
-   override val patience: PatienceConfig = PatienceConfig(),
-   val listener: ContinuallyListener<T>? = null
-) : ContinuallyConfig<T>() {
-   constructor(duration: Long, interval: Interval = PatienceConfig.defaultInterval, listener: ContinuallyListener<T>? = null)
-      : this(PatienceConfig(duration, interval), listener)
-
-   fun withDuration(duration: Long) = copy(patience = patience.copy(duration = duration))
-   suspend fun withDuration(duration: Long, f: suspend () -> T): T? = withDuration(duration).invoke(f)
-
-   fun withInterval(interval: Interval) = copy(patience = patience.copy(interval = interval))
-   suspend fun withInterval(interval: Interval, f: suspend () -> T): T? = withInterval(interval).invoke(f)
-
-   fun withListener(listener: ContinuallyListener<T>) = copy(listener = listener)
-   suspend fun withListener(listener: ContinuallyListener<T>, f: suspend () -> T): T? = withListener(listener).invoke(f)
+   constructor(config: ContinuallyConfig<Nothing>) {
+      duration = config.duration
+      interval = config.interval
+      initialDelay = config.initialDelay
+   }
 }
 
 @ExperimentalKotest
 data class ContinuallyState<T>(val result: T, val start: Long, val end: Long, val times: Int)
 
 @ExperimentalKotest
-fun interface ContinuallyListener<T> {
-   fun onEval(state: ContinuallyState<T>)
-}
+private suspend fun <T> ContinuallyConfig<T>.invoke(f: suspend () -> T): T? {
+   delay(initialDelay)
 
-@ExperimentalKotest
-fun continually(duration: Long) = BasicContinuallyConfig(duration)
-
-@ExperimentalKotest
-suspend fun <T> continually(duration: Long, f: suspend () -> T) = continually(duration).invoke(f)
-
-@ExperimentalKotest
-suspend fun <T> ContinuallyConfig<T>.invoke(f: suspend () -> T): T? {
    val start = timeInMillis()
-   val end = start + patience.duration
+   val end = start + duration
    var times = 0
    var result: T? = null
 
    while (timeInMillis() < end) {
       try {
          result = f()
-
-         when (this) {
-            is BasicContinuallyConfig -> Unit
-            is GenericContinuallyConfig -> listener?.onEval(ContinuallyState(result, start, end, times))
-         }
+         listener?.invoke(ContinuallyState(result, start, end, times))
       } catch (e: AssertionError) {
          // if this is the first time the check was executed then just rethrow the underlying error
          if (times == 0)
             throw e
          // if not the first attempt then include how many times/for how long the test passed
          throw failure(
-            "Test failed after $start; expected to pass for ${patience.duration}; attempted $times times\nUnderlying failure was: ${e.message}",
+            "Test failed after $start; expected to pass for ${duration}; attempted $times times\nUnderlying failure was: ${e.message}",
             e
          )
       }
-      times++
-      delay(patience.interval.next(times))
+      delay(interval.next(++times))
    }
    return result
 }
+
+// region continually
+
+@ExperimentalKotest
+suspend fun <T> continually(
+   config: ContinuallyConfig<Nothing>, configure: ContinuallyBuilder<T>.() -> Unit, @BuilderInference test: suspend () -> T
+): T? {
+   val builder = ContinuallyBuilder<T>(config)
+   builder.configure()
+   return builder.toConfig().invoke(test)
+}
+
+@ExperimentalKotest
+suspend fun <T> continually(
+   config: ContinuallyConfig<T>, configure: ContinuallyBuilder<T>.() -> Unit, @BuilderInference test: suspend () -> T
+): T? {
+   val builder = ContinuallyBuilder(config)
+   builder.configure()
+   return builder.toConfig().invoke(test)
+}
+
+@ExperimentalKotest
+suspend fun <T> continually(
+   configure: ContinuallyBuilder<T>.() -> Unit, @BuilderInference test: suspend () -> T
+): T? {
+   val builder = ContinuallyBuilder<T>()
+   builder.configure()
+   return builder.toConfig().invoke(test)
+}
+
+@ExperimentalTime
+@ExperimentalKotest
+suspend fun <T> continually(duration: Duration, test: suspend () -> T): T? = continually(duration.inWholeMilliseconds, test)
+
+@ExperimentalKotest
+suspend fun <T> continually(duration: Long, test: suspend () -> T): T? = continually({ this.duration = duration }, test)
+
+// endregion
