@@ -205,7 +205,7 @@ private class EventuallyControl(val config: EventuallyConfig<*>) {
    var lastDelayPeriod: Long = 0L
    var lastInterval: Long = 0L
 
-   fun exceptionIsNotSuppressable(e: Throwable): Boolean {
+   fun exceptionIsNotSuppressible(e: Throwable): Boolean {
       if (firstError == null) {
          firstError = e
       } else {
@@ -292,7 +292,7 @@ suspend operator fun <T> EventuallyConfig<T>.invoke(f: suspend () -> T): T {
                }
             }
          } catch (e: Throwable) {
-            val notSuppressable = control.exceptionIsNotSuppressable(e)
+            val notSuppressable = control.exceptionIsNotSuppressible(e)
             when (this) {
                is BasicEventuallyConfig -> Unit
                is GenericEventuallyConfig -> listener?.onEval(control.toState(null))
