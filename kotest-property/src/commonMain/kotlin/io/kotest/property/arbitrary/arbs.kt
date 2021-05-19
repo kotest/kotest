@@ -32,7 +32,7 @@ fun <A> Arb<A>.next(rs: RandomSource = RandomSource.default()): A = single(rs)
  *
  * Note: This arb can result in an infinite loop if more elements are requested than can be generated uniquely.
  */
-@Deprecated("distinct will be removed in 4.6")
+@Deprecated("distinct Will be removed in 4.7")
 fun <A> Arb<A>.distinct() = distinctBy { it }
 
 /**
@@ -41,7 +41,7 @@ fun <A> Arb<A>.distinct() = distinctBy { it }
  *
  * Note: This arb can result in an infinite loop if more elements are requested than can be generated uniquely.
  */
-@Deprecated("distinctBy will be removed in 4.6")
+@Deprecated("distinctBy Will be removed in 4.7")
 fun <A, B> Arb<A>.distinctBy(selector: (A) -> B) = object : Arb<A>() {
 
    override fun edgecase(rs: RandomSource): A? = this@distinctBy.edgecase(rs)

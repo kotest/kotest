@@ -56,7 +56,7 @@ abstract class SpecRunner(
          Try { listener.specInstantiationError(kclass, it) }
       }
 
-   @Deprecated("Explicit thread mode will be removed in 4.6")
+   @Deprecated("Explicit thread mode Will be removed in 4.7")
    protected suspend fun runParallel(threads: Int, testCases: Collection<TestCase>, run: suspend (TestCase) -> Unit) {
 
       val executor = Executors.newFixedThreadPool(threads, NamedThreadFactory("SpecRunner-%d"))

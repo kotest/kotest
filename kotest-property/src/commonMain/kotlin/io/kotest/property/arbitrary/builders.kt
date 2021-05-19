@@ -68,7 +68,7 @@ fun <A> arbitrary(shrinker: Shrinker<A>, fn: (RandomSource) -> A): Arb<A> =
  * from successive invocations of the given function f.
  */
 @Deprecated(
-   "use arbitrary(). This function will be removed in 4.6",
+   "use arbitrary(). This function Will be removed in 4.7",
    ReplaceWith("arbitrary(fn)")
 )
 fun <A> arb(fn: (RandomSource) -> A): Arb<A> =
@@ -79,7 +79,7 @@ fun <A> arb(fn: (RandomSource) -> A): Arb<A> =
  * and generates values from the given function that is invoked once to return a sequence of values.
  */
 @Deprecated(
-   "This function will no longer accept Sequence<A>. Use arbitrary with (RandomSource -> A) for compatibility. This function will be removed in 4.6"
+   "This function will no longer accept Sequence<A>. Use arbitrary with (RandomSource -> A) for compatibility. This function Will be removed in 4.7"
 )
 @JvmName("arbSequence")
 fun <A> arb(edgecases: List<A> = emptyList(), fn: (RandomSource) -> Sequence<A>) = object : Arb<A>() {
@@ -93,7 +93,7 @@ fun <A> arb(edgecases: List<A> = emptyList(), fn: (RandomSource) -> Sequence<A>)
  * supplied edge case values, and provides values from sequence returning function.
  */
 @Deprecated(
-   "This function will no longer accept Sequence<A>. Use arbitrary with (RandomSource -> A) for compatibility. This function will be removed in 4.6"
+   "This function will no longer accept Sequence<A>. Use arbitrary with (RandomSource -> A) for compatibility. This function Will be removed in 4.7"
 )
 @JvmName("arbSequence")
 fun <A> arb(
@@ -111,7 +111,7 @@ fun <A> arb(
  * from successive invocations of the given function f.
  */
 @Deprecated(
-   "Use arbitrary with (RandomSource -> A). This function will be removed in 4.6",
+   "Use arbitrary with (RandomSource -> A). This function Will be removed in 4.7",
    ReplaceWith("arbitrary(shrinker, fn)")
 )
 fun <A> arb(shrinker: Shrinker<A>, fn: (RandomSource) -> A): Arb<A> =
@@ -122,7 +122,7 @@ fun <A> arb(shrinker: Shrinker<A>, fn: (RandomSource) -> A): Arb<A> =
  * generates each value from successive invocations of the given function f.
  */
 @Deprecated(
-   "Use arbitrary with (RandomSource -> A). This function will be removed in 4.6",
+   "Use arbitrary with (RandomSource -> A). This function Will be removed in 4.7",
    ReplaceWith("arbitrary(edgecases, shrinker, fn)")
 )
 fun <A> arb(shrinker: Shrinker<A>, edgecases: List<A> = emptyList(), fn: (RandomSource) -> A): Arb<A> =
@@ -133,7 +133,7 @@ fun <A> arb(shrinker: Shrinker<A>, edgecases: List<A> = emptyList(), fn: (Random
  * generates each value from successive invocations of the given function f.
  */
 @Deprecated(
-   "Use arbitrary with (RandomSource -> A). This function will be removed in 4.6",
+   "Use arbitrary with (RandomSource -> A). This function Will be removed in 4.7",
    ReplaceWith("arbitrary(edgecases, fn)")
 )
 fun <A> arb(edgecases: List<A> = emptyList(), fn: (RandomSource) -> A): Arb<A> =
@@ -143,7 +143,7 @@ fun <A> arb(edgecases: List<A> = emptyList(), fn: (RandomSource) -> A): Arb<A> =
  * Returns an [Arb] where each value is generated from the given function.
  */
 @Deprecated(
-   "Use arbitrary with (RandomSource -> A). This function will be removed in 4.6",
+   "Use arbitrary with (RandomSource -> A). This function Will be removed in 4.7",
    ReplaceWith("arbitrary(edgeCases, fn)")
 )
 fun <A> Arb.Companion.create(edgeCases: List<A> = emptyList(), fn: (RandomSource) -> A): Arb<A> =
