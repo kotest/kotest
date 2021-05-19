@@ -30,7 +30,7 @@ Kotest allows tests to be created in several styles, so you can choose the style
 Check all the Tricky Cases With Data Driven Testing
 --------------------------
 
-Handle even an enormous amount of input parameter combinations easily with [data driven tests](data_driven_testing.md):
+Handle even an enormous amount of input parameter combinations easily with [data driven tests](framework/datatesting/introduction):
 
 ```kotlin
 class StringSpecExample : StringSpec({

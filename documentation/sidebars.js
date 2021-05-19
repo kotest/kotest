@@ -81,7 +81,16 @@ module.exports = {
       'framework/conditional_evaluation',
       'framework/isolation_mode',
       'framework/exceptions',
-      'framework/data_driven_testing',
+      {
+         type: "category",
+         label: "Data Driven Testing",
+         collapsed: false,
+         items: [
+            'framework/datatesting/introduction',
+            'framework/datatesting/nested',
+            'framework/datatesting/custom-test-names',
+         ]
+      },
       {
          type: "category",
          label: "Non-deterministic Testing",

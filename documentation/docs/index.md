@@ -91,7 +91,7 @@ class PropertyExample: StringSpec({
 Check all the Tricky Cases With Data Driven Testing
 --------------------------
 
-Handle even an enormous amount of input parameter combinations easily with [data driven tests](framework/data_driven_testing.md):
+Handle even an enormous amount of input parameter combinations easily with [data driven tests](introduction):
 
 ```kotlin
 class StringSpecExample : StringSpec({

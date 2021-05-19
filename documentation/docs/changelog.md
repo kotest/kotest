@@ -13,12 +13,16 @@ This is a small release which **adds support for Kotlin 1.5** while remaining co
 * Fixed false negative results by Inspectors when used inside assertSoftly. #2245
 
 #### Features / Improvement
+
 * Test config can now be specified at the test container level in addition to the leaf level #1370 #2050 #2065
-* In data driven tests, added `IsStableType` annotation which when use on a type, kotest will call `toString` method on that type for creating test name. See [updated docs](https://kotest.io/docs/framework/data-driven-testing.html) #2248
-* In data driven tests, added `WithDataTestName` interface which allow a type to modify the test name generated. See [updated docs](https://kotest.io/docs/framework/data-driven-testing.html) #2248
+* In data driven tests, added `IsStableType` annotation which when use on a type, kotest will call `toString` method on
+  that type for creating test name. See [updated docs](https://kotest.io/docs/framework/data-driven-testing.html) #2248
+* In data driven tests, added `WithDataTestName` interface which allow a type to modify the test name generated.
+  See [updated docs](https://kotest.io/docs/framework/data-driven-testing.html) #2248
 * All internal logging now uses lazy functions which offers a significant speed up on large test suites
 * Reflection methods are cached to avoid slow reflection calls.
-* Added experimental versions of `eventually`, `until`, and `continually` that don't use `kotlin.time` internally. See [updated docs](https://kotest.io/docs/framework/concurrency/eventually.html) #2149
+* Added experimental versions of `eventually`, `until`, and `continually` that don't use `kotlin.time` internally.
+  See [updated docs](https://kotest.io/docs/framework/concurrency/eventually.html) #2149
 * Coroutines upgraded to 1.5 which also allows us to release assertions/property tests for watchosX64
 * WatchosX64 artifacts released for assertions and property tests.
 
@@ -47,7 +51,7 @@ See the full list of [extension modules](https://kotest.io/docs/extensions/exten
 * Duplicated test names no longer throw an automatic error, but now mangle the name. So two tests of name 'foo' will appear as 'foo' and '(1) foo'. This enables data driven testing to work properly in javascript. To restore the original behavior, set the configuration value `Configuration.duplicateTestNameMode = Error`.
 
 #### Features / Improvement
-* A new data testing module has been added `kotest-framework-datatest` which properly supports runtime nesting of data tests. #2078
+* A new data testing module has been added `kotest-framework-datatest` which properly supports runtime nesting of data tests. See [updated docs](https://kotest.io/docs/framework/data-driven-testing.html) #2078
 * Added new matcher for DayOfWeek in `kotest-assertion-clock` module. #2124
 * Added factory method to simplify creating new matchers. #2122
 * Added method in `Exhaustive` to create a new `Exhaustive` which will be a cartesian product of given two `Exhaustive`. #2120
