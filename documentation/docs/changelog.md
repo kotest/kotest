@@ -11,7 +11,7 @@ This is a small release which **adds support for Kotlin 1.5** while remaining co
 #### Bugfixes.
 
 * All internal logging now uses lazy functions which offers a significant speed up on large test suites.
-  Thanks to Łukasz Wasylkowski who spent considerable time tracking down this performance issue.
+  Thanks to [Łukasz Wasylkowski](https://github.com/lwasyl) who spent considerable time tracking down this performance issue.
 * Fixed false negative results by Inspectors when used inside assertSoftly. #2245
 
 #### Features / Improvement
