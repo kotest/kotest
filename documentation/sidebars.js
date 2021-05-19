@@ -87,7 +87,7 @@ module.exports = {
          label: "Non-deterministic Testing",
          collapsed: false,
          items: [
-            'assertions/eventually',
+            'framework/concurrency/eventually',
             'assertions/continually',
             'assertions/until',
             'assertions/retry',
