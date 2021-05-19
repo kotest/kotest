@@ -1,14 +1,12 @@
 package io.kotest.property.arbitrary
 
 import io.kotest.property.Arb
-import io.kotest.property.Exhaustive
-import io.kotest.property.Gen
 import kotlin.jvm.JvmName
 
 /**
  * An alias to [choose] to aid in discoverability for those used to Haskell's QuickCheck.
  */
-fun <A : Any> Arb.Companion.frequency(
+fun <A> Arb.Companion.frequency(
    a: Pair<Int, A>,
    b: Pair<Int, A>,
    vararg cs: Pair<Int, A>
@@ -24,7 +22,7 @@ fun <A : Any> Arb.Companion.frequency(
  * @throws IllegalArgumentException If any negative weight is given or only
  * weights of zero are given.
  */
-fun <A : Any> Arb.Companion.choose(a: Pair<Int, A>, b: Pair<Int, A>, vararg cs: Pair<Int, A>): Arb<A> {
+fun <A> Arb.Companion.choose(a: Pair<Int, A>, b: Pair<Int, A>, vararg cs: Pair<Int, A>): Arb<A> {
    val allPairs = listOf(a, b) + cs
    val weights = allPairs.map { it.first }
    require(weights.all { it >= 0 }) { "Negative weights not allowed" }
@@ -51,7 +49,7 @@ fun <A : Any> Arb.Companion.choose(a: Pair<Int, A>, b: Pair<Int, A>, vararg cs: 
  * An alias to [choose] to aid in discoverability for those used to Haskell's QuickCheck.
  */
 @JvmName("frequencyArbs")
-fun <A : Any> Arb.Companion.frequency(
+fun <A> Arb.Companion.frequency(
    a: Pair<Int, Arb<A>>,
    b: Pair<Int, Arb<A>>,
    vararg cs: Pair<Int, Arb<A>>
@@ -67,7 +65,7 @@ fun <A : Any> Arb.Companion.frequency(
  * weights of zero are given.
  */
 @JvmName("chooseArbs")
-fun <A : Any> Arb.Companion.choose(a: Pair<Int, Arb<A>>, b: Pair<Int, Arb<A>>, vararg cs: Pair<Int, Arb<A>>): Arb<A> {
+fun <A> Arb.Companion.choose(a: Pair<Int, Arb<A>>, b: Pair<Int, Arb<A>>, vararg cs: Pair<Int, Arb<A>>): Arb<A> {
    val allPairs = listOf(a, b) + cs
    val allArbs = allPairs.map { it.second }
    val weights = allPairs.map { it.first }
@@ -109,29 +107,6 @@ fun <A> Arb.Companion.shuffle(list: List<A>): Arb<List<A>> = arbitrary {
 fun <A> Arb.Companion.subsequence(list: List<A>): Arb<List<A>> = arbitrary {
    val size = it.random.nextInt(0, list.size + 1)
    list.take(size)
-}
-
-/**
- * Randomly selects one of the given gens to generate the next element.
- * The input gens must be infinite.
- *
- * @throws IllegalArgumentException if no arbs have been passed to this function
- */
-@Deprecated(
-   message = "Deprecated in favor of a function that returns an Arb instead of a Gen. Will be removed in 4.7",
-   replaceWith = ReplaceWith("Arb.Companion.choice(vararg arbs: Arb<A>)")
-)
-fun <A> Arb.Companion.choice(vararg gens: Gen<A>): Gen<A> {
-   check(gens.isNotEmpty()) { "at least one gen needs to be provided for choice" }
-
-   val arbs = gens.toList().map { gen ->
-      when (gen) {
-         is Arb -> gen
-         is Exhaustive -> gen.toArb()
-      }
-   }
-
-   return choice(arbs.first(), *arbs.drop(1).toTypedArray())
 }
 
 /**
