@@ -6,7 +6,7 @@ slug: exceptions.html
 ---
 
 
-Testing for [exceptions](../assertions/index.md#exceptions) is easy with Kotest:
+Testing for [exceptions](https://kotest.io/docs/assertions/exceptions.html) is easy with Kotest:
 
 ```kotlin
 val exception = shouldThrow<IllegalAccessException> {
