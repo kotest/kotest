@@ -10,6 +10,8 @@ This is a small release which **adds support for Kotlin 1.5** while remaining co
 
 #### Bugfixes.
 
+* All internal logging now uses lazy functions which offers a significant speed up on large test suites.
+  Thanks to Łukasz Wasylkowski who spent considerable time tracking down this performance issue.
 * Fixed false negative results by Inspectors when used inside assertSoftly. #2245
 
 #### Features / Improvement
@@ -19,12 +21,19 @@ This is a small release which **adds support for Kotlin 1.5** while remaining co
   that type for creating test name. See [updated docs](https://kotest.io/docs/framework/data-driven-testing.html) #2248
 * In data driven tests, added `WithDataTestName` interface which allow a type to modify the test name generated.
   See [updated docs](https://kotest.io/docs/framework/data-driven-testing.html) #2248
-* All internal logging now uses lazy functions which offers a significant speed up on large test suites
 * Reflection methods are cached to avoid slow reflection calls.
 * Added experimental versions of `eventually`, `until`, and `continually` that don't use `kotlin.time` internally.
   See [updated docs](https://kotest.io/docs/framework/concurrency/eventually.html) #2149
 * Coroutines upgraded to 1.5 which also allows us to release assertions/property tests for watchosX64
 * WatchosX64 artifacts released for assertions and property tests.
+
+#### Contributors
+
+* Ashish Kumar Joy
+* Jim Schneidereit
+* Łukasz Wasylkowski
+* sksamuel
+
 
 ### 4.5.0 May 2021
 
