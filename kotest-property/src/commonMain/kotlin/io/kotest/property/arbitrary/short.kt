@@ -14,9 +14,10 @@ fun Arb.Companion.short() = arbitrary(listOf(0, -1, 1, Short.MIN_VALUE, Short.MA
  * The edge cases are [[Short.MIN_VALUE], [Short.MAX_VALUE], 0, -1, 1]
  */
 @ExperimentalUnsignedTypes
-fun Arb.Companion.ushort() = arb(UShortShrinker, listOf(0.toUShort(), 1.toUShort(), UShort.MIN_VALUE, UShort.MAX_VALUE)) {
-   it.random.nextInt().toUInt().shr(UInt.SIZE_BITS - UShort.SIZE_BITS).toUShort()
-}
+fun Arb.Companion.ushort() =
+   arbitrary(listOf(0.toUShort(), 1.toUShort(), UShort.MIN_VALUE, UShort.MAX_VALUE), UShortShrinker) {
+      it.random.nextInt().toUInt().shr(UInt.SIZE_BITS - UShort.SIZE_BITS).toUShort()
+   }
 
 val ShortShrinker = IntShrinker(Short.MIN_VALUE..Short.MAX_VALUE).bimap({ it.toInt() }, { it.toShort() })
 

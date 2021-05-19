@@ -17,8 +17,7 @@ import kotlin.math.round
  * [Float.POSITIVE_INFINITY]
  *
  */
-fun Arb.Companion.float(): Arb<Float> = arb(
-   FloatShrinker,
+fun Arb.Companion.float(): Arb<Float> = arbitrary(
    listOf(
       0F, 1.0F, -1.0F,
       Float.MIN_VALUE,
@@ -26,7 +25,8 @@ fun Arb.Companion.float(): Arb<Float> = arb(
       Float.NEGATIVE_INFINITY,
       Float.NaN,
       Float.POSITIVE_INFINITY
-   )
+   ),
+   FloatShrinker,
 ) { it.random.nextFloat() }
 
 /**
@@ -37,13 +37,13 @@ fun Arb.Companion.float(): Arb<Float> = arb(
 fun Arb.Companion.numericFloats(
    from: Float = -Float.MAX_VALUE,
    to: Float = Float.MAX_VALUE
-) = arb(
-   FloatShrinker,
+) = arbitrary(
    listOf(
       0F, 1.0F, -1.0F,
       Float.MIN_VALUE,
       Float.MAX_VALUE
-   )
+   ),
+   FloatShrinker,
 ) { it.random.nextDouble(from.toDouble(), to.toDouble()).toFloat() }
 
 object FloatShrinker : Shrinker<Float> {

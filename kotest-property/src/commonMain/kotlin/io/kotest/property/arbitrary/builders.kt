@@ -1,7 +1,6 @@
 package io.kotest.property.arbitrary
 
 import io.kotest.property.*
-import kotlin.jvm.JvmName
 
 /**
  * Creates a new [Arb] that performs no shrinking, has no edge cases and
@@ -62,17 +61,6 @@ fun <A> arbitrary(
  */
 fun <A> arbitrary(shrinker: Shrinker<A>, fn: (RandomSource) -> A): Arb<A> =
    arbitrary(emptyList(), shrinker, fn)
-
-/**
- * Creates a new [Arb] with the given edgecases, that performs shrinking using the supplied shrinker and
- * generates each value from successive invocations of the given function f.
- */
-@Deprecated(
-   "Use arbitrary with (RandomSource -> A). This function Will be removed in 4.7",
-   ReplaceWith("arbitrary(edgecases, shrinker, fn)")
-)
-fun <A> arb(shrinker: Shrinker<A>, edgecases: List<A> = emptyList(), fn: (RandomSource) -> A): Arb<A> =
-   arbitrary(edgecases, shrinker, fn)
 
 /**
  * Returns an [Arb] which repeatedly generates a single value.

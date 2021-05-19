@@ -8,7 +8,7 @@ import io.kotest.property.Arb
  */
 fun Arb.Companion.byte(min: Byte = Byte.MIN_VALUE, max: Byte = Byte.MAX_VALUE): Arb<Byte> {
    val edges = byteArrayOf(1, -1, 0, min, max).filter { it in min..max }.distinct()
-   return arb(ByteShrinker, edges) {
+   return arbitrary(edges, ByteShrinker) {
       generateSequence { it.random.nextBytes(1).first() }.filter { it in min..max }.first()
    }
 }

@@ -30,7 +30,7 @@ private val doubleEdgecases = finiteDoubleEdgecases + nonFiniteDoubleEdgecases
  * Returns an [Arb] where each value is a randomly chosen Double.
  */
 fun Arb.Companion.double(): Arb<Double> {
-   return arb(DoubleShrinker, doubleEdgecases) { it.random.nextDouble(-Double.MAX_VALUE, Double.MAX_VALUE) }
+   return arbitrary(doubleEdgecases, DoubleShrinker) { it.random.nextDouble(-Double.MAX_VALUE, Double.MAX_VALUE) }
 }
 
 /**
@@ -43,7 +43,7 @@ fun Arb.Companion.numericDoubles(
    to: Double = Double.MAX_VALUE
 ): Arb<Double> {
    val edgecases = (finiteDoubleEdgecases + listOf(from, to)).filter { it in (from..to) }.distinct()
-   return arb(DoubleShrinker, edgecases) { it.random.nextDouble(from, to) }
+   return arbitrary(edgecases, DoubleShrinker) { it.random.nextDouble(from, to) }
 }
 
 fun Arb.Companion.positiveDoubles(): Arb<Double> = double().filter { it > 0.0 }
