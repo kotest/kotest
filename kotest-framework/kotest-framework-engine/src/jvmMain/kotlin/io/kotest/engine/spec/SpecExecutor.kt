@@ -110,7 +110,7 @@ class SpecExecutor(private val listener: TestEngineListener) {
    }
 
    private fun Spec.resolvedIsolationMode() =
-      this.isolationMode() ?: this.isolationMode ?: this.isolation ?: configuration.isolationMode
+      this.isolationMode() ?: this.isolationMode ?: configuration.isolationMode
 
    private fun runner(spec: Spec): SpecRunner {
       return when (spec.resolvedIsolationMode()) {
