@@ -14,11 +14,11 @@ This is a small release which **adds support for Kotlin 1.5** while remaining co
 
 #### Features / Improvement
 * Test config can now be specified at the test container level in addition to the leaf level #1370 #2050 #2065
-* In data driven tests, added `IsStableType` annotation which when use on a type, kotest will call `toString` method on that type for creating test name. #2248
-* In data driven tests, added `WithDataTestName` interface which allow a type to modify the test name generated. #2248
+* In data driven tests, added `IsStableType` annotation which when use on a type, kotest will call `toString` method on that type for creating test name. See [updated docs](https://kotest.io/docs/framework/data-driven-testing.html) #2248
+* In data driven tests, added `WithDataTestName` interface which allow a type to modify the test name generated. See [updated docs](https://kotest.io/docs/framework/data-driven-testing.html) #2248
 * All internal logging now uses lazy functions which offers a significant speed up on large test suites
 * Reflection methods are cached to avoid slow reflection calls.
-* Added experimental versions of `eventually`, `until`, and `continually` that don't use `kotlin.time` internally. #2149
+* Added experimental versions of `eventually`, `until`, and `continually` that don't use `kotlin.time` internally. See [updated docs](https://kotest.io/docs/framework/concurrency/eventually.html) #2149
 * Coroutines upgraded to 1.5 which also allows us to release assertions/property tests for watchosX64
 * WatchosX64 artifacts released for assertions and property tests.
 

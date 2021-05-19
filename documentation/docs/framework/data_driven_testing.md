@@ -149,4 +149,14 @@ context("Pythag triples tests") {
 Whether this is worth the extra effort or not depends on how readable the toString() method is on the data classes you
 are using.
 
+## Stable Names
+
+When generating test names, Kotest needs a _stable_ test name. Otherwise, test reports can be messed up if the name used
+changes over the course of the test suite execution.
+
+Kotest will only use the `toString()` of the input class if it thinks the input class has a stable `toString()` value
+otherwise it will use the class name.
+
+You can force Kotest to use the `toString()` for test names by annotation your type with `@IsStableType`. Then
+the `toString()` will be used regardless.
 
