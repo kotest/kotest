@@ -10,7 +10,7 @@ slug: framework-config-props.html
 ```kotlin
 package io.kotest.core.internal
 
-@Deprecated("Renamed to KotestEngineProperties. Will be removed in 4.7")
+@Deprecated("Renamed to KotestEngineProperties. Will be removed in 4.8")
 val KotestEngineSystemProperties = KotestEngineProperties
 
 object KotestEngineProperties {
