@@ -77,7 +77,7 @@ The error message will contain the error and the input row details:
 `Test failed for (a, 5), (b, 4), (c, 3) expected:<9> but was:<41>`
 
 In that previous example, we wrapped the `withData` call in a parent test, so we have more context when the test results appear.
-The syntax varies depending on the [spec style](docs/framework/styles) used - here we used _fun spec_ which uses context blocks for containers.
+The syntax varies depending on the [spec style](../styles.md) used - here we used _fun spec_ which uses context blocks for containers.
 In fact, data tests can be nested inside any number of containers.
 
 But this is optional, you can define data tests at the root level as well.
