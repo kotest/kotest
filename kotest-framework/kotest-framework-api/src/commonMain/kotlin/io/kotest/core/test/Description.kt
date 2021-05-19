@@ -163,7 +163,7 @@ sealed class Description {
     * Returns a parseable consistent identifier for this description including the spec name.
     */
    @JsName("id_val")
-   @Deprecated("This causes issues with tests that include characters that do not match the regex. This id will be removed in 4.6. Use testId instead.")
+   @Deprecated("This causes issues with tests that include characters that do not match the regex. This id Will be removed in 4.7. Use testId instead.")
    val id: TestId by lazy {
       TestId(chain().joinToString("/") {
          it.displayName().replace(" ", "_").replace(idRegex, "")

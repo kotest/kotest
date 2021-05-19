@@ -64,7 +64,7 @@ data class TestCase(
    /**
     * Returns true if this test case is a root test inside a spec.
     */
-   @Deprecated("use description.isRootTest(). Will be removed in 4.6")
+   @Deprecated("use description.isRootTest(). Will be removed in 4.7")
    fun isTopLevel(): Boolean = description.isRootTest()
 
    companion object {

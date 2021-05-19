@@ -55,7 +55,7 @@ fun <T> beEmpty() = object : Matcher<Channel<T>> {
  * Asserts that this [Channel] should receive within [duration]
  *
  */
-@Deprecated("This is a blocking call and should be avoided. This will be removed in 4.6")
+@Deprecated("This is a blocking call and should be avoided. This Will be removed in 4.7")
 fun <T> Channel<T>.shouldReceiveWithin(duration: Duration) = this should receiveWithin(duration)
 
 @Deprecated("This is a blocking call and should be avoided")
@@ -75,7 +75,7 @@ fun <T> receiveWithin(duration: Duration) = object : Matcher<Channel<T>> {
  * Asserts that this [Channel] should not receive within [duration]
  *
  */
-@Deprecated("This is a blocking call and should be avoided. This will be removed in 4.6")
+@Deprecated("This is a blocking call and should be avoided. This Will be removed in 4.7")
 fun <T> Channel<T>.shouldReceiveNoElementsWithin(duration: Duration) = this shouldNot receiveWithin(duration)
 
 

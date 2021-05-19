@@ -118,7 +118,7 @@ fun <A> Arb.Companion.subsequence(list: List<A>): Arb<List<A>> = arbitrary {
  * @throws IllegalArgumentException if no arbs have been passed to this function
  */
 @Deprecated(
-   message = "Deprecated in favor of a function that returns an Arb instead of a Gen. Will be removed in 4.6",
+   message = "Deprecated in favor of a function that returns an Arb instead of a Gen. Will be removed in 4.7",
    replaceWith = ReplaceWith("Arb.Companion.choice(vararg arbs: Arb<A>)")
 )
 fun <A> Arb.Companion.choice(vararg gens: Gen<A>): Gen<A> {

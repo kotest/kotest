@@ -49,7 +49,7 @@ abstract class AbstractProjectConfig {
     *  - [FailureFirstSpecExecutionOrder]
     *  - [RandomSpecExecutionOrder]
     */
-   @Deprecated("use the val version. Will be removed in 4.6")
+   @Deprecated("use the val version. Will be removed in 4.7")
    open fun specExecutionOrder(): SpecExecutionOrder? = null
 
    /**
@@ -60,7 +60,7 @@ abstract class AbstractProjectConfig {
    /**
     * The [IsolationMode] set here will be applied if the isolation mode in a spec is null.
     */
-   @Deprecated("use the val version. Will be removed in 4.6")
+   @Deprecated("use the val version. Will be removed in 4.7")
    open fun isolationMode(): IsolationMode? = null
 
    open val isolationMode: IsolationMode? = null
@@ -98,7 +98,7 @@ abstract class AbstractProjectConfig {
     * Note: For backwards compatibility, setting this value to > 1 will implicitly set
     * [specConcurrentDispatch] to true unless that value has been explicitly set to false.
     */
-   @Deprecated("use the val version. Will be removed in 4.6")
+   @Deprecated("use the val version. Will be removed in 4.7")
    open fun parallelism(): Int? = null
 
    /**
@@ -130,7 +130,7 @@ abstract class AbstractProjectConfig {
     * To enable this feature, set this to true, or set the system property
     * 'kotest.write.specfailures=true'
     */
-   @Deprecated("use the val version. Will be removed in 4.6")
+   @Deprecated("use the val version. Will be removed in 4.7")
    open fun writeSpecFailureFile(): Boolean = false
 
    open val writeSpecFailureFile: Boolean? = null
@@ -144,7 +144,7 @@ abstract class AbstractProjectConfig {
     * If this function returns null then the default of Sequential
     * will be used.
     */
-   @Deprecated("use the val version. Will be removed in 4.6")
+   @Deprecated("use the val version. Will be removed in 4.7")
    open fun testCaseOrder(): TestCaseOrder? = null
 
    open val testCaseOrder: TestCaseOrder? = null
