@@ -19,7 +19,7 @@ fun Arb.Companion.long(min: Long = Long.MIN_VALUE, max: Long = Long.MAX_VALUE) =
  */
 fun Arb.Companion.long(range: LongRange = Long.MIN_VALUE..Long.MAX_VALUE): Arb<Long> {
    val edgecases = listOf(0, 1, -1, Long.MAX_VALUE, Long.MIN_VALUE).filter { it in range }
-   return arb(LongShrinker(range), edgecases) { it.random.nextLong(range) }
+   return arbitrary(edgecases, LongShrinker(range)) { it.random.nextLong(range) }
 }
 
 class LongShrinker(private val range: LongRange) : Shrinker<Long> {
