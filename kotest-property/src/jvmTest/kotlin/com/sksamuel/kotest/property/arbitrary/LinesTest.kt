@@ -10,7 +10,7 @@ import java.io.File
 class LinesTest : FunSpec({
    test("Arb.lines should generate a line from the file") {
       val file = File(javaClass.getResource("/lines.txt").file)
-      Arb.lines(file).values(RandomSource.default()).take(1000).map { it.value }.toSet() shouldBe
+      Arb.lines(file).generate(RandomSource.default()).take(1000).map { it.value }.toSet() shouldBe
          setOf("a", "b", "c", "d", "e", "f")
    }
 })

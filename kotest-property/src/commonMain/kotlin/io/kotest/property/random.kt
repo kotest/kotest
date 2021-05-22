@@ -7,12 +7,7 @@ data class RandomSource(val random: Random, val seed: Long) {
 
       fun seeded(seed: Long): RandomSource = RandomSource(Random(seed), seed)
 
-      @Deprecated("has concurrency issues with native")
-      val Default = lazy {
-         val seed = Random.Default.nextLong()
-         RandomSource(Random(seed), seed)
-      }.value
-
+      // due to concurrency issues with native, this must not be val
       fun default(): RandomSource {
          val seed = Random.Default.nextLong()
          return RandomSource(Random(seed), seed)

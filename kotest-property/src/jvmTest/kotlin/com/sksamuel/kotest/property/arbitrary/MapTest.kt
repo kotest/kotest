@@ -20,13 +20,13 @@ class MapTest : FunSpec({
       val intArb = Arb.int(1, 10).map {
          counter.getAndIncrement()
       }
-      intArb.values(RandomSource.default()).take(1).toList()
+      intArb.generate(RandomSource.default()).take(1).toList()
       counter.get().shouldBe(1)
    }
 
    test("should transform edgecases") {
       val arb = Arb.int(1, 10).withEdgecases(1).map { "$it" }
-      arb.generate(RandomSource.Default, EdgeConfig(edgecasesGenerationProbability = 1.0)).first().value shouldBe "1"
+      arb.generate(RandomSource.default(), EdgeConfig(edgecasesGenerationProbability = 1.0)).first().value shouldBe "1"
    }
 
    test("should preserve shrinking") {

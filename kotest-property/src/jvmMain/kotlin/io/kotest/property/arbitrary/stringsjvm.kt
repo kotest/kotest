@@ -16,7 +16,6 @@ fun Arb.Companion.stringPattern(pattern: String): Arb<String> = object : Arb<Str
 
    override fun edgecase(rs: RandomSource): String? = null
 
-   override fun values(rs: RandomSource): Sequence<Sample<String>> = sequence { sampleStringPattern(rs) }
    override fun sample(rs: RandomSource): Sample<String> = sampleStringPattern(rs)
 
    private val generex = Generex(pattern)

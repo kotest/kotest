@@ -456,8 +456,6 @@ private fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, T> Arb.Companion.bindN(
          val n = arbN.sample(rs).value
          return Sample(bindFn(a, b, c, d, e, f, g, h, i, j, k, l, m, n))
       }
-
-      override fun values(rs: RandomSource): Sequence<Sample<T>> = generateSequence { sample(rs) }
    }
 }
 

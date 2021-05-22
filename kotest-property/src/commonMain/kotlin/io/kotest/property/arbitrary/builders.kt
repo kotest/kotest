@@ -16,7 +16,6 @@ fun <A> arbitrary(fn: (RandomSource) -> A): Arb<A> =
 fun <A> arbitrary(edgecases: List<A>, fn: (RandomSource) -> A): Arb<A> = object : Arb<A>() {
    override fun edgecase(rs: RandomSource): A? = if (edgecases.isEmpty()) null else edgecases.random(rs.random)
    override fun sample(rs: RandomSource): Sample<A> = Sample(fn(rs))
-   override fun values(rs: RandomSource): Sequence<Sample<A>> = generateSequence { Sample(fn(rs)) }
 }
 
 /**
@@ -26,7 +25,6 @@ fun <A> arbitrary(edgecases: List<A>, fn: (RandomSource) -> A): Arb<A> = object 
 fun <A> arbitrary(edgecases: List<A>, shrinker: Shrinker<A>, fn: (RandomSource) -> A): Arb<A> = object : Arb<A>() {
    override fun edgecase(rs: RandomSource): A? = if (edgecases.isEmpty()) null else edgecases.random(rs.random)
    override fun sample(rs: RandomSource): Sample<A> = sampleOf(fn(rs), shrinker)
-   override fun values(rs: RandomSource): Sequence<Sample<A>> = generateSequence { sampleOf(fn(rs), shrinker) }
 }
 
 /**
@@ -37,7 +35,6 @@ fun <A> arbitrary(edgecaseFn: (RandomSource) -> A?, sampleFn: (RandomSource) -> 
    object : Arb<A>() {
       override fun edgecase(rs: RandomSource): A? = edgecaseFn(rs)
       override fun sample(rs: RandomSource): Sample<A> = Sample(sampleFn(rs))
-      override fun values(rs: RandomSource): Sequence<Sample<A>> = generateSequence { Sample(sampleFn(rs)) }
    }
 
 /**
@@ -52,7 +49,6 @@ fun <A> arbitrary(
    object : Arb<A>() {
       override fun edgecase(rs: RandomSource): A? = edgecaseFn(rs)
       override fun sample(rs: RandomSource): Sample<A> = Sample(sampleFn(rs))
-      override fun values(rs: RandomSource): Sequence<Sample<A>> = generateSequence { sampleOf(sampleFn(rs), shrinker) }
    }
 
 /**
