@@ -17,19 +17,25 @@ object JvmReflection : Reflection {
    override fun fqn(kclass: KClass<*>): String? = fqns.getOrPut(kclass) { kclass.qualifiedName }
 
    override fun annotations(kclass: KClass<*>, recursive: Boolean): List<Annotation> {
+      return if (recursive) return annotations(kclass, emptySet()) else kclass.annotationsSafe()
+   }
+
+   private fun annotations(kclass: KClass<*>, checked: Set<String>): List<Annotation> {
       return annotations.getOrPut(kclass) {
-         try {
-            val annos = kclass.annotations
-            if (recursive) annos + annos.flatMap {
-               // we don't want to get into a loop with jvm annotations that annotate themselves
-               if (it.annotationClass.jvmName.startsWith("io.kotest"))
-                  annotations (it.annotationClass, recursive)
-               else emptyList()
-            } else annos
-         } catch (e: Exception) {
-            emptyList()
+         val annos = kclass.annotations
+         annos + annos.flatMap {
+            // we don't want to get into a loop with annotations that annotate themselves
+            if (checked.contains(it.annotationClass.jvmName)) emptyList() else {
+               annotations(it.annotationClass, checked + it.annotationClass.jvmName)
+            }
          }
       }
+   }
+
+   private fun KClass<*>.annotationsSafe(): List<Annotation> = try {
+      this.annotations
+   } catch (e: Exception) {
+      emptyList()
    }
 
    override fun <T : Any> isDataClass(kclass: KClass<T>): Boolean = try {
