@@ -45,6 +45,23 @@ object TestProjectExtension2 : ProjectExtension {
       listExtensionEvents.add("there")
       project()
    }
+   override fun extensions() = listOf(TestProjectExtension, TestProjectExtension2)
+}
+
+internal val listExtensionEvents = mutableListOf<String>()
+
+object TestProjectExtension : ProjectExtension {
+   override suspend fun aroundProject(project: suspend () -> Unit) {
+      listExtensionEvents.add("hello")
+      project()
+   }
+}
+
+object TestProjectExtension2 : ProjectExtension {
+   override suspend fun aroundProject(project: suspend () -> Unit) {
+      listExtensionEvents.add("there")
+      project()
+   }
 }
 
 object TestProjectListener : ProjectListener {
