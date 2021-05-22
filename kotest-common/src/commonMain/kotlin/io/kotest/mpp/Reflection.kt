@@ -17,9 +17,11 @@ interface Reflection {
    fun fqn(kclass: KClass<*>): String?
 
    /**
-    * Returns the annotations on this class or empty list if not supported
+    * Returns the annotations on this class or empty list if not supported.
+    *
+    * @param recursive if true will recursively gather annotations on annotations...
     */
-   fun annotations(kclass: KClass<*>): List<Annotation>
+   fun annotations(kclass: KClass<*>, recursive: Boolean): List<Annotation>
 
    /**
     * Returns true if this class is a data class or false if it is not, or the platform does not
@@ -49,7 +51,7 @@ interface Reflection {
 
 object BasicReflection : Reflection {
    override fun fqn(kclass: KClass<*>): String? = null
-   override fun annotations(kclass: KClass<*>): List<Annotation> = emptyList()
+   override fun annotations(kclass: KClass<*>, recursive: Boolean): List<Annotation> = emptyList()
    override fun <T : Any> isDataClass(kclass: KClass<T>): Boolean = false
    override fun <T : Any> isEnumClass(kclass: KClass<T>): Boolean = false
    override fun paramNames(fn: Function<*>): List<String>? = null
@@ -71,21 +73,13 @@ fun KClass<*>.qualifiedNameOrNull(): String? = reflection.fqn(this)
  *
  * This method will recursively included composed annotations.
  */
-inline fun <reified T : Any> KClass<*>.annotation(): T? = this.annotation(T::class)
-
-/**
- * Finds the first annotation of type T on this class, or returns null if annotations
- * are not supported on this platform or the annotation is missing.
- *
- * This method will recursively included composed annotations.
- */
-fun <T : Any> KClass<*>.annotation(annotationType: KClass<T>): T? {
-   return reflection.annotations(this).flatMap { listOf(it) + reflection.annotations(it::class) }
-      .firstOrNull { annotationType.isInstance(it) } as T?
+inline fun <reified T : Any> KClass<*>.annotation(): T? {
+   return reflection.annotations(this, true).filterIsInstance<T>().firstOrNull()
 }
 
 /**
  * Returns true if this class has the given annotation.
+ *
  * This will recursively check for annotations by looking for annotations on annotations.
  */
 inline fun <reified T : Any> KClass<*>.hasAnnotation(): Boolean = this.annotation<T>() != null

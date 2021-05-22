@@ -105,6 +105,13 @@ kotlin {
          dependsOn(desktopMain)
       }
 
+      val jvmTest by getting {
+         dependencies {
+            implementation(project(Projects.Engine))
+            implementation(project(Projects.JunitRunner))
+         }
+      }
+
       all {
          languageSettings.useExperimentalAnnotation("kotlin.time.ExperimentalTime")
          languageSettings.useExperimentalAnnotation("kotlin.experimental.ExperimentalTypeInference")

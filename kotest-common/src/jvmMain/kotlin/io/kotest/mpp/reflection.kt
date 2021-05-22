@@ -6,6 +6,7 @@ import kotlin.reflect.KCallable
 import kotlin.reflect.KClass
 import kotlin.reflect.full.isSubclassOf
 import kotlin.reflect.full.primaryConstructor
+import kotlin.reflect.jvm.jvmName
 import kotlin.reflect.jvm.reflect
 
 object JvmReflection : Reflection {
@@ -15,10 +16,17 @@ object JvmReflection : Reflection {
 
    override fun fqn(kclass: KClass<*>): String? = fqns.getOrPut(kclass) { kclass.qualifiedName }
 
-   override fun annotations(kclass: KClass<*>): List<Annotation> {
+   override fun annotations(kclass: KClass<*>, recursive: Boolean): List<Annotation> {
+      println("Annos for $kclass")
       return annotations.getOrPut(kclass) {
          try {
-            kclass.annotations
+            val annos = kclass.annotations
+            if (recursive) annos + annos.flatMap {
+               // we don't want to get into a loop with jvm annotations that annotate themselves
+               if (it.annotationClass.jvmName.startsWith("io.kotest"))
+                  annotations (it.annotationClass, recursive)
+               else emptyList()
+            } else annos
          } catch (e: Exception) {
             emptyList()
          }
