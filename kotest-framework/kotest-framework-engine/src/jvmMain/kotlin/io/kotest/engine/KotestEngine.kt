@@ -22,6 +22,7 @@ import io.kotest.engine.lifecycle.beforeProject
 import io.kotest.fp.Try
 import io.kotest.fp.getOrElse
 import io.kotest.mpp.log
+import kotlinx.coroutines.withTimeout
 import kotlin.reflect.KClass
 import kotlin.script.templates.standard.ScriptTemplateWithArgs
 
@@ -88,7 +89,7 @@ class KotestEngine(private val config: KotestEngineConfig) {
       if (beforeErrors.isNotEmpty())
          return EngineResult(beforeErrors)
 
-      val submissionError = submitAll(suite, listener).errorOrNull()
+      val submissionError = withTimeout(configuration.projectTimeout) { submitAll(suite, listener).errorOrNull() }
 
       // after project listeners are executed even if the submission fails and the errors are added together
       val afterErrors = configuration.listeners().afterProject().getOrElse { emptyList() }
