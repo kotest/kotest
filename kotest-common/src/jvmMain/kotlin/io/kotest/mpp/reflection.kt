@@ -17,7 +17,6 @@ object JvmReflection : Reflection {
    override fun fqn(kclass: KClass<*>): String? = fqns.getOrPut(kclass) { kclass.qualifiedName }
 
    override fun annotations(kclass: KClass<*>, recursive: Boolean): List<Annotation> {
-      println("Annos for $kclass")
       return annotations.getOrPut(kclass) {
          try {
             val annos = kclass.annotations
