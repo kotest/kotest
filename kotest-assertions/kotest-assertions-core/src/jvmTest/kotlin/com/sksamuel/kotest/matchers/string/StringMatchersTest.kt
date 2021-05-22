@@ -53,7 +53,6 @@ import io.kotest.matchers.string.shouldNotHaveLengthBetween
 import io.kotest.matchers.string.shouldNotHaveLengthIn
 import io.kotest.matchers.string.shouldNotHaveSameLengthAs
 import io.kotest.matchers.string.shouldNotMatch
-import org.opentest4j.AssertionFailedError
 
 class StringMatchersTest : FreeSpec() {
    init {

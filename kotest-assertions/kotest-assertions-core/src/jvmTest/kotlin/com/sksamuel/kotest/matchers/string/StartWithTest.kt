@@ -9,11 +9,12 @@ import io.kotest.matchers.string.shouldNotStartWith
 import io.kotest.matchers.string.shouldStartWith
 import io.kotest.matchers.string.startWith
 
-class StartWithMatcherTest : FreeSpec() {
+class StartWithTest : FreeSpec() {
    init {
       "should startWith" - {
          "should test strings" {
             "hello" should startWith("h")
+            "hello" should startWith("h" as CharSequence)
             "hello" should startWith("")
             "hello" shouldStartWith ""
             "hello" shouldStartWith "h"
@@ -27,6 +28,24 @@ class StartWithMatcherTest : FreeSpec() {
             shouldThrow<AssertionError> {
                "hello" should startWith("goodbye")
             }
+         }
+         "work with char seqs" {
+            val cs: CharSequence = "hello"
+            cs should startWith("h")
+            cs.shouldStartWith("h")
+
+            val csnullable: CharSequence? = "hello"
+            csnullable should startWith("h")
+            csnullable.shouldStartWith("h")
+         }
+         "return the correct type" {
+            val cs1: CharSequence = "hello"
+            val a1 = cs1.shouldStartWith("o")
+            a1 shouldBe "hello"
+
+            val cs2: CharSequence? = "hello"
+            val a2 = cs2.shouldStartWith("o")
+            a2 shouldBe "hello"
          }
          "should show divergence in error message" {
             shouldThrow<AssertionError> {

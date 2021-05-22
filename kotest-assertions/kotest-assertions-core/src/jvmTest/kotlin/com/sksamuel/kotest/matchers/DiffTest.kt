@@ -3,6 +3,7 @@ package com.sksamuel.kotest.matchers
 import io.kotest.core.spec.style.WordSpec
 import io.kotest.matchers.string.Diff
 import io.kotest.matchers.shouldBe
+import io.kotest.matchers.string.shouldStartWith
 import io.kotest.matchers.string.startWith
 
 class DiffTest : WordSpec() {
@@ -33,7 +34,7 @@ class DiffTest : WordSpec() {
           |but was:
           |  1.toByte()
         """.trimMargin()
-        Diff.create(Any(), null).toString() shouldBe startWith("""
+        Diff.create(Any(), null).toString().shouldStartWith("""
           |expected:
           |  null
           |but was:

@@ -17,7 +17,7 @@ infix fun <A : CharSequence?> A.shouldNotHaveMaxLength(length: Int): A {
    return this
 }
 
-fun <A : CharSequence?> haveMaxLength(length: Int): Matcher<A> = neverNullMatcher { value ->
+fun haveMaxLength(length: Int): Matcher<CharSequence?> = neverNullMatcher { value ->
    MatcherResult(
       value.length <= length,
       "${value.show().value} should have maximum length of $length",
@@ -35,7 +35,7 @@ infix fun <A : CharSequence?> A.shouldNotHaveMinLength(length: Int): A {
    return this
 }
 
-fun <A : CharSequence?> haveMinLength(length: Int): Matcher<A> = neverNullMatcher { value ->
+fun haveMinLength(length: Int): Matcher<CharSequence?> = neverNullMatcher { value ->
    MatcherResult(
       value.length >= length,
       "${value.show().value} should have minimum length of $length",
@@ -75,7 +75,7 @@ fun <A : CharSequence?> A.shouldNotHaveLengthIn(range: IntRange): A {
    return this
 }
 
-fun <A : CharSequence?> haveLengthIn(range: IntRange): Matcher<A> {
+fun haveLengthIn(range: IntRange): Matcher<CharSequence?> {
    return neverNullMatcher { value ->
       MatcherResult(
          value.length in range,
@@ -107,7 +107,7 @@ infix fun <A : CharSequence?> A.shouldNotHaveSameLengthAs(other: String): A {
    return this
 }
 
-fun <A : CharSequence?> haveSameLengthAs(other: A): Matcher<A> = neverNullMatcher { value ->
+fun haveSameLengthAs(other: CharSequence?): Matcher<CharSequence?> = neverNullMatcher { value ->
    MatcherResult(
       value.length == other?.length,
       "${value.show().value} should have the same length as ${other.show().value}",
@@ -117,7 +117,7 @@ fun <A : CharSequence?> haveSameLengthAs(other: A): Matcher<A> = neverNullMatche
 
 fun strlen(length: Int): Matcher<String?> = haveLength(length)
 
-fun <A : CharSequence?> haveLength(length: Int): Matcher<A> = neverNullMatcher { value ->
+fun haveLength(length: Int): Matcher<CharSequence?> = neverNullMatcher { value ->
    MatcherResult(
       value.length == length,
       "${value.show().value} should have length $length, but instead was ${value.length}",

@@ -24,7 +24,7 @@ class MatchersTest : FreeSpec({
    }
 
    "support 'or' function on matcher" {
-      "hello" should (haveLength<String>(5) or haveLength(6))
+      "hello" should (haveLength(5) or haveLength(6))
    }
 
    "Matchers.shouldBe" - {
