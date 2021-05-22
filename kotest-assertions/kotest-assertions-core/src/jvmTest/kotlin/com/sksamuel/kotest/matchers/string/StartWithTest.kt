@@ -40,11 +40,11 @@ class StartWithTest : FreeSpec() {
          }
          "return the correct type" {
             val cs1: CharSequence = "hello"
-            val a1 = cs1.shouldStartWith("o")
+            val a1 = cs1.shouldStartWith("h")
             a1 shouldBe "hello"
 
             val cs2: CharSequence? = "hello"
-            val a2 = cs2.shouldStartWith("o")
+            val a2 = cs2.shouldStartWith("h")
             a2 shouldBe "hello"
          }
          "should show divergence in error message" {
