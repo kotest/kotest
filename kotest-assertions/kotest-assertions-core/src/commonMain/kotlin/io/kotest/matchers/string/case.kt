@@ -7,17 +7,17 @@ import io.kotest.matchers.neverNullMatcher
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldNot
 
-fun <A : CharSequence?> A.shouldBeUpperCase(): A {
+fun <A : CharSequence> A?.shouldBeUpperCase(): A {
    this should beUpperCase()
-   return this
+   return this!!
 }
 
-fun String?.shouldNotBeUpperCase(): String? {
+fun <A : CharSequence> A?.shouldNotBeUpperCase(): A {
    this shouldNot beUpperCase()
-   return this
+   return this!!
 }
 
-fun <A : CharSequence?> beUpperCase(): Matcher<A> = neverNullMatcher { value ->
+fun beUpperCase(): Matcher<CharSequence?> = neverNullMatcher { value ->
    MatcherResult(
       value.toString().toUpperCase() == value,
       "${value.show().value} should be upper case",
@@ -35,7 +35,7 @@ fun <A : CharSequence?> A.shouldNotBeLowerCase(): A {
    return this
 }
 
-fun <A : CharSequence?> beLowerCase(): Matcher<A> = neverNullMatcher { value ->
+fun beLowerCase(): Matcher<CharSequence?> = neverNullMatcher { value ->
    MatcherResult(
       value.toString().toLowerCase() == value,
       "${value.show().value} should be lower case",

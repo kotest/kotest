@@ -24,9 +24,7 @@ import io.kotest.matchers.string.shouldBeBlank
 import io.kotest.matchers.string.shouldBeEmpty
 import io.kotest.matchers.string.shouldBeEqualIgnoringCase
 import io.kotest.matchers.string.shouldBeInteger
-import io.kotest.matchers.string.shouldBeLowerCase
 import io.kotest.matchers.string.shouldBeSingleLine
-import io.kotest.matchers.string.shouldBeUpperCase
 import io.kotest.matchers.string.shouldContain
 import io.kotest.matchers.string.shouldContainADigit
 import io.kotest.matchers.string.shouldContainIgnoringCase
@@ -40,9 +38,7 @@ import io.kotest.matchers.string.shouldMatch
 import io.kotest.matchers.string.shouldNotBeBlank
 import io.kotest.matchers.string.shouldNotBeEmpty
 import io.kotest.matchers.string.shouldNotBeEqualIgnoringCase
-import io.kotest.matchers.string.shouldNotBeLowerCase
 import io.kotest.matchers.string.shouldNotBeSingleLine
-import io.kotest.matchers.string.shouldNotBeUpperCase
 import io.kotest.matchers.string.shouldNotContain
 import io.kotest.matchers.string.shouldNotContainADigit
 import io.kotest.matchers.string.shouldNotContainIgnoringCase
@@ -215,67 +211,6 @@ class StringMatchersTest : FreeSpec() {
             }.message shouldBe "Expecting actual not to be null"
          }
       }
-
-      "string should beUpperCase()" - {
-         "should test that a string is upper case" {
-            "" should beUpperCase()
-            "HELLO" should beUpperCase()
-            "heLLO" shouldNot beUpperCase()
-            "hello" shouldNot beUpperCase()
-            "HELLO".shouldBeUpperCase()
-            "HelLO".shouldNotBeUpperCase()
-         }
-
-         "should fail if value is null" {
-            shouldThrow<AssertionError> {
-               null shouldNot beUpperCase()
-            }.message shouldBe "Expecting actual not to be null"
-
-            shouldThrow<AssertionError> {
-               null.shouldNotBeUpperCase()
-            }.message shouldBe "Expecting actual not to be null"
-
-            shouldThrow<AssertionError> {
-               null should beUpperCase()
-            }.message shouldBe "Expecting actual not to be null"
-
-            shouldThrow<AssertionError> {
-               null.shouldBeUpperCase()
-            }.message shouldBe "Expecting actual not to be null"
-         }
-      }
-
-
-      "string should beLowerCase()" - {
-         "should test that a string is lower case" {
-            "" should beLowerCase()
-            "hello" should beLowerCase()
-            "HELLO" shouldNot beLowerCase()
-            "HELlo" shouldNot beLowerCase()
-
-            "hello".shouldBeLowerCase()
-            "HELLO".shouldNotBeLowerCase()
-         }
-
-         "should fail if value is null" {
-            shouldThrow<AssertionError> {
-               null shouldNot beLowerCase()
-            }.message shouldBe "Expecting actual not to be null"
-
-            shouldThrow<AssertionError> {
-               null.shouldNotBeLowerCase()
-            }.message shouldBe "Expecting actual not to be null"
-
-            shouldThrow<AssertionError> {
-               null should beLowerCase()
-            }.message shouldBe "Expecting actual not to be null"
-
-            shouldThrow<AssertionError> {
-               null.shouldBeLowerCase()
-            }.message shouldBe "Expecting actual not to be null"
-         }
-      }
-
 
       "string should beBlank()" - {
          "should test that a string has only whitespace" {
