@@ -3,6 +3,7 @@ package io.kotest.engine
 import io.kotest.core.config.configuration
 import io.kotest.core.config.specInstantiationListeners
 import io.kotest.core.config.testListeners
+import io.kotest.core.listeners.FinalizeSpecListener
 import io.kotest.core.plan.Descriptor
 import io.kotest.core.spec.Spec
 import io.kotest.core.test.TestCase
@@ -99,7 +100,7 @@ class NotificationManager(private val listener: TestEngineListener) {
       kclass: KClass<out Spec>,
       results: Map<TestCase, TestResult>
    ) = Try {
-      configuration.testListeners().forEach {
+      configuration.listeners().filterIsInstance<FinalizeSpecListener>().forEach {
          it.finalizeSpec(kclass, results)
       }
    }
