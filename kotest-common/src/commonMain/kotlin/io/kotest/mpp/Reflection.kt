@@ -68,10 +68,27 @@ fun KClass<*>.qualifiedNameOrNull(): String? = reflection.fqn(this)
 /**
  * Finds the first annotation of type T on this class, or returns null if annotations
  * are not supported on this platform or the annotation is missing.
+ *
+ * This method will recursively included composed annotations.
  */
-inline fun <reified T> KClass<*>.annotation(): T? = reflection.annotations(this).filterIsInstance<T>().firstOrNull()
+inline fun <reified T : Any> KClass<*>.annotation(): T? = this.annotation(T::class)
 
-inline fun <reified T> KClass<*>.hasAnnotation(): Boolean = reflection.annotations(this).filterIsInstance<T>().isNotEmpty()
+/**
+ * Finds the first annotation of type T on this class, or returns null if annotations
+ * are not supported on this platform or the annotation is missing.
+ *
+ * This method will recursively included composed annotations.
+ */
+fun <T : Any> KClass<*>.annotation(annotationType: KClass<T>): T? {
+   return reflection.annotations(this).flatMap { listOf(it) + reflection.annotations(it::class) }
+      .firstOrNull { annotationType.isInstance(it) } as T?
+}
+
+/**
+ * Returns true if this class has the given annotation.
+ * This will recursively check for annotations by looking for annotations on annotations.
+ */
+inline fun <reified T : Any> KClass<*>.hasAnnotation(): Boolean = this.annotation<T>() != null
 
 fun <T : Any> KClass<T>.newInstanceNoArgConstructor(): T = reflection.newInstanceNoArgConstructor(this)
 

@@ -11,13 +11,18 @@ import kotlin.reflect.jvm.reflect
 object JvmReflection : Reflection {
 
    private val fqns = mutableMapOf<KClass<*>, String?>()
+   private val annotations = mutableMapOf<KClass<*>, List<Annotation>>()
 
    override fun fqn(kclass: KClass<*>): String? = fqns.getOrPut(kclass) { kclass.qualifiedName }
 
-   override fun annotations(kclass: KClass<*>): List<Annotation> = try {
-      kclass.annotations
-   } catch (e: Exception) {
-      emptyList()
+   override fun annotations(kclass: KClass<*>): List<Annotation> {
+      return annotations.getOrPut(kclass) {
+         try {
+            kclass.annotations
+         } catch (e: Exception) {
+            emptyList()
+         }
+      }
    }
 
    override fun <T : Any> isDataClass(kclass: KClass<T>): Boolean = try {
