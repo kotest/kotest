@@ -9,8 +9,6 @@ import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNot
 import io.kotest.matchers.string.beBlank
 import io.kotest.matchers.string.beEmpty
-import io.kotest.matchers.string.beLowerCase
-import io.kotest.matchers.string.beUpperCase
 import io.kotest.matchers.string.contain
 import io.kotest.matchers.string.containADigit
 import io.kotest.matchers.string.containIgnoringCase

@@ -7,14 +7,14 @@ import io.kotest.matchers.neverNullMatcher
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldNot
 
-infix fun <A : CharSequence?> A.shouldHaveMaxLength(length: Int): A {
+infix fun <A : CharSequence> A?.shouldHaveMaxLength(length: Int): A {
    this should haveMaxLength(length)
-   return this
+   return this!!
 }
 
-infix fun <A : CharSequence?> A.shouldNotHaveMaxLength(length: Int): A {
+infix fun <A : CharSequence> A?.shouldNotHaveMaxLength(length: Int): A {
    this shouldNot haveMaxLength(length)
-   return this
+   return this!!
 }
 
 fun haveMaxLength(length: Int): Matcher<CharSequence?> = neverNullMatcher { value ->
@@ -25,14 +25,14 @@ fun haveMaxLength(length: Int): Matcher<CharSequence?> = neverNullMatcher { valu
    )
 }
 
-infix fun <A : CharSequence?> A.shouldHaveMinLength(length: Int): A {
+infix fun <A : CharSequence> A?.shouldHaveMinLength(length: Int): A {
    this should haveMinLength(length)
-   return this
+   return this!!
 }
 
-infix fun <A : CharSequence?> A.shouldNotHaveMinLength(length: Int): A {
+infix fun <A : CharSequence> A?.shouldNotHaveMinLength(length: Int): A {
    this shouldNot haveMinLength(length)
-   return this
+   return this!!
 }
 
 fun haveMinLength(length: Int): Matcher<CharSequence?> = neverNullMatcher { value ->
@@ -43,17 +43,17 @@ fun haveMinLength(length: Int): Matcher<CharSequence?> = neverNullMatcher { valu
    )
 }
 
-fun <A : CharSequence?> A.shouldHaveLengthBetween(min: Int, max: Int): A {
+fun <A : CharSequence> A?.shouldHaveLengthBetween(min: Int, max: Int): A {
    this should haveLengthBetween(min, max)
-   return this
+   return this!!
 }
 
-fun <A : CharSequence?> A.shouldNotHaveLengthBetween(min: Int, max: Int): A {
+fun <A : CharSequence> A?.shouldNotHaveLengthBetween(min: Int, max: Int): A {
    this shouldNot haveLengthBetween(min, max)
-   return this
+   return this!!
 }
 
-fun <A : CharSequence?> haveLengthBetween(min: Int, max: Int): Matcher<A> {
+fun haveLengthBetween(min: Int, max: Int): Matcher<CharSequence?> {
    require(min <= max)
    return neverNullMatcher { value ->
       MatcherResult(
@@ -65,14 +65,14 @@ fun <A : CharSequence?> haveLengthBetween(min: Int, max: Int): Matcher<A> {
 }
 
 
-fun <A : CharSequence?> A.shouldHaveLengthIn(range: IntRange): A {
+fun <A : CharSequence> A?.shouldHaveLengthIn(range: IntRange): A {
    this should haveLengthIn(range)
-   return this
+   return this!!
 }
 
-fun <A : CharSequence?> A.shouldNotHaveLengthIn(range: IntRange): A {
+fun <A : CharSequence> A?.shouldNotHaveLengthIn(range: IntRange): A {
    this shouldNot haveLengthIn(range)
-   return this
+   return this!!
 }
 
 fun haveLengthIn(range: IntRange): Matcher<CharSequence?> {
@@ -86,25 +86,25 @@ fun haveLengthIn(range: IntRange): Matcher<CharSequence?> {
 }
 
 
-infix fun <A : CharSequence?> A.shouldHaveLength(length: Int): A {
+infix fun <A : CharSequence> A?.shouldHaveLength(length: Int): A {
    this should haveLength(length)
-   return this
+   return this!!
 }
 
-infix fun <A : CharSequence?> A.shouldNotHaveLength(length: Int): A {
+infix fun <A : CharSequence> A?.shouldNotHaveLength(length: Int): A {
    this shouldNot haveLength(length)
-   return this
+   return this!!
 }
 
 
-infix fun <A : CharSequence?> A.shouldHaveSameLengthAs(other: String): A {
+infix fun <A : CharSequence> A?.shouldHaveSameLengthAs(other: String): A {
    this should haveSameLengthAs(other)
-   return this
+   return this!!
 }
 
-infix fun <A : CharSequence?> A.shouldNotHaveSameLengthAs(other: String): A {
+infix fun <A : CharSequence> A?.shouldNotHaveSameLengthAs(other: String): A {
    this shouldNot haveSameLengthAs(other)
-   return this
+   return this!!
 }
 
 fun haveSameLengthAs(other: CharSequence?): Matcher<CharSequence?> = neverNullMatcher { value ->

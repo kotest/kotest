@@ -1,29 +1,30 @@
 package io.kotest.matchers.string
 
 import io.kotest.assertions.show.show
+import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
 import io.kotest.matchers.neverNullMatcher
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldNot
 
-fun String?.shouldBeSingleLine(): String? {
+fun <A : CharSequence> A?.shouldBeSingleLine(): A {
    this should haveLineCount(1)
-   return this
+   return this!!
 }
 
-fun String?.shouldNotBeSingleLine(): String? {
+fun <A : CharSequence> A?.shouldNotBeSingleLine(): A {
    this shouldNot haveLineCount(1)
-   return this
+   return this!!
 }
 
-infix fun String?.shouldHaveLineCount(count: Int): String? {
+infix fun <A : CharSequence> A?.shouldHaveLineCount(count: Int): A {
    this should haveLineCount(count)
-   return this
+   return this!!
 }
 
-infix fun String?.shouldNotHaveLineCount(count: Int): String? {
+infix fun <A : CharSequence> A?.shouldNotHaveLineCount(count: Int): A {
    this shouldNot haveLineCount(count)
-   return this
+   return this!!
 }
 
 /**
@@ -31,7 +32,7 @@ infix fun String?.shouldNotHaveLineCount(count: Int): String? {
  *
  * This will count both "\n" and "\r\n", and so is not dependant on the system line separator.
  */
-fun haveLineCount(count: Int) = neverNullMatcher<String> { value ->
+fun haveLineCount(count: Int): Matcher<CharSequence?> = neverNullMatcher<CharSequence> { value ->
    // plus one because we always have one more line than the new line character
    val lines = if (value.isEmpty()) 0 else value.count { it == '\n' } + 1
    MatcherResult(
