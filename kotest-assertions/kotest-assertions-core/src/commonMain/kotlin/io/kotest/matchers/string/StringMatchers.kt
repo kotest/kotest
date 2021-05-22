@@ -38,12 +38,3 @@ fun match(regex: Regex) = neverNullMatcher<String> { value ->
 }
 
 fun match(regex: String): Matcher<String?> = match(regex.toRegex())
-
-fun strlen(length: Int): Matcher<String?> = haveLength(length)
-
-fun haveLength(length: Int) = neverNullMatcher<String> { value ->
-  MatcherResult(
-      value.length == length,
-      "${value.show().value} should have length $length, but instead was ${value.length}",
-      "${value.show().value} should not have length $length")
-}
