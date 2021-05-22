@@ -1,4 +1,4 @@
-package com.sksamuel.kotest.listeners.testlistener.instancepertest
+package com.sksamuel.kotest.listeners.spec.instanceperleaf
 
 import io.kotest.core.listeners.FinalizeSpecListener
 import io.kotest.core.listeners.TestListener
@@ -36,19 +36,26 @@ class FinalizeSpecTestListener2 : FinalizeSpecListener {
 
 class FinalizeSpecTest : FunSpec() {
 
-   override fun isolationMode(): IsolationMode = IsolationMode.InstancePerTest
+   override fun isolationMode(): IsolationMode = IsolationMode.InstancePerLeaf
 
    init {
 
       afterProject {
          // both listeners should have fired
-         counter.get() shouldBe 2
+         counter.get() shouldBe 8
+      }
+
+      // will be added once per instance created
+      finalizeSpec {
+         counter.incrementAndGet()
       }
 
       test("ignored test").config(enabled = false) {}
       test("a").config(enabled = true) {}
       test("b").config(enabled = true) {}
       test("c").config(enabled = true) {}
-      test("d").config(enabled = true) {}
+      context("d") {
+         test("e").config(enabled = true) {}
+      }
    }
 }
