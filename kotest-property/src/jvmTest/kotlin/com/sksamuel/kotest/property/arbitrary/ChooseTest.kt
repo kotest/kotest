@@ -21,10 +21,10 @@ class ChooseTest : FunSpec({
 
    test("Arb.choose should honour seed") {
       val seedListA =
-         Arb.choose(1 to 'A', 3 to 'B', 4 to 'C', 5 to 'D').generate(684658365846L.random()).take(500).toList()
+         Arb.choose(1 to 'A', 3 to 'B', 4 to 'C', 5 to 'D').samples(684658365846L.random()).take(500).toList()
             .map { it.value }
       val seedListB =
-         Arb.choose(1 to 'A', 3 to 'B', 4 to 'C', 5 to 'D').generate(684658365846L.random()).take(500).toList()
+         Arb.choose(1 to 'A', 3 to 'B', 4 to 'C', 5 to 'D').samples(684658365846L.random()).take(500).toList()
             .map { it.value }
       seedListA shouldBe seedListB
    }
@@ -114,15 +114,15 @@ class ChooseTest : FunSpec({
          .toList()
 
       edgecases shouldContainExactly listOf(
-         'a',
-         'd',
-         'a',
-         'd',
          'c',
-         'a',
-         'd',
          'c',
+         'd',
+         'a',
          'b',
+         'a',
+         'd',
+         'd',
+         'a',
          'b'
       )
    }

@@ -48,7 +48,7 @@ fun <A> arbitrary(
 ): Arb<A> =
    object : Arb<A>() {
       override fun edgecase(rs: RandomSource): A? = edgecaseFn(rs)
-      override fun sample(rs: RandomSource): Sample<A> = Sample(sampleFn(rs))
+      override fun sample(rs: RandomSource): Sample<A> = sampleOf(sampleFn(rs), shrinker)
    }
 
 /**

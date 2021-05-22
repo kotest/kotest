@@ -14,7 +14,7 @@ class ShrinkingTest : FunSpec() {
 
          val stdout = captureStandardOut {
             shouldThrowAny {
-               checkAll<String, String>(PropTestConfig(seed = 12312313)) { a, b ->
+               checkAll<String, String>(PropTestConfig(seed = 324234)) { a, b ->
                   (a + b).length shouldBeLessThan 4
                }
             }
@@ -22,38 +22,39 @@ class ShrinkingTest : FunSpec() {
 
          stdout.shouldContain(
             """
-Attempting to shrink arg ""aaVTT${"$"}H<<3&rYlvW==(>]8Sga"
-Shrink #1: ""aaVTT${"$"}H<<3&r" fail
-Shrink #2: ""aaVTT${'$'}" fail
-Shrink #3: ""aaV" fail
-Shrink #4: ""a" fail
-Shrink #5: ""${'"'} fail
-Shrink #6: <empty string> fail
-Shrink result (after 6 shrinks) => <empty string>
+Attempting to shrink arg "K\#a")?7'9G/B'#[X:8+uN"le*m]^^9iOoD2CQ3!ZN6XT)?,ii"
+Shrink #1: "K\#a")?7'9G/B'#[X:8+uN"le" fail
+Shrink #2: "K\#a")?7'9G/B" fail
+Shrink #3: "K\#a")?" fail
+Shrink #4: "K\#a" fail
+Shrink #5: "K\" fail
+Shrink #6: "K" fail
+Shrink #7: <empty string> fail
+Shrink result (after 7 shrinks) => <empty string>
             """.trim()
          )
 
          stdout.shouldContain(
             """
-Attempting to shrink arg "Z7XHs_\&5YUAua4^Eq>m${"$"}w:-\EtY\3b<${'$'}<[WnDk,e'T9I3?1+Rvx;")63cwl!`"
-Shrink #1: "Z7XHs_\&5YUAua4^Eq>m${"$"}w:-\EtY\3b" fail
-Shrink #2: "Z7XHs_\&5YUAua4^" fail
-Shrink #3: "Z7XHs_\&" fail
-Shrink #4: "Z7XH" fail
-Shrink #5: "Z7" pass
-Shrink #6: "XH" pass
-Shrink #7: "7XH" pass
-Shrink #8: "Z7X" pass
-Shrink #9: "a7XH" fail
-Shrink #10: "a7" pass
-Shrink #11: "a7X" pass
-Shrink #12: "aaXH" fail
+Attempting to shrink arg "2K6iUxNE)Dt0?dpR\\2 jt`@7K(cIint'OKqR(,gm(5EInW(?_o.R Q2_t%"
+Shrink #1: "2K6iUxNE)Dt0?dpR\\2 jt`@7K(cIi" fail
+Shrink #2: "2K6iUxNE)Dt0?dp" fail
+Shrink #3: "2K6iUxNE" fail
+Shrink #4: "2K6i" fail
+Shrink #5: "2K" pass
+Shrink #6: "6i" pass
+Shrink #7: "K6i" pass
+Shrink #8: "2K6" pass
+Shrink #9: "aK6i" fail
+Shrink #10: "aK" pass
+Shrink #11: "aK6" pass
+Shrink #12: "aa6i" fail
 Shrink #13: "aa" pass
-Shrink #14: "aXH" pass
-Shrink #15: "aaX" pass
-Shrink #16: "aaaH" fail
-Shrink #17: "aH" pass
-Shrink #18: "aaH" pass
+Shrink #14: "a6i" pass
+Shrink #15: "aa6" pass
+Shrink #16: "aaai" fail
+Shrink #17: "ai" pass
+Shrink #18: "aai" pass
 Shrink #19: "aaa" pass
 Shrink #20: "aaaa" fail
 Shrink result (after 20 shrinks) => "aaaa"

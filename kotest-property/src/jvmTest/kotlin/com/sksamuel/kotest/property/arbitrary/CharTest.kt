@@ -17,13 +17,13 @@ import io.kotest.property.random
 class CharTest : FunSpec({
 
    test("should honour seed") {
-      val seedListA = Arb.char().generate(1234909L.random()).take(120).toList().map { it.value }
-      val seedListB = Arb.char().generate(1234909L.random()).take(120).toList().map { it.value }
+      val seedListA = Arb.char().samples(1234909L.random()).take(120).toList().map { it.value }
+      val seedListB = Arb.char().samples(1234909L.random()).take(120).toList().map { it.value }
       seedListA shouldBe seedListB
 
       val ranges = listOf('A'..'L', 'P'..'Z')
-      val seedListC = Arb.char(ranges).generate(1234909L.random()).take(120).toList().map { it.value }
-      val seedListD = Arb.char(ranges).generate(1234909L.random()).take(120).toList().map { it.value }
+      val seedListC = Arb.char(ranges).samples(1234909L.random()).take(120).toList().map { it.value }
+      val seedListD = Arb.char(ranges).samples(1234909L.random()).take(120).toList().map { it.value }
       seedListC shouldBe seedListD
    }
 

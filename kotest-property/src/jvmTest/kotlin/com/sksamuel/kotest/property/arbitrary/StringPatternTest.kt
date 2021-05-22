@@ -9,7 +9,6 @@ import io.kotest.property.arbitrary.take
 import kotlinx.coroutines.asCoroutineDispatcher
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
-import kotlinx.coroutines.newSingleThreadContext
 import java.util.concurrent.Executors
 
 class StringPatternTest : FunSpec({
@@ -23,9 +22,42 @@ class StringPatternTest : FunSpec({
          async(testDispatcher) { arbPattern.take(1000, RandomSource.seeded(1324L)).toList().takeLast(10) }
       )
 
-      first shouldContainInOrder listOf("T8", "7Jx0zg5", "o", "Mu", "e5", "b0", "g", "uF3", "h", "l7hlj")
-      second shouldContainInOrder listOf("6I", "i4", "j4", "w", "TiOO", "E", "Hz", "raE", "2974dU", "2")
-      third shouldContainInOrder listOf("K", "rs3V7", "8", "P7", "9058", "F", "LuU", "tB9", "5", "0m")
+      first shouldContainInOrder listOf(
+         "Sg",
+         "T8",
+         "7Jx0zg5",
+         "o",
+         "Mu",
+         "e5",
+         "b0",
+         "g",
+         "uF3",
+         "h"
+      )
+      second shouldContainInOrder listOf(
+         "8",
+         "6I",
+         "i4",
+         "j4",
+         "w",
+         "TiOO",
+         "E",
+         "Hz",
+         "raE",
+         "2974dU"
+      )
+      third shouldContainInOrder listOf(
+         "Z3",
+         "K",
+         "rs3V7",
+         "8",
+         "P7",
+         "9058",
+         "F",
+         "LuU",
+         "tB9",
+         "5"
+      )
    }
 
    context("should not timeout") {

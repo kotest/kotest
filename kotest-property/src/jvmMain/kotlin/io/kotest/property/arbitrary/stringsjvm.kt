@@ -4,7 +4,6 @@ import com.mifmif.common.regex.Generex
 import io.kotest.property.Arb
 import io.kotest.property.RandomSource
 import io.kotest.property.Sample
-import io.kotest.property.sampleOf
 
 /**
  * Generate strings that match the given pattern.
@@ -14,13 +13,13 @@ import io.kotest.property.sampleOf
  */
 fun Arb.Companion.stringPattern(pattern: String): Arb<String> = object : Arb<String>() {
 
-   override fun edgecase(rs: RandomSource): String? = null
+   private val generex = Generex(pattern)
 
+   override fun edgecase(rs: RandomSource): String? = null
    override fun sample(rs: RandomSource): Sample<String> = sampleStringPattern(rs)
 
-   private val generex = Generex(pattern)
    private fun sampleStringPattern(rs: RandomSource): Sample<String> = synchronized(this) {
       generex.setSeed(rs.random.nextLong())
-      sampleOf(generex.random(), StringShrinker)
+      Sample(generex.random())
    }
 }
