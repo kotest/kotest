@@ -1,6 +1,7 @@
 package io.kotest.engine.launcher
 
 import io.kotest.core.Tags
+import io.kotest.core.internal.KotestEngineProperties
 import io.kotest.engine.reporter.IsolatedReporter
 import kotlin.system.exitProcess
 
@@ -20,7 +21,7 @@ fun main(args: Array<String>) {
       launcherArgs.spec,
       launcherArgs.testpath,
       tags,
-      launcherArgs.dumpconfig ?: true
+      launcherArgs.dumpconfig ?: System.getProperty(KotestEngineProperties.dumpConfig) == "true"
    )
 
    // there could be threads in the background that will stop the launcher shutting down

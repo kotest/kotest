@@ -27,7 +27,7 @@ fun execute(
    specFQN: String?,
    testPath: String?,
    tags: Tags?,
-   dumpconfig: Boolean = true,
+   dumpconfig: Boolean,
 ) {
    setupLauncher(specFQN, packageName, testPath, tags, dumpconfig, reporter)
       .fold(
@@ -51,7 +51,7 @@ private fun setupLauncher(
    packageName: String?,
    testPath: String?,
    tags: Tags?,
-   dumpconfig: Boolean = true,
+   dumpconfig: Boolean,
    reporter: Reporter
 ): Try<KotestEngineLauncher> = Try {
 

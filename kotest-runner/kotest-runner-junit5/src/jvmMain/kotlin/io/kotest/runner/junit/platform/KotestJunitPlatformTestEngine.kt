@@ -4,6 +4,7 @@ import io.kotest.core.config.configuration
 import io.kotest.core.extensions.DiscoveryExtension
 import io.kotest.core.filter.TestFilter
 import io.kotest.core.filter.TestFilterResult
+import io.kotest.core.internal.KotestEngineProperties
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.toDescription
 import io.kotest.engine.KotestEngineLauncher
@@ -75,7 +76,7 @@ class KotestJunitPlatformTestEngine : TestEngine {
          .withListener(listener)
          .withSpecs(root.classes)
          .withScripts(root.scripts)
-         .withDumpConfig(true)
+         .withDumpConfig(shouldDumpConfig())
          .withFilters(root.testFilters)
          .launch()
    }
@@ -127,6 +128,8 @@ class KotestJunitPlatformTestEngine : TestEngine {
          KotestEngineDescriptor(uniqueId, emptyList(), emptyList(), emptyList(), null)
       }
    }
+
+   private fun shouldDumpConfig() = System.getProperty(KotestEngineProperties.dumpConfig) == "true"
 }
 
 class KotestEngineDescriptor(
