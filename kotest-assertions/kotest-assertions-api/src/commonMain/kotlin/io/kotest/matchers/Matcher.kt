@@ -61,14 +61,15 @@ infix fun <T> Matcher<T>.or(other: Matcher<T>): Matcher<T> = Matcher {
  * The matcher returned by [invert] will _also_ assert that the value is not `null`. Use this for matchers that
  * should fail on `null` values, whether called with `should` or `shouldNot`.
  */
-internal abstract class NeverNullMatcher<T : Any?> : Matcher<T> {
-   final override fun test(value: T): MatcherResult {
+internal abstract class NeverNullMatcher<T : Any?> : Matcher<T?> {
+   final override fun test(value: T?): MatcherResult {
       return if (value == null) MatcherResult(false, "Expecting actual not to be null", "")
       else testNotNull(value)
    }
 
-   override fun invert(): Matcher<T> = object : NeverNullMatcher<T>() {
-      override fun testNotNull(value: T): MatcherResult {
+   override fun invert(): Matcher<T?> = object : NeverNullMatcher<T?>() {
+      override fun testNotNull(value: T?): MatcherResult {
+         if (value == null) return MatcherResult(false, "Expecting actual not to be null", "")
          val result = this@NeverNullMatcher.testNotNull(value)
          return MatcherResult(!result.passed(), result.negatedFailureMessage(), result.failureMessage())
       }
@@ -88,10 +89,10 @@ internal abstract class NeverNullMatcher<T : Any?> : Matcher<T> {
    }
 }
 
-fun <T : Any?> neverNullMatcher(test: (T) -> MatcherResult): Matcher<T> {
+fun <T : Any> neverNullMatcher(t: (T) -> MatcherResult): Matcher<T?> {
    return object : NeverNullMatcher<T>() {
       override fun testNotNull(value: T): MatcherResult {
-         return test(value)
+         return t(value)
       }
    }
 }

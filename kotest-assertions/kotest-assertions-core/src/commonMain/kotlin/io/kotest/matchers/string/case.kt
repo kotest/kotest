@@ -35,7 +35,7 @@ fun <A : CharSequence?> A.shouldNotBeLowerCase(): A {
    return this
 }
 
-fun <A : CharSequence?> beLowerCase() = neverNullMatcher<A> { value ->
+fun <A : CharSequence?> beLowerCase(): Matcher<A> = neverNullMatcher { value ->
    MatcherResult(
       value.toString().toLowerCase() == value,
       "${value.show().value} should be lower case",
