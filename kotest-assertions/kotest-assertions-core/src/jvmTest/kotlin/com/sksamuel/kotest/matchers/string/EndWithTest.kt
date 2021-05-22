@@ -9,12 +9,15 @@ import io.kotest.matchers.string.endWith
 import io.kotest.matchers.string.shouldEndWith
 import io.kotest.matchers.string.shouldNotEndWith
 
-class EndWithMatcherTest : FreeSpec() {
+@Suppress("RedundantNullableReturnType")
+class EndWithTest : FreeSpec() {
    init {
       "should endWith" - {
          "should test strings" {
             "hello" should endWith("o")
+            "hello" should endWith("o" as CharSequence)
             "hello" should endWith("")
+            "hello" should endWith("" as CharSequence)
             "hello" shouldEndWith ""
             "hello" shouldEndWith "lo"
             "hello" shouldEndWith "o"
@@ -27,7 +30,24 @@ class EndWithMatcherTest : FreeSpec() {
                "hello" should endWith("goodbye")
             }
          }
+         "work with char seqs" {
+            val cs: CharSequence = "hello"
+            cs should endWith("o")
+            cs.shouldEndWith("o")
 
+            val csnullable: CharSequence? = "hello"
+            csnullable should endWith("o")
+            csnullable.shouldEndWith("o")
+         }
+         "return the correct type" {
+            val cs1: CharSequence = "hello"
+            val a1 = cs1.shouldEndWith("o")
+            a1 shouldBe "hello"
+
+            val cs2: CharSequence? = "hello"
+            val a2 = cs2.shouldEndWith("o")
+            a2 shouldBe "hello"
+         }
          "should fail if value is null" {
             shouldThrow<AssertionError> {
                null shouldNot endWith("")

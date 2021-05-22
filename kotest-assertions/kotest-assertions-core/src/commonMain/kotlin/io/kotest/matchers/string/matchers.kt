@@ -185,42 +185,6 @@ fun include(substr: String) = neverNullMatcher<String> { value ->
    )
 }
 
-infix fun String?.shouldMatch(regex: String): String? {
-   this should match(regex)
-   return this
-}
-
-infix fun String?.shouldMatch(regex: Regex): String? {
-   this should match(regex)
-   return this
-}
-
-infix fun String?.shouldNotMatch(regex: String): String? {
-   this shouldNot match(regex)
-   return this
-}
-
-infix fun String?.shouldEndWith(suffix: String): String? {
-   this should endWith(suffix)
-   return this
-}
-
-infix fun String?.shouldNotEndWith(suffix: String): String? {
-   this shouldNot endWith(suffix)
-   return this
-}
-
-infix fun String?.shouldStartWith(prefix: String): String? {
-   this should startWith(prefix)
-   return this
-}
-
-infix fun String?.shouldNotStartWith(prefix: String): String? {
-   this shouldNot startWith(prefix)
-   return this
-}
-
-
 /**
  * Asserts that [this] is equal to [other] (ignoring case)
  *

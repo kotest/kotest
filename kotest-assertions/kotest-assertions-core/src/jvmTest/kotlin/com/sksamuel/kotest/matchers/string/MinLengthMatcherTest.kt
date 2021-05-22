@@ -5,8 +5,11 @@ import io.kotest.core.spec.style.FreeSpec
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNot
+import io.kotest.matchers.string.haveMaxLength
 import io.kotest.matchers.string.haveMinLength
+import io.kotest.matchers.string.shouldHaveMaxLength
 import io.kotest.matchers.string.shouldHaveMinLength
+import io.kotest.matchers.string.shouldNotHaveMaxLength
 import io.kotest.matchers.string.shouldNotHaveMinLength
 
 class MinLengthMatcherTest : FreeSpec() {
@@ -21,6 +24,23 @@ class MinLengthMatcherTest : FreeSpec() {
             shouldThrow<AssertionError> {
                "1" should haveMinLength(2)
             }.message shouldBe "\"1\" should have minimum length of 2"
+         }
+         "should work on char seq" {
+            val empty: CharSequence = ""
+            val single: CharSequence = "x"
+            val double: CharSequence = "xx"
+            empty should haveMinLength(0)
+            empty.shouldNotHaveMinLength(1)
+            single.shouldHaveMinLength(0)
+            single.shouldHaveMinLength(1)
+            double.shouldHaveMinLength(2)
+            double.shouldNotHaveMinLength(12)
+         }
+         "should work for nullable char seqs" {
+            val cs: CharSequence? = null
+            shouldThrow<AssertionError> {
+               cs.shouldHaveMinLength(4)
+            }.message shouldBe "Expecting actual not to be null"
          }
          "should fail if value is null" {
             shouldThrow<AssertionError> {

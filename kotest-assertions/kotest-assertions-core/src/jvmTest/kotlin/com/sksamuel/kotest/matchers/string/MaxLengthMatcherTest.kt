@@ -11,8 +11,8 @@ import io.kotest.matchers.string.shouldNotHaveMaxLength
 
 class MaxLengthMatcherTest : FreeSpec() {
    init {
-      "should have max length" - {
-         "should check max length" {
+      "shouldHaveMaxLength" - {
+         "should work on strings" {
             "" should haveMaxLength(0)
             "1" should haveMaxLength(1)
             "123" shouldHaveMaxLength 10
@@ -21,6 +21,23 @@ class MaxLengthMatcherTest : FreeSpec() {
             shouldThrow<AssertionError> {
                "12" should haveMaxLength(1)
             }.message shouldBe "\"12\" should have maximum length of 1"
+         }
+         "should work on char seq" {
+            val empty: CharSequence = ""
+            val single: CharSequence = "x"
+            val double: CharSequence = "xx"
+            empty should haveMaxLength(0)
+            empty.shouldHaveMaxLength(10)
+            single should haveMaxLength(1)
+            double shouldHaveMaxLength 2
+            double shouldNotHaveMaxLength 1
+            double should haveMaxLength(10)
+         }
+         "should work for nullable char seqs" {
+            val cs: CharSequence? = null
+            shouldThrow<AssertionError> {
+               cs.shouldHaveMaxLength(1)
+            }.message shouldBe "Expecting actual not to be null"
          }
          "should fail if value is null" {
             shouldThrow<AssertionError> {
