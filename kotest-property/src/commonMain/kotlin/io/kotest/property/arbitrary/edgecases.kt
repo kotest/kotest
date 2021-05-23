@@ -46,5 +46,4 @@ fun <A> Arb<A>.withEdgecases(vararg edgecases: A): Arb<A> = withEdgecases(edgeca
 fun <A> Arb<A>.modifyEdgecases(f: (A) -> A?): Arb<A> = object : Arb<A>() {
    override fun edgecase(rs: RandomSource): A? = this@modifyEdgecases.edgecase(rs)?.let(f)
    override fun sample(rs: RandomSource): Sample<A> = this@modifyEdgecases.sample(rs)
-   override fun values(rs: RandomSource): Sequence<Sample<A>> = this@modifyEdgecases.values(rs)
 }

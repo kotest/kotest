@@ -32,16 +32,16 @@ class FlatMapTest : FunSpec() {
             .toList()
 
          edges shouldContainExactly listOf(
-            "2 2.0 foo",
-            "2 2.0 foo",
-            "1 1.0 bar",
-            "2 1.0 bar",
-            "1 2.0 foo",
-            "1 2.0 foo",
-            "2 2.0 foo",
-            "1 1.0 foo",
             "2 2.0 bar",
-            "2 1.0 bar"
+            "2 2.0 bar",
+            "1 1.0 foo",
+            "1 2.0 foo",
+            "2 1.0 bar",
+            "2 1.0 bar",
+            "2 2.0 bar",
+            "2 1.0 foo",
+            "2 2.0 bar",
+            "2 2.0 foo"
          )
       }
 
@@ -60,14 +60,14 @@ class FlatMapTest : FunSpec() {
             .toList()
 
          edges shouldContainExactly listOf(
+            "2 4 bar",
+            "1 3 foo",
+            "1 4 foo",
+            "2 3 bar",
+            "2 3 foo",
             "2 4 foo",
             "1 3 bar",
-            "2 3 bar",
-            "1 4 foo",
-            "1 3 foo",
-            "2 4 bar",
             "1 4 bar",
-            "2 3 foo"
          )
       }
 

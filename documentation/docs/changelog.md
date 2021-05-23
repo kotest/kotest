@@ -4,6 +4,12 @@ sidebar_label: Changelog
 slug: changelog.html
 ---
 
+### [Next Release 5.0.0]
+
+#### Breaking Changes
+
+* `Arb.values` has been removed. This was deprecated back in 4.3 in favour of `Arb.sample`. Any custom arbs implementing values should be updated. Any custom arbs using the `arbitrary` builders are not affected.
+
 ### 4.6.0 May 2021
 
 This is a small release which **adds support for Kotlin 1.5** while remaining compatible with Kotlin 1.4.x

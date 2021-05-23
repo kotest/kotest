@@ -21,10 +21,10 @@ class ChooseTest : FunSpec({
 
    test("Arb.choose should honour seed") {
       val seedListA =
-         Arb.choose(1 to 'A', 3 to 'B', 4 to 'C', 5 to 'D').values(684658365846L.random()).take(500).toList()
+         Arb.choose(1 to 'A', 3 to 'B', 4 to 'C', 5 to 'D').samples(684658365846L.random()).take(500).toList()
             .map { it.value }
       val seedListB =
-         Arb.choose(1 to 'A', 3 to 'B', 4 to 'C', 5 to 'D').values(684658365846L.random()).take(500).toList()
+         Arb.choose(1 to 'A', 3 to 'B', 4 to 'C', 5 to 'D').samples(684658365846L.random()).take(500).toList()
             .map { it.value }
       seedListA shouldBe seedListB
    }
@@ -39,7 +39,7 @@ class ChooseTest : FunSpec({
          val genCount = 100000
          val chooseGen = Arb.choose(weightPairs[0], weightPairs[1], *weightPairs.drop(2).toTypedArray())
          val actualCountsMap = (1..genCount).map { chooseGen.single() }.groupBy { it }.map { (k, v) -> k to v.count() }
-         val actualRatiosMap = actualCountsMap.map { (k, v) -> k to (v.toDouble() / genCount) }.toMap()
+         val actualRatiosMap = actualCountsMap.associate { (k, v) -> k to (v.toDouble() / genCount) }
 
          actualRatiosMap.keys shouldBe expectedRatiosMap.keys
 
@@ -78,7 +78,7 @@ class ChooseTest : FunSpec({
          val genCount = 100000
          val chooseGen = Arb.choose(weightPairs[0], weightPairs[1], *weightPairs.drop(2).toTypedArray())
          val actualCountsMap = (1..genCount).map { chooseGen.single() }.groupBy { it }.map { (k, v) -> k to v.count() }
-         val actualRatiosMap = actualCountsMap.map { (k, v) -> k to (v.toDouble() / genCount) }.toMap()
+         val actualRatiosMap = actualCountsMap.associate { (k, v) -> k to (v.toDouble() / genCount) }
 
          actualRatiosMap.keys shouldBe expectedRatiosMap.keys
 
@@ -114,15 +114,15 @@ class ChooseTest : FunSpec({
          .toList()
 
       edgecases shouldContainExactly listOf(
-         'a',
-         'd',
-         'a',
-         'd',
          'c',
-         'a',
-         'd',
          'c',
+         'd',
+         'a',
          'b',
+         'a',
+         'd',
+         'd',
+         'a',
          'b'
       )
    }

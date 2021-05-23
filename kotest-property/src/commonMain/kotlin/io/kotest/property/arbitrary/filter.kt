@@ -18,7 +18,6 @@ fun <A> Arb<A>.filter(predicate: (A) -> Boolean): Arb<A> = object : Arb<A>() {
          .filter(predicate)
          .firstOrNull()
 
-   override fun values(rs: RandomSource): Sequence<Sample<A>> = this@filter.values(rs).filter { predicate(it.value) }
    override fun sample(rs: RandomSource): Sample<A> = this@filter.samples(rs).filter { predicate(it.value) }.first()
 }
 

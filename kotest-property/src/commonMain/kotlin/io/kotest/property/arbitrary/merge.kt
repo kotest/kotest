@@ -27,17 +27,6 @@ fun <A, B : A> Arb<A>.merge(other: Gen<B>): Arb<A> = object : Arb<A>() {
       is Exhaustive -> this@merge.edgecase(rs)
    }
 
-   override fun values(rs: RandomSource): Sequence<Sample<A>> {
-      val aIterator = this@merge.samples(rs).iterator()
-      val bIterator = when (other) {
-         is Arb -> other.samples(rs).iterator()
-         is Exhaustive -> other.toArb().samples(rs).iterator()
-      }
-      return generateSequence {
-         if (rs.random.nextBoolean()) aIterator.next() else bIterator.next()
-      }
-   }
-
    override fun sample(rs: RandomSource): Sample<A> =
       if (rs.random.nextBoolean()) {
          this@merge.sample(rs)

@@ -17,13 +17,13 @@ import io.kotest.property.random
 class CharTest : FunSpec({
 
    test("should honour seed") {
-      val seedListA = Arb.char().values(1234909L.random()).take(120).toList().map { it.value }
-      val seedListB = Arb.char().values(1234909L.random()).take(120).toList().map { it.value }
+      val seedListA = Arb.char().samples(1234909L.random()).take(120).toList().map { it.value }
+      val seedListB = Arb.char().samples(1234909L.random()).take(120).toList().map { it.value }
       seedListA shouldBe seedListB
 
       val ranges = listOf('A'..'L', 'P'..'Z')
-      val seedListC = Arb.char(ranges).values(1234909L.random()).take(120).toList().map { it.value }
-      val seedListD = Arb.char(ranges).values(1234909L.random()).take(120).toList().map { it.value }
+      val seedListC = Arb.char(ranges).samples(1234909L.random()).take(120).toList().map { it.value }
+      val seedListD = Arb.char(ranges).samples(1234909L.random()).take(120).toList().map { it.value }
       seedListC shouldBe seedListD
    }
 
@@ -78,7 +78,7 @@ class CharTest : FunSpec({
 
    test("should only give ASCII characters when no parameters given") {
       val actualChars = Arb.char().take(100000).map(Char::toInt).toList()
-      actualChars.min() as Int shouldBeGreaterThanOrEqual 0x0021
-      actualChars.max() as Int shouldBeLessThanOrEqual 0x007E
+      actualChars.minOrNull() as Int shouldBeGreaterThanOrEqual 0x0021
+      actualChars.maxOrNull() as Int shouldBeLessThanOrEqual 0x007E
    }
 })

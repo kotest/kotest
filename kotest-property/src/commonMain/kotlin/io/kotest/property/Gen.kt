@@ -93,27 +93,16 @@ abstract class Arb<out A> : Gen<A>() {
    abstract fun edgecase(rs: RandomSource): A?
 
    /**
-    * Returns a random [Sample] from this [Arb] using the supplied random source.
+    * Returns a single random [Sample] from this [Arb] using the supplied random source.
     */
-   open fun sample(rs: RandomSource): Sample<A> = values(rs).first()
-
-   @Deprecated(
-      "implement one value at a time using sample(rs). This function will be removed in 4.7",
-      ReplaceWith("sample(rs)")
-   )
-   open fun values(rs: RandomSource): Sequence<Sample<A>> = emptySequence()
+   abstract fun sample(rs: RandomSource): Sample<A>
 
    /**
     * Returns a sequence from values generated from this arb.
     * Edgecases will be ignored.
     */
    fun samples(rs: RandomSource = RandomSource.default()): Sequence<Sample<A>> {
-      val valuesIterator = values(rs).iterator()
-      return if (valuesIterator.hasNext()) {
-         generateSequence { valuesIterator.next() }
-      } else {
-         generateSequence { sample(rs) }
-      }
+      return generateSequence { sample(rs) }
    }
 
    companion object
