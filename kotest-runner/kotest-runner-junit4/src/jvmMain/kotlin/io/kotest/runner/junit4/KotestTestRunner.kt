@@ -15,11 +15,13 @@ class KotestTestRunner(
    private val klass: Class<out Spec>
 ) : Runner() {
 
-   override fun run(notifier: RunNotifier) = runBlocking {
-      val listener = JUnitTestEngineListener(notifier)
-      KotestEngineLauncher()
-         .withListener(listener)
-         .withSpec(klass.kotlin).launch()
+   override fun run(notifier: RunNotifier) {
+      runBlocking {
+         val listener = JUnitTestEngineListener(notifier)
+         KotestEngineLauncher()
+            .withListener(listener)
+            .withSpec(klass.kotlin).launch()
+      }
    }
 
    override fun getDescription(): Description = klass.let { klass ->
