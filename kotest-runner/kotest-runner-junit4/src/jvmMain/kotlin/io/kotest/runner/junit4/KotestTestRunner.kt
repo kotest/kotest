@@ -1,8 +1,10 @@
 package io.kotest.runner.junit4
 
+import io.kotest.core.Tags
 import io.kotest.core.spec.Spec
 import io.kotest.engine.KotestEngineLauncher
 import io.kotest.core.spec.materializeAndOrderRootTests
+import io.kotest.engine.launcher.ReporterTestEngineListener
 import io.kotest.engine.spec.createAndInitializeSpec
 import io.kotest.fp.Try.Failure
 import io.kotest.fp.Try.Success
@@ -19,8 +21,8 @@ class KotestTestRunner(
       runBlocking {
          val listener = JUnitTestEngineListener(notifier)
          KotestEngineLauncher()
-            .withListener(listener)
-            .withSpec(klass.kotlin).launch()
+            .default(listOf(listener), listOf(klass.kotlin), null)
+            .launch()
       }
    }
 

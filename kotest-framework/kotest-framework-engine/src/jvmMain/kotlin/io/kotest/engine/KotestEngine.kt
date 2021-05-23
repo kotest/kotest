@@ -2,6 +2,7 @@ package io.kotest.engine
 
 import io.kotest.core.Tags
 import io.kotest.core.config.configuration
+import io.kotest.core.filter.SpecFilter
 import io.kotest.core.filter.TestFilter
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.afterProject
@@ -22,9 +23,10 @@ import kotlin.reflect.KClass
 import kotlin.script.templates.standard.ScriptTemplateWithArgs
 
 data class KotestEngineConfig(
-   val filters: List<TestFilter>,
+   val testFilters: List<TestFilter>,
+   val specFilters: List<SpecFilter>,
    val listener: TestEngineListener,
-   val tags: Tags?,
+   val explicitTags: Tags?,
    val dumpConfig: Boolean,
 )
 
@@ -39,10 +41,10 @@ class KotestEngine(private val config: KotestEngineConfig) {
       ConfigManager.init()
 
       // if the engine was invoked with explicit tags, we register those via a tag extension
-      config.tags?.let { configuration.registerExtension(SpecifiedTagsTagExtension(it)) }
+      config.explicitTags?.let { configuration.registerExtension(SpecifiedTagsTagExtension(it)) }
 
       // if the engine was invoked with explicit filters, those are registered here
-      configuration.registerFilters(config.filters)
+      configuration.registerFilters(config.testFilters)
 
       // load and apply system properties from [KotestPropertiesFilename]
       loadAndApplySystemProps()
@@ -108,7 +110,7 @@ class KotestEngine(private val config: KotestEngineConfig) {
    }
 
    fun cleanup() {
-      configuration.deregisterFilters(config.filters)
+      configuration.deregisterFilters(config.testFilters)
    }
 
    private fun dumpConfig() {

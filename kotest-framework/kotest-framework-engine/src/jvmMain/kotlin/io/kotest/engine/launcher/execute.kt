@@ -63,11 +63,9 @@ private fun setupLauncher(
 
    if (error != null) throw error
 
-   KotestEngineLauncher()
-      .withListener(ReporterTestEngineListener(reporter))
-      .withSpecs(specs)
-      .withTags(tags)
-      .withFilters(listOfNotNull(filter))
+   KotestEngineLauncher
+      .default(listOf(ReporterTestEngineListener(reporter)), specs, tags ?: Tags.Empty)
+      .withTestFilters(listOfNotNull(filter))
       .withDumpConfig(dumpconfig)
 }
 
