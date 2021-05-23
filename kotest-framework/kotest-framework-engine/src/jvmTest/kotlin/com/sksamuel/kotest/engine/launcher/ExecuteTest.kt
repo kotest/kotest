@@ -43,7 +43,8 @@ class ExecuteTest : FunSpec() {
             null,
             "unknown.class",
             null,
-            null
+            null,
+            false
          )
 
          errors.shouldHaveSize(1)

@@ -31,7 +31,7 @@ class KotestEngineLauncher(
       ConfigManager.init()
    }
 
-   constructor() : this(emptyList(), emptyList(), emptyList(), null, true, emptyList())
+   constructor() : this(emptyList(), emptyList(), emptyList(), null, false, emptyList())
 
    fun launch() {
 

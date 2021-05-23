@@ -37,7 +37,7 @@ class DiscoveryExtensionExceptionTest : FunSpec() {
          }
 
          configuration.registerExtension(ext)
-         execute(reporter, "com.sksamuel.kotest.engine.active", null, null, null)
+         execute(reporter, "com.sksamuel.kotest.engine.active", null, null, null, false)
          reporter.hasErrors() shouldBe true
          configuration.deregisterExtension(ext)
       }
