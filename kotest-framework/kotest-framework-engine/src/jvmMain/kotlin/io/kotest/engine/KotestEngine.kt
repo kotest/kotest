@@ -6,6 +6,7 @@ import io.kotest.core.filter.TestFilter
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.afterProject
 import io.kotest.core.spec.beforeProject
+import io.kotest.core.spec.style.scopes.TestDslState
 import io.kotest.engine.config.ConfigManager
 import io.kotest.engine.config.dumpProjectConfig
 import io.kotest.engine.config.loadAndApplySystemProps
@@ -29,6 +30,8 @@ data class KotestEngineConfig(
 
 data class TestPlan(val classes: List<KClass<out Spec>>, val scripts: List<KClass<out ScriptTemplateWithArgs>>)
 
+data class EngineResult(val errors: List<Throwable>)
+
 class KotestEngine(private val config: KotestEngineConfig) {
 
    init {
@@ -48,7 +51,7 @@ class KotestEngine(private val config: KotestEngineConfig) {
    /**
     * Starts execution of the given test plan.
     */
-   suspend fun execute(plan: TestPlan) {
+   suspend fun execute(plan: TestPlan): EngineResult {
 
       if (config.dumpConfig) {
          dumpConfig()
@@ -65,7 +68,7 @@ class KotestEngine(private val config: KotestEngineConfig) {
                      end(it + error)
                   }
                )
-               return
+               return EngineResult(listOf(error))
             },
             { errors ->
                if (errors.isNotEmpty()) {
@@ -73,14 +76,12 @@ class KotestEngine(private val config: KotestEngineConfig) {
                      { end(errors + listOf(it)) },
                      { end(errors + it) }
                   )
-                  return
+                  return EngineResult(errors)
                }
-
-
             }
          )
 
-      Try { submitAll(plan) }
+      return submitAll(plan)
          .fold(
             { error ->
                log(error) { "KotestEngine: Error during submit all" }
@@ -88,14 +89,20 @@ class KotestEngine(private val config: KotestEngineConfig) {
                   { end(listOf(error, it)) },
                   { end(it + error) }
                )
+               EngineResult(listOf(error))
             },
             {
                // any exception here is used to notify the listener
                configuration.listeners().afterProject().fold(
-                  { end(listOf(it)) },
-                  { end(it) }
+                  {
+                     end(listOf(it))
+                     EngineResult(listOf(it))
+                  },
+                  {
+                     end(it)
+                     EngineResult(it)
+                  }
                )
-
             }
          )
    }
@@ -104,7 +111,7 @@ class KotestEngine(private val config: KotestEngineConfig) {
       configuration.deregisterFilters(config.filters)
    }
 
-   fun dumpConfig() {
+   private fun dumpConfig() {
       // outputs the engine settings to the console
       configuration.dumpProjectConfig()
    }
@@ -136,6 +143,9 @@ class KotestEngine(private val config: KotestEngineConfig) {
       log { "KotestEngine: Will use spec launcher $launcher" }
 
       launcher.launch(executor, ordered)
+
+      // make sure we didn't have any partially constructed tests
+      TestDslState.checkState()
    }
 
    private fun end(errors: List<Throwable>) {

@@ -31,6 +31,9 @@ class TestWithConfigBuilder(
       severity: TestCaseSeverityLevel? = null,
       test: suspend TestContext.() -> Unit
    ) {
+
+      TestDslState.clear(context.testCase.description.appendTest(name))
+
       val derivedConfig = defaultTestConfig.deriveTestCaseConfig(
          enabled,
          tags,

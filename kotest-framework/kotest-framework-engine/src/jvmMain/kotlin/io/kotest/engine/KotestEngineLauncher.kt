@@ -1,13 +1,13 @@
 package io.kotest.engine
 
 import io.kotest.core.Tags
-import io.kotest.engine.listener.TestEngineListener
 import io.kotest.core.filter.TestFilter
 import io.kotest.core.spec.Spec
 import io.kotest.engine.config.ConfigManager
 import io.kotest.engine.listener.CompositeTestEngineListener
 import io.kotest.engine.listener.IsolationTestEngineListener
 import io.kotest.engine.listener.SynchronizedTestEngineListener
+import io.kotest.engine.listener.TestEngineListener
 import kotlinx.coroutines.runBlocking
 import kotlin.reflect.KClass
 import kotlin.script.templates.standard.ScriptTemplateWithArgs
@@ -33,7 +33,7 @@ class KotestEngineLauncher(
 
    constructor() : this(emptyList(), emptyList(), emptyList(), null, false, emptyList())
 
-   fun launch() {
+   fun launch(): EngineResult {
 
       if (listeners.isEmpty())
          error("Cannot launch a KotestEngine without at least one TestEngineListener")
@@ -51,13 +51,15 @@ class KotestEngineLauncher(
       val runner = KotestEngine(config)
       val plan = TestPlan(specs, scripts)
 
-      try {
+      return try {
          runBlocking { // blocks the calling thread while the engine runs
-            runner.execute(plan)
+            val result = runner.execute(plan)
             runner.cleanup()
+            result
          }
       } catch (e: Exception) {
          e.printStackTrace()
+         EngineResult(listOf(e))
       }
    }
 

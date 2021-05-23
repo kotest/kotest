@@ -100,21 +100,25 @@ class DescribeSpecContainerContext(
       )
    }
 
-   fun it(name: String) =
-      TestWithConfigBuilder(
+   suspend fun it(name: String): TestWithConfigBuilder {
+      TestDslState.startTest(testContext.testCase.description.appendTest(name))
+      return TestWithConfigBuilder(
          createTestName("It: ", name, false),
          testContext,
          testCase.spec.resolvedDefaultConfig(),
          xdisabled = false,
       )
+   }
 
-   fun xit(name: String) =
-      TestWithConfigBuilder(
+   suspend fun xit(name: String): TestWithConfigBuilder {
+      TestDslState.startTest(testContext.testCase.description.appendTest(name))
+      return TestWithConfigBuilder(
          createTestName("It: ", name, false),
          testContext,
          testCase.spec.resolvedDefaultConfig(),
          xdisabled = true,
       )
+   }
 
    suspend fun it(name: String, test: suspend TestContext.() -> Unit) =
       registerTestCase(

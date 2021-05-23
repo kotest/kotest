@@ -105,3 +105,5 @@ interface TestEngineListener {
    fun specInstantiationError(kclass: KClass<out Spec>, t: Throwable) {}
 
 }
+
+val NoopTestEngineListener = object : TestEngineListener {}

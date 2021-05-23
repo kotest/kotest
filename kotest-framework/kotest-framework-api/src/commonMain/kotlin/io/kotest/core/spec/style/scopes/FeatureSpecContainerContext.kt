@@ -98,7 +98,8 @@ class FeatureSpecContainerContext(
       )
    }
 
-   fun scenario(name: String): TestWithConfigBuilder {
+   suspend fun scenario(name: String): TestWithConfigBuilder {
+      TestDslState.startTest(testContext.testCase.description.appendTest(name))
       return TestWithConfigBuilder(
          createTestName("Scenario: ", name, false),
          testContext,
@@ -107,7 +108,8 @@ class FeatureSpecContainerContext(
       )
    }
 
-   fun xscenario(name: String): TestWithConfigBuilder {
+   suspend fun xscenario(name: String): TestWithConfigBuilder {
+      TestDslState.startTest(testContext.testCase.description.appendTest(name))
       return TestWithConfigBuilder(
          createTestName("Scenario: ", name, false),
          testContext,

@@ -86,21 +86,25 @@ class ShouldSpecContainerContext(
       true
    ) { ShouldSpecContainerContext(it) }
 
-   fun should(name: String) =
-      TestWithConfigBuilder(
+   suspend fun should(name: String): TestWithConfigBuilder {
+      TestDslState.startTest(testContext.testCase.description.appendTest(name))
+      return TestWithConfigBuilder(
          createTestName("should ", name, false),
          testContext,
          testCase.spec.resolvedDefaultConfig(),
          xdisabled = false,
       )
+   }
 
-   fun xshould(name: String) =
-      TestWithConfigBuilder(
+   suspend fun xshould(name: String): TestWithConfigBuilder {
+      TestDslState.startTest(testContext.testCase.description.appendTest(name))
+      return TestWithConfigBuilder(
          createTestName("should ", name, false),
          testContext,
          testCase.spec.resolvedDefaultConfig(),
          xdisabled = true,
       )
+   }
 
    suspend fun should(name: String, test: suspend TestContext.() -> Unit) =
       registerTestCase(
