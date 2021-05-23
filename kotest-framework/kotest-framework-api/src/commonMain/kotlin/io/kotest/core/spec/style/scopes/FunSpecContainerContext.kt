@@ -92,14 +92,28 @@ class FunSpecContainerContext(
    /**
     * Adds a test case to this context, expecting config.
     */
-   fun test(name: String) =
-      TestWithConfigBuilder(createTestName(name), testContext, testCase.spec.resolvedDefaultConfig(), xdisabled = false)
+   suspend fun test(name: String): TestWithConfigBuilder {
+      TestDslState.startTest(testContext.testCase.description.appendTest(name))
+      return TestWithConfigBuilder(
+         createTestName(name),
+         testContext,
+         testCase.spec.resolvedDefaultConfig(),
+         xdisabled = false
+      )
+   }
 
    /**
     * Adds a disabled test case to this context, expecting config.
     */
-   fun xtest(name: String) =
-      TestWithConfigBuilder(createTestName(name), testContext, testCase.spec.resolvedDefaultConfig(), xdisabled = true)
+   suspend fun xtest(name: String): TestWithConfigBuilder {
+      TestDslState.startTest(testContext.testCase.description.appendTest(name))
+      return TestWithConfigBuilder(
+         createTestName(name),
+         testContext,
+         testCase.spec.resolvedDefaultConfig(),
+         xdisabled = true
+      )
+   }
 
    /**
     * Adds a test case to this context.

@@ -6,6 +6,7 @@ sealed class Try<out T> {
    data class Failure(val error: Throwable) : Try<Nothing>()
 
    companion object {
+      fun failure(error: String) = Failure(RuntimeException(error))
       operator fun invoke(t: Throwable): Try<Unit> = Failure(t)
       inline operator fun <T> invoke(f: () -> T): Try<T> = try {
          Success(f())

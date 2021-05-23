@@ -98,7 +98,8 @@ class ExpectSpecContainerContext(
       )
    }
 
-   fun expect(name: String): TestWithConfigBuilder {
+   suspend fun expect(name: String): TestWithConfigBuilder {
+      TestDslState.startTest(testContext.testCase.description.appendTest(name))
       return TestWithConfigBuilder(
          createTestName("Expect: ", name, false),
          testContext,
@@ -107,7 +108,8 @@ class ExpectSpecContainerContext(
       )
    }
 
-   fun xexpect(name: String): TestWithConfigBuilder {
+   suspend fun xexpect(name: String): TestWithConfigBuilder {
+      TestDslState.startTest(testContext.testCase.description.appendTest(name))
       return TestWithConfigBuilder(
          createTestName("Expect: ", name, false),
          testContext,
