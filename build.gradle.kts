@@ -17,17 +17,17 @@ buildscript {
 
 plugins {
    java
-   kotlin("multiplatform") version Libs.kotlinVersion
+   kotlin("multiplatform")
    id("java-library")
    id("maven-publish")
    signing
-   id("com.adarshr.test-logger") version Libs.adarshrTestLoggerVersion
-   id("org.jetbrains.dokka") version Libs.dokkaVersion
+   id("com.adarshr.test-logger")
+   id("org.jetbrains.dokka")
 
    // To get versions report, execute:
    // Win: .\gradlew.bat dependencyUpdates -Drevision=release
    // Other: ./gradlew dependencyUpdates -Drevision=release
-   id("com.github.ben-manes.versions") version Libs.gradleVersionsPluginVersion
+   id("com.github.ben-manes.versions")
 }
 
 tasks {
