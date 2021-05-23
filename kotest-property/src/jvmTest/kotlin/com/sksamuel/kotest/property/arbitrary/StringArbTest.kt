@@ -3,19 +3,7 @@ package com.sksamuel.kotest.property.arbitrary
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.collections.shouldContainExactlyInAnyOrder
 import io.kotest.property.Arb
-import io.kotest.property.arbitrary.alphanumeric
-import io.kotest.property.arbitrary.arabic
-import io.kotest.property.arbitrary.armenian
-import io.kotest.property.arbitrary.asString
-import io.kotest.property.arbitrary.ascii
-import io.kotest.property.arbitrary.cyrillic
-import io.kotest.property.arbitrary.georgian
-import io.kotest.property.arbitrary.greekCoptic
-import io.kotest.property.arbitrary.hebrew
-import io.kotest.property.arbitrary.hiragana
-import io.kotest.property.arbitrary.katakana
-import io.kotest.property.arbitrary.map
-import io.kotest.property.arbitrary.string
+import io.kotest.property.arbitrary.*
 import io.kotest.property.checkAll
 import io.kotest.property.forAll
 
@@ -51,7 +39,7 @@ class StringArbTest : FunSpec() {
       }
 
       test("all ascii strings generated should be valid code codepoints") {
-         checkAll(Arb.string(10..20, Arb.ascii())) { a ->
+         checkAll(Arb.string(10..20, Codepoint.ascii())) { a ->
             a.codePoints().forEach {
                Character.isValidCodePoint(it)
             }
@@ -59,7 +47,7 @@ class StringArbTest : FunSpec() {
       }
 
       test("all alphanumeric strings generated should be valid codepoints") {
-         checkAll(Arb.string(10..20, Arb.alphanumeric())) { a ->
+         checkAll(Arb.string(10..20, Codepoint.alphanumeric())) { a ->
             a.codePoints().forEach {
                Character.isValidCodePoint(it)
             }
@@ -75,7 +63,7 @@ class StringArbTest : FunSpec() {
       }
 
       test("all strings generated with georgian codepoints should be valid code codepoints") {
-         checkAll(Arb.string(10..20, Arb.georgian())) { a ->
+         checkAll(Arb.string(10..20, Codepoint.georgian())) { a ->
             a.codePoints().forEach {
                Character.isValidCodePoint(it)
             }
@@ -83,7 +71,7 @@ class StringArbTest : FunSpec() {
       }
 
       test("all strings generated with Katakana codepoints should be valid code codepoints") {
-         checkAll(Arb.string(10..20, Arb.katakana())) { a ->
+         checkAll(Arb.string(10..20, Codepoint.katakana())) { a ->
             a.codePoints().forEach {
                Character.isValidCodePoint(it)
             }
@@ -91,7 +79,7 @@ class StringArbTest : FunSpec() {
       }
 
       test("all strings generated with hiragana codepoints should be valid code codepoints") {
-         checkAll(Arb.string(10..20, Arb.hiragana())) { a ->
+         checkAll(Arb.string(10..20, Codepoint.hiragana())) { a ->
             a.codePoints().forEach {
                Character.isValidCodePoint(it)
             }
@@ -99,7 +87,7 @@ class StringArbTest : FunSpec() {
       }
 
       test("all strings generated with greek coptic Codepoints should be valid code codepoints") {
-         checkAll(Arb.string(10..20, Arb.greekCoptic())) { a ->
+         checkAll(Arb.string(10..20, Codepoint.greekCoptic())) { a ->
             a.codePoints().forEach {
                Character.isValidCodePoint(it)
             }
@@ -107,7 +95,7 @@ class StringArbTest : FunSpec() {
       }
 
       test("all strings generated with armenian codepoints should be valid code codepoints") {
-         checkAll(Arb.string(10..20, Arb.armenian())) { a ->
+         checkAll(Arb.string(10..20, Codepoint.armenian())) { a ->
             a.codePoints().forEach {
                Character.isValidCodePoint(it)
             }
@@ -115,7 +103,7 @@ class StringArbTest : FunSpec() {
       }
 
       test("all strings generated with hebrew Codepoints should be valid code codepoints") {
-         checkAll(Arb.string(10..20, Arb.hebrew())) { a ->
+         checkAll(Arb.string(10..20, Codepoint.hebrew())) { a ->
             a.codePoints().forEach {
                Character.isValidCodePoint(it)
             }
@@ -123,7 +111,7 @@ class StringArbTest : FunSpec() {
       }
 
       test("all strings generated with arabic codepoints should be valid code codepoints") {
-         checkAll(Arb.string(10..20, Arb.arabic())) { a ->
+         checkAll(Arb.string(10..20, Codepoint.arabic())) { a ->
             a.codePoints().forEach {
                Character.isValidCodePoint(it)
             }
@@ -131,7 +119,7 @@ class StringArbTest : FunSpec() {
       }
 
       test("all strings generated with cyrillic Codepoints should be valid code codepoints") {
-         checkAll(Arb.string(10..20, Arb.cyrillic())) { a ->
+         checkAll(Arb.string(10..20, Codepoint.cyrillic())) { a ->
             a.codePoints().forEach {
                Character.isValidCodePoint(it)
             }
