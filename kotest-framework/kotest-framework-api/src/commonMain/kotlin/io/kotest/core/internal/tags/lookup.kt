@@ -7,6 +7,7 @@ import io.kotest.core.extensions.TagExtension
 import io.kotest.core.test.TestCase
 import kotlin.reflect.KClass
 import io.kotest.core.NamedTag
+import io.kotest.mpp.annotation
 
 /**
  * Returns all runtime tags when invoked, wrapping into an instance of [Tags].
