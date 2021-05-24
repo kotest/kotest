@@ -59,7 +59,7 @@ fun Arb.Companion.string(range: IntRange, codepoints: Arb<Codepoint> = Codepoint
 fun Arb.Companion.string(size: Int, codepoints: Arb<Codepoint> = Codepoint.ascii()): Arb<String> =
    Arb.string(size, size, codepoints)
 
-@Deprecated("use StringShrinkerWithMin. This will be removed in 4.7")
+@Deprecated("This Shrinker does not take into account string lengths. Use StringShrinkerWithMin. This was deprecated in 4.5 and will be removed in 5.1")
 object StringShrinker : Shrinker<String> {
 
    override fun shrink(value: String): List<String> {

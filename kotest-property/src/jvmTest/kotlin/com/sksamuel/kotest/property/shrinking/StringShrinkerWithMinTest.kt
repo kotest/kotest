@@ -4,6 +4,7 @@ import io.kotest.assertions.shouldFail
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.extensions.system.captureStandardOut
 import io.kotest.inspectors.forAtLeastOne
+import io.kotest.matchers.collections.shouldContain
 import io.kotest.matchers.comparables.shouldBeLessThan
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldContain
@@ -21,7 +22,7 @@ import io.kotest.property.checkAll
 import io.kotest.property.internal.doShrinking
 import io.kotest.property.rtree
 
-class StringShrinkerTest : DescribeSpec({
+class StringShrinkerWithMinTest : DescribeSpec({
 
    beforeSpec {
       PropertyTesting.shouldPrintShrinkSteps = false
@@ -31,7 +32,7 @@ class StringShrinkerTest : DescribeSpec({
       PropertyTesting.shouldPrintShrinkSteps = true
    }
 
-   describe("StringShrinker should") {
+   describe("StringShrinkerWithMin should") {
       it("include bisected input") {
          checkAll { a: String ->
             if (a.length > 1) {
@@ -47,18 +48,30 @@ class StringShrinkerTest : DescribeSpec({
          }
       }
 
-      it("should include 2 padded 'a's") {
-         checkAll { a: String ->
-            if (a.length > 1) {
-               val candidates = StringShrinkerWithMin().shrink(a)
-               candidates.forAtLeastOne {
-                  it.shouldEndWith("a".repeat(a.length / 2))
-               }
-               candidates.forAtLeastOne {
-                  it.shouldStartWith("a".repeat(a.length / 2))
-               }
-            }
-         }
+      it("should replace first char with simplest") {
+         StringShrinkerWithMin(4).shrink("ttttt") shouldContain "atttt"
+      }
+
+      it("should replace last char with simplest") {
+         StringShrinkerWithMin(4).shrink("ttttt") shouldContain "tttta"
+      }
+
+      it("should drop first char") {
+         StringShrinkerWithMin(4).shrink("abcde") shouldContain "bcde"
+      }
+
+      it("should drop last char") {
+         StringShrinkerWithMin(4).shrink("abcde") shouldContain "abcd"
+      }
+
+      it("should include first half variant") {
+         StringShrinkerWithMin(1).shrink("abcdef") shouldContain "abc"
+         StringShrinkerWithMin(1).shrink("abcde") shouldContain "abc"
+      }
+
+      it("should include second half variant") {
+         StringShrinkerWithMin(1).shrink("abcdef") shouldContain "def"
+         StringShrinkerWithMin(1).shrink("abcd") shouldContain "cd"
       }
 
       it("shrink to expected value") {
