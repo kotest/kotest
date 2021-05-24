@@ -6,7 +6,7 @@ import io.kotest.core.extensions.TestCaseExtension
 import io.kotest.core.listeners.TestListener
 import kotlin.time.Duration
 
-typealias EnabledIf = (TestCase) -> Boolean
+typealias EnabledIf = suspend (TestCase) -> Boolean
 typealias EnabledOrReasonIf = suspend (TestCase) -> Enabled
 
 class Enabled private constructor(val isEnabled: Boolean, reason: String? = null) {
