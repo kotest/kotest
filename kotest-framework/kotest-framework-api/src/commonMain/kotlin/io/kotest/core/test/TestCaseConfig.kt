@@ -18,7 +18,7 @@ class Enabled private constructor(val isEnabled: Boolean, reason: String? = null
       val disabled = Enabled(false, null)
       fun disabled(reason: String) = Enabled(false, reason)
 
-      suspend fun fold(es: Iterable<Enabled>): Enabled {
+      fun fold(es: Iterable<Enabled>): Enabled {
          return es.fold(enabled) { acc, e ->
             Enabled(acc.isEnabled && e.isEnabled, acc.reason).also {
                if (!e.isEnabled) {
