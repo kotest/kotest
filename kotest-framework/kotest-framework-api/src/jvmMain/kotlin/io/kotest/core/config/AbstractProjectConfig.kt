@@ -172,6 +172,12 @@ abstract class AbstractProjectConfig {
     */
    open val failOnIgnoredTests: Boolean = false
 
+   /**
+    * Override this value and set it to true if you want the build to be marked as failed
+    * if no tests were executed.
+    */
+   open val failOnEmptyTestSuite: Boolean? = null
+
    @ExperimentalKotest
    open val concurrentSpecs: Int? = null
 

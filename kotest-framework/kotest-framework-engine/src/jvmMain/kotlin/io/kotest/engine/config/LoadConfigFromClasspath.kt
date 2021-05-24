@@ -45,6 +45,7 @@ private fun AbstractProjectConfig.toDetectedConfig(): DetectedProjectConfig {
       testCaseOrder = testCaseOrder.toOption().orElse(testCaseOrder().toOption()),
       specExecutionOrder = specExecutionOrder.toOption().orElse(specExecutionOrder().toOption()),
       failOnIgnoredTests = failOnIgnoredTests.toOption(),
+      failOnEmptyTestSuite = failOnEmptyTestSuite.toOption(),
       globalAssertSoftly = globalAssertSoftly.toOption(),
       autoScanEnabled = autoScanEnabled.toOption(),
       autoScanIgnoredClasses = autoScanIgnoredClasses,
