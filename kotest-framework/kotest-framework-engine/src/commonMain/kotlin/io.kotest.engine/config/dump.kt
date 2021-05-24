@@ -18,7 +18,8 @@ fun Configuration.createConfigSummary(): String {
    sb.buildOutput("Global soft assertions", globalAssertSoftly.toString())
    sb.buildOutput("Write spec failure file", writeSpecFailureFile.toString())
    if (writeSpecFailureFile) {
-      sb.buildOutput("Spec failure file path", specFailureFilePath.capitalize())
+      sb.buildOutput("Spec failure file path",
+         specFailureFilePath.replaceFirstChar { if (it.isLowerCase()) it.titlecase() else it.toString() })
    }
    sb.buildOutput("Fail on ignored tests", failOnIgnoredTests.toString())
    sb.buildOutput("Spec execution order", specExecutionOrder::class.simpleName)

@@ -1,7 +1,8 @@
+@file:Suppress("BlockingMethodInNonBlockingContext")
+
 package io.kotest.framework.concurrency
 
 import io.kotest.assertions.all
-import io.kotest.assertions.assertSoftly
 import io.kotest.assertions.fail
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.assertions.withClue
@@ -10,13 +11,12 @@ import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.ints.shouldBeLessThan
 import io.kotest.matchers.longs.shouldBeGreaterThan
 import io.kotest.matchers.longs.shouldBeGreaterThanOrEqual
-import io.kotest.matchers.nulls.shouldBeNull
 import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldContain
 import kotlinx.coroutines.asCoroutineDispatcher
-import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.FileNotFoundException
 import java.io.IOException
@@ -30,7 +30,7 @@ import kotlin.system.measureTimeMillis
 private fun Int.seconds(): Long = Duration.ofSeconds(this.toLong()).toMillis()
 private fun Int.milliseconds(): Long = this.toLong()
 
-@OptIn(ExperimentalKotest::class)
+@ExperimentalKotest
 class EventuallySpec : FunSpec({
 
    test("eventually should immediately pass working tests") {
@@ -151,7 +151,7 @@ class EventuallySpec : FunSpec({
 
    test("eventually does one final iteration if we never executed before interval expired") {
       val dispatcher = Executors.newSingleThreadExecutor().asCoroutineDispatcher()
-      async(dispatcher) {
+      launch(dispatcher) {
          Thread.sleep(2000)
       }
       val counter = AtomicInteger(0)
@@ -170,7 +170,7 @@ class EventuallySpec : FunSpec({
    test("eventually does one final iteration if we only executed once and the last delay > interval") {
       val dispatcher = Executors.newSingleThreadExecutor().asCoroutineDispatcher()
       // this will start immediately, free the dispatcher to allow eventually to run once, then block the thread
-      async(dispatcher) {
+      launch(dispatcher) {
          delay(100.milliseconds())
          Thread.sleep(500)
       }

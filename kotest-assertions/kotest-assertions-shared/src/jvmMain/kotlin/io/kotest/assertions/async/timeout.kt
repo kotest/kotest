@@ -7,7 +7,7 @@ import java.util.concurrent.TimeUnit
 import kotlin.time.Duration
 
 suspend fun <A> shouldTimeout(duration: Duration, thunk: suspend () -> A) =
-   shouldTimeout(duration.toLongMilliseconds(), TimeUnit.MILLISECONDS, thunk)
+   shouldTimeout(duration.inWholeMilliseconds, TimeUnit.MILLISECONDS, thunk)
 
 suspend fun <A> shouldTimeout(duration: java.time.Duration, thunk: suspend () -> A) =
    shouldTimeout(duration.toMillis(), TimeUnit.MILLISECONDS, thunk)

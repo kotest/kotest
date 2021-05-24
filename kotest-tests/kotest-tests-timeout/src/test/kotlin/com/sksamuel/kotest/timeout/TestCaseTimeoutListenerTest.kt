@@ -13,12 +13,14 @@ import io.kotest.core.test.TestContext
 import io.kotest.core.test.TestResult
 import io.kotest.engine.toTestResult
 import io.kotest.matchers.shouldBe
+import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import java.util.concurrent.atomic.AtomicInteger
 import kotlin.coroutines.CoroutineContext
-import kotlin.time.milliseconds
+import kotlin.time.Duration
 
+@DelicateCoroutinesApi
 @Suppress("BlockingMethodInNonBlockingContext")
 class TestCaseTimeoutListenerTest : FunSpec() {
 
@@ -32,7 +34,11 @@ class TestCaseTimeoutListenerTest : FunSpec() {
          suspendingCount.get() shouldBe 1
       }
 
-      test("tests which timeout during a blocking operation should still run the 'after test' listeners").config(timeout = 1000.milliseconds) {
+      test("tests which timeout during a blocking operation should still run the 'after test' listeners").config(
+         timeout = Duration.milliseconds(
+            1000
+         )
+      ) {
 
          // this listener will flick the flag to true so we know it ran
          val listener = object : TestListener {
@@ -52,7 +58,7 @@ class TestCaseTimeoutListenerTest : FunSpec() {
                true,
                invocations = 1,
                threads = 1,
-               timeout = 125.milliseconds,
+               timeout = Duration.milliseconds(125),
                listeners = listOf(listener)
             )
          )
@@ -68,7 +74,7 @@ class TestCaseTimeoutListenerTest : FunSpec() {
       }
 
       test("tests which timeout during a suspending operation should still run the 'after test' listeners").config(
-         timeout = 1000.milliseconds
+         timeout = Duration.milliseconds(1000)
       ) {
 
          // this listener will flick the flag to true so we know it ran
@@ -89,7 +95,7 @@ class TestCaseTimeoutListenerTest : FunSpec() {
                true,
                invocations = 1,
                threads = 1,
-               timeout = 125.milliseconds,
+               timeout = Duration.milliseconds(125),
                listeners = listOf(listener)
             )
          )

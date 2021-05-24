@@ -1,5 +1,6 @@
 package com.sksamuel.kotest.tests.concurrency
 
+import io.kotest.common.ExperimentalKotest
 import io.kotest.core.config.Configuration
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.Spec
@@ -13,6 +14,7 @@ import io.kotest.matchers.string.shouldHaveLength
 import kotlinx.coroutines.delay
 
 // asserts that tests can be launched concurrently and before/after callbacks are handled properly
+@ExperimentalKotest
 class ConcurrentTestsSingleInstanceTest : FunSpec() {
 
    private var befores = ""

@@ -13,7 +13,7 @@ private fun Int.hours(): Long = Duration.ofDays(this.toLong()).toMillis()
 private fun Int.seconds(): Long = Duration.ofSeconds(this.toLong()).toMillis()
 private fun Int.milliseconds(): Long = this.toLong()
 
-@OptIn(ExperimentalKotest::class)
+@ExperimentalKotest
 class ContinuallySpec : FunSpec({
    test("continually passes working tests") {
       continually(500.milliseconds()) {

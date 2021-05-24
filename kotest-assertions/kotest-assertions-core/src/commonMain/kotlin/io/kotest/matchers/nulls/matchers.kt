@@ -4,7 +4,6 @@ import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldNot
-import kotlin.contracts.ExperimentalContracts
 import kotlin.contracts.contract
 
 /**
@@ -24,7 +23,6 @@ import kotlin.contracts.contract
  *
  * ```
  */
-@OptIn(ExperimentalContracts::class)
 fun Any?.shouldBeNull() {
   contract {
     returns() implies (this@shouldBeNull == null)
@@ -65,7 +63,6 @@ fun Any?.shouldBeNull() {
  *
  * ```
  */
-@OptIn(ExperimentalContracts::class)
 fun <T> T?.shouldNotBeNull(): T {
    contract {
       returns() implies (this@shouldNotBeNull != null)

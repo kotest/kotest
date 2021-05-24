@@ -16,4 +16,4 @@ fun Exhaustive.Companion.lines(file: File, charset: Charset = Charsets.UTF_8): E
 /**
  * Returns an [Exhaustive] that enumerates all the lines in the given file.
  */
-fun Exhaustive.Companion.lines(file: Path, charset: Charset = Charsets.UTF_8) = lines(file.toFile())
+fun Exhaustive.Companion.lines(file: Path, charset: Charset = Charsets.UTF_8) = lines(file.toFile(), charset)

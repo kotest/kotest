@@ -15,8 +15,8 @@ class ShouldBeUUIDTest : FreeSpec({
       "Should pass for Java generated UUIDs" {
          Arb.uuid().checkAll { uuid ->
             uuid.toString().shouldBeUUID()
-            uuid.toString().toUpperCase().shouldBeUUID()
-            uuid.toString().toLowerCase().shouldBeUUID()
+            uuid.toString().uppercase().shouldBeUUID()
+            uuid.toString().lowercase().shouldBeUUID()
             shouldThrow<AssertionError> { uuid.toString().shouldNotBeUUID() }
          }
       }

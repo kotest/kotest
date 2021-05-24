@@ -56,7 +56,7 @@ class StringArbTest : FunSpec() {
 
       test("alphanumeric strings should generate all possible strings") {
          val chars = mutableSetOf<Char>()
-         Arb.alphanumeric().map { it.asString().single() }.checkAll {
+         Codepoint.alphanumeric().map { it.asString().single() }.checkAll {
             chars += it
          }
          chars shouldContainExactlyInAnyOrder (('a'..'z') + ('A'..'Z') + ('0'..'9')).toList()

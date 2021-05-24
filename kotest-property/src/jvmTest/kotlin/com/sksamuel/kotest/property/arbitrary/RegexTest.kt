@@ -1,16 +1,21 @@
 package com.sksamuel.kotest.property.arbitrary
 
 import io.kotest.core.spec.style.FunSpec
+import io.kotest.inspectors.forAll
+import io.kotest.matchers.string.shouldMatch
+import io.kotest.property.Arb
+import io.kotest.property.arbitrary.stringPattern
+import io.kotest.property.arbitrary.take
 
 class RegexTest : FunSpec({
 
    test("regex generation") {
-      val regex = "a.b.".toRegex(RegexOption.DOT_MATCHES_ALL)
-//      Arb.regex(regex).random().take(1000).forAll { it.shouldMatch(regex) }
+      val pattern = "a.b."
+      Arb.stringPattern(pattern).take(100).forAll { it.shouldMatch(pattern.toRegex(RegexOption.DOT_MATCHES_ALL)) }
    }
 
    test("regex generation 2") {
-      val regex = "[a-z]-[0-9]abbc.".toRegex(RegexOption.DOT_MATCHES_ALL)
-//      Arb.regex(regex).random().take(1000).forAll { it.shouldMatch(regex) }
+      val pattern = "[a-z]-[0-9]abbc."
+      Arb.stringPattern(pattern).take(100).forAll { it.shouldMatch(pattern.toRegex(RegexOption.DOT_MATCHES_ALL)) }
    }
 })

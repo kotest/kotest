@@ -5,7 +5,6 @@ import io.kotest.assertions.show.show
 import io.kotest.matchers.*
 import io.kotest.matchers.neverNullMatcher
 import io.kotest.matchers.string.UUIDVersion.ANY
-import kotlin.contracts.ExperimentalContracts
 import kotlin.contracts.contract
 import kotlin.text.RegexOption.IGNORE_CASE
 
@@ -112,7 +111,7 @@ infix fun String?.shouldNotContainIgnoringCase(substr: String): String? {
 
 fun containIgnoringCase(substr: String) = neverNullMatcher<String> { value ->
    MatcherResult(
-      value.toLowerCase().indexOf(substr.toLowerCase()) >= 0,
+      value.lowercase().indexOf(substr.lowercase()) >= 0,
       { "${value.show().value} should contain the substring ${substr.show().value} (case insensitive)" },
       { "${value.show().value} should not contain the substring ${substr.show().value} (case insensitive)" }
    )
@@ -340,7 +339,6 @@ fun beUUID(
    private fun String.isNilUUID() = this == "00000000-0000-0000-0000-000000000000"
 }
 
-@OptIn(ExperimentalContracts::class)
 fun String?.shouldBeInteger(radix: Int = 10): Int {
    contract {
       returns() implies (this@shouldBeInteger != null)

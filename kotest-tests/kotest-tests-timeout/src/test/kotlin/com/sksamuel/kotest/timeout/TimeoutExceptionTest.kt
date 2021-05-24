@@ -5,6 +5,7 @@ import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestStatus
 import io.kotest.matchers.shouldBe
 import kotlinx.coroutines.delay
+import kotlin.time.Duration
 import kotlin.time.milliseconds
 
 // tests that the values in the timeout exception are populated correctly
@@ -15,7 +16,7 @@ class SpecInvocationTimeoutExceptionTest : FunSpec() {
       invocationTimeout = 10 // millis
 
       test("timeout exception should use the value that caused the test to fail") {
-         delay(250.milliseconds)
+         delay(Duration.milliseconds(250))
       }
 
       aroundTest { (test, execute) ->
@@ -33,15 +34,19 @@ class TestInvocationTimeoutExceptionTest : FunSpec() {
       timeout = 965
       invocationTimeout = 800 // millis
 
-      test("timeout exception should use the value that caused the test to fail 1").config(invocationTimeout = 44.milliseconds) {
-         delay(500.milliseconds)
+      test("timeout exception should use the value that caused the test to fail 1").config(
+         invocationTimeout = Duration.milliseconds(
+            44
+         )
+      ) {
+         delay(Duration.milliseconds(500))
       }
 
       test("timeout exception should use the value that caused the test to fail 2").config(
-         timeout = 454.milliseconds,
-         invocationTimeout = 44.milliseconds
+         timeout = Duration.milliseconds(454),
+         invocationTimeout = Duration.milliseconds(44)
       ) {
-         delay(500.milliseconds)
+         delay(Duration.milliseconds(500))
       }
 
       aroundTest { (test, execute) ->
@@ -61,7 +66,7 @@ class SpecTimeoutExceptionTest : FunSpec() {
       timeout = 21
 
       test("timeout exception should use the value that caused the test to fail") {
-         delay(100.milliseconds)
+         delay(Duration.milliseconds(100))
       }
 
       aroundTest { (test, execute) ->
@@ -79,8 +84,12 @@ class TestTimeoutExceptionTest : FunSpec() {
 
       timeout = 250
 
-      test("timeout exception should use the value that caused the test to fail").config(timeout = 23.milliseconds) {
-         delay(100.milliseconds)
+      test("timeout exception should use the value that caused the test to fail").config(
+         timeout = Duration.milliseconds(
+            23
+         )
+      ) {
+         delay(Duration.milliseconds(100))
       }
 
       aroundTest { (test, execute) ->
