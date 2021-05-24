@@ -9,6 +9,17 @@ slug: changelog.html
 #### Breaking Changes
 
 * `Arb.values` has been removed. This was deprecated back in 4.3 in favour of `Arb.sample`. Any custom arbs implementing values should be updated. Any custom arbs using the `arbitrary` builders are not affected.
+* Upon startup, the Engine no longer dumps config to the console upon opting in. Set the system property `kotest.framework.dump.config` to true.
+
+#### Fixes
+
+* Finalize spec is now properly called in all situations #2272
+* String matchers now also work on CharSequence where applicable #2278
+* Annotations such as @Ignore and @Isolate now work when composed #2279
+
+#### Improvements
+
+* Unfinished tests now error
 
 ### 4.6.0 May 2021
 
