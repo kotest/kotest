@@ -36,7 +36,7 @@ fun KClass<*>.tags(): Set<Tag> {
  * any returned tags into a [Tags] container.
  */
 fun Configuration.activeTags(): Tags {
-   val extensions = extensions().filterIsInstance<TagExtension>()
+   val extensions = this.extensions().filterIsInstance<TagExtension>()
    return if (extensions.isEmpty()) Tags.Empty else extensions.map { it.tags() }.reduce { a, b -> a.combine(b) }
 }
 
@@ -44,4 +44,4 @@ fun Configuration.activeTags(): Tags {
  * Returns all tags assigned to a [TestCase], taken from the test case config, spec inline function,
  * spec override function, or the spec class.
  */
-fun TestCase.allTags(): Set<Tag> = this.config.tags + this.spec.declaredTags()
+fun TestCase.allTags(): Set<Tag> = this.config.tags + this.spec.declaredTags() + this.spec::class.tags()
