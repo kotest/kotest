@@ -91,29 +91,6 @@ abstract class AbstractProjectConfig {
     * Note: For backwards compatibility, setting this value to > 1 will implicitly set
     * [specConcurrentDispatch] to true unless that value has been explicitly set to false.
     */
-   @Deprecated("use the val version. Will be removed in 4.7")
-   open fun parallelism(): Int? = null
-
-   /**
-    * The parallelism factor determines how many threads are used to launch tests.
-    *
-    * The tests inside the same spec are always executed using the same thread, to ensure
-    * that callbacks all operate on the same thread. In other words, a spec is sticky
-    * with regards to the execution thread.
-    *
-    * Increasing this value to k > 1, means that k threads are created, allowing different
-    * specs to execute on different threads. For n specs, if you set this value to k, then
-    * on average, each thread will service n/k specs.
-    *
-    * The thread choosen for a particular thread can be determined by the ThreadAllocationExtension,
-    * which by default chooses in a round robin fashion.
-    *
-    * An alternative way to enable this is the system property kotest.framework.parallelism
-    * which will always (if defined) take priority over the value here.
-    *
-    * Note: For backwards compatibility, setting this value to > 1 will implicitly set
-    * [specConcurrentDispatch] to true unless that value has been explicitly set to false.
-    */
    open val parallelism: Int? = null
 
    /**

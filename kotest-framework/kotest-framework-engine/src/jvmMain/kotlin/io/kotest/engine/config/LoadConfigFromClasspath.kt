@@ -49,7 +49,7 @@ private fun AbstractProjectConfig.toDetectedConfig(): DetectedProjectConfig {
       autoScanEnabled = autoScanEnabled.toOption(),
       autoScanIgnoredClasses = autoScanIgnoredClasses,
       writeSpecFailureFile = writeSpecFailureFile.toOption(),
-      parallelism = parallelism.toOption().orElse(parallelism().toOption()),
+      parallelism = parallelism.toOption(),
       timeout = timeout.toOption().map { it.inWholeMilliseconds },
       invocationTimeout = invocationTimeout.toOption(),
       testCaseConfig = defaultTestCaseConfig.toOption(),
