@@ -7,7 +7,7 @@ import io.kotest.core.listeners.TestListener
 import kotlin.time.Duration
 
 typealias EnabledIf = (TestCase) -> Boolean
-typealias EnabledOrReasonIf = (TestCase) -> Enabled
+typealias EnabledOrReasonIf = suspend (TestCase) -> Enabled
 
 class Enabled private constructor(val isEnabled: Boolean, reason: String? = null) {
    private val builder = StringBuilder(reason ?: "")
@@ -18,7 +18,7 @@ class Enabled private constructor(val isEnabled: Boolean, reason: String? = null
       val disabled = Enabled(false, null)
       fun disabled(reason: String) = Enabled(false, reason)
 
-      fun fold(es: Iterable<Enabled>): Enabled {
+      suspend fun fold(es: Iterable<Enabled>): Enabled {
          return es.fold(enabled) { acc, e ->
             Enabled(acc.isEnabled && e.isEnabled, acc.reason).also {
                if (!e.isEnabled) {
