@@ -1,5 +1,6 @@
 package io.kotest.datatest
 
+import io.kotest.common.ExperimentalKotest
 import io.kotest.core.spec.style.scopes.RootContext
 import io.kotest.core.test.TestContext
 import io.kotest.matchers.collections.shouldContainExactly
@@ -8,6 +9,7 @@ import io.kotest.matchers.string.shouldHaveLength
 
 data class PythagTriple(val a: Int, val b: Int, val c: Int)
 
+@ExperimentalKotest
 fun RootContext.registerRootTests(): MutableList<String> {
 
    val results = mutableListOf<String>()
@@ -68,6 +70,7 @@ fun RootContext.registerRootTests(): MutableList<String> {
    return results
 }
 
+@ExperimentalKotest
 suspend fun TestContext.registerContextTests(): MutableList<String> {
 
    val results = mutableListOf<String>()

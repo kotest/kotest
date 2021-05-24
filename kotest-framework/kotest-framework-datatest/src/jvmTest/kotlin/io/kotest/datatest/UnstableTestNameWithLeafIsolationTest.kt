@@ -13,6 +13,7 @@ import io.kotest.engine.listener.TestEngineListener
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
 
+@ExperimentalKotest
 @Isolate // sets global values via configuration so must be isolated
 class UnstableTestNameWithLeafIsolationTest : FunSpec() {
    init {

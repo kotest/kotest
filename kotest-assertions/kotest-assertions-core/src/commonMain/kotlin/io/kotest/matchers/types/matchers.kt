@@ -4,7 +4,6 @@ package io.kotest.matchers.types
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
-import kotlin.contracts.ExperimentalContracts
 import kotlin.contracts.contract
 
 /**
@@ -71,10 +70,8 @@ inline fun <reified T : Any> Any?.shouldBeInstanceOf(block: (T) -> Unit = { }): 
  * val arrayList = list.shouldBeInstanceOf<ArrayList<Int>>()
  *
  * ```
- * @param block Lambda that receives typecasted instance as argument for further assertions.
  * @return The typecasted instance
  */
-@OptIn(ExperimentalContracts::class)
 inline fun <reified T : Any> Any?.shouldBeInstanceOf(): T {
    contract {
       returns() implies (this@shouldBeInstanceOf is T)
@@ -139,7 +136,6 @@ inline fun <reified T : Any> Any?.shouldBeTypeOf(block: (T) -> Unit = { }): T {
    return this
 }
 
-@OptIn(ExperimentalContracts::class)
 inline fun <reified T : Any> Any?.shouldBeTypeOf(): T {
    contract {
       returns() implies (this@shouldBeTypeOf is T)

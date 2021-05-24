@@ -3,6 +3,7 @@ package com.sksamuel.kotest.framework.api
 import io.kotest.core.annotation.Ignored
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
+import kotlin.time.Duration
 import kotlin.time.seconds
 
 @Ignored
@@ -15,13 +16,13 @@ class TestCaseSourceRefTest : FunSpec() {
          }
       }
 
-      test("source ref should be performant").config(timeout = 10.seconds) {
-         repeat(100000) {
-            MySpec().materializeRootTests().first().testCase.source.apply {
-               fileName shouldBe "TestCaseSourceRefTest.kt"
-               lineNumber shouldBe 31
-            }
-         }
+      test("source ref should be performant").config(timeout = Duration.seconds(10)) {
+          repeat(100000) {
+              MySpec().materializeRootTests().first().testCase.source.apply {
+                  fileName shouldBe "TestCaseSourceRefTest.kt"
+                  lineNumber shouldBe 31
+              }
+          }
       }
    }
 }

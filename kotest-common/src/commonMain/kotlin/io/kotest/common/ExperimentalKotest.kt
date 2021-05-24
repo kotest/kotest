@@ -4,4 +4,3 @@ package io.kotest.common
 @Retention(value = AnnotationRetention.BINARY)
 @RequiresOptIn(level = RequiresOptIn.Level.WARNING)
 annotation class ExperimentalKotest
-

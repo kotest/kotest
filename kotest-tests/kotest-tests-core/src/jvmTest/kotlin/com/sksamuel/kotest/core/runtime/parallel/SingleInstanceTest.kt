@@ -241,15 +241,12 @@ class SpecThreadBeforeAfterSingleInstanceTest : FunSpec({
    }
 
    test("test 1 should run before/after test one more time") {
-      "void"
    }
 
    test("test 2 should run before/after test one more time") {
-      "void"
    }
 
    test("test 3 should run before/after test one more time") {
-      "void"
    }
 })
 
@@ -400,15 +397,12 @@ class SpecThreadTestCaseExtensionConcurrentSingleInstanceTest : FunSpec({
    }
 
    test("test 1 should run TestCaseExtension concurrently") {
-      "void"
    }
 
    test("test 2 should run TestCaseExtension concurrently") {
-      "void"
    }
 
    test("test 3 should run TestCaseExtension concurrently") {
-      "void"
    }
 })
 
@@ -445,14 +439,11 @@ class SpecThreadSpecExtensionConcurrentSingleInstanceTest : FunSpec({
    }
 
    test("test 1 aroundSpecExtension should be called only once for entire Spec without concurrency") {
-      "void"
    }
 
    test("test 2 aroundSpecExtension should be called only once for entire Spec without concurrency") {
-      "void"
    }
 
    test("test 3 aroundSpecExtension should be called only once for entire Spec without concurrency") {
-      "void"
    }
 })

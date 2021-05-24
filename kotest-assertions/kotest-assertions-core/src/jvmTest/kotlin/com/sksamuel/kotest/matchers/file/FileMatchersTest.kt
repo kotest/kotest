@@ -11,8 +11,8 @@ import io.kotest.matchers.file.haveExtension
 import io.kotest.matchers.file.shouldBeADirectory
 import io.kotest.matchers.file.shouldBeAFile
 import io.kotest.matchers.file.shouldBeAbsolute
+import io.kotest.matchers.file.shouldBeEmpty
 import io.kotest.matchers.file.shouldBeEmptyDirectory
-import io.kotest.matchers.file.shouldBeNonEmptyDirectory
 import io.kotest.matchers.file.shouldBeRelative
 import io.kotest.matchers.file.shouldBeSymbolicLink
 import io.kotest.matchers.file.shouldExist
@@ -20,8 +20,8 @@ import io.kotest.matchers.file.shouldHaveExtension
 import io.kotest.matchers.file.shouldHaveParent
 import io.kotest.matchers.file.shouldNotBeADirectory
 import io.kotest.matchers.file.shouldNotBeAFile
+import io.kotest.matchers.file.shouldNotBeEmpty
 import io.kotest.matchers.file.shouldNotBeEmptyDirectory
-import io.kotest.matchers.file.shouldNotBeNonEmptyDirectory
 import io.kotest.matchers.file.shouldNotBeSymbolicLink
 import io.kotest.matchers.file.shouldNotExist
 import io.kotest.matchers.file.shouldNotHaveExtension
@@ -152,9 +152,9 @@ class FileMatchersTest : FunSpec() {
 
     test("directory should be empty (deprecated)") {
        val dir = Files.createTempDirectory("testdir").toFile()
-       dir.shouldNotBeNonEmptyDirectory()
+       dir.shouldBeEmpty()
        dir.resolve("testfile.txt").writeBytes(byteArrayOf(1, 2, 3))
-       dir.shouldBeNonEmptyDirectory()
+       dir.shouldNotBeEmpty()
     }
 
     test("directory should be empty") {

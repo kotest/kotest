@@ -1,10 +1,11 @@
 package com.sksamuel.kotest.engine.spec.config
 
+import io.kotest.common.ExperimentalKotest
 import io.kotest.core.Tag
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 import java.util.concurrent.atomic.AtomicInteger
-import kotlin.time.seconds
+import kotlin.time.Duration
 
 object Tag1 : Tag()
 object Tag2 : Tag()
@@ -13,6 +14,7 @@ object Tag2 : Tag()
  * A test that just ensures the syntax for test configs does not break between releases.
  * The actual functionality of things like tags and timeouts is tested elsewhere.
  */
+@ExperimentalKotest
 class FunSpecConfigSyntaxTest : FunSpec() {
    init {
 
@@ -38,8 +40,8 @@ class FunSpecConfigSyntaxTest : FunSpec() {
          counter.incrementAndGet()
       }
 
-      test("a test with timeout").config(timeout = 1.seconds) {
-         counter.incrementAndGet()
+      test("a test with timeout").config(timeout = Duration.seconds(1)) {
+          counter.incrementAndGet()
       }
 
       test("a test with tags").config(tags = setOf(Tag1)) {
@@ -50,11 +52,11 @@ class FunSpecConfigSyntaxTest : FunSpec() {
          counter.incrementAndGet()
       }
 
-      context("an outer context with timeout").config(timeout = 2.seconds) {
-         counter.incrementAndGet()
-         test("an inner test") {
-            counter.incrementAndGet()
-         }
+      context("an outer context with timeout").config(timeout = Duration.seconds(2)) {
+          counter.incrementAndGet()
+          test("an inner test") {
+              counter.incrementAndGet()
+          }
       }
 
       context("an outer context with tags").config(tags = setOf(Tag1)) {
@@ -83,11 +85,11 @@ class FunSpecConfigSyntaxTest : FunSpec() {
 
       context("an outer context") {
          counter.incrementAndGet()
-         context("an inner context with timeout").config(timeout = 2.seconds) {
-            counter.incrementAndGet()
-            test("an inner test") {
-               counter.incrementAndGet()
-            }
+         context("an inner context with timeout").config(timeout = Duration.seconds(2)) {
+             counter.incrementAndGet()
+             test("an inner test") {
+                 counter.incrementAndGet()
+             }
          }
 
          context("an inner context with tags").config(tags = setOf(Tag1)) {

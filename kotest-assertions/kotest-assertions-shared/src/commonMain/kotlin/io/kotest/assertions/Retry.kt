@@ -5,7 +5,6 @@ import kotlin.reflect.KClass
 import kotlin.time.Duration
 import kotlin.time.DurationUnit
 import kotlin.time.TimeSource
-import kotlin.time.seconds
 import kotlinx.coroutines.delay
 
 /**
@@ -27,7 +26,7 @@ import kotlinx.coroutines.delay
 suspend fun <T> retry(
    maxRetry: Int,
    timeout: Duration,
-   delay: Duration = 1.seconds,
+   delay: Duration = Duration.seconds(1),
    multiplier: Int = 1,
    f: suspend () -> T
 ): T = retry(maxRetry, timeout, delay, multiplier, Exception::class, f)
@@ -52,7 +51,7 @@ suspend fun <T> retry(
 suspend fun <T, E : Throwable> retry(
    maxRetry: Int,
    timeout: Duration,
-   delay: Duration = 1.seconds,
+   delay: Duration = Duration.seconds(1),
    multiplier: Int = 1,
    exceptionClass: KClass<E>,
    f: suspend () -> T
@@ -60,7 +59,7 @@ suspend fun <T, E : Throwable> retry(
    val mark = TimeSource.Monotonic.markNow()
    val end = mark.plus(timeout)
    var retrySoFar = 0
-   var nextAwaitDuration = delay.toLongMilliseconds()
+   var nextAwaitDuration = delay.inWholeMilliseconds
    var lastError: Throwable? = null
 
    while (end.hasNotPassedNow() && retrySoFar < maxRetry) {

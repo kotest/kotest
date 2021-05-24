@@ -90,7 +90,8 @@ suspend fun <T> continually(
 
 @ExperimentalTime
 @ExperimentalKotest
-suspend fun <T> continually(duration: Duration, test: suspend () -> T): T? = continually(duration.toLongMilliseconds(), test)
+suspend fun <T> continually(duration: Duration, test: suspend () -> T): T? =
+   continually(duration.inWholeMilliseconds, test)
 
 @ExperimentalKotest
 suspend fun <T> continually(duration: Long, test: suspend () -> T): T? = continually({ this.duration = duration }, test)

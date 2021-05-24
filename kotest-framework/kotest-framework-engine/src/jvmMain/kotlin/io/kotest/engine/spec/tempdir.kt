@@ -4,9 +4,9 @@ import io.kotest.core.TestConfiguration
 import java.io.File
 
 fun TestConfiguration.tempdir(prefix: String? = javaClass.name, suffix: String? = null): File {
-   val dir = createTempDir(prefix ?: "tmp", suffix)
+   val dir = kotlin.io.path.createTempDirectory(prefix ?: "tmp")
    afterSpec {
-      dir.delete()
+      dir.toFile().delete()
    }
-   return dir
+   return dir.toFile()
 }

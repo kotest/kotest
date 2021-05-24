@@ -115,6 +115,8 @@ kotlin {
       all {
          languageSettings.useExperimentalAnnotation("kotlin.time.ExperimentalTime")
          languageSettings.useExperimentalAnnotation("kotlin.experimental.ExperimentalTypeInference")
+         languageSettings.useExperimentalAnnotation("kotlin.RequiresOptIn")
+         languageSettings.useExperimentalAnnotation("kotlin.reflect.jvm.ExperimentalReflectionOnLambdas")
       }
    }
 }

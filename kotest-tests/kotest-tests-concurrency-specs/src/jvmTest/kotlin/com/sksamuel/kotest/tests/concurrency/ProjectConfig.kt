@@ -1,9 +1,11 @@
 package com.sksamuel.kotest.tests.concurrency
 
+import io.kotest.common.ExperimentalKotest
 import io.kotest.core.config.AbstractProjectConfig
 import io.kotest.core.config.Configuration
 import io.kotest.matchers.longs.shouldBeLessThan
 
+@ExperimentalKotest
 object ProjectConfig : AbstractProjectConfig() {
 
    private var start = 0L

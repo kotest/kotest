@@ -2,13 +2,12 @@ package com.sksamuel.kotest.timeout
 
 import io.kotest.core.spec.style.FreeSpec
 import kotlinx.coroutines.delay
-import kotlin.time.milliseconds
-import kotlin.time.minutes
+import kotlin.time.Duration
 
 class SpecLevelInvocationTimeoutContainerTest : FreeSpec({
 
-   timeout = 1.minutes.toLongMilliseconds()
-   invocationTimeout = 50.milliseconds.toLongMilliseconds()
+   timeout = Duration.minutes(1).inWholeMilliseconds
+   invocationTimeout = Duration.milliseconds(50).inWholeMilliseconds
 
    "invocation timeouts at the spec level should not be applied to containers" - {
       // these inner tests will run 10 times, with 10ms pause each time = 100ms total pause

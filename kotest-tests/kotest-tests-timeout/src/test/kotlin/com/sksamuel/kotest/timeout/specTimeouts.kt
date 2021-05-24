@@ -3,13 +3,11 @@ package com.sksamuel.kotest.timeout
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.spec.style.funSpec
 import kotlinx.coroutines.delay
-import kotlin.time.hours
-import kotlin.time.milliseconds
-import kotlin.time.minutes
+import kotlin.time.Duration
 
 private val factory = funSpec {
    test("long running test") {
-      delay(10.hours)
+      delay(Duration.hours(10))
    }
 }
 
@@ -20,10 +18,10 @@ class InlineTimeoutTest : FunSpec() {
    init {
       extension(expectFailureExtension)
 
-      timeout = 10.milliseconds.toLongMilliseconds()
+      timeout = Duration.milliseconds(10).inWholeMilliseconds
 
       test("should timeout from spec setting") {
-         delay(10.hours)
+         delay(Duration.hours(10))
       }
 
       // should apply to factories too
@@ -37,8 +35,8 @@ class InlineTimeoutFailurePrecedenceTest : FunSpec() {
 
       timeout = 10000000000
 
-      test("test case config timeout should take precedence").config(timeout = 500.milliseconds) {
-         delay(10.hours)
+      test("test case config timeout should take precedence").config(timeout = Duration.milliseconds(500)) {
+         delay(Duration.hours(10))
       }
    }
 }
@@ -46,9 +44,9 @@ class InlineTimeoutFailurePrecedenceTest : FunSpec() {
 class InlineTimeoutSuccessPrecedenceTest : FunSpec() {
    init {
       timeout = 1
-      test("test case config timeout should take precedence").config(timeout = 500.milliseconds) {
+      test("test case config timeout should take precedence").config(timeout = Duration.milliseconds(500)) {
          // this test should pass because 50 < 250, and 250 should override the 1 at the spec level
-         delay(50.milliseconds)
+         delay(Duration.milliseconds(50))
       }
    }
 }
@@ -58,13 +56,13 @@ class InlineTimeoutSuccessPrecedenceTest : FunSpec() {
  */
 class OverrideTimeoutTest : FunSpec() {
 
-   override fun timeout(): Long = 10.milliseconds.toLongMilliseconds()
+   override fun timeout(): Long = Duration.milliseconds(10).inWholeMilliseconds
 
    init {
       extension(expectFailureExtension)
 
       test("should timeout from spec setting") {
-         delay(10.hours)
+         delay(Duration.hours(10))
       }
 
       // should apply to factories too
@@ -77,13 +75,13 @@ class OverrideTimeoutTest : FunSpec() {
  */
 class OverrideTimeoutFailurePrecenceTest : FunSpec() {
 
-   override fun timeout(): Long = 1.hours.toLongMilliseconds()
+   override fun timeout(): Long = Duration.hours(1).inWholeMilliseconds
 
    init {
       extension(expectFailureExtension)
 
-      test("test case config timeout should take precedence").config(timeout = 250.milliseconds) {
-         delay(2.minutes)
+      test("test case config timeout should take precedence").config(timeout = Duration.milliseconds(250)) {
+         delay(Duration.minutes(2))
       }
    }
 }
@@ -93,12 +91,12 @@ class OverrideTimeoutFailurePrecenceTest : FunSpec() {
  */
 class OverrideTimeoutSuccessPrecenceTest : FunSpec() {
 
-   override fun timeout(): Long = 1.milliseconds.toLongMilliseconds()
+   override fun timeout(): Long = Duration.milliseconds(1).inWholeMilliseconds
 
    init {
-      test("test case config timeout should take precedence").config(timeout = 250.milliseconds) {
+      test("test case config timeout should take precedence").config(timeout = Duration.milliseconds(250)) {
          // this test should pass because 50 < 250, and 250 should override the 1 at the spec level
-         delay(50.milliseconds)
+         delay(Duration.milliseconds(50))
       }
    }
 }

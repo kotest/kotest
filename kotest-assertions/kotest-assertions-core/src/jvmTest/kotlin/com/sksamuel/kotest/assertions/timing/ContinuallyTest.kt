@@ -6,30 +6,28 @@ import io.kotest.assertions.throwables.shouldThrowExactly
 import io.kotest.assertions.timing.continually
 import io.kotest.core.spec.style.WordSpec
 import io.kotest.matchers.shouldBe
-import kotlin.time.ExperimentalTime
+import kotlin.time.Duration
 import kotlin.time.hours
-import kotlin.time.milliseconds
-import kotlin.time.seconds
 
 class ContinuallyTest : WordSpec() {
 
   init {
     "continually" should {
       "pass working tests" {
-        continually(500.milliseconds) {
-          (System.currentTimeMillis() > 0) shouldBe true
-        }
+          continually(Duration.milliseconds(500)) {
+              (System.currentTimeMillis() > 0) shouldBe true
+          }
       }
       "fail broken tests immediately"  {
         shouldThrowAny {
-          continually(12.hours) {
+          continually(Duration.hours(12)) {
             false shouldBe true
           }
         }
       }
       "fail should throw the underlying error" {
         shouldThrowExactly<AssertionError> {
-          continually(12.hours) {
+          continually(Duration.hours(12)) {
             throw AssertionError("boom")
           }
         }.message shouldBe "boom"
@@ -38,10 +36,10 @@ class ContinuallyTest : WordSpec() {
         var n = 0
         val e = shouldThrow<Throwable> {
 
-          continually(3.seconds) {
-            Thread.sleep(5)
-            (n++ < 100) shouldBe true
-          }
+            continually(Duration.seconds(3)) {
+                Thread.sleep(5)
+                (n++ < 100) shouldBe true
+            }
         }
         val r =
           "Test failed after [\\d]+ms; expected to pass for 3000ms; attempted 100 times\nUnderlying failure was: 100 should be < 100".toRegex()

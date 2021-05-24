@@ -10,7 +10,7 @@ class NamedThreadFactoryTest : StringSpec({
       val t1 = factory.newThread { }
       t1.name.shouldMatch("wibble-\\d+".toRegex())
       val t2 = factory.newThread { }
-      t1.name.shouldMatch("wibble-\\d+".toRegex())
+      t2.name.shouldMatch("wibble-\\d+".toRegex())
    }
 })
 

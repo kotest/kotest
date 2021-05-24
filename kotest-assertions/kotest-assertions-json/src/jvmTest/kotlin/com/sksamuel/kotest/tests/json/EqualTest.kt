@@ -2,7 +2,6 @@ package com.sksamuel.kotest.tests.json
 
 import io.kotest.assertions.json.CompareMode
 import io.kotest.assertions.json.CompareOrder
-import io.kotest.assertions.json.pretty
 import io.kotest.assertions.json.shouldEqualJson
 import io.kotest.assertions.shouldFail
 import io.kotest.core.spec.style.FunSpec
@@ -10,20 +9,19 @@ import io.kotest.matchers.string.shouldStartWith
 import io.kotest.matchers.throwable.shouldHaveMessage
 import io.kotest.property.Arb
 import io.kotest.property.Exhaustive
+import io.kotest.property.arbitrary.Codepoint
 import io.kotest.property.arbitrary.az
 import io.kotest.property.arbitrary.numericDoubles
 import io.kotest.property.arbitrary.string
 import io.kotest.property.checkAll
 import io.kotest.property.exhaustive.boolean
-import kotlinx.serialization.encodeToString
-import kotlinx.serialization.json.Json
 
 class EqualTest : FunSpec() {
    init {
 
       test("comparing strings in objects") {
 
-         checkAll(Arb.string(1..10, Arb.az())) { string ->
+         checkAll(Arb.string(1..10, Codepoint.az())) { string ->
             val a = """ { "a" : "$string" } """
             a shouldEqualJson a
          }

@@ -14,7 +14,7 @@ private const val hour = 3_600_000L
 interface Interval {
 
    /**
-    * Returns the next delay as a [Millis].
+    * Returns the next delay in milliseconds.
     *
     * @param count The number of times the condition has been polled (evaluated) so far.
     * Always a positive integer.
@@ -38,7 +38,7 @@ fun Long.fixed(): FixedInterval = FixedInterval(this)
 
 @ExperimentalTime
 @ExperimentalKotest
-fun Duration.fixed() = this.toLongMilliseconds().fixed()
+fun Duration.fixed() = this.inWholeMilliseconds.fixed()
 
 
 /**
@@ -77,7 +77,8 @@ fun Long.fibonacci(max: Long? = FibonacciInterval.defaultMax) = FibonacciInterva
 
 @ExperimentalTime
 @ExperimentalKotest
-fun Duration.fibonacci(max: Duration? = null) = this.toLongMilliseconds().fibonacci(max?.toLongMilliseconds() ?: FibonacciInterval.defaultMax)
+fun Duration.fibonacci(max: Duration? = null) =
+   this.inWholeMilliseconds.fibonacci(max?.inWholeMilliseconds ?: FibonacciInterval.defaultMax)
 
 @ExperimentalKotest
 fun fibonacci(n: Int): Int {
@@ -124,6 +125,6 @@ fun Long.exponential(factor: Double = ExponentialInterval.defaultFactor, max: Lo
 @ExperimentalTime
 @ExperimentalKotest
 fun Duration.exponential(factor: Double = ExponentialInterval.defaultFactor, max: Duration? = null) =
-   this.toLongMilliseconds().exponential(factor, max?.toLongMilliseconds() ?: FibonacciInterval.defaultMax)
+   this.inWholeMilliseconds.exponential(factor, max?.inWholeMilliseconds ?: FibonacciInterval.defaultMax)
 
 

@@ -59,7 +59,7 @@ suspend fun <T> eventually(duration: Duration, exceptionClass: KClass<out Throwa
  */
 suspend fun <T> eventually(
    duration: Duration = Duration.INFINITE,
-   interval: Interval = 25.milliseconds.fixed(),
+   interval: Interval = Duration.milliseconds(25).fixed(),
    predicate: EventuallyPredicate<T> = { true },
    listener: EventuallyListener<T> = EventuallyListener { },
    retries: Int = Int.MAX_VALUE,
@@ -150,7 +150,7 @@ suspend fun <T> eventually(
 
 data class EventuallyConfig(
    val duration: Duration = Duration.INFINITE,
-   val interval: Interval = 25.milliseconds.fixed(),
+   val interval: Interval = Duration.milliseconds(25).fixed(),
    val retries: Int = Int.MAX_VALUE,
    val exceptionClass: KClass<out Throwable>? = null,
 ) {

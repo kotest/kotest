@@ -5,7 +5,9 @@ import io.kotest.assertions.failure
 import io.kotest.assertions.until.Interval
 import io.kotest.assertions.until.fixed
 import kotlinx.coroutines.delay
-import kotlin.time.*
+import kotlin.time.Duration
+import kotlin.time.TimeMark
+import kotlin.time.TimeSource
 
 data class ContinuallyState(val start: TimeMark, val end: TimeMark, val times: Int)
 
@@ -19,7 +21,7 @@ fun interface ContinuallyListener<in T> {
 
 data class Continually<T> (
    val duration: Duration = Duration.INFINITE,
-   val interval: Interval = 25.milliseconds.fixed(),
+   val interval: Interval = Duration.milliseconds(25).fixed(),
    val listener: ContinuallyListener<T> = ContinuallyListener.noop,
    ) {
    suspend operator fun invoke(f: SuspendingProducer<T>): T? {
@@ -37,7 +39,7 @@ data class Continually<T> (
                throw e
             // if not the first attempt then include how many times/for how long the test passed
             throw failure(
-               "Test failed after ${start.elapsedNow()}; expected to pass for ${duration.toLongMilliseconds()}ms; attempted $times times\nUnderlying failure was: ${e.message}",
+               "Test failed after ${start.elapsedNow()}; expected to pass for ${duration.inWholeMilliseconds}ms; attempted $times times\nUnderlying failure was: ${e.message}",
                e
             )
          }
@@ -54,5 +56,5 @@ data class Continually<T> (
 suspend fun <T> continually(duration: Duration, poll: Duration, f: suspend () -> T) =
    continually(duration, poll.fixed(), f = f)
 
-suspend fun <T> continually(duration: Duration, interval: Interval = 10.milliseconds.fixed(), f: suspend () -> T) =
+suspend fun <T> continually(duration: Duration, interval: Interval = Duration.milliseconds(10).fixed(), f: suspend () -> T) =
    Continually<T>(duration, interval).invoke(f)

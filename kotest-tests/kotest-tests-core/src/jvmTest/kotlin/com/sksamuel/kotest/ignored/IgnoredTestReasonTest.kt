@@ -32,7 +32,7 @@ private var fakeRan = false
 private val ignoredWithFunction = "This test was ignored by enabledOrReasonIf due to: ${UUID.randomUUID()}"
 private val ignoredWithExtension = "This test was ignored by EnabledExtension due to: ${UUID.randomUUID()}"
 
-@OptIn(ExperimentalKotest::class)
+@ExperimentalKotest
 private val skippedExtension = object : EnabledExtension {
    override suspend fun isEnabled(descriptor: Descriptor): Enabled =
       if (descriptor.name.value == isEnabledExtensionTestName)
@@ -41,6 +41,7 @@ private val skippedExtension = object : EnabledExtension {
          Enabled.enabled
 }
 
+@ExperimentalKotest
 private val skippedListener = object : TestListener {
    override val name = "Ignored Test Reason Listener"
 
@@ -53,6 +54,7 @@ private val skippedListener = object : TestListener {
    }
 }
 
+@ExperimentalKotest
 @Order(0)
 @Isolate // Isolate because this spec registers global extensions and listeners which have state
 class IgnoredTestReasonFake : FunSpec({
@@ -93,6 +95,7 @@ class IgnoredTestReasonFake : FunSpec({
    }
 })
 
+@ExperimentalKotest
 @Order(1)
 class IgnoredTestReasonSpec : FunSpec({
    tags(tag)

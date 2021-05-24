@@ -23,7 +23,7 @@ internal fun invocationTimeout(): Option<Long> =
    sysprop(KotestEngineProperties.invocationTimeout).toOption().map { it.toLong() }
 
 internal fun allowMultilineTestName(): Option<Boolean> =
-   sysprop(KotestEngineProperties.allowMultilineTestName).toOption().map { it.toUpperCase() == "TRUE" }
+   sysprop(KotestEngineProperties.allowMultilineTestName).toOption().map { it.uppercase() == "TRUE" }
 
 internal fun concurrentSpecs(): Option<Int> =
    sysprop(KotestEngineProperties.concurrentSpecs).toOption().map { it.toInt() }
@@ -32,10 +32,10 @@ internal fun concurrentTests(): Option<Int> =
    sysprop(KotestEngineProperties.concurrentTests).toOption().map { it.toInt() }
 
 internal fun globalAssertSoftly(): Option<Boolean> =
-   sysprop(KotestEngineProperties.globalAssertSoftly).toOption().map { it.toUpperCase() == "TRUE" }
+   sysprop(KotestEngineProperties.globalAssertSoftly).toOption().map { it.uppercase() == "TRUE" }
 
 internal fun testNameAppendTags(): Option<Boolean> =
-   sysprop(KotestEngineProperties.testNameAppendTags).toOption().map { it.toUpperCase() == "TRUE" }
+   sysprop(KotestEngineProperties.testNameAppendTags).toOption().map { it.uppercase() == "TRUE" }
 
 internal fun duplicateTestNameMode(): Option<DuplicateTestNameMode> =
    sysprop(KotestEngineProperties.testNameAppendTags).toOption().map { DuplicateTestNameMode.valueOf(it) }

@@ -20,8 +20,8 @@ import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldContain
 import kotlinx.coroutines.asCoroutineDispatcher
-import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.FileNotFoundException
 import java.io.IOException
@@ -29,124 +29,123 @@ import java.util.concurrent.CountDownLatch
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicInteger
+import kotlin.time.Duration
 import kotlin.time.TimeSource
 import kotlin.time.days
-import kotlin.time.milliseconds
-import kotlin.time.seconds
 
 class EventuallyTest : WordSpec() {
 
    init {
       "eventually" should {
          "pass working tests" {
-            eventually(5.days) {
+            eventually(Duration.days(5)) {
                System.currentTimeMillis()
             }
          }
          "pass tests that completed within the time allowed" {
             val end = System.currentTimeMillis() + 250
-            eventually(1.seconds) {
+            eventually(Duration.seconds(1)) {
                if (System.currentTimeMillis() < end)
                   throw RuntimeException("foo")
             }
          }
          "fail tests that do not complete within the time allowed" {
             shouldThrow<AssertionError> {
-               eventually(150.milliseconds) {
-                  throw RuntimeException("foo")
-               }
+                eventually(Duration.milliseconds(150)) {
+                    throw RuntimeException("foo")
+                }
             }
          }
          "return the result computed inside" {
-            val result = eventually(2.seconds) {
+            val result = eventually(Duration.seconds(2)) {
                1
             }
             result shouldBe 1
          }
          "pass tests that completed within the time allowed, AssertionError"  {
             val end = System.currentTimeMillis() + 250
-            eventually(5.days) {
+            eventually(Duration.days(5)) {
                if (System.currentTimeMillis() < end)
                   assert(false)
             }
          }
          "pass tests that completed within the time allowed, custom exception"  {
             val end = System.currentTimeMillis() + 250
-            eventually(5.seconds, FileNotFoundException::class) {
+            eventually(Duration.seconds(5), FileNotFoundException::class) {
                if (System.currentTimeMillis() < end)
                   throw FileNotFoundException()
             }
          }
          "fail tests throw unexpected exception type"  {
             shouldThrow<NullPointerException> {
-               eventually(2.seconds, exceptionClass = IOException::class) {
+               eventually(Duration.seconds(2), exceptionClass = IOException::class) {
                   (null as String?)!!.length
                }
             }
          }
          "pass tests that throws FileNotFoundException for some time"  {
             val end = System.currentTimeMillis() + 150
-            eventually(5.days) {
+            eventually(Duration.days(5)) {
                if (System.currentTimeMillis() < end)
                   throw FileNotFoundException("foo")
             }
          }
          "handle kotlin assertion errors" {
             var thrown = false
-            eventually(100.milliseconds) {
-               if (!thrown) {
-                  thrown = true
-                  throw AssertionError("boom")
-               }
-            }
+             eventually(Duration.milliseconds(100)) {
+                 if (!thrown) {
+                     thrown = true
+                     throw AssertionError("boom")
+                 }
+             }
          }
          "handle java assertion errors" {
             var thrown = false
-            eventually(100.milliseconds) {
-               if (!thrown) {
-                  thrown = true
-                  throw java.lang.AssertionError("boom")
-               }
-            }
+             eventually(Duration.milliseconds(100)) {
+                 if (!thrown) {
+                     thrown = true
+                     throw java.lang.AssertionError("boom")
+                 }
+             }
          }
          "display the first and last underlying failures" {
             var count = 0
             val message = shouldThrow<AssertionError> {
-               eventually(100.milliseconds) {
-                  if (count == 0) {
-                     count = 1
-                     fail("first")
-                  } else {
-                     fail("last")
-                  }
-               }
+                eventually(Duration.milliseconds(100)) {
+                    if (count == 0) {
+                        count = 1
+                        fail("first")
+                    } else {
+                        fail("last")
+                    }
+                }
             }.message
             message.shouldContain("Eventually block failed after 100ms; attempted \\d+ time\\(s\\); FixedInterval\\(duration=25.0ms\\) delay between attempts".toRegex())
             message.shouldContain("The first error was caused by: first")
             message.shouldContain("The last error was caused by: last")
          }
          "allow suspendable functions" {
-            eventually(100.milliseconds) {
-               delay(25)
-               System.currentTimeMillis()
-            }
+             eventually(Duration.milliseconds(100)) {
+                 delay(25)
+                 System.currentTimeMillis()
+             }
          }
          "allow configuring interval delay" {
             var count = 0
-            eventually(200.milliseconds, 40.milliseconds.fixed()) {
-               count += 1
-            }
+             eventually(Duration.milliseconds(200), Duration.milliseconds(40).fixed()) {
+                 count += 1
+             }
             count.shouldBeLessThan(6)
          }
          "do one final iteration if we never executed before interval expired" {
             val dispatcher = Executors.newSingleThreadExecutor().asCoroutineDispatcher()
-            async(dispatcher) {
+            launch(dispatcher) {
                Thread.sleep(2000)
             }
             val counter = AtomicInteger(0)
             withContext(dispatcher) {
                // we won't be able to run in here
-               eventually(1.seconds, 100.milliseconds) {
+               eventually(Duration.seconds(1), Duration.milliseconds(100)) {
                   counter.incrementAndGet()
                }
             }
@@ -155,56 +154,57 @@ class EventuallyTest : WordSpec() {
          "do one final iteration if we only executed once and the last delay > interval" {
             val dispatcher = Executors.newSingleThreadExecutor().asCoroutineDispatcher()
             // this will start immediately, free the dispatcher to allow eventually to run once, then block the thread
-            async(dispatcher) {
-               delay(100.milliseconds)
+            launch(dispatcher) {
+               delay(Duration.milliseconds(100))
                Thread.sleep(500)
             }
             val counter = AtomicInteger(0)
             withContext(dispatcher) {
                // this will execute once immediately, then the earlier async will steal the thread
                // and then since the delay has been > interval and times == 1, we will execute once more
-               eventually(250.milliseconds, 25.milliseconds) {
-                  counter.incrementAndGet() shouldBe 2
-               }
+                eventually(Duration.milliseconds(250), Duration.milliseconds(25)) {
+                    counter.incrementAndGet() shouldBe 2
+                }
             }
             counter.get().shouldBe(2)
          }
          "handle shouldNotBeNull" {
             val mark = TimeSource.Monotonic.markNow()
             shouldThrow<java.lang.AssertionError> {
-               eventually(50.milliseconds) {
-                  val str: String? = null
-                  str.shouldNotBeNull()
-               }
+                eventually(Duration.milliseconds(50)) {
+                    val str: String? = null
+                    str.shouldNotBeNull()
+                }
             }
-            mark.elapsedNow().toLongMilliseconds().shouldBeGreaterThanOrEqual(50)
+            mark.elapsedNow().inWholeMilliseconds.shouldBeGreaterThanOrEqual(50)
          }
 
          "eventually with boolean predicate" {
-            eventually(5.seconds) {
+            eventually(Duration.seconds(5)) {
                System.currentTimeMillis() > 0
             }
          }
 
          "eventually with boolean predicate and interval" {
-            eventually(5.seconds, 1.seconds.fixed()) {
+            eventually(Duration.seconds(5), Duration.seconds(1).fixed()) {
                System.currentTimeMillis() > 0
             }
          }
 
          "eventually with T predicate" {
             var t = ""
-            eventually(5.seconds, predicate = { t == "xxxx" }) {
+            eventually(Duration.seconds(5), predicate = { t == "xxxx" }) {
                t += "x"
             }
          }
 
          "eventually with T predicate and interval" {
             var t = ""
-            val result = eventually(5.seconds, 250.milliseconds.fixed(), predicate = { t == "xxxxxxxxxxx" }) {
-               t += "x"
-               t
-            }
+            val result =
+               eventually(Duration.seconds(5), Duration.milliseconds(250).fixed(), predicate = { t == "xxxxxxxxxxx" }) {
+                  t += "x"
+                  t
+               }
             result shouldBe "xxxxxxxxxxx"
          }
 
@@ -212,8 +212,8 @@ class EventuallyTest : WordSpec() {
             var t = ""
             val latch = CountDownLatch(5)
             val result = eventually(
-               5.seconds,
-               250.milliseconds.fixed(),
+               Duration.seconds(5),
+               Duration.milliseconds(250).fixed(),
                predicate = { t == "xxxxxxxxxxx" },
                listener = { latch.countDown() },
             ) {
@@ -226,7 +226,7 @@ class EventuallyTest : WordSpec() {
 
          "fail tests that fail a predicate" {
             shouldThrow<AssertionError> {
-               eventually(1.seconds, predicate = { it == 2 }) {
+               eventually(Duration.seconds(1), predicate = { it == 2 }) {
                   1
                }
             }
@@ -236,8 +236,8 @@ class EventuallyTest : WordSpec() {
             var t = ""
             val latch = CountDownLatch(5)
             val result = eventually(
-               duration = 10.seconds,
-               interval = 200.milliseconds.fibonacci(),
+               duration = Duration.seconds(10),
+               interval = Duration.milliseconds(200).fibonacci(),
                predicate = { t == "xxxxxx" },
                listener = { latch.countDown() },
             ) {
@@ -249,7 +249,7 @@ class EventuallyTest : WordSpec() {
          }
 
          "eventually has a shareable configuration" {
-            val slow = EventuallyConfig(duration = 5.seconds)
+            val slow = EventuallyConfig(duration = Duration.seconds(5))
 
             var i = 0
             val fast = slow.copy(retries = 1)
@@ -257,8 +257,8 @@ class EventuallyTest : WordSpec() {
             assertSoftly {
                slow.retries shouldBe Int.MAX_VALUE
                fast.retries shouldBe 1
-               slow.duration shouldBe 5.seconds
-               fast.duration shouldBe 5.seconds
+               slow.duration shouldBe Duration.seconds(5)
+               fast.duration shouldBe Duration.seconds(5)
             }
 
             eventually(slow) {
@@ -288,7 +288,7 @@ class EventuallyTest : WordSpec() {
             val message = shouldThrow<AssertionError> {
                assertSoftly {
                   withClue("Eventually which should pass") {
-                     eventually(2.seconds) {
+                     eventually(Duration.seconds(2)) {
                         System.currentTimeMillis() shouldBeGreaterThan target
                      }
                   }

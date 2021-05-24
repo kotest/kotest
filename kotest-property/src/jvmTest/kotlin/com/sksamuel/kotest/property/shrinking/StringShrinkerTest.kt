@@ -2,7 +2,6 @@ package com.sksamuel.kotest.property.shrinking
 
 import io.kotest.assertions.shouldFail
 import io.kotest.core.spec.style.DescribeSpec
-import io.kotest.core.spec.style.StringSpec
 import io.kotest.extensions.system.captureStandardOut
 import io.kotest.inspectors.forAtLeastOne
 import io.kotest.matchers.comparables.shouldBeLessThan
@@ -16,7 +15,7 @@ import io.kotest.property.Arb
 import io.kotest.property.PropTestConfig
 import io.kotest.property.PropertyTesting
 import io.kotest.property.ShrinkingMode
-import io.kotest.property.arbitrary.StringShrinker
+import io.kotest.property.arbitrary.StringShrinkerWithMin
 import io.kotest.property.arbitrary.string
 import io.kotest.property.checkAll
 import io.kotest.property.internal.doShrinking
@@ -36,7 +35,7 @@ class StringShrinkerTest : DescribeSpec({
       it("include bisected input") {
          checkAll { a: String ->
             if (a.length > 1) {
-               val candidates = StringShrinker.shrink(a)
+               val candidates = StringShrinkerWithMin().shrink(a)
                candidates.forAtLeastOne {
                   it.shouldHaveLength(a.length / 2 + a.length % 2)
                }
@@ -51,7 +50,7 @@ class StringShrinkerTest : DescribeSpec({
       it("should include 2 padded 'a's") {
          checkAll { a: String ->
             if (a.length > 1) {
-               val candidates = StringShrinker.shrink(a)
+               val candidates = StringShrinkerWithMin().shrink(a)
                candidates.forAtLeastOne {
                   it.shouldEndWith("a".repeat(a.length / 2))
                }
@@ -68,7 +67,7 @@ class StringShrinkerTest : DescribeSpec({
 
          checkAll<String> { a ->
 
-            val shrinks = StringShrinker.rtree(a)
+            val shrinks = StringShrinkerWithMin().rtree(a)
             val shrunk = doShrinking(shrinks, ShrinkingMode.Unbounded) {
                it.shouldNotContain("#")
             }
@@ -88,7 +87,7 @@ class StringShrinkerTest : DescribeSpec({
          PropertyTesting.shouldPrintShrinkSteps = false
 
          val a = "97asd!@#ASD'''234)*safmasd"
-         val shrinks = StringShrinker.rtree(a)
+         val shrinks = StringShrinkerWithMin().rtree(a)
          doShrinking(shrinks, ShrinkingMode.Unbounded) {
             it.length.shouldBeLessThan(3)
          }.shrink shouldBe "aaa"

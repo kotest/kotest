@@ -1,10 +1,12 @@
 package com.sksamuel.kotest.specs
 
+import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 
+@DelicateCoroutinesApi
 fun main() {
   println("Starting main")
   runBlocking {

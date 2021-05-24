@@ -1,7 +1,9 @@
 package io.kotest.datatest
 
+import io.kotest.common.ExperimentalKotest
 import io.kotest.core.spec.style.FeatureSpec
 
+@ExperimentalKotest
 internal class FeatureSpecForAllDataTest : FeatureSpec() {
    init {
 
