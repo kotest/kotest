@@ -205,6 +205,11 @@ class Configuration {
    var defaultTestConfig: TestCaseConfig = Defaults.testCaseConfig
 
    /**
+    * If set to true, then will cause the test suite to fail if there were no executed tests.
+    */
+   var failOnEmptyTestSuite: Boolean = Defaults.failOnEmptyTestSuite
+
+   /**
     * Some specs have DSLs that include prefix or suffix words in the test name.
     *
     * If this method returns true, then test names include those prefix and suffix names

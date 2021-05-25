@@ -37,6 +37,7 @@ data class DetectedProjectConfig(
    val testCaseOrder: Option<TestCaseOrder> = Option.None,
    val specExecutionOrder: Option<SpecExecutionOrder> = Option.None,
    val failOnIgnoredTests: Option<Boolean> = Option.None,
+   val failOnEmptyTestSuite: Option<Boolean> = Option.None,
    val globalAssertSoftly: Option<Boolean> = Option.None,
    val autoScanEnabled: Option<Boolean> = Option.None,
    val autoScanIgnoredClasses: List<KClass<*>> = emptyList(),
@@ -65,6 +66,7 @@ fun DetectedProjectConfig.merge(other: DetectedProjectConfig): DetectedProjectCo
       testCaseOrder = this.testCaseOrder.orElse(other.testCaseOrder),
       specExecutionOrder = this.specExecutionOrder.orElse(other.specExecutionOrder),
       failOnIgnoredTests = this.failOnIgnoredTests.orElse(other.failOnIgnoredTests),
+      failOnEmptyTestSuite = this.failOnEmptyTestSuite.orElse(other.failOnEmptyTestSuite),
       globalAssertSoftly = this.globalAssertSoftly.orElse(other.globalAssertSoftly),
       autoScanEnabled = this.autoScanEnabled.orElse(other.autoScanEnabled),
       autoScanIgnoredClasses = this.autoScanIgnoredClasses + other.autoScanIgnoredClasses,
@@ -111,6 +113,7 @@ fun DetectedProjectConfig.apply(configuration: Configuration) {
    writeSpecFailureFile.forEach { configuration.writeSpecFailureFile = it }
    specFailureFilePath.forEach { configuration.specFailureFilePath = it }
    failOnIgnoredTests.forEach { configuration.failOnIgnoredTests = it }
+   failOnEmptyTestSuite.forEach { configuration.failOnEmptyTestSuite = it }
 
    // timeout options
    timeout.forEach { configuration.timeout = it }

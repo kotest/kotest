@@ -49,7 +49,7 @@ class KotestEngineLauncher(
          dumpConfig
       )
       val runner = KotestEngine(config)
-      val plan = TestPlan(specs, scripts)
+      val plan = TestSuite(specs, scripts)
 
       return try {
          runBlocking { // blocks the calling thread while the engine runs
