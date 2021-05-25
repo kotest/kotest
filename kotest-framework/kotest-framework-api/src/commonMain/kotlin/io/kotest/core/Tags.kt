@@ -33,6 +33,13 @@ data class Tags(val expression: String?) {
       else -> Tags(this.expression + " & " + other.expression)
    }
 
+   /**
+    * Returns a new [Tags] which is the result of this expression and including the given tag.
+    */
    fun include(tag: Tag): Tags = combine(Tags(tag.name))
+
+   /**
+    * Returns a new [Tags] which is the result of this expression and excluding the given tag.
+    */
    fun exclude(tag: Tag): Tags = combine(Tags("!" + tag.name))
 }

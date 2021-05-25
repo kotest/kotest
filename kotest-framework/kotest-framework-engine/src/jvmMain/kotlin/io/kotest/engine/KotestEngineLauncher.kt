@@ -1,9 +1,13 @@
 package io.kotest.engine
 
 import io.kotest.core.Tags
+import io.kotest.core.config.configuration
+import io.kotest.core.filter.SpecFilter
 import io.kotest.core.filter.TestFilter
+import io.kotest.core.internal.tags.ConfigurationTagProvider
 import io.kotest.core.spec.Spec
 import io.kotest.engine.config.ConfigManager
+import io.kotest.engine.filter.RequiresTagSpecFilter
 import io.kotest.engine.listener.CompositeTestEngineListener
 import io.kotest.engine.listener.IsolationTestEngineListener
 import io.kotest.engine.listener.SynchronizedTestEngineListener
@@ -21,7 +25,8 @@ import kotlin.script.templates.standard.ScriptTemplateWithArgs
 class KotestEngineLauncher(
    private val listeners: List<TestEngineListener>,
    private val specs: List<KClass<out Spec>>,
-   private val filters: List<TestFilter>,
+   private val testFilters: List<TestFilter>,
+   private val specFilters: List<SpecFilter>,
    private val tags: Tags?,
    private val dumpConfig: Boolean,
    private val scripts: List<KClass<out ScriptTemplateWithArgs>>,
@@ -31,7 +36,29 @@ class KotestEngineLauncher(
       ConfigManager.init()
    }
 
-   constructor() : this(emptyList(), emptyList(), emptyList(), null, false, emptyList())
+   companion object {
+
+      /**
+       * Returns a [KotestEngineLauncher] with common filters and settings.
+       */
+      fun default(
+         listeners: List<TestEngineListener>,
+         specs: List<KClass<out Spec>>,
+         tags: Tags?
+      ): KotestEngineLauncher {
+         return KotestEngineLauncher(
+            listeners = listeners,
+            specs = specs,
+            scripts = emptyList(),
+            testFilters = emptyList(),
+            specFilters = listOf(RequiresTagSpecFilter(ConfigurationTagProvider(configuration))),
+            tags = tags,
+            dumpConfig = false,
+         )
+      }
+   }
+
+   constructor() : this(emptyList(), emptyList(), emptyList(), emptyList(), null, false, emptyList())
 
    fun launch(): EngineResult {
 
@@ -39,7 +66,8 @@ class KotestEngineLauncher(
          error("Cannot launch a KotestEngine without at least one TestEngineListener")
 
       val config = KotestEngineConfig(
-         filters,
+         testFilters,
+         specFilters,
          SynchronizedTestEngineListener(
             IsolationTestEngineListener(
                CompositeTestEngineListener(listeners)
@@ -68,7 +96,8 @@ class KotestEngineLauncher(
    fun withListener(listener: TestEngineListener) = KotestEngineLauncher(
       listeners = this.listeners + listener,
       specs = specs,
-      filters = this.filters + filters,
+      testFilters = testFilters,
+      specFilters = specFilters,
       tags = tags,
       dumpConfig = dumpConfig,
       scripts = scripts,
@@ -77,28 +106,46 @@ class KotestEngineLauncher(
    fun withDumpConfig(dump: Boolean) = KotestEngineLauncher(
       listeners = listeners,
       specs = specs,
-      filters = this.filters + filters,
+      testFilters = testFilters,
+      specFilters = specFilters,
       tags = tags,
       dumpConfig = dump,
       scripts = scripts,
    )
 
-   fun withFilters(filters: List<TestFilter>): KotestEngineLauncher {
+   fun withSpecFilters(filters: List<SpecFilter>): KotestEngineLauncher {
       return KotestEngineLauncher(
          listeners = listeners,
          specs = specs,
-         filters = this.filters + filters,
+         testFilters = testFilters,
+         specFilters = specFilters + filters,
          tags = tags,
          dumpConfig = dumpConfig,
          scripts = scripts,
       )
    }
 
+   fun withTestFilters(filters: List<TestFilter>): KotestEngineLauncher {
+      return KotestEngineLauncher(
+         listeners = listeners,
+         specs = specs,
+         testFilters = testFilters + filters,
+         specFilters = specFilters,
+         tags = tags,
+         dumpConfig = dumpConfig,
+         scripts = scripts,
+      )
+   }
+
+   @Deprecated("use withTestFilters. This must remain for binary compatibility.")
+   fun withFilters(filters: List<TestFilter>): KotestEngineLauncher = withTestFilters(filters)
+
    fun withScripts(scripts: List<KClass<out ScriptTemplateWithArgs>>): KotestEngineLauncher {
       return KotestEngineLauncher(
          listeners = listeners,
          specs = specs,
-         filters = filters,
+         testFilters = testFilters,
+         specFilters = specFilters,
          tags = tags,
          dumpConfig = dumpConfig,
          scripts = scripts,
@@ -113,7 +160,8 @@ class KotestEngineLauncher(
       return KotestEngineLauncher(
          listeners = listeners,
          specs = specs,
-         filters = filters,
+         testFilters = testFilters,
+         specFilters = specFilters,
          tags = tags,
          dumpConfig = dumpConfig,
          scripts = scripts,
@@ -124,7 +172,8 @@ class KotestEngineLauncher(
       return KotestEngineLauncher(
          listeners = listeners,
          specs = specs,
-         filters = filters,
+         testFilters = testFilters,
+         specFilters = specFilters,
          tags = tags,
          dumpConfig = dumpConfig,
          scripts = scripts,
