@@ -597,11 +597,11 @@ class BindTest : StringSpec({
          .toList()
 
       edgecases shouldContainExactly listOf(
-         Wobble(a = "a", b = false, c = 2147483647, d = 0.0, e = 3.4028235E38F),
-         Wobble(a = "", b = true, c = -2147483648, d = -1.0, e = Float.NEGATIVE_INFINITY),
-         Wobble(a = "", b = false, c = 1, d = Double.NEGATIVE_INFINITY, e = 1.4E-45F),
-         Wobble(a = "a", b = true, c = -2147483648, d = Double.NaN, e = 1.4E-45F),
-         Wobble(a = "", b = false, c = 2147483647, d = Double.NEGATIVE_INFINITY, e = -1.0F)
+         Wobble(a = "a", b = false, c = 1, d = 0.0, e = 3.4028235E38F),
+         Wobble(a = "", b = true, c = 2147483647, d = -1.0, e = Float.NEGATIVE_INFINITY),
+         Wobble(a = "", b = false, c = -1, d = Double.NEGATIVE_INFINITY, e = 1.4E-45F),
+         Wobble(a = "a", b = true, c = 2147483647, d = Double.NaN, e = 1.4E-45F),
+         Wobble(a = "", b = false, c = 1, d = Double.NEGATIVE_INFINITY, e = -1.0F)
       )
    }
 })

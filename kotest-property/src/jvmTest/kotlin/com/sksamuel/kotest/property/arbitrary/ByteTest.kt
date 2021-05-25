@@ -1,46 +1,71 @@
 package com.sksamuel.kotest.property.arbitrary
 
-import io.kotest.core.spec.style.DescribeSpec
+import io.kotest.core.spec.style.FunSpec
+import io.kotest.data.blocking.forAll
+import io.kotest.data.row
 import io.kotest.inspectors.forAll
-import io.kotest.inspectors.forNone
-import io.kotest.inspectors.forOne
 import io.kotest.matchers.bytes.shouldBeBetween
 import io.kotest.matchers.shouldBe
 import io.kotest.property.Arb
-import io.kotest.property.arbitrary.byte
-import io.kotest.property.arbitrary.edgecases
-import io.kotest.property.arbitrary.take
+import io.kotest.property.PropTest
+import io.kotest.property.arbitrary.*
+import io.kotest.property.checkAll
+import io.kotest.property.checkCoverage
 
-class ByteTest : DescribeSpec() {
-   init {
-      describe("Arb.byte") {
-         it("should respect min / max") {
-            Arb.byte(5.toByte(), 9.toByte()).take(1000).forAll {
-               it.shouldBeBetween(5, 9)
+class ByteTest : FunSpec({
+   test("<Byte, Byte> should give values between min and max inclusive") {
+      // Test parameters include the test for negative bounds
+      forAll(
+         row(-10, -1),
+         row(1, 3),
+         row(-100, 100),
+         row((Byte.MAX_VALUE - 10).toByte(), Byte.MAX_VALUE),
+         row(Byte.MIN_VALUE, (Byte.MIN_VALUE + 10).toByte())
+      ) { vMin, vMax ->
+         val expectedValues = (vMin..vMax).map { it.toByte() }.toSet()
+         val actualValues = (1..100_000).map { Arb.byte(vMin, vMax).single() }.toSet()
+         actualValues shouldBe expectedValues
+      }
+   }
+
+   test("Arb.byte edgecases should respect min and max bounds") {
+      checkCoverage("run", 25.0) {
+         PropTest(iterations = 1000).checkAll<Byte, Byte> { min, max ->
+            if (min < max) {
+               classify("run")
+               Arb.byte(min, max).edgecases().forAll {
+                  it.shouldBeBetween(min, max)
+               }
             }
-         }
-         it("should only include 0 in the edge cases if within the bounds") {
-            Arb.byte(5.toByte(), 9.toByte()).edgecases().forNone { it shouldBe 0.toByte() }
-            Arb.byte(0.toByte(), 9.toByte()).edgecases().forOne { it shouldBe 0.toByte() }
-            Arb.byte((-5).toByte(), 0.toByte()).edgecases().forOne { it shouldBe 0.toByte() }
-         }
-         it("should only include 1 in the edge cases if within the bounds") {
-            Arb.byte(5.toByte(), 9.toByte()).edgecases().forNone { it shouldBe 1.toByte() }
-            Arb.byte(0.toByte(), 9.toByte()).edgecases().forOne { it shouldBe 1.toByte() }
-            Arb.byte(1.toByte(), 9.toByte()).edgecases().forOne { it shouldBe 1.toByte() }
-            Arb.byte(1.toByte(), 1.toByte()).edgecases().forOne { it shouldBe 1.toByte() }
-            Arb.byte((-5).toByte(), 1.toByte()).edgecases().forOne { it shouldBe 1.toByte() }
-            Arb.byte((-5).toByte(), 2.toByte()).edgecases().forOne { it shouldBe 1.toByte() }
-         }
-         it("should only include -1 in the edge cases if within the bounds") {
-            Arb.byte(5.toByte(), 9.toByte()).edgecases().forNone { it shouldBe (-1).toByte() }
-            Arb.byte(0.toByte(), 9.toByte()).edgecases().forNone { it shouldBe (-1).toByte() }
-            Arb.byte((-1).toByte(), 9.toByte()).edgecases().forOne { it shouldBe (-1).toByte() }
-            Arb.byte((-1).toByte(), (-1).toByte()).edgecases().forOne { it shouldBe (-1).toByte() }
-            Arb.byte((-2).toByte(), 0.toByte()).edgecases().forOne { it shouldBe (-1).toByte() }
-            Arb.byte((-5).toByte(), 0.toByte()).edgecases().forOne { it shouldBe (-1).toByte() }
-            Arb.byte((-5).toByte(), (-1).toByte()).edgecases().forOne { it shouldBe (-1).toByte() }
          }
       }
    }
-}
+})
+
+class UByteTest : FunSpec({
+   test("<UByte, UByte> should give values between min and max inclusive") {
+      forAll(
+         row(1u, 3u),
+         row(0u, 100u),
+         row((UByte.MAX_VALUE - 10u).toUByte(), UByte.MAX_VALUE),
+         row(UByte.MIN_VALUE, (UByte.MIN_VALUE + 10u).toUByte())
+      ) { vMin, vMax ->
+         val expectedValues = (vMin..vMax).map { it.toUByte() }.toSet()
+         val actualValues = (1..100_000).map { Arb.ubyte(vMin, vMax).single() }.toSet()
+         actualValues shouldBe expectedValues
+      }
+   }
+
+   test("Arb.ubyte edgecases should respect min and max bounds") {
+      checkCoverage("run", 25.0) {
+         PropTest(iterations = 1000).checkAll<UByte, UByte> { min, max ->
+            if (min < max) {
+               classify("run")
+               Arb.ubyte(min, max).edgecases().forAll {
+                  it.shouldBeBetween(min, max)
+               }
+            }
+         }
+      }
+   }
+})
