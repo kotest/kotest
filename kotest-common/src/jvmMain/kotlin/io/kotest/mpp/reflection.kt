@@ -57,6 +57,8 @@ object JvmReflection : Reflection {
       }
    }
 
+   // ignored because on JDK 8 newInstance is the only option
+   @Suppress("DEPRECATION")
    override fun <T : Any> newInstanceNoArgConstructor(klass: KClass<T>): T {
       return klass.java.newInstance()
    }
