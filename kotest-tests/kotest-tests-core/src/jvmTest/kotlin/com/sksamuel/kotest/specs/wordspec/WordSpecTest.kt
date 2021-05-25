@@ -4,6 +4,7 @@ import io.kotest.core.spec.style.WordSpec
 import io.kotest.matchers.ints.shouldBeGreaterThan
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlin.time.Duration
 import kotlin.time.milliseconds
 
 class WordSpecTest : WordSpec() {
@@ -27,8 +28,8 @@ class WordSpecTest : WordSpec() {
             "have a test" {
                2.shouldBeGreaterThan(1)
             }
-            "have a test with config".config(timeout = 10000.milliseconds) {
-               2.shouldBeGreaterThan(1)
+            "have a test with config".config(timeout = Duration.milliseconds(10000)) {
+                2.shouldBeGreaterThan(1)
             }
          }
 

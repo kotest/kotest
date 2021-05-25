@@ -63,7 +63,7 @@ class BehaviorSpecTest : BehaviorSpec() {
                   }
 
                   And("I make it uppercase") {
-                     val upper = together.toUpperCase()
+                     val upper = together.uppercase()
 
                      Then("It should be FOOBARFUZ") {
                         upper shouldBe "FOOBARFUZ"

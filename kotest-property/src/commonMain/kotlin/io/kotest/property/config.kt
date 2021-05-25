@@ -2,10 +2,12 @@ package io.kotest.property
 
 import io.kotest.mpp.sysprop
 import kotlin.math.max
+import kotlin.native.concurrent.ThreadLocal
 
 /**
  * Global object for containing settings for property testing.
  */
+@ThreadLocal
 object PropertyTesting {
    var maxFilterAttempts: Int = 10
    var shouldPrintGeneratedValues: Boolean = sysprop("kotest.proptest.output.generated-values", "false") == "true"

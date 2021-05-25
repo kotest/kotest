@@ -6,10 +6,8 @@ import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldNot
-import kotlin.contracts.ExperimentalContracts
 import kotlin.contracts.contract
 
-@OptIn(ExperimentalContracts::class)
 infix fun String?.shouldContainJsonKey(path: String) {
    contract {
       returns() implies (this@shouldContainJsonKey != null)

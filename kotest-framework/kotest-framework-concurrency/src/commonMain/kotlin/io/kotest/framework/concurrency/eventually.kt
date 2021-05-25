@@ -212,7 +212,7 @@ suspend fun <T> eventually(
 @ExperimentalTime
 @ExperimentalKotest
 suspend fun <T> eventually(duration: Duration, test: suspend () -> T): T =
-   eventually(duration.toLongMilliseconds(), test)
+   eventually(duration.inWholeMilliseconds, test)
 
 @ExperimentalKotest
 suspend fun <T> eventually(duration: Long, test: suspend () -> T): T = eventually({ this.duration = duration }, test)
@@ -243,7 +243,7 @@ suspend fun until(
 
 @ExperimentalTime
 @ExperimentalKotest
-suspend fun until(duration: Duration, test: suspend () -> Boolean) = until(millis = duration.toLongMilliseconds(), test)
+suspend fun until(duration: Duration, test: suspend () -> Boolean) = until(millis = duration.inWholeMilliseconds, test)
 
 @ExperimentalKotest
 suspend fun until(millis: Long, test: suspend () -> Boolean) = until({ this.duration = millis }, test)

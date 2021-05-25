@@ -2,7 +2,6 @@ package io.kotest.assertions.until
 
 import kotlin.math.pow
 import kotlin.time.Duration
-import kotlin.time.hours
 
 /**
  * Exponential interval implements a delay where each duration is calculated as a multiplier
@@ -24,7 +23,7 @@ class ExponentialInterval(private val base: Duration, private val factor: Double
    }
 
    companion object {
-      val defaultMax = 2.hours
+      val defaultMax = Duration.hours(2)
       const val defaultFactor = 2.0
    }
 }

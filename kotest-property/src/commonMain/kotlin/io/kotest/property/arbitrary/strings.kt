@@ -16,7 +16,7 @@ import kotlin.random.nextInt
 fun Arb.Companion.string(
    minSize: Int = 0,
    maxSize: Int = 100,
-   codepoints: Arb<Codepoint> = Arb.ascii()
+   codepoints: Arb<Codepoint> = Codepoint.ascii()
 ): Arb<String> {
 
    return arbitrary(
@@ -46,7 +46,7 @@ fun Arb.Companion.string(
  * The edge case values are a string of the first value in the range, using the first edgecase
  * codepoint provided by the codepoints arb.
  */
-fun Arb.Companion.string(range: IntRange, codepoints: Arb<Codepoint> = Arb.ascii()): Arb<String> =
+fun Arb.Companion.string(range: IntRange, codepoints: Arb<Codepoint> = Codepoint.ascii()): Arb<String> =
    Arb.string(range.first, range.last, codepoints)
 
 /**
@@ -56,10 +56,10 @@ fun Arb.Companion.string(range: IntRange, codepoints: Arb<Codepoint> = Arb.ascii
  *
  * There are no edge case values associated with this arb.
  */
-fun Arb.Companion.string(size: Int, codepoints: Arb<Codepoint> = Arb.ascii()): Arb<String> =
+fun Arb.Companion.string(size: Int, codepoints: Arb<Codepoint> = Codepoint.ascii()): Arb<String> =
    Arb.string(size, size, codepoints)
 
-@Deprecated("use StringShrinkerWithMin. This will be removed in 4.7")
+@Deprecated("This Shrinker does not take into account string lengths. Use StringShrinkerWithMin. This was deprecated in 4.5 and will be removed in 5.1")
 object StringShrinker : Shrinker<String> {
 
    override fun shrink(value: String): List<String> {

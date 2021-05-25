@@ -29,7 +29,7 @@ fun Arb.Companion.char(ranges: List<CharRange> = CharSets.BASIC_LATIN): Arb<Char
 
    fun makeRangeWeightedGen(): Arb<CharRange> {
       val weightPairs = ranges.map { range ->
-         val weight = range.last.toInt() - range.first.toInt() + 1
+         val weight = range.last.code - range.first.code + 1
          Pair(weight, range)
       }
       return Arb.choose(weightPairs[0], weightPairs[1], *weightPairs.drop(2).toTypedArray())

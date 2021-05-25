@@ -1,5 +1,6 @@
 package io.kotest.core.test
 
+import io.kotest.common.ExperimentalKotest
 import io.kotest.core.Tag
 import io.kotest.core.extensions.TestCaseExtension
 import io.kotest.core.listeners.TestListener
@@ -39,6 +40,7 @@ internal fun TestCaseConfig.deriveTestCaseConfig(
  * Creates and returns a new [TestContainerConfig] from the given parameters, using values
  * from the receiver as defaults.
  */
+@ExperimentalKotest
 internal fun TestContainerConfig.deriveTestContainerConfig(
    enabled: Boolean? = null,
    enabledIf: EnabledIf? = null,

@@ -12,6 +12,6 @@ fun Spec.materializeAndOrderRootTests(): List<RootTest> {
    return when (order) {
       TestCaseOrder.Sequential -> tests
       TestCaseOrder.Random -> tests.shuffled()
-      TestCaseOrder.Lexicographic -> tests.sortedBy { it.testCase.description.displayName().toLowerCase() }
+      TestCaseOrder.Lexicographic -> tests.sortedBy { it.testCase.description.displayName().lowercase() }
    }
 }

@@ -2,8 +2,9 @@ package com.sksamuel.kotest.matchers.collections
 
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.assertions.throwables.shouldThrowAny
+import io.kotest.core.spec.KotestDsl
 import io.kotest.core.spec.style.WordSpec
-import io.kotest.core.spec.style.scopes. WordSpecTerminalContext
+import io.kotest.core.spec.style.scopes.WordSpecTerminalContext
 import io.kotest.core.spec.style.scopes.WordSpecShouldContainerContext
 import io.kotest.matchers.sequences.shouldBeLargerThan
 import io.kotest.matchers.sequences.shouldBeSameCountAs
@@ -848,11 +849,11 @@ class SequenceMatchersTest : WordSpec() {
          }
 
          succeed("for multiple") {
-            countup.shouldHaveUpperBound(countup.max() ?: Int.MAX_VALUE)
+            countup.shouldHaveUpperBound(countup.maxOrNull() ?: Int.MAX_VALUE)
          }
 
          fail("for multiple with wrong bound") {
-            countup.shouldHaveUpperBound((countup.max() ?: Int.MAX_VALUE) - 1)
+            countup.shouldHaveUpperBound((countup.maxOrNull() ?: Int.MAX_VALUE) - 1)
          }
       }
 
@@ -870,11 +871,11 @@ class SequenceMatchersTest : WordSpec() {
          }
 
          succeed("for multiple") {
-            countup.shouldHaveLowerBound(countup.min() ?: Int.MIN_VALUE)
+            countup.shouldHaveLowerBound(countup.minOrNull() ?: Int.MIN_VALUE)
          }
 
          fail("for multiple with wrong bound") {
-            countup.shouldHaveLowerBound((countup.min() ?: Int.MIN_VALUE) + 1)
+            countup.shouldHaveLowerBound((countup.minOrNull() ?: Int.MIN_VALUE) + 1)
          }
       }
 

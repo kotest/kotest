@@ -6,9 +6,13 @@ slug: data-driven-testing.html
 
 
 :::note
-This section covers the new and improved data test support that was released with Kotest 4.6.0. To view the
-documentation for the previous data test support, [click here](data_driven_testing_4.2.0.md)
+This section covers the new and improved data test support that was released with Kotest 4.6.0. Before it can be used,
+you need to add the module `kotest-framework-datatest` to your build.
+
+To view the documentation for the previous data test support, [click here](data_driven_testing_4.2.0.md)
 :::
+
+
 
 When writing tests that are logic based, one or two specific code paths that work through particular scenarios make
 sense. Other times we have tests that are more example based, and it would be helpful to test many combinations of

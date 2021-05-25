@@ -32,11 +32,12 @@ private data class BlockFunctionTest(val a: BlockFunction, val aName: String, va
    override fun toString() = "$aName + $bName"
 }
 
-@OptIn(ExperimentalKotest::class)
+@ExperimentalKotest
 private val blockFunctions: List<Pair<String, BlockFunction>> = listOf(
    Pair("all", ::all), Pair("one", ::one), Pair("any", ::any)
 )
 
+@ExperimentalKotest
 class ErrorAndAssertionScopeTests : FunSpec({
    context("assertion block tests should be limited to the maximum depth defined in assertionBlockMaximumDepth") {
       val cases = blockFunctions.map { a -> blockFunctions.map { b -> Pair(a, b) } }.flatten().map {
@@ -45,7 +46,7 @@ class ErrorAndAssertionScopeTests : FunSpec({
          Pair(it.toString(), it) // TODO: what do we think of an interface that kotest knows that lets it use a special function for the the test name?
       }.toTypedArray()
 
-      forAll(data = *cases) {
+      forAll(data = cases) {
          shouldThrow<IllegalStateException> {
             runBlocking {
                it.a {

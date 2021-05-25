@@ -13,6 +13,7 @@ import io.kotest.extensions.locale.LocaleTestListener
 import io.kotest.extensions.locale.TimeZoneTestListener
 import java.util.Locale
 import java.util.TimeZone
+import kotlin.time.Duration
 import kotlin.time.milliseconds
 
 class FunSpecExample : FunSpec() {
@@ -49,8 +50,8 @@ class FunSpecExample : FunSpec() {
       test("this is a test") {
          // test here
       }
-      test("this test has config").config(timeout = 412.milliseconds, enabled = true) {
-         // test here
+      test("this test has config").config(timeout = Duration.milliseconds(412), enabled = true) {
+          // test here
       }
    }
 }

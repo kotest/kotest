@@ -1,7 +1,9 @@
 package io.kotest.datatest
 
+import io.kotest.common.ExperimentalKotest
 import io.kotest.core.spec.style.WordSpec
 
+@ExperimentalKotest
 internal class WordSpecForAllDataTest : WordSpec() {
    init {
 

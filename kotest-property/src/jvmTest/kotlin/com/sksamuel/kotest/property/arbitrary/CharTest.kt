@@ -77,7 +77,7 @@ class CharTest : FunSpec({
    }
 
    test("should only give ASCII characters when no parameters given") {
-      val actualChars = Arb.char().take(100000).map(Char::toInt).toList()
+      val actualChars = Arb.char().take(100000).map(Char::code).toList()
       actualChars.minOrNull() as Int shouldBeGreaterThanOrEqual 0x0021
       actualChars.maxOrNull() as Int shouldBeLessThanOrEqual 0x007E
    }

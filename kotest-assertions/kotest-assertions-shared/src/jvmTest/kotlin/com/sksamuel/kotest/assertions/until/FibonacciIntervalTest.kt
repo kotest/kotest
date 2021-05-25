@@ -6,6 +6,7 @@ import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.comparables.shouldBeGreaterThan
 import io.kotest.matchers.comparables.shouldBeLessThan
 import io.kotest.matchers.shouldBe
+import kotlin.time.Duration
 import kotlin.time.minutes
 
 class FibonacciIntervalTest : FunSpec() {
@@ -23,51 +24,51 @@ class FibonacciIntervalTest : FunSpec() {
       }
 
       test("fibonacci interval should have a reasonable default max") {
-         val max= FibonacciInterval.defaultMax
-         val default = 10.minutes.fibonacci()
-         val unbounded = 10.minutes.fibonacci(null)
+          val max = FibonacciInterval.defaultMax
+          val default = Duration.minutes(10).fibonacci()
+          val unbounded = Duration.minutes(10).fibonacci(null)
 
-         val first = 0
-         val last = 20
+          val first = 0
+          val last = 20
 
-         unbounded.next(first) shouldBeLessThan max
-         unbounded.next(last) shouldBeGreaterThan max
+          unbounded.next(first) shouldBeLessThan max
+          unbounded.next(last) shouldBeGreaterThan max
 
-         for (i in first..last) {
-            val u = unbounded.next(i)
-            val d = default.next(i)
+          for (i in first..last) {
+              val u = unbounded.next(i)
+              val d = default.next(i)
 
-            if (u < max) {
-               d shouldBe u
-            } else {
-               d shouldBe max
-               u shouldBeGreaterThan max
-            }
-         }
+              if (u < max) {
+                  d shouldBe u
+              } else {
+                  d shouldBe max
+                  u shouldBeGreaterThan max
+              }
+          }
       }
 
       test("fibonacci interval should respect user specified max") {
-         val max = FibonacciInterval.defaultMax.plus(15.minutes)
-         val bounded = 10.minutes.fibonacci(max)
-         val unbounded = 10.minutes.fibonacci(null)
+          val max = FibonacciInterval.defaultMax.plus(Duration.minutes(15))
+          val bounded = Duration.minutes(10).fibonacci(max)
+          val unbounded = Duration.minutes(10).fibonacci(null)
 
-         val first = 0
-         val last = 20
+          val first = 0
+          val last = 20
 
-         unbounded.next(first) shouldBeLessThan max
-         unbounded.next(last) shouldBeGreaterThan max
+          unbounded.next(first) shouldBeLessThan max
+          unbounded.next(last) shouldBeGreaterThan max
 
-         for (i in first..last) {
-            val u = unbounded.next(i)
-            val b = bounded.next(i)
+          for (i in first..last) {
+              val u = unbounded.next(i)
+              val b = bounded.next(i)
 
-            if (u < max) {
-               b shouldBe u
-            } else {
-               b shouldBe max
-               u shouldBeGreaterThan max
-            }
-         }
+              if (u < max) {
+                  b shouldBe u
+              } else {
+                  b shouldBe max
+                  u shouldBeGreaterThan max
+              }
+          }
       }
    }
 }

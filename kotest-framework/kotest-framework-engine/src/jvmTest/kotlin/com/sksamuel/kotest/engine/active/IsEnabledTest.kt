@@ -1,5 +1,6 @@
 package com.sksamuel.kotest.engine.active
 
+import io.kotest.common.ExperimentalKotest
 import io.kotest.core.NamedTag
 import io.kotest.core.Tags
 import io.kotest.core.config.configuration
@@ -21,6 +22,7 @@ import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestCaseConfig
 import io.kotest.matchers.shouldBe
 
+@ExperimentalKotest
 @Isolate
 class IsEnabledTest : StringSpec() {
 

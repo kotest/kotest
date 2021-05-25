@@ -48,21 +48,14 @@ abstract class AbstractProjectConfig {
     *  - [LexicographicSpecSorter]
     *  - [FailureFirstSpecExecutionOrder]
     *  - [RandomSpecExecutionOrder]
-    */
-   @Deprecated("use the val version. Will be removed in 4.7")
-   open fun specExecutionOrder(): SpecExecutionOrder? = null
-
-   /**
-    * Note: This has no effect on non-JVM targets.
+    *
+    *  Note: This has no effect on non-JVM targets.
     */
    open val specExecutionOrder: SpecExecutionOrder? = null
 
    /**
     * The [IsolationMode] set here will be applied if the isolation mode in a spec is null.
     */
-   @Deprecated("use the val version. Will be removed in 4.7")
-   open fun isolationMode(): IsolationMode? = null
-
    open val isolationMode: IsolationMode? = null
 
    /**
@@ -98,29 +91,6 @@ abstract class AbstractProjectConfig {
     * Note: For backwards compatibility, setting this value to > 1 will implicitly set
     * [specConcurrentDispatch] to true unless that value has been explicitly set to false.
     */
-   @Deprecated("use the val version. Will be removed in 4.7")
-   open fun parallelism(): Int? = null
-
-   /**
-    * The parallelism factor determines how many threads are used to launch tests.
-    *
-    * The tests inside the same spec are always executed using the same thread, to ensure
-    * that callbacks all operate on the same thread. In other words, a spec is sticky
-    * with regards to the execution thread.
-    *
-    * Increasing this value to k > 1, means that k threads are created, allowing different
-    * specs to execute on different threads. For n specs, if you set this value to k, then
-    * on average, each thread will service n/k specs.
-    *
-    * The thread choosen for a particular thread can be determined by the ThreadAllocationExtension,
-    * which by default chooses in a round robin fashion.
-    *
-    * An alternative way to enable this is the system property kotest.framework.parallelism
-    * which will always (if defined) take priority over the value here.
-    *
-    * Note: For backwards compatibility, setting this value to > 1 will implicitly set
-    * [specConcurrentDispatch] to true unless that value has been explicitly set to false.
-    */
    open val parallelism: Int? = null
 
    /**
@@ -130,9 +100,6 @@ abstract class AbstractProjectConfig {
     * To enable this feature, set this to true, or set the system property
     * 'kotest.write.specfailures=true'
     */
-   @Deprecated("use the val version. Will be removed in 4.7")
-   open fun writeSpecFailureFile(): Boolean = false
-
    open val writeSpecFailureFile: Boolean? = null
 
    /**
@@ -144,9 +111,6 @@ abstract class AbstractProjectConfig {
     * If this function returns null then the default of Sequential
     * will be used.
     */
-   @Deprecated("use the val version. Will be removed in 4.7")
-   open fun testCaseOrder(): TestCaseOrder? = null
-
    open val testCaseOrder: TestCaseOrder? = null
 
    /**
@@ -171,6 +135,12 @@ abstract class AbstractProjectConfig {
     * if there was one or more tests that were disabled/ignored.
     */
    open val failOnIgnoredTests: Boolean = false
+
+   /**
+    * Override this value and set it to true if you want the build to be marked as failed
+    * if no tests were executed.
+    */
+   open val failOnEmptyTestSuite: Boolean? = null
 
    @ExperimentalKotest
    open val concurrentSpecs: Int? = null

@@ -97,16 +97,16 @@ fun createTestName(
 
    val displayName = if (withPrefix.isBlank()) {
       when (testNameCase) {
-         TestNameCase.Sentence -> croppedName.capitalize()
+         TestNameCase.Sentence -> croppedName.capital()
          TestNameCase.InitialLowercase -> croppedName.uncapitalize()
-         TestNameCase.Lowercase -> croppedName.toLowerCase()
+         TestNameCase.Lowercase -> croppedName.lowercase()
          else -> croppedName
       }
    } else {
       when (testNameCase) {
-         TestNameCase.Sentence -> "${withPrefix.capitalize()}${croppedName.uncapitalize()}"
+         TestNameCase.Sentence -> "${withPrefix.capital()}${croppedName.uncapitalize()}"
          TestNameCase.InitialLowercase -> "${withPrefix.uncapitalize()}${croppedName.uncapitalize()}"
-         TestNameCase.Lowercase -> "${withPrefix.toLowerCase()}${croppedName.toLowerCase()}"
+         TestNameCase.Lowercase -> "${withPrefix.lowercase()}${croppedName.lowercase()}"
          else -> "$withPrefix$croppedName"
       }
    }
@@ -114,8 +114,10 @@ fun createTestName(
    return DescriptionName.TestName(name, displayName, focus, bang)
 }
 
+private fun String.capital() = this.replaceFirstChar { if (it.isLowerCase()) it.titlecase() else it.toString() }
+
 private fun String.uncapitalize() =
-   this[0].toLowerCase() + substring(1 until this.length)
+   this[0].lowercaseChar() + substring(1 until this.length)
 
 private fun String.removeAllExtraWhitespaces() = this.split(Regex("\\s")).filterNot { it == "" }.joinToString(" ")
 private fun String.removeNewLineCharacter() = this.replace("\n", "").trim()

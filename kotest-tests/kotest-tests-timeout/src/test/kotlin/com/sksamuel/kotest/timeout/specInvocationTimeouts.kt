@@ -3,13 +3,11 @@ package com.sksamuel.kotest.timeout
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.spec.style.funSpec
 import kotlinx.coroutines.delay
-import kotlin.time.hours
-import kotlin.time.milliseconds
-import kotlin.time.seconds
+import kotlin.time.Duration
 
 private val factory = funSpec {
    test("long running test") {
-      delay(10.hours)
+      delay(Duration.hours(10))
    }
 }
 
@@ -23,7 +21,7 @@ class SpecInlineInvocationTimeoutTest : FunSpec() {
       invocationTimeout = 50
 
       test("should take timeout from spec setting").config(invocations = 3) {
-         delay(1.seconds)
+         delay(Duration.seconds(1))
       }
 
       // should apply to factories too
@@ -44,9 +42,9 @@ class FunctionOverrideInvocationPrecedenceTimeoutTest : FunSpec() {
       extension(expectFailureExtension)
       test("test case config timeout should take precedence").config(
          invocations = 3,
-         invocationTimeout = 150.milliseconds,
+         invocationTimeout = Duration.milliseconds(150),
       ) {
-         delay(10.hours)
+         delay(Duration.hours(10))
       }
    }
 }
@@ -62,9 +60,9 @@ class InlineInvocationPrecedenceTimeoutTest : FunSpec() {
 
       test("test case config timeout should take precedence").config(
          invocations = 3,
-         invocationTimeout = 150.milliseconds,
+         invocationTimeout = Duration.milliseconds(150),
       ) {
-         delay(10.hours)
+         delay(Duration.hours(10))
       }
    }
 }
@@ -81,7 +79,7 @@ class FunctionOverrideInvocationTimeoutTest : FunSpec() {
    init {
       extension(expectFailureExtension)
       test("should take timeout from spec setting").config(invocations = 3) {
-         delay(10.hours)
+         delay(Duration.hours(10))
       }
 
       // should apply to factories too

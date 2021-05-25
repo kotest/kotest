@@ -1,9 +1,11 @@
 package com.sksamuel.kotest.engine.plan
 
+import io.kotest.common.ExperimentalKotest
 import io.kotest.core.plan.Descriptor
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 
+@ExperimentalKotest
 class ScriptDescriptorTest : FunSpec() {
    init {
       test("classname should be set when generating a script name") {

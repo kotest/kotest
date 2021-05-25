@@ -7,7 +7,7 @@ import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.matchers.shouldBe
 
-@OptIn(ExperimentalKotest::class)
+@ExperimentalKotest
 class DataTestNameTest: FunSpec({
 
    context("Data test with pair") {

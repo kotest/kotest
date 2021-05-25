@@ -12,7 +12,7 @@ import kotlin.system.measureTimeMillis
 private fun Int.seconds(): Long = Duration.ofSeconds(this.toLong()).toMillis()
 private fun Int.milliseconds(): Long = this.toLong()
 
-@OptIn(ExperimentalKotest::class)
+@ExperimentalKotest
 class UntilSpec : FunSpec({
    test("until with immediate boolean predicate") {
       var attempts = 0

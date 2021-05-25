@@ -2,11 +2,14 @@ package io.kotest.engine.listener
 
 import io.kotest.core.plan.Descriptor
 import io.kotest.core.spec.Spec
-import io.kotest.core.test.Description
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import kotlin.reflect.KClass
 
+/**
+ * A [TestEngineListener] that wraps one or more other test engine listeners, forwarding all
+ * calls to those listeners.
+ */
 class CompositeTestEngineListener(private val listeners: List<TestEngineListener>) : TestEngineListener {
 
    init {
