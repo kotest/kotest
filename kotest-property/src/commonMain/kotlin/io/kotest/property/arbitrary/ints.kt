@@ -22,19 +22,30 @@ fun Arb.Companion.int(range: IntRange = Int.MIN_VALUE..Int.MAX_VALUE): Arb<Int> 
 }
 
 /**
- * Returns an [Arb] that produces positives [Int]s,  where the edge cases are 1 and [max].
+ * Returns an [Arb] that produces positives [Int]s, where the edge cases are 1 and [max].
  */
 fun Arb.Companion.positiveInts(max: Int = Int.MAX_VALUE) = int(1..max)
 
 /**
+ * Returns an [Arb] that produces positives [Int]s or 0, where the edge cases are 0, 1 and [max].
+ */
+fun Arb.Companion.nonNegativeInts(max: Int = Int.MAX_VALUE) = int(0..max)
+
+/**
  * Returns an [Arb] that produces natural [Int]s, excluding 0, where the edge cases are 1 and [max].
  */
+@Deprecated("use positiveInts", ReplaceWith("positiveInts"))
 fun Arb.Companion.nats(max: Int = Int.MAX_VALUE) = positiveInts(max)
 
 /**
  * Returns an [Arb] that produces negative [Int]s, where the edge cases are [min] and -1.
  */
 fun Arb.Companion.negativeInts(min: Int = Int.MIN_VALUE) = int(min until 0)
+
+/**
+ * Returns an [Arb] that produces negative [Int]s or 0, where the edge cases are [min], -1 and 0.
+ */
+fun Arb.Companion.nonPositiveInts(min: Int = Int.MIN_VALUE) = int(min..0)
 
 class IntShrinker(val range: IntRange) : Shrinker<Int> {
    override fun shrink(value: Int): List<Int> =

@@ -4,9 +4,7 @@ import io.kotest.core.spec.style.FunSpec
 import io.kotest.data.blocking.forAll
 import io.kotest.data.row
 import io.kotest.inspectors.forAll
-import io.kotest.matchers.ints.shouldBeBetween
-import io.kotest.matchers.ints.shouldBeGreaterThan
-import io.kotest.matchers.ints.shouldBePositive
+import io.kotest.matchers.ints.*
 import io.kotest.matchers.shouldBe
 import io.kotest.property.Arb
 import io.kotest.property.PropTest
@@ -43,12 +41,24 @@ class IntTest : FunSpec({
       }
    }
 
-   test("Arb.nats should return positive ints only") {
-      val nats = Arb.nats().take(1000).toSet()
-      nats.forAll {
-         it.shouldBePositive()
-      }
-      nats.size.shouldBeGreaterThan(50)
+   test("Arb.positiveInts should return positive ints only") {
+      val numbers = Arb.positiveInts().take(1000).toSet()
+      numbers.forAll { it.shouldBePositive() }
+   }
+
+   test("Arb.nonNegativeInts should return non negative ints only") {
+      val numbers = Arb.nonNegativeInts().take(1000).toSet()
+      numbers.forAll { it.shouldBeNonNegative() }
+   }
+
+   test("Arb.negativeInts should return negative ints only") {
+      val numbers = Arb.negativeInts().take(1000).toSet()
+      numbers.forAll { it.shouldBeNegative() }
+   }
+
+   test("Arb.nonPositiveInts should return non positive ints only") {
+      val numbers = Arb.nonPositiveInts().take(1000).toSet()
+      numbers.forAll { it.shouldBeNonPositive() }
    }
 })
 

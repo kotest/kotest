@@ -20,6 +20,15 @@ fun positive() = object : Matcher<Int> {
   override fun test(value: Int) = MatcherResult(value > 0, "$value should be > 0", "$value should not be > 0")
 }
 
+fun Int.shouldBeNonNegative(): Int {
+   this shouldBe nonNegative()
+   return this
+}
+
+fun nonNegative() = object : Matcher<Int> {
+   override fun test(value: Int) = MatcherResult(value >= 0, "$value should be >= 0", "$value should not be >= 0")
+}
+
 fun Int.shouldBeNegative(): Int {
    this shouldBe negative()
    return this
@@ -27,6 +36,15 @@ fun Int.shouldBeNegative(): Int {
 
 fun negative() = object : Matcher<Int> {
   override fun test(value: Int) = MatcherResult(value < 0, "$value should be < 0", "$value should not be < 0")
+}
+
+fun Int.shouldBeNonPositive(): Int {
+   this shouldBe nonPositive()
+   return this
+}
+
+fun nonPositive() = object : Matcher<Int> {
+   override fun test(value: Int) = MatcherResult(value <= 0, "$value should be <= 0", "$value should not be <= 0")
 }
 
 fun Int.shouldBeEven(): Int {
