@@ -72,7 +72,7 @@ class KotestEngine(private val config: KotestEngineConfig) {
          { ts, tel -> extension.intercept(ts, tel, next) }
       }
 
-      val result = execute(suite, config.listener)
+      val result = execute.invoke(suite, config.listener)
       notifyResult(result)
       return result
    }
@@ -85,9 +85,8 @@ class KotestEngine(private val config: KotestEngineConfig) {
 
       // if we have errors in the before project listeners, we'll not even execute tests, but
       // instead immediately exit. Any errors in after project are added to the original error.
-      val allErrors = beforeErrors + configuration.listeners().beforeProject().getOrElse { emptyList() }
-      if (allErrors.isNotEmpty())
-         return EngineResult(allErrors)
+      if (beforeErrors.isNotEmpty())
+         return EngineResult(beforeErrors)
 
       val submissionError = submitAll(suite, listener).errorOrNull()
 

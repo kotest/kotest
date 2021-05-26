@@ -4,6 +4,7 @@ import io.kotest.core.spec.style.scopes.TestDslState
 import io.kotest.engine.EngineResult
 import io.kotest.engine.TestSuite
 import io.kotest.engine.listener.TestEngineListener
+import io.kotest.fp.Try
 
 /**
  * Checks that we didn't have any partially constructed tests.
@@ -14,7 +15,10 @@ internal object TestDslStateExtensions : EngineExtension {
       listener: TestEngineListener,
       execute: suspend (TestSuite, TestEngineListener) -> EngineResult
    ): EngineResult {
-      TestDslState.checkState()
-      return execute(suite, listener)
+      val result = execute(suite, listener)
+      return Try { TestDslState.checkState() }.fold(
+         { EngineResult(listOf(it) + result.errors) },
+         { result }
+      )
    }
 }
