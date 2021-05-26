@@ -85,7 +85,7 @@ class KotestEngine(private val config: KotestEngineConfig) {
 
       // if we have errors in the before project listeners, we'll not even execute tests, but
       // instead immediately exit. Any errors in after project are added to the original error.
-      val allErrors = beforeErrors + configuration.listeners().afterProject().getOrElse { emptyList() }
+      val allErrors = beforeErrors + configuration.listeners().beforeProject().getOrElse { emptyList() }
       if (allErrors.isNotEmpty())
          return EngineResult(allErrors)
 

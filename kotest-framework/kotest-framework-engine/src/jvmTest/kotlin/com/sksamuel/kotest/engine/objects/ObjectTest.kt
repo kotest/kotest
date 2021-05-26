@@ -11,12 +11,14 @@ val objectTests = AtomicBoolean(false)
 @AutoScan
 object ObjectTestProjectListener : AfterProjectListener {
    // if the object test wasn't picked up, then this will be false and fail
-   override suspend fun afterProject() = objectTests.get().shouldBeTrue()
+   override suspend fun afterProject() {
+      objectTests.get().shouldBeTrue()
+   }
 }
 
 object ObjectTest : FunSpec() {
    init {
-      test("objects should be detected") {
+      test("object specs should be detected") {
          objectTests.set(true)
       }
    }
