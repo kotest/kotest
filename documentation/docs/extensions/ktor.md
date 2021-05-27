@@ -13,7 +13,7 @@ HTTP client.
 To add Ktor matchers, add the following dependency to your project
 
 ```groovy
-io.kotest:kotest-assertions-ktor:${version}
+io.kotest.extensions:kotest-assertions-ktor:${version}
 ```
 
 [<img src="https://img.shields.io/maven-central/v/io.kotest.extensions/kotest-assertions-ktor.svg?label=latest%20release"/>](http://search.maven.org/#search|ga|1|kotest-assertions-ktor)
