@@ -4,10 +4,10 @@ import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.property.Arb
 import io.kotest.property.RandomSource
-import io.kotest.property.arbitrary.multiples
+import io.kotest.property.arbitrary.multiple
 
 class MultipleTest : FunSpec({
    test("multiples of k") {
-      Arb.multiples(3, 99999).generate(RandomSource.default()).take(100).forEach { it.value % 3 shouldBe 0 }
+      Arb.multiple(3, 99999).generate(RandomSource.default()).take(100).forEach { it.value % 3 shouldBe 0 }
    }
 })

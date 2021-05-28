@@ -7,14 +7,15 @@ import kotlin.random.nextInt
 import kotlin.random.nextUInt
 
 /**
- * Returns an [Arb] that produces [Int]s, where the edge cases are [min], -1, 0, 1 and [max].
- * -1, 0 and 1 will only be included if they are within the specified min and max bounds.
+ * Returns an [Arb] that produces [Int]s from [min] to [max] (inclusive).
+ * The edge cases are [min], -1, 0, 1 and [max] which are only included if they are in the provided range.
  */
 fun Arb.Companion.int(min: Int = Int.MIN_VALUE, max: Int = Int.MAX_VALUE) = int(min..max)
 
 /**
- * Returns an [Arb] that produces [Int]s, where the edge cases are [IntRange.first], -1, 0, 1 and [IntRange.last].
- * -1, 0 and 1 will only be included if they are within the specified min and max bounds.
+ * Returns an [Arb] that produces [Int]s in [range].
+ * The edge cases are [IntRange.first], -1, 0, 1 and [IntRange.last] which are only included if they are in the provided
+ * range.
  */
 fun Arb.Companion.int(range: IntRange = Int.MIN_VALUE..Int.MAX_VALUE): Arb<Int> {
    val edgecases = intArrayOf(range.first, -1, 0, 1, range.last).filter { it in range }.distinct()
@@ -22,56 +23,61 @@ fun Arb.Companion.int(range: IntRange = Int.MIN_VALUE..Int.MAX_VALUE): Arb<Int> 
 }
 
 /**
- * Returns an [Arb] that produces positives [Int]s, where the edge cases are 1 and [max].
+ * Returns an [Arb] that produces positive [Int]s from 1 to [max] (inclusive).
+ * The edge cases are 1 and [max] which are only included if they are in the provided range.
  */
-fun Arb.Companion.positiveInts(max: Int = Int.MAX_VALUE) = int(1..max)
+fun Arb.Companion.positiveInt(max: Int = Int.MAX_VALUE) = int(1, max)
+
+@Deprecated("use positiveInt", ReplaceWith("positiveInt"))
+fun Arb.Companion.positiveInts(max: Int = Int.MAX_VALUE) = positiveInt(max)
+
+@Deprecated("use positiveInt", ReplaceWith("positiveInt"))
+fun Arb.Companion.nats(max: Int = Int.MAX_VALUE) = positiveInt(max)
 
 /**
- * Returns an [Arb] that produces positives [Int]s or 0, where the edge cases are 0, 1 and [max].
+ * Returns an [Arb] that produces non negative [Int]s from 0 to [max] (inclusive).
+ * The edge cases are 0, 1 and [max] which are only included if they are in the provided range.
  */
-fun Arb.Companion.nonNegativeInts(max: Int = Int.MAX_VALUE) = int(0..max)
+fun Arb.Companion.nonNegativeInt(max: Int = Int.MAX_VALUE) = int(0, max)
 
 /**
- * Returns an [Arb] that produces natural [Int]s, excluding 0, where the edge cases are 1 and [max].
+ * Returns an [Arb] that produces negative [Int]s from [min] to -1 (inclusive).
+ * The edge cases are [min] and -1 which are only included if they are in the provided range.
  */
-@Deprecated("use positiveInts", ReplaceWith("positiveInts"))
-fun Arb.Companion.nats(max: Int = Int.MAX_VALUE) = positiveInts(max)
+fun Arb.Companion.negativeInt(min: Int = Int.MIN_VALUE) = int(min, -1)
+
+@Deprecated("use negativeInt", ReplaceWith("negativeInt"))
+fun Arb.Companion.negativeInts(min: Int = Int.MIN_VALUE) = negativeInt(min)
 
 /**
- * Returns an [Arb] that produces negative [Int]s, where the edge cases are [min] and -1.
+ * Returns an [Arb] that produces non positive [Int]s from [min] to 0 (inclusive).
+ * The edge cases are [min], -1 and 0 which are only included if they are in the provided range.
  */
-fun Arb.Companion.negativeInts(min: Int = Int.MIN_VALUE) = int(min until 0)
-
-/**
- * Returns an [Arb] that produces negative [Int]s or 0, where the edge cases are [min], -1 and 0.
- */
-fun Arb.Companion.nonPositiveInts(min: Int = Int.MIN_VALUE) = int(min..0)
+fun Arb.Companion.nonPositiveInt(min: Int = Int.MIN_VALUE) = int(min, 0)
 
 class IntShrinker(val range: IntRange) : Shrinker<Int> {
-   override fun shrink(value: Int): List<Int> =
-      when (value) {
-         0 -> emptyList()
-         1, -1 -> listOf(0).filter { it in range }
-         else -> {
-            val a = intArrayOf(0, 1, -1, abs(value), value / 3, value / 2, value * 2 / 3)
-            val b = (1..5).map { value - it }.reversed().filter { it > 0 }
-            (a + b).distinct()
-               .filterNot { it == value }
-               .filter { it in range }
-         }
+   override fun shrink(value: Int): List<Int> = when (value) {
+      0 -> emptyList()
+      1, -1 -> listOf(0).filter { it in range }
+      else -> {
+         val a = intArrayOf(0, 1, -1, abs(value), value / 3, value / 2, value * 2 / 3)
+         val b = (1..5).map { value - it }.reversed().filter { it > 0 }
+         (a + b).distinct().filterNot { it == value }.filter { it in range }
       }
+   }
 }
 
 
 /**
- * Returns an [Arb] that produces [Int]s, where the edge cases are [min], 1 and [max].
- * 1 will only be included if they are within the specified min and max bounds.
+ * Returns an [Arb] that produces [UInt]s from [min] to [max] (inclusive).
+ * The edge cases are [min], 1 and [max] which are only included if they are in the provided range.
  */
 fun Arb.Companion.uint(min: UInt = UInt.MIN_VALUE, max: UInt = UInt.MAX_VALUE) = uint(min..max)
 
 /**
- * Returns an [Arb] that produces [Int]s, where the edge cases are [UIntRange.first], 1 and [UIntRange.last].
- * 1 will only be included if they are within the specified min and max bounds.
+ * Returns an [Arb] that produces [UInt]s in range.
+ * The edge cases are [UIntRange.first], 1 and [UIntRange.last] which are only included if they are in the provided
+ * range.
  */
 fun Arb.Companion.uint(range: UIntRange = UInt.MIN_VALUE..UInt.MAX_VALUE): Arb<UInt> {
    val edges = listOf(range.first, 1u, range.last).filter { it in range }.distinct()
@@ -79,18 +85,15 @@ fun Arb.Companion.uint(range: UIntRange = UInt.MIN_VALUE..UInt.MAX_VALUE): Arb<U
 }
 
 class UIntShrinker(val range: UIntRange) : Shrinker<UInt> {
-   override fun shrink(value: UInt): List<UInt> =
-      when (value) {
-         0u -> emptyList()
-         1u -> listOf(0u).filter { it in range }
-         else -> {
-            val a = listOf(0u, 1u, value / 3u, value / 2u, value * 2u / 3u)
-            val b = (1u..5u).map { value - it }.reversed().filter { it > 0u }
-            (a + b).distinct()
-               .filterNot { it == value }
-               .filter { it in range }
-         }
+   override fun shrink(value: UInt): List<UInt> = when (value) {
+      0u -> emptyList()
+      1u -> listOf(0u).filter { it in range }
+      else -> {
+         val a = listOf(0u, 1u, value / 3u, value / 2u, value * 2u / 3u)
+         val b = (1u..5u).map { value - it }.reversed().filter { it > 0u }
+         (a + b).distinct().filterNot { it == value }.filter { it in range }
       }
+   }
 }
 
 fun <A, B> Shrinker<A>.bimap(f: (B) -> A, g: (A) -> B): Shrinker<B> = object : Shrinker<B> {
