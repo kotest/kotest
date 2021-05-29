@@ -1,10 +1,23 @@
 package io.kotest.property.arbitrary
 
 import io.kotest.property.Arb
+import io.kotest.property.Gen
 import io.kotest.property.Shrinker
 import kotlin.math.abs
 import kotlin.random.nextLong
 import kotlin.random.nextULong
+
+class LongShrinker(private val range: LongRange) : Shrinker<Long> {
+   override fun shrink(value: Long): List<Long> = when (value) {
+      0L -> emptyList()
+      1L, -1L -> listOf(0L).filter { it in range }
+      else -> {
+         val a = listOf(0, 1, -1, abs(value), value / 3, value / 2, value * 2 / 3)
+         val b = (1..5).map { value - it }.reversed().filter { it > 0 }
+         (a + b).distinct().filterNot { it == value }.filter { it in range }
+      }
+   }
+}
 
 /**
  * Returns an [Arb] that produces [Long]s from [min] to [max] (inclusive).
@@ -34,13 +47,20 @@ fun Arb.Companion.positiveLong(max: Long = Long.MAX_VALUE): Arb<Long> = long(1L,
  */
 fun Arb.Companion.negativeLong(min: Long = Long.MIN_VALUE): Arb<Long> = long(min, -1L)
 
-class LongShrinker(private val range: LongRange) : Shrinker<Long> {
-   override fun shrink(value: Long): List<Long> = when (value) {
-      0L -> emptyList()
-      1L, -1L -> listOf(0L).filter { it in range }
+/**
+ * Returns an [Arb] that produces [LongArray]s where [generateArrayLength] produces the length of the arrays and
+ * [generateContents] produces the content of the arrays.
+ */
+fun Arb.Companion.longArray(generateArrayLength: Gen<Int>, generateContents: Arb<Long>): Arb<LongArray> =
+   toPrimitiveArray(generateArrayLength, generateContents, Collection<Long>::toLongArray)
+
+class ULongShrinker(val range: ULongRange) : Shrinker<ULong> {
+   override fun shrink(value: ULong): List<ULong> = when (value) {
+      0uL -> emptyList()
+      1uL -> listOf(0uL).filter { it in range }
       else -> {
-         val a = listOf(0, 1, -1, abs(value), value / 3, value / 2, value * 2 / 3)
-         val b = (1..5).map { value - it }.reversed().filter { it > 0 }
+         val a = listOf(0uL, 1uL, value / 3u, value / 2u, value * 2u / 3u)
+         val b = (1u..5u).map { value - it }.reversed().filter { it > 0u }
          (a + b).distinct().filterNot { it == value }.filter { it in range }
       }
    }
@@ -62,14 +82,10 @@ fun Arb.Companion.ulong(range: ULongRange = ULong.MIN_VALUE..ULong.MAX_VALUE): A
    return arbitrary(edgecases, ULongShrinker(range)) { it.random.nextULong(range) }
 }
 
-class ULongShrinker(val range: ULongRange) : Shrinker<ULong> {
-   override fun shrink(value: ULong): List<ULong> = when (value) {
-      0uL -> emptyList()
-      1uL -> listOf(0uL).filter { it in range }
-      else -> {
-         val a = listOf(0uL, 1uL, value / 3u, value / 2u, value * 2u / 3u)
-         val b = (1u..5u).map { value - it }.reversed().filter { it > 0u }
-         (a + b).distinct().filterNot { it == value }.filter { it in range }
-      }
-   }
-}
+/**
+ * Returns an [Arb] that produces [ULongArray]s where [generateArrayLength] produces the length of the arrays and
+ * [generateContents] produces the content of the arrays.
+ */
+@ExperimentalUnsignedTypes
+fun Arb.Companion.uLongArray(generateArrayLength: Gen<Int>, generateContents: Arb<ULong>): Arb<ULongArray> =
+   toPrimitiveArray(generateArrayLength, generateContents, Collection<ULong>::toULongArray)

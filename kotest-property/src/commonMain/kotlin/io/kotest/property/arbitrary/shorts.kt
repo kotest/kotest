@@ -1,6 +1,8 @@
 package io.kotest.property.arbitrary
 
 import io.kotest.property.Arb
+import io.kotest.property.Exhaustive
+import io.kotest.property.Gen
 import kotlin.random.nextInt
 import kotlin.random.nextUInt
 
@@ -28,6 +30,14 @@ fun Arb.Companion.positiveShort(max: Short = Short.MAX_VALUE) = short(1, max)
 fun Arb.Companion.negativeShort(min: Short = Short.MIN_VALUE) = short(min, -1)
 
 /**
+ * Returns an [Arb] that produces [ShortArray]s where [generateArrayLength] produces the length of the arrays and
+ * [generateContents] produces the content of the arrays.
+ */
+fun Arb.Companion.shortArray(generateArrayLength: Gen<Int>, generateContents: Arb<Short>): Arb<ShortArray> =
+   toPrimitiveArray(generateArrayLength, generateContents, Collection<Short>::toShortArray)
+
+
+/**
  * Returns an [Arb] that produces [UShort]s from [min] to [max] (inclusive).
  * The edge cases are [min], 1 and [max] which are only included if they are in the provided range.
  */
@@ -37,3 +47,11 @@ fun Arb.Companion.ushort(min: UShort = UShort.MIN_VALUE, max: UShort = UShort.MA
 }
 
 val UShortShrinker = UIntShrinker(UShort.MIN_VALUE..UShort.MAX_VALUE).bimap({ it.toUInt() }, { it.toUShort() })
+
+/**
+ * Returns an [Arb] that produces [UShortArray]s where [generateArrayLength] produces the length of the arrays and
+ * [generateContents] produces the content of the arrays.
+ */
+@ExperimentalUnsignedTypes
+fun Arb.Companion.uShortArray(generateArrayLength: Gen<Int>, generateContents: Arb<UShort>): Arb<UShortArray> =
+   toPrimitiveArray(generateArrayLength, generateContents, Collection<UShort>::toUShortArray)

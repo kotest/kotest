@@ -1,6 +1,7 @@
 package io.kotest.property.arbitrary
 
 import io.kotest.property.Arb
+import io.kotest.property.Gen
 import io.kotest.property.Shrinker
 import kotlin.math.abs
 import kotlin.math.round
@@ -8,6 +9,14 @@ import kotlin.math.round
 private val numericEdgeCases = listOf(-1.0, -Double.MIN_VALUE, -0.0, 0.0, Double.MIN_VALUE, 1.0)
 
 private val nonFiniteEdgeCases = listOf(Double.NEGATIVE_INFINITY, Double.NaN, Double.POSITIVE_INFINITY)
+
+object DoubleShrinker : Shrinker<Double> {
+   override fun shrink(value: Double): List<Double> = if (value == 0.0) emptyList() else {
+      val a = listOf(0.0, 1.0, -1.0, abs(value), value / 3, value / 2)
+      val b = (1..5).map { value - it }.reversed().filter { it > 0 }
+      (a + b + round(value)).distinct()
+   }
+}
 
 /**
  * Returns an [Arb] that produces [Double]s from [min] to [max] (inclusive).
@@ -72,10 +81,9 @@ fun Arb.Companion.numericDouble(
 fun Arb.Companion.numericDoubles(from: Double = -Double.MAX_VALUE, to: Double = Double.MAX_VALUE): Arb<Double> =
    numericDouble(from, to)
 
-object DoubleShrinker : Shrinker<Double> {
-   override fun shrink(value: Double): List<Double> = if (value == 0.0) emptyList() else {
-      val a = listOf(0.0, 1.0, -1.0, abs(value), value / 3, value / 2)
-      val b = (1..5).map { value - it }.reversed().filter { it > 0 }
-      (a + b + round(value)).distinct()
-   }
-}
+/**
+ * Returns an [Arb] that produces [DoubleArray]s where [generateArrayLength] produces the length of the arrays and
+ * [generateContents] produces the content of the arrays.
+ */
+fun Arb.Companion.doubleArray(generateArrayLength: Gen<Int>, generateContents: Arb<Double>): Arb<DoubleArray> =
+   toPrimitiveArray(generateArrayLength, generateContents, Collection<Double>::toDoubleArray)

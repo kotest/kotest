@@ -33,10 +33,7 @@ fun Arb.Companion.negativeByte(min: Byte = Byte.MIN_VALUE): Arb<Byte> = byte(min
  * [generateContents] produces the content of the arrays.
  */
 fun Arb.Companion.byteArray(generateArrayLength: Gen<Int>, generateContents: Arb<Byte>): Arb<ByteArray> =
-   when (generateArrayLength) {
-      is Arb -> generateArrayLength
-      is Exhaustive -> generateArrayLength.toArb()
-   }.flatMap { length -> Arb.list(generateContents, length..length) }.map { it.toByteArray() }
+   toPrimitiveArray(generateArrayLength, generateContents, Collection<Byte>::toByteArray)
 
 @Deprecated("use byteArray", ReplaceWith("byteArray"))
 fun Arb.Companion.byteArrays(generateArrayLength: Gen<Int>, generateContents: Arb<Byte>): Arb<ByteArray> =
@@ -52,3 +49,11 @@ fun Arb.Companion.ubyte(min: UByte = UByte.MIN_VALUE, max: UByte = UByte.MAX_VAL
    }
 
 val UByteShrinker = UIntShrinker(UByte.MIN_VALUE..UByte.MAX_VALUE).bimap({ it.toUInt() }, { it.toUByte() })
+
+/**
+ * Returns an [Arb] that produces [UByteArray]s where [generateArrayLength] produces the length of the arrays and
+ * [generateContents] produces the content of the arrays.
+ */
+@ExperimentalUnsignedTypes
+fun Arb.Companion.uByteArray(generateArrayLength: Gen<Int>, generateContents: Arb<UByte>): Arb<UByteArray> =
+   toPrimitiveArray(generateArrayLength, generateContents, Collection<UByte>::toUByteArray)

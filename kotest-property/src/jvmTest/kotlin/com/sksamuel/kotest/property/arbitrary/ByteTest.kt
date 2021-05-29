@@ -1,13 +1,10 @@
 package com.sksamuel.kotest.property.arbitrary
 
-import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.data.blocking.forAll
 import io.kotest.data.row
 import io.kotest.inspectors.forAll
 import io.kotest.matchers.bytes.shouldBeBetween
-import io.kotest.matchers.ints.shouldBeGreaterThanOrEqual
-import io.kotest.matchers.ints.shouldBeLessThanOrEqual
 import io.kotest.matchers.shouldBe
 import io.kotest.property.Arb
 import io.kotest.property.PropTest
@@ -44,25 +41,6 @@ class ByteTest : FunSpec({
       }
    }
 })
-
-class ByteArrayTest : DescribeSpec() {
-   init {
-      describe("Arb.byteArrays") {
-         it("should generate specified lengths") {
-            Arb.byteArray(Arb.int(5, 15), Arb.byte()).take(1000).toList().forAll {
-               it.size.shouldBeGreaterThanOrEqual(5)
-               it.size.shouldBeLessThanOrEqual(15)
-            }
-         }
-         it("should populate random byte values") {
-            Arb.byteArray(Arb.constant(1000000), Arb.byte()).take(10).toList().forAll {
-               it.toSet().size shouldBe 256
-            }
-         }
-      }
-   }
-}
-
 
 class UByteTest : FunSpec({
    test("<UByte, UByte> should give values between min and max inclusive") {
