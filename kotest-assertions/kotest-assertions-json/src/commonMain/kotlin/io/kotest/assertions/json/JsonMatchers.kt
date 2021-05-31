@@ -67,6 +67,16 @@ fun String.shouldNotEqualJson(expected: String, mode: CompareMode, order: Compar
    a shouldNot equalJson(e, mode, order)
 }
 
+fun String.shouldEqualJsonIgnoringUnknown(expected: String, mode: CompareMode, order: CompareOrder) {
+   val (e,a) = parse(expected, this)
+   a should equalJson(e, mode, order, ignoreUnknownKeys = true)
+}
+
+fun String.shouldNotEqualJsonIgnoringUnknown(expected: String, mode: CompareMode, order: CompareOrder) {
+   val (e,a) = parse(expected, this)
+   a shouldNot equalJson(e, mode, order, ignoreUnknownKeys = true)
+}
+
 internal fun parse(expected: String, actual: String): Pair<JsonTree, JsonTree> {
    val enode = pretty.parseToJsonElement(expected)
    val anode = pretty.parseToJsonElement(actual)
