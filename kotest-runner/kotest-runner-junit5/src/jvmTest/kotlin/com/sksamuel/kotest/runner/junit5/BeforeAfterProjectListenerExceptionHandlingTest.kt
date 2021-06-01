@@ -97,6 +97,7 @@ class BeforeAfterProjectListenerExceptionHandlingTest : FunSpec({
                   "Kotest"
                )
                dynamicallyRegistered().shouldHaveNames(
+                  "com.sksamuel.kotest.runner.junit5.BeforeAfterProjectListenerExceptionSample",
                   "foo",
                   "wobble"
                )
