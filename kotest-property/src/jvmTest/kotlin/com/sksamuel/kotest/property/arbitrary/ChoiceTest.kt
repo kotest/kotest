@@ -12,8 +12,8 @@ import io.kotest.property.arbitrary.arbitrary
 import io.kotest.property.arbitrary.choice
 import io.kotest.property.arbitrary.int
 import io.kotest.property.arbitrary.map
-import io.kotest.property.arbitrary.negativeInts
-import io.kotest.property.arbitrary.positiveInts
+import io.kotest.property.arbitrary.negativeInt
+import io.kotest.property.arbitrary.positiveInt
 import io.kotest.property.arbitrary.take
 import io.kotest.property.forAll
 
@@ -21,7 +21,7 @@ class ChoiceTest : WordSpec({
 
    "Arb.choice" should {
       "correctly handle multiple generators" {
-         val gen = Arb.choice(Arb.positiveInts(), Arb.negativeInts())
+         val gen = Arb.choice(Arb.positiveInt(), Arb.negativeInt())
          var positiveNumbers = 0
          var negativeNumbers = 0
          forAll(gen) {

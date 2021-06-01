@@ -7,7 +7,7 @@ import io.kotest.matchers.doubles.plusOrMinus
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
 import io.kotest.property.Arb
-import io.kotest.property.arbitrary.numericDoubles
+import io.kotest.property.arbitrary.numericDouble
 import io.kotest.property.checkAll
 
 class DoubleToleranceTest : FunSpec({
@@ -19,7 +19,7 @@ class DoubleToleranceTest : FunSpec({
    }
 
    test("infinite double with finite tolerance should equal the same infinite double") {
-      checkAll(Arb.numericDoubles(from = 0.0)) { eps ->
+      checkAll(Arb.numericDouble(min = 0.0)) { eps ->
          Double.NEGATIVE_INFINITY shouldBe (Double.NEGATIVE_INFINITY plusOrMinus eps)
          Double.POSITIVE_INFINITY shouldBe (Double.POSITIVE_INFINITY plusOrMinus eps)
       }

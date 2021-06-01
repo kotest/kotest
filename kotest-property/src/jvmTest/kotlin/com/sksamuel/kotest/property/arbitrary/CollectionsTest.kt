@@ -3,7 +3,6 @@ package com.sksamuel.kotest.property.arbitrary
 import io.kotest.assertions.throwables.shouldThrowAny
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.inspectors.forAll
-import io.kotest.inspectors.forNone
 import io.kotest.matchers.collections.shouldContain
 import io.kotest.matchers.collections.shouldHaveAtLeastSize
 import io.kotest.matchers.collections.shouldHaveAtMostSize
@@ -16,7 +15,7 @@ import io.kotest.property.arbitrary.edgecases
 import io.kotest.property.arbitrary.int
 import io.kotest.property.arbitrary.list
 import io.kotest.property.arbitrary.of
-import io.kotest.property.arbitrary.positiveInts
+import io.kotest.property.arbitrary.positiveInt
 import io.kotest.property.arbitrary.set
 import io.kotest.property.arbitrary.single
 import io.kotest.property.checkAll
@@ -42,18 +41,18 @@ class CollectionsTest : DescribeSpec({
       }
 
       it("include repeated elements in edge cases") {
-         val edgecase = Arb.positiveInts().edgecases().firstOrNull()
-         Arb.list(Arb.positiveInts()).edgecases() shouldContain listOf(edgecase, edgecase)
-         Arb.list(Arb.positiveInts(), 4..6).edgecases() shouldContain listOf(edgecase, edgecase, edgecase, edgecase)
+         val edgecase = Arb.positiveInt().edgecases().firstOrNull()
+         Arb.list(Arb.positiveInt()).edgecases() shouldContain listOf(edgecase, edgecase)
+         Arb.list(Arb.positiveInt(), 4..6).edgecases() shouldContain listOf(edgecase, edgecase, edgecase, edgecase)
 
       }
 
       it("include empty list in edge cases") {
-         Arb.list(Arb.positiveInts()).edgecases() shouldContain emptyList()
+         Arb.list(Arb.positiveInt()).edgecases() shouldContain emptyList()
       }
 
       it("respect bounds in edgecases") {
-         val edges = Arb.list(Arb.positiveInts(), 2..10).edgecases().toSet()
+         val edges = Arb.list(Arb.positiveInt(), 2..10).edgecases().toSet()
          edges.forAll { it.shouldNotBeEmpty() }
       }
 

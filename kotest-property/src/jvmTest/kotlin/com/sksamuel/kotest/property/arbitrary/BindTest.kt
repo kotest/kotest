@@ -16,8 +16,8 @@ import io.kotest.property.arbitrary.bool
 import io.kotest.property.arbitrary.double
 import io.kotest.property.arbitrary.filter
 import io.kotest.property.arbitrary.map
-import io.kotest.property.arbitrary.negativeInts
-import io.kotest.property.arbitrary.positiveInts
+import io.kotest.property.arbitrary.negativeInt
+import io.kotest.property.arbitrary.positiveInt
 import io.kotest.property.arbitrary.string
 import io.kotest.property.arbitrary.take
 import io.kotest.property.arbitrary.withEdgecases
@@ -46,7 +46,7 @@ class BindTest : StringSpec({
    }
 
    "Arb.bindB" {
-      val gen = Arb.bind(Arb.string(), Arb.positiveInts(), ::User)
+      val gen = Arb.bind(Arb.string(), Arb.positiveInt(), ::User)
       checkAll(gen) {
          it.email shouldNotBe null
          it.id should beGreaterThan(0)
@@ -54,7 +54,7 @@ class BindTest : StringSpec({
    }
 
    "Arb.bindC" {
-      val gen = Arb.bind(Arb.string(), Arb.positiveInts(), Arb.double().filter { it > 0 }, ::FooC)
+      val gen = Arb.bind(Arb.string(), Arb.positiveInt(), Arb.double().filter { it > 0 }, ::FooC)
       checkAll(gen) {
          it.a shouldNotBe null
          it.b should beGreaterThan(0)
@@ -71,7 +71,7 @@ class BindTest : StringSpec({
 
    "Arb.bindD" {
       val gen =
-         Arb.bind(Arb.string(), Arb.positiveInts(), Arb.double().filter { it > 0 }, Arb.negativeInts(), ::FooD)
+         Arb.bind(Arb.string(), Arb.positiveInt(), Arb.double().filter { it > 0 }, Arb.negativeInt(), ::FooD)
       checkAll(gen) {
          it.a shouldNotBe null
          it.b should beGreaterThan(0)
@@ -91,9 +91,9 @@ class BindTest : StringSpec({
    "Arb.bindE" {
       val gen = Arb.bind(
          Arb.string(),
-         Arb.positiveInts(),
+         Arb.positiveInt(),
          Arb.double().filter { it > 0 },
-         Arb.negativeInts(),
+         Arb.negativeInt(),
          Arb.bool(),
          ::FooE
       )
@@ -597,11 +597,11 @@ class BindTest : StringSpec({
          .toList()
 
       edgecases shouldContainExactly listOf(
-         Wobble(a = "a", b = false, c = 1, d = 0.0, e = 3.4028235E38F),
-         Wobble(a = "", b = true, c = 2147483647, d = -1.0, e = Float.NEGATIVE_INFINITY),
-         Wobble(a = "", b = false, c = -1, d = Double.NEGATIVE_INFINITY, e = 1.4E-45F),
-         Wobble(a = "a", b = true, c = 2147483647, d = Double.NaN, e = 1.4E-45F),
-         Wobble(a = "", b = false, c = 1, d = Double.NEGATIVE_INFINITY, e = -1.0F)
+         Wobble(a = "a", b = false, c = 1, d = -Double.MIN_VALUE, e = Float.POSITIVE_INFINITY),
+         Wobble(a = "", b = true, c = 2147483647, d = -1.0, e = Float.MIN_VALUE),
+         Wobble(a = "", b = false, c = -1, d = -Double.MIN_VALUE, e = 1.0F),
+         Wobble(a = "a", b = true, c = 2147483647, d = -Double.MAX_VALUE, e = -1.0F),
+         Wobble(a = "", b = false, c = 1, d = -0.0, e = Float.NaN)
       )
    }
 })

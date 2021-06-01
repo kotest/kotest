@@ -5,12 +5,12 @@ import io.kotest.inspectors.forAll
 import io.kotest.matchers.shouldBe
 import io.kotest.property.Arb
 import io.kotest.property.RandomSource
-import io.kotest.property.arbitrary.multiples
+import io.kotest.property.arbitrary.multiple
 
 class MultipleArbitraryTest : FunSpec() {
    init {
       test("multiple generation") {
-         Arb.multiples(3, 100)
+         Arb.multiple(3, 100)
             .generate(RandomSource.default())
             .take(100)
             .forAll { it.value % 3 shouldBe 0 }

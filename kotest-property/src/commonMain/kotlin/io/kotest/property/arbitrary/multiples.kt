@@ -12,8 +12,11 @@ import io.kotest.property.Shrinker
  * factors of k until 0 is hit.
  *
  */
-fun Arb.Companion.multiples(k: Int, max: Int): Arb<Int> =
+fun Arb.Companion.multiple(k: Int, max: Int): Arb<Int> =
    arbitrary(MultiplesShrinker(k)) { it.random.nextInt(0, max / k) * k }
+
+@Deprecated("use multiple", ReplaceWith("multiple"))
+fun Arb.Companion.multiples(k: Int, max: Int): Arb<Int> = multiple(k, max)
 
 class MultiplesShrinker(private val multiple: Int) : Shrinker<Int> {
    override fun shrink(value: Int): List<Int> = when (value) {
@@ -23,11 +26,9 @@ class MultiplesShrinker(private val multiple: Int) : Shrinker<Int> {
    }
 }
 
-fun Arb.Companion.factors(k: Int): Arb<Int> {
-   return arbitrary {
-      generateSequence { it.random.nextInt(k) }
-         .filter { it > 0 }
-         .filter { k % it == 0 }
-         .first()
-   }
+fun Arb.Companion.factor(k: Int): Arb<Int> = arbitrary {
+   generateSequence { it.random.nextInt(k) }.filter { it > 0 }.filter { k % it == 0 }.first()
 }
+
+@Deprecated("use factor", ReplaceWith("factor"))
+fun Arb.Companion.factors(k: Int): Arb<Int> = factor(k)

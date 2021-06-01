@@ -42,22 +42,22 @@ class IntTest : FunSpec({
    }
 
    test("Arb.positiveInts should return positive ints only") {
-      val numbers = Arb.positiveInts().take(1000).toSet()
+      val numbers = Arb.positiveInt().take(1000).toSet()
       numbers.forAll { it.shouldBePositive() }
    }
 
    test("Arb.nonNegativeInts should return non negative ints only") {
-      val numbers = Arb.nonNegativeInts().take(1000).toSet()
+      val numbers = Arb.nonNegativeInt().take(1000).toSet()
       numbers.forAll { it.shouldBeNonNegative() }
    }
 
    test("Arb.negativeInts should return negative ints only") {
-      val numbers = Arb.negativeInts().take(1000).toSet()
+      val numbers = Arb.negativeInt().take(1000).toSet()
       numbers.forAll { it.shouldBeNegative() }
    }
 
    test("Arb.nonPositiveInts should return non positive ints only") {
-      val numbers = Arb.nonPositiveInts().take(1000).toSet()
+      val numbers = Arb.nonPositiveInt().take(1000).toSet()
       numbers.forAll { it.shouldBeNonPositive() }
    }
 })
