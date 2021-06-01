@@ -7,7 +7,7 @@ import io.kotest.matchers.file.shouldNotExist
 
 class TempDirTest : FunSpec({
 
-   val dir = tempdir()
+   val dir = tempdir().apply { resolve("test.txt").writeText("This is a test file.") }
 
    test("temp directory should be deleted after spec") {
       dir.shouldExist()
