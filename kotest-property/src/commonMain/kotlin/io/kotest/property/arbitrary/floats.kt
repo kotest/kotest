@@ -1,6 +1,7 @@
 package io.kotest.property.arbitrary
 
 import io.kotest.property.Arb
+import io.kotest.property.Gen
 import io.kotest.property.Shrinker
 import kotlin.math.abs
 import kotlin.math.round
@@ -8,6 +9,14 @@ import kotlin.math.round
 private val numericEdgeCases = listOf(-1.0F, -Float.MIN_VALUE, -0.0F, 0.0F, Float.MIN_VALUE, 1.0F)
 
 private val nonFiniteEdgeCases = listOf(Float.NEGATIVE_INFINITY, Float.NaN, Float.POSITIVE_INFINITY)
+
+object FloatShrinker : Shrinker<Float> {
+   override fun shrink(value: Float): List<Float> = if (value == 0F) emptyList() else {
+      val a = listOf(0F, 1F, -1F, abs(value), value / 3, value / 2)
+      val b = (1..5).map { value - it }.reversed().filter { it > 0 }
+      (a + b + round(value)).distinct()
+   }
+}
 
 /**
  * Returns an [Arb] that produces [Float]s from [min] to [max] (inclusive).
@@ -65,10 +74,9 @@ fun Arb.Companion.numericFloat(
 fun Arb.Companion.numericFloats(from: Float = -Float.MAX_VALUE, to: Float = Float.MAX_VALUE): Arb<Float> =
    numericFloat(from, to)
 
-object FloatShrinker : Shrinker<Float> {
-   override fun shrink(value: Float): List<Float> = if (value == 0F) emptyList() else {
-      val a = listOf(0F, 1F, -1F, abs(value), value / 3, value / 2)
-      val b = (1..5).map { value - it }.reversed().filter { it > 0 }
-      (a + b + round(value)).distinct()
-   }
-}
+/**
+ * Returns an [Arb] that produces [FloatArray]s where [length] produces the length of the arrays and
+ * [content] produces the content of the arrays.
+ */
+fun Arb.Companion.floatArray(length: Gen<Int>, content: Arb<Float>): Arb<FloatArray> =
+   toPrimitiveArray(length, content, Collection<Float>::toFloatArray)
