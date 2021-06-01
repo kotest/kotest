@@ -31,8 +31,8 @@ fun Arb.Companion.double(min: Double = -Double.MAX_VALUE, max: Double = Double.M
 /**
  * Returns an [Arb] that produces [Double]s in [range].
  * The edge cases are [Double.NEGATIVE_INFINITY], [ClosedFloatingPointRange.start], -1.0, -[Double.MIN_VALUE], -0.0,
- * 0.0, [Double.MIN_VALUE], 1.0, [ClosedFloatingPointRange.endInclusive] and [Double.POSITIVE_INFINITY] which are only
- * included if they are in the provided range.
+ * 0.0, [Double.MIN_VALUE], 1.0, [ClosedFloatingPointRange.endInclusive], [Double.POSITIVE_INFINITY] and [Double.NaN]
+ * which are only included if they are in the provided range.
  */
 fun Arb.Companion.double(
    range: ClosedFloatingPointRange<Double> = -Double.MAX_VALUE..Double.MAX_VALUE
