@@ -7,9 +7,6 @@ import io.kotest.matchers.shouldNot
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.withTimeoutOrNull
-import java.time.Duration
 
 /**
  * Asserts that this [Channel] is closed
@@ -17,9 +14,10 @@ import java.time.Duration
  * Opposite of [Channel.shouldBeOpen]
  *
  */
+@ExperimentalCoroutinesApi
 fun <T> Channel<T>.shouldBeClosed() = this should beClosed()
 
-@OptIn(ExperimentalCoroutinesApi::class)
+@ExperimentalCoroutinesApi
 fun <T> beClosed() = object : Matcher<Channel<T>> {
    override fun test(value: Channel<T>) = MatcherResult(
       value.isClosedForSend && value.isClosedForReceive,
@@ -34,15 +32,17 @@ fun <T> beClosed() = object : Matcher<Channel<T>> {
  * Opposite of [Channel.shouldBeClosed]
  *
  */
+@ExperimentalCoroutinesApi
 fun <T> Channel<T>.shouldBeOpen() = this shouldNot beClosed()
 
 /**
  * Asserts that this [Channel] is empty
  *
  */
+@ExperimentalCoroutinesApi
 fun <T> Channel<T>.shouldBeEmpty() = this should beEmpty()
 
-@OptIn(ExperimentalCoroutinesApi::class)
+@ExperimentalCoroutinesApi
 fun <T> beEmpty() = object : Matcher<Channel<T>> {
    override fun test(value: Channel<T>) = MatcherResult(
       value.isEmpty,
@@ -52,37 +52,10 @@ fun <T> beEmpty() = object : Matcher<Channel<T>> {
 }
 
 /**
- * Asserts that this [Channel] should receive within [duration]
- *
- */
-@Deprecated("This is a blocking call and should be avoided. This Will be removed in 4.7")
-fun <T> Channel<T>.shouldReceiveWithin(duration: Duration) = this should receiveWithin(duration)
-
-@Deprecated("This is a blocking call and should be avoided")
-fun <T> receiveWithin(duration: Duration) = object : Matcher<Channel<T>> {
-   override fun test(value: Channel<T>) = MatcherResult(
-      runBlocking {
-         withTimeoutOrNull(duration.toMillis()) {
-            value.receive()
-         } != null
-      },
-      { "Channel should receive within ${duration.toMillis()}ms" },
-      { "Channel should not receive within ${duration.toMillis()}ms" }
-   )
-}
-
-/**
- * Asserts that this [Channel] should not receive within [duration]
- *
- */
-@Deprecated("This is a blocking call and should be avoided. This Will be removed in 4.7")
-fun <T> Channel<T>.shouldReceiveNoElementsWithin(duration: Duration) = this shouldNot receiveWithin(duration)
-
-
-/**
  * Asserts that this [Channel] should receive [n] elements, then is closed.
  *
  */
+@ExperimentalCoroutinesApi
 suspend fun <T> Channel<T>.shouldHaveSize(n: Int) {
    repeat(n) {
       println("Receiving $it")
@@ -103,6 +76,7 @@ suspend fun <T> Channel<T>.shouldReceiveAtLeast(n: Int) {
  * Asserts that this [Channel] should receive at most [n] elements, then close
  *
  */
+@ExperimentalCoroutinesApi
 suspend fun <T> Channel<T>.shouldReceiveAtMost(n: Int) {
    var count = 0
    for (value in this@shouldReceiveAtMost) {
