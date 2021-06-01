@@ -5,13 +5,13 @@ internal val isLoggingEnabled by lazy { sysprop("KOTEST_DEBUG") != null || env("
 
 inline fun log(f: () -> String) {
    if (isLoggingEnabled) {
-      println(f())
+      println(timeInMillis().toString() + " " + f())
    }
 }
 
 inline fun log(t: Throwable?, f: () -> String) {
    if (isLoggingEnabled) {
-      println(f())
+      println(timeInMillis().toString() + " " + f())
       if (t != null) println(t)
    }
 }

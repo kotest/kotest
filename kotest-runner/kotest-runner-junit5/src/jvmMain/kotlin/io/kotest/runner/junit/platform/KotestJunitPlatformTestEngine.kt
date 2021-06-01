@@ -77,7 +77,7 @@ class KotestJunitPlatformTestEngine : TestEngine {
          .withSpecs(root.classes)
          .withScripts(root.scripts)
          .withDumpConfig(shouldDumpConfig())
-         .withFilters(root.testFilters)
+         .withTestFilters(root.testFilters)
          .launch()
    }
 
@@ -95,7 +95,7 @@ class KotestJunitPlatformTestEngine : TestEngine {
       request: EngineDiscoveryRequest,
       uniqueId: UniqueId,
    ): KotestEngineDescriptor {
-      log { "uniqueId=$uniqueId" }
+      log { "JUnit discovery request [uniqueId=$uniqueId]" }
       log { request.string() }
 
       // if we are excluded from the engines then we say goodnight according to junit rules
@@ -111,7 +111,7 @@ class KotestJunitPlatformTestEngine : TestEngine {
       // this happens for example, when trying to run a junit test alongside kotest tests,
       // and kotest will then run all other tests.
       // therefore, the presence of a MethodSelector means we must run no tests in KT.
-      return if (request.getSelectorsByType(MethodSelector::class.java).isEmpty()) {
+      val descriptor =  if (request.getSelectorsByType(MethodSelector::class.java).isEmpty()) {
 
          val extensions = listOf(
             IgnoredSpecDiscoveryExtension,
@@ -127,6 +127,9 @@ class KotestJunitPlatformTestEngine : TestEngine {
       } else {
          KotestEngineDescriptor(uniqueId, emptyList(), emptyList(), emptyList(), null)
       }
+
+      log { "JUnit discovery completed [descriptor=$descriptor]" }
+      return descriptor
    }
 
    private fun shouldDumpConfig() = System.getProperty(KotestEngineProperties.dumpConfig) == "true"
