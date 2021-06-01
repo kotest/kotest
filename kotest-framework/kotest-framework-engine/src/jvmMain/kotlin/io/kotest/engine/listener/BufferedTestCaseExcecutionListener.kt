@@ -29,7 +29,7 @@ class BufferedTestCaseExcecutionListener(private val listener: TestCaseExecution
    }
 
    fun rootFinished(testCase: TestCase) {
-      require(testCase.isTopLevel())
+      require(testCase.description.isRootTest())
       synchronized(this) {
          startStop(testCase, finished[testCase.description]!!.second)
       }
