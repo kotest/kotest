@@ -4,36 +4,29 @@ import io.kotest.core.config.configuration
 import io.kotest.core.listeners.ProjectListener
 import io.kotest.core.spec.Isolate
 import io.kotest.core.spec.style.FunSpec
-import io.kotest.extensions.system.withEnvironment
-import io.mockk.every
-import io.mockk.mockkObject
-import io.mockk.unmockkObject
+import io.kotest.extensions.system.withSystemProperty
 import org.junit.platform.engine.discovery.DiscoverySelectors
 import org.junit.platform.testkit.engine.EngineTestKit
 
 @Isolate
 class BeforeAfterProjectListenerExceptionHandlingTest : FunSpec({
 
-   test("BeforeProjectListenerException and AfterProjectListenerException should add marker spec") {
-      mockkObject(configuration)
-      every { configuration.listeners() } returns listOf(
+   test("BeforeProjectListener exception should add marker spec") {
+
+      configuration.registerListener(
          object : ProjectListener {
             override val name: String
-               get() = "MyAfterProjectListenerName"
-            override suspend fun afterProject() {
-               if (System.getenv("foo") == "true") error("afterProjectError")
-            }
-         },
-         object : ProjectListener {
-            override val name: String
-               get() = "MyBeforeProjectListenerName"
+               get() = "wibble"
+
             override suspend fun beforeProject() {
-               if (System.getenv("foo") == "true") error("beforeProjectError")
+               // use an env so that we only trigger the after all failure in the test, not while running the overall test suite
+               if (System.getProperty("beforeProject") == "true") error("beforeProjectError")
             }
          }
       )
+
       // use an env so that we only trigger the after all failure in the test, not while running the overall test suite
-      withEnvironment("foo", "true") {
+      withSystemProperty("beforeProject", "true") {
          EngineTestKit
             .engine("kotest")
             .selectors(DiscoverySelectors.selectClass(BeforeAfterProjectListenerExceptionSample::class.java))
@@ -42,27 +35,73 @@ class BeforeAfterProjectListenerExceptionHandlingTest : FunSpec({
             .allEvents().apply {
                started().shouldHaveNames(
                   "Kotest",
-                  "MyBeforeProjectListenerName",
-                  "MyAfterProjectListenerName"
+                  "wibble",
                )
                aborted().shouldBeEmpty()
                skipped().shouldBeEmpty()
-               failed().shouldHaveNames("MyBeforeProjectListenerName", "MyAfterProjectListenerName")
+               failed().shouldHaveNames("wibble")
                succeeded().shouldHaveNames(
                   "Kotest"
                )
                finished().shouldHaveNames(
-                  "MyBeforeProjectListenerName",
-                  "MyAfterProjectListenerName",
+                  "wibble",
                   "Kotest"
                )
                dynamicallyRegistered().shouldHaveNames(
-                  "MyBeforeProjectListenerName",
-                  "MyAfterProjectListenerName"
+                  "wibble",
                )
             }
       }
-      unmockkObject(configuration)
+   }
+
+   test("AfterProjectListener exception should add marker spec") {
+
+      configuration.registerListener(
+         object : ProjectListener {
+            override val name: String
+               get() = "wobble"
+
+            override suspend fun afterProject() {
+               // use an env so that we only trigger the after all failure in the test, not while running the overall test suite
+               if (System.getProperty("afterProject") == "true") error("afterProjectError")
+            }
+         }
+      )
+
+      // use an env so that we only trigger the after all failure in the test, not while running the overall test suite
+      withSystemProperty("afterProject", "true") {
+         EngineTestKit
+            .engine("kotest")
+            .selectors(DiscoverySelectors.selectClass(BeforeAfterProjectListenerExceptionSample::class.java))
+            .configurationParameter("allow_private", "true")
+            .execute()
+            .allEvents().apply {
+               started().shouldHaveNames(
+                  "Kotest",
+                  "com.sksamuel.kotest.runner.junit5.BeforeAfterProjectListenerExceptionSample",
+                  "foo",
+                  "wobble",
+               )
+               aborted().shouldBeEmpty()
+               skipped().shouldBeEmpty()
+               failed().shouldHaveNames("wobble")
+               succeeded().shouldHaveNames(
+                  "foo",
+                  "com.sksamuel.kotest.runner.junit5.BeforeAfterProjectListenerExceptionSample",
+                  "Kotest",
+               )
+               finished().shouldHaveNames(
+                  "foo",
+                  "com.sksamuel.kotest.runner.junit5.BeforeAfterProjectListenerExceptionSample",
+                  "wobble",
+                  "Kotest"
+               )
+               dynamicallyRegistered().shouldHaveNames(
+                  "foo",
+                  "wobble"
+               )
+            }
+      }
    }
 })
 
