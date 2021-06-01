@@ -1,15 +1,16 @@
 package com.sksamuel.kotest.matchers.channels
 
 import io.kotest.assertions.shouldFail
-import io.kotest.matchers.channels.*
-import io.kotest.matchers.ints.shouldBeExactly
 import io.kotest.core.spec.style.StringSpec
+import io.kotest.matchers.channels.shouldBeClosed
+import io.kotest.matchers.channels.shouldBeEmpty
+import io.kotest.matchers.channels.shouldHaveSize
+import io.kotest.matchers.channels.shouldReceiveAtLeast
+import io.kotest.matchers.channels.shouldReceiveAtMost
+import io.kotest.matchers.ints.shouldBeExactly
 import io.kotest.matchers.shouldBe
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import java.time.Duration
 
 class ChannelTest : StringSpec() {
   init {
@@ -44,38 +45,6 @@ class ChannelTest : StringSpec() {
         }
         channel.receive() shouldBe 1
      }
-     "shouldReceiveWithin should not fail on non-empty channels" {
-        val channel: Channel<Int> = Channel(1)
-        channel.send(1)
-        channel.shouldReceiveWithin(Duration.ofSeconds(1))
-     }
-    "shouldReceiveWithin should not fail when elements are received later" {
-      val channel: Channel<Int> = Channel()
-      launch(Dispatchers.IO) {
-        delay(1000)
-        channel.send(1)
-      }
-      channel.shouldReceiveWithin(Duration.ofSeconds(3))
-    }
-    "shouldReceiveWithin should fail when no elements are sent" {
-      val channel: Channel<Int> = Channel()
-      shouldFail {
-        channel.shouldReceiveWithin(Duration.ofSeconds(1))
-      }
-    }
-    "shouldReceiveNoElementsWithin should not fail when no elements are sent" {
-      val channel: Channel<Int> = Channel()
-      channel.shouldReceiveNoElementsWithin(Duration.ofSeconds(1))
-    }
-    "shouldReceiveNoElementsWithin should fail when elements are sent" {
-      val channel: Channel<Int> = Channel()
-       launch(Dispatchers.IO) {
-        channel.send(1)
-      }
-      shouldFail {
-        channel.shouldReceiveNoElementsWithin(Duration.ofSeconds(1))
-      }
-    }
     "!shouldHaveSize should not fail when n elements are sent" {
       val channel: Channel<Int> = Channel()
       launch {
