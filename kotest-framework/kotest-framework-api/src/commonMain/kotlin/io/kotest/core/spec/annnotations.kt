@@ -21,8 +21,7 @@ annotation class DisplayName(val name: String)
 annotation class KotestDsl
 
 /**
- * When added to a spec, will mark that spec to not run in parallel, regardless
- * of concurrency or parallelism settings.
+ * Use [Isolate].
  */
 @Target(AnnotationTarget.CLASS)
 @Retention(AnnotationRetention.RUNTIME)

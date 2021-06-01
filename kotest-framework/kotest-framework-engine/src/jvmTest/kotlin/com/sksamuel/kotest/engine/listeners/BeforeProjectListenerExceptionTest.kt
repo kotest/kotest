@@ -1,27 +1,25 @@
-package com.sksamuel.kotest.core.runtime
+package com.sksamuel.kotest.engine.listeners
 
-import io.kotest.assertions.assertSoftly
 import io.kotest.core.config.configuration
 import io.kotest.engine.KotestEngineLauncher
 import io.kotest.engine.listener.TestEngineListener
 import io.kotest.core.listeners.ProjectListener
 import io.kotest.core.listeners.BeforeProjectListenerException
-import io.kotest.core.spec.DoNotParallelize
+import io.kotest.core.spec.Isolate
 import io.kotest.core.spec.style.FunSpec
+import io.kotest.inspectors.forOne
 import io.kotest.matchers.collections.shouldHaveSize
+import io.kotest.matchers.throwable.shouldHaveMessage
 import io.kotest.matchers.types.shouldBeInstanceOf
 
-@DoNotParallelize
-class BeforeProjectTest : FunSpec({
+@Isolate
+class BeforeProjectListenerExceptionTest : FunSpec({
 
-   test("beforeProject error should use BeforeProjectListenerException") {
+   test("exception in beforeProject should use BeforeProjectListenerException") {
 
       val projectListener = object : ProjectListener {
-         override val name
-            get() = "BeforeAllTest ProjectListener"
-
          override suspend fun beforeProject() {
-            error("boom")
+            error("OOOFF")
          }
       }
 
@@ -34,38 +32,35 @@ class BeforeProjectTest : FunSpec({
       }
 
       configuration.registerListener(projectListener)
+
       KotestEngineLauncher()
          .withListener(listener)
          .withSpec(DummySpec3::class)
          .launch()
-      assertSoftly {
-         errors shouldHaveSize 1
-         errors[0].shouldBeInstanceOf<BeforeProjectListenerException>()
-      }
+
+      errors shouldHaveSize 1
+      errors[0].shouldBeInstanceOf<BeforeProjectListenerException>()
+      errors[0].cause!! shouldHaveMessage "OOOFF"
+
       configuration.deregisterListener(projectListener)
    }
 
-   test("2 failed beforeProject listener should be collected") {
+   test("multiple beforeProject exceptions should be collected") {
 
       val projectListener1 = object : ProjectListener {
-         override val name
-            get() = "BeforeAllTest1 ProjectListener"
-
          override suspend fun beforeProject() {
-            error("boom")
+            error("ZLOPP")
          }
       }
 
       val projectListener2 = object : ProjectListener {
-         override val name
-            get() = "BeforeAllTest2 ProjectListener"
-
          override suspend fun beforeProject() {
-            error("boom")
+            error("WHAMM")
          }
       }
 
       val errors: MutableList<Throwable> = mutableListOf()
+
       val listener = object : TestEngineListener {
          override fun engineFinished(t: List<Throwable>) {
             errors.addAll(t)
@@ -74,14 +69,23 @@ class BeforeProjectTest : FunSpec({
 
       configuration.registerListener(projectListener1)
       configuration.registerListener(projectListener2)
+
       KotestEngineLauncher()
          .withListener(listener)
          .withSpec(DummySpec3::class)
          .launch()
-      assertSoftly {
-         errors shouldHaveSize 2
-         errors.filterIsInstance<BeforeProjectListenerException>() shouldHaveSize 2
+
+      errors shouldHaveSize 2
+      errors.filterIsInstance<BeforeProjectListenerException>() shouldHaveSize 2
+
+      errors.forOne {
+         it.cause!!.shouldHaveMessage("ZLOPP")
       }
+
+      errors.forOne {
+         it.cause!!.shouldHaveMessage("WHAMM")
+      }
+
       configuration.deregisterListener(projectListener1)
       configuration.deregisterListener(projectListener2)
    }

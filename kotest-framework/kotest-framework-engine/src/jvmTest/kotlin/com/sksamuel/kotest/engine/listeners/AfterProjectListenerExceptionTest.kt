@@ -1,24 +1,25 @@
-package com.sksamuel.kotest.core.runtime
+package com.sksamuel.kotest.engine.listeners
 
-import io.kotest.assertions.assertSoftly
 import io.kotest.core.config.configuration
+import io.kotest.core.listeners.AfterProjectListenerException
 import io.kotest.engine.KotestEngineLauncher
 import io.kotest.engine.listener.TestEngineListener
 import io.kotest.core.listeners.ProjectListener
-import io.kotest.core.listeners.AfterProjectListenerException
-import io.kotest.core.spec.DoNotParallelize
+import io.kotest.core.spec.Isolate
 import io.kotest.core.spec.style.FunSpec
+import io.kotest.inspectors.forOne
 import io.kotest.matchers.collections.shouldHaveSize
+import io.kotest.matchers.throwable.shouldHaveMessage
 import io.kotest.matchers.types.shouldBeInstanceOf
 
-@DoNotParallelize
-class AfterProjectTest : FunSpec({
+@Isolate
+class AfterProjectListenerExceptionTest : FunSpec({
 
-   test("after project error should use AfterAllListenerException") {
+   test("exception in afterProject should use AfterProjectListenerException") {
 
       val projectListener = object : ProjectListener {
          override suspend fun afterProject() {
-            error("boom")
+            error("ARRGH")
          }
       }
 
@@ -31,28 +32,30 @@ class AfterProjectTest : FunSpec({
       }
 
       configuration.registerListener(projectListener)
+
       KotestEngineLauncher()
          .withListener(listener)
-         .withSpec(DummySpec2::class)
+         .withSpec(DummySpec7::class)
          .launch()
-      assertSoftly {
-         errors shouldHaveSize 1
-         errors[0].shouldBeInstanceOf<AfterProjectListenerException>()
-      }
+
+      errors shouldHaveSize 1
+      errors[0].shouldBeInstanceOf<AfterProjectListenerException>()
+      errors[0].cause!! shouldHaveMessage "ARRGH"
+
       configuration.deregisterListener(projectListener)
    }
 
-   test("after project errors should have size 2") {
+   test("multiple afterProject exceptions should be collected") {
 
       val projectListener1 = object : ProjectListener {
          override suspend fun afterProject() {
-            error("boom1")
+            error("GLIPP")
          }
       }
 
       val projectListener2 = object : ProjectListener {
          override suspend fun afterProject() {
-            error("boom2")
+            error("WHACK")
          }
       }
 
@@ -66,19 +69,28 @@ class AfterProjectTest : FunSpec({
 
       configuration.registerListener(projectListener1)
       configuration.registerListener(projectListener2)
+
       KotestEngineLauncher()
          .withListener(listener)
-         .withSpec(DummySpec2::class)
+         .withSpec(DummySpec7::class)
          .launch()
-      assertSoftly {
-         errors shouldHaveSize 2
-         errors.filterIsInstance<AfterProjectListenerException>() shouldHaveSize 2
+
+      errors shouldHaveSize 2
+      errors.filterIsInstance<AfterProjectListenerException>() shouldHaveSize 2
+
+      errors.forOne {
+         it.cause!!.shouldHaveMessage("GLIPP")
       }
+
+      errors.forOne {
+         it.cause!!.shouldHaveMessage("WHACK")
+      }
+
       configuration.deregisterListener(projectListener1)
       configuration.deregisterListener(projectListener2)
    }
 })
 
-private class DummySpec2 : FunSpec({
+private class DummySpec7 : FunSpec({
    test("foo") {}
 })

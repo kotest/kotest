@@ -1,25 +1,34 @@
 package com.sksamuel.kotest.engine.objects
 
-import io.kotest.core.listeners.AfterProjectListener
-import io.kotest.core.spec.AutoScan
+import io.kotest.core.config.configuration
+import io.kotest.core.listeners.ProjectListener
 import io.kotest.core.spec.style.FunSpec
-import io.kotest.matchers.booleans.shouldBeTrue
-import java.util.concurrent.atomic.AtomicBoolean
+import io.kotest.engine.KotestEngineLauncher
+import io.kotest.engine.listener.NoopTestEngineListener
+import io.kotest.matchers.shouldBe
 
-val objectTests = AtomicBoolean(false)
-
-@AutoScan
-object ObjectTestProjectListener : AfterProjectListener {
-   // if the object test wasn't picked up, then this will be false and fail
-   override suspend fun afterProject() {
-      objectTests.get().shouldBeTrue()
-   }
-}
-
-object ObjectTest : FunSpec() {
+class ObjectSpecTest : FunSpec() {
    init {
-      test("object specs should be detected") {
-         objectTests.set(true)
+      test("object specs should be supported") {
+
+         var fired = false
+
+         configuration.registerListener(object : ProjectListener {
+            override suspend fun afterProject() {
+               fired = true
+            }
+         })
+
+         KotestEngineLauncher()
+            .withListener(NoopTestEngineListener)
+            .withSpec(DummyObjectSpec::class)
+            .launch()
+
+         fired shouldBe true
       }
    }
 }
+
+private class DummyObjectSpec : FunSpec({
+   test("foo") {}
+})
