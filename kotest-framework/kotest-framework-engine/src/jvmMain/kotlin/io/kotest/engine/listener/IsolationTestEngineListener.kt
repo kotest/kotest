@@ -7,7 +7,6 @@ import io.kotest.core.spec.Spec
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.core.spec.toDescription
-import io.kotest.mpp.log
 import java.util.concurrent.atomic.AtomicReference
 import kotlin.reflect.KClass
 import kotlinx.coroutines.runBlocking
@@ -144,7 +143,6 @@ class IsolationTestEngineListener(val listener: TestEngineListener) : TestEngine
 
    override fun specStarted(kclass: KClass<out Spec>) {
       synchronized(listener) {
-         log { "IsolationTestEngineListener: specStarted $kclass" }
          if (runningSpec.compareAndSet(null, kclass.toDescription().path().value)) {
             listener.specStarted(kclass)
          } else {
@@ -161,7 +159,6 @@ class IsolationTestEngineListener(val listener: TestEngineListener) : TestEngine
       results: Map<TestCase, TestResult>
    ) {
       synchronized(listener) {
-         log { "IsolationTestEngineListener: specFinished $kclass" }
          if (runningSpec.get() == kclass.toDescription().path().value) {
             listener.specFinished(kclass, t, results)
             runningSpec.set(null)
