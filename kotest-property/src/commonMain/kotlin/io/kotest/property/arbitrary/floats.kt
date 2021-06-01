@@ -30,8 +30,8 @@ fun Arb.Companion.float(min: Float = -Float.MAX_VALUE, max: Float = Float.MAX_VA
 /**
  * Returns an [Arb] that produces [Float]s in [range].
  * The edge cases are [Float.NEGATIVE_INFINITY], [ClosedFloatingPointRange.start], -1.0, -[Float.MIN_VALUE], -0.0,
- * 0.0, [Float.MIN_VALUE], 1.0, [ClosedFloatingPointRange.endInclusive] and [Float.POSITIVE_INFINITY] which are only
- * included if they are in the provided range.
+ * 0.0, [Float.MIN_VALUE], 1.0, [ClosedFloatingPointRange.endInclusive], [Float.POSITIVE_INFINITY] and [Float.NaN] which
+ * are only included if they are in the provided range.
  */
 fun Arb.Companion.float(range: ClosedFloatingPointRange<Float> = -Float.MAX_VALUE..Float.MAX_VALUE): Arb<Float> =
    arbitrary(
