@@ -73,11 +73,11 @@ fun Arb.Companion.negativeInts(min: Int = Int.MIN_VALUE) = negativeInt(min)
 fun Arb.Companion.nonPositiveInt(min: Int = Int.MIN_VALUE) = int(min, 0)
 
 /**
- * Returns an [Arb] that produces [IntArray]s where [generateArrayLength] produces the length of the arrays and
- * [generateContents] produces the content of the arrays.
+ * Returns an [Arb] that produces [IntArray]s where [length] produces the length of the arrays and
+ * [content] produces the content of the arrays.
  */
-fun Arb.Companion.intArray(generateArrayLength: Gen<Int>, generateContents: Arb<Int>): Arb<IntArray> =
-   toPrimitiveArray(generateArrayLength, generateContents, Collection<Int>::toIntArray)
+fun Arb.Companion.intArray(length: Gen<Int>, content: Arb<Int>): Arb<IntArray> =
+   toPrimitiveArray(length, content, Collection<Int>::toIntArray)
 
 class UIntShrinker(val range: UIntRange) : Shrinker<UInt> {
    override fun shrink(value: UInt): List<UInt> = when (value) {
@@ -108,9 +108,9 @@ fun Arb.Companion.uint(range: UIntRange = UInt.MIN_VALUE..UInt.MAX_VALUE): Arb<U
 }
 
 /**
- * Returns an [Arb] that produces [UIntArray]s where [generateArrayLength] produces the length of the arrays and
- * [generateContents] produces the content of the arrays.
+ * Returns an [Arb] that produces [UIntArray]s where [length] produces the length of the arrays and
+ * [content] produces the content of the arrays.
  */
 @ExperimentalUnsignedTypes
-fun Arb.Companion.uIntArray(generateArrayLength: Gen<Int>, generateContents: Arb<UInt>): Arb<UIntArray> =
-   toPrimitiveArray(generateArrayLength, generateContents, Collection<UInt>::toUIntArray)
+fun Arb.Companion.uIntArray(length: Gen<Int>, content: Arb<UInt>): Arb<UIntArray> =
+   toPrimitiveArray(length, content, Collection<UInt>::toUIntArray)

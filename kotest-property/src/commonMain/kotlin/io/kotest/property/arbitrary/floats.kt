@@ -75,8 +75,8 @@ fun Arb.Companion.numericFloats(from: Float = -Float.MAX_VALUE, to: Float = Floa
    numericFloat(from, to)
 
 /**
- * Returns an [Arb] that produces [FloatArray]s where [generateArrayLength] produces the length of the arrays and
- * [generateContents] produces the content of the arrays.
+ * Returns an [Arb] that produces [FloatArray]s where [length] produces the length of the arrays and
+ * [content] produces the content of the arrays.
  */
-fun Arb.Companion.floatArray(generateArrayLength: Gen<Int>, generateContents: Arb<Float>): Arb<FloatArray> =
-   toPrimitiveArray(generateArrayLength, generateContents, Collection<Float>::toFloatArray)
+fun Arb.Companion.floatArray(length: Gen<Int>, content: Arb<Float>): Arb<FloatArray> =
+   toPrimitiveArray(length, content, Collection<Float>::toFloatArray)

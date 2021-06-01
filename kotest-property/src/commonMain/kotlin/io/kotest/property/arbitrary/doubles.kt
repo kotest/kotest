@@ -82,8 +82,8 @@ fun Arb.Companion.numericDoubles(from: Double = -Double.MAX_VALUE, to: Double = 
    numericDouble(from, to)
 
 /**
- * Returns an [Arb] that produces [DoubleArray]s where [generateArrayLength] produces the length of the arrays and
- * [generateContents] produces the content of the arrays.
+ * Returns an [Arb] that produces [DoubleArray]s where [length] produces the length of the arrays and
+ * [content] produces the content of the arrays.
  */
-fun Arb.Companion.doubleArray(generateArrayLength: Gen<Int>, generateContents: Arb<Double>): Arb<DoubleArray> =
-   toPrimitiveArray(generateArrayLength, generateContents, Collection<Double>::toDoubleArray)
+fun Arb.Companion.doubleArray(length: Gen<Int>, content: Arb<Double>): Arb<DoubleArray> =
+   toPrimitiveArray(length, content, Collection<Double>::toDoubleArray)

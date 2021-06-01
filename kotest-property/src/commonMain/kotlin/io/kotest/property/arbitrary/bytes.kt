@@ -1,7 +1,6 @@
 package io.kotest.property.arbitrary
 
 import io.kotest.property.Arb
-import io.kotest.property.Exhaustive
 import io.kotest.property.Gen
 import kotlin.random.nextUInt
 
@@ -29,11 +28,11 @@ fun Arb.Companion.positiveByte(max: Byte = Byte.MAX_VALUE): Arb<Byte> = byte(1, 
 fun Arb.Companion.negativeByte(min: Byte = Byte.MIN_VALUE): Arb<Byte> = byte(min, -1)
 
 /**
- * Returns an [Arb] that produces [ByteArray]s where [generateArrayLength] produces the length of the arrays and
- * [generateContents] produces the content of the arrays.
+ * Returns an [Arb] that produces [ByteArray]s where [length] produces the length of the arrays and
+ * [content] produces the content of the arrays.
  */
-fun Arb.Companion.byteArray(generateArrayLength: Gen<Int>, generateContents: Arb<Byte>): Arb<ByteArray> =
-   toPrimitiveArray(generateArrayLength, generateContents, Collection<Byte>::toByteArray)
+fun Arb.Companion.byteArray(length: Gen<Int>, content: Arb<Byte>): Arb<ByteArray> =
+   toPrimitiveArray(length, content, Collection<Byte>::toByteArray)
 
 @Deprecated("use byteArray", ReplaceWith("byteArray"))
 fun Arb.Companion.byteArrays(generateArrayLength: Gen<Int>, generateContents: Arb<Byte>): Arb<ByteArray> =
@@ -51,9 +50,9 @@ fun Arb.Companion.ubyte(min: UByte = UByte.MIN_VALUE, max: UByte = UByte.MAX_VAL
 val UByteShrinker = UIntShrinker(UByte.MIN_VALUE..UByte.MAX_VALUE).bimap({ it.toUInt() }, { it.toUByte() })
 
 /**
- * Returns an [Arb] that produces [UByteArray]s where [generateArrayLength] produces the length of the arrays and
- * [generateContents] produces the content of the arrays.
+ * Returns an [Arb] that produces [UByteArray]s where [length] produces the length of the arrays and
+ * [content] produces the content of the arrays.
  */
 @ExperimentalUnsignedTypes
-fun Arb.Companion.uByteArray(generateArrayLength: Gen<Int>, generateContents: Arb<UByte>): Arb<UByteArray> =
-   toPrimitiveArray(generateArrayLength, generateContents, Collection<UByte>::toUByteArray)
+fun Arb.Companion.uByteArray(length: Gen<Int>, content: Arb<UByte>): Arb<UByteArray> =
+   toPrimitiveArray(length, content, Collection<UByte>::toUByteArray)
