@@ -41,7 +41,7 @@ val integerStrings: Arb<String> = Arb.int().map { it.toString() }
 
 ## FlatMap
 
-If you have an arb whose emission or edgecases depends on the emission of the previous arbitraries, you can use flatMap.
+If you have an arb whose emission or edge cases depends on the emission of the previous arbitraries, you can use flatMap.
 ```kotlin
 val dependentArbs: Arb<String> = Arb.of("foo", "bar").flatMap { prefix ->
    Arb.int(1..10).map { integer ->

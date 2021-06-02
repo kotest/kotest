@@ -19,11 +19,11 @@ fun Arb.Companion.uuid(
    allowNilValue: Boolean = true
 ): Arb<UUID> {
 
-   val edgecases = if (allowNilValue)
+   val edgeCases = if (allowNilValue)
       listOf(UUID.fromString("00000000-0000-0000-0000-000000000000"))
    else emptyList()
 
-   return arbitrary(edgecases) {
+   return arbitrary(edgeCases) {
       val value = Arb.stringPattern(uuidVersion.uuidRegex.pattern).next(it)
       UUID.fromString(value)
    }

@@ -14,7 +14,7 @@ import io.kotest.property.RandomSource
 import io.kotest.property.arbitrary.choose
 import io.kotest.property.arbitrary.constant
 import io.kotest.property.arbitrary.single
-import io.kotest.property.arbitrary.withEdgecases
+import io.kotest.property.arbitrary.withEdgeCases
 import io.kotest.property.random
 
 class ChooseTest : FunSpec({
@@ -100,20 +100,20 @@ class ChooseTest : FunSpec({
       shouldNotThrow<Exception> { Arb.choose(0 to Arb.constant('A'), 0 to Arb.constant('B'), 1 to Arb.constant('C')) }
    }
 
-   test("Arb.choose(arbs) should collate edgecases") {
+   test("Arb.choose(arbs) should collate edge cases") {
       val arb = Arb.choose(
-         1 to Arb.constant('A').withEdgecases('a'),
-         3 to Arb.constant('B').withEdgecases('b'),
-         4 to Arb.constant('C').withEdgecases('c'),
-         5 to Arb.constant('D').withEdgecases('d')
+         1 to Arb.constant('A').withEdgeCases('a'),
+         3 to Arb.constant('B').withEdgeCases('b'),
+         4 to Arb.constant('C').withEdgeCases('c'),
+         5 to Arb.constant('D').withEdgeCases('d')
       )
-      val edgecases = arb
-         .generate(RandomSource.seeded(1234L), EdgeConfig(edgecasesGenerationProbability = 1.0))
+      val edgeCases = arb
+         .generate(RandomSource.seeded(1234L), EdgeConfig(edgeCasesGenerationProbability = 1.0))
          .take(10)
          .map { it.value }
          .toList()
 
-      edgecases shouldContainExactly listOf(
+      edgeCases shouldContainExactly listOf(
          'c',
          'c',
          'd',

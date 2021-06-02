@@ -87,15 +87,15 @@ fun <A> Arb.Companion.list(gen: Gen<A>, range: IntRange = 0..100): Arb<List<A>> 
    check(range.first >= 0)
 
    return arbitrary(
-      edgecaseFn = { rs ->
+      edgeCaseFn = { rs ->
          val emptyList = emptyList<A>()
          val singleList: List<A>? = when (gen) {
-            is Arb -> (gen.edgecase(rs) ?: gen.next(rs))?.let { listOf(it) }
+            is Arb -> (gen.edgeCase(rs) ?: gen.next(rs))?.let { listOf(it) }
             is Exhaustive -> gen.values.firstOrNull()?.let { listOf(it) }
          }
          val repeatedList: List<A>? = when {
             range.last < 2 -> null // too small for repeats
-            gen is Arb -> (gen.edgecase(rs) ?: gen.next(rs))?.let { a -> List(max(2, range.first)) { a } }
+            gen is Arb -> (gen.edgeCase(rs) ?: gen.next(rs))?.let { a -> List(max(2, range.first)) { a } }
             gen is Exhaustive -> gen.values.firstOrNull()?.let { a -> List(max(2, range.first)) { a } }
             else -> null
          }

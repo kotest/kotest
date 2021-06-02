@@ -36,7 +36,7 @@ class LazyInitializationTest : FunSpec({
 })
 
 private class MyDummyArb(private val seed: Int) : Arb<Int>() {
-   override fun edgecase(rs: RandomSource): Int = listOf(1, 2, 3).random()
+   override fun edgeCase(rs: RandomSource): Int = listOf(1, 2, 3).random()
    override fun sample(rs: RandomSource): Sample<Int> = Sample(seed)
 }
 

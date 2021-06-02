@@ -10,7 +10,7 @@ import io.kotest.property.map
  */
 fun <A, B> Arb<A>.map(f: (A) -> B): Arb<B> = object : Arb<B>() {
 
-   override fun edgecase(rs: RandomSource): B? = this@map.edgecase(rs)?.let(f)
+   override fun edgeCase(rs: RandomSource): B? = this@map.edgeCase(rs)?.let(f)
 
    override fun sample(rs: RandomSource): Sample<B> =
       this@map.sample(rs).let {
@@ -23,10 +23,10 @@ fun <A, B> Arb<A>.map(f: (A) -> B): Arb<B> = object : Arb<B>() {
  */
 fun <A, B> Arb<A>.flatMap(f: (A) -> Arb<B>): Arb<B> = object : Arb<B>() {
 
-   override fun edgecase(rs: RandomSource): B? {
-      // generate an edgecase, map it to another arb, and generate an edgecase again
-      val a = this@flatMap.edgecase(rs) ?: this@flatMap.next(rs)
-      return f(a).edgecase(rs)
+   override fun edgeCase(rs: RandomSource): B? {
+      // generate an edge case, map it to another arb, and generate an edge case again
+      val a = this@flatMap.edgeCase(rs) ?: this@flatMap.next(rs)
+      return f(a).edgeCase(rs)
    }
 
    override fun sample(rs: RandomSource): Sample<B> = f(this@flatMap.sample(rs).value).sample(rs)

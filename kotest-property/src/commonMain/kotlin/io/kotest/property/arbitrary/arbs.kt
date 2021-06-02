@@ -12,13 +12,13 @@ fun <A> Arb<A>.take(count: Int, rs: RandomSource = RandomSource.default()): Sequ
    samples(rs).map { it.value }.take(count)
 
 /**
- * Returns a single value generated from this arb ignoring edgecases.
+ * Returns a single value generated from this arb ignoring edge cases.
  * Alias for next.
  */
 fun <A> Arb<A>.single(rs: RandomSource = RandomSource.default()): A = this.samples(rs).map { it.value }.first()
 
 /**
- * Returns a single value generated from this arb ignoring edgecases.
+ * Returns a single value generated from this arb ignoring edge cases.
  * Alias for single.
  */
 fun <A> Arb<A>.next(rs: RandomSource = RandomSource.default()): A = single(rs)
@@ -31,7 +31,7 @@ fun <A> Arb.Companion.lazy(f: () -> Arb<A>): Arb<A> {
    val arb by kotlin.lazy { f() }
 
    return object : Arb<A>() {
-      override fun edgecase(rs: RandomSource): A? = arb.edgecase(rs)
+      override fun edgeCase(rs: RandomSource): A? = arb.edgeCase(rs)
       override fun sample(rs: RandomSource): Sample<A> = arb.sample(rs)
    }
 }

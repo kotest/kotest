@@ -6,27 +6,27 @@ import io.kotest.property.Arb
 import io.kotest.property.EdgeConfig
 import io.kotest.property.RandomSource
 import io.kotest.property.arbitrary.double
-import io.kotest.property.arbitrary.edgecases
+import io.kotest.property.arbitrary.edgeCases
 import io.kotest.property.arbitrary.flatMap
 import io.kotest.property.arbitrary.int
 import io.kotest.property.arbitrary.map
 import io.kotest.property.arbitrary.string
 import io.kotest.property.arbitrary.take
-import io.kotest.property.arbitrary.withEdgecases
+import io.kotest.property.arbitrary.withEdgeCases
 
 class FlatMapTest : FunSpec() {
    init {
-      test("Arb.flatMap should compute probabilistic edgecases") {
+      test("Arb.flatMap should compute probabilistic edge cases") {
 
-         val arbString = Arb.int(1..10).withEdgecases(1, 2).flatMap { a ->
-            Arb.double().withEdgecases(1.0, 2.0).flatMap { b ->
-               Arb.string().withEdgecases("foo", "bar").map { c ->
+         val arbString = Arb.int(1..10).withEdgeCases(1, 2).flatMap { a ->
+            Arb.double().withEdgeCases(1.0, 2.0).flatMap { b ->
+               Arb.string().withEdgeCases("foo", "bar").map { c ->
                   "$a $b $c"
                }
             }
          }
          val edges = arbString
-            .generate(RandomSource.seeded(1234L), EdgeConfig(edgecasesGenerationProbability = 1.0))
+            .generate(RandomSource.seeded(1234L), EdgeConfig(edgeCasesGenerationProbability = 1.0))
             .take(10)
             .map { it.value }
             .toList()
@@ -45,18 +45,18 @@ class FlatMapTest : FunSpec() {
          )
       }
 
-      test("Arb.flatMap should replace null edgecases with samples") {
+      test("Arb.flatMap should replace null edge cases with samples") {
 
-         val arbString = Arb.int(1..2).withEdgecases(emptyList()).flatMap { a ->
-            Arb.int(3..4).withEdgecases(emptyList()).flatMap { b ->
-               Arb.string().withEdgecases("foo", "bar").map { c ->
+         val arbString = Arb.int(1..2).withEdgeCases(emptyList()).flatMap { a ->
+            Arb.int(3..4).withEdgeCases(emptyList()).flatMap { b ->
+               Arb.string().withEdgeCases("foo", "bar").map { c ->
                   "$a $b $c"
                }
             }
          }
 
          val edges = arbString
-            .edgecases(100, RandomSource.seeded(1234L))
+            .edgeCases(100, RandomSource.seeded(1234L))
             .toList()
 
          edges shouldContainExactly listOf(

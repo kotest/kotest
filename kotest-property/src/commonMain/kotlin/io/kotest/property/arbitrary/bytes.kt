@@ -42,7 +42,7 @@ fun Arb.Companion.byteArrays(generateArrayLength: Gen<Int>, generateContents: Ar
  * Returns an [Arb] that produces [UByte]s from [min] to [max] (inclusive).
  * The edge cases are [min], 1 and [max] which are only included if they are in the provided range.
  */
-fun Arb.Companion.ubyte(min: UByte = UByte.MIN_VALUE, max: UByte = UByte.MAX_VALUE): Arb<UByte> =
+fun Arb.Companion.uByte(min: UByte = UByte.MIN_VALUE, max: UByte = UByte.MAX_VALUE): Arb<UByte> =
    arbitrary(listOf(min, 1u, max).filter { it in min..max }.distinct(), UByteShrinker) {
       it.random.nextUInt(min..max).toUByte()
    }

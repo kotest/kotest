@@ -7,10 +7,10 @@ import io.kotest.inspectors.forAll
 import io.kotest.matchers.longs.shouldBeBetween
 import io.kotest.matchers.shouldBe
 import io.kotest.property.Arb
-import io.kotest.property.arbitrary.edgecases
+import io.kotest.property.arbitrary.edgeCases
 import io.kotest.property.arbitrary.long
 import io.kotest.property.arbitrary.single
-import io.kotest.property.arbitrary.ulong
+import io.kotest.property.arbitrary.uLong
 import io.kotest.property.checkAll
 import io.kotest.property.checkCoverage
 
@@ -30,12 +30,12 @@ class LongTest : FunSpec({
       }
    }
 
-   test("Arb.long edgecases should respect min and max bounds") {
+   test("Arb.long edge cases should respect min and max bounds") {
       checkCoverage("run", 25.0) {
          checkAll<Long, Long> { min, max ->
             if (min < max) {
                classify("run")
-               Arb.long(min..max).edgecases().forAll {
+               Arb.long(min..max).edgeCases().forAll {
                   it.shouldBeBetween(min, max)
                }
             }
@@ -53,17 +53,17 @@ class ULongTest : FunSpec({
          row(ULong.MIN_VALUE, ULong.MIN_VALUE + 10uL)
       ) { vMin, vMax ->
          val expectedValues = (vMin..vMax).toSet()
-         val actualValues = (1..100_000).map { Arb.ulong(vMin, vMax).single() }.toSet()
+         val actualValues = (1..100_000).map { Arb.uLong(vMin, vMax).single() }.toSet()
          actualValues shouldBe expectedValues
       }
    }
 
-   test("Arb.ulong edgecases should respect min and max bounds") {
+   test("Arb.ulong edge cases should respect min and max bounds") {
       checkCoverage("run", 25.0) {
          checkAll<ULong, ULong> { min, max ->
             if (min < max) {
                classify("run")
-               Arb.ulong(min..max).edgecases().forAll {
+               Arb.uLong(min..max).edgeCases().forAll {
                   it.shouldBeBetween(min, max)
                }
             }

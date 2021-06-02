@@ -22,9 +22,9 @@ import io.kotest.property.Sample
  */
 fun <A, B : A> Arb<A>.merge(other: Gen<B>): Arb<A> = object : Arb<A>() {
 
-   override fun edgecase(rs: RandomSource): A? = when (other) {
-      is Arb -> listOf(this@merge, other).random(rs.random).edgecase(rs)
-      is Exhaustive -> this@merge.edgecase(rs)
+   override fun edgeCase(rs: RandomSource): A? = when (other) {
+      is Arb -> listOf(this@merge, other).random(rs.random).edgeCase(rs)
+      is Exhaustive -> this@merge.edgeCase(rs)
    }
 
    override fun sample(rs: RandomSource): Sample<A> =

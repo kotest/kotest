@@ -40,10 +40,13 @@ fun Arb.Companion.shortArray(length: Gen<Int>, content: Arb<Short>): Arb<ShortAr
  * Returns an [Arb] that produces [UShort]s from [min] to [max] (inclusive).
  * The edge cases are [min], 1 and [max] which are only included if they are in the provided range.
  */
-fun Arb.Companion.ushort(min: UShort = UShort.MIN_VALUE, max: UShort = UShort.MAX_VALUE): Arb<UShort> {
+fun Arb.Companion.uShort(min: UShort = UShort.MIN_VALUE, max: UShort = UShort.MAX_VALUE): Arb<UShort> {
    val edges = listOf(min, 1u, max).filter { it in min..max }.distinct()
    return arbitrary(edges, UShortShrinker) { it.random.nextUInt(min..max).toUShort() }
 }
+
+@Deprecated("use uShort", ReplaceWith("uShort"))
+fun Arb.Companion.ushort(min: UShort = UShort.MIN_VALUE, max: UShort = UShort.MAX_VALUE): Arb<UShort> = uShort(min, max)
 
 val UShortShrinker = UIntShrinker(UShort.MIN_VALUE..UShort.MAX_VALUE).bimap({ it.toUInt() }, { it.toUShort() })
 

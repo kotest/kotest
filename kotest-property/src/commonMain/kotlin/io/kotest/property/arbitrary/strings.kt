@@ -10,8 +10,8 @@ import kotlin.random.nextInt
  * with any codepoint generator. There are many available, such as [katakana] and so on.
  *
  * The edge case values are a string of min length, using the first
- * edgecase codepoint provided by the codepoints arb. If the min length is 0 and maxSize > 0, then
- * the edgecases will include a string of length 1 as well.
+ * edge case codepoint provided by the codepoints arb. If the min length is 0 and maxSize > 0, then
+ * the edge cases will include a string of length 1 as well.
  */
 fun Arb.Companion.string(
    minSize: Int = 0,
@@ -20,14 +20,14 @@ fun Arb.Companion.string(
 ): Arb<String> {
 
    return arbitrary(
-      edgecaseFn = { rs ->
+      edgeCaseFn = { rs ->
          if (minSize == maxSize) null else {
-            val lowCodePoint = codepoints.edgecase(rs)
+            val lowCodePoint = codepoints.edgeCase(rs)
             val min = lowCodePoint?.let { cp -> List(minSize) { cp.asString() }.joinToString("") }
             val minPlus1 = lowCodePoint?.let { cp -> List(minSize + 1) { cp.asString() }.joinToString("") }
-            val edgecases = listOfNotNull(min, minPlus1)
+            val edgeCases = listOfNotNull(min, minPlus1)
                .filter { it.length in minSize..maxSize }
-            if (edgecases.isEmpty()) null else edgecases.random(rs.random)
+            if (edgeCases.isEmpty()) null else edgeCases.random(rs.random)
          }
       },
       shrinker = StringShrinkerWithMin(minSize),
@@ -43,7 +43,7 @@ fun Arb.Companion.string(
  * By default the arb uses a [ascii] codepoint generator, but this can be substituted
  * with any codepoint generator. There are many available, such as [katakana] and so on.
  *
- * The edge case values are a string of the first value in the range, using the first edgecase
+ * The edge case values are a string of the first value in the range, using the first edge case
  * codepoint provided by the codepoints arb.
  */
 fun Arb.Companion.string(range: IntRange, codepoints: Arb<Codepoint> = Codepoint.ascii()): Arb<String> =

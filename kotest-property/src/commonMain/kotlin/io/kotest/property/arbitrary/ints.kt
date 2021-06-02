@@ -35,8 +35,8 @@ fun Arb.Companion.int(min: Int = Int.MIN_VALUE, max: Int = Int.MAX_VALUE) = int(
  * range.
  */
 fun Arb.Companion.int(range: IntRange = Int.MIN_VALUE..Int.MAX_VALUE): Arb<Int> {
-   val edgecases = intArrayOf(range.first, -1, 0, 1, range.last).filter { it in range }.distinct()
-   return arbitrary(edgecases, IntShrinker(range)) { it.random.nextInt(range) }
+   val edgeCases = intArrayOf(range.first, -1, 0, 1, range.last).filter { it in range }.distinct()
+   return arbitrary(edgeCases, IntShrinker(range)) { it.random.nextInt(range) }
 }
 
 /**
@@ -95,14 +95,14 @@ class UIntShrinker(val range: UIntRange) : Shrinker<UInt> {
  * Returns an [Arb] that produces [UInt]s from [min] to [max] (inclusive).
  * The edge cases are [min], 1 and [max] which are only included if they are in the provided range.
  */
-fun Arb.Companion.uint(min: UInt = UInt.MIN_VALUE, max: UInt = UInt.MAX_VALUE) = uint(min..max)
+fun Arb.Companion.uInt(min: UInt = UInt.MIN_VALUE, max: UInt = UInt.MAX_VALUE) = uInt(min..max)
 
 /**
  * Returns an [Arb] that produces [UInt]s in range.
  * The edge cases are [UIntRange.first], 1 and [UIntRange.last] which are only included if they are in the provided
  * range.
  */
-fun Arb.Companion.uint(range: UIntRange = UInt.MIN_VALUE..UInt.MAX_VALUE): Arb<UInt> {
+fun Arb.Companion.uInt(range: UIntRange = UInt.MIN_VALUE..UInt.MAX_VALUE): Arb<UInt> {
    val edges = listOf(range.first, 1u, range.last).filter { it in range }.distinct()
    return arbitrary(edges, UIntShrinker(range)) { it.random.nextUInt(range) }
 }

@@ -5,7 +5,7 @@ import io.kotest.matchers.shouldBe
 import io.kotest.property.Arb
 import io.kotest.property.Exhaustive
 import io.kotest.property.arbitrary.string
-import io.kotest.property.arbitrary.withEdgecases
+import io.kotest.property.arbitrary.withEdgeCases
 import io.kotest.property.calculateMinimumIterations
 import io.kotest.property.exhaustive.boolean
 import io.kotest.property.exhaustive.ints
@@ -22,7 +22,7 @@ describe("calculateMinimumIterations") {
 
    it("should calculate min for arbs") {
       calculateMinimumIterations(
-         Arb.string(1).withEdgecases(listOf("a", "b")),
+         Arb.string(1).withEdgeCases(listOf("a", "b")),
          Arb.string(1)
       ) shouldBe 2
    }
@@ -30,7 +30,7 @@ describe("calculateMinimumIterations") {
    it("should calculate min for a mix of exhaustives and arbs") {
       calculateMinimumIterations(
          Exhaustive.ints(0..10), // 11 values
-         Arb.string(1) // edgecase is the empty string
+         Arb.string(1) // edge case is the empty string
       ) shouldBe 11
    }
 }

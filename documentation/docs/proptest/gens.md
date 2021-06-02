@@ -40,8 +40,8 @@ tested with zero, a positive number and a negative number. If only random values
 appearing would be fairly low, so Kotest will always provide some "edge cases" for integers (unless you specify
 otherwise).
 
-When executing tests, the framework will alternate randomly between samples and edgecases. The split is determined
-by a configuration value which defaults to 2% edgecases.
+When executing tests, the framework will alternate randomly between samples and edge cases. The split is determined
+by a configuration value which defaults to 2% edge cases.
 
 Not all arbs have edge cases, but the arbs for the most common types do.
 Here are some examples of edge cases used by some arbs:

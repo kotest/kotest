@@ -28,12 +28,12 @@ class ShortTest : FunSpec({
       }
    }
 
-   test("Arb.short edgecases should respect min and max bounds") {
+   test("Arb.short edge cases should respect min and max bounds") {
       checkCoverage("run", 25.0) {
          PropTest(iterations = 1000).checkAll<Short, Short> { min, max ->
             if (min < max) {
                classify("run")
-               Arb.short(min, max).edgecases().forAll {
+               Arb.short(min, max).edgeCases().forAll {
                   it.shouldBeBetween(min, max)
                }
             }
@@ -51,17 +51,17 @@ class UShortTest : FunSpec({
          row(UShort.MIN_VALUE, (UShort.MIN_VALUE + 10u).toUShort())
       ) { vMin, vMax ->
          val expectedValues = (vMin..vMax).map { it.toUShort() }.toSet()
-         val actualValues = (1..100_000).map { Arb.ushort(vMin, vMax).single() }.toSet()
+         val actualValues = (1..100_000).map { Arb.uShort(vMin, vMax).single() }.toSet()
          actualValues shouldBe expectedValues
       }
    }
 
-   test("Arb.ushort edgecases should respect min and max bounds") {
+   test("Arb.uShort edge cases should respect min and max bounds") {
       checkCoverage("run", 25.0) {
          PropTest(iterations = 1000).checkAll<UShort, UShort> { min, max ->
             if (min < max) {
                classify("run")
-               Arb.ushort(min, max).edgecases().forAll {
+               Arb.uShort(min, max).edgeCases().forAll {
                   it.shouldBeBetween(min, max)
                }
             }

@@ -12,8 +12,8 @@ import io.kotest.property.Sample
  */
 fun <A> Arb<A>.filter(predicate: (A) -> Boolean): Arb<A> = object : Arb<A>() {
 
-   override fun edgecase(rs: RandomSource): A? =
-      generateSequence { this@filter.edgecase(rs) }
+   override fun edgeCase(rs: RandomSource): A? =
+      generateSequence { this@filter.edgeCase(rs) }
          .take(PropertyTesting.maxFilterAttempts)
          .filter(predicate)
          .firstOrNull()

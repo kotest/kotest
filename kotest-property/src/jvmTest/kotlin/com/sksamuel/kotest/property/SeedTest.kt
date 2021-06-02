@@ -7,7 +7,7 @@ import io.kotest.matchers.shouldNotBe
 import io.kotest.matchers.string.shouldContain
 import io.kotest.property.Arb
 import io.kotest.property.PropTestConfig
-import io.kotest.property.arbitrary.bool
+import io.kotest.property.arbitrary.boolean
 import io.kotest.property.arbitrary.int
 import io.kotest.property.arbitrary.long
 import io.kotest.property.arbitrary.single
@@ -23,7 +23,7 @@ class SeedTest : FunSpec({
          Arb.int().single(seed.random()) shouldBe Arb.int().single(seed.random())
          Arb.long().single(seed.random()) shouldBe Arb.long().single(seed.random())
          Arb.string().single(seed.random()) shouldBe Arb.string().single(seed.random())
-         Arb.bool().single(seed.random()) shouldBe Arb.bool().single(seed.random())
+         Arb.boolean().single(seed.random()) shouldBe Arb.boolean().single(seed.random())
       }
    }
 

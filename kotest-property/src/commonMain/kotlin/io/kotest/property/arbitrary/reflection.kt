@@ -13,16 +13,16 @@ fun <A> defaultForClass(kClass: KClass<*>): Arb<A>? {
       "java.lang.String", "kotlin.String", "String" -> Arb.string() as Arb<A>
       "java.lang.Character", "kotlin.Char", "Char" -> Arb.char() as Arb<A>
       "java.lang.Long", "kotlin.Long", "Long" -> Arb.long() as Arb<A>
-      "kotlin.ULong", "ULong" -> Arb.ulong() as Arb<A>
+      "kotlin.ULong", "ULong" -> Arb.uLong() as Arb<A>
       "java.lang.Integer", "kotlin.Int", "Int" -> Arb.int() as Arb<A>
-      "kotlin.UInt", "UInt" -> Arb.uint() as Arb<A>
+      "kotlin.UInt", "UInt" -> Arb.uInt() as Arb<A>
       "java.lang.Short", "kotlin.Short", "Short" -> Arb.short() as Arb<A>
-      "kotlin.UShort", "UShort" -> Arb.ushort() as Arb<A>
+      "kotlin.UShort", "UShort" -> Arb.uShort() as Arb<A>
       "java.lang.Byte", "kotlin.Byte", "Byte" -> Arb.byte() as Arb<A>
-      "kotlin.UByte", "UByte" -> Arb.ubyte() as Arb<A>
+      "kotlin.UByte", "UByte" -> Arb.uByte() as Arb<A>
       "java.lang.Double", "kotlin.Double", "Double" -> Arb.double() as Arb<A>
       "java.lang.Float", "kotlin.Float", "Float" -> Arb.float() as Arb<A>
-      "java.lang.Boolean", "kotlin.Boolean", "Boolean" -> Arb.bool() as Arb<A>
+      "java.lang.Boolean", "kotlin.Boolean", "Boolean" -> Arb.boolean() as Arb<A>
       else -> null
    }
 }

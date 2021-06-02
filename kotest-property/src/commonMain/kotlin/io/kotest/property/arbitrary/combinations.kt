@@ -84,7 +84,7 @@ fun <A> Arb.Companion.choose(a: Pair<Int, Arb<A>>, b: Pair<Int, Arb<A>>, vararg 
    }
 
    return arbitrary(
-      edgecaseFn = { allArbs.edgecase(it) },
+      edgeCaseFn = { allArbs.edgeCase(it) },
       sampleFn = { rs ->
          val n = rs.random.nextInt(1, total + 1)
          val arb = pick(n, allPairs)
@@ -110,36 +110,36 @@ fun <A> Arb.Companion.subsequence(list: List<A>): Arb<List<A>> = arbitrary {
 }
 
 /**
- * Uses the Arbs provided to randomly generate the next element.
- * The returned Arb's edgecases contains the edgecases of the input arbs.
+ * Uses the [Arb]s provided to randomly generate the next element.
+ * The returned [Arb]'s edge cases contains the edge cases of the input [Arb]s.
  *
  * The input must be non-empty.
- * The input arbs must be infinite.
+ * The input [Arb]s must be infinite.
  *
- * @return A new Arb<A> that will randomly select values from the provided Arbs, and combine all of the provided
- * Arbs edgecases
+ * @return A new [Arb]<A> that will randomly select values from the provided Arbs, and combine all of the provided
+ * [Arb]s edge cases
  */
 fun <A> Arb.Companion.choice(arb: Arb<A>, vararg arbs: Arb<A>): Arb<A> {
    val arbList = listOf(arb, *arbs)
    return arbitrary(
-      edgecaseFn = { arbList.edgecase(it) },
+      edgeCaseFn = { arbList.edgeCase(it) },
       sampleFn = { arbList.random(it.random).next(it) }
    )
 }
 
 /**
- * Uses the Arbs provided to randomly generate the next element.
- * The returned Arb's edgecases contains the edgecases of the input arbs.
- * The input arbs must be infinite.
+ * Uses the [Arb]s provided to randomly generate the next element.
+ * The returned [Arb]'s edge cases contains the edge cases of the input [Arb]s.
+ * The input [Arb]s must be infinite.
  *
  * @throws IllegalArgumentException if no arbs have been passed to this function
  *
- * @return A new Arb<A> that will randomly select values from the provided Arbs, and combine all of the provided
- * Arbs edgecases
+ * @return A new [Arb]<A> that will randomly select values from the provided [Arb]s, and combine all of the provided
+ * [Arb]s edge cases
  */
 fun <A> Arb.Companion.choice(arbs: List<Arb<A>>): Arb<A> {
    return arbitrary(
-      edgecaseFn = { arbs.edgecase(it) },
+      edgeCaseFn = { arbs.edgeCase(it) },
       sampleFn = { arbs.random(it.random).next(it) }
    )
 }

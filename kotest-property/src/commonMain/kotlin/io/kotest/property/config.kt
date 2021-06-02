@@ -13,8 +13,12 @@ object PropertyTesting {
    var shouldPrintGeneratedValues: Boolean = sysprop("kotest.proptest.output.generated-values", "false") == "true"
    var shouldPrintShrinkSteps: Boolean = sysprop("kotest.proptest.output.shrink-steps", "true") == "true"
    var defaultIterationCount: Int = sysprop("kotest.proptest.default.iteration.count", "1000").toInt()
-   var edgecasesGenerationProbability: Double = sysprop("kotest.proptest.arb.edgecases-generation-probability", "0.02").toDouble()
-   var edgecasesBindDeterminism: Double = sysprop("kotest.proptest.arb.edgecases-bind-determinism", "0.9").toDouble()
+   var edgeCasesGenerationProbability: Double = sysprop("kotest.proptest.arb.edgecases-generation-probability", "0.02").toDouble()
+   @Deprecated("use edgeCasesGenerationProbability", ReplaceWith("edgeCasesGenerationProbability"))
+   var edgecasesGenerationProbability: Double = edgeCasesGenerationProbability
+   var edgeCasesBindDeterminism: Double = sysprop("kotest.proptest.arb.edgecases-bind-determinism", "0.9").toDouble()
+   @Deprecated("use edgeCasesBindDeterminism", ReplaceWith("edgeCasesBindDeterminism"))
+   var edgecasesBindDeterminism: Double = edgeCasesBindDeterminism
 }
 
 /**
@@ -44,7 +48,7 @@ fun calculateMinimumIterations(vararg gens: Gen<*>): Int {
 }
 
 fun EdgeConfig.Companion.default(): EdgeConfig = EdgeConfig(
-   edgecasesGenerationProbability = PropertyTesting.edgecasesGenerationProbability
+   edgeCasesGenerationProbability = PropertyTesting.edgeCasesGenerationProbability
 )
 
 data class PropTest(

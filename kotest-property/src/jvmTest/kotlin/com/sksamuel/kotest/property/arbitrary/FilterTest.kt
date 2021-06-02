@@ -10,29 +10,29 @@ import io.kotest.property.Sample
 import io.kotest.property.arbitrary.filter
 import io.kotest.property.arbitrary.int
 import io.kotest.property.arbitrary.take
-import io.kotest.property.arbitrary.withEdgecases
+import io.kotest.property.arbitrary.withEdgeCases
 
 class FilterTest : FunSpec({
 
    test("should filter elements") {
-      Arb.int(1..10).withEdgecases(2, 4, 6).filter { it % 2 == 0 }
+      Arb.int(1..10).withEdgeCases(2, 4, 6).filter { it % 2 == 0 }
          .take(1000, RandomSource.seeded(3242344L))
          .toList().distinct().sorted() shouldContainExactly listOf(2, 4, 6, 8, 10)
    }
 
-   test("should filter edgecases") {
-      val arb = Arb.int(1..10).withEdgecases(1, 2, 3).filter { it % 2 == 0 }
-      val edgecases = arb
-         .generate(RandomSource.seeded(1234L), EdgeConfig(edgecasesGenerationProbability = 1.0))
+   test("should filter edge cases") {
+      val arb = Arb.int(1..10).withEdgeCases(1, 2, 3).filter { it % 2 == 0 }
+      val edgeCases = arb
+         .generate(RandomSource.seeded(1234L), EdgeConfig(edgeCasesGenerationProbability = 1.0))
          .take(5)
          .map { it.value }
          .toList()
-      edgecases shouldContainExactly listOf(2, 2, 2, 2, 2)
+      edgeCases shouldContainExactly listOf(2, 2, 2, 2, 2)
    }
 
    test("should be stack safe") {
       val arb = object : Arb<Int>() {
-         override fun edgecase(rs: RandomSource): Int? = null
+         override fun edgeCase(rs: RandomSource): Int? = null
          override fun sample(rs: RandomSource): Sample<Int> = Sample(rs.random.nextInt())
       }
 

@@ -420,22 +420,22 @@ private fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, T> Arb.Companion.bindN(
 
    return object : Arb<T>() {
 
-      override fun edgecase(rs: RandomSource): T? {
+      override fun edgeCase(rs: RandomSource): T? {
          return bindFn(
-            arbA.edgecase(rs) ?: arbA.next(rs),
-            arbB.edgecase(rs) ?: arbB.next(rs),
-            arbC.edgecase(rs) ?: arbC.next(rs),
-            arbD.edgecase(rs) ?: arbD.next(rs),
-            arbE.edgecase(rs) ?: arbE.next(rs),
-            arbF.edgecase(rs) ?: arbF.next(rs),
-            arbG.edgecase(rs) ?: arbG.next(rs),
-            arbH.edgecase(rs) ?: arbH.next(rs),
-            arbI.edgecase(rs) ?: arbI.next(rs),
-            arbJ.edgecase(rs) ?: arbJ.next(rs),
-            arbK.edgecase(rs) ?: arbK.next(rs),
-            arbL.edgecase(rs) ?: arbL.next(rs),
-            arbM.edgecase(rs) ?: arbM.next(rs),
-            arbN.edgecase(rs) ?: arbN.next(rs),
+            arbA.edgeCase(rs) ?: arbA.next(rs),
+            arbB.edgeCase(rs) ?: arbB.next(rs),
+            arbC.edgeCase(rs) ?: arbC.next(rs),
+            arbD.edgeCase(rs) ?: arbD.next(rs),
+            arbE.edgeCase(rs) ?: arbE.next(rs),
+            arbF.edgeCase(rs) ?: arbF.next(rs),
+            arbG.edgeCase(rs) ?: arbG.next(rs),
+            arbH.edgeCase(rs) ?: arbH.next(rs),
+            arbI.edgeCase(rs) ?: arbI.next(rs),
+            arbJ.edgeCase(rs) ?: arbJ.next(rs),
+            arbK.edgeCase(rs) ?: arbK.next(rs),
+            arbL.edgeCase(rs) ?: arbL.next(rs),
+            arbM.edgeCase(rs) ?: arbM.next(rs),
+            arbN.edgeCase(rs) ?: arbN.next(rs),
          )
       }
 
