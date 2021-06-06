@@ -86,7 +86,7 @@ inline fun <reified T : Throwable> shouldNotThrowUnit(block: () -> Unit) = shoul
  *
  * @see [shouldThrowUnit]
  */
-inline fun <reified T : Throwable> shouldThrow(block: () -> Any?): T {
+inline fun <reified T : Throwable> shouldThrow(block: () -> Unit): T {
    assertionCounter.inc()
    val expectedExceptionClass = T::class
    val thrownThrowable = try {
@@ -133,7 +133,7 @@ inline fun <reified T : Throwable> shouldThrow(block: () -> Any?): T {
  *
  * @see [shouldNotThrowUnit]
  */
-inline fun <reified T : Throwable> shouldNotThrow(block: () -> Any?) {
+inline fun <reified T : Throwable> shouldNotThrow(block: () -> Unit) {
    assertionCounter.inc()
    val thrown = try {
       block()

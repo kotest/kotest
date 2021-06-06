@@ -20,6 +20,6 @@ import io.kotest.assertions.throwables.shouldThrow
  * @see shouldThrow
  * @see shouldThrowExactly
  */
-inline fun shouldFail(block: () -> Any?): AssertionError = shouldThrow(block)
+inline fun shouldFail(block: () -> Unit): AssertionError = shouldThrow(block)
 
 fun fail(msg: String): Nothing = throw failure(msg)
