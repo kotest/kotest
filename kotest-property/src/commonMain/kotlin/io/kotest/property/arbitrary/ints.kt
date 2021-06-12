@@ -45,10 +45,10 @@ fun Arb.Companion.int(range: IntRange = Int.MIN_VALUE..Int.MAX_VALUE): Arb<Int> 
  */
 fun Arb.Companion.positiveInt(max: Int = Int.MAX_VALUE) = int(1, max)
 
-@Deprecated("use positiveInt", ReplaceWith("positiveInt"))
+@Deprecated("use positiveInt", ReplaceWith("positiveInt(max)"))
 fun Arb.Companion.positiveInts(max: Int = Int.MAX_VALUE) = positiveInt(max)
 
-@Deprecated("use positiveInt", ReplaceWith("positiveInt"))
+@Deprecated("use positiveInt", ReplaceWith("positiveInt(max)"))
 fun Arb.Companion.nats(max: Int = Int.MAX_VALUE) = positiveInt(max)
 
 /**
@@ -63,7 +63,7 @@ fun Arb.Companion.nonNegativeInt(max: Int = Int.MAX_VALUE) = int(0, max)
  */
 fun Arb.Companion.negativeInt(min: Int = Int.MIN_VALUE) = int(min, -1)
 
-@Deprecated("use negativeInt", ReplaceWith("negativeInt"))
+@Deprecated("use negativeInt", ReplaceWith("negativeInt(min)"))
 fun Arb.Companion.negativeInts(min: Int = Int.MIN_VALUE) = negativeInt(min)
 
 /**

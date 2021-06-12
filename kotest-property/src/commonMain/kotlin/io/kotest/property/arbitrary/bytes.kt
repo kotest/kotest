@@ -34,7 +34,7 @@ fun Arb.Companion.negativeByte(min: Byte = Byte.MIN_VALUE): Arb<Byte> = byte(min
 fun Arb.Companion.byteArray(length: Gen<Int>, content: Arb<Byte>): Arb<ByteArray> =
    toPrimitiveArray(length, content, Collection<Byte>::toByteArray)
 
-@Deprecated("use byteArray", ReplaceWith("byteArray"))
+@Deprecated("use byteArray", ReplaceWith("byteArray(generateArrayLength, generateContents)"))
 fun Arb.Companion.byteArrays(generateArrayLength: Gen<Int>, generateContents: Arb<Byte>): Arb<ByteArray> =
    byteArray(generateArrayLength, generateContents)
 

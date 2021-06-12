@@ -19,7 +19,7 @@ tailrec fun <A> List<Arb<A>>.edgeCase(rs: RandomSource): A? {
    }
 }
 
-@Deprecated("use edgeCase", ReplaceWith("edgeCase"))
+@Deprecated("use edgeCase", ReplaceWith("edgeCase(rs)"))
 fun <A> List<Arb<A>>.edgecase(rs: RandomSource): A? = edgeCase(rs)
 
 /**
@@ -33,7 +33,7 @@ fun <A> Arb<A>.edgeCases(iterations: Int = 100, rs: RandomSource = RandomSource.
       .map { it.value }
       .toSet()
 
-@Deprecated("use edgeCases", ReplaceWith("edgeCases"))
+@Deprecated("use edgeCases", ReplaceWith("edgeCases(iterations, rs)"))
 fun <A> Arb<A>.edgecases(iterations: Int = 100, rs: RandomSource = RandomSource.default()): Set<A> =
    edgeCases(iterations, rs)
 
@@ -42,7 +42,7 @@ fun <A> Arb<A>.edgecases(iterations: Int = 100, rs: RandomSource = RandomSource.
  */
 fun <A> Arb<A>.withEdgeCases(edgeCases: List<A>): Arb<A> = arbitrary(edgeCases) { this.next(it) }
 
-@Deprecated("use withEdgeCases", ReplaceWith("withEdgeCases"))
+@Deprecated("use withEdgeCases", ReplaceWith("withEdgeCases(edgecases)"))
 fun <A> Arb<A>.withEdgecases(edgecases: List<A>): Arb<A> = withEdgeCases(edgecases)
 
 /**
@@ -50,7 +50,7 @@ fun <A> Arb<A>.withEdgecases(edgecases: List<A>): Arb<A> = withEdgeCases(edgecas
  */
 fun <A> Arb<A>.withEdgeCases(vararg edgeCases: A): Arb<A> = withEdgeCases(edgeCases.toList())
 
-@Deprecated("use withEdgeCases", ReplaceWith("withEdgeCases"))
+@Deprecated("use withEdgeCases", ReplaceWith("withEdgeCases(edgecases)"))
 fun <A> Arb<A>.withEdgecases(vararg edgecases: A): Arb<A> = withEdgeCases(edgecases.toList())
 
 /**
@@ -61,5 +61,5 @@ fun <A> Arb<A>.modifyEdgeCases(f: (A) -> A?): Arb<A> = object : Arb<A>() {
    override fun sample(rs: RandomSource): Sample<A> = this@modifyEdgeCases.sample(rs)
 }
 
-@Deprecated("use modifyEdgeCases", ReplaceWith("modifyEdgeCases"))
+@Deprecated("use modifyEdgeCases", ReplaceWith("modifyEdgeCases(f)"))
 fun <A> Arb<A>.modifyEdgecases(f: (A) -> A?): Arb<A> = modifyEdgeCases(f)

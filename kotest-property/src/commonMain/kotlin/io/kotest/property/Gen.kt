@@ -92,7 +92,7 @@ abstract class Arb<out A> : Gen<A>() {
     */
    abstract fun edgeCase(rs: RandomSource): A?
 
-   @Deprecated("use edgeCase", ReplaceWith("edgeCase"))
+   @Deprecated("use edgeCase", ReplaceWith("edgeCase(rs)"))
    open fun edgecase(rs: RandomSource): A? = edgeCase(rs)
 
    /**

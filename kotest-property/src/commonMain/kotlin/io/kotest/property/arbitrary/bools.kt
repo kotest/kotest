@@ -8,7 +8,7 @@ import io.kotest.property.Gen
  */
 fun Arb.Companion.boolean(): Arb<Boolean> = arbitrary(listOf(true, false)) { it.random.nextBoolean() }
 
-@Deprecated("use boolean", ReplaceWith("boolean"))
+@Deprecated("use boolean", ReplaceWith("boolean()"))
 fun Arb.Companion.bool(): Arb<Boolean> = boolean()
 
 /**
