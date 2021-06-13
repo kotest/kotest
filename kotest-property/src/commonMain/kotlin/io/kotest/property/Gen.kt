@@ -27,7 +27,7 @@ sealed class Gen<out A> {
     * Returns values from this generator as a lazily generated sequence.
     *
     * If this gen is an [Arb], then each value will either be a sample or an edge case. The bias
-    * towards edge cases or samples is given by the value of [EdgeConfig.edgeCasesGenerationProbability]
+    * towards edge cases or samples is given by the value of [EdgeConfig.edgecasesGenerationProbability]
     * inside the [edgeConfig] parameter.
     *
     * If this gen is an [Exhaustive], then the returned values will iterate in turn, repeating
@@ -42,9 +42,9 @@ sealed class Gen<out A> {
          is Arb -> {
             val samples = this.samples(rs).iterator()
             generateSequence {
-               val isEdgeCase = rs.random.nextDouble(0.0, 1.0) < edgeConfig.edgeCasesGenerationProbability
+               val isEdgeCase = rs.random.nextDouble(0.0, 1.0) < edgeConfig.edgecasesGenerationProbability
                if (isEdgeCase) {
-                  this.edgeCase(rs)?.asSample() ?: samples.next()
+                  this.edgecase(rs)?.asSample() ?: samples.next()
                } else samples.next()
             }
          }
@@ -67,7 +67,7 @@ sealed class Gen<out A> {
 /**
  * An [Arb] (short for arbitrary) is a generator of values in two categories: edge cases and samples.
  *
- * Edgecases are values that are a common source of bugs. For example, a function using ints is
+ * Edge cases are values that are a common source of bugs. For example, a function using ints is
  * more likely to fail for common edge cases like zero, minus 1, positive 1, [Int.MAX_VALUE] and [Int.MIN_VALUE]
  * rather than random values like 965489. Therefore it is useful that we try to include such values
  * rather than relying entirely on random values which are unlikely to generate these.
@@ -90,10 +90,7 @@ abstract class Arb<out A> : Gen<A>() {
     * If this arb provides multiple edge cases, then one should be chosen randomly.
     * Can return null if no edge cases are available.
     */
-   abstract fun edgeCase(rs: RandomSource): A?
-
-   @Deprecated("use edgeCase", ReplaceWith("edgeCase(rs)"))
-   open fun edgecase(rs: RandomSource): A? = edgeCase(rs)
+   abstract fun edgecase(rs: RandomSource): A?
 
    /**
     * Returns a single random [Sample] from this [Arb] using the supplied random source.
@@ -156,13 +153,13 @@ fun <A> A.asSample(): Sample<A> = Sample(this)
 fun <A> sampleOf(a: A, shrinker: Shrinker<A>) = Sample(a, shrinker.rtree(a))
 
 data class EdgeConfig(
-   val edgeCasesGenerationProbability: Double = PropertyTesting.edgeCasesGenerationProbability
+   val edgecasesGenerationProbability: Double = PropertyTesting.edgecasesGenerationProbability
 ) {
    companion object;
 
    init {
-      check(edgeCasesGenerationProbability in 0.0..1.0) {
-         "provided edgeCasesProbability $edgeCasesGenerationProbability is not between 0.0 and 1.0"
+      check(edgecasesGenerationProbability in 0.0..1.0) {
+         "provided edgecasesProbability $edgecasesGenerationProbability is not between 0.0 and 1.0"
       }
    }
 }

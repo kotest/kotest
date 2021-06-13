@@ -6,7 +6,7 @@ import io.kotest.property.Sample
 
 /**
  * Returns a sequence of size [count] from values generated from this arb.
- * Edgecases will be ignored.
+ * Edge cases will be ignored.
  */
 fun <A> Arb<A>.take(count: Int, rs: RandomSource = RandomSource.default()): Sequence<A> =
    samples(rs).map { it.value }.take(count)
@@ -31,7 +31,7 @@ fun <A> Arb.Companion.lazy(f: () -> Arb<A>): Arb<A> {
    val arb by kotlin.lazy { f() }
 
    return object : Arb<A>() {
-      override fun edgeCase(rs: RandomSource): A? = arb.edgeCase(rs)
+      override fun edgecase(rs: RandomSource): A? = arb.edgecase(rs)
       override fun sample(rs: RandomSource): Sample<A> = arb.sample(rs)
    }
 }

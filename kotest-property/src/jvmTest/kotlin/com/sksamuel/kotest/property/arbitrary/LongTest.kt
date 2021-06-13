@@ -7,7 +7,7 @@ import io.kotest.inspectors.forAll
 import io.kotest.matchers.longs.shouldBeBetween
 import io.kotest.matchers.shouldBe
 import io.kotest.property.Arb
-import io.kotest.property.arbitrary.edgeCases
+import io.kotest.property.arbitrary.edgecases
 import io.kotest.property.arbitrary.long
 import io.kotest.property.arbitrary.single
 import io.kotest.property.arbitrary.uLong
@@ -35,7 +35,7 @@ class LongTest : FunSpec({
          checkAll<Long, Long> { min, max ->
             if (min < max) {
                classify("run")
-               Arb.long(min..max).edgeCases().forAll {
+               Arb.long(min..max).edgecases().forAll {
                   it.shouldBeBetween(min, max)
                }
             }
@@ -63,7 +63,7 @@ class ULongTest : FunSpec({
          checkAll<ULong, ULong> { min, max ->
             if (min < max) {
                classify("run")
-               Arb.uLong(min..max).edgeCases().forAll {
+               Arb.uLong(min..max).edgecases().forAll {
                   it.shouldBeBetween(min, max)
                }
             }

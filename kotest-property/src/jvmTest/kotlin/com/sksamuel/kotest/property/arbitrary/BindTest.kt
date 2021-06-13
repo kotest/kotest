@@ -20,7 +20,7 @@ import io.kotest.property.arbitrary.negativeInt
 import io.kotest.property.arbitrary.positiveInt
 import io.kotest.property.arbitrary.string
 import io.kotest.property.arbitrary.take
-import io.kotest.property.arbitrary.withEdgeCases
+import io.kotest.property.arbitrary.withEdgecases
 import io.kotest.property.checkAll
 import io.kotest.matchers.doubles.beGreaterThan as gtd
 
@@ -184,11 +184,11 @@ class BindTest : StringSpec({
    }
 
    "Arb.bind(a,b) should compute the probabilistic edge cases" {
-      val arbA = Arb.string(1).withEdgeCases("a")
-      val arbB = Arb.string(1).withEdgeCases("a", "b")
+      val arbA = Arb.string(1).withEdgecases("a")
+      val arbB = Arb.string(1).withEdgecases("a", "b")
       val arb = Arb.bind(arbA, arbB) { a, b -> a + b }
       val edgeCases = arb
-         .generate(RandomSource.seeded(1234L), EdgeConfig(edgeCasesGenerationProbability = 1.0))
+         .generate(RandomSource.seeded(1234L), EdgeConfig(edgecasesGenerationProbability = 1.0))
          .take(5)
          .map { it.value }
          .toList()
@@ -202,12 +202,12 @@ class BindTest : StringSpec({
    }
 
    "Arb.bind(a,b,c) should compute probabilistic edge cases" {
-      val arbA = Arb.string(1).withEdgeCases("a")
-      val arbB = Arb.string(1).withEdgeCases("a", "b")
-      val arbC = Arb.string(1).withEdgeCases(emptyList())
+      val arbA = Arb.string(1).withEdgecases("a")
+      val arbB = Arb.string(1).withEdgecases("a", "b")
+      val arbC = Arb.string(1).withEdgecases(emptyList())
       val arb = Arb.bind(arbA, arbB, arbC) { a, b, c -> a + b + c }
       val edgeCases = arb
-         .generate(RandomSource.seeded(1234L), EdgeConfig(edgeCasesGenerationProbability = 1.0))
+         .generate(RandomSource.seeded(1234L), EdgeConfig(edgecasesGenerationProbability = 1.0))
          .take(5)
          .map { it.value }
          .toList()
@@ -221,13 +221,13 @@ class BindTest : StringSpec({
    }
 
    "Arb.bind(a,b,c,d) should compute probabilistic edge cases" {
-      val arbA = Arb.string(1).withEdgeCases("a")
-      val arbB = Arb.string(1).withEdgeCases("a", "b")
-      val arbC = Arb.string(1).withEdgeCases("a", "b")
-      val arbD = Arb.string(1).withEdgeCases(emptyList())
+      val arbA = Arb.string(1).withEdgecases("a")
+      val arbB = Arb.string(1).withEdgecases("a", "b")
+      val arbC = Arb.string(1).withEdgecases("a", "b")
+      val arbD = Arb.string(1).withEdgecases(emptyList())
       val arb = Arb.bind(arbA, arbB, arbC, arbD) { a, b, c, d -> "$a$b$c$d" }
       val edgeCases = arb
-         .generate(RandomSource.seeded(1234L), EdgeConfig(edgeCasesGenerationProbability = 1.0))
+         .generate(RandomSource.seeded(1234L), EdgeConfig(edgecasesGenerationProbability = 1.0))
          .take(5)
          .map { it.value }
          .toList()
@@ -241,14 +241,14 @@ class BindTest : StringSpec({
    }
 
    "Arb.bind(a,b,c,d,e) should compute probabilistic edge cases" {
-      val arbA = Arb.string(1).withEdgeCases("a")
-      val arbB = Arb.string(1).withEdgeCases("a", "b")
-      val arbC = Arb.string(1).withEdgeCases(emptyList())
-      val arbD = Arb.string(1).withEdgeCases("a", "b")
-      val arbE = Arb.string(1).withEdgeCases("a", "b")
+      val arbA = Arb.string(1).withEdgecases("a")
+      val arbB = Arb.string(1).withEdgecases("a", "b")
+      val arbC = Arb.string(1).withEdgecases(emptyList())
+      val arbD = Arb.string(1).withEdgecases("a", "b")
+      val arbE = Arb.string(1).withEdgecases("a", "b")
       val arb = Arb.bind(arbA, arbB, arbC, arbD, arbE) { a, b, c, d, e -> "$a$b$c$d$e" }
       val edgeCases = arb
-         .generate(RandomSource.seeded(1234L), EdgeConfig(edgeCasesGenerationProbability = 1.0))
+         .generate(RandomSource.seeded(1234L), EdgeConfig(edgecasesGenerationProbability = 1.0))
          .take(5)
          .map { it.value }
          .toList()
@@ -263,15 +263,15 @@ class BindTest : StringSpec({
 
 
    "Arb.bind(a,b,c,d,e,f) should compute probabilistic edge cases" {
-      val arbA = Arb.string(1).withEdgeCases("a", "b")
-      val arbB = Arb.string(1).withEdgeCases("a", "b")
-      val arbC = Arb.string(1).withEdgeCases(emptyList())
-      val arbD = Arb.string(1).withEdgeCases("a", "b")
-      val arbE = Arb.string(1).withEdgeCases("a", "b")
-      val arbF = Arb.string(1).withEdgeCases(emptyList())
+      val arbA = Arb.string(1).withEdgecases("a", "b")
+      val arbB = Arb.string(1).withEdgecases("a", "b")
+      val arbC = Arb.string(1).withEdgecases(emptyList())
+      val arbD = Arb.string(1).withEdgecases("a", "b")
+      val arbE = Arb.string(1).withEdgecases("a", "b")
+      val arbF = Arb.string(1).withEdgecases(emptyList())
       val arb = Arb.bind(arbA, arbB, arbC, arbD, arbE, arbF) { a, b, c, d, e, f -> "$a$b$c$d$e$f" }
       val edgeCases = arb
-         .generate(RandomSource.seeded(1234L), EdgeConfig(edgeCasesGenerationProbability = 1.0))
+         .generate(RandomSource.seeded(1234L), EdgeConfig(edgecasesGenerationProbability = 1.0))
          .take(5)
          .map { it.value }
          .toList()
@@ -286,16 +286,16 @@ class BindTest : StringSpec({
 
 
    "Arb.bind(a,b,c,d,e,f,g) should compute probabilistic edge cases" {
-      val arbA = Arb.string(1).withEdgeCases(emptyList())
-      val arbB = Arb.string(1).withEdgeCases("a", "b")
-      val arbC = Arb.string(1).withEdgeCases("a")
-      val arbD = Arb.string(1).withEdgeCases("a", "b")
-      val arbE = Arb.string(1).withEdgeCases("a", "b")
-      val arbF = Arb.string(1).withEdgeCases(emptyList())
-      val arbG = Arb.string(1).withEdgeCases("a", "b")
+      val arbA = Arb.string(1).withEdgecases(emptyList())
+      val arbB = Arb.string(1).withEdgecases("a", "b")
+      val arbC = Arb.string(1).withEdgecases("a")
+      val arbD = Arb.string(1).withEdgecases("a", "b")
+      val arbE = Arb.string(1).withEdgecases("a", "b")
+      val arbF = Arb.string(1).withEdgecases(emptyList())
+      val arbG = Arb.string(1).withEdgecases("a", "b")
       val arb = Arb.bind(arbA, arbB, arbC, arbD, arbE, arbF, arbG) { a, b, c, d, e, f, g -> "$a$b$c$d$e$f$g" }
       val edgeCases = arb
-         .generate(RandomSource.seeded(1234L), EdgeConfig(edgeCasesGenerationProbability = 1.0))
+         .generate(RandomSource.seeded(1234L), EdgeConfig(edgecasesGenerationProbability = 1.0))
          .take(5)
          .map { it.value }
          .toList()
@@ -310,18 +310,18 @@ class BindTest : StringSpec({
 
 
    "Arb.bind(a,b,c,d,e,f,g,h) should compute probabilistic edge cases" {
-      val arbA = Arb.string(1).withEdgeCases("a", "b")
-      val arbB = Arb.string(1).withEdgeCases("a")
-      val arbC = Arb.string(1).withEdgeCases("a", "b")
-      val arbD = Arb.string(1).withEdgeCases("a", "b")
-      val arbE = Arb.string(1).withEdgeCases(emptyList())
-      val arbF = Arb.string(1).withEdgeCases("a", "b")
-      val arbG = Arb.string(1).withEdgeCases("a", "b")
-      val arbH = Arb.string(1).withEdgeCases(emptyList())
+      val arbA = Arb.string(1).withEdgecases("a", "b")
+      val arbB = Arb.string(1).withEdgecases("a")
+      val arbC = Arb.string(1).withEdgecases("a", "b")
+      val arbD = Arb.string(1).withEdgecases("a", "b")
+      val arbE = Arb.string(1).withEdgecases(emptyList())
+      val arbF = Arb.string(1).withEdgecases("a", "b")
+      val arbG = Arb.string(1).withEdgecases("a", "b")
+      val arbH = Arb.string(1).withEdgecases(emptyList())
       val arb =
          Arb.bind(arbA, arbB, arbC, arbD, arbE, arbF, arbG, arbH) { a, b, c, d, e, f, g, h -> "$a$b$c$d$e$f$g$h" }
       val edgeCases = arb
-         .generate(RandomSource.seeded(1234L), EdgeConfig(edgeCasesGenerationProbability = 1.0))
+         .generate(RandomSource.seeded(1234L), EdgeConfig(edgecasesGenerationProbability = 1.0))
          .take(5)
          .map { it.value }
          .toList()
@@ -335,15 +335,15 @@ class BindTest : StringSpec({
    }
 
    "Arb.bind(a,b,c,d,e,f,g,h,i) should compute probabilistic edge cases" {
-      val arbA = Arb.string(1).withEdgeCases("a", "b")
-      val arbB = Arb.string(1).withEdgeCases(emptyList())
-      val arbC = Arb.string(1).withEdgeCases("a")
-      val arbD = Arb.string(1).withEdgeCases("a", "b")
-      val arbE = Arb.string(1).withEdgeCases("a", "b")
-      val arbF = Arb.string(1).withEdgeCases(emptyList())
-      val arbG = Arb.string(1).withEdgeCases("a", "b")
-      val arbH = Arb.string(1).withEdgeCases("a", "b")
-      val arbI = Arb.string(1).withEdgeCases("a", "b")
+      val arbA = Arb.string(1).withEdgecases("a", "b")
+      val arbB = Arb.string(1).withEdgecases(emptyList())
+      val arbC = Arb.string(1).withEdgecases("a")
+      val arbD = Arb.string(1).withEdgecases("a", "b")
+      val arbE = Arb.string(1).withEdgecases("a", "b")
+      val arbF = Arb.string(1).withEdgecases(emptyList())
+      val arbG = Arb.string(1).withEdgecases("a", "b")
+      val arbH = Arb.string(1).withEdgecases("a", "b")
+      val arbI = Arb.string(1).withEdgecases("a", "b")
       val arb = Arb.bind(
          arbA,
          arbB,
@@ -356,7 +356,7 @@ class BindTest : StringSpec({
          arbI
       ) { a, b, c, d, e, f, g, h, i -> "$a$b$c$d$e$f$g$h$i" }
       val edgeCases = arb
-         .generate(RandomSource.seeded(1234L), EdgeConfig(edgeCasesGenerationProbability = 1.0))
+         .generate(RandomSource.seeded(1234L), EdgeConfig(edgecasesGenerationProbability = 1.0))
          .take(5)
          .map { it.value }
          .toList()
@@ -370,21 +370,21 @@ class BindTest : StringSpec({
    }
 
    "Arb.bind(a,b,c,d,e,f,g,h,i,j) should compute probabilistic edge cases" {
-      val arbA = Arb.string(1).withEdgeCases("a", "b")
-      val arbB = Arb.string(1).withEdgeCases(emptyList())
-      val arbC = Arb.string(1).withEdgeCases("a", "b")
-      val arbD = Arb.string(1).withEdgeCases("a", "b")
-      val arbE = Arb.string(1).withEdgeCases("a")
-      val arbF = Arb.string(1).withEdgeCases("a", "b")
-      val arbG = Arb.string(1).withEdgeCases("a", "b")
-      val arbH = Arb.string(1).withEdgeCases(emptyList())
-      val arbI = Arb.string(1).withEdgeCases("a", "b")
-      val arbJ = Arb.string(1).withEdgeCases("a", "b")
+      val arbA = Arb.string(1).withEdgecases("a", "b")
+      val arbB = Arb.string(1).withEdgecases(emptyList())
+      val arbC = Arb.string(1).withEdgecases("a", "b")
+      val arbD = Arb.string(1).withEdgecases("a", "b")
+      val arbE = Arb.string(1).withEdgecases("a")
+      val arbF = Arb.string(1).withEdgecases("a", "b")
+      val arbG = Arb.string(1).withEdgecases("a", "b")
+      val arbH = Arb.string(1).withEdgecases(emptyList())
+      val arbI = Arb.string(1).withEdgecases("a", "b")
+      val arbJ = Arb.string(1).withEdgecases("a", "b")
       val arb = Arb.bind(arbA, arbB, arbC, arbD, arbE, arbF, arbG, arbH, arbI, arbJ) { a, b, c, d, e, f, g, h, i, j ->
          "$a$b$c$d$e$f$g$h$i$j"
       }
       val edgeCases = arb
-         .generate(RandomSource.seeded(1234L), EdgeConfig(edgeCasesGenerationProbability = 1.0))
+         .generate(RandomSource.seeded(1234L), EdgeConfig(edgecasesGenerationProbability = 1.0))
          .take(5)
          .map { it.value }
          .toList()
@@ -398,23 +398,23 @@ class BindTest : StringSpec({
    }
 
    "Arb.bind(a,b,c,d,e,f,g,h,i,j,k) should compute probabilistic edge cases" {
-      val arbA = Arb.string(1).withEdgeCases("a", "b")
-      val arbB = Arb.string(1).withEdgeCases("a")
-      val arbC = Arb.string(1).withEdgeCases("a", "b")
-      val arbD = Arb.string(1).withEdgeCases("a", "b")
-      val arbE = Arb.string(1).withEdgeCases(emptyList())
-      val arbF = Arb.string(1).withEdgeCases("a", "b")
-      val arbG = Arb.string(1).withEdgeCases("a", "b")
-      val arbH = Arb.string(1).withEdgeCases("a", "b")
-      val arbI = Arb.string(1).withEdgeCases("a", "b")
-      val arbJ = Arb.string(1).withEdgeCases(emptyList())
-      val arbK = Arb.string(1).withEdgeCases("a", "b")
+      val arbA = Arb.string(1).withEdgecases("a", "b")
+      val arbB = Arb.string(1).withEdgecases("a")
+      val arbC = Arb.string(1).withEdgecases("a", "b")
+      val arbD = Arb.string(1).withEdgecases("a", "b")
+      val arbE = Arb.string(1).withEdgecases(emptyList())
+      val arbF = Arb.string(1).withEdgecases("a", "b")
+      val arbG = Arb.string(1).withEdgecases("a", "b")
+      val arbH = Arb.string(1).withEdgecases("a", "b")
+      val arbI = Arb.string(1).withEdgecases("a", "b")
+      val arbJ = Arb.string(1).withEdgecases(emptyList())
+      val arbK = Arb.string(1).withEdgecases("a", "b")
       val arb =
          Arb.bind(arbA, arbB, arbC, arbD, arbE, arbF, arbG, arbH, arbI, arbJ, arbK) { a, b, c, d, e, f, g, h, i, j, k ->
             "$a$b$c$d$e$f$g$h$i$j$k"
          }
       val edgeCases = arb
-         .generate(RandomSource.seeded(1234L), EdgeConfig(edgeCasesGenerationProbability = 1.0))
+         .generate(RandomSource.seeded(1234L), EdgeConfig(edgecasesGenerationProbability = 1.0))
          .take(5)
          .map { it.value }
          .toList()
@@ -428,18 +428,18 @@ class BindTest : StringSpec({
    }
 
    "Arb.bind(a,b,c,d,e,f,g,h,i,j,k,l) should compute probabilistic edge cases" {
-      val arbA = Arb.string(1).withEdgeCases("a", "b")
-      val arbB = Arb.string(1).withEdgeCases("a", "b")
-      val arbC = Arb.string(1).withEdgeCases(emptyList())
-      val arbD = Arb.string(1).withEdgeCases("a", "b")
-      val arbE = Arb.string(1).withEdgeCases("a", "b")
-      val arbF = Arb.string(1).withEdgeCases("a", "b")
-      val arbG = Arb.string(1).withEdgeCases("a", "b")
-      val arbH = Arb.string(1).withEdgeCases("a", "b")
-      val arbI = Arb.string(1).withEdgeCases("a", "b")
-      val arbJ = Arb.string(1).withEdgeCases("a")
-      val arbK = Arb.string(1).withEdgeCases("a", "b")
-      val arbL = Arb.string(1).withEdgeCases(emptyList())
+      val arbA = Arb.string(1).withEdgecases("a", "b")
+      val arbB = Arb.string(1).withEdgecases("a", "b")
+      val arbC = Arb.string(1).withEdgecases(emptyList())
+      val arbD = Arb.string(1).withEdgecases("a", "b")
+      val arbE = Arb.string(1).withEdgecases("a", "b")
+      val arbF = Arb.string(1).withEdgecases("a", "b")
+      val arbG = Arb.string(1).withEdgecases("a", "b")
+      val arbH = Arb.string(1).withEdgecases("a", "b")
+      val arbI = Arb.string(1).withEdgecases("a", "b")
+      val arbJ = Arb.string(1).withEdgecases("a")
+      val arbK = Arb.string(1).withEdgecases("a", "b")
+      val arbL = Arb.string(1).withEdgecases(emptyList())
       val arb = Arb.bind(
          arbA,
          arbB,
@@ -458,7 +458,7 @@ class BindTest : StringSpec({
       }
 
       val edgeCases = arb
-         .generate(RandomSource.seeded(1234L), EdgeConfig(edgeCasesGenerationProbability = 1.0))
+         .generate(RandomSource.seeded(1234L), EdgeConfig(edgecasesGenerationProbability = 1.0))
          .take(5)
          .map { it.value }
          .toList()
@@ -472,19 +472,19 @@ class BindTest : StringSpec({
    }
 
    "Arb.bind(a,b,c,d,e,f,g,h,i,j,k,l,m) should compute probabilistic edge cases" {
-      val arbA = Arb.string(1).withEdgeCases(emptyList())
-      val arbB = Arb.string(1).withEdgeCases("a", "b")
-      val arbC = Arb.string(1).withEdgeCases("a", "b")
-      val arbD = Arb.string(1).withEdgeCases("a")
-      val arbE = Arb.string(1).withEdgeCases("a", "b")
-      val arbF = Arb.string(1).withEdgeCases("a", "b")
-      val arbG = Arb.string(1).withEdgeCases(emptyList())
-      val arbH = Arb.string(1).withEdgeCases("a", "b")
-      val arbI = Arb.string(1).withEdgeCases("a", "b")
-      val arbJ = Arb.string(1).withEdgeCases("a")
-      val arbK = Arb.string(1).withEdgeCases("a", "b")
-      val arbL = Arb.string(1).withEdgeCases("a", "b")
-      val arbM = Arb.string(1).withEdgeCases(emptyList())
+      val arbA = Arb.string(1).withEdgecases(emptyList())
+      val arbB = Arb.string(1).withEdgecases("a", "b")
+      val arbC = Arb.string(1).withEdgecases("a", "b")
+      val arbD = Arb.string(1).withEdgecases("a")
+      val arbE = Arb.string(1).withEdgecases("a", "b")
+      val arbF = Arb.string(1).withEdgecases("a", "b")
+      val arbG = Arb.string(1).withEdgecases(emptyList())
+      val arbH = Arb.string(1).withEdgecases("a", "b")
+      val arbI = Arb.string(1).withEdgecases("a", "b")
+      val arbJ = Arb.string(1).withEdgecases("a")
+      val arbK = Arb.string(1).withEdgecases("a", "b")
+      val arbL = Arb.string(1).withEdgecases("a", "b")
+      val arbM = Arb.string(1).withEdgecases(emptyList())
       val arb = Arb.bind(
          arbA,
          arbB,
@@ -504,7 +504,7 @@ class BindTest : StringSpec({
       }
 
       val edgeCases = arb
-         .generate(RandomSource.seeded(1234L), EdgeConfig(edgeCasesGenerationProbability = 1.0))
+         .generate(RandomSource.seeded(1234L), EdgeConfig(edgecasesGenerationProbability = 1.0))
          .take(5)
          .map { it.value }
          .toList()
@@ -518,20 +518,20 @@ class BindTest : StringSpec({
    }
 
    "Arb.bind(a,b,c,d,e,f,g,h,i,j,k,l,m,n) should compute probabilistic edge cases" {
-      val arbA = Arb.string(1).withEdgeCases("a")
-      val arbB = Arb.string(1).withEdgeCases("a", "b")
-      val arbC = Arb.string(1).withEdgeCases("a", "b")
-      val arbD = Arb.string(1).withEdgeCases("a", "b")
-      val arbE = Arb.string(1).withEdgeCases("a", "b")
-      val arbF = Arb.string(1).withEdgeCases("a", "b")
-      val arbG = Arb.string(1).withEdgeCases("a", "b")
-      val arbH = Arb.string(1).withEdgeCases(emptyList())
-      val arbI = Arb.string(1).withEdgeCases("a", "b")
-      val arbJ = Arb.string(1).withEdgeCases("a", "b")
-      val arbK = Arb.string(1).withEdgeCases("a", "b")
-      val arbL = Arb.string(1).withEdgeCases("a", "b")
-      val arbM = Arb.string(1).withEdgeCases("a", "b")
-      val arbN = Arb.string(1).withEdgeCases(emptyList())
+      val arbA = Arb.string(1).withEdgecases("a")
+      val arbB = Arb.string(1).withEdgecases("a", "b")
+      val arbC = Arb.string(1).withEdgecases("a", "b")
+      val arbD = Arb.string(1).withEdgecases("a", "b")
+      val arbE = Arb.string(1).withEdgecases("a", "b")
+      val arbF = Arb.string(1).withEdgecases("a", "b")
+      val arbG = Arb.string(1).withEdgecases("a", "b")
+      val arbH = Arb.string(1).withEdgecases(emptyList())
+      val arbI = Arb.string(1).withEdgecases("a", "b")
+      val arbJ = Arb.string(1).withEdgecases("a", "b")
+      val arbK = Arb.string(1).withEdgecases("a", "b")
+      val arbL = Arb.string(1).withEdgecases("a", "b")
+      val arbM = Arb.string(1).withEdgecases("a", "b")
+      val arbN = Arb.string(1).withEdgecases(emptyList())
       val arb = Arb.bind(
          arbA,
          arbB,
@@ -551,7 +551,7 @@ class BindTest : StringSpec({
          "$a$b$c$d$e$f$g$h$i$j$k$l$m$n"
       }
       val edgeCases = arb
-         .generate(RandomSource.seeded(1234L), EdgeConfig(edgeCasesGenerationProbability = 1.0))
+         .generate(RandomSource.seeded(1234L), EdgeConfig(edgecasesGenerationProbability = 1.0))
          .take(5)
          .map { it.value }
          .toList()
@@ -565,11 +565,11 @@ class BindTest : StringSpec({
    }
 
    "Arb.bind list" {
-      val arbs: List<Arb<String>> = generateSequence { Arb.string(1).withEdgeCases("a") }.take(100).toList()
+      val arbs: List<Arb<String>> = generateSequence { Arb.string(1).withEdgecases("a") }.take(100).toList()
       val arb: Arb<String> = Arb.bind(arbs) { it.joinToString("") }
 
       val edgeCases = arb
-         .generate(RandomSource.seeded(1234L), EdgeConfig(edgeCasesGenerationProbability = 1.0))
+         .generate(RandomSource.seeded(1234L), EdgeConfig(edgecasesGenerationProbability = 1.0))
          .take(5)
          .map { it.value }
          .toList()
@@ -591,7 +591,7 @@ class BindTest : StringSpec({
    "Arb.reflectiveBind should generate probabilistic edge cases" {
       val arb = Arb.bind<Wobble>()
       val edgeCases = arb
-         .generate(RandomSource.seeded(1234L), EdgeConfig(edgeCasesGenerationProbability = 1.0))
+         .generate(RandomSource.seeded(1234L), EdgeConfig(edgecasesGenerationProbability = 1.0))
          .take(5)
          .map { it.value }
          .toList()

@@ -18,7 +18,6 @@ fun Arb.Companion.uuid(
    uuidVersion: UUIDVersion = UUIDVersion.V4,
    allowNilValue: Boolean = true
 ): Arb<UUID> {
-
    val edgeCases = if (allowNilValue)
       listOf(UUID.fromString("00000000-0000-0000-0000-000000000000"))
    else emptyList()

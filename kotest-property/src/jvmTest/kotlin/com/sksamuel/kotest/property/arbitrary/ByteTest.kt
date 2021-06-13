@@ -33,7 +33,7 @@ class ByteTest : FunSpec({
          PropTest(iterations = 1000).checkAll<Byte, Byte> { min, max ->
             if (min < max) {
                classify("run")
-               Arb.byte(min, max).edgeCases().forAll {
+               Arb.byte(min, max).edgecases().forAll {
                   it.shouldBeBetween(min, max)
                }
             }
@@ -61,7 +61,7 @@ class UByteTest : FunSpec({
          PropTest(iterations = 1000).checkAll<UByte, UByte> { min, max ->
             if (min < max) {
                classify("run")
-               Arb.uByte(min, max).edgeCases().forAll {
+               Arb.uByte(min, max).edgecases().forAll {
                   it.shouldBeBetween(min, max)
                }
             }

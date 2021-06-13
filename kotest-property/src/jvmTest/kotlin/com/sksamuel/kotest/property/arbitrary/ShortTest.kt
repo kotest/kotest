@@ -33,7 +33,7 @@ class ShortTest : FunSpec({
          PropTest(iterations = 1000).checkAll<Short, Short> { min, max ->
             if (min < max) {
                classify("run")
-               Arb.short(min, max).edgeCases().forAll {
+               Arb.short(min, max).edgecases().forAll {
                   it.shouldBeBetween(min, max)
                }
             }
@@ -61,7 +61,7 @@ class UShortTest : FunSpec({
          PropTest(iterations = 1000).checkAll<UShort, UShort> { min, max ->
             if (min < max) {
                classify("run")
-               Arb.uShort(min, max).edgeCases().forAll {
+               Arb.uShort(min, max).edgecases().forAll {
                   it.shouldBeBetween(min, max)
                }
             }

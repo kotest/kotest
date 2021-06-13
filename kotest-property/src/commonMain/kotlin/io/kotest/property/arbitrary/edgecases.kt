@@ -10,56 +10,40 @@ import io.kotest.property.Sample
  * If the chosen arb has no edge cases, then another arb will be chosen.
  * If all [Arb]s have no edge cases, then returns null.
  */
-tailrec fun <A> List<Arb<A>>.edgeCase(rs: RandomSource): A? {
+tailrec fun <A> List<Arb<A>>.edgecase(rs: RandomSource): A? {
    if (this.isEmpty()) return null
    val shuffled = this.shuffled(rs.random)
-   return when (val edge = shuffled.first().edgeCase(rs)) {
-      null -> this.drop(1).edgeCase(rs)
+   return when (val edge = shuffled.first().edgecase(rs)) {
+      null -> this.drop(1).edgecase(rs)
       else -> edge
    }
 }
-
-@Deprecated("use edgeCase", ReplaceWith("edgeCase(rs)"))
-fun <A> List<Arb<A>>.edgecase(rs: RandomSource): A? = edgeCase(rs)
 
 /**
  * Collects the edge cases from this arb.
  * Will stop after the given number of iterations.
  * This function is mainly used for testing.
  */
-fun <A> Arb<A>.edgeCases(iterations: Int = 100, rs: RandomSource = RandomSource.default()): Set<A> =
-   generate(rs, EdgeConfig(edgeCasesGenerationProbability = 1.0))
+fun <A> Arb<A>.edgecases(iterations: Int = 100, rs: RandomSource = RandomSource.default()): Set<A> =
+   generate(rs, EdgeConfig(edgecasesGenerationProbability = 1.0))
       .take(iterations)
       .map { it.value }
       .toSet()
 
-@Deprecated("use edgeCases", ReplaceWith("edgeCases(iterations, rs)"))
-fun <A> Arb<A>.edgecases(iterations: Int = 100, rs: RandomSource = RandomSource.default()): Set<A> =
-   edgeCases(iterations, rs)
+/**
+ * Returns a new [Arb] with the supplied edge cases replacing any existing edge cases.
+ */
+fun <A> Arb<A>.withEdgecases(edgecases: List<A>): Arb<A> = arbitrary(edgecases) { this.next(it) }
 
 /**
  * Returns a new [Arb] with the supplied edge cases replacing any existing edge cases.
  */
-fun <A> Arb<A>.withEdgeCases(edgeCases: List<A>): Arb<A> = arbitrary(edgeCases) { this.next(it) }
-
-@Deprecated("use withEdgeCases", ReplaceWith("withEdgeCases(edgecases)"))
-fun <A> Arb<A>.withEdgecases(edgecases: List<A>): Arb<A> = withEdgeCases(edgecases)
-
-/**
- * Returns a new [Arb] with the supplied edge cases replacing any existing edge cases.
- */
-fun <A> Arb<A>.withEdgeCases(vararg edgeCases: A): Arb<A> = withEdgeCases(edgeCases.toList())
-
-@Deprecated("use withEdgeCases", ReplaceWith("withEdgeCases(edgecases)"))
-fun <A> Arb<A>.withEdgecases(vararg edgecases: A): Arb<A> = withEdgeCases(edgecases.toList())
+fun <A> Arb<A>.withEdgecases(vararg edgecases: A): Arb<A> = this.withEdgecases(edgecases.toList())
 
 /**
  * Returns a new [Arb] with the edge cases from this arb transformed by the given function [f].
  */
-fun <A> Arb<A>.modifyEdgeCases(f: (A) -> A?): Arb<A> = object : Arb<A>() {
-   override fun edgeCase(rs: RandomSource): A? = this@modifyEdgeCases.edgeCase(rs)?.let(f)
-   override fun sample(rs: RandomSource): Sample<A> = this@modifyEdgeCases.sample(rs)
+fun <A> Arb<A>.modifyEdgecases(f: (A) -> A?): Arb<A> = object : Arb<A>() {
+   override fun edgecase(rs: RandomSource): A? = this@modifyEdgecases.edgecase(rs)?.let(f)
+   override fun sample(rs: RandomSource): Sample<A> = this@modifyEdgecases.sample(rs)
 }
-
-@Deprecated("use modifyEdgeCases", ReplaceWith("modifyEdgeCases(f)"))
-fun <A> Arb<A>.modifyEdgecases(f: (A) -> A?): Arb<A> = modifyEdgeCases(f)

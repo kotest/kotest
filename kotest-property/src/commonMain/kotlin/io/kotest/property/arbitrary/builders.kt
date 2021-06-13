@@ -13,8 +13,8 @@ fun <A> arbitrary(fn: (RandomSource) -> A): Arb<A> =
  * Creates a new [Arb] that performs no shrinking, uses the given edge cases and
  * generates values from the given function.
  */
-fun <A> arbitrary(edgeCases: List<A>, fn: (RandomSource) -> A): Arb<A> = object : Arb<A>() {
-   override fun edgeCase(rs: RandomSource): A? = if (edgeCases.isEmpty()) null else edgeCases.random(rs.random)
+fun <A> arbitrary(edgecases: List<A>, fn: (RandomSource) -> A): Arb<A> = object : Arb<A>() {
+   override fun edgecase(rs: RandomSource): A? = if (edgecases.isEmpty()) null else edgecases.random(rs.random)
    override fun sample(rs: RandomSource): Sample<A> = Sample(fn(rs))
 }
 
@@ -22,32 +22,32 @@ fun <A> arbitrary(edgeCases: List<A>, fn: (RandomSource) -> A): Arb<A> = object 
  * Creates a new [Arb] that performs shrinking using the supplied [Shrinker], uses the given edge cases and
  * generates values from the given function.
  */
-fun <A> arbitrary(edgeCases: List<A>, shrinker: Shrinker<A>, fn: (RandomSource) -> A): Arb<A> = object : Arb<A>() {
-   override fun edgeCase(rs: RandomSource): A? = if (edgeCases.isEmpty()) null else edgeCases.random(rs.random)
+fun <A> arbitrary(edgecases: List<A>, shrinker: Shrinker<A>, fn: (RandomSource) -> A): Arb<A> = object : Arb<A>() {
+   override fun edgecase(rs: RandomSource): A? = if (edgecases.isEmpty()) null else edgecases.random(rs.random)
    override fun sample(rs: RandomSource): Sample<A> = sampleOf(fn(rs), shrinker)
 }
 
 /**
- * Creates a new [Arb] that generates edge cases from the given [edgeCaseFn] function
+ * Creates a new [Arb] that generates edge cases from the given [edgecaseFn] function
  * and generates samples from the given [sampleFn] function.
  */
-fun <A> arbitrary(edgeCaseFn: (RandomSource) -> A?, sampleFn: (RandomSource) -> A): Arb<A> =
+fun <A> arbitrary(edgecaseFn: (RandomSource) -> A?, sampleFn: (RandomSource) -> A): Arb<A> =
    object : Arb<A>() {
-      override fun edgeCase(rs: RandomSource): A? = edgeCaseFn(rs)
+      override fun edgecase(rs: RandomSource): A? = edgecaseFn(rs)
       override fun sample(rs: RandomSource): Sample<A> = Sample(sampleFn(rs))
    }
 
 /**
- * Creates a new [Arb] that generates edge cases from the given [edgeCaseFn] function,
+ * Creates a new [Arb] that generates edge cases from the given [edgecaseFn] function,
  * performs shrinking using the supplied [Shrinker, and generates samples from the given [sampleFn] function.
  */
 fun <A> arbitrary(
-   edgeCaseFn: (RandomSource) -> A?,
+   edgecaseFn: (RandomSource) -> A?,
    shrinker: Shrinker<A>,
    sampleFn: (RandomSource) -> A
 ): Arb<A> =
    object : Arb<A>() {
-      override fun edgeCase(rs: RandomSource): A? = edgeCaseFn(rs)
+      override fun edgecase(rs: RandomSource): A? = edgecaseFn(rs)
       override fun sample(rs: RandomSource): Sample<A> = sampleOf(sampleFn(rs), shrinker)
    }
 

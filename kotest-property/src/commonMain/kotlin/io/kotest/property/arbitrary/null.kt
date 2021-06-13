@@ -33,6 +33,6 @@ fun <A> Arb<A>.orNull(nullProbability: Double): Arb<A?> {
  */
 fun <A> Arb<A>.orNull(isNextNull: (RandomSource) -> Boolean = { it.random.nextBoolean() }): Arb<A?> =
    arbitrary(
-      edgeCaseFn = { this@orNull.edgeCase(it) },
+      edgecaseFn = { this@orNull.edgecase(it) },
       sampleFn = { if (isNextNull(it)) null else this@orNull.next(it) }
    )

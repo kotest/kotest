@@ -6,7 +6,7 @@ import io.kotest.matchers.collections.shouldContainAll
 import io.kotest.matchers.shouldBe
 import io.kotest.property.Arb
 import io.kotest.property.RandomSource
-import io.kotest.property.arbitrary.edgeCases
+import io.kotest.property.arbitrary.edgecases
 import io.kotest.property.arbitrary.instant
 import io.kotest.property.arbitrary.localDate
 import io.kotest.property.arbitrary.localDateTime
@@ -43,11 +43,11 @@ class DateTest : WordSpec({
 
       "Contain Feb 29th if leap year" {
          val leapYear = 2016
-         Arb.localDate(LocalDate.of(leapYear, 1, 1), LocalDate.of(leapYear, 12, 31)).edgeCases().toList() shouldContain LocalDate.of(2016, 2, 29)
+         Arb.localDate(LocalDate.of(leapYear, 1, 1), LocalDate.of(leapYear, 12, 31)).edgecases().toList() shouldContain LocalDate.of(2016, 2, 29)
       }
 
       "Contain the edge cases Feb 28, Jan 01 and Dec 31" {
-         Arb.localDate(LocalDate.of(2019, 1, 1), LocalDate.of(2020, 12, 31)).edgeCases().toList() shouldContainAll listOf(
+         Arb.localDate(LocalDate.of(2019, 1, 1), LocalDate.of(2020, 12, 31)).edgecases().toList() shouldContainAll listOf(
             LocalDate.of(2019, 1, 1),
             LocalDate.of(2020, 12, 31)
          )

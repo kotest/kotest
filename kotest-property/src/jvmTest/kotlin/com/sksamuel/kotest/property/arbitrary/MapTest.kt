@@ -11,7 +11,7 @@ import io.kotest.property.arbitrary.arbitrary
 import io.kotest.property.arbitrary.int
 import io.kotest.property.arbitrary.map
 import io.kotest.property.arbitrary.single
-import io.kotest.property.arbitrary.withEdgeCases
+import io.kotest.property.arbitrary.withEdgecases
 import java.util.concurrent.atomic.AtomicInteger
 
 class MapTest : FunSpec({
@@ -25,8 +25,8 @@ class MapTest : FunSpec({
    }
 
    test("should transform edge cases") {
-      val arb = Arb.int(1, 10).withEdgeCases(1).map { "$it" }
-      arb.generate(RandomSource.default(), EdgeConfig(edgeCasesGenerationProbability = 1.0)).first().value shouldBe "1"
+      val arb = Arb.int(1, 10).withEdgecases(1).map { "$it" }
+      arb.generate(RandomSource.default(), EdgeConfig(edgecasesGenerationProbability = 1.0)).first().value shouldBe "1"
    }
 
    test("should preserve shrinking") {

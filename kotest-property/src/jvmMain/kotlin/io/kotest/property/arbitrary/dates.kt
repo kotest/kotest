@@ -98,9 +98,9 @@ fun Arb.Companion.localDateTime(
 ): Arb<LocalDateTime> {
 
    return arbitrary(
-      edgeCaseFn = {
-         val date = localDate(LocalDate.of(minYear, 1, 1), LocalDate.of(maxYear, 12, 31)).edgeCase(it)
-         val time = localTime().edgeCase(it)
+      edgecaseFn = {
+         val date = localDate(LocalDate.of(minYear, 1, 1), LocalDate.of(maxYear, 12, 31)).edgecase(it)
+         val time = localTime().edgecase(it)
          if (date == null || time == null) null else date.atTime(time)
       },
       sampleFn = {

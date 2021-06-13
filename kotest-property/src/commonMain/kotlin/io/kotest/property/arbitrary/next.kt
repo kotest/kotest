@@ -16,7 +16,7 @@ import io.kotest.property.RandomSource
  * This is useful if you want a randomized value, but don't want to execute a property test over them (for example, by
  * using [checkAll] or [forAll]).
  *
- * IMPORTANT: This will not draw from the [edgeCases] pool. Only random values.
+ * IMPORTANT: This will not draw from the [edgecases] pool. Only random values.
  *
  * ```
  * val gen = Gen.string()

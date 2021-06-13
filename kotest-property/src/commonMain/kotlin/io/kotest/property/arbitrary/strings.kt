@@ -20,9 +20,9 @@ fun Arb.Companion.string(
 ): Arb<String> {
 
    return arbitrary(
-      edgeCaseFn = { rs ->
+      edgecaseFn = { rs ->
          if (minSize == maxSize) null else {
-            val lowCodePoint = codepoints.edgeCase(rs)
+            val lowCodePoint = codepoints.edgecase(rs)
             val min = lowCodePoint?.let { cp -> List(minSize) { cp.asString() }.joinToString("") }
             val minPlus1 = lowCodePoint?.let { cp -> List(minSize + 1) { cp.asString() }.joinToString("") }
             val edgeCases = listOfNotNull(min, minPlus1)

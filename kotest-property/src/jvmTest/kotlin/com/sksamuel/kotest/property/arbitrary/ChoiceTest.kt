@@ -49,7 +49,7 @@ class ChoiceTest : WordSpec({
             arbitrary(listOf(3, 4)) { 6 }
          )
          val edgeCases = arb
-            .generate(RandomSource.seeded(1234L), EdgeConfig(edgeCasesGenerationProbability = 1.0))
+            .generate(RandomSource.seeded(1234L), EdgeConfig(edgecasesGenerationProbability = 1.0))
             .take(10)
             .map { it.value }
             .toList()

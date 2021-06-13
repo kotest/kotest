@@ -10,7 +10,7 @@ import io.kotest.property.PropTestConfig
 import io.kotest.property.ShrinkingMode
 import io.kotest.property.arbitrary.int
 import io.kotest.property.arbitrary.map
-import io.kotest.property.arbitrary.withEdgeCases
+import io.kotest.property.arbitrary.withEdgecases
 import io.kotest.property.exhaustive.constant
 import io.kotest.property.exhaustive.ints
 import io.kotest.property.exhaustive.longs
@@ -53,7 +53,7 @@ class ForNoneTest : FunSpec({
       shouldNotThrowAny {
          forNone(
             2,
-            Arb.int(1..10).withEdgeCases(1, 2, 3, 4, 5, 6, 7, 8, 9, 10)
+            Arb.int(1..10).withEdgecases(1, 2, 3, 4, 5, 6, 7, 8, 9, 10)
          ) { a -> a != a }
       }
    }

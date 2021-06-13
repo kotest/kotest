@@ -33,7 +33,7 @@ class IntTest : FunSpec({
          PropTest(iterations = 1000).checkAll<Int, Int> { min, max ->
             if (min < max) {
                classify("run")
-               Arb.int(min..max).edgeCases().forAll {
+               Arb.int(min..max).edgecases().forAll {
                   it.shouldBeBetween(min, max)
                }
             }
@@ -81,7 +81,7 @@ class UIntTest : FunSpec({
          PropTest(iterations = 1000).checkAll<UInt, UInt> { min, max ->
             if (min < max) {
                classify("run")
-               Arb.uInt(min..max).edgeCases().forAll {
+               Arb.uInt(min..max).edgecases().forAll {
                   it.shouldBeBetween(min, max)
                }
             }
