@@ -90,7 +90,7 @@ module.exports = {
                ],
             },
          ],
-         copyright: `Copyright © ${new Date().getFullYear()} Kotest, Inc. Built with Docusaurus.`,
+         copyright: `Copyright © ${new Date().getFullYear()} Kotest Team. Built with Docusaurus.`,
       },
       prism: {
          additionalLanguages: ['kotlin', 'groovy'],
