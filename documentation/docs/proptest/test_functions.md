@@ -42,7 +42,7 @@ Here is the same example again written in the equivalent way using checkAll.
 class PropertyExample: StringSpec({
    "String size" {
       checkAll<String, String> { a, b ->
-         (a + b).length shouldHaveLength a.length + b.length
+         a + b shouldHaveLength a.length + b.length
       }
    }
 })
