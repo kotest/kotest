@@ -32,7 +32,11 @@ fun Arb.Companion.long(min: Long = Long.MIN_VALUE, max: Long = Long.MAX_VALUE) =
  */
 fun Arb.Companion.long(range: LongRange = Long.MIN_VALUE..Long.MAX_VALUE): Arb<Long> {
    val edgeCases = longArrayOf(range.first, -1, 0, 1, range.last).filter { it in range }.distinct()
-   return arbitrary(edgeCases, LongShrinker(range)) { it.random.nextLong(range) }
+   return arbitrary(edgeCases, LongShrinker(range)) {
+      var value = it.random.nextLong(range)
+      while(value !in range) value = it.random.nextLong(range) // temporary workaround for KT-47304
+      value
+   }
 }
 
 /**
@@ -79,7 +83,11 @@ fun Arb.Companion.uLong(min: ULong = ULong.MIN_VALUE, max: ULong = ULong.MAX_VAL
  */
 fun Arb.Companion.uLong(range: ULongRange = ULong.MIN_VALUE..ULong.MAX_VALUE): Arb<ULong> {
    val edgeCases = listOf(range.first, 1uL, range.last).filter { it in range }.distinct()
-   return arbitrary(edgeCases, ULongShrinker(range)) { it.random.nextULong(range) }
+   return arbitrary(edgeCases, ULongShrinker(range)) {
+      var value = it.random.nextULong(range)
+      while(value !in range) value = it.random.nextULong(range) // temporary workaround for KT-47304
+      value
+   }
 }
 
 /**

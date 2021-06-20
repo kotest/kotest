@@ -56,7 +56,7 @@ class UByteTest : FunSpec({
       }
    }
 
-   test("Arb.ubyte edge cases should respect min and max bounds") {
+   test("Arb.uByte edge cases should respect min and max bounds") {
       checkCoverage("run", 25.0) {
          PropTest(iterations = 1000).checkAll<UByte, UByte> { min, max ->
             if (min < max) {
