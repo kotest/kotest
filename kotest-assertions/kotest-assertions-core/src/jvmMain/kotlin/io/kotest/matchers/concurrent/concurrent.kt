@@ -6,7 +6,7 @@ import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicReference
 import kotlin.concurrent.thread
 
-fun <A> shouldCompleteWithin(timeout: Long, unit: TimeUnit, thunk: () -> A) {
+fun <A> shouldCompleteWithin(timeout: Long, unit: TimeUnit, thunk: () -> A): A {
 
   val ref = AtomicReference<A>(null)
   val latch = CountDownLatch(1)
@@ -21,7 +21,7 @@ fun <A> shouldCompleteWithin(timeout: Long, unit: TimeUnit, thunk: () -> A) {
     throw failure("Test should have completed within $timeout/$unit")
   }
 
-  ref.get()
+  return ref.get()
 }
 
 fun <A> shouldTimeout(timeout: Long, unit: TimeUnit, thunk: () -> A) {

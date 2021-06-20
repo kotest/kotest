@@ -30,6 +30,14 @@ class ConcurrentTest : FunSpec({
       message shouldBe "Test should have completed within 1000/MILLISECONDS"
    }
 
+   test("should return the resulting value of the function block") {
+      val result = shouldCompleteWithin(1000, TimeUnit.MILLISECONDS) {
+         "some value"
+      }
+
+      result shouldBe "some value"
+   }
+
    test("should not throw any if given lambda did not complete in given time") {
       shouldNotThrowAny {
          shouldTimeout(1, TimeUnit.SECONDS) {
