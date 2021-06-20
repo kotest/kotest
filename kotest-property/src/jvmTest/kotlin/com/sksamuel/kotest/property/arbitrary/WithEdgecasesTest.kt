@@ -9,19 +9,19 @@ import io.kotest.property.arbitrary.withEdgecases
 
 class WithEdgecasesTest : FunSpec({
    context("Arb<A>.withEdgecases") {
-      test("should override the initial edgecases") {
+      test("should override the initial edge cases") {
          val arbInt = arbitrary(listOf(1)) { it.random.nextInt() }
          arbInt.withEdgecases(2, 3).edgecases() shouldContainExactlyInAnyOrder listOf(2, 3)
       }
 
-      test("should override the initial edgecases when specified a list") {
+      test("should override the initial edge cases when specified a list") {
          val arbInt = arbitrary(listOf(1)) { it.random.nextInt() }
          arbInt.withEdgecases(listOf(2, 3)).edgecases() shouldContainExactlyInAnyOrder listOf(2, 3)
       }
    }
 
    context("Arb<A>.modifyEdgecases") {
-      test("should modify the each edgecase") {
+      test("should modify the each edge case") {
          val arbInt = arbitrary(listOf(1, 2, 3)) { it.random.nextInt() }
          arbInt.modifyEdgecases { it * 2 }.edgecases() shouldContainExactlyInAnyOrder listOf(2, 4, 6)
       }

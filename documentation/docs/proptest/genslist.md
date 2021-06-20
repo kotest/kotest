@@ -18,8 +18,8 @@ We also provide generators for [Arrow](arrow.md) as a separate module.
 | `arb.orNull()` | Generates random values from the arb instance, with null values mixed in. For example, `Arb.int().orNull()` could generate `1, -1, null, 8, 17`, and so on. Has overloaded versions to control the frequency of nulls being generated.| ✓ | ✓ | ✓ |
 | `arb.orNull(nullProbability)` | Generates random values from the arb instance, with null values mixed in using the defined probability. | ✓ | ✓ | ✓ |
 | **Booleans** |
-| `Arb.bool()` | Returns an `Arb` that produces `Boolean`s. | ✓ | ✓ | ✓ |
-| `Arb.boolArray(length, content)` | Returns an `Arb` that produces `BoolArray`s where `length` produces the length of the arrays and `content` produces the content of the arrays. | ✓ | ✓ | ✓ |
+| `Arb.boolean()` | Returns an `Arb` that produces `Boolean`s. | ✓ | ✓ | ✓ |
+| `Arb.booleanArray(length, content)` | Returns an `Arb` that produces `BoolArray`s where `length` produces the length of the arrays and `content` produces the content of the arrays. | ✓ | ✓ | ✓ |
 | `Exhaustive.boolean()` | Alternatives between true and false. | ✓ | ✓ | ✓ |
 | **Chars** |
 | `Arb.char(range1, range2,...)` | Returns random char's generated from one or more given ranges. By supporting multiple ranges, it is possible to specific non-consecutive ranges of characters to populate values from. | ✓ | ✓ | ✓ |
@@ -29,14 +29,14 @@ We also provide generators for [Arrow](arrow.md) as a separate module.
 | `Arb.positiveByte(min, max)` | Returns an `Arb` that produces positive `Byte`s from `min` to `max` (inclusive). The edge cases are 1 and `max` which are only included if they are in the provided range. | ✓ | ✓ | ✓ |
 | `Arb.negativeByte(min, max)` | Returns an `Arb` that produces negative `Byte`s from `min` to `max` (inclusive). The edge cases are `min` and -1 which are only included if they are in the provided range. | ✓ | ✓ | ✓ |
 | `Arb.byteArray(length, content)` | Returns an `Arb` that produces `ByteArray`s where `length` produces the length of the arrays and `content` produces the content of the arrays. | ✓ | ✓ | ✓ |
-| `Arb.ubyte(min, max)` | Returns an `Arb` that produces `UByte`s from `min` to `max` (inclusive). The edge cases are `min`, 1 and `max` which are only included if they are in the provided range. | ✓ | ✓ | ✓ |
+| `Arb.uByte(min, max)` | Returns an `Arb` that produces `UByte`s from `min` to `max` (inclusive). The edge cases are `min`, 1 and `max` which are only included if they are in the provided range. | ✓ | ✓ | ✓ |
 | `Arb.uByteArray(length, content)` | Returns an `Arb` that produces `UByteArray`s where `length` produces the length of the arrays and `content` produces the content of the arrays. | ✓ | ✓ | ✓ |
 | **Shorts** |
 | `Arb.short(min, max)` | Returns an `Arb` that produces `Short`s from `min` to `max` (inclusive). The edge cases are `min`, -1, 0, 1 and `max` which are only included if they are in the provided range. | ✓ | ✓ | ✓ |
 | `Arb.positiveShort(min, max)` | Returns an `Arb` that produces positive `Short`s from `min` to `max` (inclusive). The edge cases are 1 and `max` which are only included if they are in the provided range. | ✓ | ✓ | ✓ |
 | `Arb.negativeShort(min, max)` | Returns an `Arb` that produces negative `Short`s from `min` to `max` (inclusive). The edge cases are `min` and -1 which are only included if they are in the provided range. | ✓ | ✓ | ✓ |
 | `Arb.shortArray(length, content)` | Returns an `Arb` that produces `ShortArray`s where `length` produces the length of the arrays and `content` produces the content of the arrays. | ✓ | ✓ | ✓ |
-| `Arb.ushort(min, max)` | Returns an `Arb` that produces `UShort`s from `min` to `max` (inclusive). The edge cases are `min`, 1 and `max` which are only included if they are in the provided range. | ✓ | ✓ | ✓ |
+| `Arb.uShort(min, max)` | Returns an `Arb` that produces `UShort`s from `min` to `max` (inclusive). The edge cases are `min`, 1 and `max` which are only included if they are in the provided range. | ✓ | ✓ | ✓ |
 | `Arb.uShortArray(length, content)` | Returns an `Arb` that produces `UShortArray`s where `length` produces the length of the arrays and `content` produces the content of the arrays. | ✓ | ✓ | ✓ |
 | **Ints** |
 | `Arb.int(min, max)` | Returns an `Arb` that produces `Int`s from `min` to `max` (inclusive). The edge cases are `min`, -1, 0, 1 and `max` which are only included if they are in the provided range. | ✓ | ✓ | ✓ |
@@ -45,10 +45,10 @@ We also provide generators for [Arrow](arrow.md) as a separate module.
 | `Arb.negativeInt(min, max)` | Returns an `Arb` that produces negative `Int`s from `min` to `max` (inclusive). The edge cases are `min` and -1 which are only included if they are in the provided range. | ✓ | ✓ | ✓ |
 | `Arb.nonPositiveInts(min, max)` | Returns an `Arb` that produces non positive `Int`s from `min` to `max` (inclusive). The edge cases are `min`, -1 and 0 which are only included if they are in the provided range. | ✓ | ✓ | ✓ |
 | `Arb.intArray(length, content)` | Returns an `Arb` that produces `IntArray`s where `length` produces the length of the arrays and `content` produces the content of the arrays. | ✓ | ✓ | ✓ |
-| `Arb.uint(min, max)` | Returns an `Arb` that produces `UInt`s from `min` to `max` (inclusive). The edge cases are `min`, 1 and `max` which are only included if they are in the provided range. | ✓ | ✓ | ✓ |
+| `Arb.uInt(min, max)` | Returns an `Arb` that produces `UInt`s from `min` to `max` (inclusive). The edge cases are `min`, 1 and `max` which are only included if they are in the provided range. | ✓ | ✓ | ✓ |
 | `Arb.uIntArray(length, content)` | Returns an `Arb` that produces `UIntArray`s where `length` produces the length of the arrays and `content` produces the content of the arrays. | ✓ | ✓ | ✓ |
 | `Exhaustive.ints(range)` | Returns all ints in the given range. | ✓ | ✓ | ✓ |
-| `Arb.multiple(k, max)` | Generates multiples of k up a max value. The edgecases are `0`. | ✓ | ✓ | ✓ |
+| `Arb.multiple(k, max)` | Generates multiples of k up a max value. The edge cases are `0`. | ✓ | ✓ | ✓ |
 | `Arb.factor(k)` | Generates factors of k. | ✓ | ✓ | ✓ |
 | **Longs** |
 | `Arb.long(min, max)` | Returns an `Arb` that produces `Long`s from `min` to `max` (inclusive). The edge cases are `min`, -1, 0, 1 and `max` which are only included if they are in the provided range. | ✓ | ✓ | ✓ |
@@ -74,9 +74,9 @@ We also provide generators for [Arrow](arrow.md) as a separate module.
 | `Arb.enum<T>()` | Randomly selects constants from the given enum. | ✓ | ✓ | ✓ |
 | `Exhaustive.enum<T>()` | Iterates all the constants defined in the given enum. | ✓ | ✓ | ✓ |
 | **Geo** |
-| `Arb.latlong()` | Generates random pair's of doubles, where each double is in the range -180 to 180. | ✓ | ✓ | ✓ |
+| `Arb.latlong()` | Generates random pairs of doubles, where each double is in the range -180 to 180. | ✓ | ✓ | ✓ |
 | **Strings** |
-| `Arb.string(range)` | Generates random printable strings with a randomly chosen size from the given range. If rangei s not specified then (0..100) is used. The edgecases include empty string, a blank string and a unicode string. | ✓ | ✓ | ✓ |
+| `Arb.string(range)` | Generates random printable strings with a randomly chosen size from the given range. If range is not specified then (0..100) is used. The edge cases include empty string, a blank string and a unicode string. | ✓ | ✓ | ✓ |
 | `Arb.stringPattern(pattern)` | Generates strings that match given pattern using [Generex](https://github.com/mifmif/Generex) | ✓ |   |   |
 | `Exhaustive.azstring(range)` | Returns all A-Z strings in the given range. For example if range was 1..2 then a, b, c, ...., yz, zz would be included. | ✓ | ✓ | ✓ |
 | `Arb.email(localPartGen, domainGen)` | Generates random emails where the local part and domain part are random strings generated by the given generators. A default value is provided for both. | ✓ | ✓ | ✓ |
@@ -102,8 +102,8 @@ We also provide generators for [Arrow](arrow.md) as a separate module.
 | `Arb<T>.chunked(range)` | Generates lists where each list is populated from elements of this receiver. The size of each size is randomly chosen within the given range. | ✓ | ✓ | ✓ |
 | `Exhaustive.collection(list)` | Enumerates each element of the list one by one. | ✓ | ✓ | ✓ |
 | **Tuples**|
-| `Arb.pair(arb1, arb2) | Generates `Pair` instances where each value of the pair is drawn from the two provided arbs | ✓ | ✓ | ✓ |
-| `Arb.triple(arb1, arb2, arb3) | Generates `Triple` instances where each value of the triple is drawn from the three provided arbs | ✓ | ✓ | ✓ |
+| `Arb.pair(arb1, arb2)` | Generates `Pair` instances where each value of the pair is drawn from the two provided arbs | ✓ | ✓ | ✓ |
+| `Arb.triple(arb1, arb2, arb3)` | Generates `Triple` instances where each value of the triple is drawn from the three provided arbs | ✓ | ✓ | ✓ |
 | **Dates** |
 | `Arb.date(ranges)` | Generates random dates with the year between the given range |  | ✓ |  |
 | `Arb.datetime(ranges)` | Generates random date times with the year between the given range |  | ✓ |  |

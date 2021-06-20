@@ -26,8 +26,8 @@ sealed class Gen<out A> {
    /**
     * Returns values from this generator as a lazily generated sequence.
     *
-    * If this gen is an [Arb], then each value will either be a sample or an edgecase. The bias
-    * towards edgecases or samples is given by the value of [EdgeConfig.edgecasesGenerationProbability]
+    * If this gen is an [Arb], then each value will either be a sample or an edge case. The bias
+    * towards edge cases or samples is given by the value of [EdgeConfig.edgecasesGenerationProbability]
     * inside the [edgeConfig] parameter.
     *
     * If this gen is an [Exhaustive], then the returned values will iterate in turn, repeating
@@ -65,9 +65,9 @@ sealed class Gen<out A> {
 }
 
 /**
- * An [Arb] (short for arbitrary) is a generator of values in two categories: edgecases and samples.
+ * An [Arb] (short for arbitrary) is a generator of values in two categories: edge cases and samples.
  *
- * Edgecases are values that are a common source of bugs. For example, a function using ints is
+ * Edge cases are values that are a common source of bugs. For example, a function using ints is
  * more likely to fail for common edge cases like zero, minus 1, positive 1, [Int.MAX_VALUE] and [Int.MIN_VALUE]
  * rather than random values like 965489. Therefore it is useful that we try to include such values
  * rather than relying entirely on random values which are unlikely to generate these.
@@ -86,9 +86,9 @@ sealed class Gen<out A> {
 abstract class Arb<out A> : Gen<A>() {
 
    /**
-    * Returns a single edgecase for this arbitrary.
-    * If this arb provides mutliple edgecases, then one should be chosen randomly.
-    * Can return null if no edgecases are available.
+    * Returns a single edge case for this arbitrary.
+    * If this arb provides multiple edge cases, then one should be chosen randomly.
+    * Can return null if no edge cases are available.
     */
    abstract fun edgecase(rs: RandomSource): A?
 

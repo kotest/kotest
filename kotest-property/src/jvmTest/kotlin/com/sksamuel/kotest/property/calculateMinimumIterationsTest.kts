@@ -30,7 +30,7 @@ describe("calculateMinimumIterations") {
    it("should calculate min for a mix of exhaustives and arbs") {
       calculateMinimumIterations(
          Exhaustive.ints(0..10), // 11 values
-         Arb.string(1) // edgecase is the empty string
+         Arb.string(1) // edge case is the empty string
       ) shouldBe 11
    }
 }

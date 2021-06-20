@@ -70,7 +70,7 @@ fun Arb.Companion.numericFloat(
    it.random.nextDouble(min.toDouble(), max.toDouble()).toFloat()
 }
 
-@Deprecated("use numericFloat", ReplaceWith("numericFloat"))
+@Deprecated("use numericFloat", ReplaceWith("numericFloat(from, to)"))
 fun Arb.Companion.numericFloats(from: Float = -Float.MAX_VALUE, to: Float = Float.MAX_VALUE): Arb<Float> =
    numericFloat(from, to)
 

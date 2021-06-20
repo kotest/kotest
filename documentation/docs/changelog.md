@@ -72,7 +72,7 @@ See the full list of [extension modules](https://kotest.io/docs/extensions/exten
 * In order to ensure the `EventuallyListener` is called in `eventually` when an exception is thrown the `ListenerState` field `result` was changed
   from type `T` to type `T?`. This will allow insight into when the eventually producer function is failing for whatever reason
   instead of appearing as if it is hanging. #2190
-* Property tests now randomly cycle between edgecases and samples, rather than iterating all edgecases first. This allows greater number of edgecases to be used and avoids a combinatoral explosion. If you are implementing custom Arb's by extending the Arb class (instead of using the `arbitrary` builders), then you will need to adjust your edgecases method from `fun edgecases(): List<A>` to `fun edgecase(rs: RandomSource): A?`.
+* Property tests now randomly cycle between edge cases and samples, rather than iterating all edge cases first. This allows greater number of edge cases to be used and avoids a combinatoral explosion. If you are implementing custom Arb's by extending the Arb class (instead of using the `arbitrary` builders), then you will need to adjust your edge cases method from `fun edgecases(): List<A>` to `fun edgecase(rs: RandomSource): A?`.
 * Because of the above property test change, if you are setting a seed in a property test you may need to adjust the value.
 * The kotlin stdlib dependencies are now marked as `compileOnly`, meaning the version in your build will be used. Kotest tries to maintain compatibility across multiple versions by not relying on features only available in the latest releases.
 * Duplicated test names no longer throw an automatic error, but now mangle the name. So two tests of name 'foo' will appear as 'foo' and '(1) foo'. This enables data driven testing to work properly in javascript. To restore the original behavior, set the configuration value `Configuration.duplicateTestNameMode = Error`.
@@ -244,7 +244,7 @@ Note: Release 4.4.0 bumps the minimum required version of Kotlin to 1.4.21
 #### Bugfix
 
 * A Kotlin 1.4 specific method was added in 4.3.1 and reverted in 4.3.2
-* Arb.choose does not currently include edgecases from input arbs #1886
+* Arb.choose does not currently include edge cases from input arbs #1886
 * String shrinking is not being executed #1860
 * Arb.stringPattern slows down the test dramatically #1878
 * AssertionMode.Error doesn't work on FeatureSpec #1864
@@ -449,8 +449,8 @@ Note: Release 4.4.0 bumps the minimum required version of Kotlin to 1.4.21
 ### 4.0.5 April 2020
 
 * Bugfix: Focus mode would cause some nested tests to be ignored [#1376](https://github.com/kotest/kotest/issues/1376)
-* Bugfix: Arb.choice would include edgecases in the generated values [#1406](https://github.com/kotest/kotest/issues/1406)
-* Bugfix: Arb.int and Arb.long edgecases included values outside the specified ranged [#1405](https://github.com/kotest/kotest/issues/1405)
+* Bugfix: Arb.choice would include edge cases in the generated values [#1406](https://github.com/kotest/kotest/issues/1406)
+* Bugfix: Arb.int and Arb.long edge cases included values outside the specified ranged [#1405](https://github.com/kotest/kotest/issues/1405)
 
 ### 4.0.4 April 2020
 

@@ -26,7 +26,7 @@ class CollectionsTest : DescribeSpec({
 
    describe("Arb.list should") {
 
-      it("not include empty edgecases as first sample") {
+      it("not include empty edge cases as first sample") {
          val numGen = Arb.list(Arb.int(), 1..10)
          forAll(1, numGen) { it.isNotEmpty() }
       }
@@ -41,9 +41,9 @@ class CollectionsTest : DescribeSpec({
       }
 
       it("include repeated elements in edge cases") {
-         val edgecase = Arb.positiveInt().edgecases().firstOrNull()
-         Arb.list(Arb.positiveInt()).edgecases() shouldContain listOf(edgecase, edgecase)
-         Arb.list(Arb.positiveInt(), 4..6).edgecases() shouldContain listOf(edgecase, edgecase, edgecase, edgecase)
+         val edgeCase = Arb.positiveInt().edgecases().firstOrNull()
+         Arb.list(Arb.positiveInt()).edgecases() shouldContain listOf(edgeCase, edgeCase)
+         Arb.list(Arb.positiveInt(), 4..6).edgecases() shouldContain listOf(edgeCase, edgeCase, edgeCase, edgeCase)
 
       }
 
@@ -51,7 +51,7 @@ class CollectionsTest : DescribeSpec({
          Arb.list(Arb.positiveInt()).edgecases() shouldContain emptyList()
       }
 
-      it("respect bounds in edgecases") {
+      it("respect bounds in edge cases") {
          val edges = Arb.list(Arb.positiveInt(), 2..10).edgecases().toSet()
          edges.forAll { it.shouldNotBeEmpty() }
       }
@@ -72,7 +72,7 @@ class CollectionsTest : DescribeSpec({
 
    describe("Arb.set should") {
 
-      it("not include empty edgecases as first sample") {
+      it("not include empty edge cases as first sample") {
          val numGen = Arb.set(Arb.int(), 1..10)
          forAll(1, numGen) { it.isNotEmpty() }
       }

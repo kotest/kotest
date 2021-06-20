@@ -6,9 +6,9 @@ import io.kotest.property.RandomSource
 import io.kotest.property.Sample
 
 /**
- * Randomly chooses an arb and then generates an edgecase from that arb.
- * If the chosen arb has no edgecases, then another arb will be chosen.
- * If all arbs have no edgecases, then returns null.
+ * Randomly chooses an [Arb] and then generates an edge case from that [Arb].
+ * If the chosen arb has no edge cases, then another arb will be chosen.
+ * If all [Arb]s have no edge cases, then returns null.
  */
 tailrec fun <A> List<Arb<A>>.edgecase(rs: RandomSource): A? {
    if (this.isEmpty()) return null
@@ -20,7 +20,7 @@ tailrec fun <A> List<Arb<A>>.edgecase(rs: RandomSource): A? {
 }
 
 /**
- * Collects the edgecases from this arb.
+ * Collects the edge cases from this arb.
  * Will stop after the given number of iterations.
  * This function is mainly used for testing.
  */
@@ -31,17 +31,17 @@ fun <A> Arb<A>.edgecases(iterations: Int = 100, rs: RandomSource = RandomSource.
       .toSet()
 
 /**
- * Returns a new [Arb] with the supplied edgecases replacing any existing edgecases.
+ * Returns a new [Arb] with the supplied edge cases replacing any existing edge cases.
  */
 fun <A> Arb<A>.withEdgecases(edgecases: List<A>): Arb<A> = arbitrary(edgecases) { this.next(it) }
 
 /**
- * Returns a new [Arb] with the supplied edgecases replacing any existing edgecases.
+ * Returns a new [Arb] with the supplied edge cases replacing any existing edge cases.
  */
-fun <A> Arb<A>.withEdgecases(vararg edgecases: A): Arb<A> = withEdgecases(edgecases.toList())
+fun <A> Arb<A>.withEdgecases(vararg edgecases: A): Arb<A> = this.withEdgecases(edgecases.toList())
 
 /**
- * Returns a new [Arb] with the edgecases from this arb transformed by the given function [f]
+ * Returns a new [Arb] with the edge cases from this arb transformed by the given function [f].
  */
 fun <A> Arb<A>.modifyEdgecases(f: (A) -> A?): Arb<A> = object : Arb<A>() {
    override fun edgecase(rs: RandomSource): A? = this@modifyEdgecases.edgecase(rs)?.let(f)

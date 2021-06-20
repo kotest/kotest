@@ -28,7 +28,7 @@ class ByteTest : FunSpec({
       }
    }
 
-   test("Arb.byte edgecases should respect min and max bounds") {
+   test("Arb.byte edge cases should respect min and max bounds") {
       checkCoverage("run", 25.0) {
          PropTest(iterations = 1000).checkAll<Byte, Byte> { min, max ->
             if (min < max) {
@@ -51,17 +51,17 @@ class UByteTest : FunSpec({
          row(UByte.MIN_VALUE, (UByte.MIN_VALUE + 10u).toUByte())
       ) { vMin, vMax ->
          val expectedValues = (vMin..vMax).map { it.toUByte() }.toSet()
-         val actualValues = (1..100_000).map { Arb.ubyte(vMin, vMax).single() }.toSet()
+         val actualValues = (1..100_000).map { Arb.uByte(vMin, vMax).single() }.toSet()
          actualValues shouldBe expectedValues
       }
    }
 
-   test("Arb.ubyte edgecases should respect min and max bounds") {
+   test("Arb.ubyte edge cases should respect min and max bounds") {
       checkCoverage("run", 25.0) {
          PropTest(iterations = 1000).checkAll<UByte, UByte> { min, max ->
             if (min < max) {
                classify("run")
-               Arb.ubyte(min, max).edgecases().forAll {
+               Arb.uByte(min, max).edgecases().forAll {
                   it.shouldBeBetween(min, max)
                }
             }

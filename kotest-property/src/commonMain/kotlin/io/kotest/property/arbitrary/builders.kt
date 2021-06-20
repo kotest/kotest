@@ -28,7 +28,7 @@ fun <A> arbitrary(edgecases: List<A>, shrinker: Shrinker<A>, fn: (RandomSource) 
 }
 
 /**
- * Creates a new [Arb] that generates edgecases from the given [edgecaseFn] function
+ * Creates a new [Arb] that generates edge cases from the given [edgecaseFn] function
  * and generates samples from the given [sampleFn] function.
  */
 fun <A> arbitrary(edgecaseFn: (RandomSource) -> A?, sampleFn: (RandomSource) -> A): Arb<A> =
@@ -38,7 +38,7 @@ fun <A> arbitrary(edgecaseFn: (RandomSource) -> A?, sampleFn: (RandomSource) -> 
    }
 
 /**
- * Creates a new [Arb] that generates edgecases from the given [edgecaseFn] function,
+ * Creates a new [Arb] that generates edge cases from the given [edgecaseFn] function,
  * performs shrinking using the supplied [Shrinker, and generates samples from the given [sampleFn] function.
  */
 fun <A> arbitrary(

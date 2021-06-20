@@ -28,7 +28,7 @@ class IntTest : FunSpec({
       }
    }
 
-   test("Arb.int edgecases should respect min and max bounds") {
+   test("Arb.int edge cases should respect min and max bounds") {
       checkCoverage("run", 25.0) {
          PropTest(iterations = 1000).checkAll<Int, Int> { min, max ->
             if (min < max) {
@@ -71,17 +71,17 @@ class UIntTest : FunSpec({
          row(UInt.MIN_VALUE, UInt.MIN_VALUE + 10u)
       ) { vMin, vMax ->
          val expectedValues = (vMin..vMax).toSet()
-         val actualValues = (1..100_000).map { Arb.uint(vMin, vMax).single() }.toSet()
+         val actualValues = (1..100_000).map { Arb.uInt(vMin, vMax).single() }.toSet()
          actualValues shouldBe expectedValues
       }
    }
 
-   test("Arb.uint edgecases should respect min and max bounds") {
+   test("Arb.uint edge cases should respect min and max bounds") {
       checkCoverage("run", 25.0) {
          PropTest(iterations = 1000).checkAll<UInt, UInt> { min, max ->
             if (min < max) {
                classify("run")
-               Arb.uint(min..max).edgecases().forAll {
+               Arb.uInt(min..max).edgecases().forAll {
                   it.shouldBeBetween(min, max)
                }
             }

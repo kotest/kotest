@@ -49,7 +49,7 @@ class ForNoneTest : FunSpec({
       }.message shouldBe "Require at least 101 iterations to cover requirements"
    }
 
-   test("should not throw error if iterations is less than edgecases") {
+   test("should not throw error if iterations is less than edge cases") {
       shouldNotThrowAny {
          forNone(
             2,

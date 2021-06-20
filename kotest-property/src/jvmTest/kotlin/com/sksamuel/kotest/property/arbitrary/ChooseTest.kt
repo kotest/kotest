@@ -100,20 +100,20 @@ class ChooseTest : FunSpec({
       shouldNotThrow<Exception> { Arb.choose(0 to Arb.constant('A'), 0 to Arb.constant('B'), 1 to Arb.constant('C')) }
    }
 
-   test("Arb.choose(arbs) should collate edgecases") {
+   test("Arb.choose(arbs) should collate edge cases") {
       val arb = Arb.choose(
          1 to Arb.constant('A').withEdgecases('a'),
          3 to Arb.constant('B').withEdgecases('b'),
          4 to Arb.constant('C').withEdgecases('c'),
          5 to Arb.constant('D').withEdgecases('d')
       )
-      val edgecases = arb
+      val edgeCases = arb
          .generate(RandomSource.seeded(1234L), EdgeConfig(edgecasesGenerationProbability = 1.0))
          .take(10)
          .map { it.value }
          .toList()
 
-      edgecases shouldContainExactly listOf(
+      edgeCases shouldContainExactly listOf(
          'c',
          'c',
          'd',

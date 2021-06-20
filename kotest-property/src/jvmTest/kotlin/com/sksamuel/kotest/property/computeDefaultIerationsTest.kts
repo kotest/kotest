@@ -15,8 +15,8 @@ test("computeDefaultIteration should use default if larger than an arbs edge cas
 }
 
 test("computeDefaultIteration should yield default iteration for arbitraries") {
-   val edgecases = List(234234) { it }
-   val arb = arbitrary(edgecases) { 1 }
+   val edgeCases = List(234234) { it }
+   val arb = arbitrary(edgeCases) { 1 }
    computeDefaultIteration(arb) shouldBe PropertyTesting.defaultIterationCount
 }
 

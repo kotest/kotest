@@ -46,7 +46,7 @@ class DateTest : WordSpec({
          Arb.localDate(LocalDate.of(leapYear, 1, 1), LocalDate.of(leapYear, 12, 31)).edgecases().toList() shouldContain LocalDate.of(2016, 2, 29)
       }
 
-      "Contain the edgecases Feb 28, Jan 01 and Dec 31" {
+      "Contain the edge cases Feb 28, Jan 01 and Dec 31" {
          Arb.localDate(LocalDate.of(2019, 1, 1), LocalDate.of(2020, 12, 31)).edgecases().toList() shouldContainAll listOf(
             LocalDate.of(2019, 1, 1),
             LocalDate.of(2020, 12, 31)

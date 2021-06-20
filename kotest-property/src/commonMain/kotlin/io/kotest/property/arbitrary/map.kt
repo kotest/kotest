@@ -24,7 +24,7 @@ fun <A, B> Arb<A>.map(f: (A) -> B): Arb<B> = object : Arb<B>() {
 fun <A, B> Arb<A>.flatMap(f: (A) -> Arb<B>): Arb<B> = object : Arb<B>() {
 
    override fun edgecase(rs: RandomSource): B? {
-      // generate an edgecase, map it to another arb, and generate an edgecase again
+      // generate an edge case, map it to another arb, and generate an edge case again
       val a = this@flatMap.edgecase(rs) ?: this@flatMap.next(rs)
       return f(a).edgecase(rs)
    }
