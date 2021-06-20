@@ -42,6 +42,14 @@ class LongTest : FunSpec({
          }
       }
    }
+
+   test("Arb.long generates values in range") {
+      val min = -140_737_488_355_328 // -2^47
+      val max = 140_737_488_355_327 // 2^47 - 1
+      checkAll(100_000, Arb.long(min, max)) { value ->
+         value.shouldBeBetween(min, max)
+      }
+   }
 })
 
 class ULongTest : FunSpec({
@@ -58,7 +66,7 @@ class ULongTest : FunSpec({
       }
    }
 
-   test("Arb.ulong edge cases should respect min and max bounds") {
+   test("Arb.uLong edge cases should respect min and max bounds") {
       checkCoverage("run", 25.0) {
          checkAll<ULong, ULong> { min, max ->
             if (min < max) {
@@ -68,6 +76,14 @@ class ULongTest : FunSpec({
                }
             }
          }
+      }
+   }
+
+   test("Arb.uLong generates values in range") {
+      val min = 0uL
+      val max = 281_474_976_710_655u // 2^48 - 1
+      checkAll(100_000, Arb.uLong(min, max)) { value ->
+         value.shouldBeBetween(min, max)
       }
    }
 })

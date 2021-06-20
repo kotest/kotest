@@ -76,7 +76,7 @@ class UIntTest : FunSpec({
       }
    }
 
-   test("Arb.uint edge cases should respect min and max bounds") {
+   test("Arb.uInt edge cases should respect min and max bounds") {
       checkCoverage("run", 25.0) {
          PropTest(iterations = 1000).checkAll<UInt, UInt> { min, max ->
             if (min < max) {
