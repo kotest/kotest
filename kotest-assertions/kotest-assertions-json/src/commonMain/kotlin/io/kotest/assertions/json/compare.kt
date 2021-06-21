@@ -5,11 +5,26 @@ package io.kotest.assertions.json
 import kotlin.math.abs
 
 enum class CompareMode {
-   Strict, Lenient
+   /** Forces strict type handling, e.g. true != "true" */
+   Strict,
+
+   /** Relaxes type handling, enabling conversion of string values to expected type before comparison.
+    * 3.14 == "3.14"
+    * true == "true"
+    */
+   Lenient
 }
 
 enum class CompareOrder {
-   Strict, Lenient
+   Strict,
+   Lenient
+}
+
+enum class FieldComparison {
+   /** Verifies all expected key-values match, and that no extra keys exist in the actual */
+   All,
+   /** Verifies all expected key-values match, ignoring keys in actual that are not specified in expected */
+   IgnoringUnspecified
 }
 
 /**
@@ -21,15 +36,15 @@ internal fun compare(
    actual: JsonNode,
    mode: CompareMode,
    order: CompareOrder,
-   ignoreUnknownKeys: Boolean,
+   fieldComparison: FieldComparison,
 ): JsonError? {
    return when (expected) {
       is JsonNode.ObjectNode -> when (actual) {
-         is JsonNode.ObjectNode -> compareObjects(path, expected, actual, mode, order, ignoreUnknownKeys)
+         is JsonNode.ObjectNode -> compareObjects(path, expected, actual, mode, order, fieldComparison)
          else -> JsonError.ExpectedObject(path, actual)
       }
       is JsonNode.ArrayNode -> when (actual) {
-         is JsonNode.ArrayNode -> compareArrays(path, expected, actual, mode, order, ignoreUnknownKeys)
+         is JsonNode.ArrayNode -> compareArrays(path, expected, actual, mode, order, fieldComparison)
          else -> JsonError.ExpectedArray(path, actual)
       }
       is JsonNode.BooleanNode -> compareBoolean(path, expected, actual, mode)
@@ -48,10 +63,10 @@ internal fun compareObjects(
    actual: JsonNode.ObjectNode,
    mode: CompareMode,
    order: CompareOrder,
-   ignoreUnknownKeys: Boolean
+   fieldComparison: FieldComparison,
 ): JsonError? {
 
-   if (!ignoreUnknownKeys) {
+   if (fieldComparison == FieldComparison.All) {
       val keys1 = expected.elements.keys
       val keys2 = actual.elements.keys
 
@@ -71,13 +86,13 @@ internal fun compareObjects(
       CompareOrder.Strict ->
          expected.elements.entries.withIndex().zip(actual.elements.entries).forEach { (e, a) ->
             if (a.key != e.value.key) return JsonError.NameOrderDiff(path, e.index, e.value.key, a.key)
-            val error = compare(path + a.key, e.value.value, a.value, mode, order, ignoreUnknownKeys)
+            val error = compare(path + a.key, e.value.value, a.value, mode, order, fieldComparison)
             if (error != null) return error
          }
       CompareOrder.Lenient ->
          expected.elements.entries.forEach { (name, e) ->
             val a = actual.elements[name] ?: return JsonError.ObjectMissingKeys(path, setOf(name))
-            val error = compare(path + name, e, a, mode, order, ignoreUnknownKeys)
+            val error = compare(path + name, e, a, mode, order, fieldComparison)
             if (error != null) return error
          }
    }
@@ -91,14 +106,14 @@ internal fun compareArrays(
    actual: JsonNode.ArrayNode,
    mode: CompareMode,
    order: CompareOrder,
-   ignoreUnknownKeys: Boolean,
+   fieldComparison: FieldComparison,
 ): JsonError? {
 
    if (expected.elements.size != actual.elements.size)
       return JsonError.UnequalArrayLength(path, expected.elements.size, actual.elements.size)
 
    expected.elements.withIndex().zip(actual.elements.withIndex()).forEach { (a, b) ->
-      val error = compare(path + "[${a.index}]", a.value, b.value, mode, order, ignoreUnknownKeys)
+      val error = compare(path + "[${a.index}]", a.value, b.value, mode, order, fieldComparison)
       if (error != null) return error
    }
 

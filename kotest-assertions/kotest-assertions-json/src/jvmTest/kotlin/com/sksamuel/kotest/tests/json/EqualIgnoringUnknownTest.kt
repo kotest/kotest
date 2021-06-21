@@ -1,6 +1,6 @@
 package com.sksamuel.kotest.tests.json
 
-import io.kotest.assertions.json.shouldEqualJsonIgnoringUnknown
+import io.kotest.assertions.json.shouldEqualSpecifiedJson
 import io.kotest.assertions.shouldFail
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.throwable.shouldHaveMessage
@@ -17,7 +17,7 @@ class EqualIgnoringUnknownTest : FunSpec(
             val a = """ { "a" : "$string", "b": "bar" } """
             val b = """ { "a" : "$string" }"""
 
-            a shouldEqualJsonIgnoringUnknown b
+            a shouldEqualSpecifiedJson b
          }
       }
 
@@ -25,10 +25,10 @@ class EqualIgnoringUnknownTest : FunSpec(
          val a = """ { "a" : "foo", "b" : "bar" } """
          val b = """ { "a" : "foo", "b" : "baz" } """
 
-         a shouldEqualJsonIgnoringUnknown a
+         a shouldEqualSpecifiedJson a
 
          shouldFail {
-            a shouldEqualJsonIgnoringUnknown b
+            a shouldEqualSpecifiedJson b
          }.shouldHaveMessage(
             """At 'b' expected 'baz' but was 'bar'
 
@@ -51,7 +51,7 @@ actual:
          val b = """ { "a" : "foo", "b": "bar" } """
 
          shouldFail {
-            a shouldEqualJsonIgnoringUnknown b
+            a shouldEqualSpecifiedJson b
          }.shouldHaveMessage(
             """The top level object was missing expected field(s) [b]
 
@@ -74,7 +74,7 @@ actual:
                val a = """ { "wrapper": { "a" : "$string", "b": "bar" } }"""
                val b = """ { "wrapper": { "a" : "$string" } }"""
 
-               a shouldEqualJsonIgnoringUnknown b
+               a shouldEqualSpecifiedJson b
             }
          }
 
@@ -82,10 +82,10 @@ actual:
             val a = """ { "wrapper": { "a" : "foo", "b": "bar" } }"""
             val b = """ { "wrapper": { "a" : "foo", "b": "baz" } }"""
 
-            a shouldEqualJsonIgnoringUnknown a
+            a shouldEqualSpecifiedJson a
 
             shouldFail {
-               a shouldEqualJsonIgnoringUnknown b
+               a shouldEqualSpecifiedJson b
             }.shouldHaveMessage(
                """At 'wrapper.b' expected 'baz' but was 'bar'
 
@@ -112,7 +112,7 @@ actual:
             val b = """ { "wrapper": { "a" : "foo", "b": "bar" } } """
 
             shouldFail {
-               a shouldEqualJsonIgnoringUnknown b
+               a shouldEqualSpecifiedJson b
             }.shouldHaveMessage(
                """At 'wrapper' object was missing expected field(s) [b]
 
@@ -141,7 +141,7 @@ actual:
                val a = """ { "wrapper": [{ "a" : "$string", "b": "bar" }] }"""
                val b = """ { "wrapper": [{ "a" : "$string" }] }"""
 
-               a shouldEqualJsonIgnoringUnknown b
+               a shouldEqualSpecifiedJson b
             }
          }
 
@@ -149,10 +149,10 @@ actual:
             val a = """ { "wrapper": [{ "a" : "foo", "b": "bar" }] }"""
             val b = """ { "wrapper": [{ "a" : "foo", "b": "baz" }] }"""
 
-            a shouldEqualJsonIgnoringUnknown a
+            a shouldEqualSpecifiedJson a
 
             shouldFail {
-               a shouldEqualJsonIgnoringUnknown b
+               a shouldEqualSpecifiedJson b
             }.shouldHaveMessage(
                """At 'wrapper.[0].b' expected 'baz' but was 'bar'
 
@@ -183,7 +183,7 @@ actual:
             val b = """ { "wrapper": [ { "a" : "foo", "b": "bar" } ] } """
 
             shouldFail {
-               a shouldEqualJsonIgnoringUnknown b
+               a shouldEqualSpecifiedJson b
             }.shouldHaveMessage(
                """At 'wrapper.[0]' object was missing expected field(s) [b]
 

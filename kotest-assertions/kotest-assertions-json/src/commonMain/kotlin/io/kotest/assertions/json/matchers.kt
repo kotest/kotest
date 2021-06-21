@@ -18,7 +18,7 @@ fun equalJson(
    expected: JsonTree,
    mode: CompareMode,
    order: CompareOrder,
-   ignoreUnknownKeys: Boolean = false
+   fieldComparison: FieldComparison = FieldComparison.All,
 ) = object : Matcher<JsonTree> {
    override fun test(value: JsonTree): MatcherResult {
       val error = compare(
@@ -27,7 +27,7 @@ fun equalJson(
          actual = value.root,
          mode = mode,
          order = order,
-         ignoreUnknownKeys
+         fieldComparison
       )?.asString()
 
       return MatcherResult(
@@ -46,8 +46,8 @@ infix fun String.shouldEqualJson(expected: String): Unit =
 infix fun String.shouldNotEqualJson(expected: String): Unit =
    this.shouldNotEqualJson(expected, CompareMode.Strict, CompareOrder.Lenient)
 
-infix fun String.shouldEqualJsonIgnoringUnknown(expected: String) =
-   this.shouldEqualJsonIgnoringUnknown(expected, CompareMode.Strict)
+infix fun String.shouldEqualSpecifiedJson(expected: String) =
+   this.shouldEqualSpecifiedJson(expected, CompareMode.Strict)
 
 infix fun String.shouldNotEqualJsonIgnoringUnknown(expected: String) =
    this.shouldNotEqualJsonIgnoringUnknown(expected, CompareMode.Strict)
@@ -64,14 +64,14 @@ fun String.shouldEqualJson(expected: String, order: CompareOrder) =
 fun String.shouldNotEqualJson(expected: String, order: CompareOrder) =
    shouldNotEqualJson(expected, CompareMode.Strict, order)
 
-fun String.shouldEqualJsonIgnoringUnknown(expected: String, mode: CompareMode) =
-   shouldEqualJsonIgnoringUnknown(expected, mode, CompareOrder.Lenient)
+fun String.shouldEqualSpecifiedJson(expected: String, mode: CompareMode) =
+   shouldEqualSpecifiedJson(expected, mode, CompareOrder.Lenient)
 
 fun String.shouldNotEqualJsonIgnoringUnknown(expected: String, mode: CompareMode) =
    shouldNotEqualJsonIgnoringUnknown(expected, mode, CompareOrder.Lenient)
 
-fun String.shouldEqualJsonIgnoringUnknown(expected: String, order: CompareOrder) =
-   shouldEqualJsonIgnoringUnknown(expected, CompareMode.Strict, order)
+fun String.shouldEqualSpecifiedJson(expected: String, order: CompareOrder) =
+   shouldEqualSpecifiedJson(expected, CompareMode.Strict, order)
 
 fun String.shouldNotEqualJsonIgnoringUnknown(expected: String, order: CompareOrder) =
    shouldNotEqualJsonIgnoringUnknown(expected, CompareMode.Strict, order)
