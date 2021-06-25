@@ -205,11 +205,11 @@ abstract class AbstractProjectConfig {
     * Executed before the first test of the project, but after the
     * [ProjectListener.beforeProject] methods.
     */
-   open fun beforeAll() {}
+   open suspend fun beforeAll() {}
 
    /**
     * Executed after the last test of the project, but before the
     * [ProjectListener.afterProject] methods.
     */
-   open fun afterAll() {}
+   open suspend fun afterAll() {}
 }
