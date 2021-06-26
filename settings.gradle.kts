@@ -27,6 +27,8 @@ include("kotest-framework:kotest-framework-discovery")
 // contains the JVM execution engine implementation
 // brings in the API dependency
 include("kotest-framework:kotest-framework-engine")
+include("kotest-framework:kotest-framework-compiler-plugin-js")
+include("kotest-framework:kotest-framework-compiler-plugin-gradle")
 
 // contains data driven testing that builds on top of the kotest test framework
 include("kotest-framework:kotest-framework-datatest")
