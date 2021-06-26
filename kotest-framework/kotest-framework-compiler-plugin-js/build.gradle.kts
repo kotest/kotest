@@ -21,16 +21,10 @@ kotlin {
       }
    }
    sourceSets {
-      val commonMain by getting {
-         dependencies {
-            implementation("org.jetbrains.kotlin:kotlin-stdlib")
-            compileOnly("org.jetbrains.kotlin:kotlin-compiler-embeddable")
-         }
-      }
       val jvmMain by getting {
          dependencies {
             implementation("org.jetbrains.kotlin:kotlin-stdlib")
-            compileOnly("org.jetbrains.kotlin:kotlin-compiler-embeddable")
+            compileOnly("org.jetbrains.kotlin:kotlin-compiler-embeddable:1.5.20")
          }
       }
    }
