@@ -11,7 +11,7 @@ buildscript {
 
    dependencies {
       // To be uncommented if adding any Android project
-      classpath("com.android.tools.build:gradle:4.2.1")
+      classpath("com.android.tools.build:gradle:4.2.2")
    }
 }
 
