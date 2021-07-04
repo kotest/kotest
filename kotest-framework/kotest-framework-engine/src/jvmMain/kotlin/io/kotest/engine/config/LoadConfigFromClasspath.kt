@@ -26,10 +26,12 @@ private fun AbstractProjectConfig.toDetectedConfig(): DetectedProjectConfig {
    val beforeAfterAllListener = object : ProjectListener {
       override suspend fun beforeProject() {
          this@toDetectedConfig.beforeProject()
+         this@toDetectedConfig.beforeAll()
       }
 
       override suspend fun afterProject() {
          this@toDetectedConfig.afterProject()
+         this@toDetectedConfig.afterAll()
       }
    }
 
