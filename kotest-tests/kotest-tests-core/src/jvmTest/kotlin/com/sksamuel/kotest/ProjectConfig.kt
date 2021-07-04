@@ -19,7 +19,7 @@ object ProjectConfig : AbstractProjectConfig() {
       return listOf(SpecExtensionNumbers.ext, TagFilteredDiscoveryExtensionExampleTest.ext)
    }
 
-   override suspend fun beforeAll() {
+   override suspend fun beforeProject() {
       intercepterLog.append("B1.")
    }
 }

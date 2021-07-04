@@ -19,7 +19,7 @@ object Listener : TestListener {
 class Config1 : AbstractProjectConfig() {
    override val testCaseOrder = TestCaseOrder.Random
    override fun listeners(): List<Listener> = listOf(Listener)
-   override suspend fun beforeAll() {
+   override suspend fun beforeProject() {
       beforeAll++
    }
 }
@@ -27,7 +27,7 @@ class Config1 : AbstractProjectConfig() {
 class Config2 : AbstractProjectConfig() {
    override val specExecutionOrder: SpecExecutionOrder = SpecExecutionOrder.Random
    override fun listeners(): List<Listener> = listOf(Listener)
-   override suspend fun beforeAll() {
+   override suspend fun beforeProject() {
       beforeAll++
    }
 }

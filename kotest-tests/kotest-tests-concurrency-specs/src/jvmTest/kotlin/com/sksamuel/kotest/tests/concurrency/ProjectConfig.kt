@@ -12,11 +12,11 @@ object ProjectConfig : AbstractProjectConfig() {
 
    override val concurrentSpecs: Int = Configuration.MaxConcurrency
 
-   override suspend fun beforeAll() {
+   override suspend fun beforeProject() {
       start = System.currentTimeMillis()
    }
 
-   override suspend fun afterAll() {
+   override suspend fun afterProject() {
       val duration = System.currentTimeMillis() - start
       // each of the specs has a 500 milli delay, so the overall time without concurrency would be 1500
       // with concurrency it should be ~500
