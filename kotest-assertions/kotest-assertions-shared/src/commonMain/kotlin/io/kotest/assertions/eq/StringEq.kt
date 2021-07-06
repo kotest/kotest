@@ -18,7 +18,7 @@ import io.kotest.assertions.show.show
  */
 object StringEq : Eq<String> {
 
-   override fun equals(actual: String, expected: String): Throwable? {
+   override fun equals(actual: String, expected: String, strictNumberEq: Boolean): Throwable? {
       return when {
          actual == expected -> null
          equalIgnoringWhitespace(actual, expected) -> {

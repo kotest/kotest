@@ -7,11 +7,14 @@ import io.kotest.assertions.show.show
 
 object NumberEq : Eq<Number> {
 
-   override fun equals(actual: Number, expected: Number): Throwable? {
-      return if (compare(actual, expected)) null else failure(Expected(expected.show()), Actual(actual.show()))
+   override fun equals(actual: Number, expected: Number, strictNumberEq: Boolean): Throwable? {
+      return if (compare(actual, expected, strictNumberEq)) null else failure(Expected(expected.show()), Actual(actual.show()))
    }
 
-   private fun compare(a: Number, b: Number): Boolean {
+   private fun compare(a: Number, b: Number, strictNumberEq: Boolean): Boolean {
+      if (strictNumberEq) {
+         return a == b
+      }
       return when (a) {
          is Int -> when (b) {
             is Long -> a.toLong() == b

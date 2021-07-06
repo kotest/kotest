@@ -73,6 +73,11 @@ class ShouldContainExactlyTest : WordSpec() {
             }
          }
 
+         "test contains exactly for byte arrays" {
+            listOf("hello".toByteArray()) shouldContainExactly listOf("hello".toByteArray())
+            listOf("helloworld".toByteArray()) shouldNotContainExactly listOf("hello".toByteArray())
+         }
+
          "print errors unambiguously"  {
             shouldThrow<AssertionError> {
                listOf<Any>(1L, 2L).shouldContainExactly(listOf<Any>(1, 2))

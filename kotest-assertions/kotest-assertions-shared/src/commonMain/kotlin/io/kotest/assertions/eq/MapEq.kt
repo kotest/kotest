@@ -4,15 +4,15 @@ import io.kotest.assertions.failure
 import io.kotest.assertions.show.show
 
 internal object MapEq : Eq<Map<*, *>?> {
-   override fun equals(actual: Map<*, *>?, expected: Map<*, *>?): Throwable? {
+   override fun equals(actual: Map<*, *>?, expected: Map<*, *>?, strictNumberEq: Boolean): Throwable? {
       return when {
          actual == null && expected == null -> null
          actual != null && expected != null -> {
-            val haveUnequalKeys = eq(actual.keys, expected.keys)
+            val haveUnequalKeys = eq(actual.keys, expected.keys, strictNumberEq)
             if(haveUnequalKeys != null) generateError(actual, expected)
             else {
                val hasDifferentValue = actual.keys.any { key ->
-                  eq(actual[key], expected[key]) != null
+                  eq(actual[key], expected[key], strictNumberEq) != null
                }
                if(hasDifferentValue) generateError(actual, expected)
                else null
