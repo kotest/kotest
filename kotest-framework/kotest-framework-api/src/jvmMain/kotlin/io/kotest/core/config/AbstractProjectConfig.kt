@@ -205,11 +205,25 @@ abstract class AbstractProjectConfig {
     * Executed before the first test of the project, but after the
     * [ProjectListener.beforeProject] methods.
     */
+   open suspend fun beforeProject() {}
+
+   /**
+    * Executed before the first test of the project, but after the
+    * [ProjectListener.beforeProject] methods.
+    */
+   @Deprecated(message = "use beforeProject", replaceWith = ReplaceWith("beforeProject"))
    open fun beforeAll() {}
 
    /**
     * Executed after the last test of the project, but before the
     * [ProjectListener.afterProject] methods.
     */
+   open suspend fun afterProject() {}
+
+   /**
+    * Executed after the last test of the project, but before the
+    * [ProjectListener.afterProject] methods.
+    */
+   @Deprecated(message = "use afterProject", replaceWith = ReplaceWith("afterProject"))
    open fun afterAll() {}
 }
