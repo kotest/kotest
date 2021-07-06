@@ -15,7 +15,7 @@ object Linux : Tag()
 object Windows: Tag()
 ```
 
-Alternatively, tags can be defined using the `StringTag` class. When using this class, observe the following rules:
+Alternatively, tags can be defined using the `NamedTag` class. When using this class, observe the following rules:
 
 - A tag must not be null or blank.
 - A tag must not contain whitespace.
@@ -30,7 +30,7 @@ Alternatively, tags can be defined using the `StringTag` class. When using this 
 For example:
 
 ```kotlin
-val tag = StringTag("Linux")
+val tag = NamedTag("Linux")
 ```
 
 ## Marking Tests
@@ -42,15 +42,15 @@ import io.kotest.specs.StringSpec
 
 class MyTest : StringSpec() {
   init {
-    "should run on Windows".config(tags = setOf(Windows)) {
+    "should run on Windows".config(tags(Windows)) {
       // ...
     }
 
-    "should run on Linux".config(tags = setOf(Linux)) {
+    "should run on Linux".config(tags(Linux)) {
       // ...
     }
 
-    "should run on Windows and Linux".config(tags = setOf(Windows, Linux)) {
+    "should run on Windows and Linux".config(tags(Windows, Linux)) {
       // ...
     }
   }
@@ -129,8 +129,8 @@ class MyTestClass : FunSpec({
 
   beforeSpec { println("Before") }
 
-  test("A").config(tags = setOf(Mysql)) {}
-  test("B").config(tags = setOf(Postgres)) {}
+  test("A").config(tags(Mysql)) {}
+  test("B").config(tags(Postgres)) {}
   test("C") {}
 })
 ```
@@ -172,6 +172,3 @@ val test by tasks.getting(Test::class) {
 ```
 
 This will guarantee that the system property is correctly read by the JVM
-
-
-
