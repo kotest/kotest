@@ -129,8 +129,8 @@ class MyTestClass : FunSpec({
 
   beforeSpec { println("Before") }
 
-  test("A").config(tags(Mysql)) {}
-  test("B").config(tags(Postgres)) {}
+  test("A").config(tags = setOf(Mysql)) {}
+  test("B").config(tags = setOf(Postgres)) {}
   test("C") {}
 })
 ```
