@@ -42,15 +42,15 @@ import io.kotest.specs.StringSpec
 
 class MyTest : StringSpec() {
   init {
-    "should run on Windows".config(tags(Windows)) {
+    "should run on Windows".config(tags = setOf(Windows)) {
       // ...
     }
 
-    "should run on Linux".config(tags(Linux)) {
+    "should run on Linux".config(tags = setOf(Linux)) {
       // ...
     }
 
-    "should run on Windows and Linux".config(tags(Windows, Linux)) {
+    "should run on Windows and Linux".config(tags = setOf(Windows, Linux)) {
       // ...
     }
   }
