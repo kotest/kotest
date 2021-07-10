@@ -38,11 +38,10 @@
 }
 
 .heroSlogan {
-   font-size: 60px;
+   font-size: 3em;
    line-height: normal;
    color: var(--ifm-color-white) !important;
 }
-
 
 .heroSlogan strong {
    color: #4dbf4d;

@@ -92,10 +92,11 @@ function Home() {
          description="Flexible, powerful and elegant kotlin test framework with multiplatform support">
          <header className={clsx('hero hero--primary', styles.heroBanner)}>
             <div className="container">
-               <p className={clsx(styles.heroSlogan)}>Flexible and
-                  elegant <strong>multiplatform</strong> test <strong>framework</strong>, <strong>assertions</strong> library,
-                  and <strong>property
-                     test</strong> library for Kotlin
+               <p className={clsx(styles.heroSlogan)}>
+                  Kotest is a flexible and elegant <strong>Kotlin</strong><br/>
+                  test runner with <strong>multiplatform</strong> support.
+                  <br/><br/>
+                  Optional modules provide <strong>assertions</strong>, <strong>property testing</strong> and integration with third party libraries.
                </p>
                <div className={styles.buttons}>
                   <Link
