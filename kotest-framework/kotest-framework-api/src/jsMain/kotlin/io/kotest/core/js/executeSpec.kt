@@ -18,8 +18,8 @@ import kotlinx.coroutines.promise
 import kotlin.coroutines.CoroutineContext
 
 fun executeSpec2(name: String) {
-   describe(name) {
-      it(name + "2") { done ->
+   describe(name + "a") {
+      it(name + "b") { done ->
          done(null)
       }
    }
