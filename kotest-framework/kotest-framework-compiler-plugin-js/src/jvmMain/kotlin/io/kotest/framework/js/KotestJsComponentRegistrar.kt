@@ -6,7 +6,6 @@ import org.jetbrains.kotlin.backend.common.extensions.IrPluginContext
 import org.jetbrains.kotlin.backend.common.ir.addChild
 import org.jetbrains.kotlin.backend.common.lower.DeclarationIrBuilder
 import org.jetbrains.kotlin.cli.common.CLIConfigurationKeys
-import org.jetbrains.kotlin.cli.common.config.kotlinSourceRoots
 import org.jetbrains.kotlin.cli.common.messages.CompilerMessageSeverity
 import org.jetbrains.kotlin.cli.common.messages.MessageCollector
 import org.jetbrains.kotlin.com.intellij.mock.MockProject
@@ -24,11 +23,11 @@ import org.jetbrains.kotlin.ir.builders.irString
 import org.jetbrains.kotlin.ir.declarations.IrClass
 import org.jetbrains.kotlin.ir.declarations.IrFile
 import org.jetbrains.kotlin.ir.declarations.IrModuleFragment
-import org.jetbrains.kotlin.ir.declarations.name
 import org.jetbrains.kotlin.ir.symbols.IrSimpleFunctionSymbol
 import org.jetbrains.kotlin.ir.types.IrType
 import org.jetbrains.kotlin.ir.types.classFqName
 import org.jetbrains.kotlin.ir.types.getClass
+import org.jetbrains.kotlin.ir.util.kotlinFqName
 import org.jetbrains.kotlin.name.FqName
 import org.jetbrains.kotlin.name.Name
 
@@ -38,48 +37,42 @@ class KotestJsComponentRegistrar : ComponentRegistrar {
       project: MockProject,
       configuration: CompilerConfiguration
    ) {
-
       val messageCollector = configuration.get(CLIConfigurationKeys.MESSAGE_COLLECTOR_KEY, MessageCollector.NONE)
-      configuration.kotlinSourceRoots.forEach {
-         messageCollector.report(
-            CompilerMessageSeverity.WARNING,
-            "*** Hello from ***" + it.path
-         )
-      }
-
       IrGenerationExtension.registerExtension(project, SpecIrGenerationExtension(messageCollector))
-
    }
 }
 
-class SpecIrGenerationExtension(
-   private val messageCollector: MessageCollector,
-) : IrGenerationExtension {
+class SpecIrGenerationExtension(private val messageCollector: MessageCollector) : IrGenerationExtension {
    override fun generate(moduleFragment: IrModuleFragment, pluginContext: IrPluginContext) {
 
       moduleFragment.transform(object : IrElementTransformerVoidWithContext() {
 
          override fun visitFileNew(declaration: IrFile): IrFile {
-            messageCollector.report(CompilerMessageSeverity.WARNING, "file=${declaration.name}")
-            val specs = declaration.declarations.filterIsInstance<IrClass>().filter { it.isSpecClass() }
-            messageCollector.report(CompilerMessageSeverity.WARNING, "specs=${specs.map { it.name.asString() }}")
+            declaration.specs().forEach { spec ->
 
-            if (specs.isNotEmpty()) {
-               val registerKotest = pluginContext.irFactory.buildProperty {
-                  name = Name.identifier("kotestSpecEntryPoint_${declaration.name.removeSuffix(".kt")}")
+               // we use a public val to register each spec, so this name must be unique across all files
+               // therefore using FQN spec name seems a safe bet
+               val entryPointPropertyName = "kotestSpecEntryPoint_${spec.kotlinFqName.asString().replace(".", "_")}"
+//               messageCollector.report(
+//                  CompilerMessageSeverity.WARNING,
+//                  "entryPointPropertyName=$entryPointPropertyName"
+//               )
+
+               val registerKotestProperty = pluginContext.irFactory.buildProperty {
+                  name = Name.identifier(entryPointPropertyName)
                }.apply {
                   parent = declaration
                   backingField = pluginContext.irFactory.buildField {
                      type = pluginContext.irBuiltIns.unitType
                      isFinal = true
                      isExternal = false
-                     isStatic = true // top level must be static
-                     name = Name.identifier("kotestSpecEntryPoint_${declaration.name.removeSuffix(".kt")}}")
+                     isStatic = true // top level vals must be static
+                     name = Name.identifier(entryPointPropertyName)
                   }.also {
                      it.correspondingPropertySymbol = this@apply.symbol
                      it.initializer = pluginContext.irFactory.createExpressionBody(startOffset, endOffset) {
                         this.expression = DeclarationIrBuilder(pluginContext, it.symbol).irBlock {
-                           invokeSpecs(pluginContext, specs)
+                           invokeSpec(pluginContext, spec)
                         }
                      }
                   }
@@ -88,12 +81,12 @@ class SpecIrGenerationExtension(
                      returnType = pluginContext.irBuiltIns.unitType
                   }.also { func ->
                      func.body = DeclarationIrBuilder(pluginContext, func.symbol).irBlockBody {
-                        invokeSpecs(pluginContext, specs)
+                        invokeSpec(pluginContext, spec)
                      }
                   }
                }
 
-               declaration.addChild(registerKotest)
+               declaration.addChild(registerKotestProperty)
             }
 
             return declaration
@@ -120,13 +113,19 @@ val IrPluginContext.executeSpecFn: IrSimpleFunctionSymbol
       parameters.size == 1
    }
 
-fun <T : IrElement> IrStatementsBuilder<T>.invokeSpecs(pluginContext: IrPluginContext, specs: List<IrClass>) {
-   specs.forEach {
-      val callExecuteSpecFn = irCall(pluginContext.executeSpecFn)
-      callExecuteSpecFn.putValueArgument(0, irString(it.name.asString()))
-      +callExecuteSpecFn
-   }
+/**
+ * Registers irCalls that execute each spec in turn.
+ */
+fun <T : IrElement> IrStatementsBuilder<T>.invokeSpec(pluginContext: IrPluginContext, spec: IrClass) {
+   val callExecuteSpecFn = irCall(pluginContext.executeSpecFn)
+   callExecuteSpecFn.putValueArgument(0, irString(spec.name.asString()))
+   +callExecuteSpecFn
 }
+
+/**
+ * Returns any specs declared at the top level in this file.
+ */
+private fun IrFile.specs() = declarations.filterIsInstance<IrClass>().filter { it.isSpecClass() }
 
 /**
  * Recursively returns all supertypes for an [IrClass] to the top of the type tree.
