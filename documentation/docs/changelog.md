@@ -6,6 +6,8 @@ slug: changelog.html
 
 ### [Next Release 5.0.0]
 
+_**Kotlin 1.5 is now the minimum supported version**_
+
 #### Breaking Changes
 
 * Javascript support has been reworked to support the IR compiler. The legacy compiler is no longer supported.
