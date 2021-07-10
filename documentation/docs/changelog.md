@@ -8,6 +8,7 @@ slug: changelog.html
 
 #### Breaking Changes
 
+* Javascript support has been reworked to support the IR compiler. The legacy compiler is no longer supported.
 * `Arb.values` has been removed. This was deprecated back in 4.3 in favour of `Arb.sample`. Any custom arbs that override this method should be updated. Any custom arbs that use the `arbitrary` builders are not affected.
 * The Engine no longer logs config to the console during start **by default**. To enable, set the system property `kotest.framework.dump.config` to true.
 * Removed deprecated `shouldReceiveWithin` and `shouldReceiveNoElementsWithin` channel matchers.
