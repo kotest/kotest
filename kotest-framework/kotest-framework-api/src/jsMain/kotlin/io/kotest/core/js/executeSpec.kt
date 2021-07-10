@@ -17,10 +17,18 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.promise
 import kotlin.coroutines.CoroutineContext
 
+fun executeSpec2(name: String) {
+   describe(name) {
+      it(name + "2") { done ->
+         done(null)
+      }
+   }
+}
+
 /**
  * Note: we need to use this: https://youtrack.jetbrains.com/issue/KT-22228
  */
-internal fun executeSpec(spec: Spec) {
+fun executeSpec(spec: Spec) {
    spec.materializeAndOrderRootTests()
       .filter { it.testCase.isEnabledInternal().isEnabled }
       .forEach { root ->
