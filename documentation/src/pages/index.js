@@ -51,7 +51,7 @@ const features = [
       imageUrl: 'img/undraw_docusaurus_react.svg',
       description: (
          <>
-            The Kotest proptest module is an advanced multi-platform property test library with over 50 built in
+            The Kotest property testing module is an advanced multi-platform property test library with over 50 built in
             generators.
 
             <br/><br/>
@@ -93,7 +93,7 @@ function Home() {
          <header className={clsx('hero hero--primary', styles.heroBanner)}>
             <div className="container">
                <p className={clsx(styles.heroSlogan)}>
-                  Kotest is a flexible and elegant <strong>multi-platform</strong> test framwork
+                  Kotest is a flexible and elegant <strong>multi-platform</strong> test framework
                   for <strong>Kotlin</strong> with extensive <strong>assertions</strong> and integrated <strong>property
                   testing</strong>
                </p>
