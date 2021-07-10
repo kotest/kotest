@@ -107,7 +107,7 @@ private val specClasses = listOf(
 )
 
 val IrPluginContext.executeSpecFn: IrSimpleFunctionSymbol
-   get() = referenceFunctions(FqName("io.kotest.core.js.executeSpec")).single {
+   get() = referenceFunctions(FqName("io.kotest.engine.execution.executeSpec")).single {
       val parameters = it.owner.valueParameters
       parameters.size == 1
    }

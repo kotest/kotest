@@ -1,4 +1,6 @@
-package io.kotest.core.js
+@file:Suppress("unused")
+
+package io.kotest.engine.execution
 
 import io.kotest.core.CallingThreadExecutionContext
 import io.kotest.core.internal.TestCaseExecutor
@@ -14,14 +16,20 @@ import io.kotest.core.test.TestCaseExecutionListener
 import io.kotest.core.test.TestContext
 import io.kotest.core.test.TestResult
 import io.kotest.mpp.bestName
+import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.promise
 import kotlin.coroutines.CoroutineContext
 
 /**
+ * Entry point for JS tests.
+ * This method is invoked by the compiler plugin.
+ *
  * Note: we need to use this: https://youtrack.jetbrains.com/issue/KT-22228
  */
+@DelicateCoroutinesApi
 fun executeSpec(spec: Spec) {
+   // we use the spec itself is an outer test like in JVM tests.
    describe(spec::class.bestName()) {
       spec.materializeAndOrderRootTests()
          .filter { it.testCase.isEnabledInternal().isEnabled }
