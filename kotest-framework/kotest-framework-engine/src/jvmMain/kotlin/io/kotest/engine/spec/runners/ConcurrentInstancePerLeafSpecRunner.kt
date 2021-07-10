@@ -12,7 +12,7 @@ import io.kotest.engine.listener.BufferedTestCaseExcecutionListener
 import io.kotest.engine.spec.SpecRunner
 import io.kotest.engine.listener.TestEngineListener
 import io.kotest.engine.ExecutorExecutionContext
-import io.kotest.core.internal.TestCaseExecutor
+import io.kotest.engine.test.TestCaseExecutor
 import io.kotest.engine.listener.TestCaseListenerToTestEngineListenerAdapter
 import io.kotest.core.spec.invokeAfterSpec
 import io.kotest.core.spec.invokeBeforeSpec

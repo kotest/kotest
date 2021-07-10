@@ -1,4 +1,7 @@
-package io.kotest.core.test
+package io.kotest.engine.test
+
+import io.kotest.core.test.TestCase
+import io.kotest.core.test.TestResult
 
 interface TestCaseExecutionListener {
    fun testStarted(testCase: TestCase) {}

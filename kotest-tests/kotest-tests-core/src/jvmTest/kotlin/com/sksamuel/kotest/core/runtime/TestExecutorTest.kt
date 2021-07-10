@@ -4,9 +4,9 @@ import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.CallingThreadExecutionContext
 import io.kotest.core.TimeoutExecutionContext
 import io.kotest.engine.ExecutorExecutionContext
-import io.kotest.core.test.TestCaseExecutionListener
-import io.kotest.core.internal.TestCaseExecutor
-import io.kotest.core.internal.TimeoutException
+import io.kotest.engine.test.TestCaseExecutionListener
+import io.kotest.engine.test.TestCaseExecutor
+import io.kotest.engine.test.TimeoutException
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.spec.style.funSpec
 import io.kotest.core.test.NestedTest

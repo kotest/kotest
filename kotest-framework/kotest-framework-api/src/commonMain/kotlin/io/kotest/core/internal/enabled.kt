@@ -20,8 +20,6 @@ import io.kotest.core.test.isFocused
 import io.kotest.mpp.log
 import io.kotest.mpp.sysprop
 
-suspend fun TestCase.isActive(): Boolean = this.isEnabled().isEnabled
-
 /**
  * Returns [Enabled.isEnabled] if the given [TestCase] is enabled based on default rules at [isEnabledInternal]
  * or any registered [EnabledExtension]s.

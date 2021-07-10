@@ -2,8 +2,8 @@ package com.sksamuel.kotest.timeout
 
 import io.kotest.core.listeners.TestListener
 import io.kotest.engine.ExecutorExecutionContext
-import io.kotest.core.test.TestCaseExecutionListener
-import io.kotest.core.internal.TestCaseExecutor
+import io.kotest.engine.test.TestCaseExecutionListener
+import io.kotest.engine.test.TestCaseExecutor
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.spec.toDescription
 import io.kotest.core.test.NestedTest

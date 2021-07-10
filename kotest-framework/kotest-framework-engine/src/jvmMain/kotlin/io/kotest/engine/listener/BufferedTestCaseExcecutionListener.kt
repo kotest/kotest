@@ -1,6 +1,6 @@
 package io.kotest.engine.listener
 
-import io.kotest.core.test.TestCaseExecutionListener
+import io.kotest.engine.test.TestCaseExecutionListener
 import io.kotest.core.test.Description
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult

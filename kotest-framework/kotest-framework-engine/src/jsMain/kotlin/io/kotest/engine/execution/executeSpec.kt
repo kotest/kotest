@@ -3,7 +3,7 @@
 package io.kotest.engine.execution
 
 import io.kotest.core.CallingThreadExecutionContext
-import io.kotest.core.internal.TestCaseExecutor
+import io.kotest.engine.test.TestCaseExecutor
 import io.kotest.core.internal.isEnabledInternal
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.materializeAndOrderRootTests
@@ -12,7 +12,7 @@ import io.kotest.core.spec.style.ShouldSpec
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.core.test.NestedTest
 import io.kotest.core.test.TestCase
-import io.kotest.core.test.TestCaseExecutionListener
+import io.kotest.engine.test.TestCaseExecutionListener
 import io.kotest.core.test.TestContext
 import io.kotest.core.test.TestResult
 import io.kotest.mpp.bestName

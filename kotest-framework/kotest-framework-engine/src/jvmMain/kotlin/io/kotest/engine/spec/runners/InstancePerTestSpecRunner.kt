@@ -1,7 +1,7 @@
 package io.kotest.engine.spec.runners
 
 import io.kotest.core.config.configuration
-import io.kotest.core.internal.TestCaseExecutor
+import io.kotest.engine.test.TestCaseExecutor
 import io.kotest.core.internal.resolvedThreads
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.invokeAfterSpec
@@ -9,7 +9,7 @@ import io.kotest.core.spec.invokeBeforeSpec
 import io.kotest.core.spec.materializeAndOrderRootTests
 import io.kotest.core.test.NestedTest
 import io.kotest.core.test.TestCase
-import io.kotest.core.test.TestCaseExecutionListener
+import io.kotest.engine.test.TestCaseExecutionListener
 import io.kotest.core.test.TestContext
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestType
