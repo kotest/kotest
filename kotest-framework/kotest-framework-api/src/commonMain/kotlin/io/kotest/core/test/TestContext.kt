@@ -53,21 +53,3 @@ suspend fun TestContext.registerTestCase(
 }
 
 class InvalidTestConstructionException(msg: String) : RuntimeException(msg)
-
-private class TestContextWithCoroutineContext(
-   val delegate: TestContext,
-   override val coroutineContext: CoroutineContext
-) : TestContext by delegate {
-   override fun toString(): String = "TestCaseContext [$coroutineContext]"
-}
-
-/**
- * Returns a new [TestContext] which uses the given [coroutineContext] with the other methods
- * delegating to the receiver context.
- */
-internal fun TestContext.withCoroutineContext(coroutineContext: CoroutineContext): TestContext =
-   if (this is TestContextWithCoroutineContext) {
-      TestContextWithCoroutineContext(delegate, coroutineContext)
-   } else {
-      TestContextWithCoroutineContext(this, coroutineContext)
-   }

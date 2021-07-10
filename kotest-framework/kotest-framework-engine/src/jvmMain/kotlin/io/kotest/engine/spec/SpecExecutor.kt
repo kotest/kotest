@@ -3,11 +3,10 @@ package io.kotest.engine.spec
 import io.kotest.core.config.configuration
 import io.kotest.core.extensions.SpecExtension
 import io.kotest.core.extensions.resolvedSpecExtensions
-import io.kotest.core.internal.isEnabled
+import io.kotest.engine.test.isEnabled
 import io.kotest.core.internal.resolvedThreads
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.Spec
-import io.kotest.core.spec.materializeAndOrderRootTests
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.engine.NotificationManager

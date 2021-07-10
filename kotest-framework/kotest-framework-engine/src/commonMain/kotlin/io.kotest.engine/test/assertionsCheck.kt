@@ -1,4 +1,4 @@
-package io.kotest.core.internal
+package io.kotest.engine.test
 
 import io.kotest.assertions.assertionCounter
 import io.kotest.assertions.getAndReset

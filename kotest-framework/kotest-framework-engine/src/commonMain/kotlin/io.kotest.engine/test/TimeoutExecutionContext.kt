@@ -1,4 +1,4 @@
-package io.kotest.core
+package io.kotest.engine.test
 
 /**
  * Allows for the execution of a function with a timeout to wake blocked threads.
