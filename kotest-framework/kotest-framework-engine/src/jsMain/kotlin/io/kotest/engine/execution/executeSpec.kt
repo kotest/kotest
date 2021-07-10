@@ -4,7 +4,7 @@ package io.kotest.engine.execution
 
 import io.kotest.engine.test.CallingThreadExecutionContext
 import io.kotest.engine.test.TestCaseExecutor
-import io.kotest.core.internal.isEnabledInternal
+import io.kotest.engine.test.isEnabledInternal
 import io.kotest.core.spec.Spec
 import io.kotest.engine.spec.materializeAndOrderRootTests
 import io.kotest.core.spec.style.FunSpec
