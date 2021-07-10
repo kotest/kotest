@@ -16,7 +16,7 @@ import io.kotest.engine.test.TestCaseExecutor
 import io.kotest.engine.listener.TestCaseListenerToTestEngineListenerAdapter
 import io.kotest.core.spec.invokeAfterSpec
 import io.kotest.core.spec.invokeBeforeSpec
-import io.kotest.core.spec.materializeAndOrderRootTests
+import io.kotest.engine.spec.materializeAndOrderRootTests
 import io.kotest.core.test.createTestName
 import io.kotest.engine.dispatchers.ExecutorCoroutineDispatcherFactory
 import io.kotest.engine.launchers.SequentialTestLauncher

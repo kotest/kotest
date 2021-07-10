@@ -1,6 +1,5 @@
 package io.kotest.engine.test
 
-import io.kotest.core.TimeoutExecutionContext
 import io.kotest.core.extensions.TestCaseExtension
 import io.kotest.core.extensions.resolvedTestCaseExtensions
 import io.kotest.core.internal.isEnabled

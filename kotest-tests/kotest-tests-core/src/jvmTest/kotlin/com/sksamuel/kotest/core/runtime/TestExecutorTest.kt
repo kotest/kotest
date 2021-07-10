@@ -1,8 +1,8 @@
 package com.sksamuel.kotest.core.runtime
 
 import io.kotest.assertions.throwables.shouldThrow
-import io.kotest.core.CallingThreadExecutionContext
-import io.kotest.core.TimeoutExecutionContext
+import io.kotest.engine.test.CallingThreadExecutionContext
+import io.kotest.engine.test.TimeoutExecutionContext
 import io.kotest.engine.ExecutorExecutionContext
 import io.kotest.engine.test.TestCaseExecutionListener
 import io.kotest.engine.test.TestCaseExecutor
@@ -14,7 +14,7 @@ import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestContext
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestStatus
-import io.kotest.core.spec.materializeAndOrderRootTests
+import io.kotest.engine.spec.materializeAndOrderRootTests
 import io.kotest.engine.toTestResult
 import io.kotest.matchers.booleans.shouldBeTrue
 import io.kotest.matchers.shouldBe

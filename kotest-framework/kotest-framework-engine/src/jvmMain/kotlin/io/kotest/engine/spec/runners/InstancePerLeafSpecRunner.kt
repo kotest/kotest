@@ -5,7 +5,7 @@ import io.kotest.engine.test.TestCaseExecutor
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.invokeAfterSpec
 import io.kotest.core.spec.invokeBeforeSpec
-import io.kotest.core.spec.materializeAndOrderRootTests
+import io.kotest.engine.spec.materializeAndOrderRootTests
 import io.kotest.core.test.Description
 import io.kotest.core.test.NestedTest
 import io.kotest.core.test.TestCase

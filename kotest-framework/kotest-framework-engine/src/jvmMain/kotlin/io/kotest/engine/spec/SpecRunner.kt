@@ -2,7 +2,6 @@ package io.kotest.engine.spec
 
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.Spec
-import io.kotest.core.spec.materializeAndOrderRootTests
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.engine.launchers.TestLauncher

@@ -2,11 +2,11 @@
 
 package io.kotest.engine.execution
 
-import io.kotest.core.CallingThreadExecutionContext
+import io.kotest.engine.test.CallingThreadExecutionContext
 import io.kotest.engine.test.TestCaseExecutor
 import io.kotest.core.internal.isEnabledInternal
 import io.kotest.core.spec.Spec
-import io.kotest.core.spec.materializeAndOrderRootTests
+import io.kotest.engine.spec.materializeAndOrderRootTests
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.spec.style.ShouldSpec
 import io.kotest.core.spec.style.StringSpec

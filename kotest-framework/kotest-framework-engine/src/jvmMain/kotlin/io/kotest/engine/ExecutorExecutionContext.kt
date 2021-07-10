@@ -1,6 +1,6 @@
 package io.kotest.engine
 
-import io.kotest.core.TimeoutExecutionContext
+import io.kotest.engine.test.TimeoutExecutionContext
 import io.kotest.engine.test.TimeoutException
 import io.kotest.mpp.NamedThreadFactory
 import io.kotest.mpp.log

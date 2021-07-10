@@ -6,7 +6,7 @@ import io.kotest.core.internal.resolvedThreads
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.invokeAfterSpec
 import io.kotest.core.spec.invokeBeforeSpec
-import io.kotest.core.spec.materializeAndOrderRootTests
+import io.kotest.engine.spec.materializeAndOrderRootTests
 import io.kotest.core.test.NestedTest
 import io.kotest.core.test.TestCase
 import io.kotest.engine.test.TestCaseExecutionListener
