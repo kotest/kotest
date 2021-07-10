@@ -6,7 +6,6 @@ import org.jetbrains.kotlin.backend.common.extensions.IrPluginContext
 import org.jetbrains.kotlin.backend.common.ir.addChild
 import org.jetbrains.kotlin.backend.common.lower.DeclarationIrBuilder
 import org.jetbrains.kotlin.cli.common.CLIConfigurationKeys
-import org.jetbrains.kotlin.cli.common.messages.CompilerMessageSeverity
 import org.jetbrains.kotlin.cli.common.messages.MessageCollector
 import org.jetbrains.kotlin.com.intellij.mock.MockProject
 import org.jetbrains.kotlin.compiler.plugin.ComponentRegistrar
@@ -19,7 +18,6 @@ import org.jetbrains.kotlin.ir.builders.declarations.buildProperty
 import org.jetbrains.kotlin.ir.builders.irBlock
 import org.jetbrains.kotlin.ir.builders.irBlockBody
 import org.jetbrains.kotlin.ir.builders.irCall
-import org.jetbrains.kotlin.ir.builders.irString
 import org.jetbrains.kotlin.ir.declarations.IrClass
 import org.jetbrains.kotlin.ir.declarations.IrFile
 import org.jetbrains.kotlin.ir.declarations.IrModuleFragment
@@ -27,6 +25,7 @@ import org.jetbrains.kotlin.ir.symbols.IrSimpleFunctionSymbol
 import org.jetbrains.kotlin.ir.types.IrType
 import org.jetbrains.kotlin.ir.types.classFqName
 import org.jetbrains.kotlin.ir.types.getClass
+import org.jetbrains.kotlin.ir.util.constructors
 import org.jetbrains.kotlin.ir.util.kotlinFqName
 import org.jetbrains.kotlin.name.FqName
 import org.jetbrains.kotlin.name.Name
@@ -96,19 +95,19 @@ class SpecIrGenerationExtension(private val messageCollector: MessageCollector) 
 }
 
 private val specClasses = listOf(
-   "io.kotest.core.spec.style.FunSpec",
-   "io.kotest.core.spec.style.StringSpec",
-   "io.kotest.core.spec.style.DescribeSpec",
-   "io.kotest.core.spec.style.WordSpec",
-   "io.kotest.core.spec.style.FreeSpec",
-   "io.kotest.core.spec.style.ShouldSpec",
-   "io.kotest.core.spec.style.FeatureSpec",
-   "io.kotest.core.spec.style.ExpectSpec",
    "io.kotest.core.spec.style.BehaviorSpec",
+   "io.kotest.core.spec.style.DescribeSpec",
+   "io.kotest.core.spec.style.ExpectSpec",
+   "io.kotest.core.spec.style.FeatureSpec",
+   "io.kotest.core.spec.style.FreeSpec",
+   "io.kotest.core.spec.style.FunSpec",
+   "io.kotest.core.spec.style.ShouldSpec",
+   "io.kotest.core.spec.style.StringSpec",
+   "io.kotest.core.spec.style.WordSpec",
 )
 
 val IrPluginContext.executeSpecFn: IrSimpleFunctionSymbol
-   get() = referenceFunctions(FqName("io.kotest.core.js.executeSpec2")).single {
+   get() = referenceFunctions(FqName("io.kotest.core.js.executeSpec")).single {
       val parameters = it.owner.valueParameters
       parameters.size == 1
    }
@@ -118,7 +117,7 @@ val IrPluginContext.executeSpecFn: IrSimpleFunctionSymbol
  */
 fun <T : IrElement> IrStatementsBuilder<T>.invokeSpec(pluginContext: IrPluginContext, spec: IrClass) {
    val callExecuteSpecFn = irCall(pluginContext.executeSpecFn)
-   callExecuteSpecFn.putValueArgument(0, irString(spec.name.asString()))
+   callExecuteSpecFn.putValueArgument(0, irCall(spec.constructors.first()))
    +callExecuteSpecFn
 }
 
