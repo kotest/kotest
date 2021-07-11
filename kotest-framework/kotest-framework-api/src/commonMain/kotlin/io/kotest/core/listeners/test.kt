@@ -13,7 +13,7 @@ interface BeforeTestListener : Listener {
     *
     * @param testCase the [TestCase] about to be executed.
     */
-   @Deprecated("Use beforeAny. Deprecated since 5.0")
+   @Deprecated("Use beforeAny. Deprecated since 5.0 and will be removed in 6.0")
    suspend fun beforeTest(testCase: TestCase): Unit = Unit
 
    /**
@@ -22,7 +22,7 @@ interface BeforeTestListener : Listener {
    suspend fun beforeAny(testCase: TestCase): Unit = Unit
 }
 
-@Deprecated("Use beforeContainer, beforeEach, or beforeAny. Deprecated since 5.0")
+@Deprecated("Use beforeContainer, beforeEach, or beforeAny. Deprecated since 5.0 and will be removed in 6.0")
 interface AfterTestListener : Listener {
 
    /**
@@ -33,7 +33,7 @@ interface AfterTestListener : Listener {
     *
     * @param testCase the [TestCase] that has completed.
     */
-   @Deprecated("Use afterAny. Deprecated since 5.0")
+   @Deprecated("Use afterAny. Deprecated since 5.0 and will be removed in 6.0")
    suspend fun afterTest(testCase: TestCase, result: TestResult): Unit = Unit
 
    /**
