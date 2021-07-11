@@ -3,7 +3,7 @@ package com.sksamuel.kotest.core.runtime
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestStatus
-import io.kotest.engine.toTestResult
+import io.kotest.engine.test.toTestResult
 
 class InvocationThreadErrorTest : FunSpec({
 

@@ -8,10 +8,10 @@ import io.kotest.core.test.TestContext
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestStatus
 import io.kotest.core.test.TestType
-import io.kotest.engine.test.lifecycle.invokeAfterInvocation
-import io.kotest.engine.test.lifecycle.invokeAllAfterTestCallbacks
-import io.kotest.engine.test.lifecycle.invokeAllBeforeTestCallbacks
-import io.kotest.engine.test.lifecycle.invokeBeforeInvocation
+import io.kotest.engine.lifecycle.invokeAfterInvocation
+import io.kotest.engine.lifecycle.invokeAllAfterTestCallbacks
+import io.kotest.engine.lifecycle.invokeAllBeforeTestCallbacks
+import io.kotest.engine.lifecycle.invokeBeforeInvocation
 import io.kotest.engine.test.status.isEnabled
 import io.kotest.fp.Try
 import io.kotest.mpp.log

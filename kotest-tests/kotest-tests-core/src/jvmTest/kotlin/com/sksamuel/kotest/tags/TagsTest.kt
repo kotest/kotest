@@ -4,7 +4,7 @@ import io.kotest.core.NamedTag
 import io.kotest.core.Tag
 import io.kotest.core.Tags
 import io.kotest.core.spec.style.StringSpec
-import io.kotest.core.internal.tags.isActive
+import io.kotest.engine.tags.isActive
 import io.kotest.core.internal.tags.parse
 import io.kotest.matchers.shouldBe
 

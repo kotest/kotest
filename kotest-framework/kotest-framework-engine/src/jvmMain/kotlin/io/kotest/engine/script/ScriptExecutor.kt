@@ -16,7 +16,7 @@ import io.kotest.engine.ExecutorExecutionContext
 import io.kotest.engine.NotificationManager
 import io.kotest.engine.listener.TestEngineListener
 import io.kotest.engine.test.DuplicateTestNameHandler
-import io.kotest.engine.toTestResult
+import io.kotest.engine.test.toTestResult
 import io.kotest.fp.Try
 import io.kotest.mpp.log
 import java.util.concurrent.ConcurrentHashMap

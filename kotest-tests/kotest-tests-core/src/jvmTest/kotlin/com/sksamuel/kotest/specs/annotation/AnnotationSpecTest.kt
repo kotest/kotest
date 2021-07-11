@@ -7,7 +7,7 @@ import io.kotest.core.extensions.Extension
 import io.kotest.core.extensions.TestCaseExtension
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.style.AnnotationSpec
-import io.kotest.engine.toTestResult
+import io.kotest.engine.test.toTestResult
 import io.kotest.matchers.shouldBe
 
 class AnnotationSpecTest : AnnotationSpec() {

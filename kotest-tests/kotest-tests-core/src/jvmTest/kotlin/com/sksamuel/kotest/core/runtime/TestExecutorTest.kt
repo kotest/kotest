@@ -15,7 +15,7 @@ import io.kotest.core.test.TestContext
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestStatus
 import io.kotest.engine.spec.materializeAndOrderRootTests
-import io.kotest.engine.toTestResult
+import io.kotest.engine.test.toTestResult
 import io.kotest.matchers.booleans.shouldBeTrue
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.types.shouldBeInstanceOf

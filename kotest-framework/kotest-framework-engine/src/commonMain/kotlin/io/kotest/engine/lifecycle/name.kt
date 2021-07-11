@@ -1,4 +1,4 @@
-package io.kotest.engine.test.lifecycle
+package io.kotest.engine.lifecycle
 
 import io.kotest.core.listeners.Listener
 

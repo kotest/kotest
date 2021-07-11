@@ -3,7 +3,7 @@ package io.kotest.engine.test.status
 import io.kotest.core.config.configuration
 import io.kotest.core.internal.tags.activeTags
 import io.kotest.core.internal.tags.allTags
-import io.kotest.core.internal.tags.isActive
+import io.kotest.engine.tags.isActive
 import io.kotest.core.internal.tags.parse
 import io.kotest.core.test.Enabled
 import io.kotest.core.test.TestCase

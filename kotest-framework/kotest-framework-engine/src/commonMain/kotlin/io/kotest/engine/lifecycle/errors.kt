@@ -1,4 +1,4 @@
-package io.kotest.core.listeners
+package io.kotest.engine.lifecycle
 
 class AfterProjectListenerException : RuntimeException {
    constructor(message: String, t: Throwable?, name: String) : super(message, t) {

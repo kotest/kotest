@@ -17,9 +17,9 @@ import io.kotest.engine.launchers.TestLauncher
 import io.kotest.engine.listener.TestEngineListener
 import io.kotest.engine.spec.SpecRunner
 import io.kotest.engine.test.DuplicateTestNameHandler
-import io.kotest.engine.test.lifecycle.invokeAfterSpec
-import io.kotest.engine.test.lifecycle.invokeBeforeSpec
-import io.kotest.engine.toTestResult
+import io.kotest.engine.lifecycle.invokeAfterSpec
+import io.kotest.engine.lifecycle.invokeBeforeSpec
+import io.kotest.engine.test.toTestResult
 import io.kotest.fp.Try
 import io.kotest.mpp.log
 import kotlinx.coroutines.coroutineScope

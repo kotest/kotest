@@ -17,8 +17,8 @@ import io.kotest.engine.listener.TestEngineListener
 import io.kotest.engine.script.ScriptExecutor
 import io.kotest.engine.spec.SpecExecutor
 import io.kotest.engine.spec.sort
-import io.kotest.engine.test.lifecycle.afterProject
-import io.kotest.engine.test.lifecycle.beforeProject
+import io.kotest.engine.lifecycle.afterProject
+import io.kotest.engine.lifecycle.beforeProject
 import io.kotest.fp.Try
 import io.kotest.fp.getOrElse
 import io.kotest.mpp.log

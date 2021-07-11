@@ -1,4 +1,4 @@
-package io.kotest.engine
+package io.kotest.engine.test
 
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestStatus

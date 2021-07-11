@@ -4,7 +4,7 @@ import io.kotest.core.Tags
 import io.kotest.core.config.configuration
 import io.kotest.core.extensions.DiscoveryExtension
 import io.kotest.core.spec.Spec
-import io.kotest.core.internal.tags.isPotentiallyActive
+import io.kotest.engine.tags.isPotentiallyActive
 import io.kotest.core.internal.tags.parse
 import io.kotest.core.internal.tags.activeTags
 import kotlin.reflect.KClass

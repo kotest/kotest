@@ -4,8 +4,8 @@ import io.kotest.core.spec.Spec
 import io.kotest.core.config.configuration
 import io.kotest.engine.listener.TestEngineListener
 import io.kotest.engine.writeSpecFailures
-import io.kotest.core.listeners.AfterProjectListenerException
-import io.kotest.core.listeners.BeforeProjectListenerException
+import io.kotest.engine.lifecycle.AfterProjectListenerException
+import io.kotest.engine.lifecycle.BeforeProjectListenerException
 import io.kotest.core.plan.Descriptor
 import io.kotest.core.plan.toDescriptor
 import io.kotest.core.sourceRef

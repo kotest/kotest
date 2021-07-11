@@ -1,9 +1,7 @@
-package io.kotest.engine.test.lifecycle
+package io.kotest.engine.lifecycle
 
 import io.kotest.core.listeners.AfterProjectListener
-import io.kotest.core.listeners.AfterProjectListenerException
 import io.kotest.core.listeners.BeforeProjectListener
-import io.kotest.core.listeners.BeforeProjectListenerException
 import io.kotest.core.listeners.Listener
 import io.kotest.fp.Try
 import io.kotest.mpp.log
