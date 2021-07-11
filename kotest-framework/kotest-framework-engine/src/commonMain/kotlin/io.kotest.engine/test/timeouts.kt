@@ -1,6 +1,7 @@
-package io.kotest.core.test
+package io.kotest.engine.test
 
 import io.kotest.core.config.configuration
+import io.kotest.core.test.TestCase
 
 /**
  * Returns the resolved timeout for a [TestCase] taking into account test case config,

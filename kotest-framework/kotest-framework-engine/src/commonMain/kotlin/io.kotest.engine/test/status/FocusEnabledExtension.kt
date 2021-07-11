@@ -1,6 +1,6 @@
 package io.kotest.engine.test.status
 
-import io.kotest.core.spec.focusTests
+import io.kotest.engine.spec.focusTests
 import io.kotest.core.test.Enabled
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.isFocused

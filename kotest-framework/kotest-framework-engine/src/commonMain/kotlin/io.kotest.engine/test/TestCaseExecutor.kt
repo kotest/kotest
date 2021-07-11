@@ -12,8 +12,6 @@ import io.kotest.core.test.TestContext
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestStatus
 import io.kotest.core.test.TestType
-import io.kotest.core.test.resolvedInvocationTimeout
-import io.kotest.core.test.resolvedTimeout
 import io.kotest.engine.test.status.isEnabled
 import io.kotest.fp.Try
 import io.kotest.mpp.log
