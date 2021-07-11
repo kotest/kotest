@@ -4,7 +4,7 @@ import io.kotest.core.config.configuration
 import io.kotest.core.extensions.SpecExtension
 import io.kotest.core.extensions.resolvedSpecExtensions
 import io.kotest.engine.test.isEnabled
-import io.kotest.core.internal.resolvedThreads
+import io.kotest.engine.concurrency.resolvedThreads
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.Spec
 import io.kotest.core.test.TestCase

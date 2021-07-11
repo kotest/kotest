@@ -1,6 +1,6 @@
 package io.kotest.engine.launchers
 
-import io.kotest.core.internal.isIsolate
+import io.kotest.engine.concurrency.isIsolate
 import io.kotest.core.spec.DoNotParallelize
 import io.kotest.core.spec.Isolate
 import io.kotest.core.spec.Spec

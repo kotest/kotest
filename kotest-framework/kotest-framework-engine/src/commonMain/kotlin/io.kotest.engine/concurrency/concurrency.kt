@@ -1,4 +1,4 @@
-package io.kotest.core.internal
+package io.kotest.engine.concurrency
 
 import io.kotest.core.config.Configuration
 import io.kotest.core.config.configuration
@@ -15,14 +15,14 @@ import kotlin.reflect.KClass
  *
  * Those annotations are [DoNotParallelize] and [Isolate].
  */
-fun KClass<*>.isIsolate(): Boolean = annotation<DoNotParallelize>() != null || annotation<Isolate>() != null
+internal fun KClass<*>.isIsolate(): Boolean = annotation<DoNotParallelize>() != null || annotation<Isolate>() != null
 
 /**
  * Returns the number of threads specified on this spec, which comes either from the
  * function overrides of the var overrides.
  */
 @Deprecated("Setting explicit thread count in a spec has been deprecated. Use the concurrency setting")
-fun Spec.resolvedThreads(): Int? = this.threads() ?: this.threads
+internal fun Spec.resolvedThreads(): Int? = this.threads() ?: this.threads
 
 /**
  * Returns the concurrent tests count to use for tests in this spec.
@@ -35,7 +35,7 @@ fun Spec.resolvedThreads(): Int? = this.threads() ?: this.threads
  *
  * spec.concurrency ?: configuration.concurrentTests
  */
-fun Spec.resolvedConcurrentTests(): Int {
+internal fun Spec.resolvedConcurrentTests(): Int {
    val fromSpecConcurrency = this.concurrency ?: this.concurrency()
    val fromSpecThreadCount = this.resolvedThreads()
    return when {

@@ -1,7 +1,7 @@
 package io.kotest.engine.dispatchers
 
 import io.kotest.common.ExperimentalKotest
-import io.kotest.core.internal.resolvedThreads
+import io.kotest.engine.concurrency.resolvedThreads
 import io.kotest.core.spec.Spec
 import io.kotest.core.test.TestCase
 import io.kotest.mpp.NamedThreadFactory

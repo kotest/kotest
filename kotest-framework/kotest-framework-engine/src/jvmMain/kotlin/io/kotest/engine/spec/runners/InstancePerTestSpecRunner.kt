@@ -2,7 +2,7 @@ package io.kotest.engine.spec.runners
 
 import io.kotest.core.config.configuration
 import io.kotest.engine.test.TestCaseExecutor
-import io.kotest.core.internal.resolvedThreads
+import io.kotest.engine.concurrency.resolvedThreads
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.invokeAfterSpec
 import io.kotest.core.spec.invokeBeforeSpec
