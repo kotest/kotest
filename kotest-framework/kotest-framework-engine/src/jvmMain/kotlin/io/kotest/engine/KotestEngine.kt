@@ -5,8 +5,6 @@ import io.kotest.core.config.configuration
 import io.kotest.core.filter.SpecFilter
 import io.kotest.core.filter.TestFilter
 import io.kotest.core.spec.Spec
-import io.kotest.core.spec.afterProject
-import io.kotest.core.spec.beforeProject
 import io.kotest.engine.config.ConfigManager
 import io.kotest.engine.extensions.DumpConfigExtension
 import io.kotest.engine.extensions.EmptyTestSuiteExtension
@@ -19,6 +17,8 @@ import io.kotest.engine.listener.TestEngineListener
 import io.kotest.engine.script.ScriptExecutor
 import io.kotest.engine.spec.SpecExecutor
 import io.kotest.engine.spec.sort
+import io.kotest.engine.test.lifecycle.afterProject
+import io.kotest.engine.test.lifecycle.beforeProject
 import io.kotest.fp.Try
 import io.kotest.fp.getOrElse
 import io.kotest.mpp.log

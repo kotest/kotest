@@ -14,13 +14,13 @@ import io.kotest.engine.listener.TestEngineListener
 import io.kotest.engine.ExecutorExecutionContext
 import io.kotest.engine.test.TestCaseExecutor
 import io.kotest.engine.listener.TestCaseListenerToTestEngineListenerAdapter
-import io.kotest.core.spec.invokeAfterSpec
-import io.kotest.core.spec.invokeBeforeSpec
 import io.kotest.engine.spec.materializeAndOrderRootTests
 import io.kotest.core.test.createTestName
 import io.kotest.engine.dispatchers.ExecutorCoroutineDispatcherFactory
 import io.kotest.engine.launchers.SequentialTestLauncher
 import io.kotest.engine.test.DuplicateTestNameHandler
+import io.kotest.engine.test.lifecycle.invokeAfterSpec
+import io.kotest.engine.test.lifecycle.invokeBeforeSpec
 import io.kotest.engine.toTestResult
 import io.kotest.fp.Try
 import io.kotest.mpp.log

@@ -4,8 +4,6 @@ import io.kotest.core.config.configuration
 import io.kotest.engine.test.TestCaseExecutor
 import io.kotest.engine.concurrency.resolvedThreads
 import io.kotest.core.spec.Spec
-import io.kotest.core.spec.invokeAfterSpec
-import io.kotest.core.spec.invokeBeforeSpec
 import io.kotest.engine.spec.materializeAndOrderRootTests
 import io.kotest.core.test.NestedTest
 import io.kotest.core.test.TestCase
@@ -20,6 +18,8 @@ import io.kotest.engine.launchers.TestLauncher
 import io.kotest.engine.listener.TestEngineListener
 import io.kotest.engine.spec.SpecRunner
 import io.kotest.engine.test.DuplicateTestNameHandler
+import io.kotest.engine.test.lifecycle.invokeAfterSpec
+import io.kotest.engine.test.lifecycle.invokeBeforeSpec
 import io.kotest.engine.toTestResult
 import io.kotest.fp.Try
 import io.kotest.mpp.log

@@ -2,16 +2,16 @@ package io.kotest.engine.test
 
 import io.kotest.core.extensions.TestCaseExtension
 import io.kotest.engine.extensions.resolvedTestCaseExtensions
-import io.kotest.core.spec.invokeAfterInvocation
-import io.kotest.core.spec.invokeAllAfterTestCallbacks
-import io.kotest.core.spec.invokeAllBeforeTestCallbacks
-import io.kotest.core.spec.invokeBeforeInvocation
 import io.kotest.core.test.NestedTest
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestContext
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestStatus
 import io.kotest.core.test.TestType
+import io.kotest.engine.test.lifecycle.invokeAfterInvocation
+import io.kotest.engine.test.lifecycle.invokeAllAfterTestCallbacks
+import io.kotest.engine.test.lifecycle.invokeAllBeforeTestCallbacks
+import io.kotest.engine.test.lifecycle.invokeBeforeInvocation
 import io.kotest.engine.test.status.isEnabled
 import io.kotest.fp.Try
 import io.kotest.mpp.log
