@@ -11,7 +11,7 @@ where using the kafka docker images are an issue.
 To use this extension add the `io.kotest.extensions:kotest-extensions-embedded-kafka` module to your test compile path.
 
 
-[<img src="https://img.shields.io/maven-central/v/io.kotest.extensions/kotest-extensions-embedded-kafka.svg?label=latest%20release"/>](http://search.maven.org/#search|ga|1|kotest-extensions-embedded-kafka)
+[<img src="https://img.shields.io/maven-central/v/io.kotest.extensions/kotest-extensions-embedded-kafka.svg?label=latest%20release"/>](https://search.maven.org/#search|ga|1|kotest-extensions-embedded-kafka)
 [<img src="https://img.shields.io/nexus/s/https/oss.sonatype.org/io.kotest.extensions/kotest-extensions-embedded-kafka.svg?label=latest%20snapshot"/>](https://oss.sonatype.org/content/repositories/snapshots/io/kotest/extensions/kotest-extensions-embedded-kafka/)
 
 

@@ -152,7 +152,7 @@ function Home() {
 
                      &nbsp;
 
-                     <a href="http://stackoverflow.com/questions/tagged/kotest">
+                     <a href="https://stackoverflow.com/questions/tagged/kotest">
                         <img
                            src="https://img.shields.io/badge/stackoverflow-kotest-blue?style=for-the-badge"
                            alt="stack overflow"/>

@@ -13,7 +13,7 @@ Requires the `io.kotest.extensions:kotest-extensions-mockserver` module to be ad
 :::
 
 
-[<img src="https://img.shields.io/maven-central/v/io.kotest.extensions/kotest-extensions-mockserver.svg?label=latest%20release"/>](http://search.maven.org/#search|ga|1|kotest-extensions-mockserver)
+[<img src="https://img.shields.io/maven-central/v/io.kotest.extensions/kotest-extensions-mockserver.svg?label=latest%20release"/>](https://search.maven.org/#search|ga|1|kotest-extensions-mockserver)
 [<img src="https://img.shields.io/nexus/s/https/oss.sonatype.org/io.kotest.extensions/kotest-extensions-mockserver.svg?label=latest%20snapshot"/>](https://oss.sonatype.org/content/repositories/snapshots/io/kotest/extensions/kotest-extensions-mockserver/)
 
 

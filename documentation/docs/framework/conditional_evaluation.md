@@ -20,7 +20,7 @@ If you're looking for something like JUnit's `@Ignore`, this is for you.
 
 You can use the same mechanism to run tests only under certain conditions.
  For example you could run certain tests only on Linux systems using
- [SystemUtils](http://commons.apache.org/proper/commons-lang/javadocs/api-release/org/apache/commons/lang3/SystemUtils.html#IS_OS_WINDOWS) .IS_OS_LINUX from [Apache Commons Lang](https://commons.apache.org/proper/commons-lang/).
+ [SystemUtils](https://commons.apache.org/proper/commons-lang/javadocs/api-release/org/apache/commons/lang3/SystemUtils.html#IS_OS_WINDOWS) .IS_OS_LINUX from [Apache Commons Lang](https://commons.apache.org/proper/commons-lang/).
 
 ```kotlin
 "should do something".config(enabled = IS_OS_LINUX) {

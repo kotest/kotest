@@ -8,7 +8,7 @@ slug: spring.html
 Kotest offers a Spring extension that allows you to test code that wires dependencies using Spring.
 To use this extension add the `io.kotest.extensions:kotest-extensions-spring` module to your test compile path.
 
-[<img src="https://img.shields.io/maven-central/v/io.kotest.extensions/kotest-extensions-spring.svg?label=latest%20release"/>](http://search.maven.org/#search|ga|1|kotest-extensions-spring)
+[<img src="https://img.shields.io/maven-central/v/io.kotest.extensions/kotest-extensions-spring.svg?label=latest%20release"/>](https://search.maven.org/#search|ga|1|kotest-extensions-spring)
 [<img src="https://img.shields.io/nexus/s/https/oss.sonatype.org/io.kotest.extensions/kotest-extensions-spring.svg?label=latest%20snapshot"/>](https://oss.sonatype.org/content/repositories/snapshots/io/kotest/extensions/kotest-extensions-spring/)
 
 

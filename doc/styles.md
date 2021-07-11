@@ -296,7 +296,7 @@ class MyTests : FreeSpec({
 
 ### Feature Spec
 
-`FeatureSpec` allows you to use `feature` and `scenario`, which will be familiar to those who have used [cucumber](http://docs.cucumber.io/gherkin/reference/).
+`FeatureSpec` allows you to use `feature` and `scenario`, which will be familiar to those who have used [cucumber](https://cucumber.io/docs/gherkin/reference/).
 Although not intended to be exactly the same as cucumber, the keywords mimic the style.
 
 ```kotlin

@@ -20,7 +20,7 @@ To start, add the below dependency to your Gradle build file.
 io.kotest.extensions:kotest-extensions-allure:${kotest.version}
 ```
 
-[<img src="https://img.shields.io/maven-central/v/io.kotest.extensions/kotest-extensions-allure.svg?label=latest%20release"/>](http://search.maven.org/#search|ga|1|kotest-extensions-allure)
+[<img src="https://img.shields.io/maven-central/v/io.kotest.extensions/kotest-extensions-allure.svg?label=latest%20release"/>](https://search.maven.org/#search|ga|1|kotest-extensions-allure)
 [<img src="https://img.shields.io/nexus/s/https/oss.sonatype.org/io.kotest.extensions/kotest-extensions-allure.svg?label=latest%20snapshot"/>](https://oss.sonatype.org/content/repositories/snapshots/io/kotest/extensions/kotest-extensions-allure/)
 
 

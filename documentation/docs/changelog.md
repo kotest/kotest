@@ -947,7 +947,7 @@ uri should haveFragment("results")
 
 * **Arrow matcher module**
 
-A new module has been added which includes matchers for [Arrow](http://arrow-kt.io) - the popular and awesome
+A new module has been added which includes matchers for [Arrow](https://arrow-kt.io/) - the popular and awesome
  functional programming library for Kotlin. To include this module add `kotlintest-assertions-arrow` to your build.
 
 The included matchers are:

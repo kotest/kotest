@@ -1,7 +1,7 @@
 KotlinTest
 ==========
 
-[<img src="https://img.shields.io/maven-central/v/io.kotlintest/kotlintest-core.svg?label=latest%20release"/>](http://search.maven.org/#search|ga|1|kotlintest) [![GitHub license](https://img.shields.io/github/license/kotlintest/kotlintest.svg)]()
+[<img src="https://img.shields.io/maven-central/v/io.kotlintest/kotlintest-core.svg?label=latest%20release"/>](https://search.maven.org/#search|ga|1|kotlintest) [![GitHub license](https://img.shields.io/github/license/kotlintest/kotlintest.svg)]()
 
 This version of the document is for version 3.2+.
 For docs for earlier versions see [here](reference_3.1.md)
@@ -777,7 +777,7 @@ If you're looking for something like JUnit's `@Ignore`, this is for you.
 
 You can use the same mechanism to run tests only under certain conditions.
  For example you could run certain tests only on Linux systems using
- [SystemUtils](http://commons.apache.org/proper/commons-lang/javadocs/api-release/org/apache/commons/lang3/SystemUtils.html#IS_OS_WINDOWS).IS_OS_LINUX from [Apache Commons Lang](https://commons.apache.org/proper/commons-lang/).
+ [SystemUtils](https://commons.apache.org/proper/commons-lang/javadocs/api-release/org/apache/commons/lang3/SystemUtils.html#IS_OS_WINDOWS).IS_OS_LINUX from [Apache Commons Lang](https://commons.apache.org/proper/commons-lang/).
 
 ```kotlin
 "should do something".config(enabled = IS_OS_LINUX) {
