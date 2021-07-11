@@ -17,6 +17,6 @@ import kotlin.reflect.KClass
  * clash with another spec.
  */
 fun KClass<out Spec>.toDescription(): Description.Spec {
-   val name = this.displayName()
+   val name = this.displayName() ?: bestName()
    return Description.Spec(this, DescriptionName.SpecName(this.bestName(), this.simpleName ?: "", name))
 }

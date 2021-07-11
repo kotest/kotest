@@ -56,7 +56,7 @@ sealed class Descriptor {
        */
       fun fromSpecClass(kclass: KClass<*>): SpecDescriptor {
          val name = kclass.bestName()
-         val display = kclass.displayName()
+         val display = kclass.displayName() ?: kclass.simpleName ?: this.toString()
          return SpecDescriptor(
             name = Name(name),
             displayName = DisplayName(display),
@@ -264,7 +264,11 @@ sealed class Descriptor {
    }
 }
 
-expect fun KClass<*>.displayName(): String
+/**
+ * Returns the value of the @DisplayName annotation on JVM platforms, if present.
+ * On other platforms, returns null.
+ */
+expect fun KClass<*>.displayName(): String?
 
 /**
  * Creates a [Descriptor] from the deprecated descriptions.
