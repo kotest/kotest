@@ -43,10 +43,10 @@ and then the test itself as a lambda. If in doubt, this is the style to use.
 
 ```kotlin
 class MyTests : FunSpec({
-	test("String length should return the length of the string") {
-		"sammy".length shouldBe 5
-		"".length shouldBe 0
-	}
+    test("String length should return the length of the string") {
+        "sammy".length shouldBe 5
+        "".length shouldBe 0
+    }
 })
 ```
 
@@ -61,9 +61,9 @@ class MyTests : DescribeSpec({
         }
     }
     xcontext("this block is disabled") {
-      test("disabled by inheritance from the parent") {
-        // test here
-      }
+        test("disabled by inheritance from the parent") {
+            // test here
+        }
     }
 })
 ```
@@ -76,9 +76,9 @@ class MyTests : DescribeSpec({
 
 ```kotlin
 class MyTests : StringSpec({
-	"strings.length should return size of string" {
-		"hello".length shouldBe 5
-	}
+    "strings.length should return size of string" {
+        "hello".length shouldBe 5
+    }
 })
 ```
 
@@ -86,9 +86,9 @@ Adding config to the test.
 
 ```kotlin
 class MyTests : StringSpec({
-	"strings.length should return size of string".config(enabled = false, invocations = 3) {
-		"hello".length shouldBe 5
-	}
+    "strings.length should return size of string".config(enabled = false, invocations = 3) {
+        "hello".length shouldBe 5
+    }
 })
 ```
 
@@ -100,10 +100,10 @@ class MyTests : StringSpec({
 
 ```kotlin
 class MyTests : ShouldSpec({
-	should("return the length of the string") {
-		"sammy".length shouldBe 5
-		"".length shouldBe 0
-	}
+    should("return the length of the string") {
+        "sammy".length shouldBe 5
+        "".length shouldBe 0
+    }
 })
 ```
 
@@ -112,12 +112,12 @@ Tests can be nested in one or more context blocks as well:
 
 ```kotlin
 class MyTests : ShouldSpec({
-	context("String.length") {
-		should("return the length of the string") {
-			"sammy".length shouldBe 5
-			"".length shouldBe 0
-		}
-	}
+    context("String.length") {
+        should("return the length of the string") {
+            "sammy".length shouldBe 5
+            "".length shouldBe 0
+        }
+    }
 })
 ```
 
@@ -134,9 +134,9 @@ class MyTests : ShouldSpec({
         }
     }
     xcontext("this block is disabled") {
-      should("disabled by inheritance from the parent") {
-        // test here
-      }
+        should("disabled by inheritance from the parent") {
+            // test here
+        }
     }
 })
 ```
@@ -165,9 +165,9 @@ class MyTests : DescribeSpec({
         }
 
         describe("for the opposite team") {
-          it("Should negate one score") {
-            // test here
-          }
+            it("Should negate one score") {
+                // test here
+            }
         }
     }
 })
@@ -183,9 +183,9 @@ class MyTests : DescribeSpec({
         }
     }
     xdescribe("this block is disabled") {
-      it("disabled by inheritance from the parent") {
-        // test here
-      }
+        it("disabled by inheritance from the parent") {
+            // test here
+        }
     }
 })
 ```
@@ -274,12 +274,12 @@ class MyTests : DescribeSpec({
 
 ```kotlin
 class MyTests : WordSpec({
-	"String.length" should {
-		"return the length of the string" {
-			"sammy".length shouldBe 5
-			"".length shouldBe 0
-		}
-	}
+    "String.length" should {
+        "return the length of the string" {
+            "sammy".length shouldBe 5
+            "".length shouldBe 0
+        }
+    }
 })
 ```
 
@@ -288,18 +288,18 @@ in Kotlin, we must use backticks or the uppercase variant.
 
 ```kotlin
 class MyTests : WordSpec({
-	"Hello" When {
-		"asked for length" should {
-			"return 5" {
-				"Hello".length shouldBe 5
-			}
-		}
-		"appended to Bob" should {
-			"return Hello Bob" {
-				"Hello " + "Bob" shouldBe "Hello Bob"
-			}
-		}
-	}
+    "Hello" When {
+        "asked for length" should {
+            "return 5" {
+                "Hello".length shouldBe 5
+            }
+        }
+        "appended to Bob" should {
+            "return Hello Bob" {
+                "Hello " + "Bob" shouldBe "Hello Bob"
+            }
+        }
+    }
 })
 ```
 
@@ -345,14 +345,14 @@ Although not intended to be exactly the same as cucumber, the keywords mimic the
 
 ```kotlin
 class MyTests : FeatureSpec({
-	feature("the can of coke") {
-		scenario("should be fizzy when I shake it") {
-			// test here
-		}
-		scenario("and should be tasty") {
-			// test here
-		}
-	}
+    feature("the can of coke") {
+        scenario("should be fizzy when I shake it") {
+            // test here
+        }
+        scenario("and should be tasty") {
+            // test here
+        }
+    }
 })
 ```
 
@@ -368,9 +368,9 @@ class MyTests : FeatureSpec({
         }
     }
     xfeature("this block is disabled") {
-      scenario("disabled by inheritance from the parent") {
-        // test here
-      }
+        scenario("disabled by inheritance from the parent") {
+            // test here
+        }
     }
 })
 ```
@@ -415,9 +415,9 @@ class MyTests : DescribeSpec({
         }
     }
     xcontext("this block is disabled") {
-      expect("disabled by inheritance from the parent") {
-        // test here
-      }
+        expect("disabled by inheritance from the parent") {
+            // test here
+        }
     }
 })
 ```
