@@ -1,8 +1,8 @@
 package io.kotest.core.spec
 
+import io.kotest.core.plan.displayName
 import io.kotest.core.test.Description
 import io.kotest.core.test.DescriptionName
-import io.kotest.mpp.annotation
 import io.kotest.mpp.bestName
 import kotlin.reflect.KClass
 
@@ -17,6 +17,6 @@ import kotlin.reflect.KClass
  * clash with another spec.
  */
 fun KClass<out Spec>.toDescription(): Description.Spec {
-   val name = annotation<DisplayName>()?.name ?: bestName()
+   val name = this.displayName() ?: bestName()
    return Description.Spec(this, DescriptionName.SpecName(this.bestName(), this.simpleName ?: "", name))
 }

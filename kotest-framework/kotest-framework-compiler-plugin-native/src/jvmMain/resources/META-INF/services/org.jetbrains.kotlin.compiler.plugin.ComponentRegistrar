@@ -1,1 +1,1 @@
-io.kotest.framework.js.KotestJsComponentRegistrar
+io.kotest.framework.native.KotestNativeComponentRegistrar

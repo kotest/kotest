@@ -84,7 +84,6 @@ class DateTest : WordSpec({
          val seconds = mutableSetOf<Int>()
 
          checkAll(5000, Arb.localDateTime(1998, 1999)) {
-            println(it)
             years += it.year
             months += it.monthValue
             days += it.dayOfMonth

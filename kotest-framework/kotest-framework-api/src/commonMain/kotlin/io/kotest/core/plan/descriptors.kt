@@ -2,17 +2,16 @@
 
 package io.kotest.core.plan
 
-import io.kotest.core.SourceRef
 import io.kotest.common.ExperimentalKotest
+import io.kotest.core.SourceRef
 import io.kotest.core.plan.Descriptor.EngineDescriptor
 import io.kotest.core.plan.Descriptor.SpecDescriptor
+import io.kotest.core.plan.Descriptor.TestDescriptor
 import io.kotest.core.script.ScriptSpec
-import io.kotest.core.spec.DisplayName as DisplayNameAnnotation
 import io.kotest.core.test.Description
 import io.kotest.core.test.TestId
 import io.kotest.core.test.TestPath
 import io.kotest.core.test.TestType
-import io.kotest.mpp.annotation
 import io.kotest.mpp.bestName
 import io.kotest.mpp.qualifiedNameOrNull
 import kotlin.reflect.KClass
@@ -57,7 +56,7 @@ sealed class Descriptor {
        */
       fun fromSpecClass(kclass: KClass<*>): SpecDescriptor {
          val name = kclass.bestName()
-         val display = kclass.annotation<DisplayNameAnnotation>()?.name ?: kclass.simpleName ?: this.toString()
+         val display = kclass.displayName() ?: kclass.simpleName ?: this.toString()
          return SpecDescriptor(
             name = Name(name),
             displayName = DisplayName(display),
@@ -264,6 +263,12 @@ sealed class Descriptor {
       }
    }
 }
+
+/**
+ * Returns the value of the @DisplayName annotation on JVM platforms, if present.
+ * On other platforms, returns null.
+ */
+expect fun KClass<*>.displayName(): String?
 
 /**
  * Creates a [Descriptor] from the deprecated descriptions.

@@ -4,8 +4,6 @@ buildscript {
       mavenCentral()
       mavenLocal()
       google()
-      maven("https://dl.bintray.com/kotlin/kotlin-eap")
-      maven("https://kotlin.bintray.com/kotlinx")
       gradlePluginPortal()
    }
 
@@ -40,8 +38,6 @@ allprojects {
       mavenCentral()
       jcenter()
       google()
-      maven("https://kotlin.bintray.com/kotlinx")
-      maven("https://dl.bintray.com/kotlin/kotlin-eap")
    }
 
    group = "io.kotest"

@@ -52,10 +52,6 @@ class SpecIrGenerationExtension(private val messageCollector: MessageCollector) 
                // we use a public val to register each spec, so this name must be unique across all files
                // therefore using FQN spec name seems a safe bet
                val entryPointPropertyName = "kotestSpecEntryPoint_${spec.kotlinFqName.asString().replace(".", "_")}"
-//               messageCollector.report(
-//                  CompilerMessageSeverity.WARNING,
-//                  "entryPointPropertyName=$entryPointPropertyName"
-//               )
 
                val registerKotestProperty = pluginContext.irFactory.buildProperty {
                   name = Name.identifier(entryPointPropertyName)

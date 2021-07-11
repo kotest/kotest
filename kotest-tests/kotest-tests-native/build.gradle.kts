@@ -17,7 +17,6 @@ kotlin {
       mingwX64()
       macosX64()
       tvos()
-//      watchos()
       iosX64()
       iosArm64()
       iosArm32()
@@ -26,6 +25,7 @@ kotlin {
    sourceSets {
       val commonTest by getting {
          dependencies {
+            implementation(kotlin("stdlib"))
             implementation(kotlin("test-common"))
             implementation(kotlin("test-annotations-common"))
             implementation(project(Projects.AssertionsCore))
@@ -59,10 +59,6 @@ kotlin {
       val iosArm32Test by getting {
          dependsOn(nativeTest)
       }
-
-//      val watchosTest by getting {
-//         dependsOn(nativeTest)
-//      }
 
       val tvosTest by getting {
          dependsOn(nativeTest)

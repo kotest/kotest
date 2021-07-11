@@ -6,8 +6,6 @@ import io.kotest.core.config.Configuration
 import io.kotest.core.extensions.TagExtension
 import io.kotest.core.test.TestCase
 import kotlin.reflect.KClass
-import io.kotest.core.NamedTag
-import io.kotest.mpp.annotation
 
 /**
  * Returns all runtime tags when invoked, wrapping into an instance of [Tags].
@@ -26,10 +24,7 @@ class ConfigurationTagProvider(private val configuration: Configuration) : TagPr
 /**
  * Returns the tags specified on the given class from the @Tags annotation if present.
  */
-fun KClass<*>.tags(): Set<Tag> {
-   val annotation = annotation<io.kotest.core.annotation.Tags>() ?: return emptySet()
-   return annotation.values.map { NamedTag(it) }.toSet()
-}
+expect fun KClass<*>.tags(): Set<Tag>
 
 /**
  * Returns runtime active [Tag]'s by invocating all registered [TagExtension]s and combining
