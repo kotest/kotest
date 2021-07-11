@@ -1,8 +1,8 @@
 package com.sksamuel.kotest.engine
 
-import io.kotest.core.SpecInstantiationException
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.engine.KotestEngineLauncher
+import io.kotest.engine.spec.SpecInstantiationException
 import io.kotest.matchers.maps.shouldHaveSize
 import io.kotest.matchers.types.shouldBeInstanceOf
 

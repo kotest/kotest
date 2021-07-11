@@ -1,6 +1,5 @@
 package com.sksamuel.kotest.specs.isolation.test
 
-import io.kotest.core.SpecInstantiationException
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.style.*
@@ -9,6 +8,7 @@ import io.kotest.core.test.TestResult
 import io.kotest.matchers.types.shouldBeInstanceOf
 import io.kotest.engine.listener.TestEngineListener
 import io.kotest.engine.spec.SpecExecutor
+import io.kotest.engine.spec.SpecInstantiationException
 import kotlin.reflect.KClass
 
 private class BehaviorSpecWithInitError : BehaviorSpec() {
