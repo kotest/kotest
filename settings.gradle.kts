@@ -24,10 +24,13 @@ include("kotest-framework:kotest-framework-concurrency")
 // brings in the API dependency for required data types
 include("kotest-framework:kotest-framework-discovery")
 
-// contains the JVM execution engine implementation
+// contains the execution engine implementation for jvm, js, native
 // brings in the API dependency
 include("kotest-framework:kotest-framework-engine")
+
+// compiler plugins to integrate tests with the engine
 include("kotest-framework:kotest-framework-compiler-plugin-js")
+include("kotest-framework:kotest-framework-compiler-plugin-native")
 include("kotest-framework:kotest-framework-compiler-plugin-gradle")
 
 // contains data driven testing that builds on top of the kotest test framework

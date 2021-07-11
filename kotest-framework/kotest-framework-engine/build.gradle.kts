@@ -25,6 +25,7 @@ kotlin {
          browser()
          nodejs()
       }
+      linuxX64()
    }
 
    sourceSets {
@@ -76,6 +77,14 @@ kotlin {
             implementation(project(Projects.JunitRunner))
             implementation(Libs.Mocking.mockk)
          }
+      }
+
+      val desktopMain by creating {
+         dependsOn(commonMain)
+      }
+
+      val linuxX64Main by getting {
+         dependsOn(desktopMain)
       }
 
       all {

@@ -23,6 +23,7 @@ kotlin {
          browser()
          nodejs()
       }
+      linuxX64()
    }
 
    sourceSets {
@@ -68,6 +69,14 @@ kotlin {
             // this is here to test that the intellij marker 'dummy' test doesn't appear in intellij
             implementation(Libs.JUnitJupiter.engine)
          }
+      }
+
+      val desktopMain by creating {
+         dependsOn(commonMain)
+      }
+
+      val linuxX64Main by getting {
+         dependsOn(desktopMain)
       }
 
       all {

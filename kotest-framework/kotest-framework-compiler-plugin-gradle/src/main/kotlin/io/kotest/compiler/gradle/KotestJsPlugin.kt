@@ -12,7 +12,13 @@ class KotestJsPlugin : KotlinCompilerPluginSupportPlugin {
    override fun getPluginArtifact() = SubpluginArtifact(
       "io.kotest",
       "kotest-framework-compiler-plugin-js-jvm",
-      "5.0.0-LOCAL"
+      "5.0.0-LOCAL",
+   )
+
+   override fun getPluginArtifactForNative(): SubpluginArtifact = SubpluginArtifact(
+      "io.kotest",
+      "kotest-framework-compiler-plugin-native-jvm",
+      "5.0.0-LOCAL",
    )
 
    override fun isApplicable(kotlinCompilation: KotlinCompilation<*>): Boolean {
