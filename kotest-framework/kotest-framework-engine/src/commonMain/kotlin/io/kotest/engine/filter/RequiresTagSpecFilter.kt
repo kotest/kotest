@@ -4,9 +4,9 @@ import io.kotest.core.NamedTag
 import io.kotest.core.annotation.RequiresTag
 import io.kotest.core.filter.SpecFilter
 import io.kotest.core.filter.SpecFilterResult
-import io.kotest.core.internal.tags.TagProvider
+import io.kotest.engine.tags.TagProvider
 import io.kotest.engine.tags.isActive
-import io.kotest.core.internal.tags.parse
+import io.kotest.engine.tags.parse
 import io.kotest.mpp.annotation
 import kotlin.reflect.KClass
 

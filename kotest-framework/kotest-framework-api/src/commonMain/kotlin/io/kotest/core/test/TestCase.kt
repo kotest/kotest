@@ -104,6 +104,7 @@ data class TestCase(
          parent = parent,
       )
 
+      // todo this should move to runtime inside the runners
       fun appendTagsInDisplayName(testCase: TestCase): TestCase {
          val tagNames = testCase.allTags().joinToString(", ")
 

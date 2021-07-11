@@ -4,7 +4,7 @@ import io.kotest.core.Tags
 import io.kotest.core.config.configuration
 import io.kotest.core.filter.SpecFilter
 import io.kotest.core.filter.TestFilter
-import io.kotest.core.internal.tags.ConfigurationTagProvider
+import io.kotest.engine.tags.ConfigurationTagProvider
 import io.kotest.core.spec.Spec
 import io.kotest.engine.config.ConfigManager
 import io.kotest.engine.filter.RequiresTagSpecFilter

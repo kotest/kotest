@@ -1,11 +1,9 @@
-package io.kotest.core.internal.tags
+package io.kotest.engine.tags
 
 import io.kotest.core.Tag
 import io.kotest.core.Tags
 import io.kotest.core.config.Configuration
 import io.kotest.core.extensions.TagExtension
-import io.kotest.core.test.TestCase
-import kotlin.reflect.KClass
 
 /**
  * Returns all runtime tags when invoked, wrapping into an instance of [Tags].
@@ -21,10 +19,7 @@ class ConfigurationTagProvider(private val configuration: Configuration) : TagPr
    override fun tags(): Tags = configuration.activeTags()
 }
 
-/**
- * Returns the tags specified on the given class from the @Tags annotation if present.
- */
-expect fun KClass<*>.tags(): Set<Tag>
+
 
 /**
  * Returns runtime active [Tag]'s by invocating all registered [TagExtension]s and combining
@@ -34,9 +29,3 @@ fun Configuration.activeTags(): Tags {
    val extensions = this.extensions().filterIsInstance<TagExtension>()
    return if (extensions.isEmpty()) Tags.Empty else extensions.map { it.tags() }.reduce { a, b -> a.combine(b) }
 }
-
-/**
- * Returns all tags assigned to a [TestCase], taken from the test case config, spec inline function,
- * spec override function, or the spec class.
- */
-fun TestCase.allTags(): Set<Tag> = this.config.tags + this.spec.declaredTags() + this.spec::class.tags()

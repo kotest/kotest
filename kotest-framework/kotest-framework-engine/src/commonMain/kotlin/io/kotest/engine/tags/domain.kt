@@ -1,4 +1,4 @@
-package io.kotest.core.internal.tags
+package io.kotest.engine.tags
 
 data class Token(val lexeme: String, val type: TokenType)
 

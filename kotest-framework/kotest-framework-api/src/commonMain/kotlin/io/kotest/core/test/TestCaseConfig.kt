@@ -58,7 +58,8 @@ val xdisabledMessage = Enabled.disabled("Test was disabled using xdisabled")
 /**
  * Returns a copy of this test config with the enabled flag set to false, if [xdisabled] is true.
  */
-fun TestCaseConfig.withXDisabled(xdisabled: Boolean) = if (xdisabled) copy(enabledOrReasonIf = { xdisabledMessage }) else this
+fun TestCaseConfig.withXDisabled(xdisabled: Boolean) =
+   if (xdisabled) copy(enabledOrReasonIf = { xdisabledMessage }) else this
 
 
 /**
