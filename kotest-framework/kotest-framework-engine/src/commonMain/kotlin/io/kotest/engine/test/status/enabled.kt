@@ -2,10 +2,10 @@ package io.kotest.engine.test.status
 
 import io.kotest.common.ExperimentalKotest
 import io.kotest.core.extensions.EnabledExtension
-import io.kotest.core.extensions.resolvedExtensions
 import io.kotest.core.plan.toDescriptor
 import io.kotest.core.test.Enabled
 import io.kotest.core.test.TestCase
+import io.kotest.engine.extensions.resolvedExtensions
 
 /**
  * Returns [Enabled.isEnabled] if the given [TestCase] is enabled based on default rules at [isEnabledInternal]
