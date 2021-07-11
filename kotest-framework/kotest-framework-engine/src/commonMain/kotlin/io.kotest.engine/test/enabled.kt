@@ -3,7 +3,7 @@ package io.kotest.engine.test
 import io.kotest.common.ExperimentalKotest
 import io.kotest.core.config.configuration
 import io.kotest.core.extensions.EnabledExtension
-import io.kotest.core.extensions.resolvedExtensions
+import io.kotest.engine.extensions.resolvedExtensions
 import io.kotest.core.filter.TestFilter
 import io.kotest.core.filter.TestFilterResult
 import io.kotest.core.internal.KotestEngineProperties
