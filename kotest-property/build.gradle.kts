@@ -59,7 +59,7 @@ kotlin {
          dependsOn(commonMain)
          dependencies {
             implementation(Libs.Wumpz.diffutils)
-            implementation(Libs.Mifmif.generex)
+            implementation(Libs.rgxgen.rgxgen)
          }
       }
 

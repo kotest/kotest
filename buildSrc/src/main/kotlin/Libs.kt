@@ -1,5 +1,5 @@
 object Libs {
-   
+
    object Kotlin {
       const val kotlinScriptRuntime = "org.jetbrains.kotlin:kotlin-script-runtime:_"
       const val kotlinScriptUtil = "org.jetbrains.kotlin:kotlin-script-util:_"
@@ -63,8 +63,8 @@ object Libs {
       const val netty = "org.mock-server:mockserver-netty:_"
    }
 
-   object Mifmif {
-      const val generex = "com.github.mifmif:generex:_"
+   object rgxgen {
+      const val rgxgen = "com.github.curious-odd-man:rgxgen:_"
    }
 
    object OpenTest4j {

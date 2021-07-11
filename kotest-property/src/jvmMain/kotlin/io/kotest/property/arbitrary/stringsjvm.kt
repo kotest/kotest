@@ -1,25 +1,26 @@
 package io.kotest.property.arbitrary
 
-import com.mifmif.common.regex.Generex
+import com.github.curiousoddman.rgxgen.RgxGen
 import io.kotest.property.Arb
 import io.kotest.property.RandomSource
 import io.kotest.property.Sample
+import java.util.Random
 
 /**
  * Generate strings that match the given pattern.
  *
- * The returned arb uses the [Generex](https://github.com/mifmif/Generex) library to generate strings. Generex
- * supports a very restricted subset of regular expression constructs.
+ * The returned arb uses the [RgxGen](https://github.com/curious-odd-man/RgxGen) library to generate strings.
+ * RgxGen supports a restricted subset of regular expression constructs.
  */
 fun Arb.Companion.stringPattern(pattern: String): Arb<String> = object : Arb<String>() {
 
-   private val generex = Generex(pattern)
+   val rgxgen = RgxGen(pattern)
 
    override fun edgecase(rs: RandomSource): String? = null
    override fun sample(rs: RandomSource): Sample<String> = sampleStringPattern(rs)
 
    private fun sampleStringPattern(rs: RandomSource): Sample<String> = synchronized(this) {
-      generex.setSeed(rs.random.nextLong())
-      Sample(generex.random())
+      val value = rgxgen.generate(Random(rs.random.nextLong()))
+      Sample(value)
    }
 }
