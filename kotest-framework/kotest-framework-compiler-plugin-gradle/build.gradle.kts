@@ -28,15 +28,15 @@ tasks {
    pluginBundle {
       website = "https://kotest.io"
       vcsUrl = "https://github.com/kotest"
-      tags = listOf("kotest", "kotlin", "testing", "integrationTesting")
+      tags = listOf("kotest", "kotlin", "testing", "integrationTesting", "javascript")
    }
    gradlePlugin {
       plugins {
-         create("kotestJsPlugin") {
-            id = "io.kotest.js"
-            implementationClass = "io.kotest.compiler.gradle.KotestJsPlugin"
-            displayName = "Kotest JS Compiler Plugin"
-            description = "Adds support to Kotlin for Kotest in Javascript"
+         create("kotestMultiplatformCompilerPlugin") {
+            id = "io.kotest.multiplatform"
+            implementationClass = "io.kotest.framework.gradle.KotestMultiplatformCompilerPlugin"
+            displayName = "Kotest Multiplatform Compiler Plugin"
+            description = "Adds support for Javascript and Native tests in Kotest"
          }
       }
    }

@@ -1,4 +1,4 @@
-package io.kotest.compiler.gradle
+package io.kotest.framework.gradle
 
 import org.gradle.api.provider.Provider
 import org.jetbrains.kotlin.gradle.plugin.KotlinCompilation
@@ -6,8 +6,9 @@ import org.jetbrains.kotlin.gradle.plugin.KotlinCompilerPluginSupportPlugin
 import org.jetbrains.kotlin.gradle.plugin.SubpluginArtifact
 import org.jetbrains.kotlin.gradle.plugin.SubpluginOption
 
-class KotestJsPlugin : KotlinCompilerPluginSupportPlugin {
-   override fun getCompilerPluginId() = "io.kotest.js"
+class KotestMultiplatformCompilerPlugin : KotlinCompilerPluginSupportPlugin {
+
+   override fun getCompilerPluginId() = "io.kotest.multiplatform"
 
    override fun getPluginArtifact() = SubpluginArtifact(
       "io.kotest",
@@ -22,7 +23,7 @@ class KotestJsPlugin : KotlinCompilerPluginSupportPlugin {
    )
 
    override fun isApplicable(kotlinCompilation: KotlinCompilation<*>): Boolean {
-      return kotlinCompilation.target.project.plugins.hasPlugin(KotestJsPlugin::class.java)
+      return kotlinCompilation.target.project.plugins.hasPlugin(KotestMultiplatformCompilerPlugin::class.java)
    }
 
    override fun applyToCompilation(kotlinCompilation: KotlinCompilation<*>): Provider<List<SubpluginOption>> {
