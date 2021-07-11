@@ -13,7 +13,7 @@ slug: robolectric.html
 
 To add this module to project you need specify following in your `build.gradle`:
 
-[![Latest Release](https://img.shields.io/maven-central/v/io.kotest.extensions/kotest-extensions-robolectric)](https://search.maven.org/search?q=g:io.kotest.extensions%20a:kotest-extensions-robolectric)
+[![Latest Release](https://img.shields.io/maven-central/v/io.kotest.extensions/kotest-extensions-robolectric)](https://search.maven.org/artifact/io.kotest.extensions/kotest-extensions-robolectric)
 
 ```kotlin
 testImplementation("io.kotest.extensions:kotest-extensions-robolectric:${version}")

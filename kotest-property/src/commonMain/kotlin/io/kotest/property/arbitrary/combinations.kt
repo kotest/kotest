@@ -30,7 +30,7 @@ fun <A> Arb.Companion.choose(a: Pair<Int, A>, b: Pair<Int, A>, vararg cs: Pair<I
 
    // The algorithm for pick is a migration of
    // the algorithm from Haskell QuickCheck
-   // http://hackage.haskell.org/package/QuickCheck
+   // https://hackage.haskell.org/package/QuickCheck
    // See function frequency in the package Test.QuickCheck
    tailrec fun pick(n: Int, l: Sequence<Pair<Int, A>>): A {
       val (w, e) = l.first()
@@ -75,7 +75,7 @@ fun <A> Arb.Companion.choose(a: Pair<Int, Arb<A>>, b: Pair<Int, Arb<A>>, vararg 
 
    // The algorithm for pick is a migration of
    // the algorithm from Haskell QuickCheck
-   // http://hackage.haskell.org/package/QuickCheck
+   // https://hackage.haskell.org/package/QuickCheck
    // See function frequency in the package Test.QuickCheck
    tailrec fun pick(n: Int, l: List<Pair<Int, Arb<A>>>): Arb<A> {
       val (w, e) = l.first()

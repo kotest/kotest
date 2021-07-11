@@ -128,7 +128,7 @@ function Home() {
 
                      &nbsp;
 
-                     <a href="https://search.maven.org/search?q=kotest">
+                     <a href="https://search.maven.org/search?q=g:io.kotest%20OR%20g:io.kotest.extensions">
                         <img
                            src="https://img.shields.io/maven-central/v/io.kotest/kotest-property.svg?label=release&style=for-the-badge"
                            alt="version badge"/>
@@ -152,7 +152,7 @@ function Home() {
 
                      &nbsp;
 
-                     <a href="http://stackoverflow.com/questions/tagged/kotest">
+                     <a href="https://stackoverflow.com/questions/tagged/kotest">
                         <img
                            src="https://img.shields.io/badge/stackoverflow-kotest-blue?style=for-the-badge"
                            alt="stack overflow"/>
