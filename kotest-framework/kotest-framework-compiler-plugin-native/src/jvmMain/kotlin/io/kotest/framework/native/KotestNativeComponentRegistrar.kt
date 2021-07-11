@@ -1,4 +1,4 @@
-package io.kotest.framework.js
+package io.kotest.framework.native
 
 import com.intellij.mock.MockProject
 import org.jetbrains.kotlin.backend.common.extensions.IrGenerationExtension
@@ -7,7 +7,7 @@ import org.jetbrains.kotlin.cli.common.messages.MessageCollector
 import org.jetbrains.kotlin.compiler.plugin.ComponentRegistrar
 import org.jetbrains.kotlin.config.CompilerConfiguration
 
-class KotestJsComponentRegistrar : ComponentRegistrar {
+class KotestNativeComponentRegistrar : ComponentRegistrar {
 
    override fun registerProjectComponents(
       project: MockProject,

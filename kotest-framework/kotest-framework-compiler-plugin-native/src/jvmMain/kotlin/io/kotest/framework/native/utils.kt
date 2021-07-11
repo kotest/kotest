@@ -1,4 +1,4 @@
-package io.kotest.framework.js
+package io.kotest.framework.native
 
 import org.jetbrains.kotlin.backend.common.extensions.IrPluginContext
 import org.jetbrains.kotlin.ir.IrElement
