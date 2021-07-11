@@ -14,7 +14,7 @@ import io.kotest.engine.spec.materializeAndOrderRootTests
 import io.kotest.engine.test.CallingThreadExecutionContext
 import io.kotest.engine.test.TestCaseExecutionListener
 import io.kotest.engine.test.TestCaseExecutor
-import io.kotest.engine.test.isEnabledInternal
+import io.kotest.engine.test.status.isEnabledInternal
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.runBlocking
 import kotlin.coroutines.CoroutineContext

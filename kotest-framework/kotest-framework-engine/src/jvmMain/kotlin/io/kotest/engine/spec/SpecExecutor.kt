@@ -3,7 +3,7 @@ package io.kotest.engine.spec
 import io.kotest.core.config.configuration
 import io.kotest.core.extensions.SpecExtension
 import io.kotest.engine.extensions.resolvedSpecExtensions
-import io.kotest.engine.test.isEnabled
+import io.kotest.engine.test.status.isEnabled
 import io.kotest.engine.concurrency.resolvedThreads
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.Spec

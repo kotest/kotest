@@ -10,9 +10,6 @@ slug: framework-config-props.html
 ```kotlin
 package io.kotest.core.internal
 
-@Deprecated("Renamed to KotestEngineProperties. Will be removed in 4.8")
-val KotestEngineSystemProperties = KotestEngineProperties
-
 object KotestEngineProperties {
 
    @Deprecated("Use the val from the spring extension module (io.kotest.extensions:kotest-extensions-spring")

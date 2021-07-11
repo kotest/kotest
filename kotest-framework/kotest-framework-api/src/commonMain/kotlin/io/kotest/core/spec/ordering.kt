@@ -7,7 +7,7 @@ enum class SpecExecutionOrder {
 
    /**
     * The order of specs is undefined and will execute in the order they are discovered at
-    * runtime (eg, from JVM classpath discovery, or the order they appear in a javascript file).
+    * runtime (for example, from JVM classpath discovery or the order of compilation for JS or Native tests).
     *
     * This is the default execution order.
     */
@@ -24,7 +24,7 @@ enum class SpecExecutionOrder {
    Random,
 
    /**
-    * Orders specs by the [@Order] annotation. Any specs without such an annotation are considered "last".
+    * Orders specs by the [Order] annotation. Any specs without such an annotation are considered "last".
     */
    Annotated,
 
