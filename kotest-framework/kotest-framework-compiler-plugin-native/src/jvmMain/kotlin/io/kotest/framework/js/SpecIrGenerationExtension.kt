@@ -21,8 +21,6 @@ import org.jetbrains.kotlin.name.Name
 class SpecIrGenerationExtension(private val messageCollector: MessageCollector) : IrGenerationExtension {
    override fun generate(moduleFragment: IrModuleFragment, pluginContext: IrPluginContext) {
 
-      messageCollector.report(CompilerMessageSeverity.WARNING, "qweqweqe" + moduleFragment)
-
       moduleFragment.transform(object : IrElementTransformerVoidWithContext() {
 
          override fun visitFileNew(declaration: IrFile): IrFile {

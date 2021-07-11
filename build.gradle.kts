@@ -23,32 +23,12 @@ plugins {
    signing
    id("com.adarshr.test-logger")
    id("org.jetbrains.dokka")
-
-   // To get versions report, execute:
-   // Win: .\gradlew.bat dependencyUpdates -Drevision=release
-   // Other: ./gradlew dependencyUpdates -Drevision=release
-   id("com.github.ben-manes.versions")
 }
 
 tasks {
    javadoc {
    }
 }
-
-// Configure existing Dokka task to output HTML to typical Javadoc directory
-//tasks.dokka {
-//   outputFormat = "html"
-//   outputDirectory = "$buildDir/javadoc"
-//   configuration {
-//      includeNonPublic = false
-//      skipDeprecated = true
-//      reportUndocumented = false
-//      skipEmptyPackages = true
-//      targets = listOf("JVM")
-//      platform = "JVM"
-//      jdkVersion = 8
-//   }
-//}
 
 // apply plugin: "io.kotest"
 

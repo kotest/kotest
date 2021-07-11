@@ -4,28 +4,27 @@ import org.jetbrains.kotlin.backend.common.extensions.IrPluginContext
 import org.jetbrains.kotlin.ir.IrElement
 import org.jetbrains.kotlin.ir.builders.IrStatementsBuilder
 import org.jetbrains.kotlin.ir.builders.irCall
-import org.jetbrains.kotlin.ir.builders.irString
 import org.jetbrains.kotlin.ir.declarations.IrClass
 import org.jetbrains.kotlin.ir.declarations.IrFile
 import org.jetbrains.kotlin.ir.symbols.IrSimpleFunctionSymbol
 import org.jetbrains.kotlin.ir.types.IrType
 import org.jetbrains.kotlin.ir.types.classFqName
 import org.jetbrains.kotlin.ir.types.getClass
+import org.jetbrains.kotlin.ir.util.constructors
 import org.jetbrains.kotlin.name.FqName
 
-val IrPluginContext.println: IrSimpleFunctionSymbol
-   get() = referenceFunctions(FqName("kotlin.io.println")).single {
+val IrPluginContext.executeSpecFn: IrSimpleFunctionSymbol
+   get() = referenceFunctions(FqName("io.kotest.engine.execution.executeSpec")).single {
       val parameters = it.owner.valueParameters
-      parameters.size == 1 && parameters.first().type == this.irBuiltIns.stringType
+      parameters.size == 1
    }
 
 /**
  * Registers irCalls that execute each spec in turn.
  */
 fun <T : IrElement> IrStatementsBuilder<T>.invokeSpec(pluginContext: IrPluginContext, spec: IrClass) {
-   val callExecuteSpecFn = irCall(pluginContext.println)
-//   callExecuteSpecFn.putValueArgument(0, irCall(spec.constructors.first()))
-   callExecuteSpecFn.putValueArgument(0, irString(spec.name.asString()))
+   val callExecuteSpecFn = irCall(pluginContext.executeSpecFn)
+   callExecuteSpecFn.putValueArgument(0, irCall(spec.constructors.first()))
    +callExecuteSpecFn
 }
 
