@@ -1,7 +1,7 @@
 KotlinTest
 ==========
 
-[<img src="https://img.shields.io/maven-central/v/io.kotlintest/kotlintest-core.svg?label=latest%20release"/>](https://search.maven.org/#search|ga|1|kotlintest) [![GitHub license](https://img.shields.io/github/license/kotlintest/kotlintest.svg)]()
+[<img src="https://img.shields.io/maven-central/v/io.kotlintest/kotlintest-core.svg?label=latest%20release"/>](https://search.maven.org/search?q=g:io.kotlintest) [![GitHub license](https://img.shields.io/github/license/kotlintest/kotlintest.svg)]()
 
 This version of the document is for version 3.2+.
 For docs for earlier versions see [here](reference_3.1.md)

@@ -16,7 +16,7 @@ To add Ktor matchers, add the following dependency to your project
 io.kotest.extensions:kotest-assertions-ktor:${version}
 ```
 
-[<img src="https://img.shields.io/maven-central/v/io.kotest.extensions/kotest-assertions-ktor.svg?label=latest%20release"/>](https://search.maven.org/#search|ga|1|kotest-assertions-ktor)
+[<img src="https://img.shields.io/maven-central/v/io.kotest.extensions/kotest-assertions-ktor.svg?label=latest%20release"/>](https://search.maven.org/artifact/io.kotest.extensions/kotest-assertions-ktor)
 [<img src="https://img.shields.io/nexus/s/https/oss.sonatype.org/io.kotest.extensions/kotest-assertions-ktor.svg?label=latest%20snapshot"/>](https://oss.sonatype.org/content/repositories/snapshots/io/kotest/extensions/kotest-assertions-ktor/)
 
 
