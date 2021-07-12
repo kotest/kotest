@@ -15,6 +15,7 @@ import io.kotest.core.test.TestCase
 import io.kotest.engine.test.TestCaseExecutionListener
 import io.kotest.core.test.TestContext
 import io.kotest.core.test.TestResult
+import io.kotest.engine.test.resolvedTimeout
 import io.kotest.mpp.bestName
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
@@ -37,6 +38,11 @@ fun executeSpec(spec: Spec) {
             // we have to always start the test so that the framework doesn't exit before we return
             // also it gives us a handle to the done callback
             it(root.testCase.description.name.displayName) { done ->
+
+               // done is the JS promise
+               // some frameworks default to a 2000 timeout,
+               // we can change this to the kotest test setting
+               done.timeout(root.testCase.resolvedTimeout())
 
                val listener = object : TestCaseExecutionListener {
                   override fun testStarted(testCase: TestCase) {}
