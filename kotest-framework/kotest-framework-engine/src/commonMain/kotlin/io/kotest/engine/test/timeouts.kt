@@ -4,8 +4,12 @@ import io.kotest.core.config.configuration
 import io.kotest.core.test.TestCase
 
 /**
- * Returns the resolved timeout for a [TestCase] taking into account test case config,
- * spec overrides, and project defaults.
+ * Returns the resolved timeout for a [TestCase] in milliseconds.
+ *
+ * The value cascades from the following settings in order:
+ * - test case config
+ * - spec
+ * - project default
  */
 fun TestCase.resolvedTimeout(): Long =
    config.timeout?.inWholeMilliseconds ?: spec.timeout ?: spec.timeout() ?: configuration.timeout
