@@ -20,7 +20,6 @@ _**Kotlin 1.5 is now the minimum supported version**_
 
 * Finalize spec is now properly called in all situations #2272
 * String matchers now also work on CharSequence where applicable #2278
-* Annotations such as @Ignore and @Isolate now work when composed #2279
 * Fix Arb.long/ulong producing values outside range (#2330)
 
 #### Improvements
@@ -44,6 +43,14 @@ _**Kotlin 1.5 is now the minimum supported version**_
 
 * `beforeTest` / `afterTest` have been deprecated in favour of `beforeAny` / `afterAny`.
 * Datatest2 has been deprecated
+
+
+## [Unreleased 4.6.1]
+
+### Fixes
+
+* HTMLReporter - css not loading (href of the file is absolute, not relative) #2342
+* Annotations such as @Ignore and @Isolate now work when composed #2279
 
 
 ### 4.6.0 May 2021
