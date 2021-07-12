@@ -18,7 +18,7 @@ _**Kotlin 1.5 is now the minimum supported version**_
 
 #### Fixes
 
-* Finalize spec is now properly called in all situations #2272
+* 
 * String matchers now also work on CharSequence where applicable #2278
 * Fix Arb.long/ulong producing values outside range (#2330)
 
@@ -45,13 +45,15 @@ _**Kotlin 1.5 is now the minimum supported version**_
 * Datatest2 has been deprecated
 
 
-## [Unreleased 4.6.1]
+## 4.6.1 July 2021
 
 ### Fixes
 
 * HTMLReporter - css not loading (href of the file is absolute, not relative) #2342
 * Annotations such as @Ignore and @Isolate now work when composed #2279
-
+* Finalize spec is now properly called in all situations #2272
+* Arb.bigDecimal bounds are not being honored #2357
+* Fix for running individual test using WordSpec inside intellij #2319
 
 ### 4.6.0 May 2021
 
