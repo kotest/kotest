@@ -25,6 +25,10 @@ _**Kotlin 1.5 is now the minimum supported version**_
 
 * Unfinished tests now error
 
+#### Deprecations
+
+* `beforeTest` / `afterTest` have been deprecated in favour of `beforeAny` / `afterAny`.
+
 ### 4.6.0 May 2021
 
 This is a small release which **adds support for Kotlin 1.5** while remaining compatible with Kotlin 1.4.x
