@@ -60,10 +60,11 @@ class FunSpecContainerContext(
     */
    @ExperimentalKotest
    fun context(name: String) = ContainerContextConfigBuilder(
-      createTestName(name),
-      testContext,
-      false
-   ) { FunSpecContainerContext(this) }
+      name = createTestName(name),
+      context = testContext,
+      xdisabled = false,
+      contextFn = { FunSpecContainerContext(it) }
+   )
 
    /**
     * Adds a disabled container test to this context.
@@ -87,7 +88,7 @@ class FunSpecContainerContext(
       createTestName(name),
       testContext,
       true
-   ) { FunSpecContainerContext(this) }
+   ) { FunSpecContainerContext(it) }
 
    /**
     * Adds a test case to this context, expecting config.

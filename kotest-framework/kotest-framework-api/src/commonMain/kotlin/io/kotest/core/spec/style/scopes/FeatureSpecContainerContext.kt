@@ -101,20 +101,20 @@ class FeatureSpecContainerContext(
    suspend fun scenario(name: String): TestWithConfigBuilder {
       TestDslState.startTest(testContext.testCase.description.appendTest(name))
       return TestWithConfigBuilder(
-         createTestName("Scenario: ", name, false),
-         testContext,
-         testCase.spec.resolvedDefaultConfig(),
-         false,
+         name = createTestName("Scenario: ", name, false),
+         context = testContext,
+         defaultTestConfig = testCase.spec.resolvedDefaultConfig(),
+         xdisabled = false,
       )
    }
 
    suspend fun xscenario(name: String): TestWithConfigBuilder {
       TestDslState.startTest(testContext.testCase.description.appendTest(name))
       return TestWithConfigBuilder(
-         createTestName("Scenario: ", name, false),
-         testContext,
-         testCase.spec.resolvedDefaultConfig(),
-         true,
+         name = createTestName("Scenario: ", name, false),
+         context = testContext,
+         defaultTestConfig = testCase.spec.resolvedDefaultConfig(),
+         xdisabled = true,
       )
    }
 }

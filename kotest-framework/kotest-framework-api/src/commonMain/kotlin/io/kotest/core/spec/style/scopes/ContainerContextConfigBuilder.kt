@@ -27,6 +27,7 @@ class ContainerContextConfigBuilder<T>(
       enabledOrReasonIf: EnabledOrReasonIf? = null,
       tags: Set<Tag>? = null,
       timeout: Duration? = null,
+      failfast: Boolean? = null,
       test: suspend T.() -> Unit
    ) {
 
@@ -36,6 +37,7 @@ class ContainerContextConfigBuilder<T>(
          enabledOrReasonIf = enabledOrReasonIf,
          tags = tags,
          timeout = timeout,
+         failfast = failfast,
       )
 
       val activeConfig = if (xdisabled) derivedConfig.copy(enabled = false) else derivedConfig
@@ -48,7 +50,7 @@ class ContainerContextConfigBuilder<T>(
             type = TestType.Container,
             descriptor = null,
             factoryId = context.testCase.factoryId,
-            test = { contextFn(this).test() }
+            test = { contextFn(this).test() },
          )
       )
    }

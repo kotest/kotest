@@ -63,13 +63,13 @@ interface TestEngineListener {
    }
 
    /**
-    * Invoked if a [TestCase] is about to be executed (is active).
+    * Invoked if a [TestCase] is about to be executed.
     * Will not be invoked if the test is ignored.
     */
    fun testStarted(testCase: TestCase) {}
 
    /**
-    * Invoked if a [TestCase] is about to be executed (is active).
+    * Invoked if a [TestCase] is about to be executed.
     * Will not be invoked if the test is ignored.
     */
    @ExperimentalKotest
@@ -77,7 +77,7 @@ interface TestEngineListener {
    }
 
    /**
-    * Invoked if a [TestCase] will not be executed because it is ignored (not active).
+    * Invoked if a [TestCase] will not be executed because it is not enabled.
     */
    fun testIgnored(testCase: TestCase, reason: String?) {}
 

@@ -27,6 +27,7 @@ class RootContextConfigBuilder<T>(
       enabledOrReasonIf: EnabledOrReasonIf? = null,
       tags: Set<Tag>? = null,
       timeout: Duration? = null,
+      failfast: Boolean? = null,
       test: suspend T.() -> Unit
    ) {
 
@@ -38,6 +39,7 @@ class RootContextConfigBuilder<T>(
             enabledOrReasonIf = enabledOrReasonIf,
             tags = tags,
             timeout = timeout,
+            failfast = failfast,
          )
 
       registration.addTest(

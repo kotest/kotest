@@ -18,6 +18,10 @@ class CapturingTestListener : TestEngineListener {
       specsFinished[kclass] = t
    }
 
+   override fun testIgnored(testCase: TestCase, reason: String?) {
+      testsFinished[testCase.description.name] = TestStatus.Ignored
+   }
+
    override fun testFinished(testCase: TestCase, result: TestResult) {
       testsFinished[testCase.description.name] = result.status
    }

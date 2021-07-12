@@ -45,6 +45,9 @@ data class TestCaseConfig(
    val enabledIf: EnabledIf = { true },
    val severity: TestCaseSeverityLevel? = null,
    val enabledOrReasonIf: EnabledOrReasonIf = { Enabled.enabled },
+
+   // has no effect on leaf tests
+   val failfast: Boolean? = null
 ) {
    init {
       require(invocations > 0) { "Number of invocations must be greater than 0" }
@@ -94,6 +97,12 @@ data class TestContainerConfig(
     * [Tag]s that are applied to this test case and nested tests.
     */
    val tags: Set<Tag> = emptySet(),
+
+   /**
+    * When set to true, a failing nested test will cause any further nested tests to be skippped.
+    * If null, then the value of the parent context will be used.
+    */
+   val failfast: Boolean? = null,
 )
 
 @ExperimentalKotest
@@ -103,7 +112,8 @@ fun TestCaseConfig.toTestContainerConfig() =
       enabledIf = enabledIf,
       enabledOrReasonIf = enabledOrReasonIf,
       tags = tags,
-      timeout = timeout
+      timeout = timeout,
+      failfast = failfast,
    )
 
 @ExperimentalKotest
@@ -116,5 +126,6 @@ fun TestContainerConfig.toTestCaseConfig() =
       timeout = this.timeout,
       invocationTimeout = null,
       listeners = emptyList(),
-      extensions = emptyList()
+      extensions = emptyList(),
+      failfast = failfast,
    )
