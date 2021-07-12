@@ -4,15 +4,16 @@ sidebar_label: Changelog
 slug: changelog.html
 ---
 
-### [Next Release 5.0.0]
+### [Unreleased 5.0.0]
 
 _**Kotlin 1.5 is now the minimum supported version**_
 
 #### Breaking Changes
 
 * Javascript support has been reworked to support the IR compiler. The legacy compiler is no longer supported.
-* `Arb.values` has been removed. This was deprecated back in 4.3 in favour of `Arb.sample`. Any custom arbs that override this method should be updated. Any custom arbs that use the `arbitrary` builders are not affected.
-* The Engine no longer logs config to the console during start **by default**. To enable, set the system property `kotest.framework.dump.config` to true.
+* Native test support.
+* `Arb.values` has been removed. This was deprecated back in 4.3 in favour of `Arb.sample`. Any custom arbs that override this method should be updated. Any custom arbs that use the `arbitrary` builders are not affected. (#2277)
+* The Engine no longer logs config to the console during start **by default**. To enable, set the system property `kotest.framework.dump.config` to true. (#2276)
 * Removed deprecated `shouldReceiveWithin` and `shouldReceiveNoElementsWithin` channel matchers.
 
 #### Fixes
@@ -20,15 +21,30 @@ _**Kotlin 1.5 is now the minimum supported version**_
 * Finalize spec is now properly called in all situations #2272
 * String matchers now also work on CharSequence where applicable #2278
 * Annotations such as @Ignore and @Isolate now work when composed #2279
+* Fix Arb.long/ulong producing values outside range (#2330)
 
 #### Improvements
 
-* Failfast option added [see docs]
-* Unfinished tests now error
+* Failfast option added [see docs] #2243
+* Unfinished tests should error (#2281)
+* Added option to fail test run if no tests were executed (#2287)
+* Added @RequiresTag for improved spec exclude capability #1820
+* Change usages of Char.toInt() to Char.code for Kotlin 1.5. Migrate codepoints to Codepoint companion object. (#2283)
+* Generex has been replaced with Rgxgen #2323
+* Add fun interace to EnabledCondition #2343
+* In Project Config, `beforeAll` / `afterAll` are now deprecated and `beforeProject` / `afterProject`, which are suspend functions, have been added #2333
+* Improve Arb function naming (#2310)
+* Return the resulting value of the function block from shouldCompleteWithin (#2309)
+* tempdir: Delete temporary directories recursively (#2227)
+* Improve Arb.primitive consistency (#2299)
+* Add Arb.ints zero inclusive variants (#2294)
+* Add unsigned types for Arb (#2290)
 
 #### Deprecations
 
 * `beforeTest` / `afterTest` have been deprecated in favour of `beforeAny` / `afterAny`.
+* Datatest2 has been deprecated
+
 
 ### 4.6.0 May 2021
 
