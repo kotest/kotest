@@ -13,20 +13,19 @@ import java.math.RoundingMode
 import java.util.concurrent.TimeUnit
 
 class BigDecimalTest : FunSpec({
-   test("Arb.bigDecimal(min, max) should generate bigDecimal between given range") {
-      val min = BigDecimal.valueOf(Double.MIN_VALUE)
-      val max = BigDecimal.valueOf(Double.MAX_VALUE)
 
-      Arb.bigDecimal(min, max).take(1_00_000).forAll {
+   test("Arb.bigDecimal(min, max) should generate bigDecimal between given range") {
+      val min = BigDecimal.valueOf(123)
+      val max = BigDecimal.valueOf(555)
+
+      Arb.bigDecimal(min, max).take(100).forAll {
          (it >= min && it <= max) shouldBe true
       }
    }
 
    test("Arb.bigDecimal(scale, rounding) should generate bigDecimal of given scale") {
-      Arb.bigDecimal(4, RoundingMode.CEILING).take(1_00_000).forAll {
-         assertSoftly {
-            it.scale() shouldBe 4
-         }
+      Arb.bigDecimal(4, RoundingMode.CEILING).take(100).forAll {
+         it.scale() shouldBe 4
       }
    }
 

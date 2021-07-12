@@ -26,6 +26,8 @@ fun Arb.Companion.bigDecimal(scale: Int, roundingMode: RoundingMode) =
    bigDecimal().map { it.setScale(scale, roundingMode) }
 
 fun Arb.Companion.bigDecimal(min: BigDecimal, max: BigDecimal): Arb<BigDecimal> {
-   return bigDecimal().filter { it in min..max }
+   return arbitrary(bigDecimalEdgecases) {
+      min.add(BigDecimal(Math.random()).multiply(max.subtract(min)))
+   }
 }
 
