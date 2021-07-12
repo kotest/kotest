@@ -23,6 +23,7 @@ _**Kotlin 1.5 is now the minimum supported version**_
 
 #### Improvements
 
+* Failfast option added [see docs]
 * Unfinished tests now error
 
 #### Deprecations
