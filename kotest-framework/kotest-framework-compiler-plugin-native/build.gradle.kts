@@ -24,7 +24,7 @@ kotlin {
       val jvmMain by getting {
          dependencies {
             implementation("org.jetbrains.kotlin:kotlin-stdlib")
-            compileOnly("org.jetbrains.kotlin:kotlin-compiler:1.5.20")
+            compileOnly("org.jetbrains.kotlin:kotlin-compiler:1.5.21")
          }
       }
    }
