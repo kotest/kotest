@@ -5,7 +5,6 @@ import io.kotest.assertions.Expected
 import io.kotest.assertions.failure
 import io.kotest.assertions.show.show
 import io.kotest.fp.toOption
-import io.kotest.matchers.shouldBe
 import io.kotest.mpp.Property
 import io.kotest.mpp.bestName
 import io.kotest.mpp.reflection
@@ -35,38 +34,38 @@ internal object DataClassEq : Eq<Any> {
     */
    private const val MAX_NESTED_DEPTH = 10
 
-   override fun equals(actual: Any, expected: Any): Throwable? =
+   override fun equals(actual: Any, expected: Any, strictNumberEq: Boolean): Throwable? =
       if (test(actual, expected)) {
          null
       } else {
          val detailedDiffMsg = runCatching {
-            dataClassDiff(actual, expected)?.let { diff -> formatDifferences(diff) + "\n\n" } ?: ""
+            dataClassDiff(actual, expected, strictNumberEq = strictNumberEq)?.let { diff -> formatDifferences(diff) + "\n\n" } ?: ""
          }.getOrElse { "" }
          failure(Expected(expected.show()), Actual(actual.show()), detailedDiffMsg)
       }
 
    private fun test(a: Any?, b: Any?): Boolean = makeComparable(a) == makeComparable(b)
 
-   private fun dataClassDiff(actual: Any?, expected: Any?, depth: Int = 0): DataClassDifference? {
+   private fun dataClassDiff(actual: Any?, expected: Any?, depth: Int = 0, strictNumberEq: Boolean): DataClassDifference? {
       require(actual != null && expected != null) { "Actual and expected values cannot be null in a data class comparison" }
       require(depth < MAX_NESTED_DEPTH) { "Max depth reached" }
-      val differences = computeMemberDifferences(expected, actual, depth)
+      val differences = computeMemberDifferences(expected, actual, depth, strictNumberEq)
       return when {
          differences.isEmpty() -> null
          else -> DataClassDifference(expected::class.bestName(), differences)
       }
    }
 
-   private fun computeMemberDifferences(expected: Any, actual: Any, depth: Int) =
+   private fun computeMemberDifferences(expected: Any, actual: Any, depth: Int, strictNumberEq: Boolean) =
       reflection.primaryConstructorMembers(expected::class).mapNotNull { prop ->
          val actualPropertyValue = prop.call(actual)
          val expectedPropertyValue = prop.call(expected)
          if (isDataClassInstance(actualPropertyValue) && isDataClassInstance(expectedPropertyValue))
-            dataClassDiff(actualPropertyValue, expectedPropertyValue, depth + 1)?.let { diff ->
+            dataClassDiff(actualPropertyValue, expectedPropertyValue, depth + 1, strictNumberEq)?.let { diff ->
                Pair(prop, diff)
             }
          else {
-            eq(actualPropertyValue, expectedPropertyValue)
+            eq(actualPropertyValue, expectedPropertyValue, strictNumberEq)
                .toOption()
                .map { Pair(prop, StandardDifference(it)) }
                .orNull()
