@@ -12,7 +12,7 @@ import io.kotest.assertions.show.show
  * and in the case of inequality, delegates to [failure].
  */
 internal object DefaultEq : Eq<Any> {
-   override fun equals(actual: Any, expected: Any): Throwable? {
+   override fun equals(actual: Any, expected: Any, strictNumberEq: Boolean): Throwable? {
       return if (test(actual, expected)) null else {
          failure(Expected(expected.show()), Actual(actual.show()))
       }

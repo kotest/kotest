@@ -10,7 +10,7 @@ import io.kotest.assertions.show.show
  * An implementation of [Eq] for comparing [Regex]s.
  */
 internal object RegexEq : Eq<Regex> {
-   override fun equals(actual: Regex, expected: Regex): Throwable? {
+   override fun equals(actual: Regex, expected: Regex, strictNumberEq: Boolean): Throwable? {
       return patternsAreNotEqual(actual, expected) ?: optionsAreNotEqual(actual, expected)
    }
 }
