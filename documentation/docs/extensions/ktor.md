@@ -35,7 +35,7 @@ withTestApplication({ module(testing = true) }) {
 And an example of using the client support:
 ```kotlin
 val client = HttpClient(CIO)
-val resp = client.post("http://mydomain.com/foo")
+val response = client.post("http://mydomain.com/foo")
 response.shouldHaveStatus(HttpStatusCode.OK)
 response.shouldHaveHeader(name = "Authorization", value = "Bearer")
 
