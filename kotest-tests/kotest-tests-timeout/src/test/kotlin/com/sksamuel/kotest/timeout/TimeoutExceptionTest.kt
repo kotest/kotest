@@ -4,9 +4,9 @@ import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestStatus
 import io.kotest.matchers.shouldBe
+import io.kotest.matchers.string.shouldEndWith
 import kotlinx.coroutines.delay
 import kotlin.time.Duration
-import kotlin.time.milliseconds
 
 // tests that the values in the timeout exception are populated correctly
 class SpecInvocationTimeoutExceptionTest : FunSpec() {
@@ -21,7 +21,7 @@ class SpecInvocationTimeoutExceptionTest : FunSpec() {
 
       aroundTest { (test, execute) ->
          val result = execute(test)
-         result.error?.message shouldBe "Test did not complete within 10ms"
+         result.error?.message shouldBe "Test 'timeout exception should use the value that caused the test to fail' did not complete within 10ms"
          TestResult.success(0)
       }
    }
@@ -52,7 +52,7 @@ class TestInvocationTimeoutExceptionTest : FunSpec() {
       aroundTest { (test, execute) ->
          val result = execute(test)
          (result.status == TestStatus.Failure || result.status == TestStatus.Error) shouldBe true
-         result.error?.message shouldBe "Test did not complete within 44ms"
+         result.error?.message.shouldEndWith(" did not complete within 44ms")
          TestResult.success(0)
       }
    }
@@ -71,7 +71,7 @@ class SpecTimeoutExceptionTest : FunSpec() {
 
       aroundTest { (test, execute) ->
          val result = execute(test)
-         result.error?.message shouldBe "Test did not complete within 21ms"
+         result.error?.message shouldBe "Test 'timeout exception should use the value that caused the test to fail' did not complete within 21ms"
          TestResult.success(0)
       }
    }
@@ -94,7 +94,7 @@ class TestTimeoutExceptionTest : FunSpec() {
 
       aroundTest { (test, execute) ->
          val result = execute(test)
-         result.error?.message shouldBe "Test did not complete within 23ms"
+         result.error?.message shouldBe "Test 'timeout exception should use the value that caused the test to fail' did not complete within 23ms"
          TestResult.success(0)
       }
    }
