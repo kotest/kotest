@@ -1,13 +1,14 @@
 package io.kotest.engine.test
 
 import io.kotest.core.extensions.TestCaseExtension
-import io.kotest.engine.extensions.resolvedTestCaseExtensions
 import io.kotest.core.test.NestedTest
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestContext
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestStatus
 import io.kotest.core.test.TestType
+import io.kotest.engine.TestTimeoutException
+import io.kotest.engine.extensions.resolvedTestCaseExtensions
 import io.kotest.engine.lifecycle.invokeAfterInvocation
 import io.kotest.engine.lifecycle.invokeAllAfterTestCallbacks
 import io.kotest.engine.lifecycle.invokeAllBeforeTestCallbacks
@@ -24,11 +25,6 @@ import kotlinx.coroutines.withTimeout
 import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.coroutineContext
 import kotlin.math.min
-
-/**
- * Thrown when a test times out.
- */
-data class TimeoutException(val duration: Long) : Exception("Test did not complete within ${duration}ms")
 
 /**
  * Validates that a [TestCase] is compatible on the actual platform. For example, in JS we can only
@@ -238,8 +234,8 @@ class TestCaseExecutor(
          } catch (e: TimeoutCancellationException) {
             log { "TestCaseExecutor: TimeoutCancellationException $e" }
             when (testCase.type) {
-               TestType.Container -> TimeoutException(timeout)
-               TestType.Test -> TimeoutException(min(timeout, invocationTimeout))
+               TestType.Container -> TestTimeoutException(timeout, testCase.displayName)
+               TestType.Test -> TestTimeoutException(min(timeout, invocationTimeout), testCase.displayName)
             }
          } catch (t: Throwable) {
             log { "TestCaseExecutor: Throwable $t" }
