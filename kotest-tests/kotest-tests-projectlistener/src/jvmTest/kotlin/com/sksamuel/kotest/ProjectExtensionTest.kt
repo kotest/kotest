@@ -25,7 +25,7 @@ class ProjectExtensionExceptionTest : FunSpec({
       },
       object : ProjectExtension {
          val name = "mon capitaine!"
-         override suspend fun aroundProject(callback: suspend () -> Throwable?): Throwable? {
+         override suspend fun aroundProject(callback: suspend () -> Throwable?): Throwable {
             callback(); return ProjectExtensionThrowable(name)
          }
       },
