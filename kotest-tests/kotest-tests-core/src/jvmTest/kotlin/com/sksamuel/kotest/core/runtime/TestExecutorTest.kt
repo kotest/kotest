@@ -6,7 +6,6 @@ import io.kotest.engine.test.TimeoutExecutionContext
 import io.kotest.engine.ExecutorExecutionContext
 import io.kotest.engine.test.TestCaseExecutionListener
 import io.kotest.engine.test.TestCaseExecutor
-import io.kotest.engine.test.TimeoutException
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.spec.style.funSpec
 import io.kotest.core.test.NestedTest
@@ -14,6 +13,7 @@ import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestContext
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestStatus
+import io.kotest.engine.TestTimeoutException
 import io.kotest.engine.spec.materializeAndOrderRootTests
 import io.kotest.engine.test.toTestResult
 import io.kotest.matchers.booleans.shouldBeTrue
@@ -73,7 +73,7 @@ fun testExecutorTests(context: TimeoutExecutionContext) = funSpec {
       val testCase = Tests().materializeAndOrderRootTests().first { it.testCase.displayName == "b" }.testCase
       val result = executor.execute(testCase, context(testCase))
       result.status shouldBe TestStatus.Error
-      result.error shouldBe TimeoutException(100)
+      result.error shouldBe TestTimeoutException(100, "b")
       started shouldBe true
       finished shouldBe true
    }

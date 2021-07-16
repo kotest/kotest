@@ -60,7 +60,7 @@ object KotestEngineProperties {
 
    const val timeout = "kotest.framework.timeout"
 
-   const val projectTimeout = "kotest.framework.project.timeout"
+   const val projectTimeout = "kotest.framework.projectTimeout"
 
    const val invocationTimeout = "kotest.framework.invocation.timeout"
 
