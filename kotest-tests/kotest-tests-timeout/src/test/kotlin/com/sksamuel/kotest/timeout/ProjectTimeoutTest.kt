@@ -2,55 +2,55 @@ package com.sksamuel.kotest.timeout
 
 import io.kotest.core.config.configuration
 import io.kotest.core.spec.Isolate
-import io.kotest.core.spec.Spec
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.engine.KotestEngineLauncher
-import io.kotest.engine.listener.TestEngineListener
-import io.kotest.inspectors.forAtLeastOne
-import io.kotest.matchers.string.shouldContain
+import io.kotest.engine.ProjectTimeoutException
+import io.kotest.engine.listener.NoopTestEngineListener
+import io.kotest.inspectors.forOne
+import io.kotest.matchers.types.shouldBeInstanceOf
 import kotlinx.coroutines.delay
 
 @Isolate
 class ProjectTimeoutTest : FunSpec({
-   val listener = object : TestEngineListener {
-      override fun specInstantiated(spec: Spec) {
-         super.specInstantiated(spec)
-      }
-      override fun engineFinished(t: List<Throwable>) {
 
-      }
-   }
-
-   var original: Long = Long.MAX_VALUE
+   var projectTimeout: Long = Long.MAX_VALUE
+   var testTimeout: Long = Long.MAX_VALUE
 
    beforeSpec {
-      original = configuration.projectTimeout
-      configuration.projectTimeout = 2_000L
+      projectTimeout = configuration.projectTimeout
+      testTimeout = configuration.timeout
+      configuration.projectTimeout = 1000L
+      // need to reset the timeout per test since we're testing project timeouts
+      configuration.timeout = Long.MAX_VALUE
    }
 
    afterSpec {
-      configuration.projectTimeout = original
+      configuration.projectTimeout = projectTimeout
+      configuration.timeout = testTimeout
    }
 
    test("a project times out when the sum duration of its tests exceeds the specified project timeout") {
+      // project timeout is set to 1000L
+      // each test takes 500, but 3 tests, so we should hit the project limit
       val result = KotestEngineLauncher()
-         .withListener(listener)
-         .withSpec(SpecWithTestsUnderTimeout::class)
+         .withListener(NoopTestEngineListener)
+         .withSpec(ProjectTimeoutSampleSpec::class)
          .launch()
-      result.errors.forAtLeastOne { it.message.shouldContain("TimeoutCancellationException: Timed out waiting for 2000 ms") }
+      result.errors.forOne { it.shouldBeInstanceOf<ProjectTimeoutException>() }
    }
 })
 
-internal class SpecWithTestsUnderTimeout : FunSpec({
+private class ProjectTimeoutSampleSpec : FunSpec({
+
    test("1: a test under the test level timeout") {
       delay(500)
    }
 
-   test("2: a test under the invocation timeout") { delay(500) }
+   test("2: a test under the test level timeout") {
+      delay(500)
+   }
 
-   test("3: a test under the invocation timeout") { delay(500) }
-
-   test("4: a test under the invocation timeout") { delay(500) }
-
-   test("5: a test under the invocation timeout") { delay(500) }
+   test("3: a test under the test level timeout") {
+      delay(500)
+   }
 })

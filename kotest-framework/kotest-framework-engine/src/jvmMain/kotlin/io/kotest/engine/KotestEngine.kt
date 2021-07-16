@@ -6,17 +6,23 @@ import io.kotest.core.filter.SpecFilter
 import io.kotest.core.filter.TestFilter
 import io.kotest.core.spec.Spec
 import io.kotest.engine.config.ConfigManager
-import io.kotest.engine.extensions.*
+import io.kotest.engine.extensions.DumpConfigExtension
+import io.kotest.engine.extensions.EmptyTestSuiteExtension
+import io.kotest.engine.extensions.EngineExtension
+import io.kotest.engine.extensions.KotestPropertiesExtension
+import io.kotest.engine.extensions.SpecifiedTagsTagExtension
+import io.kotest.engine.extensions.TestDslStateExtensions
 import io.kotest.engine.launchers.specLauncher
+import io.kotest.engine.lifecycle.afterProject
+import io.kotest.engine.lifecycle.beforeProject
 import io.kotest.engine.listener.TestEngineListener
 import io.kotest.engine.script.ScriptExecutor
 import io.kotest.engine.spec.SpecExecutor
 import io.kotest.engine.spec.sort
-import io.kotest.engine.lifecycle.afterProject
-import io.kotest.engine.lifecycle.beforeProject
 import io.kotest.fp.Try
 import io.kotest.fp.getOrElse
 import io.kotest.mpp.log
+import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.withTimeout
 import kotlin.reflect.KClass
 import kotlin.script.templates.standard.ScriptTemplateWithArgs
@@ -128,6 +134,11 @@ class KotestEngine(private val config: KotestEngineConfig) {
          log { "KotestEngine: Will use spec launcher $launcher" }
 
          launcher.launch(executor, ordered)
+      }
+   }.mapFailure {
+      when (it) {
+         is TimeoutCancellationException -> ProjectTimeoutException(configuration.projectTimeout)
+         else -> it
       }
    }
 
