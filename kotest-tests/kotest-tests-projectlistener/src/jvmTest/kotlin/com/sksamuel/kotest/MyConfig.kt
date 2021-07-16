@@ -34,33 +34,16 @@ object MyConfigGlobalState {
 internal val listExtensionEvents = mutableListOf<String>()
 
 object TestProjectExtension : ProjectExtension {
-   override suspend fun aroundProject(project: suspend () -> Unit) {
+   override suspend fun aroundProject(callback: suspend () -> Throwable?): Throwable? {
       listExtensionEvents.add("hello")
-      project()
+      return callback()
    }
 }
 
 object TestProjectExtension2 : ProjectExtension {
-   override suspend fun aroundProject(project: suspend () -> Unit) {
+   override suspend fun aroundProject(callback: suspend () -> Throwable?): Throwable? {
       listExtensionEvents.add("there")
-      project()
-   }
-   override fun extensions() = listOf(TestProjectExtension, TestProjectExtension2)
-}
-
-internal val listExtensionEvents = mutableListOf<String>()
-
-object TestProjectExtension : ProjectExtension {
-   override suspend fun aroundProject(project: suspend () -> Unit) {
-      listExtensionEvents.add("hello")
-      project()
-   }
-}
-
-object TestProjectExtension2 : ProjectExtension {
-   override suspend fun aroundProject(project: suspend () -> Unit) {
-      listExtensionEvents.add("there")
-      project()
+      return callback()
    }
 }
 
