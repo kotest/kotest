@@ -129,13 +129,10 @@ class MatchersTest : FreeSpec({
             val l = HashMap<Any, Any>()
             l[1L] = l
             l shouldBe emptyMap()
-         }.message shouldBe "Expected\n" +
-            "{}\n" +
-            "to be equal to\n" +
-            "{\n" +
+         }.message shouldBe "Values differed at keys 1\n" +
+            "expected:<{}> but was:<{\n" +
             "  1L = [(1L, (this HashMap))]\n" +
-            "}\n" +
-            "Values differed at keys 1"
+            "}>"
       }
 
       "format list error" {
