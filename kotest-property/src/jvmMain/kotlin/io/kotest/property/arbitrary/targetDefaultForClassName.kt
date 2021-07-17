@@ -12,44 +12,47 @@ import java.time.Period
 import kotlin.reflect.KClass
 import kotlin.reflect.full.isSubclassOf
 
+actual inline fun <reified A : Any> Arb.Companion.default(): Arb<A> {
+
+   val type = object : TypeReference<A>() {}.type as ParameterizedType
+   val tparams = type.actualTypeArguments.map { it as WildcardType }.map { it.upperBounds.first() as Class<*> }
+
+   return defaultForClass(A::class)
+      ?: targetDefaultForClass(A::class, tparams)
+      ?: throw NoGeneratorFoundException("Cannot locate generator for ${A::class}; specify generators explicitly")
+}
+
+fun <A : Any> forClass(kclass: KClass<A>): Arb<A> {
+   return defaultForClass(kclass)
+      ?: targetDefaultForClass(kclass, emptyList())
+      ?: throw NoGeneratorFoundException("Cannot locate generator for ${kclass}; specify generators explicitly")
+}
+
 @Suppress("UNCHECKED_CAST")
-actual fun <A : Any> targetDefaultForClass(kclass: KClass<A>): Arb<A>? {
+fun <A : Any> targetDefaultForClass(kclass: KClass<A>, tparams: List<Class<*>>): Arb<A>? {
    return when {
-      kclass.isSubclassOf(List::class) -> {
-         val type = object : TypeReference<A>() {}.type as ParameterizedType
-         val first = type.actualTypeArguments.first() as WildcardType
-         val upper = first.upperBounds.first() as Class<*>
-         Arb.list(defaultForClass<Any>(upper.kotlin) as Arb<Any>) as Arb<A>
-      }
-      kclass.isSubclassOf(Set::class) -> {
-         val type = object : TypeReference<A>() {}.type as ParameterizedType
-         val first = type.actualTypeArguments.first() as WildcardType
-         val upper = first.upperBounds.first() as Class<*>
-         Arb.set(defaultForClass<Any>(upper.kotlin) as Arb<Any>) as Arb<A>
-      }
-      kclass.isSubclassOf(Pair::class) -> {
-         val type = object : TypeReference<A>() {}.type as ParameterizedType
-         val first = (type.actualTypeArguments[0] as WildcardType).upperBounds.first() as Class<*>
-         val second = (type.actualTypeArguments[1] as WildcardType).upperBounds.first() as Class<*>
-         Arb.pair(defaultForClass<Any>(first.kotlin)!!, defaultForClass<Any>(second.kotlin)!!) as Arb<A>
-      }
+      kclass.isSubclassOf(List::class) -> Arb.list(defaultForClass<Any>(tparams.first().kotlin) as Arb<Any>) as Arb<A>
+      kclass.isSubclassOf(Set::class) -> Arb.set(defaultForClass<Any>(tparams.first().kotlin) as Arb<Any>) as Arb<A>
+      kclass.isSubclassOf(Pair::class) -> Arb.pair(
+         defaultForClass<Any>(tparams[0].kotlin)!!,
+         defaultForClass<Any>(tparams[1].kotlin)!!
+      ) as Arb<A>
       kclass.isSubclassOf(Map::class) -> {
-         val type = object : TypeReference<A>() {}.type as ParameterizedType
-         // map key type can have or have not variance
-         val first = if (type.actualTypeArguments[0] is Class<*>) {
-            type.actualTypeArguments[0] as Class<*>
-         } else {
-            (type.actualTypeArguments[0] as WildcardType).upperBounds.first() as Class<*>
-         }
-         val second = (type.actualTypeArguments[1] as WildcardType).upperBounds.first() as Class<*>
-         Arb.map(defaultForClass<Any>(first.kotlin)!!, defaultForClass<Any>(second.kotlin)!!) as Arb<A>
+//          map key type can have or have not variance
+//         val first = if (type.actualTypeArguments[0] is Class<*>) {
+//            type.actualTypeArguments[0] as Class<*>
+//         } else {
+//            (type.actualTypeArguments[0] as WildcardType).upperBounds.first() as Class<*>
+//         }
+//         val second = (type.actualTypeArguments[1] as WildcardType).upperBounds.first() as Class<*>
+         Arb.map(defaultForClass<Any>(tparams[0].kotlin)!!, defaultForClass<Any>(tparams[1].kotlin)!!) as Arb<A>
       }
       kclass == LocalDate::class -> Arb.localDate() as Arb<A>
       kclass == LocalDateTime::class -> Arb.localDateTime() as Arb<A>
       kclass == LocalTime::class -> Arb.localTime() as Arb<A>
       kclass == Period::class -> Arb.period() as Arb<A>
       kclass == BigDecimal::class -> Arb.bigDecimal() as Arb<A>
-      kclass.isData -> Arb.bind(kclass)
+      kclass.isData -> forClass(kclass)
       else -> null
    }
 }

@@ -6,18 +6,13 @@ import io.kotest.mpp.bestName
 import io.kotest.property.Arb
 import kotlin.reflect.KClass
 
-@Suppress("UNCHECKED_CAST")
-inline fun <reified A : Any> Arb.Companion.default(): Arb<A> = forClass(A::class)
-
 /**
  * Returns an [Arb] for the given kclass by first checking for a multiplatform
  * arb, and then falling back to platform specific arbs, before throwing if no
  * suitable arb can be found.
  */
-fun <A : Any> Arb.Companion.forClass(kclass: KClass<A>): Arb<A> =
-   defaultForClass(kclass)
-      ?: targetDefaultForClass(kclass)
-      ?: throw NoGeneratorFoundException("Cannot locate generator for ${kclass}; specify generators explicitly")
+@Suppress("UNCHECKED_CAST")
+expect inline fun <reified A : Any> Arb.Companion.default(): Arb<A>
 
 /**
  * Returns an [Arb] for the given kclass if one is available on all platforms,
@@ -41,13 +36,5 @@ fun <A : Any> defaultForClass(kClass: KClass<*>): Arb<A>? {
       else -> null
    }
 }
-
-/**
- * Returns an [Arb] for the given kclass if one is available on the specifc
- * platform, otherwise returns null.
- *
- * This is similar to [defaultForClass] but allows for arbs that are not multiplatform.
- */
-expect fun <A : Any> targetDefaultForClass(kclass: KClass<A>): Arb<A>?
 
 class NoGeneratorFoundException(msg: String) : RuntimeException(msg)
