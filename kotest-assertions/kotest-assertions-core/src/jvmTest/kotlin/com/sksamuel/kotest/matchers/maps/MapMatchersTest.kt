@@ -383,7 +383,32 @@ Values differed at keys Key2, Key3, Key4, Key5, Key6, Key7, Key8, Key9, Key10, K
 
             val assertionError = shouldThrow<AssertionError> { map1 shouldBe map2 }
 
-            assertionError.message shouldBe expectedErrorMessage
+            assertionError.message shouldBe """Values differed at keys Key2, Key3, Key4, Key5, Key6, Key7, Key8, Key9, Key10, Key11, ...
+expected:<{
+  "Key1" = "Val11",
+  "Key2" = "Val22",
+  "Key3" = "Val32",
+  "Key4" = "Val42",
+  "Key5" = "Val52",
+  "Key6" = "Val62",
+  "Key7" = "Val72",
+  "Key8" = "Val82",
+  "Key9" = "Val92",
+  "Key10" = "Val102",
+...
+}> but was:<{
+  "Key1" = "Val11",
+  "Key2" = "Val21",
+  "Key3" = "Val31",
+  "Key4" = "Val41",
+  "Key5" = "Val51",
+  "Key6" = "Val61",
+  "Key7" = "Val71",
+  "Key8" = "Val81",
+  "Key9" = "Val91",
+  "Key10" = "Val101",
+...
+}>"""
          }
       }
    }

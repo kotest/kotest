@@ -50,7 +50,7 @@ class MatchersTest : FreeSpec({
 
       "should support matching non null with null" {
          shouldThrow<AssertionError> {
-            val name: String? = "nullornot"
+            val name: String = "nullornot"
             name shouldBe null
          }
          shouldThrow<AssertionError> {
@@ -118,20 +118,17 @@ class MatchersTest : FreeSpec({
       "format map error" {
          shouldThrow<AssertionError> {
             mapOf('a' to 1L) shouldBe mapOf('b' to 2L)
-         }.message shouldBe "Expected\n" +
-            "{\n" +
+         }.message shouldBe "Values differed at keys a\n" +
+            "expected:<{\n" +
             "  'b' = 2L\n" +
-            "}\n" +
-            "to be equal to\n" +
-            "{\n" +
+            "}> but was:<{\n" +
             "  'a' = 1L\n" +
-            "}\n" +
-            "Values differed at keys a"
+            "}>"
 
          shouldThrow<AssertionError> {
             val l = HashMap<Any, Any>()
             l[1L] = l
-            l shouldBe emptyMap<Any, Any>()
+            l shouldBe emptyMap()
          }.message shouldBe "Expected\n" +
             "{}\n" +
             "to be equal to\n" +
@@ -151,7 +148,7 @@ class MatchersTest : FreeSpec({
          shouldThrow<AssertionError> {
             val l = ArrayList<Any>()
             l.add(l)
-            l shouldBe emptyList<Any>()
+            l shouldBe emptyList()
          }.message shouldBe """Unexpected elements from index 0
                                                               |expected:<[]> but was:<[[(this Collection)]]>""".trimMargin()
       }
