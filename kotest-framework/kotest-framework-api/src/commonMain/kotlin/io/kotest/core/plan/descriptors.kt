@@ -17,7 +17,6 @@ import io.kotest.mpp.qualifiedNameOrNull
 import kotlin.reflect.KClass
 
 /**
- * A [Descriptor] is an ADT that represents nodes in the [TestPlan] tree.
  *
  * There are four types of descriptors - a single [EngineDescriptor] at the root,
  * with [SpecDescriptor]s  as direct children of the engine.
