@@ -88,7 +88,7 @@ class JUnitTestEngineListener(
 
    private var hasIgnoredTest = false
 
-   override fun engineStarted(classes: List<KClass<out Spec>>) {
+   override fun engineStarted(classes: List<KClass<*>>) {
       log { "Engine started; classes=[$classes]" }
       listener.executionStarted(root)
    }
@@ -126,7 +126,7 @@ class JUnitTestEngineListener(
       listener.executionFinished(root, result)
    }
 
-   override fun specStarted(kclass: KClass<out Spec>) {
+   override fun specStarted(kclass: KClass<*>) {
       log { "specStarted [${kclass.qualifiedName}]" }
 
       // reset the flags for this spec
@@ -195,11 +195,7 @@ class JUnitTestEngineListener(
       listener.executionFinished(descriptor, result)
    }
 
-   override fun specFinished(
-      kclass: KClass<out Spec>,
-      t: Throwable?,
-      results: Map<TestCase, TestResult>,
-   ) {
+   override fun specFinished(kclass: KClass<*>, t: Throwable?, results: Map<TestCase, TestResult>) {
       log { "specFinished [$kclass]" }
 
       val descriptor = descriptors[kclass.toDescription().toDescriptor(sourceRef()).testPath()]
@@ -225,7 +221,7 @@ class JUnitTestEngineListener(
     * If the spec fails to be created, then there will be no tests, so we should insert an instantiation
     * failed test so that the spec shows up.
     */
-   override fun specInstantiationError(kclass: KClass<out Spec>, t: Throwable) {
+   override fun specInstantiationError(kclass: KClass<*>, t: Throwable) {
       exceptionThrowBySpec = t
    }
 
@@ -233,7 +229,7 @@ class JUnitTestEngineListener(
     * Checks that the spec has at least one test attached in case of failure.
     * If it doesn't, then it will add a dummy test name to ensure it appears.
     */
-   private fun ensureSpecIsVisible(kclass: KClass<out Spec>, t: Throwable) {
+   private fun ensureSpecIsVisible(kclass: KClass<*>, t: Throwable) {
       if (!hasVisibleTest) {
          val description = kclass.toDescription()
          val spec = descriptors[description.toDescriptor(sourceRef()).testPath()]!!

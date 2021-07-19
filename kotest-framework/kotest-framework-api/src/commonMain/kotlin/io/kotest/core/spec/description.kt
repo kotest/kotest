@@ -16,7 +16,7 @@ import kotlin.reflect.KClass
  * cannot share the same name, so if @DisplayName is used, developers must ensure it does not
  * clash with another spec.
  */
-fun KClass<out Spec>.toDescription(): Description.Spec {
+fun KClass<*>.toDescription(): Description.Spec {
    val name = this.displayName() ?: bestName()
    return Description.Spec(this, DescriptionName.SpecName(this.bestName(), this.simpleName ?: "", name))
 }

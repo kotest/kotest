@@ -2,7 +2,6 @@
 
 package io.kotest.engine.reporter
 
-import io.kotest.core.spec.Spec
 import io.kotest.core.spec.toDescription
 import io.kotest.core.test.Description
 import io.kotest.core.test.TestCase
@@ -36,7 +35,7 @@ class IsolatedReporter(val reporter: Reporter) : Reporter {
       return reporter.hasErrors()
    }
 
-   override fun engineStarted(classes: List<KClass<out Spec>>) {
+   override fun engineStarted(classes: List<KClass<*>>) {
       reporter.engineStarted(classes)
    }
 
@@ -44,7 +43,7 @@ class IsolatedReporter(val reporter: Reporter) : Reporter {
       reporter.engineFinished(t)
    }
 
-   override fun specStarted(kclass: KClass<out Spec>) {
+   override fun specStarted(kclass: KClass<*>) {
       synchronized(reporter) {
          if (runningSpec.compareAndSet(null, kclass.toDescription())) {
             reporter.specStarted(kclass)
@@ -56,7 +55,7 @@ class IsolatedReporter(val reporter: Reporter) : Reporter {
       }
    }
 
-   override fun specFinished(kclass: KClass<out Spec>, t: Throwable?, results: Map<TestCase, TestResult>) {
+   override fun specFinished(kclass: KClass<*>, t: Throwable?, results: Map<TestCase, TestResult>) {
       synchronized(reporter) {
          if (runningSpec.get() == kclass.toDescription()) {
             reporter.specFinished(kclass, t, results)

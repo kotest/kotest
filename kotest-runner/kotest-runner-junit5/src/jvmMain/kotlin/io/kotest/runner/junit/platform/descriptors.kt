@@ -52,7 +52,7 @@ sealed class Segment {
  * Creates a new spec-level [TestDescriptor] from the given class, appending it to the
  * parent [TestDescriptor]. The created descriptor will have segment type [Segment.Spec].
  */
-fun KClass<out Spec>.descriptor(parent: TestDescriptor): TestDescriptor {
+fun KClass<*>.descriptor(parent: TestDescriptor): TestDescriptor {
    val source = ClassSource.from(java)
    return parent.append(toDescription(), TestDescriptor.Type.CONTAINER, source, Segment.Spec)
 }

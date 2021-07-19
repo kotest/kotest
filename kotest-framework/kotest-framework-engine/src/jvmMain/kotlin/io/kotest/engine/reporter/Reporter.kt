@@ -1,7 +1,6 @@
 package io.kotest.engine.reporter
 
 import com.github.ajalt.mordant.TermColors
-import io.kotest.core.spec.Spec
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import kotlin.reflect.KClass
@@ -19,11 +18,11 @@ interface Reporter {
     */
    fun hasErrors(): Boolean
 
-   fun engineStarted(classes: List<KClass<out Spec>>)
+   fun engineStarted(classes: List<KClass<*>>)
    fun engineFinished(t: List<Throwable>)
 
-   fun specStarted(kclass: KClass<out Spec>)
-   fun specFinished(kclass: KClass<out Spec>, t: Throwable?, results: Map<TestCase, TestResult>)
+   fun specStarted(kclass: KClass<*>)
+   fun specFinished(kclass: KClass<*>, t: Throwable?, results: Map<TestCase, TestResult>)
 
    fun testStarted(testCase: TestCase)
    fun testIgnored(testCase: TestCase) {}
