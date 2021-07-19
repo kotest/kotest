@@ -23,7 +23,6 @@ fun createRootTestCase(
       type = type,
       config = config,
       factoryId = null,
-      assertionMode = null,
       parent = null, // root tests do not have a parent test case
    )
    return if (configuration.testNameAppendTags) {

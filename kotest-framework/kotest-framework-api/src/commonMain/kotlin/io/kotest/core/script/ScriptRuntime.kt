@@ -54,7 +54,6 @@ object ScriptRuntime {
             type = type,
             config = config,
             factoryId = null,
-            assertionMode = null,
             descriptor = Descriptor.fromScriptClass(ScriptSpec::class).append(
                Name(description.name.name),
                DisplayName(description.name.displayName),

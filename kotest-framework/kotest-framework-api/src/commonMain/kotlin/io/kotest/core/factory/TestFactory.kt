@@ -39,7 +39,6 @@ internal fun TestFactory.createTestCases(description: Description.Spec, spec: Sp
          source = dyn.source,
          config = dyn.config.copy(tags = dyn.config.tags + this.tags),
          factoryId = this.factoryId,
-         assertionMode = this.assertionMode,
          parent = null,
       )
    }
