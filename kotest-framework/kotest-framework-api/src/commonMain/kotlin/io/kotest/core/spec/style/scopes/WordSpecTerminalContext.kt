@@ -1,5 +1,6 @@
 package io.kotest.core.spec.style.scopes
 
+import io.kotest.core.execution.ExecutionContext
 import io.kotest.core.spec.KotestDsl
 import io.kotest.core.test.NestedTest
 import io.kotest.core.test.TestCase
@@ -18,6 +19,7 @@ class WordSpecTerminalContext(val context: TestContext) : TestContext {
 
    override val coroutineContext: CoroutineContext = context.coroutineContext
    override val testCase: TestCase = context.testCase
+   override val executionContext: ExecutionContext = context.executionContext
 
    // we need to override the should method to stop people nesting a should inside a should
    @Deprecated("A should block can only be used at the top level", ReplaceWith("{}"), level = DeprecationLevel.ERROR)

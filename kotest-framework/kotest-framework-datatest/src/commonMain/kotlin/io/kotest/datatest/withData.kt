@@ -1,13 +1,13 @@
 package io.kotest.datatest
 
 import io.kotest.common.ExperimentalKotest
+import io.kotest.core.plan.TestName
 import io.kotest.core.spec.style.scopes.RootContext
 import io.kotest.core.test.Identifiers
 import io.kotest.core.test.TestCaseConfig
 import io.kotest.core.test.TestContext
 import io.kotest.core.test.TestType
 import io.kotest.core.test.createNestedTest
-import io.kotest.core.test.createTestName
 import kotlin.jvm.JvmName
 
 /**
@@ -63,7 +63,7 @@ fun <T : Any> RootContext.withData(ts: Collection<T>, test: suspend TestContext.
 @ExperimentalKotest
 fun <T : Any> RootContext.withData(nameFn: (T) -> String, ts: Collection<T>, test: suspend TestContext.(T) -> Unit) {
    ts.forEach { t ->
-      registration().addContainerTest(createTestName(nameFn(t)), false) { test(t) }
+      registration().addContainerTest(TestName(nameFn(t)), false) { test(t) }
    }
 }
 
@@ -75,7 +75,7 @@ fun <T : Any> RootContext.withData(nameFn: (T) -> String, ts: Collection<T>, tes
 @JvmName("forAllWithNames")
 fun <T : Any> RootContext.withData(data: Map<String, T>, test: suspend TestContext.(T) -> Unit) {
    data.forEach { (name, t) ->
-      registration().addContainerTest(createTestName(name), false) { test(t) }
+      registration().addContainerTest(TestName(name), false) { test(t) }
    }
 }
 
@@ -151,11 +151,10 @@ suspend fun <T : Any> TestContext.withData(
    ts.forEach { t ->
       this.registerTestCase(
          createNestedTest(
-            name = createTestName(name = nameFn(t)),
+            name = TestName(name = nameFn(t)),
             xdisabled = false,
             config = TestCaseConfig(),
             type = TestType.Container,
-            descriptor = null,
             factoryId = null
          ) { test(t) }
       )
@@ -171,7 +170,7 @@ suspend fun <T : Any> TestContext.withData(
 suspend fun <T : Any> TestContext.withData(data: Map<String, T>, test: suspend TestContext.(T) -> Unit) {
    data.forEach { (name, t) ->
       this.registerTestCase(
-         createNestedTest(createTestName(name), false, TestCaseConfig(), TestType.Container, null, null) { test(t) }
+         createNestedTest(TestName(name), false, TestCaseConfig(), TestType.Container, null) { test(t) }
       )
    }
 }

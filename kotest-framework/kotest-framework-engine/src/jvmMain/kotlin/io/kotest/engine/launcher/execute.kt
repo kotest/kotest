@@ -58,7 +58,7 @@ private fun setupLauncher(
    val specClass = specFQN?.let { (Class.forName(it) as Class<Spec>).kotlin }
    val (specs, _, error) = specs(specClass, packageName)
    val filter = if (testPath == null || specClass == null) null else {
-      TestPathTestCaseFilter(testPath, specClass)
+      TestPathTestFilter(testPath, specClass)
    }
 
    if (error != null) throw error

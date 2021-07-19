@@ -2,11 +2,11 @@ package com.sksamuel.kotest.engine.datatest
 
 import io.kotest.core.spec.Isolate
 import io.kotest.core.spec.style.FunSpec
-import io.kotest.core.test.DescriptionName
+import io.kotest.core.plan.DescriptorName
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestStatus
-import io.kotest.core.test.createTestName
+import io.kotest.core.plan.createTestName
 import io.kotest.engine.KotestEngineLauncher
 import io.kotest.engine.listener.TestEngineListener
 import io.kotest.matchers.shouldBe
@@ -17,7 +17,7 @@ class DataTest : FunSpec() {
 
    init {
 
-      val results = ConcurrentHashMap<DescriptionName.TestName, TestStatus>()
+      val results = ConcurrentHashMap<DescriptorName.TestName, TestStatus>()
 
       val listener = object : TestEngineListener {
          override fun testFinished(testCase: TestCase, result: TestResult) {
@@ -78,7 +78,7 @@ class DataTest : FunSpec() {
 //      }
  }
 
-   private fun assertResults(results: MutableMap<DescriptionName.TestName, TestStatus>) {
+   private fun assertResults(results: MutableMap<DescriptorName.TestName, TestStatus>) {
       results shouldBe mapOf(
          createTestName("datatest forAll") to TestStatus.Success,
          createTestName("PythagTriple(a=3, b=4, c=5)") to TestStatus.Success,

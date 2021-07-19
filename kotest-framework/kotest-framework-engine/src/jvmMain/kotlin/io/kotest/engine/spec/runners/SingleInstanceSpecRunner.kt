@@ -1,14 +1,13 @@
 package io.kotest.engine.spec.runners
 
 import io.kotest.core.config.configuration
+import io.kotest.core.execution.ExecutionContext
 import io.kotest.core.spec.Spec
 import io.kotest.core.test.NestedTest
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestContext
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestStatus
-import io.kotest.core.test.createTestName
-import io.kotest.core.test.toTestCase
 import io.kotest.engine.ExecutorExecutionContext
 import io.kotest.engine.concurrency.resolvedThreads
 import io.kotest.engine.launchers.TestLauncher
@@ -17,9 +16,10 @@ import io.kotest.engine.lifecycle.invokeBeforeSpec
 import io.kotest.engine.listener.TestEngineListener
 import io.kotest.engine.spec.SpecRunner
 import io.kotest.engine.spec.materializeAndOrderRootTests
-import io.kotest.engine.test.DuplicateTestNameHandler
 import io.kotest.engine.test.TestCaseExecutionListener
 import io.kotest.engine.test.TestCaseExecutor
+import io.kotest.engine.test.attach
+import io.kotest.engine.test.names.DuplicateTestNameHandler
 import io.kotest.engine.test.toTestResult
 import io.kotest.fp.Try
 import io.kotest.mpp.log
@@ -33,6 +33,7 @@ import kotlin.coroutines.CoroutineContext
  * is instantiated for all the test cases.
  */
 internal class SingleInstanceSpecRunner(
+   private val executionContext: ExecutionContext,
    listener: TestEngineListener,
    launcher: TestLauncher,
 ) : SpecRunner(listener, launcher) {
@@ -43,7 +44,7 @@ internal class SingleInstanceSpecRunner(
       log { "SingleInstanceSpecRunner: executing spec [$spec]" }
 
       suspend fun interceptAndRun(context: CoroutineContext) = Try {
-         val rootTests = spec.materializeAndOrderRootTests().map { it.testCase }
+         val rootTests = spec.materializeAndOrderRootTests(executionContext).map { it.testCase }
          log { "SingleInstanceSpecRunner: Materialized root tests: ${rootTests.size}" }
          val threads = spec.resolvedThreads()
          if (threads != null && threads > 1) {
@@ -71,6 +72,7 @@ internal class SingleInstanceSpecRunner(
    inner class Context(
       override val testCase: TestCase,
       override val coroutineContext: CoroutineContext,
+      override val executionContext: ExecutionContext,
    ) : TestContext {
 
       private val handler = DuplicateTestNameHandler(configuration.duplicateTestNameMode)
@@ -79,14 +81,15 @@ internal class SingleInstanceSpecRunner(
       // in the single instance runner we execute each nested test as soon as they are registered
       override suspend fun registerTestCase(nested: NestedTest) {
          log { "Nested test case discovered $nested" }
-         val overrideName = handler.handle(nested.name)?.let { createTestName(it) }
-         val nestedTestCase = nested.toTestCase(testCase.spec, testCase, overrideName)
+
+         val t = nested.attach(testCase, handler.handle(nested.name), executionContext)
+
          if (failedfast) {
             log { "A previous nested test failed and failfast is enabled - will mark this as ignored" }
-            listener.testIgnored(nestedTestCase, "Failfast enabled on parent test")
+            listener.testIgnored(t, "Failfast enabled on parent test")
          } else {
             // if running this nested test results in an error, we won't launch any more nested tests
-            val result = runTest(nestedTestCase, coroutineContext)
+            val result = runTest(t, coroutineContext)
             if (testCase.config.failfast == true) {
                if (result.status == TestStatus.Failure || result.status == TestStatus.Error) {
                   failedfast = true
@@ -114,7 +117,7 @@ internal class SingleInstanceSpecRunner(
          }
       }, ExecutorExecutionContext, {}, { t, duration -> toTestResult(t, duration) })
 
-      val result = testExecutor.execute(testCase, Context(testCase, coroutineContext))
+      val result = testExecutor.execute(testCase, Context(testCase, coroutineContext, executionContext))
       results[testCase] = result
       return result
    }

@@ -1,8 +1,11 @@
 package io.kotest.core
 
-data class SourceRef(val lineNumber: Int, val fileName: String)
+import io.kotest.core.plan.Source
 
 /**
- * Returns a [SourceRef] for the current execution point.
+ * Returns a [Source] for the current execution point.
+ *
+ * Will return null if executing on a platform where source cannot be determined, or if source
+ * evaluation is disabled at runtime.
  */
-expect fun sourceRef(): SourceRef
+expect fun source(): Source?

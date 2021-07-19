@@ -2,12 +2,10 @@
 
 package io.kotest.engine.listener
 
-import io.kotest.core.plan.Descriptor
+import io.kotest.core.plan.toDescriptor
 import io.kotest.core.spec.Spec
-import io.kotest.core.spec.toDescription
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
-import kotlinx.coroutines.runBlocking
 import java.util.concurrent.atomic.AtomicReference
 import kotlin.reflect.KClass
 
@@ -18,7 +16,7 @@ import kotlin.reflect.KClass
  */
 class IsolationTestEngineListener(val listener: TestEngineListener) : TestEngineListener {
 
-   private val runningSpec = AtomicReference<String?>(null)
+   private val runningSpec = AtomicReference<KClass<*>>(null)
    private val callbacks = mutableListOf<() -> Unit>()
 
    private fun queue(fn: () -> Unit) {
@@ -47,7 +45,7 @@ class IsolationTestEngineListener(val listener: TestEngineListener) : TestEngine
 
    override fun specInstantiated(spec: Spec) {
       synchronized(listener) {
-         if (runningSpec.get() == spec::class.toDescription().path().value) {
+         if (runningSpec.get() == spec::class.toDescriptor().kclass) {
             listener.specInstantiated(spec)
          } else {
             queue {
@@ -59,7 +57,7 @@ class IsolationTestEngineListener(val listener: TestEngineListener) : TestEngine
 
    override fun specInstantiationError(kclass: KClass<*>, t: Throwable) {
       synchronized(listener) {
-         if (runningSpec.get() == kclass.toDescription().path().value) {
+         if (runningSpec.get() == kclass.toDescriptor().kclass) {
             listener.specInstantiationError(kclass, t)
          } else {
             queue {
@@ -71,7 +69,7 @@ class IsolationTestEngineListener(val listener: TestEngineListener) : TestEngine
 
    override fun testStarted(testCase: TestCase) {
       synchronized(listener) {
-         if (runningSpec.get() == testCase.spec::class.toDescription().path().value) {
+         if (runningSpec.get() == testCase.spec::class.toDescriptor().kclass) {
             listener.testStarted(testCase)
          } else {
             queue {
@@ -81,21 +79,9 @@ class IsolationTestEngineListener(val listener: TestEngineListener) : TestEngine
       }
    }
 
-   override fun testStarted(descriptor: Descriptor.TestDescriptor) {
-      synchronized(listener) {
-         if (runningSpec.get() == descriptor.spec()?.classname) {
-            listener.testStarted(descriptor)
-         } else {
-            queue {
-               testStarted(descriptor)
-            }
-         }
-      }
-   }
-
    override fun testIgnored(testCase: TestCase, reason: String?) {
       synchronized(listener) {
-         if (runningSpec.get() == testCase.spec::class.toDescription().path().value) {
+         if (runningSpec.get() == testCase.spec::class.toDescriptor().kclass) {
             listener.testIgnored(testCase, reason)
          } else {
             queue {
@@ -105,21 +91,9 @@ class IsolationTestEngineListener(val listener: TestEngineListener) : TestEngine
       }
    }
 
-   override fun testIgnored(descriptor: Descriptor.TestDescriptor, reason: String?) {
-      synchronized(listener) {
-         if (runningSpec.get() == descriptor.spec()?.classname) {
-            listener.testIgnored(descriptor, reason)
-         } else {
-            queue {
-               testIgnored(descriptor, reason)
-            }
-         }
-      }
-   }
-
    override fun testFinished(testCase: TestCase, result: TestResult) {
       synchronized(listener) {
-         if (runningSpec.get() == testCase.spec::class.toDescription().path().value) {
+         if (runningSpec.get() == testCase.spec::class.toDescriptor().kclass) {
             listener.testFinished(testCase, result)
          } else {
             queue {
@@ -129,21 +103,9 @@ class IsolationTestEngineListener(val listener: TestEngineListener) : TestEngine
       }
    }
 
-   override fun testFinished(descriptor: Descriptor.TestDescriptor, result: TestResult) {
-      synchronized(listener) {
-         if (runningSpec.get() == descriptor.spec()?.classname) {
-            listener.testFinished(descriptor, result)
-         } else {
-            queue {
-               testFinished(descriptor, result)
-            }
-         }
-      }
-   }
-
    override fun specStarted(kclass: KClass<*>) {
       synchronized(listener) {
-         if (runningSpec.compareAndSet(null, kclass.toDescription().path().value)) {
+         if (runningSpec.compareAndSet(null, kclass.toDescriptor().kclass)) {
             listener.specStarted(kclass)
          } else {
             queue {
@@ -153,57 +115,15 @@ class IsolationTestEngineListener(val listener: TestEngineListener) : TestEngine
       }
    }
 
-   override fun specFinished(
-      kclass: KClass<*>,
-      t: Throwable?,
-      results: Map<TestCase, TestResult>
-   ) {
+   override fun specFinished(kclass: KClass<*>, t: Throwable?, results: Map<TestCase, TestResult>) {
       synchronized(listener) {
-         if (runningSpec.get() == kclass.toDescription().path().value) {
+         if (runningSpec.get() == kclass.toDescriptor().kclass) {
             listener.specFinished(kclass, t, results)
             runningSpec.set(null)
             replay()
          } else {
             queue {
                specFinished(kclass, t, results)
-            }
-         }
-      }
-   }
-
-   override suspend fun specFinished(
-      descriptor: Descriptor.SpecDescriptor,
-      t: Throwable?,
-      results: Map<Descriptor.TestDescriptor, TestResult>
-   ) {
-      synchronized(listener) {
-         if (runningSpec.get() == descriptor.classname) {
-            runBlocking {
-               listener.specFinished(descriptor, t, results)
-            }
-            runningSpec.set(null)
-            replay()
-         } else {
-            queue {
-               runBlocking {
-                  listener.specFinished(descriptor, t, results)
-               }
-            }
-         }
-      }
-   }
-
-   override suspend fun specStarted(descriptor: Descriptor.SpecDescriptor) {
-      synchronized(listener) {
-         if (runningSpec.compareAndSet(null, descriptor.classname)) {
-            runBlocking {
-               listener.specStarted(descriptor)
-            }
-         } else {
-            queue {
-               runBlocking {
-                  listener.specStarted(descriptor)
-               }
             }
          }
       }

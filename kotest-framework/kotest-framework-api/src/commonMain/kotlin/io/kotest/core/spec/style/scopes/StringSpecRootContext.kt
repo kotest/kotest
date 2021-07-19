@@ -1,22 +1,18 @@
 package io.kotest.core.spec.style.scopes
 
 import io.kotest.core.Tag
+import io.kotest.core.execution.ExecutionContext
 import io.kotest.core.extensions.TestCaseExtension
+import io.kotest.core.plan.createTestName
 import io.kotest.core.test.EnabledIf
 import io.kotest.core.test.EnabledOrReasonIf
 import io.kotest.core.test.NestedTest
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestCaseSeverityLevel
 import io.kotest.core.test.TestContext
-import io.kotest.core.test.createTestName
 import kotlin.coroutines.CoroutineContext
 import kotlin.jvm.JvmName
 import kotlin.time.Duration
-
-@Deprecated("Renamed to StringSpecRootContext. This typealias will be removed in 4.8")
-typealias StringSpecRootScope = StringSpecRootContext
-
-
 
 /**
  * Defines the DSL for creating tests in the 'StringSpec' style.
@@ -42,7 +38,7 @@ interface StringSpecRootContext : RootContext {
       severity: TestCaseSeverityLevel? = null,
       enabledOrReasonIf: EnabledOrReasonIf? = null,
       test: suspend TestContext.() -> Unit,
-   ) = RootTestWithConfigBuilder(createTestName(null, this, false), registration(), false).config(
+   ) = RootTestWithConfigBuilder(createTestName(this, null, null, false), registration(), false).config(
       enabled,
       invocations,
       threads,
@@ -61,9 +57,9 @@ interface StringSpecRootContext : RootContext {
     */
    operator fun String.invoke(test: suspend StringSpecScope.() -> Unit) =
       registration().addTest(
-         createTestName(null, this, false),
+         createTestName(this, null, null, false),
          xdisabled = false,
-         test = { StringSpecScope(this.coroutineContext, testCase).test() }
+         test = { StringSpecScope(this.coroutineContext, this.executionContext, testCase).test() }
       )
 }
 
@@ -72,6 +68,7 @@ interface StringSpecRootContext : RootContext {
  */
 class StringSpecScope(
    override val coroutineContext: CoroutineContext,
+   override val executionContext: ExecutionContext,
    override val testCase: TestCase
 ) : TestContext {
 

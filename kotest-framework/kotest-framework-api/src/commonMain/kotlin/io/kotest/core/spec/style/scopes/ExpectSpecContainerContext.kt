@@ -1,5 +1,7 @@
 package io.kotest.core.spec.style.scopes
 
+import io.kotest.core.execution.ExecutionContext
+import io.kotest.core.plan.createTestName
 import io.kotest.core.spec.KotestDsl
 import io.kotest.core.spec.resolvedDefaultConfig
 import io.kotest.core.test.NestedTest
@@ -7,11 +9,7 @@ import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestContext
 import io.kotest.core.test.TestType
 import io.kotest.core.test.createNestedTest
-import io.kotest.core.test.createTestName
 import kotlin.coroutines.CoroutineContext
-
-@Deprecated("This interface has been renamed to ExpectSpecContainerContext. This alias will be removed in 4.8")
-typealias ExpectScope = ExpectSpecContainerContext
 
 /**
  * A context that allows tests to be registered using the syntax:
@@ -34,6 +32,7 @@ class ExpectSpecContainerContext(
 
    override val testCase: TestCase = testContext.testCase
    override val coroutineContext: CoroutineContext = testContext.coroutineContext
+   override val executionContext: ExecutionContext = testContext.executionContext
    override suspend fun registerTestCase(nested: NestedTest) = testContext.registerTestCase(nested)
 
    override suspend fun addTest(name: String, type: TestType, test: suspend TestContext.() -> Unit) {
@@ -47,11 +46,10 @@ class ExpectSpecContainerContext(
    suspend fun context(name: String, test: suspend ExpectSpecContainerContext.() -> Unit) {
       registerTestCase(
          createNestedTest(
-            name = createTestName("Context: ", name, false),
+            name = createTestName(name, "Context: ", null, false),
             xdisabled = false,
             config = testCase.spec.resolvedDefaultConfig(),
             type = TestType.Container,
-            descriptor = null,
             factoryId = testCase.factoryId
          ) { ExpectSpecContainerContext(this).test() }
       )
@@ -60,11 +58,10 @@ class ExpectSpecContainerContext(
    suspend fun xcontext(name: String, test: suspend ExpectSpecContainerContext.() -> Unit) {
       registerTestCase(
          createNestedTest(
-            name = createTestName("Context: ", name, false),
+            name = createTestName(name, "Context: ", null, false),
             xdisabled = true,
             config = testCase.spec.resolvedDefaultConfig(),
             type = TestType.Container,
-            descriptor = null,
             factoryId = testCase.factoryId
          ) { ExpectSpecContainerContext(this).test() }
       )
@@ -73,11 +70,10 @@ class ExpectSpecContainerContext(
    suspend fun expect(name: String, test: suspend TestContext.() -> Unit) {
       registerTestCase(
          createNestedTest(
-            name = createTestName("Expect: ", name, false),
+            name = createTestName(name, "Expect: ", null, false),
             xdisabled = false,
             config = testCase.spec.resolvedDefaultConfig(),
             type = TestType.Test,
-            descriptor = null,
             factoryId = testCase.factoryId,
             test = test
          )
@@ -87,11 +83,10 @@ class ExpectSpecContainerContext(
    suspend fun xexpect(name: String, test: suspend TestContext.() -> Unit) {
       registerTestCase(
          createNestedTest(
-            name = createTestName("Expect: ", name, false),
+            name = createTestName(name, "Expect: ", null, false),
             xdisabled = true,
             config = testCase.spec.resolvedDefaultConfig(),
             type = TestType.Test,
-            descriptor = null,
             factoryId = testCase.factoryId,
             test = test
          )
@@ -99,9 +94,9 @@ class ExpectSpecContainerContext(
    }
 
    suspend fun expect(name: String): TestWithConfigBuilder {
-      TestDslState.startTest(testContext.testCase.description.appendTest(name))
+      TestDslState.startTest(testContext.testCase.descriptor.testPath().append(name))
       return TestWithConfigBuilder(
-         createTestName("Expect: ", name, false),
+         createTestName(name, "Expect: ", null, false),
          testContext,
          testCase.spec.resolvedDefaultConfig(),
          xdisabled = false,
@@ -109,9 +104,9 @@ class ExpectSpecContainerContext(
    }
 
    suspend fun xexpect(name: String): TestWithConfigBuilder {
-      TestDslState.startTest(testContext.testCase.description.appendTest(name))
+      TestDslState.startTest(testContext.testCase.descriptor.testPath().append(name))
       return TestWithConfigBuilder(
-         createTestName("Expect: ", name, false),
+         createTestName(name, "Expect: ", null, false),
          testContext,
          testCase.spec.resolvedDefaultConfig(),
          xdisabled = true,

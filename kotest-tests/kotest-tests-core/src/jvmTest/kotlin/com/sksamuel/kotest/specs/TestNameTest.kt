@@ -3,7 +3,7 @@
 //import io.kotest.core.config.getProject
 //import io.kotest.core.test.TestNameCase
 //import io.kotest.core.spec.style.FunSpec
-//import io.kotest.core.test.DescriptionName
+//import io.kotest.core.plan.DescriptionName
 //import io.kotest.matchers.booleans.shouldBeTrue
 //import io.kotest.matchers.shouldBe
 //

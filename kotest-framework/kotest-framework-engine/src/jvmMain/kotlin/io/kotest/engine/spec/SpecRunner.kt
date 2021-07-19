@@ -1,5 +1,7 @@
 package io.kotest.engine.spec
 
+import io.kotest.core.config.configuration
+import io.kotest.core.execution.ExecutionContext
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.Spec
 import io.kotest.core.test.TestCase
@@ -38,7 +40,7 @@ abstract class SpecRunner(
     * Executes all the tests in this spec.
     */
    protected suspend fun launch(spec: Spec, run: suspend (TestCase) -> Unit) {
-      val rootTests = spec.materializeAndOrderRootTests().map { it.testCase }
+      val rootTests = spec.materializeAndOrderRootTests(ExecutionContext(configuration)).map { it.testCase }
       log { "SingleInstanceSpecRunner: Launching ${rootTests.size} root tests with launcher $launcher" }
       launcher.launch(run, rootTests)
    }

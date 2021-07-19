@@ -1,12 +1,13 @@
 package io.kotest.engine.launcher
 
 import com.github.ajalt.mordant.TermColors
+import io.kotest.core.execution.ExecutionContext
 import io.kotest.engine.reporter.ConsoleReporter
 import io.kotest.engine.reporter.Reporter
 import io.kotest.engine.reporter.TaycanConsoleReporter
 import io.kotest.engine.reporter.TeamCityConsoleReporter
 
-internal fun createReporter(args: LauncherArgs): Reporter {
+internal fun createReporter(args: LauncherArgs, context: ExecutionContext): Reporter {
    return try {
 
       // we support "teamcity" and "taycan" as special values
@@ -31,7 +32,7 @@ internal fun createReporter(args: LauncherArgs): Reporter {
    } catch (t: Throwable) {
       println(t.message)
       t.printStackTrace()
-      defaultReporter()
+      defaultReporter(context)
    }
 }
 
@@ -39,7 +40,7 @@ internal fun createReporter(args: LauncherArgs): Reporter {
 // attempts to find the idea_rt.jar and if it exists, we assume we are running from intellij, and thus
 // change our output to be an IDEA compatible team city writer
 // otherwise we use the default taycan writer
-internal fun defaultReporter(): Reporter = try {
+internal fun defaultReporter(context: ExecutionContext): Reporter = try {
    Class.forName("com.intellij.rt.execution.CommandLineWrapper")
    TeamCityConsoleReporter()
 } catch (_: ClassNotFoundException) {

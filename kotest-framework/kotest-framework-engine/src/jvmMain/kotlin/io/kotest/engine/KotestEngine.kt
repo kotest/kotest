@@ -2,6 +2,7 @@ package io.kotest.engine
 
 import io.kotest.core.Tags
 import io.kotest.core.config.configuration
+import io.kotest.core.execution.ExecutionContext
 import io.kotest.core.extensions.ProjectExtension
 import io.kotest.core.filter.SpecFilter
 import io.kotest.core.filter.TestFilter
@@ -116,7 +117,7 @@ class KotestEngine(private val config: KotestEngineConfig) {
          if (suite.scripts.isNotEmpty()) {
             suite.scripts.forEach { scriptKClass ->
                log { scriptKClass.java.methods.toList().toString() }
-               ScriptExecutor(listener)
+               ScriptExecutor(listener, ExecutionContext(configuration))
                   .execute(scriptKClass)
             }
             log { "KotestEngine: Script execution completed" }

@@ -1,9 +1,6 @@
 package io.kotest.core.spec.style.scopes
 
-import io.kotest.core.test.createTestName
-
-@Deprecated("Renamed to BehaviorSpecRootContext. This typealias will be removed in 4.8")
-typealias BehaviorSpecRootScope = BehaviorSpecRootContext
+import io.kotest.core.plan.createTestName
 
 /**
  * A context that allows tests to be registered using the syntax:
@@ -35,7 +32,7 @@ interface BehaviorSpecRootContext : RootContext {
    fun xGiven(name: String, test: suspend BehaviorSpecGivenContainerContext.() -> Unit) = addGiven(name, true, test)
 
    private fun addGiven(name: String, xdisabled: Boolean, test: suspend BehaviorSpecGivenContainerContext.() -> Unit) {
-      val testName = createTestName("Given: ", name, true)
+      val testName = createTestName(name, "Given: ", null, true)
       registration().addContainerTest(testName, xdisabled) {
          BehaviorSpecGivenContainerContext(this).test()
       }

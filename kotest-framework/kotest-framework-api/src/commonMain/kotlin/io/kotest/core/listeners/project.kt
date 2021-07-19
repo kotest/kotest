@@ -1,8 +1,8 @@
 package io.kotest.core.listeners
 
 /**
- * Brings together [BeforeProjectListener] and [AfterProjectListener]. Exists for historical reasons.
- * Users can choose to extend this, or the constituent interfaces.
+ * Brings together [BeforeProjectListener] and [AfterProjectListener].
+ * Users can choose to extend this, or the component interfaces.
  */
 interface ProjectListener : BeforeProjectListener, AfterProjectListener {
 

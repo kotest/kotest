@@ -2,7 +2,7 @@ package io.kotest.core.spec.style.scopes
 
 import io.kotest.core.Tag
 import io.kotest.core.extensions.TestCaseExtension
-import io.kotest.core.test.DescriptionName
+import io.kotest.core.plan.TestName
 import io.kotest.core.test.EnabledIf
 import io.kotest.core.test.TestCaseConfig
 import io.kotest.core.test.TestCaseSeverityLevel
@@ -13,7 +13,7 @@ import io.kotest.core.test.deriveTestCaseConfig
 import kotlin.time.Duration
 
 class TestWithConfigBuilder(
-   private val name: DescriptionName.TestName,
+   private val name: TestName,
    private val context: TestContext,
    private val defaultTestConfig: TestCaseConfig,
    private val xdisabled: Boolean,
@@ -32,7 +32,7 @@ class TestWithConfigBuilder(
       test: suspend TestContext.() -> Unit
    ) {
 
-      TestDslState.clear(context.testCase.description.appendTest(name))
+      TestDslState.clear(context.testCase.descriptor.testPath().append(name.testName))
 
       val derivedConfig = defaultTestConfig.deriveTestCaseConfig(
          enabled,
@@ -51,7 +51,6 @@ class TestWithConfigBuilder(
             xdisabled = xdisabled,
             config = derivedConfig,
             type = TestType.Test,
-            descriptor = null,
             factoryId = null,
             test = test,
          )

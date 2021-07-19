@@ -1,16 +1,17 @@
 package io.kotest.engine.reporter
 
 import com.github.ajalt.mordant.TermColors
-import io.kotest.core.spec.toDescription
-import io.kotest.core.test.Description
+import io.kotest.core.plan.Descriptor
+import io.kotest.core.plan.toDescriptor
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestStatus
 import io.kotest.core.test.TestType
+import io.kotest.engine.spec.outputName
 import kotlin.reflect.KClass
 
 /**
- * Generates test output in the 'augustus' Kotest style.
+ * Generates test output in the 'Taycan' Kotest style.
  */
 class TaycanConsoleReporter : ConsoleReporter {
 
@@ -25,18 +26,19 @@ class TaycanConsoleReporter : ConsoleReporter {
    private var testsFailed = emptyList<Pair<TestCase, TestResult>>()
    private var testsIgnored = 0
    private var testsPassed = 0
-   private var specsFailed = emptyList<Description>()
-   private var specsSeen = emptyList<Description>()
+   private var specsFailed = emptyList<Descriptor.SpecDescriptor>()
+   private var specsSeen = emptyList<Descriptor.SpecDescriptor>()
    private var slow = 500
    private var verySlow = 5000
 
-   private fun green(str: String) = term.green(str)
+   //   private fun green(str: String) = term.green(str)
    private fun greenBold(str: String) = term.green.plus(term.bold).invoke(str)
    private fun red(str: String) = term.red(str)
    private fun brightRed(str: String) = term.brightRed(str)
    private fun brightRedBold(str: String) = term.brightRed.plus(term.bold).invoke(str)
    private fun redBold(str: String) = term.red.plus(term.bold).invoke(str)
-   private fun yellow(str: String) = term.yellow(str)
+
+   //   private fun yellow(str: String) = term.yellow(str)
    private fun brightYellow(str: String) = term.brightYellow(str)
    private fun brightYellowBold(str: String) = term.brightYellow.plus(term.bold).invoke(str)
    private fun yellowBold(str: String) = term.yellow.plus(term.bold).invoke(str)
@@ -99,10 +101,10 @@ class TaycanConsoleReporter : ConsoleReporter {
       } else {
          println(redBold(">> There were test failures"))
          println()
-         specsFailed.distinct().forEach { spec ->
-            println(brightRedBold(" ${spec.displayName()}"))
-            testsFailed.filter { it.first.description.spec() == spec }.forEach { (testCase, _) ->
-               println(brightRed(" - ${testCase.description.testDisplayPath().value}"))
+         specsFailed.distinct().forEach { spec: Descriptor ->
+            println(brightRedBold(" ${spec::class.outputName()}"))
+            testsFailed.filter { it.first.descriptor.spec() == spec }.forEach { (testCase, _) ->
+               println(brightRed(" - ${testCase.descriptor.displayPath(false).value}"))
             }
          }
       }
@@ -165,16 +167,16 @@ class TaycanConsoleReporter : ConsoleReporter {
    }
 
    override fun specStarted(kclass: KClass<*>) {
-      specsSeen = specsSeen + kclass.toDescription()
+      specsSeen = specsSeen + kclass.toDescriptor()
       val specCount = specsSeen.size
       print(bold("$specCount. ".padEnd(4, ' ')))
-      println(bold(kclass.toDescription().displayName()))
+      println(bold(kclass.toDescriptor().displayName.value))
    }
 
    override fun specFinished(kclass: KClass<*>, t: Throwable?, results: Map<TestCase, TestResult>) {
       if (t != null) {
          errors++
-         specsFailed = specsFailed + kclass.toDescription()
+         specsFailed = specsFailed + kclass.toDescriptor()
          printThrowable(t, 4)
       }
       println()
@@ -182,8 +184,8 @@ class TaycanConsoleReporter : ConsoleReporter {
 
    override fun testIgnored(testCase: TestCase) {
       testsIgnored++
-      print("".padEnd(testCase.description.depth() * 4, ' '))
-      print("- " + testCase.displayName)
+      print("".padEnd(testCase.descriptor.depth() * 4, ' '))
+      print("- " + testCase.descriptor.displayName.value)
       println(brightYellowBold(" IGNORED"))
    }
 
@@ -202,15 +204,15 @@ class TaycanConsoleReporter : ConsoleReporter {
          TestStatus.Failure, TestStatus.Error -> {
             errors++
             testsFailed = testsFailed + Pair(testCase, result)
-            specsFailed = specsFailed + testCase.description.spec()
+            specsFailed = specsFailed + testCase.descriptor.spec()
          }
          else -> Unit
       }
 
       // we only print the name and status for leafs, as containers are printed in advance
       if (testCase.type == TestType.Test) {
-         print("".padEnd(testCase.description.depth() * 4, ' '))
-         print("- " + testCase.displayName)
+         print("".padEnd(testCase.descriptor.depth() * 4, ' '))
+         print("- " + testCase.descriptor.displayName.value)
          when (result.status) {
             TestStatus.Success -> print(greenBold(" OK"))
             TestStatus.Error -> print(brightRed(" ERROR"))
@@ -226,7 +228,7 @@ class TaycanConsoleReporter : ConsoleReporter {
 
       if (result.error != null) {
          println()
-         printThrowable(result.error, testCase.description.depth() * 4)
+         printThrowable(result.error, testCase.descriptor.depth() * 4)
          println()
       }
    }
@@ -234,8 +236,8 @@ class TaycanConsoleReporter : ConsoleReporter {
    override fun testStarted(testCase: TestCase) {
       // containers we display straight away without pass / fail message
       if (testCase.type == TestType.Container) {
-         print("".padEnd(testCase.description.depth() * 4, ' '))
-         println("+ " + testCase.displayName)
+         print("".padEnd(testCase.descriptor.depth() * 4, ' '))
+         println("+ " + testCase.descriptor.displayName.value)
       }
    }
 }

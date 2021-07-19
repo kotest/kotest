@@ -1,32 +1,32 @@
 package io.kotest.core.test
 
 import io.kotest.core.factory.FactoryId
-import io.kotest.core.SourceRef
-import io.kotest.core.config.configuration
-import io.kotest.core.plan.Descriptor
-import io.kotest.core.sourceRef
-import io.kotest.core.spec.Spec
+import io.kotest.core.plan.Source
+import io.kotest.core.plan.TestName
+import io.kotest.core.source
 
 /**
- * Describes a test that has been discovered at runtime but has not yet been attached to
- * a parent [TestCase].
+ * Describes a test that has been discovered at runtime but has not yet been
+ * attached to a parent test.
  */
 data class NestedTest(
-   val name: DescriptionName.TestName,
+   val name: TestName,
    val test: suspend TestContext.() -> Unit,
    val config: TestCaseConfig,
    val type: TestType,
-   val sourceRef: SourceRef,
+   val source: Source?,
    val factoryId: FactoryId?,
-   val descriptor: Descriptor.TestDescriptor?,
 )
 
+/**
+ * Creates a new [NestedTest] from the given parameters, with source evaluated from the
+ * execution point, and [xdisabled] applied to the config.
+ */
 fun createNestedTest(
-   name: DescriptionName.TestName,
+   name: TestName,
    xdisabled: Boolean,
    config: TestCaseConfig,
    type: TestType,
-   descriptor: Descriptor.TestDescriptor?,
    factoryId: FactoryId?,
    test: suspend TestContext.() -> Unit,
 ) = NestedTest(
@@ -34,32 +34,6 @@ fun createNestedTest(
    test = test,
    config = if (xdisabled) config.copy(enabled = false) else config,
    type = type,
-   sourceRef = sourceRef(),
+   source = source(),
    factoryId = factoryId,
-   descriptor = descriptor
 )
-
-/**
- * Returns a full [TestCase] from this nested test, attaching the nested test to the given spec.
- *
- * @param name override the name or can be null to use the original name
- */
-fun NestedTest.toTestCase(spec: Spec, parent: TestCase, name: DescriptionName.TestName? = null): TestCase {
-   val testCase = TestCase(
-      description = parent.description.append(name ?: this.name, type),
-      spec = spec,
-      test = test,
-      source = sourceRef,
-      type = type,
-      config = config,
-      factoryId = factoryId,
-      assertionMode = null,
-      descriptor = descriptor,
-      parent = parent,
-   )
-   return if (configuration.testNameAppendTags) {
-      TestCase.appendTagsInDisplayName(testCase)
-   } else {
-      testCase
-   }
-}

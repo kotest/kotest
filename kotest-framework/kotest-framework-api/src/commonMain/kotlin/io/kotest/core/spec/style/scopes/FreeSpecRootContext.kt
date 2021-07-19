@@ -6,12 +6,9 @@ import io.kotest.core.spec.KotestDsl
 import io.kotest.core.test.EnabledIf
 import io.kotest.core.test.TestCaseSeverityLevel
 import io.kotest.core.test.TestContext
-import io.kotest.core.test.createTestName
+import io.kotest.core.plan.createTestName
 import io.kotest.core.test.deriveTestCaseConfig
 import kotlin.time.Duration
-
-@Deprecated("Renamed to FreeSpecRootContext. This typealias will be removed in 4.8")
-typealias FreeSpecRootScope = FreeSpecRootContext
 
 @KotestDsl
 interface FreeSpecRootContext : RootContext {

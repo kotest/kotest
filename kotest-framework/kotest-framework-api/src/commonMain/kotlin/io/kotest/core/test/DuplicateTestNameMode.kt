@@ -17,7 +17,7 @@ enum class DuplicateTestNameMode {
    Warn,
 
    /**
-    * Silently adjusts the name of a test when a duplicate is discovered so that the name is unique.
+    * Renames a test on a duplicated test name.
     * The name is prepended with a counter, so a duplicated test `foo` would become `(1) foo`.
     */
    Silent

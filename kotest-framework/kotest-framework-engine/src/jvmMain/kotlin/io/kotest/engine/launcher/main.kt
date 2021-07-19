@@ -1,7 +1,9 @@
 package io.kotest.engine.launcher
 
 import io.kotest.core.Tags
+import io.kotest.core.config.configuration
 import io.kotest.core.internal.KotestEngineProperties
+import io.kotest.core.execution.ExecutionContext
 import io.kotest.engine.reporter.IsolatedReporter
 import kotlin.system.exitProcess
 
@@ -14,7 +16,7 @@ fun main(args: Array<String>) {
    val launcherArgs = parseLauncherArgs(args.toList())
    val tags = Tags(launcherArgs.tagExpression)
 
-   val reporter = IsolatedReporter(createReporter(launcherArgs))
+   val reporter = IsolatedReporter(createReporter(launcherArgs, ExecutionContext(configuration)))
    execute(
       reporter,
       launcherArgs.packageName,
