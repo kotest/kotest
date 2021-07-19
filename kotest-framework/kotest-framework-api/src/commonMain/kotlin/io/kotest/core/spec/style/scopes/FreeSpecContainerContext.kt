@@ -1,7 +1,10 @@
 package io.kotest.core.spec.style.scopes
 
 import io.kotest.core.Tag
+import io.kotest.core.execution.ExecutionContext
 import io.kotest.core.extensions.TestCaseExtension
+import io.kotest.core.plan.TestName
+import io.kotest.core.plan.createTestName
 import io.kotest.core.spec.resolvedDefaultConfig
 import io.kotest.core.test.EnabledIf
 import io.kotest.core.test.NestedTest
@@ -10,7 +13,6 @@ import io.kotest.core.test.TestCaseSeverityLevel
 import io.kotest.core.test.TestContext
 import io.kotest.core.test.TestType
 import io.kotest.core.test.createNestedTest
-import io.kotest.core.test.createTestName
 import kotlin.coroutines.CoroutineContext
 import kotlin.time.Duration
 
@@ -20,11 +22,12 @@ class FreeSpecTerminalContext(
 
    override val testCase: TestCase = testContext.testCase
    override val coroutineContext: CoroutineContext = testContext.coroutineContext
+   override val executionContext: ExecutionContext = testContext.executionContext
    override suspend fun registerTestCase(nested: NestedTest) = error("Cannot nest a test inside a terminal scope")
 
    // exists to stop nesting
    @Deprecated("Cannot nest leaf test inside another leaf test", level = DeprecationLevel.ERROR)
-   suspend infix operator fun String.invoke(test: suspend TestContext.() -> Unit) {
+   infix operator fun String.invoke(test: suspend TestContext.() -> Unit) {
    }
 }
 
@@ -37,6 +40,7 @@ class FreeSpecContainerContext(
 
    override val testCase: TestCase = testContext.testCase
    override val coroutineContext: CoroutineContext = testContext.coroutineContext
+   override val executionContext: ExecutionContext = testContext.executionContext
    override suspend fun registerTestCase(nested: NestedTest) = testContext.registerTestCase(nested)
 
    override suspend fun addTest(name: String, type: TestType, test: suspend TestContext.() -> Unit) {
@@ -62,11 +66,10 @@ class FreeSpecContainerContext(
 
    private fun createNestedTest(name: String, type: TestType, test: suspend TestContext.() -> Unit): NestedTest {
       return createNestedTest(
-         name = this@FreeSpecContainerContext.testCase.description.append(createTestName(name), type).name,
+         name = TestName(name),
          xdisabled = false,
          config = testCase.spec.resolvedDefaultConfig(),
          type = type,
-         descriptor = null,
          factoryId = testCase.factoryId,
          test = test
       )

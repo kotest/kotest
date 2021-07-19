@@ -1,6 +1,13 @@
 package io.kotest.core.spec.style
 
 import io.kotest.core.config.configuration
+import io.kotest.core.execution.ExecutionContext
+import io.kotest.core.factory.FactoryId
+import io.kotest.core.plan.Descriptor
+import io.kotest.core.plan.DisplayName
+import io.kotest.core.plan.Source
+import io.kotest.core.plan.TestName
+import io.kotest.core.source
 import io.kotest.core.spec.RootTest
 import io.kotest.core.spec.Spec
 import io.kotest.core.test.TestCase
@@ -8,9 +15,6 @@ import io.kotest.core.test.TestCaseConfig
 import io.kotest.core.test.TestContext
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestType
-import io.kotest.core.test.DescriptionName
-import io.kotest.core.test.createRootTestCase
-import io.kotest.core.test.createTestName
 import io.kotest.mpp.unwrapIfReflectionCall
 import kotlin.reflect.KClass
 import kotlin.reflect.KFunction
@@ -25,10 +29,12 @@ abstract class AnnotationSpec : Spec() {
    private fun defaultConfig() = defaultTestConfig ?: defaultTestCaseConfig() ?: configuration.defaultTestConfig
 
    override fun addTest(
-      name: DescriptionName.TestName,
+      name: TestName,
       test: suspend TestContext.() -> Unit,
       config: TestCaseConfig,
-      type: TestType
+      type: TestType,
+      source: Source?,
+      factoryId: FactoryId?
    ) = error("AnnotationSpec does not support dynamically adding tests")
 
    override fun beforeSpec(spec: Spec) {
@@ -55,45 +61,44 @@ abstract class AnnotationSpec : Spec() {
 
    private fun executeAfterSpecFunctions() = this::class.findAfterSpecFunctions().forEach { it.call(this) }
 
-   private fun KFunction<*>.toIgnoredTestCase(): TestCase {
-      return deriveTestCase(defaultConfig().copy(enabled = false))
+   private fun KFunction<*>.toIgnoredTestCase(context: ExecutionContext): TestCase {
+      return deriveTestCase(context, defaultConfig().copy(enabled = false))
    }
 
-   private fun KFunction<*>.toEnabledTestCase(): TestCase {
-      return deriveTestCase(defaultConfig())
+   private fun KFunction<*>.toEnabledTestCase(context: ExecutionContext): TestCase {
+      return deriveTestCase(context, defaultConfig())
    }
 
-   private fun KFunction<*>.deriveTestCase(config: TestCaseConfig): TestCase {
-      return if (this.isExpectingException()) {
+   private fun KFunction<*>.deriveTestCase(context: ExecutionContext, config: TestCaseConfig): TestCase {
+      val test = if (this.isExpectingException()) {
          val expected = this.getExpectedException()
-         createRootTestCase(
-            this@AnnotationSpec,
-            createTestName(name),
-            callExpectingException(expected),
-            config,
-            TestType.Test,
-         )
-      } else {
-         createRootTestCase(
-            this@AnnotationSpec,
-            createTestName(name),
-            callNotExpectingException(),
-            config,
-            TestType.Test,
-         )
-      }
+         callExpectingException(expected)
+      } else callNotExpectingException()
+      return TestCase(
+         descriptor = Descriptor.SpecDescriptor(this@AnnotationSpec)
+            .append(TestName(name), DisplayName(name), TestType.Test),
+         spec = this@AnnotationSpec,
+         parent = null,
+         test = test,
+         type = TestType.Test,
+         source = source(),
+         config = config,
+         factoryId = null,
+      )
    }
 
-   override fun materializeRootTests(): List<RootTest> {
+   override fun materializeRootTests(context: ExecutionContext): List<RootTest> {
       return this::class.findTestFunctions().withIndex().map { (index, f) ->
          f.isAccessible = true
          if (f.isIgnoredTest()) {
-            RootTest(f.toIgnoredTestCase(), index)
+            RootTest(f.toIgnoredTestCase(context), index)
          } else {
-            RootTest(f.toEnabledTestCase(), index)
+            RootTest(f.toEnabledTestCase(context), index)
          }
       }
    }
+
+   override fun testNames(): List<TestName> = this::class.findTestFunctions().map { TestName(it.name) }
 
    private fun KFunction<*>.isExpectingException(): Boolean {
       return annotations.filterIsInstance<Test>().first().expected != Test.None::class

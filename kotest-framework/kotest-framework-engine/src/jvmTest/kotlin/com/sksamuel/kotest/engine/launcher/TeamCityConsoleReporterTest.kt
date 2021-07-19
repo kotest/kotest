@@ -5,11 +5,11 @@ import io.kotest.assertions.Expected
 import io.kotest.assertions.failure
 import io.kotest.assertions.shouldFail
 import io.kotest.assertions.show.Printed
-import io.kotest.core.sourceRef
+import io.kotest.core.source
 import io.kotest.core.spec.Isolate
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.style.FunSpec
-import io.kotest.core.spec.toDescription
+import io.kotest.core.plan.toDescriptor
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestCaseConfig
 import io.kotest.core.test.TestResult
@@ -33,10 +33,10 @@ class TeamCityConsoleReporterTest : FunSpec() {
    private val kclass: KClass<out Spec> = TeamCityConsoleReporterTest::class
 
    private val testCaseContainer = TestCase(
-      kclass.toDescription().appendContainer("my context").appendContainer("my test container"),
+      kclass.toDescriptor().appendContainer("my context").appendContainer("my test container"),
       this@TeamCityConsoleReporterTest,
       { },
-      sourceRef(),
+      source(),
       TestType.Container,
       TestCaseConfig(),
       null,

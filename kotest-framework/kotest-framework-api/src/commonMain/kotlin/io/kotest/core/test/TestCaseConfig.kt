@@ -47,7 +47,11 @@ data class TestCaseConfig(
    val enabledOrReasonIf: EnabledOrReasonIf = { Enabled.enabled },
 
    // has no effect on leaf tests
-   val failfast: Boolean? = null
+   val failfast: Boolean? = null,
+
+   // assertion mode can be set to control errors/warnings in a test
+   // if null, defaults will be applied
+   val assertionMode: AssertionMode? = null,
 ) {
    init {
       require(invocations > 0) { "Number of invocations must be greater than 0" }

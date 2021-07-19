@@ -1,9 +1,10 @@
 package io.kotest.engine.reporter
 
 import io.kotest.core.annotation.Ignored
-import io.kotest.core.sourceRef
+import io.kotest.core.plan.TestName
+import io.kotest.core.source
+import io.kotest.core.spec.Spec
 import io.kotest.core.spec.style.FunSpec
-import io.kotest.core.spec.toDescription
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestType
@@ -21,7 +22,7 @@ class IsolatedReporterTest : FunSpec({
          }
 
          override fun hasErrors(): Boolean = false
-         override fun engineStarted(classes: List<KClass<*>>) {
+         override fun engineStarted(classes: List<KClass<out Spec>>) {
             append("enginestarted")
          }
 
@@ -29,11 +30,11 @@ class IsolatedReporterTest : FunSpec({
             append("engineFinished")
          }
 
-         override fun specStarted(kclass: KClass<*>) {
+         override fun specStarted(kclass: KClass<out Spec>) {
             append("specStarted:$kclass")
          }
 
-         override fun specFinished(kclass: KClass<*>, t: Throwable?, results: Map<TestCase, TestResult>) {
+         override fun specFinished(kclass: KClass<out Spec>, t: Throwable?, results: Map<TestCase, TestResult>) {
             append("specFinished:$kclass")
          }
 
@@ -50,21 +51,23 @@ class IsolatedReporterTest : FunSpec({
       isolated.specStarted(IsolatedReporterSpec1::class)
       isolated.testStarted(
          TestCase(
-            IsolatedReporterSpec1::class.toDescription().appendTest("foo"),
+            TestName("foo"),
             IsolatedReporterSpec1(),
+            null,
             {},
-            sourceRef(),
-            TestType.Test
+            TestType.Test,
+            source(),
          )
       )
       isolated.specStarted(IsolatedReporterSpec2::class)
       isolated.testStarted(
          TestCase(
-            IsolatedReporterSpec1::class.toDescription().appendTest("bar"),
+            TestName("bar"),
             IsolatedReporterSpec2(),
+            null,
             {},
-            sourceRef(),
-            TestType.Test
+            TestType.Test,
+            source(),
          )
       )
       isolated.specFinished(IsolatedReporterSpec1::class, null, emptyMap())

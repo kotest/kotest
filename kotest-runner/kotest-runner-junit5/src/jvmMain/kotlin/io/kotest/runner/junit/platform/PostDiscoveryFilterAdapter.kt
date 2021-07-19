@@ -3,7 +3,7 @@ package io.kotest.runner.junit.platform
 import io.kotest.core.filter.TestFilter
 import io.kotest.core.filter.TestFilterResult
 import io.kotest.core.filter.toTestFilterResult
-import io.kotest.core.test.Description
+import io.kotest.core.plan.Descriptor
 import org.junit.platform.engine.UniqueId
 import org.junit.platform.launcher.PostDiscoveryFilter
 
@@ -19,8 +19,8 @@ class PostDiscoveryFilterAdapter(
    private val filter: PostDiscoveryFilter,
    private val uniqueId: UniqueId
 ) : TestFilter {
-   override fun filter(description: Description): TestFilterResult {
-      val testDescriptor = description.toTestDescriptor(uniqueId)
+   override fun filter(descriptor: Descriptor.TestDescriptor): TestFilterResult {
+      val testDescriptor = descriptor.toTestDescriptor(uniqueId)
       return filter.toPredicate().test(testDescriptor).toTestFilterResult()
    }
 }

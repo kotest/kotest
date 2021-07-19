@@ -2,6 +2,8 @@
 
 package io.kotest.engine.execution
 
+import io.kotest.core.config.configuration
+import io.kotest.core.execution.ExecutionContext
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.spec.style.ShouldSpec
@@ -25,28 +27,30 @@ import kotlin.coroutines.CoroutineContext
  */
 @DelicateCoroutinesApi
 fun executeSpec(spec: Spec) {
-   spec.materializeAndOrderRootTests()
-      .filter { it.testCase.isEnabledInternal().isEnabled }
+   val executionContext = ExecutionContext(configuration)
+   val roots = spec.materializeAndOrderRootTests(executionContext)
+   roots.filter { it.testCase.isEnabledInternal().isEnabled }
       .forEach { root ->
 
          runBlocking {
 
             val listener = object : TestCaseExecutionListener {
                override fun testStarted(testCase: TestCase) {
-                  TeamCityLogger().start(testCase.displayName)
+                  TeamCityLogger().start(testCase.descriptor.displayName.value)
                }
 
                override fun testIgnored(testCase: TestCase) {
                }
 
                override fun testFinished(testCase: TestCase, result: TestResult) {
-                  TeamCityLogger().pass(testCase.displayName, 124)
+                  TeamCityLogger().pass(testCase.descriptor.displayName.value, 124)
                }
             }
 
             val context = object : TestContext {
                override val testCase: TestCase = root.testCase
                override val coroutineContext: CoroutineContext = this@runBlocking.coroutineContext
+               override val executionContext: ExecutionContext = executionContext
                override suspend fun registerTestCase(nested: NestedTest) {
                   throw IllegalStateException("Spec styles that support nested tests are disabled in kotest-native")
                }

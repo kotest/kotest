@@ -7,6 +7,8 @@ import io.kotest.core.Tag
 import io.kotest.core.TestConfiguration
 import io.kotest.core.config.Configuration
 import io.kotest.core.config.configuration
+import io.kotest.core.execution.ExecutionContext
+import io.kotest.core.plan.TestName
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestCaseOrder
 import kotlin.js.JsName
@@ -16,17 +18,18 @@ import kotlin.js.JsName
  *
  * Functions that can be overriden to customize spec execution are found in [SpecFunctionConfiguration].
  * Functions that can be overriden for lifecycle callbacks are found in [SpecFunctionCallbacks].
- * Functions to register [AutoCloseable] instances can be found in [AutoClosing].
  */
 abstract class Spec : TestConfiguration(), SpecFunctionConfiguration, SpecFunctionCallbacks {
 
    /**
-    * Returns the tests defined in this spec as [RootTest] instances.
-    *
-    * If this spec does not create the test cases upon instantiation, then this method
-    * will materialize the tests (Eg when a test is defined as a function as in annotation spec).
+    * Materializes the tests defined in this spec as [RootTest] instances.
     */
-   abstract fun materializeRootTests(): List<RootTest>
+   abstract fun materializeRootTests(context: ExecutionContext): List<RootTest>
+
+   /**
+    * Returns the [TestName] for each of the currently registered top level tests.
+    */
+   abstract fun testNames(): List<TestName>
 
    @JsName("isolation_mode_js")
    var isolationMode: IsolationMode? = null
@@ -95,9 +98,10 @@ abstract class Spec : TestConfiguration(), SpecFunctionConfiguration, SpecFuncti
    var invocationTimeout: Long? = null
 
    /**
-    * Sets the [TestCaseOrder] for root tests in this spec.
+    * Sets the [TestCaseOrder] for top level tests in this spec.
     * If null, then the order is defined by the project default.
     */
+   @JsName("testOrder_var")
    var testOrder: TestCaseOrder? = null
 
    /**

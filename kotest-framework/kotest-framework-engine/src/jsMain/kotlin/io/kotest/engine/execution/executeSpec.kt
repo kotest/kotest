@@ -2,20 +2,22 @@
 
 package io.kotest.engine.execution
 
-import io.kotest.engine.test.CallingThreadExecutionContext
-import io.kotest.engine.test.TestCaseExecutor
-import io.kotest.engine.test.status.isEnabledInternal
+import io.kotest.core.config.configuration
+import io.kotest.core.execution.ExecutionContext
 import io.kotest.core.spec.Spec
-import io.kotest.engine.spec.materializeAndOrderRootTests
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.spec.style.ShouldSpec
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.core.test.NestedTest
 import io.kotest.core.test.TestCase
-import io.kotest.engine.test.TestCaseExecutionListener
 import io.kotest.core.test.TestContext
 import io.kotest.core.test.TestResult
+import io.kotest.engine.spec.materializeAndOrderRootTests
+import io.kotest.engine.test.CallingThreadExecutionContext
+import io.kotest.engine.test.TestCaseExecutionListener
+import io.kotest.engine.test.TestCaseExecutor
 import io.kotest.engine.test.resolvedTimeout
+import io.kotest.engine.test.status.isEnabledInternal
 import io.kotest.mpp.bestName
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
@@ -32,12 +34,13 @@ import kotlin.coroutines.CoroutineContext
 fun executeSpec(spec: Spec) {
    // we use the spec itself is an outer test like in JVM tests.
    describe(spec::class.bestName()) {
-      spec.materializeAndOrderRootTests()
-         .filter { it.testCase.isEnabledInternal().isEnabled }
+      val executionContext = ExecutionContext(configuration)
+      val roots = spec.materializeAndOrderRootTests(executionContext)
+      roots.filter { it.testCase.isEnabledInternal().isEnabled }
          .forEach { root ->
             // we have to always start the test so that the framework doesn't exit before we return
             // also it gives us a handle to the done callback
-            it(root.testCase.description.name.displayName) { done ->
+            it(root.testCase.descriptor.displayName.value) { done ->
 
                // done is the JS promise
                // some frameworks default to a 2000 timeout,
@@ -56,6 +59,7 @@ fun executeSpec(spec: Spec) {
                   val context = object : TestContext {
                      override val testCase: TestCase = root.testCase
                      override val coroutineContext: CoroutineContext = this@promise.coroutineContext
+                     override val executionContext: ExecutionContext = executionContext
                      override suspend fun registerTestCase(nested: NestedTest) {
                         throw IllegalStateException("Spec styles that support nested tests are disabled in kotest-js because the underlying JS frameworks do not support promises for outer root scopes. Please use FunSpec, StringSpec, or ShouldSpec and ensure that only top level tests are used.")
                      }

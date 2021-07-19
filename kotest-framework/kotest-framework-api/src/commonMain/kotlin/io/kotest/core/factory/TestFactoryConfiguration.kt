@@ -2,8 +2,9 @@ package io.kotest.core.factory
 
 import io.kotest.core.TestConfiguration
 import io.kotest.core.config.configuration
-import io.kotest.core.sourceRef
-import io.kotest.core.test.DescriptionName
+import io.kotest.core.plan.Source
+import io.kotest.core.plan.TestName
+import io.kotest.core.source
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestCaseConfig
 import io.kotest.core.test.TestContext
@@ -48,9 +49,11 @@ abstract class TestFactoryConfiguration : TestConfiguration() {
     * into a [Spec] these tests will be materialized as [TestCase]s.
     */
    override fun addTest(
-      name: DescriptionName.TestName,
+      name: TestName,
       test: suspend TestContext.() -> Unit,
       config: TestCaseConfig,
       type: TestType,
-   ) = addDynamicTest(DynamicRootTest(name, test, config, type, sourceRef(), factoryId))
+      source: Source?,
+      factoryId: FactoryId?
+   ) = addDynamicTest(DynamicRootTest(name, test, config, type, source(), this.factoryId))
 }

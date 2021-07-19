@@ -1,182 +1,138 @@
-@file:Suppress("MemberVisibilityCanBePrivate", "unused")
+@file:Suppress("PropertyName")
 
 package io.kotest.core.plan
 
-import io.kotest.common.ExperimentalKotest
-import io.kotest.core.SourceRef
-import io.kotest.core.plan.Descriptor.EngineDescriptor
-import io.kotest.core.plan.Descriptor.SpecDescriptor
-import io.kotest.core.plan.Descriptor.TestDescriptor
-import io.kotest.core.script.ScriptSpec
-import io.kotest.core.test.Description
-import io.kotest.core.test.TestId
-import io.kotest.core.test.TestPath
+import io.kotest.core.spec.Spec
 import io.kotest.core.test.TestType
 import io.kotest.mpp.bestName
-import io.kotest.mpp.qualifiedNameOrNull
 import kotlin.reflect.KClass
 
-/**
- * A [Descriptor] is an ADT that represents nodes in the [TestPlan] tree.
- *
- * There are four types of descriptors - a single [EngineDescriptor] at the root,
- * with [SpecDescriptor]s  as direct children of the engine.
- *
- * Then [TestDescriptor]s are children of the spec descriptors and comprise leaf nodes.
- *
- * This class is intended as a long term replacement for [Description].
- *
- * For example:
- *
- * - kotest
- *   - spec
- *     - container
- *       - test
- *       - test
- *   - spec
- *     - test
- *     - container
- *       - container
- *         - test
- */
-@ExperimentalKotest
 sealed class Descriptor {
 
-   companion object {
+   abstract val id: DescriptorId
 
-      /**
-       * Returns a [SpecDescriptor] for a spec class.
-       *
-       * If the spec has been annotated with [DisplayName] (on supported platforms), then that will be used
-       * for the display name, otherwise the default is to use the fully qualified class name.
-       *
-       * Note: The display name must be globally unique. Two specs, even in different packages,
-       * cannot share the same names, so if [DisplayName] is used, developers must ensure it does not
-       * clash with another spec.
-       */
-      fun fromSpecClass(kclass: KClass<*>): SpecDescriptor {
-         val name = kclass.bestName()
-         val display = kclass.displayName() ?: kclass.simpleName ?: this.toString()
-         return SpecDescriptor(
-            name = Name(name),
-            displayName = DisplayName(display),
-            classname = kclass.qualifiedNameOrNull(),
-            script = false,
-            source = Source.ClassSource(kclass.bestName() + ".kt")
-         )
-      }
-
-      /**
-       * Returns a [SpecDescriptor] for a script file.
-       */
-      fun fromScriptClass(kclass: KClass<*>): SpecDescriptor {
-         val name = kclass.bestName()
-         val display = kclass.simpleName ?: this.toString()
-         val fqn = kclass.qualifiedNameOrNull()
-         return SpecDescriptor(
-            name = Name(name),
-            displayName = DisplayName(display),
-            classname = fqn,
-            script = true,
-            source = Source.ClassSource(kclass.bestName() + ".kt")
-         )
-      }
-   }
-
-   /**
-    * Returns an ephemeral id that can be used to uniquely refer to this test during a test run.
-    * In 4.4 this will be the test name without special characters, but to allow for proper unicode
-    * tests, this will change to a numeric id. Do not rely on the format
-    */
-   @ExperimentalKotest
-   fun id(): TestId = TestId(name.value.replace("[^a-zA-Z0-9]".toRegex(), "_"))
-
-   /**
-    * Returns a parsable name for this descriptor.
-    */
-   abstract val name: Name
-
-   /**
-    * Returns a human readable name used for reports and displays.
-    */
    abstract val displayName: DisplayName
 
    /**
-    * Returns true if this descriptor is for a class based test file.
+    * A [Descriptor] for a top level container of tests, for instance a class, an object
+    * or a Kotlin Script. In Kotest these top level containers are called Specs.
+    *
+    * @param kclass the KClass reference for the spec.
+    * @param displayName formatted name for the spec
+    * @param type specs can be three types - classes, objects or scripts
     */
-   fun isSpec() = this is SpecDescriptor
+   data class SpecDescriptor(
+      val kclass: KClass<*>,
+      override val displayName: DisplayName,
+      val type: SpecType,
+   ) : Descriptor() {
 
-   /**
-    * Returns true if this descriptor is the root engine node.
-    */
-   fun isEngine() = this is EngineDescriptor
+      companion object {
+         operator fun invoke(spec: Spec): SpecDescriptor = invoke(spec::class)
 
-   /**
-    * Returns true if this descriptor is for a root test case.
-    */
-   fun isTestCase() = this is TestDescriptor
+         operator fun invoke(kclass: KClass<*>): SpecDescriptor = SpecDescriptor(
+            kclass,
+            kclass.displayName(),
+            SpecType.Class,
+         )
 
-   /**
-    * Returns true if this descriptor represents a root test case.
-    */
-   fun isRootTest() = this is TestDescriptor && this.parent.isSpec()
+         fun script(kclass: KClass<*>): SpecDescriptor = SpecDescriptor(
+            kclass,
+            kclass.displayName(),
+            SpecType.Script,
+         )
+      }
 
-   /**
-    * Returns the depth of this node, where the [EngineDescriptor] is depth 0, a [SpecDescriptor] is depth 1, and so on.
-    */
-   fun depth() = parents().size
-
-   /**
-    * Returns true if this descriptor is a container of other descriptors.
-    */
-   fun isContainer() = when (this) {
-      EngineDescriptor -> true
-      is SpecDescriptor -> true
-      is TestDescriptor -> this.type == TestType.Container
+      override val id: DescriptorId = DescriptorId(kclass.bestName())
    }
 
    /**
-    * Recursively returns any parent descriptors.
+    * References a test at runtime.
+    *
+    * A test may allow other nested tests, in which case its type is set to [TestType.Container].
+    * If a test does not allow nested tests, then it's type is [TestType.Test].
+    *
+    * Note: Just because a type has the value container does not mean it contains nested tests. It just means
+    * that the DSL permits it to accept nested tests.
+    *
+    * @param parent nested tests have a link to their parent test descriptor
+    * @param name
+    * @param displayName a formatted version of this test's name for use in reports or displays
     */
-   fun parents(): List<Descriptor> = when (this) {
-      EngineDescriptor -> emptyList()
-      is SpecDescriptor -> listOf(EngineDescriptor)
-      is TestDescriptor -> parent.parents() + parent
+   data class TestDescriptor(
+      val parent: Descriptor,
+      val name: TestName,
+      override val displayName: DisplayName,
+      val type: TestType,
+   ) : Descriptor() {
+
+      override val id: DescriptorId = DescriptorId(name.testName)
+
+      fun spec(): SpecDescriptor = when (parent) {
+         is TestDescriptor -> parent.spec()
+         is SpecDescriptor -> parent
+      }
+
+      fun displayPath(includeSpec: Boolean, separator: String = " "): DisplayPath = when (parent) {
+         is SpecDescriptor ->
+            if (includeSpec)
+               DisplayPath(parent.displayName.value).append(this.displayName.value, separator)
+            else
+               DisplayPath(this.displayName.value)
+         is TestDescriptor -> parent.displayPath(includeSpec).append(this.displayName.value, separator)
+      }
+
+      fun testPath(includeSpec: Boolean = false): TestPath = when (parent) {
+         is SpecDescriptor ->
+            if (includeSpec)
+               TestPath(parent.kclass.bestName()).append(name.testName)
+            else
+               TestPath(name.testName)
+         is TestDescriptor -> TestPath(name.testName)
+      }
+
+      /**
+       * Returns true if this test is a top level test.
+       *
+       * A top level test is one that is defined at the 'root' of a spec, or, in other words,
+       * has no test parent.
+       */
+      fun isTopLevel() = parent is SpecDescriptor
+   }
+
+   fun append(name: TestName, displayName: DisplayName, type: TestType): TestDescriptor {
+      return TestDescriptor(this, name, displayName, type)
+   }
+
+   fun ids(): List<DescriptorId> = when (this) {
+      is SpecDescriptor -> listOf(id)
+      is TestDescriptor -> parent.ids() + this.id
    }
 
    /**
-    * Returns the [SpecDescriptor] parent for this descriptor, if any.
-    *
-    * If this descriptor is itself a spec, then this function will return itself.
-    *
-    * If this descriptor is the [EngineDescriptor], a [ScriptDescriptor], or a [TestDescriptor] located
-    * inside a script, then this function returns null.
+    * Returns 0 for a spec, 1 for a top level test and so on.
     */
-   fun spec(): SpecDescriptor? = when (this) {
-      EngineDescriptor -> null
-      is SpecDescriptor -> this
-      is TestDescriptor -> parent.spec()
+   fun depth(): Int = when (this) {
+      is SpecDescriptor -> 0
+      is TestDescriptor -> this.parent.depth() + 1
    }
 
    /**
     * Returns true if this descriptor is the immediate parent of the given [descriptor].
     */
    fun isParentOf(descriptor: Descriptor): Boolean = when (descriptor) {
-      // nothing can be the parent of the engine
-      EngineDescriptor -> false
+      // nothing can be the parent of a spec
       // only the engine can be the parent of a spec
-      is SpecDescriptor -> this is EngineDescriptor
-      is TestDescriptor -> this.id() == descriptor.parent.id()
+      is SpecDescriptor -> false
+      is TestDescriptor -> this.id == descriptor.parent.id
    }
 
    /**
     * Returns true if this descriptor is ancestor (1..nth-parent) of the given [descriptor].
     */
    fun isAncestorOf(descriptor: Descriptor): Boolean = when (descriptor) {
-      // nothing can be the ancestor of the engine
-      EngineDescriptor -> false
       // only the engine can be a ancestor of a spec or script
-      is SpecDescriptor -> this is EngineDescriptor
+      is SpecDescriptor -> false //this is EngineDescriptor
       is TestDescriptor -> isParentOf(descriptor) || isAncestorOf(descriptor.parent)
    }
 
@@ -184,113 +140,110 @@ sealed class Descriptor {
     * Returns true if this descriptor is the immediate child of the given [descriptor].
     */
    fun isChildOf(descriptor: Descriptor): Boolean = when (this) {
-      EngineDescriptor -> false
-      is SpecDescriptor -> descriptor is EngineDescriptor
-      is TestDescriptor -> parent.id() == descriptor.id()
+      is SpecDescriptor -> false //descriptor is EngineDescriptor
+      is TestDescriptor -> parent.id == descriptor.id
    }
 
    /**
-    * Returns true if this node is a child, grandchild, etc of the given [descriptor].
+    * Returns true if this [descriptor] is a child, grandchild, etc of the given [descriptor].
     */
    fun isDescendentOf(descriptor: Descriptor): Boolean = when (this) {
-      // the engine cannot be a descendant of any other node
-      EngineDescriptor -> false
       // a spec can only be a descendant of the engine
-      is SpecDescriptor -> this is EngineDescriptor
+      is SpecDescriptor -> false // this is EngineDescriptor
       is TestDescriptor -> isChildOf(descriptor) || descriptor.isDescendentOf(descriptor)
    }
 
    /**
-    * Returns true if this node is part of the path to the given [descriptor]. That is, if this
-    * instance is either an ancestor of, of the same as, the given node.
+    * Returns true if this instance is on the path to the given [descriptor]. That is, if this
+    * instance is either an ancestor of, of the same as, the given descriptor.
+    * Ignores test prefixes when comparing.
     */
-   fun contains(descriptor: Descriptor): Boolean = this.id() == descriptor.id() || this.isAncestorOf(descriptor)
-
-   /**
-    * Returns a parseable path to the test.
-    * Includes the engine, spec or script, and all parent tests.
-    */
-   fun testPath(): TestPath = when (this) {
-      EngineDescriptor -> TestPath(this.name.value)
-      is SpecDescriptor -> EngineDescriptor.testPath().append(this.name.value)
-      is TestDescriptor -> parent.testPath().append(this.name.value)
-   }
-
-   abstract fun append(name: Name, displayName: DisplayName, type: TestType, source: Source.TestSource): TestDescriptor
-
-   object EngineDescriptor : Descriptor() {
-      override val name: Name = Name("kotest")
-      override val displayName: DisplayName = DisplayName("kotest")
-      override fun append(name: Name, displayName: DisplayName, type: TestType, source: Source.TestSource) =
-         error("Cannot register a test on the engine")
-   }
-
-   /**
-    * A [Descriptor] for a spec class or a script file.
-    *
-    * @param name the fully qualified class name if available, otherwise the simple class name
-    * @param displayName the simple class name unless overriden by a @DisplayName annotation. Note, only spec
-    * classes are able to specify a display name annotation.
-    * @param classname the fully qualified class name if available, or null.
-    * @param script true if this spec is a kotlin script.
-    */
-   data class SpecDescriptor(
-      override val name: Name,
-      override val displayName: DisplayName,
-      val classname: String?,
-      val script: Boolean,
-      val source: Source.ClassSource,
-   ) : Descriptor() {
-      override fun append(name: Name, displayName: DisplayName, type: TestType, source: Source.TestSource) =
-         TestDescriptor(this, name, displayName, type, source)
-   }
-
-   data class TestDescriptor(
-      val parent: Descriptor,
-      override val name: Name,
-      override val displayName: DisplayName,
-      val type: TestType,
-      val source: Source.TestSource,
-   ) : Descriptor() {
-      override fun append(
-         name: Name,
-         displayName: DisplayName,
-         type: TestType,
-         source: Source.TestSource
-      ): TestDescriptor {
-         if (this@TestDescriptor.type == TestType.Test) error("Cannot register test on TestType.Test")
-         return TestDescriptor(this, name, displayName, type, source)
-      }
-   }
+   fun isOnPath(descriptor: Descriptor): Boolean = this.isDescendentOf(descriptor) || this.isAncestorOf(descriptor)
 }
 
 /**
- * Returns the value of the @DisplayName annotation on JVM platforms, if present.
- * On other platforms, returns null.
+ * Returns a [SpecDescriptor] for this kclass.
+ *
+ * If the spec has been annotated with @DisplayName (on supported platforms), then that will be used,
+ * otherwise the default is to use the fully qualified class name.
+ *
+ * Note: This name must be globally unique. Two specs, even in different packages,
+ * cannot share the same name, so if @DisplayName is used, developers must ensure it does not
+ * clash with another spec.
  */
-expect fun KClass<*>.displayName(): String?
+fun KClass<*>.toDescriptor(): Descriptor.SpecDescriptor = Descriptor.SpecDescriptor(this)
 
-/**
- * Creates a [Descriptor] from the deprecated descriptions.
- */
-fun Description.toDescriptor(sourceRef: SourceRef): Descriptor {
-   return when (this) {
-      is Description.Spec ->
-         if (this.kclass.bestName() == ScriptSpec::class.bestName())
-            Descriptor.fromScriptClass(this.kclass)
-         else
-            Descriptor.fromSpecClass(this.kclass)
-      is Description.Test -> Descriptor.TestDescriptor(
-         parent = this.parent.toDescriptor(sourceRef),
-         name = Name(this.name.name),
-         displayName = DisplayName(this.name.displayName),
-         type = this.type,
-         source = Source.TestSource(sourceRef.fileName, sourceRef.lineNumber)
-      )
-   }
-}
+//   /**
+//    * Returns true if this descriptor is a container of other descriptors.
+//    */
+//   fun isContainer() = when (this) {
+//      is SpecDescriptor -> true
+//      is TestDescriptor -> this.type == TestType.Container
+//   }
+//
+//   private val _chain by lazy {
+//      when (this) {
+//         is SpecDescriptor -> listOf(this)
+//         is TestDescriptor -> parent.chain() + listOf(this)
+//      }
+//   }
+//
+//   /**
+//    * Returns all [Descriptor]s from the spec to this test, with the spec as the first element,
+//    * and this descriptor as the last.
+//    */
+//   fun chain(): List<Descriptor> = _chain
+//
+//   /**
+//    * Returns the depth of this description, where a [Spec] is 0, and a root test is 1, and so on.
+//    */
+//   fun depth() = parents().size
+//
+//   private val _parents by lazy {
+//      when (this) {
+//         is SpecDescriptor -> emptyList()
+//         is TestDescriptor -> parent.parents() + listOf(this)
+//      }
+//   }
+//
+//   /**
+//    * Returns all test parents of this description.
+//    */
+//   fun parents(): List<Descriptor> = _parents
 
-data class Name(val value: String)
+//   fun testNames() = names().filterIsInstance<TestName>()
+
+//   private val _names by lazy { chain().map { it.name } }
+
+//   /**
+//    * Returns the [SpecDescriptor] parent for this descriptor, if any.
+//    *
+//    * If this descriptor is a [TestDescriptor] then the ultimate parent spec will be returned.
+//    * If this descriptor is a [SpecDescriptor], then this function will return itself.
+//    * If this descriptor is an [EngineDescriptor], then this function will return null.
+//    */
+//   fun spec(): SpecDescriptor? = when (this) {
+//      is SpecDescriptor -> this
+//      is TestDescriptor -> parent.spec()
+//   }
+//
+
+//
+//   private val _ids by lazy {
+//      when (this) {
+//         is SpecDescriptor -> listOf(id)
+//         is TestDescriptor -> parent.ids() + id
+//      }
+//   }
+
 data class DisplayName(val value: String)
 
-fun TestPath.append(component: String) = TestPath(listOf(this.value, component).joinToString("/"))
+data class DisplayPath(val value: String) {
+   fun append(other: String, separator: String): DisplayPath = DisplayPath("$value$separator$other")
+}
+
+data class DescriptorId(val value: String)
+
+enum class SpecType {
+   Class, Script
+}

@@ -1,5 +1,7 @@
 package io.kotest.core.spec.style.scopes
 
+import io.kotest.core.execution.ExecutionContext
+import io.kotest.core.plan.createTestName
 import io.kotest.core.spec.KotestDsl
 import io.kotest.core.spec.resolvedDefaultConfig
 import io.kotest.core.test.NestedTest
@@ -7,11 +9,7 @@ import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestContext
 import io.kotest.core.test.TestType
 import io.kotest.core.test.createNestedTest
-import io.kotest.core.test.createTestName
 import kotlin.coroutines.CoroutineContext
-
-@Deprecated("This interface has been renamed to BehaviorSpecWhenContainerContext. This alias will be removed in 4.8")
-typealias WhenScope = BehaviorSpecWhenContainerContext
 
 /**
  * A context that allows tests to be registered using the syntax:
@@ -33,6 +31,7 @@ class BehaviorSpecWhenContainerContext(
 
    override val testCase: TestCase = testContext.testCase
    override val coroutineContext: CoroutineContext = testContext.coroutineContext
+   override val executionContext: ExecutionContext = testContext.executionContext
    override suspend fun registerTestCase(nested: NestedTest) = testContext.registerTestCase(nested)
 
    override suspend fun addTest(name: String, type: TestType, test: suspend TestContext.() -> Unit) {
@@ -50,48 +49,43 @@ class BehaviorSpecWhenContainerContext(
    private suspend fun addAnd(name: String, test: suspend BehaviorSpecWhenContainerContext.() -> Unit, xdisabled: Boolean) {
       registerTestCase(
          createNestedTest(
-            name = createTestName("And: ", name, true),
+            name = createTestName(name, "And: ", null, true),
             xdisabled = xdisabled,
             config = testCase.spec.resolvedDefaultConfig(),
             type = TestType.Container,
-            descriptor = null,
             factoryId = testCase.factoryId,
             test = { BehaviorSpecWhenContainerContext(this).test() }
          )
       )
    }
 
-   fun then(name: String) =
-      TestWithConfigBuilder(
-         createTestName("Then: ", name, true),
-         testContext,
-         testCase.spec.resolvedDefaultConfig(),
-         xdisabled = false
-      )
+   fun then(name: String) = TestWithConfigBuilder(
+      createTestName(name, "Then: ", null, true),
+      testContext,
+      testCase.spec.resolvedDefaultConfig(),
+      xdisabled = false
+   )
 
-   fun Then(name: String) =
-      TestWithConfigBuilder(
-         createTestName("Then: ", name, true),
-         testContext,
-         testCase.spec.resolvedDefaultConfig(),
-         xdisabled = false
-      )
+   fun Then(name: String) = TestWithConfigBuilder(
+      createTestName(name, "Then: ", null, true),
+      testContext,
+      testCase.spec.resolvedDefaultConfig(),
+      xdisabled = false
+   )
 
-   fun xthen(name: String) =
-      TestWithConfigBuilder(
-         createTestName("Then: ", name, true),
-         testContext,
-         testCase.spec.resolvedDefaultConfig(),
-         xdisabled = true
-      )
+   fun xthen(name: String) = TestWithConfigBuilder(
+      createTestName(name, "Then: ", null, true),
+      testContext,
+      testCase.spec.resolvedDefaultConfig(),
+      xdisabled = true
+   )
 
-   fun xThen(name: String) =
-      TestWithConfigBuilder(
-         createTestName("Then: ", name, true),
-         testContext,
-         testCase.spec.resolvedDefaultConfig(),
-         xdisabled = true
-      )
+   fun xThen(name: String) = TestWithConfigBuilder(
+      createTestName(name, "Then: ", null, true),
+      testContext,
+      testCase.spec.resolvedDefaultConfig(),
+      xdisabled = true
+   )
 
    suspend fun Then(name: String, test: suspend TestContext.() -> Unit) = addThen(name, test, xdisabled = false)
    suspend fun then(name: String, test: suspend TestContext.() -> Unit) = addThen(name, test, xdisabled = false)
@@ -101,11 +95,10 @@ class BehaviorSpecWhenContainerContext(
    private suspend fun addThen(name: String, test: suspend TestContext.() -> Unit, xdisabled: Boolean) {
       registerTestCase(
          createNestedTest(
-            name = createTestName("Then: ", name, true),
+            name = createTestName(name, "Then: ", null, true),
             xdisabled = xdisabled,
             config = testCase.spec.resolvedDefaultConfig(),
             type = TestType.Test,
-            descriptor = null,
             factoryId = testCase.factoryId,
             test = { BehaviorSpecWhenContainerContext(this).test() }
          )

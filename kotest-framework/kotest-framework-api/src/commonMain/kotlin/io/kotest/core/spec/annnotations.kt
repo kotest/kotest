@@ -15,7 +15,7 @@ annotation class AutoScan
  */
 @Target(AnnotationTarget.CLASS)
 @Retention(AnnotationRetention.RUNTIME)
-annotation class DisplayName(val name: String)
+annotation class DisplayNameAnno(val name: String)
 
 @Target(AnnotationTarget.CLASS, AnnotationTarget.FUNCTION, AnnotationTarget.TYPE)
 @Retention(AnnotationRetention.SOURCE)

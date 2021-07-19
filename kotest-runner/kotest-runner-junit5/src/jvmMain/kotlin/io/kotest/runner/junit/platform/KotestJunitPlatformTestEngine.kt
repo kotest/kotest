@@ -3,10 +3,8 @@ package io.kotest.runner.junit.platform
 import io.kotest.core.config.configuration
 import io.kotest.core.extensions.DiscoveryExtension
 import io.kotest.core.filter.TestFilter
-import io.kotest.core.filter.TestFilterResult
 import io.kotest.core.internal.KotestEngineProperties
 import io.kotest.core.spec.Spec
-import io.kotest.core.spec.toDescription
 import io.kotest.engine.KotestEngineLauncher
 import io.kotest.engine.config.ConfigManager
 import io.kotest.engine.extensions.EnabledConditionSpecDiscoveryExtension
@@ -120,10 +118,10 @@ class KotestJunitPlatformTestEngine : TestEngine {
          ) + configuration.extensions().filterIsInstance<DiscoveryExtension>()
          val discovery = Discovery(extensions)
          val result = discovery.discover(request.toKotestDiscoveryRequest())
-         val classes = result.specs.filter { spec ->
-            testFilters.all { it.filter(spec.toDescription()) == TestFilterResult.Include }
-         }
-         KotestEngineDescriptor(uniqueId, classes, result.scripts, testFilters, result.error)
+//         val classes = result.specs.filter { spec ->
+//            testFilters.all { it.filter(spec.toDescriptor()) == TestFilterResult.Include }
+//         }
+         KotestEngineDescriptor(uniqueId, result.specs, result.scripts, testFilters, result.error)
       } else {
          KotestEngineDescriptor(uniqueId, emptyList(), emptyList(), emptyList(), null)
       }

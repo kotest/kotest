@@ -3,7 +3,7 @@ package com.sksamuel.kotest.extensions
 import io.kotest.core.extensions.SpecExtension
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.style.WordSpec
-import io.kotest.core.spec.toDescription
+import io.kotest.core.plan.toDescriptor
 import io.kotest.matchers.shouldBe
 import kotlin.reflect.KClass
 
@@ -14,7 +14,7 @@ object SpecExtensionNumbers {
 
    val ext = object : SpecExtension {
       override suspend fun intercept(spec: KClass<out Spec>, process: suspend () -> Unit) {
-         if (spec.toDescription().name.qualifiedName == SpecExtensionTest::class.java.name) {
+         if (spec.toDescriptor().name.qualifiedName == SpecExtensionTest::class.java.name) {
             before++
             process()
             after++

@@ -69,7 +69,7 @@ interface PrepareSpecListener : Listener {
     *
     * @param kclass the [Spec] class
     */
-   suspend fun prepareSpec(kclass: KClass<out Spec>): Unit = Unit
+   suspend fun prepareSpec(kclass: KClass<*>): Unit = Unit
 }
 
 interface FinalizeSpecListener : Listener {
@@ -89,12 +89,12 @@ interface FinalizeSpecListener : Listener {
     * @param results a map of each test case mapped to its result.
     */
    suspend fun finalizeSpec(
-      kclass: KClass<out Spec>,
+      kclass: KClass<*>,
       results: Map<TestCase, TestResult>,
    ): Unit = Unit
 }
 
 interface SpecInstantiationListener : Listener {
    fun specInstantiated(spec: Spec) {}
-   fun specInstantiationError(kclass: KClass<out Spec>, t: Throwable) {}
+   fun specInstantiationError(kclass: KClass<*>, t: Throwable) {}
 }

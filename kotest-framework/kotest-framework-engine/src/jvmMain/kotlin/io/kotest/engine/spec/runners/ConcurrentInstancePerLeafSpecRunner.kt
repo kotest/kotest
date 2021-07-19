@@ -1,30 +1,32 @@
 package io.kotest.engine.spec.runners
 
 import io.kotest.core.config.configuration
+import io.kotest.core.execution.ExecutionContext
+import io.kotest.core.plan.DescriptorId
+import io.kotest.core.spec.Spec
 import io.kotest.core.test.NestedTest
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestContext
 import io.kotest.core.test.TestResult
-import io.kotest.core.test.toTestCase
-import io.kotest.core.spec.Spec
-import io.kotest.core.test.DescriptionName
-import io.kotest.engine.listener.BufferedTestCaseExcecutionListener
-import io.kotest.engine.spec.SpecRunner
-import io.kotest.engine.listener.TestEngineListener
 import io.kotest.engine.ExecutorExecutionContext
-import io.kotest.engine.test.TestCaseExecutor
-import io.kotest.engine.listener.TestCaseListenerToTestEngineListenerAdapter
-import io.kotest.engine.spec.materializeAndOrderRootTests
-import io.kotest.core.test.createTestName
 import io.kotest.engine.dispatchers.ExecutorCoroutineDispatcherFactory
 import io.kotest.engine.launchers.SequentialTestLauncher
-import io.kotest.engine.test.DuplicateTestNameHandler
 import io.kotest.engine.lifecycle.invokeAfterSpec
 import io.kotest.engine.lifecycle.invokeBeforeSpec
+import io.kotest.engine.listener.BufferedTestCaseExcecutionListener
+import io.kotest.engine.listener.TestCaseListenerToTestEngineListenerAdapter
+import io.kotest.engine.listener.TestEngineListener
+import io.kotest.engine.spec.SpecRunner
+import io.kotest.engine.spec.materializeAndOrderRootTests
+import io.kotest.engine.test.TestCaseExecutor
+import io.kotest.engine.test.attach
+import io.kotest.engine.test.names.DuplicateTestNameHandler
 import io.kotest.engine.test.toTestResult
 import io.kotest.fp.Try
 import io.kotest.mpp.log
-import kotlinx.coroutines.*
+import kotlinx.coroutines.asCoroutineDispatcher
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.launch
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.Executors
 import java.util.concurrent.atomic.AtomicBoolean
@@ -41,6 +43,7 @@ import kotlin.coroutines.CoroutineContext
  */
 @Deprecated("Should be replaced with a better InstancePerLeafSpecRunner runner")
 internal class ConcurrentInstancePerLeafSpecRunner(
+   private val executionContext: ExecutionContext,
    testEngineListener: TestEngineListener,
    private val threads: Int,
 ) : SpecRunner(testEngineListener, SequentialTestLauncher(ExecutorCoroutineDispatcherFactory(1, true))) {
@@ -62,8 +65,8 @@ internal class ConcurrentInstancePerLeafSpecRunner(
          val dispatchers = List(threads) { Executors.newSingleThreadExecutor().asCoroutineDispatcher() }
 
          coroutineScope {
-            spec.materializeAndOrderRootTests().withIndex().forEach { (index, rootTest) ->
-               log { "InstancePerLeafConcurrentSpecRunner: Launching coroutine for root test [${rootTest.testCase.description.testPath()}]" }
+            spec.materializeAndOrderRootTests(executionContext).withIndex().forEach { (index, rootTest) ->
+               log { "InstancePerLeafConcurrentSpecRunner: Launching coroutine for root test [${rootTest.testCase.descriptor.testPath()}]" }
                launch(dispatchers[index % threads]) {
                   executeInCleanSpec(rootTest.testCase).getOrThrow()
                   testCaseListener.rootFinished(rootTest.testCase)
@@ -80,16 +83,17 @@ internal class ConcurrentInstancePerLeafSpecRunner(
       log { "InstancePerLeafConcurrentSpecRunner: Executing target in clean spec" }
       return createInstance(target.spec::class)
          .flatMap { it.invokeBeforeSpec() }
-         .flatMap { startTest(it, target.description.testNames()) } // drop the spec name
+         .flatMap { startTest(it, target.descriptor.ids()) } // drop the spec name
          .flatMap { it.invokeAfterSpec() }
    }
 
    // we need to find the same root test but in the newly created spec and begin executing that
-   private suspend fun startTest(spec: Spec, targets: List<DescriptionName.TestName>): Try<Spec> {
+   private suspend fun startTest(spec: Spec, targets: List<DescriptorId>): Try<Spec> {
       require(targets.isNotEmpty())
       return Try {
          log { "Created new spec instance $spec" }
-         val root = spec.materializeAndOrderRootTests().first { it.testCase.description.name == targets.first() }
+         val root = spec.materializeAndOrderRootTests(executionContext)
+            .first { it.testCase.descriptor.id == targets.first() }
          run(root.testCase, targets.drop(1))
          spec
       }
@@ -101,7 +105,7 @@ internal class ConcurrentInstancePerLeafSpecRunner(
     * discovered, and it hasn't yet be seen on previous executions, then a coroutine is launched to
     * execute that test.
     */
-   private suspend fun run(test: TestCase, targets: List<DescriptionName.TestName>) {
+   private suspend fun run(test: TestCase, targets: List<DescriptorId>) {
       coroutineScope {
          val context = object : TestContext {
 
@@ -112,15 +116,15 @@ internal class ConcurrentInstancePerLeafSpecRunner(
 
             override val testCase: TestCase = test
             override val coroutineContext: CoroutineContext = this@coroutineScope.coroutineContext
+            override val executionContext: ExecutionContext = this@ConcurrentInstancePerLeafSpecRunner.executionContext
 
             override suspend fun registerTestCase(nested: NestedTest) {
 
-               val overrideName = handler.handle(nested.name)?.let { createTestName(it) }
-               val t = nested.toTestCase(test.spec, test, overrideName)
+               val t = nested.attach(testCase, handler.handle(nested.name), executionContext)
 
                when {
                   // if the nested test is the next entry that we are looking for, we launch straight into that
-                  targets.isNotEmpty() && t.description.name == targets.first() -> launch { run(t, targets.drop(1)) }
+                  targets.isNotEmpty() && t.descriptor.id == targets.first() -> launch { run(t, targets.drop(1)) }
                   // if we have no target then we are speculatively executing the scope, so the first nested test
                   // can go on the same spec, any others need to go onto seperate specs.
                   targets.isEmpty() -> {

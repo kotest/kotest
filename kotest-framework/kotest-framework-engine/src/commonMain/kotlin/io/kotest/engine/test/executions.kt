@@ -21,7 +21,7 @@ internal suspend fun TestCase.executeWithBehaviours(context: TestContext) {
 private suspend fun wrapTestWithAssertionModeCheck(testCase: TestCase, run: suspend () -> Unit) {
    when (testCase.type) {
       TestType.Container -> run()
-      TestType.Test -> testCase.spec.resolvedAssertionMode().executeWithAssertionsCheck(testCase.description) {
+      TestType.Test -> testCase.spec.resolvedAssertionMode().executeWithAssertionsCheck(testCase.descriptor.name) {
          run()
       }
    }

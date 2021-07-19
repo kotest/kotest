@@ -2,9 +2,9 @@ package io.kotest.extensions.system
 
 import io.kotest.core.config.AbstractProjectConfig
 import io.kotest.core.listeners.TestListener
+import io.kotest.core.plan.Descriptor
+import io.kotest.core.plan.toDescriptor
 import io.kotest.core.spec.Spec
-import io.kotest.core.test.Description
-import io.kotest.core.spec.toDescription
 import io.kotest.matchers.shouldBe
 import java.io.FileDescriptor
 import java.net.InetAddress
@@ -26,7 +26,7 @@ import kotlin.reflect.KClass
  * alternative [SpecSystemExitListener]
  */
 object SystemExitListener : TestListener {
-   override suspend fun prepareSpec(kclass: KClass<out Spec>) {
+   override suspend fun prepareSpec(kclass: KClass<*>) {
         val previous = System.getSecurityManager()
         System.setSecurityManager(NoExitSecurityManager(previous))
     }
@@ -51,18 +51,18 @@ object SystemExitListener : TestListener {
  */
 object SpecSystemExitListener : TestListener {
 
-   private val previousSecurityManagers = ConcurrentHashMap<Description, SecurityManager>()
+   private val previousSecurityManagers = ConcurrentHashMap<Descriptor, SecurityManager>()
 
    override suspend fun beforeSpec(spec: Spec) {
       val previous = System.getSecurityManager()
       if (previous != null)
-         previousSecurityManagers[spec::class.toDescription()] = previous
+         previousSecurityManagers[spec::class.toDescriptor()] = previous
       System.setSecurityManager(NoExitSecurityManager(previous))
    }
 
    override suspend fun afterSpec(spec: Spec) {
-      if (previousSecurityManagers.contains(spec::class.toDescription()))
-         System.setSecurityManager(previousSecurityManagers[spec::class.toDescription()])
+      if (previousSecurityManagers.contains(spec::class.toDescriptor()))
+         System.setSecurityManager(previousSecurityManagers[spec::class.toDescriptor()])
       else
          System.setSecurityManager(null)
    }

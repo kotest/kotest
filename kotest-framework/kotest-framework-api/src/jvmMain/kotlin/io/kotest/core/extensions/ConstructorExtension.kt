@@ -12,6 +12,8 @@ import kotlin.reflect.KClass
  *
  * One common usecase is to instantiate classes that are being autowired
  * by a dependency injection framework.
+ *
+ * This extension is JVM only.
  */
 interface ConstructorExtension : Extension {
 

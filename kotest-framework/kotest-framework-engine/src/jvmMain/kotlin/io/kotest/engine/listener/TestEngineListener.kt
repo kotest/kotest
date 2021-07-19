@@ -1,7 +1,5 @@
 package io.kotest.engine.listener
 
-import io.kotest.common.ExperimentalKotest
-import io.kotest.core.plan.Descriptor
 import io.kotest.core.spec.Spec
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
@@ -34,14 +32,7 @@ interface TestEngineListener {
     * Is invoked once per [Spec] to indicate that this spec is about to
     * begin execution.
     */
-   fun specStarted(kclass: KClass<*>) {
-   }
-
-   /**
-    * Is invoked once per [Spec] to indicate that this spec is about to
-    * begin execution.
-    */
-   suspend fun specStarted(descriptor: Descriptor.SpecDescriptor) {}
+   fun specStarted(kclass: KClass<*>) {}
 
    /**
     * Is invoked once per [Spec] to indicate that all [TestCase] instances
@@ -51,16 +42,7 @@ interface TestEngineListener {
     * @param t if not null, then an error that occured when trying to execute this spec
     * @param results if t is null, then the results of the tests that were submitted.
     */
-   fun specFinished(kclass: KClass<*>, t: Throwable?, results: Map<TestCase, TestResult>) {
-   }
-
-   @ExperimentalKotest
-   suspend fun specFinished(
-      descriptor: Descriptor.SpecDescriptor,
-      t: Throwable?,
-      results: Map<Descriptor.TestDescriptor, TestResult>
-   ) {
-   }
+   fun specFinished(kclass: KClass<*>, t: Throwable?, results: Map<TestCase, TestResult>) {}
 
    /**
     * Invoked if a [TestCase] is about to be executed.
@@ -69,21 +51,9 @@ interface TestEngineListener {
    fun testStarted(testCase: TestCase) {}
 
    /**
-    * Invoked if a [TestCase] is about to be executed.
-    * Will not be invoked if the test is ignored.
-    */
-   @ExperimentalKotest
-   fun testStarted(descriptor: Descriptor.TestDescriptor) {
-   }
-
-   /**
     * Invoked if a [TestCase] will not be executed because it is not enabled.
     */
    fun testIgnored(testCase: TestCase, reason: String?) {}
-
-   @ExperimentalKotest
-   fun testIgnored(descriptor: Descriptor.TestDescriptor, reason: String?) {
-   }
 
    /**
     * Invoked when all the invocations of a [TestCase] have completed.
@@ -91,10 +61,6 @@ interface TestEngineListener {
     * The result passed in here is the result directly from the test run, before any interception.
     */
    fun testFinished(testCase: TestCase, result: TestResult) {}
-
-   @ExperimentalKotest
-   fun testFinished(descriptor: Descriptor.TestDescriptor, result: TestResult) {
-   }
 
    /**
     * Invoked each time an instance of a [Spec] is created.

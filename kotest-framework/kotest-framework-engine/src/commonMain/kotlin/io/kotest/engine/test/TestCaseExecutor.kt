@@ -1,5 +1,6 @@
 package io.kotest.engine.test
 
+import io.kotest.core.execution.ExecutionContext
 import io.kotest.core.extensions.TestCaseExtension
 import io.kotest.core.test.NestedTest
 import io.kotest.core.test.TestCase
@@ -105,11 +106,11 @@ class TestCaseExecutor(
 
       return when (enabled.isEnabled) {
          true -> {
-            log { "${testCase.description.testPath()} is enabled" }
+            log { "${testCase.descriptor.name.testName} is enabled" }
             ifEnabled()
          }
          false -> {
-            log { "${testCase.description.testPath()} is disabled" }
+            log { "${testCase.descriptor.name.testName} is disabled" }
             TestResult.ignored(enabled)
          }
       }
@@ -234,8 +235,8 @@ class TestCaseExecutor(
          } catch (e: TimeoutCancellationException) {
             log { "TestCaseExecutor: TimeoutCancellationException $e" }
             when (testCase.type) {
-               TestType.Container -> TestTimeoutException(timeout, testCase.displayName)
-               TestType.Test -> TestTimeoutException(min(timeout, invocationTimeout), testCase.displayName)
+               TestType.Container -> TestTimeoutException(timeout, testCase.descriptor.name.testName)
+               TestType.Test -> TestTimeoutException(min(timeout, invocationTimeout), testCase.descriptor.name.testName)
             }
          } catch (t: Throwable) {
             log { "TestCaseExecutor: Throwable $t" }
@@ -255,6 +256,7 @@ class TestCaseExecutor(
       val contextp = object : TestContext {
          override val testCase: TestCase = context.testCase
          override val coroutineContext: CoroutineContext = this@coroutineScope.coroutineContext
+         override val executionContext: ExecutionContext = context.executionContext
          override suspend fun registerTestCase(nested: NestedTest) = context.registerTestCase(nested)
       }
       testCase.executeWithBehaviours(contextp)

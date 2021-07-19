@@ -1,8 +1,8 @@
 package com.sksamuel.kotest.runner.junit5
 
-import io.kotest.core.sourceRef
+import io.kotest.core.source
 import io.kotest.core.spec.style.FunSpec
-import io.kotest.core.spec.toDescription
+import io.kotest.core.plan.toDescriptor
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestType
@@ -42,10 +42,10 @@ class JUnitTestRunnerListenerTests : FunSpec({
       }
 
       val test1 = TestCase(
-         JUnitTestRunnerListenerTests::class.toDescription().appendTest("test1"),
+         JUnitTestRunnerListenerTests::class.toDescriptor().appendTest("test1"),
          JUnitTestRunnerListenerTests(),
          { },
-         sourceRef(),
+         source(),
          TestType.Container,
          parent = null,
       )
@@ -54,7 +54,7 @@ class JUnitTestRunnerListenerTests : FunSpec({
          test1.description.appendTest("test2"),
          JUnitTestRunnerListenerTests(),
          { },
-         sourceRef(),
+         source(),
          TestType.Container,
          parent = null,
       )

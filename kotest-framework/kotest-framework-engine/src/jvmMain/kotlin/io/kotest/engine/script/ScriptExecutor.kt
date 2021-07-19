@@ -1,21 +1,20 @@
 package io.kotest.engine.script
 
 import io.kotest.core.config.configuration
-import io.kotest.engine.test.TestCaseExecutor
+import io.kotest.core.execution.ExecutionContext
 import io.kotest.core.plan.Descriptor
-import io.kotest.core.plan.toDescriptor
 import io.kotest.core.script.ScriptRuntime
 import io.kotest.core.test.NestedTest
 import io.kotest.core.test.TestCase
-import io.kotest.engine.test.TestCaseExecutionListener
 import io.kotest.core.test.TestContext
 import io.kotest.core.test.TestResult
-import io.kotest.core.test.createTestName
-import io.kotest.core.test.toTestCase
 import io.kotest.engine.ExecutorExecutionContext
 import io.kotest.engine.NotificationManager
 import io.kotest.engine.listener.TestEngineListener
-import io.kotest.engine.test.DuplicateTestNameHandler
+import io.kotest.engine.test.TestCaseExecutionListener
+import io.kotest.engine.test.TestCaseExecutor
+import io.kotest.engine.test.attach
+import io.kotest.engine.test.names.DuplicateTestNameHandler
 import io.kotest.engine.test.toTestResult
 import io.kotest.fp.Try
 import io.kotest.mpp.log
@@ -30,9 +29,12 @@ import kotlin.script.templates.standard.ScriptTemplateWithArgs
  *
  * @param listener a listener that is notified of events in the spec lifecycle
  */
-class ScriptExecutor(private val listener: TestEngineListener) {
+class ScriptExecutor(
+   private val listener: TestEngineListener,
+   private val executionContext: ExecutionContext
+) {
 
-   private val results = ConcurrentHashMap<Descriptor.TestDescriptor, TestResult>()
+   private val results = ConcurrentHashMap<TestCase, TestResult>()
    private val n = NotificationManager(listener)
 
    /**
@@ -41,12 +43,12 @@ class ScriptExecutor(private val listener: TestEngineListener) {
    suspend fun execute(kclass: KClass<out ScriptTemplateWithArgs>): Try<Unit> {
       log { "ScriptExecutor: execute [$kclass]" }
       ScriptRuntime.reset()
-      val descriptor = Descriptor.fromScriptClass(kclass)
+      val descriptor = Descriptor.SpecDescriptor.script(kclass)
       return createInstance(kclass)
-         .flatMap { n.specStarted(descriptor) }
-         .flatMap { runTests(descriptor) }
-         .onFailure { n.specFinished(descriptor, it, emptyMap()) }
-         .onSuccess { n.specFinished(descriptor, null, results.toMap()) }
+         .flatMap { n.specStarted(kclass) }
+         .flatMap { runTests() }
+         .onFailure { n.specFinished(kclass, it, emptyMap()) }
+         .onSuccess { n.specFinished(kclass, null, results.toMap()) }
    }
 
 //   /**
@@ -74,9 +76,9 @@ class ScriptExecutor(private val listener: TestEngineListener) {
    /**
     * Executes the tests registered with the script execution runtime.
     */
-   private suspend fun runTests(descriptor: Descriptor.SpecDescriptor): Try<Unit> = Try {
+   private suspend fun runTests(): Try<Unit> = Try {
       log { "ScriptExecutor: Executing tests from script" }
-      ScriptRuntime.materializeRootTests(descriptor).forEach { testCase ->
+      ScriptRuntime.materializeRootTests().forEach { testCase ->
          runTest(testCase, coroutineContext)
       }
    }
@@ -96,20 +98,20 @@ class ScriptExecutor(private val listener: TestEngineListener) {
    ) {
       val testExecutor = TestCaseExecutor(object : TestCaseExecutionListener {
          override fun testStarted(testCase: TestCase) {
-            listener.testStarted(testCase.descriptor!!)
+            listener.testStarted(testCase)
          }
 
          override fun testIgnored(testCase: TestCase) {
-            listener.testIgnored(testCase.descriptor!!, null)
+            listener.testIgnored(testCase, null)
          }
 
          override fun testFinished(testCase: TestCase, result: TestResult) {
-            listener.testFinished(testCase.descriptor!!, result)
+            listener.testFinished(testCase, result)
          }
       }, ExecutorExecutionContext, {}, { t, duration -> toTestResult(t, duration) })
 
       val result = testExecutor.execute(testCase, Context(testCase, coroutineContext))
-      results[testCase.description.toDescriptor(testCase.source) as Descriptor.TestDescriptor] = result
+      results[testCase] = result
    }
 
    inner class Context(
@@ -119,12 +121,13 @@ class ScriptExecutor(private val listener: TestEngineListener) {
 
       private val handler = DuplicateTestNameHandler(configuration.duplicateTestNameMode)
 
+      override val executionContext: ExecutionContext = this@ScriptExecutor.executionContext
+
       // in the single instance runner we execute each nested test as soon as they are registered
       override suspend fun registerTestCase(nested: NestedTest) {
          log { "Nested test case discovered $nested" }
-         val overrideName = handler.handle(nested.name)?.let { createTestName(it) }
-         val nestedTestCase = nested.toTestCase(testCase.spec, testCase, overrideName)
-         runTest(nestedTestCase, coroutineContext)
+         val t = nested.attach(testCase, handler.handle(nested.name), executionContext)
+         runTest(t, coroutineContext)
       }
    }
 }

@@ -1,7 +1,6 @@
 package io.kotest.engine.config
 
 import io.kotest.core.config.configuration
-import io.kotest.core.extensions.RuntimeTagExtension
 import io.kotest.engine.extensions.RuntimeTagExpressionExtension
 import io.kotest.engine.extensions.SystemPropertyTagExtension
 import java.util.concurrent.atomic.AtomicBoolean
@@ -27,7 +26,6 @@ object ConfigManager {
          // explicitly register default extensions
          configuration.registerExtensions(
             SystemPropertyTagExtension,
-            RuntimeTagExtension,
             RuntimeTagExpressionExtension
          )
       }

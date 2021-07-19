@@ -5,7 +5,7 @@ import io.kotest.core.plan.Descriptor
 import io.kotest.core.test.Enabled
 
 /**
- * An extension point that is used to override if a [Descriptor] is enabled or disabled.
+ * An extension point that is used to override if a [TestDescriptor] is enabled or disabled.
  *
  * If multiple instances of this extension are defined then all will be executed and all must respond enabled.
  */
@@ -19,5 +19,5 @@ interface EnabledExtension : Extension {
     *  - [Enabled.enabled] if this test or spec should be enabled regardless of the input enabled status
     *  - [Enabled.disabled] if this test or spec should be disabled regardless of the input enabled status
     */
-   suspend fun isEnabled(descriptor: Descriptor): Enabled
+   suspend fun isEnabled(descriptor: Descriptor.TestDescriptor): Enabled
 }

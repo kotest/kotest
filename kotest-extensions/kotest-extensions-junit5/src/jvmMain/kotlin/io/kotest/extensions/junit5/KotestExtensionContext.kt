@@ -2,7 +2,7 @@ package io.kotest.extensions.junit5
 
 import io.kotest.core.spec.Spec
 import io.kotest.core.test.TestCase
-import io.kotest.core.spec.toDescription
+import io.kotest.core.plan.toDescriptor
 import org.junit.jupiter.api.TestInstance
 import org.junit.jupiter.api.extension.ExtensionContext
 import org.junit.jupiter.api.extension.TestInstances
@@ -19,11 +19,11 @@ class KotestExtensionContext(
    override fun getParent(): Optional<ExtensionContext> = Optional.empty()
    override fun getRoot(): ExtensionContext = this
 
-   override fun getUniqueId(): String = spec::class.toDescription().id.value
+   override fun getUniqueId(): String = spec::class.toDescriptor().id.value
 
    override fun getDisplayName(): String = when (test) {
-      null -> spec::class.toDescription().testDisplayPath().value
-      else -> test.displayName
+      null -> spec::class.toDescriptor().displayName.value
+      else -> test.descriptor.displayName.value
    }
 
    override fun getTags(): MutableSet<String> = spec.tags().map { it.name }.toMutableSet()

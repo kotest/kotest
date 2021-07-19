@@ -1,12 +1,11 @@
 package io.kotest.engine.test.status
 
 import io.kotest.core.config.configuration
-import io.kotest.core.internal.tags.allTags
+import io.kotest.core.test.Enabled
+import io.kotest.core.test.TestCase
 import io.kotest.engine.tags.activeTags
 import io.kotest.engine.tags.isActive
 import io.kotest.engine.tags.parse
-import io.kotest.core.test.Enabled
-import io.kotest.core.test.TestCase
 import io.kotest.mpp.log
 
 /**
@@ -22,9 +21,9 @@ import io.kotest.mpp.log
  */
 object TagsEnabledExtension : TestEnabledExtension {
    override fun isEnabled(testCase: TestCase): Enabled {
-      val enabledInTags = configuration.activeTags().parse().isActive(testCase.allTags())
+      val enabledInTags = configuration.activeTags().parse().isActive(testCase.tags())
       if (!enabledInTags) {
-         return Enabled.disabled("${testCase.description.testPath()} is disabled by tags")
+         return Enabled.disabled("${testCase.descriptor.name.testName} is disabled by tags")
             .also { log { it.reason } }
       }
       return Enabled.enabled

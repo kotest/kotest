@@ -8,13 +8,12 @@ import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestCaseOrder
 import io.kotest.core.test.TestResult
 import io.kotest.core.spec.style.FunSpec
-import io.kotest.core.spec.toDescription
+import io.kotest.core.plan.toDescriptor
 import io.kotest.extensions.locale.LocaleTestListener
 import io.kotest.extensions.locale.TimeZoneTestListener
 import java.util.Locale
 import java.util.TimeZone
 import kotlin.time.Duration
-import kotlin.time.milliseconds
 
 class FunSpecExample : FunSpec() {
 
@@ -28,11 +27,11 @@ class FunSpecExample : FunSpec() {
    }
 
    override fun beforeSpec(spec: Spec) {
-      println("Starting spec ${spec::class.toDescription()}")
+      println("Starting spec ${spec::class.toDescriptor()}")
    }
 
    override fun afterSpec(spec: Spec) {
-      println("Completed spec ${spec::class.toDescription()}")
+      println("Completed spec ${spec::class.toDescriptor()}")
    }
 
    override fun afterTest(testCase: TestCase, result: TestResult) {

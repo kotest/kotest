@@ -8,9 +8,6 @@ import io.kotest.core.test.TestContext
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestType
 
-@Deprecated("Use ContainerContext. This alias will be removed in 4.8")
-typealias ContainerScope = ContainerContext
-
 /**
  * Extends a [TestContext] with methods used by test containers.
  */
@@ -41,7 +38,8 @@ interface ContainerContext : TestContext {
       val thisTestCase = this.testCase
       addListener(object : TestListener {
          override suspend fun beforeTest(testCase: TestCase) {
-            if (thisTestCase.description.isAncestorOf(testCase.description)) f(testCase)
+            if (thisTestCase.descriptor.isAncestorOf(testCase.descriptor))
+               f(testCase)
          }
       })
    }
@@ -54,7 +52,8 @@ interface ContainerContext : TestContext {
       val thisTestCase = this.testCase
       addListener(object : TestListener {
          override suspend fun afterTest(testCase: TestCase, result: TestResult) {
-            if (thisTestCase.description.isAncestorOf(testCase.description)) f(Tuple2(testCase, result))
+            if (thisTestCase.descriptor.isAncestorOf(testCase.descriptor))
+               f(Tuple2(testCase, result))
          }
       })
    }
@@ -69,9 +68,8 @@ interface ContainerContext : TestContext {
       val thisTestCase = this.testCase
       addListener(object : TestListener {
          override suspend fun beforeContainer(testCase: TestCase) {
-            if (thisTestCase.description.isAncestorOf(testCase.description)) {
+            if (thisTestCase.descriptor.isAncestorOf(testCase.descriptor))
                f(testCase)
-            }
          }
       })
    }
@@ -86,9 +84,8 @@ interface ContainerContext : TestContext {
       val thisTestCase = this.testCase
       addListener(object : TestListener {
          override suspend fun afterContainer(testCase: TestCase, result: TestResult) {
-            if (thisTestCase.description.isAncestorOf(testCase.description)) {
+            if (thisTestCase.descriptor.isAncestorOf(testCase.descriptor))
                f(Tuple2(testCase, result))
-            }
          }
       })
    }
@@ -100,9 +97,8 @@ interface ContainerContext : TestContext {
       val thisTestCase = this.testCase
       addListener(object : TestListener {
          override suspend fun beforeEach(testCase: TestCase) {
-            if (thisTestCase.description.isAncestorOf(testCase.description)) {
+            if (thisTestCase.descriptor.isAncestorOf(testCase.descriptor))
                f(testCase)
-            }
          }
       })
    }
@@ -114,9 +110,8 @@ interface ContainerContext : TestContext {
       val thisTestCase = this.testCase
       addListener(object : TestListener {
          override suspend fun afterEach(testCase: TestCase, result: TestResult) {
-            if (thisTestCase.description.isAncestorOf(testCase.description)) {
+            if (thisTestCase.descriptor.isAncestorOf(testCase.descriptor))
                f(Tuple2(testCase, result))
-            }
          }
       })
    }
@@ -128,7 +123,8 @@ interface ContainerContext : TestContext {
       val thisTestCase = this.testCase
       addListener(object : TestListener {
          override suspend fun beforeAny(testCase: TestCase) {
-            if (thisTestCase.description.isAncestorOf(testCase.description)) f(testCase)
+            if (thisTestCase.descriptor.isAncestorOf(testCase.descriptor))
+               f(testCase)
          }
       })
    }
@@ -140,7 +136,8 @@ interface ContainerContext : TestContext {
       val thisTestCase = this.testCase
       addListener(object : TestListener {
          override suspend fun afterAny(testCase: TestCase, result: TestResult) {
-            if (thisTestCase.description.isAncestorOf(testCase.description)) f(Tuple2(testCase, result))
+            if (thisTestCase.descriptor.isAncestorOf(testCase.descriptor))
+               f(Tuple2(testCase, result))
          }
       })
    }

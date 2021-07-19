@@ -1,18 +1,18 @@
 package com.sksamuel.kotest.framework.api
 
 import io.kotest.core.spec.style.FunSpec
-import io.kotest.core.spec.toDescription
+import io.kotest.core.plan.toDescriptor
 import io.kotest.core.test.Description
-import io.kotest.core.test.DescriptionName
+import io.kotest.core.plan.DescriptorName
 import io.kotest.core.test.DisplayPath
 import io.kotest.core.test.TestPath
 import io.kotest.core.test.TestType
-import io.kotest.core.test.createTestName
+import io.kotest.core.plan.createTestName
 import io.kotest.matchers.shouldBe
 
 class DescriptionTest : FunSpec({
 
-   val spec = DescriptionTest::class.toDescription()
+   val spec = DescriptionTest::class.toDescriptor()
    val container = spec.appendContainer("a context")
    val test = container.appendTest("nested test")
    val testWithPrefix = container.appendTest(createTestName("given", "nested test", true))
@@ -41,23 +41,23 @@ class DescriptionTest : FunSpec({
 
    test("names should include the spec") {
       rootTest.names() shouldBe listOf(
-         DescriptionName.SpecName("com.sksamuel.kotest.framework.api.DescriptionTest", "DescriptionTest",
+         DescriptorName.SpecName("com.sksamuel.kotest.framework.api.DescriptionTest", "DescriptionTest",
             "com.sksamuel.kotest.framework.api.DescriptionTest"),
          createTestName("root test")
       )
       test.names() shouldBe listOf(
-         DescriptionName.SpecName("com.sksamuel.kotest.framework.api.DescriptionTest", "DescriptionTest",
+         DescriptorName.SpecName("com.sksamuel.kotest.framework.api.DescriptionTest", "DescriptionTest",
             "com.sksamuel.kotest.framework.api.DescriptionTest"),
          createTestName("a context"),
          createTestName("nested test")
       )
       container.names() shouldBe listOf(
-         DescriptionName.SpecName("com.sksamuel.kotest.framework.api.DescriptionTest", "DescriptionTest",
+         DescriptorName.SpecName("com.sksamuel.kotest.framework.api.DescriptionTest", "DescriptionTest",
             "com.sksamuel.kotest.framework.api.DescriptionTest"),
          createTestName("a context")
       )
       spec.names() shouldBe listOf(
-         DescriptionName.SpecName("com.sksamuel.kotest.framework.api.DescriptionTest", "DescriptionTest",
+         DescriptorName.SpecName("com.sksamuel.kotest.framework.api.DescriptionTest", "DescriptionTest",
             "com.sksamuel.kotest.framework.api.DescriptionTest")
       )
    }

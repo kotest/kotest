@@ -1,14 +1,13 @@
 package io.kotest.extensions.junitxml
 
 import io.kotest.core.listeners.TestListener
-import io.kotest.core.spec.Spec
+import io.kotest.core.plan.toDescriptor
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestStatus
 import io.kotest.core.test.TestType
-import io.kotest.core.spec.toDescription
-import org.jdom2.Element
 import org.jdom2.Document
+import org.jdom2.Element
 import org.jdom2.output.Format
 import org.jdom2.output.XMLOutputter
 import java.net.InetAddress
@@ -22,9 +21,6 @@ import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter.ISO_LOCAL_DATE_TIME
 import java.util.concurrent.ConcurrentHashMap
 import kotlin.reflect.KClass
-
-@Deprecated("Now called JunitXmlReporter. Will be removed in 4.8")
-typealias JunitXmlListener = JunitXmlReporter
 
 /**
  * A JUnit xml legacy format writer.
@@ -52,7 +48,7 @@ class JunitXmlReporter(
       const val AttributeName = "name"
    }
 
-   private var marks = ConcurrentHashMap<KClass<out Spec>, Long>()
+   private var marks = ConcurrentHashMap<KClass<*>, Long>()
 
    private fun outputDir(): Path {
       val buildDir = System.getProperty(BuildDirKey)
@@ -62,7 +58,7 @@ class JunitXmlReporter(
          Paths.get(DefaultLocation)
    }
 
-   override suspend fun prepareSpec(kclass: KClass<out Spec>) {
+   override suspend fun prepareSpec(kclass: KClass<*>) {
       marks[kclass] = System.currentTimeMillis()
    }
 
@@ -71,8 +67,7 @@ class JunitXmlReporter(
       false -> results.filter { it.key.type == TestType.Test }
    }
 
-   override suspend fun finalizeSpec(kclass: KClass<out Spec>, results: Map<TestCase, TestResult>) {
-      super.finalizeSpec(kclass, results)
+   override suspend fun finalizeSpec(kclass: KClass<*>, results: Map<TestCase, TestResult>) {
 
       val start = marks[kclass] ?: System.currentTimeMillis()
       val duration = System.currentTimeMillis() - start
@@ -88,14 +83,14 @@ class JunitXmlReporter(
       testSuite.setAttribute("failures", filtered.filter { it.value.status == TestStatus.Failure }.size.toString())
       testSuite.setAttribute("skipped", filtered.filter { it.value.status == TestStatus.Ignored }.size.toString())
       testSuite.setAttribute("tests", filtered.size.toString())
-      testSuite.setAttribute(AttributeName, kclass.toDescription().displayName())
+      testSuite.setAttribute(AttributeName, kclass.toDescriptor().displayName.value)
       document.addContent(testSuite)
 
-      filtered.map { (testcase, result) ->
+      filtered.map { (testDescriptor, result) ->
 
          val name = when (useTestPathAsName) {
-            true -> testcase.description.testDisplayPath().value
-            false -> testcase.description.name.displayName
+            true -> testDescriptor.descriptor.displayPath(false).value
+            false -> testDescriptor.descriptor.displayName.value
          }
 
          val e = Element("testcase")
@@ -129,8 +124,8 @@ class JunitXmlReporter(
       write(kclass, document)
    }
 
-   private fun write(kclass: KClass<out Spec>, document: Document) {
-      val path = outputDir().resolve("TEST-" + kclass.toDescription().name.displayName + ".xml")
+   private fun write(spec: KClass<*>, document: Document) {
+      val path = outputDir().resolve("TEST-" + spec.toDescriptor().displayName.value + ".xml")
       path.parent.toFile().mkdirs()
       val outputter = XMLOutputter(Format.getPrettyFormat())
       val writer = Files.newBufferedWriter(path, StandardOpenOption.TRUNCATE_EXISTING, StandardOpenOption.CREATE)

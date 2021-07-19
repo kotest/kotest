@@ -1,21 +1,22 @@
 package io.kotest.engine.spec
 
 import io.kotest.core.config.configuration
+import io.kotest.core.execution.ExecutionContext
 import io.kotest.core.extensions.SpecExtension
-import io.kotest.engine.extensions.resolvedSpecExtensions
-import io.kotest.engine.test.status.isEnabled
-import io.kotest.engine.concurrency.resolvedThreads
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.Spec
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.engine.NotificationManager
+import io.kotest.engine.concurrency.resolvedThreads
+import io.kotest.engine.extensions.resolvedSpecExtensions
 import io.kotest.engine.launchers.testLauncher
 import io.kotest.engine.listener.TestEngineListener
 import io.kotest.engine.spec.runners.ConcurrentInstancePerLeafSpecRunner
 import io.kotest.engine.spec.runners.InstancePerLeafSpecRunner
 import io.kotest.engine.spec.runners.InstancePerTestSpecRunner
 import io.kotest.engine.spec.runners.SingleInstanceSpecRunner
+import io.kotest.engine.test.status.isEnabled
 import io.kotest.fp.Try
 import io.kotest.fp.flatten
 import io.kotest.fp.success
@@ -60,7 +61,7 @@ class SpecExecutor(private val listener: TestEngineListener) {
     */
    private suspend fun runTestsIfAtLeastOneEnabled(spec: Spec): Try<Map<TestCase, TestResult>> {
       log { "runTestsIfAtLeastOneActive [$spec]" }
-      val roots = spec.materializeAndOrderRootTests()
+      val roots = spec.materializeAndOrderRootTests(ExecutionContext(configuration))
       val active = roots.any { it.testCase.isEnabled().isEnabled }
 
       if (!active) {
@@ -113,11 +114,19 @@ class SpecExecutor(private val listener: TestEngineListener) {
 
    private fun runner(spec: Spec): SpecRunner {
       return when (spec.resolvedIsolationMode()) {
-         IsolationMode.SingleInstance -> SingleInstanceSpecRunner(listener, testLauncher(spec))
-         IsolationMode.InstancePerTest -> InstancePerTestSpecRunner(listener, testLauncher(spec))
+         IsolationMode.SingleInstance -> SingleInstanceSpecRunner(
+            ExecutionContext(configuration),
+            listener,
+            testLauncher(spec)
+         )
+         IsolationMode.InstancePerTest -> InstancePerTestSpecRunner(
+            ExecutionContext(configuration),
+            listener,
+            testLauncher(spec)
+         )
          IsolationMode.InstancePerLeaf -> when (val threads = spec.resolvedThreads()) {
-            null, 0, 1 -> InstancePerLeafSpecRunner(listener, testLauncher(spec))
-            else -> ConcurrentInstancePerLeafSpecRunner(listener, threads)
+            null, 0, 1 -> InstancePerLeafSpecRunner(ExecutionContext(configuration), listener, testLauncher(spec))
+            else -> ConcurrentInstancePerLeafSpecRunner(ExecutionContext(configuration), listener, threads)
          }
       }
    }

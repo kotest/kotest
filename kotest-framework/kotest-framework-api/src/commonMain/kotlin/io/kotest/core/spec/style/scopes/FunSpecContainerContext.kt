@@ -1,6 +1,8 @@
 package io.kotest.core.spec.style.scopes
 
 import io.kotest.common.ExperimentalKotest
+import io.kotest.core.execution.ExecutionContext
+import io.kotest.core.plan.createTestName
 import io.kotest.core.spec.KotestDsl
 import io.kotest.core.spec.resolvedDefaultConfig
 import io.kotest.core.test.NestedTest
@@ -8,11 +10,7 @@ import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestContext
 import io.kotest.core.test.TestType
 import io.kotest.core.test.createNestedTest
-import io.kotest.core.test.createTestName
 import kotlin.coroutines.CoroutineContext
-
-@Deprecated("This interface has been renamed to FunSpecContainerContext. This alias will be removed in 4.8")
-typealias FunSpecContextScope = FunSpecContainerContext
 
 /**
  * A context that allows tests to be registered using the syntax:
@@ -29,6 +27,7 @@ class FunSpecContainerContext(
 
    override val testCase: TestCase = testContext.testCase
    override val coroutineContext: CoroutineContext = testContext.coroutineContext
+   override val executionContext: ExecutionContext = testContext.executionContext
    override suspend fun registerTestCase(nested: NestedTest) = testContext.registerTestCase(nested)
 
    override suspend fun addTest(name: String, type: TestType, test: suspend TestContext.() -> Unit) {
@@ -48,7 +47,6 @@ class FunSpecContainerContext(
             xdisabled = false,
             config = testCase.spec.resolvedDefaultConfig(),
             type = TestType.Container,
-            descriptor = null,
             factoryId = testCase.factoryId,
             test = { FunSpecContainerContext(this).test() }
          )
@@ -76,7 +74,6 @@ class FunSpecContainerContext(
             xdisabled = true,
             config = testCase.spec.resolvedDefaultConfig(),
             type = TestType.Container,
-            descriptor = null,
             factoryId = testCase.factoryId,
             test = { FunSpecContainerContext(this).test() }
          )
@@ -94,7 +91,7 @@ class FunSpecContainerContext(
     * Adds a test case to this context, expecting config.
     */
    suspend fun test(name: String): TestWithConfigBuilder {
-      TestDslState.startTest(testContext.testCase.description.appendTest(name))
+      TestDslState.startTest(testContext.testCase.descriptor.testPath().append(name))
       return TestWithConfigBuilder(
          createTestName(name),
          testContext,
@@ -107,7 +104,7 @@ class FunSpecContainerContext(
     * Adds a disabled test case to this context, expecting config.
     */
    suspend fun xtest(name: String): TestWithConfigBuilder {
-      TestDslState.startTest(testContext.testCase.description.appendTest(name))
+      TestDslState.startTest(testContext.testCase.descriptor.testPath().append(name))
       return TestWithConfigBuilder(
          createTestName(name),
          testContext,
@@ -126,7 +123,6 @@ class FunSpecContainerContext(
             xdisabled = false,
             config = testCase.spec.resolvedDefaultConfig(),
             type = TestType.Test,
-            descriptor = null,
             factoryId = testCase.factoryId,
             test = test,
          )
@@ -142,7 +138,6 @@ class FunSpecContainerContext(
             xdisabled = true,
             config = testCase.spec.resolvedDefaultConfig(),
             type = TestType.Test,
-            descriptor = null,
             factoryId = testCase.factoryId,
             test = test,
          )

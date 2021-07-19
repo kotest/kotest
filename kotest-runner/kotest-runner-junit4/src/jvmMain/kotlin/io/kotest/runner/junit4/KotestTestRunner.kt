@@ -1,5 +1,7 @@
 package io.kotest.runner.junit4
 
+import io.kotest.core.config.configuration
+import io.kotest.core.execution.ExecutionContext
 import io.kotest.core.spec.Spec
 import io.kotest.engine.spec.materializeAndOrderRootTests
 import io.kotest.engine.KotestEngineLauncher
@@ -31,7 +33,8 @@ class KotestTestRunner(
             is Success -> {
                val spec = it.value
                val desc = Description.createSuiteDescription(spec::class.java)
-               spec.materializeAndOrderRootTests().forEach { rootTest -> desc.addChild(describeTestCase(rootTest.testCase)) }
+               spec.materializeAndOrderRootTests(ExecutionContext(configuration))
+                  .forEach { rootTest -> desc.addChild(describeTestCase(rootTest.testCase)) }
                desc
             }
          }

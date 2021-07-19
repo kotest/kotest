@@ -1,10 +1,7 @@
 package io.kotest.core.spec.style.scopes
 
+import io.kotest.core.plan.createTestName
 import io.kotest.core.spec.KotestDsl
-import io.kotest.core.test.createTestName
-
-@Deprecated("Renamed to FeatureSpecRootContext. This typealias will be removed in 4.8")
-typealias FeatureSpecRootScope = FeatureSpecRootContext
 
 /**
  * A scope that allows root tests to be registered using the syntax:
@@ -20,7 +17,7 @@ interface FeatureSpecRootContext : RootContext {
    fun xfeature(name: String, test: suspend FeatureSpecContainerContext.() -> Unit) = addFeature(name, true, test)
 
    fun addFeature(name: String, xdisabled: Boolean, test: suspend FeatureSpecContainerContext.() -> Unit) {
-      val testName = createTestName("Feature: ", name, false)
+      val testName = createTestName(name, "Feature: ", null, false)
       registration().addContainerTest(testName, xdisabled = xdisabled) {
          FeatureSpecContainerContext(this).test()
       }

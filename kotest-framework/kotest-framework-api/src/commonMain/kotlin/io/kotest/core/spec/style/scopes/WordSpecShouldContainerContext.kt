@@ -1,6 +1,7 @@
 package io.kotest.core.spec.style.scopes
 
 import io.kotest.core.Tag
+import io.kotest.core.execution.ExecutionContext
 import io.kotest.core.extensions.TestCaseExtension
 import io.kotest.core.spec.KotestDsl
 import io.kotest.core.spec.resolvedDefaultConfig
@@ -11,12 +12,9 @@ import io.kotest.core.test.TestCaseSeverityLevel
 import io.kotest.core.test.TestContext
 import io.kotest.core.test.TestType
 import io.kotest.core.test.createNestedTest
-import io.kotest.core.test.createTestName
+import io.kotest.core.plan.createTestName
 import kotlin.coroutines.CoroutineContext
 import kotlin.time.Duration
-
-@Deprecated("This interface has been renamed to WordSpecShouldContainerContext. This alias will be removed in 4.8")
-typealias WordSpecShouldScope = WordSpecShouldContainerContext
 
 /**
  * A scope that allows tests to be registered using the syntax:
@@ -35,6 +33,7 @@ class WordSpecShouldContainerContext(
 
    override val testCase: TestCase = testContext.testCase
    override val coroutineContext: CoroutineContext = testContext.coroutineContext
+   override val executionContext: ExecutionContext = testContext.executionContext
    override suspend fun registerTestCase(nested: NestedTest) = testContext.registerTestCase(nested)
 
    override suspend fun addTest(name: String, type: TestType, test: suspend TestContext.() -> Unit) {
@@ -80,7 +79,6 @@ class WordSpecShouldContainerContext(
             xdisabled = false,
             config = testCase.spec.resolvedDefaultConfig(),
             type = TestType.Test,
-            descriptor = null,
             factoryId = testCase.factoryId,
             test = { WordSpecTerminalContext(this).test() }
          )
