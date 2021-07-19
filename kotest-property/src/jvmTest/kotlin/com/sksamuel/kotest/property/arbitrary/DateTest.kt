@@ -3,6 +3,7 @@ package com.sksamuel.kotest.property.arbitrary
 import io.kotest.core.spec.style.WordSpec
 import io.kotest.matchers.collections.shouldContain
 import io.kotest.matchers.collections.shouldContainAll
+import io.kotest.matchers.date.shouldBeAfter
 import io.kotest.matchers.shouldBe
 import io.kotest.property.Arb
 import io.kotest.property.RandomSource
@@ -39,6 +40,12 @@ class DateTest : WordSpec({
          years shouldBe setOf(1998, 1999)
          months shouldBe (1..12).toSet()
          days shouldBe (1..31).toSet()
+      }
+
+      "generate LocalDates after the minYear" {
+         checkAll(100_000, Arb.localDate(LocalDate.of(2021, 7, 17))) {
+            it shouldBeAfter LocalDate.of(2021, 7, 16)
+         }
       }
 
       "Contain Feb 29th if leap year" {
