@@ -1,13 +1,13 @@
 package io.kotest.engine.script
 
 import io.kotest.core.config.configuration
-import io.kotest.core.internal.TestCaseExecutor
+import io.kotest.engine.test.TestCaseExecutor
 import io.kotest.core.plan.Descriptor
 import io.kotest.core.plan.toDescriptor
 import io.kotest.core.script.ScriptRuntime
 import io.kotest.core.test.NestedTest
 import io.kotest.core.test.TestCase
-import io.kotest.core.test.TestCaseExecutionListener
+import io.kotest.engine.test.TestCaseExecutionListener
 import io.kotest.core.test.TestContext
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.createTestName
@@ -16,7 +16,7 @@ import io.kotest.engine.ExecutorExecutionContext
 import io.kotest.engine.NotificationManager
 import io.kotest.engine.listener.TestEngineListener
 import io.kotest.engine.test.DuplicateTestNameHandler
-import io.kotest.engine.toTestResult
+import io.kotest.engine.test.toTestResult
 import io.kotest.fp.Try
 import io.kotest.mpp.log
 import java.util.concurrent.ConcurrentHashMap

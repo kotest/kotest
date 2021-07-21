@@ -20,7 +20,7 @@ interface TestEngineListener {
     *
     * @param classes the [Spec] classes that will be used by the [KotestEngine].
     */
-   fun engineStarted(classes: List<KClass<out Spec>>) {}
+   fun engineStarted(classes: List<KClass<*>>) {}
 
    /**
     * Is invoked when the [KotestEngine] has finished execution.
@@ -34,7 +34,7 @@ interface TestEngineListener {
     * Is invoked once per [Spec] to indicate that this spec is about to
     * begin execution.
     */
-   fun specStarted(kclass: KClass<out Spec>) {
+   fun specStarted(kclass: KClass<*>) {
    }
 
    /**
@@ -51,7 +51,7 @@ interface TestEngineListener {
     * @param t if not null, then an error that occured when trying to execute this spec
     * @param results if t is null, then the results of the tests that were submitted.
     */
-   fun specFinished(kclass: KClass<out Spec>, t: Throwable?, results: Map<TestCase, TestResult>) {
+   fun specFinished(kclass: KClass<*>, t: Throwable?, results: Map<TestCase, TestResult>) {
    }
 
    @ExperimentalKotest
@@ -63,13 +63,13 @@ interface TestEngineListener {
    }
 
    /**
-    * Invoked if a [TestCase] is about to be executed (is active).
+    * Invoked if a [TestCase] is about to be executed.
     * Will not be invoked if the test is ignored.
     */
    fun testStarted(testCase: TestCase) {}
 
    /**
-    * Invoked if a [TestCase] is about to be executed (is active).
+    * Invoked if a [TestCase] is about to be executed.
     * Will not be invoked if the test is ignored.
     */
    @ExperimentalKotest
@@ -77,7 +77,7 @@ interface TestEngineListener {
    }
 
    /**
-    * Invoked if a [TestCase] will not be executed because it is ignored (not active).
+    * Invoked if a [TestCase] will not be executed because it is not enabled.
     */
    fun testIgnored(testCase: TestCase, reason: String?) {}
 
@@ -102,7 +102,7 @@ interface TestEngineListener {
     */
    fun specInstantiated(spec: Spec) {}
 
-   fun specInstantiationError(kclass: KClass<out Spec>, t: Throwable) {}
+   fun specInstantiationError(kclass: KClass<*>, t: Throwable) {}
 
 }
 

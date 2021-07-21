@@ -50,7 +50,7 @@ fun Arb.Companion.double(
  */
 fun Arb.Companion.positiveDouble(max: Double = Double.MAX_VALUE): Arb<Double> = double(Double.MIN_VALUE, max)
 
-@Deprecated("use positiveDouble", ReplaceWith("positiveDouble"))
+@Deprecated("use positiveDouble", ReplaceWith("positiveDouble()"))
 fun Arb.Companion.positiveDoubles(): Arb<Double> = positiveDouble()
 
 /**
@@ -60,7 +60,7 @@ fun Arb.Companion.positiveDoubles(): Arb<Double> = positiveDouble()
  */
 fun Arb.Companion.negativeDouble(min: Double = -Double.MAX_VALUE): Arb<Double> = double(min, -Double.MIN_VALUE)
 
-@Deprecated("use negativeDouble", ReplaceWith("negativeDouble"))
+@Deprecated("use negativeDouble", ReplaceWith("negativeDouble()"))
 fun Arb.Companion.negativeDoubles(): Arb<Double> = negativeDouble()
 
 /**
@@ -77,7 +77,7 @@ fun Arb.Companion.numericDouble(
    (numericEdgeCases.filter { it in (min..max) } + listOf(min, max)).distinct(), DoubleShrinker
 ) { it.random.nextDouble(min, max) }
 
-@Deprecated("use numericDouble", ReplaceWith("numericDouble"))
+@Deprecated("use numericDouble", ReplaceWith("numericDouble(from, to)"))
 fun Arb.Companion.numericDoubles(from: Double = -Double.MAX_VALUE, to: Double = Double.MAX_VALUE): Arb<Double> =
    numericDouble(from, to)
 

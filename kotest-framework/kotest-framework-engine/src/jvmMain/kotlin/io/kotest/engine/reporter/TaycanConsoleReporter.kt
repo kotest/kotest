@@ -1,7 +1,6 @@
 package io.kotest.engine.reporter
 
 import com.github.ajalt.mordant.TermColors
-import io.kotest.core.spec.Spec
 import io.kotest.core.spec.toDescription
 import io.kotest.core.test.Description
 import io.kotest.core.test.TestCase
@@ -70,7 +69,7 @@ class TaycanConsoleReporter : ConsoleReporter {
       "I test code and chew bubblegum, and I'm all out of bubblegum"
    )
 
-   override fun engineStarted(classes: List<KClass<out Spec>>) {
+   override fun engineStarted(classes: List<KClass<*>>) {
       println(bold(">> Kotest"))
       println("- " + intros.shuffled().first())
       print("- Test plan has ")
@@ -165,14 +164,14 @@ class TaycanConsoleReporter : ConsoleReporter {
       println("${testsPassed + testsFailed.size + testsIgnored} total")
    }
 
-   override fun specStarted(kclass: KClass<out Spec>) {
+   override fun specStarted(kclass: KClass<*>) {
       specsSeen = specsSeen + kclass.toDescription()
       val specCount = specsSeen.size
       print(bold("$specCount. ".padEnd(4, ' ')))
       println(bold(kclass.toDescription().displayName()))
    }
 
-   override fun specFinished(kclass: KClass<out Spec>, t: Throwable?, results: Map<TestCase, TestResult>) {
+   override fun specFinished(kclass: KClass<*>, t: Throwable?, results: Map<TestCase, TestResult>) {
       if (t != null) {
          errors++
          specsFailed = specsFailed + kclass.toDescription()

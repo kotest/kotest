@@ -3,6 +3,7 @@ package com.sksamuel.kotest.property.arbitrary
 import io.kotest.core.spec.style.WordSpec
 import io.kotest.matchers.collections.shouldContain
 import io.kotest.matchers.collections.shouldContainAll
+import io.kotest.matchers.date.shouldBeAfter
 import io.kotest.matchers.shouldBe
 import io.kotest.property.Arb
 import io.kotest.property.RandomSource
@@ -41,12 +42,18 @@ class DateTest : WordSpec({
          days shouldBe (1..31).toSet()
       }
 
+      "generate LocalDates after the minYear" {
+         checkAll(100_000, Arb.localDate(LocalDate.of(2021, 7, 17))) {
+            it shouldBeAfter LocalDate.of(2021, 7, 16)
+         }
+      }
+
       "Contain Feb 29th if leap year" {
          val leapYear = 2016
          Arb.localDate(LocalDate.of(leapYear, 1, 1), LocalDate.of(leapYear, 12, 31)).edgecases().toList() shouldContain LocalDate.of(2016, 2, 29)
       }
 
-      "Contain the edgecases Feb 28, Jan 01 and Dec 31" {
+      "Contain the edge cases Feb 28, Jan 01 and Dec 31" {
          Arb.localDate(LocalDate.of(2019, 1, 1), LocalDate.of(2020, 12, 31)).edgecases().toList() shouldContainAll listOf(
             LocalDate.of(2019, 1, 1),
             LocalDate.of(2020, 12, 31)
@@ -84,7 +91,6 @@ class DateTest : WordSpec({
          val seconds = mutableSetOf<Int>()
 
          checkAll(5000, Arb.localDateTime(1998, 1999)) {
-            println(it)
             years += it.year
             months += it.monthValue
             days += it.dayOfMonth

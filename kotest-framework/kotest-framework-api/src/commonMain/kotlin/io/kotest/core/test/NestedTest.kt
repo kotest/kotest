@@ -1,8 +1,8 @@
 package io.kotest.core.test
 
-import io.kotest.core.factory.FactoryId
 import io.kotest.core.SourceRef
 import io.kotest.core.config.configuration
+import io.kotest.core.factory.FactoryId
 import io.kotest.core.plan.Descriptor
 import io.kotest.core.sourceRef
 import io.kotest.core.spec.Spec
@@ -53,7 +53,6 @@ fun NestedTest.toTestCase(spec: Spec, parent: TestCase, name: DescriptionName.Te
       type = type,
       config = config,
       factoryId = factoryId,
-      assertionMode = null,
       descriptor = descriptor,
       parent = parent,
    )

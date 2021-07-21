@@ -4,7 +4,7 @@ import io.kotest.core.spec.TestCaseExtensionFn
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestStatus
-import io.kotest.engine.toTestResult
+import io.kotest.engine.test.toTestResult
 import kotlinx.coroutines.delay
 
 class SystemPropertyTimeoutTest : FunSpec() {

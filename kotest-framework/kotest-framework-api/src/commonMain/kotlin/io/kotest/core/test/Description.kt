@@ -25,7 +25,7 @@ sealed class Description {
    abstract val testId: TestId
 
    data class Spec(
-      val kclass: KClass<out io.kotest.core.spec.Spec>,
+      val kclass: KClass<*>,
       override val name: DescriptionName.SpecName
    ) : Description() {
       override val testId: TestId = TestId(kclass.bestName())

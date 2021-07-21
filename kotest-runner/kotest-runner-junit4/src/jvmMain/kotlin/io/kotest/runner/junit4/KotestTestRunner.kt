@@ -1,7 +1,7 @@
 package io.kotest.runner.junit4
 
 import io.kotest.core.spec.Spec
-import io.kotest.core.spec.materializeAndOrderRootTests
+import io.kotest.engine.spec.materializeAndOrderRootTests
 import io.kotest.engine.KotestEngineLauncher
 import io.kotest.engine.spec.createAndInitializeSpec
 import io.kotest.fp.Try.Failure

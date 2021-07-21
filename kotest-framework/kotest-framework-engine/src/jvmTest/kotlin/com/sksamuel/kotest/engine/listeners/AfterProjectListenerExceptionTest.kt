@@ -1,7 +1,7 @@
 package com.sksamuel.kotest.engine.listeners
 
 import io.kotest.core.config.configuration
-import io.kotest.core.listeners.AfterProjectListenerException
+import io.kotest.engine.lifecycle.AfterProjectListenerException
 import io.kotest.engine.KotestEngineLauncher
 import io.kotest.engine.listener.TestEngineListener
 import io.kotest.core.listeners.ProjectListener

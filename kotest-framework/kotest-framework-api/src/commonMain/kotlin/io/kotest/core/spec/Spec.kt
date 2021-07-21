@@ -1,23 +1,15 @@
 package io.kotest.core.spec
 
+import io.kotest.common.ExperimentalKotest
 import io.kotest.core.SpecFunctionCallbacks
 import io.kotest.core.SpecFunctionConfiguration
 import io.kotest.core.Tag
 import io.kotest.core.TestConfiguration
 import io.kotest.core.config.Configuration
-import io.kotest.common.ExperimentalKotest
 import io.kotest.core.config.configuration
-import io.kotest.core.js.JsTest
-import io.kotest.core.js.useKotlinJs
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestCaseOrder
 import kotlin.js.JsName
-
-/**
- * This is needed to initialize the JS support for Kotest
- */
-@Suppress("unused")
-val initKotlinJsSupport = useKotlinJs()
 
 /**
  * The base class of all specs.
@@ -114,18 +106,6 @@ abstract class Spec : TestConfiguration(), SpecFunctionConfiguration, SpecFuncti
    fun declaredTestCaseOrder(): TestCaseOrder = this.testCaseOrder() ?: this.testOrder ?: configuration.testCaseOrder
 
    fun declaredTags(): Set<Tag> = tags() + _tags
-
-   /**
-    * The annotation [JsTest] is intercepted by the kotlin.js compiler and invoked in the generated
-    * javascript code. If the kotest framework adapter is installed, this will intercept the call
-    * and invokes the tests using the kotest engine.
-    *
-    * Kotest automatically installs a Javascript test-adapter to intercept calls to all tests and when
-    * this test is invoked, avoids passing it to the underlying javascript test framework. Instead it
-    * invokes the tests using the Kotest engine.
-    */
-   @JsTest
-   fun kotestJavascript() = this
 }
 
 fun Spec.resolvedDefaultConfig() = defaultTestCaseConfig() ?: defaultTestConfig ?: configuration.defaultTestConfig

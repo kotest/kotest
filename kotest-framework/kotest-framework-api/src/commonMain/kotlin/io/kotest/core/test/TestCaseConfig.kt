@@ -6,31 +6,6 @@ import io.kotest.core.extensions.TestCaseExtension
 import io.kotest.core.listeners.TestListener
 import kotlin.time.Duration
 
-typealias EnabledIf = (TestCase) -> Boolean
-typealias EnabledOrReasonIf = (TestCase) -> Enabled
-
-class Enabled private constructor(val isEnabled: Boolean, reason: String? = null) {
-   private val builder = StringBuilder(reason ?: "")
-   val reason get() = builder.trim().toString()
-
-   companion object {
-      val enabled = Enabled(true)
-      val disabled = Enabled(false, null)
-      fun disabled(reason: String) = Enabled(false, reason)
-
-      fun fold(es: Iterable<Enabled>): Enabled {
-         return es.fold(enabled) { acc, e ->
-            Enabled(acc.isEnabled && e.isEnabled, acc.reason).also {
-               if (!e.isEnabled) {
-                  it.builder.appendLine()
-                  it.builder.append(e.reason)
-               }
-            }
-         }
-      }
-   }
-}
-
 data class TestCaseConfig(
 
    /**
@@ -70,6 +45,13 @@ data class TestCaseConfig(
    val enabledIf: EnabledIf = { true },
    val severity: TestCaseSeverityLevel? = null,
    val enabledOrReasonIf: EnabledOrReasonIf = { Enabled.enabled },
+
+   // has no effect on leaf tests
+   val failfast: Boolean? = null,
+
+   // assertion mode can be set to control errors/warnings in a test
+   // if null, defaults will be applied
+   val assertionMode: AssertionMode? = null,
 ) {
    init {
       require(invocations > 0) { "Number of invocations must be greater than 0" }
@@ -83,7 +65,8 @@ val xdisabledMessage = Enabled.disabled("Test was disabled using xdisabled")
 /**
  * Returns a copy of this test config with the enabled flag set to false, if [xdisabled] is true.
  */
-fun TestCaseConfig.withXDisabled(xdisabled: Boolean) = if (xdisabled) copy(enabledOrReasonIf = { xdisabledMessage }) else this
+fun TestCaseConfig.withXDisabled(xdisabled: Boolean) =
+   if (xdisabled) copy(enabledOrReasonIf = { xdisabledMessage }) else this
 
 
 /**
@@ -118,6 +101,12 @@ data class TestContainerConfig(
     * [Tag]s that are applied to this test case and nested tests.
     */
    val tags: Set<Tag> = emptySet(),
+
+   /**
+    * When set to true, a failing nested test will cause any further nested tests to be skippped.
+    * If null, then the value of the parent context will be used.
+    */
+   val failfast: Boolean? = null,
 )
 
 @ExperimentalKotest
@@ -127,7 +116,8 @@ fun TestCaseConfig.toTestContainerConfig() =
       enabledIf = enabledIf,
       enabledOrReasonIf = enabledOrReasonIf,
       tags = tags,
-      timeout = timeout
+      timeout = timeout,
+      failfast = failfast,
    )
 
 @ExperimentalKotest
@@ -140,5 +130,6 @@ fun TestContainerConfig.toTestCaseConfig() =
       timeout = this.timeout,
       invocationTimeout = null,
       listeners = emptyList(),
-      extensions = emptyList()
+      extensions = emptyList(),
+      failfast = failfast,
    )

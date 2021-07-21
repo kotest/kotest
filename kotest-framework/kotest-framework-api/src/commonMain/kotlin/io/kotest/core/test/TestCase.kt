@@ -1,7 +1,7 @@
 package io.kotest.core.test
 
-import io.kotest.core.SourceRef
 import io.kotest.common.ExperimentalKotest
+import io.kotest.core.SourceRef
 import io.kotest.core.factory.FactoryId
 import io.kotest.core.internal.tags.allTags
 import io.kotest.core.plan.Descriptor
@@ -48,9 +48,6 @@ data class TestCase(
    val config: TestCaseConfig = TestCaseConfig(),
    // an optional factory id which is used to indicate which factory (if any) generated this test case.
    val factoryId: FactoryId? = null,
-   // assertion mode can be set to control errors/warnings in a test
-   // if null, defaults will be applied
-   val assertionMode: AssertionMode? = null,
 
    // only set for scripts
    @ExperimentalKotest val descriptor: Descriptor.TestDescriptor? = null,
@@ -80,7 +77,6 @@ data class TestCase(
             type = TestType.Test,
             config = TestCaseConfig(),
             factoryId = null,
-            assertionMode = null,
             parent = parent,
          )
 
@@ -100,10 +96,10 @@ data class TestCase(
          type = TestType.Container,
          config = TestCaseConfig(),
          factoryId = null,
-         assertionMode = null,
          parent = parent,
       )
 
+      // todo this should move to runtime inside the runners
       fun appendTagsInDisplayName(testCase: TestCase): TestCase {
          val tagNames = testCase.allTags().joinToString(", ")
 

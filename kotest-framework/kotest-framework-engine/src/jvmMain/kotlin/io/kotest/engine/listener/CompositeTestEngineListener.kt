@@ -16,7 +16,7 @@ class CompositeTestEngineListener(private val listeners: List<TestEngineListener
       require(listeners.isNotEmpty())
    }
 
-   override fun engineStarted(classes: List<KClass<out Spec>>) {
+   override fun engineStarted(classes: List<KClass<*>>) {
       listeners.forEach { it.engineStarted(classes) }
    }
 
@@ -24,11 +24,11 @@ class CompositeTestEngineListener(private val listeners: List<TestEngineListener
       listeners.forEach { it.engineFinished(t) }
    }
 
-   override fun specStarted(kclass: KClass<out Spec>) {
+   override fun specStarted(kclass: KClass<*>) {
       listeners.forEach { it.specStarted(kclass) }
    }
 
-   override fun specFinished(kclass: KClass<out Spec>, t: Throwable?, results: Map<TestCase, TestResult>) {
+   override fun specFinished(kclass: KClass<*>, t: Throwable?, results: Map<TestCase, TestResult>) {
       listeners.forEach { it.specFinished(kclass, t, results) }
    }
 
@@ -72,7 +72,7 @@ class CompositeTestEngineListener(private val listeners: List<TestEngineListener
       listeners.forEach { it.specInstantiated(spec) }
    }
 
-   override fun specInstantiationError(kclass: KClass<out Spec>, t: Throwable) {
+   override fun specInstantiationError(kclass: KClass<*>, t: Throwable) {
       listeners.forEach { it.specInstantiationError(kclass, t) }
    }
 }

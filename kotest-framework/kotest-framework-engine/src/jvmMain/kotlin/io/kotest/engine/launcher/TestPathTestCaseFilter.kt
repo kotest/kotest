@@ -18,12 +18,26 @@ class TestPathTestCaseFilter(
    spec: KClass<out Spec>,
 ) : TestFilter {
 
-   private val target = testPath.split(TestPathSeparator)
+   private val target1 = testPath.split(TestPathSeparator)
       .fold(spec.toDescription() as Description) { desc, name -> desc.appendTest(name) }
+
+   // this is a hack where we append "should" to the first name, until 5.0 where we will
+   // store names with affixes separately (right now word spec is adding them to the names at source)
+   var should = true
+   private val target2 = testPath.split(TestPathSeparator)
+      .fold(spec.toDescription() as Description) { desc, name ->
+         if (should) {
+            should = false
+            desc.appendTest("$name should")
+         } else desc.appendTest(name)
+      }
 
    override fun filter(description: Description): TestFilterResult {
       return when {
-         target.isOnPath(description) || description.isOnPath(target) -> TestFilterResult.Include
+         target1.isOnPath(description) ||
+            target2.isOnPath(description) ||
+            description.isOnPath(target1) ||
+            description.isOnPath(target2) -> TestFilterResult.Include
          else -> TestFilterResult.Exclude
       }
    }

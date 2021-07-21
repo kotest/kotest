@@ -1,6 +1,5 @@
 package io.kotest.engine.launcher
 
-import io.kotest.core.spec.Spec
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.engine.listener.TestEngineListener
@@ -12,7 +11,7 @@ import kotlin.reflect.KClass
  */
 class ReporterTestEngineListener(private val reporter: Reporter) : TestEngineListener {
 
-   override fun engineStarted(classes: List<KClass<out Spec>>) {
+   override fun engineStarted(classes: List<KClass<*>>) {
       reporter.engineStarted(classes)
    }
 
@@ -20,11 +19,11 @@ class ReporterTestEngineListener(private val reporter: Reporter) : TestEngineLis
       reporter.engineFinished(t)
    }
 
-   override fun specStarted(kclass: KClass<out Spec>) {
+   override fun specStarted(kclass: KClass<*>) {
       reporter.specStarted(kclass)
    }
 
-   override fun specFinished(kclass: KClass<out Spec>, t: Throwable?, results: Map<TestCase, TestResult>) {
+   override fun specFinished(kclass: KClass<*>, t: Throwable?, results: Map<TestCase, TestResult>) {
       reporter.specFinished(kclass, t, results)
    }
 

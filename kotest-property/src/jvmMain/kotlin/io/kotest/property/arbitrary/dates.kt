@@ -48,20 +48,22 @@ fun Arb.Companion.localDate(
    maxDate: LocalDate = LocalDate.of(2030, 12, 31)
 ): Arb<LocalDate> {
 
-   val yearRange = (minDate.year..maxDate.year)
-   val feb28Date = LocalDate.of(yearRange.random(), 2, 28)
+   val feb28DateThisYear = LocalDate.of(LocalDate.now().year, 2, 28)
+   val minDateYear = if (minDate.isBefore(feb28DateThisYear)) minDate.year else minDate.year + 1
+   val yearRange = (minDateYear..maxDate.year)
 
+   val feb28Date = LocalDate.of(yearRange.random(), 2, 28)
    val feb29Year = yearRange.firstOrNull { Year.of(it).isLeap }
    val feb29Date = feb29Year?.let { LocalDate.of(it, 2, 29) }
 
-   val edgecases = listOfNotNull(
+   val edgeCases = listOfNotNull(
       feb28Date,
       feb29Date,
       LocalDate.of(minDate.year, minDate.month, minDate.dayOfMonth),
       LocalDate.of(maxDate.year, maxDate.month, maxDate.dayOfMonth)
    )
 
-   return arbitrary(edgecases) {
+   return arbitrary(edgeCases) {
       val minDateGenerated = LocalDate.of(minDate.year, minDate.month, minDate.dayOfMonth)
       val maxDateGenerated = LocalDate.of(maxDate.year, maxDate.month, maxDate.dayOfMonth)
       val days = ChronoUnit.DAYS.between(minDateGenerated, maxDateGenerated)

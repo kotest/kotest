@@ -34,6 +34,7 @@ internal fun TestCaseConfig.deriveTestCaseConfig(
    threads = threads ?: this.threads,
    severity = severity ?: this.severity,
    enabledOrReasonIf = enabledOrReasonIf ?: this.enabledOrReasonIf,
+   failfast = failfast,
 )
 
 /**
@@ -47,10 +48,12 @@ internal fun TestContainerConfig.deriveTestContainerConfig(
    enabledOrReasonIf: EnabledOrReasonIf? = null,
    tags: Set<Tag>? = null,
    timeout: Duration? = null,
+   failfast: Boolean? = null,
 ) = TestContainerConfig(
    tags = tags ?: this.tags,
    timeout = timeout ?: this.timeout,
    enabled = enabled ?: this.enabled,
    enabledIf = enabledIf ?: this.enabledIf,
    enabledOrReasonIf = enabledOrReasonIf ?: this.enabledOrReasonIf,
+   failfast = failfast,
 )

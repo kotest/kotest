@@ -9,7 +9,6 @@ import io.kotest.core.test.TestContext
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestType
 import io.kotest.core.test.DescriptionName
-import io.kotest.core.test.TestCaseOrder
 import io.kotest.core.test.createRootTestCase
 import io.kotest.core.test.createTestName
 import io.kotest.mpp.unwrapIfReflectionCall

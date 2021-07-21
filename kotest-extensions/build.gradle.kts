@@ -31,6 +31,7 @@ kotlin {
 
       val jvmMain by getting {
          dependencies {
+            implementation(kotlin("reflect"))
             implementation(project(Projects.Api))
             implementation(project(Projects.Engine))
             implementation(project(Projects.Common))

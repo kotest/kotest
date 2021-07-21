@@ -1,7 +1,6 @@
 package io.kotest.engine.reporter
 
 import com.github.ajalt.mordant.TermColors
-import io.kotest.core.spec.Spec
 import io.kotest.core.spec.toDescription
 import io.kotest.core.test.Description
 import io.kotest.core.test.TestCase
@@ -76,9 +75,9 @@ class MochaConsoleReporter(
       return term.brightRed("$margin\tcause: $message (${testCase.source.fileName}:${testCase.source.lineNumber})")
    }
 
-   override fun specStarted(kclass: KClass<out Spec>) {}
+   override fun specStarted(kclass: KClass<*>) {}
 
-   override fun specFinished(kclass: KClass<out Spec>, t: Throwable?, results: Map<TestCase, TestResult>) {
+   override fun specFinished(kclass: KClass<*>, t: Throwable?, results: Map<TestCase, TestResult>) {
 
       n += 1
       val specDesc = kclass.toDescription()
@@ -116,7 +115,7 @@ class MochaConsoleReporter(
       println()
    }
 
-   override fun engineStarted(classes: List<KClass<out Spec>>) {
+   override fun engineStarted(classes: List<KClass<*>>) {
       start = System.currentTimeMillis()
    }
 

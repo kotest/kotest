@@ -1,6 +1,5 @@
 package io.kotest.engine.reporter
 
-import io.kotest.core.spec.Spec
 import io.kotest.core.spec.toDescription
 import io.kotest.core.test.Description
 import io.kotest.core.test.TestCase
@@ -18,7 +17,7 @@ class TeamCityConsoleReporter(private val prefix: String? = null) : Reporter {
    private fun locationHint(testCase: TestCase) =
       "kotest://" + testCase.spec.javaClass.canonicalName + ":" + testCase.source.lineNumber
 
-   private fun locationHint(kclass: KClass<out Spec>) =
+   private fun locationHint(kclass: KClass<*>) =
       "kotest://" + kclass.java.canonicalName + ":1"
 
    // intellij has no support for failed suites, so if a container or spec fails we must insert
@@ -42,7 +41,7 @@ class TeamCityConsoleReporter(private val prefix: String? = null) : Reporter {
 
    override fun hasErrors(): Boolean = errors
 
-   override fun specStarted(kclass: KClass<out Spec>) {
+   override fun specStarted(kclass: KClass<*>) {
       println()
       println(
          TeamCityMessages
@@ -53,7 +52,7 @@ class TeamCityConsoleReporter(private val prefix: String? = null) : Reporter {
       )
    }
 
-   override fun specFinished(kclass: KClass<out Spec>, t: Throwable?, results: Map<TestCase, TestResult>) {
+   override fun specFinished(kclass: KClass<*>, t: Throwable?, results: Map<TestCase, TestResult>) {
       println()
       val desc = kclass.toDescription()
       if (t == null) {
@@ -101,7 +100,7 @@ class TeamCityConsoleReporter(private val prefix: String? = null) : Reporter {
       }
    }
 
-   override fun engineStarted(classes: List<KClass<out Spec>>) {}
+   override fun engineStarted(classes: List<KClass<*>>) {}
 
    override fun engineFinished(t: List<Throwable>) {
       if (t.isNotEmpty()) {

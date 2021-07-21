@@ -1,8 +1,5 @@
 package io.kotest.core.internal
 
-@Deprecated("Renamed to KotestEngineProperties. Will be removed in 4.8")
-val KotestEngineSystemProperties = KotestEngineProperties
-
 object KotestEngineProperties {
 
    @Deprecated("Use the val from the spring extension module (io.kotest.extensions:kotest-extensions-spring")
@@ -52,6 +49,8 @@ object KotestEngineProperties {
    const val parallelism = "kotest.framework.parallelism"
 
    const val timeout = "kotest.framework.timeout"
+
+   const val projectTimeout = "kotest.framework.projectTimeout"
 
    const val invocationTimeout = "kotest.framework.invocation.timeout"
 

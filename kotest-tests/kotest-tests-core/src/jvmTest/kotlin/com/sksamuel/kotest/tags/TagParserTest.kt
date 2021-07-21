@@ -1,9 +1,9 @@
 package com.sksamuel.kotest.tags
 
 import io.kotest.core.spec.style.FunSpec
-import io.kotest.core.internal.tags.Expression
-import io.kotest.core.internal.tags.Parser
-import io.kotest.core.internal.tags.expression
+import io.kotest.engine.tags.Expression
+import io.kotest.engine.tags.Parser
+import io.kotest.engine.tags.expression
 import io.kotest.matchers.shouldBe
 
 class TagParserTest : FunSpec() {

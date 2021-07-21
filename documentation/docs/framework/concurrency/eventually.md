@@ -7,7 +7,7 @@ slug: eventually.html
 :::note New improved module
 Starting with Kotest 4.6, a new experimental module has been added which contains improved
 utilities for testing concurrent, asynchronous, or non-deterministic code. This module
-is `kotest-framework-concurrency` and is intended as a long term replaement for the previous module. The previous
+is `kotest-framework-concurrency` and is intended as a long term replacement for the previous module. The previous
 utilities are still available as part of the core framework.
 :::
 

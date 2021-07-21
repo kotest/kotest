@@ -59,7 +59,7 @@ class HtmlReporter(
          write(writer.buildClassDocument(testClass, "../index.html"), "classes/${testClass.name}.html")
       }
 
-      write({}.javaClass.getResource("/style.css").readText(), "css/style.css")
+      write({}.javaClass.getResource("/style.css").readText(), "./css/style.css")
    }
 
    private fun getTestResults(): Sequence<File> {

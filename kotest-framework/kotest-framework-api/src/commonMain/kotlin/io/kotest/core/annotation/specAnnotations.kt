@@ -38,6 +38,6 @@ annotation class Ignored
 @Retention(AnnotationRetention.RUNTIME)
 annotation class EnabledIf(val enabledIf: KClass<out EnabledCondition>)
 
-interface EnabledCondition {
+fun interface EnabledCondition {
     fun enabled(specKlass: KClass<out Spec>): Boolean
 }

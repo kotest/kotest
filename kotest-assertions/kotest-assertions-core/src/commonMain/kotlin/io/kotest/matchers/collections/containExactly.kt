@@ -1,5 +1,6 @@
 package io.kotest.matchers.collections
 
+import io.kotest.assertions.eq.eq
 import io.kotest.assertions.show.Printed
 import io.kotest.assertions.show.show
 import io.kotest.matchers.*
@@ -20,7 +21,7 @@ fun <T> containExactly(vararg expected: T): Matcher<Collection<T>?> = containExa
 /** Assert that a collection contains exactly the given values and nothing else, in order. */
 fun <T, C : Collection<T>> containExactly(expected: C): Matcher<C?> = neverNullMatcher { actual ->
 
-   val passed = actual.size == expected.size && actual.zip(expected).all { (a, b) -> a == b }
+   val passed = eq(actual, expected, strictNumberEq = true) == null
 
    val failureMessage = {
 

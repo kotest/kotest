@@ -12,7 +12,7 @@ import kotlinx.coroutines.runBlocking
  */
 class SynchronizedTestEngineListener(private val listener: TestEngineListener) : TestEngineListener {
 
-   override fun engineStarted(classes: List<KClass<out Spec>>) {
+   override fun engineStarted(classes: List<KClass<*>>) {
       synchronized(listener) {
          listener.engineStarted(classes)
       }
@@ -24,13 +24,13 @@ class SynchronizedTestEngineListener(private val listener: TestEngineListener) :
       }
    }
 
-   override fun specStarted(kclass: KClass<out Spec>) {
+   override fun specStarted(kclass: KClass<*>) {
       synchronized(listener) {
          listener.specStarted(kclass)
       }
    }
 
-   override fun specFinished(kclass: KClass<out Spec>, t: Throwable?, results: Map<TestCase, TestResult>) {
+   override fun specFinished(kclass: KClass<*>, t: Throwable?, results: Map<TestCase, TestResult>) {
       synchronized(listener) {
          listener.specFinished(kclass, t, results)
       }
@@ -60,7 +60,7 @@ class SynchronizedTestEngineListener(private val listener: TestEngineListener) :
       }
    }
 
-   override fun specInstantiationError(kclass: KClass<out Spec>, t: Throwable) {
+   override fun specInstantiationError(kclass: KClass<*>, t: Throwable) {
       synchronized(listener) {
          listener.specInstantiationError(kclass, t)
       }

@@ -4,25 +4,58 @@ sidebar_label: Changelog
 slug: changelog.html
 ---
 
-### [Next Release 5.0.0]
+### [Unreleased 5.0.0]
+
+_**Kotlin 1.5 is now the minimum supported version**_
 
 #### Breaking Changes
 
-* `Arb.values` has been removed. This was deprecated back in 4.3 in favour of `Arb.sample`. Any custom arbs that override this method should be updated. Any custom arbs that use the `arbitrary` builders are not affected.
-* The Engine no longer logs config to the console during start **by default**. To enable, set the system property `kotest.framework.dump.config` to true.
+* Javascript support has been reworked to support the IR compiler. The legacy compiler is no longer supported.
+* Native test support.
+* `Arb.values` has been removed. This was deprecated back in 4.3 in favour of `Arb.sample`. Any custom arbs that override this method should be updated. Any custom arbs that use the `arbitrary` builders are not affected. (#2277)
+* The Engine no longer logs config to the console during start **by default**. To enable, set the system property `kotest.framework.dump.config` to true. (#2276)
 * Removed deprecated `shouldReceiveWithin` and `shouldReceiveNoElementsWithin` channel matchers.
 * `equalJson` has an added parameter to support the new `shouldEqualSpecifiedJson` assertion
 
 #### Fixes
 
-* Finalize spec is now properly called in all situations #2272
+*
 * String matchers now also work on CharSequence where applicable #2278
-* Annotations such as @Ignore and @Isolate now work when composed #2279
+* Fix Arb.long/ulong producing values outside range (#2330)
 
 #### Improvements
 
-* Unfinished tests now error
-* Added `shouldEqualSpecifiedJson` to match a JSON structure on a subset of (specified) keys.
+* Failfast option added [see docs] #2243
+* Unfinished tests should error (#2281)
+* Added option to fail test run if no tests were executed (#2287)
+* Added @RequiresTag for improved spec exclude capability #1820
+* Change usages of Char.toInt() to Char.code for Kotlin 1.5. Migrate codepoints to Codepoint companion object. (#2283)
+* Generex has been replaced with Rgxgen #2323
+* Add fun interace to EnabledCondition #2343
+* In Project Config, `beforeAll` / `afterAll` are now deprecated and `beforeProject` / `afterProject`, which are suspend functions, have been added #2333
+* Improve Arb function naming (#2310)
+* Return the resulting value of the function block from shouldCompleteWithin (#2309)
+* tempdir: Delete temporary directories recursively (#2227)
+* Improve Arb.primitive consistency (#2299)
+* Add Arb.ints zero inclusive variants (#2294)
+* Add unsigned types for Arb (#2290)
+* Added `shouldEqualSpecifiedJson` to match a JSON structure on a subset of (specified) keys. (#2298)
+
+#### Deprecations
+
+* `beforeTest` / `afterTest` have been deprecated in favour of `beforeAny` / `afterAny`.
+* Datatest2 has been deprecated
+
+
+## 4.6.1 July 2021
+
+### Fixes
+
+* HTMLReporter - css not loading (href of the file is absolute, not relative) #2342
+* Annotations such as @Ignore and @Isolate now work when composed #2279
+* Finalize spec is now properly called in all situations #2272
+* Arb.bigDecimal bounds are not being honored #2357
+* Fix for running individual test using WordSpec inside intellij #2319
 
 ### 4.6.0 May 2021
 
@@ -74,7 +107,7 @@ See the full list of [extension modules](https://kotest.io/docs/extensions/exten
 * In order to ensure the `EventuallyListener` is called in `eventually` when an exception is thrown the `ListenerState` field `result` was changed
   from type `T` to type `T?`. This will allow insight into when the eventually producer function is failing for whatever reason
   instead of appearing as if it is hanging. #2190
-* Property tests now randomly cycle between edgecases and samples, rather than iterating all edgecases first. This allows greater number of edgecases to be used and avoids a combinatoral explosion. If you are implementing custom Arb's by extending the Arb class (instead of using the `arbitrary` builders), then you will need to adjust your edgecases method from `fun edgecases(): List<A>` to `fun edgecase(rs: RandomSource): A?`.
+* Property tests now randomly cycle between edge cases and samples, rather than iterating all edge cases first. This allows greater number of edge cases to be used and avoids a combinatoral explosion. If you are implementing custom Arb's by extending the Arb class (instead of using the `arbitrary` builders), then you will need to adjust your edge cases method from `fun edgecases(): List<A>` to `fun edgecase(rs: RandomSource): A?`.
 * Because of the above property test change, if you are setting a seed in a property test you may need to adjust the value.
 * The kotlin stdlib dependencies are now marked as `compileOnly`, meaning the version in your build will be used. Kotest tries to maintain compatibility across multiple versions by not relying on features only available in the latest releases.
 * Duplicated test names no longer throw an automatic error, but now mangle the name. So two tests of name 'foo' will appear as 'foo' and '(1) foo'. This enables data driven testing to work properly in javascript. To restore the original behavior, set the configuration value `Configuration.duplicateTestNameMode = Error`.
@@ -246,7 +279,7 @@ Note: Release 4.4.0 bumps the minimum required version of Kotlin to 1.4.21
 #### Bugfix
 
 * A Kotlin 1.4 specific method was added in 4.3.1 and reverted in 4.3.2
-* Arb.choose does not currently include edgecases from input arbs #1886
+* Arb.choose does not currently include edge cases from input arbs #1886
 * String shrinking is not being executed #1860
 * Arb.stringPattern slows down the test dramatically #1878
 * AssertionMode.Error doesn't work on FeatureSpec #1864
@@ -451,8 +484,8 @@ Note: Release 4.4.0 bumps the minimum required version of Kotlin to 1.4.21
 ### 4.0.5 April 2020
 
 * Bugfix: Focus mode would cause some nested tests to be ignored [#1376](https://github.com/kotest/kotest/issues/1376)
-* Bugfix: Arb.choice would include edgecases in the generated values [#1406](https://github.com/kotest/kotest/issues/1406)
-* Bugfix: Arb.int and Arb.long edgecases included values outside the specified ranged [#1405](https://github.com/kotest/kotest/issues/1405)
+* Bugfix: Arb.choice would include edge cases in the generated values [#1406](https://github.com/kotest/kotest/issues/1406)
+* Bugfix: Arb.int and Arb.long edge cases included values outside the specified ranged [#1405](https://github.com/kotest/kotest/issues/1405)
 
 ### 4.0.4 April 2020
 
@@ -946,7 +979,7 @@ uri should haveFragment("results")
 
 * **Arrow matcher module**
 
-A new module has been added which includes matchers for [Arrow](http://arrow-kt.io) - the popular and awesome
+A new module has been added which includes matchers for [Arrow](https://arrow-kt.io/) - the popular and awesome
  functional programming library for Kotlin. To include this module add `kotlintest-assertions-arrow` to your build.
 
 The included matchers are:

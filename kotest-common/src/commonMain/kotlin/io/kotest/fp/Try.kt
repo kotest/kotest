@@ -57,6 +57,7 @@ sealed class Try<out T> {
 
    fun getOrNull(): T? = fold({ null }, { it })
 
+   fun valueOrNull(): T? = fold({ null }, { it })
    fun errorOrNull(): Throwable? = fold({ it }, { null })
 }
 

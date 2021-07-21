@@ -43,17 +43,17 @@ class ChoiceTest : WordSpec({
             Arb.int().map { X.C(it) }
          )
       }
-      "combines the provided Arb instances edgecases" {
+      "combines the provided Arb instances edge cases" {
          val arb = Arb.choice(
             arbitrary(listOf(1, 2)) { 5 },
             arbitrary(listOf(3, 4)) { 6 }
          )
-         val edgecases = arb
+         val edgeCases = arb
             .generate(RandomSource.seeded(1234L), EdgeConfig(edgecasesGenerationProbability = 1.0))
             .take(10)
             .map { it.value }
             .toList()
-         edgecases shouldContainExactly listOf(
+         edgeCases shouldContainExactly listOf(
             2,
             2,
             3,
@@ -66,7 +66,7 @@ class ChoiceTest : WordSpec({
             3
          )
       }
-      "provides both edgecases and values when used as a Gen" {
+      "provides both edge cases and values when used as a Gen" {
          val values = mutableSetOf<Int>()
          forAll(
             Arb.choice(
@@ -79,7 +79,7 @@ class ChoiceTest : WordSpec({
          }
          values shouldBe setOf(1, 2, 3, 4)
       }
-      "edgecases should not be in Arb.samples" {
+      "edge cases should not be in Arb.samples" {
          val valueSet = Arb
             .choice(
                arbitrary(listOf(-1)) { 1 },

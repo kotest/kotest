@@ -9,7 +9,14 @@ slug: data-driven-testing.html
 This section covers the new and improved data test support that was released with Kotest 4.6.0. Before it can be used,
 you need to add the module `kotest-framework-datatest` to your build.
 
+This new module is currently under experimental stage and uses `ExperimentalKotest` annotation which means in your tests
+you might get warning regarding usage of `ExperimentalKotest`, in case you do not want this warning you will need to use
+either `@OptIn(ExperimentalKotest::class)` or `@ExperimentalKotest` annotation at your test method or test class.
+Along with that you will have to pass `-Xopt-in=kotlin.RequiresOptIn` compiler argument to your kotlin compiler using your build
+tool. In future release when this module will become more stable we will remove this `@ExperimentalKotest`.
+
 To view the documentation for the previous data test support, [click here](data_driven_testing_4.2.0.md)
+
 :::
 
 

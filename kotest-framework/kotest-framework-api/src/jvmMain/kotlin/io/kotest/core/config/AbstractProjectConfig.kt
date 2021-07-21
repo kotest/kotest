@@ -72,6 +72,12 @@ abstract class AbstractProjectConfig {
    open val invocationTimeout: Long? = null
 
    /**
+    * A timeout that is applied to the overall project if not null,
+    * if the sum duration of all the tests exceeds this the suite will fail.
+    */
+   open val projectTimeout: ProjectTimeout? = null
+
+   /**
     * The parallelism factor determines how many threads are used to launch tests.
     *
     * The tests inside the same spec are always executed using the same thread, to ensure
@@ -205,11 +211,25 @@ abstract class AbstractProjectConfig {
     * Executed before the first test of the project, but after the
     * [ProjectListener.beforeProject] methods.
     */
+   open suspend fun beforeProject() {}
+
+   /**
+    * Executed before the first test of the project, but after the
+    * [ProjectListener.beforeProject] methods.
+    */
+   @Deprecated(message = "use beforeProject", replaceWith = ReplaceWith("beforeProject"))
    open fun beforeAll() {}
 
    /**
     * Executed after the last test of the project, but before the
     * [ProjectListener.afterProject] methods.
     */
+   open suspend fun afterProject() {}
+
+   /**
+    * Executed after the last test of the project, but before the
+    * [ProjectListener.afterProject] methods.
+    */
+   @Deprecated(message = "use afterProject", replaceWith = ReplaceWith("afterProject"))
    open fun afterAll() {}
 }

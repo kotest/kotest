@@ -10,7 +10,7 @@ import io.kotest.property.Arb
 import io.kotest.property.arbitrary.edgecases
 import io.kotest.property.arbitrary.long
 import io.kotest.property.arbitrary.single
-import io.kotest.property.arbitrary.ulong
+import io.kotest.property.arbitrary.uLong
 import io.kotest.property.checkAll
 import io.kotest.property.checkCoverage
 
@@ -30,7 +30,7 @@ class LongTest : FunSpec({
       }
    }
 
-   test("Arb.long edgecases should respect min and max bounds") {
+   test("Arb.long edge cases should respect min and max bounds") {
       checkCoverage("run", 25.0) {
          checkAll<Long, Long> { min, max ->
             if (min < max) {
@@ -40,6 +40,14 @@ class LongTest : FunSpec({
                }
             }
          }
+      }
+   }
+
+   test("Arb.long generates values in range") {
+      val min = -140_737_488_355_328 // -2^47
+      val max = 140_737_488_355_327 // 2^47 - 1
+      checkAll(100_000, Arb.long(min, max)) { value ->
+         value.shouldBeBetween(min, max)
       }
    }
 })
@@ -53,21 +61,29 @@ class ULongTest : FunSpec({
          row(ULong.MIN_VALUE, ULong.MIN_VALUE + 10uL)
       ) { vMin, vMax ->
          val expectedValues = (vMin..vMax).toSet()
-         val actualValues = (1..100_000).map { Arb.ulong(vMin, vMax).single() }.toSet()
+         val actualValues = (1..100_000).map { Arb.uLong(vMin, vMax).single() }.toSet()
          actualValues shouldBe expectedValues
       }
    }
 
-   test("Arb.ulong edgecases should respect min and max bounds") {
+   test("Arb.uLong edge cases should respect min and max bounds") {
       checkCoverage("run", 25.0) {
          checkAll<ULong, ULong> { min, max ->
             if (min < max) {
                classify("run")
-               Arb.ulong(min..max).edgecases().forAll {
+               Arb.uLong(min..max).edgecases().forAll {
                   it.shouldBeBetween(min, max)
                }
             }
          }
+      }
+   }
+
+   test("Arb.uLong generates values in range") {
+      val min = 0uL
+      val max = 281_474_976_710_655u // 2^48 - 1
+      checkAll(100_000, Arb.uLong(min, max)) { value ->
+         value.shouldBeBetween(min, max)
       }
    }
 })

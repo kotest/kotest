@@ -31,8 +31,12 @@ fun Arb.Companion.long(min: Long = Long.MIN_VALUE, max: Long = Long.MAX_VALUE) =
  * provided range.
  */
 fun Arb.Companion.long(range: LongRange = Long.MIN_VALUE..Long.MAX_VALUE): Arb<Long> {
-   val edgecases = longArrayOf(range.first, -1, 0, 1, range.last).filter { it in range }.distinct()
-   return arbitrary(edgecases, LongShrinker(range)) { it.random.nextLong(range) }
+   val edgeCases = longArrayOf(range.first, -1, 0, 1, range.last).filter { it in range }.distinct()
+   return arbitrary(edgeCases, LongShrinker(range)) {
+      var value = it.random.nextLong(range)
+      while(value !in range) value = it.random.nextLong(range) // temporary workaround for KT-47304
+      value
+   }
 }
 
 /**
@@ -70,16 +74,20 @@ class ULongShrinker(val range: ULongRange) : Shrinker<ULong> {
  * Returns an [Arb] that produces [ULong]s from [min] to [max] (inclusive).
  * The edge cases are [min], 1 and [max] which are only included if they are in the provided range.
  */
-fun Arb.Companion.ulong(min: ULong = ULong.MIN_VALUE, max: ULong = ULong.MAX_VALUE) = ulong(min..max)
+fun Arb.Companion.uLong(min: ULong = ULong.MIN_VALUE, max: ULong = ULong.MAX_VALUE) = uLong(min..max)
 
 /**
  * Returns an [Arb] that produces [ULong]s in range.
  * The edge cases are [ULongRange.first], 1 and [ULongRange.last] which are only included if they are in the provided
  * range.
  */
-fun Arb.Companion.ulong(range: ULongRange = ULong.MIN_VALUE..ULong.MAX_VALUE): Arb<ULong> {
-   val edgecases = listOf(range.first, 1uL, range.last).filter { it in range }.distinct()
-   return arbitrary(edgecases, ULongShrinker(range)) { it.random.nextULong(range) }
+fun Arb.Companion.uLong(range: ULongRange = ULong.MIN_VALUE..ULong.MAX_VALUE): Arb<ULong> {
+   val edgeCases = listOf(range.first, 1uL, range.last).filter { it in range }.distinct()
+   return arbitrary(edgeCases, ULongShrinker(range)) {
+      var value = it.random.nextULong(range)
+      while(value !in range) value = it.random.nextULong(range) // temporary workaround for KT-47304
+      value
+   }
 }
 
 /**

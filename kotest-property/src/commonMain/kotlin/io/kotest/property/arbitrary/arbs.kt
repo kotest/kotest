@@ -6,19 +6,19 @@ import io.kotest.property.Sample
 
 /**
  * Returns a sequence of size [count] from values generated from this arb.
- * Edgecases will be ignored.
+ * Edge cases will be ignored.
  */
 fun <A> Arb<A>.take(count: Int, rs: RandomSource = RandomSource.default()): Sequence<A> =
    samples(rs).map { it.value }.take(count)
 
 /**
- * Returns a single value generated from this arb ignoring edgecases.
+ * Returns a single value generated from this arb ignoring edge cases.
  * Alias for next.
  */
 fun <A> Arb<A>.single(rs: RandomSource = RandomSource.default()): A = this.samples(rs).map { it.value }.first()
 
 /**
- * Returns a single value generated from this arb ignoring edgecases.
+ * Returns a single value generated from this arb ignoring edge cases.
  * Alias for single.
  */
 fun <A> Arb<A>.next(rs: RandomSource = RandomSource.default()): A = single(rs)

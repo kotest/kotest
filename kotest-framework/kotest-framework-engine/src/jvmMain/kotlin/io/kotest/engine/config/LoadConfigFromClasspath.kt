@@ -3,7 +3,6 @@ package io.kotest.engine.config
 import io.github.classgraph.ScanResult
 import io.kotest.core.config.AbstractProjectConfig
 import io.kotest.core.listeners.ProjectListener
-import io.kotest.fp.orElse
 import io.kotest.fp.toOption
 import io.kotest.mpp.instantiate
 
@@ -26,10 +25,12 @@ private fun AbstractProjectConfig.toDetectedConfig(): DetectedProjectConfig {
 
    val beforeAfterAllListener = object : ProjectListener {
       override suspend fun beforeProject() {
+         this@toDetectedConfig.beforeProject()
          this@toDetectedConfig.beforeAll()
       }
 
       override suspend fun afterProject() {
+         this@toDetectedConfig.afterProject()
          this@toDetectedConfig.afterAll()
       }
    }
@@ -58,6 +59,7 @@ private fun AbstractProjectConfig.toDetectedConfig(): DetectedProjectConfig {
       duplicateTestNameMode = duplicateTestNameMode.toOption(),
       testNameCase = testNameCase.toOption(),
       testNameRemoveWhitespace = testNameRemoveWhitespace.toOption(),
-      testNameAppendTags = testNameAppendTags.toOption()
+      testNameAppendTags = testNameAppendTags.toOption(),
+      projectTimeout = projectTimeout.toOption().map { it.toLongMilliseconds() },
    )
 }

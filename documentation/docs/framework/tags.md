@@ -15,7 +15,7 @@ object Linux : Tag()
 object Windows: Tag()
 ```
 
-Alternatively, tags can be defined using the `StringTag` class. When using this class, observe the following rules:
+Alternatively, tags can be defined using the `NamedTag` class. When using this class, observe the following rules:
 
 - A tag must not be null or blank.
 - A tag must not contain whitespace.
@@ -30,7 +30,7 @@ Alternatively, tags can be defined using the `StringTag` class. When using this 
 For example:
 
 ```kotlin
-val tag = StringTag("Linux")
+val tag = NamedTag("Linux")
 ```
 
 ## Marking Tests
@@ -172,6 +172,3 @@ val test by tasks.getting(Test::class) {
 ```
 
 This will guarantee that the system property is correctly read by the JVM
-
-
-

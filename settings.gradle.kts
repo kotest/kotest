@@ -4,7 +4,6 @@ pluginManagement {
    repositories {
       mavenCentral()
       gradlePluginPortal()
-      maven("https://dl.bintray.com/kotlin/kotlin-eap")
       jcenter()
    }
 }
@@ -24,9 +23,14 @@ include("kotest-framework:kotest-framework-concurrency")
 // brings in the API dependency for required data types
 include("kotest-framework:kotest-framework-discovery")
 
-// contains the JVM execution engine implementation
+// contains the execution engine implementation for jvm, js, native
 // brings in the API dependency
 include("kotest-framework:kotest-framework-engine")
+
+// compiler plugins to integrate tests with the engine
+include("kotest-framework:kotest-framework-compiler-plugin-js")
+include("kotest-framework:kotest-framework-compiler-plugin-native")
+include("kotest-framework:kotest-framework-compiler-plugin-gradle")
 
 // contains data driven testing that builds on top of the kotest test framework
 include("kotest-framework:kotest-framework-datatest")
@@ -94,12 +98,9 @@ include("kotest-tests:kotest-tests-native")
 include("kotest-bom")
 
 plugins {
-   id("com.gradle.enterprise") version "3.5.1"
-////                       # available:"3.5.2"
-////                       # available:"3.6"
-////                       # available:"3.6.1"
+   id("com.gradle.enterprise") version "3.6.1"
    // See https://jmfayard.github.io/refreshVersions
-   id("de.fayard.refreshVersions") version "0.10.0"
+   id("de.fayard.refreshVersions") version "0.10.1"
 }
 
 gradleEnterprise {

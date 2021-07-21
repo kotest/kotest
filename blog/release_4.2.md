@@ -28,7 +28,7 @@ The core assertions library is now published for ios, watchos and tvos. This bri
 
 ### Kotlinx Date/Time Matchers
 
-A new [assertions module](https://search.maven.org/search?q=kotest-assertions-kotlinx-time) has been created `kotest-assertions-kotlinx-time`
+A new [assertions module](https://search.maven.org/artifact/io.kotest/kotest-assertions-kotlinx-time) has been created `kotest-assertions-kotlinx-time`
 which contains matchers for the new [Kotlinx Datetime library](https://github.com/Kotlin/kotlinx-datetime).
 Since the datetime library has an _incubating_ status, this assertions module may require breaking changes in the future if the date/time API mandates it.
 

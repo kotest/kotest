@@ -9,8 +9,8 @@ import io.kotest.core.extensions.TagExtension
 import io.kotest.core.filter.TestFilter
 import io.kotest.core.filter.TestFilterResult
 import io.kotest.core.filter.toTestFilterResult
-import io.kotest.core.internal.isEnabled
-import io.kotest.core.internal.isEnabledInternal
+import io.kotest.engine.test.status.isEnabled
+import io.kotest.engine.test.status.isEnabledInternal
 import io.kotest.core.plan.Descriptor
 import io.kotest.core.spec.Isolate
 import io.kotest.core.spec.style.FunSpec

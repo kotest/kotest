@@ -1,14 +1,21 @@
 package com.sksamuel.kotest.specs.isolation.test
 
-import io.kotest.core.SpecInstantiationException
 import io.kotest.core.spec.IsolationMode
-import io.kotest.core.spec.Spec
-import io.kotest.core.spec.style.*
+import io.kotest.core.spec.style.BehaviorSpec
+import io.kotest.core.spec.style.DescribeSpec
+import io.kotest.core.spec.style.ExpectSpec
+import io.kotest.core.spec.style.FeatureSpec
+import io.kotest.core.spec.style.FreeSpec
+import io.kotest.core.spec.style.FunSpec
+import io.kotest.core.spec.style.ShouldSpec
+import io.kotest.core.spec.style.StringSpec
+import io.kotest.core.spec.style.WordSpec
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
-import io.kotest.matchers.types.shouldBeInstanceOf
 import io.kotest.engine.listener.TestEngineListener
 import io.kotest.engine.spec.SpecExecutor
+import io.kotest.engine.spec.SpecInstantiationException
+import io.kotest.matchers.types.shouldBeInstanceOf
 import kotlin.reflect.KClass
 
 private class BehaviorSpecWithInitError : BehaviorSpec() {
@@ -88,7 +95,7 @@ class InitializerExceptionTest : WordSpec({
    var error: Throwable? = null
 
    val listener = object : TestEngineListener {
-      override fun specFinished(kclass: KClass<out Spec>, t: Throwable?, results: Map<TestCase, TestResult>) {
+      override fun specFinished(kclass: KClass<*>, t: Throwable?, results: Map<TestCase, TestResult>) {
          if (t != null) error = t
       }
    }

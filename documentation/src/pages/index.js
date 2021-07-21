@@ -51,7 +51,7 @@ const features = [
       imageUrl: 'img/undraw_docusaurus_react.svg',
       description: (
          <>
-            The Kotest proptest module is an advanced multi-platform property test library with over 50 built in
+            The Kotest property testing module is an advanced multi-platform property test library with over 50 built in
             generators.
 
             <br/><br/>
@@ -92,10 +92,10 @@ function Home() {
          description="Flexible, powerful and elegant kotlin test framework with multiplatform support">
          <header className={clsx('hero hero--primary', styles.heroBanner)}>
             <div className="container">
-               <p className={clsx(styles.heroSlogan)}>Flexible and
-                  elegant <strong>multiplatform</strong> test <strong>framework</strong>, <strong>assertions</strong> library,
-                  and <strong>property
-                     test</strong> library for Kotlin
+               <p className={clsx(styles.heroSlogan)}>
+                  Kotest is a flexible and elegant <strong>multi-platform</strong> test framework
+                  for <strong>Kotlin</strong> with extensive <strong>assertions</strong> and integrated <strong>property
+                  testing</strong>
                </p>
                <div className={styles.buttons}>
                   <Link
@@ -128,7 +128,7 @@ function Home() {
 
                      &nbsp;
 
-                     <a href="https://search.maven.org/search?q=kotest">
+                     <a href="https://search.maven.org/search?q=g:io.kotest%20OR%20g:io.kotest.extensions">
                         <img
                            src="https://img.shields.io/maven-central/v/io.kotest/kotest-property.svg?label=release&style=for-the-badge"
                            alt="version badge"/>
@@ -152,7 +152,7 @@ function Home() {
 
                      &nbsp;
 
-                     <a href="http://stackoverflow.com/questions/tagged/kotest">
+                     <a href="https://stackoverflow.com/questions/tagged/kotest">
                         <img
                            src="https://img.shields.io/badge/stackoverflow-kotest-blue?style=for-the-badge"
                            alt="stack overflow"/>

@@ -20,14 +20,14 @@ class FilterTest : FunSpec({
          .toList().distinct().sorted() shouldContainExactly listOf(2, 4, 6, 8, 10)
    }
 
-   test("should filter edgecases") {
+   test("should filter edge cases") {
       val arb = Arb.int(1..10).withEdgecases(1, 2, 3).filter { it % 2 == 0 }
-      val edgecases = arb
+      val edgeCases = arb
          .generate(RandomSource.seeded(1234L), EdgeConfig(edgecasesGenerationProbability = 1.0))
          .take(5)
          .map { it.value }
          .toList()
-      edgecases shouldContainExactly listOf(2, 2, 2, 2, 2)
+      edgeCases shouldContainExactly listOf(2, 2, 2, 2, 2)
    }
 
    test("should be stack safe") {

@@ -4,12 +4,12 @@ package io.kotest.engine.listener
 
 import io.kotest.core.plan.Descriptor
 import io.kotest.core.spec.Spec
+import io.kotest.core.spec.toDescription
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
-import io.kotest.core.spec.toDescription
+import kotlinx.coroutines.runBlocking
 import java.util.concurrent.atomic.AtomicReference
 import kotlin.reflect.KClass
-import kotlinx.coroutines.runBlocking
 
 /**
  * Wraps a [TestEngineListener] methods to ensure that only test notifications
@@ -39,7 +39,7 @@ class IsolationTestEngineListener(val listener: TestEngineListener) : TestEngine
       }
    }
 
-   override fun engineStarted(classes: List<KClass<out Spec>>) {
+   override fun engineStarted(classes: List<KClass<*>>) {
       synchronized(listener) {
          listener.engineStarted(classes)
       }
@@ -57,7 +57,7 @@ class IsolationTestEngineListener(val listener: TestEngineListener) : TestEngine
       }
    }
 
-   override fun specInstantiationError(kclass: KClass<out Spec>, t: Throwable) {
+   override fun specInstantiationError(kclass: KClass<*>, t: Throwable) {
       synchronized(listener) {
          if (runningSpec.get() == kclass.toDescription().path().value) {
             listener.specInstantiationError(kclass, t)
@@ -141,7 +141,7 @@ class IsolationTestEngineListener(val listener: TestEngineListener) : TestEngine
       }
    }
 
-   override fun specStarted(kclass: KClass<out Spec>) {
+   override fun specStarted(kclass: KClass<*>) {
       synchronized(listener) {
          if (runningSpec.compareAndSet(null, kclass.toDescription().path().value)) {
             listener.specStarted(kclass)
@@ -154,7 +154,7 @@ class IsolationTestEngineListener(val listener: TestEngineListener) : TestEngine
    }
 
    override fun specFinished(
-      kclass: KClass<out Spec>,
+      kclass: KClass<*>,
       t: Throwable?,
       results: Map<TestCase, TestResult>
    ) {

@@ -8,7 +8,7 @@ import io.kotest.property.Shrinker
  * drawn from the given pair generating arb. The size of each
  * generated map is a random value between the specified min and max bounds.
  *
- * There are no edgecases.
+ * There are no edge cases.
  *
  * This arbitrary uses a [Shrinker] which will reduce the size of a failing map by
  * removing elements from the failed case until it is empty.
@@ -30,7 +30,7 @@ fun <K, V> Arb.Companion.map(
  * drawn by combining values from the key gen and value gen. The size of each
  * generated map is a random value between the specified min and max bounds.
  *
- * There are no edgecases.
+ * There are no edge cases.
  *
  * This arbitrary uses a [Shrinker] which will reduce the size of a failing map by
  * removing elements until they map is empty.

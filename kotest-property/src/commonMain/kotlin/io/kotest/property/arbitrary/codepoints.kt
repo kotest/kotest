@@ -4,13 +4,13 @@ import io.kotest.property.Arb
 
 /**
  * The minimum value of a Unicode code point, constant {@code U+000000}.
- * http://www.unicode.org/glossary/#code_point
+ * https://www.unicode.org/glossary/#code_point
  */
 internal const val MIN_CODE_POINT = 0x000000
 
 /**
  * The maximum value of a Unicode code point, constant {@code U+10FFFF}.
- * http://www.unicode.org/glossary/#code_point
+ * https://www.unicode.org/glossary/#code_point
  */
 internal const val MAX_CODE_POINT = 0X10FFFF
 

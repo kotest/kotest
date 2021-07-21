@@ -2,7 +2,6 @@ package io.kotest.engine.reporter
 
 import io.kotest.core.annotation.Ignored
 import io.kotest.core.sourceRef
-import io.kotest.core.spec.Spec
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.spec.toDescription
 import io.kotest.core.test.TestCase
@@ -22,7 +21,7 @@ class IsolatedReporterTest : FunSpec({
          }
 
          override fun hasErrors(): Boolean = false
-         override fun engineStarted(classes: List<KClass<out Spec>>) {
+         override fun engineStarted(classes: List<KClass<*>>) {
             append("enginestarted")
          }
 
@@ -30,11 +29,11 @@ class IsolatedReporterTest : FunSpec({
             append("engineFinished")
          }
 
-         override fun specStarted(kclass: KClass<out Spec>) {
+         override fun specStarted(kclass: KClass<*>) {
             append("specStarted:$kclass")
          }
 
-         override fun specFinished(kclass: KClass<out Spec>, t: Throwable?, results: Map<TestCase, TestResult>) {
+         override fun specFinished(kclass: KClass<*>, t: Throwable?, results: Map<TestCase, TestResult>) {
             append("specFinished:$kclass")
          }
 

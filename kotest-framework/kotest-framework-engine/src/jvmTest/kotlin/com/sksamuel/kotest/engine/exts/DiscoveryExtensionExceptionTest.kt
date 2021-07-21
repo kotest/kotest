@@ -25,13 +25,13 @@ class DiscoveryExtensionExceptionTest : FunSpec() {
             var errors = emptyList<Throwable>()
 
             override fun hasErrors(): Boolean = errors.isNotEmpty()
-            override fun engineStarted(classes: List<KClass<out Spec>>) {}
+            override fun engineStarted(classes: List<KClass<*>>) {}
             override fun engineFinished(t: List<Throwable>) {
                errors = t
             }
 
-            override fun specStarted(kclass: KClass<out Spec>) {}
-            override fun specFinished(kclass: KClass<out Spec>, t: Throwable?, results: Map<TestCase, TestResult>) {}
+            override fun specStarted(kclass: KClass<*>) {}
+            override fun specFinished(kclass: KClass<*>, t: Throwable?, results: Map<TestCase, TestResult>) {}
             override fun testStarted(testCase: TestCase) {}
             override fun testFinished(testCase: TestCase, result: TestResult) {}
          }

@@ -1,6 +1,6 @@
 plugins {
    id("java")
-   id("kotlin-multiplatform")
+   kotlin("multiplatform")
    id("java-library")
    id("com.adarshr.test-logger")
 }
@@ -12,6 +12,7 @@ repositories {
 kotlin {
 
    targets {
+
       jvm {
          compilations.all {
             kotlinOptions {
@@ -19,10 +20,27 @@ kotlin {
             }
          }
       }
+
       js(BOTH) {
          browser()
          nodejs()
       }
+
+      linuxX64()
+
+      mingwX64()
+
+      macosX64()
+      tvos()
+
+      watchosArm32()
+      watchosArm64()
+      watchosX86()
+      watchosX64()
+
+      iosX64()
+      iosArm64()
+      iosArm32()
    }
 
    sourceSets {
@@ -41,8 +59,6 @@ kotlin {
       val jsMain by getting {
          dependsOn(commonMain)
          dependencies {
-            // this must be api as it's compiled into the final source
-            api(kotlin("test-js"))
             implementation(Libs.Coroutines.coreJs)
          }
       }
@@ -52,6 +68,54 @@ kotlin {
          dependencies {
             implementation(Libs.Coroutines.coreJvm)
          }
+      }
+
+      val desktopMain by creating {
+         dependsOn(commonMain)
+      }
+
+      val macosX64Main by getting {
+         dependsOn(desktopMain)
+      }
+
+      val mingwX64Main by getting {
+         dependsOn(desktopMain)
+      }
+
+      val linuxX64Main by getting {
+         dependsOn(desktopMain)
+      }
+
+      val iosX64Main by getting {
+         dependsOn(desktopMain)
+      }
+
+      val iosArm64Main by getting {
+         dependsOn(desktopMain)
+      }
+
+      val iosArm32Main by getting {
+         dependsOn(desktopMain)
+      }
+
+      val watchosArm32Main by getting {
+         dependsOn(desktopMain)
+      }
+
+      val watchosArm64Main by getting {
+         dependsOn(desktopMain)
+      }
+
+      val watchosX86Main by getting {
+         dependsOn(desktopMain)
+      }
+
+      val watchosX64Main by getting {
+         dependsOn(desktopMain)
+      }
+
+      val tvosMain by getting {
+         dependsOn(desktopMain)
       }
 
       val jvmTest by getting {

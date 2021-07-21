@@ -1,7 +1,6 @@
 package com.sksamuel.kotest.engine.launcher
 
 import io.kotest.core.spec.Isolate
-import io.kotest.core.spec.Spec
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
@@ -23,15 +22,15 @@ class ExecuteTest : FunSpec() {
                return true
             }
 
-            override fun engineStarted(classes: List<KClass<out Spec>>) {}
+            override fun engineStarted(classes: List<KClass<*>>) {}
 
             override fun engineFinished(t: List<Throwable>) {
                errors = t
             }
 
-            override fun specStarted(kclass: KClass<out Spec>) {}
+            override fun specStarted(kclass: KClass<*>) {}
 
-            override fun specFinished(kclass: KClass<out Spec>, t: Throwable?, results: Map<TestCase, TestResult>) {}
+            override fun specFinished(kclass: KClass<*>, t: Throwable?, results: Map<TestCase, TestResult>) {}
 
             override fun testStarted(testCase: TestCase) {}
 
