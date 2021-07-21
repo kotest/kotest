@@ -18,6 +18,7 @@ Matchers provided by the `kotest-assertions-core` module.
 | `shouldThrow<T> { block }` | General purpose construct that asserts that the block throws a `T` Throwable or a subtype of `T`|
 | `shouldThrowExactly<T> { block }` | General purpose construct that asserts that the block throws exactly `T` |
 | `shouldThrowAny { block }` | General purpose construct that asserts that the block throws a Throwable of any type |
+| `shouldThrowMessage(message) { block }` | Verifies that a block of code throws any Throwable with given message |
 
 | Types ||
 | ------- | ---- |
