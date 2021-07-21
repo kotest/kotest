@@ -18,7 +18,7 @@ fun equalJson(
    expected: JsonTree,
    mode: CompareMode,
    order: CompareOrder,
-   fieldComparison: FieldComparison = FieldComparison.All,
+   fieldComparison: FieldComparison = FieldComparison.Exact,
 ) = object : Matcher<JsonTree> {
    override fun test(value: JsonTree): MatcherResult {
       val error = compare(
@@ -49,8 +49,8 @@ infix fun String.shouldNotEqualJson(expected: String): Unit =
 infix fun String.shouldEqualSpecifiedJson(expected: String) =
    this.shouldEqualSpecifiedJson(expected, CompareMode.Strict)
 
-infix fun String.shouldNotEqualJsonIgnoringUnknown(expected: String) =
-   this.shouldNotEqualJsonIgnoringUnknown(expected, CompareMode.Strict)
+infix fun String.shouldNotEqualSpecifiedJson(expected: String) =
+   this.shouldNotEqualSpecifiedJson(expected, CompareMode.Strict)
 
 fun String.shouldEqualJson(expected: String, mode: CompareMode) =
    shouldEqualJson(expected, mode, CompareOrder.Lenient)
@@ -67,11 +67,11 @@ fun String.shouldNotEqualJson(expected: String, order: CompareOrder) =
 fun String.shouldEqualSpecifiedJson(expected: String, mode: CompareMode) =
    shouldEqualSpecifiedJson(expected, mode, CompareOrder.Lenient)
 
-fun String.shouldNotEqualJsonIgnoringUnknown(expected: String, mode: CompareMode) =
-   shouldNotEqualJsonIgnoringUnknown(expected, mode, CompareOrder.Lenient)
+fun String.shouldNotEqualSpecifiedJson(expected: String, mode: CompareMode) =
+   shouldNotEqualSpecifiedJson(expected, mode, CompareOrder.Lenient)
 
 fun String.shouldEqualSpecifiedJson(expected: String, order: CompareOrder) =
    shouldEqualSpecifiedJson(expected, CompareMode.Strict, order)
 
-fun String.shouldNotEqualJsonIgnoringUnknown(expected: String, order: CompareOrder) =
-   shouldNotEqualJsonIgnoringUnknown(expected, CompareMode.Strict, order)
+fun String.shouldNotEqualSpecifiedJson(expected: String, order: CompareOrder) =
+   shouldNotEqualSpecifiedJson(expected, CompareMode.Strict, order)

@@ -22,9 +22,9 @@ enum class CompareOrder {
 
 enum class FieldComparison {
    /** Verifies all expected key-values match, and that no extra keys exist in the actual */
-   All,
+   Exact,
    /** Verifies all expected key-values match, ignoring keys in actual that are not specified in expected */
-   IgnoringUnspecified
+   IgnoreExtra
 }
 
 /**
@@ -66,7 +66,7 @@ internal fun compareObjects(
    fieldComparison: FieldComparison,
 ): JsonError? {
 
-   if (fieldComparison == FieldComparison.All) {
+   if (fieldComparison == FieldComparison.Exact) {
       val keys1 = expected.elements.keys
       val keys2 = actual.elements.keys
 
