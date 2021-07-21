@@ -15,10 +15,11 @@ _**Kotlin 1.5 is now the minimum supported version**_
 * `Arb.values` has been removed. This was deprecated back in 4.3 in favour of `Arb.sample`. Any custom arbs that override this method should be updated. Any custom arbs that use the `arbitrary` builders are not affected. (#2277)
 * The Engine no longer logs config to the console during start **by default**. To enable, set the system property `kotest.framework.dump.config` to true. (#2276)
 * Removed deprecated `shouldReceiveWithin` and `shouldReceiveNoElementsWithin` channel matchers.
+* `equalJson` has an added parameter to support the new `shouldEqualSpecifiedJson` assertion
 
 #### Fixes
 
-* 
+*
 * String matchers now also work on CharSequence where applicable #2278
 * Fix Arb.long/ulong producing values outside range (#2330)
 
@@ -38,6 +39,7 @@ _**Kotlin 1.5 is now the minimum supported version**_
 * Improve Arb.primitive consistency (#2299)
 * Add Arb.ints zero inclusive variants (#2294)
 * Add unsigned types for Arb (#2290)
+* Added `shouldEqualSpecifiedJson` to match a JSON structure on a subset of (specified) keys. (#2298)
 
 #### Deprecations
 
