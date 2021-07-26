@@ -68,7 +68,7 @@ that requires any number of inputs.
 For example:
 
 ```
-enum class Season { Winter, Fall, Spring Summer }
+enum class Season { Winter, Fall, Spring, Summer }
 
 forAll<Int, Season>(100) { a, season -> ... }
 ```
