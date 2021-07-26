@@ -11,10 +11,16 @@ private val numericEdgeCases = listOf(-1.0F, -Float.MIN_VALUE, -0.0F, 0.0F, Floa
 private val nonFiniteEdgeCases = listOf(Float.NEGATIVE_INFINITY, Float.NaN, Float.POSITIVE_INFINITY)
 
 object FloatShrinker : Shrinker<Float> {
-   override fun shrink(value: Float): List<Float> = if (value == 0F) emptyList() else {
-      val a = listOf(0F, 1F, -1F, abs(value), value / 3, value / 2)
-      val b = (1..5).map { value - it }.reversed().filter { it > 0 }
-      (a + b + round(value)).distinct()
+   override fun shrink(value: Float): List<Float> {
+      if (value == 0f || !value.isFinite())
+         return emptyList()
+
+      val bits = value.toBits()
+
+      return if (bits and 0x007F_FFFF == 0)
+         emptyList()
+      else
+         listOf(Float.fromBits(bits and (bits - 1)))
    }
 }
 
