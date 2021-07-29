@@ -15,4 +15,5 @@ object Ci {
 
    val isRelease = releaseVersion != null
    val publishVersion = releaseVersion ?: snapshotVersion
+   val gradleVersion = releaseVersion ?: snapshotVersion
 }
