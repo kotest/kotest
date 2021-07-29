@@ -1,4 +1,4 @@
-name: release_gradle_compiler_plugin
+name: release_multiplatform_plugin_gradle
 
 on:
   workflow_dispatch:
