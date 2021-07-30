@@ -5,6 +5,8 @@ import org.jetbrains.kotlin.gradle.plugin.KotlinCompilation
 import org.jetbrains.kotlin.gradle.plugin.KotlinCompilerPluginSupportPlugin
 import org.jetbrains.kotlin.gradle.plugin.SubpluginArtifact
 import org.jetbrains.kotlin.gradle.plugin.SubpluginOption
+import org.jetbrains.kotlin.gradle.plugin.mpp.AbstractKotlinNativeCompilation
+import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinJsCompilation
 
 class KotestMultiplatformCompilerPlugin : KotlinCompilerPluginSupportPlugin {
 
@@ -13,7 +15,7 @@ class KotestMultiplatformCompilerPlugin : KotlinCompilerPluginSupportPlugin {
       const val groupId = "io.kotest"
       const val artifactId = "kotest-framework-multiplatform-plugin-js-jvm"
       const val nativeArtifactId = "kotest-framework-multiplatform-plugin-native-jvm"
-      const val version = "5.0.0.328-SNAPSHOT"
+      const val version = "5.0.0.334-SNAPSHOT"
    }
 
    override fun getCompilerPluginId() = compilerPluginId
@@ -22,8 +24,10 @@ class KotestMultiplatformCompilerPlugin : KotlinCompilerPluginSupportPlugin {
 
    override fun getPluginArtifactForNative(): SubpluginArtifact = SubpluginArtifact(groupId, nativeArtifactId, version)
 
-   override fun isApplicable(kotlinCompilation: KotlinCompilation<*>): Boolean {
-      return kotlinCompilation.target.project.plugins.hasPlugin(KotestMultiplatformCompilerPlugin::class.java)
+   override fun isApplicable(kotlinCompilation: KotlinCompilation<*>): Boolean = when (kotlinCompilation) {
+      is KotlinJsCompilation -> true
+      is AbstractKotlinNativeCompilation -> true
+      else -> false
    }
 
    override fun applyToCompilation(kotlinCompilation: KotlinCompilation<*>): Provider<List<SubpluginOption>> {
