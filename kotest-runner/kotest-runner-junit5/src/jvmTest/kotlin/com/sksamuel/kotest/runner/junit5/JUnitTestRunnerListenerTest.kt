@@ -6,7 +6,6 @@ import io.kotest.core.spec.toDescription
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestType
-import io.kotest.engine.test.toTestResult
 import io.kotest.matchers.shouldBe
 import io.kotest.runner.junit.platform.JUnitTestEngineListener
 import io.kotest.runner.junit.platform.KotestEngineDescriptor
@@ -64,7 +63,7 @@ class JUnitTestRunnerListenerTests : FunSpec({
       listener.specStarted(JUnitTestRunnerListenerTests::class)
       listener.testStarted(test1)
       listener.testStarted(test2)
-      listener.testFinished(test2, toTestResult(AssertionError("boom"), 0))
+      listener.testFinished(test2, TestResult.failure(AssertionError("boom"), 0))
       listener.testFinished(test1, TestResult.success(0))
       listener.specFinished(JUnitTestRunnerListenerTests::class, null, emptyMap())
       listener.engineFinished(emptyList())

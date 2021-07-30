@@ -1,20 +1,23 @@
-@file:Suppress("unused")
-
-package io.kotest.engine.execution
+package io.kotest.engine
 
 import io.kotest.core.spec.Spec
-import io.kotest.engine.NativeEngine
-import io.kotest.engine.NativeEngineConfig
-import io.kotest.engine.TestSuite
 import io.kotest.engine.preconditions.IsNotNestedSpecStyle
 import kotlinx.coroutines.DelicateCoroutinesApi
 
 /**
- * Entry point for native tests.
+ * Entry point for JS tests.
  * This method is invoked by the compiler plugin.
  */
 @DelicateCoroutinesApi
 fun executeSpec(spec: Spec) {
-   val engine = NativeEngine(NativeEngineConfig(listOf(IsNotNestedSpecStyle)))
+   val config = TestEngineConfig(
+      emptyList(),
+      emptyList(),
+      NoopTestEngineListener,
+      null,
+      false,
+      listOf(IsNotNestedSpecStyle)
+   )
+   val engine = TestEngine(config)
    engine.execute(TestSuite(listOf(spec)))
 }

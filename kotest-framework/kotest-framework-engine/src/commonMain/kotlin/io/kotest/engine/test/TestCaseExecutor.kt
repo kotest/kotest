@@ -27,35 +27,19 @@ import kotlin.coroutines.coroutineContext
 import kotlin.math.min
 
 /**
- * Validates that a [TestCase] is compatible on the actual platform. For example, in JS we can only
- * support certain spec styles due to limitations in the underlying test runners.
- */
-typealias ValidateTestCase = (TestCase) -> Unit
-
-/**
- * Returns a [TestResult] for the given throwable and test execution duration.
- */
-typealias ToTestResult = (Throwable?, Long) -> TestResult
-
-/**
  * Executes a single [TestCase].
  * Uses a [TestCaseExecutionListener] to notify callers of events in the test.
  *
  * The [TimeoutExecutionContext] is used to provide a way of executing functions on the underlying platform
  * in a way that best utilizes threads or the lack of on that platform.
- *
- * If the given test case fails to validate via [validateTestCase], then this method throws.
  */
 class TestCaseExecutor(
    private val listener: TestCaseExecutionListener,
    private val executionContext: TimeoutExecutionContext,
-   private val validateTestCase: ValidateTestCase,
-   private val toTestResult: ToTestResult,
 ) {
 
    suspend fun execute(testCase: TestCase, context: TestContext): TestResult {
       log { "TestCaseExecutor: execute entry point [testCase=${testCase.displayName}, context=$context]" }
-      validateTestCase(testCase)
       val start = timeInMillis()
       val extensions = testCase.resolvedTestCaseExtensions()
       return intercept(testCase, context, start, extensions).apply {
@@ -145,14 +129,14 @@ class TestCaseExecutor(
          .flatMap { invokeTestCase(executionContext, it, context, start) }
          .fold(
             {
-               toTestResult(it, timeInMillis() - start).apply {
+               createResult(timeInMillis() - start, it).apply {
                   testCase.invokeAllAfterTestCallbacks(this)
                }
             },
             { result ->
                testCase.invokeAllAfterTestCallbacks(result)
                   .fold(
-                     { toTestResult(it, timeInMillis() - start) },
+                     { createResult(timeInMillis() - start, it) },
                      { result }
                   )
             }
@@ -173,10 +157,10 @@ class TestCaseExecutor(
       if (testCase.config.invocations > 1 && testCase.type == TestType.Container)
          error("Cannot execute multiple invocations in parent tests")
 
-      val t = executeAndWait(ec, testCase, context)
-      log { "TestCaseExecutor: Test returned with error $t" }
+      val error = executeAndWait(ec, testCase, context)
+      log { "TestCaseExecutor: Test returned with error $error" }
 
-      val result = toTestResult(t, timeInMillis() - start)
+      val result = createResult(timeInMillis() - start, error)
       log { "Test completed with result $result" }
       result
    }

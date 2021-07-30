@@ -7,7 +7,12 @@ import io.kotest.core.filter.SpecFilter
 import io.kotest.core.filter.TestFilter
 import io.kotest.core.spec.Spec
 import io.kotest.engine.config.ConfigManager
-import io.kotest.engine.extensions.*
+import io.kotest.engine.extensions.DumpConfigExtension
+import io.kotest.engine.extensions.EmptyTestSuiteExtension
+import io.kotest.engine.extensions.EngineExtension
+import io.kotest.engine.extensions.KotestPropertiesExtension
+import io.kotest.engine.extensions.SpecifiedTagsTagExtension
+import io.kotest.engine.extensions.TestDslStateExtensions
 import io.kotest.engine.launchers.specLauncher
 import io.kotest.engine.lifecycle.afterProject
 import io.kotest.engine.lifecycle.beforeProject

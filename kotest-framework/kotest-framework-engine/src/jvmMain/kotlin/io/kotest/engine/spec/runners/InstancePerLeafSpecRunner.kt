@@ -19,7 +19,6 @@ import io.kotest.engine.spec.SpecRunner
 import io.kotest.engine.test.DuplicateTestNameHandler
 import io.kotest.engine.lifecycle.invokeAfterSpec
 import io.kotest.engine.lifecycle.invokeBeforeSpec
-import io.kotest.engine.test.toTestResult
 import io.kotest.fp.Try
 import io.kotest.mpp.log
 import kotlinx.coroutines.coroutineScope
@@ -151,7 +150,7 @@ internal class InstancePerLeafSpecRunner(
                   }
                }
             },
-            ExecutorExecutionContext, {}, { t, duration -> toTestResult(t, duration) },
+            ExecutorExecutionContext
          )
 
          val result = testExecutor.execute(test, context)
