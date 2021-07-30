@@ -129,14 +129,14 @@ class TestCaseExecutor(
          .flatMap { invokeTestCase(executionContext, it, context, start) }
          .fold(
             {
-               createResult(timeInMillis() - start, it).apply {
+               createTestResult(timeInMillis() - start, it).apply {
                   testCase.invokeAllAfterTestCallbacks(this)
                }
             },
             { result ->
                testCase.invokeAllAfterTestCallbacks(result)
                   .fold(
-                     { createResult(timeInMillis() - start, it) },
+                     { createTestResult(timeInMillis() - start, it) },
                      { result }
                   )
             }
@@ -160,7 +160,7 @@ class TestCaseExecutor(
       val error = executeAndWait(ec, testCase, context)
       log { "TestCaseExecutor: Test returned with error $error" }
 
-      val result = createResult(timeInMillis() - start, error)
+      val result = createTestResult(timeInMillis() - start, error)
       log { "Test completed with result $result" }
       result
    }

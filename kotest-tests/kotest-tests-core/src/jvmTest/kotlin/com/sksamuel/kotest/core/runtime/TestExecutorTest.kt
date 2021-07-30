@@ -78,20 +78,6 @@ fun testExecutorTests(context: TimeoutExecutionContext) = funSpec {
       finished shouldBe true
    }
 
-   test("test executor should throw if validation throws") {
-      val executor = TestCaseExecutor(object : TestCaseExecutionListener {
-         override fun testStarted(testCase: TestCase) {}
-         override fun testIgnored(testCase: TestCase) {}
-         override fun testFinished(testCase: TestCase, result: TestResult) {}
-      }, context)
-
-      val testCase = Tests().materializeAndOrderRootTests().first { it.testCase.displayName == "a" }.testCase
-
-      shouldThrow<IllegalStateException> {
-         executor.execute(testCase, context(testCase))
-      }
-   }
-
    test("test executor should invoke before test") {
       val executor = TestCaseExecutor(object : TestCaseExecutionListener {
          override fun testStarted(testCase: TestCase) {}

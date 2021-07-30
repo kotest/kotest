@@ -4,10 +4,10 @@ import io.kotest.core.test.TestResult
 import io.kotest.mpp.bestName
 
 /**
- * Creates a [TestResult] from the given error.
+ * Creates a [TestResult] from the given [error].
  * Allows for platform specific errors to be inspected.
  */
-internal actual fun createResult(duration: Long, error: Throwable?): TestResult = when {
+actual fun createTestResult(duration: Long, error: Throwable?): TestResult = when {
    error == null -> TestResult.success(duration)
    error.isFrameworkAssertionType() -> TestResult.failure(error as AssertionError, duration)
    error is AssertionError -> TestResult.failure(error, duration)

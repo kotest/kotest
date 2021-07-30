@@ -12,10 +12,10 @@ import kotlin.jvm.JvmName
  * If the throwable is either an [AssertionError] or one of the platform specific assertion types,
  * then a [TestStatus.Failure] will be returned, otherwise a [TestStatus.Error] will be returned.
  */
-internal expect fun createResult(duration: Long, error: Throwable?): TestResult
+expect fun createTestResult(duration: Long, error: Throwable?): TestResult
 
 @JvmName("throwableToTestResult")
-fun Throwable.toTestResult(duration: Long): TestResult = createResult(duration, this)
+fun Throwable.toTestResult(duration: Long): TestResult = createTestResult(duration, this)
 
 internal fun defaultCreateResult(duration: Long, error: Throwable?) = when (error) {
    null -> TestResult.success(duration)
