@@ -6,10 +6,11 @@ import kotlinx.coroutines.DelicateCoroutinesApi
 
 /**
  * Entry point for JS tests.
- * This method is invoked by the compiler plugin.
+ *
+ * This method is invoked by the compiler plugin and the contract must remain.
  */
 @DelicateCoroutinesApi
-fun executeSpec(spec: Spec) {
+fun javascriptEntryPoint(spec: Spec) {
    val config = TestEngineConfig(
       emptyList(),
       emptyList(),

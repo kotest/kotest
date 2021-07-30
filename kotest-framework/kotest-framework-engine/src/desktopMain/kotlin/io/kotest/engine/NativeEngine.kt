@@ -5,7 +5,6 @@ import io.kotest.core.test.NestedTest
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestContext
 import io.kotest.core.test.TestResult
-import io.kotest.engine.execution.TeamCityLogger
 import io.kotest.engine.preconditions.ValidateSpec
 import io.kotest.engine.spec.materializeAndOrderRootTests
 import io.kotest.engine.test.CallingThreadExecutionContext

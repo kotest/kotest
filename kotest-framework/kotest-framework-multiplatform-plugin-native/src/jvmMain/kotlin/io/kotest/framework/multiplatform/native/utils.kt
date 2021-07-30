@@ -14,7 +14,7 @@ import org.jetbrains.kotlin.ir.util.constructors
 import org.jetbrains.kotlin.name.FqName
 
 val IrPluginContext.executeSpecFn: IrSimpleFunctionSymbol
-   get() = referenceFunctions(FqName("io.kotest.engine.execution.executeSpec")).single {
+   get() = referenceFunctions(FqName("io.kotest.engine.nativeEntryPoint")).single {
       val parameters = it.owner.valueParameters
       parameters.size == 1
    }

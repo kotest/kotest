@@ -1,4 +1,4 @@
-package io.kotest.engine.execution
+package io.kotest.engine
 
 internal class TeamCityLogger {
 
