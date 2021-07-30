@@ -8,7 +8,6 @@ import io.kotest.assertions.assertionCounter
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.extensions.TestCaseExtension
 import io.kotest.core.spec.style.FunSpec
-import io.kotest.engine.test.toTestResult
 import io.kotest.matchers.shouldBe
 
 class AssertionCounterFunSpecTest : FunSpec() {
@@ -23,7 +22,7 @@ class AssertionCounterFunSpecTest : FunSpec() {
                   val result = execute(testCase)
                   when (result.status) {
                      TestStatus.Error, TestStatus.Failure -> TestResult.success(result.duration)
-                     else -> toTestResult(RuntimeException("Should have failed"), result.duration)
+                     else -> TestResult.error(RuntimeException("Should have failed"), result.duration)
                   }
                }
                else -> execute(testCase)

@@ -16,7 +16,6 @@ import io.kotest.engine.ExecutorExecutionContext
 import io.kotest.engine.NotificationManager
 import io.kotest.engine.listener.TestEngineListener
 import io.kotest.engine.test.DuplicateTestNameHandler
-import io.kotest.engine.test.toTestResult
 import io.kotest.fp.Try
 import io.kotest.mpp.log
 import java.util.concurrent.ConcurrentHashMap
@@ -106,7 +105,7 @@ class ScriptExecutor(private val listener: TestEngineListener) {
          override fun testFinished(testCase: TestCase, result: TestResult) {
             listener.testFinished(testCase.descriptor!!, result)
          }
-      }, ExecutorExecutionContext, {}, { t, duration -> toTestResult(t, duration) })
+      }, ExecutorExecutionContext)
 
       val result = testExecutor.execute(testCase, Context(testCase, coroutineContext))
       results[testCase.description.toDescriptor(testCase.source) as Descriptor.TestDescriptor] = result

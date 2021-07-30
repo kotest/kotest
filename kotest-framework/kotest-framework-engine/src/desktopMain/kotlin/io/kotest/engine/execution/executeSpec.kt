@@ -3,9 +3,6 @@
 package io.kotest.engine.execution
 
 import io.kotest.core.spec.Spec
-import io.kotest.core.spec.style.FunSpec
-import io.kotest.core.spec.style.ShouldSpec
-import io.kotest.core.spec.style.StringSpec
 import io.kotest.core.test.NestedTest
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestContext
@@ -52,20 +49,7 @@ fun executeSpec(spec: Spec) {
                }
             }
 
-            TestCaseExecutor(
-               listener,
-               CallingThreadExecutionContext,
-               validateTestCase = {
-                  it.spec is FunSpec || it.spec is StringSpec || it.spec is ShouldSpec
-               },
-               toTestResult = { t, duration ->
-                  when (t) {
-                     null -> TestResult.success(duration)
-                     is AssertionError -> TestResult.failure(t, duration)
-                     else -> TestResult.error(t, duration)
-                  }
-               }
-            ).execute(root.testCase, context)
+            TestCaseExecutor(listener, CallingThreadExecutionContext).execute(root.testCase, context)
 
          }
       }
