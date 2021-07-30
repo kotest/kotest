@@ -5,14 +5,14 @@ import kotlin.math.PI
 import kotlin.math.acos
 
 
-@Deprecated("", replaceWith = ReplaceWith("geoLocation()"))
+@Deprecated("Use geoLocation()", replaceWith = ReplaceWith("geoLocation()"))
 fun Arb.Companion.latlong(): Arb<Pair<Double, Double>> =
    Arb.geoLocation().map { loc -> Pair(loc.latitudeDeg, loc.longitudeDeg) }
 
 data class GeoLocation(val latitude: Double, val longitude: Double) {
-   @Deprecated("", replaceWith = ReplaceWith("latitude"))
+   @Deprecated("Use latitude", replaceWith = ReplaceWith("latitude"))
    val first = latitude
-   @Deprecated("", replaceWith = ReplaceWith("longitude"))
+   @Deprecated("Use longitude", replaceWith = ReplaceWith("longitude"))
    val second = longitude
 
    val latitudeRad: Double = latitude
