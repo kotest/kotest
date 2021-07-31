@@ -4,7 +4,7 @@ import io.kotest.core.config.configuration
 import io.kotest.engine.KotestEngineLauncher
 import io.kotest.engine.listener.TestEngineListener
 import io.kotest.core.listeners.ProjectListener
-import io.kotest.engine.lifecycle.BeforeProjectListenerException
+import io.kotest.engine.events.BeforeProjectListenerException
 import io.kotest.core.spec.Isolate
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.inspectors.forOne
@@ -26,7 +26,7 @@ class BeforeProjectListenerExceptionTest : FunSpec({
       val errors: MutableList<Throwable> = mutableListOf()
 
       val listener = object : TestEngineListener {
-         override fun engineFinished(t: List<Throwable>) {
+         override suspend fun engineFinished(t: List<Throwable>) {
             errors.addAll(t)
          }
       }
@@ -62,7 +62,7 @@ class BeforeProjectListenerExceptionTest : FunSpec({
       val errors: MutableList<Throwable> = mutableListOf()
 
       val listener = object : TestEngineListener {
-         override fun engineFinished(t: List<Throwable>) {
+         override suspend fun engineFinished(t: List<Throwable>) {
             errors.addAll(t)
          }
       }

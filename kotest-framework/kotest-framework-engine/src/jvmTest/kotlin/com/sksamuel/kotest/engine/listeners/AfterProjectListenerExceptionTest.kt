@@ -1,7 +1,7 @@
 package com.sksamuel.kotest.engine.listeners
 
 import io.kotest.core.config.configuration
-import io.kotest.engine.lifecycle.AfterProjectListenerException
+import io.kotest.engine.events.AfterProjectListenerException
 import io.kotest.engine.KotestEngineLauncher
 import io.kotest.engine.listener.TestEngineListener
 import io.kotest.core.listeners.ProjectListener
@@ -26,7 +26,7 @@ class AfterProjectListenerExceptionTest : FunSpec({
       val errors: MutableList<Throwable> = mutableListOf()
 
       val listener = object : TestEngineListener {
-         override fun engineFinished(t: List<Throwable>) {
+         override suspend fun engineFinished(t: List<Throwable>) {
             errors.addAll(t)
          }
       }
@@ -62,7 +62,7 @@ class AfterProjectListenerExceptionTest : FunSpec({
       val errors: MutableList<Throwable> = mutableListOf()
 
       val listener = object : TestEngineListener {
-         override fun engineFinished(t: List<Throwable>) {
+         override suspend fun engineFinished(t: List<Throwable>) {
             errors.addAll(t)
          }
       }

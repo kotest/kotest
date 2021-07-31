@@ -10,15 +10,15 @@ _**Kotlin 1.5 is now the minimum supported version**_
 
 #### Breaking Changes
 
-* Javascript support has been reworked to support the IR compiler. The legacy compiler is no longer supported.
+* Javascript support has been reworked to use the IR compiler. The legacy compiler is no longer supported.
 * Native test support.
-* `Arb.values` has been removed. This was deprecated back in 4.3 in favour of `Arb.sample`. Any custom arbs that override this method should be updated. Any custom arbs that use the `arbitrary` builders are not affected. (#2277)
+* `Arb.values` has been removed. This was deprecated in 4.3 in favour of `Arb.sample`. Any custom arbs that override this method should be updated. Any custom arbs that use the `arbitrary` builders are not affected. (#2277)
 * The Engine no longer logs config to the console during start **by default**. To enable, set the system property `kotest.framework.dump.config` to true. (#2276)
 * Removed deprecated `shouldReceiveWithin` and `shouldReceiveNoElementsWithin` channel matchers.
+* `TestEngineListener` methods are now suspendable. This is only of interest if you have implemented customizations of the Test Engine through plugins. Note: This is not related to public TestListener methods that are used by test cases.
 
 #### Fixes
 
-* 
 * String matchers now also work on CharSequence where applicable #2278
 * Fix Arb.long/ulong producing values outside range (#2330)
 

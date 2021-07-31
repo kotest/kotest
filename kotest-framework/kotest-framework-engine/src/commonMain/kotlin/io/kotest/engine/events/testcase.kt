@@ -1,4 +1,4 @@
-package io.kotest.engine.lifecycle
+package io.kotest.engine.events
 
 import io.kotest.core.config.configuration
 import io.kotest.core.config.testListeners

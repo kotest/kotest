@@ -42,7 +42,7 @@ class ProjectExtensionExceptionTest : FunSpec({
    test("the test engine should execute project extensions") {
       val errors = mutableListOf<Throwable>()
       val listener = object : TestEngineListener {
-         override fun engineFinished(t: List<Throwable>) {
+         override suspend fun engineFinished(t: List<Throwable>) {
             errors.addAll(t)
          }
       }

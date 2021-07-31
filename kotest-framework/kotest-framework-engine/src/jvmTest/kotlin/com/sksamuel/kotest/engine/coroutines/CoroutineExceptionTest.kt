@@ -19,7 +19,7 @@ class CoroutineExceptionTest : FunSpec({
    test("exception in coroutine") {
       var _result: TestResult? = null
       val listener = object : TestEngineListener {
-         override fun testFinished(testCase: TestCase, result: TestResult) {
+         override suspend fun testFinished(testCase: TestCase, result: TestResult) {
             if (testCase.displayName == "exception in coroutine") {
                _result = result
             }

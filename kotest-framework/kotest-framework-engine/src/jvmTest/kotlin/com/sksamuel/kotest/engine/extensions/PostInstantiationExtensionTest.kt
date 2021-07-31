@@ -20,7 +20,7 @@ class PostInstantiationExtensionTest : FunSpec() {
          var a: String? = null
 
          val listener = object : TestEngineListener {
-            override fun specInstantiated(spec: Spec) {
+            override suspend fun specInstantiated(spec: Spec) {
                a = (spec as MySpec).a
             }
          }

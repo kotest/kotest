@@ -47,7 +47,7 @@ abstract class SpecRunner(
     * Creates an instance of the supplied [Spec] by delegating to the project constructors,
     * and notifies the [TestEngineListener] of the instantiation event.
     */
-   protected fun createInstance(kclass: KClass<out Spec>): Try<Spec> =
+   protected suspend fun createInstance(kclass: KClass<out Spec>): Try<Spec> =
       createAndInitializeSpec(kclass).onSuccess {
          Try { listener.specInstantiated(it) }
       }.onFailure {

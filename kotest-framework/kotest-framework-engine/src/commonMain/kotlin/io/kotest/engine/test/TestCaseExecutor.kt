@@ -9,10 +9,10 @@ import io.kotest.core.test.TestStatus
 import io.kotest.core.test.TestType
 import io.kotest.engine.TestTimeoutException
 import io.kotest.engine.extensions.resolvedTestCaseExtensions
-import io.kotest.engine.lifecycle.invokeAfterInvocation
-import io.kotest.engine.lifecycle.invokeAllAfterTestCallbacks
-import io.kotest.engine.lifecycle.invokeAllBeforeTestCallbacks
-import io.kotest.engine.lifecycle.invokeBeforeInvocation
+import io.kotest.engine.events.invokeAfterInvocation
+import io.kotest.engine.events.invokeAllAfterTestCallbacks
+import io.kotest.engine.events.invokeAllBeforeTestCallbacks
+import io.kotest.engine.events.invokeBeforeInvocation
 import io.kotest.engine.test.status.isEnabled
 import io.kotest.fp.Try
 import io.kotest.mpp.log

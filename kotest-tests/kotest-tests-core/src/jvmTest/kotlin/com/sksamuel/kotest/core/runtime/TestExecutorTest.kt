@@ -38,12 +38,12 @@ fun testExecutorTests(context: TimeoutExecutionContext) = funSpec {
       var started = false
       var finished = false
       val listener = object : TestCaseExecutionListener {
-         override fun testStarted(testCase: TestCase) {
+         override suspend fun testStarted(testCase: TestCase) {
             started = true
          }
 
-         override fun testIgnored(testCase: TestCase) {}
-         override fun testFinished(testCase: TestCase, result: TestResult) {
+         override suspend fun testIgnored(testCase: TestCase) {}
+         override suspend fun testFinished(testCase: TestCase, result: TestResult) {
             finished = true
             result.status shouldBe TestStatus.Success
          }
@@ -59,12 +59,12 @@ fun testExecutorTests(context: TimeoutExecutionContext) = funSpec {
       var started = false
       var finished = false
       val listener = object : TestCaseExecutionListener {
-         override fun testStarted(testCase: TestCase) {
+         override suspend fun testStarted(testCase: TestCase) {
             started = true
          }
 
-         override fun testIgnored(testCase: TestCase) {}
-         override fun testFinished(testCase: TestCase, result: TestResult) {
+         override suspend fun testIgnored(testCase: TestCase) {}
+         override suspend fun testFinished(testCase: TestCase, result: TestResult) {
             finished = true
             result.status shouldBe TestStatus.Error
          }
@@ -80,9 +80,9 @@ fun testExecutorTests(context: TimeoutExecutionContext) = funSpec {
 
    test("test executor should invoke before test") {
       val executor = TestCaseExecutor(object : TestCaseExecutionListener {
-         override fun testStarted(testCase: TestCase) {}
-         override fun testIgnored(testCase: TestCase) {}
-         override fun testFinished(testCase: TestCase, result: TestResult) {}
+         override suspend fun testStarted(testCase: TestCase) {}
+         override suspend fun testIgnored(testCase: TestCase) {}
+         override suspend fun testFinished(testCase: TestCase, result: TestResult) {}
       }, context)
       val spec = BeforeTest()
       val testCase = spec.materializeAndOrderRootTests().first().testCase
@@ -92,9 +92,9 @@ fun testExecutorTests(context: TimeoutExecutionContext) = funSpec {
 
    test("test executor should invoke after test") {
       val executor = TestCaseExecutor(object : TestCaseExecutionListener {
-         override fun testStarted(testCase: TestCase) {}
-         override fun testIgnored(testCase: TestCase) {}
-         override fun testFinished(testCase: TestCase, result: TestResult) {}
+         override suspend fun testStarted(testCase: TestCase) {}
+         override suspend fun testIgnored(testCase: TestCase) {}
+         override suspend fun testFinished(testCase: TestCase, result: TestResult) {}
       }, context)
       val spec = AfterTest()
       val testCase = spec.materializeAndOrderRootTests().first().testCase
@@ -106,12 +106,12 @@ fun testExecutorTests(context: TimeoutExecutionContext) = funSpec {
       var started = false
       var finished = false
       val executor = TestCaseExecutor(object : TestCaseExecutionListener {
-         override fun testStarted(testCase: TestCase) {
+         override suspend fun testStarted(testCase: TestCase) {
             started = true
          }
 
-         override fun testIgnored(testCase: TestCase) {}
-         override fun testFinished(testCase: TestCase, result: TestResult) {
+         override suspend fun testIgnored(testCase: TestCase) {}
+         override suspend fun testFinished(testCase: TestCase, result: TestResult) {
             finished = true
          }
       }, context)
@@ -127,12 +127,12 @@ fun testExecutorTests(context: TimeoutExecutionContext) = funSpec {
       var started = false
       var finished = false
       val executor = TestCaseExecutor(object : TestCaseExecutionListener {
-         override fun testStarted(testCase: TestCase) {
+         override suspend fun testStarted(testCase: TestCase) {
             started = true
          }
 
-         override fun testIgnored(testCase: TestCase) {}
-         override fun testFinished(testCase: TestCase, result: TestResult) {
+         override suspend fun testIgnored(testCase: TestCase) {}
+         override suspend fun testFinished(testCase: TestCase, result: TestResult) {
             finished = true
          }
       }, context)

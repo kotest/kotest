@@ -1,7 +1,7 @@
 package com.sksamuel.kotest.engine.internal
 
 import io.kotest.core.spec.style.WordSpec
-import io.kotest.engine.listener.IsolationTestEngineListener
+import io.kotest.engine.listener.PinnedSpecTestEngineListener
 import io.kotest.engine.listener.TestEngineListener
 import io.mockk.mockk
 import io.mockk.verify
@@ -17,7 +17,7 @@ class IsolationTestEngineListenerTest : WordSpec({
       "only notify for the running test" {
 
          val mock = mockk<TestEngineListener>(relaxed = true)
-         val listener = IsolationTestEngineListener(mock)
+         val listener = PinnedSpecTestEngineListener(mock)
 
          val spec1 = IsolationTestSpec1()
          val spec2 = IsolationTestSpec2()
@@ -36,7 +36,7 @@ class IsolationTestEngineListenerTest : WordSpec({
       "run queued callbacks for a single next spec when current spec completes" {
 
          val mock = mockk<TestEngineListener>(relaxed = true)
-         val listener = IsolationTestEngineListener(mock)
+         val listener = PinnedSpecTestEngineListener(mock)
 
          val spec1 = IsolationTestSpec1()
          val spec2 = IsolationTestSpec2()
@@ -77,7 +77,7 @@ class IsolationTestEngineListenerTest : WordSpec({
       "run all callbacks without race conditions" {
 
          val mock = mockk<TestEngineListener>(relaxed = true)
-         val listener = IsolationTestEngineListener(mock)
+         val listener = PinnedSpecTestEngineListener(mock)
 
          val spec1 = IsolationTestSpec1()
          val spec2 = IsolationTestSpec2()

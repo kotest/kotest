@@ -8,9 +8,9 @@ import io.kotest.engine.tags.ConfigurationTagProvider
 import io.kotest.core.spec.Spec
 import io.kotest.engine.config.ConfigManager
 import io.kotest.engine.filter.RequiresTagSpecFilter
+import io.kotest.engine.listener.AtomicTestEngineListener
 import io.kotest.engine.listener.CompositeTestEngineListener
-import io.kotest.engine.listener.IsolationTestEngineListener
-import io.kotest.engine.listener.SynchronizedTestEngineListener
+import io.kotest.engine.listener.PinnedSpecTestEngineListener
 import io.kotest.engine.listener.TestEngineListener
 import kotlinx.coroutines.runBlocking
 import kotlin.reflect.KClass
@@ -68,8 +68,8 @@ class KotestEngineLauncher(
       val config = KotestEngineConfig(
          testFilters,
          specFilters,
-         SynchronizedTestEngineListener(
-            IsolationTestEngineListener(
+         AtomicTestEngineListener(
+            PinnedSpecTestEngineListener(
                CompositeTestEngineListener(listeners)
             )
          ),

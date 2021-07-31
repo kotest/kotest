@@ -26,7 +26,7 @@ class LauncherTestFilterTest : FunSpec() {
          }
 
          val listener = object : TestEngineListener {
-            override fun testStarted(testCase: TestCase) {
+            override suspend fun testStarted(testCase: TestCase) {
                if (testCase.description.displayName() == "b")
                   error("should not run")
             }
@@ -48,7 +48,7 @@ class LauncherTestFilterTest : FunSpec() {
          }
 
          val listener = object : TestEngineListener {
-            override fun testStarted(testCase: TestCase) {
+            override suspend fun testStarted(testCase: TestCase) {
                if (testCase.description.displayName() == "b")
                   error("should not run")
             }

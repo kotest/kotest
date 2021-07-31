@@ -22,7 +22,7 @@ internal object EmptyTestSuiteExtension : EngineExtension {
       // listens to engine events, and if we have a test finished, we know we didn't have an empty test suite
       val emptyTestSuite = AtomicBoolean(true)
       val emptyTestSuiteListener = object : TestEngineListener {
-         override fun testFinished(testCase: TestCase, result: TestResult) {
+         override suspend fun testFinished(testCase: TestCase, result: TestResult) {
             emptyTestSuite.set(false)
          }
       }

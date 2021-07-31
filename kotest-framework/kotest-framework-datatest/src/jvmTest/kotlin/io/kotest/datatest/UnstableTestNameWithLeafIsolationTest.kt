@@ -21,7 +21,7 @@ class UnstableTestNameWithLeafIsolationTest : FunSpec() {
       val results = mutableListOf<TestStatus>()
 
       val listener = object : TestEngineListener {
-         override fun testFinished(testCase: TestCase, result: TestResult) {
+         override suspend fun testFinished(testCase: TestCase, result: TestResult) {
             results.add(result.status)
          }
       }

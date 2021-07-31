@@ -17,8 +17,8 @@ import io.kotest.engine.launchers.TestLauncher
 import io.kotest.engine.listener.TestEngineListener
 import io.kotest.engine.spec.SpecRunner
 import io.kotest.engine.test.DuplicateTestNameHandler
-import io.kotest.engine.lifecycle.invokeAfterSpec
-import io.kotest.engine.lifecycle.invokeBeforeSpec
+import io.kotest.engine.events.invokeAfterSpec
+import io.kotest.engine.events.invokeBeforeSpec
 import io.kotest.fp.Try
 import io.kotest.mpp.log
 import kotlinx.coroutines.coroutineScope
@@ -133,18 +133,18 @@ internal class InstancePerLeafSpecRunner(
 
          val testExecutor = TestCaseExecutor(
             object : TestCaseExecutionListener {
-               override fun testStarted(testCase: TestCase) {
+               override suspend fun testStarted(testCase: TestCase) {
                   if (started.add(testCase.description)) {
                      listener.testStarted(testCase)
                   }
                }
 
-               override fun testIgnored(testCase: TestCase) {
+               override suspend fun testIgnored(testCase: TestCase) {
                   if (ignored.add(testCase.description))
                      listener.testIgnored(testCase, null)
                }
 
-               override fun testFinished(testCase: TestCase, result: TestResult) {
+               override suspend fun testFinished(testCase: TestCase, result: TestResult) {
                   if (!queue.any { it.testCase.description.isDescendentOf(testCase.description) }) {
                      listener.testFinished(testCase, result)
                   }

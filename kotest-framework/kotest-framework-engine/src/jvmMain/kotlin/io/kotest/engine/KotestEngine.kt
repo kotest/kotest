@@ -7,6 +7,8 @@ import io.kotest.core.filter.SpecFilter
 import io.kotest.core.filter.TestFilter
 import io.kotest.core.spec.Spec
 import io.kotest.engine.config.ConfigManager
+import io.kotest.engine.events.Notifications
+import io.kotest.engine.events.afterProject
 import io.kotest.engine.extensions.DumpConfigExtension
 import io.kotest.engine.extensions.EmptyTestSuiteExtension
 import io.kotest.engine.extensions.EngineExtension
@@ -14,8 +16,6 @@ import io.kotest.engine.extensions.KotestPropertiesExtension
 import io.kotest.engine.extensions.SpecifiedTagsTagExtension
 import io.kotest.engine.extensions.TestDslStateExtensions
 import io.kotest.engine.launchers.specLauncher
-import io.kotest.engine.lifecycle.afterProject
-import io.kotest.engine.lifecycle.beforeProject
 import io.kotest.engine.listener.TestEngineListener
 import io.kotest.engine.script.ScriptExecutor
 import io.kotest.engine.spec.SpecExecutor
@@ -82,12 +82,12 @@ class KotestEngine(private val config: KotestEngineConfig) {
 
    private suspend fun executeTestSuite(suite: TestSuite, listener: TestEngineListener): EngineResult {
 
-      val beforeErrors = notifyListenerEngineStarted(suite, listener)
-         .flatMap { configuration.listeners().beforeProject() }
+      val beforeErrors = Notifications(listener).engineStarted(suite.classes)
+         .flatMap { Notifications(listener).beforeProject() }
          .fold({ listOf(it) }, { it })
 
       // if we have errors in the before project listeners, we'll not even execute tests, but
-      // instead immediately exit. Any errors in after project are added to the original error.
+      // instead immediately exit.
       if (beforeErrors.isNotEmpty())
          return EngineResult(beforeErrors)
 
@@ -104,9 +104,6 @@ class KotestEngine(private val config: KotestEngineConfig) {
    fun cleanup() {
       configuration.deregisterFilters(config.testFilters)
    }
-
-   private fun notifyListenerEngineStarted(suite: TestSuite, listener: TestEngineListener) =
-      Try { listener.engineStarted(suite.classes) }
 
    /**
     * Submit the test suite to be executed. Returns a success if everything completed normally,
@@ -146,7 +143,7 @@ class KotestEngine(private val config: KotestEngineConfig) {
       }
    }
 
-   private fun notifyResult(result: EngineResult) {
+   private suspend fun notifyResult(result: EngineResult) {
       result.errors.forEach {
          log(it) { "KotestEngine: Error during test engine run" }
          it.printStackTrace()

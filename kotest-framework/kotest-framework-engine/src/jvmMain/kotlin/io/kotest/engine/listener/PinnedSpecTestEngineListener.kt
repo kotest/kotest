@@ -8,45 +8,48 @@ import io.kotest.core.spec.toDescription
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import java.util.concurrent.atomic.AtomicReference
 import kotlin.reflect.KClass
 
 /**
  * Wraps a [TestEngineListener] methods to ensure that only test notifications
- * are passed to the underlying listener for one spec at at time. Notifications that
+ * are passed to the delegated listener for one spec at at time. Notifications that
  * are not for the current spec are delayed until the current spec completes.
  */
-class IsolationTestEngineListener(val listener: TestEngineListener) : TestEngineListener {
+class PinnedSpecTestEngineListener(val listener: TestEngineListener) : TestEngineListener {
 
    private val runningSpec = AtomicReference<String?>(null)
-   private val callbacks = mutableListOf<() -> Unit>()
+   private val callbacks = mutableListOf<suspend () -> Unit>()
+   private val mutex = Mutex()
 
-   private fun queue(fn: () -> Unit) {
+   private suspend fun queue(fn: suspend () -> Unit) {
       callbacks.add { fn() }
    }
 
-   private fun replay() {
-      synchronized(listener) {
+   private suspend fun replay() {
+      mutex.withLock {
          val _callbacks = callbacks.toList()
          callbacks.clear()
          _callbacks.forEach { it.invoke() }
       }
    }
 
-   override fun engineFinished(t: List<Throwable>) {
-      synchronized(listener) {
+   override suspend fun engineFinished(t: List<Throwable>) {
+      mutex.withLock {
          listener.engineFinished(t)
       }
    }
 
-   override fun engineStarted(classes: List<KClass<*>>) {
-      synchronized(listener) {
+   override suspend fun engineStarted(classes: List<KClass<*>>) {
+      mutex.withLock {
          listener.engineStarted(classes)
       }
    }
 
-   override fun specInstantiated(spec: Spec) {
-      synchronized(listener) {
+   override suspend fun specInstantiated(spec: Spec) {
+      mutex.withLock {
          if (runningSpec.get() == spec::class.toDescription().path().value) {
             listener.specInstantiated(spec)
          } else {
@@ -57,8 +60,8 @@ class IsolationTestEngineListener(val listener: TestEngineListener) : TestEngine
       }
    }
 
-   override fun specInstantiationError(kclass: KClass<*>, t: Throwable) {
-      synchronized(listener) {
+   override suspend fun specInstantiationError(kclass: KClass<*>, t: Throwable) {
+      mutex.withLock {
          if (runningSpec.get() == kclass.toDescription().path().value) {
             listener.specInstantiationError(kclass, t)
          } else {
@@ -69,8 +72,8 @@ class IsolationTestEngineListener(val listener: TestEngineListener) : TestEngine
       }
    }
 
-   override fun testStarted(testCase: TestCase) {
-      synchronized(listener) {
+   override suspend fun testStarted(testCase: TestCase) {
+      mutex.withLock {
          if (runningSpec.get() == testCase.spec::class.toDescription().path().value) {
             listener.testStarted(testCase)
          } else {
@@ -81,8 +84,8 @@ class IsolationTestEngineListener(val listener: TestEngineListener) : TestEngine
       }
    }
 
-   override fun testStarted(descriptor: Descriptor.TestDescriptor) {
-      synchronized(listener) {
+   override suspend fun testStarted(descriptor: Descriptor.TestDescriptor) {
+      mutex.withLock {
          if (runningSpec.get() == descriptor.spec()?.classname) {
             listener.testStarted(descriptor)
          } else {
@@ -93,8 +96,8 @@ class IsolationTestEngineListener(val listener: TestEngineListener) : TestEngine
       }
    }
 
-   override fun testIgnored(testCase: TestCase, reason: String?) {
-      synchronized(listener) {
+   override suspend fun testIgnored(testCase: TestCase, reason: String?) {
+      mutex.withLock {
          if (runningSpec.get() == testCase.spec::class.toDescription().path().value) {
             listener.testIgnored(testCase, reason)
          } else {
@@ -105,8 +108,8 @@ class IsolationTestEngineListener(val listener: TestEngineListener) : TestEngine
       }
    }
 
-   override fun testIgnored(descriptor: Descriptor.TestDescriptor, reason: String?) {
-      synchronized(listener) {
+   override suspend fun testIgnored(descriptor: Descriptor.TestDescriptor, reason: String?) {
+      mutex.withLock {
          if (runningSpec.get() == descriptor.spec()?.classname) {
             listener.testIgnored(descriptor, reason)
          } else {
@@ -117,8 +120,8 @@ class IsolationTestEngineListener(val listener: TestEngineListener) : TestEngine
       }
    }
 
-   override fun testFinished(testCase: TestCase, result: TestResult) {
-      synchronized(listener) {
+   override suspend fun testFinished(testCase: TestCase, result: TestResult) {
+      mutex.withLock {
          if (runningSpec.get() == testCase.spec::class.toDescription().path().value) {
             listener.testFinished(testCase, result)
          } else {
@@ -129,8 +132,8 @@ class IsolationTestEngineListener(val listener: TestEngineListener) : TestEngine
       }
    }
 
-   override fun testFinished(descriptor: Descriptor.TestDescriptor, result: TestResult) {
-      synchronized(listener) {
+   override suspend fun testFinished(descriptor: Descriptor.TestDescriptor, result: TestResult) {
+      mutex.withLock {
          if (runningSpec.get() == descriptor.spec()?.classname) {
             listener.testFinished(descriptor, result)
          } else {
@@ -141,8 +144,8 @@ class IsolationTestEngineListener(val listener: TestEngineListener) : TestEngine
       }
    }
 
-   override fun specStarted(kclass: KClass<*>) {
-      synchronized(listener) {
+   override suspend fun specStarted(kclass: KClass<*>) {
+      mutex.withLock {
          if (runningSpec.compareAndSet(null, kclass.toDescription().path().value)) {
             listener.specStarted(kclass)
          } else {
@@ -153,12 +156,12 @@ class IsolationTestEngineListener(val listener: TestEngineListener) : TestEngine
       }
    }
 
-   override fun specFinished(
+   override suspend fun specFinished(
       kclass: KClass<*>,
       t: Throwable?,
       results: Map<TestCase, TestResult>
    ) {
-      synchronized(listener) {
+      mutex.withLock {
          if (runningSpec.get() == kclass.toDescription().path().value) {
             listener.specFinished(kclass, t, results)
             runningSpec.set(null)
@@ -176,7 +179,7 @@ class IsolationTestEngineListener(val listener: TestEngineListener) : TestEngine
       t: Throwable?,
       results: Map<Descriptor.TestDescriptor, TestResult>
    ) {
-      synchronized(listener) {
+      mutex.withLock {
          if (runningSpec.get() == descriptor.classname) {
             runBlocking {
                listener.specFinished(descriptor, t, results)
@@ -194,7 +197,7 @@ class IsolationTestEngineListener(val listener: TestEngineListener) : TestEngine
    }
 
    override suspend fun specStarted(descriptor: Descriptor.SpecDescriptor) {
-      synchronized(listener) {
+      mutex.withLock {
          if (runningSpec.compareAndSet(null, descriptor.classname)) {
             runBlocking {
                listener.specStarted(descriptor)

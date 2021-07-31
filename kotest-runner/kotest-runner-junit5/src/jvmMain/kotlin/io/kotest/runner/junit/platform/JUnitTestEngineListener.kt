@@ -4,8 +4,8 @@ import io.kotest.core.spec.Spec
 import io.kotest.core.config.configuration
 import io.kotest.engine.listener.TestEngineListener
 import io.kotest.engine.writeSpecFailures
-import io.kotest.engine.lifecycle.AfterProjectListenerException
-import io.kotest.engine.lifecycle.BeforeProjectListenerException
+import io.kotest.engine.events.AfterProjectListenerException
+import io.kotest.engine.events.BeforeProjectListenerException
 import io.kotest.core.plan.Descriptor
 import io.kotest.core.plan.toDescriptor
 import io.kotest.core.sourceRef
@@ -88,12 +88,12 @@ class JUnitTestEngineListener(
 
    private var hasIgnoredTest = false
 
-   override fun engineStarted(classes: List<KClass<*>>) {
+   override suspend fun engineStarted(classes: List<KClass<*>>) {
       log { "Engine started; classes=[$classes]" }
       listener.executionStarted(root)
    }
 
-   override fun engineFinished(t: List<Throwable>) {
+   override suspend fun engineFinished(t: List<Throwable>) {
       log { "Engine finished; throwables=[${t.joinToString(separator = "\n", transform = { it.toString() })}]" }
 
       if (configuration.writeSpecFailureFile)
@@ -126,7 +126,7 @@ class JUnitTestEngineListener(
       listener.executionFinished(root, result)
    }
 
-   override fun specStarted(kclass: KClass<*>) {
+   override suspend fun specStarted(kclass: KClass<*>) {
       log { "specStarted [${kclass.qualifiedName}]" }
 
       // reset the flags for this spec
@@ -195,7 +195,7 @@ class JUnitTestEngineListener(
       listener.executionFinished(descriptor, result)
    }
 
-   override fun specFinished(kclass: KClass<*>, t: Throwable?, results: Map<TestCase, TestResult>) {
+   override suspend fun specFinished(kclass: KClass<*>, t: Throwable?, results: Map<TestCase, TestResult>) {
       log { "specFinished [$kclass]" }
 
       val descriptor = descriptors[kclass.toDescription().toDescriptor(sourceRef()).testPath()]
@@ -221,7 +221,7 @@ class JUnitTestEngineListener(
     * If the spec fails to be created, then there will be no tests, so we should insert an instantiation
     * failed test so that the spec shows up.
     */
-   override fun specInstantiationError(kclass: KClass<*>, t: Throwable) {
+   override suspend fun specInstantiationError(kclass: KClass<*>, t: Throwable) {
       exceptionThrowBySpec = t
    }
 
@@ -243,7 +243,7 @@ class JUnitTestEngineListener(
       }
    }
 
-   override fun testStarted(testCase: TestCase) {
+   override suspend fun testStarted(testCase: TestCase) {
       val descriptor = createTestDescriptor(testCase)
       log { "Registering junit dynamic test: $descriptor" }
       listener.dynamicTestRegistered(descriptor)
@@ -252,7 +252,7 @@ class JUnitTestEngineListener(
       hasVisibleTest = true
    }
 
-   override fun testStarted(descriptor: Descriptor.TestDescriptor) {
+   override suspend fun testStarted(descriptor: Descriptor.TestDescriptor) {
       val descriptor = createTestDescriptor(descriptor)
       log { "Registering junit dynamic test: $descriptor" }
       listener.dynamicTestRegistered(descriptor)
@@ -261,21 +261,21 @@ class JUnitTestEngineListener(
       hasVisibleTest = true
    }
 
-   override fun testFinished(testCase: TestCase, result: TestResult) {
+   override suspend fun testFinished(testCase: TestCase, result: TestResult) {
       val descriptor = descriptors[testCase.description.toDescriptor(testCase.source).testPath()]
          ?: throw RuntimeException("Error retrieving description for: ${testCase.description}")
       log { "Notifying junit that a test has finished [$descriptor]" }
       listener.executionFinished(descriptor, result.testExecutionResult())
    }
 
-   override fun testFinished(descriptor: Descriptor.TestDescriptor, result: TestResult) {
+   override suspend fun testFinished(descriptor: Descriptor.TestDescriptor, result: TestResult) {
       val descriptor = descriptors[descriptor.testPath()]
          ?: throw RuntimeException("Error retrieving description for: $descriptor")
       log { "Notifying junit that a test has finished [$descriptor]" }
       listener.executionFinished(descriptor, result.testExecutionResult())
    }
 
-   override fun testIgnored(testCase: TestCase, reason: String?) {
+   override suspend fun testIgnored(testCase: TestCase, reason: String?) {
       val descriptor = createTestDescriptor(testCase)
       hasIgnoredTest = true
       log { "Notifying junit that a test was ignored [$descriptor]" }
@@ -283,7 +283,7 @@ class JUnitTestEngineListener(
       listener.executionSkipped(descriptor, reason)
    }
 
-   override fun testIgnored(descriptor: Descriptor.TestDescriptor, reason: String?) {
+   override suspend fun testIgnored(descriptor: Descriptor.TestDescriptor, reason: String?) {
       val descriptor = createTestDescriptor(descriptor)
       hasIgnoredTest = true
       log { "Notifying junit that a test was ignored [$descriptor]" }

@@ -12,8 +12,8 @@ import io.kotest.core.test.toTestCase
 import io.kotest.engine.ExecutorExecutionContext
 import io.kotest.engine.concurrency.resolvedThreads
 import io.kotest.engine.launchers.TestLauncher
-import io.kotest.engine.lifecycle.invokeAfterSpec
-import io.kotest.engine.lifecycle.invokeBeforeSpec
+import io.kotest.engine.events.invokeAfterSpec
+import io.kotest.engine.events.invokeBeforeSpec
 import io.kotest.engine.listener.TestEngineListener
 import io.kotest.engine.spec.SpecRunner
 import io.kotest.engine.spec.materializeAndOrderRootTests
@@ -146,15 +146,15 @@ internal class InstancePerTestSpecRunner(
             }
          }
          val testExecutor = TestCaseExecutor(object : TestCaseExecutionListener {
-            override fun testStarted(testCase: TestCase) {
+            override suspend fun testStarted(testCase: TestCase) {
                if (isTarget) listener.testStarted(testCase)
             }
 
-            override fun testIgnored(testCase: TestCase) {
+            override suspend fun testIgnored(testCase: TestCase) {
                if (isTarget) listener.testIgnored(testCase, null)
             }
 
-            override fun testFinished(testCase: TestCase, result: TestResult) {
+            override suspend fun testFinished(testCase: TestCase, result: TestResult) {
                if (isTarget) listener.testFinished(testCase, result)
             }
          }, ExecutorExecutionContext)

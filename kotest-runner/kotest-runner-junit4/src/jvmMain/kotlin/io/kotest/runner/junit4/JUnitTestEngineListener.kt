@@ -12,11 +12,11 @@ class JUnitTestEngineListener(
    private val notifier: RunNotifier,
 ) : TestEngineListener {
 
-   override fun testStarted(testCase: TestCase) {
+   override suspend fun testStarted(testCase: TestCase) {
       notifier.fireTestStarted(describeTestCase(testCase))
    }
 
-   override fun testFinished(testCase: TestCase, result: TestResult) {
+   override suspend fun testFinished(testCase: TestCase, result: TestResult) {
       val desc = describeTestCase(testCase)
       when (result.status) {
          TestStatus.Success -> notifier.fireTestFinished(desc)

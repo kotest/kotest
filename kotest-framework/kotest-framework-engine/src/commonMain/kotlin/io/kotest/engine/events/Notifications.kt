@@ -1,4 +1,4 @@
-package io.kotest.engine
+package io.kotest.engine.events
 
 import io.kotest.core.config.configuration
 import io.kotest.core.config.specInstantiationListeners
@@ -16,7 +16,22 @@ import kotlin.reflect.KClass
 /**
  * Used to send notifications to listeners and test engine listeners.
  */
-class NotificationManager(private val listener: TestEngineListener) {
+class Notifications(private val listener: TestEngineListener) {
+
+   /**
+    * Notify the listeners that the engien has started.
+    */
+   suspend fun engineStarted(classes: List<KClass<*>>): Try<Unit> {
+      return Try { listener.engineStarted(classes) }
+   }
+
+   /**
+    * Notify the listeners that the project has started.
+    * This should be called after the engineStarted event.
+    */
+   suspend fun beforeProject(): Try<List<BeforeProjectListenerException>> {
+      return configuration.listeners().beforeProject()
+   }
 
    /**
     * Notifies listeners that we are about to start execution of a [Descriptor].
@@ -85,7 +100,7 @@ class NotificationManager(private val listener: TestEngineListener) {
       }
    }
 
-   private fun testEngineSpecFinished(
+   private suspend fun testEngineSpecFinished(
       kclass: KClass<out Spec>,
       error: Throwable?,
       results: Map<TestCase, TestResult>
@@ -105,7 +120,7 @@ class NotificationManager(private val listener: TestEngineListener) {
       }
    }
 
-   fun specInstantiated(spec: Spec) = Try {
+   suspend fun specInstantiated(spec: Spec) = Try {
       log { "NotificationManager:specInstantiated spec:$spec" }
       val listeners = configuration.specInstantiationListeners()
       listener.specInstantiated(spec)
@@ -114,7 +129,7 @@ class NotificationManager(private val listener: TestEngineListener) {
       }
    }
 
-   fun specInstantiationError(kclass: KClass<out Spec>, t: Throwable) = Try {
+   suspend fun specInstantiationError(kclass: KClass<out Spec>, t: Throwable) = Try {
       log { "NotificationManager:specInstantiationError $kclass error:$t" }
       val listeners = configuration.specInstantiationListeners()
       t.printStackTrace()

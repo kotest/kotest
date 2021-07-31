@@ -1,8 +1,8 @@
 package io.kotest.engine.listener
 
-import io.kotest.engine.test.TestCaseExecutionListener
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
+import io.kotest.engine.test.TestCaseExecutionListener
 
 /**
  * Converts events fired to a [TestCaseExecutionListener] into events fired to a [TestEngineListener]
@@ -10,15 +10,15 @@ import io.kotest.core.test.TestResult
 class TestCaseListenerToTestEngineListenerAdapter(val listener: TestEngineListener) :
    TestCaseExecutionListener {
 
-   override fun testFinished(testCase: TestCase, result: TestResult) {
+   override suspend fun testFinished(testCase: TestCase, result: TestResult) {
       listener.testFinished(testCase, result)
    }
 
-   override fun testIgnored(testCase: TestCase) {
+   override suspend fun testIgnored(testCase: TestCase) {
       listener.testIgnored(testCase, null)
    }
 
-   override fun testStarted(testCase: TestCase) {
+   override suspend fun testStarted(testCase: TestCase) {
       listener.testStarted(testCase)
    }
 }
