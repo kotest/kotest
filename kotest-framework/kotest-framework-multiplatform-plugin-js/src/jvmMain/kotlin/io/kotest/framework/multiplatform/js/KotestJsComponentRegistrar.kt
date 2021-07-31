@@ -5,28 +5,19 @@ import org.jetbrains.kotlin.backend.common.extensions.IrGenerationExtension
 import org.jetbrains.kotlin.backend.common.extensions.IrPluginContext
 import org.jetbrains.kotlin.backend.common.ir.addChild
 import org.jetbrains.kotlin.backend.common.lower.DeclarationIrBuilder
-import org.jetbrains.kotlin.cli.common.CLIConfigurationKeys
-import org.jetbrains.kotlin.cli.common.messages.MessageCollector
-import org.jetbrains.kotlin.cli.common.toLogger
 import org.jetbrains.kotlin.com.intellij.mock.MockProject
 import org.jetbrains.kotlin.compiler.plugin.ComponentRegistrar
 import org.jetbrains.kotlin.config.CompilerConfiguration
-import org.jetbrains.kotlin.ir.IrElement
-import org.jetbrains.kotlin.ir.builders.IrStatementsBuilder
 import org.jetbrains.kotlin.ir.builders.declarations.addGetter
 import org.jetbrains.kotlin.ir.builders.declarations.buildField
 import org.jetbrains.kotlin.ir.builders.declarations.buildProperty
 import org.jetbrains.kotlin.ir.builders.irBlock
 import org.jetbrains.kotlin.ir.builders.irBlockBody
 import org.jetbrains.kotlin.ir.builders.irCall
-import org.jetbrains.kotlin.ir.builders.irString
 import org.jetbrains.kotlin.ir.builders.irVararg
 import org.jetbrains.kotlin.ir.declarations.IrClass
 import org.jetbrains.kotlin.ir.declarations.IrFile
 import org.jetbrains.kotlin.ir.declarations.IrModuleFragment
-import org.jetbrains.kotlin.ir.declarations.name
-import org.jetbrains.kotlin.ir.symbols.IrClassSymbol
-import org.jetbrains.kotlin.ir.symbols.IrSimpleFunctionSymbol
 import org.jetbrains.kotlin.ir.types.IrType
 import org.jetbrains.kotlin.ir.types.classFqName
 import org.jetbrains.kotlin.ir.types.getClass
@@ -41,40 +32,50 @@ class KotestJsComponentRegistrar : ComponentRegistrar {
       project: MockProject,
       configuration: CompilerConfiguration
    ) {
-      val messageCollector = configuration.get(CLIConfigurationKeys.MESSAGE_COLLECTOR_KEY, MessageCollector.NONE)
-      IrGenerationExtension.registerExtension(project, SpecIrGenerationExtension(messageCollector))
+      // val messageCollector = configuration.get(CLIConfigurationKeys.MESSAGE_COLLECTOR_KEY, MessageCollector.NONE)
+      IrGenerationExtension.registerExtension(project, SpecIrGenerationExtension())
    }
 }
 
-class SpecIrGenerationExtension(private val messageCollector: MessageCollector) : IrGenerationExtension {
+class SpecIrGenerationExtension : IrGenerationExtension {
+
+   companion object {
+      // we use a public val to register each spec
+      const val LauncherValName = "launcher"
+
+      // the method invoked to start the tests, must exist on TestEngineLauncher
+      const val LaunchMethodName = "launch"
+
+      // the FQN for the class used to launch the MPP engine
+      const val TestEngineClassName = "io.kotest.engine.TestEngineLauncher"
+
+      // the method invoked to add specs to the launcher, must exist on TestEngineLauncher
+      const val RegisterMethodName = "register"
+   }
+
    override fun generate(moduleFragment: IrModuleFragment, pluginContext: IrPluginContext) {
 
       moduleFragment.transform(object : IrElementTransformerVoidWithContext() {
 
          val specs = mutableListOf<IrClass>()
 
-         // we use a public val to register each spec
-         val entryPointPropertyName = "kotestEngineInit"
-
          override fun visitModuleFragment(declaration: IrModuleFragment): IrModuleFragment {
             val fragment = super.visitModuleFragment(declaration)
             if (specs.isEmpty()) return fragment
 
             val file = declaration.files.first()
-            messageCollector.toLogger().warning("Will write to file ${file.name}")
 
-            val launcherClass = pluginContext.referenceClass(FqName("io.kotest.engine.TestEngineLauncher"))
-               ?: error("Cannot find TestEngineLauncher class reference")
-            val applyFn = pluginContext.referenceFunctions(FqName("kotlin.apply")).single()
+            val launcherClass = pluginContext.referenceClass(FqName(TestEngineClassName))
+               ?: error("Cannot find $TestEngineClassName class reference")
 
-            val funPrintln = pluginContext.referenceFunctions(FqName("kotlin.io.println"))
-               .single {
-                  val parameters = it.owner.valueParameters
-                  parameters.size == 1 && parameters[0].type == pluginContext.irBuiltIns.anyNType
-               }
+            val launchFn = launcherClass.getSimpleFunction(LaunchMethodName)
+               ?: error("Cannot find function $LaunchMethodName")
+
+            val registerFn = launcherClass.getSimpleFunction(RegisterMethodName)
+               ?: error("Cannot find function $RegisterMethodName")
 
             val launcher = pluginContext.irFactory.buildProperty {
-               name = Name.identifier("launcher")
+               name = Name.identifier(LauncherValName)
             }.apply {
                parent = file
 
@@ -83,22 +84,22 @@ class SpecIrGenerationExtension(private val messageCollector: MessageCollector) 
                   isFinal = true
                   isExternal = false
                   isStatic = true // top level vals must be static
-                  name = Name.identifier("launcher")
+                  name = Name.identifier(LauncherValName)
                }.also { field ->
                   field.correspondingPropertySymbol = this@apply.symbol
                   field.initializer = pluginContext.irFactory.createExpressionBody(startOffset, endOffset) {
                      this.expression = DeclarationIrBuilder(pluginContext, field.symbol).irBlock {
-                        +irCall(launcherClass.getSimpleFunction("launch")!!).also { launch ->
-                           launch.dispatchReceiver =
-                              irCall(launcherClass.getSimpleFunction("register")!!).also { register ->
-                                 register.dispatchReceiver = irCall(launcherClass.constructors.first())
-                                 register.putValueArgument(
-                                    0,
-                                    irVararg(pluginContext.irBuiltIns.stringType, specs.map {
-                                       irCall(it.constructors.first())
-                                    })
+                        +irCall(launchFn).also { launch ->
+                           launch.dispatchReceiver = irCall(registerFn).also { register ->
+                              register.dispatchReceiver = irCall(launcherClass.constructors.first())
+                              register.putValueArgument(
+                                 0,
+                                 irVararg(
+                                    pluginContext.irBuiltIns.stringType,
+                                    specs.map { irCall(it.constructors.first()) }
                                  )
-                              }
+                              )
+                           }
                         }
                      }
                   }
@@ -108,9 +109,6 @@ class SpecIrGenerationExtension(private val messageCollector: MessageCollector) 
                   returnType = pluginContext.irBuiltIns.unitType
                }.also { func ->
                   func.body = DeclarationIrBuilder(pluginContext, func.symbol).irBlockBody {
-                     +irCall(funPrintln).also {
-                        it.putValueArgument(0, irString(specs.map { "a" }.toString()))
-                     }
                   }
                }
             }
@@ -141,15 +139,6 @@ private val specClasses = listOf(
    "io.kotest.core.spec.style.StringSpec",
    "io.kotest.core.spec.style.WordSpec",
 )
-
-val IrPluginContext.javascriptEntryPointFn: IrSimpleFunctionSymbol
-   get() = referenceFunctions(FqName("io.kotest.engine.javascriptEntryPoint")).single {
-      val parameters = it.owner.valueParameters
-      parameters.size == 1
-   }
-
-val IrPluginContext.arrayListClass: IrClassSymbol
-   get() = referenceClass(FqName("kotlin.collections.ArrayList")) ?: error("Cannot find ArrayList class ref")
 
 /**
  * Returns any specs declared at the top level in this file.
