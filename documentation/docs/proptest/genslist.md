@@ -74,7 +74,7 @@ We also provide generators for [Arrow](arrow.md) as a separate module.
 | `Arb.enum<T>()` | Randomly selects constants from the given enum. | ✓ | ✓ | ✓ |
 | `Exhaustive.enum<T>()` | Iterates all the constants defined in the given enum. | ✓ | ✓ | ✓ |
 | **Geo** |
-| `Arb.latlong()` | Generates random pairs of doubles, where each double is in the range -180 to 180. | ✓ | ✓ | ✓ |
+| `Arb.geoLocation()` | Generates `GeoLocation` objects with random latitude/longitude points uniformly distributed on the globe. | ✓ | ✓ | ✓ |
 | **Strings** |
 | `Arb.string(range)` | Generates random printable strings with a randomly chosen size from the given range. If range is not specified then (0..100) is used. The edge cases include empty string, a blank string and a unicode string. | ✓ | ✓ | ✓ |
 | `Arb.stringPattern(pattern)` | Generates strings that match given pattern using [Generex](https://github.com/mifmif/Generex) | ✓ |   |   |
