@@ -1,7 +1,6 @@
 package io.kotest.engine
 
 import io.kotest.core.spec.Spec
-import io.kotest.engine.preconditions.IsNotNestedSpecStyle
 import kotlinx.coroutines.DelicateCoroutinesApi
 
 /**
@@ -11,14 +10,7 @@ import kotlinx.coroutines.DelicateCoroutinesApi
  */
 @DelicateCoroutinesApi
 fun javascriptEntryPoint(spec: Spec) {
-   val config = TestEngineConfig(
-      emptyList(),
-      emptyList(),
-      NoopTestEngineListener,
-      null,
-      false,
-      listOf(IsNotNestedSpecStyle)
-   )
+   val config = TestEngineConfig.default()
    val engine = TestEngine(config)
-   engine.execute(TestSuite(listOf(spec)))
+   engine.execute(TestSuite(listOf(spec), emptyList()))
 }

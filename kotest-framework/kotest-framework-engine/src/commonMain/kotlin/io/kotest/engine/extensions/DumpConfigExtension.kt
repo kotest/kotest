@@ -7,16 +7,16 @@ import io.kotest.engine.config.dumpProjectConfig
 import io.kotest.engine.listener.TestEngineListener
 
 /**
- * Outputs a [Configuration] to the console.
+ * Outputs a given [Configuration] to the console.
  */
 internal class DumpConfigExtension(
    private val configuration: Configuration,
 ) : EngineExtension {
 
-   override suspend fun intercept(
+   override fun intercept(
       suite: TestSuite,
       listener: TestEngineListener,
-      execute: suspend (TestSuite, TestEngineListener) -> EngineResult
+      execute: (TestSuite, TestEngineListener) -> EngineResult
    ): EngineResult {
       configuration.dumpProjectConfig()
       return execute(suite, listener)

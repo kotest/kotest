@@ -6,32 +6,42 @@ import io.kotest.engine.EngineResult
 import io.kotest.engine.TestSuite
 import io.kotest.engine.listener.CompositeTestEngineListener
 import io.kotest.engine.listener.TestEngineListener
-import java.util.concurrent.atomic.AtomicBoolean
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 
 /**
- * Wraps the [TestEngineListener] to listen for test events and errors if there were no tests executed.
+ * Wraps the [TestEngineListener] to listen for test events and returns an error
+ * if there were no tests executed.
  */
 internal object EmptyTestSuiteExtension : EngineExtension {
 
-   override suspend fun intercept(
+   override fun intercept(
       suite: TestSuite,
       listener: TestEngineListener,
-      execute: suspend (TestSuite, TestEngineListener) -> EngineResult
+      execute: (TestSuite, TestEngineListener) -> EngineResult
    ): EngineResult {
 
       // listens to engine events, and if we have a test finished, we know we didn't have an empty test suite
-      val emptyTestSuite = AtomicBoolean(true)
+      var emptyTestSuite = true
+      val mutex = Mutex()
       val emptyTestSuiteListener = object : TestEngineListener {
          override suspend fun testFinished(testCase: TestCase, result: TestResult) {
-            emptyTestSuite.set(false)
+            mutex.withLock {
+               emptyTestSuite = false
+            }
          }
       }
 
       val result = execute(suite, CompositeTestEngineListener(listOf(listener, emptyTestSuiteListener)))
 
       return when {
-         emptyTestSuite.get() -> EngineResult(result.errors + RuntimeException("No tests were executed"))
+         emptyTestSuite -> EngineResult(result.errors + EmptyTestSuiteException())
          else -> result
       }
    }
 }
+
+/**
+ * Exception used to indicate that the engine had no specs to execute.
+ */
+class EmptyTestSuiteException : Exception("No specs were available to test")

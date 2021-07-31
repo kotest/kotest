@@ -3,7 +3,6 @@
 package io.kotest.engine
 
 import io.kotest.core.spec.Spec
-import io.kotest.engine.preconditions.IsNotNestedSpecStyle
 import kotlinx.coroutines.DelicateCoroutinesApi
 
 /**
@@ -13,6 +12,6 @@ import kotlinx.coroutines.DelicateCoroutinesApi
  */
 @DelicateCoroutinesApi
 fun nativeEntryPoint(spec: Spec) {
-   val engine = NativeEngine(NativeEngineConfig(listOf(IsNotNestedSpecStyle)))
-   engine.execute(TestSuite(listOf(spec)))
+   val engine = TestEngine(TestEngineConfig.default())
+   engine.execute(TestSuite(listOf(spec), emptyList()))
 }

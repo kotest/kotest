@@ -11,6 +11,8 @@ import java.util.Properties
  * When you have system properties you want to use for tests launched by both gradle and
  * the intellij plugin, you can place them into a file `kotest.properties` that is located
  * on the classpath (say src/test/resources) and kotest will load those properties and apply them.
+ *
+ * This is a JVM only extension.
  */
 internal object KotestPropertiesExtension : EngineExtension {
 
@@ -42,10 +44,10 @@ internal object KotestPropertiesExtension : EngineExtension {
       }
    }
 
-   override suspend fun intercept(
+   override fun intercept(
       suite: TestSuite,
       listener: TestEngineListener,
-      execute: suspend (TestSuite, TestEngineListener) -> EngineResult
+      execute: (TestSuite, TestEngineListener) -> EngineResult
    ): EngineResult {
       loadAndApplySystemProps()
       return execute(suite, listener)

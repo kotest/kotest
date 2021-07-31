@@ -1,14 +1,11 @@
 package io.kotest.engine
 
-import io.kotest.core.Tags
-import io.kotest.core.filter.SpecFilter
-import io.kotest.core.filter.TestFilter
 import io.kotest.core.spec.Spec
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
-import io.kotest.engine.preconditions.ValidateSpec
 import io.kotest.engine.spec.materializeAndOrderRootTests
 import io.kotest.engine.test.CallingThreadExecutionContext
+import io.kotest.engine.test.RootRestrictedTestContext
 import io.kotest.engine.test.TestCaseExecutor
 import io.kotest.engine.test.status.isEnabledInternal
 import io.kotest.mpp.bestName
@@ -16,63 +13,11 @@ import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.promise
 
-data class TestEngineConfig(
-   val testFilters: List<TestFilter>,
-   val specFilters: List<SpecFilter>,
-   val listener: TestEngineListener,
-   val explicitTags: Tags?,
-   val dumpConfig: Boolean,
-   val validations: List<ValidateSpec>,
-)
-
-interface TestEngineListener {
-
-   /**
-    * Is invoked when the [TestEngine] is starting execution.
-    */
-   fun engineStarted() {}
-
-   /**
-    * Is invoked when the [TestEngine] has finished execution.
-    *
-    * If an unrecoverable error was detected during execution then it will be passed
-    * as the parameter to the engine.
-    */
-   fun engineFinished(t: List<Throwable>) {}
-}
-
-val NoopTestEngineListener = object : TestEngineListener {}
-
-data class TestSuite(val specs: List<Spec>)
-
 /**
  * Note: we need to use this: https://youtrack.jetbrains.com/issue/KT-22228
  */
-@DelicateCoroutinesApi
-class TestEngine(private val config: TestEngineConfig) {
-
-   fun execute(suite: TestSuite) {
-      require(suite.specs.isNotEmpty()) { "Cannot invoke the engine with no specs" }
-
-      suite.specs.forEach { spec ->
-         config.validations.forEach {
-            it.invoke(spec::class)
-         }
-      }
-
-      execute(suite.specs)
-   }
-
-   private fun execute(specs: List<Spec>) {
-      if (specs.isNotEmpty()) {
-         val runner = SpecRunner()
-         runner.execute(specs.first()) { execute(specs.drop(1)) }
-      }
-   }
-}
-
 @OptIn(DelicateCoroutinesApi::class)
-class SpecRunner {
+actual class SpecRunner {
 
    /**
     * Executes a single [spec].
@@ -81,7 +26,7 @@ class SpecRunner {
     *
     * Once the inner test promise completes, the [onComplete] callback is invoked.
     */
-   fun execute(spec: Spec, onComplete: () -> Unit) {
+   actual fun execute(spec: Spec, onComplete: suspend () -> Unit) {
       // we use the spec itself as an outer/parent test.
       describe(spec::class.bestName()) {
          spec.materializeAndOrderRootTests().forEach { root ->
@@ -100,13 +45,11 @@ class SpecRunner {
             } else {
                xit(root.testCase.displayName) {}
             }
-
-
          }
       }
    }
 
-   private fun executeTest(testCase: TestCase, onComplete: (TestResult) -> Unit) {
+   private fun executeTest(testCase: TestCase, onComplete: suspend (TestResult) -> Unit) {
       // done is the JS promise
       // some frameworks default to a 2000 timeout,
       // we can change this to the kotest test setting
@@ -115,7 +58,7 @@ class SpecRunner {
       val listener = CallbackTestCaseExecutionListener(onComplete)
 
       GlobalScope.promise {
-         val context = TerminalTestContext(testCase, this.coroutineContext)
+         val context = RootRestrictedTestContext(testCase, this.coroutineContext)
          val executor = TestCaseExecutor(
             listener,
             CallingThreadExecutionContext
