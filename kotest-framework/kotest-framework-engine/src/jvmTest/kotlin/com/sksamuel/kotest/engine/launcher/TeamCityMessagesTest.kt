@@ -1,13 +1,13 @@
 package com.sksamuel.kotest.engine.launcher
 
 import io.kotest.core.spec.style.ShouldSpec
-import io.kotest.engine.reporter.TeamCityMessages
+import io.kotest.engine.teamcity.TeamCityMessageBuilder
 import io.kotest.matchers.shouldBe
 
 class TeamCityMessagesTest : ShouldSpec({
 
    should("escape brackets in messages") {
-      val msg = TeamCityMessages.testFailed("testcity", "escape brackets")
+      val msg = TeamCityMessageBuilder.testFailed("testcity", "escape brackets")
          .message("expected:<[foo]> but was:<[bar]>")
          .duration(67)
          .toString()
@@ -15,7 +15,7 @@ class TeamCityMessagesTest : ShouldSpec({
    }
 
    should("escape quotes in messages") {
-      val msg = TeamCityMessages.testFailed("testcity", "escape quotes")
+      val msg = TeamCityMessageBuilder.testFailed("testcity", "escape quotes")
          .message("foo'bar")
          .duration(67)
          .toString()
@@ -23,7 +23,7 @@ class TeamCityMessagesTest : ShouldSpec({
    }
 
    should("escape quotes in names") {
-      val msg = TeamCityMessages.testFailed("testcity", "isn't busy")
+      val msg = TeamCityMessageBuilder.testFailed("testcity", "isn't busy")
          .message("foo'bar")
          .duration(67)
          .toString()
@@ -31,7 +31,7 @@ class TeamCityMessagesTest : ShouldSpec({
    }
 
    should("escape new lines") {
-      val msg = TeamCityMessages.testFailed("testcity", "escape brackets")
+      val msg = TeamCityMessageBuilder.testFailed("testcity", "escape brackets")
          .message(
             """
 qweqwe
@@ -45,7 +45,7 @@ ret
    }
 
    should("support comparison values") {
-      val msg = TeamCityMessages.testFailed("testcity", "support comparison values")
+      val msg = TeamCityMessageBuilder.testFailed("testcity", "support comparison values")
          .type("comparisonFailure")
          .message("test failed")
          .actual("act")

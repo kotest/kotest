@@ -68,7 +68,7 @@ object Libs {
    }
 
    object OpenTest4j {
-      const val core = "org.opentest4j:opentest4j:_"
+      const val opentest4j = "org.opentest4j:opentest4j:_"
    }
 
    object Wumpz {

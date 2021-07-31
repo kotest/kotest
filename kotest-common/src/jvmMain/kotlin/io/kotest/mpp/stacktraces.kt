@@ -4,10 +4,6 @@ package io.kotest.mpp
 
 actual val stacktraces: StackTraces = object : StackTraces {
 
-   override fun throwableLocation(t: Throwable): String? {
-      return throwableLocation(t, 1)?.firstOrNull()
-   }
-
    override fun throwableLocation(t: Throwable, n: Int): List<String>? {
       return (t.cause ?: t).stackTrace?.dropWhile {
          it.className.startsWith("io.kotest")

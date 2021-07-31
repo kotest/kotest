@@ -64,7 +64,7 @@ kotlin {
             api(project(Projects.Discovery))
 
             // we use AssertionFailedError from opentest4j
-            implementation(Libs.OpenTest4j.core)
+            implementation(Libs.OpenTest4j.opentest4j)
 
             // used to write to the console with fancy colours!
             api(Libs.Ajalt.mordant)
