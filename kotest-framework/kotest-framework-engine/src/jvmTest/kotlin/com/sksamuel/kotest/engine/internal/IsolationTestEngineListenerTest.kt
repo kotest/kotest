@@ -10,6 +10,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 
 class IsolationTestEngineListenerTest : WordSpec({
 
@@ -28,9 +29,9 @@ class IsolationTestEngineListenerTest : WordSpec({
          listener.specInstantiated(spec2)
          listener.specInstantiated(spec3)
 
-         verify { mock.specInstantiated(spec1) }
-         verify(exactly = 0) { mock.specInstantiated(spec2) }
-         verify(exactly = 0) { mock.specInstantiated(spec3) }
+         verify { runBlocking { mock.specInstantiated(spec1) } }
+         verify(exactly = 0) { runBlocking { mock.specInstantiated(spec2) } }
+         verify(exactly = 0) { runBlocking { mock.specInstantiated(spec3) } }
       }
 
       "run queued callbacks for a single next spec when current spec completes" {
@@ -50,27 +51,35 @@ class IsolationTestEngineListenerTest : WordSpec({
          listener.specFinished(spec3::class, null, emptyMap())
 
          verifyOrder {
-            mock.specStarted(spec1::class)
-            mock.specInstantiated(spec1)
+            runBlocking {
+               mock.specStarted(spec1::class)
+               mock.specInstantiated(spec1)
+            }
          }
 
          verify(exactly = 0) {
-            mock.specStarted(spec2::class)
-            mock.specInstantiated(spec2)
+            runBlocking {
+               mock.specStarted(spec2::class)
+               mock.specInstantiated(spec2)
+            }
          }
 
          listener.specFinished(spec1::class, null, emptyMap())
 
          verifyOrder {
-            mock.specFinished(spec1::class, any(), any())
-            mock.specStarted(spec2::class)
-            mock.specInstantiated(spec2)
-            mock.specFinished(spec2::class, any(), any())
+            runBlocking {
+               mock.specFinished(spec1::class, any(), any())
+               mock.specStarted(spec2::class)
+               mock.specInstantiated(spec2)
+               mock.specFinished(spec2::class, any(), any())
+            }
          }
          verify(exactly = 0) {
-            mock.specStarted(spec3::class)
-            mock.specInstantiated(spec3)
-            mock.specFinished(spec3::class, any(), any())
+            runBlocking {
+               mock.specStarted(spec3::class)
+               mock.specInstantiated(spec3)
+               mock.specFinished(spec3::class, any(), any())
+            }
          }
       }
 
@@ -122,32 +131,42 @@ class IsolationTestEngineListenerTest : WordSpec({
          }
 
          verifyOrder {
-            mock.specStarted(spec1::class)
-            mock.specInstantiated(spec1)
-            mock.specFinished(spec1::class, any(), any())
+            runBlocking {
+               mock.specStarted(spec1::class)
+               mock.specInstantiated(spec1)
+               mock.specFinished(spec1::class, any(), any())
+            }
          }
          verifyOrder {
-            mock.specStarted(spec2::class)
-            mock.specInstantiated(spec2)
-            mock.specFinished(spec2::class, any(), any())
+            runBlocking {
+               mock.specStarted(spec2::class)
+               mock.specInstantiated(spec2)
+               mock.specFinished(spec2::class, any(), any())
+            }
          }
          verifyOrder {
-            mock.specStarted(spec3::class)
-            mock.specInstantiated(spec3)
-            mock.specFinished(spec3::class, any(), any())
+            runBlocking {
+               mock.specStarted(spec3::class)
+               mock.specInstantiated(spec3)
+               mock.specFinished(spec3::class, any(), any())
+            }
          }
          verifyOrder {
-            mock.specStarted(spec4::class)
-            mock.specInstantiated(spec4)
-            mock.specFinished(spec4::class, any(), any())
-            mock.specStarted(spec5::class)
-            mock.specInstantiated(spec5)
-            mock.specFinished(spec5::class, any(), any())
+            runBlocking {
+               mock.specStarted(spec4::class)
+               mock.specInstantiated(spec4)
+               mock.specFinished(spec4::class, any(), any())
+               mock.specStarted(spec5::class)
+               mock.specInstantiated(spec5)
+               mock.specFinished(spec5::class, any(), any())
+            }
          }
          verifyOrder {
-            mock.specStarted(spec6::class)
-            mock.specInstantiated(spec6)
-            mock.specFinished(spec6::class, any(), any())
+            runBlocking {
+               mock.specStarted(spec6::class)
+               mock.specInstantiated(spec6)
+               mock.specFinished(spec6::class, any(), any())
+            }
          }
       }
    }
