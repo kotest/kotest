@@ -15,7 +15,7 @@ class KotestMultiplatformCompilerPlugin : KotlinCompilerPluginSupportPlugin {
       const val groupId = "io.kotest"
       const val artifactId = "kotest-framework-multiplatform-plugin-js-jvm"
       const val nativeArtifactId = "kotest-framework-multiplatform-plugin-native-jvm"
-      const val version = "5.0.0.334-SNAPSHOT"
+      val version = System.getenv("KOTEST_MPP_PLUGIN_VERSION") ?: "5.0.0-LOCAL"
    }
 
    override fun getCompilerPluginId() = compilerPluginId
