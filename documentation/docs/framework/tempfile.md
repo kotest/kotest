@@ -28,3 +28,16 @@ class MySpec : FunSpec({
 })
 
 ```
+
+## Temporary Directories
+
+Similar to temp files, we can create a temp dir using `tempdir()`.
+
+class MySpec : FunSpec({
+
+   val dir = tempdir()
+
+   test("a temporary dir dependent test") {
+      //...
+   }
+})
