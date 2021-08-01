@@ -20,12 +20,12 @@ class StringPatternTest : FunSpec({
    }
 
    context("should not timeout") {
-      timeout = 30000
+      timeout = 5000
       test("should be quick") {
          val arbPattern = Arb.stringPattern("[a-zA-Z0-9]+")
 
          val testDispatcher = Executors.newFixedThreadPool(10).asCoroutineDispatcher()
-         generateSequence { async(testDispatcher) { arbPattern.take(500000).last() } }
+         generateSequence { async(testDispatcher) { arbPattern.take(100000).last() } }
             .take(10)
             .toList()
             .awaitAll()

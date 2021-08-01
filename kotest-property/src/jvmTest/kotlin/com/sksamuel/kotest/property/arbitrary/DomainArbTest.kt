@@ -17,6 +17,7 @@ import java.nio.charset.StandardCharsets
 
 class DomainArbTest : ShouldSpec({
    should("Generate domains with the most common TLDs by default") {
+
       val tlds = mutableListOf<String>()
       Arb.domain().checkAll(iterations = 10_000) {
          tlds += it.substringAfterLast(".")
@@ -69,13 +70,13 @@ class DomainArbTest : ShouldSpec({
    }
 
    should("Never start with a hyphen") {
-      Arb.domain().checkAll(iterations = 100_000) {
+      Arb.domain().checkAll(iterations = 1000) {
          it shouldNotStartWith "-"
       }
    }
 
    should("Never end with a hyphen") {
-      Arb.domain().checkAll(iterations = 100_000) {
+      Arb.domain().checkAll(iterations = 1000) {
          it shouldNotEndWith "-"
       }
    }
@@ -83,7 +84,7 @@ class DomainArbTest : ShouldSpec({
    // https://whogohost.com/host/knowledgebase/308/Valid-Domain-Name-Characters.html
    // 2021-01-05
    should("Never contain a double dash in the 3rd and 4th positions") {
-      Arb.domain().filter { it.length >= 4 }.checkAll(iterations = 100_000) {
+      Arb.domain().filter { it.length >= 4 }.checkAll(iterations = 1000) {
          it.substring(2, 4) shouldNotBe "--"
       }
    }

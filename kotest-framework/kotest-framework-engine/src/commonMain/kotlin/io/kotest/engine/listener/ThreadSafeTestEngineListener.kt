@@ -11,7 +11,7 @@ import kotlin.reflect.KClass
 /**
  * Wraps a [TestEngineListener]s methods with a mutex to ensure only one method is called at a time.
  */
-class IsolatedTestEngineListener(private val listener: TestEngineListener) : TestEngineListener {
+class ThreadSafeTestEngineListener(private val listener: TestEngineListener) : TestEngineListener {
 
    private val mutex = Mutex()
 

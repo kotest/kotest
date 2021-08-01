@@ -81,7 +81,7 @@ class TeamCityConsoleReporterTest : FunSpec() {
             } shouldBe nl +
                "testcity[testStarted name='com.sksamuel.kotest.engine.launcher.TeamCityConsoleReporterTest <init>']${nl}" +
                "testcity[testFailed name='com.sksamuel.kotest.engine.launcher.TeamCityConsoleReporterTest <init>' message='boom']${nl}" +
-               "testcity[testSuiteFinished name='com.sksamuel.kotest.engine.launcher.TeamCityConsoleReporterTest' id='com.sksamuel.kotest.engine.launcher.TeamCityConsoleReporterTest' test_type='Spec' result_status='Failure']${nl}"
+               "testcity[testSuiteFinished name='com.sksamuel.kotest.engine.launcher.TeamCityConsoleReporterTest' id='com.sksamuel.kotest.engine.launcher.TeamCityConsoleReporterTest' test_type='spec' result_status='Failure']${nl}"
          }
          err shouldStartWith "${nl}java.lang.AssertionError: boom${nl}" +
             "\tat com.sksamuel.kotest.engine.launcher.TeamCityConsoleReporterTest"
