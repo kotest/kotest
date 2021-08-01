@@ -19,7 +19,7 @@ enum class SpecExecutionOrder {
    Lexicographic,
 
    /**
-    * Specs are executed in a random order each time the test plan is executed.
+    * Specs are executed in a random order each time the test suite is executed.
     */
    Random,
 
@@ -32,7 +32,7 @@ enum class SpecExecutionOrder {
     * Orders specs such that failures on the previous run are executed first.
     * If no tests failed on the previous run, or this is the first run, then the order is undefined.
     *
-    * This option is only applicable for JVM tests as it requires writing state between runs.
+    * Note: This option is only applicable for JVM tests as it requires writing state between runs.
     */
    FailureFirst
 }

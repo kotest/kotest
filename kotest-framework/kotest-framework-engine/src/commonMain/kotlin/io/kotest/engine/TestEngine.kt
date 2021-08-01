@@ -8,6 +8,8 @@ import io.kotest.engine.extensions.SpecStyleValidationExtension
 import io.kotest.engine.extensions.TestDslStateExtensions
 import io.kotest.engine.listener.NoopTestEngineListener
 import io.kotest.engine.listener.TestEngineListener
+import io.kotest.engine.spec.sort
+import io.kotest.mpp.log
 import kotlin.reflect.KClass
 
 data class TestEngineConfig(
@@ -47,7 +49,11 @@ class TestEngine(val config: TestEngineConfig) {
       require(suite.specs.isNotEmpty()) { "Cannot invoke the engine with no specs" }
 
       val innerExecute: (TestSuite, TestEngineListener) -> EngineResult =
-         { ts, tel -> execute(ts.specs, tel) }
+         { ts, tel ->
+            log { "TestEngine: Sorting specs by ${configuration.specExecutionOrder}" }
+            val ordered = ts.specs.sort(configuration.specExecutionOrder)
+            execute(ordered, tel)
+         }
 
       val execute = config.extensions.foldRight(innerExecute) { extension, next ->
          { ts, tel -> extension.intercept(ts, tel, next) }
