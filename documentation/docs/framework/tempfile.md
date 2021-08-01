@@ -33,6 +33,7 @@ class MySpec : FunSpec({
 
 Similar to temp files, we can create a temp dir using `tempdir()`.
 
+```kotlin
 class MySpec : FunSpec({
 
    val dir = tempdir()
@@ -41,3 +42,4 @@ class MySpec : FunSpec({
       //...
    }
 })
+```
