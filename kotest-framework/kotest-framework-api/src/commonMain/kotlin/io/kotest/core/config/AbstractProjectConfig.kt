@@ -1,17 +1,17 @@
 package io.kotest.core.config
 
 import io.kotest.common.ExperimentalKotest
-import io.kotest.core.test.TestNameCase
 import io.kotest.core.extensions.Extension
 import io.kotest.core.filter.Filter
-import io.kotest.core.spec.SpecExecutionOrder
 import io.kotest.core.listeners.Listener
-import io.kotest.core.spec.IsolationMode
-import io.kotest.core.test.AssertionMode
-import io.kotest.core.test.TestCaseOrder
 import io.kotest.core.listeners.ProjectListener
+import io.kotest.core.spec.IsolationMode
+import io.kotest.core.spec.SpecExecutionOrder
+import io.kotest.core.test.AssertionMode
 import io.kotest.core.test.DuplicateTestNameMode
 import io.kotest.core.test.TestCaseConfig
+import io.kotest.core.test.TestCaseOrder
+import io.kotest.core.test.TestNameCase
 import kotlin.reflect.KClass
 import kotlin.time.Duration
 
@@ -19,9 +19,17 @@ import kotlin.time.Duration
  * Project-wide configuration. Extensions returned by an
  * instance of this class will be applied to all [Spec] and [TestCase]s.
  *
- * Create an object that is derived from this class and place it in your classpath.
- * It will be detected at runtime and the options specified here will be used to set
- * global configuration.
+ * Create an object or class that is derived from this class and place it in your source.
+ *
+ * It will be detected at runtime and used to configure the test engine.
+ *
+ * For example, you could create this object and place the source in `src/main/kotlin/my/test/package`.
+ *
+ * object ProjectConfig : AbstractProjectConfig {
+ *    override val failOnEmptyTestSuite = true
+ *    override val testCaseOrder = TestCaseOrder.Random
+ * }
+ *
  */
 abstract class AbstractProjectConfig {
 
@@ -44,17 +52,14 @@ abstract class AbstractProjectConfig {
     * Override this function and return an instance of [SpecExecutionOrder] which will
     * be used to sort specs before execution.
     *
-    * Implementations are currently:
-    *  - [LexicographicSpecSorter]
-    *  - [FailureFirstSpecExecutionOrder]
-    *  - [RandomSpecExecutionOrder]
-    *
-    *  Note: This has no effect on non-JVM targets.
+    * Note: This has no effect on non-JVM targets.
     */
    open val specExecutionOrder: SpecExecutionOrder? = null
 
    /**
     * The [IsolationMode] set here will be applied if the isolation mode in a spec is null.
+    *
+    * Note: This is a JVM platform only option.
     */
    open val isolationMode: IsolationMode? = null
 
@@ -75,7 +80,7 @@ abstract class AbstractProjectConfig {
     * A timeout that is applied to the overall project if not null,
     * if the sum duration of all the tests exceeds this the suite will fail.
     */
-   open val projectTimeout: ProjectTimeout? = null
+   open val projectTimeout: Long? = null
 
    /**
     * The parallelism factor determines how many threads are used to launch tests.
@@ -105,6 +110,8 @@ abstract class AbstractProjectConfig {
     *
     * To enable this feature, set this to true, or set the system property
     * 'kotest.write.specfailures=true'
+    *
+    * Note: This is a JVM platform only option.
     */
    open val writeSpecFailureFile: Boolean? = null
 
@@ -128,11 +135,15 @@ abstract class AbstractProjectConfig {
    /**
     * Override this value and set it to false if you want to disable autoscanning of extensions
     * and listeners.
+    *
+    *  Note: This is a JVM platform only option.
     */
    open val autoScanEnabled: Boolean? = null
 
    /**
     * Override this value with a list of classes for which @autoscan is disabled.
+    *
+    *  Note: This is a JVM platform only option.
     */
    open val autoScanIgnoredClasses: List<KClass<*>> = emptyList()
 
@@ -156,7 +167,7 @@ abstract class AbstractProjectConfig {
 
    /**
     * Override this value to set a global [AssertionMode].
-    * If a [Spec] sets an assertion mode, then the spec will override.
+    * If a spec sets an assertion mode, then the spec will override.
     */
    open val assertionMode: AssertionMode? = null
 
@@ -217,7 +228,7 @@ abstract class AbstractProjectConfig {
     * Executed before the first test of the project, but after the
     * [ProjectListener.beforeProject] methods.
     */
-   @Deprecated(message = "use beforeProject", replaceWith = ReplaceWith("beforeProject"))
+   @Deprecated(message = "use beforeProject supports suspension", replaceWith = ReplaceWith("beforeProject"))
    open fun beforeAll() {}
 
    /**
@@ -230,6 +241,6 @@ abstract class AbstractProjectConfig {
     * Executed after the last test of the project, but before the
     * [ProjectListener.afterProject] methods.
     */
-   @Deprecated(message = "use afterProject", replaceWith = ReplaceWith("afterProject"))
+   @Deprecated(message = "use afterProject which supports suspension", replaceWith = ReplaceWith("afterProject"))
    open fun afterAll() {}
 }

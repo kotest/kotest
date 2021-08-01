@@ -1,9 +1,10 @@
-package io.kotest.core.extensions
+package io.kotest.engine.extensions
 
 import io.kotest.core.Tag
 import io.kotest.core.Tags
-import io.kotest.core.extensions.RuntimeTagExtension.excluded
-import io.kotest.core.extensions.RuntimeTagExtension.included
+import io.kotest.core.extensions.TagExtension
+import io.kotest.engine.extensions.RuntimeTagExtension.excluded
+import io.kotest.engine.extensions.RuntimeTagExtension.included
 
 /**
  * Allows including/excluding tags at runtime
@@ -11,7 +12,6 @@ import io.kotest.core.extensions.RuntimeTagExtension.included
  * You can use the properties [included] and [excluded] to modify what behavior you should use for specific tests
  * at runtime. Any test tagged with tags in [included] will be included to run, and any tags in [excluded] will be excluded.
  */
-@Deprecated("Use RuntimeTagExpressionExtension. Will be removed in 4.7")
 object RuntimeTagExtension : TagExtension {
 
    val included = mutableSetOf<Tag>()

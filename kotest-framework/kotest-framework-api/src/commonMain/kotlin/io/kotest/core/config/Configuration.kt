@@ -20,6 +20,11 @@ import kotlinx.coroutines.CoroutineDispatcher
 
 /**
  * The global configuration singleton.
+ *
+ * This is a global singleton for historic reasons and is slowly being replaced with a non global variable.
+ *
+ * Expect this val to disappear in Kotest 6.0
+ *
  */
 val configuration = Configuration()
 
@@ -47,12 +52,18 @@ class Configuration {
     * If enabled, then all failing spec names will be written to a "failure file".
     * This file can then be used by [SpecExecutionOrder.FailureFirst].
     *
-    * Defaults to [Defaults.writeSpecFailureFile]
+    * Defaults to [Defaults.writeSpecFailureFile].
+    *
+    * Note: Only has an effect on the JVM.
     */
    var writeSpecFailureFile: Boolean = Defaults.writeSpecFailureFile
 
    /**
     * The path to write the failed spec list to, if enabled.
+    *
+    * Defaults to [Defaults.specFailureFilePath].
+    *
+    * Note: Only has an effect on the JVM.
     */
    var specFailureFilePath: String = Defaults.specFailureFilePath
 
@@ -178,7 +189,8 @@ class Configuration {
    var concurrentTests: Int = Defaults.concurrentTests
 
    /**
-    * Returns the timeout for the execution of a test case.
+    * Returns the timeout for the execution of a test case in milliseconds.
+    *
     * Note: This timeout includes the time required to executed nested tests.
     *
     * This value is used if a timeout is not specified in the test case itself.

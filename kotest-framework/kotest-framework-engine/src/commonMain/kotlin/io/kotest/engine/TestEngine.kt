@@ -1,5 +1,6 @@
 package io.kotest.engine
 
+import io.kotest.core.config.Configuration
 import io.kotest.core.config.configuration
 import io.kotest.core.extensions.SpecExecutionOrderExtension
 import io.kotest.core.spec.Spec
@@ -16,7 +17,9 @@ import kotlin.reflect.KClass
 data class TestEngineConfig(
    val listener: TestEngineListener,
    val extensions: List<EngineExtension>,
+   val configuration: Configuration,
 ) {
+
    companion object {
       fun default(): TestEngineConfig {
 
@@ -29,8 +32,13 @@ data class TestEngineConfig(
          return TestEngineConfig(
             listener = NoopTestEngineListener,
             extensions = engineExtensions,
+            configuration = configuration,
          )
       }
+   }
+
+   fun withConfig(configuration: Configuration): TestEngineConfig {
+      return TestEngineConfig(listener = listener, extensions = extensions, configuration = configuration)
    }
 }
 
@@ -44,6 +52,9 @@ data class EngineResult(val errors: List<Throwable>)
  */
 data class TestSuite(val specs: List<Spec>, val classes: List<KClass<out Spec>>)
 
+/**
+ * Multiplatform Kotest Test Engine.
+ */
 class TestEngine(val config: TestEngineConfig) {
 
    fun execute(suite: TestSuite) {
