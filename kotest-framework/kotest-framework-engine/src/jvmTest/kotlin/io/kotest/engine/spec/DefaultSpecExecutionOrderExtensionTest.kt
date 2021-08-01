@@ -1,23 +1,52 @@
 package io.kotest.engine.spec
 
+import io.kotest.core.spec.Order
 import io.kotest.core.spec.SpecExecutionOrder
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.core.spec.style.FunSpec
+import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.shouldBe
 
 class DefaultSpecExecutionOrderExtensionTest : DescribeSpec({
 
    describe("The DefaultSpecExecutionOrder extension should support") {
+
       it("SpecExecutionOrder.Undefined") {
          DefaultSpecExecutionOrderExtension(SpecExecutionOrder.Undefined).sortClasses(
-            listOf(Spec1::class, Spec2::class, Spec3::class, Spec4::class)
-         ) shouldBe listOf(Spec1::class, Spec2::class, Spec3::class, Spec4::class)
+            listOf(ASpec::class, ZSpec::class, SpecA::class, SpecZ::class)
+         ) shouldBe listOf(ASpec::class, ZSpec::class, SpecA::class, SpecZ::class)
+      }
+
+      it("SpecExecutionOrder.Annotated") {
+         DefaultSpecExecutionOrderExtension(SpecExecutionOrder.Annotated).sortClasses(
+            listOf(ASpec::class, ZSpec::class, SpecA::class, SpecZ::class)
+         ) shouldBe listOf(SpecA::class, ASpec::class, ZSpec::class, SpecZ::class)
+      }
+
+      it("SpecExecutionOrder.Lexicographic") {
+         DefaultSpecExecutionOrderExtension(SpecExecutionOrder.Lexicographic).sortClasses(
+            listOf(ASpec::class, ZSpec::class, SpecA::class, SpecZ::class)
+         ) shouldBe listOf(ASpec::class, SpecA::class, SpecZ::class, ZSpec::class)
+      }
+
+      it("SpecExecutionOrder.Random") {
+         // should have all combinations since it's meant to be random
+         List(10000) {
+            DefaultSpecExecutionOrderExtension(SpecExecutionOrder.Random).sortClasses(
+               listOf(ASpec::class, ZSpec::class, SpecA::class, SpecZ::class)
+            )
+         }.distinct().shouldHaveSize(24)
       }
    }
 
 })
 
-private class Spec1 : FunSpec()
-private class Spec2 : FunSpec()
-private class Spec3 : FunSpec()
-private class Spec4 : FunSpec()
+@Order(3)
+private class ASpec : FunSpec()
+
+private class ZSpec : FunSpec()
+
+@Order(2)
+private class SpecA : FunSpec()
+
+private class SpecZ : FunSpec()

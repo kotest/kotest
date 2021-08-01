@@ -24,7 +24,8 @@ enum class SpecExecutionOrder {
    Random,
 
    /**
-    * Orders specs by the [Order] annotation. Any specs without such an annotation are considered "last".
+    * Orders specs by the [Order] annotation. Any specs without such an annotation are considered "last"
+    * and the order is undefined.
     */
    Annotated,
 
