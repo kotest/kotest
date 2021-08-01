@@ -6,17 +6,16 @@ import io.kotest.assertions.throwables.shouldThrowExactly
 import io.kotest.common.ExperimentalKotest
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
-import kotlinx.coroutines.delay
+import io.kotest.matchers.throwable.shouldHaveMessage
 import java.time.Duration
 
 private fun Int.hours(): Long = Duration.ofDays(this.toLong()).toMillis()
-private fun Int.seconds(): Long = Duration.ofSeconds(this.toLong()).toMillis()
 private fun Int.milliseconds(): Long = this.toLong()
 
 @ExperimentalKotest
 class ContinuallySpec : FunSpec({
    test("continually passes working tests") {
-      continually(500.milliseconds()) {
+      continually(100.milliseconds()) {
          (System.currentTimeMillis() > 0) shouldBe true
       }
    }
@@ -37,17 +36,15 @@ class ContinuallySpec : FunSpec({
       }.message shouldBe "boom"
    }
 
-   test("continually fails tests that start off as passing then fail within the period") {
+   test("continually fails tests that start off as passing then fail before the time is up") {
       var n = 0
       val e = shouldThrow<Throwable> {
 
-         continually(10.seconds()) {
-            delay(5L)
-            (n++ < 100) shouldBe true
+         continually(12.hours()) {
+            (n++ < 10) shouldBe true
          }
       }
-      val r =
-         "Test failed after [\\d]+ms; expected to pass for 10000ms; attempted 100 times\nUnderlying failure was: 100 should be < 100".toRegex()
-      e.message?.matches(r) ?: false shouldBe true
+
+      e.shouldHaveMessage("Test failed after \\d+ms; expected to pass for \\d+ms; attempted 10 times\nUnderlying failure was: expected:<true> but was:<false>".toRegex())
    }
 })

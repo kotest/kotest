@@ -18,6 +18,18 @@ fun haveMessage(message: String) = object : Matcher<Throwable> {
   )
 }
 
+infix fun Throwable.shouldHaveMessage(message: Regex) = this should haveMessage(message)
+infix fun Throwable.shouldNotHaveMessage(message: Regex) = this shouldNot haveMessage(message)
+
+fun haveMessage(regex: Regex) = object : Matcher<Throwable> {
+   override fun test(value: Throwable) = MatcherResult(
+      value.message?.matches(regex) ?: false,
+      "Throwable should match regex: ${regex.show().value}\nActual was:\n${value.message?.trim().show().value}\n",
+      "Throwable should not match regex: ${regex.show().value}"
+   )
+}
+
+
 fun Throwable.shouldHaveCause(block: (Throwable) -> Unit = {}) {
   this should haveCause()
   block.invoke(cause!!)
