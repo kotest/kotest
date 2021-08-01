@@ -1,5 +1,6 @@
 package com.sksamuel.kotest.runner.junit5
 
+import io.kotest.core.internal.KotestEngineProperties
 import io.kotest.core.spec.Isolate
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.framework.discovery.Discovery
@@ -19,6 +20,14 @@ import org.junit.platform.launcher.core.LauncherDiscoveryRequestBuilder
 
 @Isolate
 class DiscoveryTest : FunSpec({
+
+   beforeSpec {
+      System.setProperty(KotestEngineProperties.disableJarDiscovery, "true")
+   }
+
+   afterSpec {
+      System.clearProperty(KotestEngineProperties.disableJarDiscovery)
+   }
 
    test("kotest should return Nil if request excludes kotest engine") {
       val req = LauncherDiscoveryRequestBuilder.request()
