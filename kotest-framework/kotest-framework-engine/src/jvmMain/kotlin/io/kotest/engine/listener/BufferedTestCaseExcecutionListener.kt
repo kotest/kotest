@@ -20,13 +20,13 @@ class BufferedTestCaseExcecutionListener(private val listener: TestCaseExecution
    private val mutex = Mutex()
 
    override suspend fun testStarted(testCase: TestCase) {
-      synchronized(this) {
+      mutex.withLock {
          started[testCase.description] = testCase
       }
    }
 
    override suspend fun testFinished(testCase: TestCase, result: TestResult) {
-      synchronized(this) {
+      mutex.withLock {
          finished[testCase.description] = testCase to result
       }
    }
@@ -50,7 +50,7 @@ class BufferedTestCaseExcecutionListener(private val listener: TestCaseExecution
    }
 
    override suspend fun testIgnored(testCase: TestCase) {
-      synchronized(this) {
+      mutex.withLock {
          ignored[testCase.description] = testCase
       }
    }

@@ -12,7 +12,7 @@ import io.kotest.engine.config.ConfigManager
 import io.kotest.engine.extensions.EnabledConditionSpecDiscoveryExtension
 import io.kotest.engine.extensions.IgnoredSpecDiscoveryExtension
 import io.kotest.engine.extensions.TagsExcludedDiscoveryExtension
-import io.kotest.engine.listener.AtomicTestEngineListener
+import io.kotest.engine.listener.IsolatedTestEngineListener
 import io.kotest.engine.listener.PinnedSpecTestEngineListener
 import io.kotest.framework.discovery.Discovery
 import io.kotest.mpp.log
@@ -62,7 +62,7 @@ class KotestJunitPlatformTestEngine : TestEngine {
 
    private fun execute(request: ExecutionRequest, root: KotestEngineDescriptor) {
 
-      val listener = AtomicTestEngineListener(
+      val listener = IsolatedTestEngineListener(
          PinnedSpecTestEngineListener(
             JUnitTestEngineListener(
                SynchronizedEngineExecutionListener(
