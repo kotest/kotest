@@ -20,7 +20,7 @@ class DumpTest : FunSpec({
 -> Extensions
   - com.sksamuel.kotest.autoscan.AutoScanConstructorExtension
   - io.kotest.engine.extensions.SystemPropertyTagExtension
-  - io.kotest.core.extensions.RuntimeTagExtension
+  - io.kotest.engine.extensions.RuntimeTagExtension
   - io.kotest.engine.extensions.RuntimeTagExpressionExtension
   - io.kotest.engine.extensions.IgnoredSpecDiscoveryExtension
   - io.kotest.engine.extensions.TagsExcludedDiscoveryExtension

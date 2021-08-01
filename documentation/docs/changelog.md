@@ -17,6 +17,9 @@ _**Kotlin 1.5 is now the minimum supported version**_
 * Removed deprecated `shouldReceiveWithin` and `shouldReceiveNoElementsWithin` channel matchers.
 * `TestEngineListener` methods are now suspendable. This is only of interest if you have implemented customizations of the Test Engine through plugins. Note: This is not related to public TestListener methods that are used by test cases.
 * The global configuration variable `project` has been removed. This was deprecated in 4.2. Use the replacment global variable `configuration` or provide config via instances of [ProjectConfig](https://kotest.io/docs/framework/project-config.html).
+* The deprecated `RuntimeTagExtension` has been undeprecated but moved to a new package.
+
+
 #### Fixes
 
 * String matchers now also work on CharSequence where applicable #2278
