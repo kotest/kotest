@@ -29,7 +29,7 @@ class LongHttpRequestTest : FunSpec({
             .withCookie(
                "sessionId", "2By8LOhBmaW5nZXJwcmludCIlMDAzMW"
             )
-            .withDelay(TimeUnit.SECONDS, 2)
+            .withDelay(TimeUnit.MILLISECONDS, 25)
             .withHeader(
                "X-Test", "foo"
             )
@@ -38,7 +38,7 @@ class LongHttpRequestTest : FunSpec({
 
    test("post http request with timeout") {
       shouldThrow<HttpRequestTimeoutException> {
-         http("/example_post.http", mapOf(), 100) {
+         http("/example_post.http", mapOf(), 10) {
             it.status shouldBe HttpStatusCode.Accepted
             it.headers["X-Test"] shouldBe "foo"
          }
