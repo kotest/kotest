@@ -23,11 +23,11 @@ class TeamCityConsoleReporter(private val prefix: String = TeamCityMessageBuilde
    // a dummy "test" in order to show something is red or yellow.
    private fun insertDummyFailure(desc: Description, t: Throwable?) {
       val initName = desc.name.displayName + " <init>"
-      println(TeamCityMessageBuilder.testStarted(prefix, initName))
+      println(TeamCityMessageBuilder.testStarted(prefix, initName).build())
       // we must print out the stack trace in between the dummy so it appears when you click on the test name
       if (t != null) printStackTrace(t)
       val message = t?.message?.let { if (it.lines().size == 1) it else null } ?: "Spec failed"
-      println(TeamCityMessageBuilder.testFailed(prefix, initName).message(message))
+      println(TeamCityMessageBuilder.testFailed(prefix, initName).message(message).build())
    }
 
    private fun printStackTrace(t: Throwable) {
@@ -48,6 +48,7 @@ class TeamCityConsoleReporter(private val prefix: String = TeamCityMessageBuilde
             .locationHint(Locations.locationHint(kclass))
             .id(kclass.toDescription().id.value)
             .spec()
+            .build()
       )
    }
 
@@ -61,6 +62,7 @@ class TeamCityConsoleReporter(private val prefix: String = TeamCityMessageBuilde
                .id(desc.id.value)
                .spec()
                .resultStatus(TestStatus.Success.name)
+               .build()
          )
       } else {
          errors = true
@@ -71,6 +73,7 @@ class TeamCityConsoleReporter(private val prefix: String = TeamCityMessageBuilde
                .id(desc.id.value)
                .spec()
                .resultStatus(TestStatus.Failure.name)
+               .build()
          )
       }
    }
@@ -85,6 +88,7 @@ class TeamCityConsoleReporter(private val prefix: String = TeamCityMessageBuilde
                .parent(testCase.description.parent.id.value)
                .locationHint(locationHint(testCase))
                .testType(testCase.type.name)
+               .build()
          )
       } else {
          println()
@@ -95,6 +99,7 @@ class TeamCityConsoleReporter(private val prefix: String = TeamCityMessageBuilde
                .parent(testCase.description.parent.id.value)
                .locationHint(locationHint(testCase))
                .testType(testCase.type.name)
+               .build()
          )
       }
    }
@@ -104,10 +109,10 @@ class TeamCityConsoleReporter(private val prefix: String = TeamCityMessageBuilde
    override fun engineFinished(t: List<Throwable>) {
       if (t.isNotEmpty()) {
          println()
-         println(TeamCityMessageBuilder.testStarted(prefix, "Test failure"))
+         println(TeamCityMessageBuilder.testStarted(prefix, "Test failure").build())
          println()
          val errors = t.joinToString("\n") { t.toString() }
-         println(TeamCityMessageBuilder.testFailed(prefix, "Test failure").message(errors))
+         println(TeamCityMessageBuilder.testFailed(prefix, "Test failure").message(errors).build())
       }
    }
 
@@ -128,6 +133,7 @@ class TeamCityConsoleReporter(private val prefix: String = TeamCityMessageBuilde
                         .duration(result.duration)
                         .testType(testCase.type.name)
                         .resultStatus(result.status.name)
+                        .build()
                   )
                }
                TestType.Test -> {
@@ -140,6 +146,7 @@ class TeamCityConsoleReporter(private val prefix: String = TeamCityMessageBuilde
                         .duration(result.duration)
                         .testType(testCase.type.name)
                         .resultStatus(result.status.name)
+                        .build()
                   )
                }
             }
@@ -153,6 +160,7 @@ class TeamCityConsoleReporter(private val prefix: String = TeamCityMessageBuilde
                      .parent(testCase.description.parent.id.value)
                      .testType(testCase.type.name)
                      .resultStatus(result.status.name)
+                     .build()
                TestType.Test ->
                   TeamCityMessageBuilder
                      .testIgnored(prefix, desc.name.displayName)
@@ -161,6 +169,7 @@ class TeamCityConsoleReporter(private val prefix: String = TeamCityMessageBuilde
                      .message(result.reason ?: "No reason")
                      .testType(testCase.type.name)
                      .resultStatus(result.status.name)
+                     .build()
             }
             println(msg)
          }
@@ -174,6 +183,7 @@ class TeamCityConsoleReporter(private val prefix: String = TeamCityMessageBuilde
                      .duration(result.duration)
                      .testType(testCase.type.name)
                      .resultStatus(result.status.name)
+                     .build()
                TestType.Test ->
                   TeamCityMessageBuilder
                      .testFinished(prefix, desc.name.displayName)
@@ -182,6 +192,7 @@ class TeamCityConsoleReporter(private val prefix: String = TeamCityMessageBuilde
                      .duration(result.duration)
                      .testType(testCase.type.name)
                      .resultStatus(result.status.name)
+                     .build()
             }
             println(msg)
          }

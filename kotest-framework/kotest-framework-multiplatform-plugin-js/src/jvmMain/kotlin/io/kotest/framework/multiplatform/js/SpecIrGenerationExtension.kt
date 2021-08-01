@@ -1,4 +1,4 @@
-package io.kotest.framework.multiplatform.native
+package io.kotest.framework.multiplatform.js
 
 import org.jetbrains.kotlin.backend.common.IrElementTransformerVoidWithContext
 import org.jetbrains.kotlin.backend.common.extensions.IrGenerationExtension
@@ -21,7 +21,7 @@ import org.jetbrains.kotlin.ir.util.getSimpleFunction
 import org.jetbrains.kotlin.name.FqName
 import org.jetbrains.kotlin.name.Name
 
-class SpecIrGenerationExtension(private val messageCollector: MessageCollector) : IrGenerationExtension {
+class SpecIrGenerationExtension(messageCollector: MessageCollector) : IrGenerationExtension {
 
    override fun generate(moduleFragment: IrModuleFragment, pluginContext: IrPluginContext) {
 

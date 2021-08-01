@@ -17,6 +17,7 @@ object TeamCityTestCaseExecutionListener : TestCaseExecutionListener {
          .id(testCase.description.id.value)
          .locationHint(Locations.locationHint(testCase.spec::class))
          .testType(testCase.type.name)
+         .build()
       println()
       println(msg)
    }
@@ -27,6 +28,7 @@ object TeamCityTestCaseExecutionListener : TestCaseExecutionListener {
          .id(testCase.description.id.value)
          .locationHint(Locations.locationHint(testCase.spec::class))
          .testType(testCase.type.name)
+         .build()
       println()
       println(msg)
    }
@@ -55,7 +57,8 @@ object TeamCityTestCaseExecutionListener : TestCaseExecutionListener {
                .id(testCase.description.id.value)
                .locationHint(Locations.locationHint(testCase.spec::class))
                .testType(testCase.type.name)
-      }
+      }.build()
+
       println()
       println(msg)
    }

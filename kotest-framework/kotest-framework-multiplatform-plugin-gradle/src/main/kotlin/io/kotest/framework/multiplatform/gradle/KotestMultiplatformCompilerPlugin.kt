@@ -1,3 +1,5 @@
+@file:Suppress("unused")
+
 package io.kotest.framework.multiplatform.gradle
 
 import org.gradle.api.provider.Provider

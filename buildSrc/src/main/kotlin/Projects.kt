@@ -3,10 +3,12 @@ object Projects {
    const val Api = ":kotest-framework:kotest-framework-api"
    const val Engine = ":kotest-framework:kotest-framework-engine"
    const val Discovery = ":kotest-framework:kotest-framework-discovery"
-   const val FrameworkConcurrency = ":kotest-framework:kotest-framework-concurrency"
+
    object Framework {
-      const val TeamCity = ":kotest-framework:kotest-framework-teamcity"
+      const val concurrency = ":kotest-framework:kotest-framework-concurrency"
+      const val mppshared = ":kotest-framework:kotest-framework-multiplatform-plugin-shared"
    }
+
    const val AssertionsApi = ":kotest-assertions:kotest-assertions-api"
    const val AssertionsCore = ":kotest-assertions:kotest-assertions-core"
    const val AssertionsKtor = ":kotest-assertions:kotest-assertions-ktor"
