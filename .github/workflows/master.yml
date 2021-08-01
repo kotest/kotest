@@ -25,7 +25,7 @@ jobs:
                java-version: '11'
 
          -  name: Run tests
-            run: ./gradlew check
+            run: ./gradlew check --scan
 
          -  name: publish snapshots
             run: ./gradlew publish
