@@ -59,7 +59,7 @@ class TeamCityConsoleReporterTest : FunSpec() {
       test("before test should write testSuiteStarted for TestType.Container") {
          captureStandardOut {
             TeamCityConsoleReporter("testcity").testStarted(testCaseContainer)
-         } shouldBe "${nl}testcity[testSuiteStarted name='my test container' id='com.sksamuel.kotest.engine.launcher.TeamCityConsoleReporterTest/my_context/my_test_container' parent_id='com.sksamuel.kotest.engine.launcher.TeamCityConsoleReporterTest/my_context' locationHint='kotest://com.sksamuel.kotest.engine.launcher.TeamCityConsoleReporterTest:39' test_type='Container']${nl}"
+         } shouldBe "${nl}testcity[testSuiteStarted name='my test container' id='com.sksamuel.kotest.engine.launcher.TeamCityConsoleReporterTest/my_context/my_test_container' parent_id='com.sksamuel.kotest.engine.launcher.TeamCityConsoleReporterTest/my_context' locationHint='kotest://com.sksamuel.kotest.engine.launcher.TeamCityConsoleReporterTest:39' test_type='container']${nl}"
       }
 
       test("before test should write testStarted for TestType.Test") {
@@ -90,7 +90,7 @@ class TeamCityConsoleReporterTest : FunSpec() {
       test("after test should write testSuiteFinished for container success") {
          captureStandardOut {
             TeamCityConsoleReporter("testcity").testFinished(testCaseContainer, TestResult.success(15))
-         } shouldBe "${nl}testcity[testSuiteFinished name='my test container' id='com.sksamuel.kotest.engine.launcher.TeamCityConsoleReporterTest/my_context/my_test_container' parent_id='com.sksamuel.kotest.engine.launcher.TeamCityConsoleReporterTest/my_context' duration='15' test_type='Container' result_status='Success']${nl}"
+         } shouldBe "${nl}testcity[testSuiteFinished name='my test container' id='com.sksamuel.kotest.engine.launcher.TeamCityConsoleReporterTest/my_context/my_test_container' parent_id='com.sksamuel.kotest.engine.launcher.TeamCityConsoleReporterTest/my_context' duration='15' test_type='container' result_status='Success']${nl}"
       }
 
       test("after test should insert dummy test and write testSuiteFinished for container error") {
@@ -103,7 +103,7 @@ class TeamCityConsoleReporterTest : FunSpec() {
             } shouldBe nl +
                "testcity[testStarted name='my test container <init>']${nl}" +
                "testcity[testFailed name='my test container <init>' message='wibble']${nl}" +
-               "testcity[testSuiteFinished name='my test container' id='com.sksamuel.kotest.engine.launcher.TeamCityConsoleReporterTest/my_context/my_test_container' parent_id='com.sksamuel.kotest.engine.launcher.TeamCityConsoleReporterTest/my_context' duration='51' test_type='Container' result_status='Failure']${nl}"
+               "testcity[testSuiteFinished name='my test container' id='com.sksamuel.kotest.engine.launcher.TeamCityConsoleReporterTest/my_context/my_test_container' parent_id='com.sksamuel.kotest.engine.launcher.TeamCityConsoleReporterTest/my_context' duration='51' test_type='container' result_status='Failure']${nl}"
          } shouldStartWith "${nl}java.lang.AssertionError: wibble${nl}" +
             "\tat com.sksamuel.kotest.engine.launcher.TeamCityConsoleReporterTest"
       }
@@ -111,7 +111,7 @@ class TeamCityConsoleReporterTest : FunSpec() {
       test("after test should write testSuiteFinished for container ignored") {
          captureStandardOut {
             TeamCityConsoleReporter("testcity").testFinished(testCaseContainer, TestResult.ignored("ignore me?"))
-         } shouldBe "${nl}testcity[testSuiteFinished name='my test container' id='com.sksamuel.kotest.engine.launcher.TeamCityConsoleReporterTest/my_context/my_test_container' parent_id='com.sksamuel.kotest.engine.launcher.TeamCityConsoleReporterTest/my_context' test_type='Container' result_status='Ignored']${nl}"
+         } shouldBe "${nl}testcity[testSuiteFinished name='my test container' id='com.sksamuel.kotest.engine.launcher.TeamCityConsoleReporterTest/my_context/my_test_container' parent_id='com.sksamuel.kotest.engine.launcher.TeamCityConsoleReporterTest/my_context' test_type='container' result_status='Ignored']${nl}"
       }
 
       test("after test should write testFinished for test success") {

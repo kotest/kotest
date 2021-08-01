@@ -10,7 +10,7 @@ class TeamCityMessagesTest : ShouldSpec({
       val msg = TeamCityMessageBuilder.testFailed("testcity", "escape brackets")
          .message("expected:<[foo]> but was:<[bar]>")
          .duration(67)
-         .toString()
+         .build()
       msg shouldBe """testcity[testFailed name='escape brackets' message='expected:<|[foo|]> but was:<|[bar|]>' duration='67']"""
    }
 
@@ -18,7 +18,7 @@ class TeamCityMessagesTest : ShouldSpec({
       val msg = TeamCityMessageBuilder.testFailed("testcity", "escape quotes")
          .message("foo'bar")
          .duration(67)
-         .toString()
+         .build()
       msg shouldBe """testcity[testFailed name='escape quotes' message='foo|'bar' duration='67']"""
    }
 
@@ -26,7 +26,7 @@ class TeamCityMessagesTest : ShouldSpec({
       val msg = TeamCityMessageBuilder.testFailed("testcity", "isn't busy")
          .message("foo'bar")
          .duration(67)
-         .toString()
+         .build()
       msg shouldBe """testcity[testFailed name='isn|'t busy' message='foo|'bar' duration='67']"""
    }
 
@@ -40,7 +40,7 @@ ret
 """
          )
          .duration(67)
-         .toString()
+         .build()
       msg shouldBe """testcity[testFailed name='escape brackets' message='qweqwe|newr|nret' duration='67']"""
    }
 
@@ -51,7 +51,7 @@ ret
          .actual("act")
          .expected("exp")
          .duration(44)
-         .toString()
+         .build()
       msg shouldBe """testcity[testFailed name='support comparison values' type='comparisonFailure' message='test failed' actual='act' expected='exp' duration='44']"""
    }
 })
