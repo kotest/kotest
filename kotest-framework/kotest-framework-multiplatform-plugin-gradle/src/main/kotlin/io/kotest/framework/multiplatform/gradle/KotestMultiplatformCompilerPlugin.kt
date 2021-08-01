@@ -2,6 +2,7 @@
 
 package io.kotest.framework.multiplatform.gradle
 
+import org.gradle.api.Project
 import org.gradle.api.provider.Provider
 import org.jetbrains.kotlin.gradle.plugin.KotlinCompilation
 import org.jetbrains.kotlin.gradle.plugin.KotlinCompilerPluginSupportPlugin
@@ -17,19 +18,39 @@ class KotestMultiplatformCompilerPlugin : KotlinCompilerPluginSupportPlugin {
       const val groupId = "io.kotest"
       const val artifactId = "kotest-framework-multiplatform-plugin-js-jvm"
       const val nativeArtifactId = "kotest-framework-multiplatform-plugin-native-jvm"
-      val version = System.getenv("KOTEST_MPP_PLUGIN_VERSION") ?: "5.0.0-LOCAL"
+      const val missingTargetError = "Target is not initialized"
+      const val engineDepPrefix = "kotest-framework-engine"
+   }
+
+   private var target: Project? = null
+
+   override fun apply(target: Project) {
+      super.apply(target)
+      this.target = target
+   }
+
+   private fun version(): String? {
+      val project = target ?: error(missingTargetError)
+      return project.configurations.flatMap { it.all }.flatMap { it.dependencies }
+         .find { it.group == groupId && it.name.startsWith(engineDepPrefix) }?.version
    }
 
    override fun getCompilerPluginId() = compilerPluginId
 
-   override fun getPluginArtifact() = SubpluginArtifact(groupId, artifactId, version)
+   override fun getPluginArtifact(): SubpluginArtifact =
+      SubpluginArtifact(groupId, artifactId, version())
 
-   override fun getPluginArtifactForNative(): SubpluginArtifact = SubpluginArtifact(groupId, nativeArtifactId, version)
+   override fun getPluginArtifactForNative(): SubpluginArtifact =
+      SubpluginArtifact(groupId, nativeArtifactId, version())
 
-   override fun isApplicable(kotlinCompilation: KotlinCompilation<*>): Boolean = when (kotlinCompilation) {
-      is KotlinJsCompilation -> true
-      is AbstractKotlinNativeCompilation -> true
-      else -> false
+   override fun isApplicable(kotlinCompilation: KotlinCompilation<*>): Boolean {
+      return when {
+         // if we can't find the engine dep then we won't apply the plugin to this module
+         version() == null -> false
+         kotlinCompilation is KotlinJsCompilation -> true
+         kotlinCompilation is AbstractKotlinNativeCompilation -> true
+         else -> false
+      }
    }
 
    override fun applyToCompilation(kotlinCompilation: KotlinCompilation<*>): Provider<List<SubpluginOption>> {
