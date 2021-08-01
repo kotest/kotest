@@ -6,6 +6,7 @@ import io.kotest.core.extensions.ProjectExtension
 import io.kotest.core.filter.SpecFilter
 import io.kotest.core.filter.TestFilter
 import io.kotest.engine.config.ConfigManager
+import io.kotest.engine.config.detectAbstractProjectConfigs
 import io.kotest.engine.events.Notifications
 import io.kotest.engine.events.afterProject
 import io.kotest.engine.extensions.DumpConfigExtension
@@ -37,7 +38,7 @@ class KotestEngine(private val config: KotestEngineConfig) {
 
    init {
 
-      ConfigManager.init()
+      ConfigManager.initialize(configuration, detectAbstractProjectConfigs())
 
       // if the engine was invoked with explicit tags, we register those via a tag extension
       config.explicitTags?.let { configuration.registerExtension(SpecifiedTagsTagExtension(it)) }

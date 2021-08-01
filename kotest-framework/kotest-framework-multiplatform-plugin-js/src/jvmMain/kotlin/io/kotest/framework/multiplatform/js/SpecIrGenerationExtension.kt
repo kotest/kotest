@@ -38,11 +38,13 @@ class SpecIrGenerationExtension(messageCollector: MessageCollector) : IrGenerati
             val launcherClass = pluginContext.referenceClass(FqName(EntryPoint.TestEngineClassName))
                ?: error("Cannot find ${EntryPoint.TestEngineClassName} class reference")
 
+            val launcherConstructor = launcherClass.constructors.first { it.owner.valueParameters.isEmpty() }
+
             val launchFn = launcherClass.getSimpleFunction(EntryPoint.LaunchMethodName)
                ?: error("Cannot find function ${EntryPoint.LaunchMethodName}")
 
-            val registerFn = launcherClass.getSimpleFunction(EntryPoint.RegisterMethodName)
-               ?: error("Cannot find function ${EntryPoint.RegisterMethodName}")
+            val registerFn = launcherClass.getSimpleFunction(EntryPoint.WithSpecsMethodName)
+               ?: error("Cannot find function ${EntryPoint.WithSpecsMethodName}")
 
             val launcher = pluginContext.irFactory.buildProperty {
                name = Name.identifier(EntryPoint.LauncherValName)
@@ -61,7 +63,7 @@ class SpecIrGenerationExtension(messageCollector: MessageCollector) : IrGenerati
                      this.expression = DeclarationIrBuilder(pluginContext, field.symbol).irBlock {
                         +irCall(launchFn).also { launch ->
                            launch.dispatchReceiver = irCall(registerFn).also { register ->
-                              register.dispatchReceiver = irCall(launcherClass.constructors.first())
+                              register.dispatchReceiver = irCall(launcherConstructor)
                               register.putValueArgument(
                                  0,
                                  irVararg(
