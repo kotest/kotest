@@ -1,6 +1,7 @@
 package io.kotest.engine
 
 import io.kotest.core.config.configuration
+import io.kotest.core.extensions.SpecExecutionOrderExtension
 import io.kotest.core.spec.Spec
 import io.kotest.engine.extensions.EmptyTestSuiteExtension
 import io.kotest.engine.extensions.EngineExtension
@@ -8,7 +9,7 @@ import io.kotest.engine.extensions.SpecStyleValidationExtension
 import io.kotest.engine.extensions.TestDslStateExtensions
 import io.kotest.engine.listener.NoopTestEngineListener
 import io.kotest.engine.listener.TestEngineListener
-import io.kotest.engine.spec.sort
+import io.kotest.engine.spec.DefaultSpecExecutionOrderExtension
 import io.kotest.mpp.log
 import kotlin.reflect.KClass
 
@@ -50,8 +51,15 @@ class TestEngine(val config: TestEngineConfig) {
 
       val innerExecute: (TestSuite, TestEngineListener) -> EngineResult =
          { ts, tel ->
-            log { "TestEngine: Sorting specs by ${configuration.specExecutionOrder}" }
-            val ordered = ts.specs.sort(configuration.specExecutionOrder)
+
+            // spec classes are ordered using SpecExecutionOrderExtension extensions
+            val exts = configuration.extensions().filterIsInstance<SpecExecutionOrderExtension>().ifEmpty {
+               listOf(DefaultSpecExecutionOrderExtension(configuration.specExecutionOrder))
+            }
+
+            log { "KotestEngine: Sorting specs using extensions $exts" }
+            val ordered = exts.fold(ts.specs) { acc, op -> op.sortSpecs(acc) }
+
             execute(ordered, tel)
          }
 

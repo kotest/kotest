@@ -3,6 +3,7 @@ package io.kotest.engine
 import io.kotest.core.Tags
 import io.kotest.core.config.configuration
 import io.kotest.core.extensions.ProjectExtension
+import io.kotest.core.extensions.SpecExecutionOrderExtension
 import io.kotest.core.filter.SpecFilter
 import io.kotest.core.filter.TestFilter
 import io.kotest.engine.config.ConfigManager
@@ -16,8 +17,8 @@ import io.kotest.engine.extensions.SpecifiedTagsTagExtension
 import io.kotest.engine.extensions.TestDslStateExtensions
 import io.kotest.engine.launchers.specLauncher
 import io.kotest.engine.listener.TestEngineListener
+import io.kotest.engine.spec.DefaultSpecExecutionOrderExtension
 import io.kotest.engine.spec.SpecExecutor
-import io.kotest.engine.spec.sort
 import io.kotest.fp.Try
 import io.kotest.fp.getOrElse
 import io.kotest.mpp.log
@@ -116,9 +117,13 @@ class KotestEngine(private val config: KotestEngineConfig) {
 //            log { "KotestEngine: Script execution completed" }
 //         }
 
-         // spec classes are ordered using an instance of SpecExecutionOrder
-         log { "KotestEngine: Sorting specs by ${configuration.specExecutionOrder}" }
-         val ordered = suite.classes.sort(configuration.specExecutionOrder)
+         // spec classes are ordered using SpecExecutionOrderExtension extensions
+         val exts = configuration.extensions().filterIsInstance<SpecExecutionOrderExtension>().ifEmpty {
+            listOf(DefaultSpecExecutionOrderExtension(configuration.specExecutionOrder))
+         }
+
+         log { "KotestEngine: Sorting specs using extensions $exts" }
+         val ordered =  exts.fold(suite.classes) { acc, op -> op.sortClasses(acc) }
 
          val executor = SpecExecutor(listener)
          log { "KotestEngine: Will use spec executor $executor" }
