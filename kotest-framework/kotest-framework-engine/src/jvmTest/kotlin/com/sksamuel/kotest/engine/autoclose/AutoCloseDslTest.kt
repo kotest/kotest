@@ -9,10 +9,11 @@ class AutoCloseDslTest : FunSpec({
    var beforeTests = true
    var closed = false
    val closeme = AutoCloseable { closed = true }
+   autoClose(closeme)
 
-   autoClose(lazy {
+   val lazyClosed by autoClose(lazy {
       beforeTests = false
-      closeme
+      LazyCloseable()
    })
 
    beforeTests.shouldBeTrue()
@@ -21,7 +22,20 @@ class AutoCloseDslTest : FunSpec({
       closed.shouldBeFalse()
    }
 
-   afterProject {
-      closed.shouldBeTrue()
+   test("lazy auto close with dsl method") {
+      lazyClosed.closed.shouldBeFalse()
    }
-})
+
+   afterSpec {
+      closed.shouldBeTrue()
+      lazyClosed.closed.shouldBeTrue()
+   }
+}) {
+   class LazyCloseable : AutoCloseable {
+      var closed = false
+      override fun close() {
+         closed = true
+      }
+   }
+}
+
