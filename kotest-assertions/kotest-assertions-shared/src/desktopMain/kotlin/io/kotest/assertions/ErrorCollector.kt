@@ -1,6 +1,6 @@
 package io.kotest.assertions
 
-import kotlin.native.concurrent.ThreadLocal
+import kotlin.native.concurrent.SharedImmutable
 
-@ThreadLocal
-actual val errorCollector: ErrorCollector = BasicErrorCollector()
+@SharedImmutable
+actual val errorCollector: ErrorCollector = NoopErrorCollector

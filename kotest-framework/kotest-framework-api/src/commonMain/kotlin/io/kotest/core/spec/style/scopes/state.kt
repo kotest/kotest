@@ -17,7 +17,7 @@ object TestDslState {
       started.remove(name.testPath().value)
    }
 
-   suspend fun checkState() = mutex.withPermit {
+   fun checkState() {
       val unfinished = started.map { "Test was not fully defined: $it" }
       if (unfinished.isNotEmpty())
          error(unfinished.joinToString(", "))

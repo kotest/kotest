@@ -20,7 +20,7 @@ class DataTest : FunSpec() {
       val results = ConcurrentHashMap<DescriptionName.TestName, TestStatus>()
 
       val listener = object : TestEngineListener {
-         override fun testFinished(testCase: TestCase, result: TestResult) {
+         override suspend fun testFinished(testCase: TestCase, result: TestResult) {
             results[testCase.description.name] = result.status
          }
       }

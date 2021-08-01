@@ -7,7 +7,6 @@ plugins {
 
 repositories {
    mavenCentral()
-   maven(url = "https://kotlin.bintray.com/kotlinx/")
 }
 
 kotlin {
@@ -68,7 +67,7 @@ kotlin {
          dependencies {
             implementation(project(Projects.Property))
             implementation(project(Projects.JunitRunner))
-            implementation(Libs.OpenTest4j.core)
+            implementation(Libs.OpenTest4j.opentest4j)
             implementation(Libs.Apache.commonslang)
          }
       }

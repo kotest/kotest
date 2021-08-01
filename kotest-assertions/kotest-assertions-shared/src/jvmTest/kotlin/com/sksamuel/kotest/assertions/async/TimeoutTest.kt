@@ -8,18 +8,18 @@ import java.time.Duration
 import java.util.concurrent.TimeUnit
 
 class TimeoutTest : FunSpec({
-   test("shouldTimeout should pass if a coroutine takes longer than the given timeout") {
-      shouldTimeout(Duration.ofMillis(50)) {
-         delay(250)
+   test("shouldTimeout should capture the error if a coroutine takes longer than the given timeout") {
+      shouldTimeout(Duration.ofMillis(2)) {
+         delay(25)
       }
-       shouldTimeout(kotlin.time.Duration.milliseconds(50)) {
-           delay(250)
+       shouldTimeout(kotlin.time.Duration.milliseconds(2)) {
+           delay(25)
        }
-      shouldTimeout(50, TimeUnit.MILLISECONDS) {
-         delay(250)
+      shouldTimeout(2, TimeUnit.MILLISECONDS) {
+         delay(25)
       }
    }
-   test("shouldTimeout should fail if a coroutine finishes before the timeout") {
+   test("shouldTimeout should fail if a coroutine does not timeout") {
       shouldFail {
          shouldTimeout(Duration.ofMillis(50)) {
             delay(1)

@@ -17,15 +17,6 @@ class CompilationsMatcherTest : StringSpec() {
    }
 
    init {
-      "a code snippet of valid variable assignment should compile" {
-         val codeSnippet = """
-             val aString: String = "A valid variable assignment"
-          """.trimIndent()
-
-         codeSnippet.shouldCompile()
-         file.writeText(codeSnippet)
-         file.shouldCompile()
-      }
 
       "a code snippet of invalid variable assignment should not compile" {
          val codeSnippet = """

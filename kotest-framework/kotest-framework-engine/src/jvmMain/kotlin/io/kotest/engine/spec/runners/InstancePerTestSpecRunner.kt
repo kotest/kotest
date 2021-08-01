@@ -1,26 +1,25 @@
 package io.kotest.engine.spec.runners
 
 import io.kotest.core.config.configuration
-import io.kotest.engine.test.TestCaseExecutor
-import io.kotest.engine.concurrency.resolvedThreads
 import io.kotest.core.spec.Spec
-import io.kotest.engine.spec.materializeAndOrderRootTests
 import io.kotest.core.test.NestedTest
 import io.kotest.core.test.TestCase
-import io.kotest.engine.test.TestCaseExecutionListener
 import io.kotest.core.test.TestContext
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestType
 import io.kotest.core.test.createTestName
 import io.kotest.core.test.toTestCase
 import io.kotest.engine.ExecutorExecutionContext
+import io.kotest.engine.concurrency.resolvedThreads
 import io.kotest.engine.launchers.TestLauncher
+import io.kotest.engine.events.invokeAfterSpec
+import io.kotest.engine.events.invokeBeforeSpec
 import io.kotest.engine.listener.TestEngineListener
 import io.kotest.engine.spec.SpecRunner
+import io.kotest.engine.spec.materializeAndOrderRootTests
 import io.kotest.engine.test.DuplicateTestNameHandler
-import io.kotest.engine.lifecycle.invokeAfterSpec
-import io.kotest.engine.lifecycle.invokeBeforeSpec
-import io.kotest.engine.test.toTestResult
+import io.kotest.engine.test.TestCaseExecutionListener
+import io.kotest.engine.test.TestCaseExecutor
 import io.kotest.fp.Try
 import io.kotest.mpp.log
 import kotlinx.coroutines.coroutineScope
@@ -147,18 +146,18 @@ internal class InstancePerTestSpecRunner(
             }
          }
          val testExecutor = TestCaseExecutor(object : TestCaseExecutionListener {
-            override fun testStarted(testCase: TestCase) {
+            override suspend fun testStarted(testCase: TestCase) {
                if (isTarget) listener.testStarted(testCase)
             }
 
-            override fun testIgnored(testCase: TestCase) {
+            override suspend fun testIgnored(testCase: TestCase) {
                if (isTarget) listener.testIgnored(testCase, null)
             }
 
-            override fun testFinished(testCase: TestCase, result: TestResult) {
+            override suspend fun testFinished(testCase: TestCase, result: TestResult) {
                if (isTarget) listener.testFinished(testCase, result)
             }
-         }, ExecutorExecutionContext, {}, { t, duration -> toTestResult(t, duration) })
+         }, ExecutorExecutionContext)
 
          val result = testExecutor.execute(test, context)
          results[test] = result

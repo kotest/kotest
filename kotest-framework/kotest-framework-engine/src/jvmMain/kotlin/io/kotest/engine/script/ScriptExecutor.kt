@@ -13,10 +13,9 @@ import io.kotest.core.test.TestResult
 import io.kotest.core.test.createTestName
 import io.kotest.core.test.toTestCase
 import io.kotest.engine.ExecutorExecutionContext
-import io.kotest.engine.NotificationManager
+import io.kotest.engine.events.Notifications
 import io.kotest.engine.listener.TestEngineListener
 import io.kotest.engine.test.DuplicateTestNameHandler
-import io.kotest.engine.test.toTestResult
 import io.kotest.fp.Try
 import io.kotest.mpp.log
 import java.util.concurrent.ConcurrentHashMap
@@ -33,7 +32,7 @@ import kotlin.script.templates.standard.ScriptTemplateWithArgs
 class ScriptExecutor(private val listener: TestEngineListener) {
 
    private val results = ConcurrentHashMap<Descriptor.TestDescriptor, TestResult>()
-   private val n = NotificationManager(listener)
+   private val n = Notifications(listener)
 
    /**
     * Executes the given test [ScriptTemplateWithArgs].
@@ -95,18 +94,18 @@ class ScriptExecutor(private val listener: TestEngineListener) {
       coroutineContext: CoroutineContext,
    ) {
       val testExecutor = TestCaseExecutor(object : TestCaseExecutionListener {
-         override fun testStarted(testCase: TestCase) {
+         override suspend fun testStarted(testCase: TestCase) {
             listener.testStarted(testCase.descriptor!!)
          }
 
-         override fun testIgnored(testCase: TestCase) {
+         override suspend fun testIgnored(testCase: TestCase) {
             listener.testIgnored(testCase.descriptor!!, null)
          }
 
-         override fun testFinished(testCase: TestCase, result: TestResult) {
+         override suspend fun testFinished(testCase: TestCase, result: TestResult) {
             listener.testFinished(testCase.descriptor!!, result)
          }
-      }, ExecutorExecutionContext, {}, { t, duration -> toTestResult(t, duration) })
+      }, ExecutorExecutionContext)
 
       val result = testExecutor.execute(testCase, Context(testCase, coroutineContext))
       results[testCase.description.toDescriptor(testCase.source) as Descriptor.TestDescriptor] = result

@@ -13,15 +13,15 @@ class CapturingTestListener : TestEngineListener {
    val specsFinished = ConcurrentHashMap<KClass<*>, Throwable?>()
    val testsFinished = ConcurrentHashMap<DescriptionName.TestName, TestStatus>()
 
-   override fun specFinished(kclass: KClass<*>, t: Throwable?, results: Map<TestCase, TestResult>) {
+   override suspend fun specFinished(kclass: KClass<*>, t: Throwable?, results: Map<TestCase, TestResult>) {
       specsFinished[kclass] = t
    }
 
-   override fun testIgnored(testCase: TestCase, reason: String?) {
+   override suspend fun testIgnored(testCase: TestCase, reason: String?) {
       testsFinished[testCase.description.name] = TestStatus.Ignored
    }
 
-   override fun testFinished(testCase: TestCase, result: TestResult) {
+   override suspend fun testFinished(testCase: TestCase, result: TestResult) {
       testsFinished[testCase.description.name] = result.status
    }
 }

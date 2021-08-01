@@ -9,7 +9,7 @@ import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.Spec
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
-import io.kotest.engine.NotificationManager
+import io.kotest.engine.events.Notifications
 import io.kotest.engine.launchers.testLauncher
 import io.kotest.engine.listener.TestEngineListener
 import io.kotest.engine.spec.runners.ConcurrentInstancePerLeafSpecRunner
@@ -31,7 +31,7 @@ import kotlin.reflect.KClass
  */
 class SpecExecutor(private val listener: TestEngineListener) {
 
-   private val notifications = NotificationManager(listener)
+   private val notifications = Notifications(listener)
 
    suspend fun execute(kclass: KClass<out Spec>) {
       log { "SpecExecutor execute [$kclass]" }
@@ -48,7 +48,7 @@ class SpecExecutor(private val listener: TestEngineListener) {
     * Creates an instance of the supplied [Spec] by delegating to the constructor extensions,
     * and notifies of the instantiation event.
     */
-   private fun createInstance(kclass: KClass<out Spec>): Try<Spec> =
+   private suspend fun createInstance(kclass: KClass<out Spec>): Try<Spec> =
       createAndInitializeSpec(kclass)
          .onFailure { notifications.specInstantiationError(kclass, it) }
          .flatMap { spec -> notifications.specInstantiated(spec).map { spec } }

@@ -28,9 +28,9 @@ include("kotest-framework:kotest-framework-discovery")
 include("kotest-framework:kotest-framework-engine")
 
 // compiler plugins to integrate tests with the engine
-include("kotest-framework:kotest-framework-compiler-plugin-js")
-include("kotest-framework:kotest-framework-compiler-plugin-native")
-include("kotest-framework:kotest-framework-compiler-plugin-gradle")
+include("kotest-framework:kotest-framework-multiplatform-plugin-js")
+include("kotest-framework:kotest-framework-multiplatform-plugin-native")
+include("kotest-framework:kotest-framework-multiplatform-plugin-gradle")
 
 // contains data driven testing that builds on top of the kotest test framework
 include("kotest-framework:kotest-framework-datatest")

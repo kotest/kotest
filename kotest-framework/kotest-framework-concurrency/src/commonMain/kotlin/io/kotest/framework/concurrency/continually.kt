@@ -61,7 +61,7 @@ private suspend fun <T> ContinuallyConfig<T>.invoke(f: suspend () -> T): T? {
             throw e
          // if not the first attempt then include how many times/for how long the test passed
          throw failure(
-            "Test failed after $start; expected to pass for ${duration}; attempted $times times\nUnderlying failure was: ${e.message}",
+            "Test failed after ${start}ms; expected to pass for ${duration}ms; attempted $times times\nUnderlying failure was: ${e.message}",
             e
          )
       }

@@ -1,7 +1,6 @@
 package io.kotest.core.spec.style.scopes
 
 import io.kotest.common.ExperimentalKotest
-import io.kotest.core.spec.KotestDsl
 import io.kotest.core.spec.resolvedDefaultConfig
 import io.kotest.core.test.DescriptionName
 import io.kotest.core.test.NestedTest
@@ -31,7 +30,6 @@ typealias DescribeScope = DescribeSpecContainerContext
  * xit("some test")
  * xit("some test").config(...)
  */
-@KotestDsl
 class DescribeSpecContainerContext(
    val testContext: TestContext,
 ) : ContainerContext {

@@ -1,7 +1,6 @@
 package io.kotest.core.spec.style.scopes
 
 import io.kotest.common.ExperimentalKotest
-import io.kotest.core.spec.KotestDsl
 import io.kotest.core.test.DescriptionName
 import io.kotest.core.test.TestContext
 import io.kotest.core.test.createTestName
@@ -19,7 +18,6 @@ typealias DescribeSpecRootScope = DescribeSpecRootContext
  *
  * xdescribe("some disabled test")
  */
-@KotestDsl
 interface DescribeSpecRootContext : RootContext {
 
    fun context(name: String, test: suspend DescribeSpecContainerContext.() -> Unit) {

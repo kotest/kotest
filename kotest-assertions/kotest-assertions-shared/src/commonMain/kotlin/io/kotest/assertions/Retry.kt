@@ -70,7 +70,8 @@ suspend fun <T, E : Throwable> retry(
             // Not the kind of exceptions we were prepared to tolerate
             e::class.simpleName != "AssertionError" &&
                e::class != exceptionClass &&
-               e::class.bestName() != "org.opentest4j.AssertionFailedError" -> throw e
+               e::class.bestName() != "org.opentest4j.AssertionFailedError" &&
+               !e::class.bestName().endsWith("AssertionFailedError") -> throw e
          }
          lastError = e
          // else ignore and continue

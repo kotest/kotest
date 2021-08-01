@@ -94,7 +94,7 @@ class BeforeTestExceptionTest : WordSpec({
    var error: Throwable? = null
 
    val listener = object : TestEngineListener {
-      override fun testFinished(testCase: TestCase, result: TestResult) {
+      override suspend fun testFinished(testCase: TestCase, result: TestResult) {
          if (result.status == TestStatus.Error)
             error = result.error
       }

@@ -1,6 +1,7 @@
 package io.kotest.assertions
 
 import io.kotest.assertions.show.Printed
+import io.kotest.common.errors.ComparisonError
 import io.kotest.mpp.stacktraces
 
 data class Expected(val value: Printed)

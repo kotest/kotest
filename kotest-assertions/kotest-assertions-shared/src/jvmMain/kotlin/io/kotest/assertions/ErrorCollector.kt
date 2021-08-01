@@ -2,7 +2,7 @@
 
 package io.kotest.assertions
 
-import java.util.*
+import java.util.Stack
 
 actual val errorCollector: ErrorCollector = ThreadLocalErrorCollector
 

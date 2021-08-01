@@ -10,28 +10,27 @@ import java.util.concurrent.TimeUnit
 
 class ConcurrentTest : FunSpec({
 
-   test("should not fail when given lambda pass in given time") {
+   test("should not fail when given lambda pass in given time using blocking call") {
       shouldNotThrowAny {
-         shouldCompleteWithin(2000, TimeUnit.MILLISECONDS) {
-            Thread.sleep(1000)
-            null
+         shouldCompleteWithin(150, TimeUnit.MILLISECONDS) {
+            Thread.sleep(10)
          }
       }
    }
 
    test("should fail when given lambda does not complete in given time") {
       val message = shouldThrow<AssertionError> {
-         shouldCompleteWithin(1000, TimeUnit.MILLISECONDS) {
-            Thread.sleep(1500)
+         shouldCompleteWithin(2, TimeUnit.MILLISECONDS) {
+            Thread.sleep(50)
             null
          }
       }.message
 
-      message shouldBe "Test should have completed within 1000/MILLISECONDS"
+      message shouldBe "Test should have completed within 2/MILLISECONDS"
    }
 
    test("should return the resulting value of the function block") {
-      val result = shouldCompleteWithin(1000, TimeUnit.MILLISECONDS) {
+      val result = shouldCompleteWithin(100, TimeUnit.MILLISECONDS) {
          "some value"
       }
 
@@ -40,16 +39,16 @@ class ConcurrentTest : FunSpec({
 
    test("should not throw any if given lambda did not complete in given time") {
       shouldNotThrowAny {
-         shouldTimeout(1, TimeUnit.SECONDS) {
-            Thread.sleep(1100)
+         shouldTimeout(2, TimeUnit.MILLISECONDS) {
+            Thread.sleep(100)
          }
       }
    }
 
    test("should fail if given lambda complete within given time") {
       shouldThrow<AssertionError> {
-         shouldTimeout(1, TimeUnit.SECONDS) {
-            Thread.sleep(100)
+         shouldTimeout(100, TimeUnit.MILLISECONDS) {
+            Thread.sleep(10)
          }
       }
    }

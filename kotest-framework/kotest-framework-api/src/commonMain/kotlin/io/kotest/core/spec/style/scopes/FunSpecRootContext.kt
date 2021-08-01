@@ -8,7 +8,6 @@ import io.kotest.core.test.createTestName
 @Deprecated("Renamed to FunSpecRootContext. This typealias will be removed in 4.8")
 typealias FunSpecRootScope = FunSpecRootContext
 
-@KotestDsl
 interface FunSpecRootContext : RootContext {
 
    /**

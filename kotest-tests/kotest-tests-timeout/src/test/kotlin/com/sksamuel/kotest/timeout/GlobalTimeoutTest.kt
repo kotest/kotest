@@ -1,5 +1,7 @@
 package com.sksamuel.kotest.timeout
 
+import io.kotest.core.config.configuration
+import io.kotest.core.spec.Isolate
 import io.kotest.core.spec.TestCaseExtensionFn
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.core.test.TestResult
@@ -7,9 +9,21 @@ import io.kotest.core.test.TestStatus
 import io.kotest.engine.test.toTestResult
 import kotlinx.coroutines.delay
 
+@Isolate
 class GlobalTimeoutTest : StringSpec() {
 
    init {
+
+      var previousTimeout = 0L
+
+      beforeSpec {
+         previousTimeout = configuration.timeout
+         configuration.timeout = 10
+      }
+
+      afterSpec {
+         configuration.timeout = previousTimeout
+      }
 
       "a global timeout should interrupt a blocked thread" {
          // high value to ensure its interrupted, we'd notice a test that runs for 10 weeks

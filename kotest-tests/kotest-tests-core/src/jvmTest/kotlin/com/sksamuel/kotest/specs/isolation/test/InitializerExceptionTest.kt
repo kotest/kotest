@@ -95,7 +95,7 @@ class InitializerExceptionTest : WordSpec({
    var error: Throwable? = null
 
    val listener = object : TestEngineListener {
-      override fun specFinished(kclass: KClass<*>, t: Throwable?, results: Map<TestCase, TestResult>) {
+      override suspend fun specFinished(kclass: KClass<*>, t: Throwable?, results: Map<TestCase, TestResult>) {
          if (t != null) error = t
       }
    }

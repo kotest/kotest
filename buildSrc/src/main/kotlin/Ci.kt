@@ -11,8 +11,14 @@ object Ci {
       else -> "$snapshotBase.${githubBuildNumber}-SNAPSHOT"
    }
 
+   private val snapshotGradleVersion = when (githubBuildNumber) {
+      null -> "$snapshotBase-LOCAL"
+      else -> "$snapshotBase.${githubBuildNumber}"
+   }
+
    private val releaseVersion = System.getenv("RELEASE_VERSION")
 
    val isRelease = releaseVersion != null
    val publishVersion = releaseVersion ?: snapshotVersion
+   val gradleVersion = releaseVersion ?: snapshotGradleVersion
 }

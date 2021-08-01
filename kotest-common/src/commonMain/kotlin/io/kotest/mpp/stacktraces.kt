@@ -3,7 +3,6 @@ package io.kotest.mpp
 expect val stacktraces: StackTraces
 
 object BasicStackTraces : StackTraces {
-   override fun throwableLocation(t: Throwable): String? = null
    override fun throwableLocation(t: Throwable, n: Int): List<String>? = null
    override fun <T : Throwable> cleanStackTrace(throwable: T): T = throwable
    override fun root(throwable: Throwable): Throwable = throwable
@@ -15,10 +14,10 @@ interface StackTraces {
     * Returns the first line of this stack trace, skipping io.kotest if possible.
     * On some platforms the stack trace may not be available and will return null.
     */
-   fun throwableLocation(t: Throwable): String?
+   fun throwableLocation(t: Throwable): String? = throwableLocation(t, 1)?.firstOrNull()
 
    /**
-    * Returns the first n lines of this stack trace, skipping io.test if possible.
+    * Returns the first n lines of this stack trace, skipping io.kotest if possible.
     * On some platforms the stack trace may not be available and will return null.
     */
    fun throwableLocation(t: Throwable, n: Int): List<String>?

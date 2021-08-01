@@ -6,6 +6,7 @@ import io.kotest.matchers.collections.shouldContainAll
 import io.kotest.matchers.collections.shouldContainExactly
 import io.kotest.matchers.collections.shouldNotContain
 import io.kotest.matchers.shouldBe
+import io.mockk.clearMocks
 import io.mockk.every
 import io.mockk.mockk
 import java.sql.ResultSet
@@ -13,48 +14,42 @@ import java.sql.ResultSet
 
 class ResultSetMatchersTest : StringSpec() {
 
+   private val resultSet = mockk<ResultSet>().also {
+      every { it.row } returns 1
+      every { it.metaData.columnCount } returns 1
+      every { it.metaData.columnCount } returns 1
+      every { it.metaData.getColumnLabel(1) } returns TEST_COLUMN
+      every { it.next() } returnsMany listOf(true, true, true, false)
+      every { it.getObject(TEST_COLUMN) } returnsMany TEST_COLUMN_VALUES
+   }
+
    init {
       "ResultSet should have rows" {
-         val resultSet = mockk<ResultSet>()
-         every { resultSet.row } returns 1
-
          resultSet.shouldHaveRows(1)
          resultSet shouldHaveRows 1
          resultSet.shouldNotHaveRows(2)
          resultSet shouldNotHaveRows 2
       }
       "ResultSet should have columns" {
-         val resultSet = mockk<ResultSet>()
-         every { resultSet.metaData.columnCount } returns 1
-
          resultSet.shouldHaveColumns(1)
          resultSet shouldHaveColumns 1
          resultSet.shouldNotHaveColumns(2)
          resultSet shouldNotHaveColumns 2
       }
       "ResultSet should contain column" {
-         val resultSet = mockk<ResultSet>()
-         every { resultSet.metaData.columnCount } returns 1
-         every { resultSet.metaData.getColumnLabel(1) } returns TEST_COLUMN
-
          resultSet.shouldContainColumn(TEST_COLUMN)
          resultSet shouldContainColumn TEST_COLUMN
          resultSet.shouldNotContainColumn("WRONG-$TEST_COLUMN")
          resultSet shouldNotContainColumn "WRONG-$TEST_COLUMN"
       }
       "ResultSet should have column" {
-         val resultSet = mockk<ResultSet>()
-         every { resultSet.next() } returnsMany listOf(true, true, true, false)
-         every { resultSet.metaData.columnCount } returns 1
-         every { resultSet.metaData.getColumnLabel(1) } returns TEST_COLUMN
-         every { resultSet.getObject(TEST_COLUMN) } returnsMany TEST_COLUMN_VALUES
-
          resultSet.shouldHaveColumn<String>(TEST_COLUMN) {
             it shouldBe TEST_COLUMN_VALUES
          }
       }
       "ResultSet should have column with diff type" {
-         val resultSet = mockk<ResultSet>()
+         clearMocks(resultSet)
+
          every { resultSet.next() } returnsMany listOf(true, true, true, false)
          every { resultSet.metaData.columnCount } returns 1
          every { resultSet.metaData.getColumnLabel(1) } returns TEST_COLUMN

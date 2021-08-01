@@ -1,9 +1,11 @@
 package io.kotest.engine.listener
 
-import io.kotest.engine.test.TestCaseExecutionListener
 import io.kotest.core.test.Description
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
+import io.kotest.engine.test.TestCaseExecutionListener
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import java.util.concurrent.ConcurrentHashMap
 
 /**
@@ -15,27 +17,28 @@ class BufferedTestCaseExcecutionListener(private val listener: TestCaseExecution
    private val started = ConcurrentHashMap<Description, TestCase>()
    private val ignored = ConcurrentHashMap<Description, TestCase>()
    private val finished = ConcurrentHashMap<Description, Pair<TestCase, TestResult>>()
+   private val mutex = Mutex()
 
-   override fun testStarted(testCase: TestCase) {
-      synchronized(this) {
+   override suspend fun testStarted(testCase: TestCase) {
+      mutex.withLock {
          started[testCase.description] = testCase
       }
    }
 
-   override fun testFinished(testCase: TestCase, result: TestResult) {
-      synchronized(this) {
+   override suspend fun testFinished(testCase: TestCase, result: TestResult) {
+      mutex.withLock {
          finished[testCase.description] = testCase to result
       }
    }
 
-   fun rootFinished(testCase: TestCase) {
+   suspend fun rootFinished(testCase: TestCase) {
       require(testCase.description.isRootTest())
-      synchronized(this) {
+      mutex.withLock {
          startStop(testCase, finished[testCase.description]!!.second)
       }
    }
 
-   private fun startStop(testCase: TestCase, result: TestResult) {
+   private suspend fun startStop(testCase: TestCase, result: TestResult) {
       listener.testStarted(testCase)
       finished
          .filter { testCase.description.isParentOf(it.key) }
@@ -46,8 +49,8 @@ class BufferedTestCaseExcecutionListener(private val listener: TestCaseExecution
       listener.testFinished(testCase, result)
    }
 
-   override fun testIgnored(testCase: TestCase) {
-      synchronized(this) {
+   override suspend fun testIgnored(testCase: TestCase) {
+      mutex.withLock {
          ignored[testCase.description] = testCase
       }
    }

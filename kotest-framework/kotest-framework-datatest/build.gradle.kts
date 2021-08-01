@@ -19,7 +19,7 @@ kotlin {
             }
          }
       }
-      js(BOTH) {
+      js(IR) {
          browser()
          nodejs()
       }

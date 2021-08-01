@@ -11,31 +11,31 @@ import kotlin.reflect.KClass
  */
 class ReporterTestEngineListener(private val reporter: Reporter) : TestEngineListener {
 
-   override fun engineStarted(classes: List<KClass<*>>) {
+   override suspend fun engineStarted(classes: List<KClass<*>>) {
       reporter.engineStarted(classes)
    }
 
-   override fun engineFinished(t: List<Throwable>) {
+   override suspend fun engineFinished(t: List<Throwable>) {
       reporter.engineFinished(t)
    }
 
-   override fun specStarted(kclass: KClass<*>) {
+   override suspend fun specStarted(kclass: KClass<*>) {
       reporter.specStarted(kclass)
    }
 
-   override fun specFinished(kclass: KClass<*>, t: Throwable?, results: Map<TestCase, TestResult>) {
+   override suspend fun specFinished(kclass: KClass<*>, t: Throwable?, results: Map<TestCase, TestResult>) {
       reporter.specFinished(kclass, t, results)
    }
 
-   override fun testStarted(testCase: TestCase) {
+   override suspend fun testStarted(testCase: TestCase) {
       reporter.testStarted(testCase)
    }
 
-   override fun testFinished(testCase: TestCase, result: TestResult) {
+   override suspend fun testFinished(testCase: TestCase, result: TestResult) {
       reporter.testFinished(testCase, result)
    }
 
-   override fun testIgnored(testCase: TestCase, reason: String?) {
+   override suspend fun testIgnored(testCase: TestCase, reason: String?) {
       reporter.testIgnored(testCase)
    }
 }

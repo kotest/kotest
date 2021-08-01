@@ -17,7 +17,7 @@ class DataTestingRepeatedTestNameTest : FunSpec() {
       val names = mutableListOf<String>()
 
       val listener = object : TestEngineListener {
-         override fun testFinished(testCase: TestCase, result: TestResult) {
+         override suspend fun testFinished(testCase: TestCase, result: TestResult) {
             println(testCase.displayName)
             names.add(testCase.displayName)
          }

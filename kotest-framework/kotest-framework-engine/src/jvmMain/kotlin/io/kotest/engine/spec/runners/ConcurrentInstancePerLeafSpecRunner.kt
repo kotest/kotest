@@ -1,30 +1,31 @@
 package io.kotest.engine.spec.runners
 
 import io.kotest.core.config.configuration
+import io.kotest.core.spec.Spec
+import io.kotest.core.test.DescriptionName
 import io.kotest.core.test.NestedTest
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestContext
 import io.kotest.core.test.TestResult
-import io.kotest.core.test.toTestCase
-import io.kotest.core.spec.Spec
-import io.kotest.core.test.DescriptionName
-import io.kotest.engine.listener.BufferedTestCaseExcecutionListener
-import io.kotest.engine.spec.SpecRunner
-import io.kotest.engine.listener.TestEngineListener
-import io.kotest.engine.ExecutorExecutionContext
-import io.kotest.engine.test.TestCaseExecutor
-import io.kotest.engine.listener.TestCaseListenerToTestEngineListenerAdapter
-import io.kotest.engine.spec.materializeAndOrderRootTests
 import io.kotest.core.test.createTestName
+import io.kotest.core.test.toTestCase
+import io.kotest.engine.ExecutorExecutionContext
 import io.kotest.engine.dispatchers.ExecutorCoroutineDispatcherFactory
 import io.kotest.engine.launchers.SequentialTestLauncher
+import io.kotest.engine.events.invokeAfterSpec
+import io.kotest.engine.events.invokeBeforeSpec
+import io.kotest.engine.listener.BufferedTestCaseExcecutionListener
+import io.kotest.engine.listener.TestCaseListenerToTestEngineListenerAdapter
+import io.kotest.engine.listener.TestEngineListener
+import io.kotest.engine.spec.SpecRunner
+import io.kotest.engine.spec.materializeAndOrderRootTests
 import io.kotest.engine.test.DuplicateTestNameHandler
-import io.kotest.engine.lifecycle.invokeAfterSpec
-import io.kotest.engine.lifecycle.invokeBeforeSpec
-import io.kotest.engine.test.toTestResult
+import io.kotest.engine.test.TestCaseExecutor
 import io.kotest.fp.Try
 import io.kotest.mpp.log
-import kotlinx.coroutines.*
+import kotlinx.coroutines.asCoroutineDispatcher
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.launch
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.Executors
 import java.util.concurrent.atomic.AtomicBoolean
@@ -137,8 +138,6 @@ internal class ConcurrentInstancePerLeafSpecRunner(
          val testExecutor = TestCaseExecutor(
             testCaseListener,
             ExecutorExecutionContext,
-            {},
-            { t, duration -> toTestResult(t, duration) },
          )
          val result = testExecutor.execute(test, context)
          results[test] = result

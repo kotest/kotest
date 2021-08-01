@@ -4,7 +4,7 @@ import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 
 interface TestCaseExecutionListener {
-   fun testStarted(testCase: TestCase) {}
-   fun testIgnored(testCase: TestCase) {}
-   fun testFinished(testCase: TestCase, result: TestResult) {}
+   suspend fun testStarted(testCase: TestCase) {}
+   suspend fun testIgnored(testCase: TestCase) {}
+   suspend fun testFinished(testCase: TestCase, result: TestResult) {}
 }
