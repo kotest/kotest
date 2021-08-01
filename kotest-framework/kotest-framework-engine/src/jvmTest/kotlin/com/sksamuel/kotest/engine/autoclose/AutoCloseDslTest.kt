@@ -6,10 +6,16 @@ import io.kotest.matchers.booleans.shouldBeTrue
 
 class AutoCloseDslTest : FunSpec({
 
+   var beforeTests = true
    var closed = false
    val closeme = AutoCloseable { closed = true }
 
-   autoClose(closeme)
+   autoClose(lazy {
+      beforeTests = false
+      closeme
+   })
+
+   beforeTests.shouldBeTrue()
 
    test("auto close with dsl method") {
       closed.shouldBeFalse()
