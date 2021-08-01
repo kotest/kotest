@@ -1,3 +1,6 @@
 package io.kotest.assertions
 
-actual val assertionCounter: AssertionCounter = BasicAssertionCounter()
+import kotlin.native.concurrent.SharedImmutable
+
+@SharedImmutable
+actual val assertionCounter: AssertionCounter = NoopAssertionsCounter
