@@ -3,12 +3,10 @@ package io.kotest.core.spec.style.scopes
 import io.kotest.core.spec.KotestDsl
 import io.kotest.core.spec.resolvedDefaultConfig
 import io.kotest.core.test.NestedTest
-import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestContext
 import io.kotest.core.test.TestType
 import io.kotest.core.test.createNestedTest
 import io.kotest.core.test.createTestName
-import kotlin.coroutines.CoroutineContext
 
 /**
  * A scope that allows tests to be registered using the syntax:

@@ -6,13 +6,11 @@ import io.kotest.core.spec.KotestDsl
 import io.kotest.core.spec.resolvedDefaultConfig
 import io.kotest.core.test.EnabledIf
 import io.kotest.core.test.NestedTest
-import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestCaseSeverityLevel
 import io.kotest.core.test.TestContext
 import io.kotest.core.test.TestType
 import io.kotest.core.test.createNestedTest
 import io.kotest.core.test.createTestName
-import kotlin.coroutines.CoroutineContext
 import kotlin.time.Duration
 
 /**
