@@ -6,6 +6,8 @@ import org.jetbrains.kotlin.backend.common.extensions.IrPluginContext
 import org.jetbrains.kotlin.backend.common.ir.addChild
 import org.jetbrains.kotlin.backend.common.lower.DeclarationIrBuilder
 import org.jetbrains.kotlin.cli.common.messages.MessageCollector
+import org.jetbrains.kotlin.cli.common.toLogger
+import org.jetbrains.kotlin.ir.IrStatement
 import org.jetbrains.kotlin.ir.builders.declarations.addGetter
 import org.jetbrains.kotlin.ir.builders.declarations.buildField
 import org.jetbrains.kotlin.ir.builders.declarations.buildProperty
@@ -21,13 +23,14 @@ import org.jetbrains.kotlin.ir.util.getSimpleFunction
 import org.jetbrains.kotlin.name.FqName
 import org.jetbrains.kotlin.name.Name
 
-class SpecIrGenerationExtension(messageCollector: MessageCollector) : IrGenerationExtension {
+class SpecIrGenerationExtension(private val messageCollector: MessageCollector) : IrGenerationExtension {
 
    override fun generate(moduleFragment: IrModuleFragment, pluginContext: IrPluginContext) {
 
       moduleFragment.transform(object : IrElementTransformerVoidWithContext() {
 
          val specs = mutableListOf<IrClass>()
+         var configs = mutableListOf<IrClass>()
 
          override fun visitModuleFragment(declaration: IrModuleFragment): IrModuleFragment {
             val fragment = super.visitModuleFragment(declaration)
@@ -43,8 +46,11 @@ class SpecIrGenerationExtension(messageCollector: MessageCollector) : IrGenerati
             val launchFn = launcherClass.getSimpleFunction(EntryPoint.LaunchMethodName)
                ?: error("Cannot find function ${EntryPoint.LaunchMethodName}")
 
-            val registerFn = launcherClass.getSimpleFunction(EntryPoint.WithSpecsMethodName)
+            val withSpecsFn = launcherClass.getSimpleFunction(EntryPoint.WithSpecsMethodName)
                ?: error("Cannot find function ${EntryPoint.WithSpecsMethodName}")
+
+            val withConfigFn = launcherClass.getSimpleFunction(EntryPoint.WithConfigMethodName)
+               ?: error("Cannot find function ${EntryPoint.WithConfigMethodName}")
 
             val launcher = pluginContext.irFactory.buildProperty {
                name = Name.identifier(EntryPoint.LauncherValName)
@@ -62,15 +68,24 @@ class SpecIrGenerationExtension(messageCollector: MessageCollector) : IrGenerati
                   field.initializer = pluginContext.irFactory.createExpressionBody(startOffset, endOffset) {
                      this.expression = DeclarationIrBuilder(pluginContext, field.symbol).irBlock {
                         +irCall(launchFn).also { launch ->
-                           launch.dispatchReceiver = irCall(registerFn).also { register ->
-                              register.dispatchReceiver = irCall(launcherConstructor)
-                              register.putValueArgument(
+                           launch.dispatchReceiver = irCall(withSpecsFn).also { withSpecs ->
+                              withSpecs.putValueArgument(
                                  0,
                                  irVararg(
                                     pluginContext.irBuiltIns.stringType,
                                     specs.map { irCall(it.constructors.first()) }
                                  )
                               )
+                              withSpecs.dispatchReceiver = irCall(withConfigFn).also { withConfig ->
+                                 withConfig.putValueArgument(
+                                    0,
+                                    irVararg(
+                                       pluginContext.irBuiltIns.stringType,
+                                       configs.map { irCall(it.constructors.first()) }
+                                    )
+                                 )
+                                 withConfig.dispatchReceiver = irCall(launcherConstructor)
+                              }
                            }
                         }
                      }
@@ -89,7 +104,14 @@ class SpecIrGenerationExtension(messageCollector: MessageCollector) : IrGenerati
             return fragment
          }
 
+         override fun visitClassNew(declaration: IrClass): IrStatement {
+            super.visitClassNew(declaration)
+            if (declaration.isProjectConfig()) configs.add(declaration)
+            return declaration
+         }
+
          override fun visitFileNew(declaration: IrFile): IrFile {
+            super.visitFileNew(declaration)
             declaration.specs().forEach { spec ->
                specs.add(spec)
             }

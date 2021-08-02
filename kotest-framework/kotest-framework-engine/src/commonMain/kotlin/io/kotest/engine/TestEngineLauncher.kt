@@ -12,28 +12,28 @@ import io.kotest.engine.config.ConfigManager
  * public api cannot have breaking changes.
  */
 class TestEngineLauncher(
-   val projectConfig: AbstractProjectConfig?,
+   val configs: List<AbstractProjectConfig>,
    val specs: List<Spec>,
 ) {
 
-   constructor() : this(null, emptyList())
+   constructor() : this(emptyList(), emptyList())
 
    fun withSpecs(vararg specs: Spec): TestEngineLauncher {
-      return TestEngineLauncher(projectConfig, specs.toList())
+      return TestEngineLauncher(configs, specs.toList())
    }
 
    /**
-    * Specifies an [AbstractProjectConfig] that was detected by the compiler plugin.
+    * Adds a [AbstractProjectConfig] that was detected by the compiler plugin.
     */
-   fun withConfig(projectConfig: AbstractProjectConfig): TestEngineLauncher {
-      return TestEngineLauncher(projectConfig, specs)
+   fun withConfig(vararg projectConfig: AbstractProjectConfig): TestEngineLauncher {
+      return TestEngineLauncher(configs + projectConfig, specs)
    }
 
    fun launch() {
 
       val config = TestEngineConfig.default()
          // initializes the global configuration and passes it to the test engine config
-         .withConfig(ConfigManager.initialize(configuration, listOfNotNull(projectConfig)))
+         .withConfig(ConfigManager.initialize(configuration, configs))
 
       val engine = TestEngine(config)
       engine.execute(TestSuite(specs, emptyList()))

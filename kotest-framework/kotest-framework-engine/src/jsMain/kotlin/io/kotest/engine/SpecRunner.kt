@@ -1,5 +1,7 @@
 package io.kotest.engine
 
+import io.kotest.core.listeners.AfterProjectListener
+import io.kotest.core.listeners.BeforeProjectListener
 import io.kotest.core.spec.Spec
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
@@ -8,6 +10,7 @@ import io.kotest.engine.test.CallingThreadExecutionContext
 import io.kotest.engine.test.RootRestrictedTestContext
 import io.kotest.engine.test.TestCaseExecutor
 import io.kotest.engine.test.status.isEnabledInternal
+import io.kotest.fp.Try
 import io.kotest.mpp.bestName
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
@@ -30,7 +33,6 @@ actual class SpecRunner {
       // we use the spec itself as an outer/parent test.
       describe(spec::class.bestName()) {
          spec.materializeAndOrderRootTests().forEach { root ->
-
             val enabled = root.testCase.isEnabledInternal()
             if (enabled.isEnabled) {
                // we have to always invoke `it` to start the test so that the js test framework doesn't exit
@@ -68,7 +70,36 @@ actual class SpecRunner {
 
       // we don't want to return a promise here as the js frameworks will use that for test resolution
       // instead of the done callback, and we prefer the callback as it allows for custom timeouts
-      // without the need for the user to configure them on the js side.
       Unit
+   }
+}
+
+actual class LifecycleEventManager {
+
+   private fun execute(name: String, f: suspend () -> Unit) {
+      describe(name) {
+         it(name) { done ->
+            GlobalScope.promise {
+               Try { f() }.fold({ done(it) }, { done(null) })
+            }
+            // we don't want to return a promise here as the js frameworks will use that for test resolution
+            // instead of the done callback, and we prefer the callback as it allows for custom timeouts
+            Unit
+         }
+      }
+   }
+
+   actual fun beforeProject(listeners: List<BeforeProjectListener>) {
+      if (listeners.isNotEmpty())
+         execute("beforeProject") {
+            listeners.forEach { it.beforeProject() }
+         }
+   }
+
+   actual fun afterProject(listeners: List<AfterProjectListener>) {
+      if (listeners.isNotEmpty())
+         execute("afterProject") {
+            listeners.forEach { it.afterProject() }
+         }
    }
 }

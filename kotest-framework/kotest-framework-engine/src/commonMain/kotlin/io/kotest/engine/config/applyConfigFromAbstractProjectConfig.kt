@@ -2,7 +2,8 @@ package io.kotest.engine.config
 
 import io.kotest.core.config.AbstractProjectConfig
 import io.kotest.core.config.Configuration
-import io.kotest.core.listeners.ProjectListener
+import io.kotest.core.listeners.AfterProjectListener
+import io.kotest.core.listeners.BeforeProjectListener
 import io.kotest.fp.foreach
 
 /**
@@ -43,7 +44,10 @@ internal fun applyConfigFromProjectConfig(config: AbstractProjectConfig, configu
 
    // the project config object allows us to define project event methods, which we
    // wrap into a project listener and register as normal
-   val projectListener = object : ProjectListener {
+   val projectListener = object : BeforeProjectListener, AfterProjectListener {
+
+      override val name: String = "ProjectConfigBeforeAfterProjectListener"
+
       override suspend fun beforeProject() {
          config.beforeProject()
          config.beforeAll()

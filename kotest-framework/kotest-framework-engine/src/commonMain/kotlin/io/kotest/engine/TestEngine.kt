@@ -3,6 +3,8 @@ package io.kotest.engine
 import io.kotest.core.config.Configuration
 import io.kotest.core.config.configuration
 import io.kotest.core.extensions.SpecExecutionOrderExtension
+import io.kotest.core.listeners.AfterProjectListener
+import io.kotest.core.listeners.BeforeProjectListener
 import io.kotest.core.spec.Spec
 import io.kotest.engine.extensions.EmptyTestSuiteExtension
 import io.kotest.engine.extensions.EngineExtension
@@ -57,8 +59,12 @@ data class TestSuite(val specs: List<Spec>, val classes: List<KClass<out Spec>>)
  */
 class TestEngine(val config: TestEngineConfig) {
 
+   private val lifecycle = LifecycleEventManager()
+
    fun execute(suite: TestSuite) {
       require(suite.specs.isNotEmpty()) { "Cannot invoke the engine with no specs" }
+
+      lifecycle.beforeProject(config.configuration.listeners().filterIsInstance<BeforeProjectListener>())
 
       val innerExecute: (TestSuite, TestEngineListener) -> EngineResult =
          { ts, tel ->
@@ -70,7 +76,6 @@ class TestEngine(val config: TestEngineConfig) {
 
             log { "KotestEngine: Sorting specs using extensions $exts" }
             val ordered = exts.fold(ts.specs) { acc, op -> op.sortSpecs(acc) }
-
             execute(ordered, tel)
          }
 
@@ -85,9 +90,16 @@ class TestEngine(val config: TestEngineConfig) {
       if (specs.isNotEmpty()) {
          val runner = SpecRunner()
          runner.execute(specs.first()) { execute(specs.drop(1), listener) }
+      } else {
+         lifecycle.afterProject(config.configuration.listeners().filterIsInstance<AfterProjectListener>())
       }
       return EngineResult(emptyList())
    }
+}
+
+expect class LifecycleEventManager() {
+   fun beforeProject(listeners: List<BeforeProjectListener>)
+   fun afterProject(listeners: List<AfterProjectListener>)
 }
 
 expect class SpecRunner() {

@@ -1,5 +1,7 @@
 package io.kotest.engine
 
+import io.kotest.core.listeners.AfterProjectListener
+import io.kotest.core.listeners.BeforeProjectListener
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.toDescription
 import io.kotest.core.test.TestCase
@@ -39,5 +41,19 @@ actual class SpecRunner {
    private fun execute(testCase: TestCase) = runBlocking {
       val context = RootRestrictedTestContext(testCase, this.coroutineContext)
       TestCaseExecutor(TeamCityTestCaseExecutionListener, CallingThreadExecutionContext).execute(testCase, context)
+   }
+}
+
+actual class LifecycleEventManager {
+   actual fun beforeProject(listeners: List<BeforeProjectListener>) {
+      runBlocking {
+         listeners.forEach { it.beforeProject() }
+      }
+   }
+
+   actual fun afterProject(listeners: List<AfterProjectListener>) {
+      runBlocking {
+         listeners.forEach { it.afterProject() }
+      }
    }
 }
