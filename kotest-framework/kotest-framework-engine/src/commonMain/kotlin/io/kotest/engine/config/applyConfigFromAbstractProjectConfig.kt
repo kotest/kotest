@@ -40,7 +40,11 @@ internal fun applyConfigFromProjectConfig(config: AbstractProjectConfig, configu
    config.duplicateTestNameMode.foreach { configuration.duplicateTestNameMode = it }
    config.testNameCase.foreach { configuration.testNameCase = it }
 
+   // config
    config.defaultTestCaseConfig.foreach { configuration.defaultTestConfig = it }
+
+   // debug
+   config.coroutineDebugProbes.foreach { configuration.coroutineDebugProbes = it }
 
    // the project config object allows us to define project event methods, which we
    // wrap into a project listener and register as normal

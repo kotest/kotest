@@ -77,6 +77,7 @@ object Libs {
    }
 
    object Coroutines {
+      const val debug = "org.jetbrains.kotlinx:kotlinx-coroutines-debug:_"
       const val coreCommon = "org.jetbrains.kotlinx:kotlinx-coroutines-core:_"
       const val coreJvm = "org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm:_"
       const val coreJs = "org.jetbrains.kotlinx:kotlinx-coroutines-core-js:_"

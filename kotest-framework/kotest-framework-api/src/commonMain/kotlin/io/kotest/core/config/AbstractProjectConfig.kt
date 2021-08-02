@@ -219,6 +219,11 @@ abstract class AbstractProjectConfig {
    open val duplicateTestNameMode: DuplicateTestNameMode? = null
 
    /**
+    * Set to true to enable enhanced tracing of coroutines when an error occurs.
+    */
+   open val coroutineDebugProbes: Boolean? = null
+
+   /**
     * Executed before the first test of the project, but after the
     * [ProjectListener.beforeProject] methods.
     */

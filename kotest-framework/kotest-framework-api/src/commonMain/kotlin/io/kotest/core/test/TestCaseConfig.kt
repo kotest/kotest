@@ -52,6 +52,9 @@ data class TestCaseConfig(
    // assertion mode can be set to control errors/warnings in a test
    // if null, defaults will be applied
    val assertionMode: AssertionMode? = null,
+
+   // when set to true, installs a coroutine debug probe for tracing coroutines when an error occurs
+   val coroutineDebugProbes: Boolean? = null
 ) {
    init {
       require(invocations > 0) { "Number of invocations must be greater than 0" }

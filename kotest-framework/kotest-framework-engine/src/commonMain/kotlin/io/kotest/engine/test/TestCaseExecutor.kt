@@ -1,5 +1,6 @@
 package io.kotest.engine.test
 
+import io.kotest.core.config.configuration
 import io.kotest.core.extensions.TestCaseExtension
 import io.kotest.core.test.NestedTest
 import io.kotest.core.test.TestCase
@@ -8,12 +9,13 @@ import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestStatus
 import io.kotest.core.test.TestType
 import io.kotest.engine.TestTimeoutException
-import io.kotest.engine.extensions.resolvedTestCaseExtensions
 import io.kotest.engine.events.invokeAfterInvocation
 import io.kotest.engine.events.invokeAllAfterTestCallbacks
 import io.kotest.engine.events.invokeAllBeforeTestCallbacks
 import io.kotest.engine.events.invokeBeforeInvocation
+import io.kotest.engine.extensions.resolvedTestCaseExtensions
 import io.kotest.engine.test.status.isEnabled
+import io.kotest.engine.withDebugProbe
 import io.kotest.fp.Try
 import io.kotest.mpp.log
 import io.kotest.mpp.replay
@@ -62,7 +64,7 @@ class TestCaseExecutor(
    ): TestResult {
 
       val innerExecute: suspend (TestCase, TestContext) -> TestResult = { tc, ctx ->
-         executeIfEnabled(tc) { executeActiveTest(tc, ctx, start) }
+         executeIfEnabled(tc) { executeWithProbe(tc, ctx, start) }
       }
 
       val execute = extensions.foldRight(innerExecute) { extension, execute ->
@@ -96,6 +98,18 @@ class TestCaseExecutor(
             log { "${testCase.description.testPath()} is disabled" }
             TestResult.ignored(enabled)
          }
+      }
+   }
+
+   private suspend fun executeWithProbe(tc: TestCase, ctx: TestContext, start: Long): TestResult {
+      val enabled = tc.config.coroutineDebugProbes ?: configuration.coroutineDebugProbes
+      log { "TestCaseExecutor: coroutineDebugProbes enabled=$enabled" }
+      return if (enabled) {
+         withDebugProbe {
+            executeActiveTest(tc, ctx, start)
+         }
+      } else {
+         executeActiveTest(tc, ctx, start)
       }
    }
 

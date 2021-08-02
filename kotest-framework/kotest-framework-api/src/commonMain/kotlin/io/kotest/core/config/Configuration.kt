@@ -219,7 +219,7 @@ class Configuration {
     * Returns the default [TestCaseConfig] to be assigned to tests when not specified either in
     * the spec, test factory, or test case itself.
     *
-    * If this is null, then defaults to [Defaults.testCaseConfig]
+    * Defaults to [Defaults.testCaseConfig]
     */
    var defaultTestConfig: TestCaseConfig = Defaults.testCaseConfig
 
@@ -227,6 +227,13 @@ class Configuration {
     * If set to true, then will cause the test suite to fail if there were no executed tests.
     */
    var failOnEmptyTestSuite: Boolean = Defaults.failOnEmptyTestSuite
+
+   /**
+    * Set to true to enable enhanced tracing of coroutines when an error occurs.
+    *
+    * Defaults to [Defaults.coroutineDebugProbes]
+    */
+   var coroutineDebugProbes: Boolean = Defaults.coroutineDebugProbes
 
    /**
     * Some specs have DSLs that include prefix or suffix words in the test name.

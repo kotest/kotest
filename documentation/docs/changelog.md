@@ -27,6 +27,7 @@ _**Kotlin 1.5 is now the minimum supported version**_
 
 #### Improvements
 
+* Config option to enable [coroutine debugging](https://github.com/Kotlin/kotlinx.coroutines/tree/master/kotlinx-coroutines-debug)
 * Failfast option added [see docs] #2243
 * Unfinished tests should error (#2281)
 * Added option to fail test run if no tests were executed (#2287)
