@@ -15,9 +15,6 @@ import io.kotest.core.test.createTestName
 import kotlin.coroutines.CoroutineContext
 import kotlin.time.Duration
 
-@Deprecated("This interface has been renamed to WordSpecShouldContainerContext. This alias will be removed in 4.8")
-typealias WordSpecShouldScope = WordSpecShouldContainerContext
-
 /**
  * A scope that allows tests to be registered using the syntax:
  *

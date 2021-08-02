@@ -10,10 +10,6 @@ import io.kotest.core.test.createNestedTest
 import io.kotest.core.test.createTestName
 import kotlin.coroutines.CoroutineContext
 
-@Deprecated("Renamed to WordSpecWhenContainerContext. This typealias will be removed in 4.8")
-typealias WordSpecWhenScope = WordSpecWhenContainerContext
-
-
 @Suppress("FunctionName")
 @KotestDsl
 class WordSpecWhenContainerContext(

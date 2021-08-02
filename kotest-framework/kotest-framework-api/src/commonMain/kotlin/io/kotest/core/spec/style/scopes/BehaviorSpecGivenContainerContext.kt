@@ -10,9 +10,6 @@ import io.kotest.core.test.createNestedTest
 import io.kotest.core.test.createTestName
 import kotlin.coroutines.CoroutineContext
 
-@Deprecated("This interface has been renamed to BehaviorSpecGivenContainerContext. This alias will be removed in 4.8")
-typealias GivenScope = BehaviorSpecGivenContainerContext
-
 /**
  * A context that allows tests to be registered using the syntax:
  *

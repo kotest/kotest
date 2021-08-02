@@ -18,8 +18,7 @@ _**Kotlin 1.5 is now the minimum supported version**_
 * `TestEngineListener` methods are now suspendable. This is only of interest if you have implemented customizations of the Test Engine through plugins. Note: This is not related to public TestListener methods that are used by test cases.
 * The global configuration variable `project` has been removed. This was deprecated in 4.2. Use the replacment global variable `configuration` or provide config via instances of [ProjectConfig](https://kotest.io/docs/framework/project-config.html).
 * The deprecated `RuntimeTagExtension` has been undeprecated but moved to a new package.
-
-
+* In 4.5 the DSL scope classes were renamed from `XYZScope` to `XYZContext`. For example, `FreeSpecRootScope` became `FreeSpecRootContext`. The deprecated type aliases have now been removed. This only affects you if you have written custom Kotest Spec Styles that relied on the old names of scopes from existing spec styles.
 #### Fixes
 
 * String matchers now also work on CharSequence where applicable #2278
