@@ -224,6 +224,12 @@ abstract class AbstractProjectConfig {
    open val coroutineDebugProbes: Boolean? = null
 
    /**
+    * Set to false and if a spec has no active tests (all disabled due to config or tags say)
+    * then the spec itself will not appear as a node in output.
+    */
+   open val displaySpecIfNoActiveTests: Boolean? = null
+
+   /**
     * Executed before the first test of the project, but after the
     * [ProjectListener.beforeProject] methods.
     */

@@ -15,6 +15,9 @@ internal fun applyConfigFromProjectConfig(config: AbstractProjectConfig, configu
    config.assertionMode.foreach { configuration.assertionMode = it }
    config.globalAssertSoftly.foreach { configuration.globalAssertSoftly = it }
 
+   // outputs
+   config.displaySpecIfNoActiveTests.foreach { configuration.displaySpecIfNoActiveTests = it }
+
    // project run options
    config.failOnIgnoredTests.foreach { configuration.failOnIgnoredTests = it }
    config.failOnEmptyTestSuite.foreach { configuration.failOnEmptyTestSuite = it }

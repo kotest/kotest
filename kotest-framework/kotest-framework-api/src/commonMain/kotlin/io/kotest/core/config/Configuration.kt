@@ -263,6 +263,16 @@ class Configuration {
    var includeTestScopeAffixes: Boolean? = Defaults.defaultIncludeTestScopeAffixes
 
    /**
+    * Set to false and if a spec has no active tests (all disabled due to config or tags say)
+    * then the spec itself will not appear as a node in output.
+    *
+    * Defaults to [Defaults.displaySpecIfNoActiveTests]
+    *
+    * Note: This only works for JUnit and Intellij runners.
+    */
+   var displaySpecIfNoActiveTests: Boolean = Defaults.displaySpecIfNoActiveTests
+
+   /**
     * Controls the default [IsolationMode] that each spec will execute in.
     *
     * This value is used if a value is not specified in the spec itself.
