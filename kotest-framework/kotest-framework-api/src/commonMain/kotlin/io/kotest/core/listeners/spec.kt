@@ -46,7 +46,7 @@ interface AfterSpecListener : Listener {
    suspend fun afterSpec(spec: Spec): Unit = Unit
 }
 
-interface SpecIgnoredListner : Listener {
+interface SpecIgnoredListener : Listener {
 
    /**
     * Called once per [Spec] iff all tests in the spec are inactive.
