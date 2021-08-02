@@ -24,6 +24,9 @@ These blogs and articles can be useful in addition to the official docs to show 
 * [Parameterized tests with Kotest (2020)](https://kotlintesting.com/kotest-parameterized/)
 * [Using Testcontainers with Micronaut and Kotest (2020)](https://akobor.me/posts/using-testcontainers-with-micronaut-and-kotest)
 * [Property-based testing in Android - are we testing like it's 1999? (2020)](https://www.droidcon.com/media-detail?video=491022325)
-* [How To Write Human-Readable Tests in Kotlin With Kotest and MockK](https://betterprogramming.pub/how-to-write-human-readable-tests-in-kotlin-with-kotest-and-mockk-1b614da32148)
+* [How To Write Human-Readable Tests in Kotlin With Kotest and MockK (2021)](https://betterprogramming.pub/how-to-write-human-readable-tests-in-kotlin-with-kotest-and-mockk-1b614da32148)
+* [Backend testing taxonomy - Scopes and Techniques (2021)](https://www.47deg.com/blog/backend-testing-taxonomy-scopes-and-techniques/#backend-testing-taxonomy-scopes-and-techniques-0)
+* [What If Kotest Had HTML Reports? (2021)](https://hugomartins.io/essays/2021/03/what-if-kotest-had-html-reports/)
+
 
 Please open a PR to add your blog or article here.
