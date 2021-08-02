@@ -4,12 +4,10 @@ import io.kotest.common.ExperimentalKotest
 import io.kotest.core.spec.KotestDsl
 import io.kotest.core.spec.resolvedDefaultConfig
 import io.kotest.core.test.NestedTest
-import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestContext
 import io.kotest.core.test.TestType
 import io.kotest.core.test.createNestedTest
 import io.kotest.core.test.createTestName
-import kotlin.coroutines.CoroutineContext
 
 /**
  * A scope that allows tests to be registered using the syntax:
@@ -22,10 +20,8 @@ import kotlin.coroutines.CoroutineContext
 @KotestDsl
 class ShouldSpecContainerContext(
    val testContext: TestContext,
-) : ContainerContext {
+) : AbstractContainerContext(testContext) {
 
-   override val testCase: TestCase = testContext.testCase
-   override val coroutineContext: CoroutineContext = testContext.coroutineContext
    override suspend fun registerTestCase(nested: NestedTest) = testContext.registerTestCase(nested)
 
    override suspend fun addTest(name: String, type: TestType, test: suspend TestContext.() -> Unit) {
