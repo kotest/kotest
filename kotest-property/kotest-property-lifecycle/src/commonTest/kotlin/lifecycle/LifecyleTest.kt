@@ -9,22 +9,34 @@ import io.kotest.property.lifecycle.beforeProperty
 class LifecyleTest : FunSpec() {
    init {
 
-      var counter = 0
+      var beforeCounter = 0
+      var afterCounter = 0
 
       beforeProperty {
-         counter++
+         beforeCounter++
       }
 
       afterProperty {
-         counter++
+         afterCounter++
+      }
+
+      beforeProperty {
+         // test that we can support multiple
+         beforeCounter++
+      }
+
+      afterProperty {
+         // test that we can support multiple
+         afterCounter++
       }
 
       test("property test") {
          checkAll<String, String>(iterations = 31) { a, b -> a + b shouldBe "$a$b" }
       }
 
-      afterSpec {
-         counter shouldBe 62
+      afterProject {
+         beforeCounter shouldBe 62
+         afterCounter shouldBe 62
       }
    }
 

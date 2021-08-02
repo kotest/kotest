@@ -17,7 +17,6 @@ import io.kotest.core.spec.BeforeContainer
 import io.kotest.core.spec.BeforeEach
 import io.kotest.core.spec.BeforeSpec
 import io.kotest.core.spec.BeforeTest
-import io.kotest.core.spec.PrepareSpec
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.TestCaseExtensionFn
 import io.kotest.core.test.AssertionMode
@@ -294,11 +293,4 @@ abstract class TestConfiguration {
     * Returns any [TestCaseExtension] instances registered directly on this class.
     */
    fun registeredExtensions() = _extensions
-
-   @Deprecated(
-      "Cannot use inline version of prepare spec since this must run before the spec is created. Create a TestListener instance and register that globally.",
-      level = DeprecationLevel.ERROR
-   )
-   fun prepareSpec(f: PrepareSpec) {
-   }
 }
