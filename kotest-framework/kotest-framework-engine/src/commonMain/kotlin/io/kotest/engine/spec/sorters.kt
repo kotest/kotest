@@ -41,16 +41,9 @@ object RandomSpecSorter : SpecSorter {
  * value of the [Order] annotation. If the annotation is not present, then that spec is
  * assumed to have a [Int.MAX_VALUE] default value.
  *
- * Note: Runtime annotations are not supported on native or JS so on those platforms all
- * specs will have the [Int.MAX_VALUE] default value.
+ * Note: Runtime annotations are not supported on Native or JS so on those platforms
+ * this sort order is a no-op.
  */
-object AnnotatedSpecSorter : SpecSorter {
-
-   override fun compare(a: KClass<out Spec>, b: KClass<out Spec>): Int {
-      val orderValueA = a.annotation<Order>()?.value ?: Int.MAX_VALUE
-      val orderValueB = b.annotation<Order>()?.value ?: Int.MAX_VALUE
-      return orderValueA.compareTo(orderValueB)
-   }
-}
+expect object AnnotatedSpecSorter :SpecSorter
 
 expect class FailureFirstSorter() : SpecSorter
