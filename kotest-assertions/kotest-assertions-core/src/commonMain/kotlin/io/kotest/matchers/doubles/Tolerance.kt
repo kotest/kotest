@@ -2,6 +2,8 @@ package io.kotest.matchers.doubles
 
 import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
+import io.kotest.matchers.should
+import io.kotest.matchers.shouldNot
 import kotlin.math.abs
 
 /**
@@ -67,4 +69,41 @@ class ToleranceMatcher(private val expected: Double?, private val tolerance: Dou
        MatcherResult(passed, msg,"$value should not be equal to $expected")
     }
   }
+}
+
+/**
+ * Verifies that this double is within [percentage]% of [other]
+ *
+ * 90.0.shouldBeWithinPercentageOf(100.0, 10.0)  // Passes
+ * 50.0.shouldBeWithinPercentageOf(100.0, 50.0)  // Passes
+ * 30.0.shouldBeWithinPercentageOf(100.0, 10.0)  // Fail
+ *
+ */
+fun Double.shouldBeWithinPercentageOf(other: Double, percentage: Double) {
+   require(percentage > 0.0) { "Percentage must be > 0.0" }
+   this should beWithinPercentageOf(other, percentage)
+}
+
+/**
+ * Verifies that this double is NOT within [percentage]% of [other]
+ *
+ * 90.0.shouldNotBeWithinPercentageOf(100.0, 10.0)  // Fail
+ * 50.0.shouldNotBeWithinPercentageOf(100.0, 50.0)  // Fail
+ * 30.0.shouldNotBeWithinPercentageOf(100.0, 10.0)  // Passes
+ *
+ */
+fun Double.shouldNotBeWithinPercentageOf(other: Double, percentage: Double) {
+   require(percentage > 0.0) { "Percentage must be > 0.0" }
+   this shouldNot beWithinPercentageOf(other, percentage)
+}
+
+fun beWithinPercentageOf(other: Double, percentage: Double) = object : Matcher<Double> {
+   private val tolerance = other.times(percentage / 100)
+   private val range = (other - tolerance)..(other + tolerance)
+
+   override fun test(value: Double) = MatcherResult(
+      value in range,
+      "$value should be in $range",
+      "$value should not be in $range"
+   )
 }
