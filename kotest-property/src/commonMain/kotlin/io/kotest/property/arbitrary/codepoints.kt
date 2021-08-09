@@ -105,6 +105,13 @@ fun Codepoint.Companion.ascii(): Arb<Codepoint> =
       .map { Codepoint(it) }
       .withEdgecases(Codepoint('a'.code))
 
+/**
+ * Returns an [Arb] that generates HEX codepoints.
+ */
+fun Codepoint.Companion.hex(): Arb<Codepoint> =
+   Arb.choice(Arb.int('a'.code..'f'.code), Arb.int('0'.code..'9'.code))
+      .map { Codepoint(it) }
+
 fun Codepoint.Companion.georgian(): Arb<Codepoint> {
    val empty = listOf(0x10C6, 0x10ce, 0x10cf) + (0x10c8..0x10cC).toList()
    return Arb.int(0x10A0..0x10FF)
