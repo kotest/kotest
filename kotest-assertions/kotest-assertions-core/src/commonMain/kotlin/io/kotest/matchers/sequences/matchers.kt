@@ -85,7 +85,7 @@ fun <T, C : Sequence<T>> containExactly(expected: C): Matcher<C?> = neverNullMat
    val expectedIterator = expected.withIndex().iterator()
 
    var passed = true
-   var failMessage = "Sequence should contain exactly $expected but was $value"
+   var failMessage = "Sequence should contain exactly $expected but was $value."
    while (passed && actualIterator.hasNext() && expectedIterator.hasNext()) {
       val actualElement = actualIterator.next()
       val expectedElement = expectedIterator.next()
@@ -95,8 +95,13 @@ fun <T, C : Sequence<T>> containExactly(expected: C): Matcher<C?> = neverNullMat
       }
    }
 
-   if (actualIterator.hasNext() || expectedIterator.hasNext()) {
-      failMessage += "Actual and Expected sequence have unequal number of elements"
+   if (passed && actualIterator.hasNext()) {
+      failMessage += "\nActual sequence has more element than Expected sequence"
+      passed = false
+   }
+
+   if (passed && expectedIterator.hasNext()) {
+      failMessage += "\nExpected sequence has more element than Actual sequence"
       passed = false
    }
 
