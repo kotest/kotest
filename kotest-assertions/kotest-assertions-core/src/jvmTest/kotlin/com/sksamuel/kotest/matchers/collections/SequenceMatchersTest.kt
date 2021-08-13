@@ -634,6 +634,25 @@ class SequenceMatchersTest : WordSpec() {
          succeed("for same elements but different order (variadic)") {
             repeating.shouldNotContainExactly(1, 1, 2, 2, 3, 3)
          }
+
+         succeed("for single traversable equal sequence") {
+            var count1 = 0
+            var count2 = 0
+            val seq1 = generateSequence { if(count1 < 5) count1++ else null }
+            val seq2 = generateSequence { if(count2 < 5) count2++ else null }
+
+            seq1.shouldContainExactly(seq2)
+         }
+
+         fail("for single traversable unequal sequence") {
+            var count1 = 0
+            var count2 = 0
+            val seq1 = generateSequence { if(count1 < 5) count1++ else null }
+            val seq2 = generateSequence { if(count2 < 6) count2++ else null }
+
+            seq1.shouldContainExactly(seq2)
+         }
+
       }
 
       "contain in any order" should {
