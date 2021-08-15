@@ -20,6 +20,11 @@ jobs:
          -  name: Checkout the repo
             uses: actions/checkout@v2
 
+         -  name: Setup JDK
+            uses: actions/setup-java@v1
+            with:
+               java-version: '8'
+
          -  name: Run ubuntu tests
             if: matrix.os == 'ubuntu-latest'
             run: ./gradlew check --scan

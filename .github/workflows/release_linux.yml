@@ -22,6 +22,11 @@ jobs:
                fetch-depth: 0
                ref: ${{ github.event.inputs.branch }}
 
+         -  name: Setup JDK
+            uses: actions/setup-java@v1
+            with:
+               java-version: '8'
+
          -  name: publish multiplatform release
             run: ./gradlew publishKotlinMultiplatformPublicationToDeployRepository
             env:
