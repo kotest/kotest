@@ -2,6 +2,8 @@
 
 package io.kotest.matchers.sequences
 
+import io.kotest.assertions.eq.eq
+import io.kotest.assertions.show.show
 import io.kotest.matchers.*
 
 private fun <T> Sequence<T>.toString(limit: Int = 10) = this.joinToString(", ", limit = limit)
@@ -79,17 +81,30 @@ fun <T> containExactly(vararg expected: T): Matcher<Sequence<T>?> = containExact
 
 /** Assert that a sequence contains exactly the given values and nothing else, in order. */
 fun <T, C : Sequence<T>> containExactly(expected: C): Matcher<C?> = neverNullMatcher { value ->
-   var passed: Boolean = value.count() == expected.count()
-   var failMessage = "Sequence should contain exactly $expected but was $value"
-   if (passed) {
-      val diff = value.zip(expected) { a, b -> Triple(a, b, a == b) }.withIndex().find { !it.value.third }
-      if (diff != null) {
+   val actualIterator = value.withIndex().iterator()
+   val expectedIterator = expected.withIndex().iterator()
+
+   var passed = true
+   var failMessage = "Sequence should contain exactly $expected but was $value."
+   while (passed && actualIterator.hasNext() && expectedIterator.hasNext()) {
+      val actualElement = actualIterator.next()
+      val expectedElement = expectedIterator.next()
+      if (eq(actualElement.value, expectedElement.value) != null) {
+         failMessage += " (expected ${expectedElement.value.show().value} at ${expectedElement.index} but found ${actualElement.value.show().value})"
          passed = false
-         failMessage += " (expected ${diff.value.second} at ${diff.index} but found ${diff.value.first})"
       }
-   } else {
-      failMessage += " (expected ${expected.count()} elements but found ${value.count()})"
    }
+
+   if (passed && actualIterator.hasNext()) {
+      failMessage += "\nActual sequence has more element than Expected sequence"
+      passed = false
+   }
+
+   if (passed && expectedIterator.hasNext()) {
+      failMessage += "\nExpected sequence has more element than Actual sequence"
+      passed = false
+   }
+
    MatcherResult(
       passed,
       failMessage,
