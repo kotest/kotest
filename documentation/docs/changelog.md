@@ -41,6 +41,8 @@ _**Kotlin 1.5 is now the minimum supported version**_
 * Improve Arb.primitive consistency (#2299)
 * Add Arb.ints zero inclusive variants (#2294)
 * Add unsigned types for Arb (#2290)
+* Added arb for ip addresses V4 #2407
+* Added arb for hexidecimal codepoints #2409
 
 #### Deprecations
 
