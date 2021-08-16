@@ -16,34 +16,31 @@ import io.kotest.mpp.timeInMillis
  * Wraps the test function checking for assertion mode, if the test is a [TestType.Test].
  */
 internal class AssertionModeTestExecutionExtension(private val start: Long) : TestExecutionExtension {
+
    override suspend fun execute(
       testCase: TestCase,
       test: suspend (TestContext) -> TestResult
    ): suspend (TestContext) -> TestResult = { context ->
 
-      when (testCase.type) {
-         TestType.Container -> test(context)
-         TestType.Test -> {
+      assertionCounter.reset()
+      val result = test(context)
+      val mode = testCase.spec.assertions ?: testCase.spec.assertionMode() ?: configuration.assertionMode
+      val warningMessage = "Test '${testCase.displayName}' did not invoke any assertions"
 
-            assertionCounter.reset()
-            val result = test(context)
-            when (result.status) {
-               TestStatus.Success -> result
-               else -> {
-                  val warningMessage = "Test '${testCase.displayName}' did not invoke any assertions"
-                  val mode = testCase.spec.assertions ?: testCase.spec.assertionMode() ?: configuration.assertionMode
-                  when {
-                     mode == AssertionMode.Error && assertionCounter.getAndReset() == 0 ->
-                        createTestResult(timeInMillis() - start, ZeroAssertionsError(warningMessage))
-                     mode == AssertionMode.Warn && assertionCounter.getAndReset() == 0 -> {
-                        println("Warning: $warningMessage")
-                        result
-                     }
-                     else -> result
-                  }
-               }
-            }
+      when {
+         // assertions mode has no effect on containers
+         testCase.type == TestType.Container -> result
+         // if we had an error anyway, we don't bother with this check
+         result.status in listOf(TestStatus.Error, TestStatus.Failure) -> result
+         // if we had assertions we're good
+         assertionCounter.getAndReset() > 0 -> result
+         // mode disabled
+         mode == AssertionMode.Error -> createTestResult(timeInMillis() - start, ZeroAssertionsError(warningMessage))
+         mode == AssertionMode.Warn -> {
+            println("Warning: $warningMessage")
+            result
          }
+         else -> result
       }
    }
 }

@@ -53,6 +53,7 @@ class AssertionCounterFunSpecTest : FunSpec() {
          shouldThrow<RuntimeException> {
             throw RuntimeException("shazzam")
          }
+         assertionCounter.get() shouldBe 1
       }
    }
 }
