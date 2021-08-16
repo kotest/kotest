@@ -1,5 +1,6 @@
 package io.kotest.engine.test.extensions
 
+import io.kotest.core.extensions.TestCaseExtension
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestContext
 import io.kotest.core.test.TestResult
@@ -7,6 +8,11 @@ import io.kotest.engine.extensions.resolvedTestCaseExtensions
 import io.kotest.engine.test.withCoroutineContext
 import kotlin.coroutines.coroutineContext
 
+/**
+ * This [TestExecutionExtension] executes any user level [TestCaseExtension]s.
+ *
+ * This extension should happen early, so users can override any disabled status.
+ */
 object TestCaseInterceptionTestExecutionExtension : TestExecutionExtension {
 
    override suspend fun execute(
@@ -27,6 +33,7 @@ object TestCaseInterceptionTestExecutionExtension : TestExecutionExtension {
             }
          }
       }
+      
       execute(context)
    }
 }
