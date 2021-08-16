@@ -15,14 +15,13 @@ import io.kotest.mpp.log
  */
 object EnabledCheckTestExecutionExtension : TestExecutionExtension {
    override suspend fun execute(
-      testCase: TestCase,
-      test: suspend (TestContext) -> TestResult
-   ): suspend (TestContext) -> TestResult = { context ->
+      test: suspend (TestCase, TestContext) -> TestResult
+   ): suspend (TestCase, TestContext) -> TestResult = { testCase, context ->
       val enabled = testCase.isEnabled()
       when (enabled.isEnabled) {
          true -> {
             log { "${testCase.description.testPath()} is enabled" }
-            test(context)
+            test(testCase, context)
          }
          false -> {
             log { "${testCase.description.testPath()} is disabled" }

@@ -25,9 +25,8 @@ class TimeoutTestExecutionExtension(
          ?: configuration.timeout
 
    override suspend fun execute(
-      testCase: TestCase,
-      test: suspend (TestContext) -> TestResult
-   ): suspend (TestContext) -> TestResult {
+      test: suspend (TestCase, TestContext) -> TestResult
+   ): suspend (TestCase, TestContext) -> TestResult = { testCase, context ->
 
       // this timeout applies to the test itself. If the test has multiple invocations then
       // this timeout applies across all invocations. In other words, if a test has invocations = 3,
@@ -35,14 +34,12 @@ class TimeoutTestExecutionExtension(
       val timeout = resolvedTimeout(testCase)
       log { "TestCaseExecutor: Test [${testCase.displayName}] will execute with timeout $timeout" }
 
-      return { context ->
-         try {
-            withTimeout(timeout) {
-               ec.executeWithTimeoutInterruption(timeout) { test(context) }
-            }
-         } catch (e: TimeoutCancellationException) {
-            throw TestTimeoutException(timeout, testCase.displayName)
+      try {
+         withTimeout(timeout) {
+            ec.executeWithTimeoutInterruption(timeout) { test(testCase, context) }
          }
+      } catch (e: TimeoutCancellationException) {
+         throw TestTimeoutException(timeout, testCase.displayName)
       }
    }
 }

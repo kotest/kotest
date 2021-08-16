@@ -12,11 +12,10 @@ import kotlinx.coroutines.coroutineScope
  */
 internal object CoroutineScopeTestExecutionExtension : TestExecutionExtension {
    override suspend fun execute(
-      testCase: TestCase,
-      test: suspend (TestContext) -> TestResult
-   ): suspend (TestContext) -> TestResult = { context ->
+      test: suspend (TestCase, TestContext) -> TestResult
+   ): suspend (TestCase, TestContext) -> TestResult = { testCase, context ->
       coroutineScope {
-         test(context.withCoroutineContext(coroutineContext))
+         test(testCase, context.withCoroutineContext(coroutineContext))
       }
    }
 }

@@ -12,11 +12,10 @@ import kotlinx.coroutines.supervisorScope
  */
 object SupervisorScopeTestExecutionExtension : TestExecutionExtension {
    override suspend fun execute(
-      testCase: TestCase,
-      test: suspend (TestContext) -> TestResult
-   ): suspend (TestContext) -> TestResult {
-      return { context ->
-         supervisorScope { test(context) }
+      test: suspend (TestCase, TestContext) -> TestResult
+   ): suspend (TestCase, TestContext) -> TestResult {
+      return { testCase, context ->
+         supervisorScope { test(testCase, context) }
       }
    }
 }

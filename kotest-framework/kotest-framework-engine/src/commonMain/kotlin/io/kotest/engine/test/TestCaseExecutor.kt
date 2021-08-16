@@ -40,24 +40,26 @@ class TestCaseExecutor(
          CoroutineDebugProbeTestExecutionExtension,
          TestCaseInterceptionTestExecutionExtension,
          EnabledCheckTestExecutionExtension,
-         LifecycleTestExecutionExtension(listener, start),
          ExceptionCapturingTestExecutionExtension(start),
+         LifecycleTestExecutionExtension(listener, start),
          CoroutineScopeTestExecutionExtension,
          InvocationCountCheckTestExecutionExtension,
-         AssertionModeTestExecutionExtension(start),
+         AssertionModeTestExecutionExtension,
          GlobalSoftAssertTestExecutionExtension,
          TimeoutTestExecutionExtension(executionContext),
          InvocationTimeoutTestExecutionExtension(executionContext),
       )
 
-      val innerExecute: suspend (TestContext) -> TestResult = { ctx ->
-         testCase.test(ctx)
+      val innerExecute: suspend (TestCase, TestContext) -> TestResult = { tc, ctx ->
+         tc.test(ctx)
          createTestResult(timeInMillis() - start, null)
       }
 
       val result = extensions.foldRight(innerExecute) { ext, fn ->
-         if (ext.shouldApply(testCase)) ext.execute(testCase, fn) else fn
-      }.invoke(context)
+         { tc, ctx ->
+            if (ext.shouldApply(tc)) ext.execute(fn)(tc, ctx) else fn(tc, ctx)
+         }
+      }.invoke(testCase, context)
 
       when (result.status) {
          TestStatus.Ignored -> listener.testIgnored(testCase)

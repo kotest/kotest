@@ -10,12 +10,11 @@ import io.kotest.core.test.TestType
  */
 object InvocationCountCheckTestExecutionExtension : TestExecutionExtension {
    override suspend fun execute(
-      testCase: TestCase,
-      test: suspend (TestContext) -> TestResult
-   ): suspend (TestContext) -> TestResult = { context ->
+      test: suspend (TestCase, TestContext) -> TestResult
+   ): suspend (TestCase, TestContext) -> TestResult = { testCase, context ->
       if (testCase.config.invocations > 1 && testCase.type == TestType.Container)
          error("Cannot execute multiple invocations in parent tests")
       else
-         test(context)
+         test(testCase, context)
    }
 }

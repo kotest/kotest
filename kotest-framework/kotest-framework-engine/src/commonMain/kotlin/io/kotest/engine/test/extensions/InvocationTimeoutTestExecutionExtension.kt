@@ -36,9 +36,8 @@ class InvocationTimeoutTestExecutionExtension(
          ?: configuration.invocationTimeout
 
    override suspend fun execute(
-      testCase: TestCase,
-      test: suspend (TestContext) -> TestResult
-   ): suspend (TestContext) -> TestResult = { context ->
+      test: suspend (TestCase, TestContext) -> TestResult
+   ): suspend (TestCase, TestContext) -> TestResult = { testCase, context ->
 
       // this timeout applies to each invocation. If a test has invocations = 3, and this timeout
       // is set to 300ms, then each individual invocation must complete in under 300ms.
@@ -51,7 +50,7 @@ class InvocationTimeoutTestExecutionExtension(
       // depending on the test type, we execute with an invocation timeout
       try {
          when (testCase.type) {
-            TestType.Container -> test(context)
+            TestType.Container -> test(testCase, context)
             TestType.Test -> {
                var result = TestResult.success(0)
                // not all platforms support executing with an interruption based timeout
@@ -63,7 +62,7 @@ class InvocationTimeoutTestExecutionExtension(
                   { testCase.invokeAfterInvocation(it) }) {
                   ec.executeWithTimeoutInterruption(invocationTimeout) {
                      withTimeout(invocationTimeout) {
-                        result = test(context)
+                        result = test(testCase, context)
                      }
                   }
                }

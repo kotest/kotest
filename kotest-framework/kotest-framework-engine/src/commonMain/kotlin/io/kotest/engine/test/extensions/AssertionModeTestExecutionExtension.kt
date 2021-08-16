@@ -13,7 +13,7 @@ import io.kotest.core.test.TestType
 /**
  * Wraps the test function checking for assertion mode, if the test is a [TestType.Test].
  */
-internal class AssertionModeTestExecutionExtension(private val start: Long) : TestExecutionExtension {
+internal object AssertionModeTestExecutionExtension : TestExecutionExtension {
 
    private fun mode(testCase: TestCase) =
       testCase.spec.assertions ?: testCase.spec.assertionMode() ?: configuration.assertionMode
@@ -26,12 +26,11 @@ internal class AssertionModeTestExecutionExtension(private val start: Long) : Te
    }
 
    override suspend fun execute(
-      testCase: TestCase,
-      test: suspend (TestContext) -> TestResult
-   ): suspend (TestContext) -> TestResult = { context ->
+      test: suspend (TestCase, TestContext) -> TestResult
+   ): suspend (TestCase, TestContext) -> TestResult = { testCase, context ->
 
       assertionCounter.reset()
-      val result = test(context)
+      val result = test(testCase, context)
 
       val warningMessage = "Test '${testCase.displayName}' did not invoke any assertions"
       val mode = mode(testCase)

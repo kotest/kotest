@@ -17,11 +17,10 @@ object CoroutineDebugProbeTestExecutionExtension : TestExecutionExtension {
    }
 
    override suspend fun execute(
-      testCase: TestCase,
-      test: suspend (TestContext) -> TestResult
-   ): suspend (TestContext) -> TestResult = { context ->
+      test: suspend (TestCase, TestContext) -> TestResult
+   ): suspend (TestCase, TestContext) -> TestResult = { testCase, context ->
       withDebugProbe {
-         test(context)
+         test(testCase, context)
       }
    }
 }

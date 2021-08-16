@@ -25,24 +25,19 @@ object TestCaseInterceptionTestExecutionExtension : TestExecutionExtension {
    }
 
    override suspend fun execute(
-      testCase: TestCase,
-      test: suspend (TestContext) -> TestResult
-   ): suspend (TestContext) -> TestResult = { context ->
+      test: suspend (TestCase, TestContext) -> TestResult
+   ): suspend (TestCase, TestContext) -> TestResult = { testCase, context ->
 
-      val innerExecute: suspend (TestContext) -> TestResult = { ctx ->
-         test(ctx)
-      }
-
-      val execute = testCase.resolvedTestCaseExtensions().foldRight(innerExecute) { extension, execute ->
-         { ctx ->
-            extension.intercept(testCase) {
+      val execute = testCase.resolvedTestCaseExtensions().foldRight(test) { extension, execute ->
+         { tc, ctx ->
+            extension.intercept(tc) {
                // the user's intercept method is free to change the context of the coroutine
                // to support this, we should switch the context used by the test case context
-               execute(ctx.withCoroutineContext(coroutineContext))
+               execute(it, ctx.withCoroutineContext(coroutineContext))
             }
          }
       }
 
-      execute(context)
+      execute(testCase, context)
    }
 }

@@ -9,7 +9,6 @@ internal interface TestExecutionExtension {
    suspend fun shouldApply(testCase: TestCase): Boolean = true
 
    suspend fun execute(
-      testCase: TestCase,
-      test: suspend (TestContext) -> TestResult
-   ): suspend (TestContext) -> TestResult
+      test: suspend (TestCase, TestContext) -> TestResult
+   ): suspend (TestCase, TestContext) -> TestResult
 }

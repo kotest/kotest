@@ -18,9 +18,8 @@ internal object GlobalSoftAssertTestExecutionExtension : TestExecutionExtension 
    }
 
    override suspend fun execute(
-      testCase: TestCase,
-      test: suspend (TestContext) -> TestResult
-   ): suspend (TestContext) -> TestResult = { context ->
-      assertSoftly { test(context) }
+      test: suspend (TestCase, TestContext) -> TestResult
+   ): suspend (TestCase, TestContext) -> TestResult = { testCase, context ->
+      assertSoftly { test(testCase, context) }
    }
 }

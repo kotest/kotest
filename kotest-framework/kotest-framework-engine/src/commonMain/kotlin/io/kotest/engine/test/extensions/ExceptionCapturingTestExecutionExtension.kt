@@ -15,11 +15,10 @@ import io.kotest.mpp.timeInMillis
 class ExceptionCapturingTestExecutionExtension(private val start: Long) : TestExecutionExtension {
 
    override suspend fun execute(
-      testCase: TestCase,
-      test: suspend (TestContext) -> TestResult
-   ): suspend (TestContext) -> TestResult = { context ->
+      test: suspend (TestCase, TestContext) -> TestResult
+   ): suspend (TestCase, TestContext) -> TestResult = { testCase, context ->
       try {
-         test(context)
+         test(testCase, context)
       } catch (e: TestTimeoutException) {
          log { "ExceptionCapturingTestExecutionExtension: TestTimeoutException $e" }
          createTestResult(timeInMillis() - start, e)

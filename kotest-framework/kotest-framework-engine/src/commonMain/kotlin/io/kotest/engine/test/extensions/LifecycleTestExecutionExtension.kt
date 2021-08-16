@@ -33,9 +33,8 @@ class LifecycleTestExecutionExtension(
 ) : TestExecutionExtension {
 
    override suspend fun execute(
-      testCase: TestCase,
-      test: suspend (TestContext) -> TestResult
-   ): suspend (TestContext) -> TestResult = { context ->
+      test: suspend (TestCase, TestContext) -> TestResult
+   ): suspend (TestCase, TestContext) -> TestResult = { testCase, context ->
 
       log { "Executing active test $testCase with context $context" }
       listener.testStarted(testCase)
@@ -48,7 +47,7 @@ class LifecycleTestExecutionExtension(
                }
             },
             {
-               val result = test(context)
+               val result = test(testCase, context)
                // an error in the after test callbacks will override the result of the test if it was successfuls\
                // if the test already failed, that result will be used
                // todo combine into multiple errors ?
