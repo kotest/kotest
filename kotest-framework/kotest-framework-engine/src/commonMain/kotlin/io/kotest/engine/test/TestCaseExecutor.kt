@@ -11,7 +11,6 @@ import io.kotest.engine.test.extensions.EnabledCheckTestExecutionExtension
 import io.kotest.engine.test.extensions.ExceptionCapturingTestExecutionExtension
 import io.kotest.engine.test.extensions.GlobalSoftAssertTestExecutionExtension
 import io.kotest.engine.test.extensions.InvocationCountCheckTestExecutionExtension
-import io.kotest.engine.test.extensions.InvocationTimeoutTestExecutionExtension
 import io.kotest.engine.test.extensions.LifecycleTestExecutionExtension
 import io.kotest.engine.test.extensions.SupervisorScopeTestExecutionExtension
 import io.kotest.engine.test.extensions.TestCaseInterceptionTestExecutionExtension
@@ -36,18 +35,17 @@ class TestCaseExecutor(
       val start = timeInMillis()
 
       val extensions = listOf(
-         SupervisorScopeTestExecutionExtension,
          CoroutineDebugProbeTestExecutionExtension,
          TestCaseInterceptionTestExecutionExtension,
          EnabledCheckTestExecutionExtension,
          ExceptionCapturingTestExecutionExtension(start),
          LifecycleTestExecutionExtension(listener, start),
-         CoroutineScopeTestExecutionExtension,
          InvocationCountCheckTestExecutionExtension,
+         SupervisorScopeTestExecutionExtension,
+         TimeoutTestExecutionExtension(executionContext, start),
          AssertionModeTestExecutionExtension,
          GlobalSoftAssertTestExecutionExtension,
-         TimeoutTestExecutionExtension(executionContext),
-         InvocationTimeoutTestExecutionExtension(executionContext),
+         CoroutineScopeTestExecutionExtension,
       )
 
       val innerExecute: suspend (TestCase, TestContext) -> TestResult = { tc, ctx ->
