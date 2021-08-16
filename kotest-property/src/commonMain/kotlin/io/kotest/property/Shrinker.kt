@@ -59,3 +59,7 @@ fun <A, B> RTree<A>.map(f: (A) -> B): RTree<B> {
 }
 
 fun <A> RTree<A>.isEmpty() = this.children.value.isEmpty()
+
+fun <A, B> Shrinker<A>.bimap(f: (B) -> A, g: (A) -> B): Shrinker<B> = object : Shrinker<B> {
+   override fun shrink(value: B): List<B> = this@bimap.shrink(f(value)).map(g)
+}
