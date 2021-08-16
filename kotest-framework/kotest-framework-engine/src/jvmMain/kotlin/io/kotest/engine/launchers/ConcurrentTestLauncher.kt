@@ -10,7 +10,7 @@ import kotlinx.coroutines.sync.Semaphore
 import kotlinx.coroutines.sync.withPermit
 
 /**
- * A [SpecLauncher] that launches tests concurrently.
+ * A [TestLauncher] that launches tests concurrently.
  *
  * @param maxConcurrent The maximum number of coroutines to launch. Uses a semaphore to limit.
  * @param factory a [CoroutineDispatcherFactory] used to allocate dispatchers to tests.
