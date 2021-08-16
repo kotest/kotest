@@ -6,16 +6,75 @@ import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.shouldBe
 import io.kotest.property.Exhaustive
 import io.kotest.property.exhaustive.cartesian
+import io.kotest.property.exhaustive.cartesianPairs
+import io.kotest.property.exhaustive.exhaustive
 import io.kotest.property.exhaustive.of
 
 class CartesianTest : FunSpec() {
    init {
 
-      test("Exhaustive.cartesian arity 2") {
+      test("Exhaustive.cartesianPairs") {
+         listOf(1, 2, 3).exhaustive().cartesianPairs().values shouldBe listOf(
+            Pair(1, 1),
+            Pair(1, 2),
+            Pair(1, 3),
+            Pair(2, 1),
+            Pair(2, 2),
+            Pair(2, 3),
+            Pair(3, 1),
+            Pair(3, 2),
+            Pair(3, 3),
+         )
+      }
+
+      test("Exhaustive.cartesian(a,b) arity 2") {
          val e = Exhaustive.cartesian(
             Exhaustive.of(1, 2, 3),
             Exhaustive.of(true, false)
          ) { a, b -> Pair(a, b) }
+         e.values.shouldHaveSize(6)
+         e.values shouldBe listOf(
+            Pair(1, true),
+            Pair(1, false),
+            Pair(2, true),
+            Pair(2, false),
+            Pair(3, true),
+            Pair(3, false),
+         )
+      }
+
+      test("a.cartesian(b) arity 2") {
+         val e = Exhaustive.of(1, 2, 3).cartesian(Exhaustive.of(true, false)) { a, b -> Pair(a, b) }
+         e.values.shouldHaveSize(6)
+         e.values shouldBe listOf(
+            Pair(1, true),
+            Pair(1, false),
+            Pair(2, true),
+            Pair(2, false),
+            Pair(3, true),
+            Pair(3, false),
+         )
+      }
+
+
+      test("a.cartesianPairs(b) arity 2") {
+         val e = Exhaustive.of(1, 2, 3).cartesianPairs(Exhaustive.of(true, false))
+         e.values.shouldHaveSize(6)
+         e.values shouldBe listOf(
+            Pair(1, true),
+            Pair(1, false),
+            Pair(2, true),
+            Pair(2, false),
+            Pair(3, true),
+            Pair(3, false),
+         )
+      }
+
+      test("Exhaustive.cartesianPairs(a,b) arity 2") {
+         val e = Exhaustive.cartesianPairs(
+            Exhaustive.of(1, 2, 3),
+            Exhaustive.of(true, false)
+         )
          e.values.shouldHaveSize(6)
          e.values shouldBe listOf(
             Pair(1, true),
