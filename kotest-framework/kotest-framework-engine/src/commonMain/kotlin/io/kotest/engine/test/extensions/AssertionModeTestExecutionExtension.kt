@@ -13,7 +13,7 @@ import io.kotest.engine.test.createTestResult
 import io.kotest.mpp.timeInMillis
 
 /**
- * Wraps an execution function checking for assertion mode, if a [TestType.Test] and if enabled.
+ * Wraps the test function checking for assertion mode, if the test is a [TestType.Test].
  */
 internal class AssertionModeTestExecutionExtension(private val start: Long) : TestExecutionExtension {
    override suspend fun execute(

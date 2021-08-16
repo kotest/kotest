@@ -9,6 +9,9 @@ import io.kotest.mpp.log
 /**
  * Checks the enabled status of a [TestCase] before invoking it.
  * If the test is disabled, then [TestResult.ignored] is returned.
+ *
+ * Note: This extension must execute before any other extension that invokes methods
+ * on the listener, as in runners like junit, ignored cannot happen after "started".
  */
 object EnabledCheckTestExecutionExtension : TestExecutionExtension {
    override suspend fun execute(
