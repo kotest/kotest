@@ -7,7 +7,8 @@ import kotlinx.coroutines.supervisorScope
 
 /**
  * We don't want any errors in the test to propagate out and cancel all the coroutines used for
- * the specs / parent tests, therefore we install a supervisor job
+ * the specs / a parent tests, therefore we install supervisor job. This supervisor job adds a barrier
+ * so that any child coroutines from here do not cancel any parent ones.
  */
 object SupervisorScopeTestExecutionExtension : TestExecutionExtension {
    override suspend fun execute(

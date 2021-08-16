@@ -7,8 +7,8 @@ import io.kotest.engine.test.withCoroutineContext
 import kotlinx.coroutines.coroutineScope
 
 /**
- * Execute the test case wrapped in a [coroutineScope], so that we wait for any child coroutines
- * inside the user's test to complete before the test is marked completed.
+ * Execute the test case wrapped in a [coroutineScope], so that we wait for any child coroutines launched
+ * by the user inside the test function to complete before the engine marks the test as completed.
  */
 internal object CoroutineScopeTestExecutionExtension : TestExecutionExtension {
    override suspend fun execute(
