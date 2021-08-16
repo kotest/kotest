@@ -13,10 +13,17 @@ import io.kotest.mpp.log
 import io.kotest.mpp.replay
 import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.withTimeout
+import kotlin.math.min
 
 class InvocationTimeoutTestExecutionExtension(
    private val ec: TimeoutExecutionContext,
 ) : TestExecutionExtension {
+
+   private fun resolvedTimeout(testCase: TestCase): Long =
+      testCase.config.timeout?.inWholeMilliseconds
+         ?: testCase.spec.timeout
+         ?: testCase.spec.timeout()
+         ?: configuration.timeout
 
    /**
     * Returns the resolved timeout for a test invocation taking into account config on the test case,
@@ -33,10 +40,12 @@ class InvocationTimeoutTestExecutionExtension(
       test: suspend (TestContext) -> TestResult
    ): suspend (TestContext) -> TestResult = { context ->
 
-      // this timeout applies to each inovation. If a test has invocations = 3, and this timeout
+      // this timeout applies to each invocation. If a test has invocations = 3, and this timeout
       // is set to 300ms, then each individual invocation must complete in under 300ms.
       // invocation timeouts are not applied to TestType.Container only TestType.Test
-      val invocationTimeout = resolvedInvocationTimeout(testCase)
+
+      // note: the invocation timeout cannot be larger than the test case timeout
+      val invocationTimeout = min(resolvedTimeout(testCase), resolvedInvocationTimeout(testCase))
       log { "TestCaseExecutor: Test [${testCase.displayName}] will execute with invocationTimeout $invocationTimeout" }
 
       // depending on the test type, we execute with an invocation timeout
@@ -44,9 +53,9 @@ class InvocationTimeoutTestExecutionExtension(
          when (testCase.type) {
             TestType.Container -> test(context)
             TestType.Test -> {
+               var result = TestResult.success(0)
                // not all platforms support executing with an interruption based timeout
                // because it uses background threads to interrupt
-               var result = TestResult.success(0)
                replay(
                   testCase.config.invocations,
                   testCase.config.threads,

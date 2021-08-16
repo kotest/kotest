@@ -19,9 +19,9 @@ internal class AssertionModeTestExecutionExtension(private val start: Long) : Te
       testCase.spec.assertions ?: testCase.spec.assertionMode() ?: configuration.assertionMode
 
    override suspend fun shouldApply(testCase: TestCase): Boolean {
+      if (testCase.type == TestType.Container) return false
       val mode = mode(testCase)
       if (mode == AssertionMode.None) return false
-      if (testCase.type == TestType.Container) return false
       return true
    }
 

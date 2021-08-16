@@ -4,7 +4,6 @@ import io.kotest.core.config.configuration
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestContext
 import io.kotest.core.test.TestResult
-import io.kotest.core.test.TestType
 import io.kotest.engine.TestTimeoutException
 import io.kotest.engine.test.TimeoutExecutionContext
 import io.kotest.mpp.log
@@ -42,10 +41,7 @@ class TimeoutTestExecutionExtension(
                ec.executeWithTimeoutInterruption(timeout) { test(context) }
             }
          } catch (e: TimeoutCancellationException) {
-            when (testCase.type) {
-               TestType.Container -> throw TestTimeoutException(timeout, testCase.displayName)
-               TestType.Test -> throw TestTimeoutException(timeout, testCase.displayName)
-            }
+            throw TestTimeoutException(timeout, testCase.displayName)
          }
       }
    }
