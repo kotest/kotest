@@ -4,7 +4,7 @@ import io.kotest.core.extensions.TestCaseExtension
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestContext
 import io.kotest.core.test.TestResult
-import io.kotest.engine.extensions.resolvedTestCaseExtensions
+import io.kotest.engine.extensions.resolvedExtensions
 import io.kotest.engine.test.withCoroutineContext
 import kotlin.coroutines.coroutineContext
 
@@ -14,6 +14,15 @@ import kotlin.coroutines.coroutineContext
  * This extension should happen early, so users can override any disabled status.
  */
 object TestCaseInterceptionTestExecutionExtension : TestExecutionExtension {
+
+   /**
+    * Returns the runtime [TestCaseExtension]s applicable for this [TestCase].
+    * Those are extensions from the test case's [TestCaseConfig] and those applied to
+    * the spec instance.
+    */
+   private fun TestCase.resolvedTestCaseExtensions(): List<TestCaseExtension> {
+      return config.extensions + spec.resolvedExtensions().filterIsInstance<TestCaseExtension>()
+   }
 
    override suspend fun execute(
       testCase: TestCase,
@@ -33,7 +42,7 @@ object TestCaseInterceptionTestExecutionExtension : TestExecutionExtension {
             }
          }
       }
-      
+
       execute(context)
    }
 }
