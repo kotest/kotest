@@ -12,13 +12,15 @@ import io.kotest.core.test.TestType
  * this [TestCase] is a [TestType.Test].
  */
 internal object GlobalSoftAssertTestExecutionExtension : TestExecutionExtension {
+
+   override suspend fun shouldApply(testCase: TestCase): Boolean {
+      return testCase.type == TestType.Test && configuration.globalAssertSoftly
+   }
+
    override suspend fun execute(
       testCase: TestCase,
       test: suspend (TestContext) -> TestResult
    ): suspend (TestContext) -> TestResult = { context ->
-      when {
-         testCase.type == TestType.Test && configuration.globalAssertSoftly -> assertSoftly { test(context) }
-         else -> test(context)
-      }
+      assertSoftly { test(context) }
    }
 }

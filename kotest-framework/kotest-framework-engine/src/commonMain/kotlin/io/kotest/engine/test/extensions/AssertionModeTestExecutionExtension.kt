@@ -17,6 +17,16 @@ import io.kotest.mpp.timeInMillis
  */
 internal class AssertionModeTestExecutionExtension(private val start: Long) : TestExecutionExtension {
 
+   private fun mode(testCase: TestCase) =
+      testCase.spec.assertions ?: testCase.spec.assertionMode() ?: configuration.assertionMode
+
+   override suspend fun shouldApply(testCase: TestCase): Boolean {
+      val mode = mode(testCase)
+      if (mode == AssertionMode.None) return false
+      if (testCase.type == TestType.Container) return false
+      return true
+   }
+
    override suspend fun execute(
       testCase: TestCase,
       test: suspend (TestContext) -> TestResult
@@ -24,17 +34,15 @@ internal class AssertionModeTestExecutionExtension(private val start: Long) : Te
 
       assertionCounter.reset()
       val result = test(context)
-      val mode = testCase.spec.assertions ?: testCase.spec.assertionMode() ?: configuration.assertionMode
+
       val warningMessage = "Test '${testCase.displayName}' did not invoke any assertions"
+      val mode = mode(testCase)
 
       when {
-         // assertions mode has no effect on containers
-         testCase.type == TestType.Container -> result
          // if we had an error anyway, we don't bother with this check
          result.status in listOf(TestStatus.Error, TestStatus.Failure) -> result
          // if we had assertions we're good
          assertionCounter.getAndReset() > 0 -> result
-         // mode disabled
          mode == AssertionMode.Error -> createTestResult(timeInMillis() - start, ZeroAssertionsError(warningMessage))
          mode == AssertionMode.Warn -> {
             println("Warning: $warningMessage")

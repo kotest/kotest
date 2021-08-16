@@ -56,7 +56,7 @@ class TestCaseExecutor(
       }
 
       val result = extensions.foldRight(innerExecute) { ext, fn ->
-         ext.execute(testCase, fn)
+         if (ext.shouldApply(testCase)) ext.execute(testCase, fn) else fn
       }.invoke(context)
 
       when (result.status) {

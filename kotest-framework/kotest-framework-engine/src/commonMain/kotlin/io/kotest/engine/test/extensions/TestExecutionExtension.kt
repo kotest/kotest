@@ -5,6 +5,9 @@ import io.kotest.core.test.TestContext
 import io.kotest.core.test.TestResult
 
 internal interface TestExecutionExtension {
+
+   suspend fun shouldApply(testCase: TestCase): Boolean = true
+
    suspend fun execute(
       testCase: TestCase,
       test: suspend (TestContext) -> TestResult
