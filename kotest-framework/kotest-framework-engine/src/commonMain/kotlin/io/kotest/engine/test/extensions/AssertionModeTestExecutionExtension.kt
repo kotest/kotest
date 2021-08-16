@@ -9,8 +9,6 @@ import io.kotest.core.test.TestContext
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestStatus
 import io.kotest.core.test.TestType
-import io.kotest.engine.test.createTestResult
-import io.kotest.mpp.timeInMillis
 
 /**
  * Wraps the test function checking for assertion mode, if the test is a [TestType.Test].
@@ -43,7 +41,7 @@ internal class AssertionModeTestExecutionExtension(private val start: Long) : Te
          result.status in listOf(TestStatus.Error, TestStatus.Failure) -> result
          // if we had assertions we're good
          assertionCounter.getAndReset() > 0 -> result
-         mode == AssertionMode.Error -> createTestResult(timeInMillis() - start, ZeroAssertionsError(warningMessage))
+         mode == AssertionMode.Error -> throw ZeroAssertionsError(warningMessage)
          mode == AssertionMode.Warn -> {
             println("Warning: $warningMessage")
             result

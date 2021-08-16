@@ -8,6 +8,10 @@ import io.kotest.engine.test.createTestResult
 import io.kotest.mpp.log
 import io.kotest.mpp.timeInMillis
 
+/**
+ * Captures exceptions in downstream test functions and converts to test results.
+ * Any [TestExecutionExtension]s that throw should appear after this extension.
+ */
 class ExceptionCapturingTestExecutionExtension(private val start: Long) : TestExecutionExtension {
 
    override suspend fun execute(

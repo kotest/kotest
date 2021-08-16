@@ -38,14 +38,14 @@ class TestCaseExecutor(
       val extensions = listOf(
          SupervisorScopeTestExecutionExtension,
          CoroutineDebugProbeTestExecutionExtension,
-         TestCaseInterceptionTestExecutionExtension,
          EnabledCheckTestExecutionExtension,
-         InvocationCountCheckTestExecutionExtension,
          CoroutineScopeTestExecutionExtension,
          LifecycleTestExecutionExtension(listener, start),
+         ExceptionCapturingTestExecutionExtension(start),
+         TestCaseInterceptionTestExecutionExtension,
+         InvocationCountCheckTestExecutionExtension,
          AssertionModeTestExecutionExtension(start),
          GlobalSoftAssertTestExecutionExtension,
-         ExceptionCapturingTestExecutionExtension(start),
          TimeoutTestExecutionExtension(executionContext),
          InvocationTimeoutTestExecutionExtension(executionContext),
       )
