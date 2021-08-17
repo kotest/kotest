@@ -4,8 +4,10 @@ import io.kotest.property.Arb
 import java.math.BigDecimal
 import java.math.RoundingMode
 
-private val bigDecimalEdgecases = listOf(
+internal val bigDecimalEdgecases = listOf(
    BigDecimal(0.0),
+   // BigDecimal compareTo and equals are not consistent
+   BigDecimal("0.00"),
    BigDecimal(1.0),
    BigDecimal(-1.0),
    BigDecimal("1e-300"),
