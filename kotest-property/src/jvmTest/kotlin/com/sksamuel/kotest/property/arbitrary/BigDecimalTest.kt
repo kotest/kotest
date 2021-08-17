@@ -3,10 +3,12 @@ package com.sksamuel.kotest.property.arbitrary
 import io.kotest.assertions.assertSoftly
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.inspectors.forAll
+import io.kotest.matchers.collections.shouldContain
 import io.kotest.matchers.concurrent.shouldCompleteWithin
 import io.kotest.matchers.shouldBe
 import io.kotest.property.Arb
 import io.kotest.property.arbitrary.bigDecimal
+import io.kotest.property.arbitrary.bigDecimalEdgecases
 import io.kotest.property.arbitrary.take
 import java.math.BigDecimal
 import java.math.RoundingMode
@@ -34,5 +36,10 @@ class BigDecimalTest : FunSpec({
          Arb.bigDecimal(BigDecimal.valueOf(-100_000.00), BigDecimal.valueOf(100_000.00)).take(100).forEach { _ ->
          }
       }
+   }
+
+   test("bigDecimalEdgecases should contain zeros with differing precision") {
+      bigDecimalEdgecases.shouldContain(BigDecimal("0.00"))
+      bigDecimalEdgecases.shouldContain(BigDecimal("0"))
    }
 })
