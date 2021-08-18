@@ -1,14 +1,16 @@
 package com.sksamuel.kotest.matchers.floats
 
+import com.sksamuel.kotest.matchers.doubles.numericFloats
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.script.context
 import io.kotest.core.spec.style.StringSpec
-import io.kotest.matchers.doubles.shouldBeWithinPercentageOf
+import io.kotest.matchers.floats.beNaN
 import io.kotest.matchers.floats.shouldBeExactly
 import io.kotest.matchers.floats.shouldBeGreaterThan
 import io.kotest.matchers.floats.shouldBeGreaterThanOrEqual
 import io.kotest.matchers.floats.shouldBeLessThan
 import io.kotest.matchers.floats.shouldBeLessThanOrEqual
+import io.kotest.matchers.floats.shouldBeNaN
 import io.kotest.matchers.floats.shouldBeWithinPercentageOf
 import io.kotest.matchers.floats.shouldBeZero
 import io.kotest.matchers.floats.shouldNotBeExactly
@@ -16,11 +18,16 @@ import io.kotest.matchers.floats.shouldNotBeGreaterThan
 import io.kotest.matchers.floats.shouldNotBeGreaterThanOrEqual
 import io.kotest.matchers.floats.shouldNotBeLessThan
 import io.kotest.matchers.floats.shouldNotBeLessThanOrEqual
+import io.kotest.matchers.floats.shouldNotBeNaN
 import io.kotest.matchers.floats.shouldNotBeZero
+import io.kotest.matchers.should
+import io.kotest.matchers.shouldBe
+import io.kotest.matchers.shouldNot
 import io.kotest.property.Arb
 import io.kotest.property.arbitrary.bind
 import io.kotest.property.arbitrary.double
 import io.kotest.property.arbitrary.float
+import io.kotest.property.checkAll
 
 class FloatMatchersTest : StringSpec() {
   init {
@@ -122,7 +129,7 @@ class FloatMatchersTest : StringSpec() {
 
         test("Refuse negative percentage") {
            shouldThrow<IllegalArgumentException> {
-              1.0.shouldBeWithinPercentageOf(1.0, -0.1)
+              1f.shouldBeWithinPercentageOf(1f, -0.1)
            }
         }
 
@@ -133,5 +140,54 @@ class FloatMatchersTest : StringSpec() {
            }
         }
      }
+
+
+     context("NaN matcher") {
+        test("Every numeric float should not be NaN") {
+              checkAll(100, numericFloats) {
+                 it.shouldNotMatchNaN()
+              }
+        }
+
+        test("The non-numeric floats") {
+           Float.NaN.shouldMatchNaN()
+           Float.POSITIVE_INFINITY.shouldNotMatchNaN()
+           Float.NEGATIVE_INFINITY.shouldNotMatchNaN()
+        }
+     }
+
   }
+
+   private fun shouldThrowAssertionError(message: String, vararg expression: () -> Any?) {
+      expression.forEach {
+         val exception = shouldThrow<AssertionError>(it)
+         exception.message shouldBe message
+      }
+   }
+
+   private fun Float.shouldMatchNaN() {
+      this should beNaN()
+      this.shouldBeNaN()
+
+      this.shouldThrowExceptionOnNotBeNaN()
+   }
+
+   private fun Float.shouldThrowExceptionOnNotBeNaN() {
+      shouldThrowAssertionError("$this should not be NaN",
+         { this.shouldNotBeNaN() },
+         { this shouldNot beNaN() })
+   }
+
+   private fun Float.shouldNotMatchNaN() {
+      this shouldNot beNaN()
+      this.shouldNotBeNaN()
+
+      this.shouldThrowExceptionOnBeNaN()
+   }
+
+   private fun Float.shouldThrowExceptionOnBeNaN() {
+      shouldThrowAssertionError("$this should be NaN",
+         { this.shouldBeNaN() },
+         { this should beNaN() })
+   }
 }
