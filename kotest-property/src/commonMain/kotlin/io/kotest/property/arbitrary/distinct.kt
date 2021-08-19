@@ -1,9 +1,11 @@
 package io.kotest.property.arbitrary
 
+import io.kotest.common.DelicateKotest
 import io.kotest.property.Arb
 import io.kotest.property.RandomSource
 import io.kotest.property.Sample
 
+@DelicateKotest
 fun <A> Arb<A>.distinct(attempts: Int = 100) = object : Arb<A>() {
 
    private val seen = mutableSetOf<A>()
