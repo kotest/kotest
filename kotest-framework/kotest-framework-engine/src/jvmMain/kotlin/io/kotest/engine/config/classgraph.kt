@@ -15,7 +15,7 @@ internal fun classgraph(): ClassGraph {
       .enableAnnotationInfo()
       .ignoreClassVisibility()
       .disableNestedJarScanning()
-      .rejectPackages(
+      .blacklistPackages(
          "java.*",
          "javax.*",
          "sun.*",

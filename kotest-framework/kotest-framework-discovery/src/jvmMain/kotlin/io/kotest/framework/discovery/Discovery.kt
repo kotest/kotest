@@ -192,7 +192,7 @@ class Discovery(private val discoveryExtensions: List<DiscoveryExtension> = empt
          .enableExternalClasses()
          .ignoreClassVisibility()
          .disableNestedJarScanning()
-         .rejectPackages(
+         .blacklistPackages(
             "java.*",
             "javax.*",
             "sun.*",
