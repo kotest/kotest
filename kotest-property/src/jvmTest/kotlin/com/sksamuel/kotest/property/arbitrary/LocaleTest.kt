@@ -2,7 +2,6 @@ package com.sksamuel.kotest.property.arbitrary
 
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.collections.shouldContain
-import io.kotest.matchers.string.shouldHaveMaxLength
 import io.kotest.matchers.string.shouldHaveMinLength
 import io.kotest.property.Arb
 import io.kotest.property.arbitrary.edgecases
