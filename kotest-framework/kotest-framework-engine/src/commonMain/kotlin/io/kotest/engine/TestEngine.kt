@@ -62,8 +62,10 @@ class TestEngine(val config: TestEngineConfig) {
    private val lifecycle = LifecycleEventManager()
 
    fun execute(suite: TestSuite) {
+      log { "TestEngine: Executing test suite with ${suite.specs.size} specs and ${suite.classes.size} classes" }
       require(suite.specs.isNotEmpty()) { "Cannot invoke the engine with no specs" }
 
+      log { "TestEngine: Invoking beforeProject listeners" }
       lifecycle.beforeProject(config.configuration.listeners().filterIsInstance<BeforeProjectListener>())
 
       val innerExecute: (TestSuite, TestEngineListener) -> EngineResult =
@@ -74,12 +76,18 @@ class TestEngine(val config: TestEngineConfig) {
                listOf(DefaultSpecExecutionOrderExtension(configuration.specExecutionOrder))
             }
 
-            log { "KotestEngine: Sorting specs using extensions $exts" }
+            log { "TestEngine: Sorting specs using extensions $exts" }
             val ordered = exts.fold(ts.specs) { acc, op -> op.sortSpecs(acc) }
             execute(ordered, tel)
          }
 
-      val execute = config.extensions.foldRight(innerExecute) { extension, next ->
+      val extensions = config.extensions
+      log { "TestEngine: ${extensions.size} engine extensions:" }
+      extensions.forEach {
+         log { "TestEngine: ${it::class.simpleName}" }
+      }
+
+      val execute = extensions.foldRight(innerExecute) { extension, next ->
          { ts, tel -> extension.intercept(ts, tel, next) }
       }
 
@@ -87,6 +95,7 @@ class TestEngine(val config: TestEngineConfig) {
    }
 
    private fun execute(specs: List<Spec>, listener: TestEngineListener): EngineResult {
+      log { "TestEngine: Executing ${specs.size} specs" }
       if (specs.isNotEmpty()) {
          val runner = SpecRunner()
          runner.execute(specs.first()) { execute(specs.drop(1), listener) }

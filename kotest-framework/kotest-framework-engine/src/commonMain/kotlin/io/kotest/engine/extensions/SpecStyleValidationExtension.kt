@@ -8,7 +8,6 @@ import io.kotest.engine.EngineResult
 import io.kotest.engine.TestSuite
 import io.kotest.engine.listener.TestEngineListener
 import io.kotest.mpp.bestName
-import kotlin.reflect.KClass
 
 /**
  * Validates that a [Spec] style is compatible for platforms that do not support nested tests.
@@ -21,17 +20,16 @@ object SpecStyleValidationExtension : EngineExtension {
       execute: (TestSuite, TestEngineListener) -> EngineResult
    ): EngineResult {
 
-      val invalid = suite.specs.filterNot {
-         it is FunSpec || it is StringSpec || it is ShouldSpec
-      }.map { it::class }
+      fun isValid(spec: Spec): Boolean = spec is FunSpec || spec is StringSpec || spec is ShouldSpec
+      val (valid, invalid) = suite.specs.partition { isValid(it) }
 
-      return if (invalid.isEmpty()) {
-         execute(suite, listener)
-      } else {
-         EngineResult(listOf(InvalidSpecStyleException(invalid)))
+      if (invalid.isNotEmpty()) {
+         println("WARN: kotest-js and kotest-native only support top level tests due to underlying platform limitations. The following specs are ignored:")
+         invalid.forEach {
+            println("WARN: " + it::class.bestName())
+         }
       }
+
+      return execute(suite.copy(specs = valid), listener)
    }
 }
-
-class InvalidSpecStyleException(val specs: List<KClass<out Spec>>) :
-   Exception("Unsupported spec styles used - kotest-js and kotest-native only support top level tests due to underlying platform limitations. Caused by: ${specs.map { it.bestName() }}")

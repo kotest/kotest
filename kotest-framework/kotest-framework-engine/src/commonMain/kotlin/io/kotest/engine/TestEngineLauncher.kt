@@ -6,14 +6,15 @@ import io.kotest.core.config.AbstractProjectConfig
 import io.kotest.core.config.configuration
 import io.kotest.core.spec.Spec
 import io.kotest.engine.config.ConfigManager
+import io.kotest.mpp.log
 
 /**
  * Entry point for tests generated through the complier plugins, and so the
  * public api cannot have breaking changes.
  */
 class TestEngineLauncher(
-   val configs: List<AbstractProjectConfig>,
-   val specs: List<Spec>,
+   private val configs: List<AbstractProjectConfig>,
+   private val specs: List<Spec>,
 ) {
 
    constructor() : this(emptyList(), emptyList())
@@ -30,6 +31,7 @@ class TestEngineLauncher(
    }
 
    fun launch() {
+      log { "TestEngineLauncher: Creating Test Engine" }
 
       val config = TestEngineConfig.default()
          // initializes the global configuration and passes it to the test engine config
