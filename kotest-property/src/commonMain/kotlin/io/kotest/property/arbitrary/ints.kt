@@ -3,6 +3,7 @@ package io.kotest.property.arbitrary
 import io.kotest.property.Arb
 import io.kotest.property.Gen
 import io.kotest.property.Shrinker
+import io.kotest.property.arbitrary.numbers.IntClassifier
 import kotlin.math.abs
 import kotlin.random.nextInt
 import kotlin.random.nextUInt
@@ -39,7 +40,11 @@ fun Arb.Companion.int(min: Int = Int.MIN_VALUE, max: Int = Int.MAX_VALUE) = int(
  */
 fun Arb.Companion.int(range: IntRange = Int.MIN_VALUE..Int.MAX_VALUE): Arb<Int> {
    val edgeCases = intArrayOf(range.first, -1, 0, 1, range.last).filter { it in range }.distinct()
-   return arbitrary(edgeCases, IntShrinker(range)) { it.random.nextInt(range) }
+   return ArbitraryBuilder.create { it.random.nextInt(range) }
+      .withEdgecases(edgeCases)
+      .withShrinker(IntShrinker(range))
+      .withClassifier(IntClassifier(range))
+      .build()
 }
 
 /**

@@ -9,6 +9,7 @@ class PropertyContext {
    private var successes = 0
    private var failures = 0
    private val classifications = mutableMapOf<String, Int>()
+   private val autoclassifications = mutableMapOf<String, MutableMap<String, Int>>()
 
    fun markSuccess() {
       successes++
@@ -24,6 +25,7 @@ class PropertyContext {
    fun attempts(): Int = successes + failures
 
    fun classifications(): Map<String, Int> = classifications.toMap()
+   fun autoclassifications(): Map<String, Map<String, Int>> = autoclassifications.toMap()
 
    /**
     * Increase the count of [label].
@@ -31,6 +33,13 @@ class PropertyContext {
    fun classify(label: String) {
       val current = classifications.getOrElse(label) { 0 }
       classifications[label] = current + 1
+   }
+
+   fun classify(input: Int, label: String) {
+      val current = autoclassifications.getOrPut(input.toString()) { mutableMapOf() }
+      val count = current[label] ?: 0
+      current[label] = count + 1
+      autoclassifications[input.toString()]
    }
 
    /**

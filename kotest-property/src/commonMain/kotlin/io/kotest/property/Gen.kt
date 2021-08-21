@@ -55,6 +55,11 @@ sealed class Gen<out A> {
       }
 
    /**
+    * Returns an optional [Classifier] to label values.
+    */
+   open val classifier: Classifier<out A>? = null
+
+   /**
     * The minimum iteration count required for this [Gen] to be invoked.
     * Requesting a property test with fewer than this will result in an exception.
     */
@@ -80,15 +85,20 @@ sealed class Gen<out A> {
  * could be from across the entire integer number line, or could be limited to a subset of ints
  * such as natural numbers or even numbers.
  *
+ * In addition to values, arbs can optionally implement a [classify] function which classifies
+ * the generated values with labels. These labels can then be used to display information on the
+ * types of values generated.
+ *
  * In order to use an [Arb] outside a property test, one must invoke the [take] method, passing in
  * the number of iterations required and optionally a [ShrinkingMode].
  */
 abstract class Arb<out A> : Gen<A>() {
 
    /**
-    * Returns a single edge case for this arbitrary.
-    * If this arb provides multiple edge cases, then one should be chosen randomly.
-    * Can return null if no edge cases are available.
+    * Returns a single edge case for this arbitrary. If this arb supports multiple edge cases,
+    * then one should be chosen randomly each time this function is invoked.
+    *
+    * Can return null if this arb does not provide edge cases.
     */
    abstract fun edgecase(rs: RandomSource): A?
 
@@ -138,6 +148,10 @@ abstract class Exhaustive<out A> : Gen<A>() {
    fun toArb(): Arb<A> = Arb.of(values)
 
    companion object
+}
+
+fun interface Classifier<A> {
+   fun classify(value: A): String?
 }
 
 /**

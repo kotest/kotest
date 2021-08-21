@@ -6,6 +6,7 @@ import io.kotest.property.Gen
 import io.kotest.property.PropTestConfig
 import io.kotest.property.PropertyContext
 import io.kotest.property.RandomSource
+import io.kotest.property.classifications.outputClassifications
 import io.kotest.property.random
 import kotlin.math.max
 
@@ -28,7 +29,14 @@ suspend fun <A> proptest(
             .forEach { a ->
                val shrinkfn = shrinkfn(a, property, config.shrinkingMode)
                config.listeners.forEach { it.beforeTest() }
-               test(context, config, shrinkfn, listOf(a.value), random.seed) {
+               test(
+                  context,
+                  config,
+                  shrinkfn,
+                  listOf(a.value),
+                  listOf(genA.classifier),
+                  random.seed
+               ) {
                   context.property(a.value)
                }
                config.listeners.forEach { it.afterTest() }
@@ -37,7 +45,14 @@ suspend fun <A> proptest(
       is Exhaustive -> {
          genA.values.forEach { a ->
             config.listeners.forEach { it.beforeTest() }
-            test(context, config, { emptyList() }, listOf(a), random.seed) {
+            test(
+               context,
+               config,
+               { emptyList() },
+               listOf(a),
+               listOf(genA.classifier),
+               random.seed
+            ) {
                context.property(a)
             }
             config.listeners.forEach { it.afterTest() }
@@ -45,6 +60,7 @@ suspend fun <A> proptest(
       }
    }
 
+   context.outputClassifications(1, config, random.seed)
    context.checkMaxSuccess(config, random.seed)
    return context
 }
@@ -68,7 +84,14 @@ suspend fun <A, B> proptest(
       genA.values.forEach { a ->
          genB.values.forEach { b ->
             config.listeners.forEach { it.beforeTest() }
-            test(context, config, { emptyList() }, listOf(a, b), random.seed) {
+            test(
+               context,
+               config,
+               { emptyList() },
+               listOf(a, b),
+               listOf(genA.classifier, genB.classifier),
+               random.seed
+            ) {
                context.property(a, b)
             }
             config.listeners.forEach { it.afterTest() }
@@ -81,13 +104,21 @@ suspend fun <A, B> proptest(
          .forEach { (a, b) ->
             val shrinkfn = shrinkfn(a, b, property, config.shrinkingMode)
             config.listeners.forEach { it.beforeTest() }
-            test(context, config, shrinkfn, listOf(a.value, b.value), random.seed) {
+            test(
+               context,
+               config,
+               shrinkfn,
+               listOf(a.value, b.value),
+               listOf(genA.classifier, genB.classifier),
+               random.seed
+            ) {
                context.property(a.value, b.value)
             }
             config.listeners.forEach { it.afterTest() }
          }
    }
 
+   context.outputClassifications(2, config, random.seed)
    context.checkMaxSuccess(config, random.seed)
    return context
 }
@@ -113,7 +144,14 @@ suspend fun <A, B, C> proptest(
          genB.values.forEach { b ->
             genC.values.forEach { c ->
                config.listeners.forEach { it.beforeTest() }
-               test(context, config, { emptyList() }, listOf(a, b, c), random.seed) {
+               test(
+                  context,
+                  config,
+                  { emptyList() },
+                  listOf(a, b, c),
+                  listOf(genA.classifier, genB.classifier, genC.classifier),
+                  random.seed
+               ) {
                   context.property(a, b, c)
                }
                config.listeners.forEach { it.afterTest() }
@@ -129,13 +167,21 @@ suspend fun <A, B, C> proptest(
             val (a, b) = ab
             val shrinkfn = shrinkfn(a, b, c, property, config.shrinkingMode)
             config.listeners.forEach { it.beforeTest() }
-            test(context, config, shrinkfn, listOf(a.value, b.value, c.value), random.seed) {
+            test(
+               context,
+               config,
+               shrinkfn,
+               listOf(a.value, b.value, c.value),
+               listOf(genA.classifier, genB.classifier, genC.classifier),
+               random.seed
+            ) {
                context.property(a.value, b.value, c.value)
             }
             config.listeners.forEach { it.afterTest() }
          }
    }
 
+   context.outputClassifications(3, config, random.seed)
    context.checkMaxSuccess(config, random.seed)
    return context
 }
@@ -165,7 +211,10 @@ suspend fun <A, B, C, D> proptest(
             genC.values.forEach { c ->
                genD.values.forEach { d ->
                   config.listeners.forEach { it.beforeTest() }
-                  test(context, config, { emptyList() }, listOf(a, b, c, d), random.seed) {
+                  test(
+                     context, config, { emptyList() }, listOf(a, b, c, d),
+                     listOf(genA.classifier, genB.classifier, genC.classifier, genD.classifier), random.seed
+                  ) {
                      context.property(a, b, c, d)
                   }
                   config.listeners.forEach { it.afterTest() }
@@ -185,13 +234,19 @@ suspend fun <A, B, C, D> proptest(
             val (a, b) = ab
             val shrinkfn = shrinkfn(a, b, c, d, property, config.shrinkingMode)
             config.listeners.forEach { it.beforeTest() }
-            test(context, config, shrinkfn, listOf(a.value, b.value, c.value, d.value), random.seed) {
+            test(
+               context, config, shrinkfn,
+               listOf(a.value, b.value, c.value, d.value),
+               listOf(genA.classifier, genB.classifier, genC.classifier, genD.classifier),
+               random.seed
+            ) {
                context.property(a.value, b.value, c.value, d.value)
             }
             config.listeners.forEach { it.afterTest() }
          }
    }
 
+   context.outputClassifications(4, config, random.seed)
    context.checkMaxSuccess(config, random.seed)
    return context
 }
@@ -228,7 +283,20 @@ suspend fun <A, B, C, D, E> proptest(
                genD.values.forEach { d ->
                   genE.values.forEach { e ->
                      config.listeners.forEach { it.beforeTest() }
-                     test(context, config, { emptyList() }, listOf(a, b, c, d, e), random.seed) {
+                     test(
+                        context,
+                        config,
+                        { emptyList() },
+                        listOf(a, b, c, d, e),
+                        listOf(
+                           genA.classifier,
+                           genB.classifier,
+                           genC.classifier,
+                           genD.classifier,
+                           genE.classifier,
+                        ),
+                        random.seed
+                     ) {
                         context.property(a, b, c, d, e)
                      }
                      config.listeners.forEach { it.afterTest() }
@@ -250,13 +318,27 @@ suspend fun <A, B, C, D, E> proptest(
             val (a, b) = ab
             val shrinkfn = shrinkfn(a, b, c, d, e, property, config.shrinkingMode)
             config.listeners.forEach { it.beforeTest() }
-            test(context, config, shrinkfn, listOf(a.value, b.value, c.value, d.value, e.value), random.seed) {
+            test(
+               context,
+               config,
+               shrinkfn,
+               listOf(a.value, b.value, c.value, d.value, e.value),
+               listOf(
+                  genA.classifier,
+                  genB.classifier,
+                  genC.classifier,
+                  genD.classifier,
+                  genE.classifier,
+               ),
+               random.seed
+            ) {
                context.property(a.value, b.value, c.value, d.value, e.value)
             }
             config.listeners.forEach { it.afterTest() }
          }
    }
 
+   context.outputClassifications(5, config, random.seed)
    context.checkMaxSuccess(config, random.seed)
    return context
 }
@@ -302,11 +384,27 @@ suspend fun <A, B, C, D, E, F> proptest(
          val (a, b) = ab
          val shrinkfn = shrinkfn(a, b, c, d, e, f, property, config.shrinkingMode)
          config.listeners.forEach { it.beforeTest() }
-         test(context, config, shrinkfn, listOf(a.value, b.value, c.value, d.value, e.value, f.value), random.seed) {
+         test(
+            context,
+            config,
+            shrinkfn,
+            listOf(a.value, b.value, c.value, d.value, e.value, f.value),
+            listOf(
+               genA.classifier,
+               genB.classifier,
+               genC.classifier,
+               genD.classifier,
+               genE.classifier,
+               genF.classifier,
+            ),
+            random.seed
+         ) {
             context.property(a.value, b.value, c.value, d.value, e.value, f.value)
          }
          config.listeners.forEach { it.afterTest() }
       }
+
+   context.outputClassifications(6, config, random.seed)
    context.checkMaxSuccess(config, random.seed)
    return context
 }
@@ -361,12 +459,23 @@ suspend fun <A, B, C, D, E, F, G> proptest(
             config,
             shrinkfn,
             listOf(a.value, b.value, c.value, d.value, e.value, f.value, g.value),
+            listOf(
+               genA.classifier,
+               genB.classifier,
+               genC.classifier,
+               genD.classifier,
+               genE.classifier,
+               genF.classifier,
+               genG.classifier
+            ),
             random.seed
          ) {
             context.property(a.value, b.value, c.value, d.value, e.value, f.value, g.value)
          }
          config.listeners.forEach { it.afterTest() }
       }
+
+   context.outputClassifications(7, config, random.seed)
    context.checkMaxSuccess(config, random.seed)
    return context
 }
@@ -425,12 +534,24 @@ suspend fun <A, B, C, D, E, F, G, H> proptest(
             config,
             shrinkfn,
             listOf(a.value, b.value, c.value, d.value, e.value, f.value, g.value, h.value),
+            listOf(
+               genA.classifier,
+               genB.classifier,
+               genC.classifier,
+               genD.classifier,
+               genE.classifier,
+               genF.classifier,
+               genG.classifier,
+               genH.classifier
+            ),
             random.seed
          ) {
             context.property(a.value, b.value, c.value, d.value, e.value, f.value, g.value, h.value)
          }
          config.listeners.forEach { it.afterTest() }
       }
+
+   context.outputClassifications(8, config, random.seed)
    context.checkMaxSuccess(config, random.seed)
    return context
 }
@@ -493,12 +614,25 @@ suspend fun <A, B, C, D, E, F, G, H, I> proptest(
             config,
             shrinkfn,
             listOf(a.value, b.value, c.value, d.value, e.value, f.value, g.value, h.value, i.value),
+            listOf(
+               genA.classifier,
+               genB.classifier,
+               genC.classifier,
+               genD.classifier,
+               genE.classifier,
+               genF.classifier,
+               genG.classifier,
+               genH.classifier,
+               genI.classifier
+            ),
             random.seed
          ) {
             context.property(a.value, b.value, c.value, d.value, e.value, f.value, g.value, h.value, i.value)
          }
          config.listeners.forEach { it.afterTest() }
       }
+
+   context.outputClassifications(9, config, random.seed)
    context.checkMaxSuccess(config, random.seed)
    return context
 }
@@ -565,12 +699,26 @@ suspend fun <A, B, C, D, E, F, G, H, I, J> proptest(
             config,
             shrinkfn,
             listOf(a.value, b.value, c.value, d.value, e.value, f.value, g.value, h.value, i.value, j.value),
+            listOf(
+               genA.classifier,
+               genB.classifier,
+               genC.classifier,
+               genD.classifier,
+               genE.classifier,
+               genF.classifier,
+               genG.classifier,
+               genH.classifier,
+               genI.classifier,
+               genJ.classifier
+            ),
             random.seed
          ) {
             context.property(a.value, b.value, c.value, d.value, e.value, f.value, g.value, h.value, i.value, j.value)
          }
          config.listeners.forEach { it.afterTest() }
       }
+
+   context.outputClassifications(10, config, random.seed)
    context.checkMaxSuccess(config, random.seed)
    return context
 }
@@ -641,6 +789,19 @@ suspend fun <A, B, C, D, E, F, G, H, I, J, K> proptest(
             config,
             shrinkfn,
             listOf(a.value, b.value, c.value, d.value, e.value, f.value, g.value, h.value, i.value, j.value, k.value),
+            listOf(
+               genA.classifier,
+               genB.classifier,
+               genC.classifier,
+               genD.classifier,
+               genE.classifier,
+               genF.classifier,
+               genG.classifier,
+               genH.classifier,
+               genI.classifier,
+               genJ.classifier,
+               genK.classifier
+            ),
             random.seed
          ) {
             context.property(
@@ -659,6 +820,8 @@ suspend fun <A, B, C, D, E, F, G, H, I, J, K> proptest(
          }
          config.listeners.forEach { it.afterTest() }
       }
+
+   context.outputClassifications(11, config, random.seed)
    context.checkMaxSuccess(config, random.seed)
    return context
 }
@@ -746,6 +909,20 @@ suspend fun <A, B, C, D, E, F, G, H, I, J, K, L> proptest(
                k.value,
                l.value
             ),
+            listOf(
+               genA.classifier,
+               genB.classifier,
+               genC.classifier,
+               genD.classifier,
+               genE.classifier,
+               genF.classifier,
+               genG.classifier,
+               genH.classifier,
+               genI.classifier,
+               genJ.classifier,
+               genK.classifier,
+               genL.classifier
+            ),
             random.seed
          ) {
             context.property(
@@ -765,6 +942,8 @@ suspend fun <A, B, C, D, E, F, G, H, I, J, K, L> proptest(
          }
          config.listeners.forEach { it.afterTest() }
       }
+
+   context.outputClassifications(12, config, random.seed)
    context.checkMaxSuccess(config, random.seed)
    return context
 }

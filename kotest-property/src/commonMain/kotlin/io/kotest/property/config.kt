@@ -1,6 +1,8 @@
 package io.kotest.property
 
 import io.kotest.mpp.sysprop
+import io.kotest.property.classifications.LabelsReporter
+import io.kotest.property.classifications.StandardLabelsReporter
 import kotlin.math.max
 import kotlin.native.concurrent.ThreadLocal
 
@@ -15,6 +17,7 @@ object PropertyTesting {
    var defaultIterationCount: Int = sysprop("kotest.proptest.default.iteration.count", "1000").toInt()
    var edgecasesGenerationProbability: Double = sysprop("kotest.proptest.arb.edgecases-generation-probability", "0.02").toDouble()
    var edgecasesBindDeterminism: Double = sysprop("kotest.proptest.arb.edgecases-bind-determinism", "0.9").toDouble()
+   var outputClassifiations: Boolean = sysprop("kotest.proptest.arb.output.classificaions", "false") == "true"
 }
 
 /**
@@ -75,7 +78,9 @@ data class PropTestConfig(
    val shrinkingMode: ShrinkingMode = ShrinkingMode.Bounded(1000),
    val iterations: Int? = null,
    val listeners: List<PropTestListener> = listOf(),
-   val edgeConfig: EdgeConfig = EdgeConfig.default()
+   val edgeConfig: EdgeConfig = EdgeConfig.default(),
+   val outputLabels: Boolean? = null,
+   val labelsReporter: LabelsReporter = StandardLabelsReporter
 )
 
 interface PropTestListener {
