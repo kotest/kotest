@@ -8,7 +8,7 @@ package io.kotest.engine
  */
 external fun describe(name: String, fn: () -> Unit)
 external fun xdescribe(name: String, fn: () -> Unit)
-external fun it(name: String, fn: (dynamic) -> Any?)
+external fun it(name: String, fn: (dynamic) -> Any?): dynamic
 external fun xit(name: String, fn: () -> Any?)
 
 external fun beforeAll(fn: () -> Any?)

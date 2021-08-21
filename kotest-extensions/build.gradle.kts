@@ -33,7 +33,7 @@ kotlin {
          dependencies {
             implementation(kotlin("reflect"))
             implementation(project(Projects.Api))
-            implementation(project(Projects.Engine))
+            implementation(project(Projects.Framework.engine))
             implementation(project(Projects.Common))
             implementation(Libs.Apache.commonsio)
             implementation(Libs.Mocking.mockk)

@@ -92,6 +92,7 @@ include("kotest-tests:kotest-tests-timeout")
 include("kotest-tests:kotest-tests-timeout-sysprop")
 include("kotest-tests:kotest-tests-multiname-test-name-sysprop")
 include("kotest-tests:kotest-tests-native")
+include("kotest-tests:kotest-tests-js")
 
 //include("kotest-examples:kotest-examples-jvm")
 //include("kotest-examples:kotest-examples-allure")

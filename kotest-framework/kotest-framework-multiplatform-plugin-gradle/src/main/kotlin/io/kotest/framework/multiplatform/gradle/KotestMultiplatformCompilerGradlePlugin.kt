@@ -11,14 +11,14 @@ import org.jetbrains.kotlin.gradle.plugin.SubpluginOption
 import org.jetbrains.kotlin.gradle.plugin.mpp.AbstractKotlinNativeCompilation
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinJsCompilation
 
-class KotestMultiplatformCompilerPlugin : KotlinCompilerPluginSupportPlugin {
+class KotestMultiplatformCompilerGradlePlugin : KotlinCompilerPluginSupportPlugin {
 
    companion object {
       const val compilerPluginId = "io.kotest.multiplatform"
       const val groupId = "io.kotest"
       const val artifactId = "kotest-framework-multiplatform-plugin-js-jvm"
       const val nativeArtifactId = "kotest-framework-multiplatform-plugin-native-jvm"
-      const val missingTargetError = "Target is not initialized"
+      const val missingProjectValError = "Project is not initialized"
       const val engineDepPrefix = "kotest-framework-engine"
    }
 
@@ -30,10 +30,15 @@ class KotestMultiplatformCompilerPlugin : KotlinCompilerPluginSupportPlugin {
    }
 
    private fun version(): String? {
-      val project = target ?: error(missingTargetError)
-      return project.configurations.flatMap { it.all }.flatMap { it.dependencies }
-         .find { it.group == groupId && it.name.startsWith(engineDepPrefix) }?.version
+      val project = target ?: error(missingProjectValError)
+      val version = engineDeps(project).firstOrNull()?.version ?: return null
+      if (version.contains("LOCAL"))
+         println("Using DEV version for compiler plugin: $version")
+      return version
    }
+
+   private fun engineDeps(project: Project) = project.configurations.flatMap { it.all }.flatMap { it.dependencies }
+      .filter { it.group == groupId && it.name.startsWith(engineDepPrefix) }
 
    override fun getCompilerPluginId() = compilerPluginId
 

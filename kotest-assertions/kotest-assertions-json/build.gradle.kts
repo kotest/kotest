@@ -40,7 +40,7 @@ kotlin {
          dependencies {
             implementation(project(Projects.AssertionsCore))
             implementation(project(Projects.Api))
-            implementation(project(Projects.Engine))
+            implementation(project(Projects.Framework.engine))
             implementation(project(Projects.Property))
          }
       }
