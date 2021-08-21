@@ -2,6 +2,7 @@ package io.kotest.property.classifications
 
 import io.kotest.common.ExperimentalKotest
 import io.kotest.property.PropertyResult
+import kotlin.math.max
 import kotlin.math.roundToInt
 
 /**
@@ -16,7 +17,7 @@ interface LabelsReporter {
 object StandardLabelsReporter : LabelsReporter {
 
    private fun row(label: String, count: Int, attempts: Int, countPad: Int) {
-      val percentage = ((count / attempts.toDouble() * 100.0)).roundToInt()
+      val percentage = max(((count / attempts.toDouble() * 100.0)).roundToInt(), 1)
       println("${label.padEnd(60, ' ')} ${count.toString().padStart(countPad, ' ')} ($percentage%)")
    }
 

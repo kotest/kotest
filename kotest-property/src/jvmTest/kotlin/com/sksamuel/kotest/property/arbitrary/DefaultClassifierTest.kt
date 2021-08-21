@@ -37,7 +37,7 @@ class DefaultClassifierTest : FunSpec() {
          out.shouldContain("MIN                                                             5 (1%)")
          out.shouldContain("NEGATIVE ODD                                                  254 (25%)")
          out.shouldContain("ZERO                                                            6 (1%)")
-         out.shouldContain("MAX                                                             2 (0%)")
+         out.shouldContain("MAX                                                             2 (1%)")
       }
 
       test("long classifier should be provided by default long arb") {
@@ -49,9 +49,9 @@ class DefaultClassifierTest : FunSpec() {
          out.shouldContain("NEGATIVE ODD                                                  234 (23%)")
          out.shouldContain("POSITIVE ODD                                                  258 (26%)")
          out.shouldContain("NEGATIVE EVEN                                                 251 (25%)")
-         out.shouldContain("MIN                                                             3 (0%)")
+         out.shouldContain("MIN                                                             3 (1%)")
          out.shouldContain("POSITIVE EVEN                                                 246 (25%)")
-         out.shouldContain("MAX                                                             3 (0%)")
+         out.shouldContain("MAX                                                             3 (1%)")
          out.shouldContain("ZERO                                                            5 (1%)")
       }
    }
