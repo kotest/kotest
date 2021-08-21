@@ -39,9 +39,9 @@ tasks {
    }
    gradlePlugin {
       plugins {
-         create("kotestMultiplatformCompilerPlugin") {
+         create("KotestMultiplatformCompilerGradlePlugin") {
             id = "io.kotest.multiplatform"
-            implementationClass = "io.kotest.framework.multiplatform.gradle.KotestMultiplatformCompilerPlugin"
+            implementationClass = "io.kotest.framework.multiplatform.gradle.KotestMultiplatformCompilerGradlePlugin"
             displayName = "Kotest Multiplatform Compiler Plugin"
             description = "Adds support for Javascript and Native tests in Kotest"
          }

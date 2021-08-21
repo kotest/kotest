@@ -6,11 +6,6 @@ repositories {
    mavenCentral()
 }
 
-
-repositories {
-   mavenCentral()
-}
-
 kotlin {
    targets {
       linuxX64()
