@@ -2,17 +2,16 @@ package io.kotest.engine
 
 import io.kotest.core.config.Configuration
 import io.kotest.core.config.configuration
-import io.kotest.core.extensions.SpecExecutionOrderExtension
 import io.kotest.core.listeners.AfterProjectListener
 import io.kotest.core.listeners.BeforeProjectListener
 import io.kotest.core.spec.Spec
 import io.kotest.engine.extensions.EmptyTestSuiteExtension
 import io.kotest.engine.extensions.EngineExtension
+import io.kotest.engine.extensions.SpecSortEngineExtension
 import io.kotest.engine.extensions.SpecStyleValidationExtension
 import io.kotest.engine.extensions.TestDslStateExtensions
 import io.kotest.engine.listener.NoopTestEngineListener
 import io.kotest.engine.listener.TestEngineListener
-import io.kotest.engine.spec.DefaultSpecExecutionOrderExtension
 import io.kotest.mpp.log
 import kotlin.reflect.KClass
 
@@ -28,6 +27,7 @@ data class TestEngineConfig(
          val engineExtensions = listOfNotNull(
             TestDslStateExtensions,
             SpecStyleValidationExtension,
+            SpecSortEngineExtension,
             if (configuration.failOnEmptyTestSuite) EmptyTestSuiteExtension else null,
          )
 
@@ -68,18 +68,7 @@ class TestEngine(val config: TestEngineConfig) {
       log { "TestEngine: Invoking beforeProject listeners" }
       lifecycle.beforeProject(config.configuration.listeners().filterIsInstance<BeforeProjectListener>())
 
-      val innerExecute: (TestSuite, TestEngineListener) -> EngineResult =
-         { ts, tel ->
-
-            // spec classes are ordered using SpecExecutionOrderExtension extensions
-            val exts = configuration.extensions().filterIsInstance<SpecExecutionOrderExtension>().ifEmpty {
-               listOf(DefaultSpecExecutionOrderExtension(configuration.specExecutionOrder))
-            }
-
-            log { "TestEngine: Sorting specs using extensions $exts" }
-            val ordered = exts.fold(ts.specs) { acc, op -> op.sortSpecs(acc) }
-            execute(ordered, tel)
-         }
+      val innerExecute: (TestSuite, TestEngineListener) -> EngineResult = { ts, tel -> execute(ts.specs, tel) }
 
       val extensions = config.extensions
       log { "TestEngine: ${extensions.size} engine extensions:" }
