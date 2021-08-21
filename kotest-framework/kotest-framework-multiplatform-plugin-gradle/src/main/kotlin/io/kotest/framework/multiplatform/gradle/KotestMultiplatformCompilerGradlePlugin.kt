@@ -3,6 +3,7 @@
 package io.kotest.framework.multiplatform.gradle
 
 import org.gradle.api.Project
+import org.gradle.api.provider.Property
 import org.gradle.api.provider.Provider
 import org.jetbrains.kotlin.gradle.plugin.KotlinCompilation
 import org.jetbrains.kotlin.gradle.plugin.KotlinCompilerPluginSupportPlugin
@@ -23,14 +24,23 @@ class KotestMultiplatformCompilerGradlePlugin : KotlinCompilerPluginSupportPlugi
    }
 
    private var target: Project? = null
+   private var extension: KotestPluginExtension? = null
 
    override fun apply(target: Project) {
       super.apply(target)
       this.target = target
+      extension = target.extensions.create("kotest", KotestPluginExtension::class.java)
    }
 
    private fun version(): String? {
       val project = target ?: error(missingProjectValError)
+
+      val versionFromExtension = extension?.compilerPluginVersion?.orNull
+      if (versionFromExtension != null) {
+         println("Using compiler plugin version: $versionFromExtension")
+         return versionFromExtension
+      }
+
       val version = engineDeps(project).firstOrNull()?.version ?: return null
       if (version.contains("LOCAL"))
          println("Using DEV version for compiler plugin: $version")
@@ -60,5 +70,13 @@ class KotestMultiplatformCompilerGradlePlugin : KotlinCompilerPluginSupportPlugi
 
    override fun applyToCompilation(kotlinCompilation: KotlinCompilation<*>): Provider<List<SubpluginOption>> {
       return kotlinCompilation.target.project.provider { emptyList() }
+   }
+}
+
+abstract class KotestPluginExtension {
+   abstract val compilerPluginVersion: Property<String>
+
+   init {
+      compilerPluginVersion.convention(null as String?)
    }
 }
