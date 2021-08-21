@@ -14,6 +14,7 @@ plugins {
 repositories {
    mavenCentral()
    mavenLocal()
+   maven("https://oss.sonatype.org/content/repositories/snapshots/")
 }
 
 kotlin {
@@ -29,7 +30,7 @@ kotlin {
          dependencies {
             implementation(kotlin("stdlib"))
             implementation(project(Projects.AssertionsCore))
-            implementation(project(Projects.Framework.engine))
+            implementation("io.kotest:kotest-framework-engine:5.0.0.399-SNAPSHOT")
          }
       }
    }
