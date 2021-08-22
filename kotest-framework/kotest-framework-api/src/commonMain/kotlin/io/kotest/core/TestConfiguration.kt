@@ -290,7 +290,7 @@ abstract class TestConfiguration {
    fun registeredAutoCloseables(): List<Lazy<AutoCloseable>> = _autoCloseables.toList()
 
    /**
-    * Returns any [TestCaseExtension] instances registered directly on this class.
+    * Returns any [Extension] instances registered directly on this class.
     */
    fun registeredExtensions() = _extensions
 }
