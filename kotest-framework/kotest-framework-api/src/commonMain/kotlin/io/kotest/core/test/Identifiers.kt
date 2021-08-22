@@ -15,7 +15,7 @@ object Identifiers {
     * or one of the [primitiveTypes]. Or if the type of instance is annotated with [IsStableType].
     *
     * If instance is a type which implements [WithDataTestName], then test name return by [dataTestName] method
-    * will be consider as stableIdentifier.
+    * will be considered a stableIdentifier.
     *
     * Note: If the user has overridden toString() and the returned value is not stable, tests may not appear.
     */

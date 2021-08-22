@@ -5,7 +5,8 @@ import io.kotest.core.test.DuplicateTestNameMode
 import io.kotest.core.test.Identifiers
 
 /**
- * A handler for test names. Will track all test names used for a particular context.
+ * Tracks test names for a context, and reports on duplicates, or modifies names
+ * to be unique based on the value of the given [DuplicateTestNameMode].
  */
 class DuplicateTestNameHandler(private val mode: DuplicateTestNameMode) {
 
