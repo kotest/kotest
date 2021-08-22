@@ -3,7 +3,7 @@ package io.kotest.core.spec
 import io.kotest.core.Tuple2
 import io.kotest.core.config.configuration
 import io.kotest.core.test.Identifiers
-import io.kotest.core.extensions.SpecExtension
+import io.kotest.core.extensions.SpecInterceptExtension
 import io.kotest.core.factory.TestFactory
 import io.kotest.core.factory.addPrefix
 import io.kotest.core.factory.createTestCases
@@ -80,7 +80,7 @@ abstract class DslDrivenSpec : Spec() {
 
    @Deprecated("this makes no sense")
    fun aroundSpec(aroundSpecFn: AroundSpecFn) {
-      extension(object : SpecExtension {
+      extension(object : SpecInterceptExtension {
          override suspend fun intercept(spec: KClass<out Spec>, process: suspend () -> Unit) {
             aroundSpecFn(Tuple2(spec, process))
          }

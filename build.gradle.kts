@@ -28,11 +28,7 @@ tasks {
    }
 }
 
-// apply plugin: "io.kotest"
-
 allprojects {
-
-//   apply(plugin = "io.kotest")
 
    repositories {
       mavenCentral()

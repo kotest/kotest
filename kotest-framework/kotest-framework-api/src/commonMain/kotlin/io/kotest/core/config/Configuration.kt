@@ -21,7 +21,7 @@ import kotlinx.coroutines.CoroutineDispatcher
 /**
  * The global configuration singleton.
  *
- * This is a global singleton for historic reasons and is slowly being replaced with a non global variable.
+ * This is a global singleton for historic reasons and is slowly being replaced with a non-global variable.
  *
  * Expect this val to disappear in Kotest 6.0
  *
