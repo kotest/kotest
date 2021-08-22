@@ -59,8 +59,10 @@ sealed class Gen<out A> {
     * Requesting a property test with fewer than this will result in an exception.
     */
    fun minIterations(): Int = when (this) {
-      is Arb -> 1
       is Exhaustive -> this.values.size
+      // seems a bug in the native compiler throwing kotlin.NoWhenBranchMatchedException when Arb is explicitly used here
+      // using else is the same thing as we don't require access to properties from the Arb instance
+      else -> 1
    }
 }
 
