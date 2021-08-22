@@ -1,12 +1,12 @@
 package io.kotest.engine.listener
 
+import io.kotest.common.concurrentHashMap
 import io.kotest.core.test.Description
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.engine.test.TestCaseExecutionListener
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
-import java.util.concurrent.ConcurrentHashMap
 
 /**
  * An implementation of [TestCaseExecutionListener] that will buffer the state of root tests and their nested
@@ -14,9 +14,9 @@ import java.util.concurrent.ConcurrentHashMap
  */
 class BufferedTestCaseExcecutionListener(private val listener: TestCaseExecutionListener) : TestCaseExecutionListener {
 
-   private val started = ConcurrentHashMap<Description, TestCase>()
-   private val ignored = ConcurrentHashMap<Description, TestCase>()
-   private val finished = ConcurrentHashMap<Description, Pair<TestCase, TestResult>>()
+   private val started = concurrentHashMap<Description, TestCase>()
+   private val ignored = concurrentHashMap<Description, TestCase>()
+   private val finished = concurrentHashMap<Description, Pair<TestCase, TestResult>>()
    private val mutex = Mutex()
 
    override suspend fun testStarted(testCase: TestCase) {
