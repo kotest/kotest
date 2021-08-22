@@ -12,11 +12,13 @@ import io.kotest.engine.test.RootRestrictedTestContext
 import io.kotest.engine.test.TeamCityTestCaseExecutionListener
 import io.kotest.engine.test.TestCaseExecutor
 import io.kotest.engine.test.status.isEnabledInternal
+import io.kotest.mpp.log
 import kotlinx.coroutines.runBlocking
 
 actual class SpecRunner {
 
    actual fun execute(spec: Spec, onComplete: suspend () -> Unit) {
+      log { "Executing spec $spec" }
       println()
       println(
          TeamCityMessageBuilder
@@ -25,6 +27,7 @@ actual class SpecRunner {
             .spec()
             .build()
       )
+      println()
       spec.materializeAndOrderRootTests()
          .filter { it.testCase.isEnabledInternal().isEnabled }
          .forEach { execute(it.testCase) }
@@ -36,11 +39,17 @@ actual class SpecRunner {
             .spec()
             .build()
       )
+      println()
+      runBlocking {
+         onComplete()
+      }
    }
 
    private fun execute(testCase: TestCase) = runBlocking {
+      log { "Executing testCase $testCase" }
       val context = RootRestrictedTestContext(testCase, this.coroutineContext)
-      TestCaseExecutor(TeamCityTestCaseExecutionListener, CallingThreadExecutionContext).execute(testCase, context)
+      TestCaseExecutor(TeamCityTestCaseExecutionListener, CallingThreadExecutionContext)
+         .execute(testCase, context)
    }
 }
 
