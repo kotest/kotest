@@ -9,6 +9,12 @@ import io.kotest.property.RandomSource
 import io.kotest.property.random
 import kotlin.math.max
 
+private fun actualIterations(iterations: Int, config: PropTestConfig) =
+   config.iterations ?: iterations
+
+private fun checkMinSize(minSize: Int, iterations: Int) =
+   require(iterations >= minSize) { "Require at least $minSize iterations to cover requirements" }
+
 suspend fun <A> proptest(
    iterations: Int,
    genA: Gen<A>,
@@ -16,7 +22,8 @@ suspend fun <A> proptest(
    property: suspend PropertyContext.(A) -> Unit
 ): PropertyContext {
 
-   require(iterations >= genA.minIterations()) { "Require at least ${genA.minIterations()} iterations to cover requirements" }
+   val actualIterations = actualIterations(iterations, config)
+   checkMinSize(genA.minIterations(), actualIterations)
 
    val context = PropertyContext()
    val random = config.seed?.random() ?: RandomSource.default()
@@ -24,7 +31,7 @@ suspend fun <A> proptest(
    when (genA) {
       is Arb -> {
          genA.generate(random, config.edgeConfig)
-            .take(iterations)
+            .take(actualIterations)
             .forEach { a ->
                val shrinkfn = shrinkfn(a, property, config.shrinkingMode)
                config.listeners.forEach { it.beforeTest() }
@@ -59,7 +66,8 @@ suspend fun <A, B> proptest(
 
    // we must have enough iterations to cover the max(minsize).
    val minSize = max(genA.minIterations(), genB.minIterations())
-   require(iterations >= minSize) { "Require at least $minSize iterations to cover requirements" }
+   val actualIterations = actualIterations(iterations, config)
+   checkMinSize(minSize, actualIterations)
 
    val context = PropertyContext()
    val random = config.seed?.random() ?: RandomSource.default()
@@ -77,7 +85,7 @@ suspend fun <A, B> proptest(
    } else {
       genA.generate(random, config.edgeConfig)
          .zip(genB.generate(random, config.edgeConfig))
-         .take(iterations)
+         .take(actualIterations)
          .forEach { (a, b) ->
             val shrinkfn = shrinkfn(a, b, property, config.shrinkingMode)
             config.listeners.forEach { it.beforeTest() }
@@ -103,7 +111,8 @@ suspend fun <A, B, C> proptest(
 
    // we must have enough iterations to cover the max(minsize).
    val minSize = max(max(genA.minIterations(), genB.minIterations()), genC.minIterations())
-   require(iterations >= minSize) { "Require at least $minSize iterations to cover requirements" }
+   val actualIterations = actualIterations(iterations, config)
+   checkMinSize(minSize, actualIterations)
 
    val context = PropertyContext()
    val random = config.seed?.random() ?: RandomSource.default()
@@ -124,7 +133,7 @@ suspend fun <A, B, C> proptest(
       genA.generate(random, config.edgeConfig)
          .zip(genB.generate(random, config.edgeConfig))
          .zip(genC.generate(random, config.edgeConfig))
-         .take(iterations)
+         .take(actualIterations)
          .forEach { (ab, c) ->
             val (a, b) = ab
             val shrinkfn = shrinkfn(a, b, c, property, config.shrinkingMode)
@@ -154,7 +163,8 @@ suspend fun <A, B, C, D> proptest(
 
    val minSize =
       listOf(genA.minIterations(), genB.minIterations(), genC.minIterations(), genD.minIterations()).maxOrNull() ?: 0
-   require(iterations >= minSize) { "Require at least $minSize iterations to cover requirements" }
+   val actualIterations = actualIterations(iterations, config)
+   checkMinSize(minSize, actualIterations)
 
    val context = PropertyContext()
    val random = config.seed?.random() ?: RandomSource.default()
@@ -179,7 +189,7 @@ suspend fun <A, B, C, D> proptest(
          .zip(genB.generate(random, config.edgeConfig))
          .zip(genC.generate(random, config.edgeConfig))
          .zip(genD.generate(random, config.edgeConfig))
-         .take(iterations)
+         .take(actualIterations)
          .forEach { (abc, d) ->
             val (ab, c) = abc
             val (a, b) = ab
@@ -216,7 +226,8 @@ suspend fun <A, B, C, D, E> proptest(
       genD.minIterations(),
       genE.minIterations()
    ).maxOrNull() ?: 0
-   require(iterations >= minSize) { "Require at least $minSize iterations to cover requirements" }
+   val actualIterations = actualIterations(iterations, config)
+   checkMinSize(minSize, actualIterations)
 
    val context = PropertyContext()
    val random = config.seed?.random() ?: RandomSource.default()
@@ -243,7 +254,7 @@ suspend fun <A, B, C, D, E> proptest(
          .zip(genC.generate(random, config.edgeConfig))
          .zip(genD.generate(random, config.edgeConfig))
          .zip(genE.generate(random, config.edgeConfig))
-         .take(iterations)
+         .take(actualIterations)
          .forEach { (abcd, e) ->
             val (abc, d) = abcd
             val (ab, c) = abc
@@ -283,7 +294,8 @@ suspend fun <A, B, C, D, E, F> proptest(
       genE.minIterations(),
       genF.minIterations()
    ).maxOrNull() ?: 0
-   require(iterations >= minSize) { "Require at least $minSize iterations to cover requirements" }
+   val actualIterations = actualIterations(iterations, config)
+   checkMinSize(minSize, actualIterations)
 
    val context = PropertyContext()
    val random = config.seed?.random() ?: RandomSource.default()
@@ -294,7 +306,7 @@ suspend fun <A, B, C, D, E, F> proptest(
       .zip(genD.generate(random, config.edgeConfig))
       .zip(genE.generate(random, config.edgeConfig))
       .zip(genF.generate(random, config.edgeConfig))
-      .take(iterations)
+      .take(actualIterations)
       .forEach { (abcde, f) ->
          val (abcd, e) = abcde
          val (abc, d) = abcd
@@ -335,7 +347,8 @@ suspend fun <A, B, C, D, E, F, G> proptest(
       genF.minIterations(),
       genG.minIterations(),
    ).maxOrNull() ?: 0
-   require(iterations >= minSize) { "Require at least $minSize iterations to cover requirements" }
+   val actualIterations = actualIterations(iterations, config)
+   checkMinSize(minSize, actualIterations)
 
    val context = PropertyContext()
    val random = config.seed?.random() ?: RandomSource.default()
@@ -347,7 +360,7 @@ suspend fun <A, B, C, D, E, F, G> proptest(
       .zip(genE.generate(random, config.edgeConfig))
       .zip(genF.generate(random, config.edgeConfig))
       .zip(genG.generate(random, config.edgeConfig))
-      .take(iterations)
+      .take(actualIterations)
       .forEach { (abcdef, g) ->
          val (abcde, f) = abcdef
          val (abcd, e) = abcde
@@ -397,7 +410,8 @@ suspend fun <A, B, C, D, E, F, G, H> proptest(
       genG.minIterations(),
       genH.minIterations(),
    ).maxOrNull() ?: 0
-   require(iterations >= minSize) { "Require at least $minSize iterations to cover requirements" }
+   val actualIterations = actualIterations(iterations, config)
+   checkMinSize(minSize, actualIterations)
 
    val context = PropertyContext()
    val random = config.seed?.random() ?: RandomSource.default()
@@ -410,7 +424,7 @@ suspend fun <A, B, C, D, E, F, G, H> proptest(
       .zip(genF.generate(random, config.edgeConfig))
       .zip(genG.generate(random, config.edgeConfig))
       .zip(genH.generate(random, config.edgeConfig))
-      .take(iterations)
+      .take(actualIterations)
       .forEach { (abcdefg, h) ->
          val (abcdef, g) = abcdefg
          val (abcde, f) = abcdef
@@ -463,7 +477,8 @@ suspend fun <A, B, C, D, E, F, G, H, I> proptest(
       genH.minIterations(),
       genI.minIterations(),
    ).maxOrNull() ?: 0
-   require(iterations >= minSize) { "Require at least $minSize iterations to cover requirements" }
+   val actualIterations = actualIterations(iterations, config)
+   checkMinSize(minSize, actualIterations)
 
    val context = PropertyContext()
    val random = config.seed?.random() ?: RandomSource.default()
@@ -477,7 +492,7 @@ suspend fun <A, B, C, D, E, F, G, H, I> proptest(
       .zip(genG.generate(random, config.edgeConfig))
       .zip(genH.generate(random, config.edgeConfig))
       .zip(genI.generate(random, config.edgeConfig))
-      .take(iterations)
+      .take(actualIterations)
       .forEach { (abcdefgh, i) ->
          val (abcdefg, h) = abcdefgh
          val (abcdef, g) = abcdefg
@@ -533,7 +548,8 @@ suspend fun <A, B, C, D, E, F, G, H, I, J> proptest(
       genI.minIterations(),
       genJ.minIterations(),
    ).maxOrNull() ?: 0
-   require(iterations >= minSize) { "Require at least $minSize iterations to cover requirements" }
+   val actualIterations = actualIterations(iterations, config)
+   checkMinSize(minSize, actualIterations)
 
    val context = PropertyContext()
    val random = config.seed?.random() ?: RandomSource.default()
@@ -548,7 +564,7 @@ suspend fun <A, B, C, D, E, F, G, H, I, J> proptest(
       .zip(genH.generate(random, config.edgeConfig))
       .zip(genI.generate(random, config.edgeConfig))
       .zip(genJ.generate(random, config.edgeConfig))
-      .take(iterations)
+      .take(actualIterations)
       .forEach { (abcdefghi, j) ->
          val (abcdefgh, i) = abcdefghi
          val (abcdefg, h) = abcdefgh
@@ -607,7 +623,8 @@ suspend fun <A, B, C, D, E, F, G, H, I, J, K> proptest(
       genJ.minIterations(),
       genK.minIterations(),
    ).maxOrNull() ?: 0
-   require(iterations >= minSize) { "Require at least $minSize iterations to cover requirements" }
+   val actualIterations = actualIterations(iterations, config)
+   checkMinSize(minSize, actualIterations)
 
    val context = PropertyContext()
    val random = config.seed?.random() ?: RandomSource.default()
@@ -623,7 +640,7 @@ suspend fun <A, B, C, D, E, F, G, H, I, J, K> proptest(
       .zip(genI.generate(random, config.edgeConfig))
       .zip(genJ.generate(random, config.edgeConfig))
       .zip(genK.generate(random, config.edgeConfig))
-      .take(iterations)
+      .take(actualIterations)
       .forEach { (abcdefghij, k) ->
          val (abcdefghi, j) = abcdefghij
          val (abcdefgh, i) = abcdefghi
@@ -697,7 +714,8 @@ suspend fun <A, B, C, D, E, F, G, H, I, J, K, L> proptest(
       genK.minIterations(),
       genL.minIterations(),
    ).maxOrNull() ?: 0
-   require(iterations >= minSize) { "Require at least $minSize iterations to cover requirements" }
+   val actualIterations = actualIterations(iterations, config)
+   checkMinSize(minSize, actualIterations)
 
    val context = PropertyContext()
    val random = config.seed?.random() ?: RandomSource.default()
@@ -714,7 +732,7 @@ suspend fun <A, B, C, D, E, F, G, H, I, J, K, L> proptest(
       .zip(genJ.generate(random, config.edgeConfig))
       .zip(genK.generate(random, config.edgeConfig))
       .zip(genL.generate(random, config.edgeConfig))
-      .take(iterations)
+      .take(actualIterations)
       .forEach { (abcdefghijk, l) ->
          val (abcdefghij, k) = abcdefghijk
          val (abcdefghi, j) = abcdefghij
