@@ -1,20 +1,22 @@
 package io.kotest.engine.test
 
+import io.kotest.core.config.configuration
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestContext
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestStatus
-import io.kotest.engine.test.extensions.AssertionModeTestExecutionExtension
-import io.kotest.engine.test.extensions.CoroutineDebugProbeTestExecutionExtension
-import io.kotest.engine.test.extensions.CoroutineScopeTestExecutionExtension
-import io.kotest.engine.test.extensions.EnabledCheckTestExecutionExtension
-import io.kotest.engine.test.extensions.ExceptionCapturingTestExecutionExtension
-import io.kotest.engine.test.extensions.GlobalSoftAssertTestExecutionExtension
-import io.kotest.engine.test.extensions.InvocationCountCheckTestExecutionExtension
-import io.kotest.engine.test.extensions.LifecycleTestExecutionExtension
-import io.kotest.engine.test.extensions.SupervisorScopeTestExecutionExtension
-import io.kotest.engine.test.extensions.TestCaseInterceptionTestExecutionExtension
-import io.kotest.engine.test.extensions.TimeoutTestExecutionExtension
+import io.kotest.engine.test.extensions.AssertionModeTestExecutionFilter
+import io.kotest.engine.test.extensions.CoroutineDebugProbeTestExecutionFilter
+import io.kotest.engine.test.extensions.CoroutineDispatcherTestExecutionFilter
+import io.kotest.engine.test.extensions.CoroutineScopeTestExecutionFilter
+import io.kotest.engine.test.extensions.EnabledCheckTestExecutionFilter
+import io.kotest.engine.test.extensions.ExceptionCapturingTestExecutionFilter
+import io.kotest.engine.test.extensions.GlobalSoftAssertTestExecutionFilter
+import io.kotest.engine.test.extensions.InvocationCountCheckTestExecutionFilter
+import io.kotest.engine.test.extensions.LifecycleTestExecutionFilter
+import io.kotest.engine.test.extensions.SupervisorScopeTestExecutionFilter
+import io.kotest.engine.test.extensions.TestCaseInterceptionTestExecutionFilter
+import io.kotest.engine.test.extensions.TimeoutTestExecutionFilter
 import io.kotest.mpp.log
 import io.kotest.mpp.timeInMillis
 
@@ -34,18 +36,19 @@ class TestCaseExecutor(
 
       val start = timeInMillis()
 
-      val extensions = listOf(
-         CoroutineDebugProbeTestExecutionExtension,
-         TestCaseInterceptionTestExecutionExtension,
-         EnabledCheckTestExecutionExtension,
-         LifecycleTestExecutionExtension(listener, start),
-         ExceptionCapturingTestExecutionExtension(start),
-         InvocationCountCheckTestExecutionExtension,
-         SupervisorScopeTestExecutionExtension,
-         TimeoutTestExecutionExtension(executionContext, start),
-         AssertionModeTestExecutionExtension,
-         GlobalSoftAssertTestExecutionExtension,
-         CoroutineScopeTestExecutionExtension,
+      val pipeline = listOf(
+         CoroutineDebugProbeTestExecutionFilter,
+         CoroutineDispatcherTestExecutionFilter(configuration),
+         TestCaseInterceptionTestExecutionFilter,
+         EnabledCheckTestExecutionFilter,
+         LifecycleTestExecutionFilter(listener, start),
+         ExceptionCapturingTestExecutionFilter(start),
+         InvocationCountCheckTestExecutionFilter,
+         SupervisorScopeTestExecutionFilter,
+         TimeoutTestExecutionFilter(executionContext, start),
+         AssertionModeTestExecutionFilter,
+         GlobalSoftAssertTestExecutionFilter,
+         CoroutineScopeTestExecutionFilter,
       )
 
       val innerExecute: suspend (TestCase, TestContext) -> TestResult = { tc, ctx ->
@@ -53,10 +56,8 @@ class TestCaseExecutor(
          createTestResult(timeInMillis() - start, null)
       }
 
-      val result = extensions.foldRight(innerExecute) { ext, fn ->
-         { tc, ctx ->
-            if (ext.shouldApply(tc)) ext.execute(fn)(tc, ctx) else fn(tc, ctx)
-         }
+      val result = pipeline.foldRight(innerExecute) { ext, test ->
+         { tc, ctx -> ext.execute(test).invoke(tc, ctx) }
       }.invoke(testCase, context)
 
       when (result.status) {

@@ -4,7 +4,7 @@ import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.Spec
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
-import io.kotest.engine.launchers.TestLauncher
+import io.kotest.engine.test.scheduler.TestScheduler
 import io.kotest.engine.listener.TestEngineListener
 import io.kotest.fp.Try
 import io.kotest.mpp.NamedThreadFactory
@@ -25,7 +25,7 @@ import kotlin.reflect.KClass
  */
 abstract class SpecRunner(
    val listener: TestEngineListener,
-   val launcher: TestLauncher,
+   val launcher: TestScheduler,
 ) {
 
    /**

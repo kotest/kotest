@@ -11,7 +11,7 @@ import io.kotest.core.test.createTestName
 import io.kotest.core.test.toTestCase
 import io.kotest.engine.ExecutorExecutionContext
 import io.kotest.engine.concurrency.resolvedThreads
-import io.kotest.engine.launchers.TestLauncher
+import io.kotest.engine.test.scheduler.TestScheduler
 import io.kotest.engine.events.invokeAfterSpec
 import io.kotest.engine.events.invokeBeforeSpec
 import io.kotest.engine.listener.TestEngineListener
@@ -59,7 +59,7 @@ import kotlin.coroutines.CoroutineContext
  */
 internal class InstancePerTestSpecRunner(
    listener: TestEngineListener,
-   launcher: TestLauncher,
+   launcher: TestScheduler,
 ) : SpecRunner(listener, launcher) {
 
    private val results = ConcurrentHashMap<TestCase, TestResult>()

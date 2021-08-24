@@ -1,12 +1,10 @@
-package io.kotest.engine.extensions
+package io.kotest.engine.spec
 
 import io.kotest.core.spec.DoNotParallelize
 import io.kotest.core.spec.Isolate
 import io.kotest.core.spec.Spec
+import io.kotest.engine.CoroutineDispatcherProvider
 import io.kotest.engine.TestSuite
-import io.kotest.engine.concurrency.CoroutineDispatcherProvider
-import io.kotest.engine.concurrency.isIsolate
-import io.kotest.engine.spec.TestSuiteScheduler
 import io.kotest.mpp.log
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
@@ -22,14 +20,13 @@ import kotlin.reflect.KClass
  * annotations to ensure those specs are never scheduled concurrently.
  *
  * @param maxConcurrent The maximum number of concurrent coroutines.
- * @param factory a [CoroutineDispatcherProvider] used to allocate CoroutineDispatchers to specs.
+ * @param provider a [CoroutineDispatcherProvider] used to allocate CoroutineDispatchers to specs.
  */
 class DefaultTestSuiteScheduler(
    private val maxConcurrent: Int,
-   private val provider: CoroutineDispatcherProvider,
 ) : TestSuiteScheduler {
 
-   override suspend fun schedule(suite: TestSuite, f1: (Spec) -> Unit, f2: (KClass<out Spec>) -> Unit) {
+   override suspend fun schedule(suite: TestSuite, f1: suspend (Spec) -> Unit, f2: suspend (KClass<out Spec>) -> Unit) {
       log { "DefaultTestSuiteScheduler: Launching ${suite.specs.size} specs / ${suite.classes.size} classes" }
       // we partition the classes into those which can run concurrently (default)
       // and those which cannot (see @Isolated)
@@ -42,14 +39,17 @@ class DefaultTestSuiteScheduler(
       log { "DefaultSpecLauncher: All specs have completed" }
    }
 
-   private suspend fun schedule(f: (KClass<out Spec>) -> Unit, classes: List<KClass<out Spec>>, concurrency: Int) {
+   private suspend fun schedule(
+      f: suspend (KClass<out Spec>) -> Unit,
+      classes: List<KClass<out Spec>>,
+      concurrency: Int
+   ) {
       val semaphore = Semaphore(concurrency)
       // coroutine scope must be outside the loop to ensure that the entire loop can complete before suspending
       coroutineScope {
          classes.forEach { kclass ->
-            val dispatcher = provider.acquire(kclass)
-            log { "DefaultTestSuiteScheduler: Launching coroutine for spec [$kclass] with dispatcher [$dispatcher]" }
-            launch(dispatcher) {
+            log { "DefaultTestSuiteScheduler: Scheduling coroutine for spec [$kclass]" }
+            launch {
                semaphore.withPermit {
                   log { "DefaultTestSuiteScheduler: Acquired permit for $kclass" }
                   try {
@@ -59,18 +59,17 @@ class DefaultTestSuiteScheduler(
                      throw t
                   }
                }
-            }.invokeOnCompletion { provider.release(kclass) }
+            }
          }
       }
    }
 
-   private suspend fun schedule(f: (Spec) -> Unit, specs: List<Spec>) {
+   private suspend fun schedule(f: suspend (Spec) -> Unit, specs: List<Spec>) {
       specs.forEach { spec ->
          // coroutine scope is inside the loop because we want to suspend until the spec is completed
          coroutineScope {
-            val dispatcher = provider.acquire(spec::class)
-            log { "DefaultTestSuiteScheduler: Launching coroutine for spec [$spec] with dispatcher [$dispatcher]" }
-            launch(dispatcher) {
+            log { "DefaultTestSuiteScheduler: Scheduling coroutine for spec [$spec]" }
+            launch {
                log { "DefaultTestSuiteScheduler: Acquired permit for $spec" }
                try {
                   f(spec)
@@ -78,7 +77,7 @@ class DefaultTestSuiteScheduler(
                   log { "DefaultTestSuiteScheduler: Unhandled error during spec execution [$spec] [$t]" }
                   throw t
                }
-            }.invokeOnCompletion { provider.release(spec::class) }
+            }
          }
       }
    }

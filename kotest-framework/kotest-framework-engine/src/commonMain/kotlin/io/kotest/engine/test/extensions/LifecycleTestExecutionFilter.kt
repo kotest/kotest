@@ -27,10 +27,10 @@ import io.kotest.mpp.timeInMillis
  * Essentially, the after-test listeners are always attempted, and any error from invoking the before, test,
  * or after code is returned as higher priority than the result from the test case itself.
  */
-class LifecycleTestExecutionExtension(
+class LifecycleTestExecutionFilter(
    private val listener: TestCaseExecutionListener,
    private val start: Long
-) : TestExecutionExtension {
+) : TestExecutionFilter {
 
    override suspend fun execute(
       test: suspend (TestCase, TestContext) -> TestResult

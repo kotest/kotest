@@ -1,7 +1,7 @@
 package io.kotest.engine.extensions
 
 import io.kotest.common.ExperimentalKotest
-import io.kotest.engine.concurrency.CoroutineDispatcherProvider
+import io.kotest.engine.CoroutineDispatcherProvider
 
 /**
  * An extension point that can be used to return a [CoroutineDispatcherProvider] which

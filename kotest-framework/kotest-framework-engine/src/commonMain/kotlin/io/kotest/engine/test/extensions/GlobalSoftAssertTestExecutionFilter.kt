@@ -11,15 +11,15 @@ import io.kotest.core.test.TestType
  * Executes the test with assertSoftly if global assert mode us enabled at the project level and if
  * this [TestCase] is a [TestType.Test].
  */
-internal object GlobalSoftAssertTestExecutionExtension : TestExecutionExtension {
+internal object GlobalSoftAssertTestExecutionFilter : TestExecutionFilter {
 
-   override suspend fun shouldApply(testCase: TestCase): Boolean {
+   private fun shouldApply(testCase: TestCase): Boolean {
       return testCase.type == TestType.Test && configuration.globalAssertSoftly
    }
 
    override suspend fun execute(
       test: suspend (TestCase, TestContext) -> TestResult
    ): suspend (TestCase, TestContext) -> TestResult = { testCase, context ->
-      assertSoftly { test(testCase, context) }
+      if (shouldApply(testCase)) assertSoftly { test(testCase, context) } else test(testCase, context)
    }
 }

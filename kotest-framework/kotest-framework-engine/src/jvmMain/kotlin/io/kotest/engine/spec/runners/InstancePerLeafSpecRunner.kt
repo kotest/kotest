@@ -13,7 +13,7 @@ import io.kotest.core.test.TestResult
 import io.kotest.core.test.createTestName
 import io.kotest.core.test.toTestCase
 import io.kotest.engine.ExecutorExecutionContext
-import io.kotest.engine.launchers.TestLauncher
+import io.kotest.engine.test.scheduler.TestScheduler
 import io.kotest.engine.listener.TestEngineListener
 import io.kotest.engine.spec.SpecRunner
 import io.kotest.engine.test.DuplicateTestNameHandler
@@ -28,7 +28,7 @@ import kotlin.coroutines.CoroutineContext
 
 internal class InstancePerLeafSpecRunner(
    listener: TestEngineListener,
-   launcher: TestLauncher
+   launcher: TestScheduler
 ) : SpecRunner(listener, launcher) {
 
    private val results = mutableMapOf<TestCase, TestResult>()

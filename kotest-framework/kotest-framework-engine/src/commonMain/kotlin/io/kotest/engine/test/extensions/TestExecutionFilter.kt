@@ -4,9 +4,11 @@ import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestContext
 import io.kotest.core.test.TestResult
 
-internal interface TestExecutionExtension {
-
-   suspend fun shouldApply(testCase: TestCase): Boolean = true
+/**
+ * Acts as a filter for the test function, wrapping the test -> result
+ * function in further logic.
+ */
+internal interface TestExecutionFilter {
 
    suspend fun execute(
       test: suspend (TestCase, TestContext) -> TestResult

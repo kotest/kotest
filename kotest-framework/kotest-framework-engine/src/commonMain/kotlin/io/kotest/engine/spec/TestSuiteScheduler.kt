@@ -13,5 +13,5 @@ import kotlin.reflect.KClass
  */
 @ExperimentalKotest
 interface TestSuiteScheduler {
-   suspend fun schedule(suite: TestSuite, f1: (Spec) -> Unit, f2: (KClass<out Spec>) -> Unit)
+   suspend fun schedule(suite: TestSuite, f1: suspend (Spec) -> Unit, f2: suspend (KClass<out Spec>) -> Unit)
 }
