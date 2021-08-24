@@ -1,3 +1,6 @@
 package io.kotest.engine
 
-actual val defaultCoroutineDispatcherProvider: CoroutineDispatcherProvider = NoopCoroutineDispatcherProvider
+import io.kotest.core.config.configuration
+
+actual val defaultCoroutineDispatcherProvider: CoroutineDispatcherProvider =
+   ExecutorCoroutineDispatcherProvider(configuration.parallelism, configuration.dispatcherAffinity)
