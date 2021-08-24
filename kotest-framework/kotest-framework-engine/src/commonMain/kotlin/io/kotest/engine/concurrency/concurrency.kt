@@ -15,7 +15,8 @@ import kotlin.reflect.KClass
  *
  * Those annotations are [DoNotParallelize] and [Isolate].
  */
-internal fun KClass<*>.isIsolate(): Boolean = annotation<DoNotParallelize>() != null || annotation<Isolate>() != null
+internal fun KClass<*>.isIsolate(): Boolean =
+   annotation<DoNotParallelize>() != null || annotation<Isolate>() != null
 
 /**
  * Returns the number of threads specified on this spec, which comes either from the

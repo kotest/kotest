@@ -4,6 +4,7 @@ import io.kotest.common.ExperimentalKotest
 import io.kotest.core.config.configuration
 import io.kotest.core.spec.Spec
 import io.kotest.engine.dispatchers.coroutineDispatcherFactory
+import io.kotest.engine.extensions.DefaultTestSuiteScheduler
 import io.kotest.engine.extensions.SpecLauncherExtension
 import io.kotest.engine.spec.SpecExecutor
 import io.kotest.fp.firstOrNone
@@ -13,7 +14,7 @@ import kotlin.reflect.KClass
 /**
  * A [SpecLauncher] is responsible for launching the given list of specs into their own coroutines.
  *
- * See [DefaultSpecLauncher] for the default implementation. Register a
+ * See [DefaultTestSuiteScheduler] for the default implementation. Register a
  * [SpecLauncherExtension] to provide a custom implementation.
  */
 @ExperimentalKotest
@@ -25,7 +26,7 @@ interface SpecLauncher {
  * Returns a [SpecLauncher] to be used for launching specs.
  *
  * Will use a [SpecLauncherExtension] if provided otherwise will default to the
- * [DefaultSpecLauncher] using values provided by configuration.
+ * [DefaultTestSuiteScheduler] using values provided by configuration.
  */
 @ExperimentalKotest
 fun specLauncher(): SpecLauncher {
@@ -33,7 +34,7 @@ fun specLauncher(): SpecLauncher {
       .firstOrNone()
       .map { it.launcher() }
       .getOrElse {
-         DefaultSpecLauncher(
+         DefaultTestSuiteScheduler(
             configuration.concurrentSpecs ?: configuration.parallelism,
             coroutineDispatcherFactory()
          )
