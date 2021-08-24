@@ -2,12 +2,15 @@ package com.sksamuel.kotest.property.arbitrary
 
 import io.kotest.assertions.throwables.shouldNotThrow
 import io.kotest.core.spec.style.FunSpec
+import io.kotest.inspectors.forAll
 import io.kotest.matchers.collections.shouldContainExactly
+import io.kotest.matchers.collections.shouldNotBeIn
 import io.kotest.property.Arb
 import io.kotest.property.EdgeConfig
 import io.kotest.property.RandomSource
 import io.kotest.property.Sample
 import io.kotest.property.arbitrary.filter
+import io.kotest.property.arbitrary.filterNot
 import io.kotest.property.arbitrary.int
 import io.kotest.property.arbitrary.take
 import io.kotest.property.arbitrary.withEdgecases
@@ -38,6 +41,18 @@ class FilterTest : FunSpec({
 
       shouldNotThrow<StackOverflowError> {
          arb.filter { it % 2 == 0 }.take(1000000).toList()
+      }
+   }
+
+   test("should apply filter to shrinks") {
+      val filteredElements = listOf(1, -1)
+      val arb = Arb.int(-100..100).filterNot { filteredElements.contains(it) }
+      val samples = arb.samples(RandomSource.default()).take(1000)
+      samples.forAll { sample ->
+         sample.shrinks.value() shouldNotBeIn filteredElements
+         sample.shrinks.children.value.forAll {
+            it.value() shouldNotBeIn filteredElements
+         }
       }
    }
 })
