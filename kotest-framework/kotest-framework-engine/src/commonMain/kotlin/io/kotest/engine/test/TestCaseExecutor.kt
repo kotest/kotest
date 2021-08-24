@@ -54,9 +54,7 @@ class TestCaseExecutor(
       }
 
       val result = pipeline.foldRight(innerExecute) { ext, fn ->
-         { tc, ctx ->
-            if (ext.shouldApply(tc)) ext.execute(fn)(tc, ctx) else fn(tc, ctx)
-         }
+         { tc, ctx -> ext.execute(fn)(tc, ctx) }
       }.invoke(testCase, context)
 
       when (result.status) {
