@@ -10,7 +10,7 @@ import kotlinx.coroutines.coroutineScope
  * Execute the test case wrapped in a [coroutineScope], so that we wait for any child coroutines launched
  * by the user inside the test function to complete before the engine marks the test as completed.
  */
-internal object CoroutineScopeTestExecutionExtension : TestExecutionExtension {
+internal object CoroutineScopeTestExecutionFilter : TestExecutionFilter {
    override suspend fun execute(
       test: suspend (TestCase, TestContext) -> TestResult
    ): suspend (TestCase, TestContext) -> TestResult = { testCase, context ->
