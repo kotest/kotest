@@ -45,8 +45,8 @@ actual class SpecRunner {
 
                }
                // some frameworks default to a 2000 timeout,
-               // we can change this to the kotest test setting
-               test.timeout(4000)
+               // here we set to a high number and use the timeout support kotest provides via coroutines
+               test.timeout(Int.MAX_VALUE)
                Unit
             } else {
                xit(root.testCase.displayName) {}

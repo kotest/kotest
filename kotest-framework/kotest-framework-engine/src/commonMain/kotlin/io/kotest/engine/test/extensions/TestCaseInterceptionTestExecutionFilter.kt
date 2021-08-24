@@ -9,11 +9,11 @@ import io.kotest.engine.test.withCoroutineContext
 import kotlin.coroutines.coroutineContext
 
 /**
- * This [TestExecutionExtension] executes any user level [TestCaseExtension]s.
+ * This [TestExecutionFilter] executes any user level [TestCaseExtension]s.
  *
  * This extension should happen early, so users can override any disabled status.
  */
-object TestCaseInterceptionTestExecutionExtension : TestExecutionExtension {
+object TestCaseInterceptionTestExecutionFilter : TestExecutionFilter {
 
    /**
     * Returns the runtime [TestCaseExtension]s applicable for this [TestCase].

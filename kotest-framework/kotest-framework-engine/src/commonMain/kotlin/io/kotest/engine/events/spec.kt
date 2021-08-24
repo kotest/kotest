@@ -2,6 +2,7 @@ package io.kotest.engine.events
 
 import io.kotest.core.config.configuration
 import io.kotest.core.config.testListeners
+import io.kotest.core.extensions.SpecFinalizeExtension
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.resolvedTestListeners
 import io.kotest.fp.Try
@@ -34,5 +35,10 @@ internal suspend fun Spec.invokeAfterSpec(): Try<Spec> = Try {
 
    val listeners = resolvedTestListeners() + configuration.testListeners()
    listeners.forEach { it.afterSpec(this) }
+
+   configuration.extensions().filterIsInstance<SpecFinalizeExtension>().forEach {
+      it.finalize(this)
+   }
+
    this
 }

@@ -10,9 +10,9 @@ import io.kotest.mpp.timeInMillis
 
 /**
  * Captures exceptions in downstream test functions and converts to test results.
- * Any [TestExecutionExtension]s that throw should appear after this extension.
+ * Any [TestExecutionFilter]s that throw should appear after this extension.
  */
-class ExceptionCapturingTestExecutionExtension(private val start: Long) : TestExecutionExtension {
+class ExceptionCapturingTestExecutionFilter(private val start: Long) : TestExecutionFilter {
 
    override suspend fun execute(
       test: suspend (TestCase, TestContext) -> TestResult

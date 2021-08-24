@@ -1,6 +1,6 @@
 package io.kotest.property.lifecycle
 
-import io.kotest.core.extensions.SpecExtension
+import io.kotest.core.extensions.SpecInterceptExtension
 import io.kotest.core.spec.Spec
 import io.kotest.property.AfterPropertyContextElement
 import io.kotest.property.BeforePropertyContextElement
@@ -8,7 +8,7 @@ import kotlinx.coroutines.withContext
 import kotlin.coroutines.coroutineContext
 import kotlin.reflect.KClass
 
-interface BeforeAndAfterPropertyTestExtension : SpecExtension {
+interface BeforeAndAfterPropertyTestInterceptExtension : SpecInterceptExtension {
 
    suspend fun beforeProperty()
    suspend fun afterProperty()
@@ -29,14 +29,14 @@ interface BeforeAndAfterPropertyTestExtension : SpecExtension {
 }
 
 fun Spec.beforeProperty(f: suspend () -> Unit) {
-   extension(object : BeforeAndAfterPropertyTestExtension {
+   extension(object : BeforeAndAfterPropertyTestInterceptExtension {
       override suspend fun beforeProperty() { f() }
       override suspend fun afterProperty() { }
    })
 }
 
 fun Spec.afterProperty(f: suspend () -> Unit) {
-   extension(object : BeforeAndAfterPropertyTestExtension {
+   extension(object : BeforeAndAfterPropertyTestInterceptExtension {
       override suspend fun beforeProperty() { }
       override suspend fun afterProperty() { f() }
    })

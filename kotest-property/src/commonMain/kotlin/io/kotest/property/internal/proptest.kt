@@ -7,17 +7,21 @@ import io.kotest.property.PropTestConfig
 import io.kotest.property.PropertyContext
 import io.kotest.property.RandomSource
 import io.kotest.property.classifications.outputClassifications
+import io.kotest.property.computeDefaultIteration
 import io.kotest.property.random
 import kotlin.math.max
 
+private fun checkMinSize(minSize: Int, iterations: Int) =
+   require(iterations >= minSize) { "Require at least $minSize iterations to cover requirements" }
+
 suspend fun <A> proptest(
-   iterations: Int,
    genA: Gen<A>,
    config: PropTestConfig,
    property: suspend PropertyContext.(A) -> Unit
 ): PropertyContext {
 
-   require(iterations >= genA.minIterations()) { "Require at least ${genA.minIterations()} iterations to cover requirements" }
+   val iterations = config.iterations ?: computeDefaultIteration(genA)
+   checkMinSize(genA.minIterations(), iterations)
 
    val context = PropertyContext()
    val random = config.seed?.random() ?: RandomSource.default()
@@ -66,7 +70,6 @@ suspend fun <A> proptest(
 }
 
 suspend fun <A, B> proptest(
-   iterations: Int,
    genA: Gen<A>,
    genB: Gen<B>,
    config: PropTestConfig,
@@ -75,7 +78,8 @@ suspend fun <A, B> proptest(
 
    // we must have enough iterations to cover the max(minsize).
    val minSize = max(genA.minIterations(), genB.minIterations())
-   require(iterations >= minSize) { "Require at least $minSize iterations to cover requirements" }
+   val iterations = config.iterations ?: computeDefaultIteration(genA, genB)
+   checkMinSize(minSize, iterations)
 
    val context = PropertyContext()
    val random = config.seed?.random() ?: RandomSource.default()
@@ -124,7 +128,6 @@ suspend fun <A, B> proptest(
 }
 
 suspend fun <A, B, C> proptest(
-   iterations: Int,
    genA: Gen<A>,
    genB: Gen<B>,
    genC: Gen<C>,
@@ -134,7 +137,8 @@ suspend fun <A, B, C> proptest(
 
    // we must have enough iterations to cover the max(minsize).
    val minSize = max(max(genA.minIterations(), genB.minIterations()), genC.minIterations())
-   require(iterations >= minSize) { "Require at least $minSize iterations to cover requirements" }
+   val iterations = config.iterations ?: computeDefaultIteration(genA, genB, genC)
+   checkMinSize(minSize, iterations)
 
    val context = PropertyContext()
    val random = config.seed?.random() ?: RandomSource.default()
@@ -187,7 +191,6 @@ suspend fun <A, B, C> proptest(
 }
 
 suspend fun <A, B, C, D> proptest(
-   iterations: Int,
    genA: Gen<A>,
    genB: Gen<B>,
    genC: Gen<C>,
@@ -200,7 +203,8 @@ suspend fun <A, B, C, D> proptest(
 
    val minSize =
       listOf(genA.minIterations(), genB.minIterations(), genC.minIterations(), genD.minIterations()).maxOrNull() ?: 0
-   require(iterations >= minSize) { "Require at least $minSize iterations to cover requirements" }
+   val iterations = config.iterations ?: computeDefaultIteration(genA, genB, genC, genD)
+   checkMinSize(minSize, iterations)
 
    val context = PropertyContext()
    val random = config.seed?.random() ?: RandomSource.default()
@@ -252,7 +256,6 @@ suspend fun <A, B, C, D> proptest(
 }
 
 suspend fun <A, B, C, D, E> proptest(
-   iterations: Int,
    genA: Gen<A>,
    genB: Gen<B>,
    genC: Gen<C>,
@@ -271,7 +274,8 @@ suspend fun <A, B, C, D, E> proptest(
       genD.minIterations(),
       genE.minIterations()
    ).maxOrNull() ?: 0
-   require(iterations >= minSize) { "Require at least $minSize iterations to cover requirements" }
+   val iterations = config.iterations ?: computeDefaultIteration(genA, genB, genC, genD, genE)
+   checkMinSize(minSize, iterations)
 
    val context = PropertyContext()
    val random = config.seed?.random() ?: RandomSource.default()
@@ -344,7 +348,6 @@ suspend fun <A, B, C, D, E> proptest(
 }
 
 suspend fun <A, B, C, D, E, F> proptest(
-   iterations: Int,
    genA: Gen<A>,
    genB: Gen<B>,
    genC: Gen<C>,
@@ -365,7 +368,8 @@ suspend fun <A, B, C, D, E, F> proptest(
       genE.minIterations(),
       genF.minIterations()
    ).maxOrNull() ?: 0
-   require(iterations >= minSize) { "Require at least $minSize iterations to cover requirements" }
+   val iterations = config.iterations ?: computeDefaultIteration(genA, genB, genC, genD, genE, genF)
+   checkMinSize(minSize, iterations)
 
    val context = PropertyContext()
    val random = config.seed?.random() ?: RandomSource.default()
@@ -410,7 +414,6 @@ suspend fun <A, B, C, D, E, F> proptest(
 }
 
 suspend fun <A, B, C, D, E, F, G> proptest(
-   iterations: Int,
    genA: Gen<A>,
    genB: Gen<B>,
    genC: Gen<C>,
@@ -433,7 +436,8 @@ suspend fun <A, B, C, D, E, F, G> proptest(
       genF.minIterations(),
       genG.minIterations(),
    ).maxOrNull() ?: 0
-   require(iterations >= minSize) { "Require at least $minSize iterations to cover requirements" }
+   val iterations = config.iterations ?: computeDefaultIteration(genA, genB, genC, genD, genE, genF, genG)
+   checkMinSize(minSize, iterations)
 
    val context = PropertyContext()
    val random = config.seed?.random() ?: RandomSource.default()
@@ -481,7 +485,6 @@ suspend fun <A, B, C, D, E, F, G> proptest(
 }
 
 suspend fun <A, B, C, D, E, F, G, H> proptest(
-   iterations: Int,
    genA: Gen<A>,
    genB: Gen<B>,
    genC: Gen<C>,
@@ -506,7 +509,8 @@ suspend fun <A, B, C, D, E, F, G, H> proptest(
       genG.minIterations(),
       genH.minIterations(),
    ).maxOrNull() ?: 0
-   require(iterations >= minSize) { "Require at least $minSize iterations to cover requirements" }
+   val iterations = config.iterations ?: computeDefaultIteration(genA, genB, genC, genD, genE, genF, genG, genH)
+   checkMinSize(minSize, iterations)
 
    val context = PropertyContext()
    val random = config.seed?.random() ?: RandomSource.default()
@@ -557,7 +561,6 @@ suspend fun <A, B, C, D, E, F, G, H> proptest(
 }
 
 suspend fun <A, B, C, D, E, F, G, H, I> proptest(
-   iterations: Int,
    genA: Gen<A>,
    genB: Gen<B>,
    genC: Gen<C>,
@@ -584,7 +587,8 @@ suspend fun <A, B, C, D, E, F, G, H, I> proptest(
       genH.minIterations(),
       genI.minIterations(),
    ).maxOrNull() ?: 0
-   require(iterations >= minSize) { "Require at least $minSize iterations to cover requirements" }
+   val iterations = config.iterations ?: computeDefaultIteration(genA, genB, genC, genD, genE, genF, genG, genH, genI)
+   checkMinSize(minSize, iterations)
 
    val context = PropertyContext()
    val random = config.seed?.random() ?: RandomSource.default()
@@ -638,7 +642,6 @@ suspend fun <A, B, C, D, E, F, G, H, I> proptest(
 }
 
 suspend fun <A, B, C, D, E, F, G, H, I, J> proptest(
-   iterations: Int,
    genA: Gen<A>,
    genB: Gen<B>,
    genC: Gen<C>,
@@ -667,7 +670,8 @@ suspend fun <A, B, C, D, E, F, G, H, I, J> proptest(
       genI.minIterations(),
       genJ.minIterations(),
    ).maxOrNull() ?: 0
-   require(iterations >= minSize) { "Require at least $minSize iterations to cover requirements" }
+   val iterations = config.iterations ?: computeDefaultIteration(genA, genB, genC, genD, genE, genF, genG, genH, genI, genJ)
+   checkMinSize(minSize, iterations)
 
    val context = PropertyContext()
    val random = config.seed?.random() ?: RandomSource.default()
@@ -724,7 +728,6 @@ suspend fun <A, B, C, D, E, F, G, H, I, J> proptest(
 }
 
 suspend fun <A, B, C, D, E, F, G, H, I, J, K> proptest(
-   iterations: Int,
    genA: Gen<A>,
    genB: Gen<B>,
    genC: Gen<C>,
@@ -755,7 +758,8 @@ suspend fun <A, B, C, D, E, F, G, H, I, J, K> proptest(
       genJ.minIterations(),
       genK.minIterations(),
    ).maxOrNull() ?: 0
-   require(iterations >= minSize) { "Require at least $minSize iterations to cover requirements" }
+   val iterations = config.iterations ?: computeDefaultIteration(genA, genB, genC, genD, genE, genF, genG, genH, genI, genJ, genK)
+   checkMinSize(minSize, iterations)
 
    val context = PropertyContext()
    val random = config.seed?.random() ?: RandomSource.default()
@@ -827,7 +831,6 @@ suspend fun <A, B, C, D, E, F, G, H, I, J, K> proptest(
 }
 
 suspend fun <A, B, C, D, E, F, G, H, I, J, K, L> proptest(
-   iterations: Int,
    genA: Gen<A>,
    genB: Gen<B>,
    genC: Gen<C>,
@@ -860,7 +863,8 @@ suspend fun <A, B, C, D, E, F, G, H, I, J, K, L> proptest(
       genK.minIterations(),
       genL.minIterations(),
    ).maxOrNull() ?: 0
-   require(iterations >= minSize) { "Require at least $minSize iterations to cover requirements" }
+   val iterations = config.iterations ?: computeDefaultIteration(genA, genB, genC, genD, genE, genF, genG, genH, genI, genJ, genK, genL)
+   checkMinSize(minSize, iterations)
 
    val context = PropertyContext()
    val random = config.seed?.random() ?: RandomSource.default()

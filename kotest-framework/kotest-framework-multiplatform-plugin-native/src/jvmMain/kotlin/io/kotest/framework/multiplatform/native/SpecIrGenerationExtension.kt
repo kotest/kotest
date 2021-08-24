@@ -99,7 +99,7 @@ class SpecIrGenerationExtension(private val messageCollector: MessageCollector) 
          override fun visitFileNew(declaration: IrFile): IrFile {
             super.visitFileNew(declaration)
             val specs = declaration.specs()
-            messageCollector.toLogger().log("${declaration.name} contains ${specs.size}")
+            messageCollector.toLogger().log("${declaration.name} contains ${specs.size} spec(s): ${specs.joinToString(", ") { it.kotlinFqName.asString() }}")
             this.specs.addAll(specs)
             return declaration
          }

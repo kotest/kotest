@@ -4,10 +4,13 @@ import io.kotest.core.spec.Spec
 import io.kotest.core.test.TestCase
 import kotlin.reflect.KClass
 
+@Deprecated("Renamed to SpecInterceptExtension")
+typealias SpecExtension = SpecInterceptExtension
+
 /**
  * Extension point that allows intercepting execution of specs.
  */
-interface SpecExtension : Extension {
+interface SpecInterceptExtension : Extension {
 
    /**
     * Intercepts a [Spec] before it has been instantiated.
