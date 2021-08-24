@@ -76,4 +76,4 @@ object NoopCoroutineDispatcherProvider : CoroutineDispatcherProvider {
    override fun release(spec: KClass<out Spec>) {}
 }
 
-//expect val defaultCoroutineDispatcherProvider: CoroutineDispatcherProvider
+expect val defaultCoroutineDispatcherProvider: CoroutineDispatcherProvider

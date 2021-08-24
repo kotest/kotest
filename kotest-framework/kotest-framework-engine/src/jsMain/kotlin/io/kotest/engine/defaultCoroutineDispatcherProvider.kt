@@ -1,0 +1,3 @@
+package io.kotest.engine
+
+actual val defaultCoroutineDispatcherProvider: CoroutineDispatcherProvider = NoopCoroutineDispatcherProvider

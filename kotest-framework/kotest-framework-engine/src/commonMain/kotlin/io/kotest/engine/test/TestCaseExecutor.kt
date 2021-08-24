@@ -1,11 +1,13 @@
 package io.kotest.engine.test
 
+import io.kotest.core.config.configuration
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestContext
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestStatus
 import io.kotest.engine.test.extensions.AssertionModeTestExecutionFilter
 import io.kotest.engine.test.extensions.CoroutineDebugProbeTestExecutionFilter
+import io.kotest.engine.test.extensions.CoroutineDispatcherTestExecutionFilter
 import io.kotest.engine.test.extensions.CoroutineScopeTestExecutionFilter
 import io.kotest.engine.test.extensions.EnabledCheckTestExecutionFilter
 import io.kotest.engine.test.extensions.ExceptionCapturingTestExecutionFilter
@@ -36,6 +38,7 @@ class TestCaseExecutor(
 
       val pipeline = listOf(
          CoroutineDebugProbeTestExecutionFilter,
+         CoroutineDispatcherTestExecutionFilter(configuration),
          TestCaseInterceptionTestExecutionFilter,
          EnabledCheckTestExecutionFilter,
          LifecycleTestExecutionFilter(listener, start),
