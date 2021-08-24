@@ -12,14 +12,18 @@ import io.kotest.engine.withDebugProbe
  */
 object CoroutineDebugProbeTestExecutionFilter : TestExecutionFilter {
 
-   override suspend fun shouldApply(testCase: TestCase): Boolean {
+   private fun shouldApply(testCase: TestCase): Boolean {
       return testCase.config.coroutineDebugProbes ?: configuration.coroutineDebugProbes
    }
 
    override suspend fun execute(
       test: suspend (TestCase, TestContext) -> TestResult
    ): suspend (TestCase, TestContext) -> TestResult = { testCase, context ->
-      withDebugProbe {
+      if (shouldApply(testCase)) {
+         withDebugProbe {
+            test(testCase, context)
+         }
+      } else {
          test(testCase, context)
       }
    }
