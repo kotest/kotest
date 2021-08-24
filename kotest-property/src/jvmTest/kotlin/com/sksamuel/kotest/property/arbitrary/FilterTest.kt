@@ -47,7 +47,7 @@ class FilterTest : FunSpec({
    test("should apply filter to shrinks") {
       val filteredElements = listOf(1, -1)
       val arb = Arb.int(-100..100).filterNot { filteredElements.contains(it) }
-      val samples = arb.samples(RandomSource.default()).take(1000)
+      val samples = arb.samples().take(1000)
       samples.forAll { sample ->
          sample.shrinks.value() shouldNotBeIn filteredElements
          sample.shrinks.children.value.forAll {
