@@ -167,7 +167,7 @@ fun <A> A.asSample(): Sample<A> = Sample(this)
 fun <A> sampleOf(a: A, shrinker: Shrinker<A>) = Sample(a, shrinker.rtree(a))
 
 data class EdgeConfig(
-   val edgecasesGenerationProbability: Double = PropertyTesting.edgecasesGenerationProbability
+   val edgecasesGenerationProbability: Double = PropertyTesting.defaultEdgecasesGenerationProbability
 ) {
    companion object;
 
