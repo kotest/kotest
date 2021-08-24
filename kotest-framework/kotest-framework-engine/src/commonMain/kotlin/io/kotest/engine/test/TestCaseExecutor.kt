@@ -38,7 +38,7 @@ class TestCaseExecutor(
 
       val pipeline = listOf(
          CoroutineDebugProbeTestExecutionFilter,
-         CoroutineDispatcherTestExecutionFilter(configuration),
+       //  CoroutineDispatcherTestExecutionFilter(configuration),
          TestCaseInterceptionTestExecutionFilter,
          EnabledCheckTestExecutionFilter,
          LifecycleTestExecutionFilter(listener, start),

@@ -17,5 +17,5 @@ interface TestScheduler {
     * @param run the function to invoke to execute each test.
     * @param tests the tests to execute
     */
-   suspend fun launch(run: suspend (TestCase) -> Unit, tests: List<TestCase>)
+   suspend fun schedule(run: suspend (TestCase) -> Unit, tests: List<TestCase>)
 }

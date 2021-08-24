@@ -67,6 +67,7 @@ interface CoroutineDispatcherProvider {
 
 /**
  * An implementation of [CoroutineDispatcherProvider] that does not switch dispatchers.
+ * This is used in JS and Native engines were all tests run on the main dispatcher by default.
  */
 object NoopCoroutineDispatcherProvider : CoroutineDispatcherProvider {
    override fun acquire(spec: KClass<*>): CoroutineDispatcher? = null

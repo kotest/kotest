@@ -14,15 +14,13 @@ import kotlinx.coroutines.sync.withPermit
  * @param maxConcurrent The maximum number of tests to schedule concurrently.
  */
 @ExperimentalKotest
-class ConcurrentTestScheduler(
-   private val maxConcurrent: Int,
-) : TestScheduler {
+class ConcurrentTestScheduler(private val maxConcurrent: Int) : TestScheduler {
 
    private val semaphore = Semaphore(maxConcurrent)
 
-   override suspend fun launch(run: suspend (TestCase) -> Unit, tests: List<TestCase>) {
+   override suspend fun schedule(run: suspend (TestCase) -> Unit, tests: List<TestCase>) {
       log { "ConcurrentTestScheduler: Launching ${tests.size} tests with $maxConcurrent max concurrency" }
-      coroutineScope {
+      coroutineScope { // will wait for all tests to complete
          tests.forEach { test ->
             semaphore.withPermit {
                log { "ConcurrentTestScheduler: Acquired permit for [$test]" }

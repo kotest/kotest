@@ -7,11 +7,12 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 
 /**
- * This implementation of [TestScheduler] will launch all tests consecutively.
+ * This implementation of [TestScheduler] will launch all tests consecutively, waiting
+ * for each test to complete before launching the next.
  */
 @ExperimentalKotest
 object SequentialTestScheduler : TestScheduler {
-   override suspend fun launch(run: suspend (TestCase) -> Unit, tests: List<TestCase>) {
+   override suspend fun schedule(run: suspend (TestCase) -> Unit, tests: List<TestCase>) {
       log { "SequentialTestLauncher: Launching ${tests.size} sequentially" }
       tests.forEach { test ->
          coroutineScope { // will wait for the launched test to complete
