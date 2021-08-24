@@ -12,6 +12,11 @@ import kotlin.native.concurrent.ThreadLocal
 @ThreadLocal
 object PropertyTesting {
    var maxFilterAttempts: Int = 10
+   var shouldPrintShrinkSteps: Boolean = sysprop("kotest.proptest.output.shrink-steps", "true") == "true"
+   @Deprecated("This property is no longer used and will be removed")
+   var shouldPrintGeneratedValues: Boolean = sysprop("kotest.proptest.output.generated-values", "false") == "true"
+   @Deprecated("This property is no longer used and will be removed")
+   var edgecasesBindDeterminism: Double = sysprop("kotest.proptest.arb.edgecases-bind-determinism", "0.9").toDouble()
 
    // PropTestConfig
    var defaultSeed: Long? = null
@@ -26,13 +31,6 @@ object PropertyTesting {
       get() = defaultEdgecasesGenerationProbability
       set(value) { defaultEdgecasesGenerationProbability = value }
    var defaultOutputClassifications: Boolean = sysprop("kotest.proptest.arb.output.classifications", "false") == "true"
-
-   var shouldPrintShrinkSteps: Boolean = sysprop("kotest.proptest.output.shrink-steps", "true") == "true"
-   @Deprecated("This property is no longer used and will be removed")
-   var shouldPrintGeneratedValues: Boolean = sysprop("kotest.proptest.output.generated-values", "false") == "true"
-   @Deprecated("This property is no longer used and will be removed")
-   var edgecasesBindDeterminism: Double = sysprop("kotest.proptest.arb.edgecases-bind-determinism", "0.9").toDouble()
-
 }
 
 /**
