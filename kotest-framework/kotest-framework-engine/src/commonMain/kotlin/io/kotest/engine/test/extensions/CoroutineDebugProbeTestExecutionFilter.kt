@@ -10,7 +10,7 @@ import io.kotest.engine.withDebugProbe
  * If configured, then the kotlinx debug probe is installed for coroutines.
  * Note: This is a JVM only option.
  */
-object CoroutineDebugProbeTestExecutionExtension : TestExecutionExtension {
+object CoroutineDebugProbeTestExecutionFilter : TestExecutionFilter {
 
    override suspend fun shouldApply(testCase: TestCase): Boolean {
       return testCase.config.coroutineDebugProbes ?: configuration.coroutineDebugProbes

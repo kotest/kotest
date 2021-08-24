@@ -20,10 +20,10 @@ import kotlin.math.min
  * The [TimeoutExecutionContext] is used to provide a way of executing functions on the underlying platform
  * in a way that best utilizes threads or the lack of on that platform.
  */
-class TimeoutTestExecutionExtension(
+class TimeoutTestExecutionFilter(
    private val ec: TimeoutExecutionContext,
    private val start: Long,
-) : TestExecutionExtension {
+) : TestExecutionFilter {
 
    private fun resolvedTimeout(testCase: TestCase): Long =
       testCase.config.timeout?.inWholeMilliseconds
