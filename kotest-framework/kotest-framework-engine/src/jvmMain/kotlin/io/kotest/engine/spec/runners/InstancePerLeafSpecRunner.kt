@@ -19,6 +19,7 @@ import io.kotest.engine.spec.SpecRunner
 import io.kotest.engine.test.DuplicateTestNameHandler
 import io.kotest.engine.events.invokeAfterSpec
 import io.kotest.engine.events.invokeBeforeSpec
+import io.kotest.engine.test.scheduler.TestScheduler
 import io.kotest.fp.Try
 import io.kotest.mpp.log
 import kotlinx.coroutines.coroutineScope
@@ -28,7 +29,7 @@ import kotlin.coroutines.CoroutineContext
 
 internal class InstancePerLeafSpecRunner(
    listener: TestEngineListener,
-   launcher: TestLauncher
+   launcher: TestScheduler
 ) : SpecRunner(listener, launcher) {
 
    private val results = mutableMapOf<TestCase, TestResult>()

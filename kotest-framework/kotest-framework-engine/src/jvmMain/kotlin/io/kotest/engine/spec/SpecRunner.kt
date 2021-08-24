@@ -4,8 +4,8 @@ import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.Spec
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
-import io.kotest.engine.launchers.TestLauncher
 import io.kotest.engine.listener.TestEngineListener
+import io.kotest.engine.test.scheduler.TestScheduler
 import io.kotest.fp.Try
 import io.kotest.mpp.NamedThreadFactory
 import io.kotest.mpp.log
@@ -25,7 +25,7 @@ import kotlin.reflect.KClass
  */
 abstract class SpecRunner(
    val listener: TestEngineListener,
-   val launcher: TestLauncher,
+   private val scheduler: TestScheduler,
 ) {
 
    /**
@@ -39,8 +39,8 @@ abstract class SpecRunner(
     */
    protected suspend fun launch(spec: Spec, run: suspend (TestCase) -> Unit) {
       val rootTests = spec.materializeAndOrderRootTests().map { it.testCase }
-      log { "SingleInstanceSpecRunner: Launching ${rootTests.size} root tests with launcher $launcher" }
-      launcher.launch(run, rootTests)
+      log { "SingleInstanceSpecRunner: Launching ${rootTests.size} root tests with launcher $scheduler" }
+      scheduler.schedule(run, rootTests)
    }
 
    /**
