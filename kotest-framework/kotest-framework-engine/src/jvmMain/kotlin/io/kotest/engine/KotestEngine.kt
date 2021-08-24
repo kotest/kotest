@@ -16,6 +16,7 @@ import io.kotest.engine.extensions.KotestPropertiesExtension
 import io.kotest.engine.extensions.SpecSortEngineExtension
 import io.kotest.engine.extensions.SpecifiedTagsTagExtension
 import io.kotest.engine.extensions.TestDslStateExtensions
+import io.kotest.engine.extensions.WriteFailuresExtension
 import io.kotest.engine.launchers.specLauncher
 import io.kotest.engine.listener.TestEngineListener
 import io.kotest.engine.spec.SpecExecutor
@@ -56,6 +57,7 @@ class KotestEngine(private val config: KotestEngineConfig) {
          KotestPropertiesExtension,
          TestDslStateExtensions,
          SpecSortEngineExtension,
+         WriteFailuresExtension(configuration.specFailureFilePath),
          if (config.dumpConfig) DumpConfigExtension(configuration) else null,
          if (configuration.failOnEmptyTestSuite) EmptyTestSuiteExtension else null,
       )
@@ -101,7 +103,7 @@ class KotestEngine(private val config: KotestEngineConfig) {
 
    /**
     * Submit the test suite to be executed. Returns a success if everything completed normally,
-    * or returns an failure if an unexpected (not test failure) error occured.
+    * or returns a failure if an unexpected (not test failure) error occured.
     */
    private suspend fun submitAll(suite: TestSuite, listener: TestEngineListener): Try<Unit> = Try {
       withTimeout(configuration.projectTimeout) {

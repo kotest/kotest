@@ -21,7 +21,7 @@ import io.kotest.mpp.timeInMillis
 /**
  * Executes a single [TestCase].
  *
- * Uses a [TestCaseExecutionListener] to notify callers of events in the test.
+ * Uses a [TestCaseExecutionListener] to notify callers of events in the test lifecycle.
  *
  */
 class TestCaseExecutor(

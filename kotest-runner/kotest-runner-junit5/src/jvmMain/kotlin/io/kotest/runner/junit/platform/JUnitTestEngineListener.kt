@@ -15,7 +15,6 @@ import io.kotest.core.test.createTestName
 import io.kotest.engine.events.AfterProjectListenerException
 import io.kotest.engine.events.BeforeProjectListenerException
 import io.kotest.engine.listener.TestEngineListener
-import io.kotest.engine.writeSpecFailures
 import io.kotest.mpp.log
 import org.junit.platform.engine.EngineExecutionListener
 import org.junit.platform.engine.TestDescriptor
@@ -94,9 +93,6 @@ class JUnitTestEngineListener(
 
    override suspend fun engineFinished(t: List<Throwable>) {
       log { "Engine finished; throwables=[${t.joinToString(separator = "\n", transform = { it.toString() })}]" }
-
-      if (configuration.writeSpecFailureFile)
-         writeSpecFailures(failedSpecs, configuration.specFailureFilePath)
 
       val result = t.map {
          when (it) {
