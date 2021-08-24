@@ -10,7 +10,6 @@ import io.kotest.property.EdgeConfig
 import io.kotest.property.RandomSource
 import io.kotest.property.Sample
 import io.kotest.property.arbitrary.filter
-import io.kotest.property.arbitrary.filterNot
 import io.kotest.property.arbitrary.int
 import io.kotest.property.arbitrary.take
 import io.kotest.property.arbitrary.withEdgecases
@@ -45,13 +44,13 @@ class FilterTest : FunSpec({
    }
 
    test("should apply filter to shrinks") {
-      val filteredElements = listOf(1, -1)
-      val arb = Arb.int(-100..100).filterNot { filteredElements.contains(it) }
-      val samples = arb.samples().take(1000)
-      samples.forAll { sample ->
-         sample.shrinks.value() shouldNotBeIn filteredElements
+      val arbEvenInts = Arb.int(-100..100).filter { it % 2 == 0 }
+      val oddNumbers = (-100..100).filter { it % 2 != 0 }
+
+      arbEvenInts.samples().take(100).forAll { sample ->
+         sample.shrinks.value() shouldNotBeIn oddNumbers
          sample.shrinks.children.value.forAll {
-            it.value() shouldNotBeIn filteredElements
+            it.value() shouldNotBeIn oddNumbers
          }
       }
    }
