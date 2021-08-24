@@ -50,9 +50,9 @@ _**Kotlin 1.5 is now the minimum supported version**_
 * Datatest2 has been deprecated
 
 
-## 4.6.2 August 2021
+### 4.6.2 August 2021
 
-### Fixes
+#### Fixes
 
 * Reverted use of 1.5 API introduced erroneously in 4.6.1
 * autoClose breaks lazy #2388
@@ -62,9 +62,9 @@ _**Kotlin 1.5 is now the minimum supported version**_
 * PropTestConfig's iterations parameter is not respected. #2428
 * tempfile and tempdir should fail test when deletion fails #2351
 
-## 4.6.1 July 2021
+### 4.6.1 July 2021
 
-### Fixes
+#### Fixes
 
 * HTMLReporter - css not loading (href of the file is absolute, not relative) #2342
 * Annotations such as @Ignore and @Isolate now work when composed #2279
