@@ -2,7 +2,9 @@ package com.sksamuel.kotest.property.arbitrary
 
 import io.kotest.assertions.throwables.shouldNotThrow
 import io.kotest.core.spec.style.FunSpec
+import io.kotest.inspectors.forAll
 import io.kotest.matchers.collections.shouldContainExactly
+import io.kotest.matchers.collections.shouldNotBeIn
 import io.kotest.property.Arb
 import io.kotest.property.EdgeConfig
 import io.kotest.property.RandomSource
@@ -38,6 +40,18 @@ class FilterTest : FunSpec({
 
       shouldNotThrow<StackOverflowError> {
          arb.filter { it % 2 == 0 }.take(1000000).toList()
+      }
+   }
+
+   test("should apply filter to shrinks") {
+      val arbEvenInts = Arb.int(-100..100).filter { it % 2 == 0 }
+      val oddNumbers = (-100..100).filter { it % 2 != 0 }
+
+      arbEvenInts.samples().take(100).forAll { sample ->
+         sample.shrinks.value() shouldNotBeIn oddNumbers
+         sample.shrinks.children.value.forAll {
+            it.value() shouldNotBeIn oddNumbers
+         }
       }
    }
 })

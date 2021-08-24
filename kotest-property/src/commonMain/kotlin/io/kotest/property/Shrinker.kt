@@ -58,6 +58,14 @@ fun <A, B> RTree<A>.map(f: (A) -> B): RTree<B> {
    return RTree(b, c)
 }
 
+fun <A> RTree<A>.filter(predicate: (A) -> Boolean): RTree<A>? {
+   val a = value()
+   return when {
+      predicate(a) -> RTree({ a }, lazy { children.value.mapNotNull { it.filter(predicate) } })
+      else -> null
+   }
+}
+
 fun <A> RTree<A>.isEmpty() = this.children.value.isEmpty()
 
 fun <A, B> Shrinker<A>.bimap(f: (B) -> A, g: (A) -> B): Shrinker<B> = object : Shrinker<B> {
