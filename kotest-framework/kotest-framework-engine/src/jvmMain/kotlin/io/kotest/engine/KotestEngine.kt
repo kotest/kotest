@@ -16,9 +16,10 @@ import io.kotest.engine.extensions.KotestPropertiesExtension
 import io.kotest.engine.extensions.SpecSortEngineExtension
 import io.kotest.engine.extensions.SpecifiedTagsTagExtension
 import io.kotest.engine.extensions.TestDslStateExtensions
+import io.kotest.engine.extensions.TestSuiteSchedulerExtension
 import io.kotest.engine.extensions.WriteFailuresExtension
-import io.kotest.engine.launchers.specLauncher
 import io.kotest.engine.listener.TestEngineListener
+import io.kotest.engine.spec.DefaultTestSuiteScheduler
 import io.kotest.engine.spec.SpecExecutor
 import io.kotest.fp.Try
 import io.kotest.fp.getOrElse
@@ -123,10 +124,13 @@ class KotestEngine(private val config: KotestEngineConfig) {
          val executor = SpecExecutor(listener)
          log { "KotestEngine: Will use spec executor $executor" }
 
-         val launcher = specLauncher()
-         log { "KotestEngine: Will use spec launcher $launcher" }
+         val scheduler = configuration.extensions()
+            .filterIsInstance<TestSuiteSchedulerExtension>()
+            .firstOrNull()?.scheduler()
+            ?: DefaultTestSuiteScheduler(configuration.concurrentSpecs ?: configuration.parallelism)
 
-         launcher.launch(executor, suite.classes)
+         log { "KotestEngine: Will use scheduler $scheduler" }
+         scheduler.schedule(suite, { }, { executor.execute(it) })
       }
    }.mapFailure {
       when (it) {

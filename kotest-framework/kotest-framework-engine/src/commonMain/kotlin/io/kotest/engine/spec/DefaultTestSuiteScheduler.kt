@@ -32,9 +32,9 @@ class DefaultTestSuiteScheduler(
       // pre-instantiated specs are always treated as isolated
       val (sequential, concurrent) = suite.classes.partition { it.isIsolate() }
       log { "DefaultTestSuiteScheduler: Split specs based on isolation annotations [${sequential.size} sequential ${concurrent.size} concurrent]" }
-      schedule(f2, concurrent, maxConcurrent)
-      schedule(f2, sequential, 1)
-      schedule(f1, suite.specs)
+      schedule(f2, concurrent, 1)
+      //  schedule(f2, sequential, 1)
+      //  schedule(f1, suite.specs)
       log { "DefaultSpecLauncher: All specs have completed" }
    }
 
@@ -48,7 +48,7 @@ class DefaultTestSuiteScheduler(
       coroutineScope {
          classes.forEach { kclass ->
             log { "DefaultTestSuiteScheduler: Scheduling coroutine for spec [$kclass]" }
-            launch {
+             launch {
                semaphore.withPermit {
                   log { "DefaultTestSuiteScheduler: Acquired permit for $kclass" }
                   try {
