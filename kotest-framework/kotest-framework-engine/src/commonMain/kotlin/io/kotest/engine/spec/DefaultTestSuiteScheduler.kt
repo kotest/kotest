@@ -21,9 +21,7 @@ import kotlin.reflect.KClass
  *
  * @param maxConcurrent The maximum number of concurrent coroutines.
  */
-class DefaultTestSuiteScheduler(
-   private val maxConcurrent: Int,
-) : TestSuiteScheduler {
+class DefaultTestSuiteScheduler(private val maxConcurrent: Int) : TestSuiteScheduler {
 
    override suspend fun schedule(suite: TestSuite, f1: suspend (Spec) -> Unit, f2: suspend (KClass<out Spec>) -> Unit) {
       log { "DefaultTestSuiteScheduler: Launching ${suite.specs.size} specs / ${suite.classes.size} classes" }
@@ -33,8 +31,8 @@ class DefaultTestSuiteScheduler(
       val (sequential, concurrent) = suite.classes.partition { it.isIsolate() }
       log { "DefaultTestSuiteScheduler: Split specs based on isolation annotations [${sequential.size} sequential ${concurrent.size} concurrent]" }
       schedule(f2, concurrent, 1)
-      //  schedule(f2, sequential, 1)
-      //  schedule(f1, suite.specs)
+      schedule(f2, sequential, 1)
+      schedule(f1, suite.specs)
       log { "DefaultSpecLauncher: All specs have completed" }
    }
 
@@ -48,7 +46,7 @@ class DefaultTestSuiteScheduler(
       coroutineScope {
          classes.forEach { kclass ->
             log { "DefaultTestSuiteScheduler: Scheduling coroutine for spec [$kclass]" }
-             launch {
+            launch {
                semaphore.withPermit {
                   log { "DefaultTestSuiteScheduler: Acquired permit for $kclass" }
                   try {
