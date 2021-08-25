@@ -1,36 +1,56 @@
 package io.kotest.property
 
+import io.kotest.mpp.atomics.AtomicProperty
 import io.kotest.mpp.sysprop
 import io.kotest.property.classifications.LabelsReporter
 import io.kotest.property.classifications.StandardLabelsReporter
 import kotlin.math.max
-import kotlin.native.concurrent.ThreadLocal
 
 /**
- * Global object for containing settings for property testing.
+ * Global object containing settings for property testing.
  */
-@ThreadLocal
 object PropertyTesting {
-   var maxFilterAttempts: Int = 10
-   var shouldPrintShrinkSteps: Boolean = sysprop("kotest.proptest.output.shrink-steps", "true") == "true"
+   var maxFilterAttempts: Int by AtomicProperty { 10 }
+   var shouldPrintShrinkSteps: Boolean by AtomicProperty {
+      sysprop("kotest.proptest.output.shrink-steps", "true") == "true"
+   }
    @Deprecated("This property is no longer used and will be removed")
-   var shouldPrintGeneratedValues: Boolean = sysprop("kotest.proptest.output.generated-values", "false") == "true"
+   var shouldPrintGeneratedValues: Boolean by AtomicProperty {
+      sysprop("kotest.proptest.output.generated-values", "false") == "true"
+   }
    @Deprecated("This property is no longer used and will be removed")
-   var edgecasesBindDeterminism: Double = sysprop("kotest.proptest.arb.edgecases-bind-determinism", "0.9").toDouble()
+   var edgecasesBindDeterminism: Double by AtomicProperty {
+      sysprop("kotest.proptest.arb.edgecases-bind-determinism", "0.9").toDouble()
+   }
 
-   // PropTestConfig
-   var defaultSeed: Long? = null
-   var defaultMinSuccess: Int = Int.MAX_VALUE
-   var defaultMaxFailure: Int = 0
-   var defaultShrinkingMode: ShrinkingMode = ShrinkingMode.Bounded(1000)
-   var defaultIterationCount: Int = sysprop("kotest.proptest.default.iteration.count", "1000").toInt()
-   var defaultListeners: List<PropTestListener> = listOf()
-   var defaultEdgecasesGenerationProbability: Double = sysprop("kotest.proptest.arb.edgecases-generation-probability", "0.02").toDouble()
+   var defaultSeed: Long? by AtomicProperty {
+      null
+   }
+   var defaultMinSuccess: Int by AtomicProperty {
+      Int.MAX_VALUE
+   }
+   var defaultMaxFailure: Int by AtomicProperty {
+      0
+   }
+   var defaultIterationCount: Int by AtomicProperty {
+      sysprop("kotest.proptest.default.iteration.count", "1000").toInt()
+   }
+   var defaultShrinkingMode: ShrinkingMode by AtomicProperty {
+      ShrinkingMode.Bounded(1000)
+   }
+   var defaultListeners: List<PropTestListener> by AtomicProperty {
+      listOf()
+   }
+   var defaultEdgecasesGenerationProbability: Double by AtomicProperty {
+      sysprop("kotest.proptest.arb.edgecases-generation-probability", "0.02").toDouble()
+   }
    @Deprecated("Use defaultEdgecasesGenerationProbability instead. This property will be removed")
    var edgecasesGenerationProbability: Double
       get() = defaultEdgecasesGenerationProbability
       set(value) { defaultEdgecasesGenerationProbability = value }
-   var defaultOutputClassifications: Boolean = sysprop("kotest.proptest.arb.output.classifications", "false") == "true"
+   var defaultOutputClassifications: Boolean by AtomicProperty {
+      sysprop("kotest.proptest.arb.output.classifications", "false") == "true"
+   }
 }
 
 /**
