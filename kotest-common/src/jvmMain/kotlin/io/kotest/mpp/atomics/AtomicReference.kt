@@ -2,11 +2,13 @@ package io.kotest.mpp.atomics
 
 actual class AtomicReference<T> actual constructor(initialValue: T) {
 
-   private val delegate = java.util.concurrent.atomic.AtomicReference(value)
-   actual fun get() = delegate.get()
-   actual fun set(value: T) {
+   private val delegate = java.util.concurrent.atomic.AtomicReference<T>(initialValue)
+
+   actual var value: T
+      get() = delegate.get()
+      set(value) {
          delegate.set(value)
       }
 
-   actual fun compareAndSet(expected: T, new: T): Boolean = delegate.compareAndSet(expected, new)
+   actual fun compareAndSet(expectedValue: T, newValue: T): Boolean = delegate.compareAndSet(expectedValue, newValue)
 }
