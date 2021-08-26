@@ -14,25 +14,25 @@ object PropertyTesting {
       10
    }
    var shouldPrintShrinkSteps: Boolean by AtomicProperty {
-      sysprop("kotest.proptest.output.shrink-steps", "true") == "true"
+      sysprop("kotest.proptest.output.shrink-steps", true)
    }
    var shouldPrintGeneratedValues: Boolean by AtomicProperty {
-      sysprop("kotest.proptest.output.generated-values", "false") == "true"
+      sysprop("kotest.proptest.output.generated-values", false)
    }
    var edgecasesBindDeterminism: Double by AtomicProperty {
-      sysprop("kotest.proptest.arb.edgecases-bind-determinism", "0.9").toDouble()
+      sysprop("kotest.proptest.arb.edgecases-bind-determinism", 0.9)
    }
    var defaultSeed: Long? by AtomicProperty {
-      null
+      sysprop("kotest.proptest.default.seed", null, { it.toLong() })
    }
    var defaultMinSuccess: Int by AtomicProperty {
-      Int.MAX_VALUE
+      sysprop("kotest.proptest.default.min-success", Int.MAX_VALUE)
    }
    var defaultMaxFailure: Int by AtomicProperty {
-      0
+      sysprop("kotest.proptest.default.max-failure", 0)
    }
    var defaultIterationCount: Int by AtomicProperty {
-      sysprop("kotest.proptest.default.iteration.count", "1000").toInt()
+      sysprop("kotest.proptest.default.iteration.count", 1000)
    }
    var defaultShrinkingMode: ShrinkingMode by AtomicProperty {
       ShrinkingMode.Bounded(1000)
@@ -41,10 +41,10 @@ object PropertyTesting {
       listOf()
    }
    var defaultEdgecasesGenerationProbability: Double by AtomicProperty {
-      sysprop("kotest.proptest.arb.edgecases-generation-probability", "0.02").toDouble()
+      sysprop("kotest.proptest.arb.edgecases-generation-probability", 0.02)
    }
    var defaultOutputClassifications: Boolean by AtomicProperty {
-      sysprop("kotest.proptest.arb.output.classifications", "false") == "true"
+      sysprop("kotest.proptest.arb.output.classifications", false)
    }
 }
 
