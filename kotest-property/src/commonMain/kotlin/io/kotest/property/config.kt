@@ -12,20 +12,18 @@ import kotlin.native.concurrent.ThreadLocal
 @ThreadLocal
 object PropertyTesting {
    var maxFilterAttempts: Int = 10
-   var shouldPrintShrinkSteps: Boolean = sysprop("kotest.proptest.output.shrink-steps", "true") == "true"
-   @Deprecated("This property is no longer used and will be removed")
-   var shouldPrintGeneratedValues: Boolean = sysprop("kotest.proptest.output.generated-values", "false") == "true"
-   @Deprecated("This property is no longer used and will be removed")
-   var edgecasesBindDeterminism: Double = sysprop("kotest.proptest.arb.edgecases-bind-determinism", "0.9").toDouble()
+   var shouldPrintShrinkSteps: Boolean = sysprop("kotest.proptest.output.shrink-steps", true)
+   var shouldPrintGeneratedValues: Boolean = sysprop("kotest.proptest.output.generated-values", false)
+   var edgecasesBindDeterminism: Double = sysprop("kotest.proptest.arb.edgecases-bind-determinism", 0.9)
 
    // PropTestConfig
-   var defaultSeed: Long? = null
-   var defaultMinSuccess: Int = Int.MAX_VALUE
-   var defaultMaxFailure: Int = 0
+   var defaultSeed: Long? = sysprop("kotest.proptest.default.seed", null, { it.toLong() })
+   var defaultMinSuccess: Int = sysprop("kotest.proptest.default.min-success", Int.MAX_VALUE)
+   var defaultMaxFailure: Int = sysprop("kotest.proptest.default.max-failure", 0)
    var defaultShrinkingMode: ShrinkingMode = ShrinkingMode.Bounded(1000)
-   var defaultIterationCount: Int = sysprop("kotest.proptest.default.iteration.count", "1000").toInt()
+   var defaultIterationCount: Int = sysprop("kotest.proptest.default.iteration.count", 1000)
    var defaultListeners: List<PropTestListener> = listOf()
-   var defaultEdgecasesGenerationProbability: Double = sysprop("kotest.proptest.arb.edgecases-generation-probability", "0.02").toDouble()
+   var defaultEdgecasesGenerationProbability: Double = sysprop("kotest.proptest.arb.edgecases-generation-probability", 0.02)
    @Deprecated("Use defaultEdgecasesGenerationProbability instead. This property will be removed")
    var edgecasesGenerationProbability: Double
       get() = defaultEdgecasesGenerationProbability
