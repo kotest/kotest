@@ -28,7 +28,7 @@ object PropertyTesting {
    var edgecasesGenerationProbability: Double
       get() = defaultEdgecasesGenerationProbability
       set(value) { defaultEdgecasesGenerationProbability = value }
-   var defaultOutputClassifications: Boolean = sysprop("kotest.proptest.arb.output.classifications", "false") == "true"
+   var defaultOutputClassifications: Boolean = sysprop("kotest.proptest.arb.output.classifications", false)
 }
 
 /**
