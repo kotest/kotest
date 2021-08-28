@@ -52,6 +52,8 @@ object KotestEngineProperties {
 
    const val projectTimeout = "kotest.framework.projectTimeout"
 
+   const val logLevel = "kotest.framework.logLevel"
+
    const val invocationTimeout = "kotest.framework.invocation.timeout"
 
    const val concurrentSpecs = "kotest.framework.spec.concurrent"
