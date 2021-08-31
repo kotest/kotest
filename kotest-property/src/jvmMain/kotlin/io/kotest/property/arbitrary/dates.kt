@@ -121,8 +121,8 @@ fun InstantRange.random(random: Random): Instant {
 
       val nanos = when {
          seconds == start.epochSecond && seconds == endInclusive.epochSecond -> start.nano..endInclusive.nano
-         seconds == start.epochSecond -> endInclusive.nano..999_999_999
-         seconds == start.epochSecond -> 0..endInclusive.nano
+         seconds == start.epochSecond -> start.nano..999_999_999
+         seconds == endInclusive.epochSecond -> 0..endInclusive.nano
          else -> 0..999_999_999
       }.random(random)
 
