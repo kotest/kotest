@@ -54,8 +54,17 @@ jobs:
                ORG_GRADLE_PROJECT_signingKey: ${{ secrets.SIGNING_KEY }}
                ORG_GRADLE_PROJECT_signingPassword: ${{ secrets.SIGNING_PASSWORD }}
 
-         -  name: publish linux release
+         -  name: publish linux x64 release
             run: ./gradlew publishLinuxX64PublicationToDeployRepository
+            env:
+               RELEASE_VERSION: ${{ github.event.inputs.version }}
+               OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
+               OSSRH_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
+               ORG_GRADLE_PROJECT_signingKey: ${{ secrets.SIGNING_KEY }}
+               ORG_GRADLE_PROJECT_signingPassword: ${{ secrets.SIGNING_PASSWORD }}
+
+         -  name: publish linux Arm64 release
+            run: ./gradlew publishLinuxArm64PublicationToDeployRepository
             env:
                RELEASE_VERSION: ${{ github.event.inputs.version }}
                OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
@@ -81,6 +90,15 @@ jobs:
 
          -  name: publish macosx64 release
             run: ./gradlew publishMacosX64PublicationToDeployRepository
+            env:
+               RELEASE_VERSION: ${{ github.event.inputs.version }}
+               OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
+               OSSRH_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
+               ORG_GRADLE_PROJECT_signingKey: ${{ secrets.SIGNING_KEY }}
+               ORG_GRADLE_PROJECT_signingPassword: ${{ secrets.SIGNING_PASSWORD }}
+
+         -  name: publish macosArm64 release
+            run: ./gradlew publishMacosArm64PublicationToDeployRepository
             env:
                RELEASE_VERSION: ${{ github.event.inputs.version }}
                OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
@@ -186,7 +204,7 @@ jobs:
                java-version: '8'
 
          -  name: deploy to sonatype
-            run: ./gradlew publishMingwX64PublicationToDeployRepository
+            run: ./gradlew publishMingwX64PublicationToDeployRepository publishMingwX86PublicationToDeployRepository
             env:
                RELEASE_VERSION: ${{ github.event.inputs.version }}
                OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}

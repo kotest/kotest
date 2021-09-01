@@ -38,15 +38,21 @@ kotlin {
       }
 
       linuxX64()
+      linuxArm64()
 
       mingwX64()
+      mingwX86()
 
       macosX64()
+      macosArm64()
+
       tvos()
+
       watchosArm32()
       watchosArm64()
       watchosX86()
       watchosX64()
+
       iosX64()
       iosArm64()
       iosArm32()
@@ -111,15 +117,27 @@ kotlin {
          dependsOn(commonMain)
       }
 
-      val linuxX64Main by getting {
-         dependsOn(desktopMain)
-      }
-
       val macosX64Main by getting {
          dependsOn(desktopMain)
       }
 
+      val macosArm64Main by getting {
+         dependsOn(desktopMain)
+      }
+
       val mingwX64Main by getting {
+         dependsOn(desktopMain)
+      }
+
+      val mingwX86Main by getting {
+         dependsOn(desktopMain)
+      }
+
+      val linuxX64Main by getting {
+         dependsOn(desktopMain)
+      }
+
+      val linuxArm64Main by getting {
          dependsOn(desktopMain)
       }
 
@@ -135,15 +153,15 @@ kotlin {
          dependsOn(desktopMain)
       }
 
-      val watchosX86Main by getting {
-         dependsOn(desktopMain)
-      }
-
       val watchosArm32Main by getting {
          dependsOn(desktopMain)
       }
 
       val watchosArm64Main by getting {
+         dependsOn(desktopMain)
+      }
+
+      val watchosX86Main by getting {
          dependsOn(desktopMain)
       }
 

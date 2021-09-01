@@ -25,13 +25,13 @@ jobs:
             with:
                java-version: '8'
 
-         -  name: Run ubuntu tests
+         -  name: Run Ubuntu tests
             if: matrix.os == 'ubuntu-latest'
             run: ./gradlew check --scan
 
-         -  name: Run windows tests
+         -  name: Run Windows tests
             if: matrix.os == 'windows-latest'
-            run: ./gradlew mingwX64Test --scan
+            run: ./gradlew mingwX64Test mingwX86Test --scan
 
          -  name: Run macOS tests
             if: matrix.os == 'macOS-latest'
