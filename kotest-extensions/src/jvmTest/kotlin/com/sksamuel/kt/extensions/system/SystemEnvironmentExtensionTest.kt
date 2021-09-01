@@ -23,12 +23,6 @@ class SystemEnvironmentExtensionTest : FreeSpec() {
    private val key = "SystemEnvironmentExtensionTestFoo"
    private val value = "SystemEnvironmentExtensionTestBar"
 
-   private val mode: OverrideMode = mockk {
-      every { override(any(), any()) } answers {
-         firstArg<Map<String, String>>().plus(secondArg<Map<String, String>>()).toMutableMap()
-      }
-   }
-
    init {
       "Should set environment to specific map" - {
          executeOnAllEnvironmentOverloads {
@@ -59,15 +53,15 @@ class SystemEnvironmentExtensionTest : FreeSpec() {
       val results = mutableListOf<T>()
 
       "String String overload" {
-         results += withEnvironment(key, value, mode) { block() }
+         results += withEnvironment(key, value, OverrideMode.SetOrOverride) { block() }
       }
 
       "Pair overload" {
-         results += withEnvironment(key to value, mode) { block() }
+         results += withEnvironment(key to value, OverrideMode.SetOrOverride) { block() }
       }
 
       "Map overload" {
-         results += withEnvironment(mapOf(key to value), mode) { block() }
+         results += withEnvironment(mapOf(key to value), OverrideMode.SetOrOverride) { block() }
       }
 
       return results
