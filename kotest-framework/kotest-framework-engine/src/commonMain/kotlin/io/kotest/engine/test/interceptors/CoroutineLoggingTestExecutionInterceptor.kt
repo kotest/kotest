@@ -32,7 +32,7 @@ private class TestContextLoggingCoroutineContextElement(val logs: MutableList<An
    companion object Key : CoroutineContext.Key<TestContextLoggingCoroutineContextElement>
 }
 
-@ExperimentalKotest
+@OptIn(ExperimentalKotest::class)
 internal object CoroutineLoggingTestExecutionInterceptor : TestExecutionInterceptor {
    override suspend fun execute(
       test: suspend (TestCase, TestContext) -> TestResult
