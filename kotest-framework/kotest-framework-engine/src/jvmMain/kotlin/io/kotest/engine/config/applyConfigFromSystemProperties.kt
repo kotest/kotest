@@ -8,6 +8,7 @@ import io.kotest.core.test.AssertionMode
 import io.kotest.core.test.DuplicateTestNameMode
 import io.kotest.fp.fmap
 import io.kotest.fp.foreach
+import io.kotest.mpp.env
 import io.kotest.mpp.sysprop
 
 /**
@@ -67,5 +68,9 @@ internal fun duplicateTestNameMode(): DuplicateTestNameMode? =
 internal fun projectTimeout(): Long? =
    sysprop(KotestEngineProperties.projectTimeout).fmap { it.toLong() }
 
-internal fun logLevel(): LogLevel? =
-   sysprop(KotestEngineProperties.logLevel).fmap { LogLevel.from(prop = it) }
+internal fun logLevel(): LogLevel {
+   val levelProp = sysprop(KotestEngineProperties.logLevel).fmap { LogLevel.from(it) }
+   val levelEnv = env(KotestEngineProperties.logLevel).fmap { LogLevel.from(it) }
+
+   return levelProp ?: levelEnv ?: LogLevel.OFF
+}

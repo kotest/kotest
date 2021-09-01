@@ -1,8 +1,5 @@
 package io.kotest.core.config
 
-import io.kotest.core.internal.KotestEngineProperties
-import io.kotest.mpp.env
-
 enum class LogLevel(val level: Int) {
    OFF(0), ERROR(1), WARN(2), INFO(3), DEBUG(4);
 
@@ -13,13 +10,13 @@ enum class LogLevel(val level: Int) {
    fun isDisabled() = level < 1 || level > 4
 
    companion object {
-      fun from(prop: String?): LogLevel = when (prop ?: env(KotestEngineProperties.logLevel) ?: "off") {
-         "debug" -> LogLevel.DEBUG
-         "info" -> LogLevel.INFO
-         "warn" -> LogLevel.WARN
-         "error" -> LogLevel.ERROR
-         "off" -> LogLevel.OFF
-         else -> LogLevel.OFF
+      fun from(level: String?): LogLevel = when (level) {
+         "debug" -> DEBUG
+         "info" -> INFO
+         "warn" -> WARN
+         "error" -> ERROR
+         "off" -> OFF
+         else -> OFF
       }
    }
 }
