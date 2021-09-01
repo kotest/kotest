@@ -222,7 +222,8 @@ slug: framework-config-props.html
 
    foundFiles.forEach { file ->
       val name = file.name
-      val content = file.readLines().joinToString(separator = System.lineSeparator())
+      // intentionally use \n instead of System.lineSeparator to respect .editorconfig
+      val content = file.readLines().joinToString(separator = "\n")
 
       sb.append(fileTemplate.format(name, content))
    }
