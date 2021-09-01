@@ -12,7 +12,7 @@ import io.kotest.mpp.bestName
 /**
  * Validates that a [Spec] style is compatible for platforms that do not support nested tests.
  */
-object SpecStyleValidationInterceptor : EngineInterceptor {
+internal object SpecStyleValidationInterceptor : EngineInterceptor {
 
    override fun intercept(
       suite: TestSuite,

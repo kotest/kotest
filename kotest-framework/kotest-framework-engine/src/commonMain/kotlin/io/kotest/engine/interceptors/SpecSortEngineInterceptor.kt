@@ -12,7 +12,7 @@ import io.kotest.mpp.log
  * An [EngineInterceptor] that sorts specs according to registered [SpecExecutionOrderExtension]s
  * or falling back to the [DefaultSpecExecutionOrderExtension].
  */
-object SpecSortEngineInterceptor : EngineInterceptor {
+internal object SpecSortEngineInterceptor : EngineInterceptor {
    override fun intercept(
       suite: TestSuite,
       listener: TestEngineListener,

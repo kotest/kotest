@@ -12,7 +12,7 @@ import java.nio.file.Files
 import java.nio.file.Paths
 import kotlin.reflect.KClass
 
-class WriteFailuresInterceptor(private val filename: String) : EngineInterceptor {
+internal class WriteFailuresInterceptor(private val filename: String) : EngineInterceptor {
 
    override fun intercept(
       suite: TestSuite,
