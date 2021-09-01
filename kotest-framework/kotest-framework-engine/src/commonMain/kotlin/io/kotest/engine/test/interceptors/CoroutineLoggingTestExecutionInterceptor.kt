@@ -28,9 +28,7 @@ object ConsoleLogListener : LogListener {
 }
 
 @ExperimentalKotest
-private class TestContextLoggingCoroutineContextElement(val logs: MutableList<Any>) : AbstractCoroutineContextElement(
-   Key
-) {
+private class TestContextLoggingCoroutineContextElement(val logs: MutableList<Any>) : AbstractCoroutineContextElement(Key) {
    companion object Key : CoroutineContext.Key<TestContextLoggingCoroutineContextElement>
 }
 
