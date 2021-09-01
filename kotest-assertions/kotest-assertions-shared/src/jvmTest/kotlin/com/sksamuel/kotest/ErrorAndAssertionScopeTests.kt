@@ -43,7 +43,7 @@ class ErrorAndAssertionScopeTests : FunSpec({
       val cases = blockFunctions.map { a -> blockFunctions.map { b -> Pair(a, b) } }.flatten().map {
          BlockFunctionTest(it.first.second, it.first.first, it.second.second, it.second.first)
       }.map {
-         Pair(it.toString(), it) // TODO: what do we think of an interface that kotest knows that lets it use a special function for the the test name?
+         Pair(it.toString(), it)
       }.toTypedArray()
 
       forAll(data = cases) {
