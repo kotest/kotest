@@ -33,7 +33,7 @@ private class TestContextLoggingCoroutineContextElement(val logs: MutableList<An
 }
 
 @ExperimentalKotest
-internal object CoroutineLoggingTestExecutionExtension : TestExecutionFilter {
+internal object CoroutineLoggingTestExecutionFilter : TestExecutionFilter {
    override suspend fun execute(
       test: suspend (TestCase, TestContext) -> TestResult
    ): suspend (TestCase, TestContext) -> TestResult = { testCase, context ->
