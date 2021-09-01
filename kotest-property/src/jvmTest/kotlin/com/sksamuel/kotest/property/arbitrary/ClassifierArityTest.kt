@@ -11,7 +11,7 @@ class ClassifierArityTest : FunSpec() {
 
       test("classifiers for prop test arity 2") {
          val out = captureStandardOut {
-            checkAll<String, Int>(PropTestConfig(outputLabels = true, seed = 678673131234)) { _, _ -> }
+            checkAll<String, Int>(PropTestConfig(outputClassifications = true, seed = 678673131234)) { _, _ -> }
          }
          repeat(2) { k ->
             out.shouldContain("Label statistics for arg $k (1000 inputs):")
@@ -22,7 +22,7 @@ class ClassifierArityTest : FunSpec() {
          val out = captureStandardOut {
             checkAll<Int, Int, Int>(
                PropTestConfig(
-                  outputLabels = true,
+                  outputClassifications = true,
                   seed = 678673131234
                )
             ) { _, _, _ -> }
@@ -36,7 +36,7 @@ class ClassifierArityTest : FunSpec() {
          val out = captureStandardOut {
             checkAll<Int, Int, Int, Int>(
                PropTestConfig(
-                  outputLabels = true,
+                  outputClassifications = true,
                   seed = 678673131234
                )
             ) { _, _, _, _ -> }
@@ -50,7 +50,7 @@ class ClassifierArityTest : FunSpec() {
          val out = captureStandardOut {
             checkAll<Int, Int, Int, Int, Int>(
                PropTestConfig(
-                  outputLabels = true,
+                  outputClassifications = true,
                   seed = 678673131234
                )
             ) { _, _, _, _, _ -> }
@@ -64,7 +64,7 @@ class ClassifierArityTest : FunSpec() {
          val out = captureStandardOut {
             checkAll<Int, Int, Int, Int, Int, Int>(
                PropTestConfig(
-                  outputLabels = true,
+                  outputClassifications = true,
                   seed = 678673131234
                )
             ) { _, _, _, _, _, _ -> }
@@ -78,7 +78,7 @@ class ClassifierArityTest : FunSpec() {
          val out = captureStandardOut {
             checkAll<Int, Int, Int, Int, Int, Int, Int>(
                PropTestConfig(
-                  outputLabels = true,
+                  outputClassifications = true,
                   seed = 678673131234
                )
             ) { _, _, _, _, _, _, _ -> }
@@ -92,7 +92,7 @@ class ClassifierArityTest : FunSpec() {
          val out = captureStandardOut {
             checkAll<Int, Int, Int, Int, Int, Int, Int, Int>(
                PropTestConfig(
-                  outputLabels = true,
+                  outputClassifications = true,
                   seed = 678673131234
                )
             ) { _, _, _, _, _, _, _, _ -> }
@@ -106,7 +106,7 @@ class ClassifierArityTest : FunSpec() {
          val out = captureStandardOut {
             checkAll<Int, Int, Int, Int, Int, Int, Int, Int, Int>(
                PropTestConfig(
-                  outputLabels = true,
+                  outputClassifications = true,
                   seed = 678673131234
                )
             ) { _, _, _, _, _, _, _, _, _ -> }
@@ -120,7 +120,7 @@ class ClassifierArityTest : FunSpec() {
          val out = captureStandardOut {
             checkAll<Int, Int, Int, Int, Int, Int, Int, Int, Int, Int>(
                PropTestConfig(
-                  outputLabels = true,
+                  outputClassifications = true,
                   seed = 678673131234
                )
             ) { _, _, _, _, _, _, _, _, _, _ -> }
@@ -134,7 +134,7 @@ class ClassifierArityTest : FunSpec() {
          val out = captureStandardOut {
             checkAll<Int, Int, Int, Int, Int, Int, Int, Int, Int, Int, Int>(
                PropTestConfig(
-                  outputLabels = true,
+                  outputClassifications = true,
                   seed = 678673131234
                )
             ) { _, _, _, _, _, _, _, _, _, _, _ -> }
@@ -148,7 +148,7 @@ class ClassifierArityTest : FunSpec() {
          val out = captureStandardOut {
             checkAll<Int, Int, Int, Int, Int, Int, Int, Int, Int, Int, Int, Int>(
                PropTestConfig(
-                  outputLabels = true,
+                  outputClassifications = true,
                   seed = 678673131234
                )
             ) { _, _, _, _, _, _, _, _, _, _, _, _ -> }

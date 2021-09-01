@@ -1,6 +1,10 @@
 package io.kotest.mpp
 
 fun sysprop(key: String, default: String): String = sysprop(key) ?: default
+fun <T> sysprop(key: String, default: T, converter: (String) -> T): T = sysprop(key)?.let { converter(it) } ?: default
+fun sysprop(key: String, default: Int): Int = sysprop(key, default) { it.toInt() }
+fun sysprop(key: String, default: Double): Double = sysprop(key, default) { it.toDouble() }
+fun sysprop(key: String, default: Boolean): Boolean = sysprop(key, default) { it == "true" }
 
 expect fun sysprop(name: String): String?
 

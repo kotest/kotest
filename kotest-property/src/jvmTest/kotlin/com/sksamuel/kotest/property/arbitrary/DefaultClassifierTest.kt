@@ -13,7 +13,7 @@ class DefaultClassifierTest : FunSpec() {
 
       test("String classifier should be provided by default string arb") {
          val out = captureStandardOut {
-            checkAll<String>(PropTestConfig(outputLabels = true, seed = 123123123)) {}
+            checkAll<String>(PropTestConfig(outputClassifications = true, seed = 123123123)) {}
          }
          println(out)
          out.shouldContain("Label statistics for arg 0 (1000 inputs):")
@@ -26,7 +26,7 @@ class DefaultClassifierTest : FunSpec() {
 
       test("int classifier should be provided by default int arb") {
          val out = captureStandardOut {
-            checkAll<Int>(PropTestConfig(outputLabels = true, seed = 9848976132)) {}
+            checkAll<Int>(PropTestConfig(outputClassifications = true, seed = 9848976132)) {}
          }
          Arb.long()
          println(out)
@@ -42,7 +42,7 @@ class DefaultClassifierTest : FunSpec() {
 
       test("long classifier should be provided by default long arb") {
          val out = captureStandardOut {
-            checkAll<Long>(PropTestConfig(outputLabels = true, seed = 1234864124)) {}
+            checkAll<Long>(PropTestConfig(outputClassifications = true, seed = 1234864124)) {}
          }
          println(out)
          out.shouldContain("Label statistics for arg 0 (1000 inputs):")

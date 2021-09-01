@@ -12,12 +12,23 @@ import kotlin.native.concurrent.ThreadLocal
 @ThreadLocal
 object PropertyTesting {
    var maxFilterAttempts: Int = 10
-   var shouldPrintGeneratedValues: Boolean = sysprop("kotest.proptest.output.generated-values", "false") == "true"
-   var shouldPrintShrinkSteps: Boolean = sysprop("kotest.proptest.output.shrink-steps", "true") == "true"
-   var defaultIterationCount: Int = sysprop("kotest.proptest.default.iteration.count", "1000").toInt()
-   var edgecasesGenerationProbability: Double = sysprop("kotest.proptest.arb.edgecases-generation-probability", "0.02").toDouble()
-   var edgecasesBindDeterminism: Double = sysprop("kotest.proptest.arb.edgecases-bind-determinism", "0.9").toDouble()
-   var outputClassifiations: Boolean = sysprop("kotest.proptest.arb.output.classificaions", "false") == "true"
+   var shouldPrintShrinkSteps: Boolean = sysprop("kotest.proptest.output.shrink-steps", true)
+   var shouldPrintGeneratedValues: Boolean = sysprop("kotest.proptest.output.generated-values", false)
+   var edgecasesBindDeterminism: Double = sysprop("kotest.proptest.arb.edgecases-bind-determinism", 0.9)
+
+   // PropTestConfig
+   var defaultSeed: Long? = sysprop("kotest.proptest.default.seed", null, { it.toLong() })
+   var defaultMinSuccess: Int = sysprop("kotest.proptest.default.min-success", Int.MAX_VALUE)
+   var defaultMaxFailure: Int = sysprop("kotest.proptest.default.max-failure", 0)
+   var defaultShrinkingMode: ShrinkingMode = ShrinkingMode.Bounded(1000)
+   var defaultIterationCount: Int = sysprop("kotest.proptest.default.iteration.count", 1000)
+   var defaultListeners: List<PropTestListener> = listOf()
+   var defaultEdgecasesGenerationProbability: Double = sysprop("kotest.proptest.arb.edgecases-generation-probability", 0.02)
+   @Deprecated("Use defaultEdgecasesGenerationProbability instead. This property will be removed")
+   var edgecasesGenerationProbability: Double
+      get() = defaultEdgecasesGenerationProbability
+      set(value) { defaultEdgecasesGenerationProbability = value }
+   var defaultOutputClassifications: Boolean = sysprop("kotest.proptest.arb.output.classifications", false)
 }
 
 /**
@@ -47,16 +58,16 @@ fun calculateMinimumIterations(vararg gens: Gen<*>): Int {
 }
 
 fun EdgeConfig.Companion.default(): EdgeConfig = EdgeConfig(
-   edgecasesGenerationProbability = PropertyTesting.edgecasesGenerationProbability
+   edgecasesGenerationProbability = PropertyTesting.defaultEdgecasesGenerationProbability
 )
 
 data class PropTest(
-   val seed: Long? = null,
-   val minSuccess: Int = Int.MAX_VALUE,
-   val maxFailure: Int = 0,
-   val shrinkingMode: ShrinkingMode = ShrinkingMode.Bounded(1000),
+   val seed: Long? = PropertyTesting.defaultSeed,
+   val minSuccess: Int = PropertyTesting.defaultMinSuccess,
+   val maxFailure: Int = PropertyTesting.defaultMaxFailure,
+   val shrinkingMode: ShrinkingMode = PropertyTesting.defaultShrinkingMode,
    val iterations: Int? = null,
-   val listeners: List<PropTestListener> = listOf(),
+   val listeners: List<PropTestListener> = PropertyTesting.defaultListeners,
    val edgeConfig: EdgeConfig = EdgeConfig.default()
 )
 
@@ -71,15 +82,22 @@ fun PropTest.toPropTestConfig() =
       edgeConfig = edgeConfig
    )
 
+/**
+ * Property Test Configuration to be used by the underlying property test runner
+ *
+ * @property iterations The number of iterations to run. If null either the global [PropertyTesting]'s default value
+ *                      will be used, or the minimum iterations required for the supplied generations. Whichever is
+ *                      greater.
+ */
 data class PropTestConfig(
-   val seed: Long? = null,
-   val minSuccess: Int = Int.MAX_VALUE,
-   val maxFailure: Int = 0,
-   val shrinkingMode: ShrinkingMode = ShrinkingMode.Bounded(1000),
+   val seed: Long? = PropertyTesting.defaultSeed,
+   val minSuccess: Int = PropertyTesting.defaultMinSuccess,
+   val maxFailure: Int = PropertyTesting.defaultMaxFailure,
+   val shrinkingMode: ShrinkingMode = PropertyTesting.defaultShrinkingMode,
    val iterations: Int? = null,
-   val listeners: List<PropTestListener> = listOf(),
+   val listeners: List<PropTestListener> = PropertyTesting.defaultListeners,
    val edgeConfig: EdgeConfig = EdgeConfig.default(),
-   val outputLabels: Boolean? = null,
+   val outputClassifications: Boolean = PropertyTesting.defaultOutputClassifications,
    val labelsReporter: LabelsReporter = StandardLabelsReporter
 )
 
