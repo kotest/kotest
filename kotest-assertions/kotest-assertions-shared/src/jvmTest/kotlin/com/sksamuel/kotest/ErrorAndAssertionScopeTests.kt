@@ -60,16 +60,4 @@ class ErrorAndAssertionScopeTests : FunSpec({
          }
       }
    }
-
-   test("test allowing users to set soft collection mode") {
-      val previous = errorCollector.getCollectionMode()
-      errorCollector.setCollectionMode(ErrorCollectionMode.Soft)
-      try {
-         1 shouldBe 2
-         error("should throw")
-      } catch(ex: Exception) {
-      } finally {
-         errorCollector.setCollectionMode(previous)
-      }
-   }
 })
