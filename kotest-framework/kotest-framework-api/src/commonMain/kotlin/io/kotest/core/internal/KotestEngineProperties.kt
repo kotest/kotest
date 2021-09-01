@@ -50,9 +50,9 @@ object KotestEngineProperties {
 
    const val timeout = "kotest.framework.timeout"
 
-   const val projectTimeout = "kotest.framework.projectTimeout"
+   const val projectTimeout = "kotest.framework.projecttimeout"
 
-   const val logLevel = "kotest.framework.logLevel"
+   const val logLevel = "kotest.framework.loglevel"
 
    const val invocationTimeout = "kotest.framework.invocation.timeout"
 
