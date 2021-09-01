@@ -38,7 +38,7 @@ private class SomeSpec1 : FunSpec() {
    }
 }
 
-// we try to use failure class twice, so the 2nd time it triggers a java.lang.NoClassDefFoundError
+// we try to use FailingClass twice, so the 2nd time it triggers a java.lang.NoClassDefFoundError
 private class SomeSpec2 : FunSpec() {
    private val failure = FailingClass()
 

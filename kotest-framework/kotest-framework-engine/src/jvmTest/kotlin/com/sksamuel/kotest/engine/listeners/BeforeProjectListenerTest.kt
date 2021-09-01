@@ -10,7 +10,7 @@ import io.kotest.matchers.shouldBe
 
 class BeforeProjectListenerTest : FunSpec({
 
-   test("ProjectListener's afterProject method should be fired") {
+   test("ProjectListener's beforeProject method should be fired") {
 
       var fired = false
 
@@ -29,7 +29,7 @@ class BeforeProjectListenerTest : FunSpec({
 
    }
 
-   test("AfterProjectListener's afterProject method should be fired") {
+   test("BeforeProjectListener's beforeProject method should be fired") {
 
       var fired = false
 
