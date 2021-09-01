@@ -1,4 +1,4 @@
-package io.kotest.engine.test.extensions
+package io.kotest.engine.test.interceptors
 
 import io.kotest.core.config.configuration
 import io.kotest.core.test.TestCase
@@ -10,7 +10,7 @@ import io.kotest.engine.withDebugProbe
  * If configured, then the kotlinx debug probe is installed for coroutines.
  * Note: This is a JVM only option.
  */
-object CoroutineDebugProbeTestExecutionFilter : TestExecutionFilter {
+object CoroutineDebugProbeTestExecutionInterceptor : TestExecutionInterceptor {
 
    private fun shouldApply(testCase: TestCase): Boolean {
       return testCase.config.coroutineDebugProbes ?: configuration.coroutineDebugProbes

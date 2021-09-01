@@ -1,4 +1,4 @@
-package io.kotest.engine.test.extensions
+package io.kotest.engine.test.interceptors
 
 import io.kotest.assertions.assertionCounter
 import io.kotest.assertions.getAndReset
@@ -13,7 +13,7 @@ import io.kotest.core.test.TestType
 /**
  * Wraps the test function checking for assertion mode, if the test is a [TestType.Test].
  */
-internal object AssertionModeTestExecutionFilter : TestExecutionFilter {
+internal object AssertionModeTestExecutionInterceptor : TestExecutionInterceptor {
 
    private fun mode(testCase: TestCase) =
       testCase.spec.assertions ?: testCase.spec.assertionMode() ?: configuration.assertionMode

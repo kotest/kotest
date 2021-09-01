@@ -1,4 +1,4 @@
-package io.kotest.engine.test.extensions
+package io.kotest.engine.test.interceptors
 
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestContext
@@ -10,7 +10,7 @@ import kotlinx.coroutines.coroutineScope
  * Execute the test case wrapped in a [coroutineScope], so that we wait for any child coroutines launched
  * by the user inside the test function to complete before the engine marks the test as completed.
  */
-internal object CoroutineScopeTestExecutionFilter : TestExecutionFilter {
+internal object CoroutineScopeTestExecutionInterceptor : TestExecutionInterceptor {
    override suspend fun execute(
       test: suspend (TestCase, TestContext) -> TestResult
    ): suspend (TestCase, TestContext) -> TestResult = { testCase, context ->

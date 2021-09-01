@@ -1,4 +1,4 @@
-package io.kotest.engine.test.extensions
+package io.kotest.engine.test.interceptors
 
 import io.kotest.core.config.configuration
 import io.kotest.core.test.TestCase
@@ -20,10 +20,10 @@ import kotlin.math.min
  * The [TimeoutExecutionContext] is used to provide a way of executing functions on the underlying platform
  * in a way that best utilizes threads or the lack of on that platform.
  */
-class TimeoutTestExecutionFilter(
+class TimeoutTestExecutionInterceptor(
    private val ec: TimeoutExecutionContext,
    private val start: Long,
-) : TestExecutionFilter {
+) : TestExecutionInterceptor {
 
    private fun resolvedTimeout(testCase: TestCase): Long =
       testCase.config.timeout?.inWholeMilliseconds

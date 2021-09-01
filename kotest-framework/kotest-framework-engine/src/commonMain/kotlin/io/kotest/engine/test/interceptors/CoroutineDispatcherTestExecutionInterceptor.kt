@@ -1,4 +1,4 @@
-package io.kotest.engine.test.extensions
+package io.kotest.engine.test.interceptors
 
 import io.kotest.core.config.Configuration
 import io.kotest.core.test.TestCase
@@ -11,7 +11,7 @@ import kotlinx.coroutines.withContext
 /**
  * Switches execution onto a dispatcher provided by a [io.kotest.engine.CoroutineDispatcherProvider].
  */
-class CoroutineDispatcherTestExecutionFilter(private val configuration: Configuration) : TestExecutionFilter {
+class CoroutineDispatcherTestExecutionInterceptor(private val configuration: Configuration) : TestExecutionInterceptor {
 
    override suspend fun execute(test: suspend (TestCase, TestContext) -> TestResult): suspend (TestCase, TestContext) -> TestResult {
 

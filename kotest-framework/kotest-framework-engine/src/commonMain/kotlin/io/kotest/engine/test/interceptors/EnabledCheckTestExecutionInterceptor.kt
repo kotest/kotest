@@ -1,4 +1,4 @@
-package io.kotest.engine.test.extensions
+package io.kotest.engine.test.interceptors
 
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestContext
@@ -13,7 +13,7 @@ import io.kotest.mpp.log
  * Note: This extension must execute before any other extension that invokes methods
  * on the listener, as in runners like junit, ignored cannot happen after "started".
  */
-object EnabledCheckTestExecutionFilter : TestExecutionFilter {
+object EnabledCheckTestExecutionInterceptor : TestExecutionInterceptor {
    override suspend fun execute(
       test: suspend (TestCase, TestContext) -> TestResult
    ): suspend (TestCase, TestContext) -> TestResult = { testCase, context ->
