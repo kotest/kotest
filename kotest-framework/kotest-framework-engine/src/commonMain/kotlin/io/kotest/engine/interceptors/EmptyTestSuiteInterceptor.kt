@@ -1,4 +1,4 @@
-package io.kotest.engine.extensions
+package io.kotest.engine.interceptors
 
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
@@ -13,7 +13,7 @@ import kotlinx.coroutines.sync.withLock
  * Wraps the [TestEngineListener] to listen for test events and returns an error
  * if there were no tests executed.
  */
-internal object EmptyTestSuiteExtension : EngineExtension {
+internal object EmptyTestSuiteInterceptor : EngineInterceptor {
 
    override fun intercept(
       suite: TestSuite,

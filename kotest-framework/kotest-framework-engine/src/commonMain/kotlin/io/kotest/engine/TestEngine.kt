@@ -5,11 +5,11 @@ import io.kotest.core.config.configuration
 import io.kotest.core.listeners.AfterProjectListener
 import io.kotest.core.listeners.BeforeProjectListener
 import io.kotest.core.spec.Spec
-import io.kotest.engine.extensions.EmptyTestSuiteExtension
-import io.kotest.engine.extensions.EngineExtension
-import io.kotest.engine.extensions.SpecSortEngineExtension
-import io.kotest.engine.extensions.SpecStyleValidationExtension
-import io.kotest.engine.extensions.TestDslStateExtensions
+import io.kotest.engine.interceptors.EmptyTestSuiteInterceptor
+import io.kotest.engine.interceptors.EngineInterceptor
+import io.kotest.engine.interceptors.SpecSortEngineInterceptor
+import io.kotest.engine.interceptors.SpecStyleValidationInterceptor
+import io.kotest.engine.interceptors.TestDslStateInterceptor
 import io.kotest.engine.listener.NoopTestEngineListener
 import io.kotest.engine.listener.TestEngineListener
 import io.kotest.mpp.log
@@ -17,30 +17,30 @@ import kotlin.reflect.KClass
 
 data class TestEngineConfig(
    val listener: TestEngineListener,
-   val extensions: List<EngineExtension>,
+   val interceptors: List<EngineInterceptor>,
    val configuration: Configuration,
 ) {
 
    companion object {
       fun default(): TestEngineConfig {
 
-         val engineExtensions = listOfNotNull(
-            TestDslStateExtensions,
-            SpecStyleValidationExtension,
-            SpecSortEngineExtension,
-            if (configuration.failOnEmptyTestSuite) EmptyTestSuiteExtension else null,
+         val interceptors = listOfNotNull(
+            TestDslStateInterceptor,
+            SpecStyleValidationInterceptor,
+            SpecSortEngineInterceptor,
+            if (configuration.failOnEmptyTestSuite) EmptyTestSuiteInterceptor else null,
          )
 
          return TestEngineConfig(
             listener = NoopTestEngineListener,
-            extensions = engineExtensions,
+            interceptors = interceptors,
             configuration = configuration,
          )
       }
    }
 
    fun withConfig(configuration: Configuration): TestEngineConfig {
-      return TestEngineConfig(listener = listener, extensions = extensions, configuration = configuration)
+      return TestEngineConfig(listener = listener, interceptors = interceptors, configuration = configuration)
    }
 }
 
@@ -70,7 +70,7 @@ class TestEngine(val config: TestEngineConfig) {
 
       val innerExecute: (TestSuite, TestEngineListener) -> EngineResult = { ts, tel -> execute(ts.specs, tel) }
 
-      val extensions = config.extensions
+      val extensions = config.interceptors
       log { "TestEngine: ${extensions.size} engine extensions:" }
       extensions.forEach {
          log { "TestEngine: ${it::class.simpleName}" }

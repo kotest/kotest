@@ -1,4 +1,4 @@
-package io.kotest.engine.extensions
+package io.kotest.engine.interceptors
 
 import io.kotest.core.spec.style.scopes.TestDslState
 import io.kotest.engine.EngineResult
@@ -9,7 +9,7 @@ import io.kotest.fp.Try
 /**
  * Checks that we didn't have any partially constructed tests.
  */
-internal object TestDslStateExtensions : EngineExtension {
+internal object TestDslStateInterceptor : EngineInterceptor {
    override fun intercept(
       suite: TestSuite,
       listener: TestEngineListener,

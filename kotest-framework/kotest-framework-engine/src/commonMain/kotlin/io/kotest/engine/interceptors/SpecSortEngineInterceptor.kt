@@ -1,4 +1,4 @@
-package io.kotest.engine.extensions
+package io.kotest.engine.interceptors
 
 import io.kotest.core.config.configuration
 import io.kotest.core.extensions.SpecExecutionOrderExtension
@@ -9,10 +9,10 @@ import io.kotest.engine.spec.DefaultSpecExecutionOrderExtension
 import io.kotest.mpp.log
 
 /**
- * An [EngineExtension] that sorts specs according to registered [SpecExecutionOrderExtension]s
+ * An [EngineInterceptor] that sorts specs according to registered [SpecExecutionOrderExtension]s
  * or falling back to the [DefaultSpecExecutionOrderExtension].
  */
-object SpecSortEngineExtension : EngineExtension {
+object SpecSortEngineInterceptor : EngineInterceptor {
    override fun intercept(
       suite: TestSuite,
       listener: TestEngineListener,

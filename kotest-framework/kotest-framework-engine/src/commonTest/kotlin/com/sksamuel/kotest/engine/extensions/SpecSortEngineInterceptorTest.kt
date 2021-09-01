@@ -1,7 +1,5 @@
 package com.sksamuel.kotest.engine.extensions
 
-import com.sksamuel.kotest.engine.ReusedVariableTest
-import com.sksamuel.kotest.engine.TestCaseOrderTest
 import com.sksamuel.kotest.engine.active.BangDisableFunSpec
 import com.sksamuel.kotest.engine.active.FocusTest
 import com.sksamuel.kotest.engine.active.IgnoredTestsTest
@@ -12,19 +10,19 @@ import io.kotest.core.spec.SpecExecutionOrder
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.engine.EngineResult
 import io.kotest.engine.TestSuite
-import io.kotest.engine.extensions.SpecSortEngineExtension
+import io.kotest.engine.interceptors.SpecSortEngineInterceptor
 import io.kotest.engine.listener.NoopTestEngineListener
 import io.kotest.matchers.shouldBe
 import kotlin.reflect.KClass
 
 @Isolate
-class SpecSortEngineExtensionTest : FunSpec({
+class SpecSortEngineInterceptorTest : FunSpec({
 
    test("should sort classes") {
       val previous = configuration.specExecutionOrder
       configuration.specExecutionOrder = SpecExecutionOrder.Lexicographic
       var sorted = emptyList<KClass<*>>()
-      SpecSortEngineExtension.intercept(
+      SpecSortEngineInterceptor.intercept(
          TestSuite(
             emptyList(),
             listOf(IgnoredTestsTest::class, BangDisableFunSpec::class, FocusTest::class),
@@ -42,7 +40,7 @@ class SpecSortEngineExtensionTest : FunSpec({
       val previous = configuration.specExecutionOrder
       configuration.specExecutionOrder = SpecExecutionOrder.Lexicographic
       var sorted = emptyList<Spec>()
-      SpecSortEngineExtension.intercept(
+      SpecSortEngineInterceptor.intercept(
          TestSuite(
             listOf(IgnoredTestsTest(), BangDisableFunSpec(), FocusTest()),
             emptyList(),

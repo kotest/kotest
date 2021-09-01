@@ -1,4 +1,4 @@
-package io.kotest.engine.extensions
+package io.kotest.engine.interceptors
 
 import io.kotest.core.config.configuration
 import io.kotest.core.spec.Spec
@@ -12,7 +12,7 @@ import java.nio.file.Files
 import java.nio.file.Paths
 import kotlin.reflect.KClass
 
-class WriteFailuresExtension(private val filename: String) : EngineExtension {
+class WriteFailuresInterceptor(private val filename: String) : EngineInterceptor {
 
    override fun intercept(
       suite: TestSuite,

@@ -1,4 +1,4 @@
-package io.kotest.engine.extensions
+package io.kotest.engine.interceptors
 
 import io.kotest.engine.EngineResult
 import io.kotest.engine.TestSuite
@@ -13,7 +13,7 @@ import io.kotest.engine.listener.TestEngineListener
  * Extensions of this type are not designed to be used by third party addons.
  * We reserve the right to change the implementation of these extensions with regard to breaking changes.
  */
-interface EngineExtension {
+interface EngineInterceptor {
    fun intercept(
       suite: TestSuite,
       listener: TestEngineListener,

@@ -1,4 +1,4 @@
-package io.kotest.engine.extensions
+package io.kotest.engine.interceptors
 
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.style.FunSpec
@@ -12,7 +12,7 @@ import io.kotest.mpp.bestName
 /**
  * Validates that a [Spec] style is compatible for platforms that do not support nested tests.
  */
-object SpecStyleValidationExtension : EngineExtension {
+object SpecStyleValidationInterceptor : EngineInterceptor {
 
    override fun intercept(
       suite: TestSuite,

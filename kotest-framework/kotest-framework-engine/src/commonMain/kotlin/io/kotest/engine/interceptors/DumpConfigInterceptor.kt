@@ -1,4 +1,4 @@
-package io.kotest.engine.extensions
+package io.kotest.engine.interceptors
 
 import io.kotest.core.config.Configuration
 import io.kotest.engine.EngineResult
@@ -9,9 +9,9 @@ import io.kotest.engine.listener.TestEngineListener
 /**
  * Outputs a given [Configuration] to the console.
  */
-internal class DumpConfigExtension(
+internal class DumpConfigInterceptor(
    private val configuration: Configuration,
-) : EngineExtension {
+) : EngineInterceptor {
 
    override fun intercept(
       suite: TestSuite,
