@@ -25,7 +25,7 @@ class CoroutineLoggingTestExecutionExtensionSpec : FunSpec({
       override val name = "TestConsoleLogListener"
       val stored = mutableListOf<String>()
 
-      override suspend fun consume(testCase: TestCase, logs: List<Any>) {
+      override suspend fun afterEach(testCase: TestCase, logs: List<Any>) {
          stored.addAll(logs.map { it.toString() })
       }
    }
@@ -34,7 +34,7 @@ class CoroutineLoggingTestExecutionExtensionSpec : FunSpec({
       override val name: String = "TestDatabaseLogListener"
       val stored = mutableListOf<String>()
 
-      override suspend fun consume(testCase: TestCase, logs: List<Any>) {
+      override suspend fun afterEach(testCase: TestCase, logs: List<Any>) {
          stored.addAll(logs.map { when (it) {
             is Boom -> throw CannotLogException("danger zone")
             else -> it.toString()
