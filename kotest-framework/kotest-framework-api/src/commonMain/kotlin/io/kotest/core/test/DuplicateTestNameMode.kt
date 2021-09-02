@@ -1,5 +1,9 @@
 package io.kotest.core.test
 
+/**
+ * Controls what should happen when a test is registered with the same name (in the same scope)
+ * as another test.
+ */
 enum class DuplicateTestNameMode {
 
    /**
