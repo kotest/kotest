@@ -14,6 +14,7 @@ import io.kotest.engine.interceptors.DumpConfigInterceptor
 import io.kotest.engine.interceptors.EmptyTestSuiteInterceptor
 import io.kotest.engine.interceptors.EngineInterceptor
 import io.kotest.engine.interceptors.KotestPropertiesInterceptor
+import io.kotest.engine.interceptors.ProjectExtensionEngineInterceptor
 import io.kotest.engine.interceptors.ProjectListenerEngineInterceptor
 import io.kotest.engine.interceptors.SpecSortEngineInterceptor
 import io.kotest.engine.interceptors.TestDslStateInterceptor
@@ -57,6 +58,7 @@ class KotestEngine(private val config: KotestEngineConfig) {
          KotestPropertiesInterceptor,
          TestDslStateInterceptor,
          SpecSortEngineInterceptor,
+         ProjectExtensionEngineInterceptor(configuration.extensions().filterIsInstance<ProjectExtension>()),
          ProjectListenerEngineInterceptor(configuration.extensions()),
          WriteFailuresInterceptor(configuration.specFailureFilePath),
          if (config.dumpConfig) DumpConfigInterceptor(configuration) else null,
@@ -76,14 +78,8 @@ class KotestEngine(private val config: KotestEngineConfig) {
    }
 
    private fun executeTestSuite(suite: TestSuite, listener: TestEngineListener): EngineResult = runBlocking {
-
-      Notifications(listener)
-         .engineStarted(suite.classes)
-
-      val extensions = configuration.extensions().filterIsInstance<ProjectExtension>()
-      val initial: suspend () -> Throwable? = { submitAll(suite, listener).errorOrNull() }
-
-      val error = extensions.foldRight(initial) { extension, acc -> { extension.aroundProject(acc) } }.invoke()
+      Notifications(listener).engineStarted(suite.classes)
+      val error = submitAll(suite, listener).errorOrNull()
       EngineResult(listOfNotNull(error))
    }
 
