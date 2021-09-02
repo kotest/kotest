@@ -8,3 +8,5 @@ interface TestCaseExecutionListener {
    suspend fun testIgnored(testCase: TestCase) {}
    suspend fun testFinished(testCase: TestCase, result: TestResult) {}
 }
+
+object NoopTestCaseExecutionListener : TestCaseExecutionListener

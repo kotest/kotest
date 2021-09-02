@@ -35,18 +35,18 @@ class TestCaseExecutor(
       val start = timeInMillis()
 
       val interceptors = listOf(
+         InvocationCountCheckTestExecutionInterceptor,
          CoroutineDebugProbeTestExecutionInterceptor,
-      //   CoroutineDispatcherTestExecutionFilter(configuration),
+         SupervisorScopeTestExecutionInterceptor,
+         CoroutineScopeTestExecutionInterceptor,
+//         CoroutineDispatcherTestExecutionFilter(configuration),
          TestCaseInterceptionTestExecutionInterceptor,
          EnabledCheckTestExecutionInterceptor,
          LifecycleTestExecutionInterceptor(listener, start),
          ExceptionCapturingTestExecutionInterceptor(start),
-         InvocationCountCheckTestExecutionInterceptor,
-         SupervisorScopeTestExecutionInterceptor,
-         TimeoutTestExecutionInterceptor(executionContext, start),
          AssertionModeTestExecutionInterceptor,
          GlobalSoftAssertTestExecutionInterceptor,
-         CoroutineScopeTestExecutionInterceptor,
+         TimeoutTestExecutionInterceptor(executionContext, start),
       )
 
       val innerExecute: suspend (TestCase, TestContext) -> TestResult = { tc, ctx ->

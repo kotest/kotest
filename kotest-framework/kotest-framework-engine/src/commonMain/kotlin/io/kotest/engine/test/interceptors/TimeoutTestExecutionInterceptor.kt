@@ -45,19 +45,19 @@ class TimeoutTestExecutionInterceptor(
       // this timeout applies across all invocations. In other words, if a test has invocations = 3,
       // each test takes 300ms, and a timeout of 800ms, this would fail, becauase 3 x 300 > 800.
       val timeout = resolvedTimeout(testCase)
-      log { "TestCaseExecutor: Test [${testCase.displayName}] will execute with timeout $timeout" }
+      log { "TestCaseExecutor: Test [${testCase.displayName}] will execute with timeout ${timeout}ms" }
 
       // note: the invocation timeout cannot be larger than the test case timeout
       val invocationTimeout = min(resolvedTimeout(testCase), resolvedInvocationTimeout(testCase))
-      log { "TestCaseExecutor: Test [${testCase.displayName}] will execute with invocationTimeout $invocationTimeout" }
+      log { "TestCaseExecutor: Test [${testCase.displayName}] will execute with invocationTimeout ${invocationTimeout}ms" }
 
       try {
          withTimeout(timeout) {
             ec.executeWithTimeoutInterruption(timeout) {
                // depending on the test type, we execute with an invocation timeout
-               when (testCase.type) {
-                  TestType.Container -> test(testCase, context)
-                  TestType.Test -> {
+               when {
+                  testCase.type == TestType.Container -> test(testCase, context)
+                  else -> {
                      // not all platforms support executing with an interruption based timeout
                      // because it uses background threads to interrupt
                      replay(

@@ -20,11 +20,11 @@ internal object EnabledCheckTestExecutionInterceptor : TestExecutionInterceptor 
       val enabled = testCase.isEnabled()
       when (enabled.isEnabled) {
          true -> {
-            log { "${testCase.description.testPath()} is enabled" }
+            log { "EnabledCheckTestExecutionInterceptor: ${testCase.description.testPath().value} is enabled" }
             test(testCase, context)
          }
          false -> {
-            log { "${testCase.description.testPath()} is disabled" }
+            log { "EnabledCheckTestExecutionInterceptor: ${testCase.description.testPath().value} is disabled" }
             TestResult.ignored(enabled)
          }
       }
