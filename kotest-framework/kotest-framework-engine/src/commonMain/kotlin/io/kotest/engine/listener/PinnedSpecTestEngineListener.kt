@@ -32,12 +32,12 @@ class PinnedSpecTestEngineListener(val listener: TestEngineListener) : TestEngin
       _callbacks.forEach { it.invoke() }
    }
 
-   override suspend fun engineFinished(t: List<Throwable>) {
-      listener.engineFinished(t)
-   }
-
    override suspend fun engineStarted(classes: List<KClass<*>>) {
       listener.engineStarted(classes)
+   }
+
+   override suspend fun engineFinished(t: List<Throwable>) {
+      listener.engineFinished(t)
    }
 
    override suspend fun specInstantiated(spec: Spec) {

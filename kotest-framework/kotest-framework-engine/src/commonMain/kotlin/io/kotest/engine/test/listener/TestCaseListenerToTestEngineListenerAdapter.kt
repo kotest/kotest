@@ -1,7 +1,8 @@
-package io.kotest.engine.listener
+package io.kotest.engine.test.listener
 
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
+import io.kotest.engine.listener.TestEngineListener
 import io.kotest.engine.test.TestCaseExecutionListener
 
 /**

@@ -7,7 +7,7 @@ import io.kotest.engine.spec.materializeAndOrderRootTests
 import io.kotest.engine.teamcity.TeamCityMessageBuilder
 import io.kotest.engine.test.CallingThreadExecutionContext
 import io.kotest.engine.test.RootRestrictedTestContext
-import io.kotest.engine.test.TeamCityTestCaseExecutionListener
+import io.kotest.engine.test.listener.TeamCityTestCaseExecutionListener
 import io.kotest.engine.test.TestCaseExecutor
 import io.kotest.engine.test.status.isEnabledInternal
 import io.kotest.mpp.log

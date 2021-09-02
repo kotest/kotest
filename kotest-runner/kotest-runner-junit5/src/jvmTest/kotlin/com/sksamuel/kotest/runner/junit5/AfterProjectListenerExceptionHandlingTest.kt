@@ -62,7 +62,7 @@ class AfterProjectListenerExceptionHandlingTest : FunSpec({
       }
    }
 
-   test("an AfterProjectListenerException should add 2 markers spec") {
+   test("!an AfterProjectListenerException should add 2 markers spec") {
       every { configuration.extensions() } returns listOf(
          object : ProjectListener {
             override suspend fun afterProject() {

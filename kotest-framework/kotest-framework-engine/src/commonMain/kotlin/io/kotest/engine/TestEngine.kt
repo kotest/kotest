@@ -65,13 +65,12 @@ class TestEngine(val config: TestEngineConfig) {
 
       val innerExecute: suspend (TestSuite, TestEngineListener) -> EngineResult = { ts, tel -> execute(ts.specs, tel) }
 
-      val extensions = config.interceptors
-      log { "TestEngine: ${extensions.size} engine extensions:" }
-      extensions.forEach {
+      log { "TestEngine: ${config.interceptors.size} engine interceptors:" }
+      config.interceptors.forEach {
          log { "TestEngine: ${it::class.simpleName}" }
       }
 
-      val execute = extensions.foldRight(innerExecute) { extension, next ->
+      val execute = config.interceptors.foldRight(innerExecute) { extension, next ->
          { ts, tel -> extension.intercept(ts, tel, next) }
       }
 
