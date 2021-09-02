@@ -78,7 +78,7 @@ jobs:
                fetch-depth: 0
 
          -  name: Run tests
-            run: ./gradlew mingwX64Test mingwX86Test --scan
+            run: ./gradlew mingwX64Test --scan
 
          -  name: Bundle the build report
             if: failure()

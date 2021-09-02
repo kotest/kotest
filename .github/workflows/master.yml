@@ -118,7 +118,7 @@ jobs:
                fetch-depth: 0
 
          -  name: Run tests
-            run: ./gradlew mingwX64Test mingwX86Test --scan
+            run: ./gradlew mingwX64Test --scan
 
          -  name: publish mingw64 and mingw86 snapshot
             run: ./gradlew publishMingwX64PublicationToDeployRepository publishMingwX86PublicationToDeployRepository

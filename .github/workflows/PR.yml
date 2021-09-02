@@ -31,7 +31,7 @@ jobs:
 
          -  name: Run Windows tests
             if: matrix.os == 'windows-latest'
-            run: ./gradlew mingwX64Test mingwX86Test --scan
+            run: ./gradlew mingwX64Test --scan
 
          -  name: Run macOS tests
             if: matrix.os == 'macOS-latest'
