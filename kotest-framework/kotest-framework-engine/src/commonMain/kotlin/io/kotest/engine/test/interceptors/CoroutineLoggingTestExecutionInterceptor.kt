@@ -105,7 +105,7 @@ suspend fun TestContext.info(message: suspend () -> Any?) = maybeLog(configurati
 suspend fun TestContext.warn(message: suspend () -> Any?) = maybeLog(configuration.logLevel.isWarnEnabled(), message)
 
 /**
- * Adds a log to the [TestContext] when the log level is set to [io.kotest.core.config.LogLevel.ERROR].
+ * Adds a log to the [TestContext], when the log level is set to [io.kotest.core.config.LogLevel.ERROR].
  */
 @ExperimentalKotest
 suspend fun TestContext.error(message: suspend () -> Any?) = maybeLog(configuration.logLevel.isErrorEnabled(), message)
