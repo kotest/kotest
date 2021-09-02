@@ -30,7 +30,7 @@ class TestEngineLauncher(
       return TestEngineLauncher(configs + projectConfig, specs)
    }
 
-   suspend fun launch() {
+   fun launch() {
       log { "TestEngineLauncher: Creating Test Engine" }
 
       val config = TestEngineConfig.default()
@@ -38,6 +38,10 @@ class TestEngineLauncher(
          .withConfig(ConfigManager.initialize(configuration, configs))
 
       val engine = TestEngine(config)
-      engine.execute(TestSuite(specs, emptyList()))
+      runSuspend {
+         engine.execute(TestSuite(specs, emptyList()))
+      }
    }
 }
+
+expect fun runSuspend(f: suspend () -> Unit)
