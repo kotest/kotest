@@ -10,8 +10,8 @@ import kotlinx.coroutines.supervisorScope
  * the specs / a parent tests, therefore we install supervisor job. This supervisor job adds a barrier
  * so that any child coroutines from here do not cancel any parent ones.
  */
-object SupervisorScopeTestExecutionInterceptor : TestExecutionInterceptor {
-   override suspend fun execute(
+internal object SupervisorScopeTestExecutionInterceptor : TestExecutionInterceptor {
+   override suspend fun intercept(
       test: suspend (TestCase, TestContext) -> TestResult
    ): suspend (TestCase, TestContext) -> TestResult {
       return { testCase, context ->

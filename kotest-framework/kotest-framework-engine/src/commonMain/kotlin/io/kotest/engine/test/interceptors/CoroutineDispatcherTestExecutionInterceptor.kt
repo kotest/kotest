@@ -13,7 +13,7 @@ import kotlinx.coroutines.withContext
  */
 class CoroutineDispatcherTestExecutionInterceptor(private val configuration: Configuration) : TestExecutionInterceptor {
 
-   override suspend fun execute(test: suspend (TestCase, TestContext) -> TestResult): suspend (TestCase, TestContext) -> TestResult {
+   override suspend fun intercept(test: suspend (TestCase, TestContext) -> TestResult): suspend (TestCase, TestContext) -> TestResult {
 
       val ext = configuration.extensions().filterIsInstance<CoroutineDispatcherExtension>().firstOrNull()
       val provider = ext?.provider() ?: defaultCoroutineDispatcherProvider

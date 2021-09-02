@@ -16,7 +16,7 @@ object CoroutineDebugProbeTestExecutionInterceptor : TestExecutionInterceptor {
       return testCase.config.coroutineDebugProbes ?: configuration.coroutineDebugProbes
    }
 
-   override suspend fun execute(
+   override suspend fun intercept(
       test: suspend (TestCase, TestContext) -> TestResult
    ): suspend (TestCase, TestContext) -> TestResult = { testCase, context ->
       if (shouldApply(testCase)) {

@@ -25,7 +25,7 @@ internal object AssertionModeTestExecutionInterceptor : TestExecutionInterceptor
       return true
    }
 
-   override suspend fun execute(
+   override suspend fun intercept(
       test: suspend (TestCase, TestContext) -> TestResult
    ): suspend (TestCase, TestContext) -> TestResult = { testCase, context ->
       if (shouldApply(testCase)) apply(testCase, context, test) else test(testCase, context)

@@ -8,8 +8,8 @@ import io.kotest.core.test.TestType
 /**
  * Checks that the user has not tried to use an invalid invocation count.
  */
-object InvocationCountCheckTestExecutionInterceptor : TestExecutionInterceptor {
-   override suspend fun execute(
+internal object InvocationCountCheckTestExecutionInterceptor : TestExecutionInterceptor {
+   override suspend fun intercept(
       test: suspend (TestCase, TestContext) -> TestResult
    ): suspend (TestCase, TestContext) -> TestResult = { testCase, context ->
       if (testCase.config.invocations > 1 && testCase.type == TestType.Container)

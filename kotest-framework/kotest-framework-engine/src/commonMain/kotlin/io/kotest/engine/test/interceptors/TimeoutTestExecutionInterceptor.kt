@@ -37,7 +37,7 @@ class TimeoutTestExecutionInterceptor(
          ?: testCase.spec.invocationTimeout
          ?: configuration.invocationTimeout
 
-   override suspend fun execute(
+   override suspend fun intercept(
       test: suspend (TestCase, TestContext) -> TestResult
    ): suspend (TestCase, TestContext) -> TestResult = { testCase, context ->
 

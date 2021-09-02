@@ -11,7 +11,7 @@ import kotlinx.coroutines.coroutineScope
  * by the user inside the test function to complete before the engine marks the test as completed.
  */
 internal object CoroutineScopeTestExecutionInterceptor : TestExecutionInterceptor {
-   override suspend fun execute(
+   override suspend fun intercept(
       test: suspend (TestCase, TestContext) -> TestResult
    ): suspend (TestCase, TestContext) -> TestResult = { testCase, context ->
       coroutineScope {

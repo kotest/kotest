@@ -13,8 +13,8 @@ import io.kotest.mpp.log
  * Note: This extension must execute before any other extension that invokes methods
  * on the listener, as in runners like junit, ignored cannot happen after "started".
  */
-object EnabledCheckTestExecutionInterceptor : TestExecutionInterceptor {
-   override suspend fun execute(
+internal object EnabledCheckTestExecutionInterceptor : TestExecutionInterceptor {
+   override suspend fun intercept(
       test: suspend (TestCase, TestContext) -> TestResult
    ): suspend (TestCase, TestContext) -> TestResult = { testCase, context ->
       val enabled = testCase.isEnabled()

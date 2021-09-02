@@ -17,7 +17,7 @@ internal object GlobalSoftAssertTestExecutionInterceptor : TestExecutionIntercep
       return testCase.type == TestType.Test && configuration.globalAssertSoftly
    }
 
-   override suspend fun execute(
+   override suspend fun intercept(
       test: suspend (TestCase, TestContext) -> TestResult
    ): suspend (TestCase, TestContext) -> TestResult = { testCase, context ->
       if (shouldApply(testCase)) assertSoftly { test(testCase, context) } else test(testCase, context)

@@ -55,7 +55,7 @@ class TestCaseExecutor(
       }
 
       val result = interceptors.foldRight(innerExecute) { ext, fn ->
-         { tc, ctx -> ext.execute(fn)(tc, ctx) }
+         { tc, ctx -> ext.intercept(fn)(tc, ctx) }
       }.invoke(testCase, context)
 
       when (result.status) {

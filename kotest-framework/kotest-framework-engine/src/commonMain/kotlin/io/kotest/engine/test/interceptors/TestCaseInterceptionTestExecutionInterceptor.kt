@@ -24,7 +24,7 @@ object TestCaseInterceptionTestExecutionInterceptor : TestExecutionInterceptor {
       return config.extensions + spec.resolvedExtensions().filterIsInstance<TestCaseExtension>()
    }
 
-   override suspend fun execute(
+   override suspend fun intercept(
       test: suspend (TestCase, TestContext) -> TestResult
    ): suspend (TestCase, TestContext) -> TestResult = { testCase, context ->
 

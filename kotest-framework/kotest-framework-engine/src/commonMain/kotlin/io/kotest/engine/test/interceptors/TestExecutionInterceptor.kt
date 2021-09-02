@@ -5,7 +5,7 @@ import io.kotest.core.test.TestContext
 import io.kotest.core.test.TestResult
 
 internal interface TestExecutionInterceptor {
-   suspend fun execute(
+   suspend fun intercept(
       test: suspend (TestCase, TestContext) -> TestResult
    ): suspend (TestCase, TestContext) -> TestResult
 }
