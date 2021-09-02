@@ -79,11 +79,9 @@ class CoroutineLoggingTestExecutionInterceptorSpec : FunSpec({
       error { "error" }
       debug { "debug" }
 
-      val expected = setOf<String>()
-
       all {
-         console.stored.shouldContainInOrder(expected)
-         database.stored.shouldContainInOrder(expected)
+         console.stored.shouldBeEmpty()
+         database.stored.shouldBeEmpty()
       }
    }
 
