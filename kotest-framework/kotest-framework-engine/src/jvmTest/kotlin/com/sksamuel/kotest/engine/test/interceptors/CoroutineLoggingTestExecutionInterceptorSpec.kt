@@ -1,4 +1,4 @@
-package io.kotest.engine.test.extensions
+package io.kotest.engine.test.interceptors
 
 import io.kotest.assertions.all
 import io.kotest.assertions.throwables.shouldThrow
@@ -8,7 +8,6 @@ import io.kotest.core.config.configuration
 import io.kotest.core.spec.Isolate
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.test.TestCase
-import io.kotest.engine.test.interceptors.*
 import io.kotest.matchers.collections.shouldBeEmpty
 import io.kotest.matchers.collections.shouldContainExactly
 import io.kotest.matchers.collections.shouldContainInOrder
@@ -21,21 +20,19 @@ private class CannotLogException(override val message: String) : Exception()
 
 @Isolate
 @OptIn(ExperimentalKotest::class)
-class CoroutineLoggingTestExecutionExtensionSpec : FunSpec({
-   val console = object : LogListener {
-      override val name = "TestConsoleLogListener"
+class CoroutineLoggingTestExecutionInterceptorSpec : FunSpec({
+   val console = object : LogExtension {
       val stored = mutableListOf<String>()
 
-      override suspend fun afterEach(testCase: TestCase, logs: List<Any>) {
+      override suspend fun handleLogs(testCase: TestCase, logs: List<Any>) {
          stored.addAll(logs.map { it.toString() })
       }
    }
 
-   val database = object : LogListener {
-      override val name: String = "TestDatabaseLogListener"
+   val database = object : LogExtension {
       val stored = mutableListOf<String>()
 
-      override suspend fun afterEach(testCase: TestCase, logs: List<Any>) {
+      override suspend fun handleLogs(testCase: TestCase, logs: List<Any>) {
          stored.addAll(logs.map { when (it) {
             is Boom -> throw CannotLogException("danger zone")
             else -> it.toString()
@@ -47,11 +44,11 @@ class CoroutineLoggingTestExecutionExtensionSpec : FunSpec({
    val logLevel = configuration.logLevel
 
    beforeSpec {
-      configuration.registerListeners(listeners)
+      configuration.registerExtensions(listeners)
    }
 
    afterSpec {
-      configuration.deregisterListeners(listeners)
+      configuration.deregisterExtensions(listeners)
       configuration.logLevel = logLevel
    }
 

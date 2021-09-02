@@ -17,6 +17,8 @@ import io.kotest.engine.test.interceptors.InvocationCountCheckInterceptor
 import io.kotest.engine.test.interceptors.InvocationRepeatInterceptor
 import io.kotest.engine.test.interceptors.InvocationTimeoutInterceptor
 import io.kotest.engine.test.interceptors.LifecycleInterceptor
+import io.kotest.engine.test.interceptors.LogExtension
+import io.kotest.engine.test.interceptors.SerialLogExtension
 import io.kotest.engine.test.interceptors.SupervisorScopeInterceptor
 import io.kotest.engine.test.interceptors.TestCaseExtensionInterceptor
 import io.kotest.engine.test.interceptors.TimeoutInterceptor

@@ -2,7 +2,7 @@ package io.kotest.engine.test.interceptors
 
 import io.kotest.common.ExperimentalKotest
 import io.kotest.core.config.configuration
-import io.kotest.core.listeners.Listener
+import io.kotest.core.extensions.Extension
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestContext
 import io.kotest.core.test.TestResult
@@ -14,34 +14,33 @@ import kotlin.coroutines.CoroutineContext
 
 /**
  * On completion of the execution of a given testCase,
- * the values logged by way of [debug], [info], [warn], and [error] will be passed to afterEach.
+ * the values logged by way of [debug], [info], [warn], and [error] will be passed to [LogExtension.handleLogs].
  *
  * Listeners can use testId on [TestCase.description] to cross-reference the [TestResult] with the provided logs.
  */
 @ExperimentalKotest
-interface LogListener : Listener {
-   suspend fun afterEach(testCase: TestCase, logs: List<Any>)
+interface LogExtension : Extension {
+   suspend fun handleLogs(testCase: TestCase, logs: List<Any>)
 }
 
 /**
- * [SerialLogListener] wraps the user provided [LogListener] with a mutex,
- * so we can guarantee that calls to [LogListener.afterEach] aren't interleaved.
+ * [SerialLogExtension] wraps the user provided [LogExtension] with a mutex,
+ * so we can guarantee that calls to [LogExtension.handleLogs] aren't interleaved.
  */
 @OptIn(ExperimentalKotest::class)
-internal class SerialLogListener constructor(private val logListener: LogListener) {
+internal class SerialLogExtension constructor(private val logExtension: LogExtension) {
    private val mutex = Mutex()
 
    suspend fun afterEach(testCase: TestCase, logs: List<Any>) = mutex.withLock {
       runCatching {
-         logListener.afterEach(testCase, logs)
+         logExtension.handleLogs(testCase, logs)
       }
    }
 }
 
 @ExperimentalKotest
-object ConsoleLogListener : LogListener {
-   override val name = "ConsoleLogListener"
-   override suspend fun afterEach(testCase: TestCase, logs: List<Any>) {
+object ConsoleLogExtension : LogExtension {
+   override suspend fun handleLogs(testCase: TestCase, logs: List<Any>) {
       println(" - ${testCase.description}")
       logs.forEach { println(it) }
    }
@@ -53,12 +52,12 @@ private class TestContextLoggingCoroutineContextElement(val logs: MutableList<An
 }
 
 @OptIn(ExperimentalKotest::class)
-internal object CoroutineLoggingTestExecutionInterceptor : TestExecutionInterceptor {
+internal class CoroutineLoggingTestExecutionInterceptor(private val extensions: List<SerialLogExtension>) : TestExecutionInterceptor {
    override suspend fun execute(
       test: suspend (TestCase, TestContext) -> TestResult
    ): suspend (TestCase, TestContext) -> TestResult = { testCase, context ->
       when {
-         configuration.logLevel.isDisabled() || listeners.isEmpty() -> test(testCase, context)
+         configuration.logLevel.isDisabled() || extensions.isEmpty() -> test(testCase, context)
          else -> {
             val contextWithLogging = context.withCoroutineContext(TestContextLoggingCoroutineContextElement(mutableListOf()))
 
@@ -68,7 +67,7 @@ internal object CoroutineLoggingTestExecutionInterceptor : TestExecutionIntercep
                throw ex
             } finally {
                val logs = contextWithLogging.getLogs()
-               listeners.forEach { it.afterEach(testCase, logs) }
+               extensions.forEach { it.afterEach(testCase, logs) }
             }
          }
       }
