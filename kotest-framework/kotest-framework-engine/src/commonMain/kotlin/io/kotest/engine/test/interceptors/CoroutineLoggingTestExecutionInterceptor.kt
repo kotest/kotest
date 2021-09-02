@@ -53,7 +53,7 @@ private class TestContextLoggingCoroutineContextElement(val logs: MutableList<An
 
 @OptIn(ExperimentalKotest::class)
 internal class CoroutineLoggingTestExecutionInterceptor(private val extensions: List<SerialLogExtension>) : TestExecutionInterceptor {
-   override suspend fun execute(
+   override suspend fun intercept(
       test: suspend (TestCase, TestContext) -> TestResult
    ): suspend (TestCase, TestContext) -> TestResult = { testCase, context ->
       when {
@@ -109,3 +109,22 @@ suspend fun TestContext.warn(message: suspend () -> Any?) = maybeLog(configurati
  */
 @ExperimentalKotest
 suspend fun TestContext.error(message: suspend () -> Any?) = maybeLog(configuration.logLevel.isErrorEnabled(), message)
+
+@ExperimentalKotest
+interface TestLogger {
+   suspend fun debug(message: suspend () -> Any?)
+   suspend fun info(message: suspend () -> Any?)
+   suspend fun warn(message: suspend () -> Any?)
+   suspend fun error(message: suspend () -> Any?)
+}
+
+@ExperimentalKotest
+fun TestContext.getLogger(): TestLogger = object : TestLogger {
+   private val logLevel = configuration.logLevel
+   private val context = this@getLogger
+
+   override suspend fun debug(message: suspend () -> Any?) = context.maybeLog(logLevel.isDebugEnabled(), message)
+   override suspend fun info(message: suspend () -> Any?) = context.maybeLog(logLevel.isInfoEnabled(), message)
+   override suspend fun warn(message: suspend () -> Any?) = context.maybeLog(logLevel.isWarnEnabled(), message)
+   override suspend fun error(message: suspend () -> Any?) = context.maybeLog(logLevel.isErrorEnabled(), message)
+}
