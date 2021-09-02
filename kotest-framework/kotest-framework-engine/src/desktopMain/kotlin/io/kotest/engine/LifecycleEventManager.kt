@@ -5,13 +5,13 @@ import io.kotest.core.listeners.BeforeProjectListener
 import kotlinx.coroutines.runBlocking
 
 actual class LifecycleEventManager {
-   actual fun beforeProject(listeners: List<BeforeProjectListener>) {
+   actual suspend fun beforeProject(listeners: List<BeforeProjectListener>) {
       runBlocking {
          listeners.forEach { it.beforeProject() }
       }
    }
 
-   actual fun afterProject(listeners: List<AfterProjectListener>) {
+   actual suspend fun afterProject(listeners: List<AfterProjectListener>) {
       runBlocking {
          listeners.forEach { it.afterProject() }
       }

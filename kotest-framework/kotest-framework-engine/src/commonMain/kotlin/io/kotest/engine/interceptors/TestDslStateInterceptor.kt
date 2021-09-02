@@ -10,10 +10,10 @@ import io.kotest.fp.Try
  * Checks that we didn't have any partially constructed tests.
  */
 internal object TestDslStateInterceptor : EngineInterceptor {
-   override fun intercept(
+   override suspend fun intercept(
       suite: TestSuite,
       listener: TestEngineListener,
-      execute: (TestSuite, TestEngineListener) -> EngineResult
+      execute: suspend (TestSuite, TestEngineListener) -> EngineResult
    ): EngineResult {
       val result = execute(suite, listener)
       return Try { TestDslState.checkState() }.fold(

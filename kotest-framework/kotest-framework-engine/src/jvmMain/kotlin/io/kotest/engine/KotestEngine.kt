@@ -8,21 +8,20 @@ import io.kotest.core.filter.TestFilter
 import io.kotest.engine.config.ConfigManager
 import io.kotest.engine.config.detectAbstractProjectConfigs
 import io.kotest.engine.events.Notifications
-import io.kotest.engine.events.afterProject
+import io.kotest.engine.extensions.SpecifiedTagsTagExtension
+import io.kotest.engine.extensions.TestSuiteSchedulerExtension
 import io.kotest.engine.interceptors.DumpConfigInterceptor
 import io.kotest.engine.interceptors.EmptyTestSuiteInterceptor
 import io.kotest.engine.interceptors.EngineInterceptor
 import io.kotest.engine.interceptors.KotestPropertiesInterceptor
+import io.kotest.engine.interceptors.ProjectListenerEngineInterceptor
 import io.kotest.engine.interceptors.SpecSortEngineInterceptor
-import io.kotest.engine.extensions.SpecifiedTagsTagExtension
 import io.kotest.engine.interceptors.TestDslStateInterceptor
-import io.kotest.engine.extensions.TestSuiteSchedulerExtension
 import io.kotest.engine.interceptors.WriteFailuresInterceptor
 import io.kotest.engine.listener.TestEngineListener
 import io.kotest.engine.spec.DefaultTestSuiteScheduler
 import io.kotest.engine.spec.SpecExecutor
 import io.kotest.fp.Try
-import io.kotest.fp.getOrElse
 import io.kotest.mpp.log
 import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.runBlocking
@@ -58,12 +57,13 @@ class KotestEngine(private val config: KotestEngineConfig) {
          KotestPropertiesInterceptor,
          TestDslStateInterceptor,
          SpecSortEngineInterceptor,
+         ProjectListenerEngineInterceptor(configuration.extensions()),
          WriteFailuresInterceptor(configuration.specFailureFilePath),
          if (config.dumpConfig) DumpConfigInterceptor(configuration) else null,
          if (configuration.failOnEmptyTestSuite) EmptyTestSuiteInterceptor else null,
       )
 
-      val innerExecute: (TestSuite, TestEngineListener) -> EngineResult =
+      val innerExecute: suspend (TestSuite, TestEngineListener) -> EngineResult =
          { ts, tel -> executeTestSuite(ts, tel) }
 
       val execute = interceptors.foldRight(innerExecute) { extension, next ->
@@ -77,25 +77,14 @@ class KotestEngine(private val config: KotestEngineConfig) {
 
    private fun executeTestSuite(suite: TestSuite, listener: TestEngineListener): EngineResult = runBlocking {
 
-      val beforeErrors = Notifications(listener).engineStarted(suite.classes)
-         .flatMap { Notifications(listener).beforeProject() }
-         .fold({ listOf(it) }, { it })
+      Notifications(listener)
+         .engineStarted(suite.classes)
 
-      // if we have errors in the before project listeners, we'll not even execute tests, but
-      // instead immediately exit.
-      if (beforeErrors.isNotEmpty()) {
-         EngineResult(beforeErrors)
-      } else {
+      val extensions = configuration.extensions().filterIsInstance<ProjectExtension>()
+      val initial: suspend () -> Throwable? = { submitAll(suite, listener).errorOrNull() }
 
-         val extensions = configuration.extensions().filterIsInstance<ProjectExtension>()
-         val initial: suspend () -> Throwable? = { submitAll(suite, listener).errorOrNull() }
-
-         val error = extensions.foldRight(initial) { extension, acc -> { extension.aroundProject(acc) } }.invoke()
-
-         // after project listeners are executed even if the submission fails and the errors are added together
-         val afterErrors = configuration.listeners().afterProject().getOrElse { emptyList() }
-         EngineResult(listOfNotNull(error) + afterErrors)
-      }
+      val error = extensions.foldRight(initial) { extension, acc -> { extension.aroundProject(acc) } }.invoke()
+      EngineResult(listOfNotNull(error))
    }
 
    fun cleanup() {

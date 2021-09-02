@@ -13,10 +13,10 @@ internal class DumpConfigInterceptor(
    private val configuration: Configuration,
 ) : EngineInterceptor {
 
-   override fun intercept(
+   override suspend fun intercept(
       suite: TestSuite,
       listener: TestEngineListener,
-      execute: (TestSuite, TestEngineListener) -> EngineResult
+      execute: suspend (TestSuite, TestEngineListener) -> EngineResult
    ): EngineResult {
       configuration.dumpProjectConfig()
       return execute(suite, listener)

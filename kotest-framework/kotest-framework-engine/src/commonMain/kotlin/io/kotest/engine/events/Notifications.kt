@@ -26,14 +26,6 @@ class Notifications(private val listener: TestEngineListener) {
    }
 
    /**
-    * Notify the listeners that the project has started.
-    * This should be called after the engineStarted event.
-    */
-   suspend fun beforeProject(): Try<List<BeforeProjectListenerException>> {
-      return configuration.listeners().beforeProject()
-   }
-
-   /**
     * Notifies listeners that we are about to start execution of a [Descriptor].
     */
    suspend fun specStarted(spec: Descriptor.SpecDescriptor) = Try {

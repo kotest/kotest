@@ -15,10 +15,10 @@ import kotlinx.coroutines.sync.withLock
  */
 internal object EmptyTestSuiteInterceptor : EngineInterceptor {
 
-   override fun intercept(
+   override suspend fun intercept(
       suite: TestSuite,
       listener: TestEngineListener,
-      execute: (TestSuite, TestEngineListener) -> EngineResult
+      execute: suspend (TestSuite, TestEngineListener) -> EngineResult
    ): EngineResult {
 
       // listens to engine events, and if we have a test finished, we know we didn't have an empty test suite

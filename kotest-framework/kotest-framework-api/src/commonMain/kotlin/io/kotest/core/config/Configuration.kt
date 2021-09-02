@@ -44,7 +44,6 @@ class Configuration {
       const val MaxConcurrency = Int.MAX_VALUE
    }
 
-   private val listeners = mutableListOf<Listener>()
    private val filters = mutableListOf<Filter>()
    private val extensions = mutableListOf<Extension>()
 
@@ -314,7 +313,8 @@ class Configuration {
    /**
     * Returns all globally registered [Listener]s.
     */
-   fun listeners() = listeners.toList()
+   @Deprecated("Listeners have been subsumed into extensions")
+   fun listeners() = extensions()
 
    /**
     * Returns all globally registered [Extension]s.
@@ -354,16 +354,14 @@ class Configuration {
    fun registerListeners(listeners: List<Listener>) = listeners.forEach { registerListener(it) }
    fun deregisterListeners(listeners: List<Listener>) = listeners.forEach { deregisterListener(it) }
 
-   fun registerListener(listener: Listener) {
-      listeners.add(listener)
-   }
+   fun registerListener(listener: Listener) = registerExtension(listener)
 
    fun deregisterListener(listener: Listener) {
-      listeners.remove(listener)
+      deregisterExtension(listener)
    }
 
    fun removeListeners() {
-      listeners.clear()
+      removeExtensions()
    }
 
    fun removeExtensions() {
@@ -376,7 +374,6 @@ class Configuration {
 }
 
 fun Configuration.testListeners(): List<TestListener> = listeners().filterIsInstance<TestListener>()
-fun Configuration.testCaseExtensions(): List<TestCaseExtension> = listeners().filterIsInstance<TestCaseExtension>()
 fun Configuration.specInstantiationListeners(): List<SpecInstantiationListener> =
    listeners().filterIsInstance<SpecInstantiationListener>()
 

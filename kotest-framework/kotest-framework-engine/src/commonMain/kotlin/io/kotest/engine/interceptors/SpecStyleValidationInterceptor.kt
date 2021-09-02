@@ -14,10 +14,10 @@ import io.kotest.mpp.bestName
  */
 internal object SpecStyleValidationInterceptor : EngineInterceptor {
 
-   override fun intercept(
+   override suspend fun intercept(
       suite: TestSuite,
       listener: TestEngineListener,
-      execute: (TestSuite, TestEngineListener) -> EngineResult
+      execute: suspend (TestSuite, TestEngineListener) -> EngineResult
    ): EngineResult {
 
       fun isValid(spec: Spec): Boolean = spec is FunSpec || spec is StringSpec || spec is ShouldSpec

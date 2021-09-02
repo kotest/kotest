@@ -60,7 +60,7 @@ class ProjectListenerTest : WordSpec() {
 private class MyTest1 : FunSpec() {
    init {
       test("checking beforeAll") {
-         // we are asserting this in two places and it should be the same in both places
+         // we are asserting this in two places, and it should be the same in both places
 
       }
       test("checking afterAll") {

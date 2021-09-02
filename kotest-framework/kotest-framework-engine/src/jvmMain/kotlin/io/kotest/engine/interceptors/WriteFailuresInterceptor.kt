@@ -14,10 +14,10 @@ import kotlin.reflect.KClass
 
 internal class WriteFailuresInterceptor(private val filename: String) : EngineInterceptor {
 
-   override fun intercept(
+   override suspend fun intercept(
       suite: TestSuite,
       listener: TestEngineListener,
-      execute: (TestSuite, TestEngineListener) -> EngineResult
+      execute: suspend (TestSuite, TestEngineListener) -> EngineResult
    ): EngineResult {
       val collector = CollectingTestEngineListener()
       val comp = CompositeTestEngineListener(listOf(listener, collector))

@@ -44,10 +44,10 @@ internal object KotestPropertiesInterceptor : EngineInterceptor {
       }
    }
 
-   override fun intercept(
+   override suspend fun intercept(
       suite: TestSuite,
       listener: TestEngineListener,
-      execute: (TestSuite, TestEngineListener) -> EngineResult
+      execute: suspend (TestSuite, TestEngineListener) -> EngineResult
    ): EngineResult {
       loadAndApplySystemProps()
       return execute(suite, listener)

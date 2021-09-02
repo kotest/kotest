@@ -10,7 +10,7 @@ interface ProjectExtension : Extension {
     * the project to be executed, otherwise not calling [callback] will skip
     * the entire project.
     *
-    * Any error returned back the callback should be returned from this method.
+    * Any error returned from the callback should be returned from this method.
     */
    suspend fun aroundProject(callback: suspend () -> Throwable?): Throwable?
 }

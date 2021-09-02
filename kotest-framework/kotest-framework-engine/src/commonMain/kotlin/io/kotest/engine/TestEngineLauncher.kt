@@ -9,7 +9,7 @@ import io.kotest.engine.config.ConfigManager
 import io.kotest.mpp.log
 
 /**
- * Entry point for tests generated through the complier plugins, and so the
+ * Entry point for tests generated through the compiler plugins, and so the
  * public api cannot have breaking changes.
  */
 class TestEngineLauncher(
@@ -30,7 +30,7 @@ class TestEngineLauncher(
       return TestEngineLauncher(configs + projectConfig, specs)
    }
 
-   fun launch() {
+   suspend fun launch() {
       log { "TestEngineLauncher: Creating Test Engine" }
 
       val config = TestEngineConfig.default()

@@ -14,9 +14,9 @@ import io.kotest.engine.listener.TestEngineListener
  * We reserve the right to change the implementation of these extensions with regard to breaking changes.
  */
 interface EngineInterceptor {
-   fun intercept(
+   suspend fun intercept(
       suite: TestSuite,
       listener: TestEngineListener,
-      execute: (TestSuite, TestEngineListener) -> EngineResult
+      execute: suspend (TestSuite, TestEngineListener) -> EngineResult
    ): EngineResult
 }

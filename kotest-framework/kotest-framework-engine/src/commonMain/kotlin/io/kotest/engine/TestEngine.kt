@@ -5,7 +5,7 @@ import io.kotest.core.config.configuration
 import io.kotest.core.spec.Spec
 import io.kotest.engine.interceptors.EmptyTestSuiteInterceptor
 import io.kotest.engine.interceptors.EngineInterceptor
-import io.kotest.engine.interceptors.ProjectLifecycleEngineInterceptor
+import io.kotest.engine.interceptors.ProjectListenerEngineInterceptor
 import io.kotest.engine.interceptors.SpecSortEngineInterceptor
 import io.kotest.engine.interceptors.SpecStyleValidationInterceptor
 import io.kotest.engine.interceptors.TestDslStateInterceptor
@@ -27,7 +27,7 @@ data class TestEngineConfig(
             TestDslStateInterceptor,
             SpecStyleValidationInterceptor,
             SpecSortEngineInterceptor,
-            ProjectLifecycleEngineInterceptor(configuration.listeners()),
+            ProjectListenerEngineInterceptor(configuration.listeners()),
             if (configuration.failOnEmptyTestSuite) EmptyTestSuiteInterceptor else null,
          )
 
@@ -59,11 +59,11 @@ data class TestSuite(val specs: List<Spec>, val classes: List<KClass<out Spec>>)
  */
 class TestEngine(val config: TestEngineConfig) {
 
-   fun execute(suite: TestSuite) {
+   suspend fun execute(suite: TestSuite) {
       log { "TestEngine: Executing test suite with ${suite.specs.size} specs and ${suite.classes.size} classes" }
       require(suite.specs.isNotEmpty()) { "Cannot invoke the engine with no specs" }
 
-      val innerExecute: (TestSuite, TestEngineListener) -> EngineResult = { ts, tel -> execute(ts.specs, tel) }
+      val innerExecute: suspend (TestSuite, TestEngineListener) -> EngineResult = { ts, tel -> execute(ts.specs, tel) }
 
       val extensions = config.interceptors
       log { "TestEngine: ${extensions.size} engine extensions:" }
