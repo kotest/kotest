@@ -11,7 +11,7 @@ class TeamCityMessagesTest : ShouldSpec({
          .message("expected:<[foo]> but was:<[bar]>")
          .duration(67)
          .build()
-      msg shouldBe """testcity[testFailed name='escape brackets' message='expected:<|[foo|]> but was:<|[bar|]>' duration='67']"""
+      msg shouldBe """testcity[testFailed name='escape brackets' message='expectedː<|[foo|]> but wasː<|[bar|]>' duration='67']"""
    }
 
    should("escape quotes in messages") {

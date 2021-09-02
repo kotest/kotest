@@ -42,7 +42,7 @@ class ExceptionCapturingTestExecutionInterceptorTest : FunSpec({
 
       ExceptionCapturingTestExecutionInterceptor(5).intercept { _, _ -> error("boom") }
          .invoke(tc, context)
-         .status shouldBe TestStatus.Failure
+         .status shouldBe TestStatus.Error
 
    }
 })

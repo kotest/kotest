@@ -106,7 +106,7 @@ class TeamCityMessageBuilder(
       myText
          .append(' ')
          .append(name).append("='")
-         .append(escapeColons(Escaper.escapeForTeamCity(value)))
+         .append(Escaper.escapeForTeamCity(value))
          .append("'")
       return this
    }
@@ -128,8 +128,8 @@ class TeamCityMessageBuilder(
 
       val line1 = error.message?.lines()?.firstOrNull()
       val message = if (line1.isNullOrBlank()) "Test failed" else line1
-      message(message)
-      details(error.stackTraceToString())
+      message(escapeColons(message))
+      details(escapeColons(error.stackTraceToString()))
 
       when (error) {
          is ComparisonError -> type("comparisonFailure").actual(error.actualValue).expected(error.expectedValue)
