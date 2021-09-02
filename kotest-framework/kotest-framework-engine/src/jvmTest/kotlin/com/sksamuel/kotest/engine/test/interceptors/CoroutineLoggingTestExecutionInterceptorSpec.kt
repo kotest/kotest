@@ -21,6 +21,8 @@ private class CannotLogException(override val message: String) : Exception()
 @Isolate
 @OptIn(ExperimentalKotest::class)
 class CoroutineLoggingTestExecutionInterceptorSpec : FunSpec({
+   concurrency = 1
+
    val console = object : LogExtension {
       val stored = mutableListOf<String>()
 
@@ -52,7 +54,9 @@ class CoroutineLoggingTestExecutionInterceptorSpec : FunSpec({
       configuration.logLevel = logLevel
    }
 
-   beforeTest {
+   fun reset(level: LogLevel) {
+      configuration.logLevel = level
+
       console.stored.clear()
       database.stored.clear()
 
@@ -60,24 +64,26 @@ class CoroutineLoggingTestExecutionInterceptorSpec : FunSpec({
       database.stored.shouldBeEmpty()
    }
 
-   test("suppresses exceptions thrown by consume functions") {
-      configuration.logLevel = LogLevel.ERROR
+   context("suppresses exceptions thrown by consume functions") {
+      reset(LogLevel.Error)
 
-      database.stored.shouldBeEmpty()
-      shouldThrow<CannotLogException> { error { Boom } }
-      database.stored.shouldBeEmpty()
+      test("execute logs") {
+         shouldThrow<CannotLogException> { error { Boom } }
+         error { "this is fine" }
+      }
 
-      error { "this is fine" }
       database.stored.shouldContainExactly("this is fine")
    }
 
-   test("ignores all logs when logging is OFF by config") {
-      configuration.logLevel = LogLevel.OFF
+   context("ignores all logs when logging is OFF by config") {
+      reset(LogLevel.Off)
 
-      info { "info" }
-      warn { "warn" }
-      error { "error" }
-      debug { "debug" }
+      test("execute logs") {
+         info { "info" }
+         warn { "warn" }
+         error { "error" }
+         debug { "debug" }
+      }
 
       all {
          console.stored.shouldBeEmpty()
@@ -85,13 +91,15 @@ class CoroutineLoggingTestExecutionInterceptorSpec : FunSpec({
       }
    }
 
-   test("ignores logs lower priority than ERROR by config") {
-      configuration.logLevel = LogLevel.ERROR
+   context("ignores logs lower priority than ERROR by config") {
+      reset(LogLevel.Error)
 
-      info { "info" }
-      warn { "warn" }
-      error { "error" }
-      debug { "debug" }
+      test("execute logs") {
+         info { "info" }
+         warn { "warn" }
+         error { "error" }
+         debug { "debug" }
+      }
 
       val expected = setOf("error")
 
@@ -101,13 +109,15 @@ class CoroutineLoggingTestExecutionInterceptorSpec : FunSpec({
       }
    }
 
-   test("ignores logs lower priority than WARN by config") {
-      configuration.logLevel = LogLevel.WARN
+   context("ignores logs lower priority than WARN by config") {
+      reset(LogLevel.Warn)
 
-      info { "info" }
-      warn { "warn" }
-      error { "error" }
-      debug { "debug" }
+      test("execute logs") {
+         info { "info" }
+         warn { "warn" }
+         error { "error" }
+         debug { "debug" }
+      }
 
       val expected = setOf("warn", "error")
 
@@ -117,13 +127,15 @@ class CoroutineLoggingTestExecutionInterceptorSpec : FunSpec({
       }
    }
 
-   test("ignores logs lower priority than INFO by config") {
-      configuration.logLevel = LogLevel.DEBUG
+   context("ignores logs lower priority than INFO by config") {
+      reset(LogLevel.Debug)
 
-      info { "info" }
-      warn { "warn" }
-      error { "error" }
-      debug { "debug" }
+      test("execute logs") {
+         info { "info" }
+         warn { "warn" }
+         error { "error" }
+         debug { "debug" }
+      }
 
       val expected = setOf("info", "warn", "error")
 
@@ -133,13 +145,15 @@ class CoroutineLoggingTestExecutionInterceptorSpec : FunSpec({
       }
    }
 
-   test("accepts all logs when DEBUG by config") {
-      configuration.logLevel = LogLevel.DEBUG
+   context("accepts all logs when DEBUG by config") {
+      reset(LogLevel.Debug)
 
-      info { "info" }
-      warn { "warn" }
-      error { "error" }
-      debug { "debug" }
+      test("execute logs") {
+         info { "info" }
+         warn { "warn" }
+         error { "error" }
+         debug { "debug" }
+      }
 
       val expected = setOf("info", "warn", "error", "debug")
 
@@ -147,6 +161,24 @@ class CoroutineLoggingTestExecutionInterceptorSpec : FunSpec({
          console.stored.shouldContainInOrder(expected)
          database.stored.shouldContainInOrder(expected)
       }
+   }
 
+   context("accepts all logs when TRACE by config using TestLogger") {
+      reset(LogLevel.Trace)
+
+      test("execute logs") {
+         logger.info { "info" }
+         logger.warn { "warn" }
+         logger.error { "error" }
+         logger.debug { "debug" }
+         logger.trace { "trace" }
+      }
+
+      val expected = setOf("info", "warn", "error", "debug", "trace")
+
+      all {
+         console.stored.shouldContainInOrder(expected)
+         database.stored.shouldContainInOrder(expected)
+      }
    }
 })

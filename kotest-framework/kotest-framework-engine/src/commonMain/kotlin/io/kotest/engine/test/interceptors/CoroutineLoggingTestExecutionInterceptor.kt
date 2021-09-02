@@ -1,6 +1,7 @@
 package io.kotest.engine.test.interceptors
 
 import io.kotest.common.ExperimentalKotest
+import io.kotest.core.config.LogLevel
 import io.kotest.core.config.configuration
 import io.kotest.core.extensions.Extension
 import io.kotest.core.test.TestCase
@@ -13,45 +14,48 @@ import kotlin.coroutines.AbstractCoroutineContextElement
 import kotlin.coroutines.CoroutineContext
 
 /**
- * On completion of the execution of a given testCase,
- * the values logged by way of [debug], [info], [warn], and [error] will be passed to [LogExtension.handleLogs].
+ * An extension that is invoked when a test completes, logging any values that were logged using
+ * by way of [trace], [debug], [info], [warn], and [error] during that test.
  *
- * Listeners can use testId on [TestCase.description] to cross-reference the [TestResult] with the provided logs.
+ * Users can use testId on [TestCase.description] to cross-reference the [TestResult] with the provided logs.
  */
 @ExperimentalKotest
 interface LogExtension : Extension {
-   suspend fun handleLogs(testCase: TestCase, logs: List<Any>)
+   suspend fun handleLogs(testCase: TestCase, logs: List<LogEntry>)
 }
 
 /**
- * [SerialLogExtension] wraps the user provided [LogExtension] with a mutex,
- * so we can guarantee that calls to [LogExtension.handleLogs] aren't interleaved.
+ * [SerialLogExtension] wraps a [LogExtension] with a mutex, so we can guarantee
+ * that calls to [LogExtension.handleLogs] are invoked sequentially.
  */
-@OptIn(ExperimentalKotest::class)
+@ExperimentalKotest
 internal class SerialLogExtension constructor(private val logExtension: LogExtension) {
    private val mutex = Mutex()
 
-   suspend fun afterEach(testCase: TestCase, logs: List<Any>) = mutex.withLock {
+   suspend fun handleLogs(testCase: TestCase, logs: List<LogEntry>) = mutex.withLock {
       runCatching {
          logExtension.handleLogs(testCase, logs)
       }
    }
 }
 
+/**
+ * A [LogExtension] that writes to std out using [println].
+ */
 @ExperimentalKotest
 object ConsoleLogExtension : LogExtension {
-   override suspend fun handleLogs(testCase: TestCase, logs: List<Any>) {
+   override suspend fun handleLogs(testCase: TestCase, logs: List<LogEntry>) {
       println(" - ${testCase.description}")
-      logs.forEach { println(it) }
+      logs.forEach { println(it.level.name + ": " + it.message()) }
    }
 }
 
 @ExperimentalKotest
-private class TestContextLoggingCoroutineContextElement(val logs: MutableList<Any>) : AbstractCoroutineContextElement(Key) {
+private class TestContextLoggingCoroutineContextElement(val logger: TestLogger) : AbstractCoroutineContextElement(Key) {
    companion object Key : CoroutineContext.Key<TestContextLoggingCoroutineContextElement>
 }
 
-@OptIn(ExperimentalKotest::class)
+@ExperimentalKotest
 internal class CoroutineLoggingTestExecutionInterceptor(private val extensions: List<SerialLogExtension>) : TestExecutionInterceptor {
    override suspend fun intercept(
       test: suspend (TestCase, TestContext) -> TestResult
@@ -59,72 +63,92 @@ internal class CoroutineLoggingTestExecutionInterceptor(private val extensions: 
       when {
          configuration.logLevel.isDisabled() || extensions.isEmpty() -> test(testCase, context)
          else -> {
-            val contextWithLogging = context.withCoroutineContext(TestContextLoggingCoroutineContextElement(mutableListOf()))
-
+            val logger = DefaultTestLogger()
+            val contextWithLogging = context.withCoroutineContext(TestContextLoggingCoroutineContextElement(logger))
             try {
                test(testCase, contextWithLogging)
             } catch (ex: Exception) {
                throw ex
             } finally {
-               val logs = contextWithLogging.getLogs()
-               extensions.forEach { it.afterEach(testCase, logs) }
+               val logs = logger.logs.filter { it.level >= configuration.logLevel }
+               extensions.forEach { extension -> extension.handleLogs(testCase, logs) }
             }
          }
       }
    }
 }
 
-@OptIn(ExperimentalKotest::class)
-private fun TestContext.getLogs() = this.coroutineContext[TestContextLoggingCoroutineContextElement]?.logs?.toList() ?: listOf()
-
-@ExperimentalKotest
-private suspend fun TestContext.maybeLog(enabled: Boolean, message: suspend () -> Any?) {
-   if (!enabled) return
-   val logs = this.coroutineContext[TestContextLoggingCoroutineContextElement]?.logs ?: return
-   val result = message() ?: return
-
-   logs.add(result)
-}
-
 /**
- * Adds a log to the [TestContext], when the log level is set to [io.kotest.core.config.LogLevel.DEBUG].
+ * Appends to the [TestContext] log, when the log level is set to [io.kotest.core.config.LogLevel.Trace].
  */
 @ExperimentalKotest
-suspend fun TestContext.debug(message: suspend () -> Any?) = maybeLog(configuration.logLevel.isDebugEnabled(), message)
+suspend fun TestContext.trace(message:  LogFn) = logger.trace(message)
 
 /**
- * Adds a log to the [TestContext], when the log level is set to [io.kotest.core.config.LogLevel.INFO].
+ * Appends to the [TestContext] log, when the log level is set to [io.kotest.core.config.LogLevel.Debug].
  */
 @ExperimentalKotest
-suspend fun TestContext.info(message: suspend () -> Any?) = maybeLog(configuration.logLevel.isInfoEnabled(), message)
+suspend fun TestContext.debug(message:  LogFn) = logger.debug(message)
 
 /**
- * Adds a log to the [TestContext], when the log level is set to [io.kotest.core.config.LogLevel.WARN].
+ * Appends to the [TestContext] log, when the log level is set to [io.kotest.core.config.LogLevel.Info] or higher.
  */
 @ExperimentalKotest
-suspend fun TestContext.warn(message: suspend () -> Any?) = maybeLog(configuration.logLevel.isWarnEnabled(), message)
+suspend fun TestContext.info(message:  LogFn) = logger.info(message)
 
 /**
- * Adds a log to the [TestContext], when the log level is set to [io.kotest.core.config.LogLevel.ERROR].
+ * Appends to the [TestContext] log, when the log level is [io.kotest.core.config.LogLevel.Warn] or higher.
  */
 @ExperimentalKotest
-suspend fun TestContext.error(message: suspend () -> Any?) = maybeLog(configuration.logLevel.isErrorEnabled(), message)
+suspend fun TestContext.warn(message:  LogFn) = logger.warn(message)
+
+/**
+ * Appends to the [TestContext] log, when the log level is set to [io.kotest.core.config.LogLevel.Error] or higher.
+ */
+@ExperimentalKotest
+suspend fun TestContext.error(message:  LogFn) = logger.error(message)
+
+typealias LogFn = suspend () -> Any?
 
 @ExperimentalKotest
 interface TestLogger {
-   suspend fun debug(message: suspend () -> Any?)
-   suspend fun info(message: suspend () -> Any?)
-   suspend fun warn(message: suspend () -> Any?)
-   suspend fun error(message: suspend () -> Any?)
+   suspend fun trace(message: LogFn)
+   suspend fun debug(message: LogFn)
+   suspend fun info(message: LogFn)
+   suspend fun warn(message: LogFn)
+   suspend fun error(message: LogFn)
 }
 
 @ExperimentalKotest
-fun TestContext.getLogger(): TestLogger = object : TestLogger {
-   private val logLevel = configuration.logLevel
-   private val context = this@getLogger
+class DefaultTestLogger : TestLogger {
+   val logs = mutableListOf<LogEntry>()
 
-   override suspend fun debug(message: suspend () -> Any?) = context.maybeLog(logLevel.isDebugEnabled(), message)
-   override suspend fun info(message: suspend () -> Any?) = context.maybeLog(logLevel.isInfoEnabled(), message)
-   override suspend fun warn(message: suspend () -> Any?) = context.maybeLog(logLevel.isWarnEnabled(), message)
-   override suspend fun error(message: suspend () -> Any?) = context.maybeLog(logLevel.isErrorEnabled(), message)
+   override suspend fun trace(message: LogFn) {
+      logs.add(LogEntry(LogLevel.Trace, message))
+   }
+
+   override suspend fun debug(message: LogFn) {
+      logs.add(LogEntry(LogLevel.Debug, message))
+   }
+
+   override suspend fun info(message: LogFn) {
+      logs.add(LogEntry(LogLevel.Info, message))
+   }
+
+   override suspend fun warn(message: LogFn) {
+      logs.add(LogEntry(LogLevel.Warn, message))
+   }
+
+   override suspend fun error(message: LogFn) {
+      logs.add(LogEntry(LogLevel.Error, message))
+   }
 }
+
+data class LogEntry(val level: LogLevel, val message: LogFn)
+
+/**
+ * Returns the [TestLogger] that is embedded with this [TestContext].
+ */
+@ExperimentalKotest
+val TestContext.logger: TestLogger
+   get() = coroutineContext[TestContextLoggingCoroutineContextElement]?.logger ?: error("No test logger in context")

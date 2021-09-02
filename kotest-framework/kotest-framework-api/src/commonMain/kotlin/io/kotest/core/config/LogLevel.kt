@@ -1,22 +1,29 @@
 package io.kotest.core.config
 
-enum class LogLevel(val level: Int) {
-   OFF(0), ERROR(1), WARN(2), INFO(3), DEBUG(4);
+sealed class LogLevel(val level: Int, val name: String) {
+   object Off : LogLevel(Int.MAX_VALUE, "off")
+   object Error : LogLevel(4, "error")
+   object Warn : LogLevel(3, "warn")
+   object Info : LogLevel(2, "info")
+   object Debug : LogLevel(1, "debug")
+   object Trace : LogLevel(0, "trace")
 
-   fun isDebugEnabled() = level >= DEBUG.level
-   fun isInfoEnabled() = level >= INFO.level
-   fun isWarnEnabled() = level >= WARN.level
-   fun isErrorEnabled() = level >= ERROR.level
-   fun isDisabled() = level < 1 || level > 4
+   fun isDisabled() = this is Off
+
+   operator fun compareTo(other: LogLevel): Int = when {
+      level < other.level -> -1
+      level > other.level -> 1
+      else -> 0
+   }
 
    companion object {
       fun from(level: String?): LogLevel = when (level) {
-         "debug" -> DEBUG
-         "info" -> INFO
-         "warn" -> WARN
-         "error" -> ERROR
-         "off" -> OFF
-         else -> OFF
+         "trace" -> Trace
+         "debug" -> Debug
+         "warn" -> Warn
+         "info" -> Info
+         "error" -> Error
+         else -> Off
       }
    }
 }
