@@ -1,7 +1,7 @@
 package io.kotest.engine.events
 
 import io.kotest.core.config.configuration
-import io.kotest.core.config.testListeners
+import io.kotest.core.listeners.TestListener
 import io.kotest.core.spec.resolvedTestListeners
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
@@ -15,7 +15,7 @@ import io.kotest.fp.Try
  */
 suspend fun TestCase.invokeAllBeforeTestCallbacks(): Try<TestCase> =
    Try {
-      spec.resolvedTestListeners() + configuration.testListeners()
+      spec.resolvedTestListeners() + configuration.extensions().filterIsInstance<TestListener>()
    }.fold({
       Try.Failure(it)
    }, { listeners ->
@@ -36,7 +36,7 @@ suspend fun TestCase.invokeAllBeforeTestCallbacks(): Try<TestCase> =
  */
 suspend fun TestCase.invokeAllAfterTestCallbacks(result: TestResult): Try<TestCase> =
    Try {
-      this.config.listeners + spec.resolvedTestListeners() + configuration.testListeners()
+      this.config.listeners + spec.resolvedTestListeners() + configuration.extensions().filterIsInstance<TestListener>()
    }.fold({
       Try.Failure(it)
    }, { listeners ->

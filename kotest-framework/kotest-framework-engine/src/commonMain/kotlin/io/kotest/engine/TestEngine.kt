@@ -27,7 +27,7 @@ data class TestEngineConfig(
             TestDslStateInterceptor,
             SpecStyleValidationInterceptor,
             SpecSortEngineInterceptor,
-            ProjectListenerEngineInterceptor(configuration.listeners()),
+            ProjectListenerEngineInterceptor(configuration.extensions()),
             if (configuration.failOnEmptyTestSuite) EmptyTestSuiteInterceptor else null,
          )
 

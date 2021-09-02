@@ -23,14 +23,14 @@ actual class LifecycleEventManager {
       }
    }
 
-   actual fun beforeProject(listeners: List<BeforeProjectListener>) {
+   actual suspend fun beforeProject(listeners: List<BeforeProjectListener>) {
       if (listeners.isNotEmpty())
          execute("beforeProject") {
             listeners.forEach { it.beforeProject() }
          }
    }
 
-   actual fun afterProject(listeners: List<AfterProjectListener>) {
+   actual suspend fun afterProject(listeners: List<AfterProjectListener>) {
       if (listeners.isNotEmpty())
          execute("afterProject") {
             listeners.forEach { it.afterProject() }

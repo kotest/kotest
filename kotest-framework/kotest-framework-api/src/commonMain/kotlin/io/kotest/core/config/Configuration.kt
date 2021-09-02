@@ -350,16 +350,24 @@ class Configuration {
       extensions.remove(extension)
    }
 
-   fun registerListeners(vararg listeners: Listener) = listeners.forEach { registerListener(it) }
-   fun registerListeners(listeners: List<Listener>) = listeners.forEach { registerListener(it) }
-   fun deregisterListeners(listeners: List<Listener>) = listeners.forEach { deregisterListener(it) }
+   @Deprecated("Use registerExtension. This will be removed in 6.0.")
+   fun registerListeners(vararg listeners: Listener) = listeners.forEach { registerExtension(it) }
 
+   @Deprecated("Use registerExtension. This will be removed in 6.0.")
+   fun registerListeners(listeners: List<Listener>) = listeners.forEach { registerExtension(it) }
+
+   @Deprecated("Use deregisterExtension. This will be removed in 6.0.")
+   fun deregisterListeners(listeners: List<Listener>) = listeners.forEach { deregisterExtension(it) }
+
+   @Deprecated("Use registerExtension. This will be removed in 6.0.")
    fun registerListener(listener: Listener) = registerExtension(listener)
 
+   @Deprecated("Use deregisterListener. This will be removed in 6.0.")
    fun deregisterListener(listener: Listener) {
       deregisterExtension(listener)
    }
 
+   @Deprecated("Use removeExtensions. This will be removed in 6.0.")
    fun removeListeners() {
       removeExtensions()
    }
@@ -372,8 +380,3 @@ class Configuration {
       filters.clear()
    }
 }
-
-fun Configuration.testListeners(): List<TestListener> = listeners().filterIsInstance<TestListener>()
-fun Configuration.specInstantiationListeners(): List<SpecInstantiationListener> =
-   listeners().filterIsInstance<SpecInstantiationListener>()
-

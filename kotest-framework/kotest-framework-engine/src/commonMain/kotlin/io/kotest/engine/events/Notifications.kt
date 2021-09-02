@@ -1,9 +1,9 @@
 package io.kotest.engine.events
 
 import io.kotest.core.config.configuration
-import io.kotest.core.config.specInstantiationListeners
-import io.kotest.core.config.testListeners
 import io.kotest.core.listeners.FinalizeSpecListener
+import io.kotest.core.listeners.SpecInstantiationListener
+import io.kotest.core.listeners.TestListener
 import io.kotest.core.plan.Descriptor
 import io.kotest.core.spec.Spec
 import io.kotest.core.test.TestCase
@@ -58,8 +58,8 @@ class Notifications(private val listener: TestEngineListener) {
 
       // prepareSpec can only be registered at the project level
       // It makes no sense to call prepareSpec after a spec has already been instantiated.
-      // Therefore we only look for listeners at the global level only
-      val listeners = configuration.testListeners()
+      // Therefore, we only look for listeners at the global level only
+      val listeners = configuration.extensions().filterIsInstance<TestListener>()
       log { "Notifying ${listeners.size} listeners of callback 'prepareSpec'" }
       listeners.forEach {
          it.prepareSpec(kclass)
@@ -87,7 +87,7 @@ class Notifications(private val listener: TestEngineListener) {
       spec: Spec,
       results: Map<TestCase, TestResult>
    ) = Try {
-      configuration.testListeners().forEach {
+      configuration.extensions().filterIsInstance<TestListener>().forEach {
          it.specIgnored(spec, results)
       }
    }
@@ -107,14 +107,14 @@ class Notifications(private val listener: TestEngineListener) {
       kclass: KClass<out Spec>,
       results: Map<TestCase, TestResult>
    ) = Try {
-      configuration.listeners().filterIsInstance<FinalizeSpecListener>().forEach {
+      configuration.extensions().filterIsInstance<FinalizeSpecListener>().forEach {
          it.finalizeSpec(kclass, results)
       }
    }
 
    suspend fun specInstantiated(spec: Spec) = Try {
       log { "NotificationManager:specInstantiated spec:$spec" }
-      val listeners = configuration.specInstantiationListeners()
+      val listeners = configuration.extensions().filterIsInstance<SpecInstantiationListener>()
       listener.specInstantiated(spec)
       listeners.forEach {
          it.specInstantiated(spec)
@@ -123,7 +123,7 @@ class Notifications(private val listener: TestEngineListener) {
 
    suspend fun specInstantiationError(kclass: KClass<out Spec>, t: Throwable) = Try {
       log { "NotificationManager:specInstantiationError $kclass error:$t" }
-      val listeners = configuration.specInstantiationListeners()
+      val listeners = configuration.extensions().filterIsInstance<SpecInstantiationListener>()
       t.printStackTrace()
       listener.specInstantiationError(kclass, t)
       listeners.forEach {

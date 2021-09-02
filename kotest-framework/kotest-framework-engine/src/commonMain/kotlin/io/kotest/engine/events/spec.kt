@@ -1,8 +1,8 @@
 package io.kotest.engine.events
 
 import io.kotest.core.config.configuration
-import io.kotest.core.config.testListeners
 import io.kotest.core.extensions.SpecFinalizeExtension
+import io.kotest.core.listeners.TestListener
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.resolvedTestListeners
 import io.kotest.fp.Try
@@ -14,7 +14,7 @@ import io.kotest.mpp.log
  */
 internal suspend fun Spec.invokeBeforeSpec(): Try<Spec> = Try {
    log { "invokeBeforeSpec $this" }
-   val listeners = resolvedTestListeners() + configuration.testListeners()
+   val listeners = resolvedTestListeners() + configuration.extensions().filterIsInstance<TestListener>()
    listeners.forEach {
       it.beforeSpec(this)
    }
@@ -33,7 +33,7 @@ internal suspend fun Spec.invokeAfterSpec(): Try<Spec> = Try {
       closeables.forEach { it.value.close() }
    }
 
-   val listeners = resolvedTestListeners() + configuration.testListeners()
+   val listeners = resolvedTestListeners() + configuration.extensions().filterIsInstance<TestListener>()
    listeners.forEach { it.afterSpec(this) }
 
    configuration.extensions().filterIsInstance<SpecFinalizeExtension>().forEach {
