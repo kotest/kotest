@@ -113,9 +113,9 @@ kotlin {
       }
 
       all {
-         languageSettings.useExperimentalAnnotation("kotlin.time.ExperimentalTime")
-         languageSettings.useExperimentalAnnotation("kotlin.experimental.ExperimentalTypeInference")
-         languageSettings.useExperimentalAnnotation("kotlin.RequiresOptIn")
+         languageSettings.optIn("kotlin.time.ExperimentalTime")
+         languageSettings.optIn("kotlin.experimental.ExperimentalTypeInference")
+         languageSettings.optIn("kotlin.RequiresOptIn")
       }
    }
 }
