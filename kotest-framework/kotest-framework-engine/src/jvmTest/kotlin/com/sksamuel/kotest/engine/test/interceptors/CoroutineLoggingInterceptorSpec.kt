@@ -20,7 +20,7 @@ private class CannotLogException(override val message: String) : Exception()
 
 @Isolate
 @OptIn(ExperimentalKotest::class)
-class CoroutineLoggingTestExecutionInterceptorSpec : FunSpec({
+class CoroutineLoggingInterceptorSpec : FunSpec({
    concurrency = 1
 
    val console = object : LogExtension {

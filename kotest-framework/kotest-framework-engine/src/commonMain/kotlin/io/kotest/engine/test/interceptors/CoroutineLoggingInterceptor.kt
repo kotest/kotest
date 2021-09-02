@@ -55,8 +55,8 @@ private class TestContextLoggingCoroutineContextElement(val logger: TestLogger) 
    companion object Key : CoroutineContext.Key<TestContextLoggingCoroutineContextElement>
 }
 
-@ExperimentalKotest
-internal class CoroutineLoggingTestExecutionInterceptor(private val extensions: List<SerialLogExtension>) : TestExecutionInterceptor {
+@OptIn(ExperimentalKotest::class)
+internal class CoroutineLoggingInterceptor(private val extensions: List<SerialLogExtension>) : TestExecutionInterceptor {
    override suspend fun intercept(
       test: suspend (TestCase, TestContext) -> TestResult
    ): suspend (TestCase, TestContext) -> TestResult = { testCase, context ->
