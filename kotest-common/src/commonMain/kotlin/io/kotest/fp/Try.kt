@@ -43,6 +43,11 @@ sealed class Try<out T> {
       }
    }
 
+   inline fun then(f: () -> Unit): Try<T> {
+      val t = Try { f() }
+      return if (this is Failure) this else if (t is Failure) t else this
+   }
+
    inline fun onSuccess(f: (T) -> Unit): Try<T> = when (this) {
       is Success -> {
          f(this.value)

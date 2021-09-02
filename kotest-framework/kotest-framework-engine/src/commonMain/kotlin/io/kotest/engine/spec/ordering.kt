@@ -1,18 +1,34 @@
 package io.kotest.engine.spec
 
-import io.kotest.core.spec.SpecExecutionOrder
+import io.kotest.core.extensions.SpecExecutionOrderExtension
 import io.kotest.core.spec.Spec
+import io.kotest.core.spec.SpecExecutionOrder
 import kotlin.reflect.KClass
 
-fun List<KClass<out Spec>>.sort(order: SpecExecutionOrder): List<KClass<out Spec>> {
-   return when (order) {
-      SpecExecutionOrder.Undefined -> this
-      SpecExecutionOrder.Lexicographic -> LexicographicSpecSorter.sort(this)
-      SpecExecutionOrder.Random -> RandomSpecSorter.sort(this)
-      SpecExecutionOrder.Annotated -> AnnotatedSpecSorter.sort(this)
-      SpecExecutionOrder.FailureFirst -> failureFirstSort(this)
+/**
+ * A [SpecExecutionOrderExtension] which uses the value of the given [SpecExecutionOrder] parameter
+ * to delegate to a [SpecSorter] perform sorting.
+ */
+class DefaultSpecExecutionOrderExtension(private val order: SpecExecutionOrder) : SpecExecutionOrderExtension {
+
+   override fun sortSpecs(specs: List<Spec>): List<Spec> {
+      return when (order) {
+         SpecExecutionOrder.Undefined -> specs
+         SpecExecutionOrder.Lexicographic -> LexicographicSpecSorter.sortSpecs(specs)
+         SpecExecutionOrder.Random -> RandomSpecSorter.sortSpecs(specs)
+         SpecExecutionOrder.Annotated -> AnnotatedSpecSorter.sortSpecs(specs)
+         SpecExecutionOrder.FailureFirst -> FailureFirstSorter().sortSpecs(specs)
+      }
    }
+
+   override fun sortClasses(classes: List<KClass<out Spec>>): List<KClass<out Spec>> {
+      return when (order) {
+         SpecExecutionOrder.Undefined -> classes
+         SpecExecutionOrder.Lexicographic -> LexicographicSpecSorter.sortClasses(classes)
+         SpecExecutionOrder.Random -> RandomSpecSorter.sortClasses(classes)
+         SpecExecutionOrder.Annotated -> AnnotatedSpecSorter.sortClasses(classes)
+         SpecExecutionOrder.FailureFirst -> FailureFirstSorter().sortClasses(classes)
+      }
+   }
+
 }
-
-expect fun failureFirstSort(classes: List<KClass<out Spec>>): List<KClass<out Spec>>
-

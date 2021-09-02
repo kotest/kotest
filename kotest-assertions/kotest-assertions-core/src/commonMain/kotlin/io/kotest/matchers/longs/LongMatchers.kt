@@ -43,3 +43,41 @@ fun exactly(x: Long) = object : Matcher<Long> {
     "$value should not be equal to $x"
   )
 }
+
+
+/**
+ * Verifies that this long is within [percentage]% of [other]
+ *
+ * 90.shouldBeWithinPercentageOf(100, 10.0)  // Passes
+ * 50.shouldBeWithinPercentageOf(100, 50.0)  // Passes
+ * 30.shouldBeWithinPercentageOf(100, 10.0)  // Fail
+ *
+ */
+fun Long.shouldBeWithinPercentageOf(other: Long, percentage: Double) {
+   require(percentage > 0.0) { "Percentage must be > 0.0" }
+   this should beWithinPercentageOf(other, percentage)
+}
+
+/**
+ * Verifies that this long is NOT within [percentage]% of [other]
+ *
+ * 90.shouldNotBeWithinPercentageOf(100, 10.0)  // Fail
+ * 50.shouldNotBeWithinPercentageOf(100, 50.0)  // Fail
+ * 30.shouldNotBeWithinPercentageOf(100, 10.0)  // Passes
+ *
+ */
+fun Long.shouldNotBeWithinPercentageOf(other: Long, percentage: Double) {
+   require(percentage > 0.0) { "Percentage must be > 0.0" }
+   this shouldNot beWithinPercentageOf(other, percentage)
+}
+
+fun beWithinPercentageOf(other: Long, percentage: Double) = object : Matcher<Long> {
+   private val tolerance = other.times(percentage / 100)
+   private val range = (other - tolerance)..(other + tolerance)
+
+   override fun test(value: Long) = MatcherResult(
+      value.toDouble() in range,
+      "$value should be in $range",
+      "$value should not be in $range"
+   )
+}

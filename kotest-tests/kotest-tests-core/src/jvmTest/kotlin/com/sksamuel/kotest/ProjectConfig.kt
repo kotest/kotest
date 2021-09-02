@@ -8,9 +8,6 @@ import io.kotest.core.spec.SpecExecutionOrder
 
 object ProjectConfig : AbstractProjectConfig() {
 
-   var beforeAll = 0
-   var afterAll = 0
-
    val intercepterLog = StringBuilder()
 
    override val specExecutionOrder = SpecExecutionOrder.Lexicographic

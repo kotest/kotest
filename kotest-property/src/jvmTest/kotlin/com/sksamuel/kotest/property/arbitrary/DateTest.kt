@@ -1,5 +1,6 @@
 package com.sksamuel.kotest.property.arbitrary
 
+import io.kotest.assertions.fail
 import io.kotest.core.spec.style.WordSpec
 import io.kotest.matchers.collections.shouldContain
 import io.kotest.matchers.collections.shouldContainAll
@@ -12,9 +13,13 @@ import io.kotest.property.arbitrary.instant
 import io.kotest.property.arbitrary.localDate
 import io.kotest.property.arbitrary.localDateTime
 import io.kotest.property.arbitrary.localTime
+import io.kotest.property.arbitrary.next
 import io.kotest.property.arbitrary.period
+import io.kotest.property.arbitrary.take
 import io.kotest.property.checkAll
+import io.kotest.property.forAll
 import java.time.LocalDate
+import java.time.LocalDate.of
 import java.time.LocalDateTime
 import java.time.LocalTime
 import java.time.Period
@@ -23,7 +28,7 @@ class DateTest : WordSpec({
 
    "Arb.localDate(minYear, maxYear)" should {
       "generate valid LocalDates (no exceptions)" {
-         Arb.localDate().generate(RandomSource.default()).take(10_000).toList()
+         Arb.localDate().take(10_000).toList()
       }
 
       "generate LocalDates between minYear and maxYear" {
@@ -31,7 +36,7 @@ class DateTest : WordSpec({
          val months = mutableSetOf<Int>()
          val days = mutableSetOf<Int>()
 
-         checkAll(10_000, Arb.localDate(LocalDate.of(1998, 1, 1), LocalDate.of(1999, 12, 31))) {
+         checkAll(10_000, Arb.localDate(of(1998, 1, 1), of(1999, 12, 31))) {
             years += it.year
             months += it.monthValue
             days += it.dayOfMonth
@@ -42,23 +47,19 @@ class DateTest : WordSpec({
          days shouldBe (1..31).toSet()
       }
 
-      "generate LocalDates after the minYear" {
-         checkAll(100_000, Arb.localDate(LocalDate.of(2021, 7, 17))) {
-            it shouldBeAfter LocalDate.of(2021, 7, 16)
+      "Generate LocalDates always in the range" {
+         repeat(1_000) {
+            val min = of(1970, 1, 1).plusDays(it.toLong())
+            val max = min.plusYears(20)
+            Arb.localDate(min, max).forAll { it >= min && it <= max }
          }
       }
 
       "Contain Feb 29th if leap year" {
          val leapYear = 2016
-         Arb.localDate(LocalDate.of(leapYear, 1, 1), LocalDate.of(leapYear, 12, 31)).edgecases().toList() shouldContain LocalDate.of(2016, 2, 29)
+         Arb.localDate(of(leapYear, 1, 1), of(leapYear, 12, 31)).edgecases() shouldContain of(2016, 2, 29)
       }
 
-      "Contain the edge cases Feb 28, Jan 01 and Dec 31" {
-         Arb.localDate(LocalDate.of(2019, 1, 1), LocalDate.of(2020, 12, 31)).edgecases().toList() shouldContainAll listOf(
-            LocalDate.of(2019, 1, 1),
-            LocalDate.of(2020, 12, 31)
-         )
-      }
 
       "Be the default generator for LocalDate" {
          checkAll(10) { _: LocalDate -> /* No use. Won't reach here if unsupported */ }

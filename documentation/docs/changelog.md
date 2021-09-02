@@ -17,7 +17,9 @@ _**Kotlin 1.5 is now the minimum supported version**_
 * Removed deprecated `shouldReceiveWithin` and `shouldReceiveNoElementsWithin` channel matchers.
 * `equalJson` has an added parameter to support the new `shouldEqualSpecifiedJson` assertion
 * `TestEngineListener` methods are now suspendable. This is only of interest if you have implemented customizations of the Test Engine through plugins. Note: This is not related to public TestListener methods that are used by test cases.
-
+* The global configuration variable `project` has been removed. This was deprecated in 4.2. Use the replacment global variable `configuration` or provide config via instances of [ProjectConfig](https://kotest.io/docs/framework/project-config.html).
+* The deprecated `RuntimeTagExtension` has been undeprecated but moved to a new package.
+* In 4.5 the DSL scope classes were renamed from `XYZScope` to `XYZContext`. For example, `FreeSpecRootScope` became `FreeSpecRootContext`. The deprecated type aliases have now been removed. This only affects you if you have written custom Kotest Spec Styles that relied on the old names of scopes from existing spec styles.
 #### Fixes
 
 * String matchers now also work on CharSequence where applicable #2278
@@ -25,6 +27,7 @@ _**Kotlin 1.5 is now the minimum supported version**_
 
 #### Improvements
 
+* Config option to enable [coroutine debugging](https://github.com/Kotlin/kotlinx.coroutines/tree/master/kotlinx-coroutines-debug)
 * Failfast option added [see docs] #2243
 * Unfinished tests should error (#2281)
 * Added option to fail test run if no tests were executed (#2287)
@@ -39,6 +42,8 @@ _**Kotlin 1.5 is now the minimum supported version**_
 * Improve Arb.primitive consistency (#2299)
 * Add Arb.ints zero inclusive variants (#2294)
 * Add unsigned types for Arb (#2290)
+* Added arb for ip addresses V4 #2407
+* Added arb for hexidecimal codepoints #2409
 * Added `shouldEqualSpecifiedJson` to match a JSON structure on a subset of (specified) keys. (#2298)
 
 #### Deprecations
@@ -47,9 +52,22 @@ _**Kotlin 1.5 is now the minimum supported version**_
 * Datatest2 has been deprecated
 
 
-## 4.6.1 July 2021
+### 4.6.2 August 2021
 
-### Fixes
+#### Fixes
+
+* Reverted use of 1.5 API introduced erroneously in 4.6.1
+* autoClose breaks lazy #2388
+* minDate not respected in Arb.localDate #2369
+* Sequence.containExactly should work for single pass sequences #2412
+* BigDecimal edge case for equals vs compareTo discrepancy #2403
+* PropTestConfig's iterations parameter is not respected. #2428
+* tempfile and tempdir should fail test when deletion fails #2351
+*
+
+### 4.6.1 July 2021
+
+#### Fixes
 
 * HTMLReporter - css not loading (href of the file is absolute, not relative) #2342
 * Annotations such as @Ignore and @Isolate now work when composed #2279

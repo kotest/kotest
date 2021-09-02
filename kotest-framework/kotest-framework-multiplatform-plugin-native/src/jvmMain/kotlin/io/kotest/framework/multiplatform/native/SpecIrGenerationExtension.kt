@@ -6,6 +6,7 @@ import org.jetbrains.kotlin.backend.common.extensions.IrPluginContext
 import org.jetbrains.kotlin.backend.common.ir.addChild
 import org.jetbrains.kotlin.backend.common.lower.DeclarationIrBuilder
 import org.jetbrains.kotlin.cli.common.messages.MessageCollector
+import org.jetbrains.kotlin.cli.common.toLogger
 import org.jetbrains.kotlin.ir.builders.declarations.addGetter
 import org.jetbrains.kotlin.ir.builders.declarations.buildField
 import org.jetbrains.kotlin.ir.builders.declarations.buildProperty
@@ -16,8 +17,10 @@ import org.jetbrains.kotlin.ir.builders.irVararg
 import org.jetbrains.kotlin.ir.declarations.IrClass
 import org.jetbrains.kotlin.ir.declarations.IrFile
 import org.jetbrains.kotlin.ir.declarations.IrModuleFragment
+import org.jetbrains.kotlin.ir.declarations.name
 import org.jetbrains.kotlin.ir.util.constructors
 import org.jetbrains.kotlin.ir.util.getSimpleFunction
+import org.jetbrains.kotlin.ir.util.kotlinFqName
 import org.jetbrains.kotlin.name.FqName
 import org.jetbrains.kotlin.name.Name
 
@@ -31,6 +34,10 @@ class SpecIrGenerationExtension(private val messageCollector: MessageCollector) 
 
          override fun visitModuleFragment(declaration: IrModuleFragment): IrModuleFragment {
             val fragment = super.visitModuleFragment(declaration)
+            messageCollector.toLogger().log("Detected ${specs.size} native specs:")
+            specs.forEach {
+               messageCollector.toLogger().log(it.kotlinFqName.asString())
+            }
             if (specs.isEmpty()) return fragment
 
             val file = declaration.files.first()
@@ -38,11 +45,13 @@ class SpecIrGenerationExtension(private val messageCollector: MessageCollector) 
             val launcherClass = pluginContext.referenceClass(FqName(EntryPoint.TestEngineClassName))
                ?: error("Cannot find ${EntryPoint.TestEngineClassName} class reference")
 
+            val launcherConstructor = launcherClass.constructors.first { it.owner.valueParameters.isEmpty() }
+
             val launchFn = launcherClass.getSimpleFunction(EntryPoint.LaunchMethodName)
                ?: error("Cannot find function ${EntryPoint.LaunchMethodName}")
 
-            val registerFn = launcherClass.getSimpleFunction(EntryPoint.RegisterMethodName)
-               ?: error("Cannot find function ${EntryPoint.RegisterMethodName}")
+            val registerFn = launcherClass.getSimpleFunction(EntryPoint.WithSpecsMethodName)
+               ?: error("Cannot find function ${EntryPoint.WithSpecsMethodName}")
 
             val launcher = pluginContext.irFactory.buildProperty {
                name = Name.identifier(EntryPoint.LauncherValName)
@@ -61,7 +70,7 @@ class SpecIrGenerationExtension(private val messageCollector: MessageCollector) 
                      this.expression = DeclarationIrBuilder(pluginContext, field.symbol).irBlock {
                         +irCall(launchFn).also { launch ->
                            launch.dispatchReceiver = irCall(registerFn).also { register ->
-                              register.dispatchReceiver = irCall(launcherClass.constructors.first())
+                              register.dispatchReceiver = irCall(launcherConstructor)
                               register.putValueArgument(
                                  0,
                                  irVararg(
@@ -88,9 +97,10 @@ class SpecIrGenerationExtension(private val messageCollector: MessageCollector) 
          }
 
          override fun visitFileNew(declaration: IrFile): IrFile {
-            declaration.specs().forEach { spec ->
-               specs.add(spec)
-            }
+            super.visitFileNew(declaration)
+            val specs = declaration.specs()
+            messageCollector.toLogger().log("${declaration.name} contains ${specs.size} spec(s): ${specs.joinToString(", ") { it.kotlinFqName.asString() }}")
+            this.specs.addAll(specs)
             return declaration
          }
 

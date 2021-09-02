@@ -31,7 +31,7 @@ kotlin {
 
       val jvmTest by getting {
          dependencies {
-            implementation(project(Projects.Engine))
+            implementation(project(Projects.Framework.engine))
             implementation(project(Projects.AssertionsCore))
             // we use the internals of the JVM project in the tests
             implementation(project(Projects.JunitRunner))
@@ -47,8 +47,8 @@ kotlin {
       }
 
       all {
-         languageSettings.useExperimentalAnnotation("kotlin.time.ExperimentalTime")
-         languageSettings.useExperimentalAnnotation("kotlin.experimental.ExperimentalTypeInference")
+         languageSettings.optIn("kotlin.time.ExperimentalTime")
+         languageSettings.optIn("kotlin.experimental.ExperimentalTypeInference")
       }
    }
 }

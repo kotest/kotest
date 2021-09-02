@@ -1,0 +1,198 @@
+name: release_all
+
+on:
+   workflow_dispatch:
+      inputs:
+         version:
+            description: "The release version"
+            required: true
+         branch:
+            description: "The branch to release from"
+            required: true
+            default: 'master'
+
+jobs:
+   publish_linux:
+      runs-on: ubuntu-latest
+
+      steps:
+         -  name: Checkout the repo
+            uses: actions/checkout@v2
+            with:
+               fetch-depth: 0
+               ref: ${{ github.event.inputs.branch }}
+
+         -  name: Setup JDK
+            uses: actions/setup-java@v1
+            with:
+               java-version: '8'
+
+         -  name: publish multiplatform release
+            run: ./gradlew publishKotlinMultiplatformPublicationToDeployRepository
+            env:
+               RELEASE_VERSION: ${{ github.event.inputs.version }}
+               OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
+               OSSRH_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
+               ORG_GRADLE_PROJECT_signingKey: ${{ secrets.SIGNING_KEY }}
+               ORG_GRADLE_PROJECT_signingPassword: ${{ secrets.SIGNING_PASSWORD }}
+
+         -  name: publish jvm release
+            run: ./gradlew publishJvmPublicationToDeployRepository
+            env:
+               RELEASE_VERSION: ${{ github.event.inputs.version }}
+               OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
+               OSSRH_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
+               ORG_GRADLE_PROJECT_signingKey: ${{ secrets.SIGNING_KEY }}
+               ORG_GRADLE_PROJECT_signingPassword: ${{ secrets.SIGNING_PASSWORD }}
+
+         -  name: publish js release
+            run: ./gradlew publishJsPublicationToDeployRepository
+            env:
+               RELEASE_VERSION: ${{ github.event.inputs.version }}
+               OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
+               OSSRH_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
+               ORG_GRADLE_PROJECT_signingKey: ${{ secrets.SIGNING_KEY }}
+               ORG_GRADLE_PROJECT_signingPassword: ${{ secrets.SIGNING_PASSWORD }}
+
+         -  name: publish linux release
+            run: ./gradlew publishLinuxX64PublicationToDeployRepository
+            env:
+               RELEASE_VERSION: ${{ github.event.inputs.version }}
+               OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
+               OSSRH_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
+               ORG_GRADLE_PROJECT_signingKey: ${{ secrets.SIGNING_KEY }}
+               ORG_GRADLE_PROJECT_signingPassword: ${{ secrets.SIGNING_PASSWORD }}
+
+   publish_macos:
+      runs-on: macos-latest
+      needs: publish_linux
+
+      steps:
+         -  name: Checkout the repo
+            uses: actions/checkout@v2
+            with:
+               fetch-depth: 0
+               ref: ${{ github.event.inputs.branch }}
+
+         -  name: Setup JDK
+            uses: actions/setup-java@v1
+            with:
+               java-version: '8'
+
+         -  name: publish macosx64 release
+            run: ./gradlew publishMacosX64PublicationToDeployRepository
+            env:
+               RELEASE_VERSION: ${{ github.event.inputs.version }}
+               OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
+               OSSRH_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
+               ORG_GRADLE_PROJECT_signingKey: ${{ secrets.SIGNING_KEY }}
+               ORG_GRADLE_PROJECT_signingPassword: ${{ secrets.SIGNING_PASSWORD }}
+
+         -  name: publish tvosX64 release
+            run: ./gradlew publishTvosX64PublicationToDeployRepository
+            env:
+               RELEASE_VERSION: ${{ github.event.inputs.version }}
+               OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
+               OSSRH_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
+               ORG_GRADLE_PROJECT_signingKey: ${{ secrets.SIGNING_KEY }}
+               ORG_GRADLE_PROJECT_signingPassword: ${{ secrets.SIGNING_PASSWORD }}
+
+         -  name: publish tvosArm64 release
+            run: ./gradlew publishTvosArm64PublicationToDeployRepository
+            env:
+               RELEASE_VERSION: ${{ github.event.inputs.version }}
+               OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
+               OSSRH_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
+               ORG_GRADLE_PROJECT_signingKey: ${{ secrets.SIGNING_KEY }}
+               ORG_GRADLE_PROJECT_signingPassword: ${{ secrets.SIGNING_PASSWORD }}
+
+         -  name: publish watchosX64 release
+            run: ./gradlew publishWatchosX64PublicationToDeployRepository
+            env:
+               RELEASE_VERSION: ${{ github.event.inputs.version }}
+               OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
+               OSSRH_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
+               ORG_GRADLE_PROJECT_signingKey: ${{ secrets.SIGNING_KEY }}
+               ORG_GRADLE_PROJECT_signingPassword: ${{ secrets.SIGNING_PASSWORD }}
+
+         -  name: publish watchosX86 release
+            run: ./gradlew publishWatchosX86PublicationToDeployRepository
+            env:
+               RELEASE_VERSION: ${{ github.event.inputs.version }}
+               OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
+               OSSRH_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
+               ORG_GRADLE_PROJECT_signingKey: ${{ secrets.SIGNING_KEY }}
+               ORG_GRADLE_PROJECT_signingPassword: ${{ secrets.SIGNING_PASSWORD }}
+
+         -  name: publish watchosArm32 release
+            run: ./gradlew publishWatchosArm32PublicationToDeployRepository
+            env:
+               RELEASE_VERSION: ${{ github.event.inputs.version }}
+               OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
+               OSSRH_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
+               ORG_GRADLE_PROJECT_signingKey: ${{ secrets.SIGNING_KEY }}
+               ORG_GRADLE_PROJECT_signingPassword: ${{ secrets.SIGNING_PASSWORD }}
+
+         -  name: publish watchosArm64 release
+            run: ./gradlew publishWatchosArm64PublicationToDeployRepository
+            env:
+               RELEASE_VERSION: ${{ github.event.inputs.version }}
+               OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
+               OSSRH_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
+               ORG_GRADLE_PROJECT_signingKey: ${{ secrets.SIGNING_KEY }}
+               ORG_GRADLE_PROJECT_signingPassword: ${{ secrets.SIGNING_PASSWORD }}
+
+         -  name: publish iosX64 release
+            run: ./gradlew publishIosX64PublicationToDeployRepository
+            env:
+               RELEASE_VERSION: ${{ github.event.inputs.version }}
+               OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
+               OSSRH_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
+               ORG_GRADLE_PROJECT_signingKey: ${{ secrets.SIGNING_KEY }}
+               ORG_GRADLE_PROJECT_signingPassword: ${{ secrets.SIGNING_PASSWORD }}
+
+         -  name: publish iosArm64 release
+            run: ./gradlew publishIosArm64PublicationToDeployRepository
+            env:
+               RELEASE_VERSION: ${{ github.event.inputs.version }}
+               OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
+               OSSRH_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
+               ORG_GRADLE_PROJECT_signingKey: ${{ secrets.SIGNING_KEY }}
+               ORG_GRADLE_PROJECT_signingPassword: ${{ secrets.SIGNING_PASSWORD }}
+
+         -  name: publish iosArm32 release
+            run: ./gradlew publishIosArm32PublicationToDeployRepository
+            env:
+               RELEASE_VERSION: ${{ github.event.inputs.version }}
+               OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
+               OSSRH_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
+               ORG_GRADLE_PROJECT_signingKey: ${{ secrets.SIGNING_KEY }}
+               ORG_GRADLE_PROJECT_signingPassword: ${{ secrets.SIGNING_PASSWORD }}
+
+   publish_windows:
+      runs-on: windows-latest
+      needs: publish_macos
+
+      steps:
+         -  name: Checkout the repo
+            uses: actions/checkout@v2
+            with:
+               fetch-depth: 0
+               ref: ${{ github.event.inputs.branch }}
+
+         -  name: Setup JDK
+            uses: actions/setup-java@v1
+            with:
+               java-version: '8'
+
+         -  name: deploy to sonatype
+            run: ./gradlew publishMingwX64PublicationToDeployRepository
+            env:
+               RELEASE_VERSION: ${{ github.event.inputs.version }}
+               OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
+               OSSRH_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
+               ORG_GRADLE_PROJECT_signingKey: ${{ secrets.SIGNING_KEY }}
+               ORG_GRADLE_PROJECT_signingPassword: ${{ secrets.SIGNING_PASSWORD }}
+
+env:
+   GRADLE_OPTS: -Dorg.gradle.configureondemand=true -Dorg.gradle.parallel=false -Dkotlin.incremental=false -Dorg.gradle.jvmargs="-Xmx3g -XX:MaxPermSize=2048m -XX:+HeapDumpOnOutOfMemoryError -Dfile.encoding=UTF-8"

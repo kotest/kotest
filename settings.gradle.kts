@@ -57,6 +57,9 @@ include("kotest-property")
 // property test generators for kotlinx.datetime
 include("kotest-property:kotest-property-datetime")
 
+// contains  extensions for property testing that build on the kotest test framework
+include("kotest-property:kotest-property-lifecycle")
+
 // support for executing tests via junit platform through gradle
 // this will also bring in the required libs for the intellij plugin
 include("kotest-runner:kotest-runner-junit5")
@@ -82,13 +85,14 @@ include("kotest-tests:kotest-tests-concurrency-specs")
 include("kotest-tests:kotest-tests-junitxml")
 include("kotest-tests:kotest-tests-htmlreporter")
 include("kotest-tests:kotest-tests-multipleconfig")
-include("kotest-tests:kotest-tests-parallelism")
+//include("kotest-tests:kotest-tests-parallelism")
 include("kotest-tests:kotest-tests-projectlistener")
 include("kotest-tests:kotest-tests-tagextension")
-include("kotest-tests:kotest-tests-timeout")
-include("kotest-tests:kotest-tests-timeout-sysprop")
+//include("kotest-tests:kotest-tests-timeout")
+//include("kotest-tests:kotest-tests-timeout-sysprop")
 include("kotest-tests:kotest-tests-multiname-test-name-sysprop")
 include("kotest-tests:kotest-tests-native")
+include("kotest-tests:kotest-tests-js")
 
 //include("kotest-examples:kotest-examples-jvm")
 //include("kotest-examples:kotest-examples-allure")

@@ -32,7 +32,7 @@ kotlin {
       val jvmMain by getting {
          dependencies {
             implementation(project(Projects.Common))
-            implementation(project(Projects.Engine))
+            implementation(project(Projects.Framework.engine))
             implementation(project(Projects.Api))
             implementation(Libs.Coroutines.coreJvm)
             implementation(Libs.JUnitJupiter.api)
@@ -47,8 +47,8 @@ kotlin {
       }
 
       all {
-         languageSettings.useExperimentalAnnotation("kotlin.time.ExperimentalTime")
-         languageSettings.useExperimentalAnnotation("kotlin.experimental.ExperimentalTypeInference")
+         languageSettings.optIn("kotlin.time.ExperimentalTime")
+         languageSettings.optIn("kotlin.experimental.ExperimentalTypeInference")
       }
    }
 }

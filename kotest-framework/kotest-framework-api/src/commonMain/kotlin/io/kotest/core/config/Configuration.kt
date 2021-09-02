@@ -20,6 +20,11 @@ import kotlinx.coroutines.CoroutineDispatcher
 
 /**
  * The global configuration singleton.
+ *
+ * This is a global singleton for historic reasons and is slowly being replaced with a non-global variable.
+ *
+ * Expect this val to disappear in Kotest 6.0
+ *
  */
 val configuration = Configuration()
 
@@ -39,7 +44,6 @@ class Configuration {
       const val MaxConcurrency = Int.MAX_VALUE
    }
 
-   private val listeners = mutableListOf<Listener>()
    private val filters = mutableListOf<Filter>()
    private val extensions = mutableListOf<Extension>()
 
@@ -47,12 +51,18 @@ class Configuration {
     * If enabled, then all failing spec names will be written to a "failure file".
     * This file can then be used by [SpecExecutionOrder.FailureFirst].
     *
-    * Defaults to [Defaults.writeSpecFailureFile]
+    * Defaults to [Defaults.writeSpecFailureFile].
+    *
+    * Note: Only has an effect on the JVM.
     */
    var writeSpecFailureFile: Boolean = Defaults.writeSpecFailureFile
 
    /**
     * The path to write the failed spec list to, if enabled.
+    *
+    * Defaults to [Defaults.specFailureFilePath].
+    *
+    * Note: Only has an effect on the JVM.
     */
    var specFailureFilePath: String = Defaults.specFailureFilePath
 
@@ -178,7 +188,8 @@ class Configuration {
    var concurrentTests: Int = Defaults.concurrentTests
 
    /**
-    * Returns the timeout for the execution of a test case.
+    * Returns the timeout for the execution of a test case in milliseconds.
+    *
     * Note: This timeout includes the time required to executed nested tests.
     *
     * This value is used if a timeout is not specified in the test case itself.
@@ -207,7 +218,7 @@ class Configuration {
     * Returns the default [TestCaseConfig] to be assigned to tests when not specified either in
     * the spec, test factory, or test case itself.
     *
-    * If this is null, then defaults to [Defaults.testCaseConfig]
+    * Defaults to [Defaults.testCaseConfig]
     */
    var defaultTestConfig: TestCaseConfig = Defaults.testCaseConfig
 
@@ -215,6 +226,13 @@ class Configuration {
     * If set to true, then will cause the test suite to fail if there were no executed tests.
     */
    var failOnEmptyTestSuite: Boolean = Defaults.failOnEmptyTestSuite
+
+   /**
+    * Set to true to enable enhanced tracing of coroutines when an error occurs.
+    *
+    * Defaults to [Defaults.coroutineDebugProbes]
+    */
+   var coroutineDebugProbes: Boolean = Defaults.coroutineDebugProbes
 
    /**
     * Some specs have DSLs that include prefix or suffix words in the test name.
@@ -242,6 +260,16 @@ class Configuration {
     * Defaults to null, which is to use the default.
     */
    var includeTestScopeAffixes: Boolean? = Defaults.defaultIncludeTestScopeAffixes
+
+   /**
+    * Set to false and if a spec has no active tests (all disabled due to config or tags say)
+    * then the spec itself will not appear as a node in output.
+    *
+    * Defaults to [Defaults.displaySpecIfNoActiveTests]
+    *
+    * Note: This only works for JUnit and Intellij runners.
+    */
+   var displaySpecIfNoActiveTests: Boolean = Defaults.displaySpecIfNoActiveTests
 
    /**
     * Controls the default [IsolationMode] that each spec will execute in.
@@ -285,7 +313,8 @@ class Configuration {
    /**
     * Returns all globally registered [Listener]s.
     */
-   fun listeners() = listeners.toList()
+   @Deprecated("Listeners have been subsumed into extensions")
+   fun listeners() = extensions()
 
    /**
     * Returns all globally registered [Extension]s.
@@ -321,20 +350,26 @@ class Configuration {
       extensions.remove(extension)
    }
 
-   fun registerListeners(vararg listeners: Listener) = listeners.forEach { registerListener(it) }
-   fun registerListeners(listeners: List<Listener>) = listeners.forEach { registerListener(it) }
-   fun deregisterListeners(listeners: List<Listener>) = listeners.forEach { deregisterListener(it) }
+   @Deprecated("Use registerExtension. This will be removed in 6.0.")
+   fun registerListeners(vararg listeners: Listener) = listeners.forEach { registerExtension(it) }
 
-   fun registerListener(listener: Listener) {
-      listeners.add(listener)
-   }
+   @Deprecated("Use registerExtension. This will be removed in 6.0.")
+   fun registerListeners(listeners: List<Listener>) = listeners.forEach { registerExtension(it) }
 
+   @Deprecated("Use deregisterExtension. This will be removed in 6.0.")
+   fun deregisterListeners(listeners: List<Listener>) = listeners.forEach { deregisterExtension(it) }
+
+   @Deprecated("Use registerExtension. This will be removed in 6.0.")
+   fun registerListener(listener: Listener) = registerExtension(listener)
+
+   @Deprecated("Use deregisterListener. This will be removed in 6.0.")
    fun deregisterListener(listener: Listener) {
-      listeners.remove(listener)
+      deregisterExtension(listener)
    }
 
+   @Deprecated("Use removeExtensions. This will be removed in 6.0.")
    fun removeListeners() {
-      listeners.clear()
+      removeExtensions()
    }
 
    fun removeExtensions() {
@@ -345,9 +380,3 @@ class Configuration {
       filters.clear()
    }
 }
-
-fun Configuration.testListeners(): List<TestListener> = listeners().filterIsInstance<TestListener>()
-fun Configuration.testCaseExtensions(): List<TestCaseExtension> = listeners().filterIsInstance<TestCaseExtension>()
-fun Configuration.specInstantiationListeners(): List<SpecInstantiationListener> =
-   listeners().filterIsInstance<SpecInstantiationListener>()
-

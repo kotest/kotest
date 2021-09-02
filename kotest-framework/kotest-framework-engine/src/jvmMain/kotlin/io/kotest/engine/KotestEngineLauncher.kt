@@ -1,17 +1,15 @@
 package io.kotest.engine
 
 import io.kotest.core.Tags
-import io.kotest.core.config.configuration
 import io.kotest.core.filter.SpecFilter
 import io.kotest.core.filter.TestFilter
-import io.kotest.engine.tags.ConfigurationTagProvider
 import io.kotest.core.spec.Spec
-import io.kotest.engine.config.ConfigManager
 import io.kotest.engine.filter.RequiresTagSpecFilter
-import io.kotest.engine.listener.ThreadSafeTestEngineListener
 import io.kotest.engine.listener.CompositeTestEngineListener
 import io.kotest.engine.listener.PinnedSpecTestEngineListener
 import io.kotest.engine.listener.TestEngineListener
+import io.kotest.engine.listener.ThreadSafeTestEngineListener
+import io.kotest.engine.tags.ConfigurationTagProvider
 import kotlinx.coroutines.runBlocking
 import kotlin.reflect.KClass
 import kotlin.script.templates.standard.ScriptTemplateWithArgs
@@ -32,10 +30,6 @@ class KotestEngineLauncher(
    private val scripts: List<KClass<out ScriptTemplateWithArgs>>,
 ) {
 
-   init {
-      ConfigManager.init()
-   }
-
    companion object {
 
       /**
@@ -51,7 +45,7 @@ class KotestEngineLauncher(
             specs = specs,
             scripts = emptyList(),
             testFilters = emptyList(),
-            specFilters = listOf(RequiresTagSpecFilter(ConfigurationTagProvider(configuration))),
+            specFilters = listOf(RequiresTagSpecFilter(ConfigurationTagProvider())),
             tags = tags,
             dumpConfig = false,
          )

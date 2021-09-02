@@ -63,11 +63,17 @@ kotlin {
          }
       }
 
+      val commonTest by getting {
+         dependencies {
+            implementation(project(Projects.Framework.engine))
+            implementation(project(Projects.AssertionsCore))
+         }
+      }
+
       val jvmTest by getting {
          dependsOn(jvmMain)
          dependencies {
             implementation(project(Projects.JunitRunner))
-            implementation(project(Projects.AssertionsCore))
          }
       }
 
@@ -120,8 +126,8 @@ kotlin {
       }
 
       all {
-         languageSettings.useExperimentalAnnotation("kotlin.time.ExperimentalTime")
-         languageSettings.useExperimentalAnnotation("kotlin.experimental.ExperimentalTypeInference")
+         languageSettings.optIn("kotlin.time.ExperimentalTime")
+         languageSettings.optIn("kotlin.experimental.ExperimentalTypeInference")
       }
    }
 }

@@ -16,6 +16,9 @@ object Defaults {
    val isolationMode: IsolationMode = IsolationMode.SingleInstance
    val duplicateTestNameMode: DuplicateTestNameMode = DuplicateTestNameMode.Warn
 
+   const val coroutineDebugProbes: Boolean = false
+   const val displaySpecIfNoActiveTests: Boolean = true
+
    const val failOnEmptyTestSuite = false
 
    const val specFailureFilePath: String = "./.kotest/spec_failures"

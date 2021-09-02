@@ -34,7 +34,7 @@ kotlin {
       val jvmMain by getting {
          dependencies {
             compileOnly(kotlin("stdlib"))
-            implementation(project(Projects.Engine))
+            implementation(project(Projects.Framework.engine))
             implementation(project(Projects.Api))
             implementation(Libs.Jdom.jdom2)
          }

@@ -1,25 +1,46 @@
 package io.kotest.property.internal
 
-import io.kotest.property.PropTestConfig
-import io.kotest.property.PropertyContext
 import io.kotest.assertions.show.show
 import io.kotest.mpp.stacktraces
+import io.kotest.property.AfterPropertyContextElement
+import io.kotest.property.BeforePropertyContextElement
+import io.kotest.property.Classifier
+import io.kotest.property.PropTestConfig
+import io.kotest.property.PropertyContext
+import kotlin.coroutines.coroutineContext
 
 /**
  * Performs a property test for a single set of values, tracking the min success and max failure rates.
  * Will perform shrinking and throw when the property test is deemed to have failed.
+ * If a classifier is provided, will classify each value.
+ *
+ * If registered, will invoke beforeProperty and afterProperty lifecycle methods.
  */
 internal suspend fun test(
    context: PropertyContext,
    config: PropTestConfig,
    shrinkfn: suspend () -> List<ShrinkResult<Any?>>,
    inputs: List<Any?>,
+   classifiers: List<Classifier<out Any?>?>,
    seed: Long,
    fn: suspend () -> Any
 ) {
+   require(inputs.size == classifiers.size)
    try {
+
+      inputs.indices.forEach { k ->
+         val value = inputs[k]
+         val classifier = classifiers[k]
+         if (classifier != null) {
+            val label = (classifier as Classifier<Any?>).classify(value)
+            if (label != null) context.classify(k, label)
+         }
+      }
+
+      coroutineContext[BeforePropertyContextElement]?.before?.invoke()
       fn()
       context.markSuccess()
+      coroutineContext[AfterPropertyContextElement]?.after?.invoke()
    } catch (e: AssertionError) { // we track assertion errors and try to shrink them
       context.markFailure()
       handleException(context, shrinkfn, inputs, seed, e, config)

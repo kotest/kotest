@@ -5,6 +5,7 @@ import org.jetbrains.kotlin.ir.declarations.IrFile
 import org.jetbrains.kotlin.ir.types.IrType
 import org.jetbrains.kotlin.ir.types.classFqName
 import org.jetbrains.kotlin.ir.types.getClass
+import org.jetbrains.kotlin.name.FqName
 
 val specClasses = listOf(
    "io.kotest.core.spec.style.BehaviorSpec",
@@ -18,10 +19,17 @@ val specClasses = listOf(
    "io.kotest.core.spec.style.WordSpec",
 )
 
+val abstractProjectConfigFqName = FqName("io.kotest.core.config.AbstractProjectConfig")
+
 /**
  * Returns any specs declared at the top level in this file.
  */
 fun IrFile.specs() = declarations.filterIsInstance<IrClass>().filter { it.isSpecClass() }
+
+/**
+ * Returns true fi this IrClass is a project config
+ */
+fun IrClass.isProjectConfig() = superTypes().any { it.classFqName == abstractProjectConfigFqName }
 
 /**
  * Recursively returns all supertypes for an [IrClass] to the top of the type tree.

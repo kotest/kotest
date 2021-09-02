@@ -38,13 +38,6 @@ fun Configuration.createConfigSummary(): String {
       }
    }
 
-   if (listeners().isNotEmpty()) {
-      sb.buildOutput("Listeners")
-      listeners().map(::mapClassName).forEach {
-         sb.buildOutput(it, indentation = 1)
-      }
-   }
-
    activeTags().expression?.let { sb.buildOutput("Tags", it) }
    return sb.toString()
 }

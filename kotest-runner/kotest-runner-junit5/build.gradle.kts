@@ -39,7 +39,7 @@ kotlin {
             implementation(Libs.Kotlin.kotlinScriptRuntime)
             api(project(Projects.Api))
             api(project(Projects.Common))
-            api(project(Projects.Engine))
+            api(project(Projects.Framework.engine))
             api(project(Projects.Discovery))
             api(project(Projects.AssertionsCore))
             api(project(Projects.Extensions))
@@ -63,8 +63,8 @@ kotlin {
       }
 
       all {
-         languageSettings.useExperimentalAnnotation("kotlin.time.ExperimentalTime")
-         languageSettings.useExperimentalAnnotation("kotlin.experimental.ExperimentalTypeInference")
+         languageSettings.optIn("kotlin.time.ExperimentalTime")
+         languageSettings.optIn("kotlin.experimental.ExperimentalTypeInference")
       }
    }
 }

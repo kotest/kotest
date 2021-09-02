@@ -1,6 +1,6 @@
 package com.sksamuel.kotest.extensions
 
-import io.kotest.core.extensions.SpecExtension
+import io.kotest.core.extensions.SpecInterceptExtension
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.style.WordSpec
 import io.kotest.core.spec.toDescription
@@ -12,7 +12,7 @@ object SpecExtensionNumbers {
    var before = 0
    var after = 0
 
-   val ext = object : SpecExtension {
+   val ext = object : SpecInterceptExtension {
       override suspend fun intercept(spec: KClass<out Spec>, process: suspend () -> Unit) {
          if (spec.toDescription().name.qualifiedName == SpecExtensionTest::class.java.name) {
             before++

@@ -1,13 +1,12 @@
 package com.sksamuel.kotest.extensions
 
-import io.kotest.core.test.TestCase
-import io.kotest.core.test.TestResult
 import io.kotest.core.extensions.TestCaseExtension
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.core.test.Enabled
+import io.kotest.core.test.TestCase
+import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestStatus
 import io.kotest.engine.test.toTestResult
-import java.lang.AssertionError
 
 private const val reason = "this test is skipped cause it's skipped"
 

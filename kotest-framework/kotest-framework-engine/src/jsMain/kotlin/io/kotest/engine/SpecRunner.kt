@@ -30,18 +30,21 @@ actual class SpecRunner {
       // we use the spec itself as an outer/parent test.
       describe(spec::class.bestName()) {
          spec.materializeAndOrderRootTests().forEach { root ->
-
             val enabled = root.testCase.isEnabledInternal()
             if (enabled.isEnabled) {
                // we have to always invoke `it` to start the test so that the js test framework doesn't exit
                // before we invoke our callback. This also gives us the handle to the done callback.
-               it(root.testCase.description.name.displayName) { done ->
+               val test = it(root.testCase.description.name.displayName) { done ->
                   executeTest(root.testCase) { result ->
                      done(result.error)
                      onComplete()
                   }
 
                }
+               // some frameworks default to a 2000 timeout,
+               // here we set to a high number and use the timeout support kotest provides via coroutines
+               test.timeout(Int.MAX_VALUE)
+               Unit
             } else {
                xit(root.testCase.displayName) {}
             }
@@ -50,11 +53,6 @@ actual class SpecRunner {
    }
 
    private fun executeTest(testCase: TestCase, onComplete: suspend (TestResult) -> Unit) {
-      // done is the JS promise
-      // some frameworks default to a 2000 timeout,
-      // we can change this to the kotest test setting
-//      done.timeout(testCase.resolvedTimeout())
-
       val listener = CallbackTestCaseExecutionListener(onComplete)
 
       GlobalScope.promise {
@@ -68,7 +66,7 @@ actual class SpecRunner {
 
       // we don't want to return a promise here as the js frameworks will use that for test resolution
       // instead of the done callback, and we prefer the callback as it allows for custom timeouts
-      // without the need for the user to configure them on the js side.
       Unit
    }
 }
+

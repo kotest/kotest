@@ -1,6 +1,15 @@
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 import org.gradle.api.tasks.testing.logging.TestLogEvent
 
+buildscript {
+   repositories {
+      mavenCentral()
+      mavenLocal()
+      google()
+      gradlePluginPortal()
+   }
+}
+
 plugins {
    id("java")
    id("kotlin-multiplatform")
@@ -14,6 +23,7 @@ repositories {
 kotlin {
 
    targets {
+
       jvm {
          compilations.all {
             kotlinOptions {
@@ -21,11 +31,25 @@ kotlin {
             }
          }
       }
+
       js(IR) {
          browser()
          nodejs()
       }
+
       linuxX64()
+
+      mingwX64()
+
+      macosX64()
+      tvos()
+      watchosArm32()
+      watchosArm64()
+      watchosX86()
+      watchosX64()
+      iosX64()
+      iosArm64()
+      iosArm32()
    }
 
    sourceSets {
@@ -36,9 +60,13 @@ kotlin {
             implementation(kotlin("reflect"))
             api(project(Projects.AssertionsShared))
             implementation(project(Projects.Common))
+
             // this is API because we want people to be able to use the functionality in their tests
             // without needing to declare this dependency as well
             api(project(Projects.Api))
+
+            // used to install the debug probes for coroutines
+            implementation(Libs.Coroutines.debug)
             implementation(Libs.Coroutines.coreCommon)
          }
       }
@@ -87,9 +115,49 @@ kotlin {
          dependsOn(desktopMain)
       }
 
+      val macosX64Main by getting {
+         dependsOn(desktopMain)
+      }
+
+      val mingwX64Main by getting {
+         dependsOn(desktopMain)
+      }
+
+      val iosX64Main by getting {
+         dependsOn(desktopMain)
+      }
+
+      val iosArm64Main by getting {
+         dependsOn(desktopMain)
+      }
+
+      val iosArm32Main by getting {
+         dependsOn(desktopMain)
+      }
+
+      val watchosX86Main by getting {
+         dependsOn(desktopMain)
+      }
+
+      val watchosArm32Main by getting {
+         dependsOn(desktopMain)
+      }
+
+      val watchosArm64Main by getting {
+         dependsOn(desktopMain)
+      }
+
+      val watchosX64Main by getting {
+         dependsOn(desktopMain)
+      }
+
+      val tvosMain by getting {
+         dependsOn(desktopMain)
+      }
+
       all {
-         languageSettings.useExperimentalAnnotation("kotlin.time.ExperimentalTime")
-         languageSettings.useExperimentalAnnotation("kotlin.experimental.ExperimentalTypeInference")
+         languageSettings.optIn("kotlin.time.ExperimentalTime")
+         languageSettings.optIn("kotlin.experimental.ExperimentalTypeInference")
       }
    }
 }

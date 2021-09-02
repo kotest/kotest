@@ -3,10 +3,6 @@ package io.kotest.core.spec.style.scopes
 import io.kotest.core.spec.KotestDsl
 import io.kotest.core.test.createTestName
 
-@Deprecated("Renamed to WordSpecRootContext. This typealias will be removed in 4.8")
-typealias WordSpecRootScope = WordSpecRootContext
-
-
 @Suppress("FunctionName")
 @KotestDsl
 interface WordSpecRootContext : RootContext {

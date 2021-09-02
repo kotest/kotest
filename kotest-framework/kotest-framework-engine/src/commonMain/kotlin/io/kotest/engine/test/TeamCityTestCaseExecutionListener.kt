@@ -34,32 +34,49 @@ object TeamCityTestCaseExecutionListener : TestCaseExecutionListener {
    }
 
    override suspend fun testFinished(testCase: TestCase, result: TestResult) {
-      val msg = when (result.status) {
-         TestStatus.Ignored ->
-            TeamCityMessageBuilder
+      println()
+      when (result.status) {
+         TestStatus.Ignored -> {
+            val ignored = TeamCityMessageBuilder
                .testIgnored(testCase.displayName)
                .id(testCase.description.id.value)
                .locationHint(Locations.locationHint(testCase.spec::class))
                .testType(testCase.type.name)
                .message(result.reason ?: "No reason")
                .resultStatus(result.status.name)
-         TestStatus.Success ->
-            TeamCityMessageBuilder.testFinished(testCase.displayName)
+               .build()
+            println(ignored)
+         }
+         TestStatus.Success -> {
+            val finished = TeamCityMessageBuilder
+               .testFinished(testCase.displayName)
                .duration(result.duration)
                .id(testCase.description.id.value)
                .locationHint(Locations.locationHint(testCase.spec::class))
                .testType(testCase.type.name)
-         TestStatus.Error, TestStatus.Failure ->
-            TeamCityMessageBuilder
+               .build()
+            println(finished)
+         }
+         TestStatus.Error, TestStatus.Failure -> {
+            val failed = TeamCityMessageBuilder
                .testFailed(testCase.displayName)
                .duration(result.duration)
                .withException(result.error)
                .id(testCase.description.id.value)
                .locationHint(Locations.locationHint(testCase.spec::class))
                .testType(testCase.type.name)
-      }.build()
-
-      println()
-      println(msg)
+               .build()
+            println(failed)
+            println()
+            val finished = TeamCityMessageBuilder
+               .testFinished(testCase.displayName)
+               .duration(result.duration)
+               .id(testCase.description.id.value)
+               .locationHint(Locations.locationHint(testCase.spec::class))
+               .testType(testCase.type.name)
+               .build()
+            println(finished)
+         }
+      }
    }
 }

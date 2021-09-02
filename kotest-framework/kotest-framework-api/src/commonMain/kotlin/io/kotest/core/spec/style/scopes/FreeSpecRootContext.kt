@@ -10,9 +10,6 @@ import io.kotest.core.test.createTestName
 import io.kotest.core.test.deriveTestCaseConfig
 import kotlin.time.Duration
 
-@Deprecated("Renamed to FreeSpecRootContext. This typealias will be removed in 4.8")
-typealias FreeSpecRootScope = FreeSpecRootContext
-
 @KotestDsl
 interface FreeSpecRootContext : RootContext {
 

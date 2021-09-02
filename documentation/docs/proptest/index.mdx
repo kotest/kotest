@@ -36,7 +36,7 @@ a and b, then _length(a + b)_ should always be equal to _length(a) + length(b)_.
 That is where the term _property testing_ originates.
 
 However, you do not have to use property tests to only test things like monad laws or basic numeric functions. Any test that
-would benefit from a wide array of input values is a good candidate.
+would benefit from a wide array of input values is a good candidate. For example, we might have a function that validates usernames, and we want to test that valid emails are accepted. A property test would be useful here in generating 1000s of combinations to help harden our validation logic.
 
 
 ## Getting Started

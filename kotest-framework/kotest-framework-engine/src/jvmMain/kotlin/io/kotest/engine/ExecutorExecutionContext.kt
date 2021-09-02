@@ -3,11 +3,13 @@ package io.kotest.engine
 import io.kotest.engine.test.TimeoutExecutionContext
 import io.kotest.mpp.NamedThreadFactory
 import io.kotest.mpp.log
+import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.ThreadContextElement
 import kotlinx.coroutines.withContext
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicBoolean
+import java.util.concurrent.atomic.AtomicReference
 import kotlin.coroutines.CoroutineContext
 
 /**
@@ -22,18 +24,22 @@ class CoroutineStatus : ThreadContextElement<Unit> {
    // provide the key of the corresponding context element
    override val key: CoroutineContext.Key<CoroutineStatus> get() = Key
 
+   // if true then this coroutine was suspended at some point
+   // all coroutines are initially suspended until they begin
    val suspended: AtomicBoolean = AtomicBoolean(true)
 
-   var thread: Thread? = null
+   // if the thread is not null then we know we have been resumed onto a thread
+   val thread = AtomicReference<Thread>(null)
 
    // this is invoked before coroutine is resumed on current thread
    override fun updateThreadContext(context: CoroutineContext) {
-      thread = Thread.currentThread()
+      thread.set(Thread.currentThread())
       suspended.set(false)
    }
 
    // this is invoked after coroutine has suspended on current thread
    override fun restoreThreadContext(context: CoroutineContext, oldState: Unit) {
+      thread.set(null)
       suspended.set(true)
    }
 }
@@ -60,27 +66,35 @@ object ExecutorExecutionContext : TimeoutExecutionContext {
       // this task will use the values in the coroutine status element to know which thread to interrupt
       log { "ExecutorExecutionContext: Scheduler will interrupt this execution in ${timeoutInMillis}ms" }
       val task = scheduler.schedule({
-         // if the coroutine is suspended we can cancel using co-operative coroutine cancellation
-         // otherwise if the coroutine is running, we will interrupt that thread
+         log { "ExecutorExecutionContext: Scheduled timeout has hit" }
+         // if the coroutine is suspended the withTimeout will cancel using co-operative coroutine cancellation
+         // otherwise if it's not suspended, then it's running, and so we need to interrupt
          if (!status.suspended.get()) {
             log { "ExecutorExecutionContext: Interrupting blocked coroutine via thread interruption on thread ${status.thread}" }
-            status.thread?.interrupt()
+            status.thread.get()?.interrupt()
          }
       }, timeoutInMillis, TimeUnit.MILLISECONDS)
+      log { "ExecutorExecutionContext: Scheduled task created [${System.identityHashCode(task)}]" }
 
       // install the status tracker into this coroutine
       // nested tests will install their own tracker, but into a new coroutine, so there is no clash
       // then if this parent is cancelled, it will cancel the children ultimately
-      return withContext(status) {
+      return withContext(status + CoroutineName("WithCoroutineStatus")) {
          try {
             f()
          } catch (t: InterruptedException) {
+            log { "ExecutorExecutionContext: Caught InterruptedException ${t.message}" }
             throw TestTimeoutException(timeoutInMillis, "")
+         } catch (t: Throwable) {
+            log { "ExecutorExecutionContext: Caught Throwable ${t.message}" }
+            throw t
          } finally {
             // we must stop the scheduled task from running otherwise it will end up
             // interrupting the thread later when its doing something else
-            log { "ExecutorExecutionContext: Cancelling scheduled task $task" }
-            task.cancel(false)
+            if (!task.isDone) {
+               log { "ExecutorExecutionContext: Cancelling scheduled interupt task ${System.identityHashCode(task)}" }
+               task.cancel(false)
+            }
          }
       }
    }

@@ -10,8 +10,6 @@ import io.kotest.core.test.TestResult
 import io.kotest.core.test.createTestName
 import io.kotest.core.test.toTestCase
 import io.kotest.engine.ExecutorExecutionContext
-import io.kotest.engine.dispatchers.ExecutorCoroutineDispatcherFactory
-import io.kotest.engine.launchers.SequentialTestLauncher
 import io.kotest.engine.events.invokeAfterSpec
 import io.kotest.engine.events.invokeBeforeSpec
 import io.kotest.engine.listener.BufferedTestCaseExcecutionListener
@@ -21,6 +19,7 @@ import io.kotest.engine.spec.SpecRunner
 import io.kotest.engine.spec.materializeAndOrderRootTests
 import io.kotest.engine.test.DuplicateTestNameHandler
 import io.kotest.engine.test.TestCaseExecutor
+import io.kotest.engine.test.scheduler.SequentialTestScheduler
 import io.kotest.fp.Try
 import io.kotest.mpp.log
 import kotlinx.coroutines.asCoroutineDispatcher
@@ -44,7 +43,7 @@ import kotlin.coroutines.CoroutineContext
 internal class ConcurrentInstancePerLeafSpecRunner(
    testEngineListener: TestEngineListener,
    private val threads: Int,
-) : SpecRunner(testEngineListener, SequentialTestLauncher(ExecutorCoroutineDispatcherFactory(1, true))) {
+) : SpecRunner(testEngineListener, SequentialTestScheduler) {
 
    private val results = ConcurrentHashMap<TestCase, TestResult>()
 

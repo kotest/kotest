@@ -107,16 +107,15 @@ kotlin {
 
       val jvmTest by getting {
          dependencies {
-            implementation(project(Projects.Engine))
+            implementation(project(Projects.Framework.engine))
             implementation(project(Projects.JunitRunner))
          }
       }
 
       all {
-         languageSettings.useExperimentalAnnotation("kotlin.time.ExperimentalTime")
-         languageSettings.useExperimentalAnnotation("kotlin.experimental.ExperimentalTypeInference")
-         languageSettings.useExperimentalAnnotation("kotlin.RequiresOptIn")
-         languageSettings.useExperimentalAnnotation("kotlin.reflect.jvm.ExperimentalReflectionOnLambdas")
+         languageSettings.optIn("kotlin.time.ExperimentalTime")
+         languageSettings.optIn("kotlin.experimental.ExperimentalTypeInference")
+         languageSettings.optIn("kotlin.RequiresOptIn")
       }
    }
 }

@@ -6,20 +6,22 @@ import io.kotest.core.extensions.ProjectExtension
 import io.kotest.core.filter.SpecFilter
 import io.kotest.core.filter.TestFilter
 import io.kotest.engine.config.ConfigManager
+import io.kotest.engine.config.detectAbstractProjectConfigs
 import io.kotest.engine.events.Notifications
-import io.kotest.engine.events.afterProject
-import io.kotest.engine.extensions.DumpConfigExtension
-import io.kotest.engine.extensions.EmptyTestSuiteExtension
-import io.kotest.engine.extensions.EngineExtension
-import io.kotest.engine.extensions.KotestPropertiesExtension
 import io.kotest.engine.extensions.SpecifiedTagsTagExtension
-import io.kotest.engine.extensions.TestDslStateExtensions
-import io.kotest.engine.launchers.specLauncher
+import io.kotest.engine.extensions.TestSuiteSchedulerExtension
+import io.kotest.engine.interceptors.DumpConfigInterceptor
+import io.kotest.engine.interceptors.EmptyTestSuiteInterceptor
+import io.kotest.engine.interceptors.EngineInterceptor
+import io.kotest.engine.interceptors.KotestPropertiesInterceptor
+import io.kotest.engine.interceptors.ProjectListenerEngineInterceptor
+import io.kotest.engine.interceptors.SpecSortEngineInterceptor
+import io.kotest.engine.interceptors.TestDslStateInterceptor
+import io.kotest.engine.interceptors.WriteFailuresInterceptor
 import io.kotest.engine.listener.TestEngineListener
+import io.kotest.engine.spec.DefaultTestSuiteScheduler
 import io.kotest.engine.spec.SpecExecutor
-import io.kotest.engine.spec.sort
 import io.kotest.fp.Try
-import io.kotest.fp.getOrElse
 import io.kotest.mpp.log
 import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.runBlocking
@@ -37,7 +39,7 @@ class KotestEngine(private val config: KotestEngineConfig) {
 
    init {
 
-      ConfigManager.init()
+      ConfigManager.initialize(configuration, detectAbstractProjectConfigs())
 
       // if the engine was invoked with explicit tags, we register those via a tag extension
       config.explicitTags?.let { configuration.registerExtension(SpecifiedTagsTagExtension(it)) }
@@ -47,21 +49,24 @@ class KotestEngine(private val config: KotestEngineConfig) {
    }
 
    /**
-    * Starts execution of the given [TestSuite], intercepting calls via [EngineExtension]s.
+    * Starts execution of the given [TestSuite], intercepting calls via [EngineInterceptor]s.
     */
    suspend fun execute(suite: TestSuite): EngineResult {
 
-      val engineExtensions = listOfNotNull(
-         KotestPropertiesExtension,
-         TestDslStateExtensions,
-         if (config.dumpConfig) DumpConfigExtension(configuration) else null,
-         if (configuration.failOnEmptyTestSuite) EmptyTestSuiteExtension else null,
+      val interceptors = listOfNotNull(
+         KotestPropertiesInterceptor,
+         TestDslStateInterceptor,
+         SpecSortEngineInterceptor,
+         ProjectListenerEngineInterceptor(configuration.extensions()),
+         WriteFailuresInterceptor(configuration.specFailureFilePath),
+         if (config.dumpConfig) DumpConfigInterceptor(configuration) else null,
+         if (configuration.failOnEmptyTestSuite) EmptyTestSuiteInterceptor else null,
       )
 
-      val innerExecute: (TestSuite, TestEngineListener) -> EngineResult =
+      val innerExecute: suspend (TestSuite, TestEngineListener) -> EngineResult =
          { ts, tel -> executeTestSuite(ts, tel) }
 
-      val execute = engineExtensions.foldRight(innerExecute) { extension, next ->
+      val execute = interceptors.foldRight(innerExecute) { extension, next ->
          { ts, tel -> extension.intercept(ts, tel, next) }
       }
 
@@ -72,25 +77,14 @@ class KotestEngine(private val config: KotestEngineConfig) {
 
    private fun executeTestSuite(suite: TestSuite, listener: TestEngineListener): EngineResult = runBlocking {
 
-      val beforeErrors = Notifications(listener).engineStarted(suite.classes)
-         .flatMap { Notifications(listener).beforeProject() }
-         .fold({ listOf(it) }, { it })
+      Notifications(listener)
+         .engineStarted(suite.classes)
 
-      // if we have errors in the before project listeners, we'll not even execute tests, but
-      // instead immediately exit.
-      if (beforeErrors.isNotEmpty()) {
-         EngineResult(beforeErrors)
-      } else {
+      val extensions = configuration.extensions().filterIsInstance<ProjectExtension>()
+      val initial: suspend () -> Throwable? = { submitAll(suite, listener).errorOrNull() }
 
-         val extensions = configuration.extensions().filterIsInstance<ProjectExtension>()
-         val initial: suspend () -> Throwable? = { submitAll(suite, listener).errorOrNull() }
-
-         val error = extensions.foldRight(initial) { extension, acc -> { extension.aroundProject(acc) } }.invoke()
-
-         // after project listeners are executed even if the submission fails and the errors are added together
-         val afterErrors = configuration.listeners().afterProject().getOrElse { emptyList() }
-         EngineResult(listOfNotNull(error) + afterErrors)
-      }
+      val error = extensions.foldRight(initial) { extension, acc -> { extension.aroundProject(acc) } }.invoke()
+      EngineResult(listOfNotNull(error))
    }
 
    fun cleanup() {
@@ -99,7 +93,7 @@ class KotestEngine(private val config: KotestEngineConfig) {
 
    /**
     * Submit the test suite to be executed. Returns a success if everything completed normally,
-    * or returns an failure if an unexpected (not test failure) error occured.
+    * or returns a failure if an unexpected (not test failure) error occured.
     */
    private suspend fun submitAll(suite: TestSuite, listener: TestEngineListener): Try<Unit> = Try {
       withTimeout(configuration.projectTimeout) {
@@ -116,17 +110,16 @@ class KotestEngine(private val config: KotestEngineConfig) {
 //            log { "KotestEngine: Script execution completed" }
 //         }
 
-         // spec classes are ordered using an instance of SpecExecutionOrder
-         log { "KotestEngine: Sorting specs by ${configuration.specExecutionOrder}" }
-         val ordered = suite.classes.sort(configuration.specExecutionOrder)
-
          val executor = SpecExecutor(listener)
          log { "KotestEngine: Will use spec executor $executor" }
 
-         val launcher = specLauncher()
-         log { "KotestEngine: Will use spec launcher $launcher" }
+         val scheduler = configuration.extensions()
+            .filterIsInstance<TestSuiteSchedulerExtension>()
+            .firstOrNull()?.scheduler()
+            ?: DefaultTestSuiteScheduler(configuration.concurrentSpecs ?: configuration.parallelism)
 
-         launcher.launch(executor, ordered)
+         log { "KotestEngine: Will use scheduler $scheduler" }
+         scheduler.schedule(suite, { }, { executor.execute(it) })
       }
    }.mapFailure {
       when (it) {

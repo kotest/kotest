@@ -16,6 +16,11 @@ plugins {
 
 version = Ci.gradleVersion
 
+java {
+   sourceCompatibility = JavaVersion.VERSION_1_8
+   targetCompatibility = JavaVersion.VERSION_1_8
+}
+
 repositories {
    mavenCentral()
    mavenLocal()
@@ -23,7 +28,7 @@ repositories {
 
 dependencies {
    compileOnly(gradleApi())
-   compileOnly("org.jetbrains.kotlin:kotlin-gradle-plugin:1.5.21")
+   compileOnly("org.jetbrains.kotlin:kotlin-gradle-plugin:1.5.30")
 }
 
 tasks {
@@ -34,9 +39,9 @@ tasks {
    }
    gradlePlugin {
       plugins {
-         create("kotestMultiplatformCompilerPlugin") {
+         create("KotestMultiplatformCompilerGradlePlugin") {
             id = "io.kotest.multiplatform"
-            implementationClass = "io.kotest.framework.multiplatform.gradle.KotestMultiplatformCompilerPlugin"
+            implementationClass = "io.kotest.framework.multiplatform.gradle.KotestMultiplatformCompilerGradlePlugin"
             displayName = "Kotest Multiplatform Compiler Plugin"
             description = "Adds support for Javascript and Native tests in Kotest"
          }
