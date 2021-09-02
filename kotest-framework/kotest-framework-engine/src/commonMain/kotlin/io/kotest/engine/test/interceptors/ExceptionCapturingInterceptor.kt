@@ -12,21 +12,23 @@ import io.kotest.mpp.timeInMillis
  * Captures exceptions in downstream test functions and converts to test results.
  * Any [TestExecutionInterceptor]s that throw should appear after this extension.
  */
-internal class ExceptionCapturingTestExecutionInterceptor(private val start: Long) : TestExecutionInterceptor {
+internal class ExceptionCapturingInterceptor(private val start: Long) : TestExecutionInterceptor {
 
    override suspend fun intercept(
       test: suspend (TestCase, TestContext) -> TestResult
    ): suspend (TestCase, TestContext) -> TestResult = { testCase, context ->
       try {
-         test(testCase, context)
+         test(testCase, context).apply {
+            log { "ExceptionCapturingInterceptor: Test completed without exception" }
+         }
       } catch (e: TestTimeoutException) {
-         log { "ExceptionCapturingTestExecutionExtension: TestTimeoutException $e" }
+         log { "ExceptionCapturingInterceptor: TestTimeoutException $e" }
          createTestResult(timeInMillis() - start, e)
       } catch (t: Throwable) {
-         log { "ExceptionCapturingTestExecutionExtension: Throwable $t" }
+         log { "ExceptionCapturingInterceptor: Throwable $t" }
          createTestResult(timeInMillis() - start, t)
       } catch (e: AssertionError) {
-         log { "ExceptionCapturingTestExecutionExtension: AssertionError $e" }
+         log { "ExceptionCapturingInterceptor: AssertionError $e" }
          createTestResult(timeInMillis() - start, e)
       }
    }

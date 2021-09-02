@@ -12,7 +12,9 @@ import io.kotest.engine.test.TimeoutExecutionContext
 import io.kotest.mpp.log
 import io.kotest.mpp.replay
 import io.kotest.mpp.timeInMillis
+import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.TimeoutCancellationException
+import kotlinx.coroutines.withContext
 import kotlinx.coroutines.withTimeout
 import kotlin.math.min
 
@@ -20,7 +22,7 @@ import kotlin.math.min
  * The [TimeoutExecutionContext] is used to provide a way of executing functions on the underlying platform
  * in a way that best utilizes threads or the lack of on that platform.
  */
-class TimeoutTestExecutionInterceptor(
+class TimeoutInterceptor(
    private val ec: TimeoutExecutionContext,
    private val start: Long,
 ) : TestExecutionInterceptor {
@@ -52,6 +54,7 @@ class TimeoutTestExecutionInterceptor(
       log { "TestCaseExecutor: Test [${testCase.displayName}] will execute with invocationTimeout ${invocationTimeout}ms" }
 
       try {
+         log { "TestCaseExecutor: Switching context to add timeout $timeout" }
          withTimeout(timeout) {
             ec.executeWithTimeoutInterruption(timeout) {
                // depending on the test type, we execute with an invocation timeout
@@ -66,21 +69,27 @@ class TimeoutTestExecutionInterceptor(
                         { testCase.invokeBeforeInvocation(it) },
                         { testCase.invokeAfterInvocation(it) }) {
                         ec.executeWithTimeoutInterruption(invocationTimeout) {
+                           log { "TestCaseExecutor: Switching context to add invocationTimeout $invocationTimeout" }
                            withTimeout(invocationTimeout) {
                               test(testCase, context)
                            }
                         }
                      }
+                     log { "TestCaseExecutor: All invocations have completed without exceptions" }
                      TestResult.success(timeInMillis() - start)
                   }
                }
             }
          }
       } catch (e: TimeoutCancellationException) {
+         log { "TestCaseExecutor: Caught TimeoutCancellationException ${e.message}" }
          when (testCase.type) {
             TestType.Container -> throw TestTimeoutException(timeout, testCase.displayName)
             TestType.Test -> throw TestTimeoutException(min(timeout, invocationTimeout), testCase.displayName)
          }
+      } catch (t: Throwable) {
+         log { "TestCaseExecutor: Caught Throwable ${t.message}" }
+         throw t
       }
    }
 }

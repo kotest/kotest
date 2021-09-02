@@ -13,7 +13,7 @@ import io.kotest.core.test.TestType
 /**
  * Wraps the test function checking for assertion mode, if the test is a [TestType.Test].
  */
-internal object AssertionModeTestExecutionInterceptor : TestExecutionInterceptor {
+internal object AssertionModeInterceptor : TestExecutionInterceptor {
 
    private fun mode(testCase: TestCase) =
       testCase.spec.assertions ?: testCase.spec.assertionMode() ?: configuration.assertionMode

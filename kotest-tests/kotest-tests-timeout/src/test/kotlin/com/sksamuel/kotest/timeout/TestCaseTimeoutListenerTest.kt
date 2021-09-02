@@ -3,12 +3,12 @@ package com.sksamuel.kotest.timeout
 import io.kotest.core.listeners.TestListener
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.spec.toDescription
-import io.kotest.core.test.NoopTestContext
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestCaseConfig
 import io.kotest.core.test.TestResult
 import io.kotest.engine.ExecutorExecutionContext
 import io.kotest.engine.test.NoopTestCaseExecutionListener
+import io.kotest.engine.test.NoopTestContext
 import io.kotest.engine.test.TestCaseExecutor
 import io.kotest.matchers.shouldBe
 import kotlinx.coroutines.DelicateCoroutinesApi

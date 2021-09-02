@@ -4,17 +4,17 @@ import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestContext
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestStatus
-import io.kotest.engine.test.interceptors.AssertionModeTestExecutionInterceptor
-import io.kotest.engine.test.interceptors.CoroutineDebugProbeTestExecutionInterceptor
-import io.kotest.engine.test.interceptors.CoroutineScopeTestExecutionInterceptor
-import io.kotest.engine.test.interceptors.EnabledCheckTestExecutionInterceptor
-import io.kotest.engine.test.interceptors.ExceptionCapturingTestExecutionInterceptor
-import io.kotest.engine.test.interceptors.GlobalSoftAssertTestExecutionInterceptor
-import io.kotest.engine.test.interceptors.InvocationCountCheckTestExecutionInterceptor
-import io.kotest.engine.test.interceptors.LifecycleTestExecutionInterceptor
-import io.kotest.engine.test.interceptors.SupervisorScopeTestExecutionInterceptor
-import io.kotest.engine.test.interceptors.TestCaseInterceptionTestExecutionInterceptor
-import io.kotest.engine.test.interceptors.TimeoutTestExecutionInterceptor
+import io.kotest.engine.test.interceptors.AssertionModeInterceptor
+import io.kotest.engine.test.interceptors.CoroutineDebugProbeInterceptor
+import io.kotest.engine.test.interceptors.CoroutineScopeInterceptor
+import io.kotest.engine.test.interceptors.EnabledCheckInterceptor
+import io.kotest.engine.test.interceptors.ExceptionCapturingInterceptor
+import io.kotest.engine.test.interceptors.GlobalSoftAssertInterceptor
+import io.kotest.engine.test.interceptors.InvocationCountCheckInterceptor
+import io.kotest.engine.test.interceptors.LifecycleInterceptor
+import io.kotest.engine.test.interceptors.SupervisorScopeInterceptor
+import io.kotest.engine.test.interceptors.TestCaseExtensionInterceptor
+import io.kotest.engine.test.interceptors.TimeoutInterceptor
 import io.kotest.mpp.log
 import io.kotest.mpp.timeInMillis
 
@@ -35,18 +35,20 @@ class TestCaseExecutor(
       val start = timeInMillis()
 
       val interceptors = listOf(
-         InvocationCountCheckTestExecutionInterceptor,
-         CoroutineDebugProbeTestExecutionInterceptor,
-         SupervisorScopeTestExecutionInterceptor,
-         CoroutineScopeTestExecutionInterceptor,
+         InvocationCountCheckInterceptor,
+         CoroutineDebugProbeInterceptor,
+         SupervisorScopeInterceptor,
 //         CoroutineDispatcherTestExecutionFilter(configuration),
-         TestCaseInterceptionTestExecutionInterceptor,
-         EnabledCheckTestExecutionInterceptor,
-         LifecycleTestExecutionInterceptor(listener, start),
-         ExceptionCapturingTestExecutionInterceptor(start),
-         AssertionModeTestExecutionInterceptor,
-         GlobalSoftAssertTestExecutionInterceptor,
-         TimeoutTestExecutionInterceptor(executionContext, start),
+         TestCaseExtensionInterceptor,
+         EnabledCheckInterceptor,
+         LifecycleInterceptor(listener, start),
+         ExceptionCapturingInterceptor(start),
+         AssertionModeInterceptor,
+         GlobalSoftAssertInterceptor,
+         TimeoutInterceptor(executionContext, start),
+         // this MUST BE AFTER the timeout interceptor, as any cancellation there must cancel
+         // user launched coroutines (children of this scope)
+         CoroutineScopeInterceptor,
       )
 
       val innerExecute: suspend (TestCase, TestContext) -> TestResult = { tc, ctx ->

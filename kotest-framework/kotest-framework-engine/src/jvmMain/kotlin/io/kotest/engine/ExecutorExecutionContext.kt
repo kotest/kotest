@@ -3,6 +3,7 @@ package io.kotest.engine
 import io.kotest.engine.test.TimeoutExecutionContext
 import io.kotest.mpp.NamedThreadFactory
 import io.kotest.mpp.log
+import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.ThreadContextElement
 import kotlinx.coroutines.withContext
 import java.util.concurrent.Executors
@@ -65,7 +66,8 @@ object ExecutorExecutionContext : TimeoutExecutionContext {
       // this task will use the values in the coroutine status element to know which thread to interrupt
       log { "ExecutorExecutionContext: Scheduler will interrupt this execution in ${timeoutInMillis}ms" }
       val task = scheduler.schedule({
-         // if the coroutine is suspended we can cancel using co-operative coroutine cancellation
+         log { "ExecutorExecutionContext: Scheduled timeout has hit" }
+         // if the coroutine is suspended the withTimeout will cancel using co-operative coroutine cancellation
          // otherwise if it's not suspended, then it's running, and so we need to interrupt
          if (!status.suspended.get()) {
             log { "ExecutorExecutionContext: Interrupting blocked coroutine via thread interruption on thread ${status.thread}" }
@@ -77,12 +79,15 @@ object ExecutorExecutionContext : TimeoutExecutionContext {
       // install the status tracker into this coroutine
       // nested tests will install their own tracker, but into a new coroutine, so there is no clash
       // then if this parent is cancelled, it will cancel the children ultimately
-      return withContext(status) {
+      return withContext(status + CoroutineName("WithCoroutineStatus")) {
          try {
             f()
          } catch (t: InterruptedException) {
-            status.thread.get()?.isInterrupted
+            log { "ExecutorExecutionContext: Caught InterruptedException ${t.message}" }
             throw TestTimeoutException(timeoutInMillis, "")
+         } catch (t: Throwable) {
+            log { "ExecutorExecutionContext: Caught Throwable ${t.message}" }
+            throw t
          } finally {
             // we must stop the scheduled task from running otherwise it will end up
             // interrupting the thread later when its doing something else

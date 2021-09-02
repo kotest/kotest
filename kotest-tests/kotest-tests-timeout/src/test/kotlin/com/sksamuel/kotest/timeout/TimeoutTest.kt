@@ -1,3 +1,5 @@
+@file:Suppress("BlockingMethodInNonBlockingContext")
+
 package com.sksamuel.kotest.timeout
 
 import io.kotest.core.spec.style.FunSpec
@@ -24,7 +26,7 @@ class TimeoutTest : FunSpec() {
 
       test("a testcase timeout should interupt a nested coroutine").config(timeout = Duration.milliseconds(50)) {
          launch {
-            // a  high value to ensure its interrupted, we'd notice a test that runs for ever
+            // a high value to ensure its interrupted, we'd notice a test that runs forever
             delay(Duration.hours(10))
          }
       }

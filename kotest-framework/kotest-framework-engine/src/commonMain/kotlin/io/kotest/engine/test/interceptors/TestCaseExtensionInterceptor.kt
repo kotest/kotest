@@ -13,7 +13,7 @@ import kotlin.coroutines.coroutineContext
  *
  * This extension should happen early, so users can override any disabled status.
  */
-object TestCaseInterceptionTestExecutionInterceptor : TestExecutionInterceptor {
+object TestCaseExtensionInterceptor : TestExecutionInterceptor {
 
    /**
     * Returns the runtime [TestCaseExtension]s applicable for this [TestCase].

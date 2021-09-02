@@ -27,7 +27,7 @@ import io.kotest.mpp.timeInMillis
  * Essentially, the after-test listeners are always attempted, and any error from invoking the before, test,
  * or after code is returned as higher priority than the result from the test case itself.
  */
-internal class LifecycleTestExecutionInterceptor(
+internal class LifecycleInterceptor(
    private val listener: TestCaseExecutionListener,
    private val start: Long
 ) : TestExecutionInterceptor {

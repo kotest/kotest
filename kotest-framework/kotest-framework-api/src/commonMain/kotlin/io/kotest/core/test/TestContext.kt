@@ -31,22 +31,6 @@ interface TestContext : CoroutineScope {
    suspend fun registerTestCase(nested: NestedTest)
 }
 
-class NoopTestContext(
-   override val testCase: TestCase,
-   override val coroutineContext: CoroutineContext
-) : TestContext {
-   override suspend fun registerTestCase(nested: NestedTest) {}
-}
-
-class TerminalTestContext(
-   override val testCase: TestCase,
-   override val coroutineContext: CoroutineContext
-) : TestContext {
-   override suspend fun registerTestCase(nested: NestedTest) {
-      error("Nested tests are not supported hered")
-   }
-}
-
 /**
  * Registers a [NestedTest] with the engine.
  *

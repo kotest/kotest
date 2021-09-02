@@ -3,11 +3,11 @@ package com.sksamuel.kotest.engine.interceptors
 import io.kotest.core.sourceRef
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.spec.toDescription
-import io.kotest.core.test.TerminalTestContext
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestStatus
 import io.kotest.core.test.TestType
-import io.kotest.engine.test.interceptors.ExceptionCapturingTestExecutionInterceptor
+import io.kotest.engine.test.TerminalTestContext
+import io.kotest.engine.test.interceptors.ExceptionCapturingInterceptor
 import io.kotest.matchers.shouldBe
 
 class ExceptionCapturingTestExecutionInterceptorTest : FunSpec({
@@ -23,7 +23,7 @@ class ExceptionCapturingTestExecutionInterceptorTest : FunSpec({
       )
       val context = TerminalTestContext(tc, coroutineContext)
 
-      ExceptionCapturingTestExecutionInterceptor(5).intercept { _, _ -> throw AssertionError("boom") }
+      ExceptionCapturingInterceptor(5).intercept { _, _ -> throw AssertionError("boom") }
          .invoke(tc, context)
          .status shouldBe TestStatus.Failure
 
@@ -40,7 +40,7 @@ class ExceptionCapturingTestExecutionInterceptorTest : FunSpec({
       )
       val context = TerminalTestContext(tc, coroutineContext)
 
-      ExceptionCapturingTestExecutionInterceptor(5).intercept { _, _ -> error("boom") }
+      ExceptionCapturingInterceptor(5).intercept { _, _ -> error("boom") }
          .invoke(tc, context)
          .status shouldBe TestStatus.Error
 
