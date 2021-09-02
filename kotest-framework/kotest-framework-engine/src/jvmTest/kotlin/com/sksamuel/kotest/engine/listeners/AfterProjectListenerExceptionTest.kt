@@ -31,7 +31,7 @@ class AfterProjectListenerExceptionTest : FunSpec({
          }
       }
 
-      configuration.registerListener(projectListener)
+      configuration.registerExtension(projectListener)
 
       KotestEngineLauncher()
          .withListener(listener)
@@ -42,7 +42,7 @@ class AfterProjectListenerExceptionTest : FunSpec({
       errors[0].shouldBeInstanceOf<AfterProjectListenerException>()
       errors[0].cause!! shouldHaveMessage "ARRGH"
 
-      configuration.deregisterListener(projectListener)
+      configuration.deregisterExtension(projectListener)
    }
 
    test("multiple afterProject exceptions should be collected") {
@@ -67,8 +67,8 @@ class AfterProjectListenerExceptionTest : FunSpec({
          }
       }
 
-      configuration.registerListener(projectListener1)
-      configuration.registerListener(projectListener2)
+      configuration.registerExtension(projectListener1)
+      configuration.registerExtension(projectListener2)
 
       KotestEngineLauncher()
          .withListener(listener)
@@ -86,8 +86,8 @@ class AfterProjectListenerExceptionTest : FunSpec({
          it.cause!!.shouldHaveMessage("WHACK")
       }
 
-      configuration.deregisterListener(projectListener1)
-      configuration.deregisterListener(projectListener2)
+      configuration.deregisterExtension(projectListener1)
+      configuration.deregisterExtension(projectListener2)
    }
 })
 
