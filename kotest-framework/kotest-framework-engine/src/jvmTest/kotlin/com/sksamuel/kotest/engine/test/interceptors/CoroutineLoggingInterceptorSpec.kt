@@ -1,125 +1,51 @@
 package io.kotest.engine.test.interceptors
 
 import io.kotest.assertions.all
-import io.kotest.assertions.fail
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.common.ExperimentalKotest
-import io.kotest.core.Tag
 import io.kotest.core.config.LogLevel
 import io.kotest.core.config.configuration
-import io.kotest.core.spec.Isolate
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.test.TestCase
-import io.kotest.core.test.TestCaseConfig
-import io.kotest.core.test.TestId
-import io.kotest.core.test.TestResult
-import io.kotest.core.test.TestStatus
-import io.kotest.engine.KotestEngineLauncher
-import io.kotest.engine.listener.TestEngineListener
 import io.kotest.matchers.collections.shouldBeEmpty
 import io.kotest.matchers.collections.shouldContainExactly
-import io.kotest.matchers.collections.shouldContainExactlyInAnyOrder
 import io.kotest.matchers.collections.shouldContainInOrder
-import io.kotest.matchers.collections.shouldNotBeEmpty
-
-object IReallyNeedToRememberToUseTagsWhenTestingTestsThatTestUsingEngine : Tag()
-
-private object Boom {
-   override fun toString() = "BOOM"
-}
-
-private class CannotLogException(override val message: String) : Exception()
-
-@Isolate
-@OptIn(ExperimentalKotest::class)
-class CoroutineLoggingInterceptorSpec : FunSpec({
-   tags(IReallyNeedToRememberToUseTagsWhenTestingTestsThatTestUsingEngine)
-
-   val logLevel = configuration.logLevel
-
-   beforeSpec {
-      isPrivateCoroutineLoggingInterceptorSpecEnabled = true
-      configuration.registerExtensions(extensions)
-      reset(logLevel)
-   }
-
-   afterSpec {
-      isPrivateCoroutineLoggingInterceptorSpecEnabled = false
-      configuration.deregisterExtensions(extensions)
-      reset(logLevel)
-   }
-
-   test("All tests within PrivateCoroutineLoggingInterceptorSpec succeed") {
-      val started = mutableListOf<TestId>()
-      val passed = mutableListOf<TestId>()
-
-      val listener = object : TestEngineListener {
-         override suspend fun testStarted(testCase: TestCase) {
-            started.add(testCase.description.testId)
-         }
-
-         override suspend fun testFinished(testCase: TestCase, result: TestResult) {
-            if (result.status == TestStatus.Success) {
-               passed.add(testCase.description.testId)
-            } else {
-               fail(result.toString())
-            }
-         }
-      }
-
-      val result = KotestEngineLauncher()
-         .withListener(listener)
-         .withSpec(PrivateCoroutineLoggingInterceptorSpec::class)
-         .launch()
-
-      result.errors.shouldBeEmpty()
-      started shouldContainExactlyInAnyOrder passed
-      passed.shouldNotBeEmpty()
-   }
-})
 
 private val console = object : LogExtension {
    val stored = mutableListOf<String>()
 
    override suspend fun handleLogs(testCase: TestCase, logs: List<LogEntry>) {
+      stored.addAll(logs.map { it.message.toString() })
    }
 }
 
 private val database = object : LogExtension {
    val stored = mutableListOf<String>()
    override suspend fun handleLogs(testCase: TestCase, logs: List<LogEntry>) {
+      stored.addAll(logs.map { it.message }.map { when (it) {
+         is Boom -> throw CannotLogException("danger zone")
+         else -> it.toString()
+      }})
    }
-
-//   override suspend fun handleLogs(testCase: TestCase, logs: List<LogEntry>) {
-//      stored.addAll(logs.map { it.message() }.map { when (it) {
-//         is Boom -> throw CannotLogException("danger zone")
-//         else -> it.toString()
-//      }})
-//   }
 }
 
-private fun reset(level: LogLevel) {
-   configuration.logLevel = level
 
-   console.stored.clear()
-   database.stored.clear()
-
-   console.stored.shouldBeEmpty()
-   database.stored.shouldBeEmpty()
-}
-
-private val extensions = listOf(console, database)
-
-private var isPrivateCoroutineLoggingInterceptorSpecEnabled = false
-
-//TODO: refactor this class away, we needed it when we checked the configuration for listeners once
 @OptIn(ExperimentalKotest::class)
-private class PrivateCoroutineLoggingInterceptorSpec : FunSpec({
+class CoroutineLoggingInterceptorSpec : FunSpec({
    concurrency = 1
 
-   defaultTestConfig = TestCaseConfig(enabled = isPrivateCoroutineLoggingInterceptorSpecEnabled)
+   val logLevel = configuration.logLevel
+   val extensions = listOf(console, database)
 
-   tags(IReallyNeedToRememberToUseTagsWhenTestingTestsThatTestUsingEngine)
+   beforeSpec {
+      configuration.registerExtensions(extensions)
+      reset(logLevel)
+   }
+
+   afterSpec {
+      configuration.deregisterExtensions(extensions)
+      reset(logLevel)
+   }
 
    context("suppresses exceptions thrown by consume functions") {
       reset(LogLevel.Error)
@@ -226,11 +152,11 @@ private class PrivateCoroutineLoggingInterceptorSpec : FunSpec({
       reset(LogLevel.Trace)
 
       test("execute logs") {
-         logger.info { "info" }
-         logger.warn { "warn" }
-         logger.error { "error" }
-         logger.debug { "debug" }
-         logger.trace { "trace" }
+         logger?.info { "info" }
+         logger?.warn { "warn" }
+         logger?.error { "error" }
+         logger?.debug { "debug" } // TODO: probably make these extension methods on the interface and have the interface have internal functions so we can hide the nullability
+         logger?.trace { "trace" }
       }
 
       val expected = setOf("info", "warn", "error", "debug", "trace")
@@ -241,3 +167,20 @@ private class PrivateCoroutineLoggingInterceptorSpec : FunSpec({
       }
    }
 })
+
+private object Boom {
+   override fun toString() = "BOOM"
+}
+
+private class CannotLogException(override val message: String) : Exception()
+
+private fun reset(level: LogLevel) {
+   configuration.logLevel = level
+
+   console.stored.clear()
+   database.stored.clear()
+
+   console.stored.shouldBeEmpty()
+   database.stored.shouldBeEmpty()
+}
+

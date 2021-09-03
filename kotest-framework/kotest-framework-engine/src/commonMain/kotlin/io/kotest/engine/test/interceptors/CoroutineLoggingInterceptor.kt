@@ -10,6 +10,7 @@ import io.kotest.core.test.TestResult
 import io.kotest.engine.test.withCoroutineContext
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
+import kotlinx.coroutines.withContext
 import kotlin.coroutines.AbstractCoroutineContextElement
 import kotlin.coroutines.CoroutineContext
 
@@ -52,10 +53,11 @@ object ConsoleLogExtension : LogExtension {
 
 /**
  * Returns the [TestLogger] that is embedded with this [TestContext].
+ * Does not error when there isn't a logger, there isn't one when LogLevel is set to Off.
  */
 @ExperimentalKotest
-val TestContext.logger: TestLogger
-   get() = coroutineContext[TestContextLoggingCoroutineContextElement]?.logger ?: error("No test logger in context")
+val TestContext.logger: TestLogger?
+   get() = coroutineContext[TestContextLoggingCoroutineContextElement]?.logger
 
 @ExperimentalKotest
 private class TestContextLoggingCoroutineContextElement(val logger: TestLogger) : AbstractCoroutineContextElement(Key) {
@@ -80,7 +82,13 @@ internal object CoroutineLoggingInterceptor : TestExecutionInterceptor {
                throw ex
             } finally {
                val logs = logger.logs.filter { it.level >= configuration.logLevel }
-               extensions.forEach { extension -> extension.handleLogs(testCase, logs) }
+               extensions.forEach { extension ->
+                  runCatching {
+                     withContext(contextWithLogging.coroutineContext) {  // TODO: does handleLogs need to be using the same context as the contextWithLogging?
+                        extension.handleLogs(testCase, logs)
+                     }
+                  }
+               }
             }
          }
       }
@@ -91,31 +99,31 @@ internal object CoroutineLoggingInterceptor : TestExecutionInterceptor {
  * Appends to the [TestContext] log, when the log level is set to [io.kotest.core.config.LogLevel.Trace].
  */
 @ExperimentalKotest
-suspend fun TestContext.trace(message:  LogFn) = logger.trace(message)
+suspend fun TestContext.trace(message:  LogFn) = logger?.trace(message)
 
 /**
  * Appends to the [TestContext] log, when the log level is set to [io.kotest.core.config.LogLevel.Debug].
  */
 @ExperimentalKotest
-suspend fun TestContext.debug(message:  LogFn) = logger.debug(message)
+suspend fun TestContext.debug(message:  LogFn) = logger?.debug(message)
 
 /**
  * Appends to the [TestContext] log, when the log level is set to [io.kotest.core.config.LogLevel.Info] or higher.
  */
 @ExperimentalKotest
-suspend fun TestContext.info(message:  LogFn) = logger.info(message)
+suspend fun TestContext.info(message:  LogFn) = logger?.info(message)
 
 /**
  * Appends to the [TestContext] log, when the log level is [io.kotest.core.config.LogLevel.Warn] or higher.
  */
 @ExperimentalKotest
-suspend fun TestContext.warn(message:  LogFn) = logger.warn(message)
+suspend fun TestContext.warn(message:  LogFn) = logger?.warn(message)
 
 /**
  * Appends to the [TestContext] log, when the log level is set to [io.kotest.core.config.LogLevel.Error] or higher.
  */
 @ExperimentalKotest
-suspend fun TestContext.error(message:  LogFn) = logger.error(message)
+suspend fun TestContext.error(message:  LogFn) = logger?.error(message)
 
 typealias LogFn = suspend () -> Any
 
