@@ -26,16 +26,16 @@ class CoroutineLoggingInterceptorSpec : FunSpec({
    val console = object : LogExtension {
       val stored = mutableListOf<String>()
 
-      override suspend fun handleLogs(testCase: TestCase, logs: List<Any>) {
-         stored.addAll(logs.map { it.toString() })
+      override suspend fun handleLogs(testCase: TestCase, logs: List<LogEntry>) {
+         stored.addAll(logs.map { it.message().toString() })
       }
    }
 
    val database = object : LogExtension {
       val stored = mutableListOf<String>()
 
-      override suspend fun handleLogs(testCase: TestCase, logs: List<Any>) {
-         stored.addAll(logs.map { when (it) {
+      override suspend fun handleLogs(testCase: TestCase, logs: List<LogEntry>) {
+         stored.addAll(logs.map { it.message() }.map { when (it) {
             is Boom -> throw CannotLogException("danger zone")
             else -> it.toString()
          }})

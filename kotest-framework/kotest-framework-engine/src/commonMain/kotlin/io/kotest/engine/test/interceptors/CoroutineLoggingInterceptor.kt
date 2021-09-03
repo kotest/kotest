@@ -108,7 +108,7 @@ suspend fun TestContext.warn(message:  LogFn) = logger.warn(message)
 @ExperimentalKotest
 suspend fun TestContext.error(message:  LogFn) = logger.error(message)
 
-typealias LogFn = suspend () -> Any?
+typealias LogFn = suspend () -> Any
 
 @ExperimentalKotest
 interface TestLogger {
