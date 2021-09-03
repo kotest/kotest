@@ -19,7 +19,7 @@ data class TestEngineConfig(
       fun default(): TestEngineConfig {
          return TestEngineConfig(
             listener = NoopTestEngineListener,
-            interceptors = testEngineInterceptors(),
+            interceptors = testEngineInterceptors(configuration),
             configuration = configuration,
          )
       }
@@ -30,7 +30,7 @@ data class TestEngineConfig(
    }
 }
 
-expect fun testEngineInterceptors(): List<EngineInterceptor>
+expect fun testEngineInterceptors(conf: Configuration): List<EngineInterceptor>
 
 data class EngineResult(val errors: List<Throwable>) {
    companion object {

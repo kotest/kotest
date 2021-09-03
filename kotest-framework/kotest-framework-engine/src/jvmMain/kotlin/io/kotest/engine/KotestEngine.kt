@@ -14,8 +14,6 @@ import io.kotest.engine.spec.DefaultTestSuiteScheduler
 import io.kotest.engine.spec.SpecExecutor
 import io.kotest.fp.Try
 import io.kotest.mpp.log
-import kotlinx.coroutines.TimeoutCancellationException
-import kotlinx.coroutines.withTimeout
 
 data class KotestEngineConfig(
    val testFilters: List<TestFilter>,
@@ -49,7 +47,7 @@ class KotestEngine(private val config: KotestEngineConfig) {
             EngineResult(listOfNotNull(error))
          }
 
-      val execute = testEngineInterceptors().foldRight(innerExecute) { extension, next ->
+      val execute = testEngineInterceptors(configuration).foldRight(innerExecute) { extension, next ->
          { ts, tel -> extension.intercept(ts, tel, next) }
       }
 
@@ -65,10 +63,9 @@ class KotestEngine(private val config: KotestEngineConfig) {
     * or returns a failure if an unexpected (not test failure) error occured.
     */
    private suspend fun submitAll(suite: TestSuite, listener: TestEngineListener): Try<Unit> = Try {
-      withTimeout(configuration.projectTimeout) {
-         log { "KotestEngine: Beginning test plan [specs=${suite.classes.size}, scripts=0, parallelism=${configuration.parallelism}}]" }
+      log { "KotestEngine: Beginning test plan [specs=${suite.classes.size}, scripts=0, parallelism=${configuration.parallelism}}]" }
 
-         // scripts always run sequentially
+      // scripts always run sequentially
 //         log { "KotestEngine: Launching ${suite.scripts.size} scripts" }
 //         if (suite.scripts.isNotEmpty()) {
 //            suite.scripts.forEach { scriptKClass ->
@@ -79,21 +76,15 @@ class KotestEngine(private val config: KotestEngineConfig) {
 //            log { "KotestEngine: Script execution completed" }
 //         }
 
-         val executor = SpecExecutor(listener)
-         log { "KotestEngine: Will use spec executor $executor" }
+      val executor = SpecExecutor(listener)
+      log { "KotestEngine: Will use spec executor $executor" }
 
-         val scheduler = configuration.extensions()
-            .filterIsInstance<TestSuiteSchedulerExtension>()
-            .firstOrNull()?.scheduler()
-            ?: DefaultTestSuiteScheduler(configuration.concurrentSpecs ?: configuration.parallelism)
+      val scheduler = configuration.extensions()
+         .filterIsInstance<TestSuiteSchedulerExtension>()
+         .firstOrNull()?.scheduler()
+         ?: DefaultTestSuiteScheduler(configuration.concurrentSpecs ?: configuration.parallelism)
 
-         log { "KotestEngine: Will use scheduler $scheduler" }
-         scheduler.schedule(suite, { }, { executor.execute(it) })
-      }
-   }.mapFailure {
-      when (it) {
-         is TimeoutCancellationException -> ProjectTimeoutException(configuration.projectTimeout)
-         else -> it
-      }
+      log { "KotestEngine: Will use scheduler $scheduler" }
+      scheduler.schedule(suite, { }, { executor.execute(it) })
    }
 }

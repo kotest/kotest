@@ -1,4 +1,4 @@
-package com.sksamuel.kotest.engine.interceptors
+package com.sksamuel.kotest.engine.test.interceptors
 
 import io.kotest.core.sourceRef
 import io.kotest.core.spec.style.FunSpec
