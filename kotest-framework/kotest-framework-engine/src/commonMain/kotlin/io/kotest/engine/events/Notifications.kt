@@ -19,13 +19,6 @@ import kotlin.reflect.KClass
 class Notifications(private val listener: TestEngineListener) {
 
    /**
-    * Notify the listeners that the engien has started.
-    */
-   suspend fun engineStarted(classes: List<KClass<*>>): Try<Unit> {
-      return Try { listener.engineStarted(classes) }
-   }
-
-   /**
     * Notifies listeners that we are about to start execution of a [Descriptor].
     */
    suspend fun specStarted(spec: Descriptor.SpecDescriptor) = Try {

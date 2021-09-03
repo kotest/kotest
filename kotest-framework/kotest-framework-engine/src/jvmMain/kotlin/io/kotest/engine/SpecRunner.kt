@@ -12,6 +12,8 @@ import io.kotest.engine.interceptors.ProjectExtensionEngineInterceptor
 import io.kotest.engine.interceptors.ProjectListenerEngineInterceptor
 import io.kotest.engine.interceptors.SpecSortEngineInterceptor
 import io.kotest.engine.interceptors.TestDslStateInterceptor
+import io.kotest.engine.interceptors.TestEngineListenerInitializeFinalizeInterceptor
+import io.kotest.engine.interceptors.TestEngineListenerStartedFinishedInterceptor
 import io.kotest.engine.interceptors.WriteFailuresInterceptor
 
 actual class SpecRunner {
@@ -24,6 +26,7 @@ actual class SpecRunner {
 
 actual fun testEngineInterceptors(): List<EngineInterceptor> {
    return listOfNotNull(
+      TestEngineListenerInitializeFinalizeInterceptor,
       KotestPropertiesInterceptor,
       TestDslStateInterceptor,
       SpecSortEngineInterceptor,
@@ -32,5 +35,6 @@ actual fun testEngineInterceptors(): List<EngineInterceptor> {
       WriteFailuresInterceptor(configuration.specFailureFilePath),
       if (System.getProperty(KotestEngineProperties.dumpConfig) == null) null else DumpConfigInterceptor(configuration),
       if (configuration.failOnEmptyTestSuite) EmptyTestSuiteInterceptor else null,
+      TestEngineListenerStartedFinishedInterceptor,
    )
 }

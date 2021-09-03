@@ -16,6 +16,12 @@ import kotlin.reflect.KClass
 interface TestEngineListener {
 
    /**
+    * Is invoked as soon as the engine has been created and before any other interceptors run.
+    * // todo add config as arg here.
+    */
+   suspend fun engineInitialize() {}
+
+   /**
     * Is invoked when the [KotestEngine] is starting execution.
     *
     * @param classes the [Spec] classes that will be used by the [KotestEngine].
@@ -29,6 +35,12 @@ interface TestEngineListener {
     * as the parameter to the engine.
     */
    suspend fun engineFinished(t: List<Throwable>) {}
+
+   /**
+    * Is invoked when the engine has finished with all tests and other interceptors.
+    * Is the last thing in the engine before the engine terminates.
+    */
+   suspend fun engineFinalize() {}
 
    /**
     * Is invoked once per [Spec] to indicate that this spec is about to

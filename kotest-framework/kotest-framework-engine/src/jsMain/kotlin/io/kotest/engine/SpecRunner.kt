@@ -12,6 +12,8 @@ import io.kotest.engine.interceptors.ProjectListenerEngineInterceptor
 import io.kotest.engine.interceptors.SpecSortEngineInterceptor
 import io.kotest.engine.interceptors.SpecStyleValidationInterceptor
 import io.kotest.engine.interceptors.TestDslStateInterceptor
+import io.kotest.engine.interceptors.TestEngineListenerInitializeFinalizeInterceptor
+import io.kotest.engine.interceptors.TestEngineListenerStartedFinishedInterceptor
 import io.kotest.engine.spec.materializeAndOrderRootTests
 import io.kotest.engine.test.CallingThreadExecutionContext
 import io.kotest.engine.test.RootRestrictedTestContext
@@ -81,11 +83,13 @@ actual class SpecRunner {
 
 actual fun testEngineInterceptors(): List<EngineInterceptor> {
    return listOfNotNull(
+      TestEngineListenerInitializeFinalizeInterceptor,
       TestDslStateInterceptor,
       SpecStyleValidationInterceptor,
       SpecSortEngineInterceptor,
       ProjectExtensionEngineInterceptor(configuration.extensions().filterIsInstance<ProjectExtension>()),
       ProjectListenerEngineInterceptor(configuration.extensions()),
       if (configuration.failOnEmptyTestSuite) EmptyTestSuiteInterceptor else null,
+      TestEngineListenerStartedFinishedInterceptor,
    )
 }

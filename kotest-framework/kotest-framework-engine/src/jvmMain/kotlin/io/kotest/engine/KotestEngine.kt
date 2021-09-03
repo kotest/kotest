@@ -6,7 +6,6 @@ import io.kotest.core.filter.SpecFilter
 import io.kotest.core.filter.TestFilter
 import io.kotest.engine.config.ConfigManager
 import io.kotest.engine.config.detectAbstractProjectConfigs
-import io.kotest.engine.events.Notifications
 import io.kotest.engine.extensions.SpecifiedTagsTagExtension
 import io.kotest.engine.extensions.TestSuiteSchedulerExtension
 import io.kotest.engine.interceptors.EngineInterceptor
@@ -46,7 +45,6 @@ class KotestEngine(private val config: KotestEngineConfig) {
 
       val innerExecute: suspend (TestSuite, TestEngineListener) -> EngineResult =
          { ts, tel ->
-            Notifications(tel).engineStarted(ts.classes)
             val error = submitAll(ts, tel).errorOrNull()
             EngineResult(listOfNotNull(error))
          }
@@ -55,9 +53,7 @@ class KotestEngine(private val config: KotestEngineConfig) {
          { ts, tel -> extension.intercept(ts, tel, next) }
       }
 
-      val result = execute.invoke(suite, config.listener)
-      notifyResult(result)
-      return result
+      return execute.invoke(suite, config.listener)
    }
 
    fun cleanup() {
@@ -99,16 +95,5 @@ class KotestEngine(private val config: KotestEngineConfig) {
          is TimeoutCancellationException -> ProjectTimeoutException(configuration.projectTimeout)
          else -> it
       }
-   }
-
-   private suspend fun notifyResult(result: EngineResult) {
-      result.errors.forEach {
-         log(it) { "KotestEngine: Error during test engine run" }
-         it.printStackTrace()
-      }
-      // notify only the original listener of the final engine result
-      config.listener.engineFinished(result.errors)
-      // explicitly exit because we spin up test threads that the user may have put into deadlock
-      // exitProcess(if (errors.isEmpty()) 0 else -1)
    }
 }
