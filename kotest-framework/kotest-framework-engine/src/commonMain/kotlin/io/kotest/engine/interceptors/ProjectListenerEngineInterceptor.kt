@@ -22,13 +22,12 @@ class ProjectListenerEngineInterceptor(private val extensions: List<Extension>) 
       log { "ProjectListenerEngineInterceptor: Invoking ${before.size} BeforeProjectListeners" }
       val beforeErrors = ProjectLifecycleManager.beforeProject(before)
 
-      // if we have errors in the before project listeners, we'll not even execute tests, but
-      // instead immediately exit.
+      // if we have errors in the before project listeners, we'll not execute tests,
+      // but instead immediately return those errors.
       if (beforeErrors.isNotEmpty()) return EngineResult(beforeErrors)
 
       val result = execute(suite, listener)
 
-      // todo capture errors and add to result
       val after = extensions.filterIsInstance<AfterProjectListener>()
       log { "ProjectListenerEngineInterceptor: Invoking ${after.size} AfterProjectListeners" }
       val afterErrors = ProjectLifecycleManager.afterProject(after)

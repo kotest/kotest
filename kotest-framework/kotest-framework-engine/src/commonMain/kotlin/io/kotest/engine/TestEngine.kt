@@ -32,7 +32,11 @@ data class TestEngineConfig(
 
 expect fun testEngineInterceptors(): List<EngineInterceptor>
 
-data class EngineResult(val errors: List<Throwable>)
+data class EngineResult(val errors: List<Throwable>) {
+   companion object {
+      val empty = EngineResult(emptyList())
+   }
+}
 
 /**
  * Contains the discovered specs that will be executed.

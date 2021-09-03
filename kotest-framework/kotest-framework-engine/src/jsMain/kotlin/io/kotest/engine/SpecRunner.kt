@@ -1,11 +1,13 @@
 package io.kotest.engine
 
 import io.kotest.core.config.configuration
+import io.kotest.core.extensions.ProjectExtension
 import io.kotest.core.spec.Spec
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.engine.interceptors.EmptyTestSuiteInterceptor
 import io.kotest.engine.interceptors.EngineInterceptor
+import io.kotest.engine.interceptors.ProjectExtensionEngineInterceptor
 import io.kotest.engine.interceptors.ProjectListenerEngineInterceptor
 import io.kotest.engine.interceptors.SpecSortEngineInterceptor
 import io.kotest.engine.interceptors.SpecStyleValidationInterceptor
@@ -82,6 +84,7 @@ actual fun testEngineInterceptors(): List<EngineInterceptor> {
       TestDslStateInterceptor,
       SpecStyleValidationInterceptor,
       SpecSortEngineInterceptor,
+      ProjectExtensionEngineInterceptor(configuration.extensions().filterIsInstance<ProjectExtension>()),
       ProjectListenerEngineInterceptor(configuration.extensions()),
       if (configuration.failOnEmptyTestSuite) EmptyTestSuiteInterceptor else null,
    )

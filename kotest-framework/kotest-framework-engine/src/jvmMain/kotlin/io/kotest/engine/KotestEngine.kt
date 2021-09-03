@@ -2,7 +2,6 @@ package io.kotest.engine
 
 import io.kotest.core.Tags
 import io.kotest.core.config.configuration
-import io.kotest.core.extensions.ProjectExtension
 import io.kotest.core.filter.SpecFilter
 import io.kotest.core.filter.TestFilter
 import io.kotest.engine.config.ConfigManager
@@ -17,7 +16,6 @@ import io.kotest.engine.spec.SpecExecutor
 import io.kotest.fp.Try
 import io.kotest.mpp.log
 import kotlinx.coroutines.TimeoutCancellationException
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withTimeout
 
 data class KotestEngineConfig(
@@ -47,7 +45,11 @@ class KotestEngine(private val config: KotestEngineConfig) {
    suspend fun execute(suite: TestSuite): EngineResult {
 
       val innerExecute: suspend (TestSuite, TestEngineListener) -> EngineResult =
-         { ts, tel -> executeTestSuite(ts, tel) }
+         { ts, tel ->
+            Notifications(tel).engineStarted(ts.classes)
+            val error = submitAll(ts, tel).errorOrNull()
+            EngineResult(listOfNotNull(error))
+         }
 
       val execute = testEngineInterceptors().foldRight(innerExecute) { extension, next ->
          { ts, tel -> extension.intercept(ts, tel, next) }
@@ -56,18 +58,6 @@ class KotestEngine(private val config: KotestEngineConfig) {
       val result = execute.invoke(suite, config.listener)
       notifyResult(result)
       return result
-   }
-
-   private fun executeTestSuite(suite: TestSuite, listener: TestEngineListener): EngineResult = runBlocking {
-
-      Notifications(listener)
-         .engineStarted(suite.classes)
-
-      val extensions = configuration.extensions().filterIsInstance<ProjectExtension>()
-      val initial: suspend () -> Throwable? = { submitAll(suite, listener).errorOrNull() }
-
-      val error = extensions.foldRight(initial) { extension, acc -> { extension.aroundProject(acc) } }.invoke()
-      EngineResult(listOfNotNull(error))
    }
 
    fun cleanup() {
