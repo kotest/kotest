@@ -10,11 +10,7 @@ interface ProjectExtension : Extension {
     * the project to be executed, otherwise not calling [callback] will skip
     * the entire project.
     *
-    * The callback will return any errors during execution of the test suite.
-    * Note: These errors are not test failures, but unexpected errors.
-    *
-    * Errors from the callback should be returned in turn, unless the extension
-    * wishes to override.
+    * Any error returned from the callback should be returned from this method.
     */
-   suspend fun aroundProject(callback: suspend () -> List<Throwable>): List<Throwable>
+   suspend fun aroundProject(callback: suspend () -> Throwable?): Throwable?
 }
