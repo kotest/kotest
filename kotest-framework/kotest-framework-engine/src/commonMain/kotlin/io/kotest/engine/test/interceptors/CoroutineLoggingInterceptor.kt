@@ -46,9 +46,16 @@ internal class SerialLogExtension constructor(private val logExtension: LogExten
 object ConsoleLogExtension : LogExtension {
    override suspend fun handleLogs(testCase: TestCase, logs: List<LogEntry>) {
       println(" - ${testCase.description}")
-      logs.forEach { println(it.level.name + ": " + it.message()) }
+      logs.forEach { println(it.level.name + ": " + it.message) }
    }
 }
+
+/**
+ * Returns the [TestLogger] that is embedded with this [TestContext].
+ */
+@ExperimentalKotest
+val TestContext.logger: TestLogger
+   get() = coroutineContext[TestContextLoggingCoroutineContextElement]?.logger ?: error("No test logger in context")
 
 @ExperimentalKotest
 private class TestContextLoggingCoroutineContextElement(val logger: TestLogger) : AbstractCoroutineContextElement(Key) {
@@ -56,10 +63,12 @@ private class TestContextLoggingCoroutineContextElement(val logger: TestLogger) 
 }
 
 @OptIn(ExperimentalKotest::class)
-internal class CoroutineLoggingInterceptor(private val extensions: List<SerialLogExtension>) : TestExecutionInterceptor {
+internal object CoroutineLoggingInterceptor : TestExecutionInterceptor {
    override suspend fun intercept(
       test: suspend (TestCase, TestContext) -> TestResult
    ): suspend (TestCase, TestContext) -> TestResult = { testCase, context ->
+      val extensions = configuration.extensions().filterIsInstance<LogExtension>().map { SerialLogExtension(it) }
+
       when {
          configuration.logLevel.isDisabled() || extensions.isEmpty() -> test(testCase, context)
          else -> {
@@ -124,31 +133,24 @@ class DefaultTestLogger : TestLogger {
    val logs = mutableListOf<LogEntry>()
 
    override suspend fun trace(message: LogFn) {
-      logs.add(LogEntry(LogLevel.Trace, message))
+      logs.add(LogEntry(LogLevel.Trace, message()))
    }
 
    override suspend fun debug(message: LogFn) {
-      logs.add(LogEntry(LogLevel.Debug, message))
+      logs.add(LogEntry(LogLevel.Debug, message()))
    }
 
    override suspend fun info(message: LogFn) {
-      logs.add(LogEntry(LogLevel.Info, message))
+      logs.add(LogEntry(LogLevel.Info, message()))
    }
 
    override suspend fun warn(message: LogFn) {
-      logs.add(LogEntry(LogLevel.Warn, message))
+      logs.add(LogEntry(LogLevel.Warn, message()))
    }
 
    override suspend fun error(message: LogFn) {
-      logs.add(LogEntry(LogLevel.Error, message))
+      logs.add(LogEntry(LogLevel.Error, message()))
    }
 }
 
-data class LogEntry(val level: LogLevel, val message: LogFn)
-
-/**
- * Returns the [TestLogger] that is embedded with this [TestContext].
- */
-@ExperimentalKotest
-val TestContext.logger: TestLogger
-   get() = coroutineContext[TestContextLoggingCoroutineContextElement]?.logger ?: error("No test logger in context")
+data class LogEntry(val level: LogLevel, val message: Any)

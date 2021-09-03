@@ -10,8 +10,6 @@ import io.kotest.engine.test.interceptors.AssertionModeInterceptor
 import io.kotest.engine.test.interceptors.BlockedThreadTimeoutInterceptor
 import io.kotest.engine.test.interceptors.CoroutineDebugProbeInterceptor
 import io.kotest.engine.test.interceptors.CoroutineLoggingInterceptor
-import io.kotest.engine.test.interceptors.CoroutineLoggingTestExecutionInterceptor
-import io.kotest.engine.test.interceptors.CoroutineDispatcherTestExecutionInterceptor
 import io.kotest.engine.test.interceptors.CoroutineScopeInterceptor
 import io.kotest.engine.test.interceptors.EnabledCheckInterceptor
 import io.kotest.engine.test.interceptors.ExceptionCapturingInterceptor
@@ -20,8 +18,6 @@ import io.kotest.engine.test.interceptors.InvocationCountCheckInterceptor
 import io.kotest.engine.test.interceptors.InvocationRepeatInterceptor
 import io.kotest.engine.test.interceptors.InvocationTimeoutInterceptor
 import io.kotest.engine.test.interceptors.LifecycleInterceptor
-import io.kotest.engine.test.interceptors.LogExtension
-import io.kotest.engine.test.interceptors.SerialLogExtension
 import io.kotest.engine.test.interceptors.SupervisorScopeInterceptor
 import io.kotest.engine.test.interceptors.TestCaseExtensionInterceptor
 import io.kotest.engine.test.interceptors.TimeoutInterceptor
@@ -61,7 +57,7 @@ class TestCaseExecutor(
          TimeoutInterceptor,
          InvocationRepeatInterceptor(start),
          InvocationTimeoutInterceptor,
-         CoroutineLoggingInterceptor(configuration.extensions().filterIsInstance<LogExtension>().map { SerialLogExtension(it) }),
+         CoroutineLoggingInterceptor,
       )
 
       val innerExecute: suspend (TestCase, TestContext) -> TestResult = { tc, ctx ->
