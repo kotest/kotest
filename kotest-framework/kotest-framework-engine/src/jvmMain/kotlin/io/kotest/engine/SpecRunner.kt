@@ -32,11 +32,11 @@ actual fun testEngineInterceptors(conf: Configuration): List<EngineInterceptor> 
       KotestPropertiesInterceptor,
       TestDslStateInterceptor,
       SpecSortEngineInterceptor,
+      if (System.getProperty(KotestEngineProperties.dumpConfig) == null) null else DumpConfigInterceptor(conf),
+      TestEngineListenerStartedFinishedInterceptor,
       ProjectExtensionEngineInterceptor(conf.extensions().filterIsInstance<ProjectExtension>()),
       ProjectListenerEngineInterceptor(conf.extensions()),
-      WriteFailuresInterceptor(conf.specFailureFilePath),
-      if (System.getProperty(KotestEngineProperties.dumpConfig) == null) null else DumpConfigInterceptor(conf),
       if (conf.failOnEmptyTestSuite) EmptyTestSuiteInterceptor else null,
-      TestEngineListenerStartedFinishedInterceptor,
+      WriteFailuresInterceptor(conf.specFailureFilePath),
    )
 }

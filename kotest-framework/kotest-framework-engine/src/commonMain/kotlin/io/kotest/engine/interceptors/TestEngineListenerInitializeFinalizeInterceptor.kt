@@ -5,7 +5,7 @@ import io.kotest.engine.TestSuite
 import io.kotest.engine.listener.TestEngineListener
 
 /**
- * Notifies the test listener on startup and shutdown.
+ * Notifies the [TestEngineListener] on startup (initialize) and shutdown (finalize).
  */
 object TestEngineListenerInitializeFinalizeInterceptor : EngineInterceptor {
 

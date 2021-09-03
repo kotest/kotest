@@ -64,6 +64,33 @@ class ProjectExtensionEngineInterceptorTest : FunSpec({
       fired shouldBe true
    }
 
+   test("should accumulate errors") {
+
+      val ext1 = object : ProjectExtension {
+         override suspend fun aroundProject(callback: suspend () -> List<Throwable>): List<Throwable> {
+            val errors = callback()
+            return errors + RuntimeException("whack!")
+         }
+      }
+
+      val ext2 = object : ProjectExtension {
+         override suspend fun aroundProject(callback: suspend () -> List<Throwable>): List<Throwable> {
+            val errors = callback()
+            return errors + RuntimeException("zapp!")
+         }
+      }
+
+      val result = ProjectExtensionEngineInterceptor(listOf(ext1, ext2)).intercept(
+         TestSuite.empty,
+         NoopTestEngineListener
+      ) { _, _ ->
+         EngineResult(listOf(RuntimeException("sock!")))
+      }
+
+      result.errors.size shouldBe 3
+      result.errors.map { it.message }.toSet() shouldBe setOf("sock!", "zapp!", "whack!")
+   }
+
    test("should invoke downstream without extensions") {
 
       var fired = false

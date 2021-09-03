@@ -6,8 +6,8 @@ import io.kotest.engine.listener.TestEngineListener
 import io.kotest.mpp.log
 
 /**
- * Notifies the test listener that the engine is fully booted and ready to rock.
- * Comes last in the engine interceptor chain.
+ * Notifies the test listener that the engine is ready to execute tests, and the final [TestSuite]
+ * is ready to be used, and that all tests have completed, with any unexpected errors.
  */
 object TestEngineListenerStartedFinishedInterceptor : EngineInterceptor {
 

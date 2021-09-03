@@ -1,4 +1,4 @@
-package com.sksamuel.kotest
+package com.sksamuel.kotest.engine.listeners.project
 
 import io.kotest.core.config.AbstractProjectConfig
 
