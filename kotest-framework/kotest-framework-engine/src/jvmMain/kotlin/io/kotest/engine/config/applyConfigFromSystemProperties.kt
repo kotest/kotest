@@ -72,5 +72,5 @@ internal fun logLevel(): LogLevel {
    val levelProp = sysprop(KotestEngineProperties.logLevel).fmap { LogLevel.from(it) }
    val levelEnv = env(KotestEngineProperties.logLevel).fmap { LogLevel.from(it) }
 
-   return levelProp ?: levelEnv ?: LogLevel.OFF
+   return levelProp ?: levelEnv ?: LogLevel.Off
 }
