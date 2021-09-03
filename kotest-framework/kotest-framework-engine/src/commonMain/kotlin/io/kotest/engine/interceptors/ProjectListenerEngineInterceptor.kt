@@ -15,7 +15,7 @@ class ProjectListenerEngineInterceptor(private val extensions: List<Extension>) 
    override suspend fun intercept(
       suite: TestSuite,
       listener: TestEngineListener,
-      execute: suspend (TestSuite, TestEngineListener) -> EngineResult
+      execute: suspend (TestSuite, TestEngineListener) -> EngineResult,
    ): EngineResult {
 
       val before = extensions.filterIsInstance<BeforeProjectListener>()

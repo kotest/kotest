@@ -1,8 +1,15 @@
 package io.kotest.engine
 
+import io.kotest.core.config.configuration
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.toDescription
 import io.kotest.core.test.TestCase
+import io.kotest.engine.interceptors.EmptyTestSuiteInterceptor
+import io.kotest.engine.interceptors.EngineInterceptor
+import io.kotest.engine.interceptors.ProjectListenerEngineInterceptor
+import io.kotest.engine.interceptors.SpecSortEngineInterceptor
+import io.kotest.engine.interceptors.SpecStyleValidationInterceptor
+import io.kotest.engine.interceptors.TestDslStateInterceptor
 import io.kotest.engine.spec.materializeAndOrderRootTests
 import io.kotest.engine.teamcity.TeamCityMessageBuilder
 import io.kotest.engine.test.CallingThreadExecutionContext
@@ -51,3 +58,12 @@ actual class SpecRunner {
    }
 }
 
+actual fun testEngineInterceptors(): List<EngineInterceptor> {
+   return listOfNotNull(
+      TestDslStateInterceptor,
+      SpecStyleValidationInterceptor,
+      SpecSortEngineInterceptor,
+      ProjectListenerEngineInterceptor(configuration.extensions()),
+      if (configuration.failOnEmptyTestSuite) EmptyTestSuiteInterceptor else null,
+   )
+}
