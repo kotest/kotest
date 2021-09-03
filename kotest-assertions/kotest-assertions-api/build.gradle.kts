@@ -28,7 +28,6 @@ kotlin {
       linuxArm64()
 
       mingwX64()
-      mingwX86()
 
       macosX64()
       macosArm64()

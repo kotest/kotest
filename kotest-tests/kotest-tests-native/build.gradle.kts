@@ -12,7 +12,6 @@ kotlin {
       linuxArm64()
 
       mingwX64()
-      mingwX86()
 
       macosX64()
       macosArm64()
@@ -55,10 +54,6 @@ kotlin {
       }
 
       val mingwX64Test by getting {
-         dependsOn(nativeTest)
-      }
-
-      val mingwX86Test by getting {
          dependsOn(nativeTest)
       }
 

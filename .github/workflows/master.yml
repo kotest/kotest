@@ -121,7 +121,7 @@ jobs:
             run: ./gradlew mingwX64Test --scan
 
          -  name: publish mingw64 and mingw86 snapshot
-            run: ./gradlew publishMingwX64PublicationToDeployRepository publishMingwX86PublicationToDeployRepository
+            run: ./gradlew publishMingwX64PublicationToDeployRepository
             env:
                OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
                OSSRH_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
