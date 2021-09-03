@@ -17,7 +17,7 @@ class BeforeProjectListenerExceptionHandlingTest : FunSpec({
    beforeTest { mockkObject(configuration) }
    afterTest { unmockkObject(configuration) }
 
-   test("an BeforeProjectListenerException should add marker spec") {
+   test("!an BeforeProjectListenerException should add marker spec") {
       every { configuration.extensions() } returns listOf(
          object : ProjectListener {
             override suspend fun beforeProject() {
@@ -54,7 +54,7 @@ class BeforeProjectListenerExceptionHandlingTest : FunSpec({
       }
    }
 
-   test("an BeforeProjectListener2Exception should add 2 markers spec") {
+   test("!an BeforeProjectListener2Exception should add 2 markers spec") {
       every { configuration.extensions() } returns listOf(
          object : ProjectListener {
             override val name: String

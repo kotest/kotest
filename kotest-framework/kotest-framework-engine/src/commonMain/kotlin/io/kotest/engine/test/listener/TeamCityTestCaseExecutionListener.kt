@@ -1,10 +1,11 @@
-package io.kotest.engine.test
+package io.kotest.engine.test.listener
 
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestStatus
 import io.kotest.engine.teamcity.Locations
 import io.kotest.engine.teamcity.TeamCityMessageBuilder
+import io.kotest.engine.test.TestCaseExecutionListener
 
 /**
  * A [TestCaseExecutionListener] that logs events to the console using a [TeamCityMessageBuilder].

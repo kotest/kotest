@@ -3,12 +3,7 @@ package io.kotest.engine
 import io.kotest.core.config.Configuration
 import io.kotest.core.config.configuration
 import io.kotest.core.spec.Spec
-import io.kotest.engine.interceptors.EmptyTestSuiteInterceptor
 import io.kotest.engine.interceptors.EngineInterceptor
-import io.kotest.engine.interceptors.ProjectListenerEngineInterceptor
-import io.kotest.engine.interceptors.SpecSortEngineInterceptor
-import io.kotest.engine.interceptors.SpecStyleValidationInterceptor
-import io.kotest.engine.interceptors.TestDslStateInterceptor
 import io.kotest.engine.listener.NoopTestEngineListener
 import io.kotest.engine.listener.TestEngineListener
 import io.kotest.mpp.log
@@ -22,18 +17,9 @@ data class TestEngineConfig(
 
    companion object {
       fun default(): TestEngineConfig {
-
-         val interceptors = listOfNotNull(
-            TestDslStateInterceptor,
-            SpecStyleValidationInterceptor,
-            SpecSortEngineInterceptor,
-            ProjectListenerEngineInterceptor(configuration.extensions()),
-            if (configuration.failOnEmptyTestSuite) EmptyTestSuiteInterceptor else null,
-         )
-
          return TestEngineConfig(
             listener = NoopTestEngineListener,
-            interceptors = interceptors,
+            interceptors = testEngineInterceptors(),
             configuration = configuration,
          )
       }
@@ -44,6 +30,8 @@ data class TestEngineConfig(
    }
 }
 
+expect fun testEngineInterceptors(): List<EngineInterceptor>
+
 data class EngineResult(val errors: List<Throwable>)
 
 /**
@@ -52,7 +40,11 @@ data class EngineResult(val errors: List<Throwable>)
  * On the platforms that lack reflective capability, the specs are pre-instantiated before
  * they are passed to the engine. On the JVM, the class definition is instead used.
  */
-data class TestSuite(val specs: List<Spec>, val classes: List<KClass<out Spec>>)
+data class TestSuite(val specs: List<Spec>, val classes: List<KClass<out Spec>>) {
+   companion object {
+      val empty = TestSuite(emptyList(), emptyList())
+   }
+}
 
 /**
  * Multiplatform Kotest Test Engine.
@@ -65,13 +57,12 @@ class TestEngine(val config: TestEngineConfig) {
 
       val innerExecute: suspend (TestSuite, TestEngineListener) -> EngineResult = { ts, tel -> execute(ts.specs, tel) }
 
-      val extensions = config.interceptors
-      log { "TestEngine: ${extensions.size} engine extensions:" }
-      extensions.forEach {
+      log { "TestEngine: ${config.interceptors.size} engine interceptors:" }
+      config.interceptors.forEach {
          log { "TestEngine: ${it::class.simpleName}" }
       }
 
-      val execute = extensions.foldRight(innerExecute) { extension, next ->
+      val execute = config.interceptors.foldRight(innerExecute) { extension, next ->
          { ts, tel -> extension.intercept(ts, tel, next) }
       }
 

@@ -12,8 +12,8 @@ import io.kotest.core.test.toTestCase
 import io.kotest.engine.ExecutorExecutionContext
 import io.kotest.engine.events.invokeAfterSpec
 import io.kotest.engine.events.invokeBeforeSpec
-import io.kotest.engine.listener.BufferedTestCaseExcecutionListener
-import io.kotest.engine.listener.TestCaseListenerToTestEngineListenerAdapter
+import io.kotest.engine.test.listener.BufferedTestCaseExcecutionListener
+import io.kotest.engine.test.listener.TestCaseListenerToTestEngineListenerAdapter
 import io.kotest.engine.listener.TestEngineListener
 import io.kotest.engine.spec.SpecRunner
 import io.kotest.engine.spec.materializeAndOrderRootTests
