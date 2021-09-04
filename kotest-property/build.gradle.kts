@@ -27,7 +27,6 @@ kotlin {
       }
 
       linuxX64()
-      linuxArm64()
 
       mingwX64()
 
@@ -100,10 +99,6 @@ kotlin {
       }
 
       val linuxX64Main by getting {
-         dependsOn(desktopMain)
-      }
-
-      val linuxArm64Main by getting {
          dependsOn(desktopMain)
       }
 

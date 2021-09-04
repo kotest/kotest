@@ -63,14 +63,5 @@ jobs:
                ORG_GRADLE_PROJECT_signingKey: ${{ secrets.SIGNING_KEY }}
                ORG_GRADLE_PROJECT_signingPassword: ${{ secrets.SIGNING_PASSWORD }}
 
-         -  name: publish linux Arm64 release
-            run: ./gradlew publishLinuxArm64PublicationToDeployRepository
-            env:
-               RELEASE_VERSION: ${{ github.event.inputs.version }}
-               OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
-               OSSRH_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
-               ORG_GRADLE_PROJECT_signingKey: ${{ secrets.SIGNING_KEY }}
-               ORG_GRADLE_PROJECT_signingPassword: ${{ secrets.SIGNING_PASSWORD }}
-
 env:
    GRADLE_OPTS: -Dorg.gradle.configureondemand=true -Dorg.gradle.parallel=false -Dkotlin.incremental=false -Dorg.gradle.jvmargs="-Xmx3g -XX:MaxPermSize=2048m -XX:+HeapDumpOnOutOfMemoryError -Dfile.encoding=UTF-8"
