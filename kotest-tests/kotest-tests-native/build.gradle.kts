@@ -9,7 +9,6 @@ repositories {
 kotlin {
    targets {
       linuxX64()
-      linuxArm64()
 
       mingwX64()
 
@@ -58,10 +57,6 @@ kotlin {
       }
 
       val linuxX64Test by getting {
-         dependsOn(nativeTest)
-      }
-
-      val linuxArm64Test by getting {
          dependsOn(nativeTest)
       }
 
