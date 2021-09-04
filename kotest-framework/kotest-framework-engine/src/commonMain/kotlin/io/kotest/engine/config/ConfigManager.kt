@@ -13,7 +13,8 @@ object ConfigManager {
    private var initialized = false
 
    /**
-    * Initializes a given [Configuration] instance using project config, system properties and autoscan.
+    * Initializes a given [Configuration] instance using the supplied project configs,
+    * system properties, autoscan, and project configs on the classpath.
     *
     * @return the initialized input
     */
@@ -22,7 +23,7 @@ object ConfigManager {
          applyPlatformDefaults(configuration)
          applyConfigFromSystemProperties(configuration)
          applyConfigFromAutoScan(configuration)
-         projectConfigs.forEach { applyConfigFromProjectConfig(it, configuration) }
+         (detectAbstractProjectConfigs() + projectConfigs).forEach { applyConfigFromProjectConfig(it, configuration) }
          initialized = true
       }
       return configuration
@@ -51,3 +52,10 @@ expect fun applyPlatformDefaults(configuration: Configuration)
  * Note: This function will have no effect on non-JVM targets.
  */
 expect fun applyConfigFromAutoScan(configuration: Configuration)
+
+/**
+ * Scan the classpath for [AbstractProjectConfig] instances.
+ * Only applies on the JVM.
+ */
+expect fun detectAbstractProjectConfigs(): List<AbstractProjectConfig>
+

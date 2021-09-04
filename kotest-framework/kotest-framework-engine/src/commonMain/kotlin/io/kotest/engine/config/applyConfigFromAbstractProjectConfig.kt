@@ -66,7 +66,6 @@ internal fun applyConfigFromProjectConfig(config: AbstractProjectConfig, configu
       }
    }
 
-   configuration.registerListeners(config.listeners() + listOf(projectListener))
-   configuration.registerExtensions(config.extensions())
+   configuration.registerExtensions(config.listeners() + listOf(projectListener) + config.extensions())
    configuration.registerFilters(config.filters())
 }

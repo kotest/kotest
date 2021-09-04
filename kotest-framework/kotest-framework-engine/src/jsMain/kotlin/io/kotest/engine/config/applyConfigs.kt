@@ -1,5 +1,6 @@
 package io.kotest.engine.config
 
+import io.kotest.core.config.AbstractProjectConfig
 import io.kotest.core.config.Configuration
 
 /**
@@ -24,3 +25,9 @@ actual fun applyConfigFromAutoScan(configuration: Configuration) {}
  * For example on JVM it will add System property based tag detection.
  */
 actual fun applyPlatformDefaults(configuration: Configuration) {}
+
+/**
+ * Scan the classpath for [AbstractProjectConfig] instances.
+ * Only applies on the JVM.
+ */
+actual fun detectAbstractProjectConfigs(): List<AbstractProjectConfig> = emptyList()
