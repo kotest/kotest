@@ -8,27 +8,32 @@ import io.kotest.core.config.configuration
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.test.TestCase
 import io.kotest.matchers.collections.shouldBeEmpty
-import io.kotest.matchers.collections.shouldContainExactly
 import io.kotest.matchers.collections.shouldContainInOrder
 
 private val console = object : LogExtension {
-   val stored = mutableListOf<String>()
+   fun reset() = stored.clear()
+   val logs get() = stored.toList()
+   private val stored = mutableListOf<String>()
 
    override suspend fun handleLogs(testCase: TestCase, logs: List<LogEntry>) {
       stored.addAll(logs.map { it.message.toString() })
+      return
    }
 }
 
 private val database = object : LogExtension {
-   val stored = mutableListOf<String>()
+   fun reset() = stored.clear()
+   val logs get() = stored.toList()
+   private val stored = mutableListOf<String>()
+
    override suspend fun handleLogs(testCase: TestCase, logs: List<LogEntry>) {
       stored.addAll(logs.map { it.message }.map { when (it) {
          is Boom -> throw CannotLogException("danger zone")
          else -> it.toString()
       }})
+      return
    }
 }
-
 
 @OptIn(ExperimentalKotest::class)
 class CoroutineLoggingInterceptorSpec : FunSpec({
@@ -50,20 +55,20 @@ class CoroutineLoggingInterceptorSpec : FunSpec({
    context("suppresses exceptions thrown by consume functions") {
       reset(LogLevel.Error)
 
-      test("execute logs") {
-         shouldThrow<CannotLogException> { error { Boom } }
-         error {
-            "this is fine"
+      test("execute") {
+         shouldThrow<CannotLogException> {
+            database.handleLogs(testCase, listOf(LogEntry(LogLevel.Error, Boom)))
          }
+         error { Boom }
       }
 
-      database.stored.shouldContainExactly("this is fine")
+      database.logs.shouldBeEmpty()
    }
 
    context("ignores all logs when logging is OFF by config") {
       reset(LogLevel.Off)
 
-      test("execute logs") {
+      test("execute") {
          info { "info" }
          warn { "warn" }
          error { "error" }
@@ -71,80 +76,78 @@ class CoroutineLoggingInterceptorSpec : FunSpec({
       }
 
       all {
-         console.stored.shouldBeEmpty()
-         database.stored.shouldBeEmpty()
+         console.logs.shouldBeEmpty()
+         database.logs.shouldBeEmpty()
       }
    }
 
    context("ignores logs lower priority than ERROR by config") {
       reset(LogLevel.Error)
 
-      test("execute logs") {
+      test("execute") {
          info { "info" }
          warn { "warn" }
          error { "error" }
          debug { "debug" }
       }
 
-      val expected = setOf("error")
-
       all {
-         console.stored.shouldContainInOrder(expected)
-         database.stored.shouldContainInOrder(expected)
+         console.logs.shouldContainInOrder("error")
+         database.logs.shouldContainInOrder("error")
       }
    }
 
    context("ignores logs lower priority than WARN by config") {
       reset(LogLevel.Warn)
 
-      test("execute logs") {
+      test("execute") {
          info { "info" }
          warn { "warn" }
          error { "error" }
          debug { "debug" }
       }
 
-      val expected = setOf("warn", "error")
+      val expected = arrayOf("warn", "error")
 
       all {
-         console.stored.shouldContainInOrder(expected)
-         database.stored.shouldContainInOrder(expected)
+         console.logs.shouldContainInOrder(*expected)
+         database.logs.shouldContainInOrder(*expected)
       }
    }
 
    context("ignores logs lower priority than INFO by config") {
       reset(LogLevel.Debug)
 
-      test("execute logs") {
+      test("execute") {
          info { "info" }
          warn { "warn" }
          error { "error" }
          debug { "debug" }
       }
 
-      val expected = setOf("info", "warn", "error")
+      val expected = arrayOf("info", "warn", "error")
 
       all {
-         console.stored.shouldContainInOrder(expected)
-         database.stored.shouldContainInOrder(expected)
+         console.logs.shouldContainInOrder(*expected)
+         database.logs.shouldContainInOrder(*expected)
       }
    }
 
    context("accepts all logs when DEBUG by config") {
       reset(LogLevel.Debug)
 
-      test("execute logs") {
+      test("execute") {
          info { "info" }
          warn { "warn" }
          error { "error" }
          debug { "debug" }
       }
 
-      val expected = setOf("info", "warn", "error", "debug")
+      val expected = arrayOf("info", "warn", "error", "debug")
 
       all {
-         console.stored.shouldContainInOrder(expected)
-         database.stored.shouldContainInOrder(expected)
+         console.logs.shouldContainInOrder(*expected)
+         database.logs.shouldContainInOrder(*expected)
       }
    }
 
@@ -152,21 +155,26 @@ class CoroutineLoggingInterceptorSpec : FunSpec({
       reset(LogLevel.Trace)
 
       test("execute logs") {
-         logger?.info { "info" }
-         logger?.warn { "warn" }
-         logger?.error { "error" }
-         logger?.debug { "debug" } // TODO: probably make these extension methods on the interface and have the interface have internal functions so we can hide the nullability
-         logger?.trace { "trace" }
+         logAll(logger)
       }
 
-      val expected = setOf("info", "warn", "error", "debug", "trace")
+      val expected = arrayOf("info", "warn", "error", "debug", "trace")
 
       all {
-         console.stored.shouldContainInOrder(expected)
-         database.stored.shouldContainInOrder(expected)
+         console.logs.shouldContainInOrder(*expected)
+         database.logs.shouldContainInOrder(*expected)
       }
    }
 })
+
+@OptIn(ExperimentalKotest::class)
+private suspend fun logAll(logger: TestLogger) {
+   logger.info { "info" }
+   logger.warn { "warn" }
+   logger.error { "error" }
+   logger.debug { "debug" }
+   logger.trace { "trace" }
+}
 
 private object Boom {
    override fun toString() = "BOOM"
@@ -177,10 +185,10 @@ private class CannotLogException(override val message: String) : Exception()
 private fun reset(level: LogLevel) {
    configuration.logLevel = level
 
-   console.stored.clear()
-   database.stored.clear()
+   console.reset()
+   database.reset()
 
-   console.stored.shouldBeEmpty()
-   database.stored.shouldBeEmpty()
+   console.logs.shouldBeEmpty()
+   database.logs.shouldBeEmpty()
 }
 
