@@ -20,7 +20,6 @@ import io.kotest.engine.test.TestCaseExecutor
 import io.kotest.engine.test.listener.BufferedTestCaseExcecutionListener
 import io.kotest.engine.test.listener.TestCaseListenerToTestEngineListenerAdapter
 import io.kotest.engine.test.scheduler.SequentialTestScheduler
-import io.kotest.fp.Try
 import io.kotest.fp.flatMap
 import io.kotest.mpp.log
 import kotlinx.coroutines.asCoroutineDispatcher

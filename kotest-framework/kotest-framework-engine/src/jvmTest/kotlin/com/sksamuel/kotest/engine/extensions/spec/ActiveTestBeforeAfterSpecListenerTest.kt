@@ -1,20 +1,22 @@
-package com.sksamuel.kotest.tags
+package com.sksamuel.kotest.engine.extensions.spec
 
 import io.kotest.core.NamedTag
 import io.kotest.core.Tag
 import io.kotest.core.Tags
 import io.kotest.core.config.configuration
-import io.kotest.engine.listener.TestEngineListener
 import io.kotest.core.extensions.TagExtension
 import io.kotest.core.listeners.TestListener
-import io.kotest.core.spec.DoNotParallelize
+import io.kotest.core.spec.Isolate
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.style.FreeSpec
 import io.kotest.core.spec.style.FunSpec
+import io.kotest.engine.listener.NoopTestEngineListener
+import io.kotest.engine.spec.ReflectiveSpecRef
+import io.kotest.engine.spec.SpecExecutor
 import io.kotest.matchers.shouldBe
 
-@DoNotParallelize
-class ActiveTestSpecCallbackTest : FreeSpec() {
+@Isolate
+class ActiveTestBeforeAfterSpecListenerTest : FreeSpec() {
    init {
 
       var error = false
@@ -35,27 +37,25 @@ class ActiveTestSpecCallbackTest : FreeSpec() {
 
       "beforeSpec and afterSpec should not fire when all root tests are filtered out" - {
          "by a tag on the test itself" {
-            val listener = object : TestEngineListener {}
             val ext = object : TagExtension {
                override fun tags(): Tags = Tags("!bar")
             }
             configuration.registerExtension(ext)
-            configuration.registerListener(testListener)
-            val runner = SpecExecutor(listener)
-            runner.execute(TaggedTests::class)
-            configuration.deregisterListener(testListener)
+            configuration.registerExtension(testListener)
+            val runner = SpecExecutor(NoopTestEngineListener)
+            runner.execute(ReflectiveSpecRef(TaggedTests::class))
+            configuration.deregisterExtension(testListener)
             configuration.deregisterExtension(ext)
          }
          "by a tag at the spec level" {
-            val listener = object : TestEngineListener {}
             val ext = object : TagExtension {
                override fun tags(): Tags = Tags("!foo")
             }
             configuration.registerExtension(ext)
-            configuration.registerListener(testListener)
-            val runner = SpecExecutor(listener)
-            runner.execute(TaggedTests::class)
-            configuration.deregisterListener(testListener)
+            configuration.registerExtension(testListener)
+            val runner = SpecExecutor(NoopTestEngineListener)
+            runner.execute(ReflectiveSpecRef(TaggedTests::class))
+            configuration.deregisterExtension(testListener)
             configuration.deregisterExtension(ext)
          }
       }

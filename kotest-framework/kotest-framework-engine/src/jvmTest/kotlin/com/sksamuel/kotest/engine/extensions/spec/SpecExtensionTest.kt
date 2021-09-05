@@ -1,4 +1,4 @@
-package com.sksamuel.kotest.extensions
+package com.sksamuel.kotest.engine.extensions.spec
 
 import io.kotest.core.extensions.SpecInterceptExtension
 import io.kotest.core.spec.Spec

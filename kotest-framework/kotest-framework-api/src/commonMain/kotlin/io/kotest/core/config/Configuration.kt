@@ -313,7 +313,10 @@ class Configuration {
    /**
     * Returns all globally registered [Listener]s.
     */
-   @Deprecated("Listeners have been subsumed into extensions")
+   @Deprecated(
+      "Listeners have been subsumed into extensions. Deprecated since 5.0 and will be removed in 6.0",
+      ReplaceWith("extensions()")
+   )
    fun listeners() = extensions()
 
    /**
@@ -350,7 +353,10 @@ class Configuration {
       extensions.remove(extension)
    }
 
-   @Deprecated("Use registerExtension. This will be removed in 6.0.")
+   @Deprecated(
+      "Use registerExtension. This will be removed in 6.0.",
+      ReplaceWith("registerListeners(listeners)")
+   )
    fun registerListeners(vararg listeners: Listener) = listeners.forEach { registerExtension(it) }
 
    @Deprecated("Use registerExtension. This will be removed in 6.0.")

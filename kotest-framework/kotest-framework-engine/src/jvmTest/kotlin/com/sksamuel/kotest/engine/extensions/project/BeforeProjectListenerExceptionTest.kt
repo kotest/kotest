@@ -1,4 +1,4 @@
-package com.sksamuel.kotest.engine.listeners
+package com.sksamuel.kotest.engine.extensions.project
 
 import io.kotest.core.config.configuration
 import io.kotest.engine.KotestEngineLauncher

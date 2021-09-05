@@ -1,4 +1,4 @@
-package com.sksamuel.kotest.engine.extensions
+package com.sksamuel.kotest.engine.extensions.spec
 
 import io.kotest.core.config.configuration
 import io.kotest.core.listeners.AfterSpecListener
@@ -11,10 +11,10 @@ import io.kotest.matchers.shouldBe
 import java.util.concurrent.atomic.AtomicBoolean
 
 @Isolate
-class AfterSpecExtensionTest : FunSpec() {
+class AfterSpecListenerTest : FunSpec() {
    init {
 
-      test("AfterSpecExtension's should be triggered for a spec with tests") {
+      test("AfterSpecListener's should be triggered for a spec with tests") {
 
          configuration.registerExtension(MyAfterSpecListener)
 
@@ -28,7 +28,7 @@ class AfterSpecExtensionTest : FunSpec() {
          MyAfterSpecListener.invoked.get() shouldBe true
       }
 
-      test("MyAfterSpecListener's should NOT be triggered for a spec without tests") {
+      test("AfterSpecListener's should NOT be triggered for a spec without tests") {
 
          MyAfterSpecListener.invoked.set(false)
          configuration.registerExtension(MyAfterSpecListener)

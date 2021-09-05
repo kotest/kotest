@@ -40,7 +40,7 @@ abstract class DslDrivenSpec : Spec() {
     */
    fun include(factory: TestFactory) {
       factory.createTestCases(this::class.toDescription(), this).forEach { addRootTest(it) }
-      listeners(factory.listeners)
+      register(factory.extensions)
    }
 
    /**
@@ -57,7 +57,7 @@ abstract class DslDrivenSpec : Spec() {
     * fire for this spec.
     */
    fun finalizeSpec(f: FinalizeSpec) {
-      configuration.registerListener(object : TestListener {
+      configuration.registerExtension(object : TestListener {
          override suspend fun finalizeSpec(kclass: KClass<out Spec>, results: Map<TestCase, TestResult>) {
             if (kclass == this@DslDrivenSpec::class) {
                f(Tuple2(kclass, results))
@@ -71,7 +71,7 @@ abstract class DslDrivenSpec : Spec() {
     * This is a convenience method for creating a [ProjectListener] and registering it.
     */
    fun afterProject(f: AfterProject) {
-      configuration.registerListener(object : ProjectListener {
+      configuration.registerExtension(object : ProjectListener {
          override suspend fun afterProject() {
             f()
          }
@@ -108,6 +108,6 @@ abstract class DslDrivenSpec : Spec() {
          rootTestCases.map { it.description.name.name }.toSet()
       )
       val description = testCase.description.copy(name = createTestName(uniqueName))
-      rootTestCases += if (uniqueName == testCase.description.name.name) testCase else testCase.copy(description = description)
+      rootTestCases = rootTestCases + if (uniqueName == testCase.description.name.name) testCase else testCase.copy(description = description)
    }
 }

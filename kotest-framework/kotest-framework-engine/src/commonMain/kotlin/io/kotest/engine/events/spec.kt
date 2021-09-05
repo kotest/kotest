@@ -5,7 +5,6 @@ import io.kotest.core.extensions.SpecFinalizeExtension
 import io.kotest.core.listeners.TestListener
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.resolvedTestListeners
-import io.kotest.fp.Try
 import io.kotest.mpp.log
 
 /**
@@ -14,10 +13,7 @@ import io.kotest.mpp.log
  */
 internal suspend fun Spec.invokeBeforeSpec(): Result<Spec> = kotlin.runCatching {
    log { "invokeBeforeSpec $this" }
-   val listeners = resolvedTestListeners() + configuration.extensions().filterIsInstance<TestListener>()
-   listeners.forEach {
-      it.beforeSpec(this)
-   }
+   SpecExtensions(configuration).beforeSpec(this)
    this
 }
 

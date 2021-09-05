@@ -17,9 +17,14 @@ class DefaultSpecExecutionOrderExtensionTest : DescribeSpec({
                ReflectiveSpecRef(ASpec::class),
                ReflectiveSpecRef(ZSpec::class),
                ReflectiveSpecRef(SpecA::class),
-               ReflectiveSpecRef(SpecZ::class)
+               ReflectiveSpecRef(SpecZ::class),
             )
-         ) shouldBe listOf(ASpec::class, ZSpec::class, SpecA::class, SpecZ::class)
+         ) shouldBe listOf(
+            ReflectiveSpecRef(ASpec::class),
+            ReflectiveSpecRef(ZSpec::class),
+            ReflectiveSpecRef(SpecA::class),
+            ReflectiveSpecRef(SpecZ::class),
+         )
       }
 
       it("SpecExecutionOrder.Annotated") {
@@ -28,9 +33,14 @@ class DefaultSpecExecutionOrderExtensionTest : DescribeSpec({
                ReflectiveSpecRef(ASpec::class),
                ReflectiveSpecRef(ZSpec::class),
                ReflectiveSpecRef(SpecA::class),
-               ReflectiveSpecRef(SpecZ::class)
+               ReflectiveSpecRef(SpecZ::class),
             )
-         ) shouldBe listOf(SpecA::class, ASpec::class, ZSpec::class, SpecZ::class)
+         ) shouldBe listOf(
+            ReflectiveSpecRef(SpecA::class),
+            ReflectiveSpecRef(ASpec::class),
+            ReflectiveSpecRef(ZSpec::class),
+            ReflectiveSpecRef(SpecZ::class),
+         )
       }
 
       it("SpecExecutionOrder.Lexicographic") {
@@ -39,9 +49,14 @@ class DefaultSpecExecutionOrderExtensionTest : DescribeSpec({
                ReflectiveSpecRef(ASpec::class),
                ReflectiveSpecRef(ZSpec::class),
                ReflectiveSpecRef(SpecA::class),
-               ReflectiveSpecRef(SpecZ::class)
+               ReflectiveSpecRef(SpecZ::class),
             )
-         ) shouldBe listOf(ASpec::class, SpecA::class, SpecZ::class, ZSpec::class)
+         ) shouldBe listOf(
+            ReflectiveSpecRef(ASpec::class),
+            ReflectiveSpecRef(SpecA::class),
+            ReflectiveSpecRef(SpecZ::class),
+            ReflectiveSpecRef(ZSpec::class),
+         )
       }
 
       it("SpecExecutionOrder.Random") {
@@ -52,7 +67,7 @@ class DefaultSpecExecutionOrderExtensionTest : DescribeSpec({
                   ReflectiveSpecRef(ASpec::class),
                   ReflectiveSpecRef(ZSpec::class),
                   ReflectiveSpecRef(SpecA::class),
-                  ReflectiveSpecRef(SpecZ::class)
+                  ReflectiveSpecRef(SpecZ::class),
                )
             )
          }.distinct().shouldHaveSize(24)

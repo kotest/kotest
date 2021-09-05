@@ -1,4 +1,4 @@
-package com.sksamuel.kotest.specs
+package com.sksamuel.kotest.engine.extensions.spec
 
 import io.kotest.core.listeners.TestListener
 import io.kotest.core.spec.Spec
@@ -21,11 +21,10 @@ class MultipleBeforeSpecListenerTest : FunSpec() {
       }
    }
 
-
    init {
 
-      listener(a)
-      listener(b)
+      register(a)
+      register(b)
 
       test("a + b should both run") {
          count.shouldBe(3)

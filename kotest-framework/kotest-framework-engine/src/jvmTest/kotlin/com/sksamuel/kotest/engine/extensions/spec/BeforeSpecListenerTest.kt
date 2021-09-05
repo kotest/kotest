@@ -1,4 +1,4 @@
-package com.sksamuel.kotest.engine.extensions
+package com.sksamuel.kotest.engine.extensions.spec
 
 import io.kotest.core.config.configuration
 import io.kotest.core.listeners.BeforeSpecListener
@@ -11,10 +11,10 @@ import io.kotest.matchers.shouldBe
 import java.util.concurrent.atomic.AtomicBoolean
 
 @Isolate
-class BeforeSpecExtensionTest : FunSpec() {
+class BeforeSpecListenerTest : FunSpec() {
    init {
 
-      test("BeforeSpecExtension's should be triggered for a spec with tests") {
+      test("BeforeSpecListener's should be triggered for a spec with tests") {
 
          configuration.registerExtension(MyBeforeSpecListener)
 

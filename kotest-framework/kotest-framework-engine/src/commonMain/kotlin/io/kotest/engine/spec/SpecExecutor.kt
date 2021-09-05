@@ -51,7 +51,7 @@ class SpecExecutor(private val listener: TestEngineListener) {
 
       val interceptors = listOf(
          SpecInterceptExtensionsInterceptor(
-            extensions.resolvedExtensions(spec).filterIsInstance<SpecInterceptExtension>()
+            extensions.extensions(spec).filterIsInstance<SpecInterceptExtension>()
          ),
          RunIfActiveTestsInterceptor(listener),
          SpecStartedFinishedInterceptor(listener),

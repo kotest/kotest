@@ -1,14 +1,16 @@
-package com.sksamuel.kotest.engine.listeners.project
+package com.sksamuel.kotest.engine.extensions.project
 
 import io.kotest.core.config.configuration
 import io.kotest.core.listeners.BeforeProjectListener
 import io.kotest.core.listeners.ProjectListener
+import io.kotest.core.spec.Isolate
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.spec.style.WordSpec
 import io.kotest.engine.KotestEngineLauncher
 import io.kotest.engine.listener.NoopTestEngineListener
 import io.kotest.matchers.shouldBe
 
+@Isolate
 class ProjectListenerExactlyOnceTest : WordSpec() {
 
    object TestProjectListener : ProjectListener {

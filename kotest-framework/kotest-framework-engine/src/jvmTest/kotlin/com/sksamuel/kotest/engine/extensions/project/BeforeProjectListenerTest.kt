@@ -1,47 +1,47 @@
-package com.sksamuel.kotest.engine.listeners
+package com.sksamuel.kotest.engine.extensions.project
 
 import io.kotest.core.config.configuration
-import io.kotest.core.listeners.AfterProjectListener
+import io.kotest.core.listeners.BeforeProjectListener
 import io.kotest.core.listeners.ProjectListener
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.engine.KotestEngineLauncher
 import io.kotest.engine.listener.NoopTestEngineListener
 import io.kotest.matchers.shouldBe
 
-class AfterProjectListenerTest : FunSpec({
+class BeforeProjectListenerTest : FunSpec({
 
-   test("ProjectListener's afterProject method should be fired") {
+   test("ProjectListener's beforeProject method should be fired") {
 
       var fired = false
 
       configuration.registerListener(object : ProjectListener {
-         override suspend fun afterProject() {
+         override suspend fun beforeProject() {
             fired = true
          }
       })
 
       KotestEngineLauncher()
          .withListener(NoopTestEngineListener)
-         .withSpec(DummySpec4::class)
+         .withSpec(DummySpec5::class)
          .launch()
 
       fired shouldBe true
 
    }
 
-   test("AfterProjectListener's afterProject method should be fired") {
+   test("BeforeProjectListener's beforeProject method should be fired") {
 
       var fired = false
 
-      configuration.registerListener(object : AfterProjectListener {
-         override suspend fun afterProject() {
+      configuration.registerListener(object : BeforeProjectListener {
+         override suspend fun beforeProject() {
             fired = true
          }
       })
 
       KotestEngineLauncher()
          .withListener(NoopTestEngineListener)
-         .withSpec(DummySpec4::class)
+         .withSpec(DummySpec5::class)
          .launch()
 
       fired shouldBe true
@@ -49,6 +49,6 @@ class AfterProjectListenerTest : FunSpec({
    }
 })
 
-private class DummySpec4 : FunSpec({
+private class DummySpec5 : FunSpec({
    test("foo") {}
 })
