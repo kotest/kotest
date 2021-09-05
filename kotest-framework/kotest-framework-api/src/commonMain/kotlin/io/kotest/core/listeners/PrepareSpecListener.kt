@@ -3,6 +3,9 @@ package io.kotest.core.listeners
 import io.kotest.core.spec.Spec
 import kotlin.reflect.KClass
 
+/**
+ * Invoked once per spec class if the spec has active tests.
+ */
 interface PrepareSpecListener : Listener {
 
    /**

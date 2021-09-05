@@ -3,10 +3,10 @@ package io.kotest.engine.spec.interceptor
 import io.kotest.engine.listener.TestEngineListener
 import io.kotest.core.spec.SpecRef
 
-class SpecPrepareFinalizeInterceptor(private val listener: TestEngineListener) : SpecRefInterceptor {
+class SpecEnterExitInterceptor(private val listener: TestEngineListener) : SpecRefInterceptor {
    override suspend fun intercept(fn: suspend (SpecRef) -> Unit): suspend (SpecRef) -> Unit = { ref ->
-      listener.prepareSpec(ref.kclass)
+      listener.specEnter(ref.kclass)
       fn(ref)
-      listener.finalizeSpec(ref.kclass)
+      listener.specExit(ref.kclass)
    }
 }

@@ -3,7 +3,6 @@ package io.kotest.engine.listener
 import io.kotest.common.ExperimentalKotest
 import io.kotest.core.plan.Descriptor
 import io.kotest.core.spec.Spec
-import io.kotest.core.spec.SpecRef
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.engine.TestEngine
@@ -48,7 +47,7 @@ interface TestEngineListener {
     * Is invoked once per [Spec] to indicate that this spec is ready to begin
     * executing tests.
     *
-    * Note: This function differs from [prepareSpec] in that it will
+    * Note: This function differs from [specSubmittedToExecutor] in that it will
     * only be executed if the spec is active and has enabled tests.
     */
    suspend fun specStarted(kclass: KClass<*>) {}
@@ -58,13 +57,13 @@ interface TestEngineListener {
     * to the spec executor. This callback is invoked before any other interceptors
     * are invoked, and thus will always be called, even if the spec is later skipped.
     */
-   suspend fun prepareSpec(kclass: KClass<*>) {}
+   suspend fun specSubmittedToExecutor(kclass: KClass<*>) {}
 
    /**
     * Is invoked once per [Spec] to indicate that this spec is ready to begin
     * executing tests.
     *
-    * Note: This function differs from [prepareSpec] in that it will
+    * Note: This function differs from [specSubmittedToExecutor] in that it will
     * only be executed if the spec is active and has enabled tests.
     */
    suspend fun specStarted(descriptor: Descriptor.SpecDescriptor) {}
@@ -73,7 +72,7 @@ interface TestEngineListener {
     * Is invoked once per [Spec] to indicate that all [TestCase] instances
     * of the spec have completed.
     *
-    * Note: This function differs from [finalizeSpec] in that it will
+    * Note: This function differs from [specExecutorAboutToReturn] in that it will
     * only be executed if the spec was active and had enabled tests.
     *
     * @param kclass the spec that has completed
@@ -87,7 +86,7 @@ interface TestEngineListener {
     * in the spec executor. This callback is invoked after any other interceptors
     * are invoked, and thus will always be called, even if the spec has been skipped.
     */
-   suspend fun finalizeSpec(kclass: KClass<*>) {}
+   suspend fun specExecutorAboutToReturn(kclass: KClass<*>) {}
 
    @ExperimentalKotest
    suspend fun specFinished(
@@ -128,8 +127,7 @@ interface TestEngineListener {
    suspend fun testFinished(testCase: TestCase, result: TestResult) {}
 
    @ExperimentalKotest
-   suspend fun testFinished(descriptor: Descriptor.TestDescriptor, result: TestResult) {
-   }
+   suspend fun testFinished(descriptor: Descriptor.TestDescriptor, result: TestResult) {}
 
    /**
     * Invoked each time an instance of a [Spec] is created.
@@ -143,6 +141,18 @@ interface TestEngineListener {
     * Invoked when a spec is ignored without being instantiated or executed.
     */
    fun specIgnored(kclass: KClass<out Spec>) {}
+
+   /**
+    * Invoked when a spec is exiting the SpecExecutor.
+    * This callback is invoked even if the spec was disabled or was inactive.
+    */
+   fun specExit(kclass: KClass<out Spec>) {}
+
+   /**
+    * Invoked when a spec is submitted to the SpecExecutor.
+    * At this point, the spec may be disabled or be inactive.
+    */
+   fun specEnter(kclass: KClass<out Spec>) {}
 }
 
 val NoopTestEngineListener = object : TestEngineListener {}

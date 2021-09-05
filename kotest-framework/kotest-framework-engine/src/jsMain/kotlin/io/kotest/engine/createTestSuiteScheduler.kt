@@ -27,7 +27,7 @@ object JsTestSuiteScheduler : TestSuiteScheduler {
    private suspend fun execute(specs: List<SpecRef>, listener: TestEngineListener) {
       if (specs.isNotEmpty()) {
          val callback = object : TestEngineListener {
-            override suspend fun finalizeSpec(kclass: KClass<*>) {
+            override suspend fun specExecutorAboutToReturn(kclass: KClass<*>) {
                execute(specs.drop(1), listener)
             }
          }

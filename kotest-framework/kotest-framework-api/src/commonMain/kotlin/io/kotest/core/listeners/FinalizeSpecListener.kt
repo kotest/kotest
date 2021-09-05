@@ -5,7 +5,14 @@ import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import kotlin.reflect.KClass
 
-interface FinalizeSpecListener : Listener {
+@Deprecated("This has been renamed to FinishSpecListener. This tyepalias is deprecated since 5.0 and will be removed in 6.0")
+typealias FinalizeSpecListener = FinishSpecListener
+
+/**
+ * Invoked after all tests have completed for a spec.
+ * This listener is only invoked if the spec had at least one enabled test.
+ */
+interface FinishSpecListener : Listener {
 
    /**
     * Called once per [Spec], after all tests have completed for that spec.
@@ -21,7 +28,16 @@ interface FinalizeSpecListener : Listener {
     * @param kclass the [Spec] class
     * @param results a map of each test case mapped to its result.
     */
+   @Deprecated(
+      "Renamed to specComplete. Deprecated since 5.0 and will be removed in 6.0",
+      ReplaceWith("specCompleted(kclass, results)")
+   )
    suspend fun finalizeSpec(
+      kclass: KClass<out Spec>,
+      results: Map<TestCase, TestResult>,
+   ): Unit = finishSpec(kclass, results)
+
+   suspend fun finishSpec(
       kclass: KClass<out Spec>,
       results: Map<TestCase, TestResult>,
    ): Unit = Unit

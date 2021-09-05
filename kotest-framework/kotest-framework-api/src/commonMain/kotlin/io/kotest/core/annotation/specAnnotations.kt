@@ -7,7 +7,7 @@ import kotlin.reflect.KClass
  * Attach tag to [io.kotest.core.spec.Spec] and a spec excluded by a tag expression won't be instantiated.
  * An unannotated spec will still be instantiated to order to check if root tests are included.
  */
-// @Inherited TODO Not supported by Kotlin yet, better to have it so Tags can be added to base spec
+// @Inherited TODO Not supported by Kotlin yet
 @Target(AnnotationTarget.CLASS)
 @Retention(AnnotationRetention.RUNTIME)
 annotation class Tags(vararg val values: String)
@@ -21,26 +21,25 @@ annotation class Tags(vararg val values: String)
 annotation class RequiresTag(vararg val values: String)
 
 /**
- * Attach tag to [io.kotest.core.spec.Spec], and that spec won't be instantiated or executed.
+ * Attach to [io.kotest.core.spec.Spec], and that spec won't be instantiated or executed.
  *
- * Note: Any spec annotated with @Ignored will not appear in any reports. It is essentially
- * like the spec did not exist. If instead you want the spec to appear as skipped then use @Disabled
+ * Note: Any spec annotated with [Ignored] will not appear in reports by default.
+ * If you would like the spec to appear and be marked as "ignored" in the output then
+ * also include the annotation @Visible
  */
-// @Inherited TODO Not supported by Kotlin yet, better to have it so Tags can be added to base spec
+// @Inherited TODO Not supported by Kotlin yet
 @Target(AnnotationTarget.CLASS)
 @Retention(AnnotationRetention.RUNTIME)
 annotation class Ignored
 
 /**
- * Attach tag to [io.kotest.core.spec.Spec], and that spec won't be instantiated or executed.
- *
- * Note: Any spec annotated with @[Skip] will appear in test reports as ignored. If instead you
- * want the spec to be completely invisble, then use @Ignored
+ * Attach to [io.kotest.core.spec.Spec] and any spec that is disabled or ignored will appear
+ * in outputs as an "ignored" spec.
  */
-// @Inherited TODO Not supported by Kotlin yet, better to have it so Tags can be added to base spec
+// @Inherited TODO Not supported by Kotlin yet
 @Target(AnnotationTarget.CLASS)
 @Retention(AnnotationRetention.RUNTIME)
-annotation class Skip
+annotation class Visible
 
 /**
  * Attach to [io.kotest.core.spec.Spec], and the logic inside [enabledIf] will be executed

@@ -6,9 +6,9 @@ import io.kotest.core.spec.Spec
 import io.kotest.core.spec.SpecRef
 import io.kotest.engine.listener.TestEngineListener
 import io.kotest.engine.spec.interceptor.InactiveSpecInterceptor
-import io.kotest.engine.spec.interceptor.RunIfActiveTestsInterceptor
+import io.kotest.engine.spec.interceptor.RunIfActiveInterceptor
 import io.kotest.engine.spec.interceptor.SpecInterceptExtensionsInterceptor
-import io.kotest.engine.spec.interceptor.SpecPrepareFinalizeInterceptor
+import io.kotest.engine.spec.interceptor.SpecEnterExitInterceptor
 import io.kotest.engine.spec.interceptor.SpecStartedFinishedInterceptor
 import io.kotest.fp.flatMap
 import io.kotest.mpp.log
@@ -35,7 +35,7 @@ class SpecExecutor(private val listener: TestEngineListener) {
    private suspend fun referenceInterceptors(ref: SpecRef) {
 
       val interceptors = listOf(
-         SpecPrepareFinalizeInterceptor(listener),
+         SpecEnterExitInterceptor(listener),
          InactiveSpecInterceptor(listener),
       )
 
@@ -56,7 +56,7 @@ class SpecExecutor(private val listener: TestEngineListener) {
          SpecInterceptExtensionsInterceptor(
             extensions.extensions(spec).filterIsInstance<SpecInterceptExtension>()
          ),
-         RunIfActiveTestsInterceptor(listener),
+         RunIfActiveInterceptor(listener),
          SpecStartedFinishedInterceptor(listener),
       )
 
