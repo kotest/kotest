@@ -11,8 +11,8 @@ import io.kotest.core.test.createTestName
 import io.kotest.core.test.toTestCase
 import io.kotest.engine.ExecutorExecutionContext
 import io.kotest.engine.concurrency.resolvedThreads
+import io.kotest.engine.events.SpecExtensions
 import io.kotest.engine.events.invokeAfterSpec
-import io.kotest.engine.events.invokeBeforeSpec
 import io.kotest.engine.listener.TestEngineListener
 import io.kotest.engine.spec.SpecRunner
 import io.kotest.engine.spec.materializeAndOrderRootTests
@@ -20,7 +20,6 @@ import io.kotest.engine.test.DuplicateTestNameHandler
 import io.kotest.engine.test.TestCaseExecutionListener
 import io.kotest.engine.test.TestCaseExecutor
 import io.kotest.engine.test.scheduler.TestScheduler
-import io.kotest.fp.Try
 import io.kotest.fp.flatMap
 import io.kotest.mpp.log
 import kotlinx.coroutines.coroutineScope
@@ -108,7 +107,7 @@ internal class InstancePerTestSpecRunner(
     */
    private suspend fun executeInCleanSpec(test: TestCase): Result<Spec> {
       return createInstance(test.spec::class)
-         .flatMap { it.invokeBeforeSpec() }
+         .flatMap { SpecExtensions(configuration).beforeSpec(it) }
          .flatMap { interceptAndRun(it, test) }
          .flatMap { it.invokeAfterSpec() }
    }

@@ -8,16 +8,6 @@ import io.kotest.core.spec.resolvedTestListeners
 import io.kotest.mpp.log
 
 /**
- * Notifies the user listeners that a [Spec] is starting.
- * This will be invoked for every instance of a spec.
- */
-internal suspend fun Spec.invokeBeforeSpec(): Result<Spec> = kotlin.runCatching {
-   log { "invokeBeforeSpec $this" }
-   SpecExtensions(configuration).beforeSpec(this)
-   this
-}
-
-/**
  * Notifies the user listeners that a [Spec] has finished.
  * This will be invoked for every instance of a spec.
  */

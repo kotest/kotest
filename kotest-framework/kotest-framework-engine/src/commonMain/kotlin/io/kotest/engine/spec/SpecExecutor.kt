@@ -12,6 +12,7 @@ import io.kotest.engine.spec.interceptor.SpecInterceptExtensionsInterceptor
 import io.kotest.engine.spec.interceptor.SpecPrepareFinalizeInterceptor
 import io.kotest.engine.spec.interceptor.SpecStartedFinishedInterceptor
 import io.kotest.fp.flatMap
+import io.kotest.mpp.log
 
 /**
  * Executes a single [SpecRef].
@@ -28,6 +29,7 @@ class SpecExecutor(private val listener: TestEngineListener) {
    private val extensions = SpecExtensions(configuration)
 
    suspend fun execute(ref: SpecRef) {
+      log { "SpecExecutor: Received $ref" }
       referenceInterceptors(ref)
    }
 
@@ -39,9 +41,11 @@ class SpecExecutor(private val listener: TestEngineListener) {
       )
 
       val innerExecute: suspend (SpecRef) -> Unit = {
-         createInstance(ref).map { specInterceptors(it) }
+         createInstance(ref)
+            .map { specInterceptors(it) }
       }
 
+      log { "SpecExecutor: Executing ${interceptors.size} reference interceptors" }
       interceptors.foldRight(innerExecute) { ext, fn ->
          { r -> ext.intercept(fn)(r) }
       }.invoke(ref)
@@ -59,9 +63,11 @@ class SpecExecutor(private val listener: TestEngineListener) {
 
       val innerExecute: suspend (Spec) -> Unit = {
          val delegate = createSpecExecutorDelegate(listener)
+         log { "SpecExecutor: Created spec executor delegate $delegate" }
          delegate.execute(spec)
       }
 
+      log { "SpecExecutor: Executing ${interceptors.size} spec interceptors" }
       interceptors.foldRight(innerExecute) { ext, fn ->
          { r -> ext.intercept(fn)(r) }
       }.invoke(spec)
@@ -73,7 +79,11 @@ class SpecExecutor(private val listener: TestEngineListener) {
     */
    private suspend fun createInstance(ref: SpecRef): Result<Spec> =
       ref.instance()
-         .onFailure { listener.specInstantiationError(ref::class, it) }
+         .onFailure {
+            listener.specInstantiationError(ref::class, it)
+            log { "SpecExecutor: instantiation error for ${ref.kclass} $it" }
+            it.printStackTrace()
+         }
          .flatMap { spec -> extensions.specInitialize(spec).map { spec } }
          .flatMap { spec -> extensions.specInstantiated(spec).map { spec } }
 }

@@ -139,7 +139,7 @@ class TestEngineLauncher(
     * This variation of launch requires a coroutine since it is suspending.
     */
    suspend fun launch(): EngineResult {
-      log { "TestEngineLauncher: Launching Test Engine in fire and forget mode" }
+      log { "TestEngineLauncher: Launching Test Engine" }
 
       val config = TestEngineConfig(
          listener = listener,

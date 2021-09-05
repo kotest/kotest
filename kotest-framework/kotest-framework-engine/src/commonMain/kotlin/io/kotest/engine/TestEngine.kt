@@ -73,7 +73,7 @@ class TestEngine(val config: TestEngineConfig) {
 
       log { "TestEngine: ${config.interceptors.size} engine interceptors:" }
       config.interceptors.forEach {
-         log { "TestEngine: ${it::class.simpleName}" }
+         log { "\t\t${it::class.simpleName}" }
       }
 
       val execute = config.interceptors.foldRight(innerExecute) { extension, next ->

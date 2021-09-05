@@ -10,8 +10,8 @@ import io.kotest.core.test.TestResult
 import io.kotest.core.test.createTestName
 import io.kotest.core.test.toTestCase
 import io.kotest.engine.ExecutorExecutionContext
+import io.kotest.engine.events.SpecExtensions
 import io.kotest.engine.events.invokeAfterSpec
-import io.kotest.engine.events.invokeBeforeSpec
 import io.kotest.engine.listener.TestEngineListener
 import io.kotest.engine.spec.SpecRunner
 import io.kotest.engine.spec.materializeAndOrderRootTests
@@ -79,7 +79,7 @@ internal class ConcurrentInstancePerLeafSpecRunner(
    private suspend fun executeInCleanSpec(target: TestCase): Result<Spec> {
       log { "InstancePerLeafConcurrentSpecRunner: Executing target in clean spec" }
       return createInstance(target.spec::class)
-         .flatMap { it.invokeBeforeSpec() }
+         .flatMap { SpecExtensions(configuration).beforeSpec(it) }
          .flatMap { startTest(it, target.description.testNames()) } // drop the spec name
          .flatMap { it.invokeAfterSpec() }
    }

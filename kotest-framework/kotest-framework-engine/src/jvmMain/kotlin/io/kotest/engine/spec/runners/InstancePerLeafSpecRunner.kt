@@ -10,8 +10,8 @@ import io.kotest.core.test.TestResult
 import io.kotest.core.test.createTestName
 import io.kotest.core.test.toTestCase
 import io.kotest.engine.ExecutorExecutionContext
+import io.kotest.engine.events.SpecExtensions
 import io.kotest.engine.events.invokeAfterSpec
-import io.kotest.engine.events.invokeBeforeSpec
 import io.kotest.engine.listener.TestEngineListener
 import io.kotest.engine.spec.SpecRunner
 import io.kotest.engine.spec.materializeAndOrderRootTests
@@ -80,7 +80,7 @@ internal class InstancePerLeafSpecRunner(
 
    private suspend fun executeInCleanSpec(test: TestCase): Result<Spec> {
       return createInstance(test.spec::class)
-         .flatMap { it.invokeBeforeSpec() }
+         .flatMap { SpecExtensions(configuration).beforeSpec(it) }
          .flatMap { interceptAndRun(it, test) }
          .flatMap { it.invokeAfterSpec() }
    }

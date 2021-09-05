@@ -79,7 +79,7 @@ abstract class TestConfiguration {
     * Register a single [TestListener] of type T return that listener.
     */
    fun <T : TestListener> register(extension: T): T {
-      register(extension)
+      register(listOf(extension))
       return extension
    }
 

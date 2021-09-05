@@ -28,7 +28,7 @@ class SpecExtensions(private val configuration: Configuration) {
    fun extensions(spec: Spec): List<Extension> {
       return spec.extensions() + // overriding in the spec
          spec.listeners() + // overriding in the spec
-         spec.functionOverrideCallbacks() +
+         spec.functionOverrideCallbacks() + // dsl
          spec.registeredExtensions() + // registered on the spec
          configuration.extensions() // globals
    }
@@ -41,8 +41,10 @@ class SpecExtensions(private val configuration: Configuration) {
       extensions(spec).filterIsInstance<SpecFinalizeExtension>().forEach { it.finalize(spec) }
    }
 
-   suspend fun beforeSpec(spec: Spec): Try<Unit> = Try {
+   suspend fun beforeSpec(spec: Spec): Result<Spec> = kotlin.runCatching {
+      log { "SpecExtensions: beforeSpec $spec" }
       extensions(spec).filterIsInstance<BeforeSpecListener>().forEach { it.beforeSpec(spec) }
+      spec
    }
 
    suspend fun afterSpec(spec: Spec): Try<Unit> = Try {

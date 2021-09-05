@@ -86,7 +86,7 @@ object ExecutorExecutionContext : TimeoutExecutionContext {
             log { "ExecutorExecutionContext: Caught InterruptedException ${t.message}" }
             throw TestTimeoutException(timeoutInMillis, "")
          } catch (t: Throwable) {
-            log { "ExecutorExecutionContext: Caught Throwable ${t.message}" }
+            log { "ExecutorExecutionContext: Caught Throwable [$t]" }
             throw t
          } finally {
             // we must stop the scheduled task from running otherwise it will end up

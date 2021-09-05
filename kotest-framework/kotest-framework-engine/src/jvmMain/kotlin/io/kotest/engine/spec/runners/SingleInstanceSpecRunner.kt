@@ -11,8 +11,8 @@ import io.kotest.core.test.createTestName
 import io.kotest.core.test.toTestCase
 import io.kotest.engine.ExecutorExecutionContext
 import io.kotest.engine.concurrency.resolvedThreads
+import io.kotest.engine.events.SpecExtensions
 import io.kotest.engine.events.invokeAfterSpec
-import io.kotest.engine.events.invokeBeforeSpec
 import io.kotest.engine.listener.TestEngineListener
 import io.kotest.engine.spec.SpecRunner
 import io.kotest.engine.spec.materializeAndOrderRootTests
@@ -60,7 +60,7 @@ internal class SingleInstanceSpecRunner(
       }
 
       return coroutineScope {
-         spec.invokeBeforeSpec()
+         SpecExtensions(configuration).beforeSpec(spec)
             .flatMap { interceptAndRun(coroutineContext) }
             .flatMap { spec.invokeAfterSpec() }
             .map { results }

@@ -42,6 +42,7 @@ internal fun <T : Spec> javaReflectNewInstance(clazz: KClass<T>): Spec {
       constructor.isAccessible = true
       return constructor.call()
    } catch (t: Throwable) {
+      t.printStackTrace()
       throw SpecInstantiationException("Could not create instance of $clazz", t)
    }
 }
