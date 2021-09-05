@@ -76,15 +76,6 @@ class Notifications(private val listener: TestEngineListener) {
       )
    }
 
-   suspend fun specSkipped(
-      spec: Spec,
-      results: Map<TestCase, TestResult>
-   ) = Try {
-      configuration.extensions().filterIsInstance<TestListener>().forEach {
-         it.specIgnored(spec, results)
-      }
-   }
-
    private suspend fun testEngineSpecFinished(
       kclass: KClass<out Spec>,
       error: Throwable?,
@@ -102,15 +93,6 @@ class Notifications(private val listener: TestEngineListener) {
    ) = Try {
       configuration.extensions().filterIsInstance<FinalizeSpecListener>().forEach {
          it.finalizeSpec(kclass, results)
-      }
-   }
-
-   suspend fun specInstantiated(spec: Spec) = Try {
-      log { "NotificationManager:specInstantiated spec:$spec" }
-      val listeners = configuration.extensions().filterIsInstance<SpecInstantiationListener>()
-      listener.specInstantiated(spec)
-      listeners.forEach {
-         it.specInstantiated(spec)
       }
    }
 

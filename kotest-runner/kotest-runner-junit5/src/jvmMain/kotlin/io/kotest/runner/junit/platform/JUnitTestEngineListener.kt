@@ -5,6 +5,7 @@ import io.kotest.core.plan.Descriptor
 import io.kotest.core.plan.toDescriptor
 import io.kotest.core.sourceRef
 import io.kotest.core.spec.Spec
+import io.kotest.core.spec.SpecRef
 import io.kotest.core.spec.toDescription
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestPath
@@ -77,7 +78,7 @@ class JUnitTestEngineListener(
    // when we need to register a new test
    private val descriptors = mutableMapOf<TestPath, TestDescriptor>()
 
-   // contains any spec that failed so we can write out the failed specs file
+   // contains any spec that failed, so we can write out the failed specs file
    private val failedSpecs = mutableSetOf<KClass<out Spec>>()
 
    // contains an exception throw during beforeSpec or spec instantiation

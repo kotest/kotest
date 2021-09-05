@@ -4,17 +4,16 @@ import io.kotest.core.config.configuration
 import io.kotest.core.extensions.DiscoveryExtension
 import io.kotest.core.filter.TestFilter
 import io.kotest.core.filter.TestFilterResult
-import io.kotest.core.internal.KotestEngineProperties
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.toDescription
-import io.kotest.engine.KotestEngineLauncher
+import io.kotest.engine.TestEngineLauncher
 import io.kotest.engine.config.ConfigManager
 import io.kotest.engine.config.detectAbstractProjectConfigs
 import io.kotest.engine.extensions.EnabledConditionSpecDiscoveryExtension
 import io.kotest.engine.extensions.IgnoredSpecDiscoveryExtension
 import io.kotest.engine.extensions.TagsExcludedDiscoveryExtension
-import io.kotest.engine.listener.ThreadSafeTestEngineListener
 import io.kotest.engine.listener.PinnedSpecTestEngineListener
+import io.kotest.engine.listener.ThreadSafeTestEngineListener
 import io.kotest.framework.discovery.Discovery
 import io.kotest.mpp.log
 import kotlinx.coroutines.runBlocking
@@ -47,7 +46,7 @@ class KotestJunitPlatformTestEngine : TestEngine {
 
    override fun getGroupId(): Optional<String> = Optional.of("io.kotest")
 
-   override fun execute(request: ExecutionRequest) = runBlocking {
+   override fun execute(request: ExecutionRequest) {
       log { "JUnit ExecutionRequest[${request::class.java.name}] [configurationParameters=${request.configurationParameters}; rootTestDescriptor=${request.rootTestDescriptor}]" }
       val root = request.rootTestDescriptor as KotestEngineDescriptor
       when (root.error) {
@@ -73,13 +72,12 @@ class KotestJunitPlatformTestEngine : TestEngine {
          )
       )
 
-      KotestEngineLauncher()
-         .withListener(listener)
-         .withSpecs(root.classes)
-         .withScripts(root.scripts)
-         .withDumpConfig(shouldDumpConfig())
-         .withTestFilters(root.testFilters)
-         .launch()
+      return runBlocking {
+         TestEngineLauncher(listener)
+            .withClasses(root.classes)
+            .withTestFilters(root.testFilters)
+            .launch()
+      }
    }
 
    /**
@@ -132,8 +130,6 @@ class KotestJunitPlatformTestEngine : TestEngine {
       log { "JUnit discovery completed [descriptor=$descriptor]" }
       return descriptor
    }
-
-   private fun shouldDumpConfig() = System.getProperty(KotestEngineProperties.dumpConfig) == "true"
 }
 
 class KotestEngineDescriptor(

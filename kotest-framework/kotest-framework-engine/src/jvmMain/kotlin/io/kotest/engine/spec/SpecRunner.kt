@@ -32,7 +32,7 @@ abstract class SpecRunner(
     * Executes all the tests in this spec, returning a Failure if there was an exception in a listener
     * or class initializer. Otherwise returns the results for the tests in that spec.
     */
-   abstract suspend fun execute(spec: Spec): Try<Map<TestCase, TestResult>>
+   abstract suspend fun execute(spec: Spec): Result<Map<TestCase, TestResult>>
 
    /**
     * Executes all the tests in this spec.
@@ -47,7 +47,7 @@ abstract class SpecRunner(
     * Creates an instance of the supplied [Spec] by delegating to the project constructors,
     * and notifies the [TestEngineListener] of the instantiation event.
     */
-   protected suspend fun createInstance(kclass: KClass<out Spec>): Try<Spec> =
+   protected suspend fun createInstance(kclass: KClass<out Spec>): Result<Spec> =
       createAndInitializeSpec(kclass).onSuccess {
          Try { listener.specInstantiated(it) }
       }.onFailure {

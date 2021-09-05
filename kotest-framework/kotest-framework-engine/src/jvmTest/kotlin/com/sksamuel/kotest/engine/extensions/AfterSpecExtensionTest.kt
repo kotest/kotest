@@ -1,7 +1,6 @@
 package com.sksamuel.kotest.engine.extensions
 
 import io.kotest.core.config.configuration
-import io.kotest.core.extensions.AfterSpecExtension
 import io.kotest.core.spec.Isolate
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.style.FunSpec

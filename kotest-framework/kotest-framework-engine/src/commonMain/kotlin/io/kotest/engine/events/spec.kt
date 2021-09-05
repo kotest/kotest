@@ -12,7 +12,7 @@ import io.kotest.mpp.log
  * Notifies the user listeners that a [Spec] is starting.
  * This will be invoked for every instance of a spec.
  */
-internal suspend fun Spec.invokeBeforeSpec(): Try<Spec> = Try {
+internal suspend fun Spec.invokeBeforeSpec(): Result<Spec> = kotlin.runCatching {
    log { "invokeBeforeSpec $this" }
    val listeners = resolvedTestListeners() + configuration.extensions().filterIsInstance<TestListener>()
    listeners.forEach {
@@ -25,7 +25,7 @@ internal suspend fun Spec.invokeBeforeSpec(): Try<Spec> = Try {
  * Notifies the user listeners that a [Spec] has finished.
  * This will be invoked for every instance of a spec.
  */
-internal suspend fun Spec.invokeAfterSpec(): Try<Spec> = Try {
+internal suspend fun Spec.invokeAfterSpec(): Result<Spec> = kotlin.runCatching {
    log { "invokeAfterSpec $this" }
 
    registeredAutoCloseables().let { closeables ->

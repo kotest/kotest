@@ -22,11 +22,25 @@ annotation class RequiresTag(vararg val values: String)
 
 /**
  * Attach tag to [io.kotest.core.spec.Spec], and that spec won't be instantiated or executed.
+ *
+ * Note: Any spec annotated with @Ignored will not appear in any reports. It is essentially
+ * like the spec did not exist. If instead you want the spec to appear as skipped then use @Disabled
  */
 // @Inherited TODO Not supported by Kotlin yet, better to have it so Tags can be added to base spec
 @Target(AnnotationTarget.CLASS)
 @Retention(AnnotationRetention.RUNTIME)
 annotation class Ignored
+
+/**
+ * Attach tag to [io.kotest.core.spec.Spec], and that spec won't be instantiated or executed.
+ *
+ * Note: Any spec annotated with @[Skip] will appear in test reports as ignored. If instead you
+ * want the spec to be completely invisble, then use @Ignored
+ */
+// @Inherited TODO Not supported by Kotlin yet, better to have it so Tags can be added to base spec
+@Target(AnnotationTarget.CLASS)
+@Retention(AnnotationRetention.RUNTIME)
+annotation class Skip
 
 /**
  * Attach to [io.kotest.core.spec.Spec], and the logic inside [enabledIf] will be executed

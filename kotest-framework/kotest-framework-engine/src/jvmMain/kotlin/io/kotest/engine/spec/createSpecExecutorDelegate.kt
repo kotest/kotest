@@ -1,0 +1,43 @@
+package io.kotest.engine.spec
+
+import io.kotest.core.config.Configuration
+import io.kotest.core.config.configuration
+import io.kotest.core.spec.IsolationMode
+import io.kotest.core.spec.Spec
+import io.kotest.engine.concurrency.resolvedConcurrentTests
+import io.kotest.engine.concurrency.resolvedThreads
+import io.kotest.engine.listener.TestEngineListener
+import io.kotest.engine.spec.runners.ConcurrentInstancePerLeafSpecRunner
+import io.kotest.engine.spec.runners.InstancePerLeafSpecRunner
+import io.kotest.engine.spec.runners.InstancePerTestSpecRunner
+import io.kotest.engine.spec.runners.SingleInstanceSpecRunner
+import io.kotest.engine.test.scheduler.ConcurrentTestScheduler
+import io.kotest.engine.test.scheduler.SequentialTestScheduler
+import kotlin.math.max
+
+actual fun createSpecExecutorDelegate(
+   listener: TestEngineListener
+): SpecExecutorDelegate = object : SpecExecutorDelegate {
+
+   private fun Spec.resolvedIsolationMode() =
+      this.isolationMode() ?: this.isolationMode ?: configuration.isolationMode
+
+   override suspend fun execute(spec: Spec) {
+
+      val scheduler = when (val concurrentTests = spec.resolvedConcurrentTests()) {
+         Configuration.Sequential -> SequentialTestScheduler
+         else -> ConcurrentTestScheduler(max(1, concurrentTests))
+      }
+
+      val runner = when (spec.resolvedIsolationMode()) {
+         IsolationMode.SingleInstance -> SingleInstanceSpecRunner(listener, scheduler)
+         IsolationMode.InstancePerTest -> InstancePerTestSpecRunner(listener, scheduler)
+         IsolationMode.InstancePerLeaf -> when (val threads = spec.resolvedThreads()) {
+            null, 0, 1 -> InstancePerLeafSpecRunner(listener, scheduler)
+            else -> ConcurrentInstancePerLeafSpecRunner(listener, threads)
+         }
+      }
+
+      runner.execute(spec)
+   }
+}

@@ -5,7 +5,6 @@ import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.engine.listener.TestEngineListener
-import io.kotest.engine.spec.SpecExecutor
 import io.kotest.matchers.shouldBe
 import kotlin.reflect.KClass
 

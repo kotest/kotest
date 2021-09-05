@@ -4,10 +4,12 @@ import io.kotest.core.config.configuration
 import io.kotest.core.extensions.ConstructorExtension
 import io.kotest.core.extensions.PostInstantiationExtension
 import io.kotest.core.spec.Spec
-import io.kotest.fp.Try
-import io.kotest.fp.success
 import kotlin.reflect.KClass
 import kotlin.reflect.jvm.isAccessible
+
+actual fun instantiate(kclass: KClass<out Spec>): Result<Spec> {
+   return createAndInitializeSpec(kclass)
+}
 
 /**
  * Creates an instance of a [Spec] by delegating to constructor extensions, with
@@ -17,16 +19,16 @@ import kotlin.reflect.jvm.isAccessible
  *
  * After creation will execute any [PostInstantiationExtension]s.
  */
-fun <T : Spec> createAndInitializeSpec(clazz: KClass<T>): Try<Spec> {
+fun <T : Spec> createAndInitializeSpec(clazz: KClass<T>): Result<Spec> {
    return when (val obj = clazz.objectInstance) {
-      null -> Try {
+      null -> runCatching {
          val initial: Spec? = null
          val spec = configuration.extensions().filterIsInstance<ConstructorExtension>()
             .fold(initial) { spec, ext -> spec ?: ext.instantiate(clazz) } ?: javaReflectNewInstance(clazz)
          configuration.extensions().filterIsInstance<PostInstantiationExtension>()
             .fold(spec) { acc, ext -> ext.process(acc) }
       }
-      else -> obj.success()
+      else -> Result.success(obj)
    }
 }
 

@@ -1,6 +1,5 @@
 package com.sksamuel.kotest.engine.extensions
 
-import io.kotest.core.extensions.BeforeSpecExtension
 import io.kotest.core.extensions.MountableExtension
 import io.kotest.core.extensions.install
 import io.kotest.core.spec.Spec

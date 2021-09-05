@@ -20,7 +20,7 @@ import io.kotest.engine.test.DuplicateTestNameHandler
 import io.kotest.engine.test.TestCaseExecutionListener
 import io.kotest.engine.test.TestCaseExecutor
 import io.kotest.engine.test.scheduler.TestScheduler
-import io.kotest.fp.Try
+import io.kotest.fp.flatMap
 import io.kotest.mpp.log
 import kotlinx.coroutines.coroutineScope
 import java.util.concurrent.ConcurrentHashMap
@@ -38,10 +38,10 @@ internal class SingleInstanceSpecRunner(
 
    private val results = ConcurrentHashMap<TestCase, TestResult>()
 
-   override suspend fun execute(spec: Spec): Try<Map<TestCase, TestResult>> {
+   override suspend fun execute(spec: Spec): Result<Map<TestCase, TestResult>> {
       log { "SingleInstanceSpecRunner: executing spec [$spec]" }
 
-      suspend fun interceptAndRun(context: CoroutineContext) = Try {
+      suspend fun interceptAndRun(context: CoroutineContext) = kotlin.runCatching {
          val rootTests = spec.materializeAndOrderRootTests().map { it.testCase }
          log { "SingleInstanceSpecRunner: Materialized root tests: ${rootTests.size}" }
          val threads = spec.resolvedThreads()

@@ -13,7 +13,6 @@ import io.kotest.core.spec.style.WordSpec
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.engine.listener.TestEngineListener
-import io.kotest.engine.spec.SpecExecutor
 import io.kotest.engine.spec.SpecInstantiationException
 import io.kotest.matchers.types.shouldBeInstanceOf
 import kotlin.reflect.KClass

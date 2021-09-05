@@ -1,20 +1,8 @@
 package io.kotest.engine
 
-import io.kotest.core.config.Configuration
-import io.kotest.core.extensions.ProjectExtension
 import io.kotest.core.spec.Spec
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
-import io.kotest.engine.interceptors.EmptyTestSuiteInterceptor
-import io.kotest.engine.interceptors.EngineInterceptor
-import io.kotest.engine.interceptors.ProjectExtensionEngineInterceptor
-import io.kotest.engine.interceptors.ProjectListenerEngineInterceptor
-import io.kotest.engine.interceptors.ProjectTimeoutEngineInterceptor
-import io.kotest.engine.interceptors.SpecSortEngineInterceptor
-import io.kotest.engine.interceptors.SpecStyleValidationInterceptor
-import io.kotest.engine.interceptors.TestDslStateInterceptor
-import io.kotest.engine.interceptors.TestEngineListenerInitializeFinalizeInterceptor
-import io.kotest.engine.interceptors.TestEngineListenerStartedFinishedInterceptor
 import io.kotest.engine.spec.materializeAndOrderRootTests
 import io.kotest.engine.test.CallingThreadExecutionContext
 import io.kotest.engine.test.RootRestrictedTestContext
@@ -34,7 +22,7 @@ actual class SpecRunner {
    /**
     * Executes a single [spec].
     *
-    * In Javascript the specs are instantiated in advance and passed to the engine.
+    * In Kotest-JS the specs are instantiated in advance and passed to the engine.
     *
     * Once the inner test promise completes, the [onComplete] callback is invoked.
     */
@@ -51,7 +39,6 @@ actual class SpecRunner {
                      done(result.error)
                      onComplete()
                   }
-
                }
                // some frameworks default to a 2000 timeout,
                // here we set to a high number and use the timeout support kotest provides via coroutines
@@ -80,18 +67,4 @@ actual class SpecRunner {
       // instead of the done callback, and we prefer the callback as it allows for custom timeouts
       Unit
    }
-}
-
-actual fun testEngineInterceptors(conf: Configuration): List<EngineInterceptor> {
-   return listOfNotNull(
-      TestEngineListenerInitializeFinalizeInterceptor,
-      ProjectTimeoutEngineInterceptor(conf.projectTimeout),
-      TestDslStateInterceptor,
-      SpecStyleValidationInterceptor,
-      SpecSortEngineInterceptor,
-      ProjectExtensionEngineInterceptor(conf.extensions().filterIsInstance<ProjectExtension>()),
-      ProjectListenerEngineInterceptor(conf.extensions()),
-      if (conf.failOnEmptyTestSuite) EmptyTestSuiteInterceptor else null,
-      TestEngineListenerStartedFinishedInterceptor,
-   )
 }

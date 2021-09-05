@@ -1,13 +1,11 @@
 package io.kotest.engine.interceptors
 
 import io.kotest.core.spec.Spec
-import io.kotest.core.spec.style.FunSpec
-import io.kotest.core.spec.style.ShouldSpec
-import io.kotest.core.spec.style.StringSpec
 import io.kotest.engine.EngineResult
 import io.kotest.engine.TestSuite
 import io.kotest.engine.listener.TestEngineListener
 import io.kotest.mpp.bestName
+import kotlin.reflect.KClass
 
 /**
  * Validates that a [Spec] style is compatible for platforms that do not support nested tests.
@@ -20,8 +18,10 @@ internal object SpecStyleValidationInterceptor : EngineInterceptor {
       execute: suspend (TestSuite, TestEngineListener) -> EngineResult
    ): EngineResult {
 
-      fun isValid(spec: Spec): Boolean = spec is FunSpec || spec is StringSpec || spec is ShouldSpec
-      val (valid, invalid) = suite.specs.partition { isValid(it) }
+      fun isValid(spec: KClass<out Spec>): Boolean =
+         spec.simpleName == "FunSpec" || spec.simpleName == "ShouldSpec" || spec.simpleName == "StringSpec"
+
+      val (valid, invalid) = suite.specs.partition { isValid(it.kclass) }
 
       if (invalid.isNotEmpty()) {
          println("WARN: kotest-js and kotest-native only support top level tests due to underlying platform limitations. The following specs are ignored:")

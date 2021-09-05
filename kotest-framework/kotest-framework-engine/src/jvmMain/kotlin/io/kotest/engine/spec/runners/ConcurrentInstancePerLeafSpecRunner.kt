@@ -12,15 +12,16 @@ import io.kotest.core.test.toTestCase
 import io.kotest.engine.ExecutorExecutionContext
 import io.kotest.engine.events.invokeAfterSpec
 import io.kotest.engine.events.invokeBeforeSpec
-import io.kotest.engine.test.listener.BufferedTestCaseExcecutionListener
-import io.kotest.engine.test.listener.TestCaseListenerToTestEngineListenerAdapter
 import io.kotest.engine.listener.TestEngineListener
 import io.kotest.engine.spec.SpecRunner
 import io.kotest.engine.spec.materializeAndOrderRootTests
 import io.kotest.engine.test.DuplicateTestNameHandler
 import io.kotest.engine.test.TestCaseExecutor
+import io.kotest.engine.test.listener.BufferedTestCaseExcecutionListener
+import io.kotest.engine.test.listener.TestCaseListenerToTestEngineListenerAdapter
 import io.kotest.engine.test.scheduler.SequentialTestScheduler
 import io.kotest.fp.Try
+import io.kotest.fp.flatMap
 import io.kotest.mpp.log
 import kotlinx.coroutines.asCoroutineDispatcher
 import kotlinx.coroutines.coroutineScope
@@ -76,7 +77,7 @@ internal class ConcurrentInstancePerLeafSpecRunner(
       }
    }
 
-   private suspend fun executeInCleanSpec(target: TestCase): Try<Spec> {
+   private suspend fun executeInCleanSpec(target: TestCase): Result<Spec> {
       log { "InstancePerLeafConcurrentSpecRunner: Executing target in clean spec" }
       return createInstance(target.spec::class)
          .flatMap { it.invokeBeforeSpec() }
@@ -85,9 +86,9 @@ internal class ConcurrentInstancePerLeafSpecRunner(
    }
 
    // we need to find the same root test but in the newly created spec and begin executing that
-   private suspend fun startTest(spec: Spec, targets: List<DescriptionName.TestName>): Try<Spec> {
+   private suspend fun startTest(spec: Spec, targets: List<DescriptionName.TestName>): Result<Spec> {
       require(targets.isNotEmpty())
-      return Try {
+      return kotlin.runCatching {
          log { "Created new spec instance $spec" }
          val root = spec.materializeAndOrderRootTests().first { it.testCase.description.name == targets.first() }
          run(root.testCase, targets.drop(1))

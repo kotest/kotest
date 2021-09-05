@@ -4,7 +4,6 @@ import io.kotest.core.NamedTag
 import io.kotest.core.Tag
 import io.kotest.core.Tags
 import io.kotest.core.config.configuration
-import io.kotest.engine.spec.SpecExecutor
 import io.kotest.engine.listener.TestEngineListener
 import io.kotest.core.extensions.TagExtension
 import io.kotest.core.listeners.TestListener

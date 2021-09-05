@@ -1,6 +1,5 @@
 package com.sksamuel.kotest.specs.isolation.test
 
-import io.kotest.engine.spec.SpecExecutor
 import io.kotest.engine.listener.TestEngineListener
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.style.*
