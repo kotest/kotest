@@ -1,6 +1,7 @@
 package com.sksamuel.kotest.engine.extensions
 
 import io.kotest.core.config.configuration
+import io.kotest.core.listeners.BeforeSpecListener
 import io.kotest.core.spec.Isolate
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.style.FunSpec
@@ -15,38 +16,39 @@ class BeforeSpecExtensionTest : FunSpec() {
 
       test("BeforeSpecExtension's should be triggered for a spec with tests") {
 
-         configuration.registerExtension(MyBeforeSpecExtension)
+         configuration.registerExtension(MyBeforeSpecListener)
 
          KotestEngineLauncher()
             .withSpec(MyPopulatedSpec3::class)
             .withListener(NoopTestEngineListener)
             .launch()
 
-         configuration.deregisterExtension(MyAfterSpecExtension)
+         configuration.deregisterExtension(MyBeforeSpecListener)
 
-         MyBeforeSpecExtension.invoked.get() shouldBe true
+         MyBeforeSpecListener.invoked.get() shouldBe true
       }
 
       test("BeforeSpecExtension's should NOT be triggered for a spec without tests") {
 
-         MyBeforeSpecExtension.invoked.set(false)
-         configuration.registerExtension(MyBeforeSpecExtension)
+         MyBeforeSpecListener.invoked.set(false)
+         configuration.registerExtension(MyBeforeSpecListener)
 
          KotestEngineLauncher()
             .withSpec(MyEmptySpec3::class)
             .withListener(NoopTestEngineListener)
             .launch()
 
-         configuration.deregisterExtension(MyBeforeSpecExtension)
+         configuration.deregisterExtension(MyBeforeSpecListener)
 
-         MyBeforeSpecExtension.invoked.get() shouldBe false
+         MyBeforeSpecListener.invoked.get() shouldBe false
       }
    }
 }
 
-object MyBeforeSpecExtension : AfterSpecExtension {
+object MyBeforeSpecListener : BeforeSpecListener {
    val invoked = AtomicBoolean(false)
-   override fun afterSpec(spec: Spec) {
+   override val name: String = "MyBeforeSpecExtension"
+   override suspend fun beforeSpec(spec: Spec) {
       invoked.set(true)
    }
 }

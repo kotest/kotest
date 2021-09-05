@@ -12,28 +12,48 @@ class DefaultSpecExecutionOrderExtensionTest : DescribeSpec({
    describe("The DefaultSpecExecutionOrder extension should support") {
 
       it("SpecExecutionOrder.Undefined") {
-         DefaultSpecExecutionOrderExtension(SpecExecutionOrder.Undefined).sortClasses(
-            listOf(ASpec::class, ZSpec::class, SpecA::class, SpecZ::class)
+         DefaultSpecExecutionOrderExtension(SpecExecutionOrder.Undefined).sort(
+            listOf(
+               ReflectiveSpecRef(ASpec::class),
+               ReflectiveSpecRef(ZSpec::class),
+               ReflectiveSpecRef(SpecA::class),
+               ReflectiveSpecRef(SpecZ::class)
+            )
          ) shouldBe listOf(ASpec::class, ZSpec::class, SpecA::class, SpecZ::class)
       }
 
       it("SpecExecutionOrder.Annotated") {
-         DefaultSpecExecutionOrderExtension(SpecExecutionOrder.Annotated).sortClasses(
-            listOf(ASpec::class, ZSpec::class, SpecA::class, SpecZ::class)
+         DefaultSpecExecutionOrderExtension(SpecExecutionOrder.Annotated).sort(
+            listOf(
+               ReflectiveSpecRef(ASpec::class),
+               ReflectiveSpecRef(ZSpec::class),
+               ReflectiveSpecRef(SpecA::class),
+               ReflectiveSpecRef(SpecZ::class)
+            )
          ) shouldBe listOf(SpecA::class, ASpec::class, ZSpec::class, SpecZ::class)
       }
 
       it("SpecExecutionOrder.Lexicographic") {
-         DefaultSpecExecutionOrderExtension(SpecExecutionOrder.Lexicographic).sortClasses(
-            listOf(ASpec::class, ZSpec::class, SpecA::class, SpecZ::class)
+         DefaultSpecExecutionOrderExtension(SpecExecutionOrder.Lexicographic).sort(
+            listOf(
+               ReflectiveSpecRef(ASpec::class),
+               ReflectiveSpecRef(ZSpec::class),
+               ReflectiveSpecRef(SpecA::class),
+               ReflectiveSpecRef(SpecZ::class)
+            )
          ) shouldBe listOf(ASpec::class, SpecA::class, SpecZ::class, ZSpec::class)
       }
 
       it("SpecExecutionOrder.Random") {
          // should have all combinations since it's meant to be random
          List(10000) {
-            DefaultSpecExecutionOrderExtension(SpecExecutionOrder.Random).sortClasses(
-               listOf(ASpec::class, ZSpec::class, SpecA::class, SpecZ::class)
+            DefaultSpecExecutionOrderExtension(SpecExecutionOrder.Random).sort(
+               listOf(
+                  ReflectiveSpecRef(ASpec::class),
+                  ReflectiveSpecRef(ZSpec::class),
+                  ReflectiveSpecRef(SpecA::class),
+                  ReflectiveSpecRef(SpecZ::class)
+               )
             )
          }.distinct().shouldHaveSize(24)
       }

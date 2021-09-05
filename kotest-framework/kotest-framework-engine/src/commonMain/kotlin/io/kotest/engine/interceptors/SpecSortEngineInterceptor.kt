@@ -26,7 +26,7 @@ internal object SpecSortEngineInterceptor : EngineInterceptor {
       }
 
       log { "SpecSortEngineExtension: Sorting specs using extensions $exts" }
-      val specs = exts.fold(suite.specs) { acc, op -> op.sortSpecs(acc) }
+      val specs = exts.fold(suite.specs) { acc, op -> op.sort(acc) }
       return execute(suite.copy(specs = specs), listener)
    }
 }

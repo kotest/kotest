@@ -10,7 +10,7 @@ import io.kotest.core.spec.SpecRef
  */
 class DefaultSpecExecutionOrderExtension(private val order: SpecExecutionOrder) : SpecExecutionOrderExtension {
 
-   override fun sortSpecs(specs: List<SpecRef>): List<SpecRef> {
+   override fun sort(specs: List<SpecRef>): List<SpecRef> {
       return when (order) {
          SpecExecutionOrder.Undefined -> specs
          SpecExecutionOrder.Lexicographic -> LexicographicSpecSorter.sort(specs)

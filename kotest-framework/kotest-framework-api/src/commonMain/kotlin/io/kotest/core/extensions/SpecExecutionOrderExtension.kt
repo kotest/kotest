@@ -9,5 +9,5 @@ import io.kotest.core.spec.SpecRef
  * invoked but the order of invocation is undefined.
  */
 interface SpecExecutionOrderExtension {
-   fun sortSpecs(specs: List<SpecRef>): List<SpecRef>
+   fun sort(specs: List<SpecRef>): List<SpecRef>
 }

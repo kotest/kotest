@@ -51,8 +51,8 @@ internal class ConcurrentInstancePerLeafSpecRunner(
    private val testCaseListener =
       BufferedTestCaseExcecutionListener(TestCaseListenerToTestEngineListenerAdapter(testEngineListener))
 
-   override suspend fun execute(spec: Spec): Try<Map<TestCase, TestResult>> {
-      return Try {
+   override suspend fun execute(spec: Spec): Result<Map<TestCase, TestResult>> {
+      return kotlin.runCatching {
 
          /**
           * Each root test will run in a single threaded dispatcher, and we make [threads] number of dispatchers.

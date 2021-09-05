@@ -2,6 +2,7 @@ package com.sksamuel.kotest.engine.extensions
 
 import io.kotest.core.extensions.MountableExtension
 import io.kotest.core.extensions.install
+import io.kotest.core.listeners.BeforeSpecListener
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
@@ -27,11 +28,12 @@ class MountableExtensionTest : FunSpec() {
 
 data class Config(var a: String)
 
-class MyMountable : MountableExtension<Config, Config>, BeforeSpecExtension {
+class MyMountable : MountableExtension<Config, Config>, BeforeSpecListener {
 
+   override val name: String = "MyMountable"
    val before = AtomicBoolean(false)
 
-   override fun beforeSpec(spec: Spec) {
+   override suspend fun beforeSpec(spec: Spec) {
       before.set(true)
    }
 

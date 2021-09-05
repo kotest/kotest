@@ -1,6 +1,7 @@
 package com.sksamuel.kotest.engine.extensions
 
 import io.kotest.core.config.configuration
+import io.kotest.core.listeners.AfterSpecListener
 import io.kotest.core.spec.Isolate
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.style.FunSpec
@@ -15,40 +16,44 @@ class AfterSpecExtensionTest : FunSpec() {
 
       test("AfterSpecExtension's should be triggered for a spec with tests") {
 
-         configuration.registerExtension(MyAfterSpecExtension)
+         configuration.registerExtension(MyAfterSpecListener)
 
          KotestEngineLauncher()
             .withSpec(MyPopulatedSpec2::class)
             .withListener(NoopTestEngineListener)
             .launch()
 
-         configuration.deregisterExtension(MyAfterSpecExtension)
+         configuration.deregisterExtension(MyAfterSpecListener)
 
-         MyAfterSpecExtension.invoked.get() shouldBe true
+         MyAfterSpecListener.invoked.get() shouldBe true
       }
 
-      test("AfterSpecExtension's should NOT be triggered for a spec without tests") {
+      test("MyAfterSpecListener's should NOT be triggered for a spec without tests") {
 
-         MyAfterSpecExtension.invoked.set(false)
-         configuration.registerExtension(MyAfterSpecExtension)
+         MyAfterSpecListener.invoked.set(false)
+         configuration.registerExtension(MyAfterSpecListener)
 
          KotestEngineLauncher()
             .withSpec(MyEmptySpec2::class)
             .withListener(NoopTestEngineListener)
             .launch()
 
-         configuration.deregisterExtension(MyAfterSpecExtension)
+         configuration.deregisterExtension(MyAfterSpecListener)
 
-         MyAfterSpecExtension.invoked.get() shouldBe false
+         MyAfterSpecListener.invoked.get() shouldBe false
       }
    }
 }
 
-object MyAfterSpecExtension : AfterSpecExtension {
+object MyAfterSpecListener : AfterSpecListener {
+
    val invoked = AtomicBoolean(false)
-   override fun afterSpec(spec: Spec) {
+
+   override suspend fun afterSpec(spec: Spec) {
       invoked.set(true)
    }
+
+   override val name: String = "MyAfterSpecListener"
 }
 
 private class MyEmptySpec2 : FunSpec()
