@@ -42,17 +42,6 @@ internal class SerialLogExtension constructor(private val logExtension: LogExten
 }
 
 /**
- * A [LogExtension] that writes to std out using [println].
- */
-@ExperimentalKotest
-object ConsoleLogExtension : LogExtension {
-   override suspend fun handleLogs(testCase: TestCase, logs: List<LogEntry>) {
-      println(" - ${testCase.description}")
-      logs.forEach { println(it.level.name + ": " + it.message) }
-   }
-}
-
-/**
  * Returns the [TestLogger] that is embedded with this [TestContext].
  * Does not error when there isn't a logger, there isn't one when LogLevel is set to Off.
  */
@@ -61,7 +50,7 @@ internal val TestContext.logs: MutableList<LogEntry>?
    get() = coroutineContext[TestContextLoggingCoroutineContextElement]?.logs
 
 @ExperimentalKotest
-private class TestContextLoggingCoroutineContextElement(val logs: MutableList<LogEntry>) : AbstractCoroutineContextElement(Key) {
+internal class TestContextLoggingCoroutineContextElement(val logs: MutableList<LogEntry>) : AbstractCoroutineContextElement(Key) {
    companion object Key : CoroutineContext.Key<TestContextLoggingCoroutineContextElement>
 }
 
@@ -82,10 +71,9 @@ internal object CoroutineLoggingInterceptor : TestExecutionInterceptor {
             } catch (ex: Exception) {
                throw ex
             } finally {
-               val defensiveCopy = logs.toList()
                extensions.forEach { extension ->
                   runCatching {
-                     extension.handleLogs(testCase, defensiveCopy)
+                     extension.handleLogs(testCase, logs.filter { it.level >= configuration.logLevel })
                   }
                }
             }
@@ -93,7 +81,6 @@ internal object CoroutineLoggingInterceptor : TestExecutionInterceptor {
       }
    }
 }
-
 
 typealias LogFn = suspend () -> Any
 
@@ -106,17 +93,17 @@ class TestLogger(internal val logs: MutableList<LogEntry>) {
    internal suspend fun maybeLog(message: LogFn, level: LogLevel) {
       if (level >= configuration.logLevel) {
          logs.apply {
-            add(LogEntry(level, message.invoke()))
+            add(LogEntry(level, message()))
          }
       }
    }
 }
 
 @ExperimentalKotest
-suspend fun TestContext.maybeLog(message: LogFn, level: LogLevel) {
+internal suspend fun TestContext.maybeLog(message: LogFn, level: LogLevel) {
    if (level >= configuration.logLevel) {
       logs?.apply {
-         add(LogEntry(level, message.invoke()))
+         add(LogEntry(level, message()))
       }
    }
 }
