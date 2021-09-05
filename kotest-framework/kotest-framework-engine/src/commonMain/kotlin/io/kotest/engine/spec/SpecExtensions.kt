@@ -1,4 +1,4 @@
-package io.kotest.engine.events
+package io.kotest.engine.spec
 
 import io.kotest.core.config.Configuration
 import io.kotest.core.extensions.Extension
@@ -47,8 +47,16 @@ class SpecExtensions(private val configuration: Configuration) {
       spec
    }
 
-   suspend fun afterSpec(spec: Spec): Try<Unit> = Try {
+   suspend fun afterSpec(spec: Spec): Result<Spec> = kotlin.runCatching {
+      log { "SpecExtensions: afterSpec $spec" }
+
+      spec.registeredAutoCloseables().let { closeables ->
+         log { "Closing ${closeables.size} autocloseables [$closeables]" }
+         closeables.forEach { it.value.close() }
+      }
+
       extensions(spec).filterIsInstance<AfterSpecListener>().forEach { it.afterSpec(spec) }
+      spec
    }
 
    fun specInstantiated(spec: Spec) = kotlin.runCatching {

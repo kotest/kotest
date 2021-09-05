@@ -3,7 +3,7 @@ package io.kotest.engine.spec.interceptor
 import io.kotest.core.config.configuration
 import io.kotest.core.spec.Spec
 import io.kotest.core.test.TestResult
-import io.kotest.engine.events.SpecExtensions
+import io.kotest.engine.spec.SpecExtensions
 import io.kotest.engine.listener.TestEngineListener
 import io.kotest.engine.spec.materializeAndOrderRootTests
 import io.kotest.engine.test.status.isEnabled

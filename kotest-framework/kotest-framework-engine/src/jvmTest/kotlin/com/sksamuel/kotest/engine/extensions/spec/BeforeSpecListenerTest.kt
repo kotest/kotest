@@ -53,7 +53,7 @@ class BeforeSpecListenerTest : FunSpec() {
 
 private val counter = AtomicInteger(0)
 
-object MyBeforeSpecListener : BeforeSpecListener {
+private object MyBeforeSpecListener : BeforeSpecListener {
    override val name: String = "MyBeforeSpecExtension"
    override suspend fun beforeSpec(spec: Spec) {
       counter.incrementAndGet()

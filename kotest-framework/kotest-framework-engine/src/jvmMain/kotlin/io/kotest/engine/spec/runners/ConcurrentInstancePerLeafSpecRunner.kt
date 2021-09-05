@@ -10,9 +10,8 @@ import io.kotest.core.test.TestResult
 import io.kotest.core.test.createTestName
 import io.kotest.core.test.toTestCase
 import io.kotest.engine.ExecutorExecutionContext
-import io.kotest.engine.events.SpecExtensions
-import io.kotest.engine.events.invokeAfterSpec
 import io.kotest.engine.listener.TestEngineListener
+import io.kotest.engine.spec.SpecExtensions
 import io.kotest.engine.spec.SpecRunner
 import io.kotest.engine.spec.materializeAndOrderRootTests
 import io.kotest.engine.test.DuplicateTestNameHandler
@@ -81,7 +80,7 @@ internal class ConcurrentInstancePerLeafSpecRunner(
       return createInstance(target.spec::class)
          .flatMap { SpecExtensions(configuration).beforeSpec(it) }
          .flatMap { startTest(it, target.description.testNames()) } // drop the spec name
-         .flatMap { it.invokeAfterSpec() }
+         .flatMap { SpecExtensions(configuration).afterSpec(it) }
    }
 
    // we need to find the same root test but in the newly created spec and begin executing that

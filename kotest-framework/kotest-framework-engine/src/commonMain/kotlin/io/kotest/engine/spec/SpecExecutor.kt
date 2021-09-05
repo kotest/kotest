@@ -4,7 +4,6 @@ import io.kotest.core.config.configuration
 import io.kotest.core.extensions.SpecInterceptExtension
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.SpecRef
-import io.kotest.engine.events.SpecExtensions
 import io.kotest.engine.listener.TestEngineListener
 import io.kotest.engine.spec.interceptor.InactiveSpecInterceptor
 import io.kotest.engine.spec.interceptor.RunIfActiveTestsInterceptor
