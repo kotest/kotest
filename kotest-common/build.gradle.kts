@@ -52,14 +52,12 @@ kotlin {
          dependencies {
             compileOnly(kotlin("stdlib"))
             implementation(kotlin("reflect"))
+            implementation(Libs.Coroutines.coreCommon)
          }
       }
 
       val jvmMain by getting {
          dependsOn(commonMain)
-         dependencies {
-            implementation(Libs.Coroutines.coreJvm)
-         }
       }
 
       val desktopMain by creating {
