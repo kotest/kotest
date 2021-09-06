@@ -3,27 +3,26 @@ package io.kotest.engine.spec
 import io.kotest.core.spec.Spec
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
+import io.kotest.engine.MochaTestCaseExecutionListener
 import io.kotest.engine.describe
 import io.kotest.engine.listener.TestEngineListener
 import io.kotest.engine.test.CallingThreadExecutionContext
 import io.kotest.engine.test.TerminalTestContext
 import io.kotest.engine.test.TestCaseExecutor
-import io.kotest.engine.test.listener.TestCaseListenerToTestEngineListenerAdapter
 import io.kotest.mpp.bestName
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.promise
 import kotlin.coroutines.coroutineContext
 
-actual fun createSpecExecutorDelegate(listener: TestEngineListener): SpecExecutorDelegate {
-   TODO("Not yet implemented")
-}
+actual fun createSpecExecutorDelegate(listener: TestEngineListener): SpecExecutorDelegate =
+   JavascriptSpecExecutorDelegate
 
 
 /**
  * Note: we need to use this: https://youtrack.jetbrains.com/issue/KT-22228
  */
-class JavascriptSpecExecutorDelegate(private val listener: TestEngineListener) : SpecExecutorDelegate {
+object JavascriptSpecExecutorDelegate : SpecExecutorDelegate {
 
    @DelicateCoroutinesApi
    override suspend fun execute(spec: Spec): Map<TestCase, TestResult> {
@@ -33,7 +32,7 @@ class JavascriptSpecExecutorDelegate(private val listener: TestEngineListener) :
          spec.materializeAndOrderRootTests().forEach { root ->
             GlobalScope.promise {
                TestCaseExecutor(
-                  TestCaseListenerToTestEngineListenerAdapter(listener),
+                  MochaTestCaseExecutionListener,
                   CallingThreadExecutionContext
                ).execute(root.testCase, TerminalTestContext(root.testCase, cc))
             }
