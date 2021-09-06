@@ -47,7 +47,9 @@ class SpecExecutor(private val listener: TestEngineListener) {
       )
 
       val innerExecute: suspend (SpecRef) -> Map<TestCase, TestResult> = {
-         val spec = createInstance(ref).getOrThrow()
+         val spec = createInstance(ref)
+            .onFailure { listener.specAborted(ref.kclass, it) }
+            .getOrThrow()
          specInterceptors(spec)
       }
 
@@ -88,7 +90,7 @@ class SpecExecutor(private val listener: TestEngineListener) {
          .onFailure {
             log { "SpecExecutor: instantiation error for ${ref.kclass} $it" }
             listener.specInstantiationError(ref.kclass, it)
-            SpecExtensions(configuration).specInstantiationError(ref.kclass, it)
+            extensions.specInstantiationError(ref.kclass, it)
          }
          .flatMap { spec -> extensions.specInitialize(spec).map { spec } }
          .flatMap { spec -> extensions.specInstantiated(spec).map { spec } }

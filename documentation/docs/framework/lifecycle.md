@@ -10,6 +10,8 @@
     * IgnoredSpecListener.specIgnored(kclass, reason)
   * If ref is enabled:
     * spec = create instance of ref
+    * If spec creation fails:
+      * TestEngineListener.specAborted(ref)
     * SpecInterceptExtension.intercept(spec)
     * If spec is inactive (no enabled root tests):
       * TestEngineListener.specInactive(kclass)
