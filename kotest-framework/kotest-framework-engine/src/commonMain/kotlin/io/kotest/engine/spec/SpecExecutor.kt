@@ -74,7 +74,7 @@ class SpecExecutor(private val listener: TestEngineListener) {
       val innerExecute: suspend (Spec) -> Map<TestCase, TestResult> = {
          val delegate = createSpecExecutorDelegate(listener)
          log { "SpecExecutor: Created spec executor delegate $delegate" }
-         delegate.execute(spec).getOrThrow()
+         delegate.execute(spec)
       }
 
       log { "SpecExecutor: Executing ${interceptors.size} spec interceptors" }
@@ -99,7 +99,7 @@ class SpecExecutor(private val listener: TestEngineListener) {
 }
 
 interface SpecExecutorDelegate {
-   suspend fun execute(spec: Spec): Result<Map<TestCase, TestResult>>
+   suspend fun execute(spec: Spec): Map<TestCase, TestResult>
 }
 
 expect fun createSpecExecutorDelegate(listener: TestEngineListener): SpecExecutorDelegate

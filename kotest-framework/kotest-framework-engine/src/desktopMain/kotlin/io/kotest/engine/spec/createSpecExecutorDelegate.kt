@@ -1,40 +1,46 @@
 package io.kotest.engine.spec
 
+import io.kotest.core.config.configuration
+import io.kotest.core.spec.Spec
+import io.kotest.core.test.TestCase
+import io.kotest.core.test.TestResult
 import io.kotest.engine.listener.TestEngineListener
+import io.kotest.engine.test.CallingThreadExecutionContext
+import io.kotest.engine.test.CallingThreadTestContext
+import io.kotest.engine.test.TestCaseExecutor
+import io.kotest.engine.test.listener.TestCaseListenerToTestEngineListenerAdapter
+import io.kotest.engine.test.status.isEnabledInternal
+import io.kotest.mpp.log
+import kotlin.coroutines.coroutineContext
 
-actual fun createSpecExecutorDelegate(listener: TestEngineListener): SpecExecutorDelegate {
-   TODO("Not yet implemented")
+actual fun createSpecExecutorDelegate(listener: TestEngineListener): SpecExecutorDelegate =
+   DefaultSpecExecutorDelegate(listener)
+
+/**
+ * A [SpecExecutorDelegate] that executes tests sequentially, using the calling thread
+ * as the execution context for timeouts.
+ */
+class DefaultSpecExecutorDelegate(private val listener: TestEngineListener) : SpecExecutorDelegate {
+
+   override suspend fun execute(spec: Spec): Map<TestCase, TestResult> {
+      log { "DefaultSpecExecutorDelegate: Executing spec $spec" }
+      spec.materializeAndOrderRootTests()
+         .filter { it.testCase.isEnabledInternal().isEnabled }
+         .forEach { (testCase, _) ->
+            log { "DefaultSpecExecutorDelegate: Executing testCase $testCase" }
+            val context = CallingThreadTestContext(
+               testCase,
+               coroutineContext,
+               configuration.duplicateTestNameMode,
+               listener,
+               CallingThreadExecutionContext
+            )
+            TestCaseExecutor(
+               TestCaseListenerToTestEngineListenerAdapter(listener),
+               CallingThreadExecutionContext
+            ).execute(testCase, context)
+         }
+
+      return emptyMap()
+   }
 }
-//
-//actual fun execute(spec: Spec, onComplete: suspend () -> Unit) {
-//   log { "Executing spec $spec" }
-//   println()
-//   println(
-//      TeamCityMessageBuilder.testSuiteStarted(spec::class.toDescription().displayName())
-//         .id(spec::class.toDescription().id.value)
-//         .spec()
-//         .build()
-//   )
-//   println()
-//   spec.materializeAndOrderRootTests()
-//      .filter { it.testCase.isEnabledInternal().isEnabled }
-//      .forEach { execute(it.testCase) }
-//   println()
-//   println(
-//      TeamCityMessageBuilder.testSuiteFinished(spec::class.toDescription().displayName())
-//         .id(spec::class.toDescription().id.value)
-//         .spec()
-//         .build()
-//   )
-//   println()
-//   runBlocking {
-//      onComplete()
-//   }
-//}
-//
-//private fun execute(testCase: TestCase) = runBlocking {
-//   log { "Executing testCase $testCase" }
-//   val context = RootRestrictedTestContext(testCase, coroutineContext)
-//   TestCaseExecutor(TeamCityTestCaseExecutionListener, CallingThreadExecutionContext)
-//      .execute(testCase, context)
-//}
