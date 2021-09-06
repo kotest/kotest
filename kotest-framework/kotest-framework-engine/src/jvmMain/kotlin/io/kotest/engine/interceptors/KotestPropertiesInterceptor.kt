@@ -1,5 +1,6 @@
 package io.kotest.engine.interceptors
 
+import io.kotest.common.JVMOnly
 import io.kotest.core.internal.KotestEngineProperties
 import io.kotest.engine.EngineResult
 import io.kotest.engine.TestSuite
@@ -14,6 +15,7 @@ import java.util.Properties
  *
  * This is a JVM only extension.
  */
+@JVMOnly
 internal object KotestPropertiesInterceptor : EngineInterceptor {
 
    private const val DefaultKotestPropertiesFilename = "/kotest.properties"
