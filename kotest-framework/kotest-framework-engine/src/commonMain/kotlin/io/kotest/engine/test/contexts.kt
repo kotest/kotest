@@ -38,7 +38,7 @@ class CallingThreadTestContext(
    override val coroutineContext: CoroutineContext,
    private val duplicateTestNameMode: DuplicateTestNameMode,
    private val listener: TestEngineListener,
-   private val executionContext: TimeoutExecutionContext,
+   private val executionContext: InterruptableExecutionContext,
 ) : TestContext {
 
    private val handler = DuplicateTestNameHandler(duplicateTestNameMode)

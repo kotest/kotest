@@ -7,7 +7,7 @@ import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestType
 import io.kotest.engine.events.invokeAfterInvocation
 import io.kotest.engine.events.invokeBeforeInvocation
-import io.kotest.engine.test.TimeoutExecutionContext
+import io.kotest.engine.test.InterruptableExecutionContext
 import io.kotest.mpp.log
 import io.kotest.mpp.replay
 import io.kotest.mpp.timeInMillis
@@ -16,11 +16,11 @@ import kotlinx.coroutines.withTimeout
 import kotlin.math.min
 
 /**
- * The [TimeoutExecutionContext] is used to provide a way of executing functions on the underlying platform
+ * The [InterruptableExecutionContext] is used to provide a way of executing functions on the underlying platform
  * in a way that best utilizes threads or the lack of on that platform.
  */
 class TimeoutInterceptor(
-   private val ec: TimeoutExecutionContext,
+   private val ec: InterruptableExecutionContext,
    private val start: Long,
 ) : TestExecutionInterceptor {
 

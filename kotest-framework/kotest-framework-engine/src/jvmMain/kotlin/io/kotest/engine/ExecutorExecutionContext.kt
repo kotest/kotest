@@ -1,6 +1,6 @@
 package io.kotest.engine
 
-import io.kotest.engine.test.TimeoutExecutionContext
+import io.kotest.engine.test.InterruptableExecutionContext
 import io.kotest.engine.test.interceptors.TestTimeoutException
 import io.kotest.mpp.NamedThreadFactory
 import io.kotest.mpp.log
@@ -45,7 +45,7 @@ class CoroutineStatus : ThreadContextElement<Unit> {
    }
 }
 
-object ExecutorExecutionContext : TimeoutExecutionContext {
+object ExecutorExecutionContext : InterruptableExecutionContext {
 
    // we run tests and callbacks inside an executor so that the before/after callbacks
    // and the test itself run on the same thread.

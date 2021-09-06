@@ -6,7 +6,7 @@ import io.kotest.core.test.TestResult
 import io.kotest.engine.MochaTestCaseExecutionListener
 import io.kotest.engine.describe
 import io.kotest.engine.listener.TestEngineListener
-import io.kotest.engine.test.CallingThreadExecutionContext
+import io.kotest.engine.test.NoInterruptionExecutionContext
 import io.kotest.engine.test.TerminalTestContext
 import io.kotest.engine.test.TestCaseExecutor
 import io.kotest.mpp.bestName
@@ -33,7 +33,7 @@ object JavascriptSpecExecutorDelegate : SpecExecutorDelegate {
             GlobalScope.promise {
                TestCaseExecutor(
                   MochaTestCaseExecutionListener,
-                  CallingThreadExecutionContext
+                  NoInterruptionExecutionContext
                ).execute(root.testCase, TerminalTestContext(root.testCase, cc))
             }
 

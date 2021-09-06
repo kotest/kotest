@@ -5,7 +5,7 @@ import io.kotest.core.spec.Spec
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.engine.listener.TestEngineListener
-import io.kotest.engine.test.CallingThreadExecutionContext
+import io.kotest.engine.test.NoInterruptionExecutionContext
 import io.kotest.engine.test.CallingThreadTestContext
 import io.kotest.engine.test.TestCaseExecutor
 import io.kotest.engine.test.listener.TestCaseListenerToTestEngineListenerAdapter
@@ -31,11 +31,11 @@ class DefaultSpecExecutorDelegate(private val listener: TestEngineListener) : Sp
                coroutineContext,
                configuration.duplicateTestNameMode,
                listener,
-               CallingThreadExecutionContext
+               NoInterruptionExecutionContext
             )
             TestCaseExecutor(
                TestCaseListenerToTestEngineListenerAdapter(listener),
-               CallingThreadExecutionContext
+               NoInterruptionExecutionContext
             ).execute(testCase, context)
          }
       return emptyMap()

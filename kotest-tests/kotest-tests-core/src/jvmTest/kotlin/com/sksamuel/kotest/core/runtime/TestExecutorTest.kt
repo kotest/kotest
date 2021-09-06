@@ -10,7 +10,7 @@ import io.kotest.core.test.TestStatus
 import io.kotest.engine.spec.materializeAndOrderRootTests
 import io.kotest.engine.test.TestCaseExecutionListener
 import io.kotest.engine.test.TestCaseExecutor
-import io.kotest.engine.test.TimeoutExecutionContext
+import io.kotest.engine.test.InterruptableExecutionContext
 import io.kotest.engine.test.interceptors.TestTimeoutException
 import io.kotest.matchers.booleans.shouldBeTrue
 import io.kotest.matchers.shouldBe
@@ -22,7 +22,7 @@ import kotlin.coroutines.CoroutineContext
 import kotlin.time.Duration
 
 @DelicateCoroutinesApi
-fun testExecutorTests(context: TimeoutExecutionContext) = funSpec {
+fun testExecutorTests(context: InterruptableExecutionContext) = funSpec {
 
    fun context(testCase: TestCase) = object : TestContext {
       override val testCase: TestCase = testCase
