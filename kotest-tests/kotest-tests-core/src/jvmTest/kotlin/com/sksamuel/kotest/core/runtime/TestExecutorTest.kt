@@ -7,9 +7,7 @@ import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestContext
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestStatus
-import io.kotest.engine.ExecutorExecutionContext
 import io.kotest.engine.spec.materializeAndOrderRootTests
-import io.kotest.engine.test.CallingThreadExecutionContext
 import io.kotest.engine.test.TestCaseExecutionListener
 import io.kotest.engine.test.TestCaseExecutor
 import io.kotest.engine.test.TimeoutExecutionContext
@@ -143,11 +141,11 @@ fun testExecutorTests(context: TimeoutExecutionContext) = funSpec {
    }
 }
 
-@DelicateCoroutinesApi
-class TestExecutorTest : FunSpec({
-   include("calling thread:", testExecutorTests(CallingThreadExecutionContext))
-   include("executor:", testExecutorTests(ExecutorExecutionContext))
-})
+//@DelicateCoroutinesApi
+//class TestExecutorTest : FunSpec({
+//   include("calling thread:", testExecutorTests(CallingThreadExecutionContext))
+//   include("executor:", testExecutorTests(ExecutorExecutionContext))
+//})
 
 private class Tests : FunSpec({
    test("a") {}
