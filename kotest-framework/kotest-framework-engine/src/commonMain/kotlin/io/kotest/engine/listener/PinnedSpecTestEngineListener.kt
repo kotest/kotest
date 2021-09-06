@@ -4,7 +4,6 @@ package io.kotest.engine.listener
 
 import io.kotest.core.plan.Descriptor
 import io.kotest.core.spec.Spec
-import io.kotest.core.spec.SpecRef
 import io.kotest.core.spec.toDescription
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
@@ -33,12 +32,43 @@ class PinnedSpecTestEngineListener(val listener: TestEngineListener) : TestEngin
       _callbacks.forEach { it.invoke() }
    }
 
+   override suspend fun engineInitialize() {
+      listener.engineInitialize()
+   }
+
    override suspend fun engineStarted(classes: List<KClass<*>>) {
       listener.engineStarted(classes)
    }
 
    override suspend fun engineFinished(t: List<Throwable>) {
       listener.engineFinished(t)
+   }
+
+   override suspend fun engineFinalize() {
+      listener.engineFinalize()
+   }
+
+   override suspend fun specEnter(kclass: KClass<out Spec>) {
+      if (runningSpec == null) {
+         runningSpec = kclass.toDescription().path().value
+         listener.specEnter(kclass)
+      } else {
+         queue {
+            specEnter(kclass)
+         }
+      }
+   }
+
+   override suspend fun specExit(kclass: KClass<out Spec>) {
+      if (runningSpec == kclass.toDescription().path().value) {
+         listener.specExit(kclass)
+         runningSpec = null
+         replay()
+      } else {
+         queue {
+            specExit(kclass)
+         }
+      }
    }
 
    override suspend fun specInstantiated(spec: Spec) {
@@ -122,8 +152,7 @@ class PinnedSpecTestEngineListener(val listener: TestEngineListener) : TestEngin
    }
 
    override suspend fun specStarted(kclass: KClass<*>) {
-      if (runningSpec == null) {
-         runningSpec = kclass.toDescription().path().value
+      if (runningSpec == kclass.toDescription().path().value) {
          listener.specStarted(kclass)
       } else {
          queue {
@@ -139,8 +168,6 @@ class PinnedSpecTestEngineListener(val listener: TestEngineListener) : TestEngin
    ) {
       if (runningSpec == kclass.toDescription().path().value) {
          listener.specFinished(kclass, t, results)
-         runningSpec = null
-         replay()
       } else {
          queue {
             specFinished(kclass, t, results)
@@ -155,8 +182,6 @@ class PinnedSpecTestEngineListener(val listener: TestEngineListener) : TestEngin
    ) {
       if (runningSpec == descriptor.classname) {
          listener.specFinished(descriptor, t, results)
-         runningSpec = null
-         replay()
       } else {
          queue {
             specFinished(descriptor, t, results)
@@ -165,12 +190,21 @@ class PinnedSpecTestEngineListener(val listener: TestEngineListener) : TestEngin
    }
 
    override suspend fun specStarted(descriptor: Descriptor.SpecDescriptor) {
-      if (runningSpec == null) {
-         runningSpec = descriptor.classname
+      if (runningSpec == descriptor.classname) {
          listener.specStarted(descriptor)
       } else {
          queue {
             specStarted(descriptor)
+         }
+      }
+   }
+
+   override suspend fun specIgnored(kclass: KClass<out Spec>) {
+      if (runningSpec == kclass.toDescription().path().value) {
+         listener.specIgnored(kclass)
+      } else {
+         queue {
+            specIgnored(kclass)
          }
       }
    }

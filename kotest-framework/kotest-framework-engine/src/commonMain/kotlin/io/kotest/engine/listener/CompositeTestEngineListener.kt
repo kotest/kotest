@@ -2,9 +2,9 @@ package io.kotest.engine.listener
 
 import io.kotest.core.plan.Descriptor
 import io.kotest.core.spec.Spec
-import io.kotest.core.spec.SpecRef
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
+import io.kotest.fp.foreach
 import kotlin.reflect.KClass
 
 /**
@@ -76,4 +76,25 @@ class CompositeTestEngineListener(private val listeners: List<TestEngineListener
    override suspend fun specInstantiationError(kclass: KClass<*>, t: Throwable) {
       listeners.forEach { it.specInstantiationError(kclass, t) }
    }
+
+   override suspend fun engineFinalize() {
+      listeners.forEach { it.engineFinalize() }
+   }
+
+   override suspend fun specExit(kclass: KClass<out Spec>) {
+      listeners.forEach { it.specExit(kclass) }
+   }
+
+   override suspend fun specIgnored(kclass: KClass<out Spec>) {
+      listeners.forEach { it.specIgnored(kclass) }
+   }
+
+   override suspend fun specEnter(kclass: KClass<out Spec>) {
+      listeners.forEach { it.specEnter(kclass) }
+   }
+
+   override suspend fun engineInitialize() {
+      listeners.forEach { it.engineInitialize() }
+   }
+
 }

@@ -2,7 +2,6 @@ package io.kotest.engine.listener
 
 import io.kotest.core.plan.Descriptor
 import io.kotest.core.spec.Spec
-import io.kotest.core.spec.SpecRef
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import kotlinx.coroutines.sync.Mutex
@@ -101,6 +100,36 @@ class ThreadSafeTestEngineListener(private val listener: TestEngineListener) : T
    override suspend fun testStarted(descriptor: Descriptor.TestDescriptor) {
       mutex.withLock {
          listener.testStarted(descriptor)
+      }
+   }
+
+   override suspend fun engineFinalize() {
+      mutex.withLock {
+         listener.engineFinalize()
+      }
+   }
+
+   override suspend fun engineInitialize() {
+      mutex.withLock {
+         listener.engineInitialize()
+      }
+   }
+
+   override suspend fun specExit(kclass: KClass<out Spec>) {
+      mutex.withLock {
+         listener.specExit(kclass)
+      }
+   }
+
+   override suspend fun specIgnored(kclass: KClass<out Spec>) {
+      mutex.withLock {
+         listener.specIgnored(kclass)
+      }
+   }
+
+   override suspend fun specEnter(kclass: KClass<out Spec>) {
+      mutex.withLock {
+         listener.specEnter(kclass)
       }
    }
 }

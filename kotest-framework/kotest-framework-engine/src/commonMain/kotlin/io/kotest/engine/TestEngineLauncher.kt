@@ -14,6 +14,9 @@ import io.kotest.engine.config.ConfigManager
 import io.kotest.engine.listener.NoopTestEngineListener
 import io.kotest.engine.listener.TestEngineListener
 import io.kotest.core.spec.SpecRef
+import io.kotest.engine.listener.CompositeTestEngineListener
+import io.kotest.engine.listener.PinnedSpecTestEngineListener
+import io.kotest.engine.listener.ThreadSafeTestEngineListener
 import io.kotest.engine.spec.InstanceSpecRef
 import io.kotest.engine.spec.ReflectiveSpecRef
 import io.kotest.mpp.log
@@ -142,7 +145,11 @@ class TestEngineLauncher(
       log { "TestEngineLauncher: Launching Test Engine" }
 
       val config = TestEngineConfig(
-         listener = listener,
+         listener = ThreadSafeTestEngineListener(
+            PinnedSpecTestEngineListener(
+               listener
+            )
+         ),
          interceptors = testEngineInterceptors(configuration),
          ConfigManager.initialize(configuration, configs),
          testFilters,
@@ -162,7 +169,11 @@ class TestEngineLauncher(
       log { "TestEngineLauncher: Launching Test Engine in blocking mode" }
 
       val config = TestEngineConfig(
-         listener = listener,
+         listener = ThreadSafeTestEngineListener(
+            PinnedSpecTestEngineListener(
+               listener
+            )
+         ),
          interceptors = testEngineInterceptors(configuration),
          ConfigManager.initialize(configuration, configs),
          testFilters,
