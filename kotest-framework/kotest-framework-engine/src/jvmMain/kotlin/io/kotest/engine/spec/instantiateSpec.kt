@@ -12,19 +12,19 @@ actual fun instantiate(kclass: KClass<out Spec>): Result<Spec> {
 }
 
 /**
- * Creates an instance of a [Spec] by delegating to constructor extensions, with
+ * Creates an instance of a [Spec] by delegating to [ConstructorExtension], with
  * a fallback to a reflection based zero-args constructor.
  *
- * If this clazz represents an object, then the singleton object instance will be returned
+ * If the [kclass] represents an object, then the singleton object instance will be returned.
  *
- * After creation will execute any [PostInstantiationExtension]s.
+ * After creation any [PostInstantiationExtension]s will be invoked.
  */
-fun <T : Spec> createAndInitializeSpec(clazz: KClass<T>): Result<Spec> {
-   return when (val obj = clazz.objectInstance) {
+fun <T : Spec> createAndInitializeSpec(kclass: KClass<T>): Result<Spec> {
+   return when (val obj = kclass.objectInstance) {
       null -> runCatching {
          val initial: Spec? = null
          val spec = configuration.extensions().filterIsInstance<ConstructorExtension>()
-            .fold(initial) { spec, ext -> spec ?: ext.instantiate(clazz) } ?: javaReflectNewInstance(clazz)
+            .fold(initial) { spec, ext -> spec ?: ext.instantiate(kclass) } ?: javaReflectNewInstance(kclass)
          configuration.extensions().filterIsInstance<PostInstantiationExtension>()
             .fold(spec) { acc, ext -> ext.process(acc) }
       }
