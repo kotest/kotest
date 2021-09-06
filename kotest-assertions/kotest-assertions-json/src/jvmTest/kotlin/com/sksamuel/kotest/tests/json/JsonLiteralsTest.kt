@@ -32,9 +32,10 @@ class JsonLiteralsTest : FunSpec(
       }
 
       test("comparing high-precision floating point numbers") {
-         // TODO: Currently failing since expected has been parsed to a JsonTree and then encoded to string again
-         //       Since it is a floating point number it is parsed to a double and back again when this happens,
-         //       so expected also loses precision
+
+         // Note: In the middle paragraph of the failure message the expected JSON has been
+         //       formatted as a JSON tree using KotlinX.serialization which parses the
+         //       number to a double and back, hence the loss of precision.
 
          shouldFail {
             "0.12345678912345678" shouldEqualJson "0.123456789123456789"
@@ -43,7 +44,7 @@ class JsonLiteralsTest : FunSpec(
                The top level expected 0.123456789123456789 but was 0.12345678912345678
 
                expected:
-               0.123456789123456789
+               0.12345678912345678
 
                actual:
                0.12345678912345678
