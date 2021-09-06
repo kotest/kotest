@@ -5,16 +5,13 @@ import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestContext
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestType
-import io.kotest.engine.TestTimeoutException
 import io.kotest.engine.events.invokeAfterInvocation
 import io.kotest.engine.events.invokeBeforeInvocation
 import io.kotest.engine.test.TimeoutExecutionContext
 import io.kotest.mpp.log
 import io.kotest.mpp.replay
 import io.kotest.mpp.timeInMillis
-import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.TimeoutCancellationException
-import kotlinx.coroutines.withContext
 import kotlinx.coroutines.withTimeout
 import kotlin.math.min
 
@@ -58,8 +55,8 @@ class TimeoutInterceptor(
          withTimeout(timeout) {
             ec.executeWithTimeoutInterruption(timeout) {
                // depending on the test type, we execute with an invocation timeout
-               when {
-                  testCase.type == TestType.Container -> test(testCase, context)
+               when (testCase.type) {
+                  TestType.Container -> test(testCase, context)
                   else -> {
                      // not all platforms support executing with an interruption based timeout
                      // because it uses background threads to interrupt
@@ -93,3 +90,9 @@ class TimeoutInterceptor(
       }
    }
 }
+
+/**
+ * Exception used for when a test exceeds its timeout.
+ */
+class TestTimeoutException(val timeout: Long, val testName: String) :
+   Exception("Test '$testName' did not complete within ${timeout}ms")

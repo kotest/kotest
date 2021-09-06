@@ -1,6 +1,7 @@
 package io.kotest.engine
 
 import io.kotest.engine.test.TimeoutExecutionContext
+import io.kotest.engine.test.interceptors.TestTimeoutException
 import io.kotest.mpp.NamedThreadFactory
 import io.kotest.mpp.log
 import kotlinx.coroutines.CoroutineName
