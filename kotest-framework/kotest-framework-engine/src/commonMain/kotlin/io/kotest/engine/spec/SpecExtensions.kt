@@ -16,7 +16,7 @@ import io.kotest.fp.Try
 import io.kotest.mpp.log
 
 /**
- * Used to invoke extension points on specs.
+ * Used to invoke extension points / listeners / callbacks on specs.
  */
 class SpecExtensions(private val configuration: Configuration) {
 

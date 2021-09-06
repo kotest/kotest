@@ -63,7 +63,6 @@ class TestEngine(val config: TestEngineConfig) {
     * Starts execution of the given [TestSuite], intercepting calls via [EngineInterceptor]s.
     */
    suspend fun execute(suite: TestSuite): EngineResult {
-      require(suite.specs.isNotEmpty()) { "Cannot invoke the engine with no specs" }
       log { "TestEngine: Executing test suite with ${suite.specs.size} specs" }
 
       val innerExecute: suspend (TestSuite, TestEngineListener) -> EngineResult = { ts, tel ->

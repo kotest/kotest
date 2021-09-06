@@ -5,7 +5,7 @@ import io.kotest.core.extensions.SpecInterceptExtension
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.SpecRef
 import io.kotest.engine.listener.TestEngineListener
-import io.kotest.engine.spec.interceptor.InactiveSpecInterceptor
+import io.kotest.engine.spec.interceptor.IgnoredSpecInterceptor
 import io.kotest.engine.spec.interceptor.RunIfActiveInterceptor
 import io.kotest.engine.spec.interceptor.SpecInterceptExtensionsInterceptor
 import io.kotest.engine.spec.interceptor.SpecEnterExitInterceptor
@@ -36,7 +36,7 @@ class SpecExecutor(private val listener: TestEngineListener) {
 
       val interceptors = listOf(
          SpecEnterExitInterceptor(listener),
-         InactiveSpecInterceptor(listener),
+         IgnoredSpecInterceptor(listener),
       )
 
       val innerExecute: suspend (SpecRef) -> Unit = {

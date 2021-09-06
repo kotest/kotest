@@ -10,7 +10,7 @@ import kotlin.reflect.KClass
 /**
  * Validates that a [Spec] style is compatible for platforms that do not support nested tests.
  */
-internal object SpecStyleValidationInterceptor : EngineInterceptor {
+internal object DisallowNestedSpecStylesInterceptor : EngineInterceptor {
 
    override suspend fun intercept(
       suite: TestSuite,

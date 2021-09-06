@@ -9,7 +9,7 @@ import io.kotest.engine.interceptors.ProjectExtensionEngineInterceptor
 import io.kotest.engine.interceptors.ProjectListenerEngineInterceptor
 import io.kotest.engine.interceptors.ProjectTimeoutEngineInterceptor
 import io.kotest.engine.interceptors.SpecSortEngineInterceptor
-import io.kotest.engine.interceptors.SpecStyleValidationInterceptor
+import io.kotest.engine.interceptors.DisallowNestedSpecStylesInterceptor
 import io.kotest.engine.interceptors.TestDslStateInterceptor
 import io.kotest.engine.interceptors.TestEngineListenerInitializeFinalizeInterceptor
 import io.kotest.engine.interceptors.TestEngineListenerStartedFinishedInterceptor
@@ -19,7 +19,7 @@ actual fun testEngineInterceptors(conf: Configuration): List<EngineInterceptor> 
       TestEngineListenerInitializeFinalizeInterceptor,
       ProjectTimeoutEngineInterceptor(conf.projectTimeout),
       TestDslStateInterceptor,
-      SpecStyleValidationInterceptor,
+      DisallowNestedSpecStylesInterceptor,
       SpecSortEngineInterceptor,
       ProjectExtensionEngineInterceptor(configuration.extensions().filterIsInstance<ProjectExtension>()),
       ProjectListenerEngineInterceptor(configuration.extensions()),
