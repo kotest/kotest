@@ -9,7 +9,7 @@ import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestType
 import io.kotest.core.test.createTestName
 import io.kotest.core.test.toTestCase
-import io.kotest.engine.ExecutorExecutionContext
+import io.kotest.engine.ExecutorInterruptableExecutionContext
 import io.kotest.engine.concurrency.resolvedThreads
 import io.kotest.engine.spec.SpecExtensions
 import io.kotest.engine.listener.TestEngineListener
@@ -156,7 +156,7 @@ internal class InstancePerTestSpecRunner(
             override suspend fun testFinished(testCase: TestCase, result: TestResult) {
                if (isTarget) listener.testFinished(testCase, result)
             }
-         }, ExecutorExecutionContext)
+         }, ExecutorInterruptableExecutionContext)
 
          val result = testExecutor.execute(test, context)
          results[test] = result

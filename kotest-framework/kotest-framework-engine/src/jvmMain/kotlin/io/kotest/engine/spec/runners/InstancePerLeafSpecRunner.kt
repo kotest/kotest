@@ -9,7 +9,7 @@ import io.kotest.core.test.TestContext
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.createTestName
 import io.kotest.core.test.toTestCase
-import io.kotest.engine.ExecutorExecutionContext
+import io.kotest.engine.ExecutorInterruptableExecutionContext
 import io.kotest.engine.spec.SpecExtensions
 import io.kotest.engine.listener.TestEngineListener
 import io.kotest.engine.spec.SpecRunner
@@ -149,7 +149,7 @@ internal class InstancePerLeafSpecRunner(
                   }
                }
             },
-            ExecutorExecutionContext
+            ExecutorInterruptableExecutionContext
          )
 
          val result = testExecutor.execute(test, context)

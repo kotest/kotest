@@ -45,7 +45,7 @@ class CoroutineStatus : ThreadContextElement<Unit> {
    }
 }
 
-object ExecutorExecutionContext : InterruptableExecutionContext {
+object ExecutorInterruptableExecutionContext : InterruptableExecutionContext {
 
    // we run tests and callbacks inside an executor so that the before/after callbacks
    // and the test itself run on the same thread.
