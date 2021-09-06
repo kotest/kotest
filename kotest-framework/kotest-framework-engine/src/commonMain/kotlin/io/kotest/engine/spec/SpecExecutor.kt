@@ -7,8 +7,8 @@ import io.kotest.core.spec.SpecRef
 import io.kotest.engine.listener.TestEngineListener
 import io.kotest.engine.spec.interceptor.IgnoredSpecInterceptor
 import io.kotest.engine.spec.interceptor.RunIfActiveInterceptor
-import io.kotest.engine.spec.interceptor.SpecInterceptExtensionsInterceptor
 import io.kotest.engine.spec.interceptor.SpecEnterExitInterceptor
+import io.kotest.engine.spec.interceptor.SpecInterceptExtensionsInterceptor
 import io.kotest.engine.spec.interceptor.SpecStartedFinishedInterceptor
 import io.kotest.fp.flatMap
 import io.kotest.mpp.log
@@ -40,8 +40,7 @@ class SpecExecutor(private val listener: TestEngineListener) {
       )
 
       val innerExecute: suspend (SpecRef) -> Unit = {
-         createInstance(ref)
-            .map { specInterceptors(it) }
+         createInstance(ref).onSuccess { specInterceptors(it) }
       }
 
       log { "SpecExecutor: Executing ${interceptors.size} reference interceptors" }
@@ -79,9 +78,9 @@ class SpecExecutor(private val listener: TestEngineListener) {
    private suspend fun createInstance(ref: SpecRef): Result<Spec> =
       ref.instance()
          .onFailure {
-            listener.specInstantiationError(ref::class, it)
             log { "SpecExecutor: instantiation error for ${ref.kclass} $it" }
-            it.printStackTrace()
+            listener.specInstantiationError(ref.kclass, it)
+            SpecExtensions(configuration).specInstantiationError(ref.kclass, it)
          }
          .flatMap { spec -> extensions.specInitialize(spec).map { spec } }
          .flatMap { spec -> extensions.specInstantiated(spec).map { spec } }

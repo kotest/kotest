@@ -14,7 +14,7 @@ class BeforeProjectListenerTest : FunSpec({
 
       var fired = false
 
-      configuration.registerListener(object : ProjectListener {
+      configuration.register(object : ProjectListener {
          override suspend fun beforeProject() {
             fired = true
          }
@@ -33,7 +33,7 @@ class BeforeProjectListenerTest : FunSpec({
 
       var fired = false
 
-      configuration.registerListener(object : BeforeProjectListener {
+      configuration.register(object : BeforeProjectListener {
          override suspend fun beforeProject() {
             fired = true
          }

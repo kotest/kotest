@@ -29,6 +29,8 @@ class SpecExtensionTest : WordSpec() {
 
    init {
 
+      register(SpecExtensionNumbers.ext)
+
       afterProject {
          SpecExtensionNumbers.after shouldBe 1
       }

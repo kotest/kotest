@@ -1,11 +1,13 @@
 package com.sksamuel.kotest.engine.extensions.project
 
+import io.kotest.core.spec.Isolate
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.spec.style.WordSpec
 import io.kotest.engine.KotestEngineLauncher
 import io.kotest.engine.listener.NoopTestEngineListener
 import io.kotest.matchers.shouldBe
 
+@Isolate
 class BeforeAndAfterProjectCallbackTest : WordSpec() {
    init {
        "project config" should {

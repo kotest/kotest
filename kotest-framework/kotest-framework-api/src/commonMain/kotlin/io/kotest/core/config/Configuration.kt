@@ -343,17 +343,33 @@ class Configuration {
    fun registerExtensions(extensions: List<Extension>) = extensions.forEach { registerExtension(it) }
    fun deregisterExtensions(extensions: List<Extension>) = extensions.forEach { deregisterExtension(it) }
 
+   @Deprecated(
+      "Use register. This will be removed in 6.0.",
+      ReplaceWith("register(extension)")
+   )
    fun registerExtension(extension: Extension) {
       extensions.add(extension)
    }
 
+   fun register(extension: Extension) {
+      extensions.add(extension)
+   }
+
+   @Deprecated(
+      "Use deregister. This will be removed in 6.0.",
+      ReplaceWith("deregister(extension)")
+   )
    fun deregisterExtension(extension: Extension) {
       extensions.remove(extension)
    }
 
+   fun deregister(extension: Extension) {
+      extensions.remove(extension)
+   }
+
    @Deprecated(
-      "Use registerExtension. This will be removed in 6.0.",
-      ReplaceWith("registerListeners(listeners)")
+      "Use register. This will be removed in 6.0.",
+      ReplaceWith("register(listeners)")
    )
    fun registerListeners(vararg listeners: Listener) = listeners.forEach { registerExtension(it) }
 

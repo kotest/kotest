@@ -14,6 +14,7 @@ import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.fp.Try
 import io.kotest.mpp.log
+import kotlin.reflect.KClass
 
 /**
  * Used to invoke extension points / listeners / callbacks on specs.
@@ -63,6 +64,12 @@ class SpecExtensions(private val configuration: Configuration) {
       log { "SpecExtensions: specInstantiated spec:$spec" }
       val listeners = configuration.extensions().filterIsInstance<SpecInstantiationListener>()
       listeners.forEach { it.specInstantiated(spec) }
+   }
+
+   fun specInstantiationError(kclass: KClass<out Spec>, t: Throwable) = kotlin.runCatching {
+      log { "SpecExtensions: specInstantiationError kclass:${kclass} errror:$t" }
+      val listeners = configuration.extensions().filterIsInstance<SpecInstantiationListener>()
+      listeners.forEach { it.specInstantiationError(kclass, t) }
    }
 
    suspend fun inactiveSpec(spec: Spec, results: Map<TestCase, TestResult>) {

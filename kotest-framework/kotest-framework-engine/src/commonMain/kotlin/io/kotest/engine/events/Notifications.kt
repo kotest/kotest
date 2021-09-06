@@ -2,7 +2,6 @@ package io.kotest.engine.events
 
 import io.kotest.core.config.configuration
 import io.kotest.core.listeners.FinalizeSpecListener
-import io.kotest.core.listeners.SpecInstantiationListener
 import io.kotest.core.listeners.TestListener
 import io.kotest.core.plan.Descriptor
 import io.kotest.core.spec.Spec
@@ -93,16 +92,6 @@ class Notifications(private val listener: TestEngineListener) {
    ) = Try {
       configuration.extensions().filterIsInstance<FinalizeSpecListener>().forEach {
          it.finalizeSpec(kclass, results)
-      }
-   }
-
-   suspend fun specInstantiationError(kclass: KClass<out Spec>, t: Throwable) = Try {
-      log { "NotificationManager:specInstantiationError $kclass error:$t" }
-      val listeners = configuration.extensions().filterIsInstance<SpecInstantiationListener>()
-      t.printStackTrace()
-      listener.specInstantiationError(kclass, t)
-      listeners.forEach {
-         it.specInstantiationError(kclass, t)
       }
    }
 }

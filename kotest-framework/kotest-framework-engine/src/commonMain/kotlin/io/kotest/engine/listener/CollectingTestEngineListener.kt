@@ -14,6 +14,10 @@ class CollectingTestEngineListener : TestEngineListener {
       specs[kclass] = t
    }
 
+   override suspend fun specInstantiationError(kclass: KClass<*>, t: Throwable) {
+      specs[kclass] = t
+   }
+
    override suspend fun testIgnored(testCase: TestCase, reason: String?) {
       tests[testCase] = TestResult.ignored(reason)
    }

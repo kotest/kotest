@@ -15,7 +15,7 @@ import io.kotest.mpp.log
 class IgnoredSpecInterceptor(private val listener: TestEngineListener) : SpecRefInterceptor {
    override suspend fun intercept(fn: suspend (SpecRef) -> Unit): suspend (SpecRef) -> Unit = { ref ->
       val isIgnored = ref.kclass.hasAnnotation<Ignored>()
-      log { "InactiveSpecInterceptor: ${ref.kclass} has @Ignored == $isIgnored" }
+      log { "IgnoredSpecInterceptor: ${ref.kclass} has @Ignored == $isIgnored" }
       if (isIgnored) {
          listener.specIgnored(ref.kclass)
       } else {

@@ -127,7 +127,8 @@ interface TestEngineListener {
    suspend fun testFinished(testCase: TestCase, result: TestResult) {}
 
    @ExperimentalKotest
-   suspend fun testFinished(descriptor: Descriptor.TestDescriptor, result: TestResult) {}
+   suspend fun testFinished(descriptor: Descriptor.TestDescriptor, result: TestResult) {
+   }
 
    /**
     * Invoked each time an instance of a [Spec] is created.
@@ -135,6 +136,9 @@ interface TestEngineListener {
     */
    suspend fun specInstantiated(spec: Spec) {}
 
+   /**
+    * Invoked each time an instance of a [Spec] fails to be created reflectively.
+    */
    suspend fun specInstantiationError(kclass: KClass<*>, t: Throwable) {}
 
    /**
