@@ -2,7 +2,6 @@
 
 package io.kotest.engine
 
-import io.kotest.common.runBlocking
 import io.kotest.core.Tags
 import io.kotest.core.config.AbstractProjectConfig
 import io.kotest.core.config.configuration
@@ -10,12 +9,11 @@ import io.kotest.core.filter.SpecFilter
 import io.kotest.core.filter.TestFilter
 import io.kotest.core.internal.KotestEngineProperties
 import io.kotest.core.spec.Spec
+import io.kotest.core.spec.SpecRef
 import io.kotest.engine.config.ConfigManager
 import io.kotest.engine.listener.NoopTestEngineListener
-import io.kotest.engine.listener.TestEngineListener
-import io.kotest.core.spec.SpecRef
-import io.kotest.engine.listener.CompositeTestEngineListener
 import io.kotest.engine.listener.PinnedSpecTestEngineListener
+import io.kotest.engine.listener.TestEngineListener
 import io.kotest.engine.listener.ThreadSafeTestEngineListener
 import io.kotest.engine.spec.InstanceSpecRef
 import io.kotest.engine.spec.ReflectiveSpecRef
@@ -137,54 +135,30 @@ class TestEngineLauncher(
       )
    }
 
+   fun toConfig(): TestEngineConfig {
+      return TestEngineConfig(
+         listener = ThreadSafeTestEngineListener(
+            PinnedSpecTestEngineListener(
+               listener
+            )
+         ),
+         interceptors = testEngineInterceptors(configuration),
+         ConfigManager.initialize(configuration, configs),
+         testFilters,
+         specFilters,
+         explicitTags,
+      )
+   }
+
+   fun testSuite(): TestSuite = TestSuite(refs)
+
    /**
     * Launch the [TestEngine] created from this builder.
-    * This variation of launch requires a coroutine since it is suspending.
     */
    suspend fun launch(): EngineResult {
       log { "TestEngineLauncher: Launching Test Engine" }
-
-      val config = TestEngineConfig(
-         listener = ThreadSafeTestEngineListener(
-            PinnedSpecTestEngineListener(
-               listener
-            )
-         ),
-         interceptors = testEngineInterceptors(configuration),
-         ConfigManager.initialize(configuration, configs),
-         testFilters,
-         specFilters,
-         explicitTags,
-      )
-
-      val engine = TestEngine(config)
-      return engine.execute(TestSuite(refs))
-   }
-
-   /**
-    * Launch the [TestEngine] created from this builder, block until the engine has completed,
-    * and then return any unhandled errors inside the [EngineResult].
-    */
-   fun sync(): EngineResult {
-      log { "TestEngineLauncher: Launching Test Engine in blocking mode" }
-
-      val config = TestEngineConfig(
-         listener = ThreadSafeTestEngineListener(
-            PinnedSpecTestEngineListener(
-               listener
-            )
-         ),
-         interceptors = testEngineInterceptors(configuration),
-         ConfigManager.initialize(configuration, configs),
-         testFilters,
-         specFilters,
-         explicitTags,
-      )
-
-      return runBlocking {
-         val engine = TestEngine(config)
-         engine.execute(TestSuite(refs))
-      }
+      val engine = TestEngine(toConfig())
+      return engine.execute(testSuite())
    }
 }
 
