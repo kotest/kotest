@@ -25,14 +25,16 @@ class RunIfActiveInterceptor(private val listener: TestEngineListener) : SpecExe
    ): suspend (Spec) -> Map<TestCase, TestResult> = { spec ->
 
       val roots = spec.materializeAndOrderRootTests()
-      val active = roots.any { it.testCase.isEnabled().isEnabled }
+      val enabled = roots.associate { it.testCase to it.testCase.isEnabled() }
+      val active = enabled.any { it.value.isEnabled }
+
       log { "RunIfActiveTestsInterceptor: active=$active from ${roots.size} root tests [$spec]" }
 
       if (active) {
          fn(spec)
       } else {
          listener.specInactive(spec::class)
-         val results = roots.associate { it.testCase to TestResult.ignored(it.testCase.isEnabled()) }
+         val results = enabled.mapValues { TestResult.ignored(it.value.reason) }
          SpecExtensions(configuration).inactiveSpec(spec, results)
          results
       }
