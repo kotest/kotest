@@ -81,6 +81,25 @@ class JsonLiteralsTest : FunSpec(
             "5E0" lenientShouldEqualJson "5.0"
          }
 
+         test("Strings with numbers") {
+            shouldFail {
+               "\"abc 123\"" lenientShouldEqualJson "123"
+            }.shouldHaveMessage(
+               """
+                  The top level expected number but was string
+
+                  expected:
+                  123
+
+                  actual:
+                  "abc 123"
+               """.trimIndent()
+            )
+
+            shouldFail {
+               "123" lenientShouldEqualJson "\"abc 123\""
+            }
+         }
 
          test("booleans in strings are ok") {
             "true" lenientShouldEqualJson "\"true\""
