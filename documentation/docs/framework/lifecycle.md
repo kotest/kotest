@@ -7,23 +7,23 @@
 * TestEngineListener.specEnter(kclass)
   * If ref is disabled (@Ignored or @EnabledIf annotations):
     * TestEngineListener.specIgnored(kclass)
-    * SpecDisabledListener.specDisabled(kclass, reason)
+    * IgnoredSpecListener.specIgnored(kclass, reason)
   * If ref is enabled:
     * spec = create instance of ref
     * SpecInterceptExtension.intercept(spec)
     * If spec is inactive (no enabled root tests):
-      * TestEngineListener.specIgnored(kclass)
-      * SpecInactiveListener.specInactive(spec, results)
+      * TestEngineListener.specInactive(kclass)
+      * InactiveSpecListener.inactive(spec, results)
     * If spec is active (has enabled root tests):
       * TestEngineListener.specStarted(kclass)
-      * PrepareSpecListener.prepareSpec(kclass)
+      * StartSpecListener.specStarted(kclass)
       * For each isolated spec: create new instance
         * BeforeSpecListener.beforeSpec(spec)
         * Execute tests
         * AfterSpecListener.afterSpec(spec)
       * FinishSpecListener.finishSpec(kclass)
-      * TestEngineListener.specFinished(kclass)
-* TestEngineListener.specExit(kclass)
+      * TestEngineListener.specFinished(kclass, results)
+* TestEngineListener.specExit(kclass, throwable)
 
 ### Spec Instantiation Lifecycle
 

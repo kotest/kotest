@@ -29,8 +29,8 @@ interface FinishSpecListener : Listener {
     * @param results a map of each test case mapped to its result.
     */
    @Deprecated(
-      "Renamed to specComplete. Deprecated since 5.0 and will be removed in 6.0",
-      ReplaceWith("specCompleted(kclass, results)")
+      "Renamed to finishSpec. Deprecated since 5.0 and will be removed in 6.0",
+      ReplaceWith("finishSpec(kclass, results)")
    )
    suspend fun finalizeSpec(
       kclass: KClass<out Spec>,

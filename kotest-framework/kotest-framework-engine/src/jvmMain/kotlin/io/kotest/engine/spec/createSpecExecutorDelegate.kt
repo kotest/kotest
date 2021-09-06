@@ -4,6 +4,8 @@ import io.kotest.core.config.Configuration
 import io.kotest.core.config.configuration
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.Spec
+import io.kotest.core.test.TestCase
+import io.kotest.core.test.TestResult
 import io.kotest.engine.concurrency.resolvedConcurrentTests
 import io.kotest.engine.concurrency.resolvedThreads
 import io.kotest.engine.listener.TestEngineListener
@@ -22,7 +24,7 @@ actual fun createSpecExecutorDelegate(
    private fun Spec.resolvedIsolationMode() =
       this.isolationMode() ?: this.isolationMode ?: configuration.isolationMode
 
-   override suspend fun execute(spec: Spec) {
+   override suspend fun execute(spec: Spec): Result<Map<TestCase, TestResult>> {
 
       val scheduler = when (val concurrentTests = spec.resolvedConcurrentTests()) {
          Configuration.Sequential -> SequentialTestScheduler
@@ -38,6 +40,6 @@ actual fun createSpecExecutorDelegate(
          }
       }
 
-      runner.execute(spec)
+      return runner.execute(spec)
    }
 }

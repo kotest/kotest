@@ -6,7 +6,7 @@ import io.kotest.core.extensions.SpecFinalizeExtension
 import io.kotest.core.extensions.SpecInitializeExtension
 import io.kotest.core.listeners.AfterSpecListener
 import io.kotest.core.listeners.BeforeSpecListener
-import io.kotest.core.listeners.SpecInactiveListener
+import io.kotest.core.listeners.InactiveSpecListener
 import io.kotest.core.listeners.SpecInstantiationListener
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.functionOverrideCallbacks
@@ -42,10 +42,12 @@ class SpecExtensions(private val configuration: Configuration) {
       extensions(spec).filterIsInstance<SpecFinalizeExtension>().forEach { it.finalize(spec) }
    }
 
-   suspend fun beforeSpec(spec: Spec): Result<Spec> = kotlin.runCatching {
+   suspend fun beforeSpec(spec: Spec): Result<Spec> {
       log { "SpecExtensions: beforeSpec $spec" }
-      extensions(spec).filterIsInstance<BeforeSpecListener>().forEach { it.beforeSpec(spec) }
-      spec
+      return kotlin.runCatching {
+         extensions(spec).filterIsInstance<BeforeSpecListener>().forEach { it.beforeSpec(spec) }
+         spec
+      }.fold({ Result.success(it) }, { Result.failure(BeforeSpecListenerException(it)) })
    }
 
    suspend fun afterSpec(spec: Spec): Result<Spec> = kotlin.runCatching {
@@ -56,8 +58,10 @@ class SpecExtensions(private val configuration: Configuration) {
          closeables.forEach { it.value.close() }
       }
 
-      extensions(spec).filterIsInstance<AfterSpecListener>().forEach { it.afterSpec(spec) }
-      spec
+      return kotlin.runCatching {
+         extensions(spec).filterIsInstance<AfterSpecListener>().forEach { it.afterSpec(spec) }
+         spec
+      }.fold({ Result.success(it) }, { Result.failure(AfterSpecListenerException(it)) })
    }
 
    fun specInstantiated(spec: Spec) = kotlin.runCatching {
@@ -73,6 +77,9 @@ class SpecExtensions(private val configuration: Configuration) {
    }
 
    suspend fun inactiveSpec(spec: Spec, results: Map<TestCase, TestResult>) {
-      configuration.extensions().filterIsInstance<SpecInactiveListener>().forEach { it.specInactive(spec, results) }
+      configuration.extensions().filterIsInstance<InactiveSpecListener>().forEach { it.specInactive(spec, results) }
    }
 }
+
+class BeforeSpecListenerException(throwable: Throwable) : RuntimeException(throwable)
+class AfterSpecListenerException(throwable: Throwable) : RuntimeException(throwable)

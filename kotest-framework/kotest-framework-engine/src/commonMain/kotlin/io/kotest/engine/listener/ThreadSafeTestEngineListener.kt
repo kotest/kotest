@@ -1,6 +1,5 @@
 package io.kotest.engine.listener
 
-import io.kotest.core.plan.Descriptor
 import io.kotest.core.spec.Spec
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
@@ -33,9 +32,9 @@ class ThreadSafeTestEngineListener(private val listener: TestEngineListener) : T
       }
    }
 
-   override suspend fun specFinished(kclass: KClass<*>, t: Throwable?, results: Map<TestCase, TestResult>) {
+   override suspend fun specFinished(kclass: KClass<*>, results: Map<TestCase, TestResult>) {
       mutex.withLock {
-         listener.specFinished(kclass, t, results)
+         listener.specFinished(kclass, results)
       }
    }
 
@@ -69,40 +68,6 @@ class ThreadSafeTestEngineListener(private val listener: TestEngineListener) : T
       }
    }
 
-   override suspend fun specFinished(
-      spec: Descriptor.SpecDescriptor,
-      t: Throwable?,
-      results: Map<Descriptor.TestDescriptor, TestResult>
-   ) {
-      mutex.withLock {
-         listener.specFinished(spec, t, results)
-      }
-   }
-
-   override suspend fun specStarted(spec: Descriptor.SpecDescriptor) {
-      mutex.withLock {
-         listener.specStarted(spec)
-      }
-   }
-
-   override suspend fun testFinished(descriptor: Descriptor.TestDescriptor, result: TestResult) {
-      mutex.withLock {
-         listener.testFinished(descriptor, result)
-      }
-   }
-
-   override suspend fun testIgnored(descriptor: Descriptor.TestDescriptor, reason: String?) {
-      mutex.withLock {
-         listener.testIgnored(descriptor, reason)
-      }
-   }
-
-   override suspend fun testStarted(descriptor: Descriptor.TestDescriptor) {
-      mutex.withLock {
-         listener.testStarted(descriptor)
-      }
-   }
-
    override suspend fun engineFinalize() {
       mutex.withLock {
          listener.engineFinalize()
@@ -115,15 +80,21 @@ class ThreadSafeTestEngineListener(private val listener: TestEngineListener) : T
       }
    }
 
-   override suspend fun specExit(kclass: KClass<out Spec>) {
+   override suspend fun specExit(kclass: KClass<out Spec>, t: Throwable?) {
       mutex.withLock {
-         listener.specExit(kclass)
+         listener.specExit(kclass, t)
       }
    }
 
    override suspend fun specIgnored(kclass: KClass<out Spec>) {
       mutex.withLock {
          listener.specIgnored(kclass)
+      }
+   }
+
+   override suspend fun specInactive(kclass: KClass<*>) {
+      mutex.withLock {
+         listener.specInactive(kclass)
       }
    }
 

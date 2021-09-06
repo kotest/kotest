@@ -3,9 +3,9 @@ package com.sksamuel.kotest.runner.junit5
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.engine.spec.ReflectiveSpecRef
 import io.kotest.engine.spec.SpecExecutor
+import io.kotest.matchers.shouldBe
 import io.kotest.runner.junit.platform.JUnitTestEngineListener
 import io.kotest.runner.junit.platform.KotestEngineDescriptor
-import io.kotest.matchers.shouldBe
 import org.junit.platform.engine.EngineExecutionListener
 import org.junit.platform.engine.TestDescriptor
 import org.junit.platform.engine.TestExecutionResult
@@ -41,7 +41,6 @@ class SpecInitializationErrorTest : FunSpec({
       executor.execute(ReflectiveSpecRef(SpecWithFieldError::class))
 
       finished.toMap() shouldBe mapOf(
-         "Spec execution failed" to TestExecutionResult.Status.ABORTED,
          "com.sksamuel.kotest.runner.junit5.SpecWithFieldError" to TestExecutionResult.Status.FAILED
       )
    }
@@ -73,7 +72,6 @@ class SpecInitializationErrorTest : FunSpec({
       executor.execute(ReflectiveSpecRef(SpecWithInitError::class))
 
       finished.toMap() shouldBe mapOf(
-         "Spec execution failed" to TestExecutionResult.Status.ABORTED,
          "com.sksamuel.kotest.runner.junit5.SpecWithInitError" to TestExecutionResult.Status.FAILED
       )
    }

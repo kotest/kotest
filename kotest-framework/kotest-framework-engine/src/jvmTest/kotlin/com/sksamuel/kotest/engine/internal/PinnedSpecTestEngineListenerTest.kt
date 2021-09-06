@@ -53,10 +53,10 @@ class PinnedSpecTestEngineListenerTest : WordSpec({
          listener.specStarted(spec2::class)
          listener.specInstantiated(spec2)
 
-         listener.specFinished(spec2::class, null, emptyMap())
-         listener.specExit(spec2::class)
-         listener.specFinished(spec3::class, null, emptyMap())
-         listener.specExit(spec3::class)
+         listener.specFinished(spec2::class, emptyMap())
+         listener.specExit(spec2::class, null)
+         listener.specFinished(spec3::class, emptyMap())
+         listener.specExit(spec3::class, null)
 
          verifyOrder {
             runBlocking {
@@ -74,25 +74,25 @@ class PinnedSpecTestEngineListenerTest : WordSpec({
             }
          }
 
-         listener.specFinished(spec1::class, null, emptyMap())
-         listener.specExit(spec1::class)
+         listener.specFinished(spec1::class, emptyMap())
+         listener.specExit(spec1::class, null)
 
          verifyOrder {
             runBlocking {
-               mock.specFinished(spec1::class, any(), any())
-               mock.specExit(spec1::class)
+               mock.specFinished(spec1::class, any())
+               mock.specExit(spec1::class, null)
                mock.specStarted(spec2::class)
                mock.specInstantiated(spec2)
-               mock.specFinished(spec2::class, any(), any())
-               mock.specExit(spec2::class)
+               mock.specFinished(spec2::class, any())
+               mock.specExit(spec2::class, null)
             }
          }
          verify(exactly = 0) {
             runBlocking {
                mock.specStarted(spec3::class)
                mock.specInstantiated(spec3)
-               mock.specFinished(spec3::class, any(), any())
-               mock.specExit(spec3::class)
+               mock.specFinished(spec3::class, any())
+               mock.specExit(spec3::class, null)
             }
          }
       }
@@ -115,46 +115,46 @@ class PinnedSpecTestEngineListenerTest : WordSpec({
                listener.specEnter(spec1::class)
                listener.specStarted(spec1::class)
                listener.specInstantiated(spec1)
-               listener.specFinished(spec1::class, null, emptyMap())
-               listener.specExit(spec1::class)
+               listener.specFinished(spec1::class, emptyMap())
+               listener.specExit(spec1::class, null)
             }
             launch(Dispatchers.IO) {
                delay(kotlin.random.Random.nextLong(1, 100))
                listener.specEnter(spec2::class)
                listener.specStarted(spec2::class)
                listener.specInstantiated(spec2)
-               listener.specFinished(spec2::class, null, emptyMap())
-               listener.specExit(spec2::class)
+               listener.specFinished(spec2::class, emptyMap())
+               listener.specExit(spec2::class, null)
             }
             launch(Dispatchers.IO) {
                delay(kotlin.random.Random.nextLong(1, 100))
                listener.specEnter(spec3::class)
                listener.specStarted(spec3::class)
                listener.specInstantiated(spec3)
-               listener.specFinished(spec3::class, null, emptyMap())
-               listener.specExit(spec3::class)
+               listener.specFinished(spec3::class, emptyMap())
+               listener.specExit(spec3::class, null)
             }
             launch(Dispatchers.IO) {
                delay(kotlin.random.Random.nextLong(1, 100))
                listener.specEnter(spec4::class)
                listener.specStarted(spec4::class)
                listener.specInstantiated(spec4)
-               listener.specFinished(spec4::class, null, emptyMap())
-               listener.specExit(spec4::class)
+               listener.specFinished(spec4::class, emptyMap())
+               listener.specExit(spec4::class, null)
 
                listener.specEnter(spec5::class)
                listener.specStarted(spec5::class)
                listener.specInstantiated(spec5)
-               listener.specFinished(spec5::class, null, emptyMap())
-               listener.specExit(spec5::class)
+               listener.specFinished(spec5::class, emptyMap())
+               listener.specExit(spec5::class, null)
             }
             launch(Dispatchers.IO) {
                delay(kotlin.random.Random.nextLong(1, 100))
                listener.specEnter(spec6::class)
                listener.specStarted(spec6::class)
                listener.specInstantiated(spec6)
-               listener.specFinished(spec6::class, null, emptyMap())
-               listener.specExit(spec6::class)
+               listener.specFinished(spec6::class, emptyMap())
+               listener.specExit(spec6::class, null)
             }
          }
 
@@ -166,8 +166,8 @@ class PinnedSpecTestEngineListenerTest : WordSpec({
                mock.specEnter(spec1::class)
                mock.specStarted(spec1::class)
                mock.specInstantiated(spec1)
-               mock.specFinished(spec1::class, any(), any())
-               mock.specExit(spec1::class)
+               mock.specFinished(spec1::class, any())
+               mock.specExit(spec1::class, null)
             }
          }
          verifyOrder {
@@ -175,8 +175,8 @@ class PinnedSpecTestEngineListenerTest : WordSpec({
                mock.specEnter(spec2::class)
                mock.specStarted(spec2::class)
                mock.specInstantiated(spec2)
-               mock.specFinished(spec2::class, any(), any())
-               mock.specExit(spec2::class)
+               mock.specFinished(spec2::class, any())
+               mock.specExit(spec2::class, null)
             }
          }
          verifyOrder {
@@ -184,8 +184,8 @@ class PinnedSpecTestEngineListenerTest : WordSpec({
                mock.specEnter(spec3::class)
                mock.specStarted(spec3::class)
                mock.specInstantiated(spec3)
-               mock.specFinished(spec3::class, any(), any())
-               mock.specExit(spec3::class)
+               mock.specFinished(spec3::class, any())
+               mock.specExit(spec3::class, null)
             }
          }
          verifyOrder {
@@ -193,14 +193,14 @@ class PinnedSpecTestEngineListenerTest : WordSpec({
                mock.specEnter(spec4::class)
                mock.specStarted(spec4::class)
                mock.specInstantiated(spec4)
-               mock.specFinished(spec4::class, any(), any())
-               mock.specExit(spec4::class)
+               mock.specFinished(spec4::class, any())
+               mock.specExit(spec4::class, null)
 
                mock.specEnter(spec5::class)
                mock.specStarted(spec5::class)
                mock.specInstantiated(spec5)
-               mock.specFinished(spec5::class, any(), any())
-               mock.specExit(spec5::class)
+               mock.specFinished(spec5::class, any())
+               mock.specExit(spec5::class, null)
             }
          }
          verifyOrder {
@@ -208,8 +208,8 @@ class PinnedSpecTestEngineListenerTest : WordSpec({
                mock.specEnter(spec6::class)
                mock.specStarted(spec6::class)
                mock.specInstantiated(spec6)
-               mock.specFinished(spec6::class, any(), any())
-               mock.specExit(spec6::class)
+               mock.specFinished(spec6::class, any())
+               mock.specExit(spec6::class, null)
             }
          }
       }

@@ -4,6 +4,8 @@ import io.kotest.core.config.configuration
 import io.kotest.core.extensions.SpecInterceptExtension
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.SpecRef
+import io.kotest.core.test.TestCase
+import io.kotest.core.test.TestResult
 import io.kotest.engine.listener.TestEngineListener
 import io.kotest.engine.spec.interceptor.IgnoredSpecInterceptor
 import io.kotest.engine.spec.interceptor.RunIfActiveInterceptor
@@ -39,8 +41,9 @@ class SpecExecutor(private val listener: TestEngineListener) {
          IgnoredSpecInterceptor(listener),
       )
 
-      val innerExecute: suspend (SpecRef) -> Unit = {
-         createInstance(ref).onSuccess { specInterceptors(it) }
+      val innerExecute: suspend (SpecRef) -> Map<TestCase, TestResult> = {
+         val spec = createInstance(ref).getOrThrow()
+         specInterceptors(spec)
       }
 
       log { "SpecExecutor: Executing ${interceptors.size} reference interceptors" }
@@ -49,7 +52,7 @@ class SpecExecutor(private val listener: TestEngineListener) {
       }.invoke(ref)
    }
 
-   private suspend fun specInterceptors(spec: Spec) {
+   private suspend fun specInterceptors(spec: Spec): Map<TestCase, TestResult> {
 
       val interceptors = listOf(
          SpecInterceptExtensionsInterceptor(
@@ -59,14 +62,14 @@ class SpecExecutor(private val listener: TestEngineListener) {
          SpecStartedFinishedInterceptor(listener),
       )
 
-      val innerExecute: suspend (Spec) -> Unit = {
+      val innerExecute: suspend (Spec) -> Map<TestCase, TestResult> = {
          val delegate = createSpecExecutorDelegate(listener)
          log { "SpecExecutor: Created spec executor delegate $delegate" }
-         delegate.execute(spec)
+         delegate.execute(spec).getOrThrow()
       }
 
       log { "SpecExecutor: Executing ${interceptors.size} spec interceptors" }
-      interceptors.foldRight(innerExecute) { ext, fn ->
+      return interceptors.foldRight(innerExecute) { ext, fn ->
          { r -> ext.intercept(fn)(r) }
       }.invoke(spec)
    }
@@ -87,7 +90,7 @@ class SpecExecutor(private val listener: TestEngineListener) {
 }
 
 interface SpecExecutorDelegate {
-   suspend fun execute(spec: Spec)
+   suspend fun execute(spec: Spec): Result<Map<TestCase, TestResult>>
 }
 
 expect fun createSpecExecutorDelegate(listener: TestEngineListener): SpecExecutorDelegate

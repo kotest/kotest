@@ -7,7 +7,7 @@ import io.kotest.core.test.TestResult
 /**
  * Invoked if a [Spec] has no enabled tests.
  */
-interface SpecInactiveListener : Listener {
+interface InactiveSpecListener : Listener {
 
    /**
     * Called once per [Spec] iff all tests in the spec are disabled.

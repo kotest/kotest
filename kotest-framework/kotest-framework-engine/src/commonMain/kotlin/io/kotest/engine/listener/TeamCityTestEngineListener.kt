@@ -1,7 +1,6 @@
 package io.kotest.engine.listener
 
 import io.kotest.core.plan.displayName
-import io.kotest.core.spec.SpecRef
 import io.kotest.core.spec.toDescription
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
@@ -29,7 +28,7 @@ object TeamCityTestEngineListener : TestEngineListener {
       println(msg)
    }
 
-   override suspend fun specFinished(kclass: KClass<*>, t: Throwable?, results: Map<TestCase, TestResult>) {
+   override suspend fun specFinished(kclass: KClass<*>, results: Map<TestCase, TestResult>) {
       val msg = TeamCityMessageBuilder
          .testSuiteFinished(kclass.displayName() ?: kclass.bestName())
          .id(kclass.toDescription().id.value)

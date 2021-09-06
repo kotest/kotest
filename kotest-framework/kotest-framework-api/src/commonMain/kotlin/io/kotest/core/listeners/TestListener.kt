@@ -21,7 +21,7 @@ interface TestListener :
    AfterInvocationListener,
    PrepareSpecListener,
    FinalizeSpecListener,
-   SpecInactiveListener,
+   InactiveSpecListener,
    Listener {
 
    override val name: String

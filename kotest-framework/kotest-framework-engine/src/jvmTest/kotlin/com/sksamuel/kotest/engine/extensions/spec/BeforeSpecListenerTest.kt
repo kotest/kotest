@@ -7,10 +7,12 @@ import io.kotest.core.listeners.TestListener
 import io.kotest.core.spec.Isolate
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.style.FunSpec
-import io.kotest.engine.KotestEngineLauncher
+import io.kotest.engine.TestEngineLauncher
 import io.kotest.engine.listener.CollectingTestEngineListener
 import io.kotest.engine.listener.NoopTestEngineListener
+import io.kotest.engine.spec.BeforeSpecListenerException
 import io.kotest.matchers.shouldBe
+import io.kotest.matchers.types.shouldBeInstanceOf
 import java.util.concurrent.atomic.AtomicInteger
 
 @Isolate
@@ -19,32 +21,41 @@ class BeforeSpecListenerTest : FunSpec() {
 
       test("BeforeSpecListener's should be triggered for a spec with tests") {
 
-         configuration.registerExtension(MyBeforeSpecListener)
+         configuration.register(MyBeforeSpecListener)
          counter.set(0)
 
          val listener = CollectingTestEngineListener()
-         KotestEngineLauncher()
-            .withSpec(MyPopulatedSpec3::class)
-            .withListener(listener)
+         TestEngineLauncher(listener)
+            .withClasses(MyPopulatedSpec3::class)
             .launch()
 
-         configuration.deregisterExtension(MyBeforeSpecListener)
+         configuration.deregister(MyBeforeSpecListener)
+         listener.specs.size shouldBe 1
          listener.tests.size shouldBe 1
 
          counter.get() shouldBe 5
       }
 
-      test("!BeforeSpecExtension's should NOT be triggered for a spec without tests") {
+      test("BeforeSpecListener's exceptions should be propagated to specExit") {
+         val listener = CollectingTestEngineListener()
+         TestEngineLauncher(listener)
+            .withClasses(MyErrorSpec3::class)
+            .launch()
+         listener.specs.size shouldBe 1
+         listener.specs[MyErrorSpec3::class]!!.shouldBeInstanceOf<BeforeSpecListenerException>()
+         listener.tests.size shouldBe 0
+      }
 
-         configuration.registerExtension(MyBeforeSpecListener)
+      test("BeforeSpecExtension's should NOT be triggered for a spec without tests") {
+
+         configuration.register(MyBeforeSpecListener)
          counter.set(0)
 
-         KotestEngineLauncher()
-            .withSpec(MyEmptySpec3::class)
-            .withListener(NoopTestEngineListener)
+         TestEngineLauncher(NoopTestEngineListener)
+            .withClasses(MyErrorSpec3::class)
             .launch()
 
-         configuration.deregisterExtension(MyBeforeSpecListener)
+         configuration.deregister(MyBeforeSpecListener)
 
          counter.get() shouldBe 0
       }
@@ -84,6 +95,17 @@ private class MyPopulatedSpec3 : FunSpec() {
 
       beforeSpec { counter.incrementAndGet() }
 
+      test("foo") {}
+   }
+}
+
+
+private class MyErrorSpec3 : FunSpec() {
+   override fun beforeSpec(spec: Spec) {
+      error("boom")
+   }
+
+   init {
       test("foo") {}
    }
 }
