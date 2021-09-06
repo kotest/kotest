@@ -9,7 +9,6 @@ import io.kotest.engine.test.CallingThreadExecutionContext
 import io.kotest.engine.test.CallingThreadTestContext
 import io.kotest.engine.test.TestCaseExecutor
 import io.kotest.engine.test.listener.TestCaseListenerToTestEngineListenerAdapter
-import io.kotest.engine.test.status.isEnabledInternal
 import io.kotest.mpp.log
 import kotlin.coroutines.coroutineContext
 
@@ -25,7 +24,6 @@ class DefaultSpecExecutorDelegate(private val listener: TestEngineListener) : Sp
    override suspend fun execute(spec: Spec): Map<TestCase, TestResult> {
       log { "DefaultSpecExecutorDelegate: Executing spec $spec" }
       spec.materializeAndOrderRootTests()
-         .filter { it.testCase.isEnabledInternal().isEnabled }
          .forEach { (testCase, _) ->
             log { "DefaultSpecExecutorDelegate: Executing testCase $testCase" }
             val context = CallingThreadTestContext(
@@ -40,7 +38,6 @@ class DefaultSpecExecutorDelegate(private val listener: TestEngineListener) : Sp
                CallingThreadExecutionContext
             ).execute(testCase, context)
          }
-
       return emptyMap()
    }
 }
