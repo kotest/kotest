@@ -1,9 +1,10 @@
 package io.kotest.engine
 
+import io.kotest.core.spec.Spec
+import io.kotest.core.spec.SpecRef
 import io.kotest.engine.listener.CompositeTestEngineListener
 import io.kotest.engine.listener.TestEngineListener
 import io.kotest.engine.spec.SpecExecutor
-import io.kotest.core.spec.SpecRef
 import io.kotest.mpp.log
 import kotlin.reflect.KClass
 
@@ -27,7 +28,7 @@ object JsTestSuiteScheduler : TestSuiteScheduler {
    private suspend fun execute(specs: List<SpecRef>, listener: TestEngineListener) {
       if (specs.isNotEmpty()) {
          val callback = object : TestEngineListener {
-            override suspend fun specExecutorAboutToReturn(kclass: KClass<*>) {
+            override suspend fun specExit(kclass: KClass<out Spec>) {
                execute(specs.drop(1), listener)
             }
          }
