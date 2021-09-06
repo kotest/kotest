@@ -1,8 +1,9 @@
-package io.kotest.engine.interceptors
+package com.sksamuel.kotest.engine.interceptors
 
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.engine.EngineResult
 import io.kotest.engine.TestSuite
+import io.kotest.engine.interceptors.TestEngineListenerInitializeFinalizeInterceptor
 import io.kotest.engine.listener.TestEngineListener
 import io.kotest.matchers.booleans.shouldBeTrue
 

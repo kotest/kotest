@@ -1,9 +1,11 @@
-package io.kotest.engine.spec
+package com.sksamuel.kotest.engine.spec.sorts
 
 import io.kotest.core.spec.Order
 import io.kotest.core.spec.SpecExecutionOrder
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.core.spec.style.FunSpec
+import io.kotest.engine.spec.DefaultSpecExecutionOrderExtension
+import io.kotest.engine.spec.ReflectiveSpecRef
 import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.shouldBe
 

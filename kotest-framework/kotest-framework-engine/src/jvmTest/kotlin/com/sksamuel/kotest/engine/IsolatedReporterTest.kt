@@ -1,4 +1,4 @@
-package io.kotest.engine.reporter
+package com.sksamuel.kotest.engine
 
 import io.kotest.core.annotation.Ignored
 import io.kotest.core.sourceRef
@@ -7,6 +7,8 @@ import io.kotest.core.spec.toDescription
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestType
+import io.kotest.engine.reporter.IsolatedReporter
+import io.kotest.engine.reporter.Reporter
 import io.kotest.matchers.shouldBe
 import kotlin.reflect.KClass
 
@@ -71,12 +73,12 @@ class IsolatedReporterTest : FunSpec({
       isolated.specFinished(IsolatedReporterSpec2::class, null, emptyMap())
 
       log.trim() shouldBe """
-            specStarted:class io.kotest.engine.reporter.IsolatedReporterSpec1
+            specStarted:class com.sksamuel.kotest.engine.IsolatedReporterSpec1
             testStarted:foo
-            specFinished:class io.kotest.engine.reporter.IsolatedReporterSpec1
-            specStarted:class io.kotest.engine.reporter.IsolatedReporterSpec2
+            specFinished:class com.sksamuel.kotest.engine.IsolatedReporterSpec1
+            specStarted:class com.sksamuel.kotest.engine.IsolatedReporterSpec2
             testStarted:bar
-            specFinished:class io.kotest.engine.reporter.IsolatedReporterSpec2
+            specFinished:class com.sksamuel.kotest.engine.IsolatedReporterSpec2
             """.trimIndent()
    }
 })

@@ -3,6 +3,7 @@ package io.kotest.core.listeners
 import io.kotest.core.spec.Spec
 import kotlin.reflect.KClass
 
+@Deprecated("Renamed to StartSpecListener. This typealias was deprecated in 5.0 and will be removed in 6.0")
 typealias PrepareSpecListener = StartSpecListener
 
 /**

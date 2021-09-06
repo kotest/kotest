@@ -5,6 +5,7 @@ import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.engine.listener.TestEngineListener
+import io.kotest.engine.spec.SpecExecutor
 import io.kotest.matchers.shouldBe
 import kotlin.reflect.KClass
 
@@ -15,7 +16,7 @@ class AnnotationSpecTestDetectionTest : FunSpec({
    test("An annotation spec should detect annotation tests") {
 
       val listener = object : TestEngineListener {
-         override suspend fun specFinished(kclass: KClass<*>, t: Throwable?, results: Map<TestCase, TestResult>) {
+         override suspend fun specFinished(kclass: KClass<*>, results: Map<TestCase, TestResult>) {
             tests shouldBe 2
          }
       }

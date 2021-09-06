@@ -1,4 +1,4 @@
-package io.kotest.engine.interceptors
+package com.sksamuel.kotest.engine.interceptors
 
 import io.kotest.core.listeners.AfterProjectListener
 import io.kotest.core.listeners.BeforeProjectListener
@@ -7,6 +7,7 @@ import io.kotest.engine.EngineResult
 import io.kotest.engine.TestSuite
 import io.kotest.engine.events.AfterProjectListenerException
 import io.kotest.engine.events.BeforeProjectListenerException
+import io.kotest.engine.interceptors.ProjectListenerEngineInterceptor
 import io.kotest.engine.listener.NoopTestEngineListener
 import io.kotest.matchers.shouldBe
 

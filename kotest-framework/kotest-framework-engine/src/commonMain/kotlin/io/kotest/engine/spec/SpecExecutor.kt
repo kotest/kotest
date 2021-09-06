@@ -14,6 +14,7 @@ import io.kotest.engine.spec.interceptor.SpecInterceptExtensionsInterceptor
 import io.kotest.engine.spec.interceptor.SpecStartedFinishedInterceptor
 import io.kotest.fp.flatMap
 import io.kotest.mpp.log
+import kotlin.reflect.KClass
 
 /**
  * Executes a single [SpecRef].
@@ -32,6 +33,10 @@ class SpecExecutor(private val listener: TestEngineListener) {
    suspend fun execute(ref: SpecRef) {
       log { "SpecExecutor: Received $ref" }
       referenceInterceptors(ref)
+   }
+
+   suspend fun execute(kclass: KClass<out Spec>) {
+      execute(ReflectiveSpecRef(kclass))
    }
 
    private suspend fun referenceInterceptors(ref: SpecRef) {
