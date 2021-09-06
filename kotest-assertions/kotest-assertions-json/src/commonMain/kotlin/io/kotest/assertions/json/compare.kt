@@ -145,10 +145,10 @@ internal fun compareBooleans(path: List<String>, expected: Boolean, actual: Bool
    }
 }
 
-internal fun compareNumbers(path: List<String>, expected: JsonNode.NumberNode, actual: JsonNode, mode: CompareMode): JsonError? {
+private fun compareNumbers(path: List<String>, expected: JsonNode.NumberNode, actual: JsonNode, mode: CompareMode): JsonError? {
    return when(mode) {
       CompareMode.Strict -> {
-         if (actual is JsonNode.NumberNode) compareNumbersStrictly(path, expected.content, actual.content)
+         if (actual is JsonNode.NumberNode) compareNumbersStrictly(path, expected.asString(), actual.asString())
          else JsonError.IncompatibleTypes(path, expected,actual)
       }
 
@@ -165,23 +165,29 @@ internal fun compareNumbers(path: List<String>, expected: JsonNode.NumberNode, a
    }
 }
 
-internal fun compareNumbersStrictly(path: List<String>, expected: String, actual: String): JsonError? {
+private fun compareNumbersStrictly(path: List<String>, expected: String, actual: String): JsonError? {
    return when (expected) {
       actual -> null
       else -> JsonError.UnequalValues(path, expected, actual)
    }
 }
 
-internal fun compareNumbersLeniently(path: List<String>, expected: JsonNode.NumberNode, actual: JsonNode.NumberNode): JsonError? {
-   fun leastSpecific(value: String): Number =
-      with(value.trimEnd('0', '.')) {
-         if (contains(".")) toDouble()
-         else toInt()
+private val trailingFractionalZeroesRegex =
+   """(\.\d*)0+""".toRegex()
+
+private fun compareNumbersLeniently(path: List<String>, expected: JsonNode.NumberNode, actual: JsonNode.NumberNode): JsonError? {
+   fun String.removeFractionalTrailingZeroes() =
+      this.replace(trailingFractionalZeroesRegex) { it.groupValues[1].trimEnd('0') }
+         .trimEnd('.')
+
+   fun toNumber(value: String): Number? =
+      with (value.removeFractionalTrailingZeroes()) {
+         toLongOrNull() ?: toDoubleOrNull()
       }
 
    return when {
-      leastSpecific(expected.content) == leastSpecific(actual.content) -> null
-      else -> JsonError.UnequalValues(path, expected, actual)
+      toNumber(expected.asString()) == toNumber(actual.asString()) -> null
+      else -> JsonError.UnequalValues(path, expected.content, actual.content)
    }
 }
 

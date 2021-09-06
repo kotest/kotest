@@ -31,7 +31,7 @@ sealed class JsonNode {
 
       companion object {
 
-         private val numberRegex = """\d+(\.\d+)?""".toRegex()
+         private val numberRegex = """[+-]?\d+(\.\d+)?([eE][+-]?\d+)?""".toRegex()
       }
 
       override val content = value
@@ -43,6 +43,11 @@ sealed class JsonNode {
 
    data class NumberNode(override val content: String) : JsonNode(), LiteralNode {
 
+      companion object {
+         private val exponentRegex = """.+[eE][+-]?\d+""".toRegex()
+      }
+
+      fun asString() = if (content.matches(exponentRegex)) content.toDouble().toString() else content
       override val isString = false
    }
 
