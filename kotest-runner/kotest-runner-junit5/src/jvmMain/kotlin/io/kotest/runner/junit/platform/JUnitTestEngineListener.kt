@@ -5,7 +5,6 @@ import io.kotest.core.plan.Descriptor
 import io.kotest.core.plan.toDescriptor
 import io.kotest.core.sourceRef
 import io.kotest.core.spec.Spec
-import io.kotest.core.spec.SpecRef
 import io.kotest.core.spec.toDescription
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestPath
@@ -232,6 +231,11 @@ class JUnitTestEngineListener(
     */
    override suspend fun specInstantiationError(kclass: KClass<*>, t: Throwable) {
       exceptionThrowBySpec = t
+      ensureSpecRegistered(kclass)
+      ensureSpecIsVisible(kclass, t)
+      val descriptor = descriptors[kclass.toDescription().toDescriptor(sourceRef()).testPath()]
+         ?: throw RuntimeException("Error retrieving description for spec: ${kclass.qualifiedName}")
+      listener.executionFinished(descriptor, TestExecutionResult.failed(exceptionThrowBySpec))
    }
 
    /**

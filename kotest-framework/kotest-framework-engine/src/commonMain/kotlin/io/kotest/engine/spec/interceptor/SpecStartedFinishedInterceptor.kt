@@ -7,8 +7,10 @@ class SpecStartedFinishedInterceptor(private val listener: TestEngineListener) :
 
    override suspend fun intercept(fn: suspend (Spec) -> Unit): suspend (Spec) -> Unit = { spec ->
       listener.specStarted(spec::class)
-      fn(spec)
-      listener.specFinished(spec::class, null, emptyMap())
+      kotlin.runCatching { fn(spec) }.fold(
+         { listener.specFinished(spec::class, null, emptyMap()) },
+         { listener.specFinished(spec::class, it, emptyMap()) }
+      )
    }
 
 }
