@@ -7,10 +7,7 @@ sealed class JsonNode {
       is ArrayNode -> "array"
       is BooleanNode -> "boolean"
       is StringNode -> "string"
-      is LongNode -> "long"
-      is DoubleNode -> "double"
-      is IntNode -> "int"
-      is FloatNode -> "float"
+      is NumberNode -> "number"
       NullNode -> "null"
    }
 
@@ -18,19 +15,40 @@ sealed class JsonNode {
 
    data class ArrayNode(val elements: List<JsonNode>) : JsonNode()
 
-   interface ValueNode
+   sealed interface LiteralNode {
 
-   data class BooleanNode(val value: Boolean) : JsonNode(), ValueNode
+      val content: String
+      val isString: Boolean
+   }
 
-   data class StringNode(val value: String) : JsonNode(), ValueNode
+   data class BooleanNode(val value: Boolean) : JsonNode(), LiteralNode {
 
-   data class FloatNode(val value: Float) : JsonNode(), ValueNode
+      override val content = value.toString()
+      override val isString = false
+   }
 
-   data class LongNode(val value: Long) : JsonNode(), ValueNode
+   data class StringNode(val value: String) : JsonNode(), LiteralNode {
 
-   data class DoubleNode(val value: Double) : JsonNode(), ValueNode
+      companion object {
 
-   data class IntNode(val value: Int) : JsonNode(), ValueNode
+         private val numberRegex = """\d+(\.\d+)?""".toRegex()
+      }
 
-   object NullNode : JsonNode(), ValueNode
+      override val content = value
+      override val isString = true
+
+      internal fun containsNumber() = value.matches(numberRegex)
+      internal fun toNumberNode() = NumberNode(content)
+   }
+
+   data class NumberNode(override val content: String) : JsonNode(), LiteralNode {
+
+      override val isString = false
+   }
+
+   object NullNode : JsonNode(), LiteralNode {
+
+      override val content = "null"
+      override val isString = false
+   }
 }

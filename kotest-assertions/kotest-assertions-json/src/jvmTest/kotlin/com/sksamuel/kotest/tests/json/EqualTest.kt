@@ -371,7 +371,7 @@ actual:
          shouldFail {
             a shouldEqualJson b
          }.shouldHaveMessage(
-            """At 'b' expected null but was int
+            """At 'b' expected null but was number
 
 expected:
 {
@@ -393,7 +393,7 @@ actual:
          shouldFail {
             a shouldEqualJson b
          }.shouldHaveMessage(
-            """At 'b' expected null but was double
+            """At 'b' expected null but was number
 
 expected:
 {
@@ -463,7 +463,7 @@ actual:
          shouldFail {
             a shouldEqualJson b
          }.shouldHaveMessage(
-            """At 'b' expected object type but was double
+            """At 'b' expected object type but was number
 
 expected:
 {
@@ -539,7 +539,7 @@ actual:
          shouldFail {
             a shouldEqualJson b
          }.shouldHaveMessage(
-            """At 'b' expected int but was object
+            """At 'b' expected number but was object
 
 expected:
 {
@@ -563,7 +563,7 @@ actual:
          shouldFail {
             a shouldEqualJson b
          }.shouldHaveMessage(
-            """At 'b' expected long but was object
+            """At 'b' expected number but was object
 
 expected:
 {
@@ -587,7 +587,7 @@ actual:
          shouldFail {
             a shouldEqualJson b
          }.shouldHaveMessage(
-            """At 'b' expected double but was object
+            """At 'b' expected number but was object
 
 expected:
 {
@@ -611,7 +611,7 @@ actual:
          shouldFail {
             a shouldEqualJson b
          }.shouldHaveMessage(
-            """At 'b' expected double but was object
+            """At 'b' expected number but was object
 
 expected:
 {

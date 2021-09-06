@@ -2,8 +2,6 @@
 
 package io.kotest.assertions.json
 
-import kotlin.math.abs
-
 enum class CompareMode {
    Strict, Lenient
 }
@@ -33,10 +31,7 @@ internal fun compare(
       }
       is JsonNode.BooleanNode -> compareBoolean(path, expected, actual, mode)
       is JsonNode.StringNode -> compareString(path, expected, actual, mode)
-      is JsonNode.LongNode -> compareLong(path, expected, actual, mode)
-      is JsonNode.DoubleNode -> compareDouble(path, expected, actual, mode)
-      is JsonNode.FloatNode -> compareFloat(path, expected, actual, mode)
-      is JsonNode.IntNode -> compareInt(path, expected, actual, mode)
+      is JsonNode.NumberNode -> compareNumbers(path, expected, actual, mode)
       JsonNode.NullNode -> compareNull(path, actual)
    }
 }
@@ -106,10 +101,9 @@ internal fun compareArrays(
 internal fun compareString(path: List<String>, expected: JsonNode.StringNode, actual: JsonNode, mode: CompareMode): JsonError? {
    return when {
       actual is JsonNode.StringNode -> compareStrings(path, expected.value, actual.value)
-      mode == CompareMode.Lenient -> when (actual) {
-         is JsonNode.BooleanNode -> compareStrings(path, expected.value, actual.value.toString())
-         is JsonNode.DoubleNode -> compareStrings(path, expected.value, actual.value.toString())
-         is JsonNode.LongNode -> compareStrings(path, expected.value, actual.value.toString())
+      mode == CompareMode.Lenient -> when {
+         actual is JsonNode.BooleanNode -> compareStrings(path, expected.value, actual.value.toString())
+         actual is JsonNode.NumberNode && expected.containsNumber() -> compareNumbers(path, expected.toNumberNode(), actual, mode)
          else -> JsonError.IncompatibleTypes(path, expected, actual)
       }
       else -> JsonError.IncompatibleTypes(path, expected, actual)
@@ -151,92 +145,43 @@ internal fun compareBooleans(path: List<String>, expected: Boolean, actual: Bool
    }
 }
 
-/**
- * When comparing a boolean, if the [mode] is [CompareMode.Lenient] and the actual node is a text
- * node with "true" or "false", then we convert.
- */
-internal fun compareLong(path: List<String>, expected: JsonNode.LongNode, actual: JsonNode, mode: CompareMode): JsonError? {
-   return when {
-      actual is JsonNode.LongNode -> compareLongs(path, expected.value, actual.value)
-      mode == CompareMode.Lenient && actual is JsonNode.StringNode -> when (val l = actual.value.toLongOrNull()) {
-         null -> JsonError.IncompatibleTypes(path, expected, actual)
-         else -> compareLongs(path, expected.value, l)
+internal fun compareNumbers(path: List<String>, expected: JsonNode.NumberNode, actual: JsonNode, mode: CompareMode): JsonError? {
+   return when(mode) {
+      CompareMode.Strict -> {
+         if (actual is JsonNode.NumberNode) compareNumbersStrictly(path, expected.content, actual.content)
+         else JsonError.IncompatibleTypes(path, expected,actual)
       }
-      else -> JsonError.IncompatibleTypes(path, expected, actual)
+
+      CompareMode.Lenient -> {
+         when (actual) {
+            is JsonNode.NumberNode -> compareNumbersLeniently(path, expected, actual)
+            is JsonNode.StringNode -> {
+               if (actual.containsNumber()) compareNumbersLeniently(path, expected, JsonNode.NumberNode(actual.content))
+               else JsonError.IncompatibleTypes(path, expected, actual)
+            }
+            else -> JsonError.IncompatibleTypes(path, expected, actual)
+         }
+      }
    }
 }
 
-internal fun compareLongs(path: List<String>, expected: Long, actual: Long): JsonError? {
+internal fun compareNumbersStrictly(path: List<String>, expected: String, actual: String): JsonError? {
    return when (expected) {
       actual -> null
       else -> JsonError.UnequalValues(path, expected, actual)
    }
 }
 
-/**
- * When comparing a boolean, if the [mode] is [CompareMode.Lenient] and the actual node is a text
- * node with "true" or "false", then we convert.
- */
-internal fun compareDouble(path: List<String>, expected: JsonNode.DoubleNode, actual: JsonNode, mode: CompareMode): JsonError? {
-   return when {
-      actual is JsonNode.DoubleNode -> compareDoubles(path, expected.value, actual.value)
-      actual is JsonNode.LongNode -> compareDoubles(path, expected.value, actual.value.toDouble())
-      actual is JsonNode.FloatNode -> compareDoubles(path, expected.value, actual.value.toDouble())
-      actual is JsonNode.IntNode -> compareDoubles(path, expected.value, actual.value.toDouble())
-      mode == CompareMode.Lenient && actual is JsonNode.StringNode -> when (val d = actual.value.toDoubleOrNull()) {
-         null -> JsonError.IncompatibleTypes(path, expected, actual)
-         else -> compareDoubles(path, expected.value, d)
+internal fun compareNumbersLeniently(path: List<String>, expected: JsonNode.NumberNode, actual: JsonNode.NumberNode): JsonError? {
+   fun leastSpecific(value: String): Number =
+      with(value.trimEnd('0', '.')) {
+         if (contains(".")) toDouble()
+         else toInt()
       }
-      else -> JsonError.IncompatibleTypes(path, expected, actual)
-   }
-}
 
-internal fun compareDoubles(path: List<String>, expected: Double, actual: Double): JsonError? {
    return when {
-      abs(expected - actual) <= Double.MIN_VALUE -> null
+      leastSpecific(expected.content) == leastSpecific(actual.content) -> null
       else -> JsonError.UnequalValues(path, expected, actual)
-   }
-}
-
-internal fun compareFloat(path: List<String>, expected: JsonNode.FloatNode, actual: JsonNode, mode: CompareMode): JsonError? {
-   return when {
-      actual is JsonNode.FloatNode -> compareFloats(path, expected.value, actual.value)
-      actual is JsonNode.LongNode -> compareFloats(path, expected.value, actual.value.toFloat())
-      actual is JsonNode.DoubleNode -> compareFloats(path, expected.value, actual.value.toFloat())
-      actual is JsonNode.IntNode -> compareFloats(path, expected.value, actual.value.toFloat())
-      mode == CompareMode.Lenient && actual is JsonNode.StringNode -> when (val d = actual.value.toFloatOrNull()) {
-         null -> JsonError.IncompatibleTypes(path, expected, actual)
-         else -> compareFloats(path, expected.value, d)
-      }
-      else -> JsonError.IncompatibleTypes(path, expected, actual)
-   }
-}
-
-internal fun compareFloats(path: List<String>, expected: Float, actual: Float): JsonError? {
-   return when {
-      abs(expected - actual) <= Float.MIN_VALUE -> null
-      else -> JsonError.UnequalValues(path, expected, actual)
-   }
-}
-
-internal fun compareInt(path: List<String>, expected: JsonNode.IntNode, actual: JsonNode, mode: CompareMode): JsonError? {
-   return when {
-      actual is JsonNode.IntNode -> compareInts(path, expected.value, actual.value)
-      actual is JsonNode.FloatNode -> compareInts(path, expected.value, actual.value.toInt())
-      actual is JsonNode.LongNode -> compareInts(path, expected.value, actual.value.toInt())
-      actual is JsonNode.DoubleNode -> compareInts(path, expected.value, actual.value.toInt())
-      mode == CompareMode.Lenient && actual is JsonNode.StringNode -> when (val d = actual.value.toIntOrNull()) {
-         null -> JsonError.IncompatibleTypes(path, expected, actual)
-         else -> compareInts(path, expected.value, d)
-      }
-      else -> JsonError.IncompatibleTypes(path, expected, actual)
-   }
-}
-
-internal fun compareInts(path: List<String>, expected: Int, actual: Int): JsonError? {
-   return when (expected) {
-       actual -> null
-       else -> JsonError.UnequalValues(path, expected, actual)
    }
 }
 
