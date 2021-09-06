@@ -24,7 +24,7 @@ actual fun createSpecExecutorDelegate(
    private fun Spec.resolvedIsolationMode() =
       this.isolationMode() ?: this.isolationMode ?: configuration.isolationMode
 
-   override suspend fun execute(spec: Spec): Result<Map<TestCase, TestResult>> {
+   override suspend fun execute(spec: Spec): Map<TestCase, TestResult> {
 
       val scheduler = when (val concurrentTests = spec.resolvedConcurrentTests()) {
          Configuration.Sequential -> SequentialTestScheduler
@@ -40,6 +40,6 @@ actual fun createSpecExecutorDelegate(
          }
       }
 
-      return runner.execute(spec)
+      return runner.execute(spec).getOrThrow()
    }
 }
