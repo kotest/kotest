@@ -1,19 +1,11 @@
 package io.kotest.engine.js
 
 import io.kotest.core.spec.style.FunSpec
-import io.kotest.core.test.TestResult
-import io.kotest.core.test.TestStatus
-import io.kotest.engine.TestEngineLauncher
-import io.kotest.engine.promise
-import kotlinx.coroutines.delay
-import kotlin.time.Duration
 import kotlin.time.ExperimentalTime
 
 @ExperimentalTime
 class TimeoutTest : FunSpec() {
    init {
-
-      TestEngineLauncher().promise()
 
 //      aroundTest { (tc, fn) ->
 //         val result = fn(tc)
