@@ -78,7 +78,7 @@ abstract class Spec : TestConfiguration(), SpecFunctionConfiguration, SpecFuncti
     * the project default will be used.
     *
     * When using a nested test style, this invocation timeout does not apply to container tests (parent tests)
-    * but only leaf tests (outer most tests).
+    * but only leaf tests (outermost tests).
     */
    @JsName("invocationTimeout_var")
    var invocationTimeout: Long? = null
