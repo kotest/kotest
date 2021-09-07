@@ -1,20 +1,22 @@
 package io.kotest.engine.test
 
+import io.kotest.core.config.configuration
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestContext
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestStatus
-import io.kotest.engine.test.extensions.AssertionModeTestExecutionFilter
-import io.kotest.engine.test.extensions.CoroutineDebugProbeTestExecutionFilter
-import io.kotest.engine.test.extensions.CoroutineScopeTestExecutionFilter
-import io.kotest.engine.test.extensions.EnabledCheckTestExecutionFilter
-import io.kotest.engine.test.extensions.ExceptionCapturingTestExecutionFilter
-import io.kotest.engine.test.extensions.GlobalSoftAssertTestExecutionFilter
-import io.kotest.engine.test.extensions.InvocationCountCheckTestExecutionFilter
-import io.kotest.engine.test.extensions.LifecycleTestExecutionFilter
-import io.kotest.engine.test.extensions.SupervisorScopeTestExecutionFilter
-import io.kotest.engine.test.extensions.TestCaseInterceptionTestExecutionFilter
-import io.kotest.engine.test.extensions.TimeoutTestExecutionFilter
+import io.kotest.engine.test.interceptors.AssertionModeInterceptor
+import io.kotest.engine.test.interceptors.CoroutineDebugProbeInterceptor
+import io.kotest.engine.test.interceptors.CoroutineDispatcherTestExecutionInterceptor
+import io.kotest.engine.test.interceptors.CoroutineScopeInterceptor
+import io.kotest.engine.test.interceptors.EnabledCheckInterceptor
+import io.kotest.engine.test.interceptors.ExceptionCapturingInterceptor
+import io.kotest.engine.test.interceptors.GlobalSoftAssertInterceptor
+import io.kotest.engine.test.interceptors.InvocationCountCheckInterceptor
+import io.kotest.engine.test.interceptors.LifecycleInterceptor
+import io.kotest.engine.test.interceptors.SupervisorScopeInterceptor
+import io.kotest.engine.test.interceptors.TestCaseExtensionInterceptor
+import io.kotest.engine.test.interceptors.TimeoutInterceptor
 import io.kotest.mpp.log
 import io.kotest.mpp.timeInMillis
 
@@ -26,7 +28,7 @@ import io.kotest.mpp.timeInMillis
  */
 class TestCaseExecutor(
    private val listener: TestCaseExecutionListener,
-   private val executionContext: TimeoutExecutionContext,
+   private val executionContext: InterruptableExecutionContext,
 ) {
 
    suspend fun execute(testCase: TestCase, context: TestContext): TestResult {
@@ -34,18 +36,21 @@ class TestCaseExecutor(
 
       val start = timeInMillis()
 
-      val pipeline = listOf(
-         CoroutineDebugProbeTestExecutionFilter,
-         TestCaseInterceptionTestExecutionFilter,
-         EnabledCheckTestExecutionFilter,
-         LifecycleTestExecutionFilter(listener, start),
-         ExceptionCapturingTestExecutionFilter(start),
-         InvocationCountCheckTestExecutionFilter,
-         SupervisorScopeTestExecutionFilter,
-         TimeoutTestExecutionFilter(executionContext, start),
-         AssertionModeTestExecutionFilter,
-         GlobalSoftAssertTestExecutionFilter,
-         CoroutineScopeTestExecutionFilter,
+      val interceptors = listOf(
+         InvocationCountCheckInterceptor,
+         CoroutineDebugProbeInterceptor,
+         SupervisorScopeInterceptor,
+//         CoroutineDispatcherTestExecutionInterceptor(configuration),
+         TestCaseExtensionInterceptor,
+         EnabledCheckInterceptor,
+         LifecycleInterceptor(listener, start),
+         ExceptionCapturingInterceptor(start),
+         AssertionModeInterceptor,
+         GlobalSoftAssertInterceptor,
+         TimeoutInterceptor(executionContext, start),
+         // this MUST BE AFTER the timeout interceptor, as any cancellation there must cancel
+         // user launched coroutines (children of this scope)
+         CoroutineScopeInterceptor,
       )
 
       val innerExecute: suspend (TestCase, TestContext) -> TestResult = { tc, ctx ->
@@ -53,8 +58,8 @@ class TestCaseExecutor(
          createTestResult(timeInMillis() - start, null)
       }
 
-      val result = pipeline.foldRight(innerExecute) { ext, fn ->
-         { tc, ctx -> ext.execute(fn)(tc, ctx) }
+      val result = interceptors.foldRight(innerExecute) { ext, fn ->
+         { tc, ctx -> ext.intercept(fn)(tc, ctx) }
       }.invoke(testCase, context)
 
       when (result.status) {

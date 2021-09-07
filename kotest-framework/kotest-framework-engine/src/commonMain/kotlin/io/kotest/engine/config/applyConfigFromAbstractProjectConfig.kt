@@ -17,6 +17,7 @@ internal fun applyConfigFromProjectConfig(config: AbstractProjectConfig, configu
 
    // outputs
    config.displaySpecIfNoActiveTests.foreach { configuration.displaySpecIfNoActiveTests = it }
+   config.dumpConfig.foreach { configuration.dumpConfig = it }
 
    // project run options
    config.failOnIgnoredTests.foreach { configuration.failOnIgnoredTests = it }
@@ -66,7 +67,6 @@ internal fun applyConfigFromProjectConfig(config: AbstractProjectConfig, configu
       }
    }
 
-   configuration.registerListeners(config.listeners() + listOf(projectListener))
-   configuration.registerExtensions(config.extensions())
+   configuration.registerExtensions(config.listeners() + listOf(projectListener) + config.extensions())
    configuration.registerFilters(config.filters())
 }

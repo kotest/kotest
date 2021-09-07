@@ -4,11 +4,8 @@ package io.kotest.core.config
 
 import io.kotest.common.ExperimentalKotest
 import io.kotest.core.extensions.Extension
-import io.kotest.core.extensions.TestCaseExtension
 import io.kotest.core.filter.Filter
 import io.kotest.core.listeners.Listener
-import io.kotest.core.listeners.SpecInstantiationListener
-import io.kotest.core.listeners.TestListener
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.SpecExecutionOrder
 import io.kotest.core.test.AssertionMode
@@ -44,7 +41,6 @@ class Configuration {
       const val MaxConcurrency = Int.MAX_VALUE
    }
 
-   private val listeners = mutableListOf<Listener>()
    private val filters = mutableListOf<Filter>()
    private val extensions = mutableListOf<Extension>()
 
@@ -100,7 +96,7 @@ class Configuration {
    /**
     * The parallelism factor determines how many threads are used to execute specs and tests.
     *
-    * By default a single threaded [CoroutineDispatcher] is used for all tests.
+    * By default, a single threaded [CoroutineDispatcher] is used for all tests.
     *
     * Increasing this value to k > 1, means that k dispatchers are created, allowing different
     * specs to execute on different dispatchers (each backed by a separate thread).
@@ -121,14 +117,13 @@ class Configuration {
 
    /**
     * By default, all tests inside a single spec are executed using the same dispatcher to ensure
-    * that callbacks all operate on the same thread. In other words, a spec is sticky with regards
-    * to the execution thread. To change this, set this value to false.
+    * that callbacks all operate on the same thread. In other words, a spec is sticky in regard to
+    * the execution thread. To change this, set this value to false.
     *
     * When this value is false, the framework is free to assign different dispatchers to different
     * root tests (nested tests always run in the same thread as their parent test).
     *
-    * Note: Setting this value alone will not increase the number of threads used. For that,
-    * see [Configuration.parallelism].
+    * Note: This setting has no effect unless the number of threads is increasd; see [parallelism].
     *
     * Defaults to [Defaults.dispatcherAffinity].
     */
@@ -156,7 +151,7 @@ class Configuration {
     * blocked. See [Configuration.parallelism].
     *
     * Note: This setting can be > 1 and specs can still choose to "opt out" by using the
-    * [Isolate] annotation. That annotation ensures that a spec never runs concurrently
+    * [io.kotest.core.spec.Isolate] annotation. That annotation ensures that a spec never runs concurrently
     * with any other regardless of the setting here.
     */
    @ExperimentalKotest
@@ -227,6 +222,11 @@ class Configuration {
     * If set to true, then will cause the test suite to fail if there were no executed tests.
     */
    var failOnEmptyTestSuite: Boolean = Defaults.failOnEmptyTestSuite
+
+   /**
+    * If set to true, then will output config on startup.
+    */
+   var dumpConfig: Boolean = Defaults.dumpConfig
 
    /**
     * Set to true to enable enhanced tracing of coroutines when an error occurs.
@@ -314,7 +314,11 @@ class Configuration {
    /**
     * Returns all globally registered [Listener]s.
     */
-   fun listeners() = listeners.toList()
+   @Deprecated(
+      "Listeners have been subsumed into extensions. Deprecated since 5.0 and will be removed in 6.0",
+      ReplaceWith("extensions()")
+   )
+   fun listeners() = extensions()
 
    /**
     * Returns all globally registered [Extension]s.
@@ -350,20 +354,29 @@ class Configuration {
       extensions.remove(extension)
    }
 
-   fun registerListeners(vararg listeners: Listener) = listeners.forEach { registerListener(it) }
-   fun registerListeners(listeners: List<Listener>) = listeners.forEach { registerListener(it) }
-   fun deregisterListeners(listeners: List<Listener>) = listeners.forEach { deregisterListener(it) }
+   @Deprecated(
+      "Use registerExtension. This will be removed in 6.0.",
+      ReplaceWith("registerExtension(listeners)")
+   )
+   fun registerListeners(vararg listeners: Listener) = listeners.forEach { registerExtension(it) }
 
-   fun registerListener(listener: Listener) {
-      listeners.add(listener)
-   }
+   @Deprecated("Use registerExtension. This will be removed in 6.0.")
+   fun registerListeners(listeners: List<Listener>) = listeners.forEach { registerExtension(it) }
 
+   @Deprecated("Use deregisterExtension. This will be removed in 6.0.")
+   fun deregisterListeners(listeners: List<Listener>) = listeners.forEach { deregisterExtension(it) }
+
+   @Deprecated("Use registerExtension. This will be removed in 6.0.")
+   fun registerListener(listener: Listener) = registerExtension(listener)
+
+   @Deprecated("Use deregisterListener. This will be removed in 6.0.")
    fun deregisterListener(listener: Listener) {
-      listeners.remove(listener)
+      deregisterExtension(listener)
    }
 
+   @Deprecated("Use removeExtensions. This will be removed in 6.0.")
    fun removeListeners() {
-      listeners.clear()
+      removeExtensions()
    }
 
    fun removeExtensions() {
@@ -374,9 +387,3 @@ class Configuration {
       filters.clear()
    }
 }
-
-fun Configuration.testListeners(): List<TestListener> = listeners().filterIsInstance<TestListener>()
-fun Configuration.testCaseExtensions(): List<TestCaseExtension> = listeners().filterIsInstance<TestCaseExtension>()
-fun Configuration.specInstantiationListeners(): List<SpecInstantiationListener> =
-   listeners().filterIsInstance<SpecInstantiationListener>()
-

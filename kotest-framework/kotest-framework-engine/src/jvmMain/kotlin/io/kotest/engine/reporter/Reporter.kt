@@ -9,7 +9,7 @@ import kotlin.reflect.KClass
  * A base interface for writing test events to the console.
  *
  * For example, see [TeamCityConsoleReporter] which will write out test events in a format that
- * Intellij parses and displays in it's test window.
+ * Intellij parses and displays in its test window.
  */
 interface Reporter {
 

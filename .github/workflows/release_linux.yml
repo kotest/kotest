@@ -54,7 +54,7 @@ jobs:
                ORG_GRADLE_PROJECT_signingKey: ${{ secrets.SIGNING_KEY }}
                ORG_GRADLE_PROJECT_signingPassword: ${{ secrets.SIGNING_PASSWORD }}
 
-         -  name: publish linux release
+         -  name: publish linux x64 release
             run: ./gradlew publishLinuxX64PublicationToDeployRepository
             env:
                RELEASE_VERSION: ${{ github.event.inputs.version }}

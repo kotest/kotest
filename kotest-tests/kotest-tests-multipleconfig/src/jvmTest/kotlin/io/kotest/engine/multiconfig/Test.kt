@@ -10,10 +10,10 @@ class Test : WordSpec() {
    init {
       "detecting two configs" should {
          "merge listeners" {
-            listeners shouldBe 2
+            listeners.get() shouldBe 2
          }
-         "merge beforeAll" {
-            beforeAll shouldBe 2
+         "merge project listeners" {
+            beforeAll.get() shouldBe 2
          }
          "merge separate settings" {
             configuration.testCaseOrder shouldBe TestCaseOrder.Random

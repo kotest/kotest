@@ -152,7 +152,7 @@ class TeamCityConsoleReporterTest : FunSpec() {
                TestResult.error(failure(Expected(Printed("expected")), Actual(Printed("actual"))), 14)
             )
          }
-         out.shouldStartWith("${nl}testcity[testFailed name='my test case' message='expected:<expected> but was:<actual>' details='")
+         out.shouldStartWith("${nl}testcity[testFailed name='my test case' message='expectedː<expected> but wasː<actual>' details='")
          out.shouldContain("type='comparisonFailure'")
          out.shouldContain("actual='actual'")
          out.shouldContain("expected='expected'")

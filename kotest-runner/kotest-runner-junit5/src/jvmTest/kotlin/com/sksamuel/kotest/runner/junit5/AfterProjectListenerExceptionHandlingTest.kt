@@ -18,7 +18,7 @@ class AfterProjectListenerExceptionHandlingTest : FunSpec({
    afterTest { unmockkObject(configuration) }
 
    test("an AfterProjectListenerException should add marker spec") {
-      every { configuration.listeners() } returns listOf(
+      every { configuration.extensions() } returns listOf(
          object : ProjectListener {
             override suspend fun afterProject() {
                if (System.getenv("foo") == "true") error("too")
@@ -62,8 +62,8 @@ class AfterProjectListenerExceptionHandlingTest : FunSpec({
       }
    }
 
-   test("an AfterProjectListenerException should add 2 markers spec") {
-      every { configuration.listeners() } returns listOf(
+   test("!an AfterProjectListenerException should add 2 markers spec") {
+      every { configuration.extensions() } returns listOf(
          object : ProjectListener {
             override suspend fun afterProject() {
                if (System.getenv("coo") == "true") error("moo")
@@ -116,7 +116,7 @@ class AfterProjectListenerExceptionHandlingTest : FunSpec({
    }
 
    test("an AfterProjectListenerException should add named markers spec") {
-      every { configuration.listeners() } returns listOf(
+      every { configuration.extensions() } returns listOf(
          object : ProjectListener {
             override val name: String
                get() = "MyAfterProjectListenerName"

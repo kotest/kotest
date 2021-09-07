@@ -119,7 +119,7 @@ class EventuallyTest : WordSpec() {
                     }
                 }
             }.message
-            message.shouldContain("Eventually block failed after 100ms; attempted \\d+ time\\(s\\); FixedInterval\\(duration=25.0ms\\) delay between attempts".toRegex())
+            message.shouldContain("Eventually block failed after 100ms; attempted \\d+ time\\(s\\); FixedInterval\\(duration=25ms\\) delay between attempts".toRegex())
             message.shouldContain("The first error was caused by: first")
             message.shouldContain("The last error was caused by: last")
          }

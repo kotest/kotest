@@ -16,7 +16,7 @@ class AnnotationSpecTestDetectionTest : FunSpec({
    test("An annotation spec should detect annotation tests") {
 
       val listener = object : TestEngineListener {
-         override suspend fun specFinished(kclass: KClass<*>, t: Throwable?, results: Map<TestCase, TestResult>) {
+         override suspend fun specFinished(kclass: KClass<*>, results: Map<TestCase, TestResult>) {
             tests shouldBe 2
          }
       }

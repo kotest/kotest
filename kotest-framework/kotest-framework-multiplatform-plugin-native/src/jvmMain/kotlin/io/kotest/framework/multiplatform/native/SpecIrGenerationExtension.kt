@@ -50,8 +50,12 @@ class SpecIrGenerationExtension(private val messageCollector: MessageCollector) 
             val launchFn = launcherClass.getSimpleFunction(EntryPoint.LaunchMethodName)
                ?: error("Cannot find function ${EntryPoint.LaunchMethodName}")
 
-            val registerFn = launcherClass.getSimpleFunction(EntryPoint.WithSpecsMethodName)
+            val withSpecsFn = launcherClass.getSimpleFunction(EntryPoint.WithSpecsMethodName)
                ?: error("Cannot find function ${EntryPoint.WithSpecsMethodName}")
+
+            val withTeamCityListenerMethodNameFn =
+               launcherClass.getSimpleFunction(EntryPoint.WithTeamCityListenerMethodName)
+                  ?: error("Cannot find function ${EntryPoint.WithTeamCityListenerMethodName}")
 
             val launcher = pluginContext.irFactory.buildProperty {
                name = Name.identifier(EntryPoint.LauncherValName)
@@ -69,15 +73,17 @@ class SpecIrGenerationExtension(private val messageCollector: MessageCollector) 
                   field.initializer = pluginContext.irFactory.createExpressionBody(startOffset, endOffset) {
                      this.expression = DeclarationIrBuilder(pluginContext, field.symbol).irBlock {
                         +irCall(launchFn).also { launch ->
-                           launch.dispatchReceiver = irCall(registerFn).also { register ->
-                              register.dispatchReceiver = irCall(launcherConstructor)
-                              register.putValueArgument(
-                                 0,
-                                 irVararg(
-                                    pluginContext.irBuiltIns.stringType,
-                                    specs.map { irCall(it.constructors.first()) }
+                           launch.dispatchReceiver = irCall(withTeamCityListenerMethodNameFn).also { withTeamCity ->
+                              withTeamCity.dispatchReceiver = irCall(withSpecsFn).also { withSpecs ->
+                                 withSpecs.dispatchReceiver = irCall(launcherConstructor)
+                                 withSpecs.putValueArgument(
+                                    0,
+                                    irVararg(
+                                       pluginContext.irBuiltIns.stringType,
+                                       specs.map { irCall(it.constructors.first()) }
+                                    )
                                  )
-                              )
+                              }
                            }
                         }
                      }

@@ -1,12 +1,12 @@
 package com.sksamuel.kotest.specs.isolation.test
 
-import io.kotest.engine.spec.SpecExecutor
 import io.kotest.engine.listener.TestEngineListener
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.style.*
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestStatus
+import io.kotest.engine.spec.SpecExecutor
 import io.kotest.matchers.throwable.shouldHaveMessage
 import io.kotest.matchers.types.shouldBeInstanceOf
 

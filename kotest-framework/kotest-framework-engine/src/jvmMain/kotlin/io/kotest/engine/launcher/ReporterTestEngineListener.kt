@@ -1,5 +1,6 @@
 package io.kotest.engine.launcher
 
+import io.kotest.core.spec.Spec
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.engine.listener.TestEngineListener
@@ -23,8 +24,8 @@ class ReporterTestEngineListener(private val reporter: Reporter) : TestEngineLis
       reporter.specStarted(kclass)
    }
 
-   override suspend fun specFinished(kclass: KClass<*>, t: Throwable?, results: Map<TestCase, TestResult>) {
-      reporter.specFinished(kclass, t, results)
+   override suspend fun specFinished(kclass: KClass<*>, results: Map<TestCase, TestResult>) {
+      reporter.specFinished(kclass, null, results)
    }
 
    override suspend fun testStarted(testCase: TestCase) {
@@ -37,5 +38,9 @@ class ReporterTestEngineListener(private val reporter: Reporter) : TestEngineLis
 
    override suspend fun testIgnored(testCase: TestCase, reason: String?) {
       reporter.testIgnored(testCase)
+   }
+
+   override suspend fun specExit(kclass: KClass<out Spec>, t: Throwable?) {
+      reporter.specFinished(kclass, t, emptyMap())
    }
 }

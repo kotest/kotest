@@ -41,6 +41,7 @@ abstract class AbstractProjectConfig {
    /**
     * List of project wide [Listener] instances.
     */
+   @Deprecated("Use extensions. This will be removed in 6.0")
    open fun listeners(): List<Listener> = emptyList()
 
    /**
@@ -228,6 +229,11 @@ abstract class AbstractProjectConfig {
     * then the spec itself will not appear as a node in output.
     */
    open val displaySpecIfNoActiveTests: Boolean? = null
+
+   /**
+    * If set to true, then will output config on startup.
+    */
+   var dumpConfig: Boolean? = null
 
    /**
     * Executed before the first test of the project, but after the

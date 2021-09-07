@@ -19,8 +19,16 @@ import io.kotest.common.errors.ComparisonError
  * @param prefix Is the opening string used to signal that the line is a team city line.
  *               If unspecified this defaults to the team city format '##teamcity'.
  *               Can be overriden to help with testing.
+ *
+ * @param escapeColons team city uses colons in its format, and does not support colons inside messages properly,
+ *                      and there is no escape, so we have to mangle colons if the output is going to the console.
+ *                      See https://teamcity-support.jetbrains.com/hc/en-us/community/posts/206882875-Colons-in-test-service-messages-are-confusing-Team-City-
  */
-class TeamCityMessageBuilder(prefix: String, messageName: String) {
+class TeamCityMessageBuilder(
+   prefix: String,
+   messageName: String,
+   private val escapeColons: Boolean = true
+) {
 
    companion object {
       const val TeamCityPrefix = "##teamcity"
@@ -92,7 +100,7 @@ class TeamCityMessageBuilder(prefix: String, messageName: String) {
       const val TEST_FAILED = "testFailed"
    }
 
-   private val myText = StringBuilder(prefix ?: "##teamcity").append("[$messageName")
+   private val myText = StringBuilder(prefix).append("[$messageName")
 
    fun addAttribute(name: String, value: String): TeamCityMessageBuilder {
       myText
@@ -120,9 +128,8 @@ class TeamCityMessageBuilder(prefix: String, messageName: String) {
 
       val line1 = error.message?.lines()?.firstOrNull()
       val message = if (line1.isNullOrBlank()) "Test failed" else line1
-      message(message)
-
-      details(error.stackTraceToString())
+      message(escapeColons(message))
+      details(escapeColons(error.stackTraceToString()))
 
       when (error) {
          is ComparisonError -> type("comparisonFailure").actual(error.actualValue).expected(error.expectedValue)
@@ -143,6 +150,12 @@ class TeamCityMessageBuilder(prefix: String, messageName: String) {
    fun container() = testType("container")
    fun spec() = testType("spec")
    fun test() = testType("test")
+
+   // workaround for TC colon issue, see main javadoc
+   fun escapeColons(value: String) = when (escapeColons) {
+      true -> value.replace(":", "\u02D0")
+      false -> value
+   }
 
    fun duration(durationInMillis: Long): TeamCityMessageBuilder =
       addAttribute(Attributes.DURATION, durationInMillis.toString())

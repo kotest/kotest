@@ -11,15 +11,15 @@ import org.junit.platform.testkit.engine.EngineTestKit
 @Isolate
 class BeforeAfterProjectListenerExceptionHandlingTest : FunSpec({
 
-   test("BeforeProjectListener exception should add marker spec") {
+   test("!BeforeProjectListener exception should add marker spec") {
 
-      configuration.registerListener(
+      configuration.registerExtension(
          object : ProjectListener {
             override val name: String
                get() = "wibble"
 
             override suspend fun beforeProject() {
-               // use an env so that we only trigger the after all failure in the test, not while running the overall test suite
+               // use an env so that we only trigger the beforeProject failure in the test, not while running the overall test suite
                if (System.getProperty("beforeProject") == "true") error("beforeProjectError")
             }
          }
@@ -56,7 +56,7 @@ class BeforeAfterProjectListenerExceptionHandlingTest : FunSpec({
 
    test("AfterProjectListener exception should add marker spec") {
 
-      configuration.registerListener(
+      configuration.registerExtension(
          object : ProjectListener {
             override val name: String
                get() = "wobble"

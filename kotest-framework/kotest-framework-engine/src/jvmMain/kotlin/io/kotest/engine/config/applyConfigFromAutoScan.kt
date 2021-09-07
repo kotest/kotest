@@ -4,7 +4,6 @@ import io.kotest.core.config.Configuration
 import io.kotest.core.extensions.Extension
 import io.kotest.core.filter.Filter
 import io.kotest.core.internal.KotestEngineProperties
-import io.kotest.core.listeners.Listener
 import io.kotest.core.spec.AutoScan
 import io.kotest.mpp.instantiateOrObject
 
@@ -26,11 +25,9 @@ actual fun applyConfigFromAutoScan(configuration: Configuration) {
       .map { Class.forName(it.name) }
       .mapNotNull { instantiateOrObject(it).getOrNull() }
 
-   val listeners = autoscanned.filterIsInstance<Listener>()
    val filters = autoscanned.filterIsInstance<Filter>()
    val extensions = autoscanned.filterIsInstance<Extension>()
 
-   configuration.registerListeners(listeners)
    configuration.registerFilters(filters)
    configuration.registerExtensions(extensions)
 }

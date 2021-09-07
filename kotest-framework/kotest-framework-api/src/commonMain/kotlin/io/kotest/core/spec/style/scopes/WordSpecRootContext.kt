@@ -4,7 +4,6 @@ import io.kotest.core.spec.KotestDsl
 import io.kotest.core.test.createTestName
 
 @Suppress("FunctionName")
-@KotestDsl
 interface WordSpecRootContext : RootContext {
 
    infix fun String.should(test: suspend WordSpecShouldContainerContext.() -> Unit) {

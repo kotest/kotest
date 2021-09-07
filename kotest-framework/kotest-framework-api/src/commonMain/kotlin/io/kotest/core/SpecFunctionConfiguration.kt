@@ -1,7 +1,7 @@
 package io.kotest.core
 
-import io.kotest.core.config.Configuration
 import io.kotest.common.ExperimentalKotest
+import io.kotest.core.config.Configuration
 import io.kotest.core.extensions.Extension
 import io.kotest.core.extensions.TestCaseExtension
 import io.kotest.core.listeners.TestListener
@@ -34,6 +34,7 @@ interface SpecFunctionConfiguration {
     * If you wish to register a listener for all specs
     * then use [Configuration.registerListener].
     */
+   @Deprecated("Return listeners by overriding fun extensions() {}. Deprecated since 5.0 and will be removed in 6.0")
    fun listeners(): List<TestListener> = emptyList()
 
    /**
@@ -121,8 +122,8 @@ interface SpecFunctionConfiguration {
 
    /**
     * By default, all tests inside a single spec are executed using the same dispatcher to ensure
-    * that callbacks all operate on the same thread. In other words, a spec is sticky with regards
-    * to the execution thread. To change this, set this value to false. This value can also be
+    * that callbacks all operate on the same thread. In other words, a spec is sticky in regard to
+    * the execution thread. To change this, set this value to false. This value can also be
     * set globally in [Configuration.dispatcherAffinity].
     *
     * When this value is false, the framework is free to assign different dispatchers to different

@@ -29,14 +29,21 @@ kotlin {
       mingwX64()
 
       macosX64()
+      macosArm64()
+
       tvos()
+      tvosSimulatorArm64()
+
       watchosArm32()
       watchosArm64()
       watchosX86()
       watchosX64()
+      watchosSimulatorArm64()
+
       iosX64()
       iosArm64()
       iosArm32()
+      iosSimulatorArm64()
    }
 
    sourceSets {
@@ -71,9 +78,9 @@ kotlin {
       }
 
       all {
-         languageSettings.useExperimentalAnnotation("kotlin.time.ExperimentalTime")
-         languageSettings.useExperimentalAnnotation("kotlin.experimental.ExperimentalTypeInference")
-         languageSettings.useExperimentalAnnotation("kotlin.contracts.ExperimentalContracts")
+         languageSettings.optIn("kotlin.time.ExperimentalTime")
+         languageSettings.optIn("kotlin.experimental.ExperimentalTypeInference")
+         languageSettings.optIn("kotlin.contracts.ExperimentalContracts")
       }
    }
 }

@@ -10,11 +10,13 @@ import io.kotest.engine.teamcity.Locations
 import io.kotest.engine.teamcity.TeamCityMessageBuilder
 import java.io.PrintWriter
 import java.io.StringWriter
+import java.util.concurrent.ConcurrentHashMap
 import kotlin.reflect.KClass
 
 class TeamCityConsoleReporter(private val prefix: String = TeamCityMessageBuilder.TeamCityPrefix) : Reporter {
 
    private var errors = false
+   private val started = ConcurrentHashMap.newKeySet<KClass<*>>()
 
    private fun locationHint(testCase: TestCase) =
       Locations.locationHint(testCase.spec.javaClass.canonicalName, testCase.source.lineNumber)
@@ -41,6 +43,10 @@ class TeamCityConsoleReporter(private val prefix: String = TeamCityMessageBuilde
    override fun hasErrors(): Boolean = errors
 
    override fun specStarted(kclass: KClass<*>) {
+      start(kclass)
+   }
+
+   private fun start(kclass: KClass<*>) {
       println()
       println(
          TeamCityMessageBuilder
@@ -50,9 +56,14 @@ class TeamCityConsoleReporter(private val prefix: String = TeamCityMessageBuilde
             .spec()
             .build()
       )
+      started.add(kclass)
    }
 
    override fun specFinished(kclass: KClass<*>, t: Throwable?, results: Map<TestCase, TestResult>) {
+
+      if (!started.contains(kclass))
+         start(kclass)
+
       println()
       val desc = kclass.toDescription()
       if (t == null) {

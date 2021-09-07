@@ -10,16 +10,13 @@ import io.kotest.engine.listener.PinnedSpecTestEngineListener
 import io.kotest.engine.listener.TestEngineListener
 import io.kotest.engine.listener.ThreadSafeTestEngineListener
 import io.kotest.engine.tags.ConfigurationTagProvider
-import kotlinx.coroutines.runBlocking
 import kotlin.reflect.KClass
 import kotlin.script.templates.standard.ScriptTemplateWithArgs
 
 /**
- * A builder class for creating and executing tests via the [KotestEngine].
- *
- * The contract on this class cannot change without breaking the kotest plugin.
- * It must remain a backwards compatible layer between the launchers and the engine.
+ * A builder class for creating and executing tests via the [TestEngine].
  */
+@Deprecated("Prefer TestEngineLauncher. This class will remain for compatibility with existing clients but new code should use the TestEngineLauncher which is multiplatform.")
 class KotestEngineLauncher(
    private val listeners: List<TestEngineListener>,
    private val specs: List<KClass<out Spec>>,
@@ -59,30 +56,18 @@ class KotestEngineLauncher(
       if (listeners.isEmpty())
          error("Cannot launch a KotestEngine without at least one TestEngineListener")
 
-      val config = KotestEngineConfig(
-         testFilters,
-         specFilters,
+      val launcher = TestEngineLauncher(
          ThreadSafeTestEngineListener(
             PinnedSpecTestEngineListener(
                CompositeTestEngineListener(listeners)
             )
-         ),
-         tags,
-         dumpConfig
-      )
-      val runner = KotestEngine(config)
-      val suite = TestSuite(emptyList(), specs)
+         )
+      ).withTestFilters(testFilters)
+         .withSpecFilters(specFilters)
+         .withExplicitTags(tags)
+         .withClasses(specs)
 
-      return try {
-         runBlocking { // blocks the calling thread while the engine runs
-            val result = runner.execute(suite)
-            runner.cleanup()
-            result
-         }
-      } catch (e: Exception) {
-         e.printStackTrace()
-         EngineResult(listOf(e))
-      }
+      return launcher.launch()
    }
 
    fun withFilter(filter: TestFilter) = withFilters(listOf(filter))

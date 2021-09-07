@@ -1,7 +1,7 @@
 package com.sksamuel.kotest.engine
 
 import io.kotest.core.spec.style.FunSpec
-import io.kotest.engine.KotestEngineLauncher
+import io.kotest.engine.TestEngineLauncher
 import io.kotest.engine.listener.CollectingTestEngineListener
 import io.kotest.engine.spec.SpecInstantiationException
 import io.kotest.matchers.maps.shouldHaveSize
@@ -12,7 +12,7 @@ class NoClassDefFoundTest : FunSpec() {
    init {
       test("java.lang.NoClassDefFoundError should be caught") {
          val listener = CollectingTestEngineListener()
-         KotestEngineLauncher().withListener(listener).withSpecs(SomeSpec1::class, SomeSpec2::class).launch()
+         TestEngineLauncher(listener).withClasses(SomeSpec1::class, SomeSpec2::class).launch()
          listener.specs.shouldHaveSize(2)
          listener.specs[SomeSpec1::class].shouldBeInstanceOf<SpecInstantiationException>()
          listener.specs[SomeSpec2::class].shouldBeInstanceOf<SpecInstantiationException>()
@@ -38,7 +38,7 @@ private class SomeSpec1 : FunSpec() {
    }
 }
 
-// we try to use failure class twice, so the 2nd time it triggers a java.lang.NoClassDefFoundError
+// we try to use FailingClass twice, so the 2nd time it triggers a java.lang.NoClassDefFoundError
 private class SomeSpec2 : FunSpec() {
    private val failure = FailingClass()
 

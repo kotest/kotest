@@ -6,10 +6,10 @@ import kotlinx.coroutines.CoroutineScope
 import kotlin.coroutines.CoroutineContext
 
 /**
- * A [TestContext] is used as the receiver in a test function.
+ * A test in Kotest is simply a function `suspend TestContext.() -> Unit`
  *
- * This allows the test function to interact with the test engine at runtime.
- * For instance fetching details of the executing test case( such as timeouts, tags),
+ * The [TestContext] receiver allows the test function to interact with the test engine at runtime.
+ * For instance fetching details of the executing test case (such as timeouts, tags),
  * registering a dynamic nested test, or adding a test lifecycle callback.
  *
  * This context extends [CoroutineScope] giving the ability for any test function to launch

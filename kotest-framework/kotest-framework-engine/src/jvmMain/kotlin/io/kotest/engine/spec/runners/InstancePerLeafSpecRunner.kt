@@ -1,25 +1,24 @@
 package io.kotest.engine.spec.runners
 
 import io.kotest.core.config.configuration
-import io.kotest.engine.test.TestCaseExecutor
 import io.kotest.core.spec.Spec
-import io.kotest.engine.spec.materializeAndOrderRootTests
 import io.kotest.core.test.Description
 import io.kotest.core.test.NestedTest
 import io.kotest.core.test.TestCase
-import io.kotest.engine.test.TestCaseExecutionListener
 import io.kotest.core.test.TestContext
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.createTestName
 import io.kotest.core.test.toTestCase
-import io.kotest.engine.ExecutorExecutionContext
-import io.kotest.engine.launchers.TestLauncher
+import io.kotest.engine.ExecutorInterruptableExecutionContext
+import io.kotest.engine.spec.SpecExtensions
 import io.kotest.engine.listener.TestEngineListener
 import io.kotest.engine.spec.SpecRunner
+import io.kotest.engine.spec.materializeAndOrderRootTests
 import io.kotest.engine.test.DuplicateTestNameHandler
-import io.kotest.engine.events.invokeAfterSpec
-import io.kotest.engine.events.invokeBeforeSpec
-import io.kotest.fp.Try
+import io.kotest.engine.test.TestCaseExecutionListener
+import io.kotest.engine.test.TestCaseExecutor
+import io.kotest.engine.test.scheduler.TestScheduler
+import io.kotest.fp.flatMap
 import io.kotest.mpp.log
 import kotlinx.coroutines.coroutineScope
 import java.util.PriorityQueue
@@ -28,8 +27,8 @@ import kotlin.coroutines.CoroutineContext
 
 internal class InstancePerLeafSpecRunner(
    listener: TestEngineListener,
-   launcher: TestLauncher
-) : SpecRunner(listener, launcher) {
+   scheduler: TestScheduler
+) : SpecRunner(listener, scheduler) {
 
    private val results = mutableMapOf<TestCase, TestResult>()
 
@@ -66,8 +65,8 @@ internal class InstancePerLeafSpecRunner(
     * of the containing [Spec] class. Therefore, when we begin executing a test case from
     * the queue, we must first instantiate a new spec, and begin execution on _that_ instance.
     */
-   override suspend fun execute(spec: Spec): Try<Map<TestCase, TestResult>> =
-      Try {
+   override suspend fun execute(spec: Spec): Result<Map<TestCase, TestResult>> =
+      kotlin.runCatching {
          spec.materializeAndOrderRootTests().forEach { root ->
             enqueue(root.testCase)
          }
@@ -78,15 +77,15 @@ internal class InstancePerLeafSpecRunner(
          results
       }
 
-   private suspend fun executeInCleanSpec(test: TestCase): Try<Spec> {
+   private suspend fun executeInCleanSpec(test: TestCase): Result<Spec> {
       return createInstance(test.spec::class)
-         .flatMap { it.invokeBeforeSpec() }
+         .flatMap { SpecExtensions(configuration).beforeSpec(it) }
          .flatMap { interceptAndRun(it, test) }
-         .flatMap { it.invokeAfterSpec() }
+         .flatMap { SpecExtensions(configuration).afterSpec(it) }
    }
 
    // we need to find the same root test but in the newly created spec
-   private suspend fun interceptAndRun(spec: Spec, test: TestCase): Try<Spec> = Try {
+   private suspend fun interceptAndRun(spec: Spec, test: TestCase): Result<Spec> = kotlin.runCatching {
       log { "InstancePerLeafSpecRunner: Created new spec instance $spec" }
       val root = spec.materializeAndOrderRootTests().firstOrNull { it.testCase.description.isOnPath(test.description) }
          ?: throw error("Unable to locate root test ${test.description.testPath()}")
@@ -150,7 +149,7 @@ internal class InstancePerLeafSpecRunner(
                   }
                }
             },
-            ExecutorExecutionContext
+            ExecutorInterruptableExecutionContext
          )
 
          val result = testExecutor.execute(test, context)

@@ -20,6 +20,7 @@ object Defaults {
    const val displaySpecIfNoActiveTests: Boolean = true
 
    const val failOnEmptyTestSuite = false
+   const val dumpConfig = false
 
    const val specFailureFilePath: String = "./.kotest/spec_failures"
 
