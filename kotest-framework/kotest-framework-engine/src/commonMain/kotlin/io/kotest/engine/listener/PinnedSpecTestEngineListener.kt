@@ -80,12 +80,12 @@ class PinnedSpecTestEngineListener(val listener: TestEngineListener) : TestEngin
       }
    }
 
-   override suspend fun specInactive(kclass: KClass<*>) {
+   override suspend fun specInactive(kclass: KClass<*>, results: Map<TestCase, TestResult>) {
       if (runningSpec == kclass.toDescription().path().value) {
-         listener.specInactive(kclass)
+         listener.specInactive(kclass, results)
       } else {
          queue {
-            specInactive(kclass)
+            specInactive(kclass, results)
          }
       }
    }

@@ -48,16 +48,13 @@ class TeamCityTestEngineListener(
       }
    }
 
-   private fun locationHint(testCase: TestCase) =
-      Locations.locationHint(testCase.spec::class.bestName(), testCase.source.lineNumber)
-
    override suspend fun specStarted(kclass: KClass<*>) {
       start(kclass)
    }
 
    private fun start(kclass: KClass<*>) {
       val msg = TeamCityMessageBuilder
-         .testStarted(kclass.displayName() ?: kclass.bestName())
+         .testSuiteStarted(prefix, kclass.displayName() ?: kclass.bestName())
          .id(kclass.toDescription().id.value)
          .locationHint(Locations.locationHint(kclass))
          .spec()
@@ -68,8 +65,29 @@ class TeamCityTestEngineListener(
    }
 
    override suspend fun specFinished(kclass: KClass<*>, results: Map<TestCase, TestResult>) {
+     finish(kclass)
+   }
+
+   override suspend fun specExit(kclass: KClass<out Spec>, t: Throwable?) {
+      // if we have an error we must tag it to a dummy test
+      if (t != null) {
+         if (!started.contains(kclass))
+            start(kclass)
+      }
+      super.specExit(kclass, t)
+   }
+
+   override suspend fun specInactive(kclass: KClass<*>, results: Map<TestCase, TestResult>) {
+      start(kclass)
+      results.forEach { (testCase, result) ->
+         testIgnored(testCase, result.reason)
+      }
+      finish(kclass)
+   }
+
+   private fun finish(kclass: KClass<*>) {
       val msg = TeamCityMessageBuilder
-         .testFailed(kclass.displayName() ?: kclass.bestName())
+         .testSuiteFinished(prefix, kclass.displayName() ?: kclass.bestName())
          .id(kclass.toDescription().id.value)
          .locationHint(Locations.locationHint(kclass))
          .resultStatus(TestStatus.Success.name)
@@ -80,19 +98,9 @@ class TeamCityTestEngineListener(
       finished.add(kclass)
    }
 
-   override suspend fun specExit(kclass: KClass<out Spec>, t: Throwable?) {
-      // if we have an error we must tag it to a dummy test
-      if (t != null) {
-         if (!started.contains(kclass))
-            start(kclass)
-
-      }
-      super.specExit(kclass, t)
-   }
-
    override suspend fun testStarted(testCase: TestCase) {
       val msg = TeamCityMessageBuilder
-         .testStarted(testCase.displayName)
+         .testStarted(prefix, testCase.displayName)
          .id(testCase.description.id.value)
          .parent(testCase.description.parent.id.value)
          .locationHint(Locations.locationHint(testCase.spec::class))
@@ -104,7 +112,7 @@ class TeamCityTestEngineListener(
 
    override suspend fun testIgnored(testCase: TestCase, reason: String?) {
       val msg = TeamCityMessageBuilder
-         .testIgnored(testCase.displayName)
+         .testIgnored(prefix, testCase.displayName)
          .id(testCase.description.id.value)
          .parent(testCase.description.parent.id.value)
          .locationHint(Locations.locationHint(testCase.spec::class))
@@ -119,7 +127,7 @@ class TeamCityTestEngineListener(
       val msg = when (result.status) {
          TestStatus.Ignored ->
             TeamCityMessageBuilder
-               .testIgnored(testCase.displayName)
+               .testIgnored(prefix, testCase.displayName)
                .id(testCase.description.id.value)
                .parent(testCase.description.parent.id.value)
                .locationHint(Locations.locationHint(testCase.spec::class))
@@ -129,7 +137,7 @@ class TeamCityTestEngineListener(
                .build()
          TestStatus.Success ->
             TeamCityMessageBuilder
-               .testFinished(testCase.displayName)
+               .testFinished(prefix, testCase.displayName)
                .id(testCase.description.id.value)
                .parent(testCase.description.parent.id.value)
                .duration(result.duration)
@@ -138,7 +146,7 @@ class TeamCityTestEngineListener(
                .build()
          TestStatus.Error, TestStatus.Failure ->
             TeamCityMessageBuilder
-               .testFailed(testCase.displayName)
+               .testFailed(prefix, testCase.displayName)
                .id(testCase.description.id.value)
                .parent(testCase.description.parent.id.value)
                .duration(result.duration)

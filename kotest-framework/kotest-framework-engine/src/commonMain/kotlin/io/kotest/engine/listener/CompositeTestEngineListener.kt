@@ -71,7 +71,7 @@ class CompositeTestEngineListener(private val listeners: List<TestEngineListener
       listeners.forEach { it.specEnter(kclass) }
    }
 
-   override suspend fun specInactive(kclass: KClass<*>) {
-      listeners.forEach { it.specInactive(kclass) }
+   override suspend fun specInactive(kclass: KClass<*>, results: Map<TestCase, TestResult>) {
+      listeners.forEach { it.specInactive(kclass, results) }
    }
 }

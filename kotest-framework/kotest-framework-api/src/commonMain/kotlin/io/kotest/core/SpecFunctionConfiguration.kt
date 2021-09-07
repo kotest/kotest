@@ -122,8 +122,8 @@ interface SpecFunctionConfiguration {
 
    /**
     * By default, all tests inside a single spec are executed using the same dispatcher to ensure
-    * that callbacks all operate on the same thread. In other words, a spec is sticky with regards
-    * to the execution thread. To change this, set this value to false. This value can also be
+    * that callbacks all operate on the same thread. In other words, a spec is sticky in regard to
+    * the execution thread. To change this, set this value to false. This value can also be
     * set globally in [Configuration.dispatcherAffinity].
     *
     * When this value is false, the framework is free to assign different dispatchers to different

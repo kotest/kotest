@@ -92,9 +92,9 @@ class ThreadSafeTestEngineListener(private val listener: TestEngineListener) : T
       }
    }
 
-   override suspend fun specInactive(kclass: KClass<*>) {
+   override suspend fun specInactive(kclass: KClass<*>, results: Map<TestCase, TestResult>) {
       mutex.withLock {
-         listener.specInactive(kclass)
+         listener.specInactive(kclass, results)
       }
    }
 

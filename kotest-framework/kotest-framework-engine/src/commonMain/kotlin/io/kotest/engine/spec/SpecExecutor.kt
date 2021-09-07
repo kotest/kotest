@@ -1,5 +1,7 @@
 package io.kotest.engine.spec
 
+import io.kotest.common.Platform
+import io.kotest.common.platform
 import io.kotest.core.config.configuration
 import io.kotest.core.extensions.SpecInterceptExtension
 import io.kotest.core.spec.Spec
@@ -7,6 +9,7 @@ import io.kotest.core.spec.SpecRef
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.engine.listener.TestEngineListener
+import io.kotest.engine.spec.interceptor.IgnoreNestedSpecStylesInterceptor
 import io.kotest.engine.spec.interceptor.IgnoredSpecInterceptor
 import io.kotest.engine.spec.interceptor.RunIfActiveInterceptor
 import io.kotest.engine.spec.interceptor.SpecEnterInterceptor
@@ -63,7 +66,8 @@ class SpecExecutor(private val listener: TestEngineListener) {
 
    private suspend fun specInterceptors(spec: Spec): Map<TestCase, TestResult> {
 
-      val interceptors = listOf(
+      val interceptors = listOfNotNull(
+         if (platform == Platform.JS) IgnoreNestedSpecStylesInterceptor(listener) else null,
          SpecInterceptExtensionsInterceptor(
             extensions.extensions(spec).filterIsInstance<SpecInterceptExtension>()
          ),

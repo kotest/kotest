@@ -2,6 +2,8 @@
 
 package io.kotest.engine
 
+import io.kotest.common.runBlocking
+import io.kotest.common.runPromise
 import io.kotest.core.Tags
 import io.kotest.core.config.AbstractProjectConfig
 import io.kotest.core.config.configuration
@@ -14,6 +16,7 @@ import io.kotest.engine.config.ConfigManager
 import io.kotest.engine.config.detectAbstractProjectConfigs
 import io.kotest.engine.listener.NoopTestEngineListener
 import io.kotest.engine.listener.PinnedSpecTestEngineListener
+import io.kotest.engine.listener.TeamCityTestEngineListener
 import io.kotest.engine.listener.TestEngineListener
 import io.kotest.engine.listener.ThreadSafeTestEngineListener
 import io.kotest.engine.spec.InstanceSpecRef
@@ -57,6 +60,25 @@ class TestEngineLauncher(
       emptyList(),
       sysprop(KotestEngineProperties.dumpConfig, "false") == "true",
    )
+
+   fun withTeamCityListener(): TestEngineLauncher {
+      return withListener(TeamCityTestEngineListener())
+   }
+
+   /**
+    * Replace the listener with the given value.
+    */
+   fun withListener(listener: TestEngineListener): TestEngineLauncher {
+      return TestEngineLauncher(
+         listener = listener,
+         configs = configs,
+         refs = refs,
+         explicitTags = explicitTags,
+         testFilters = testFilters,
+         specFilters = specFilters,
+         dumpConfig = dumpConfig,
+      )
+   }
 
    fun withSpecs(vararg specs: Spec): TestEngineLauncher {
       return TestEngineLauncher(
@@ -157,12 +179,24 @@ class TestEngineLauncher(
    fun testSuite(): TestSuite = TestSuite(refs)
 
    /**
-    * Launch the [TestEngine] created from this builder.
+    * Launch the [TestEngine] in an existing coroutine without blocking.
     */
-   suspend fun launch(): EngineResult {
+   suspend fun async(): EngineResult {
       log { "TestEngineLauncher: Launching Test Engine" }
       val engine = TestEngine(toConfig())
       return engine.execute(testSuite())
+   }
+
+   /**
+    * Launch the [TestEngine] created from this builder and block the thread until execution has completed.
+    * This method will throw on JS.
+    */
+   fun launch(): EngineResult {
+      log { "TestEngineLauncher: Launching Test Engine" }
+      return runBlocking {
+         val engine = TestEngine(toConfig())
+         engine.execute(testSuite())
+      }
    }
 
    /**
@@ -171,7 +205,7 @@ class TestEngineLauncher(
     */
    fun promise() {
       log { "TestEngineLauncher: Launching Test Engine in Javascript promise" }
-      io.kotest.common.promise {
+      runPromise {
          val engine = TestEngine(toConfig())
          engine.execute(testSuite())
       }

@@ -96,7 +96,7 @@ class Configuration {
    /**
     * The parallelism factor determines how many threads are used to execute specs and tests.
     *
-    * By default a single threaded [CoroutineDispatcher] is used for all tests.
+    * By default, a single threaded [CoroutineDispatcher] is used for all tests.
     *
     * Increasing this value to k > 1, means that k dispatchers are created, allowing different
     * specs to execute on different dispatchers (each backed by a separate thread).

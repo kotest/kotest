@@ -1,6 +1,5 @@
 package io.kotest.engine
 
-import io.kotest.common.runBlocking
 import io.kotest.core.Tags
 import io.kotest.core.filter.SpecFilter
 import io.kotest.core.filter.TestFilter
@@ -68,7 +67,7 @@ class KotestEngineLauncher(
          .withExplicitTags(tags)
          .withClasses(specs)
 
-      return runBlocking { launcher.launch() }
+      return launcher.launch()
    }
 
    fun withFilter(filter: TestFilter) = withFilters(listOf(filter))

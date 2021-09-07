@@ -3,7 +3,6 @@ package io.kotest.engine
 import io.kotest.core.config.Configuration
 import io.kotest.core.config.configuration
 import io.kotest.core.extensions.ProjectExtension
-import io.kotest.engine.interceptors.DisallowNestedSpecStylesInterceptor
 import io.kotest.engine.interceptors.EmptyTestSuiteInterceptor
 import io.kotest.engine.interceptors.EngineInterceptor
 import io.kotest.engine.interceptors.ProjectExtensionEngineInterceptor
@@ -19,7 +18,6 @@ actual fun testEngineInterceptors(conf: Configuration): List<EngineInterceptor> 
       TestEngineStartupShutdownInterceptor,
       ProjectTimeoutEngineInterceptor(conf.projectTimeout),
       TestDslStateInterceptor,
-      DisallowNestedSpecStylesInterceptor,
       SpecSortEngineInterceptor,
       ProjectExtensionEngineInterceptor(configuration.extensions().filterIsInstance<ProjectExtension>()),
       ProjectListenerEngineInterceptor(configuration.extensions()),
