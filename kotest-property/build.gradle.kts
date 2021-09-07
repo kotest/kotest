@@ -86,6 +86,17 @@ kotlin {
          dependsOn(commonMain)
       }
 
+      val desktopTest by creating {
+         dependsOn(commonTest)
+         dependencies {
+            implementation(kotlin("test-common"))
+         }
+      }
+
+      val iosX64Test by getting {
+         dependsOn(desktopTest)
+      }
+
       val macosX64Main by getting {
          dependsOn(desktopMain)
       }
