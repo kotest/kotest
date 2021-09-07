@@ -21,7 +21,7 @@ class AfterSpecListenerTest : FunSpec() {
 
       test("AfterSpecListener's should be triggered for a spec with tests") {
 
-         configuration.register(MyAfterSpecListener)
+         configuration.registerExtensions(MyAfterSpecListener)
          counter.set(0)
 
          val listener = CollectingTestEngineListener()
@@ -29,7 +29,7 @@ class AfterSpecListenerTest : FunSpec() {
             .withClasses(MyPopulatedSpec2::class)
             .launch()
 
-         configuration.deregister(MyAfterSpecListener)
+         configuration.deregisterExtension(MyAfterSpecListener)
          listener.specs.size shouldBe 1
          listener.tests.size shouldBe 1
 
@@ -48,14 +48,14 @@ class AfterSpecListenerTest : FunSpec() {
 
       test("AfterSpecListener's should NOT be triggered for a spec without tests") {
 
-         configuration.register(MyAfterSpecListener)
+         configuration.registerExtensions(MyAfterSpecListener)
          counter.set(0)
 
          TestEngineLauncher(NoopTestEngineListener)
             .withClasses(MyEmptySpec2::class)
             .launch()
 
-         configuration.deregister(MyAfterSpecListener)
+         configuration.deregisterExtension(MyAfterSpecListener)
 
          counter.get() shouldBe 0
       }

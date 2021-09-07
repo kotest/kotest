@@ -11,6 +11,7 @@ import io.kotest.core.internal.KotestEngineProperties
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.SpecRef
 import io.kotest.engine.config.ConfigManager
+import io.kotest.engine.config.detectAbstractProjectConfigs
 import io.kotest.engine.listener.NoopTestEngineListener
 import io.kotest.engine.listener.PinnedSpecTestEngineListener
 import io.kotest.engine.listener.TestEngineListener
@@ -136,6 +137,9 @@ class TestEngineLauncher(
    }
 
    fun toConfig(): TestEngineConfig {
+
+      ConfigManager.initialize(configuration, configs + detectAbstractProjectConfigs())
+
       return TestEngineConfig(
          listener = ThreadSafeTestEngineListener(
             PinnedSpecTestEngineListener(
@@ -143,7 +147,7 @@ class TestEngineLauncher(
             )
          ),
          interceptors = testEngineInterceptors(configuration),
-         ConfigManager.initialize(configuration, configs),
+         configuration,
          testFilters,
          specFilters,
          explicitTags,
@@ -161,4 +165,3 @@ class TestEngineLauncher(
       return engine.execute(testSuite())
    }
 }
-

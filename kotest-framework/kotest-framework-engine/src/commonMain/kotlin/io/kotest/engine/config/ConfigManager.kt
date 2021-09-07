@@ -15,7 +15,7 @@ object ConfigManager {
 
    /**
     * Initializes a given [Configuration] instance using the supplied project configs,
-    * system properties, autoscan, and project configs on the classpath.
+    * system properties, autoscan, and detected project configs on the classpath.
     *
     * @return the initialized input
     */
@@ -25,14 +25,7 @@ object ConfigManager {
          applyPlatformDefaults(configuration)
          applyConfigFromSystemProperties(configuration)
          applyConfigFromAutoScan(configuration)
-         detectAbstractProjectConfigs().forEach {
-            log { "ConfigManager: apply detected config=$it" }
-            applyConfigFromProjectConfig(it, configuration)
-         }
-         projectConfigs.forEach {
-            log { "ConfigManager: apply supplied config=$it" }
-            applyConfigFromProjectConfig(it, configuration)
-         }
+         projectConfigs.forEach { applyConfigFromProjectConfig(it, configuration) }
          initialized = true
       }
       return configuration
@@ -58,13 +51,14 @@ expect fun applyPlatformDefaults(configuration: Configuration)
  * Applies listeners, filters and extensions detected during scanning, that are annotated
  * with the [AutoScan] annotation.
  *
- * Note: This function will have no effect on non-JVM targets.
+ * Note: This will only have an effect on JVM targets.
  */
 expect fun applyConfigFromAutoScan(configuration: Configuration)
 
 /**
  * Scan the classpath for [AbstractProjectConfig] instances.
- * Only applies on the JVM.
+ *
+ * Note: This will only have an effect on JVM targets.
  */
 expect fun detectAbstractProjectConfigs(): List<AbstractProjectConfig>
 

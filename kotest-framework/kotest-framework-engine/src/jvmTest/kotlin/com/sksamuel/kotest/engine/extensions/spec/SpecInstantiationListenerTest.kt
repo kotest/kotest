@@ -27,13 +27,13 @@ class SpecInstantiationListenerTest : FunSpec() {
             }
          }
 
-         configuration.register(ext)
+         configuration.registerExtensions(ext)
 
          TestEngineLauncher(NoopTestEngineListener)
             .withClasses(SpecInstantiationSuccessSpec::class)
             .launch()
 
-         configuration.deregister(ext)
+         configuration.deregisterExtension(ext)
          fired shouldBe true
       }
 
@@ -50,13 +50,13 @@ class SpecInstantiationListenerTest : FunSpec() {
                fired = true
             }
          }
-         configuration.register(ext)
+         configuration.registerExtensions(ext)
 
          TestEngineLauncher(NoopTestEngineListener)
             .withClasses(SpecInstantiationFailureSpec::class)
             .launch()
 
-         configuration.deregister(ext)
+         configuration.deregisterExtension(ext)
          fired shouldBe true
       }
    }

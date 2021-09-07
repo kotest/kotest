@@ -21,7 +21,7 @@ class BeforeSpecListenerTest : FunSpec() {
 
       test("BeforeSpecListener's should be triggered for a spec with tests") {
 
-         configuration.register(MyBeforeSpecListener)
+         configuration.registerExtensions(MyBeforeSpecListener)
          counter.set(0)
 
          val listener = CollectingTestEngineListener()
@@ -29,7 +29,7 @@ class BeforeSpecListenerTest : FunSpec() {
             .withClasses(MyPopulatedSpec3::class)
             .launch()
 
-         configuration.deregister(MyBeforeSpecListener)
+         configuration.deregisterExtension(MyBeforeSpecListener)
          listener.specs.size shouldBe 1
          listener.tests.size shouldBe 1
 
@@ -48,14 +48,14 @@ class BeforeSpecListenerTest : FunSpec() {
 
       test("BeforeSpecExtension's should NOT be triggered for a spec without tests") {
 
-         configuration.register(MyBeforeSpecListener)
+         configuration.registerExtensions(MyBeforeSpecListener)
          counter.set(0)
 
          TestEngineLauncher(NoopTestEngineListener)
             .withClasses(MyErrorSpec3::class)
             .launch()
 
-         configuration.deregister(MyBeforeSpecListener)
+         configuration.deregisterExtension(MyBeforeSpecListener)
 
          counter.get() shouldBe 0
       }

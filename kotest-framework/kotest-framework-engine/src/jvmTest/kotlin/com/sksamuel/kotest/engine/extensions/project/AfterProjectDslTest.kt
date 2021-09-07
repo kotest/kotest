@@ -13,7 +13,7 @@ class AfterProjectDslTest : FunSpec({
 
       var fired = false
 
-      configuration.register(object : ProjectListener {
+      configuration.registerExtensions(object : ProjectListener {
          override suspend fun afterProject() {
             fired = true
          }

@@ -2,7 +2,6 @@ package io.kotest.engine
 
 import io.kotest.core.config.Configuration
 import io.kotest.core.extensions.ProjectExtension
-import io.kotest.core.internal.KotestEngineProperties
 import io.kotest.engine.interceptors.DumpConfigInterceptor
 import io.kotest.engine.interceptors.EmptyTestSuiteInterceptor
 import io.kotest.engine.interceptors.EngineInterceptor
@@ -23,7 +22,7 @@ actual fun testEngineInterceptors(conf: Configuration): List<EngineInterceptor> 
       KotestPropertiesInterceptor,
       TestDslStateInterceptor,
       SpecSortEngineInterceptor,
-      if (System.getProperty(KotestEngineProperties.dumpConfig) == null) null else DumpConfigInterceptor(conf),
+      DumpConfigInterceptor(conf),
       TestEngineListenerStartedFinishedInterceptor,
       ProjectExtensionEngineInterceptor(conf.extensions().filterIsInstance<ProjectExtension>()),
       ProjectListenerEngineInterceptor(conf.extensions()),

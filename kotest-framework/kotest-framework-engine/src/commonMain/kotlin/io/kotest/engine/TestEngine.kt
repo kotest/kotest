@@ -53,7 +53,7 @@ class TestEngine(val config: TestEngineConfig) {
 
    init {
       // if the engine was invoked with explicit tags, we register those via a tag extension
-      config.explicitTags?.let { configuration.register(SpecifiedTagsTagExtension(it)) }
+      config.explicitTags?.let { configuration.registerExtensions(SpecifiedTagsTagExtension(it)) }
 
       // if the engine was invoked with explicit filters, those are registered here
       configuration.registerFilters(config.testFilters)
