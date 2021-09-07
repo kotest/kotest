@@ -18,7 +18,6 @@ import kotlin.coroutines.coroutineContext
 actual fun createSpecExecutorDelegate(listener: TestEngineListener): SpecExecutorDelegate =
    JavascriptSpecExecutorDelegate
 
-
 /**
  * Note: we need to use this: https://youtrack.jetbrains.com/issue/KT-22228
  */

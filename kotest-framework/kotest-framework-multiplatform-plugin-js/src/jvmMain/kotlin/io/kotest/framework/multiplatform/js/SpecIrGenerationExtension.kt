@@ -37,10 +37,17 @@ class SpecIrGenerationExtension(private val messageCollector: MessageCollector) 
 
          override fun visitModuleFragment(declaration: IrModuleFragment): IrModuleFragment {
             val fragment = super.visitModuleFragment(declaration)
+
+            messageCollector.toLogger().log("Detected ${configs.size} configs:")
+            configs.forEach {
+               messageCollector.toLogger().log(it.kotlinFqName.asString())
+            }
+
             messageCollector.toLogger().log("Detected ${specs.size} JS specs:")
             specs.forEach {
                messageCollector.toLogger().log(it.kotlinFqName.asString())
             }
+
             if (specs.isEmpty()) return fragment
 
             val file = declaration.files.first()
