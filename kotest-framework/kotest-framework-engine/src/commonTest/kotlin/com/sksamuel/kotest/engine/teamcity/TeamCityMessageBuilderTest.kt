@@ -1,10 +1,10 @@
-package com.sksamuel.kotest.engine.launcher
+package com.sksamuel.kotest.engine.teamcity
 
 import io.kotest.core.spec.style.ShouldSpec
 import io.kotest.engine.teamcity.TeamCityMessageBuilder
 import io.kotest.matchers.shouldBe
 
-class TeamCityMessagesTest : ShouldSpec({
+class TeamCityMessageBuilderTest : ShouldSpec({
 
    should("escape brackets in messages") {
       val msg = TeamCityMessageBuilder.testFailed("testcity", "escape brackets")
