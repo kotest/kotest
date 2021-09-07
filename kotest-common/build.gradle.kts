@@ -56,6 +56,12 @@ kotlin {
          }
       }
 
+      val commonTest by getting {
+         dependencies {
+            implementation(project(Projects.Framework.engine))
+         }
+      }
+
       val jvmMain by getting {
          dependsOn(commonMain)
       }
