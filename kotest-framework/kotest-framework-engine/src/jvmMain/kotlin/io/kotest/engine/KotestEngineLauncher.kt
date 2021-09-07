@@ -16,9 +16,6 @@ import kotlin.script.templates.standard.ScriptTemplateWithArgs
 
 /**
  * A builder class for creating and executing tests via the [TestEngine].
- *
- * The contract on this class cannot change without breaking the kotest plugin.
- * It must remain a backwards compatible layer between the launchers and the engine.
  */
 @Deprecated("Prefer TestEngineLauncher. This class will remain for compatibility with existing clients but new code should use the TestEngineLauncher which is multiplatform.")
 class KotestEngineLauncher(
