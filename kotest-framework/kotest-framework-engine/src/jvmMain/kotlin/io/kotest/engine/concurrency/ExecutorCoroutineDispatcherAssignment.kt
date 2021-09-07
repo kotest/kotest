@@ -1,6 +1,5 @@
-package io.kotest.engine
+package io.kotest.engine.concurrency
 
-import io.kotest.core.config.configuration
 import io.kotest.core.test.TestCase
 import io.kotest.mpp.bestName
 import kotlinx.coroutines.CoroutineDispatcher
@@ -9,9 +8,6 @@ import kotlinx.coroutines.withContext
 import java.util.concurrent.Executors
 import kotlin.math.abs
 import kotlin.reflect.KClass
-
-actual val defaultCoroutineDispatcherProvider: CoroutineDispatcherAssigner =
-   ExecutorCoroutineDispatcherAssigner(configuration.parallelism, configuration.dispatcherAffinity)
 
 /**
  * Each spec has one or more root tests and each of these tests will execute in its own coroutine.
@@ -31,10 +27,10 @@ actual val defaultCoroutineDispatcherProvider: CoroutineDispatcherAssigner =
  * that spec. Swings and roundabouts. To allow each test to have its own thread, set dispatcher
  * affinity to false, either globally, or on a per spec basis.
  */
-class ExecutorCoroutineDispatcherAssigner(
+class ExecutorCoroutineDispatcherAssignment(
    private val threads: Int, // global threads count
    private val affinity: Boolean,
-) : CoroutineDispatcherAssigner {
+) : CoroutineDispatcherAssignment {
 
    // these are the global dispatchers which uses the given threadCount
    private val dispatchers = List(threads) { Executors.newSingleThreadExecutor().asCoroutineDispatcher() }

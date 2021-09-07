@@ -1,10 +1,10 @@
 package io.kotest.engine.extensions
 
 import io.kotest.common.ExperimentalKotest
-import io.kotest.engine.CoroutineDispatcherAssigner
+import io.kotest.engine.concurrency.CoroutineDispatcherAssignment
 
 /**
- * An extension point that can be used to return a [CoroutineDispatcherAssigner] which
+ * An extension point that can be used to return a [CoroutineDispatcherAssignment] which
  * is then used to switch the coroutine dispatchers context specs and tests.
  *
  * If this is not implemented then the Kotest engine will use a default implementation.
@@ -12,5 +12,5 @@ import io.kotest.engine.CoroutineDispatcherAssigner
  */
 @ExperimentalKotest
 interface CoroutineDispatcherAssignerExtension {
-   fun provider(): CoroutineDispatcherAssigner
+   fun provider(): CoroutineDispatcherAssignment
 }

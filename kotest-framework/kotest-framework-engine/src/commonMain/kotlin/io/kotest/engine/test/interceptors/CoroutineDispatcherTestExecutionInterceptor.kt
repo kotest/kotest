@@ -4,11 +4,11 @@ import io.kotest.core.config.Configuration
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestContext
 import io.kotest.core.test.TestResult
-import io.kotest.engine.defaultCoroutineDispatcherProvider
+import io.kotest.engine.concurrency.defaultCoroutineDispatcherProvider
 import io.kotest.engine.extensions.CoroutineDispatcherAssignerExtension
 
 /**
- * Switches execution onto a dispatcher provided by a [io.kotest.engine.CoroutineDispatcherAssigner].
+ * Switches execution onto a dispatcher provided by a [io.kotest.engine.CoroutineDispatcherAssignment].
  */
 class CoroutineDispatcherTestExecutionInterceptor(private val configuration: Configuration) : TestExecutionInterceptor {
 
