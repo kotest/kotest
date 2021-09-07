@@ -30,3 +30,7 @@ maintained and hosted by third parties.
 | [Http4k](https://www.http4k.org/guide/reference/kotest/) | Functional toolkit for Kotlin HTTP applications |
 | [Micronaut](https://github.com/micronaut-projects/micronaut-test) | JVM-based, full-stack framework for building modular, easily testable microservice |
 | [TestFiles](https://github.com/jGleitz/testfiles) | Creates organized files and directories for testing |
+| [Result4s](https://github.com/MrBergin/result4k-kotest-matchers) | Result4s matchers|
+| [Kotless](https://github.com/LeoColman/kotest-kotless) | Utilties for kotless and kotest |
+| [LogCapture](https://github.com/jsalinaspolo/logcapture) | LogCapture is a testing library for asserting logging messages |
+| [KotlinFixture](https://github.com/appmattus/kotlinfixture/blob/main/fixture-kotest/README.adoc) | generate well-defined, but essentially random, input |
