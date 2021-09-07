@@ -12,11 +12,11 @@ import io.kotest.engine.interceptors.ProjectTimeoutEngineInterceptor
 import io.kotest.engine.interceptors.SpecSortEngineInterceptor
 import io.kotest.engine.interceptors.TestDslStateInterceptor
 import io.kotest.engine.interceptors.TestEngineListenerStartedFinishedInterceptor
-import io.kotest.engine.interceptors.TestEngineShutdownInterceptor
+import io.kotest.engine.interceptors.TestEngineStartupShutdownInterceptor
 
 actual fun testEngineInterceptors(conf: Configuration): List<EngineInterceptor> {
    return listOfNotNull(
-      TestEngineShutdownInterceptor,
+      TestEngineStartupShutdownInterceptor,
       ProjectTimeoutEngineInterceptor(conf.projectTimeout),
       TestDslStateInterceptor,
       DisallowNestedSpecStylesInterceptor,
