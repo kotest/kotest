@@ -15,25 +15,3 @@ class SpecEnterInterceptor(private val listener: TestEngineListener) : SpecRefIn
    }
 }
 
-/**
- * A [SpecRefInterceptor] that invokes the specExit callback on the [TestEngineListener].
- * Any unhandled exception in the spec executor will be passed to this callback.
- */
-class SpecExitInterceptor(private val listener: TestEngineListener) : SpecRefInterceptor {
-
-   override suspend fun intercept(
-      fn: suspend (SpecRef) -> Map<TestCase, TestResult>
-   ): suspend (SpecRef) -> Map<TestCase, TestResult> = { ref ->
-      kotlin.runCatching { fn(ref) }
-         .fold(
-            {
-               listener.specExit(ref.kclass, null)
-               it
-            },
-            {
-               listener.specExit(ref.kclass, it)
-               emptyMap()
-            }
-         )
-   }
-}

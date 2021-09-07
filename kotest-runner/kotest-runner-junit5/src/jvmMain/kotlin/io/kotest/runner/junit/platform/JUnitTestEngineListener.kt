@@ -165,7 +165,7 @@ class JUnitTestEngineListener(
       listener.dynamicTestRegistered(descriptor)
       log { "JUnitTestEngineListener: Notifying junit that a spec was ignored [$descriptor]" }
       listener.executionSkipped(descriptor, null)
-      started.add(kclass)
+      ignored.add(kclass)
    }
 
    override suspend fun specInstantiationError(kclass: KClass<*>, t: Throwable) {
@@ -178,6 +178,7 @@ class JUnitTestEngineListener(
       // but if an error we should throw it to let the caller handle it as a root error
       if (ignored.contains(kclass)) {
          if (t != null) throw t
+         return
       }
 
       val result = when {
