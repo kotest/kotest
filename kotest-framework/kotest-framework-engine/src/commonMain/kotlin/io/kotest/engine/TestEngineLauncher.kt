@@ -61,6 +61,9 @@ class TestEngineLauncher(
       sysprop(KotestEngineProperties.dumpConfig, "false") == "true",
    )
 
+   /**
+    * Convenience function to be called by the native code gen to set up the TeamCity listener.
+    */
    fun withTeamCityListener(): TestEngineLauncher {
       return withListener(TeamCityTestEngineListener())
    }

@@ -1,4 +1,4 @@
-package com.sksamuel.kotest.engine.internal
+package com.sksamuel.kotest.engine.listener
 
 import io.kotest.core.spec.style.WordSpec
 import io.kotest.engine.listener.PinnedSpecTestEngineListener
