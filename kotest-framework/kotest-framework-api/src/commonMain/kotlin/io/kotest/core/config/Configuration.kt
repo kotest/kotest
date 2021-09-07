@@ -225,6 +225,11 @@ class Configuration {
    var failOnEmptyTestSuite: Boolean = Defaults.failOnEmptyTestSuite
 
    /**
+    * If set to true, then will output config on startup.
+    */
+   var dumpConfig: Boolean = Defaults.dumpConfig
+
+   /**
     * Set to true to enable enhanced tracing of coroutines when an error occurs.
     *
     * Defaults to [Defaults.coroutineDebugProbes]

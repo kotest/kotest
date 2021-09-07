@@ -3,7 +3,7 @@ package com.sksamuel.kotest.engine.interceptors
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.engine.EngineResult
 import io.kotest.engine.TestSuite
-import io.kotest.engine.interceptors.TestEngineListenerInitializeFinalizeInterceptor
+import io.kotest.engine.interceptors.TestEngineStartupShutdownInterceptor
 import io.kotest.engine.listener.TestEngineListener
 import io.kotest.matchers.booleans.shouldBeTrue
 
@@ -12,11 +12,11 @@ class TestEngineListenerInitializeFinalizeInterceptorTest : FunSpec({
    test("should invoke initialize") {
       var fired = false
       val listener = object : TestEngineListener {
-         override suspend fun engineInitialize() {
+         override suspend fun engineStartup() {
             fired = true
          }
       }
-      TestEngineListenerInitializeFinalizeInterceptor.intercept(
+      TestEngineStartupShutdownInterceptor.intercept(
          TestSuite.empty,
          listener
       ) { _, _ -> EngineResult.empty }
@@ -26,11 +26,11 @@ class TestEngineListenerInitializeFinalizeInterceptorTest : FunSpec({
    test("should invoke finalize") {
       var fired = false
       val listener = object : TestEngineListener {
-         override suspend fun engineFinalize() {
+         override suspend fun engineShutdown() {
             fired = true
          }
       }
-      TestEngineListenerInitializeFinalizeInterceptor.intercept(
+      TestEngineStartupShutdownInterceptor.intercept(
          TestSuite.empty,
          listener
       ) { _, _ -> EngineResult.empty }

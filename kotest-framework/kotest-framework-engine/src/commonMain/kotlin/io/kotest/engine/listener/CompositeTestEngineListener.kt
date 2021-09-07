@@ -15,12 +15,12 @@ class CompositeTestEngineListener(private val listeners: List<TestEngineListener
       require(listeners.isNotEmpty())
    }
 
-   override suspend fun engineFinalize() {
-      listeners.forEach { it.engineFinalize() }
+   override suspend fun engineShutdown() {
+      listeners.forEach { it.engineShutdown() }
    }
 
-   override suspend fun engineInitialize() {
-      listeners.forEach { it.engineInitialize() }
+   override suspend fun engineStartup() {
+      listeners.forEach { it.engineStartup() }
    }
 
    override suspend fun engineStarted(classes: List<KClass<*>>) {

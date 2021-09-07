@@ -16,12 +16,12 @@ interface TestEngineListener {
 
    /**
     * Is invoked as soon as the engine has been created and before any other interceptors run.
-    * // todo add config as arg here.
     */
-   suspend fun engineInitialize() {}
+   suspend fun engineStartup() {}
 
    /**
     * Is invoked when the [TestEngine] is starting execution.
+    *
     * This callback is executed after all other interceptors have completed
     * and the engine setup is complete.
     *
@@ -30,7 +30,7 @@ interface TestEngineListener {
    suspend fun engineStarted(classes: List<KClass<*>>) {}
 
    /**
-    * Is invoked when the [TestEngine] has finished execution.
+    * Is invoked when the [TestEngine] has finished execution of all specs.
     * This callback is invoked before execution returns to the interceptor chain.
     *
     * If an unrecoverable error was detected during execution then it will be passed
@@ -41,11 +41,8 @@ interface TestEngineListener {
    /**
     * Is invoked when the engine has finished with all tests and other interceptors.
     * Is the last thing in the engine before the engine terminates.
-    *
-    * If an unrecoverable error was detected during execution then it will be passed
-    * as the parameter to the engine.
     */
-   suspend fun engineFinalize() {}
+   suspend fun engineShutdown() {}
 
    /**
     * Invoked when a spec is submitted to the SpecExecutor.

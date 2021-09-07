@@ -231,6 +231,11 @@ abstract class AbstractProjectConfig {
    open val displaySpecIfNoActiveTests: Boolean? = null
 
    /**
+    * If set to true, then will output config on startup.
+    */
+   var dumpConfig: Boolean? = null
+
+   /**
     * Executed before the first test of the project, but after the
     * [ProjectListener.beforeProject] methods.
     */

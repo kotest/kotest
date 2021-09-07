@@ -5,18 +5,18 @@ import io.kotest.engine.TestSuite
 import io.kotest.engine.listener.TestEngineListener
 
 /**
- * Notifies the [TestEngineListener] on startup (initialize) and shutdown (finalize).
+ * Notifies the [TestEngineListener] on startup and shutdown.
  */
-object TestEngineListenerInitializeFinalizeInterceptor : EngineInterceptor {
+object TestEngineShutdownInterceptor : EngineInterceptor {
 
    override suspend fun intercept(
       suite: TestSuite,
       listener: TestEngineListener,
       execute: suspend (TestSuite, TestEngineListener) -> EngineResult
    ): EngineResult {
-      listener.engineInitialize()
+      listener.engineStartup()
       val result = execute(suite, listener)
-      listener.engineFinalize()
+      listener.engineShutdown()
       return result
    }
 }

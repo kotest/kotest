@@ -21,7 +21,11 @@ internal class DumpConfigInterceptor(
       listener: TestEngineListener,
       execute: suspend (TestSuite, TestEngineListener) -> EngineResult
    ): EngineResult {
-      if (sysprop(KotestEngineProperties.dumpConfig) != null || env(KotestEngineProperties.dumpConfig) != null) {
+
+      if (sysprop(KotestEngineProperties.dumpConfig) != null ||
+         env(KotestEngineProperties.dumpConfig) != null ||
+         configuration.dumpConfig
+      ) {
          configuration.dumpProjectConfig()
       }
       return execute(suite, listener)

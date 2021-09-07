@@ -68,15 +68,15 @@ class ThreadSafeTestEngineListener(private val listener: TestEngineListener) : T
       }
    }
 
-   override suspend fun engineFinalize() {
+   override suspend fun engineShutdown() {
       mutex.withLock {
-         listener.engineFinalize()
+         listener.engineShutdown()
       }
    }
 
-   override suspend fun engineInitialize() {
+   override suspend fun engineStartup() {
       mutex.withLock {
-         listener.engineInitialize()
+         listener.engineStartup()
       }
    }
 

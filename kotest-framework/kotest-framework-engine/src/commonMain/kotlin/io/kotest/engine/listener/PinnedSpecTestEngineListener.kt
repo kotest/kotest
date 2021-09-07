@@ -31,8 +31,8 @@ class PinnedSpecTestEngineListener(val listener: TestEngineListener) : TestEngin
       _callbacks.forEach { it.invoke() }
    }
 
-   override suspend fun engineInitialize() {
-      listener.engineInitialize()
+   override suspend fun engineStartup() {
+      listener.engineStartup()
    }
 
    override suspend fun engineStarted(classes: List<KClass<*>>) {
@@ -43,8 +43,8 @@ class PinnedSpecTestEngineListener(val listener: TestEngineListener) : TestEngin
       listener.engineFinished(t)
    }
 
-   override suspend fun engineFinalize() {
-      listener.engineFinalize()
+   override suspend fun engineShutdown() {
+      listener.engineShutdown()
    }
 
    override suspend fun specEnter(kclass: KClass<out Spec>) {
