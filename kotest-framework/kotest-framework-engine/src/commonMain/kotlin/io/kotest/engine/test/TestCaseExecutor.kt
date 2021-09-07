@@ -40,7 +40,7 @@ class TestCaseExecutor(
          InvocationCountCheckInterceptor,
          CoroutineDebugProbeInterceptor,
          SupervisorScopeInterceptor,
-         CoroutineDispatcherTestExecutionInterceptor(configuration),
+//         CoroutineDispatcherTestExecutionInterceptor(configuration),
          TestCaseExtensionInterceptor,
          EnabledCheckInterceptor,
          LifecycleInterceptor(listener, start),

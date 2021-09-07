@@ -11,6 +11,6 @@ import io.kotest.engine.concurrency.CoroutineDispatcherAssignment
  * If two or more instances of this extension are used, then one will be arbitrarily picked.
  */
 @ExperimentalKotest
-interface CoroutineDispatcherAssignerExtension {
+interface CoroutineDispatcherAssignmentExtension {
    fun provider(): CoroutineDispatcherAssignment
 }

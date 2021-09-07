@@ -12,4 +12,7 @@ object EntryPoint {
 
    // the method invoked to add specs to the launcher, must exist on TestEngineLauncher
    const val WithSpecsMethodName = "withSpecs"
+
+   // the method invoked to set the team city listener, must exist on TestEngineLauncher
+   const val WithTeamCityListenerMethodName = "withTeamCityListener"
 }

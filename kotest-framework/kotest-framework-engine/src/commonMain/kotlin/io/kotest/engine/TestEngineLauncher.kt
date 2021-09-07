@@ -16,6 +16,7 @@ import io.kotest.engine.config.ConfigManager
 import io.kotest.engine.config.detectAbstractProjectConfigs
 import io.kotest.engine.listener.NoopTestEngineListener
 import io.kotest.engine.listener.PinnedSpecTestEngineListener
+import io.kotest.engine.listener.TeamCityTestEngineListener
 import io.kotest.engine.listener.TestEngineListener
 import io.kotest.engine.listener.ThreadSafeTestEngineListener
 import io.kotest.engine.spec.InstanceSpecRef
@@ -59,6 +60,25 @@ class TestEngineLauncher(
       emptyList(),
       sysprop(KotestEngineProperties.dumpConfig, "false") == "true",
    )
+
+   fun withTeamCityListener(): TestEngineLauncher {
+      return withListener(TeamCityTestEngineListener())
+   }
+
+   /**
+    * Replace the listener with the given value.
+    */
+   fun withListener(listener: TestEngineListener): TestEngineLauncher {
+      return TestEngineLauncher(
+         listener = listener,
+         configs = configs,
+         refs = refs,
+         explicitTags = explicitTags,
+         testFilters = testFilters,
+         specFilters = specFilters,
+         dumpConfig = dumpConfig,
+      )
+   }
 
    fun withSpecs(vararg specs: Spec): TestEngineLauncher {
       return TestEngineLauncher(

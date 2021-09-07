@@ -5,7 +5,7 @@ import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestContext
 import io.kotest.core.test.TestResult
 import io.kotest.engine.concurrency.defaultCoroutineDispatcherProvider
-import io.kotest.engine.extensions.CoroutineDispatcherAssignerExtension
+import io.kotest.engine.extensions.CoroutineDispatcherAssignmentExtension
 
 /**
  * Switches execution onto a dispatcher provided by a [io.kotest.engine.CoroutineDispatcherAssignment].
@@ -14,7 +14,7 @@ class CoroutineDispatcherTestExecutionInterceptor(private val configuration: Con
 
    override suspend fun intercept(test: suspend (TestCase, TestContext) -> TestResult): suspend (TestCase, TestContext) -> TestResult {
 
-      val ext = configuration.extensions().filterIsInstance<CoroutineDispatcherAssignerExtension>().firstOrNull()
+      val ext = configuration.extensions().filterIsInstance<CoroutineDispatcherAssignmentExtension>().firstOrNull()
       val provider = ext?.provider() ?: defaultCoroutineDispatcherProvider
 
       return { testCase, testContext ->
