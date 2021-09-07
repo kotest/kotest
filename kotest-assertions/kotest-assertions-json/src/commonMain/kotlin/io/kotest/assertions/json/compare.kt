@@ -103,7 +103,7 @@ internal fun compareString(path: List<String>, expected: JsonNode.StringNode, ac
       actual is JsonNode.StringNode -> compareStrings(path, expected.value, actual.value)
       mode == CompareMode.Lenient -> when {
          actual is JsonNode.BooleanNode -> compareStrings(path, expected.value, actual.value.toString())
-         actual is JsonNode.NumberNode && expected.containsNumber() -> compareNumbers(path, expected.toNumberNode(), actual, mode)
+         actual is JsonNode.NumberNode && expected.contentIsNumber() -> compareNumberNodes(path, expected.toNumberNode(), actual)
          else -> JsonError.IncompatibleTypes(path, expected, actual)
       }
       else -> JsonError.IncompatibleTypes(path, expected, actual)
@@ -146,47 +146,29 @@ internal fun compareBooleans(path: List<String>, expected: Boolean, actual: Bool
 }
 
 private fun compareNumbers(path: List<String>, expected: JsonNode.NumberNode, actual: JsonNode, mode: CompareMode): JsonError? {
-   return when(mode) {
-      CompareMode.Strict -> {
-         if (actual is JsonNode.NumberNode) compareNumbersStrictly(path, expected.asString(), actual.asString())
-         else JsonError.IncompatibleTypes(path, expected,actual)
+   return when(actual) {
+      is JsonNode.NumberNode -> compareNumberNodes(path, expected, actual)
+      is JsonNode.StringNode -> {
+         if (CompareMode.Lenient == mode && actual.contentIsNumber()) compareNumberNodes(path, expected, actual.toNumberNode())
+         else JsonError.IncompatibleTypes(path, expected, actual)
       }
-
-      CompareMode.Lenient -> {
-         when (actual) {
-            is JsonNode.NumberNode -> compareNumbersLeniently(path, expected, actual)
-            is JsonNode.StringNode -> {
-               if (actual.containsNumber()) compareNumbersLeniently(path, expected, JsonNode.NumberNode(actual.content))
-               else JsonError.IncompatibleTypes(path, expected, actual)
-            }
-            else -> JsonError.IncompatibleTypes(path, expected, actual)
-         }
-      }
+      else -> JsonError.IncompatibleTypes(path, expected, actual)
    }
 }
 
-private fun compareNumbersStrictly(path: List<String>, expected: String, actual: String): JsonError? {
-   return when (expected) {
-      actual -> null
-      else -> JsonError.UnequalValues(path, expected, actual)
-   }
-}
-
-private val trailingFractionalZeroesRegex =
+private val fractionalZeroesRegex =
    """(\.\d*)0+""".toRegex()
 
-private fun compareNumbersLeniently(path: List<String>, expected: JsonNode.NumberNode, actual: JsonNode.NumberNode): JsonError? {
-   fun String.removeFractionalTrailingZeroes() =
-      this.replace(trailingFractionalZeroesRegex) { it.groupValues[1].trimEnd('0') }
+private fun compareNumberNodes(path: List<String>, expected: JsonNode.NumberNode, actual: JsonNode.NumberNode): JsonError? {
+   /**
+    * Removes insignificant part of a number. e.g. 1.0 -> 1 or 3.1400 -> 3.14
+    */
+   fun trimInsignificant(value: String): String =
+      value.replace(fractionalZeroesRegex) { it.groupValues[1].trimEnd('0') }
          .trimEnd('.')
 
-   fun toNumber(value: String): Number? =
-      with (value.removeFractionalTrailingZeroes()) {
-         toLongOrNull() ?: toDoubleOrNull()
-      }
-
    return when {
-      toNumber(expected.asString()) == toNumber(actual.asString()) -> null
+      trimInsignificant(expected.asString()) == trimInsignificant(actual.asString()) -> null
       else -> JsonError.UnequalValues(path, expected.content, actual.content)
    }
 }

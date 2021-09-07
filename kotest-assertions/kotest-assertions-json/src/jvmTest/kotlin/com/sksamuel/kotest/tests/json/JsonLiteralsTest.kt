@@ -27,6 +27,7 @@ class JsonLiteralsTest : FunSpec(
       test("comparing exponent-based float with regular float") {
          "1E3" shouldEqualJson "1000.0"
          "1000.0" shouldEqualJson "1E3"
+         "1000.0" shouldEqualJson "1000"
          "5E0" shouldEqualJson "5.0"
          "2E-1" shouldEqualJson "0.2"
       }

@@ -31,13 +31,13 @@ sealed class JsonNode {
 
       companion object {
 
-         private val numberRegex = """[+-]?\d+(\.\d+)?([eE][+-]?\d+)?""".toRegex()
+         private val numberRegex = """-?([1-9]\d*|0)(\.\d+)?([eE][+-]?\d+)?""".toRegex()
       }
 
       override val content = value
       override val isString = true
 
-      internal fun containsNumber() = value.matches(numberRegex)
+      internal fun contentIsNumber() = value.matches(numberRegex)
       internal fun toNumberNode() = NumberNode(content)
    }
 
