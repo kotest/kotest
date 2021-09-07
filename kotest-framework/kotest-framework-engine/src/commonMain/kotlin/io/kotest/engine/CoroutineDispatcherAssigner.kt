@@ -11,3 +11,9 @@ interface CoroutineDispatcherAssigner {
     */
    suspend fun <T> withDispatcher(testCase: TestCase, f: suspend () -> T): T
 }
+
+object NoopCoroutineDispatcherAssigner : CoroutineDispatcherAssigner {
+   override suspend fun <T> withDispatcher(testCase: TestCase, f: suspend () -> T): T {
+      return f()
+   }
+}
