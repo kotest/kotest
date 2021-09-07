@@ -159,6 +159,15 @@ class TestEngineLauncher(
    fun testSuite(): TestSuite = TestSuite(refs)
 
    /**
+    * Launch the [TestEngine] in an existing coroutine without blocking.
+    */
+   suspend fun async(): EngineResult {
+      log { "TestEngineLauncher: Launching Test Engine" }
+      val engine = TestEngine(toConfig())
+      return engine.execute(testSuite())
+   }
+
+   /**
     * Launch the [TestEngine] created from this builder and block the thread until execution has completed.
     * This method will throw on JS.
     */
