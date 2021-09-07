@@ -41,6 +41,7 @@ abstract class AbstractProjectConfig {
    /**
     * List of project wide [Listener] instances.
     */
+   @Deprecated("Use extensions. This will be removed in 6.0")
    open fun listeners(): List<Listener> = emptyList()
 
    /**

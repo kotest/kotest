@@ -8,7 +8,6 @@ import io.kotest.core.spec.Spec
 import io.kotest.core.spec.toDescription
 import io.kotest.engine.TestEngineLauncher
 import io.kotest.engine.config.ConfigManager
-import io.kotest.engine.config.detectAbstractProjectConfigs
 import io.kotest.engine.extensions.EnabledConditionSpecDiscoveryExtension
 import io.kotest.engine.extensions.IgnoredSpecDiscoveryExtension
 import io.kotest.engine.extensions.TagsExcludedDiscoveryExtension
@@ -39,7 +38,7 @@ class KotestJunitPlatformTestEngine : TestEngine {
    }
 
    init {
-      ConfigManager.initialize(configuration, detectAbstractProjectConfigs())
+      ConfigManager.initialize(configuration, emptyList())
    }
 
    override fun getId(): String = EngineId

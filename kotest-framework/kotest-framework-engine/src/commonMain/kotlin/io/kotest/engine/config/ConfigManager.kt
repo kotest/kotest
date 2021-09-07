@@ -2,6 +2,7 @@ package io.kotest.engine.config
 
 import io.kotest.core.config.AbstractProjectConfig
 import io.kotest.core.config.Configuration
+import io.kotest.mpp.log
 import kotlin.native.concurrent.ThreadLocal
 
 @ThreadLocal
@@ -20,10 +21,18 @@ object ConfigManager {
     */
    fun initialize(configuration: Configuration, projectConfigs: List<AbstractProjectConfig>): Configuration {
       if (!initialized) {
+         log { "ConfigManager: initialize config projectConfigs=$projectConfigs" }
          applyPlatformDefaults(configuration)
          applyConfigFromSystemProperties(configuration)
          applyConfigFromAutoScan(configuration)
-         (detectAbstractProjectConfigs() + projectConfigs).forEach { applyConfigFromProjectConfig(it, configuration) }
+         detectAbstractProjectConfigs().forEach {
+            log { "ConfigManager: apply detected config=$it" }
+            applyConfigFromProjectConfig(it, configuration)
+         }
+         projectConfigs.forEach {
+            log { "ConfigManager: apply supplied config=$it" }
+            applyConfigFromProjectConfig(it, configuration)
+         }
          initialized = true
       }
       return configuration

@@ -6,7 +6,6 @@ import io.kotest.common.ExperimentalKotest
 import io.kotest.core.extensions.Extension
 import io.kotest.core.filter.Filter
 import io.kotest.core.listeners.Listener
-import io.kotest.core.listeners.TestListener
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.SpecExecutionOrder
 import io.kotest.core.test.AssertionMode
@@ -339,9 +338,9 @@ class Configuration {
       filters.remove(filter)
    }
 
-   fun registerExtensions(vararg extensions: Extension) = extensions.forEach { registerExtension(it) }
-   fun registerExtensions(extensions: List<Extension>) = extensions.forEach { registerExtension(it) }
-   fun deregisterExtensions(extensions: List<Extension>) = extensions.forEach { deregisterExtension(it) }
+   fun registerExtensions(vararg extensions: Extension) = extensions.forEach { register(it) }
+   fun registerExtensions(extensions: List<Extension>) = extensions.forEach { register(it) }
+   fun deregisterExtensions(extensions: List<Extension>) = extensions.forEach { deregister(it) }
 
    @Deprecated(
       "Use register. This will be removed in 6.0.",
