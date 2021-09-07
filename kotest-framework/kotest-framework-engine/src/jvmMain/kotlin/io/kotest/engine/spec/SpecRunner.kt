@@ -7,12 +7,7 @@ import io.kotest.core.test.TestResult
 import io.kotest.engine.listener.TestEngineListener
 import io.kotest.engine.test.scheduler.TestScheduler
 import io.kotest.fp.Try
-import io.kotest.mpp.NamedThreadFactory
 import io.kotest.mpp.log
-import kotlinx.coroutines.runBlocking
-import java.util.concurrent.ExecutionException
-import java.util.concurrent.Executors
-import java.util.concurrent.TimeUnit
 import kotlin.reflect.KClass
 
 /**
@@ -54,34 +49,4 @@ abstract class SpecRunner(
          it.printStackTrace()
          Try { listener.specInstantiationError(kclass, it) }
       }
-
-   @Deprecated("Explicit thread mode Will be removed in 4.7")
-   protected suspend fun runParallel(threads: Int, testCases: Collection<TestCase>, run: suspend (TestCase) -> Unit) {
-
-      val executor = Executors.newFixedThreadPool(threads, NamedThreadFactory("SpecRunner-%d"))
-
-      val futures = testCases.map { testCase ->
-         executor.submit {
-            runBlocking {
-               run(testCase)
-            }
-         }
-      }
-      executor.shutdown()
-      log { "Waiting for test case execution to terminate" }
-
-      try {
-         executor.awaitTermination(1, TimeUnit.DAYS)
-      } catch (t: InterruptedException) {
-         log(t) { "Test case execution interrupted" }
-         throw t
-      }
-
-      //Handle Uncaught Exception in threads or they just be swallowed
-      try {
-         futures.forEach { it.get() }
-      } catch (e: ExecutionException) {
-         throw e.cause ?: e
-      }
-   }
 }
