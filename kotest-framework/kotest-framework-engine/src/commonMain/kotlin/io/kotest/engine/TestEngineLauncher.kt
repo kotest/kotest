@@ -164,4 +164,16 @@ class TestEngineLauncher(
       val engine = TestEngine(toConfig())
       return engine.execute(testSuite())
    }
+
+   /**
+    * Launch the [TestEngine] created from this builder using a Javascript promise.
+    * This method will throw on JVM or native.
+    */
+   fun promise() {
+      log { "TestEngineLauncher: Launching Test Engine in Javascript promise" }
+      io.kotest.common.promise {
+         val engine = TestEngine(toConfig())
+         engine.execute(testSuite())
+      }
+   }
 }

@@ -75,7 +75,7 @@ class SpecIrGenerationExtension(private val messageCollector: MessageCollector) 
                   field.initializer = pluginContext.irFactory.createExpressionBody(startOffset, endOffset) {
                      this.expression = DeclarationIrBuilder(pluginContext, field.symbol).irBlock {
                         +irCall(promiseFn).also { promise: IrCall ->
-                           promise.extensionReceiver = irCall(withSpecsFn).also { withSpecs ->
+                           promise.dispatchReceiver = irCall(withSpecsFn).also { withSpecs ->
                               withSpecs.putValueArgument(
                                  0,
                                  irVararg(
