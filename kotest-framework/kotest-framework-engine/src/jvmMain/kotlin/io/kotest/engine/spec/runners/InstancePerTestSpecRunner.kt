@@ -10,9 +10,8 @@ import io.kotest.core.test.TestType
 import io.kotest.core.test.createTestName
 import io.kotest.core.test.toTestCase
 import io.kotest.engine.ExecutorInterruptableExecutionContext
-import io.kotest.engine.concurrency.resolvedThreads
-import io.kotest.engine.spec.SpecExtensions
 import io.kotest.engine.listener.TestEngineListener
+import io.kotest.engine.spec.SpecExtensions
 import io.kotest.engine.spec.SpecRunner
 import io.kotest.engine.spec.materializeAndOrderRootTests
 import io.kotest.engine.test.DuplicateTestNameHandler
@@ -77,17 +76,9 @@ internal class InstancePerTestSpecRunner(
     */
    override suspend fun execute(spec: Spec): Result<Map<TestCase, TestResult>> =
       kotlin.runCatching {
-         val threads = spec.resolvedThreads()
-         if (threads != null && threads > 0) {
-            runParallel(threads, spec.materializeAndOrderRootTests().map { it.testCase }) {
-               executeInCleanSpec(it)
-                  .getOrThrow()
-            }
-         } else {
-            launch(spec) {
-               executeInCleanSpec(it)
-                  .getOrThrow()
-            }
+         launch(spec) {
+            executeInCleanSpec(it)
+               .getOrThrow()
          }
          results
       }

@@ -10,9 +10,8 @@ import io.kotest.core.test.TestStatus
 import io.kotest.core.test.createTestName
 import io.kotest.core.test.toTestCase
 import io.kotest.engine.ExecutorInterruptableExecutionContext
-import io.kotest.engine.concurrency.resolvedThreads
-import io.kotest.engine.spec.SpecExtensions
 import io.kotest.engine.listener.TestEngineListener
+import io.kotest.engine.spec.SpecExtensions
 import io.kotest.engine.spec.SpecRunner
 import io.kotest.engine.spec.materializeAndOrderRootTests
 import io.kotest.engine.test.DuplicateTestNameHandler
@@ -43,18 +42,9 @@ internal class SingleInstanceSpecRunner(
       suspend fun interceptAndRun(context: CoroutineContext) = kotlin.runCatching {
          val rootTests = spec.materializeAndOrderRootTests().map { it.testCase }
          log { "SingleInstanceSpecRunner: Materialized root tests: ${rootTests.size}" }
-         val threads = spec.resolvedThreads()
-         if (threads != null && threads > 1) {
-            log { "Warning - usage of deprecated thread count $threads" }
-            runParallel(threads, rootTests) {
-               log { "SingleInstanceSpecRunner: Executing test $it" }
-               runTest(it, context)
-            }
-         } else {
-            launch(spec) {
-               log { "SingleInstanceSpecRunner: Executing test $it" }
-               runTest(it, context)
-            }
+         launch(spec) {
+            log { "SingleInstanceSpecRunner: Executing test $it" }
+            runTest(it, context)
          }
       }
 

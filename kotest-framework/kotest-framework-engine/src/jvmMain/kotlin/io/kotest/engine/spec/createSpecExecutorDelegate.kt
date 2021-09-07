@@ -7,9 +7,7 @@ import io.kotest.core.spec.Spec
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.engine.concurrency.resolvedConcurrentTests
-import io.kotest.engine.concurrency.resolvedThreads
 import io.kotest.engine.listener.TestEngineListener
-import io.kotest.engine.spec.runners.ConcurrentInstancePerLeafSpecRunner
 import io.kotest.engine.spec.runners.InstancePerLeafSpecRunner
 import io.kotest.engine.spec.runners.InstancePerTestSpecRunner
 import io.kotest.engine.spec.runners.SingleInstanceSpecRunner
@@ -34,10 +32,7 @@ actual fun createSpecExecutorDelegate(
       val runner = when (spec.resolvedIsolationMode()) {
          IsolationMode.SingleInstance -> SingleInstanceSpecRunner(listener, scheduler)
          IsolationMode.InstancePerTest -> InstancePerTestSpecRunner(listener, scheduler)
-         IsolationMode.InstancePerLeaf -> when (val threads = spec.resolvedThreads()) {
-            null, 0, 1 -> InstancePerLeafSpecRunner(listener, scheduler)
-            else -> ConcurrentInstancePerLeafSpecRunner(listener, threads)
-         }
+         IsolationMode.InstancePerLeaf -> InstancePerLeafSpecRunner(listener, scheduler)
       }
 
       return runner.execute(spec).getOrThrow()

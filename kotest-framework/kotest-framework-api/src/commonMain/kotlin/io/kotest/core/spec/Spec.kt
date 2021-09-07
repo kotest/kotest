@@ -32,20 +32,10 @@ abstract class Spec : TestConfiguration(), SpecFunctionConfiguration, SpecFuncti
    var isolationMode: IsolationMode? = null
 
    /**
-    * Sets the number of threads that will be used for executing root tests in this spec.
-    *
-    * On the JVM this will result in multiple threads being used.
-    * On other platforms this setting will have no effect.
-    */
-   @JsName("threads_js")
-   @Deprecated("Replaced with concurrency and parallelism. This parameter will be removed in 4.7")
-   var threads: Int? = null
-
-   /**
     * Sets the number of tests that will be launched concurrently.
     *
     * Each test is launched into its own coroutine. This parameter determines how many test
-    * coroutines are launched concurrently inside of this spec.
+    * coroutines are launched concurrently inside this spec.
     *
     * Setting this parameter to [Configuration.MaxConcurrency] will result in all tests of this spec
     * being launched concurrently.
@@ -61,15 +51,14 @@ abstract class Spec : TestConfiguration(), SpecFunctionConfiguration, SpecFuncti
 
    /**
     * By default, all tests inside a single spec are executed using the same dispatcher to ensure
-    * that callbacks all operate on the same thread. In other words, a spec is sticky with regards
-    * to the execution thread. To change this, set this value to false. This value can also be
+    * that callbacks all operate on the same thread. In other words, a spec is sticky in regard to
+    * the execution thread. To change this, set this value to false. This value can also be
     * set globally in [Configuration.dispatcherAffinity].
     *
     * When this value is false, the framework is free to assign different dispatchers to different
     * root tests (nested tests always run in the same thread as their parent test).
     *
-    * Note: Setting this value alone will not increase the number of threads used. For that,
-    * see [Configuration.parallelism].
+    * Note: This setting has no effect unless the number of threads is increasd; see [Configuration.parallelism].
     */
    @ExperimentalKotest
    @JsName("dispatcherAffinity_var")
