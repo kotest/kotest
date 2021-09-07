@@ -3,7 +3,6 @@ package io.kotest.engine
 import io.kotest.common.ExperimentalKotest
 import io.kotest.core.spec.Spec
 import io.kotest.core.test.TestCase
-import io.kotest.engine.concurrency.resolvedThreads
 import io.kotest.mpp.NamedThreadFactory
 import io.kotest.mpp.bestName
 import io.kotest.mpp.log
@@ -52,7 +51,7 @@ class ExecutorCoroutineDispatcherProvider(
    override fun acquire(testCase: TestCase): CoroutineDispatcher {
 
       // deprecated option - if this test specifies a thread count, then we use dispatchers created solely for this spec
-      val resolvedThreadCount = testCase.spec.resolvedThreads() ?: 0
+      val resolvedThreadCount = 0
       log { "ExecutorCoroutineDispatcherFactory: resolvedThreadCount for ${testCase.spec::class} is $resolvedThreadCount" }
 
       // deprecated option - if this test specifies a thread count, then we use dispatchers created solely for this spec

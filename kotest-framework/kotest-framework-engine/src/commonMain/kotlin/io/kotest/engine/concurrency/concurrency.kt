@@ -18,13 +18,6 @@ import kotlin.reflect.KClass
 internal fun KClass<*>.isIsolate(): Boolean = annotation<DoNotParallelize>() != null || annotation<Isolate>() != null
 
 /**
- * Returns the number of threads specified on this spec, which comes either from the
- * function overrides of the var overrides.
- */
-@Deprecated("Setting explicit thread count in a spec has been deprecated. Use the concurrency setting")
-internal fun Spec.resolvedThreads(): Int? = this.threads() ?: this.threads
-
-/**
  * Returns the concurrent tests count to use for tests in this spec.
  *
  * If threads is specified on the spec, then that will implicitly raise the concurrentTests
@@ -37,11 +30,9 @@ internal fun Spec.resolvedThreads(): Int? = this.threads() ?: this.threads
  */
 internal fun Spec.resolvedConcurrentTests(): Int {
    val fromSpecConcurrency = this.concurrency ?: this.concurrency()
-   val fromSpecThreadCount = this.resolvedThreads()
    return when {
       this::class.isIsolate() -> Configuration.Sequential
       fromSpecConcurrency != null -> max(1, fromSpecConcurrency)
-      fromSpecThreadCount != null -> max(1, fromSpecThreadCount)
       else -> configuration.concurrentTests
    }
 }

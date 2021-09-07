@@ -117,14 +117,13 @@ class Configuration {
 
    /**
     * By default, all tests inside a single spec are executed using the same dispatcher to ensure
-    * that callbacks all operate on the same thread. In other words, a spec is sticky with regards
-    * to the execution thread. To change this, set this value to false.
+    * that callbacks all operate on the same thread. In other words, a spec is sticky in regard to
+    * the execution thread. To change this, set this value to false.
     *
     * When this value is false, the framework is free to assign different dispatchers to different
     * root tests (nested tests always run in the same thread as their parent test).
     *
-    * Note: Setting this value alone will not increase the number of threads used. For that,
-    * see [Configuration.parallelism].
+    * Note: This setting has no effect unless the number of threads is increasd; see [parallelism].
     *
     * Defaults to [Defaults.dispatcherAffinity].
     */
@@ -152,7 +151,7 @@ class Configuration {
     * blocked. See [Configuration.parallelism].
     *
     * Note: This setting can be > 1 and specs can still choose to "opt out" by using the
-    * [Isolate] annotation. That annotation ensures that a spec never runs concurrently
+    * [io.kotest.core.spec.Isolate] annotation. That annotation ensures that a spec never runs concurrently
     * with any other regardless of the setting here.
     */
    @ExperimentalKotest
