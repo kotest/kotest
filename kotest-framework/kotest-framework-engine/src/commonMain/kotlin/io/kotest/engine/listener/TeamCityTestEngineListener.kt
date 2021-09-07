@@ -54,7 +54,7 @@ class TeamCityTestEngineListener(
 
    private fun start(kclass: KClass<*>) {
       val msg = TeamCityMessageBuilder
-         .testStarted(prefix, kclass.displayName() ?: kclass.bestName())
+         .testSuiteStarted(prefix, kclass.displayName() ?: kclass.bestName())
          .id(kclass.toDescription().id.value)
          .locationHint(Locations.locationHint(kclass))
          .spec()
@@ -66,7 +66,7 @@ class TeamCityTestEngineListener(
 
    override suspend fun specFinished(kclass: KClass<*>, results: Map<TestCase, TestResult>) {
       val msg = TeamCityMessageBuilder
-         .testFailed(prefix, kclass.displayName() ?: kclass.bestName())
+         .testSuiteFinished(prefix, kclass.displayName() ?: kclass.bestName())
          .id(kclass.toDescription().id.value)
          .locationHint(Locations.locationHint(kclass))
          .resultStatus(TestStatus.Success.name)
@@ -82,9 +82,15 @@ class TeamCityTestEngineListener(
       if (t != null) {
          if (!started.contains(kclass))
             start(kclass)
-
       }
       super.specExit(kclass, t)
+   }
+
+   override suspend fun specInactive(kclass: KClass<*>, results: Map<TestCase, TestResult>) {
+      start(kclass)
+      results.forEach { (testCase, result) ->
+         testIgnored(testCase, result.reason)
+      }
    }
 
    override suspend fun testStarted(testCase: TestCase) {

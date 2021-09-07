@@ -33,8 +33,8 @@ class RunIfActiveInterceptor(private val listener: TestEngineListener) : SpecExe
       if (active) {
          fn(spec)
       } else {
-         listener.specInactive(spec::class)
          val results = enabled.mapValues { TestResult.ignored(it.value.reason) }
+         listener.specInactive(spec::class, results)
          SpecExtensions(configuration).inactiveSpec(spec, results)
          results
       }

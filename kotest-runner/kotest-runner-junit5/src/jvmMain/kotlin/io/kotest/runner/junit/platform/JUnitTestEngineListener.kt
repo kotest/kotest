@@ -123,7 +123,7 @@ class JUnitTestEngineListener(
       markSpecStarted(kclass)
    }
 
-   override suspend fun specInactive(kclass: KClass<*>) {
+   override suspend fun specInactive(kclass: KClass<*>, results: Map<TestCase, TestResult>) {
       // if we display the spec whenever there are no active tests or not
       // then we can just mark it as ignored
       if (configuration.displaySpecIfNoActiveTests) {

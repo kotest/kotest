@@ -57,8 +57,10 @@ interface TestEngineListener {
 
    /**
     * Invoked when a spec has no active tests.
+    *
+    * @param results a map of each root test to an ignored status with possible disabled reason.
     */
-   suspend fun specInactive(kclass: KClass<*>) {}
+   suspend fun specInactive(kclass: KClass<*>, results: Map<TestCase, TestResult>) {}
 
    /**
     * Invoked each time an instance of a [Spec] is created.

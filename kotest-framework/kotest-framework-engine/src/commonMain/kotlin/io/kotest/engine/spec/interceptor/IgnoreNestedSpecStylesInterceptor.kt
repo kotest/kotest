@@ -26,7 +26,7 @@ internal class IgnoreNestedSpecStylesInterceptor(private val listener: TestEngin
          fn(spec)
       } else {
          println("WARN: kotest-js only supports top level tests due to underlying platform limitations. '${spec::class.bestName()}' has been marked as ignored")
-         listener.specInactive(spec::class)
+         listener.specInactive(spec::class, emptyMap())
          SpecExtensions(configuration).inactiveSpec(spec, emptyMap())
          emptyMap()
       }
