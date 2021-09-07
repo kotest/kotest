@@ -19,6 +19,7 @@ import org.jetbrains.kotlin.ir.declarations.IrClass
 import org.jetbrains.kotlin.ir.declarations.IrFile
 import org.jetbrains.kotlin.ir.declarations.IrModuleFragment
 import org.jetbrains.kotlin.ir.declarations.name
+import org.jetbrains.kotlin.ir.expressions.IrCall
 import org.jetbrains.kotlin.ir.util.constructors
 import org.jetbrains.kotlin.ir.util.getSimpleFunction
 import org.jetbrains.kotlin.ir.util.kotlinFqName
@@ -49,8 +50,8 @@ class SpecIrGenerationExtension(private val messageCollector: MessageCollector) 
 
             val launcherConstructor = launcherClass.constructors.first { it.owner.valueParameters.isEmpty() }
 
-            val launchFn = launcherClass.getSimpleFunction(EntryPoint.LaunchMethodName)
-               ?: error("Cannot find function ${EntryPoint.LaunchMethodName}")
+            val promiseFn = launcherClass.getSimpleFunction(EntryPoint.PromiseMethodName)
+               ?: error("Cannot find function ${EntryPoint.PromiseMethodName}")
 
             val withSpecsFn = launcherClass.getSimpleFunction(EntryPoint.WithSpecsMethodName)
                ?: error("Cannot find function ${EntryPoint.WithSpecsMethodName}")
@@ -73,8 +74,8 @@ class SpecIrGenerationExtension(private val messageCollector: MessageCollector) 
                   field.correspondingPropertySymbol = this@apply.symbol
                   field.initializer = pluginContext.irFactory.createExpressionBody(startOffset, endOffset) {
                      this.expression = DeclarationIrBuilder(pluginContext, field.symbol).irBlock {
-                        +irCall(launchFn).also { launch ->
-                           launch.dispatchReceiver = irCall(withSpecsFn).also { withSpecs ->
+                        +irCall(promiseFn).also { promise: IrCall ->
+                           promise.dispatchReceiver = irCall(withSpecsFn).also { withSpecs ->
                               withSpecs.putValueArgument(
                                  0,
                                  irVararg(

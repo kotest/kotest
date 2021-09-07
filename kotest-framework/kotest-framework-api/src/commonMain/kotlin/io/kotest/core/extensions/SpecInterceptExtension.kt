@@ -4,7 +4,7 @@ import io.kotest.core.spec.Spec
 import io.kotest.core.test.TestCase
 import kotlin.reflect.KClass
 
-@Deprecated("Renamed to SpecInterceptExtension")
+@Deprecated("Renamed to SpecInterceptExtension. This typealias is deprecated since 5.0 and will be removed in 6.0")
 typealias SpecExtension = SpecInterceptExtension
 
 /**

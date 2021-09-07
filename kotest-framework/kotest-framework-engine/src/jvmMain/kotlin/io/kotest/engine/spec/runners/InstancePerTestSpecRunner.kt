@@ -9,10 +9,9 @@ import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestType
 import io.kotest.core.test.createTestName
 import io.kotest.core.test.toTestCase
-import io.kotest.engine.ExecutorExecutionContext
+import io.kotest.engine.ExecutorInterruptableExecutionContext
 import io.kotest.engine.concurrency.resolvedThreads
-import io.kotest.engine.events.invokeAfterSpec
-import io.kotest.engine.events.invokeBeforeSpec
+import io.kotest.engine.spec.SpecExtensions
 import io.kotest.engine.listener.TestEngineListener
 import io.kotest.engine.spec.SpecRunner
 import io.kotest.engine.spec.materializeAndOrderRootTests
@@ -20,7 +19,7 @@ import io.kotest.engine.test.DuplicateTestNameHandler
 import io.kotest.engine.test.TestCaseExecutionListener
 import io.kotest.engine.test.TestCaseExecutor
 import io.kotest.engine.test.scheduler.TestScheduler
-import io.kotest.fp.Try
+import io.kotest.fp.flatMap
 import io.kotest.mpp.log
 import kotlinx.coroutines.coroutineScope
 import java.util.concurrent.ConcurrentHashMap
@@ -76,8 +75,8 @@ internal class InstancePerTestSpecRunner(
     * Once the target is found it can be executed as normal, and any test lambdas it contains
     * can be registered back with the stack for execution later.
     */
-   override suspend fun execute(spec: Spec): Try<Map<TestCase, TestResult>> =
-      Try {
+   override suspend fun execute(spec: Spec): Result<Map<TestCase, TestResult>> =
+      kotlin.runCatching {
          val threads = spec.resolvedThreads()
          if (threads != null && threads > 0) {
             runParallel(threads, spec.materializeAndOrderRootTests().map { it.testCase }) {
@@ -105,14 +104,14 @@ internal class InstancePerTestSpecRunner(
     * Once the target is found it can be executed as normal, and any test lambdas it contains
     * can be registered back with the stack for execution later.
     */
-   private suspend fun executeInCleanSpec(test: TestCase): Try<Spec> {
+   private suspend fun executeInCleanSpec(test: TestCase): Result<Spec> {
       return createInstance(test.spec::class)
-         .flatMap { it.invokeBeforeSpec() }
+         .flatMap { SpecExtensions(configuration).beforeSpec(it) }
          .flatMap { interceptAndRun(it, test) }
-         .flatMap { it.invokeAfterSpec() }
+         .flatMap { SpecExtensions(configuration).afterSpec(it) }
    }
 
-   private suspend fun interceptAndRun(spec: Spec, test: TestCase): Try<Spec> = Try {
+   private suspend fun interceptAndRun(spec: Spec, test: TestCase): Result<Spec> = kotlin.runCatching {
       log { "Created new spec instance $spec" }
       // we need to find the same root test but in the newly created spec
       val root = spec.materializeAndOrderRootTests().first { it.testCase.description.isOnPath(test.description) }
@@ -157,7 +156,7 @@ internal class InstancePerTestSpecRunner(
             override suspend fun testFinished(testCase: TestCase, result: TestResult) {
                if (isTarget) listener.testFinished(testCase, result)
             }
-         }, ExecutorExecutionContext)
+         }, ExecutorInterruptableExecutionContext)
 
          val result = testExecutor.execute(test, context)
          results[test] = result

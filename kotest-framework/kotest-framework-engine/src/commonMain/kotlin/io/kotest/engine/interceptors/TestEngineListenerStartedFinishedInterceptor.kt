@@ -17,7 +17,7 @@ object TestEngineListenerStartedFinishedInterceptor : EngineInterceptor {
       execute: suspend (TestSuite, TestEngineListener) -> EngineResult
    ): EngineResult {
 
-      listener.engineStarted(suite.classes)
+      listener.engineStarted(suite.specs.map { it.kclass })
       val result = execute(suite, listener)
 
       result.errors.forEach {

@@ -5,62 +5,175 @@ package io.kotest.engine
 import io.kotest.core.Tags
 import io.kotest.core.config.AbstractProjectConfig
 import io.kotest.core.config.configuration
+import io.kotest.core.filter.SpecFilter
 import io.kotest.core.filter.TestFilter
+import io.kotest.core.internal.KotestEngineProperties
 import io.kotest.core.spec.Spec
+import io.kotest.core.spec.SpecRef
 import io.kotest.engine.config.ConfigManager
-import io.kotest.engine.extensions.SpecifiedTagsTagExtension
+import io.kotest.engine.config.detectAbstractProjectConfigs
+import io.kotest.engine.listener.NoopTestEngineListener
+import io.kotest.engine.listener.PinnedSpecTestEngineListener
+import io.kotest.engine.listener.TestEngineListener
+import io.kotest.engine.listener.ThreadSafeTestEngineListener
+import io.kotest.engine.spec.InstanceSpecRef
+import io.kotest.engine.spec.ReflectiveSpecRef
 import io.kotest.mpp.log
+import io.kotest.mpp.sysprop
+import kotlin.reflect.KClass
 
 /**
+ * A builder class for creating and executing tests via the [TestEngine].
+ *
  * Entry point for tests generated through the compiler plugins, and so the
  * public api cannot have breaking changes.
  */
 class TestEngineLauncher(
+   private val listener: TestEngineListener,
    private val configs: List<AbstractProjectConfig>,
-   private val specs: List<Spec>,
+   private val refs: List<SpecRef>,
    private val explicitTags: Tags?,
    private val testFilters: List<TestFilter>,
+   private val specFilters: List<SpecFilter>,
+   private val dumpConfig: Boolean,
 ) {
 
-   constructor() : this(emptyList(), emptyList(), null, emptyList())
+   constructor() : this(
+      NoopTestEngineListener,
+      emptyList(),
+      emptyList(),
+      null,
+      emptyList(),
+      emptyList(),
+      sysprop(KotestEngineProperties.dumpConfig, "false") == "true",
+   )
+
+   constructor(listener: TestEngineListener) : this(
+      listener,
+      emptyList(),
+      emptyList(),
+      null,
+      emptyList(),
+      emptyList(),
+      sysprop(KotestEngineProperties.dumpConfig, "false") == "true",
+   )
 
    fun withSpecs(vararg specs: Spec): TestEngineLauncher {
-      return TestEngineLauncher(configs, specs.toList(), explicitTags, testFilters)
+      return TestEngineLauncher(
+         listener = listener,
+         configs = configs,
+         refs = specs.toList().map { InstanceSpecRef(it) },
+         explicitTags = explicitTags,
+         testFilters = testFilters,
+         specFilters = specFilters,
+         dumpConfig = dumpConfig,
+      )
+   }
+
+   fun withClasses(vararg specs: KClass<out Spec>): TestEngineLauncher = withClasses(specs.toList())
+   fun withClasses(specs: List<KClass<out Spec>>): TestEngineLauncher {
+      return TestEngineLauncher(
+         listener = listener,
+         configs = configs,
+         refs = specs.toList().map { ReflectiveSpecRef(it) },
+         explicitTags = explicitTags,
+         testFilters = testFilters,
+         specFilters = specFilters,
+         dumpConfig = dumpConfig,
+      )
    }
 
    /**
     * Adds a [AbstractProjectConfig] that was detected by the compiler plugin.
     */
    fun withConfig(vararg projectConfig: AbstractProjectConfig): TestEngineLauncher {
-      return TestEngineLauncher(configs + projectConfig, specs, explicitTags, testFilters)
+      return TestEngineLauncher(
+         listener = listener,
+         configs = configs + projectConfig,
+         refs = refs,
+         explicitTags = explicitTags,
+         testFilters = testFilters,
+         specFilters = specFilters,
+         dumpConfig = dumpConfig,
+      )
    }
 
-   fun withExplicitTags(explicitTags: Tags): TestEngineLauncher {
-      return TestEngineLauncher(configs, specs, explicitTags, testFilters)
+   fun withExplicitTags(tags: Tags?): TestEngineLauncher {
+      return TestEngineLauncher(
+         listener = listener,
+         configs = configs,
+         refs = refs,
+         explicitTags = tags,
+         testFilters = testFilters,
+         specFilters = specFilters,
+         dumpConfig = dumpConfig,
+      )
    }
 
+   fun withTestFilters(vararg filters: TestFilter): TestEngineLauncher = withTestFilters(filters.toList())
    fun withTestFilters(filters: List<TestFilter>): TestEngineLauncher {
-      return TestEngineLauncher(configs, specs, explicitTags, filters)
+      return TestEngineLauncher(
+         listener = listener,
+         configs = configs,
+         refs = refs,
+         explicitTags = explicitTags,
+         testFilters = testFilters + filters,
+         specFilters = specFilters,
+         dumpConfig = dumpConfig,
+      )
    }
 
-   fun launch() {
-      log { "TestEngineLauncher: Creating Test Engine" }
+   fun withSpecFilters(vararg filters: SpecFilter): TestEngineLauncher = withSpecFilters(filters.toList())
+   fun withSpecFilters(filters: List<SpecFilter>): TestEngineLauncher {
+      return TestEngineLauncher(
+         listener = listener,
+         configs = configs,
+         refs = refs,
+         explicitTags = explicitTags,
+         testFilters = testFilters,
+         specFilters = specFilters + filters,
+         dumpConfig = dumpConfig,
+      )
+   }
 
-      // if the engine was invoked with explicit tags, we register those via a tag extension
-      explicitTags?.let { configuration.registerExtension(SpecifiedTagsTagExtension(it)) }
+   fun toConfig(): TestEngineConfig {
 
-      // if the engine was invoked with explicit filters, those are registered here
-      configuration.registerFilters(testFilters)
+      ConfigManager.initialize(configuration, configs + detectAbstractProjectConfigs())
 
-      val config = TestEngineConfig.default()
-         // initializes the global configuration and passes it to the test engine config
-         .withConfig(ConfigManager.initialize(configuration, configs))
+      return TestEngineConfig(
+         listener = ThreadSafeTestEngineListener(
+            PinnedSpecTestEngineListener(
+               listener
+            )
+         ),
+         interceptors = testEngineInterceptors(configuration),
+         configuration,
+         testFilters,
+         specFilters,
+         explicitTags,
+      )
+   }
 
-      val engine = TestEngine(config)
-      runSuspend {
-         engine.execute(TestSuite(specs, emptyList()))
+   fun testSuite(): TestSuite = TestSuite(refs)
+
+   /**
+    * Launch the [TestEngine] created from this builder.
+    */
+   suspend fun launch(): EngineResult {
+      log { "TestEngineLauncher: Launching Test Engine" }
+      val engine = TestEngine(toConfig())
+      return engine.execute(testSuite())
+   }
+
+   /**
+    * Launch the [TestEngine] created from this builder using a Javascript promise.
+    * This method will throw on JVM or native.
+    */
+   fun promise() {
+      log { "TestEngineLauncher: Launching Test Engine in Javascript promise" }
+      io.kotest.common.promise {
+         val engine = TestEngine(toConfig())
+         engine.execute(testSuite())
       }
    }
 }
-
-expect fun runSuspend(f: suspend () -> Unit)

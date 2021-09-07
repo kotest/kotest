@@ -1,6 +1,7 @@
 package com.sksamuel.kotest.specs.isolation.test
 
 import io.kotest.core.spec.IsolationMode
+import io.kotest.core.spec.Spec
 import io.kotest.core.spec.style.BehaviorSpec
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.core.spec.style.ExpectSpec
@@ -95,7 +96,7 @@ class InitializerExceptionTest : WordSpec({
    var error: Throwable? = null
 
    val listener = object : TestEngineListener {
-      override suspend fun specFinished(kclass: KClass<*>, t: Throwable?, results: Map<TestCase, TestResult>) {
+      override suspend fun specExit(kclass: KClass<out Spec>, t: Throwable?) {
          if (t != null) error = t
       }
    }

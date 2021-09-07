@@ -3,6 +3,7 @@ package io.kotest.engine.spec
 import io.kotest.core.spec.Order
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.SpecExecutionOrder
+import io.kotest.core.spec.SpecRef
 import io.kotest.mpp.bestName
 import kotlin.random.Random
 import kotlin.reflect.KClass
@@ -14,11 +15,8 @@ interface SpecSorter {
 
    fun compare(a: KClass<out Spec>, b: KClass<out Spec>): Int
 
-   fun sortClasses(classes: List<KClass<out Spec>>): List<KClass<out Spec>> =
-      classes.sortedWith { a, b -> compare(a, b) }
-
-   fun sortSpecs(specs: List<Spec>): List<Spec> =
-      specs.sortedWith { a, b -> compare(a::class, b::class) }
+   fun sort(specs: List<SpecRef>): List<SpecRef> =
+      specs.sortedWith { a, b -> compare(a.kclass, b.kclass) }
 }
 
 /**

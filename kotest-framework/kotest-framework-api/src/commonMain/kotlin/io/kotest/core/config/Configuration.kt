@@ -4,11 +4,8 @@ package io.kotest.core.config
 
 import io.kotest.common.ExperimentalKotest
 import io.kotest.core.extensions.Extension
-import io.kotest.core.extensions.TestCaseExtension
 import io.kotest.core.filter.Filter
 import io.kotest.core.listeners.Listener
-import io.kotest.core.listeners.SpecInstantiationListener
-import io.kotest.core.listeners.TestListener
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.SpecExecutionOrder
 import io.kotest.core.test.AssertionMode
@@ -228,6 +225,11 @@ class Configuration {
    var failOnEmptyTestSuite: Boolean = Defaults.failOnEmptyTestSuite
 
    /**
+    * If set to true, then will output config on startup.
+    */
+   var dumpConfig: Boolean = Defaults.dumpConfig
+
+   /**
     * Set to true to enable enhanced tracing of coroutines when an error occurs.
     *
     * Defaults to [Defaults.coroutineDebugProbes]
@@ -313,7 +315,10 @@ class Configuration {
    /**
     * Returns all globally registered [Listener]s.
     */
-   @Deprecated("Listeners have been subsumed into extensions")
+   @Deprecated(
+      "Listeners have been subsumed into extensions. Deprecated since 5.0 and will be removed in 6.0",
+      ReplaceWith("extensions()")
+   )
    fun listeners() = extensions()
 
    /**
@@ -350,7 +355,10 @@ class Configuration {
       extensions.remove(extension)
    }
 
-   @Deprecated("Use registerExtension. This will be removed in 6.0.")
+   @Deprecated(
+      "Use registerExtension. This will be removed in 6.0.",
+      ReplaceWith("registerExtension(listeners)")
+   )
    fun registerListeners(vararg listeners: Listener) = listeners.forEach { registerExtension(it) }
 
    @Deprecated("Use registerExtension. This will be removed in 6.0.")

@@ -26,7 +26,7 @@ import io.kotest.mpp.timeInMillis
  */
 class TestCaseExecutor(
    private val listener: TestCaseExecutionListener,
-   private val executionContext: TimeoutExecutionContext,
+   private val executionContext: InterruptableExecutionContext,
 ) {
 
    suspend fun execute(testCase: TestCase, context: TestContext): TestResult {
