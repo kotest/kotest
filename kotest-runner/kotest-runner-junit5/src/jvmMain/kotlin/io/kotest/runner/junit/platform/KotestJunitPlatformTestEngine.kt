@@ -44,8 +44,8 @@ class KotestJunitPlatformTestEngine : TestEngine {
       log { "JUnit ExecutionRequest[${request::class.java.name}] [configurationParameters=${request.configurationParameters}; rootTestDescriptor=${request.rootTestDescriptor}]" }
       val root = request.rootTestDescriptor as KotestEngineDescriptor
       when (root.error) {
-          null -> execute(request, root)
-          else -> abortExecution(request, root.error)
+         null -> execute(request, root)
+         else -> abortExecution(request, root.error)
       }
    }
 
@@ -66,12 +66,10 @@ class KotestJunitPlatformTestEngine : TestEngine {
          )
       )
 
-      return runBlocking {
-         TestEngineLauncher(listener)
-            .withClasses(root.classes)
-            .withTestFilters(root.testFilters)
-            .launch()
-      }
+      TestEngineLauncher(listener)
+         .withClasses(root.classes)
+         .withTestFilters(root.testFilters)
+         .launch()
    }
 
    /**
@@ -104,7 +102,7 @@ class KotestJunitPlatformTestEngine : TestEngine {
       // this happens for example, when trying to run a junit test alongside kotest tests,
       // and kotest will then run all other tests.
       // therefore, the presence of a MethodSelector means we must run no tests in KT.
-      val descriptor =  if (request.getSelectorsByType(MethodSelector::class.java).isEmpty()) {
+      val descriptor = if (request.getSelectorsByType(MethodSelector::class.java).isEmpty()) {
 
          val extensions = listOf(
             IgnoredSpecDiscoveryExtension,

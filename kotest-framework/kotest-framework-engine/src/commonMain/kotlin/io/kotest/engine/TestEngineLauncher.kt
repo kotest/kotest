@@ -2,6 +2,8 @@
 
 package io.kotest.engine
 
+import io.kotest.common.runBlocking
+import io.kotest.common.runPromise
 import io.kotest.core.Tags
 import io.kotest.core.config.AbstractProjectConfig
 import io.kotest.core.config.configuration
@@ -157,12 +159,15 @@ class TestEngineLauncher(
    fun testSuite(): TestSuite = TestSuite(refs)
 
    /**
-    * Launch the [TestEngine] created from this builder.
+    * Launch the [TestEngine] created from this builder and block the thread until execution has completed.
+    * This method will throw on JS.
     */
-   suspend fun launch(): EngineResult {
+   fun launch(): EngineResult {
       log { "TestEngineLauncher: Launching Test Engine" }
-      val engine = TestEngine(toConfig())
-      return engine.execute(testSuite())
+      return runBlocking {
+         val engine = TestEngine(toConfig())
+         engine.execute(testSuite())
+      }
    }
 
    /**
@@ -171,7 +176,7 @@ class TestEngineLauncher(
     */
    fun promise() {
       log { "TestEngineLauncher: Launching Test Engine in Javascript promise" }
-      io.kotest.common.promise {
+      runPromise {
          val engine = TestEngine(toConfig())
          engine.execute(testSuite())
       }
