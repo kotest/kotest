@@ -15,45 +15,30 @@ sealed class JsonNode {
 
    data class ArrayNode(val elements: List<JsonNode>) : JsonNode()
 
-   sealed interface LiteralNode {
+   interface ValueNode
 
-      val content: String
-      val isString: Boolean
-   }
+   data class BooleanNode(val value: Boolean) : JsonNode(), ValueNode
 
-   data class BooleanNode(val value: Boolean) : JsonNode(), LiteralNode {
-
-      override val content = value.toString()
-      override val isString = false
-   }
-
-   data class StringNode(val value: String) : JsonNode(), LiteralNode {
+   data class StringNode(val value: String) : JsonNode(), ValueNode {
 
       companion object {
 
          private val numberRegex = """-?([1-9]\d*|0)(\.\d+)?([eE][+-]?\d+)?""".toRegex()
       }
 
-      override val content = value
-      override val isString = true
-
       internal fun contentIsNumber() = value.matches(numberRegex)
-      internal fun toNumberNode() = NumberNode(content)
+      internal fun toNumberNode() = NumberNode(value)
    }
 
-   data class NumberNode(override val content: String) : JsonNode(), LiteralNode {
+   data class NumberNode(val content: String) : JsonNode(), ValueNode {
 
       companion object {
+
          private val exponentRegex = """.+[eE][+-]?\d+""".toRegex()
       }
 
       fun asString() = if (content.matches(exponentRegex)) content.toDouble().toString() else content
-      override val isString = false
    }
 
-   object NullNode : JsonNode(), LiteralNode {
-
-      override val content = "null"
-      override val isString = false
-   }
+   object NullNode : JsonNode(), ValueNode
 }
