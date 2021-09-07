@@ -65,16 +65,7 @@ class TeamCityTestEngineListener(
    }
 
    override suspend fun specFinished(kclass: KClass<*>, results: Map<TestCase, TestResult>) {
-      val msg = TeamCityMessageBuilder
-         .testSuiteFinished(prefix, kclass.displayName() ?: kclass.bestName())
-         .id(kclass.toDescription().id.value)
-         .locationHint(Locations.locationHint(kclass))
-         .resultStatus(TestStatus.Success.name)
-         .spec()
-         .build()
-      println()
-      println(msg)
-      finished.add(kclass)
+     finish(kclass)
    }
 
    override suspend fun specExit(kclass: KClass<out Spec>, t: Throwable?) {
@@ -91,6 +82,20 @@ class TeamCityTestEngineListener(
       results.forEach { (testCase, result) ->
          testIgnored(testCase, result.reason)
       }
+      finish(kclass)
+   }
+
+   private fun finish(kclass: KClass<*>) {
+      val msg = TeamCityMessageBuilder
+         .testSuiteFinished(prefix, kclass.displayName() ?: kclass.bestName())
+         .id(kclass.toDescription().id.value)
+         .locationHint(Locations.locationHint(kclass))
+         .resultStatus(TestStatus.Success.name)
+         .spec()
+         .build()
+      println()
+      println(msg)
+      finished.add(kclass)
    }
 
    override suspend fun testStarted(testCase: TestCase) {
