@@ -13,6 +13,7 @@ import kotlin.reflect.KVisibility
 import kotlin.reflect.full.memberProperties
 
 class ReflectionKtTest : FunSpec() {
+   class HasComputedField(val name: String) { val random: Int get() = Random.nextInt()}
 
    data class Foo(val a: String, val b: Int, val c: Boolean)
 
@@ -28,7 +29,8 @@ class ReflectionKtTest : FunSpec() {
 
    class Teacher(
       name: String,
-      val students: Array<Person> = emptyArray()
+      val students: Array<Person> = emptyArray(),
+      internal val age: Int = 123
    ): Person(name)
 
    init {
@@ -188,15 +190,25 @@ class ReflectionKtTest : FunSpec() {
          Teacher("bar", students) shouldBeEqualToComparingFields Teacher("bar", students)
       }
 
+      test("shouldBeEqualToComparingFields can include computed field") {
+         shouldFail {
+            HasComputedField("foo").shouldBeEqualToComparingFields(HasComputedField("foo"), ignoreComputedFields = false)
+         }.message shouldContain "Using fields: name, random"
+      }
+
+      test("shouldBeEqualToComparingFields includes internal fields") {
+         shouldFail {
+            Teacher("foo", age = 100) shouldBeEqualToComparingFields Teacher("foo", age = 200)
+         }.message shouldContain "Using fields: age, isExhausted, name, students"
+      }
+
       test("shouldBeEqualToComparingFields includes fields from superclasses") {
          shouldFail {
             Teacher("foo") shouldBeEqualToComparingFields Teacher("bar")
-         }.message shouldContain "Using fields: isExhausted, name, students"
+         }.message shouldContain "Using fields: age, isExhausted, name, students"
       }
 
       test("shouldBeEqualToComparingFields ignores synthetic fields") {
-         class HasComputedField(val name: String) { val random: Int get() = Random.nextInt()}
-
          shouldFail {
             HasComputedField("foo") shouldBeEqualToComparingFields HasComputedField("bar")
          }.message shouldNotContain "random"
