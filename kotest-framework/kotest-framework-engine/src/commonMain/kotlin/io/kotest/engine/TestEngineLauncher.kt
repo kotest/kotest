@@ -182,7 +182,7 @@ class TestEngineLauncher(
     * Launch the [TestEngine] by blocking the current thread.
     * This method will throw on JS platforms where runBlocking is not available.
     */
-   fun launch(): EngineResult {
+   fun block(): EngineResult {
       log { "TestEngineLauncher: Launching Test Engine" }
       return runBlocking {
          val engine = TestEngine(toConfig())
@@ -193,7 +193,7 @@ class TestEngineLauncher(
    /**
     * Launch the [TestEngine] into an existing coroutine without blocking.
     */
-   suspend fun async(): EngineResult {
+   suspend fun launch(): EngineResult {
       log { "TestEngineLauncher: Launching Test Engine asynchronously" }
       val engine = TestEngine(toConfig())
       return engine.execute(testSuite())

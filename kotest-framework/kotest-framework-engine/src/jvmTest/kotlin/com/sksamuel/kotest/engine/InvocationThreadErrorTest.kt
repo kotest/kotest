@@ -13,7 +13,7 @@ class InvocationThreadErrorTest : FunSpec({
       val listener = CollectingTestEngineListener()
       TestEngineLauncher(listener)
          .withClasses(InvocationErrorsTests::class)
-         .async()
+         .launch()
       listener.tests.size shouldBe 2
       listener.tests.values.forAll { it.status shouldBe TestStatus.Error }
 

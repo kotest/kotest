@@ -15,7 +15,7 @@ class FailFastTest : FunSpec() {
 
          TestEngineLauncher(listener)
             .withClasses(FailFastFunSpec::class)
-            .async()
+            .launch()
 
          val results = listener.tests.mapKeys { it.key.displayName }
          results["a"]?.status shouldBe TestStatus.Success

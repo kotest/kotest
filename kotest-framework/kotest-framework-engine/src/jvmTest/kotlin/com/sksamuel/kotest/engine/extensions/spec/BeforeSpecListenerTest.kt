@@ -27,7 +27,7 @@ class BeforeSpecListenerTest : FunSpec() {
          val listener = CollectingTestEngineListener()
          TestEngineLauncher(listener)
             .withClasses(MyPopulatedSpec3::class)
-            .async()
+            .launch()
 
          configuration.deregisterExtension(MyBeforeSpecListener)
          listener.specs.size shouldBe 1
@@ -40,7 +40,7 @@ class BeforeSpecListenerTest : FunSpec() {
          val listener = CollectingTestEngineListener()
          TestEngineLauncher(listener)
             .withClasses(MyErrorSpec3::class)
-            .async()
+            .launch()
          listener.specs.size shouldBe 1
          listener.specs[MyErrorSpec3::class]!!.shouldBeInstanceOf<BeforeSpecListenerException>()
          listener.tests.size shouldBe 0
@@ -53,7 +53,7 @@ class BeforeSpecListenerTest : FunSpec() {
 
          TestEngineLauncher(NoopTestEngineListener)
             .withClasses(MyErrorSpec3::class)
-            .async()
+            .launch()
 
          configuration.deregisterExtension(MyBeforeSpecListener)
 

@@ -68,7 +68,7 @@ class KotestEngineLauncher(
          .withExplicitTags(tags)
          .withClasses(specs)
 
-      return runBlocking { launcher.async() }
+      return runBlocking { launcher.launch() }
    }
 
    fun withFilter(filter: TestFilter) = withFilters(listOf(filter))

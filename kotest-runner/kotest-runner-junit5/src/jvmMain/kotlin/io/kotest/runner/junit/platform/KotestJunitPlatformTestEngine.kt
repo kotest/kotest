@@ -68,7 +68,7 @@ class KotestJunitPlatformTestEngine : TestEngine {
       TestEngineLauncher(listener)
          .withClasses(root.classes)
          .withTestFilters(root.testFilters)
-         .launch()
+         .block()
    }
 
    /**
