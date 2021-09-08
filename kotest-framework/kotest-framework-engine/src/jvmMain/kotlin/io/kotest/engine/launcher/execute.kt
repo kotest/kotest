@@ -16,6 +16,7 @@ import io.kotest.framework.discovery.Discovery
 import io.kotest.framework.discovery.DiscoveryRequest
 import io.kotest.framework.discovery.DiscoveryResult
 import io.kotest.framework.discovery.DiscoverySelector
+import kotlinx.coroutines.runBlocking
 import kotlin.reflect.KClass
 
 /**
@@ -43,7 +44,9 @@ fun execute(
 }
 
 private fun executeLauncher(launcher: KotestEngineLauncher) = Try {
-   launcher.launch()
+   runBlocking {
+      launcher.async()
+   }
 }
 
 private fun setupLauncher(

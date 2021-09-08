@@ -7,15 +7,15 @@ import io.kotest.engine.listener.CollectingTestEngineListener
 import io.kotest.matchers.maps.shouldNotContainKey
 import io.kotest.matchers.shouldBe
 
-class FailTestTest : FunSpec() {
+class FailFastTest : FunSpec() {
    init {
       test("when enabling fail fast, further nested tests should be skipped") {
 
          val listener = CollectingTestEngineListener()
 
          TestEngineLauncher(listener)
-            .withClasses(FailTestFunSpec::class)
-            .launch()
+            .withClasses(FailFastFunSpec::class)
+            .async()
 
          val results = listener.tests.mapKeys { it.key.displayName }
          results["a"]?.status shouldBe TestStatus.Success
@@ -32,7 +32,7 @@ class FailTestTest : FunSpec() {
    }
 }
 
-private class FailTestFunSpec() : FunSpec() {
+private class FailFastFunSpec() : FunSpec() {
    init {
       context("root context with fail fast enabled").config(failfast = true) {
          test("a") {} // pass

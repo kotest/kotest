@@ -5,5 +5,5 @@ import io.kotest.core.filter.Filter
 
 class ProjectConfig : AbstractProjectConfig() {
    override fun filters(): List<Filter> = listOf(TestFilterTestFilter)
-   override val parallelism: Int = 4
+   override val parallelism: Int = 1
 }

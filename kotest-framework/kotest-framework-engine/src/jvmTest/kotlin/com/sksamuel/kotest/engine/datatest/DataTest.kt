@@ -30,22 +30,22 @@ class DataTest : FunSpec() {
       }
 
       test("free spec should support data tests") {
-         KotestEngineLauncher().withListener(listener).withSpec(FreeSpecDataTest::class).launch()
+         KotestEngineLauncher().withListener(listener).withSpec(FreeSpecDataTest::class).async()
          assertResults(results)
       }
 
       test("describe spec should support data tests") {
-         KotestEngineLauncher().withListener(listener).withSpec(DescribeSpecDataTest::class).launch()
+         KotestEngineLauncher().withListener(listener).withSpec(DescribeSpecDataTest::class).async()
          assertResults(results)
       }
 
       test("fun spec should support data tests") {
-         KotestEngineLauncher().withListener(listener).withSpec(FunSpecDataTest::class).launch()
+         KotestEngineLauncher().withListener(listener).withSpec(FunSpecDataTest::class).async()
          assertResults(results)
       }
 
       test("expect spec should support data tests") {
-         KotestEngineLauncher().withListener(listener).withSpec(ExpectSpecDataTest::class).launch()
+         KotestEngineLauncher().withListener(listener).withSpec(ExpectSpecDataTest::class).async()
          assertResults(results)
       }
 
@@ -55,7 +55,7 @@ class DataTest : FunSpec() {
 //      }
 
       test("feature spec should support data tests") {
-         KotestEngineLauncher().withListener(listener).withSpec(FeatureSpecDataTest::class).launch()
+         KotestEngineLauncher().withListener(listener).withSpec(FeatureSpecDataTest::class).async()
          assertResults(results)
       }
 

@@ -36,7 +36,7 @@ class AfterProjectListenerExceptionTest : FunSpec({
       KotestEngineLauncher()
          .withListener(listener)
          .withSpec(DummySpec7::class)
-         .launch()
+         .async()
 
       errors shouldHaveSize 1
       errors[0].shouldBeInstanceOf<AfterProjectListenerException>()
@@ -73,7 +73,7 @@ class AfterProjectListenerExceptionTest : FunSpec({
       KotestEngineLauncher()
          .withListener(listener)
          .withSpec(DummySpec7::class)
-         .launch()
+         .async()
 
       errors shouldHaveSize 2
       errors.filterIsInstance<AfterProjectListenerException>() shouldHaveSize 2

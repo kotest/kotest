@@ -21,7 +21,7 @@ class SpecFinalizerExtensionTest : FunSpec() {
          KotestEngineLauncher()
             .withSpec(MyPopulatedSpec::class)
             .withListener(NoopTestEngineListener)
-            .launch()
+            .async()
 
          configuration.deregisterExtension(MySpecFinalizeExtension)
 
@@ -36,7 +36,7 @@ class SpecFinalizerExtensionTest : FunSpec() {
          KotestEngineLauncher()
             .withSpec(MyEmptySpec::class)
             .withListener(NoopTestEngineListener)
-            .launch()
+            .async()
 
          configuration.deregisterExtension(MySpecFinalizeExtension)
 

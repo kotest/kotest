@@ -16,7 +16,7 @@ class BeforeAndAfterProjectCallbackTest : WordSpec() {
              KotestEngineLauncher()
                 .withListener(NoopTestEngineListener)
                 .withSpecs(listOf(MyTest::class))
-                .launch()
+                .async()
           }
 
           "call beforeAll" {
@@ -24,7 +24,7 @@ class BeforeAndAfterProjectCallbackTest : WordSpec() {
              KotestEngineLauncher()
                 .withListener(NoopTestEngineListener)
                 .withSpecs(listOf(MyTest::class))
-                .launch()
+                .async()
           }
 
           "call afterProject" {
@@ -32,7 +32,7 @@ class BeforeAndAfterProjectCallbackTest : WordSpec() {
              KotestEngineLauncher()
                 .withListener(NoopTestEngineListener)
                 .withSpecs(listOf(MyTest::class))
-                .launch()
+                .async()
              MyConfigGlobalState.afterProjectCallCount shouldBe 1
           }
 
@@ -41,7 +41,7 @@ class BeforeAndAfterProjectCallbackTest : WordSpec() {
              KotestEngineLauncher()
                 .withListener(NoopTestEngineListener)
                 .withSpecs(listOf(MyTest::class))
-                .launch()
+                .async()
              MyConfigGlobalState.afterAllCallCount shouldBe 1
           }
        }

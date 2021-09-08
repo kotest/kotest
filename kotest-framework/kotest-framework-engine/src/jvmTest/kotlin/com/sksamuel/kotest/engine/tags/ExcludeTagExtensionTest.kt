@@ -31,7 +31,7 @@ class ExcludeTagExtensionTest : FunSpec() {
          KotestEngineLauncher()
             .withListener(listener)
             .withSpec(ExcludedSpec::class)
-            .launch()
+            .async()
          configuration.deregisterExtension(ExcludeTagExtension)
       }
    }

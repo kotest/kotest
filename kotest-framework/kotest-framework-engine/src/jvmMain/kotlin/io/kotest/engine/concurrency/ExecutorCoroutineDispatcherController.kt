@@ -2,6 +2,7 @@ package io.kotest.engine.concurrency
 
 import io.kotest.core.test.TestCase
 import io.kotest.mpp.bestName
+import io.kotest.mpp.log
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.asCoroutineDispatcher
 import kotlinx.coroutines.withContext
@@ -27,29 +28,31 @@ import kotlin.reflect.KClass
  * that spec. Swings and roundabouts. To allow each test to have its own thread, set dispatcher
  * affinity to false, either globally, or on a per spec basis.
  */
-class ExecutorCoroutineDispatcherAssignment(
+class ExecutorCoroutineDispatcherController(
    private val threads: Int, // global threads count
    private val affinity: Boolean,
-) : CoroutineDispatcherAssignment {
+) : CoroutineDispatcherController {
 
-   // these are the global dispatchers which uses the given threadCount
+   // we create single-threaded dispatchers, rather than one dispatcher with multiple threads,
+   // so that we can ensure that different tests are allocated the exact same thread if affinity is required
    private val dispatchers = List(threads) { Executors.newSingleThreadExecutor().asCoroutineDispatcher() }
 
    override suspend fun <T> withDispatcher(testCase: TestCase, f: suspend () -> T): T {
 
-      // if dispatcher affinity is set to true, we pick a dispatcher for the spec and stick with it
+      // if dispatcher affinity is set to true, we use the same dispatcher for the spec and all tests
       // otherwise each test just gets a random dispatcher
       val dispatcher = when (testCase.spec.dispatcherAffinity ?: testCase.spec.dispatcherAffinity() ?: affinity) {
          true -> dispatcherFor(testCase.spec::class)
          else -> dispatchers.random()
       }
 
+      log { "ExecutorCoroutineDispatcherController: Switching context to dispatcher $dispatcher" }
       return withContext(dispatcher) {
          f()
       }
    }
 
-   private fun dispatcherFor(kClass: KClass<*>): CoroutineDispatcher =
-      dispatchers[abs(kClass.bestName().hashCode()) % dispatchers.size]
+   private fun dispatcherFor(kclass: KClass<*>): CoroutineDispatcher =
+      dispatchers[abs(kclass.bestName().hashCode()) % dispatchers.size]
 
 }

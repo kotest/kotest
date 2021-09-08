@@ -46,7 +46,7 @@ class ProjectListenerExactlyOnceTest : WordSpec() {
             KotestEngineLauncher()
                .withListener(NoopTestEngineListener)
                .withSpecs(listOf(MyTest1::class, MyTest2::class))
-               .launch()
+               .async()
 
             TestProjectListener.beforeAll shouldBe 1
             TestBeforeProjectListener.beforeAll shouldBe 1

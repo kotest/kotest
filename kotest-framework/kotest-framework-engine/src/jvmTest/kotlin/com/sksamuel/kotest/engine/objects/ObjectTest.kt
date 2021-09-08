@@ -22,7 +22,7 @@ class ObjectSpecTest : FunSpec() {
          KotestEngineLauncher()
             .withListener(NoopTestEngineListener)
             .withSpec(DummyObjectSpec::class)
-            .launch()
+            .async()
 
          fired shouldBe true
       }

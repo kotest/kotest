@@ -7,7 +7,6 @@ import io.kotest.engine.test.withCoroutineContext
 import io.kotest.mpp.log
 import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.job
 
 /**
  * Execute the test case wrapped in a [coroutineScope], so that we wait for any child coroutines launched

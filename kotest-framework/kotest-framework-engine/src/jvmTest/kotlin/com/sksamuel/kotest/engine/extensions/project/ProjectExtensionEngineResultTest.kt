@@ -48,7 +48,7 @@ class ProjectExtensionEngineResultTest : FunSpec({
          }
       }
 
-      KotestEngineLauncher().withListener(listener).withSpec(PassingProjectTest::class).launch()
+      KotestEngineLauncher().withListener(listener).withSpec(PassingProjectTest::class).async()
 
       (events + errors.map { it.message }).toSet() shouldBe setOf("hello q", "mon capitaine!")
    }

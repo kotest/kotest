@@ -22,7 +22,7 @@ class AfterProjectDslTest : FunSpec({
       KotestEngineLauncher()
          .withListener(NoopTestEngineListener)
          .withSpec(DummySpec6::class)
-         .launch()
+         .async()
 
       fired shouldBe true
 

@@ -14,7 +14,6 @@ import io.kotest.engine.listener.PinnedSpecTestEngineListener
 import io.kotest.engine.listener.ThreadSafeTestEngineListener
 import io.kotest.framework.discovery.Discovery
 import io.kotest.mpp.log
-import kotlinx.coroutines.runBlocking
 import org.junit.platform.engine.EngineDiscoveryRequest
 import org.junit.platform.engine.ExecutionRequest
 import org.junit.platform.engine.TestEngine

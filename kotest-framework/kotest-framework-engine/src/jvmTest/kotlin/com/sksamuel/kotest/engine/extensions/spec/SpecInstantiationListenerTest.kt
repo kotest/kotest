@@ -31,7 +31,7 @@ class SpecInstantiationListenerTest : FunSpec() {
 
          TestEngineLauncher(NoopTestEngineListener)
             .withClasses(SpecInstantiationSuccessSpec::class)
-            .launch()
+            .async()
 
          configuration.deregisterExtension(ext)
          fired shouldBe true
@@ -54,7 +54,7 @@ class SpecInstantiationListenerTest : FunSpec() {
 
          TestEngineLauncher(NoopTestEngineListener)
             .withClasses(SpecInstantiationFailureSpec::class)
-            .launch()
+            .async()
 
          configuration.deregisterExtension(ext)
          fired shouldBe true

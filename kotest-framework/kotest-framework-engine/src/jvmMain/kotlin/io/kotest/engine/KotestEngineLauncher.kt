@@ -10,6 +10,7 @@ import io.kotest.engine.listener.PinnedSpecTestEngineListener
 import io.kotest.engine.listener.TestEngineListener
 import io.kotest.engine.listener.ThreadSafeTestEngineListener
 import io.kotest.engine.tags.ConfigurationTagProvider
+import kotlinx.coroutines.runBlocking
 import kotlin.reflect.KClass
 import kotlin.script.templates.standard.ScriptTemplateWithArgs
 
@@ -51,7 +52,7 @@ class KotestEngineLauncher(
 
    constructor() : this(emptyList(), emptyList(), emptyList(), emptyList(), null, false, emptyList())
 
-   fun launch(): EngineResult {
+   suspend fun async(): EngineResult {
 
       if (listeners.isEmpty())
          error("Cannot launch a KotestEngine without at least one TestEngineListener")
@@ -67,7 +68,11 @@ class KotestEngineLauncher(
          .withExplicitTags(tags)
          .withClasses(specs)
 
-      return launcher.launch()
+      return launcher.async()
+   }
+
+   fun launch(): EngineResult {
+      return runBlocking { async() }
    }
 
    fun withFilter(filter: TestFilter) = withFilters(listOf(filter))

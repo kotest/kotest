@@ -28,7 +28,7 @@ class CoroutineExceptionTest : FunSpec({
       KotestEngineLauncher()
          .withListener(listener)
          .withSpec(FailingCoroutineTest::class)
-         .launch()
+         .async()
       _result?.status shouldBe TestStatus.Error
    }
 })

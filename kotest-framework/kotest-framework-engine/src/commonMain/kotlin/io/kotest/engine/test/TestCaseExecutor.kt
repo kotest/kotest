@@ -1,13 +1,13 @@
 package io.kotest.engine.test
 
-import io.kotest.core.config.configuration
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestContext
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestStatus
+import io.kotest.engine.concurrency.defaultCoroutineDispatcherController
 import io.kotest.engine.test.interceptors.AssertionModeInterceptor
 import io.kotest.engine.test.interceptors.CoroutineDebugProbeInterceptor
-import io.kotest.engine.test.interceptors.CoroutineDispatcherTestExecutionInterceptor
+import io.kotest.engine.test.interceptors.CoroutineDispatcherInterceptor
 import io.kotest.engine.test.interceptors.CoroutineScopeInterceptor
 import io.kotest.engine.test.interceptors.EnabledCheckInterceptor
 import io.kotest.engine.test.interceptors.ExceptionCapturingInterceptor
@@ -40,10 +40,12 @@ class TestCaseExecutor(
          InvocationCountCheckInterceptor,
          CoroutineDebugProbeInterceptor,
          SupervisorScopeInterceptor,
-//         CoroutineDispatcherTestExecutionInterceptor(configuration),
+         // this must be before the timeout interceptor as we need the thread switch to timeout on and
+         // must be before lifecycle interceptor so the callbacks are on the same thread as the tests
+         CoroutineDispatcherInterceptor(defaultCoroutineDispatcherController),
+         LifecycleInterceptor(listener, start),
          TestCaseExtensionInterceptor,
          EnabledCheckInterceptor,
-         LifecycleInterceptor(listener, start),
          ExceptionCapturingInterceptor(start),
          AssertionModeInterceptor,
          GlobalSoftAssertInterceptor,

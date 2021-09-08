@@ -36,7 +36,7 @@ class LauncherTestFilterTest : FunSpec() {
             .withListener(listener)
             .withSpec(MyTestClass::class)
             .withFilter(filter)
-            .launch()
+            .async()
       }
 
       test("filter with test path added via launcher should filter test cases") {
@@ -58,7 +58,7 @@ class LauncherTestFilterTest : FunSpec() {
             .withListener(listener)
             .withSpec(MyTestClass::class)
             .withFilter(filter)
-            .launch()
+            .async()
       }
    }
 }
