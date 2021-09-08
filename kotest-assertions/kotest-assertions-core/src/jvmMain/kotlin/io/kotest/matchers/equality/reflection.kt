@@ -369,6 +369,15 @@ fun <T : Any> T.shouldNotBeEqualToComparingFields(
    this shouldNot beEqualComparingFields(other, ignorePrivateFields, emptyList(), ignoreComputedFields)
 }
 
+private typealias PropertyPredicate = (KProperty<*>) -> Boolean
+
+// If no java field exists, it is a computed property which only has a getter
+private val nonComputed: PropertyPredicate = { it.javaField != null }
+private val nonPrivate: PropertyPredicate = { it.visibility != KVisibility.PRIVATE }
+
+private infix fun PropertyPredicate.and(other: PropertyPredicate) =
+   { property: KProperty<*> -> this(property) && other(property) }
+
 fun <T : Any> beEqualComparingFields(
    other: T,
    ignorePrivateFields: Boolean,
@@ -376,13 +385,16 @@ fun <T : Any> beEqualComparingFields(
    ignoreComputedFields: Boolean,
 ) = object : Matcher<T> {
    override fun test(value: T): MatcherResult {
-      // If no java field exists, it is a computed property which only has a getter
+      val predicates = listOfNotNull(
+         if (ignorePrivateFields) nonPrivate else null,
+         if (ignoreComputedFields) nonComputed else null,
+         { it !in propertiesToExclude }
+      ).reduce { a, b -> a and b }
+
       val fieldsToCompare = value::class.memberProperties
          .asSequence()
          .onEach { it.isAccessible = true }
-         .filter { !ignorePrivateFields || it.visibility != KVisibility.PRIVATE }
-         .filter { !ignoreComputedFields || it.javaField != null }
-         .filter { it !in propertiesToExclude }
+         .filter(predicates)
          .sortedBy { it.name }
          .toList()
 
