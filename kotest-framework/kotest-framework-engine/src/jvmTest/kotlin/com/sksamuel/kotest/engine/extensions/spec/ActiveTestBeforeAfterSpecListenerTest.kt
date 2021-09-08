@@ -10,6 +10,7 @@ import io.kotest.core.spec.Isolate
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.style.FreeSpec
 import io.kotest.core.spec.style.FunSpec
+import io.kotest.engine.NoopCoroutineDispatcherController
 import io.kotest.engine.listener.NoopTestEngineListener
 import io.kotest.engine.spec.ReflectiveSpecRef
 import io.kotest.engine.spec.SpecExecutor
@@ -42,7 +43,7 @@ class ActiveTestBeforeAfterSpecListenerTest : FreeSpec() {
             }
             configuration.registerExtension(ext)
             configuration.registerExtension(testListener)
-            val runner = SpecExecutor(NoopTestEngineListener)
+            val runner = SpecExecutor(NoopTestEngineListener, NoopCoroutineDispatcherController)
             runner.execute(ReflectiveSpecRef(TaggedTests::class))
             configuration.deregisterExtension(testListener)
             configuration.deregisterExtension(ext)
@@ -53,7 +54,7 @@ class ActiveTestBeforeAfterSpecListenerTest : FreeSpec() {
             }
             configuration.registerExtension(ext)
             configuration.registerExtension(testListener)
-            val runner = SpecExecutor(NoopTestEngineListener)
+            val runner = SpecExecutor(NoopTestEngineListener, NoopCoroutineDispatcherController)
             runner.execute(ReflectiveSpecRef(TaggedTests::class))
             configuration.deregisterExtension(testListener)
             configuration.deregisterExtension(ext)

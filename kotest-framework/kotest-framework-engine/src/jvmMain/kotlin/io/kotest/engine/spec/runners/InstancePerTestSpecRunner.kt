@@ -9,6 +9,7 @@ import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestType
 import io.kotest.core.test.createTestName
 import io.kotest.core.test.toTestCase
+import io.kotest.engine.CoroutineDispatcherController
 import io.kotest.engine.ExecutorInterruptableExecutionContext
 import io.kotest.engine.listener.TestEngineListener
 import io.kotest.engine.spec.SpecExtensions
@@ -58,6 +59,7 @@ import kotlin.coroutines.CoroutineContext
 internal class InstancePerTestSpecRunner(
    listener: TestEngineListener,
    schedule: TestScheduler,
+   private val controller: CoroutineDispatcherController,
 ) : SpecRunner(listener, schedule) {
 
    private val results = ConcurrentHashMap<TestCase, TestResult>()
@@ -147,7 +149,7 @@ internal class InstancePerTestSpecRunner(
             override suspend fun testFinished(testCase: TestCase, result: TestResult) {
                if (isTarget) listener.testFinished(testCase, result)
             }
-         }, ExecutorInterruptableExecutionContext)
+         }, ExecutorInterruptableExecutionContext, controller)
 
          val result = testExecutor.execute(test, context)
          results[test] = result

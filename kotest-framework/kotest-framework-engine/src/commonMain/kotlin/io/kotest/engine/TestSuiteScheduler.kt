@@ -22,7 +22,7 @@ object LoopingTestSuiteScheduler : TestSuiteScheduler {
    override suspend fun schedule(suite: TestSuite, listener: TestEngineListener): EngineResult {
       log { "LoopingTestSuiteScheduler: Executing ${suite.specs} specs" }
       suite.specs.forEach {
-         val executor = SpecExecutor(NoopTestEngineListener)
+         val executor = SpecExecutor(NoopTestEngineListener, NoopCoroutineDispatcherController)
          executor.execute(it)
       }
       return EngineResult(emptyList())

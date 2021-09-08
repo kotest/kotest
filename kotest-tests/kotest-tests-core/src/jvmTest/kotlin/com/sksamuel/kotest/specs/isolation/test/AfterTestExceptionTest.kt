@@ -6,6 +6,7 @@ import io.kotest.core.spec.style.*
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestStatus
+import io.kotest.engine.NoopCoroutineDispatcherController
 import io.kotest.engine.spec.SpecExecutor
 import io.kotest.matchers.throwable.shouldHaveMessage
 import io.kotest.matchers.types.shouldBeInstanceOf
@@ -102,55 +103,55 @@ class AfterTestExceptionTest : WordSpec({
 
    "an exception in before test" should {
       "fail the test for behavior spec" {
-         val executor = SpecExecutor(listener)
+         val executor = SpecExecutor(listener, NoopCoroutineDispatcherController)
          executor.execute(BehaviorSpecWithAfterTestError::class)
          error.shouldBeInstanceOf<IllegalStateException>()
          error!!.shouldHaveMessage("boom")
       }
       "fail the test for feature spec" {
-         val executor = SpecExecutor(listener)
+         val executor = SpecExecutor(listener, NoopCoroutineDispatcherController)
          executor.execute(FeatureSpecWithAfterTestError::class)
          error.shouldBeInstanceOf<IllegalStateException>()
          error!!.shouldHaveMessage("boom")
       }
       "fail the test for word spec" {
-         val executor = SpecExecutor(listener)
+         val executor = SpecExecutor(listener, NoopCoroutineDispatcherController)
          executor.execute(WordSpecWithAfterTestError::class)
          error.shouldBeInstanceOf<IllegalStateException>()
          error!!.shouldHaveMessage("boom")
       }
       "fail the test for should spec" {
-         val executor = SpecExecutor(listener)
+         val executor = SpecExecutor(listener, NoopCoroutineDispatcherController)
          executor.execute(ShouldSpecWithAfterTestError::class)
          error.shouldBeInstanceOf<IllegalStateException>()
          error!!.shouldHaveMessage("boom")
       }
       "fail the test for string spec" {
-         val executor = SpecExecutor(listener)
+         val executor = SpecExecutor(listener, NoopCoroutineDispatcherController)
          executor.execute(StringSpecWithAfterTestError::class)
          error.shouldBeInstanceOf<IllegalStateException>()
          error!!.shouldHaveMessage("boom")
       }
       "fail the test for describe spec" {
-         val executor = SpecExecutor(listener)
+         val executor = SpecExecutor(listener, NoopCoroutineDispatcherController)
          executor.execute(DescribeSpecWithAfterTestError::class)
          error.shouldBeInstanceOf<IllegalStateException>()
          error!!.shouldHaveMessage("boom")
       }
       "fail the test for free spec" {
-         val executor = SpecExecutor(listener)
+         val executor = SpecExecutor(listener, NoopCoroutineDispatcherController)
          executor.execute(FreeSpecWithAfterTestError::class)
          error.shouldBeInstanceOf<IllegalStateException>()
          error!!.shouldHaveMessage("boom")
       }
       "fail the test for fun spec" {
-         val executor = SpecExecutor(listener)
+         val executor = SpecExecutor(listener, NoopCoroutineDispatcherController)
          executor.execute(FunSpecWithAfterTestError::class)
          error.shouldBeInstanceOf<IllegalStateException>()
          error!!.shouldHaveMessage("boom")
       }
       "fail the test for expect spec" {
-         val executor = SpecExecutor(listener)
+         val executor = SpecExecutor(listener, NoopCoroutineDispatcherController)
          executor.execute(ExpectSpecWithAfterTestError::class)
          error.shouldBeInstanceOf<IllegalStateException>()
          error!!.shouldHaveMessage("boom")

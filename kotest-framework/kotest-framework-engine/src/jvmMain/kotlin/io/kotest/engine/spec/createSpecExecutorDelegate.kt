@@ -6,6 +6,7 @@ import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.Spec
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
+import io.kotest.engine.CoroutineDispatcherController
 import io.kotest.engine.concurrency.resolvedConcurrentTests
 import io.kotest.engine.listener.TestEngineListener
 import io.kotest.engine.spec.runners.InstancePerLeafSpecRunner
@@ -16,7 +17,8 @@ import io.kotest.engine.test.scheduler.SequentialTestScheduler
 import kotlin.math.max
 
 actual fun createSpecExecutorDelegate(
-   listener: TestEngineListener
+   listener: TestEngineListener,
+   controller: CoroutineDispatcherController,
 ): SpecExecutorDelegate = object : SpecExecutorDelegate {
 
    private fun Spec.resolvedIsolationMode() =
@@ -30,9 +32,9 @@ actual fun createSpecExecutorDelegate(
       }
 
       val runner = when (spec.resolvedIsolationMode()) {
-         IsolationMode.SingleInstance -> SingleInstanceSpecRunner(listener, scheduler)
-         IsolationMode.InstancePerTest -> InstancePerTestSpecRunner(listener, scheduler)
-         IsolationMode.InstancePerLeaf -> InstancePerLeafSpecRunner(listener, scheduler)
+         IsolationMode.SingleInstance -> SingleInstanceSpecRunner(listener, scheduler, controller)
+         IsolationMode.InstancePerTest -> InstancePerTestSpecRunner(listener, scheduler, controller)
+         IsolationMode.InstancePerLeaf -> InstancePerLeafSpecRunner(listener, scheduler, controller)
       }
 
       return runner.execute(spec).getOrThrow()

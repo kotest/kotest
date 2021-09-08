@@ -8,6 +8,7 @@ import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestStatus
 import io.kotest.core.test.createTestName
 import io.kotest.core.test.toTestCase
+import io.kotest.engine.CoroutineDispatcherController
 import io.kotest.engine.listener.TestEngineListener
 import io.kotest.engine.test.listener.TestCaseListenerToTestEngineListenerAdapter
 import io.kotest.mpp.log
@@ -39,6 +40,7 @@ class CallingThreadTestContext(
    private val duplicateTestNameMode: DuplicateTestNameMode,
    private val listener: TestEngineListener,
    private val executionContext: InterruptableExecutionContext,
+   private val controller: CoroutineDispatcherController,
 ) : TestContext {
 
    private val handler = DuplicateTestNameHandler(duplicateTestNameMode)
@@ -70,10 +72,18 @@ class CallingThreadTestContext(
 
       return TestCaseExecutor(
          TestCaseListenerToTestEngineListenerAdapter(listener),
-         executionContext
+         executionContext,
+         controller,
       ).execute(
          testCase,
-         CallingThreadTestContext(testCase, coroutineContext, duplicateTestNameMode, listener, executionContext)
+         CallingThreadTestContext(
+            testCase,
+            coroutineContext,
+            duplicateTestNameMode,
+            listener,
+            executionContext,
+            controller
+         )
       )
    }
 }
