@@ -111,6 +111,7 @@ kotlin {
             implementation(project(Projects.AssertionsCore))
             implementation(project(Projects.JunitRunner))
             implementation(Libs.Mocking.mockk)
+            implementation(Libs.Coroutines.coreJvm)
          }
       }
 
