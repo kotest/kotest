@@ -1,5 +1,6 @@
 package io.kotest.matchers.equality
 
+import io.kotest.assertions.eq.eq
 import io.kotest.assertions.show.show
 import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
@@ -9,6 +10,9 @@ import kotlin.reflect.KProperty
 import kotlin.reflect.KVisibility
 import kotlin.reflect.full.memberProperties
 import kotlin.reflect.jvm.isAccessible
+import kotlin.reflect.jvm.javaField
+import kotlin.reflect.jvm.javaGetter
+import kotlin.reflect.jvm.kotlinProperty
 
 /**
  * Asserts that this is equal to [other] using specific fields
@@ -353,26 +357,32 @@ fun <T : Any> beEqualComparingFields(
    propertiesToExclude: List<KProperty<*>>
 ) = object : Matcher<T> {
    override fun test(value: T): MatcherResult {
-      val allFields = if (ignorePrivateFields) {
-         value::class.memberProperties.filter { it.visibility == KVisibility.PUBLIC }
-      } else {
-         value::class.memberProperties.onEach { it.isAccessible = true }
-      }.toList().filterNot { propertiesToExclude.contains(it) }
+      // If no java field exists, it is a computed property which only has a getter
+      val nonComputedFields = value::class.memberProperties
+         .filter { it.javaField != null }
+         .sortedBy { it.name }
 
-      val failed = checkEqualityOfFields(allFields, value, other)
+      val fieldsToCompare =
+         if (ignorePrivateFields) {
+            nonComputedFields.filter { it.visibility == KVisibility.PUBLIC }
+         } else {
+            nonComputedFields.onEach { it.isAccessible = true }
+         }.toList().filterNot { propertiesToExclude.contains(it) }
+
+      val failed = checkEqualityOfFields(fieldsToCompare, value, other)
 
       return MatcherResult(
          failed.isEmpty(),
          {
             """Expected ${value.show().value} to equal ${other.show().value}
-            | Using fields: ${allFields.joinToString(", ") { it.name }}
+            | Using fields: ${fieldsToCompare.joinToString(", ") { it.name }}
             | Value differ at:
             | ${failed.withIndex().joinToString("\n") { "${it.index + 1}) ${it.value}" }}
          """.trimMargin()
          },
          {
             """Expected ${value.show().value} to not equal ${other.show().value}
-            | Using fields: ${allFields.joinToString(", ") { it.name }}
+            | Using fields: ${fieldsToCompare.joinToString(", ") { it.name }}
          """.trimMargin()
          }
       )
@@ -383,8 +393,9 @@ private fun <T> checkEqualityOfFields(fields: List<KProperty<*>>, value: T, othe
    return fields.mapNotNull {
       val actual = it.getter.call(value)
       val expected = it.getter.call(other)
-      if (actual == expected) null else {
-         "${it.name}: ${actual.show().value} != ${expected.show().value}"
-      }
+
+      val isEqual = eq(actual, expected) == null
+
+      if (isEqual) null else "${it.name}: ${actual.show().value} != ${expected.show().value}"
    }
 }
