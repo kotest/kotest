@@ -44,7 +44,7 @@ include("kotest-assertions:kotest-assertions-api")
 // no user should need to depend on this
 include("kotest-assertions:kotest-assertions-shared")
 
-// the core assertions that cover things like collections, strings, etc
+// the core assertions that cover things like collections, strings, etc.
 // users should depend on this if they want to use kotest assertions in tests
 include("kotest-assertions:kotest-assertions-core")
 include("kotest-assertions:kotest-assertions-compiler")
@@ -87,7 +87,7 @@ include("kotest-tests:kotest-tests-htmlreporter")
 include("kotest-tests:kotest-tests-multipleconfig")
 //include("kotest-tests:kotest-tests-parallelism")
 include("kotest-tests:kotest-tests-tagextension")
-//include("kotest-tests:kotest-tests-timeout")
+include("kotest-tests:kotest-tests-timeout")
 //include("kotest-tests:kotest-tests-timeout-sysprop")
 include("kotest-tests:kotest-tests-multiname-test-name-sysprop")
 include("kotest-tests:kotest-tests-native")

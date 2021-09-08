@@ -4,7 +4,7 @@ import io.kotest.core.config.configuration
 import io.kotest.core.spec.Isolate
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.engine.KotestEngineLauncher
-import io.kotest.engine.ProjectTimeoutException
+import io.kotest.engine.interceptors.ProjectTimeoutException
 import io.kotest.engine.listener.NoopTestEngineListener
 import io.kotest.inspectors.forOne
 import io.kotest.matchers.types.shouldBeInstanceOf
@@ -35,7 +35,7 @@ class ProjectTimeoutTest : FunSpec({
       val result = KotestEngineLauncher()
          .withListener(NoopTestEngineListener)
          .withSpec(ProjectTimeoutSampleSpec::class)
-         .launch()
+         .async()
       result.errors.forOne { it.shouldBeInstanceOf<ProjectTimeoutException>() }
    }
 })
