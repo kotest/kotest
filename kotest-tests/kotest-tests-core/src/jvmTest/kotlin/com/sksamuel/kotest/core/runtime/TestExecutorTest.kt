@@ -7,6 +7,7 @@ import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestContext
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestStatus
+import io.kotest.engine.concurrency.NoopCoroutineDispatcherController
 import io.kotest.engine.spec.materializeAndOrderRootTests
 import io.kotest.engine.test.TestCaseExecutionListener
 import io.kotest.engine.test.TestCaseExecutor
@@ -44,7 +45,7 @@ fun testExecutorTests(context: InterruptableExecutionContext) = funSpec {
             result.status shouldBe TestStatus.Success
          }
       }
-      val executor = TestCaseExecutor(listener, context)
+      val executor = TestCaseExecutor(listener, context, NoopCoroutineDispatcherController)
       val testCase = Tests().materializeAndOrderRootTests().first { it.testCase.displayName == "a" }.testCase
       executor.execute(testCase, context(testCase)).status shouldBe TestStatus.Success
       started shouldBe true
@@ -65,7 +66,7 @@ fun testExecutorTests(context: InterruptableExecutionContext) = funSpec {
             result.status shouldBe TestStatus.Error
          }
       }
-      val executor = TestCaseExecutor(listener, context)
+      val executor = TestCaseExecutor(listener, context, NoopCoroutineDispatcherController)
       val testCase = Tests().materializeAndOrderRootTests().first { it.testCase.displayName == "b" }.testCase
       val result = executor.execute(testCase, context(testCase))
       result.status shouldBe TestStatus.Error
@@ -79,7 +80,7 @@ fun testExecutorTests(context: InterruptableExecutionContext) = funSpec {
          override suspend fun testStarted(testCase: TestCase) {}
          override suspend fun testIgnored(testCase: TestCase) {}
          override suspend fun testFinished(testCase: TestCase, result: TestResult) {}
-      }, context)
+      }, context, NoopCoroutineDispatcherController)
       val spec = BeforeTest()
       val testCase = spec.materializeAndOrderRootTests().first().testCase
       executor.execute(testCase, context(testCase))
@@ -91,7 +92,7 @@ fun testExecutorTests(context: InterruptableExecutionContext) = funSpec {
          override suspend fun testStarted(testCase: TestCase) {}
          override suspend fun testIgnored(testCase: TestCase) {}
          override suspend fun testFinished(testCase: TestCase, result: TestResult) {}
-      }, context)
+      }, context, NoopCoroutineDispatcherController)
       val spec = AfterTest()
       val testCase = spec.materializeAndOrderRootTests().first().testCase
       executor.execute(testCase, context(testCase))
@@ -110,7 +111,7 @@ fun testExecutorTests(context: InterruptableExecutionContext) = funSpec {
          override suspend fun testFinished(testCase: TestCase, result: TestResult) {
             finished = true
          }
-      }, context)
+      }, context, NoopCoroutineDispatcherController)
       val testCase = BeforeTestWithException().materializeAndOrderRootTests().first().testCase
       val result = executor.execute(testCase, context(testCase))
       result.status shouldBe TestStatus.Error
@@ -131,7 +132,7 @@ fun testExecutorTests(context: InterruptableExecutionContext) = funSpec {
          override suspend fun testFinished(testCase: TestCase, result: TestResult) {
             finished = true
          }
-      }, context)
+      }, context, NoopCoroutineDispatcherController)
       val testCase = AfterTestWithException().materializeAndOrderRootTests().first().testCase
       val result = executor.execute(testCase, context(testCase))
       result.status shouldBe TestStatus.Error

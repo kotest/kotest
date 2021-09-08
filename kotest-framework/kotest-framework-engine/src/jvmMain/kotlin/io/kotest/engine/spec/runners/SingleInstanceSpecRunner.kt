@@ -10,13 +10,14 @@ import io.kotest.core.test.TestStatus
 import io.kotest.core.test.createTestName
 import io.kotest.core.test.toTestCase
 import io.kotest.engine.ExecutorInterruptableExecutionContext
+import io.kotest.engine.concurrency.CoroutineDispatcherController
 import io.kotest.engine.listener.TestEngineListener
 import io.kotest.engine.spec.SpecExtensions
 import io.kotest.engine.spec.SpecRunner
 import io.kotest.engine.spec.materializeAndOrderRootTests
 import io.kotest.engine.test.DuplicateTestNameHandler
-import io.kotest.engine.test.TestCaseExecutionListener
 import io.kotest.engine.test.TestCaseExecutor
+import io.kotest.engine.test.listener.TestCaseListenerToTestEngineListenerAdapter
 import io.kotest.engine.test.scheduler.TestScheduler
 import io.kotest.fp.flatMap
 import io.kotest.mpp.log
@@ -32,6 +33,7 @@ import kotlin.coroutines.CoroutineContext
 internal class SingleInstanceSpecRunner(
    listener: TestEngineListener,
    scheduler: TestScheduler,
+   private val controller: CoroutineDispatcherController,
 ) : SpecRunner(listener, scheduler) {
 
    private val results = ConcurrentHashMap<TestCase, TestResult>()
@@ -88,19 +90,12 @@ internal class SingleInstanceSpecRunner(
       testCase: TestCase,
       coroutineContext: CoroutineContext,
    ): TestResult {
-      val testExecutor = TestCaseExecutor(object : TestCaseExecutionListener {
-         override suspend fun testStarted(testCase: TestCase) {
-            listener.testStarted(testCase)
-         }
 
-         override suspend fun testIgnored(testCase: TestCase) {
-            listener.testIgnored(testCase, null)
-         }
-
-         override suspend fun testFinished(testCase: TestCase, result: TestResult) {
-            listener.testFinished(testCase, result)
-         }
-      }, ExecutorInterruptableExecutionContext)
+      val testExecutor = TestCaseExecutor(
+         TestCaseListenerToTestEngineListenerAdapter(listener),
+         ExecutorInterruptableExecutionContext,
+         controller
+      )
 
       val result = testExecutor.execute(testCase, Context(testCase, coroutineContext))
       results[testCase] = result

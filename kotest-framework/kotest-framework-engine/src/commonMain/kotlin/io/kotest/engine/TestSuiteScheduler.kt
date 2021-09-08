@@ -1,6 +1,7 @@
 package io.kotest.engine
 
 import io.kotest.common.ExperimentalKotest
+import io.kotest.engine.concurrency.defaultCoroutineDispatcherController
 import io.kotest.engine.listener.NoopTestEngineListener
 import io.kotest.engine.listener.TestEngineListener
 import io.kotest.engine.spec.SpecExecutor
@@ -11,7 +12,10 @@ import io.kotest.mpp.log
  */
 @ExperimentalKotest
 interface TestSuiteScheduler {
-   suspend fun schedule(suite: TestSuite, listener: TestEngineListener): EngineResult
+   suspend fun schedule(
+      suite: TestSuite,
+      listener: TestEngineListener
+   ): EngineResult
 }
 
 /**
@@ -19,10 +23,14 @@ interface TestSuiteScheduler {
  */
 object LoopingTestSuiteScheduler : TestSuiteScheduler {
 
-   override suspend fun schedule(suite: TestSuite, listener: TestEngineListener): EngineResult {
+   override suspend fun schedule(
+      suite: TestSuite,
+      listener: TestEngineListener,
+   ): EngineResult {
       log { "LoopingTestSuiteScheduler: Executing ${suite.specs} specs" }
+      val controller = defaultCoroutineDispatcherController()
       suite.specs.forEach {
-         val executor = SpecExecutor(NoopTestEngineListener)
+         val executor = SpecExecutor(NoopTestEngineListener, controller)
          executor.execute(it)
       }
       return EngineResult(emptyList())

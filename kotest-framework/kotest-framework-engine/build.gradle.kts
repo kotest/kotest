@@ -83,6 +83,7 @@ kotlin {
          dependencies {
             // this must be api as it's compiled into the final source
             api(kotlin("test-js"))
+            implementation(Libs.Coroutines.coreJs)
          }
       }
 
@@ -111,7 +112,6 @@ kotlin {
             implementation(project(Projects.AssertionsCore))
             implementation(project(Projects.JunitRunner))
             implementation(Libs.Mocking.mockk)
-            implementation(Libs.Coroutines.coreJvm)
          }
       }
 

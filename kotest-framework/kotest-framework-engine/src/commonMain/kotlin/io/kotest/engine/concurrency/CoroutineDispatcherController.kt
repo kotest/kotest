@@ -3,10 +3,10 @@ package io.kotest.engine.concurrency
 import io.kotest.core.test.TestCase
 import kotlinx.coroutines.CoroutineDispatcher
 
-expect val defaultCoroutineDispatcherController: CoroutineDispatcherController
+expect fun defaultCoroutineDispatcherController(): CoroutineDispatcherController
 
 /**
- * Optionally switches execution of the given test or spec onto a [CoroutineDispatcher].
+ * Provides [CoroutineDispatcher]s for test and spec execution.
  */
 interface CoroutineDispatcherController {
 

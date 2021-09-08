@@ -10,8 +10,9 @@ import io.kotest.core.test.TestResult
 import io.kotest.core.test.createTestName
 import io.kotest.core.test.toTestCase
 import io.kotest.engine.ExecutorInterruptableExecutionContext
-import io.kotest.engine.spec.SpecExtensions
+import io.kotest.engine.concurrency.CoroutineDispatcherController
 import io.kotest.engine.listener.TestEngineListener
+import io.kotest.engine.spec.SpecExtensions
 import io.kotest.engine.spec.SpecRunner
 import io.kotest.engine.spec.materializeAndOrderRootTests
 import io.kotest.engine.test.DuplicateTestNameHandler
@@ -27,7 +28,8 @@ import kotlin.coroutines.CoroutineContext
 
 internal class InstancePerLeafSpecRunner(
    listener: TestEngineListener,
-   scheduler: TestScheduler
+   scheduler: TestScheduler,
+   private val controller: CoroutineDispatcherController,
 ) : SpecRunner(listener, scheduler) {
 
    private val results = mutableMapOf<TestCase, TestResult>()
@@ -115,7 +117,7 @@ internal class InstancePerLeafSpecRunner(
                   open = false
                   seen.add(t.description)
                   run(t, target)
-                  // otherwise if we're already past our target we're discovering and so
+                  // otherwise, if we're already past our target we're discovering and so
                   // the first discovery we run, the rest we queue
                } else if (target.description.isOnPath(t.description)) {
                   if (seen.add(t.description)) {
@@ -149,7 +151,8 @@ internal class InstancePerLeafSpecRunner(
                   }
                }
             },
-            ExecutorInterruptableExecutionContext
+            ExecutorInterruptableExecutionContext,
+            controller,
          )
 
          val result = testExecutor.execute(test, context)

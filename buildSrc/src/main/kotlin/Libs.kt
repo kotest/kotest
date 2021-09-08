@@ -77,12 +77,14 @@ object Libs {
    }
 
    object Coroutines {
-      const val debug = "org.jetbrains.kotlinx:kotlinx-coroutines-debug:1.5.2"
-      const val coreCommon = "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.2"
-      const val coreJvm = "org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm:1.5.2"
-      const val coreNative = "org.jetbrains.kotlinx:kotlinx-coroutines-core-native:1.5.2"
-      const val jdk8 = "org.jetbrains.kotlinx:kotlinx-coroutines-jdk8:1.5.2"
-      const val test = "org.jetbrains.kotlinx:kotlinx-coroutines-test:1.5.2"
+      const val version = "1.5.2"
+      const val debug = "org.jetbrains.kotlinx:kotlinx-coroutines-debug:$version"
+      const val coreCommon = "org.jetbrains.kotlinx:kotlinx-coroutines-core:$version"
+      const val coreJvm = "org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm:$version"
+      const val coreJs = "org.jetbrains.kotlinx:kotlinx-coroutines-core-js:$version"
+      const val coreNative = "org.jetbrains.kotlinx:kotlinx-coroutines-core-native:$version"
+      const val jdk8 = "org.jetbrains.kotlinx:kotlinx-coroutines-jdk8:$version"
+      const val test = "org.jetbrains.kotlinx:kotlinx-coroutines-test:$version"
    }
 
    object Serialization {

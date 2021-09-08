@@ -1,9 +1,12 @@
 package io.kotest.engine.spec
 
+import io.kotest.core.config.Configuration
 import io.kotest.core.spec.Spec
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.engine.PromiseTestCaseExecutionListener
+import io.kotest.engine.concurrency.CoroutineDispatcherController
+import io.kotest.engine.concurrency.NoopCoroutineDispatcherController
 import io.kotest.engine.describe
 import io.kotest.engine.it
 import io.kotest.engine.listener.TestEngineListener
@@ -18,8 +21,11 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.promise
 import kotlin.coroutines.coroutineContext
 
-actual fun createSpecExecutorDelegate(listener: TestEngineListener): SpecExecutorDelegate =
-   JavascriptSpecExecutorDelegate
+actual fun createSpecExecutorDelegate(
+   listener: TestEngineListener,
+   configuration: Configuration,
+   controller: CoroutineDispatcherController,
+): SpecExecutorDelegate = JavascriptSpecExecutorDelegate
 
 /**
  * Note: we need to use this: https://youtrack.jetbrains.com/issue/KT-22228
@@ -45,7 +51,8 @@ object JavascriptSpecExecutorDelegate : SpecExecutorDelegate {
                   GlobalScope.promise {
                      TestCaseExecutor(
                         PromiseTestCaseExecutionListener(done),
-                        NoInterruptionExecutionContext
+                        NoInterruptionExecutionContext,
+                        NoopCoroutineDispatcherController
                      ).execute(root.testCase, TerminalTestContext(root.testCase, cc))
                   }
 

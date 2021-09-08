@@ -10,6 +10,8 @@ import io.kotest.core.test.TestType
 import io.kotest.core.test.createTestName
 import io.kotest.core.test.toTestCase
 import io.kotest.engine.ExecutorInterruptableExecutionContext
+import io.kotest.engine.concurrency.CoroutineDispatcherController
+import io.kotest.engine.concurrency.NoopCoroutineDispatcherController
 import io.kotest.engine.listener.TestEngineListener
 import io.kotest.engine.spec.SpecExtensions
 import io.kotest.engine.spec.SpecRunner
@@ -58,6 +60,7 @@ import kotlin.coroutines.CoroutineContext
 internal class InstancePerTestSpecRunner(
    listener: TestEngineListener,
    schedule: TestScheduler,
+   private val controller: CoroutineDispatcherController,
 ) : SpecRunner(listener, schedule) {
 
    private val results = ConcurrentHashMap<TestCase, TestResult>()
@@ -135,19 +138,23 @@ internal class InstancePerTestSpecRunner(
                }
             }
          }
-         val testExecutor = TestCaseExecutor(object : TestCaseExecutionListener {
-            override suspend fun testStarted(testCase: TestCase) {
-               if (isTarget) listener.testStarted(testCase)
-            }
+         val testExecutor = TestCaseExecutor(
+            object : TestCaseExecutionListener {
+               override suspend fun testStarted(testCase: TestCase) {
+                  if (isTarget) listener.testStarted(testCase)
+               }
 
-            override suspend fun testIgnored(testCase: TestCase) {
-               if (isTarget) listener.testIgnored(testCase, null)
-            }
+               override suspend fun testIgnored(testCase: TestCase) {
+                  if (isTarget) listener.testIgnored(testCase, null)
+               }
 
-            override suspend fun testFinished(testCase: TestCase, result: TestResult) {
-               if (isTarget) listener.testFinished(testCase, result)
-            }
-         }, ExecutorInterruptableExecutionContext)
+               override suspend fun testFinished(testCase: TestCase, result: TestResult) {
+                  if (isTarget) listener.testFinished(testCase, result)
+               }
+            },
+            ExecutorInterruptableExecutionContext,
+            controller,
+         )
 
          val result = testExecutor.execute(test, context)
          results[test] = result

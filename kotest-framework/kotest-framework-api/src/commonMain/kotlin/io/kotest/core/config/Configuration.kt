@@ -23,6 +23,7 @@ import kotlinx.coroutines.CoroutineDispatcher
  * Expect this val to disappear in Kotest 6.0
  *
  */
+@Deprecated("Do not access configuration via the global singleton. Consider using a ProjectConfig class or extensions. Deprecated in 5.0 and will be removed in 6.0")
 val configuration = Configuration()
 
 /**

@@ -59,20 +59,23 @@ class TestEngine(val config: TestEngineConfig) {
       configuration.registerFilters(config.testFilters)
    }
 
+   private fun logInterceptors() {
+      log { "TestEngine: ${config.interceptors.size} engine interceptors:" }
+      config.interceptors.forEach {
+         log { "\t\t${it::class.simpleName}" }
+      }
+   }
+
    /**
     * Starts execution of the given [TestSuite], intercepting calls via [EngineInterceptor]s.
     */
    suspend fun execute(suite: TestSuite): EngineResult {
       log { "TestEngine: Executing test suite with ${suite.specs.size} specs" }
+      logInterceptors()
 
       val innerExecute: suspend (TestSuite, TestEngineListener) -> EngineResult = { ts, tel ->
          val scheduler = createTestSuiteScheduler()
          scheduler.schedule(ts, tel)
-      }
-
-      log { "TestEngine: ${config.interceptors.size} engine interceptors:" }
-      config.interceptors.forEach {
-         log { "\t\t${it::class.simpleName}" }
       }
 
       val execute = config.interceptors.foldRight(innerExecute) { extension, next ->
