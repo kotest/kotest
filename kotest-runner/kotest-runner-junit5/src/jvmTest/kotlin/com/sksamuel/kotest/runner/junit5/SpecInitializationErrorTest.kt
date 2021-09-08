@@ -1,6 +1,8 @@
 package com.sksamuel.kotest.runner.junit5
 
 import io.kotest.core.spec.style.FunSpec
+import io.kotest.engine.NoopCoroutineDispatcherController
+import io.kotest.engine.listener.NoopTestEngineListener
 import io.kotest.engine.spec.ReflectiveSpecRef
 import io.kotest.engine.spec.SpecExecutor
 import io.kotest.matchers.shouldBe
@@ -37,7 +39,7 @@ class SpecInitializationErrorTest : FunSpec({
       }
 
       val listener = JUnitTestEngineListener(engineListener, root)
-      val executor = SpecExecutor(listener)
+      val executor = SpecExecutor(listener, NoopCoroutineDispatcherController)
       executor.execute(ReflectiveSpecRef(SpecWithFieldError::class))
 
       finished.toMap() shouldBe mapOf(
@@ -68,7 +70,7 @@ class SpecInitializationErrorTest : FunSpec({
       }
 
       val listener = JUnitTestEngineListener(engineListener, root)
-      val executor = SpecExecutor(listener)
+      val executor = SpecExecutor(listener, NoopCoroutineDispatcherController)
       executor.execute(ReflectiveSpecRef(SpecWithInitError::class))
 
       finished.toMap() shouldBe mapOf(
