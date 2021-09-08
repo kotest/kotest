@@ -23,7 +23,7 @@ class AfterProjectListenerTest : FunSpec({
       KotestEngineLauncher()
          .withListener(NoopTestEngineListener)
          .withSpec(DummySpec4::class)
-         .async()
+         .launch()
 
       fired shouldBe true
 
@@ -42,7 +42,7 @@ class AfterProjectListenerTest : FunSpec({
       KotestEngineLauncher()
          .withListener(NoopTestEngineListener)
          .withSpec(DummySpec4::class)
-         .async()
+         .launch()
 
       fired shouldBe true
 

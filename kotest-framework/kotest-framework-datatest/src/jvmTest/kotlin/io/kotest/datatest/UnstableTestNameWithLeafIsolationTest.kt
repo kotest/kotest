@@ -35,7 +35,7 @@ class UnstableTestNameWithLeafIsolationTest : FunSpec() {
          KotestEngineLauncher()
             .withListener(listener)
             .withSpec(RegularClassAndLeafIsolation::class)
-            .async()
+            .launch()
 
          results shouldBe listOf(
             TestStatus.Success,
@@ -53,7 +53,7 @@ class UnstableTestNameWithLeafIsolationTest : FunSpec() {
          KotestEngineLauncher()
             .withListener(listener)
             .withSpec(DataClassWithNonDataParameterAndLeafIsolation::class)
-            .async()
+            .launch()
 
          results shouldBe listOf(
             TestStatus.Success,

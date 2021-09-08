@@ -35,7 +35,7 @@ class ProjectTimeoutTest : FunSpec({
       val result = KotestEngineLauncher()
          .withListener(NoopTestEngineListener)
          .withSpec(ProjectTimeoutSampleSpec::class)
-         .async()
+         .launch()
       result.errors.forOne { it.shouldBeInstanceOf<ProjectTimeoutException>() }
    }
 })

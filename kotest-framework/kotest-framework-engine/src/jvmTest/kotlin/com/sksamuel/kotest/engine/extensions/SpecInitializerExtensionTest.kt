@@ -21,7 +21,7 @@ class MySpecInitializerExtensionTest : FunSpec() {
          KotestEngineLauncher()
             .withSpec(MyPopulatedSpec4::class)
             .withListener(NoopTestEngineListener)
-            .async()
+            .launch()
 
          configuration.deregisterExtension(MySpecInitializeExtension)
 
@@ -36,7 +36,7 @@ class MySpecInitializerExtensionTest : FunSpec() {
          KotestEngineLauncher()
             .withSpec(MyEmptySpec4::class)
             .withListener(NoopTestEngineListener)
-            .async()
+            .launch()
 
          configuration.deregisterExtension(MySpecInitializeExtension)
 

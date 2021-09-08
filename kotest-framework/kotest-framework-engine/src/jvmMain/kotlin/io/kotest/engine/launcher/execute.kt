@@ -45,7 +45,7 @@ fun execute(
 
 private fun executeLauncher(launcher: KotestEngineLauncher) = Try {
    runBlocking {
-      launcher.async()
+      launcher.launch()
    }
 }
 

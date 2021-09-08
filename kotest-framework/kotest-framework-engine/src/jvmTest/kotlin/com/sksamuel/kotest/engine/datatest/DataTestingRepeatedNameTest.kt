@@ -32,7 +32,7 @@ class DataTestingRepeatedTestNameTest : FunSpec() {
          KotestEngineLauncher()
             .withListener(listener)
             .withSpec(RepeatedNameTest::class)
-            .async()
+            .launch()
 
          names shouldBe listOf(
             "Foo(name=sam)",

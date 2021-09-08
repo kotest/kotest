@@ -39,7 +39,7 @@ internal object KotestPropertiesInterceptor : EngineInterceptor {
 
    private fun loadAndApplySystemProps() {
       val filename = systemPropsFilename()
-      log { "Loading kotest properties from $filename" }
+      log { "KotestPropertiesInterceptor: Loading kotest properties from $filename" }
       loadSystemProps(filename).forEach { (key, value) ->
          if (key != null && value != null)
             System.setProperty(key.toString(), value.toString())

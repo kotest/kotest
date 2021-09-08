@@ -18,7 +18,7 @@ class KotestTestRunner(
          val listener = JUnitTestEngineListener(notifier)
          KotestEngineLauncher
             .default(listOf(listener), listOf(klass.kotlin), null)
-            .async()
+            .launch()
       }
    }
 

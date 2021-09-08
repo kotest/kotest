@@ -20,7 +20,7 @@ class UnfinishedTestDefinitionTest : FunSpec() {
          val result = KotestEngineLauncher()
             .withListener(NoopTestEngineListener)
             .withSpec(FunSpecUnfinishedTestDefinitionTest::class)
-            .async()
+            .launch()
          result.errors.forAtLeastOne { it.message!!.shouldContain("unfinished test") }
       }
 
@@ -28,7 +28,7 @@ class UnfinishedTestDefinitionTest : FunSpec() {
          val result = KotestEngineLauncher()
             .withListener(NoopTestEngineListener)
             .withSpec(DescribeSpecUnfinishedTestDefinitionTest::class)
-            .async()
+            .launch()
          result.errors.forAtLeastOne { it.message!!.shouldContain("unfinished it") }
       }
 
@@ -36,7 +36,7 @@ class UnfinishedTestDefinitionTest : FunSpec() {
          val result = KotestEngineLauncher()
             .withListener(NoopTestEngineListener)
             .withSpec(ShouldSpecUnfinishedTestDefinitionTest::class)
-            .async()
+            .launch()
          result.errors.forAtLeastOne { it.message!!.shouldContain("unfinished should") }
       }
 
@@ -44,7 +44,7 @@ class UnfinishedTestDefinitionTest : FunSpec() {
          val result = KotestEngineLauncher()
             .withListener(NoopTestEngineListener)
             .withSpec(FeatureSpecUnfinishedTestDefinitionTest::class)
-            .async()
+            .launch()
          result.errors.forAtLeastOne { it.message!!.shouldContain("unfinished scenario") }
       }
 
@@ -52,7 +52,7 @@ class UnfinishedTestDefinitionTest : FunSpec() {
          val result = KotestEngineLauncher()
             .withListener(NoopTestEngineListener)
             .withSpec(ExpectSpecUnfinishedTestDefinitionTest::class)
-            .async()
+            .launch()
          result.errors.forAtLeastOne { it.message!!.shouldContain("unfinished expect") }
       }
    }

@@ -85,12 +85,12 @@ class JUnitTestEngineListener(
    private var hasIgnoredTest = false
 
    override suspend fun engineStarted(classes: List<KClass<*>>) {
-      log { "Engine started; classes=[$classes]" }
+      log { "JUnitTestEngineListener: Engine started; classes=[$classes]" }
       listener.executionStarted(root)
    }
 
    override suspend fun engineFinished(t: List<Throwable>) {
-      log { "Engine finished; throwables=[${t.joinToString(separator = "\n", transform = { it.toString() })}]" }
+      log { "JUnitTestEngineListener: Engine finished; throwables=[${t.joinToString(separator = "\n", transform = { it.toString() })}]" }
 
       val result = t.map {
          when (it) {
@@ -218,7 +218,7 @@ class JUnitTestEngineListener(
    override suspend fun testIgnored(testCase: TestCase, reason: String?) {
       val descriptor = createTestDescriptor(testCase)
       hasIgnoredTest = true
-      log { "Notifying junit that a test was ignored [$descriptor]" }
+      log { "JUnitTestEngineListener: Notifying junit that a test was ignored [$descriptor]" }
       listener.dynamicTestRegistered(descriptor)
       listener.executionSkipped(descriptor, reason)
    }
@@ -232,7 +232,7 @@ class JUnitTestEngineListener(
    private fun createTestDescriptor(testCase: TestCase): TestDescriptor {
       val parent = descriptors[testCase.description.parent.toDescriptor(testCase.source).testPath()]
       if (parent == null) {
-         val msg = "Cannot find parent description for: ${testCase.description}"
+         val msg = "JUnitTestEngineListener: Cannot find parent description for: ${testCase.description}"
          log { msg }
          error(msg)
       }

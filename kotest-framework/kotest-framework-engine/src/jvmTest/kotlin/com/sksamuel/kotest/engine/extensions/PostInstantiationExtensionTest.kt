@@ -30,7 +30,7 @@ class PostInstantiationExtensionTest : FunSpec() {
          KotestEngineLauncher()
             .withSpec(MySpec::class)
             .withListener(listener)
-            .async()
+            .launch()
 
          configuration.deregisterExtension(MyPostInstantiationExtension)
 

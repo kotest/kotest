@@ -36,7 +36,7 @@ class BeforeProjectListenerExceptionTest : FunSpec({
       KotestEngineLauncher()
          .withListener(listener)
          .withSpec(DummySpec3::class)
-         .async()
+         .launch()
 
       errors shouldHaveSize 1
       errors[0].shouldBeInstanceOf<BeforeProjectListenerException>()
@@ -73,7 +73,7 @@ class BeforeProjectListenerExceptionTest : FunSpec({
       KotestEngineLauncher()
          .withListener(listener)
          .withSpec(DummySpec3::class)
-         .async()
+         .launch()
 
       errors shouldHaveSize 2
       errors.filterIsInstance<BeforeProjectListenerException>() shouldHaveSize 2

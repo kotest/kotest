@@ -52,27 +52,23 @@ class KotestEngineLauncher(
 
    constructor() : this(emptyList(), emptyList(), emptyList(), emptyList(), null, false, emptyList())
 
-   suspend fun async(): EngineResult {
+    fun launch(): EngineResult {
 
-      if (listeners.isEmpty())
-         error("Cannot launch a KotestEngine without at least one TestEngineListener")
+       if (listeners.isEmpty())
+          error("Cannot launch a KotestEngine without at least one TestEngineListener")
 
-      val launcher = TestEngineLauncher(
-         ThreadSafeTestEngineListener(
-            PinnedSpecTestEngineListener(
-               CompositeTestEngineListener(listeners)
-            )
-         )
+       val launcher = TestEngineLauncher(
+          ThreadSafeTestEngineListener(
+             PinnedSpecTestEngineListener(
+                CompositeTestEngineListener(listeners)
+             )
+          )
       ).withTestFilters(testFilters)
          .withSpecFilters(specFilters)
          .withExplicitTags(tags)
          .withClasses(specs)
 
-      return launcher.async()
-   }
-
-   fun launch(): EngineResult {
-      return runBlocking { async() }
+      return runBlocking { launcher.async() }
    }
 
    fun withFilter(filter: TestFilter) = withFilters(listOf(filter))

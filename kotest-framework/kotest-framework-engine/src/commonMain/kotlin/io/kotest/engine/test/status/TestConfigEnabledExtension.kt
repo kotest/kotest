@@ -19,7 +19,7 @@ object TestConfigEnabledExtension : TestEnabledExtension {
 
       val enabledOrReasonIf = testCase.config.enabledOrReasonIf(testCase)
       if (!enabledOrReasonIf.isEnabled) {
-          log { "${testCase.description.testPath()} is disabled by enabledOrReasonIf function in config: ${enabledOrReasonIf.reason}" }
+         log { "TestConfigEnabledExtension: ${testCase.description.testPath()} is disabled by enabledOrReasonIf function in config: ${enabledOrReasonIf.reason}" }
          return enabledOrReasonIf
       }
 
