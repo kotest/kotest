@@ -43,6 +43,7 @@ class ConcurrentTestSuiteScheduler(private val maxConcurrent: Int) : TestSuiteSc
       listener: TestEngineListener,
       concurrency: Int,
    ) = coroutineScope { // we don't want this function to return until all specs are completed
+      val controller = NoopCoroutineDispatcherController
       val semaphore = Semaphore(concurrency)
       specs.forEach { ref ->
          log { "DefaultTestSuiteScheduler: Scheduling coroutine for spec [$ref]" }
@@ -50,7 +51,7 @@ class ConcurrentTestSuiteScheduler(private val maxConcurrent: Int) : TestSuiteSc
             semaphore.withPermit {
                log { "DefaultTestSuiteScheduler: Acquired permit for $ref" }
                try {
-                  val executor = SpecExecutor(listener)
+                  val executor = SpecExecutor(listener, controller)
                   executor.execute(ref)
                } catch (t: Throwable) {
                   log { "DefaultTestSuiteScheduler: Unhandled error during spec execution [$ref] [$t]" }

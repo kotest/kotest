@@ -8,6 +8,7 @@ import io.kotest.core.spec.Spec
 import io.kotest.core.spec.SpecRef
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
+import io.kotest.engine.CoroutineDispatcherController
 import io.kotest.engine.listener.TestEngineListener
 import io.kotest.engine.spec.interceptor.IgnoreNestedSpecStylesInterceptor
 import io.kotest.engine.spec.interceptor.IgnoredSpecInterceptor
@@ -30,7 +31,10 @@ import kotlin.reflect.KClass
  * [io.kotest.engine.spec.interceptor.SpecExecutionInterceptor] are executed after the spec is created.
  *
  */
-class SpecExecutor(private val listener: TestEngineListener) {
+class SpecExecutor(
+   private val listener: TestEngineListener,
+   private val controller: CoroutineDispatcherController
+) {
 
    private val extensions = SpecExtensions(configuration)
 
@@ -76,7 +80,7 @@ class SpecExecutor(private val listener: TestEngineListener) {
       )
 
       val innerExecute: suspend (Spec) -> Map<TestCase, TestResult> = {
-         val delegate = createSpecExecutorDelegate(listener)
+         val delegate = createSpecExecutorDelegate(listener, controller)
          log { "SpecExecutor: Created spec executor delegate $delegate" }
          delegate.execute(spec)
       }
@@ -106,5 +110,8 @@ interface SpecExecutorDelegate {
    suspend fun execute(spec: Spec): Map<TestCase, TestResult>
 }
 
-expect fun createSpecExecutorDelegate(listener: TestEngineListener): SpecExecutorDelegate
+expect fun createSpecExecutorDelegate(
+   listener: TestEngineListener,
+   controller: CoroutineDispatcherController,
+): SpecExecutorDelegate
 

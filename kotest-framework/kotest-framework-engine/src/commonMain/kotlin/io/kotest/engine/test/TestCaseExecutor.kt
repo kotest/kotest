@@ -4,6 +4,8 @@ import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestContext
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestStatus
+import io.kotest.engine.CoroutineDispatcherController
+import io.kotest.engine.NoopCoroutineDispatcherController
 import io.kotest.engine.defaultCoroutineDispatcherController
 import io.kotest.engine.test.interceptors.AssertionModeInterceptor
 import io.kotest.engine.test.interceptors.CoroutineDebugProbeInterceptor
@@ -29,6 +31,7 @@ import io.kotest.mpp.timeInMillis
 class TestCaseExecutor(
    private val listener: TestCaseExecutionListener,
    private val executionContext: InterruptableExecutionContext,
+   private val controller: CoroutineDispatcherController = NoopCoroutineDispatcherController,
 ) {
 
    suspend fun execute(testCase: TestCase, context: TestContext): TestResult {
@@ -42,7 +45,7 @@ class TestCaseExecutor(
          SupervisorScopeInterceptor,
          // this must be before the timeout interceptor as we need the thread switch to timeout on and
          // must be before lifecycle interceptor so the callbacks are on the same thread as the tests
-         CoroutineDispatcherInterceptor(defaultCoroutineDispatcherController()),
+         CoroutineDispatcherInterceptor(controller),
          TestCaseExtensionInterceptor,
          EnabledCheckInterceptor,
          LifecycleInterceptor(listener, start),
