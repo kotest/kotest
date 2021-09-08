@@ -6,6 +6,7 @@ import io.kotest.matchers.shouldBe
 import org.junit.platform.engine.discovery.DiscoverySelectors.selectClass
 import org.junit.platform.testkit.engine.EngineTestKit
 
+// do not run from intellij as the test filter will filter out the tests in the dummy specs
 class WordSpecEngineKitTest : FunSpec({
 
    test("verify engine stats") {
