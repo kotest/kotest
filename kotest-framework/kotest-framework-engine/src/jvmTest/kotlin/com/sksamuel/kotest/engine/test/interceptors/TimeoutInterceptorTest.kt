@@ -11,7 +11,6 @@ import io.kotest.engine.test.NoopTestContext
 import io.kotest.engine.test.interceptors.TestTimeoutException
 import io.kotest.engine.test.interceptors.TimeoutInterceptor
 import kotlinx.coroutines.delay
-import kotlin.time.Duration
 
 class TimeoutInterceptorTest : FunSpec() {
    init {
@@ -29,10 +28,7 @@ class TimeoutInterceptorTest : FunSpec() {
             TimeoutInterceptor.intercept { _, _ ->
                delay(10000)
                TestResult.success(0)
-            }.invoke(
-               tc.copy(config = tc.config.copy(timeout = Duration.milliseconds(6))),
-               NoopTestContext(tc, coroutineContext)
-            )
+            }.invoke(tc, NoopTestContext(tc, coroutineContext))
          }
       }
    }
