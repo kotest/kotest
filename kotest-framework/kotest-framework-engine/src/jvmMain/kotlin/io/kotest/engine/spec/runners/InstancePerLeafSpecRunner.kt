@@ -1,5 +1,6 @@
 package io.kotest.engine.spec.runners
 
+import io.kotest.core.concurrency.CoroutineDispatcherFactory
 import io.kotest.core.config.configuration
 import io.kotest.core.spec.Spec
 import io.kotest.core.test.Description
@@ -9,7 +10,6 @@ import io.kotest.core.test.TestContext
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.createTestName
 import io.kotest.core.test.toTestCase
-import io.kotest.engine.CoroutineDispatcherController
 import io.kotest.engine.spec.SpecExtensions
 import io.kotest.engine.listener.TestEngineListener
 import io.kotest.engine.spec.SpecRunner
@@ -28,7 +28,7 @@ import kotlin.coroutines.CoroutineContext
 internal class InstancePerLeafSpecRunner(
    listener: TestEngineListener,
    scheduler: TestScheduler,
-   private val controller: CoroutineDispatcherController
+   private val defaultCoroutineDispatcherFactory: CoroutineDispatcherFactory
 ) : SpecRunner(listener, scheduler) {
 
    private val results = mutableMapOf<TestCase, TestResult>()
@@ -150,7 +150,7 @@ internal class InstancePerLeafSpecRunner(
                   }
                }
             },
-            controller
+            defaultCoroutineDispatcherFactory
          )
 
          val result = testExecutor.execute(test, context)

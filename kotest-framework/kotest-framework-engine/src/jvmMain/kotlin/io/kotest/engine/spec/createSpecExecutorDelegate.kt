@@ -1,12 +1,12 @@
 package io.kotest.engine.spec
 
+import io.kotest.core.concurrency.CoroutineDispatcherFactory
 import io.kotest.core.config.Configuration
 import io.kotest.core.config.configuration
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.Spec
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
-import io.kotest.engine.CoroutineDispatcherController
 import io.kotest.engine.concurrency.resolvedConcurrentTests
 import io.kotest.engine.listener.TestEngineListener
 import io.kotest.engine.spec.runners.InstancePerLeafSpecRunner
@@ -18,7 +18,7 @@ import kotlin.math.max
 
 actual fun createSpecExecutorDelegate(
    listener: TestEngineListener,
-   controller: CoroutineDispatcherController,
+   defaultCoroutineDispatcherFactory: CoroutineDispatcherFactory,
 ): SpecExecutorDelegate = object : SpecExecutorDelegate {
 
    private fun Spec.resolvedIsolationMode() =
@@ -32,9 +32,9 @@ actual fun createSpecExecutorDelegate(
       }
 
       val runner = when (spec.resolvedIsolationMode()) {
-         IsolationMode.SingleInstance -> SingleInstanceSpecRunner(listener, scheduler, controller)
-         IsolationMode.InstancePerTest -> InstancePerTestSpecRunner(listener, scheduler, controller)
-         IsolationMode.InstancePerLeaf -> InstancePerLeafSpecRunner(listener, scheduler, controller)
+         IsolationMode.SingleInstance -> SingleInstanceSpecRunner(listener, scheduler, defaultCoroutineDispatcherFactory)
+         IsolationMode.InstancePerTest -> InstancePerTestSpecRunner(listener, scheduler, defaultCoroutineDispatcherFactory)
+         IsolationMode.InstancePerLeaf -> InstancePerLeafSpecRunner(listener, scheduler, defaultCoroutineDispatcherFactory)
       }
 
       return runner.execute(spec).getOrThrow()

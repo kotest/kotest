@@ -2,13 +2,13 @@ package io.kotest.engine.spec
 
 import io.kotest.common.Platform
 import io.kotest.common.platform
+import io.kotest.core.concurrency.CoroutineDispatcherFactory
 import io.kotest.core.config.configuration
 import io.kotest.core.extensions.SpecInterceptExtension
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.SpecRef
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
-import io.kotest.engine.CoroutineDispatcherController
 import io.kotest.engine.listener.TestEngineListener
 import io.kotest.engine.spec.interceptor.IgnoreNestedSpecStylesInterceptor
 import io.kotest.engine.spec.interceptor.IgnoredSpecInterceptor
@@ -33,7 +33,7 @@ import kotlin.reflect.KClass
  */
 class SpecExecutor(
    private val listener: TestEngineListener,
-   private val controller: CoroutineDispatcherController
+   private val defaultCoroutineDispatcherFactory: CoroutineDispatcherFactory
 ) {
 
    private val extensions = SpecExtensions(configuration)
@@ -80,7 +80,7 @@ class SpecExecutor(
       )
 
       val innerExecute: suspend (Spec) -> Map<TestCase, TestResult> = {
-         val delegate = createSpecExecutorDelegate(listener, controller)
+         val delegate = createSpecExecutorDelegate(listener, defaultCoroutineDispatcherFactory)
          log { "SpecExecutor: Created spec executor delegate $delegate" }
          delegate.execute(spec)
       }
@@ -112,6 +112,6 @@ interface SpecExecutorDelegate {
 
 expect fun createSpecExecutorDelegate(
    listener: TestEngineListener,
-   controller: CoroutineDispatcherController,
+   defaultCoroutineDispatcherFactory: CoroutineDispatcherFactory,
 ): SpecExecutorDelegate
 

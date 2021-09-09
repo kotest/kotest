@@ -1,5 +1,6 @@
 package io.kotest.engine.spec.runners
 
+import io.kotest.core.concurrency.CoroutineDispatcherFactory
 import io.kotest.core.config.configuration
 import io.kotest.core.spec.Spec
 import io.kotest.core.test.NestedTest
@@ -9,7 +10,6 @@ import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestType
 import io.kotest.core.test.createTestName
 import io.kotest.core.test.toTestCase
-import io.kotest.engine.CoroutineDispatcherController
 import io.kotest.engine.listener.TestEngineListener
 import io.kotest.engine.spec.SpecExtensions
 import io.kotest.engine.spec.SpecRunner
@@ -58,7 +58,7 @@ import kotlin.coroutines.CoroutineContext
 internal class InstancePerTestSpecRunner(
    listener: TestEngineListener,
    schedule: TestScheduler,
-   private val controller: CoroutineDispatcherController,
+   private val defaultCoroutineDispatcherFactory: CoroutineDispatcherFactory,
 ) : SpecRunner(listener, schedule) {
 
    private val results = ConcurrentHashMap<TestCase, TestResult>()
@@ -150,7 +150,7 @@ internal class InstancePerTestSpecRunner(
                   if (isTarget) listener.testFinished(testCase, result)
                }
             },
-            controller
+            defaultCoroutineDispatcherFactory
          )
 
          val result = testExecutor.execute(test, context)

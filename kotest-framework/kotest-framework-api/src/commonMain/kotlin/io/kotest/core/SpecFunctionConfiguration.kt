@@ -1,6 +1,7 @@
 package io.kotest.core
 
 import io.kotest.common.ExperimentalKotest
+import io.kotest.core.concurrency.CoroutineDispatcherFactory
 import io.kotest.core.config.Configuration
 import io.kotest.core.extensions.Extension
 import io.kotest.core.extensions.TestCaseExtension
@@ -97,10 +98,12 @@ interface SpecFunctionConfiguration {
    /**
     * Sets the number of threads that will be used for executing root tests in this spec.
     *
-    * On the JVM this will result in multiple threads being used.
-    * On other platforms this setting will have no effect.
+    * By setting this a value, a [CoroutineDispatcherFactory] will be installed for this spec
+    * that shares a fixed number of threads for this spec only. If the [coroutineDispatcherFactory]
+    * is also set, then that will have precedence.
+    *
+    * This setting is JVM only.
     */
-   @Deprecated("Use concurrency setting. This Will be removed in 4.7")
    fun threads(): Int? = null
 
    /**
@@ -134,4 +137,6 @@ interface SpecFunctionConfiguration {
     */
    @ExperimentalKotest
    fun dispatcherAffinity(): Boolean? = null
+
+   fun coroutineDispatcherFactory(): CoroutineDispatcherFactory? = null
 }

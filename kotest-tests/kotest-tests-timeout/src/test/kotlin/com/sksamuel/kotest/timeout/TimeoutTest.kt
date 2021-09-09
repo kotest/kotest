@@ -16,7 +16,7 @@ class TimeoutTest : FunSpec() {
 
       test("a testcase timeout should interrupt a blocked thread").config(
          timeout = Duration.milliseconds(10),
-         timeoutInterruption = true
+         blockingTest = true
       ) {
          // high value to ensure its interrupted, we'd notice a test that runs for 10 weeks
          Thread.sleep(1000000)

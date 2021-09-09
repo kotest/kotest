@@ -25,7 +25,7 @@ class GlobalTimeoutTest : StringSpec() {
          configuration.timeout = previousTimeout
       }
 
-      "a global timeout should interrupt a blocked thread".config(timeoutInterruption = true) {
+      "a global timeout should interrupt a blocked thread".config(blockingTest = true) {
          // high value to ensure its interrupted, we'd notice a test that runs for 10 weeks
          Thread.sleep(1000000)
       }

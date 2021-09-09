@@ -18,7 +18,7 @@ private val scheduler =
    Executors.newScheduledThreadPool(1, NamedThreadFactory("BlockedThreadTimeoutInterceptor-%d", daemon = true))
 
 /**
- * If [io.kotest.core.test.TestCaseConfig.timeoutInterruption] is enabled, then switches the execution
+ * If [io.kotest.core.test.TestCaseConfig.blockingTest] is enabled, then switches the execution
  * to a new thread, so it can be interrupted if the test times out.
  */
 actual class BlockedThreadTimeoutInterceptor : TestExecutionInterceptor {
@@ -26,7 +26,7 @@ actual class BlockedThreadTimeoutInterceptor : TestExecutionInterceptor {
       test: suspend (TestCase, TestContext) -> TestResult
    ): suspend (TestCase, TestContext) -> TestResult = { testCase, context ->
 
-      val interruption = testCase.config.timeoutInterruption ?: testCase.spec.timeoutInterruption ?: false
+      val interruption = testCase.config.blockingTest ?: testCase.spec.blockingTest ?: false
       if (interruption) {
 
          // we must switch execution onto a throwaway thread so the interruption task

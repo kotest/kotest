@@ -4,7 +4,7 @@ import io.kotest.core.spec.style.AnnotationSpec
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
-import io.kotest.engine.NoopCoroutineDispatcherController
+import io.kotest.engine.concurrency.NoopCoroutineDispatcherFactory
 import io.kotest.engine.listener.TestEngineListener
 import io.kotest.engine.spec.SpecExecutor
 import io.kotest.matchers.shouldBe
@@ -21,7 +21,7 @@ class AnnotationSpecTestDetectionTest : FunSpec({
             tests shouldBe 2
          }
       }
-      val executor = SpecExecutor(listener, NoopCoroutineDispatcherController)
+      val executor = SpecExecutor(listener, NoopCoroutineDispatcherFactory)
       executor.execute(AnnotationSpecClass::class)
    }
 

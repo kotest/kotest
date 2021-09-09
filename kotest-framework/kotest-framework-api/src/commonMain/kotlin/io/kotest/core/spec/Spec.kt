@@ -5,6 +5,7 @@ import io.kotest.core.SpecFunctionCallbacks
 import io.kotest.core.SpecFunctionConfiguration
 import io.kotest.core.Tag
 import io.kotest.core.TestConfiguration
+import io.kotest.core.concurrency.CoroutineDispatcherFactory
 import io.kotest.core.config.Configuration
 import io.kotest.core.config.configuration
 import io.kotest.core.test.TestCase
@@ -93,7 +94,22 @@ abstract class Spec : TestConfiguration(), SpecFunctionConfiguration, SpecFuncti
    // therefore allowing the test engine to safely interrupt tests via Thread.interrupt when they time out.
    // This is useful if you are testing blocking code and want to use timeouts because coroutine timeouts
    // are cooperative by nature.
-   var timeoutInterruption: Boolean? = null
+   var blockingTest: Boolean? = null
+
+   @JsName("coroutineDispatcherFactory_var")
+   var coroutineDispatcherFactory: CoroutineDispatcherFactory? = null
+
+   /**
+    * Sets the number of threads that will be used for executing root tests in this spec.
+    *
+    * By setting this a value, a [CoroutineDispatcherFactory] will be installed for this spec
+    * that shares a fixed number of threads for this spec only. If the [coroutineDispatcherFactory]
+    * is also set, then that will have precedence.
+    *
+    * This setting is JVM only.
+    */
+   @JsName("threads_var")
+   val threads: Int? = null
 
    /**
     * Returns the actual test order to use, taking into account spec config and global config.

@@ -37,7 +37,7 @@ interface StringSpecRootContext : RootContext {
       severity: TestCaseSeverityLevel? = null,
       enabledOrReasonIf: EnabledOrReasonIf? = null,
       coroutineDebugProbes: Boolean? = null,
-      timeoutInterruption: Boolean? = null,
+      blockingTest: Boolean? = null,
       test: suspend TestContext.() -> Unit,
    ) = RootTestWithConfigBuilder(createTestName(null, this, false), registration(), false).config(
       enabled = enabled,
@@ -51,7 +51,7 @@ interface StringSpecRootContext : RootContext {
       severity = severity,
       enabledOrReasonIf = enabledOrReasonIf,
       coroutineDebugProbes = coroutineDebugProbes,
-      timeoutInterruption = timeoutInterruption,
+      blockingTest = blockingTest,
       test = test
    )
 
