@@ -10,12 +10,12 @@ import kotlin.coroutines.coroutineContext
 
 internal actual fun coroutineDispatcherFactoryInterceptor(
    defaultCoroutineDispatcherFactory: CoroutineDispatcherFactory
-): TestExecutionInterceptor = CoroutineDispatcherInterceptor(defaultCoroutineDispatcherFactory)
+): TestExecutionInterceptor = CoroutineDispatcherFactoryInterceptor(defaultCoroutineDispatcherFactory)
 
 /**
  * Switches execution onto a dispatcher provided by the given [CoroutineDispatcherFactory].
  */
-class CoroutineDispatcherInterceptor(
+class CoroutineDispatcherFactoryInterceptor(
    private val defaultCoroutineDispatcherFactory: CoroutineDispatcherFactory
 ) : TestExecutionInterceptor {
 

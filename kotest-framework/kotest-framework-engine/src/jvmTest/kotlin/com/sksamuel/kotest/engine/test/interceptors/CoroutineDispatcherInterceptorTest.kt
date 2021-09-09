@@ -8,6 +8,7 @@ import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestType
 import io.kotest.engine.test.NoopTestContext
+import io.kotest.engine.test.interceptors.CoroutineDispatcherFactoryInterceptor
 import io.kotest.matchers.string.shouldStartWith
 import kotlinx.coroutines.asCoroutineDispatcher
 import kotlinx.coroutines.withContext
