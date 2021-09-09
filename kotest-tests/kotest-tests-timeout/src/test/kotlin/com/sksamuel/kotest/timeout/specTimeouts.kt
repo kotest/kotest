@@ -1,6 +1,5 @@
 package com.sksamuel.kotest.timeout
 
-import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.spec.style.funSpec
 import kotlinx.coroutines.delay
 import kotlin.time.Duration

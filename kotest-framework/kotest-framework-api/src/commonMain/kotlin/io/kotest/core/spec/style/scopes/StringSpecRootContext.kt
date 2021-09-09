@@ -36,19 +36,23 @@ interface StringSpecRootContext : RootContext {
       invocationTimeout: Duration? = null,
       severity: TestCaseSeverityLevel? = null,
       enabledOrReasonIf: EnabledOrReasonIf? = null,
+      coroutineDebugProbes: Boolean? = null,
+      timeoutInterruption: Boolean? = null,
       test: suspend TestContext.() -> Unit,
    ) = RootTestWithConfigBuilder(createTestName(null, this, false), registration(), false).config(
-      enabled,
-      invocations,
-      threads,
-      tags,
-      timeout,
-      extensions,
-      enabledIf,
-      invocationTimeout,
-      severity,
-      enabledOrReasonIf,
-      test
+      enabled = enabled,
+      invocations = invocations,
+      threads = threads,
+      tags = tags,
+      timeout = timeout,
+      extensions = extensions,
+      enabledIf = enabledIf,
+      invocationTimeout = invocationTimeout,
+      severity = severity,
+      enabledOrReasonIf = enabledOrReasonIf,
+      coroutineDebugProbes = coroutineDebugProbes,
+      timeoutInterruption = timeoutInterruption,
+      test = test
    )
 
    /**
