@@ -6,7 +6,6 @@ import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.engine.CoroutineDispatcherController
 import io.kotest.engine.listener.TestEngineListener
-import io.kotest.engine.test.NoInterruptionExecutionContext
 import io.kotest.engine.test.CallingThreadTestContext
 import io.kotest.engine.test.TestCaseExecutor
 import io.kotest.engine.test.listener.TestCaseListenerToTestEngineListenerAdapter
@@ -38,12 +37,10 @@ class DefaultSpecExecutorDelegate(
                coroutineContext,
                configuration.duplicateTestNameMode,
                listener,
-               NoInterruptionExecutionContext,
                controller
             )
             TestCaseExecutor(
                TestCaseListenerToTestEngineListenerAdapter(listener),
-               NoInterruptionExecutionContext,
                controller,
             ).execute(testCase, context)
          }

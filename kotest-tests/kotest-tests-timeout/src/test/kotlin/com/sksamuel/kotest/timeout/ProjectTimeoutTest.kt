@@ -3,8 +3,8 @@ package com.sksamuel.kotest.timeout
 import io.kotest.core.config.configuration
 import io.kotest.core.spec.Isolate
 import io.kotest.core.spec.style.FunSpec
-import io.kotest.engine.KotestEngineLauncher
-import io.kotest.engine.ProjectTimeoutException
+import io.kotest.engine.TestEngineLauncher
+import io.kotest.engine.interceptors.ProjectTimeoutException
 import io.kotest.engine.listener.NoopTestEngineListener
 import io.kotest.inspectors.forOne
 import io.kotest.matchers.types.shouldBeInstanceOf
@@ -19,7 +19,7 @@ class ProjectTimeoutTest : FunSpec({
    beforeSpec {
       projectTimeout = configuration.projectTimeout
       testTimeout = configuration.timeout
-      configuration.projectTimeout = 1000L
+      configuration.projectTimeout = 10
       // need to reset the timeout per test since we're testing project timeouts
       configuration.timeout = Long.MAX_VALUE
    }
@@ -30,11 +30,10 @@ class ProjectTimeoutTest : FunSpec({
    }
 
    test("a project times out when the sum duration of its tests exceeds the specified project timeout") {
-      // project timeout is set to 1000L
-      // each test takes 500, but 3 tests, so we should hit the project limit
-      val result = KotestEngineLauncher()
-         .withListener(NoopTestEngineListener)
-         .withSpec(ProjectTimeoutSampleSpec::class)
+      // project timeout is set to 10
+      // each test takes 10, but 3 tests, so we should hit the project limit
+      val result = TestEngineLauncher(NoopTestEngineListener)
+         .withClasses(ProjectTimeoutSampleSpec::class)
          .launch()
       result.errors.forOne { it.shouldBeInstanceOf<ProjectTimeoutException>() }
    }
@@ -43,14 +42,14 @@ class ProjectTimeoutTest : FunSpec({
 private class ProjectTimeoutSampleSpec : FunSpec({
 
    test("1: a test under the test level timeout") {
-      delay(500)
+      delay(10)
    }
 
    test("2: a test under the test level timeout") {
-      delay(500)
+      delay(10)
    }
 
    test("3: a test under the test level timeout") {
-      delay(500)
+      delay(10)
    }
 })

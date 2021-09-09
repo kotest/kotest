@@ -89,6 +89,12 @@ abstract class Spec : TestConfiguration(), SpecFunctionConfiguration, SpecFuncti
     */
    var testOrder: TestCaseOrder? = null
 
+   // When set to true, execution will switch to a dedicated thread for each test case in this spec,
+   // therefore allowing the test engine to safely interrupt tests via Thread.interrupt when they time out.
+   // This is useful if you are testing blocking code and want to use timeouts because coroutine timeouts
+   // are cooperative by nature.
+   var timeoutInterruption: Boolean? = null
+
    /**
     * Returns the actual test order to use, taking into account spec config and global config.
     */

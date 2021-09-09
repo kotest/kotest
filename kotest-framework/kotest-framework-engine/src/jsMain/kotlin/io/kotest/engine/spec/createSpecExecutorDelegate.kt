@@ -9,7 +9,6 @@ import io.kotest.engine.PromiseTestCaseExecutionListener
 import io.kotest.engine.describe
 import io.kotest.engine.it
 import io.kotest.engine.listener.TestEngineListener
-import io.kotest.engine.test.NoInterruptionExecutionContext
 import io.kotest.engine.test.TerminalTestContext
 import io.kotest.engine.test.TestCaseExecutor
 import io.kotest.engine.test.status.isEnabledInternal
@@ -49,7 +48,6 @@ object JavascriptSpecExecutorDelegate : SpecExecutorDelegate {
                   GlobalScope.promise {
                      TestCaseExecutor(
                         PromiseTestCaseExecutionListener(done),
-                        NoInterruptionExecutionContext,
                         NoopCoroutineDispatcherController,
                      ).execute(root.testCase, TerminalTestContext(root.testCase, cc))
                   }

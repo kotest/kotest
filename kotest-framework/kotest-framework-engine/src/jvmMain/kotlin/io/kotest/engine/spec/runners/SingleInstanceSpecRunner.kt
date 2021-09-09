@@ -10,7 +10,6 @@ import io.kotest.core.test.TestStatus
 import io.kotest.core.test.createTestName
 import io.kotest.core.test.toTestCase
 import io.kotest.engine.CoroutineDispatcherController
-import io.kotest.engine.ExecutorInterruptableExecutionContext
 import io.kotest.engine.listener.TestEngineListener
 import io.kotest.engine.spec.SpecExtensions
 import io.kotest.engine.spec.SpecRunner
@@ -50,11 +49,16 @@ internal class SingleInstanceSpecRunner(
          }
       }
 
-      return coroutineScope {
-         SpecExtensions(configuration).beforeSpec(spec)
-            .flatMap { interceptAndRun(coroutineContext) }
-            .flatMap { SpecExtensions(configuration).afterSpec(spec) }
-            .map { results }
+      try {
+         return coroutineScope {
+            SpecExtensions(configuration).beforeSpec(spec)
+               .flatMap { interceptAndRun(coroutineContext) }
+               .flatMap { SpecExtensions(configuration).afterSpec(spec) }
+               .map { results }
+         }
+      } catch (e: Exception) {
+         e.printStackTrace()
+         throw e
       }
    }
 
@@ -90,19 +94,22 @@ internal class SingleInstanceSpecRunner(
       testCase: TestCase,
       coroutineContext: CoroutineContext,
    ): TestResult {
-      val testExecutor = TestCaseExecutor(object : TestCaseExecutionListener {
-         override suspend fun testStarted(testCase: TestCase) {
-            listener.testStarted(testCase)
-         }
+      val testExecutor = TestCaseExecutor(
+         object : TestCaseExecutionListener {
+            override suspend fun testStarted(testCase: TestCase) {
+               listener.testStarted(testCase)
+            }
 
-         override suspend fun testIgnored(testCase: TestCase) {
-            listener.testIgnored(testCase, null)
-         }
+            override suspend fun testIgnored(testCase: TestCase) {
+               listener.testIgnored(testCase, null)
+            }
 
-         override suspend fun testFinished(testCase: TestCase, result: TestResult) {
-            listener.testFinished(testCase, result)
-         }
-      }, ExecutorInterruptableExecutionContext, controller)
+            override suspend fun testFinished(testCase: TestCase, result: TestResult) {
+               listener.testFinished(testCase, result)
+            }
+         },
+         controller
+      )
 
       val result = testExecutor.execute(testCase, Context(testCase, coroutineContext))
       results[testCase] = result

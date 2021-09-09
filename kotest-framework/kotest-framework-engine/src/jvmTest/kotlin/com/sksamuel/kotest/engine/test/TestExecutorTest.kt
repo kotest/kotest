@@ -1,16 +1,15 @@
-package com.sksamuel.kotest.core.runtime
+package com.sksamuel.kotest.engine.test
 
 import io.kotest.core.spec.style.FunSpec
-import io.kotest.core.spec.style.funSpec
 import io.kotest.core.test.NestedTest
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestContext
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestStatus
+import io.kotest.engine.NoopCoroutineDispatcherController
 import io.kotest.engine.spec.materializeAndOrderRootTests
 import io.kotest.engine.test.TestCaseExecutionListener
 import io.kotest.engine.test.TestCaseExecutor
-import io.kotest.engine.test.InterruptableExecutionContext
 import io.kotest.engine.test.interceptors.TestTimeoutException
 import io.kotest.matchers.booleans.shouldBeTrue
 import io.kotest.matchers.shouldBe
@@ -22,7 +21,7 @@ import kotlin.coroutines.CoroutineContext
 import kotlin.time.Duration
 
 @DelicateCoroutinesApi
-fun testExecutorTests(context: InterruptableExecutionContext) = funSpec {
+class TestExecutorTest : FunSpec({
 
    fun context(testCase: TestCase) = object : TestContext {
       override val testCase: TestCase = testCase
@@ -44,7 +43,7 @@ fun testExecutorTests(context: InterruptableExecutionContext) = funSpec {
             result.status shouldBe TestStatus.Success
          }
       }
-      val executor = TestCaseExecutor(listener, context)
+      val executor = TestCaseExecutor(listener, NoopCoroutineDispatcherController)
       val testCase = Tests().materializeAndOrderRootTests().first { it.testCase.displayName == "a" }.testCase
       executor.execute(testCase, context(testCase)).status shouldBe TestStatus.Success
       started shouldBe true
@@ -65,7 +64,7 @@ fun testExecutorTests(context: InterruptableExecutionContext) = funSpec {
             result.status shouldBe TestStatus.Error
          }
       }
-      val executor = TestCaseExecutor(listener, context)
+      val executor = TestCaseExecutor(listener, NoopCoroutineDispatcherController)
       val testCase = Tests().materializeAndOrderRootTests().first { it.testCase.displayName == "b" }.testCase
       val result = executor.execute(testCase, context(testCase))
       result.status shouldBe TestStatus.Error
@@ -79,7 +78,7 @@ fun testExecutorTests(context: InterruptableExecutionContext) = funSpec {
          override suspend fun testStarted(testCase: TestCase) {}
          override suspend fun testIgnored(testCase: TestCase) {}
          override suspend fun testFinished(testCase: TestCase, result: TestResult) {}
-      }, context)
+      }, NoopCoroutineDispatcherController)
       val spec = BeforeTest()
       val testCase = spec.materializeAndOrderRootTests().first().testCase
       executor.execute(testCase, context(testCase))
@@ -91,7 +90,7 @@ fun testExecutorTests(context: InterruptableExecutionContext) = funSpec {
          override suspend fun testStarted(testCase: TestCase) {}
          override suspend fun testIgnored(testCase: TestCase) {}
          override suspend fun testFinished(testCase: TestCase, result: TestResult) {}
-      }, context)
+      }, NoopCoroutineDispatcherController)
       val spec = AfterTest()
       val testCase = spec.materializeAndOrderRootTests().first().testCase
       executor.execute(testCase, context(testCase))
@@ -110,7 +109,7 @@ fun testExecutorTests(context: InterruptableExecutionContext) = funSpec {
          override suspend fun testFinished(testCase: TestCase, result: TestResult) {
             finished = true
          }
-      }, context)
+      }, NoopCoroutineDispatcherController)
       val testCase = BeforeTestWithException().materializeAndOrderRootTests().first().testCase
       val result = executor.execute(testCase, context(testCase))
       result.status shouldBe TestStatus.Error
@@ -131,7 +130,7 @@ fun testExecutorTests(context: InterruptableExecutionContext) = funSpec {
          override suspend fun testFinished(testCase: TestCase, result: TestResult) {
             finished = true
          }
-      }, context)
+      }, NoopCoroutineDispatcherController)
       val testCase = AfterTestWithException().materializeAndOrderRootTests().first().testCase
       val result = executor.execute(testCase, context(testCase))
       result.status shouldBe TestStatus.Error
@@ -139,13 +138,7 @@ fun testExecutorTests(context: InterruptableExecutionContext) = funSpec {
       started shouldBe true
       finished shouldBe true
    }
-}
-
-//@DelicateCoroutinesApi
-//class TestExecutorTest : FunSpec({
-//   include("calling thread:", testExecutorTests(CallingThreadExecutionContext))
-//   include("executor:", testExecutorTests(ExecutorExecutionContext))
-//})
+})
 
 private class Tests : FunSpec({
    test("a") {}

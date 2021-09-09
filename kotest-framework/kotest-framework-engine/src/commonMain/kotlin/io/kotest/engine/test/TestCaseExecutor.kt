@@ -6,8 +6,8 @@ import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestStatus
 import io.kotest.engine.CoroutineDispatcherController
 import io.kotest.engine.NoopCoroutineDispatcherController
-import io.kotest.engine.defaultCoroutineDispatcherController
 import io.kotest.engine.test.interceptors.AssertionModeInterceptor
+import io.kotest.engine.test.interceptors.BlockedThreadTimeoutInterceptor
 import io.kotest.engine.test.interceptors.CoroutineDebugProbeInterceptor
 import io.kotest.engine.test.interceptors.CoroutineDispatcherInterceptor
 import io.kotest.engine.test.interceptors.CoroutineScopeInterceptor
@@ -15,6 +15,8 @@ import io.kotest.engine.test.interceptors.EnabledCheckInterceptor
 import io.kotest.engine.test.interceptors.ExceptionCapturingInterceptor
 import io.kotest.engine.test.interceptors.GlobalSoftAssertInterceptor
 import io.kotest.engine.test.interceptors.InvocationCountCheckInterceptor
+import io.kotest.engine.test.interceptors.InvocationRepeatInterceptor
+import io.kotest.engine.test.interceptors.InvocationTimeoutInterceptor
 import io.kotest.engine.test.interceptors.LifecycleInterceptor
 import io.kotest.engine.test.interceptors.SupervisorScopeInterceptor
 import io.kotest.engine.test.interceptors.TestCaseExtensionInterceptor
@@ -30,7 +32,6 @@ import io.kotest.mpp.timeInMillis
  */
 class TestCaseExecutor(
    private val listener: TestCaseExecutionListener,
-   private val executionContext: InterruptableExecutionContext,
    private val controller: CoroutineDispatcherController = NoopCoroutineDispatcherController,
 ) {
 
@@ -43,8 +44,6 @@ class TestCaseExecutor(
          InvocationCountCheckInterceptor,
          CoroutineDebugProbeInterceptor,
          SupervisorScopeInterceptor,
-         // this must be before the timeout interceptor as we need the thread switch to timeout on and
-         // must be before lifecycle interceptor so the callbacks are on the same thread as the tests
          CoroutineDispatcherInterceptor(controller),
          TestCaseExtensionInterceptor,
          EnabledCheckInterceptor,
@@ -52,10 +51,11 @@ class TestCaseExecutor(
          ExceptionCapturingInterceptor(start),
          AssertionModeInterceptor,
          GlobalSoftAssertInterceptor,
-         TimeoutInterceptor(executionContext, start),
-         // this MUST BE AFTER the timeout interceptor, as any cancellation there must cancel
-         // user launched coroutines (children of this scope)
          CoroutineScopeInterceptor,
+         BlockedThreadTimeoutInterceptor(),
+         TimeoutInterceptor,
+         InvocationRepeatInterceptor(start),
+         InvocationTimeoutInterceptor,
       )
 
       val innerExecute: suspend (TestCase, TestContext) -> TestResult = { tc, ctx ->

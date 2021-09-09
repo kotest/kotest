@@ -39,7 +39,6 @@ class CallingThreadTestContext(
    override val coroutineContext: CoroutineContext,
    private val duplicateTestNameMode: DuplicateTestNameMode,
    private val listener: TestEngineListener,
-   private val executionContext: InterruptableExecutionContext,
    private val controller: CoroutineDispatcherController,
 ) : TestContext {
 
@@ -72,7 +71,6 @@ class CallingThreadTestContext(
 
       return TestCaseExecutor(
          TestCaseListenerToTestEngineListenerAdapter(listener),
-         executionContext,
          controller,
       ).execute(
          testCase,
@@ -81,7 +79,6 @@ class CallingThreadTestContext(
             coroutineContext,
             duplicateTestNameMode,
             listener,
-            executionContext,
             controller
          )
       )
