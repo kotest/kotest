@@ -5,11 +5,11 @@ import io.kotest.core.config.AbstractProjectConfig
 import io.kotest.core.config.Configuration
 import io.kotest.matchers.longs.shouldBeLessThan
 
-@ExperimentalKotest
-object ProjectConfig : AbstractProjectConfig() {
+class ProjectConfig : AbstractProjectConfig() {
 
    private var start = 0L
 
+   @ExperimentalKotest
    override val concurrentSpecs: Int = Configuration.MaxConcurrency
 
    override suspend fun beforeProject() {
@@ -18,8 +18,8 @@ object ProjectConfig : AbstractProjectConfig() {
 
    override suspend fun afterProject() {
       val duration = System.currentTimeMillis() - start
-      // each of the specs has a 500 milli delay, so the overall time without concurrency would be 1500
+      // each of the specs has a 500 milli delay, so the overall time without concurrency would be at least 1500
       // with concurrency it should be ~500
-     // todo duration.shouldBeLessThan(1499)
+      duration.shouldBeLessThan(1499)
    }
 }

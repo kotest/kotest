@@ -1,7 +1,5 @@
 package com.sksamuel.kotest.tests.concurrency
 
-import io.kotest.core.listeners.ProjectListener
-import io.kotest.core.listeners.TestListener
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.style.FunSpec
