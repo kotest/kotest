@@ -1,5 +1,6 @@
-package io.kotest.engine
+package io.kotest.engine.concurrency
 
+import io.kotest.core.concurrency.CoroutineDispatcherFactory
 import io.kotest.core.config.configuration
 import io.kotest.core.test.TestCase
 import io.kotest.mpp.bestName
@@ -10,34 +11,31 @@ import java.util.concurrent.Executors
 import kotlin.math.abs
 import kotlin.reflect.KClass
 
-actual fun defaultCoroutineDispatcherController(): CoroutineDispatcherController =
-   ExecutorCoroutineDispatcherController(configuration.parallelism, configuration.dispatcherAffinity)
-
+actual fun defaultCoroutineDispatcherFactory(): CoroutineDispatcherFactory =
+   FixedThreadCoroutineDispatcherFactory(configuration.parallelism, configuration.dispatcherAffinity)
 
 /**
- * Each spec has one or more root tests and each of these tests will execute in its own coroutine.
+ * A [CoroutineDispatcherFactory] that uses a fixed number of threads that are shared between
+ * all specs that use this factory.
  *
- * By default, a single threaded dispatcher is used and shared for all tests and all specs.
- * This is suitable for tests that suspend but not for tests that block.
+ * If [affinity] is true, then the same thread will be assigned to a spec and all it's tests.
+ * This ensures that all tests and callbacks in a single spec are using the same thread.
+ * This option can be overriden at the spec level.
  *
- * The [threads] parameter in global configuration allows overriding how many threads
- * are used when executing tests.
- *
- * By default, all tests in the same spec have dispatcher [affinity] - that is all tests in the same
- * spec will always use the same thread, to ensure that all callbacks for all tests (e.g. beforeTest)
- * operate on the same thread. This helps avoid subtle memory model issues on the JVM for those who are not
+ * Affinity helps avoid subtle memory model issues on the JVM for those who are not
  * familiar with how the JVM guarantees updates to variables are visible across threads.
  *
  * This does mean however that inside a given spec, a blocked test will also block other tests in
- * that spec. Swings and roundabouts. To allow each test to have its own thread, set dispatcher
- * affinity to false, either globally, or on a per spec basis.
+ * that spec. Each test can be set to use its own thread by setting the test config `blockedTest` to true.
+ *
+ * As factories can be shared across specs, it is possible to create an instance of this factory
+ * and assign it to be used by several specs independently of others.
  */
-class ExecutorCoroutineDispatcherController(
-   private val threads: Int, // global threads count
+class FixedThreadCoroutineDispatcherFactory(
+   threads: Int,
    private val affinity: Boolean,
-) : CoroutineDispatcherController {
+) : CoroutineDispatcherFactory {
 
-   // these are the global dispatchers which uses the given threadCount
    private val dispatchers = List(threads) { Executors.newSingleThreadExecutor().asCoroutineDispatcher() }
 
    override suspend fun <T> withDispatcher(testCase: TestCase, f: suspend () -> T): T {

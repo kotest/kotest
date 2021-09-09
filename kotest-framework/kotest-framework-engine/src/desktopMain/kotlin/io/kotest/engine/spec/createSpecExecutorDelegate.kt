@@ -1,10 +1,10 @@
 package io.kotest.engine.spec
 
+import io.kotest.core.concurrency.CoroutineDispatcherFactory
 import io.kotest.core.config.configuration
 import io.kotest.core.spec.Spec
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
-import io.kotest.engine.CoroutineDispatcherController
 import io.kotest.engine.listener.TestEngineListener
 import io.kotest.engine.test.CallingThreadTestContext
 import io.kotest.engine.test.TestCaseExecutor
@@ -14,9 +14,9 @@ import kotlin.coroutines.coroutineContext
 
 actual fun createSpecExecutorDelegate(
    listener: TestEngineListener,
-   controller: CoroutineDispatcherController,
+   defaultCoroutineDispatcherFactory: CoroutineDispatcherFactory,
 ): SpecExecutorDelegate =
-   DefaultSpecExecutorDelegate(listener, controller)
+   DefaultSpecExecutorDelegate(listener, defaultCoroutineDispatcherFactory)
 
 /**
  * A [SpecExecutorDelegate] that executes tests sequentially, using the calling thread
@@ -24,7 +24,7 @@ actual fun createSpecExecutorDelegate(
  */
 class DefaultSpecExecutorDelegate(
    private val listener: TestEngineListener,
-   private val controller: CoroutineDispatcherController
+   private val controller: CoroutineDispatcherFactory
 ) : SpecExecutorDelegate {
 
    override suspend fun execute(spec: Spec): Map<TestCase, TestResult> {

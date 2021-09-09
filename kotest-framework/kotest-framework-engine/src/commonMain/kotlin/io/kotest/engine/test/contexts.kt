@@ -1,5 +1,6 @@
 package io.kotest.engine.test
 
+import io.kotest.core.concurrency.CoroutineDispatcherFactory
 import io.kotest.core.test.DuplicateTestNameMode
 import io.kotest.core.test.NestedTest
 import io.kotest.core.test.TestCase
@@ -8,7 +9,6 @@ import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestStatus
 import io.kotest.core.test.createTestName
 import io.kotest.core.test.toTestCase
-import io.kotest.engine.CoroutineDispatcherController
 import io.kotest.engine.listener.TestEngineListener
 import io.kotest.engine.test.listener.TestCaseListenerToTestEngineListenerAdapter
 import io.kotest.mpp.log
@@ -39,7 +39,7 @@ class CallingThreadTestContext(
    override val coroutineContext: CoroutineContext,
    private val duplicateTestNameMode: DuplicateTestNameMode,
    private val listener: TestEngineListener,
-   private val controller: CoroutineDispatcherController,
+   private val defaultCoroutineDispatcherFactory: CoroutineDispatcherFactory,
 ) : TestContext {
 
    private val handler = DuplicateTestNameHandler(duplicateTestNameMode)
@@ -71,7 +71,7 @@ class CallingThreadTestContext(
 
       return TestCaseExecutor(
          TestCaseListenerToTestEngineListenerAdapter(listener),
-         controller,
+         defaultCoroutineDispatcherFactory,
       ).execute(
          testCase,
          CallingThreadTestContext(
@@ -79,7 +79,7 @@ class CallingThreadTestContext(
             coroutineContext,
             duplicateTestNameMode,
             listener,
-            controller
+            defaultCoroutineDispatcherFactory
          )
       )
    }

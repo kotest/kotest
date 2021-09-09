@@ -23,7 +23,7 @@ internal fun TestCaseConfig.deriveTestCaseConfig(
    listeners: List<TestListener>? = null,
    enabledOrReasonIf: EnabledOrReasonIf? = null,
    coroutineDebugProbes: Boolean? = null,
-   timeoutInterruption: Boolean? = null,
+   blockingTest: Boolean? = null,
 ) = TestCaseConfig(
    enabled = enabled ?: this.enabled,
    tags = tags ?: this.tags,
@@ -38,7 +38,7 @@ internal fun TestCaseConfig.deriveTestCaseConfig(
    enabledOrReasonIf = enabledOrReasonIf ?: this.enabledOrReasonIf,
    failfast = failfast,
    coroutineDebugProbes = coroutineDebugProbes,
-   timeoutInterruption = timeoutInterruption,
+   blockingTest = blockingTest,
 )
 
 /**

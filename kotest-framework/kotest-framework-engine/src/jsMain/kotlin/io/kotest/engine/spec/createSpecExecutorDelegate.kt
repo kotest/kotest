@@ -1,10 +1,10 @@
 package io.kotest.engine.spec
 
+import io.kotest.core.concurrency.CoroutineDispatcherFactory
 import io.kotest.core.spec.Spec
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
-import io.kotest.engine.CoroutineDispatcherController
-import io.kotest.engine.NoopCoroutineDispatcherController
+import io.kotest.engine.concurrency.NoopCoroutineDispatcherFactory
 import io.kotest.engine.PromiseTestCaseExecutionListener
 import io.kotest.engine.describe
 import io.kotest.engine.it
@@ -21,7 +21,7 @@ import kotlin.coroutines.coroutineContext
 
 actual fun createSpecExecutorDelegate(
    listener: TestEngineListener,
-   controller: CoroutineDispatcherController,
+   defaultCoroutineDispatcherFactory: CoroutineDispatcherFactory,
 ): SpecExecutorDelegate = JavascriptSpecExecutorDelegate
 
 /**
@@ -48,7 +48,7 @@ object JavascriptSpecExecutorDelegate : SpecExecutorDelegate {
                   GlobalScope.promise {
                      TestCaseExecutor(
                         PromiseTestCaseExecutionListener(done),
-                        NoopCoroutineDispatcherController,
+                        NoopCoroutineDispatcherFactory,
                      ).execute(root.testCase, TerminalTestContext(root.testCase, cc))
                   }
 
