@@ -12,7 +12,7 @@ import kotlinx.coroutines.withTimeout
 /**
  * A [TestExecutionInterceptor] that installs a general timeout for all invocations of a test.
  */
-object TimeoutInterceptor : TestExecutionInterceptor {
+internal object TimeoutInterceptor : TestExecutionInterceptor {
 
    override suspend fun intercept(
       test: suspend (TestCase, TestContext) -> TestResult
