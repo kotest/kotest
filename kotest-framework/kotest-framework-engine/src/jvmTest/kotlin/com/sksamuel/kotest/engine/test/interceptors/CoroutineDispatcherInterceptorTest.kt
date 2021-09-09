@@ -9,16 +9,15 @@ import io.kotest.core.test.TestType
 import io.kotest.engine.CoroutineDispatcherController
 import io.kotest.engine.test.NoopTestContext
 import io.kotest.engine.test.interceptors.CoroutineDispatcherInterceptor
-import io.kotest.matchers.shouldBe
+import io.kotest.matchers.string.shouldStartWith
 import kotlinx.coroutines.asCoroutineDispatcher
 import kotlinx.coroutines.withContext
 import java.util.concurrent.Executors
 
 class CoroutineDispatcherInterceptorTest : DescribeSpec() {
    init {
-      describe("InvocationCountCheckInterceptor") {
-         it("should error if invocation count > 1 for containers") {
-
+      describe("CoroutineDispatcherInterceptor") {
+         it("should dispatch to coroutineDispatcher") {
             val tc = TestCase(
                InvocationCountCheckInterceptorTest::class.toDescription().appendTest("foo"),
                InvocationCountCheckInterceptorTest(),
@@ -41,7 +40,7 @@ class CoroutineDispatcherInterceptorTest : DescribeSpec() {
             }
 
             CoroutineDispatcherInterceptor(controller).intercept { _, _ ->
-               Thread.currentThread().name shouldBe "foo"
+               Thread.currentThread().name.shouldStartWith("foo")
                TestResult.success(0)
             }.invoke(tc, NoopTestContext(tc, coroutineContext))
          }
