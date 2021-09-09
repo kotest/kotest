@@ -95,6 +95,7 @@ internal class SingleInstanceSpecRunner(
       coroutineContext: CoroutineContext,
    ): TestResult {
       val testExecutor = TestCaseExecutor(
+         // todo replace with TestCaseAdapter
          object : TestCaseExecutionListener {
             override suspend fun testStarted(testCase: TestCase) {
                listener.testStarted(testCase)

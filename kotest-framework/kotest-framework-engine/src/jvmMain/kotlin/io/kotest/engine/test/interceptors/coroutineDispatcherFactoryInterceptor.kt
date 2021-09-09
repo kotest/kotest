@@ -6,6 +6,7 @@ import io.kotest.core.test.TestContext
 import io.kotest.core.test.TestResult
 import io.kotest.engine.concurrency.FixedThreadCoroutineDispatcherFactory
 import io.kotest.engine.test.withCoroutineContext
+import io.kotest.mpp.log
 import kotlin.coroutines.coroutineContext
 
 internal actual fun coroutineDispatcherFactoryInterceptor(
@@ -24,6 +25,8 @@ class CoroutineDispatcherFactoryInterceptor(
 
          val userFactory = testCase.spec.coroutineDispatcherFactory ?: testCase.spec.coroutineDispatcherFactory()
          val threads = testCase.spec.threads ?: testCase.spec.threads() ?: 1
+
+         log { "CoroutineDispatcherFactoryInterceptor: userFactory=$userFactory; threads=$threads" }
 
          val f = when {
             userFactory != null -> userFactory

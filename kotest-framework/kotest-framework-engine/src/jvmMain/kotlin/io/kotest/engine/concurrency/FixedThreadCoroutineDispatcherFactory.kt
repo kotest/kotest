@@ -4,6 +4,7 @@ import io.kotest.core.concurrency.CoroutineDispatcherFactory
 import io.kotest.core.config.configuration
 import io.kotest.core.test.TestCase
 import io.kotest.mpp.bestName
+import io.kotest.mpp.log
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.asCoroutineDispatcher
 import kotlinx.coroutines.withContext
@@ -40,9 +41,12 @@ class FixedThreadCoroutineDispatcherFactory(
 
    override suspend fun <T> withDispatcher(testCase: TestCase, f: suspend () -> T): T {
 
+      val resolvedAffinity = testCase.spec.dispatcherAffinity ?: testCase.spec.dispatcherAffinity() ?: affinity
+      log { "FixedThreadCoroutineDispatcherFactory: For ${testCase.displayName} affinity=$resolvedAffinity" }
+
       // if dispatcher affinity is set to true, we pick a dispatcher for the spec and stick with it
       // otherwise each test just gets a random dispatcher
-      val dispatcher = when (testCase.spec.dispatcherAffinity ?: testCase.spec.dispatcherAffinity() ?: affinity) {
+      val dispatcher = when (resolvedAffinity) {
          true -> dispatcherFor(testCase.spec::class)
          else -> dispatchers.random()
       }

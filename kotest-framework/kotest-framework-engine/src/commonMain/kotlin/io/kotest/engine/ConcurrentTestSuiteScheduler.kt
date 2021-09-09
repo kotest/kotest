@@ -3,7 +3,7 @@ package io.kotest.engine
 import io.kotest.core.spec.DoNotParallelize
 import io.kotest.core.spec.Isolate
 import io.kotest.core.spec.SpecRef
-import io.kotest.engine.concurrency.NoopCoroutineDispatcherFactory
+import io.kotest.engine.concurrency.defaultCoroutineDispatcherFactory
 import io.kotest.engine.concurrency.isIsolate
 import io.kotest.engine.listener.TestEngineListener
 import io.kotest.engine.spec.SpecExecutor
@@ -44,7 +44,7 @@ class ConcurrentTestSuiteScheduler(private val maxConcurrent: Int) : TestSuiteSc
       listener: TestEngineListener,
       concurrency: Int,
    ) = coroutineScope { // we don't want this function to return until all specs are completed
-      val controller = NoopCoroutineDispatcherFactory
+      val controller = defaultCoroutineDispatcherFactory()
       val semaphore = Semaphore(concurrency)
       specs.forEach { ref ->
          log { "DefaultTestSuiteScheduler: Scheduling coroutine for spec [$ref]" }

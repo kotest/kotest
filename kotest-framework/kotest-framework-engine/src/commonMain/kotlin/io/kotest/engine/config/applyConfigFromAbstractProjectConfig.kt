@@ -31,6 +31,7 @@ internal fun applyConfigFromProjectConfig(config: AbstractProjectConfig, configu
    config.concurrentTests.foreach { configuration.concurrentTests = it }
    config.concurrentSpecs.foreach { configuration.concurrentSpecs = it }
    config.isolationMode.foreach { configuration.isolationMode = it }
+   config.dispatcherAffinity.foreach { configuration.dispatcherAffinity = it }
 
    // timeouts
    config.timeout.foreach { configuration.timeout = it.inWholeMilliseconds }

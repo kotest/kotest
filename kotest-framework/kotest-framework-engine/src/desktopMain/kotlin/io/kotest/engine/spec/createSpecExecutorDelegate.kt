@@ -24,7 +24,7 @@ actual fun createSpecExecutorDelegate(
  */
 class DefaultSpecExecutorDelegate(
    private val listener: TestEngineListener,
-   private val controller: CoroutineDispatcherFactory
+   private val coroutineDispatcherFactory: CoroutineDispatcherFactory
 ) : SpecExecutorDelegate {
 
    override suspend fun execute(spec: Spec): Map<TestCase, TestResult> {
@@ -37,11 +37,11 @@ class DefaultSpecExecutorDelegate(
                coroutineContext,
                configuration.duplicateTestNameMode,
                listener,
-               controller
+               coroutineDispatcherFactory
             )
             TestCaseExecutor(
                TestCaseListenerToTestEngineListenerAdapter(listener),
-               controller,
+               coroutineDispatcherFactory,
             ).execute(testCase, context)
          }
       return emptyMap()

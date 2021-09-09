@@ -2,6 +2,7 @@ package io.kotest.engine
 
 import io.kotest.common.ExperimentalKotest
 import io.kotest.engine.concurrency.NoopCoroutineDispatcherFactory
+import io.kotest.engine.concurrency.defaultCoroutineDispatcherFactory
 import io.kotest.engine.listener.NoopTestEngineListener
 import io.kotest.engine.listener.TestEngineListener
 import io.kotest.engine.spec.SpecExecutor
