@@ -1,4 +1,4 @@
-package com.sksamuel.kotest.core.runtime
+package com.sksamuel.kotest.engine.test
 
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.maps.shouldHaveSize
