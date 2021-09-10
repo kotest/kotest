@@ -34,7 +34,7 @@ suspend fun <A, B, C> checkAll(
    genB: Gen<B>,
    genC: Gen<C>,
    property: suspend PropertyContext.(A, B, C) -> Unit
-): PropertyContext = proptest(genA, genB, genC, config.copy(constraints = Constraints.iterations(iterations)), property)
+): PropertyContext = proptest(genA, genB, genC, PropTestConfig(constraints = Constraints.iterations(iterations)), property)
 
 suspend fun <A, B, C> checkAll(
    iterations: Int,
