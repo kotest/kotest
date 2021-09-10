@@ -42,7 +42,7 @@ suspend fun <T : Any> ContainerContext.forAll(ts: List<T>, test: suspend (T) -> 
    forAll(ts.map { Pair(Identifiers.stableIdentifier(it), it) }, test)
 }
 
-@JvmName("forAllWithNames")
+@JvmName("withData")
 @Deprecated("Replaced with withData. Will be removed in 6.0")
 suspend fun <T : Any> ContainerContext.forAll(data: List<Pair<String, T>>, test: suspend (T) -> Unit) {
    data.forEach { (name, t) ->
@@ -84,7 +84,7 @@ fun <T : Any> RootContext.forAll(ts: List<T>, test: suspend (T) -> Unit) {
    this.forAll(ts.map { Pair(Identifiers.stableIdentifier(it), it) }, test)
 }
 
-@JvmName("forAllWithNames")
+@JvmName("withData")
 @Deprecated("Replaced with withData. Will be removed in 6.0")
 fun <T : Any> RootContext.forAll(data: List<Pair<String, T>>, test: suspend (T) -> Unit) {
    data.forEach { (name, t) ->
