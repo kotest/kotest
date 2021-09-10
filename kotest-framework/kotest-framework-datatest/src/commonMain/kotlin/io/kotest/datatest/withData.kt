@@ -72,7 +72,7 @@ fun <T : Any> RootContext.withData(nameFn: (T) -> String, ts: Collection<T>, tes
  * used as the test name, and the second value passed to the test.
  */
 @ExperimentalKotest
-@JvmName("forAllWithNames")
+@JvmName("withDataWithMap")
 fun <T : Any> RootContext.withData(data: Map<String, T>, test: suspend TestContext.(T) -> Unit) {
    data.forEach { (name, t) ->
       registration().addContainerTest(createTestName(name), false) { test(t) }
@@ -167,7 +167,7 @@ suspend fun <T : Any> TestContext.withData(
  * of the tuple used as the test name, and the second value passed to the test.
  */
 @ExperimentalKotest
-@JvmName("forAllWithNames")
+@JvmName("withDataWithMap")
 suspend fun <T : Any> TestContext.withData(data: Map<String, T>, test: suspend TestContext.(T) -> Unit) {
    data.forEach { (name, t) ->
       this.registerTestCase(
