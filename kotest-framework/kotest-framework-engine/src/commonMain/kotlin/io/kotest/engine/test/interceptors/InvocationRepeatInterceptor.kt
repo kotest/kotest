@@ -11,7 +11,7 @@ import io.kotest.mpp.timeInMillis
 /**
  * A [TestExecutionInterceptor] that repeats a test based on the test's invocations setting.
  */
-class InvocationRepeatInterceptor(private val start: Long) : TestExecutionInterceptor {
+internal class InvocationRepeatInterceptor(private val start: Long) : TestExecutionInterceptor {
 
    override suspend fun intercept(
       test: suspend (TestCase, TestContext) -> TestResult

@@ -9,6 +9,6 @@ import io.kotest.core.spec.Spec
  * function override, those registered explicitly in the spec, and project wide extensions
  * from configuration.
  */
-fun Spec.resolvedExtensions(): List<Extension> {
+internal fun Spec.resolvedExtensions(): List<Extension> {
    return this.extensions() + this.registeredExtensions() + configuration.extensions()
 }

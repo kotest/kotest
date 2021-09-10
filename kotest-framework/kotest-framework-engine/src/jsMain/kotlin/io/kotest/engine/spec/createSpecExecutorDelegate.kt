@@ -19,7 +19,7 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.promise
 import kotlin.coroutines.coroutineContext
 
-actual fun createSpecExecutorDelegate(
+internal actual fun createSpecExecutorDelegate(
    listener: TestEngineListener,
    defaultCoroutineDispatcherFactory: CoroutineDispatcherFactory,
 ): SpecExecutorDelegate = JavascriptSpecExecutorDelegate
@@ -27,7 +27,7 @@ actual fun createSpecExecutorDelegate(
 /**
  * Note: we need to use this: https://youtrack.jetbrains.com/issue/KT-22228
  */
-object JavascriptSpecExecutorDelegate : SpecExecutorDelegate {
+internal object JavascriptSpecExecutorDelegate : SpecExecutorDelegate {
 
    @DelicateCoroutinesApi
    override suspend fun execute(spec: Spec): Map<TestCase, TestResult> {

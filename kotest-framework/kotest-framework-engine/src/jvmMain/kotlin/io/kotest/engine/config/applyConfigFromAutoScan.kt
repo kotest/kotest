@@ -14,7 +14,7 @@ import io.kotest.mpp.instantiateOrObject
  *
  * Note: This function will have no effect on non-JVM targets.
  */
-actual fun applyConfigFromAutoScan(configuration: Configuration) {
+internal actual fun applyConfigFromAutoScan(configuration: Configuration) {
 
    // this property is used to disable class path scanning for configurations
    if (System.getProperty(KotestEngineProperties.disableAutoScanClassPathScanning) == "true")

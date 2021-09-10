@@ -7,7 +7,7 @@ import io.kotest.engine.test.TestCaseExecutionListener
 /**
  * A [TestCaseExecutionListener] that completes the Js promise when a test is finished.
  */
-class PromiseTestCaseExecutionListener(private val done: dynamic) : TestCaseExecutionListener {
+internal class PromiseTestCaseExecutionListener(private val done: dynamic) : TestCaseExecutionListener {
    override suspend fun testFinished(testCase: TestCase, result: TestResult) {
       done(result.error)
    }

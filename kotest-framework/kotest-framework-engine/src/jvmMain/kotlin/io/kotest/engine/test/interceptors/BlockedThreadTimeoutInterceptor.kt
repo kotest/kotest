@@ -23,7 +23,7 @@ private val scheduler =
  */
 internal actual fun blockedThreadTimeoutInterceptor(): TestExecutionInterceptor = BlockedThreadTimeoutInterceptor()
 
-class BlockedThreadTimeoutInterceptor : TestExecutionInterceptor {
+internal class BlockedThreadTimeoutInterceptor : TestExecutionInterceptor {
    override suspend fun intercept(
       test: suspend (TestCase, TestContext) -> TestResult
    ): suspend (TestCase, TestContext) -> TestResult = { testCase, context ->

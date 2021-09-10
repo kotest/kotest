@@ -16,7 +16,7 @@ import io.kotest.engine.test.scheduler.ConcurrentTestScheduler
 import io.kotest.engine.test.scheduler.SequentialTestScheduler
 import kotlin.math.max
 
-actual fun createSpecExecutorDelegate(
+internal actual fun createSpecExecutorDelegate(
    listener: TestEngineListener,
    defaultCoroutineDispatcherFactory: CoroutineDispatcherFactory,
 ): SpecExecutorDelegate = object : SpecExecutorDelegate {

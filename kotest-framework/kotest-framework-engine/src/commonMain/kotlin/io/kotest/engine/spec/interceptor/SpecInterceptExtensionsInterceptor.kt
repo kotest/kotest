@@ -9,7 +9,7 @@ import io.kotest.mpp.log
 /**
  * A [SpecExecutionInterceptor] that executes all [SpecInterceptExtension]s.
  */
-class SpecInterceptExtensionsInterceptor(
+internal class SpecInterceptExtensionsInterceptor(
    private val extensions: List<SpecInterceptExtension>
 ) : SpecExecutionInterceptor {
 

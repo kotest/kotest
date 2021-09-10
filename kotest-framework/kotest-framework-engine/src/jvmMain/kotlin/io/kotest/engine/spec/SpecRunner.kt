@@ -18,7 +18,7 @@ import kotlin.reflect.KClass
  * @param listener provides callbacks on tests as they are executed. These callbacks are used
  * to ultimately feed back into the test engine implementation.
  */
-abstract class SpecRunner(
+internal abstract class SpecRunner(
    val listener: TestEngineListener,
    private val scheduler: TestScheduler,
 ) {

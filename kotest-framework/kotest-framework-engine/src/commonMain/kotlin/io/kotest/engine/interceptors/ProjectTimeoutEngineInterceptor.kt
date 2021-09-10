@@ -7,7 +7,7 @@ import io.kotest.engine.listener.TestEngineListener
 import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.withTimeout
 
-class ProjectTimeoutEngineInterceptor(private val timeout: Long) : EngineInterceptor {
+internal class ProjectTimeoutEngineInterceptor(private val timeout: Long) : EngineInterceptor {
 
    override suspend fun intercept(
       suite: TestSuite,

@@ -4,7 +4,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.debug.DebugProbes
 
 @ExperimentalCoroutinesApi
-actual inline fun <T> withDebugProbe(f: () -> T): T {
+internal actual inline fun <T> withDebugProbe(f: () -> T): T {
    DebugProbes.enableCreationStackTraces = false
    DebugProbes.sanitizeStackTraces = true
    return if (!DebugProbes.isInstalled) {

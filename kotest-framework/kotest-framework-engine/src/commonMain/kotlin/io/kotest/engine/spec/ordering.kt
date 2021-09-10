@@ -8,7 +8,9 @@ import io.kotest.core.spec.SpecRef
  * A [SpecExecutionOrderExtension] which uses the value of the given [SpecExecutionOrder] parameter
  * to delegate to a [SpecSorter] perform sorting.
  */
-class DefaultSpecExecutionOrderExtension(private val order: SpecExecutionOrder) : SpecExecutionOrderExtension {
+internal class DefaultSpecExecutionOrderExtension(
+   private val order: SpecExecutionOrder
+) : SpecExecutionOrderExtension {
 
    override fun sort(specs: List<SpecRef>): List<SpecRef> {
       return when (order) {

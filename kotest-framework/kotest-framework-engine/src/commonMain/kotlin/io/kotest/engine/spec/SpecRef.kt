@@ -17,4 +17,4 @@ data class InstanceSpecRef(val spec: Spec) : SpecRef {
    override fun instance(): Result<Spec> = Result.success(spec)
 }
 
-expect fun instantiate(kclass: KClass<out Spec>): Result<Spec>
+internal expect fun instantiate(kclass: KClass<out Spec>): Result<Spec>
