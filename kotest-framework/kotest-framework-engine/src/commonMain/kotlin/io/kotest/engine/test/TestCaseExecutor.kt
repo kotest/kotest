@@ -9,6 +9,7 @@ import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestStatus
 import io.kotest.engine.concurrency.NoopCoroutineDispatcherFactory
 import io.kotest.engine.test.interceptors.AssertionModeInterceptor
+import io.kotest.engine.test.interceptors.IncompleteContainerCheckInterceptor
 import io.kotest.engine.test.interceptors.CoroutineDebugProbeInterceptor
 import io.kotest.engine.test.interceptors.CoroutineScopeInterceptor
 import io.kotest.engine.test.interceptors.EnabledCheckInterceptor
@@ -44,6 +45,7 @@ class TestCaseExecutor(
 
       val interceptors = listOfNotNull(
          InvocationCountCheckInterceptor,
+         IncompleteContainerCheckInterceptor,
          CoroutineDebugProbeInterceptor,
          SupervisorScopeInterceptor,
          if (platform == Platform.JVM) coroutineDispatcherFactoryInterceptor(defaultCoroutineDispatcherFactory) else null,
