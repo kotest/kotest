@@ -22,8 +22,26 @@ fun Arb.Companion.uuid(
       listOf(UUID.fromString("00000000-0000-0000-0000-000000000000"))
    else emptyList()
 
+   val arb = when (uuidVersion) {
+      UUIDVersion.ANY -> arbUuidAny
+      UUIDVersion.V1 -> arbV1
+      UUIDVersion.V2 -> arbV2
+      UUIDVersion.V3 -> arbV3
+      UUIDVersion.V4 -> arbV4
+      UUIDVersion.V5 -> arbV5
+   }
+
    return arbitrary(edgeCases) {
-      val value = Arb.stringPattern(uuidVersion.uuidRegex.pattern).next(it)
+      val value = arb.next(it)
       UUID.fromString(value)
    }
 }
+
+// UUID regex patterns are predictable.
+// The reason we put these Arbs here is so that RgxGen instances can be reused for better performance
+private val arbUuidAny = Arb.stringPattern(UUIDVersion.ANY.uuidRegex.pattern)
+private val arbV1 = Arb.stringPattern(UUIDVersion.V1.uuidRegex.pattern)
+private val arbV2 = Arb.stringPattern(UUIDVersion.V2.uuidRegex.pattern)
+private val arbV3 = Arb.stringPattern(UUIDVersion.V3.uuidRegex.pattern)
+private val arbV4 = Arb.stringPattern(UUIDVersion.V4.uuidRegex.pattern)
+private val arbV5 = Arb.stringPattern(UUIDVersion.V5.uuidRegex.pattern)
