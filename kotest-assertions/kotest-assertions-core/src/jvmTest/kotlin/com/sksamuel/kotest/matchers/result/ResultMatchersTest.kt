@@ -27,7 +27,7 @@ class ResultMatchersTest : FreeSpec() {
          val r = Result.runCatching { "Test 01" }
          r.shouldBeSuccess("Test 01")
       }
-      "shouldNotBeFailure" - {
+      "shouldNotBeFailure" {
         Result.success("Test 01").shouldNotBeFailure()
         Result.success(null).shouldNotBeFailure()
       }
