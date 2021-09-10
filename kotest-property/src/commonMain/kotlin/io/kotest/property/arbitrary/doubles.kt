@@ -3,8 +3,6 @@ package io.kotest.property.arbitrary
 import io.kotest.property.Arb
 import io.kotest.property.Gen
 import io.kotest.property.Shrinker
-import kotlin.math.abs
-import kotlin.math.round
 
 private val numericEdgeCases = listOf(-1.0, -Double.MIN_VALUE, -0.0, 0.0, Double.MIN_VALUE, 1.0)
 
@@ -27,12 +25,16 @@ object DoubleShrinker : Shrinker<Double> {
 /**
  * Returns an [Arb] that produces [Double]s from [min] to [max] (inclusive).
  * The edge cases are [Double.NEGATIVE_INFINITY], [min], -1.0, -[Double.MIN_VALUE], -0.0, 0.0, [Double.MIN_VALUE], 1.0,
- * [max], [Double.POSITIVE_INFINITY] and [Double.NaN] which are only included if they are in the provided range.
+ * [max], [Double.POSITIVE_INFINITY] and [Double.NaN].
+ *
+ * Only values in the provided range are included.
  *
  * @see numericDouble to only produce numeric [Double]s
  */
-fun Arb.Companion.double(min: Double = -Double.MAX_VALUE, max: Double = Double.MAX_VALUE): Arb<Double> =
-   double(min..max)
+fun Arb.Companion.double(
+   min: Double = -Double.MAX_VALUE,
+   max: Double = Double.MAX_VALUE
+): Arb<Double> = double(min..max)
 
 /**
  * Returns an [Arb] that produces [Double]s in [range].
@@ -56,7 +58,7 @@ fun Arb.Companion.double(
  */
 fun Arb.Companion.positiveDouble(max: Double = Double.MAX_VALUE): Arb<Double> = double(Double.MIN_VALUE, max)
 
-@Deprecated("use positiveDouble", ReplaceWith("positiveDouble()"))
+@Deprecated("use positiveDouble. Deprecated in 5.0 and will be removed in 6.0", ReplaceWith("positiveDouble()"))
 fun Arb.Companion.positiveDoubles(): Arb<Double> = positiveDouble()
 
 /**
@@ -66,7 +68,7 @@ fun Arb.Companion.positiveDoubles(): Arb<Double> = positiveDouble()
  */
 fun Arb.Companion.negativeDouble(min: Double = -Double.MAX_VALUE): Arb<Double> = double(min, -Double.MIN_VALUE)
 
-@Deprecated("use negativeDouble", ReplaceWith("negativeDouble()"))
+@Deprecated("use negativeDouble. Deprecated in 5.0 and will be removed in 6.0", ReplaceWith("negativeDouble()"))
 fun Arb.Companion.negativeDoubles(): Arb<Double> = negativeDouble()
 
 /**
@@ -74,7 +76,7 @@ fun Arb.Companion.negativeDoubles(): Arb<Double> = negativeDouble()
  * The edge cases are [min], -1.0, -[Double.MIN_VALUE], -0.0, 0.0, [Double.MIN_VALUE], 1.0 and [max] which are only
  * included if they are in the provided range.
  *
- * @see double to also have non numeric [Double]s as edge cases.
+ * @see double to also have non-numeric [Double]s as edge cases.
  */
 fun Arb.Companion.numericDouble(
    min: Double = -Double.MAX_VALUE,
@@ -83,7 +85,7 @@ fun Arb.Companion.numericDouble(
    (numericEdgeCases.filter { it in (min..max) } + listOf(min, max)).distinct(), DoubleShrinker
 ) { it.random.nextDouble(min, max) }
 
-@Deprecated("use numericDouble", ReplaceWith("numericDouble(from, to)"))
+@Deprecated("use numericDouble. Deprecated in 5.0 and will be removed in 6.0", ReplaceWith("numericDouble(from, to)"))
 fun Arb.Companion.numericDoubles(from: Double = -Double.MAX_VALUE, to: Double = Double.MAX_VALUE): Arb<Double> =
    numericDouble(from, to)
 
