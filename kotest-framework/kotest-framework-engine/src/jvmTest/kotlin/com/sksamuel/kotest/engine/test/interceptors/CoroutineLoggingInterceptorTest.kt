@@ -1,4 +1,4 @@
-package io.kotest.engine.test.interceptors
+package com.sksamuel.kotest.engine.test.interceptors
 
 import io.kotest.assertions.all
 import io.kotest.assertions.throwables.shouldThrow
@@ -7,6 +7,15 @@ import io.kotest.core.config.LogLevel
 import io.kotest.core.config.configuration
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.test.TestCase
+import io.kotest.engine.test.interceptors.LogEntry
+import io.kotest.engine.test.interceptors.LogExtension
+import io.kotest.engine.test.interceptors.TestLogger
+import io.kotest.engine.test.interceptors.debug
+import io.kotest.engine.test.interceptors.error
+import io.kotest.engine.test.interceptors.info
+import io.kotest.engine.test.interceptors.logger
+import io.kotest.engine.test.interceptors.trace
+import io.kotest.engine.test.interceptors.warn
 import io.kotest.matchers.collections.shouldBeEmpty
 import io.kotest.matchers.collections.shouldContainInOrder
 
@@ -35,8 +44,7 @@ private val database = object : LogExtension {
    }
 }
 
-@OptIn(ExperimentalKotest::class)
-class CoroutineLoggingInterceptorSpec : FunSpec({
+class CoroutineLoggingInterceptorTest : FunSpec({
    concurrency = 1
 
    val logLevel = configuration.logLevel
@@ -168,7 +176,7 @@ class CoroutineLoggingInterceptorSpec : FunSpec({
 })
 
 @OptIn(ExperimentalKotest::class)
-private suspend fun logAll(logger: TestLogger) {
+private fun logAll(logger: TestLogger) {
    logger.info { "info" }
    logger.warn { "warn" }
    logger.error { "error" }
