@@ -19,7 +19,7 @@ internal actual fun instantiate(kclass: KClass<out Spec>): Result<Spec> {
  *
  * After creation any [PostInstantiationExtension]s will be invoked.
  */
-internal fun <T : Spec> createAndInitializeSpec(kclass: KClass<T>): Result<Spec> {
+fun <T : Spec> createAndInitializeSpec(kclass: KClass<T>): Result<Spec> {
    return when (val obj = kclass.objectInstance) {
       null -> runCatching {
          val initial: Spec? = null
