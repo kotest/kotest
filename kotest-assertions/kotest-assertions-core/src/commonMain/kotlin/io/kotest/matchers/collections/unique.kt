@@ -38,7 +38,8 @@ fun <T> Collection<T>.shouldNotBeUnique(): Collection<T> {
 fun <T> beUnique() = object : Matcher<Collection<T>> {
    override fun test(value: Collection<T>) = MatcherResult(
       value.toSet().size == value.size,
-      "Collection should be Unique",
-      "Collection should contain at least one duplicate element"
-   )
+      { "Collection should be Unique" },
+      {
+         "Collection should contain at least one duplicate element"
+      })
 }

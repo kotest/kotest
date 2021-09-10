@@ -25,9 +25,10 @@ infix fun <A : CharSequence> A?.shouldNotMatch(regex: String): A {
 fun match(regex: Regex): Matcher<CharSequence?> = neverNullMatcher { value ->
    MatcherResult(
       value.matches(regex),
-      "${value.show().value} should match regex $regex",
-      "${value.show().value} should not match regex $regex"
-   )
+      { "${value.show().value} should match regex $regex" },
+      {
+         "${value.show().value} should not match regex $regex"
+      })
 }
 
 fun match(regex: CharSequence): Matcher<CharSequence?> = match(regex.toString().toRegex())

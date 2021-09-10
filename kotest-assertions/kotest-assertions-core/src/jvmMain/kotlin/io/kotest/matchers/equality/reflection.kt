@@ -107,9 +107,10 @@ fun <T : Any> beEqualToUsingFields(other: T, vararg fields: KProperty<*>): Match
 
       return MatcherResult(
          failed.isEmpty(),
-         "$value should be equal to $other using fields $fieldsString; Failed for $failed",
-         "$value should not be equal to $other using fields $fieldsString"
-      )
+         { "$value should be equal to $other using fields $fieldsString; Failed for $failed" },
+         {
+            "$value should not be equal to $other using fields $fieldsString"
+         })
    }
 }
 
@@ -290,9 +291,10 @@ fun <T : Any> beEqualToIgnoringFields(
 
       return MatcherResult(
          failed.isEmpty(),
-         "$value should be equal to $other ignoring fields $fieldsString; Failed for $failed",
-         "$value should not be equal to $other ignoring fields $fieldsString"
-      )
+         { "$value should be equal to $other ignoring fields $fieldsString; Failed for $failed" },
+         {
+            "$value should not be equal to $other ignoring fields $fieldsString"
+         })
    }
 }
 

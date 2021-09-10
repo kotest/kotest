@@ -22,9 +22,10 @@ infix fun <T : Comparable<T>, C : Collection<T>> C.shouldHaveUpperBound(t: T): C
 fun <T : Comparable<T>, C : Collection<T>> haveUpperBound(t: T) = object : Matcher<C> {
    override fun test(value: C) = MatcherResult(
       value.all { it <= t },
-      "Collection should have upper bound $t",
-      "Collection should not have upper bound $t"
-   )
+      { "Collection should have upper bound $t" },
+      {
+         "Collection should not have upper bound $t"
+      })
 }
 
 infix fun <T : Comparable<T>> Iterable<T>.shouldHaveLowerBound(t: T): Iterable<T> {
@@ -45,7 +46,8 @@ infix fun <T : Comparable<T>, C : Collection<T>> C.shouldHaveLowerBound(t: T): C
 fun <T : Comparable<T>, C : Collection<T>> haveLowerBound(t: T) = object : Matcher<C> {
    override fun test(value: C) = MatcherResult(
       value.all { t <= it },
-      "Collection should have lower bound $t",
-      "Collection should not have lower bound $t"
-   )
+      { "Collection should have lower bound $t" },
+      {
+         "Collection should not have lower bound $t"
+      })
 }

@@ -17,7 +17,10 @@ fun Int.shouldBePositive(): Int {
 }
 
 fun positive() = object : Matcher<Int> {
-  override fun test(value: Int) = MatcherResult(value > 0, "$value should be > 0", "$value should not be > 0")
+   override fun test(value: Int) = MatcherResult(
+      value > 0,
+      { "$value should be > 0" },
+      { "$value should not be > 0" })
 }
 
 fun Int.shouldBeNonNegative(): Int {
@@ -26,7 +29,11 @@ fun Int.shouldBeNonNegative(): Int {
 }
 
 fun nonNegative() = object : Matcher<Int> {
-   override fun test(value: Int) = MatcherResult(value >= 0, "$value should be >= 0", "$value should not be >= 0")
+   override fun test(value: Int) =
+      MatcherResult(
+         value >= 0,
+         { "$value should be >= 0" },
+         { "$value should not be >= 0" })
 }
 
 fun Int.shouldBeNegative(): Int {
@@ -35,7 +42,10 @@ fun Int.shouldBeNegative(): Int {
 }
 
 fun negative() = object : Matcher<Int> {
-  override fun test(value: Int) = MatcherResult(value < 0, "$value should be < 0", "$value should not be < 0")
+   override fun test(value: Int) = MatcherResult(
+      value < 0,
+      { "$value should be < 0" },
+      { "$value should not be < 0" })
 }
 
 fun Int.shouldBeNonPositive(): Int {
@@ -44,7 +54,11 @@ fun Int.shouldBeNonPositive(): Int {
 }
 
 fun nonPositive() = object : Matcher<Int> {
-   override fun test(value: Int) = MatcherResult(value <= 0, "$value should be <= 0", "$value should not be <= 0")
+   override fun test(value: Int) =
+      MatcherResult(
+         value <= 0,
+         { "$value should be <= 0" },
+         { "$value should not be <= 0" })
 }
 
 fun Int.shouldBeEven(): Int {
@@ -58,8 +72,11 @@ fun Int.shouldNotBeEven(): Int {
 }
 
 fun beEven() = object : Matcher<Int> {
-  override fun test(value: Int): MatcherResult =
-      MatcherResult(value % 2 == 0, "$value should be even", "$value should be odd")
+   override fun test(value: Int): MatcherResult =
+      MatcherResult(
+         value % 2 == 0,
+         { "$value should be even" },
+         { "$value should be odd" })
 }
 
 fun Int.shouldBeOdd(): Int {
@@ -73,8 +90,11 @@ fun Int.shouldNotBeOdd(): Int {
 }
 
 fun beOdd() = object : Matcher<Int> {
-  override fun test(value: Int): MatcherResult =
-      MatcherResult(value % 2 == 1, "$value should be odd", "$value should be even")
+   override fun test(value: Int): MatcherResult =
+      MatcherResult(
+         value % 2 == 1,
+         { "$value should be odd" },
+         { "$value should be even" })
 }
 
 infix fun Int.shouldBeLessThan(x: Int): Int {

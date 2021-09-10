@@ -20,7 +20,8 @@ infix fun <A : CharSequence> A?.shouldNotEndWith(suffix: CharSequence): A {
 fun endWith(suffix: CharSequence): Matcher<CharSequence?> = neverNullMatcher { value ->
    MatcherResult(
       value.endsWith(suffix),
-      "${value.show().value} should end with ${suffix.show().value}",
-      "${value.show().value} should not end with ${suffix.show().value}"
-   )
+      { "${value.show().value} should end with ${suffix.show().value}" },
+      {
+         "${value.show().value} should not end with ${suffix.show().value}"
+      })
 }
