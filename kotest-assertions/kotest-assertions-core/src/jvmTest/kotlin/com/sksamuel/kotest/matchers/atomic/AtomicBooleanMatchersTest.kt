@@ -18,7 +18,7 @@ class AtomicBooleanMatchersTest : FreeSpec() {
          AtomicBoolean(3 + 3 == 6).shouldBeTrue()
       }
 
-      "Boolean shouldBeTrue should fail for false booleans" - {
+      "Boolean shouldBeTrue should fail for false booleans" {
          shouldThrow<AssertionError> { AtomicBoolean(false).shouldBeTrue() }
       }
 
@@ -27,7 +27,7 @@ class AtomicBooleanMatchersTest : FreeSpec() {
          AtomicBoolean(3 + 3 == 42).shouldBeFalse()
       }
 
-      "Boolean shouldBeFalse should fail for true booleans" - {
+      "Boolean shouldBeFalse should fail for true booleans" {
          shouldThrow<AssertionError> { AtomicBoolean(true).shouldBeFalse() }
       }
 
