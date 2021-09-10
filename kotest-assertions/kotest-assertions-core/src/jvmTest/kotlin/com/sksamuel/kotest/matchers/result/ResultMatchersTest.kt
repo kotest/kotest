@@ -17,7 +17,7 @@ import java.lang.AssertionError
 class ResultMatchersTest : FreeSpec() {
   init {
     "with success result" - {
-      "shouldBeSuccess" - {
+      "shouldBeSuccess" {
          shouldThrow<AssertionError> {
             Result.runCatching { throw TestException() }.shouldBeSuccess<Unit>()
          }
@@ -36,7 +36,7 @@ class ResultMatchersTest : FreeSpec() {
       }
     }
     "with error result" - {
-      "shouldBeFailure" - {
+      "shouldBeFailure" {
         Result.runCatching { throw TestException() }.shouldBeFailure()
         Result.runCatching { throw TestException() }.shouldBeFailure { error ->
           error should beInstanceOf<TestException>()
@@ -48,7 +48,7 @@ class ResultMatchersTest : FreeSpec() {
       "shouldNotBeFailureOfType" {
         Result.runCatching { throw TestException() }.shouldNotBeFailureOfType<IOException>()
       }
-      "shouldNotBeSuccess" - {
+      "shouldNotBeSuccess" {
         Result.runCatching { throw TestException() }.shouldNotBeSuccess()
       }
     }
