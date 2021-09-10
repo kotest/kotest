@@ -24,7 +24,7 @@ data class LogEntry(val level: LogLevel, val message: Any)
  */
 @ExperimentalKotest
 interface LogExtension : Extension {
-   suspend fun handleLogs(testCase: TestCase, logs: List<LogEntry>)
+   fun handleLogs(testCase: TestCase, logs: List<LogEntry>)
 }
 
 /**
@@ -51,7 +51,8 @@ internal val TestContext.logs: MutableList<LogEntry>?
    get() = coroutineContext[TestContextLoggingCoroutineContextElement]?.logs
 
 @ExperimentalKotest
-internal class TestContextLoggingCoroutineContextElement(val logs: MutableList<LogEntry>) : AbstractCoroutineContextElement(Key) {
+internal class TestContextLoggingCoroutineContextElement(val logs: MutableList<LogEntry>) :
+   AbstractCoroutineContextElement(Key) {
    companion object Key : CoroutineContext.Key<TestContextLoggingCoroutineContextElement>
 }
 
