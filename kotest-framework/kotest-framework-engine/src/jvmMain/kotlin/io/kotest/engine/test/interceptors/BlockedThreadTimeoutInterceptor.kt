@@ -21,7 +21,9 @@ private val scheduler =
  * If [io.kotest.core.test.TestCaseConfig.blockingTest] is enabled, then switches the execution
  * to a new thread, so it can be interrupted if the test times out.
  */
-actual class BlockedThreadTimeoutInterceptor : TestExecutionInterceptor {
+internal actual fun blockedThreadTimeoutInterceptor(): TestExecutionInterceptor = BlockedThreadTimeoutInterceptor()
+
+class BlockedThreadTimeoutInterceptor : TestExecutionInterceptor {
    override suspend fun intercept(
       test: suspend (TestCase, TestContext) -> TestResult
    ): suspend (TestCase, TestContext) -> TestResult = { testCase, context ->

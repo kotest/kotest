@@ -18,7 +18,7 @@ interface TestSuiteScheduler {
 /**
  * A [TestSuiteScheduler] that launches specs sequentially in a loop.
  */
-object LoopingTestSuiteScheduler : TestSuiteScheduler {
+object SequentialTestSuiteScheduler : TestSuiteScheduler {
 
    override suspend fun schedule(suite: TestSuite, listener: TestEngineListener): EngineResult {
       log { "LoopingTestSuiteScheduler: Executing ${suite.specs} specs" }
@@ -30,7 +30,3 @@ object LoopingTestSuiteScheduler : TestSuiteScheduler {
    }
 }
 
-/**
- * Returns the appropriate TestSuiteScheduler for the platform.
- */
-expect fun createTestSuiteScheduler(): TestSuiteScheduler

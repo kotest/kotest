@@ -5,10 +5,15 @@ import io.kotest.core.concurrency.CoroutineDispatcherFactory
 
 /**
  * Returns a [TestExecutionInterceptor] for switching coroutine dispatchers.
- *
- * On non-JVM platforms this returns a no-op.
  */
 @JVMOnly
 internal expect fun coroutineDispatcherFactoryInterceptor(
    defaultCoroutineDispatcherFactory: CoroutineDispatcherFactory
 ): TestExecutionInterceptor
+
+/**
+ * Returns a [TestExecutionInterceptor] for switching execution to a dedicated thread
+ * when blockingTest is true.
+ */
+@JVMOnly
+internal expect fun blockedThreadTimeoutInterceptor(): TestExecutionInterceptor

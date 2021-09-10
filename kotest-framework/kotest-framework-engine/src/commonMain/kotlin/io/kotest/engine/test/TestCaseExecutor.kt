@@ -1,5 +1,7 @@
 package io.kotest.engine.test
 
+import io.kotest.common.Platform
+import io.kotest.common.platform
 import io.kotest.core.concurrency.CoroutineDispatcherFactory
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestContext
@@ -7,7 +9,6 @@ import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestStatus
 import io.kotest.engine.concurrency.NoopCoroutineDispatcherFactory
 import io.kotest.engine.test.interceptors.AssertionModeInterceptor
-import io.kotest.engine.test.interceptors.BlockedThreadTimeoutInterceptor
 import io.kotest.engine.test.interceptors.CoroutineDebugProbeInterceptor
 import io.kotest.engine.test.interceptors.CoroutineScopeInterceptor
 import io.kotest.engine.test.interceptors.EnabledCheckInterceptor
@@ -20,6 +21,7 @@ import io.kotest.engine.test.interceptors.LifecycleInterceptor
 import io.kotest.engine.test.interceptors.SupervisorScopeInterceptor
 import io.kotest.engine.test.interceptors.TestCaseExtensionInterceptor
 import io.kotest.engine.test.interceptors.TimeoutInterceptor
+import io.kotest.engine.test.interceptors.blockedThreadTimeoutInterceptor
 import io.kotest.engine.test.interceptors.coroutineDispatcherFactoryInterceptor
 import io.kotest.mpp.log
 import io.kotest.mpp.timeInMillis
@@ -40,11 +42,11 @@ class TestCaseExecutor(
 
       val start = timeInMillis()
 
-      val interceptors = listOf(
+      val interceptors = listOfNotNull(
          InvocationCountCheckInterceptor,
          CoroutineDebugProbeInterceptor,
          SupervisorScopeInterceptor,
-         coroutineDispatcherFactoryInterceptor(defaultCoroutineDispatcherFactory),
+         if (platform == Platform.JVM) coroutineDispatcherFactoryInterceptor(defaultCoroutineDispatcherFactory) else null,
          TestCaseExtensionInterceptor,
          EnabledCheckInterceptor,
          LifecycleInterceptor(listener, start),
@@ -52,7 +54,7 @@ class TestCaseExecutor(
          AssertionModeInterceptor,
          GlobalSoftAssertInterceptor,
          CoroutineScopeInterceptor,
-         BlockedThreadTimeoutInterceptor(),
+         if (platform == Platform.JVM) blockedThreadTimeoutInterceptor() else null,
          TimeoutInterceptor,
          InvocationRepeatInterceptor(start),
          InvocationTimeoutInterceptor,

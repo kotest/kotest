@@ -1,5 +1,7 @@
 package io.kotest.engine
 
+import io.kotest.common.Platform
+import io.kotest.common.platform
 import io.kotest.core.Tags
 import io.kotest.core.config.Configuration
 import io.kotest.core.config.configuration
@@ -66,7 +68,11 @@ class TestEngine(val config: TestEngineConfig) {
       log { "TestEngine: Executing test suite with ${suite.specs.size} specs" }
 
       val innerExecute: suspend (TestSuite, TestEngineListener) -> EngineResult = { ts, tel ->
-         val scheduler = createTestSuiteScheduler()
+         val scheduler = when (platform) {
+            Platform.JVM -> ConcurrentTestSuiteScheduler(configuration.concurrentSpecs ?: configuration.parallelism)
+            Platform.JS -> SequentialTestSuiteScheduler
+            Platform.Native -> SequentialTestSuiteScheduler
+         }
          scheduler.schedule(ts, tel)
       }
 

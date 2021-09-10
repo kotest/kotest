@@ -9,9 +9,3 @@ internal interface TestExecutionInterceptor {
       test: suspend (TestCase, TestContext) -> TestResult
    ): suspend (TestCase, TestContext) -> TestResult
 }
-
-object NoopTestExecutionInterceptor : TestExecutionInterceptor {
-   override suspend fun intercept(
-      test: suspend (TestCase, TestContext) -> TestResult
-   ): suspend (TestCase, TestContext) -> TestResult = test
-}
