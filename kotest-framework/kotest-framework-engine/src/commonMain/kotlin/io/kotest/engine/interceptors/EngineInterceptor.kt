@@ -10,7 +10,7 @@ import io.kotest.engine.listener.TestEngineListener
  * This extension can be used to execute code before or after the engine, change
  * the [TestEngineListener], or adapt the [TestSuite].
  */
-internal interface EngineInterceptor {
+interface EngineInterceptor {
    suspend fun intercept(
       suite: TestSuite,
       listener: TestEngineListener,
