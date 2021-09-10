@@ -19,7 +19,7 @@ class PropTestConfigTest : FunSpec() {
             var iterationCount = 0
             proptest(
                Arb.int(),
-               PropTestConfig(iterations = iterations)
+               config.copy(constraints = Constraints.iterations(iterations))
             ) {
                iterationCount++
             }
@@ -36,7 +36,7 @@ class PropTestConfigTest : FunSpec() {
             proptest(
                Arb.int(),
                Arb.int(),
-               PropTestConfig(iterations = iterations)
+               config.copy(constraints = Constraints.iterations(iterations))
             ) { _, _ ->
                iterationCount++
             }
@@ -54,7 +54,7 @@ class PropTestConfigTest : FunSpec() {
                Arb.int(),
                Arb.int(),
                Arb.int(),
-               PropTestConfig(iterations = iterations)
+               config.copy(constraints = Constraints.iterations(iterations))
             )
             { _, _, _ ->
                iterationCount++
@@ -74,7 +74,7 @@ class PropTestConfigTest : FunSpec() {
                Arb.int(),
                Arb.int(),
                Arb.int(),
-               PropTestConfig(iterations = iterations)
+               config.copy(constraints = Constraints.iterations(iterations))
             )
             { _, _, _, _ ->
                iterationCount++
@@ -95,7 +95,7 @@ class PropTestConfigTest : FunSpec() {
                Arb.int(),
                Arb.int(),
                Arb.int(),
-               PropTestConfig(iterations = iterations)
+               config.copy(constraints = Constraints.iterations(iterations))
             )
             { _, _, _, _, _ ->
                iterationCount++
@@ -117,7 +117,7 @@ class PropTestConfigTest : FunSpec() {
                Arb.int(),
                Arb.int(),
                Arb.int(),
-               PropTestConfig(iterations = iterations)
+               config.copy(constraints = Constraints.iterations(iterations))
             )
             { _, _, _, _, _, _ ->
                iterationCount++
@@ -140,7 +140,7 @@ class PropTestConfigTest : FunSpec() {
                Arb.int(),
                Arb.int(),
                Arb.int(),
-               PropTestConfig(iterations = iterations)
+               config.copy(constraints = Constraints.iterations(iterations))
             )
             { _, _, _, _, _, _, _ ->
                iterationCount++
@@ -164,7 +164,7 @@ class PropTestConfigTest : FunSpec() {
                Arb.int(),
                Arb.int(),
                Arb.int(),
-               PropTestConfig(iterations = iterations)
+               config.copy(constraints = Constraints.iterations(iterations))
             )
             { _, _, _, _, _, _, _, _ ->
                iterationCount++
@@ -189,7 +189,7 @@ class PropTestConfigTest : FunSpec() {
                Arb.int(),
                Arb.int(),
                Arb.int(),
-               PropTestConfig(iterations = iterations)
+               config.copy(constraints = Constraints.iterations(iterations))
             )
             { _, _, _, _, _, _, _, _, _ ->
                iterationCount++
@@ -215,7 +215,7 @@ class PropTestConfigTest : FunSpec() {
                Arb.int(),
                Arb.int(),
                Arb.int(),
-               PropTestConfig(iterations = iterations)
+               config.copy(constraints = Constraints.iterations(iterations))
             )
             { _, _, _, _, _, _, _, _, _, _ ->
                iterationCount++
@@ -242,7 +242,7 @@ class PropTestConfigTest : FunSpec() {
                Arb.int(),
                Arb.int(),
                Arb.int(),
-               PropTestConfig(iterations = iterations)
+               config.copy(constraints = Constraints.iterations(iterations))
             )
             { _, _, _, _, _, _, _, _, _, _, _ ->
                iterationCount++
@@ -270,7 +270,7 @@ class PropTestConfigTest : FunSpec() {
                Arb.int(),
                Arb.int(),
                Arb.int(),
-               PropTestConfig(iterations = iterations))
+               config.copy(constraints = Constraints.iterations(iterations)))
             { _, _, _, _, _, _, _, _, _, _, _, _ ->
                iterationCount++
             }

@@ -23,7 +23,7 @@ object PropertyTesting {
       sysprop("kotest.proptest.arb.edgecases-bind-determinism", 0.9)
    }
    var defaultSeed: Long? by AtomicProperty {
-      sysprop("kotest.proptest.default.seed", null, { it.toLong() })
+      sysprop("kotest.proptest.default.seed", null) { it.toLong() }
    }
    var defaultMinSuccess: Int by AtomicProperty {
       sysprop("kotest.proptest.default.min-success", Int.MAX_VALUE)
@@ -55,7 +55,7 @@ object PropertyTesting {
  * This is the max of either the [PropertyTesting.defaultIterationCount] or the
  * [calculateMinimumIterations] from the supplied gens.
  */
-fun computeDefaultIteration(vararg gens: Gen<*>): Int =
+fun computeDefaultConstraints(vararg gens: Gen<*>): Int =
    max(PropertyTesting.defaultIterationCount, calculateMinimumIterations(*gens))
 
 /**
@@ -85,7 +85,8 @@ data class PropTest(
    val shrinkingMode: ShrinkingMode = PropertyTesting.defaultShrinkingMode,
    val iterations: Int? = null,
    val listeners: List<PropTestListener> = PropertyTesting.defaultListeners,
-   val edgeConfig: EdgeConfig = EdgeConfig.default()
+   val edgeConfig: EdgeConfig = EdgeConfig.default(),
+   val constraints: Constraints? = null,
 )
 
 fun PropTest.toPropTestConfig() =
@@ -102,9 +103,11 @@ fun PropTest.toPropTestConfig() =
 /**
  * Property Test Configuration to be used by the underlying property test runner
  *
- * @property iterations The number of iterations to run. If null either the global [PropertyTesting]'s default value
+ * @param iterations The number of iterations to run. If null either the global [PropertyTesting]'s default value
  *                      will be used, or the minimum iterations required for the supplied generations. Whichever is
  *                      greater.
+ *
+ * @param constraints controls the loop for properties. See [Constraints].
  */
 data class PropTestConfig(
    val seed: Long? = PropertyTesting.defaultSeed,
@@ -115,7 +118,8 @@ data class PropTestConfig(
    val listeners: List<PropTestListener> = PropertyTesting.defaultListeners,
    val edgeConfig: EdgeConfig = EdgeConfig.default(),
    val outputClassifications: Boolean = PropertyTesting.defaultOutputClassifications,
-   val labelsReporter: LabelsReporter = StandardLabelsReporter
+   val labelsReporter: LabelsReporter = StandardLabelsReporter,
+   val constraints: Constraints? = null,
 )
 
 interface PropTestListener {
