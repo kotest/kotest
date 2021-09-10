@@ -7,5 +7,6 @@ package io.kotest.datatest
  *  Note: If you want to provide a custom implementation of test name generation other than what
  *  toString gives, you will need to extend [WithDataTestName] interface.
  * */
+@Deprecated("No longer has any effect. Will be removed in 6.0")
 @Target(AnnotationTarget.CLASS)
 annotation class IsStableType
