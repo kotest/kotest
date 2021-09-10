@@ -69,7 +69,7 @@ class UnstableTestNameWithLeafIsolationTest : FunSpec() {
 }
 
 @ExperimentalKotest
-private class RegularClassAndLeafIsolation : DescribeSpec() {
+ class RegularClassAndLeafIsolation : DescribeSpec() {
    init {
       isolationMode = IsolationMode.InstancePerLeaf
 
@@ -94,7 +94,7 @@ private class RegularClassAndLeafIsolation : DescribeSpec() {
 }
 
 @ExperimentalKotest
-private class DataClassWithNonDataParameterAndLeafIsolation : DescribeSpec() {
+ class DataClassWithNonDataParameterAndLeafIsolation : DescribeSpec() {
    init {
       isolationMode = IsolationMode.InstancePerLeaf
 
