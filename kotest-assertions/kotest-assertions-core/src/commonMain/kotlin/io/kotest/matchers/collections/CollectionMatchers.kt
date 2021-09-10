@@ -32,9 +32,9 @@ fun <T> haveSize(size: Int): Matcher<Collection<T>> = haveSizeMatcher(size)
 
 fun <T> singleElement(t: T): Matcher<Collection<T>> = object : Matcher<Collection<T>> {
   override fun test(value: Collection<T>) = MatcherResult(
-    value.size == 1 && value.first() == t,
-    { "Collection should be a single element of $t but has ${value.size} elements: ${value.show().value}" },
-    { "Collection should not be a single element of $t" }
+     value.size == 1 && value.first() == t,
+     { "Collection should be a single element of $t but has ${value.size} elements: ${value.show().value}" },
+     { "Collection should not be a single element of $t" }
   )
 }
 
@@ -58,9 +58,9 @@ fun <T : Comparable<T>> sorted(): Matcher<List<T>> = object : Matcher<List<T>> {
       else -> ". Element ${failure.value} at index ${failure.index} was greater than element ${value[failure.index + 1]}"
     }
     return MatcherResult(
-      failure == null,
-      { "List ${value.show().value} should be sorted$elementMessage" },
-      { "List ${value.show().value} should not be sorted" }
+       failure == null,
+       { "List ${value.show().value} should be sorted$elementMessage" },
+       { "List ${value.show().value} should not be sorted" }
     )
   }
 }

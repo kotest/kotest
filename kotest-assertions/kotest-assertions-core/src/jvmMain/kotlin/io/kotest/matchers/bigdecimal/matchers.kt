@@ -34,9 +34,10 @@ infix fun BigDecimal.shouldNotBeGreaterThanOrEquals(other: BigDecimal) = this sh
 infix fun BigDecimal.shouldBeInRange(range: ClosedRange<BigDecimal>) = this should beInClosedRange(range)
 infix fun BigDecimal.shouldNotBeInRange(range: ClosedRange<BigDecimal>) = this shouldNot beInClosedRange(range)
 fun beInClosedRange(range: ClosedRange<BigDecimal>) = object : Matcher<BigDecimal> {
-  override fun test(value: BigDecimal) = MatcherResult(
-    range.contains(value),
-    "Value $value should be in range from ${range.start} to ${range.endInclusive} (Inclusive)",
-    "Value $value should not be in range from ${range.start} to ${range.endInclusive} (Inclusive)"
-  )
+   override fun test(value: BigDecimal) = MatcherResult(
+      range.contains(value),
+      { "Value $value should be in range from ${range.start} to ${range.endInclusive} (Inclusive)" },
+      {
+         "Value $value should not be in range from ${range.start} to ${range.endInclusive} (Inclusive)"
+      })
 }

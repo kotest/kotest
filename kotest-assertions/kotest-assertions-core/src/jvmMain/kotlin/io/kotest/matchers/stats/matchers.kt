@@ -344,29 +344,40 @@ private fun <T : Number> testMean(collection: Collection<T>, expectedValue: BigD
    val actual = if (collection.isEmpty()) BigDecimal.ZERO else calculateMean(collection).round(precision)
    return MatcherResult(
       expected.compareTo(actual) == 0,
-      "Collection should have mean $expected but was $actual",
-      "Collection should not have mean $expected but was $actual"
-   )
+      { "Collection should have mean $expected but was $actual" },
+      {
+         "Collection should not have mean $expected but was $actual"
+      })
 }
 
-private fun <T : Number> testVariance(collection: Collection<T>, expectedValue: BigDecimal, precision: Int): MatcherResult {
+private fun <T : Number> testVariance(
+   collection: Collection<T>,
+   expectedValue: BigDecimal,
+   precision: Int
+): MatcherResult {
    val expected = expectedValue.stripTrailingZeros()
    val actual = if (collection.isEmpty()) BigDecimal.ZERO else calculateVariance(collection).round(precision)
    return MatcherResult(
       expected.compareTo(actual) == 0,
-      "Collection should have variance $expected but was $actual",
-      "Collection should not have variance $expected but was $actual"
-   )
+      { "Collection should have variance $expected but was $actual" },
+      {
+         "Collection should not have variance $expected but was $actual"
+      })
 }
 
-private fun <T : Number> testStandardDeviation(collection: Collection<T>, expectedValue: BigDecimal, precision: Int): MatcherResult {
+private fun <T : Number> testStandardDeviation(
+   collection: Collection<T>,
+   expectedValue: BigDecimal,
+   precision: Int
+): MatcherResult {
    val expected = expectedValue.stripTrailingZeros()
    val actual = if (collection.isEmpty()) BigDecimal.ZERO else calculateStandardDeviation(collection).round(precision)
    return MatcherResult(
       expected.compareTo(actual) == 0,
-      "Collection should have standard deviation $expected but was $actual",
-      "Collection should not have standard deviation $expected but was $actual"
-   )
+      { "Collection should have standard deviation $expected but was $actual" },
+      {
+         "Collection should not have standard deviation $expected but was $actual"
+      })
 }
 
 fun <T : Number> haveMean(expectedValue: BigDecimal, precision: Int = 4) = object :

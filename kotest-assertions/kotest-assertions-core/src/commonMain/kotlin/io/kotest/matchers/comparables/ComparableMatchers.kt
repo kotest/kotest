@@ -2,6 +2,7 @@ package io.kotest.matchers.comparables
 
 import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
+import io.kotest.matchers.MatcherResult.Companion.invoke
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNot
@@ -34,7 +35,10 @@ infix fun <T : Comparable<T>> T.shouldBeLessThan(other: T) = this shouldBe lt(ot
 infix fun <T : Comparable<T>> T.shouldNotBeLessThan(other: T) = this shouldNotBe lt(other)
 fun <T : Comparable<T>> lt(x: T) = beLessThan(x)
 fun <T : Comparable<T>> beLessThan(x: T) = object : Matcher<Comparable<T>> {
-  override fun test(value: Comparable<T>) = MatcherResult(value < x, "$value should be < $x", "$value should not be < $x")
+  override fun test(value: Comparable<T>) = invoke(
+     value < x,
+     { "$value should be < $x" },
+     { "$value should not be < $x" })
 }
 
 /**
@@ -63,7 +67,10 @@ infix fun <T : Comparable<T>> T.shouldBeLessThanOrEqualTo(other: T) = this shoul
 infix fun <T : Comparable<T>> T.shouldNotBeLessThanOrEqualTo(other: T) = this shouldNotBe lte(other)
 fun <T : Comparable<T>> lte(x: T) = beLessThanOrEqualTo(x)
 fun <T : Comparable<T>> beLessThanOrEqualTo(x: T) = object : Matcher<Comparable<T>> {
-  override fun test(value: Comparable<T>) = MatcherResult(value <= x, "$value should be <= $x", "$value should not be <= $x")
+  override fun test(value: Comparable<T>) = invoke(
+     value <= x,
+     { "$value should be <= $x" },
+     { "$value should not be <= $x" })
 }
 
 /**
@@ -92,7 +99,10 @@ infix fun <T : Comparable<T>> T.shouldBeGreaterThan(other: T) = this shouldBe gt
 infix fun <T : Comparable<T>> T.shouldNotBeGreaterThan(other: T) = this shouldNotBe gt(other)
 fun <T : Comparable<T>> gt(x: T) = beGreaterThan(x)
 fun <T : Comparable<T>> beGreaterThan(x: T) = object : Matcher<Comparable<T>> {
-  override fun test(value: Comparable<T>) = MatcherResult(value > x, "$value should be > $x", "$value should not be > $x")
+  override fun test(value: Comparable<T>) = invoke(
+     value > x,
+     { "$value should be > $x" },
+     { "$value should not be > $x" })
 }
 
 /**
@@ -121,7 +131,10 @@ infix fun <T : Comparable<T>> T.shouldBeGreaterThanOrEqualTo(other: T) = this sh
 infix fun <T : Comparable<T>> T.shouldNotBeGreaterThanOrEqualTo(other: T) = this shouldNotBe gte(other)
 fun <T : Comparable<T>> gte(x: T) = beGreaterThanOrEqualTo(x)
 fun <T : Comparable<T>> beGreaterThanOrEqualTo(x: T) = object : Matcher<Comparable<T>> {
-  override fun test(value: Comparable<T>) = MatcherResult(value >= x, "$value should be >= $x", "$value should not be >= $x")
+  override fun test(value: Comparable<T>) = invoke(
+     value >= x,
+     { "$value should be >= $x" },
+     { "$value should not be >= $x" })
 }
 
 /**
@@ -147,7 +160,10 @@ infix fun <T : Comparable<T>> T.shouldNotBeEqualComparingTo(other: T) = this sho
 fun <T : Comparable<T>> beEqualComparingTo(other: T) = object : Matcher<T> {
   override fun test(value: T): MatcherResult {
     val passed = value.compareTo(other) == 0
-    return MatcherResult(passed, "Value $value should compare equal to $other", "Value $value should not compare equal to $other")
+    return invoke(
+       passed,
+       { "Value $value should compare equal to $other" },
+       { "Value $value should not compare equal to $other" })
   }
 }
 
@@ -172,6 +188,9 @@ fun <T : Comparable<T>> T.shouldNotBeEqualComparingTo(other: T, comparator: Comp
 fun <T> compareTo(other: T, comparator: Comparator<T>) = object : Matcher<T> {
   override fun test(value: T): MatcherResult {
     val passed = comparator.compare(value, other) == 0
-    return MatcherResult(passed, "Value $value should compare equal to $other", "Value $value should not compare equal to $other")
+    return invoke(
+       passed,
+       { "Value $value should compare equal to $other" },
+       { "Value $value should not compare equal to $other" })
   }
 }

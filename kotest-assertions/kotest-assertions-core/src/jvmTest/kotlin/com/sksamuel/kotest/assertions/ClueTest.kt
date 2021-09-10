@@ -17,9 +17,12 @@ class ClueTest : FreeSpec({
 
    "withClue()" - {
       fun withClueEcho(other: String) = object : Matcher<String> {
-         override fun test(value: String)= MatcherResult(false,
-            "Should have the details of '$value' and $other",
-            "Should have the details of '$value' and $other")
+         override fun test(value: String) = MatcherResult(
+            false,
+            { "Should have the details of '$value' and $other" },
+            {
+               "Should have the details of '$value' and $other"
+            })
       }
 
       "should prepend clue to message with a newline" {

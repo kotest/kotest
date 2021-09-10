@@ -17,7 +17,11 @@ fun Long.shouldBePositive(): Long {
 }
 
 fun positiveL() = object : Matcher<Long> {
-  override fun test(value: Long) = MatcherResult(value > 0, "$value should be > 0", "$value should not be > 0")
+   override fun test(value: Long) =
+      MatcherResult(
+         value > 0,
+         { "$value should be > 0" },
+         { "$value should not be > 0" })
 }
 
 fun Long.shouldBeNegative(): Long {
@@ -26,7 +30,11 @@ fun Long.shouldBeNegative(): Long {
 }
 
 fun negativeL() = object : Matcher<Long> {
-  override fun test(value: Long) = MatcherResult(value < 0, "$value should be < 0", "$value should not be < 0")
+   override fun test(value: Long) =
+      MatcherResult(
+         value < 0,
+         { "$value should be < 0" },
+         { "$value should not be < 0" })
 }
 
 fun Long.shouldBeEven(): Long {
@@ -40,8 +48,11 @@ fun Long.shouldNotBeEven(): Long {
 }
 
 fun lbeEven() = object : Matcher<Long> {
-  override fun test(value: Long): MatcherResult =
-      MatcherResult(value % 2 == 0L, "$value should be even", "$value should be odd")
+   override fun test(value: Long): MatcherResult =
+      MatcherResult(
+         value % 2 == 0L,
+         { "$value should be even" },
+         { "$value should be odd" })
 }
 
 fun Long.shouldBeOdd(): Long {
@@ -55,8 +66,11 @@ fun Long.shouldNotBeOdd(): Long {
 }
 
 fun lbeOdd() = object : Matcher<Long> {
-  override fun test(value: Long): MatcherResult =
-      MatcherResult(value % 2 == 1L, "$value should be odd", "$value should be even")
+   override fun test(value: Long): MatcherResult =
+      MatcherResult(
+         value % 2 == 1L,
+         { "$value should be odd" },
+         { "$value should be even" })
 }
 
 infix fun Long.shouldBeLessThan(x: Long): Long {

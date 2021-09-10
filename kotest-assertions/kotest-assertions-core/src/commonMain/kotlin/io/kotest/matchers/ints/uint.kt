@@ -12,7 +12,8 @@ fun UInt.shouldBeBetween(lower: UInt, upper: UInt): UInt {
 fun between(lower: UInt, upper: UInt) = object : Matcher<UInt> {
    override fun test(value: UInt) = MatcherResult(
       value in lower..upper,
-      "$value should be between ($lower, $upper) inclusive",
-      "$value should not be between ($lower, $upper) inclusive"
-   )
+      { "$value should be between ($lower, $upper) inclusive" },
+      {
+         "$value should not be between ($lower, $upper) inclusive"
+      })
 }

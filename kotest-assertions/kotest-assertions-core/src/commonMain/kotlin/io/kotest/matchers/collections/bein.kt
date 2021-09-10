@@ -129,8 +129,9 @@ fun <T> beIn(collection: Collection<T>) = object : Matcher<T> {
 
       return MatcherResult(
          match,
-         "Collection should contain ${value.show().value}, but doesn't. Possible values: ${collection.show().value}",
-         "Collection should not contain ${value.show().value}, but does. Forbidden values: ${collection.show().value}"
-      )
+         { "Collection should contain ${value.show().value}, but doesn't. Possible values: ${collection.show().value}" },
+         {
+            "Collection should not contain ${value.show().value}, but does. Forbidden values: ${collection.show().value}"
+         })
    }
 }

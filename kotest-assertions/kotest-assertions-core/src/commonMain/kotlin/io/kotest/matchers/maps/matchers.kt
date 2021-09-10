@@ -10,9 +10,10 @@ import io.kotest.matchers.shouldNot
 fun <K, V> mapcontain(key: K, v: V) = object : Matcher<Map<K, V>> {
    override fun test(value: Map<K, V>) = MatcherResult(
       value[key] == v,
-      "Map should contain mapping $key=$v but was ${buildActualValue(value)}",
-      "Map should not contain mapping $key=$v but was $value"
-   )
+      { "Map should contain mapping $key=$v but was ${buildActualValue(value)}" },
+      {
+         "Map should not contain mapping $key=$v but was $value"
+      })
 
    private fun buildActualValue(map: Map<K, V>) = map[key].toOption().map { "$key=$it" }.getOrElse(map)
 }

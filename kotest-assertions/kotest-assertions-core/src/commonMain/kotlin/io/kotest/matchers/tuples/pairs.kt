@@ -19,9 +19,10 @@ fun <A> haveFirst(a: A) = object : Matcher<Pair<A, *>> {
    override fun test(value: Pair<A, *>): MatcherResult {
       return MatcherResult(
          value.first == a,
-         "Pair $value should have first value $a but was ${value.first}",
-         "Pair $value should not have first value $a"
-      )
+         { "Pair $value should have first value $a but was ${value.first}" },
+         {
+            "Pair $value should not have first value $a"
+         })
    }
 }
 
@@ -39,8 +40,9 @@ fun <B> haveSecond(b: B) = object : Matcher<Pair<*, B>> {
    override fun test(value: Pair<*, B>): MatcherResult {
       return MatcherResult(
          value.second == b,
-         "Pair $value should have second value $b but was ${value.second}",
-         "Pair $value should not have second value $b"
-      )
+         { "Pair $value should have second value $b but was ${value.second}" },
+         {
+            "Pair $value should not have second value $b"
+         })
    }
 }

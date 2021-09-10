@@ -27,9 +27,10 @@ fun matchJson(expected: String?) = object : Matcher<String?> {
       } catch (ex: Exception) {
          return MatcherResult(
             false,
-            "expected: actual json to be valid json: $value",
-            "expected: actual json to be invalid json: $value"
-         )
+            { "expected: actual json to be valid json: $value" },
+            {
+               "expected: actual json to be invalid json: $value"
+            })
       }
 
       val expectedJson = try {
@@ -37,16 +38,18 @@ fun matchJson(expected: String?) = object : Matcher<String?> {
       } catch (ex: Exception) {
          return MatcherResult(
             false,
-            "expected: expected json to be valid json: $expected",
-            "expected: expected json to be invalid json: $expected"
-         )
+            { "expected: expected json to be valid json: $expected" },
+            {
+               "expected: expected json to be invalid json: $expected"
+            })
       }
 
       return MatcherResult(
          actualJson == expectedJson,
-         "expected: $expectedJson but was: $actualJson",
-         "expected not to match with: $expectedJson but match: $actualJson"
-      )
+         { "expected: $expectedJson but was: $actualJson" },
+         {
+            "expected not to match with: $expectedJson but match: $actualJson"
+         })
    }
 }
 
