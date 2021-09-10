@@ -4,6 +4,7 @@ import io.kotest.assertions.json.CompareMode
 import io.kotest.assertions.json.shouldEqualJson
 import io.kotest.assertions.shouldFail
 import io.kotest.core.spec.style.FunSpec
+import io.kotest.matchers.string.shouldContain
 import io.kotest.matchers.throwable.shouldHaveMessage
 
 class JsonLiteralsTest : FunSpec(
@@ -22,6 +23,17 @@ class JsonLiteralsTest : FunSpec(
                3.2
             """.trimIndent()
          )
+      }
+
+      test("quoted numbers are treated as strings in strict mode") {
+         shouldFail { "\"1E3\"" shouldEqualJson "1000.0" }
+
+         // Unquoted 1E3 is parsed to double and back due to prettifying output
+         shouldFail { "\"1000.0\"" shouldEqualJson "1E3" }.message shouldContain
+            "The top level expected number but was string"
+
+         shouldFail { "10.0" shouldEqualJson "\"10.0\"" }.message shouldContain
+            "The top level expected string but was number"
       }
 
       test("comparing exponent-based float with regular float") {
