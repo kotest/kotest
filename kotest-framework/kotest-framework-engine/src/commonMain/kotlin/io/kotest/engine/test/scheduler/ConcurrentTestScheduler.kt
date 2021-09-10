@@ -14,7 +14,7 @@ import kotlinx.coroutines.sync.withPermit
  * @param maxConcurrent The maximum number of tests to schedule concurrently.
  */
 @ExperimentalKotest
-class ConcurrentTestScheduler(private val maxConcurrent: Int) : TestScheduler {
+internal class ConcurrentTestScheduler(private val maxConcurrent: Int) : TestScheduler {
 
    private val semaphore = Semaphore(maxConcurrent)
 

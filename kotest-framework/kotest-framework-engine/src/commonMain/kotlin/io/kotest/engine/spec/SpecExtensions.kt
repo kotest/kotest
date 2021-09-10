@@ -19,7 +19,7 @@ import kotlin.reflect.KClass
 /**
  * Used to invoke extension points / listeners / callbacks on specs.
  */
-class SpecExtensions(private val configuration: Configuration) {
+internal class SpecExtensions(private val configuration: Configuration) {
 
    /**
     * Returns all [Extension]s applicable to the [Spec]. This includes extensions via

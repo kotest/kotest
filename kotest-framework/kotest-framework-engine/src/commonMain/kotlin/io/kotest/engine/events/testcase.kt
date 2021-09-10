@@ -13,7 +13,7 @@ import io.kotest.fp.Try
  * Invokes all before test callbacks for this test, taking the listeners from
  * those present at the spec level and the project level.
  */
-suspend fun TestCase.invokeAllBeforeTestCallbacks(): Try<TestCase> =
+internal suspend fun TestCase.invokeAllBeforeTestCallbacks(): Try<TestCase> =
    Try {
       spec.resolvedTestListeners() + configuration.extensions().filterIsInstance<TestListener>()
    }.fold({
@@ -34,7 +34,7 @@ suspend fun TestCase.invokeAllBeforeTestCallbacks(): Try<TestCase> =
  * Invokes all after test callbacks for this test, taking the listeners from
  * those present at the config level, spec level and the project level.
  */
-suspend fun TestCase.invokeAllAfterTestCallbacks(result: TestResult): Try<TestCase> =
+internal suspend fun TestCase.invokeAllAfterTestCallbacks(result: TestResult): Try<TestCase> =
    Try {
       this.config.listeners + spec.resolvedTestListeners() + configuration.extensions().filterIsInstance<TestListener>()
    }.fold({

@@ -12,9 +12,6 @@ import java.util.concurrent.Executors
 import kotlin.math.abs
 import kotlin.reflect.KClass
 
-actual fun defaultCoroutineDispatcherFactory(): CoroutineDispatcherFactory =
-   FixedThreadCoroutineDispatcherFactory(configuration.parallelism, configuration.dispatcherAffinity)
-
 /**
  * A [CoroutineDispatcherFactory] that uses a fixed number of threads that are shared between
  * all specs that use this factory.

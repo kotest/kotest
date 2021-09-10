@@ -13,7 +13,7 @@ import io.kotest.engine.interceptors.TestDslStateInterceptor
 import io.kotest.engine.interceptors.TestEngineListenerStartedFinishedInterceptor
 import io.kotest.engine.interceptors.TestEngineStartupShutdownInterceptor
 
-actual fun testEngineInterceptors(conf: Configuration): List<EngineInterceptor> {
+internal actual fun testEngineInterceptors(conf: Configuration): List<EngineInterceptor> {
    return listOfNotNull(
       TestEngineStartupShutdownInterceptor,
       ProjectTimeoutEngineInterceptor(conf.projectTimeout),

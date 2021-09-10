@@ -9,7 +9,7 @@ import io.kotest.engine.listener.TestEngineListener
  * A [SpecRefInterceptor] that invokes the specExit callback on the [TestEngineListener].
  * Any unhandled exception in the spec executor will be passed to this callback.
  */
-class SpecExitInterceptor(private val listener: TestEngineListener) : SpecRefInterceptor {
+internal class SpecExitInterceptor(private val listener: TestEngineListener) : SpecRefInterceptor {
 
    override suspend fun intercept(
       fn: suspend (SpecRef) -> Map<TestCase, TestResult>

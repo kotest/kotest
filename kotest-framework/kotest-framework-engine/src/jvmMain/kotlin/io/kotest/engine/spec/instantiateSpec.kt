@@ -7,7 +7,7 @@ import io.kotest.core.spec.Spec
 import kotlin.reflect.KClass
 import kotlin.reflect.jvm.isAccessible
 
-actual fun instantiate(kclass: KClass<out Spec>): Result<Spec> {
+internal actual fun instantiate(kclass: KClass<out Spec>): Result<Spec> {
    return createAndInitializeSpec(kclass)
 }
 
@@ -19,7 +19,7 @@ actual fun instantiate(kclass: KClass<out Spec>): Result<Spec> {
  *
  * After creation any [PostInstantiationExtension]s will be invoked.
  */
-fun <T : Spec> createAndInitializeSpec(kclass: KClass<T>): Result<Spec> {
+internal fun <T : Spec> createAndInitializeSpec(kclass: KClass<T>): Result<Spec> {
    return when (val obj = kclass.objectInstance) {
       null -> runCatching {
          val initial: Spec? = null

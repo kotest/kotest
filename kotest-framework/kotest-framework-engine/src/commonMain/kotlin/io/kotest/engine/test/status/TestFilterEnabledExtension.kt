@@ -10,7 +10,7 @@ import io.kotest.mpp.log
 /**
  * This [TestEnabledExtension] disables tests if they are filtered by a [TestFilter].
  */
-object TestFilterEnabledExtension : TestEnabledExtension {
+internal object TestFilterEnabledExtension : TestEnabledExtension {
 
    override fun isEnabled(testCase: TestCase): Enabled {
 

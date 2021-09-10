@@ -18,7 +18,7 @@ import io.kotest.mpp.log
  *
  * Otherwise, if at least one active, the downstream function is invoked.
  */
-class RunIfActiveInterceptor(private val listener: TestEngineListener) : SpecExecutionInterceptor {
+internal class RunIfActiveInterceptor(private val listener: TestEngineListener) : SpecExecutionInterceptor {
 
    override suspend fun intercept(
       fn: suspend (Spec) -> Map<TestCase, TestResult>

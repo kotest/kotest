@@ -6,4 +6,4 @@ import io.kotest.engine.interceptors.EngineInterceptor
 /**
  * Returns the [EngineInterceptor]s that should be used for this platform.
  */
-expect fun testEngineInterceptors(conf: Configuration): List<EngineInterceptor>
+internal expect fun testEngineInterceptors(conf: Configuration): List<EngineInterceptor>
