@@ -60,7 +60,7 @@ internal fun testNameAppendTags(): Boolean? =
    sysprop(KotestEngineProperties.testNameAppendTags).fmap { it.uppercase() == "TRUE" }
 
 internal fun duplicateTestNameMode(): DuplicateTestNameMode? =
-   sysprop(KotestEngineProperties.testNameAppendTags).fmap { DuplicateTestNameMode.valueOf(it) }
+   sysprop(KotestEngineProperties.duplicateTestNameMode).fmap { DuplicateTestNameMode.valueOf(it) }
 
 internal fun projectTimeout(): Long? =
    sysprop(KotestEngineProperties.projectTimeout).fmap { it.toLong() }

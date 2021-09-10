@@ -5,6 +5,7 @@ import io.kotest.core.SpecFunctionCallbacks
 import io.kotest.core.SpecFunctionConfiguration
 import io.kotest.core.Tag
 import io.kotest.core.TestConfiguration
+import io.kotest.core.concurrency.CoroutineDispatcherFactory
 import io.kotest.core.config.Configuration
 import io.kotest.core.config.configuration
 import io.kotest.core.test.TestCase
@@ -32,20 +33,10 @@ abstract class Spec : TestConfiguration(), SpecFunctionConfiguration, SpecFuncti
    var isolationMode: IsolationMode? = null
 
    /**
-    * Sets the number of threads that will be used for executing root tests in this spec.
-    *
-    * On the JVM this will result in multiple threads being used.
-    * On other platforms this setting will have no effect.
-    */
-   @JsName("threads_js")
-   @Deprecated("Replaced with concurrency and parallelism. This parameter will be removed in 4.7")
-   var threads: Int? = null
-
-   /**
     * Sets the number of tests that will be launched concurrently.
     *
     * Each test is launched into its own coroutine. This parameter determines how many test
-    * coroutines are launched concurrently inside of this spec.
+    * coroutines are launched concurrently inside this spec.
     *
     * Setting this parameter to [Configuration.MaxConcurrency] will result in all tests of this spec
     * being launched concurrently.
@@ -61,15 +52,14 @@ abstract class Spec : TestConfiguration(), SpecFunctionConfiguration, SpecFuncti
 
    /**
     * By default, all tests inside a single spec are executed using the same dispatcher to ensure
-    * that callbacks all operate on the same thread. In other words, a spec is sticky with regards
-    * to the execution thread. To change this, set this value to false. This value can also be
+    * that callbacks all operate on the same thread. In other words, a spec is sticky in regard to
+    * the execution thread. To change this, set this value to false. This value can also be
     * set globally in [Configuration.dispatcherAffinity].
     *
     * When this value is false, the framework is free to assign different dispatchers to different
     * root tests (nested tests always run in the same thread as their parent test).
     *
-    * Note: Setting this value alone will not increase the number of threads used. For that,
-    * see [Configuration.parallelism].
+    * Note: This setting has no effect unless the number of threads is increasd; see [Configuration.parallelism].
     */
    @ExperimentalKotest
    @JsName("dispatcherAffinity_var")
@@ -89,7 +79,7 @@ abstract class Spec : TestConfiguration(), SpecFunctionConfiguration, SpecFuncti
     * the project default will be used.
     *
     * When using a nested test style, this invocation timeout does not apply to container tests (parent tests)
-    * but only leaf tests (outer most tests).
+    * but only leaf tests (outermost tests).
     */
    @JsName("invocationTimeout_var")
    var invocationTimeout: Long? = null
@@ -99,6 +89,27 @@ abstract class Spec : TestConfiguration(), SpecFunctionConfiguration, SpecFuncti
     * If null, then the order is defined by the project default.
     */
    var testOrder: TestCaseOrder? = null
+
+   // When set to true, execution will switch to a dedicated thread for each test case in this spec,
+   // therefore allowing the test engine to safely interrupt tests via Thread.interrupt when they time out.
+   // This is useful if you are testing blocking code and want to use timeouts because coroutine timeouts
+   // are cooperative by nature.
+   var blockingTest: Boolean? = null
+
+   @JsName("coroutineDispatcherFactory_var")
+   var coroutineDispatcherFactory: CoroutineDispatcherFactory? = null
+
+   /**
+    * Sets the number of threads that will be used for executing root tests in this spec.
+    *
+    * By setting this a value, a [CoroutineDispatcherFactory] will be installed for this spec
+    * that shares a fixed number of threads for this spec only. If the [coroutineDispatcherFactory]
+    * is also set, then that will have precedence.
+    *
+    * This setting is JVM only.
+    */
+   @JsName("threads_var")
+   val threads: Int? = null
 
    /**
     * Returns the actual test order to use, taking into account spec config and global config.

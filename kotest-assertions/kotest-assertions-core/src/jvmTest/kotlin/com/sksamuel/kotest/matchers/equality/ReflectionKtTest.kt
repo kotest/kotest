@@ -1,27 +1,37 @@
 package com.sksamuel.kotest.matchers.equality
 
+import io.kotest.assertions.shouldFail
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.equality.*
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldContain
+import io.kotest.matchers.string.shouldNotContain
 import org.junit.jupiter.api.assertThrows
+import kotlin.random.Random
 import kotlin.reflect.KVisibility
 import kotlin.reflect.full.memberProperties
 
 class ReflectionKtTest : FunSpec() {
+   class HasComputedField(val name: String) { val random: Int get() = Random.nextInt()}
 
    data class Foo(val a: String, val b: Int, val c: Boolean)
 
    data class Car(val name: String, val price: Int, private val modelNumber: Int)
 
-   class Person(val name: String) {
+   open class Person(val name: String) {
       var isExhausted: Boolean = false
       private var address: String = ""
       fun setAddress(newAddress: String) {
          this.address = newAddress
       }
    }
+
+   class Teacher(
+      name: String,
+      val students: Array<Person> = emptyArray(),
+      internal val age: Int = 123
+   ): Person(name)
 
    init {
 
@@ -173,6 +183,35 @@ class ReflectionKtTest : FunSpec() {
          shouldThrow<AssertionError> {
             Person("foo").shouldNotBeEqualToComparingFields(Person("foo"), false)
          }.message shouldContain "Using fields: address, isExhausted, name"
+      }
+
+      test("shouldBeEqualToComparingFields handles arrays") {
+         val students = arrayOf(Person("foo"), Person("bar"))
+         Teacher("bar", students) shouldBeEqualToComparingFields Teacher("bar", students)
+      }
+
+      test("shouldBeEqualToComparingFields can include computed field") {
+         shouldFail {
+            HasComputedField("foo").shouldBeEqualToComparingFields(HasComputedField("foo"), ignoreComputedFields = false)
+         }.message shouldContain "Using fields: name, random"
+      }
+
+      test("shouldBeEqualToComparingFields includes internal fields") {
+         shouldFail {
+            Teacher("foo", age = 100) shouldBeEqualToComparingFields Teacher("foo", age = 200)
+         }.message shouldContain "Using fields: age, isExhausted, name, students"
+      }
+
+      test("shouldBeEqualToComparingFields includes fields from superclasses") {
+         shouldFail {
+            Teacher("foo") shouldBeEqualToComparingFields Teacher("bar")
+         }.message shouldContain "Using fields: age, isExhausted, name, students"
+      }
+
+      test("shouldBeEqualToComparingFields ignores synthetic fields") {
+         shouldFail {
+            HasComputedField("foo") shouldBeEqualToComparingFields HasComputedField("bar")
+         }.message shouldNotContain "random"
       }
    }
 }

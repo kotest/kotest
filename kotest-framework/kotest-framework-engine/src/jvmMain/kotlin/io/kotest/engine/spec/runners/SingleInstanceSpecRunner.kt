@@ -1,5 +1,6 @@
 package io.kotest.engine.spec.runners
 
+import io.kotest.core.concurrency.CoroutineDispatcherFactory
 import io.kotest.core.config.configuration
 import io.kotest.core.spec.Spec
 import io.kotest.core.test.NestedTest
@@ -9,18 +10,15 @@ import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestStatus
 import io.kotest.core.test.createTestName
 import io.kotest.core.test.toTestCase
-import io.kotest.engine.ExecutorExecutionContext
-import io.kotest.engine.concurrency.resolvedThreads
-import io.kotest.engine.events.invokeAfterSpec
-import io.kotest.engine.events.invokeBeforeSpec
 import io.kotest.engine.listener.TestEngineListener
+import io.kotest.engine.spec.SpecExtensions
 import io.kotest.engine.spec.SpecRunner
 import io.kotest.engine.spec.materializeAndOrderRootTests
 import io.kotest.engine.test.DuplicateTestNameHandler
 import io.kotest.engine.test.TestCaseExecutionListener
 import io.kotest.engine.test.TestCaseExecutor
 import io.kotest.engine.test.scheduler.TestScheduler
-import io.kotest.fp.Try
+import io.kotest.fp.flatMap
 import io.kotest.mpp.log
 import kotlinx.coroutines.coroutineScope
 import java.util.concurrent.ConcurrentHashMap
@@ -34,36 +32,33 @@ import kotlin.coroutines.CoroutineContext
 internal class SingleInstanceSpecRunner(
    listener: TestEngineListener,
    scheduler: TestScheduler,
+   private val defaultCoroutineDispatcherFactory: CoroutineDispatcherFactory,
 ) : SpecRunner(listener, scheduler) {
 
    private val results = ConcurrentHashMap<TestCase, TestResult>()
 
-   override suspend fun execute(spec: Spec): Try<Map<TestCase, TestResult>> {
+   override suspend fun execute(spec: Spec): Result<Map<TestCase, TestResult>> {
       log { "SingleInstanceSpecRunner: executing spec [$spec]" }
 
-      suspend fun interceptAndRun(context: CoroutineContext) = Try {
+      suspend fun interceptAndRun(context: CoroutineContext) = kotlin.runCatching {
          val rootTests = spec.materializeAndOrderRootTests().map { it.testCase }
          log { "SingleInstanceSpecRunner: Materialized root tests: ${rootTests.size}" }
-         val threads = spec.resolvedThreads()
-         if (threads != null && threads > 1) {
-            log { "Warning - usage of deprecated thread count $threads" }
-            runParallel(threads, rootTests) {
-               log { "SingleInstanceSpecRunner: Executing test $it" }
-               runTest(it, context)
-            }
-         } else {
-            launch(spec) {
-               log { "SingleInstanceSpecRunner: Executing test $it" }
-               runTest(it, context)
-            }
+         launch(spec) {
+            log { "SingleInstanceSpecRunner: Executing test $it" }
+            runTest(it, context)
          }
       }
 
-      return coroutineScope {
-         spec.invokeBeforeSpec()
-            .flatMap { interceptAndRun(coroutineContext) }
-            .flatMap { spec.invokeAfterSpec() }
-            .map { results }
+      try {
+         return coroutineScope {
+            SpecExtensions(configuration).beforeSpec(spec)
+               .flatMap { interceptAndRun(coroutineContext) }
+               .flatMap { SpecExtensions(configuration).afterSpec(spec) }
+               .map { results }
+         }
+      } catch (e: Exception) {
+         e.printStackTrace()
+         throw e
       }
    }
 
@@ -99,19 +94,23 @@ internal class SingleInstanceSpecRunner(
       testCase: TestCase,
       coroutineContext: CoroutineContext,
    ): TestResult {
-      val testExecutor = TestCaseExecutor(object : TestCaseExecutionListener {
-         override suspend fun testStarted(testCase: TestCase) {
-            listener.testStarted(testCase)
-         }
+      val testExecutor = TestCaseExecutor(
+         // todo replace with TestCaseAdapter
+         object : TestCaseExecutionListener {
+            override suspend fun testStarted(testCase: TestCase) {
+               listener.testStarted(testCase)
+            }
 
-         override suspend fun testIgnored(testCase: TestCase) {
-            listener.testIgnored(testCase, null)
-         }
+            override suspend fun testIgnored(testCase: TestCase) {
+               listener.testIgnored(testCase, null)
+            }
 
-         override suspend fun testFinished(testCase: TestCase, result: TestResult) {
-            listener.testFinished(testCase, result)
-         }
-      }, ExecutorExecutionContext)
+            override suspend fun testFinished(testCase: TestCase, result: TestResult) {
+               listener.testFinished(testCase, result)
+            }
+         },
+         defaultCoroutineDispatcherFactory
+      )
 
       val result = testExecutor.execute(testCase, Context(testCase, coroutineContext))
       results[testCase] = result

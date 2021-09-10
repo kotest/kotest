@@ -80,10 +80,6 @@ kotlin {
 
       val jsMain by getting {
          dependsOn(commonMain)
-         dependencies {
-            // this must be api as it's compiled into the final source
-            api(kotlin("test-js"))
-         }
       }
 
       val jvmMain by getting {

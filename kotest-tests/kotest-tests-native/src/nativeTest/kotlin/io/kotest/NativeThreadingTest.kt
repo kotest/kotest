@@ -1,12 +1,14 @@
 package io.kotest
 
 import io.kotest.assertions.assertSoftly
+import io.kotest.assertions.throwables.shouldNotThrow
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.data.blocking.forAll
 import io.kotest.data.row
 import io.kotest.matchers.ints.beEven
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldBe
+import io.kotest.mpp.atomics.AtomicProperty
 import kotlin.native.concurrent.TransferMode.SAFE
 import kotlin.native.concurrent.Worker
 import kotlin.native.concurrent.freeze
@@ -57,6 +59,33 @@ class NativeThreadingTest {
             row(3, 6)
          ) { a, b ->
             a + b shouldBe 0
+         }
+      }
+   }
+
+   @Test
+   fun testAtomicProperty() {
+      var boolProperty: Boolean by AtomicProperty { false }
+
+      threadedTest {
+         listOf(true, false).forEach { newValue ->
+            boolProperty = newValue
+         }
+
+         boolProperty shouldBe false
+      }
+
+      boolProperty shouldBe false
+   }
+
+   // Educational test to show the issue with kotlin native's memory model mutability
+   @Test
+   fun testNonAtomicProperty() {
+      var boolProperty =  false
+
+      shouldThrow<kotlin.native.concurrent.InvalidMutabilityException> {
+         threadedTest {
+            boolProperty = true
          }
       }
    }

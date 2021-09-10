@@ -41,6 +41,7 @@ abstract class AbstractProjectConfig {
    /**
     * List of project wide [Listener] instances.
     */
+   @Deprecated("Use extensions. This will be removed in 6.0")
    open fun listeners(): List<Listener> = emptyList()
 
    /**
@@ -87,20 +88,18 @@ abstract class AbstractProjectConfig {
     *
     * The tests inside the same spec are always executed using the same thread, to ensure
     * that callbacks all operate on the same thread. In other words, a spec is sticky
-    * with regards to the execution thread.
+    * in regard to the execution thread.
     *
     * Increasing this value to k > 1, means that k threads are created, allowing different
     * specs to execute on different threads. For n specs, if you set this value to k, then
     * on average, each thread will service n/k specs.
     *
-    * The thread choosen for a particular thread can be determined by the ThreadAllocationExtension,
-    * which by default chooses in a round robin fashion.
-    *
     * An alternative way to enable this is the system property kotest.framework.parallelism
     * which will always (if defined) take priority over the value here.
     *
     * Note: For backwards compatibility, setting this value to > 1 will implicitly set
-    * [specConcurrentDispatch] to true unless that value has been explicitly set to false.
+    * [concurrentSpecs] to [Configuration.MaxConcurrency] unless that option has been explicitly
+    * set to another value.
     */
    open val parallelism: Int? = null
 
@@ -228,6 +227,13 @@ abstract class AbstractProjectConfig {
     * then the spec itself will not appear as a node in output.
     */
    open val displaySpecIfNoActiveTests: Boolean? = null
+
+   /**
+    * If set to true, then will output config on startup.
+    */
+   open var dumpConfig: Boolean? = null
+
+   open var dispatcherAffinity: Boolean? = null
 
    /**
     * Executed before the first test of the project, but after the

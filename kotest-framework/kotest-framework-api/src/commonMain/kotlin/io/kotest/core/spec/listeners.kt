@@ -13,7 +13,7 @@ import io.kotest.core.test.TestResult
  */
 fun Spec.resolvedTestListeners(): List<TestListener> {
    return listeners() + // listeners defined by overriding the listeners function
-      this.registeredListeners() + // listeners added via the inline callbacks
+      this.registeredExtensions().filterIsInstance<TestListener>() + // extensions added via the inline callbacks
       this.functionOverrideCallbacks() // listeners from the overrides
 }
 

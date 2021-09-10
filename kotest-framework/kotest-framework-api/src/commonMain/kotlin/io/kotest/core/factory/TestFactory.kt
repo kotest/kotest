@@ -2,7 +2,6 @@ package io.kotest.core.factory
 
 import io.kotest.core.Tag
 import io.kotest.core.extensions.Extension
-import io.kotest.core.listeners.TestListener
 import io.kotest.core.spec.Spec
 import io.kotest.core.test.AssertionMode
 import io.kotest.core.test.Description
@@ -18,7 +17,6 @@ data class TestFactory(
    val tests: List<DynamicRootTest>,
    val tags: Set<Tag>,
    val assertionMode: AssertionMode?,
-   val listeners: List<TestListener>,
    val extensions: List<Extension>,
 )
 

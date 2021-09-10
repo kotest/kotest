@@ -28,19 +28,23 @@ class RootTestWithConfigBuilder(
       invocationTimeout: Duration? = null,
       severity: TestCaseSeverityLevel? = null,
       enabledOrReasonIf: EnabledOrReasonIf? = null,
+      coroutineDebugProbes: Boolean? = null,
+      blockingTest: Boolean? = null,
       test: suspend TestContext.() -> Unit,
    ) {
       val derivedConfig = registration.defaultConfig.deriveTestCaseConfig(
-         enabled,
-         tags,
-         extensions,
-         timeout,
-         invocationTimeout,
-         enabledIf,
-         invocations,
-         threads,
-         severity,
+         enabled = enabled,
+         tags = tags,
+         extensions = extensions,
+         timeout = timeout,
+         invocationTimeout = invocationTimeout,
+         enabledIf = enabledIf,
+         invocations = invocations,
+         threads = threads,
+         severity = severity,
          enabledOrReasonIf = enabledOrReasonIf,
+         coroutineDebugProbes = coroutineDebugProbes,
+         blockingTest = blockingTest,
       )
       registration.addTest(name, xdisabled, derivedConfig, TestType.Test, test)
    }

@@ -19,7 +19,7 @@ class DuplicateTestNameHandler(private val mode: DuplicateTestNameMode) {
       val isUnique = names.add(name.name)
       if (isUnique) return null
       return when (mode) {
-         DuplicateTestNameMode.Error -> error(message(name.name))
+         DuplicateTestNameMode.Error -> throw DuplicateTestNameException(message(name.name))
          DuplicateTestNameMode.Silent -> makeUniqueName(name.name)
          DuplicateTestNameMode.Warn -> {
             println("WARN: " + message(name.name))
@@ -34,3 +34,5 @@ class DuplicateTestNameHandler(private val mode: DuplicateTestNameMode) {
       return unique
    }
 }
+
+class DuplicateTestNameException(message: String) : RuntimeException(message)

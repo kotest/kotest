@@ -6,7 +6,6 @@ import io.kotest.matchers.shouldBe
 import org.junit.platform.engine.discovery.DiscoverySelectors
 import org.junit.platform.testkit.engine.EngineTestKit
 import kotlin.time.Duration
-import kotlin.time.seconds
 
 class PerformanceTest : FunSpec() {
    init {

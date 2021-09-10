@@ -24,7 +24,7 @@ class AfterTestTest : FunSpec() {
 
    init {
 
-      listener(listener)
+      register(listener)
 
       afterProject {
          counter.get() shouldBe 4
