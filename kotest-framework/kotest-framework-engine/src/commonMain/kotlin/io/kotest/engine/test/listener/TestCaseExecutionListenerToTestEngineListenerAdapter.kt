@@ -8,8 +8,9 @@ import io.kotest.engine.test.TestCaseExecutionListener
 /**
  * Converts events fired to a [TestCaseExecutionListener] into events fired to a [TestEngineListener]
  */
-class TestCaseListenerToTestEngineListenerAdapter(val listener: TestEngineListener) :
-   TestCaseExecutionListener {
+class TestCaseExecutionListenerToTestEngineListenerAdapter(
+   private val listener: TestEngineListener
+) : TestCaseExecutionListener {
 
    override suspend fun testFinished(testCase: TestCase, result: TestResult) {
       listener.testFinished(testCase, result)

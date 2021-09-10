@@ -15,8 +15,8 @@ import io.kotest.engine.spec.SpecExtensions
 import io.kotest.engine.spec.SpecRunner
 import io.kotest.engine.spec.materializeAndOrderRootTests
 import io.kotest.engine.test.DuplicateTestNameHandler
-import io.kotest.engine.test.TestCaseExecutionListener
 import io.kotest.engine.test.TestCaseExecutor
+import io.kotest.engine.test.listener.TestCaseExecutionListenerToTestEngineListenerAdapter
 import io.kotest.engine.test.scheduler.TestScheduler
 import io.kotest.fp.flatMap
 import io.kotest.mpp.log
@@ -95,20 +95,7 @@ internal class SingleInstanceSpecRunner(
       coroutineContext: CoroutineContext,
    ): TestResult {
       val testExecutor = TestCaseExecutor(
-         // todo replace with TestCaseAdapter
-         object : TestCaseExecutionListener {
-            override suspend fun testStarted(testCase: TestCase) {
-               listener.testStarted(testCase)
-            }
-
-            override suspend fun testIgnored(testCase: TestCase) {
-               listener.testIgnored(testCase, null)
-            }
-
-            override suspend fun testFinished(testCase: TestCase, result: TestResult) {
-               listener.testFinished(testCase, result)
-            }
-         },
+         TestCaseExecutionListenerToTestEngineListenerAdapter(listener),
          defaultCoroutineDispatcherFactory
       )
 

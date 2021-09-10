@@ -8,7 +8,7 @@ import io.kotest.core.test.TestResult
 import io.kotest.engine.listener.TestEngineListener
 import io.kotest.engine.test.CallingThreadTestContext
 import io.kotest.engine.test.TestCaseExecutor
-import io.kotest.engine.test.listener.TestCaseListenerToTestEngineListenerAdapter
+import io.kotest.engine.test.listener.TestCaseExecutionListenerToTestEngineListenerAdapter
 import io.kotest.mpp.log
 import kotlin.coroutines.coroutineContext
 
@@ -40,7 +40,7 @@ internal class DefaultSpecExecutorDelegate(
                coroutineDispatcherFactory
             )
             TestCaseExecutor(
-               TestCaseListenerToTestEngineListenerAdapter(listener),
+               TestCaseExecutionListenerToTestEngineListenerAdapter(listener),
                coroutineDispatcherFactory,
             ).execute(testCase, context)
          }

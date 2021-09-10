@@ -10,7 +10,7 @@ import io.kotest.core.test.TestStatus
 import io.kotest.core.test.createTestName
 import io.kotest.core.test.toTestCase
 import io.kotest.engine.listener.TestEngineListener
-import io.kotest.engine.test.listener.TestCaseListenerToTestEngineListenerAdapter
+import io.kotest.engine.test.listener.TestCaseExecutionListenerToTestEngineListenerAdapter
 import io.kotest.mpp.log
 import kotlin.coroutines.CoroutineContext
 
@@ -70,7 +70,7 @@ class CallingThreadTestContext(
    ): TestResult {
 
       return TestCaseExecutor(
-         TestCaseListenerToTestEngineListenerAdapter(listener),
+         TestCaseExecutionListenerToTestEngineListenerAdapter(listener),
          defaultCoroutineDispatcherFactory,
       ).execute(
          testCase,
