@@ -107,10 +107,7 @@ fun <A> arbitraryBuilder(
             { value },
             classifier,
             shrinker,
-            { rs ->
-               // use edgecase function if provided, otherwise retain those from flatmap compositions
-               if (edgecaseFn != null) edgecaseFn.invoke(rs) else value
-            }
+            { rs -> edgecaseFn?.invoke(rs) ?: value }
          ).build()
       }
       wrapReturn.startCoroutine(continuation, continuation)

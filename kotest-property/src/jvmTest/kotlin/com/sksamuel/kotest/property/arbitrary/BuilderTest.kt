@@ -85,6 +85,27 @@ class BuilderTest : FunSpec() {
             )
          }
 
+         test("should preserve edgecases of dependent arbs, even when intermideary arb(s) have no edgecases") {
+
+            val arb: Arb<String> = arbitrary {
+               val first = Arb.string(5, Codepoint.alphanumeric()).withEdgecases("edge1", "edge2").bind()
+               val second = Arb.int(1..4).withEdgecases(emptyList()).bind()
+               val third = Arb.int(101..109).withEdgecases(100 + second).bind()
+               "$first $second $third"
+            }
+
+            arb.edgecases() shouldContainExactlyInAnyOrder setOf(
+               "edge1 1 101",
+               "edge1 2 102",
+               "edge1 3 103",
+               "edge1 4 104",
+               "edge2 1 101",
+               "edge2 2 102",
+               "edge2 3 103",
+               "edge2 4 104"
+            )
+         }
+
          test("should modify edgecases") {
             val edges = setOf("edge1", "edge2")
             val arb = arbitraryBuilder(edgecaseFn = { edges.random(it.random) }) { "abcd" }
