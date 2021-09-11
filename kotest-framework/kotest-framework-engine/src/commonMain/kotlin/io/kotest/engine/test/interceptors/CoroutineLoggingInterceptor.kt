@@ -24,7 +24,7 @@ data class LogEntry(val level: LogLevel, val message: Any)
  */
 @ExperimentalKotest
 interface LogExtension : Extension {
-   fun handleLogs(testCase: TestCase, logs: List<LogEntry>)
+   suspend fun handleLogs(testCase: TestCase, logs: List<LogEntry>)
 }
 
 /**
