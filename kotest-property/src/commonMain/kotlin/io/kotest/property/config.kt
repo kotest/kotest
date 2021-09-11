@@ -48,32 +48,6 @@ object PropertyTesting {
    }
 }
 
-/**
- * Calculates the default iterations to use for a property test.
- * This value is used when a property test does not specify the iteration count.
- *
- * This is the max of either the [PropertyTesting.defaultIterationCount] or the
- * [calculateMinimumIterations] from the supplied gens.
- */
-fun computeDefaultConstraints(vararg gens: Gen<*>): Int =
-   max(PropertyTesting.defaultIterationCount, calculateMinimumIterations(*gens))
-
-/**
- * Calculates the minimum number of iterations required for the given generators.
- *
- * The value per generator is calcuated as:
- *  - for an [Exhaustive] the total number of values is used
- *  - for an [Arb] the number of edge cases is used
- *
- *  In addition, if all generators are exhaustives, then the cartesian product is used.
- */
-fun calculateMinimumIterations(vararg gens: Gen<*>): Int {
-   return when {
-      gens.all { it is Exhaustive } -> gens.fold(1) { acc, gen -> gen.minIterations() * acc }
-      else -> gens.fold(0) { acc, gen -> max(acc, gen.minIterations()) }
-   }
-}
-
 fun EdgeConfig.Companion.default(): EdgeConfig = EdgeConfig(
    edgecasesGenerationProbability = PropertyTesting.defaultEdgecasesGenerationProbability
 )

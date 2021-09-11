@@ -6,14 +6,10 @@ import io.kotest.property.Exhaustive
 import io.kotest.property.Gen
 import io.kotest.property.PropTestConfig
 import io.kotest.property.PropertyContext
+import io.kotest.property.PropertyTesting
 import io.kotest.property.RandomSource
 import io.kotest.property.classifications.outputClassifications
-import io.kotest.property.computeDefaultConstraints
 import io.kotest.property.random
-import kotlin.math.max
-
-private fun checkMinSize(minSize: Int, iterations: Int) =
-   require(iterations >= minSize) { "Require at least $minSize iterations to cover requirements" }
 
 suspend fun <A> proptest(
    genA: Gen<A>,
@@ -23,8 +19,7 @@ suspend fun <A> proptest(
 
    val constraints = config.constraints
       ?: config.iterations?.let { Constraints.iterations(it) }
-      ?: Constraints.iterations(computeDefaultConstraints(genA))
-//   checkMinSize(genA.minIterations(), iterations)
+      ?: Constraints.iterations(PropertyTesting.defaultIterationCount)
 
    val context = PropertyContext()
    val random = config.seed?.random() ?: RandomSource.default()
@@ -79,12 +74,9 @@ suspend fun <A, B> proptest(
    property: suspend PropertyContext.(A, B) -> Unit
 ): PropertyContext {
 
-   // we must have enough iterations to cover the max(minsize).
-   val minSize = max(genA.minIterations(), genB.minIterations())
    val constraints = config.constraints
       ?: config.iterations?.let { Constraints.iterations(it) }
-      ?: Constraints.iterations(computeDefaultConstraints(genA, genB))
-//   checkMinSize(minSize, iterations)
+      ?: Constraints.iterations(PropertyTesting.defaultIterationCount)
 
    val context = PropertyContext()
    val random = config.seed?.random() ?: RandomSource.default()
@@ -140,12 +132,9 @@ suspend fun <A, B, C> proptest(
    property: suspend PropertyContext.(A, B, C) -> Unit
 ): PropertyContext {
 
-   // we must have enough iterations to cover the max(minsize).
-   val minSize = max(max(genA.minIterations(), genB.minIterations()), genC.minIterations())
    val constraints = config.constraints
       ?: config.iterations?.let { Constraints.iterations(it) }
-      ?: Constraints.iterations(computeDefaultConstraints(genA, genB, genC))
-//   checkMinSize(genA.minIterations(), iterations)
+      ?: Constraints.iterations(PropertyTesting.defaultIterationCount)
 
    val context = PropertyContext()
    val random = config.seed?.random() ?: RandomSource.default()
@@ -206,15 +195,9 @@ suspend fun <A, B, C, D> proptest(
    property: suspend PropertyContext.(A, B, C, D) -> Unit
 ): PropertyContext {
 
-   // we must have enough iterations to cover the max(minsize).
-
-   val minSize =
-      listOf(genA.minIterations(), genB.minIterations(), genC.minIterations(), genD.minIterations()).maxOrNull() ?: 0
-
    val constraints = config.constraints
       ?: config.iterations?.let { Constraints.iterations(it) }
-      ?: Constraints.iterations(computeDefaultConstraints(genA, genB, genC, genD))
-//   checkMinSize(genA.minIterations(), iterations)
+      ?: Constraints.iterations(PropertyTesting.defaultIterationCount)
 
    val context = PropertyContext()
    val random = config.seed?.random() ?: RandomSource.default()
@@ -275,20 +258,10 @@ suspend fun <A, B, C, D, E> proptest(
    property: suspend PropertyContext.(A, B, C, D, E) -> Unit
 ): PropertyContext {
 
-   // we must have enough iterations to cover the max(minsize).
-
-   val minSize = listOf(
-      genA.minIterations(),
-      genB.minIterations(),
-      genC.minIterations(),
-      genD.minIterations(),
-      genE.minIterations()
-   ).maxOrNull() ?: 0
-
    val constraints = config.constraints
       ?: config.iterations?.let { Constraints.iterations(it) }
-      ?: Constraints.iterations(computeDefaultConstraints(genA, genB, genC, genD, genE))
-//   checkMinSize(minSize, iterations)
+      ?: Constraints.iterations(PropertyTesting.defaultIterationCount)
+
    val context = PropertyContext()
    val random = config.seed?.random() ?: RandomSource.default()
 
@@ -370,21 +343,9 @@ suspend fun <A, B, C, D, E, F> proptest(
    property: suspend PropertyContext.(A, B, C, D, E, F) -> Unit
 ): PropertyContext {
 
-   // we must have enough iterations to cover the max(minsize).
-
-   val minSize = listOf(
-      genA.minIterations(),
-      genB.minIterations(),
-      genC.minIterations(),
-      genD.minIterations(),
-      genE.minIterations(),
-      genF.minIterations()
-   ).maxOrNull() ?: 0
-
    val constraints = config.constraints
       ?: config.iterations?.let { Constraints.iterations(it) }
-      ?: Constraints.iterations(computeDefaultConstraints(genA, genB, genC, genD, genE, genF))
-//   checkMinSize(minSize, iterations)
+      ?: Constraints.iterations(PropertyTesting.defaultIterationCount)
 
    val context = PropertyContext()
    val random = config.seed?.random() ?: RandomSource.default()
@@ -440,22 +401,9 @@ suspend fun <A, B, C, D, E, F, G> proptest(
    property: suspend PropertyContext.(A, B, C, D, E, F, G) -> Unit
 ): PropertyContext {
 
-   // we must have enough iterations to cover the max(minsize).
-
-   val minSize = listOf(
-      genA.minIterations(),
-      genB.minIterations(),
-      genC.minIterations(),
-      genD.minIterations(),
-      genE.minIterations(),
-      genF.minIterations(),
-      genG.minIterations(),
-   ).maxOrNull() ?: 0
-
    val constraints = config.constraints
       ?: config.iterations?.let { Constraints.iterations(it) }
-      ?: Constraints.iterations(computeDefaultConstraints(genA, genB, genC, genD, genE, genF, genG))
-//   checkMinSize(minSize, iterations)
+      ?: Constraints.iterations(PropertyTesting.defaultIterationCount)
 
    val context = PropertyContext()
    val random = config.seed?.random() ?: RandomSource.default()
@@ -515,23 +463,9 @@ suspend fun <A, B, C, D, E, F, G, H> proptest(
    property: suspend PropertyContext.(A, B, C, D, E, F, G, H) -> Unit
 ): PropertyContext {
 
-   // we must have enough iterations to cover the max(minsize).
-
-   val minSize = listOf(
-      genA.minIterations(),
-      genB.minIterations(),
-      genC.minIterations(),
-      genD.minIterations(),
-      genE.minIterations(),
-      genF.minIterations(),
-      genG.minIterations(),
-      genH.minIterations(),
-   ).maxOrNull() ?: 0
-
    val constraints = config.constraints
       ?: config.iterations?.let { Constraints.iterations(it) }
-      ?: Constraints.iterations(computeDefaultConstraints(genA, genB, genC, genD, genE, genF, genG, genH))
-//   checkMinSize(minSize, iterations)
+      ?: Constraints.iterations(PropertyTesting.defaultIterationCount)
 
    val context = PropertyContext()
    val random = config.seed?.random() ?: RandomSource.default()
@@ -595,24 +529,9 @@ suspend fun <A, B, C, D, E, F, G, H, I> proptest(
    property: suspend PropertyContext.(A, B, C, D, E, F, G, H, I) -> Unit
 ): PropertyContext {
 
-   // we must have enough iterations to cover the max(minsize).
-
-   val minSize = listOf(
-      genA.minIterations(),
-      genB.minIterations(),
-      genC.minIterations(),
-      genD.minIterations(),
-      genE.minIterations(),
-      genF.minIterations(),
-      genG.minIterations(),
-      genH.minIterations(),
-      genI.minIterations(),
-   ).maxOrNull() ?: 0
-
    val constraints = config.constraints
       ?: config.iterations?.let { Constraints.iterations(it) }
-      ?: Constraints.iterations(computeDefaultConstraints(genA, genB, genC, genD, genE, genF, genG, genH, genI))
-//   checkMinSize(minSize, iterations)
+      ?: Constraints.iterations(PropertyTesting.defaultIterationCount)
 
    val context = PropertyContext()
    val random = config.seed?.random() ?: RandomSource.default()
@@ -680,25 +599,9 @@ suspend fun <A, B, C, D, E, F, G, H, I, J> proptest(
    property: suspend PropertyContext.(A, B, C, D, E, F, G, H, I, J) -> Unit
 ): PropertyContext {
 
-   // we must have enough iterations to cover the max(minsize).
-
-   val minSize = listOf(
-      genA.minIterations(),
-      genB.minIterations(),
-      genC.minIterations(),
-      genD.minIterations(),
-      genE.minIterations(),
-      genF.minIterations(),
-      genG.minIterations(),
-      genH.minIterations(),
-      genI.minIterations(),
-      genJ.minIterations(),
-   ).maxOrNull() ?: 0
-
    val constraints = config.constraints
       ?: config.iterations?.let { Constraints.iterations(it) }
-      ?: Constraints.iterations(computeDefaultConstraints(genA, genB, genC, genD, genE, genF, genG, genH, genI, genJ))
-   //   checkMinSize(minSize, iterations)
+      ?: Constraints.iterations(PropertyTesting.defaultIterationCount)
 
    val context = PropertyContext()
    val random = config.seed?.random() ?: RandomSource.default()
@@ -770,40 +673,9 @@ suspend fun <A, B, C, D, E, F, G, H, I, J, K> proptest(
    property: suspend PropertyContext.(A, B, C, D, E, F, G, H, I, J, K) -> Unit
 ): PropertyContext {
 
-   // we must have enough iterations to cover the max(minsize).
-
-   val minSize = listOf(
-      genA.minIterations(),
-      genB.minIterations(),
-      genC.minIterations(),
-      genD.minIterations(),
-      genE.minIterations(),
-      genF.minIterations(),
-      genG.minIterations(),
-      genH.minIterations(),
-      genI.minIterations(),
-      genJ.minIterations(),
-      genK.minIterations(),
-   ).maxOrNull() ?: 0
-
    val constraints = config.constraints
       ?: config.iterations?.let { Constraints.iterations(it) }
-      ?: Constraints.iterations(
-         computeDefaultConstraints(
-            genA,
-            genB,
-            genC,
-            genD,
-            genE,
-            genF,
-            genG,
-            genH,
-            genI,
-            genJ,
-            genK
-         )
-      )
-//   checkMinSize(minSize, iterations)
+      ?: Constraints.iterations(PropertyTesting.defaultIterationCount)
 
    val context = PropertyContext()
    val random = config.seed?.random() ?: RandomSource.default()
@@ -891,42 +763,9 @@ suspend fun <A, B, C, D, E, F, G, H, I, J, K, L> proptest(
    property: suspend PropertyContext.(A, B, C, D, E, F, G, H, I, J, K, L) -> Unit
 ): PropertyContext {
 
-   // we must have enough iterations to cover the max(minsize).
-
-   val minSize = listOf(
-      genA.minIterations(),
-      genB.minIterations(),
-      genC.minIterations(),
-      genD.minIterations(),
-      genE.minIterations(),
-      genF.minIterations(),
-      genG.minIterations(),
-      genH.minIterations(),
-      genI.minIterations(),
-      genJ.minIterations(),
-      genK.minIterations(),
-      genL.minIterations(),
-   ).maxOrNull() ?: 0
-
    val constraints = config.constraints
       ?: config.iterations?.let { Constraints.iterations(it) }
-      ?: Constraints.iterations(
-         computeDefaultConstraints(
-            genA,
-            genB,
-            genC,
-            genD,
-            genE,
-            genF,
-            genG,
-            genH,
-            genI,
-            genJ,
-            genK,
-            genL
-         )
-      )
-//   checkMinSize(minSize, iterations)
+      ?: Constraints.iterations(PropertyTesting.defaultIterationCount)
 
    val context = PropertyContext()
    val random = config.seed?.random() ?: RandomSource.default()

@@ -13,7 +13,6 @@ import io.kotest.property.arbitrary.map
 import io.kotest.property.arbitrary.withEdgecases
 import io.kotest.property.exhaustive.constant
 import io.kotest.property.exhaustive.ints
-import io.kotest.property.exhaustive.longs
 import io.kotest.property.forNone
 
 class ForNoneTest : FunSpec({
