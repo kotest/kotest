@@ -156,7 +156,6 @@ interface ArbitraryBuilderSyntax {
    suspend fun <T> Arb<T>.bind(): T
 }
 
-@Suppress("UNCHECKED_CAST")
 private class ArbContinuation<A> : Continuation<Arb<A>>, ArbitraryBuilderSyntax {
    override val context: CoroutineContext = EmptyCoroutineContext
    private lateinit var returnedArb: Arb<A>
