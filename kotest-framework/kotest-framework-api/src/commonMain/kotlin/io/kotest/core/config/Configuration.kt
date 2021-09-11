@@ -211,6 +211,11 @@ class Configuration {
    var projectTimeout: Long = Long.MAX_VALUE
 
    /**
+    * Controls which log functions on TestCase will be invoked or skipped
+    */
+   var logLevel: LogLevel = LogLevel.Off
+
+   /**
     * Returns the default [TestCaseConfig] to be assigned to tests when not specified either in
     * the spec, test factory, or test case itself.
     *

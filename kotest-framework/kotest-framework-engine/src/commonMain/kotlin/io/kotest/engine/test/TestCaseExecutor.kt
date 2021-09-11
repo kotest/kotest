@@ -10,6 +10,7 @@ import io.kotest.core.test.TestStatus
 import io.kotest.engine.concurrency.NoopCoroutineDispatcherFactory
 import io.kotest.engine.test.interceptors.AssertionModeInterceptor
 import io.kotest.engine.test.interceptors.CoroutineDebugProbeInterceptor
+import io.kotest.engine.test.interceptors.CoroutineLoggingInterceptor
 import io.kotest.engine.test.interceptors.CoroutineScopeInterceptor
 import io.kotest.engine.test.interceptors.EnabledCheckInterceptor
 import io.kotest.engine.test.interceptors.ExceptionCapturingInterceptor
@@ -58,6 +59,7 @@ class TestCaseExecutor(
          TimeoutInterceptor,
          InvocationRepeatInterceptor(start),
          InvocationTimeoutInterceptor,
+         CoroutineLoggingInterceptor,
       )
 
       val innerExecute: suspend (TestCase, TestContext) -> TestResult = { tc, ctx ->

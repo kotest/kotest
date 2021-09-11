@@ -64,7 +64,7 @@ internal class InstancePerTestSpecRunner(
    private val results = ConcurrentHashMap<TestCase, TestResult>()
 
    /**
-    * The intention of this runner is that each [TestCase] executes in it's own instance
+    * The intention of this runner is that each [TestCase] executes in its own instance
     * of the containing [Spec] class. Therefore, when we begin executing a test case from
     * the queue, we must first instantiate a new spec, and begin execution on _that_ instance.
     *
@@ -85,7 +85,7 @@ internal class InstancePerTestSpecRunner(
       }
 
    /**
-    * The intention of this runner is that each [TestCase] executes in it's own instance
+    * The intention of this runner is that each [TestCase] executes in its own instance
     * of the containing [Spec] class. Therefore, when we begin executing a test case from
     * the queue, we must first instantiate a new spec, and begin execution on _that_ instance.
     *
