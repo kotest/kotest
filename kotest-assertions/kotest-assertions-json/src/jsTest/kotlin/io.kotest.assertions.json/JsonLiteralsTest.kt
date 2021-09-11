@@ -2,15 +2,17 @@ package io.kotest.assertions.json
 
 import io.kotest.assertions.shouldFail
 import io.kotest.core.spec.style.FunSpec
+import io.kotest.matchers.string.shouldContain
 import io.kotest.matchers.throwable.shouldHaveMessage
 
 class JsonLiteralsTest : FunSpec(
    {
-      test("comparing float and int") {
-         shouldFail {
-            "3.2" shouldEqualJson "3"
-         }.shouldHaveMessage(
-            """
+      context("Strict (default) comparisons") {
+         test("comparing float and int") {
+            shouldFail {
+               "3.2" shouldEqualJson "3"
+            }.shouldHaveMessage(
+               """
                The top level expected 3 but was 3.2
 
                expected:
@@ -19,26 +21,36 @@ class JsonLiteralsTest : FunSpec(
                actual:
                3.2
             """.trimIndent()
-         )
-      }
+            )
+         }
 
-      test("comparing exponent-based float with regular float") {
-         "1E3" shouldEqualJson "1000.0"
-         "1000.0" shouldEqualJson "1E3"
-         "5E0" shouldEqualJson "5.0"
-         "2E-1" shouldEqualJson "0.2"
-      }
+         test("quoted numbers are treated as strings") {
+            shouldFail { "\"1E3\"" shouldEqualJson "1000.0" }
+            // Unquoted 1E3 is parsed to double and back due to prettifying output
+            shouldFail { "\"1000.0\"" shouldEqualJson "1E3" }.message shouldContain
+               "The top level expected number but was string"
+            shouldFail { "10.0" shouldEqualJson "\"10.0\"" }.message shouldContain
+               "The top level expected string but was number"
+         }
 
-      test("comparing high-precision floating point numbers") {
+         test("comparing exponent-based float with regular float") {
+            "1E3" shouldEqualJson "1000.0"
+            "1000.0" shouldEqualJson "1E3"
+            "1000.0" shouldEqualJson "1000"
+            "5E0" shouldEqualJson "5.0"
+            "2E-1" shouldEqualJson "0.2"
+         }
 
-         // Note: In the middle paragraph of the failure message the expected JSON has been
-         //       formatted as a JSON tree using KotlinX.serialization which parses the
-         //       number to a double and back, hence the loss of precision.
+         test("comparing high-precision floating point numbers") {
 
-         shouldFail {
-            "0.12345678912345678" shouldEqualJson "0.123456789123456789"
-         }.shouldHaveMessage(
-            """
+            // Note: In the middle paragraph of the failure message the expected JSON has been
+            //       formatted as a JSON tree using KotlinX.serialization which parses the
+            //       number to a double and back, hence the loss of precision.
+
+            shouldFail {
+               "0.12345678912345678" shouldEqualJson "0.123456789123456789"
+            }.shouldHaveMessage(
+               """
                The top level expected 0.123456789123456789 but was 0.12345678912345678
 
                expected:
@@ -47,14 +59,14 @@ class JsonLiteralsTest : FunSpec(
                actual:
                0.12345678912345678
             """.trimIndent()
-         )
-      }
+            )
+         }
 
-      test("comparing string and boolean") {
-         shouldFail {
-            "true" shouldEqualJson "\"true\""
-         }.shouldHaveMessage(
-            """
+         test("comparing string and boolean") {
+            shouldFail {
+               "true" shouldEqualJson "\"true\""
+            }.shouldHaveMessage(
+               """
                The top level expected string but was boolean
 
                expected:
@@ -63,7 +75,69 @@ class JsonLiteralsTest : FunSpec(
                actual:
                true
             """.trimIndent()
-         )
+            )
+         }
+      }
+
+      context("CompareMode.Exact requires same format for numbers") {
+         infix fun String.shouldExactlyEqualJson(expected: String) = this.shouldEqualJson(expected, CompareMode.Exact)
+
+         test("comparing float and exponent") {
+            shouldFail {
+               "10.0" shouldExactlyEqualJson "1e1"
+            }.shouldHaveMessage(
+               """
+               The top level expected 1e1 but was 10.0
+
+               expected:
+               10.0
+
+               actual:
+               10.0
+            """.trimIndent()
+            )
+         }
+
+         test("comparing int and exponent") {
+            shouldFail {
+               "10" shouldExactlyEqualJson "1e1"
+            }.shouldHaveMessage(
+               """
+               The top level expected 1e1 but was 10
+
+               expected:
+               10.0
+
+               actual:
+               10
+            """.trimIndent()
+            )
+         }
+
+         test("comparing float and int") {
+            shouldFail {
+               "10.0" shouldExactlyEqualJson "10"
+            }.shouldHaveMessage(
+               """
+               The top level expected 10 but was 10.0
+
+               expected:
+               10
+
+               actual:
+               10.0
+            """.trimIndent()
+            )
+         }
+
+         test("quoted numbers are treated as strings") {
+            shouldFail { "\"1E3\"" shouldEqualJson "1000.0" }
+            // Unquoted 1E3 is parsed to double and back due to prettifying output
+            shouldFail { "\"1000.0\"" shouldEqualJson "1E3" }.message shouldContain
+               "The top level expected number but was string"
+            shouldFail { "10.0" shouldEqualJson "\"10.0\"" }.message shouldContain
+               "The top level expected string but was number"
+         }
       }
 
       context("Lenient type-conversions") {

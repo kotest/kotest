@@ -3,7 +3,32 @@
 package io.kotest.assertions.json
 
 enum class CompareMode {
-   Strict, Lenient
+
+   /**
+    * Types and formats must be identical.
+    *
+    * For example, "true" and true will not match because one is a string, and the other is a boolean.
+    * Similarly, 2.99E9 and 299000000 would not match because despite both being doubles, and the same value,
+    * they are not using the same representation.
+    */
+   Exact,
+
+   /**
+    * Types must be identical and compare by value.
+    *
+    * For example, `"true"` and `true` will not match because one is a string, and the other is a boolean.
+    * But `2.99E9` and `299000000` are considered equal as they are the same number, just in a different format.
+    * `"100"` and `100` would not match as they are different types (string vs number).
+    */
+   Strict,
+
+   /**
+    * Compare by value, coercing if possible.
+    *
+    * For example, "true" and true will match because the string value can be coerced into a valid boolean.
+    * Similarly, "100" and 100 will match as the former can be coerced into an int.
+    */
+   Lenient,
 }
 
 enum class CompareOrder {
@@ -147,7 +172,16 @@ internal fun compareBooleans(path: List<String>, expected: Boolean, actual: Bool
 
 private fun compareNumbers(path: List<String>, expected: JsonNode.NumberNode, actual: JsonNode, mode: CompareMode): JsonError? {
    return when(actual) {
-      is JsonNode.NumberNode -> compareNumberNodes(path, expected, actual)
+      is JsonNode.NumberNode -> {
+         when(mode) {
+            CompareMode.Exact -> {
+               if (expected.content != actual.content) JsonError.UnequalValues(path, expected.content, actual.content)
+               else null
+            }
+            CompareMode.Strict -> compareNumberNodes(path, expected, actual)
+            CompareMode.Lenient -> compareNumberNodes(path, expected, actual)
+         }
+      }
       is JsonNode.StringNode -> {
          if (CompareMode.Lenient == mode && actual.contentIsNumber()) compareNumberNodes(path, expected, actual.toNumberNode())
          else JsonError.IncompatibleTypes(path, expected, actual)
