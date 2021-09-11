@@ -8,7 +8,7 @@ import io.kotest.core.test.Identifiers
  * Tracks test names for a context, and reports on duplicates, or modifies names
  * to be unique based on the value of the given [DuplicateTestNameMode].
  */
-class DuplicateTestNameHandler(private val mode: DuplicateTestNameMode) {
+internal class DuplicateTestNameHandler(private val mode: DuplicateTestNameMode) {
 
    private val names = mutableSetOf<String>()
 

@@ -12,7 +12,7 @@ import io.kotest.mpp.log
  *
  * Note: This extension only applies to root tests. Nested tests are not affected by this extension.
  */
-object FocusEnabledExtension : TestEnabledExtension {
+internal object FocusEnabledExtension : TestEnabledExtension {
    override fun isEnabled(testCase: TestCase): Enabled {
 
       if (!testCase.description.isRootTest()) return Enabled.enabled

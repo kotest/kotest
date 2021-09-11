@@ -33,8 +33,9 @@ fun containJsonKey(path: String) = object : Matcher<String?> {
 
       return MatcherResult(
          passed,
-         "$sub should contain the path $path",
-         "$sub should not contain the path $path"
-      )
+         { "$sub should contain the path $path" },
+         {
+            "$sub should not contain the path $path"
+         })
    }
 }

@@ -5,7 +5,7 @@ import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.engine.listener.TestEngineListener
 
-class SpecEnterInterceptor(private val listener: TestEngineListener) : SpecRefInterceptor {
+internal class SpecEnterInterceptor(private val listener: TestEngineListener) : SpecRefInterceptor {
 
    override suspend fun intercept(
       fn: suspend (SpecRef) -> Map<TestCase, TestResult>

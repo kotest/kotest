@@ -15,7 +15,7 @@ import io.kotest.mpp.sysprop
  *
  * Note: If no minimum severity level is specified, then this extension has no effect.
  */
-object SeverityLevelEnabledExtension : TestEnabledExtension {
+internal object SeverityLevelEnabledExtension : TestEnabledExtension {
    override fun isEnabled(testCase: TestCase): Enabled {
 
       val minLevel = sysprop(KotestEngineProperties.testSeverity)

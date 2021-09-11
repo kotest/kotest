@@ -5,7 +5,7 @@ import io.kotest.engine.EngineResult
 import io.kotest.engine.TestSuite
 import io.kotest.engine.listener.TestEngineListener
 
-class ProjectExtensionEngineInterceptor(private val extensions: List<ProjectExtension>) : EngineInterceptor {
+internal class ProjectExtensionEngineInterceptor(private val extensions: List<ProjectExtension>) : EngineInterceptor {
 
    override suspend fun intercept(
       suite: TestSuite,

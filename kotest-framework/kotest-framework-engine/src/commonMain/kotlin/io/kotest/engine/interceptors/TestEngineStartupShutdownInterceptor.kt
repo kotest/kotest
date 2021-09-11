@@ -7,7 +7,7 @@ import io.kotest.engine.listener.TestEngineListener
 /**
  * Notifies the [TestEngineListener] on startup and shutdown.
  */
-object TestEngineStartupShutdownInterceptor : EngineInterceptor {
+internal object TestEngineStartupShutdownInterceptor : EngineInterceptor {
 
    override suspend fun intercept(
       suite: TestSuite,

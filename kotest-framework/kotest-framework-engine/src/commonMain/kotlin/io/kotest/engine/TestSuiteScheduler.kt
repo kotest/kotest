@@ -11,14 +11,14 @@ import io.kotest.mpp.log
  * A [TestSuiteScheduler] is responsible for launching each spec from a [TestSuite] into a coroutine.
  */
 @ExperimentalKotest
-interface TestSuiteScheduler {
+internal interface TestSuiteScheduler {
    suspend fun schedule(suite: TestSuite, listener: TestEngineListener): EngineResult
 }
 
 /**
  * A [TestSuiteScheduler] that launches specs sequentially in a loop.
  */
-object SequentialTestSuiteScheduler : TestSuiteScheduler {
+internal object SequentialTestSuiteScheduler : TestSuiteScheduler {
 
    override suspend fun schedule(suite: TestSuite, listener: TestEngineListener): EngineResult {
       log { "LoopingTestSuiteScheduler: Executing ${suite.specs} specs" }

@@ -22,7 +22,7 @@ import kotlinx.coroutines.sync.withPermit
  *
  * @param maxConcurrent The maximum number of concurrent coroutines.
  */
-class ConcurrentTestSuiteScheduler(private val maxConcurrent: Int) : TestSuiteScheduler {
+internal class ConcurrentTestSuiteScheduler(private val maxConcurrent: Int) : TestSuiteScheduler {
 
    override suspend fun schedule(suite: TestSuite, listener: TestEngineListener): EngineResult {
       log { "DefaultTestSuiteScheduler: Launching ${suite.specs.size} specs" }

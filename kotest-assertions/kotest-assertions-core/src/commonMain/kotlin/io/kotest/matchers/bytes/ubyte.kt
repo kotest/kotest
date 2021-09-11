@@ -12,7 +12,8 @@ fun UByte.shouldBeBetween(lower: UByte, upper: UByte): UByte {
 fun between(lower: UByte, upper: UByte) = object : Matcher<UByte> {
    override fun test(value: UByte) = MatcherResult(
       value in lower..upper,
-      "$value should be between ($lower, $upper) inclusive",
-      "$value should not be between ($lower, $upper) inclusive"
-   )
+      { "$value should be between ($lower, $upper) inclusive" },
+      {
+         "$value should not be between ($lower, $upper) inclusive"
+      })
 }

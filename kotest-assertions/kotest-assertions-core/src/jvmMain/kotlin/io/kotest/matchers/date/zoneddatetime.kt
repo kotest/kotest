@@ -8,14 +8,15 @@ import io.kotest.matchers.shouldNot
 import java.time.ZonedDateTime
 
 fun beInTodayZDT() = object : Matcher<ZonedDateTime> {
-  override fun test(value: ZonedDateTime): MatcherResult {
-    val passed = value.toLocalDate() == ZonedDateTime.now().toLocalDate()
-    return MatcherResult(
-      passed,
-      "$value should be today",
-      "$value should not be today"
-    )
-  }
+   override fun test(value: ZonedDateTime): MatcherResult {
+      val passed = value.toLocalDate() == ZonedDateTime.now().toLocalDate()
+      return MatcherResult(
+         passed,
+         { "$value should be today" },
+         {
+            "$value should not be today"
+         })
+   }
 }
 
 /**

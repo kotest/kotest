@@ -2,9 +2,7 @@ package io.kotest.matchers.doubles
 
 import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
-import io.kotest.matchers.should
 import io.kotest.matchers.shouldBe
-import io.kotest.matchers.shouldNot
 import io.kotest.matchers.shouldNotBe
 
 /**
@@ -48,5 +46,9 @@ infix fun Double.shouldNotBeGreaterThan(x: Double): Double {
 
 fun gt(x: Double) = beGreaterThan(x)
 fun beGreaterThan(x: Double) = object : Matcher<Double> {
-  override fun test(value: Double) = MatcherResult(value > x, "$value should be > $x", "$value should not be > $x")
+  override fun test(value: Double) =
+     MatcherResult(
+        value > x,
+        { "$value should be > $x" },
+        { "$value should not be > $x" })
 }

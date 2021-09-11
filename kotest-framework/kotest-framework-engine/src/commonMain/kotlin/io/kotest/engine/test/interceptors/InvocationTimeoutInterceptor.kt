@@ -15,7 +15,7 @@ import kotlin.math.min
 /**
  * Installs an invocation timeout.
  */
-object InvocationTimeoutInterceptor : TestExecutionInterceptor {
+internal object InvocationTimeoutInterceptor : TestExecutionInterceptor {
 
    override suspend fun intercept(
       test: suspend (TestCase, TestContext) -> TestResult

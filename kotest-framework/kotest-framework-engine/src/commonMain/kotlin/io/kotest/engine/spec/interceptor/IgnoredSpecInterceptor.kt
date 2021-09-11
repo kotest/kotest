@@ -14,7 +14,7 @@ import io.kotest.mpp.log
  *
  * Note: annotations are only available on the JVM.
  */
-class IgnoredSpecInterceptor(private val listener: TestEngineListener) : SpecRefInterceptor {
+internal class IgnoredSpecInterceptor(private val listener: TestEngineListener) : SpecRefInterceptor {
 
    override suspend fun intercept(
       fn: suspend (SpecRef) -> Map<TestCase, TestResult>

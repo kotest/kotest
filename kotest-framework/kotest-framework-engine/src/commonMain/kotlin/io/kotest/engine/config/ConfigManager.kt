@@ -37,14 +37,14 @@ object ConfigManager {
  *
  * Note: This function will have no effect on non-JVM targets.
  */
-expect fun applyConfigFromSystemProperties(configuration: Configuration)
+internal expect fun applyConfigFromSystemProperties(configuration: Configuration)
 
 /**
  * Modifies configuration with some defaults based on the platform.
  *
  * For example on JVM it will add System property based tag detection.
  */
-expect fun applyPlatformDefaults(configuration: Configuration)
+internal expect fun applyPlatformDefaults(configuration: Configuration)
 
 /**
  *
@@ -53,12 +53,12 @@ expect fun applyPlatformDefaults(configuration: Configuration)
  *
  * Note: This will only have an effect on JVM targets.
  */
-expect fun applyConfigFromAutoScan(configuration: Configuration)
+internal expect fun applyConfigFromAutoScan(configuration: Configuration)
 
 /**
  * Scan the classpath for [AbstractProjectConfig] instances.
  *
  * Note: This will only have an effect on JVM targets.
  */
-expect fun detectAbstractProjectConfigs(): List<AbstractProjectConfig>
+internal expect fun detectAbstractProjectConfigs(): List<AbstractProjectConfig>
 

@@ -27,8 +27,9 @@ inline fun <reified T> containJsonKeyValue(path: String, t: T) = object : Matche
 
       return MatcherResult(
          value != null && JsonPath.parse(value).read(path, T::class.java) == t,
-         "$sub should contain the element $path = $t",
-         "$sub should not contain the element $path = $t"
-      )
+         { "$sub should contain the element $path = $t" },
+         {
+            "$sub should not contain the element $path = $t"
+         })
    }
 }

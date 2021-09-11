@@ -1,5 +1,7 @@
 package io.kotest.matchers
 
+import io.kotest.matchers.MatcherResult.Companion.invoke
+
 /**
  * A [Matcher] is the main abstraction in the assertions library.
  *
@@ -27,10 +29,11 @@ interface Matcher<in T> {
    infix fun <U> compose(fn: (U) -> T): Matcher<U> = Matcher { this@Matcher.test(fn(it)) }
 
    companion object {
+
       /**
        * Returns a [Matcher] for type T that will always fail with the given [error] message.
        */
-      fun <T> failure(error: String) = Matcher<T> { MatcherResult(false, "", error) }
+      fun <T> failure(error: String) = Matcher<T> { invoke(false, { "" }, { error }) }
 
       /**
        * Create matcher with the given function to evaluate the value and return a MatcherResult
@@ -63,15 +66,15 @@ infix fun <T> Matcher<T>.or(other: Matcher<T>): Matcher<T> = Matcher {
  */
 internal abstract class NeverNullMatcher<T : Any?> : Matcher<T?> {
    final override fun test(value: T?): MatcherResult {
-      return if (value == null) MatcherResult(false, "Expecting actual not to be null", "")
+      return if (value == null) invoke(false, { "Expecting actual not to be null" }, { "" })
       else testNotNull(value)
    }
 
    override fun invert(): Matcher<T?> = object : NeverNullMatcher<T?>() {
       override fun testNotNull(value: T?): MatcherResult {
-         if (value == null) return MatcherResult(false, "Expecting actual not to be null", "")
+         if (value == null) return invoke(false, { "Expecting actual not to be null" }, { "" })
          val result = this@NeverNullMatcher.testNotNull(value)
-         return MatcherResult(!result.passed(), result.negatedFailureMessage(), result.failureMessage())
+         return invoke(!result.passed(), { result.negatedFailureMessage() }, { result.failureMessage() })
       }
    }
 
@@ -126,15 +129,17 @@ interface MatcherResult {
 
    companion object {
 
+      @Deprecated(
+         "Prefer the version that accepts functions - this avoids eager creation of messages. This was deprecated in 5.0 and will be removed in 7.0",
+         ReplaceWith(
+            "MatcherResult(\npassed,\n{ failureMessage },\n{ negatedFailureMessage }\n)"
+         )
+      )
       operator fun invoke(
          passed: Boolean,
          failureMessage: String,
          negatedFailureMessage: String
-      ) = object : MatcherResult {
-         override fun passed(): Boolean = passed
-         override fun failureMessage(): String = failureMessage
-         override fun negatedFailureMessage(): String = negatedFailureMessage
-      }
+      ) = invoke(passed, { failureMessage }, { negatedFailureMessage })
 
       operator fun invoke(
          passed: Boolean,

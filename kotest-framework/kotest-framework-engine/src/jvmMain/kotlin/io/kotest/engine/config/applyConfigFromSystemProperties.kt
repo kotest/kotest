@@ -14,7 +14,7 @@ import io.kotest.mpp.sysprop
  *
  * Note: This function will have no effect on non-JVM targets.
  */
-actual fun applyConfigFromSystemProperties(configuration: Configuration) {
+internal actual fun applyConfigFromSystemProperties(configuration: Configuration) {
    isolationMode().foreach { configuration.isolationMode = it }
    assertionMode().foreach { configuration.assertionMode = it }
    parallelism().foreach { configuration.parallelism = it }

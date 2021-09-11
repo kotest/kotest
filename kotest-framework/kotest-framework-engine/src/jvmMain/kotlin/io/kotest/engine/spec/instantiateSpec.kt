@@ -7,7 +7,7 @@ import io.kotest.core.spec.Spec
 import kotlin.reflect.KClass
 import kotlin.reflect.jvm.isAccessible
 
-actual fun instantiate(kclass: KClass<out Spec>): Result<Spec> {
+internal actual fun instantiate(kclass: KClass<out Spec>): Result<Spec> {
    return createAndInitializeSpec(kclass)
 }
 

@@ -8,11 +8,11 @@ import io.kotest.core.test.TestResult
 import io.kotest.engine.listener.TestEngineListener
 import io.kotest.engine.test.CallingThreadTestContext
 import io.kotest.engine.test.TestCaseExecutor
-import io.kotest.engine.test.listener.TestCaseListenerToTestEngineListenerAdapter
+import io.kotest.engine.test.listener.TestCaseExecutionListenerToTestEngineListenerAdapter
 import io.kotest.mpp.log
 import kotlin.coroutines.coroutineContext
 
-actual fun createSpecExecutorDelegate(
+internal actual fun createSpecExecutorDelegate(
    listener: TestEngineListener,
    defaultCoroutineDispatcherFactory: CoroutineDispatcherFactory,
 ): SpecExecutorDelegate =
@@ -22,7 +22,7 @@ actual fun createSpecExecutorDelegate(
  * A [SpecExecutorDelegate] that executes tests sequentially, using the calling thread
  * as the execution context for timeouts.
  */
-class DefaultSpecExecutorDelegate(
+internal class DefaultSpecExecutorDelegate(
    private val listener: TestEngineListener,
    private val coroutineDispatcherFactory: CoroutineDispatcherFactory
 ) : SpecExecutorDelegate {
@@ -40,7 +40,7 @@ class DefaultSpecExecutorDelegate(
                coroutineDispatcherFactory
             )
             TestCaseExecutor(
-               TestCaseListenerToTestEngineListenerAdapter(listener),
+               TestCaseExecutionListenerToTestEngineListenerAdapter(listener),
                coroutineDispatcherFactory,
             ).execute(testCase, context)
          }

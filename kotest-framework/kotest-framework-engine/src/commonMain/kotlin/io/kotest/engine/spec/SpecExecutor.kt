@@ -110,7 +110,7 @@ interface SpecExecutorDelegate {
    suspend fun execute(spec: Spec): Map<TestCase, TestResult>
 }
 
-expect fun createSpecExecutorDelegate(
+internal expect fun createSpecExecutorDelegate(
    listener: TestEngineListener,
    defaultCoroutineDispatcherFactory: CoroutineDispatcherFactory,
 ): SpecExecutorDelegate

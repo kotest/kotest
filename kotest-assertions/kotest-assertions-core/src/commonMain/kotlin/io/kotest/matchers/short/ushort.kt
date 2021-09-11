@@ -12,7 +12,8 @@ fun UShort.shouldBeBetween(lower: UShort, upper: UShort): UShort {
 fun between(lower: UShort, upper: UShort) = object : Matcher<UShort> {
    override fun test(value: UShort) = MatcherResult(
       value in lower..upper,
-      "$value should be between ($lower, $upper) inclusive",
-      "$value should not be between ($lower, $upper) inclusive"
-   )
+      { "$value should be between ($lower, $upper) inclusive" },
+      {
+         "$value should not be between ($lower, $upper) inclusive"
+      })
 }

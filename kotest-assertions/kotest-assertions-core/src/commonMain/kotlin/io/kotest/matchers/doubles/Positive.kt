@@ -1,7 +1,7 @@
 package io.kotest.matchers.doubles
 
 import io.kotest.matchers.Matcher
-import io.kotest.matchers.MatcherResult
+import io.kotest.matchers.MatcherResult.Companion.invoke
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
 
@@ -44,5 +44,8 @@ fun Double.shouldNotBePositive(): Double {
 }
 
 fun positive() = object : Matcher<Double> {
-  override fun test(value: Double) = MatcherResult(value > 0.0, "$value should be > 0.0", "$value should not be > 0.0")
+  override fun test(value: Double) = invoke(
+     value > 0.0,
+     { "$value should be > 0.0" },
+     { "$value should not be > 0.0" })
 }

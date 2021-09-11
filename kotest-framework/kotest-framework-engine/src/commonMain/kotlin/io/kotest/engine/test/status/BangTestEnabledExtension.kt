@@ -11,7 +11,7 @@ import io.kotest.mpp.sysprop
  * A [TestEnabledExtension] that disabled a test if the name of the test is prefixed with "!"
  * and System.getProperty("kotest.bang.disable") has a null value (ie, not defined)
  */
-object BangTestEnabledExtension : TestEnabledExtension {
+internal object BangTestEnabledExtension : TestEnabledExtension {
    override fun isEnabled(testCase: TestCase): Enabled {
       // this sys property disables the use of !
       // when it's not set, then we use ! to disable tests

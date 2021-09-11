@@ -20,7 +20,7 @@ import io.kotest.mpp.log
  *
  *  Note: tags are defined either through [TestCaseConfig] or in the [Spec] dsl.
  */
-object TagsEnabledExtension : TestEnabledExtension {
+internal object TagsEnabledExtension : TestEnabledExtension {
    override fun isEnabled(testCase: TestCase): Enabled {
       val enabledInTags = configuration.activeTags().parse().isActive(testCase.allTags())
       if (!enabledInTags) {

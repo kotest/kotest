@@ -10,7 +10,7 @@ import io.kotest.engine.events.BeforeProjectListenerException
 import io.kotest.engine.listener.TestEngineListener
 import io.kotest.mpp.log
 
-class ProjectListenerEngineInterceptor(private val extensions: List<Extension>) : EngineInterceptor {
+internal class ProjectListenerEngineInterceptor(private val extensions: List<Extension>) : EngineInterceptor {
 
    override suspend fun intercept(
       suite: TestSuite,

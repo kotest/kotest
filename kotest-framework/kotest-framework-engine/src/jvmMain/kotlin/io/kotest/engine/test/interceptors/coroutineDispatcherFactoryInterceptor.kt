@@ -16,7 +16,7 @@ internal actual fun coroutineDispatcherFactoryInterceptor(
 /**
  * Switches execution onto a dispatcher provided by the given [CoroutineDispatcherFactory].
  */
-class CoroutineDispatcherFactoryInterceptor(
+internal class CoroutineDispatcherFactoryInterceptor(
    private val defaultCoroutineDispatcherFactory: CoroutineDispatcherFactory
 ) : TestExecutionInterceptor {
 

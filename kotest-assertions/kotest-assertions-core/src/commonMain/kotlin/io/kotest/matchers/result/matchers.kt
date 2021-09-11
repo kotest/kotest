@@ -31,9 +31,10 @@ fun <T> beSuccess(): Matcher<Result<T>> = object : Matcher<Result<T>> {
    override fun test(value: Result<T>): MatcherResult {
       return MatcherResult(
          value.isSuccess,
-         "Result should be a Success but was $value",
-         "Result should not be a Success"
-      )
+         { "Result should be a Success but was $value" },
+         {
+            "Result should not be a Success"
+         })
    }
 }
 
@@ -44,9 +45,10 @@ class BeSuccess<T>(val expected: T?) : Matcher<Result<T>> {
          {
             MatcherResult(
                it == expected,
-               "Result should be a Success($expected), but instead got Success($it).",
-               "Result should not be a Success($expected)"
-            )
+               { "Result should be a Success($expected), but instead got Success($it)." },
+               {
+                  "Result should not be a Success($expected)"
+               })
          },
          {
             defaultResult(false)
@@ -55,30 +57,41 @@ class BeSuccess<T>(val expected: T?) : Matcher<Result<T>> {
    }
 
    private fun defaultResult(passed: Boolean) =
-      MatcherResult(passed, "Result should be a success.", "Result should not be a success")
+      MatcherResult(
+         passed,
+         { "Result should be a success." },
+         { "Result should not be a success" })
 }
 
 fun beFailure(): BeFailure = BeFailure()
 class BeFailure : Matcher<Result<Any?>> {
    override fun test(value: Result<Any?>) = MatcherResult(
       value.isFailure,
-      "Result should be a failure but was ${value.getOrNull()}",
-      "Result should not be a failure"
-   )
+      { "Result should be a failure but was ${value.getOrNull()}" },
+      {
+         "Result should not be a failure"
+      })
 }
 
 class BeFailureOfType<A : Throwable>(private val clazz: KClass<A>) : Matcher<Result<Any?>> {
    override fun test(value: Result<Any?>): MatcherResult {
       val error = value.exceptionOrNull()
       return when {
-         value.isSuccess -> MatcherResult(false, "Result should be a failure but was success", "")
+         value.isSuccess -> MatcherResult(
+            false,
+            { "Result should be a failure but was success" },
+            { "" })
          clazz.isInstance(error) -> MatcherResult(
             true,
-            "Result should be a Failure($clazz)",
-            "Result should not be a Failure($clazz)"
-         )
+            { "Result should be a Failure($clazz)" },
+            {
+               "Result should not be a Failure($clazz)"
+            })
          else -> {
-            MatcherResult(false, "Result should be a Failure($clazz) but was Failure(${error!!::class})", "")
+            MatcherResult(
+               false,
+               { "Result should be a Failure($clazz) but was Failure(${error!!::class})" },
+               { "" })
          }
       }
    }
