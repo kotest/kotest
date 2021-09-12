@@ -25,13 +25,8 @@ kotlin {
       }
 
       linuxX64()
-      linuxArm64()
-      linuxArm32Hfp()
-      linuxMips32()
-      linuxMipsel32()
 
       mingwX64()
-      mingwX86()
 
       macosX64()
       macosArm64()
@@ -87,23 +82,7 @@ kotlin {
          dependsOn(desktopMain)
       }
 
-      val mingwX86Main by getting {
-         dependsOn(desktopMain)
-      }
-
       val linuxX64Main by getting {
-         dependsOn(desktopMain)
-      }
-
-      val linuxArm32HfpMain by getting {
-         dependsOn(desktopMain)
-      }
-
-      val linuxMips32Main by getting {
-         dependsOn(desktopMain)
-      }
-
-      val linuxMipsel32Main by getting {
          dependsOn(desktopMain)
       }
 
