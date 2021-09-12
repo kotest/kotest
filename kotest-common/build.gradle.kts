@@ -95,7 +95,7 @@ kotlin {
          dependsOn(desktopMain)
       }
 
-      val linuxArm32Hfp by getting {
+      val linuxArm32HfpMain by getting {
          dependsOn(desktopMain)
       }
 
