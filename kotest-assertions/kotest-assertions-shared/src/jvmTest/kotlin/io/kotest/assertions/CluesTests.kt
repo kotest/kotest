@@ -1,6 +1,7 @@
 package io.kotest.assertions
 
 import io.kotest.core.spec.style.FunSpec
+import io.kotest.matchers.collections.shouldHaveSize
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
@@ -8,11 +9,13 @@ import kotlinx.coroutines.withContext
 class CluesTests : FunSpec({
    test("withClue should not fail on coroutine thread switch") {
       withContext(Dispatchers.Unconfined) {
+         val threadIds = mutableSetOf<Long>()
          withClue("should not fail") {
-            Thread.currentThread().run { println("withClue block begins on $name, id $id") }
+            threadIds.add(Thread.currentThread().id)
             delay(10)
-            Thread.currentThread().run { println("withClue block ends on $name, id $id") }
+            threadIds.add(Thread.currentThread().id)
          }
+         threadIds shouldHaveSize 2
       }
    }
 })
