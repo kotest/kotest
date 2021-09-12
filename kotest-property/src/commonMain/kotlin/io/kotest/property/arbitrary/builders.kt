@@ -1,6 +1,5 @@
 package io.kotest.property.arbitrary
 
-import io.kotest.mpp.atomics.AtomicReference
 import io.kotest.property.Arb
 import io.kotest.property.Classifier
 import io.kotest.property.RandomSource
@@ -190,10 +189,10 @@ private class RestrictedArbContinuation<A>(
 ) : Continuation<Arb<A>>, RestrictedArbitraryBuilderScope {
    override val context: CoroutineContext = EmptyCoroutineContext
    private lateinit var returnedArb: Arb<A>
-   private val hasExecuted: AtomicReference<Boolean> = AtomicReference(false)
+   private var hasExecuted: Boolean = false
 
    override fun resumeWith(result: Result<Arb<A>>) {
-      hasExecuted.value = true
+      hasExecuted = true
       result.map { resultArb -> returnedArb = resultArb }.getOrThrow()
    }
 
@@ -227,7 +226,7 @@ private class RestrictedArbContinuation<A>(
     * we need to recreate the [RestrictedArbContinuation] instance and call [singleShotArb] again.
     */
    fun singleShotArb(): Arb<A> {
-      require(!hasExecuted.value) { "continuation has already been executed, if you see this error please raise a bug report" }
+      require(!hasExecuted) { "continuation has already been executed, if you see this error please raise a bug report" }
       fn.startCoroutine(this, this)
       return returnedArb
    }
