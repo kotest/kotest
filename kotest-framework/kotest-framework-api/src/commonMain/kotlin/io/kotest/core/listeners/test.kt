@@ -1,8 +1,10 @@
 package io.kotest.core.listeners
 
+import io.kotest.common.SoftDeprecated
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 
+@SoftDeprecated("Use beforeAny")
 interface BeforeTestListener : Listener {
 
    /**
@@ -13,7 +15,7 @@ interface BeforeTestListener : Listener {
     *
     * @param testCase the [TestCase] about to be executed.
     */
-   @Deprecated("Use beforeAny. Deprecated since 5.0 and will be removed in 6.0")
+   @SoftDeprecated("Use beforeAny")
    suspend fun beforeTest(testCase: TestCase): Unit = Unit
 
    /**
@@ -22,7 +24,7 @@ interface BeforeTestListener : Listener {
    suspend fun beforeAny(testCase: TestCase): Unit = Unit
 }
 
-@Deprecated("Use beforeContainer, beforeEach, or beforeAny. Deprecated since 5.0 and will be removed in 6.0")
+@SoftDeprecated("Use afterContainer, afterEach, or afterAny")
 interface AfterTestListener : Listener {
 
    /**
@@ -33,7 +35,7 @@ interface AfterTestListener : Listener {
     *
     * @param testCase the [TestCase] that has completed.
     */
-   @Deprecated("Use afterAny. Deprecated since 5.0 and will be removed in 6.0")
+   @SoftDeprecated("Use afterAny")
    suspend fun afterTest(testCase: TestCase, result: TestResult): Unit = Unit
 
    /**

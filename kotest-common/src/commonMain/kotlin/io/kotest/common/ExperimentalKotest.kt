@@ -15,3 +15,10 @@ annotation class DelicateKotest
  */
 @Retention(value = AnnotationRetention.SOURCE)
 annotation class JVMOnly
+
+/**
+ * Marks a Kotest feature as soft deprecated
+ */
+@Retention(value = AnnotationRetention.SOURCE)
+annotation class SoftDeprecated(val message: String)
+
