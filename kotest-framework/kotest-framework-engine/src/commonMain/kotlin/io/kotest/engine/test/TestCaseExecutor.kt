@@ -24,6 +24,7 @@ import io.kotest.engine.test.interceptors.TestCaseExtensionInterceptor
 import io.kotest.engine.test.interceptors.TimeoutInterceptor
 import io.kotest.engine.test.interceptors.blockedThreadTimeoutInterceptor
 import io.kotest.engine.test.interceptors.coroutineDispatcherFactoryInterceptor
+import io.kotest.engine.test.interceptors.coroutineErrorCollectorInterceptor
 import io.kotest.mpp.log
 import io.kotest.mpp.timeInMillis
 
@@ -48,6 +49,7 @@ class TestCaseExecutor(
          CoroutineDebugProbeInterceptor,
          SupervisorScopeInterceptor,
          if (platform == Platform.JVM) coroutineDispatcherFactoryInterceptor(defaultCoroutineDispatcherFactory) else null,
+         if (platform == Platform.JVM) coroutineErrorCollectorInterceptor() else null,
          TestCaseExtensionInterceptor,
          EnabledCheckInterceptor,
          LifecycleInterceptor(listener, start),

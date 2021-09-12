@@ -3,7 +3,6 @@ package io.kotest.assertions
 import io.kotest.core.spec.style.FunSpec
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 
 class CluesTests : FunSpec({
