@@ -21,7 +21,7 @@ interface FinishSpecListener : Listener {
     * for example, if [InstancePerTest] or [InstancePerLeaf] isolation
     * modes are used, this callback will only be invoked once.
     *
-    * The results parameter contains every [TestCase], along with
+    * The results' parameter contains every [TestCase], along with
     * the result of that test, including tests that were ignored (which
     * will have a TestResult that has TestStatus.Ignored).
     *
@@ -35,10 +35,10 @@ interface FinishSpecListener : Listener {
    suspend fun finalizeSpec(
       kclass: KClass<out Spec>,
       results: Map<TestCase, TestResult>,
-   ): Unit = finishSpec(kclass, results)
+   ): Unit = Unit
 
    suspend fun finishSpec(
       kclass: KClass<out Spec>,
       results: Map<TestCase, TestResult>,
-   ): Unit = Unit
+   ): Unit = finalizeSpec(kclass, results)
 }

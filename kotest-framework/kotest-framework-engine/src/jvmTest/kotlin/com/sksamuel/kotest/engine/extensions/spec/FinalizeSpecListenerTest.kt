@@ -1,32 +1,31 @@
-package com.sksamuel.kotest.listeners.spec.singleinstance
+package com.sksamuel.kotest.engine.extensions.spec
 
+import io.kotest.core.config.configuration
 import io.kotest.core.listeners.FinalizeSpecListener
 import io.kotest.core.listeners.TestListener
-import io.kotest.core.spec.AutoScan
-import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
+import io.kotest.engine.TestEngineLauncher
+import io.kotest.engine.listener.NoopTestEngineListener
 import io.kotest.matchers.shouldBe
 import java.util.concurrent.atomic.AtomicInteger
 import kotlin.reflect.KClass
 
 private val counter = AtomicInteger(0)
 
-@AutoScan
 class FinalizeSpecTestListener1 : TestListener {
    override suspend fun finalizeSpec(kclass: KClass<out Spec>, results: Map<TestCase, TestResult>) {
-      if (kclass == FinalizeSpecTest::class) {
+      if (kclass == FinalizeSpec::class) {
          counter.incrementAndGet()
       }
    }
 }
 
-@AutoScan
 class FinalizeSpecTestListener2 : FinalizeSpecListener {
    override suspend fun finalizeSpec(kclass: KClass<out Spec>, results: Map<TestCase, TestResult>) {
-      if (kclass == FinalizeSpecTest::class) {
+      if (kclass == FinalizeSpec::class) {
          counter.incrementAndGet()
       }
    }
@@ -35,22 +34,21 @@ class FinalizeSpecTestListener2 : FinalizeSpecListener {
 }
 
 class FinalizeSpecTest : FunSpec() {
-
    init {
-
-      afterProject {
-         // both listeners should have fired
-         counter.get() shouldBe 3
+      test("finalize spec listeners should be fired") {
+         configuration.registerExtension(FinalizeSpecTestListener1())
+         configuration.registerExtension(FinalizeSpecTestListener2())
+         counter.set(0)
+         TestEngineLauncher(NoopTestEngineListener).withClasses(FinalizeSpec::class).launch()
+         counter.get().shouldBe(2)
       }
+   }
+}
 
-      finalizeSpec {
-         counter.incrementAndGet()
-      }
-
+class FinalizeSpec : FunSpec() {
+   init {
       test("ignored test").config(enabled = false) {}
       test("a").config(enabled = true) {}
       test("b").config(enabled = true) {}
-      test("c").config(enabled = true) {}
-      test("d").config(enabled = true) {}
    }
 }
