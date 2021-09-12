@@ -9,7 +9,39 @@ enum class CompareMode {
 }
 
 enum class CompareOrder {
-   Strict, Lenient
+   /**
+    * All object properties and array items must be in same order as expected.
+    *
+    * For example, { "x": 14.2, "y": 13.0 }` and `{ "y": 13.0, "x: 14.2 }` will NOT be considered equal.
+    */
+   Strict,
+
+   /**
+    * See [IgnoreProperties]
+    */
+   @Deprecated(
+      replaceWith = ReplaceWith("CompareOrder.IgnoreProperties"),
+      message = "Will be renamed to `IgnoreProperties` in 5.0"
+   )
+   Lenient,
+
+   /**
+    * Ignore the order of object properties and arrays.
+    *
+    * For example, { "x": 14.2, "y": 13.0 }` and `{ "y": 13.0, "x: 14.2 }` would also be considered equal,
+    * since they have the same properties and values.
+    * However, `[1, 2]` and `[2, 1]` would NOT be considered equal
+    */
+   IgnoreProperties,
+
+   /**
+    * Ignore the order of object properties and arrays.
+    *
+    * For example, `[1, 2]` and `[2, 1]` will be considered equal, since they contain the same items.
+    * `{ "x": 14.2, "y": 13.0 }` and `{ "y": 13.0, "x: 14.2 }` would also be considered equal, since they have the
+    * same properties and values.
+    */
+   IgnoreAll,
 }
 
 /**
@@ -92,9 +124,47 @@ internal fun compareArrays(
    if (expected.elements.size != actual.elements.size)
       return JsonError.UnequalArrayLength(path, expected.elements.size, actual.elements.size)
 
-   expected.elements.withIndex().zip(actual.elements.withIndex()).forEach { (a, b) ->
-      val error = compare(path + "[${a.index}]", a.value, b.value, mode, order)
-      if (error != null) return error
+   when (order) {
+      CompareOrder.Strict -> {
+         expected.elements.withIndex().zip(actual.elements.withIndex()).forEach { (a, b) ->
+            val error = compare(path + "[${a.index}]", a.value, b.value, mode, order)
+            if (error != null) return error
+         }
+      }
+      /**
+       * Perhaps this can be optimized somehow?
+       * If content was [Comparable], perhaps both could be sorted and compared normally afterwards.
+       * This solution simply tries to find a match for each element in [actual], in the [expected] array,
+       * flagging used matches so they can't be used twice.
+       */
+      CompareOrder.Lenient -> {
+
+         val consumedIndexes = BooleanArray(expected.elements.size) { false }
+
+         fun availableIndexes() = consumedIndexes
+            .mapIndexed { index, isConsumed -> if (!isConsumed) index else null }
+            .filterNotNull()
+
+         fun findMatchingIndex(element: JsonNode): Int? {
+            for (i in availableIndexes()) {
+               val error = compare(path + "[$i]", element, expected.elements[i], mode, order)
+
+               if (error == null) {
+                  // Comparison success, use index
+                  return i
+               }
+            }
+
+            return null
+         }
+
+         for ((i, element) in actual.elements.withIndex()) {
+            val match = findMatchingIndex(element)
+               ?: return JsonError.UnequalArrayContent(path + "[$i]", expected, element)
+
+            consumedIndexes[match] = true
+         }
+      }
    }
 
    return null
