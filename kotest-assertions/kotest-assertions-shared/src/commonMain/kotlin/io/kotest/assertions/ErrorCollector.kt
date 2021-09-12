@@ -91,7 +91,7 @@ open class BasicErrorCollector : ErrorCollector {
       clues.removeAt(0)
    }
 
-   override fun clueContext(): List<Clue> = clues.toList()
+   override fun clueContext(): List<Clue> = clues.reversed()
 
    override fun pushError(t: Throwable) {
       failures.add(t)
