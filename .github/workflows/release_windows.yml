@@ -36,6 +36,3 @@ jobs:
 
          -  name: publish mingwX64 release
             run: ./gradlew publishMingwX64PublicationToDeployRepository
-
-         -  name: publish mingwX86 release
-            run: ./gradlew publishMingwX86PublicationToDeployRepository

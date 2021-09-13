@@ -46,12 +46,3 @@ jobs:
 
          -  name: publish linux x64 release
             run: ./gradlew publishLinuxX64PublicationToDeployRepository
-
-         -  name: publish linux Mips32 release
-            run: ./gradlew publishLinuxMips32PublicationToDeployRepository
-
-         -  name: publish linux Mipsel32 release
-            run: ./gradlew publishLinuxMipsel32PublicationToDeployRepository
-
-         -  name: publish linux x64 release
-            run: ./gradlew publishLinuxX64PublicationToDeployRepository

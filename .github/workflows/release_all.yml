@@ -46,15 +46,6 @@ jobs:
          -  name: publish linux x64 release
             run: ./gradlew publishLinuxX64PublicationToDeployRepository
 
-         -  name: publish linux Arm32Hfp release
-            run: ./gradlew publishLinuxArm32HfpPublicationToDeployRepository
-
-         -  name: publish linux Mips32 release
-            run: ./gradlew publishLinuxMips32PublicationToDeployRepository
-
-         -  name: publish linux Mipsel32 release
-            run: ./gradlew publishLinuxMipsel32PublicationToDeployRepository
-
    publish_macos:
       runs-on: macos-latest
       needs: publish_linux
@@ -131,6 +122,3 @@ jobs:
 
          -  name: publish mingwX64 release
             run: ./gradlew publishMingwX64PublicationToDeployRepository
-
-         -  name: publish mingwX86 release
-            run: ./gradlew publishMingwX86PublicationToDeployRepository
