@@ -56,8 +56,6 @@ sealed class Try<out T> {
       is Failure -> this
    }
 
-   fun toOption(): Option<T> = fold({ Option.None }, { Option.Some(it) })
-
    inline fun mapFailure(f: (Throwable) -> Throwable) = fold({ f(it).failure() }, { it.success() })
 
    fun getOrNull(): T? = fold({ null }, { it })

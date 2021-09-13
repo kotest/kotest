@@ -4,7 +4,6 @@ import io.kotest.assertions.Actual
 import io.kotest.assertions.Expected
 import io.kotest.assertions.failure
 import io.kotest.assertions.show.show
-import io.kotest.fp.toOption
 import io.kotest.mpp.Property
 import io.kotest.mpp.bestName
 import io.kotest.mpp.reflection
@@ -66,9 +65,7 @@ internal object DataClassEq : Eq<Any> {
             }
          else {
             eq(actualPropertyValue, expectedPropertyValue, strictNumberEq)
-               .toOption()
-               .map { Pair(prop, StandardDifference(it)) }
-               .orNull()
+               ?.let { Pair(prop, StandardDifference(it)) }
          }
       }
 
