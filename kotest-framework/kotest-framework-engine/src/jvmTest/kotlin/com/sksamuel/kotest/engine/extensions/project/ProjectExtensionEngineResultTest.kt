@@ -1,7 +1,7 @@
 package com.sksamuel.kotest.engine.extensions.project
 
 import io.kotest.core.config.configuration
-import io.kotest.core.extensions.ProjectExtension
+import io.kotest.core.extensions.ProjectInterceptExtension
 import io.kotest.core.spec.Isolate
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.engine.KotestEngineLauncher
@@ -14,16 +14,16 @@ class ProjectExtensionEngineResultTest : FunSpec({
    val events = mutableListOf<String>()
 
    val extensions = listOf(
-      object : ProjectExtension {
+      object : ProjectInterceptExtension {
          val name = "hello q"
-         override suspend fun aroundProject(callback: suspend () -> List<Throwable>): List<Throwable> {
+         override suspend fun interceptProject(callback: suspend () -> List<Throwable>): List<Throwable> {
             events.add(name)
             return callback()
          }
       },
-      object : ProjectExtension {
+      object : ProjectInterceptExtension {
          val name = "mon capitaine!"
-         override suspend fun aroundProject(callback: suspend () -> List<Throwable>): List<Throwable> {
+         override suspend fun interceptProject(callback: suspend () -> List<Throwable>): List<Throwable> {
             callback();
             return listOf(ProjectExtensionThrowable(name))
          }
