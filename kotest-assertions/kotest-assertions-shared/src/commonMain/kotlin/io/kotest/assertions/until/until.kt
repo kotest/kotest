@@ -105,7 +105,7 @@ suspend fun <T> until(
    f: suspend () -> T
 ): T = until(duration = patience.duration, interval = patience.interval, predicate = predicate, listener = {}, f = f)
 
-@Deprecated("Simply move the listener code into the predicate code. Will be removed in 4.7 or 5.0")
+@Deprecated("Simply move the listener code into the predicate code. Will be removed in 6.0")
 suspend fun <T> until(
    duration: Duration,
    interval: Interval = Duration.seconds(1).fixed(),
