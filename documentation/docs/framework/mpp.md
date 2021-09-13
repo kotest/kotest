@@ -22,7 +22,7 @@ For example:
 
 ```kotlin
 plugins {
-   kotlin("io.kotest.multiplatform").version("5.0.0.5")
+   id("io.kotest.multiplatform") version "5.0.0.5"
 }
 ```
 
