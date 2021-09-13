@@ -28,9 +28,6 @@ class FreeSpecTerminalContext(
    }
 }
 
-@Deprecated("Renamed to FreeSpecContainerContext. This alias will be removed in 4.8")
-typealias FreeScope = FreeSpecContainerContext
-
 class FreeSpecContainerContext(
    val testContext: TestContext,
 ) : AbstractContainerContext(testContext) {

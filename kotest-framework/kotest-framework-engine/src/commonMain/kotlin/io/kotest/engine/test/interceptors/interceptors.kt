@@ -17,3 +17,10 @@ internal expect fun coroutineDispatcherFactoryInterceptor(
  */
 @JVMOnly
 internal expect fun blockedThreadTimeoutInterceptor(): TestExecutionInterceptor
+
+/**
+ * Returns a [TestExecutionInterceptor] for keeping the error collector synchronized
+ * with thread-switching coroutines.
+ */
+@JVMOnly
+internal expect fun coroutineErrorCollectorInterceptor(): TestExecutionInterceptor

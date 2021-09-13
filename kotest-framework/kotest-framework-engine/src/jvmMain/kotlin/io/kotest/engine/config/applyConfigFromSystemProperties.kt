@@ -1,12 +1,14 @@
 package io.kotest.engine.config
 
 import io.kotest.core.config.Configuration
+import io.kotest.core.config.LogLevel
 import io.kotest.core.internal.KotestEngineProperties
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.test.AssertionMode
 import io.kotest.core.test.DuplicateTestNameMode
 import io.kotest.fp.fmap
 import io.kotest.fp.foreach
+import io.kotest.mpp.env
 import io.kotest.mpp.sysprop
 
 /**
@@ -27,6 +29,7 @@ internal actual fun applyConfigFromSystemProperties(configuration: Configuration
    testNameAppendTags().foreach { configuration.testNameAppendTags = it }
    duplicateTestNameMode().foreach { configuration.duplicateTestNameMode = it }
    projectTimeout().foreach { configuration.projectTimeout = it }
+   logLevel().foreach { configuration.logLevel = it }
 }
 
 internal fun isolationMode(): IsolationMode? =
@@ -64,3 +67,10 @@ internal fun duplicateTestNameMode(): DuplicateTestNameMode? =
 
 internal fun projectTimeout(): Long? =
    sysprop(KotestEngineProperties.projectTimeout).fmap { it.toLong() }
+
+internal fun logLevel(): LogLevel {
+   val levelProp = sysprop(KotestEngineProperties.logLevel).fmap { LogLevel.from(it) }
+   val levelEnv = env(KotestEngineProperties.logLevel).fmap { LogLevel.from(it) }
+
+   return levelProp ?: levelEnv ?: LogLevel.Off
+}

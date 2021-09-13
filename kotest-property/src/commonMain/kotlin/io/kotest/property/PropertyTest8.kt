@@ -42,7 +42,7 @@ suspend fun <A, B, C, D, E, F, G, H> checkAll(
    genG: Gen<G>,
    genH: Gen<H>,
    property: suspend PropertyContext.(A, B, C, D, E, F, G, H) -> Unit
-): PropertyContext = proptest(genA, genB, genC, genD, genE, genF, genG, genH, PropTestConfig(iterations = iterations), property)
+): PropertyContext = proptest(genA, genB, genC, genD, genE, genF, genG, genH, PropTestConfig(constraints = Constraints.iterations(iterations)), property)
 
 suspend fun <A, B, C, D, E, F, G, H> checkAll(
    iterations: Int,
@@ -101,7 +101,7 @@ suspend inline fun <reified A, reified B, reified C, reified D, reified E, reifi
    Arb.default(),
    Arb.default(),
    Arb.default(),
-   PropTestConfig(iterations = iterations),
+   PropTestConfig(constraints = Constraints.iterations(iterations)),
    property
 )
 

@@ -84,6 +84,11 @@ abstract class AbstractProjectConfig {
    open val projectTimeout: Long? = null
 
    /**
+    * Controls which log functions on TestCase will be invoked or skipped
+    */
+   open val logLevel: LogLevel? = null
+
+   /**
     * The parallelism factor determines how many threads are used to launch tests.
     *
     * The tests inside the same spec are always executed using the same thread, to ensure

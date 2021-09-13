@@ -1,7 +1,7 @@
 package io.kotest.engine
 
 import io.kotest.core.config.Configuration
-import io.kotest.core.extensions.ProjectExtension
+import io.kotest.core.extensions.ProjectInterceptExtension
 import io.kotest.engine.interceptors.EmptyTestSuiteInterceptor
 import io.kotest.engine.interceptors.EngineInterceptor
 import io.kotest.engine.interceptors.ProjectExtensionEngineInterceptor
@@ -18,7 +18,7 @@ internal actual fun testEngineInterceptors(conf: Configuration): List<EngineInte
       ProjectTimeoutEngineInterceptor(conf.projectTimeout),
       TestDslStateInterceptor,
       SpecSortEngineInterceptor,
-      ProjectExtensionEngineInterceptor(conf.extensions().filterIsInstance<ProjectExtension>()),
+      ProjectExtensionEngineInterceptor(conf.extensions().filterIsInstance<ProjectInterceptExtension>()),
       ProjectListenerEngineInterceptor(conf.extensions()),
       if (conf.failOnEmptyTestSuite) EmptyTestSuiteInterceptor else null,
       TestEngineListenerStartedFinishedInterceptor,

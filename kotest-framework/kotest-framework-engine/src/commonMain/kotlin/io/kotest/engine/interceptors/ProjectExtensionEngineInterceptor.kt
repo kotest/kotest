@@ -1,11 +1,11 @@
 package io.kotest.engine.interceptors
 
-import io.kotest.core.extensions.ProjectExtension
+import io.kotest.core.extensions.ProjectInterceptExtension
 import io.kotest.engine.EngineResult
 import io.kotest.engine.TestSuite
 import io.kotest.engine.listener.TestEngineListener
 
-internal class ProjectExtensionEngineInterceptor(private val extensions: List<ProjectExtension>) : EngineInterceptor {
+internal class ProjectExtensionEngineInterceptor(private val extensions: List<ProjectInterceptExtension>) : EngineInterceptor {
 
    override suspend fun intercept(
       suite: TestSuite,
@@ -16,7 +16,7 @@ internal class ProjectExtensionEngineInterceptor(private val extensions: List<Pr
       val initial: suspend () -> EngineResult = { execute(suite, listener) }
       val chain = extensions.foldRight(initial) { extension, acc: suspend () -> EngineResult ->
          {
-            val errors = extension.aroundProject { acc().errors }
+            val errors = extension.interceptProject { acc().errors }
             EngineResult(errors)
          }
       }

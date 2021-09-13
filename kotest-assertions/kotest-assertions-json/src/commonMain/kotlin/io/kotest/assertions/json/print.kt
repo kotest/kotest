@@ -1,6 +1,6 @@
 package io.kotest.assertions.json
 
-const val indent = "  "
+private const val indent = "  "
 
 internal fun prettyPrint(node: JsonNode, depth: Int = 0): String {
    return when (node) {
@@ -19,7 +19,7 @@ internal fun prettyPrint(node: JsonNode, depth: Int = 0): String {
    }
 }
 
-internal fun <S, T : Collection<S>> prettyPrintElements(
+private fun <S, T : Collection<S>> prettyPrintElements(
    depth: Int,
    prefix: String,
    suffix: String,

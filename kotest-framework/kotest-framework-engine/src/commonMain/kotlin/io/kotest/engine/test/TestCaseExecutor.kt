@@ -10,6 +10,7 @@ import io.kotest.core.test.TestStatus
 import io.kotest.engine.concurrency.NoopCoroutineDispatcherFactory
 import io.kotest.engine.test.interceptors.AssertionModeInterceptor
 import io.kotest.engine.test.interceptors.CoroutineDebugProbeInterceptor
+import io.kotest.engine.test.interceptors.CoroutineLoggingInterceptor
 import io.kotest.engine.test.interceptors.CoroutineScopeInterceptor
 import io.kotest.engine.test.interceptors.EnabledCheckInterceptor
 import io.kotest.engine.test.interceptors.ExceptionCapturingInterceptor
@@ -23,6 +24,7 @@ import io.kotest.engine.test.interceptors.TestCaseExtensionInterceptor
 import io.kotest.engine.test.interceptors.TimeoutInterceptor
 import io.kotest.engine.test.interceptors.blockedThreadTimeoutInterceptor
 import io.kotest.engine.test.interceptors.coroutineDispatcherFactoryInterceptor
+import io.kotest.engine.test.interceptors.coroutineErrorCollectorInterceptor
 import io.kotest.mpp.log
 import io.kotest.mpp.timeInMillis
 
@@ -47,6 +49,7 @@ class TestCaseExecutor(
          CoroutineDebugProbeInterceptor,
          SupervisorScopeInterceptor,
          if (platform == Platform.JVM) coroutineDispatcherFactoryInterceptor(defaultCoroutineDispatcherFactory) else null,
+         if (platform == Platform.JVM) coroutineErrorCollectorInterceptor() else null,
          TestCaseExtensionInterceptor,
          EnabledCheckInterceptor,
          LifecycleInterceptor(listener, start),
@@ -58,6 +61,7 @@ class TestCaseExecutor(
          TimeoutInterceptor,
          InvocationRepeatInterceptor(start),
          InvocationTimeoutInterceptor,
+         CoroutineLoggingInterceptor,
       )
 
       val innerExecute: suspend (TestCase, TestContext) -> TestResult = { tc, ctx ->

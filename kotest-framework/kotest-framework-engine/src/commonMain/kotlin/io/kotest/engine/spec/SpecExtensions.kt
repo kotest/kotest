@@ -2,17 +2,16 @@ package io.kotest.engine.spec
 
 import io.kotest.core.config.Configuration
 import io.kotest.core.extensions.Extension
-import io.kotest.core.extensions.SpecFinalizeExtension
 import io.kotest.core.extensions.SpecInitializeExtension
 import io.kotest.core.listeners.AfterSpecListener
 import io.kotest.core.listeners.BeforeSpecListener
+import io.kotest.core.listeners.FinishSpecListener
 import io.kotest.core.listeners.InactiveSpecListener
 import io.kotest.core.listeners.SpecInstantiationListener
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.functionOverrideCallbacks
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
-import io.kotest.fp.Try
 import io.kotest.mpp.log
 import kotlin.reflect.KClass
 
@@ -36,10 +35,6 @@ internal class SpecExtensions(private val configuration: Configuration) {
 
    fun specInitialize(spec: Spec): Result<Unit> = kotlin.runCatching {
       extensions(spec).filterIsInstance<SpecInitializeExtension>().forEach { it.initialize(spec) }
-   }
-
-   fun specFinalize(spec: Spec): Try<Unit> = Try {
-      extensions(spec).filterIsInstance<SpecFinalizeExtension>().forEach { it.finalize(spec) }
    }
 
    suspend fun beforeSpec(spec: Spec): Result<Spec> {
@@ -71,13 +66,19 @@ internal class SpecExtensions(private val configuration: Configuration) {
    }
 
    fun specInstantiationError(kclass: KClass<out Spec>, t: Throwable) = kotlin.runCatching {
-      log { "SpecExtensions: specInstantiationError kclass:${kclass} errror:$t" }
+      log { "SpecExtensions: specInstantiationError $kclass errror:$t" }
       val listeners = configuration.extensions().filterIsInstance<SpecInstantiationListener>()
       listeners.forEach { it.specInstantiationError(kclass, t) }
    }
 
    suspend fun inactiveSpec(spec: Spec, results: Map<TestCase, TestResult>) {
       configuration.extensions().filterIsInstance<InactiveSpecListener>().forEach { it.specInactive(spec, results) }
+   }
+
+   suspend fun finishSpec(kclass: KClass<out Spec>, results: Map<TestCase, TestResult>) {
+      val exts = configuration.extensions().filterIsInstance<FinishSpecListener>()
+      log { "SpecExtensions: finishSpec(${exts.size}) $kclass results:$results" }
+      exts.forEach { it.finishSpec(kclass, results) }
    }
 }
 

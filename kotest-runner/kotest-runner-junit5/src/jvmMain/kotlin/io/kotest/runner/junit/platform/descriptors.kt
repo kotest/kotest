@@ -3,9 +3,8 @@ package io.kotest.runner.junit.platform
 import io.kotest.core.internal.KotestEngineProperties
 import io.kotest.core.plan.Descriptor
 import io.kotest.core.plan.DisplayName
-import io.kotest.core.test.Description
-import io.kotest.core.spec.Spec
 import io.kotest.core.spec.toDescription
+import io.kotest.core.test.Description
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestType
 import org.junit.platform.engine.TestDescriptor
@@ -18,8 +17,6 @@ import org.junit.platform.engine.support.descriptor.FileSource
 import org.junit.platform.engine.support.descriptor.MethodSource
 import java.io.File
 import kotlin.reflect.KClass
-
-fun engineId(): UniqueId = UniqueId.forEngine("kotest")
 
 /**
  * Returns a new [UniqueId] by appending this description to the receiver.

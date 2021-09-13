@@ -3,7 +3,7 @@ package io.kotest.core.extensions
 /**
  * Extension point that allows intercepting execution of projects.
  */
-interface ProjectExtension : Extension {
+interface ProjectInterceptExtension : Extension {
 
    /**
     * Implementations must invoke the [callback] callback if they wish
@@ -12,5 +12,5 @@ interface ProjectExtension : Extension {
     *
     * Any errors returned from the callback should be returned from this method.
     */
-   suspend fun aroundProject(callback: suspend () -> List<Throwable>): List<Throwable>
+   suspend fun interceptProject(callback: suspend () -> List<Throwable>): List<Throwable>
 }
