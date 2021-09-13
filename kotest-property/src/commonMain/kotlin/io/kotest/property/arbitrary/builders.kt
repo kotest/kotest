@@ -19,21 +19,21 @@ import kotlin.coroutines.startCoroutine
  * Creates a new [Arb] that performs no shrinking, has no edge cases and
  * generates values from the given function.
  */
-fun <A> arbitrary(fn: suspend RestrictedArbitraryBuilderScope.(RandomSource) -> A): Arb<A> =
+fun <A> arbitrary(fn: suspend ArbitraryBuilderSyntax.(RandomSource) -> A): Arb<A> =
    arbitraryBuilder { rs -> fn(rs) }
 
 /**
  * Creates a new [Arb] that performs shrinking using the supplied [Shrinker], has no edge cases and
  * generates values from the given function.
  */
-fun <A> arbitrary(shrinker: Shrinker<A>, fn: suspend RestrictedArbitraryBuilderScope.(RandomSource) -> A): Arb<A> =
+fun <A> arbitrary(shrinker: Shrinker<A>, fn: suspend ArbitraryBuilderSyntax.(RandomSource) -> A): Arb<A> =
    arbitraryBuilder(shrinker) { rs -> fn(rs) }
 
 /**
  * Creates a new [Arb] that classifies the generated values using the supplied [Classifier], has no edge cases and
  * generates values from the given function.
  */
-fun <A> arbitrary(classifier: Classifier<A>, fn: suspend RestrictedArbitraryBuilderScope.(RandomSource) -> A): Arb<A> =
+fun <A> arbitrary(classifier: Classifier<A>, fn: suspend ArbitraryBuilderSyntax.(RandomSource) -> A): Arb<A> =
    arbitraryBuilder(null, classifier) { rs -> fn(rs) }
 
 /**
@@ -44,7 +44,7 @@ fun <A> arbitrary(classifier: Classifier<A>, fn: suspend RestrictedArbitraryBuil
 fun <A> arbitrary(
    shrinker: Shrinker<A>,
    classifier: Classifier<A>,
-   fn: suspend RestrictedArbitraryBuilderScope.(RandomSource) -> A
+   fn: suspend ArbitraryBuilderSyntax.(RandomSource) -> A
 ): Arb<A> =
    arbitraryBuilder(shrinker, classifier) { rs -> fn(rs) }
 
@@ -100,7 +100,7 @@ fun <A> arbitraryBuilder(
    shrinker: Shrinker<A>? = null,
    classifier: Classifier<A>? = null,
    edgecaseFn: EdgecaseFn<A>? = null,
-   builderFn: suspend RestrictedArbitraryBuilderScope.(RandomSource) -> A
+   builderFn: suspend ArbitraryBuilderSyntax.(RandomSource) -> A
 ): Arb<A> = object : Arb<A>() {
    override fun edgecase(rs: RandomSource): A? = singleShotArb().edgecase(rs)
    override fun sample(rs: RandomSource): Sample<A> = singleShotArb().sample(rs)
@@ -112,11 +112,11 @@ fun <A> arbitraryBuilder(
     * This needs to be a function because at time of writing, Kotlin 1.5's [Continuation] is single shot.
     * With arbs, we ideally need multishot. To rerun [builderFn], we need to "reset" the continuation.
     *
-    * The current way we do it is to recreate a fresh [RestrictedArbContinuation] instance that
+    * The current way we do it is to recreate a fresh [SingleShotArbContinuation] instance that
     * will provide another single shot Arb. Hence the reason why this function is invoked
     * on every call to [sample] / [edgecase].
     */
-   private fun singleShotArb(): Arb<A> = RestrictedArbContinuation {
+   private fun singleShotArb(): Arb<A> = SingleShotArbContinuation {
       /**
        * At the end of the suspension we got a generated value [A] as a comprehension result.
        * This value can either be a sample, or an edgecase.
@@ -174,19 +174,17 @@ class ArbitraryBuilder<A>(
    }
 }
 
+@RestrictsSuspension
 interface ArbitraryBuilderSyntax {
    /**
-    * [bind] returns the generated value of an arb.
+    * [bind] returns the generated value of an arb. This can either be a sample or an edgecase.
     */
    suspend fun <T> Arb<T>.bind(): T
 }
 
-@RestrictsSuspension
-interface RestrictedArbitraryBuilderScope : ArbitraryBuilderSyntax
-
-private class RestrictedArbContinuation<A>(
-   private val fn: suspend RestrictedArbitraryBuilderScope.() -> Arb<A>
-) : Continuation<Arb<A>>, RestrictedArbitraryBuilderScope {
+private class SingleShotArbContinuation<A>(
+   private val fn: suspend ArbitraryBuilderSyntax.() -> Arb<A>
+) : Continuation<Arb<A>>, ArbitraryBuilderSyntax {
    override val context: CoroutineContext = EmptyCoroutineContext
    private lateinit var returnedArb: Arb<A>
    private var hasExecuted: Boolean = false
@@ -223,7 +221,7 @@ private class RestrictedArbContinuation<A>(
     *
     * The aforementioned limitation means the [Arb] that we construct through this mechanism can only be used
     * to generate exactly one value. Hence, to recycle and rerun the specified composed transformation,
-    * we need to recreate the [RestrictedArbContinuation] instance and call [singleShotArb] again.
+    * we need to recreate the [SingleShotArbContinuation] instance and call [singleShotArb] again.
     */
    fun singleShotArb(): Arb<A> {
       require(!hasExecuted) { "continuation has already been executed, if you see this error please raise a bug report" }
