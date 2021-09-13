@@ -56,7 +56,7 @@ class JsonLiteralsTest : FunSpec(
                The top level expected 0.123456789123456789 but was 0.12345678912345678
 
                expected:
-               0.12345678912345678
+               0.123456789123456789
 
                actual:
                0.12345678912345678
@@ -92,7 +92,7 @@ class JsonLiteralsTest : FunSpec(
                The top level expected 1e1 but was 10.0
 
                expected:
-               10.0
+               1e1
 
                actual:
                10.0
@@ -108,7 +108,7 @@ class JsonLiteralsTest : FunSpec(
                The top level expected 1e1 but was 10
 
                expected:
-               10.0
+               1e1
 
                actual:
                10

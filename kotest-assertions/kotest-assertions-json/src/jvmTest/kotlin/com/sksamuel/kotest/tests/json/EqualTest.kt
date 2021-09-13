@@ -592,7 +592,7 @@ actual:
 expected:
 {
   "a": "foo",
-  "b": 6.02
+  "b": 6.02f
 }
 
 actual:
