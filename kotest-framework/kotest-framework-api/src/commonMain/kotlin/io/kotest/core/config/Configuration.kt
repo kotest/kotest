@@ -3,6 +3,7 @@
 package io.kotest.core.config
 
 import io.kotest.common.ExperimentalKotest
+import io.kotest.common.SoftDeprecated
 import io.kotest.core.extensions.Extension
 import io.kotest.core.filter.Filter
 import io.kotest.core.listeners.Listener
@@ -319,10 +320,7 @@ class Configuration {
    /**
     * Returns all globally registered [Listener]s.
     */
-   @Deprecated(
-      "Listeners have been subsumed into extensions. Deprecated since 5.0 and will be removed in 6.0",
-      ReplaceWith("extensions()")
-   )
+   @SoftDeprecated("Listeners have been subsumed into extensions")
    fun listeners() = extensions()
 
    /**
@@ -359,27 +357,24 @@ class Configuration {
       extensions.remove(extension)
    }
 
-   @Deprecated(
-      "Use registerExtension. This will be removed in 6.0.",
-      ReplaceWith("registerExtension(listeners)")
-   )
+   @SoftDeprecated("Use registerExtension")
    fun registerListeners(vararg listeners: Listener) = listeners.forEach { registerExtension(it) }
 
-   @Deprecated("Use registerExtension. This will be removed in 6.0.")
+   @SoftDeprecated("Use registerExtension")
    fun registerListeners(listeners: List<Listener>) = listeners.forEach { registerExtension(it) }
 
-   @Deprecated("Use deregisterExtension. This will be removed in 6.0.")
+   @SoftDeprecated("Use deregisterExtension")
    fun deregisterListeners(listeners: List<Listener>) = listeners.forEach { deregisterExtension(it) }
 
-   @Deprecated("Use registerExtension. This will be removed in 6.0.")
+   @SoftDeprecated("Use registerExtension")
    fun registerListener(listener: Listener) = registerExtension(listener)
 
-   @Deprecated("Use deregisterListener. This will be removed in 6.0.")
+   @SoftDeprecated("Use deregisterExtension")
    fun deregisterListener(listener: Listener) {
       deregisterExtension(listener)
    }
 
-   @Deprecated("Use removeExtensions. This will be removed in 6.0.")
+   @SoftDeprecated("Use removeExtensions.")
    fun removeListeners() {
       removeExtensions()
    }
