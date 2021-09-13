@@ -3,12 +3,20 @@ package com.sksamuel.kotest.tests.json
 import io.kotest.assertions.json.CompareMode
 import io.kotest.assertions.json.shouldEqualJson
 import io.kotest.assertions.shouldFail
+import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.string.shouldContain
 import io.kotest.matchers.throwable.shouldHaveMessage
+import java.lang.IllegalArgumentException
 
 class JsonLiteralsTest : FunSpec(
    {
+      test("Unsupported type") {
+         shouldThrow<IllegalArgumentException> {
+            "0x03" shouldEqualJson "0x03"
+         }.shouldHaveMessage("Unsupported kotlinx-serialization type 0x03")
+      }
+
       context("Strict (default) comparisons") {
          test("comparing float and int") {
             shouldFail {
