@@ -4,9 +4,9 @@ import io.kotest.assertions.withClue
 import io.kotest.core.NamedTag
 import io.kotest.common.ExperimentalKotest
 import io.kotest.core.config.configuration
+import io.kotest.core.descriptors.Descriptor
 import io.kotest.core.extensions.EnabledExtension
 import io.kotest.core.listeners.TestListener
-import io.kotest.core.plan.Descriptor
 import io.kotest.core.spec.Isolate
 import io.kotest.core.spec.Order
 import io.kotest.core.spec.Spec
@@ -35,7 +35,7 @@ private val ignoredWithExtension = "This test was ignored by EnabledExtension du
 @ExperimentalKotest
 private val skippedExtension = object : EnabledExtension {
    override suspend fun isEnabled(descriptor: Descriptor): Enabled =
-      if (descriptor.name.value == isEnabledExtensionTestName)
+      if (descriptor.id.value == isEnabledExtensionTestName)
          Enabled.disabled(ignoredWithExtension)
       else
          Enabled.enabled

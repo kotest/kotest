@@ -14,7 +14,7 @@ object Numbers {
 
 class TestCaseExtensionAdder(private val n: Int) : TestCaseExtension {
    override suspend fun intercept(testCase: TestCase, execute: suspend (TestCase) -> TestResult): TestResult {
-      return when (testCase.descriptor.name.name) {
+      return when (testCase.descriptor.id.value) {
          "be activated by registration with ProjectExtensions", "use around advice", "use extensions registered on config" -> {
             Numbers.a.addAndGet(n)
             val result = execute(testCase)

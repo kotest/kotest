@@ -14,7 +14,7 @@ private const val reason = "this test is skipped cause it's skipped"
 class TestCaseExtensionAroundAdviceTest : StringSpec() {
    object MyExt : TestCaseExtension {
       override suspend fun intercept(testCase: TestCase, execute: suspend (TestCase) -> TestResult): TestResult {
-         return when (testCase.descriptor.name.name) {
+         return when (testCase.descriptor.id.value) {
             "test1" -> TestResult.Ignored
             "test2" ->
                when (execute(testCase).status) {
