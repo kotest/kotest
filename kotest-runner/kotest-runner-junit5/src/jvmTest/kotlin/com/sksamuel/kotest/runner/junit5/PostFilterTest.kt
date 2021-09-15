@@ -11,7 +11,7 @@ import org.junit.platform.launcher.PostDiscoveryFilter
 import org.junit.platform.launcher.core.LauncherDiscoveryRequestBuilder
 import kotlin.reflect.jvm.jvmName
 
-class KotestJunitPlatformTestEngineTest : StringSpec({
+class PostFilterTest : StringSpec({
 
    "KotestJunitPlatformTestEngine should apply post filters from a LauncherDiscoveryRequest" {
       val request = LauncherDiscoveryRequestBuilder()

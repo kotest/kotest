@@ -24,6 +24,8 @@ import kotlin.reflect.KClass
 /**
  * Notifies JUnit Platform of test statuses via a [EngineExecutionListener].
  *
+ * This is not thread safe and should only be invoked by one spec at a time.
+ *
  * JUnit platform supports out of order notification of tests, in that sibling
  * tests can be executing in parallel and updating JUnit out of order. However the gradle test
  * task gets confused if we are executing two or more tests directly under the root at once.
@@ -78,25 +80,24 @@ class JUnitTestEngineListener(
 
    private val formatter = DisplayNameFormatter(configuration)
 
-   // contains a mapping of junit TestDescriptors, so we can look up the parent
-   // when we need to register a new test
+   // contains a mapping of junit TestDescriptor's, so we can find previously registered tests
    private val descriptors = mutableMapOf<Descriptor, TestDescriptor>()
 
-   // these are specs that have been started
-   private val started = mutableSetOf<KClass<*>>()
-   private val ignored = mutableSetOf<KClass<*>>()
-   private val inactive = mutableSetOf<KClass<*>>()
+   // contains an exception throw during instantiation
+   private var instantiationException: Throwable? = null
 
-   // contains an exception throw during beforeSpec or spec instantiation
-   private var exceptionThrownBySpec: Throwable? = null
+   private var ignored = false
+   private var started = false
+   private var inactive = false
 
+   // the root tests are our entry point when outputting results
    private val rootTests = mutableListOf<TestCase>()
 
    private val children = mutableMapOf<Descriptor, MutableList<TestCase>>()
 
    private val results = mutableMapOf<Descriptor, TestResult>()
 
-   // set to true when we have a test that is ignored, so our check can look for it, if configured
+   // set to true if we had at least one ignored test
    private var hasIgnoredTest = false
 
    override suspend fun engineStarted(classes: List<KClass<*>>) {
@@ -134,7 +135,7 @@ class JUnitTestEngineListener(
          }
 
       log { "JUnitTestEngineListener: Notifying junit that root descriptor completed $root" }
-      listener.executionFinished(root, result)
+      listener.executionFinished(root, TestExecutionResult.successful())
    }
 
    override suspend fun specStarted(kclass: KClass<*>) {
@@ -153,7 +154,7 @@ class JUnitTestEngineListener(
          log { "JUnitTestEngineListener: Notifying junit that a spec was started [$descriptor]" }
          listener.executionStarted(descriptor)
 
-         started.add(kclass)
+         started = true
          descriptor
 
       } catch (t: Throwable) {
@@ -163,11 +164,11 @@ class JUnitTestEngineListener(
    }
 
    override suspend fun specInactive(kclass: KClass<*>, results: Map<TestCase, TestResult>) {
-      inactive.add(kclass)
+      inactive = true
    }
 
    override suspend fun specIgnored(kclass: KClass<out Spec>) {
-      ignored.add(kclass)
+      ignored = true
    }
 
    private fun markSpecIgnored(kclass: KClass<*>) {
@@ -183,23 +184,23 @@ class JUnitTestEngineListener(
    }
 
    override suspend fun specInstantiationError(kclass: KClass<*>, t: Throwable) {
-      exceptionThrownBySpec = t
+      instantiationException = t
    }
 
    override suspend fun specExit(kclass: KClass<out Spec>, t: Throwable?) {
 
-      if (t == null && inactive.contains(kclass)) {
+      if (t == null && inactive) {
          markSpecIgnored(kclass)
          return
       }
 
-      if (t == null && ignored.contains(kclass)) {
+      if (t == null && ignored) {
          return
       }
 
       // if we have a spec error before we even started the spec, we will start the spec, add a placeholder
       // to hold the error, mark that test as failed, and then fail the spec as well
-      if (t != null && !started.contains(kclass)) {
+      if (t != null && !started) {
          val descriptor = markSpecStarted(kclass)
          addPlaceholderTest(descriptor, t)
          log { "JUnitTestEngineListener: Notifying junit that a spec failed [$descriptor, $t]" }
@@ -221,7 +222,7 @@ class JUnitTestEngineListener(
 
       val result = when {
          t != null -> TestExecutionResult.failed(t)
-         exceptionThrownBySpec != null -> TestExecutionResult.failed(exceptionThrownBySpec)
+         instantiationException != null -> TestExecutionResult.failed(instantiationException)
          else -> TestExecutionResult.successful()
       }
 
@@ -232,6 +233,19 @@ class JUnitTestEngineListener(
 
       log { "JUnitTestEngineListener: Notifying junit that a spec has finished [$descriptor, $result]" }
       listener.executionFinished(descriptor, result)
+
+      reset()
+   }
+
+   private fun reset() {
+      rootTests.clear()
+      children.clear()
+      results.clear()
+      hasIgnoredTest = false
+      started = false
+      ignored = false
+      inactive = false
+      descriptors.clear()
    }
 
    private fun addPlaceholderTest(parent: TestDescriptor, t: Throwable) {
@@ -250,7 +264,7 @@ class JUnitTestEngineListener(
 
    override suspend fun testStarted(testCase: TestCase) {
       if (testCase.parent == null) rootTests.add(testCase)
-      children.getOrPut(testCase.descriptor.parent) { mutableListOf() }.add(testCase)
+      addChild(testCase)
    }
 
    override suspend fun testFinished(testCase: TestCase, result: TestResult) {
@@ -259,9 +273,13 @@ class JUnitTestEngineListener(
 
    override suspend fun testIgnored(testCase: TestCase, reason: String?) {
       if (testCase.parent == null) rootTests.add(testCase)
-      children.getOrPut(testCase.descriptor.parent) { mutableListOf() }.add(testCase)
+      addChild(testCase)
       results[testCase.descriptor] = TestResult.ignored(reason)
       hasIgnoredTest = true
+   }
+
+   private fun addChild(testCase: TestCase) {
+      children.getOrPut(testCase.descriptor.parent) { mutableListOf() }.add(testCase)
    }
 
    private fun handleTest(testCase: TestCase) {

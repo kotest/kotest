@@ -32,13 +32,22 @@ class JUnitTestEngineListenerTest : FunSpec({
    )
 
    val tc2 = TestCase(
-      MySpec::class.toDescriptor().append("foo").append("bar"),
+      tc1.descriptor.append("bar"),
       TestName("bar"),
-      MySpec(),
+      tc1.spec,
       {},
       sourceRef(),
       TestType.Test,
       parent = tc1,
+   )
+
+   val tc3 = TestCase(
+      MySpec2::class.toDescriptor().append("baz"),
+      TestName("baz"),
+      MySpec2(),
+      {},
+      sourceRef(),
+      TestType.Container,
    )
 
    test("an error before spec started should show spec with a dummy error test") {
@@ -47,12 +56,24 @@ class JUnitTestEngineListenerTest : FunSpec({
       listener.specEnter(MySpec::class)
       listener.specExit(MySpec::class, Exception("CRRAACK"))
       track.events shouldBe listOf(
-         EventTrackingEngineExecutionListener.Event.TestRegistered("com.sksamuel.kotest.runner.junit5.MySpec", TestDescriptor.Type.CONTAINER),
+         EventTrackingEngineExecutionListener.Event.TestRegistered(
+            "com.sksamuel.kotest.runner.junit5.MySpec",
+            TestDescriptor.Type.CONTAINER
+         ),
          EventTrackingEngineExecutionListener.Event.ExecutionStarted("com.sksamuel.kotest.runner.junit5.MySpec"),
-         EventTrackingEngineExecutionListener.Event.TestRegistered(JUnitTestEngineListener.PlaceholderName, TestDescriptor.Type.TEST),
+         EventTrackingEngineExecutionListener.Event.TestRegistered(
+            JUnitTestEngineListener.PlaceholderName,
+            TestDescriptor.Type.TEST
+         ),
          EventTrackingEngineExecutionListener.Event.ExecutionStarted(JUnitTestEngineListener.PlaceholderName),
-         EventTrackingEngineExecutionListener.Event.ExecutionFinished(JUnitTestEngineListener.PlaceholderName, TestExecutionResult.Status.FAILED),
-         EventTrackingEngineExecutionListener.Event.ExecutionFinished("com.sksamuel.kotest.runner.junit5.MySpec", TestExecutionResult.Status.FAILED),
+         EventTrackingEngineExecutionListener.Event.ExecutionFinished(
+            JUnitTestEngineListener.PlaceholderName,
+            TestExecutionResult.Status.FAILED
+         ),
+         EventTrackingEngineExecutionListener.Event.ExecutionFinished(
+            "com.sksamuel.kotest.runner.junit5.MySpec",
+            TestExecutionResult.Status.FAILED
+         ),
       )
    }
 
@@ -225,7 +246,10 @@ class JUnitTestEngineListenerTest : FunSpec({
       )
       listener.specExit(MySpec::class, Exception("THWAPP!"))
       track.events shouldBe listOf(
-         EventTrackingEngineExecutionListener.Event.TestRegistered("com.sksamuel.kotest.runner.junit5.MySpec", TestDescriptor.Type.CONTAINER),
+         EventTrackingEngineExecutionListener.Event.TestRegistered(
+            "com.sksamuel.kotest.runner.junit5.MySpec",
+            TestDescriptor.Type.CONTAINER
+         ),
          EventTrackingEngineExecutionListener.Event.ExecutionStarted("com.sksamuel.kotest.runner.junit5.MySpec"),
          EventTrackingEngineExecutionListener.Event.TestRegistered("foo", TestDescriptor.Type.TEST),
          EventTrackingEngineExecutionListener.Event.ExecutionStarted("foo"),
@@ -233,12 +257,61 @@ class JUnitTestEngineListenerTest : FunSpec({
 //         EventTrackingEngineExecutionListener.Event.TestRegistered(JUnitTestEngineListener.PlaceholderName, TestDescriptor.Type.TEST),
 //         EventTrackingEngineExecutionListener.Event.ExecutionStarted(JUnitTestEngineListener.PlaceholderName),
 //         EventTrackingEngineExecutionListener.Event.ExecutionFinished(JUnitTestEngineListener.PlaceholderName, TestExecutionResult.Status.FAILED),
-         EventTrackingEngineExecutionListener.Event.ExecutionFinished("com.sksamuel.kotest.runner.junit5.MySpec", TestExecutionResult.Status.FAILED),
+         EventTrackingEngineExecutionListener.Event.ExecutionFinished(
+            "com.sksamuel.kotest.runner.junit5.MySpec",
+            TestExecutionResult.Status.FAILED
+         ),
+      )
+   }
+
+   test("state should be reset after spec") {
+      val track = EventTrackingEngineExecutionListener()
+      val listener = JUnitTestEngineListener(track, root)
+      listener.specEnter(MySpec::class)
+      listener.specStarted(MySpec::class)
+      listener.testStarted(tc1)
+      listener.testFinished(tc1, TestResult.success(7))
+      listener.specFinished(MySpec::class, mapOf(tc1 to TestResult.success(7)))
+      listener.specExit(MySpec::class, null)
+
+      listener.specEnter(MySpec2::class)
+      listener.specStarted(MySpec2::class)
+      listener.testStarted(tc3)
+      listener.testFinished(tc3, TestResult.success(4))
+      listener.specFinished(MySpec2::class, mapOf(tc3 to TestResult.success(4)))
+      listener.specExit(MySpec2::class, null)
+
+      track.events shouldBe listOf(
+         EventTrackingEngineExecutionListener.Event.TestRegistered(
+            "com.sksamuel.kotest.runner.junit5.MySpec",
+            TestDescriptor.Type.CONTAINER
+         ),
+         EventTrackingEngineExecutionListener.Event.ExecutionStarted("com.sksamuel.kotest.runner.junit5.MySpec"),
+         EventTrackingEngineExecutionListener.Event.TestRegistered("foo", TestDescriptor.Type.TEST),
+         EventTrackingEngineExecutionListener.Event.ExecutionStarted("foo"),
+         EventTrackingEngineExecutionListener.Event.ExecutionFinished("foo", TestExecutionResult.Status.SUCCESSFUL),
+         EventTrackingEngineExecutionListener.Event.ExecutionFinished(
+            "com.sksamuel.kotest.runner.junit5.MySpec",
+            TestExecutionResult.Status.SUCCESSFUL
+         ),
+         EventTrackingEngineExecutionListener.Event.TestRegistered(
+            "com.sksamuel.kotest.runner.junit5.MySpec2",
+            TestDescriptor.Type.CONTAINER
+         ),
+         EventTrackingEngineExecutionListener.Event.ExecutionStarted("com.sksamuel.kotest.runner.junit5.MySpec2"),
+         EventTrackingEngineExecutionListener.Event.TestRegistered("baz", TestDescriptor.Type.TEST),
+         EventTrackingEngineExecutionListener.Event.ExecutionStarted("baz"),
+         EventTrackingEngineExecutionListener.Event.ExecutionFinished("baz", TestExecutionResult.Status.SUCCESSFUL),
+         EventTrackingEngineExecutionListener.Event.ExecutionFinished(
+            "com.sksamuel.kotest.runner.junit5.MySpec2",
+            TestExecutionResult.Status.SUCCESSFUL
+         ),
       )
    }
 })
 
 private class MySpec : FunSpec() {}
+private class MySpec2 : FunSpec() {}
 
 class EventTrackingEngineExecutionListener : EngineExecutionListener {
 
