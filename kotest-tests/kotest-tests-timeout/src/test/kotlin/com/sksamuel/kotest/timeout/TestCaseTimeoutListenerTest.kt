@@ -1,8 +1,10 @@
 package com.sksamuel.kotest.timeout
 
+import io.kotest.core.descriptors.append
 import io.kotest.core.listeners.TestListener
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.descriptors.toDescriptor
+import io.kotest.core.names.TestName
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestCaseConfig
 import io.kotest.core.test.TestResult
@@ -48,7 +50,8 @@ class TestCaseTimeoutListenerTest : FunSpec() {
          }
 
          val testCase = TestCase.test(
-            TestCaseTimeoutListenerTest::class.toDescriptor().appendTest("wibble"),
+            TestCaseTimeoutListenerTest::class.toDescriptor().append("wibble"),
+            TestName("wibble"),
             this@TestCaseTimeoutListenerTest,
             parent = null,
          ) {
@@ -82,7 +85,8 @@ class TestCaseTimeoutListenerTest : FunSpec() {
          }
 
          val testCase = TestCase.test(
-            TestCaseTimeoutListenerTest::class.toDescriptor().appendTest("wibble"),
+            TestCaseTimeoutListenerTest::class.toDescriptor().append("wibble"),
+            TestName("wibble"),
             this@TestCaseTimeoutListenerTest,
             parent = null,
          ) {
