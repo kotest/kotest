@@ -6,8 +6,9 @@ import io.kotest.core.spec.Spec
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.engine.listener.TestEngineListener
-import io.kotest.engine.test.CallingThreadTestContext
 import io.kotest.engine.test.TestCaseExecutor
+import io.kotest.engine.test.contexts.CallingThreadTestContext
+import io.kotest.engine.test.contexts.DuplicateNameHandlingTestContext
 import io.kotest.engine.test.listener.TestCaseExecutionListenerToTestEngineListenerAdapter
 import io.kotest.mpp.log
 import kotlin.coroutines.coroutineContext
@@ -32,12 +33,15 @@ internal class DefaultSpecExecutorDelegate(
       spec.materializeAndOrderRootTests()
          .forEach { (testCase, _) ->
             log { "DefaultSpecExecutorDelegate: Executing testCase $testCase" }
-            val context = CallingThreadTestContext(
-               testCase,
-               coroutineContext,
+            val context = DuplicateNameHandlingTestContext(
                configuration.duplicateTestNameMode,
-               listener,
-               coroutineDispatcherFactory
+               CallingThreadTestContext(
+                  testCase,
+                  coroutineContext,
+                  configuration.duplicateTestNameMode,
+                  listener,
+                  coroutineDispatcherFactory
+               )
             )
             TestCaseExecutor(
                TestCaseExecutionListenerToTestEngineListenerAdapter(listener),

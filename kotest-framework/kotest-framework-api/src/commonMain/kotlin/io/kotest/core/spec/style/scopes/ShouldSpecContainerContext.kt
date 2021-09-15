@@ -1,13 +1,14 @@
 package io.kotest.core.spec.style.scopes
 
 import io.kotest.common.ExperimentalKotest
+import io.kotest.core.descriptors.append
+import io.kotest.core.names.TestName
 import io.kotest.core.spec.KotestDsl
 import io.kotest.core.spec.resolvedDefaultConfig
 import io.kotest.core.test.NestedTest
 import io.kotest.core.test.TestContext
 import io.kotest.core.test.TestType
 import io.kotest.core.test.createNestedTest
-import io.kotest.core.test.createTestName
 
 /**
  * A scope that allows tests to be registered using the syntax:
@@ -37,11 +38,11 @@ class ShouldSpecContainerContext(
    suspend fun context(name: String, test: suspend ShouldSpecContainerContext.() -> Unit) {
       registerTestCase(
          createNestedTest(
-            name = createTestName(name),
+            descriptor = testCase.descriptor.append(name),
+            name = TestName(name),
             xdisabled = false,
             config = testCase.spec.resolvedDefaultConfig(),
             type = TestType.Container,
-            descriptor = null,
             factoryId = testCase.factoryId,
             test = { ShouldSpecContainerContext(this).test() }
          )
@@ -50,7 +51,7 @@ class ShouldSpecContainerContext(
 
    @ExperimentalKotest
    fun context(name: String) = ContainerContextConfigBuilder(
-      createTestName(name),
+      TestName(name),
       testContext,
       false
    ) { ShouldSpecContainerContext(it) }
@@ -61,11 +62,11 @@ class ShouldSpecContainerContext(
    suspend fun xcontext(name: String, test: suspend ShouldSpecContainerContext.() -> Unit) {
       registerTestCase(
          createNestedTest(
-            name = createTestName(name),
+            descriptor = testCase.descriptor.append(name),
+            name = TestName(name),
             xdisabled = true,
             config = testCase.spec.resolvedDefaultConfig(),
             type = TestType.Container,
-            descriptor = null,
             factoryId = testCase.factoryId,
             test = { ShouldSpecContainerContext(this).test() }
          )
@@ -74,15 +75,15 @@ class ShouldSpecContainerContext(
 
    @ExperimentalKotest
    fun xcontext(name: String) = ContainerContextConfigBuilder(
-      createTestName(name),
+      TestName(name),
       testContext,
       true
    ) { ShouldSpecContainerContext(it) }
 
    suspend fun should(name: String): TestWithConfigBuilder {
-      TestDslState.startTest(testContext.testCase.description.appendTest(name))
+      TestDslState.startTest(testContext.testCase.descriptor.append(name))
       return TestWithConfigBuilder(
-         createTestName("should ", name, false),
+         TestName("should ", name, false),
          testContext,
          testCase.spec.resolvedDefaultConfig(),
          xdisabled = false,
@@ -90,9 +91,9 @@ class ShouldSpecContainerContext(
    }
 
    suspend fun xshould(name: String): TestWithConfigBuilder {
-      TestDslState.startTest(testContext.testCase.description.appendTest(name))
+      TestDslState.startTest(testContext.testCase.descriptor.append(name))
       return TestWithConfigBuilder(
-         createTestName("should ", name, false),
+         TestName("should ", name, false),
          testContext,
          testCase.spec.resolvedDefaultConfig(),
          xdisabled = true,
@@ -102,11 +103,11 @@ class ShouldSpecContainerContext(
    suspend fun should(name: String, test: suspend TestContext.() -> Unit) =
       registerTestCase(
          createNestedTest(
-            name = createTestName("should ", name, true),
+            descriptor = testCase.descriptor.append(name),
+            name = TestName("should ", name, true),
             xdisabled = false,
             config = testCase.spec.resolvedDefaultConfig(),
             type = TestType.Test,
-            descriptor = null,
             factoryId = testCase.factoryId,
             test = { ShouldSpecContainerContext(this).test() }
          )
@@ -115,11 +116,11 @@ class ShouldSpecContainerContext(
    suspend fun xshould(name: String, test: suspend TestContext.() -> Unit) =
       registerTestCase(
          createNestedTest(
-            name = createTestName("should ", name, true),
+            descriptor = testCase.descriptor.append(name),
+            name = TestName("should ", name, true),
             xdisabled = true,
             config = testCase.spec.resolvedDefaultConfig(),
             type = TestType.Test,
-            descriptor = null,
             factoryId = testCase.factoryId,
             test = { ShouldSpecContainerContext(this).test() }
          )

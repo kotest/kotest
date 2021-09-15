@@ -8,14 +8,13 @@ import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestContext
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestStatus
-import io.kotest.core.test.createTestName
 import io.kotest.core.test.toTestCase
 import io.kotest.engine.listener.TestEngineListener
 import io.kotest.engine.spec.SpecExtensions
 import io.kotest.engine.spec.SpecRunner
 import io.kotest.engine.spec.materializeAndOrderRootTests
-import io.kotest.engine.test.DuplicateTestNameHandler
 import io.kotest.engine.test.TestCaseExecutor
+import io.kotest.engine.test.contexts.DuplicateNameHandlingTestContext
 import io.kotest.engine.test.listener.TestCaseExecutionListenerToTestEngineListenerAdapter
 import io.kotest.engine.test.scheduler.TestScheduler
 import io.kotest.fp.flatMap
@@ -67,14 +66,12 @@ internal class SingleInstanceSpecRunner(
       override val coroutineContext: CoroutineContext,
    ) : TestContext {
 
-      private val handler = DuplicateTestNameHandler(configuration.duplicateTestNameMode)
       private var failedfast = false
 
       // in the single instance runner we execute each nested test as soon as they are registered
       override suspend fun registerTestCase(nested: NestedTest) {
-         log { "Nested test case discovered $nested" }
-         val overrideName = handler.handle(nested.name)?.let { createTestName(it) }
-         val nestedTestCase = nested.toTestCase(testCase.spec, testCase, overrideName)
+         log { "Nested test case discovered '${nested.descriptor.path().value}'" }
+         val nestedTestCase = nested.toTestCase(testCase.spec, testCase)
          if (failedfast) {
             log { "A previous nested test failed and failfast is enabled - will mark this as ignored" }
             listener.testIgnored(nestedTestCase, "Failfast enabled on parent test")
@@ -94,12 +91,20 @@ internal class SingleInstanceSpecRunner(
       testCase: TestCase,
       coroutineContext: CoroutineContext,
    ): TestResult {
+
       val testExecutor = TestCaseExecutor(
          TestCaseExecutionListenerToTestEngineListenerAdapter(listener),
          defaultCoroutineDispatcherFactory
       )
 
-      val result = testExecutor.execute(testCase, Context(testCase, coroutineContext))
+      val context = DuplicateNameHandlingTestContext(
+         configuration.duplicateTestNameMode,
+         Context(testCase, coroutineContext)
+      )
+
+      val result = testExecutor.execute(
+         testCase, context
+      )
       results[testCase] = result
       return result
    }

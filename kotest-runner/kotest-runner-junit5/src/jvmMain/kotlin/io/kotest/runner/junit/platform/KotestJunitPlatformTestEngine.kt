@@ -5,7 +5,7 @@ import io.kotest.core.extensions.DiscoveryExtension
 import io.kotest.core.filter.TestFilter
 import io.kotest.core.filter.TestFilterResult
 import io.kotest.core.spec.Spec
-import io.kotest.core.spec.toDescription
+import io.kotest.core.descriptors.toDescriptor
 import io.kotest.engine.TestEngineLauncher
 import io.kotest.engine.extensions.EnabledConditionSpecDiscoveryExtension
 import io.kotest.engine.extensions.IgnoredSpecDiscoveryExtension
@@ -14,7 +14,6 @@ import io.kotest.engine.listener.PinnedSpecTestEngineListener
 import io.kotest.engine.listener.ThreadSafeTestEngineListener
 import io.kotest.framework.discovery.Discovery
 import io.kotest.mpp.log
-import kotlinx.coroutines.runBlocking
 import org.junit.platform.engine.EngineDiscoveryRequest
 import org.junit.platform.engine.ExecutionRequest
 import org.junit.platform.engine.TestEngine
@@ -112,7 +111,7 @@ class KotestJunitPlatformTestEngine : TestEngine {
          val discovery = Discovery(extensions)
          val result = discovery.discover(request.toKotestDiscoveryRequest())
          val classes = result.specs.filter { spec ->
-            testFilters.all { it.filter(spec.toDescription()) == TestFilterResult.Include }
+            testFilters.all { it.filter(spec.toDescriptor()) == TestFilterResult.Include }
          }
          KotestEngineDescriptor(uniqueId, classes, result.scripts, testFilters, result.error)
       } else {

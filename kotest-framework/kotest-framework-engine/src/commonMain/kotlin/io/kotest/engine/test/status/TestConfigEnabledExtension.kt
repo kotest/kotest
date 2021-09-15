@@ -19,17 +19,17 @@ internal object TestConfigEnabledExtension : TestEnabledExtension {
 
       val enabledOrReasonIf = testCase.config.enabledOrReasonIf(testCase)
       if (!enabledOrReasonIf.isEnabled) {
-         log { "${testCase.description.testPath()} is disabled by enabledOrReasonIf function in config: ${enabledOrReasonIf.reason}" }
+         log { "${testCase.descriptor.path()} is disabled by enabledOrReasonIf function in config: ${enabledOrReasonIf.reason}" }
          return enabledOrReasonIf
       }
 
       if (!testCase.config.enabled) {
-         return Enabled.disabled("${testCase.description.testPath()} is disabled by enabled property in config")
+         return Enabled.disabled("${testCase.descriptor.path()} is disabled by enabled property in config")
             .also { log { it.reason } }
       }
 
       if (!testCase.config.enabledIf(testCase)) {
-         return Enabled.disabled("${testCase.description.testPath()} is disabled by enabledIf function in config")
+         return Enabled.disabled("${testCase.descriptor.path()} is disabled by enabledIf function in config")
             .also { log { it.reason } }
       }
 

@@ -50,7 +50,7 @@ class DiscoveryTest : FunSpec({
          .build()
       val engine = KotestJunitPlatformTestEngine()
       val descriptor = engine.discover(req, UniqueId.forEngine("testengine"))
-      descriptor.classes.size shouldBe 24
+      descriptor.classes.size shouldBe 25
    }
 
    test("kotest should support include package name filter") {

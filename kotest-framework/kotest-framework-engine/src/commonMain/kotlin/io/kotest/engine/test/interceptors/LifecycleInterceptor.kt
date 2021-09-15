@@ -36,7 +36,7 @@ internal class LifecycleInterceptor(
       test: suspend (TestCase, TestContext) -> TestResult
    ): suspend (TestCase, TestContext) -> TestResult = { testCase, context ->
 
-      log { "Executing active test $testCase with context $context" }
+      log { "LifecycleInterceptor: Executing active test '${testCase.descriptor.path().value}' with context $context" }
       listener.testStarted(testCase)
 
       testCase.invokeAllBeforeTestCallbacks()
@@ -48,6 +48,7 @@ internal class LifecycleInterceptor(
             },
             {
                val result = test(testCase, context)
+               log { "LifecycleInterceptor: '${testCase.descriptor.path().value}'=${result.status}"  }
                // an error in the after test callbacks will override the result of the test if it was successfuls\
                // if the test already failed, that result will be used
                // todo combine into multiple errors ?

@@ -1,9 +1,11 @@
 package com.sksamuel.kotest.engine.listener
 
+import io.kotest.core.descriptors.append
 import io.kotest.core.sourceRef
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.style.FunSpec
-import io.kotest.core.spec.toDescription
+import io.kotest.core.descriptors.toDescriptor
+import io.kotest.core.names.TestName
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestCaseConfig
 import io.kotest.core.test.TestResult
@@ -18,18 +20,18 @@ class TeamCityListenerIgnoredTestsEndToEndTest : FunSpec() {
    private val kclass: KClass<out Spec> = TeamCityListenerIgnoredTestsEndToEndTest::class
 
    private val testCase1 = TestCase(
-      description = kclass.toDescription().appendTest("disabled test"),
+      descriptor = kclass.toDescriptor().append("disabled test"),
+      name = TestName("disabled test"),
       spec = this,
       test = { },
       source = sourceRef(),
       type = TestType.Test,
       config = TestCaseConfig(enabled = false),
       factoryId = null,
-      descriptor = null
    )
 
    private val testCase2 = testCase1.copy(
-      description = kclass.toDescription().appendTest("disabled container"),
+      descriptor = kclass.toDescriptor().append("disabled container"),
       type = TestType.Container,
    )
 

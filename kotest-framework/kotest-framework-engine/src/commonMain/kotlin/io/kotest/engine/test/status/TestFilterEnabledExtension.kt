@@ -16,10 +16,10 @@ internal object TestFilterEnabledExtension : TestEnabledExtension {
 
       val filters = configuration.filters().filterIsInstance<TestFilter>()
       val includedByFilters = filters.all {
-         it.filter(testCase.description) == TestFilterResult.Include
+         it.filter(testCase.descriptor) == TestFilterResult.Include
       }
       if (!includedByFilters) {
-         return Enabled.disabled("${testCase.description.testPath()} is excluded by test case filters (${filters.size} filters found)")
+         return Enabled.disabled("${testCase.descriptor.path()} is excluded by test case filters (${filters.size} filters found)")
             .also { log { it.reason } }
       }
 

@@ -1,7 +1,7 @@
 package io.kotest.core.spec.style.scopes
 
+import io.kotest.core.names.TestName
 import io.kotest.core.spec.KotestDsl
-import io.kotest.core.test.createTestName
 
 /**
  * A scope that allows root tests to be registered using the syntax:
@@ -17,7 +17,7 @@ interface FeatureSpecRootContext : RootContext {
    fun xfeature(name: String, test: suspend FeatureSpecContainerContext.() -> Unit) = addFeature(name, true, test)
 
    fun addFeature(name: String, xdisabled: Boolean, test: suspend FeatureSpecContainerContext.() -> Unit) {
-      val testName = createTestName("Feature: ", name, false)
+      val testName = TestName("Feature: ", name, false)
       registration().addContainerTest(testName, xdisabled = xdisabled) {
          FeatureSpecContainerContext(this).test()
       }

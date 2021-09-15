@@ -1,7 +1,9 @@
 package io.kotest.core.spec.style.scopes
 
 import io.kotest.core.Tag
+import io.kotest.core.descriptors.append
 import io.kotest.core.extensions.TestCaseExtension
+import io.kotest.core.names.TestName
 import io.kotest.core.spec.KotestDsl
 import io.kotest.core.spec.resolvedDefaultConfig
 import io.kotest.core.test.EnabledIf
@@ -10,7 +12,6 @@ import io.kotest.core.test.TestCaseSeverityLevel
 import io.kotest.core.test.TestContext
 import io.kotest.core.test.TestType
 import io.kotest.core.test.createNestedTest
-import io.kotest.core.test.createTestName
 import kotlin.time.Duration
 
 /**
@@ -49,7 +50,7 @@ class WordSpecShouldContainerContext(
       severity: TestCaseSeverityLevel? = null,
       test: suspend TestContext.() -> Unit
    ) = TestWithConfigBuilder(
-      createTestName(this),
+      TestName(this),
       testContext,
       testCase.spec.resolvedDefaultConfig(),
       false,
@@ -69,11 +70,11 @@ class WordSpecShouldContainerContext(
    suspend infix operator fun String.invoke(test: suspend WordSpecTerminalContext.() -> Unit) {
       registerTestCase(
          createNestedTest(
-            name = createTestName(this),
+            descriptor = testCase.descriptor.append(this),
+            name = TestName(this),
             xdisabled = false,
             config = testCase.spec.resolvedDefaultConfig(),
             type = TestType.Test,
-            descriptor = null,
             factoryId = testCase.factoryId,
             test = { WordSpecTerminalContext(this).test() }
          )

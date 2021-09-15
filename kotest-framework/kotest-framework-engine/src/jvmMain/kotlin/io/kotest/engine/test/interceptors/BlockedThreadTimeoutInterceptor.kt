@@ -3,8 +3,8 @@ package io.kotest.engine.test.interceptors
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestContext
 import io.kotest.core.test.TestResult
+import io.kotest.engine.test.contexts.withCoroutineContext
 import io.kotest.engine.test.resolvedTimeout
-import io.kotest.engine.test.withCoroutineContext
 import io.kotest.mpp.NamedThreadFactory
 import io.kotest.mpp.log
 import kotlinx.coroutines.asCoroutineDispatcher
@@ -51,7 +51,7 @@ internal class BlockedThreadTimeoutInterceptor : TestExecutionInterceptor {
             }
          } catch (t: InterruptedException) {
             log { "BlockedThreadTimeoutInterceptor: Caught InterruptedException ${t.message}" }
-            throw TestTimeoutException(timeoutInMillis, "")
+            throw BlockedThreadTestTimeoutException(timeoutInMillis, testCase.name.testName)
          } finally {
             // we should stop the scheduled task from running just to be tidy
             if (!task.isDone) {
@@ -65,4 +65,7 @@ internal class BlockedThreadTimeoutInterceptor : TestExecutionInterceptor {
    }
 }
 
-
+/**
+ * Exception used for when a test exceeds its timeout.
+ */
+class BlockedThreadTestTimeoutException(timeout: Long, testName: String) : TestTimeoutException(timeout, testName)

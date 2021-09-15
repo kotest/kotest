@@ -1,12 +1,14 @@
 package io.kotest.engine.reporter
 
 import com.github.ajalt.mordant.TermColors
-import io.kotest.core.spec.toDescription
-import io.kotest.core.test.Description
+import io.kotest.core.descriptors.Descriptor
+import io.kotest.core.config.configuration
+import io.kotest.core.descriptors.toDescriptor
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestStatus
 import io.kotest.core.test.TestType
+import io.kotest.engine.test.names.DisplayNameFormatter
 import kotlin.reflect.KClass
 
 private val isWindows = System.getProperty("os.name").contains("win")
@@ -35,21 +37,24 @@ class MochaConsoleReporter(
 
    private val margin = " ".repeat(2)
 
-   private val tests = mutableListOf<TestCase>()
-   private val results = mutableMapOf<Description, TestResult>()
+   private val tests = mutableMapOf<Descriptor, TestCase>()
+   private val results = mutableMapOf<Descriptor, TestResult>()
+
    private var n = 0
    private var start = 0L
    private var errors = false
 
-   private fun Description.indent(): String = "\t".repeat(parents().size)
+   private val formatter = DisplayNameFormatter(configuration)
+
+   private fun Descriptor.indent(): String = "\t".repeat(depth())
 
    override fun hasErrors(): Boolean = errors
 
    private fun testLine(testCase: TestCase, result: TestResult): String {
       val name = when (result.status) {
-         TestStatus.Failure, TestStatus.Error -> term.brightRed(testCase.description.name.displayName + " *** FAILED ***")
-         TestStatus.Success -> testCase.description.name.displayName
-         TestStatus.Ignored -> term.gray(testCase.description.name.displayName + " ??? IGNORED ???")
+         TestStatus.Failure, TestStatus.Error -> term.brightRed(formatter.format(testCase) + " *** FAILED ***")
+         TestStatus.Success -> formatter.format(testCase)
+         TestStatus.Ignored -> term.gray(formatter.format(testCase) + " ??? IGNORED ???")
       }
       val symbol = when (result.status) {
          TestStatus.Success -> SuccessSymbol
@@ -60,7 +65,7 @@ class MochaConsoleReporter(
          TestType.Test -> durationString(result.duration)
          else -> ""
       }
-      return "$margin${testCase.description.indent()} ${symbol.print(term)} $name $duration".padEnd(80, ' ')
+      return "$margin${testCase.descriptor.indent()} ${symbol.print(term)} $name $duration".padEnd(80, ' ')
    }
 
    private fun durationString(durationMs: Long): String {
@@ -80,19 +85,18 @@ class MochaConsoleReporter(
    override fun specFinished(kclass: KClass<*>, t: Throwable?, results: Map<TestCase, TestResult>) {
 
       n += 1
-      val specDesc = kclass.toDescription()
 
       if (t == null) {
          println("$margin$n) " + term.brightWhite(kclass.qualifiedName!!))
       } else {
          errors = true
          print(margin)
-         println(term.red(specDesc.name.displayName + " *** FAILED ***"))
+         println(term.red(formatter.format(kclass) + " *** FAILED ***"))
          println(term.red("$margin\tcause: ${t.message})"))
       }
       println()
 
-      tests
+      tests.values
          .filter { it.spec::class.qualifiedName == kclass.qualifiedName }
          .forEach { testCase ->
             val result = results[testCase]
@@ -120,11 +124,11 @@ class MochaConsoleReporter(
    }
 
    override fun testStarted(testCase: TestCase) {
-      tests.add(testCase)
+      tests[testCase.descriptor] = testCase
    }
 
    override fun testFinished(testCase: TestCase, result: TestResult) {
-      results[testCase.description] = result
+      results[testCase.descriptor] = result
    }
 
    private fun padNewLines(str: String, pad: String): String = str.lines().joinToString("\n") { "$pad$it" }
@@ -137,7 +141,7 @@ class MochaConsoleReporter(
       val failed = results.filter { it.value.status == TestStatus.Failure || it.value.status == TestStatus.Error }
       val passed = results.filter { it.value.status == TestStatus.Success }
 
-      val specs = tests.map { it.spec::class.toDescription() }.distinct()
+      val specs = tests.values.map { it.spec::class.toDescriptor() }.distinct()
       val specDistinctCount = specs.distinct().size
 
       println()
@@ -148,8 +152,9 @@ class MochaConsoleReporter(
          println()
          println(term.brightWhite("$margin----------------------------- ${failed.size} FAILURES -----------------------------"))
          failed.forEach {
+            val test = tests[it.key]!!
             println()
-            println("$margin${term.brightRed(if (isWindows) "X" else "✘")} ${term.brightWhite(it.key.testDisplayPath().value)}")
+            println("$margin${term.brightRed(if (isWindows) "X" else "✘")} ${term.brightWhite(formatter.formatTestPath(test))}")
             println()
             val error = it.value.error
             if (error != null) {

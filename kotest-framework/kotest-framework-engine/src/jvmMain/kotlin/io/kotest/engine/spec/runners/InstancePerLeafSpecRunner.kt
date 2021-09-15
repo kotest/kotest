@@ -2,21 +2,20 @@ package io.kotest.engine.spec.runners
 
 import io.kotest.core.concurrency.CoroutineDispatcherFactory
 import io.kotest.core.config.configuration
+import io.kotest.core.descriptors.Descriptor
 import io.kotest.core.spec.Spec
-import io.kotest.core.test.Description
 import io.kotest.core.test.NestedTest
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestContext
 import io.kotest.core.test.TestResult
-import io.kotest.core.test.createTestName
 import io.kotest.core.test.toTestCase
-import io.kotest.engine.spec.SpecExtensions
 import io.kotest.engine.listener.TestEngineListener
+import io.kotest.engine.spec.SpecExtensions
 import io.kotest.engine.spec.SpecRunner
 import io.kotest.engine.spec.materializeAndOrderRootTests
-import io.kotest.engine.test.DuplicateTestNameHandler
 import io.kotest.engine.test.TestCaseExecutionListener
 import io.kotest.engine.test.TestCaseExecutor
+import io.kotest.engine.test.contexts.DuplicateNameHandlingTestContext
 import io.kotest.engine.test.scheduler.TestScheduler
 import io.kotest.fp.flatMap
 import io.kotest.mpp.log
@@ -34,11 +33,11 @@ internal class InstancePerLeafSpecRunner(
    private val results = mutableMapOf<TestCase, TestResult>()
 
    // keeps track of tests we've already discovered
-   private val seen = mutableSetOf<Description>()
+   private val seen = mutableSetOf<Descriptor>()
 
    // keeps track of tests we've already notified the listener about
-   private val ignored = mutableSetOf<Description>()
-   private val started = mutableSetOf<Description>()
+   private val ignored = mutableSetOf<Descriptor>()
+   private val started = mutableSetOf<Descriptor>()
 
    // we keep a count to break ties (first discovered)
    data class Enqueued(val testCase: TestCase, val count: Int)
@@ -47,8 +46,8 @@ internal class InstancePerLeafSpecRunner(
 
    // the queue contains tests discovered to run next. We always run the tests with the "furthest" path first.
    private val queue = PriorityQueue(Comparator<Enqueued> { o1, o2 ->
-      val o1s = o1.testCase.description.names().size
-      val o2s = o2.testCase.description.names().size
+      val o1s = o1.testCase.descriptor.depth()
+      val o2s = o2.testCase.descriptor.depth()
       if (o1s == o2s) o1.count.compareTo(o2.count) else o2s.compareTo(o1s)
    })
 
@@ -88,9 +87,9 @@ internal class InstancePerLeafSpecRunner(
    // we need to find the same root test but in the newly created spec
    private suspend fun interceptAndRun(spec: Spec, test: TestCase): Result<Spec> = kotlin.runCatching {
       log { "InstancePerLeafSpecRunner: Created new spec instance $spec" }
-      val root = spec.materializeAndOrderRootTests().firstOrNull { it.testCase.description.isOnPath(test.description) }
-         ?: throw error("Unable to locate root test ${test.description.testPath()}")
-      log { "InstancePerLeafSpecRunner: Starting root test ${root.testCase.description} in search of ${test.description}" }
+      val root = spec.materializeAndOrderRootTests().firstOrNull { it.testCase.descriptor.isOnPath(test.descriptor) }
+         ?: throw error("Unable to locate root test ${test.descriptor.path()}")
+      log { "InstancePerLeafSpecRunner: Starting root test ${root.testCase.descriptor} in search of ${test.descriptor}" }
       run(root.testCase, test)
       spec
    }
@@ -101,25 +100,22 @@ internal class InstancePerLeafSpecRunner(
 
             var open = true
 
-            private val handler = DuplicateTestNameHandler(configuration.duplicateTestNameMode)
-
             override val testCase: TestCase = test
             override val coroutineContext: CoroutineContext = this@coroutineScope.coroutineContext
             override suspend fun registerTestCase(nested: NestedTest) {
 
-               val overrideName = handler.handle(nested.name)?.let { createTestName(it) }
-               val t = nested.toTestCase(test.spec, test, overrideName)
+               val t = nested.toTestCase(test.spec, test)
 
                // if this test is our target then we definitely run it
                // or if the test is on the path to our target we must run it
-               if (t.description.isOnPath(target.description)) {
+               if (t.descriptor.isOnPath(target.descriptor)) {
                   open = false
-                  seen.add(t.description)
+                  seen.add(t.descriptor)
                   run(t, target)
                   // otherwise if we're already past our target we're discovering and so
                   // the first discovery we run, the rest we queue
-               } else if (target.description.isOnPath(t.description)) {
-                  if (seen.add(t.description)) {
+               } else if (target.descriptor.isOnPath(t.descriptor)) {
+                  if (seen.add(t.descriptor)) {
                      if (open) {
                         open = false
                         run(t, target)
@@ -131,21 +127,23 @@ internal class InstancePerLeafSpecRunner(
             }
          }
 
+         val context2 = DuplicateNameHandlingTestContext(configuration.duplicateTestNameMode, context)
+
          val testExecutor = TestCaseExecutor(
             object : TestCaseExecutionListener {
                override suspend fun testStarted(testCase: TestCase) {
-                  if (started.add(testCase.description)) {
+                  if (started.add(testCase.descriptor)) {
                      listener.testStarted(testCase)
                   }
                }
 
                override suspend fun testIgnored(testCase: TestCase) {
-                  if (ignored.add(testCase.description))
+                  if (ignored.add(testCase.descriptor))
                      listener.testIgnored(testCase, null)
                }
 
                override suspend fun testFinished(testCase: TestCase, result: TestResult) {
-                  if (!queue.any { it.testCase.description.isDescendentOf(testCase.description) }) {
+                  if (!queue.any { it.testCase.descriptor.isDescendentOf(testCase.descriptor) }) {
                      listener.testFinished(testCase, result)
                   }
                }
@@ -153,7 +151,7 @@ internal class InstancePerLeafSpecRunner(
             defaultCoroutineDispatcherFactory
          )
 
-         val result = testExecutor.execute(test, context)
+         val result = testExecutor.execute(test, context2)
          results[test] = result
       }
    }

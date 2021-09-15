@@ -28,7 +28,7 @@ internal class RunIfActiveInterceptor(private val listener: TestEngineListener) 
       val enabled = roots.associate { it.testCase to it.testCase.isEnabled() }
       val active = enabled.any { it.value.isEnabled }
 
-      log { "RunIfActiveTestsInterceptor: active=$active from ${roots.size} root tests [$spec]" }
+      log { "RunIfActiveInterceptor: active=$active from ${roots.size} root tests [$spec]" }
 
       if (active) {
          fn(spec)

@@ -2,7 +2,7 @@ package io.kotest.core.spec.style.scopes
 
 import io.kotest.common.ExperimentalKotest
 import io.kotest.core.Tag
-import io.kotest.core.test.DescriptionName
+import io.kotest.core.names.TestName
 import io.kotest.core.test.EnabledIf
 import io.kotest.core.test.EnabledOrReasonIf
 import io.kotest.core.test.TestContext
@@ -14,7 +14,7 @@ import kotlin.time.Duration
 
 @ExperimentalKotest
 class RootContextConfigBuilder<T>(
-   private val name: DescriptionName.TestName,
+   private val name: TestName,
    private val registration: RootTestRegistration,
    private val xdisabled: Boolean,
    val contextFn: (TestContext) -> T

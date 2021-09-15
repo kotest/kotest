@@ -28,7 +28,7 @@ internal object SeverityLevelEnabledExtension : TestEnabledExtension {
 
       return when {
          testLevel.level >= minLevel.level -> Enabled.enabled
-         else -> Enabled.disabled("${testCase.description.testPath()} is disabled by severityLevel")
+         else -> Enabled.disabled("${testCase.descriptor.path()} is disabled by severityLevel")
             .also { log { it.reason } }
       }
    }

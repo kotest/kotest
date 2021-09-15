@@ -6,7 +6,6 @@ import io.kotest.core.concurrency.CoroutineDispatcherFactory
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestContext
 import io.kotest.core.test.TestResult
-import io.kotest.core.test.TestStatus
 import io.kotest.engine.concurrency.NoopCoroutineDispatcherFactory
 import io.kotest.engine.test.interceptors.AssertionModeInterceptor
 import io.kotest.engine.test.interceptors.CoroutineDebugProbeInterceptor
@@ -21,6 +20,7 @@ import io.kotest.engine.test.interceptors.InvocationTimeoutInterceptor
 import io.kotest.engine.test.interceptors.LifecycleInterceptor
 import io.kotest.engine.test.interceptors.SupervisorScopeInterceptor
 import io.kotest.engine.test.interceptors.TestCaseExtensionInterceptor
+import io.kotest.engine.test.interceptors.TestFinishedInterceptor
 import io.kotest.engine.test.interceptors.TimeoutInterceptor
 import io.kotest.engine.test.interceptors.blockedThreadTimeoutInterceptor
 import io.kotest.engine.test.interceptors.coroutineDispatcherFactoryInterceptor
@@ -40,7 +40,7 @@ class TestCaseExecutor(
 ) {
 
    suspend fun execute(testCase: TestCase, context: TestContext): TestResult {
-      log { "TestCaseExecutor: execute entry point [testCase=${testCase.displayName}, context=$context]" }
+      log { "TestCaseExecutor: execute entry point '${testCase.descriptor.path().value}' context=$context" }
 
       val start = timeInMillis()
 
@@ -50,6 +50,7 @@ class TestCaseExecutor(
          SupervisorScopeInterceptor,
          if (platform == Platform.JVM) coroutineDispatcherFactoryInterceptor(defaultCoroutineDispatcherFactory) else null,
          if (platform == Platform.JVM) coroutineErrorCollectorInterceptor() else null,
+         TestFinishedInterceptor(listener),
          TestCaseExtensionInterceptor,
          EnabledCheckInterceptor,
          LifecycleInterceptor(listener, start),
@@ -72,11 +73,6 @@ class TestCaseExecutor(
       val result = interceptors.foldRight(innerExecute) { ext, fn ->
          { tc, ctx -> ext.intercept(fn)(tc, ctx) }
       }.invoke(testCase, context)
-
-      when (result.status) {
-         TestStatus.Ignored -> listener.testIgnored(testCase)
-         else -> listener.testFinished(testCase, result)
-      }
 
       return result
    }

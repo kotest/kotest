@@ -47,7 +47,6 @@ tasks.named<Test>("jvmTest") {
       showExceptions = true
       showStandardStreams = true
       events = setOf(
-         org.gradle.api.tasks.testing.logging.TestLogEvent.STARTED,
          org.gradle.api.tasks.testing.logging.TestLogEvent.SKIPPED,
          org.gradle.api.tasks.testing.logging.TestLogEvent.FAILED,
          org.gradle.api.tasks.testing.logging.TestLogEvent.PASSED,

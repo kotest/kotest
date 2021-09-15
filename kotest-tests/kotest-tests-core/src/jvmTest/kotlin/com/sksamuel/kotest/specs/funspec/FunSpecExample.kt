@@ -8,13 +8,12 @@ import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestCaseOrder
 import io.kotest.core.test.TestResult
 import io.kotest.core.spec.style.FunSpec
-import io.kotest.core.spec.toDescription
+import io.kotest.core.descriptors.toDescriptor
 import io.kotest.extensions.locale.LocaleTestListener
 import io.kotest.extensions.locale.TimeZoneTestListener
 import java.util.Locale
 import java.util.TimeZone
 import kotlin.time.Duration
-import kotlin.time.milliseconds
 
 class FunSpecExample : FunSpec() {
 
@@ -24,19 +23,19 @@ class FunSpecExample : FunSpec() {
    override fun tags(): Set<Tag> = setOf(jvmTag, linuxTag)
 
    override fun beforeTest(testCase: TestCase) {
-      println("Starting test ${testCase.description}")
+      println("Starting test ${testCase.descriptor}")
    }
 
    override fun beforeSpec(spec: Spec) {
-      println("Starting spec ${spec::class.toDescription()}")
+      println("Starting spec ${spec::class.toDescriptor()}")
    }
 
    override fun afterSpec(spec: Spec) {
-      println("Completed spec ${spec::class.toDescription()}")
+      println("Completed spec ${spec::class.toDescriptor()}")
    }
 
    override fun afterTest(testCase: TestCase, result: TestResult) {
-      println("Test ${testCase.description} completed with result $result")
+      println("Test ${testCase.descriptor} completed with result $result")
    }
 
    override fun isolationMode(): IsolationMode? = IsolationMode.InstancePerLeaf

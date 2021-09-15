@@ -42,6 +42,7 @@ class SpecInitializationErrorTest : FunSpec({
       executor.execute(ReflectiveSpecRef(SpecWithFieldError::class))
 
       finished.toMap() shouldBe mapOf(
+         "<error>" to TestExecutionResult.Status.FAILED,
          "com.sksamuel.kotest.runner.junit5.SpecWithFieldError" to TestExecutionResult.Status.FAILED
       )
    }
@@ -73,7 +74,8 @@ class SpecInitializationErrorTest : FunSpec({
       executor.execute(ReflectiveSpecRef(SpecWithInitError::class))
 
       finished.toMap() shouldBe mapOf(
-         "com.sksamuel.kotest.runner.junit5.SpecWithInitError" to TestExecutionResult.Status.FAILED
+         "<error>" to TestExecutionResult.Status.FAILED,
+         "com.sksamuel.kotest.runner.junit5.SpecWithInitError" to TestExecutionResult.Status.FAILED,
       )
    }
 })
