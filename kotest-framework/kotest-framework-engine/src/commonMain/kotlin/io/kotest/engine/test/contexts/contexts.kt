@@ -1,15 +1,16 @@
-package io.kotest.engine.test
+package io.kotest.engine.test.contexts
 
 import io.kotest.core.concurrency.CoroutineDispatcherFactory
-import io.kotest.core.test.DuplicateTestNameMode
+import io.kotest.core.config.configuration
+import io.kotest.core.names.DuplicateTestNameMode
 import io.kotest.core.test.NestedTest
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestContext
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestStatus
-import io.kotest.core.test.createTestName
 import io.kotest.core.test.toTestCase
 import io.kotest.engine.listener.TestEngineListener
+import io.kotest.engine.test.TestCaseExecutor
 import io.kotest.engine.test.listener.TestCaseExecutionListenerToTestEngineListenerAdapter
 import io.kotest.mpp.log
 import kotlin.coroutines.CoroutineContext
@@ -42,14 +43,12 @@ class CallingThreadTestContext(
    private val defaultCoroutineDispatcherFactory: CoroutineDispatcherFactory,
 ) : TestContext {
 
-   private val handler = DuplicateTestNameHandler(duplicateTestNameMode)
    private var failedfast = false
 
    // in the single instance runner we execute each nested test as soon as they are registered
    override suspend fun registerTestCase(nested: NestedTest) {
       log { "CallingThreadTestContext: Nested test case discovered $nested" }
-      val overrideName = handler.handle(nested.name)?.let { createTestName(it) }
-      val nestedTestCase = nested.toTestCase(testCase.spec, testCase, overrideName)
+      val nestedTestCase = nested.toTestCase(testCase.spec, testCase)
       if (failedfast) {
          log { "CallingThreadTestContext: A previous nested test failed and failfast is enabled - will mark this as ignored" }
          listener.testIgnored(nestedTestCase, "Failfast enabled on parent test")
@@ -74,12 +73,15 @@ class CallingThreadTestContext(
          defaultCoroutineDispatcherFactory,
       ).execute(
          testCase,
-         CallingThreadTestContext(
-            testCase,
-            coroutineContext,
-            duplicateTestNameMode,
-            listener,
-            defaultCoroutineDispatcherFactory
+         DuplicateNameHandlingTestContext(
+            configuration.duplicateTestNameMode,
+            CallingThreadTestContext(
+               testCase,
+               coroutineContext,
+               duplicateTestNameMode,
+               listener,
+               defaultCoroutineDispatcherFactory
+            )
          )
       )
    }
@@ -106,3 +108,4 @@ class TerminalTestContext(
       error("Nested tests are not supported")
    }
 }
+

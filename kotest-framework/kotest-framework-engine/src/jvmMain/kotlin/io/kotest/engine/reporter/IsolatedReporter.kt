@@ -2,8 +2,8 @@
 
 package io.kotest.engine.reporter
 
-import io.kotest.core.spec.toDescription
-import io.kotest.core.test.Description
+import io.kotest.core.descriptors.Descriptor
+import io.kotest.core.descriptors.toDescriptor
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import java.util.concurrent.atomic.AtomicReference
@@ -16,7 +16,7 @@ import kotlin.reflect.KClass
  */
 class IsolatedReporter(val reporter: Reporter) : Reporter {
 
-   private val runningSpec = AtomicReference<Description?>(null)
+   private val runningSpec = AtomicReference<Descriptor?>(null)
    private val callbacks = mutableListOf<() -> Unit>()
 
    private fun queue(fn: () -> Unit) {
@@ -45,7 +45,7 @@ class IsolatedReporter(val reporter: Reporter) : Reporter {
 
    override fun specStarted(kclass: KClass<*>) {
       synchronized(reporter) {
-         if (runningSpec.compareAndSet(null, kclass.toDescription())) {
+         if (runningSpec.compareAndSet(null, kclass.toDescriptor())) {
             reporter.specStarted(kclass)
          } else {
             queue {
@@ -57,7 +57,7 @@ class IsolatedReporter(val reporter: Reporter) : Reporter {
 
    override fun specFinished(kclass: KClass<*>, t: Throwable?, results: Map<TestCase, TestResult>) {
       synchronized(reporter) {
-         if (runningSpec.get() == kclass.toDescription()) {
+         if (runningSpec.get() == kclass.toDescriptor()) {
             reporter.specFinished(kclass, t, results)
             runningSpec.set(null)
             replay()
@@ -71,7 +71,7 @@ class IsolatedReporter(val reporter: Reporter) : Reporter {
 
    override fun testStarted(testCase: TestCase) {
       synchronized(reporter) {
-         if (runningSpec.get() == testCase.spec::class.toDescription()) {
+         if (runningSpec.get() == testCase.spec::class.toDescriptor()) {
             reporter.testStarted(testCase)
          } else {
             queue {
@@ -83,7 +83,7 @@ class IsolatedReporter(val reporter: Reporter) : Reporter {
 
    override fun testFinished(testCase: TestCase, result: TestResult) {
       synchronized(reporter) {
-         if (runningSpec.get() == testCase.spec::class.toDescription()) {
+         if (runningSpec.get() == testCase.spec::class.toDescriptor()) {
             reporter.testFinished(testCase, result)
          } else {
             queue {

@@ -5,10 +5,12 @@ import io.kotest.assertions.Expected
 import io.kotest.assertions.failure
 import io.kotest.assertions.shouldFail
 import io.kotest.assertions.show.Printed
+import io.kotest.core.descriptors.append
 import io.kotest.core.sourceRef
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.style.FunSpec
-import io.kotest.core.spec.toDescription
+import io.kotest.core.descriptors.toDescriptor
+import io.kotest.core.names.TestName
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestCaseConfig
 import io.kotest.core.test.TestResult
@@ -32,7 +34,8 @@ class TeamCityListenerTest : FunSpec() {
    private val kclass: KClass<out Spec> = TeamCityListenerTest::class
 
    private val testCaseContainer = TestCase(
-      kclass.toDescription().appendContainer("my container"),
+      kclass.toDescriptor().append("my container"),
+      TestName("my container"),
       this@TeamCityListenerTest,
       { },
       sourceRef(),
@@ -43,7 +46,8 @@ class TeamCityListenerTest : FunSpec() {
    )
 
    private val testCaseTest = testCaseContainer.copy(
-      description = testCaseContainer.description.appendTest("my test case"),
+      descriptor = testCaseContainer.descriptor.append("my test case"),
+      TestName("my test case"),
       type = TestType.Test
    )
 
@@ -52,31 +56,31 @@ class TeamCityListenerTest : FunSpec() {
       test("specStarted should write testSuiteStarted") {
          captureStandardOut {
             TeamCityTestEngineListener("testcity").specStarted(kclass)
-         } shouldBe "${nl}testcity[testSuiteStarted name='com.sksamuel.kotest.engine.listener.TeamCityListenerTest' id='com.sksamuel.kotest.engine.listener.TeamCityListenerTest' locationHint='kotest://com.sksamuel.kotest.engine.listener.TeamCityListenerTest:1' test_type='spec']$nl"
+         } shouldBe "${nl}testcity[testSuiteStarted name='TeamCityListenerTest' id='com.sksamuel.kotest.engine.listener.TeamCityListenerTest' locationHint='kotest://com.sksamuel.kotest.engine.listener.TeamCityListenerTest:1' test_type='spec']$nl"
       }
 
       test("testStarted should write testSuiteStarted for TestType.Container") {
          captureStandardOut {
             TeamCityTestEngineListener("testcity").testStarted(testCaseContainer)
-         } shouldBe "${nl}testcity[testSuiteStarted name='my container' id='com.sksamuel.kotest.engine.listener.TeamCityListenerTest/my_container' parent_id='com.sksamuel.kotest.engine.listener.TeamCityListenerTest' locationHint='kotest://com.sksamuel.kotest.engine.listener.TeamCityListenerTest:1' test_type='container']$nl"
+         } shouldBe "${nl}testcity[testSuiteStarted name='my container' id='com.sksamuel.kotest.engine.listener.TeamCityListenerTest/my container' parent_id='com.sksamuel.kotest.engine.listener.TeamCityListenerTest' locationHint='kotest://com.sksamuel.kotest.engine.listener.TeamCityListenerTest:1' test_type='container']$nl"
       }
 
       test("testStarted should write testStarted for TestType.Test") {
          captureStandardOut {
             TeamCityTestEngineListener("testcity").testStarted(testCaseTest)
-         } shouldBe "${nl}testcity[testStarted name='my test case' id='com.sksamuel.kotest.engine.listener.TeamCityListenerTest/my_container/my_test_case' parent_id='com.sksamuel.kotest.engine.listener.TeamCityListenerTest/my_container' locationHint='kotest://com.sksamuel.kotest.engine.listener.TeamCityListenerTest:1' test_type='test']$nl"
+         } shouldBe "${nl}testcity[testStarted name='my test case' id='com.sksamuel.kotest.engine.listener.TeamCityListenerTest/my container -- my test case' parent_id='com.sksamuel.kotest.engine.listener.TeamCityListenerTest/my container' locationHint='kotest://com.sksamuel.kotest.engine.listener.TeamCityListenerTest:1' test_type='test']$nl"
       }
 
       test("testFinished should write testFinished for TestType.Test success") {
          captureStandardOut {
             TeamCityTestEngineListener("testcity").testFinished(testCaseTest, TestResult.success(234))
-         } shouldBe "${nl}testcity[testFinished name='my test case' id='com.sksamuel.kotest.engine.listener.TeamCityListenerTest/my_container/my_test_case' parent_id='com.sksamuel.kotest.engine.listener.TeamCityListenerTest/my_container' duration='234' locationHint='kotest://com.sksamuel.kotest.engine.listener.TeamCityListenerTest:1' test_type='test' result_status='Success']$nl"
+         } shouldBe "${nl}testcity[testFinished name='my test case' id='com.sksamuel.kotest.engine.listener.TeamCityListenerTest/my container -- my test case' parent_id='com.sksamuel.kotest.engine.listener.TeamCityListenerTest/my container' duration='234' locationHint='kotest://com.sksamuel.kotest.engine.listener.TeamCityListenerTest:1' test_type='test' result_status='Success']$nl"
       }
 
       test("testFinished should write testSuiteFinished for TestType.Container success") {
          captureStandardOut {
             TeamCityTestEngineListener("testcity").testFinished(testCaseContainer, TestResult.success(15))
-         } shouldBe "${nl}testcity[testSuiteFinished name='my container' id='com.sksamuel.kotest.engine.listener.TeamCityListenerTest/my_container' parent_id='com.sksamuel.kotest.engine.listener.TeamCityListenerTest' duration='15' locationHint='kotest://com.sksamuel.kotest.engine.listener.TeamCityListenerTest:1' test_type='container' result_status='Success']$nl"
+         } shouldBe "${nl}testcity[testSuiteFinished name='my container' id='com.sksamuel.kotest.engine.listener.TeamCityListenerTest/my container' parent_id='com.sksamuel.kotest.engine.listener.TeamCityListenerTest' duration='15' locationHint='kotest://com.sksamuel.kotest.engine.listener.TeamCityListenerTest:1' test_type='container' result_status='Success']$nl"
       }
 
       test("testFinished should write testFailed and testFinished for TestType.Test failure") {
@@ -86,8 +90,8 @@ class TeamCityListenerTest : FunSpec() {
                TestResult.failure(AssertionError("wibble"), 51)
             )
          }
-         msg.shouldStartWith("${nl}testcity[testFailed name='my test case' id='com.sksamuel.kotest.engine.listener.TeamCityListenerTest/my_container/my_test_case' parent_id='com.sksamuel.kotest.engine.listener.TeamCityListenerTest/my_container' duration='51' message='wibble' details='java.lang.AssertionErrorː wibble|n\tat com.sksamuel.kotest.engine.listener.TeamCityListenerTest")
-         msg.shouldEndWith("testcity[testFinished name='my test case' id='com.sksamuel.kotest.engine.listener.TeamCityListenerTest/my_container/my_test_case' parent_id='com.sksamuel.kotest.engine.listener.TeamCityListenerTest/my_container' duration='51' locationHint='kotest://com.sksamuel.kotest.engine.listener.TeamCityListenerTest:1' test_type='test' result_status='Failure']$nl")
+         msg.shouldStartWith("${nl}testcity[testFailed name='my test case' id='com.sksamuel.kotest.engine.listener.TeamCityListenerTest/my container -- my test case' parent_id='com.sksamuel.kotest.engine.listener.TeamCityListenerTest/my container' duration='51' message='wibble' details='java.lang.AssertionErrorː wibble|n\tat com.sksamuel.kotest.engine.listener.TeamCityListenerTest")
+         msg.shouldEndWith("testcity[testFinished name='my test case' id='com.sksamuel.kotest.engine.listener.TeamCityListenerTest/my container -- my test case' parent_id='com.sksamuel.kotest.engine.listener.TeamCityListenerTest/my container' duration='51' locationHint='kotest://com.sksamuel.kotest.engine.listener.TeamCityListenerTest:1' test_type='test' result_status='Failure']$nl")
       }
 
       test("testFinished should insert dummy test and write testSuiteFinished for TestType.Container failure") {
@@ -117,7 +121,7 @@ class TeamCityListenerTest : FunSpec() {
       test("testIgnored should write testIgnored") {
          captureStandardOut {
             TeamCityTestEngineListener("testcity").testIgnored(testCaseTest, "ignore me?")
-         } shouldBe "${nl}testcity[testIgnored name='my test case' id='com.sksamuel.kotest.engine.listener.TeamCityListenerTest/my_container/my_test_case' parent_id='com.sksamuel.kotest.engine.listener.TeamCityListenerTest/my_container' locationHint='kotest://com.sksamuel.kotest.engine.listener.TeamCityListenerTest:1' test_type='test' message='ignore me?' result_status='Ignored']$nl"
+         } shouldBe "${nl}testcity[testIgnored name='my test case' id='com.sksamuel.kotest.engine.listener.TeamCityListenerTest/my container -- my test case' parent_id='com.sksamuel.kotest.engine.listener.TeamCityListenerTest/my container' locationHint='kotest://com.sksamuel.kotest.engine.listener.TeamCityListenerTest:1' test_type='test' message='ignore me?' result_status='Ignored']$nl"
       }
 
       test("specFinish should write nothing") {
@@ -162,9 +166,9 @@ class TeamCityListenerTest : FunSpec() {
             TeamCityTestEngineListener("testcity").testFinished(testCaseTest, TestResult.error(error, 8123))
          }
          out.shouldHaveLineCount(5) // the test failed, blank line, the test finished
-         out.shouldStartWith("${nl}testcity[testFailed name='my test case' id='com.sksamuel.kotest.engine.listener.TeamCityListenerTest/my_container/my_test_case' parent_id='com.sksamuel.kotest.engine.listener.TeamCityListenerTest/my_container' duration='8123' message='Test failed' details='java.lang.AssertionErrorː |n")
+         out.shouldStartWith("${nl}testcity[testFailed name='my test case' id='com.sksamuel.kotest.engine.listener.TeamCityListenerTest/my container -- my test case' parent_id='com.sksamuel.kotest.engine.listener.TeamCityListenerTest/my container' duration='8123' message='Test failed' details='java.lang.AssertionErrorː |n")
          out.shouldContain("duration='8123'")
-         out.shouldEndWith("testcity[testFinished name='my test case' id='com.sksamuel.kotest.engine.listener.TeamCityListenerTest/my_container/my_test_case' parent_id='com.sksamuel.kotest.engine.listener.TeamCityListenerTest/my_container' duration='8123' locationHint='kotest://com.sksamuel.kotest.engine.listener.TeamCityListenerTest:1' test_type='test' result_status='Error']$nl")
+         out.shouldEndWith("testcity[testFinished name='my test case' id='com.sksamuel.kotest.engine.listener.TeamCityListenerTest/my container -- my test case' parent_id='com.sksamuel.kotest.engine.listener.TeamCityListenerTest/my container' duration='8123' locationHint='kotest://com.sksamuel.kotest.engine.listener.TeamCityListenerTest:1' test_type='test' result_status='Error']$nl")
       }
 
       test("should use comparison values with a supported exception type") {
@@ -175,11 +179,11 @@ class TeamCityListenerTest : FunSpec() {
             )
          }
          out.shouldHaveLineCount(5)
-         out.shouldStartWith("${nl}testcity[testFailed name='my test case' id='com.sksamuel.kotest.engine.listener.TeamCityListenerTest/my_container/my_test_case' parent_id='com.sksamuel.kotest.engine.listener.TeamCityListenerTest/my_container' duration='14' message='expectedː<expected> but wasː<actual>' details='io.kotest.assertions.AssertionFailedError")
+         out.shouldStartWith("${nl}testcity[testFailed name='my test case' id='com.sksamuel.kotest.engine.listener.TeamCityListenerTest/my container/my test case' parent_id='com.sksamuel.kotest.engine.listener.TeamCityListenerTest/my container' duration='14' message='expectedː<expected> but wasː<actual>' details='io.kotest.assertions.AssertionFailedError")
          out.shouldContain("type='comparisonFailure'")
          out.shouldContain("actual='actual'")
          out.shouldContain("expected='expected'")
-         out.shouldEndWith("testcity[testFinished name='my test case' id='com.sksamuel.kotest.engine.listener.TeamCityListenerTest/my_container/my_test_case' parent_id='com.sksamuel.kotest.engine.listener.TeamCityListenerTest/my_container' duration='14' locationHint='kotest://com.sksamuel.kotest.engine.listener.TeamCityListenerTest:1' test_type='test' result_status='Error']$nl")
+         out.shouldEndWith("testcity[testFinished name='my test case' id='com.sksamuel.kotest.engine.listener.TeamCityListenerTest/my container -- my test case' parent_id='com.sksamuel.kotest.engine.listener.TeamCityListenerTest/my container' duration='14' locationHint='kotest://com.sksamuel.kotest.engine.listener.TeamCityListenerTest:1' test_type='test' result_status='Error']$nl")
       }
    }
 }

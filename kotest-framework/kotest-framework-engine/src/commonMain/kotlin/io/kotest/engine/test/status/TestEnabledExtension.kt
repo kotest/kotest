@@ -8,9 +8,6 @@ import io.kotest.core.test.TestCase
  *
  * Any extension can choose to disable a test - all extensions must reply enabled
  * for a test to be considered active.
- *
- * todo consider making this extension public, perhaps with test case replaced
- * todo with a public state object
  */
 internal interface TestEnabledExtension {
    fun isEnabled(testCase: TestCase): Enabled

@@ -15,7 +15,7 @@ class FunSpecTimeoutTest : FunSpec() {
       extension { (testCase, execute) ->
          val result = execute(testCase)
          if (testCase.displayName.contains("timeout:") && result.status == TestStatus.Success) {
-            AssertionError("${testCase.description.name.name} passed but should fail").toTestResult(0)
+            AssertionError("${testCase.descriptor.id.value} passed but should fail").toTestResult(0)
          } else {
             TestResult.success(0)
          }

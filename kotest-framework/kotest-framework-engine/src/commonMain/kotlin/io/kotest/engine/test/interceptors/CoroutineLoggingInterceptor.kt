@@ -7,7 +7,7 @@ import io.kotest.core.extensions.Extension
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestContext
 import io.kotest.core.test.TestResult
-import io.kotest.engine.test.withCoroutineContext
+import io.kotest.engine.test.contexts.withCoroutineContext
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
@@ -20,7 +20,7 @@ data class LogEntry(val level: LogLevel, val message: Any)
  * An extension that is invoked when a test completes, logging any values that were logged using
  * by way of [trace], [debug], [info], [warn], and [error] during that test.
  *
- * Users can use testId on [TestCase.description] to cross-reference the [TestResult] with the provided logs.
+ * Users can use testId on [TestCase.descriptor] to cross-reference the [TestResult] with the provided logs.
  */
 @ExperimentalKotest
 interface LogExtension : Extension {
@@ -60,8 +60,7 @@ internal object CoroutineLoggingInterceptor : TestExecutionInterceptor {
    override suspend fun intercept(
       test: suspend (TestCase, TestContext) -> TestResult
    ): suspend (TestCase, TestContext) -> TestResult = { testCase, context ->
-      val extensions = configuration.extensions().filterIsInstance<LogExtension>().map { SerialLogExtension(it) }
-
+      val extensions = configuration.extensions().filterIsInstance<LogExtension>()
       when {
          configuration.logLevel.isDisabled() || extensions.isEmpty() -> test(testCase, context)
          else -> {
@@ -73,7 +72,7 @@ internal object CoroutineLoggingInterceptor : TestExecutionInterceptor {
             } catch (ex: Exception) {
                throw ex
             } finally {
-               extensions.forEach { extension ->
+               extensions.map { SerialLogExtension(it) }.forEach { extension ->
                   runCatching {
                      extension.handleLogs(testCase, logs.filter { it.level >= configuration.logLevel })
                   }

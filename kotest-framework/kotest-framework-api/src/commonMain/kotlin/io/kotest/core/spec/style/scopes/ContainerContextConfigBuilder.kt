@@ -2,7 +2,8 @@ package io.kotest.core.spec.style.scopes
 
 import io.kotest.common.ExperimentalKotest
 import io.kotest.core.Tag
-import io.kotest.core.test.DescriptionName
+import io.kotest.core.descriptors.append
+import io.kotest.core.names.TestName
 import io.kotest.core.test.EnabledIf
 import io.kotest.core.test.EnabledOrReasonIf
 import io.kotest.core.test.TestContext
@@ -15,7 +16,7 @@ import kotlin.time.Duration
 
 @ExperimentalKotest
 class ContainerContextConfigBuilder<T>(
-   private val name: DescriptionName.TestName,
+   private val name: TestName,
    private val context: TestContext,
    private val xdisabled: Boolean,
    private val contextFn: (TestContext) -> T
@@ -44,11 +45,11 @@ class ContainerContextConfigBuilder<T>(
 
       context.registerTestCase(
          createNestedTest(
+            descriptor = context.testCase.descriptor.append(name),
             name = name,
             xdisabled = xdisabled,
             config = activeConfig.toTestCaseConfig(),
             type = TestType.Container,
-            descriptor = null,
             factoryId = context.testCase.factoryId,
             test = { contextFn(this).test() },
          )

@@ -1,6 +1,6 @@
 package io.kotest.core.spec.style.scopes
 
-import io.kotest.core.test.Description
+import io.kotest.core.descriptors.Descriptor
 import kotlinx.coroutines.sync.Semaphore
 import kotlinx.coroutines.sync.withPermit
 
@@ -9,12 +9,12 @@ object TestDslState {
    private val started = mutableSetOf<String>()
    private val mutex = Semaphore(1)
 
-   suspend fun startTest(name: Description.Test) = mutex.withPermit {
-      started.add(name.testPath().value)
+   suspend fun startTest(name: Descriptor.TestDescriptor) = mutex.withPermit {
+      started.add(name.path().value)
    }
 
-   suspend fun clear(name: Description.Test) = mutex.withPermit {
-      started.remove(name.testPath().value)
+   suspend fun clear(name: Descriptor.TestDescriptor) = mutex.withPermit {
+      started.remove(name.path().value)
    }
 
    fun checkState() {

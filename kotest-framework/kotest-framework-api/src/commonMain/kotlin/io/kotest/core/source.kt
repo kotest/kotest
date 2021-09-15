@@ -1,4 +1,4 @@
-package io.kotest.core.plan
+package io.kotest.core
 
 sealed class Source {
 

@@ -1,13 +1,13 @@
 package com.sksamuel.kotest.engine
 
+import io.kotest.core.descriptors.Descriptor
 import io.kotest.core.filter.TestFilter
 import io.kotest.core.filter.TestFilterResult
+import io.kotest.core.spec.style.StringSpec
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestStatus
 import io.kotest.matchers.shouldBe
-import io.kotest.core.spec.style.StringSpec
-import io.kotest.core.test.Description
 
 class TestFilterTest : StringSpec() {
 
@@ -25,7 +25,7 @@ class TestFilterTest : StringSpec() {
   }
 
   override fun afterTest(testCase: TestCase, result: TestResult) {
-    when (testCase.description.name.name) {
+    when (testCase.descriptor.id.value) {
       "aa should run" -> result.status shouldBe TestStatus.Success
       "bb should be ignored" -> result.status shouldBe TestStatus.Ignored
     }
@@ -34,8 +34,8 @@ class TestFilterTest : StringSpec() {
 }
 
 object TestFilterTestFilter : TestFilter {
-  override fun filter(description: Description): TestFilterResult {
-    return when (description.displayName()) {
+  override fun filter(descriptor: Descriptor): TestFilterResult {
+    return when (descriptor.id.value) {
       "bb should be ignored" -> TestFilterResult.Exclude
       else -> TestFilterResult.Include
     }

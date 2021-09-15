@@ -10,7 +10,7 @@ class TestCaseExtensionChainTest : StringSpec() {
 
    object MyExt1 : TestCaseExtension {
       override suspend fun intercept(testCase: TestCase, execute: suspend (TestCase) -> TestResult): TestResult {
-         return if (testCase.description.name.name == "test1")
+         return if (testCase.descriptor.name.name == "test1")
             TestResult.Ignored
          else
             execute(testCase)
@@ -19,7 +19,7 @@ class TestCaseExtensionChainTest : StringSpec() {
 
    object MyExt2 : TestCaseExtension {
       override suspend fun intercept(testCase: TestCase, execute: suspend (TestCase) -> TestResult): TestResult {
-         return if (testCase.description.name.name == "test2")
+         return if (testCase.descriptor.name.name == "test2")
             TestResult.Ignored
          else
             execute(testCase)

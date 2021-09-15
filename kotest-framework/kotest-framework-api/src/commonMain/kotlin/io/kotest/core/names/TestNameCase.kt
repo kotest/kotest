@@ -1,4 +1,4 @@
-package io.kotest.core.test
+package io.kotest.core.names
 
 /**
  * Test naming strategies to adjust test name case.

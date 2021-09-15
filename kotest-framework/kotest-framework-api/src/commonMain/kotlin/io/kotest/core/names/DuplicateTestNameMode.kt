@@ -1,4 +1,4 @@
-package io.kotest.core.test
+package io.kotest.core.names
 
 /**
  * Controls what should happen when a test is registered with the same name (in the same scope)

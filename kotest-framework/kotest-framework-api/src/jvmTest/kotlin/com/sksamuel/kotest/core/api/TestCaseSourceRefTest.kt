@@ -1,4 +1,4 @@
-package com.sksamuel.kotest.framework.api
+package com.sksamuel.kotest.core.api
 
 import io.kotest.core.annotation.Ignored
 import io.kotest.core.spec.style.FunSpec

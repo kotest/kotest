@@ -5,7 +5,7 @@ import io.kotest.core.config.LogLevel
 import io.kotest.core.internal.KotestEngineProperties
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.test.AssertionMode
-import io.kotest.core.test.DuplicateTestNameMode
+import io.kotest.core.names.DuplicateTestNameMode
 import io.kotest.fp.fmap
 import io.kotest.fp.foreach
 import io.kotest.mpp.env

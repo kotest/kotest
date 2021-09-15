@@ -1,9 +1,10 @@
 package io.kotest.core.test
 
 import io.kotest.core.SourceRef
-import io.kotest.core.config.configuration
+import io.kotest.core.descriptors.Descriptor
+import io.kotest.core.descriptors.append
 import io.kotest.core.factory.FactoryId
-import io.kotest.core.plan.Descriptor
+import io.kotest.core.names.TestName
 import io.kotest.core.sourceRef
 import io.kotest.core.spec.Spec
 
@@ -12,53 +13,46 @@ import io.kotest.core.spec.Spec
  * a parent [TestCase].
  */
 data class NestedTest(
-   val name: DescriptionName.TestName,
+   val descriptor: Descriptor.TestDescriptor,
+   val name: TestName,
    val test: suspend TestContext.() -> Unit,
    val config: TestCaseConfig,
    val type: TestType,
    val sourceRef: SourceRef,
    val factoryId: FactoryId?,
-   val descriptor: Descriptor.TestDescriptor?,
 )
 
 fun createNestedTest(
-   name: DescriptionName.TestName,
+   name: TestName,
+   descriptor: Descriptor.TestDescriptor,
    xdisabled: Boolean,
    config: TestCaseConfig,
    type: TestType,
-   descriptor: Descriptor.TestDescriptor?,
    factoryId: FactoryId?,
    test: suspend TestContext.() -> Unit,
 ) = NestedTest(
+   descriptor = descriptor,
    name = name,
    test = test,
    config = if (xdisabled) config.copy(enabled = false) else config,
    type = type,
    sourceRef = sourceRef(),
    factoryId = factoryId,
-   descriptor = descriptor
 )
 
 /**
- * Returns a full [TestCase] from this nested test, attaching the nested test to the given spec.
- *
- * @param name override the name or can be null to use the original name
+ * Realizes a runtime [TestCase] from this [NestedTest], attaching the test to the given spec.
  */
-fun NestedTest.toTestCase(spec: Spec, parent: TestCase, name: DescriptionName.TestName? = null): TestCase {
-   val testCase = TestCase(
-      description = parent.description.append(name ?: this.name, type),
+fun NestedTest.toTestCase(spec: Spec, parent: TestCase): TestCase {
+   return TestCase(
+      descriptor = parent.descriptor.append(name),
+      name = name,
       spec = spec,
       test = test,
       source = sourceRef,
       type = type,
       config = config,
       factoryId = factoryId,
-      descriptor = descriptor,
       parent = parent,
    )
-   return if (configuration.testNameAppendTags) {
-      TestCase.appendTagsInDisplayName(testCase)
-   } else {
-      testCase
-   }
 }

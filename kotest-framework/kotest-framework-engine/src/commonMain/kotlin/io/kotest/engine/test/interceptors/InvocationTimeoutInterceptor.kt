@@ -6,7 +6,7 @@ import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestType
 import io.kotest.engine.test.resolvedInvocationTimeout
 import io.kotest.engine.test.resolvedTimeout
-import io.kotest.engine.test.withCoroutineContext
+import io.kotest.engine.test.contexts.withCoroutineContext
 import io.kotest.mpp.log
 import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.withTimeout

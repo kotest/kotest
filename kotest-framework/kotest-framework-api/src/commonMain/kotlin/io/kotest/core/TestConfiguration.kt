@@ -5,6 +5,7 @@ package io.kotest.core
 import io.kotest.core.extensions.Extension
 import io.kotest.core.extensions.TestCaseExtension
 import io.kotest.core.listeners.TestListener
+import io.kotest.core.names.TestName
 import io.kotest.core.spec.AfterAny
 import io.kotest.core.spec.AfterContainer
 import io.kotest.core.spec.AfterEach
@@ -20,7 +21,6 @@ import io.kotest.core.spec.BeforeTest
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.TestCaseExtensionFn
 import io.kotest.core.test.AssertionMode
-import io.kotest.core.test.DescriptionName
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestCaseConfig
 import io.kotest.core.test.TestContext
@@ -141,7 +141,7 @@ abstract class TestConfiguration {
    }
 
    abstract fun addTest(
-      name: DescriptionName.TestName,
+      name: TestName,
       test: suspend TestContext.() -> Unit,
       config: TestCaseConfig,
       type: TestType

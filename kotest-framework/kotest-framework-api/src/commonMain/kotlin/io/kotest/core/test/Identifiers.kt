@@ -14,9 +14,6 @@ object Identifiers {
     * An instance is considered stable if it is a data class where each parameter is either a data class itself,
     * or one of the [primitiveTypes]. Or if the type of instance is annotated with [IsStableType].
     *
-    * If instance is a type which implements [WithDataTestName], then test name return by [dataTestName] method
-    * will be considered a stableIdentifier.
-    *
     * Note: If the user has overridden toString() and the returned value is not stable, tests may not appear.
     */
    fun stableIdentifier(t: Any): String {
@@ -25,14 +22,5 @@ object Identifiers {
       } else {
          t::class.bestName()
       }
-   }
-
-   fun uniqueTestName(name: String, testNames: Set<String>): String {
-      if (!testNames.contains(name)) return name
-      var n = 1
-      fun nextName() = "($n) $name"
-      while (testNames.contains(nextName()))
-         n++
-      return nextName()
    }
 }
