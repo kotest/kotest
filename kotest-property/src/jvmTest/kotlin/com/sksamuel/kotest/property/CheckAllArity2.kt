@@ -60,5 +60,21 @@ class CheckAllArity2 : FunSpec() {
          context.successes() shouldBe 55
          context.failures() shouldBe 0
       }
+
+      test("checkAll/customConfig/specifiedArbs") {
+
+         val context = checkAll(
+            config = PropTestConfig(seed = 333, iterations = 35),
+            Arb.int(),
+            Arb.int()
+         ) { a, b ->
+            a + b shouldBe b + a
+         }
+
+         context.attempts() shouldBe 35
+         context.successes() shouldBe 35
+         context.failures() shouldBe 0
+      }
+
    }
 }
