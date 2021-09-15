@@ -203,7 +203,7 @@ class JUnitTestEngineListener(
          return
       }
 
-      // if we had an error in the spec, and we had no tests, we'll add the dummy
+      // if we had an error in the spec, and we had no tests, we'll add the dummy and return
       if (t != null && rootTests.isEmpty()) {
          val descriptor = descriptors[kclass.toDescriptor()]!!
          addPlaceholderTest("<error>", descriptor, t)
@@ -216,6 +216,7 @@ class JUnitTestEngineListener(
       rootTests.forEach { handleTest(it) }
 
       val result = when {
+         t != null -> TestExecutionResult.failed(t)
          exceptionThrownBySpec != null -> TestExecutionResult.failed(exceptionThrownBySpec)
          else -> TestExecutionResult.successful()
       }
