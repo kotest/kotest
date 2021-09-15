@@ -49,9 +49,9 @@ class JUnitTestEngineListenerTest : FunSpec({
       track.events shouldBe listOf(
          EventTrackingEngineExecutionListener.Event.TestRegistered("com.sksamuel.kotest.runner.junit5.MySpec", TestDescriptor.Type.CONTAINER),
          EventTrackingEngineExecutionListener.Event.ExecutionStarted("com.sksamuel.kotest.runner.junit5.MySpec"),
-         EventTrackingEngineExecutionListener.Event.TestRegistered("<error>", TestDescriptor.Type.TEST),
-         EventTrackingEngineExecutionListener.Event.ExecutionStarted("<error>"),
-         EventTrackingEngineExecutionListener.Event.ExecutionFinished("<error>", TestExecutionResult.Status.FAILED),
+         EventTrackingEngineExecutionListener.Event.TestRegistered(JUnitTestEngineListener.PlaceholderName, TestDescriptor.Type.TEST),
+         EventTrackingEngineExecutionListener.Event.ExecutionStarted(JUnitTestEngineListener.PlaceholderName),
+         EventTrackingEngineExecutionListener.Event.ExecutionFinished(JUnitTestEngineListener.PlaceholderName, TestExecutionResult.Status.FAILED),
          EventTrackingEngineExecutionListener.Event.ExecutionFinished("com.sksamuel.kotest.runner.junit5.MySpec", TestExecutionResult.Status.FAILED),
       )
    }
@@ -230,6 +230,9 @@ class JUnitTestEngineListenerTest : FunSpec({
          EventTrackingEngineExecutionListener.Event.TestRegistered("foo", TestDescriptor.Type.TEST),
          EventTrackingEngineExecutionListener.Event.ExecutionStarted("foo"),
          EventTrackingEngineExecutionListener.Event.ExecutionFinished("foo", TestExecutionResult.Status.SUCCESSFUL),
+//         EventTrackingEngineExecutionListener.Event.TestRegistered(JUnitTestEngineListener.PlaceholderName, TestDescriptor.Type.TEST),
+//         EventTrackingEngineExecutionListener.Event.ExecutionStarted(JUnitTestEngineListener.PlaceholderName),
+//         EventTrackingEngineExecutionListener.Event.ExecutionFinished(JUnitTestEngineListener.PlaceholderName, TestExecutionResult.Status.FAILED),
          EventTrackingEngineExecutionListener.Event.ExecutionFinished("com.sksamuel.kotest.runner.junit5.MySpec", TestExecutionResult.Status.FAILED),
       )
    }

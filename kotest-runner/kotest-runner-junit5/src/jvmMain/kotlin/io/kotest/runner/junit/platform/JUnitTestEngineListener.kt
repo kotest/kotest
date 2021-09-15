@@ -72,6 +72,10 @@ class JUnitTestEngineListener(
    val root: EngineDescriptor,
 ) : TestEngineListener {
 
+   companion object {
+      const val PlaceholderName = "<error>"
+   }
+
    private val formatter = DisplayNameFormatter(configuration)
 
    // contains a mapping of junit TestDescriptors, so we can look up the parent
