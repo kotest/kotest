@@ -265,7 +265,7 @@ class JUnitTestEngineListener(
       val parent = getExpectedParent(testCase)
 
       val type = if (children.getOrElse(testCase.descriptor) { emptyList() }
-            .isEmpty()) TestDescriptor.Type.TEST else TestDescriptor.Type.CONTAINER_AND_TEST
+            .isEmpty()) TestDescriptor.Type.TEST else TestDescriptor.Type.CONTAINER
       val id = parent.uniqueId.append(testCase.descriptor)
       val source = ClassSource.from(testCase.descriptor.spec().kclass.java)
       val descriptor = createTestDescriptor(
@@ -273,7 +273,7 @@ class JUnitTestEngineListener(
          formatter.format(testCase),
          type,
          source,
-         type == TestDescriptor.Type.CONTAINER_AND_TEST
+         type == TestDescriptor.Type.CONTAINER
       )
       parent.addChild(descriptor)
 
