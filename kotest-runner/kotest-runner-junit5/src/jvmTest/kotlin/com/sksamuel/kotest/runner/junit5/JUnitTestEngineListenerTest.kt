@@ -212,7 +212,7 @@ class JUnitTestEngineListenerTest : FunSpec({
       )
    }
 
-   test("an error in the spec should add a placeholder test with the error") {
+   test("an error in the spec should add a placeholder test with the error along with completed tests") {
       val track = EventTrackingEngineExecutionListener()
       val listener = JUnitTestEngineListener(track, root)
       listener.specEnter(MySpec::class)
