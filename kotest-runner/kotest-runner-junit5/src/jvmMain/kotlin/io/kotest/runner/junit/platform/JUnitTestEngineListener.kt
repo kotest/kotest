@@ -197,7 +197,7 @@ class JUnitTestEngineListener(
       // to hold the error, mark that test as failed, and then fail the spec as well
       if (t != null && !started.contains(kclass)) {
          val descriptor = markSpecStarted(kclass)
-         addPlaceholderTest("<error>", descriptor, t)
+         addPlaceholderTest(descriptor, t)
          log { "JUnitTestEngineListener: Notifying junit that a spec failed [$descriptor, $t]" }
          listener.executionFinished(descriptor, TestExecutionResult.failed(t))
          return
@@ -206,7 +206,7 @@ class JUnitTestEngineListener(
       // if we had an error in the spec, and we had no tests, we'll add the dummy and return
       if (t != null && rootTests.isEmpty()) {
          val descriptor = descriptors[kclass.toDescriptor()]!!
-         addPlaceholderTest("<error>", descriptor, t)
+         addPlaceholderTest(descriptor, t)
          log { "JUnitTestEngineListener: Notifying junit that a spec failed [$descriptor, $t]" }
          listener.executionFinished(descriptor, TestExecutionResult.failed(t))
          return
@@ -230,10 +230,10 @@ class JUnitTestEngineListener(
       listener.executionFinished(descriptor, result)
    }
 
-   private fun addPlaceholderTest(name: String, parent: TestDescriptor, t: Throwable) {
+   private fun addPlaceholderTest(parent: TestDescriptor, t: Throwable) {
       val descriptor = createTestDescriptor(
-         parent.uniqueId.append(Segment.Test.value, name),
-         name,
+         parent.uniqueId.append(Segment.Test.value, "<error>"),
+         "<error>",
          TestDescriptor.Type.TEST,
          null,
          false
@@ -246,10 +246,10 @@ class JUnitTestEngineListener(
 
    override suspend fun testStarted(testCase: TestCase) {
       if (testCase.parent == null) rootTests.add(testCase)
+      children.getOrPut(testCase.descriptor.parent) { mutableListOf() }.add(testCase)
    }
 
    override suspend fun testFinished(testCase: TestCase, result: TestResult) {
-      children.getOrPut(testCase.descriptor.parent) { mutableListOf() }.add(testCase)
       results[testCase.descriptor] = result
    }
 
@@ -264,8 +264,13 @@ class JUnitTestEngineListener(
 
       val parent = getExpectedParent(testCase)
 
-      val type = if (children.getOrElse(testCase.descriptor) { emptyList() }
-            .isEmpty()) TestDescriptor.Type.TEST else TestDescriptor.Type.CONTAINER
+      // we dynamically work out the type by looking to see if this test had any children
+      val c = children[testCase.descriptor]
+      val type = when {
+         c == null || c.isEmpty() -> TestDescriptor.Type.TEST
+         else -> TestDescriptor.Type.CONTAINER
+      }
+
       val id = parent.uniqueId.append(testCase.descriptor)
       val source = ClassSource.from(testCase.descriptor.spec().kclass.java)
       val descriptor = createTestDescriptor(
@@ -274,10 +279,10 @@ class JUnitTestEngineListener(
          type,
          source,
          type == TestDescriptor.Type.CONTAINER
-      )
-      parent.addChild(descriptor)
-
-      descriptors[testCase.descriptor] = descriptor
+      ).apply {
+         parent.addChild(this)
+         descriptors[testCase.descriptor] = this
+      }
 
       val result = results[testCase.descriptor] ?: error("Must have result for a finished test")
 
