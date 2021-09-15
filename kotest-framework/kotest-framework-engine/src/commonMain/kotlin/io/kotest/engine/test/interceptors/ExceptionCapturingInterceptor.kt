@@ -18,7 +18,7 @@ internal class ExceptionCapturingInterceptor(private val start: Long) : TestExec
    ): suspend (TestCase, TestContext) -> TestResult = { testCase, context ->
       try {
          test(testCase, context).apply {
-            log { "ExceptionCapturingInterceptor: Test completed without exception" }
+            log { "ExceptionCapturingInterceptor: Test '${testCase.descriptor.path().value}' completed without exception" }
          }
       } catch (t: Throwable) {
          log { "ExceptionCapturingInterceptor: Throwable $t" }

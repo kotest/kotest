@@ -306,7 +306,7 @@ class JUnitTestEngineListener(
          descriptors[testCase.descriptor] = this
       }
 
-      val result = results[testCase.descriptor] ?: error("Must have result for a finished test")
+      val result = results[testCase.descriptor] ?: error("Must have result for a finished test: ${testCase.descriptor}")
 
       log { "JUnitTestEngineListener: Registering junit dynamic test: $descriptor" }
       listener.dynamicTestRegistered(descriptor)
@@ -321,7 +321,7 @@ class JUnitTestEngineListener(
          log { "JUnitTestEngineListener: Notifying junit that a test was started [$descriptor]" }
          listener.executionStarted(descriptor)
 
-         children[testCase.descriptor]?.forEach { handleTest(it) }
+         children[testCase.descriptor]?.distinctBy { it.descriptor }?.forEach { handleTest(it) }
 
          log { "JUnitTestEngineListener: Notifying junit that a test has finished [$descriptor]" }
          listener.executionFinished(descriptor, result.testExecutionResult())

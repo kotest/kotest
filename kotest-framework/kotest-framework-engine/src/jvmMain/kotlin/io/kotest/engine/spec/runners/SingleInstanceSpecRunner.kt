@@ -70,7 +70,7 @@ internal class SingleInstanceSpecRunner(
 
       // in the single instance runner we execute each nested test as soon as they are registered
       override suspend fun registerTestCase(nested: NestedTest) {
-         log { "Nested test case discovered $nested" }
+         log { "Nested test case discovered '${nested.descriptor.path().value}'" }
          val nestedTestCase = nested.toTestCase(testCase.spec, testCase)
          if (failedfast) {
             log { "A previous nested test failed and failfast is enabled - will mark this as ignored" }

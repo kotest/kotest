@@ -16,6 +16,7 @@ internal object SupervisorScopeInterceptor : TestExecutionInterceptor {
       test: suspend (TestCase, TestContext) -> TestResult
    ): suspend (TestCase, TestContext) -> TestResult {
       return { testCase, context ->
+         // a timeout in a parent test will still cause this to fail
          supervisorScope {
             test(testCase, context.withCoroutineContext(coroutineContext))
          }

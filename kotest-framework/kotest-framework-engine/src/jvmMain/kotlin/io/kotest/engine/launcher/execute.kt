@@ -10,6 +10,8 @@ import io.kotest.engine.KotestEngineLauncher
 import io.kotest.engine.extensions.EnabledConditionSpecDiscoveryExtension
 import io.kotest.engine.extensions.IgnoredSpecDiscoveryExtension
 import io.kotest.engine.extensions.TagsExcludedDiscoveryExtension
+import io.kotest.engine.listener.CompositeTestEngineListener
+import io.kotest.engine.listener.LoggingTestEngineListener
 import io.kotest.engine.reporter.Reporter
 import io.kotest.fp.Try
 import io.kotest.framework.discovery.Discovery
@@ -64,7 +66,16 @@ private fun setupLauncher(
    if (error != null) throw error
 
    KotestEngineLauncher
-      .default(listOf(ReporterTestEngineListener(reporter)), specs, tags)
+      .default(
+         listOf(
+            CompositeTestEngineListener(
+               listOf(
+                  LoggingTestEngineListener,
+                  ReporterTestEngineListener(reporter),
+               )
+            )
+         ), specs, tags
+      )
       .withTestFilters(listOfNotNull(filter))
       .withDumpConfig(dumpconfig)
 }

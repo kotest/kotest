@@ -53,7 +53,7 @@ data class TestCase(
    @ExperimentalKotest val parent: TestCase? = null,
 ) {
 
-   @Deprecated("to be removed")
+   @Deprecated("Use testCase.name.testName or descriptor.id")
    val displayName: String = descriptor.id.value
 
    companion object {

@@ -14,7 +14,7 @@ class FunSpecTimeoutTest : FunSpec() {
 
       extension { (testCase, execute) ->
          val result = execute(testCase)
-         if (testCase.displayName.contains("timeout:") && result.status == TestStatus.Success) {
+         if (testCase.name.testName.contains("timeout:") && result.status == TestStatus.Success) {
             AssertionError("${testCase.descriptor.id.value} passed but should fail").toTestResult(0)
          } else {
             TestResult.success(0)
@@ -50,16 +50,6 @@ class FunSpecTimeoutTest : FunSpec() {
          context("timeout: nested container should override container timeouts").config(
             timeout = Duration.milliseconds(10)
          ) {
-            delay(Duration.milliseconds(20))
-         }
-      }
-
-      context("containers should allow tests to have longer timeouts").config(timeout = Duration.milliseconds(10)) {
-         test("nested test should override container timeouts").config(timeout = Duration.milliseconds(25)) {
-            delay(Duration.milliseconds(20))
-         }
-
-         context("nested container should override container timeouts").config(timeout = Duration.milliseconds(25)) {
             delay(Duration.milliseconds(20))
          }
       }
