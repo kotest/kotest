@@ -1,6 +1,8 @@
 package io.kotest.engine.test.names
 
 import io.kotest.core.config.Configuration
+import io.kotest.core.extensions.DisplayNameFormatter
+import io.kotest.core.extensions.DisplayNameFormatterExtension
 import io.kotest.core.internal.tags.allTags
 import io.kotest.core.names.TestNameCase
 import io.kotest.core.spec.DisplayName
@@ -9,16 +11,25 @@ import io.kotest.mpp.annotation
 import io.kotest.mpp.bestName
 import kotlin.reflect.KClass
 
+fun getDisplayNameFormatter(configuration: Configuration): DisplayNameFormatter {
+   return configuration
+      .extensions()
+      .filterIsInstance<DisplayNameFormatterExtension>()
+      .firstOrNull()
+      ?.formatter() ?: DefaultDisplayNameFormatter(configuration)
+}
+
 /**
- * Returns formatted spec and test names for display or reporting purposes.
+ * A default implementation of [DisplayNameFormatter].
+ * Used when there are no registered [io.kotest.core.extensions.DisplayNameFormatterExtension]s.
  */
-class DisplayNameFormatter(private val configuration: Configuration) {
+class DefaultDisplayNameFormatter(private val configuration: Configuration) : DisplayNameFormatter {
 
    companion object {
       const val DefaultTestCaseSeparator = "/"
    }
 
-   fun format(testCase: TestCase): String {
+   override fun format(testCase: TestCase): String {
 
       val withPrefix = when (configuration.includeTestScopeAffixes ?: testCase.name.defaultAffixes) {
          true -> testCase.name.prefix ?: ""
@@ -58,19 +69,8 @@ class DisplayNameFormatter(private val configuration: Configuration) {
     * cannot share the same names, so if [DisplayName] is used, developers must ensure it does not
     * clash with another spec.
     */
-   fun format(kclass: KClass<*>): String {
+   override fun format(kclass: KClass<*>): String {
       return kclass.annotation<DisplayName>()?.name ?: kclass.bestName()
-   }
-
-   /**
-    * Returns a formatted full test path.
-    * This does not include the spec name.
-    */
-   fun formatTestPath(testCase: TestCase, separator: String = DefaultTestCaseSeparator): String {
-      return when (val parent = testCase.parent) {
-         null -> format(testCase)
-         else -> format(parent) + separator + format(testCase)
-      }
    }
 }
 

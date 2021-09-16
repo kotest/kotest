@@ -9,7 +9,7 @@ import io.kotest.core.test.TestStatus
 import io.kotest.core.test.TestType
 import io.kotest.engine.teamcity.Locations
 import io.kotest.engine.teamcity.TeamCityMessageBuilder
-import io.kotest.engine.test.names.DisplayNameFormatter
+import io.kotest.engine.test.names.getDisplayNameFormatter
 import kotlin.reflect.KClass
 
 /**
@@ -25,7 +25,7 @@ class TeamCityTestEngineListener(
    // these are the specs for which we received the specFinished event
    private val finished = mutableSetOf<KClass<*>>()
 
-   private val formatter = DisplayNameFormatter(configuration)
+   private val formatter = getDisplayNameFormatter(configuration)
 
    // intellij has no method for failed suites, so if a container or spec fails we must insert
    // a dummy "test" in order to tag the error against that

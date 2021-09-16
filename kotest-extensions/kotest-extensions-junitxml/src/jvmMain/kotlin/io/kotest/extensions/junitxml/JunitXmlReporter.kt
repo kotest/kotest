@@ -1,13 +1,14 @@
 package io.kotest.extensions.junitxml
 
 import io.kotest.core.config.configuration
+import io.kotest.core.extensions.formatTestPath
 import io.kotest.core.listeners.TestListener
 import io.kotest.core.spec.Spec
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestStatus
 import io.kotest.core.test.TestType
-import io.kotest.engine.test.names.DisplayNameFormatter
+import io.kotest.engine.test.names.getDisplayNameFormatter
 import org.jdom2.Document
 import org.jdom2.Element
 import org.jdom2.output.Format
@@ -53,7 +54,7 @@ class JunitXmlReporter(
       const val AttributeName = "name"
    }
 
-   private val formatter = DisplayNameFormatter(configuration)
+   private val formatter = getDisplayNameFormatter(configuration)
    private var marks = ConcurrentHashMap<KClass<out Spec>, Long>()
 
    private fun outputDir(): Path {
@@ -96,7 +97,7 @@ class JunitXmlReporter(
       filtered.map { (testcase, result) ->
 
          val name = when (useTestPathAsName) {
-            true -> formatter.formatTestPath(testcase)
+            true -> formatter.formatTestPath(testcase, " -- ")
             false -> formatter.format(testcase)
          }
 

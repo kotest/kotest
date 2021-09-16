@@ -13,7 +13,7 @@ import io.kotest.engine.listener.TestEngineListener
 import io.kotest.engine.test.TestCaseExecutor
 import io.kotest.engine.test.contexts.TerminalTestContext
 import io.kotest.engine.test.interceptors.testNameEscape
-import io.kotest.engine.test.names.DisplayNameFormatter
+import io.kotest.engine.test.names.getDisplayNameFormatter
 import io.kotest.engine.test.status.isEnabledInternal
 import io.kotest.engine.xit
 import io.kotest.mpp.bestName
@@ -32,7 +32,7 @@ internal actual fun createSpecExecutorDelegate(
  */
 internal object JavascriptSpecExecutorDelegate : SpecExecutorDelegate {
 
-   private val formatter = DisplayNameFormatter(configuration)
+   private val formatter = getDisplayNameFormatter(configuration)
 
    @DelicateCoroutinesApi
    override suspend fun execute(spec: Spec): Map<TestCase, TestResult> {
