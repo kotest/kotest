@@ -25,10 +25,6 @@ fun getDisplayNameFormatter(configuration: Configuration): DisplayNameFormatter 
  */
 class DefaultDisplayNameFormatter(private val configuration: Configuration) : DisplayNameFormatter {
 
-   companion object {
-      const val DefaultTestCaseSeparator = "/"
-   }
-
    override fun format(testCase: TestCase): String {
 
       val withPrefix = when (configuration.includeTestScopeAffixes ?: testCase.name.defaultAffixes) {
