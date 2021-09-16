@@ -4,11 +4,12 @@ import com.github.ajalt.mordant.TermColors
 import io.kotest.core.descriptors.Descriptor
 import io.kotest.core.config.configuration
 import io.kotest.core.descriptors.toDescriptor
+import io.kotest.core.extensions.formatTestPath
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestStatus
 import io.kotest.core.test.TestType
-import io.kotest.engine.test.names.DisplayNameFormatter
+import io.kotest.engine.test.names.getDisplayNameFormatter
 import kotlin.reflect.KClass
 
 private val isWindows = System.getProperty("os.name").contains("win")
@@ -44,7 +45,7 @@ class MochaConsoleReporter(
    private var start = 0L
    private var errors = false
 
-   private val formatter = DisplayNameFormatter(configuration)
+   private val formatter = getDisplayNameFormatter(configuration)
 
    private fun Descriptor.indent(): String = "\t".repeat(depth())
 
@@ -154,7 +155,7 @@ class MochaConsoleReporter(
          failed.forEach {
             val test = tests[it.key]!!
             println()
-            println("$margin${term.brightRed(if (isWindows) "X" else "✘")} ${term.brightWhite(formatter.formatTestPath(test))}")
+            println("$margin${term.brightRed(if (isWindows) "X" else "✘")} ${term.brightWhite(formatter.formatTestPath(test, " -- "))}")
             println()
             val error = it.value.error
             if (error != null) {

@@ -5,7 +5,7 @@ import io.kotest.core.spec.Spec
 import io.kotest.engine.KotestEngineLauncher
 import io.kotest.engine.spec.createAndInitializeSpec
 import io.kotest.engine.spec.materializeAndOrderRootTests
-import io.kotest.engine.test.names.DisplayNameFormatter
+import io.kotest.engine.test.names.getDisplayNameFormatter
 import kotlinx.coroutines.runBlocking
 import org.junit.runner.Description
 import org.junit.runner.Runner
@@ -15,7 +15,7 @@ class KotestTestRunner(
    private val klass: Class<out Spec>
 ) : Runner() {
 
-   private val formatter = DisplayNameFormatter(configuration)
+   private val formatter = getDisplayNameFormatter(configuration)
 
    override fun run(notifier: RunNotifier) {
       runBlocking {

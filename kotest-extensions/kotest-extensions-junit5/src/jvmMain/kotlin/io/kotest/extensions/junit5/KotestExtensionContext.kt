@@ -4,7 +4,7 @@ import io.kotest.core.config.configuration
 import io.kotest.core.spec.Spec
 import io.kotest.core.descriptors.toDescriptor
 import io.kotest.core.test.TestCase
-import io.kotest.engine.test.names.DisplayNameFormatter
+import io.kotest.engine.test.names.getDisplayNameFormatter
 import org.junit.jupiter.api.TestInstance
 import org.junit.jupiter.api.extension.ExtensionContext
 import org.junit.jupiter.api.extension.TestInstances
@@ -18,7 +18,7 @@ class KotestExtensionContext(
    private val testCase: TestCase?
 ) : ExtensionContext {
 
-   private val formatter = DisplayNameFormatter(configuration)
+   private val formatter = getDisplayNameFormatter(configuration)
 
    override fun getParent(): Optional<ExtensionContext> = Optional.empty()
    override fun getRoot(): ExtensionContext = this

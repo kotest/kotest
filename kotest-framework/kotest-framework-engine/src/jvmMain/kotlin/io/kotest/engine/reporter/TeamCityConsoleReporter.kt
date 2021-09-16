@@ -9,7 +9,7 @@ import io.kotest.core.test.TestStatus
 import io.kotest.core.test.TestType
 import io.kotest.engine.teamcity.Locations
 import io.kotest.engine.teamcity.TeamCityMessageBuilder
-import io.kotest.engine.test.names.DisplayNameFormatter
+import io.kotest.engine.test.names.getDisplayNameFormatter
 import java.io.PrintWriter
 import java.io.StringWriter
 import java.util.concurrent.ConcurrentHashMap
@@ -17,7 +17,7 @@ import kotlin.reflect.KClass
 
 class TeamCityConsoleReporter(private val prefix: String = TeamCityMessageBuilder.TeamCityPrefix) : Reporter {
 
-   private val formatter = DisplayNameFormatter(configuration)
+   private val formatter = getDisplayNameFormatter(configuration)
 
    private var errors = false
    private val started = ConcurrentHashMap.newKeySet<KClass<*>>()

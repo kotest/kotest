@@ -5,11 +5,13 @@ import io.kotest.core.descriptors.Descriptor
 import io.kotest.core.config.configuration
 import io.kotest.core.descriptors.spec
 import io.kotest.core.descriptors.toDescriptor
+import io.kotest.core.extensions.formatTestPath
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestStatus
 import io.kotest.core.test.TestType
-import io.kotest.engine.test.names.DisplayNameFormatter
+import io.kotest.engine.test.names.DefaultDisplayNameFormatter
+import io.kotest.engine.test.names.getDisplayNameFormatter
 import kotlin.reflect.KClass
 
 /**
@@ -32,7 +34,7 @@ class TaycanConsoleReporter : ConsoleReporter {
    private var specsSeen = emptyList<Descriptor>()
    private var slow = 500
    private var verySlow = 5000
-   private val formatter = DisplayNameFormatter(configuration)
+   private val formatter = getDisplayNameFormatter(configuration)
 
    private fun green(str: String) = term.green(str)
    private fun greenBold(str: String) = term.green.plus(term.bold).invoke(str)
@@ -106,7 +108,7 @@ class TaycanConsoleReporter : ConsoleReporter {
          specsFailed.distinct().forEach { spec ->
             println(brightRedBold(" ${formatter.format(spec.kclass)}"))
             testsFailed.filter { it.first.spec::class.toDescriptor() == spec }.forEach { (testCase, _) ->
-               println(brightRed(" - ${formatter.formatTestPath(testCase)}"))
+               println(brightRed(" - ${formatter.formatTestPath(testCase, " -- ")}"))
             }
          }
       }

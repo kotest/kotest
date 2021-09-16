@@ -1,4 +1,4 @@
-package com.sksamuel.kotest.engine.names
+package com.sksamuel.kotest.engine.test.names
 
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.FunSpec
