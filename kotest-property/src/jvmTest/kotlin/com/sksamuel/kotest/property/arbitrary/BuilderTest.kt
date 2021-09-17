@@ -19,6 +19,7 @@ import io.kotest.property.arbitrary.arbitrary
 import io.kotest.property.arbitrary.constant
 import io.kotest.property.arbitrary.edgecases
 import io.kotest.property.arbitrary.flatMap
+import io.kotest.property.arbitrary.generateArbitrary
 import io.kotest.property.arbitrary.int
 import io.kotest.property.arbitrary.map
 import io.kotest.property.arbitrary.next
@@ -192,7 +193,7 @@ class BuilderTest : FunSpec() {
 
          test("should build arb on the parent coroutine context") {
             val arb = withContext(Foo("hello")) {
-               arbitrary.suspendable {
+               generateArbitrary {
                   val hello = coroutineContext[Foo]?.value
                   val world = arbitrary { "world" }.bind()
                   val first = Arb.int(1..10).bind()
@@ -210,7 +211,7 @@ class BuilderTest : FunSpec() {
          }
 
          test("should bind edgecases") {
-            val arb: Arb<String> = arbitrary.suspendable {
+            val arb: Arb<String> = generateArbitrary {
                val first = Arb.string(5, Codepoint.alphanumeric()).withEdgecases("edge1", "edge2").bind()
                val second = Arb.int(1..9).withEdgecases(5).bind()
                val third = Arb.int(101..109).withEdgecases(100 + second, 109).bind()
@@ -227,7 +228,7 @@ class BuilderTest : FunSpec() {
 
          test("should preserve edgecases of dependent arbs, even when intermideary arb(s) have no edgecases") {
 
-            val arb: Arb<String> = arbitrary.suspendable {
+            val arb: Arb<String> = generateArbitrary {
                val first = Arb.string(5, Codepoint.alphanumeric()).withEdgecases("edge1", "edge2").bind()
                val second = Arb.int(1..4).withEdgecases(emptyList()).bind()
                val third = Arb.int(101..109).withEdgecases(100 + second).bind()
@@ -247,7 +248,7 @@ class BuilderTest : FunSpec() {
          }
 
          test("should propagate exception") {
-            val throwingArb = arbitrary.suspendable {
+            val throwingArb = generateArbitrary {
                val number = Arb.int(1..4).withEdgecases(emptyList()).bind()
 
                // try to throw something inside the arb
@@ -260,7 +261,7 @@ class BuilderTest : FunSpec() {
 
          test("should assign edgecases") {
             val edges = setOf("edge1", "edge2")
-            val arb = arbitrary.suspendable(edges.toList()) { "abcd" }
+            val arb = generateArbitrary(edges.toList()) { "abcd" }
 
             arb.edgecases() shouldContainExactlyInAnyOrder edges
          }
@@ -268,7 +269,7 @@ class BuilderTest : FunSpec() {
          test("should assign edgecases and shrinker") {
             val shrinker = IntShrinker(1..5)
             val edges = setOf(1, 2)
-            val arb = arbitrary.suspendable(edges.toList(), shrinker) { 5 }
+            val arb = generateArbitrary(edges.toList(), shrinker) { 5 }
 
             arb.edgecases() shouldContainExactlyInAnyOrder edges
             arb.sample(RandomSource.seeded(1234L)).shrinks.children.value.map { it.value() } shouldBe shrinker.shrink(5)
@@ -276,7 +277,7 @@ class BuilderTest : FunSpec() {
 
          test("should use shrinker when provided") {
             val shrinker = IntShrinker(1..5)
-            val arb = arbitrary.suspendable(shrinker) { 5 }
+            val arb = generateArbitrary(shrinker) { 5 }
 
             arb.classifier.shouldBeNull()
 
@@ -286,14 +287,14 @@ class BuilderTest : FunSpec() {
 
          test("should use classifier when provided") {
             val classifier = IntClassifier(1..5)
-            val arb = arbitrary.suspendable(classifier) { 5 }
+            val arb = generateArbitrary(classifier) { 5 }
             arb.classifier shouldBeSameInstanceAs classifier
          }
 
          test("should use classifier and shrinker when provided") {
             val shrinker = IntShrinker(1..5)
             val classifier = IntClassifier(1..5)
-            val arb = arbitrary.suspendable(shrinker, classifier) { 5 }
+            val arb = generateArbitrary(shrinker, classifier) { 5 }
 
             arb.classifier shouldBeSameInstanceAs classifier
 
@@ -302,13 +303,13 @@ class BuilderTest : FunSpec() {
          }
 
          test("should use edgecase function when provided") {
-            val arb = arbitrary.suspendable({ 5 }) { 10 }
+            val arb = generateArbitrary({ 5 }) { 10 }
             arb.edgecases() shouldContainExactlyInAnyOrder setOf(5)
          }
 
          test("should use edgecase function and shrinker when provided") {
             val shrinker = IntShrinker(1..5)
-            val arb = arbitrary.suspendable({ 5 }, shrinker) { 10 }
+            val arb = generateArbitrary({ 5 }, shrinker) { 10 }
 
             arb.edgecases() shouldContainExactlyInAnyOrder setOf(5)
 
@@ -320,13 +321,13 @@ class BuilderTest : FunSpec() {
             val arb = Arb.constant(5)
             val shrinker = IntShrinker(1..5)
             val classifier = IntClassifier(1..5)
-            arbitrary.suspendable { arb.bind() }.single() shouldBe 5
-            arbitrary.suspendable(shrinker) { arb.bind() }.single() shouldBe 5
-            arbitrary.suspendable(classifier) { arb.bind() }.single() shouldBe 5
-            arbitrary.suspendable(shrinker, classifier) { arb.bind() }.single() shouldBe 5
-            arbitrary.suspendable(listOf(5)) { arb.bind() }.single() shouldBe 5
-            arbitrary.suspendable({ 5 }) { arb.bind() }.single() shouldBe 5
-            arbitrary.suspendable({ 5 }, shrinker) { arb.bind() }.single() shouldBe 5
+            generateArbitrary { arb.bind() }.single() shouldBe 5
+            generateArbitrary(shrinker) { arb.bind() }.single() shouldBe 5
+            generateArbitrary(classifier) { arb.bind() }.single() shouldBe 5
+            generateArbitrary(shrinker, classifier) { arb.bind() }.single() shouldBe 5
+            generateArbitrary(listOf(5)) { arb.bind() }.single() shouldBe 5
+            generateArbitrary({ 5 }) { arb.bind() }.single() shouldBe 5
+            generateArbitrary({ 5 }, shrinker) { arb.bind() }.single() shouldBe 5
          }
       }
    }
