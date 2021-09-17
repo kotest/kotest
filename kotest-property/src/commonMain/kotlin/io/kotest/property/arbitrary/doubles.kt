@@ -12,12 +12,14 @@ private val nonFiniteEdgeCases = listOf(Double.NEGATIVE_INFINITY, Double.NaN, Do
 object DoubleShrinker : Shrinker<Double> {
    private val pattern = Regex("""([+-]|)([0-9]*)(\.[0-9]*|)(e[+-]?[0-9]+|)""", RegexOption.IGNORE_CASE)
 
-   override fun shrink(value: Double): List<Double> {
+   override fun shrink(value: Double): List<Double> =
       if (value == 0.0 || !value.isFinite() || value.absoluteValue < 10 * Double.MIN_VALUE)
-         return emptyList()
+         emptyList()
+      else
+         listOfNotNull(shrink(value.toString())?.toDouble())
 
-      val text = value.toString()
-      val matches = pattern.matchEntire(text) ?: return emptyList()
+   fun shrink(value: String): String? {
+      val matches = pattern.matchEntire(value) ?: return null
       val parts = matches.groupValues.drop(1)
       val (signPart, intPart, fracPart_, expPart) = parts
       val fracPart = fracPart_.trimEnd { it == '0' }
@@ -28,7 +30,7 @@ object DoubleShrinker : Shrinker<Double> {
          val index = intPart.indexOfLast { it != '0' }.let { if (it == -1) length else it }
 
          if (index == 0) {
-            return emptyList()
+            return null
          }
 
          val head = intPart.take(index)
@@ -37,7 +39,7 @@ object DoubleShrinker : Shrinker<Double> {
          "${head}0$tail"
       }
 
-      return listOf("$signPart$numberPart$expPart".toDouble())
+      return "$signPart$numberPart$expPart"
    }
 }
 
