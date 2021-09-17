@@ -23,6 +23,7 @@ import io.kotest.property.arbitrary.int
 import io.kotest.property.arbitrary.map
 import io.kotest.property.arbitrary.next
 import io.kotest.property.arbitrary.numbers.IntClassifier
+import io.kotest.property.arbitrary.single
 import io.kotest.property.arbitrary.string
 import io.kotest.property.arbitrary.take
 import io.kotest.property.arbitrary.withEdgecases
@@ -121,6 +122,15 @@ class BuilderTest : FunSpec() {
             arb.edgecases() shouldContainExactlyInAnyOrder edges
          }
 
+         test("should assign edgecases and shrinker") {
+            val shrinker = IntShrinker(1..5)
+            val edges = setOf(1, 2)
+            val arb = arbitrary(edges.toList(), shrinker) { 5 }
+
+            arb.edgecases() shouldContainExactlyInAnyOrder edges
+            arb.sample(RandomSource.seeded(1234L)).shrinks.children.value.map { it.value() } shouldBe shrinker.shrink(5)
+         }
+
          test("should use shrinker when provided") {
             val shrinker = IntShrinker(1..5)
             val arb = arbitrary(shrinker) { 5 }
@@ -161,6 +171,19 @@ class BuilderTest : FunSpec() {
 
             val shrinks = arb.sample(RandomSource.seeded(1234L)).shrinks
             shrinks.children.value.map { it.value() } shouldContainExactly shrinker.shrink(10)
+         }
+
+         test("should support .bind() syntax") {
+            val arb = Arb.constant(5)
+            val shrinker = IntShrinker(1..5)
+            val classifier = IntClassifier(1..5)
+            arbitrary { arb.bind() }.single() shouldBe 5
+            arbitrary(shrinker) { arb.bind() }.single() shouldBe 5
+            arbitrary(classifier) { arb.bind() }.single() shouldBe 5
+            arbitrary(shrinker, classifier) { arb.bind() }.single() shouldBe 5
+            arbitrary(listOf(5)) { arb.bind() }.single() shouldBe 5
+            arbitrary({ 5 }) { arb.bind() }.single() shouldBe 5
+            arbitrary({ 5 }, shrinker) { arb.bind() }.single() shouldBe 5
          }
       }
 
@@ -242,6 +265,15 @@ class BuilderTest : FunSpec() {
             arb.edgecases() shouldContainExactlyInAnyOrder edges
          }
 
+         test("should assign edgecases and shrinker") {
+            val shrinker = IntShrinker(1..5)
+            val edges = setOf(1, 2)
+            val arb = arbitrary.suspendable(edges.toList(), shrinker) { 5 }
+
+            arb.edgecases() shouldContainExactlyInAnyOrder edges
+            arb.sample(RandomSource.seeded(1234L)).shrinks.children.value.map { it.value() } shouldBe shrinker.shrink(5)
+         }
+
          test("should use shrinker when provided") {
             val shrinker = IntShrinker(1..5)
             val arb = arbitrary.suspendable(shrinker) { 5 }
@@ -282,6 +314,19 @@ class BuilderTest : FunSpec() {
 
             val shrinks = arb.sample(RandomSource.seeded(1234L)).shrinks
             shrinks.children.value.map { it.value() } shouldContainExactly shrinker.shrink(10)
+         }
+
+         test("should support .bind() syntax") {
+            val arb = Arb.constant(5)
+            val shrinker = IntShrinker(1..5)
+            val classifier = IntClassifier(1..5)
+            arbitrary.suspendable { arb.bind() }.single() shouldBe 5
+            arbitrary.suspendable(shrinker) { arb.bind() }.single() shouldBe 5
+            arbitrary.suspendable(classifier) { arb.bind() }.single() shouldBe 5
+            arbitrary.suspendable(shrinker, classifier) { arb.bind() }.single() shouldBe 5
+            arbitrary.suspendable(listOf(5)) { arb.bind() }.single() shouldBe 5
+            arbitrary.suspendable({ 5 }) { arb.bind() }.single() shouldBe 5
+            arbitrary.suspendable({ 5 }, shrinker) { arb.bind() }.single() shouldBe 5
          }
       }
    }

@@ -81,7 +81,7 @@ fun <A> arbitrary(
  */
 fun <A> arbitrary(
    edgecaseFn: (RandomSource) -> A?,
-   sampleFn: ArbitraryBuilderSyntax.(RandomSource) -> A
+   sampleFn: suspend ArbitraryBuilderSyntax.(RandomSource) -> A
 ): Arb<A> =
    object : Arb<A>() {
       override fun edgecase(rs: RandomSource): A? = edgecaseFn(rs)
@@ -97,7 +97,7 @@ fun <A> arbitrary(
 fun <A> arbitrary(
    edgecaseFn: (RandomSource) -> A?,
    shrinker: Shrinker<A>,
-   sampleFn: ArbitraryBuilderSyntax.(RandomSource) -> A
+   sampleFn: suspend ArbitraryBuilderSyntax.(RandomSource) -> A
 ): Arb<A> =
    object : Arb<A>() {
       override fun edgecase(rs: RandomSource): A? = edgecaseFn(rs)
@@ -149,9 +149,9 @@ object arbitrary {
     * Creates a new [Arb] that performs no shrinking, uses the given edge cases and
     * generates values from the given function.
     */
-   suspend fun <A> suspendable(
+   suspend inline fun <A> suspendable(
       edgecases: List<A>,
-      fn: suspend SuspendArbitraryBuilderSyntax.(RandomSource) -> A
+      crossinline fn: suspend SuspendArbitraryBuilderSyntax.(RandomSource) -> A
    ): Arb<A> = suspendArbitraryBuilder(null, null,
       if (edgecases.isEmpty()) null else { rs -> edgecases.random(rs.random) }
    ) { rs -> fn(rs) }
@@ -160,10 +160,10 @@ object arbitrary {
     * Creates a new [Arb] that performs shrinking using the supplied [Shrinker], uses the given edge cases and
     * generates values from the given function.
     */
-   suspend fun <A> suspendable(
+   suspend inline fun <A> suspendable(
       edgecases: List<A>,
       shrinker: Shrinker<A>,
-      fn: suspend SuspendArbitraryBuilderSyntax.(RandomSource) -> A
+      crossinline fn: suspend SuspendArbitraryBuilderSyntax.(RandomSource) -> A
    ): Arb<A> = suspendArbitraryBuilder(
       shrinker,
       null,
@@ -175,9 +175,9 @@ object arbitrary {
     * Creates a new [Arb] that generates edge cases from the given [edgecaseFn] function
     * and generates samples from the given [sampleFn] function.
     */
-   suspend fun <A> suspendable(
-      edgecaseFn: (RandomSource) -> A?,
-      sampleFn: SuspendArbitraryBuilderSyntax.(RandomSource) -> A
+   suspend inline fun <A> suspendable(
+      crossinline edgecaseFn: (RandomSource) -> A?,
+      crossinline sampleFn: suspend SuspendArbitraryBuilderSyntax.(RandomSource) -> A
    ): Arb<A> {
       val delegate: Arb<A> = suspendArbitraryBuilder { rs -> sampleFn(rs) }
 
@@ -191,10 +191,10 @@ object arbitrary {
     * Creates a new [Arb] that generates edge cases from the given [edgecaseFn] function,
     * performs shrinking using the supplied [Shrinker], and generates samples from the given [sampleFn] function.
     */
-   suspend fun <A> suspendable(
-      edgecaseFn: (RandomSource) -> A?,
+   suspend inline fun <A> suspendable(
+      crossinline edgecaseFn: (RandomSource) -> A?,
       shrinker: Shrinker<A>,
-      sampleFn: SuspendArbitraryBuilderSyntax.(RandomSource) -> A
+      crossinline sampleFn: suspend SuspendArbitraryBuilderSyntax.(RandomSource) -> A
    ): Arb<A> {
       val delegate: Arb<A> = suspendArbitraryBuilder(shrinker) { rs -> sampleFn(rs) }
 
