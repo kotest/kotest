@@ -6,18 +6,23 @@ import io.kotest.matchers.collections.shouldContainExactly
 import io.kotest.matchers.collections.shouldContainExactlyInAnyOrder
 import io.kotest.matchers.ints.shouldBeBetween
 import io.kotest.matchers.ints.shouldBeGreaterThan
+import io.kotest.matchers.nulls.shouldBeNull
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldHaveLengthBetween
+import io.kotest.matchers.types.shouldBeSameInstanceAs
 import io.kotest.property.Arb
 import io.kotest.property.RandomSource
 import io.kotest.property.arbitrary.Codepoint
+import io.kotest.property.arbitrary.IntShrinker
 import io.kotest.property.arbitrary.alphanumeric
 import io.kotest.property.arbitrary.arbitrary
+import io.kotest.property.arbitrary.constant
 import io.kotest.property.arbitrary.edgecases
 import io.kotest.property.arbitrary.flatMap
 import io.kotest.property.arbitrary.int
 import io.kotest.property.arbitrary.map
 import io.kotest.property.arbitrary.next
+import io.kotest.property.arbitrary.numbers.IntClassifier
 import io.kotest.property.arbitrary.string
 import io.kotest.property.arbitrary.take
 import io.kotest.property.arbitrary.withEdgecases
@@ -109,18 +114,60 @@ class BuilderTest : FunSpec() {
             )
          }
 
-         test("should modify edgecases") {
+         test("should assign edgecases") {
             val edges = setOf("edge1", "edge2")
             val arb = arbitrary(edges.toList()) { "abcd" }
 
             arb.edgecases() shouldContainExactlyInAnyOrder edges
+         }
+
+         test("should use shrinker when provided") {
+            val shrinker = IntShrinker(1..5)
+            val arb = arbitrary(shrinker) { 5 }
+
+            arb.classifier.shouldBeNull()
+
+            val shrinks = arb.sample(RandomSource.seeded(1234L)).shrinks
+            shrinks.children.value.map { it.value() } shouldContainExactly shrinker.shrink(5)
+         }
+
+         test("should use classifier when provided") {
+            val classifier = IntClassifier(1..5)
+            val arb = arbitrary(classifier) { 5 }
+            arb.classifier shouldBeSameInstanceAs classifier
+         }
+
+         test("should use classifier and shrinker when provided") {
+            val shrinker = IntShrinker(1..5)
+            val classifier = IntClassifier(1..5)
+            val arb = arbitrary(shrinker, classifier) { 5 }
+
+            arb.classifier shouldBeSameInstanceAs classifier
+
+            val shrinks = arb.sample(RandomSource.seeded(1234L)).shrinks
+            shrinks.children.value.map { it.value() } shouldContainExactly shrinker.shrink(5)
+         }
+
+         test("should use edgecase function when provided") {
+            val arb = arbitrary({ 5 }) { 10 }
+            arb.edgecases() shouldContainExactlyInAnyOrder setOf(5)
+         }
+
+         test("should use edgecase function and shrinker when provided") {
+            val shrinker = IntShrinker(1..5)
+            val arb = arbitrary({ 5 }, shrinker) { 10 }
+
+            arb.edgecases() shouldContainExactlyInAnyOrder setOf(5)
+
+            val shrinks = arb.sample(RandomSource.seeded(1234L)).shrinks
+            shrinks.children.value.map { it.value() } shouldContainExactly shrinker.shrink(10)
          }
       }
 
       context("suspend arbitrary builder with unrestricted continuation") {
          suspend fun combineAsString(vararg values: Any?): String = values.joinToString(" ")
 
-         test("build arb on the parent coroutine context") {
+         test("should build arb on the parent coroutine context") {
             val arb = withContext(Foo("hello")) {
                arbitrary.suspendable {
                   val hello = coroutineContext[Foo]?.value
@@ -186,6 +233,55 @@ class BuilderTest : FunSpec() {
 
             val assertionError = shouldThrow<AssertionError> { execute(RandomSource.seeded(1234L), throwingArb) }
             assertionError.message shouldBe "4 should be > 5"
+         }
+
+         test("should assign edgecases") {
+            val edges = setOf("edge1", "edge2")
+            val arb = arbitrary.suspendable(edges.toList()) { "abcd" }
+
+            arb.edgecases() shouldContainExactlyInAnyOrder edges
+         }
+
+         test("should use shrinker when provided") {
+            val shrinker = IntShrinker(1..5)
+            val arb = arbitrary.suspendable(shrinker) { 5 }
+
+            arb.classifier.shouldBeNull()
+
+            val shrinks = arb.sample(RandomSource.seeded(1234L)).shrinks
+            shrinks.children.value.map { it.value() } shouldContainExactly shrinker.shrink(5)
+         }
+
+         test("should use classifier when provided") {
+            val classifier = IntClassifier(1..5)
+            val arb = arbitrary.suspendable(classifier) { 5 }
+            arb.classifier shouldBeSameInstanceAs classifier
+         }
+
+         test("should use classifier and shrinker when provided") {
+            val shrinker = IntShrinker(1..5)
+            val classifier = IntClassifier(1..5)
+            val arb = arbitrary.suspendable(shrinker, classifier) { 5 }
+
+            arb.classifier shouldBeSameInstanceAs classifier
+
+            val shrinks = arb.sample(RandomSource.seeded(1234L)).shrinks
+            shrinks.children.value.map { it.value() } shouldContainExactly shrinker.shrink(5)
+         }
+
+         test("should use edgecase function when provided") {
+            val arb = arbitrary.suspendable({ 5 }) { 10 }
+            arb.edgecases() shouldContainExactlyInAnyOrder setOf(5)
+         }
+
+         test("should use edgecase function and shrinker when provided") {
+            val shrinker = IntShrinker(1..5)
+            val arb = arbitrary.suspendable({ 5 }, shrinker) { 10 }
+
+            arb.edgecases() shouldContainExactlyInAnyOrder setOf(5)
+
+            val shrinks = arb.sample(RandomSource.seeded(1234L)).shrinks
+            shrinks.children.value.map { it.value() } shouldContainExactly shrinker.shrink(10)
          }
       }
    }

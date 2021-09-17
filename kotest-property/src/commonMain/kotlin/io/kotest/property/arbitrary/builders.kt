@@ -80,31 +80,29 @@ fun <A> arbitrary(
  * and generates samples from the given [sampleFn] function.
  */
 fun <A> arbitrary(
-   edgecaseFn: ArbitraryBuilderSyntax.(RandomSource) -> A?,
+   edgecaseFn: (RandomSource) -> A?,
    sampleFn: ArbitraryBuilderSyntax.(RandomSource) -> A
 ): Arb<A> =
    object : Arb<A>() {
-      override fun edgecase(rs: RandomSource): A? = edgecaseDelegate.edgecase(rs)
+      override fun edgecase(rs: RandomSource): A? = edgecaseFn(rs)
       override fun sample(rs: RandomSource): Sample<A> = delegate.sample(rs)
 
-      private val edgecaseDelegate: Arb<A?> = arbitraryBuilder { rs -> edgecaseFn(rs) }
       private val delegate: Arb<A> = arbitraryBuilder { rs -> sampleFn(rs) }
    }
 
 /**
  * Creates a new [Arb] that generates edge cases from the given [edgecaseFn] function,
- * performs shrinking using the supplied [Shrinker, and generates samples from the given [sampleFn] function.
+ * performs shrinking using the supplied [Shrinker], and generates samples from the given [sampleFn] function.
  */
 fun <A> arbitrary(
-   edgecaseFn: ArbitraryBuilderSyntax.(RandomSource) -> A?,
+   edgecaseFn: (RandomSource) -> A?,
    shrinker: Shrinker<A>,
    sampleFn: ArbitraryBuilderSyntax.(RandomSource) -> A
 ): Arb<A> =
    object : Arb<A>() {
-      override fun edgecase(rs: RandomSource): A? = edgecaseDelegate.edgecase(rs)
+      override fun edgecase(rs: RandomSource): A? = edgecaseFn(rs)
       override fun sample(rs: RandomSource): Sample<A> = delegate.sample(rs)
 
-      private val edgecaseDelegate: Arb<A?> = arbitraryBuilder { rs -> edgecaseFn(rs) }
       private val delegate: Arb<A> = arbitraryBuilder(shrinker) { rs -> sampleFn(rs) }
    }
 
@@ -171,6 +169,40 @@ object arbitrary {
       null,
       if (edgecases.isEmpty()) null else { rs -> edgecases.random(rs.random) }
    ) { rs -> fn(rs) }
+
+
+   /**
+    * Creates a new [Arb] that generates edge cases from the given [edgecaseFn] function
+    * and generates samples from the given [sampleFn] function.
+    */
+   suspend fun <A> suspendable(
+      edgecaseFn: (RandomSource) -> A?,
+      sampleFn: SuspendArbitraryBuilderSyntax.(RandomSource) -> A
+   ): Arb<A> {
+      val delegate: Arb<A> = suspendArbitraryBuilder { rs -> sampleFn(rs) }
+
+      return object : Arb<A>() {
+         override fun edgecase(rs: RandomSource): A? = edgecaseFn(rs)
+         override fun sample(rs: RandomSource): Sample<A> = delegate.sample(rs)
+      }
+   }
+
+   /**
+    * Creates a new [Arb] that generates edge cases from the given [edgecaseFn] function,
+    * performs shrinking using the supplied [Shrinker], and generates samples from the given [sampleFn] function.
+    */
+   suspend fun <A> suspendable(
+      edgecaseFn: (RandomSource) -> A?,
+      shrinker: Shrinker<A>,
+      sampleFn: SuspendArbitraryBuilderSyntax.(RandomSource) -> A
+   ): Arb<A> {
+      val delegate: Arb<A> = suspendArbitraryBuilder(shrinker) { rs -> sampleFn(rs) }
+
+      return object : Arb<A>() {
+         override fun edgecase(rs: RandomSource): A? = edgecaseFn(rs)
+         override fun sample(rs: RandomSource): Sample<A> = delegate.sample(rs)
+      }
+   }
 }
 
 /**
@@ -187,6 +219,7 @@ fun <A> arbitraryBuilder(
 ): Arb<A> = object : Arb<A>() {
    override fun edgecase(rs: RandomSource): A? = singleShotArb().edgecase(rs)
    override fun sample(rs: RandomSource): Sample<A> = singleShotArb().sample(rs)
+   override val classifier: Classifier<out A>? = classifier
 
    /**
     * This function generates a new instance of a single shot arb.
@@ -222,7 +255,7 @@ fun <A> arbitraryBuilder(
 }
 
 /**
- * Creates a new suspendable [Arb] using [Continuation] using a stateless [builderFn].
+ * Creates a new suspendable [Arb] using [Continuation] using a stateless [fn].
  *
  * This function accepts an optional [shrinker], [classifier], and [edgecaseFn]. These parameters
  * will be passed to [ArbitraryBuilder].
@@ -236,13 +269,14 @@ suspend fun <A> suspendArbitraryBuilder(
    val arb = object : Arb<A>() {
       override fun edgecase(rs: RandomSource): A? = singleShotArb().edgecase(rs)
       override fun sample(rs: RandomSource): Sample<A> = singleShotArb().sample(rs)
+      override val classifier: Classifier<out A>? = classifier
 
       /**
        * This function generates a new instance of a single shot arb.
        * DO NOT CACHE THE [Arb] returned by this function.
        *
        * This needs to be a function because at time of writing, Kotlin 1.5's [Continuation] is single shot.
-       * With arbs, we ideally need multishot. To rerun [builderFn], we need to "reset" the continuation.
+       * With arbs, we ideally need multishot. To rerun [fn], we need to "reset" the continuation.
        *
        * The current way we do it is to recreate a fresh [SingleShotArbContinuation] instance that
        * will provide another single shot Arb. Hence the reason why this function is invoked
