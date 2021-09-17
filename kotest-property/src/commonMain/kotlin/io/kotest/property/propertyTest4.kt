@@ -29,7 +29,7 @@ suspend fun <A, B, C, D> checkAll(
    genD: Gen<D>,
    property: suspend PropertyContext.(A, B, C, D) -> Unit
 ): PropertyContext =
-   proptest<A, B, C, D>(genA, genB, genC, genD, config, property)
+   proptest(genA, genB, genC, genD, config, property)
 
 suspend fun <A, B, C, D> checkAll(
    iterations: Int,
@@ -52,7 +52,7 @@ suspend fun <A, B, C, D> checkAll(
 
 suspend inline fun <reified A, reified B, reified C, reified D> checkAll(
    noinline property: suspend PropertyContext.(A, B, C, D) -> Unit
-) = proptest<A, B, C, D>(
+) = proptest(
    Arb.default<A>(),
    Arb.default<B>(),
    Arb.default<C>(),
@@ -76,7 +76,7 @@ suspend inline fun <reified A, reified B, reified C, reified D> checkAll(
 suspend inline fun <reified A, reified B, reified C, reified D> checkAll(
    iterations: Int,
    noinline property: suspend PropertyContext.(A, B, C, D) -> Unit
-) = proptest<A, B, C, D>(
+) = proptest(
    Arb.default<A>(),
    Arb.default<B>(),
    Arb.default<C>(),
@@ -89,7 +89,7 @@ suspend inline fun <reified A, reified B, reified C, reified D> checkAll(
    iterations: Int,
    config: PropTestConfig,
    noinline property: suspend PropertyContext.(A, B, C, D) -> Unit
-) = proptest<A, B, C, D>(
+) = proptest(
    Arb.default<A>(),
    Arb.default<B>(),
    Arb.default<C>(),

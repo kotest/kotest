@@ -31,7 +31,7 @@ suspend fun <A, B, C, D, E, F, G, H, I> checkAll(
    genH: Gen<H>,
    genI: Gen<I>,
    property: suspend PropertyContext.(A, B, C, D, E, F, G, H, I) -> Unit
-): PropertyContext = checkAll(config, genA, genB, genC, genD, genE, genF, genG, genH, genI, property)
+): PropertyContext = proptest(genA, genB, genC, genD, genE, genF, genG, genH, genI, config, property)
 
 suspend fun <A, B, C, D, E, F, G, H, I> checkAll(
    iterations: Int,
