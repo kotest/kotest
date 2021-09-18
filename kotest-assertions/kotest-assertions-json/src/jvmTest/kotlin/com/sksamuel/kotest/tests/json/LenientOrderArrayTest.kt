@@ -1,6 +1,7 @@
 package com.sksamuel.kotest.tests.json
 
-import io.kotest.assertions.json.CompareOrder
+import io.kotest.assertions.json.CompareJsonOptions.ArrayOrder
+import io.kotest.assertions.json.compareJsonOptions
 import io.kotest.assertions.json.shouldEqualJson
 import io.kotest.assertions.shouldFail
 import io.kotest.core.spec.style.FunSpec
@@ -9,7 +10,7 @@ import io.kotest.matchers.throwable.shouldHaveMessage
 class LenientOrderArrayTest : FunSpec(
    {
       infix fun String.shouldEqualJsonIgnoringOrder(other: String) =
-         this.shouldEqualJson(other, order = CompareOrder.LenientAll)
+         this.shouldEqualJson(other, compareJsonOptions { arrayOrder = ArrayOrder.Lenient })
 
       test("simple") {
          "[1, 2]" shouldEqualJsonIgnoringOrder "[2, 1]"
