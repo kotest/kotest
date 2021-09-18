@@ -1,4 +1,4 @@
-package com.sksamuel.kotest.specs.annotation
+package com.sksamuel.kotest.engine.spec.annotation
 
 import io.kotest.assertions.fail
 import io.kotest.core.listeners.TestListener
@@ -13,7 +13,8 @@ import io.kotest.matchers.shouldBe
 import java.util.concurrent.atomic.AtomicInteger
 import kotlin.reflect.KClass
 
-class AnnotationSpecAnnotationsTest : AnnotationSpec() {
+class AnnotationSpecBeforeAfterTest : AnnotationSpec() {
+
    companion object {
       var counterBeforeAll = AtomicInteger(0)
       var counterBeforeEach = AtomicInteger(0)
@@ -87,12 +88,6 @@ class AnnotationSpecAnnotationsTest : AnnotationSpec() {
       counterAfterEach.get() shouldBe 4
    }
 
-   @Ignore
-   @Test
-   fun testIgnore() {
-      fail("This should never execute as the test is marked with @Ignore")
-   }
-
    override fun isolationMode() = IsolationMode.SingleInstance
 
    override fun testCaseOrder() = TestCaseOrder.Sequential
@@ -102,13 +97,13 @@ class AnnotationSpecAnnotationsTest : AnnotationSpec() {
 @AutoScan
 object AssertionListener : TestListener {
    override suspend fun finalizeSpec(kclass: KClass<out Spec>, results: Map<TestCase, TestResult>) {
-      if (kclass == AnnotationSpecAnnotationsTest::class) {
+      if (kclass == AnnotationSpecBeforeAfterTest::class) {
 
-         AnnotationSpecAnnotationsTest.counterBeforeEach.get() shouldBe 6
-         AnnotationSpecAnnotationsTest.counterBeforeAll.get() shouldBe 2
+         AnnotationSpecBeforeAfterTest.counterBeforeEach.get() shouldBe 6
+         AnnotationSpecBeforeAfterTest.counterBeforeAll.get() shouldBe 2
 
-         AnnotationSpecAnnotationsTest.counterAfterEach.get() shouldBe 6
-         AnnotationSpecAnnotationsTest.counterAfterAll.get() shouldBe 2
+         AnnotationSpecBeforeAfterTest.counterAfterEach.get() shouldBe 6
+         AnnotationSpecBeforeAfterTest.counterAfterAll.get() shouldBe 2
       }
    }
 }
