@@ -48,10 +48,7 @@ internal fun show(node: JsonNode): String {
       is JsonNode.ArrayNode -> "[${node.elements.joinToString(separator = ",") { show(it) }}]"
       is JsonNode.BooleanNode -> node.value.toString()
       JsonNode.NullNode -> "null"
-      is JsonNode.IntNode -> node.value.toString()
-      is JsonNode.DoubleNode -> node.value.toString()
-      is JsonNode.FloatNode -> node.value.toString()
-      is JsonNode.LongNode -> node.value.toString()
+      is JsonNode.NumberNode -> node.content
       is JsonNode.ObjectNode -> "{${node.elements.map { "\"${it.key}\": ${show(it.value)}" }.joinToString(separator = ",")}}"
       is JsonNode.StringNode -> node.value
    }
