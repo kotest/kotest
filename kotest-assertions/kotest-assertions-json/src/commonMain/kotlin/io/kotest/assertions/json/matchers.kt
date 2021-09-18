@@ -40,10 +40,10 @@ fun equalJson(
 data class JsonTree(val root: JsonNode, val raw: String)
 
 infix fun String.shouldEqualJson(expected: String): Unit =
-   this.shouldEqualJson(expected, CompareMode.Strict, CompareOrder.Lenient)
+   this.shouldEqualJson(expected, CompareMode.Strict, CompareOrder.LenientProperties)
 
 infix fun String.shouldNotEqualJson(expected: String): Unit =
-   this.shouldNotEqualJson(expected, CompareMode.Strict, CompareOrder.Lenient)
+   this.shouldNotEqualJson(expected, CompareMode.Strict, CompareOrder.LenientProperties)
 
 infix fun String.shouldEqualSpecifiedJson(expected: String) =
    this.shouldEqualSpecifiedJson(expected, CompareMode.Strict)
@@ -52,10 +52,10 @@ infix fun String.shouldNotEqualSpecifiedJson(expected: String) =
    this.shouldNotEqualSpecifiedJson(expected, CompareMode.Strict)
 
 fun String.shouldEqualJson(expected: String, mode: CompareMode) =
-   shouldEqualJson(expected, mode, CompareOrder.Lenient)
+   shouldEqualJson(expected, mode, CompareOrder.LenientProperties)
 
 fun String.shouldNotEqualJson(expected: String, mode: CompareMode) =
-   shouldNotEqualJson(expected, mode, CompareOrder.Lenient)
+   shouldNotEqualJson(expected, mode, CompareOrder.LenientProperties)
 
 fun String.shouldEqualJson(expected: String, order: CompareOrder) =
    shouldEqualJson(expected, CompareMode.Strict, order)

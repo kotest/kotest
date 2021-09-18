@@ -10,6 +10,12 @@ sealed class JsonError {
       val actual: Int
    ) : JsonError()
 
+   data class UnequalArrayContent(
+      override val path: List<String>,
+      val expected: JsonNode.ArrayNode,
+      val missing: JsonNode
+   ): JsonError()
+
    data class ObjectMissingKeys(override val path: List<String>, val missing: Set<String>) : JsonError()
    data class ObjectExtraKeys(override val path: List<String>, val extra: Set<String>) : JsonError()
    data class ExpectedObject(override val path: List<String>, val b: JsonNode) : JsonError()
@@ -42,5 +48,6 @@ fun JsonError.asString(): String {
       is JsonError.IncompatibleTypes -> "$dotpath expected ${a.type()} but was ${b.type()}"
       is JsonError.ExpectedNull -> "$dotpath expected null but was ${b.type()}"
       is JsonError.NameOrderDiff -> "$dotpath object expected field $index to be '$expected' but was '$actual'"
+      is JsonError.UnequalArrayContent -> "$dotpath has extra element '${show(missing)}' not found (or too few) in '${show(expected)}'"
    }
 }
