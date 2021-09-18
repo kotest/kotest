@@ -22,6 +22,7 @@ maintained and hosted by third parties.
 | [Roboelectric](roboelectric.md) | Integrate roboelectric with the test lifecycle |
 | [Allure](allure.md) | Provides output for the allure framework |
 | [JUnit XML](junit_xml.md) | Provides output in the JUnit XML format for integration with reporting tools |
+| [HTML Reporter](html_reporter.md) | Generates HTML reports of test results based on [JUnit XML](junit_xml.md) |
 
 ### Third Party Extensions
 

@@ -1,8 +1,10 @@
 package com.sksamuel.kotest.runner.junit5
 
+import io.kotest.core.descriptors.append
 import io.kotest.core.sourceRef
 import io.kotest.core.spec.style.DescribeSpec
-import io.kotest.core.spec.toDescription
+import io.kotest.core.descriptors.toDescriptor
+import io.kotest.core.names.TestName
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestType
@@ -16,7 +18,7 @@ import org.junit.platform.engine.TestExecutionResult
 import org.junit.platform.engine.UniqueId
 import org.junit.platform.engine.reporting.ReportEntry
 
-class JUnitTestRunnerListenerTests : DescribeSpec({
+class JUnitTestRunnerListenerTest : DescribeSpec({
 
    describe("as per the JUnit spec") {
       it("a failing test should not fail the parent test or parent spec") {
@@ -43,8 +45,9 @@ class JUnitTestRunnerListenerTests : DescribeSpec({
          }
 
          val test1 = TestCase(
-            JUnitTestRunnerListenerTests::class.toDescription().appendTest("test1"),
-            JUnitTestRunnerListenerTests(),
+            JUnitTestRunnerListenerTest::class.toDescriptor().append("test1"),
+            TestName("test1"),
+            JUnitTestRunnerListenerTest(),
             { },
             sourceRef(),
             TestType.Container,
@@ -52,30 +55,31 @@ class JUnitTestRunnerListenerTests : DescribeSpec({
          )
 
          val test2 = TestCase(
-            test1.description.appendTest("test2"),
-            JUnitTestRunnerListenerTests(),
+            test1.descriptor.append("test2"),
+            TestName("test2"),
+            JUnitTestRunnerListenerTest(),
             { },
             sourceRef(),
-            TestType.Container,
-            parent = null,
+            TestType.Test,
+            parent = test1,
          )
 
          val listener = JUnitTestEngineListener(engineListener, root)
          listener.engineStarted(emptyList())
-         listener.specEnter(JUnitTestRunnerListenerTests::class)
-         listener.specStarted(JUnitTestRunnerListenerTests::class)
+         listener.specEnter(JUnitTestRunnerListenerTest::class)
+         listener.specStarted(JUnitTestRunnerListenerTest::class)
          listener.testStarted(test1)
          listener.testStarted(test2)
          listener.testFinished(test2, createTestResult(0, AssertionError("boom")))
          listener.testFinished(test1, TestResult.success(0))
-         listener.specFinished(JUnitTestRunnerListenerTests::class, emptyMap())
-         listener.specExit(JUnitTestRunnerListenerTests::class, null)
+         listener.specFinished(JUnitTestRunnerListenerTest::class, emptyMap())
+         listener.specExit(JUnitTestRunnerListenerTest::class, null)
          listener.engineFinished(emptyList())
 
          finished.toMap() shouldBe mapOf(
             "test2" to TestExecutionResult.Status.FAILED,
             "test1" to TestExecutionResult.Status.SUCCESSFUL,
-            "com.sksamuel.kotest.runner.junit5.JUnitTestRunnerListenerTests" to TestExecutionResult.Status.SUCCESSFUL,
+            "com.sksamuel.kotest.runner.junit5.JUnitTestRunnerListenerTest" to TestExecutionResult.Status.SUCCESSFUL,
             "Kotest" to TestExecutionResult.Status.SUCCESSFUL
          )
       }

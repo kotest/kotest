@@ -1,9 +1,11 @@
 package com.sksamuel.kotest.engine
 
 import io.kotest.core.annotation.Ignored
+import io.kotest.core.descriptors.append
 import io.kotest.core.sourceRef
 import io.kotest.core.spec.style.FunSpec
-import io.kotest.core.spec.toDescription
+import io.kotest.core.descriptors.toDescriptor
+import io.kotest.core.names.TestName
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestType
@@ -52,7 +54,8 @@ class IsolatedReporterTest : FunSpec({
       isolated.specStarted(IsolatedReporterSpec1::class)
       isolated.testStarted(
          TestCase(
-            IsolatedReporterSpec1::class.toDescription().appendTest("foo"),
+            IsolatedReporterSpec1::class.toDescriptor().append("foo"),
+            TestName("foo"),
             IsolatedReporterSpec1(),
             {},
             sourceRef(),
@@ -62,7 +65,8 @@ class IsolatedReporterTest : FunSpec({
       isolated.specStarted(IsolatedReporterSpec2::class)
       isolated.testStarted(
          TestCase(
-            IsolatedReporterSpec1::class.toDescription().appendTest("bar"),
+            IsolatedReporterSpec1::class.toDescriptor().append("bar"),
+            TestName("bar"),
             IsolatedReporterSpec2(),
             {},
             sourceRef(),

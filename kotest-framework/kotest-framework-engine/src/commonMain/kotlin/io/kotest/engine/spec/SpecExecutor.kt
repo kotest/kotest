@@ -80,9 +80,13 @@ class SpecExecutor(
       )
 
       val innerExecute: suspend (Spec) -> Map<TestCase, TestResult> = {
-         val delegate = createSpecExecutorDelegate(listener, defaultCoroutineDispatcherFactory)
-         log { "SpecExecutor: Created spec executor delegate $delegate" }
-         delegate.execute(spec)
+         try {
+            val delegate = createSpecExecutorDelegate(listener, defaultCoroutineDispatcherFactory)
+            delegate.execute(spec)
+         } catch (t: Throwable) {
+            log { "SpecExecutor: Error creating spec delegate $t" }
+            throw t
+         }
       }
 
       log { "SpecExecutor: Executing ${interceptors.size} spec interceptors" }

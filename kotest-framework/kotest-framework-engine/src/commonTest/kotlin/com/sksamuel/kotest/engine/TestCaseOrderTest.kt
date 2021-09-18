@@ -10,16 +10,16 @@ import io.kotest.matchers.shouldNotBe
 class TestCaseOrderTest : FunSpec() {
    init {
       test("sequential test case ordering") {
-         SequentialSpec().materializeAndOrderRootTests().map { it.testCase.description.name.name } shouldBe
+         SequentialSpec().materializeAndOrderRootTests().map { it.testCase.name.testName } shouldBe
             listOf("c", "b", "d", "e", "a")
       }
       test("Lexicographic test case ordering") {
-         LexicographicSpec().materializeAndOrderRootTests().map { it.testCase.description.name.name } shouldBe
+         LexicographicSpec().materializeAndOrderRootTests().map { it.testCase.name.testName } shouldBe
             listOf("a", "b", "c", "d", "e")
       }
       test("random test case ordering") {
-         val a = RandomSpec().materializeAndOrderRootTests().map { it.testCase.description.name.name }
-         val b = RandomSpec().materializeAndOrderRootTests().map { it.testCase.description.name.name }
+         val a = RandomSpec().materializeAndOrderRootTests().map { it.testCase.name.testName }
+         val b = RandomSpec().materializeAndOrderRootTests().map { it.testCase.name.testName }
          a shouldNotBe b
       }
    }

@@ -54,7 +54,7 @@ class DataTestNameTest: FunSpec({
 
 }) {
    override fun afterAny(testCase: TestCase, result: TestResult) {
-      DataTestNamesStore.names.add(testCase.description.displayName())
+      DataTestNamesStore.names.add(testCase.descriptor.id.value)
    }
 
    override fun afterSpec(spec: Spec) {

@@ -1,15 +1,15 @@
 package io.kotest.engine.listener
 
-import io.kotest.core.plan.displayName
+import io.kotest.core.config.configuration
+import io.kotest.core.descriptors.toDescriptor
 import io.kotest.core.spec.Spec
-import io.kotest.core.spec.toDescription
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestStatus
 import io.kotest.core.test.TestType
 import io.kotest.engine.teamcity.Locations
 import io.kotest.engine.teamcity.TeamCityMessageBuilder
-import io.kotest.mpp.bestName
+import io.kotest.engine.test.names.getDisplayNameFormatter
 import kotlin.reflect.KClass
 
 /**
@@ -25,6 +25,8 @@ class TeamCityTestEngineListener(
    // these are the specs for which we received the specFinished event
    private val finished = mutableSetOf<KClass<*>>()
 
+   private val formatter = getDisplayNameFormatter(configuration)
+
    // intellij has no method for failed suites, so if a container or spec fails we must insert
    // a dummy "test" in order to tag the error against that
    private fun insertDummyFailure(name: String, t: Throwable?, testCase: TestCase) {
@@ -34,7 +36,7 @@ class TeamCityTestEngineListener(
       val msg = TeamCityMessageBuilder
          .testStarted(prefix, dummyTestName)
          .id(dummyTestName)
-         .parent(testCase.description.id.value)
+         .parent(testCase.descriptor.path().value)
          .testType(TestType.Test.name)
          .build()
 
@@ -48,7 +50,7 @@ class TeamCityTestEngineListener(
       val msg2 = TeamCityMessageBuilder
          .testFailed(prefix, dummyTestName)
          .id(dummyTestName)
-         .parent(testCase.description.id.value)
+         .parent(testCase.descriptor.path().value)
          .message(message)
          .testType(TestType.Test.name)
          .build()
@@ -59,7 +61,7 @@ class TeamCityTestEngineListener(
       val msg3 = TeamCityMessageBuilder
          .testFinished(prefix, dummyTestName)
          .id(dummyTestName)
-         .parent(testCase.description.id.value)
+         .parent(testCase.descriptor.path().value)
          .testType(TestType.Test.name)
          .build()
 
@@ -85,8 +87,8 @@ class TeamCityTestEngineListener(
 
    private fun start(kclass: KClass<*>) {
       val msg = TeamCityMessageBuilder
-         .testSuiteStarted(prefix, kclass.displayName() ?: kclass.bestName())
-         .id(kclass.toDescription().id.value)
+         .testSuiteStarted(prefix, formatter.format(kclass))
+         .id(kclass.toDescriptor().path().value)
          .locationHint(Locations.locationHint(kclass))
          .spec()
          .build()
@@ -115,8 +117,8 @@ class TeamCityTestEngineListener(
 
    private fun finish(kclass: KClass<*>) {
       val msg = TeamCityMessageBuilder
-         .testSuiteFinished(prefix, kclass.displayName() ?: kclass.bestName())
-         .id(kclass.toDescription().id.value)
+         .testSuiteFinished(prefix, formatter.format(kclass))
+         .id(kclass.toDescriptor().path().value)
          .locationHint(Locations.locationHint(kclass))
          .resultStatus(TestStatus.Success.name)
          .spec()
@@ -135,9 +137,9 @@ class TeamCityTestEngineListener(
 
    override suspend fun testIgnored(testCase: TestCase, reason: String?) {
       val msg = TeamCityMessageBuilder
-         .testIgnored(prefix, testCase.displayName)
-         .id(testCase.description.id.value)
-         .parent(testCase.description.parent.id.value)
+         .testIgnored(prefix, formatter.format(testCase))
+         .id(testCase.descriptor.path().value)
+         .parent(testCase.descriptor.parent.path().value)
          .locationHint(Locations.locationHint(testCase.spec::class))
          .testType(testCase.type.name)
          .message(reason)
@@ -156,7 +158,7 @@ class TeamCityTestEngineListener(
          }
          TestStatus.Error, TestStatus.Failure -> when (testCase.type) {
             TestType.Container -> {
-               insertDummyFailure(testCase.displayName, result.error, testCase)
+               insertDummyFailure(formatter.format(testCase), result.error, testCase)
                finishTestSuite(testCase, result)
             }
             TestType.Test -> {
@@ -169,9 +171,9 @@ class TeamCityTestEngineListener(
 
    private fun startTest(testCase: TestCase) {
       val msg = TeamCityMessageBuilder
-         .testStarted(prefix, testCase.displayName)
-         .id(testCase.description.id.value)
-         .parent(testCase.description.parent.id.value)
+         .testStarted(prefix, formatter.format(testCase))
+         .id(testCase.descriptor.path().value)
+         .parent(testCase.descriptor.parent.path().value)
          .locationHint(Locations.locationHint(testCase.spec::class))
          .testType(testCase.type.name)
          .build()
@@ -181,9 +183,9 @@ class TeamCityTestEngineListener(
 
    private fun startTestSuite(testCase: TestCase) {
       val msg = TeamCityMessageBuilder
-         .testSuiteStarted(prefix, testCase.displayName)
-         .id(testCase.description.id.value)
-         .parent(testCase.description.parent.id.value)
+         .testSuiteStarted(prefix, formatter.format(testCase))
+         .id(testCase.descriptor.path().value)
+         .parent(testCase.descriptor.parent.path().value)
          .locationHint(Locations.locationHint(testCase.spec::class))
          .testType(testCase.type.name)
          .build()
@@ -193,9 +195,9 @@ class TeamCityTestEngineListener(
 
    private fun failTest(testCase: TestCase, result: TestResult) {
       val msg1 = TeamCityMessageBuilder
-         .testFailed(prefix, testCase.displayName)
-         .id(testCase.description.id.value)
-         .parent(testCase.description.parent.id.value)
+         .testFailed(prefix, formatter.format(testCase))
+         .id(testCase.descriptor.path().value)
+         .parent(testCase.descriptor.parent.path().value)
          .duration(result.duration)
          .withException(result.error)
          .locationHint(Locations.locationHint(testCase.spec::class))
@@ -208,9 +210,9 @@ class TeamCityTestEngineListener(
 
    private fun finishTest(testCase: TestCase, result: TestResult) {
       val msg2 = TeamCityMessageBuilder
-         .testFinished(prefix, testCase.displayName)
-         .id(testCase.description.id.value)
-         .parent(testCase.description.parent.id.value)
+         .testFinished(prefix, formatter.format(testCase))
+         .id(testCase.descriptor.path().value)
+         .parent(testCase.descriptor.parent.path().value)
          .duration(result.duration)
          .locationHint(Locations.locationHint(testCase.spec::class))
          .testType(testCase.type.name)
@@ -222,9 +224,9 @@ class TeamCityTestEngineListener(
 
    private fun finishTestSuite(testCase: TestCase, result: TestResult) {
       val msg = TeamCityMessageBuilder
-         .testSuiteFinished(prefix, testCase.displayName)
-         .id(testCase.description.id.value)
-         .parent(testCase.description.parent.id.value)
+         .testSuiteFinished(prefix, formatter.format(testCase))
+         .id(testCase.descriptor.path().value)
+         .parent(testCase.descriptor.parent.path().value)
          .duration(result.duration)
          .locationHint(Locations.locationHint(testCase.spec::class))
          .testType(testCase.type.name)

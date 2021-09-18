@@ -1,22 +1,24 @@
 package io.kotest.core.test
 
-import io.kotest.core.config.configuration
+import io.kotest.core.descriptors.append
+import io.kotest.core.descriptors.toDescriptor
+import io.kotest.core.names.TestName
 import io.kotest.core.sourceRef
 import io.kotest.core.spec.Spec
-import io.kotest.core.spec.toDescription
 
 /**
  * Creates a new root level [TestCase] for the given spec.
  */
 fun createRootTestCase(
    spec: Spec,
-   name: DescriptionName.TestName,
+   name: TestName,
    test: suspend TestContext.() -> Unit,
    config: TestCaseConfig,
    type: TestType
 ): TestCase {
-   val testCase = TestCase(
-      description = spec::class.toDescription().append(name, type),
+   return TestCase(
+      descriptor = spec::class.toDescriptor().append(name),
+      name = name,
       spec = spec,
       test = test,
       source = sourceRef(),
@@ -25,9 +27,4 @@ fun createRootTestCase(
       factoryId = null,
       parent = null, // root tests do not have a parent test case
    )
-   return if (configuration.testNameAppendTags) {
-      TestCase.appendTagsInDisplayName(testCase)
-   } else {
-      testCase
-   }
 }

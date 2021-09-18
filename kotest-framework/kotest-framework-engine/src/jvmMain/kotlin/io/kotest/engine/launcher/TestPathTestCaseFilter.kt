@@ -1,11 +1,12 @@
 package io.kotest.engine.launcher
 
+import io.kotest.core.descriptors.Descriptor
+import io.kotest.core.descriptors.Descriptor.Companion.TestDelimiter
+import io.kotest.core.descriptors.append
 import io.kotest.core.filter.TestFilter
 import io.kotest.core.filter.TestFilterResult
 import io.kotest.core.spec.Spec
-import io.kotest.core.spec.toDescription
-import io.kotest.core.test.Description
-import io.kotest.core.test.TestPathSeparator
+import io.kotest.core.descriptors.toDescriptor
 import kotlin.reflect.KClass
 
 /**
@@ -18,26 +19,28 @@ class TestPathTestCaseFilter(
    spec: KClass<out Spec>,
 ) : TestFilter {
 
-   private val target1 = testPath.split(TestPathSeparator)
-      .fold(spec.toDescription() as Description) { desc, name -> desc.appendTest(name) }
+   private val target1 = testPath.split(TestDelimiter)
+      .fold(spec.toDescriptor() as Descriptor) { desc, name ->
+         desc.append(name)
+      }
 
    // this is a hack where we append "should" to the first name, until 5.0 where we will
    // store names with affixes separately (right now word spec is adding them to the names at source)
    var should = true
-   private val target2 = testPath.split(TestPathSeparator)
-      .fold(spec.toDescription() as Description) { desc, name ->
+   private val target2 = testPath.split(TestDelimiter)
+      .fold(spec.toDescriptor() as Descriptor) { desc, name ->
          if (should) {
             should = false
-            desc.appendTest("$name should")
-         } else desc.appendTest(name)
+            desc.append("$name should")
+         } else desc.append(name)
       }
 
-   override fun filter(description: Description): TestFilterResult {
+   override fun filter(descriptor: Descriptor): TestFilterResult {
       return when {
-         target1.isOnPath(description) ||
-            target2.isOnPath(description) ||
-            description.isOnPath(target1) ||
-            description.isOnPath(target2) -> TestFilterResult.Include
+         target1.isOnPath(descriptor) ||
+            target2.isOnPath(descriptor) ||
+            descriptor.isOnPath(target1) ||
+            descriptor.isOnPath(target2) -> TestFilterResult.Include
          else -> TestFilterResult.Exclude
       }
    }

@@ -1,7 +1,9 @@
 package io.kotest.core.spec.style.scopes
 
 import io.kotest.core.Tag
+import io.kotest.core.descriptors.append
 import io.kotest.core.extensions.TestCaseExtension
+import io.kotest.core.names.TestName
 import io.kotest.core.spec.resolvedDefaultConfig
 import io.kotest.core.test.EnabledIf
 import io.kotest.core.test.NestedTest
@@ -10,7 +12,6 @@ import io.kotest.core.test.TestCaseSeverityLevel
 import io.kotest.core.test.TestContext
 import io.kotest.core.test.TestType
 import io.kotest.core.test.createNestedTest
-import io.kotest.core.test.createTestName
 import kotlin.coroutines.CoroutineContext
 import kotlin.time.Duration
 
@@ -57,11 +58,11 @@ class FreeSpecContainerContext(
 
    private fun createNestedTest(name: String, type: TestType, test: suspend TestContext.() -> Unit): NestedTest {
       return createNestedTest(
-         name = this@FreeSpecContainerContext.testCase.description.append(createTestName(name), type).name,
+         descriptor = testCase.descriptor.append(name),
+         name = TestName(name),
          xdisabled = false,
          config = testCase.spec.resolvedDefaultConfig(),
          type = type,
-         descriptor = null,
          factoryId = testCase.factoryId,
          test = test
       )
@@ -79,7 +80,7 @@ class FreeSpecContainerContext(
       severity: TestCaseSeverityLevel? = null,
       test: suspend TestContext.() -> Unit,
    ) = TestWithConfigBuilder(
-      createTestName(this),
+      TestName(this),
       testContext,
       testCase.spec.resolvedDefaultConfig(),
       xdisabled = false,

@@ -1,7 +1,6 @@
 package io.kotest.core.extensions
 
-import io.kotest.common.ExperimentalKotest
-import io.kotest.core.plan.Descriptor
+import io.kotest.core.descriptors.Descriptor
 import io.kotest.core.test.Enabled
 
 /**
@@ -9,7 +8,6 @@ import io.kotest.core.test.Enabled
  *
  * If multiple instances of this extension are defined then all will be executed and all must respond enabled.
  */
-@ExperimentalKotest
 interface EnabledExtension : Extension {
 
    /**

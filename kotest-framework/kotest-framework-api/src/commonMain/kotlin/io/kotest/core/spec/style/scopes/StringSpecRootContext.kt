@@ -2,13 +2,13 @@ package io.kotest.core.spec.style.scopes
 
 import io.kotest.core.Tag
 import io.kotest.core.extensions.TestCaseExtension
+import io.kotest.core.names.TestName
 import io.kotest.core.test.EnabledIf
 import io.kotest.core.test.EnabledOrReasonIf
 import io.kotest.core.test.NestedTest
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestCaseSeverityLevel
 import io.kotest.core.test.TestContext
-import io.kotest.core.test.createTestName
 import kotlin.coroutines.CoroutineContext
 import kotlin.jvm.JvmName
 import kotlin.time.Duration
@@ -39,7 +39,7 @@ interface StringSpecRootContext : RootContext {
       coroutineDebugProbes: Boolean? = null,
       blockingTest: Boolean? = null,
       test: suspend TestContext.() -> Unit,
-   ) = RootTestWithConfigBuilder(createTestName(null, this, false), registration(), false).config(
+   ) = RootTestWithConfigBuilder(TestName(null, this, false), registration(), false).config(
       enabled = enabled,
       invocations = invocations,
       threads = threads,
@@ -60,7 +60,7 @@ interface StringSpecRootContext : RootContext {
     */
    operator fun String.invoke(test: suspend StringSpecScope.() -> Unit) =
       registration().addTest(
-         createTestName(null, this, false),
+         TestName(null, this, false),
          xdisabled = false,
          test = { StringSpecScope(this.coroutineContext, testCase).test() }
       )
