@@ -42,3 +42,14 @@ sealed class JsonNode {
 
    object NullNode : JsonNode(), ValueNode
 }
+
+internal fun show(node: JsonNode): String {
+   return when (node) {
+      is JsonNode.ArrayNode -> "[${node.elements.joinToString(separator = ",") { show(it) }}]"
+      is JsonNode.BooleanNode -> node.value.toString()
+      JsonNode.NullNode -> "null"
+      is JsonNode.NumberNode -> node.content
+      is JsonNode.ObjectNode -> "{${node.elements.map { "\"${it.key}\": ${show(it.value)}" }.joinToString(separator = ",")}}"
+      is JsonNode.StringNode -> node.value
+   }
+}

@@ -32,7 +32,39 @@ enum class CompareMode {
 }
 
 enum class CompareOrder {
-   Strict, Lenient
+   /**
+    * All object properties and array items must be in same order as expected.
+    *
+    * For example, { "x": 14.2, "y": 13.0 }` and `{ "y": 13.0, "x: 14.2 }` will NOT be considered equal.
+    */
+   Strict,
+
+   /**
+    * See [LenientProperties]
+    */
+   @Deprecated(
+      replaceWith = ReplaceWith("CompareOrder.LenientProperties"),
+      message = "Renamed to `LenientProperties` in 5.0"
+   )
+   Lenient,
+
+   /**
+    * Ignore the order of object properties and arrays.
+    *
+    * For example, { "x": 14.2, "y": 13.0 }` and `{ "y": 13.0, "x: 14.2 }` would also be considered equal,
+    * since they have the same properties and values.
+    * However, `[1, 2]` and `[2, 1]` would NOT be considered equal
+    */
+   LenientProperties,
+
+   /**
+    * Ignore the order of object properties and arrays.
+    *
+    * For example, `[1, 2]` and `[2, 1]` will be considered equal, since they contain the same items.
+    * `{ "x": 14.2, "y": 13.0 }` and `{ "y": 13.0, "x: 14.2 }` would also be considered equal, since they have the
+    * same properties and values.
+    */
+   LenientAll,
 }
 
 /**
@@ -90,6 +122,8 @@ internal fun compareObjects(
             val error = compare(path + a.key, e.value.value, a.value, mode, order)
             if (error != null) return error
          }
+      CompareOrder.LenientAll,
+      CompareOrder.LenientProperties,
       CompareOrder.Lenient ->
          expected.elements.entries.forEach { (name, e) ->
             val a = actual.elements[name] ?: return JsonError.ObjectMissingKeys(path, setOf(name))
@@ -112,9 +146,49 @@ internal fun compareArrays(
    if (expected.elements.size != actual.elements.size)
       return JsonError.UnequalArrayLength(path, expected.elements.size, actual.elements.size)
 
-   expected.elements.withIndex().zip(actual.elements.withIndex()).forEach { (a, b) ->
-      val error = compare(path + "[${a.index}]", a.value, b.value, mode, order)
-      if (error != null) return error
+   when (order) {
+      CompareOrder.LenientProperties,
+      CompareOrder.Lenient,
+      CompareOrder.Strict -> {
+         expected.elements.withIndex().zip(actual.elements.withIndex()).forEach { (a, b) ->
+            val error = compare(path + "[${a.index}]", a.value, b.value, mode, order)
+            if (error != null) return error
+         }
+      }
+
+      /**
+       * In [CompareOrder.LenientAll], we try to allow array contents to be out-of-order.
+       * We do this by searching for a match for each element in [actual], in the [expected] array,
+       * flagging used matches so they can't be used twice. This will probably be slow for very big arrays.
+       */
+      CompareOrder.LenientAll -> {
+
+         val consumedIndexes = BooleanArray(expected.elements.size) { false }
+
+         fun availableIndexes() = consumedIndexes
+            .mapIndexed { index, isConsumed -> if (!isConsumed) index else null }
+            .filterNotNull()
+
+         fun findMatchingIndex(element: JsonNode): Int? {
+            for (i in availableIndexes()) {
+               // Comparison with no error -> matching element
+               val isMatch = compare(path + "[$i]", element, expected.elements[i], mode, order) == null
+
+               if (isMatch) {
+                  return i
+               }
+            }
+
+            return null
+         }
+
+         for ((i, element) in actual.elements.withIndex()) {
+            val match = findMatchingIndex(element)
+               ?: return JsonError.UnequalArrayContent(path + "[$i]", expected, element)
+
+            consumedIndexes[match] = true
+         }
+      }
    }
 
    return null
