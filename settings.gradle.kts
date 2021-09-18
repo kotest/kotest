@@ -48,6 +48,10 @@ include("kotest-assertions:kotest-assertions-compiler")
 include("kotest-assertions:kotest-assertions-json")
 include("kotest-assertions:kotest-assertions-sql")
 
+// provides support for better assertion matchers
+include("kotest-assertions:kotest-assertions-plugin-gradle")
+include("kotest-assertions:kotest-assertions-plugin-jvm")
+
 // base classes for property testing, plus std lib generators
 include("kotest-property")
 
