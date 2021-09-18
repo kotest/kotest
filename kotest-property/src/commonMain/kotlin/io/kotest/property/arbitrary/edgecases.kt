@@ -33,7 +33,7 @@ fun <A> Arb<A>.edgecases(iterations: Int = 100, rs: RandomSource = RandomSource.
 /**
  * Returns a new [Arb] with the supplied edge cases replacing any existing edge cases.
  */
-fun <A> Arb<A>.withEdgecases(edgecases: List<A>): Arb<A> = arbitrary(edgecases) { this.next(it) }
+fun <A> Arb<A>.withEdgecases(edgecases: List<A>): Arb<A> = arbitrary(edgecases) { this@withEdgecases.next(it) }
 
 /**
  * Returns a new [Arb] with the supplied edge cases replacing any existing edge cases.
