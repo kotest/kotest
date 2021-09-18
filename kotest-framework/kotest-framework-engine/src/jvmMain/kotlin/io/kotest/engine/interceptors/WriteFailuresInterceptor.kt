@@ -27,17 +27,19 @@ internal class WriteFailuresInterceptor(private val filename: String) : EngineIn
       listener: TestEngineListener,
       execute: suspend (TestSuite, TestEngineListener) -> EngineResult
    ): EngineResult {
-      val collector = CollectingTestEngineListener()
-      val comp = CompositeTestEngineListener(listOf(listener, collector))
-      val result = execute(suite, comp)
-      if (configuration.writeSpecFailureFile) {
+      return if (configuration.writeSpecFailureFile) {
+         val collector = CollectingTestEngineListener()
+         val comp = CompositeTestEngineListener(listOf(listener, collector))
+         val result = execute(suite, comp)
          val failedSpecs = collector.tests
             .filterValues { it.status == TestStatus.Failure || it.status == TestStatus.Error }
             .map { it.key.spec::class }
             .toSet()
          writeSpecFailures(failedSpecs)
+         result
+      } else {
+         execute(suite, listener)
       }
-      return result
    }
 
    private fun writeSpecFailures(failures: Set<KClass<out Spec>>) {

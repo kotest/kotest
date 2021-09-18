@@ -1,4 +1,4 @@
-package com.sksamuel.kotest.specs.annotation
+package com.sksamuel.kotest.engine.spec.annotation
 
 import io.kotest.core.spec.style.AnnotationSpec
 import io.kotest.matchers.shouldBe
