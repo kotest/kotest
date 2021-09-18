@@ -22,6 +22,8 @@ internal fun TestCaseConfig.deriveTestCaseConfig(
    severity: TestCaseSeverityLevel? = null,
    listeners: List<TestListener>? = null,
    enabledOrReasonIf: EnabledOrReasonIf? = null,
+   coroutineDebugProbes: Boolean? = null,
+   blockingTest: Boolean? = null,
 ) = TestCaseConfig(
    enabled = enabled ?: this.enabled,
    tags = tags ?: this.tags,
@@ -35,6 +37,8 @@ internal fun TestCaseConfig.deriveTestCaseConfig(
    severity = severity ?: this.severity,
    enabledOrReasonIf = enabledOrReasonIf ?: this.enabledOrReasonIf,
    failfast = failfast,
+   coroutineDebugProbes = coroutineDebugProbes,
+   blockingTest = blockingTest,
 )
 
 /**

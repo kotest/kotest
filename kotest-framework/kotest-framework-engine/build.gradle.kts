@@ -42,14 +42,21 @@ kotlin {
       mingwX64()
 
       macosX64()
+      macosArm64()
+
       tvos()
+      tvosSimulatorArm64()
+
       watchosArm32()
       watchosArm64()
       watchosX86()
       watchosX64()
+      watchosSimulatorArm64()
+
       iosX64()
       iosArm64()
       iosArm32()
+      iosSimulatorArm64()
    }
 
    sourceSets {
@@ -73,10 +80,6 @@ kotlin {
 
       val jsMain by getting {
          dependsOn(commonMain)
-         dependencies {
-            // this must be api as it's compiled into the final source
-            api(kotlin("test-js"))
-         }
       }
 
       val jvmMain by getting {
@@ -111,15 +114,19 @@ kotlin {
          dependsOn(commonMain)
       }
 
-      val linuxX64Main by getting {
-         dependsOn(desktopMain)
-      }
-
       val macosX64Main by getting {
          dependsOn(desktopMain)
       }
 
+      val macosArm64Main by getting {
+         dependsOn(desktopMain)
+      }
+
       val mingwX64Main by getting {
+         dependsOn(desktopMain)
+      }
+
+      val linuxX64Main by getting {
          dependsOn(desktopMain)
       }
 
@@ -135,7 +142,7 @@ kotlin {
          dependsOn(desktopMain)
       }
 
-      val watchosX86Main by getting {
+      val iosSimulatorArm64Main by getting {
          dependsOn(desktopMain)
       }
 
@@ -147,11 +154,23 @@ kotlin {
          dependsOn(desktopMain)
       }
 
+      val watchosX86Main by getting {
+         dependsOn(desktopMain)
+      }
+
       val watchosX64Main by getting {
          dependsOn(desktopMain)
       }
 
+      val watchosSimulatorArm64Main by getting {
+         dependsOn(desktopMain)
+      }
+
       val tvosMain by getting {
+         dependsOn(desktopMain)
+      }
+
+      val tvosSimulatorArm64Main by getting {
          dependsOn(desktopMain)
       }
 

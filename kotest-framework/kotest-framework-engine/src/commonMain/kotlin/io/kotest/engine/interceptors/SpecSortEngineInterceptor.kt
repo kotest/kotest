@@ -9,7 +9,7 @@ import io.kotest.engine.spec.DefaultSpecExecutionOrderExtension
 import io.kotest.mpp.log
 
 /**
- * An [EngineInterceptor] that sorts specs according to registered [SpecExecutionOrderExtension]s
+ * An [EngineInterceptor] that sorts the [TestSuite] according to registered [SpecExecutionOrderExtension]s
  * or falling back to the [DefaultSpecExecutionOrderExtension].
  */
 internal object SpecSortEngineInterceptor : EngineInterceptor {
@@ -25,9 +25,8 @@ internal object SpecSortEngineInterceptor : EngineInterceptor {
          listOf(DefaultSpecExecutionOrderExtension(configuration.specExecutionOrder))
       }
 
-      log { "SpecSortEngineExtension: Sorting specs using extensions $exts" }
-      val specs = exts.fold(suite.specs) { acc, op -> op.sortSpecs(acc) }
-      val classes = exts.fold(suite.classes) { acc, op -> op.sortClasses(acc) }
-      return execute(suite.copy(specs = specs, classes = classes), listener)
+      log { "SpecSortEngineInterceptor: Sorting specs using extensions $exts" }
+      val specs = exts.fold(suite.specs) { acc, op -> op.sort(acc) }
+      return execute(suite.copy(specs = specs), listener)
    }
 }

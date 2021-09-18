@@ -5,6 +5,7 @@ package io.kotest.core
 import io.kotest.core.extensions.Extension
 import io.kotest.core.extensions.TestCaseExtension
 import io.kotest.core.listeners.TestListener
+import io.kotest.core.names.TestName
 import io.kotest.core.spec.AfterAny
 import io.kotest.core.spec.AfterContainer
 import io.kotest.core.spec.AfterEach
@@ -20,7 +21,6 @@ import io.kotest.core.spec.BeforeTest
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.TestCaseExtensionFn
 import io.kotest.core.test.AssertionMode
-import io.kotest.core.test.DescriptionName
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestCaseConfig
 import io.kotest.core.test.TestContext
@@ -35,9 +35,6 @@ abstract class TestConfiguration {
 
    @JsName("_tags")
    internal var _tags: Set<Tag> = emptySet()
-
-   @JsName("_listeners")
-   internal var _listeners = emptyList<TestListener>()
 
    @JsName("_extensions")
    internal var _extensions = emptyList<Extension>()
@@ -59,22 +56,32 @@ abstract class TestConfiguration {
    /**
     * Register a single [TestListener] of type T return that listener.
     */
+   @Deprecated("Use register. This method will be removed in 6.0", ReplaceWith("register(listener)"))
    fun <T : TestListener> listener(listener: T): T {
-      listeners(listener)
-      return listener
+      return register(listener)
    }
 
    /**
     * Register multiple [TestListener]s.
     */
+   @Deprecated("Use register. This method will be removed in 6.0", ReplaceWith("register(listeners)"))
    fun listeners(listeners: List<TestListener>) {
-      _listeners = _listeners + listeners
+      register(listeners)
    }
 
    /**
     * Register multiple [TestListener]s.
     */
-   fun listeners(vararg listener: TestListener) = listeners(listener.toList())
+   @Deprecated("Use register. This method will be removed in 6.0", ReplaceWith("register(listeners)"))
+   fun listeners(vararg listeners: TestListener) = register(listeners.toList())
+
+   /**
+    * Register a single [TestListener] of type T return that listener.
+    */
+   fun <T : TestListener> register(extension: T): T {
+      register(listOf(extension))
+      return extension
+   }
 
    /**
     * Register a single [TestCaseExtension] of type T return that extension.
@@ -84,11 +91,26 @@ abstract class TestConfiguration {
       return extension
    }
 
+   fun register(vararg extensions: Extension) {
+      register(extensions.toList())
+   }
+
+   fun register(extensions: List<Extension>) {
+      _extensions = _extensions + extensions
+   }
+
    /**
-    * Register multiple [TestCaseExtension]s.
+    * Register multiple [Extension]s.
     */
    fun extensions(vararg extensions: Extension) {
-      _extensions = _extensions + extensions.toList()
+      register(extensions.toList())
+   }
+
+   /**
+    * Register multiple [Extension]s.
+    */
+   fun extensions(extensions: List<Extension>) {
+      register(extensions)
    }
 
    /**
@@ -119,7 +141,7 @@ abstract class TestConfiguration {
    }
 
    abstract fun addTest(
-      name: DescriptionName.TestName,
+      name: TestName,
       test: suspend TestContext.() -> Unit,
       config: TestCaseConfig,
       type: TestType
@@ -131,8 +153,8 @@ abstract class TestConfiguration {
     * The [TestCase] about to be executed is provided as the parameter.
     */
    fun beforeTest(f: BeforeTest) {
-      listener(object : TestListener {
-         override suspend fun beforeTest(testCase: TestCase) {
+      register(object : TestListener {
+         override suspend fun beforeAny(testCase: TestCase) {
             f(testCase)
          }
       })
@@ -145,8 +167,8 @@ abstract class TestConfiguration {
     * and the [TestResult] outcome of that test.
     */
    fun afterTest(f: AfterTest) {
-      listener(object : TestListener {
-         override suspend fun afterTest(testCase: TestCase, result: TestResult) {
+      register(object : TestListener {
+         override suspend fun afterAny(testCase: TestCase, result: TestResult) {
             f(Tuple2(testCase, result))
          }
       })
@@ -159,7 +181,7 @@ abstract class TestConfiguration {
     * The [TestCase] about to be executed is provided as the parameter.
     */
    fun beforeContainer(f: BeforeContainer) {
-      listener(object : TestListener {
+      register(object : TestListener {
          override suspend fun beforeContainer(testCase: TestCase) {
             f(testCase)
          }
@@ -174,7 +196,7 @@ abstract class TestConfiguration {
     * and the [TestResult] outcome of that test.
     */
    fun afterContainer(f: AfterContainer) {
-      listener(object : TestListener {
+      register(object : TestListener {
          override suspend fun afterContainer(testCase: TestCase, result: TestResult) {
             f(Tuple2(testCase, result))
          }
@@ -188,7 +210,7 @@ abstract class TestConfiguration {
     * The [TestCase] about to be executed is provided as the parameter.
     */
    fun beforeEach(f: BeforeEach) {
-      listener(object : TestListener {
+      register(object : TestListener {
          override suspend fun beforeEach(testCase: TestCase) {
             f(testCase)
          }
@@ -203,7 +225,7 @@ abstract class TestConfiguration {
     * and the [TestResult] outcome of that test.
     */
    fun afterEach(f: AfterEach) {
-      listener(object : TestListener {
+      register(object : TestListener {
          override suspend fun afterEach(testCase: TestCase, result: TestResult) {
             f(Tuple2(testCase, result))
          }
@@ -217,7 +239,7 @@ abstract class TestConfiguration {
     * The [TestCase] about to be executed is provided as the parameter.
     */
    fun beforeAny(f: BeforeAny) {
-      listener(object : TestListener {
+      register(object : TestListener {
          override suspend fun beforeAny(testCase: TestCase) {
             f(testCase)
          }
@@ -232,7 +254,7 @@ abstract class TestConfiguration {
     * and the [TestResult] outcome of that test.
     */
    fun afterAny(f: AfterAny) {
-      listener(object : TestListener {
+      register(object : TestListener {
          override suspend fun afterAny(testCase: TestCase, result: TestResult) {
             f(Tuple2(testCase, result))
          }
@@ -244,7 +266,7 @@ abstract class TestConfiguration {
     * The spec instance is provided as a parameter.
     */
    fun beforeSpec(f: BeforeSpec) {
-      listener(object : TestListener {
+      register(object : TestListener {
          override suspend fun beforeSpec(spec: Spec) {
             f(spec)
          }
@@ -266,7 +288,7 @@ abstract class TestConfiguration {
     * The spec instance is provided as a parameter.
     */
    fun afterSpec(f: AfterSpec) {
-      listener(object : TestListener {
+      register(object : TestListener {
          override suspend fun afterSpec(spec: Spec) {
             f(spec)
          }
@@ -281,11 +303,6 @@ abstract class TestConfiguration {
          }
       })
    }
-
-   /**
-    * Returns any [TestListener] instances registered directly on this class.
-    */
-   fun registeredListeners() = _listeners
 
    fun registeredAutoCloseables(): List<Lazy<AutoCloseable>> = _autoCloseables.toList()
 

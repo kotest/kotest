@@ -11,11 +11,11 @@ class SystemPropertyTimeoutTest : FunSpec() {
    init {
       extension(expectFailureExtension)
       context("using system property timeouts") {
-         test("this test should timeout due to 2000 test timeout").config(invocations = 6) {
-            delay(500)
+         test("this test should timeout due to the test timeout set via sys props").config(invocations = 100) {
+            delay(10)
          }
-         test("this test should timeout due to 1000 invocation timeout").config(invocations = 1) {
-            delay(1500)
+         test("this test should timeout due to the invocation timeout set via sys props") {
+            delay(1000)
          }
       }
    }
@@ -28,6 +28,6 @@ val expectFailureExtension: TestCaseExtensionFn = { (testCase, execute) ->
    val result = execute(testCase)
    when (result.status) {
       TestStatus.Failure, TestStatus.Error -> TestResult.success(0)
-      else -> AssertionError("${testCase.description.name.name} passed but should fail").toTestResult(0)
+      else -> AssertionError("${testCase.descriptor.id.value} passed but should fail").toTestResult(0)
    }
 }

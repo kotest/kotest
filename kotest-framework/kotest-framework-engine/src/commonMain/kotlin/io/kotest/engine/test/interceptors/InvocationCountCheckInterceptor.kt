@@ -17,6 +17,8 @@ internal object InvocationCountCheckInterceptor : TestExecutionInterceptor {
       if (testCase.config.invocations > 1 && testCase.type == TestType.Container)
          error("Cannot execute multiple invocations in parent tests")
       else
-         test(testCase, context)
+         test(testCase, context).apply {
+            log { "rrrrrrrr" }
+         }
    }
 }

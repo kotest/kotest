@@ -5,7 +5,7 @@ import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestContext
 import io.kotest.core.test.TestResult
 import io.kotest.engine.extensions.resolvedExtensions
-import io.kotest.engine.test.withCoroutineContext
+import io.kotest.engine.test.contexts.withCoroutineContext
 import kotlin.coroutines.coroutineContext
 
 /**
@@ -13,11 +13,11 @@ import kotlin.coroutines.coroutineContext
  *
  * This extension should happen early, so users can override any disabled status.
  */
-object TestCaseExtensionInterceptor : TestExecutionInterceptor {
+internal object TestCaseExtensionInterceptor : TestExecutionInterceptor {
 
    /**
     * Returns the runtime [TestCaseExtension]s applicable for this [TestCase].
-    * Those are extensions from the test case's [TestCaseConfig] and those applied to
+    * Those are extensions from the test case's [io.kotest.core.test.TestCaseConfig] and those applied to
     * the spec instance.
     */
    private fun TestCase.resolvedTestCaseExtensions(): List<TestCaseExtension> {

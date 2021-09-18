@@ -55,9 +55,10 @@ infix fun <T> Collection<T>.shouldExist(p: (T) -> Boolean) = this should exist(p
 fun <T> exist(p: (T) -> Boolean) = object : Matcher<Collection<T>> {
    override fun test(value: Collection<T>) = MatcherResult(
       value.any { p(it) },
-      "Collection should contain an element that matches the predicate $p",
-      "Collection should not contain an element that matches the predicate $p"
-   )
+      { "Collection should contain an element that matches the predicate $p" },
+      {
+         "Collection should not contain an element that matches the predicate $p"
+      })
 }
 
 fun <T> Iterable<T>.shouldExistInOrder(vararg ps: (T) -> Boolean) = toList().shouldExistInOrder(ps.toList())

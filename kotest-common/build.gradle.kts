@@ -29,16 +29,21 @@ kotlin {
       mingwX64()
 
       macosX64()
+      macosArm64()
+
       tvos()
+      tvosSimulatorArm64()
 
       watchosArm32()
       watchosArm64()
       watchosX86()
       watchosX64()
+      watchosSimulatorArm64()
 
       iosX64()
       iosArm64()
       iosArm32()
+      iosSimulatorArm64()
    }
 
    sourceSets {
@@ -47,14 +52,18 @@ kotlin {
          dependencies {
             compileOnly(kotlin("stdlib"))
             implementation(kotlin("reflect"))
+            implementation(Libs.Coroutines.coreCommon)
+         }
+      }
+
+      val commonTest by getting {
+         dependencies {
+            implementation(project(Projects.Framework.engine))
          }
       }
 
       val jvmMain by getting {
          dependsOn(commonMain)
-         dependencies {
-            implementation(Libs.Coroutines.coreJvm)
-         }
       }
 
       val desktopMain by creating {
@@ -62,6 +71,10 @@ kotlin {
       }
 
       val macosX64Main by getting {
+         dependsOn(desktopMain)
+      }
+
+      val macosArm64Main by getting {
          dependsOn(desktopMain)
       }
 
@@ -85,7 +98,7 @@ kotlin {
          dependsOn(desktopMain)
       }
 
-      val watchosX86Main by getting {
+      val iosSimulatorArm64Main by getting {
          dependsOn(desktopMain)
       }
 
@@ -97,11 +110,23 @@ kotlin {
          dependsOn(desktopMain)
       }
 
+      val watchosX86Main by getting {
+         dependsOn(desktopMain)
+      }
+
       val watchosX64Main by getting {
          dependsOn(desktopMain)
       }
 
+      val watchosSimulatorArm64Main by getting {
+         dependsOn(desktopMain)
+      }
+
       val tvosMain by getting {
+         dependsOn(desktopMain)
+      }
+
+      val tvosSimulatorArm64Main by getting {
          dependsOn(desktopMain)
       }
 

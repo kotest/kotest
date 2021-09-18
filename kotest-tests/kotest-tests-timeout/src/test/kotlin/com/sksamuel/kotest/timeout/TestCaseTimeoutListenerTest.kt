@@ -1,14 +1,16 @@
 package com.sksamuel.kotest.timeout
 
+import io.kotest.core.descriptors.append
 import io.kotest.core.listeners.TestListener
 import io.kotest.core.spec.style.FunSpec
-import io.kotest.core.spec.toDescription
+import io.kotest.core.descriptors.toDescriptor
+import io.kotest.core.names.TestName
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestCaseConfig
 import io.kotest.core.test.TestResult
-import io.kotest.engine.ExecutorExecutionContext
+import io.kotest.engine.concurrency.NoopCoroutineDispatcherFactory
 import io.kotest.engine.test.NoopTestCaseExecutionListener
-import io.kotest.engine.test.NoopTestContext
+import io.kotest.engine.test.contexts.NoopTestContext
 import io.kotest.engine.test.TestCaseExecutor
 import io.kotest.matchers.shouldBe
 import kotlinx.coroutines.DelicateCoroutinesApi
@@ -27,13 +29,17 @@ class TestCaseTimeoutListenerTest : FunSpec() {
 
    init {
 
+      blockingTest = true
+
       afterSpec {
          suspendingCount.get() shouldBe 1
          blockingCount.get() shouldBe 1
       }
 
+      // todo figure this out
       test("tests which timeout during a blocking operation should still run the 'after test' listeners").config(
-         timeout = Duration.milliseconds(10000)
+         timeout = Duration.milliseconds(10000),
+         blockingTest = true,
       ) {
 
          // this listener will flick the flag to true, so we know it ran
@@ -44,7 +50,8 @@ class TestCaseTimeoutListenerTest : FunSpec() {
          }
 
          val testCase = TestCase.test(
-            TestCaseTimeoutListenerTest::class.toDescription().appendTest("wibble"),
+            TestCaseTimeoutListenerTest::class.toDescriptor().append("wibble"),
+            TestName("wibble"),
             this@TestCaseTimeoutListenerTest,
             parent = null,
          ) {
@@ -59,8 +66,8 @@ class TestCaseTimeoutListenerTest : FunSpec() {
             )
          )
 
-         val executor = TestCaseExecutor(NoopTestCaseExecutionListener, ExecutorExecutionContext)
-         // needs to run on a separate thread so we don't interrupt our own thread
+         val executor = TestCaseExecutor(NoopTestCaseExecutionListener, NoopCoroutineDispatcherFactory)
+         // needs to run on a separate thread, so we don't interrupt our own thread
          withContext(Dispatchers.IO) {
             executor.execute(testCase, NoopTestContext(testCase, coroutineContext))
          }
@@ -78,7 +85,8 @@ class TestCaseTimeoutListenerTest : FunSpec() {
          }
 
          val testCase = TestCase.test(
-            TestCaseTimeoutListenerTest::class.toDescription().appendTest("wibble"),
+            TestCaseTimeoutListenerTest::class.toDescriptor().append("wibble"),
+            TestName("wibble"),
             this@TestCaseTimeoutListenerTest,
             parent = null,
          ) {
@@ -93,8 +101,8 @@ class TestCaseTimeoutListenerTest : FunSpec() {
             )
          )
 
-         val executor = TestCaseExecutor(NoopTestCaseExecutionListener, ExecutorExecutionContext)
-         // needs to run on a separate thread so we don't interrupt our own thread
+         val executor = TestCaseExecutor(NoopTestCaseExecutionListener, NoopCoroutineDispatcherFactory)
+         // needs to run on a separate thread, so we don't interrupt our own thread
          withContext(Dispatchers.IO) {
             executor.execute(testCase, NoopTestContext(testCase, coroutineContext))
          }

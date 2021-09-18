@@ -5,12 +5,13 @@ import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestContext
 import io.kotest.core.test.TestResult
 import io.kotest.engine.withDebugProbe
+import io.kotest.mpp.log
 
 /**
  * If configured, then the kotlinx debug probe is installed for coroutines.
  * Note: This is a JVM only option.
  */
-object CoroutineDebugProbeInterceptor : TestExecutionInterceptor {
+internal object CoroutineDebugProbeInterceptor : TestExecutionInterceptor {
 
    private fun shouldApply(testCase: TestCase): Boolean {
       return testCase.config.coroutineDebugProbes ?: configuration.coroutineDebugProbes
@@ -20,6 +21,7 @@ object CoroutineDebugProbeInterceptor : TestExecutionInterceptor {
       test: suspend (TestCase, TestContext) -> TestResult
    ): suspend (TestCase, TestContext) -> TestResult = { testCase, context ->
       if (shouldApply(testCase)) {
+         log { "CoroutineDebugProbeInterceptor: Installing debug probe" }
          withDebugProbe {
             test(testCase, context)
          }

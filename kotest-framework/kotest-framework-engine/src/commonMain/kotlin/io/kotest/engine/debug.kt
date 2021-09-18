@@ -1,3 +1,3 @@
 package io.kotest.engine
 
-expect inline fun <T> withDebugProbe(f: () -> T): T
+internal expect inline fun <T> withDebugProbe(f: () -> T): T

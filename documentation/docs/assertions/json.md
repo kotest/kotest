@@ -60,10 +60,16 @@ a.shouldEqualJson(b)
 ```
 
 :::note
-Longs and doubles will always attempt to match regardless of this setting.
+Longs and doubles will always attempt to match regardless of this setting. See Numbers below.
 :::
 
 The default is `CompareMode.Strict` which will consider any values unequal if they have different types.
+
+#### Numbers
+JSON makes no difference between integer vs floating point numbers. It also allows for defining numbers using exponents.
+Strict-mode allows for equality between integers, floating points and exponents. If you want exact comparison of format
+_as well as_ type, you can use `CompareMode.Exact`
+
 
 ### CompareOrder
 

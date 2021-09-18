@@ -32,7 +32,8 @@ infix fun <T, U> Collection<T>.shouldBeLargerThan(other: Collection<U>): Collect
 fun <T, U> beLargerThan(other: Collection<U>) = object : Matcher<Collection<T>> {
    override fun test(value: Collection<T>) = MatcherResult(
       value.size > other.size,
-      "Collection of size ${value.size} should be larger than collection of size ${other.size}",
-      "Collection of size ${value.size} should not be larger than collection of size ${other.size}"
-   )
+      { "Collection of size ${value.size} should be larger than collection of size ${other.size}" },
+      {
+         "Collection of size ${value.size} should not be larger than collection of size ${other.size}"
+      })
 }

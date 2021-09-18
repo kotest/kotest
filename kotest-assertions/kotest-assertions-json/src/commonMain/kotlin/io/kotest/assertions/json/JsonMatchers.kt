@@ -5,8 +5,8 @@ import io.kotest.matchers.MatcherResult
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldNot
 import kotlinx.serialization.ExperimentalSerializationApi
-import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonElement
 
 @OptIn(ExperimentalSerializationApi::class)
 internal val pretty by lazy { Json { prettyPrint = true; prettyPrintIndent = "  " } }
@@ -27,9 +27,10 @@ fun matchJson(expected: String?) = object : Matcher<String?> {
       } catch (ex: Exception) {
          return MatcherResult(
             false,
-            "expected: actual json to be valid json: $value",
-            "expected: actual json to be invalid json: $value"
-         )
+            { "expected: actual json to be valid json: $value" },
+            {
+               "expected: actual json to be invalid json: $value"
+            })
       }
 
       val expectedJson = try {
@@ -37,16 +38,18 @@ fun matchJson(expected: String?) = object : Matcher<String?> {
       } catch (ex: Exception) {
          return MatcherResult(
             false,
-            "expected: expected json to be valid json: $expected",
-            "expected: expected json to be invalid json: $expected"
-         )
+            { "expected: expected json to be valid json: $expected" },
+            {
+               "expected: expected json to be invalid json: $expected"
+            })
       }
 
       return MatcherResult(
          actualJson == expectedJson,
-         "expected: $expectedJson but was: $actualJson",
-         "expected not to match with: $expectedJson but match: $actualJson"
-      )
+         { "expected: $expectedJson but was: $actualJson" },
+         {
+            "expected not to match with: $expectedJson but match: $actualJson"
+         })
    }
 }
 
@@ -80,7 +83,12 @@ fun String.shouldNotEqualSpecifiedJson(expected: String, mode: CompareMode, orde
 internal fun parse(expected: String, actual: String): Pair<JsonTree, JsonTree> {
    val enode = pretty.parseToJsonElement(expected)
    val anode = pretty.parseToJsonElement(actual)
-   val e = JsonTree(enode.toJsonNode(), pretty.encodeToString(enode))
-   val a = JsonTree(anode.toJsonNode(), pretty.encodeToString(anode))
+   val e = toJsonTree(enode)
+   val a = toJsonTree(anode)
    return Pair(e, a)
 }
+
+internal fun toJsonTree(root: JsonElement) =
+   with(root.toJsonNode()) {
+      JsonTree(this, prettyPrint(this))
+   }

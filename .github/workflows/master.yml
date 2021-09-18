@@ -67,7 +67,7 @@ jobs:
             run: ./gradlew watchosArm32TestKlibrary watchosArm64TestKlibrary watchosX86Test watchosX64Test watchosX86Test --scan
 
          -  name: publish macos snapshots
-            run: ./gradlew publishMacosX64PublicationToDeployRepository
+            run: ./gradlew publishMacosX64PublicationToDeployRepository publishMacosArm64PublicationToDeployRepository
             env:
                OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
                OSSRH_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
@@ -120,7 +120,7 @@ jobs:
          -  name: Run tests
             run: ./gradlew mingwX64Test --scan
 
-         -  name: publish mingw64 snapshot
+         -  name: publish mingw64 and mingw86 snapshot
             run: ./gradlew publishMingwX64PublicationToDeployRepository
             env:
                OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}

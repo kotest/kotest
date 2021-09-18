@@ -1,10 +1,10 @@
 package io.kotest.core.datatest
 
 import io.kotest.assertions.failure
+import io.kotest.core.names.TestName
 import io.kotest.core.spec.style.scopes.*
 import io.kotest.core.test.Identifiers
 import io.kotest.core.test.TestType
-import io.kotest.core.test.createTestName
 import kotlin.jvm.*
 
 @Deprecated("Deprecated without replacement. Will be removed in 6.0")
@@ -61,7 +61,7 @@ fun <T : Any> RootContext.forNone(vararg data: T, test: suspend (T) -> Unit) {
 @Deprecated("Deprecated without replacement. Will be removed in 6.0")
 fun <T> RootContext.forNone(data: List<Pair<String, T>>, test: suspend (T) -> Unit) {
    data.forEach { (name, t) ->
-      registration().addTest(createTestName(name), false) {
+      registration().addTest(TestName(name), false) {
          try {
             test(t)
             null
@@ -88,6 +88,6 @@ fun <T : Any> RootContext.forAll(ts: List<T>, test: suspend (T) -> Unit) {
 @Deprecated("Replaced with withData. Will be removed in 6.0")
 fun <T : Any> RootContext.forAll(data: List<Pair<String, T>>, test: suspend (T) -> Unit) {
    data.forEach { (name, t) ->
-      registration().addTest(createTestName(name), false) { test(t) }
+      registration().addTest(TestName(name), false) { test(t) }
    }
 }

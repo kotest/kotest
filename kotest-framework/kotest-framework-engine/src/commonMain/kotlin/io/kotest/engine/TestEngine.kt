@@ -1,88 +1,94 @@
 package io.kotest.engine
 
+import io.kotest.common.Platform
+import io.kotest.common.platform
+import io.kotest.core.Tags
 import io.kotest.core.config.Configuration
 import io.kotest.core.config.configuration
+import io.kotest.core.filter.SpecFilter
+import io.kotest.core.filter.TestFilter
 import io.kotest.core.spec.Spec
+import io.kotest.core.spec.SpecRef
+import io.kotest.engine.extensions.SpecifiedTagsTagExtension
 import io.kotest.engine.interceptors.EngineInterceptor
-import io.kotest.engine.listener.NoopTestEngineListener
 import io.kotest.engine.listener.TestEngineListener
+import io.kotest.engine.spec.ReflectiveSpecRef
 import io.kotest.mpp.log
+import kotlinx.coroutines.coroutineScope
 import kotlin.reflect.KClass
+
+data class EngineResult(val errors: List<Throwable>) {
+   companion object {
+      val empty = EngineResult(emptyList())
+   }
+}
+
+/**
+ * Contains the discovered specs that will be executed.
+ *
+ * All specs are wrapped in a [SpecRef].
+ *
+ * On platforms that lack reflective capability, such as nodeJS or native, the specs are
+ * either preconstructed or constructed through a simple function. On the JVM, the [KClass]
+ * instance is used to reflectively instantiate.
+ */
+data class TestSuite(val specs: List<SpecRef>) {
+   companion object {
+      operator fun invoke(classes: List<KClass<out Spec>>) = TestSuite(classes.map { ReflectiveSpecRef(it) })
+      val empty = TestSuite(emptyList())
+   }
+}
 
 data class TestEngineConfig(
    val listener: TestEngineListener,
    val interceptors: List<EngineInterceptor>,
    val configuration: Configuration,
-) {
-
-   companion object {
-      fun default(): TestEngineConfig {
-         return TestEngineConfig(
-            listener = NoopTestEngineListener,
-            interceptors = testEngineInterceptors(),
-            configuration = configuration,
-         )
-      }
-   }
-
-   fun withConfig(configuration: Configuration): TestEngineConfig {
-      return TestEngineConfig(listener = listener, interceptors = interceptors, configuration = configuration)
-   }
-}
-
-expect fun testEngineInterceptors(): List<EngineInterceptor>
-
-data class EngineResult(val errors: List<Throwable>)
-
-/**
- * Contains the discovered specs that will be executed.
- *
- * On the platforms that lack reflective capability, the specs are pre-instantiated before
- * they are passed to the engine. On the JVM, the class definition is instead used.
- */
-data class TestSuite(val specs: List<Spec>, val classes: List<KClass<out Spec>>) {
-   companion object {
-      val empty = TestSuite(emptyList(), emptyList())
-   }
-}
+   val testFilters: List<TestFilter>,
+   val specFilters: List<SpecFilter>,
+   val explicitTags: Tags?,
+)
 
 /**
  * Multiplatform Kotest Test Engine.
  */
 class TestEngine(val config: TestEngineConfig) {
 
-   suspend fun execute(suite: TestSuite) {
-      log { "TestEngine: Executing test suite with ${suite.specs.size} specs and ${suite.classes.size} classes" }
-      require(suite.specs.isNotEmpty()) { "Cannot invoke the engine with no specs" }
+   init {
+      // if the engine was invoked with explicit tags, we register those via a tag extension
+      config.explicitTags?.let { configuration.registerExtensions(SpecifiedTagsTagExtension(it)) }
 
-      val innerExecute: suspend (TestSuite, TestEngineListener) -> EngineResult = { ts, tel -> execute(ts.specs, tel) }
+      // if the engine was invoked with explicit filters, those are registered here
+      configuration.registerFilters(config.testFilters)
+   }
+
+   /**
+    * Starts execution of the given [TestSuite], intercepting calls via [EngineInterceptor]s.
+    */
+   suspend fun execute(suite: TestSuite): EngineResult {
+      log { "TestEngine: Executing test suite with ${suite.specs.size} specs" }
+
+      val innerExecute: suspend (TestSuite, TestEngineListener) -> EngineResult = { ts, tel ->
+         val scheduler = when (platform) {
+            Platform.JVM -> ConcurrentTestSuiteScheduler(configuration.concurrentSpecs ?: configuration.parallelism)
+            Platform.JS -> SequentialTestSuiteScheduler
+            Platform.Native -> SequentialTestSuiteScheduler
+         }
+         scheduler.schedule(ts, tel)
+      }
 
       log { "TestEngine: ${config.interceptors.size} engine interceptors:" }
       config.interceptors.forEach {
-         log { "TestEngine: ${it::class.simpleName}" }
+         log { "\t\t${it::class.simpleName}" }
       }
 
       val execute = config.interceptors.foldRight(innerExecute) { extension, next ->
          { ts, tel -> extension.intercept(ts, tel, next) }
       }
 
-      execute(suite, config.listener)
-   }
-
-   private fun execute(specs: List<Spec>, listener: TestEngineListener): EngineResult {
-      log { "TestEngine: Executing ${specs.size} specs" }
-      if (specs.isNotEmpty()) {
-         val runner = SpecRunner()
-         runner.execute(specs.first()) { execute(specs.drop(1), listener) }
+      // we want to suspend the engine while we wait for all specs to complete
+      return coroutineScope {
+         execute(suite, config.listener)
       }
-      return EngineResult(emptyList())
    }
 }
 
-expect class SpecRunner() {
-
-   /**
-    * Execute the given [spec] and invoke the [onComplete] callback once finished.
-    */
-   fun execute(spec: Spec, onComplete: suspend () -> Unit)
-}

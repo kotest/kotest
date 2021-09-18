@@ -13,7 +13,7 @@ object ExcludeTagExtension : TagExtension {
    override fun tags(): Tags = Tags.exclude(Exclude)
 }
 
-object ProjectConfig : AbstractProjectConfig() {
+class ProjectConfig : AbstractProjectConfig() {
    override fun extensions() = listOf(ExcludeTagExtension)
 }
 

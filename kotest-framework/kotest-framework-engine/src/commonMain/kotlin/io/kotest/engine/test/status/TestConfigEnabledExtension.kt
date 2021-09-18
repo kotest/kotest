@@ -14,22 +14,22 @@ import io.kotest.mpp.log
  * - The `enabled` property is set to false in the [TestCaseConfig] associated with the test.
  * - The `enabledIf` function evaluates to [false] in the [TestCaseConfig] associated with the test.
  */
-object TestConfigEnabledExtension : TestEnabledExtension {
+internal object TestConfigEnabledExtension : TestEnabledExtension {
    override fun isEnabled(testCase: TestCase): Enabled {
 
       val enabledOrReasonIf = testCase.config.enabledOrReasonIf(testCase)
       if (!enabledOrReasonIf.isEnabled) {
-          log { "${testCase.description.testPath()} is disabled by enabledOrReasonIf function in config: ${enabledOrReasonIf.reason}" }
+         log { "${testCase.descriptor.path()} is disabled by enabledOrReasonIf function in config: ${enabledOrReasonIf.reason}" }
          return enabledOrReasonIf
       }
 
       if (!testCase.config.enabled) {
-         return Enabled.disabled("${testCase.description.testPath()} is disabled by enabled property in config")
+         return Enabled.disabled("${testCase.descriptor.path()} is disabled by enabled property in config")
             .also { log { it.reason } }
       }
 
       if (!testCase.config.enabledIf(testCase)) {
-         return Enabled.disabled("${testCase.description.testPath()} is disabled by enabledIf function in config")
+         return Enabled.disabled("${testCase.descriptor.path()} is disabled by enabledIf function in config")
             .also { log { it.reason } }
       }
 

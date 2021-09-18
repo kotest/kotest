@@ -1,6 +1,6 @@
 package io.kotest.core.listeners
 
-import io.kotest.core.test.Description
+import io.kotest.core.descriptors.DescriptorId
 
 interface DiscoveryListener {
 
@@ -8,10 +8,10 @@ interface DiscoveryListener {
     * Is invoked after all the [Spec] classes have been discovered.
     * This callback will be called after any [DiscoveryExtension]s have been invoked.
     *
-    * In other words the descriptions given here are after discovery extensions
+    * In other words the descriptors given here are after discovery extensions
     * have had the chance to filter.
     *
-    * @param descriptions the [Description] instance for each Spec class discovered.
+    * @param descriptors the [DescriptorId] instance for each Spec class discovered.
     */
-   fun afterDiscovery(descriptions: List<Description>): Unit = Unit
+   fun afterDiscovery(descriptors: List<DescriptorId>): Unit = Unit
 }

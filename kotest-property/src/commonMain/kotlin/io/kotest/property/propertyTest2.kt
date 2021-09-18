@@ -17,14 +17,14 @@ suspend fun <A, B> checkAll(
    genA: Gen<A>,
    genB: Gen<B>,
    property: suspend PropertyContext.(A, B) -> Unit
-): PropertyContext = checkAll(config, genA, genB, property)
+): PropertyContext = proptest(genA, genB, config, property)
 
 suspend fun <A, B> checkAll(
    iterations: Int,
    genA: Gen<A>,
    genB: Gen<B>,
    property: suspend PropertyContext.(A, B) -> Unit
-): PropertyContext = proptest(genA, genB, PropTestConfig(iterations = iterations), property)
+): PropertyContext = proptest(genA, genB, PropTestConfig(constraints = Constraints.iterations(iterations)), property)
 
 suspend fun <A, B> checkAll(
    iterations: Int,
@@ -68,7 +68,7 @@ suspend inline fun <reified A, reified B> checkAll(
 ) = proptest(
    Arb.default(),
    Arb.default(),
-   PropTestConfig(iterations = iterations),
+   PropTestConfig(constraints = Constraints.iterations(iterations)),
    property
 )
 

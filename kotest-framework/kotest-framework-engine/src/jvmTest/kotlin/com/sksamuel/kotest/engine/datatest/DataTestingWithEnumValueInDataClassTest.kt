@@ -21,7 +21,7 @@ class DataTestingWithEnumValueInDataClassTest : FunSpec({
    }
 }) {
    override fun afterAny(testCase: TestCase, result: TestResult) {
-      NamesStore.names.add(testCase.description.displayName())
+      NamesStore.names.add(testCase.descriptor.id.value)
    }
 
    override fun afterSpec(spec: Spec) {

@@ -18,14 +18,14 @@ class GlobalTimeoutTest : StringSpec() {
 
       beforeSpec {
          previousTimeout = configuration.timeout
-         configuration.timeout = 10
+         configuration.timeout = 50
       }
 
       afterSpec {
          configuration.timeout = previousTimeout
       }
 
-      "a global timeout should interrupt a blocked thread" {
+      "a global timeout should interrupt a blocked thread".config(blockingTest = true) {
          // high value to ensure its interrupted, we'd notice a test that runs for 10 weeks
          Thread.sleep(1000000)
       }
@@ -46,6 +46,6 @@ val expectFailureExtension: TestCaseExtensionFn = { (testCase, execute) ->
    val result = execute(testCase)
    when (result.status) {
       TestStatus.Failure, TestStatus.Error -> TestResult.success(0)
-      else -> AssertionError("${testCase.description.name.name} passed but should fail").toTestResult(0)
+      else -> AssertionError("${testCase.descriptor.id.value} passed but should fail").toTestResult(0)
    }
 }

@@ -17,6 +17,7 @@ internal fun applyConfigFromProjectConfig(config: AbstractProjectConfig, configu
 
    // outputs
    config.displaySpecIfNoActiveTests.foreach { configuration.displaySpecIfNoActiveTests = it }
+   config.dumpConfig.foreach { configuration.dumpConfig = it }
 
    // project run options
    config.failOnIgnoredTests.foreach { configuration.failOnIgnoredTests = it }
@@ -30,6 +31,7 @@ internal fun applyConfigFromProjectConfig(config: AbstractProjectConfig, configu
    config.concurrentTests.foreach { configuration.concurrentTests = it }
    config.concurrentSpecs.foreach { configuration.concurrentSpecs = it }
    config.isolationMode.foreach { configuration.isolationMode = it }
+   config.dispatcherAffinity.foreach { configuration.dispatcherAffinity = it }
 
    // timeouts
    config.timeout.foreach { configuration.timeout = it.inWholeMilliseconds }
@@ -66,7 +68,6 @@ internal fun applyConfigFromProjectConfig(config: AbstractProjectConfig, configu
       }
    }
 
-   configuration.registerListeners(config.listeners() + listOf(projectListener))
-   configuration.registerExtensions(config.extensions())
+   configuration.registerExtensions(config.listeners() + listOf(projectListener) + config.extensions())
    configuration.registerFilters(config.filters())
 }

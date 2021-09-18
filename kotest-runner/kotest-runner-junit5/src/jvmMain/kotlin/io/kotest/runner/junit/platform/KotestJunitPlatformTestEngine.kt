@@ -4,20 +4,16 @@ import io.kotest.core.config.configuration
 import io.kotest.core.extensions.DiscoveryExtension
 import io.kotest.core.filter.TestFilter
 import io.kotest.core.filter.TestFilterResult
-import io.kotest.core.internal.KotestEngineProperties
 import io.kotest.core.spec.Spec
-import io.kotest.core.spec.toDescription
-import io.kotest.engine.KotestEngineLauncher
-import io.kotest.engine.config.ConfigManager
-import io.kotest.engine.config.detectAbstractProjectConfigs
+import io.kotest.core.descriptors.toDescriptor
+import io.kotest.engine.TestEngineLauncher
 import io.kotest.engine.extensions.EnabledConditionSpecDiscoveryExtension
 import io.kotest.engine.extensions.IgnoredSpecDiscoveryExtension
 import io.kotest.engine.extensions.TagsExcludedDiscoveryExtension
-import io.kotest.engine.listener.ThreadSafeTestEngineListener
 import io.kotest.engine.listener.PinnedSpecTestEngineListener
+import io.kotest.engine.listener.ThreadSafeTestEngineListener
 import io.kotest.framework.discovery.Discovery
 import io.kotest.mpp.log
-import kotlinx.coroutines.runBlocking
 import org.junit.platform.engine.EngineDiscoveryRequest
 import org.junit.platform.engine.ExecutionRequest
 import org.junit.platform.engine.TestEngine
@@ -39,20 +35,16 @@ class KotestJunitPlatformTestEngine : TestEngine {
       const val EngineId = "kotest"
    }
 
-   init {
-      ConfigManager.initialize(configuration, detectAbstractProjectConfigs())
-   }
-
    override fun getId(): String = EngineId
 
    override fun getGroupId(): Optional<String> = Optional.of("io.kotest")
 
-   override fun execute(request: ExecutionRequest) = runBlocking {
+   override fun execute(request: ExecutionRequest) {
       log { "JUnit ExecutionRequest[${request::class.java.name}] [configurationParameters=${request.configurationParameters}; rootTestDescriptor=${request.rootTestDescriptor}]" }
       val root = request.rootTestDescriptor as KotestEngineDescriptor
       when (root.error) {
-          null -> execute(request, root)
-          else -> abortExecution(request, root.error)
+         null -> execute(request, root)
+         else -> abortExecution(request, root.error)
       }
    }
 
@@ -73,11 +65,8 @@ class KotestJunitPlatformTestEngine : TestEngine {
          )
       )
 
-      KotestEngineLauncher()
-         .withListener(listener)
-         .withSpecs(root.classes)
-         .withScripts(root.scripts)
-         .withDumpConfig(shouldDumpConfig())
+      TestEngineLauncher(listener)
+         .withClasses(root.classes)
          .withTestFilters(root.testFilters)
          .launch()
    }
@@ -112,7 +101,7 @@ class KotestJunitPlatformTestEngine : TestEngine {
       // this happens for example, when trying to run a junit test alongside kotest tests,
       // and kotest will then run all other tests.
       // therefore, the presence of a MethodSelector means we must run no tests in KT.
-      val descriptor =  if (request.getSelectorsByType(MethodSelector::class.java).isEmpty()) {
+      val descriptor = if (request.getSelectorsByType(MethodSelector::class.java).isEmpty()) {
 
          val extensions = listOf(
             IgnoredSpecDiscoveryExtension,
@@ -122,7 +111,7 @@ class KotestJunitPlatformTestEngine : TestEngine {
          val discovery = Discovery(extensions)
          val result = discovery.discover(request.toKotestDiscoveryRequest())
          val classes = result.specs.filter { spec ->
-            testFilters.all { it.filter(spec.toDescription()) == TestFilterResult.Include }
+            testFilters.all { it.filter(spec.toDescriptor()) == TestFilterResult.Include }
          }
          KotestEngineDescriptor(uniqueId, classes, result.scripts, testFilters, result.error)
       } else {
@@ -132,8 +121,6 @@ class KotestJunitPlatformTestEngine : TestEngine {
       log { "JUnit discovery completed [descriptor=$descriptor]" }
       return descriptor
    }
-
-   private fun shouldDumpConfig() = System.getProperty(KotestEngineProperties.dumpConfig) == "true"
 }
 
 class KotestEngineDescriptor(

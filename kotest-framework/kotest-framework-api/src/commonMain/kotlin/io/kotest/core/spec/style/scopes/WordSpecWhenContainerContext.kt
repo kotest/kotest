@@ -1,12 +1,13 @@
 package io.kotest.core.spec.style.scopes
 
+import io.kotest.core.descriptors.append
+import io.kotest.core.names.TestName
 import io.kotest.core.spec.KotestDsl
 import io.kotest.core.spec.resolvedDefaultConfig
 import io.kotest.core.test.NestedTest
 import io.kotest.core.test.TestContext
 import io.kotest.core.test.TestType
 import io.kotest.core.test.createNestedTest
-import io.kotest.core.test.createTestName
 
 @Suppress("FunctionName")
 @KotestDsl
@@ -30,11 +31,11 @@ class WordSpecWhenContainerContext(
    private suspend fun addShould(name: String, test: suspend WordSpecShouldContainerContext.() -> Unit, xdisabled: Boolean) {
       registerTestCase(
          createNestedTest(
-            name = createTestName("$name should"),
+            descriptor = testCase.descriptor.append(name),
+            name = TestName("$name should"),
             xdisabled = xdisabled,
             config = testCase.spec.resolvedDefaultConfig(),
             type = TestType.Container,
-            descriptor = null,
             factoryId = testCase.factoryId,
             test = { WordSpecShouldContainerContext(this).test() }
          )

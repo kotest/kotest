@@ -1,7 +1,9 @@
 package io.kotest.core
 
-import io.kotest.core.config.Configuration
 import io.kotest.common.ExperimentalKotest
+import io.kotest.common.SoftDeprecated
+import io.kotest.core.concurrency.CoroutineDispatcherFactory
+import io.kotest.core.config.Configuration
 import io.kotest.core.extensions.Extension
 import io.kotest.core.extensions.TestCaseExtension
 import io.kotest.core.listeners.TestListener
@@ -34,6 +36,7 @@ interface SpecFunctionConfiguration {
     * If you wish to register a listener for all specs
     * then use [Configuration.registerListener].
     */
+   @SoftDeprecated("Use extensions")
    fun listeners(): List<TestListener> = emptyList()
 
    /**
@@ -96,10 +99,12 @@ interface SpecFunctionConfiguration {
    /**
     * Sets the number of threads that will be used for executing root tests in this spec.
     *
-    * On the JVM this will result in multiple threads being used.
-    * On other platforms this setting will have no effect.
+    * By setting this a value, a [CoroutineDispatcherFactory] will be installed for this spec
+    * that shares a fixed number of threads for this spec only. If the [coroutineDispatcherFactory]
+    * is also set, then that will have precedence.
+    *
+    * This setting is JVM only.
     */
-   @Deprecated("Use concurrency setting. This Will be removed in 4.7")
    fun threads(): Int? = null
 
    /**
@@ -121,8 +126,8 @@ interface SpecFunctionConfiguration {
 
    /**
     * By default, all tests inside a single spec are executed using the same dispatcher to ensure
-    * that callbacks all operate on the same thread. In other words, a spec is sticky with regards
-    * to the execution thread. To change this, set this value to false. This value can also be
+    * that callbacks all operate on the same thread. In other words, a spec is sticky in regard to
+    * the execution thread. To change this, set this value to false. This value can also be
     * set globally in [Configuration.dispatcherAffinity].
     *
     * When this value is false, the framework is free to assign different dispatchers to different
@@ -133,4 +138,6 @@ interface SpecFunctionConfiguration {
     */
    @ExperimentalKotest
    fun dispatcherAffinity(): Boolean? = null
+
+   fun coroutineDispatcherFactory(): CoroutineDispatcherFactory? = null
 }

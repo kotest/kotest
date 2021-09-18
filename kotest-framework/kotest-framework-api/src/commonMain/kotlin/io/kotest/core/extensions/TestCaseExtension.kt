@@ -1,7 +1,11 @@
 package io.kotest.core.extensions
 
+import io.kotest.common.SoftDeprecated
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
+
+@SoftDeprecated("Renamed to TestCaseInterceptExtension")
+typealias TestCaseExtension = TestCaseInterceptExtension
 
 /**
  * Extension point that intercepts calls to a [TestCase].
@@ -9,7 +13,7 @@ import io.kotest.core.test.TestResult
  * This extension can be used to override the results of a test, or whether a test is invoked.
  *
  */
-interface TestCaseExtension : Extension {
+interface TestCaseInterceptExtension : Extension {
 
    /**
     * Intercepts a [TestCase].
@@ -53,7 +57,7 @@ interface TestCaseExtension : Extension {
     * @param execute a function that is invoked to execute the test. Can be ignored if you
     * wish to return a result without executing the test itself.
     *
-    * @param complete a function that must be invoked with a [TestResult] to
+    * @param execute a function that must be invoked with a [TestResult] to
     * notify the test runner of the outcome of the test.
     */
    suspend fun intercept(

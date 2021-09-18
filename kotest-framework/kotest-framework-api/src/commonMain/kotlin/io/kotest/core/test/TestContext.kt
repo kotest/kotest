@@ -1,7 +1,5 @@
 package io.kotest.core.test
 
-import io.kotest.core.plan.Descriptor
-import io.kotest.core.sourceRef
 import kotlinx.coroutines.CoroutineScope
 import kotlin.coroutines.CoroutineContext
 
@@ -29,27 +27,9 @@ interface TestContext : CoroutineScope {
     * Will throw if the current test is not a container test.
     */
    suspend fun registerTestCase(nested: NestedTest)
-}
 
-/**
- * Registers a [NestedTest] with the engine.
- *
- * Will throw if the current test is not a container test.
- */
-suspend fun TestContext.registerTestCase(
-   name: DescriptionName.TestName,
-   test: suspend TestContext.() -> Unit,
-   config: TestCaseConfig,
-   type: TestType,
-   descriptor: Descriptor.TestDescriptor? = null,
-) {
-   when (testCase.type) {
-      TestType.Container -> {
-         val nested = NestedTest(name, test, config, type, sourceRef(), testCase.factoryId, descriptor)
-         registerTestCase(nested)
-      }
-      TestType.Test -> throw InvalidTestConstructionException("Cannot add a nested test to '${testCase.displayName}' because it is not a test container")
-   }
+   /**
+    * Invoked when the test has completed and this scope is finished.
+    */
+   fun close() {}
 }
-
-class InvalidTestConstructionException(msg: String) : RuntimeException(msg)

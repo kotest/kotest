@@ -3,10 +3,10 @@ package io.kotest.core.config
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.SpecExecutionOrder
 import io.kotest.core.test.AssertionMode
-import io.kotest.core.test.DuplicateTestNameMode
+import io.kotest.core.names.DuplicateTestNameMode
 import io.kotest.core.test.TestCaseConfig
 import io.kotest.core.test.TestCaseOrder
-import io.kotest.core.test.TestNameCase
+import io.kotest.core.names.TestNameCase
 
 object Defaults {
 
@@ -20,6 +20,7 @@ object Defaults {
    const val displaySpecIfNoActiveTests: Boolean = true
 
    const val failOnEmptyTestSuite = false
+   const val dumpConfig = false
 
    const val specFailureFilePath: String = "./.kotest/spec_failures"
 

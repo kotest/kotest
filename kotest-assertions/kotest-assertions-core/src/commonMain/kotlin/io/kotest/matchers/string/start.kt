@@ -30,5 +30,8 @@ fun startWith(prefix: CharSequence): Matcher<CharSequence?> = neverNullMatcher {
          }
       }
    }
-   MatcherResult(ok, msg, notmsg)
+   MatcherResult(
+      ok,
+      { msg },
+      { notmsg })
 }

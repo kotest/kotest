@@ -1,6 +1,6 @@
 package io.kotest.core.spec.style.scopes
 
-import io.kotest.core.test.createTestName
+import io.kotest.core.names.TestName
 
 /**
  * A context that allows tests to be registered using the syntax:
@@ -32,7 +32,7 @@ interface BehaviorSpecRootContext : RootContext {
    fun xGiven(name: String, test: suspend BehaviorSpecGivenContainerContext.() -> Unit) = addGiven(name, true, test)
 
    private fun addGiven(name: String, xdisabled: Boolean, test: suspend BehaviorSpecGivenContainerContext.() -> Unit) {
-      val testName = createTestName("Given: ", name, true)
+      val testName = TestName("Given: ", name, true)
       registration().addContainerTest(testName, xdisabled) {
          BehaviorSpecGivenContainerContext(this).test()
       }

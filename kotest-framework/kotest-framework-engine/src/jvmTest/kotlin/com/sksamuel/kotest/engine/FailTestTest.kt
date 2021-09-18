@@ -1,59 +1,36 @@
 package com.sksamuel.kotest.engine
 
 import io.kotest.core.spec.style.FunSpec
-import io.kotest.core.test.DescriptionName
-import io.kotest.core.test.TestCase
-import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestStatus
-import io.kotest.engine.KotestEngineLauncher
-import io.kotest.engine.listener.TestEngineListener
+import io.kotest.engine.TestEngineLauncher
+import io.kotest.engine.listener.CollectingTestEngineListener
 import io.kotest.matchers.maps.shouldNotContainKey
 import io.kotest.matchers.shouldBe
-import java.util.concurrent.ConcurrentHashMap
-import kotlin.reflect.KClass
 
 class FailTestTest : FunSpec() {
    init {
       test("when enabling fail fast, further nested tests should be skipped") {
-         val listener = CapturingTestListener()
-         KotestEngineLauncher()
-            .withListener(listener)
-            .withSpec(FailTestFunSpec::class)
+
+         val listener = CollectingTestEngineListener()
+
+         TestEngineLauncher(listener)
+            .withClasses(FailTestFunSpec::class)
             .launch()
 
-         val results = listener.testsFinished.mapKeys { it.key.name }
-         results["a"] shouldBe TestStatus.Success
-         results["b"] shouldBe TestStatus.Error
-         results["c"] shouldBe TestStatus.Ignored
-         results["d"] shouldBe TestStatus.Ignored
+         val results = listener.tests.mapKeys { it.key.displayName }
+         results["a"]?.status shouldBe TestStatus.Success
+         results["b"]?.status shouldBe TestStatus.Error
+         results["c"]?.status shouldBe TestStatus.Ignored
+         results["d"]?.status shouldBe TestStatus.Ignored
          results.shouldNotContainKey("e")
-         results["t"] shouldBe TestStatus.Success
-         results["u"] shouldBe TestStatus.Error
-         results["v"] shouldBe TestStatus.Ignored
-         results["w"] shouldBe TestStatus.Ignored
+         results["t"]?.status shouldBe TestStatus.Success
+         results["u"]?.status shouldBe TestStatus.Error
+         results["v"]?.status shouldBe TestStatus.Ignored
+         results["w"]?.status shouldBe TestStatus.Ignored
          results.shouldNotContainKey("x")
       }
    }
 }
-
-class CapturingTestListener : TestEngineListener {
-
-   val specsFinished = ConcurrentHashMap<KClass<*>, Throwable?>()
-   val testsFinished = ConcurrentHashMap<DescriptionName.TestName, TestStatus>()
-
-   override suspend fun specFinished(kclass: KClass<*>, t: Throwable?, results: Map<TestCase, TestResult>) {
-      specsFinished[kclass] = t
-   }
-
-   override suspend fun testIgnored(testCase: TestCase, reason: String?) {
-      testsFinished[testCase.description.name] = TestStatus.Ignored
-   }
-
-   override suspend fun testFinished(testCase: TestCase, result: TestResult) {
-      testsFinished[testCase.description.name] = result.status
-   }
-}
-
 
 private class FailTestFunSpec() : FunSpec() {
    init {

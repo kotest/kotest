@@ -1,6 +1,7 @@
 package io.kotest.core.spec.style
 
 import io.kotest.core.config.configuration
+import io.kotest.core.names.TestName
 import io.kotest.core.spec.RootTest
 import io.kotest.core.spec.Spec
 import io.kotest.core.test.TestCase
@@ -8,9 +9,7 @@ import io.kotest.core.test.TestCaseConfig
 import io.kotest.core.test.TestContext
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestType
-import io.kotest.core.test.DescriptionName
 import io.kotest.core.test.createRootTestCase
-import io.kotest.core.test.createTestName
 import io.kotest.mpp.unwrapIfReflectionCall
 import kotlin.reflect.KClass
 import kotlin.reflect.KFunction
@@ -25,7 +24,7 @@ abstract class AnnotationSpec : Spec() {
    private fun defaultConfig() = defaultTestConfig ?: defaultTestCaseConfig() ?: configuration.defaultTestConfig
 
    override fun addTest(
-      name: DescriptionName.TestName,
+      name: TestName,
       test: suspend TestContext.() -> Unit,
       config: TestCaseConfig,
       type: TestType
@@ -68,7 +67,7 @@ abstract class AnnotationSpec : Spec() {
          val expected = this.getExpectedException()
          createRootTestCase(
             this@AnnotationSpec,
-            createTestName(name),
+            TestName(name),
             callExpectingException(expected),
             config,
             TestType.Test,
@@ -76,7 +75,7 @@ abstract class AnnotationSpec : Spec() {
       } else {
          createRootTestCase(
             this@AnnotationSpec,
-            createTestName(name),
+            TestName(name),
             callNotExpectingException(),
             config,
             TestType.Test,

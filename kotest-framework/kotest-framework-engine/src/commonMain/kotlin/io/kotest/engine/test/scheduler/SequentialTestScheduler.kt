@@ -11,7 +11,7 @@ import kotlinx.coroutines.launch
  * for each test to complete before launching the next.
  */
 @ExperimentalKotest
-object SequentialTestScheduler : TestScheduler {
+internal object SequentialTestScheduler : TestScheduler {
    override suspend fun schedule(run: suspend (TestCase) -> Unit, tests: List<TestCase>) {
       log { "SequentialTestLauncher: Launching ${tests.size} sequentially" }
       tests.forEach { test ->

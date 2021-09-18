@@ -52,6 +52,14 @@ _**Kotlin 1.5 is now the minimum supported version**_
 * Datatest2 has been deprecated
 
 
+### 4.6.3 September 2021
+
+### Fixes
+
+* StackOverflow when using checkAll with certain arity functions #2513
+* Added arity8 and arity9 forall for table testing #2444
+
+
 ### 4.6.2 August 2021
 
 #### Fixes

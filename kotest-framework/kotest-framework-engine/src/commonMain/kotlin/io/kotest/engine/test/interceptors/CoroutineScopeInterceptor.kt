@@ -3,11 +3,9 @@ package io.kotest.engine.test.interceptors
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestContext
 import io.kotest.core.test.TestResult
-import io.kotest.engine.test.withCoroutineContext
+import io.kotest.engine.test.contexts.withCoroutineContext
 import io.kotest.mpp.log
-import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.job
 
 /**
  * Execute the test case wrapped in a [coroutineScope], so that we wait for any child coroutines launched
@@ -21,7 +19,7 @@ internal object CoroutineScopeInterceptor : TestExecutionInterceptor {
       coroutineScope {
          test(
             testCase,
-            context.withCoroutineContext(coroutineContext + CoroutineName("CoroutineScopeInterceptor"))
+            context.withCoroutineContext(coroutineContext)
          )
       }.apply {
          log { "CoroutineScopeInterceptor: Test execution scope has completed" }

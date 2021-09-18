@@ -1,5 +1,6 @@
 package io.kotest.engine.interceptors
 
+import io.kotest.common.JVMOnly
 import io.kotest.core.config.configuration
 import io.kotest.core.spec.Spec
 import io.kotest.core.test.TestStatus
@@ -12,6 +13,13 @@ import java.nio.file.Files
 import java.nio.file.Paths
 import kotlin.reflect.KClass
 
+/**
+ * Writes failed specs to a file so that the [io.kotest.engine.spec.FailureFirstSorter]
+ * can use the file to run failed specs first.
+ *
+ * Note: This is a JVM only feature.
+ */
+@JVMOnly
 internal class WriteFailuresInterceptor(private val filename: String) : EngineInterceptor {
 
    override suspend fun intercept(

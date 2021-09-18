@@ -1,10 +1,7 @@
-enableFeaturePreview("GRADLE_METADATA")
-
 pluginManagement {
    repositories {
       mavenCentral()
       gradlePluginPortal()
-      jcenter()
    }
 }
 
@@ -82,14 +79,14 @@ include("kotest-tests:kotest-tests-core")
 include("kotest-tests:kotest-tests-concurrency-tests")
 include("kotest-tests:kotest-tests-concurrency-specs")
 
-include("kotest-tests:kotest-tests-junitxml")
+//include("kotest-tests:kotest-tests-junitxml")
 include("kotest-tests:kotest-tests-htmlreporter")
 include("kotest-tests:kotest-tests-multipleconfig")
-//include("kotest-tests:kotest-tests-parallelism")
-include("kotest-tests:kotest-tests-projectlistener")
+include("kotest-tests:kotest-tests-test-parallelism")
+//include("kotest-tests:kotest-tests-spec-parallelism")
 include("kotest-tests:kotest-tests-tagextension")
-//include("kotest-tests:kotest-tests-timeout")
-//include("kotest-tests:kotest-tests-timeout-sysprop")
+include("kotest-tests:kotest-tests-timeout")
+include("kotest-tests:kotest-tests-timeout-sysprop")
 include("kotest-tests:kotest-tests-multiname-test-name-sysprop")
 include("kotest-tests:kotest-tests-native")
 include("kotest-tests:kotest-tests-js")

@@ -1,13 +1,13 @@
 package io.kotest.core.spec.style.scopes
 
 import io.kotest.common.ExperimentalKotest
+import io.kotest.core.descriptors.append
+import io.kotest.core.names.TestName
 import io.kotest.core.spec.resolvedDefaultConfig
-import io.kotest.core.test.DescriptionName
 import io.kotest.core.test.NestedTest
 import io.kotest.core.test.TestContext
 import io.kotest.core.test.TestType
 import io.kotest.core.test.createNestedTest
-import io.kotest.core.test.createTestName
 
 /**
  * A scope that allows tests to be registered using the syntax:
@@ -39,62 +39,70 @@ class DescribeSpecContainerContext(
    }
 
    suspend fun context(name: String, test: suspend DescribeSpecContainerContext.() -> Unit) {
-      val testName = createTestName("Context: ", name, false)
+      val testName = TestName("Context: ", name, false)
       containerTest(testName, false, test)
    }
 
    @ExperimentalKotest
    fun context(name: String) =
-      ContainerContextConfigBuilder(createTestName(name), this, false) { DescribeSpecContainerContext(it) }
+      ContainerContextConfigBuilder(TestName(name), this, false) { DescribeSpecContainerContext(it) }
 
    suspend fun xcontext(name: String, test: suspend DescribeSpecContainerContext.() -> Unit) {
-      val testName = createTestName("Context: ", name, false)
+      val testName = TestName("Context: ", name, false)
       containerTest(testName, true, test)
    }
 
    @ExperimentalKotest
    fun xcontext(name: String) =
-      ContainerContextConfigBuilder(createTestName("Context: ", name, false), this, true) { DescribeSpecContainerContext(it) }
+      ContainerContextConfigBuilder(TestName("Context: ", name, false), this, true) { DescribeSpecContainerContext(it) }
 
    suspend fun describe(name: String, test: suspend DescribeSpecContainerContext.() -> Unit) {
-      val testName = createTestName("Describe: ", name, false)
+      val testName = TestName("Describe: ", name, false)
       containerTest(testName, false, test)
    }
 
    @ExperimentalKotest
    fun describe(name: String) =
-      ContainerContextConfigBuilder(createTestName("Describe: ", name, false), this, false) { DescribeSpecContainerContext(it) }
+      ContainerContextConfigBuilder(
+         TestName("Describe: ", name, false),
+         this,
+         false
+      ) { DescribeSpecContainerContext(it) }
 
    suspend fun xdescribe(name: String, test: suspend DescribeSpecContainerContext.() -> Unit) {
-      val testName = createTestName("Describe: ", name, false)
+      val testName = TestName("Describe: ", name, false)
       containerTest(testName, true, test)
    }
 
    @ExperimentalKotest
    fun xdescribe(name: String) =
-      ContainerContextConfigBuilder(createTestName("Describe: ", name, false), this, true) { DescribeSpecContainerContext(it) }
+      ContainerContextConfigBuilder(
+         TestName("Describe: ", name, false),
+         this,
+         true
+      ) { DescribeSpecContainerContext(it) }
 
    private suspend fun containerTest(
-      testName: DescriptionName.TestName,
+      testName: TestName,
       xdisabled: Boolean,
       test: suspend DescribeSpecContainerContext.() -> Unit,
    ) {
       registerTestCase(
          createNestedTest(
+            descriptor = testCase.descriptor.append(testName),
             name = testName,
             xdisabled = xdisabled,
             config = testCase.spec.resolvedDefaultConfig(),
             type = TestType.Container,
-            descriptor = null,
             factoryId = testCase.factoryId
          ) { DescribeSpecContainerContext(this).test() }
       )
    }
 
    suspend fun it(name: String): TestWithConfigBuilder {
-      TestDslState.startTest(testContext.testCase.description.appendTest(name))
+      TestDslState.startTest(testContext.testCase.descriptor.append(name))
       return TestWithConfigBuilder(
-         createTestName("It: ", name, false),
+         TestName("It: ", name, false),
          testContext,
          testCase.spec.resolvedDefaultConfig(),
          xdisabled = false,
@@ -102,9 +110,9 @@ class DescribeSpecContainerContext(
    }
 
    suspend fun xit(name: String): TestWithConfigBuilder {
-      TestDslState.startTest(testContext.testCase.description.appendTest(name))
+      TestDslState.startTest(testContext.testCase.descriptor.append(name))
       return TestWithConfigBuilder(
-         createTestName("It: ", name, false),
+         TestName("It: ", name, false),
          testContext,
          testCase.spec.resolvedDefaultConfig(),
          xdisabled = true,
@@ -114,11 +122,11 @@ class DescribeSpecContainerContext(
    suspend fun it(name: String, test: suspend TestContext.() -> Unit) =
       registerTestCase(
          createNestedTest(
-            name = createTestName(name),
+            descriptor = testCase.descriptor.append(name),
+            name = TestName(name),
             xdisabled = false,
             config = testCase.spec.resolvedDefaultConfig(),
             type = TestType.Test,
-            descriptor = null,
             factoryId = testCase.factoryId
          ) { DescribeSpecContainerContext(this).test() }
       )
@@ -126,11 +134,11 @@ class DescribeSpecContainerContext(
    suspend fun xit(name: String, test: suspend TestContext.() -> Unit) =
       registerTestCase(
          createNestedTest(
-            name = createTestName(name),
+            descriptor = testCase.descriptor.append(name),
+            name = TestName(name),
             xdisabled = true,
             config = testCase.spec.resolvedDefaultConfig(),
             type = TestType.Test,
-            descriptor = null,
             factoryId = testCase.factoryId
          ) { DescribeSpecContainerContext(this).test() }
       )

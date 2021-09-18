@@ -32,9 +32,8 @@ fun equalJson(
 
       return MatcherResult(
          error == null,
-         "$error\n\nexpected:\n${expected.raw}\n\nactual:\n${value.raw}\n",
-         "Expected values to not match ${expected.raw}",
-      )
+         { "$error\n\nexpected:\n${expected.raw}\n\nactual:\n${value.raw}\n" },
+         { "Expected values to not match ${expected.raw}" })
    }
 }
 

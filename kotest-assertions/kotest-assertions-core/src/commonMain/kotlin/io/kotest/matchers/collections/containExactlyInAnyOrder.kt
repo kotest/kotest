@@ -110,7 +110,8 @@ fun <T, C : Collection<T>> containExactlyInAnyOrder(expected: C): Matcher<C?> = 
 
    MatcherResult(
       passed,
-      "Collection should contain ${expected.show().value} in any order, but was ${value.show().value}",
-      "Collection should not contain exactly ${expected.show().value} in any order"
-   )
+      { "Collection should contain ${expected.show().value} in any order, but was ${value.show().value}" },
+      {
+         "Collection should not contain exactly ${expected.show().value} in any order"
+      })
 }
