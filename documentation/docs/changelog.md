@@ -15,6 +15,7 @@ _**Kotlin 1.5 is now the minimum supported version**_
 * `Arb.values` has been removed. This was deprecated in 4.3 in favour of `Arb.sample`. Any custom arbs that override this method should be updated. Any custom arbs that use the `arbitrary` builders are not affected. (#2277)
 * The Engine no longer logs config to the console during start **by default**. To enable, set the system property `kotest.framework.dump.config` to true. (#2276)
 * Removed deprecated `shouldReceiveWithin` and `shouldReceiveNoElementsWithin` channel matchers.
+* `equalJson` has an added parameter to support the new `shouldEqualSpecifiedJson` assertion
 * `TestEngineListener` methods are now suspendable. This is only of interest if you have implemented customizations of the Test Engine through plugins. Note: This is not related to public TestListener methods that are used by test cases.
 * The global configuration variable `project` has been removed. This was deprecated in 4.2. Use the replacment global variable `configuration` or provide config via instances of [ProjectConfig](https://kotest.io/docs/framework/project-config.html).
 * The deprecated `RuntimeTagExtension` has been undeprecated but moved to a new package.
@@ -43,6 +44,7 @@ _**Kotlin 1.5 is now the minimum supported version**_
 * Add unsigned types for Arb (#2290)
 * Added arb for ip addresses V4 #2407
 * Added arb for hexidecimal codepoints #2409
+* Added `shouldEqualSpecifiedJson` to match a JSON structure on a subset of (specified) keys. (#2298)
 
 #### Deprecations
 

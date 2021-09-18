@@ -113,6 +113,24 @@ a.shouldEqualJson(b, CompareOrder.LenientAll)
 
 Targets: **JVM**, **JS**
 
+## shouldEqualSpecifiedJson
+Behaves a lot like `shouldEqualJson`, but ignores extra keys present in the actual structure. By comparison, `shouldEqualJson` requires the entire structure to match. Using `shouldEqualSpecifiedJson` will make the comparison use only specified fields, for example:
+
+```kotlin
+val a = """ { "a": true, "date": "2019-11-03" } """
+val b = """ { "a": true } """
+
+// this would pass
+a shouldEqualSpecifiedJson b
+
+// this would fail
+a shouldEqualJson b
+```
+
+`shouldEqualSpecifiedJson` also supports the `CompareMode` and `CompareOrder` parameters.
+
+Targets: **JVM**, **JS**
+
 ## shouldContainJsonKey
 
 `json?.shouldContainJsonKey("$.json.path")` asserts that a JSON string contains the given JSON path.
@@ -131,7 +149,7 @@ Targets: **JVM**
 
 ## shouldMatchJsonResource
 
-`json?.shouldContainJsonKey("$.json.path")` asserts that the JSON is equal to the existing `/file.json` ignoring properties' order and formatting.
+`json?.shouldMatchJsonResource("/file.json")` asserts that the JSON is equal to the existing test reosource `/file.json`, ignoring properties' order and formatting.
 
 Targets: **JVM**
 
