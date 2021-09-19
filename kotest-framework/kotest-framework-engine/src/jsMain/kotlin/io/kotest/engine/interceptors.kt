@@ -15,12 +15,12 @@ import io.kotest.engine.interceptors.TestEngineStartupShutdownInterceptor
 internal actual fun testEngineInterceptors(conf: Configuration): List<EngineInterceptor> {
    return listOfNotNull(
       TestEngineStartupShutdownInterceptor,
-      ProjectTimeoutEngineInterceptor(conf.projectTimeout),
+      ProjectTimeoutEngineInterceptor,
       TestDslStateInterceptor,
       SpecSortEngineInterceptor,
       ProjectExtensionEngineInterceptor(conf.extensions().filterIsInstance<ProjectExtension>()),
       ProjectListenerEngineInterceptor(conf.extensions()),
-      if (conf.failOnEmptyTestSuite) EmptyTestSuiteInterceptor else null,
+      EmptyTestSuiteInterceptor,
       TestEngineListenerStartedFinishedInterceptor,
    )
 }
