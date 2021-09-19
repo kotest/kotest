@@ -4,11 +4,10 @@ import io.kotest.core.listeners.AfterProjectListener
 import io.kotest.core.listeners.BeforeProjectListener
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.engine.EngineResult
-import io.kotest.engine.TestSuite
 import io.kotest.engine.events.AfterProjectListenerException
 import io.kotest.engine.events.BeforeProjectListenerException
+import io.kotest.engine.interceptors.EngineContext
 import io.kotest.engine.interceptors.ProjectListenerEngineInterceptor
-import io.kotest.engine.listener.NoopTestEngineListener
 import io.kotest.matchers.shouldBe
 
 class ProjectListenerEngineInterceptorTest : FunSpec({
@@ -20,10 +19,7 @@ class ProjectListenerEngineInterceptorTest : FunSpec({
             fired = true
          }
       }
-      ProjectListenerEngineInterceptor(listOf(listener)).intercept(
-         TestSuite.empty,
-         NoopTestEngineListener
-      ) { _, _ -> EngineResult(emptyList()) }
+      ProjectListenerEngineInterceptor(listOf(listener)).intercept(EngineContext.empty) { EngineResult(emptyList()) }
 
       fired shouldBe true
    }
@@ -42,9 +38,8 @@ class ProjectListenerEngineInterceptorTest : FunSpec({
          }
       }
       ProjectListenerEngineInterceptor(listOf(listener1, listener2)).intercept(
-         TestSuite.empty,
-         NoopTestEngineListener
-      ) { _, _ -> EngineResult(emptyList()) }
+         EngineContext.empty
+      ) { EngineResult(emptyList()) }
 
       fired1 shouldBe true
       fired2 shouldBe true
@@ -58,9 +53,8 @@ class ProjectListenerEngineInterceptorTest : FunSpec({
          }
       }
       ProjectListenerEngineInterceptor(listOf(listener)).intercept(
-         TestSuite.empty,
-         NoopTestEngineListener
-      ) { _, _ -> EngineResult(emptyList()) }
+         EngineContext.empty
+      ) { EngineResult(emptyList()) }
 
       fired shouldBe true
    }
@@ -79,9 +73,8 @@ class ProjectListenerEngineInterceptorTest : FunSpec({
          }
       }
       ProjectListenerEngineInterceptor(listOf(listener1, listener2)).intercept(
-         TestSuite.empty,
-         NoopTestEngineListener
-      ) { _, _ -> EngineResult(emptyList()) }
+         EngineContext.empty
+      ) { EngineResult(emptyList()) }
 
       fired1 shouldBe true
       fired2 shouldBe true
@@ -99,9 +92,8 @@ class ProjectListenerEngineInterceptorTest : FunSpec({
          }
       }
       val results = ProjectListenerEngineInterceptor(listOf(listener1, listener2)).intercept(
-         TestSuite.empty,
-         NoopTestEngineListener
-      ) { _, _ -> EngineResult(emptyList()) }
+         EngineContext.empty
+      ) { EngineResult(emptyList()) }
       results.errors.filterIsInstance<BeforeProjectListenerException>().size shouldBe 2
    }
 
@@ -117,9 +109,8 @@ class ProjectListenerEngineInterceptorTest : FunSpec({
          }
       }
       val results = ProjectListenerEngineInterceptor(listOf(listener1, listener2)).intercept(
-         TestSuite.empty,
-         NoopTestEngineListener
-      ) { _, _ -> EngineResult(emptyList()) }
+         EngineContext.empty
+      ) { EngineResult(emptyList()) }
       results.errors.filterIsInstance<AfterProjectListenerException>().size shouldBe 2
    }
 })

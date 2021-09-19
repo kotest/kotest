@@ -1,42 +1,33 @@
 package io.kotest.engine.interceptors
 
-import io.kotest.core.test.TestCase
-import io.kotest.core.test.TestResult
+import io.kotest.common.KotestInternal
 import io.kotest.engine.EngineResult
-import io.kotest.engine.TestSuite
-import io.kotest.engine.listener.CompositeTestEngineListener
+import io.kotest.engine.listener.CollectingTestEngineListener
 import io.kotest.engine.listener.TestEngineListener
-import kotlinx.coroutines.sync.Mutex
-import kotlinx.coroutines.sync.withLock
 
 /**
  * Wraps the [TestEngineListener] to listen for test events and returns an error
  * if there were no tests executed.
  */
+@OptIn(KotestInternal::class)
 internal object EmptyTestSuiteInterceptor : EngineInterceptor {
 
    override suspend fun intercept(
-      suite: TestSuite,
-      listener: TestEngineListener,
-      execute: suspend (TestSuite, TestEngineListener) -> EngineResult
+      context: EngineContext,
+      execute: suspend (EngineContext) -> EngineResult
    ): EngineResult {
 
-      // listens to engine events, and if we have a test finished, we know we didn't have an empty test suite
-      var emptyTestSuite = true
-      val mutex = Mutex()
-      val emptyTestSuiteListener = object : TestEngineListener {
-         override suspend fun testFinished(testCase: TestCase, result: TestResult) {
-            mutex.withLock {
-               emptyTestSuite = false
+      return when (context.configuration.failOnEmptyTestSuite) {
+         true -> {
+            val collector = CollectingTestEngineListener()
+            val result = execute(context.mergeListener(collector))
+
+            when {
+               collector.tests.isEmpty() -> EngineResult(result.errors + EmptyTestSuiteException())
+               else -> result
             }
          }
-      }
-
-      val result = execute(suite, CompositeTestEngineListener(listOf(listener, emptyTestSuiteListener)))
-
-      return when {
-         emptyTestSuite -> EngineResult(result.errors + EmptyTestSuiteException())
-         else -> result
+         false -> execute(context)
       }
    }
 }

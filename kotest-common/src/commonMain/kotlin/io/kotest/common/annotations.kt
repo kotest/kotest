@@ -5,10 +5,22 @@ package io.kotest.common
 @RequiresOptIn(level = RequiresOptIn.Level.WARNING)
 annotation class ExperimentalKotest
 
+/**
+ * Any feature annotated with [DelicateKotest] is an advanced feature.
+ */
 @MustBeDocumented
 @Retention(value = AnnotationRetention.BINARY)
 @RequiresOptIn(level = RequiresOptIn.Level.WARNING)
 annotation class DelicateKotest
+
+/**
+ * An internal Kotest feature that is public for operational reasons but should not be used by end users.
+ */
+@MustBeDocumented
+@Retention(value = AnnotationRetention.BINARY)
+@RequiresOptIn(level = RequiresOptIn.Level.WARNING)
+annotation class KotestInternal
+
 
 /**
  * Marks a Kotest feature as only available on the JVM platform.

@@ -2,7 +2,7 @@ package com.sksamuel.kotest.engine.interceptors
 
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.engine.EngineResult
-import io.kotest.engine.TestSuite
+import io.kotest.engine.interceptors.EngineContext
 import io.kotest.engine.interceptors.TestEngineStartupShutdownInterceptor
 import io.kotest.engine.listener.TestEngineListener
 import io.kotest.matchers.booleans.shouldBeTrue
@@ -17,9 +17,8 @@ class TestEngineListenerInitializeFinalizeInterceptorTest : FunSpec({
          }
       }
       TestEngineStartupShutdownInterceptor.intercept(
-         TestSuite.empty,
-         listener
-      ) { _, _ -> EngineResult.empty }
+         EngineContext.empty.mergeListener(listener)
+      ) { EngineResult.empty }
       fired.shouldBeTrue()
    }
 
@@ -31,9 +30,8 @@ class TestEngineListenerInitializeFinalizeInterceptorTest : FunSpec({
          }
       }
       TestEngineStartupShutdownInterceptor.intercept(
-         TestSuite.empty,
-         listener
-      ) { _, _ -> EngineResult.empty }
+         EngineContext.empty.mergeListener(listener)
+      ) { EngineResult.empty }
       fired.shouldBeTrue()
    }
 
