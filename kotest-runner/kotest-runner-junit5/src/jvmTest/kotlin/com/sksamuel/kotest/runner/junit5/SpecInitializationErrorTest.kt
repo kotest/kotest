@@ -1,5 +1,6 @@
 package com.sksamuel.kotest.runner.junit5
 
+import io.kotest.core.config.configuration
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.engine.concurrency.NoopCoroutineDispatcherFactory
 import io.kotest.engine.spec.ReflectiveSpecRef
@@ -37,7 +38,7 @@ class SpecInitializationErrorTest : FunSpec({
          override fun dynamicTestRegistered(testDescriptor: TestDescriptor?) {}
       }
 
-      val listener = JUnitTestEngineListener(engineListener, root)
+      val listener = JUnitTestEngineListener(engineListener, root, configuration)
       val executor = SpecExecutor(listener, NoopCoroutineDispatcherFactory)
       executor.execute(ReflectiveSpecRef(SpecWithFieldError::class))
 
@@ -69,7 +70,7 @@ class SpecInitializationErrorTest : FunSpec({
          override fun dynamicTestRegistered(testDescriptor: TestDescriptor?) {}
       }
 
-      val listener = JUnitTestEngineListener(engineListener, root)
+      val listener = JUnitTestEngineListener(engineListener, root, configuration)
       val executor = SpecExecutor(listener, NoopCoroutineDispatcherFactory)
       executor.execute(ReflectiveSpecRef(SpecWithInitError::class))
 

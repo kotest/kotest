@@ -21,7 +21,7 @@ class DefaultDisplayNameFormatterTest : FunSpec() {
    init {
 
       test("@DisplayName should be used for spec name") {
-         DefaultDisplayNameFormatter(configuration).format(SpecWithDisplayName::class) shouldBe "ZZZZZ"
+         DefaultDisplayNameFormatter(configuration, configuration.displayFullTestPath).format(SpecWithDisplayName::class) shouldBe "ZZZZZ"
       }
 
       test("tags should be appended from spec when configuration is set") {
@@ -35,7 +35,7 @@ class DefaultDisplayNameFormatterTest : FunSpec() {
             sourceRef(),
             TestType.Test,
          )
-         DefaultDisplayNameFormatter(configuration).format(tc) shouldBe "test[tags = Foo]"
+         DefaultDisplayNameFormatter(configuration, configuration.displayFullTestPath).format(tc) shouldBe "test[tags = Foo]"
          configuration.testNameAppendTags = false
       }
 
@@ -51,7 +51,7 @@ class DefaultDisplayNameFormatterTest : FunSpec() {
             type = TestType.Test,
             config = TestCaseConfig(tags = setOf(Dummy, NoUse))
          )
-         DefaultDisplayNameFormatter(configuration).format(tc) shouldBe "test[tags = Dummy, NoUse]"
+         DefaultDisplayNameFormatter(configuration, configuration.displayFullTestPath).format(tc) shouldBe "test[tags = Dummy, NoUse]"
          configuration.testNameAppendTags = false
       }
 
@@ -67,7 +67,7 @@ class DefaultDisplayNameFormatterTest : FunSpec() {
             type = TestType.Test,
             config = TestCaseConfig(tags = setOf(Dummy, NoUse))
          )
-         DefaultDisplayNameFormatter(configuration).format(tc) shouldBe "test[tags = Dummy, NoUse, Foo]"
+         DefaultDisplayNameFormatter(configuration, configuration.displayFullTestPath).format(tc) shouldBe "test[tags = Dummy, NoUse, Foo]"
          configuration.testNameAppendTags = false
       }
    }

@@ -60,7 +60,9 @@ class KotestJunitPlatformTestEngine : TestEngine {
             JUnitTestEngineListener(
                SynchronizedEngineExecutionListener(
                   request.engineExecutionListener
-               ), root
+               ),
+               root,
+               configuration,
             )
          )
       )

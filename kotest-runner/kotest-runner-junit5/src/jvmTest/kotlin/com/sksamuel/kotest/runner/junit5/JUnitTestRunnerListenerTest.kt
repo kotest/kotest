@@ -1,5 +1,6 @@
 package com.sksamuel.kotest.runner.junit5
 
+import io.kotest.core.config.configuration
 import io.kotest.core.descriptors.append
 import io.kotest.core.sourceRef
 import io.kotest.core.spec.style.DescribeSpec
@@ -64,7 +65,7 @@ class JUnitTestRunnerListenerTest : DescribeSpec({
             parent = test1,
          )
 
-         val listener = JUnitTestEngineListener(engineListener, root)
+         val listener = JUnitTestEngineListener(engineListener, root, configuration)
          listener.engineStarted(emptyList())
          listener.specEnter(JUnitTestRunnerListenerTest::class)
          listener.specStarted(JUnitTestRunnerListenerTest::class)

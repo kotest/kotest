@@ -1,6 +1,6 @@
 package io.kotest.runner.junit.platform
 
-import io.kotest.core.config.configuration
+import io.kotest.core.config.Configuration
 import io.kotest.core.descriptors.Descriptor
 import io.kotest.core.descriptors.DescriptorId
 import io.kotest.core.descriptors.spec
@@ -72,6 +72,7 @@ import kotlin.reflect.KClass
 class JUnitTestEngineListener(
    private val listener: EngineExecutionListener,
    val root: EngineDescriptor,
+   private val configuration: Configuration,
 ) : TestEngineListener {
 
    companion object {

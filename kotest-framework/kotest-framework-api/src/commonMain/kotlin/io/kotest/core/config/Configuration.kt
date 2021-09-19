@@ -317,6 +317,8 @@ class Configuration {
     */
    var duplicateTestNameMode: DuplicateTestNameMode = Defaults.duplicateTestNameMode
 
+   var displayFullTestPath: Boolean = Defaults.displayFullTestPath
+
    /**
     * Returns all globally registered [Listener]s.
     */

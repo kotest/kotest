@@ -23,7 +23,9 @@ fun getDisplayNameFormatter(configuration: Configuration): DisplayNameFormatter 
  * A default implementation of [DisplayNameFormatter].
  * Used when there are no registered [io.kotest.core.extensions.DisplayNameFormatterExtension]s.
  */
-class DefaultDisplayNameFormatter(private val configuration: Configuration) : DisplayNameFormatter {
+class DefaultDisplayNameFormatter(
+   private val configuration: Configuration,
+) : DisplayNameFormatter {
 
    override fun format(testCase: TestCase): String {
 
@@ -48,10 +50,15 @@ class DefaultDisplayNameFormatter(private val configuration: Configuration) : Di
          }
       }
 
-      return if (configuration.testNameAppendTags) {
+      val name = if (configuration.testNameAppendTags) {
          return appendTagsInDisplayName(testCase, displayName)
       } else {
          displayName
+      }
+
+      return when (val parent = testCase.parent) {
+         null -> name
+         else -> if (configuration.displayFullTestPath) format(parent) + " " + name else name
       }
    }
 

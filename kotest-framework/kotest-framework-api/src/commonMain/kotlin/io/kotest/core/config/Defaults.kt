@@ -15,6 +15,7 @@ object Defaults {
    val testCaseOrder: TestCaseOrder = TestCaseOrder.Sequential
    val isolationMode: IsolationMode = IsolationMode.SingleInstance
    val duplicateTestNameMode: DuplicateTestNameMode = DuplicateTestNameMode.Warn
+   val displayFullTestPath: Boolean = false
 
    const val coroutineDebugProbes: Boolean = false
    const val displaySpecIfNoActiveTests: Boolean = true
