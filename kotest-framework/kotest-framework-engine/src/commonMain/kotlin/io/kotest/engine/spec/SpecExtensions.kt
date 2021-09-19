@@ -3,6 +3,7 @@ package io.kotest.engine.spec
 import io.kotest.core.config.Configuration
 import io.kotest.core.extensions.Extension
 import io.kotest.core.extensions.SpecInitializeExtension
+import io.kotest.core.extensions.SpecInstantiationExtension
 import io.kotest.core.listeners.AfterSpecListener
 import io.kotest.core.listeners.BeforeSpecListener
 import io.kotest.core.listeners.FinishSpecListener
@@ -33,7 +34,7 @@ internal class SpecExtensions(private val configuration: Configuration) {
          configuration.extensions() // globals
    }
 
-   fun specInitialize(spec: Spec): Result<Unit> = kotlin.runCatching {
+   fun specInitialize(spec: Spec): Result<Unit> = runCatching {
       extensions(spec).filterIsInstance<SpecInitializeExtension>().forEach { it.initialize(spec) }
    }
 
@@ -59,16 +60,16 @@ internal class SpecExtensions(private val configuration: Configuration) {
       }.fold({ Result.success(it) }, { Result.failure(AfterSpecListenerException(it)) })
    }
 
-   fun specInstantiated(spec: Spec) = kotlin.runCatching {
+   suspend fun specInstantiated(spec: Spec) = runCatching {
       log { "SpecExtensions: specInstantiated spec:$spec" }
-      val listeners = configuration.extensions().filterIsInstance<SpecInstantiationListener>()
-      listeners.forEach { it.specInstantiated(spec) }
+      configuration.extensions().filterIsInstance<SpecInstantiationListener>().forEach { it.specInstantiated(spec) }
+      configuration.extensions().filterIsInstance<SpecInstantiationExtension>().forEach { it.onSpecInstantiation(spec) }
    }
 
-   fun specInstantiationError(kclass: KClass<out Spec>, t: Throwable) = kotlin.runCatching {
+   suspend fun specInstantiationError(kclass: KClass<out Spec>, t: Throwable) = kotlin.runCatching {
       log { "SpecExtensions: specInstantiationError $kclass errror:$t" }
-      val listeners = configuration.extensions().filterIsInstance<SpecInstantiationListener>()
-      listeners.forEach { it.specInstantiationError(kclass, t) }
+      configuration.extensions().filterIsInstance<SpecInstantiationListener>().forEach { it.specInstantiationError(kclass, t) }
+      configuration.extensions().filterIsInstance<SpecInstantiationExtension>().forEach { it.onSpecInstantiationError(kclass, t) }
    }
 
    suspend fun inactiveSpec(spec: Spec, results: Map<TestCase, TestResult>) {

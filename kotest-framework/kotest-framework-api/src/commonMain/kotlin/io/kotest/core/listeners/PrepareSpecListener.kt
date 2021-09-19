@@ -3,13 +3,10 @@ package io.kotest.core.listeners
 import io.kotest.core.spec.Spec
 import kotlin.reflect.KClass
 
-@Deprecated("Renamed to StartSpecListener. This typealias was deprecated in 5.0 and will be removed in 6.0")
-typealias PrepareSpecListener = StartSpecListener
-
 /**
  * Invoked once per spec class if the spec has active tests.
  */
-interface StartSpecListener : Listener {
+interface PrepareSpecListener : Listener {
 
    /**
     * Called once per [Spec], when the engine is preparing to
@@ -21,11 +18,5 @@ interface StartSpecListener : Listener {
     *
     * @param kclass the [Spec] class
     */
-   suspend fun specStarted(kclass: KClass<out Spec>): Unit = Unit
-
-   @Deprecated(
-      "Use specStarted. This was deprecated in 5.0 and will be removed in 6.0",
-      ReplaceWith("specStarted(kclass)")
-   )
    suspend fun prepareSpec(kclass: KClass<out Spec>): Unit = Unit
 }

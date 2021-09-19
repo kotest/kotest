@@ -12,7 +12,7 @@ import io.kotest.core.spec.Spec
  * This extension is invoked once per spec instance. If a spec is instantiated multiple times,
  * then this extension will also be invoked multiple times.
  *
- * Note: This extension differs from [io.kotest.core.listeners.SpecInstantiationListener], in that
+ * Note: This extension differs from [io.kotest.core.extensions.SpecInstantiationExtension], in that
  * this extension is invoked on all platforms when a spec factory returns a spec, whereas the
  * instantiation listener is only invoked when the spec is created reflectively on the JVM.
  */

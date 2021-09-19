@@ -7,13 +7,13 @@ import io.kotest.common.SoftDeprecated
 import io.kotest.core.extensions.Extension
 import io.kotest.core.filter.Filter
 import io.kotest.core.listeners.Listener
+import io.kotest.core.names.DuplicateTestNameMode
+import io.kotest.core.names.TestNameCase
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.SpecExecutionOrder
 import io.kotest.core.test.AssertionMode
-import io.kotest.core.names.DuplicateTestNameMode
 import io.kotest.core.test.TestCaseConfig
 import io.kotest.core.test.TestCaseOrder
-import io.kotest.core.names.TestNameCase
 import kotlinx.coroutines.CoroutineDispatcher
 
 /**
@@ -349,12 +349,22 @@ class Configuration {
    fun registerExtensions(extensions: List<Extension>) = extensions.forEach { registerExtension(it) }
    fun deregisterExtensions(extensions: List<Extension>) = extensions.forEach { deregisterExtension(it) }
 
-   fun registerExtension(extension: Extension) {
+   fun register(extension: Extension) {
       extensions.add(extension)
    }
 
-   fun deregisterExtension(extension: Extension) {
+   @SoftDeprecated("Use register")
+   fun registerExtension(extension: Extension) {
+      register(extension)
+   }
+
+   fun deregister(extension: Extension) {
       extensions.remove(extension)
+   }
+
+   @SoftDeprecated("Use deregister")
+   fun deregisterExtension(extension: Extension) {
+      deregister(extension)
    }
 
    @SoftDeprecated("Use registerExtension")
