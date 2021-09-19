@@ -1,25 +1,29 @@
 package io.kotest.engine.interceptors
 
-import io.kotest.core.extensions.ProjectInterceptExtension
+import io.kotest.common.KotestInternal
+import io.kotest.core.extensions.ProjectExtension
 import io.kotest.engine.EngineResult
-import io.kotest.engine.TestSuite
-import io.kotest.engine.listener.TestEngineListener
 
-internal class ProjectExtensionEngineInterceptor(private val extensions: List<ProjectInterceptExtension>) : EngineInterceptor {
+@OptIn(KotestInternal::class)
+internal class ProjectExtensionEngineInterceptor(private val extensions: List<ProjectExtension>) : EngineInterceptor {
 
    override suspend fun intercept(
-      suite: TestSuite,
-      listener: TestEngineListener,
-      execute: suspend (TestSuite, TestEngineListener) -> EngineResult
+      context: EngineContext,
+      execute: suspend (EngineContext) -> EngineResult
    ): EngineResult {
 
-      val initial: suspend () -> EngineResult = { execute(suite, listener) }
-      val chain = extensions.foldRight(initial) { extension, acc: suspend () -> EngineResult ->
+      var result: EngineResult = EngineResult.empty
+      val initial: suspend () -> Unit = { result = execute(context) }
+      val chain = extensions.foldRight(initial) { extension, acc: suspend () -> Unit ->
          {
-            val errors = extension.interceptProject { acc().errors }
-            EngineResult(errors)
+            extension.interceptProject { acc() }
          }
       }
-      return chain.invoke()
+      return try {
+         chain.invoke()
+         result
+      } catch (t: Throwable) {
+         result.addError(t)
+      }
    }
 }

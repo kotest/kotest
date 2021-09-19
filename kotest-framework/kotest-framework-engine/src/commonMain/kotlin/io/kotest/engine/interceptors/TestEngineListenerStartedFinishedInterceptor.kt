@@ -2,7 +2,6 @@ package io.kotest.engine.interceptors
 
 import io.kotest.engine.EngineResult
 import io.kotest.engine.TestSuite
-import io.kotest.engine.listener.TestEngineListener
 import io.kotest.mpp.log
 
 /**
@@ -12,20 +11,19 @@ import io.kotest.mpp.log
 internal object TestEngineListenerStartedFinishedInterceptor : EngineInterceptor {
 
    override suspend fun intercept(
-      suite: TestSuite,
-      listener: TestEngineListener,
-      execute: suspend (TestSuite, TestEngineListener) -> EngineResult
+      context: EngineContext,
+      execute: suspend (EngineContext) -> EngineResult
    ): EngineResult {
 
-      listener.engineStarted(suite.specs.map { it.kclass })
-      val result = execute(suite, listener)
+      context.listener.engineStarted(context.suite.specs.map { it.kclass })
+      val result = execute(context)
 
       result.errors.forEach {
          log(it) { "TestEngineListenerStartedFinishedInterceptor: Error during test engine run" }
          it.printStackTrace()
       }
 
-      listener.engineFinished(result.errors)
+      context.listener.engineFinished(result.errors)
       return result
    }
 }

@@ -1,7 +1,6 @@
 package io.kotest.engine.interceptors
 
 import io.kotest.engine.EngineResult
-import io.kotest.engine.TestSuite
 import io.kotest.engine.listener.TestEngineListener
 
 /**
@@ -10,13 +9,12 @@ import io.kotest.engine.listener.TestEngineListener
 internal object TestEngineStartupShutdownInterceptor : EngineInterceptor {
 
    override suspend fun intercept(
-      suite: TestSuite,
-      listener: TestEngineListener,
-      execute: suspend (TestSuite, TestEngineListener) -> EngineResult
+      context: EngineContext,
+      execute: suspend (EngineContext) -> EngineResult
    ): EngineResult {
-      listener.engineStartup()
-      val result = execute(suite, listener)
-      listener.engineShutdown()
+      context.listener.engineStartup()
+      val result = execute(context)
+      context.listener.engineShutdown()
       return result
    }
 }

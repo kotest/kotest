@@ -1,25 +1,23 @@
 package io.kotest.engine.interceptors
 
-import io.kotest.core.config.configuration
+import io.kotest.common.KotestInternal
 import io.kotest.engine.EngineResult
-import io.kotest.engine.TestSuite
-import io.kotest.engine.listener.TestEngineListener
 import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.withTimeout
 
-internal class ProjectTimeoutEngineInterceptor(private val timeout: Long) : EngineInterceptor {
+@OptIn(KotestInternal::class)
+internal object ProjectTimeoutEngineInterceptor : EngineInterceptor {
 
    override suspend fun intercept(
-      suite: TestSuite,
-      listener: TestEngineListener,
-      execute: suspend (TestSuite, TestEngineListener) -> EngineResult
+      context: EngineContext,
+      execute: suspend (EngineContext) -> EngineResult
    ): EngineResult {
       return try {
-         withTimeout(timeout) {
-            execute(suite, listener)
+         withTimeout(context.configuration.projectTimeout) {
+            execute(context)
          }
       } catch (e: TimeoutCancellationException) {
-         val ee = ProjectTimeoutException(configuration.projectTimeout)
+         val ee = ProjectTimeoutException(context.configuration.projectTimeout)
          EngineResult(listOf(ee))
       }
    }
