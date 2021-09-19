@@ -1,11 +1,7 @@
 package io.kotest.core.extensions
 
-import io.kotest.common.SoftDeprecated
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
-
-@SoftDeprecated("Renamed to TestCaseInterceptExtension")
-typealias TestCaseExtension = TestCaseInterceptExtension
 
 /**
  * Extension point that intercepts calls to a [TestCase].
@@ -13,7 +9,7 @@ typealias TestCaseExtension = TestCaseInterceptExtension
  * This extension can be used to override the results of a test, or whether a test is invoked.
  *
  */
-interface TestCaseInterceptExtension : Extension {
+interface TestCaseExtension : Extension {
 
    /**
     * Intercepts a [TestCase].

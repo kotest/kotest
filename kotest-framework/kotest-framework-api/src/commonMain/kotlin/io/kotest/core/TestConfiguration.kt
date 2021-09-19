@@ -2,6 +2,7 @@
 
 package io.kotest.core
 
+import io.kotest.common.SoftDeprecated
 import io.kotest.core.extensions.Extension
 import io.kotest.core.extensions.TestCaseExtension
 import io.kotest.core.listeners.TestListener
@@ -56,7 +57,7 @@ abstract class TestConfiguration {
    /**
     * Register a single [TestListener] of type T return that listener.
     */
-   @Deprecated("Use register. This method will be removed in 6.0", ReplaceWith("register(listener)"))
+   @SoftDeprecated("Use register")
    fun <T : TestListener> listener(listener: T): T {
       return register(listener)
    }
@@ -64,7 +65,7 @@ abstract class TestConfiguration {
    /**
     * Register multiple [TestListener]s.
     */
-   @Deprecated("Use register. This method will be removed in 6.0", ReplaceWith("register(listeners)"))
+   @SoftDeprecated("Use register")
    fun listeners(listeners: List<TestListener>) {
       register(listeners)
    }
@@ -72,7 +73,7 @@ abstract class TestConfiguration {
    /**
     * Register multiple [TestListener]s.
     */
-   @Deprecated("Use register. This method will be removed in 6.0", ReplaceWith("register(listeners)"))
+   @SoftDeprecated("Use register")
    fun listeners(vararg listeners: TestListener) = register(listeners.toList())
 
    /**

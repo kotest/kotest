@@ -15,7 +15,7 @@ import io.kotest.property.Shrinker
 fun Arb.Companion.multiple(k: Int, max: Int): Arb<Int> =
    arbitrary(MultiplesShrinker(k)) { it.random.nextInt(0, max / k) * k }
 
-@Deprecated("use multiple", ReplaceWith("multiple(k, max)"))
+@Deprecated("Use multiple. Deprecated since 5.0 and will be removed in 6.0", ReplaceWith("multiple(k, max)"))
 fun Arb.Companion.multiples(k: Int, max: Int): Arb<Int> = multiple(k, max)
 
 class MultiplesShrinker(private val multiple: Int) : Shrinker<Int> {
@@ -30,5 +30,5 @@ fun Arb.Companion.factor(k: Int): Arb<Int> = arbitrary {
    generateSequence { it.random.nextInt(k) }.filter { it > 0 }.filter { k % it == 0 }.first()
 }
 
-@Deprecated("use factor", ReplaceWith("factor(k)"))
+@Deprecated("Use factor. Deprecated since 5.0 and will be removed in 6.0", ReplaceWith("factor(k)"))
 fun Arb.Companion.factors(k: Int): Arb<Int> = factor(k)
