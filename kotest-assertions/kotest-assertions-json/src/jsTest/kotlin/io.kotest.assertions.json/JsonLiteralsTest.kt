@@ -1,9 +1,5 @@
 package io.kotest.assertions.json
 
-import io.kotest.assertions.json.CompareJsonOptions
-import io.kotest.assertions.json.CompareJsonOptions.TypeCoercion
-import io.kotest.assertions.json.compareJsonOptions
-import io.kotest.assertions.json.shouldEqualJson
 import io.kotest.assertions.shouldFail
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.FunSpec
@@ -92,7 +88,7 @@ class JsonLiteralsTest : FunSpec(
 
       context("CompareMode.Exact requires same format for numbers") {
          infix fun String.shouldExactlyEqualJson(expected: String) =
-            this.shouldEqualJson(expected, compareJsonOptions { numberFormat = CompareJsonOptions.NumberFormat.Strict })
+            this.shouldEqualJson(expected, compareJsonOptions { numberFormat = NumberFormat.Strict })
 
          test("comparing float and exponent") {
             shouldFail {

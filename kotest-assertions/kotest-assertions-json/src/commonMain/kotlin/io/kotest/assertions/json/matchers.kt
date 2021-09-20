@@ -1,6 +1,5 @@
 package io.kotest.assertions.json
 
-import io.kotest.assertions.json.CompareJsonOptions.FieldComparison
 import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
 

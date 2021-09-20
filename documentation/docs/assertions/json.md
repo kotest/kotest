@@ -39,19 +39,18 @@ _are_ considered equal.
 ### compareJsonOptions
 `shouldEqualJson` supports an additional parameter of type `CompareJsonOptions` which supports the following flags to toggle behaviour of the JSON comparison:
 
-#### Usage: 
+#### Usage:
 
 Options can be specified inline, like:
 ```kotlin
-a.shouldEqualJson(b, compareJsonOptions { arrayOrder = CompareJsonOptions.ArrayOrder.Strict })
+a.shouldEqualJson(b, compareJsonOptions { arrayOrder = ArrayOrder.Strict })
 ```
 
 Another option is to define a compare function which suits your desires, like:
 ```kotlin
-val myOptions = compareJsonOptions { 
-   // For added convenience, you can add `import io.kotest.assertions.json.CompareJsonOptions.TypeCoercion`
-   typeCoercion = CompareJsonOptions.TypeCoercion.Enabled 
-   arrayOrder = CompareJsonOptions.ArrayOrder.Lenient
+val myOptions = compareJsonOptions {
+   typeCoercion = TypeCoercion.Enabled
+   arrayOrder = ArrayOrder.Lenient
 }
 
 infix fun String.lenientShouldEqualJson(other: String) = this.shouldEqualJson(other, myOptions)
@@ -60,10 +59,10 @@ infix fun String.lenientShouldEqualJson(other: String) = this.shouldEqualJson(ot
 ```
 
 #### Parameters
-| Name  | Purpose  | Possible values | Default value | 
+| Name  | Purpose  | Possible values | Default value |
 |---|---|---|---|
-| `PropertyOrder`  | Determines if the order of properties in JSON objects are considered when comparing | `PropertyOrder.Strict`, `PropertyOrder.Lenient`  |  `PropertyOrder.Lenient`, i.e. order of properties *DON'T* matter  | 
-| `ArrayOrder`  | Determines if the order of elements in JSON arrays are considered when comparing | `ArrayOrder.Strict`, `ArrayOrder.Lenient`  | `ArrayOrder.Strict`, i.e. order of elements *DO* matter | 
+| `PropertyOrder`  | Determines if the order of properties in JSON objects are considered when comparing | `PropertyOrder.Strict`, `PropertyOrder.Lenient`  |  `PropertyOrder.Lenient`, i.e. order of properties *DON'T* matter  |
+| `ArrayOrder`  | Determines if the order of elements in JSON arrays are considered when comparing | `ArrayOrder.Strict`, `ArrayOrder.Lenient`  | `ArrayOrder.Strict`, i.e. order of elements *DO* matter |
 | `FieldComparison`  | Determines if comparison will fail if JSON objects `actual` contain extra properties, when compared to `expected`  | `FieldComparison.Strict`, `FieldComparison.Lenient` | `FieldComparison.Strict`, i.e. extra properties will cause inequality |
 | `NumberFormat`  | Determines if comparison of numbers are strict with regards to number format. For instance, if 100.0 and 100 are considered equal.  | `NumberFormat.Strict`, `NumberFormat.Lenient`  | `NumberFormat.Lenient`, i.e. number formats *DON'T* matter  |
 | `TypeCoercion` | Determines if types will try to be coerced, for instance when a string contains a number or boolean value  | `TypeCoercion.Enabled`, `TypeCoercion.Disabled`  | `TypeCoercion.Disabled`, i.e. types will *NOT* be coerced  |
@@ -71,7 +70,7 @@ infix fun String.lenientShouldEqualJson(other: String) = this.shouldEqualJson(ot
 Targets: **JVM**, **JS**
 
 ### shouldEqualSpecifiedJson
-Alias for `shouldEqualJson`, with default options except `FieldComparison` which is set to `FieldComparison.Lenient` instead. 
+Alias for `shouldEqualJson`, with default options except `FieldComparison` which is set to `FieldComparison.Lenient` instead.
 
 ```kotlin
 val a = """ { "a": true, "date": "2019-11-03" } """

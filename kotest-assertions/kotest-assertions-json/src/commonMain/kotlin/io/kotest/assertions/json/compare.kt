@@ -2,12 +2,7 @@
 
 package io.kotest.assertions.json
 
-import io.kotest.assertions.json.CompareJsonOptions.ArrayOrder
-import io.kotest.assertions.json.CompareJsonOptions.NumberFormat
-import io.kotest.assertions.json.CompareJsonOptions.PropertyOrder
-import io.kotest.assertions.json.CompareJsonOptions.TypeCoercion
-
-@Deprecated("Json comparison options is now specified with `CompareJsonOptions`")
+@Deprecated("Json comparison options is now specified with `CompareJsonOptions`", ReplaceWith("TypeCoercion"))
 enum class CompareMode {
    /**
     * Types must be identical and compare by value.
@@ -18,7 +13,7 @@ enum class CompareMode {
     */
    @Deprecated(
       "Json comparison options is now specified with `CompareJsonOptions`",
-      ReplaceWith("CompareJsonOptions.TypeCoercion.Disabled")
+      ReplaceWith("TypeCoercion.Disabled")
    )
    Strict,
 
@@ -30,12 +25,12 @@ enum class CompareMode {
     */
    @Deprecated(
       "Json comparison options is now specified with `CompareJsonOptions`",
-      ReplaceWith("CompareJsonOptions.TypeCoercion.Enabled")
+      ReplaceWith("TypeCoercion.Enabled")
    )
    Lenient,
 }
 
-@Deprecated("Json comparison options is now specified with `CompareJsonOptions`")
+@Deprecated("Json comparison options is now specified with `CompareJsonOptions`", ReplaceWith("PropertyOrder"))
 enum class CompareOrder {
    /**
     * All object properties must be in same order as expected.
@@ -44,13 +39,13 @@ enum class CompareOrder {
     */
    @Deprecated(
       "Json comparison options is now specified with `CompareJsonOptions`",
-      ReplaceWith("CompareJsonOptions.PropertyOrder.Strict")
+      ReplaceWith("PropertyOrder.Strict")
    )
    Strict,
 
    @Deprecated(
       "Json comparison options is now specified with `CompareJsonOptions`",
-      ReplaceWith("CompareJsonOptions.PropertyOrder.Lenient")
+      ReplaceWith("PropertyOrder.Lenient")
    )
    Lenient,
 }
@@ -99,76 +94,75 @@ class CompareJsonOptions(
     *  Controls whether types should be coerced when possible. For instance, when strings contain bool or numeric values.
     */
    var typeCoercion: TypeCoercion = TypeCoercion.Disabled
-) {
+)
 
-   enum class PropertyOrder {
-      /**
-       * Default. Property order in objects does not matter.
-       *
-       * Example: `"""{ "a": 0, "b": 2 }""".shouldEqualJson("""{ "b": 2, "a": 1 }""", compareJsonOptions { propertyOrder = Lenient })` will pass
-       */
-      Lenient,
+enum class PropertyOrder {
+   /**
+    * Default. Property order in objects does not matter.
+    *
+    * Example: `"""{ "a": 0, "b": 2 }""".shouldEqualJson("""{ "b": 2, "a": 1 }""", compareJsonOptions { propertyOrder = Lenient })` will pass
+    */
+   Lenient,
 
-      /**
-       * Properties must be in same order. E.g. `{ "a": 0, "b": 2 }` is not considered equal to `{ "b": 2, "a": 1 }`
-       */
-      Strict
-   }
+   /**
+    * Properties must be in same order. E.g. `{ "a": 0, "b": 2 }` is not considered equal to `{ "b": 2, "a": 1 }`
+    */
+   Strict
+}
 
-   enum class ArrayOrder {
-      /**
-       * Default. Arrays must contain the same elements in the same order.
-       */
-      Strict,
+enum class ArrayOrder {
+   /**
+    * Default. Arrays must contain the same elements in the same order.
+    */
+   Strict,
 
-      /**
-       * Arrays are allowed to be shuffled, but must still contain same items.
-       */
-      Lenient,
-   }
+   /**
+    * Arrays are allowed to be shuffled, but must still contain same items.
+    */
+   Lenient,
+}
 
-   enum class FieldComparison {
-      /**
-       * Default. Objects in [expected] and [actual] must contain the same fields.
-       */
-      Strict,
+enum class FieldComparison {
+   /**
+    * Default. Objects in [expected] and [actual] must contain the same fields.
+    */
+   Strict,
 
-      /**
-       * Objects in the actual document may contain extraneous fields without causing comparison to fail.
-       */
-      Lenient,
-   }
+   /**
+    * Objects in the actual document may contain extraneous fields without causing comparison to fail.
+    */
+   Lenient,
+}
 
-   enum class NumberFormat {
-      /**
-       * Default. Numbers will be interpreted before being compared. Meaning we can compare 0E3 to 1000 without fail
-       */
-      Lenient,
+enum class NumberFormat {
+   /**
+    * Default. Numbers will be interpreted before being compared. Meaning we can compare 0E3 to 1000 without fail
+    */
+   Lenient,
 
-      /**
-       * Numbers must also be formatted the same way to be considered equal.
-       */
-      Strict
-   }
+   /**
+    * Numbers must also be formatted the same way to be considered equal.
+    */
+   Strict
+}
 
-   enum class TypeCoercion {
-      /**
-       * Default. Types will not be converted. Meaning `"true"` and `true` are considered unequal.
-       */
-      Disabled,
+enum class TypeCoercion {
+   /**
+    * Default. Types will not be converted. Meaning `"true"` and `true` are considered unequal.
+    */
+   Disabled,
 
-      /**
-       * Types may be coerced. Strings containing numbers will be considered equal to their numbers, and booleans in
-       * strings will also be compared.
-       *
-       * For example: `"\"11\"".shouldEqualJson("12", compareJsonOptions { typeCoercion = TypeCoercion.Enabled })` will
-       * succeed.
-       */
-      Enabled;
+   /**
+    * Types may be coerced. Strings containing numbers will be considered equal to their numbers, and booleans in
+    * strings will also be compared.
+    *
+    * For example: `"\"11\"".shouldEqualJson("12", compareJsonOptions { typeCoercion = TypeCoercion.Enabled })` will
+    * succeed.
+    */
+   Enabled;
 
-      internal fun isEnabled(): Boolean =
-         this == Enabled
-   }
+   internal fun isEnabled(): Boolean =
+      this == Enabled
 }
 
 fun compareJsonOptions(builder: CompareJsonOptions.() -> Unit): CompareJsonOptions =
@@ -206,7 +200,7 @@ internal fun compareObjects(
    options: CompareJsonOptions,
 ): JsonError? {
 
-   if (CompareJsonOptions.FieldComparison.Strict == options.fieldComparison) {
+   if (FieldComparison.Strict == options.fieldComparison) {
       val keys1 = expected.elements.keys
       val keys2 = actual.elements.keys
 
@@ -299,12 +293,21 @@ internal fun compareArrays(
 /**
  * When comparing a string, if the [mode] is [CompareMode.Lenient] we can convert the actual node to a string.
  */
-internal fun compareString(path: List<String>, expected: JsonNode.StringNode, actual: JsonNode, options: CompareJsonOptions): JsonError? {
+internal fun compareString(
+   path: List<String>,
+   expected: JsonNode.StringNode,
+   actual: JsonNode,
+   options: CompareJsonOptions
+): JsonError? {
    return when {
       actual is JsonNode.StringNode -> compareStrings(path, expected.value, actual.value)
       options.typeCoercion.isEnabled() -> when {
          actual is JsonNode.BooleanNode -> compareStrings(path, expected.value, actual.value.toString())
-         actual is JsonNode.NumberNode && expected.contentIsNumber() -> compareNumberNodes(path, expected.toNumberNode(), actual)
+         actual is JsonNode.NumberNode && expected.contentIsNumber() -> compareNumberNodes(
+            path,
+            expected.toNumberNode(),
+            actual
+         )
          else -> JsonError.IncompatibleTypes(path, expected, actual)
       }
       else -> JsonError.IncompatibleTypes(path, expected, actual)
@@ -346,10 +349,15 @@ internal fun compareBooleans(path: List<String>, expected: Boolean, actual: Bool
    }
 }
 
-private fun compareNumbers(path: List<String>, expected: JsonNode.NumberNode, actual: JsonNode, options: CompareJsonOptions): JsonError? {
-   return when(actual) {
+private fun compareNumbers(
+   path: List<String>,
+   expected: JsonNode.NumberNode,
+   actual: JsonNode,
+   options: CompareJsonOptions
+): JsonError? {
+   return when (actual) {
       is JsonNode.NumberNode -> {
-         when(options.numberFormat) {
+         when (options.numberFormat) {
             NumberFormat.Strict -> {
                if (expected.content != actual.content) JsonError.UnequalValues(path, expected.content, actual.content)
                else null
@@ -358,7 +366,11 @@ private fun compareNumbers(path: List<String>, expected: JsonNode.NumberNode, ac
          }
       }
       is JsonNode.StringNode -> {
-         if (options.typeCoercion.isEnabled() && actual.contentIsNumber()) compareNumberNodes(path, expected, actual.toNumberNode())
+         if (options.typeCoercion.isEnabled() && actual.contentIsNumber()) compareNumberNodes(
+            path,
+            expected,
+            actual.toNumberNode()
+         )
          else JsonError.IncompatibleTypes(path, expected, actual)
       }
       else -> JsonError.IncompatibleTypes(path, expected, actual)
@@ -368,7 +380,11 @@ private fun compareNumbers(path: List<String>, expected: JsonNode.NumberNode, ac
 private val fractionalZeroesRegex =
    """(\.\d*)0+""".toRegex()
 
-private fun compareNumberNodes(path: List<String>, expected: JsonNode.NumberNode, actual: JsonNode.NumberNode): JsonError? {
+private fun compareNumberNodes(
+   path: List<String>,
+   expected: JsonNode.NumberNode,
+   actual: JsonNode.NumberNode
+): JsonError? {
    /**
     * Removes insignificant part of a number. e.g. 1.0 -> 1 or 3.1400 -> 3.14
     */

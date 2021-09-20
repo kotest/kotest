@@ -1,6 +1,6 @@
 package com.sksamuel.kotest.tests.json
 
-import io.kotest.assertions.json.CompareJsonOptions.ArrayOrder
+import io.kotest.assertions.json.ArrayOrder
 import io.kotest.assertions.json.compareJsonOptions
 import io.kotest.assertions.json.shouldEqualJson
 import io.kotest.assertions.shouldFail
