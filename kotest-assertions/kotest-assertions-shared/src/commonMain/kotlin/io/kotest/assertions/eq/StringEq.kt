@@ -3,6 +3,7 @@ package io.kotest.assertions.eq
 import io.kotest.assertions.*
 import io.kotest.assertions.show.Printed
 import io.kotest.assertions.show.show
+import io.kotest.common.isIntellij
 
 /**
  * An [Eq] implementation for String's that generates diffs for errors when the string inputs
@@ -48,6 +49,7 @@ object StringEq : Eq<String> {
    }
 
    private fun useDiff(expected: String, actual: String): Boolean {
+      if (isIntellij()) return false
       val minSizeForDiff = AssertionsConfig.largeStringDiffMinSize
       return expected.lines().size >= minSizeForDiff
          && actual.lines().size >= minSizeForDiff &&
