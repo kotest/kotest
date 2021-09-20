@@ -163,11 +163,11 @@ private class FreeSpecSample : FreeSpec({
       }
    }
 
-   "an empty outer container with" - {
+   "an empty outer container with" {
    }
 
    "an outer container that conatins" - {
-      "an empty inner container" - {
+      "an empty inner container" {
 
       }
    }
