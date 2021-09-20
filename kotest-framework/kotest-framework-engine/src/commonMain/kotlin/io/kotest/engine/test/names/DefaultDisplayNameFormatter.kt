@@ -48,10 +48,15 @@ class DefaultDisplayNameFormatter(private val configuration: Configuration) : Di
          }
       }
 
-      return if (configuration.testNameAppendTags) {
+      val name = if (configuration.testNameAppendTags) {
          return appendTagsInDisplayName(testCase, displayName)
       } else {
          displayName
+      }
+
+      return when (val parent = testCase.parent) {
+         null -> name
+         else -> if (configuration.displayFullTestPath) format(parent) + " " + name else name
       }
    }
 
