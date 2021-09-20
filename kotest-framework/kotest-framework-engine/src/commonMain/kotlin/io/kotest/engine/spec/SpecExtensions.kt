@@ -6,7 +6,7 @@ import io.kotest.core.extensions.SpecInitializeExtension
 import io.kotest.core.extensions.SpecInstantiationExtension
 import io.kotest.core.listeners.AfterSpecListener
 import io.kotest.core.listeners.BeforeSpecListener
-import io.kotest.core.listeners.FinishSpecListener
+import io.kotest.core.listeners.FinalizeSpecListener
 import io.kotest.core.listeners.InactiveSpecListener
 import io.kotest.core.listeners.SpecInstantiationListener
 import io.kotest.core.spec.Spec
@@ -77,9 +77,9 @@ internal class SpecExtensions(private val configuration: Configuration) {
    }
 
    suspend fun finishSpec(kclass: KClass<out Spec>, results: Map<TestCase, TestResult>) {
-      val exts = configuration.extensions().filterIsInstance<FinishSpecListener>()
+      val exts = configuration.extensions().filterIsInstance<FinalizeSpecListener>()
       log { "SpecExtensions: finishSpec(${exts.size}) $kclass results:$results" }
-      exts.forEach { it.finishSpec(kclass, results) }
+      exts.forEach { it.finalizeSpec(kclass, results) }
    }
 }
 
