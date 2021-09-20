@@ -97,8 +97,8 @@ fun haveParameter(key: String) = object : Matcher<URL> {
 fun URL.shouldHaveParameterValue(key: String, value: String) = this should haveParameterValue(key, value)
 fun URL.shouldNotHaveParameterValue(key: String, value: String) = this shouldNot haveParameterValue(key, value)
 fun haveParameterValue(key: String, value: String) = object : Matcher<URL> {
-   override fun test(url: URL) = MatcherResult(
-      url.query.split("&").find { it.split("=").first() == key } == "$key=$value",
+   override fun test(value: URL) = MatcherResult(
+      value.query.split("&").find { it.split("=").first() == key } == "$key=$value",
       { "URL $value should have query parameter $key=$value" },
       {
          "URL $value should not have query parameter $key=$value"

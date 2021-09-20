@@ -4,7 +4,7 @@ package io.kotest.mpp
 internal fun isLoggingEnabled() =
    sysprop("KOTEST_DEBUG")?.uppercase() == "TRUE" || env("KOTEST_DEBUG")?.uppercase() == "TRUE"
 
-inline fun log(noinline f: () -> String) {
+fun log(f: () -> String) {
    log(null, f)
 }
 

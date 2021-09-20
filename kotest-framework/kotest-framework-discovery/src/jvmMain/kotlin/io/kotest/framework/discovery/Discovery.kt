@@ -187,11 +187,13 @@ class Discovery(private val discoveryExtensions: List<DiscoveryExtension> = empt
    }
 
    private fun classgraph(): ClassGraph {
+      @Suppress("DEPRECATION")
       return ClassGraph()
          .enableClassInfo()
          .enableExternalClasses()
          .ignoreClassVisibility()
          .disableNestedJarScanning()
+         // do not change this to use reject as it will break clients using older versions of classgraph
          .blacklistPackages(
             "java.*",
             "javax.*",

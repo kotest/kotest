@@ -112,7 +112,7 @@ class JUnitTestEngineListener(
             "[${t.joinToString(separator = "\n", transform = { it.toString() })}]"
       }
 
-      val result = t.map {
+      val result: TestExecutionResult = t.map {
          when (it) {
             is AfterProjectListenerException -> {
                val container = createAndRegisterDummySpec(it.name)
@@ -136,7 +136,7 @@ class JUnitTestEngineListener(
          }
 
       log { "JUnitTestEngineListener: Notifying junit that root descriptor completed $root" }
-      listener.executionFinished(root, TestExecutionResult.successful())
+      listener.executionFinished(root, result)
    }
 
    override suspend fun specStarted(kclass: KClass<*>) {

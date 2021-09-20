@@ -16,6 +16,7 @@ import kotlin.script.templates.standard.ScriptTemplateWithArgs
 /**
  * A builder class for creating and executing tests via the [TestEngine].
  */
+@Suppress("DEPRECATION")
 @Deprecated("Prefer TestEngineLauncher. This class will remain for compatibility with existing clients but new code should use the TestEngineLauncher which is multiplatform.")
 class KotestEngineLauncher(
    private val listeners: List<TestEngineListener>,
@@ -116,7 +117,6 @@ class KotestEngineLauncher(
       )
    }
 
-   @Deprecated("use withTestFilters. This must remain for binary compatibility.")
    fun withFilters(filters: List<TestFilter>): KotestEngineLauncher = withTestFilters(filters)
 
    fun withScripts(scripts: List<KClass<out ScriptTemplateWithArgs>>): KotestEngineLauncher {

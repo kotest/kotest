@@ -1,5 +1,7 @@
 package io.kotest.engine
 
+import io.kotest.common.ExperimentalKotest
+import io.kotest.common.KotestInternal
 import io.kotest.common.Platform
 import io.kotest.common.platform
 import io.kotest.core.Tags
@@ -71,6 +73,7 @@ class TestEngine(val config: TestEngineConfig) {
    /**
     * Starts execution of the given [TestSuite], intercepting calls via [EngineInterceptor]s.
     */
+   @OptIn(KotestInternal::class, ExperimentalKotest::class)
    suspend fun execute(suite: TestSuite): EngineResult {
       log { "TestEngine: Executing test suite with ${suite.specs.size} specs" }
 

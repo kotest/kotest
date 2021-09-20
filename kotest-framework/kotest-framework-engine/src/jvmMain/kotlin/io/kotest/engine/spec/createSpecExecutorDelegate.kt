@@ -1,5 +1,6 @@
 package io.kotest.engine.spec
 
+import io.kotest.common.ExperimentalKotest
 import io.kotest.core.concurrency.CoroutineDispatcherFactory
 import io.kotest.core.config.Configuration
 import io.kotest.core.config.configuration
@@ -16,6 +17,7 @@ import io.kotest.engine.test.scheduler.ConcurrentTestScheduler
 import io.kotest.engine.test.scheduler.SequentialTestScheduler
 import kotlin.math.max
 
+@OptIn(ExperimentalKotest::class)
 internal actual fun createSpecExecutorDelegate(
    listener: TestEngineListener,
    defaultCoroutineDispatcherFactory: CoroutineDispatcherFactory,
@@ -52,6 +54,7 @@ internal actual fun createSpecExecutorDelegate(
  *
  * spec.concurrency ?: configuration.concurrentTests
  */
+@OptIn(ExperimentalKotest::class)
 internal fun Spec.resolvedConcurrentTests(): Int {
    val fromSpecConcurrency = this.concurrency ?: this.concurrency()
    return when {

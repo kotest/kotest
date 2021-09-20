@@ -1,13 +1,15 @@
 package io.kotest.engine.interceptors
 
 import io.kotest.common.DelicateKotest
+import io.kotest.common.KotestInternal
 import io.kotest.core.extensions.EngineContextExtension
 import io.kotest.engine.EngineResult
 import io.kotest.engine.TestSuite
 
-@OptIn(DelicateKotest::class)
+@OptIn(KotestInternal::class)
 internal object EngineContextExtensionEngineInterceptor : EngineInterceptor {
 
+   @OptIn(DelicateKotest::class)
    override suspend fun intercept(
       context: EngineContext,
       execute: suspend (EngineContext) -> EngineResult

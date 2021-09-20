@@ -1,10 +1,10 @@
 package io.kotest.property
 
+import io.kotest.common.ExperimentalKotest
 import io.kotest.mpp.atomics.AtomicProperty
 import io.kotest.mpp.sysprop
 import io.kotest.property.classifications.LabelsReporter
 import io.kotest.property.classifications.StandardLabelsReporter
-import kotlin.math.max
 
 /**
  * Global object containing settings for property testing.
@@ -83,6 +83,7 @@ fun PropTest.toPropTestConfig() =
  *
  * @param constraints controls the loop for properties. See [Constraints].
  */
+@OptIn(ExperimentalKotest::class)
 data class PropTestConfig(
    val seed: Long? = PropertyTesting.defaultSeed,
    val minSuccess: Int = PropertyTesting.defaultMinSuccess,
