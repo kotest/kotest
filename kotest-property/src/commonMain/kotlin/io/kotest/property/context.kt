@@ -1,5 +1,7 @@
 package io.kotest.property
 
+import io.kotest.property.arbitrary.next
+
 /**
  * A [PropertyContext] is used when executing a propery test.
  * It allows feedback and tracking of the state of the property test.
@@ -10,6 +12,7 @@ class PropertyContext {
    private var failures = 0
    private val classifications = mutableMapOf<String, Int>()
    private val autoclassifications = mutableMapOf<String, MutableMap<String, Int>>()
+   private val inputs = mutableListOf<Any?>()
 
    fun markSuccess() {
       successes++
@@ -35,11 +38,10 @@ class PropertyContext {
       classifications[label] = current + 1
    }
 
-   fun classify(input: Int, label: String) {
+   fun classify(input: Any, label: String) {
       val current = autoclassifications.getOrPut(input.toString()) { mutableMapOf() }
       val count = current[label] ?: 0
       current[label] = count + 1
-      autoclassifications[input.toString()]
    }
 
    /**
@@ -61,5 +63,23 @@ class PropertyContext {
          val current = classifications.getOrElse(falseLabel) { 0 }
          classifications[falseLabel] = current + 1
       }
+   }
+
+   fun <A : Any> Arb<A>.value(): A {
+      val a = this.next() // todo use an RS that is injected into the property context
+      inputs.add(a) // todo reset the inputs on each cycle
+
+      val classifier: Classifier<out A>? = this.classifier
+      val label: String? = (classifier as Classifier<Any?>).classify(a)
+      if (label != null) classify(a, label)
+
+      return a
+   }
+
+   /**
+    * Reset for next loop
+    */
+   fun reset() {
+      inputs.clear()
    }
 }
