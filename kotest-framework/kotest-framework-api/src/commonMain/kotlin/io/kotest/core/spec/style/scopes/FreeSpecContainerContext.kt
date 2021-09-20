@@ -50,7 +50,11 @@ class FreeSpecContainerContext(
     * Creates a new container scope inside this spec.
     */
    suspend infix operator fun String.minus(test: suspend FreeSpecContainerContext.() -> Unit) {
-      registerTestCase(createNestedTest(this, TestType.Container) { FreeSpecContainerContext(this).test() })
+      registerTestCase(createNestedTest(this, TestType.Container) {
+         val incomplete = IncompleteContainerContext(this)
+         FreeSpecContainerContext(incomplete).test()
+         if (!incomplete.registered) throw IncompleteContainerException(this@minus)
+      })
    }
 
    /**

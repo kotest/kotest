@@ -21,7 +21,7 @@ import kotlin.coroutines.CoroutineContext
 import kotlin.time.Duration
 
 @DelicateCoroutinesApi
-class TestExecutorTest : FunSpec({
+class TestCaseExecutorTest : FunSpec({
 
    fun context(testCase: TestCase) = object : TestContext {
       override val testCase: TestCase = testCase
@@ -50,7 +50,7 @@ class TestExecutorTest : FunSpec({
       finished shouldBe true
    }
 
-   test("test executor should timeout a suspendable call") {
+   test("TestCaseExecutor should timeout a suspendable call") {
       var started = false
       var finished = false
       val listener = object : TestCaseExecutionListener {
@@ -73,7 +73,7 @@ class TestExecutorTest : FunSpec({
       finished shouldBe true
    }
 
-   test("test executor should invoke before test") {
+   test("TestCaseExecutor should invoke before test") {
       val executor = TestCaseExecutor(object : TestCaseExecutionListener {
          override suspend fun testStarted(testCase: TestCase) {}
          override suspend fun testIgnored(testCase: TestCase) {}
@@ -85,7 +85,7 @@ class TestExecutorTest : FunSpec({
       spec.before.shouldBeTrue()
    }
 
-   test("test executor should invoke after test") {
+   test("TestCaseExecutor should invoke after test") {
       val executor = TestCaseExecutor(object : TestCaseExecutionListener {
          override suspend fun testStarted(testCase: TestCase) {}
          override suspend fun testIgnored(testCase: TestCase) {}
@@ -97,7 +97,7 @@ class TestExecutorTest : FunSpec({
       spec.after.shouldBeTrue()
    }
 
-   test("test executor should start/finish test with error if before-test throws") {
+   test("TestCaseExecutor should start/finish test with error if before-test throws") {
       var started = false
       var finished = false
       val executor = TestCaseExecutor(object : TestCaseExecutionListener {
@@ -118,7 +118,7 @@ class TestExecutorTest : FunSpec({
       finished shouldBe true
    }
 
-   test("test executor should start/finish test with error if after-test throws") {
+   test("TestCaseExecutor should start/finish test with error if after-test throws") {
       var started = false
       var finished = false
       val executor = TestCaseExecutor(object : TestCaseExecutionListener {

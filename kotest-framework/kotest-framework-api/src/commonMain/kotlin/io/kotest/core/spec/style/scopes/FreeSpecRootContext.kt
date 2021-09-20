@@ -18,9 +18,11 @@ interface FreeSpecRootContext : RootContext {
 
    // eg, "this test" - { } // adds a container test
    infix operator fun String.minus(test: suspend FreeSpecContainerContext.() -> Unit) {
-      val name = TestName(this)
-      registration().addContainerTest(name, xdisabled = false) {
-         FreeSpecContainerContext(this).test()
+      val testName = TestName(this)
+      registration().addContainerTest(testName, xdisabled = false) {
+         val incomplete = IncompleteContainerContext(this)
+         FreeSpecContainerContext(incomplete).test()
+         if (!incomplete.registered) throw IncompleteContainerException(testName.testName)
       }
    }
 
