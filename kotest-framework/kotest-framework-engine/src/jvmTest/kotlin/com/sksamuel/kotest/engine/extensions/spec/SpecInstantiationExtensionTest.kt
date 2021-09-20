@@ -43,13 +43,13 @@ class SpecInstantiationExtensionTest : FunSpec() {
    }
 }
 
-class ClassWithComplexConstructor(val thread: Thread) : FunSpec() {
+private class ClassWithComplexConstructor(val thread: Thread) : FunSpec() {
    init {
       test("a") {}
    }
 }
 
-class ClassWithSimpleConstructor : FunSpec() {
+private class ClassWithSimpleConstructor : FunSpec() {
    init {
       test("a") {}
    }
