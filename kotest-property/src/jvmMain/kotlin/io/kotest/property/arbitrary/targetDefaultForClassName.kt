@@ -9,6 +9,7 @@ import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
 import java.time.Period
+import kotlin.reflect.KClass
 import kotlin.reflect.full.isSubclassOf
 
 @Suppress("UNCHECKED_CAST")
@@ -48,6 +49,10 @@ actual inline fun <reified A> targetDefaultForClass(): Arb<A>? {
       A::class == LocalTime::class -> Arb.localTime() as Arb<A>
       A::class == Period::class -> Arb.period() as Arb<A>
       A::class == BigDecimal::class -> Arb.bigDecimal() as Arb<A>
+      A::class.isData -> {
+         val k = A::class as KClass<Any>
+         Arb.bind(k) as Arb<A>
+      }
       else -> null
    }
 }
