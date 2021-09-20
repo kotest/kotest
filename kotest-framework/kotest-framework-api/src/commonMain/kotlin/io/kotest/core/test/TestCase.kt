@@ -1,6 +1,5 @@
 package io.kotest.core.test
 
-import io.kotest.common.ExperimentalKotest
 import io.kotest.core.SourceRef
 import io.kotest.core.descriptors.Descriptor
 import io.kotest.core.factory.FactoryId
@@ -50,7 +49,7 @@ data class TestCase(
    // an optional factory id which is used to indicate which factory (if any) generated this test case.
    val factoryId: FactoryId? = null,
    // not null if this test has a parent test
-   @ExperimentalKotest val parent: TestCase? = null,
+   val parent: TestCase? = null,
 ) {
 
    @Deprecated("Use testCase.name or testCase.descriptor. This was deprecated in 5.0 and will be removed in 6.0")
