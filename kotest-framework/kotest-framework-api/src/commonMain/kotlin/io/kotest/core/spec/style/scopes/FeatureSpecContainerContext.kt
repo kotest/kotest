@@ -9,6 +9,9 @@ import io.kotest.core.test.TestContext
 import io.kotest.core.test.TestType
 import io.kotest.core.test.createNestedTest
 
+@Deprecated("renamed to FeatureSpecContainerContext")
+typealias FeatureScope = FeatureSpecContainerContext
+
 /**
  * A scope that allows tests to be registered using the syntax:
  *

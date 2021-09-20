@@ -9,6 +9,9 @@ import io.kotest.core.test.TestContext
 import io.kotest.core.test.TestType
 import io.kotest.core.test.createNestedTest
 
+@Deprecated("This interface has been renamed to BehaviorSpecGivenContainerContext. This alias will be removed in 6.0")
+typealias GivenScope = BehaviorSpecGivenContainerContext
+
 /**
  * A context that allows tests to be registered using the syntax:
  *

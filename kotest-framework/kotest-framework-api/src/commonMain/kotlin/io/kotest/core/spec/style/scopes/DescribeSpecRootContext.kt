@@ -4,6 +4,9 @@ import io.kotest.common.ExperimentalKotest
 import io.kotest.core.names.TestName
 import io.kotest.core.test.TestContext
 
+@Deprecated("Renamed to DescribeSpecRootContext. This typealias will be removed in 4.8")
+typealias DescribeSpecRootScope = DescribeSpecRootContext
+
 /**
  * A context that allows root tests to be registered using the syntax:
  *

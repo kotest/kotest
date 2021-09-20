@@ -10,6 +10,9 @@ import io.kotest.core.test.TestContext
 import io.kotest.core.test.TestType
 import io.kotest.core.test.createNestedTest
 
+@Deprecated("This interface has been renamed to FunSpecContainerContext. This alias will be removed in 6.0")
+typealias FunSpecContextScope = FunSpecContainerContext
+
 /**
  * A context that allows tests to be registered using the syntax:
  *

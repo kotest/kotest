@@ -9,6 +9,9 @@ import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestType
 import kotlin.coroutines.CoroutineContext
 
+@Deprecated("Use ContainerContext. This alias will be removed in 6.0")
+typealias ContainerScope = ContainerContext
+
 /**
  * Extends a [TestContext] with methods used by test containers.
  */

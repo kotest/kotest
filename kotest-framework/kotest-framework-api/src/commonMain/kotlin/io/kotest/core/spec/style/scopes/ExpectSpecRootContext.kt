@@ -4,6 +4,9 @@ import io.kotest.core.names.TestName
 import io.kotest.core.spec.KotestDsl
 import io.kotest.core.test.TestContext
 
+@Deprecated("Renamed to ExpectSpecRootContext. This typealias will be removed in 4.8")
+typealias ExpectSpecRootScope = ExpectSpecRootContext
+
 /**
  * Top level registration methods for ExpectSpec methods.
  */

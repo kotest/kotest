@@ -3,6 +3,9 @@ package io.kotest.core.spec.style.scopes
 import io.kotest.core.names.TestName
 import io.kotest.core.spec.KotestDsl
 
+@Deprecated("Renamed to FeatureSpecRootContext. This typealias will be removed in 4.8")
+typealias FeatureSpecRootScope = FeatureSpecRootContext
+
 /**
  * A scope that allows root tests to be registered using the syntax:
  *
