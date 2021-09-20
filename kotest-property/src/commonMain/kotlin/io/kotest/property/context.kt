@@ -10,6 +10,7 @@ class PropertyContext(private val rs: RandomSource? = null) {
 
    private var successes = 0
    private var failures = 0
+   private var labelPointer = 0
    private val classifications = mutableMapOf<String, Int>()
    private val autoclassifications = mutableMapOf<String, MutableMap<String, Int>>()
    private val inputs = mutableListOf<Any?>()
@@ -38,7 +39,7 @@ class PropertyContext(private val rs: RandomSource? = null) {
       classifications[label] = current + 1
    }
 
-   fun classify(input: Any, label: String) {
+   fun classify(input: Int, label: String) {
       val current = autoclassifications.getOrPut(input.toString()) { mutableMapOf() }
       val count = current[label] ?: 0
       current[label] = count + 1
@@ -66,12 +67,13 @@ class PropertyContext(private val rs: RandomSource? = null) {
    }
 
    fun <A : Any> Arb<A>.value(): A {
+      labelPointer++
       val a = this.next(rs!!)
       inputs.add(a)
 
       val classifier: Classifier<out A>? = this.classifier
       val label: String? = (classifier as Classifier<Any?>).classify(a)
-      if (label != null) classify(a, label)
+      if (label != null) classify(labelPointer, label)
 
       return a
    }
@@ -81,5 +83,6 @@ class PropertyContext(private val rs: RandomSource? = null) {
     */
    fun reset() {
       inputs.clear()
+      labelPointer = 0
    }
 }

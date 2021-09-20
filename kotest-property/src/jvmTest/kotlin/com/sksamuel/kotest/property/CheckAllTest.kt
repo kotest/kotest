@@ -26,5 +26,15 @@ class CheckAllTest : FunSpec() {
             a shouldBe "cUj%x=.f6ktw\"icenM(AEw&5CP3q+8FxU*xi<p!Jbd"
          }
       }
+
+      test("auto labelling") {
+         val context = checkAll(100, 98173L) {
+            Arb.string().value()
+         }
+         context.autoclassifications()["1"] shouldBe mapOf(
+            "MAX LENGTH" to 3,
+            "ANY LENGTH LETTER OR DIGITS" to 3
+         )
+      }
    }
 }
