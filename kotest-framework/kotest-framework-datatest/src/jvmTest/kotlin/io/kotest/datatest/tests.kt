@@ -54,8 +54,8 @@ fun RootContext.registerRootTests(): MutableList<String> {
       )
    ) { a ->
       a % 2 shouldBe 0
-      if (a == 2) this.testCase.displayName shouldBe "(2) a"
-      if (a == 4) this.testCase.displayName shouldBe "(2) b"
+      if (a == 2) this.testCase.name.testName shouldBe "(2) a"
+      if (a == 4) this.testCase.name.testName shouldBe "(2) b"
    }
 
    withData("p", "q") { a ->
@@ -97,7 +97,7 @@ suspend fun TestContext.registerContextTests(): MutableList<String> {
       )
    ) { a ->
       a % 2 shouldBe 0
-      if (a == 2) this.testCase.displayName shouldBe "foo"
+      if (a == 2) this.testCase.name.testName shouldBe "foo"
       //if (a == 4) this.testCase.displayName shouldBe "foo2"
    }
 
@@ -124,8 +124,8 @@ suspend fun TestContext.registerContextTests(): MutableList<String> {
       )
    ) { a ->
       a % 2 shouldBe 0
-      if (a == 2) this.testCase.displayName shouldBe "(2) a"
-      if (a == 4) this.testCase.displayName shouldBe "(2) b"
+      if (a == 2) this.testCase.name.testName shouldBe "(2) a"
+      if (a == 4) this.testCase.name.testName shouldBe "(2) b"
    }
 
    withData("p", "q") { a ->

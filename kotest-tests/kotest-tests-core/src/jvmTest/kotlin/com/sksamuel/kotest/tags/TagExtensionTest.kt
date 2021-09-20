@@ -33,7 +33,7 @@ class TagExtensionTest : StringSpec() {
    init {
 
       finalizeSpec { results ->
-         results.b.map { it.key.displayName to it.value.status }.toMap() shouldBe mapOf(
+         results.b.map { it.key.name.testName to it.value.status }.toMap() shouldBe mapOf(
             "should be tagged with tagA and therefore included" to TestStatus.Success,
             "should be untagged and therefore excluded" to TestStatus.Ignored,
             "should be tagged with tagB and therefore excluded" to TestStatus.Ignored

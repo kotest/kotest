@@ -17,7 +17,7 @@ class FailTestTest : FunSpec() {
             .withClasses(FailTestFunSpec::class)
             .launch()
 
-         val results = listener.tests.mapKeys { it.key.displayName }
+         val results = listener.tests.mapKeys { it.key.name.testName }
          results["a"]?.status shouldBe TestStatus.Success
          results["b"]?.status shouldBe TestStatus.Error
          results["c"]?.status shouldBe TestStatus.Ignored

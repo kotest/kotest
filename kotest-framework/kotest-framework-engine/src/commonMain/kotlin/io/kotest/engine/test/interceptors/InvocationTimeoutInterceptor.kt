@@ -27,7 +27,7 @@ internal object InvocationTimeoutInterceptor : TestExecutionInterceptor {
 
          // note: the invocation timeout cannot be larger than the test case timeout
          val timeout = min(resolvedTimeout(testCase), resolvedInvocationTimeout(testCase))
-         log { "InvocationTimeoutInterceptor: Test [${testCase.displayName}] will execute with invocationTimeout ${timeout}ms" }
+         log { "InvocationTimeoutInterceptor: Test [${testCase.name.testName}] will execute with invocationTimeout ${timeout}ms" }
 
          log { "InvocationTimeoutInterceptor: Switching context to add invocationTimeout $timeout" }
          try {
@@ -36,7 +36,7 @@ internal object InvocationTimeoutInterceptor : TestExecutionInterceptor {
             }
          } catch (e: TimeoutCancellationException) {
             log { "InvocationTimeoutInterceptor: Caught TimeoutCancellationException ${e.message}" }
-            throw TestTimeoutException(timeout, testCase.displayName)
+            throw TestTimeoutException(timeout, testCase.name.testName)
          }
       }
    }

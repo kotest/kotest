@@ -42,11 +42,11 @@ class IsolatedReporterTest : FunSpec({
          }
 
          override fun testStarted(testCase: TestCase) {
-            append("testStarted:${testCase.displayName}")
+            append("testStarted:${testCase.name.testName}")
          }
 
          override fun testFinished(testCase: TestCase, result: TestResult) {
-            append("testFinished:${testCase.displayName}")
+            append("testFinished:${testCase.name.testName}")
          }
 
       }

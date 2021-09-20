@@ -44,7 +44,7 @@ class TestExecutorTest : FunSpec({
          }
       }
       val executor = TestCaseExecutor(listener, NoopCoroutineDispatcherFactory)
-      val testCase = Tests().materializeAndOrderRootTests().first { it.testCase.displayName == "a" }.testCase
+      val testCase = Tests().materializeAndOrderRootTests().first { it.testCase.name.testName == "a" }.testCase
       executor.execute(testCase, context(testCase)).status shouldBe TestStatus.Success
       started shouldBe true
       finished shouldBe true
@@ -65,7 +65,7 @@ class TestExecutorTest : FunSpec({
          }
       }
       val executor = TestCaseExecutor(listener, NoopCoroutineDispatcherFactory)
-      val testCase = Tests().materializeAndOrderRootTests().first { it.testCase.displayName == "b" }.testCase
+      val testCase = Tests().materializeAndOrderRootTests().first { it.testCase.name.testName == "b" }.testCase
       val result = executor.execute(testCase, context(testCase))
       result.status shouldBe TestStatus.Error
       result.error shouldBe TestTimeoutException(100, "b")

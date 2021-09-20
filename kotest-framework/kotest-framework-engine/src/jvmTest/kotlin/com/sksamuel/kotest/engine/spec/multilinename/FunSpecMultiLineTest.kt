@@ -22,7 +22,7 @@ class FunSpecMultiLineTest : FunSpec() {
     1
     """
       ) {
-         names.add(this.testCase.displayName)
+         names.add(this.testCase.name.testName)
       }
 
       context("context") {
@@ -33,7 +33,7 @@ class FunSpecMultiLineTest : FunSpec() {
     2
     """
          ) {
-            names.add(this.testCase.displayName)
+            names.add(this.testCase.name.testName)
 
          }
       }

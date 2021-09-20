@@ -18,8 +18,8 @@ class DataTestingRepeatedTestNameTest : FunSpec() {
 
       val listener = object : TestEngineListener {
          override suspend fun testFinished(testCase: TestCase, result: TestResult) {
-            println(testCase.displayName)
-            names.add(testCase.displayName)
+            println(testCase.name.testName)
+            names.add(testCase.name.testName)
          }
       }
 

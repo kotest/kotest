@@ -24,7 +24,7 @@ class ExcludeTagExtensionTest : FunSpec() {
       test("tag extensions should be applied to tests with tag inherited from spec") {
          val listener = object : TestEngineListener {
             override suspend fun testStarted(testCase: TestCase) {
-               fail(testCase.displayName + " should not run")
+               fail(testCase.name.testName + " should not run")
             }
          }
          configuration.registerExtension(ExcludeTagExtension)
