@@ -138,7 +138,7 @@ class TeamCityConsoleReporter(private val prefix: String = TeamCityMessageBuilde
          TestStatus.Failure, TestStatus.Error -> {
             errors = true
             when (testCase.type) {
-               TestType.Container, TestType.ContainerAndTest -> {
+               TestType.Container -> {
                   insertDummyFailure(desc, result.error)
                   println(
                      TeamCityMessageBuilder
@@ -168,7 +168,7 @@ class TeamCityConsoleReporter(private val prefix: String = TeamCityMessageBuilde
          }
          TestStatus.Ignored -> {
             val msg = when (testCase.type) {
-               TestType.Container, TestType.ContainerAndTest ->
+               TestType.Container ->
                   TeamCityMessageBuilder
                      .testSuiteFinished(prefix, formatter.format(testCase))
                      .id(desc.id.value)
@@ -190,7 +190,7 @@ class TeamCityConsoleReporter(private val prefix: String = TeamCityMessageBuilde
          }
          TestStatus.Success -> {
             val msg = when (testCase.type) {
-               TestType.Container, TestType.ContainerAndTest ->
+               TestType.Container ->
                   TeamCityMessageBuilder
                      .testSuiteFinished(prefix, formatter.format(testCase))
                      .id(desc.id.value)
