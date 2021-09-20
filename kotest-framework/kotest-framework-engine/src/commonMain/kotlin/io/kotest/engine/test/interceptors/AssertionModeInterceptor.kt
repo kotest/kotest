@@ -40,7 +40,7 @@ internal object AssertionModeInterceptor : TestExecutionInterceptor {
       assertionCounter.reset()
       val result = test(testCase, context)
 
-      val warningMessage = "Test '${testCase.displayName}' did not invoke any assertions"
+      val warningMessage = "Test '${testCase.name.testName}' did not invoke any assertions"
       val mode = mode(testCase)
 
       return when {

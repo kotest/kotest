@@ -7,20 +7,20 @@ import io.kotest.matchers.shouldBe
 
 fun factory1(writer: StringBuilder) = funSpec {
    test("o") {
-      writer.append(this.testCase.displayName)
+      writer.append(this.testCase.name.testName)
    }
    test("r") {
-      writer.append(this.testCase.displayName)
+      writer.append(this.testCase.name.testName)
    }
 }
 
 fun factory2(writer: StringBuilder) = funSpec {
    test("w") {
-      writer.append(this.testCase.displayName)
+      writer.append(this.testCase.name.testName)
    }
    include(factory1(writer))
    test("f") {
-      writer.append(this.testCase.displayName)
+      writer.append(this.testCase.name.testName)
    }
 }
 

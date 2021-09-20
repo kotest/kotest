@@ -9,11 +9,11 @@ abstract class FunSpecDuplicateNameTest(iso: IsolationMode) : FunSpec() {
       isolationMode = iso
       context("wobble") {
          test("wibble") { }
-         test("wibble") { this.testCase.displayName shouldBe "(1) wibble" }
-         test("wibble") { this.testCase.displayName shouldBe "(2) wibble" }
+         test("wibble") { this.testCase.name.testName shouldBe "(1) wibble" }
+         test("wibble") { this.testCase.name.testName shouldBe "(2) wibble" }
       }
-      context("wobble") { this.testCase.displayName shouldBe "(1) wobble" }
-      context("wobble") { this.testCase.displayName shouldBe "(2) wobble" }
+      context("wobble") { this.testCase.name.testName shouldBe "(1) wobble" }
+      context("wobble") { this.testCase.name.testName shouldBe "(2) wobble" }
    }
 }
 

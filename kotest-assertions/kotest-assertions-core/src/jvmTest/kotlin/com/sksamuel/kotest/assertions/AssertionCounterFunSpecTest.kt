@@ -17,7 +17,7 @@ class AssertionCounterFunSpecTest : FunSpec() {
    override fun extensions(): List<TestCaseExtension> = listOf(
       object : TestCaseExtension {
          override suspend fun intercept(testCase: TestCase, execute: suspend (TestCase) -> TestResult): TestResult {
-            return when (testCase.displayName) {
+            return when (testCase.name.testName) {
                "AssertionMode.Error assertion mode should fail the test if no assertions were present" -> {
                   val result = execute(testCase)
                   when (result.status) {

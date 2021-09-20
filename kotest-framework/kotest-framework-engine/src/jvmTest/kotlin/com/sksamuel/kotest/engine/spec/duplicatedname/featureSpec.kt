@@ -9,11 +9,11 @@ abstract class FeatureSpecDuplicateNameTest(iso: IsolationMode) : FeatureSpec() 
       isolationMode = iso
       feature("foo") {
          scenario("woo") {}
-         scenario("woo") { this.testCase.displayName shouldBe "(1) woo" }
-         scenario("woo") { this.testCase.displayName shouldBe "(2) woo" }
+         scenario("woo") { this.testCase.name.testName shouldBe "(1) woo" }
+         scenario("woo") { this.testCase.name.testName shouldBe "(2) woo" }
       }
-      feature("foo") { this.testCase.displayName shouldBe "(1) foo" }
-      feature("foo") { this.testCase.displayName shouldBe "(2) foo" }
+      feature("foo") { this.testCase.name.testName shouldBe "(1) foo" }
+      feature("foo") { this.testCase.name.testName shouldBe "(2) foo" }
    }
 }
 
