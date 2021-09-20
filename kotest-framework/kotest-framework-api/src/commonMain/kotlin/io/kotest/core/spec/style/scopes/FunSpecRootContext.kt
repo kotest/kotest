@@ -13,26 +13,28 @@ interface FunSpecRootContext : RootContext {
     * Adds a top level [FunSpecContainerContext] to this root scope.
     */
    fun context(name: String, test: suspend FunSpecContainerContext.() -> Unit) {
-      val testName = TestName(name)
+      val testName = TestName("context", name, false)
       registration().addContainerTest(testName, xdisabled = false) {
-         FunSpecContainerContext(this).test()
+         val incomplete = IncompleteContainerContext(this)
+         FunSpecContainerContext(incomplete).test()
+         if (!incomplete.registered) throw IncompleteContainerException(testName.testName)
       }
    }
 
    @ExperimentalKotest
    fun context(name: String) =
-      RootContextConfigBuilder(TestName(name), registration(), false) { FunSpecContainerContext(it) }
+      RootContextConfigBuilder(TestName("context", name, false), registration(), false) { FunSpecContainerContext(it) }
 
    /**
     * Adds a disabled top level [FunSpecContainerContext] this root scope.
     */
    fun xcontext(name: String, test: suspend FunSpecContainerContext.() -> Unit) {
-      registration().addContainerTest(TestName(name), xdisabled = true) {}
+      registration().addContainerTest(TestName("context", name, false), xdisabled = true) {}
    }
 
    @ExperimentalKotest
    fun xcontext(name: String) =
-      RootContextConfigBuilder(TestName(name), registration(), true) { FunSpecContainerContext(it) }
+      RootContextConfigBuilder(TestName("context", name, false), registration(), true) { FunSpecContainerContext(it) }
 
    /**
     * Adds a top level test case to this root scope.

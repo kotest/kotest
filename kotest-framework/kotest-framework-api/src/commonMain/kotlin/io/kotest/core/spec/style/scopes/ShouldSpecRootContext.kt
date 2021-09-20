@@ -30,8 +30,10 @@ interface ShouldSpecRootContext : RootContext {
     * Adds a top level context scope to the spec.
     */
    fun context(name: String, test: suspend ShouldSpecContainerContext.() -> Unit) {
-      registration().addContainerTest(TestName(name), xdisabled = false) {
-         ShouldSpecContainerContext(this).test()
+      registration().addContainerTest(TestName("context ", name, false), xdisabled = false) {
+         val incomplete = IncompleteContainerContext(this)
+         ShouldSpecContainerContext(incomplete).test()
+         if (!incomplete.registered) throw IncompleteContainerException(name)
       }
    }
 
@@ -40,13 +42,15 @@ interface ShouldSpecRootContext : RootContext {
     */
    @ExperimentalKotest
    fun context(name: String) =
-      RootContextConfigBuilder(TestName(name), registration(), false) { ShouldSpecContainerContext(it) }
+      RootContextConfigBuilder(TestName("context ", name, false), registration(), false) {
+         ShouldSpecContainerContext(it)
+      }
 
    /**
     * Adds a top level context scope to the spec.
     */
    fun xcontext(name: String, test: suspend ShouldSpecContainerContext.() -> Unit) {
-      registration().addContainerTest(TestName(name), xdisabled = true) {}
+      registration().addContainerTest(TestName("context ", name, false), xdisabled = true) {}
    }
 
    /**
@@ -54,7 +58,9 @@ interface ShouldSpecRootContext : RootContext {
     */
    @ExperimentalKotest
    fun xcontext(name: String) =
-      RootContextConfigBuilder(TestName(name), registration(), true) { ShouldSpecContainerContext(it) }
+      RootContextConfigBuilder(TestName("context ", name, false), registration(), true) {
+         ShouldSpecContainerContext(it)
+      }
 
    /**
     * Adds a top level test, with the given name and test function, with test config supplied

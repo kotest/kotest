@@ -11,14 +11,18 @@ interface WordSpecRootContext : RootContext {
    infix fun String.should(test: suspend WordSpecShouldContainerContext.() -> Unit) {
       val testName = TestName("$this should")
       registration().addContainerTest(testName, xdisabled = false) {
-         WordSpecShouldContainerContext(this).test()
+         val incomplete = IncompleteContainerContext(this)
+         WordSpecShouldContainerContext(incomplete).test()
+         if (!incomplete.registered) throw IncompleteContainerException(testName.testName)
       }
    }
 
    infix fun String.xshould(test: suspend WordSpecShouldContainerContext.() -> Unit) {
       val testName = TestName("$this should")
       registration().addContainerTest(testName, xdisabled = true) {
-         WordSpecShouldContainerContext(this).test()
+         val incomplete = IncompleteContainerContext(this)
+         WordSpecShouldContainerContext(incomplete).test()
+         if (!incomplete.registered) throw IncompleteContainerException(testName.testName)
       }
    }
 
@@ -28,7 +32,9 @@ interface WordSpecRootContext : RootContext {
    private fun addWhenContext(name: String, test: suspend WordSpecWhenContainerContext.() -> Unit) {
       val testName = TestName("$name when")
       registration().addContainerTest(testName, xdisabled = false) {
-         WordSpecWhenContainerContext(this).test()
+         val incomplete = IncompleteContainerContext(this)
+         WordSpecWhenContainerContext(incomplete).test()
+         if (!incomplete.registered) throw IncompleteContainerException(testName.testName)
       }
    }
 }

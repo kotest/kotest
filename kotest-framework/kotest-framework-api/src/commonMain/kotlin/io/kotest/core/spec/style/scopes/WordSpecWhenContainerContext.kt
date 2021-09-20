@@ -40,7 +40,11 @@ class WordSpecWhenContainerContext(
             config = testCase.spec.resolvedDefaultConfig(),
             type = TestType.Container,
             factoryId = testCase.factoryId,
-            test = { WordSpecShouldContainerContext(this).test() }
+            test = {
+               val incomplete = IncompleteContainerContext(this)
+               WordSpecShouldContainerContext(incomplete).test()
+               if (!incomplete.registered) throw IncompleteContainerException(name)
+            }
          )
       )
    }

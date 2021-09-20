@@ -1,4 +1,4 @@
-package com.sksamuel.kotest.engine.spec.unfinished
+package com.sksamuel.kotest.engine.spec.dsl
 
 import io.kotest.core.annotation.Ignored
 import io.kotest.core.spec.style.FeatureSpec

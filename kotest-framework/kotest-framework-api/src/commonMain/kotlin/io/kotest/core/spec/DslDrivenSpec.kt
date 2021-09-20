@@ -94,7 +94,7 @@ abstract class DslDrivenSpec : Spec() {
       name: TestName,
       test: suspend TestContext.() -> Unit,
       config: TestCaseConfig,
-      type: TestType
+      type: TestType,
    ) {
       addRootTest(createRootTestCase(this, name, test, config, type))
    }
