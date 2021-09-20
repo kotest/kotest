@@ -28,12 +28,12 @@ class CheckAllTest : FunSpec() {
       }
 
       test("auto labelling") {
-         val context = checkAll(100, 98173L) {
+         val context = checkAll(100, 12412124123L) {
             Arb.string().value()
          }
          context.autoclassifications()["1"] shouldBe mapOf(
-            "MAX LENGTH" to 3,
-            "ANY LENGTH LETTER OR DIGITS" to 3
+            "EMPTY STRING" to 4,
+            "ANY LENGTH LETTER OR DIGITS" to 2
          )
       }
    }
