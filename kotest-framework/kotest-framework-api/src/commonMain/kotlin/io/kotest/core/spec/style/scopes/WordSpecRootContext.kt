@@ -1,7 +1,6 @@
 package io.kotest.core.spec.style.scopes
 
 import io.kotest.core.names.TestName
-import io.kotest.core.spec.KotestDsl
 
 @Suppress("FunctionName")
 interface WordSpecRootContext : RootContext {
