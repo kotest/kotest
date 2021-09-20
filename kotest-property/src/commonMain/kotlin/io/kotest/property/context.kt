@@ -6,7 +6,7 @@ import io.kotest.property.arbitrary.next
  * A [PropertyContext] is used when executing a propery test.
  * It allows feedback and tracking of the state of the property test.
  */
-class PropertyContext {
+class PropertyContext(private val rs: RandomSource? = null) {
 
    private var successes = 0
    private var failures = 0
@@ -66,8 +66,8 @@ class PropertyContext {
    }
 
    fun <A : Any> Arb<A>.value(): A {
-      val a = this.next() // todo use an RS that is injected into the property context
-      inputs.add(a) // todo reset the inputs on each cycle
+      val a = this.next(rs!!)
+      inputs.add(a)
 
       val classifier: Classifier<out A>? = this.classifier
       val label: String? = (classifier as Classifier<Any?>).classify(a)
