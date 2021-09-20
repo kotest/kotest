@@ -16,10 +16,9 @@ _**Kotlin 1.5 is now the minimum supported version**_
 * The Engine no longer logs config to the console during start **by default**. To enable, set the system property `kotest.framework.dump.config` to true. (#2276)
 * Removed deprecated `shouldReceiveWithin` and `shouldReceiveNoElementsWithin` channel matchers.
 * `equalJson` has an added parameter to support the new `shouldEqualSpecifiedJson` assertion
-* `TestEngineListener` methods are now suspendable. This is only of interest if you have implemented customizations of the Test Engine through plugins. Note: This is not related to public TestListener methods that are used by test cases.
 * The global configuration variable `project` has been removed. This was deprecated in 4.2. Use the replacment global variable `configuration` or provide config via instances of [ProjectConfig](https://kotest.io/docs/framework/project-config.html).
 * The deprecated `RuntimeTagExtension` has been undeprecated but moved to a new package.
-* In 4.5 the DSL scope classes were renamed from `XYZScope` to `XYZContext`. For example, `FreeSpecRootScope` became `FreeSpecRootContext`. The deprecated type aliases have now been removed. This only affects you if you have written custom Kotest Spec Styles that relied on the old names of scopes from existing spec styles.
+
 #### Fixes
 
 * String matchers now also work on CharSequence where applicable #2278
@@ -54,7 +53,7 @@ _**Kotlin 1.5 is now the minimum supported version**_
 
 ### 4.6.3 September 2021
 
-### Fixes
+#### Fixes
 
 * StackOverflow when using checkAll with certain arity functions #2513
 * Added arity8 and arity9 forall for table testing #2444
