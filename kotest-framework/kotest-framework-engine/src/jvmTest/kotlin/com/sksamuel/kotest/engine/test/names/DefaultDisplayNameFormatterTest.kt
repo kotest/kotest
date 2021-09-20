@@ -2,6 +2,7 @@ package com.sksamuel.kotest.engine.test.names
 
 import io.kotest.core.Tag
 import io.kotest.core.annotation.Tags
+import io.kotest.core.config.Configuration
 import io.kotest.core.config.configuration
 import io.kotest.core.descriptors.append
 import io.kotest.core.descriptors.toDescriptor
@@ -21,7 +22,30 @@ class DefaultDisplayNameFormatterTest : FunSpec() {
    init {
 
       test("@DisplayName should be used for spec name") {
-         DefaultDisplayNameFormatter(configuration, configuration.displayFullTestPath).format(SpecWithDisplayName::class) shouldBe "ZZZZZ"
+         DefaultDisplayNameFormatter(configuration).format(SpecWithDisplayName::class) shouldBe "ZZZZZ"
+      }
+
+      test("test name should use full path option") {
+         val conf = Configuration()
+         conf.displayFullTestPath = true
+         val tc1 = TestCase(
+            SpecWithTag::class.toDescriptor().append("test"),
+            TestName("test"),
+            SpecWithTag(),
+            {},
+            sourceRef(),
+            TestType.Test,
+         )
+         val tc2 = TestCase(
+            SpecWithTag::class.toDescriptor().append("test2"),
+            TestName("test2"),
+            SpecWithTag(),
+            {},
+            sourceRef(),
+            TestType.Test,
+            parent = tc1
+         )
+         DefaultDisplayNameFormatter(conf).format(tc2) shouldBe "test test2"
       }
 
       test("tags should be appended from spec when configuration is set") {
@@ -35,7 +59,7 @@ class DefaultDisplayNameFormatterTest : FunSpec() {
             sourceRef(),
             TestType.Test,
          )
-         DefaultDisplayNameFormatter(configuration, configuration.displayFullTestPath).format(tc) shouldBe "test[tags = Foo]"
+         DefaultDisplayNameFormatter(configuration).format(tc) shouldBe "test[tags = Foo]"
          configuration.testNameAppendTags = false
       }
 
@@ -51,7 +75,7 @@ class DefaultDisplayNameFormatterTest : FunSpec() {
             type = TestType.Test,
             config = TestCaseConfig(tags = setOf(Dummy, NoUse))
          )
-         DefaultDisplayNameFormatter(configuration, configuration.displayFullTestPath).format(tc) shouldBe "test[tags = Dummy, NoUse]"
+         DefaultDisplayNameFormatter(configuration).format(tc) shouldBe "test[tags = Dummy, NoUse]"
          configuration.testNameAppendTags = false
       }
 
@@ -67,7 +91,7 @@ class DefaultDisplayNameFormatterTest : FunSpec() {
             type = TestType.Test,
             config = TestCaseConfig(tags = setOf(Dummy, NoUse))
          )
-         DefaultDisplayNameFormatter(configuration, configuration.displayFullTestPath).format(tc) shouldBe "test[tags = Dummy, NoUse, Foo]"
+         DefaultDisplayNameFormatter(configuration).format(tc) shouldBe "test[tags = Dummy, NoUse, Foo]"
          configuration.testNameAppendTags = false
       }
    }
