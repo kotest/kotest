@@ -10,6 +10,7 @@ import java.time.LocalDateTime
 import java.time.LocalTime
 import java.time.Period
 import kotlin.reflect.KClass
+import kotlin.reflect.KType
 import kotlin.reflect.full.isSubclassOf
 
 @Suppress("UNCHECKED_CAST")
@@ -52,6 +53,48 @@ actual inline fun <reified A> targetDefaultForClass(): Arb<A>? {
       A::class.isData -> {
          val k = A::class as KClass<Any>
          Arb.bind(k) as Arb<A>
+      }
+      else -> null
+   }
+}
+
+@ExperimentalStdlibApi
+fun targetDefaultForType(type: KType): Arb<*>? {
+   val clazz = type.classifier as KClass<*>
+   return when {
+      clazz.isSubclassOf(List::class) -> {
+         val upperBound = type.arguments.first().type ?: error("No bound for List")
+         Arb.list(arbForType(upperBound) as Arb<Any>)
+      }
+      clazz.isSubclassOf(Set::class) -> {
+         val upperBound = clazz.typeParameters[0].upperBounds.onEach { println(it) }.first()
+         Arb.set(arbForType(upperBound) as Arb<Any>)
+      }
+//      clazz.isSubclassOf(Pair::class) -> {
+//         val type = object : TypeReference<A>() {}.type as ParameterizedType
+//         val first = (type.actualTypeArguments[0] as WildcardType).upperBounds.first() as Class<*>
+//         val second = (type.actualTypeArguments[1] as WildcardType).upperBounds.first() as Class<*>
+//         Arb.pair(defaultForClass(first.kotlin)!!, defaultForClass(second.kotlin)!!)
+//      }
+//      clazz.isSubclassOf(Map::class) -> {
+//         val type = object : TypeReference<A>() {}.type as ParameterizedType
+//         // map key type can have or have not variance
+//         val first = if (type.actualTypeArguments[0] is Class<*>) {
+//            type.actualTypeArguments[0] as Class<*>
+//         } else {
+//            (type.actualTypeArguments[0] as WildcardType).upperBounds.first() as Class<*>
+//         }
+//         val second = (type.actualTypeArguments[1] as WildcardType).upperBounds.first() as Class<*>
+//         Arb.map(defaultForClass(first.kotlin)!!, defaultForClass(second.kotlin)!!)
+//      }
+      clazz == LocalDate::class -> Arb.localDate()
+      clazz == LocalDateTime::class -> Arb.localDateTime()
+      clazz == LocalTime::class -> Arb.localTime()
+      clazz == Period::class -> Arb.period()
+      clazz == BigDecimal::class -> Arb.bigDecimal()
+      clazz.isData -> {
+         val k = clazz as KClass<Any>
+         Arb.bind(k)
       }
       else -> null
    }

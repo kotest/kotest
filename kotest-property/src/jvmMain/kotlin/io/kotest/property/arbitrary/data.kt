@@ -38,12 +38,15 @@ inline fun <reified T : Any> Arb.Companion.data(): Arb<T> =
    } else error("Only possible to use for data classes")
 
 @ExperimentalStdlibApi
-inline fun toArb(property: KParameter, type: KType): Arb<*> {
+fun toArb(property: KParameter, type: KType): Arb<*> {
+   return arbForType(type) ?: error("Unhandled: ${property.name}")
+}
+
+@ExperimentalStdlibApi
+fun arbForType(type: KType): Arb<*>? {
    return defaultForClass(type.classifier as KClass<*>)
-      // TODO:
-//      ?: targetDefaultForClass()
       ?: tryDataArb(type)
-      ?: error("Unhandled: ${property.name}")
+      ?: targetDefaultForType(type)
 }
 
 @ExperimentalStdlibApi

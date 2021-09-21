@@ -11,11 +11,12 @@ import kotlin.reflect.full.declaredMemberProperties
 class ArbDataTest : FunSpec(
    {
 
-      data class Inner(val something: Int, val somethingElse: Int)
+      data class Inner(val something: List<Int>, val somethingElse: Int)
       data class Person(val name: String, val age: Int, val isHuman: Boolean, val inner: Inner)
+      data class Teacher(val name: String, val students: List<Person>)
 
       test("Generate arb for data class") {
-         val gen = Arb.data(Person::class)
+         val gen = Arb.data(Teacher::class)
          val person = gen.next()
 
          println(person)
