@@ -583,27 +583,4 @@ class BindTest : StringSpec({
       )
    }
 
-   "Arb.reflectiveBind" {
-      val arb = Arb.bind<Wobble>()
-      arb.take(10).toList().size shouldBe 10
-   }
-
-   "Arb.reflectiveBind should generate probabilistic edge cases" {
-      val arb = Arb.bind<Wobble>()
-      val edgeCases = arb
-         .generate(RandomSource.seeded(1234L), EdgeConfig(edgecasesGenerationProbability = 1.0))
-         .take(5)
-         .map { it.value }
-         .toList()
-
-      edgeCases shouldContainExactly listOf(
-         Wobble(a = "a", b = false, c = 1, d = -Double.MIN_VALUE, e = Float.POSITIVE_INFINITY),
-         Wobble(a = "", b = true, c = 2147483647, d = -1.0, e = Float.MIN_VALUE),
-         Wobble(a = "", b = false, c = -1, d = -Double.MIN_VALUE, e = 1.0F),
-         Wobble(a = "a", b = true, c = 2147483647, d = -Double.MAX_VALUE, e = -1.0F),
-         Wobble(a = "", b = false, c = 1, d = -0.0, e = Float.NaN)
-      )
-   }
 })
-
-data class Wobble(val a: String, val b: Boolean, val c: Int, val d: Double, val e: Float)

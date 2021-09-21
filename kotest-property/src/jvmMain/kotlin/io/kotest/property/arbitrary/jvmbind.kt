@@ -2,6 +2,7 @@ package io.kotest.property.arbitrary
 
 import io.kotest.property.Arb
 import kotlin.reflect.KClass
+import kotlin.reflect.KType
 import kotlin.reflect.full.primaryConstructor
 
 /**
@@ -15,6 +16,11 @@ import kotlin.reflect.full.primaryConstructor
  * the parameter generators are supplied programatically.
  */
 inline fun <reified T : Any> Arb.Companion.bind(): Arb<T> = bind(T::class)
+
+/**
+ * Alias for [Arb.Companion.bind]
+ */
+inline fun <reified T : Any> Arb.Companion.data(): Arb<T> = Arb.bind()
 
 /**
  * Returns an [Arb] where each value is a randomly created instance of [T].
@@ -31,9 +37,13 @@ fun <T : Any> Arb.Companion.bind(kclass: KClass<T>): Arb<T> {
    check(constructor.parameters.isNotEmpty()) { "${kclass.qualifiedName} constructor must contain at least 1 parameter" }
 
    val arbs: List<Arb<*>> = constructor.parameters.map { param ->
-      defaultForClass(param.type.classifier as KClass<*>)
-         ?: error("Could not locate generator for parameter ${kclass.qualifiedName}.${param.name}")
+      Arb.forType(param.type) ?: error("Could not locate generator for parameter ${kclass.qualifiedName}.${param.name}")
    }
 
    return Arb.bind(arbs) { params -> constructor.call(*params.toTypedArray()) }
+}
+
+internal fun Arb.Companion.forType(type: KType): Arb<*>? {
+   return (type.classifier as? KClass<*>)?.let { defaultForClass(it) }
+      ?: targetDefaultForType(type)
 }

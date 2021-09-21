@@ -12,87 +12,39 @@ import java.time.Period
 import kotlin.reflect.KClass
 import kotlin.reflect.KType
 import kotlin.reflect.full.isSubclassOf
+import kotlin.reflect.typeOf
 
 @Suppress("UNCHECKED_CAST")
-actual inline fun <reified A> targetDefaultForClass(): Arb<A>? {
-   return when {
-      A::class.isSubclassOf(List::class) -> {
-         val type = object : TypeReference<A>() {}.type as ParameterizedType
-         val first = type.actualTypeArguments.first() as WildcardType
-         val upper = first.upperBounds.first() as Class<*>
-         Arb.list(defaultForClass(upper.kotlin) as Arb<Any>) as Arb<A>
-      }
-      A::class.isSubclassOf(Set::class) -> {
-         val type = object : TypeReference<A>() {}.type as ParameterizedType
-         val first = type.actualTypeArguments.first() as WildcardType
-         val upper = first.upperBounds.first() as Class<*>
-         Arb.set(defaultForClass(upper.kotlin) as Arb<Any>) as Arb<A>
-      }
-      A::class.isSubclassOf(Pair::class) -> {
-         val type = object : TypeReference<A>() {}.type as ParameterizedType
-         val first = (type.actualTypeArguments[0] as WildcardType).upperBounds.first() as Class<*>
-         val second = (type.actualTypeArguments[1] as WildcardType).upperBounds.first() as Class<*>
-         Arb.pair(defaultForClass(first.kotlin)!!, defaultForClass(second.kotlin)!!) as Arb<A>
-      }
-      A::class.isSubclassOf(Map::class) -> {
-         val type = object : TypeReference<A>() {}.type as ParameterizedType
-         // map key type can have or have not variance
-         val first = if (type.actualTypeArguments[0] is Class<*>) {
-            type.actualTypeArguments[0] as Class<*>
-         } else {
-            (type.actualTypeArguments[0] as WildcardType).upperBounds.first() as Class<*>
-         }
-         val second = (type.actualTypeArguments[1] as WildcardType).upperBounds.first() as Class<*>
-         Arb.map(defaultForClass(first.kotlin)!!, defaultForClass(second.kotlin)!!) as Arb<A>
-      }
-      A::class == LocalDate::class -> Arb.localDate() as Arb<A>
-      A::class == LocalDateTime::class -> Arb.localDateTime() as Arb<A>
-      A::class == LocalTime::class -> Arb.localTime() as Arb<A>
-      A::class == Period::class -> Arb.period() as Arb<A>
-      A::class == BigDecimal::class -> Arb.bigDecimal() as Arb<A>
-      A::class.isData -> {
-         val k = A::class as KClass<Any>
-         Arb.bind(k) as Arb<A>
-      }
-      else -> null
-   }
-}
+actual inline fun <reified A> targetDefaultForClass(): Arb<A>? = targetDefaultForType(typeOf<A>()) as Arb<A>?
 
-@ExperimentalStdlibApi
 fun targetDefaultForType(type: KType): Arb<*>? {
-   val clazz = type.classifier as KClass<*>
+   val clazz = type.classifier as? KClass<*>
    return when {
-      clazz.isSubclassOf(List::class) -> {
+      clazz?.isSubclassOf(List::class) == true -> {
          val upperBound = type.arguments.first().type ?: error("No bound for List")
-         Arb.list(arbForType(upperBound) as Arb<Any>)
+         Arb.list(Arb.forType(upperBound) as Arb<Any>)
       }
-      clazz.isSubclassOf(Set::class) -> {
-         val upperBound = clazz.typeParameters[0].upperBounds.onEach { println(it) }.first()
-         Arb.set(arbForType(upperBound) as Arb<Any>)
+      clazz?.isSubclassOf(Set::class) == true -> {
+         val upperBound = type.arguments.first().type ?: error("No bound for Set")
+         Arb.set(Arb.forType(upperBound) as Arb<Any>)
       }
-//      clazz.isSubclassOf(Pair::class) -> {
-//         val type = object : TypeReference<A>() {}.type as ParameterizedType
-//         val first = (type.actualTypeArguments[0] as WildcardType).upperBounds.first() as Class<*>
-//         val second = (type.actualTypeArguments[1] as WildcardType).upperBounds.first() as Class<*>
-//         Arb.pair(defaultForClass(first.kotlin)!!, defaultForClass(second.kotlin)!!)
-//      }
-//      clazz.isSubclassOf(Map::class) -> {
-//         val type = object : TypeReference<A>() {}.type as ParameterizedType
-//         // map key type can have or have not variance
-//         val first = if (type.actualTypeArguments[0] is Class<*>) {
-//            type.actualTypeArguments[0] as Class<*>
-//         } else {
-//            (type.actualTypeArguments[0] as WildcardType).upperBounds.first() as Class<*>
-//         }
-//         val second = (type.actualTypeArguments[1] as WildcardType).upperBounds.first() as Class<*>
-//         Arb.map(defaultForClass(first.kotlin)!!, defaultForClass(second.kotlin)!!)
-//      }
-      clazz == LocalDate::class -> Arb.localDate()
-      clazz == LocalDateTime::class -> Arb.localDateTime()
-      clazz == LocalTime::class -> Arb.localTime()
-      clazz == Period::class -> Arb.period()
-      clazz == BigDecimal::class -> Arb.bigDecimal()
-      clazz.isData -> {
+      clazz?.isSubclassOf(Pair::class) == true -> {
+         val first = type.arguments[0].type ?: error("No bound for first type parameter of Pair")
+         val second = type.arguments[1].type ?: error("No bound for second type parameter of Pair")
+         Arb.pair(Arb.forType(first)!!, Arb.forType(second)!!)
+      }
+      clazz?.isSubclassOf(Map::class) == true -> {
+         // map key type can have or have not variance
+         val first = type.arguments[0].type ?: error("No bound for first type parameter of Map<K, V>")
+         val second = type.arguments[1].type ?: error("No bound for second type parameter of Map<K, V>")
+         Arb.map(Arb.forType(first)!!, Arb.forType(second)!!)
+      }
+      type == typeOf<LocalDate>() -> Arb.localDate()
+      type == typeOf<LocalDateTime>() -> Arb.localDateTime()
+      type == typeOf<LocalTime>() -> Arb.localTime()
+      type == typeOf<Period>() -> Arb.period()
+      type == typeOf<BigDecimal>() -> Arb.bigDecimal()
+      clazz?.isData == true -> {
          val k = clazz as KClass<Any>
          Arb.bind(k)
       }

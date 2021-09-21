@@ -160,6 +160,7 @@ kotlin {
 
       all {
          languageSettings.optIn("kotlin.time.ExperimentalTime")
+         languageSettings.optIn("kotlin.ExperimentalStdlibApi")
          languageSettings.optIn("kotlin.experimental.ExperimentalTypeInference")
       }
    }
