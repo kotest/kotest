@@ -15,12 +15,14 @@ import kotlin.reflect.full.primaryConstructor
  * If your class has more complex requirements, you can use Arb.bind(gen1, gen2...) where
  * the parameter generators are supplied programatically.
  */
-inline fun <reified T : Any> Arb.Companion.bind(): Arb<T> = bind(T::class)
+inline fun <reified T : Any> Arb.Companion.bind(providedArbs: Map<KClass<*>, Arb<*>> = emptyMap()): Arb<T> =
+   bind(providedArbs, T::class)
 
 /**
  * Alias for [Arb.Companion.bind]
  */
-inline fun <reified T : Any> Arb.Companion.data(): Arb<T> = Arb.bind()
+inline fun <reified T : Any> Arb.Companion.data(providedArbs: Map<KClass<*>, Arb<*>> = emptyMap()): Arb<T> =
+   Arb.bind(providedArbs)
 
 /**
  * Returns an [Arb] where each value is a randomly created instance of [T].
@@ -32,18 +34,19 @@ inline fun <reified T : Any> Arb.Companion.data(): Arb<T> = Arb.bind()
  * If your class has more complex requirements, you can use Arb.bind(gen1, gen2...) where
  * the parameter generators are supplied programatically.
  */
-fun <T : Any> Arb.Companion.bind(kclass: KClass<T>): Arb<T> {
+fun <T : Any> Arb.Companion.bind(providedArbs: Map<KClass<*>, Arb<*>>, kclass: KClass<T>): Arb<T> {
    val constructor = kclass.primaryConstructor ?: error("could not locate a primary constructor")
    check(constructor.parameters.isNotEmpty()) { "${kclass.qualifiedName} constructor must contain at least 1 parameter" }
 
    val arbs: List<Arb<*>> = constructor.parameters.map { param ->
-      Arb.forType(param.type) ?: error("Could not locate generator for parameter ${kclass.qualifiedName}.${param.name}")
+      Arb.forType(providedArbs, param.type)
+         ?: error("Could not locate generator for parameter ${kclass.qualifiedName}.${param.name}")
    }
 
    return Arb.bind(arbs) { params -> constructor.call(*params.toTypedArray()) }
 }
 
-internal fun Arb.Companion.forType(type: KType): Arb<*>? {
-   return (type.classifier as? KClass<*>)?.let { defaultForClass(it) }
-      ?: targetDefaultForType(type)
+internal fun Arb.Companion.forType(providedArbs: Map<KClass<*>, Arb<*>>, type: KType): Arb<*>? {
+   return (type.classifier as? KClass<*>)?.let { providedArbs[it] ?: defaultForClass(it) }
+      ?: targetDefaultForType(providedArbs, type)
 }

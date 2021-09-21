@@ -15,29 +15,29 @@ import kotlin.reflect.full.isSubclassOf
 import kotlin.reflect.typeOf
 
 @Suppress("UNCHECKED_CAST")
-actual inline fun <reified A> targetDefaultForClass(): Arb<A>? = targetDefaultForType(typeOf<A>()) as Arb<A>?
+actual inline fun <reified A> targetDefaultForClass(): Arb<A>? = targetDefaultForType(type = typeOf<A>()) as Arb<A>?
 
-fun targetDefaultForType(type: KType): Arb<*>? {
+fun targetDefaultForType(providedArbs: Map<KClass<*>, Arb<*>> = emptyMap(), type: KType): Arb<*>? {
    val clazz = type.classifier as? KClass<*>
    return when {
       clazz?.isSubclassOf(List::class) == true -> {
          val upperBound = type.arguments.first().type ?: error("No bound for List")
-         Arb.list(Arb.forType(upperBound) as Arb<Any>)
+         Arb.list(Arb.forType(providedArbs, upperBound) as Arb<Any>)
       }
       clazz?.isSubclassOf(Set::class) == true -> {
          val upperBound = type.arguments.first().type ?: error("No bound for Set")
-         Arb.set(Arb.forType(upperBound) as Arb<Any>)
+         Arb.set(Arb.forType(providedArbs, upperBound) as Arb<Any>)
       }
       clazz?.isSubclassOf(Pair::class) == true -> {
          val first = type.arguments[0].type ?: error("No bound for first type parameter of Pair")
          val second = type.arguments[1].type ?: error("No bound for second type parameter of Pair")
-         Arb.pair(Arb.forType(first)!!, Arb.forType(second)!!)
+         Arb.pair(Arb.forType(providedArbs, first)!!, Arb.forType(providedArbs, second)!!)
       }
       clazz?.isSubclassOf(Map::class) == true -> {
          // map key type can have or have not variance
          val first = type.arguments[0].type ?: error("No bound for first type parameter of Map<K, V>")
          val second = type.arguments[1].type ?: error("No bound for second type parameter of Map<K, V>")
-         Arb.map(Arb.forType(first)!!, Arb.forType(second)!!)
+         Arb.map(Arb.forType(providedArbs, first)!!, Arb.forType(providedArbs, second)!!)
       }
       type == typeOf<LocalDate>() -> Arb.localDate()
       type == typeOf<LocalDateTime>() -> Arb.localDateTime()
@@ -46,7 +46,7 @@ fun targetDefaultForType(type: KType): Arb<*>? {
       type == typeOf<BigDecimal>() -> Arb.bigDecimal()
       clazz?.isData == true -> {
          val k = clazz as KClass<Any>
-         Arb.bind(k)
+         Arb.bind(providedArbs, k)
       }
       else -> null
    }
