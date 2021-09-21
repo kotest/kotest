@@ -30,7 +30,7 @@ fun <T : Any> Arb.Companion.bind(kclass: KClass<T>): Arb<T> {
    val constructor = kclass.primaryConstructor ?: error("could not locate a primary constructor")
    check(constructor.parameters.isNotEmpty()) { "${kclass.qualifiedName} constructor must contain at least 1 parameter" }
 
-   val arbs: List<Arb<Any>> = constructor.parameters.map { param ->
+   val arbs: List<Arb<*>> = constructor.parameters.map { param ->
       defaultForClass(param.type.classifier as KClass<*>)
          ?: error("Could not locate generator for parameter ${kclass.qualifiedName}.${param.name}")
    }

@@ -19,19 +19,19 @@ actual inline fun <reified A> targetDefaultForClass(): Arb<A>? {
          val type = object : TypeReference<A>() {}.type as ParameterizedType
          val first = type.actualTypeArguments.first() as WildcardType
          val upper = first.upperBounds.first() as Class<*>
-         Arb.list(defaultForClass<Any>(upper.kotlin) as Arb<Any>) as Arb<A>
+         Arb.list(defaultForClass(upper.kotlin) as Arb<Any>) as Arb<A>
       }
       A::class.isSubclassOf(Set::class) -> {
          val type = object : TypeReference<A>() {}.type as ParameterizedType
          val first = type.actualTypeArguments.first() as WildcardType
          val upper = first.upperBounds.first() as Class<*>
-         Arb.set(defaultForClass<Any>(upper.kotlin) as Arb<Any>) as Arb<A>
+         Arb.set(defaultForClass(upper.kotlin) as Arb<Any>) as Arb<A>
       }
       A::class.isSubclassOf(Pair::class) -> {
          val type = object : TypeReference<A>() {}.type as ParameterizedType
          val first = (type.actualTypeArguments[0] as WildcardType).upperBounds.first() as Class<*>
          val second = (type.actualTypeArguments[1] as WildcardType).upperBounds.first() as Class<*>
-         Arb.pair(defaultForClass<Any>(first.kotlin)!!, defaultForClass<Any>(second.kotlin)!!) as Arb<A>
+         Arb.pair(defaultForClass(first.kotlin)!!, defaultForClass(second.kotlin)!!) as Arb<A>
       }
       A::class.isSubclassOf(Map::class) -> {
          val type = object : TypeReference<A>() {}.type as ParameterizedType
@@ -42,7 +42,7 @@ actual inline fun <reified A> targetDefaultForClass(): Arb<A>? {
             (type.actualTypeArguments[0] as WildcardType).upperBounds.first() as Class<*>
          }
          val second = (type.actualTypeArguments[1] as WildcardType).upperBounds.first() as Class<*>
-         Arb.map(defaultForClass<Any>(first.kotlin)!!, defaultForClass<Any>(second.kotlin)!!) as Arb<A>
+         Arb.map(defaultForClass(first.kotlin)!!, defaultForClass(second.kotlin)!!) as Arb<A>
       }
       A::class == LocalDate::class -> Arb.localDate() as Arb<A>
       A::class == LocalDateTime::class -> Arb.localDateTime() as Arb<A>

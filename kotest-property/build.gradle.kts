@@ -65,6 +65,7 @@ kotlin {
          dependencies {
             implementation(Libs.Wumpz.diffutils)
             implementation(Libs.rgxgen.rgxgen)
+            implementation(kotlin("reflect"))
          }
       }
 
