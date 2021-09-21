@@ -16,7 +16,7 @@ class ArbDataTest : FunSpec(
       data class Teacher(val name: String, val students: List<Person>)
 
       test("Generate arb for data class") {
-         val gen = Arb.data(Teacher::class)
+         val gen = Arb.data<Teacher>()
          val person = gen.next()
 
          println(person)
