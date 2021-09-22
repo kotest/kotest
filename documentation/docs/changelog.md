@@ -44,11 +44,13 @@ _**Kotlin 1.5 is now the minimum supported version**_
 * Added arb for ip addresses V4 #2407
 * Added arb for hexidecimal codepoints #2409
 * Added `shouldEqualSpecifiedJson` to match a JSON structure on a subset of (specified) keys. (#2298)
+* `shouldEqualJson` now supports high-precision numbers (#2458)
 
 #### Deprecations
 
 * `beforeTest` / `afterTest` have been deprecated in favour of `beforeAny` / `afterAny`.
 * Datatest2 has been deprecated
+* `CompareMode` /`CompareOrder` for `shouldEqualJson` has been deprecated in favor of `compareJsonOptions { }`
 
 
 ### 4.6.3 September 2021
