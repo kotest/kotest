@@ -604,6 +604,22 @@ class BindTest : StringSpec({
          Wobble(a = "", b = false, c = 1, d = -0.0, e = Float.NaN)
       )
    }
+
+   "Arb.bind shrinks" {
+      data class Person(val name: String, val age: Int) {
+         init {
+            require(age > 0) { "Age must not be negative" }
+            require(age < 200) { "Unlikely" }
+         }
+      }
+      val arb = Arb.bind<Person>()
+
+      shouldFail {
+         checkAll(arb) {
+            // Probably ok
+         }
+      }.shouldHaveMessage("")
+   }
 })
 
 data class Wobble(val a: String, val b: Boolean, val c: Int, val d: Double, val e: Float)

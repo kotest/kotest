@@ -3,11 +3,12 @@ package io.kotest.property.arbitrary
 import io.kotest.property.Arb
 import io.kotest.property.Exhaustive
 import io.kotest.property.Gen
+import io.kotest.property.RTree
 import io.kotest.property.RandomSource
 import io.kotest.property.Sample
 import io.kotest.property.Shrinker
+import io.kotest.property.map
 import io.kotest.property.rtree
-import io.kotest.property.sampleOf
 
 fun <A, B, T> Arb.Companion.bind(
    genA: Gen<A>,
@@ -406,6 +407,55 @@ private fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, T> Arb.Companion.bindN(
    bindFn: (A, B, C, D, E, F, G, H, I, J, K, L, M, N) -> T,
 ): Arb<T> {
 
+   data class RTreeTuple(
+      val a: RTree<A>, val b: RTree<B>, val c: RTree<C>, val d: RTree<D>, val e: RTree<E>,
+      val f: RTree<F>, val g: RTree<G>, val h: RTree<H>, val i: RTree<I>, val j: RTree<J>,
+      val k: RTree<K>, val l: RTree<L>, val m: RTree<M>, val n:RTree<N>
+   )
+
+   fun RTreeTuple.bind(): RTree<T> =
+      RTree(
+         {
+            bindFn(
+               a.value(), b.value(), c.value(), d.value(), e.value(),
+               f.value(), g.value(), h.value(), i.value(), j.value(),
+               k.value(), l.value(), m.value(), n.value()
+            )
+         },
+         lazy {
+            a.children.value.flatMap { ac ->
+               b.children.value.flatMap { bc ->
+                  c.children.value.flatMap { cc ->
+                     d.children.value.flatMap { dc ->
+                        e.children.value.flatmap { ec ->
+                           f.children.value.flatMap { fc ->
+                              g.children.value.flatMap { gc ->
+                                 h.children.value.flatMap { hc ->
+                                    i.children.value.flatMap { ic ->
+                                       j.children.value.flatMap { jc ->
+                                          k.children.value.flatMap { kc ->
+                                             l.children.value.flatMap { lc ->
+                                                m.children.value.flatMap { mc ->
+                                                   n.children.value.map { nc ->
+                                                      RTreeTuple(ac,bc,cc,dc,ec,fc,gc,hc,ic,jc,kc,lc,mc,nc).bind()
+                                                   }
+                                                }
+                                             }
+                                          }
+                                       }
+                                    }
+                                 }
+                              }
+                           }
+                        }
+                     }
+                  }
+               }
+            }
+         }
+      )
+
+
    val arbA = genA.toArb()
    val arbB = genB.toArb()
    val arbC = genC.toArb()
@@ -443,44 +493,24 @@ private fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, T> Arb.Companion.bindN(
       }
 
       override fun sample(rs: RandomSource): Sample<T> {
-         val (av, `as`) = arbA.sample(rs)
-         val (bv, bs) = arbB.sample(rs)
-         val (cv, cs) = arbC.sample(rs)
-         val (dv, ds) = arbD.sample(rs)
-         val (ev, es) = arbE.sample(rs)
-         val (fv, fs) = arbF.sample(rs)
-         val (gv, gs) = arbG.sample(rs)
-         val (hv, hs) = arbH.sample(rs)
-         val (iv, `is`) = arbI.sample(rs)
-         val (jv, js) = arbJ.sample(rs)
-         val (kv, ks) = arbK.sample(rs)
-         val (lv, ls) = arbL.sample(rs)
-         val (mv, ms) = arbM.sample(rs)
-         val (nv, ns) = arbN.sample(rs)
+         val (av, ar) = arbA.sample(rs)
+         val (bv, br) = arbB.sample(rs)
+         val (cv, cr) = arbC.sample(rs)
+         val (dv, dr) = arbD.sample(rs)
+         val (ev, er) = arbE.sample(rs)
+         val (fv, fr) = arbF.sample(rs)
+         val (gv, gr) = arbG.sample(rs)
+         val (hv, hr) = arbH.sample(rs)
+         val (iv, ir) = arbI.sample(rs)
+         val (jv, jr) = arbJ.sample(rs)
+         val (kv, kr) = arbK.sample(rs)
+         val (lv, lr) = arbL.sample(rs)
+         val (mv, mr) = arbM.sample(rs)
+         val (nv, nr) = arbN.sample(rs)
 
-         // Shrink components one by one
-         val shrinker = Shrinker { _: T ->
-            listOf(
-               bindFn(`as`.value(), bv, cv, dv, ev, fv, gv, hv, iv, jv, kv, lv, mv, nv),
-               bindFn(av, bs.value(), cv, dv, ev, fv, gv, hv, iv, jv, kv, lv, mv, nv),
-               bindFn(av, bv, cs.value(), dv, ev, fv, gv, hv, iv, jv, kv, lv, mv, nv),
-               bindFn(av, bv, cv, ds.value(), ev, fv, gv, hv, iv, jv, kv, lv, mv, nv),
-               bindFn(av, bv, cv, dv, es.value(), fv, gv, hv, iv, jv, kv, lv, mv, nv),
-               bindFn(av, bv, cv, dv, ev, fs.value(), gv, hv, iv, jv, kv, lv, mv, nv),
-               bindFn(av, bv, cv, dv, ev, fv, gs.value(), hv, iv, jv, kv, lv, mv, nv),
-               bindFn(av, bv, cv, dv, ev, fv, gv, hs.value(), iv, jv, kv, lv, mv, nv),
-               bindFn(av, bv, cv, dv, ev, fv, gv, hv, `is`.value(), jv, kv, lv, mv, nv),
-               bindFn(av, bv, cv, dv, ev, fv, gv, hv, iv, js.value(), kv, lv, mv, nv),
-               bindFn(av, bv, cv, dv, ev, fv, gv, hv, iv, jv, ks.value(), lv, mv, nv),
-               bindFn(av, bv, cv, dv, ev, fv, gv, hv, iv, jv, kv, ls.value(), mv, nv),
-               bindFn(av, bv, cv, dv, ev, fv, gv, hv, iv, jv, kv, lv, ms.value(), nv),
-               bindFn(av, bv, cv, dv, ev, fv, gv, hv, iv, jv, kv, lv, mv, ns.value()),
-            )
-         }
-
-         return sampleOf(
+         return Sample(
             bindFn(av, bv, cv, dv, ev, fv, gv, hv, iv, jv, kv, lv, mv, nv),
-            shrinker
+            RTreeTuple(ar, br, cr, dr, er, fr, gr, hr, ir, jr, kr, lr, mr, nr).bind()
          )
       }
    }
