@@ -5,6 +5,9 @@ import io.kotest.property.Exhaustive
 import io.kotest.property.Gen
 import io.kotest.property.RandomSource
 import io.kotest.property.Sample
+import io.kotest.property.Shrinker
+import io.kotest.property.rtree
+import io.kotest.property.sampleOf
 
 fun <A, B, T> Arb.Companion.bind(
    genA: Gen<A>,
@@ -400,7 +403,7 @@ private fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, T> Arb.Companion.bindN(
    genL: Gen<L>,
    genM: Gen<M>,
    genN: Gen<N>,
-   bindFn: (A, B, C, D, E, F, G, H, I, J, K, L, M, N) -> T
+   bindFn: (A, B, C, D, E, F, G, H, I, J, K, L, M, N) -> T,
 ): Arb<T> {
 
    val arbA = genA.toArb()
@@ -440,21 +443,45 @@ private fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, T> Arb.Companion.bindN(
       }
 
       override fun sample(rs: RandomSource): Sample<T> {
-         val a = arbA.sample(rs).value
-         val b = arbB.sample(rs).value
-         val c = arbC.sample(rs).value
-         val d = arbD.sample(rs).value
-         val e = arbE.sample(rs).value
-         val f = arbF.sample(rs).value
-         val g = arbG.sample(rs).value
-         val h = arbH.sample(rs).value
-         val i = arbI.sample(rs).value
-         val j = arbJ.sample(rs).value
-         val k = arbK.sample(rs).value
-         val l = arbL.sample(rs).value
-         val m = arbM.sample(rs).value
-         val n = arbN.sample(rs).value
-         return Sample(bindFn(a, b, c, d, e, f, g, h, i, j, k, l, m, n))
+         val (av, `as`) = arbA.sample(rs)
+         val (bv, bs) = arbB.sample(rs)
+         val (cv, cs) = arbC.sample(rs)
+         val (dv, ds) = arbD.sample(rs)
+         val (ev, es) = arbE.sample(rs)
+         val (fv, fs) = arbF.sample(rs)
+         val (gv, gs) = arbG.sample(rs)
+         val (hv, hs) = arbH.sample(rs)
+         val (iv, `is`) = arbI.sample(rs)
+         val (jv, js) = arbJ.sample(rs)
+         val (kv, ks) = arbK.sample(rs)
+         val (lv, ls) = arbL.sample(rs)
+         val (mv, ms) = arbM.sample(rs)
+         val (nv, ns) = arbN.sample(rs)
+
+         // Shrink components one by one
+         val shrinker = Shrinker { _: T ->
+            listOf(
+               bindFn(`as`.value(), bv, cv, dv, ev, fv, gv, hv, iv, jv, kv, lv, mv, nv),
+               bindFn(av, bs.value(), cv, dv, ev, fv, gv, hv, iv, jv, kv, lv, mv, nv),
+               bindFn(av, bv, cs.value(), dv, ev, fv, gv, hv, iv, jv, kv, lv, mv, nv),
+               bindFn(av, bv, cv, ds.value(), ev, fv, gv, hv, iv, jv, kv, lv, mv, nv),
+               bindFn(av, bv, cv, dv, es.value(), fv, gv, hv, iv, jv, kv, lv, mv, nv),
+               bindFn(av, bv, cv, dv, ev, fs.value(), gv, hv, iv, jv, kv, lv, mv, nv),
+               bindFn(av, bv, cv, dv, ev, fv, gs.value(), hv, iv, jv, kv, lv, mv, nv),
+               bindFn(av, bv, cv, dv, ev, fv, gv, hs.value(), iv, jv, kv, lv, mv, nv),
+               bindFn(av, bv, cv, dv, ev, fv, gv, hv, `is`.value(), jv, kv, lv, mv, nv),
+               bindFn(av, bv, cv, dv, ev, fv, gv, hv, iv, js.value(), kv, lv, mv, nv),
+               bindFn(av, bv, cv, dv, ev, fv, gv, hv, iv, jv, ks.value(), lv, mv, nv),
+               bindFn(av, bv, cv, dv, ev, fv, gv, hv, iv, jv, kv, ls.value(), mv, nv),
+               bindFn(av, bv, cv, dv, ev, fv, gv, hv, iv, jv, kv, lv, ms.value(), nv),
+               bindFn(av, bv, cv, dv, ev, fv, gv, hv, iv, jv, kv, lv, mv, ns.value()),
+            )
+         }
+
+         return sampleOf(
+            bindFn(av, bv, cv, dv, ev, fv, gv, hv, iv, jv, kv, lv, mv, nv),
+            shrinker
+         )
       }
    }
 }
@@ -533,5 +560,3 @@ private fun <A> Arb.Companion.bind(arbs: List<Arb<A>>): Arb<List<A>> = when (arb
       Arb.bind(listOfArbs).map { it.flatten() }
    }
 }
-
-
