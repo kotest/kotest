@@ -1,12 +1,19 @@
 package io.kotest.assertions.json
 
 import io.kotest.assertions.shouldFail
+import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.string.shouldContain
 import io.kotest.matchers.throwable.shouldHaveMessage
 
 class JsonLiteralsTest : FunSpec(
    {
+      test("Unsupported type") {
+         shouldThrow<IllegalArgumentException> {
+            "0x03" shouldEqualJson "0x03"
+         }.shouldHaveMessage("Unsupported kotlinx-serialization type 0x03")
+      }
+
       context("Strict (default) comparisons") {
          test("comparing float and int") {
             shouldFail {
@@ -54,7 +61,7 @@ class JsonLiteralsTest : FunSpec(
                The top level expected 0.123456789123456789 but was 0.12345678912345678
 
                expected:
-               0.12345678912345678
+               0.123456789123456789
 
                actual:
                0.12345678912345678
@@ -80,7 +87,8 @@ class JsonLiteralsTest : FunSpec(
       }
 
       context("CompareMode.Exact requires same format for numbers") {
-         infix fun String.shouldExactlyEqualJson(expected: String) = this.shouldEqualJson(expected, CompareMode.Exact)
+         infix fun String.shouldExactlyEqualJson(expected: String) =
+            this.shouldEqualJson(expected, compareJsonOptions { numberFormat = NumberFormat.Strict })
 
          test("comparing float and exponent") {
             shouldFail {
@@ -90,7 +98,7 @@ class JsonLiteralsTest : FunSpec(
                The top level expected 1e1 but was 10.0
 
                expected:
-               10.0
+               1e1
 
                actual:
                10.0
@@ -106,7 +114,7 @@ class JsonLiteralsTest : FunSpec(
                The top level expected 1e1 but was 10
 
                expected:
-               10.0
+               1e1
 
                actual:
                10
@@ -142,7 +150,8 @@ class JsonLiteralsTest : FunSpec(
 
       context("Lenient type-conversions") {
 
-         infix fun String.lenientShouldEqualJson(expected: String) = this.shouldEqualJson(expected, CompareMode.Lenient)
+         infix fun String.lenientShouldEqualJson(expected: String) =
+            this.shouldEqualJson(expected, compareJsonOptions { typeCoercion = TypeCoercion.Enabled })
 
          test("comparing exponent-based float with regular float") {
             "1E3" lenientShouldEqualJson "\"1000.0\""
