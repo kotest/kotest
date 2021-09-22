@@ -8,7 +8,7 @@ suspend fun <A, B, C, D> forAll(vararg rows: Row4<A, B, C, D>, testfn: suspend (
    val paramA = params.getOrElse(0) { "a" }
    val paramB = params.getOrElse(1) { "b" }
    val paramC = params.getOrElse(2) { "c" }
-   val paramD = params.getOrElse(2) { "d" }
+   val paramD = params.getOrElse(3) { "d" }
    table(headers(paramA, paramB, paramC, paramD), *rows).forAll { A, B, C, D -> testfn(A, B, C, D) }
 }
 
@@ -32,7 +32,7 @@ suspend fun <A, B, C, D> forNone(vararg rows: Row4<A, B, C, D>, testfn: suspend 
    val paramA = params.getOrElse(0) { "a" }
    val paramB = params.getOrElse(1) { "b" }
    val paramC = params.getOrElse(2) { "c" }
-   val paramD = params.getOrElse(2) { "d" }
+   val paramD = params.getOrElse(3) { "d" }
    table(headers(paramA, paramB, paramC, paramD), *rows).forNone { A, B, C, D -> testfn(A, B, C, D) }
 }
 
