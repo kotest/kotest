@@ -95,11 +95,11 @@ class ReflectiveBindTest : StringSpec(
             .toList()
 
          edgeCases shouldContainExactly listOf(
-            Wobble(a = "a", b = false, c = 1, d = Double.POSITIVE_INFINITY to -0.0f),
-            Wobble(a = "", b = true, c = 1, d = 1.0 to -2.064131E37f),
-            Wobble(a = "a", b = true, c = 0, d = Double.POSITIVE_INFINITY to 1.4E-45f),
-            Wobble(a = "", b = false, c = Int.MIN_VALUE, d = -Double.MAX_VALUE to 3.4028235E38f),
-            Wobble(a = "", b = false, c = -1, d = Double.NEGATIVE_INFINITY to 2.4178792E38f)
+            Wobble(a = "a", b = false, c = 1, d = Pair(2.780487668580398E307, Float.POSITIVE_INFINITY)),
+            Wobble(a = "", b = true, c = 0, d = Pair(-Double.MIN_VALUE, Float.NaN)),
+            Wobble(a = "a", b = true, c = 0, d = Pair(Double.POSITIVE_INFINITY, Float.MIN_VALUE)),
+            Wobble(a = "", b = false, c = Int.MIN_VALUE, d = Pair(-1.6820648195553769E308, Float.MIN_VALUE)),
+            Wobble(a = "a", b = false, c = 1, d = Pair(Double.MAX_VALUE, -1.3826198E38f))
          )
       }
 

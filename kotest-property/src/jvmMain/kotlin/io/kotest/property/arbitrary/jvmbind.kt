@@ -11,15 +11,41 @@ import kotlin.reflect.full.primaryConstructor
  * auto-detecting a generator for each parameter of that constructor.
  * T must be a class type.
  *
- * Note: This method only supports "basic" parameter types - string, boolean and so on.
- * If your class has more complex requirements, you can use Arb.bind(gen1, gen2...) where
- * the parameter generators are supplied programatically.
+ * [providedArbs] allows you to provide a mapping of [KClass] to [Arb], for any given class [T].
+ * This can be used to control parts of the data generation, as well as including non-data classes in the
+ * hierarchies for which an [Arb] is being derived.
+ *
+ * Note: This method only supports parameters the following kind of parameter:
+ * - Data classes, where all properties also fall into this category
+ * - Pair, where 1st and 2nd fall into this category
+ * - Primitives
+ * - LocalDate, LocalDateTime, LocalTime, Period
+ * - BigDecimal
+ * - Collections (Set, List, Map)
+ * - Classes for which an [Arb] has been provided through [providedArbs]
  */
 inline fun <reified T : Any> Arb.Companion.bind(providedArbs: Map<KClass<*>, Arb<*>> = emptyMap()): Arb<T> =
    bind(providedArbs, T::class)
 
 /**
  * Alias for [Arb.Companion.bind]
+ *
+ * Returns an [Arb] where each value is a randomly created instance of [T].
+ * These instances are created by selecting the primaryConstructor of T and then
+ * auto-detecting a generator for each parameter of that constructor.
+ * T must be a class type.
+ *
+ * [providedArbs] allows you to provide a mapping of [KClass] to [Arb], for any given class [T].
+ * This can be used to control parts of the data generation, as well as including non-data classes in the
+ * hierarchies for which an [Arb] is being derived.
+ *
+ * Note: This method only supports parameters the following kind of parameter:
+ * - Data classes, where all properties also fall into this category
+ * - Pair, where 1st and 2nd fall into this category
+ * - Primitives
+ * - LocalDate, LocalDateTime, LocalTime, Period
+ * - BigDecimal
+ * - Collections (Set, List, Map)
  */
 inline fun <reified T : Any> Arb.Companion.data(providedArbs: Map<KClass<*>, Arb<*>> = emptyMap()): Arb<T> =
    Arb.bind(providedArbs)
@@ -30,9 +56,17 @@ inline fun <reified T : Any> Arb.Companion.data(providedArbs: Map<KClass<*>, Arb
  * auto-detecting a generator for each parameter of that constructor.
  * T must be a class type.
  *
- * Note: This method only supports "basic" parameter types - string, boolean and so on.
- * If your class has more complex requirements, you can use Arb.bind(gen1, gen2...) where
- * the parameter generators are supplied programatically.
+ * [providedArbs] allows you to provide a mapping of [KClass] to [Arb], for any given class [T].
+ * This can be used to control parts of the data generation, as well as including non-data classes in the
+ * hierarchies for which an [Arb] is being derived.
+ *
+ * Note: This method only supports parameters the following kind of parameter:
+ * - Data classes, where all properties also fall into this category
+ * - Pair, where 1st and 2nd fall into this category
+ * - Primitives
+ * - LocalDate, LocalDateTime, LocalTime, Period
+ * - BigDecimal
+ * - Collections (Set, List, Map)
  */
 fun <T : Any> Arb.Companion.bind(providedArbs: Map<KClass<*>, Arb<*>>, kclass: KClass<T>): Arb<T> {
    val constructor = kclass.primaryConstructor ?: error("could not locate a primary constructor")
