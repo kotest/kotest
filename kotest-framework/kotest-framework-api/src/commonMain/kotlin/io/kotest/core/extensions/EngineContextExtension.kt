@@ -9,7 +9,7 @@ import io.kotest.core.spec.SpecRef
  * An extension point that allows the state of the engine to be modified before execution begins.
  */
 @DelicateKotest
-interface EngineContextExtension {
+interface EngineContextExtension : Extension {
 
    data class EngineContext(val specs: List<SpecRef>, val configuration: Configuration, val tags: Tags)
 
