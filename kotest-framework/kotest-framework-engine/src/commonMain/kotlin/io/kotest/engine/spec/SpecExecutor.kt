@@ -3,8 +3,10 @@ package io.kotest.engine.spec
 import io.kotest.common.Platform
 import io.kotest.common.platform
 import io.kotest.core.concurrency.CoroutineDispatcherFactory
+import io.kotest.core.config.Configuration
 import io.kotest.core.config.configuration
 import io.kotest.core.extensions.SpecExtension
+import io.kotest.core.extensions.SpecLaunchedExtension
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.SpecRef
 import io.kotest.core.test.TestCase
@@ -16,6 +18,7 @@ import io.kotest.engine.spec.interceptor.RunIfActiveInterceptor
 import io.kotest.engine.spec.interceptor.SpecEnterInterceptor
 import io.kotest.engine.spec.interceptor.SpecExitInterceptor
 import io.kotest.engine.spec.interceptor.SpecInterceptExtensionsInterceptor
+import io.kotest.engine.spec.interceptor.SpecLaunchedExtensionInterceptor
 import io.kotest.engine.spec.interceptor.SpecStartedFinishedInterceptor
 import io.kotest.fp.flatMap
 import io.kotest.mpp.log
@@ -33,10 +36,11 @@ import kotlin.reflect.KClass
  */
 class SpecExecutor(
    private val listener: TestEngineListener,
-   private val defaultCoroutineDispatcherFactory: CoroutineDispatcherFactory
+   private val defaultCoroutineDispatcherFactory: CoroutineDispatcherFactory,
+   private val conf: Configuration = configuration,
 ) {
 
-   private val extensions = SpecExtensions(configuration)
+   private val extensions = SpecExtensions(conf)
 
    suspend fun execute(ref: SpecRef) {
       log { "SpecExecutor: Received $ref" }
@@ -52,7 +56,8 @@ class SpecExecutor(
       val interceptors = listOf(
          SpecExitInterceptor(listener),
          SpecEnterInterceptor(listener),
-         IgnoredSpecInterceptor(listener),
+         SpecLaunchedExtensionInterceptor(conf.extensions().filterIsInstance<SpecLaunchedExtension>()),
+         IgnoredSpecInterceptor(listener, conf),
       )
 
       val innerExecute: suspend (SpecRef) -> Map<TestCase, TestResult> = {

@@ -2,6 +2,7 @@ package io.kotest.engine.spec
 
 import io.kotest.core.config.Configuration
 import io.kotest.core.extensions.Extension
+import io.kotest.core.extensions.SpecIgnoredExtension
 import io.kotest.core.extensions.SpecInactiveExtension
 import io.kotest.core.extensions.SpecInitializeExtension
 import io.kotest.core.extensions.SpecInstantiationExtension
@@ -88,6 +89,12 @@ internal class SpecExtensions(private val configuration: Configuration) {
       val initial: suspend (Spec) -> Unit = { f(it) }
       val chain = exts.foldRight(initial) { op, acc -> { s -> op.interceptSpec(s) { acc(it) } } }
       chain.invoke(spec)
+   }
+
+   suspend fun ignored(kclass: KClass<out Spec>) {
+      val exts = configuration.extensions().filterIsInstance<SpecIgnoredExtension>()
+      log { "SpecExtensions: ignored(${exts.size}) $kclass" }
+      exts.forEach { it.ignored(kclass, null) }
    }
 }
 

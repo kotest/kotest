@@ -1,10 +1,12 @@
 package io.kotest.engine.spec.interceptor
 
 import io.kotest.core.annotation.Ignored
+import io.kotest.core.config.Configuration
 import io.kotest.core.spec.SpecRef
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.engine.listener.TestEngineListener
+import io.kotest.engine.spec.SpecExtensions
 import io.kotest.mpp.hasAnnotation
 import io.kotest.mpp.log
 
@@ -14,7 +16,10 @@ import io.kotest.mpp.log
  *
  * Note: annotations are only available on the JVM.
  */
-internal class IgnoredSpecInterceptor(private val listener: TestEngineListener) : SpecRefInterceptor {
+internal class IgnoredSpecInterceptor(
+   private val listener: TestEngineListener,
+   private val conf: Configuration
+) : SpecRefInterceptor {
 
    override suspend fun intercept(
       fn: suspend (SpecRef) -> Map<TestCase, TestResult>
@@ -23,6 +28,7 @@ internal class IgnoredSpecInterceptor(private val listener: TestEngineListener) 
       log { "IgnoredSpecInterceptor: ${ref.kclass} has @Ignored == $isIgnored" }
       if (isIgnored) {
          listener.specIgnored(ref.kclass)
+         SpecExtensions(conf).ignored(ref.kclass)
          emptyMap()
       } else {
          fn(ref)
