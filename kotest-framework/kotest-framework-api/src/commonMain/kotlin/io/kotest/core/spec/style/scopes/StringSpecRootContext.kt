@@ -13,7 +13,7 @@ import kotlin.coroutines.CoroutineContext
 import kotlin.jvm.JvmName
 import kotlin.time.Duration
 
-@Deprecated("Renamed to StringSpecRootContext. This typealias will be removed in 4.8")
+@Deprecated("Renamed to StringSpecRootContext. Deprecated since 4.5.")
 typealias StringSpecRootScope = StringSpecRootContext
 
 /**

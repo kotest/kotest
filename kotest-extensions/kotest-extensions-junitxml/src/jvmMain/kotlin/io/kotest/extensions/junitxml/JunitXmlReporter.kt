@@ -25,7 +25,7 @@ import java.time.format.DateTimeFormatter.ISO_LOCAL_DATE_TIME
 import java.util.concurrent.ConcurrentHashMap
 import kotlin.reflect.KClass
 
-@Deprecated("Now called JunitXmlReporter. Deprecated since 4.6. Will be removed in 6.0")
+@Deprecated("Now called JunitXmlReporter. Deprecated since 4.6.")
 typealias JunitXmlListener = JunitXmlReporter
 
 /**

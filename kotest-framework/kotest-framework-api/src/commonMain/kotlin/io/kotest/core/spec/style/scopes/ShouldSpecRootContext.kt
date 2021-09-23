@@ -5,7 +5,7 @@ import io.kotest.core.names.TestName
 import io.kotest.core.spec.KotestDsl
 import io.kotest.core.test.TestContext
 
-@Deprecated("Renamed to ShouldSpecRootContext. This typealias will be removed in 4.8")
+@Deprecated("Renamed to ShouldSpecRootContext. Deprecated since 4.5.")
 typealias ShouldSpecRootScope = ShouldSpecRootContext
 
 /**

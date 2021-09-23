@@ -2,7 +2,7 @@ package io.kotest.core.spec.style.scopes
 
 import io.kotest.core.names.TestName
 
-@Deprecated("Renamed to WordSpecRootContext. This typealias will be removed in 4.8")
+@Deprecated("Renamed to WordSpecRootContext. Deprecated since 4.5.")
 typealias WordSpecRootScope = WordSpecRootContext
 
 @Suppress("FunctionName")

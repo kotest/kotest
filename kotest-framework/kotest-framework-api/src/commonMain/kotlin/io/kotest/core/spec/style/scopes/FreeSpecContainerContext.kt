@@ -29,7 +29,7 @@ class FreeSpecTerminalContext(
    }
 }
 
-@Deprecated("Renamed to FreeSpecContainerContext. This alias will be removed in 6.0")
+@Deprecated("Renamed to FreeSpecContainerContext. Deprecated since 4.5.")
 typealias FreeScope = FreeSpecContainerContext
 
 
