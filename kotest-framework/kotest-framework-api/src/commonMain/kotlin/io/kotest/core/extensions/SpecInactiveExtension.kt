@@ -1,4 +1,4 @@
-package io.kotest.core.listeners
+package io.kotest.core.extensions
 
 import io.kotest.core.spec.Spec
 import io.kotest.core.test.TestCase
@@ -7,7 +7,7 @@ import io.kotest.core.test.TestResult
 /**
  * Invoked if a [Spec] has no enabled tests.
  */
-interface InactiveSpecListener : Listener {
+interface SpecInactiveExtension : Extension {
 
    /**
     * Called once per [Spec] iff all tests in the spec are disabled.
@@ -15,6 +15,6 @@ interface InactiveSpecListener : Listener {
     * @param spec the [Spec] instance.
     * @param results a map of each test case mapped to its skipped result.
     */
-   suspend fun specInactive(spec: Spec, results: Map<TestCase, TestResult>): Unit = Unit
+   suspend fun inactive(spec: Spec, results: Map<TestCase, TestResult>): Unit = Unit
 }
 

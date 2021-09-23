@@ -21,5 +21,5 @@ interface SpecInitializeExtension : Extension {
    /**
     * Accepts a [Spec] for processing before any tests are executed or enabled/disabled checks are performed.
     */
-   fun initialize(spec: Spec)
+   suspend fun initialize(spec: Spec)
 }

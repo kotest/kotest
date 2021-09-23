@@ -7,7 +7,7 @@ import io.kotest.core.extensions.SpecInstantiationExtension
 import io.kotest.core.listeners.AfterSpecListener
 import io.kotest.core.listeners.BeforeSpecListener
 import io.kotest.core.listeners.FinalizeSpecListener
-import io.kotest.core.listeners.InactiveSpecListener
+import io.kotest.core.extensions.SpecInactiveExtension
 import io.kotest.core.listeners.SpecInstantiationListener
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.functionOverrideCallbacks
@@ -73,7 +73,7 @@ internal class SpecExtensions(private val configuration: Configuration) {
    }
 
    suspend fun inactiveSpec(spec: Spec, results: Map<TestCase, TestResult>) {
-      configuration.extensions().filterIsInstance<InactiveSpecListener>().forEach { it.specInactive(spec, results) }
+      configuration.extensions().filterIsInstance<SpecInactiveExtension>().forEach { it.inactive(spec, results) }
    }
 
    suspend fun finishSpec(kclass: KClass<out Spec>, results: Map<TestCase, TestResult>) {

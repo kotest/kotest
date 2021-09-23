@@ -4,7 +4,7 @@ import io.kotest.common.Platform
 import io.kotest.common.platform
 import io.kotest.core.concurrency.CoroutineDispatcherFactory
 import io.kotest.core.config.configuration
-import io.kotest.core.extensions.SpecInterceptExtension
+import io.kotest.core.extensions.SpecExtension
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.SpecRef
 import io.kotest.core.test.TestCase
@@ -73,7 +73,7 @@ class SpecExecutor(
       val interceptors = listOfNotNull(
          if (platform == Platform.JS) IgnoreNestedSpecStylesInterceptor(listener) else null,
          SpecInterceptExtensionsInterceptor(
-            extensions.extensions(spec).filterIsInstance<SpecInterceptExtension>()
+            extensions.extensions(spec).filterIsInstance<SpecExtension>()
          ),
          RunIfActiveInterceptor(listener),
          SpecStartedFinishedInterceptor(listener),

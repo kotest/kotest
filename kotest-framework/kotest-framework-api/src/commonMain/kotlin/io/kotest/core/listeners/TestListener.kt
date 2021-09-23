@@ -1,5 +1,6 @@
 package io.kotest.core.listeners
 
+import io.kotest.core.extensions.SpecInactiveExtension
 import io.kotest.core.test.TestCase
 
 /**
@@ -21,7 +22,7 @@ interface TestListener :
    AfterInvocationListener,
    PrepareSpecListener,
    FinalizeSpecListener,
-   InactiveSpecListener,
+   SpecInactiveExtension,
    Listener {
 
    override val name: String
