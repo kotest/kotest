@@ -9,7 +9,7 @@ import io.kotest.core.test.TestContext
 import io.kotest.core.test.TestType
 import io.kotest.core.test.createNestedTest
 
-@Deprecated("This interface has been renamed to BehaviorSpecWhenContainerContext. This alias will be removed in 6.0")
+@Deprecated("This interface has been renamed to BehaviorSpecWhenContainerContext. Deprecated since 4.5.")
 typealias WhenScope = BehaviorSpecWhenContainerContext
 
 /**

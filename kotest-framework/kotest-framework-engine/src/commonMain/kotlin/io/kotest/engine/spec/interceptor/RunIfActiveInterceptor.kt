@@ -1,7 +1,7 @@
 package io.kotest.engine.spec.interceptor
 
 import io.kotest.core.config.configuration
-import io.kotest.core.listeners.InactiveSpecListener
+import io.kotest.core.extensions.InactiveSpecListener
 import io.kotest.core.spec.Spec
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult

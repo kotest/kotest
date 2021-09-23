@@ -6,7 +6,7 @@ import io.kotest.core.descriptors.toDescriptor
 import io.kotest.core.test.TestCaseConfig
 import kotlin.reflect.KClass
 
-@Deprecated("Renamed to RootContext. This alias will be removed in 6.0")
+@Deprecated("Renamed to RootContext. Deprecated since 4.5.")
 typealias RootScope = RootContext
 
 interface RootContext {

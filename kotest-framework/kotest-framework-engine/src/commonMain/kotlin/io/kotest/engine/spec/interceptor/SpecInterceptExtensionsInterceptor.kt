@@ -1,16 +1,16 @@
 package io.kotest.engine.spec.interceptor
 
-import io.kotest.core.extensions.SpecInterceptExtension
+import io.kotest.core.extensions.SpecExtension
 import io.kotest.core.spec.Spec
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.mpp.log
 
 /**
- * A [SpecExecutionInterceptor] that executes all [SpecInterceptExtension]s.
+ * A [SpecExecutionInterceptor] that executes all [SpecExtension]s.
  */
 internal class SpecInterceptExtensionsInterceptor(
-   private val extensions: List<SpecInterceptExtension>
+   private val extensions: List<SpecExtension>
 ) : SpecExecutionInterceptor {
 
    override suspend fun intercept(
@@ -25,7 +25,7 @@ internal class SpecInterceptExtensionsInterceptor(
 
    private suspend fun interceptSpec(
       spec: Spec,
-      remaining: List<SpecInterceptExtension>,
+      remaining: List<SpecExtension>,
       run: suspend () -> Unit,
    ) {
       when {

@@ -14,7 +14,7 @@ import io.kotest.core.test.TestType
 import io.kotest.core.test.createNestedTest
 import kotlin.time.Duration
 
-@Deprecated("This interface has been renamed to WordSpecShouldContainerContext. This alias will be removed in 6.0")
+@Deprecated("This interface has been renamed to WordSpecShouldContainerContext. Deprecated since 4.5.")
 typealias WordSpecShouldScope = WordSpecShouldContainerContext
 
 /**

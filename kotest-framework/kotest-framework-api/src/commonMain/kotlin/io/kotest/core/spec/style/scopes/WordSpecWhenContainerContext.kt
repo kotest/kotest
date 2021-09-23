@@ -9,7 +9,7 @@ import io.kotest.core.test.TestContext
 import io.kotest.core.test.TestType
 import io.kotest.core.test.createNestedTest
 
-@Deprecated("Renamed to WordSpecWhenContainerContext. This typealias will be removed in 4.8")
+@Deprecated("Renamed to WordSpecWhenContainerContext. Deprecated since 4.5.")
 typealias WordSpecWhenScope = WordSpecWhenContainerContext
 
 @Suppress("FunctionName")

@@ -5,7 +5,7 @@ import io.kotest.core.names.TestName
 import io.kotest.core.test.NestedTest
 import io.kotest.core.test.TestContext
 
-@Deprecated("Renamed to DescribeSpecRootContext. This typealias will be removed in 4.8")
+@Deprecated("Renamed to DescribeSpecRootContext. Deprecated since 4.5.")
 typealias DescribeSpecRootScope = DescribeSpecRootContext
 
 /**

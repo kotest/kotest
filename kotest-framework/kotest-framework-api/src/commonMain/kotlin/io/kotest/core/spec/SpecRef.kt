@@ -21,5 +21,5 @@ interface SpecRef {
     * May return an error if an instance could not be created (eg, on JVM, instances are created
     * refectively, and this may error if the constructor is not known).
     */
-   fun instance(): Result<Spec>
+   suspend fun instance(): Result<Spec>
 }

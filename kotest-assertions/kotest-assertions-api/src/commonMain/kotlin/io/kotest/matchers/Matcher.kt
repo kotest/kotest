@@ -130,7 +130,7 @@ interface MatcherResult {
    companion object {
 
       @Deprecated(
-         "Prefer the version that accepts functions - this avoids eager creation of messages. This was deprecated in 5.0 and will be removed in 7.0",
+         "Prefer the version that accepts functions - this avoids eager creation of messages. This was deprecated in 5.0.",
          ReplaceWith(
             "MatcherResult(\npassed,\n{ failureMessage },\n{ negatedFailureMessage }\n)"
          )

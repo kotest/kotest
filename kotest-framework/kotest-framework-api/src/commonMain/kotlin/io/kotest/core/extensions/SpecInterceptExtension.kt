@@ -2,20 +2,18 @@ package io.kotest.core.extensions
 
 import io.kotest.core.spec.Spec
 import io.kotest.core.test.TestCase
-import kotlin.reflect.KClass
-
-@Deprecated("Renamed to SpecInterceptExtension. This typealias is deprecated since 5.0 and will be removed in 6.0")
-typealias SpecExtension = SpecInterceptExtension
 
 /**
- * Extension point that allows intercepting execution of specs.
+ * An [Extension] point that allows intercepting execution of [Spec]s for each
+ * spec that is created.
  */
 interface SpecInterceptExtension : Extension {
 
    /**
-    * Intercepts a [Spec] before it has been instantiated.
+    * Intercepts a [Spec] after it has been instantiated but before
+    * any tests are executed.
     *
-    * Implementations must invoke the process callback if they
+    * Implementations must invoke the [process] callback if they
     * wish this spec to be executed. If they want to skip
     * the tests in this spec they can elect not to invoke
     * the callback.
@@ -24,23 +22,14 @@ interface SpecInterceptExtension : Extension {
     * [Spec] and all it's nested [TestCase]s are guaranteed
     * to have been completed.
     *
-    * @param process callback function required to continue spec processing
-    */
-   suspend fun intercept(spec: KClass<out Spec>, process: suspend () -> Unit) {
-      process()
-   }
-
-   /**
-    * Implementations must invoke the process callback if they
-    * wish this spec to be executed. If they want to skip
-    * the tests in this spec they can elect not to invoke
-    * the callback.
+    * This method is not invoked if the spec is inactive. An inactive spec
+    * is one which has no active (enabled) tests.
     *
-    * Once the [execute] function returns, the execution of this
-    * [Spec] and all it's nested [TestCase]s are guaranteed
-    * to have been completed.
+    * If you are using an isolation mode that calls for fresh instances of a
+    * spec per test, then this method will be invoked for each instance created.
+    *
+    * @param spec the spec instance.
+    * @param process callback function required to continue spec processing.
     */
-   suspend fun intercept(spec: Spec, execute: suspend (Spec) -> Unit) {
-      execute(spec)
-   }
+   suspend fun interceptSpec(spec: Spec, process: suspend (Spec) -> Unit)
 }

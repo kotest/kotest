@@ -47,4 +47,8 @@ data class EngineContext(
    fun withConfiguration(c: Configuration): EngineContext {
       return EngineContext(suite, listener, tags, c)
    }
+
+   fun withTags(tags: Tags): EngineContext {
+      return EngineContext(suite, listener, tags, configuration)
+   }
 }

@@ -1,5 +1,6 @@
 package io.kotest.engine
 
+import io.kotest.core.config.configuration
 import io.kotest.core.spec.DoNotParallelize
 import io.kotest.core.spec.Isolate
 import io.kotest.core.spec.SpecRef
@@ -44,7 +45,7 @@ internal class ConcurrentTestSuiteScheduler(private val maxConcurrent: Int) : Te
       listener: TestEngineListener,
       concurrency: Int,
    ) = coroutineScope { // we don't want this function to return until all specs are completed
-      val controller = defaultCoroutineDispatcherFactory()
+      val coroutineDispatcherFactory = defaultCoroutineDispatcherFactory()
       val semaphore = Semaphore(concurrency)
       specs.forEach { ref ->
          log { "DefaultTestSuiteScheduler: Scheduling coroutine for spec [$ref]" }
@@ -52,7 +53,7 @@ internal class ConcurrentTestSuiteScheduler(private val maxConcurrent: Int) : Te
             semaphore.withPermit {
                log { "DefaultTestSuiteScheduler: Acquired permit for $ref" }
                try {
-                  val executor = SpecExecutor(listener, controller)
+                  val executor = SpecExecutor(listener, coroutineDispatcherFactory, configuration)
                   executor.execute(ref)
                } catch (t: Throwable) {
                   log { "DefaultTestSuiteScheduler: Unhandled error during spec execution [$ref] [$t]" }

@@ -65,6 +65,7 @@ kotlin {
          dependencies {
             implementation(Libs.Wumpz.diffutils)
             implementation(Libs.rgxgen.rgxgen)
+            implementation(kotlin("reflect"))
          }
       }
 
@@ -159,6 +160,7 @@ kotlin {
 
       all {
          languageSettings.optIn("kotlin.time.ExperimentalTime")
+         languageSettings.optIn("kotlin.ExperimentalStdlibApi")
          languageSettings.optIn("kotlin.experimental.ExperimentalTypeInference")
       }
    }

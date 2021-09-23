@@ -52,7 +52,7 @@ data class TestCase(
    val parent: TestCase? = null,
 ) {
 
-   @Deprecated("Use testCase.name or testCase.descriptor. This was deprecated in 5.0 and will be removed in 6.0")
+   @Deprecated("Use testCase.name or testCase.descriptor. This was deprecated in 5.0.")
    val displayName: String = descriptor.id.value
 
    companion object {

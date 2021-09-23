@@ -5,7 +5,6 @@ import io.kotest.core.config.Configuration
 import io.kotest.core.extensions.ProjectExtension
 import io.kotest.engine.interceptors.DumpConfigInterceptor
 import io.kotest.engine.interceptors.EmptyTestSuiteInterceptor
-import io.kotest.engine.interceptors.EngineContextExtensionEngineInterceptor
 import io.kotest.engine.interceptors.EngineInterceptor
 import io.kotest.engine.interceptors.KotestPropertiesInterceptor
 import io.kotest.engine.interceptors.ProjectExtensionEngineInterceptor
@@ -24,11 +23,10 @@ actual fun testEngineInterceptors(conf: Configuration): List<EngineInterceptor> 
       KotestPropertiesInterceptor,
       TestDslStateInterceptor,
       SpecSortEngineInterceptor,
-      EngineContextExtensionEngineInterceptor,
-      TestEngineListenerStartedFinishedInterceptor,
-      ProjectTimeoutEngineInterceptor,
       ProjectExtensionEngineInterceptor(conf.extensions().filterIsInstance<ProjectExtension>()),
       ProjectListenerEngineInterceptor(conf.extensions()),
+      TestEngineListenerStartedFinishedInterceptor,
+      ProjectTimeoutEngineInterceptor,
       EmptyTestSuiteInterceptor,
       WriteFailuresInterceptor,
       DumpConfigInterceptor,
