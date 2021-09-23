@@ -26,6 +26,9 @@ import kotlinx.coroutines.CoroutineDispatcher
  */
 val configuration = Configuration()
 
+@Deprecated("Replaced with io.kotest.core.configuration. Deprecated since 4.2")
+val Project = configuration
+
 /**
  * This class defines project wide settings that are used when executing tests.
  *
