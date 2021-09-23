@@ -40,7 +40,7 @@ class PostInstantiationExtensionTest : FunSpec() {
 }
 
 private val MyPostInstantiationExtension = object : PostInstantiationExtension {
-   override fun process(spec: Spec): Spec {
+   override suspend fun instantiated(spec: Spec): Spec {
       (spec as MySpec).a = "foo"
       return spec
    }

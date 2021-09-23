@@ -20,5 +20,5 @@ interface PostInstantiationExtension : Extension {
     * This function must return a spec to be used. Typically, the same instance is returned,
     * but the implementation is free to return another instance if desired.
     */
-   fun process(spec: Spec): Spec
+   suspend fun instantiated(spec: Spec): Spec
 }
