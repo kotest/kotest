@@ -50,7 +50,15 @@ fun <A> Shrinker<A>.rtree(value: () -> A): RTree<A> =
       }
    )
 
-data class RTree<out A>(val value: () -> A, val children: Lazy<List<RTree<A>>> = lazy { emptyList<RTree<A>>() })
+data class RTree<out A>(val value: () -> A, val children: Lazy<List<RTree<A>>> = lazy { emptyList<RTree<A>>() }) {
+   companion object {
+      val unit = RTree({ })
+   }
+}
+
+fun <A> RTree<A>.childrenOrCurrent() =
+   if (this.children.value.isNotEmpty()) this.children.value
+   else listOf(this)
 
 fun <A, B> RTree<A>.map(f: (A) -> B): RTree<B> {
    val b = { f(value()) }

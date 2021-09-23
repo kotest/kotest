@@ -6,9 +6,7 @@ import io.kotest.property.Gen
 import io.kotest.property.RTree
 import io.kotest.property.RandomSource
 import io.kotest.property.Sample
-import io.kotest.property.Shrinker
-import io.kotest.property.map
-import io.kotest.property.rtree
+import io.kotest.property.childrenOrCurrent
 
 fun <A, B, T> Arb.Companion.bind(
    genA: Gen<A>,
@@ -407,13 +405,11 @@ private fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, T> Arb.Companion.bindN(
    bindFn: (A, B, C, D, E, F, G, H, I, J, K, L, M, N) -> T,
 ): Arb<T> {
 
-   data class RTreeTuple(
-      val a: RTree<A>, val b: RTree<B>, val c: RTree<C>, val d: RTree<D>, val e: RTree<E>,
-      val f: RTree<F>, val g: RTree<G>, val h: RTree<H>, val i: RTree<I>, val j: RTree<J>,
-      val k: RTree<K>, val l: RTree<L>, val m: RTree<M>, val n:RTree<N>
-   )
-
-   fun RTreeTuple.bind(): RTree<T> =
+   fun shrink(
+      a: RTree<A>, b: RTree<B>, c: RTree<C>, d: RTree<D>, e: RTree<E>,
+      f: RTree<F>, g: RTree<G>, h: RTree<H>, i: RTree<I>, j: RTree<J>,
+      k: RTree<K>, l: RTree<L>, m: RTree<M>, n: RTree<N>
+   ): RTree<T> =
       RTree(
          {
             bindFn(
@@ -422,22 +418,22 @@ private fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, T> Arb.Companion.bindN(
                k.value(), l.value(), m.value(), n.value()
             )
          },
-         lazy {
-            a.children.value.flatMap { ac ->
-               b.children.value.flatMap { bc ->
-                  c.children.value.flatMap { cc ->
-                     d.children.value.flatMap { dc ->
-                        e.children.value.flatmap { ec ->
-                           f.children.value.flatMap { fc ->
-                              g.children.value.flatMap { gc ->
-                                 h.children.value.flatMap { hc ->
-                                    i.children.value.flatMap { ic ->
-                                       j.children.value.flatMap { jc ->
-                                          k.children.value.flatMap { kc ->
-                                             l.children.value.flatMap { lc ->
-                                                m.children.value.flatMap { mc ->
-                                                   n.children.value.map { nc ->
-                                                      RTreeTuple(ac,bc,cc,dc,ec,fc,gc,hc,ic,jc,kc,lc,mc,nc).bind()
+         kotlin.lazy {
+            a.childrenOrCurrent().flatMap { ac ->
+               b.childrenOrCurrent().flatMap { bc ->
+                  c.childrenOrCurrent().flatMap { cc ->
+                     d.childrenOrCurrent().flatMap { dc ->
+                        e.childrenOrCurrent().flatMap { ec ->
+                           f.childrenOrCurrent().flatMap { fc ->
+                              g.childrenOrCurrent().flatMap { gc ->
+                                 h.childrenOrCurrent().flatMap { hc ->
+                                    i.childrenOrCurrent().flatMap { ic ->
+                                       j.childrenOrCurrent().flatMap { jc ->
+                                          k.childrenOrCurrent().flatMap { kc ->
+                                             l.childrenOrCurrent().flatMap { lc ->
+                                                m.childrenOrCurrent().flatMap { mc ->
+                                                   n.childrenOrCurrent().map { nc ->
+                                                      shrink(ac,bc,cc,dc,ec,fc,gc,hc,ic,jc,kc,lc,mc,nc)
                                                    }
                                                 }
                                              }
@@ -510,7 +506,7 @@ private fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, T> Arb.Companion.bindN(
 
          return Sample(
             bindFn(av, bv, cv, dv, ev, fv, gv, hv, iv, jv, kv, lv, mv, nv),
-            RTreeTuple(ar, br, cr, dr, er, fr, gr, hr, ir, jr, kr, lr, mr, nr).bind()
+            shrink(ar, br, cr, dr, er, fr, gr, hr, ir, jr, kr, lr, mr, nr)
          )
       }
    }

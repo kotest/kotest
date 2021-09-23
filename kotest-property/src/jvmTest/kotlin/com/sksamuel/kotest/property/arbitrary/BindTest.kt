@@ -1,13 +1,19 @@
 package com.sksamuel.kotest.property.arbitrary
 
+import io.kotest.assertions.shouldFail
 import io.kotest.core.spec.style.StringSpec
+import io.kotest.matchers.collections.shouldBeIn
 import io.kotest.matchers.collections.shouldContainExactly
 import io.kotest.matchers.collections.shouldHaveAtLeastSize
 import io.kotest.matchers.comparables.beGreaterThan
 import io.kotest.matchers.comparables.beLessThan
+import io.kotest.matchers.comparables.shouldBeGreaterThan
+import io.kotest.matchers.comparables.shouldBeLessThan
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
+import io.kotest.matchers.string.shouldContain
+import io.kotest.matchers.throwable.shouldHaveMessage
 import io.kotest.property.Arb
 import io.kotest.property.EdgeConfig
 import io.kotest.property.RandomSource
@@ -605,20 +611,32 @@ class BindTest : StringSpec({
       )
    }
 
-   "Arb.bind shrinks" {
-      data class Person(val name: String, val age: Int) {
-         init {
-            require(age > 0) { "Age must not be negative" }
-            require(age < 200) { "Unlikely" }
+   "flatmapping" {
+      val combined = listOf("a", "b").flatMap { x ->
+         listOf("c").flatMap { y ->
+            emptyList<String>().map { z ->
+               {
+                  "$x$y$z"
+               }
+            }
          }
       }
+
+      combined shouldBe listOf("ac", "bc")
+   }
+
+   "Arb.bind shrinks" {
+      data class Person(val name: String, val age: Int)
+
       val arb = Arb.bind<Person>()
 
       shouldFail {
-         checkAll(arb) {
-            // Probably ok
+         checkAll(arb) { person ->
+            person.name.length shouldBeLessThan 10
+            person.age shouldBeGreaterThan -1
+            person.age shouldBeLessThan 130
          }
-      }.shouldHaveMessage("")
+      }.message shouldContain "Arg 0ː Person(name=aaaaaaaaaa, age=0) (shrunk from Person"
    }
 })
 
