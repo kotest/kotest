@@ -610,20 +610,6 @@ class BindTest : StringSpec({
       )
    }
 
-   "flatmapping" {
-      val combined = listOf("a", "b").flatMap { x ->
-         listOf("c").flatMap { y ->
-            emptyList<String>().map { z ->
-               {
-                  "$x$y$z"
-               }
-            }
-         }
-      }
-
-      combined shouldBe listOf("ac", "bc")
-   }
-
    "Arb.bind shrinks" {
       data class Person(val name: String, val age: Int)
 
