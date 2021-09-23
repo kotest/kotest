@@ -36,10 +36,6 @@ internal class SpecExtensions(private val configuration: Configuration) {
          configuration.extensions() // globals
    }
 
-   suspend fun specInitialize(spec: Spec): Result<Unit> = runCatching {
-      extensions(spec).filterIsInstance<SpecInitializeExtension>().forEach { it.initialize(spec) }
-   }
-
    suspend fun beforeSpec(spec: Spec): Result<Spec> {
       log { "SpecExtensions: beforeSpec $spec" }
       return kotlin.runCatching {

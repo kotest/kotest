@@ -115,7 +115,6 @@ class SpecExecutor(
             listener.specInstantiationError(ref.kclass, it)
             extensions.specInstantiationError(ref.kclass, it)
          }
-         .flatMap { spec -> extensions.specInitialize(spec).map { spec } }
          .flatMap { spec -> extensions.specInstantiated(spec).map { spec } }
 }
 
