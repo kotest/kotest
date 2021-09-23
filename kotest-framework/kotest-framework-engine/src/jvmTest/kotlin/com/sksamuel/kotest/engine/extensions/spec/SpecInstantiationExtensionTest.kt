@@ -1,7 +1,7 @@
 package com.sksamuel.kotest.engine.extensions.spec
 
 import io.kotest.core.config.configuration
-import io.kotest.core.extensions.SpecCreatedListener
+import io.kotest.core.extensions.SpecInitializeExtension
 import io.kotest.core.extensions.SpecCreationErrorListener
 import io.kotest.core.spec.Isolate
 import io.kotest.core.spec.Spec
@@ -17,8 +17,8 @@ class SpecInstantiationExtensionTest : FunSpec() {
    init {
       test("SpecInstantiationExtension should trigger for successful instantiation") {
          var count = 0
-         val ext = object : SpecCreatedListener {
-            override suspend fun onSpecCreated(spec: Spec) {
+         val ext = object : SpecInitializeExtension {
+            override suspend fun initialize(spec: Spec) {
                count++
             }
          }

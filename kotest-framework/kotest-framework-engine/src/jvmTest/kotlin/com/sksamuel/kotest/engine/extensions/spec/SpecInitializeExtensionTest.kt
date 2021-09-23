@@ -1,5 +1,6 @@
-package com.sksamuel.kotest.engine.extensions
+package com.sksamuel.kotest.engine.extensions.spec
 
+import com.sksamuel.kotest.engine.extensions.MySpecFinalizeExtension
 import io.kotest.core.config.configuration
 import io.kotest.core.extensions.SpecInitializeExtension
 import io.kotest.core.spec.Isolate
@@ -11,10 +12,10 @@ import io.kotest.matchers.shouldBe
 import java.util.concurrent.atomic.AtomicBoolean
 
 @Isolate
-class MySpecInitializerExtensionTest : FunSpec() {
+class SpecInitializeExtensionTest : FunSpec() {
    init {
 
-      test("SpecFinalizerExtension's should be triggered for a spec with tests") {
+      test("SpecInitializeExtension's should be triggered for a spec with tests") {
 
          configuration.registerExtension(MySpecInitializeExtension)
 
@@ -28,7 +29,7 @@ class MySpecInitializerExtensionTest : FunSpec() {
          MySpecInitializeExtension.invoked.get() shouldBe true
       }
 
-      test("SpecFinalizerExtension's should be triggered for a spec without tests") {
+      test("SpecInitializeExtension's should be triggered for a spec without tests") {
 
          MySpecFinalizeExtension.finalized.set(false)
          configuration.registerExtension(MySpecInitializeExtension)
@@ -47,8 +48,9 @@ class MySpecInitializerExtensionTest : FunSpec() {
 
 object MySpecInitializeExtension : SpecInitializeExtension {
    val invoked = AtomicBoolean(false)
-   override suspend fun initialize(spec: Spec) {
+   override suspend fun initialize(spec: Spec): Spec {
       invoked.set(true)
+      return spec
    }
 }
 

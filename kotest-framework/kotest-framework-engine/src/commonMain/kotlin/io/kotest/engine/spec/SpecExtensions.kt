@@ -5,7 +5,6 @@ import io.kotest.core.extensions.Extension
 import io.kotest.core.extensions.SpecIgnoredListener
 import io.kotest.core.extensions.InactiveSpecListener
 import io.kotest.core.extensions.SpecInitializeExtension
-import io.kotest.core.extensions.SpecCreatedListener
 import io.kotest.core.extensions.SpecCreationErrorListener
 import io.kotest.core.extensions.SpecInterceptExtension
 import io.kotest.core.listeners.AfterSpecListener
@@ -66,7 +65,7 @@ internal class SpecExtensions(private val configuration: Configuration) {
    suspend fun specInstantiated(spec: Spec) = runCatching {
       log { "SpecExtensions: specInstantiated spec:$spec" }
       configuration.extensions().filterIsInstance<SpecInstantiationListener>().forEach { it.specInstantiated(spec) }
-      configuration.extensions().filterIsInstance<SpecCreatedListener>().forEach { it.onSpecCreated(spec) }
+      configuration.extensions().filterIsInstance<SpecInitializeExtension>().forEach { it.initialize(spec) }
    }
 
    suspend fun specInstantiationError(kclass: KClass<out Spec>, t: Throwable) = kotlin.runCatching {
