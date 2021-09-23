@@ -6,7 +6,6 @@ import io.kotest.property.Gen
 import io.kotest.property.RTree
 import io.kotest.property.RandomSource
 import io.kotest.property.Sample
-import io.kotest.property.childrenOrCurrent
 
 fun <A, B, T> Arb.Companion.bind(
    genA: Gen<A>,
@@ -405,7 +404,9 @@ private fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, T> Arb.Companion.bindN(
    bindFn: (A, B, C, D, E, F, G, H, I, J, K, L, M, N) -> T,
 ): Arb<T> {
 
-   fun shrink(
+   fun <S> shrink(tree: RTree<S>): List<RTree<S>> = tree.children.value
+
+   fun combineShrinks(
       a: RTree<A>, b: RTree<B>, c: RTree<C>, d: RTree<D>, e: RTree<E>,
       f: RTree<F>, g: RTree<G>, h: RTree<H>, i: RTree<I>, j: RTree<J>,
       k: RTree<K>, l: RTree<L>, m: RTree<M>, n: RTree<N>
@@ -419,35 +420,20 @@ private fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, T> Arb.Companion.bindN(
             )
          },
          kotlin.lazy {
-            a.childrenOrCurrent().flatMap { ac ->
-               b.childrenOrCurrent().flatMap { bc ->
-                  c.childrenOrCurrent().flatMap { cc ->
-                     d.childrenOrCurrent().flatMap { dc ->
-                        e.childrenOrCurrent().flatMap { ec ->
-                           f.childrenOrCurrent().flatMap { fc ->
-                              g.childrenOrCurrent().flatMap { gc ->
-                                 h.childrenOrCurrent().flatMap { hc ->
-                                    i.childrenOrCurrent().flatMap { ic ->
-                                       j.childrenOrCurrent().flatMap { jc ->
-                                          k.childrenOrCurrent().flatMap { kc ->
-                                             l.childrenOrCurrent().flatMap { lc ->
-                                                m.childrenOrCurrent().flatMap { mc ->
-                                                   n.childrenOrCurrent().map { nc ->
-                                                      shrink(ac,bc,cc,dc,ec,fc,gc,hc,ic,jc,kc,lc,mc,nc)
-                                                   }
-                                                }
-                                             }
-                                          }
-                                       }
-                                    }
-                                 }
-                              }
-                           }
-                        }
-                     }
-                  }
-               }
-            }
+            shrink(a).map { combineShrinks(it, b, c, d, e, f, g, h, i, j, k, l, m, n) } +
+            shrink(b).map { combineShrinks(a, it, c, d, e, f, g, h, i, j, k, l, m, n) } +
+            shrink(c).map { combineShrinks(a, b, it, d, e, f, g, h, i, j, k, l, m, n) } +
+            shrink(d).map { combineShrinks(a, b, c, it, e, f, g, h, i, j, k, l, m, n) } +
+            shrink(e).map { combineShrinks(a, b, c, d, it, f, g, h, i, j, k, l, m, n) } +
+            shrink(f).map { combineShrinks(a, b, c, d, e, it, g, h, i, j, k, l, m, n) } +
+            shrink(g).map { combineShrinks(a, b, c, d, e, f, it, h, i, j, k, l, m, n) } +
+            shrink(h).map { combineShrinks(a, b, c, d, e, f, g, it, i, j, k, l, m, n) } +
+            shrink(i).map { combineShrinks(a, b, c, d, e, f, g, h, it, j, k, l, m, n) } +
+            shrink(j).map { combineShrinks(a, b, c, d, e, f, g, h, i, it, k, l, m, n) } +
+            shrink(k).map { combineShrinks(a, b, c, d, e, f, g, h, i, j, it, l, m, n) } +
+            shrink(l).map { combineShrinks(a, b, c, d, e, f, g, h, i, j, k, it, m, n) } +
+            shrink(m).map { combineShrinks(a, b, c, d, e, f, g, h, i, j, k, l, it, n) } +
+            shrink(n).map { combineShrinks(a, b, c, d, e, f, g, h, i, j, k, l, m, it) }
          }
       )
 
@@ -506,7 +492,7 @@ private fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, T> Arb.Companion.bindN(
 
          return Sample(
             bindFn(av, bv, cv, dv, ev, fv, gv, hv, iv, jv, kv, lv, mv, nv),
-            shrink(ar, br, cr, dr, er, fr, gr, hr, ir, jr, kr, lr, mr, nr)
+            combineShrinks(ar, br, cr, dr, er, fr, gr, hr, ir, jr, kr, lr, mr, nr)
          )
       }
    }

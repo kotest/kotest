@@ -2,7 +2,6 @@ package com.sksamuel.kotest.property.arbitrary
 
 import io.kotest.assertions.shouldFail
 import io.kotest.core.spec.style.StringSpec
-import io.kotest.matchers.collections.shouldBeIn
 import io.kotest.matchers.collections.shouldContainExactly
 import io.kotest.matchers.collections.shouldHaveAtLeastSize
 import io.kotest.matchers.comparables.beGreaterThan
@@ -13,7 +12,6 @@ import io.kotest.matchers.should
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
 import io.kotest.matchers.string.shouldContain
-import io.kotest.matchers.throwable.shouldHaveMessage
 import io.kotest.property.Arb
 import io.kotest.property.EdgeConfig
 import io.kotest.property.RandomSource
@@ -636,7 +634,7 @@ class BindTest : StringSpec({
             person.age shouldBeGreaterThan -1
             person.age shouldBeLessThan 130
          }
-      }.message shouldContain "Arg 0ː Person(name=aaaaaaaaaa, age=0) (shrunk from Person"
+      }.message shouldContain "Arg 0ː Person(name=, age=-1) (shrunk from Person"
    }
 })
 

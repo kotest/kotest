@@ -56,10 +56,6 @@ data class RTree<out A>(val value: () -> A, val children: Lazy<List<RTree<A>>> =
    }
 }
 
-fun <A> RTree<A>.childrenOrCurrent() =
-   if (this.children.value.isNotEmpty()) this.children.value
-   else listOf(this)
-
 fun <A, B> RTree<A>.map(f: (A) -> B): RTree<B> {
    val b = { f(value()) }
    val c = lazy { children.value.map { it.map(f) } }
