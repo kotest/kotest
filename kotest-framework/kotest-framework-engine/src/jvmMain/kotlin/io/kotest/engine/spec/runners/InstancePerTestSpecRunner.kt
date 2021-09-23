@@ -61,6 +61,7 @@ internal class InstancePerTestSpecRunner(
 ) : SpecRunner(listener, schedule) {
 
    private val results = ConcurrentHashMap<TestCase, TestResult>()
+   private val extensions = SpecExtensions(configuration)
 
    /**
     * The intention of this runner is that each [TestCase] executes in its own instance
@@ -75,7 +76,7 @@ internal class InstancePerTestSpecRunner(
     * can be registered back with the stack for execution later.
     */
    override suspend fun execute(spec: Spec): Result<Map<TestCase, TestResult>> =
-      kotlin.runCatching {
+      runCatching {
          launch(spec) {
             executeInCleanSpec(it)
                .getOrThrow()
@@ -97,9 +98,15 @@ internal class InstancePerTestSpecRunner(
     */
    private suspend fun executeInCleanSpec(test: TestCase): Result<Spec> {
       return createInstance(test.spec::class)
-         .flatMap { SpecExtensions(configuration).beforeSpec(it) }
-         .flatMap { interceptAndRun(it, test) }
-         .flatMap { SpecExtensions(configuration).afterSpec(it) }
+         .flatMap { spec ->
+            runCatching {
+               extensions.intercept(spec) {
+                  extensions.beforeSpec(spec)
+                     .flatMap { interceptAndRun(it, test) }
+                     .flatMap { SpecExtensions(configuration).afterSpec(it) }
+               }
+            }.map { spec }
+         }
    }
 
    private suspend fun interceptAndRun(spec: Spec, test: TestCase): Result<Spec> = kotlin.runCatching {

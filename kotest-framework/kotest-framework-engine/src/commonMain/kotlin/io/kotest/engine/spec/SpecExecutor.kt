@@ -79,10 +79,14 @@ class SpecExecutor(
          SpecStartedFinishedInterceptor(listener),
       )
 
-      val innerExecute: suspend (Spec) -> Map<TestCase, TestResult> = {
+      val initial: suspend (Spec) -> Map<TestCase, TestResult> = {
          try {
-            val delegate = createSpecExecutorDelegate(listener, defaultCoroutineDispatcherFactory)
-            delegate.execute(spec)
+            var results: Map<TestCase, TestResult> = emptyMap()
+            extensions.intercept(it) {
+               val delegate = createSpecExecutorDelegate(listener, defaultCoroutineDispatcherFactory)
+               results = delegate.execute(spec)
+            }
+            results
          } catch (t: Throwable) {
             log { "SpecExecutor: Error creating spec delegate $t" }
             throw t
@@ -90,7 +94,7 @@ class SpecExecutor(
       }
 
       log { "SpecExecutor: Executing ${interceptors.size} spec interceptors" }
-      return interceptors.foldRight(innerExecute) { ext, fn ->
+      return interceptors.foldRight(initial) { ext, fn ->
          { r -> ext.intercept(fn)(r) }
       }.invoke(spec)
    }

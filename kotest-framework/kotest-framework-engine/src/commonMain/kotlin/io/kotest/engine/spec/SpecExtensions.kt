@@ -2,12 +2,13 @@ package io.kotest.engine.spec
 
 import io.kotest.core.config.Configuration
 import io.kotest.core.extensions.Extension
+import io.kotest.core.extensions.SpecInactiveExtension
 import io.kotest.core.extensions.SpecInitializeExtension
 import io.kotest.core.extensions.SpecInstantiationExtension
+import io.kotest.core.extensions.SpecInterceptExtension
 import io.kotest.core.listeners.AfterSpecListener
 import io.kotest.core.listeners.BeforeSpecListener
 import io.kotest.core.listeners.FinalizeSpecListener
-import io.kotest.core.extensions.SpecInactiveExtension
 import io.kotest.core.listeners.SpecInstantiationListener
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.functionOverrideCallbacks
@@ -80,6 +81,13 @@ internal class SpecExtensions(private val configuration: Configuration) {
       val exts = configuration.extensions().filterIsInstance<FinalizeSpecListener>()
       log { "SpecExtensions: finishSpec(${exts.size}) $kclass results:$results" }
       exts.forEach { it.finalizeSpec(kclass, results) }
+   }
+
+   suspend fun intercept(spec: Spec, f: suspend (Spec) -> Unit) {
+      val exts = configuration.extensions().filterIsInstance<SpecInterceptExtension>()
+      val initial: suspend (Spec) -> Unit = { f(it) }
+      val chain = exts.foldRight(initial) { op, acc -> { s -> op.interceptSpec(s) { acc(it) } } }
+      chain.invoke(spec)
    }
 }
 
