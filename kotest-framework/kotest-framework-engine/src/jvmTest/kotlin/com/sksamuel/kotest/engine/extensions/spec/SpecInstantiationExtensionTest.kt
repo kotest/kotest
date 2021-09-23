@@ -18,8 +18,9 @@ class SpecInstantiationExtensionTest : FunSpec() {
       test("SpecInstantiationExtension should trigger for successful instantiation") {
          var count = 0
          val ext = object : SpecInitializeExtension {
-            override suspend fun initialize(spec: Spec) {
+            override suspend fun initialize(spec: Spec): Spec {
                count++
+               return spec
             }
          }
          configuration.register(ext)
