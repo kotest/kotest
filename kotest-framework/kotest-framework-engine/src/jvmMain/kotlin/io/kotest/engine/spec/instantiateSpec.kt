@@ -26,7 +26,7 @@ suspend fun <T : Spec> createAndInitializeSpec(kclass: KClass<T>): Result<Spec> 
          val spec = configuration.extensions().filterIsInstance<ConstructorExtension>()
             .fold(initial) { spec, ext -> spec ?: ext.instantiate(kclass) } ?: javaReflectNewInstance(kclass)
          configuration.extensions().filterIsInstance<PostInstantiationExtension>()
-            .fold(spec) { acc, ext -> ext.process(acc) }
+            .fold(spec) { acc, ext -> ext.instantiated(acc) }
       }
       else -> Result.success(obj)
    }

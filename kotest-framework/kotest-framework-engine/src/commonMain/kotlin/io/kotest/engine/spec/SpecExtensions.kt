@@ -34,7 +34,7 @@ internal class SpecExtensions(private val configuration: Configuration) {
          configuration.extensions() // globals
    }
 
-   fun specInitialize(spec: Spec): Result<Unit> = runCatching {
+   suspend fun specInitialize(spec: Spec): Result<Unit> = runCatching {
       extensions(spec).filterIsInstance<SpecInitializeExtension>().forEach { it.initialize(spec) }
    }
 

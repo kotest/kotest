@@ -1,6 +1,7 @@
 package com.sksamuel.kotest.engine.extensions.project
 
 import io.kotest.core.config.configuration
+import io.kotest.core.extensions.ProjectContext
 import io.kotest.core.extensions.ProjectExtension
 import io.kotest.core.spec.Isolate
 import io.kotest.core.spec.style.FunSpec
@@ -16,14 +17,14 @@ class ProjectExtensionEngineResultTest : FunSpec({
    val extensions = listOf(
       object : ProjectExtension {
          val name = "hello q"
-         override suspend fun interceptProject(callback: suspend () -> Unit) {
+         override suspend fun interceptProject(context: ProjectContext, callback: suspend (ProjectContext) -> Unit) {
             events.add(name)
-            return callback()
+            return callback(context)
          }
       },
       object : ProjectExtension {
          val name = "mon capitaine!"
-         override suspend fun interceptProject(callback: suspend () -> Unit) {
+         override suspend fun interceptProject(context: ProjectContext, callback: suspend (ProjectContext) -> Unit) {
             throw ProjectExtensionThrowable(name)
          }
       },
