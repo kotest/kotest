@@ -1,13 +1,13 @@
 package io.kotest.engine.spec.interceptor
 
-import io.kotest.core.extensions.SpecLaunchedExtension
+import io.kotest.core.extensions.SpecLaunchExtension
 import io.kotest.core.spec.SpecRef
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import kotlin.reflect.KClass
 
-class SpecLaunchedExtensionInterceptor(
-   private val extensions: List<SpecLaunchedExtension>
+class SpecLaunchExtensionInterceptor(
+   private val extensions: List<SpecLaunchExtension>
 ) : SpecRefInterceptor {
 
    override suspend fun intercept(

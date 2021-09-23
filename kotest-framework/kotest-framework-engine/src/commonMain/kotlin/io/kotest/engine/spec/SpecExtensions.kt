@@ -2,10 +2,11 @@ package io.kotest.engine.spec
 
 import io.kotest.core.config.Configuration
 import io.kotest.core.extensions.Extension
-import io.kotest.core.extensions.SpecIgnoredExtension
-import io.kotest.core.extensions.SpecInactiveExtension
+import io.kotest.core.extensions.SpecIgnoredListener
+import io.kotest.core.extensions.InactiveSpecListener
 import io.kotest.core.extensions.SpecInitializeExtension
-import io.kotest.core.extensions.SpecInstantiationExtension
+import io.kotest.core.extensions.SpecCreatedListener
+import io.kotest.core.extensions.SpecCreationErrorListener
 import io.kotest.core.extensions.SpecInterceptExtension
 import io.kotest.core.listeners.AfterSpecListener
 import io.kotest.core.listeners.BeforeSpecListener
@@ -65,17 +66,17 @@ internal class SpecExtensions(private val configuration: Configuration) {
    suspend fun specInstantiated(spec: Spec) = runCatching {
       log { "SpecExtensions: specInstantiated spec:$spec" }
       configuration.extensions().filterIsInstance<SpecInstantiationListener>().forEach { it.specInstantiated(spec) }
-      configuration.extensions().filterIsInstance<SpecInstantiationExtension>().forEach { it.onSpecInstantiation(spec) }
+      configuration.extensions().filterIsInstance<SpecCreatedListener>().forEach { it.onSpecCreated(spec) }
    }
 
    suspend fun specInstantiationError(kclass: KClass<out Spec>, t: Throwable) = kotlin.runCatching {
       log { "SpecExtensions: specInstantiationError $kclass errror:$t" }
       configuration.extensions().filterIsInstance<SpecInstantiationListener>().forEach { it.specInstantiationError(kclass, t) }
-      configuration.extensions().filterIsInstance<SpecInstantiationExtension>().forEach { it.onSpecInstantiationError(kclass, t) }
+      configuration.extensions().filterIsInstance<SpecCreationErrorListener>().forEach { it.onSpecCreationError(kclass, t) }
    }
 
    suspend fun inactiveSpec(spec: Spec, results: Map<TestCase, TestResult>) {
-      configuration.extensions().filterIsInstance<SpecInactiveExtension>().forEach { it.inactive(spec, results) }
+      configuration.extensions().filterIsInstance<InactiveSpecListener>().forEach { it.inactive(spec, results) }
    }
 
    suspend fun finishSpec(kclass: KClass<out Spec>, results: Map<TestCase, TestResult>) {
@@ -92,7 +93,7 @@ internal class SpecExtensions(private val configuration: Configuration) {
    }
 
    suspend fun ignored(kclass: KClass<out Spec>) {
-      val exts = configuration.extensions().filterIsInstance<SpecIgnoredExtension>()
+      val exts = configuration.extensions().filterIsInstance<SpecIgnoredListener>()
       log { "SpecExtensions: ignored(${exts.size}) $kclass" }
       exts.forEach { it.ignored(kclass, null) }
    }
