@@ -27,7 +27,7 @@ class KotestTestRunner(
    }
 
    override fun getDescription(): Description {
-      val spec = createAndInitializeSpec(klass.kotlin).getOrThrow()
+      val spec = runBlocking { createAndInitializeSpec(klass.kotlin).getOrThrow() }
       val desc = Description.createSuiteDescription(spec::class.java)
       spec.materializeAndOrderRootTests()
          .forEach { rootTest ->
