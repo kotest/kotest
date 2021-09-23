@@ -15,9 +15,9 @@ Kotest has an extension selection of hooks through which you can integrate into 
 | If spec creation is successful, then any `SpecCreatedListener`s are invoked and if spec creation fails, then any `SpecCreationErrorListener`s are invoked with the exception.
 | Any `SpecInterceptExtension`s are invoked passing in the created spec. These extensions may opt to skip execution or continue. Any changes to the coroutine context are propagated downstream.
 | If the spec is active (contains at least one, enabled, root test case), then any `PrepareSpecListener`s are invoked. Otherwise, the spec is inactive, and any `InactiveSpecListener`s are invoked and execution is skipped.
-| Any `BeforeSpecListener`s are invoked. Any errors in these extensions will cause test execution and after spec listeners to be skipped.
+| Any `BeforeSpecListener`s are invoked passing in the spec instance. Any errors in these extensions will cause test execution and after spec listeners to be skipped.
 | All tests in the spec are executed.
-| Any `AfterSpecListener`s are invoked.
-| Any `FinalizeSpecListeners`s are invoked.
+| Any `AfterSpecListener`s are invoked passing in the spec instance.
+| Any `FinalizeSpecListeners`s are invoked passing in the `KClass` reference to the spec that was completed.
 
 Note: For each isolated spec, a fresh spec instance will be created and the `PostInstantiationExtension`, `SpecCreatedListener`, `SpecCreationErrorListener`, `SpecInterceptExtension`, `BeforeSpecListener` and `AfterSpecListener` callbacks will be repeated.
