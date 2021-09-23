@@ -1,13 +1,14 @@
 package com.sksamuel.kotest.property.arbitrary
 
-import io.kotest.assertions.shouldFail
+import io.kotest.assertions.throwables.shouldThrowAny
 import io.kotest.core.spec.style.StringSpec
+import io.kotest.extensions.system.captureStandardOut
 import io.kotest.matchers.collections.shouldContainExactly
 import io.kotest.matchers.collections.shouldHaveAtLeastSize
 import io.kotest.matchers.comparables.beGreaterThan
 import io.kotest.matchers.comparables.beLessThan
 import io.kotest.matchers.comparables.shouldBeGreaterThan
-import io.kotest.matchers.comparables.shouldBeLessThan
+import io.kotest.matchers.ints.shouldBeLessThan
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
@@ -628,13 +629,18 @@ class BindTest : StringSpec({
 
       val arb = Arb.bind<Person>()
 
-      shouldFail {
-         checkAll(arb) { person ->
-            person.name.length shouldBeLessThan 10
-            person.age shouldBeGreaterThan -1
-            person.age shouldBeLessThan 130
+      val stdout = captureStandardOut {
+         shouldThrowAny {
+            checkAll(arb) { person ->
+               person.name.length shouldBeLessThan 10
+               person.age shouldBeGreaterThan -1
+               person.age shouldBeLessThan 130
+            }
          }
-      }.message shouldContain "Arg 0ː Person(name=, age=-1) (shrunk from Person"
+      }
+
+      stdout shouldContain "Shrink result"
+      stdout shouldContain "Person(name=, age=-1)"
    }
 })
 
