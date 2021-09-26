@@ -7,7 +7,8 @@ slug: jacoco.html
 
 
 
-Kotest integrates with [Jacoco](https://www.eclemma.org/jacoco/) for code coverage in the normal way you'd expect.
+Kotest integrates with [Jacoco](https://www.eclemma.org/jacoco/) for code coverage in the standard gradle way.
+You can read gradle installation instructions [here](https://docs.gradle.org/current/userguide/jacoco_plugin.html).
 
 1. In gradle, add jacoco to your plugins.
 
@@ -19,7 +20,16 @@ plugins {
 }
 ```
 
-2. Add the jacoco XML report task.
+2. Configure jacoco
+
+```kotlin
+jacoco {
+    toolVersion = "0.8.7"
+    reportsDirectory = layout.buildDirectory.dir('customJacocoReportDir') // optional
+}
+```
+
+3. Add the jacoco XML report task.
 
 ```kotlin
 tasks.jacocoTestReport {
