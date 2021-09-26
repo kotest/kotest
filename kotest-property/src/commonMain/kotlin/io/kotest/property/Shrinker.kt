@@ -21,7 +21,7 @@ package io.kotest.property
  * Note: It is important that you do not return the degenerate case as the first step in a shrinker.
  * Otherwise, this could be tested first, it could pass, and no other routes would be explored.
  */
-interface Shrinker<A> {
+fun interface Shrinker<A> {
 
    /**
     * Returns the "next level" of shrinks for the given value, or empty list if a "base case" has been reached.

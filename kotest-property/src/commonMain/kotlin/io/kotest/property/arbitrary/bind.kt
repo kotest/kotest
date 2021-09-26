@@ -3,6 +3,7 @@ package io.kotest.property.arbitrary
 import io.kotest.property.Arb
 import io.kotest.property.Exhaustive
 import io.kotest.property.Gen
+import io.kotest.property.RTree
 import io.kotest.property.RandomSource
 import io.kotest.property.Sample
 
@@ -400,8 +401,42 @@ private fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, T> Arb.Companion.bindN(
    genL: Gen<L>,
    genM: Gen<M>,
    genN: Gen<N>,
-   bindFn: (A, B, C, D, E, F, G, H, I, J, K, L, M, N) -> T
+   bindFn: (A, B, C, D, E, F, G, H, I, J, K, L, M, N) -> T,
 ): Arb<T> {
+
+   fun <S> shrink(tree: RTree<S>): List<RTree<S>> = tree.children.value
+
+   fun combineShrinks(
+      a: RTree<A>, b: RTree<B>, c: RTree<C>, d: RTree<D>, e: RTree<E>,
+      f: RTree<F>, g: RTree<G>, h: RTree<H>, i: RTree<I>, j: RTree<J>,
+      k: RTree<K>, l: RTree<L>, m: RTree<M>, n: RTree<N>
+   ): RTree<T> =
+      RTree(
+         {
+            bindFn(
+               a.value(), b.value(), c.value(), d.value(), e.value(),
+               f.value(), g.value(), h.value(), i.value(), j.value(),
+               k.value(), l.value(), m.value(), n.value()
+            )
+         },
+         kotlin.lazy {
+            shrink(a).map { combineShrinks(it, b, c, d, e, f, g, h, i, j, k, l, m, n) } +
+            shrink(b).map { combineShrinks(a, it, c, d, e, f, g, h, i, j, k, l, m, n) } +
+            shrink(c).map { combineShrinks(a, b, it, d, e, f, g, h, i, j, k, l, m, n) } +
+            shrink(d).map { combineShrinks(a, b, c, it, e, f, g, h, i, j, k, l, m, n) } +
+            shrink(e).map { combineShrinks(a, b, c, d, it, f, g, h, i, j, k, l, m, n) } +
+            shrink(f).map { combineShrinks(a, b, c, d, e, it, g, h, i, j, k, l, m, n) } +
+            shrink(g).map { combineShrinks(a, b, c, d, e, f, it, h, i, j, k, l, m, n) } +
+            shrink(h).map { combineShrinks(a, b, c, d, e, f, g, it, i, j, k, l, m, n) } +
+            shrink(i).map { combineShrinks(a, b, c, d, e, f, g, h, it, j, k, l, m, n) } +
+            shrink(j).map { combineShrinks(a, b, c, d, e, f, g, h, i, it, k, l, m, n) } +
+            shrink(k).map { combineShrinks(a, b, c, d, e, f, g, h, i, j, it, l, m, n) } +
+            shrink(l).map { combineShrinks(a, b, c, d, e, f, g, h, i, j, k, it, m, n) } +
+            shrink(m).map { combineShrinks(a, b, c, d, e, f, g, h, i, j, k, l, it, n) } +
+            shrink(n).map { combineShrinks(a, b, c, d, e, f, g, h, i, j, k, l, m, it) }
+         }
+      )
+
 
    val arbA = genA.toArb()
    val arbB = genB.toArb()
@@ -440,21 +475,25 @@ private fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, T> Arb.Companion.bindN(
       }
 
       override fun sample(rs: RandomSource): Sample<T> {
-         val a = arbA.sample(rs).value
-         val b = arbB.sample(rs).value
-         val c = arbC.sample(rs).value
-         val d = arbD.sample(rs).value
-         val e = arbE.sample(rs).value
-         val f = arbF.sample(rs).value
-         val g = arbG.sample(rs).value
-         val h = arbH.sample(rs).value
-         val i = arbI.sample(rs).value
-         val j = arbJ.sample(rs).value
-         val k = arbK.sample(rs).value
-         val l = arbL.sample(rs).value
-         val m = arbM.sample(rs).value
-         val n = arbN.sample(rs).value
-         return Sample(bindFn(a, b, c, d, e, f, g, h, i, j, k, l, m, n))
+         val (av, ar) = arbA.sample(rs)
+         val (bv, br) = arbB.sample(rs)
+         val (cv, cr) = arbC.sample(rs)
+         val (dv, dr) = arbD.sample(rs)
+         val (ev, er) = arbE.sample(rs)
+         val (fv, fr) = arbF.sample(rs)
+         val (gv, gr) = arbG.sample(rs)
+         val (hv, hr) = arbH.sample(rs)
+         val (iv, ir) = arbI.sample(rs)
+         val (jv, jr) = arbJ.sample(rs)
+         val (kv, kr) = arbK.sample(rs)
+         val (lv, lr) = arbL.sample(rs)
+         val (mv, mr) = arbM.sample(rs)
+         val (nv, nr) = arbN.sample(rs)
+
+         return Sample(
+            bindFn(av, bv, cv, dv, ev, fv, gv, hv, iv, jv, kv, lv, mv, nv),
+            combineShrinks(ar, br, cr, dr, er, fr, gr, hr, ir, jr, kr, lr, mr, nr)
+         )
       }
    }
 }
@@ -533,5 +572,3 @@ private fun <A> Arb.Companion.bind(arbs: List<Arb<A>>): Arb<List<A>> = when (arb
       Arb.bind(listOfArbs).map { it.flatten() }
    }
 }
-
-
