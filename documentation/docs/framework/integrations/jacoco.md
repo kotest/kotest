@@ -33,8 +33,25 @@ jacoco {
 
 ```kotlin
 tasks.jacocoTestReport {
+    dependsOn(tasks.test)
     reports {
         xml.isEnabled = true
     }
 }
 ```
+
+4. Change tests task to depend on jacoco.
+
+```kotlin
+tasks.test {
+  ...
+  finalizedBy(tasks.jacocoTestReport)
+}
+```
+
+Now when you run `test`, the Jacoco report files should be generated in `$buildDir/reports/jacoco`. 
+
+:::note
+You may need to apply the jacoco plugin to each submodule if you have a multi module project.
+:::
+
