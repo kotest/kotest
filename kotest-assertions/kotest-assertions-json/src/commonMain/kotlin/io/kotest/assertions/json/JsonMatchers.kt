@@ -76,6 +76,16 @@ fun String.shouldNotEqualJson(expected: String, options: CompareJsonOptions) {
    a shouldNot equalJson(e, options)
 }
 
+fun String.shouldBeEmptyJsonArray(): String {
+   this should matchJson("[]")
+   return this
+}
+
+fun String.shouldBeEmptyJsonObject(): String {
+   this should matchJson("{}")
+   return this
+}
+
 internal fun parse(expected: String, actual: String): Pair<JsonTree, JsonTree> {
    val enode = pretty.parseToJsonElement(expected)
    val anode = pretty.parseToJsonElement(actual)
