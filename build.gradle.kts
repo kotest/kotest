@@ -9,7 +9,7 @@ buildscript {
 plugins {
    kotlin("jvm")
    java
-   id("org.jetbrains.intellij").version("0.6.5")
+   id("org.jetbrains.intellij")
 }
 
 repositories {
@@ -71,19 +71,18 @@ val jetbrainsToken: String by project
 version = "1.1." + (System.getenv("GITHUB_RUN_NUMBER") ?: "0-SNAPSHOT")
 
 intellij {
-   sandboxDirectory = project.property("sandbox").toString()
-   version = descriptor.sdkVersion
-   pluginName = "kotest-plugin-intellij"
-   setPlugins(*descriptor.deps.toTypedArray())
-   downloadSources = true
-   type = "IC"
-   updateSinceUntilBuild = false
+   sandboxDir.set(project.property("sandbox").toString())
+   version.set(descriptor.sdkVersion)
+   pluginName.set("kotest-plugin-intellij")
+   plugins.set(descriptor.deps)
+   downloadSources.set(true)
+   type.set("IC")
+   updateSinceUntilBuild.set(false)
 }
 
 dependencies {
-   compileOnly(kotlin("stdlib"))
-   implementation("javax.xml.bind:jaxb-api:2.2.12")
-   implementation("javax.activation:activation:1.1.1")
+   implementation("javax.xml.bind:jaxb-api:_")
+   implementation("javax.activation:activation:_")
 
    // we bundle this for 4.1 support
    // in kotest 4.2.0 the launcher has moved to a stand alone module
@@ -94,8 +93,8 @@ dependencies {
    implementation("io.kotest:kotest-framework-launcher-jvm:4.2.0")
 
    // needed for the resource files which are loaded into java light tests
-   testImplementation("io.kotest:kotest-framework-api:4.4.1")
-   testImplementation("io.kotest:kotest-assertions-core-jvm:4.4.1")
+   testImplementation("io.kotest:kotest-framework-api:_")
+   testImplementation("io.kotest:kotest-assertions-core-jvm:_")
 }
 
 sourceSets {
@@ -128,12 +127,12 @@ tasks {
    }
 
    publishPlugin {
-      token(System.getenv("JETBRAINS_TOKEN") ?: jetbrainsToken)
+      token.set(System.getenv("JETBRAINS_TOKEN") ?: jetbrainsToken)
    }
 
    patchPluginXml {
       setVersion("${project.version}-${descriptor.sdkVersion}")
-      setSinceBuild(descriptor.since)
-      setUntilBuild(descriptor.until)
+      sinceBuild.set(descriptor.since)
+      untilBuild.set(descriptor.until)
    }
 }
