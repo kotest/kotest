@@ -12,7 +12,7 @@ import io.kotest.core.filter.TestFilter
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.SpecRef
 import io.kotest.engine.extensions.SpecifiedTagsTagExtension
-import io.kotest.engine.extensions.TestEngineConfigFiltersExtension
+import io.kotest.engine.extensions.TestEngineConfigFiltersInterceptor
 import io.kotest.engine.interceptors.EngineContext
 import io.kotest.engine.interceptors.EngineInterceptor
 import io.kotest.engine.listener.TestEngineListener
@@ -59,7 +59,7 @@ data class TestEngineConfig(
 )
 
 private val testEngineConfigExtensions = listOf(
-   TestEngineConfigFiltersExtension,
+   TestEngineConfigFiltersInterceptor,
 )
 
 /**
@@ -67,7 +67,7 @@ private val testEngineConfigExtensions = listOf(
  */
 class TestEngine(config: TestEngineConfig) {
    val config: TestEngineConfig = testEngineConfigExtensions.foldRight(config) { extension, config ->
-      extension.transform(config)
+      extension.intercept(config)
    }
 
    init {

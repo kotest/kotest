@@ -33,7 +33,7 @@ private fun Regex.toSpecFilter(): SpecFilter = object : SpecFilter {
    }
 }
 
-fun readFilterPropertyToRegexes(name: String): Sequence<Regex> = (sysprop(name) ?: env(name) ?: "")
+private fun readFilterPropertyToRegexes(name: String): Sequence<Regex> = (sysprop(name) ?: env(name) ?: "")
    .split(",")
    .asSequence()
    .filter { it.isNotBlank() }
@@ -41,8 +41,8 @@ fun readFilterPropertyToRegexes(name: String): Sequence<Regex> = (sysprop(name) 
    .mapNotNull { it.valueOrNull() }
 
 @OptIn(KotestInternal::class)
-object TestEngineConfigFiltersExtension : TestEngineConfigExtension {
-   override fun transform(config: TestEngineConfig): TestEngineConfig {
+internal object TestEngineConfigFiltersInterceptor : TestEngineConfigInterceptor {
+   override fun intercept(config: TestEngineConfig): TestEngineConfig {
       val testFilters = readFilterPropertyToRegexes(testFiltersProperty).map { it.toTestFilter() } + config.testFilters
       val specFilters = readFilterPropertyToRegexes(specFiltersProperty).map { it.toSpecFilter() } + config.specFilters
 
