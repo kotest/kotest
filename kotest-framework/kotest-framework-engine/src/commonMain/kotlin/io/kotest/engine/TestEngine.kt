@@ -12,6 +12,7 @@ import io.kotest.core.filter.TestFilter
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.SpecRef
 import io.kotest.engine.extensions.SpecifiedTagsTagExtension
+import io.kotest.engine.extensions.TestEngineConfigFiltersExtension
 import io.kotest.engine.interceptors.EngineContext
 import io.kotest.engine.interceptors.EngineInterceptor
 import io.kotest.engine.listener.TestEngineListener
@@ -57,10 +58,17 @@ data class TestEngineConfig(
    val explicitTags: Tags?,
 )
 
+private val testEngineConfigExtensions = listOf(
+   TestEngineConfigFiltersExtension,
+)
+
 /**
  * Multiplatform Kotest Test Engine.
  */
-class TestEngine(val config: TestEngineConfig) {
+class TestEngine(config: TestEngineConfig) {
+   val config: TestEngineConfig = testEngineConfigExtensions.foldRight(config) { extension, config ->
+      extension.transform(config)
+   }
 
    init {
       // if the engine was invoked with explicit tags, we register those via a tag extension
