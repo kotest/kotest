@@ -27,7 +27,7 @@ private fun Regex.toTestFilter(): TestFilter = object : TestFilter {
 private fun Regex.toSpecFilter(): SpecFilter = object : SpecFilter {
    override fun filter(kclass: KClass<*>): SpecFilterResult {
       val regex = this@toSpecFilter
-      val name = kclass.simpleName ?: ""
+      val name = kclass.simpleName ?: "" // TODO: can't use qualified name here cause of js, should I make an expect fun?
 
       return if (regex.matches(name)) SpecFilterResult.Include else SpecFilterResult.Exclude
    }
