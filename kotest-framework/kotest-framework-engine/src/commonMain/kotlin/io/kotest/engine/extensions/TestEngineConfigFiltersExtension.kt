@@ -12,8 +12,8 @@ import io.kotest.mpp.env
 import io.kotest.mpp.sysprop
 import kotlin.reflect.KClass
 
-const val testFiltersProperty = "kotest.filters.tests"
-const val specFiltersProperty = "kotest.filters.specs"
+const val testFiltersProperty = "kotest.filter.tests"
+const val specFiltersProperty = "kotest.filter.specs"
 
 private fun Regex.toTestFilter(): TestFilter = object : TestFilter {
    override fun filter(descriptor: Descriptor): TestFilterResult {
