@@ -3,6 +3,8 @@ package io.kotest.engine.test
 import io.kotest.common.Platform
 import io.kotest.common.platform
 import io.kotest.core.concurrency.CoroutineDispatcherFactory
+import io.kotest.core.config.Configuration
+import io.kotest.core.config.configuration
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestContext
 import io.kotest.core.test.TestResult
@@ -18,6 +20,7 @@ import io.kotest.engine.test.interceptors.InvocationCountCheckInterceptor
 import io.kotest.engine.test.interceptors.InvocationRepeatInterceptor
 import io.kotest.engine.test.interceptors.InvocationTimeoutInterceptor
 import io.kotest.engine.test.interceptors.LifecycleInterceptor
+import io.kotest.engine.test.interceptors.RunBlockingTestInterceptor
 import io.kotest.engine.test.interceptors.SupervisorScopeInterceptor
 import io.kotest.engine.test.interceptors.TestCaseExtensionInterceptor
 import io.kotest.engine.test.interceptors.TestFinishedInterceptor
@@ -25,6 +28,7 @@ import io.kotest.engine.test.interceptors.TimeoutInterceptor
 import io.kotest.engine.test.interceptors.blockedThreadTimeoutInterceptor
 import io.kotest.engine.test.interceptors.coroutineDispatcherFactoryInterceptor
 import io.kotest.engine.test.interceptors.coroutineErrorCollectorInterceptor
+import io.kotest.engine.test.interceptors.isTestCoroutineDispatcher
 import io.kotest.mpp.log
 import io.kotest.mpp.timeInMillis
 
@@ -37,7 +41,15 @@ import io.kotest.mpp.timeInMillis
 class TestCaseExecutor(
    private val listener: TestCaseExecutionListener,
    private val defaultCoroutineDispatcherFactory: CoroutineDispatcherFactory = NoopCoroutineDispatcherFactory,
+   private val configuration: Configuration,
 ) {
+
+   companion object {
+      operator fun invoke(
+         listener: TestCaseExecutionListener,
+         defaultCoroutineDispatcherFactory: CoroutineDispatcherFactory = NoopCoroutineDispatcherFactory,
+      ): TestCaseExecutor = TestCaseExecutor(listener, defaultCoroutineDispatcherFactory, configuration)
+   }
 
    suspend fun execute(testCase: TestCase, context: TestContext): TestResult {
       log { "TestCaseExecutor: execute entry point '${testCase.descriptor.path().value}' context=$context" }
@@ -63,6 +75,7 @@ class TestCaseExecutor(
          InvocationRepeatInterceptor(start),
          InvocationTimeoutInterceptor,
          CoroutineLoggingInterceptor,
+         if (platform == Platform.JVM && testCase.isTestCoroutineDispatcher(configuration)) RunBlockingTestInterceptor() else null,
       )
 
       val innerExecute: suspend (TestCase, TestContext) -> TestResult = { tc, ctx ->

@@ -18,6 +18,8 @@ object Defaults {
    val displayFullTestPath: Boolean = false
 
    const val coroutineDebugProbes: Boolean = false
+   const val testCoroutineDispatcher: Boolean = false
+
    const val displaySpecIfNoActiveTests: Boolean = true
 
    const val failOnEmptyTestSuite = false

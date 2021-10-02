@@ -220,6 +220,14 @@ class Configuration {
    var logLevel: LogLevel = LogLevel.Off
 
    /**
+    * If set to true then the test engine will install a [TestCoroutineDispatcher].
+    * This can be retrieved via `delayController` in your tests.
+    * @see https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-test/index.html
+    */
+   @ExperimentalKotest
+   var testCoroutineDispatcher: Boolean = Defaults.testCoroutineDispatcher
+
+   /**
     * Returns the default [TestCaseConfig] to be assigned to tests when not specified either in
     * the spec, test factory, or test case itself.
     *

@@ -54,7 +54,7 @@ kotlin {
          dependencies {
             compileOnly(kotlin("stdlib"))
             implementation(kotlin("reflect"))
-            implementation(Libs.Coroutines.coreCommon)
+            api(Libs.Coroutines.coreCommon)
             implementation(Libs.Kotlin.kotlinScriptRuntime)
             implementation(project(Projects.Common))
             api(project(Projects.AssertionsShared))
@@ -67,6 +67,9 @@ kotlin {
 
       val jvmMain by getting {
          dependsOn(commonMain)
+         dependencies {
+            api(Libs.Coroutines.test)
+         }
       }
 
       val desktopMain by creating {

@@ -97,7 +97,16 @@ abstract class Spec : TestConfiguration(), SpecFunctionConfiguration, SpecFuncti
    var blockingTest: Boolean? = null
 
    @JsName("coroutineDispatcherFactory_var")
+   @ExperimentalKotest
    var coroutineDispatcherFactory: CoroutineDispatcherFactory? = null
+
+   /**
+    * If set to true then the test engine will install a [TestCoroutineDispatcher].
+    * This can be retrieved via `delayController` in your tests.
+    * @see https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-test/index.html
+    */
+   @ExperimentalKotest
+   var testCoroutineDispatcher: Boolean? = null
 
    /**
     * Sets the number of threads that will be used for executing root tests in this spec.
