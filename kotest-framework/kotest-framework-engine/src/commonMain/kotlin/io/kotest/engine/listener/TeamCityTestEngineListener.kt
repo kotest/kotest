@@ -40,7 +40,6 @@ class TeamCityTestEngineListener(
          .testType(TestType.Test.name)
          .build()
 
-      println()
       println(msg)
 
       // we must print out the stack trace in between the dummy, so it appears when you click on the test name
@@ -55,7 +54,6 @@ class TeamCityTestEngineListener(
          .testType(TestType.Test.name)
          .build()
 
-      println()
       println(msg2)
 
       val msg3 = TeamCityMessageBuilder
@@ -65,7 +63,6 @@ class TeamCityTestEngineListener(
          .testType(TestType.Test.name)
          .build()
 
-      println()
       println(msg3)
    }
 
@@ -73,9 +70,7 @@ class TeamCityTestEngineListener(
 
    override suspend fun engineFinished(t: List<Throwable>) {
       if (t.isNotEmpty()) {
-         println()
          println(TeamCityMessageBuilder.testStarted(prefix, "Test failure").build())
-         println()
          val errors = t.joinToString("\n") { t.toString() }
          println(TeamCityMessageBuilder.testFailed(prefix, "Test failure").message(errors).build())
       }
@@ -92,7 +87,6 @@ class TeamCityTestEngineListener(
          .locationHint(Locations.locationHint(kclass))
          .spec()
          .build()
-      println()
       println(msg)
       started.add(kclass)
    }
@@ -123,7 +117,6 @@ class TeamCityTestEngineListener(
          .resultStatus(TestStatus.Success.name)
          .spec()
          .build()
-      println()
       println(msg)
       finished.add(kclass)
    }
@@ -145,7 +138,6 @@ class TeamCityTestEngineListener(
          .message(reason)
          .resultStatus(TestStatus.Ignored.name)
          .build()
-      println()
       println(msg)
    }
 
@@ -177,7 +169,6 @@ class TeamCityTestEngineListener(
          .locationHint(Locations.locationHint(testCase.spec::class))
          .testType(testCase.type.name)
          .build()
-      println()
       println(msg)
    }
 
@@ -189,7 +180,6 @@ class TeamCityTestEngineListener(
          .locationHint(Locations.locationHint(testCase.spec::class))
          .testType(testCase.type.name)
          .build()
-      println()
       println(msg)
    }
 
@@ -204,7 +194,6 @@ class TeamCityTestEngineListener(
          .testType(testCase.type.name)
          .resultStatus(result.status.name)
          .build()
-      println()
       println(msg1)
    }
 
@@ -218,7 +207,6 @@ class TeamCityTestEngineListener(
          .testType(testCase.type.name)
          .resultStatus(result.status.name)
          .build()
-      println()
       println(msg2)
    }
 
@@ -232,7 +220,6 @@ class TeamCityTestEngineListener(
          .testType(testCase.type.name)
          .resultStatus(result.status.name)
          .build()
-      println()
       println(msg)
    }
 }
