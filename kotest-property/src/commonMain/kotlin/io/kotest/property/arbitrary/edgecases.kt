@@ -40,6 +40,8 @@ fun <A> Arb<A>.withEdgecases(edgecases: List<A>): Arb<A> = arbitrary(edgecases) 
  */
 fun <A> Arb<A>.withEdgecases(vararg edgecases: A): Arb<A> = this.withEdgecases(edgecases.toList())
 
+fun <A> Arb<A>.removeEdgecases(): Arb<A> = this.withEdgecases(emptyList())
+
 /**
  * Returns a new [Arb] with the edge cases from this arb transformed by the given function [f].
  */
