@@ -19,21 +19,21 @@ import kotlin.coroutines.resume
  * Creates a new [Arb] that performs no shrinking, has no edge cases and
  * generates values from the given function.
  */
-fun <A> arbitrary(fn: suspend ArbitraryBuilderSyntax.(RandomSource) -> A): Arb<A> =
+fun <A> arbitrary(fn: suspend ArbitraryBuilderContext.(RandomSource) -> A): Arb<A> =
    arbitraryBuilder { rs -> fn(rs) }
 
 /**
  * Creates a new [Arb] that performs shrinking using the supplied [Shrinker], has no edge cases and
  * generates values from the given function.
  */
-fun <A> arbitrary(shrinker: Shrinker<A>, fn: suspend ArbitraryBuilderSyntax.(RandomSource) -> A): Arb<A> =
+fun <A> arbitrary(shrinker: Shrinker<A>, fn: suspend ArbitraryBuilderContext.(RandomSource) -> A): Arb<A> =
    arbitraryBuilder(shrinker) { rs -> fn(rs) }
 
 /**
  * Creates a new [Arb] that classifies the generated values using the supplied [Classifier], has no edge cases and
  * generates values from the given function.
  */
-fun <A> arbitrary(classifier: Classifier<A>, fn: suspend ArbitraryBuilderSyntax.(RandomSource) -> A): Arb<A> =
+fun <A> arbitrary(classifier: Classifier<A>, fn: suspend ArbitraryBuilderContext.(RandomSource) -> A): Arb<A> =
    arbitraryBuilder(null, classifier) { rs -> fn(rs) }
 
 /**
@@ -44,7 +44,7 @@ fun <A> arbitrary(classifier: Classifier<A>, fn: suspend ArbitraryBuilderSyntax.
 fun <A> arbitrary(
    shrinker: Shrinker<A>,
    classifier: Classifier<A>,
-   fn: suspend ArbitraryBuilderSyntax.(RandomSource) -> A
+   fn: suspend ArbitraryBuilderContext.(RandomSource) -> A
 ): Arb<A> =
    arbitraryBuilder(shrinker, classifier) { rs -> fn(rs) }
 
@@ -52,7 +52,7 @@ fun <A> arbitrary(
  * Creates a new [Arb] that performs no shrinking, uses the given edge cases and
  * generates values from the given function.
  */
-fun <A> arbitrary(edgecases: List<A>, fn: suspend ArbitraryBuilderSyntax.(RandomSource) -> A): Arb<A> =
+fun <A> arbitrary(edgecases: List<A>, fn: suspend ArbitraryBuilderContext.(RandomSource) -> A): Arb<A> =
    object : Arb<A>() {
       override fun edgecase(rs: RandomSource): A? = if (edgecases.isEmpty()) null else edgecases.random(rs.random)
       override fun sample(rs: RandomSource): Sample<A> = delegate.sample(rs)
@@ -67,7 +67,7 @@ fun <A> arbitrary(edgecases: List<A>, fn: suspend ArbitraryBuilderSyntax.(Random
 fun <A> arbitrary(
    edgecases: List<A>,
    shrinker: Shrinker<A>,
-   fn: suspend ArbitraryBuilderSyntax.(RandomSource) -> A
+   fn: suspend ArbitraryBuilderContext.(RandomSource) -> A
 ): Arb<A> = object : Arb<A>() {
    override fun edgecase(rs: RandomSource): A? = if (edgecases.isEmpty()) null else edgecases.random(rs.random)
    override fun sample(rs: RandomSource): Sample<A> = delegate.sample(rs)
@@ -81,7 +81,7 @@ fun <A> arbitrary(
  */
 fun <A> arbitrary(
    edgecaseFn: (RandomSource) -> A?,
-   sampleFn: suspend ArbitraryBuilderSyntax.(RandomSource) -> A
+   sampleFn: suspend ArbitraryBuilderContext.(RandomSource) -> A
 ): Arb<A> =
    object : Arb<A>() {
       override fun edgecase(rs: RandomSource): A? = edgecaseFn(rs)
@@ -97,7 +97,7 @@ fun <A> arbitrary(
 fun <A> arbitrary(
    edgecaseFn: (RandomSource) -> A?,
    shrinker: Shrinker<A>,
-   sampleFn: suspend ArbitraryBuilderSyntax.(RandomSource) -> A
+   sampleFn: suspend ArbitraryBuilderContext.(RandomSource) -> A
 ): Arb<A> =
    object : Arb<A>() {
       override fun edgecase(rs: RandomSource): A? = edgecaseFn(rs)
@@ -111,7 +111,7 @@ fun <A> arbitrary(
  * generates values from the given function.
  */
 suspend inline fun <A> generateArbitrary(
-   crossinline fn: suspend GenerateArbitraryBuilderSyntax.(RandomSource) -> A
+   crossinline fn: suspend GenerateArbitraryBuilderContext.(RandomSource) -> A
 ): Arb<A> = suspendArbitraryBuilder { rs -> fn(rs) }
 
 /**
@@ -120,7 +120,7 @@ suspend inline fun <A> generateArbitrary(
  */
 suspend inline fun <A> generateArbitrary(
    shrinker: Shrinker<A>,
-   crossinline fn: suspend GenerateArbitraryBuilderSyntax.(RandomSource) -> A
+   crossinline fn: suspend GenerateArbitraryBuilderContext.(RandomSource) -> A
 ): Arb<A> = suspendArbitraryBuilder(shrinker, null) { rs -> fn(rs) }
 
 /**
@@ -129,7 +129,7 @@ suspend inline fun <A> generateArbitrary(
  */
 suspend inline fun <A> generateArbitrary(
    classifier: Classifier<A>,
-   crossinline fn: suspend GenerateArbitraryBuilderSyntax.(RandomSource) -> A
+   crossinline fn: suspend GenerateArbitraryBuilderContext.(RandomSource) -> A
 ): Arb<A> = suspendArbitraryBuilder(null, classifier) { rs -> fn(rs) }
 
 /**
@@ -140,7 +140,7 @@ suspend inline fun <A> generateArbitrary(
 suspend inline fun <A> generateArbitrary(
    shrinker: Shrinker<A>,
    classifier: Classifier<A>,
-   crossinline fn: suspend GenerateArbitraryBuilderSyntax.(RandomSource) -> A
+   crossinline fn: suspend GenerateArbitraryBuilderContext.(RandomSource) -> A
 ): Arb<A> = suspendArbitraryBuilder(shrinker, classifier) { rs -> fn(rs) }
 
 /**
@@ -149,7 +149,7 @@ suspend inline fun <A> generateArbitrary(
  */
 suspend inline fun <A> generateArbitrary(
    edgecases: List<A>,
-   crossinline fn: suspend GenerateArbitraryBuilderSyntax.(RandomSource) -> A
+   crossinline fn: suspend GenerateArbitraryBuilderContext.(RandomSource) -> A
 ): Arb<A> = suspendArbitraryBuilder(null, null,
    if (edgecases.isEmpty()) null else { rs -> edgecases.random(rs.random) }
 ) { rs -> fn(rs) }
@@ -161,7 +161,7 @@ suspend inline fun <A> generateArbitrary(
 suspend inline fun <A> generateArbitrary(
    edgecases: List<A>,
    shrinker: Shrinker<A>,
-   crossinline fn: suspend GenerateArbitraryBuilderSyntax.(RandomSource) -> A
+   crossinline fn: suspend GenerateArbitraryBuilderContext.(RandomSource) -> A
 ): Arb<A> = suspendArbitraryBuilder(
    shrinker,
    null,
@@ -174,7 +174,7 @@ suspend inline fun <A> generateArbitrary(
  */
 suspend inline fun <A> generateArbitrary(
    crossinline edgecaseFn: (RandomSource) -> A?,
-   crossinline sampleFn: suspend GenerateArbitraryBuilderSyntax.(RandomSource) -> A
+   crossinline sampleFn: suspend GenerateArbitraryBuilderContext.(RandomSource) -> A
 ): Arb<A> {
    val delegate: Arb<A> = suspendArbitraryBuilder { rs -> sampleFn(rs) }
 
@@ -191,7 +191,7 @@ suspend inline fun <A> generateArbitrary(
 suspend inline fun <A> generateArbitrary(
    crossinline edgecaseFn: (RandomSource) -> A?,
    shrinker: Shrinker<A>,
-   crossinline sampleFn: suspend GenerateArbitraryBuilderSyntax.(RandomSource) -> A
+   crossinline sampleFn: suspend GenerateArbitraryBuilderContext.(RandomSource) -> A
 ): Arb<A> {
    val delegate: Arb<A> = suspendArbitraryBuilder(shrinker) { rs -> sampleFn(rs) }
 
@@ -211,7 +211,7 @@ fun <A> arbitraryBuilder(
    shrinker: Shrinker<A>? = null,
    classifier: Classifier<A>? = null,
    edgecaseFn: EdgecaseFn<A>? = null,
-   builderFn: suspend ArbitraryBuilderSyntax.(RandomSource) -> A
+   builderFn: suspend ArbitraryBuilderContext.(RandomSource) -> A
 ): Arb<A> = object : Arb<A>() {
    override fun edgecase(rs: RandomSource): A? = singleShotArb().edgecase(rs)
    override fun sample(rs: RandomSource): Sample<A> = singleShotArb().sample(rs)
@@ -260,7 +260,7 @@ suspend fun <A> suspendArbitraryBuilder(
    shrinker: Shrinker<A>? = null,
    classifier: Classifier<A>? = null,
    edgecaseFn: EdgecaseFn<A>? = null,
-   fn: suspend GenerateArbitraryBuilderSyntax.(RandomSource) -> A
+   fn: suspend GenerateArbitraryBuilderContext.(RandomSource) -> A
 ): Arb<A> = suspendCoroutineUninterceptedOrReturn { cont ->
    val arb = object : Arb<A>() {
       override fun edgecase(rs: RandomSource): A? = singleShotArb().edgecase(rs)
@@ -348,22 +348,22 @@ interface BaseArbitraryBuilderSyntax {
 }
 
 @RestrictsSuspension
-interface ArbitraryBuilderSyntax : BaseArbitraryBuilderSyntax
+interface ArbitraryBuilderContext : BaseArbitraryBuilderSyntax
 
-interface GenerateArbitraryBuilderSyntax : BaseArbitraryBuilderSyntax
+interface GenerateArbitraryBuilderContext : BaseArbitraryBuilderSyntax
 
 sealed class SingleShotArbContinuation<F : BaseArbitraryBuilderSyntax, A>(
    override val context: CoroutineContext,
    private val fn: suspend F.() -> Arb<A>
 ) : Continuation<Arb<A>>, BaseArbitraryBuilderSyntax {
    class Restricted<A>(
-      fn: suspend ArbitraryBuilderSyntax.() -> Arb<A>
-   ) : SingleShotArbContinuation<ArbitraryBuilderSyntax, A>(EmptyCoroutineContext, fn), ArbitraryBuilderSyntax
+      fn: suspend ArbitraryBuilderContext.() -> Arb<A>
+   ) : SingleShotArbContinuation<ArbitraryBuilderContext, A>(EmptyCoroutineContext, fn), ArbitraryBuilderContext
 
    class Suspendedable<A>(
       override val context: CoroutineContext,
-      fn: suspend GenerateArbitraryBuilderSyntax.() -> Arb<A>
-   ) : SingleShotArbContinuation<GenerateArbitraryBuilderSyntax, A>(context, fn), GenerateArbitraryBuilderSyntax
+      fn: suspend GenerateArbitraryBuilderContext.() -> Arb<A>
+   ) : SingleShotArbContinuation<GenerateArbitraryBuilderContext, A>(context, fn), GenerateArbitraryBuilderContext
 
    private lateinit var returnedArb: Arb<A>
    private var hasExecuted: Boolean = false
