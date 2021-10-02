@@ -56,6 +56,14 @@ data class TestCaseConfig(
    // when set to true, installs a coroutine debug probe for tracing coroutines when an error occurs
    val coroutineDebugProbes: Boolean? = null,
 
+   /**
+    * If set to true then the test engine will install a [TestCoroutineDispatcher].
+    * This can be retrieved via `delayController` in your tests.
+    *
+    * @see https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-test/index.html
+    */
+   var testCoroutineDispatcher: Boolean? = null,
+
    // When set to true, execution will switch to a dedicated thread for each test case in this spec,
    // therefore allowing the test engine to safely interrupt tests via Thread.interrupt when they time out.
    // This is useful if you are testing blocking code and want to use timeouts because coroutine timeouts

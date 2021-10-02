@@ -88,6 +88,7 @@ kotlin {
             api(Libs.Kotlin.kotlinScriptRuntime)
             implementation(Libs.Kotlin.kotlinScriptUtil)
             implementation(Libs.Kotlin.kotlinScriptJvm)
+            implementation(Libs.Coroutines.test)
 
             api(Libs.Classgraph.classgraph)
 

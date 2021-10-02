@@ -30,6 +30,7 @@ class RootTestWithConfigBuilder(
       enabledOrReasonIf: EnabledOrReasonIf? = null,
       coroutineDebugProbes: Boolean? = null,
       blockingTest: Boolean? = null,
+      testCoroutineDispatcher: Boolean? = null,
       test: suspend TestContext.() -> Unit,
    ) {
       val derivedConfig = registration.defaultConfig.deriveTestCaseConfig(
@@ -45,6 +46,7 @@ class RootTestWithConfigBuilder(
          enabledOrReasonIf = enabledOrReasonIf,
          coroutineDebugProbes = coroutineDebugProbes,
          blockingTest = blockingTest,
+         testCoroutineDispatcher = testCoroutineDispatcher,
       )
       registration.addTest(name, xdisabled, derivedConfig, TestType.Test, test)
    }
