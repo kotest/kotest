@@ -104,7 +104,5 @@ fun beWithinPercentageOf(other: Float, percentage: Double) = object : Matcher<Fl
    override fun test(value: Float) = MatcherResult(
       value in range,
       { "$value should be in $range" },
-      {
-         "$value should not be in $range"
-      })
+      { "$value should not be in $range" })
 }

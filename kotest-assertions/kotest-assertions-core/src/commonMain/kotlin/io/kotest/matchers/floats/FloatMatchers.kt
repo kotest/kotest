@@ -14,9 +14,7 @@ class FloatToleranceMatcher(private val expected: Float, private val tolerance: 
        MatcherResult(
           false,
           { "By design, Float.Nan != Float.Nan; see https://stackoverflow.com/questions/8819738/why-does-double-nan-double-nan-return-false/8819776#8819776" },
-          {
-             "By design, Float.Nan != Float.Nan; see https://stackoverflow.com/questions/8819738/why-does-double-nan-double-nan-return-false/8819776#8819776"
-          })
+          { "By design, Float.Nan != Float.Nan; see https://stackoverflow.com/questions/8819738/why-does-double-nan-double-nan-return-false/8819776#8819776" })
     } else {
        if (tolerance == 0.0F)
           println("[WARN] When comparing Float consider using tolerance, eg: a shouldBe b plusOrMinus c")
@@ -24,9 +22,7 @@ class FloatToleranceMatcher(private val expected: Float, private val tolerance: 
        MatcherResult(
           diff <= tolerance,
           { "$value should be equal to $expected" },
-          {
-             "$value should not be equal to $expected"
-          })
+          { "$value should not be equal to $expected" })
     }
   }
 

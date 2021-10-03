@@ -58,7 +58,5 @@ fun beNaN() = object : Matcher<Float> {
    override fun test(value: Float) = MatcherResult(
       value.isNaN(),
       { "$value should be NaN" },
-      {
-         "$value should not be NaN"
-      })
+      { "$value should not be NaN" })
 }
