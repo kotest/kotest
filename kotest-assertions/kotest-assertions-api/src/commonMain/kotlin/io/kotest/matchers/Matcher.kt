@@ -112,18 +112,18 @@ interface MatcherResult {
    fun passed(): Boolean
 
    /**
-    * Returns a message indicating why the evaluation failed
-    * for when this matcher is used in the positive sense. For example,
-    * if a size matcher was used like `mylist should haveSize(5)` then
-    * an appropriate error message would be "list should be size 5".
+    * Returns a message indicating why the matcher failed for when this matcher
+    * is used in the positive sense. For example, if a size matcher was used
+    * like `mylist should haveSize(5)` then an appropriate error message would
+    * be "list should be size 5".
     */
    fun failureMessage(): String
 
    /**
-    * Returns a message indicating why the evaluation
-    * failed for when this matcher is used in the negative sense. For example,
-    * if a size matcher was used like `mylist shouldNot haveSize(5)` then
-    * an appropriate negated failure would be "List should not have size 5".
+    * Returns a message indicating why the matcher failed for when this matcher
+    * is used in the negative sense. For example, if a size matcher was used
+    * like `mylist shouldNot haveSize(5)` then an appropriate negated failure
+    * would be "List should not have size 5".
     */
    fun negatedFailureMessage(): String
 
@@ -149,6 +149,29 @@ interface MatcherResult {
          override fun passed(): Boolean = passed
          override fun failureMessage(): String = failureMessageFn()
          override fun negatedFailureMessage(): String = negatedFailureMessageFn()
+      }
+   }
+}
+
+interface ComparableMatcherResult : MatcherResult {
+
+   fun actual(): String
+
+   fun expected(): String
+
+   companion object {
+      operator fun invoke(
+         passed: Boolean,
+         failureMessageFn: () -> String,
+         negatedFailureMessageFn: () -> String,
+         actual: String,
+         expected: String,
+      ) = object : ComparableMatcherResult {
+         override fun passed(): Boolean = passed
+         override fun failureMessage(): String = failureMessageFn()
+         override fun negatedFailureMessage(): String = negatedFailureMessageFn()
+         override fun actual(): String = actual
+         override fun expected(): String = expected
       }
    }
 }

@@ -17,7 +17,7 @@ interface Eq<T> {
  * Locates the applicable [Eq] for the inputs, and invokes it, returning the error if any.
  */
 fun <T : Any?> eq(actual: T, expected: T, strictNumberEq: Boolean = false): Throwable? {
-   // if we have null and non null, usually that's a failure, but people can override equals to allow it
+   // if we have null and non-null, usually that's a failure, but people can override equals to allow it
    return when {
       actual === expected -> null
       actual == null && expected == null -> null

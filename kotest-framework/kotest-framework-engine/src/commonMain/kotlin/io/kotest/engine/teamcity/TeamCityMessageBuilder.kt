@@ -27,7 +27,7 @@ import io.kotest.common.errors.ComparisonError
 class TeamCityMessageBuilder(
    prefix: String,
    messageName: String,
-   private val escapeColons: Boolean = true
+   private val escapeColons: Boolean = false
 ) {
 
    companion object {
