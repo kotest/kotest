@@ -61,7 +61,7 @@ internal class SpecExtensions(private val configuration: Configuration) {
    suspend fun specInstantiated(spec: Spec) = runCatching {
       log { "SpecExtensions: specInstantiated spec:$spec" }
       configuration.extensions().filterIsInstance<SpecInstantiationListener>().forEach { it.specInstantiated(spec) }
-      configuration.extensions().filterIsInstance<SpecInitializeExtension>().forEach { it.initialize(spec) }
+      configuration.extensions().filterIsInstance<SpecInitializeExtension>().forEach { it.initializeSpec(spec) }
    }
 
    suspend fun specInstantiationError(kclass: KClass<out Spec>, t: Throwable) = kotlin.runCatching {
@@ -90,7 +90,7 @@ internal class SpecExtensions(private val configuration: Configuration) {
    suspend fun ignored(kclass: KClass<out Spec>) {
       val exts = configuration.extensions().filterIsInstance<SpecIgnoredListener>()
       log { "SpecExtensions: ignored(${exts.size}) $kclass" }
-      exts.forEach { it.ignored(kclass, null) }
+      exts.forEach { it.ignoredSpec(kclass, null) }
    }
 }
 

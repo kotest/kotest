@@ -18,5 +18,5 @@ interface SpecFinalizeExtension : Extension {
    /**
     * Accepts a [Spec] for processing before that spec is completed.
     */
-   fun finalize(spec: Spec)
+   fun finalizeSpec(spec: Spec)
 }
