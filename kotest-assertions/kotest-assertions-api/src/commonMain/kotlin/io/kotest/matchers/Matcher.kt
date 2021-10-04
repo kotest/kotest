@@ -33,7 +33,7 @@ interface Matcher<in T> {
       /**
        * Returns a [Matcher] for type T that will always fail with the given [error] message.
        */
-      fun <T> failure(error: String) = Matcher<T> { invoke(false, { "" }, { error }) }
+      fun <T> failure(error: String) = Matcher<T> { invoke(false, { error }, { "" }) }
 
       /**
        * Create matcher with the given function to evaluate the value and return a MatcherResult
