@@ -12,6 +12,7 @@ import io.kotest.core.spec.SpecRef
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.engine.listener.TestEngineListener
+import io.kotest.engine.spec.interceptor.ApplyExtensionsInterceptor
 import io.kotest.engine.spec.interceptor.IgnoreNestedSpecStylesInterceptor
 import io.kotest.engine.spec.interceptor.IgnoredSpecInterceptor
 import io.kotest.engine.spec.interceptor.RunIfActiveInterceptor
@@ -58,6 +59,7 @@ class SpecExecutor(
          SpecEnterInterceptor(listener),
          SpecLaunchExtensionInterceptor(conf.extensions().filterIsInstance<SpecLaunchExtension>()),
          IgnoredSpecInterceptor(listener, conf),
+         ApplyExtensionsInterceptor(conf),
       )
 
       val innerExecute: suspend (SpecRef) -> Map<TestCase, TestResult> = {

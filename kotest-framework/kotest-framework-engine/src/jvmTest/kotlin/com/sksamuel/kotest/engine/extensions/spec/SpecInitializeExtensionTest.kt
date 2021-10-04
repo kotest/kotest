@@ -48,7 +48,7 @@ class SpecInitializeExtensionTest : FunSpec() {
 
 object MySpecInitializeExtension : SpecInitializeExtension {
    val invoked = AtomicBoolean(false)
-   override suspend fun initialize(spec: Spec): Spec {
+   override suspend fun initializeSpec(spec: Spec): Spec {
       invoked.set(true)
       return spec
    }

@@ -47,7 +47,7 @@ class SpecFinalizerExtensionTest : FunSpec() {
 
 object MySpecFinalizeExtension : SpecFinalizeExtension {
    val finalized = AtomicBoolean(false)
-   override fun finalize(spec: Spec) {
+   override fun finalizeSpec(spec: Spec) {
       finalized.set(true)
    }
 }

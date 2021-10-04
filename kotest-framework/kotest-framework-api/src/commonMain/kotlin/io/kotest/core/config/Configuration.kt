@@ -333,7 +333,7 @@ class Configuration {
    /**
     * Returns all globally registered [Listener]s.
     */
-   @SoftDeprecated("Listeners have been subsumed into extensions")
+   @Deprecated("Listeners have been subsumed into extensions", level = DeprecationLevel.ERROR)
    fun listeners() = extensions()
 
    /**
