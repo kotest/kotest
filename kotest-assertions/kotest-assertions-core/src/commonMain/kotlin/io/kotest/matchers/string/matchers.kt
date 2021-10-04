@@ -22,9 +22,7 @@ fun containOnlyDigits() = neverNullMatcher<String> { value ->
    MatcherResult(
       value.toCharArray().all { it in '0'..'9' },
       { "${value.show().value} should contain only digits" },
-      {
-         "${value.show().value} should not contain only digits"
-      })
+      { "${value.show().value} should not contain only digits" })
 }
 
 fun String?.shouldContainADigit(): String? {
@@ -41,9 +39,7 @@ fun containADigit() = neverNullMatcher<String> { value ->
    MatcherResult(
       value.toCharArray().any { it in '0'..'9' },
       { "${value.show().value} should contain at least one digit" },
-      {
-         "${value.show().value} should not contain any digits"
-      })
+      { "${value.show().value} should not contain any digits" })
 }
 
 infix fun String?.shouldContainOnlyOnce(substr: String): String? {
@@ -60,9 +56,7 @@ fun containOnlyOnce(substring: String) = neverNullMatcher<String> { value ->
    MatcherResult(
       value.indexOf(substring) >= 0 && value.indexOf(substring) == value.lastIndexOf(substring),
       { "${value.show().value} should contain the substring ${substring.show().value} exactly once" },
-      {
-         "${value.show().value} should not contain the substring ${substring.show().value} exactly once"
-      })
+      { "${value.show().value} should not contain the substring ${substring.show().value} exactly once" })
 }
 
 fun String?.shouldBeEmpty(): String? {
@@ -79,9 +73,7 @@ fun beEmpty() = neverNullMatcher<String> { value ->
    MatcherResult(
       value.isEmpty(),
       { "${value.show().value} should be empty" },
-      {
-         "${value.show().value} should not be empty"
-      })
+      { "${value.show().value} should not be empty" })
 }
 
 fun String?.shouldBeBlank(): String? {
@@ -184,9 +176,7 @@ fun include(substr: String) = neverNullMatcher<String> { value ->
    MatcherResult(
       value.contains(substr),
       { "${value.show().value} should include substring ${substr.show().value}" },
-      {
-         "${value.show().value} should not include substring ${substr.show().value}"
-      })
+      { "${value.show().value} should not include substring ${substr.show().value}" })
 }
 
 /**
@@ -272,7 +262,7 @@ enum class UUIDVersion(
  *
  * Verifies that this string is a valid UUID as per RFC4122. Version depends on [version]. By default, all versions
  * (v1 through v5) are matched. A special attention is necessary for the NIL UUID (an UUID with all zeros),
- * which is considered a valid UUID. By default it's matched as valid.
+ * which is considered a valid UUID. By default, it's matched as valid.
  *
  * ```
  * "123e4567-e89b-12d3-a456-426655440000".shouldBeUUID(version = ANY)  // Assertion passes
@@ -282,7 +272,7 @@ enum class UUIDVersion(
  *
  * ```
  *
- * @see [RFC4122] https://tools.ietf.org/html/rfc4122
+ * @see RFC4122 https://tools.ietf.org/html/rfc4122
  */
 fun String.shouldBeUUID(
    version: UUIDVersion = ANY,
@@ -339,9 +329,7 @@ fun beUUID(
    override fun test(value: String) = MatcherResult(
       value.matches(version.uuidRegex) || (considerNilValid && value.isNilUUID()),
       { "String $value is not an UUID ($version), but should be" },
-      {
-         "String $value is an UUID ($version), but shouldn't be"
-      })
+      { "String $value is an UUID ($version), but shouldn't be" })
 
    private fun String.isNilUUID() = this == "00000000-0000-0000-0000-000000000000"
 }
