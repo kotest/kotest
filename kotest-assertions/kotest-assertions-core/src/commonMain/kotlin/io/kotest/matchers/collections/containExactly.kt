@@ -1,5 +1,6 @@
 package io.kotest.matchers.collections
 
+import io.kotest.assertions.AssertionsConfig
 import io.kotest.assertions.eq.eq
 import io.kotest.assertions.show.Printed
 import io.kotest.assertions.show.show
@@ -67,7 +68,7 @@ fun <T, C : Collection<T>> containExactly(expected: C): Matcher<C?> = neverNullM
 
    val negatedFailureMessage = { "Collection should not contain exactly ${expected.printed().value}" }
 
-   if (actual.size <= 20 && expected.size <= 20) {
+   if (actual.size <= AssertionsConfig.maxCollectionEnumerateSize && expected.size <= AssertionsConfig.maxCollectionEnumerateSize) {
       ComparableMatcherResult(
          passed,
          failureMessage,
