@@ -3,6 +3,7 @@ package io.kotest.assertions
 import io.kotest.mpp.sysprop
 
 object AssertionsConfig {
+
    val showDataClassDiff: Boolean
       get() = sysprop("kotest.assertions.show-data-class-diffs", "true").toBoolean()
 
@@ -14,4 +15,7 @@ object AssertionsConfig {
 
    val maxErrorsOutput: Int
       get() = (sysprop("kotest.assertions.output.max") ?: sysprop("kotlintest.assertions.output.max"))?.toInt() ?: 10
+
+   val maxCollectionEnumerateSize: Int
+      get() = sysprop("kotest.assertions.collection.enumerate.size")?.toIntOrNull() ?: 20
 }

@@ -1,6 +1,7 @@
 package io.kotest.matchers.throwable
 
 import io.kotest.assertions.show.show
+import io.kotest.matchers.ComparableMatcherResult
 import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
 import io.kotest.matchers.should
@@ -11,7 +12,7 @@ infix fun Throwable.shouldHaveMessage(message: String) = this should haveMessage
 infix fun Throwable.shouldNotHaveMessage(message: String) = this shouldNot haveMessage(message)
 
 fun haveMessage(message: String) = object : Matcher<Throwable> {
-   override fun test(value: Throwable) = MatcherResult(
+   override fun test(value: Throwable) = ComparableMatcherResult(
       value.message?.trim() == message.trim(),
       {
          "Throwable should have message:\n${message.trim().show().value}\n\nActual was:\n${
@@ -20,7 +21,10 @@ fun haveMessage(message: String) = object : Matcher<Throwable> {
       },
       {
          "Throwable should not have message:\n${message.trim().show().value}"
-      })
+      },
+      actual = value.message?.trim().show().value,
+      expected = message.trim().show().value,
+   )
 }
 
 infix fun Throwable.shouldHaveMessage(message: Regex) = this should haveMessage(message)

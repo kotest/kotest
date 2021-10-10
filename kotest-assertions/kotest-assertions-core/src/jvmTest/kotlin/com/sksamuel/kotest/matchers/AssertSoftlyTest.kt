@@ -5,7 +5,6 @@ import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.assertions.withClue
 import io.kotest.core.spec.style.FreeSpec
 import io.kotest.matchers.collections.containExactly
-import io.kotest.matchers.collections.shouldNotContainExactly
 import io.kotest.matchers.comparables.beLessThan
 import io.kotest.matchers.doubles.negative
 import io.kotest.matchers.doubles.positive
@@ -110,15 +109,12 @@ class AssertSoftlyTest : FreeSpec({
                "foobar".shouldNotEndWith("bar")
                1.shouldBePositive() // should pass
                1.0.shouldBeNegative()
-               listOf(1).shouldNotContainExactly(1)
             }
          }.let {
-            it.message should contain(
-               """4) Collection should not be exactly [
-  1
-]"""
-            )
-            it.message shouldNot contain("5) ")
+            it.message should contain("""1) 1 should be < 0""")
+            it.message should contain("""2) "foobar" should not end with "bar"""")
+            it.message should contain("""3) 1.0 should be < 0.0""")
+            it.message shouldNot contain("4) ")
          }
       }
 

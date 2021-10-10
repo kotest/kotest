@@ -30,7 +30,7 @@ class TeamCityConsoleReporter(private val prefix: String = TeamCityMessageBuilde
    private fun insertDummyFailure(desc: Descriptor, t: Throwable?) {
       val initName = desc.id.value + " <error>"
       println(TeamCityMessageBuilder.testStarted(prefix, initName).build())
-      // we must print out the stack trace in between the dummy so it appears when you click on the test name
+      // we must print out the stack trace in between the dummy, so it appears when you click on the test name
       if (t != null) printStackTrace(t)
       val message = t?.message?.let { if (it.lines().size == 1) it else null } ?: "Spec failed"
       println(TeamCityMessageBuilder.testFailed(prefix, initName).message(message).build())
