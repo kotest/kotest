@@ -14,7 +14,7 @@ object AssertionsConfig {
       get() = sysprop("kotest.assertions.multi-line-diff", "")
 
    val maxErrorsOutput: Int
-      get() = (sysprop("kotest.assertions.output.max") ?: sysprop("kotlintest.assertions.output.max"))?.toInt() ?: 10
+      get() = sysprop("kotest.assertions.output.max")?.toIntOrNull() ?: 10
 
    val maxCollectionEnumerateSize: Int
       get() = sysprop("kotest.assertions.collection.enumerate.size")?.toIntOrNull() ?: 20
