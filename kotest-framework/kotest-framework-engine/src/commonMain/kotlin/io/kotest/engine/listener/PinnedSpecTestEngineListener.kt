@@ -2,19 +2,20 @@
 
 package io.kotest.engine.listener
 
-import io.kotest.core.spec.Spec
 import io.kotest.core.descriptors.toDescriptor
+import io.kotest.core.spec.Spec
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import kotlin.reflect.KClass
 
 /**
  * Wraps a [TestEngineListener] methods to ensure that only test notifications
- * are passed to the delegated listener for one spec at at time. Notifications that
+ * are passed to the delegated listener for one spec at a time. Notifications that
  * are not for the current spec are delayed until the current spec completes.
  *
  * Note: This class is not thread safe. It is up to the caller to ensure that calls
- * to the methods of this listener are strictly sequential.
+ * to the methods of this listener are strictly sequential, for example by using
+ * an instance of [ThreadSafeTestEngineListener].
  */
 class PinnedSpecTestEngineListener(val listener: TestEngineListener) : TestEngineListener {
 

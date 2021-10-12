@@ -1,29 +1,25 @@
 package io.kotest.engine.reporter
 
 import com.github.ajalt.mordant.TermColors
-import io.kotest.core.descriptors.Descriptor
 import io.kotest.core.config.configuration
+import io.kotest.core.descriptors.Descriptor
 import io.kotest.core.descriptors.spec
 import io.kotest.core.descriptors.toDescriptor
 import io.kotest.core.extensions.formatTestPath
+import io.kotest.core.spec.Spec
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestStatus
 import io.kotest.core.test.TestType
-import io.kotest.engine.test.names.DefaultDisplayNameFormatter
+import io.kotest.engine.listener.TestEngineListener
 import io.kotest.engine.test.names.getDisplayNameFormatter
 import kotlin.reflect.KClass
 
 /**
- * Generates test output in the 'augustus' Kotest style.
+ * Generates test output to the console in an enhanced, formatted, coloured, way.
+ * For a more basic output, see [BasicConsoleTestEngineListener]
  */
-class TaycanConsoleReporter : ConsoleReporter {
-
-   private var term: TermColors = TermColors()
-
-   override fun setTerm(term: TermColors) {
-      this.term = term
-   }
+class EnhancedConsoleTestEngineListener(private val term: TermColors) : TestEngineListener {
 
    private var errors = 0
    private var start = System.currentTimeMillis()
@@ -75,7 +71,7 @@ class TaycanConsoleReporter : ConsoleReporter {
       "I test code and chew bubblegum, and I'm all out of bubblegum"
    )
 
-   override fun engineStarted(classes: List<KClass<*>>) {
+   override suspend fun engineStarted(classes: List<KClass<*>>) {
       println(bold(">> Kotest"))
       println("- " + intros.shuffled().first())
       print("- Test plan has ")
@@ -84,9 +80,7 @@ class TaycanConsoleReporter : ConsoleReporter {
       println()
    }
 
-   override fun hasErrors(): Boolean = errors > 0
-
-   override fun engineFinished(t: List<Throwable>) {
+   override suspend fun engineFinished(t: List<Throwable>) {
 
       if (specsSeen.isEmpty()) return
 
@@ -170,14 +164,14 @@ class TaycanConsoleReporter : ConsoleReporter {
       println("${testsPassed + testsFailed.size + testsIgnored} total")
    }
 
-   override fun specStarted(kclass: KClass<*>) {
+   override suspend fun specStarted(kclass: KClass<*>) {
       specsSeen = specsSeen + kclass.toDescriptor()
       val specCount = specsSeen.size
       print(bold("$specCount. ".padEnd(4, ' ')))
       println(bold(formatter.format(kclass)))
    }
 
-   override fun specFinished(kclass: KClass<*>, t: Throwable?, results: Map<TestCase, TestResult>) {
+   override suspend fun specExit(kclass: KClass<out Spec>, t: Throwable?) {
       if (t != null) {
          errors++
          specsFailed = specsFailed + kclass.toDescriptor()
@@ -186,7 +180,7 @@ class TaycanConsoleReporter : ConsoleReporter {
       println()
    }
 
-   override fun testIgnored(testCase: TestCase) {
+   override suspend fun testIgnored(testCase: TestCase, reason: String?) {
       testsIgnored++
       print("".padEnd(testCase.descriptor.depth() * 4, ' '))
       print("- " + formatter.format(testCase))
@@ -201,7 +195,7 @@ class TaycanConsoleReporter : ConsoleReporter {
       }
    }
 
-   override fun testFinished(testCase: TestCase, result: TestResult) {
+   override suspend fun testFinished(testCase: TestCase, result: TestResult) {
       // only leaf tests or failed containers contribute to the counts
       when (result.status) {
          TestStatus.Success -> if (testCase.type == TestType.Test) testsPassed++
@@ -237,7 +231,7 @@ class TaycanConsoleReporter : ConsoleReporter {
       }
    }
 
-   override fun testStarted(testCase: TestCase) {
+   override suspend fun testStarted(testCase: TestCase) {
       // containers we display straight away without pass / fail message
       if (testCase.type == TestType.Container) {
          print("".padEnd(testCase.descriptor.depth() * 4, ' '))

@@ -19,12 +19,12 @@ internal object DumpConfigInterceptor : EngineInterceptor {
       execute: suspend (EngineContext) -> EngineResult
    ): EngineResult {
 
-      if (sysprop(KotestEngineProperties.dumpConfig) != null ||
-         env(KotestEngineProperties.dumpConfig) != null ||
-         context.configuration.dumpConfig
-      ) {
+      if (syspropEnabled() || context.configuration.dumpConfig) {
          context.configuration.dumpProjectConfig()
       }
       return execute(context)
    }
+
+   private fun syspropEnabled() =
+      sysprop(KotestEngineProperties.dumpConfig) != null || env(KotestEngineProperties.dumpConfig) != null
 }

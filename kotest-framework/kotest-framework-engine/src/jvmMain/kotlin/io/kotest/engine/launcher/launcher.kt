@@ -1,18 +1,14 @@
-@file:Suppress("UNCHECKED_CAST")
-
 package io.kotest.engine.launcher
 
 import io.kotest.core.Tags
 import io.kotest.core.config.configuration
 import io.kotest.core.extensions.DiscoveryExtension
 import io.kotest.core.spec.Spec
-import io.kotest.engine.KotestEngineLauncher
+import io.kotest.engine.TestEngineLauncher
 import io.kotest.engine.extensions.EnabledConditionSpecDiscoveryExtension
 import io.kotest.engine.extensions.IgnoredSpecDiscoveryExtension
 import io.kotest.engine.extensions.TagsExcludedDiscoveryExtension
-import io.kotest.engine.listener.CompositeTestEngineListener
-import io.kotest.engine.listener.LoggingTestEngineListener
-import io.kotest.engine.reporter.Reporter
+import io.kotest.engine.listener.TestEngineListener
 import io.kotest.fp.Try
 import io.kotest.framework.discovery.Discovery
 import io.kotest.framework.discovery.DiscoveryRequest
@@ -21,63 +17,25 @@ import io.kotest.framework.discovery.DiscoverySelector
 import kotlin.reflect.KClass
 
 /**
- * Creates a kotest engine and launches the tests.
+ * Creates a [TestEngineLauncher] to be used to launch the test engine.
  */
-fun execute(
-   reporter: Reporter,
-   packageName: String?,
-   specFQN: String?,
-   testPath: String?,
-   tags: Tags?,
-   dumpconfig: Boolean,
-) {
-   setupLauncher(specFQN, packageName, testPath, tags, dumpconfig, reporter)
-      .fold(
-         {
-            reporter.engineStarted(emptyList())
-            reporter.engineFinished(listOf(it))
-         },
-         { launcher ->
-            executeLauncher(launcher)
-               .onFailure { reporter.engineFinished(listOf(it)) }
-         }
-      )
-}
+internal fun setupLauncher(
+   args: LauncherArgs,
+   listener: TestEngineListener,
+): Try<TestEngineLauncher> = Try {
 
-private fun executeLauncher(launcher: KotestEngineLauncher) = Try {
-   launcher.launch()
-}
-
-private fun setupLauncher(
-   specFQN: String?,
-   packageName: String?,
-   testPath: String?,
-   tags: Tags?,
-   dumpconfig: Boolean,
-   reporter: Reporter
-): Try<KotestEngineLauncher> = Try {
-
-   val specClass = specFQN?.let { (Class.forName(it) as Class<Spec>).kotlin }
-   val (specs, _, error) = specs(specClass, packageName)
-   val filter = if (testPath == null || specClass == null) null else {
-      TestPathTestCaseFilter(testPath, specClass)
+   val specClass = args.spec?.let { (Class.forName(it) as Class<Spec>).kotlin }
+   val (specs, _, error) = specs(specClass, args.packageName)
+   val filter = if (args.testpath == null || specClass == null) null else {
+      TestPathTestCaseFilter(args.testpath, specClass)
    }
 
    if (error != null) throw error
 
-   KotestEngineLauncher
-      .default(
-         listOf(
-            CompositeTestEngineListener(
-               listOf(
-                  LoggingTestEngineListener,
-                  ReporterTestEngineListener(reporter),
-               )
-            )
-         ), specs, tags
-      )
+   TestEngineLauncher(listener)
       .withTestFilters(listOfNotNull(filter))
-      .withDumpConfig(dumpconfig)
+      .withExplicitTags(Tags(args.tagExpression))
+      .withClasses(specs)
 }
 
 /**

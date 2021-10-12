@@ -9,13 +9,12 @@ import kotlin.reflect.KClass
 /**
  * Implementations of this interface will be notified of events
  * that occur as part of the [TestEngine] lifecycle.
- *
- * This is an internal interface liable to be changed without notice.
  */
 interface TestEngineListener {
 
    /**
-    * Is invoked as soon as the engine has been created and before any other interceptors run.
+    * Is invoked as soon as the engine has been created.
+    * No other callbacks or lifecycle hooks will execute before this one.
     */
    suspend fun engineStartup() {}
 

@@ -30,6 +30,9 @@ class TeamCityTestEngineListener(
    // contains any tests which we know are parents
    private val parents = hashSetOf<Descriptor>()
 
+   // set to true if we had any errors at all
+   private var errors = false
+
    private fun TestCase.isContainer() = parents.contains(descriptor)
 
    private fun TestCase.type() = if (isContainer()) "Container" else "Test"
