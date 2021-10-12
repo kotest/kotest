@@ -8,12 +8,12 @@ import io.kotest.core.test.TestResult
 import io.kotest.matchers.shouldBe
 
 @ExperimentalKotest
-class DataTestNameTest: FunSpec({
+class ContainerDataTestNameFunctionTest : FunSpec({
 
    context("Data test with pair") {
       withData(
-         Pair(2,1),
-         Pair(1,2),
+         Pair(2, 1),
+         Pair(1, 2),
       ) {}
    }
 
@@ -24,7 +24,7 @@ class DataTestNameTest: FunSpec({
       ) {}
    }
 
-   context("Data test for type extending WithDataTestName") {
+   context("data test for type extending WithDataTestName") {
       withData(
          ADummyClass("a1", "b1"),
          ADummyClass("a2", "b2")
@@ -38,7 +38,7 @@ class DataTestNameTest: FunSpec({
       ) {}
    }
 
-   context("data test names with function") {
+   context("data test with name function and varargs") {
       withData<SimpleClass>(
          { "simple${it.a}${it.b}" },
          SimpleClass("a1", "b1"),
@@ -46,11 +46,25 @@ class DataTestNameTest: FunSpec({
       ) {}
    }
 
-   withData<SimpleClass>(
-      { "simple${it.a}${it.b}" },
-      SimpleClass("a1", "b1"),
-      SimpleClass("a2", "b2"),
-   ) {}
+   context("data test with name function and sequence") {
+      withData<SimpleClass>(
+         { "simple${it.a}${it.b}" },
+         sequenceOf(
+            SimpleClass("a1", "b1"),
+            SimpleClass("a2", "b2"),
+         )
+      ) {}
+   }
+
+   context("data test with name function and collection") {
+      withData<SimpleClass>(
+         { "simple${it.a}${it.b}" },
+         listOf(
+            SimpleClass("a1", "b1"),
+            SimpleClass("a2", "b2"),
+         )
+      ) {}
+   }
 
 }) {
    override fun afterAny(testCase: TestCase, result: TestResult) {
@@ -67,15 +81,19 @@ class DataTestNameTest: FunSpec({
          "Data test with triple",
          "ADummyClass(a : a1, b : b1)",
          "ADummyClass(a : a2, b : b2)",
-         "Data test for type extending WithDataTestName",
+         "data test for type extending WithDataTestName",
          "AnotherDummyClass(a : a1, b : b1)",
          "AnotherDummyClass(a : a2, b : b2)",
          "Data test for type annotated with IsStableType",
          "simplea1b1",
          "simplea2b2",
-         "data test names with function",
+         "data test with name function and varargs",
          "simplea1b1",
          "simplea2b2",
+         "data test with name function and sequence",
+         "simplea1b1",
+         "simplea2b2",
+         "data test with name function and collection",
       )
    }
 
@@ -84,18 +102,17 @@ class DataTestNameTest: FunSpec({
    }
 }
 
-private object DataTestNamesStore {
+object DataTestNamesStore {
    val names = mutableListOf<String>()
 }
 
-private class ADummyClass(private val a: String, private val b: String) : WithDataTestName {
+internal class ADummyClass(private val a: String, private val b: String) : WithDataTestName {
    override fun dataTestName() = "ADummyClass(a : $a, b : $b)"
 }
 
-
-private class SimpleClass(val a: String, val b: String)
+internal class SimpleClass(val a: String, val b: String)
 
 @IsStableType
-private data class AnotherDummyClass(private val a: String, private val b: String) {
+internal data class AnotherDummyClass(private val a: String, private val b: String) {
    override fun toString() = "AnotherDummyClass(a : $a, b : $b)"
 }
