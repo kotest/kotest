@@ -21,15 +21,12 @@ data class LauncherArgs(
 
 fun parseLauncherArgs(args: List<String>): LauncherArgs {
    val a = parseArgs(args)
-   if (a.containsKey("writer") || a.containsKey("reporter")) {
-      error("The args 'writer' and 'reporter' are no longer supported. Use listener.")
-   }
    return LauncherArgs(
       testpath = a["testpath"],
       packageName = a["package"],
       spec = a["spec"],
       termcolor = a["termcolor"],
-      listener = a["listener"],
+      listener = a["listener"] ?: a["writer"] ?: a["reporter"],
       tagExpression = a["tags"],
       dumpconfig = a["dumpconfig"]?.toBoolean(),
    )
