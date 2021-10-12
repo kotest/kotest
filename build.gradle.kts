@@ -9,7 +9,7 @@ buildscript {
 plugins {
    kotlin("jvm")
    java
-   id("org.jetbrains.intellij") version "1.2.0"
+   id("org.jetbrains.intellij").version("0.6.5")
 }
 
 repositories {
@@ -71,13 +71,13 @@ val jetbrainsToken: String by project
 version = "1.1." + (System.getenv("GITHUB_RUN_NUMBER") ?: "0-SNAPSHOT")
 
 intellij {
-   sandboxDir.set(project.property("sandbox").toString())
-   version.set(descriptor.sdkVersion)
-   pluginName.set("kotest-plugin-intellij")
-   plugins.set(descriptor.deps)
-   downloadSources.set(true)
-   type.set("IC")
-   updateSinceUntilBuild.set(false)
+   sandboxDirectory = project.property("sandbox").toString()
+   version = descriptor.sdkVersion
+   pluginName = "kotest-plugin-intellij"
+   setPlugins(*descriptor.deps.toTypedArray())
+   downloadSources = true
+   type = "IC"
+   updateSinceUntilBuild = false
 }
 
 dependencies {
@@ -86,7 +86,7 @@ dependencies {
 
    // we bundle this for 4.1 support
    // in kotest 4.2.0 the launcher has moved to a stand alone module
-   implementation("io.kotest:kotest-launcher:1.0.9")
+   implementation("io.kotest:kotest-launcher:1.0.10")
 
    // this is needed to use the launcher in 4.2.0, in 4.2.1+ the launcher is built
    // into the engine dep which should already be on the classpath
@@ -127,12 +127,12 @@ tasks {
    }
 
    publishPlugin {
-      token.set(System.getenv("JETBRAINS_TOKEN") ?: jetbrainsToken)
+      token(System.getenv("JETBRAINS_TOKEN") ?: jetbrainsToken)
    }
 
    patchPluginXml {
       setVersion("${project.version}-${descriptor.sdkVersion}")
-      sinceBuild.set(descriptor.since)
-      untilBuild.set(descriptor.until)
+      setSinceBuild(descriptor.since)
+      setUntilBuild(descriptor.until)
    }
 }
