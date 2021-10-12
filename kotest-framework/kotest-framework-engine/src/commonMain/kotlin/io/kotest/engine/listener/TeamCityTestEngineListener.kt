@@ -1,12 +1,12 @@
 package io.kotest.engine.listener
 
 import io.kotest.core.config.configuration
+import io.kotest.core.descriptors.Descriptor
 import io.kotest.core.descriptors.toDescriptor
 import io.kotest.core.spec.Spec
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestStatus
-import io.kotest.core.test.TestType
 import io.kotest.engine.teamcity.Locations
 import io.kotest.engine.teamcity.TeamCityMessageBuilder
 import io.kotest.engine.test.names.getDisplayNameFormatter
@@ -27,17 +27,24 @@ class TeamCityTestEngineListener(
 
    private val formatter = getDisplayNameFormatter(configuration)
 
+   // contains any tests which we know are parents
+   private val parents = hashSetOf<Descriptor>()
+
+   private fun TestCase.isContainer() = parents.contains(descriptor)
+
+   private fun TestCase.type() = if (isContainer()) "Container" else "Test"
+
    // intellij has no method for failed suites, so if a container or spec fails we must insert
    // a dummy "test" in order to tag the error against that
    private fun insertDummyFailure(name: String, t: Throwable?, testCase: TestCase) {
-      require(testCase.type == TestType.Container)
+      require(testCase.isContainer())
       val dummyTestName = "$name <error>"
 
       val msg = TeamCityMessageBuilder
          .testStarted(prefix, dummyTestName)
          .id(dummyTestName)
          .parent(testCase.descriptor.path().value)
-         .testType(TestType.Test.name)
+         .testType(testCase.type())
          .build()
 
       println(msg)
@@ -51,7 +58,7 @@ class TeamCityTestEngineListener(
          .id(dummyTestName)
          .parent(testCase.descriptor.path().value)
          .message(message)
-         .testType(TestType.Test.name)
+         .testType(testCase.type())
          .build()
 
       println(msg2)
@@ -60,7 +67,7 @@ class TeamCityTestEngineListener(
          .testFinished(prefix, dummyTestName)
          .id(dummyTestName)
          .parent(testCase.descriptor.path().value)
-         .testType(TestType.Test.name)
+         .testType(testCase.type())
          .build()
 
       println(msg3)
@@ -122,9 +129,9 @@ class TeamCityTestEngineListener(
    }
 
    override suspend fun testStarted(testCase: TestCase) {
-      when (testCase.type) {
-         TestType.Test -> startTest(testCase)
-         TestType.Container -> startTestSuite(testCase)
+      when (testCase.isContainer()) {
+         true -> startTestSuite(testCase)
+         false -> startTest(testCase)
       }
    }
 
@@ -144,16 +151,16 @@ class TeamCityTestEngineListener(
    override suspend fun testFinished(testCase: TestCase, result: TestResult) {
       when (result.status) {
          TestStatus.Ignored -> return
-         TestStatus.Success -> when (testCase.type) {
-            TestType.Container -> finishTestSuite(testCase, result)
-            TestType.Test -> finishTest(testCase, result)
+         TestStatus.Success -> when (testCase.isContainer()) {
+            true -> finishTestSuite(testCase, result)
+            false -> finishTest(testCase, result)
          }
-         TestStatus.Error, TestStatus.Failure -> when (testCase.type) {
-            TestType.Container -> {
+         TestStatus.Error, TestStatus.Failure -> when (testCase.isContainer()) {
+            true -> {
                insertDummyFailure(formatter.format(testCase), result.error, testCase)
                finishTestSuite(testCase, result)
             }
-            TestType.Test -> {
+            false -> {
                failTest(testCase, result)
                finishTest(testCase, result)
             }
