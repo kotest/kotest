@@ -17,6 +17,7 @@ _**Kotlin 1.5 is now the minimum supported version**_
 * Removed deprecated `shouldReceiveWithin` and `shouldReceiveNoElementsWithin` channel matchers.
 * `equalJson` has an added parameter to support the new `shouldEqualSpecifiedJson` assertion
 * The deprecated `RuntimeTagExtension` has been undeprecated but moved to a new package.
+* When using inspectors, the deprecated `kotlintest.assertions.output.max` system property has been removed. This was replaced with `kotest.assertions.output.max` in 4.0.
 
 #### Fixes
 
