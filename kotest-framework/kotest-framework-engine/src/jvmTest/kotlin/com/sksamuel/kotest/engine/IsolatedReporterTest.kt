@@ -9,7 +9,6 @@ import io.kotest.core.names.TestName
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestType
-import io.kotest.engine.reporter.IsolatedReporter
 import io.kotest.engine.reporter.Reporter
 import io.kotest.matchers.shouldBe
 import kotlin.reflect.KClass
