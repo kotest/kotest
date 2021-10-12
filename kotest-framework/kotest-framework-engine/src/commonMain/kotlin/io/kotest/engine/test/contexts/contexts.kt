@@ -3,16 +3,9 @@ package io.kotest.engine.test.contexts
 import io.kotest.core.concurrency.CoroutineDispatcherFactory
 import io.kotest.core.config.configuration
 import io.kotest.core.names.DuplicateTestNameMode
-import io.kotest.core.test.NestedTest
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestContext
-import io.kotest.core.test.TestResult
-import io.kotest.core.test.TestStatus
-import io.kotest.core.test.toTestCase
 import io.kotest.engine.listener.TestEngineListener
-import io.kotest.engine.test.TestCaseExecutor
-import io.kotest.engine.test.listener.TestCaseExecutionListenerToTestEngineListenerAdapter
-import io.kotest.mpp.log
 import kotlin.coroutines.CoroutineContext
 
 /**
@@ -33,79 +26,23 @@ private class TestContextWithCoroutineContext(
 }
 
 /**
- * A [TestContext] that executes nested tests as they are discovered.
+ * Creates a [TestContext] suitable for use in a single instance runner.
  */
-class CallingThreadTestContext(
-   override val testCase: TestCase,
-   override val coroutineContext: CoroutineContext,
-   private val duplicateTestNameMode: DuplicateTestNameMode,
-   private val listener: TestEngineListener,
-   private val defaultCoroutineDispatcherFactory: CoroutineDispatcherFactory,
-) : TestContext {
-
-   private var failedfast = false
-
-   // in the single instance runner we execute each nested test as soon as they are registered
-   override suspend fun registerTestCase(nested: NestedTest) {
-      log { "CallingThreadTestContext: Nested test case discovered $nested" }
-      val nestedTestCase = nested.toTestCase(testCase.spec, testCase)
-      if (failedfast) {
-         log { "CallingThreadTestContext: A previous nested test failed and failfast is enabled - will mark this as ignored" }
-         listener.testIgnored(nestedTestCase, "Failfast enabled on parent test")
-      } else {
-         val result = runTest(nestedTestCase, coroutineContext)
-         if (testCase.config.failfast == true) {
-            if (result.status == TestStatus.Failure || result.status == TestStatus.Error) {
-               // if running this nested test results in an error, we won't launch any further nested tests
-               failedfast = true
-            }
-         }
-      }
-   }
-
-   private suspend fun runTest(
-      testCase: TestCase,
-      coroutineContext: CoroutineContext,
-   ): TestResult {
-
-      return TestCaseExecutor(
-         TestCaseExecutionListenerToTestEngineListenerAdapter(listener),
-         defaultCoroutineDispatcherFactory,
-      ).execute(
+fun createSingleInstanceTestContext(
+   testCase: TestCase,
+   coroutineContext: CoroutineContext,
+   mode: DuplicateTestNameMode,
+   listener: TestEngineListener,
+   dispatcherFactory: CoroutineDispatcherFactory
+): TestContext {
+   return DuplicateNameHandlingTestContext(
+      configuration.duplicateTestNameMode,
+      InOrderTestContext(
          testCase,
-         DuplicateNameHandlingTestContext(
-            configuration.duplicateTestNameMode,
-            CallingThreadTestContext(
-               testCase,
-               coroutineContext,
-               duplicateTestNameMode,
-               listener,
-               defaultCoroutineDispatcherFactory
-            )
-         )
+         coroutineContext,
+         mode,
+         listener,
+         dispatcherFactory
       )
-   }
+   )
 }
-
-/**
- * A [TestContext] that ignores registration attempts of nested tests.
- */
-class NoopTestContext(
-   override val testCase: TestCase,
-   override val coroutineContext: CoroutineContext
-) : TestContext {
-   override suspend fun registerTestCase(nested: NestedTest) {}
-}
-
-/**
- * A [TestContext] that errors on registration attempts of nested tests.
- */
-class TerminalTestContext(
-   override val testCase: TestCase,
-   override val coroutineContext: CoroutineContext
-) : TestContext {
-   override suspend fun registerTestCase(nested: NestedTest) {
-      error("Nested tests are not supported")
-   }
-}
-
