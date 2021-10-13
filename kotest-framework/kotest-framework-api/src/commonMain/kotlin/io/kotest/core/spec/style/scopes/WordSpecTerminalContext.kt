@@ -7,7 +7,7 @@ import io.kotest.core.test.TestContext
 import kotlin.coroutines.CoroutineContext
 
 /**
- * This context is used so we can add a deprecated should method to stop nesting a should inside a should
+ * This context is used, so we can add a deprecated should method to stop nesting a should inside a should
  */
 @KotestDsl
 class WordSpecTerminalContext(val context: TestContext) : TestContext {
