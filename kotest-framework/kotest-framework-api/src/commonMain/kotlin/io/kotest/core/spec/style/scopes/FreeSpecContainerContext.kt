@@ -18,7 +18,6 @@ import kotlin.time.Duration
 @Deprecated("Renamed to FreeSpecContainerContext. Deprecated since 4.5.")
 typealias FreeScope = FreeSpecContainerContext
 
-@KotestDsl
 class FreeSpecContainerContext(
    val testContext: TestContext,
 ) : AbstractContainerContext(testContext) {
