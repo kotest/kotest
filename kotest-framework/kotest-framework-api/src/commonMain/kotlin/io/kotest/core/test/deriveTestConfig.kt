@@ -25,6 +25,7 @@ internal fun TestCaseConfig.deriveTestCaseConfig(
    coroutineDebugProbes: Boolean? = null,
    blockingTest: Boolean? = null,
    testCoroutineDispatcher: Boolean? = null,
+   failfast: Boolean? = null,
 ) = TestCaseConfig(
    enabled = enabled ?: this.enabled,
    tags = tags ?: this.tags,

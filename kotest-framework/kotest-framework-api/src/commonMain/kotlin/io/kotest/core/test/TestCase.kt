@@ -55,6 +55,10 @@ data class TestCase(
    @Deprecated("Use testCase.name or testCase.descriptor. This was deprecated in 5.0.")
    val displayName: String = descriptor.id.value
 
+   init {
+      if (type == TestType.Test && config.failfast == true) error("Cannot set fail fast on leaf test")
+   }
+
    companion object {
 
       /**

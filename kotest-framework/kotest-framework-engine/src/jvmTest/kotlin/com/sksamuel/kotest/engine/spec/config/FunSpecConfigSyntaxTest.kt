@@ -6,6 +6,7 @@ import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 import java.util.concurrent.atomic.AtomicInteger
 import kotlin.time.Duration
+import kotlin.time.ExperimentalTime
 
 object Tag1 : Tag()
 object Tag2 : Tag()
@@ -14,6 +15,7 @@ object Tag2 : Tag()
  * A test that just ensures the syntax for test configs does not break between releases.
  * The actual functionality of things like tags and timeouts is tested elsewhere.
  */
+@ExperimentalTime
 @ExperimentalKotest
 class FunSpecConfigSyntaxTest : FunSpec() {
    init {

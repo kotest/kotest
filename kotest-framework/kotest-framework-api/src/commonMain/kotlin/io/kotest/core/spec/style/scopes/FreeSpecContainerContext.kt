@@ -7,31 +7,15 @@ import io.kotest.core.names.TestName
 import io.kotest.core.spec.resolvedDefaultConfig
 import io.kotest.core.test.EnabledIf
 import io.kotest.core.test.NestedTest
-import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestCaseSeverityLevel
 import io.kotest.core.test.TestContext
 import io.kotest.core.test.TestType
 import io.kotest.core.test.createNestedTest
-import kotlin.coroutines.CoroutineContext
+import io.kotest.core.test.deriveTestCaseConfig
 import kotlin.time.Duration
-
-class FreeSpecTerminalContext(
-   val testContext: TestContext,
-) : TestContext {
-
-   override val testCase: TestCase = testContext.testCase
-   override val coroutineContext: CoroutineContext = testContext.coroutineContext
-   override suspend fun registerTestCase(nested: NestedTest) = error("Cannot nest a test inside a terminal scope")
-
-   // exists to stop nesting
-   @Deprecated("Cannot nest leaf test inside another leaf test", level = DeprecationLevel.ERROR)
-   suspend infix operator fun String.invoke(test: suspend TestContext.() -> Unit) {
-   }
-}
 
 @Deprecated("Renamed to FreeSpecContainerContext. Deprecated since 4.5.")
 typealias FreeScope = FreeSpecContainerContext
-
 
 class FreeSpecContainerContext(
    val testContext: TestContext,
@@ -104,4 +88,49 @@ class FreeSpecContainerContext(
       severity,
       test
    )
+
+   // eg, "this test".config(...) - { } // adds a container test with config
+   suspend infix operator fun FreeSpecContextConfigBuilder.minus(test: suspend FreeSpecContainerContext.() -> Unit) {
+      registerTestCase(
+         createNestedTest(
+            descriptor = testCase.descriptor.append(name),
+            name = TestName(name),
+            xdisabled = false,
+            config = config,
+            type = TestType.Container,
+            factoryId = testCase.factoryId,
+         ) {
+            val incomplete = IncompleteContainerContext(this)
+            FreeSpecContainerContext(incomplete).test()
+            if (!incomplete.registered) throw IncompleteContainerException(name)
+         })
+   }
+
+   // starts a config builder for a context with config
+   fun String.config(
+      enabled: Boolean? = null,
+      invocations: Int? = null,
+      threads: Int? = null,
+      tags: Set<Tag>? = null,
+      timeout: Duration? = null,
+      extensions: List<TestCaseExtension>? = null,
+      enabledIf: EnabledIf? = null,
+      invocationTimeout: Duration? = null,
+      severity: TestCaseSeverityLevel? = null,
+      failfast: Boolean? = null,
+   ): FreeSpecContextConfigBuilder {
+      val config = testContext.testCase.config.deriveTestCaseConfig(
+         enabled = enabled,
+         tags = tags,
+         extensions = extensions,
+         timeout = timeout,
+         invocationTimeout = invocationTimeout,
+         enabledIf = enabledIf,
+         invocations = invocations,
+         threads = threads,
+         severity = severity,
+         failfast = failfast,
+      )
+      return FreeSpecContextConfigBuilder(this, config)
+   }
 }
