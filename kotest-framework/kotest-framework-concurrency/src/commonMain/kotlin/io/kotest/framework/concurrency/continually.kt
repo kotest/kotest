@@ -5,7 +5,6 @@ import io.kotest.common.ExperimentalKotest
 import io.kotest.mpp.timeInMillis
 import kotlinx.coroutines.delay
 import kotlin.time.Duration
-import kotlin.time.ExperimentalTime
 
 @OptIn(ExperimentalKotest::class)
 typealias ContinuallyListener<T> = (ContinuallyState<T>) -> Unit
@@ -88,7 +87,6 @@ suspend fun <T> continually(
    return builder.toConfig().invoke(test)
 }
 
-@ExperimentalTime
 @ExperimentalKotest
 suspend fun <T> continually(duration: Duration, test: suspend () -> T): T? =
    continually(duration.inWholeMilliseconds, test)

@@ -209,7 +209,6 @@ suspend fun <T> eventually(
    return config.invoke(test)
 }
 
-@ExperimentalTime
 @ExperimentalKotest
 suspend fun <T> eventually(duration: Duration, test: suspend () -> T): T =
    eventually(duration.inWholeMilliseconds, test)
@@ -241,7 +240,6 @@ suspend fun until(
    builder.build().invoke(test)
 }
 
-@ExperimentalTime
 @ExperimentalKotest
 suspend fun until(duration: Duration, test: suspend () -> Boolean) = until(millis = duration.inWholeMilliseconds, test)
 

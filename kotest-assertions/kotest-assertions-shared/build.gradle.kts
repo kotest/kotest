@@ -141,7 +141,7 @@ kotlin {
       }
 
       all {
-         languageSettings.optIn("kotlin.time.ExperimentalTime")
+
          languageSettings.optIn("kotlin.experimental.ExperimentalTypeInference")
       }
    }
@@ -149,7 +149,7 @@ kotlin {
 
 tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
    kotlinOptions.jvmTarget = "1.8"
-   kotlinOptions.apiVersion = "1.5"
+   kotlinOptions.apiVersion = "1.6"
 }
 
 tasks.named<Test>("jvmTest") {
