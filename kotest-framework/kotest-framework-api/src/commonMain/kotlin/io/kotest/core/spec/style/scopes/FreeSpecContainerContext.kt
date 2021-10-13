@@ -4,7 +4,6 @@ import io.kotest.core.Tag
 import io.kotest.core.descriptors.append
 import io.kotest.core.extensions.TestCaseExtension
 import io.kotest.core.names.TestName
-import io.kotest.core.spec.KotestDsl
 import io.kotest.core.spec.resolvedDefaultConfig
 import io.kotest.core.test.EnabledIf
 import io.kotest.core.test.NestedTest
