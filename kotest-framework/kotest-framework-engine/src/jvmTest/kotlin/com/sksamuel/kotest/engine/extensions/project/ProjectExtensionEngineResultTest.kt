@@ -6,7 +6,7 @@ import io.kotest.core.extensions.ProjectExtension
 import io.kotest.core.spec.Isolate
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.engine.TestEngineLauncher
-import io.kotest.engine.listener.TestEngineListener
+import io.kotest.engine.listener.AbstractTestEngineListener
 import io.kotest.matchers.shouldBe
 
 @Isolate
@@ -42,7 +42,7 @@ class ProjectExtensionEngineResultTest : FunSpec({
 
       val errors = mutableListOf<Throwable>()
 
-      val listener = object : TestEngineListener {
+      val listener = object : AbstractTestEngineListener() {
          override suspend fun engineFinished(t: List<Throwable>) {
             errors.addAll(t)
          }

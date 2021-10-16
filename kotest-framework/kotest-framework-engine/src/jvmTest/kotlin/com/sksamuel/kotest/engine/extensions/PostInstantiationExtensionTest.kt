@@ -6,7 +6,7 @@ import io.kotest.core.spec.Isolate
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.engine.KotestEngineLauncher
-import io.kotest.engine.listener.TestEngineListener
+import io.kotest.engine.listener.AbstractTestEngineListener
 import io.kotest.matchers.shouldBe
 
 @Isolate
@@ -19,7 +19,7 @@ class PostInstantiationExtensionTest : FunSpec() {
 
          var a: String? = null
 
-         val listener = object : TestEngineListener {
+         val listener = object : AbstractTestEngineListener() {
             override suspend fun specInstantiated(spec: Spec) {
                a = (spec as MySpec).a
             }

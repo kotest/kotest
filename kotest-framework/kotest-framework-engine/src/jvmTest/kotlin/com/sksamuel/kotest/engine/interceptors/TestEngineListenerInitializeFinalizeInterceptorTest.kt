@@ -22,17 +22,4 @@ class TestEngineListenerInitializeFinalizeInterceptorTest : FunSpec({
       fired.shouldBeTrue()
    }
 
-   test("should invoke finalize") {
-      var fired = false
-      val listener = object : TestEngineListener {
-         override suspend fun engineShutdown() {
-            fired = true
-         }
-      }
-      TestEngineInitializedInterceptor.intercept(
-         EngineContext.empty.mergeListener(listener)
-      ) { EngineResult.empty }
-      fired.shouldBeTrue()
-   }
-
 })

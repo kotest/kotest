@@ -10,7 +10,7 @@ import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.core.test.TestCase
 import io.kotest.engine.KotestEngineLauncher
-import io.kotest.engine.listener.TestEngineListener
+import io.kotest.engine.listener.AbstractTestEngineListener
 
 object Exclude : Tag()
 
@@ -22,7 +22,7 @@ private object ExcludeTagExtension : TagExtension {
 class ExcludeTagExtensionTest : FunSpec() {
    init {
       test("tag extensions should be applied to tests with tag inherited from spec") {
-         val listener = object : TestEngineListener {
+         val listener = object : AbstractTestEngineListener() {
             override suspend fun testStarted(testCase: TestCase) {
                fail(testCase.name.testName + " should not run")
             }
