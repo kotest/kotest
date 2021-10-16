@@ -24,6 +24,7 @@ import kotlinx.coroutines.CoroutineDispatcher
  * Expect this val to disappear in Kotest 6.0
  *
  */
+@Deprecated("Do not set configuration directly on the config object. Use project config classes. Deprecated since 5.0")
 val configuration = Configuration()
 
 @Deprecated("Replaced with io.kotest.core.configuration. Deprecated since 4.2")
