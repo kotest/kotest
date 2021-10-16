@@ -5,7 +5,7 @@ import io.kotest.core.descriptors.Descriptor
 import io.kotest.core.descriptors.DescriptorId
 import io.kotest.core.descriptors.spec
 import io.kotest.core.descriptors.toDescriptor
-import io.kotest.core.spec.Spec
+import io.kotest.core.names.UniqueNames
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestStatus
@@ -13,6 +13,7 @@ import io.kotest.engine.events.AfterProjectListenerException
 import io.kotest.engine.events.BeforeProjectListenerException
 import io.kotest.engine.listener.TestEngineListener
 import io.kotest.engine.test.names.getDisplayNameFormatter
+import io.kotest.mpp.bestName
 import io.kotest.mpp.log
 import org.junit.platform.engine.EngineExecutionListener
 import org.junit.platform.engine.TestDescriptor
@@ -99,45 +100,48 @@ class JUnitTestEngineListener(
 
    private val results = mutableMapOf<Descriptor, TestResult>()
 
-   // set to true if we had at least one ignored test
-   private var hasIgnoredTest = false
+   private val dummies = hashSetOf<String>()
 
-   override suspend fun engineStarted(classes: List<KClass<*>>) {
-      log { "JUnitTestEngineListener: Engine started; classes=[$classes]" }
+   override suspend fun engineStarted() {
+      log { "JUnitTestEngineListener: Engine started" }
       listener.executionStarted(root)
    }
 
    override suspend fun engineFinished(t: List<Throwable>) {
-      log {
-         "JUnitTestEngineListener: Engine finished; throwables=" +
-            "[${t.joinToString(separator = "\n", transform = { it.toString() })}]"
+      log { "JUnitTestEngineListener: Engine finished; throwables=[${t}]" }
+
+      registerExceptionPlaceholders(t)
+
+      val result = if (configuration.failOnIgnoredTests && results.values.any { it.status == TestStatus.Ignored }) {
+         TestExecutionResult.failed(RuntimeException("Build contained ignored test"))
+      } else {
+         TestExecutionResult.successful()
       }
 
-      val result: TestExecutionResult = t.map {
+      log { "JUnitTestEngineListener: Notifying junit that root descriptor completed $root" }
+      listener.executionFinished(root, result)
+   }
+
+   private fun registerExceptionPlaceholders(ts: List<Throwable>) {
+      ts.forEach {
          when (it) {
             is AfterProjectListenerException -> {
                val container = createAndRegisterDummySpec(it.name)
                listener.executionStarted(container)
                listener.executionFinished(container, TestExecutionResult.failed(it))
-               TestExecutionResult.successful()
             }
             is BeforeProjectListenerException -> {
                val container = createAndRegisterDummySpec(it.name)
                listener.executionStarted(container)
                listener.executionFinished(container, TestExecutionResult.failed(it))
-               TestExecutionResult.successful()
             }
-            else -> TestExecutionResult.failed(it)
+            else -> {
+               val container = createAndRegisterDummySpec(it::class.bestName())
+               listener.executionStarted(container)
+               listener.executionFinished(container, TestExecutionResult.failed(it))
+            }
          }
-      }.find { it.status == TestExecutionResult.Status.FAILED }
-         ?: if (configuration.failOnIgnoredTests && hasIgnoredTest) {
-            TestExecutionResult.failed(RuntimeException("Build contained ignored test"))
-         } else {
-            TestExecutionResult.successful()
-         }
-
-      log { "JUnitTestEngineListener: Notifying junit that root descriptor completed $root" }
-      listener.executionFinished(root, result)
+      }
    }
 
    override suspend fun specStarted(kclass: KClass<*>) {
@@ -147,7 +151,8 @@ class JUnitTestEngineListener(
    private fun markSpecStarted(kclass: KClass<*>): TestDescriptor {
       return try {
 
-         val descriptor = createTestDescriptor(kclass.toDescriptor(), formatter.format(kclass), root)
+         val descriptor =
+            createDescriptorForSpec(kclass.toDescriptor(), formatter.format(kclass), root)
          descriptors[kclass.toDescriptor()] = descriptor
 
          log { "JUnitTestEngineListener: Registering junit dynamic test: $descriptor" }
@@ -171,13 +176,14 @@ class JUnitTestEngineListener(
       inactiveTests = results
    }
 
-   override suspend fun specIgnored(kclass: KClass<out Spec>) {
+   override suspend fun specIgnored(kclass: KClass<*>) {
       ignored = true
    }
 
    private suspend fun markSpecInactive(kclass: KClass<*>) {
 
-      val descriptor: TestDescriptor = createTestDescriptor(kclass.toDescriptor(), formatter.format(kclass), root)
+      val descriptor: TestDescriptor =
+         createDescriptorForSpec(kclass.toDescriptor(), formatter.format(kclass), root)
       descriptors[kclass.toDescriptor()] = descriptor
 
       log { "JUnitTestEngineListener: Registering junit dynamic test: $descriptor" }
@@ -196,13 +202,13 @@ class JUnitTestEngineListener(
       instantiationException = t
    }
 
-   override suspend fun specExit(kclass: KClass<out Spec>, t: Throwable?) {
+   override suspend fun specExit(kclass: KClass<*>, t: Throwable?) {
       when {
          t == null && ignored -> Unit
          t == null && inactive -> markSpecInactive(kclass)
          // if we have a spec error before we even started the spec, we will start the spec, add a placeholder
          // to hold the error, mark that test as failed, and then fail the spec as well
-         t != null && !started ->{
+         t != null && !started -> {
             val descriptor = markSpecStarted(kclass)
             addPlaceholderTest(descriptor, t)
             log { "JUnitTestEngineListener: Notifying junit that a spec failed [$descriptor, $t]" }
@@ -241,7 +247,6 @@ class JUnitTestEngineListener(
       rootTests.clear()
       children.clear()
       results.clear()
-      hasIgnoredTest = false
       started = false
       ignored = false
       inactive = false
@@ -276,7 +281,6 @@ class JUnitTestEngineListener(
       if (testCase.parent == null) rootTests.add(testCase)
       addChild(testCase)
       results[testCase.descriptor] = TestResult.ignored(reason)
-      hasIgnoredTest = true
    }
 
    private fun addChild(testCase: TestCase) {
@@ -330,7 +334,10 @@ class JUnitTestEngineListener(
    }
 
    private fun createAndRegisterDummySpec(name: String): TestDescriptor {
-      val descriptor = createTestDescriptor(Descriptor.SpecDescriptor(DescriptorId(name), this::class), name, root)
+      val unique = UniqueNames.unique(name, dummies) ?: name
+      dummies.add(unique)
+      val descriptor =
+         createDescriptorForSpec(Descriptor.SpecDescriptor(DescriptorId(unique), this::class), unique, root)
       listener.dynamicTestRegistered(descriptor)
       return descriptor
    }

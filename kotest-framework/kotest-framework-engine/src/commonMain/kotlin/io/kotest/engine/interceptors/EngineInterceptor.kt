@@ -1,6 +1,5 @@
 package io.kotest.engine.interceptors
 
-import io.kotest.common.ExperimentalKotest
 import io.kotest.common.KotestInternal
 import io.kotest.core.Tags
 import io.kotest.core.config.Configuration
@@ -21,7 +20,6 @@ interface EngineInterceptor {
    suspend fun intercept(context: EngineContext, execute: suspend (EngineContext) -> EngineResult): EngineResult
 }
 
-@KotestInternal
 data class EngineContext(
    val suite: TestSuite,
    val listener: TestEngineListener,

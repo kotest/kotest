@@ -3,6 +3,7 @@ package io.kotest.engine.listener
 import io.kotest.core.spec.Spec
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
+import io.kotest.engine.interceptors.EngineContext
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlin.reflect.KClass
@@ -14,9 +15,9 @@ class ThreadSafeTestEngineListener(private val listener: TestEngineListener) : T
 
    private val mutex = Mutex()
 
-   override suspend fun engineStarted(classes: List<KClass<*>>) {
+   override suspend fun engineInitialized(context: EngineContext) {
       mutex.withLock {
-         listener.engineStarted(classes)
+         listener.engineInitialized(context)
       }
    }
 
@@ -68,25 +69,19 @@ class ThreadSafeTestEngineListener(private val listener: TestEngineListener) : T
       }
    }
 
-   override suspend fun engineShutdown() {
+   override suspend fun engineStarted() {
       mutex.withLock {
-         listener.engineShutdown()
+         listener.engineStarted()
       }
    }
 
-   override suspend fun engineStartup() {
-      mutex.withLock {
-         listener.engineStartup()
-      }
-   }
-
-   override suspend fun specExit(kclass: KClass<out Spec>, t: Throwable?) {
+   override suspend fun specExit(kclass: KClass<*>, t: Throwable?) {
       mutex.withLock {
          listener.specExit(kclass, t)
       }
    }
 
-   override suspend fun specIgnored(kclass: KClass<out Spec>) {
+   override suspend fun specIgnored(kclass: KClass<*>) {
       mutex.withLock {
          listener.specIgnored(kclass)
       }
@@ -98,7 +93,13 @@ class ThreadSafeTestEngineListener(private val listener: TestEngineListener) : T
       }
    }
 
-   override suspend fun specEnter(kclass: KClass<out Spec>) {
+   override suspend fun specAborted(kclass: KClass<*>, t: Throwable) {
+      mutex.withLock {
+         listener.specAborted(kclass, t)
+      }
+   }
+
+   override suspend fun specEnter(kclass: KClass<*>) {
       mutex.withLock {
          listener.specEnter(kclass)
       }

@@ -33,7 +33,7 @@ fun main(args: Array<String>) {
       setupLauncher(launcherArgs, listener).fold(
          {
             // if we couldn't create the launcher we'll display those errors
-            listener.engineStarted(emptyList())
+            listener.engineStarted()
             listener.engineFinished(listOf(it))
          },
          { it.async() }

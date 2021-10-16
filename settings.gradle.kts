@@ -79,7 +79,7 @@ include("kotest-tests:kotest-tests-core")
 include("kotest-tests:kotest-tests-concurrency-tests")
 include("kotest-tests:kotest-tests-concurrency-specs")
 
-//include("kotest-tests:kotest-tests-junitxml")
+include("kotest-tests:kotest-tests-junitxml")
 include("kotest-tests:kotest-tests-htmlreporter")
 include("kotest-tests:kotest-tests-multipleconfig")
 include("kotest-tests:kotest-tests-test-parallelism")

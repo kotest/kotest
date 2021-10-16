@@ -1,19 +1,18 @@
 package io.kotest.engine.listener
 
 import io.kotest.common.concurrentHashMap
-import io.kotest.core.spec.Spec
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestStatus
 import kotlin.reflect.KClass
 
-class CollectingTestEngineListener : TestEngineListener {
+class CollectingTestEngineListener : AbstractTestEngineListener() {
 
    val specs = concurrentHashMap<KClass<*>, Throwable?>()
    val tests = concurrentHashMap<TestCase, TestResult>()
    var errors = false
 
-   override suspend fun specExit(kclass: KClass<out Spec>, t: Throwable?) {
+   override suspend fun specExit(kclass: KClass<*>, t: Throwable?) {
       specs[kclass] = t
       if (t != null) errors = true
    }

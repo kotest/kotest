@@ -15,7 +15,7 @@ import org.junit.platform.engine.support.descriptor.ClassSource
  * [engine] descriptor. The created descriptor will have segment type [Segment.Spec]
  * and will use [displayName].
  */
-fun createTestDescriptor(
+fun createDescriptorForSpec(
    descriptor: Descriptor.SpecDescriptor,
    displayName: String,
    engine: TestDescriptor

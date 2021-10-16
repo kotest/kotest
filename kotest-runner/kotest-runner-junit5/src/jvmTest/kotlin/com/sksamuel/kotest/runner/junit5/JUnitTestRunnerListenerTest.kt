@@ -66,7 +66,7 @@ class JUnitTestRunnerListenerTest : DescribeSpec({
          )
 
          val listener = JUnitTestEngineListener(engineListener, root, configuration)
-         listener.engineStarted(emptyList())
+         listener.engineStarted()
          listener.specEnter(JUnitTestRunnerListenerTest::class)
          listener.specStarted(JUnitTestRunnerListenerTest::class)
          listener.testStarted(test1)

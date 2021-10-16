@@ -2,11 +2,11 @@ package io.kotest.engine.listener
 
 import io.kotest.core.config.configuration
 import io.kotest.core.descriptors.toDescriptor
-import io.kotest.core.spec.Spec
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestStatus
 import io.kotest.core.test.TestType
+import io.kotest.engine.interceptors.EngineContext
 import io.kotest.engine.teamcity.Locations
 import io.kotest.engine.teamcity.TeamCityMessageBuilder
 import io.kotest.engine.test.names.getDisplayNameFormatter
@@ -71,7 +71,9 @@ class TeamCityTestEngineListener(
       println(msg3)
    }
 
-   override suspend fun engineStarted(classes: List<KClass<*>>) {}
+   override suspend fun engineStarted() {}
+
+   override suspend fun engineInitialized(context: EngineContext) {}
 
    override suspend fun engineFinished(t: List<Throwable>) {
       if (t.isNotEmpty()) {
@@ -98,14 +100,14 @@ class TeamCityTestEngineListener(
 
    override suspend fun specFinished(kclass: KClass<*>, results: Map<TestCase, TestResult>) {}
 
-   override suspend fun specExit(kclass: KClass<out Spec>, t: Throwable?) {
+   override suspend fun specExit(kclass: KClass<*>, t: Throwable?) {
       // we must start the test if it wasn't already started
       if (!started.contains(kclass))
          start(kclass)
       finish(kclass)
    }
 
-   override suspend fun specIgnored(kclass: KClass<out Spec>) {}
+   override suspend fun specIgnored(kclass: KClass<*>) {}
 
    override suspend fun specInactive(kclass: KClass<*>, results: Map<TestCase, TestResult>) {
       start(kclass)
