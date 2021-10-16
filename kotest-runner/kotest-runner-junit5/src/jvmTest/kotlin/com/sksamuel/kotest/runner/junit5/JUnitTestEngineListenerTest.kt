@@ -1,5 +1,6 @@
 package com.sksamuel.kotest.runner.junit5
 
+import io.kotest.core.annotation.Ignored
 import io.kotest.core.config.Configuration
 import io.kotest.core.config.configuration
 import io.kotest.core.descriptors.append
@@ -99,7 +100,11 @@ class JUnitTestEngineListenerTest : FunSpec({
       listener.specExit(MySpec::class, null)
       track.events shouldBe listOf(
          EventTrackingEngineExecutionListener.Event.TestRegistered("com.sksamuel.kotest.runner.junit5.MySpec", TestDescriptor.Type.CONTAINER),
-         EventTrackingEngineExecutionListener.Event.ExecutionSkipped("com.sksamuel.kotest.runner.junit5.MySpec"),
+         EventTrackingEngineExecutionListener.Event.TestRegistered("foo", TestDescriptor.Type.TEST),
+         EventTrackingEngineExecutionListener.Event.ExecutionSkipped("foo", null),
+         EventTrackingEngineExecutionListener.Event.TestRegistered("bar", TestDescriptor.Type.TEST),
+         EventTrackingEngineExecutionListener.Event.ExecutionSkipped("bar", null),
+         EventTrackingEngineExecutionListener.Event.ExecutionSkipped("com.sksamuel.kotest.runner.junit5.MySpec", null),
       )
    }
 
@@ -151,7 +156,7 @@ class JUnitTestEngineListenerTest : FunSpec({
          EventTrackingEngineExecutionListener.Event.TestRegistered("com.sksamuel.kotest.runner.junit5.MySpec", TestDescriptor.Type.CONTAINER),
          EventTrackingEngineExecutionListener.Event.ExecutionStarted("com.sksamuel.kotest.runner.junit5.MySpec"),
          EventTrackingEngineExecutionListener.Event.TestRegistered("foo", TestDescriptor.Type.TEST),
-         EventTrackingEngineExecutionListener.Event.ExecutionSkipped("foo"),
+         EventTrackingEngineExecutionListener.Event.ExecutionSkipped("foo", "secret!"),
          EventTrackingEngineExecutionListener.Event.ExecutionFinished("com.sksamuel.kotest.runner.junit5.MySpec", TestExecutionResult.Status.SUCCESSFUL),
       )
    }
@@ -229,7 +234,7 @@ class JUnitTestEngineListenerTest : FunSpec({
          EventTrackingEngineExecutionListener.Event.TestRegistered("foo", TestDescriptor.Type.CONTAINER),
          EventTrackingEngineExecutionListener.Event.ExecutionStarted("foo"),
          EventTrackingEngineExecutionListener.Event.TestRegistered("bar", TestDescriptor.Type.TEST),
-         EventTrackingEngineExecutionListener.Event.ExecutionSkipped("bar"),
+         EventTrackingEngineExecutionListener.Event.ExecutionSkipped("bar", "secret!"),
          EventTrackingEngineExecutionListener.Event.ExecutionFinished("foo", TestExecutionResult.Status.SUCCESSFUL),
          EventTrackingEngineExecutionListener.Event.ExecutionFinished("com.sksamuel.kotest.runner.junit5.MySpec", TestExecutionResult.Status.SUCCESSFUL),
       )
@@ -311,6 +316,70 @@ class JUnitTestEngineListenerTest : FunSpec({
       )
    }
 
+   test("state should be reset after ignored spec") {
+      val track = EventTrackingEngineExecutionListener()
+      val listener = JUnitTestEngineListener(track, root, configuration)
+      listener.specEnter(MyIgnoredTest::class)
+      listener.specIgnored(MyIgnoredTest::class)
+      listener.specExit(MyIgnoredTest::class, null)
+
+      listener.specEnter(MySpec2::class)
+      listener.specStarted(MySpec2::class)
+      listener.testStarted(tc3)
+      listener.testFinished(tc3, TestResult.success(4))
+      listener.specFinished(MySpec2::class, mapOf(tc3 to TestResult.success(4)))
+      listener.specExit(MySpec2::class, null)
+
+      track.events shouldBe listOf(
+         EventTrackingEngineExecutionListener.Event.TestRegistered(
+            "com.sksamuel.kotest.runner.junit5.MySpec2",
+            TestDescriptor.Type.CONTAINER
+         ),
+         EventTrackingEngineExecutionListener.Event.ExecutionStarted("com.sksamuel.kotest.runner.junit5.MySpec2"),
+         EventTrackingEngineExecutionListener.Event.TestRegistered("baz", TestDescriptor.Type.TEST),
+         EventTrackingEngineExecutionListener.Event.ExecutionStarted("baz"),
+         EventTrackingEngineExecutionListener.Event.ExecutionFinished("baz", TestExecutionResult.Status.SUCCESSFUL),
+         EventTrackingEngineExecutionListener.Event.ExecutionFinished(
+            "com.sksamuel.kotest.runner.junit5.MySpec2",
+            TestExecutionResult.Status.SUCCESSFUL
+         ),
+      )
+   }
+
+   test("state should be reset after inactive spec") {
+      val track = EventTrackingEngineExecutionListener()
+      val listener = JUnitTestEngineListener(track, root, configuration)
+      listener.specEnter(MySpec::class)
+      listener.specInactive(MySpec::class, mapOf(tc1 to TestResult.ignored("wibble")))
+      listener.specExit(MySpec::class, null)
+
+      listener.specEnter(MySpec2::class)
+      listener.specStarted(MySpec2::class)
+      listener.testStarted(tc3)
+      listener.testFinished(tc3, TestResult.success(4))
+      listener.specFinished(MySpec2::class, mapOf(tc3 to TestResult.success(4)))
+      listener.specExit(MySpec2::class, null)
+
+      track.events shouldBe listOf(
+         EventTrackingEngineExecutionListener.Event.TestRegistered("com.sksamuel.kotest.runner.junit5.MySpec", TestDescriptor.Type.CONTAINER),
+         EventTrackingEngineExecutionListener.Event.TestRegistered("foo", TestDescriptor.Type.TEST),
+         EventTrackingEngineExecutionListener.Event.ExecutionSkipped("foo", "wibble"),
+         EventTrackingEngineExecutionListener.Event.ExecutionSkipped("com.sksamuel.kotest.runner.junit5.MySpec", null),
+         EventTrackingEngineExecutionListener.Event.TestRegistered(
+            "com.sksamuel.kotest.runner.junit5.MySpec2",
+            TestDescriptor.Type.CONTAINER
+         ),
+         EventTrackingEngineExecutionListener.Event.ExecutionStarted("com.sksamuel.kotest.runner.junit5.MySpec2"),
+         EventTrackingEngineExecutionListener.Event.TestRegistered("baz", TestDescriptor.Type.TEST),
+         EventTrackingEngineExecutionListener.Event.ExecutionStarted("baz"),
+         EventTrackingEngineExecutionListener.Event.ExecutionFinished("baz", TestExecutionResult.Status.SUCCESSFUL),
+         EventTrackingEngineExecutionListener.Event.ExecutionFinished(
+            "com.sksamuel.kotest.runner.junit5.MySpec2",
+            TestExecutionResult.Status.SUCCESSFUL
+         ),
+      )
+   }
+
    test("listener should support full test paths") {
       val track = EventTrackingEngineExecutionListener()
       val config = Configuration()
@@ -336,7 +405,10 @@ class JUnitTestEngineListenerTest : FunSpec({
          EventTrackingEngineExecutionListener.Event.ExecutionStarted("foo bar"),
          EventTrackingEngineExecutionListener.Event.ExecutionFinished("foo bar", TestExecutionResult.Status.SUCCESSFUL),
          EventTrackingEngineExecutionListener.Event.ExecutionFinished("foo", TestExecutionResult.Status.SUCCESSFUL),
-         EventTrackingEngineExecutionListener.Event.ExecutionFinished("com.sksamuel.kotest.runner.junit5.MySpec", TestExecutionResult.Status.SUCCESSFUL),
+         EventTrackingEngineExecutionListener.Event.ExecutionFinished(
+            "com.sksamuel.kotest.runner.junit5.MySpec",
+            TestExecutionResult.Status.SUCCESSFUL
+         ),
       )
    }
 })
@@ -344,11 +416,20 @@ class JUnitTestEngineListenerTest : FunSpec({
 private class MySpec : FunSpec() {}
 private class MySpec2 : FunSpec() {}
 
+@Ignored
+private class MyIgnoredTest() : FunSpec() {
+   init {
+      test("!disabled test") {
+         error("foo")
+      }
+   }
+}
+
 class EventTrackingEngineExecutionListener : EngineExecutionListener {
 
    sealed interface Event {
       data class TestRegistered(val descriptor: String, val type: TestDescriptor.Type) : Event
-      data class ExecutionSkipped(val descriptor: String) : Event
+      data class ExecutionSkipped(val descriptor: String, val reason: String?) : Event
       data class ExecutionStarted(val descriptor: String) : Event
       data class ExecutionFinished(val descriptor: String, val status: TestExecutionResult.Status) : Event
    }
@@ -360,7 +441,7 @@ class EventTrackingEngineExecutionListener : EngineExecutionListener {
    }
 
    override fun executionSkipped(testDescriptor: TestDescriptor, reason: String?) {
-      events.add(Event.ExecutionSkipped(testDescriptor.displayName))
+      events.add(Event.ExecutionSkipped(testDescriptor.displayName, reason))
    }
 
    override fun executionStarted(testDescriptor: TestDescriptor) {

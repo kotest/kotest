@@ -90,6 +90,7 @@ class JUnitTestEngineListener(
    private var ignored = false
    private var started = false
    private var inactive = false
+   private var inactiveTests: Map<TestCase, TestResult> = emptyMap()
 
    // the root tests are our entry point when outputting results
    private val rootTests = mutableListOf<TestCase>()
@@ -165,20 +166,27 @@ class JUnitTestEngineListener(
    }
 
    override suspend fun specInactive(kclass: KClass<*>, results: Map<TestCase, TestResult>) {
+      log { "JUnitTestEngineListener: Spec is being flagged as inactive: $kclass" }
       inactive = true
+      inactiveTests = results
    }
 
    override suspend fun specIgnored(kclass: KClass<out Spec>) {
       ignored = true
    }
 
-   private fun markSpecIgnored(kclass: KClass<*>) {
+   private suspend fun markSpecInactive(kclass: KClass<*>) {
 
       val descriptor: TestDescriptor = createTestDescriptor(kclass.toDescriptor(), formatter.format(kclass), root)
       descriptors[kclass.toDescriptor()] = descriptor
 
       log { "JUnitTestEngineListener: Registering junit dynamic test: $descriptor" }
       listener.dynamicTestRegistered(descriptor)
+
+      inactiveTests.forEach { (tc, result) ->
+         testIgnored(tc, result.reason)
+         handleTest(tc)
+      }
 
       log { "JUnitTestEngineListener: Notifying junit that a spec was ignored [$descriptor]" }
       listener.executionSkipped(descriptor, null)
@@ -189,52 +197,43 @@ class JUnitTestEngineListener(
    }
 
    override suspend fun specExit(kclass: KClass<out Spec>, t: Throwable?) {
+      when {
+         t == null && ignored -> Unit
+         t == null && inactive -> markSpecInactive(kclass)
+         // if we have a spec error before we even started the spec, we will start the spec, add a placeholder
+         // to hold the error, mark that test as failed, and then fail the spec as well
+         t != null && !started ->{
+            val descriptor = markSpecStarted(kclass)
+            addPlaceholderTest(descriptor, t)
+            log { "JUnitTestEngineListener: Notifying junit that a spec failed [$descriptor, $t]" }
+            listener.executionFinished(descriptor, TestExecutionResult.failed(t))
+         }
+         // if we had an error in the spec, and we had no tests, we'll add the dummy and return
+         t != null && rootTests.isEmpty() -> {
+            val descriptor = descriptors[kclass.toDescriptor()]!!
+            addPlaceholderTest(descriptor, t)
+            log { "JUnitTestEngineListener: Notifying junit that a spec failed [$descriptor, $t]" }
+            listener.executionFinished(descriptor, TestExecutionResult.failed(t))
+         }
+         else -> {
+            val descriptor = descriptors[kclass.toDescriptor()]
+            rootTests.forEach { handleTest(it) }
 
-      if (t == null && inactive) {
-         markSpecIgnored(kclass)
-         return
+            val result = when {
+               t != null -> TestExecutionResult.failed(t)
+               instantiationException != null -> TestExecutionResult.failed(instantiationException)
+               else -> TestExecutionResult.successful()
+            }
+
+            if (descriptor == null) {
+               log { "JUnitTestEngineListener: Error retrieving description for spec[${kclass.qualifiedName}]" }
+               throw RuntimeException("Error retrieving description for spec ${kclass.qualifiedName}")
+            }
+
+            log { "JUnitTestEngineListener: Notifying junit that a spec has finished [$descriptor, $result]" }
+            listener.executionFinished(descriptor, result)
+         }
       }
-
-      if (t == null && ignored) {
-         return
-      }
-
-      // if we have a spec error before we even started the spec, we will start the spec, add a placeholder
-      // to hold the error, mark that test as failed, and then fail the spec as well
-      if (t != null && !started) {
-         val descriptor = markSpecStarted(kclass)
-         addPlaceholderTest(descriptor, t)
-         log { "JUnitTestEngineListener: Notifying junit that a spec failed [$descriptor, $t]" }
-         listener.executionFinished(descriptor, TestExecutionResult.failed(t))
-         return
-      }
-
-      // if we had an error in the spec, and we had no tests, we'll add the dummy and return
-      if (t != null && rootTests.isEmpty()) {
-         val descriptor = descriptors[kclass.toDescriptor()]!!
-         addPlaceholderTest(descriptor, t)
-         log { "JUnitTestEngineListener: Notifying junit that a spec failed [$descriptor, $t]" }
-         listener.executionFinished(descriptor, TestExecutionResult.failed(t))
-         return
-      }
-
-      val descriptor = descriptors[kclass.toDescriptor()]
-      rootTests.forEach { handleTest(it) }
-
-      val result = when {
-         t != null -> TestExecutionResult.failed(t)
-         instantiationException != null -> TestExecutionResult.failed(instantiationException)
-         else -> TestExecutionResult.successful()
-      }
-
-      if (descriptor == null) {
-         log { "JUnitTestEngineListener: Error retrieving description for spec[${kclass.qualifiedName}]" }
-         throw RuntimeException("Error retrieving description for spec ${kclass.qualifiedName}")
-      }
-
-      log { "JUnitTestEngineListener: Notifying junit that a spec has finished [$descriptor, $result]" }
-      listener.executionFinished(descriptor, result)
-
       reset()
    }
 
@@ -246,6 +245,7 @@ class JUnitTestEngineListener(
       started = false
       ignored = false
       inactive = false
+      inactiveTests = emptyMap()
       descriptors.clear()
    }
 

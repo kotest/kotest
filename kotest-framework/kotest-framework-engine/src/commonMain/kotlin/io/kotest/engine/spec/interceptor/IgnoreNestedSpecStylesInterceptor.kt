@@ -10,6 +10,7 @@ import io.kotest.core.test.TestResult
 import io.kotest.engine.listener.TestEngineListener
 import io.kotest.engine.spec.SpecExtensions
 import io.kotest.mpp.bestName
+import io.kotest.mpp.log
 
 /**
  * Filters [Spec]'s that are not compatible on platforms that disallow nested tests.
@@ -25,6 +26,7 @@ internal class IgnoreNestedSpecStylesInterceptor(private val listener: TestEngin
       if (isValid(spec)) {
          fn(spec)
       } else {
+         log { "IgnoreNestedSpecStylesInterceptor: Marking ${spec::class.bestName()} as inactive due to platform limitations" }
          println("WARN: kotest-js only supports top level tests due to underlying platform limitations. '${spec::class.bestName()}' has been marked as ignored")
          listener.specInactive(spec::class, emptyMap())
          SpecExtensions(configuration).inactiveSpec(spec, emptyMap())

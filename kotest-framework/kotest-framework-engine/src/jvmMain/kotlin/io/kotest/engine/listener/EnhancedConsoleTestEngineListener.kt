@@ -1,4 +1,4 @@
-package io.kotest.engine.reporter
+package io.kotest.engine.listener
 
 import com.github.ajalt.mordant.TermColors
 import io.kotest.core.config.configuration
@@ -11,7 +11,6 @@ import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestStatus
 import io.kotest.core.test.TestType
-import io.kotest.engine.listener.TestEngineListener
 import io.kotest.engine.test.names.getDisplayNameFormatter
 import kotlin.reflect.KClass
 

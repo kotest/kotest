@@ -1,15 +1,16 @@
 package io.kotest.engine.listener
 
 import io.kotest.core.config.configuration
-import io.kotest.core.descriptors.Descriptor
 import io.kotest.core.descriptors.toDescriptor
 import io.kotest.core.spec.Spec
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestStatus
+import io.kotest.core.test.TestType
 import io.kotest.engine.teamcity.Locations
 import io.kotest.engine.teamcity.TeamCityMessageBuilder
 import io.kotest.engine.test.names.getDisplayNameFormatter
+import io.kotest.mpp.bestName
 import kotlin.reflect.KClass
 
 /**
@@ -27,19 +28,13 @@ class TeamCityTestEngineListener(
 
    private val formatter = getDisplayNameFormatter(configuration)
 
-   // contains any tests which we know are parents
-   private val parents = hashSetOf<Descriptor>()
-
-   // set to true if we had any errors at all
-   private var errors = false
-
-   private fun TestCase.isContainer() = parents.contains(descriptor)
+   private fun TestCase.isContainer() = this.type == TestType.Container
 
    private fun TestCase.type() = if (isContainer()) "Container" else "Test"
 
    // intellij has no method for failed suites, so if a container or spec fails we must insert
    // a dummy "test" in order to tag the error against that
-   private fun insertDummyFailure(name: String, t: Throwable?, testCase: TestCase) {
+   private fun insertPlaceholderFailure(name: String, t: Throwable?, testCase: TestCase) {
       require(testCase.isContainer())
       val dummyTestName = "$name <error>"
 
@@ -80,9 +75,9 @@ class TeamCityTestEngineListener(
 
    override suspend fun engineFinished(t: List<Throwable>) {
       if (t.isNotEmpty()) {
-         println(TeamCityMessageBuilder.testStarted(prefix, "Test failure").build())
-         val errors = t.joinToString("\n") { t.toString() }
-         println(TeamCityMessageBuilder.testFailed(prefix, "Test failure").message(errors).build())
+         println(TeamCityMessageBuilder.testStarted(prefix, "Engine failure").build())
+         val errors = t.joinToString("\n") { it.message ?: t::class.bestName() }
+         println(TeamCityMessageBuilder.testFailed(prefix, "Engine failure").message(errors).build())
       }
    }
 
@@ -160,7 +155,7 @@ class TeamCityTestEngineListener(
          }
          TestStatus.Error, TestStatus.Failure -> when (testCase.isContainer()) {
             true -> {
-               insertDummyFailure(formatter.format(testCase), result.error, testCase)
+               insertPlaceholderFailure(formatter.format(testCase), result.error, testCase)
                finishTestSuite(testCase, result)
             }
             false -> {
@@ -194,7 +189,7 @@ class TeamCityTestEngineListener(
    }
 
    private fun failTest(testCase: TestCase, result: TestResult) {
-      val msg1 = TeamCityMessageBuilder
+      val msg = TeamCityMessageBuilder
          .testFailed(prefix, formatter.format(testCase))
          .id(testCase.descriptor.path().value)
          .parent(testCase.descriptor.parent.path().value)
@@ -203,12 +198,13 @@ class TeamCityTestEngineListener(
          .locationHint(Locations.locationHint(testCase.spec::class))
          .testType(testCase.type.name)
          .resultStatus(result.status.name)
+         .withException(result.error)
          .build()
-      println(msg1)
+      println(msg)
    }
 
    private fun finishTest(testCase: TestCase, result: TestResult) {
-      val msg2 = TeamCityMessageBuilder
+      val msg = TeamCityMessageBuilder
          .testFinished(prefix, formatter.format(testCase))
          .id(testCase.descriptor.path().value)
          .parent(testCase.descriptor.parent.path().value)
@@ -217,7 +213,7 @@ class TeamCityTestEngineListener(
          .testType(testCase.type.name)
          .resultStatus(result.status.name)
          .build()
-      println(msg2)
+      println(msg)
    }
 
    private fun finishTestSuite(testCase: TestCase, result: TestResult) {

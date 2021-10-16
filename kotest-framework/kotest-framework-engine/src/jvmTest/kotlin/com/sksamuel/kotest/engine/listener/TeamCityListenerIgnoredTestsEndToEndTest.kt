@@ -52,13 +52,9 @@ class TeamCityListenerIgnoredTestsEndToEndTest : FunSpec() {
          out.trim() shouldBe
             """
 ##teamcity[testSuiteStarted name='com.sksamuel.kotest.engine.listener.TeamCityListenerIgnoredTestsEndToEndTest' id='com.sksamuel.kotest.engine.listener.TeamCityListenerIgnoredTestsEndToEndTest' locationHint='kotest://com.sksamuel.kotest.engine.listener.TeamCityListenerIgnoredTestsEndToEndTest:1' test_type='spec']
-
-##teamcity[testIgnored name='disabled test' id='com.sksamuel.kotest.engine.listener.TeamCityListenerIgnoredTestsEndToEndTest/disabled_test' parent_id='com.sksamuel.kotest.engine.listener.TeamCityListenerIgnoredTestsEndToEndTest' locationHint='kotest://com.sksamuel.kotest.engine.listener.TeamCityListenerIgnoredTestsEndToEndTest:1' test_type='test' message='no love' result_status='Ignored']
-
-##teamcity[testIgnored name='disabled container' id='com.sksamuel.kotest.engine.listener.TeamCityListenerIgnoredTestsEndToEndTest/disabled_container' parent_id='com.sksamuel.kotest.engine.listener.TeamCityListenerIgnoredTestsEndToEndTest' locationHint='kotest://com.sksamuel.kotest.engine.listener.TeamCityListenerIgnoredTestsEndToEndTest:1' test_type='container' message='rejected' result_status='Ignored']
-
+##teamcity[testIgnored name='disabled test' id='com.sksamuel.kotest.engine.listener.TeamCityListenerIgnoredTestsEndToEndTest/disabled test' parent_id='com.sksamuel.kotest.engine.listener.TeamCityListenerIgnoredTestsEndToEndTest' locationHint='kotest://com.sksamuel.kotest.engine.listener.TeamCityListenerIgnoredTestsEndToEndTest:1' test_type='test' message='no love' result_status='Ignored']
+##teamcity[testIgnored name='disabled test' id='com.sksamuel.kotest.engine.listener.TeamCityListenerIgnoredTestsEndToEndTest/disabled container' parent_id='com.sksamuel.kotest.engine.listener.TeamCityListenerIgnoredTestsEndToEndTest' locationHint='kotest://com.sksamuel.kotest.engine.listener.TeamCityListenerIgnoredTestsEndToEndTest:1' test_type='container' message='rejected' result_status='Ignored']
 ##teamcity[testSuiteFinished name='com.sksamuel.kotest.engine.listener.TeamCityListenerIgnoredTestsEndToEndTest' id='com.sksamuel.kotest.engine.listener.TeamCityListenerIgnoredTestsEndToEndTest' locationHint='kotest://com.sksamuel.kotest.engine.listener.TeamCityListenerIgnoredTestsEndToEndTest:1' result_status='Success' test_type='spec']
-
 """.trim()
       }
    }

@@ -109,11 +109,13 @@ class Discovery(private val discoveryExtensions: List<DiscoveryExtension> = empt
 
       log { "After filters there are ${filtered.size} spec classes" }
 
+      log { "[Discovery] Further filtering classes via discovery extensions [$discoveryExtensions]" }
+
       val afterExtensions = discoveryExtensions
          .fold(filtered) { cl, ext -> ext.afterScan(cl) }
          .sortedBy { it.simpleName }
 
-      log { "After discovery extensions there are ${filtered.size} spec classes" }
+      log { "After discovery extensions there are ${afterExtensions.size} spec classes" }
 
       val scriptsEnabled = System.getProperty(KotestEngineProperties.scriptsEnabled) == "true" ||
          System.getenv(KotestEngineProperties.scriptsEnabled) == "true"

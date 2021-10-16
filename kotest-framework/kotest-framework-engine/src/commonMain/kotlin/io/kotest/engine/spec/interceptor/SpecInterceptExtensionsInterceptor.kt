@@ -16,11 +16,15 @@ internal class SpecInterceptExtensionsInterceptor(
    override suspend fun intercept(
       fn: suspend (Spec) -> Map<TestCase, TestResult>
    ): suspend (Spec) -> Map<TestCase, TestResult> = { spec ->
-      log { "SpecInterceptExtensionsInterceptor: Intercepting spec with ${extensions.size} extensions [$extensions]" }
-      var results = emptyMap<TestCase, TestResult>()
-      val initial: suspend () -> Unit = { results = fn(spec) }
-      interceptSpec(spec, extensions, initial)
-      results
+      if (extensions.isEmpty()) {
+         fn(spec)
+      } else {
+         log { "SpecInterceptExtensionsInterceptor: Intercepting spec with ${extensions.size} extensions [$extensions]" }
+         var results = emptyMap<TestCase, TestResult>()
+         val initial: suspend () -> Unit = { results = fn(spec) }
+         interceptSpec(spec, extensions, initial)
+         results
+      }
    }
 
    private suspend fun interceptSpec(
