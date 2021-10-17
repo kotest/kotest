@@ -104,24 +104,74 @@ class TeamCityTestEngineListener(
       // we must start the test if it wasn't already started
       if (!started.contains(kclass))
          start(kclass)
-      finish(kclass)
+
+      if (t != null) {
+
+         val dummyTestName = "<error>"
+
+         val msg = TeamCityMessageBuilder
+            .testStarted(prefix, dummyTestName)
+            .id(dummyTestName)
+            .parent(kclass.toDescriptor().path().value)
+            .testType("Test")
+            .build()
+
+         println(msg)
+
+         // we must print out the stack trace in between the dummy, so it appears when you click on the test name
+         t.printStackTrace()
+         val message = t.message?.let { if (it.lines().size == 1) it else null }
+
+         val msg2 = TeamCityMessageBuilder
+            .testFailed(prefix, dummyTestName)
+            .id(dummyTestName)
+            .parent(kclass.toDescriptor().path().value)
+            .message(message)
+            .testType("Test")
+            .build()
+
+         println(msg2)
+
+         val msg3 = TeamCityMessageBuilder
+            .testFinished(prefix, dummyTestName)
+            .id(dummyTestName)
+            .parent(kclass.toDescriptor().path().value)
+            .testType("Test")
+            .build()
+
+         println(msg3)
+
+      }
+      finish(kclass, t)
    }
 
    override suspend fun specIgnored(kclass: KClass<*>) {}
 
    override suspend fun specInactive(kclass: KClass<*>, results: Map<TestCase, TestResult>) {
-      start(kclass)
-      results.forEach { (testCase, result) ->
-         testIgnored(testCase, result.reason)
+      if (results.isEmpty()) {
+         start(kclass)
+         val msg = TeamCityMessageBuilder
+            .testIgnored(prefix, "<no tests>")
+            .id("<no tests>")
+            .parent(kclass.toDescriptor().path().value)
+            .testType("Test")
+            .resultStatus(TestStatus.Ignored.name)
+            .build()
+         println(msg)
+      } else {
+         start(kclass)
+         results.forEach { (testCase, result) ->
+            testIgnored(testCase, result.reason)
+         }
       }
    }
 
-   private fun finish(kclass: KClass<*>) {
+   private fun finish(kclass: KClass<*>, t: Throwable?) {
       val msg = TeamCityMessageBuilder
          .testSuiteFinished(prefix, formatter.format(kclass))
          .id(kclass.toDescriptor().path().value)
          .locationHint(Locations.locationHint(kclass))
-         .resultStatus(TestStatus.Success.name)
+         .resultStatus(if (t == null) TestStatus.Success.name else TestStatus.Error.name)
          .spec()
          .build()
       println(msg)

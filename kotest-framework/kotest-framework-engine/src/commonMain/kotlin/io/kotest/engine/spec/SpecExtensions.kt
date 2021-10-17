@@ -2,10 +2,10 @@ package io.kotest.engine.spec
 
 import io.kotest.core.config.Configuration
 import io.kotest.core.extensions.Extension
-import io.kotest.core.extensions.SpecIgnoredListener
 import io.kotest.core.extensions.InactiveSpecListener
-import io.kotest.core.extensions.SpecInitializeExtension
 import io.kotest.core.extensions.SpecCreationErrorListener
+import io.kotest.core.extensions.SpecIgnoredListener
+import io.kotest.core.extensions.SpecInitializeExtension
 import io.kotest.core.extensions.SpecInterceptExtension
 import io.kotest.core.listeners.AfterSpecListener
 import io.kotest.core.listeners.BeforeSpecListener
@@ -38,13 +38,13 @@ internal class SpecExtensions(private val configuration: Configuration) {
 
    suspend fun beforeSpec(spec: Spec): Result<Spec> {
       log { "SpecExtensions: beforeSpec $spec" }
-      return kotlin.runCatching {
+      return runCatching {
          extensions(spec).filterIsInstance<BeforeSpecListener>().forEach { it.beforeSpec(spec) }
          spec
       }.fold({ Result.success(it) }, { Result.failure(BeforeSpecListenerException(it)) })
    }
 
-   suspend fun afterSpec(spec: Spec): Result<Spec> = kotlin.runCatching {
+   suspend fun afterSpec(spec: Spec): Result<Spec> = runCatching {
       log { "SpecExtensions: afterSpec $spec" }
 
       spec.registeredAutoCloseables().let { closeables ->
@@ -52,7 +52,7 @@ internal class SpecExtensions(private val configuration: Configuration) {
          closeables.forEach { it.value.close() }
       }
 
-      return kotlin.runCatching {
+      return runCatching {
          extensions(spec).filterIsInstance<AfterSpecListener>().forEach { it.afterSpec(spec) }
          spec
       }.fold({ Result.success(it) }, { Result.failure(AfterSpecListenerException(it)) })
@@ -64,7 +64,7 @@ internal class SpecExtensions(private val configuration: Configuration) {
       configuration.extensions().filterIsInstance<SpecInitializeExtension>().forEach { it.initializeSpec(spec) }
    }
 
-   suspend fun specInstantiationError(kclass: KClass<out Spec>, t: Throwable) = kotlin.runCatching {
+   suspend fun specInstantiationError(kclass: KClass<out Spec>, t: Throwable) = runCatching {
       log { "SpecExtensions: specInstantiationError $kclass errror:$t" }
       configuration.extensions().filterIsInstance<SpecInstantiationListener>().forEach { it.specInstantiationError(kclass, t) }
       configuration.extensions().filterIsInstance<SpecCreationErrorListener>().forEach { it.onSpecCreationError(kclass, t) }

@@ -95,7 +95,7 @@ class SpecExecutor(
             }
             results
          } catch (t: Throwable) {
-            log { "SpecExecutor: Error creating spec delegate $t" }
+            log { "SpecExecutor: Error executing spec $t" }
             throw t
          }
       }

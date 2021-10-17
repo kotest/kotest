@@ -59,6 +59,52 @@ class TeamCityTestEngineListenerTest : FunSpec() {
          } shouldBe "testcity[testSuiteStarted name='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest' id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest' locationHint='kotest://com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest:1' test_type='spec']$nl"
       }
 
+      test("specExit errors should add placeholder test") {
+         val listener = TeamCityTestEngineListener("testcity")
+         listener.specEnter(kclass)
+         val out = captureStandardOut {
+            listener.specExit(kclass, Exception("whip!"))
+         }
+         out shouldBe """testcity[testSuiteStarted name='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest' id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest' locationHint='kotest://com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest:1' test_type='spec']
+testcity[testStarted name='<error>' id='<error>' parent_id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest' test_type='test']
+testcity[testFailed name='<error>' id='<error>' parent_id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest' message='whip!' test_type='test']
+testcity[testFinished name='<error>' id='<error>' parent_id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest' test_type='test']
+testcity[testSuiteFinished name='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest' id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest' locationHint='kotest://com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest:1' result_status='Error' test_type='spec']
+"""
+      }
+
+      test("specExit should write testSuiteFinished in error is null") {
+         val listener = TeamCityTestEngineListener("testcity")
+         listener.specStarted(kclass)
+         captureStandardOut {
+            listener.specExit(kclass, null)
+         } shouldBe "testcity[testSuiteFinished name='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest' id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest' locationHint='kotest://com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest:1' result_status='Success' test_type='spec']$nl"
+      }
+
+      test("inactive spec should write each root test as ignored") {
+         val listener = TeamCityTestEngineListener("testcity")
+         val out = captureStandardOut {
+            listener.specEnter(kclass)
+            listener.specInactive(kclass, mapOf(testCaseTest to TestResult.ignored(null)))
+            listener.specExit(kclass, null)
+         }
+         out.shouldContain("testcity[testSuiteStarted name='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest'")
+         out.shouldContain("testcity[testIgnored name='my test case'")
+         out.shouldContain("testcity[testSuiteFinished name='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest'")
+      }
+
+      test("inactive spec should write dummy ignored test if there are no tests") {
+         val listener = TeamCityTestEngineListener("testcity")
+         val out = captureStandardOut {
+            listener.specEnter(kclass)
+            listener.specInactive(kclass, emptyMap())
+            listener.specExit(kclass, null)
+         }
+         out.shouldContain("testcity[testSuiteStarted name='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest'")
+         out.shouldContain("testcity[testIgnored name='<no tests>'")
+         out.shouldContain("testcity[testSuiteFinished name='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest'")
+      }
+
       test("testStarted should write testSuiteStarted for parent test") {
          captureStandardOut {
             TeamCityTestEngineListener("testcity").testStarted(testCaseContainer)
@@ -129,27 +175,6 @@ class TeamCityTestEngineListenerTest : FunSpec() {
             TeamCityTestEngineListener("testcity").specFinished(kclass, emptyMap())
          } shouldBe ""
       }
-
-      test("specExit should write testSuiteFinished in error is null") {
-         val listener = TeamCityTestEngineListener("testcity")
-         listener.specStarted(kclass)
-         captureStandardOut {
-            listener.specExit(kclass, null)
-         } shouldBe "testcity[testSuiteFinished name='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest' id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest' locationHint='kotest://com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest:1' result_status='Success' test_type='spec']$nl"
-      }
-
-//      test("specFinished should insert dummy test and write testSuiteFinished for spec error") {
-//         val err = captureStandardErr {
-//            captureStandardOut {
-//               TeamCityTestEngineListener("testcity").specFinished(kclass, AssertionError("boom"), emptyMap())
-//            } shouldBe nl +
-//               "testcity[testStarted name='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest <init>']$nl" +
-//               "testcity[testFailed name='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest <init>' message='boom']$nl" +
-//               "testcity[testSuiteFinished name='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest' id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest' test_type='spec' result_status='Failure']$nl"
-//         }
-//         err shouldStartWith "${nl}java.lang.AssertionError: boom$nl" +
-//            "\tat com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest"
-//      }
 
       test("testFinished with error should handle multiline messages") {
 

@@ -11,6 +11,7 @@ import io.kotest.engine.TestEngineLauncher
 import io.kotest.engine.listener.CollectingTestEngineListener
 import io.kotest.engine.listener.NoopTestEngineListener
 import io.kotest.engine.spec.AfterSpecListenerException
+import io.kotest.matchers.booleans.shouldBeTrue
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.types.shouldBeInstanceOf
 import java.util.concurrent.atomic.AtomicInteger
@@ -24,26 +25,26 @@ class AfterSpecListenerTest : FunSpec() {
          configuration.registerExtensions(MyAfterSpecListener)
          counter.set(0)
 
-         val listener = CollectingTestEngineListener()
-         TestEngineLauncher(listener)
+         val collector = CollectingTestEngineListener()
+         TestEngineLauncher(collector)
             .withClasses(MyPopulatedSpec2::class)
             .launch()
 
          configuration.deregisterExtension(MyAfterSpecListener)
-         listener.specs.size shouldBe 1
-         listener.tests.size shouldBe 1
+         collector.specs.size shouldBe 1
+         collector.tests.size shouldBe 1
 
          counter.get() shouldBe 5
       }
 
       test("AfterSpecListener's exceptions should be propagated to specExit") {
-         val listener = CollectingTestEngineListener()
-         TestEngineLauncher(listener)
+         val collector = CollectingTestEngineListener()
+         TestEngineLauncher(collector)
             .withClasses(MyErrorSpec2::class)
             .launch()
-         listener.specs.size shouldBe 1
-         listener.specs[MyErrorSpec2::class]!!.shouldBeInstanceOf<AfterSpecListenerException>()
-         listener.tests.size shouldBe 1
+         collector.specs.size shouldBe 1
+         collector.specs[MyErrorSpec2::class]!!.shouldBeInstanceOf<AfterSpecListenerException>()
+         collector.tests.size shouldBe 1
       }
 
       test("AfterSpecListener's should NOT be triggered for a spec without tests") {
@@ -58,6 +59,23 @@ class AfterSpecListenerTest : FunSpec() {
          configuration.deregisterExtension(MyAfterSpecListener)
 
          counter.get() shouldBe 0
+      }
+
+      test("inline afterSpec functions should be invoked") {
+         TestEngineLauncher(NoopTestEngineListener)
+            .withClasses(InlineAfterSpec::class)
+            .launch()
+         inlineAfterSpec.shouldBeTrue()
+      }
+
+      test("f:inline afterSpec function errors should be caught") {
+
+         val collector = CollectingTestEngineListener()
+         TestEngineLauncher(collector)
+            .withClasses(InlineAfterSpecError::class)
+            .launch()
+         collector.specs.size.shouldBe(1)
+         collector.specs[InlineAfterSpecError::class]!!.shouldBeInstanceOf<AfterSpecListenerException>()
       }
    }
 }
@@ -110,5 +128,21 @@ private class MyPopulatedSpec2 : FunSpec() {
       afterSpec { counter.incrementAndGet() }
 
       test("foo") {}
+   }
+}
+
+var inlineAfterSpec = false
+
+private class InlineAfterSpec : FunSpec() {
+   init {
+      afterSpec { inlineAfterSpec = true }
+      test("a") {}
+   }
+}
+
+private class InlineAfterSpecError : FunSpec() {
+   init {
+      afterSpec { error("zam!") }
+      test("a") {}
    }
 }
