@@ -17,7 +17,8 @@ import io.kotest.matchers.file.shouldBeSymbolicLink
 import io.kotest.matchers.file.shouldExist
 import io.kotest.matchers.file.shouldHaveExtension
 import io.kotest.matchers.file.shouldHaveParent
-import io.kotest.matchers.file.shouldHaveSameStructure
+import io.kotest.matchers.file.shouldHaveSameStructureAs
+import io.kotest.matchers.file.shouldHaveSameStructureAndContentAs
 import io.kotest.matchers.file.shouldNotBeADirectory
 import io.kotest.matchers.file.shouldNotBeAFile
 import io.kotest.matchers.file.shouldNotBeEmptyDirectory
@@ -275,7 +276,7 @@ class FileMatchersTest : FunSpec() {
       fileAsFile.shouldNotHaveParent("super_hyper_long_random_file_name")
     }
 
-    test("shouldHaveSameTreeAndContentsAs should check if two file trees are the same") {
+    test("shouldHaveSameStructureAs and shouldHaveSameStructureAndContentAs two file trees") {
       val testDir = Files.createTempDirectory("testdir")
 
       val expectDir = File("$testDir/expect").apply {
@@ -292,13 +293,75 @@ class FileMatchersTest : FunSpec() {
         File("$this/subfolder/subfolder-two/c.txt").createWithContent(byteArrayOf(1, 2))
       }
 
-      expectDir shouldHaveSameStructure actualDir
+      expectDir shouldHaveSameStructureAs actualDir
+      expectDir shouldHaveSameStructureAndContentAs actualDir
 
-      File("$actualDir/z.txt").createWithContent(byteArrayOf(1, 2, 3))
+      File("$expectDir/z.txt").createWithContent(byteArrayOf(1, 2, 3))
 
-      shouldThrow<AssertionError> { expectDir shouldHaveSameStructure  actualDir }
+      shouldThrow<AssertionError> { expectDir shouldHaveSameStructureAs actualDir }
+      shouldThrow<AssertionError> { expectDir shouldHaveSameStructureAndContentAs actualDir }
+
+      File("$actualDir/z.txt").createWithContent(byteArrayOf(1, 2, 3, 4))
+
+      expectDir shouldHaveSameStructureAs actualDir
+      shouldThrow<AssertionError> { expectDir shouldHaveSameStructureAndContentAs actualDir }
+    }
+
+    test("shouldHaveSameStructureAs with filter should check if two file trees are the same and files have the same content") {
+      val testDir = Files.createTempDirectory("testdir")
+
+      val expectDir = File("$testDir/expect").apply {
+        File("$this/a.txt").createWithContent("a/b")
+        File("$this/b.txt").createWithContent("b/c")
+        File("$this/subfolder/b.txt").createWithContent("b/c")
+        File("$this/subfolder/subfolder-two/c.txt").createWithContent("c/d")
+        File("$this/z.txt").createWithContent("z")
+      }
+
+      val actualDir = File("$testDir/actual").apply {
+        File("$this/a.txt").createWithContent("a/b")
+        File("$this/b.txt").createWithContent("b/c")
+        File("$this/subfolder/b.txt").createWithContent("b/c")
+        File("$this/subfolder/subfolder-two/c.txt").createWithContent("c/d")
+        File("$this/z.txt").createWithContent("zz")
+      }
+
+      expectDir.shouldHaveSameStructureAs(actualDir, filterLhs = { it.name == "z.txt" })
+
+      expectDir.shouldHaveSameStructureAs(actualDir, filterRhs = { it.name == "z.txt" })
+    }
+
+    test("shouldHaveSameStructureAndContentAs with compare and filter should check if two file trees are the same and files have the same content") {
+      val testDir = Files.createTempDirectory("testdir")
+
+      val expectDir = File("$testDir/expect").apply {
+        File("$this/a.txt").createWithContent("a/b")
+        File("$this/b.txt").createWithContent("b/c")
+        File("$this/subfolder/b.txt").createWithContent("b/c")
+        File("$this/subfolder/subfolder-two/c.txt").createWithContent("c/d")
+      }
+
+      val actualDir = File("$testDir/actual").apply {
+        File("$this/a.txt").createWithContent("a/b")
+        File("$this/b.txt").createWithContent("b\\c")
+        File("$this/subfolder/b.txt").createWithContent("b\\c")
+        File("$this/subfolder/subfolder-two/c.txt").createWithContent("c\\d")
+      }
+
+      expectDir.shouldHaveSameStructureAs(actualDir) { a, b ->
+        a.isFile && b.isFile && a.readText() == b.readText().replace("\\", "/")
+      }
+
+      expectDir.shouldHaveSameStructureAndContentAs(actualDir, filterLhs = { it.name != "a.txt" })
+      expectDir.shouldHaveSameStructureAndContentAs(actualDir, filterRhs = { it.name != "a.txt" })
     }
   }
+}
+
+private fun File.createWithContent(content: String) {
+  this.parentFile.mkdirs()
+  createNewFile()
+  writeText(content)
 }
 
 private fun File.createWithContent(content: ByteArray) {
