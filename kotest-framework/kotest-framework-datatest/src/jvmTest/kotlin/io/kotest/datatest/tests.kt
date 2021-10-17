@@ -31,6 +31,16 @@ fun RootContext.registerRootTests(): MutableList<String> {
       a * a + b * b shouldBe c * c
    }
 
+   withData(
+      mapOf(
+         "foo" to 2,
+         "foo" to 4,
+      )
+   ) { a ->
+      a % 2 shouldBe 0
+      if (a == 2) this.testCase.name.testName shouldBe "foo"
+   }
+
    withData("a", "b") { a ->
       withData(sequenceOf("x", "y")) { b ->
          a + b shouldHaveLength 2

@@ -80,6 +80,7 @@ class TeamCityTestEngineListener(
          println(TeamCityMessageBuilder.testStarted(prefix, "Engine failure").build())
          val errors = t.joinToString("\n") { it.message ?: t::class.bestName() }
          println(TeamCityMessageBuilder.testFailed(prefix, "Engine failure").message(errors).build())
+         //println(TeamCityMessageBuilder.testFinished(prefix, "Engine failure").build())
       }
    }
 

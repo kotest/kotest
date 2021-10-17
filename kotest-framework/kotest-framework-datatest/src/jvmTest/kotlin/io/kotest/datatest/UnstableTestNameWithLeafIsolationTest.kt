@@ -9,7 +9,7 @@
 //import io.kotest.core.test.TestResult
 //import io.kotest.core.test.TestStatus
 //import io.kotest.engine.KotestEngineLauncher
-//import io.kotest.engine.listener.TestEngineListener
+//import io.kotest.engine.listener.AbstractTestEngineListener
 //import io.kotest.matchers.shouldBe
 //import io.kotest.matchers.shouldNotBe
 //
@@ -20,7 +20,7 @@
 //
 //      val results = mutableListOf<TestStatus>()
 //
-//      val listener = object : TestEngineListener {
+//      val listener = object : AbstractTestEngineListener() {
 //         override suspend fun testFinished(testCase: TestCase, result: TestResult) {
 //            results.add(result.status)
 //         }

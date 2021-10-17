@@ -4,6 +4,7 @@ import io.kotest.core.listeners.ProjectListener
 import io.kotest.core.spec.AutoScan
 import io.kotest.core.spec.Isolate
 import io.kotest.core.spec.style.FunSpec
+import io.kotest.matchers.shouldBe
 import java.util.concurrent.atomic.AtomicBoolean
 
 @Isolate
@@ -18,7 +19,7 @@ class IsolatedAnnotationTest : FunSpec() {
 @AutoScan
 class IsolatedAnnotationTestAfterProject : ProjectListener {
    override suspend fun afterProject() {
-//      invoked.get() shouldBe true
+      invoked.get() shouldBe true
    }
 }
 
