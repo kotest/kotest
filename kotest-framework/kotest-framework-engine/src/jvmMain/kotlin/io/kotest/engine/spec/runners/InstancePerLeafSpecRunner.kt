@@ -1,5 +1,7 @@
 package io.kotest.engine.spec.runners
 
+import io.kotest.common.ExperimentalKotest
+import io.kotest.common.runBlocking
 import io.kotest.core.concurrency.CoroutineDispatcherFactory
 import io.kotest.core.config.configuration
 import io.kotest.core.descriptors.Descriptor
@@ -17,13 +19,13 @@ import io.kotest.engine.test.TestCaseExecutionListener
 import io.kotest.engine.test.TestCaseExecutor
 import io.kotest.engine.test.contexts.DuplicateNameHandlingTestContext
 import io.kotest.engine.test.scheduler.TestScheduler
-import io.kotest.fp.flatMap
 import io.kotest.mpp.log
 import kotlinx.coroutines.coroutineScope
 import java.util.PriorityQueue
 import java.util.concurrent.atomic.AtomicInteger
 import kotlin.coroutines.CoroutineContext
 
+@ExperimentalKotest
 internal class InstancePerLeafSpecRunner(
    listener: TestEngineListener,
    scheduler: TestScheduler,
@@ -66,7 +68,7 @@ internal class InstancePerLeafSpecRunner(
     * the queue, we must first instantiate a new spec, and begin execution on _that_ instance.
     */
    override suspend fun execute(spec: Spec): Result<Map<TestCase, TestResult>> =
-      kotlin.runCatching {
+      runCatching {
          spec.materializeAndOrderRootTests().forEach { root ->
             enqueue(root.testCase)
          }
@@ -78,14 +80,20 @@ internal class InstancePerLeafSpecRunner(
       }
 
    private suspend fun executeInCleanSpec(test: TestCase): Result<Spec> {
-      return createInstance(test.spec::class)
-         .flatMap { SpecExtensions(configuration).beforeSpec(it) }
-         .flatMap { interceptAndRun(it, test) }
-         .flatMap { SpecExtensions(configuration).afterSpec(it) }
+      val extensions = SpecExtensions(configuration.extensions())
+      return createInstance(test.spec::class).onSuccess { spec ->
+         runBlocking {
+            extensions.intercept(spec) {
+               extensions.beforeSpec(spec).getOrThrow()
+               run(spec, test).getOrThrow()
+               extensions.afterSpec(spec).getOrThrow()
+            }
+         }
+      }
    }
 
    // we need to find the same root test but in the newly created spec
-   private suspend fun interceptAndRun(spec: Spec, test: TestCase): Result<Spec> = kotlin.runCatching {
+   private suspend fun run(spec: Spec, test: TestCase): Result<Spec> = kotlin.runCatching {
       log { "InstancePerLeafSpecRunner: Created new spec instance $spec" }
       val root = spec.materializeAndOrderRootTests().firstOrNull { it.testCase.descriptor.isOnPath(test.descriptor) }
          ?: throw error("Unable to locate root test ${test.descriptor.path()}")

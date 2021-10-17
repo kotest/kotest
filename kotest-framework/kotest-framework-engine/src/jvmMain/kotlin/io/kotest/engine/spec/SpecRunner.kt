@@ -1,5 +1,6 @@
 package io.kotest.engine.spec
 
+import io.kotest.common.ExperimentalKotest
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.Spec
 import io.kotest.core.test.TestCase
@@ -18,6 +19,7 @@ import kotlin.reflect.KClass
  * @param listener provides callbacks on tests as they are executed. These callbacks are used
  * to ultimately feed back into the test engine implementation.
  */
+@ExperimentalKotest
 internal abstract class SpecRunner(
    val listener: TestEngineListener,
    private val scheduler: TestScheduler,
@@ -25,7 +27,7 @@ internal abstract class SpecRunner(
 
    /**
     * Executes all the tests in this spec, returning a Failure if there was an exception in a listener
-    * or class initializer. Otherwise returns the results for the tests in that spec.
+    * or class initializer. Otherwise, returns the results for the tests in that spec.
     */
    abstract suspend fun execute(spec: Spec): Result<Map<TestCase, TestResult>>
 

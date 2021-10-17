@@ -1,6 +1,6 @@
 package io.kotest.engine.spec.interceptor
 
-import io.kotest.core.config.configuration
+import io.kotest.core.config.Configuration
 import io.kotest.core.listeners.InactiveSpecListener
 import io.kotest.core.spec.Spec
 import io.kotest.core.test.TestCase
@@ -18,7 +18,10 @@ import io.kotest.mpp.log
  *
  * Otherwise, if at least one active, the downstream function is invoked.
  */
-internal class RunIfActiveInterceptor(private val listener: TestEngineListener) : SpecExecutionInterceptor {
+internal class RunIfActiveInterceptor(
+   private val listener: TestEngineListener,
+   private val configuration: Configuration,
+) : SpecExecutionInterceptor {
 
    override suspend fun intercept(
       fn: suspend (Spec) -> Map<TestCase, TestResult>
@@ -37,7 +40,7 @@ internal class RunIfActiveInterceptor(private val listener: TestEngineListener) 
       } else {
          val results = enabled.mapValues { TestResult.ignored(it.value.reason) }
          listener.specInactive(spec::class, results)
-         SpecExtensions(configuration).inactiveSpec(spec, results)
+         SpecExtensions(configuration.extensions()).inactiveSpec(spec, results)
          results
       }
    }

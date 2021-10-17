@@ -1,6 +1,6 @@
 package io.kotest.engine.spec.interceptor
 
-import io.kotest.core.config.configuration
+import io.kotest.core.config.Configuration
 import io.kotest.core.spec.Spec
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
@@ -8,9 +8,10 @@ import io.kotest.engine.listener.TestEngineListener
 import io.kotest.engine.spec.SpecExtensions
 import io.kotest.mpp.log
 
-internal class SpecStartedFinishedInterceptor(private val listener: TestEngineListener) : SpecExecutionInterceptor {
-
-   private val extensions = SpecExtensions(configuration)
+internal class SpecStartedFinishedInterceptor(
+   private val listener: TestEngineListener,
+   private val configuration: Configuration,
+) : SpecExecutionInterceptor {
 
    override suspend fun intercept(
       fn: suspend (Spec) -> Map<TestCase, TestResult>
@@ -29,7 +30,7 @@ internal class SpecStartedFinishedInterceptor(private val listener: TestEngineLi
       log { "SpecStartedFinishedInterceptor: listener.specFinished $spec" }
       listener.specFinished(spec::class, results)
 
-      extensions.finishSpec(spec::class, results)
+      SpecExtensions(configuration.extensions()).finishSpec(spec::class, results)
       results
    }
 }

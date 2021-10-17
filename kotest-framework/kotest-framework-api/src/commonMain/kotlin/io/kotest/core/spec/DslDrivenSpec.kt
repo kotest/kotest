@@ -57,7 +57,7 @@ abstract class DslDrivenSpec : Spec() {
     * fire for this spec.
     */
    fun finalizeSpec(f: FinalizeSpec) {
-      configuration.registerExtension(object : TestListener {
+      configuration.register(object : TestListener {
          override suspend fun finalizeSpec(kclass: KClass<out Spec>, results: Map<TestCase, TestResult>) {
             if (kclass == this@DslDrivenSpec::class) {
                f(Tuple2(kclass, results))
@@ -71,7 +71,7 @@ abstract class DslDrivenSpec : Spec() {
     * This is a convenience method for creating a [ProjectListener] and registering it.
     */
    fun afterProject(f: AfterProject) {
-      configuration.registerExtension(object : ProjectListener {
+      configuration.register(object : ProjectListener {
          override suspend fun afterProject() {
             f()
          }

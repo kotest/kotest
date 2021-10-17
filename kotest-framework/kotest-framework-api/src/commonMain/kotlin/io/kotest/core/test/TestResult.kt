@@ -6,13 +6,19 @@ sealed interface TestResult2 {
    data class Ignored(val reason: String?) : TestResult2
    data class Success(val duration: Duration) : TestResult2
    data class Error(val duration: Duration, val throwable: Throwable) : TestResult2
-   data class Failure(val duration: Duration, val throwable: Throwable) : TestResult2
+   data class Failure(val duration: Duration, val error: AssertionError) : TestResult2
 
    val isSuccess: Boolean
       get() = this is Success
 
+   val isError: Boolean
+      get() = this is Error
+
    val isFailure: Boolean
       get() = this is Failure
+
+   val isIgnored: Boolean
+      get() = this is Ignored
 }
 
 data class TestResult(

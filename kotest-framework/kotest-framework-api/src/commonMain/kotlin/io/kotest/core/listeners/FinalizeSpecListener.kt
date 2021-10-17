@@ -6,7 +6,7 @@ import io.kotest.core.test.TestResult
 import kotlin.reflect.KClass
 
 /**
- * Invoked after all tests have completed for a spec.
+ * Invoked once per spec class if the spec has enabled root tests.
  * This listener is only invoked if the spec had at least one enabled test.
  */
 interface FinalizeSpecListener : Listener {
@@ -14,9 +14,9 @@ interface FinalizeSpecListener : Listener {
    /**
     * Called once per [Spec], after all tests have completed for that spec.
     *
-    * Regardless of how many times the spec is instantiated,
-    * for example, if [InstancePerTest] or [InstancePerLeaf] isolation
-    * modes are used, this callback will only be invoked once.
+    * If a spec is instantiated multiple times because the isolation mode
+    * is set to create multiple instances, then this listener will not be
+    * invoked multiple times.
     *
     * The results' parameter contains every [TestCase], along with
     * the result of that test, including tests that were ignored (which

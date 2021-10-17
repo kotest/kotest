@@ -1,5 +1,6 @@
 package io.kotest.engine.spec.runners
 
+import io.kotest.common.ExperimentalKotest
 import io.kotest.core.concurrency.CoroutineDispatcherFactory
 import io.kotest.core.config.configuration
 import io.kotest.core.spec.Spec
@@ -54,6 +55,7 @@ import kotlin.coroutines.CoroutineContext
  * spec3.outerTest
  * spec3.innerTestB
  */
+@ExperimentalKotest
 internal class InstancePerTestSpecRunner(
    listener: TestEngineListener,
    schedule: TestScheduler,
@@ -61,7 +63,6 @@ internal class InstancePerTestSpecRunner(
 ) : SpecRunner(listener, schedule) {
 
    private val results = ConcurrentHashMap<TestCase, TestResult>()
-   private val extensions = SpecExtensions(configuration)
 
    /**
     * The intention of this runner is that each [TestCase] executes in its own instance
@@ -97,19 +98,20 @@ internal class InstancePerTestSpecRunner(
     * can be registered back with the stack for execution later.
     */
    private suspend fun executeInCleanSpec(test: TestCase): Result<Spec> {
+      val extensions = SpecExtensions(configuration.extensions())
       return createInstance(test.spec::class)
          .flatMap { spec ->
             runCatching {
                extensions.intercept(spec) {
                   extensions.beforeSpec(spec)
-                     .flatMap { interceptAndRun(it, test) }
-                     .flatMap { SpecExtensions(configuration).afterSpec(it) }
+                     .flatMap { run(it, test) }
+                     .flatMap { extensions.afterSpec(it) }
                }
             }.map { spec }
          }
    }
 
-   private suspend fun interceptAndRun(spec: Spec, test: TestCase): Result<Spec> = kotlin.runCatching {
+   private suspend fun run(spec: Spec, test: TestCase): Result<Spec> = kotlin.runCatching {
       log { "Created new spec instance $spec" }
       // we need to find the same root test but in the newly created spec
       val root = spec.materializeAndOrderRootTests().first { it.testCase.descriptor.isOnPath(test.descriptor) }

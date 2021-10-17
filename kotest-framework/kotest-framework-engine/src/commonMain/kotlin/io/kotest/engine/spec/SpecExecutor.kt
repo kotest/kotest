@@ -5,8 +5,6 @@ import io.kotest.common.platform
 import io.kotest.core.concurrency.CoroutineDispatcherFactory
 import io.kotest.core.config.Configuration
 import io.kotest.core.config.configuration
-import io.kotest.core.extensions.SpecExtension
-import io.kotest.core.extensions.SpecLaunchExtension
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.SpecRef
 import io.kotest.core.test.TestCase
@@ -15,11 +13,11 @@ import io.kotest.engine.listener.TestEngineListener
 import io.kotest.engine.spec.interceptor.ApplyExtensionsInterceptor
 import io.kotest.engine.spec.interceptor.IgnoreNestedSpecStylesInterceptor
 import io.kotest.engine.spec.interceptor.IgnoredSpecInterceptor
+import io.kotest.engine.spec.interceptor.SpecRefExtensionInterceptor
 import io.kotest.engine.spec.interceptor.RunIfActiveInterceptor
 import io.kotest.engine.spec.interceptor.SpecEnterInterceptor
 import io.kotest.engine.spec.interceptor.SpecExitInterceptor
-import io.kotest.engine.spec.interceptor.SpecInterceptExtensionsInterceptor
-import io.kotest.engine.spec.interceptor.SpecLaunchExtensionInterceptor
+import io.kotest.engine.spec.interceptor.SpecExtensionInterceptor
 import io.kotest.engine.spec.interceptor.SpecStartedFinishedInterceptor
 import io.kotest.fp.flatMap
 import io.kotest.mpp.log
@@ -41,7 +39,7 @@ class SpecExecutor(
    private val conf: Configuration = configuration,
 ) {
 
-   private val extensions = SpecExtensions(conf)
+   private val extensions = SpecExtensions(conf.extensions())
 
    suspend fun execute(ref: SpecRef) {
       log { "SpecExecutor: Received $ref" }
@@ -57,8 +55,8 @@ class SpecExecutor(
       val interceptors = listOf(
          SpecExitInterceptor(listener),
          SpecEnterInterceptor(listener),
-         SpecLaunchExtensionInterceptor(conf.extensions().filterIsInstance<SpecLaunchExtension>()),
          IgnoredSpecInterceptor(listener, conf),
+         SpecRefExtensionInterceptor(conf),
          ApplyExtensionsInterceptor(conf),
       )
 
@@ -78,22 +76,16 @@ class SpecExecutor(
    private suspend fun specInterceptors(spec: Spec): Map<TestCase, TestResult> {
 
       val interceptors = listOfNotNull(
-         if (platform == Platform.JS) IgnoreNestedSpecStylesInterceptor(listener) else null,
-         SpecInterceptExtensionsInterceptor(
-            extensions.extensions(spec).filterIsInstance<SpecExtension>()
-         ),
-         RunIfActiveInterceptor(listener),
-         SpecStartedFinishedInterceptor(listener),
+         if (platform == Platform.JS) IgnoreNestedSpecStylesInterceptor(listener, conf) else null,
+         SpecExtensionInterceptor(conf),
+         RunIfActiveInterceptor(listener, conf),
+         SpecStartedFinishedInterceptor(listener, conf),
       )
 
       val initial: suspend (Spec) -> Map<TestCase, TestResult> = {
          try {
-            var results: Map<TestCase, TestResult> = emptyMap()
-            extensions.intercept(it) {
-               val delegate = createSpecExecutorDelegate(listener, defaultCoroutineDispatcherFactory)
-               results = delegate.execute(spec)
-            }
-            results
+            val delegate = createSpecExecutorDelegate(listener, defaultCoroutineDispatcherFactory)
+            delegate.execute(spec)
          } catch (t: Throwable) {
             log { "SpecExecutor: Error executing spec $t" }
             throw t

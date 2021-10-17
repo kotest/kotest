@@ -632,7 +632,7 @@ private class StringSpecExceptionInBeforeSpecForInstancePerLeaf : StringSpec({
       1 shouldBe 1
    }
 }) {
-   override fun isolationMode(): IsolationMode? = IsolationMode.InstancePerLeaf
+   override fun isolationMode(): IsolationMode = IsolationMode.InstancePerLeaf
 
    override fun beforeSpec(spec: Spec) {
       throw RuntimeException("zopp!!")

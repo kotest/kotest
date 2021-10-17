@@ -4,7 +4,14 @@ import io.kotest.core.spec.Spec
 import kotlin.reflect.KClass
 
 /**
- * Invoked once per spec class if the spec has active tests.
+ * This listener is invoked before any tests execute for a spec.
+ *
+ * Invoked once per spec class if the spec has enabled root tests.
+ * If the created spec is not active, then this listener will not be invoked.
+ *
+ * If a spec is instantiated multiple times because the isolation mode
+ * is set to create multiple instances, then this listener will not be
+ * invoked multiple times.
  */
 interface PrepareSpecListener : Listener {
 

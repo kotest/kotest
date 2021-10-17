@@ -19,11 +19,11 @@ import io.kotest.core.spec.Spec
  * }
  *
  * Here `kafka` is a materialized value that contains details of the host/port of the
- * started kafka instance.
+ * started kafka instance and `EmbeddedKafka` is an extension instance.
  *
  */
 interface MountableExtension<CONFIG, MATERIALIZED> : Extension {
-   // cannot be suspending as it is invoked from mount that is itself invoked in constructors
+   // cannot be suspending as it is invoked by install that is used in constructors
    fun mount(configure: CONFIG.() -> Unit): MATERIALIZED
 }
 

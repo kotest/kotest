@@ -24,11 +24,13 @@ internal class IgnoredSpecInterceptor(
    override suspend fun intercept(
       fn: suspend (SpecRef) -> Map<TestCase, TestResult>
    ): suspend (SpecRef) -> Map<TestCase, TestResult> = { ref ->
+
       val isIgnored = ref.kclass.hasAnnotation<Ignored>()
       log { "IgnoredSpecInterceptor: ${ref.kclass} has @Ignored == $isIgnored" }
+
       if (isIgnored) {
          listener.specIgnored(ref.kclass)
-         SpecExtensions(conf).ignored(ref.kclass)
+         SpecExtensions(conf.extensions()).ignored(ref.kclass)
          emptyMap()
       } else {
          fn(ref)

@@ -1,5 +1,6 @@
 package io.kotest.engine.spec.runners
 
+import io.kotest.common.ExperimentalKotest
 import io.kotest.core.concurrency.CoroutineDispatcherFactory
 import io.kotest.core.config.configuration
 import io.kotest.core.spec.Spec
@@ -28,6 +29,7 @@ import kotlin.coroutines.CoroutineContext
  * same [Spec] instance. In other words, only a single instance of the spec class
  * is instantiated for all the test cases.
  */
+@ExperimentalKotest
 internal class SingleInstanceSpecRunner(
    listener: TestEngineListener,
    scheduler: TestScheduler,
@@ -50,9 +52,9 @@ internal class SingleInstanceSpecRunner(
 
       try {
          return coroutineScope {
-            SpecExtensions(configuration).beforeSpec(spec)
+            SpecExtensions(configuration.extensions()).beforeSpec(spec)
                .flatMap { interceptAndRun(coroutineContext) }
-               .flatMap { SpecExtensions(configuration).afterSpec(spec) }
+               .flatMap { SpecExtensions(configuration.extensions()).afterSpec(spec) }
                .map { results }
          }
       } catch (e: Exception) {

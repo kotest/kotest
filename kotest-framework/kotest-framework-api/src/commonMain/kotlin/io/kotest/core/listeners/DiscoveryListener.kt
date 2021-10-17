@@ -1,5 +1,6 @@
 package io.kotest.core.listeners
 
+import io.kotest.core.descriptors.Descriptor
 import io.kotest.core.descriptors.DescriptorId
 
 interface DiscoveryListener {
@@ -13,5 +14,5 @@ interface DiscoveryListener {
     *
     * @param descriptors the [DescriptorId] instance for each Spec class discovered.
     */
-   fun afterDiscovery(descriptors: List<DescriptorId>): Unit = Unit
+   fun afterDiscovery(descriptors: List<Descriptor.SpecDescriptor>): Unit = Unit
 }

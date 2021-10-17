@@ -1,7 +1,7 @@
 package com.sksamuel.kotest.engine.extensions.spec
 
 import io.kotest.core.config.configuration
-import io.kotest.core.extensions.SpecInterceptExtension
+import io.kotest.core.extensions.SpecExtension
 import io.kotest.core.spec.Isolate
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.Spec
@@ -16,12 +16,12 @@ import io.kotest.matchers.shouldBe
 class SpecInterceptExtensionTest : FunSpec() {
    init {
 
-      test("SpecInterceptExtension should be invoked IsolationMode.Single") {
+      test("SpecExtension should be invoked IsolationMode.Single") {
          var count = 0
 
-         val ext = object : SpecInterceptExtension {
-            override suspend fun interceptSpec(spec: Spec, process: suspend (Spec) -> Unit) {
-               process(spec)
+         val ext = object : SpecExtension {
+            override suspend fun intercept(spec: Spec, execute: suspend (Spec) -> Unit) {
+               execute(spec)
                count++
             }
          }
@@ -32,12 +32,12 @@ class SpecInterceptExtensionTest : FunSpec() {
          count shouldBe 1
       }
 
-      test("SpecInterceptExtension should be invoked for each instance created") {
+      test("SpecExtension should be invoked for each instance created") {
          var count = 0
 
-         val ext = object : SpecInterceptExtension {
-            override suspend fun interceptSpec(spec: Spec, process: suspend (Spec) -> Unit) {
-               process(spec)
+         val ext = object : SpecExtension {
+            override suspend fun intercept(spec: Spec, execute: suspend (Spec) -> Unit) {
+               execute(spec)
                count++
             }
          }
@@ -48,10 +48,10 @@ class SpecInterceptExtensionTest : FunSpec() {
          count shouldBe 3
       }
 
-      test("SpecInterceptExtension can opt to skip processing") {
+      test("SpecExtension can opt to skip processing") {
 
-         val ext = object : SpecInterceptExtension {
-            override suspend fun interceptSpec(spec: Spec, process: suspend (Spec) -> Unit) {}
+         val ext = object : SpecExtension {
+            override suspend fun intercept(spec: Spec, execute: suspend (Spec) -> Unit) {}
          }
 
          configuration.register(ext)

@@ -1,7 +1,7 @@
 package com.sksamuel.kotest.engine.extensions.spec
 
 import io.kotest.core.extensions.ApplyExtension
-import io.kotest.core.extensions.SpecInitializeExtension
+import io.kotest.core.extensions.SpecExtension
 import io.kotest.core.listeners.AfterSpecListener
 import io.kotest.core.listeners.AfterTestListener
 import io.kotest.core.listeners.BeforeSpecListener
@@ -26,7 +26,8 @@ class AnnotationExtensionTest : FunSpec() {
          afterTest = 0
          prepareSpec = 0
          beforeTest = 0
-         initializeSpec = 0
+         beforeIntercept = 0
+         afterIntercept = 0
       }
 
       test("a spec annotated with ApplyExtension should have that extension applied") {
@@ -38,8 +39,9 @@ class AnnotationExtensionTest : FunSpec() {
          afterSpec.shouldBe(1)
          afterTest.shouldBe(1)
          beforeTest.shouldBe(1)
+         beforeIntercept.shouldBe(1)
+         afterIntercept.shouldBe(1)
          // prepareSpec.shouldBe(1)
-         initializeSpec.shouldBe(1)
       }
 
       test("a spec annotated with multiple ApplyExtension's should have all extensions applied") {
@@ -51,8 +53,9 @@ class AnnotationExtensionTest : FunSpec() {
          afterSpec.shouldBe(2)
          afterTest.shouldBe(2)
          beforeTest.shouldBe(2)
+         beforeIntercept.shouldBe(2)
+         afterIntercept.shouldBe(2)
          // prepareSpec.shouldBe(2)
-         initializeSpec.shouldBe(2)
       }
 
       test("ApplyExtension should only apply to the spec they are annotating") {
@@ -64,8 +67,9 @@ class AnnotationExtensionTest : FunSpec() {
          afterSpec.shouldBe(1)
          afterTest.shouldBe(1)
          beforeTest.shouldBe(1)
+         beforeIntercept.shouldBe(1)
+         afterIntercept.shouldBe(1)
          // prepareSpec.shouldBe(1)
-         initializeSpec.shouldBe(1)
       }
    }
 }
@@ -95,18 +99,25 @@ private var beforeSpec = 0
 private var afterSpec = 0
 private var beforeTest = 0
 private var afterTest = 0
-private var initializeSpec = 0
 private var prepareSpec = 0
+private var beforeIntercept = 0
+private var afterIntercept = 0
 
 class MyExtension : BeforeSpecListener,
    AfterSpecListener,
    BeforeTestListener,
    AfterTestListener,
-   SpecInitializeExtension,
+   SpecExtension,
    PrepareSpecListener {
 
    init {
       instantiations++
+   }
+
+   override suspend fun intercept(spec: Spec, execute: suspend (Spec) -> Unit) {
+      beforeIntercept++
+      execute(spec)
+      afterIntercept++
    }
 
    override suspend fun beforeSpec(spec: Spec) {
@@ -115,11 +126,6 @@ class MyExtension : BeforeSpecListener,
 
    override suspend fun afterSpec(spec: Spec) {
       afterSpec++
-   }
-
-   override suspend fun initializeSpec(spec: Spec): Spec {
-      initializeSpec++
-      return spec
    }
 
    override suspend fun beforeTest(testCase: TestCase) {

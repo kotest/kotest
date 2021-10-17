@@ -2,12 +2,9 @@ package io.kotest.engine.extensions
 
 import io.kotest.core.extensions.Extension
 import io.kotest.core.listeners.InactiveSpecListener
-import io.kotest.core.extensions.SpecCreationErrorListener
+import io.kotest.core.listeners.InstantiationErrorListener
 import io.kotest.core.extensions.SpecExtension
-import io.kotest.core.extensions.SpecFinalizeExtension
-import io.kotest.core.extensions.SpecIgnoredListener
-import io.kotest.core.extensions.SpecInitializeExtension
-import io.kotest.core.extensions.SpecInterceptExtension
+import io.kotest.core.listeners.IgnoredSpecListener
 import io.kotest.core.listeners.AfterContainerListener
 import io.kotest.core.listeners.AfterEachListener
 import io.kotest.core.listeners.AfterSpecListener
@@ -31,12 +28,9 @@ internal class SpecWrapperExtension(
    private val delegate: Extension,
    private val target: KClass<*>
 ) : SpecInstantiationListener,
-   SpecCreationErrorListener,
+   InstantiationErrorListener,
    SpecExtension,
-   SpecInterceptExtension,
-   SpecFinalizeExtension,
-   SpecIgnoredListener,
-   SpecInitializeExtension,
+   IgnoredSpecListener,
    InactiveSpecListener,
    AfterSpecListener,
    BeforeSpecListener,
@@ -84,26 +78,12 @@ internal class SpecWrapperExtension(
       if (delegate is BeforeTestListener && testCase.spec::class == target) delegate.beforeTest(testCase)
    }
 
-   override suspend fun onSpecCreationError(kclass: KClass<*>, t: Throwable) {
-      if (delegate is SpecCreationErrorListener && kclass == target) delegate.onSpecCreationError(kclass, t)
-   }
-
-   override fun finalizeSpec(spec: Spec) {
-      if (delegate is SpecFinalizeExtension && spec::class == target) delegate.finalizeSpec(spec)
+   override suspend fun instantiationError(kclass: KClass<*>, t: Throwable) {
+      if (delegate is InstantiationErrorListener && kclass == target) delegate.instantiationError(kclass, t)
    }
 
    override suspend fun ignoredSpec(kclass: KClass<*>, reason: String?) {
-      if (delegate is SpecIgnoredListener && kclass == target) delegate.ignoredSpec(kclass, reason)
-   }
-
-   override suspend fun initializeSpec(spec: Spec): Spec {
-      return if (delegate is SpecInitializeExtension && spec::class == target) delegate.initializeSpec(spec) else spec
-   }
-
-   override suspend fun interceptSpec(spec: Spec, process: suspend (Spec) -> Unit) {
-      if (delegate is SpecInterceptExtension && spec::class == target)
-         delegate.interceptSpec(spec, process)
-      else process(spec)
+      if (delegate is IgnoredSpecListener && kclass == target) delegate.ignoredSpec(kclass, reason)
    }
 
    override suspend fun afterSpec(spec: Spec) {

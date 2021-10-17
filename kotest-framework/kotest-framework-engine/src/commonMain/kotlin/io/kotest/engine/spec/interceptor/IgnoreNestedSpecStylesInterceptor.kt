@@ -1,6 +1,6 @@
 package io.kotest.engine.spec.interceptor
 
-import io.kotest.core.config.configuration
+import io.kotest.core.config.Configuration
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.spec.style.ShouldSpec
@@ -15,7 +15,10 @@ import io.kotest.mpp.log
 /**
  * Filters [Spec]'s that are not compatible on platforms that disallow nested tests.
  */
-internal class IgnoreNestedSpecStylesInterceptor(private val listener: TestEngineListener) : SpecExecutionInterceptor {
+internal class IgnoreNestedSpecStylesInterceptor(
+   private val listener: TestEngineListener,
+   private val configuration: Configuration,
+) : SpecExecutionInterceptor {
 
    override suspend fun intercept(
       fn: suspend (Spec) -> Map<TestCase, TestResult>
@@ -29,7 +32,7 @@ internal class IgnoreNestedSpecStylesInterceptor(private val listener: TestEngin
          log { "IgnoreNestedSpecStylesInterceptor: Marking ${spec::class.bestName()} as inactive due to platform limitations" }
          println("WARN: kotest-js only supports top level tests due to underlying platform limitations. '${spec::class.bestName()}' has been marked as ignored")
          listener.specInactive(spec::class, emptyMap())
-         SpecExtensions(configuration).inactiveSpec(spec, emptyMap())
+         SpecExtensions(configuration.extensions()).inactiveSpec(spec, emptyMap())
          emptyMap()
       }
    }
