@@ -37,7 +37,7 @@ class FreeSpecContainerContext(
       registerTestCase(createNestedTest(this, TestType.Container) {
          val incomplete = IncompleteContainerContext(this)
          FreeSpecContainerContext(incomplete).test()
-         if (!incomplete.registered) throw IncompleteContainerException(this@minus)
+         if (!incomplete.hasNestedTest) throw IncompleteContainerException(this@minus)
       })
    }
 
@@ -102,7 +102,7 @@ class FreeSpecContainerContext(
          ) {
             val incomplete = IncompleteContainerContext(this)
             FreeSpecContainerContext(incomplete).test()
-            if (!incomplete.registered) throw IncompleteContainerException(name)
+            if (!incomplete.hasNestedTest) throw IncompleteContainerException(name)
          })
    }
 

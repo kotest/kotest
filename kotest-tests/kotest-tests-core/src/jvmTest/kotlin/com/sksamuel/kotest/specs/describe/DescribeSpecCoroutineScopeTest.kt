@@ -8,12 +8,9 @@ class DescribeSpecCoroutineScopeTest : DescribeSpec() {
 
    init {
       describe("a") {
-         launch {
-            delay(100)
-            it("b") {
-               launch {
-                  delay(100)
-               }
+         it("b") {
+            launch {
+               delay(100)
             }
          }
       }
