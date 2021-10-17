@@ -45,6 +45,7 @@ _**Kotlin 1.5 is now the minimum supported version**_
 * Added arb for hexidecimal codepoints #2409
 * Added `shouldEqualSpecifiedJson` to match a JSON structure on a subset of (specified) keys. (#2298)
 * `shouldEqualJson` now supports high-precision numbers (#2458)
+* Added `shouldHaveSameStructure` to file matchers
 
 #### Deprecations
 
