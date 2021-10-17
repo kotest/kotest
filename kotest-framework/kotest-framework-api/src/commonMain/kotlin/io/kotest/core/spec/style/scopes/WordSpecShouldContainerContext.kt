@@ -86,6 +86,6 @@ class WordSpecShouldContainerContext(
 
    // we need to override the should method to stop people nesting a should inside a should
    @Suppress("UNUSED_PARAMETER")
-   @Deprecated("A should block can only be used at the top level", ReplaceWith("{}"), level = DeprecationLevel.ERROR)
+   @Deprecated("A should block can only be used at the top level", ReplaceWith("{}"), level = DeprecationLevel.HIDDEN)
    infix fun String.should(init: () -> Unit) = Unit
 }

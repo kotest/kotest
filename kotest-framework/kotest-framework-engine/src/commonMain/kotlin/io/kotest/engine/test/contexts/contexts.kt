@@ -36,7 +36,7 @@ fun createSingleInstanceTestContext(
    dispatcherFactory: CoroutineDispatcherFactory
 ): TestContext {
    return DuplicateNameHandlingTestContext(
-      configuration.duplicateTestNameMode,
+      testCase.spec.duplicateTestNameMode ?: configuration.duplicateTestNameMode,
       InOrderTestContext(
          testCase,
          coroutineContext,

@@ -8,6 +8,7 @@ import io.kotest.core.TestConfiguration
 import io.kotest.core.concurrency.CoroutineDispatcherFactory
 import io.kotest.core.config.Configuration
 import io.kotest.core.config.configuration
+import io.kotest.core.names.DuplicateTestNameMode
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestCaseOrder
 import kotlin.js.JsName
@@ -118,7 +119,9 @@ abstract class Spec : TestConfiguration(), SpecFunctionConfiguration, SpecFuncti
     * This setting is JVM only.
     */
    @JsName("threads_var")
-   val threads: Int? = null
+   var threads: Int? = null
+
+   var duplicateTestNameMode: DuplicateTestNameMode? = null
 
    /**
     * Returns the actual test order to use, taking into account spec config and global config.
