@@ -4,7 +4,7 @@ import io.kotest.core.config.configuration
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestStatus
-import io.kotest.engine.listener.TestEngineListener
+import io.kotest.engine.listener.AbstractTestEngineListener
 import io.kotest.engine.test.names.getDisplayNameFormatter
 import org.junit.runner.Description
 import org.junit.runner.notification.Failure
@@ -12,7 +12,7 @@ import org.junit.runner.notification.RunNotifier
 
 class JUnitTestEngineListener(
    private val notifier: RunNotifier,
-) : TestEngineListener {
+) : AbstractTestEngineListener() {
 
    private val formatter = getDisplayNameFormatter(configuration)
 
