@@ -63,7 +63,7 @@ class JunitXmlReporterTest : WordSpec() {
             }
          }
 
-         "include test names" {
+         "!include test names" {
             val root = loadTestFile("without_containers/TEST-com.sksamuel.kotest.DummyBehaviorSpecTest.xml")
             root.getChildren("testcase").map { it.getAttributeValue("name") }.toSet() shouldBe
                setOf(
