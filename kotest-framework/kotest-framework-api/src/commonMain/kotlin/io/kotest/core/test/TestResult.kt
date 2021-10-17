@@ -1,5 +1,20 @@
 package io.kotest.core.test
 
+import kotlin.time.Duration
+
+sealed interface TestResult2 {
+   data class Ignored(val reason: String?) : TestResult2
+   data class Success(val duration: Duration) : TestResult2
+   data class Error(val duration: Duration, val throwable: Throwable) : TestResult2
+   data class Failure(val duration: Duration, val throwable: Throwable) : TestResult2
+
+   val isSuccess: Boolean
+      get() = this is Success
+
+   val isFailure: Boolean
+      get() = this is Failure
+}
+
 data class TestResult(
    val status: TestStatus,
    val error: Throwable?,

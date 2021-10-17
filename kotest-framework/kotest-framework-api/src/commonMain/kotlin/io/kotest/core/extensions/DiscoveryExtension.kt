@@ -9,7 +9,7 @@ import kotlin.reflect.KClass
  * The discovery phase is the part of the test cycle that finds
  * [Spec] classes on the classpath.
  *
- * This extension is only usable on the JVM target and is not used
+ * This extension is only usable on the JVM target and will have no effect
  * if gradle or another build tool performs the discovery action.
  *
  * Note: If multiple [DiscoveryExtension]s are registered, the order

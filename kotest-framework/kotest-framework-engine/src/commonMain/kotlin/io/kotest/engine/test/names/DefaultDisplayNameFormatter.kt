@@ -1,7 +1,7 @@
 package io.kotest.engine.test.names
 
 import io.kotest.core.config.Configuration
-import io.kotest.core.extensions.DisplayNameFormatter
+import io.kotest.core.names.DisplayNameFormatter
 import io.kotest.core.extensions.DisplayNameFormatterExtension
 import io.kotest.core.internal.tags.allTags
 import io.kotest.core.names.TestNameCase

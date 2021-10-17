@@ -1,6 +1,5 @@
 package io.kotest.core.listeners
 
-import io.kotest.core.extensions.InactiveSpecListener
 import io.kotest.core.test.TestCase
 
 @Deprecated("Renamed to InactiveSpecListener. Deprecated since 5.0")

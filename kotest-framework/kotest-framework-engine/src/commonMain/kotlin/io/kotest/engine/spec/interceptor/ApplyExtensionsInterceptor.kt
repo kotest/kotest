@@ -14,6 +14,8 @@ import io.kotest.mpp.newInstanceNoArgConstructorOrObjectInstance
  * If the spec is annotated with the [ApplyExtension] annotation, registers any extensions
  * returned by that annotation.
  *
+ * Each extension will be wrapped so that it only executes for that spec.
+ *
  * Note: annotations are only available on the JVM.
  */
 internal class ApplyExtensionsInterceptor(private val conf: Configuration) : SpecRefInterceptor {
@@ -24,10 +26,9 @@ internal class ApplyExtensionsInterceptor(private val conf: Configuration) : Spe
 
       val extensions = mutableListOf<Extension>()
 
-      ref.kclass.annotation<ApplyExtension>()?.factory?.forEach { factoryClass ->
-         val factory = factoryClass.newInstanceNoArgConstructorOrObjectInstance()
-         val extension = factory.extension(ref.kclass)
-         if (extension != null) extensions.add(SpecWrapperExtension(extension, ref.kclass))
+      ref.kclass.annotation<ApplyExtension>()?.extensions?.forEach { extensionClass ->
+         val extension = extensionClass.newInstanceNoArgConstructorOrObjectInstance()
+         extensions.add(SpecWrapperExtension(extension, ref.kclass))
       }
 
       extensions.forEach { conf.register(it) }

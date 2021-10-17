@@ -1,7 +1,7 @@
 package io.kotest.engine.extensions
 
 import io.kotest.core.extensions.Extension
-import io.kotest.core.extensions.InactiveSpecListener
+import io.kotest.core.listeners.InactiveSpecListener
 import io.kotest.core.extensions.SpecCreationErrorListener
 import io.kotest.core.extensions.SpecExtension
 import io.kotest.core.extensions.SpecFinalizeExtension

@@ -5,13 +5,12 @@ import io.kotest.core.config.configuration
 import io.kotest.core.descriptors.Descriptor
 import io.kotest.core.descriptors.spec
 import io.kotest.core.descriptors.toDescriptor
-import io.kotest.core.extensions.formatTestPath
-import io.kotest.core.spec.Spec
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestStatus
 import io.kotest.core.test.TestType
 import io.kotest.engine.interceptors.EngineContext
+import io.kotest.engine.test.names.formatTestPath
 import io.kotest.engine.test.names.getDisplayNameFormatter
 import kotlin.reflect.KClass
 

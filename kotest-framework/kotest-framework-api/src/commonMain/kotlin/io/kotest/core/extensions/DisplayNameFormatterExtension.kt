@@ -1,31 +1,13 @@
 package io.kotest.core.extensions
 
-import io.kotest.core.test.TestCase
-import kotlin.reflect.KClass
-
-interface DisplayNameFormatterExtension {
-   fun formatter(): DisplayNameFormatter
-}
+import io.kotest.core.names.DisplayNameFormatter
 
 /**
- * Returns formatted spec and test names for display or reporting purposes.
+ * An extension point that allows users to inject their own [DisplayNameFormatter].
+ *
+ * Note: If multiple [DisplayNameFormatterExtension]s are registered, then one
+ * will be picked arbitrarily.
  */
-interface DisplayNameFormatter {
-
-   /**
-    * Returns a formatted name for a test.
-    */
-   fun format(testCase: TestCase): String
-
-   /**
-    * Returns a formatted name for a spec class.
-    */
-   fun format(kclass: KClass<*>): String
-}
-
-fun DisplayNameFormatter.formatTestPath(testCase: TestCase, separator: String): String {
-   return when (val parent = testCase.parent) {
-      null -> format(testCase)
-      else -> format(parent) + separator + format(testCase)
-   }
+interface DisplayNameFormatterExtension {
+   fun formatter(): DisplayNameFormatter
 }

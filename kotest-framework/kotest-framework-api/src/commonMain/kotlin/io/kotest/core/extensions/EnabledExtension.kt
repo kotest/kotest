@@ -6,7 +6,8 @@ import io.kotest.core.test.Enabled
 /**
  * An extension point that is used to override if a [Descriptor] is enabled or disabled.
  *
- * If multiple instances of this extension are defined then all will be executed and all must respond enabled.
+ * If multiple instances of this extension are defined then all must agree that a descriptor
+ * is enabled, otherwise it will be disabled.
  */
 interface EnabledExtension : Extension {
 

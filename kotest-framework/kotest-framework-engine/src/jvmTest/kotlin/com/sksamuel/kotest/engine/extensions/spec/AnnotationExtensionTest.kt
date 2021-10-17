@@ -1,8 +1,6 @@
 package com.sksamuel.kotest.engine.extensions.spec
 
 import io.kotest.core.extensions.ApplyExtension
-import io.kotest.core.extensions.Extension
-import io.kotest.core.extensions.ExtensionFactory
 import io.kotest.core.extensions.SpecInitializeExtension
 import io.kotest.core.listeners.AfterSpecListener
 import io.kotest.core.listeners.AfterTestListener
@@ -72,14 +70,14 @@ class AnnotationExtensionTest : FunSpec() {
    }
 }
 
-@ApplyExtension(MyExtensionFactory::class)
+@ApplyExtension(MyExtension::class)
 private class MyAnnotatedSpec1 : FunSpec() {
    init {
       test("a") {}
    }
 }
 
-@ApplyExtension(MyExtensionFactory::class, MyExtensionFactory::class)
+@ApplyExtension(MyExtension::class, MyExtension::class)
 private class MyAnnotatedSpec2 : FunSpec() {
    init {
       test("a") {}
@@ -89,12 +87,6 @@ private class MyAnnotatedSpec2 : FunSpec() {
 private class NotAnnotatedSpec : FunSpec() {
    init {
       test("a") {}
-   }
-}
-
-object MyExtensionFactory : ExtensionFactory {
-   override fun extension(spec: KClass<*>): Extension {
-      return MyExtension()
    }
 }
 

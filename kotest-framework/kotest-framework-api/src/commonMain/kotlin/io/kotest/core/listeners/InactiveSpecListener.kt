@@ -1,11 +1,22 @@
-package io.kotest.core.extensions
+package io.kotest.core.listeners
 
+import io.kotest.core.extensions.Extension
 import io.kotest.core.spec.Spec
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 
 /**
- * Invoked if a [Spec] has no enabled tests.
+ * Invoked if a [Spec] has no enabled root tests.
+ *
+ * For example,
+ *
+ * ```
+ * class MySpec : FunSpec({
+ *   test("!disabled") { }
+ * })
+ *
+ * Has no active tests. Therefore, this listener would be notified, along with a
+ * results map that contains the test cases and a TestResult of ignored.
  */
 interface InactiveSpecListener : Extension {
 

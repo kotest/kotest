@@ -2,7 +2,7 @@ package io.kotest.engine.spec
 
 import io.kotest.core.config.Configuration
 import io.kotest.core.extensions.Extension
-import io.kotest.core.extensions.InactiveSpecListener
+import io.kotest.core.listeners.InactiveSpecListener
 import io.kotest.core.extensions.SpecCreationErrorListener
 import io.kotest.core.extensions.SpecIgnoredListener
 import io.kotest.core.extensions.SpecInitializeExtension
