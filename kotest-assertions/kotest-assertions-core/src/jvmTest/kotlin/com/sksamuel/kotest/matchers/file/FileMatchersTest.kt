@@ -17,6 +17,7 @@ import io.kotest.matchers.file.shouldBeSymbolicLink
 import io.kotest.matchers.file.shouldExist
 import io.kotest.matchers.file.shouldHaveExtension
 import io.kotest.matchers.file.shouldHaveParent
+import io.kotest.matchers.file.shouldHaveSameStructure
 import io.kotest.matchers.file.shouldNotBeADirectory
 import io.kotest.matchers.file.shouldNotBeAFile
 import io.kotest.matchers.file.shouldNotBeEmptyDirectory
@@ -43,10 +44,10 @@ import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNot
 import io.kotest.matchers.string.shouldEndWith
 import io.kotest.matchers.string.shouldMatch
-import org.apache.commons.lang3.SystemUtils.IS_OS_WINDOWS
 import java.io.File
 import java.nio.file.Files
 import java.nio.file.Paths
+import org.apache.commons.lang3.SystemUtils.IS_OS_WINDOWS
 
 @Suppress("BlockingMethodInNonBlockingContext")
 class FileMatchersTest : FunSpec() {
@@ -149,17 +150,17 @@ class FileMatchersTest : FunSpec() {
     }
 
     test("directory should be empty (deprecated)") {
-       val dir = Files.createTempDirectory("testdir").toFile()
-       dir.shouldBeEmptyDirectory()
-       dir.resolve("testfile.txt").writeBytes(byteArrayOf(1, 2, 3))
-       dir.shouldNotBeEmptyDirectory()
+      val dir = Files.createTempDirectory("testdir").toFile()
+      dir.shouldBeEmptyDirectory()
+      dir.resolve("testfile.txt").writeBytes(byteArrayOf(1, 2, 3))
+      dir.shouldNotBeEmptyDirectory()
     }
 
     test("directory should be empty") {
-       val dir = Files.createTempDirectory("testdir").toFile()
-       dir.shouldBeEmptyDirectory()
-       dir.resolve("testfile.txt").writeBytes(byteArrayOf(1, 2, 3))
-       dir.shouldNotBeEmptyDirectory()
+      val dir = Files.createTempDirectory("testdir").toFile()
+      dir.shouldBeEmptyDirectory()
+      dir.resolve("testfile.txt").writeBytes(byteArrayOf(1, 2, 3))
+      dir.shouldNotBeEmptyDirectory()
     }
 
     test("directory contains file matching predicate") {
@@ -263,7 +264,7 @@ class FileMatchersTest : FunSpec() {
 
       val subdir = Files.createDirectory(testDir.resolve("sub_testdir"))
       val file = Files.write(subdir.resolve("a.txt"), byteArrayOf(1, 2, 3, 4))
-      val fileAsFile =  file.toFile()
+      val fileAsFile = file.toFile()
 
       file.shouldHaveParent(testDir.toFile().name)
       file.shouldHaveParent(subdir.toFile().name)
@@ -273,19 +274,50 @@ class FileMatchersTest : FunSpec() {
       fileAsFile.shouldHaveParent(subdir.toFile().name)
       fileAsFile.shouldNotHaveParent("super_hyper_long_random_file_name")
     }
+
+    test("shouldHaveSameTreeAndContentsAs should check if two file trees are the same") {
+      val testDir = Files.createTempDirectory("testdir")
+
+      val expectDir = File("$testDir/expect").apply {
+        File("$this/a.txt").createWithContent(byteArrayOf(1, 2, 3))
+        File("$this/b.txt").createWithContent(byteArrayOf(1, 2, 3, 4))
+        File("$this/subfolder/b.txt").createWithContent(byteArrayOf(1, 2, 3, 4))
+        File("$this/subfolder/subfolder-two/c.txt").createWithContent(byteArrayOf(1, 2))
+      }
+
+      val actualDir = File("$testDir/actual").apply {
+        File("$this/a.txt").createWithContent(byteArrayOf(1, 2, 3))
+        File("$this/b.txt").createWithContent(byteArrayOf(1, 2, 3, 4))
+        File("$this/subfolder/b.txt").createWithContent(byteArrayOf(1, 2, 3, 4))
+        File("$this/subfolder/subfolder-two/c.txt").createWithContent(byteArrayOf(1, 2))
+      }
+
+      expectDir shouldHaveSameStructure actualDir
+
+      File("$actualDir/z.txt").createWithContent(byteArrayOf(1, 2, 3))
+
+      shouldThrow<AssertionError> { expectDir shouldHaveSameStructure  actualDir }
+    }
   }
 }
 
+private fun File.createWithContent(content: ByteArray) {
+  this.parentFile.mkdirs()
+  createNewFile()
+  writeBytes(content)
+}
+
 private fun isNotWindowsOrIsWindowsElevated(): Boolean {
-   return if (!IS_OS_WINDOWS)
-      true
-   else
-      try {
-         val p = Runtime.getRuntime().exec("""reg query "HKU\S-1-5-19"""")
-         p.waitFor()
-         0 == p.exitValue()
-      } catch (ex: Exception) {
-         println("Failed to determine if process had elevated permissions, assuming it does not.")
-         false
-      }
+  return if (!IS_OS_WINDOWS) {
+    true
+  } else {
+    try {
+      val p = Runtime.getRuntime().exec("""reg query "HKU\S-1-5-19"""")
+      p.waitFor()
+      0 == p.exitValue()
+    } catch (ex: Exception) {
+      println("Failed to determine if process had elevated permissions, assuming it does not.")
+      false
+    }
+  }
 }
