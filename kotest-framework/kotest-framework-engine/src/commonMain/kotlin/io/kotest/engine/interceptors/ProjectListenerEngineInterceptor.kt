@@ -9,7 +9,10 @@ import io.kotest.engine.events.AfterProjectListenerException
 import io.kotest.engine.events.BeforeProjectListenerException
 import io.kotest.mpp.log
 
-@OptIn(KotestInternal::class)
+/**
+ * An [EngineInterceptor] that invokes the before and after project listeners.
+ */
+@KotestInternal
 internal class ProjectListenerEngineInterceptor(private val extensions: List<Extension>) : EngineInterceptor {
 
    override suspend fun intercept(
@@ -19,7 +22,7 @@ internal class ProjectListenerEngineInterceptor(private val extensions: List<Ext
 
       val before = extensions.filterIsInstance<BeforeProjectListener>()
       log { "ProjectListenerEngineInterceptor: Invoking ${before.size} BeforeProjectListeners" }
-      val beforeErrors = ProjectLifecycleManager.beforeProject(before)
+      val beforeErrors = ProjectListenerEvents.beforeProject(before)
 
       // if we have errors in the before project listeners, we'll not execute tests,
       // but instead immediately return those errors.
@@ -29,13 +32,13 @@ internal class ProjectListenerEngineInterceptor(private val extensions: List<Ext
 
       val after = extensions.filterIsInstance<AfterProjectListener>()
       log { "ProjectListenerEngineInterceptor: Invoking ${after.size} AfterProjectListeners" }
-      val afterErrors = ProjectLifecycleManager.afterProject(after)
+      val afterErrors = ProjectListenerEvents.afterProject(after)
 
       return result.copy(errors = result.errors + afterErrors)
    }
 }
 
-object ProjectLifecycleManager {
+object ProjectListenerEvents {
 
    suspend fun beforeProject(before: List<BeforeProjectListener>): List<BeforeProjectListenerException> {
       return before.mapNotNull {

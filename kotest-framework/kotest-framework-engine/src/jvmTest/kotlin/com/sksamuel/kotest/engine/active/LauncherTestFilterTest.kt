@@ -7,7 +7,7 @@ import io.kotest.core.spec.Isolate
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.test.TestCase
 import io.kotest.engine.KotestEngineLauncher
-import io.kotest.engine.listener.TestEngineListener
+import io.kotest.engine.listener.AbstractTestEngineListener
 
 private var counter = 0
 
@@ -25,7 +25,7 @@ class LauncherTestFilterTest : FunSpec() {
             }
          }
 
-         val listener = object : TestEngineListener {
+         val listener = object : AbstractTestEngineListener() {
             override suspend fun testStarted(testCase: TestCase) {
                if (testCase.descriptor.id.value == "b")
                   error("should not run")
@@ -47,7 +47,7 @@ class LauncherTestFilterTest : FunSpec() {
             }
          }
 
-         val listener = object : TestEngineListener {
+         val listener = object : AbstractTestEngineListener() {
             override suspend fun testStarted(testCase: TestCase) {
                if (testCase.descriptor.id.value == "b")
                   error("should not run")

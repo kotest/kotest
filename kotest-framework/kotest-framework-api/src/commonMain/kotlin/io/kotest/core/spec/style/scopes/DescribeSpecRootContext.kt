@@ -2,7 +2,6 @@ package io.kotest.core.spec.style.scopes
 
 import io.kotest.common.ExperimentalKotest
 import io.kotest.core.names.TestName
-import io.kotest.core.test.NestedTest
 import io.kotest.core.test.TestContext
 
 @Deprecated("Renamed to DescribeSpecRootContext. Deprecated since 4.5.")
@@ -75,7 +74,7 @@ interface DescribeSpecRootContext : RootContext {
       registration().addContainerTest(testName, xdisabled = false) {
          val incomplete = IncompleteContainerContext(this)
          DescribeSpecContainerContext(incomplete).test()
-         if (!incomplete.registered) throw IncompleteContainerException(testName.testName)
+         if (!incomplete.hasNestedTest) throw IncompleteContainerException(testName.testName)
       }
    }
 }

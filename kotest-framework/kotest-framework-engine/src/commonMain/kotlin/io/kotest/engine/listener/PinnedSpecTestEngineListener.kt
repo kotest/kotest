@@ -6,6 +6,7 @@ import io.kotest.core.descriptors.toDescriptor
 import io.kotest.core.spec.Spec
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
+import io.kotest.engine.interceptors.EngineContext
 import kotlin.reflect.KClass
 
 /**
@@ -32,23 +33,19 @@ class PinnedSpecTestEngineListener(val listener: TestEngineListener) : TestEngin
       _callbacks.forEach { it.invoke() }
    }
 
-   override suspend fun engineStartup() {
-      listener.engineStartup()
+   override suspend fun engineStarted() {
+      listener.engineStarted()
    }
 
-   override suspend fun engineStarted(classes: List<KClass<*>>) {
-      listener.engineStarted(classes)
+   override suspend fun engineInitialized(context: EngineContext) {
+      listener.engineInitialized(context)
    }
 
    override suspend fun engineFinished(t: List<Throwable>) {
       listener.engineFinished(t)
    }
 
-   override suspend fun engineShutdown() {
-      listener.engineShutdown()
-   }
-
-   override suspend fun specEnter(kclass: KClass<out Spec>) {
+   override suspend fun specEnter(kclass: KClass<*>) {
       if (runningSpec == null) {
          runningSpec = kclass.toDescriptor().path().value
          listener.specEnter(kclass)
@@ -59,7 +56,7 @@ class PinnedSpecTestEngineListener(val listener: TestEngineListener) : TestEngin
       }
    }
 
-   override suspend fun specExit(kclass: KClass<out Spec>, t: Throwable?) {
+   override suspend fun specExit(kclass: KClass<*>, t: Throwable?) {
       if (runningSpec == kclass.toDescriptor().path().value) {
          listener.specExit(kclass, t)
          runningSpec = null
@@ -151,7 +148,7 @@ class PinnedSpecTestEngineListener(val listener: TestEngineListener) : TestEngin
       }
    }
 
-   override suspend fun specIgnored(kclass: KClass<out Spec>) {
+   override suspend fun specIgnored(kclass: KClass<*>) {
       if (runningSpec == kclass.toDescriptor().path().value) {
          listener.specIgnored(kclass)
       } else {

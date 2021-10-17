@@ -1,4 +1,4 @@
-package io.kotest.engine.reporter
+package io.kotest.engine.listener
 
 import com.github.ajalt.mordant.TermColors
 import io.kotest.core.config.configuration
@@ -11,7 +11,7 @@ import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestStatus
 import io.kotest.core.test.TestType
-import io.kotest.engine.listener.TestEngineListener
+import io.kotest.engine.interceptors.EngineContext
 import io.kotest.engine.test.names.getDisplayNameFormatter
 import kotlin.reflect.KClass
 
@@ -19,7 +19,7 @@ import kotlin.reflect.KClass
  * Generates test output to the console in an enhanced, formatted, coloured, way.
  * For a more basic output, see [BasicConsoleTestEngineListener]
  */
-class EnhancedConsoleTestEngineListener(private val term: TermColors) : TestEngineListener {
+class EnhancedConsoleTestEngineListener(private val term: TermColors) : AbstractTestEngineListener() {
 
    private var errors = 0
    private var start = System.currentTimeMillis()
@@ -71,11 +71,11 @@ class EnhancedConsoleTestEngineListener(private val term: TermColors) : TestEngi
       "I test code and chew bubblegum, and I'm all out of bubblegum"
    )
 
-   override suspend fun engineStarted(classes: List<KClass<*>>) {
+   override suspend fun engineInitialized(context: EngineContext) {
       println(bold(">> Kotest"))
       println("- " + intros.shuffled().first())
       print("- Test plan has ")
-      print(greenBold(classes.size.toString()))
+      print(greenBold(context.suite.specs.size.toString()))
       println(" specs")
       println()
    }
@@ -171,7 +171,7 @@ class EnhancedConsoleTestEngineListener(private val term: TermColors) : TestEngi
       println(bold(formatter.format(kclass)))
    }
 
-   override suspend fun specExit(kclass: KClass<out Spec>, t: Throwable?) {
+   override suspend fun specExit(kclass: KClass<*>, t: Throwable?) {
       if (t != null) {
          errors++
          specsFailed = specsFailed + kclass.toDescriptor()

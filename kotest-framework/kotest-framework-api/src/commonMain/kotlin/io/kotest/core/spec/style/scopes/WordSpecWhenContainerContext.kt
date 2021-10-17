@@ -43,7 +43,7 @@ class WordSpecWhenContainerContext(
             test = {
                val incomplete = IncompleteContainerContext(this)
                WordSpecShouldContainerContext(incomplete).test()
-               if (!incomplete.registered) throw IncompleteContainerException(name)
+               if (!incomplete.hasNestedTest) throw IncompleteContainerException(name)
             }
          )
       )

@@ -6,7 +6,7 @@ import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestStatus
 import io.kotest.engine.KotestEngineLauncher
-import io.kotest.engine.listener.TestEngineListener
+import io.kotest.engine.listener.AbstractTestEngineListener
 import io.kotest.matchers.shouldBe
 import kotlinx.coroutines.launch
 
@@ -18,7 +18,7 @@ class CoroutineExceptionTest : FunSpec({
 
    test("exception in coroutine") {
       var _result: TestResult? = null
-      val listener = object : TestEngineListener {
+      val listener = object : AbstractTestEngineListener() {
          override suspend fun testFinished(testCase: TestCase, result: TestResult) {
             if (testCase.name.testName == "exception in coroutine") {
                _result = result

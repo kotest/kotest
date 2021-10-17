@@ -76,7 +76,7 @@ internal class SpecExtensions(private val configuration: Configuration) {
 
    suspend fun finishSpec(kclass: KClass<out Spec>, results: Map<TestCase, TestResult>) {
       val exts = configuration.extensions().filterIsInstance<FinalizeSpecListener>()
-      log { "SpecExtensions: finishSpec(${exts.size}) $kclass results:$results" }
+      log { "SpecExtensions: finishSpec ${exts.size} extensions on $kclass results:$results" }
       exts.forEach { it.finalizeSpec(kclass, results) }
    }
 
@@ -89,7 +89,7 @@ internal class SpecExtensions(private val configuration: Configuration) {
 
    suspend fun ignored(kclass: KClass<out Spec>) {
       val exts = configuration.extensions().filterIsInstance<SpecIgnoredListener>()
-      log { "SpecExtensions: ignored(${exts.size}) $kclass" }
+      log { "SpecExtensions: ignored ${exts.size} extensions on $kclass" }
       exts.forEach { it.ignoredSpec(kclass, null) }
    }
 }

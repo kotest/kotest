@@ -103,7 +103,7 @@ abstract class DslDrivenSpec : Spec() {
     * Adds a new root-level [TestCase] to this [Spec].
     */
    private fun addRootTest(testCase: TestCase) {
-      val uniqueName = UniqueNames.uniqueTestName(
+      val uniqueName = UniqueNames.unique(
          testCase.name.testName,
          rootTestCases.map { it.name.testName }.toSet()
       )

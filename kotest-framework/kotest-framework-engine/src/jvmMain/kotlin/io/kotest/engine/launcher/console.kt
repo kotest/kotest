@@ -4,7 +4,7 @@ import com.github.ajalt.mordant.TermColors
 import io.kotest.common.isIntellij
 import io.kotest.engine.listener.TeamCityTestEngineListener
 import io.kotest.engine.listener.TestEngineListener
-import io.kotest.engine.reporter.EnhancedConsoleTestEngineListener
+import io.kotest.engine.listener.EnhancedConsoleTestEngineListener
 
 /**
  * Creates a [TestEngineListener] that will write to the console, using the provided

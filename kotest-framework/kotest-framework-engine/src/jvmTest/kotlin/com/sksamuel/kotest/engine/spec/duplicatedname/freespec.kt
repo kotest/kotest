@@ -24,10 +24,12 @@ abstract class FreeSpecDuplicateNameTest(iso: IsolationMode) : FreeSpec() {
 
       "woo" - {
          this.testCase.name.testName shouldBe "(1) woo"
+         "a" { }
       }
 
       "woo" - {
          this.testCase.name.testName shouldBe "(2) woo"
+         "a" { }
       }
    }
 }

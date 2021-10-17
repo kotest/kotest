@@ -18,16 +18,22 @@ abstract class DescribeSpecDuplicateTestNameModeInfoTest(iso: IsolationMode) : D
       }
       describe("foo") {
          this.testCase.name.testName shouldBe "(1) foo"
+         it("a") { }
       }
       describe("foo") {
          this.testCase.name.testName shouldBe "(2) foo"
+         it("a") { }
       }
-      context("goo") {}
+      context("goo") {
+         it("a") { }
+      }
       context("goo") {
          this.testCase.name.testName shouldBe "(1) goo"
+         it("a") { }
       }
       context("goo") {
          this.testCase.name.testName shouldBe "(2) goo"
+         it("a") { }
       }
    }
 }

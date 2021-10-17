@@ -2,7 +2,8 @@ package io.kotest.extensions.junitxml
 
 import io.kotest.core.config.configuration
 import io.kotest.core.extensions.formatTestPath
-import io.kotest.core.listeners.TestListener
+import io.kotest.core.listeners.FinalizeSpecListener
+import io.kotest.core.listeners.PrepareSpecListener
 import io.kotest.core.spec.Spec
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
@@ -43,7 +44,7 @@ class JunitXmlReporter(
    private val includeContainers: Boolean = false,
    private val useTestPathAsName: Boolean = true,
    private val outputDir: String = "test-results/test"
-) : TestListener {
+) : PrepareSpecListener, FinalizeSpecListener {
 
    companion object {
       const val DefaultLocation = "./build/test-results/test/"

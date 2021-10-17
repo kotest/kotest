@@ -25,6 +25,8 @@ internal class RunIfActiveInterceptor(private val listener: TestEngineListener) 
    ): suspend (Spec) -> Map<TestCase, TestResult> = { spec ->
 
       val roots = spec.materializeAndOrderRootTests()
+      log { "RunIfActiveInterceptor: materialized ${roots.size} root tests" }
+
       val enabled = roots.associate { it.testCase to it.testCase.isEnabled() }
       val active = enabled.any { it.value.isEnabled }
 

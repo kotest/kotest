@@ -13,7 +13,7 @@ interface WordSpecRootContext : RootContext {
       registration().addContainerTest(testName, xdisabled = false) {
          val incomplete = IncompleteContainerContext(this)
          WordSpecShouldContainerContext(incomplete).test()
-         if (!incomplete.registered) throw IncompleteContainerException(testName.testName)
+         if (!incomplete.hasNestedTest) throw IncompleteContainerException(testName.testName)
       }
    }
 
@@ -22,7 +22,7 @@ interface WordSpecRootContext : RootContext {
       registration().addContainerTest(testName, xdisabled = true) {
          val incomplete = IncompleteContainerContext(this)
          WordSpecShouldContainerContext(incomplete).test()
-         if (!incomplete.registered) throw IncompleteContainerException(testName.testName)
+         if (!incomplete.hasNestedTest) throw IncompleteContainerException(testName.testName)
       }
    }
 
@@ -34,7 +34,7 @@ interface WordSpecRootContext : RootContext {
       registration().addContainerTest(testName, xdisabled = false) {
          val incomplete = IncompleteContainerContext(this)
          WordSpecWhenContainerContext(incomplete).test()
-         if (!incomplete.registered) throw IncompleteContainerException(testName.testName)
+         if (!incomplete.hasNestedTest) throw IncompleteContainerException(testName.testName)
       }
    }
 }

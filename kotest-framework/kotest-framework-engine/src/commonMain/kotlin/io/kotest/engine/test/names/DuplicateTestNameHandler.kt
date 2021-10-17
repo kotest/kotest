@@ -32,7 +32,7 @@ internal class DuplicateTestNameHandler(private val mode: DuplicateTestNameMode)
    }
 
    private fun makeUniqueName(name: String): String {
-      val unique = UniqueNames.uniqueTestName(name, names) ?: name
+      val unique = UniqueNames.unique(name, names) ?: name
       names.add(unique)
       return unique
    }

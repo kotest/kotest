@@ -33,7 +33,7 @@ interface ShouldSpecRootContext : RootContext {
       registration().addContainerTest(TestName("context ", name, false), xdisabled = false) {
          val incomplete = IncompleteContainerContext(this)
          ShouldSpecContainerContext(incomplete).test()
-         if (!incomplete.registered) throw IncompleteContainerException(name)
+         if (!incomplete.hasNestedTest) throw IncompleteContainerException(name)
       }
    }
 

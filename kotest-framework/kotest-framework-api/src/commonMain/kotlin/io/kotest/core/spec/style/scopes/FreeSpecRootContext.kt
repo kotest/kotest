@@ -24,7 +24,7 @@ interface FreeSpecRootContext : RootContext {
       registration().addContainerTest(testName, xdisabled = false) {
          val incomplete = IncompleteContainerContext(this)
          FreeSpecContainerContext(incomplete).test()
-         if (!incomplete.registered) throw IncompleteContainerException(testName.testName)
+         if (!incomplete.hasNestedTest) throw IncompleteContainerException(testName.testName)
       }
    }
 
@@ -39,7 +39,7 @@ interface FreeSpecRootContext : RootContext {
       registration().addTest(testName, xdisabled = false, config = config, type = TestType.Container) {
          val incomplete = IncompleteContainerContext(this)
          FreeSpecContainerContext(incomplete).test()
-         if (!incomplete.registered) throw IncompleteContainerException(testName.testName)
+         if (!incomplete.hasNestedTest) throw IncompleteContainerException(testName.testName)
       }
    }
 
