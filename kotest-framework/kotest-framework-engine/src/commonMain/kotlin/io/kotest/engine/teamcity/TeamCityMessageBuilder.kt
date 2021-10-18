@@ -159,8 +159,6 @@ class TeamCityMessageBuilder(
       false -> value
    }
 
-   fun duration(durationMillis: Long) = duration(durationMillis.milliseconds)
-
    fun duration(duration: Duration): TeamCityMessageBuilder =
       addAttribute(Attributes.DURATION, duration.inWholeMilliseconds.toString())
 
