@@ -6,49 +6,58 @@ import io.kotest.core.filter.SpecFilter
 import io.kotest.core.filter.SpecFilterResult
 import io.kotest.core.filter.TestFilter
 import io.kotest.core.filter.TestFilterResult
+import io.kotest.core.internal.KotestEngineProperties
 import io.kotest.engine.TestEngineConfig
 import io.kotest.fp.Try
+import io.kotest.mpp.bestName
 import io.kotest.mpp.env
 import io.kotest.mpp.sysprop
 import kotlin.reflect.KClass
 
-const val testFiltersProperty = "kotest.filter.tests"
-const val specFiltersProperty = "kotest.filter.specs"
-
 private fun Regex.toTestFilter(): TestFilter = object : TestFilter {
+   val regex = this@toTestFilter
    override fun filter(descriptor: Descriptor): TestFilterResult {
-      val regex = this@toTestFilter
       val name = descriptor.path().value
-
       return if (regex.matches(name)) TestFilterResult.Include else TestFilterResult.Exclude
    }
 }
 
 private fun Regex.toSpecFilter(): SpecFilter = object : SpecFilter {
+   val regex = this@toSpecFilter
    override fun filter(kclass: KClass<*>): SpecFilterResult {
-      val regex = this@toSpecFilter
-      val name = kclass.simpleName ?: "" // TODO: can't use qualified name here cause of js, should I make an expect fun?
-
+      val name = kclass.bestName()
       return if (regex.matches(name)) SpecFilterResult.Include else SpecFilterResult.Exclude
    }
 }
 
-private fun readFilterPropertyToRegexes(name: String): Sequence<Regex> = (sysprop(name) ?: env(name) ?: "")
+private fun readFilterPropertyToRegexes(setting: String) = setting
    .split(",")
-   .asSequence()
    .filter { it.isNotBlank() }
    .map { Try { Regex(it) } }
    .mapNotNull { it.valueOrNull() }
 
 @OptIn(KotestInternal::class)
-internal object TestEngineConfigFiltersInterceptor : TestEngineConfigInterceptor {
-   override fun intercept(config: TestEngineConfig): TestEngineConfig {
-      val testFilters = readFilterPropertyToRegexes(testFiltersProperty).map { it.toTestFilter() } + config.testFilters
-      val specFilters = readFilterPropertyToRegexes(specFiltersProperty).map { it.toSpecFilter() } + config.specFilters
+internal fun createTestEngineConfigFiltersProcessor(testFiltersSetting: String, specFiltersSetting: String): TestEngineConfigProcessor {
+   return object : TestEngineConfigProcessor {
+      override fun process(config: TestEngineConfig): TestEngineConfig {
+         val result = config.copy(
+            testFilters = readFilterPropertyToRegexes(testFiltersSetting).map { it.toTestFilter() } + config.testFilters,
+            specFilters = readFilterPropertyToRegexes(specFiltersSetting).map { it.toSpecFilter() } + config.specFilters,
+         )
 
-      return config.copy(
-         testFilters = testFilters.toList(),
-         specFilters = specFilters.toList(),
-      )
+         return result
+      }
    }
+}
+
+private fun resolveSystemPropertyOrEnvironmentVariable(name: String) = sysprop(name) ?: env(name) ?: ""
+
+internal val TestEngineConfigFiltersFromSystemPropertiesAndEnvironmentInterceptor = run {
+   val filterTests = resolveSystemPropertyOrEnvironmentVariable(KotestEngineProperties.filterTests)
+   val filterSpecs = resolveSystemPropertyOrEnvironmentVariable(KotestEngineProperties.filterSpecs)
+
+   createTestEngineConfigFiltersProcessor(
+      testFiltersSetting = filterTests,
+      specFiltersSetting = filterSpecs,
+   )
 }

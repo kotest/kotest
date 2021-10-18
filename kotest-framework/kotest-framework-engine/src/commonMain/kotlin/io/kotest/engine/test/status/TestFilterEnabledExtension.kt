@@ -15,8 +15,8 @@ internal object TestFilterEnabledExtension : TestEnabledExtension {
    override fun isEnabled(testCase: TestCase): Enabled {
 
       val filters = configuration.filters().filterIsInstance<TestFilter>()
-      val includedByFilters = filters.all {
-         it.filter(testCase.descriptor) == TestFilterResult.Include
+      val includedByFilters = filters.any {
+         it.filter(testCase.descriptor) == TestFilterResult.Exclude
       }
       if (!includedByFilters) {
          return Enabled.disabled("${testCase.descriptor.path()} is excluded by test case filters (${filters.size} filters found)")

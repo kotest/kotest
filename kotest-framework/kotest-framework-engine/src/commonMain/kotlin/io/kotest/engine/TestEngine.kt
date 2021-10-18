@@ -12,7 +12,7 @@ import io.kotest.core.filter.TestFilter
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.SpecRef
 import io.kotest.engine.extensions.SpecifiedTagsTagExtension
-import io.kotest.engine.extensions.TestEngineConfigFiltersInterceptor
+import io.kotest.engine.extensions.TestEngineConfigFiltersFromSystemPropertiesAndEnvironmentInterceptor
 import io.kotest.engine.interceptors.EngineContext
 import io.kotest.engine.interceptors.EngineInterceptor
 import io.kotest.engine.listener.TestEngineListener
@@ -58,16 +58,16 @@ data class TestEngineConfig(
    val explicitTags: Tags?,
 )
 
-private val testEngineConfigExtensions = listOf(
-   TestEngineConfigFiltersInterceptor,
+private val testEngineConfigProcessors = listOf(
+   TestEngineConfigFiltersFromSystemPropertiesAndEnvironmentInterceptor,
 )
 
 /**
  * Multiplatform Kotest Test Engine.
  */
-class TestEngine(config: TestEngineConfig) {
-   val config: TestEngineConfig = testEngineConfigExtensions.foldRight(config) { extension, config ->
-      extension.intercept(config)
+class TestEngine(initial: TestEngineConfig) {
+   val config: TestEngineConfig = testEngineConfigProcessors.foldRight(initial) { p, c ->
+      p.process(c)
    }
 
    init {
@@ -76,6 +76,7 @@ class TestEngine(config: TestEngineConfig) {
 
       // if the engine was invoked with explicit filters, those are registered here
       configuration.registerFilters(config.testFilters)
+      configuration.registerFilters(config.specFilters)
    }
 
    /**

@@ -6,7 +6,7 @@ import kotlin.reflect.KClass
  * A [SpecFilter] can be used to filter [Spec] classes before they are instantiated.
  * These filters are passed to the Kotest Engine at runtime.
  */
-interface SpecFilter {
+interface SpecFilter : Filter {
 
    /**
     * This method is invoked with a spec [KClass] and the result
