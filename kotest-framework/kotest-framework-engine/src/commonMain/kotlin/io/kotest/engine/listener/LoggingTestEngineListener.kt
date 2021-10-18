@@ -25,6 +25,6 @@ object LoggingTestEngineListener : AbstractTestEngineListener() {
    }
 
    override suspend fun testFinished(testCase: TestCase, result: TestResult) {
-      log { "LoggingTestEngineListener: testFinished '${testCase.descriptor.path().value}' result ${result.status}" }
+      log { "LoggingTestEngineListener: testFinished '${testCase.descriptor.path().value}' result $result" }
    }
 }

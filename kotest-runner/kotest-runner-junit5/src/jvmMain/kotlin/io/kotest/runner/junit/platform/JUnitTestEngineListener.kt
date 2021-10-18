@@ -8,7 +8,6 @@ import io.kotest.core.descriptors.toDescriptor
 import io.kotest.core.names.UniqueNames
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
-import io.kotest.core.test.TestStatus
 import io.kotest.engine.events.AfterProjectListenerException
 import io.kotest.engine.events.BeforeProjectListenerException
 import io.kotest.engine.listener.TestEngineListener
@@ -21,6 +20,7 @@ import org.junit.platform.engine.TestExecutionResult
 import org.junit.platform.engine.support.descriptor.ClassSource
 import org.junit.platform.engine.support.descriptor.EngineDescriptor
 import kotlin.reflect.KClass
+import kotlin.time.Duration
 
 /**
  * Notifies JUnit Platform of test statuses via a [EngineExecutionListener].
@@ -112,7 +112,7 @@ class JUnitTestEngineListener(
 
       registerExceptionPlaceholders(t)
 
-      val result = if (configuration.failOnIgnoredTests && results.values.any { it.status == TestStatus.Ignored }) {
+      val result = if (configuration.failOnIgnoredTests && results.values.any { it.isIgnored }) {
          TestExecutionResult.failed(RuntimeException("Build contained ignored test"))
       } else {
          TestExecutionResult.successful()
@@ -190,7 +190,7 @@ class JUnitTestEngineListener(
       listener.dynamicTestRegistered(descriptor)
 
       inactiveTests.forEach { (tc, result) ->
-         testIgnored(tc, result.reason)
+         testIgnored(tc, if (result is TestResult.Ignored) result.reason else null)
          handleTest(tc)
       }
 
@@ -265,7 +265,7 @@ class JUnitTestEngineListener(
       parent.addChild(descriptor)
       listener.dynamicTestRegistered(descriptor)
       listener.executionStarted(descriptor)
-      listener.executionFinished(descriptor, TestResult.error(t, 0).testExecutionResult())
+      listener.executionFinished(descriptor, TestResult.Error(Duration.ZERO, t).testExecutionResult())
    }
 
    override suspend fun testStarted(testCase: TestCase) {
@@ -280,7 +280,7 @@ class JUnitTestEngineListener(
    override suspend fun testIgnored(testCase: TestCase, reason: String?) {
       if (testCase.parent == null) rootTests.add(testCase)
       addChild(testCase)
-      results[testCase.descriptor] = TestResult.ignored(reason)
+      results[testCase.descriptor] = TestResult.Ignored(reason)
    }
 
    private fun addChild(testCase: TestCase) {
@@ -316,7 +316,7 @@ class JUnitTestEngineListener(
       log { "JUnitTestEngineListener: Registering junit dynamic test: $descriptor" }
       listener.dynamicTestRegistered(descriptor)
 
-      if (result.status == TestStatus.Ignored) {
+      if (result is TestResult.Ignored) {
 
          log { "JUnitTestEngineListener: Notifying junit that a test was ignored [$descriptor]" }
          listener.executionSkipped(descriptor, result.reason)

@@ -3,7 +3,6 @@ package com.sksamuel.kotest.engine
 import io.kotest.core.descriptors.DescriptorId
 import io.kotest.core.spec.Isolate
 import io.kotest.core.spec.style.FunSpec
-import io.kotest.core.test.TestStatus
 import io.kotest.engine.TestEngineLauncher
 import io.kotest.engine.listener.CollectingTestEngineListener
 import io.kotest.matchers.maps.shouldHaveSize
@@ -18,7 +17,7 @@ class IsolatedAnnotationTest : FunSpec() {
             .withClasses(MyIsolatedSpec::class)
             .launch()
          collector.tests.shouldHaveSize(1)
-         collector.tests.mapKeys { it.key.descriptor.id }[DescriptorId("a")]!!.status shouldBe TestStatus.Success
+         collector.tests.mapKeys { it.key.descriptor.id }[DescriptorId("a")]!!.isSuccess shouldBe true
       }
    }
 }

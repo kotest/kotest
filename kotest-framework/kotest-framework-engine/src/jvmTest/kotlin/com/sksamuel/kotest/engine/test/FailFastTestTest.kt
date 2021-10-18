@@ -2,7 +2,6 @@ package com.sksamuel.kotest.engine.test
 
 import io.kotest.core.spec.style.FreeSpec
 import io.kotest.core.spec.style.FunSpec
-import io.kotest.core.test.TestStatus
 import io.kotest.engine.TestEngineLauncher
 import io.kotest.engine.listener.CollectingTestEngineListener
 import io.kotest.matchers.maps.shouldNotContainKey
@@ -20,15 +19,15 @@ class FailFastTestTest : FunSpec() {
             .launch()
 
          val results = listener.tests.mapKeys { it.key.name.testName }
-         results["a"]?.status shouldBe TestStatus.Success
-         results["b"]?.status shouldBe TestStatus.Error
-         results["c"]?.status shouldBe TestStatus.Ignored
-         results["d"]?.status shouldBe TestStatus.Ignored
+         results["a"]?.isSuccess shouldBe true
+         results["b"]?.isError shouldBe true
+         results["c"]?.isIgnored shouldBe true
+         results["d"]?.isIgnored shouldBe true
          results.shouldNotContainKey("e")
-         results["t"]?.status shouldBe TestStatus.Success
-         results["u"]?.status shouldBe TestStatus.Error
-         results["v"]?.status shouldBe TestStatus.Ignored
-         results["w"]?.status shouldBe TestStatus.Ignored
+         results["t"]?.isSuccess shouldBe true
+         results["u"]?.isError shouldBe true
+         results["v"]?.isIgnored shouldBe true
+         results["w"]?.isIgnored shouldBe true
          results.shouldNotContainKey("x")
       }
 
@@ -41,15 +40,15 @@ class FailFastTestTest : FunSpec() {
             .launch()
 
          val results = listener.tests.mapKeys { it.key.name.testName }
-         results["a"]?.status shouldBe TestStatus.Success
-         results["b"]?.status shouldBe TestStatus.Error
-         results["c"]?.status shouldBe TestStatus.Ignored
-         results["d"]?.status shouldBe TestStatus.Ignored
+         results["a"]?.isSuccess shouldBe true
+         results["b"]?.isError shouldBe true
+         results["c"]?.isIgnored shouldBe true
+         results["d"]?.isIgnored shouldBe true
          results.shouldNotContainKey("e")
-         results["t"]?.status shouldBe TestStatus.Success
-         results["u"]?.status shouldBe TestStatus.Error
-         results["v"]?.status shouldBe TestStatus.Ignored
-         results["w"]?.status shouldBe TestStatus.Ignored
+         results["t"]?.isSuccess shouldBe true
+         results["u"]?.isError shouldBe true
+         results["v"]?.isIgnored shouldBe true
+         results["w"]?.isIgnored shouldBe true
          results.shouldNotContainKey("x")
       }
    }

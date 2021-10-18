@@ -1,12 +1,12 @@
 package io.kotest.engine.test.contexts
 
+import io.kotest.common.ExperimentalKotest
 import io.kotest.core.concurrency.CoroutineDispatcherFactory
 import io.kotest.core.names.DuplicateTestNameMode
 import io.kotest.core.test.NestedTest
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestContext
 import io.kotest.core.test.TestResult
-import io.kotest.core.test.TestStatus
 import io.kotest.core.test.toTestCase
 import io.kotest.engine.listener.TestEngineListener
 import io.kotest.engine.test.TestCaseExecutor
@@ -17,6 +17,7 @@ import kotlin.coroutines.CoroutineContext
 /**
  * A [TestContext] that executes nested tests as soon as they are discovered.
  */
+@ExperimentalKotest
 class InOrderTestContext(
    override val testCase: TestCase,
    override val coroutineContext: CoroutineContext,
@@ -36,7 +37,7 @@ class InOrderTestContext(
       } else {
          val nestedTestCase = nested.toTestCase(testCase.spec, testCase)
          val result = runTest(nestedTestCase, coroutineContext)
-         if (result.status == TestStatus.Failure || result.status == TestStatus.Error) {
+         if (result.isErrorOrFailure) {
             failed = true
          }
       }

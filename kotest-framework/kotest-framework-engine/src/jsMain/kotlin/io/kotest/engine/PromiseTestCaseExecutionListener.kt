@@ -9,6 +9,6 @@ import io.kotest.engine.test.TestCaseExecutionListener
  */
 internal class PromiseTestCaseExecutionListener(private val done: dynamic) : TestCaseExecutionListener {
    override suspend fun testFinished(testCase: TestCase, result: TestResult) {
-      done(result.error)
+      done(result.errorOrNull)
    }
 }

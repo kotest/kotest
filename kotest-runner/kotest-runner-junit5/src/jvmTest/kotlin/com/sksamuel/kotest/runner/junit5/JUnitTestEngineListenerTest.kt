@@ -20,6 +20,7 @@ import org.junit.platform.engine.TestExecutionResult
 import org.junit.platform.engine.UniqueId
 import org.junit.platform.engine.reporting.ReportEntry
 import org.junit.platform.engine.support.descriptor.EngineDescriptor
+import kotlin.time.milliseconds
 
 class JUnitTestEngineListenerTest : FunSpec({
 
@@ -95,7 +96,7 @@ class JUnitTestEngineListenerTest : FunSpec({
       listener.specEnter(MySpec::class)
       listener.specInactive(
          MySpec::class,
-         mapOf(tc1 to TestResult.ignored(null), tc2 to TestResult.ignored(null))
+         mapOf(tc1 to TestResult.Ignored(null), tc2 to TestResult.Ignored(null))
       )
       listener.specExit(MySpec::class, null)
       track.events shouldBe listOf(
@@ -114,7 +115,7 @@ class JUnitTestEngineListenerTest : FunSpec({
       listener.specEnter(MySpec::class)
       listener.specStarted(MySpec::class)
       listener.testStarted(tc1)
-      listener.testFinished(tc1, TestResult.success(12))
+      listener.testFinished(tc1, TestResult.Success(12.milliseconds))
       listener.specExit(MySpec::class, null)
       track.events shouldBe listOf(
          EventTrackingEngineExecutionListener.Event.TestRegistered("com.sksamuel.kotest.runner.junit5.MySpec", TestDescriptor.Type.CONTAINER),
@@ -133,15 +134,21 @@ class JUnitTestEngineListenerTest : FunSpec({
       listener.specStarted(MySpec::class)
       listener.testStarted(tc1)
       listener.testFinished(tc1, TestResult.failure(AssertionError("whack!"), 5))
-      listener.specFinished(MySpec::class, mapOf(tc1 to TestResult.failure(AssertionError("whack!"), 5)))
+      listener.specFinished(MySpec::class, mapOf(tc1 to TestResult.Failure(5.milliseconds, AssertionError("whack!"))))
       listener.specExit(MySpec::class, null)
       track.events shouldBe listOf(
-         EventTrackingEngineExecutionListener.Event.TestRegistered("com.sksamuel.kotest.runner.junit5.MySpec", TestDescriptor.Type.CONTAINER),
+         EventTrackingEngineExecutionListener.Event.TestRegistered(
+            "com.sksamuel.kotest.runner.junit5.MySpec",
+            TestDescriptor.Type.CONTAINER
+         ),
          EventTrackingEngineExecutionListener.Event.ExecutionStarted("com.sksamuel.kotest.runner.junit5.MySpec"),
          EventTrackingEngineExecutionListener.Event.TestRegistered("foo", TestDescriptor.Type.TEST),
          EventTrackingEngineExecutionListener.Event.ExecutionStarted("foo"),
          EventTrackingEngineExecutionListener.Event.ExecutionFinished("foo", TestExecutionResult.Status.FAILED),
-         EventTrackingEngineExecutionListener.Event.ExecutionFinished("com.sksamuel.kotest.runner.junit5.MySpec", TestExecutionResult.Status.SUCCESSFUL),
+         EventTrackingEngineExecutionListener.Event.ExecutionFinished(
+            "com.sksamuel.kotest.runner.junit5.MySpec",
+            TestExecutionResult.Status.SUCCESSFUL
+         ),
       )
    }
 
@@ -172,7 +179,7 @@ class JUnitTestEngineListenerTest : FunSpec({
       listener.testFinished(tc1, TestResult.success(7))
       listener.specFinished(
          MySpec::class,
-         mapOf(tc1 to TestResult.success(7), tc2 to TestResult.ignored("secret!"))
+         mapOf(tc1 to TestResult.success(7), tc2 to TestResult.Ignored("secret!"))
       )
       listener.specExit(MySpec::class, null)
       track.events shouldBe listOf(
@@ -196,10 +203,10 @@ class JUnitTestEngineListenerTest : FunSpec({
       listener.testStarted(tc1)
       listener.testStarted(tc2)
       listener.testFinished(tc2, TestResult.failure(AssertionError("whack!"), 5))
-      listener.testFinished(tc1, TestResult.success(7))
+      listener.testFinished(tc1, TestResult.Success(7.milliseconds))
       listener.specFinished(
          MySpec::class,
-         mapOf(tc1 to TestResult.success(7), tc2 to TestResult.ignored("secret!"))
+         mapOf(tc1 to TestResult.Success(7.milliseconds), tc2 to TestResult.Ignored("secret!"))
       )
       listener.specExit(MySpec::class, null)
       track.events shouldBe listOf(
@@ -222,10 +229,10 @@ class JUnitTestEngineListenerTest : FunSpec({
       listener.specStarted(MySpec::class)
       listener.testStarted(tc1)
       listener.testIgnored(tc2, "secret!")
-      listener.testFinished(tc1, TestResult.success(7))
+      listener.testFinished(tc1, TestResult.Success(7.milliseconds))
       listener.specFinished(
          MySpec::class,
-         mapOf(tc1 to TestResult.success(7), tc2 to TestResult.ignored("secret!"))
+         mapOf(tc1 to TestResult.Success(7.milliseconds), tc2 to TestResult.Ignored("secret!"))
       )
       listener.specExit(MySpec::class, null)
       track.events shouldBe listOf(
@@ -246,10 +253,10 @@ class JUnitTestEngineListenerTest : FunSpec({
       listener.specEnter(MySpec::class)
       listener.specStarted(MySpec::class)
       listener.testStarted(tc1)
-      listener.testFinished(tc1, TestResult.success(7))
+      listener.testFinished(tc1, TestResult.Success(7.milliseconds))
       listener.specFinished(
          MySpec::class,
-         mapOf(tc1 to TestResult.success(7))
+         mapOf(tc1 to TestResult.Success(7.milliseconds))
       )
       listener.specExit(MySpec::class, Exception("THWAPP!"))
       track.events shouldBe listOf(
@@ -277,15 +284,15 @@ class JUnitTestEngineListenerTest : FunSpec({
       listener.specEnter(MySpec::class)
       listener.specStarted(MySpec::class)
       listener.testStarted(tc1)
-      listener.testFinished(tc1, TestResult.success(7))
-      listener.specFinished(MySpec::class, mapOf(tc1 to TestResult.success(7)))
+      listener.testFinished(tc1, TestResult.Success(7.milliseconds))
+      listener.specFinished(MySpec::class, mapOf(tc1 to TestResult.Success(7.milliseconds)))
       listener.specExit(MySpec::class, null)
 
       listener.specEnter(MySpec2::class)
       listener.specStarted(MySpec2::class)
       listener.testStarted(tc3)
-      listener.testFinished(tc3, TestResult.success(4))
-      listener.specFinished(MySpec2::class, mapOf(tc3 to TestResult.success(4)))
+      listener.testFinished(tc3, TestResult.Success(4.milliseconds))
+      listener.specFinished(MySpec2::class, mapOf(tc3 to TestResult.Success(4.milliseconds)))
       listener.specExit(MySpec2::class, null)
 
       track.events shouldBe listOf(
@@ -326,8 +333,8 @@ class JUnitTestEngineListenerTest : FunSpec({
       listener.specEnter(MySpec2::class)
       listener.specStarted(MySpec2::class)
       listener.testStarted(tc3)
-      listener.testFinished(tc3, TestResult.success(4))
-      listener.specFinished(MySpec2::class, mapOf(tc3 to TestResult.success(4)))
+      listener.testFinished(tc3, TestResult.Success(4.milliseconds))
+      listener.specFinished(MySpec2::class, mapOf(tc3 to TestResult.Success(4.milliseconds)))
       listener.specExit(MySpec2::class, null)
 
       track.events shouldBe listOf(
@@ -350,7 +357,7 @@ class JUnitTestEngineListenerTest : FunSpec({
       val track = EventTrackingEngineExecutionListener()
       val listener = JUnitTestEngineListener(track, root, configuration)
       listener.specEnter(MySpec::class)
-      listener.specInactive(MySpec::class, mapOf(tc1 to TestResult.ignored("wibble")))
+      listener.specInactive(MySpec::class, mapOf(tc1 to TestResult.Ignored("wibble")))
       listener.specExit(MySpec::class, null)
 
       listener.specEnter(MySpec2::class)
@@ -393,7 +400,7 @@ class JUnitTestEngineListenerTest : FunSpec({
       listener.testFinished(tc1, TestResult.success(7))
       listener.specFinished(
          MySpec::class,
-         mapOf(tc1 to TestResult.success(7), tc2 to TestResult.ignored("secret!"))
+         mapOf(tc1 to TestResult.success(7), tc2 to TestResult.Ignored("secret!"))
       )
       listener.specExit(MySpec::class, null)
       track.events shouldBe listOf(

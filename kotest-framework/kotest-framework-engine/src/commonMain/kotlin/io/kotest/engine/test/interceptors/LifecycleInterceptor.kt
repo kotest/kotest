@@ -3,13 +3,13 @@ package io.kotest.engine.test.interceptors
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestContext
 import io.kotest.core.test.TestResult
-import io.kotest.core.test.TestStatus
 import io.kotest.engine.events.invokeAllAfterTestCallbacks
 import io.kotest.engine.events.invokeAllBeforeTestCallbacks
 import io.kotest.engine.test.TestCaseExecutionListener
 import io.kotest.engine.test.createTestResult
 import io.kotest.mpp.log
 import io.kotest.mpp.timeInMillis
+import kotlin.time.TimeMark
 
 /**
  * Executes a test taking care of invoking user level listeners.
@@ -29,7 +29,7 @@ import io.kotest.mpp.timeInMillis
  */
 internal class LifecycleInterceptor(
    private val listener: TestCaseExecutionListener,
-   private val start: Long
+   private val timeMark: TimeMark
 ) : TestExecutionInterceptor {
 
    override suspend fun intercept(
@@ -42,21 +42,21 @@ internal class LifecycleInterceptor(
       testCase.invokeAllBeforeTestCallbacks()
          .fold(
             {
-               createTestResult(timeInMillis() - start, it).apply {
+               createTestResult(timeMark.elapsedNow(), it).apply {
                   testCase.invokeAllAfterTestCallbacks(this)
                }
             },
             {
                val result = test(testCase, context)
-               log { "LifecycleInterceptor: '${testCase.descriptor.path().value}'=${result.status}"  }
+               log { "LifecycleInterceptor: '${testCase.descriptor.path().value}'=${result}"  }
                // an error in the after test callbacks will override the result of the test if it was successfuls\
                // if the test already failed, that result will be used
                // todo combine into multiple errors ?
                testCase.invokeAllAfterTestCallbacks(result)
                   .fold(
                      {
-                        when (result.status) {
-                           TestStatus.Success, TestStatus.Ignored -> createTestResult(timeInMillis() - start, it)
+                        when (result) {
+                           is TestResult.Success, is TestResult.Ignored -> createTestResult(timeMark.elapsedNow(), it)
                            else -> result
                         }
                      },

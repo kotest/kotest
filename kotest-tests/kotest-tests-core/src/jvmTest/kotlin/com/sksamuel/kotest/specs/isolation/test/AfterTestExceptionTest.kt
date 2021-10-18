@@ -105,7 +105,7 @@ class AfterTestExceptionTest : WordSpec({
    val listener = object : AbstractTestEngineListener() {
       override suspend fun testFinished(testCase: TestCase, result: TestResult) {
          if (result.status == TestStatus.Error)
-            error = result.error
+            error = result.errorOrNull
       }
    }
 

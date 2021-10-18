@@ -1,7 +1,6 @@
 package com.sksamuel.kotest.engine
 
 import io.kotest.core.spec.style.FunSpec
-import io.kotest.core.test.TestStatus
 import io.kotest.engine.TestEngineLauncher
 import io.kotest.engine.listener.CollectingTestEngineListener
 import io.kotest.inspectors.forAll
@@ -15,10 +14,8 @@ class InvocationThreadErrorTest : FunSpec({
          .withClasses(InvocationErrorsTests::class)
          .launch()
       listener.tests.size shouldBe 2
-      listener.tests.values.forAll { it.status shouldBe TestStatus.Error }
-
+      listener.tests.values.forAll { it.isError shouldBe true }
    }
-
 })
 
 private class InvocationErrorsTests : FunSpec({

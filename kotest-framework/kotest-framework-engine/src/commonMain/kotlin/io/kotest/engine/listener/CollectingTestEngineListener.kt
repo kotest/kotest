@@ -3,7 +3,6 @@ package io.kotest.engine.listener
 import io.kotest.common.concurrentHashMap
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
-import io.kotest.core.test.TestStatus
 import kotlin.reflect.KClass
 
 class CollectingTestEngineListener : AbstractTestEngineListener() {
@@ -23,12 +22,12 @@ class CollectingTestEngineListener : AbstractTestEngineListener() {
    }
 
    override suspend fun testIgnored(testCase: TestCase, reason: String?) {
-      tests[testCase] = TestResult.ignored(reason)
+      tests[testCase] = TestResult.Ignored(reason)
    }
 
    override suspend fun testFinished(testCase: TestCase, result: TestResult) {
       tests[testCase] = result
-      if (result.status in listOf(TestStatus.Error, TestStatus.Failure)) errors = true
+      if (result.isFailure || result.isError) errors = true
    }
 
    override suspend fun specAborted(kclass: KClass<*>, t: Throwable) {

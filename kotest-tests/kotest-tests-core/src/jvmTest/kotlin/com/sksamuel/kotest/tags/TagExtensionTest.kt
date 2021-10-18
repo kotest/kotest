@@ -21,7 +21,6 @@ class TagExtensionTest : StringSpec() {
          Tags(setOf(TagA), setOf(TagB))
    }
 
-
    override fun beforeSpec(spec: Spec) {
       configuration.registerExtension(ext)
    }

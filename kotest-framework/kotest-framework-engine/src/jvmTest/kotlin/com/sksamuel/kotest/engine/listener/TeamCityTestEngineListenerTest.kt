@@ -85,7 +85,7 @@ testcity[testSuiteFinished name='com.sksamuel.kotest.engine.listener.TeamCityTes
          val listener = TeamCityTestEngineListener("testcity")
          val out = captureStandardOut {
             listener.specEnter(kclass)
-            listener.specInactive(kclass, mapOf(testCaseTest to TestResult.ignored(null)))
+            listener.specInactive(kclass, mapOf(testCaseTest to TestResult.Ignored(null)))
             listener.specExit(kclass, null)
          }
          out.shouldContain("testcity[testSuiteStarted name='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest'")
@@ -154,13 +154,13 @@ testcity[testSuiteFinished name='com.sksamuel.kotest.engine.listener.TeamCityTes
 
       test("testFinished should write nothing for TestType.Test ignored") {
          captureStandardOut {
-            TeamCityTestEngineListener("testcity").testFinished(testCaseTest, TestResult.ignored("ignore me?"))
+            TeamCityTestEngineListener("testcity").testFinished(testCaseTest, TestResult.Ignored("ignore me?"))
          } shouldBe ""
       }
 
       test("testFinished should write nothing for container ignored") {
          captureStandardOut {
-            TeamCityTestEngineListener("testcity").testFinished(testCaseContainer, TestResult.ignored("ignore me?"))
+            TeamCityTestEngineListener("testcity").testFinished(testCaseContainer, TestResult.Ignored("ignore me?"))
          } shouldBe ""
       }
 

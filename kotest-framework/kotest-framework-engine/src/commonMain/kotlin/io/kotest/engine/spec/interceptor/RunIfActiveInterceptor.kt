@@ -38,7 +38,7 @@ internal class RunIfActiveInterceptor(
       if (active) {
          fn(spec)
       } else {
-         val results = enabled.mapValues { TestResult.ignored(it.value.reason) }
+         val results = enabled.mapValues { TestResult.Ignored(it.value.reason) }
          listener.specInactive(spec::class, results)
          SpecExtensions(configuration.extensions()).inactiveSpec(spec, results)
          results

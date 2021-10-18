@@ -4,7 +4,6 @@ import io.kotest.core.spec.Isolate
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
-import io.kotest.core.test.TestStatus
 import io.kotest.engine.KotestEngineLauncher
 import io.kotest.engine.listener.AbstractTestEngineListener
 import io.kotest.matchers.shouldBe
@@ -17,7 +16,9 @@ import kotlinx.coroutines.launch
 class CoroutineExceptionTest : FunSpec({
 
    test("exception in coroutine") {
+
       var _result: TestResult? = null
+
       val listener = object : AbstractTestEngineListener() {
          override suspend fun testFinished(testCase: TestCase, result: TestResult) {
             if (testCase.name.testName == "exception in coroutine") {
@@ -25,11 +26,13 @@ class CoroutineExceptionTest : FunSpec({
             }
          }
       }
+
       KotestEngineLauncher()
          .withListener(listener)
          .withSpec(FailingCoroutineTest::class)
          .launch()
-      _result?.status shouldBe TestStatus.Error
+
+      _result?.isError shouldBe true
    }
 })
 

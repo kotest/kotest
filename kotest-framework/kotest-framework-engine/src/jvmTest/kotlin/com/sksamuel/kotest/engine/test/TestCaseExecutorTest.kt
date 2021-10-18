@@ -1,11 +1,11 @@
 package com.sksamuel.kotest.engine.test
 
+import io.kotest.common.ExperimentalKotest
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.test.NestedTest
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestContext
 import io.kotest.core.test.TestResult
-import io.kotest.core.test.TestStatus
 import io.kotest.engine.concurrency.NoopCoroutineDispatcherFactory
 import io.kotest.engine.spec.materializeAndOrderRootTests
 import io.kotest.engine.test.TestCaseExecutionListener
@@ -20,6 +20,7 @@ import kotlinx.coroutines.delay
 import kotlin.coroutines.CoroutineContext
 import kotlin.time.Duration
 
+@ExperimentalKotest
 @DelicateCoroutinesApi
 class TestCaseExecutorTest : FunSpec({
 
@@ -40,12 +41,12 @@ class TestCaseExecutorTest : FunSpec({
          override suspend fun testIgnored(testCase: TestCase) {}
          override suspend fun testFinished(testCase: TestCase, result: TestResult) {
             finished = true
-            result.status shouldBe TestStatus.Success
+            result.isSuccess shouldBe true
          }
       }
       val executor = TestCaseExecutor(listener, NoopCoroutineDispatcherFactory)
       val testCase = Tests().materializeAndOrderRootTests().first { it.testCase.name.testName == "a" }.testCase
-      executor.execute(testCase, context(testCase)).status shouldBe TestStatus.Success
+      executor.execute(testCase, context(testCase)).isSuccess shouldBe true
       started shouldBe true
       finished shouldBe true
    }
@@ -61,14 +62,14 @@ class TestCaseExecutorTest : FunSpec({
          override suspend fun testIgnored(testCase: TestCase) {}
          override suspend fun testFinished(testCase: TestCase, result: TestResult) {
             finished = true
-            result.status shouldBe TestStatus.Error
+            result.isError shouldBe true
          }
       }
       val executor = TestCaseExecutor(listener, NoopCoroutineDispatcherFactory)
       val testCase = Tests().materializeAndOrderRootTests().first { it.testCase.name.testName == "b" }.testCase
       val result = executor.execute(testCase, context(testCase))
-      result.status shouldBe TestStatus.Error
-      result.error shouldBe TestTimeoutException(100, "b")
+      result.isError shouldBe true
+      result.errorOrNull shouldBe TestTimeoutException(100, "b")
       started shouldBe true
       finished shouldBe true
    }
@@ -112,8 +113,8 @@ class TestCaseExecutorTest : FunSpec({
       }, NoopCoroutineDispatcherFactory)
       val testCase = BeforeTestWithException().materializeAndOrderRootTests().first().testCase
       val result = executor.execute(testCase, context(testCase))
-      result.status shouldBe TestStatus.Error
-      result.error.shouldBeInstanceOf<IllegalStateException>()
+      result.isError shouldBe true
+      result.errorOrNull.shouldBeInstanceOf<IllegalStateException>()
       started shouldBe true
       finished shouldBe true
    }
@@ -133,8 +134,8 @@ class TestCaseExecutorTest : FunSpec({
       }, NoopCoroutineDispatcherFactory)
       val testCase = AfterTestWithException().materializeAndOrderRootTests().first().testCase
       val result = executor.execute(testCase, context(testCase))
-      result.status shouldBe TestStatus.Error
-      result.error.shouldBeInstanceOf<IllegalStateException>()
+      result.isError shouldBe true
+      result.errorOrNull.shouldBeInstanceOf<IllegalStateException>()
       started shouldBe true
       finished shouldBe true
    }

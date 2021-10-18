@@ -2,9 +2,7 @@ package io.kotest.engine.interceptors
 
 import io.kotest.common.JVMOnly
 import io.kotest.common.KotestInternal
-import io.kotest.core.config.configuration
 import io.kotest.core.spec.Spec
-import io.kotest.core.test.TestStatus
 import io.kotest.engine.EngineResult
 import io.kotest.engine.listener.CollectingTestEngineListener
 import java.nio.file.Files
@@ -29,7 +27,7 @@ internal object WriteFailuresInterceptor : EngineInterceptor {
          val collector = CollectingTestEngineListener()
          val result = execute(context.mergeListener(collector))
          val failedSpecs = collector.tests
-            .filterValues { it.status == TestStatus.Failure || it.status == TestStatus.Error }
+            .filterValues { it.isErrorOrFailure }
             .map { it.key.spec::class }
             .toSet()
          writeSpecFailures(failedSpecs, context.configuration.specFailureFilePath)

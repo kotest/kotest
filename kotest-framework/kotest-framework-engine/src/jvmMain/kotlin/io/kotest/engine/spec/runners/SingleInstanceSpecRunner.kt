@@ -8,7 +8,6 @@ import io.kotest.core.test.NestedTest
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestContext
 import io.kotest.core.test.TestResult
-import io.kotest.core.test.TestStatus
 import io.kotest.core.test.toTestCase
 import io.kotest.engine.listener.TestEngineListener
 import io.kotest.engine.spec.SpecExtensions
@@ -81,7 +80,7 @@ internal class SingleInstanceSpecRunner(
             // if running this nested test results in an error, we won't launch any more nested tests
             val result = runTest(nestedTestCase, coroutineContext)
             if (testCase.config.failfast == true) {
-               if (result.status == TestStatus.Failure || result.status == TestStatus.Error) {
+               if (result.isErrorOrFailure) {
                   failedfast = true
                }
             }
