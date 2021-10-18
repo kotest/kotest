@@ -1,5 +1,6 @@
 package com.sksamuel.kotest.engine.test
 
+import io.kotest.common.ExperimentalKotest
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.test.NestedTest
 import io.kotest.core.test.TestCase
@@ -19,6 +20,7 @@ import kotlinx.coroutines.delay
 import kotlin.coroutines.CoroutineContext
 import kotlin.time.Duration
 
+@ExperimentalKotest
 @DelicateCoroutinesApi
 class TestCaseExecutorTest : FunSpec({
 

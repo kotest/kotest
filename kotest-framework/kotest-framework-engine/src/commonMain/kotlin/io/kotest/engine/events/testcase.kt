@@ -63,8 +63,7 @@ internal suspend fun TestCase.invokeAllAfterTestCallbacks(result: TestResult): T
                }
             }
          }
-         currentException?.let { throw Error(it) }
-
+         currentException?.let { throw it }
          this
       }
    })
