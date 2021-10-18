@@ -13,7 +13,7 @@ class ShouldSpecTimeoutTest : ShouldSpec() {
 
       extension { (testCase, execute) ->
          val result = execute(testCase)
-         if (testCase.name.testName.contains("timeout:") && result.status == TestStatus.Success) {
+         if (testCase.name.testName.contains("timeout:") && result.isSuccess) {
             AssertionError("${testCase.descriptor.id.value} passed but should fail").toTestResult(0)
          } else {
             TestResult.success(0)

@@ -39,12 +39,12 @@ class TestCaseExecutorTest : FunSpec({
          override suspend fun testIgnored(testCase: TestCase) {}
          override suspend fun testFinished(testCase: TestCase, result: TestResult) {
             finished = true
-            result.status shouldBe TestStatus.Success
+            result.isSuccess shouldBe true
          }
       }
       val executor = TestCaseExecutor(listener, NoopCoroutineDispatcherFactory)
       val testCase = Tests().materializeAndOrderRootTests().first { it.testCase.name.testName == "a" }.testCase
-      executor.execute(testCase, context(testCase)).status shouldBe TestStatus.Success
+      executor.execute(testCase, context(testCase)).isSuccess shouldBe true
       started shouldBe true
       finished shouldBe true
    }
@@ -60,13 +60,13 @@ class TestCaseExecutorTest : FunSpec({
          override suspend fun testIgnored(testCase: TestCase) {}
          override suspend fun testFinished(testCase: TestCase, result: TestResult) {
             finished = true
-            result.status shouldBe TestStatus.Error
+            result.isError shouldBe true
          }
       }
       val executor = TestCaseExecutor(listener, NoopCoroutineDispatcherFactory)
       val testCase = Tests().materializeAndOrderRootTests().first { it.testCase.name.testName == "b" }.testCase
       val result = executor.execute(testCase, context(testCase))
-      result.status shouldBe TestStatus.Error
+      result.isError shouldBe true
       result.errorOrNull shouldBe TestTimeoutException(100, "b")
       started shouldBe true
       finished shouldBe true
@@ -111,7 +111,7 @@ class TestCaseExecutorTest : FunSpec({
       }, NoopCoroutineDispatcherFactory)
       val testCase = BeforeTestWithException().materializeAndOrderRootTests().first().testCase
       val result = executor.execute(testCase, context(testCase))
-      result.status shouldBe TestStatus.Error
+      result.isError shouldBe true
       result.errorOrNull.shouldBeInstanceOf<IllegalStateException>()
       started shouldBe true
       finished shouldBe true
@@ -132,7 +132,7 @@ class TestCaseExecutorTest : FunSpec({
       }, NoopCoroutineDispatcherFactory)
       val testCase = AfterTestWithException().materializeAndOrderRootTests().first().testCase
       val result = executor.execute(testCase, context(testCase))
-      result.status shouldBe TestStatus.Error
+      result.isError shouldBe true
       result.errorOrNull.shouldBeInstanceOf<IllegalStateException>()
       started shouldBe true
       finished shouldBe true

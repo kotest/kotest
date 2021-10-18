@@ -20,11 +20,11 @@ class CoroutineTest : FunSpec() {
          val result = execute(testCase)
          when {
             testCase.name.testName == "exceptions inside launched coroutine should be propagated" &&
-               result.status == TestStatus.Error -> TestResult.success(0)
+               result.isError -> TestResult.success(0)
             testCase.name.testName == "exception in launched coroutine should cancel siblings" &&
-               result.status == TestStatus.Error -> TestResult.success(0)
+               result.isError -> TestResult.success(0)
             testCase.name.testName == "exception in test coroutine should cancel launched coroutines" &&
-               result.status == TestStatus.Error -> TestResult.success(0)
+               result.isError -> TestResult.success(0)
             else -> result
          }
       }

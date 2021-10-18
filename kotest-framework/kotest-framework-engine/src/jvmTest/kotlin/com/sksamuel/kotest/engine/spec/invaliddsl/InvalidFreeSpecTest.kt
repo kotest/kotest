@@ -8,7 +8,7 @@ class InvalidFreeSpecTest : FreeSpec() {
 
       aroundTest { (testCase, fn) ->
          val result = fn(testCase)
-         if (result.status == TestStatus.Success && testCase.name.testName == "should fail")
+         if (result.isSuccess && testCase.name.testName == "should fail")
             TestResult.failure(AssertionError("leaf"), 0)
          else
             TestResult.success(0)

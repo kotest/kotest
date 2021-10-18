@@ -15,10 +15,10 @@ class FreeSpecIncompleteContainerTest : FunSpec() {
             .withClasses(IncompleteFreeSpec::class)
             .launch()
          val desc = collector.tests.mapKeys { it.key.descriptor.id }
-         desc[DescriptorId("a")]?.status shouldBe TestStatus.Error
+         desc[DescriptorId("a")]?.isError shouldBe true
          desc[DescriptorId("a")]?.errorOrNull?.message shouldBe "Test 'a' requires at least one nested test"
-         desc[DescriptorId("b")]?.status shouldBe TestStatus.Success
-         desc[DescriptorId("c")]?.status shouldBe TestStatus.Error
+         desc[DescriptorId("b")]?.isSuccess shouldBe true
+         desc[DescriptorId("c")]?.isError shouldBe true
          desc[DescriptorId("c")]?.errorOrNull?.message shouldBe "Test 'c' requires at least one nested test"
       }
    }

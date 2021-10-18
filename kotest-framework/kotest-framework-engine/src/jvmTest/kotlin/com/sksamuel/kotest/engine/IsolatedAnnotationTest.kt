@@ -17,7 +17,7 @@ class IsolatedAnnotationTest : FunSpec() {
             .withClasses(MyIsolatedSpec::class)
             .launch()
          collector.tests.shouldHaveSize(1)
-         collector.tests.mapKeys { it.key.descriptor.id }[DescriptorId("a")]!!.status shouldBe TestStatus.Success
+         collector.tests.mapKeys { it.key.descriptor.id }[DescriptorId("a")]!!.isSuccess shouldBe true
       }
    }
 }

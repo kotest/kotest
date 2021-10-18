@@ -15,7 +15,7 @@ class ShouldSpecIncompleteContainerTest : FunSpec() {
             .withClasses(IncompleteShouldSpec::class)
             .launch()
          val desc = collector.tests.mapKeys { it.key.descriptor.id }
-         desc[DescriptorId("c")]?.status shouldBe TestStatus.Error
+         desc[DescriptorId("c")]?.isError shouldBe true
          desc[DescriptorId("c")]?.errorOrNull?.message shouldBe "Test 'c' requires at least one nested test"
       }
    }

@@ -15,13 +15,13 @@ class WordSpecIncompleteContainerTest : FunSpec() {
             .withClasses(IncompleteWordSpec::class)
             .launch()
          val desc = collector.tests.mapKeys { it.key.descriptor.id }
-         desc[DescriptorId("s should")]?.status shouldBe TestStatus.Error
+         desc[DescriptorId("s should")]?.isError shouldBe true
          desc[DescriptorId("s should")]?.errorOrNull?.message shouldBe "Test 's should' requires at least one nested test"
 
-         desc[DescriptorId("w when")]?.status shouldBe TestStatus.Error
+         desc[DescriptorId("w when")]?.isError shouldBe true
          desc[DescriptorId("w when")]?.errorOrNull?.message shouldBe "Test 'w when' requires at least one nested test"
 
-         desc[DescriptorId("y should")]?.status shouldBe TestStatus.Error
+         desc[DescriptorId("y should")]?.isError shouldBe true
          desc[DescriptorId("y should")]?.errorOrNull?.message shouldBe "Test 'y' requires at least one nested test"
       }
    }
