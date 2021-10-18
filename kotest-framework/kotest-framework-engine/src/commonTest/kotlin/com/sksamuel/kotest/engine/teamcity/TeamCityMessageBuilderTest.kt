@@ -35,10 +35,10 @@ class TeamCityMessageBuilderTest : ShouldSpec({
       val msg = TeamCityMessageBuilder.testFailed("testcity", "escape brackets")
          .message(
             """
-   qweqwe
-   ewr
-   ret
-   """
+qweqwe
+ewr
+ret
+"""
          )
          .duration(67.milliseconds)
          .build()
