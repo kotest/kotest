@@ -51,11 +51,11 @@ class JUnitExtensionAdapter(private val extension: Extension) : TestListener {
          extension.afterTestExecution(context)
       }
       if (extension is TestWatcher) {
-         when (result.status) {
-            TestStatus.Ignored -> extension.testDisabled(context, Optional.ofNullable(result.reason))
-            TestStatus.Success -> extension.testSuccessful(context)
-            TestStatus.Error -> extension.testAborted(context, result.errorOrNull)
-            TestStatus.Failure -> extension.testFailed(context, result.errorOrNull)
+         when (result) {
+            is TestResult.Ignored -> extension.testDisabled(context, Optional.ofNullable(result.reason))
+            is TestResult.Success -> extension.testSuccessful(context)
+            is TestResult.Error -> extension.testAborted(context, result.errorOrNull)
+            is TestResult.Failure -> extension.testFailed(context, result.errorOrNull)
          }
       }
    }

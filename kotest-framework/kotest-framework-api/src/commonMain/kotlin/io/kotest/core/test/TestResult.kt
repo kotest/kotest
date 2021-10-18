@@ -51,6 +51,15 @@ sealed interface TestResult {
 
    val duration: Duration
 
+   @Deprecated("No longer has relevance. Pattern match on TestResult directly. Deprecated since 5.0")
+   val status: TestStatus
+      get() = when (this) {
+         is Error -> TestStatus.Error
+         is Failure -> TestStatus.Failure
+         is Ignored -> TestStatus.Ignored
+         is Success -> TestStatus.Success
+      }
+
    val reasonOrNull: String?
       get() = when (this) {
          is Ignored -> this.reason
