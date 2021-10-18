@@ -4,7 +4,6 @@ import io.kotest.core.listeners.TestListener
 import io.kotest.core.spec.Spec
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
-import io.kotest.core.test.TestStatus
 import org.junit.jupiter.api.extension.AfterAllCallback
 import org.junit.jupiter.api.extension.AfterEachCallback
 import org.junit.jupiter.api.extension.AfterTestExecutionCallback
@@ -55,8 +54,8 @@ class JUnitExtensionAdapter(private val extension: Extension) : TestListener {
          when (result.status) {
             TestStatus.Ignored -> extension.testDisabled(context, Optional.ofNullable(result.reason))
             TestStatus.Success -> extension.testSuccessful(context)
-            TestStatus.Error -> extension.testAborted(context, result.error)
-            TestStatus.Failure -> extension.testFailed(context, result.error)
+            TestStatus.Error -> extension.testAborted(context, result.errorOrNull)
+            TestStatus.Failure -> extension.testFailed(context, result.errorOrNull)
          }
       }
    }

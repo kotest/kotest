@@ -1,5 +1,6 @@
 package io.kotest.engine.test
 
+import io.kotest.common.ExperimentalKotest
 import io.kotest.common.Platform
 import io.kotest.common.platform
 import io.kotest.core.concurrency.CoroutineDispatcherFactory
@@ -30,7 +31,7 @@ import io.kotest.engine.test.interceptors.coroutineDispatcherFactoryInterceptor
 import io.kotest.engine.test.interceptors.coroutineErrorCollectorInterceptor
 import io.kotest.engine.test.interceptors.isTestCoroutineDispatcher
 import io.kotest.mpp.log
-import io.kotest.mpp.timeInMillis
+import kotlin.time.TimeSource
 
 /**
  * Executes a single [TestCase].
@@ -38,6 +39,7 @@ import io.kotest.mpp.timeInMillis
  * Uses a [TestCaseExecutionListener] to notify callers of events in the test lifecycle.
  *
  */
+@ExperimentalKotest
 class TestCaseExecutor(
    private val listener: TestCaseExecutionListener,
    private val defaultCoroutineDispatcherFactory: CoroutineDispatcherFactory = NoopCoroutineDispatcherFactory,
@@ -54,7 +56,7 @@ class TestCaseExecutor(
    suspend fun execute(testCase: TestCase, context: TestContext): TestResult {
       log { "TestCaseExecutor: execute entry point '${testCase.descriptor.path().value}' context=$context" }
 
-      val start = timeInMillis()
+      val timeMark = TimeSource.Monotonic.markNow()
 
       val interceptors = listOfNotNull(
          InvocationCountCheckInterceptor,
@@ -65,14 +67,14 @@ class TestCaseExecutor(
          TestFinishedInterceptor(listener),
          TestCaseExtensionInterceptor,
          EnabledCheckInterceptor,
-         LifecycleInterceptor(listener, start),
-         ExceptionCapturingInterceptor(start),
+         LifecycleInterceptor(listener, timeMark),
+         ExceptionCapturingInterceptor(timeMark),
          AssertionModeInterceptor,
          GlobalSoftAssertInterceptor,
          CoroutineScopeInterceptor,
          if (platform == Platform.JVM) blockedThreadTimeoutInterceptor() else null,
          TimeoutInterceptor,
-         InvocationRepeatInterceptor(start),
+         InvocationRepeatInterceptor(timeMark),
          InvocationTimeoutInterceptor,
          CoroutineLoggingInterceptor,
          if (platform == Platform.JVM && testCase.isTestCoroutineDispatcher(configuration)) RunBlockingTestInterceptor() else null,
@@ -80,7 +82,7 @@ class TestCaseExecutor(
 
       val innerExecute: suspend (TestCase, TestContext) -> TestResult = { tc, ctx ->
          tc.test(ctx)
-         createTestResult(timeInMillis() - start, null)
+         createTestResult(timeMark.elapsedNow(), null)
       }
 
       val result = interceptors.foldRight(innerExecute) { ext, fn ->

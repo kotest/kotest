@@ -4,7 +4,6 @@ import io.kotest.core.config.configuration
 import io.kotest.core.descriptors.toDescriptor
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
-import io.kotest.core.test.TestStatus
 import io.kotest.core.test.TestType
 import io.kotest.engine.interceptors.EngineContext
 import io.kotest.engine.teamcity.Locations
@@ -156,13 +155,13 @@ class TeamCityTestEngineListener(
             .id("<no tests>")
             .parent(kclass.toDescriptor().path().value)
             .testType("Test")
-            .resultStatus(TestStatus.Ignored.name)
+            .resultStatus("Ignored")
             .build()
          println(msg)
       } else {
          start(kclass)
          results.forEach { (testCase, result) ->
-            testIgnored(testCase, result.reason)
+            testIgnored(testCase, if (result is TestResult.Ignored) result.reason else null)
          }
       }
    }
@@ -172,7 +171,7 @@ class TeamCityTestEngineListener(
          .testSuiteFinished(prefix, formatter.format(kclass))
          .id(kclass.toDescriptor().path().value)
          .locationHint(Locations.locationHint(kclass))
-         .resultStatus(if (t == null) TestStatus.Success.name else TestStatus.Error.name)
+         .resultStatus(if (t == null) "Success" else "Error")
          .spec()
          .build()
       println(msg)
@@ -194,21 +193,21 @@ class TeamCityTestEngineListener(
          .locationHint(Locations.locationHint(testCase.spec::class))
          .testType(testCase.type.name)
          .message(reason)
-         .resultStatus(TestStatus.Ignored.name)
+         .resultStatus("Ignored")
          .build()
       println(msg)
    }
 
    override suspend fun testFinished(testCase: TestCase, result: TestResult) {
-      when (result.status) {
-         TestStatus.Ignored -> return
-         TestStatus.Success -> when (testCase.isContainer()) {
+      when (result) {
+         is TestResult.Ignored -> return
+         is TestResult.Success -> when (testCase.isContainer()) {
             true -> finishTestSuite(testCase, result)
             false -> finishTest(testCase, result)
          }
-         TestStatus.Error, TestStatus.Failure -> when (testCase.isContainer()) {
+         else -> when (testCase.isContainer()) {
             true -> {
-               insertPlaceholderFailure(formatter.format(testCase), result.error, testCase)
+               insertPlaceholderFailure(formatter.format(testCase), result.errorOrNull, testCase)
                finishTestSuite(testCase, result)
             }
             false -> {
@@ -247,11 +246,11 @@ class TeamCityTestEngineListener(
          .id(testCase.descriptor.path().value)
          .parent(testCase.descriptor.parent.path().value)
          .duration(result.duration)
-         .withException(result.error)
+         .withException(result.errorOrNull)
          .locationHint(Locations.locationHint(testCase.spec::class))
          .testType(testCase.type.name)
-         .resultStatus(result.status.name)
-         .withException(result.error)
+         .resultStatus(result::class.simpleName ?: "Error")
+         .withException(result.errorOrNull)
          .build()
       println(msg)
    }
@@ -264,7 +263,7 @@ class TeamCityTestEngineListener(
          .duration(result.duration)
          .locationHint(Locations.locationHint(testCase.spec::class))
          .testType(testCase.type.name)
-         .resultStatus(result.status.name)
+         .resultStatus(result::class.simpleName ?: "Error")
          .build()
       println(msg)
    }
@@ -277,7 +276,7 @@ class TeamCityTestEngineListener(
          .duration(result.duration)
          .locationHint(Locations.locationHint(testCase.spec::class))
          .testType(testCase.type.name)
-         .resultStatus(result.status.name)
+         .resultStatus(result::class.simpleName ?: "Error")
          .build()
       println(msg)
    }

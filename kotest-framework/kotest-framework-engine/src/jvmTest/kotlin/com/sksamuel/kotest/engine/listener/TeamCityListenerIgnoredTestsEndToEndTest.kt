@@ -43,8 +43,8 @@ class TeamCityListenerIgnoredTestsEndToEndTest : FunSpec() {
             listener.specInactive(
                kclass,
                mapOf(
-                  testCase1 to TestResult.ignored("no love"),
-                  testCase2 to TestResult.ignored("rejected")
+                  testCase1 to TestResult.Ignored("no love"),
+                  testCase2 to TestResult.Ignored("rejected")
                )
             )
             listener.specExit(kclass, null)

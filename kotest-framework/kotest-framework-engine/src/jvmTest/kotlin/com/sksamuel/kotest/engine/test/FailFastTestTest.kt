@@ -2,7 +2,6 @@ package com.sksamuel.kotest.engine.test
 
 import io.kotest.core.spec.style.FreeSpec
 import io.kotest.core.spec.style.FunSpec
-import io.kotest.core.test.TestStatus
 import io.kotest.engine.TestEngineLauncher
 import io.kotest.engine.listener.CollectingTestEngineListener
 import io.kotest.matchers.maps.shouldNotContainKey

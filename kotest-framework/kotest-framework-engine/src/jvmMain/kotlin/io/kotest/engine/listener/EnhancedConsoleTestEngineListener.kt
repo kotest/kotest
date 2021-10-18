@@ -7,12 +7,13 @@ import io.kotest.core.descriptors.spec
 import io.kotest.core.descriptors.toDescriptor
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
-import io.kotest.core.test.TestStatus
 import io.kotest.core.test.TestType
 import io.kotest.engine.interceptors.EngineContext
 import io.kotest.engine.test.names.formatTestPath
 import io.kotest.engine.test.names.getDisplayNameFormatter
 import kotlin.reflect.KClass
+import kotlin.time.Duration
+import kotlin.time.milliseconds
 
 /**
  * Generates test output to the console in an enhanced, formatted, coloured, way.
@@ -27,8 +28,8 @@ class EnhancedConsoleTestEngineListener(private val term: TermColors) : Abstract
    private var testsPassed = 0
    private var specsFailed = emptyList<Descriptor.SpecDescriptor>()
    private var specsSeen = emptyList<Descriptor>()
-   private var slow = 500
-   private var verySlow = 5000
+   private var slow = 500.milliseconds
+   private var verySlow = 5000.milliseconds
    private val formatter = getDisplayNameFormatter(configuration)
 
    private fun green(str: String) = term.green(str)
@@ -186,19 +187,19 @@ class EnhancedConsoleTestEngineListener(private val term: TermColors) : Abstract
       println(brightYellowBold(" IGNORED"))
    }
 
-   private fun durationString(durationMs: Long): String {
+   private fun durationString(duration: Duration): String {
       return when {
-         durationMs in slow..verySlow -> term.brightYellow("(${durationMs}ms)")
-         durationMs > verySlow -> term.brightRed("(${durationMs}ms)")
+         duration in slow..verySlow -> term.brightYellow("(${duration.inWholeMilliseconds}ms)")
+         duration > verySlow -> term.brightRed("(${duration.inWholeMilliseconds}ms)")
          else -> ""
       }
    }
 
    override suspend fun testFinished(testCase: TestCase, result: TestResult) {
       // only leaf tests or failed containers contribute to the counts
-      when (result.status) {
-         TestStatus.Success -> if (testCase.type == TestType.Test) testsPassed++
-         TestStatus.Failure, TestStatus.Error -> {
+      when (result) {
+         is TestResult.Success -> if (testCase.type == TestType.Test) testsPassed++
+         is TestResult.Failure, is TestResult.Error -> {
             errors++
             testsFailed = testsFailed + Pair(testCase, result)
             specsFailed = specsFailed + testCase.descriptor.spec()
@@ -210,11 +211,11 @@ class EnhancedConsoleTestEngineListener(private val term: TermColors) : Abstract
       if (testCase.type == TestType.Test) {
          print("".padEnd(testCase.descriptor.depth() * 4, ' '))
          print("- " + formatter.format(testCase))
-         when (result.status) {
-            TestStatus.Success -> print(greenBold(" OK"))
-            TestStatus.Error -> print(brightRed(" ERROR"))
-            TestStatus.Failure -> print(brightRed(" FAILED"))
-            TestStatus.Ignored -> print(brightYellow(" IGNORED"))
+         when (result) {
+            is TestResult.Success -> print(greenBold(" OK"))
+            is TestResult.Error -> print(brightRed(" ERROR"))
+            is TestResult.Failure -> print(brightRed(" FAILED"))
+            is TestResult.Ignored -> print(brightYellow(" IGNORED"))
          }
 
          if (result.duration > slow) {
@@ -223,9 +224,9 @@ class EnhancedConsoleTestEngineListener(private val term: TermColors) : Abstract
          println()
       }
 
-      if (result.error != null) {
+      if (result.errorOrNull != null) {
          println()
-         printThrowable(result.error, testCase.descriptor.depth() * 4)
+         printThrowable(result.errorOrNull, testCase.descriptor.depth() * 4)
          println()
       }
    }

@@ -5,7 +5,6 @@ import io.kotest.core.test.NestedTest
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestContext
 import io.kotest.core.test.TestResult
-import io.kotest.core.test.TestStatus
 import io.kotest.engine.concurrency.NoopCoroutineDispatcherFactory
 import io.kotest.engine.spec.materializeAndOrderRootTests
 import io.kotest.engine.test.TestCaseExecutionListener
@@ -68,7 +67,7 @@ class TestCaseExecutorTest : FunSpec({
       val testCase = Tests().materializeAndOrderRootTests().first { it.testCase.name.testName == "b" }.testCase
       val result = executor.execute(testCase, context(testCase))
       result.status shouldBe TestStatus.Error
-      result.error shouldBe TestTimeoutException(100, "b")
+      result.errorOrNull shouldBe TestTimeoutException(100, "b")
       started shouldBe true
       finished shouldBe true
    }
@@ -113,7 +112,7 @@ class TestCaseExecutorTest : FunSpec({
       val testCase = BeforeTestWithException().materializeAndOrderRootTests().first().testCase
       val result = executor.execute(testCase, context(testCase))
       result.status shouldBe TestStatus.Error
-      result.error.shouldBeInstanceOf<IllegalStateException>()
+      result.errorOrNull.shouldBeInstanceOf<IllegalStateException>()
       started shouldBe true
       finished shouldBe true
    }
@@ -134,7 +133,7 @@ class TestCaseExecutorTest : FunSpec({
       val testCase = AfterTestWithException().materializeAndOrderRootTests().first().testCase
       val result = executor.execute(testCase, context(testCase))
       result.status shouldBe TestStatus.Error
-      result.error.shouldBeInstanceOf<IllegalStateException>()
+      result.errorOrNull.shouldBeInstanceOf<IllegalStateException>()
       started shouldBe true
       finished shouldBe true
    }

@@ -3,7 +3,6 @@ package com.sksamuel.kotest.engine.spec.annotation
 import io.kotest.core.descriptors.DescriptorId
 import io.kotest.core.spec.style.AnnotationSpec
 import io.kotest.core.spec.style.DescribeSpec
-import io.kotest.core.test.TestStatus
 import io.kotest.engine.TestEngineLauncher
 import io.kotest.engine.listener.CollectingTestEngineListener
 import io.kotest.matchers.maps.shouldHaveSize

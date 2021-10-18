@@ -6,7 +6,6 @@ import io.kotest.core.listeners.PrepareSpecListener
 import io.kotest.core.spec.Spec
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
-import io.kotest.core.test.TestStatus
 import io.kotest.core.test.TestType
 import io.kotest.engine.test.names.formatTestPath
 import io.kotest.engine.test.names.getDisplayNameFormatter
@@ -88,9 +87,9 @@ class JunitXmlReporter(
       testSuite.setAttribute("timestamp", ISO_LOCAL_DATE_TIME.format(getCurrentDateTime()))
       testSuite.setAttribute("time", (duration / 1000).toString())
       testSuite.setAttribute("hostname", hostname())
-      testSuite.setAttribute("errors", filtered.filter { it.value.status == TestStatus.Error }.size.toString())
-      testSuite.setAttribute("failures", filtered.filter { it.value.status == TestStatus.Failure }.size.toString())
-      testSuite.setAttribute("skipped", filtered.filter { it.value.status == TestStatus.Ignored }.size.toString())
+      testSuite.setAttribute("errors", filtered.filter { it.value.isError }.size.toString())
+      testSuite.setAttribute("failures", filtered.filter { it.value.isFailure }.size.toString())
+      testSuite.setAttribute("skipped", filtered.filter { it.value.isIgnored }.size.toString())
       testSuite.setAttribute("tests", filtered.size.toString())
       testSuite.setAttribute(AttributeName, formatter.format(kclass))
       document.addContent(testSuite)
@@ -107,18 +106,18 @@ class JunitXmlReporter(
          e.setAttribute("classname", kclass.java.canonicalName)
          e.setAttribute("time", (result.duration / 1000).toString())
 
-         when (result.status) {
-            TestStatus.Error -> {
+         when (result) {
+            is TestResult.Error -> {
                val err = Element("error")
-               result.error?.let {
+               result.errorOrNull?.let {
                   err.setAttribute("type", it.javaClass.name)
                   err.setText(it.message)
                }
                e.addContent(err)
             }
-            TestStatus.Failure -> {
+            is TestResult.Failure -> {
                val failure = Element("failure")
-               result.error?.let {
+               result.errorOrNull?.let {
                   failure.setAttribute("type", it.javaClass.name)
                   failure.setText(it.message)
                }

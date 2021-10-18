@@ -8,7 +8,8 @@ import io.kotest.mpp.log
 
 /**
  * Checks the enabled status of a [TestCase] before invoking it.
- * If the test is disabled, then [TestResult.ignored] is returned.
+ *
+ * If the test is disabled, then a [TestResult.Ignored] is returned.
  *
  * Note: This extension must execute before any other extension that invokes methods
  * on the listener, as in runners like junit, ignored cannot happen after "started".
@@ -25,7 +26,7 @@ internal object EnabledCheckInterceptor : TestExecutionInterceptor {
          }
          false -> {
             log { "EnabledCheckTestExecutionInterceptor: ${testCase.descriptor.path().value} is disabled" }
-            TestResult.ignored(enabled)
+            TestResult.Ignored(enabled)
          }
       }
    }

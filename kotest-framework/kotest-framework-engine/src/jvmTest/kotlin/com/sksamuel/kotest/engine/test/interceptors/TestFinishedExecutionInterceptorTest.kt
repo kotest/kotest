@@ -52,7 +52,7 @@ class TestFinishedExecutionInterceptorTest : FunSpec({
             ignored = true
          }
       }
-      TestFinishedInterceptor(listener).intercept { _, _ -> TestResult.ignored(null) }.invoke(tc, context)
+      TestFinishedInterceptor(listener).intercept { _, _ -> TestResult.Ignored(null) }.invoke(tc, context)
       ignored shouldBe true
    }
 })

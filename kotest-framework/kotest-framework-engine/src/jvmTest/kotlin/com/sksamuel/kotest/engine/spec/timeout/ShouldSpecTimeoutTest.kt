@@ -3,7 +3,6 @@ package com.sksamuel.kotest.engine.spec.timeout
 import io.kotest.common.ExperimentalKotest
 import io.kotest.core.spec.style.ShouldSpec
 import io.kotest.core.test.TestResult
-import io.kotest.core.test.TestStatus
 import io.kotest.engine.test.toTestResult
 import kotlinx.coroutines.delay
 import kotlin.time.Duration

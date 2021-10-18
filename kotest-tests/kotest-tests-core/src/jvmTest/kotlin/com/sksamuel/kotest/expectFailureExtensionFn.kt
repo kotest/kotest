@@ -2,7 +2,6 @@ package com.sksamuel.kotest
 
 import io.kotest.core.spec.TestCaseExtensionFn
 import io.kotest.core.test.TestResult
-import io.kotest.core.test.TestStatus
 import io.kotest.engine.test.toTestResult
 
 val expectFailureExtension: TestCaseExtensionFn = {

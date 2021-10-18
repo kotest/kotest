@@ -2,7 +2,6 @@ package com.sksamuel.kotest.engine.spec.invaliddsl
 
 import io.kotest.core.spec.style.FreeSpec
 import io.kotest.core.test.TestResult
-import io.kotest.core.test.TestStatus
 
 class InvalidFreeSpecTest : FreeSpec() {
    init {

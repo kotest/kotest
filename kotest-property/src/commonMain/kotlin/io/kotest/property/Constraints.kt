@@ -31,7 +31,7 @@ fun interface Constraints {
          val end = timeInMillis().apply {
             if (this == 0L)
                error("unsupported on this platform")
-         }
+         } + millis
 
          override fun evaluate(): Boolean {
             return timeInMillis() < end

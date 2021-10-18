@@ -2,7 +2,6 @@ package com.sksamuel.kotest.engine.coroutines
 
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.test.TestResult
-import io.kotest.core.test.TestStatus
 import io.kotest.matchers.shouldBe
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.Channel

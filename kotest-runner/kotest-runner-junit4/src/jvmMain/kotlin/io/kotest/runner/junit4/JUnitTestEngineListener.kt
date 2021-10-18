@@ -3,7 +3,6 @@ package io.kotest.runner.junit4
 import io.kotest.core.config.configuration
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
-import io.kotest.core.test.TestStatus
 import io.kotest.engine.listener.AbstractTestEngineListener
 import io.kotest.engine.test.names.getDisplayNameFormatter
 import org.junit.runner.Description
@@ -22,16 +21,16 @@ class JUnitTestEngineListener(
 
    override suspend fun testFinished(testCase: TestCase, result: TestResult) {
       val desc = describeTestCase(testCase, formatter.format(testCase))
-      when (result.status) {
-         TestStatus.Success -> notifier.fireTestFinished(desc)
-         TestStatus.Error -> notifyFailure(desc, result)
-         TestStatus.Ignored -> notifier.fireTestIgnored(desc)
-         TestStatus.Failure -> notifyFailure(desc, result)
+      when (result) {
+         is TestResult.Success -> notifier.fireTestFinished(desc)
+         is TestResult.Error -> notifyFailure(desc, result)
+         is TestResult.Ignored -> notifier.fireTestIgnored(desc)
+         is TestResult.Failure -> notifyFailure(desc, result)
       }
    }
 
    private fun notifyFailure(desc: Description, result: TestResult) {
-      notifier.fireTestFailure(Failure(desc, result.error))
+      notifier.fireTestFailure(Failure(desc, result.errorOrNull))
       notifier.fireTestFinished(desc)
    }
 }

@@ -3,7 +3,6 @@ package com.sksamuel.kotest.assertions
 import io.kotest.core.test.AssertionMode
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
-import io.kotest.core.test.TestStatus
 import io.kotest.assertions.assertionCounter
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.extensions.TestCaseExtension

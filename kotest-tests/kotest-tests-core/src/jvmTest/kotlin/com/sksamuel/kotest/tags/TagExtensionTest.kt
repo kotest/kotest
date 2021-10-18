@@ -7,7 +7,6 @@ import io.kotest.core.extensions.TagExtension
 import io.kotest.core.spec.Isolate
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.style.StringSpec
-import io.kotest.core.test.TestStatus
 import io.kotest.matchers.shouldBe
 
 @Isolate

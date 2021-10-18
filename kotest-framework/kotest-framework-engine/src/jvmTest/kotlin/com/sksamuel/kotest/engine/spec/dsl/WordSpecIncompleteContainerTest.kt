@@ -3,7 +3,6 @@ package com.sksamuel.kotest.engine.spec.dsl
 import io.kotest.core.descriptors.DescriptorId
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.spec.style.WordSpec
-import io.kotest.core.test.TestStatus
 import io.kotest.engine.TestEngineLauncher
 import io.kotest.engine.listener.CollectingTestEngineListener
 import io.kotest.matchers.shouldBe
@@ -17,13 +16,13 @@ class WordSpecIncompleteContainerTest : FunSpec() {
             .launch()
          val desc = collector.tests.mapKeys { it.key.descriptor.id }
          desc[DescriptorId("s should")]?.status shouldBe TestStatus.Error
-         desc[DescriptorId("s should")]?.error?.message shouldBe "Test 's should' requires at least one nested test"
+         desc[DescriptorId("s should")]?.errorOrNull?.message shouldBe "Test 's should' requires at least one nested test"
 
          desc[DescriptorId("w when")]?.status shouldBe TestStatus.Error
-         desc[DescriptorId("w when")]?.error?.message shouldBe "Test 'w when' requires at least one nested test"
+         desc[DescriptorId("w when")]?.errorOrNull?.message shouldBe "Test 'w when' requires at least one nested test"
 
          desc[DescriptorId("y should")]?.status shouldBe TestStatus.Error
-         desc[DescriptorId("y should")]?.error?.message shouldBe "Test 'y' requires at least one nested test"
+         desc[DescriptorId("y should")]?.errorOrNull?.message shouldBe "Test 'y' requires at least one nested test"
       }
    }
 }

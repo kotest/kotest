@@ -1,6 +1,8 @@
 package io.kotest.engine.teamcity
 
 import io.kotest.common.errors.ComparisonError
+import kotlin.time.Duration
+import kotlin.time.milliseconds
 
 /**
  * Creates a TeamCity message builder to be used for a single string.
@@ -157,8 +159,10 @@ class TeamCityMessageBuilder(
       false -> value
    }
 
-   fun duration(durationInMillis: Long): TeamCityMessageBuilder =
-      addAttribute(Attributes.DURATION, durationInMillis.toString())
+   fun duration(durationMillis: Long) = duration(durationMillis.milliseconds)
+
+   fun duration(duration: Duration): TeamCityMessageBuilder =
+      addAttribute(Attributes.DURATION, duration.inWholeMilliseconds.toString())
 
    /**
     * Returns the completed string.
