@@ -23,6 +23,8 @@ sealed interface TestResult {
          ReplaceWith("TestResult.Error(durationMillis.milliseconds)", "kotlin.time.milliseconds")
       )
       fun error(error: Throwable, durationMillis: Long): Error = Error(durationMillis.milliseconds, error)
+
+      val Ignored = Ignored(null)
    }
 
    /**

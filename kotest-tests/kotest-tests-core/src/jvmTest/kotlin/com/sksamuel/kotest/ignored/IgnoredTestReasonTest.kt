@@ -16,6 +16,7 @@ import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestCaseConfig
 import io.kotest.core.test.TestCaseOrder
 import io.kotest.core.test.TestResult
+import io.kotest.core.test.TestStatus
 import io.kotest.core.test.xdisabledMessage
 import io.kotest.matchers.collections.shouldBeEmpty
 import io.kotest.matchers.collections.shouldContain
@@ -47,7 +48,7 @@ private val skippedListener = object : TestListener {
    val reasons = mutableSetOf<String>()
 
    override suspend fun finalizeSpec(kclass: KClass<out Spec>, results: Map<TestCase, TestResult>) {
-      reasons.addAll(results.values.filter { it.status == TestStatus.Ignored }.map { it.reason ?: "" })
+      reasons.addAll(results.values.filter { it.status == TestStatus.Ignored }.map { it.reasonOrNull ?: "" })
       configuration.deregisterListener(this)
       configuration.deregisterExtension(skippedExtension)
    }

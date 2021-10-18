@@ -1,6 +1,6 @@
 //package com.sksamuel.kotest.specs.stringspec
 //
-//import currentThreadWithoutCoroutine
+//import com.sksamuel.kotest.specs.currentThreadWithoutCoroutine
 //import io.kotest.core.spec.style.WordSpec
 //import io.kotest.core.test.TestCase
 //import io.kotest.core.test.TestCaseOrder
@@ -22,11 +22,11 @@
 //   override fun testCaseOrder(): TestCaseOrder = TestCaseOrder.Sequential
 //
 //   override fun beforeTest(testCase: TestCase) {
-//      listenerThread = currentThreadWithoutCoroutine()
+//      listenerThread = com.sksamuel.kotest.specs.currentThreadWithoutCoroutine()
 //   }
 //
 //   override fun afterTest(testCase: TestCase, result: TestResult) {
-//      listenerThread shouldBe currentThreadWithoutCoroutine()
+//      listenerThread shouldBe com.sksamuel.kotest.specs.currentThreadWithoutCoroutine()
 //   }
 //
 //   init {
@@ -73,6 +73,6 @@
 //   }
 //
 //   private fun logThreadName() {
-//      threadnames.add(currentThreadWithoutCoroutine())
+//      threadnames.add(com.sksamuel.kotest.specs.currentThreadWithoutCoroutine())
 //   }
 //}
