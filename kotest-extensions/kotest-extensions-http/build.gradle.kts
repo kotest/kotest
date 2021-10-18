@@ -53,7 +53,7 @@ kotlin {
          dependsOn(jvmMain)
          dependencies {
             implementation(project(Projects.JunitRunner))
-            implementation(project(Projects.AssertionsCore))
+            implementation(project(Projects.Assertions.Core))
             implementation(Libs.MockServer.netty)
             implementation(Libs.Kotest.Extensions.MockServer)
          }

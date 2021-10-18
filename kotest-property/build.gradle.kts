@@ -55,7 +55,7 @@ kotlin {
             compileOnly(kotlin("stdlib"))
             implementation(kotlin("reflect"))
             api(project(Projects.Common))
-            api(project(Projects.AssertionsShared))
+            api(project(Projects.Assertions.Shared))
             implementation(Libs.Coroutines.coreCommon)
          }
       }
@@ -72,7 +72,7 @@ kotlin {
       val commonTest by getting {
          dependencies {
             implementation(project(Projects.Framework.engine))
-            implementation(project(Projects.AssertionsCore))
+            implementation(project(Projects.Assertions.Core))
          }
       }
 

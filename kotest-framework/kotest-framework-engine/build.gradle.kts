@@ -65,7 +65,7 @@ kotlin {
          dependencies {
             compileOnly(kotlin("stdlib"))
             implementation(kotlin("reflect"))
-            api(project(Projects.AssertionsShared))
+            api(project(Projects.Assertions.Shared))
             implementation(project(Projects.Common))
 
             // this is API because we want people to be able to use the functionality in their tests
@@ -105,7 +105,7 @@ kotlin {
 
       val jvmTest by getting {
          dependencies {
-            implementation(project(Projects.AssertionsCore))
+            implementation(project(Projects.Assertions.Core))
             implementation(project(Projects.JunitRunner))
             implementation(Libs.Mocking.mockk)
          }

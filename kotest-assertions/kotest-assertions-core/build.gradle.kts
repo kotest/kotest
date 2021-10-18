@@ -54,9 +54,9 @@ kotlin {
             implementation(kotlin("reflect"))
             implementation(Libs.Coroutines.coreCommon)
             implementation(project(Projects.Common))
-            implementation(project(Projects.AssertionsApi))
+            implementation(project(Projects.Assertions.Api))
             // this is api because we want to expose `shouldBe` etc
-            api(project(Projects.AssertionsShared))
+            api(project(Projects.Assertions.Shared))
          }
       }
 

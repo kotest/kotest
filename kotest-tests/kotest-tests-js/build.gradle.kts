@@ -30,7 +30,7 @@ kotlin {
       val commonTest by getting {
          dependencies {
             implementation(kotlin("stdlib"))
-            implementation(project(Projects.AssertionsCore))
+            implementation(project(Projects.Assertions.Core))
             implementation(project(Projects.Framework.engine))
          }
       }

@@ -41,7 +41,7 @@ kotlin {
             api(project(Projects.Common))
             api(project(Projects.Framework.engine))
             api(project(Projects.Discovery))
-            api(project(Projects.AssertionsCore))
+            api(project(Projects.Assertions.Core))
             api(project(Projects.Extensions))
             api(project(Projects.Framework.concurrency))
             api(Libs.Coroutines.coreJvm)
@@ -56,7 +56,7 @@ kotlin {
          dependsOn(jvmMain)
          dependencies {
             implementation(project(Projects.JunitRunner))
-            implementation(project(Projects.AssertionsCore))
+            implementation(project(Projects.Assertions.Core))
             implementation(Libs.JUnitPlatform.testkit)
             implementation(Libs.Mocking.mockk)
          }

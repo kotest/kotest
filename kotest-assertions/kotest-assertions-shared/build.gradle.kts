@@ -54,7 +54,7 @@ kotlin {
          dependencies {
             compileOnly(kotlin("stdlib"))
             implementation(kotlin("reflect"))
-            api(project(Projects.AssertionsApi))
+            api(project(Projects.Assertions.Api))
             implementation(project(Projects.Common))
             implementation(Libs.Coroutines.coreCommon)
          }

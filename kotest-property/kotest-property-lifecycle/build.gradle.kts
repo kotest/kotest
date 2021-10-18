@@ -40,7 +40,7 @@ kotlin {
       val commonTest by getting {
          dependencies {
             implementation(project(Projects.Framework.engine))
-            implementation(project(Projects.AssertionsCore))
+            implementation(project(Projects.Assertions.Core))
          }
       }
 

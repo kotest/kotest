@@ -31,14 +31,14 @@ kotlin {
       val commonMain by getting {
          dependencies {
             implementation(Libs.Serialization.json)
-            implementation(project(Projects.AssertionsShared))
+            implementation(project(Projects.Assertions.Shared))
             implementation(Libs.Jayway.jsonpath)
          }
       }
 
       val commonTest by getting {
          dependencies {
-            implementation(project(Projects.AssertionsCore))
+            implementation(project(Projects.Assertions.Core))
             implementation(project(Projects.Api))
             implementation(project(Projects.Framework.engine))
             implementation(project(Projects.Property))

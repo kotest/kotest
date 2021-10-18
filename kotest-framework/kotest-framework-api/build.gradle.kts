@@ -57,7 +57,7 @@ kotlin {
             api(Libs.Coroutines.coreCommon)
             implementation(Libs.Kotlin.kotlinScriptRuntime)
             implementation(project(Projects.Common))
-            api(project(Projects.AssertionsShared))
+            api(project(Projects.Assertions.Shared))
          }
       }
 
@@ -140,7 +140,7 @@ kotlin {
          dependencies {
             implementation(kotlin("reflect"))
             implementation(project(Projects.Framework.engine))
-            implementation(project(Projects.AssertionsCore))
+            implementation(project(Projects.Assertions.Core))
             // we use the internals of the JVM project in the tests
             implementation(project(Projects.JunitRunner))
             implementation(Libs.Coroutines.coreJvm)
