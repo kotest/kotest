@@ -16,11 +16,11 @@ import io.kotest.matchers.shouldNotBe
 class DataTestingUnstableTestNameTest : FunSpec() {
    init {
 
-      val results = mutableListOf<TestStatus>()
+      val results = mutableListOf<TestResult>()
 
       val listener = object : AbstractTestEngineListener() {
          override suspend fun testFinished(testCase: TestCase, result: TestResult) {
-            results.add(result.status)
+            results.add(result)
          }
       }
 
@@ -35,12 +35,10 @@ class DataTestingUnstableTestNameTest : FunSpec() {
             .withSpec(RegularClassAndLeafIsolation::class)
             .launch()
 
-         results shouldBe listOf(
-            TestStatus.Success,
-            TestStatus.Failure,
-            TestStatus.Success,
-            TestStatus.Success,
-         )
+         results[0].isSuccess shouldBe true
+         results[1].isFailure shouldBe true
+         results[2].isSuccess shouldBe true
+         results[3].isSuccess shouldBe true
       }
 
       test("isolation mode leaf + data classes with regular class param should show all tests in data testing") {
@@ -50,12 +48,10 @@ class DataTestingUnstableTestNameTest : FunSpec() {
             .withSpec(DataClassWithNonDataParameterAndLeafIsolation::class)
             .launch()
 
-         results shouldBe listOf(
-            TestStatus.Success,
-            TestStatus.Failure,
-            TestStatus.Success,
-            TestStatus.Success,
-         )
+         results[0].isSuccess shouldBe true
+         results[1].isFailure shouldBe true
+         results[2].isSuccess shouldBe true
+         results[3].isSuccess shouldBe true
       }
    }
 }
