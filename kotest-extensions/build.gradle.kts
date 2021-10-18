@@ -32,7 +32,7 @@ kotlin {
       val jvmMain by getting {
          dependencies {
             implementation(kotlin("reflect"))
-            implementation(project(Projects.Api))
+            implementation(project(Projects.Framework.api))
             implementation(project(Projects.Framework.engine))
             implementation(project(Projects.Common))
             implementation(Libs.Apache.commonsio)

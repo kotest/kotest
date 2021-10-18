@@ -32,7 +32,7 @@ kotlin {
             compileOnly(kotlin("stdlib"))
             implementation(Libs.Coroutines.coreCommon)
             implementation(project(Projects.Common))
-            implementation(project(Projects.Api))
+            implementation(project(Projects.Framework.api))
          }
       }
 

@@ -35,7 +35,7 @@ kotlin {
          dependencies {
             compileOnly(kotlin("stdlib"))
             implementation(project(Projects.Framework.engine))
-            implementation(project(Projects.Api))
+            implementation(project(Projects.Framework.api))
             implementation(Libs.Jdom.jdom2)
          }
       }

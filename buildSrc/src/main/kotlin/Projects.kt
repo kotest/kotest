@@ -1,13 +1,13 @@
 object Projects {
 
    const val Common = ":kotest-common"
-   const val Api = ":kotest-framework:kotest-framework-api"
    const val Discovery = ":kotest-framework:kotest-framework-discovery"
 
    object Framework {
       const val concurrency = ":kotest-framework:kotest-framework-concurrency"
       const val mppshared = ":kotest-framework:kotest-framework-multiplatform-plugin-shared"
       const val engine = ":kotest-framework:kotest-framework-engine"
+      const val api = ":kotest-framework:kotest-framework-api"
    }
 
    object Assertions {

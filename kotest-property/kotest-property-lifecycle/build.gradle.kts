@@ -31,7 +31,7 @@ kotlin {
          dependencies {
             compileOnly(kotlin("stdlib"))
             api(project(Projects.Property))
-            api(project(Projects.Api))
+            api(project(Projects.Framework.api))
             implementation(Libs.Coroutines.coreCommon)
             implementation(project(Projects.Common))
          }

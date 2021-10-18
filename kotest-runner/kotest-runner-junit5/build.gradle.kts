@@ -37,7 +37,7 @@ kotlin {
       val jvmMain by getting {
          dependencies {
             implementation(Libs.Kotlin.kotlinScriptRuntime)
-            api(project(Projects.Api))
+            api(project(Projects.Framework.api))
             api(project(Projects.Common))
             api(project(Projects.Framework.engine))
             api(project(Projects.Discovery))

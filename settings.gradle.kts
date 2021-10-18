@@ -24,6 +24,9 @@ include("kotest-framework:kotest-framework-discovery")
 // brings in the API dependency
 include("kotest-framework:kotest-framework-engine")
 
+// a fat jar that includes everything needed to execute the engine
+include("kotest-framework:kotest-framework-standalone")
+
 // compiler plugins to integrate tests with the engine
 include("kotest-framework:kotest-framework-multiplatform-plugin-js")
 include("kotest-framework:kotest-framework-multiplatform-plugin-native")
