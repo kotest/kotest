@@ -2,7 +2,6 @@ package io.kotest.engine.spec.interceptor
 
 import io.kotest.core.config.Configuration
 import io.kotest.core.extensions.ApplyExtension
-import io.kotest.core.extensions.Extension
 import io.kotest.core.spec.SpecRef
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
@@ -24,12 +23,10 @@ internal class ApplyExtensionsInterceptor(private val conf: Configuration) : Spe
       fn: suspend (SpecRef) -> Map<TestCase, TestResult>
    ): suspend (SpecRef) -> Map<TestCase, TestResult> = { ref ->
 
-      val extensions = mutableListOf<Extension>()
-
-      ref.kclass.annotation<ApplyExtension>()?.extensions?.forEach { extensionClass ->
+      val extensions = ref.kclass.annotation<ApplyExtension>()?.extensions?.map { extensionClass ->
          val extension = extensionClass.newInstanceNoArgConstructorOrObjectInstance()
-         extensions.add(SpecWrapperExtension(extension, ref.kclass))
-      }
+         SpecWrapperExtension(extension, ref.kclass)
+      } ?: emptyList()
 
       extensions.forEach { conf.register(it) }
       fn(ref).apply {
