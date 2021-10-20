@@ -74,6 +74,7 @@ kotlin {
             implementation(project(Projects.JunitRunner))
             implementation(Libs.OpenTest4j.opentest4j)
             implementation(Libs.Apache.commonslang)
+            implementation(Libs.Mocking.mockk)
          }
       }
 
