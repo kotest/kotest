@@ -32,12 +32,16 @@ class MyConfig : AbstractProjectConfig() {
 }
 ```
 
-Additionally, the reporter needs to know where your build output folder is by setting a system property, so we configure
-that in the tests block in gradle.
+Additionally, the reporter needs to know where your build output folder is by setting a system property.
+Gradle also needs to know that it should not generate JUnit XML reports by itself.
+We configure that in the tests block in gradle.
 
 ```kotlin
 tasks.named<Test>("test") {
   useJUnitPlatform()
+  reports {
+    junitXml.required.set(false)
+  }
   systemProperty("gradle.build.dir", project.buildDir)
 }
 ```
