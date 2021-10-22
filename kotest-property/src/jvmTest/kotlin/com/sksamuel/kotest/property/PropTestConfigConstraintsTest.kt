@@ -1,13 +1,18 @@
 package com.sksamuel.kotest.property
 
 import io.kotest.core.spec.style.FunSpec
+import io.kotest.matchers.longs.shouldBeGreaterThan
+import io.kotest.matchers.longs.shouldBeLessThan
 import io.kotest.matchers.shouldBe
 import io.kotest.property.Arb
 import io.kotest.property.Constraints
 import io.kotest.property.PropTestConfig
 import io.kotest.property.arbitrary.int
+import io.kotest.property.arbitrary.string
 import io.kotest.property.checkAll
 import io.kotest.property.internal.proptest
+import kotlin.time.Duration
+import kotlin.time.TimeSource
 
 class PropTestConfigConstraintsTest : FunSpec() {
    init {
@@ -220,8 +225,6 @@ class PropTestConfigConstraintsTest : FunSpec() {
 
       test("PropTestConfig constraints should be used by proptest11 if present") {
          checkAll(Arb.int(1..1000)) { iterations ->
-
-
             var iterationCount = 0
             proptest(
                Arb.int(),
@@ -247,8 +250,6 @@ class PropTestConfigConstraintsTest : FunSpec() {
 
       test("PropTestConfig constraints should be used by proptest12 if present") {
          checkAll(Arb.int(1..1000)) { iterations ->
-
-
             var iterationCount = 0
             proptest(
                Arb.int(),
@@ -263,13 +264,23 @@ class PropTestConfigConstraintsTest : FunSpec() {
                Arb.int(),
                Arb.int(),
                Arb.int(),
-               PropTestConfig(constraints = Constraints.iterations(iterations)))
+               PropTestConfig(constraints = Constraints.iterations(iterations))
+            )
             { _, _, _, _, _, _, _, _, _, _, _, _ ->
                iterationCount++
             }
 
             iterationCount shouldBe iterations
          }
+      }
+
+      test("PropTestConfig constraints should support durations") {
+         val config = PropTestConfig(constraints = Constraints.duration(Duration.milliseconds(200)))
+         val start = TimeSource.Monotonic.markNow()
+         checkAll(config, Arb.string()) { _ -> }
+         // we should have exited around 200 millis
+         start.elapsedNow().inWholeMilliseconds.shouldBeGreaterThan(150)
+         start.elapsedNow().inWholeMilliseconds.shouldBeLessThan(300)
       }
    }
 }
