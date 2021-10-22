@@ -29,12 +29,10 @@ class TestEngineStartedFinishedInterceptorTest : FunSpec({
    }
 
    test("should invoke engineFinished after downstream") {
-      var errors = emptyList<Throwable>()
       var fired = ""
       val listener = object : AbstractTestEngineListener() {
          override suspend fun engineFinished(t: List<Throwable>) {
             fired += "a"
-            errors = t
          }
       }
       TestEngineStartedFinishedInterceptor.intercept(

@@ -8,7 +8,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.TestCoroutineDispatcher
 
 @ExperimentalCoroutinesApi
-actual class RunBlockingTestInterceptor : TestExecutionInterceptor {
+actual class TestCoroutineDispatcherInterceptor : TestExecutionInterceptor {
 
    override suspend fun intercept(
       test: suspend (TestCase, TestContext) -> TestResult

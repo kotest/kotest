@@ -1,5 +1,6 @@
 package io.kotest.engine.spec
 
+import io.kotest.common.ExperimentalKotest
 import io.kotest.common.Platform
 import io.kotest.common.platform
 import io.kotest.core.concurrency.CoroutineDispatcherFactory
@@ -11,6 +12,7 @@ import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.engine.listener.TestEngineListener
 import io.kotest.engine.spec.interceptor.ApplyExtensionsInterceptor
+import io.kotest.engine.spec.interceptor.EnabledIfSpecInterceptor
 import io.kotest.engine.spec.interceptor.IgnoreNestedSpecStylesInterceptor
 import io.kotest.engine.spec.interceptor.IgnoredSpecInterceptor
 import io.kotest.engine.spec.interceptor.SpecRefExtensionInterceptor
@@ -19,6 +21,7 @@ import io.kotest.engine.spec.interceptor.SpecEnterInterceptor
 import io.kotest.engine.spec.interceptor.SpecExitInterceptor
 import io.kotest.engine.spec.interceptor.SpecExtensionInterceptor
 import io.kotest.engine.spec.interceptor.SpecStartedFinishedInterceptor
+import io.kotest.engine.spec.interceptor.TagsExcludedSpecInterceptor
 import io.kotest.fp.flatMap
 import io.kotest.mpp.log
 import kotlin.reflect.KClass
@@ -33,6 +36,7 @@ import kotlin.reflect.KClass
  * [io.kotest.engine.spec.interceptor.SpecExecutionInterceptor] are executed after the spec is created.
  *
  */
+@ExperimentalKotest
 class SpecExecutor(
    private val listener: TestEngineListener,
    private val defaultCoroutineDispatcherFactory: CoroutineDispatcherFactory,
@@ -55,7 +59,9 @@ class SpecExecutor(
       val interceptors = listOf(
          SpecExitInterceptor(listener),
          SpecEnterInterceptor(listener),
+         EnabledIfSpecInterceptor(listener, conf),
          IgnoredSpecInterceptor(listener, conf),
+         TagsExcludedSpecInterceptor(listener, conf),
          SpecRefExtensionInterceptor(conf),
          ApplyExtensionsInterceptor(conf),
       )

@@ -6,8 +6,8 @@ import io.kotest.core.spec.Spec
 import kotlin.reflect.KClass
 
 /**
- * Returns true if the given Spec class could contain an active test based on further tags.
- * Returns false if the spec should be explictly excluded
+ * Returns true if the given [Spec] class could contain an active test based on further tags.
+ * Returns false if the spec has been explicitly excluded and should not be instantiated.
  */
 fun Expression?.isPotentiallyActive(kclass: KClass<out Spec>): Boolean {
    // nothing is excluded if the expression is null

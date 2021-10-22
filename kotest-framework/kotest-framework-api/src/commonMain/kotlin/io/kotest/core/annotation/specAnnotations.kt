@@ -4,8 +4,9 @@ import io.kotest.core.spec.Spec
 import kotlin.reflect.KClass
 
 /**
- * Attach tag to [io.kotest.core.spec.Spec] and a spec excluded by a tag expression won't be instantiated.
- * An unannotated spec will still be instantiated to order to check if root tests are included.
+ * Attach to a [io.kotest.core.spec.Spec] and a spec excluded by a tag expression
+ * won't be instantiated. An unannotated spec will still need be instantiated to
+ * order to examine any tags registered by the constructors.
  */
 // @Inherited TODO Not supported by Kotlin yet
 @Target(AnnotationTarget.CLASS)
@@ -21,11 +22,7 @@ annotation class Tags(vararg val values: String)
 annotation class RequiresTag(vararg val values: String)
 
 /**
- * Attach to [io.kotest.core.spec.Spec], and that spec won't be instantiated or executed.
- *
- * Note: Any spec annotated with [Ignored] will not appear in reports by default.
- * If you would like the spec to appear and be marked as "ignored" in the output then
- * also include the annotation @Visible
+ * Attach to a [io.kotest.core.spec.Spec], and that spec won't be instantiated or executed.
  */
 // @Inherited TODO Not supported by Kotlin yet
 @Target(AnnotationTarget.CLASS)
@@ -33,8 +30,8 @@ annotation class RequiresTag(vararg val values: String)
 annotation class Ignored
 
 /**
- * Attach to [io.kotest.core.spec.Spec], and the logic inside [enabledIf] will be executed
- * to define if a Spec will be instantiated or executed.
+ * Attach to a [io.kotest.core.spec.Spec], and the referenced [EnabledCondition] will be
+ * instantiated and the [enabledIf] function invoked.
  *
  * Implementations must contain a no-arg constructor as it will be created via reflection.
  */

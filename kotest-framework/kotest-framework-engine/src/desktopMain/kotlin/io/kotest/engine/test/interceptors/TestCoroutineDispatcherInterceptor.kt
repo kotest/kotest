@@ -4,7 +4,7 @@ import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestContext
 import io.kotest.core.test.TestResult
 
-actual class RunBlockingTestInterceptor : TestExecutionInterceptor {
+actual class TestCoroutineDispatcherInterceptor : TestExecutionInterceptor {
    override suspend fun intercept(
       test: suspend (TestCase, TestContext) -> TestResult
    ): suspend (TestCase, TestContext) -> TestResult = test

@@ -8,4 +8,4 @@ import io.kotest.core.test.TestCase
 fun TestCase.isTestCoroutineDispatcher(configuration: Configuration): Boolean =
    config.testCoroutineDispatcher ?: spec.testCoroutineDispatcher ?: configuration.testCoroutineDispatcher
 
-expect class RunBlockingTestInterceptor() : TestExecutionInterceptor
+expect class TestCoroutineDispatcherInterceptor() : TestExecutionInterceptor

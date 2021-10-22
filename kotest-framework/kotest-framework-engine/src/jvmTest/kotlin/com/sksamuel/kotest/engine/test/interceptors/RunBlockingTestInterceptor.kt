@@ -10,7 +10,7 @@ import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestType
 import io.kotest.core.test.delayController
 import io.kotest.engine.test.contexts.NoopTestContext
-import io.kotest.engine.test.interceptors.RunBlockingTestInterceptor
+import io.kotest.engine.test.interceptors.TestCoroutineDispatcherInterceptor
 import io.kotest.matchers.booleans.shouldBeTrue
 import io.kotest.matchers.nulls.shouldNotBeNull
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -31,7 +31,7 @@ class RunBlockingTestInterceptorTest : FunSpec() {
          )
 
          var fired = false
-         RunBlockingTestInterceptor().intercept { _, context ->
+         TestCoroutineDispatcherInterceptor().intercept { _, context ->
             context.delayController.shouldNotBeNull()
             fired = true
             TestResult.success(0)

@@ -5,9 +5,6 @@ import io.kotest.core.config.configuration
 import io.kotest.core.extensions.DiscoveryExtension
 import io.kotest.core.spec.Spec
 import io.kotest.engine.TestEngineLauncher
-import io.kotest.engine.extensions.EnabledConditionSpecDiscoveryExtension
-import io.kotest.engine.extensions.IgnoredSpecDiscoveryExtension
-import io.kotest.engine.extensions.TagsExcludedDiscoveryExtension
 import io.kotest.engine.listener.TestEngineListener
 import io.kotest.fp.Try
 import io.kotest.framework.discovery.Discovery
@@ -54,12 +51,7 @@ private fun specs(specClass: KClass<out Spec>?, packageName: String?): Discovery
 private fun scan(packageName: String?): DiscoveryResult {
    val packageSelector = packageName?.let { DiscoverySelector.PackageDiscoverySelector(it) }
    val req = DiscoveryRequest(selectors = listOfNotNull(packageSelector))
-   val extensions = listOf(
-      IgnoredSpecDiscoveryExtension,
-      EnabledConditionSpecDiscoveryExtension,
-      EnabledConditionSpecDiscoveryExtension,
-      TagsExcludedDiscoveryExtension,
-   ) + configuration.extensions().filterIsInstance<DiscoveryExtension>()
+   val extensions = configuration.extensions().filterIsInstance<DiscoveryExtension>()
    val discovery = Discovery(extensions)
    return discovery.discover(req)
 }

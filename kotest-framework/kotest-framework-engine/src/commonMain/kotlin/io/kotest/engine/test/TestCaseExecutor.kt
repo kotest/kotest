@@ -21,7 +21,7 @@ import io.kotest.engine.test.interceptors.InvocationCountCheckInterceptor
 import io.kotest.engine.test.interceptors.InvocationRepeatInterceptor
 import io.kotest.engine.test.interceptors.InvocationTimeoutInterceptor
 import io.kotest.engine.test.interceptors.LifecycleInterceptor
-import io.kotest.engine.test.interceptors.RunBlockingTestInterceptor
+import io.kotest.engine.test.interceptors.TestCoroutineDispatcherInterceptor
 import io.kotest.engine.test.interceptors.SupervisorScopeInterceptor
 import io.kotest.engine.test.interceptors.TestCaseExtensionInterceptor
 import io.kotest.engine.test.interceptors.TestFinishedInterceptor
@@ -77,7 +77,7 @@ class TestCaseExecutor(
          InvocationRepeatInterceptor(timeMark),
          InvocationTimeoutInterceptor,
          CoroutineLoggingInterceptor,
-         if (platform == Platform.JVM && testCase.isTestCoroutineDispatcher(configuration)) RunBlockingTestInterceptor() else null,
+         if (platform == Platform.JVM && testCase.isTestCoroutineDispatcher(configuration)) TestCoroutineDispatcherInterceptor() else null,
       )
 
       val innerExecute: suspend (TestCase, TestContext) -> TestResult = { tc, ctx ->
