@@ -7,9 +7,9 @@ import io.kotest.engine.listener.TestEngineListener
 
 /**
  * Wraps the [TestEngineListener] to listen for test events and returns an error
- * if there were no tests executed.
+ * if there were no tests executed and [configuration.failOnEmptyTestSuite] is true.
  */
-@OptIn(KotestInternal::class)
+@KotestInternal
 internal object EmptyTestSuiteInterceptor : EngineInterceptor {
 
    override suspend fun intercept(
@@ -21,9 +21,8 @@ internal object EmptyTestSuiteInterceptor : EngineInterceptor {
          true -> {
             val collector = CollectingTestEngineListener()
             val result = execute(context.mergeListener(collector))
-
             when {
-               collector.tests.isEmpty() -> EngineResult(result.errors + EmptyTestSuiteException())
+               collector.tests.isEmpty() -> EngineResult(result.errors + EmptyTestSuiteException)
                else -> result
             }
          }
@@ -35,4 +34,4 @@ internal object EmptyTestSuiteInterceptor : EngineInterceptor {
 /**
  * Exception used to indicate that the engine had no specs to execute.
  */
-class EmptyTestSuiteException : Exception("No specs were available to test")
+object EmptyTestSuiteException : Exception("No specs were available to test")
