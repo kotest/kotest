@@ -1,8 +1,7 @@
 package io.kotest.core.spec
 
 /**
- * Add this annotation to [Listener]s or [Extensions] and they will be registered automatically
- * for all specs.
+ * Add this annotation to [Extension]s and they will be registered automatically for all specs.
  */
 annotation class AutoScan
 

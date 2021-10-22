@@ -33,7 +33,7 @@ interface Matcher<in T> {
       /**
        * Returns a [Matcher] for type T that will always fail with the given [error] message.
        */
-      fun <T> failure(error: String) = Matcher<T> { invoke(false, { "" }, { error }) }
+      fun <T> failure(error: String) = Matcher<T> { invoke(false, { error }, { "" }) }
 
       /**
        * Create matcher with the given function to evaluate the value and return a MatcherResult
@@ -112,25 +112,25 @@ interface MatcherResult {
    fun passed(): Boolean
 
    /**
-    * Returns a message indicating why the evaluation failed
-    * for when this matcher is used in the positive sense. For example,
-    * if a size matcher was used like `mylist should haveSize(5)` then
-    * an appropriate error message would be "list should be size 5".
+    * Returns a message indicating why the matcher failed for when this matcher
+    * is used in the positive sense. For example, if a size matcher was used
+    * like `mylist should haveSize(5)` then an appropriate error message would
+    * be "list should be size 5".
     */
    fun failureMessage(): String
 
    /**
-    * Returns a message indicating why the evaluation
-    * failed for when this matcher is used in the negative sense. For example,
-    * if a size matcher was used like `mylist shouldNot haveSize(5)` then
-    * an appropriate negated failure would be "List should not have size 5".
+    * Returns a message indicating why the matcher failed for when this matcher
+    * is used in the negative sense. For example, if a size matcher was used
+    * like `mylist shouldNot haveSize(5)` then an appropriate negated failure
+    * would be "List should not have size 5".
     */
    fun negatedFailureMessage(): String
 
    companion object {
 
       @Deprecated(
-         "Prefer the version that accepts functions - this avoids eager creation of messages. This was deprecated in 5.0 and will be removed in 7.0",
+         "Prefer the version that accepts functions - this avoids eager creation of messages. This was deprecated in 5.0.",
          ReplaceWith(
             "MatcherResult(\npassed,\n{ failureMessage },\n{ negatedFailureMessage }\n)"
          )
@@ -149,6 +149,29 @@ interface MatcherResult {
          override fun passed(): Boolean = passed
          override fun failureMessage(): String = failureMessageFn()
          override fun negatedFailureMessage(): String = negatedFailureMessageFn()
+      }
+   }
+}
+
+interface ComparableMatcherResult : MatcherResult {
+
+   fun actual(): String
+
+   fun expected(): String
+
+   companion object {
+      operator fun invoke(
+         passed: Boolean,
+         failureMessageFn: () -> String,
+         negatedFailureMessageFn: () -> String,
+         actual: String,
+         expected: String,
+      ) = object : ComparableMatcherResult {
+         override fun passed(): Boolean = passed
+         override fun failureMessage(): String = failureMessageFn()
+         override fun negatedFailureMessage(): String = negatedFailureMessageFn()
+         override fun actual(): String = actual
+         override fun expected(): String = expected
       }
    }
 }

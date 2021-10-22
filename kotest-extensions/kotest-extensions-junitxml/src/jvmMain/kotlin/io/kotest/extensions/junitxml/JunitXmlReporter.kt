@@ -1,14 +1,16 @@
 package io.kotest.extensions.junitxml
 
-import io.kotest.core.listeners.TestListener
+import io.kotest.core.config.configuration
+import io.kotest.core.listeners.FinalizeSpecListener
+import io.kotest.core.listeners.PrepareSpecListener
 import io.kotest.core.spec.Spec
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
-import io.kotest.core.test.TestStatus
 import io.kotest.core.test.TestType
-import io.kotest.core.spec.toDescription
-import org.jdom2.Element
+import io.kotest.engine.test.names.formatTestPath
+import io.kotest.engine.test.names.getDisplayNameFormatter
 import org.jdom2.Document
+import org.jdom2.Element
 import org.jdom2.output.Format
 import org.jdom2.output.XMLOutputter
 import java.net.InetAddress
@@ -23,7 +25,7 @@ import java.time.format.DateTimeFormatter.ISO_LOCAL_DATE_TIME
 import java.util.concurrent.ConcurrentHashMap
 import kotlin.reflect.KClass
 
-@Deprecated("Now called JunitXmlReporter. Will be removed in 4.8")
+@Deprecated("Now called JunitXmlReporter. Deprecated since 4.6.")
 typealias JunitXmlListener = JunitXmlReporter
 
 /**
@@ -41,7 +43,7 @@ class JunitXmlReporter(
    private val includeContainers: Boolean = false,
    private val useTestPathAsName: Boolean = true,
    private val outputDir: String = "test-results/test"
-) : TestListener {
+) : PrepareSpecListener, FinalizeSpecListener {
 
    companion object {
       const val DefaultLocation = "./build/test-results/test/"
@@ -52,6 +54,7 @@ class JunitXmlReporter(
       const val AttributeName = "name"
    }
 
+   private val formatter = getDisplayNameFormatter(configuration)
    private var marks = ConcurrentHashMap<KClass<out Spec>, Long>()
 
    private fun outputDir(): Path {
@@ -84,18 +87,18 @@ class JunitXmlReporter(
       testSuite.setAttribute("timestamp", ISO_LOCAL_DATE_TIME.format(getCurrentDateTime()))
       testSuite.setAttribute("time", (duration / 1000).toString())
       testSuite.setAttribute("hostname", hostname())
-      testSuite.setAttribute("errors", filtered.filter { it.value.status == TestStatus.Error }.size.toString())
-      testSuite.setAttribute("failures", filtered.filter { it.value.status == TestStatus.Failure }.size.toString())
-      testSuite.setAttribute("skipped", filtered.filter { it.value.status == TestStatus.Ignored }.size.toString())
+      testSuite.setAttribute("errors", filtered.filter { it.value.isError }.size.toString())
+      testSuite.setAttribute("failures", filtered.filter { it.value.isFailure }.size.toString())
+      testSuite.setAttribute("skipped", filtered.filter { it.value.isIgnored }.size.toString())
       testSuite.setAttribute("tests", filtered.size.toString())
-      testSuite.setAttribute(AttributeName, kclass.toDescription().displayName())
+      testSuite.setAttribute(AttributeName, formatter.format(kclass))
       document.addContent(testSuite)
 
       filtered.map { (testcase, result) ->
 
          val name = when (useTestPathAsName) {
-            true -> testcase.description.testDisplayPath().value
-            false -> testcase.description.name.displayName
+            true -> formatter.formatTestPath(testcase, " -- ")
+            false -> formatter.format(testcase)
          }
 
          val e = Element("testcase")
@@ -103,18 +106,18 @@ class JunitXmlReporter(
          e.setAttribute("classname", kclass.java.canonicalName)
          e.setAttribute("time", (result.duration / 1000).toString())
 
-         when (result.status) {
-            TestStatus.Error -> {
+         when (result) {
+            is TestResult.Error -> {
                val err = Element("error")
-               result.error?.let {
+               result.errorOrNull?.let {
                   err.setAttribute("type", it.javaClass.name)
                   err.setText(it.message)
                }
                e.addContent(err)
             }
-            TestStatus.Failure -> {
+            is TestResult.Failure -> {
                val failure = Element("failure")
-               result.error?.let {
+               result.errorOrNull?.let {
                   failure.setAttribute("type", it.javaClass.name)
                   failure.setText(it.message)
                }
@@ -129,8 +132,8 @@ class JunitXmlReporter(
       write(kclass, document)
    }
 
-   private fun write(kclass: KClass<out Spec>, document: Document) {
-      val path = outputDir().resolve("TEST-" + kclass.toDescription().name.displayName + ".xml")
+   private fun write(kclass: KClass<*>, document: Document) {
+      val path = outputDir().resolve("TEST-" + formatter.format(kclass) + ".xml")
       path.parent.toFile().mkdirs()
       val outputter = XMLOutputter(Format.getPrettyFormat())
       val writer = Files.newBufferedWriter(path, StandardOpenOption.TRUNCATE_EXISTING, StandardOpenOption.CREATE)

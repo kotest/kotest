@@ -71,9 +71,11 @@ class MapShrinker<K, V> : Shrinker<Map<K, V>> {
 
 /**
  * Returns an [Arb] that produces Pairs of K,V using the supplied arbs for K and V.
+ * Edgecases will be derived from [k] and [v].
  */
-fun <K, V> Arb.Companion.pair(k: Arb<K>, v: Arb<V>) = arbitrary { rs ->
-   val ks = k.sample(rs)
-   val vs = v.sample(rs)
-   Pair(ks.value, vs.value)
+fun <K, V> Arb.Companion.pair(k: Arb<K>, v: Arb<V>): Arb<Pair<K, V>> {
+   val arbPairWithoutKeyEdges:Arb<Pair<K, V>> = Arb.bind(k.removeEdgecases(), v, ::Pair)
+   val arbPairWithoutValueEdges:Arb<Pair<K, V>> = Arb.bind(k, v.removeEdgecases(), ::Pair)
+   val arbPair: Arb<Pair<K, V>> = Arb.bind(k, v, ::Pair)
+   return Arb.choice(arbPair, arbPairWithoutKeyEdges, arbPairWithoutValueEdges)
 }

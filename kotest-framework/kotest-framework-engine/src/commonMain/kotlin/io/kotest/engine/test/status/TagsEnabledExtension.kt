@@ -24,7 +24,7 @@ internal object TagsEnabledExtension : TestEnabledExtension {
    override fun isEnabled(testCase: TestCase): Enabled {
       val enabledInTags = configuration.activeTags().parse().isActive(testCase.allTags())
       if (!enabledInTags) {
-         return Enabled.disabled("${testCase.description.testPath()} is disabled by tags")
+         return Enabled.disabled("${testCase.descriptor.path()} is disabled by tags")
             .also { log { it.reason } }
       }
       return Enabled.enabled

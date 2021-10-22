@@ -1,34 +1,20 @@
 package io.kotest.core.spec.style.scopes
 
 import io.kotest.core.Tag
+import io.kotest.core.descriptors.append
 import io.kotest.core.extensions.TestCaseExtension
+import io.kotest.core.names.TestName
 import io.kotest.core.spec.resolvedDefaultConfig
 import io.kotest.core.test.EnabledIf
 import io.kotest.core.test.NestedTest
-import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestCaseSeverityLevel
 import io.kotest.core.test.TestContext
 import io.kotest.core.test.TestType
 import io.kotest.core.test.createNestedTest
-import io.kotest.core.test.createTestName
-import kotlin.coroutines.CoroutineContext
+import io.kotest.core.test.deriveTestCaseConfig
 import kotlin.time.Duration
 
-class FreeSpecTerminalContext(
-   val testContext: TestContext,
-) : TestContext {
-
-   override val testCase: TestCase = testContext.testCase
-   override val coroutineContext: CoroutineContext = testContext.coroutineContext
-   override suspend fun registerTestCase(nested: NestedTest) = error("Cannot nest a test inside a terminal scope")
-
-   // exists to stop nesting
-   @Deprecated("Cannot nest leaf test inside another leaf test", level = DeprecationLevel.ERROR)
-   suspend infix operator fun String.invoke(test: suspend TestContext.() -> Unit) {
-   }
-}
-
-@Deprecated("Renamed to FreeSpecContainerContext. This alias will be removed in 4.8")
+@Deprecated("Renamed to FreeSpecContainerContext. Deprecated since 4.5.")
 typealias FreeScope = FreeSpecContainerContext
 
 class FreeSpecContainerContext(
@@ -48,7 +34,11 @@ class FreeSpecContainerContext(
     * Creates a new container scope inside this spec.
     */
    suspend infix operator fun String.minus(test: suspend FreeSpecContainerContext.() -> Unit) {
-      registerTestCase(createNestedTest(this, TestType.Container) { FreeSpecContainerContext(this).test() })
+      registerTestCase(createNestedTest(this, TestType.Container) {
+         val incomplete = IncompleteContainerContext(this)
+         FreeSpecContainerContext(incomplete).test()
+         if (!incomplete.hasNestedTest) throw IncompleteContainerException(this@minus)
+      })
    }
 
    /**
@@ -60,11 +50,11 @@ class FreeSpecContainerContext(
 
    private fun createNestedTest(name: String, type: TestType, test: suspend TestContext.() -> Unit): NestedTest {
       return createNestedTest(
-         name = this@FreeSpecContainerContext.testCase.description.append(createTestName(name), type).name,
+         descriptor = testCase.descriptor.append(name),
+         name = TestName(name),
          xdisabled = false,
          config = testCase.spec.resolvedDefaultConfig(),
          type = type,
-         descriptor = null,
          factoryId = testCase.factoryId,
          test = test
       )
@@ -82,7 +72,7 @@ class FreeSpecContainerContext(
       severity: TestCaseSeverityLevel? = null,
       test: suspend TestContext.() -> Unit,
    ) = TestWithConfigBuilder(
-      createTestName(this),
+      TestName(this),
       testContext,
       testCase.spec.resolvedDefaultConfig(),
       xdisabled = false,
@@ -98,4 +88,49 @@ class FreeSpecContainerContext(
       severity,
       test
    )
+
+   // eg, "this test".config(...) - { } // adds a container test with config
+   suspend infix operator fun FreeSpecContextConfigBuilder.minus(test: suspend FreeSpecContainerContext.() -> Unit) {
+      registerTestCase(
+         createNestedTest(
+            descriptor = testCase.descriptor.append(name),
+            name = TestName(name),
+            xdisabled = false,
+            config = config,
+            type = TestType.Container,
+            factoryId = testCase.factoryId,
+         ) {
+            val incomplete = IncompleteContainerContext(this)
+            FreeSpecContainerContext(incomplete).test()
+            if (!incomplete.hasNestedTest) throw IncompleteContainerException(name)
+         })
+   }
+
+   // starts a config builder for a context with config
+   fun String.config(
+      enabled: Boolean? = null,
+      invocations: Int? = null,
+      threads: Int? = null,
+      tags: Set<Tag>? = null,
+      timeout: Duration? = null,
+      extensions: List<TestCaseExtension>? = null,
+      enabledIf: EnabledIf? = null,
+      invocationTimeout: Duration? = null,
+      severity: TestCaseSeverityLevel? = null,
+      failfast: Boolean? = null,
+   ): FreeSpecContextConfigBuilder {
+      val config = testContext.testCase.config.deriveTestCaseConfig(
+         enabled = enabled,
+         tags = tags,
+         extensions = extensions,
+         timeout = timeout,
+         invocationTimeout = invocationTimeout,
+         enabledIf = enabledIf,
+         invocations = invocations,
+         threads = threads,
+         severity = severity,
+         failfast = failfast,
+      )
+      return FreeSpecContextConfigBuilder(this, config)
+   }
 }

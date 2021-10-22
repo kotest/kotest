@@ -4,56 +4,46 @@ import io.kotest.core.spec.Spec
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.engine.TestEngine
+import io.kotest.engine.interceptors.EngineContext
 import kotlin.reflect.KClass
 
 /**
  * Implementations of this interface will be notified of events
  * that occur as part of the [TestEngine] lifecycle.
- *
- * This is an internal interface liable to be changed without notice.
  */
 interface TestEngineListener {
 
    /**
-    * Is invoked as soon as the engine has been created and before any other interceptors run.
+    * Is invoked as soon as the engine has been created.
     */
-   suspend fun engineStartup() {}
+   suspend fun engineStarted()
 
    /**
-    * Is invoked when the [TestEngine] is starting execution.
+    * Is invoked when the [TestEngine] has completed setup and is ready to begin
+    * executing specs.
     *
-    * This callback is executed after all other interceptors have completed
-    * and the engine setup is complete.
-    *
-    * @param classes the [Spec] classes that will be used by the [TestEngine].
+    * @param context the final context that will be used.
     */
-   suspend fun engineStarted(classes: List<KClass<*>>) {}
+   suspend fun engineInitialized(context: EngineContext) {}
 
    /**
     * Is invoked when the [TestEngine] has finished execution of all specs.
-    * This callback is invoked before execution returns to the interceptor chain.
     *
-    * If an unrecoverable error was detected during execution then it will be passed
-    * as the parameter to the engine.
+    * If any unexpected errors were detected during execution then it will be passed
+    * to this method.
     */
    suspend fun engineFinished(t: List<Throwable>) {}
-
-   /**
-    * Is invoked when the engine has finished with all tests and other interceptors.
-    * Is the last thing in the engine before the engine terminates.
-    */
-   suspend fun engineShutdown() {}
 
    /**
     * Invoked when a spec is submitted to the SpecExecutor.
     * This callback is invoked before any of the spec level interceptors.
     */
-   suspend fun specEnter(kclass: KClass<out Spec>) {}
+   suspend fun specEnter(kclass: KClass<*>) {}
 
    /**
     * Invoked when a spec is ignored without being instantiated or executed.
     */
-   suspend fun specIgnored(kclass: KClass<out Spec>) {}
+   suspend fun specIgnored(kclass: KClass<*>) {}
 
    /**
     * Invoked when a spec has no active tests.
@@ -104,7 +94,7 @@ interface TestEngineListener {
     * in the spec executor. This callback is invoked after any other interceptors
     * are invoked, and thus will always be called, even if the spec has been skipped.
     */
-   suspend fun specExit(kclass: KClass<out Spec>, t: Throwable?) {}
+   suspend fun specExit(kclass: KClass<*>, t: Throwable?) {}
 
    /**
     * Invoked if a [TestCase] is about to be executed.
@@ -125,4 +115,8 @@ interface TestEngineListener {
    suspend fun testFinished(testCase: TestCase, result: TestResult) {}
 }
 
-val NoopTestEngineListener = object : TestEngineListener {}
+abstract class AbstractTestEngineListener : TestEngineListener {
+   override suspend fun engineStarted() {}
+}
+
+val NoopTestEngineListener = object : AbstractTestEngineListener() {}

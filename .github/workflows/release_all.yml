@@ -46,6 +46,9 @@ jobs:
          -  name: publish linux x64 release
             run: ./gradlew publishLinuxX64PublicationToDeployRepository
 
+         -  name: publish bom release
+            run: ./gradlew publishKotestBomPublicationToDeployRepository
+
    publish_macos:
       runs-on: macos-latest
       needs: publish_linux

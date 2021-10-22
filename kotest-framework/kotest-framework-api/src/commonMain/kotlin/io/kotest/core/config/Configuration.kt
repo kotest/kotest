@@ -3,16 +3,17 @@
 package io.kotest.core.config
 
 import io.kotest.common.ExperimentalKotest
+import io.kotest.common.SoftDeprecated
 import io.kotest.core.extensions.Extension
 import io.kotest.core.filter.Filter
 import io.kotest.core.listeners.Listener
+import io.kotest.core.names.DuplicateTestNameMode
+import io.kotest.core.names.TestNameCase
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.SpecExecutionOrder
 import io.kotest.core.test.AssertionMode
-import io.kotest.core.test.DuplicateTestNameMode
 import io.kotest.core.test.TestCaseConfig
 import io.kotest.core.test.TestCaseOrder
-import io.kotest.core.test.TestNameCase
 import kotlinx.coroutines.CoroutineDispatcher
 
 /**
@@ -23,7 +24,11 @@ import kotlinx.coroutines.CoroutineDispatcher
  * Expect this val to disappear in Kotest 6.0
  *
  */
+@Deprecated("Do not set configuration directly on the config object. Use project config classes. Deprecated since 5.0")
 val configuration = Configuration()
+
+@Deprecated("Replaced with io.kotest.core.configuration. Deprecated since 4.2")
+val Project = configuration
 
 /**
  * This class defines project wide settings that are used when executing tests.
@@ -216,6 +221,14 @@ class Configuration {
    var logLevel: LogLevel = LogLevel.Off
 
    /**
+    * If set to true then the test engine will install a [TestCoroutineDispatcher].
+    * This can be retrieved via `delayController` in your tests.
+    * @see https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-test/index.html
+    */
+   @ExperimentalKotest
+   var testCoroutineDispatcher: Boolean = Defaults.testCoroutineDispatcher
+
+   /**
     * Returns the default [TestCaseConfig] to be assigned to tests when not specified either in
     * the spec, test factory, or test case itself.
     *
@@ -316,13 +329,12 @@ class Configuration {
     */
    var duplicateTestNameMode: DuplicateTestNameMode = Defaults.duplicateTestNameMode
 
+   var displayFullTestPath: Boolean = Defaults.displayFullTestPath
+
    /**
     * Returns all globally registered [Listener]s.
     */
-   @Deprecated(
-      "Listeners have been subsumed into extensions. Deprecated since 5.0 and will be removed in 6.0",
-      ReplaceWith("extensions()")
-   )
+   @Deprecated("Listeners have been subsumed into extensions", level = DeprecationLevel.ERROR)
    fun listeners() = extensions()
 
    /**
@@ -351,35 +363,42 @@ class Configuration {
    fun registerExtensions(extensions: List<Extension>) = extensions.forEach { registerExtension(it) }
    fun deregisterExtensions(extensions: List<Extension>) = extensions.forEach { deregisterExtension(it) }
 
-   fun registerExtension(extension: Extension) {
+   fun register(extension: Extension) {
       extensions.add(extension)
    }
 
-   fun deregisterExtension(extension: Extension) {
+   @SoftDeprecated("Use register")
+   fun registerExtension(extension: Extension) {
+      register(extension)
+   }
+
+   fun deregister(extension: Extension) {
       extensions.remove(extension)
    }
 
-   @Deprecated(
-      "Use registerExtension. This will be removed in 6.0.",
-      ReplaceWith("registerExtension(listeners)")
-   )
+   @SoftDeprecated("Use deregister")
+   fun deregisterExtension(extension: Extension) {
+      deregister(extension)
+   }
+
+   @SoftDeprecated("Use registerExtension")
    fun registerListeners(vararg listeners: Listener) = listeners.forEach { registerExtension(it) }
 
-   @Deprecated("Use registerExtension. This will be removed in 6.0.")
+   @SoftDeprecated("Use registerExtension")
    fun registerListeners(listeners: List<Listener>) = listeners.forEach { registerExtension(it) }
 
-   @Deprecated("Use deregisterExtension. This will be removed in 6.0.")
+   @SoftDeprecated("Use deregisterExtension")
    fun deregisterListeners(listeners: List<Listener>) = listeners.forEach { deregisterExtension(it) }
 
-   @Deprecated("Use registerExtension. This will be removed in 6.0.")
+   @SoftDeprecated("Use registerExtension")
    fun registerListener(listener: Listener) = registerExtension(listener)
 
-   @Deprecated("Use deregisterListener. This will be removed in 6.0.")
+   @SoftDeprecated("Use deregisterExtension")
    fun deregisterListener(listener: Listener) {
       deregisterExtension(listener)
    }
 
-   @Deprecated("Use removeExtensions. This will be removed in 6.0.")
+   @SoftDeprecated("Use removeExtensions.")
    fun removeListeners() {
       removeExtensions()
    }

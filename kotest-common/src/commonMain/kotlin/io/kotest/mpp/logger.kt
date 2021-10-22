@@ -4,10 +4,8 @@ package io.kotest.mpp
 internal fun isLoggingEnabled() =
    sysprop("KOTEST_DEBUG")?.uppercase() == "TRUE" || env("KOTEST_DEBUG")?.uppercase() == "TRUE"
 
-inline fun log(f: () -> String) {
-   if (isLoggingEnabled()) {
-      println(timeInMillis().toString() + " " + f())
-   }
+fun log(f: () -> String) {
+   log(null, f)
 }
 
 inline fun log(t: Throwable?, f: () -> String) {
@@ -16,3 +14,5 @@ inline fun log(t: Throwable?, f: () -> String) {
       if (t != null) println(t)
    }
 }
+
+expect fun writeLog(t: Throwable?, f: () -> String)

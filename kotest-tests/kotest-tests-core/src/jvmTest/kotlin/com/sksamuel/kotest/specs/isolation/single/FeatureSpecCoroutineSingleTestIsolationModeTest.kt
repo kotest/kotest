@@ -1,6 +1,6 @@
 //package com.sksamuel.kotest.specs.feature
 //
-//import currentThreadWithoutCoroutine
+//import com.sksamuel.kotest.specs.currentThreadWithoutCoroutine
 //import io.kotest.core.test.Description
 //import io.kotest.core.test.TestResult
 //import io.kotest.matchers.string.shouldStartWith
@@ -20,12 +20,12 @@
 //
 //  override fun beforeTest(description: Description) {
 //    // strip off the coroutine suffix
-//    listenerThread = currentThreadWithoutCoroutine()
+//    listenerThread = com.sksamuel.kotest.specs.currentThreadWithoutCoroutine()
 //  }
 //
 //  override fun afterTest(description: Description, result: TestResult) {
 //    // strip off the coroutine suffix
-//    listenerThread shouldBe currentThreadWithoutCoroutine()
+//    listenerThread shouldBe com.sksamuel.kotest.specs.currentThreadWithoutCoroutine()
 //  }
 //
 //  init {
@@ -83,6 +83,6 @@
 //    delay(10)
 //    Thread.sleep(10)
 //    // strip off the coroutine suffix
-//    threadnames.add(currentThreadWithoutCoroutine())
+//    threadnames.add(com.sksamuel.kotest.specs.currentThreadWithoutCoroutine())
 //  }
 //}

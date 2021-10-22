@@ -29,9 +29,7 @@ fun startWithPath(prefix: String) = object : Matcher<Path> {
    override fun test(value: Path): MatcherResult = MatcherResult(
       value.toString().startsWith(prefix),
       { "Path $value should start with $prefix" },
-      {
-         "Path $value should not start with $prefix"
-      })
+      { "Path $value should not start with $prefix" })
 }
 
 fun Path.shouldExist() = this should exist()
@@ -50,9 +48,7 @@ fun haveFileSize(size: Long): Matcher<Path> = object : Matcher<Path> {
    override fun test(value: Path): MatcherResult = MatcherResult(
       Files.size(value) == size,
       { "Path $value should have size $size" },
-      {
-         "Path $value should not have size $size"
-      })
+      { "Path $value should not have size $size" })
 }
 
 
@@ -63,9 +59,7 @@ fun aDirectory(): Matcher<Path> = object : Matcher<Path> {
    override fun test(value: Path): MatcherResult = MatcherResult(
       Files.isDirectory(value),
       { "File $value should be a directory" },
-      {
-         "File $value should not be a directory"
-      })
+      { "File $value should not be a directory" })
 }
 
 fun Path.shouldBeAFile() = this should aFile()
@@ -74,9 +68,7 @@ fun aFile(): Matcher<Path> = object : Matcher<Path> {
    override fun test(value: Path): MatcherResult = MatcherResult(
       !Files.isDirectory(value),
       { "File $value should be a directory" },
-      {
-         "File $value should not be a directory"
-      })
+      { "File $value should not be a directory" })
 }
 
 fun Path.shouldBeAbsolute() = this should beAbsolute()
@@ -118,9 +110,7 @@ fun beWriteable(): Matcher<Path> = object : Matcher<Path> {
       MatcherResult(
          Files.isWritable(value),
          { "Path $value should be writeable" },
-         {
-            "Path $value should not be writeable"
-         })
+         { "Path $value should not be writeable" })
 }
 
 fun Path.shouldBeExecutable() = this should beExecutable()
@@ -129,17 +119,15 @@ fun beExecutable(): Matcher<Path> = object : Matcher<Path> {
    override fun test(value: Path): MatcherResult = MatcherResult(
       Files.isExecutable(value),
       { "Path $value should be executable" },
-      {
-         "Path $value should not be executable"
-      })
+      { "Path $value should not be executable" })
 }
 
 infix fun Path.shouldContainNFiles(n: Int) = this.toFile() shouldBe containNFiles(n)
 infix fun Path.shouldNotContainNFiles(n: Int) = this.toFile() shouldNotBe containNFiles(n)
 
-@Deprecated(message ="checks if a directory is empty", replaceWith = ReplaceWith("shouldBeEmptyDirectory()"))
+@Deprecated(message ="checks if a directory is empty. Deprecated since 4.3.", replaceWith = ReplaceWith("shouldBeEmptyDirectory()"))
 fun Path.shouldBeNonEmptyDirectory() = this.toFile() shouldNot beEmptyDirectory()
-@Deprecated(message ="checks if a directory is not empty", replaceWith = ReplaceWith("shouldBeNonEmptyDirectory()"))
+@Deprecated(message ="checks if a directory is not empty. Deprecated since 4.3.", replaceWith = ReplaceWith("shouldBeNonEmptyDirectory()"))
 fun Path.shouldNotBeNonEmptyDirectory() = this.toFile() should beEmptyDirectory()
 
 fun Path.shouldBeEmptyDirectory() = this.toFile() should beEmptyDirectory()
@@ -161,9 +149,7 @@ fun beCanonicalPath(): Matcher<Path> = object : Matcher<Path> {
    override fun test(value: Path): MatcherResult = MatcherResult(
       value.toFile().canonicalPath == value.toFile().path,
       { "File $value should be canonical" },
-      {
-         "File $value should not be canonical"
-      })
+      { "File $value should not be canonical" })
 }
 
 infix fun Path.shouldContainFile(name: String) = this should containFile(name)
@@ -175,9 +161,7 @@ fun containFile(name: String) = object : Matcher<Path> {
       return MatcherResult(
          passed,
          { "Directory $value should contain a file with filename $name (detected ${contents.size} other files)" },
-         {
-            "Directory $value should not contain a file with filename $name"
-         })
+         { "Directory $value should not contain a file with filename $name" })
    }
 }
 
@@ -192,9 +176,7 @@ fun beLarger(other: Path): Matcher<Path> = object : Matcher<Path> {
       return MatcherResult(
          sizea > sizeb,
          { "Path $value ($sizea bytes) should be larger than $other ($sizeb bytes)" },
-         {
-            "Path $value ($sizea bytes) should not be larger than $other ($sizeb bytes)"
-         })
+         { "Path $value ($sizea bytes) should not be larger than $other ($sizeb bytes)"})
    }
 }
 
@@ -209,9 +191,7 @@ fun beSmaller(other: Path): Matcher<Path> = object : Matcher<Path> {
       return MatcherResult(
          sizea < sizeb,
          { "Path $value ($sizea bytes) should be smaller than $other ($sizeb bytes)" },
-         {
-            "Path $value ($sizea bytes) should not be smaller than $other ($sizeb bytes)"
-         })
+         { "Path $value ($sizea bytes) should not be smaller than $other ($sizeb bytes)" })
    }
 }
 

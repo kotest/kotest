@@ -3,7 +3,6 @@ package io.kotest.engine.test.status
 import io.kotest.core.internal.KotestEngineProperties
 import io.kotest.core.test.Enabled
 import io.kotest.core.test.TestCase
-import io.kotest.core.test.isBang
 import io.kotest.mpp.log
 import io.kotest.mpp.sysprop
 
@@ -13,11 +12,15 @@ import io.kotest.mpp.sysprop
  */
 internal object BangTestEnabledExtension : TestEnabledExtension {
    override fun isEnabled(testCase: TestCase): Enabled {
+
       // this sys property disables the use of !
-      // when it's not set, then we use ! to disable tests
-      val bangEnabled = sysprop(KotestEngineProperties.disableBangPrefix) == null
-      if (testCase.isBang() && bangEnabled) {
-         return Enabled.disabled("${testCase.description.testPath()} is disabled by bang")
+      // when it is true, we don't check for !
+      if (sysprop(KotestEngineProperties.disableBangPrefix) == "true") {
+         return Enabled.enabled
+      }
+
+      if (testCase.name.bang) {
+         return Enabled.disabled("${testCase.descriptor.path().value} is disabled by bang")
             .also { log { it.reason } }
       }
 

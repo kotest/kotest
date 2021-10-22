@@ -44,7 +44,7 @@ abstract class LocaleListener(private val locale: Locale) {
  * Replaces the default Locale
  *
  * This listener replaces the current default locale with [locale], then executes the test and finally
- * returns the original default locale to it's place.
+ * returns the original default locale to its place.
  *
  * **Attention:** This code is subject to race conditions. The System can only have one default locale, and if you
  * change the locale while it was already changed, the result may be inconsistent.
@@ -64,7 +64,7 @@ class LocaleTestListener(locale: Locale) : LocaleListener(locale), TestListener 
  * Replaces the default Locale
  *
  * This listener replaces the current default locale with [locale], then executes the project and finally
- * returns the original default locale to it's place.
+ * returns the original default locale to its place.
  *
  * **Attention:** This code is subject to race conditions. The System can only have one default locale, and if you
  * change the locale while it was already changed, the result may be inconsistent.

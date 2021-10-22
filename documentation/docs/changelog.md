@@ -15,10 +15,10 @@ _**Kotlin 1.5 is now the minimum supported version**_
 * `Arb.values` has been removed. This was deprecated in 4.3 in favour of `Arb.sample`. Any custom arbs that override this method should be updated. Any custom arbs that use the `arbitrary` builders are not affected. (#2277)
 * The Engine no longer logs config to the console during start **by default**. To enable, set the system property `kotest.framework.dump.config` to true. (#2276)
 * Removed deprecated `shouldReceiveWithin` and `shouldReceiveNoElementsWithin` channel matchers.
-* `TestEngineListener` methods are now suspendable. This is only of interest if you have implemented customizations of the Test Engine through plugins. Note: This is not related to public TestListener methods that are used by test cases.
-* The global configuration variable `project` has been removed. This was deprecated in 4.2. Use the replacment global variable `configuration` or provide config via instances of [ProjectConfig](https://kotest.io/docs/framework/project-config.html).
+* `equalJson` has an added parameter to support the new `shouldEqualSpecifiedJson` assertion
 * The deprecated `RuntimeTagExtension` has been undeprecated but moved to a new package.
-* In 4.5 the DSL scope classes were renamed from `XYZScope` to `XYZContext`. For example, `FreeSpecRootScope` became `FreeSpecRootContext`. The deprecated type aliases have now been removed. This only affects you if you have written custom Kotest Spec Styles that relied on the old names of scopes from existing spec styles.
+* When using inspectors, the deprecated `kotlintest.assertions.output.max` system property has been removed. This was replaced with `kotest.assertions.output.max` in 4.0.
+
 #### Fixes
 
 * String matchers now also work on CharSequence where applicable #2278
@@ -43,11 +43,24 @@ _**Kotlin 1.5 is now the minimum supported version**_
 * Add unsigned types for Arb (#2290)
 * Added arb for ip addresses V4 #2407
 * Added arb for hexidecimal codepoints #2409
+* Added `shouldEqualSpecifiedJson` to match a JSON structure on a subset of (specified) keys. (#2298)
+* `shouldEqualJson` now supports high-precision numbers (#2458)
+* Added `shouldHaveSameStructureAs` to file matchers
+* Added `shouldHaveSameStructureAndContentAs` to file matchers
 
 #### Deprecations
 
 * `beforeTest` / `afterTest` have been deprecated in favour of `beforeAny` / `afterAny`.
 * Datatest2 has been deprecated
+* `CompareMode` /`CompareOrder` for `shouldEqualJson` has been deprecated in favor of `compareJsonOptions { }`
+
+
+### 4.6.3 September 2021
+
+#### Fixes
+
+* StackOverflow when using checkAll with certain arity functions #2513
+* Added arity8 and arity9 forall for table testing #2444
 
 
 ### 4.6.2 August 2021
@@ -61,7 +74,7 @@ _**Kotlin 1.5 is now the minimum supported version**_
 * BigDecimal edge case for equals vs compareTo discrepancy #2403
 * PropTestConfig's iterations parameter is not respected. #2428
 * tempfile and tempdir should fail test when deletion fails #2351
-* 
+*
 
 ### 4.6.1 July 2021
 

@@ -1,6 +1,7 @@
 package io.kotest.core
 
 import io.kotest.common.ExperimentalKotest
+import io.kotest.common.SoftDeprecated
 import io.kotest.core.concurrency.CoroutineDispatcherFactory
 import io.kotest.core.config.Configuration
 import io.kotest.core.extensions.Extension
@@ -35,7 +36,7 @@ interface SpecFunctionConfiguration {
     * If you wish to register a listener for all specs
     * then use [Configuration.registerListener].
     */
-   @Deprecated("Return listeners by overriding fun extensions() {}. Deprecated since 5.0 and will be removed in 6.0")
+   @SoftDeprecated("Use extensions")
    fun listeners(): List<TestListener> = emptyList()
 
    /**

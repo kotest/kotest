@@ -33,15 +33,6 @@ annotation class RequiresTag(vararg val values: String)
 annotation class Ignored
 
 /**
- * Attach to [io.kotest.core.spec.Spec] and any spec that is disabled or ignored will appear
- * in outputs as an "ignored" spec.
- */
-// @Inherited TODO Not supported by Kotlin yet
-@Target(AnnotationTarget.CLASS)
-@Retention(AnnotationRetention.RUNTIME)
-annotation class Visible
-
-/**
  * Attach to [io.kotest.core.spec.Spec], and the logic inside [enabledIf] will be executed
  * to define if a Spec will be instantiated or executed.
  *

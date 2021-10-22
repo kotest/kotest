@@ -2,7 +2,6 @@ package com.sksamuel.kotest.engine.coroutines
 
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.test.TestResult
-import io.kotest.core.test.TestStatus
 import io.kotest.matchers.shouldBe
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.Channel
@@ -20,12 +19,12 @@ class CoroutineTest : FunSpec() {
       aroundTest { (testCase, execute) ->
          val result = execute(testCase)
          when {
-            testCase.displayName == "exceptions inside launched coroutine should be propagated" &&
-               result.status == TestStatus.Error -> TestResult.success(0)
-            testCase.displayName == "exception in launched coroutine should cancel siblings" &&
-               result.status == TestStatus.Error -> TestResult.success(0)
-            testCase.displayName == "exception in test coroutine should cancel launched coroutines" &&
-               result.status == TestStatus.Error -> TestResult.success(0)
+            testCase.name.testName == "exceptions inside launched coroutine should be propagated" &&
+               result.isError -> TestResult.success(0)
+            testCase.name.testName == "exception in launched coroutine should cancel siblings" &&
+               result.isError -> TestResult.success(0)
+            testCase.name.testName == "exception in test coroutine should cancel launched coroutines" &&
+               result.isError -> TestResult.success(0)
             else -> result
          }
       }

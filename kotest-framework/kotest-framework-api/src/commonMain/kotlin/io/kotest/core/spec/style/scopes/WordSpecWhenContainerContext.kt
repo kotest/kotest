@@ -1,12 +1,16 @@
 package io.kotest.core.spec.style.scopes
 
+import io.kotest.core.descriptors.append
+import io.kotest.core.names.TestName
 import io.kotest.core.spec.KotestDsl
 import io.kotest.core.spec.resolvedDefaultConfig
 import io.kotest.core.test.NestedTest
 import io.kotest.core.test.TestContext
 import io.kotest.core.test.TestType
 import io.kotest.core.test.createNestedTest
-import io.kotest.core.test.createTestName
+
+@Deprecated("Renamed to WordSpecWhenContainerContext. Deprecated since 4.5.")
+typealias WordSpecWhenScope = WordSpecWhenContainerContext
 
 @Suppress("FunctionName")
 @KotestDsl
@@ -30,13 +34,17 @@ class WordSpecWhenContainerContext(
    private suspend fun addShould(name: String, test: suspend WordSpecShouldContainerContext.() -> Unit, xdisabled: Boolean) {
       registerTestCase(
          createNestedTest(
-            name = createTestName("$name should"),
+            descriptor = testCase.descriptor.append(name),
+            name = TestName("$name should"),
             xdisabled = xdisabled,
             config = testCase.spec.resolvedDefaultConfig(),
             type = TestType.Container,
-            descriptor = null,
             factoryId = testCase.factoryId,
-            test = { WordSpecShouldContainerContext(this).test() }
+            test = {
+               val incomplete = IncompleteContainerContext(this)
+               WordSpecShouldContainerContext(incomplete).test()
+               if (!incomplete.hasNestedTest) throw IncompleteContainerException(name)
+            }
          )
       )
    }

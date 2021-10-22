@@ -1,22 +1,28 @@
 package io.kotest.core.spec.style.scopes
 
-import io.kotest.core.spec.KotestDsl
-import io.kotest.core.test.createTestName
+import io.kotest.core.names.TestName
+
+@Deprecated("Renamed to WordSpecRootContext. Deprecated since 4.5.")
+typealias WordSpecRootScope = WordSpecRootContext
 
 @Suppress("FunctionName")
 interface WordSpecRootContext : RootContext {
 
    infix fun String.should(test: suspend WordSpecShouldContainerContext.() -> Unit) {
-      val testName = createTestName("$this should")
+      val testName = TestName("$this should")
       registration().addContainerTest(testName, xdisabled = false) {
-         WordSpecShouldContainerContext(this).test()
+         val incomplete = IncompleteContainerContext(this)
+         WordSpecShouldContainerContext(incomplete).test()
+         if (!incomplete.hasNestedTest) throw IncompleteContainerException(testName.testName)
       }
    }
 
    infix fun String.xshould(test: suspend WordSpecShouldContainerContext.() -> Unit) {
-      val testName = createTestName("$this should")
+      val testName = TestName("$this should")
       registration().addContainerTest(testName, xdisabled = true) {
-         WordSpecShouldContainerContext(this).test()
+         val incomplete = IncompleteContainerContext(this)
+         WordSpecShouldContainerContext(incomplete).test()
+         if (!incomplete.hasNestedTest) throw IncompleteContainerException(testName.testName)
       }
    }
 
@@ -24,9 +30,11 @@ interface WordSpecRootContext : RootContext {
    infix fun String.`when`(init: suspend WordSpecWhenContainerContext.() -> Unit) = addWhenContext(this, init)
 
    private fun addWhenContext(name: String, test: suspend WordSpecWhenContainerContext.() -> Unit) {
-      val testName = createTestName("$name when")
+      val testName = TestName("$name when")
       registration().addContainerTest(testName, xdisabled = false) {
-         WordSpecWhenContainerContext(this).test()
+         val incomplete = IncompleteContainerContext(this)
+         WordSpecWhenContainerContext(incomplete).test()
+         if (!incomplete.hasNestedTest) throw IncompleteContainerException(testName.testName)
       }
    }
 }

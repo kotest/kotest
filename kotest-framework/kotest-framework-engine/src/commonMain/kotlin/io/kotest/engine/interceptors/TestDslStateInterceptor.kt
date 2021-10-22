@@ -2,8 +2,6 @@ package io.kotest.engine.interceptors
 
 import io.kotest.core.spec.style.scopes.TestDslState
 import io.kotest.engine.EngineResult
-import io.kotest.engine.TestSuite
-import io.kotest.engine.listener.TestEngineListener
 import io.kotest.fp.Try
 
 /**
@@ -11,11 +9,10 @@ import io.kotest.fp.Try
  */
 internal object TestDslStateInterceptor : EngineInterceptor {
    override suspend fun intercept(
-      suite: TestSuite,
-      listener: TestEngineListener,
-      execute: suspend (TestSuite, TestEngineListener) -> EngineResult
+      context: EngineContext,
+      execute: suspend (EngineContext) -> EngineResult
    ): EngineResult {
-      val result = execute(suite, listener)
+      val result = execute(context)
       return Try { TestDslState.checkState() }.fold(
          { EngineResult(listOf(it) + result.errors) },
          { result }

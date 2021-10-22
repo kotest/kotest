@@ -30,7 +30,7 @@ kotlin {
 
       val jvmMain by getting {
          dependencies {
-            implementation(project(Projects.AssertionsShared))
+            implementation(project(Projects.Assertions.Shared))
             implementation(Libs.Kotlin.compilerEmbeddable)
             implementation(Libs.Tschuchortdev.kotlinCompileTesting)
          }

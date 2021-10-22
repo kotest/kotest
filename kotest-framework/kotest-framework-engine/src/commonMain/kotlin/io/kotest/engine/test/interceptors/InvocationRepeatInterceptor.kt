@@ -6,12 +6,12 @@ import io.kotest.core.test.TestResult
 import io.kotest.engine.events.invokeAfterInvocation
 import io.kotest.engine.events.invokeBeforeInvocation
 import io.kotest.mpp.replay
-import io.kotest.mpp.timeInMillis
+import kotlin.time.TimeMark
 
 /**
  * A [TestExecutionInterceptor] that repeats a test based on the test's invocations setting.
  */
-internal class InvocationRepeatInterceptor(private val start: Long) : TestExecutionInterceptor {
+internal class InvocationRepeatInterceptor(private val timeMark: TimeMark) : TestExecutionInterceptor {
 
    override suspend fun intercept(
       test: suspend (TestCase, TestContext) -> TestResult
@@ -23,7 +23,7 @@ internal class InvocationRepeatInterceptor(private val start: Long) : TestExecut
          { testCase.invokeAfterInvocation(it) }) {
          test(testCase, context)
       }
-      TestResult.success(timeInMillis() - start)
+      TestResult.Success(timeMark.elapsedNow())
    }
 }
 

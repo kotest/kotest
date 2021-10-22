@@ -1,51 +1,51 @@
-package com.sksamuel.kotest.engine.active
-
-import io.kotest.core.spec.style.FreeSpec
-import io.kotest.core.spec.toDescription
-import io.kotest.core.test.TestCase
-import io.kotest.core.test.isBang
-import io.kotest.core.test.isFocused
-import io.kotest.matchers.shouldBe
-
-class FocusBangTest : FreeSpec() {
-   init {
-      "test case with f: prefix" - {
-         "should be focused when top level" {
-            val test =
-               TestCase.test(FocusBangTest::class.toDescription().appendTest("f: a"), this@FocusBangTest, null) {}
-            test.isFocused() shouldBe true
-         }
-         "should not be focused when nested" {
-
-            val parent =
-               TestCase.test(FocusBangTest::class.toDescription().appendTest("f: a"), this@FocusBangTest, null) {}
-
-            val test = TestCase.test(
-               FocusBangTest::class.toDescription().appendTest("a").appendTest("f: b"),
-               this@FocusBangTest,
-               parent
-            ) {}
-
-            test.isFocused() shouldBe false
-         }
-      }
-
-      "test case with ! prefix" - {
-         "should be banged" {
-            val test = TestCase.test(FocusBangTest::class.toDescription().appendTest("!a"), this@FocusBangTest, null) {}
-            test.isBang() shouldBe true
-         }
-      }
-
-      "test case with no prefix" - {
-         "should not be focused" {
-            val test = TestCase.test(FocusBangTest::class.toDescription().appendTest("a"), this@FocusBangTest, null) {}
-            test.isFocused() shouldBe false
-         }
-         "should not be banged" {
-            val test = TestCase.test(FocusBangTest::class.toDescription().appendTest("a"), this@FocusBangTest, null) {}
-            test.isBang() shouldBe false
-         }
-      }
-   }
-}
+//package com.sksamuel.kotest.engine.active
+//
+//import io.kotest.core.spec.style.FreeSpec
+//import io.kotest.core.spec.toDescription
+//import io.kotest.core.test.TestCase
+//import io.kotest.core.test.isBang
+//import io.kotest.core.test.isFocused
+//import io.kotest.matchers.shouldBe
+//
+//class FocusBangTest : FreeSpec() {
+//   init {
+//      "test case with f: prefix" - {
+//         "should be focused when top level" {
+//            val test =
+//               TestCase.test(FocusBangTest::class.toDescription().appendTest("f: a"), this@FocusBangTest, null) {}
+//            test.isFocused() shouldBe true
+//         }
+//         "should not be focused when nested" {
+//
+//            val parent =
+//               TestCase.test(FocusBangTest::class.toDescription().appendTest("f: a"), this@FocusBangTest, null) {}
+//
+//            val test = TestCase.test(
+//               FocusBangTest::class.toDescription().appendTest("a").appendTest("f: b"),
+//               this@FocusBangTest,
+//               parent
+//            ) {}
+//
+//            test.isFocused() shouldBe false
+//         }
+//      }
+//
+//      "test case with ! prefix" - {
+//         "should be banged" {
+//            val test = TestCase.test(FocusBangTest::class.toDescription().appendTest("!a"), this@FocusBangTest, null) {}
+//            test.isBang() shouldBe true
+//         }
+//      }
+//
+//      "test case with no prefix" - {
+//         "should not be focused" {
+//            val test = TestCase.test(FocusBangTest::class.toDescription().appendTest("a"), this@FocusBangTest, null) {}
+//            test.isFocused() shouldBe false
+//         }
+//         "should not be banged" {
+//            val test = TestCase.test(FocusBangTest::class.toDescription().appendTest("a"), this@FocusBangTest, null) {}
+//            test.isBang() shouldBe false
+//         }
+//      }
+//   }
+//}

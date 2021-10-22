@@ -1,10 +1,11 @@
 package io.kotest.core.factory
 
+import io.kotest.core.descriptors.Descriptor
 import io.kotest.core.Tag
+import io.kotest.core.descriptors.append
 import io.kotest.core.extensions.Extension
 import io.kotest.core.spec.Spec
 import io.kotest.core.test.AssertionMode
-import io.kotest.core.test.Description
 import io.kotest.core.test.TestCase
 
 /**
@@ -27,10 +28,11 @@ data class TestFactory(
  * @param description the parent description for the generated tests.
  * @param spec the [Spec] that will contain the generated tests.
  */
-internal fun TestFactory.createTestCases(description: Description.Spec, spec: Spec): List<TestCase> {
+internal fun TestFactory.createTestCases(description: Descriptor.SpecDescriptor, spec: Spec): List<TestCase> {
    return tests.map { dyn ->
       TestCase(
-         description = description.append(dyn.name, dyn.type),
+         descriptor = description.append(dyn.name),
+         name = dyn.name,
          spec = spec,
          test = dyn.test,
          type = dyn.type,

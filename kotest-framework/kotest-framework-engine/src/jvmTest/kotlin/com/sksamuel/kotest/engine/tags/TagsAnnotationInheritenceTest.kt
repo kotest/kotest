@@ -21,7 +21,7 @@ class TagsAnnotationInheritenceTest : FunSpec() {
          configuration.registerExtension(ext)
          MyTestClass().materializeAndOrderRootTests()
             .filter { it.testCase.isEnabledInternal().isEnabled }
-            .map { it.testCase.displayName } shouldBe listOf("a", "b", "c", "d")
+            .map { it.testCase.name.testName } shouldBe listOf("a", "b", "c", "d")
          configuration.deregisterExtension(ext)
       }
 
@@ -33,7 +33,7 @@ class TagsAnnotationInheritenceTest : FunSpec() {
          // all tests should be filtered out because of the @Tags
          MyTestClass().materializeAndOrderRootTests()
             .filter { it.testCase.isEnabledInternal().isEnabled }
-            .map { it.testCase.displayName } shouldBe emptyList()
+            .map { it.testCase.name.testName } shouldBe emptyList()
          configuration.deregisterExtension(ext)
       }
 
@@ -45,7 +45,7 @@ class TagsAnnotationInheritenceTest : FunSpec() {
          // linux is included for all and we're using an or
          MyTestClass().materializeAndOrderRootTests()
             .filter { it.testCase.isEnabledInternal().isEnabled }
-            .map { it.testCase.displayName } shouldBe listOf("a", "b", "c", "d")
+            .map { it.testCase.name.testName } shouldBe listOf("a", "b", "c", "d")
          configuration.deregisterExtension(ext)
       }
 
@@ -57,7 +57,7 @@ class TagsAnnotationInheritenceTest : FunSpec() {
          // linux should be included for all, but then postgres tests excluded as well
          MyTestClass().materializeAndOrderRootTests()
             .filter { it.testCase.isEnabledInternal().isEnabled }
-            .map { it.testCase.displayName } shouldBe listOf("a", "d")
+            .map { it.testCase.name.testName } shouldBe listOf("a", "d")
          configuration.deregisterExtension(ext)
       }
 
@@ -69,7 +69,7 @@ class TagsAnnotationInheritenceTest : FunSpec() {
          // Mysql tests should be excluded
          MyTestClass().materializeAndOrderRootTests()
             .filter { it.testCase.isEnabledInternal().isEnabled }
-            .map { it.testCase.displayName } shouldBe listOf("b", "d")
+            .map { it.testCase.name.testName } shouldBe listOf("b", "d")
          configuration.deregisterExtension(ext)
       }
 
@@ -81,7 +81,7 @@ class TagsAnnotationInheritenceTest : FunSpec() {
          // Mysql tests should be excluded
          MyTestClass().materializeAndOrderRootTests()
             .filter { it.testCase.isEnabledInternal().isEnabled }
-            .map { it.testCase.displayName } shouldBe listOf("b", "c")
+            .map { it.testCase.name.testName } shouldBe listOf("b", "c")
          configuration.deregisterExtension(ext)
       }
    }

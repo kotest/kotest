@@ -1,11 +1,12 @@
 package com.sksamuel.kotest.engine.extensions.project
 
 import io.kotest.core.config.configuration
+import io.kotest.core.extensions.ProjectContext
 import io.kotest.core.extensions.ProjectExtension
 import io.kotest.core.spec.Isolate
 import io.kotest.core.spec.style.FunSpec
-import io.kotest.engine.KotestEngineLauncher
-import io.kotest.engine.listener.TestEngineListener
+import io.kotest.engine.TestEngineLauncher
+import io.kotest.engine.listener.AbstractTestEngineListener
 import io.kotest.matchers.shouldBe
 
 @Isolate
@@ -16,16 +17,15 @@ class ProjectExtensionEngineResultTest : FunSpec({
    val extensions = listOf(
       object : ProjectExtension {
          val name = "hello q"
-         override suspend fun aroundProject(callback: suspend () -> List<Throwable>): List<Throwable> {
+         override suspend fun interceptProject(context: ProjectContext, callback: suspend (ProjectContext) -> Unit) {
             events.add(name)
-            return callback()
+            return callback(context)
          }
       },
       object : ProjectExtension {
          val name = "mon capitaine!"
-         override suspend fun aroundProject(callback: suspend () -> List<Throwable>): List<Throwable> {
-            callback();
-            return listOf(ProjectExtensionThrowable(name))
+         override suspend fun interceptProject(context: ProjectContext, callback: suspend (ProjectContext) -> Unit) {
+            throw ProjectExtensionThrowable(name)
          }
       },
    )
@@ -38,17 +38,17 @@ class ProjectExtensionEngineResultTest : FunSpec({
       configuration.deregisterExtensions(extensions)
    }
 
-   test("the test engine should return errors from project extensions in the engine result") {
+   test("ProjectExtension errors should be propogated to the test engine") {
 
       val errors = mutableListOf<Throwable>()
 
-      val listener = object : TestEngineListener {
+      val listener = object : AbstractTestEngineListener() {
          override suspend fun engineFinished(t: List<Throwable>) {
             errors.addAll(t)
          }
       }
 
-      KotestEngineLauncher().withListener(listener).withSpec(PassingProjectTest::class).launch()
+      TestEngineLauncher(listener).withClasses(PassingProjectTest::class).launch()
 
       (events + errors.map { it.message }).toSet() shouldBe setOf("hello q", "mon capitaine!")
    }

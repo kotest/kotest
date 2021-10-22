@@ -3,6 +3,7 @@ package io.kotest.engine.listener
 import io.kotest.core.spec.Spec
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
+import io.kotest.engine.interceptors.EngineContext
 import kotlin.reflect.KClass
 
 /**
@@ -15,16 +16,12 @@ class CompositeTestEngineListener(private val listeners: List<TestEngineListener
       require(listeners.isNotEmpty())
    }
 
-   override suspend fun engineShutdown() {
-      listeners.forEach { it.engineShutdown() }
+   override suspend fun engineStarted() {
+      listeners.forEach { it.engineStarted() }
    }
 
-   override suspend fun engineStartup() {
-      listeners.forEach { it.engineStartup() }
-   }
-
-   override suspend fun engineStarted(classes: List<KClass<*>>) {
-      listeners.forEach { it.engineStarted(classes) }
+   override suspend fun engineInitialized(context: EngineContext) {
+      listeners.forEach { it.engineInitialized(context) }
    }
 
    override suspend fun engineFinished(t: List<Throwable>) {
@@ -59,16 +56,20 @@ class CompositeTestEngineListener(private val listeners: List<TestEngineListener
       listeners.forEach { it.specInstantiationError(kclass, t) }
    }
 
-   override suspend fun specExit(kclass: KClass<out Spec>, t: Throwable?) {
+   override suspend fun specExit(kclass: KClass<*>, t: Throwable?) {
       listeners.forEach { it.specExit(kclass, t) }
    }
 
-   override suspend fun specIgnored(kclass: KClass<out Spec>) {
+   override suspend fun specIgnored(kclass: KClass<*>) {
       listeners.forEach { it.specIgnored(kclass) }
    }
 
-   override suspend fun specEnter(kclass: KClass<out Spec>) {
+   override suspend fun specEnter(kclass: KClass<*>) {
       listeners.forEach { it.specEnter(kclass) }
+   }
+
+   override suspend fun specAborted(kclass: KClass<*>, t: Throwable) {
+      listeners.forEach { it.specAborted(kclass, t) }
    }
 
    override suspend fun specInactive(kclass: KClass<*>, results: Map<TestCase, TestResult>) {

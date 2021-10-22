@@ -32,7 +32,7 @@ kotlin {
             compileOnly(kotlin("stdlib"))
             implementation(Libs.Coroutines.coreCommon)
             implementation(project(Projects.Common))
-            implementation(project(Projects.Api))
+            implementation(project(Projects.Framework.api))
          }
       }
 
@@ -46,7 +46,7 @@ kotlin {
 
       val jvmTest by getting {
          dependencies {
-            implementation(project(Projects.AssertionsCore))
+            implementation(project(Projects.Assertions.Core))
             implementation(project(Projects.Framework.engine))
             implementation(project(Projects.JunitRunner))
          }

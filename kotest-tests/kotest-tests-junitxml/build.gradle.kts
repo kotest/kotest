@@ -40,7 +40,7 @@ kotlin {
       val jvmTest by getting {
          dependencies {
             implementation(project(Projects.Framework.engine))
-            implementation(project(Projects.AssertionsCore))
+            implementation(project(Projects.Assertions.Core))
             implementation(project(Projects.JunitRunner))
             implementation(project(Projects.JunitXmlExtension))
             implementation(Libs.Jdom.jdom2)

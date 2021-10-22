@@ -34,7 +34,7 @@ kotlin {
       val jvmMain by getting {
          dependencies {
             implementation(project(Projects.Framework.engine))
-            implementation(project(Projects.Api))
+            implementation(project(Projects.Framework.api))
             implementation(Libs.Jdom.jdom2)
          }
       }

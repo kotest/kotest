@@ -1,9 +1,9 @@
 package com.sksamuel.kotest.specs.stringspec
 
-import io.kotest.matchers.string.haveLength
-import io.kotest.matchers.shouldBe
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.should
+import io.kotest.matchers.shouldBe
+import io.kotest.matchers.string.haveLength
 
 class StringSpecTest : StringSpec() {
 
@@ -20,6 +20,10 @@ class StringSpecTest : StringSpec() {
 
       "an ignored string test".config(enabled = false) {
 
+      }
+
+      val testName = "BCN_Epileptic.X"
+      testName {
       }
    }
 }

@@ -1,13 +1,17 @@
 package com.sksamuel.kotest.property.arbitrary
 
+import io.kotest.assertions.throwables.shouldThrowAny
 import io.kotest.core.spec.style.StringSpec
+import io.kotest.extensions.system.captureStandardOut
 import io.kotest.matchers.collections.shouldContainExactly
 import io.kotest.matchers.collections.shouldHaveAtLeastSize
 import io.kotest.matchers.comparables.beGreaterThan
 import io.kotest.matchers.comparables.beLessThan
+import io.kotest.matchers.comparables.shouldBeGreaterThan
+import io.kotest.matchers.ints.shouldBeLessThan
 import io.kotest.matchers.should
-import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
+import io.kotest.matchers.string.shouldContain
 import io.kotest.property.Arb
 import io.kotest.property.EdgeConfig
 import io.kotest.property.RandomSource
@@ -583,27 +587,22 @@ class BindTest : StringSpec({
       )
    }
 
-   "Arb.reflectiveBind" {
-      val arb = Arb.bind<Wobble>()
-      arb.take(10).toList().size shouldBe 10
-   }
+   "Arb.bind shrinks" {
+      data class Person(val name: String, val age: Int)
 
-   "Arb.reflectiveBind should generate probabilistic edge cases" {
-      val arb = Arb.bind<Wobble>()
-      val edgeCases = arb
-         .generate(RandomSource.seeded(1234L), EdgeConfig(edgecasesGenerationProbability = 1.0))
-         .take(5)
-         .map { it.value }
-         .toList()
+      val arb = Arb.bind<Person>()
 
-      edgeCases shouldContainExactly listOf(
-         Wobble(a = "a", b = false, c = 1, d = -Double.MIN_VALUE, e = Float.POSITIVE_INFINITY),
-         Wobble(a = "", b = true, c = 2147483647, d = -1.0, e = Float.MIN_VALUE),
-         Wobble(a = "", b = false, c = -1, d = -Double.MIN_VALUE, e = 1.0F),
-         Wobble(a = "a", b = true, c = 2147483647, d = -Double.MAX_VALUE, e = -1.0F),
-         Wobble(a = "", b = false, c = 1, d = -0.0, e = Float.NaN)
-      )
+      val stdout = captureStandardOut {
+         shouldThrowAny {
+            checkAll(arb) { person ->
+               person.name.length shouldBeLessThan 10
+               person.age shouldBeGreaterThan -1
+               person.age shouldBeLessThan 130
+            }
+         }
+      }
+
+      stdout shouldContain "Shrink result"
+      stdout shouldContain "Person(name=, age=-1)"
    }
 })
-
-data class Wobble(val a: String, val b: Boolean, val c: Int, val d: Double, val e: Float)

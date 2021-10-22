@@ -7,7 +7,7 @@ import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.engine.KotestEngineLauncher
-import io.kotest.engine.listener.TestEngineListener
+import io.kotest.engine.listener.AbstractTestEngineListener
 import io.kotest.matchers.shouldBe
 
 @Isolate // sets global values via configuration so must be isolated
@@ -16,10 +16,10 @@ class DataTestingRepeatedTestNameTest : FunSpec() {
 
       val names = mutableListOf<String>()
 
-      val listener = object : TestEngineListener {
+      val listener = object : AbstractTestEngineListener() {
          override suspend fun testFinished(testCase: TestCase, result: TestResult) {
-            println(testCase.displayName)
-            names.add(testCase.displayName)
+            println(testCase.name.testName)
+            names.add(testCase.name.testName)
          }
       }
 

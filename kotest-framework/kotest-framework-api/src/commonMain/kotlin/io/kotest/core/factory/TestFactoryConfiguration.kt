@@ -2,8 +2,8 @@ package io.kotest.core.factory
 
 import io.kotest.core.TestConfiguration
 import io.kotest.core.config.configuration
+import io.kotest.core.names.TestName
 import io.kotest.core.sourceRef
-import io.kotest.core.test.DescriptionName
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestCaseConfig
 import io.kotest.core.test.TestContext
@@ -48,7 +48,7 @@ abstract class TestFactoryConfiguration : TestConfiguration() {
     * into a [Spec] these tests will be materialized as [TestCase]s.
     */
    override fun addTest(
-      name: DescriptionName.TestName,
+      name: TestName,
       test: suspend TestContext.() -> Unit,
       config: TestCaseConfig,
       type: TestType,

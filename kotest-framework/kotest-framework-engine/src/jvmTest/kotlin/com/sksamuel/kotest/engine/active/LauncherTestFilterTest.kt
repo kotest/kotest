@@ -1,13 +1,13 @@
 package com.sksamuel.kotest.engine.active
 
+import io.kotest.core.descriptors.Descriptor
 import io.kotest.core.filter.TestFilter
 import io.kotest.core.filter.TestFilterResult
 import io.kotest.core.spec.Isolate
 import io.kotest.core.spec.style.FunSpec
-import io.kotest.core.test.Description
 import io.kotest.core.test.TestCase
 import io.kotest.engine.KotestEngineLauncher
-import io.kotest.engine.listener.TestEngineListener
+import io.kotest.engine.listener.AbstractTestEngineListener
 
 private var counter = 0
 
@@ -20,14 +20,14 @@ class LauncherTestFilterTest : FunSpec() {
       test("filter added via launcher should filter test cases") {
 
          val filter = object : TestFilter {
-            override fun filter(description: Description): TestFilterResult {
-               return if (description.displayName() == "a") TestFilterResult.Include else TestFilterResult.Exclude
+            override fun filter(descriptor: Descriptor): TestFilterResult {
+               return if (descriptor.id.value == "a") TestFilterResult.Include else TestFilterResult.Exclude
             }
          }
 
-         val listener = object : TestEngineListener {
+         val listener = object : AbstractTestEngineListener() {
             override suspend fun testStarted(testCase: TestCase) {
-               if (testCase.description.displayName() == "b")
+               if (testCase.descriptor.id.value == "b")
                   error("should not run")
             }
          }
@@ -42,14 +42,14 @@ class LauncherTestFilterTest : FunSpec() {
       test("filter with test path added via launcher should filter test cases") {
 
          val filter = object : TestFilter {
-            override fun filter(description: Description): TestFilterResult {
-               return if (description.displayName() == "a") TestFilterResult.Include else TestFilterResult.Exclude
+            override fun filter(descriptor: Descriptor): TestFilterResult {
+               return if (descriptor.id.value == "a") TestFilterResult.Include else TestFilterResult.Exclude
             }
          }
 
-         val listener = object : TestEngineListener {
+         val listener = object : AbstractTestEngineListener() {
             override suspend fun testStarted(testCase: TestCase) {
-               if (testCase.description.displayName() == "b")
+               if (testCase.descriptor.id.value == "b")
                   error("should not run")
             }
          }

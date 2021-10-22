@@ -1,11 +1,12 @@
 package com.sksamuel.kotest.engine.interceptors
 
+import io.kotest.core.Tags
+import io.kotest.core.extensions.ProjectContext
 import io.kotest.core.extensions.ProjectExtension
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.engine.EngineResult
-import io.kotest.engine.TestSuite
+import io.kotest.engine.interceptors.EngineContext
 import io.kotest.engine.interceptors.ProjectExtensionEngineInterceptor
-import io.kotest.engine.listener.NoopTestEngineListener
 import io.kotest.matchers.shouldBe
 
 class ProjectExtensionEngineInterceptorTest : FunSpec({
@@ -16,23 +17,20 @@ class ProjectExtensionEngineInterceptorTest : FunSpec({
       var fired2 = false
 
       val ext1 = object : ProjectExtension {
-         override suspend fun aroundProject(callback: suspend () -> List<Throwable>): List<Throwable> {
+         override suspend fun interceptProject(context: ProjectContext, callback: suspend (ProjectContext) -> Unit) {
             fired1 = true
-            return callback()
+            callback(context)
          }
       }
 
       val ext2 = object : ProjectExtension {
-         override suspend fun aroundProject(callback: suspend () -> List<Throwable>): List<Throwable> {
+         override suspend fun interceptProject(context: ProjectContext, callback: suspend (ProjectContext) -> Unit) {
             fired2 = true
-            return callback()
+            callback(context)
          }
       }
 
-      ProjectExtensionEngineInterceptor(listOf(ext1, ext2)).intercept(
-         TestSuite.empty,
-         NoopTestEngineListener
-      ) { _, _ -> EngineResult.empty }
+      ProjectExtensionEngineInterceptor(listOf(ext1, ext2)).intercept(EngineContext.empty) { EngineResult.empty }
 
       fired1 shouldBe true
       fired2 shouldBe true
@@ -43,67 +41,51 @@ class ProjectExtensionEngineInterceptorTest : FunSpec({
       var fired = false
 
       val ext1 = object : ProjectExtension {
-         override suspend fun aroundProject(callback: suspend () -> List<Throwable>): List<Throwable> {
-            return callback()
+         override suspend fun interceptProject(context: ProjectContext, callback: suspend (ProjectContext) -> Unit) {
+            callback(context)
          }
       }
 
       val ext2 = object : ProjectExtension {
-         override suspend fun aroundProject(callback: suspend () -> List<Throwable>): List<Throwable> {
-            return callback()
+         override suspend fun interceptProject(context: ProjectContext, callback: suspend (ProjectContext) -> Unit) {
+            callback(context)
          }
       }
 
-      ProjectExtensionEngineInterceptor(listOf(ext1, ext2)).intercept(
-         TestSuite.empty,
-         NoopTestEngineListener
-      ) { _, _ ->
+      ProjectExtensionEngineInterceptor(listOf(ext1, ext2)).intercept(EngineContext.empty) {
          fired = true
          EngineResult.empty
       }
 
       fired shouldBe true
-   }
-
-   test("should accumulate errors") {
-
-      val ext1 = object : ProjectExtension {
-         override suspend fun aroundProject(callback: suspend () -> List<Throwable>): List<Throwable> {
-            val errors = callback()
-            return errors + RuntimeException("whack!")
-         }
-      }
-
-      val ext2 = object : ProjectExtension {
-         override suspend fun aroundProject(callback: suspend () -> List<Throwable>): List<Throwable> {
-            val errors = callback()
-            return errors + RuntimeException("zapp!")
-         }
-      }
-
-      val result = ProjectExtensionEngineInterceptor(listOf(ext1, ext2)).intercept(
-         TestSuite.empty,
-         NoopTestEngineListener
-      ) { _, _ ->
-         EngineResult(listOf(RuntimeException("sock!")))
-      }
-
-      result.errors.size shouldBe 3
-      result.errors.map { it.message }.toSet() shouldBe setOf("sock!", "zapp!", "whack!")
    }
 
    test("should invoke downstream without extensions") {
 
       var fired = false
 
-      ProjectExtensionEngineInterceptor(emptyList()).intercept(
-         TestSuite.empty,
-         NoopTestEngineListener
-      ) { _, _ ->
+      ProjectExtensionEngineInterceptor(emptyList()).intercept(EngineContext.empty) {
          fired = true
          EngineResult.empty
       }
 
       fired shouldBe true
+   }
+
+   test("should propagate tag changes") {
+      var tags = Tags("none")
+
+      val ext = object : ProjectExtension {
+         override suspend fun interceptProject(context: ProjectContext, callback: suspend (ProjectContext) -> Unit) {
+            callback(context.copy(tags = context.tags.include("bar")))
+         }
+      }
+
+      ProjectExtensionEngineInterceptor(listOf(ext)).intercept(EngineContext.empty.withTags(Tags("foo"))) {
+         tags = it.tags
+         EngineResult.empty
+      }
+
+      tags.expression shouldBe "foo & bar"
    }
 })

@@ -30,7 +30,7 @@ kotlin {
       val commonMain by getting {
          dependencies {
             compileOnly(kotlin("stdlib"))
-            api(project(Projects.AssertionsApi))
+            api(project(Projects.Assertions.Api))
             api(project(Projects.Property))
             implementation(project(Projects.Common))
             implementation(Libs.KotlinTime.kotlintime)

@@ -36,7 +36,7 @@ kotlin {
             implementation(kotlin("stdlib"))
             implementation(kotlin("test-common"))
             implementation(kotlin("test-annotations-common"))
-            implementation(project(Projects.AssertionsCore))
+            implementation(project(Projects.Assertions.Core))
          }
       }
 

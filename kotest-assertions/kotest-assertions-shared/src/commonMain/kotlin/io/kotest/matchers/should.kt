@@ -1,9 +1,16 @@
 package io.kotest.matchers
 
-import io.kotest.assertions.*
+import io.kotest.assertions.Actual
+import io.kotest.assertions.Expected
+import io.kotest.assertions.assertionCounter
+import io.kotest.assertions.collectOrThrow
 import io.kotest.assertions.eq.actualIsNull
 import io.kotest.assertions.eq.eq
 import io.kotest.assertions.eq.expectedIsNull
+import io.kotest.assertions.errorCollector
+import io.kotest.assertions.failure
+import io.kotest.assertions.intellijFormatError
+import io.kotest.assertions.show.Printed
 import io.kotest.assertions.show.show
 
 @Suppress("UNCHECKED_CAST")
@@ -35,7 +42,16 @@ fun <T> invokeMatcher(t: T, matcher: Matcher<T>): T {
    assertionCounter.inc()
    val result = matcher.test(t)
    if (!result.passed()) {
-      errorCollector.collectOrThrow(failure(result.failureMessage()))
+      when (result) {
+         is ComparableMatcherResult -> errorCollector.collectOrThrow(
+            failure(
+               Expected(Printed(result.expected())),
+               Actual(Printed(result.actual())),
+               result.failureMessage()
+            )
+         )
+         else -> errorCollector.collectOrThrow(failure(result.failureMessage()))
+      }
    }
    return t
 }

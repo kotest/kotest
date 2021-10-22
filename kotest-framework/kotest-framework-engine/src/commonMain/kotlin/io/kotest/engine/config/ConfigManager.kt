@@ -2,6 +2,7 @@ package io.kotest.engine.config
 
 import io.kotest.core.config.AbstractProjectConfig
 import io.kotest.core.config.Configuration
+import io.kotest.fp.mapError
 import io.kotest.mpp.log
 import kotlin.native.concurrent.ThreadLocal
 
@@ -21,16 +22,22 @@ object ConfigManager {
     */
    fun initialize(configuration: Configuration, projectConfigs: List<AbstractProjectConfig>): Configuration {
       if (!initialized) {
-         log { "ConfigManager: initialize config projectConfigs=$projectConfigs" }
-         applyPlatformDefaults(configuration)
-         applyConfigFromSystemProperties(configuration)
-         applyConfigFromAutoScan(configuration)
-         projectConfigs.forEach { applyConfigFromProjectConfig(it, configuration) }
+         compile(configuration, projectConfigs).getOrThrow()
          initialized = true
       }
       return configuration
    }
+
+   fun compile(configuration: Configuration, projectConfigs: List<AbstractProjectConfig>) = runCatching {
+      log { "ConfigManager: compiling config projectConfigs=$projectConfigs" }
+      applyPlatformDefaults(configuration)
+      applyConfigFromSystemProperties(configuration)
+      applyConfigFromAutoScan(configuration)
+      projectConfigs.forEach { applyConfigFromProjectConfig(it, configuration) }
+   }.mapError { ConfigurationException(it) }
 }
+
+class ConfigurationException(cause: Throwable) : Exception(cause)
 
 /**
  * Uses system properties to load configuration values onto the supplied [Configuration] object.

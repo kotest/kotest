@@ -5,7 +5,7 @@ import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestContext
 import io.kotest.core.test.TestResult
 import io.kotest.engine.extensions.resolvedExtensions
-import io.kotest.engine.test.withCoroutineContext
+import io.kotest.engine.test.contexts.withCoroutineContext
 import kotlin.coroutines.coroutineContext
 
 /**

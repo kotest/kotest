@@ -20,7 +20,7 @@ class BehaviorSpecInstancePerTestTest : BehaviorSpec({
    }
 
    afterTest {
-      tests.add(it.a.displayName)
+      tests.add(it.a.name.testName)
    }
 
    isolationMode = IsolationMode.InstancePerTest

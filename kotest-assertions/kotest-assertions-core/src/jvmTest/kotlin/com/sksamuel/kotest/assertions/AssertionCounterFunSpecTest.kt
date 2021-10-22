@@ -1,13 +1,12 @@
 package com.sksamuel.kotest.assertions
 
-import io.kotest.core.test.AssertionMode
-import io.kotest.core.test.TestCase
-import io.kotest.core.test.TestResult
-import io.kotest.core.test.TestStatus
 import io.kotest.assertions.assertionCounter
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.extensions.TestCaseExtension
 import io.kotest.core.spec.style.FunSpec
+import io.kotest.core.test.AssertionMode
+import io.kotest.core.test.TestCase
+import io.kotest.core.test.TestResult
 import io.kotest.matchers.shouldBe
 
 class AssertionCounterFunSpecTest : FunSpec() {
@@ -17,12 +16,11 @@ class AssertionCounterFunSpecTest : FunSpec() {
    override fun extensions(): List<TestCaseExtension> = listOf(
       object : TestCaseExtension {
          override suspend fun intercept(testCase: TestCase, execute: suspend (TestCase) -> TestResult): TestResult {
-            return when (testCase.displayName) {
+            return when (testCase.name.testName) {
                "AssertionMode.Error assertion mode should fail the test if no assertions were present" -> {
-                  val result = execute(testCase)
-                  when (result.status) {
-                     TestStatus.Error, TestStatus.Failure -> TestResult.success(result.duration)
-                     else -> TestResult.error(RuntimeException("Should have failed"), result.duration)
+                  when (val result = execute(testCase)) {
+                     is TestResult.Error, is TestResult.Failure -> TestResult.Success(result.duration)
+                     else -> TestResult.Error(result.duration, RuntimeException("Should have failed"))
                   }
                }
                else -> execute(testCase)

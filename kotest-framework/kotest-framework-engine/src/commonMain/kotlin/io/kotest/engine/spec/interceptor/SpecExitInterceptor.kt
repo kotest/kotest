@@ -14,7 +14,7 @@ internal class SpecExitInterceptor(private val listener: TestEngineListener) : S
    override suspend fun intercept(
       fn: suspend (SpecRef) -> Map<TestCase, TestResult>
    ): suspend (SpecRef) -> Map<TestCase, TestResult> = { ref ->
-      kotlin.runCatching { fn(ref) }
+      runCatching { fn(ref) }
          .fold(
             {
                listener.specExit(ref.kclass, null)

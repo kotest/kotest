@@ -1,5 +1,6 @@
 package io.kotest.core.test
 
+import io.kotest.core.spec.KotestDsl
 import kotlinx.coroutines.CoroutineScope
 import kotlin.coroutines.CoroutineContext
 
@@ -27,9 +28,4 @@ interface TestContext : CoroutineScope {
     * Will throw if the current test is not a container test.
     */
    suspend fun registerTestCase(nested: NestedTest)
-
-   /**
-    * Invoked when the test has completed and this scope is finished.
-    */
-   fun close() {}
 }

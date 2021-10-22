@@ -38,8 +38,12 @@ data class Tags(val expression: String?) {
     */
    fun include(tag: Tag): Tags = combine(Tags(tag.name))
 
+   fun include(tag: String): Tags = combine(Tags(tag))
+
    /**
     * Returns a new [Tags] which is the result of this expression and excluding the given tag.
     */
    fun exclude(tag: Tag): Tags = combine(Tags("!" + tag.name))
+
+   fun exclude(tag: String): Tags = combine(Tags("!$tag"))
 }

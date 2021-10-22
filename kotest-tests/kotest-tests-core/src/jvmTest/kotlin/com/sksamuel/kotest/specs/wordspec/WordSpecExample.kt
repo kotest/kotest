@@ -2,8 +2,6 @@ package com.sksamuel.kotest.specs.wordspec
 
 import io.kotest.core.spec.style.WordSpec
 import kotlin.time.Duration
-import kotlin.time.ExperimentalTime
-import kotlin.time.milliseconds
 
 class WordSpecExample : WordSpec() {
    init {

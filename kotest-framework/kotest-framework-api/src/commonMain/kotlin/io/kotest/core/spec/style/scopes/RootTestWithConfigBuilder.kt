@@ -2,7 +2,7 @@ package io.kotest.core.spec.style.scopes
 
 import io.kotest.core.Tag
 import io.kotest.core.extensions.TestCaseExtension
-import io.kotest.core.test.DescriptionName
+import io.kotest.core.names.TestName
 import io.kotest.core.test.EnabledIf
 import io.kotest.core.test.EnabledOrReasonIf
 import io.kotest.core.test.TestCaseSeverityLevel
@@ -12,7 +12,7 @@ import io.kotest.core.test.deriveTestCaseConfig
 import kotlin.time.Duration
 
 class RootTestWithConfigBuilder(
-   private val name: DescriptionName.TestName,
+   private val name: TestName,
    private val registration: RootTestRegistration,
    private val xdisabled: Boolean
 ) {
@@ -30,6 +30,7 @@ class RootTestWithConfigBuilder(
       enabledOrReasonIf: EnabledOrReasonIf? = null,
       coroutineDebugProbes: Boolean? = null,
       blockingTest: Boolean? = null,
+      testCoroutineDispatcher: Boolean? = null,
       test: suspend TestContext.() -> Unit,
    ) {
       val derivedConfig = registration.defaultConfig.deriveTestCaseConfig(
@@ -45,6 +46,7 @@ class RootTestWithConfigBuilder(
          enabledOrReasonIf = enabledOrReasonIf,
          coroutineDebugProbes = coroutineDebugProbes,
          blockingTest = blockingTest,
+         testCoroutineDispatcher = testCoroutineDispatcher,
       )
       registration.addTest(name, xdisabled, derivedConfig, TestType.Test, test)
    }

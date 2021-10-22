@@ -26,11 +26,11 @@ class ConcurrentTestsSingleInstanceTest : FunSpec() {
    override fun testCaseOrder() = TestCaseOrder.Sequential
 
    override fun beforeTest(testCase: TestCase) {
-      befores += testCase.displayName
+      befores += testCase.name.testName
    }
 
    override fun afterTest(testCase: TestCase, result: TestResult) {
-      afters += testCase.displayName
+      afters += testCase.name.testName
    }
 
    override fun beforeSpec(spec: Spec) {

@@ -3,22 +3,43 @@ package io.kotest.property.arbitrary
 import io.kotest.property.Arb
 import io.kotest.property.Gen
 import io.kotest.property.Shrinker
+import kotlin.math.absoluteValue
 
 private val numericEdgeCases = listOf(-1.0, -Double.MIN_VALUE, -0.0, 0.0, Double.MIN_VALUE, 1.0)
 
 private val nonFiniteEdgeCases = listOf(Double.NEGATIVE_INFINITY, Double.NaN, Double.POSITIVE_INFINITY)
 
 object DoubleShrinker : Shrinker<Double> {
-   override fun shrink(value: Double): List<Double> {
-      if (value == 0.0 || !value.isFinite())
-         return emptyList()
+   private val pattern = Regex("""([+-]|)([0-9]*)(\.[0-9]*|)(e[+-]?[0-9]+|)""", RegexOption.IGNORE_CASE)
 
-      val bits = value.toBits()
-
-      return if (bits and 0x000F_FFFF_FFFF_FFFFL == 0L)
+   override fun shrink(value: Double): List<Double> =
+      if (value == 0.0 || !value.isFinite() || value.absoluteValue < 10 * Double.MIN_VALUE)
          emptyList()
       else
-         listOf(Double.fromBits(bits and (bits - 1)))
+         listOfNotNull(shrink(value.toString())?.toDouble())
+
+   fun shrink(value: String): String? {
+      val matches = pattern.matchEntire(value) ?: return null
+      val parts = matches.groupValues.drop(1)
+      val (signPart, intPart, fracPart_, expPart) = parts
+      val fracPart = fracPart_.trimEnd { it == '0' }
+      val numberPart = if (fracPart.isNotEmpty() && fracPart.last().isDigit()) {
+         "$intPart${fracPart.dropLast(1)}"
+      } else {
+         val length = intPart.length
+         val index = intPart.indexOfLast { it != '0' }.let { if (it == -1) length else it }
+
+         if (index == 0) {
+            return null
+         }
+
+         val head = intPart.take(index)
+         val tail = intPart.takeLast(length - index - 1)
+
+         "${head}0$tail"
+      }
+
+      return "$signPart$numberPart$expPart"
    }
 }
 
@@ -58,7 +79,7 @@ fun Arb.Companion.double(
  */
 fun Arb.Companion.positiveDouble(max: Double = Double.MAX_VALUE): Arb<Double> = double(Double.MIN_VALUE, max)
 
-@Deprecated("use positiveDouble. Deprecated in 5.0 and will be removed in 6.0", ReplaceWith("positiveDouble()"))
+@Deprecated("use positiveDouble. Deprecated in 5.0.", ReplaceWith("positiveDouble()"))
 fun Arb.Companion.positiveDoubles(): Arb<Double> = positiveDouble()
 
 /**
@@ -68,7 +89,7 @@ fun Arb.Companion.positiveDoubles(): Arb<Double> = positiveDouble()
  */
 fun Arb.Companion.negativeDouble(min: Double = -Double.MAX_VALUE): Arb<Double> = double(min, -Double.MIN_VALUE)
 
-@Deprecated("use negativeDouble. Deprecated in 5.0 and will be removed in 6.0", ReplaceWith("negativeDouble()"))
+@Deprecated("use negativeDouble. Deprecated in 5.0.", ReplaceWith("negativeDouble()"))
 fun Arb.Companion.negativeDoubles(): Arb<Double> = negativeDouble()
 
 /**
@@ -85,7 +106,7 @@ fun Arb.Companion.numericDouble(
    (numericEdgeCases.filter { it in (min..max) } + listOf(min, max)).distinct(), DoubleShrinker
 ) { it.random.nextDouble(min, max) }
 
-@Deprecated("use numericDouble. Deprecated in 5.0 and will be removed in 6.0", ReplaceWith("numericDouble(from, to)"))
+@Deprecated("use numericDouble. Deprecated in 5.0.", ReplaceWith("numericDouble(from, to)"))
 fun Arb.Companion.numericDoubles(from: Double = -Double.MAX_VALUE, to: Double = Double.MAX_VALUE): Arb<Double> =
    numericDouble(from, to)
 

@@ -8,10 +8,10 @@ import io.kotest.core.listeners.ProjectListener
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.SpecExecutionOrder
 import io.kotest.core.test.AssertionMode
-import io.kotest.core.test.DuplicateTestNameMode
+import io.kotest.core.names.DuplicateTestNameMode
 import io.kotest.core.test.TestCaseConfig
 import io.kotest.core.test.TestCaseOrder
-import io.kotest.core.test.TestNameCase
+import io.kotest.core.names.TestNameCase
 import kotlin.reflect.KClass
 import kotlin.time.Duration
 

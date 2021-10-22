@@ -1,11 +1,10 @@
 package com.sksamuel.kotest.runner.junit5
 
 import io.kotest.core.config.configuration
+import io.kotest.core.listeners.AfterProjectListener
 import io.kotest.core.listeners.ProjectListener
 import io.kotest.core.spec.Isolate
 import io.kotest.core.spec.style.FunSpec
-import io.kotest.extensions.system.withEnvironment
-import io.mockk.every
 import io.mockk.mockkObject
 import io.mockk.unmockkObject
 import org.junit.platform.engine.discovery.DiscoverySelectors
@@ -17,150 +16,181 @@ class AfterProjectListenerExceptionHandlingTest : FunSpec({
    beforeTest { mockkObject(configuration) }
    afterTest { unmockkObject(configuration) }
 
-   test("an AfterProjectListenerException should add marker spec") {
-      every { configuration.extensions() } returns listOf(
-         object : ProjectListener {
-            override suspend fun afterProject() {
-               if (System.getenv("foo") == "true") error("too")
-            }
+   test("an AfterProjectListenerException should add marker test") {
+
+      val ext = object : AfterProjectListener {
+
+         override val name: String
+            get() = "myAfterProjectListener"
+
+         override suspend fun afterProject() {
+            error("afterProjectException")
          }
-      )
-      // use an env so that we only trigger the after all failure in the test, not while running the overall test suite
-      withEnvironment("foo", "true") {
-         EngineTestKit
-            .engine("kotest")
-            .selectors(DiscoverySelectors.selectClass(AfterProjectListenerExceptionSample::class.java))
-            .configurationParameter("allow_private", "true")
-            .execute()
-            .allEvents().apply {
-               started().shouldHaveNames(
-                  "Kotest",
-                  "com.sksamuel.kotest.runner.junit5.AfterProjectListenerExceptionSample",
-                  "foo",
-                  "defaultProjectListener"
-               )
-               aborted().shouldBeEmpty()
-               skipped().shouldBeEmpty()
-               failed().shouldHaveNames("defaultProjectListener")
-               succeeded().shouldHaveNames(
-                  "foo",
-                  "com.sksamuel.kotest.runner.junit5.AfterProjectListenerExceptionSample",
-                  "Kotest"
-               )
-               finished().shouldHaveNames(
-                  "foo",
-                  "com.sksamuel.kotest.runner.junit5.AfterProjectListenerExceptionSample",
-                  "defaultProjectListener",
-                  "Kotest"
-               )
-               dynamicallyRegistered().shouldHaveNames(
-                  "com.sksamuel.kotest.runner.junit5.AfterProjectListenerExceptionSample",
-                  "foo",
-                  "defaultProjectListener"
-               )
-            }
       }
+
+      configuration.register(ext)
+
+      EngineTestKit
+         .engine("kotest")
+         .selectors(DiscoverySelectors.selectClass(AfterProjectListenerExceptionSample::class.java))
+         .configurationParameter("allow_private", "true")
+         .execute()
+         .allEvents().apply {
+            started().shouldHaveNames(
+               "Kotest",
+               "com.sksamuel.kotest.runner.junit5.AfterProjectListenerExceptionSample",
+               "foo",
+               "myAfterProjectListener",
+            )
+            aborted().shouldBeEmpty()
+            skipped().shouldBeEmpty()
+            failed().shouldHaveNames("myAfterProjectListener")
+            succeeded().shouldHaveNames(
+               "foo",
+               "com.sksamuel.kotest.runner.junit5.AfterProjectListenerExceptionSample",
+               "Kotest"
+            )
+            finished().shouldHaveNames(
+               "foo",
+               "com.sksamuel.kotest.runner.junit5.AfterProjectListenerExceptionSample",
+               "myAfterProjectListener",
+               "Kotest"
+            )
+            dynamicallyRegistered().shouldHaveNames(
+               "com.sksamuel.kotest.runner.junit5.AfterProjectListenerExceptionSample",
+               "foo",
+               "myAfterProjectListener"
+            )
+         }
+
+      configuration.deregister(ext)
    }
 
-   test("!an AfterProjectListenerException should add 2 markers spec") {
-      every { configuration.extensions() } returns listOf(
-         object : ProjectListener {
-            override suspend fun afterProject() {
-               if (System.getenv("coo") == "true") error("moo")
-            }
-         },
-         object : ProjectListener {
-            override suspend fun afterProject() {
-               if (System.getenv("coo") == "true") error("boo")
-            }
+   test("multiple AfterProjectListenerException's should add multiple markers tests") {
+
+      val ext1 = object : AfterProjectListener {
+
+         override val name: String
+            get() = "myAfterProjectListener1"
+
+         override suspend fun afterProject() {
+            error("whack")
          }
-      )
-      // use an env so that we only trigger the after all failure in the test, not while running the overall test suite
-      withEnvironment("coo", "true") {
-         EngineTestKit
-            .engine("kotest")
-            .selectors(DiscoverySelectors.selectClass(AfterProjectListenerExceptionSample::class.java))
-            .configurationParameter("allow_private", "true")
-            .execute()
-            .allEvents().apply {
-               started().shouldHaveNames(
-                  "Kotest",
-                  "com.sksamuel.kotest.runner.junit5.AfterProjectListenerExceptionSample",
-                  "foo",
-                  "defaultProjectListener_0",
-                  "defaultProjectListener_1"
-               )
-               aborted().shouldBeEmpty()
-               skipped().shouldBeEmpty()
-               failed().shouldHaveNames("defaultProjectListener_0", "defaultProjectListener_1")
-               succeeded().shouldHaveNames(
-                  "foo",
-                  "com.sksamuel.kotest.runner.junit5.AfterProjectListenerExceptionSample",
-                  "Kotest"
-               )
-               finished().shouldHaveNames(
-                  "foo",
-                  "com.sksamuel.kotest.runner.junit5.AfterProjectListenerExceptionSample",
-                  "defaultProjectListener_0",
-                  "defaultProjectListener_1",
-                  "Kotest"
-               )
-               dynamicallyRegistered().shouldHaveNames(
-                  "com.sksamuel.kotest.runner.junit5.AfterProjectListenerExceptionSample",
-                  "foo",
-                  "defaultProjectListener_0",
-                  "defaultProjectListener_1"
-               )
-            }
       }
+
+      val ext2 = object : ProjectListener {
+
+         override val name: String
+            get() = "myAfterProjectListener2"
+
+         override suspend fun afterProject() {
+            error("zamm")
+         }
+      }
+
+      configuration.register(ext1)
+      configuration.register(ext2)
+
+      EngineTestKit
+         .engine("kotest")
+         .selectors(DiscoverySelectors.selectClass(AfterProjectListenerExceptionSample::class.java))
+         .configurationParameter("allow_private", "true")
+         .execute()
+         .allEvents().apply {
+            started().shouldHaveNames(
+               "Kotest",
+               "com.sksamuel.kotest.runner.junit5.AfterProjectListenerExceptionSample",
+               "foo",
+               "myAfterProjectListener1",
+               "myAfterProjectListener2"
+            )
+            aborted().shouldBeEmpty()
+            skipped().shouldBeEmpty()
+            failed().shouldHaveNames("myAfterProjectListener1", "myAfterProjectListener2")
+            succeeded().shouldHaveNames(
+               "foo",
+               "com.sksamuel.kotest.runner.junit5.AfterProjectListenerExceptionSample",
+               "Kotest"
+            )
+            finished().shouldHaveNames(
+               "foo",
+               "com.sksamuel.kotest.runner.junit5.AfterProjectListenerExceptionSample",
+               "myAfterProjectListener1",
+               "myAfterProjectListener2",
+               "Kotest"
+            )
+            dynamicallyRegistered().shouldHaveNames(
+               "com.sksamuel.kotest.runner.junit5.AfterProjectListenerExceptionSample",
+               "foo",
+               "myAfterProjectListener1",
+               "myAfterProjectListener2"
+            )
+         }
+
+      configuration.deregister(ext1)
+      configuration.deregister(ext2)
    }
 
-   test("an AfterProjectListenerException should add named markers spec") {
-      every { configuration.extensions() } returns listOf(
-         object : ProjectListener {
-            override val name: String
-               get() = "MyAfterProjectListenerName"
+   test("multiple AfterProjectListenerException's should disambiguate names") {
 
-            override suspend fun afterProject() {
-               if (System.getenv("foo") == "true") error("moo")
-            }
+      val ext1 = object : ProjectListener {
+
+         override val name: String
+            get() = "goo"
+
+         override suspend fun afterProject() {
+            error("whack")
          }
-      )
-      // use an env so that we only trigger the after all failure in the test, not while running the overall test suite
-      withEnvironment("foo", "true") {
-         EngineTestKit
-            .engine("kotest")
-            .selectors(DiscoverySelectors.selectClass(AfterProjectListenerExceptionSample::class.java))
-            .configurationParameter("allow_private", "true")
-            .execute()
-            .allEvents().apply {
-               started().shouldHaveNames(
-                  "Kotest",
-                  "com.sksamuel.kotest.runner.junit5.AfterProjectListenerExceptionSample",
-                  "foo",
-                  "MyAfterProjectListenerName"
-               )
-               aborted().shouldBeEmpty()
-               skipped().shouldBeEmpty()
-               failed().shouldHaveNames("MyAfterProjectListenerName")
-               succeeded().shouldHaveNames(
-                  "foo",
-                  "com.sksamuel.kotest.runner.junit5.AfterProjectListenerExceptionSample",
-                  "Kotest"
-               )
-               finished().shouldHaveNames(
-                  "foo",
-                  "com.sksamuel.kotest.runner.junit5.AfterProjectListenerExceptionSample",
-                  "MyAfterProjectListenerName",
-                  "Kotest"
-               )
-               dynamicallyRegistered().shouldHaveNames(
-                  "com.sksamuel.kotest.runner.junit5.AfterProjectListenerExceptionSample",
-                  "foo",
-                  "MyAfterProjectListenerName"
-               )
-            }
       }
+
+      val ext2 = object : ProjectListener {
+
+         override val name: String
+            get() = "goo"
+
+         override suspend fun afterProject() {
+            error("zamm")
+         }
+      }
+
+      configuration.register(ext1)
+      configuration.register(ext2)
+
+      EngineTestKit
+         .engine("kotest")
+         .selectors(DiscoverySelectors.selectClass(AfterProjectListenerExceptionSample::class.java))
+         .configurationParameter("allow_private", "true")
+         .execute()
+         .allEvents().apply {
+            started().shouldHaveNames(
+               "Kotest",
+               "com.sksamuel.kotest.runner.junit5.AfterProjectListenerExceptionSample",
+               "foo",
+               "goo",
+               "(1) goo"
+            )
+            aborted().shouldBeEmpty()
+            skipped().shouldBeEmpty()
+            failed().shouldHaveNames("goo", "(1) goo")
+            succeeded().shouldHaveNames(
+               "foo",
+               "com.sksamuel.kotest.runner.junit5.AfterProjectListenerExceptionSample",
+               "Kotest"
+            )
+            finished().shouldHaveNames(
+               "foo",
+               "com.sksamuel.kotest.runner.junit5.AfterProjectListenerExceptionSample",
+               "goo",
+               "(1) goo",
+               "Kotest"
+            )
+            dynamicallyRegistered().shouldHaveNames(
+               "com.sksamuel.kotest.runner.junit5.AfterProjectListenerExceptionSample",
+               "foo",
+               "goo",
+               "(1) goo"
+            )
+         }
    }
 })
 

@@ -1,5 +1,6 @@
 package io.kotest.engine.spec.runners
 
+import io.kotest.common.ExperimentalKotest
 import io.kotest.core.concurrency.CoroutineDispatcherFactory
 import io.kotest.core.config.configuration
 import io.kotest.core.spec.Spec
@@ -7,15 +8,13 @@ import io.kotest.core.test.NestedTest
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestContext
 import io.kotest.core.test.TestResult
-import io.kotest.core.test.TestStatus
-import io.kotest.core.test.createTestName
 import io.kotest.core.test.toTestCase
 import io.kotest.engine.listener.TestEngineListener
 import io.kotest.engine.spec.SpecExtensions
 import io.kotest.engine.spec.SpecRunner
 import io.kotest.engine.spec.materializeAndOrderRootTests
-import io.kotest.engine.test.DuplicateTestNameHandler
 import io.kotest.engine.test.TestCaseExecutor
+import io.kotest.engine.test.contexts.DuplicateNameHandlingTestContext
 import io.kotest.engine.test.listener.TestCaseExecutionListenerToTestEngineListenerAdapter
 import io.kotest.engine.test.scheduler.TestScheduler
 import io.kotest.fp.flatMap
@@ -29,6 +28,7 @@ import kotlin.coroutines.CoroutineContext
  * same [Spec] instance. In other words, only a single instance of the spec class
  * is instantiated for all the test cases.
  */
+@ExperimentalKotest
 internal class SingleInstanceSpecRunner(
    listener: TestEngineListener,
    scheduler: TestScheduler,
@@ -51,9 +51,9 @@ internal class SingleInstanceSpecRunner(
 
       try {
          return coroutineScope {
-            SpecExtensions(configuration).beforeSpec(spec)
+            SpecExtensions(configuration.extensions()).beforeSpec(spec)
                .flatMap { interceptAndRun(coroutineContext) }
-               .flatMap { SpecExtensions(configuration).afterSpec(spec) }
+               .flatMap { SpecExtensions(configuration.extensions()).afterSpec(spec) }
                .map { results }
          }
       } catch (e: Exception) {
@@ -67,14 +67,12 @@ internal class SingleInstanceSpecRunner(
       override val coroutineContext: CoroutineContext,
    ) : TestContext {
 
-      private val handler = DuplicateTestNameHandler(configuration.duplicateTestNameMode)
       private var failedfast = false
 
       // in the single instance runner we execute each nested test as soon as they are registered
       override suspend fun registerTestCase(nested: NestedTest) {
-         log { "Nested test case discovered $nested" }
-         val overrideName = handler.handle(nested.name)?.let { createTestName(it) }
-         val nestedTestCase = nested.toTestCase(testCase.spec, testCase, overrideName)
+         log { "Nested test case discovered '${nested.descriptor.path().value}'" }
+         val nestedTestCase = nested.toTestCase(testCase.spec, testCase)
          if (failedfast) {
             log { "A previous nested test failed and failfast is enabled - will mark this as ignored" }
             listener.testIgnored(nestedTestCase, "Failfast enabled on parent test")
@@ -82,7 +80,7 @@ internal class SingleInstanceSpecRunner(
             // if running this nested test results in an error, we won't launch any more nested tests
             val result = runTest(nestedTestCase, coroutineContext)
             if (testCase.config.failfast == true) {
-               if (result.status == TestStatus.Failure || result.status == TestStatus.Error) {
+               if (result.isErrorOrFailure) {
                   failedfast = true
                }
             }
@@ -94,12 +92,20 @@ internal class SingleInstanceSpecRunner(
       testCase: TestCase,
       coroutineContext: CoroutineContext,
    ): TestResult {
+
       val testExecutor = TestCaseExecutor(
          TestCaseExecutionListenerToTestEngineListenerAdapter(listener),
          defaultCoroutineDispatcherFactory
       )
 
-      val result = testExecutor.execute(testCase, Context(testCase, coroutineContext))
+      val context = DuplicateNameHandlingTestContext(
+         configuration.duplicateTestNameMode,
+         Context(testCase, coroutineContext)
+      )
+
+      val result = testExecutor.execute(
+         testCase, context
+      )
       results[testCase] = result
       return result
    }

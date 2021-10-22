@@ -1,6 +1,7 @@
 package io.kotest.property
 
-import io.kotest.mpp.timeInMillis
+import kotlin.time.Duration
+import kotlin.time.TimeSource
 
 /**
  * Controls iterations of a property test.
@@ -26,15 +27,10 @@ fun interface Constraints {
       /**
        * Returns a [Constraints] that executes the property test for a certain duration.
        */
-      fun duration(millis: Long) = object : Constraints {
-
-         val end = timeInMillis().apply {
-            if (this == 0L)
-               error("unsupported on this platform")
-         }
-
+      fun duration(duration: Duration) = object : Constraints {
+         val mark = TimeSource.Monotonic.markNow().plus(duration)
          override fun evaluate(): Boolean {
-            return timeInMillis() < end
+            return mark.hasNotPassedNow()
          }
       }
    }

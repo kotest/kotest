@@ -1,5 +1,7 @@
 package io.kotest.engine
 
+import io.kotest.common.ExperimentalKotest
+import io.kotest.common.KotestInternal
 import io.kotest.common.Platform
 import io.kotest.common.platform
 import io.kotest.core.Tags
@@ -10,16 +12,23 @@ import io.kotest.core.filter.TestFilter
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.SpecRef
 import io.kotest.engine.extensions.SpecifiedTagsTagExtension
+import io.kotest.engine.interceptors.EngineContext
 import io.kotest.engine.interceptors.EngineInterceptor
 import io.kotest.engine.listener.TestEngineListener
 import io.kotest.engine.spec.ReflectiveSpecRef
+import io.kotest.engine.tags.activeTags
 import io.kotest.mpp.log
 import kotlinx.coroutines.coroutineScope
 import kotlin.reflect.KClass
 
 data class EngineResult(val errors: List<Throwable>) {
+
    companion object {
       val empty = EngineResult(emptyList())
+   }
+
+   fun addError(t: Throwable): EngineResult {
+      return EngineResult(errors + t)
    }
 }
 
@@ -64,16 +73,17 @@ class TestEngine(val config: TestEngineConfig) {
    /**
     * Starts execution of the given [TestSuite], intercepting calls via [EngineInterceptor]s.
     */
+   @OptIn(KotestInternal::class, ExperimentalKotest::class)
    suspend fun execute(suite: TestSuite): EngineResult {
       log { "TestEngine: Executing test suite with ${suite.specs.size} specs" }
 
-      val innerExecute: suspend (TestSuite, TestEngineListener) -> EngineResult = { ts, tel ->
+      val innerExecute: suspend (EngineContext) -> EngineResult = { context ->
          val scheduler = when (platform) {
             Platform.JVM -> ConcurrentTestSuiteScheduler(configuration.concurrentSpecs ?: configuration.parallelism)
             Platform.JS -> SequentialTestSuiteScheduler
             Platform.Native -> SequentialTestSuiteScheduler
          }
-         scheduler.schedule(ts, tel)
+         scheduler.schedule(context.suite, context.listener)
       }
 
       log { "TestEngine: ${config.interceptors.size} engine interceptors:" }
@@ -82,12 +92,15 @@ class TestEngine(val config: TestEngineConfig) {
       }
 
       val execute = config.interceptors.foldRight(innerExecute) { extension, next ->
-         { ts, tel -> extension.intercept(ts, tel, next) }
+         { context -> extension.intercept(context, next) }
       }
+
+      val tags = configuration.activeTags()
+      log { "TestEngine: Active tags: ${tags.expression}" }
 
       // we want to suspend the engine while we wait for all specs to complete
       return coroutineScope {
-         execute(suite, config.listener)
+         execute(EngineContext(suite, config.listener, tags, configuration))
       }
    }
 }

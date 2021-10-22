@@ -31,6 +31,16 @@ fun RootContext.registerRootTests(): MutableList<String> {
       a * a + b * b shouldBe c * c
    }
 
+   withData(
+      mapOf(
+         "foo" to 2,
+         "foo" to 4,
+      )
+   ) { a ->
+      a % 2 shouldBe 0
+      if (a == 2) this.testCase.name.testName shouldBe "foo"
+   }
+
    withData("a", "b") { a ->
       withData(sequenceOf("x", "y")) { b ->
          a + b shouldHaveLength 2
@@ -52,10 +62,10 @@ fun RootContext.registerRootTests(): MutableList<String> {
          "a" to 2,
          "b" to 4,
       )
-   ) { a ->
-      a % 2 shouldBe 0
-      if (a == 2) this.testCase.displayName shouldBe "(2) a"
-      if (a == 4) this.testCase.displayName shouldBe "(2) b"
+   ) { arg ->
+      arg % 2 shouldBe 0
+      if (arg == 2) this.testCase.name.testName shouldBe "(2) a"
+      if (arg == 4) this.testCase.name.testName shouldBe "(2) b"
    }
 
    withData("p", "q") { a ->
@@ -97,8 +107,7 @@ suspend fun TestContext.registerContextTests(): MutableList<String> {
       )
    ) { a ->
       a % 2 shouldBe 0
-      if (a == 2) this.testCase.displayName shouldBe "foo"
-      //if (a == 4) this.testCase.displayName shouldBe "foo2"
+      if (a == 2) this.testCase.name.testName shouldBe "foo"
    }
 
    withData("a", "b") { a ->
@@ -122,10 +131,10 @@ suspend fun TestContext.registerContextTests(): MutableList<String> {
          "a" to 2,
          "b" to 4,
       )
-   ) { a ->
-      a % 2 shouldBe 0
-      if (a == 2) this.testCase.displayName shouldBe "(2) a"
-      if (a == 4) this.testCase.displayName shouldBe "(2) b"
+   ) { arg ->
+      arg % 2 shouldBe 0
+      if (arg == 2) this.testCase.name.testName shouldBe "(2) a"
+      if (arg == 4) this.testCase.name.testName shouldBe "(2) b"
    }
 
    withData("p", "q") { a ->

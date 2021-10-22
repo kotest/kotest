@@ -1,15 +1,15 @@
 package io.kotest.core.test
 
-import io.kotest.common.ExperimentalKotest
 import io.kotest.core.SourceRef
+import io.kotest.core.descriptors.Descriptor
 import io.kotest.core.factory.FactoryId
-import io.kotest.core.internal.tags.allTags
-import io.kotest.core.plan.Descriptor
+import io.kotest.core.names.TestName
 import io.kotest.core.sourceRef
 import io.kotest.core.spec.Spec
 
 /**
- * A [TestCase] describes an actual block of code that will be tested.
+ * A [TestCase] describes a test lambda at runtime.
+ *
  * It contains a reference back to the [Spec] instance in which it
  * is being executed.
  *
@@ -35,8 +35,8 @@ import io.kotest.core.spec.Spec
  *
  */
 data class TestCase(
-   // the description contains the names of all parents, plus the name of this test case
-   val description: Description.Test,
+   val descriptor: Descriptor.TestDescriptor,
+   val name: TestName,
    // the spec instance that contains this testcase
    val spec: Spec,
    // a closure of the test function
@@ -48,15 +48,16 @@ data class TestCase(
    val config: TestCaseConfig = TestCaseConfig(),
    // an optional factory id which is used to indicate which factory (if any) generated this test case.
    val factoryId: FactoryId? = null,
-
-   // only set for scripts
-   @ExperimentalKotest val descriptor: Descriptor.TestDescriptor? = null,
-
    // not null if this test has a parent test
-   @ExperimentalKotest val parent: TestCase? = null,
+   val parent: TestCase? = null,
 ) {
 
-   val displayName = description.displayName()
+   @Deprecated("Use testCase.name or testCase.descriptor. This was deprecated in 5.0.")
+   val displayName: String = descriptor.id.value
+
+   init {
+      if (type == TestType.Test && config.failfast == true) error("Cannot set fail fast on leaf test")
+   }
 
    companion object {
 
@@ -64,13 +65,15 @@ data class TestCase(
        * Creates a [TestCase] of type [TestType.Test], with default config, and derived source ref.
        */
       fun test(
-         description: Description.Test,
+         descriptor: Descriptor.TestDescriptor,
+         name: TestName,
          spec: Spec,
          parent: TestCase?,
          test: suspend TestContext.() -> Unit
       ): TestCase =
          TestCase(
-            description = description,
+            descriptor = descriptor,
+            name = name,
             spec = spec,
             test = test,
             source = sourceRef(),
@@ -84,12 +87,14 @@ data class TestCase(
        * Creates a [TestCase] of type [TestType.Container], with default config, and derived source ref.
        */
       fun container(
-         description: Description.Test,
+         descriptor: Descriptor.TestDescriptor,
+         name: TestName,
          spec: Spec,
          parent: TestCase?,
          test: suspend TestContext.() -> Unit
       ): TestCase = TestCase(
-         description = description,
+         descriptor = descriptor,
+         name = name,
          spec = spec,
          test = test,
          source = sourceRef(),
@@ -98,19 +103,12 @@ data class TestCase(
          factoryId = null,
          parent = parent,
       )
-
-      // todo this should move to runtime inside the runners
-      fun appendTagsInDisplayName(testCase: TestCase): TestCase {
-         val tagNames = testCase.allTags().joinToString(", ")
-
-         return if (tagNames.isNotBlank()) {
-            val description = testCase.description
-            val originalName = description.name
-            val nameWithTagsAppended = originalName.copy(displayName = "${originalName.displayName}[tags = $tagNames]")
-            testCase.copy(description = description.copy(name = nameWithTagsAppended))
-         } else {
-            testCase
-         }
-      }
    }
 }
+
+/**
+ * Returns true if this descriptor represents a root test case.
+ *
+ * A root test case is one which is defined at the top level in a spec.
+ */
+fun TestCase.isRootTest() = this.parent == null

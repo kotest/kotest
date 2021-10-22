@@ -32,7 +32,7 @@ kotlin {
       val jvmMain by getting {
          dependencies {
             implementation(kotlin("reflect"))
-            implementation(project(Projects.Api))
+            implementation(project(Projects.Framework.api))
             implementation(project(Projects.Framework.engine))
             implementation(project(Projects.Common))
             implementation(Libs.Apache.commonsio)
@@ -44,7 +44,7 @@ kotlin {
          dependsOn(jvmMain)
          dependencies {
             implementation(project(Projects.JunitRunner))
-            implementation(project(Projects.AssertionsCore))
+            implementation(project(Projects.Assertions.Core))
             implementation(Libs.Coroutines.coreJvm)
          }
       }

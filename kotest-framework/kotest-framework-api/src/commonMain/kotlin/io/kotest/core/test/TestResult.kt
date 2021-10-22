@@ -1,80 +1,93 @@
 package io.kotest.core.test
 
-data class TestResult(
-   val status: TestStatus,
-   val error: Throwable?,
-   val reason: String?, // the reason the test was ignored
-   val duration: Long
-) {
+import kotlin.time.Duration
+import kotlin.time.milliseconds
+
+sealed interface TestResult {
+
    companion object {
-
-      /**
-       * Creates a new [TestResult] with status [TestStatus.Success].
-       * @param duration the execution time of the test case.
-       */
-      fun success(duration: Long) = TestResult(
-         TestStatus.Success,
-         null,
-         null,
-         duration
+      @Deprecated(
+         "Replaced with TestResult.Success. Deprecated since 5.0",
+         ReplaceWith("TestResult.Success(durationMillis.milliseconds)", "kotlin.time.milliseconds")
       )
+      fun success(durationMillis: Long): Success = Success(durationMillis.milliseconds)
 
-      /**
-       * Returns a [TestResult] with status [TestStatus.Ignored].
-       */
-      val Ignored = TestResult(
-         TestStatus.Ignored,
-         null,
-         null,
-         0
+      @Deprecated(
+         "Replaced with TestResult.Failure. Deprecated since 5.0",
+         ReplaceWith("TestResult.Failure(durationMillis.milliseconds)", "kotlin.time.milliseconds")
       )
+      fun failure(error: AssertionError, durationMillis: Long): Failure = Failure(durationMillis.milliseconds, error)
 
-      /**
-       * Creates a new [TestResult] with status [TestStatus.Failure].
-       *
-       * @param e the assertion error that caused the test case to fail.
-       * @param duration the execution time of the test case.
-       */
-      fun failure(e: AssertionError, duration: Long) = TestResult(
-         TestStatus.Failure,
-         e,
-         null,
-         duration
+      @Deprecated(
+         "Replaced with TestResult.Error. Deprecated since 5.0",
+         ReplaceWith("TestResult.Error(durationMillis.milliseconds)", "kotlin.time.milliseconds")
       )
+      fun error(error: Throwable, durationMillis: Long): Error = Error(durationMillis.milliseconds, error)
+
+      val Ignored = Ignored(null)
+   }
+
+   /**
+    * Returns a [TestResult] with a status from the given [reason] string.
+    *
+    * @param reason an optional string describing why the test was ignored.
+    */
+   // the test was skipped completely
+   data class Ignored(val reason: String?) : TestResult {
 
       /**
-       * Creates a new [TestResult] with status [TestStatus.Error].
-       *
-       * @param t the general thorwable that caused the test case to error.
-       * @param duration the execution time of the test case.
+       * Returns a [TestResult.Ignored] with a reason string resolved from the given [Enabled].
        */
-      fun error(t: Throwable, duration: Long) = TestResult(
-         TestStatus.Error,
-         t,
-         null,
-         duration
-      )
+      constructor(enabled: Enabled) : this(enabled.reason)
 
-      /**
-       * Returns a [TestResult] with status [TestStatus.Ignored] and a reason string resolved from [TestCase.isEnabled].
-       *
-       * @param enabled a disabled [Enabled] that contains the reason for the test being ignored.
-       */
-      fun ignored(enabled: Enabled): TestResult {
-         require(!enabled.isEnabled) { "An ignored test must not be enabled" }
-         return ignored(enabled.reason)
+      override val duration: Duration = Duration.ZERO
+   }
+
+   data class Success(override val duration: Duration) : TestResult
+
+   // the test failed because of some exception that was not an assertion error
+   data class Error(override val duration: Duration, val cause: Throwable) : TestResult
+
+   // the test ran but an assertion failed
+   data class Failure(override val duration: Duration, val cause: AssertionError) : TestResult
+
+   val duration: Duration
+
+   @Deprecated("No longer has relevance. Pattern match on TestResult directly. Deprecated since 5.0")
+   val status: TestStatus
+      get() = when (this) {
+         is Error -> TestStatus.Error
+         is Failure -> TestStatus.Failure
+         is Ignored -> TestStatus.Ignored
+         is Success -> TestStatus.Success
       }
 
-      /**
-       * Returns a [TestResult] with status [TestStatus.Ignored] and a custom reason string.
-       *
-       * @param reason an optional string describing why the test was ignored.
-       */
-      fun ignored(reason: String?) = TestResult(
-         TestStatus.Ignored,
-         null,
-         reason,
-         0
-      )
-   }
+   val reasonOrNull: String?
+      get() = when (this) {
+         is Ignored -> this.reason
+         else -> null
+      }
+
+   val errorOrNull: Throwable?
+      get() = when (this) {
+         is Error -> this.cause
+         is Failure -> this.cause
+         is Ignored -> null
+         is Success -> null
+      }
+
+   val isSuccess: Boolean
+      get() = this is Success
+
+   val isError: Boolean
+      get() = this is Error
+
+   val isFailure: Boolean
+      get() = this is Failure
+
+   val isIgnored: Boolean
+      get() = this is Ignored
+
+   val isErrorOrFailure: Boolean
+      get() = isFailure || isError
 }

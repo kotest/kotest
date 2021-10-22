@@ -3,10 +3,10 @@ package io.kotest.core.extensions
 import io.kotest.core.spec.Spec
 
 /**
- * An installable extension that returns a materialized value to the user and allows for
- * a configuration block.
+ * A [MountableExtension] is an [Extension] that can return a materialized value to the
+ * user and allows for a configuration block.
  *
- * This allows extensions to provide control objects which differ from the extension itself.
+ * This allows extensions to return control objects which differ from the extension itself.
  *
  * For example:
  *
@@ -19,11 +19,11 @@ import io.kotest.core.spec.Spec
  * }
  *
  * Here `kafka` is a materialized value that contains details of the host/port of the
- * started kafka instance.
+ * started kafka instance and `EmbeddedKafka` is the extension itself.
  *
  */
 interface MountableExtension<CONFIG, MATERIALIZED> : Extension {
-   // cannot be suspending as it is invoked from mount that is itself invoked in constructors
+   // cannot be suspending as it is invoked by install that is used in constructors
    fun mount(configure: CONFIG.() -> Unit): MATERIALIZED
 }
 

@@ -1,12 +1,16 @@
 package io.kotest.core.spec.style.scopes
 
+import io.kotest.core.descriptors.append
+import io.kotest.core.names.TestName
 import io.kotest.core.spec.KotestDsl
 import io.kotest.core.spec.resolvedDefaultConfig
 import io.kotest.core.test.NestedTest
 import io.kotest.core.test.TestContext
 import io.kotest.core.test.TestType
 import io.kotest.core.test.createNestedTest
-import io.kotest.core.test.createTestName
+
+@Deprecated("This interface has been renamed to BehaviorSpecWhenContainerContext. Deprecated since 4.5.")
+typealias WhenScope = BehaviorSpecWhenContainerContext
 
 /**
  * A context that allows tests to be registered using the syntax:
@@ -43,11 +47,11 @@ class BehaviorSpecWhenContainerContext(
    private suspend fun addAnd(name: String, test: suspend BehaviorSpecWhenContainerContext.() -> Unit, xdisabled: Boolean) {
       registerTestCase(
          createNestedTest(
-            name = createTestName("And: ", name, true),
+            descriptor = testCase.descriptor.append(name),
+            name = TestName("And: ", name, true),
             xdisabled = xdisabled,
             config = testCase.spec.resolvedDefaultConfig(),
             type = TestType.Container,
-            descriptor = null,
             factoryId = testCase.factoryId,
             test = { BehaviorSpecWhenContainerContext(this).test() }
          )
@@ -56,7 +60,7 @@ class BehaviorSpecWhenContainerContext(
 
    fun then(name: String) =
       TestWithConfigBuilder(
-         createTestName("Then: ", name, true),
+         TestName("Then: ", name, true),
          testContext,
          testCase.spec.resolvedDefaultConfig(),
          xdisabled = false
@@ -64,7 +68,7 @@ class BehaviorSpecWhenContainerContext(
 
    fun Then(name: String) =
       TestWithConfigBuilder(
-         createTestName("Then: ", name, true),
+         TestName("Then: ", name, true),
          testContext,
          testCase.spec.resolvedDefaultConfig(),
          xdisabled = false
@@ -72,7 +76,7 @@ class BehaviorSpecWhenContainerContext(
 
    fun xthen(name: String) =
       TestWithConfigBuilder(
-         createTestName("Then: ", name, true),
+         TestName("Then: ", name, true),
          testContext,
          testCase.spec.resolvedDefaultConfig(),
          xdisabled = true
@@ -80,7 +84,7 @@ class BehaviorSpecWhenContainerContext(
 
    fun xThen(name: String) =
       TestWithConfigBuilder(
-         createTestName("Then: ", name, true),
+         TestName("Then: ", name, true),
          testContext,
          testCase.spec.resolvedDefaultConfig(),
          xdisabled = true
@@ -94,11 +98,11 @@ class BehaviorSpecWhenContainerContext(
    private suspend fun addThen(name: String, test: suspend TestContext.() -> Unit, xdisabled: Boolean) {
       registerTestCase(
          createNestedTest(
-            name = createTestName("Then: ", name, true),
+            descriptor = testCase.descriptor.append(name),
+            name = TestName("Then: ", name, true),
             xdisabled = xdisabled,
             config = testCase.spec.resolvedDefaultConfig(),
             type = TestType.Test,
-            descriptor = null,
             factoryId = testCase.factoryId,
             test = { BehaviorSpecWhenContainerContext(this).test() }
          )

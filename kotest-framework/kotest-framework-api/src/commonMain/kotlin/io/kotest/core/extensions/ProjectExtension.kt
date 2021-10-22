@@ -1,5 +1,9 @@
 package io.kotest.core.extensions
 
+import io.kotest.core.Tags
+import io.kotest.core.config.Configuration
+import io.kotest.core.spec.SpecRef
+
 /**
  * Extension point that allows intercepting execution of projects.
  */
@@ -10,7 +14,9 @@ interface ProjectExtension : Extension {
     * the project to be executed, otherwise not calling [callback] will skip
     * the entire project.
     *
-    * Any errors returned from the callback should be returned from this method.
+    * Implementations can modify the [ProjectContext] and changes will be reflected downstream.
     */
-   suspend fun aroundProject(callback: suspend () -> List<Throwable>): List<Throwable>
+   suspend fun interceptProject(context: ProjectContext, callback: suspend (ProjectContext) -> Unit)
 }
+
+data class ProjectContext(val tags: Tags, val specs: List<SpecRef>, val configuration: Configuration)

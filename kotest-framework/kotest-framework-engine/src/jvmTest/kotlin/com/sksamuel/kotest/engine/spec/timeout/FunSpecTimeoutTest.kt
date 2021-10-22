@@ -3,7 +3,6 @@ package com.sksamuel.kotest.engine.spec.timeout
 import io.kotest.common.ExperimentalKotest
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.test.TestResult
-import io.kotest.core.test.TestStatus
 import io.kotest.engine.test.toTestResult
 import kotlinx.coroutines.delay
 import kotlin.time.Duration
@@ -14,8 +13,8 @@ class FunSpecTimeoutTest : FunSpec() {
 
       extension { (testCase, execute) ->
          val result = execute(testCase)
-         if (testCase.displayName.contains("timeout:") && result.status == TestStatus.Success) {
-            AssertionError("${testCase.description.name.name} passed but should fail").toTestResult(0)
+         if (testCase.name.testName.contains("timeout:") && result.isSuccess) {
+            AssertionError("${testCase.descriptor.id.value} passed but should fail").toTestResult(0)
          } else {
             TestResult.success(0)
          }
@@ -50,16 +49,6 @@ class FunSpecTimeoutTest : FunSpec() {
          context("timeout: nested container should override container timeouts").config(
             timeout = Duration.milliseconds(10)
          ) {
-            delay(Duration.milliseconds(20))
-         }
-      }
-
-      context("containers should allow tests to have longer timeouts").config(timeout = Duration.milliseconds(10)) {
-         test("nested test should override container timeouts").config(timeout = Duration.milliseconds(25)) {
-            delay(Duration.milliseconds(20))
-         }
-
-         context("nested container should override container timeouts").config(timeout = Duration.milliseconds(25)) {
             delay(Duration.milliseconds(20))
          }
       }

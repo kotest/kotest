@@ -65,12 +65,12 @@ kotlin {
          dependencies {
             compileOnly(kotlin("stdlib"))
             implementation(kotlin("reflect"))
-            api(project(Projects.AssertionsShared))
+            api(project(Projects.Assertions.Shared))
             implementation(project(Projects.Common))
 
             // this is API because we want people to be able to use the functionality in their tests
             // without needing to declare this dependency as well
-            api(project(Projects.Api))
+            api(project(Projects.Framework.api))
 
             // used to install the debug probes for coroutines
             implementation(Libs.Coroutines.debug)
@@ -88,6 +88,7 @@ kotlin {
             api(Libs.Kotlin.kotlinScriptRuntime)
             implementation(Libs.Kotlin.kotlinScriptUtil)
             implementation(Libs.Kotlin.kotlinScriptJvm)
+            implementation(Libs.Coroutines.test)
 
             api(Libs.Classgraph.classgraph)
 
@@ -104,7 +105,7 @@ kotlin {
 
       val jvmTest by getting {
          dependencies {
-            implementation(project(Projects.AssertionsCore))
+            implementation(project(Projects.Assertions.Core))
             implementation(project(Projects.JunitRunner))
             implementation(Libs.Mocking.mockk)
          }

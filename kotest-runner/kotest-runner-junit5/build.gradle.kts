@@ -37,11 +37,11 @@ kotlin {
       val jvmMain by getting {
          dependencies {
             implementation(Libs.Kotlin.kotlinScriptRuntime)
-            api(project(Projects.Api))
+            api(project(Projects.Framework.api))
             api(project(Projects.Common))
             api(project(Projects.Framework.engine))
             api(project(Projects.Discovery))
-            api(project(Projects.AssertionsCore))
+            api(project(Projects.Assertions.Core))
             api(project(Projects.Extensions))
             api(project(Projects.Framework.concurrency))
             api(Libs.Coroutines.coreJvm)
@@ -56,7 +56,7 @@ kotlin {
          dependsOn(jvmMain)
          dependencies {
             implementation(project(Projects.JunitRunner))
-            implementation(project(Projects.AssertionsCore))
+            implementation(project(Projects.Assertions.Core))
             implementation(Libs.JUnitPlatform.testkit)
             implementation(Libs.Mocking.mockk)
          }
@@ -82,7 +82,14 @@ tasks.named<Test>("jvmTest") {
    testLogging {
       showExceptions = true
       showStandardStreams = true
-      events = setOf(TestLogEvent.FAILED, TestLogEvent.PASSED)
+      showCauses = true
+      events = setOf(
+         TestLogEvent.FAILED,
+         TestLogEvent.PASSED,
+         TestLogEvent.STANDARD_OUT,
+         TestLogEvent.STARTED,
+         TestLogEvent.STANDARD_ERROR
+      )
       exceptionFormat = TestExceptionFormat.FULL
    }
 }

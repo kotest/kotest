@@ -1,8 +1,8 @@
 package io.kotest.core.factory
 
 import io.kotest.core.SourceRef
+import io.kotest.core.names.TestName
 import io.kotest.core.spec.Spec
-import io.kotest.core.test.DescriptionName
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestCaseConfig
 import io.kotest.core.test.TestContext
@@ -14,7 +14,7 @@ import io.kotest.core.test.TestType
  * as fully fledged [TestCase]s.
  */
 data class DynamicRootTest(
-   val name: DescriptionName.TestName,
+   val name: TestName,
    val test: suspend TestContext.() -> Unit,
    val config: TestCaseConfig,
    val type: TestType,
@@ -22,4 +22,4 @@ data class DynamicRootTest(
    val factoryId: FactoryId
 )
 
-fun DynamicRootTest.addPrefix(prefix: String): DynamicRootTest = copy(name = name.copy(name = "$prefix $name"))
+fun DynamicRootTest.addPrefix(prefix: String): DynamicRootTest = copy(name = name.copy(testName = "$prefix $name"))

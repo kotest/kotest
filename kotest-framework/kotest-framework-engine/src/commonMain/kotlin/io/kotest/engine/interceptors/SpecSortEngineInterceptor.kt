@@ -4,7 +4,6 @@ import io.kotest.core.config.configuration
 import io.kotest.core.extensions.SpecExecutionOrderExtension
 import io.kotest.engine.EngineResult
 import io.kotest.engine.TestSuite
-import io.kotest.engine.listener.TestEngineListener
 import io.kotest.engine.spec.DefaultSpecExecutionOrderExtension
 import io.kotest.mpp.log
 
@@ -15,9 +14,8 @@ import io.kotest.mpp.log
 internal object SpecSortEngineInterceptor : EngineInterceptor {
 
    override suspend fun intercept(
-      suite: TestSuite,
-      listener: TestEngineListener,
-      execute: suspend (TestSuite, TestEngineListener) -> EngineResult
+      context: EngineContext,
+      execute: suspend (EngineContext) -> EngineResult
    ): EngineResult {
 
       // spec classes are ordered using SpecExecutionOrderExtension extensions
@@ -26,7 +24,7 @@ internal object SpecSortEngineInterceptor : EngineInterceptor {
       }
 
       log { "SpecSortEngineInterceptor: Sorting specs using extensions $exts" }
-      val specs = exts.fold(suite.specs) { acc, op -> op.sort(acc) }
-      return execute(suite.copy(specs = specs), listener)
+      val specs = exts.fold(context.suite.specs) { acc, op -> op.sort(acc) }
+      return execute(context.withTestSuite(TestSuite(specs)))
    }
 }

@@ -55,7 +55,7 @@ kotlin {
             compileOnly(kotlin("stdlib"))
             implementation(kotlin("reflect"))
             api(project(Projects.Common))
-            api(project(Projects.AssertionsShared))
+            api(project(Projects.Assertions.Shared))
             implementation(Libs.Coroutines.coreCommon)
          }
       }
@@ -65,13 +65,14 @@ kotlin {
          dependencies {
             implementation(Libs.Wumpz.diffutils)
             implementation(Libs.rgxgen.rgxgen)
+            implementation(kotlin("reflect"))
          }
       }
 
       val commonTest by getting {
          dependencies {
             implementation(project(Projects.Framework.engine))
-            implementation(project(Projects.AssertionsCore))
+            implementation(project(Projects.Assertions.Core))
          }
       }
 
@@ -159,6 +160,7 @@ kotlin {
 
       all {
          languageSettings.optIn("kotlin.time.ExperimentalTime")
+         languageSettings.optIn("kotlin.ExperimentalStdlibApi")
          languageSettings.optIn("kotlin.experimental.ExperimentalTypeInference")
       }
    }

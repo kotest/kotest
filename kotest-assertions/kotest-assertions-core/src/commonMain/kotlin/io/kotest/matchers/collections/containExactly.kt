@@ -1,17 +1,38 @@
 package io.kotest.matchers.collections
 
+import io.kotest.assertions.AssertionsConfig
 import io.kotest.assertions.eq.eq
 import io.kotest.assertions.show.Printed
 import io.kotest.assertions.show.show
-import io.kotest.matchers.*
+import io.kotest.matchers.ComparableMatcherResult
+import io.kotest.matchers.Matcher
+import io.kotest.matchers.MatcherResult
+import io.kotest.matchers.neverNullMatcher
+import io.kotest.matchers.should
+import io.kotest.matchers.shouldNot
 import kotlin.jvm.JvmName
 
+/**
+ * Verifies that this collection contains the sub collections provided in the exact given order.
+ *
+ * So, for example, listOf(1,2,3) contains exactly the sub collections:
+ *
+ * [], [1], [2], [3], [1,2], [2,3] and [1,2,3].
+ *
+ */
 @JvmName("shouldContainExactly_iterable")
-infix fun <T> Iterable<T>?.shouldContainExactly(expected: Iterable<T>) = this?.toList() should containExactly(expected.toList())
+infix fun <T> Iterable<T>?.shouldContainExactly(expected: Iterable<T>) =
+   this?.toList() should containExactly(expected.toList())
+
 @JvmName("shouldContainExactly_array")
-infix fun <T> Array<T>?.shouldContainExactly(expected: Array<T>) = this?.asList() should containExactly(*expected)
-fun <T> Iterable<T>?.shouldContainExactly(vararg expected: T) = this?.toList() should containExactly(*expected)
-fun <T> Array<T>?.shouldContainExactly(vararg expected: T) = this?.asList() should containExactly(*expected)
+infix fun <T> Array<T>?.shouldContainExactly(expected: Array<T>) =
+   this?.asList() should containExactly(*expected)
+
+fun <T> Iterable<T>?.shouldContainExactly(vararg expected: T) =
+   this?.toList() should containExactly(*expected)
+
+fun <T> Array<T>?.shouldContainExactly(vararg expected: T) =
+   this?.asList() should containExactly(*expected)
 
 infix fun <T, C : Collection<T>> C?.shouldContainExactly(expected: C) = this should containExactly(expected)
 fun <T> Collection<T>?.shouldContainExactly(vararg expected: T) = this should containExactly(*expected)
@@ -45,10 +66,23 @@ fun <T, C : Collection<T>> containExactly(expected: C): Matcher<C?> = neverNullM
       sb.toString()
    }
 
-   MatcherResult(
-      passed,
-      failureMessage
-   ) { "Collection should not be exactly ${expected.printed().value}" }
+   val negatedFailureMessage = { "Collection should not contain exactly ${expected.printed().value}" }
+
+   if (actual.size <= AssertionsConfig.maxCollectionEnumerateSize && expected.size <= AssertionsConfig.maxCollectionEnumerateSize) {
+      ComparableMatcherResult(
+         passed,
+         failureMessage,
+         negatedFailureMessage,
+         actual.show().value,
+         expected.show().value,
+      )
+   } else {
+      MatcherResult(
+         passed,
+         failureMessage,
+         negatedFailureMessage,
+      )
+   }
 }
 
 @JvmName("shouldNotContainExactly_iterable")

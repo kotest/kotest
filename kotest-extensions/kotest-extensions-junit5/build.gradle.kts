@@ -33,7 +33,7 @@ kotlin {
          dependencies {
             implementation(project(Projects.Common))
             implementation(project(Projects.Framework.engine))
-            implementation(project(Projects.Api))
+            implementation(project(Projects.Framework.api))
             implementation(Libs.Coroutines.coreJvm)
             implementation(Libs.JUnitJupiter.api)
          }

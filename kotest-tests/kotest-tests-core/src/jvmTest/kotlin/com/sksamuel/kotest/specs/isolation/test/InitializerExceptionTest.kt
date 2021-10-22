@@ -1,7 +1,6 @@
 package com.sksamuel.kotest.specs.isolation.test
 
 import io.kotest.core.spec.IsolationMode
-import io.kotest.core.spec.Spec
 import io.kotest.core.spec.style.BehaviorSpec
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.core.spec.style.ExpectSpec
@@ -12,7 +11,7 @@ import io.kotest.core.spec.style.ShouldSpec
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.core.spec.style.WordSpec
 import io.kotest.engine.concurrency.NoopCoroutineDispatcherFactory
-import io.kotest.engine.listener.TestEngineListener
+import io.kotest.engine.listener.AbstractTestEngineListener
 import io.kotest.engine.spec.SpecExecutor
 import io.kotest.engine.spec.SpecInstantiationException
 import io.kotest.matchers.types.shouldBeInstanceOf
@@ -94,8 +93,8 @@ class InitializerExceptionTest : WordSpec({
 
    var error: Throwable? = null
 
-   val listener = object : TestEngineListener {
-      override suspend fun specExit(kclass: KClass<out Spec>, t: Throwable?) {
+   val listener = object :  AbstractTestEngineListener() {
+      override suspend fun specExit(kclass: KClass<*>, t: Throwable?) {
          if (t != null) error = t
       }
    }

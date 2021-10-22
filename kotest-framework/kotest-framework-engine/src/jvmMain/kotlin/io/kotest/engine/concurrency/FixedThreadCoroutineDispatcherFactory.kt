@@ -39,7 +39,7 @@ class FixedThreadCoroutineDispatcherFactory(
    override suspend fun <T> withDispatcher(testCase: TestCase, f: suspend () -> T): T {
 
       val resolvedAffinity = testCase.spec.dispatcherAffinity ?: testCase.spec.dispatcherAffinity() ?: affinity
-      log { "FixedThreadCoroutineDispatcherFactory: For ${testCase.displayName} affinity=$resolvedAffinity" }
+      log { "FixedThreadCoroutineDispatcherFactory: For '${testCase.descriptor.path().value}' affinity=$resolvedAffinity" }
 
       // if dispatcher affinity is set to true, we pick a dispatcher for the spec and stick with it
       // otherwise each test just gets a random dispatcher

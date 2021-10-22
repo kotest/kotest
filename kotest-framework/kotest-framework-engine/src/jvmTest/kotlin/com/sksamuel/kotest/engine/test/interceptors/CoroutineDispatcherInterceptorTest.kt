@@ -1,13 +1,15 @@
 package com.sksamuel.kotest.engine.test.interceptors
 
 import io.kotest.core.concurrency.CoroutineDispatcherFactory
+import io.kotest.core.descriptors.append
 import io.kotest.core.sourceRef
 import io.kotest.core.spec.style.DescribeSpec
-import io.kotest.core.spec.toDescription
+import io.kotest.core.descriptors.toDescriptor
+import io.kotest.core.names.TestName
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestType
-import io.kotest.engine.test.NoopTestContext
+import io.kotest.engine.test.contexts.NoopTestContext
 import io.kotest.engine.test.interceptors.CoroutineDispatcherFactoryInterceptor
 import io.kotest.matchers.string.shouldStartWith
 import kotlinx.coroutines.asCoroutineDispatcher
@@ -19,7 +21,8 @@ class CoroutineDispatcherInterceptorTest : DescribeSpec() {
       describe("CoroutineDispatcherInterceptor") {
          it("should dispatch to coroutineDispatcher") {
             val tc = TestCase(
-               InvocationCountCheckInterceptorTest::class.toDescription().appendTest("foo"),
+               InvocationCountCheckInterceptorTest::class.toDescriptor().append("foo"),
+               TestName("foo"),
                InvocationCountCheckInterceptorTest(),
                {},
                sourceRef(),

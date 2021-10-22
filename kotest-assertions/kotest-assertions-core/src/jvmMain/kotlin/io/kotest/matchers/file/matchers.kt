@@ -2,6 +2,7 @@ package io.kotest.matchers.file
 
 import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
+import io.kotest.matchers.collections.shouldBeSameSizeAs
 import io.kotest.matchers.paths.beSymbolicLink
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldBe
@@ -145,7 +146,6 @@ fun beLarger(other: File): Matcher<File> = object : Matcher<File> {
    }
 }
 
-
 fun File.shouldBeCanonical() = this should beCanonicalPath()
 fun File.shouldNotBeCanonical() = this shouldNot beCanonicalPath()
 fun beCanonicalPath(): Matcher<File> = object : Matcher<File> {
@@ -176,7 +176,6 @@ fun beRelative(): Matcher<File> = object : Matcher<File> {
          { "File $value should be relative" },
          { "File $value should not be relative" })
 }
-
 
 infix fun File.shouldHaveFileSize(size: Long) = this should haveFileSize(size)
 infix fun File.shouldNotHaveFileSize(size: Long) = this shouldNot haveFileSize(size)
@@ -251,4 +250,83 @@ fun startWithPath(prefix: String) = object : Matcher<File> {
       {
          "File $value should not start with $prefix"
       })
+}
+
+infix fun File.shouldHaveSameStructureAs(file: File) {
+   this.shouldHaveSameStructureAs(file) { _, _ -> false }
+}
+
+fun File.shouldHaveSameStructureAs(
+   file: File,
+   compare: (expect: File, actual: File) -> Boolean,
+) {
+   val expectFiles = this.walkTopDown().toList()
+   val actualFiles = file.walkTopDown().toList()
+
+   val expectParentPath = this.path
+   val actualParentPath = file.path
+
+   expectFiles shouldBeSameSizeAs actualFiles
+
+   expectFiles.zip(actualFiles) { expect, actual ->
+      when {
+         compare(expect, actual) -> {}
+         expect.isDirectory -> actual.shouldBeADirectory()
+         expect.isFile -> {
+            expect.path.removePrefix(expectParentPath)
+               .shouldBe(actual.path.removePrefix(actualParentPath))
+         }
+         else -> error("There is an unexpected error analyzing file trees")
+      }
+   }
+}
+
+fun File.shouldHaveSameStructureAs(
+   file: File,
+   filterLhs: (File) -> Boolean = { false },
+   filterRhs: (File) -> Boolean = { false },
+) {
+   this.shouldHaveSameStructureAs(file) { expect, actual ->
+      filterLhs(expect) || filterRhs(actual)
+   }
+}
+
+infix fun File.shouldHaveSameStructureAndContentAs(file: File) {
+   this.shouldHaveSameStructureAndContentAs(file) { _, _ -> false }
+}
+
+fun File.shouldHaveSameStructureAndContentAs(
+   file: File,
+   compare: (expect: File, actual: File) -> Boolean,
+) {
+   val expectFiles = this.walkTopDown().toList()
+   val actualFiles = file.walkTopDown().toList()
+
+   val expectParentPath = this.path
+   val actualParentPath = file.path
+
+   expectFiles shouldBeSameSizeAs actualFiles
+
+   expectFiles.zip(actualFiles) { expect, actual ->
+      when {
+         compare(expect, actual) -> {}
+         expect.isDirectory -> actual.shouldBeADirectory()
+         expect.isFile -> {
+            expect.path.removePrefix(expectParentPath)
+               .shouldBe(actual.path.removePrefix(actualParentPath))
+            expect.shouldHaveSameContentAs(actual)
+         }
+         else -> error("There is an unexpected error analyzing file trees")
+      }
+   }
+}
+
+fun File.shouldHaveSameStructureAndContentAs(
+   file: File,
+   filterLhs: (File) -> Boolean = { false },
+   filterRhs: (File) -> Boolean = { false },
+) {
+   this.shouldHaveSameStructureAndContentAs(file) { expect, actual ->
+      filterLhs(expect) || filterRhs(actual)
+   }
 }

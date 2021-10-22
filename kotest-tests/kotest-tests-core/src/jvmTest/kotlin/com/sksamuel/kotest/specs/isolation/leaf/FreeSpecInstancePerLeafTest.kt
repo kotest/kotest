@@ -22,7 +22,7 @@ class FreeSpecInstancePerLeafTest : FreeSpec({
    }
 
    afterTest {
-      tests.add(it.a.displayName)
+      tests.add(it.a.name.testName)
    }
 
    afterProject {

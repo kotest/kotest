@@ -32,7 +32,7 @@ kotlin {
             api(project(Projects.Common))
             // needed to compile against Spec
             // but runtime classes must be provided by modules using discovery
-            compileOnly(project(Projects.Api))
+            compileOnly(project(Projects.Framework.api))
 
             // needed to scan the classpath for classes
             implementation(Libs.Classgraph.classgraph)

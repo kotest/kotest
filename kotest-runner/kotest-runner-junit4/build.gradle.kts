@@ -36,8 +36,8 @@ kotlin {
       val jvmMain by getting {
          dependencies {
             api(project(Projects.Common))
-            api(project(Projects.Api))
-            api(project(Projects.AssertionsShared))
+            api(project(Projects.Framework.api))
+            api(project(Projects.Assertions.Shared))
             api(project(Projects.Framework.engine))
             api(project(Projects.Extensions))
             api("junit:junit:4.13.2")
@@ -48,7 +48,7 @@ kotlin {
       val jvmTest by getting {
          dependsOn(jvmMain)
          dependencies {
-            implementation(project(Projects.AssertionsCore))
+            implementation(project(Projects.Assertions.Core))
             implementation(Libs.JUnitPlatform.testkit)
          }
       }

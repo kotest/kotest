@@ -1,42 +1,44 @@
 package io.kotest.engine.interceptors
 
+import io.kotest.common.KotestInternal
 import io.kotest.core.extensions.Extension
 import io.kotest.core.listeners.AfterProjectListener
 import io.kotest.core.listeners.BeforeProjectListener
 import io.kotest.engine.EngineResult
-import io.kotest.engine.TestSuite
 import io.kotest.engine.events.AfterProjectListenerException
 import io.kotest.engine.events.BeforeProjectListenerException
-import io.kotest.engine.listener.TestEngineListener
 import io.kotest.mpp.log
 
+/**
+ * An [EngineInterceptor] that invokes the before and after project listeners.
+ */
+@KotestInternal
 internal class ProjectListenerEngineInterceptor(private val extensions: List<Extension>) : EngineInterceptor {
 
    override suspend fun intercept(
-      suite: TestSuite,
-      listener: TestEngineListener,
-      execute: suspend (TestSuite, TestEngineListener) -> EngineResult,
+      context: EngineContext,
+      execute: suspend (EngineContext) -> EngineResult
    ): EngineResult {
 
       val before = extensions.filterIsInstance<BeforeProjectListener>()
       log { "ProjectListenerEngineInterceptor: Invoking ${before.size} BeforeProjectListeners" }
-      val beforeErrors = ProjectLifecycleManager.beforeProject(before)
+      val beforeErrors = ProjectListenerEvents.beforeProject(before)
 
       // if we have errors in the before project listeners, we'll not execute tests,
       // but instead immediately return those errors.
       if (beforeErrors.isNotEmpty()) return EngineResult(beforeErrors)
 
-      val result = execute(suite, listener)
+      val result = execute(context)
 
       val after = extensions.filterIsInstance<AfterProjectListener>()
       log { "ProjectListenerEngineInterceptor: Invoking ${after.size} AfterProjectListeners" }
-      val afterErrors = ProjectLifecycleManager.afterProject(after)
+      val afterErrors = ProjectListenerEvents.afterProject(after)
 
       return result.copy(errors = result.errors + afterErrors)
    }
 }
 
-object ProjectLifecycleManager {
+object ProjectListenerEvents {
 
    suspend fun beforeProject(before: List<BeforeProjectListener>): List<BeforeProjectListenerException> {
       return before.mapNotNull {

@@ -1,12 +1,12 @@
 package com.sksamuel.kotest.specs.isolation.test
 
-import io.kotest.engine.listener.TestEngineListener
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.style.*
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestStatus
 import io.kotest.engine.concurrency.NoopCoroutineDispatcherFactory
+import io.kotest.engine.listener.AbstractTestEngineListener
 import io.kotest.engine.spec.SpecExecutor
 import io.kotest.matchers.throwable.shouldHaveMessage
 import io.kotest.matchers.types.shouldBeInstanceOf
@@ -94,10 +94,10 @@ class BeforeTestExceptionTest : WordSpec({
 
    var error: Throwable? = null
 
-   val listener = object : TestEngineListener {
+   val listener = object : AbstractTestEngineListener() {
       override suspend fun testFinished(testCase: TestCase, result: TestResult) {
          if (result.status == TestStatus.Error)
-            error = result.error
+            error = result.errorOrNull
       }
    }
 
