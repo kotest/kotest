@@ -5,7 +5,6 @@ import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.engine.TestEngine
 import io.kotest.engine.interceptors.EngineContext
-import io.kotest.engine.interceptors.EngineInterceptor
 import kotlin.reflect.KClass
 
 /**
@@ -16,15 +15,12 @@ interface TestEngineListener {
 
    /**
     * Is invoked as soon as the engine has been created.
-    * This callback is guaranteed to be executed before any other
-    * [EngineInterceptor]s.
     */
    suspend fun engineStarted()
 
    /**
     * Is invoked when the [TestEngine] has completed setup and is ready to begin
-    * executing specs. This callback is guaranteed to be executed after all other
-    * [EngineInterceptor]s.
+    * executing specs.
     *
     * @param context the final context that will be used.
     */
@@ -32,10 +28,9 @@ interface TestEngineListener {
 
    /**
     * Is invoked when the [TestEngine] has finished execution of all specs.
-    * This callback is invoked before execution returns to the interceptor chain.
     *
-    * If an unrecoverable error was detected during execution then it will be passed
-    * as the parameter to the engine.
+    * If any unexpected errors were detected during execution then it will be passed
+    * to this method.
     */
    suspend fun engineFinished(t: List<Throwable>) {}
 
