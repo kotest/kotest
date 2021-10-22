@@ -1,10 +1,7 @@
 package io.kotest.engine.extensions
 
 import io.kotest.core.extensions.Extension
-import io.kotest.core.listeners.InactiveSpecListener
-import io.kotest.core.listeners.InstantiationErrorListener
 import io.kotest.core.extensions.SpecExtension
-import io.kotest.core.listeners.IgnoredSpecListener
 import io.kotest.core.listeners.AfterContainerListener
 import io.kotest.core.listeners.AfterEachListener
 import io.kotest.core.listeners.AfterSpecListener
@@ -14,6 +11,9 @@ import io.kotest.core.listeners.BeforeEachListener
 import io.kotest.core.listeners.BeforeSpecListener
 import io.kotest.core.listeners.BeforeTestListener
 import io.kotest.core.listeners.FinalizeSpecListener
+import io.kotest.core.listeners.IgnoredSpecListener
+import io.kotest.core.listeners.InactiveSpecListener
+import io.kotest.core.listeners.InstantiationErrorListener
 import io.kotest.core.listeners.PrepareSpecListener
 import io.kotest.core.listeners.SpecInstantiationListener
 import io.kotest.core.spec.Spec
@@ -25,8 +25,8 @@ import kotlin.reflect.KClass
  * Wraps another extension, delegating spec extensions only for the specified spec.
  */
 internal class SpecWrapperExtension(
-   private val delegate: Extension,
-   private val target: KClass<*>
+   val delegate: Extension,
+   val target: KClass<*>
 ) : SpecInstantiationListener,
    InstantiationErrorListener,
    SpecExtension,
