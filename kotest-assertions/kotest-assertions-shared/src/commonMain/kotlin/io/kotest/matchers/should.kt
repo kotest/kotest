@@ -14,16 +14,16 @@ import io.kotest.assertions.show.Printed
 import io.kotest.assertions.show.show
 
 @Suppress("UNCHECKED_CAST")
-infix fun <T, U : T> T.shouldBe(expected: U?) {
+infix fun <T, U : T> T.shouldBe(expected: U?): T =
    when (expected) {
-      is Matcher<*> -> should(expected as Matcher<T>)
+      is Matcher<*> -> invokeMatcher(this, expected as Matcher<T>)
       else -> {
          val actual = this
          assertionCounter.inc()
          eq(actual, expected)?.let(errorCollector::collectOrThrow)
+         actual
       }
    }
-}
 
 @Suppress("UNCHECKED_CAST")
 infix fun <T> T.shouldNotBe(any: Any?) {
@@ -84,6 +84,3 @@ fun <T> equalityMatcher(expected: T) = object : Matcher<T> {
       )
    }
 }
-
-
-
