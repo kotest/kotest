@@ -9,7 +9,7 @@ import io.kotest.mpp.log
  * Notifies the test listener that the engine is ready to execute tests, and the final [TestSuite]
  * is ready to be used, and that all tests have completed, with any unexpected errors.
  */
-@OptIn(KotestInternal::class)
+@KotestInternal
 internal object TestEngineStartedFinishedInterceptor : EngineInterceptor {
 
    override suspend fun intercept(

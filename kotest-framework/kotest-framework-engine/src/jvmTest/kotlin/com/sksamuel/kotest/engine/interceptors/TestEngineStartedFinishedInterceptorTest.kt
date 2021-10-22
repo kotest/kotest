@@ -1,26 +1,49 @@
 package com.sksamuel.kotest.engine.interceptors
 
+import io.kotest.common.KotestInternal
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.engine.EngineResult
 import io.kotest.engine.interceptors.EngineContext
 import io.kotest.engine.interceptors.TestEngineStartedFinishedInterceptor
 import io.kotest.engine.listener.AbstractTestEngineListener
-import io.kotest.matchers.booleans.shouldBeTrue
 import io.kotest.matchers.collections.shouldHaveSize
+import io.kotest.matchers.shouldBe
 
+@KotestInternal
 class TestEngineStartedFinishedInterceptorTest : FunSpec({
 
-   test("should invoke engineStarted") {
-      var fired = false
+   test("should invoke engineStarted before downstream") {
+      var fired = ""
       val listener = object : AbstractTestEngineListener() {
          override suspend fun engineStarted() {
-            fired = true
+            fired += "a"
          }
       }
       TestEngineStartedFinishedInterceptor.intercept(
          EngineContext.empty.mergeListener(listener)
-      ) { EngineResult.empty }
-      fired.shouldBeTrue()
+      ) {
+         fired += "b"
+         EngineResult.empty
+      }
+      fired.shouldBe("ab")
+   }
+
+   test("should invoke engineFinished after downstream") {
+      var errors = emptyList<Throwable>()
+      var fired = ""
+      val listener = object : AbstractTestEngineListener() {
+         override suspend fun engineFinished(t: List<Throwable>) {
+            fired += "a"
+            errors = t
+         }
+      }
+      TestEngineStartedFinishedInterceptor.intercept(
+         EngineContext.empty.mergeListener(listener)
+      ) {
+         fired += "b"
+         EngineResult(listOf(Exception("foo")))
+      }
+      fired.shouldBe("ba")
    }
 
    test("should invoke engineFinished with errors") {
