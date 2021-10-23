@@ -13,7 +13,7 @@ import kotlin.reflect.KClass
 class PrepareSpecLeafTestListener : PrepareSpecListener {
    override suspend fun prepareSpec(kclass: KClass<out Spec>) {
       if (kclass == PrepareSpecIsolationLeafTest::class) {
-         PrepareSpecIsolationLeafTest.counter.incrementAndGet()
+         PrepareSpecIsolationLeafTest.c.incrementAndGet()
       }
    }
 }
@@ -22,13 +22,13 @@ class PrepareSpecIsolationLeafTest : FunSpec() {
    override fun isolationMode(): IsolationMode = IsolationMode.InstancePerTest
 
    companion object {
-      val counter = AtomicInteger(0)
+      val c = AtomicInteger(0)
    }
 
    init {
 
       afterProject {
-         counter.get() shouldBe 1
+         c.get() shouldBe 1
       }
 
       test("ignored test").config(enabled = false) {}

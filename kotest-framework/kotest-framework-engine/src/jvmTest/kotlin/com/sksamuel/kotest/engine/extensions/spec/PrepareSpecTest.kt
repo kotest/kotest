@@ -11,8 +11,8 @@ import kotlin.reflect.KClass
 @AutoScan
 class MyPrepareSpecListener : PrepareSpecListener {
    override suspend fun prepareSpec(kclass: KClass<out Spec>) {
-      if (kclass == PrepareSpecIsolationLeafTest::class) {
-         PrepareSpecIsolationLeafTest.counter.incrementAndGet()
+      if (kclass == PrepareSpecTest::class) {
+         PrepareSpecTest.b.incrementAndGet()
       }
    }
 }
@@ -20,13 +20,13 @@ class MyPrepareSpecListener : PrepareSpecListener {
 class PrepareSpecTest : FunSpec() {
 
    companion object {
-      val counter = AtomicInteger(0)
+      val b = AtomicInteger(0)
    }
 
    init {
 
       afterProject {
-         counter.get() shouldBe 1
+         b.get() shouldBe 1
       }
 
       test("ignored test").config(enabled = false) {}

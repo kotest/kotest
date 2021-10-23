@@ -1,5 +1,6 @@
-package com.sksamuel.kotest.specs.isolation.test
+package com.sksamuel.kotest.engine.extensions.test
 
+import io.kotest.common.ExperimentalKotest
 import io.kotest.core.config.Configuration
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.style.BehaviorSpec
@@ -13,10 +14,10 @@ import io.kotest.core.spec.style.StringSpec
 import io.kotest.core.spec.style.WordSpec
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
-import io.kotest.core.test.TestStatus
 import io.kotest.engine.concurrency.NoopCoroutineDispatcherFactory
 import io.kotest.engine.listener.AbstractTestEngineListener
 import io.kotest.engine.spec.SpecExecutor
+import io.kotest.engine.test.AfterAnyException
 import io.kotest.matchers.throwable.shouldHaveMessage
 import io.kotest.matchers.types.shouldBeInstanceOf
 
@@ -99,14 +100,15 @@ private class WordSpecWithAfterTestError : WordSpec({
    }
 })
 
+@ExperimentalKotest
 class AfterTestExceptionTest : WordSpec({
 
    var error: Throwable? = null
 
    val listener = object : AbstractTestEngineListener() {
       override suspend fun testFinished(testCase: TestCase, result: TestResult) {
-         if (result.status == TestStatus.Error)
-            error = result.errorOrNull
+         if (result is TestResult.Error)
+            error = result.cause
       }
    }
 
@@ -114,56 +116,56 @@ class AfterTestExceptionTest : WordSpec({
       "fail the test for behavior spec" {
          val executor = SpecExecutor(listener, NoopCoroutineDispatcherFactory, Configuration())
          executor.execute(BehaviorSpecWithAfterTestError::class)
-         error.shouldBeInstanceOf<IllegalStateException>()
-         error!!.shouldHaveMessage("boom")
+         error.shouldBeInstanceOf<AfterAnyException>()
+         error!!.cause!!.shouldHaveMessage("boom")
       }
       "fail the test for feature spec" {
          val executor = SpecExecutor(listener, NoopCoroutineDispatcherFactory, Configuration())
          executor.execute(FeatureSpecWithAfterTestError::class)
-         error.shouldBeInstanceOf<IllegalStateException>()
-         error!!.shouldHaveMessage("boom")
+         error.shouldBeInstanceOf<AfterAnyException>()
+         error!!.cause!!.shouldHaveMessage("boom")
       }
       "fail the test for word spec" {
          val executor = SpecExecutor(listener, NoopCoroutineDispatcherFactory, Configuration())
          executor.execute(WordSpecWithAfterTestError::class)
-         error.shouldBeInstanceOf<IllegalStateException>()
-         error!!.shouldHaveMessage("boom")
+         error.shouldBeInstanceOf<AfterAnyException>()
+         error!!.cause!!.shouldHaveMessage("boom")
       }
       "fail the test for should spec" {
          val executor = SpecExecutor(listener, NoopCoroutineDispatcherFactory, Configuration())
          executor.execute(ShouldSpecWithAfterTestError::class)
-         error.shouldBeInstanceOf<IllegalStateException>()
-         error!!.shouldHaveMessage("boom")
+         error.shouldBeInstanceOf<AfterAnyException>()
+         error!!.cause!!.shouldHaveMessage("boom")
       }
       "fail the test for string spec" {
          val executor = SpecExecutor(listener, NoopCoroutineDispatcherFactory, Configuration())
          executor.execute(StringSpecWithAfterTestError::class)
-         error.shouldBeInstanceOf<IllegalStateException>()
-         error!!.shouldHaveMessage("boom")
+         error.shouldBeInstanceOf<AfterAnyException>()
+         error!!.cause!!.shouldHaveMessage("boom")
       }
       "fail the test for describe spec" {
          val executor = SpecExecutor(listener, NoopCoroutineDispatcherFactory, Configuration())
          executor.execute(DescribeSpecWithAfterTestError::class)
-         error.shouldBeInstanceOf<IllegalStateException>()
-         error!!.shouldHaveMessage("boom")
+         error.shouldBeInstanceOf<AfterAnyException>()
+         error!!.cause!!.shouldHaveMessage("boom")
       }
       "fail the test for free spec" {
          val executor = SpecExecutor(listener, NoopCoroutineDispatcherFactory, Configuration())
          executor.execute(FreeSpecWithAfterTestError::class)
-         error.shouldBeInstanceOf<IllegalStateException>()
-         error!!.shouldHaveMessage("boom")
+         error.shouldBeInstanceOf<AfterAnyException>()
+         error!!.cause!!.shouldHaveMessage("boom")
       }
       "fail the test for fun spec" {
          val executor = SpecExecutor(listener, NoopCoroutineDispatcherFactory, Configuration())
          executor.execute(FunSpecWithAfterTestError::class)
-         error.shouldBeInstanceOf<IllegalStateException>()
-         error!!.shouldHaveMessage("boom")
+         error.shouldBeInstanceOf<AfterAnyException>()
+         error!!.cause!!.shouldHaveMessage("boom")
       }
       "fail the test for expect spec" {
          val executor = SpecExecutor(listener, NoopCoroutineDispatcherFactory, Configuration())
          executor.execute(ExpectSpecWithAfterTestError::class)
-         error.shouldBeInstanceOf<IllegalStateException>()
-         error!!.shouldHaveMessage("boom")
+         error.shouldBeInstanceOf<AfterAnyException>()
+         error!!.cause!!.shouldHaveMessage("boom")
       }
    }
 })
