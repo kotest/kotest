@@ -3,6 +3,15 @@ package com.sksamuel.kotest.engine.extensions.test
 import io.kotest.common.ExperimentalKotest
 import io.kotest.core.config.Configuration
 import io.kotest.core.spec.IsolationMode
+import io.kotest.core.spec.style.BehaviorSpec
+import io.kotest.core.spec.style.DescribeSpec
+import io.kotest.core.spec.style.ExpectSpec
+import io.kotest.core.spec.style.FeatureSpec
+import io.kotest.core.spec.style.FreeSpec
+import io.kotest.core.spec.style.FunSpec
+import io.kotest.core.spec.style.ShouldSpec
+import io.kotest.core.spec.style.StringSpec
+import io.kotest.core.spec.style.WordSpec
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.engine.concurrency.NoopCoroutineDispatcherFactory
@@ -14,6 +23,7 @@ import io.kotest.matchers.types.shouldBeInstanceOf
 
 private class BehaviorSpecWithBeforeTestError : BehaviorSpec({
    isolationMode = IsolationMode.InstancePerTest
+
    beforeTest {
       error("boom")
    }
@@ -27,6 +37,7 @@ private class BehaviorSpecWithBeforeTestError : BehaviorSpec({
 
 private class FunSpecWithBeforeTestError : FunSpec({
    isolationMode = IsolationMode.InstancePerTest
+
    beforeTest {
       error("boom")
    }
@@ -35,6 +46,7 @@ private class FunSpecWithBeforeTestError : FunSpec({
 
 private class StringSpecWithBeforeTestError : StringSpec({
    isolationMode = IsolationMode.InstancePerTest
+
    beforeTest {
       error("boom")
    }
