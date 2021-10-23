@@ -121,8 +121,7 @@ class TestCaseExecutorTest : FunSpec({
       val testCase = BeforeTestWithException().materializeAndOrderRootTests(TestCaseOrder.Random).first().testCase
       val result = executor.execute(testCase, context(testCase))
       result.isError shouldBe true
-      result.errorOrNull.shouldBeInstanceOf<MultipleExceptions>()
-         .causes.first().shouldBeInstanceOf<BeforeAnyException>()
+      result.errorOrNull.shouldBeInstanceOf<BeforeAnyException>()
       started shouldBe true
       finished shouldBe true
    }
@@ -143,8 +142,7 @@ class TestCaseExecutorTest : FunSpec({
       val testCase = AfterTestWithException().materializeAndOrderRootTests(TestCaseOrder.Random).first().testCase
       val result = executor.execute(testCase, context(testCase))
       result.isError shouldBe true
-      result.errorOrNull.shouldBeInstanceOf<MultipleExceptions>()
-         .causes.first().shouldBeInstanceOf<AfterAnyException>()
+      result.errorOrNull.shouldBeInstanceOf<AfterAnyException>()
       started shouldBe true
       finished shouldBe true
    }

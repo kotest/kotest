@@ -5,7 +5,7 @@ import io.kotest.core.spec.Spec
 import io.kotest.core.spec.style.WordSpec
 import io.kotest.matchers.shouldBe
 
-class SpecExtensionSingleInstanceTest : WordSpec() {
+class SpecExtensionTest : WordSpec() {
 
    init {
 

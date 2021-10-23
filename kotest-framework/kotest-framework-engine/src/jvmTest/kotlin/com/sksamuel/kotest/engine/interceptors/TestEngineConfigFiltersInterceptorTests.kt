@@ -1,5 +1,6 @@
-package io.kotest.engine.extensions
+package com.sksamuel.kotest.engine.interceptors
 
+import io.kotest.common.ExperimentalKotest
 import io.kotest.common.KotestInternal
 import io.kotest.common.runBlocking
 import io.kotest.core.config.configuration
@@ -10,6 +11,7 @@ import io.kotest.core.test.TestContext
 import io.kotest.engine.TestEngine
 import io.kotest.engine.TestEngineConfig
 import io.kotest.engine.TestSuite
+import io.kotest.engine.extensions.createTestEngineConfigFiltersProcessor
 import io.kotest.engine.listener.NoopTestEngineListener
 import io.kotest.engine.spec.ReflectiveSpecRef
 import io.kotest.matchers.collections.shouldBeEmpty
@@ -40,6 +42,7 @@ private val baseConfig = TestEngineConfig(
    NoopTestEngineListener, listOf(), configuration, listOf(), listOf(), null
 )
 
+@ExperimentalKotest
 private val testSuite = listOf<KClass<out Spec>>(
    DistantFutureSciFiTests::class,
    NearFutureSciFiTests::class,
@@ -47,6 +50,7 @@ private val testSuite = listOf<KClass<out Spec>>(
    io.kotest.engine.extensions.foo.TestEngineConfigFiltersInterceptorInnerTests::class,
 ).map { ReflectiveSpecRef(it) }.let { TestSuite(it) }
 
+@KotestInternal
 private fun runTestsWithFilters(specFilterRegex: String = "", testFilterRegex: String = "") = runBlocking {
    val interceptor = createTestEngineConfigFiltersProcessor(
       specFiltersSetting = specFilterRegex,
@@ -63,6 +67,7 @@ private fun runTestsWithFilters(specFilterRegex: String = "", testFilterRegex: S
  * work similarly to how gradle filters in --tests described in
  * https://docs.gradle.org/current/userguide/java_testing.html#full_qualified_name_pattern
  */
+@KotestInternal
 @Isolate
 class TestEngineConfigFiltersInterceptorTests : FunSpec({
    beforeTest {

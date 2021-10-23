@@ -65,6 +65,7 @@ class SpecExecutor(
          TagsExcludedSpecInterceptor(listener, conf),
          SpecRefExtensionInterceptor(conf.registry()),
          ApplyExtensionsInterceptor(conf.registry()),
+         PrepareSpecInterceptor(conf.registry()),
       )
 
       val innerExecute: suspend (SpecRef) -> Map<TestCase, TestResult> = {

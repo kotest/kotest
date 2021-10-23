@@ -47,7 +47,7 @@ internal class TestExtensions(private val registry: ExtensionRegistry) {
          runCatching {
             it.beforeInvocation(testCase, invocation)
          }.mapError { BeforeInvocationException(it) }
-      }.collect { MultipleExceptions(it) }.map { testCase }
+      }.collect { if (it.size == 1) it.first() else MultipleExceptions(it) }.map { testCase }
    }
 
    suspend fun afterInvocation(testCase: TestCase, invocation: Int): Result<TestCase> {
@@ -56,7 +56,7 @@ internal class TestExtensions(private val registry: ExtensionRegistry) {
          runCatching {
             it.afterInvocation(testCase, invocation)
          }.mapError { AfterInvocationException(it) }
-      }.collect { MultipleExceptions(it) }.map { testCase }
+      }.collect { if (it.size == 1) it.first() else MultipleExceptions(it) }.map { testCase }
    }
 
    /**
@@ -87,10 +87,11 @@ internal class TestExtensions(private val registry: ExtensionRegistry) {
          }.mapError { BeforeTestException(it) }.exceptionOrNull()
       }
 
-      return if (errors.isNotEmpty())
-         Result.failure(MultipleExceptions(errors))
-      else
-         Result.success(testCase)
+      return when {
+         errors.isEmpty() -> Result.success(testCase)
+         errors.size == 1 -> Result.failure(errors.first())
+         else -> Result.failure(MultipleExceptions(errors))
+      }
    }
 
    /**
@@ -121,10 +122,11 @@ internal class TestExtensions(private val registry: ExtensionRegistry) {
          }.mapError { AfterEachException(it) }.exceptionOrNull()
       }
 
-      return if (errors.isNotEmpty())
-         Result.failure(MultipleExceptions(errors))
-      else
-         Result.success(testCase)
+      return when {
+         errors.isEmpty() -> Result.success(testCase)
+         errors.size == 1 -> Result.failure(errors.first())
+         else -> Result.failure(MultipleExceptions(errors))
+      }
    }
 
    /**
