@@ -53,7 +53,7 @@ _**Kotlin 1.6 is now the minimum supported version**_
 
 #### Deprecations
 
-* Datatest2 has been deprecated
+* The experimental datatest functions added in 4.5 have moved to a new module `kotest-framework-datatest` and the original aliases has been deprecated.
 * `CompareMode` /`CompareOrder` for `shouldEqualJson` has been deprecated in favor of `compareJsonOptions { }`
 * `TestStatus` has been deprecated and `TestResult` reworked to be an ADT. If you were pattern matching on `TestResult.status` you can now match on the result instance itself.
 * `val name` inside `Listener` has been deprecated. This was used so that multiple errors from multiple before/after spec callbacks could appear with customized unique names. The framework now takes care of making sure the names are unique so this val is no longer needed and is now ignored.
