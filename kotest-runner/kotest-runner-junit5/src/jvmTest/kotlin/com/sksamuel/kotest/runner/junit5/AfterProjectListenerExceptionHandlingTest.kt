@@ -84,12 +84,12 @@ class AfterProjectListenerExceptionHandlingTest : FunSpec({
                "Kotest",
                "com.sksamuel.kotest.runner.junit5.AfterProjectListenerExceptionSample",
                "foo",
-               "After Project Error_1",
-               "After Project Error_2"
+               "After Project Error",
+               "After Project Error_1"
             )
             aborted().shouldBeEmpty()
             skipped().shouldBeEmpty()
-            failed().shouldHaveNames("After Project Error_1", "After Project Error_2")
+            failed().shouldHaveNames("After Project Error", "After Project Error_1")
             succeeded().shouldHaveNames(
                "foo",
                "com.sksamuel.kotest.runner.junit5.AfterProjectListenerExceptionSample",
@@ -98,15 +98,15 @@ class AfterProjectListenerExceptionHandlingTest : FunSpec({
             finished().shouldHaveNames(
                "foo",
                "com.sksamuel.kotest.runner.junit5.AfterProjectListenerExceptionSample",
+               "After Project Error",
                "After Project Error_1",
-               "After Project Error_2",
                "Kotest"
             )
             dynamicallyRegistered().shouldHaveNames(
                "com.sksamuel.kotest.runner.junit5.AfterProjectListenerExceptionSample",
                "foo",
-               "After Project Error_1",
-               "After Project Error_2"
+               "After Project Error",
+               "After Project Error_1"
             )
          }
 

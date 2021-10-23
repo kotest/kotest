@@ -65,12 +65,12 @@ class JUnitTestEngineListenerTest : FunSpec({
          ),
          EventTrackingEngineExecutionListener.Event.ExecutionStarted("com.sksamuel.kotest.runner.junit5.MySpec"),
          EventTrackingEngineExecutionListener.Event.TestRegistered(
-            "xxx",
+            "<error>",
             TestDescriptor.Type.TEST
          ),
          EventTrackingEngineExecutionListener.Event.ExecutionStarted("xxx"),
          EventTrackingEngineExecutionListener.Event.ExecutionFinished(
-            "xxx",
+            "<error>",
             TestExecutionResult.Status.FAILED
          ),
          EventTrackingEngineExecutionListener.Event.ExecutionFinished(
