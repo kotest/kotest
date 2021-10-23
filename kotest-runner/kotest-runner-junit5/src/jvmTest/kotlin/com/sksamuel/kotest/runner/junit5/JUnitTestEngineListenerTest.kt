@@ -68,7 +68,7 @@ class JUnitTestEngineListenerTest : FunSpec({
             "<error>",
             TestDescriptor.Type.TEST
          ),
-         EventTrackingEngineExecutionListener.Event.ExecutionStarted("xxx"),
+         EventTrackingEngineExecutionListener.Event.ExecutionStarted("<error>"),
          EventTrackingEngineExecutionListener.Event.ExecutionFinished(
             "<error>",
             TestExecutionResult.Status.FAILED
