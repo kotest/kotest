@@ -1,4 +1,4 @@
-package io.kotest.fp
+package io.kotest.common
 
 inline fun <A, B> Result<A>.flatMap(fn: (A) -> Result<B>): Result<B> {
    return fold({ fn(it) }, { Result.failure(it) })

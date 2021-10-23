@@ -1,4 +1,6 @@
 package io.kotest.mpp
 
-actual fun writeLog(t: Throwable?, f: () -> String) {
+import kotlin.time.TimeMark
+
+actual fun writeLog(start: TimeMark, t: Throwable?, f: () -> String) {
 }

@@ -1,12 +1,12 @@
 package io.kotest.engine.launcher
 
+import io.kotest.common.KotestInternal
 import io.kotest.core.Tags
 import io.kotest.core.config.configuration
 import io.kotest.core.extensions.DiscoveryExtension
 import io.kotest.core.spec.Spec
 import io.kotest.engine.TestEngineLauncher
 import io.kotest.engine.listener.TestEngineListener
-import io.kotest.fp.Try
 import io.kotest.framework.discovery.Discovery
 import io.kotest.framework.discovery.DiscoveryRequest
 import io.kotest.framework.discovery.DiscoveryResult
@@ -16,10 +16,11 @@ import kotlin.reflect.KClass
 /**
  * Creates a [TestEngineLauncher] to be used to launch the test engine.
  */
+@KotestInternal
 internal fun setupLauncher(
    args: LauncherArgs,
    listener: TestEngineListener,
-): Try<TestEngineLauncher> = Try {
+): Result<TestEngineLauncher> = runCatching {
 
    val specClass = args.spec?.let { (Class.forName(it) as Class<Spec>).kotlin }
    val (specs, _, error) = specs(specClass, args.packageName)

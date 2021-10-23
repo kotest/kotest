@@ -8,7 +8,6 @@ import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.engine.listener.TestEngineListener
 import io.kotest.engine.test.scheduler.TestScheduler
-import io.kotest.fp.Try
 import io.kotest.mpp.log
 import kotlin.reflect.KClass
 
@@ -48,9 +47,9 @@ internal abstract class SpecRunner(
     */
    protected suspend fun createInstance(kclass: KClass<out Spec>): Result<Spec> =
       createAndInitializeSpec(kclass, configuration.registry()).onSuccess {
-         Try { listener.specInstantiated(it) }
+         runCatching { listener.specInstantiated(it) }
       }.onFailure {
          it.printStackTrace()
-         Try { listener.specInstantiationError(kclass, it) }
+         runCatching { listener.specInstantiationError(kclass, it) }
       }
 }

@@ -1,5 +1,6 @@
 package io.kotest.engine.launcher
 
+import io.kotest.common.KotestInternal
 import io.kotest.common.runBlocking
 import io.kotest.engine.listener.CollectingTestEngineListener
 import io.kotest.engine.listener.CompositeTestEngineListener
@@ -16,6 +17,7 @@ import kotlin.system.exitProcess
  * This is used by the kotest-intellij-plugin (and other third party clients).
  * Therefore, the package name and args for this main method should remain backwards compatible.
  */
+@KotestInternal
 fun main(args: Array<String>) {
 
    val launcherArgs = parseLauncherArgs(args.toList())
@@ -31,12 +33,12 @@ fun main(args: Array<String>) {
 
    runBlocking {
       setupLauncher(launcherArgs, listener).fold(
+         { it.async() },
          {
             // if we couldn't create the launcher we'll display those errors
             listener.engineStarted()
             listener.engineFinished(listOf(it))
          },
-         { it.async() }
       )
    }
 

@@ -17,8 +17,8 @@ import io.kotest.core.test.TestContext
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestType
 import io.kotest.engine.test.contexts.withCoroutineContext
-import io.kotest.fp.collect
-import io.kotest.fp.mapError
+import io.kotest.common.collect
+import io.kotest.common.mapError
 import kotlin.coroutines.coroutineContext
 
 /**

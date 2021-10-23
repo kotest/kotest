@@ -3,10 +3,9 @@ package io.kotest.engine.config
 import io.kotest.core.config.Configuration
 import io.kotest.core.config.LogLevel
 import io.kotest.core.internal.KotestEngineProperties
+import io.kotest.core.names.DuplicateTestNameMode
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.test.AssertionMode
-import io.kotest.core.names.DuplicateTestNameMode
-import io.kotest.fp.foreach
 import io.kotest.mpp.env
 import io.kotest.mpp.sysprop
 
@@ -16,19 +15,19 @@ import io.kotest.mpp.sysprop
  * Note: This function will have no effect on non-JVM targets.
  */
 internal actual fun applyConfigFromSystemProperties(configuration: Configuration) {
-   isolationMode().foreach { configuration.isolationMode = it }
-   assertionMode().foreach { configuration.assertionMode = it }
-   parallelism().foreach { configuration.parallelism = it }
-   concurrentTests().foreach { configuration.concurrentTests = it }
-   concurrentSpecs().foreach { configuration.concurrentSpecs = it }
-   timeout().foreach { configuration.timeout = it }
-   invocationTimeout().foreach { configuration.invocationTimeout = it }
-   allowMultilineTestName().foreach { configuration.removeTestNameWhitespace = it }
-   globalAssertSoftly().foreach { configuration.globalAssertSoftly = it }
-   testNameAppendTags().foreach { configuration.testNameAppendTags = it }
-   duplicateTestNameMode().foreach { configuration.duplicateTestNameMode = it }
-   projectTimeout().foreach { configuration.projectTimeout = it }
-   logLevel().foreach { configuration.logLevel = it }
+   isolationMode()?.let { configuration.isolationMode = it }
+   assertionMode()?.let { configuration.assertionMode = it }
+   parallelism()?.let { configuration.parallelism = it }
+   concurrentTests()?.let { configuration.concurrentTests = it }
+   concurrentSpecs()?.let { configuration.concurrentSpecs = it }
+   timeout()?.let { configuration.timeout = it }
+   invocationTimeout()?.let { configuration.invocationTimeout = it }
+   allowMultilineTestName()?.let { configuration.removeTestNameWhitespace = it }
+   globalAssertSoftly()?.let { configuration.globalAssertSoftly = it }
+   testNameAppendTags()?.let { configuration.testNameAppendTags = it }
+   duplicateTestNameMode()?.let { configuration.duplicateTestNameMode = it }
+   projectTimeout()?.let { configuration.projectTimeout = it }
+   logLevel().let { configuration.logLevel = it }
 }
 
 internal fun isolationMode(): IsolationMode? =

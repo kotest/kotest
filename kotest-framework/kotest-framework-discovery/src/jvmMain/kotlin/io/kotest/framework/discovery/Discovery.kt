@@ -7,8 +7,6 @@ import io.github.classgraph.ClassInfo
 import io.kotest.core.extensions.DiscoveryExtension
 import io.kotest.core.internal.KotestEngineProperties
 import io.kotest.core.spec.Spec
-import io.kotest.fp.Try
-import io.kotest.fp.getOrElse
 import io.kotest.mpp.env
 import io.kotest.mpp.log
 import io.kotest.mpp.sysprop
@@ -87,12 +85,13 @@ class Discovery(private val discoveryExtensions: List<DiscoveryExtension> = empt
 
    /**
     * Loads a class reference from a [ClassInfo].
-    * @param init set to false to avoid initializing the class
+    *
+    * @param init false to avoid initializing the class
     */
    private fun ClassInfo.load(init: Boolean): KClass<out Any> =
       Class.forName(name, init, this::class.java.classLoader).kotlin
 
-   private fun doDiscovery(request: DiscoveryRequest): Try<DiscoveryResult> = Try {
+   private fun doDiscovery(request: DiscoveryRequest): Result<DiscoveryResult> = runCatching {
 
       val specClasses =
          if (request.onlySelectsSingleClasses()) loadSelectedSpecs(request) else fromClassPaths
@@ -125,14 +124,14 @@ class Discovery(private val discoveryExtensions: List<DiscoveryExtension> = empt
          else -> emptyList()
       }
 
-      if (scanResult.isInitialized()) Try { scanResult.value.close() }
+      if (scanResult.isInitialized()) runCatching { scanResult.value.close() }
 
       log { "Discovery result [${afterExtensions.size} specs; ${scripts.size} scripts]" }
       DiscoveryResult(afterExtensions, scripts, null)
    }
 
    /**
-    * Returns whether or not this is a requests that selects single classes
+    * Returns whether this is a request that selects single classes
     * only. Used to avoid full classpath scans when not necessary.
     */
    private fun DiscoveryRequest.onlySelectsSingleClasses(): Boolean =

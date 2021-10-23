@@ -2,7 +2,7 @@ package io.kotest.engine.config
 
 import io.kotest.core.config.AbstractProjectConfig
 import io.kotest.core.config.Configuration
-import io.kotest.fp.mapError
+import io.kotest.common.mapError
 import io.kotest.mpp.log
 import kotlin.native.concurrent.ThreadLocal
 

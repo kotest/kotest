@@ -1,7 +1,6 @@
 package io.kotest.assertions
 
 import io.kotest.common.ExperimentalKotest
-import io.kotest.fp.Try
 import kotlinx.coroutines.withContext
 import kotlin.coroutines.AbstractCoroutineContextElement
 import kotlin.coroutines.CoroutineContext
@@ -25,7 +24,7 @@ internal class AssertionBlockContextElement : AbstractCoroutineContextElement(Ke
  * @return The result [T] of the block function, the [Failures] that block had, and the number of [Assertions] executed.
  */
 @ExperimentalKotest
-internal suspend fun <T> errorAndAssertionsScope(block: suspend () -> T): Triple<Try<T>, Failures, Assertions> {
+internal suspend fun <T> errorAndAssertionsScope(block: suspend () -> T): Triple<Result<T>, Failures, Assertions> {
    if (coroutineContext[AssertionBlockContextElement] != null) {
       throw IllegalStateException("Assertion block functions one, any, and all are limited to a depth of 1")
    }
@@ -35,7 +34,7 @@ internal suspend fun <T> errorAndAssertionsScope(block: suspend () -> T): Triple
    val originalMode = errorCollector.getCollectionMode()
    errorCollector.setCollectionMode(ErrorCollectionMode.Soft)
 
-   val result = Try {
+   val result = runCatching {
       withContext(AssertionBlockContextElement()) {
          block()
       }

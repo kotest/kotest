@@ -12,8 +12,7 @@ class SetupLauncherTest : FunSpec() {
    init {
       test("setupLauncher should return an error for unknown class") {
          setupLauncher(LauncherArgs(null, null, "unknown.class", null, null, null), NoopTestEngineListener)
-            .isFailure()
-            .shouldBeTrue()
+            .isFailure.shouldBeTrue()
       }
    }
 }

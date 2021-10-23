@@ -3,7 +3,6 @@ package io.kotest.engine.interceptors
 import io.kotest.common.KotestInternal
 import io.kotest.core.spec.style.scopes.TestDslState
 import io.kotest.engine.EngineResult
-import io.kotest.fp.Try
 
 /**
  * Checks that we didn't have any partially constructed tests.
@@ -15,9 +14,9 @@ internal object TestDslStateInterceptor : EngineInterceptor {
       execute: suspend (EngineContext) -> EngineResult
    ): EngineResult {
       val result = execute(context)
-      return Try { TestDslState.checkState() }.fold(
+      return runCatching { TestDslState.checkState() }.fold(
+         { result },
          { EngineResult(listOf(it) + result.errors) },
-         { result }
       )
    }
 }

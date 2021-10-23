@@ -22,7 +22,7 @@ import io.kotest.engine.spec.interceptor.SpecExtensionInterceptor
 import io.kotest.engine.spec.interceptor.SpecRefExtensionInterceptor
 import io.kotest.engine.spec.interceptor.SpecStartedFinishedInterceptor
 import io.kotest.engine.spec.interceptor.TagsExcludedSpecInterceptor
-import io.kotest.fp.flatMap
+import io.kotest.common.flatMap
 import io.kotest.mpp.log
 import kotlin.reflect.KClass
 
