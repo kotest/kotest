@@ -1,6 +1,11 @@
 package io.kotest.engine.spec
 
 import io.kotest.core.extensions.Extension
+import io.kotest.core.extensions.InactiveSpecListener
+import io.kotest.core.extensions.SpecCreationErrorListener
+import io.kotest.core.extensions.SpecIgnoredListener
+import io.kotest.core.extensions.SpecInitializeExtension
+import io.kotest.core.extensions.SpecInterceptExtension
 import io.kotest.core.extensions.SpecExtension
 import io.kotest.core.listeners.AfterSpecListener
 import io.kotest.core.listeners.BeforeSpecListener

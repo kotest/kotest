@@ -20,6 +20,18 @@ object KotestEngineProperties {
 
    const val includeTags = "kotest.tags.include"
 
+   /**
+    * A regex expression that is used to match the test [io.kotest.core.descriptors.Descriptor]'s path
+    * to determine if a test should be included in the test plan or not.
+    */
+   const val filterTests = "kotest.filter.tests"
+
+   /**
+    * A regex expression that is used to match the [io.kotest.mpp.bestName] of a class
+    * to determine if a spec should be included in the test plan or not.
+    */
+   const val filterSpecs = "kotest.filter.specs"
+
    const val propertiesFilename = "kotest.properties.filename"
 
    /**
