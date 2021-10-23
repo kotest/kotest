@@ -1,10 +1,7 @@
 package io.kotest.engine.spec.interceptor
 
 import io.kotest.core.annotation.Ignored
-import io.kotest.core.config.Configuration
-import io.kotest.core.config.configuration
-import io.kotest.core.filter.SpecFilter
-import io.kotest.core.filter.SpecFilterResult
+import io.kotest.core.config.ExtensionRegistry
 import io.kotest.core.spec.SpecRef
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
@@ -21,7 +18,7 @@ import io.kotest.mpp.log
  */
 internal class IgnoredSpecInterceptor(
    private val listener: TestEngineListener,
-   private val conf: Configuration
+   private val registry: ExtensionRegistry,
 ) : SpecRefInterceptor {
 
    override suspend fun intercept(
@@ -31,14 +28,9 @@ internal class IgnoredSpecInterceptor(
       val isIgnored = ref.kclass.hasAnnotation<Ignored>()
       log { "IgnoredSpecInterceptor: ${ref.kclass} has @Ignored == $isIgnored" }
 
-      val excludedByFilters = configuration.filters().filterIsInstance<SpecFilter>().any {
-         it.filter(ref.kclass) == SpecFilterResult.Exclude
-      }
-      log { "IgnoredSpecInterceptor: ${ref.kclass} is ${if (excludedByFilters) "excluded" else "included"} by filters" }
-
-      if (isIgnored || excludedByFilters) {
+      if (isIgnored) {
          listener.specIgnored(ref.kclass)
-         SpecExtensions(conf.extensions()).ignored(ref.kclass)
+         SpecExtensions(registry).ignored(ref.kclass)
          emptyMap()
       } else {
          fn(ref)

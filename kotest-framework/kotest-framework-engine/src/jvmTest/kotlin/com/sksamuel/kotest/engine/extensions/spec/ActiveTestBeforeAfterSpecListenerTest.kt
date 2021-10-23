@@ -1,9 +1,10 @@
 package com.sksamuel.kotest.engine.extensions.spec
 
+import io.kotest.common.ExperimentalKotest
 import io.kotest.core.NamedTag
 import io.kotest.core.Tag
 import io.kotest.core.Tags
-import io.kotest.core.config.configuration
+import io.kotest.core.config.Configuration
 import io.kotest.core.extensions.TagExtension
 import io.kotest.core.listeners.TestListener
 import io.kotest.core.spec.Isolate
@@ -16,6 +17,7 @@ import io.kotest.engine.spec.ReflectiveSpecRef
 import io.kotest.engine.spec.SpecExecutor
 import io.kotest.matchers.shouldBe
 
+@ExperimentalKotest
 @Isolate
 class ActiveTestBeforeAfterSpecListenerTest : FreeSpec() {
    init {
@@ -41,23 +43,21 @@ class ActiveTestBeforeAfterSpecListenerTest : FreeSpec() {
             val ext = object : TagExtension {
                override fun tags(): Tags = Tags("!bar")
             }
-            configuration.registerExtension(ext)
-            configuration.registerExtension(testListener)
-            val runner = SpecExecutor(NoopTestEngineListener, NoopCoroutineDispatcherFactory)
+            val conf = Configuration()
+            conf.registry().add(ext)
+            conf.registry().add(testListener)
+            val runner = SpecExecutor(NoopTestEngineListener, NoopCoroutineDispatcherFactory, conf)
             runner.execute(ReflectiveSpecRef(TaggedTests::class))
-            configuration.deregisterExtension(testListener)
-            configuration.deregisterExtension(ext)
          }
          "by a tag at the spec level" {
             val ext = object : TagExtension {
                override fun tags(): Tags = Tags("!foo")
             }
-            configuration.registerExtension(ext)
-            configuration.registerExtension(testListener)
-            val runner = SpecExecutor(NoopTestEngineListener, NoopCoroutineDispatcherFactory)
+            val conf = Configuration()
+            conf.registry().add(ext)
+            conf.registry().add(testListener)
+            val runner = SpecExecutor(NoopTestEngineListener, NoopCoroutineDispatcherFactory, conf)
             runner.execute(ReflectiveSpecRef(TaggedTests::class))
-            configuration.deregisterExtension(testListener)
-            configuration.deregisterExtension(ext)
          }
       }
    }

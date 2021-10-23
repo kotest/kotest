@@ -3,9 +3,7 @@
 package io.kotest.core.config
 
 import io.kotest.common.ExperimentalKotest
-import io.kotest.common.SoftDeprecated
 import io.kotest.core.extensions.Extension
-import io.kotest.core.filter.Filter
 import io.kotest.core.listeners.Listener
 import io.kotest.core.names.DuplicateTestNameMode
 import io.kotest.core.names.TestNameCase
@@ -46,8 +44,7 @@ class Configuration {
       const val MaxConcurrency = Int.MAX_VALUE
    }
 
-   private val filters = mutableListOf<Filter>()
-   private val extensions = mutableListOf<Extension>()
+   private val registry: ExtensionRegistry = DefaultExtensionRegistry()
 
    /**
     * If enabled, then all failing spec names will be written to a "failure file".
@@ -222,7 +219,9 @@ class Configuration {
 
    /**
     * If set to true then the test engine will install a [TestCoroutineDispatcher].
+    *
     * This can be retrieved via `delayController` in your tests.
+    *
     * @see https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-test/index.html
     */
    @ExperimentalKotest
@@ -335,79 +334,115 @@ class Configuration {
     * Returns all globally registered [Listener]s.
     */
    @Deprecated("Listeners have been subsumed into extensions", level = DeprecationLevel.ERROR)
-   fun listeners() = extensions()
+   fun listeners(): Nothing = throw UnsupportedOperationException()
 
    /**
-    * Returns all globally registered [Extension]s.
+    * Returns the [ExtensionRegistry] that contains all extensions registered through
+    * this configuration instance.
     */
-   fun extensions() = extensions.toList()
+   fun registry(): ExtensionRegistry = registry
+
+   @Deprecated("Use registry. Deprecated since 5.0")
+   fun extensions(): List<Extension> = registry().all()
 
    /**
     * Returns all globally registered [Filter]s.
     */
-   fun filters() = filters.toList()
+   @Deprecated("Listeners have been subsumed into extensions", level = DeprecationLevel.ERROR)
+   fun filters(): Nothing = throw UnsupportedOperationException()
 
-   fun registerFilters(vararg filters: Filter) = filters.forEach { registerFilter(it) }
-   fun registerFilters(filters: Collection<Filter>) = filters.forEach { registerFilter(it) }
-   fun deregisterFilters(filters: Collection<Filter>) = filters.forEach { deregisterFilter(it) }
+   @Deprecated("Use registry. Deprecated since 5.0")
+   fun registerFilters(vararg filters: Extension) = filters.forEach { registry.add(it) }
 
-   fun registerFilter(filter: Filter) {
-      filters.add(filter)
+   @Deprecated("Use registry. Deprecated since 5.0")
+   fun registerFilters(filters: Collection<Extension>) = filters.forEach { registry.add(it) }
+
+   @Deprecated("Use registry. Deprecated since 5.0")
+   fun deregisterFilters(filters: Collection<Extension>) = filters.forEach { registry.remove(it) }
+
+   @Deprecated("Use registry. Deprecated since 5.0")
+   fun registerFilter(filter: Extension) {
+      register(filter)
    }
 
-   fun deregisterFilter(filter: Filter) {
-      filters.remove(filter)
+   @Deprecated("Use registry. Deprecated since 5.0")
+   fun deregisterFilter(filter: Extension) {
+      deregister(filter)
    }
 
-   fun registerExtensions(vararg extensions: Extension) = extensions.forEach { registerExtension(it) }
-   fun registerExtensions(extensions: List<Extension>) = extensions.forEach { registerExtension(it) }
-   fun deregisterExtensions(extensions: List<Extension>) = extensions.forEach { deregisterExtension(it) }
+   @Deprecated(
+      "Use extensions().add(). Deprecated since 5.0",
+      ReplaceWith("extensions.forEach { extensions().add(it) }")
+   )
+   fun registerExtensions(vararg extensions: Extension) = extensions.forEach { registry().add(it) }
 
+   @Deprecated(
+      "Use extensions().add(). Deprecated since 5.0",
+      ReplaceWith("extensions.forEach { extensions().add(it) }")
+   )
+   fun registerExtensions(extensions: List<Extension>) = extensions.forEach { registry().add(it) }
+
+   @Deprecated(
+      "Use extensions().add(). Deprecated since 5.0",
+      ReplaceWith("extensions.forEach { extensions().remove(it) }")
+   )
+   fun deregisterExtensions(extensions: List<Extension>) = extensions.forEach { registry().remove(it) }
+
+   @Deprecated("Use extensions().add(). Deprecated since 5.0", ReplaceWith("extensions().add(extension)"))
    fun register(extension: Extension) {
-      extensions.add(extension)
+      registry().add(extension)
    }
 
-   @SoftDeprecated("Use register")
+   @Deprecated("Use extensions().add(). Deprecated since 5.0", ReplaceWith("extensions().add(extension)"))
    fun registerExtension(extension: Extension) {
-      register(extension)
+      registry().add(extension)
    }
 
+   @Deprecated("Use extensions().remove(). Deprecated since 5.0", ReplaceWith("extensions().remove(extension)"))
    fun deregister(extension: Extension) {
-      extensions.remove(extension)
+      registry().remove(extension)
    }
 
-   @SoftDeprecated("Use deregister")
+   @Deprecated("Use extensions().remove(). Deprecated since 5.0", ReplaceWith("extensions().remove(extension)"))
    fun deregisterExtension(extension: Extension) {
-      deregister(extension)
+      registry().remove(extension)
    }
 
-   @SoftDeprecated("Use registerExtension")
-   fun registerListeners(vararg listeners: Listener) = listeners.forEach { registerExtension(it) }
+   @Deprecated(
+      "Use extensions().add(). Deprecated since 5.0",
+      ReplaceWith("listeners.forEach { extensions().add(it) }")
+   )
+   fun registerListeners(vararg listeners: Listener) = listeners.forEach { registry().add(it) }
 
-   @SoftDeprecated("Use registerExtension")
-   fun registerListeners(listeners: List<Listener>) = listeners.forEach { registerExtension(it) }
+   @Deprecated(
+      "Use extensions().add(). Deprecated since 5.0",
+      ReplaceWith("listeners.forEach { extensions().add(it) }")
+   )
+   fun registerListeners(listeners: List<Listener>) = listeners.forEach { registry().add(it) }
 
-   @SoftDeprecated("Use deregisterExtension")
-   fun deregisterListeners(listeners: List<Listener>) = listeners.forEach { deregisterExtension(it) }
+   @Deprecated(
+      "Use extensions().remove(). Deprecated since 5.0",
+      ReplaceWith("listeners.forEach { extensions().remove(it) }")
+   )
+   fun deregisterListeners(listeners: List<Listener>) = listeners.forEach { registry().remove(it) }
 
-   @SoftDeprecated("Use registerExtension")
-   fun registerListener(listener: Listener) = registerExtension(listener)
+   @Deprecated("Use extensions().add(). Deprecated since 5.0", ReplaceWith("extensions().add(listener)"))
+   fun registerListener(listener: Listener) {
+      registry().add(listener)
+   }
 
-   @SoftDeprecated("Use deregisterExtension")
+   @Deprecated("Use extensions().remove(). Deprecated since 5.0", ReplaceWith("extensions().remove(listener)"))
    fun deregisterListener(listener: Listener) {
-      deregisterExtension(listener)
+      registry.remove(listener)
    }
 
-   @SoftDeprecated("Use removeExtensions.")
+   @Deprecated("Use extensions().clear(). Deprecated since 5.0", ReplaceWith("extensions().clear()"))
    fun removeListeners() {
-      removeExtensions()
+      registry().clear()
    }
 
+   @Deprecated("Use extensions().clear(). Deprecated since 5.0", ReplaceWith("extensions().clear()"))
    fun removeExtensions() {
-      extensions.clear()
-   }
-
-   fun removeFilters() {
-      filters.clear()
+      registry().clear()
    }
 }

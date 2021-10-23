@@ -7,7 +7,6 @@ import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.engine.listener.TestEngineListener
 import io.kotest.engine.spec.SpecExtensions
-import io.kotest.engine.spec.materializeAndOrderRootTests
 import io.kotest.engine.test.status.isEnabled
 import io.kotest.mpp.log
 
@@ -21,16 +20,16 @@ import io.kotest.mpp.log
 internal class RunIfActiveInterceptor(
    private val listener: TestEngineListener,
    private val configuration: Configuration,
-) : SpecExecutionInterceptor {
+) : SpecInterceptor {
 
    override suspend fun intercept(
       fn: suspend (Spec) -> Map<TestCase, TestResult>
    ): suspend (Spec) -> Map<TestCase, TestResult> = { spec ->
 
-      val roots = spec.materializeAndOrderRootTests()
+      val roots = spec.materializeRootTests()
       log { "RunIfActiveInterceptor: materialized ${roots.size} root tests" }
 
-      val enabled = roots.associate { it.testCase to it.testCase.isEnabled() }
+      val enabled = roots.associate { it.testCase to it.testCase.isEnabled(configuration) }
       val active = enabled.any { it.value.isEnabled }
 
       log { "RunIfActiveInterceptor: active=$active from ${roots.size} root tests [$spec]" }
@@ -40,7 +39,7 @@ internal class RunIfActiveInterceptor(
       } else {
          val results = enabled.mapValues { TestResult.Ignored(it.value.reason) }
          listener.specInactive(spec::class, results)
-         SpecExtensions(configuration.extensions()).inactiveSpec(spec, results)
+         SpecExtensions(configuration.registry()).inactiveSpec(spec, results)
          results
       }
    }

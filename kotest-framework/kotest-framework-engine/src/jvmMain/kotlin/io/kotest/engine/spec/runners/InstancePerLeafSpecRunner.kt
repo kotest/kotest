@@ -1,9 +1,8 @@
 package io.kotest.engine.spec.runners
 
 import io.kotest.common.ExperimentalKotest
-import io.kotest.common.runBlocking
 import io.kotest.core.concurrency.CoroutineDispatcherFactory
-import io.kotest.core.config.configuration
+import io.kotest.core.config.Configuration
 import io.kotest.core.descriptors.Descriptor
 import io.kotest.core.spec.Spec
 import io.kotest.core.test.NestedTest
@@ -19,6 +18,7 @@ import io.kotest.engine.test.TestCaseExecutionListener
 import io.kotest.engine.test.TestCaseExecutor
 import io.kotest.engine.test.contexts.DuplicateNameHandlingTestContext
 import io.kotest.engine.test.scheduler.TestScheduler
+import io.kotest.fp.flatMap
 import io.kotest.mpp.log
 import kotlinx.coroutines.coroutineScope
 import java.util.PriorityQueue
@@ -29,9 +29,11 @@ import kotlin.coroutines.CoroutineContext
 internal class InstancePerLeafSpecRunner(
    listener: TestEngineListener,
    scheduler: TestScheduler,
-   private val defaultCoroutineDispatcherFactory: CoroutineDispatcherFactory
-) : SpecRunner(listener, scheduler) {
+   private val defaultCoroutineDispatcherFactory: CoroutineDispatcherFactory,
+   private val configuration: Configuration,
+) : SpecRunner(listener, scheduler, configuration) {
 
+   private val extensions = SpecExtensions(configuration.registry())
    private val results = mutableMapOf<TestCase, TestResult>()
 
    // keeps track of tests we've already discovered
@@ -69,7 +71,7 @@ internal class InstancePerLeafSpecRunner(
     */
    override suspend fun execute(spec: Spec): Result<Map<TestCase, TestResult>> =
       runCatching {
-         spec.materializeAndOrderRootTests().forEach { root ->
+         spec.materializeAndOrderRootTests(configuration.testCaseOrder).forEach { root ->
             enqueue(root.testCase)
          }
          while (queue.isNotEmpty()) {
@@ -80,25 +82,22 @@ internal class InstancePerLeafSpecRunner(
       }
 
    private suspend fun executeInCleanSpec(test: TestCase): Result<Spec> {
-      val extensions = SpecExtensions(configuration.extensions())
-      return createInstance(test.spec::class).onSuccess { spec ->
-         runBlocking {
-            extensions.intercept(spec) {
-               extensions.beforeSpec(spec).getOrThrow()
-               run(spec, test).getOrThrow()
-               extensions.afterSpec(spec).getOrThrow()
-            }
+      return createInstance(test.spec::class).flatMap { spec ->
+         extensions.intercept(spec) {
+            run(spec, test)
          }
       }
    }
 
    // we need to find the same root test but in the newly created spec
-   private suspend fun run(spec: Spec, test: TestCase): Result<Spec> = kotlin.runCatching {
-      log { "InstancePerLeafSpecRunner: Created new spec instance $spec" }
-      val root = spec.materializeAndOrderRootTests().firstOrNull { it.testCase.descriptor.isOnPath(test.descriptor) }
+   private suspend fun run(spec: Spec, test: TestCase): Result<Spec> = runCatching {
+      val root = spec.materializeAndOrderRootTests(configuration.testCaseOrder)
+         .firstOrNull { it.testCase.descriptor.isOnPath(test.descriptor) }
          ?: throw error("Unable to locate root test ${test.descriptor.path()}")
       log { "InstancePerLeafSpecRunner: Starting root test ${root.testCase.descriptor} in search of ${test.descriptor}" }
+      extensions.beforeSpec(spec).getOrThrow()
       run(root.testCase, test)
+      extensions.afterSpec(spec).getOrThrow()
       spec
    }
 
@@ -120,7 +119,7 @@ internal class InstancePerLeafSpecRunner(
                   open = false
                   seen.add(t.descriptor)
                   run(t, target)
-                  // otherwise if we're already past our target we're discovering and so
+                  // otherwise, if we're already past our target we're discovering and so
                   // the first discovery we run, the rest we queue
                } else if (target.descriptor.isOnPath(t.descriptor)) {
                   if (seen.add(t.descriptor)) {
@@ -156,7 +155,8 @@ internal class InstancePerLeafSpecRunner(
                   }
                }
             },
-            defaultCoroutineDispatcherFactory
+            defaultCoroutineDispatcherFactory,
+            configuration,
          )
 
          val result = testExecutor.execute(test, context2)

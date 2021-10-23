@@ -1,6 +1,6 @@
 package com.sksamuel.kotest.engine.spec.interceptor
 
-import io.kotest.core.config.Configuration
+import io.kotest.core.config.DefaultExtensionRegistry
 import io.kotest.core.extensions.ApplyExtension
 import io.kotest.core.extensions.Extension
 import io.kotest.core.spec.style.FunSpec
@@ -13,10 +13,10 @@ class ApplyExtensionsInterceptorTest : FunSpec() {
    init {
       test("ApplyExtensionsInterceptor should apply extensions") {
 
-         val conf = Configuration()
-         ApplyExtensionsInterceptor(conf)
+         val registry = DefaultExtensionRegistry()
+         ApplyExtensionsInterceptor(registry)
             .intercept {
-               val wrapper = conf.extensions().single() as SpecWrapperExtension
+               val wrapper = registry.all().single() as SpecWrapperExtension
                wrapper.delegate.shouldBeInstanceOf<Foo>()
                emptyMap()
             }.invoke(ReflectiveSpecRef(MyAnnotatedSpec::class))

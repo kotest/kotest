@@ -9,14 +9,14 @@ import io.kotest.core.extensions.TagExtension
  * Returns all runtime tags when invoked, wrapping into an instance of [Tags].
  */
 internal interface TagProvider {
-   fun tags(configuration: Configuration): Tags
+   fun tags(): Tags
 }
 
 /**
- * Implementation of [TagProvider] that uses the [Configuration] to provide those tags.
+ * Implementation of [TagProvider] that uses a [Configuration] to provide those tags.
  */
-class ConfigurationTagProvider : TagProvider {
-   override fun tags(configuration: Configuration): Tags = configuration.activeTags()
+class ConfigurationTagProvider(private val configuration: Configuration) : TagProvider {
+   override fun tags(): Tags = configuration.activeTags()
 }
 
 /**
@@ -24,6 +24,6 @@ class ConfigurationTagProvider : TagProvider {
  * any returned tags into a [Tags] container.
  */
 fun Configuration.activeTags(): Tags {
-   val extensions = this.extensions().filterIsInstance<TagExtension>()
+   val extensions = this.registry().all().filterIsInstance<TagExtension>()
    return if (extensions.isEmpty()) Tags.Empty else extensions.map { it.tags() }.reduce { a, b -> a.combine(b) }
 }

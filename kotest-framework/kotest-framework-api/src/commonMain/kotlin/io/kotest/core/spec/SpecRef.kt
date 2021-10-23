@@ -1,5 +1,6 @@
 package io.kotest.core.spec
 
+import io.kotest.core.config.ExtensionRegistry
 import kotlin.reflect.KClass
 
 /**
@@ -20,6 +21,8 @@ interface SpecRef {
     *
     * May return an error if an instance could not be created (eg, on JVM, instances are created
     * refectively, and this may error if the constructor is not known).
+    *
+    * @param registry the extension's registry, used to lookup extensions for the instantiation process.
     */
-   suspend fun instance(): Result<Spec>
+   suspend fun instance(registry: ExtensionRegistry): Result<Spec>
 }

@@ -1,6 +1,7 @@
 package io.kotest.engine.test.interceptors
 
 import io.kotest.common.ExperimentalKotest
+import io.kotest.core.config.Configuration
 import io.kotest.core.config.LogLevel
 import io.kotest.core.config.configuration
 import io.kotest.core.extensions.Extension
@@ -56,11 +57,17 @@ internal class TestContextLoggingCoroutineContextElement(val logs: MutableList<L
    companion object Key : CoroutineContext.Key<TestContextLoggingCoroutineContextElement>
 }
 
-internal object CoroutineLoggingInterceptor : TestExecutionInterceptor {
+@ExperimentalKotest
+internal class CoroutineLoggingInterceptor(
+   private val configuration: Configuration
+) : TestExecutionInterceptor {
+
    override suspend fun intercept(
       test: suspend (TestCase, TestContext) -> TestResult
    ): suspend (TestCase, TestContext) -> TestResult = { testCase, context ->
-      val extensions = configuration.extensions().filterIsInstance<LogExtension>()
+
+      val extensions = configuration.registry().all().filterIsInstance<LogExtension>()
+
       when {
          configuration.logLevel.isDisabled() || extensions.isEmpty() -> test(testCase, context)
          else -> {
@@ -87,12 +94,12 @@ typealias LogFn = () -> Any
 
 @ExperimentalKotest
 internal val TestContext.logger: TestLogger
-   get() = TestLogger(logs = logs ?: mutableListOf())
+   get() = TestLogger(logs = logs ?: mutableListOf(), configuration.logLevel)
 
 @ExperimentalKotest
-class TestLogger(internal val logs: MutableList<LogEntry>) {
+class TestLogger(internal val logs: MutableList<LogEntry>, private val logLevel: LogLevel) {
    internal fun maybeLog(message: LogFn, level: LogLevel) {
-      if (level >= configuration.logLevel) {
+      if (level >= logLevel) {
          logs.apply {
             add(LogEntry(level, message()))
          }

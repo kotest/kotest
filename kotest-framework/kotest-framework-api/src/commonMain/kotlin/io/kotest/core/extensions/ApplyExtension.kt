@@ -10,6 +10,9 @@ import kotlin.reflect.KClass
  * @ApplyExtension(SpringExtensionFactory::class)
  * class MySpringSpec : FunSpec() { ... }
  * ```
+ *
+ * Note: This annotation will only be processed once per spec class, regardless of
+ * how many times the class is instantiated.
  */
 @Repeatable
 @Retention(AnnotationRetention.RUNTIME)

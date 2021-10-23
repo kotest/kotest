@@ -1,6 +1,7 @@
 package io.kotest.engine.spec
 
 import io.kotest.common.ExperimentalKotest
+import io.kotest.core.config.Configuration
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.Spec
 import io.kotest.core.test.TestCase
@@ -23,6 +24,7 @@ import kotlin.reflect.KClass
 internal abstract class SpecRunner(
    val listener: TestEngineListener,
    private val scheduler: TestScheduler,
+   private val configuration: Configuration,
 ) {
 
    /**
@@ -35,7 +37,7 @@ internal abstract class SpecRunner(
     * Executes all the tests in this spec.
     */
    protected suspend fun launch(spec: Spec, run: suspend (TestCase) -> Unit) {
-      val rootTests = spec.materializeAndOrderRootTests().map { it.testCase }
+      val rootTests = spec.materializeAndOrderRootTests(configuration.testCaseOrder).map { it.testCase }
       log { "SingleInstanceSpecRunner: Launching ${rootTests.size} root tests with launcher $scheduler" }
       scheduler.schedule(run, rootTests)
    }
@@ -45,7 +47,7 @@ internal abstract class SpecRunner(
     * and notifies the [TestEngineListener] of the instantiation event.
     */
    protected suspend fun createInstance(kclass: KClass<out Spec>): Result<Spec> =
-      createAndInitializeSpec(kclass).onSuccess {
+      createAndInitializeSpec(kclass, configuration.registry()).onSuccess {
          Try { listener.specInstantiated(it) }
       }.onFailure {
          it.printStackTrace()

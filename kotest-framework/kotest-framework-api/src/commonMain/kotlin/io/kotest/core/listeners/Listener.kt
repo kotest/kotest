@@ -7,6 +7,8 @@ import io.kotest.core.extensions.Extension
  */
 @Deprecated("This marker interface is being subsumed by Extension and should be ignored in favor of Extension. Deprecated in 5.0.")
 interface Listener : Extension {
+
+   @Deprecated("Listener names are no longer used. Deprecated since 5.0")
    val name: String
       get() = this::class.simpleName ?: "unspecified"
 }

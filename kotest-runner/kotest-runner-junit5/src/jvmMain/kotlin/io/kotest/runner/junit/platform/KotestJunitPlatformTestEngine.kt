@@ -1,5 +1,6 @@
 package io.kotest.runner.junit.platform
 
+import io.kotest.common.KotestInternal
 import io.kotest.core.config.configuration
 import io.kotest.core.descriptors.toDescriptor
 import io.kotest.core.extensions.DiscoveryExtension
@@ -26,6 +27,7 @@ import kotlin.script.templates.standard.ScriptTemplateWithArgs
 /**
  * A Kotest implementation of a Junit Platform [TestEngine].
  */
+@KotestInternal
 class KotestJunitPlatformTestEngine : TestEngine {
 
    companion object {
@@ -102,7 +104,7 @@ class KotestJunitPlatformTestEngine : TestEngine {
       // therefore, the presence of a MethodSelector means we must run no tests in KT.
       val descriptor = if (request.getSelectorsByType(MethodSelector::class.java).isEmpty()) {
 
-         val extensions = configuration.extensions().filterIsInstance<DiscoveryExtension>()
+         val extensions = configuration.registry().all().filterIsInstance<DiscoveryExtension>()
          val discovery = Discovery(extensions)
          val result = discovery.discover(request.toKotestDiscoveryRequest())
          val classes = result.specs.filter { spec ->

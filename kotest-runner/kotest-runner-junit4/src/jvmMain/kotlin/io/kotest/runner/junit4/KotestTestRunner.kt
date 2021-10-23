@@ -15,7 +15,7 @@ class KotestTestRunner(
    private val klass: Class<out Spec>
 ) : Runner() {
 
-   private val formatter = getDisplayNameFormatter(configuration)
+   private val formatter = getDisplayNameFormatter(configuration.registry(), configuration)
 
    override fun run(notifier: RunNotifier) {
       runBlocking {
@@ -27,9 +27,9 @@ class KotestTestRunner(
    }
 
    override fun getDescription(): Description {
-      val spec = runBlocking { createAndInitializeSpec(klass.kotlin).getOrThrow() }
+      val spec = runBlocking { createAndInitializeSpec(klass.kotlin, configuration.registry()).getOrThrow() }
       val desc = Description.createSuiteDescription(spec::class.java)
-      spec.materializeAndOrderRootTests()
+      spec.materializeAndOrderRootTests(configuration.testCaseOrder)
          .forEach { rootTest ->
             desc.addChild(
                describeTestCase(

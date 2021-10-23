@@ -5,7 +5,7 @@ import io.kotest.core.listeners.ProjectListener
 import io.kotest.core.spec.Isolate
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.engine.KotestEngineLauncher
-import io.kotest.engine.events.BeforeProjectListenerException
+import io.kotest.engine.project.BeforeProjectException
 import io.kotest.engine.listener.AbstractTestEngineListener
 import io.kotest.inspectors.forOne
 import io.kotest.matchers.collections.shouldHaveSize
@@ -39,7 +39,7 @@ class BeforeProjectListenerExceptionTest : FunSpec({
          .launch()
 
       errors shouldHaveSize 1
-      errors[0].shouldBeInstanceOf<BeforeProjectListenerException>()
+      errors[0].shouldBeInstanceOf<BeforeProjectException>()
       errors[0].cause!! shouldHaveMessage "OOOFF"
 
       configuration.deregisterListener(projectListener)
@@ -76,7 +76,7 @@ class BeforeProjectListenerExceptionTest : FunSpec({
          .launch()
 
       errors shouldHaveSize 2
-      errors.filterIsInstance<BeforeProjectListenerException>() shouldHaveSize 2
+      errors.filterIsInstance<BeforeProjectException>() shouldHaveSize 2
 
       errors.forOne {
          it.cause!!.shouldHaveMessage("ZLOPP")

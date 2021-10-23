@@ -5,13 +5,13 @@ import io.kotest.core.extensions.Extension
 import io.kotest.core.filter.Filter
 import io.kotest.core.listeners.Listener
 import io.kotest.core.listeners.ProjectListener
+import io.kotest.core.names.DuplicateTestNameMode
+import io.kotest.core.names.TestNameCase
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.SpecExecutionOrder
 import io.kotest.core.test.AssertionMode
-import io.kotest.core.names.DuplicateTestNameMode
 import io.kotest.core.test.TestCaseConfig
 import io.kotest.core.test.TestCaseOrder
-import io.kotest.core.names.TestNameCase
 import kotlin.reflect.KClass
 import kotlin.time.Duration
 
@@ -47,6 +47,7 @@ abstract class AbstractProjectConfig {
    /**
     * List of project wide [Filter] instances.
     */
+   @Deprecated("Use extensions. This will be removed in 6.0")
    open fun filters(): List<Filter> = emptyList()
 
    /**

@@ -1,7 +1,8 @@
 package io.kotest.engine.spec
 
+import io.kotest.common.ExperimentalKotest
 import io.kotest.core.concurrency.CoroutineDispatcherFactory
-import io.kotest.core.config.configuration
+import io.kotest.core.config.Configuration
 import io.kotest.core.spec.Spec
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
@@ -22,29 +23,35 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.promise
 import kotlin.coroutines.coroutineContext
 
+@ExperimentalKotest
 internal actual fun createSpecExecutorDelegate(
    listener: TestEngineListener,
    defaultCoroutineDispatcherFactory: CoroutineDispatcherFactory,
-): SpecExecutorDelegate = JavascriptSpecExecutorDelegate
+   configuration: Configuration,
+): SpecExecutorDelegate = JavascriptSpecExecutorDelegate(configuration)
 
 /**
  * Note: we need to use this: https://youtrack.jetbrains.com/issue/KT-22228
  */
-internal object JavascriptSpecExecutorDelegate : SpecExecutorDelegate {
+@ExperimentalKotest
+internal class JavascriptSpecExecutorDelegate(private val configuration: Configuration) : SpecExecutorDelegate {
 
-   private val formatter = getDisplayNameFormatter(configuration)
+   private val formatter = getDisplayNameFormatter(
+      configuration.registry(),
+      configuration
+   )
 
    @DelicateCoroutinesApi
    override suspend fun execute(spec: Spec): Map<TestCase, TestResult> {
       val cc = coroutineContext
       // we use the spec itself as an outer/parent test.
       describe(testNameEscape(spec::class.bestName())) {
-         spec.materializeAndOrderRootTests().forEach { root ->
+         spec.materializeAndOrderRootTests(configuration.testCaseOrder).forEach { root ->
 
             val testDisplayName = testNameEscape(formatter.format(root.testCase))
 
             // todo find a way to delegate this to the test case executor
-            val enabled = root.testCase.isEnabledInternal()
+            val enabled = root.testCase.isEnabledInternal(configuration)
             if (enabled.isEnabled) {
                // we have to always invoke `it` to start the test so that the js test framework doesn't exit
                // before we invoke our callback. This also gives us the handle to the done callback.

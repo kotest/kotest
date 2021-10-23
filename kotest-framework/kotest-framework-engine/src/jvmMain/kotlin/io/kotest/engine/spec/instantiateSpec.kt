@@ -1,14 +1,14 @@
 package io.kotest.engine.spec
 
-import io.kotest.core.config.configuration
+import io.kotest.core.config.ExtensionRegistry
 import io.kotest.core.extensions.ConstructorExtension
 import io.kotest.core.extensions.PostInstantiationExtension
 import io.kotest.core.spec.Spec
 import kotlin.reflect.KClass
 import kotlin.reflect.jvm.isAccessible
 
-internal actual suspend fun instantiate(kclass: KClass<out Spec>): Result<Spec> {
-   return createAndInitializeSpec(kclass)
+internal actual suspend fun instantiate(kclass: KClass<out Spec>, registry: ExtensionRegistry): Result<Spec> {
+   return createAndInitializeSpec(kclass, registry)
 }
 
 /**
@@ -19,13 +19,13 @@ internal actual suspend fun instantiate(kclass: KClass<out Spec>): Result<Spec> 
  *
  * After creation any [PostInstantiationExtension]s will be invoked.
  */
-suspend fun <T : Spec> createAndInitializeSpec(kclass: KClass<T>): Result<Spec> {
+suspend fun <T : Spec> createAndInitializeSpec(kclass: KClass<T>, registry: ExtensionRegistry): Result<Spec> {
    return when (val obj = kclass.objectInstance) {
       null -> runCatching {
          val initial: Spec? = null
-         val spec = configuration.extensions().filterIsInstance<ConstructorExtension>()
+         val spec = registry.all().filterIsInstance<ConstructorExtension>()
             .fold(initial) { spec, ext -> spec ?: ext.instantiate(kclass) } ?: javaReflectNewInstance(kclass)
-         configuration.extensions().filterIsInstance<PostInstantiationExtension>()
+         registry.all().filterIsInstance<PostInstantiationExtension>()
             .fold(spec) { acc, ext -> ext.instantiated(acc) }
       }
       else -> Result.success(obj)

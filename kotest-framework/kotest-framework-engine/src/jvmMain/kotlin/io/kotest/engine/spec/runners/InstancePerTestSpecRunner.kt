@@ -2,7 +2,7 @@ package io.kotest.engine.spec.runners
 
 import io.kotest.common.ExperimentalKotest
 import io.kotest.core.concurrency.CoroutineDispatcherFactory
-import io.kotest.core.config.configuration
+import io.kotest.core.config.Configuration
 import io.kotest.core.spec.Spec
 import io.kotest.core.test.NestedTest
 import io.kotest.core.test.TestCase
@@ -60,8 +60,10 @@ internal class InstancePerTestSpecRunner(
    listener: TestEngineListener,
    schedule: TestScheduler,
    private val defaultCoroutineDispatcherFactory: CoroutineDispatcherFactory,
-) : SpecRunner(listener, schedule) {
+   private val configuration: Configuration,
+) : SpecRunner(listener, schedule, configuration) {
 
+   private val extensions = SpecExtensions(configuration.registry())
    private val results = ConcurrentHashMap<TestCase, TestResult>()
 
    /**
@@ -98,7 +100,6 @@ internal class InstancePerTestSpecRunner(
     * can be registered back with the stack for execution later.
     */
    private suspend fun executeInCleanSpec(test: TestCase): Result<Spec> {
-      val extensions = SpecExtensions(configuration.extensions())
       return createInstance(test.spec::class)
          .flatMap { spec ->
             runCatching {
@@ -114,7 +115,7 @@ internal class InstancePerTestSpecRunner(
    private suspend fun run(spec: Spec, test: TestCase): Result<Spec> = kotlin.runCatching {
       log { "Created new spec instance $spec" }
       // we need to find the same root test but in the newly created spec
-      val root = spec.materializeAndOrderRootTests().first { it.testCase.descriptor.isOnPath(test.descriptor) }
+      val root = spec.materializeAndOrderRootTests(configuration.testCaseOrder).first { it.testCase.descriptor.isOnPath(test.descriptor) }
       log { "Starting root test ${root.testCase.descriptor} in search of ${test.descriptor}" }
       run(root.testCase, test)
       spec

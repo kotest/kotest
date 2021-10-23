@@ -8,11 +8,9 @@ import io.kotest.core.descriptors.toDescriptor
 import io.kotest.core.names.UniqueNames
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
-import io.kotest.engine.events.AfterProjectListenerException
-import io.kotest.engine.events.BeforeProjectListenerException
+import io.kotest.engine.errors.ExceptionPlaceholderNameResolver
 import io.kotest.engine.listener.TestEngineListener
 import io.kotest.engine.test.names.getDisplayNameFormatter
-import io.kotest.mpp.bestName
 import io.kotest.mpp.log
 import org.junit.platform.engine.EngineExecutionListener
 import org.junit.platform.engine.TestDescriptor
@@ -76,11 +74,7 @@ class JUnitTestEngineListener(
    private val configuration: Configuration,
 ) : TestEngineListener {
 
-   companion object {
-      const val PlaceholderName = "<error>"
-   }
-
-   private val formatter = getDisplayNameFormatter(configuration)
+   private val formatter = getDisplayNameFormatter(configuration.registry(), configuration)
 
    // contains a mapping of junit TestDescriptor's, so we can find previously registered tests
    private val descriptors = mutableMapOf<Descriptor, TestDescriptor>()
@@ -124,23 +118,10 @@ class JUnitTestEngineListener(
 
    private fun registerExceptionPlaceholders(ts: List<Throwable>) {
       ts.forEach {
-         when (it) {
-            is AfterProjectListenerException -> {
-               val container = createAndRegisterDummySpec(it.name)
-               listener.executionStarted(container)
-               listener.executionFinished(container, TestExecutionResult.failed(it))
-            }
-            is BeforeProjectListenerException -> {
-               val container = createAndRegisterDummySpec(it.name)
-               listener.executionStarted(container)
-               listener.executionFinished(container, TestExecutionResult.failed(it))
-            }
-            else -> {
-               val container = createAndRegisterDummySpec(it::class.bestName())
-               listener.executionStarted(container)
-               listener.executionFinished(container, TestExecutionResult.failed(it))
-            }
-         }
+         val (name, cause) = ExceptionPlaceholderNameResolver.resolve(it)
+         val container = createAndRegisterDummySpec(name)
+         listener.executionStarted(container)
+         listener.executionFinished(container, TestExecutionResult.failed(cause))
       }
    }
 
@@ -334,7 +315,7 @@ class JUnitTestEngineListener(
    }
 
    private fun createAndRegisterDummySpec(name: String): TestDescriptor {
-      val unique = UniqueNames.unique(name, dummies) ?: name
+      val unique = UniqueNames.unique(name, dummies) { s, k -> "${s}_$k" } ?: name
       dummies.add(unique)
       val descriptor =
          createDescriptorForSpec(Descriptor.SpecDescriptor(DescriptorId(unique), this::class), unique, root)

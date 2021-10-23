@@ -13,7 +13,7 @@ class JUnitTestEngineListener(
    private val notifier: RunNotifier,
 ) : AbstractTestEngineListener() {
 
-   private val formatter = getDisplayNameFormatter(configuration)
+   private val formatter = getDisplayNameFormatter(configuration.registry(), configuration)
 
    override suspend fun testStarted(testCase: TestCase) {
       notifier.fireTestStarted(describeTestCase(testCase, formatter.format(testCase)))

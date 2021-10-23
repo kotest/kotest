@@ -51,7 +51,7 @@ private fun specs(specClass: KClass<out Spec>?, packageName: String?): Discovery
 private fun scan(packageName: String?): DiscoveryResult {
    val packageSelector = packageName?.let { DiscoverySelector.PackageDiscoverySelector(it) }
    val req = DiscoveryRequest(selectors = listOfNotNull(packageSelector))
-   val extensions = configuration.extensions().filterIsInstance<DiscoveryExtension>()
+   val extensions = configuration.registry().all().filterIsInstance<DiscoveryExtension>()
    val discovery = Discovery(extensions)
    return discovery.discover(req)
 }

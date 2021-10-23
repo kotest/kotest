@@ -5,7 +5,7 @@ import io.kotest.core.listeners.ProjectListener
 import io.kotest.core.spec.Isolate
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.engine.KotestEngineLauncher
-import io.kotest.engine.events.AfterProjectListenerException
+import io.kotest.engine.project.AfterProjectException
 import io.kotest.engine.listener.AbstractTestEngineListener
 import io.kotest.inspectors.forOne
 import io.kotest.matchers.collections.shouldHaveSize
@@ -39,7 +39,7 @@ class AfterProjectListenerExceptionTest : FunSpec({
          .launch()
 
       errors shouldHaveSize 1
-      errors[0].shouldBeInstanceOf<AfterProjectListenerException>()
+      errors[0].shouldBeInstanceOf<AfterProjectException>()
       errors[0].cause!! shouldHaveMessage "ARRGH"
 
       configuration.deregisterExtension(projectListener)
@@ -76,7 +76,7 @@ class AfterProjectListenerExceptionTest : FunSpec({
          .launch()
 
       errors shouldHaveSize 2
-      errors.filterIsInstance<AfterProjectListenerException>() shouldHaveSize 2
+      errors.filterIsInstance<AfterProjectException>() shouldHaveSize 2
 
       errors.forOne {
          it.cause!!.shouldHaveMessage("GLIPP")

@@ -6,8 +6,8 @@ import io.kotest.core.extensions.ProjectExtension
 import io.kotest.engine.EngineResult
 import io.kotest.engine.TestSuite
 
-@OptIn(KotestInternal::class)
-internal class ProjectExtensionEngineInterceptor(private val extensions: List<ProjectExtension>) : EngineInterceptor {
+@KotestInternal
+internal object ProjectExtensionEngineInterceptor : EngineInterceptor {
 
    override suspend fun intercept(
       context: EngineContext,
@@ -16,11 +16,16 @@ internal class ProjectExtensionEngineInterceptor(private val extensions: List<Pr
 
       var result: EngineResult = EngineResult.empty
       val initial: suspend (ProjectContext) -> Unit = { result = execute(it.toEngineContext(context)) }
-      val chain = extensions.foldRight(initial) { extension, acc: suspend (ProjectContext) -> Unit ->
-         {
-            extension.interceptProject(context.toProjectContext()) { acc(it) }
+      val chain = context
+         .configuration
+         .registry()
+         .all()
+         .filterIsInstance<ProjectExtension>()
+         .foldRight(initial) { extension, acc: suspend (ProjectContext) -> Unit ->
+            {
+               extension.interceptProject(context.toProjectContext()) { acc(it) }
+            }
          }
-      }
       return try {
          chain.invoke(context.toProjectContext())
          result

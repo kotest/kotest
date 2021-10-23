@@ -15,18 +15,21 @@ import io.kotest.engine.spec.runners.InstancePerTestSpecRunner
 import io.kotest.engine.spec.runners.SingleInstanceSpecRunner
 import io.kotest.engine.test.scheduler.ConcurrentTestScheduler
 import io.kotest.engine.test.scheduler.SequentialTestScheduler
+import io.kotest.mpp.log
 import kotlin.math.max
 
 @ExperimentalKotest
 internal actual fun createSpecExecutorDelegate(
    listener: TestEngineListener,
    defaultCoroutineDispatcherFactory: CoroutineDispatcherFactory,
-): SpecExecutorDelegate = JvmSpecExecutorDelegate(listener, defaultCoroutineDispatcherFactory)
+   configuration: Configuration,
+): SpecExecutorDelegate = JvmSpecExecutorDelegate(listener, defaultCoroutineDispatcherFactory, configuration)
 
 @ExperimentalKotest
 class JvmSpecExecutorDelegate(
    private val listener: TestEngineListener,
-   private val dispatcherFactory: CoroutineDispatcherFactory
+   private val dispatcherFactory: CoroutineDispatcherFactory,
+   private val configuration: Configuration,
 ) : SpecExecutorDelegate {
 
    private fun Spec.resolvedIsolationMode() =
@@ -39,10 +42,27 @@ class JvmSpecExecutorDelegate(
          else -> ConcurrentTestScheduler(max(1, concurrentTests))
       }
 
-      val runner = when (spec.resolvedIsolationMode()) {
-         IsolationMode.SingleInstance -> SingleInstanceSpecRunner(listener, scheduler, dispatcherFactory)
-         IsolationMode.InstancePerTest -> InstancePerTestSpecRunner(listener, scheduler, dispatcherFactory)
-         IsolationMode.InstancePerLeaf -> InstancePerLeafSpecRunner(listener, scheduler, dispatcherFactory)
+      val isolation = spec.resolvedIsolationMode()
+      log { "JvmSpecExecutorDelegate: isolation=$isolation for $spec" }
+      val runner = when (isolation) {
+         IsolationMode.SingleInstance -> SingleInstanceSpecRunner(
+            listener,
+            scheduler,
+            dispatcherFactory,
+            configuration
+         )
+         IsolationMode.InstancePerTest -> InstancePerTestSpecRunner(
+            listener,
+            scheduler,
+            dispatcherFactory,
+            configuration
+         )
+         IsolationMode.InstancePerLeaf -> InstancePerLeafSpecRunner(
+            listener,
+            scheduler,
+            dispatcherFactory,
+            configuration
+         )
       }
 
       return runner.execute(spec).getOrThrow()

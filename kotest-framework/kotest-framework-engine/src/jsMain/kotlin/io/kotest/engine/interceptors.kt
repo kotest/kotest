@@ -1,8 +1,6 @@
 package io.kotest.engine
 
 import io.kotest.common.KotestInternal
-import io.kotest.core.config.Configuration
-import io.kotest.core.extensions.ProjectExtension
 import io.kotest.engine.interceptors.EmptyTestSuiteInterceptor
 import io.kotest.engine.interceptors.EngineInterceptor
 import io.kotest.engine.interceptors.ProjectExtensionEngineInterceptor
@@ -14,14 +12,14 @@ import io.kotest.engine.interceptors.TestEngineInitializedInterceptor
 import io.kotest.engine.interceptors.TestEngineStartedFinishedInterceptor
 
 @KotestInternal
-internal actual fun testEngineInterceptors(conf: Configuration): List<EngineInterceptor> {
+internal actual fun testEngineInterceptors(): List<EngineInterceptor> {
    return listOfNotNull(
       TestEngineStartedFinishedInterceptor,
       ProjectTimeoutEngineInterceptor,
       TestDslStateInterceptor,
       SpecSortEngineInterceptor,
-      ProjectExtensionEngineInterceptor(conf.extensions().filterIsInstance<ProjectExtension>()),
-      ProjectListenerEngineInterceptor(conf.extensions()),
+      ProjectExtensionEngineInterceptor,
+      ProjectListenerEngineInterceptor,
       EmptyTestSuiteInterceptor,
       TestEngineInitializedInterceptor,
    )
