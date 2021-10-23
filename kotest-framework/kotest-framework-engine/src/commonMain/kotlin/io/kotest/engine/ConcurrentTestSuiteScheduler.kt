@@ -1,6 +1,7 @@
 package io.kotest.engine
 
-import io.kotest.core.config.configuration
+import io.kotest.common.ExperimentalKotest
+import io.kotest.core.config.Configuration
 import io.kotest.core.spec.DoNotParallelize
 import io.kotest.core.spec.Isolate
 import io.kotest.core.spec.SpecRef
@@ -23,7 +24,11 @@ import kotlinx.coroutines.sync.withPermit
  *
  * @param maxConcurrent The maximum number of concurrent coroutines.
  */
-internal class ConcurrentTestSuiteScheduler(private val maxConcurrent: Int) : TestSuiteScheduler {
+@ExperimentalKotest
+internal class ConcurrentTestSuiteScheduler(
+   private val maxConcurrent: Int,
+   private val configuration: Configuration,
+) : TestSuiteScheduler {
 
    override suspend fun schedule(suite: TestSuite, listener: TestEngineListener): EngineResult {
       log { "DefaultTestSuiteScheduler: Launching ${suite.specs.size} specs" }

@@ -30,12 +30,13 @@ class RunIfActiveInterceptorTest : FunSpec() {
 
       test("RunIfActiveInterceptor should fire listeners on skip") {
          var fired = false
-         val conf = Configuration()
-         conf.register(object : InactiveSpecListener {
+         val ext = object : InactiveSpecListener {
             override suspend fun inactive(spec: Spec, results: Map<TestCase, TestResult>) {
                fired = true
             }
-         })
+         }
+         val conf = Configuration()
+         conf.registry().add(ext)
          RunIfActiveInterceptor(NoopTestEngineListener, conf)
             .intercept { error("boom") }
             .invoke(MyInactiveSpec())

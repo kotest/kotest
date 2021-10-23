@@ -12,7 +12,7 @@ class BeforeAfterTestOrder : FunSpec() {
    private var seq = ""
 
    override fun afterSpec(spec: Spec) {
-      seq shouldBe "cadbcadbcadb"
+      seq shouldBe "cabdcabdcabd"
    }
 
    override fun beforeTest(testCase: TestCase) {

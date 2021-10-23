@@ -1,9 +1,10 @@
 package io.kotest.engine.test.names
 
 import io.kotest.core.config.Configuration
-import io.kotest.core.names.DisplayNameFormatter
+import io.kotest.core.config.ExtensionRegistry
 import io.kotest.core.extensions.DisplayNameFormatterExtension
 import io.kotest.core.internal.tags.allTags
+import io.kotest.core.names.DisplayNameFormatter
 import io.kotest.core.names.TestNameCase
 import io.kotest.core.spec.DisplayName
 import io.kotest.core.test.TestCase
@@ -11,9 +12,8 @@ import io.kotest.mpp.annotation
 import io.kotest.mpp.bestName
 import kotlin.reflect.KClass
 
-fun getDisplayNameFormatter(configuration: Configuration): DisplayNameFormatter {
-   return configuration
-      .extensions()
+fun getDisplayNameFormatter(registry: ExtensionRegistry, configuration: Configuration): DisplayNameFormatter {
+   return registry.all()
       .filterIsInstance<DisplayNameFormatterExtension>()
       .firstOrNull()
       ?.formatter() ?: DefaultDisplayNameFormatter(configuration)

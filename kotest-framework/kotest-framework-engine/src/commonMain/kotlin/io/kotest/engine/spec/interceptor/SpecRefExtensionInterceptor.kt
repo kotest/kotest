@@ -1,6 +1,6 @@
 package io.kotest.engine.spec.interceptor
 
-import io.kotest.core.config.Configuration
+import io.kotest.core.config.ExtensionRegistry
 import io.kotest.core.extensions.SpecRefExtension
 import io.kotest.core.spec.SpecRef
 import io.kotest.core.test.TestCase
@@ -10,7 +10,7 @@ import io.kotest.mpp.log
 /**
  * A [SpecRefInterceptor] that will invoke any [SpecRefExtension]s.
  */
-class SpecRefExtensionInterceptor(private val conf: Configuration) : SpecRefInterceptor {
+class SpecRefExtensionInterceptor(private val registry: ExtensionRegistry) : SpecRefInterceptor {
 
    override suspend fun intercept(
       fn: suspend (SpecRef) -> Map<TestCase, TestResult>
@@ -18,7 +18,7 @@ class SpecRefExtensionInterceptor(private val conf: Configuration) : SpecRefInte
 
       log { "SpecReferenceExtensionInterceptor: Intercepting spec" }
 
-      val exts = conf.extensions().filterIsInstance<SpecRefExtension>()
+      val exts = registry.all().filterIsInstance<SpecRefExtension>()
       var results: Map<TestCase, TestResult> = emptyMap()
       val inner: suspend (SpecRef) -> Unit = { results = fn(it) }
 

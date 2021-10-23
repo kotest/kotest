@@ -1,8 +1,7 @@
-package com.sksamuel.kotest.listeners.testlistener.instancepertest
+package com.sksamuel.kotest.engine.extensions.spec
 
-import io.kotest.core.listeners.TestListener
+import io.kotest.core.listeners.PrepareSpecListener
 import io.kotest.core.spec.AutoScan
-import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
@@ -10,25 +9,24 @@ import java.util.concurrent.atomic.AtomicInteger
 import kotlin.reflect.KClass
 
 @AutoScan
-class PrepareSpecTestListener : TestListener {
+class MyPrepareSpecListener : PrepareSpecListener {
    override suspend fun prepareSpec(kclass: KClass<out Spec>) {
       if (kclass == PrepareSpecTest::class) {
-         PrepareSpecTest.counter.incrementAndGet()
+         PrepareSpecTest.b.incrementAndGet()
       }
    }
 }
 
 class PrepareSpecTest : FunSpec() {
-   override fun isolationMode(): IsolationMode = IsolationMode.InstancePerTest
 
    companion object {
-      val counter = AtomicInteger(0)
+      val b = AtomicInteger(0)
    }
 
    init {
 
       afterProject {
-         counter.get() shouldBe 1
+         b.get() shouldBe 1
       }
 
       test("ignored test").config(enabled = false) {}

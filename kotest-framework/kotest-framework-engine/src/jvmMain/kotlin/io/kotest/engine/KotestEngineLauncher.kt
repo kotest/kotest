@@ -1,21 +1,21 @@
 package io.kotest.engine
 
+import io.kotest.common.KotestInternal
 import io.kotest.core.Tags
 import io.kotest.core.filter.SpecFilter
 import io.kotest.core.filter.TestFilter
 import io.kotest.core.spec.Spec
-import io.kotest.engine.filter.RequiresTagSpecFilter
 import io.kotest.engine.listener.CompositeTestEngineListener
 import io.kotest.engine.listener.PinnedSpecTestEngineListener
 import io.kotest.engine.listener.TestEngineListener
 import io.kotest.engine.listener.ThreadSafeTestEngineListener
-import io.kotest.engine.tags.ConfigurationTagProvider
 import kotlin.reflect.KClass
 import kotlin.script.templates.standard.ScriptTemplateWithArgs
 
 /**
  * A builder class for creating and executing tests via the [TestEngine].
  */
+@KotestInternal
 @Suppress("DEPRECATION")
 @Deprecated("Prefer TestEngineLauncher. This class will remain for compatibility with existing clients but new code should use the TestEngineLauncher which is multiplatform.")
 class KotestEngineLauncher(
@@ -43,7 +43,7 @@ class KotestEngineLauncher(
             specs = specs,
             scripts = emptyList(),
             testFilters = emptyList(),
-            specFilters = listOf(RequiresTagSpecFilter(ConfigurationTagProvider())),
+            specFilters = emptyList(),
             tags = tags,
             dumpConfig = false,
          )
@@ -52,6 +52,7 @@ class KotestEngineLauncher(
 
    constructor() : this(emptyList(), emptyList(), emptyList(), emptyList(), null, false, emptyList())
 
+   @Deprecated("This class is deprecated since 5.0")
    fun launch(): EngineResult {
 
       if (listeners.isEmpty())
@@ -71,8 +72,10 @@ class KotestEngineLauncher(
       return launcher.launch()
    }
 
+   @Deprecated("This class is deprecated since 5.0")
    fun withFilter(filter: TestFilter) = withFilters(listOf(filter))
 
+   @Deprecated("This class is deprecated since 5.0")
    fun withListener(listener: TestEngineListener) = KotestEngineLauncher(
       listeners = this.listeners + listener,
       specs = specs,
@@ -83,6 +86,7 @@ class KotestEngineLauncher(
       scripts = scripts,
    )
 
+   @Deprecated("This class is deprecated since 5.0")
    fun withDumpConfig(dump: Boolean) = KotestEngineLauncher(
       listeners = listeners,
       specs = specs,
@@ -93,6 +97,7 @@ class KotestEngineLauncher(
       scripts = scripts,
    )
 
+   @Deprecated("This class is deprecated since 5.0")
    fun withSpecFilters(filters: List<SpecFilter>): KotestEngineLauncher {
       return KotestEngineLauncher(
          listeners = listeners,
@@ -105,6 +110,7 @@ class KotestEngineLauncher(
       )
    }
 
+   @Deprecated("This class is deprecated since 5.0")
    fun withTestFilters(filters: List<TestFilter>): KotestEngineLauncher {
       return KotestEngineLauncher(
          listeners = listeners,
@@ -117,8 +123,10 @@ class KotestEngineLauncher(
       )
    }
 
+   @Deprecated("This class is deprecated since 5.0")
    fun withFilters(filters: List<TestFilter>): KotestEngineLauncher = withTestFilters(filters)
 
+   @Deprecated("This class is deprecated since 5.0")
    fun withScripts(scripts: List<KClass<out ScriptTemplateWithArgs>>): KotestEngineLauncher {
       return KotestEngineLauncher(
          listeners = listeners,
@@ -131,10 +139,13 @@ class KotestEngineLauncher(
       )
    }
 
+   @Deprecated("This class is deprecated since 5.0")
    fun withSpec(klass: KClass<out Spec>) = withSpecs(listOf(klass))
 
+   @Deprecated("This class is deprecated since 5.0")
    fun withSpecs(vararg specs: KClass<out Spec>) = withSpecs(specs.toList())
 
+   @Deprecated("This class is deprecated since 5.0")
    fun withSpecs(specs: List<KClass<out Spec>>): KotestEngineLauncher {
       return KotestEngineLauncher(
          listeners = listeners,
@@ -147,6 +158,7 @@ class KotestEngineLauncher(
       )
    }
 
+   @Deprecated("This class is deprecated since 5.0")
    fun withTags(tags: Tags?): KotestEngineLauncher {
       return KotestEngineLauncher(
          listeners = listeners,

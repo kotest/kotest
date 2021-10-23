@@ -30,7 +30,7 @@ class EnhancedConsoleTestEngineListener(private val term: TermColors) : Abstract
    private var specsSeen = emptyList<Descriptor>()
    private var slow = 500.milliseconds
    private var verySlow = 5000.milliseconds
-   private val formatter = getDisplayNameFormatter(configuration)
+   private val formatter = getDisplayNameFormatter(configuration.registry(), configuration)
 
    private fun green(str: String) = term.green(str)
    private fun greenBold(str: String) = term.green.plus(term.bold).invoke(str)

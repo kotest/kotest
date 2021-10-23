@@ -6,27 +6,30 @@ slug: changelog.html
 
 ### [Unreleased 5.0.0]
 
-_**Kotlin 1.5 is now the minimum supported version**_
+_**Kotlin 1.6 is now the minimum supported version**_
 
-#### Breaking Changes
+#### Breaking Changes and removed deprecated methods
 
-* Javascript support has been reworked to use the IR compiler. The legacy compiler is no longer supported.
-* Native test support.
-* `Arb.values` has been removed. This was deprecated in 4.3 in favour of `Arb.sample`. Any custom arbs that override this method should be updated. Any custom arbs that use the `arbitrary` builders are not affected. (#2277)
+* Javascript support has been reworked to use the IR compiler. The legacy compiler is no longer supported. If you are running tests on JS legacy then you will need to continue using Kotest 4.6.x or test only IR.
+* `Arb.values` has been removed. This was deprecated in 4.3 in favour of `Arb.sample`. Any custom arbs that override this method should be updated. Any custom arbs that use the recommended `arbitrary` builders are not affected. (#2277)
 * The Engine no longer logs config to the console during start **by default**. To enable, set the system property `kotest.framework.dump.config` to true. (#2276)
 * Removed deprecated `shouldReceiveWithin` and `shouldReceiveNoElementsWithin` channel matchers.
 * `equalJson` has an added parameter to support the new `shouldEqualSpecifiedJson` assertion
 * The deprecated `RuntimeTagExtension` has been undeprecated but moved to a new package.
 * When using inspectors, the deprecated `kotlintest.assertions.output.max` system property has been removed. This was replaced with `kotest.assertions.output.max` in 4.0.
 
+
 #### Fixes
 
 * String matchers now also work on CharSequence where applicable #2278
 * Fix Arb.long/ulong producing values outside range (#2330)
 
-#### Improvements
+#### Features
 
+* Javascript IR support has been added to the framework.
+* Native test support has been added to the framework.
 * Config option to enable [coroutine debugging](https://github.com/Kotlin/kotlinx.coroutines/tree/master/kotlinx-coroutines-debug)
+* Config option to enable `TestCoroutineDispatcher`s in tests.
 * Failfast option added [see docs] #2243
 * Unfinished tests should error (#2281)
 * Added option to fail test run if no tests were executed (#2287)
@@ -50,9 +53,15 @@ _**Kotlin 1.5 is now the minimum supported version**_
 
 #### Deprecations
 
-* `beforeTest` / `afterTest` have been deprecated in favour of `beforeAny` / `afterAny`.
-* Datatest2 has been deprecated
+* The experimental datatest functions added in 4.5 have moved to a new module `kotest-framework-datatest` and the original aliases has been deprecated.
 * `CompareMode` /`CompareOrder` for `shouldEqualJson` has been deprecated in favor of `compareJsonOptions { }`
+* `TestStatus` has been deprecated and `TestResult` reworked to be an ADT. If you were pattern matching on `TestResult.status` you can now match on the result instance itself.
+* `val name` inside `Listener` has been deprecated. This was used so that multiple errors from multiple before/after spec callbacks could appear with customized unique names. The framework now takes care of making sure the names are unique so this val is no longer needed and is now ignored.
+* `SpecExtension.intercept(KClass)` has been deprecated in favor of `SpecRefExtension` and `SpecExtension.intercept(spec)`. The deprecated method had ambigious behavior when used with an IsolationMode that created multiple instances of a spec. The new methods have precise guarantees of when they will execute.
+* The global `configuration` object has been deprecated as the first step to removing this global var. To configure the project, the preferred method remains [ProjectConfig](/), which is detected on all three platforms (JVM, JS and Native).
+* `SpecInstantiationListener` has been deprecated in favour of `InstantiationListener` and `InstantiationErrorListener`, both of which support coroutines in the callbacks. `SpecInstantiationListener` is a hold-over from before coroutines existed and will be removed in a future version.
+* The `listeners` method to add listeners to a Spec has been deprecated. When adding listeners to specs directly, you should now prefer `fun extensions()` rather than `fun listeners()`.
+* `SpecIgnoredListner` (note the typo) has been renamed to `InactiveSpecListener` to align with the ignored/inactive nomenclature that Kotest uses.
 
 
 ### 4.6.3 September 2021

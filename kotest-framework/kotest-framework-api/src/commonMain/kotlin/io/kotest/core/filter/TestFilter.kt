@@ -5,9 +5,8 @@ import io.kotest.core.test.TestCase
 
 /**
  * A [TestFilter] can be used to filter tests before they are executed.
- * These filters are passed to the Kotest Engine at runtime.
  *
- * A description must be included by all filters for it to be considered enabled at runtime.
+ * A descriptor must be included by all filters for it to be considered enabled at runtime.
  */
 interface TestFilter : Filter {
 

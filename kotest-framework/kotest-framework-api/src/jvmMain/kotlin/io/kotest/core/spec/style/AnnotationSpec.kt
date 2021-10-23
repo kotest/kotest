@@ -12,7 +12,6 @@ import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestType
 import io.kotest.core.test.createNestedTest
 import io.kotest.core.test.createRootTestCase
-import io.kotest.mpp.bestName
 import io.kotest.mpp.unwrapIfReflectionCall
 import kotlin.reflect.KClass
 import kotlin.reflect.KFunction

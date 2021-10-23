@@ -2,7 +2,7 @@ package io.kotest.engine.test.interceptors
 
 import io.kotest.assertions.assertionCounter
 import io.kotest.assertions.getAndReset
-import io.kotest.core.config.configuration
+import io.kotest.core.config.Configuration
 import io.kotest.core.test.AssertionMode
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestContext
@@ -12,7 +12,7 @@ import io.kotest.core.test.TestType
 /**
  * Wraps the test function checking for assertion mode, if the test is a [TestType.Test].
  */
-internal object AssertionModeInterceptor : TestExecutionInterceptor {
+internal class AssertionModeInterceptor(private val configuration: Configuration) : TestExecutionInterceptor {
 
    private fun mode(testCase: TestCase) =
       testCase.spec.assertions ?: testCase.spec.assertionMode() ?: configuration.assertionMode

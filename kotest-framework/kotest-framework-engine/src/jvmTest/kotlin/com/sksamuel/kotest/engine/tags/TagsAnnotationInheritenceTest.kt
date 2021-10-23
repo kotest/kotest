@@ -8,6 +8,7 @@ import io.kotest.engine.test.status.isEnabledInternal
 import io.kotest.core.spec.Isolate
 import io.kotest.engine.spec.materializeAndOrderRootTests
 import io.kotest.core.spec.style.FunSpec
+import io.kotest.core.test.TestCaseOrder
 import io.kotest.matchers.shouldBe
 
 @Isolate
@@ -19,8 +20,8 @@ class TagsAnnotationInheritenceTest : FunSpec() {
             override fun tags(): Tags = Tags.include(Linux)
          }
          configuration.registerExtension(ext)
-         MyTestClass().materializeAndOrderRootTests()
-            .filter { it.testCase.isEnabledInternal().isEnabled }
+         MyTestClass().materializeAndOrderRootTests(TestCaseOrder.Random)
+            .filter { it.testCase.isEnabledInternal(configuration).isEnabled }
             .map { it.testCase.name.testName } shouldBe listOf("a", "b", "c", "d")
          configuration.deregisterExtension(ext)
       }
@@ -31,8 +32,8 @@ class TagsAnnotationInheritenceTest : FunSpec() {
          }
          configuration.registerExtension(ext)
          // all tests should be filtered out because of the @Tags
-         MyTestClass().materializeAndOrderRootTests()
-            .filter { it.testCase.isEnabledInternal().isEnabled }
+         MyTestClass().materializeAndOrderRootTests(TestCaseOrder.Random)
+            .filter { it.testCase.isEnabledInternal(configuration).isEnabled }
             .map { it.testCase.name.testName } shouldBe emptyList()
          configuration.deregisterExtension(ext)
       }
@@ -43,8 +44,8 @@ class TagsAnnotationInheritenceTest : FunSpec() {
          }
          configuration.registerExtension(ext)
          // linux is included for all and we're using an or
-         MyTestClass().materializeAndOrderRootTests()
-            .filter { it.testCase.isEnabledInternal().isEnabled }
+         MyTestClass().materializeAndOrderRootTests(TestCaseOrder.Random)
+            .filter { it.testCase.isEnabledInternal(configuration).isEnabled }
             .map { it.testCase.name.testName } shouldBe listOf("a", "b", "c", "d")
          configuration.deregisterExtension(ext)
       }
@@ -55,8 +56,8 @@ class TagsAnnotationInheritenceTest : FunSpec() {
          }
          configuration.registerExtension(ext)
          // linux should be included for all, but then postgres tests excluded as well
-         MyTestClass().materializeAndOrderRootTests()
-            .filter { it.testCase.isEnabledInternal().isEnabled }
+         MyTestClass().materializeAndOrderRootTests(TestCaseOrder.Random)
+            .filter { it.testCase.isEnabledInternal(configuration).isEnabled }
             .map { it.testCase.name.testName } shouldBe listOf("a", "d")
          configuration.deregisterExtension(ext)
       }
@@ -67,8 +68,8 @@ class TagsAnnotationInheritenceTest : FunSpec() {
          }
          configuration.registerExtension(ext)
          // Mysql tests should be excluded
-         MyTestClass().materializeAndOrderRootTests()
-            .filter { it.testCase.isEnabledInternal().isEnabled }
+         MyTestClass().materializeAndOrderRootTests(TestCaseOrder.Random)
+            .filter { it.testCase.isEnabledInternal(configuration).isEnabled }
             .map { it.testCase.name.testName } shouldBe listOf("b", "d")
          configuration.deregisterExtension(ext)
       }
@@ -79,8 +80,8 @@ class TagsAnnotationInheritenceTest : FunSpec() {
          }
          configuration.registerExtension(ext)
          // Mysql tests should be excluded
-         MyTestClass().materializeAndOrderRootTests()
-            .filter { it.testCase.isEnabledInternal().isEnabled }
+         MyTestClass().materializeAndOrderRootTests(TestCaseOrder.Random)
+            .filter { it.testCase.isEnabledInternal(configuration).isEnabled }
             .map { it.testCase.name.testName } shouldBe listOf("b", "c")
          configuration.deregisterExtension(ext)
       }

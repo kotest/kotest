@@ -1,5 +1,6 @@
 package io.kotest.engine.test.interceptors
 
+import io.kotest.core.config.Configuration
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestContext
 import io.kotest.core.test.TestResult
@@ -14,11 +15,11 @@ import io.kotest.mpp.log
  * Note: This extension must execute before any other extension that invokes methods
  * on the listener, as in runners like junit, ignored cannot happen after "started".
  */
-internal object EnabledCheckInterceptor : TestExecutionInterceptor {
+internal class EnabledCheckInterceptor(private val configuration: Configuration) : TestExecutionInterceptor {
    override suspend fun intercept(
       test: suspend (TestCase, TestContext) -> TestResult
    ): suspend (TestCase, TestContext) -> TestResult = { testCase, context ->
-      val enabled = testCase.isEnabled()
+      val enabled = testCase.isEnabled(configuration)
       when (enabled.isEnabled) {
          true -> {
             log { "EnabledCheckTestExecutionInterceptor: ${testCase.descriptor.path().value} is enabled" }

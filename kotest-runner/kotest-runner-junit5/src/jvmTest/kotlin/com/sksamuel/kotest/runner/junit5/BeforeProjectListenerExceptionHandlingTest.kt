@@ -14,7 +14,7 @@ class BeforeProjectListenerExceptionHandlingTest : FunSpec({
 
       val ext = object : ProjectListener {
          override suspend fun beforeProject() {
-            error("beforeProjectError")
+            error("zamm!")
          }
       }
 
@@ -28,20 +28,20 @@ class BeforeProjectListenerExceptionHandlingTest : FunSpec({
          .allEvents().apply {
             started().shouldHaveNames(
                "Kotest",
-               "defaultProjectListener"
+               "Before Project Error"
             )
             aborted().shouldBeEmpty()
             skipped().shouldBeEmpty()
-            failed().shouldHaveNames("defaultProjectListener")
+            failed().shouldHaveNames("Before Project Error")
             succeeded().shouldHaveNames(
                "Kotest"
             )
             finished().shouldHaveNames(
-               "defaultProjectListener",
+               "Before Project Error",
                "Kotest"
             )
             dynamicallyRegistered().shouldHaveNames(
-               "defaultProjectListener"
+               "Before Project Error"
             )
          }
 
@@ -51,22 +51,14 @@ class BeforeProjectListenerExceptionHandlingTest : FunSpec({
    test("multiple BeforeProjectListenerException's should add multiple marker tests") {
 
       val ext1 = object : ProjectListener {
-
-         override val name: String
-            get() = "MyBeforeProjectListenerName1"
-
          override suspend fun beforeProject() {
-            error("beforeProjectError1")
+            error("clopp!")
          }
       }
 
       val ext2 = object : ProjectListener {
-
-         override val name: String
-            get() = "MyBeforeProjectListenerName2"
-
          override suspend fun beforeProject() {
-            error("beforeProjectError2")
+            error("whack!")
          }
       }
 
@@ -81,23 +73,23 @@ class BeforeProjectListenerExceptionHandlingTest : FunSpec({
          .allEvents().apply {
             started().shouldHaveNames(
                "Kotest",
-               "MyBeforeProjectListenerName1",
-               "MyBeforeProjectListenerName2"
+               "Before Project Error",
+               "Before Project Error_1"
             )
             aborted().shouldBeEmpty()
             skipped().shouldBeEmpty()
-            failed().shouldHaveNames("MyBeforeProjectListenerName1", "MyBeforeProjectListenerName2")
+            failed().shouldHaveNames("Before Project Error", "Before Project Error_1")
             succeeded().shouldHaveNames(
                "Kotest"
             )
             finished().shouldHaveNames(
-               "MyBeforeProjectListenerName1",
-               "MyBeforeProjectListenerName2",
+               "Before Project Error",
+               "Before Project Error_1",
                "Kotest"
             )
             dynamicallyRegistered().shouldHaveNames(
-               "MyBeforeProjectListenerName1",
-               "MyBeforeProjectListenerName2"
+               "Before Project Error",
+               "Before Project Error_1"
             )
          }
 

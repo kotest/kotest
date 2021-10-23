@@ -10,7 +10,7 @@ import io.kotest.core.spec.style.FunSpec
 import io.kotest.engine.TestEngineLauncher
 import io.kotest.engine.listener.CollectingTestEngineListener
 import io.kotest.engine.listener.NoopTestEngineListener
-import io.kotest.engine.spec.BeforeSpecListenerException
+import io.kotest.engine.spec.BeforeSpecException
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.types.shouldBeInstanceOf
 import java.util.concurrent.atomic.AtomicInteger
@@ -42,7 +42,7 @@ class BeforeSpecListenerTest : FunSpec() {
             .withClasses(MyErrorSpec3::class)
             .launch()
          listener.specs.size shouldBe 1
-         listener.specs[MyErrorSpec3::class]!!.shouldBeInstanceOf<BeforeSpecListenerException>()
+         listener.specs[MyErrorSpec3::class]!!.shouldBeInstanceOf<BeforeSpecException>()
          listener.tests.size shouldBe 0
       }
 

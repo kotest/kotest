@@ -43,12 +43,14 @@ data class EngineResult(val errors: List<Throwable>) {
  * instance is used to reflectively instantiate.
  */
 data class TestSuite(val specs: List<SpecRef>) {
+   @ExperimentalKotest
    companion object {
       operator fun invoke(classes: List<KClass<out Spec>>) = TestSuite(classes.map { ReflectiveSpecRef(it) })
       val empty = TestSuite(emptyList())
    }
 }
 
+@KotestInternal
 data class TestEngineConfig(
    val listener: TestEngineListener,
    val interceptors: List<EngineInterceptor>,
@@ -65,6 +67,7 @@ private val testEngineConfigProcessors = listOf(
 /**
  * Multiplatform Kotest Test Engine.
  */
+@KotestInternal
 class TestEngine(initial: TestEngineConfig) {
    val config: TestEngineConfig = testEngineConfigProcessors.foldRight(initial) { p, c ->
       p.process(c)
@@ -88,9 +91,12 @@ class TestEngine(initial: TestEngineConfig) {
 
       val innerExecute: suspend (EngineContext) -> EngineResult = { context ->
          val scheduler = when (platform) {
-            Platform.JVM -> ConcurrentTestSuiteScheduler(configuration.concurrentSpecs ?: configuration.parallelism)
-            Platform.JS -> SequentialTestSuiteScheduler
-            Platform.Native -> SequentialTestSuiteScheduler
+            Platform.JVM -> ConcurrentTestSuiteScheduler(
+               config.configuration.concurrentSpecs ?: config.configuration.parallelism,
+               config.configuration
+            )
+            Platform.JS -> SequentialTestSuiteScheduler(config.configuration)
+            Platform.Native -> SequentialTestSuiteScheduler(config.configuration)
          }
          scheduler.schedule(context.suite, context.listener)
       }

@@ -1,19 +1,15 @@
 package io.kotest.engine.spec
 
+import io.kotest.core.config.ExtensionRegistry
 import io.kotest.core.extensions.Extension
-import io.kotest.core.extensions.InactiveSpecListener
-import io.kotest.core.extensions.SpecCreationErrorListener
-import io.kotest.core.extensions.SpecIgnoredListener
-import io.kotest.core.extensions.SpecInitializeExtension
-import io.kotest.core.extensions.SpecInterceptExtension
 import io.kotest.core.extensions.SpecExtension
 import io.kotest.core.listeners.AfterSpecListener
 import io.kotest.core.listeners.BeforeSpecListener
 import io.kotest.core.listeners.FinalizeSpecListener
+import io.kotest.core.listeners.IgnoredSpecListener
 import io.kotest.core.listeners.InactiveSpecListener
 import io.kotest.core.listeners.InstantiationErrorListener
 import io.kotest.core.listeners.InstantiationListener
-import io.kotest.core.listeners.IgnoredSpecListener
 import io.kotest.core.listeners.SpecInstantiationListener
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.functionOverrideCallbacks
@@ -25,19 +21,19 @@ import kotlin.reflect.KClass
 /**
  * Used to invoke extension points / listeners / callbacks on specs.
  */
-internal class SpecExtensions(private val extensions: List<Extension>) {
+internal class SpecExtensions(private val registry: ExtensionRegistry) {
 
    /**
-    * Returns all [Extension]s applicable to the [Spec]. This includes extensions via
+    * Returns all [Extension]s applicable to a [Spec]. This includes extensions via
     * function overrides, those registered explicitly in the spec as part of the DSL,
     * and project wide extensions from configuration.
     */
    fun extensions(spec: Spec): List<Extension> {
-      return spec.extensions() + // overriding in the spec
-         spec.listeners() + // overriding in the spec
+      return spec.extensions() + // overriding the extensions function in the spec
+         spec.listeners() + // overriding the listeners function in the spec
          spec.functionOverrideCallbacks() + // dsl
-         spec.registeredExtensions() + // registered on the spec
-         extensions // globals
+         spec.registeredExtensions() + // added to the spec via register
+         registry.all() // globals
    }
 
    suspend fun beforeSpec(spec: Spec): Result<Spec> {
@@ -45,7 +41,7 @@ internal class SpecExtensions(private val extensions: List<Extension>) {
       return runCatching {
          extensions(spec).filterIsInstance<BeforeSpecListener>().forEach { it.beforeSpec(spec) }
          spec
-      }.fold({ Result.success(it) }, { Result.failure(BeforeSpecListenerException(it)) })
+      }.fold({ Result.success(it) }, { Result.failure(BeforeSpecException(it)) })
    }
 
    suspend fun afterSpec(spec: Spec): Result<Spec> = runCatching {
@@ -59,34 +55,38 @@ internal class SpecExtensions(private val extensions: List<Extension>) {
       return runCatching {
          extensions(spec).filterIsInstance<AfterSpecListener>().forEach { it.afterSpec(spec) }
          spec
-      }.fold({ Result.success(it) }, { Result.failure(AfterSpecListenerException(it)) })
+      }.fold({ Result.success(it) }, { Result.failure(AfterSpecException(it)) })
    }
 
    suspend fun specInstantiated(spec: Spec) = runCatching {
       log { "SpecExtensions: specInstantiated spec:$spec" }
-      extensions.filterIsInstance<SpecInstantiationListener>().forEach { it.specInstantiated(spec) }
-      extensions.filterIsInstance<InstantiationListener>().forEach { it.specInstantiated(spec) }
+      registry.all().filterIsInstance<SpecInstantiationListener>().forEach { it.specInstantiated(spec) }
+      registry.all().filterIsInstance<InstantiationListener>().forEach { it.specInstantiated(spec) }
    }
 
    suspend fun specInstantiationError(kclass: KClass<out Spec>, t: Throwable) = runCatching {
       log { "SpecExtensions: specInstantiationError $kclass errror:$t" }
-      extensions.filterIsInstance<SpecInstantiationListener>().forEach { it.specInstantiationError(kclass, t) }
-      extensions.filterIsInstance<InstantiationErrorListener>().forEach { it.instantiationError(kclass, t) }
+      registry.all().filterIsInstance<SpecInstantiationListener>().forEach { it.specInstantiationError(kclass, t) }
+      registry.all().filterIsInstance<InstantiationErrorListener>().forEach { it.instantiationError(kclass, t) }
    }
 
    suspend fun inactiveSpec(spec: Spec, results: Map<TestCase, TestResult>) {
-      extensions.filterIsInstance<InactiveSpecListener>().forEach { it.inactive(spec, results) }
+      log { "SpecExtensions: inactiveSpec $spec" }
+      registry.all().filterIsInstance<InactiveSpecListener>().forEach { it.inactive(spec, results) }
    }
 
    suspend fun finishSpec(kclass: KClass<out Spec>, results: Map<TestCase, TestResult>) {
-      val exts = extensions.filterIsInstance<FinalizeSpecListener>()
+      val exts = registry.all().filterIsInstance<FinalizeSpecListener>()
       log { "SpecExtensions: finishSpec ${exts.size} extensions on $kclass results:$results" }
       exts.forEach { it.finalizeSpec(kclass, results) }
    }
 
-   suspend fun intercept(spec: Spec, f: suspend () -> Unit) {
+   suspend fun <T> intercept(spec: Spec, f: suspend () -> T): T {
       val exts = extensions(spec).filterIsInstance<SpecExtension>()
-      val initial: suspend () -> Unit = { f() }
+      var result: T? = null
+      val initial: suspend () -> Unit = {
+         result = f()
+      }
       val chain = exts.foldRight(initial) { op, acc ->
          {
             op.intercept(spec::class) {
@@ -97,17 +97,18 @@ internal class SpecExtensions(private val extensions: List<Extension>) {
          }
       }
       chain.invoke()
+      return result!!
    }
 
    /**
     * Notify all [IgnoredSpecListener]s that the given [kclass] has been ignored.
     */
    suspend fun ignored(kclass: KClass<out Spec>) {
-      val exts = extensions.filterIsInstance<IgnoredSpecListener>()
+      val exts = registry.all().filterIsInstance<IgnoredSpecListener>()
       log { "SpecExtensions: ignored ${exts.size} extensions on $kclass" }
       exts.forEach { it.ignoredSpec(kclass, null) }
    }
 }
 
-class BeforeSpecListenerException(throwable: Throwable) : RuntimeException(throwable)
-class AfterSpecListenerException(throwable: Throwable) : RuntimeException(throwable)
+class BeforeSpecException(throwable: Throwable) : RuntimeException(throwable)
+class AfterSpecException(throwable: Throwable) : RuntimeException(throwable)

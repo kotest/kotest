@@ -1,6 +1,7 @@
 package com.sksamuel.kotest.runner.junit5
 
-import io.kotest.core.config.configuration
+import io.kotest.common.ExperimentalKotest
+import io.kotest.core.config.Configuration
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.engine.concurrency.NoopCoroutineDispatcherFactory
 import io.kotest.engine.spec.ReflectiveSpecRef
@@ -14,6 +15,7 @@ import org.junit.platform.engine.TestExecutionResult
 import org.junit.platform.engine.UniqueId
 import org.junit.platform.engine.reporting.ReportEntry
 
+@ExperimentalKotest
 class SpecInitializationErrorTest : FunSpec({
 
    test("an error in a class field should fail spec") {
@@ -38,8 +40,8 @@ class SpecInitializationErrorTest : FunSpec({
          override fun dynamicTestRegistered(testDescriptor: TestDescriptor?) {}
       }
 
-      val listener = JUnitTestEngineListener(engineListener, root, configuration)
-      val executor = SpecExecutor(listener, NoopCoroutineDispatcherFactory)
+      val listener = JUnitTestEngineListener(engineListener, root, Configuration())
+      val executor = SpecExecutor(listener, NoopCoroutineDispatcherFactory, Configuration())
       executor.execute(ReflectiveSpecRef(SpecWithFieldError::class))
 
       finished.toMap() shouldBe mapOf(
@@ -70,8 +72,8 @@ class SpecInitializationErrorTest : FunSpec({
          override fun dynamicTestRegistered(testDescriptor: TestDescriptor?) {}
       }
 
-      val listener = JUnitTestEngineListener(engineListener, root, configuration)
-      val executor = SpecExecutor(listener, NoopCoroutineDispatcherFactory)
+      val listener = JUnitTestEngineListener(engineListener, root, Configuration())
+      val executor = SpecExecutor(listener, NoopCoroutineDispatcherFactory, Configuration())
       executor.execute(ReflectiveSpecRef(SpecWithInitError::class))
 
       finished.toMap() shouldBe mapOf(

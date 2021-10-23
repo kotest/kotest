@@ -1,4 +1,4 @@
-package io.kotest.engine
+package io.kotest.engine.concurrency
 
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.debug.DebugProbes

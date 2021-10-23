@@ -1,7 +1,7 @@
 package io.kotest.engine.spec.interceptor
 
 import io.kotest.core.annotation.EnabledIf
-import io.kotest.core.config.Configuration
+import io.kotest.core.config.ExtensionRegistry
 import io.kotest.core.spec.SpecRef
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
@@ -18,7 +18,7 @@ import io.kotest.mpp.newInstanceNoArgConstructor
  */
 internal class EnabledIfSpecInterceptor(
    private val listener: TestEngineListener,
-   private val conf: Configuration,
+   private val registry: ExtensionRegistry,
 ) : SpecRefInterceptor {
 
    override suspend fun intercept(
@@ -35,7 +35,7 @@ internal class EnabledIfSpecInterceptor(
          fn(ref)
       } else {
          listener.specIgnored(ref.kclass)
-         SpecExtensions(conf.extensions()).ignored(ref.kclass)
+         SpecExtensions(registry).ignored(ref.kclass)
          emptyMap()
       }
    }

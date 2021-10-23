@@ -1,17 +1,17 @@
 package io.kotest.engine.test.interceptors
 
-import io.kotest.core.config.configuration
+import io.kotest.core.config.Configuration
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestContext
 import io.kotest.core.test.TestResult
-import io.kotest.engine.withDebugProbe
+import io.kotest.engine.concurrency.withDebugProbe
 import io.kotest.mpp.log
 
 /**
  * If configured, then the kotlinx debug probe is installed for coroutines.
  * Note: This is a JVM only option.
  */
-internal object CoroutineDebugProbeInterceptor : TestExecutionInterceptor {
+internal class CoroutineDebugProbeInterceptor(private val configuration: Configuration) : TestExecutionInterceptor {
 
    private fun shouldApply(testCase: TestCase): Boolean {
       return testCase.config.coroutineDebugProbes ?: configuration.coroutineDebugProbes

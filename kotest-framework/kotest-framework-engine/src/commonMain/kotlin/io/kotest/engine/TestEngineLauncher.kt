@@ -2,6 +2,7 @@
 
 package io.kotest.engine
 
+import io.kotest.common.KotestInternal
 import io.kotest.common.runBlocking
 import io.kotest.common.runPromise
 import io.kotest.core.Tags
@@ -31,6 +32,7 @@ import kotlin.reflect.KClass
  * Entry point for tests generated through the compiler plugins, and so the
  * public api cannot have breaking changes.
  */
+@KotestInternal
 class TestEngineLauncher(
    private val listener: TestEngineListener,
    private val configs: List<AbstractProjectConfig>,
@@ -171,7 +173,7 @@ class TestEngineLauncher(
                listener
             )
          ),
-         interceptors = testEngineInterceptors(configuration),
+         interceptors = testEngineInterceptors(),
          configuration,
          testFilters,
          specFilters,

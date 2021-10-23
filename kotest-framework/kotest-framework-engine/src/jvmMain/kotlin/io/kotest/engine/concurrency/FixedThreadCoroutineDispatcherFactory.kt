@@ -1,7 +1,6 @@
 package io.kotest.engine.concurrency
 
 import io.kotest.core.concurrency.CoroutineDispatcherFactory
-import io.kotest.core.config.configuration
 import io.kotest.core.test.TestCase
 import io.kotest.mpp.bestName
 import io.kotest.mpp.log

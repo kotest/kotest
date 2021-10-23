@@ -3,13 +3,11 @@ package com.sksamuel.kotest.engine.spec.interceptor
 import io.kotest.common.ExperimentalKotest
 import io.kotest.core.annotation.EnabledCondition
 import io.kotest.core.annotation.EnabledIf
-import io.kotest.core.config.Configuration
+import io.kotest.core.config.EmptyExtensionRegistry
+import io.kotest.core.config.FixedExtensionRegistry
 import io.kotest.core.listeners.IgnoredSpecListener
-import io.kotest.core.listeners.InactiveSpecListener
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.style.FunSpec
-import io.kotest.core.test.TestCase
-import io.kotest.core.test.TestResult
 import io.kotest.engine.listener.NoopTestEngineListener
 import io.kotest.engine.spec.ReflectiveSpecRef
 import io.kotest.engine.spec.interceptor.EnabledIfSpecInterceptor
@@ -21,7 +19,7 @@ class EnabledIfSpecInterceptorTest : FunSpec({
 
    test("EnabledIfSpecInterceptor should proceed for any spec not annotated with @EnabledIf") {
       var fired = false
-      EnabledIfSpecInterceptor(NoopTestEngineListener, Configuration())
+      EnabledIfSpecInterceptor(NoopTestEngineListener, EmptyExtensionRegistry)
          .intercept {
             fired = true
             emptyMap()
@@ -31,7 +29,7 @@ class EnabledIfSpecInterceptorTest : FunSpec({
 
    test("EnabledIfSpecInterceptor should proceed any spec annotated with @EnabledIf that passes predicate") {
       var fired = false
-      EnabledIfSpecInterceptor(NoopTestEngineListener, Configuration())
+      EnabledIfSpecInterceptor(NoopTestEngineListener, EmptyExtensionRegistry)
          .intercept {
             fired = true
             emptyMap()
@@ -40,20 +38,19 @@ class EnabledIfSpecInterceptorTest : FunSpec({
    }
 
    test("EnabledIfSpecInterceptor should skip any spec annotated with @EnabledIf that fails predicate") {
-      EnabledIfSpecInterceptor(NoopTestEngineListener, Configuration())
+      EnabledIfSpecInterceptor(NoopTestEngineListener, EmptyExtensionRegistry)
          .intercept { error("boom") }
          .invoke(ReflectiveSpecRef(MyDisabledSpec::class))
    }
 
    test("EnabledIfSpecInterceptor should fire listeners on skip") {
       var fired = false
-      val conf = Configuration()
-      conf.register(object : IgnoredSpecListener {
+      val ext = object : IgnoredSpecListener {
          override suspend fun ignoredSpec(kclass: KClass<*>, reason: String?) {
             fired = true
          }
-      })
-      EnabledIfSpecInterceptor(NoopTestEngineListener, conf)
+      }
+      EnabledIfSpecInterceptor(NoopTestEngineListener, FixedExtensionRegistry(ext))
          .intercept { error("boom") }
          .invoke(ReflectiveSpecRef(MyDisabledSpec::class))
       fired.shouldBeTrue()

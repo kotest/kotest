@@ -21,9 +21,9 @@ import io.kotest.engine.test.interceptors.InvocationCountCheckInterceptor
 import io.kotest.engine.test.interceptors.InvocationRepeatInterceptor
 import io.kotest.engine.test.interceptors.InvocationTimeoutInterceptor
 import io.kotest.engine.test.interceptors.LifecycleInterceptor
-import io.kotest.engine.test.interceptors.TestCoroutineDispatcherInterceptor
 import io.kotest.engine.test.interceptors.SupervisorScopeInterceptor
 import io.kotest.engine.test.interceptors.TestCaseExtensionInterceptor
+import io.kotest.engine.test.interceptors.TestCoroutineDispatcherInterceptor
 import io.kotest.engine.test.interceptors.TestFinishedInterceptor
 import io.kotest.engine.test.interceptors.TimeoutInterceptor
 import io.kotest.engine.test.interceptors.blockedThreadTimeoutInterceptor
@@ -47,6 +47,12 @@ class TestCaseExecutor(
 ) {
 
    companion object {
+      @Deprecated(
+         "Exists for internal testing. Do not use", ReplaceWith(
+            "TestCaseExecutor(listener, defaultCoroutineDispatcherFactory, configuration)",
+            "io.kotest.engine.test.TestCaseExecutor",
+         )
+      )
       operator fun invoke(
          listener: TestCaseExecutionListener,
          defaultCoroutineDispatcherFactory: CoroutineDispatcherFactory = NoopCoroutineDispatcherFactory,
@@ -60,23 +66,23 @@ class TestCaseExecutor(
 
       val interceptors = listOfNotNull(
          InvocationCountCheckInterceptor,
-         CoroutineDebugProbeInterceptor,
+         CoroutineDebugProbeInterceptor(configuration),
          SupervisorScopeInterceptor,
          if (platform == Platform.JVM) coroutineDispatcherFactoryInterceptor(defaultCoroutineDispatcherFactory) else null,
          if (platform == Platform.JVM) coroutineErrorCollectorInterceptor() else null,
          TestFinishedInterceptor(listener),
-         TestCaseExtensionInterceptor,
-         EnabledCheckInterceptor,
-         LifecycleInterceptor(listener, timeMark),
+         TestCaseExtensionInterceptor(configuration.registry()),
+         EnabledCheckInterceptor(configuration),
+         LifecycleInterceptor(listener, timeMark, configuration.registry()),
          ExceptionCapturingInterceptor(timeMark),
-         AssertionModeInterceptor,
-         GlobalSoftAssertInterceptor,
+         AssertionModeInterceptor(configuration),
+         GlobalSoftAssertInterceptor(configuration),
          CoroutineScopeInterceptor,
          if (platform == Platform.JVM) blockedThreadTimeoutInterceptor() else null,
          TimeoutInterceptor,
-         InvocationRepeatInterceptor(timeMark),
+         InvocationRepeatInterceptor(configuration.registry(), timeMark),
          InvocationTimeoutInterceptor,
-         CoroutineLoggingInterceptor,
+         CoroutineLoggingInterceptor(configuration),
          if (platform == Platform.JVM && testCase.isTestCoroutineDispatcher(configuration)) TestCoroutineDispatcherInterceptor() else null,
       )
 

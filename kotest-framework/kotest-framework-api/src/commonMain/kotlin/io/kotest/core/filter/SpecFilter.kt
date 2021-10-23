@@ -1,12 +1,13 @@
 package io.kotest.core.filter
 
+import io.kotest.core.extensions.Extension
 import kotlin.reflect.KClass
 
 /**
  * A [SpecFilter] can be used to filter [Spec] classes before they are instantiated.
  * These filters are passed to the Kotest Engine at runtime.
  */
-interface SpecFilter : Filter {
+interface SpecFilter : Extension {
 
    /**
     * This method is invoked with a spec [KClass] and the result
@@ -28,7 +29,7 @@ sealed interface SpecFilterResult {
    object Exclude : SpecFilterResult
 
    /**
-    * Exclude the spec but include it as an "ignored" test, with an optional reason.
+    * Mark the spec as skipped with an optional reason.
     */
    data class Ignore(val reason: String?) : SpecFilterResult
 }

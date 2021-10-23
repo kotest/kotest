@@ -1,15 +1,18 @@
 package com.sksamuel.kotest.engine.interceptors
 
+import io.kotest.common.KotestInternal
+import io.kotest.core.config.Configuration
 import io.kotest.core.listeners.AfterProjectListener
 import io.kotest.core.listeners.BeforeProjectListener
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.engine.EngineResult
-import io.kotest.engine.events.AfterProjectListenerException
-import io.kotest.engine.events.BeforeProjectListenerException
+import io.kotest.engine.project.AfterProjectException
+import io.kotest.engine.project.BeforeProjectException
 import io.kotest.engine.interceptors.EngineContext
 import io.kotest.engine.interceptors.ProjectListenerEngineInterceptor
 import io.kotest.matchers.shouldBe
 
+@KotestInternal
 class ProjectListenerEngineInterceptorTest : FunSpec({
 
    test("should invoke beforeProject listener") {
@@ -19,7 +22,11 @@ class ProjectListenerEngineInterceptorTest : FunSpec({
             fired = true
          }
       }
-      ProjectListenerEngineInterceptor(listOf(listener)).intercept(EngineContext.empty) { EngineResult(emptyList()) }
+      val c = Configuration()
+      c.registry().add(listener)
+      ProjectListenerEngineInterceptor.intercept(
+         EngineContext.empty.withConfiguration(c)
+      ) { EngineResult(emptyList()) }
 
       fired shouldBe true
    }
@@ -37,8 +44,11 @@ class ProjectListenerEngineInterceptorTest : FunSpec({
             fired2 = true
          }
       }
-      ProjectListenerEngineInterceptor(listOf(listener1, listener2)).intercept(
-         EngineContext.empty
+      val c = Configuration()
+      c.registry().add(listener1)
+      c.registry().add(listener2)
+      ProjectListenerEngineInterceptor.intercept(
+         EngineContext.empty.withConfiguration(c)
       ) { EngineResult(emptyList()) }
 
       fired1 shouldBe true
@@ -52,8 +62,10 @@ class ProjectListenerEngineInterceptorTest : FunSpec({
             fired = true
          }
       }
-      ProjectListenerEngineInterceptor(listOf(listener)).intercept(
-         EngineContext.empty
+      val c = Configuration()
+      c.registry().add(listener)
+      ProjectListenerEngineInterceptor.intercept(
+         EngineContext.empty.withConfiguration(c)
       ) { EngineResult(emptyList()) }
 
       fired shouldBe true
@@ -72,8 +84,11 @@ class ProjectListenerEngineInterceptorTest : FunSpec({
             fired2 = true
          }
       }
-      ProjectListenerEngineInterceptor(listOf(listener1, listener2)).intercept(
-         EngineContext.empty
+      val c = Configuration()
+      c.registry().add(listener1)
+      c.registry().add(listener2)
+      ProjectListenerEngineInterceptor.intercept(
+         EngineContext.empty.withConfiguration(c)
       ) { EngineResult(emptyList()) }
 
       fired1 shouldBe true
@@ -91,10 +106,13 @@ class ProjectListenerEngineInterceptorTest : FunSpec({
             error("zapp!")
          }
       }
-      val results = ProjectListenerEngineInterceptor(listOf(listener1, listener2)).intercept(
-         EngineContext.empty
+      val c = Configuration()
+      c.registry().add(listener1)
+      c.registry().add(listener2)
+      val results = ProjectListenerEngineInterceptor.intercept(
+         EngineContext.empty.withConfiguration(c)
       ) { EngineResult(emptyList()) }
-      results.errors.filterIsInstance<BeforeProjectListenerException>().size shouldBe 2
+      results.errors.filterIsInstance<BeforeProjectException>().size shouldBe 2
    }
 
    test("should return AfterProjectListener errors wrapped in AfterProjectListenerException") {
@@ -108,9 +126,12 @@ class ProjectListenerEngineInterceptorTest : FunSpec({
             error("zapp!")
          }
       }
-      val results = ProjectListenerEngineInterceptor(listOf(listener1, listener2)).intercept(
-         EngineContext.empty
+      val c = Configuration()
+      c.registry().add(listener1)
+      c.registry().add(listener2)
+      val results = ProjectListenerEngineInterceptor.intercept(
+         EngineContext.empty.withConfiguration(c)
       ) { EngineResult(emptyList()) }
-      results.errors.filterIsInstance<AfterProjectListenerException>().size shouldBe 2
+      results.errors.filterIsInstance<AfterProjectException>().size shouldBe 2
    }
 })

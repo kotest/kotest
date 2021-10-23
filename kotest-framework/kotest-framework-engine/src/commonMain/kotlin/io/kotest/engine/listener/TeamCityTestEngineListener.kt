@@ -25,7 +25,7 @@ class TeamCityTestEngineListener(
    // these are the specs for which we received the specFinished event
    private val finished = mutableSetOf<KClass<*>>()
 
-   private val formatter = getDisplayNameFormatter(configuration)
+   private val formatter = getDisplayNameFormatter(configuration.registry(), configuration)
 
    private fun TestCase.isContainer() = this.type == TestType.Container
 

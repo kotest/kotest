@@ -2,7 +2,7 @@ package io.kotest.engine.spec.runners
 
 import io.kotest.common.ExperimentalKotest
 import io.kotest.core.concurrency.CoroutineDispatcherFactory
-import io.kotest.core.config.configuration
+import io.kotest.core.config.Configuration
 import io.kotest.core.spec.Spec
 import io.kotest.core.test.NestedTest
 import io.kotest.core.test.TestCase
@@ -33,7 +33,8 @@ internal class SingleInstanceSpecRunner(
    listener: TestEngineListener,
    scheduler: TestScheduler,
    private val defaultCoroutineDispatcherFactory: CoroutineDispatcherFactory,
-) : SpecRunner(listener, scheduler) {
+   private val configuration: Configuration,
+) : SpecRunner(listener, scheduler, configuration) {
 
    private val results = ConcurrentHashMap<TestCase, TestResult>()
 
@@ -41,7 +42,7 @@ internal class SingleInstanceSpecRunner(
       log { "SingleInstanceSpecRunner: executing spec [$spec]" }
 
       suspend fun interceptAndRun(context: CoroutineContext) = kotlin.runCatching {
-         val rootTests = spec.materializeAndOrderRootTests().map { it.testCase }
+         val rootTests = spec.materializeAndOrderRootTests(configuration.testCaseOrder).map { it.testCase }
          log { "SingleInstanceSpecRunner: Materialized root tests: ${rootTests.size}" }
          launch(spec) {
             log { "SingleInstanceSpecRunner: Executing test $it" }
@@ -51,9 +52,9 @@ internal class SingleInstanceSpecRunner(
 
       try {
          return coroutineScope {
-            SpecExtensions(configuration.extensions()).beforeSpec(spec)
+            SpecExtensions(configuration.registry()).beforeSpec(spec)
                .flatMap { interceptAndRun(coroutineContext) }
-               .flatMap { SpecExtensions(configuration.extensions()).afterSpec(spec) }
+               .flatMap { SpecExtensions(configuration.registry()).afterSpec(spec) }
                .map { results }
          }
       } catch (e: Exception) {
@@ -77,7 +78,7 @@ internal class SingleInstanceSpecRunner(
             log { "A previous nested test failed and failfast is enabled - will mark this as ignored" }
             listener.testIgnored(nestedTestCase, "Failfast enabled on parent test")
          } else {
-            // if running this nested test results in an error, we won't launch any more nested tests
+            // if running this nested test results in an error, we won't launch anymore nested tests
             val result = runTest(nestedTestCase, coroutineContext)
             if (testCase.config.failfast == true) {
                if (result.isErrorOrFailure) {

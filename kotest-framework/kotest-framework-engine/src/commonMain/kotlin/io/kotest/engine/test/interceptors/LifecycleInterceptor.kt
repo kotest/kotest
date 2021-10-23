@@ -1,14 +1,13 @@
 package io.kotest.engine.test.interceptors
 
+import io.kotest.core.config.ExtensionRegistry
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestContext
 import io.kotest.core.test.TestResult
-import io.kotest.engine.events.invokeAllAfterTestCallbacks
-import io.kotest.engine.events.invokeAllBeforeTestCallbacks
 import io.kotest.engine.test.TestCaseExecutionListener
+import io.kotest.engine.test.TestExtensions
 import io.kotest.engine.test.createTestResult
 import io.kotest.mpp.log
-import io.kotest.mpp.timeInMillis
 import kotlin.time.TimeMark
 
 /**
@@ -29,7 +28,8 @@ import kotlin.time.TimeMark
  */
 internal class LifecycleInterceptor(
    private val listener: TestCaseExecutionListener,
-   private val timeMark: TimeMark
+   private val timeMark: TimeMark,
+   private val registry: ExtensionRegistry,
 ) : TestExecutionInterceptor {
 
    override suspend fun intercept(
@@ -39,30 +39,32 @@ internal class LifecycleInterceptor(
       log { "LifecycleInterceptor: Executing active test '${testCase.descriptor.path().value}' with context $context" }
       listener.testStarted(testCase)
 
-      testCase.invokeAllBeforeTestCallbacks()
+      TestExtensions(registry)
+         .beforeTestBeforeAnyBeforeContainer(testCase)
          .fold(
             {
-               createTestResult(timeMark.elapsedNow(), it).apply {
-                  testCase.invokeAllAfterTestCallbacks(this)
-               }
-            },
-            {
                val result = test(testCase, context)
-               log { "LifecycleInterceptor: '${testCase.descriptor.path().value}'=${result}"  }
-               // an error in the after test callbacks will override the result of the test if it was successfuls\
-               // if the test already failed, that result will be used
-               // todo combine into multiple errors ?
-               testCase.invokeAllAfterTestCallbacks(result)
+               log { "LifecycleInterceptor: '${testCase.descriptor.path().value}'=${result}" }
+               // an error in the after test callbacks will override the result of the test if it was successful,
+               // if the test already failed, that result will be used.
+               TestExtensions(registry)
+                  .afterTestAfterAnyAfterContainer(testCase, result)
                   .fold(
+                     { result },
                      {
                         when (result) {
                            is TestResult.Success, is TestResult.Ignored -> createTestResult(timeMark.elapsedNow(), it)
                            else -> result
                         }
                      },
-                     { result }
                   )
-            }
+            },
+            {
+               createTestResult(timeMark.elapsedNow(), it).apply {
+                  TestExtensions(registry)
+                     .afterTestAfterAnyAfterContainer(testCase, this)
+               }
+            },
          )
    }
 }

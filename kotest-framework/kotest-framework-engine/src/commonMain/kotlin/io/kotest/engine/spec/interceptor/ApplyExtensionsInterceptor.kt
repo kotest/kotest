@@ -1,6 +1,6 @@
 package io.kotest.engine.spec.interceptor
 
-import io.kotest.core.config.Configuration
+import io.kotest.core.config.ExtensionRegistry
 import io.kotest.core.extensions.ApplyExtension
 import io.kotest.core.spec.SpecRef
 import io.kotest.core.test.TestCase
@@ -17,7 +17,7 @@ import io.kotest.mpp.newInstanceNoArgConstructorOrObjectInstance
  *
  * Note: annotations are only available on the JVM.
  */
-internal class ApplyExtensionsInterceptor(private val conf: Configuration) : SpecRefInterceptor {
+internal class ApplyExtensionsInterceptor(private val registry: ExtensionRegistry) : SpecRefInterceptor {
 
    override suspend fun intercept(
       fn: suspend (SpecRef) -> Map<TestCase, TestResult>
@@ -28,9 +28,9 @@ internal class ApplyExtensionsInterceptor(private val conf: Configuration) : Spe
          SpecWrapperExtension(extension, ref.kclass)
       } ?: emptyList()
 
-      extensions.forEach { conf.register(it) }
+      extensions.forEach { registry.add(it) }
       fn(ref).apply {
-         extensions.forEach { conf.deregister(it) }
+         extensions.forEach { registry.remove(it) }
       }
    }
 }

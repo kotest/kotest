@@ -28,7 +28,7 @@ class TagsExcludedSpecInterceptor(
          fn(ref)
       } else {
          listener.specIgnored(ref.kclass)
-         SpecExtensions(conf.extensions()).ignored(ref.kclass)
+         SpecExtensions(conf.registry()).ignored(ref.kclass)
          emptyMap()
       }
    }
