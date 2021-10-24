@@ -1,5 +1,7 @@
 package com.sksamuel.kotest.engine.interceptors
 
+import com.sksamuel.kotest.engine.interceptors.filters1.BarTests
+import com.sksamuel.kotest.engine.interceptors.filters2.FooTests
 import io.kotest.common.KotestInternal
 import io.kotest.core.config.Configuration
 import io.kotest.core.internal.KotestEngineProperties
@@ -31,8 +33,8 @@ private fun testsRunShouldBe(vararg name: String) {
 private val testSuite = listOf<KClass<out Spec>>(
    DistantFutureSciFiTests::class,
    NearFutureSciFiTests::class,
-   io.kotest.engine.extensions.bar.TestEngineConfigFiltersInterceptorInnerTests::class,
-   io.kotest.engine.extensions.foo.TestEngineConfigFiltersInterceptorInnerTests::class,
+   BarTests::class,
+   FooTests::class,
 )
 
 /**
@@ -106,7 +108,7 @@ class SystemPropertyTestFiltersTests : FunSpec({
 
       withSystemProperties(
          mapOf(
-            KotestEngineProperties.filterSpecs to "io.kotest.engine.extensions.bar*",
+            KotestEngineProperties.filterSpecs to "com.sksamuel.kotest.engine.interceptors.filters1.*",
             KotestEngineProperties.filterTests to ""
          )
       ) { TestEngineLauncher().withClasses(testSuite).withConfiguration(Configuration()).launch() }

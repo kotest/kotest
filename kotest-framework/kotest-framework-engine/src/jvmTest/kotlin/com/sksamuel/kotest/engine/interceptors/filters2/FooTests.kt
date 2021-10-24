@@ -1,9 +1,9 @@
-package io.kotest.engine.extensions.foo
+package com.sksamuel.kotest.engine.interceptors.filters2
 
-import io.kotest.core.spec.style.FunSpec
 import com.sksamuel.kotest.engine.interceptors.testAndIncrementCounter
+import io.kotest.core.spec.style.FunSpec
 
-class TestEngineConfigFiltersInterceptorInnerTests : FunSpec({
+class FooTests : FunSpec({
    test("foo test a") { testAndIncrementCounter() }
    test("foo test b") { testAndIncrementCounter() }
 })
