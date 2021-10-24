@@ -8,6 +8,8 @@ import io.kotest.core.spec.IsolationMode
 import io.kotest.core.test.AssertionMode
 import io.kotest.mpp.env
 import io.kotest.mpp.sysprop
+import kotlin.time.Duration
+import kotlin.time.milliseconds
 
 /**
  * Uses system properties to load configuration values onto the supplied [Configuration] object.
@@ -63,8 +65,8 @@ internal fun testNameAppendTags(): Boolean? =
 internal fun duplicateTestNameMode(): DuplicateTestNameMode? =
    sysprop(KotestEngineProperties.duplicateTestNameMode)?.let { DuplicateTestNameMode.valueOf(it) }
 
-internal fun projectTimeout(): Long? =
-   sysprop(KotestEngineProperties.projectTimeout)?.toLong()
+internal fun projectTimeout(): Duration? =
+   sysprop(KotestEngineProperties.projectTimeout)?.toLong()?.milliseconds
 
 internal fun logLevel(): LogLevel {
    val levelProp = sysprop(KotestEngineProperties.logLevel)?.let { LogLevel.from(it) }

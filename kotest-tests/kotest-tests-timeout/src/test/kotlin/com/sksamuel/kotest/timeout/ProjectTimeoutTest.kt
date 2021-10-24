@@ -9,17 +9,19 @@ import io.kotest.engine.listener.NoopTestEngineListener
 import io.kotest.inspectors.forOne
 import io.kotest.matchers.types.shouldBeInstanceOf
 import kotlinx.coroutines.delay
+import kotlin.time.Duration
+import kotlin.time.milliseconds
 
 @Isolate
 class ProjectTimeoutTest : FunSpec({
 
-   var projectTimeout: Long = Long.MAX_VALUE
+   var projectTimeout: Duration? = Duration.INFINITE
    var testTimeout: Long = Long.MAX_VALUE
 
    beforeSpec {
       projectTimeout = configuration.projectTimeout
       testTimeout = configuration.timeout
-      configuration.projectTimeout = 10
+      configuration.projectTimeout = 10.milliseconds
       // need to reset the timeout per test since we're testing project timeouts
       configuration.timeout = Long.MAX_VALUE
    }

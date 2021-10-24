@@ -17,7 +17,7 @@ import kotlin.script.templates.standard.ScriptTemplateWithArgs
  */
 @KotestInternal
 @Suppress("DEPRECATION")
-@Deprecated("Prefer TestEngineLauncher. This class will remain for compatibility with existing clients but new code should use the TestEngineLauncher which is multiplatform.")
+@Deprecated("Prefer TestEngineLauncher. Deprecated since 5.0")
 class KotestEngineLauncher(
    private val listeners: List<TestEngineListener>,
    private val specs: List<KClass<out Spec>>,

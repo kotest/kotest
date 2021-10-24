@@ -1,20 +1,20 @@
-package com.sksamuel.kotest.engine.spec.style
+package com.sksamuel.kotest.engine.spec.types
 
-import io.kotest.core.spec.style.FeatureSpec
+import io.kotest.core.spec.style.ExpectSpec
 import io.kotest.core.test.TestType
 import io.kotest.matchers.shouldBe
 
-class FeatureSpecTestTypeTest : FeatureSpec() {
+class ExpectSpecTestTypeTest : ExpectSpec() {
    init {
-      feature("context") {
+      context("context") {
          this.testCase.type shouldBe TestType.Container
-         feature("context 2") {
+         context("context 2") {
             this.testCase.type shouldBe TestType.Container
-            scenario("test") {
+            expect("test") {
                this.testCase.type shouldBe TestType.Test
             }
          }
-         scenario("test") {
+         expect("test") {
             this.testCase.type shouldBe TestType.Test
          }
       }

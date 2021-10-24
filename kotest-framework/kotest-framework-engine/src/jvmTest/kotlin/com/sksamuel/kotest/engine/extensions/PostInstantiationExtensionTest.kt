@@ -5,8 +5,8 @@ import io.kotest.core.extensions.PostInstantiationExtension
 import io.kotest.core.spec.Isolate
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.style.FunSpec
-import io.kotest.engine.KotestEngineLauncher
-import io.kotest.engine.listener.AbstractTestEngineListener
+import io.kotest.engine.TestEngineLauncher
+import io.kotest.engine.listener.NoopTestEngineListener
 import io.kotest.matchers.shouldBe
 
 @Isolate
@@ -17,19 +17,10 @@ class PostInstantiationExtensionTest : FunSpec() {
 
       test("post instantiation extensions should be triggered") {
 
-         var a: String? = null
-
-         val listener = object : AbstractTestEngineListener() {
-            override suspend fun specInstantiated(spec: Spec) {
-               a = (spec as MySpec).a
-            }
-         }
-
          configuration.registerExtension(MyPostInstantiationExtension)
 
-         KotestEngineLauncher()
-            .withSpec(MySpec::class)
-            .withListener(listener)
+         TestEngineLauncher(NoopTestEngineListener)
+            .withClasses(MySpec::class)
             .launch()
 
          configuration.deregisterExtension(MyPostInstantiationExtension)
@@ -39,13 +30,13 @@ class PostInstantiationExtensionTest : FunSpec() {
    }
 }
 
+private var a: String? = null
+
 private val MyPostInstantiationExtension = object : PostInstantiationExtension {
    override suspend fun instantiated(spec: Spec): Spec {
-      (spec as MySpec).a = "foo"
+      a = "foo"
       return spec
    }
 }
 
-private class MySpec : FunSpec() {
-   var a: String? = null
-}
+private class MySpec : FunSpec()

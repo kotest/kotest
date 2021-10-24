@@ -10,15 +10,15 @@ import io.kotest.core.Tags
  * match to be skipped.
  *
  * Note: If multiple extensions are registered then all returned
- * [Tags] are combined together using ORs
+ * [Tags] are combined using ORs
  *
- * The default [SystemPropertyTagExtension] is automatically registered
- * which includes and excludes tags using the system properties
+ * The [SystemPropertyTagExtension] is automatically registered which
+ * includes and excludes tags using the system properties
  * 'kotest.tags.include' and 'kotest.tags.exclude'.
  *
- * The default [RuntimeTagExtension] is automatically registered, which
- * allows to configure tags at runtime (for example, during a configuration procedure)
- * by setting the properties `included` and `excluded`.
+ * The [RuntimeTagExtension] is automatically registered, which allows
+ * tags to be configured at runtime through project config by setting
+ * the properties `included` and `excluded`.
  */
 interface TagExtension : Extension {
    fun tags(): Tags

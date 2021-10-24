@@ -8,10 +8,10 @@ import io.kotest.matchers.shouldBe
 
 class TestFilterTest : StringSpec() {
   init {
-    // this test will be ignored the test case filter that we have registered in project config
-    "!bb should be ignored" {
-      1 shouldBe 2
-    }
+     // this test will be ignored through the test case filter that we have registered in project config
+     "bb should be ignored" {
+        1 shouldBe 2
+     }
   }
 }
 

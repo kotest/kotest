@@ -13,6 +13,7 @@ import io.kotest.core.test.AssertionMode
 import io.kotest.core.test.TestCaseConfig
 import io.kotest.core.test.TestCaseOrder
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlin.time.Duration
 
 /**
  * The global configuration singleton.
@@ -22,7 +23,7 @@ import kotlinx.coroutines.CoroutineDispatcher
  * Expect this val to disappear in Kotest 6.0
  *
  */
-@Deprecated("Do not set configuration directly on the config object. Use project config classes. Deprecated since 5.0")
+@Deprecated("Do not set configuration directly on the config object. Use project config classes. This global variable will be removed in 6.0. Deprecated since 5.0")
 val configuration = Configuration()
 
 @Deprecated("Replaced with io.kotest.core.configuration. Deprecated since 4.2")
@@ -208,9 +209,8 @@ class Configuration {
    /**
     * A timeout that is applied to the overall project if not null,
     * if the sum duration of all the tests exceeds this the suite will fail.
-    * TODO: make this a [kotlin.time.Duration] when that API stabilizes
     */
-   var projectTimeout: Long = Long.MAX_VALUE
+   var projectTimeout: Duration? = null
 
    /**
     * Controls which log functions on TestCase will be invoked or skipped

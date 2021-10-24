@@ -1,4 +1,4 @@
-package com.sksamuel.kotest.engine.spec.style
+package com.sksamuel.kotest.engine.spec.types
 
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.core.test.TestType

@@ -9,12 +9,13 @@ import io.kotest.engine.interceptors.ProjectTimeoutException
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.types.shouldBeInstanceOf
 import kotlinx.coroutines.delay
+import kotlin.time.milliseconds
 
 class ProjectTimeoutEngineInterceptorTest : FunSpec({
 
    test("should return ProjectTimeoutException when project times out") {
       val c = Configuration()
-      c.projectTimeout = 1
+      c.projectTimeout = 1.milliseconds
       val result = ProjectTimeoutEngineInterceptor.intercept(EngineContext.empty.withConfiguration(c)) {
          delay(1000)
          EngineResult.empty
@@ -25,7 +26,7 @@ class ProjectTimeoutEngineInterceptorTest : FunSpec({
 
    test("should not return ProjectTimeoutException when project does not time out") {
       val c = Configuration()
-      c.projectTimeout = 100000
+      c.projectTimeout = 100000.milliseconds
       val result = ProjectTimeoutEngineInterceptor.intercept(EngineContext.empty.withConfiguration(c)) {
          delay(1)
          EngineResult.empty

@@ -1,23 +1,20 @@
-package com.sksamuel.kotest.engine.spec.style
+package com.sksamuel.kotest.engine.spec.types
 
-import io.kotest.core.spec.style.FunSpec
+import io.kotest.core.spec.style.FeatureSpec
 import io.kotest.core.test.TestType
 import io.kotest.matchers.shouldBe
 
-class FunSpecTestTypeTest : FunSpec() {
+class FeatureSpecTestTypeTest : FeatureSpec() {
    init {
-
-      finalizeSpec { it.b.size shouldBe 4 }
-
-      context("context") {
+      feature("context") {
          this.testCase.type shouldBe TestType.Container
-         context("context 2") {
+         feature("context 2") {
             this.testCase.type shouldBe TestType.Container
-            test("test") {
+            scenario("test") {
                this.testCase.type shouldBe TestType.Test
             }
          }
-         test("test") {
+         scenario("test") {
             this.testCase.type shouldBe TestType.Test
          }
       }

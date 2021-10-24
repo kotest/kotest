@@ -32,7 +32,6 @@ import kotlin.reflect.KClass
  * Entry point for tests generated through the compiler plugins, and so the
  * public api cannot have breaking changes.
  */
-@KotestInternal
 class TestEngineLauncher(
    private val listener: TestEngineListener,
    private val conf: Configuration,

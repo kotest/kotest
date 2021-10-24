@@ -1,4 +1,4 @@
-package com.sksamuel.kotest.specs.behavior
+package com.sksamuel.kotest.engine.spec.bangs
 
 import com.sksamuel.kotest.specs.attemptToFail
 import io.kotest.core.spec.style.BehaviorSpec

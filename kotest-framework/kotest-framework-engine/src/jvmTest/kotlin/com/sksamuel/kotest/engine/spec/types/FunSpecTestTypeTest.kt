@@ -1,25 +1,25 @@
-package com.sksamuel.kotest.engine.spec.style
+package com.sksamuel.kotest.engine.spec.types
 
-import io.kotest.core.spec.style.FreeSpec
+import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.test.TestType
 import io.kotest.matchers.shouldBe
 
-class FreeSpecTestTypeTest : FreeSpec() {
+class FunSpecTestTypeTest : FunSpec() {
    init {
 
       finalizeSpec { it.b.size shouldBe 4 }
 
-      "context" - {
+      context("context") {
          this.testCase.type shouldBe TestType.Container
-         "context 2" - {
+         context("context 2") {
             this.testCase.type shouldBe TestType.Container
-            "test 1" {
+            test("test") {
                this.testCase.type shouldBe TestType.Test
             }
          }
-      }
-      "test" {
-         this.testCase.type shouldBe TestType.Test
+         test("test") {
+            this.testCase.type shouldBe TestType.Test
+         }
       }
    }
 }

@@ -7,7 +7,7 @@ import io.kotest.core.spec.SpecExecutionOrder
 
 object ProjectConfig : AbstractProjectConfig() {
 
-   val intercepterLog = StringBuilder()
+   private val intercepterLog = StringBuilder()
 
    override val specExecutionOrder = SpecExecutionOrder.Lexicographic
 

@@ -12,9 +12,16 @@ fun Configuration.createConfigSummary(): String {
    sb.buildOutput("Concurrent specs", concurrentSpecs.toString())
    sb.buildOutput("Global concurrent tests", concurrentTests.toString())
    sb.buildOutput("Dispatcher affinity", dispatcherAffinity.toString())
+
+   sb.buildOutput("Coroutine debug probe", coroutineDebugProbes.toString())
+
+   sb.buildOutput("Spec execution order", specExecutionOrder.name)
+   sb.buildOutput("Default test execution order", testCaseOrder.name)
+
    sb.buildOutput("Default test timeout", timeout.toString() + "ms")
-   sb.buildOutput("Default test order", testCaseOrder.name)
-   sb.buildOutput("Overall project timeout", projectTimeout.toString() + "ms") // TODO: make duration when kotlin.time stabilizes
+   sb.buildOutput("Default test invocation timeout", invocationTimeout.toString() + "ms")
+   if (projectTimeout != null)
+      sb.buildOutput("Overall project timeout", projectTimeout.toString() + "ms")
    sb.buildOutput("Default isolation mode", isolationMode.name)
    sb.buildOutput("Global soft assertions", globalAssertSoftly.toString())
    sb.buildOutput("Write spec failure file", writeSpecFailureFile.toString())
@@ -23,7 +30,10 @@ fun Configuration.createConfigSummary(): String {
          specFailureFilePath.replaceFirstChar { if (it.isLowerCase()) it.titlecase() else it.toString() })
    }
    sb.buildOutput("Fail on ignored tests", failOnIgnoredTests.toString())
-   sb.buildOutput("Spec execution order", specExecutionOrder::class.simpleName)
+   sb.buildOutput("Fail on empty test suite", failOnEmptyTestSuite.toString())
+
+
+   sb.buildOutput("Duplicate test name mode", duplicateTestNameMode.name)
 
    if (includeTestScopeAffixes != null)
       sb.buildOutput("Include test scope affixes", includeTestScopeAffixes.toString())

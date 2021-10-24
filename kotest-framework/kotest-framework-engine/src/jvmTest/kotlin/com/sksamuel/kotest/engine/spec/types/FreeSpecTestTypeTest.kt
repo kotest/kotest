@@ -1,25 +1,25 @@
-package com.sksamuel.kotest.engine.spec.style
+package com.sksamuel.kotest.engine.spec.types
 
-import io.kotest.core.spec.style.ShouldSpec
+import io.kotest.core.spec.style.FreeSpec
 import io.kotest.core.test.TestType
 import io.kotest.matchers.shouldBe
 
-class ShouldSpecTestTypeTest : ShouldSpec() {
+class FreeSpecTestTypeTest : FreeSpec() {
    init {
 
       finalizeSpec { it.b.size shouldBe 4 }
 
-      context("context") {
+      "context" - {
          this.testCase.type shouldBe TestType.Container
-         context("context 2") {
+         "context 2" - {
             this.testCase.type shouldBe TestType.Container
-            should("should") {
+            "test 1" {
                this.testCase.type shouldBe TestType.Test
             }
          }
-         should("should") {
-            this.testCase.type shouldBe TestType.Test
-         }
+      }
+      "test" {
+         this.testCase.type shouldBe TestType.Test
       }
    }
 }

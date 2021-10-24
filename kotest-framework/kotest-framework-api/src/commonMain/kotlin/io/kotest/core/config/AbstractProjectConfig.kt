@@ -82,7 +82,7 @@ abstract class AbstractProjectConfig {
     * A timeout that is applied to the overall project if not null,
     * if the sum duration of all the tests exceeds this the suite will fail.
     */
-   open val projectTimeout: Long? = null
+   open val projectTimeout: Duration? = null
 
    /**
     * Controls which log functions on TestCase will be invoked or skipped
