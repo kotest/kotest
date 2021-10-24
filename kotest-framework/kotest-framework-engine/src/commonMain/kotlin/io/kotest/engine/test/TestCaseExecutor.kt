@@ -5,7 +5,6 @@ import io.kotest.common.Platform
 import io.kotest.common.platform
 import io.kotest.core.concurrency.CoroutineDispatcherFactory
 import io.kotest.core.config.Configuration
-import io.kotest.core.config.configuration
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestContext
 import io.kotest.core.test.TestResult
@@ -39,25 +38,12 @@ import kotlin.time.TimeSource
  * Uses a [TestCaseExecutionListener] to notify callers of events in the test lifecycle.
  *
  */
-@ExperimentalKotest
+@OptIn(ExperimentalKotest::class)
 class TestCaseExecutor(
    private val listener: TestCaseExecutionListener,
    private val defaultCoroutineDispatcherFactory: CoroutineDispatcherFactory = NoopCoroutineDispatcherFactory,
    private val configuration: Configuration,
 ) {
-
-   companion object {
-      @Deprecated(
-         "Exists for internal testing. Do not use", ReplaceWith(
-            "TestCaseExecutor(listener, defaultCoroutineDispatcherFactory, configuration)",
-            "io.kotest.engine.test.TestCaseExecutor",
-         )
-      )
-      operator fun invoke(
-         listener: TestCaseExecutionListener,
-         defaultCoroutineDispatcherFactory: CoroutineDispatcherFactory = NoopCoroutineDispatcherFactory,
-      ): TestCaseExecutor = TestCaseExecutor(listener, defaultCoroutineDispatcherFactory, configuration)
-   }
 
    suspend fun execute(testCase: TestCase, context: TestContext): TestResult {
       log { "TestCaseExecutor: execute entry point '${testCase.descriptor.path().value}' context=$context" }
@@ -78,10 +64,10 @@ class TestCaseExecutor(
          AssertionModeInterceptor(configuration),
          GlobalSoftAssertInterceptor(configuration),
          CoroutineScopeInterceptor,
-         if (platform == Platform.JVM) blockedThreadTimeoutInterceptor() else null,
-         TimeoutInterceptor,
+         if (platform == Platform.JVM) blockedThreadTimeoutInterceptor(configuration) else null,
+         TimeoutInterceptor(configuration),
          InvocationRepeatInterceptor(configuration.registry(), timeMark),
-         InvocationTimeoutInterceptor,
+         InvocationTimeoutInterceptor(configuration),
          CoroutineLoggingInterceptor(configuration),
          if (platform == Platform.JVM && testCase.isTestCoroutineDispatcher(configuration)) TestCoroutineDispatcherInterceptor() else null,
       )

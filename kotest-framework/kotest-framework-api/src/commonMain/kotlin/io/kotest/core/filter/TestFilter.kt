@@ -17,8 +17,10 @@ interface TestFilter : Filter {
    fun filter(descriptor: Descriptor): TestFilterResult
 }
 
-enum class TestFilterResult {
-   Include, Exclude
+sealed interface TestFilterResult {
+   object Include : TestFilterResult
+   data class Exclude(val reason: String?) : TestFilterResult
 }
 
-fun Boolean.toTestFilterResult() = if (this) TestFilterResult.Include else TestFilterResult.Exclude
+fun Boolean.toTestFilterResult(reason: String?) =
+   if (this) TestFilterResult.Include else TestFilterResult.Exclude(reason)

@@ -26,7 +26,10 @@ class PostDiscoveryFilterAdapter(
 ) : TestFilter {
    override fun filter(descriptor: Descriptor): TestFilterResult {
       val testDescriptor = createTestDescriptor(uniqueId, descriptor, descriptor.id.value)
-      return filter.toPredicate().test(testDescriptor).toTestFilterResult()
+      return filter
+         .toPredicate()
+         .test(testDescriptor)
+         .toTestFilterResult("Excluded by JUnit ClassMethodNameFilter: $filter")
    }
 }
 

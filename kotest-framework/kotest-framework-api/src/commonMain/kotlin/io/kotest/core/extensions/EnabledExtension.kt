@@ -15,8 +15,8 @@ interface EnabledExtension : Extension {
     * Invoked to override if a test or spec is enabled or disabled.
     *
     * This method can choose to override that status by returning:
-    *  - [Enabled.enabled] if this test or spec should be enabled regardless of the input enabled status
-    *  - [Enabled.disabled] if this test or spec should be disabled regardless of the input enabled status
+    *  - [Enabled.enabled] if this test or spec should be enabled
+    *  - [Enabled.disabled] if this test or spec should be disabled
     */
    suspend fun isEnabled(descriptor: Descriptor): Enabled
 }

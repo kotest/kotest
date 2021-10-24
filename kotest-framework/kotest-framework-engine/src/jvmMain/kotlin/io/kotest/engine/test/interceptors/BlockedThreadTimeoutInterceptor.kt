@@ -1,5 +1,6 @@
 package io.kotest.engine.test.interceptors
 
+import io.kotest.core.config.Configuration
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestContext
 import io.kotest.core.test.TestResult
@@ -11,6 +12,8 @@ import kotlinx.coroutines.asCoroutineDispatcher
 import kotlinx.coroutines.withContext
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
+import kotlin.time.Duration
+import kotlin.time.milliseconds
 
 // this scheduler is used to issue the interrupts after timeouts
 // we only need one in the JVM
@@ -21,9 +24,11 @@ private val scheduler =
  * If [io.kotest.core.test.TestCaseConfig.blockingTest] is enabled, then switches the execution
  * to a new thread, so it can be interrupted if the test times out.
  */
-internal actual fun blockedThreadTimeoutInterceptor(): TestExecutionInterceptor = BlockedThreadTimeoutInterceptor()
+internal actual fun blockedThreadTimeoutInterceptor(configuration: Configuration): TestExecutionInterceptor =
+   BlockedThreadTimeoutInterceptor(configuration)
 
-internal class BlockedThreadTimeoutInterceptor : TestExecutionInterceptor {
+internal class BlockedThreadTimeoutInterceptor(private val configuration: Configuration) : TestExecutionInterceptor {
+
    override suspend fun intercept(
       test: suspend (TestCase, TestContext) -> TestResult
    ): suspend (TestCase, TestContext) -> TestResult = { testCase, context ->
@@ -35,15 +40,15 @@ internal class BlockedThreadTimeoutInterceptor : TestExecutionInterceptor {
          // doesn't play havok with a thread in use elsewhere
          val executor = Executors.newSingleThreadExecutor()
 
-         val timeoutInMillis = resolvedTimeout(testCase)
+         val timeout = resolvedTimeout(testCase, configuration.timeout.milliseconds)
 
          // we schedule a task that will interrupt the coroutine after the timeout has expired
          // this task will use the values in the coroutine status element to know which thread to interrupt
-         log { "BlockedThreadTimeoutInterceptor: Scheduler will interrupt this test in ${timeoutInMillis}ms" }
+         log { "BlockedThreadTimeoutInterceptor: Scheduler will interrupt this test in $timeout" }
          val task = scheduler.schedule({
             log { "BlockedThreadTimeoutInterceptor: Scheduled timeout has hit" }
             executor.shutdownNow()
-         }, timeoutInMillis, TimeUnit.MILLISECONDS)
+         }, timeout.inWholeMilliseconds, TimeUnit.MILLISECONDS)
 
          try {
             withContext(executor.asCoroutineDispatcher()) {
@@ -51,7 +56,7 @@ internal class BlockedThreadTimeoutInterceptor : TestExecutionInterceptor {
             }
          } catch (t: InterruptedException) {
             log { "BlockedThreadTimeoutInterceptor: Caught InterruptedException ${t.message}" }
-            throw BlockedThreadTestTimeoutException(timeoutInMillis, testCase.name.testName)
+            throw BlockedThreadTestTimeoutException(timeout, testCase.name.testName)
          } finally {
             // we should stop the scheduled task from running just to be tidy
             if (!task.isDone) {
@@ -68,4 +73,4 @@ internal class BlockedThreadTimeoutInterceptor : TestExecutionInterceptor {
 /**
  * Exception used for when a test exceeds its timeout.
  */
-class BlockedThreadTestTimeoutException(timeout: Long, testName: String) : TestTimeoutException(timeout, testName)
+class BlockedThreadTestTimeoutException(timeout: Duration, testName: String) : TestTimeoutException(timeout, testName)

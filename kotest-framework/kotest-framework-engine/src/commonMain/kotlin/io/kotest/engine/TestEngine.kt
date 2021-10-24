@@ -6,13 +6,11 @@ import io.kotest.common.Platform
 import io.kotest.common.platform
 import io.kotest.core.Tags
 import io.kotest.core.config.Configuration
-import io.kotest.core.config.configuration
-import io.kotest.core.filter.SpecFilter
-import io.kotest.core.filter.TestFilter
+import io.kotest.core.extensions.Extension
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.SpecRef
 import io.kotest.engine.extensions.SpecifiedTagsTagExtension
-import io.kotest.engine.extensions.TestEngineConfigFiltersFromSystemPropertiesAndEnvironmentInterceptor
+import io.kotest.engine.extensions.TestEngineConfigInterceptor
 import io.kotest.engine.interceptors.EngineContext
 import io.kotest.engine.interceptors.EngineInterceptor
 import io.kotest.engine.listener.TestEngineListener
@@ -55,32 +53,29 @@ data class TestEngineConfig(
    val listener: TestEngineListener,
    val interceptors: List<EngineInterceptor>,
    val configuration: Configuration,
-   val testFilters: List<TestFilter>,
-   val specFilters: List<SpecFilter>,
+   val extensions: List<Extension>,
    val explicitTags: Tags?,
 )
 
-private val testEngineConfigProcessors = listOf(
-   TestEngineConfigFiltersFromSystemPropertiesAndEnvironmentInterceptor,
-)
+@KotestInternal
+private val testEngineConfigInterceptors = emptyList<TestEngineConfigInterceptor>()
 
 /**
  * Multiplatform Kotest Test Engine.
  */
 @KotestInternal
 class TestEngine(initial: TestEngineConfig) {
-   val config: TestEngineConfig = testEngineConfigProcessors.foldRight(initial) { p, c ->
-      p.process(c)
-   }
 
-   init {
-      // if the engine was invoked with explicit tags, we register those via a tag extension
-      config.explicitTags?.let { configuration.registerExtensions(SpecifiedTagsTagExtension(it)) }
+   val config = testEngineConfigInterceptors
+      .foldRight(initial) { p, c -> p.process(c) }
+      .apply {
 
-      // if the engine was invoked with explicit filters, those are registered here
-      configuration.registerFilters(config.testFilters)
-      configuration.registerFilters(config.specFilters)
-   }
+         // if the engine was configured with explicit tags, we register those via a tag extension
+         explicitTags?.let { configuration.registry().add(SpecifiedTagsTagExtension(it)) }
+
+         // if the engine was configured with extensions, those are registered with the configuration object
+         extensions.forEach { configuration.registry().add(it) }
+      }
 
    /**
     * Starts execution of the given [TestSuite], intercepting calls via [EngineInterceptor]s.
@@ -110,12 +105,12 @@ class TestEngine(initial: TestEngineConfig) {
          { context -> extension.intercept(context, next) }
       }
 
-      val tags = configuration.activeTags()
+      val tags = config.configuration.activeTags()
       log { "TestEngine: Active tags: ${tags.expression}" }
 
       // we want to suspend the engine while we wait for all specs to complete
       return coroutineScope {
-         execute(EngineContext(suite, config.listener, tags, configuration))
+         execute(EngineContext(suite, config.listener, tags, config.configuration))
       }
    }
 }

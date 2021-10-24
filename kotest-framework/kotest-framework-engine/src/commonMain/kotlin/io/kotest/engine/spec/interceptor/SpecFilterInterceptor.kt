@@ -10,7 +10,7 @@ import io.kotest.engine.listener.TestEngineListener
 import io.kotest.engine.spec.SpecExtensions
 import io.kotest.mpp.log
 
-class FilteredSpecInterceptor(
+class SpecFilterInterceptor(
    private val listener: TestEngineListener,
    private val registry: ExtensionRegistry
 ) : SpecRefInterceptor {

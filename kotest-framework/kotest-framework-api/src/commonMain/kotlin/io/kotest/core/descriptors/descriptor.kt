@@ -44,13 +44,16 @@ sealed interface Descriptor {
    /**
     * Returns a parseable path to the test.
     *
-    * Includes the spec, and all parent tests.
+    * @param includeSpec if true then the spec name is included in the path.
     */
-   fun path(): TestPath = when (this) {
-      is SpecDescriptor -> TestPath(this.id.value)
+   fun path(includeSpec: Boolean = true): TestPath = when (this) {
+      is SpecDescriptor -> if (includeSpec) TestPath(this.id.value) else error("Cannot call path on spec with includeSpec=false")
       is TestDescriptor -> when (this.parent) {
-         is SpecDescriptor -> TestPath(parent.id.value + SpecDelimiter + this.id.value)
-         is TestDescriptor -> TestPath(parent.path().value + TestDelimiter + this.id.value)
+         is SpecDescriptor -> when (includeSpec) {
+            true -> TestPath(this.parent.id.value + SpecDelimiter + this.id.value)
+            false -> TestPath(this.id.value)
+         }
+         is TestDescriptor -> TestPath(this.parent.path(includeSpec).value + TestDelimiter + this.id.value)
       }
    }
 
@@ -73,7 +76,7 @@ sealed interface Descriptor {
     * Returns the depth of this node, where the [SpecDescriptor] has depth of 0,
     * a root test has depth 1 and so on.
     */
-   fun depth() = parents().size
+   fun depth() = parents().size - 1
 
    /**
     * Recursively returns any parent descriptors, with the spec being first in the list

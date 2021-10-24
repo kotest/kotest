@@ -82,7 +82,10 @@ internal class SpecExtensions(private val registry: ExtensionRegistry) {
    }
 
    suspend fun <T> intercept(spec: Spec, f: suspend () -> T): T {
+
       val exts = extensions(spec).filterIsInstance<SpecExtension>()
+      log { "SpecInterceptExtensionsInterceptor: Intercepting spec with ${exts.size} spec extensions" }
+
       var result: T? = null
       val initial: suspend () -> Unit = {
          result = f()

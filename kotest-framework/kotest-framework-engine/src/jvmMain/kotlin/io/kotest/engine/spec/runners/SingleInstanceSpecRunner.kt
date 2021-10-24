@@ -96,7 +96,8 @@ internal class SingleInstanceSpecRunner(
 
       val testExecutor = TestCaseExecutor(
          TestCaseExecutionListenerToTestEngineListenerAdapter(listener),
-         defaultCoroutineDispatcherFactory
+         defaultCoroutineDispatcherFactory,
+         configuration,
       )
 
       val context = DuplicateNameHandlingTestContext(

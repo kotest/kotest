@@ -24,13 +24,15 @@ internal object TestConfigEnabledExtension : TestEnabledExtension {
       }
 
       if (!testCase.config.enabled) {
-         return Enabled.disabled("${testCase.descriptor.path()} is disabled by enabled property in config")
-            .also { log { it.reason } }
+         return Enabled
+            .disabled("${testCase.descriptor.path()} is disabled by enabled property in config")
+            .also { it.reason?.let { log { it } } }
       }
 
       if (!testCase.config.enabledIf(testCase)) {
-         return Enabled.disabled("${testCase.descriptor.path()} is disabled by enabledIf function in config")
-            .also { log { it.reason } }
+         return Enabled
+            .disabled("${testCase.descriptor.path()} is disabled by enabledIf function in config")
+            .also { it.reason?.let { log { it } } }
       }
 
       return Enabled.enabled

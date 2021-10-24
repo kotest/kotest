@@ -3,10 +3,10 @@ package io.kotest.engine.launcher
 import io.kotest.core.descriptors.Descriptor
 import io.kotest.core.descriptors.Descriptor.Companion.TestDelimiter
 import io.kotest.core.descriptors.append
+import io.kotest.core.descriptors.toDescriptor
 import io.kotest.core.filter.TestFilter
 import io.kotest.core.filter.TestFilterResult
 import io.kotest.core.spec.Spec
-import io.kotest.core.descriptors.toDescriptor
 import kotlin.reflect.KClass
 
 /**
@@ -15,7 +15,7 @@ import kotlin.reflect.KClass
  * include test name prefixes in the test path.
  */
 class TestPathTestCaseFilter(
-   testPath: String,
+   private val testPath: String,
    spec: KClass<out Spec>,
 ) : TestFilter {
 
@@ -41,7 +41,7 @@ class TestPathTestCaseFilter(
             target2.isOnPath(descriptor) ||
             descriptor.isOnPath(target1) ||
             descriptor.isOnPath(target2) -> TestFilterResult.Include
-         else -> TestFilterResult.Exclude
+         else -> TestFilterResult.Exclude("Excluded by test path filter: '$testPath'")
       }
    }
 }

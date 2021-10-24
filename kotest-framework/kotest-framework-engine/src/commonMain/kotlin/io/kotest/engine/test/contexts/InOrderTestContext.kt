@@ -2,6 +2,7 @@ package io.kotest.engine.test.contexts
 
 import io.kotest.common.ExperimentalKotest
 import io.kotest.core.concurrency.CoroutineDispatcherFactory
+import io.kotest.core.config.Configuration
 import io.kotest.core.names.DuplicateTestNameMode
 import io.kotest.core.test.NestedTest
 import io.kotest.core.test.TestCase
@@ -24,6 +25,7 @@ class InOrderTestContext(
    private val mode: DuplicateTestNameMode,
    private val listener: TestEngineListener,
    private val coroutineDispatcherFactory: CoroutineDispatcherFactory,
+   private val configuration: Configuration,
 ) : TestContext {
 
    private var failed = false
@@ -50,6 +52,7 @@ class InOrderTestContext(
       return TestCaseExecutor(
          TestCaseExecutionListenerToTestEngineListenerAdapter(listener),
          coroutineDispatcherFactory,
+         configuration,
       ).execute(
          testCase,
          createSingleInstanceTestContext(
@@ -57,7 +60,8 @@ class InOrderTestContext(
             coroutineContext,
             mode,
             listener,
-            coroutineDispatcherFactory
+            coroutineDispatcherFactory,
+            configuration,
          )
       )
    }

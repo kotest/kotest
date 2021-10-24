@@ -69,8 +69,12 @@ class DescriptorTest : FunSpec({
    }
 
    test("path") {
-      spec.path() shouldBe TestPath("com.sksamuel.kotest.core.api.DescriptorTest")
-      container.path() shouldBe TestPath("com.sksamuel.kotest.core.api.DescriptorTest/a context")
-      test.path() shouldBe TestPath("com.sksamuel.kotest.core.api.DescriptorTest/a context -- nested test")
+
+      spec.path(true) shouldBe TestPath("com.sksamuel.kotest.core.api.DescriptorTest")
+      container.path(true) shouldBe TestPath("com.sksamuel.kotest.core.api.DescriptorTest/a context")
+      test.path(true) shouldBe TestPath("com.sksamuel.kotest.core.api.DescriptorTest/a context -- nested test")
+
+      container.path(false) shouldBe TestPath("a context")
+      test.path(false) shouldBe TestPath("a context -- nested test")
    }
 })

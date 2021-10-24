@@ -63,6 +63,7 @@ internal class JavascriptSpecExecutorDelegate(private val configuration: Configu
                      TestCaseExecutor(
                         PromiseTestCaseExecutionListener(done),
                         NoopCoroutineDispatcherFactory,
+                        configuration
                      ).execute(root.testCase, TerminalTestContext(root.testCase, cc))
                   }
 

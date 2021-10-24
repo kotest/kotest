@@ -31,7 +31,7 @@ internal fun setupLauncher(
    if (error != null) throw error
 
    TestEngineLauncher(listener)
-      .withTestFilters(listOfNotNull(filter))
+      .withExtensions(listOfNotNull(filter))
       .withExplicitTags(Tags(args.tagExpression))
       .withClasses(specs)
 }

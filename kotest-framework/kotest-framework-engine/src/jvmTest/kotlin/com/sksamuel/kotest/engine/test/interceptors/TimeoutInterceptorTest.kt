@@ -1,6 +1,7 @@
 package com.sksamuel.kotest.engine.test.interceptors
 
 import io.kotest.assertions.throwables.shouldThrow
+import io.kotest.core.config.Configuration
 import io.kotest.core.descriptors.append
 import io.kotest.core.sourceRef
 import io.kotest.core.spec.style.FunSpec
@@ -14,6 +15,7 @@ import io.kotest.engine.test.interceptors.TestTimeoutException
 import io.kotest.engine.test.interceptors.TimeoutInterceptor
 import kotlinx.coroutines.delay
 import kotlin.time.Duration
+import kotlin.time.milliseconds
 
 class TimeoutInterceptorTest : FunSpec() {
    init {
@@ -29,9 +31,9 @@ class TimeoutInterceptorTest : FunSpec() {
          )
 
          shouldThrow<TestTimeoutException> {
-            TimeoutInterceptor.intercept { _, _ ->
+            TimeoutInterceptor(Configuration()).intercept { _, _ ->
                delay(10000)
-               TestResult.success(0)
+               TestResult.Success(0.milliseconds)
             }.invoke(
                tc.copy(config = tc.config.copy(timeout = Duration.milliseconds(1))),
                NoopTestContext(tc, coroutineContext)

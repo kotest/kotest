@@ -22,11 +22,11 @@ internal class EnabledCheckInterceptor(private val configuration: Configuration)
       val enabled = testCase.isEnabled(configuration)
       when (enabled.isEnabled) {
          true -> {
-            log { "EnabledCheckTestExecutionInterceptor: ${testCase.descriptor.path().value} is enabled" }
+            log { "EnabledCheckInterceptor: ${testCase.descriptor.path().value} is enabled" }
             test(testCase, context)
          }
          false -> {
-            log { "EnabledCheckTestExecutionInterceptor: ${testCase.descriptor.path().value} is disabled" }
+            log { "EnabledCheckInterceptor: ${testCase.descriptor.path().value} is disabled: ${enabled.reason}" }
             TestResult.Ignored(enabled)
          }
       }

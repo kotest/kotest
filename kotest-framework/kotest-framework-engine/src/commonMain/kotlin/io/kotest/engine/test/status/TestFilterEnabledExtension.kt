@@ -15,14 +15,14 @@ internal class TestFilterEnabledExtension(private val registry: ExtensionRegistr
    override fun isEnabled(testCase: TestCase): Enabled {
 
       val filters = registry.all().filterIsInstance<TestFilter>()
-      val includedByAll = filters.all {
-         it.filter(testCase.descriptor) == TestFilterResult.Include
+      val excluded = filters.map { it.filter(testCase.descriptor) }.firstOrNull { it is TestFilterResult.Exclude }
+
+      return if (filters.isEmpty() || excluded == null) {
+         Enabled.enabled
+      } else {
+         val reason = "${testCase.descriptor.path(false).value} is excluded by test filter: $excluded"
+         Enabled.disabled(reason)
+            .also { it.reason?.let { log { it } } }
       }
-      if (!includedByAll) {
-         val reason = "${testCase.descriptor.path()} is excluded by test case filters (${filters.size} filters found)"
-         return Enabled.disabled(reason)
-            .also { log { it.reason } }
-      }
-      return Enabled.enabled
    }
 }

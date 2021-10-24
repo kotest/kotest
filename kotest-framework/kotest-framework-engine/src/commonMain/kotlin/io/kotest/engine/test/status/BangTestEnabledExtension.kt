@@ -20,8 +20,9 @@ internal object BangTestEnabledExtension : TestEnabledExtension {
       }
 
       if (testCase.name.bang) {
-         return Enabled.disabled("${testCase.descriptor.path().value} is disabled by bang")
-            .also { log { it.reason } }
+         return Enabled
+            .disabled("${testCase.descriptor.path().value} is disabled by bang")
+            .also { it.reason?.let { log { it } } }
       }
 
       return Enabled.enabled

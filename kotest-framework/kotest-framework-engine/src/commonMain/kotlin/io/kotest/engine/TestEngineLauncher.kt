@@ -1,4 +1,4 @@
-@file:Suppress("unused")
+@file:Suppress("unused", "MemberVisibilityCanBePrivate")
 
 package io.kotest.engine
 
@@ -7,9 +7,9 @@ import io.kotest.common.runBlocking
 import io.kotest.common.runPromise
 import io.kotest.core.Tags
 import io.kotest.core.config.AbstractProjectConfig
+import io.kotest.core.config.Configuration
 import io.kotest.core.config.configuration
-import io.kotest.core.filter.SpecFilter
-import io.kotest.core.filter.TestFilter
+import io.kotest.core.extensions.Extension
 import io.kotest.core.internal.KotestEngineProperties
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.SpecRef
@@ -35,30 +35,30 @@ import kotlin.reflect.KClass
 @KotestInternal
 class TestEngineLauncher(
    private val listener: TestEngineListener,
+   private val conf: Configuration,
    private val configs: List<AbstractProjectConfig>,
    private val refs: List<SpecRef>,
    private val explicitTags: Tags?,
-   private val testFilters: List<TestFilter>,
-   private val specFilters: List<SpecFilter>,
+   private val extensions: List<Extension>,
    private val dumpConfig: Boolean,
 ) {
 
    constructor() : this(
       NoopTestEngineListener,
+      configuration,
       emptyList(),
       emptyList(),
       null,
-      emptyList(),
       emptyList(),
       sysprop(KotestEngineProperties.dumpConfig, "false") == "true",
    )
 
    constructor(listener: TestEngineListener) : this(
       listener,
+      configuration,
       emptyList(),
       emptyList(),
       null,
-      emptyList(),
       emptyList(),
       sysprop(KotestEngineProperties.dumpConfig, "false") == "true",
    )
@@ -76,11 +76,11 @@ class TestEngineLauncher(
    fun withListener(listener: TestEngineListener): TestEngineLauncher {
       return TestEngineLauncher(
          listener = listener,
+         conf = conf,
          configs = configs,
          refs = refs,
          explicitTags = explicitTags,
-         testFilters = testFilters,
-         specFilters = specFilters,
+         extensions = extensions,
          dumpConfig = dumpConfig,
       )
    }
@@ -88,11 +88,11 @@ class TestEngineLauncher(
    fun withSpecs(vararg specs: Spec): TestEngineLauncher {
       return TestEngineLauncher(
          listener = listener,
+         conf = conf,
          configs = configs,
          refs = specs.toList().map { InstanceSpecRef(it) },
          explicitTags = explicitTags,
-         testFilters = testFilters,
-         specFilters = specFilters,
+         extensions = extensions,
          dumpConfig = dumpConfig,
       )
    }
@@ -101,11 +101,11 @@ class TestEngineLauncher(
    fun withClasses(specs: List<KClass<out Spec>>): TestEngineLauncher {
       return TestEngineLauncher(
          listener = listener,
+         conf = conf,
          configs = configs,
          refs = specs.toList().map { ReflectiveSpecRef(it) },
          explicitTags = explicitTags,
-         testFilters = testFilters,
-         specFilters = specFilters,
+         extensions = extensions,
          dumpConfig = dumpConfig,
       )
    }
@@ -116,11 +116,11 @@ class TestEngineLauncher(
    fun withConfig(vararg projectConfig: AbstractProjectConfig): TestEngineLauncher {
       return TestEngineLauncher(
          listener = listener,
+         conf = conf,
          configs = configs + projectConfig,
          refs = refs,
          explicitTags = explicitTags,
-         testFilters = testFilters,
-         specFilters = specFilters,
+         extensions = extensions,
          dumpConfig = dumpConfig,
       )
    }
@@ -128,45 +128,42 @@ class TestEngineLauncher(
    fun withExplicitTags(tags: Tags?): TestEngineLauncher {
       return TestEngineLauncher(
          listener = listener,
+         conf = conf,
          configs = configs,
          refs = refs,
          explicitTags = tags,
-         testFilters = testFilters,
-         specFilters = specFilters,
+         extensions = extensions,
          dumpConfig = dumpConfig,
       )
    }
 
-   fun withTestFilters(vararg filters: TestFilter): TestEngineLauncher = withTestFilters(filters.toList())
-   fun withTestFilters(filters: List<TestFilter>): TestEngineLauncher {
+   fun withExtensions(vararg extensions: Extension): TestEngineLauncher = withExtensions(extensions.toList())
+
+   fun withExtensions(extensions: List<Extension>): TestEngineLauncher {
       return TestEngineLauncher(
          listener = listener,
+         conf = conf,
          configs = configs,
          refs = refs,
          explicitTags = explicitTags,
-         testFilters = testFilters + filters,
-         specFilters = specFilters,
+         extensions = this.extensions + extensions,
          dumpConfig = dumpConfig,
       )
    }
 
-   fun withSpecFilters(vararg filters: SpecFilter): TestEngineLauncher = withSpecFilters(filters.toList())
-   fun withSpecFilters(filters: List<SpecFilter>): TestEngineLauncher {
+   fun withConfiguration(configuration: Configuration): TestEngineLauncher {
       return TestEngineLauncher(
          listener = listener,
+         conf = configuration,
          configs = configs,
          refs = refs,
          explicitTags = explicitTags,
-         testFilters = testFilters,
-         specFilters = specFilters + filters,
+         extensions = this.extensions + extensions,
          dumpConfig = dumpConfig,
       )
    }
 
    fun toConfig(): TestEngineConfig {
-
-      ConfigManager.initialize(configuration, configs + detectAbstractProjectConfigs())
-
       return TestEngineConfig(
          listener = ThreadSafeTestEngineListener(
             PinnedSpecTestEngineListener(
@@ -174,9 +171,8 @@ class TestEngineLauncher(
             )
          ),
          interceptors = testEngineInterceptors(),
-         configuration,
-         testFilters,
-         specFilters,
+         configuration = ConfigManager.initialize(conf, configs + detectAbstractProjectConfigs()),
+         extensions,
          explicitTags,
       )
    }

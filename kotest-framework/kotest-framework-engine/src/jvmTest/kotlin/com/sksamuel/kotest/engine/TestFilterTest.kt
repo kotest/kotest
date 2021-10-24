@@ -18,7 +18,7 @@ class TestFilterTest : StringSpec() {
 object TestFilterTestFilter : TestFilter {
   override fun filter(descriptor: Descriptor): TestFilterResult {
     return when (descriptor.id.value) {
-      "bb should be ignored" -> TestFilterResult.Exclude
+      "bb should be ignored" -> TestFilterResult.Exclude(null)
       else -> TestFilterResult.Include
     }
   }

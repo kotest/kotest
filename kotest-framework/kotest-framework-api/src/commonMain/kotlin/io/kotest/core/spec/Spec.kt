@@ -123,11 +123,6 @@ abstract class Spec : TestConfiguration(), SpecFunctionConfiguration, SpecFuncti
 
    var duplicateTestNameMode: DuplicateTestNameMode? = null
 
-   /**
-    * Returns the actual test order to use, taking into account spec config and global config.
-    */
-   fun declaredTestCaseOrder(): TestCaseOrder = this.testCaseOrder() ?: this.testOrder ?: configuration.testCaseOrder
-
    fun declaredTags(): Set<Tag> = tags() + _tags
 }
 

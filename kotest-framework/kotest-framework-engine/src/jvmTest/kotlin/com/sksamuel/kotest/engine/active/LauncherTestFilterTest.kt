@@ -21,7 +21,7 @@ class LauncherTestFilterTest : FunSpec() {
 
          val filter = object : TestFilter {
             override fun filter(descriptor: Descriptor): TestFilterResult {
-               return if (descriptor.id.value == "a") TestFilterResult.Include else TestFilterResult.Exclude
+               return if (descriptor.id.value == "a") TestFilterResult.Include else TestFilterResult.Exclude(null)
             }
          }
 
@@ -43,7 +43,7 @@ class LauncherTestFilterTest : FunSpec() {
 
          val filter = object : TestFilter {
             override fun filter(descriptor: Descriptor): TestFilterResult {
-               return if (descriptor.id.value == "a") TestFilterResult.Include else TestFilterResult.Exclude
+               return if (descriptor.id.value == "a") TestFilterResult.Include else TestFilterResult.Exclude(null)
             }
          }
 

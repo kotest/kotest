@@ -1,7 +1,7 @@
 package io.kotest.engine.test.contexts
 
 import io.kotest.core.concurrency.CoroutineDispatcherFactory
-import io.kotest.core.config.configuration
+import io.kotest.core.config.Configuration
 import io.kotest.core.names.DuplicateTestNameMode
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestContext
@@ -33,7 +33,8 @@ fun createSingleInstanceTestContext(
    coroutineContext: CoroutineContext,
    mode: DuplicateTestNameMode,
    listener: TestEngineListener,
-   dispatcherFactory: CoroutineDispatcherFactory
+   dispatcherFactory: CoroutineDispatcherFactory,
+   configuration: Configuration,
 ): TestContext {
    return DuplicateNameHandlingTestContext(
       testCase.spec.duplicateTestNameMode ?: configuration.duplicateTestNameMode,
@@ -42,7 +43,8 @@ fun createSingleInstanceTestContext(
          coroutineContext,
          mode,
          listener,
-         dispatcherFactory
+         dispatcherFactory,
+         configuration,
       )
    )
 }

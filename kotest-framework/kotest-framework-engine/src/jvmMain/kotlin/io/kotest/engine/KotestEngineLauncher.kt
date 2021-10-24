@@ -64,8 +64,8 @@ class KotestEngineLauncher(
                CompositeTestEngineListener(listeners)
             )
          )
-      ).withTestFilters(testFilters)
-         .withSpecFilters(specFilters)
+      ).withExtensions(testFilters)
+         .withExtensions(specFilters)
          .withExplicitTags(tags)
          .withClasses(specs)
 

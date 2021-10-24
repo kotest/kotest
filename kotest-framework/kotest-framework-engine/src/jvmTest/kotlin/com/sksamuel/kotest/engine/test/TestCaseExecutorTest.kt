@@ -12,7 +12,6 @@ import io.kotest.engine.concurrency.NoopCoroutineDispatcherFactory
 import io.kotest.engine.spec.materializeAndOrderRootTests
 import io.kotest.engine.test.AfterAnyException
 import io.kotest.engine.test.BeforeAnyException
-import io.kotest.engine.test.MultipleExceptions
 import io.kotest.engine.test.TestCaseExecutionListener
 import io.kotest.engine.test.TestCaseExecutor
 import io.kotest.engine.test.interceptors.TestTimeoutException
@@ -24,6 +23,7 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlin.coroutines.CoroutineContext
 import kotlin.time.Duration
+import kotlin.time.milliseconds
 
 @ExperimentalKotest
 @DelicateCoroutinesApi
@@ -76,7 +76,7 @@ class TestCaseExecutorTest : FunSpec({
          Tests().materializeAndOrderRootTests(TestCaseOrder.Random).first { it.testCase.name.testName == "b" }.testCase
       val result = executor.execute(testCase, context(testCase))
       result.isError shouldBe true
-      result.errorOrNull shouldBe TestTimeoutException(100, "b")
+      result.errorOrNull shouldBe TestTimeoutException(100.milliseconds, "b")
       started shouldBe true
       finished shouldBe true
    }

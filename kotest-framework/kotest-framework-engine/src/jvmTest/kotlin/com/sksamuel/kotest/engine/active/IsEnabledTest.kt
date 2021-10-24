@@ -202,7 +202,7 @@ class IsEnabledTest : StringSpec() {
 
          val filter = object : TestFilter {
             override fun filter(descriptor: Descriptor): TestFilterResult {
-               return (descriptor.id.value == "f").toTestFilterResult()
+               return (descriptor.id.value == "f").toTestFilterResult(null)
             }
          }
 

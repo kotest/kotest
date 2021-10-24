@@ -50,7 +50,7 @@ internal class ConcurrentTestSuiteScheduler(
       listener: TestEngineListener,
       concurrency: Int,
    ) = coroutineScope { // we don't want this function to return until all specs are completed
-      val coroutineDispatcherFactory = defaultCoroutineDispatcherFactory()
+      val coroutineDispatcherFactory = defaultCoroutineDispatcherFactory(configuration)
       val semaphore = Semaphore(concurrency)
       specs.forEach { ref ->
          log { "DefaultTestSuiteScheduler: Scheduling coroutine for spec [$ref]" }

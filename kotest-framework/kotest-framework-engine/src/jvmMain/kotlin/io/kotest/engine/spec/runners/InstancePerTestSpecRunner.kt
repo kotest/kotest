@@ -157,7 +157,8 @@ internal class InstancePerTestSpecRunner(
                   if (isTarget) listener.testFinished(testCase, result)
                }
             },
-            defaultCoroutineDispatcherFactory
+            defaultCoroutineDispatcherFactory,
+            configuration
          )
 
          val result = testExecutor.execute(test, context2)

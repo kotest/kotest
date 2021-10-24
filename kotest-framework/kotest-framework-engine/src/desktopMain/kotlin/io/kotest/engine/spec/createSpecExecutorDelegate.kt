@@ -45,12 +45,14 @@ internal class DefaultSpecExecutorDelegate(
                   coroutineContext,
                   configuration.duplicateTestNameMode,
                   listener,
-                  coroutineDispatcherFactory
+                  coroutineDispatcherFactory,
+                  configuration
                )
             )
             TestCaseExecutor(
                TestCaseExecutionListenerToTestEngineListenerAdapter(listener),
                coroutineDispatcherFactory,
+               configuration
             ).execute(testCase, context)
          }
       return emptyMap()

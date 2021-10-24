@@ -8,7 +8,7 @@ import io.kotest.engine.spec.SpecExtensions
 import io.kotest.engine.tags.activeTags
 
 /**
- * Returns [Enabled.isEnabled] if the given [TestCase] is enabled based on default rules
+ * Returns [Enabled.enabled] if the given [TestCase] is enabled based on default rules
  * from [isEnabledInternal] or any registered [EnabledExtension]s.
  */
 suspend fun TestCase.isEnabled(conf: Configuration): Enabled {
@@ -16,11 +16,12 @@ suspend fun TestCase.isEnabled(conf: Configuration): Enabled {
    return if (!internal.isEnabled) {
       internal
    } else {
-      SpecExtensions(conf.registry())
+      val disabled = SpecExtensions(conf.registry())
          .extensions(spec)
          .filterIsInstance<EnabledExtension>()
          .map { it.isEnabled(descriptor) }
-         .let { Enabled.fold(it) }
+         .firstOrNull { it.isDisabled }
+      disabled ?: Enabled.enabled
    }
 }
 
@@ -33,6 +34,7 @@ internal fun TestCase.isEnabledInternal(conf: Configuration): Enabled {
       TestConfigEnabledExtension,
       TagsEnabledExtension(conf.activeTags()),
       TestFilterEnabledExtension(conf.registry()),
+      SystemPropertyTestFilterEnabledExtension,
       FocusEnabledExtension,
       BangTestEnabledExtension,
       SeverityLevelEnabledExtension,

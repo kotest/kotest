@@ -18,8 +18,9 @@ internal object FocusEnabledExtension : TestEnabledExtension {
       if (!testCase.isRootTest()) return Enabled.enabled
 
       if (!testCase.name.focus && testCase.spec.focusTests().isNotEmpty()) {
-         return Enabled.disabled("${testCase.descriptor.path()} is disabled by another test having focus")
-            .also { log { it.reason } }
+         return Enabled
+            .disabled("${testCase.descriptor.path()} is disabled by another test having focus")
+            .also { it.reason?.let { log { it } } }
       }
 
       return Enabled.enabled
