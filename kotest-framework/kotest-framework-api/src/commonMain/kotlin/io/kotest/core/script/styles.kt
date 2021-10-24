@@ -8,7 +8,7 @@
 //import io.kotest.core.plan.toDescriptor
 //import io.kotest.core.sourceRef
 //import io.kotest.core.test.Description
-//import io.kotest.core.test.TestCaseConfig
+//import io.kotest.core.test.config.TestCaseConfig
 //import io.kotest.core.test.TestContext
 //import io.kotest.core.test.TestType
 //import io.kotest.core.test.createNestedTest

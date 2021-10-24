@@ -10,8 +10,9 @@ import io.kotest.core.names.TestNameCase
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.SpecExecutionOrder
 import io.kotest.core.test.AssertionMode
-import io.kotest.core.test.TestCaseConfig
 import io.kotest.core.test.TestCaseOrder
+import io.kotest.core.test.TestCaseSeverityLevel
+import io.kotest.core.test.config.TestCaseConfig
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlin.time.Duration
 
@@ -217,6 +218,12 @@ class Configuration {
     */
    var logLevel: LogLevel = LogLevel.Off
 
+   var failfast: Boolean = Defaults.failfast
+
+   var blockingTest: Boolean = Defaults.blockingTest
+
+   var severity: TestCaseSeverityLevel? = Defaults.severity
+
    /**
     * If set to true then the test engine will install a [TestCoroutineDispatcher].
     *
@@ -228,11 +235,12 @@ class Configuration {
    var testCoroutineDispatcher: Boolean = Defaults.testCoroutineDispatcher
 
    /**
-    * Returns the default [TestCaseConfig] to be assigned to tests when not specified either in
-    * the spec, test factory, or test case itself.
+    * Contains the default [TestCaseConfig] to be used by tests when not specified in either
+    * the test, the spec, or the test factory.
     *
     * Defaults to [Defaults.testCaseConfig]
     */
+   @Deprecated("The options in this default config are better specified individually in this configuration instance. This allows project level defaults, with both spec and test level overrides. Deprecated since 5.0")
    var defaultTestConfig: TestCaseConfig = Defaults.testCaseConfig
 
    /**

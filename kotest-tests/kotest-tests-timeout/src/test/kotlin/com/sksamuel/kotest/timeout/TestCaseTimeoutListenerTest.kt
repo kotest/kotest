@@ -7,7 +7,7 @@ import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.descriptors.toDescriptor
 import io.kotest.core.names.TestName
 import io.kotest.core.test.TestCase
-import io.kotest.core.test.TestCaseConfig
+import io.kotest.core.test.config.TestCaseConfig
 import io.kotest.core.test.TestResult
 import io.kotest.engine.concurrency.NoopCoroutineDispatcherFactory
 import io.kotest.engine.test.NoopTestCaseExecutionListener

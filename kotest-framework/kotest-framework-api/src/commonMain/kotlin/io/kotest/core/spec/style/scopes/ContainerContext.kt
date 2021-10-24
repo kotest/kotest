@@ -2,11 +2,15 @@ package io.kotest.core.spec.style.scopes
 
 import io.kotest.core.Tuple2
 import io.kotest.core.listeners.TestListener
+import io.kotest.core.names.TestName
+import io.kotest.core.sourceRef
 import io.kotest.core.spec.*
+import io.kotest.core.test.NestedTest
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestContext
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestType
+import io.kotest.core.test.config.ConfigurableTestConfig
 import kotlin.coroutines.CoroutineContext
 
 @Deprecated("Use ContainerContext. Deprecated since 4.5.")
@@ -29,6 +33,42 @@ interface ContainerContext : TestContext {
       type: TestType,
       test: suspend TestContext.() -> Unit,
    )
+
+   suspend fun registerContainer(
+      name: TestName,
+      disabled: Boolean,
+      config: ConfigurableTestConfig?,
+      test: suspend TestContext.() -> Unit,
+   ) {
+      registerTestCase(
+         NestedTest(
+            name = name,
+            disabled = false,
+            config = config,
+            test = test,
+            type = TestType.Container,
+            source = sourceRef(),
+         )
+      )
+   }
+
+   suspend fun registerTest(
+      name: TestName,
+      disabled: Boolean,
+      config: ConfigurableTestConfig?,
+      test: suspend TestContext.() -> Unit,
+   ) {
+      registerTestCase(
+         NestedTest(
+            name = name,
+            disabled = false,
+            config = config,
+            test = test,
+            type = TestType.Test,
+            source = sourceRef(),
+         )
+      )
+   }
 
    private fun addListener(listener: TestListener) {
       testCase.spec.listener(listener)

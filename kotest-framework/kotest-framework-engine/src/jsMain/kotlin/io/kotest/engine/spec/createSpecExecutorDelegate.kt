@@ -41,17 +41,19 @@ internal class JavascriptSpecExecutorDelegate(private val configuration: Configu
       configuration
    )
 
+   private val materializer = Materializer(configuration)
+
    @DelicateCoroutinesApi
    override suspend fun execute(spec: Spec): Map<TestCase, TestResult> {
       val cc = coroutineContext
       // we use the spec itself as an outer/parent test.
       describe(testNameEscape(spec::class.bestName())) {
-         spec.materializeAndOrderRootTests(configuration.testCaseOrder).forEach { root ->
+         materializer.materialize(spec).forEach { root ->
 
-            val testDisplayName = testNameEscape(formatter.format(root.testCase))
+            val testDisplayName = testNameEscape(formatter.format(root))
 
             // todo find a way to delegate this to the test case executor
-            val enabled = root.testCase.isEnabledInternal(configuration)
+            val enabled = root.isEnabledInternal(configuration)
             if (enabled.isEnabled) {
                // we have to always invoke `it` to start the test so that the js test framework doesn't exit
                // before we invoke our callback. This also gives us the handle to the done callback.
@@ -64,7 +66,7 @@ internal class JavascriptSpecExecutorDelegate(private val configuration: Configu
                         PromiseTestCaseExecutionListener(done),
                         NoopCoroutineDispatcherFactory,
                         configuration
-                     ).execute(root.testCase, TerminalTestContext(root.testCase, cc))
+                     ).execute(root, TerminalTestContext(root, cc))
                   }
 
                   // we don't want to return the promise as the js frameworks will use that for test resolution

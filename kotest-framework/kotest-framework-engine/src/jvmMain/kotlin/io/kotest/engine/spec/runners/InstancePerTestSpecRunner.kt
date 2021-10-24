@@ -13,7 +13,6 @@ import io.kotest.core.test.toTestCase
 import io.kotest.engine.listener.TestEngineListener
 import io.kotest.engine.spec.SpecExtensions
 import io.kotest.engine.spec.SpecRunner
-import io.kotest.engine.spec.materializeAndOrderRootTests
 import io.kotest.engine.test.TestCaseExecutionListener
 import io.kotest.engine.test.TestCaseExecutor
 import io.kotest.engine.test.contexts.DuplicateNameHandlingTestContext
@@ -115,9 +114,9 @@ internal class InstancePerTestSpecRunner(
    private suspend fun run(spec: Spec, test: TestCase): Result<Spec> = kotlin.runCatching {
       log { "Created new spec instance $spec" }
       // we need to find the same root test but in the newly created spec
-      val root = spec.materializeAndOrderRootTests(configuration.testCaseOrder).first { it.testCase.descriptor.isOnPath(test.descriptor) }
-      log { "Starting root test ${root.testCase.descriptor} in search of ${test.descriptor}" }
-      run(root.testCase, test)
+      val root = materializer.materialize(spec).first { it.descriptor.isOnPath(test.descriptor) }
+      log { "Starting root test ${root.descriptor} in search of ${test.descriptor}" }
+      run(root, test)
       spec
    }
 
@@ -130,7 +129,7 @@ internal class InstancePerTestSpecRunner(
             override val coroutineContext: CoroutineContext = this@coroutineScope.coroutineContext
             override suspend fun registerTestCase(nested: NestedTest) {
 
-               val t = nested.toTestCase(testCase.spec, testCase)
+               val t = nested.toTestCase(testCase.spec, testCase, configuration.defaultTestConfig)
 
                // if we are currently executing the target, then any registered tests are new, and we
                // should begin execution of them in fresh specs

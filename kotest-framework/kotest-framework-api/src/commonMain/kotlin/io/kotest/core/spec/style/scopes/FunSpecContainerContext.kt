@@ -4,11 +4,9 @@ import io.kotest.common.ExperimentalKotest
 import io.kotest.core.descriptors.append
 import io.kotest.core.names.TestName
 import io.kotest.core.spec.KotestDsl
-import io.kotest.core.spec.resolvedDefaultConfig
 import io.kotest.core.test.NestedTest
 import io.kotest.core.test.TestContext
 import io.kotest.core.test.TestType
-import io.kotest.core.test.createNestedTest
 
 @Deprecated("This interface has been renamed to FunSpecContainerContext. Deprecated since 4.5.")
 typealias FunSpecContextScope = FunSpecContainerContext
@@ -36,56 +34,43 @@ class FunSpecContainerContext(
    }
 
    /**
-    * Adds a container test to this context.
+    * Adds a 'context' container test as a child of the current test case.
     */
    suspend fun context(name: String, test: suspend FunSpecContainerContext.() -> Unit) {
-      registerTestCase(
-         createNestedTest(
-            descriptor = testCase.descriptor.append(name),
-            name = TestName(name),
-            xdisabled = false,
-            config = testCase.spec.resolvedDefaultConfig(),
-            type = TestType.Container,
-            factoryId = testCase.factoryId,
-            test = { FunSpecContainerContext(this).test() }
-         )
-      )
+      registerContainer(TestName(name), false, null) { FunSpecContainerContext(this).test() }
    }
 
    /**
-    * Adds a container test to this context.
+    * Adds a container test to this context expecting config.
     */
    @ExperimentalKotest
-   fun context(name: String) = ContainerContextConfigBuilder(
-      name = TestName(name),
-      context = testContext,
-      xdisabled = false,
-      contextFn = { FunSpecContainerContext(it) }
-   )
+   fun context(name: String) {
+      ContainerContextConfigBuilder(
+         name = TestName(name),
+         context = this,
+         xdisabled = false,
+         contextFn = { FunSpecContainerContext(it) }
+      )
+   }
 
    /**
     * Adds a disabled container test to this context.
     */
    suspend fun xcontext(name: String, test: suspend FunSpecContainerContext.() -> Unit) {
-      registerTestCase(
-         createNestedTest(
-            descriptor = testCase.descriptor.append(name),
-            name = TestName(name),
-            xdisabled = true,
-            config = testCase.spec.resolvedDefaultConfig(),
-            type = TestType.Container,
-            factoryId = testCase.factoryId,
-            test = { FunSpecContainerContext(this).test() }
-         )
-      )
+      registerContainer(TestName(name), true, null) { FunSpecContainerContext(this).test() }
    }
 
+   /**
+    * Adds a disabled container to this context, expecting config.
+    */
    @ExperimentalKotest
-   fun xcontext(name: String) = ContainerContextConfigBuilder(
-      TestName(name),
-      testContext,
-      true
-   ) { FunSpecContainerContext(it) }
+   fun xcontext(name: String) {
+      ContainerContextConfigBuilder(
+         TestName(name),
+         this,
+         true
+      ) { FunSpecContainerContext(it) }
+   }
 
    /**
     * Adds a test case to this context, expecting config.
@@ -93,10 +78,9 @@ class FunSpecContainerContext(
    suspend fun test(name: String): TestWithConfigBuilder {
       TestDslState.startTest(testContext.testCase.descriptor.append(name))
       return TestWithConfigBuilder(
-         TestName(name),
-         testContext,
-         testCase.spec.resolvedDefaultConfig(),
-         xdisabled = false
+         name = TestName(name),
+         context = this,
+         xdisabled = true,
       )
    }
 
@@ -106,42 +90,23 @@ class FunSpecContainerContext(
    suspend fun xtest(name: String): TestWithConfigBuilder {
       TestDslState.startTest(testContext.testCase.descriptor.append(name))
       return TestWithConfigBuilder(
-         TestName(name),
-         testContext,
-         testCase.spec.resolvedDefaultConfig(),
-         xdisabled = true
+         name = TestName(name),
+         context = this,
+         xdisabled = true,
       )
    }
 
    /**
     * Adds a test case to this context.
     */
-   suspend fun test(name: String, test: suspend TestContext.() -> Unit) =
-      registerTestCase(
-         createNestedTest(
-            descriptor = testCase.descriptor.append(name),
-            name = TestName(name),
-            xdisabled = false,
-            config = testCase.spec.resolvedDefaultConfig(),
-            type = TestType.Test,
-            factoryId = testCase.factoryId,
-            test = test,
-         )
-      )
+   suspend fun test(name: String, test: suspend TestContext.() -> Unit) {
+      registerTest(TestName(name), false, null, test)
+   }
 
    /**
     * Adds a disabled test case to this context.
     */
-   suspend fun xtest(name: String, test: suspend TestContext.() -> Unit) =
-      registerTestCase(
-         createNestedTest(
-            descriptor = testCase.descriptor.append(name),
-            name = TestName(name),
-            xdisabled = true,
-            config = testCase.spec.resolvedDefaultConfig(),
-            type = TestType.Test,
-            factoryId = testCase.factoryId,
-            test = test,
-         )
-      )
+   suspend fun xtest(name: String, test: suspend TestContext.() -> Unit) {
+      registerTest(TestName(name), true, null, test)
+   }
 }

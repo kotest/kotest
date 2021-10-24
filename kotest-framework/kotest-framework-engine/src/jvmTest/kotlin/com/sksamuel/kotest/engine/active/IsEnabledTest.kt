@@ -17,7 +17,7 @@ import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.core.test.Enabled
 import io.kotest.core.test.TestCase
-import io.kotest.core.test.TestCaseConfig
+import io.kotest.core.test.config.TestCaseConfig
 import io.kotest.engine.test.status.isEnabled
 import io.kotest.engine.test.status.isEnabledInternal
 import io.kotest.matchers.shouldBe

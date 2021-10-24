@@ -2,10 +2,12 @@ package io.kotest.core.datatest
 
 import io.kotest.assertions.failure
 import io.kotest.core.names.TestName
-import io.kotest.core.spec.style.scopes.*
+import io.kotest.core.spec.style.scopes.ContainerContext
+import io.kotest.core.spec.style.scopes.RootContext
+import io.kotest.core.spec.style.scopes.addTest
 import io.kotest.core.test.Identifiers
 import io.kotest.core.test.TestType
-import kotlin.jvm.*
+import kotlin.jvm.JvmName
 
 @Deprecated("Deprecated without replacement. Will be removed in 6.0")
 suspend fun <T> ContainerContext.forNone(vararg data: Pair<String, T>, test: suspend (T) -> Unit) =
@@ -61,7 +63,7 @@ fun <T : Any> RootContext.forNone(vararg data: T, test: suspend (T) -> Unit) {
 @Deprecated("Deprecated without replacement. Will be removed in 6.0")
 fun <T> RootContext.forNone(data: List<Pair<String, T>>, test: suspend (T) -> Unit) {
    data.forEach { (name, t) ->
-      registration().addTest(TestName(name), false) {
+      addTest(TestName(name), false, null) {
          try {
             test(t)
             null
@@ -88,6 +90,6 @@ fun <T : Any> RootContext.forAll(ts: List<T>, test: suspend (T) -> Unit) {
 @Deprecated("Replaced with withData. Will be removed in 6.0")
 fun <T : Any> RootContext.forAll(data: List<Pair<String, T>>, test: suspend (T) -> Unit) {
    data.forEach { (name, t) ->
-      registration().addTest(TestName(name), false) { test(t) }
+      addTest(TestName(name), false, null) { test(t) }
    }
 }

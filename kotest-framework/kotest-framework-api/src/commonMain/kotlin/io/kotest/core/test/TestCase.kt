@@ -6,6 +6,7 @@ import io.kotest.core.factory.FactoryId
 import io.kotest.core.names.TestName
 import io.kotest.core.sourceRef
 import io.kotest.core.spec.Spec
+import io.kotest.core.test.config.TestCaseConfig
 
 /**
  * A [TestCase] describes a test lambda at runtime.
@@ -42,13 +43,14 @@ data class TestCase(
    // a closure of the test function
    val test: suspend TestContext.() -> Unit,
    val source: SourceRef,
+   // the type specifies if this test case is permitted to contain nested tests (container)
    val type: TestType,
    // config used when running the test, such as number of
    // invocations, threads, etc
    val config: TestCaseConfig = TestCaseConfig(),
    // an optional factory id which is used to indicate which factory (if any) generated this test case.
    val factoryId: FactoryId? = null,
-   // not null if this test has a parent test
+   // the parent test case for this test at runtime, or null
    val parent: TestCase? = null,
 ) {
 

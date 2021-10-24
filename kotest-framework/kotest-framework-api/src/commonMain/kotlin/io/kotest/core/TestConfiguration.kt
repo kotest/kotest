@@ -23,7 +23,7 @@ import io.kotest.core.spec.Spec
 import io.kotest.core.spec.TestCaseExtensionFn
 import io.kotest.core.test.AssertionMode
 import io.kotest.core.test.TestCase
-import io.kotest.core.test.TestCaseConfig
+import io.kotest.core.test.config.TestCaseConfig
 import io.kotest.core.test.TestContext
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestType
@@ -44,7 +44,9 @@ abstract class TestConfiguration {
 
    /**
     * Config applied to each test case if not overridden per test case.
-    * If left null, then defaults to the project default.
+    * If null, then defaults to the project level default.
+    *
+    * Any test case config set a test itself will override any value here.
     */
    var defaultTestConfig: TestCaseConfig? = null
 

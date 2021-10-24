@@ -13,11 +13,11 @@ import io.kotest.core.spec.Spec
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.test.Enabled
 import io.kotest.core.test.TestCase
-import io.kotest.core.test.TestCaseConfig
+import io.kotest.core.test.config.TestCaseConfig
 import io.kotest.core.test.TestCaseOrder
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestStatus
-import io.kotest.core.test.xdisabledMessage
+import io.kotest.core.test.config.xdisabledMessage
 import io.kotest.matchers.collections.shouldBeEmpty
 import io.kotest.matchers.collections.shouldContain
 import io.kotest.matchers.collections.shouldHaveSize

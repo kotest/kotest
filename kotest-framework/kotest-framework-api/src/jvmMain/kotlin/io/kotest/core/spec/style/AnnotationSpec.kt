@@ -1,18 +1,14 @@
 package io.kotest.core.spec.style
 
-import io.kotest.core.config.configuration
-import io.kotest.core.descriptors.append
 import io.kotest.core.extensions.Extension
 import io.kotest.core.names.TestName
 import io.kotest.core.spec.RootTest
 import io.kotest.core.spec.Spec
 import io.kotest.core.test.TestCase
-import io.kotest.core.test.TestCaseConfig
 import io.kotest.core.test.TestContext
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestType
-import io.kotest.core.test.createNestedTest
-import io.kotest.core.test.createRootTestCase
+import io.kotest.core.test.config.TestCaseConfig
 import io.kotest.mpp.unwrapIfReflectionCall
 import kotlin.reflect.KClass
 import kotlin.reflect.KFunction
@@ -23,8 +19,6 @@ import kotlin.reflect.jvm.isAccessible
 typealias Test = AnnotationSpec.Test
 
 abstract class AnnotationSpec : Spec() {
-
-   private fun defaultConfig() = defaultTestConfig ?: defaultTestCaseConfig() ?: configuration.defaultTestConfig
 
    override fun addTest(
       name: TestName,
@@ -57,39 +51,44 @@ abstract class AnnotationSpec : Spec() {
 
    private fun executeAfterSpecFunctions() = this::class.findAfterSpecFunctions().forEach { it.call(this) }
 
-   private fun KFunction<*>.toIgnoredTestCase(): TestCase {
-      return deriveTestCase(defaultConfig().copy(enabled = false))
+   private fun KFunction<*>.toIgnoredRootTest(): RootTest {
+      return deriveRootTest(true)
    }
 
-   private fun KFunction<*>.toEnabledTestCase(): TestCase {
-      return deriveTestCase(defaultConfig())
+   private fun KFunction<*>.toEnabledRootTest(): RootTest {
+      return deriveRootTest(false)
    }
 
-   private fun KFunction<*>.deriveTestCase(config: TestCaseConfig): TestCase {
-      return if (this.isExpectingException()) {
-         val expected = this.getExpectedException()
-         createRootTestCase(
-            this@AnnotationSpec,
-            TestName(name),
-            callExpectingException(expected),
-            config,
-            TestType.Test,
-         )
-      } else {
-         createRootTestCase(
-            this@AnnotationSpec,
-            TestName(name),
-            callNotExpectingException(),
-            config,
-            TestType.Test,
-         )
-      }
+   private fun KFunction<*>.deriveRootTest(disabled: Boolean): RootTest {
+      return TODO()
+//      return if (this.isExpectingException()) {
+//         val expected = this.getExpectedException()
+//         RootTest(
+//            name = TestName(name),
+//            spec = this@AnnotationSpec,
+//            test = callExpectingException(expected),
+//            source = sourceRef(),
+//            type = TestType.Test,
+//            config = null,
+//            disabled = disabled,
+//         )
+//      } else {
+//         RootTest(
+//            name = TestName(name),
+//            spec = this@AnnotationSpec,
+//            test = callNotExpectingException(),
+//            source = sourceRef(),
+//            type = TestType.Test,
+//            config = null,
+//            disabled = disabled,
+//         )
+//      }
    }
 
-   override fun materializeRootTests(): List<RootTest> {
-      val tests = this::class.findTestCases()
+   override fun rootTests(): List<RootTest> {
+      val tests = this::class.findRootTests()
       val nested = this::class.findNestedTests()
-      return (tests + nested).withIndex().map { (index, test) -> RootTest(test, index) }
+      return emptyList()
    }
 
    override fun globalExtensions(): List<Extension> {
@@ -104,43 +103,46 @@ abstract class AnnotationSpec : Spec() {
       return annotations.filterIsInstance<Test>().first().expected
    }
 
-   private fun KClass<out AnnotationSpec>.findTestCases(): List<TestCase> {
+   private fun KClass<out AnnotationSpec>.findRootTests(): List<RootTest> {
       return findTestFunctions().map { f ->
          f.isAccessible = true
          if (f.isIgnoredTest()) {
-            f.toIgnoredTestCase()
+            f.toIgnoredRootTest()
          } else {
-            f.toEnabledTestCase()
+            f.toEnabledRootTest()
          }
       }
    }
 
-   private fun KClass<out AnnotationSpec>.findNestedTests(): List<TestCase> {
-      return nestedClasses
-         .filter { kclass -> kclass.annotations.map { it.annotationClass }.contains(Nested::class) }
-         .map { kclass ->
-            createRootTestCase(
-               this@AnnotationSpec,
-               TestName(kclass.simpleName ?: kclass.toString()),
-               test = {
-                  (kclass.java.newInstance() as AnnotationSpec).materializeRootTests().forEach { (testCase, _) ->
-                     registerTestCase(
-                        createNestedTest(
-                           testCase.name,
-                           this.testCase.descriptor.append(testCase.name),
-                           false,
-                           testCase.config,
-                           testCase.type,
-                           null,
-                           testCase.test
-                        )
-                     )
-                  }
-               },
-               TestCaseConfig(),
-               TestType.Container
-            )
-         }
+   private fun KClass<out AnnotationSpec>.findNestedTests(): List<RootTest> {
+      return TODO()
+//      return nestedClasses
+//         .filter { kclass -> kclass.annotations.map { it.annotationClass }.contains(Nested::class) }
+//         .map { kclass ->
+//            RootTest(
+//               name = TestName(kclass.simpleName ?: kclass.toString()),
+//               spec = this@AnnotationSpec,
+//               test = {
+//                  (kclass.java.newInstance() as AnnotationSpec).materializeRootTests().forEach { root ->
+//                     registerTestCase(
+//                        createNestedTest(
+//                           root.name,
+//                           this.testCase.descriptor.append(testCase.name),
+//                           false,
+//                           testCase.config,
+//                           testCase.type,
+//                           null,
+//                           testCase.test
+//                        )
+//                     )
+//                  }
+//               },
+//               type = TestType.Container,
+//               config = TestCaseConfig(),
+//               disabled = false,
+//               source = sourceRef(),
+//            )
+//         }
    }
 
    private fun KFunction<*>.callExpectingException(expected: KClass<out Throwable>): suspend TestContext.() -> Unit {

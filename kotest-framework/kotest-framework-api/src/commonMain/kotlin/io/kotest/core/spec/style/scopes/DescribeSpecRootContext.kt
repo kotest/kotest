@@ -19,62 +19,44 @@ typealias DescribeSpecRootScope = DescribeSpecRootContext
 interface DescribeSpecRootContext : RootContext {
 
    fun context(name: String, test: suspend DescribeSpecContainerContext.() -> Unit) {
-      val testName = TestName("Context: ", name, false)
-      test(testName, test)
+      addContainer(TestName("Context: ", name, false), false, null) { DescribeSpecContainerContext(this).test() }
+   }
+
+   fun xcontext(name: String, test: suspend DescribeSpecContainerContext.() -> Unit) {
+      addContainer(TestName("Context: ", name, false), true, null) { DescribeSpecContainerContext(this).test() }
    }
 
    @ExperimentalKotest
    fun context(name: String) =
-      RootContextConfigBuilder(TestName(name), registration(), false) { DescribeSpecContainerContext(it) }
-
-   fun xcontext(name: String, test: suspend DescribeSpecContainerContext.() -> Unit) {
-      val testName = TestName("Context: ", name, false)
-      registration().addContainerTest(testName, xdisabled = true) {}
-   }
+      RootContextConfigBuilder(TestName(name), false, this) { DescribeSpecContainerContext(it) }
 
    @ExperimentalKotest
    fun xcontext(name: String) =
-      RootContextConfigBuilder(TestName(name), registration(), true) { DescribeSpecContainerContext(it) }
+      RootContextConfigBuilder(TestName(name), true, this) { DescribeSpecContainerContext(it) }
 
    fun describe(name: String, test: suspend DescribeSpecContainerContext.() -> Unit) {
-      val testName = TestName("Describe: ", name, null, false)
-      test(testName, test)
+      addTest(TestName("Describe: ", name, false), true, null) { DescribeSpecContainerContext(this).test() }
    }
-
-   @ExperimentalKotest
-   fun describe(name: String) =
-      RootContextConfigBuilder(
-         TestName("Describe: ", name, false),
-         registration(),
-         false
-      ) { DescribeSpecContainerContext(it) }
 
    fun xdescribe(name: String, test: suspend DescribeSpecContainerContext.() -> Unit) {
-      val testName = TestName("Describe: ", name, false)
-      registration().addContainerTest(testName, xdisabled = true) {}
+      addTest(TestName("Describe: ", name, false), true, null) { DescribeSpecContainerContext(this).test() }
    }
 
    @ExperimentalKotest
-   fun xdescribe(name: String) =
-      RootContextConfigBuilder(
-         TestName("Describe: ", name, false),
-         registration(),
-         true
-      ) { DescribeSpecContainerContext(it) }
+   fun describe(name: String) {
+      RootContextConfigBuilder(TestName("Describe: ", name, false), false, this) { DescribeSpecContainerContext(it) }
+   }
+
+   @ExperimentalKotest
+   fun xdescribe(name: String) {
+      RootContextConfigBuilder(TestName("Describe: ", name, false), true, this) { DescribeSpecContainerContext(it) }
+   }
 
    fun it(name: String, test: suspend TestContext.() -> Unit) {
-      registration().addTest(name = TestName(name), xdisabled = false, test = test)
+      addTest(TestName(name), false, null, test)
    }
 
    fun xit(name: String, test: suspend TestContext.() -> Unit) {
-      registration().addTest(name = TestName(name), xdisabled = true, test = test)
-   }
-
-   private fun test(testName: TestName, test: suspend DescribeSpecContainerContext.() -> Unit) {
-      registration().addContainerTest(testName, xdisabled = false) {
-         val incomplete = IncompleteContainerContext(this)
-         DescribeSpecContainerContext(incomplete).test()
-         if (!incomplete.hasNestedTest) throw IncompleteContainerException(testName.testName)
-      }
+      addTest(TestName(name), true, null, test)
    }
 }

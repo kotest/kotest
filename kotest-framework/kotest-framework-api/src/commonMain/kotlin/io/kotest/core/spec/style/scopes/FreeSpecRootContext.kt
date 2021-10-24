@@ -4,46 +4,33 @@ import io.kotest.core.Tag
 import io.kotest.core.extensions.TestCaseExtension
 import io.kotest.core.names.TestName
 import io.kotest.core.test.EnabledIf
-import io.kotest.core.test.TestCaseConfig
 import io.kotest.core.test.TestCaseSeverityLevel
 import io.kotest.core.test.TestContext
-import io.kotest.core.test.TestType
-import io.kotest.core.test.deriveTestCaseConfig
+import io.kotest.core.test.config.ConfigurableTestConfig
 import kotlin.time.Duration
 
 @Deprecated("Renamed to FreeSpecRootContext. Deprecated since 4.5.")
 typealias FreeSpecRootScope = FreeSpecRootContext
 
-data class FreeSpecContextConfigBuilder(val name: String, val config: TestCaseConfig)
+data class FreeSpecContextConfigBuilder(val name: String, val config: ConfigurableTestConfig)
 
 interface FreeSpecRootContext : RootContext {
 
    // eg, "this test" - { } // adds a container test
    infix operator fun String.minus(test: suspend FreeSpecContainerContext.() -> Unit) {
-      val testName = TestName(this)
-      registration().addContainerTest(testName, xdisabled = false) {
-         val incomplete = IncompleteContainerContext(this)
-         FreeSpecContainerContext(incomplete).test()
-         if (!incomplete.hasNestedTest) throw IncompleteContainerException(testName.testName)
-      }
+      addContainer(TestName(this), false, null) { FreeSpecContainerContext(this).test() }
    }
 
    // "this test" { } // adds a leaf test
    infix operator fun String.invoke(test: suspend FreeSpecTerminalContext.() -> Unit) {
-      registration().addTest(TestName(this), xdisabled = false, test = { FreeSpecTerminalContext(this).test() })
+      addTest(TestName(this), false, null) { FreeSpecTerminalContext(this).test() }
    }
 
-   // eg, "this test".config(...) - { } // adds a container test with config
-   infix operator fun FreeSpecContextConfigBuilder.minus(test: suspend FreeSpecContainerContext.() -> Unit) {
-      val testName = TestName(name)
-      registration().addTest(testName, xdisabled = false, config = config, type = TestType.Container) {
-         val incomplete = IncompleteContainerContext(this)
-         FreeSpecContainerContext(incomplete).test()
-         if (!incomplete.hasNestedTest) throw IncompleteContainerException(testName.testName)
-      }
-   }
-
-   // starts a config builder for a context with config
+   /**
+    * Starts a config builder, which can be added to the scope by invoking [minus] on the returned value.
+    *
+    * eg, "this test".config(...) - { }
+    */
    fun String.config(
       enabled: Boolean? = null,
       invocations: Int? = null,
@@ -56,7 +43,7 @@ interface FreeSpecRootContext : RootContext {
       severity: TestCaseSeverityLevel? = null,
       failfast: Boolean? = null,
    ): FreeSpecContextConfigBuilder {
-      val config = defaultConfig().deriveTestCaseConfig(
+      val config = ConfigurableTestConfig(
          enabled = enabled,
          tags = tags,
          extensions = extensions,
@@ -71,7 +58,20 @@ interface FreeSpecRootContext : RootContext {
       return FreeSpecContextConfigBuilder(this, config)
    }
 
-   // starts a config builder for free spec
+   /**
+    * Adds the contained config and test to this scope as a container test.
+    *
+    * eg, "this test".config(...) - { }
+    */
+   infix operator fun FreeSpecContextConfigBuilder.minus(test: suspend FreeSpecContainerContext.() -> Unit) {
+      addContainer(TestName(name), false, config) { FreeSpecContainerContext(this).test() }
+   }
+
+   /**
+    * Adds a configured test to this scope as a leaf test.
+    *
+    * eg, "this test".config(...) { }
+    */
    fun String.config(
       enabled: Boolean? = null,
       invocations: Int? = null,
@@ -85,7 +85,7 @@ interface FreeSpecRootContext : RootContext {
       failfast: Boolean? = null,
       test: suspend TestContext.() -> Unit,
    ) {
-      val config = defaultConfig().deriveTestCaseConfig(
+      val config = ConfigurableTestConfig(
          enabled = enabled,
          tags = tags,
          extensions = extensions,
@@ -97,7 +97,7 @@ interface FreeSpecRootContext : RootContext {
          severity = severity,
          failfast = failfast
       )
-      registration().addTest(TestName(this), xdisabled = false, type = TestType.Test, config = config, test = test)
+      addTest(TestName(this), false, config, test)
    }
 }
 

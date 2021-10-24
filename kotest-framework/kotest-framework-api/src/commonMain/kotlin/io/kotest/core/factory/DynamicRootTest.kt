@@ -4,7 +4,7 @@ import io.kotest.core.SourceRef
 import io.kotest.core.names.TestName
 import io.kotest.core.spec.Spec
 import io.kotest.core.test.TestCase
-import io.kotest.core.test.TestCaseConfig
+import io.kotest.core.test.config.TestCaseConfig
 import io.kotest.core.test.TestContext
 import io.kotest.core.test.TestType
 

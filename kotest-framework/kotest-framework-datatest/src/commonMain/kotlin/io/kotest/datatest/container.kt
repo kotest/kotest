@@ -4,7 +4,7 @@ import io.kotest.common.ExperimentalKotest
 import io.kotest.core.descriptors.append
 import io.kotest.core.names.TestName
 import io.kotest.core.test.Identifiers
-import io.kotest.core.test.TestCaseConfig
+import io.kotest.core.test.config.TestCaseConfig
 import io.kotest.core.test.TestContext
 import io.kotest.core.test.TestType
 import io.kotest.core.test.createNestedTest

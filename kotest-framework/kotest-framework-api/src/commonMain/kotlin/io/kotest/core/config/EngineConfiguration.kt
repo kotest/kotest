@@ -5,7 +5,7 @@ import io.kotest.core.names.TestNameCase
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.SpecExecutionOrder
 import io.kotest.core.test.AssertionMode
-import io.kotest.core.test.TestCaseConfig
+import io.kotest.core.test.config.TestCaseConfig
 import io.kotest.core.test.TestCaseOrder
 
 data class EngineConfiguration(

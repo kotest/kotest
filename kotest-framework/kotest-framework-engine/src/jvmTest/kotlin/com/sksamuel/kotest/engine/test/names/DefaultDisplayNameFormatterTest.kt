@@ -12,7 +12,7 @@ import io.kotest.core.spec.DisplayName
 import io.kotest.core.spec.Isolate
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.test.TestCase
-import io.kotest.core.test.TestCaseConfig
+import io.kotest.core.test.config.TestCaseConfig
 import io.kotest.core.test.TestType
 import io.kotest.engine.test.names.DefaultDisplayNameFormatter
 import io.kotest.matchers.shouldBe

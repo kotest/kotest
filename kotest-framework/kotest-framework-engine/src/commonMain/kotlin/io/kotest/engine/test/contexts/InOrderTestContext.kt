@@ -32,12 +32,12 @@ class InOrderTestContext(
 
    override suspend fun registerTestCase(nested: NestedTest) {
       log { "InOrderTestContext: Nested test case discovered $nested" }
+      val nestedTestCase = nested.toTestCase(testCase.spec, testCase, configuration.defaultTestConfig)
 
       if (failed && testCase.config.failfast == true) {
          log { "FailFastTestContext: A previous nested test failed and failfast is enabled - will mark this as ignored" }
-         listener.testIgnored(nested.toTestCase(testCase.spec, testCase), "Failfast enabled on parent test")
+         listener.testIgnored(nestedTestCase, "Failfast enabled on parent test")
       } else {
-         val nestedTestCase = nested.toTestCase(testCase.spec, testCase)
          val result = runTest(nestedTestCase, coroutineContext)
          if (result.isErrorOrFailure) {
             failed = true

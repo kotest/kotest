@@ -9,7 +9,7 @@
 //import io.kotest.core.spec.style.FunSpec
 //import io.kotest.core.test.DescriptionName
 //import io.kotest.core.test.TestCase
-//import io.kotest.core.test.TestCaseConfig
+//import io.kotest.core.test.config.TestCaseConfig
 //import io.kotest.core.test.TestContext
 //import io.kotest.core.test.TestType
 //import io.kotest.mpp.log
@@ -70,7 +70,7 @@
 //      spec = ScriptSpec()
 //   }
 //
-//   fun materializeRootTests(parent: Descriptor.SpecDescriptor): List<TestCase> {
+//   fun materializeRootTsssests(parent: Descriptor.SpecDescriptor): List<TestCase> {
 //      // the test cases will have been registered with a placeholder spec description, since we don't know
 //      // what that is until runtime. So now we must replace that.
 //      return rootTests.toList().map {

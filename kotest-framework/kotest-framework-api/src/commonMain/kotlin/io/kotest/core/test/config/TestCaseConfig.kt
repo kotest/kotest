@@ -1,11 +1,19 @@
-package io.kotest.core.test
+package io.kotest.core.test.config
 
 import io.kotest.common.ExperimentalKotest
 import io.kotest.core.Tag
 import io.kotest.core.extensions.TestCaseExtension
 import io.kotest.core.listeners.TestListener
+import io.kotest.core.test.AssertionMode
+import io.kotest.core.test.Enabled
+import io.kotest.core.test.EnabledIf
+import io.kotest.core.test.EnabledOrReasonIf
+import io.kotest.core.test.TestCaseSeverityLevel
 import kotlin.time.Duration
 
+/**
+ * Runtime, resolved config, attached to a [TestCase].
+ */
 data class TestCaseConfig(
 
    /**
@@ -48,7 +56,6 @@ data class TestCaseConfig(
    val severity: TestCaseSeverityLevel? = null,
    val enabledOrReasonIf: EnabledOrReasonIf = { Enabled.enabled },
 
-   // has no effect on leaf tests
    val failfast: Boolean? = null,
 
    // assertion mode can be set to control errors/warnings in a test

@@ -1,14 +1,10 @@
 package io.kotest.core.spec.style.scopes
 
-import io.kotest.core.factory.TestFactoryConfiguration
 import io.kotest.core.names.TestName
-import io.kotest.core.spec.DslDrivenSpec
-import io.kotest.core.spec.resolvedDefaultConfig
 import io.kotest.core.test.TestCase
-import io.kotest.core.test.TestCaseConfig
+import io.kotest.core.test.config.TestCaseConfig
 import io.kotest.core.test.TestContext
 import io.kotest.core.test.TestType
-import io.kotest.core.test.withXDisabled
 
 /**
  * Handles registration of top level tests inside a [RootContext].
@@ -54,32 +50,4 @@ interface RootTestRegistration {
       type: TestType,
       test: suspend TestContext.() -> Unit
    )
-
-   companion object {
-      fun from(factory: TestFactoryConfiguration): RootTestRegistration = object : RootTestRegistration {
-         override val defaultConfig: TestCaseConfig = factory.resolvedDefaultConfig()
-         override fun addTest(
-            name: TestName,
-            xdisabled: Boolean,
-            config: TestCaseConfig,
-            type: TestType,
-            test: suspend TestContext.() -> Unit
-         ) {
-            factory.addTest(name, test, config.withXDisabled(xdisabled), type)
-         }
-      }
-
-      fun from(spec: DslDrivenSpec): RootTestRegistration = object : RootTestRegistration {
-         override val defaultConfig: TestCaseConfig = spec.resolvedDefaultConfig()
-         override fun addTest(
-            name: TestName,
-            xdisabled: Boolean,
-            config: TestCaseConfig,
-            type: TestType,
-            test: suspend TestContext.() -> Unit
-         ) {
-            spec.addTest(name, test, config.withXDisabled(xdisabled), type)
-         }
-      }
-   }
 }

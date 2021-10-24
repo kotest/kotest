@@ -2,12 +2,9 @@ package io.kotest.core.spec.style.scopes
 
 import io.kotest.core.descriptors.append
 import io.kotest.core.names.TestName
-import io.kotest.core.spec.KotestDsl
-import io.kotest.core.spec.resolvedDefaultConfig
 import io.kotest.core.test.NestedTest
 import io.kotest.core.test.TestContext
 import io.kotest.core.test.TestType
-import io.kotest.core.test.createNestedTest
 
 @Deprecated("renamed to FeatureSpecContainerContext. Deprecated since 4.5.")
 typealias FeatureScope = FeatureSpecContainerContext
@@ -40,65 +37,26 @@ class FeatureSpecContainerContext(
    }
 
    suspend fun feature(name: String, test: suspend FeatureSpecContainerContext.() -> Unit) {
-      registerTestCase(
-         createNestedTest(
-            descriptor = testCase.descriptor.append(name),
-            name = TestName("Feature: ", name, false),
-            xdisabled = false,
-            config = testCase.spec.resolvedDefaultConfig(),
-            type = TestType.Container,
-            factoryId = testCase.factoryId
-         ) { FeatureSpecContainerContext(this).test() }
-      )
+      registerContainer(TestName("Feature: ", name, false), false, null) { FeatureSpecContainerContext(this).test() }
    }
 
    suspend fun xfeature(name: String, test: suspend FeatureSpecContainerContext.() -> Unit) {
-      registerTestCase(
-         createNestedTest(
-            descriptor = testCase.descriptor.append(name),
-            name = TestName("Feature: ", name, false),
-            xdisabled = true,
-            config = testCase.spec.resolvedDefaultConfig(),
-            type = TestType.Test,
-            factoryId = testCase.factoryId
-         ) { FeatureSpecContainerContext(this).test() }
-      )
+      registerContainer(TestName("Feature: ", name, true), false, null) { FeatureSpecContainerContext(this).test() }
    }
 
    suspend fun scenario(name: String, test: suspend TestContext.() -> Unit) {
-      registerTestCase(
-         createNestedTest(
-            descriptor = testCase.descriptor.append(name),
-            name = TestName("Scenario: ", name, false),
-            xdisabled = false,
-            config = testCase.spec.resolvedDefaultConfig(),
-            type = TestType.Test,
-            factoryId = null,
-            test = test
-         )
-      )
+      registerTest(TestName("Scenario: ", name, false), false, null, test)
    }
 
    suspend fun xscenario(name: String, test: suspend TestContext.() -> Unit) {
-      registerTestCase(
-         createNestedTest(
-            descriptor = testCase.descriptor.append(name),
-            name = TestName("Scenario: ", name, false),
-            xdisabled = true,
-            config = testCase.spec.resolvedDefaultConfig(),
-            type = TestType.Container,
-            factoryId = null,
-            test = test
-         )
-      )
+      registerTest(TestName("Scenario: ", name, true), false, null, test)
    }
 
    suspend fun scenario(name: String): TestWithConfigBuilder {
       TestDslState.startTest(testContext.testCase.descriptor.append(name))
       return TestWithConfigBuilder(
          name = TestName("Scenario: ", name, false),
-         context = testContext,
-         defaultTestConfig = testCase.spec.resolvedDefaultConfig(),
+         context = this,
          xdisabled = false,
       )
    }
@@ -107,8 +65,7 @@ class FeatureSpecContainerContext(
       TestDslState.startTest(testContext.testCase.descriptor.append(name))
       return TestWithConfigBuilder(
          name = TestName("Scenario: ", name, false),
-         context = testContext,
-         defaultTestConfig = testCase.spec.resolvedDefaultConfig(),
+         context = this,
          xdisabled = true,
       )
    }

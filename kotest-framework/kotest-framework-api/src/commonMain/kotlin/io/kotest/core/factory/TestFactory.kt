@@ -1,12 +1,10 @@
 package io.kotest.core.factory
 
-import io.kotest.core.descriptors.Descriptor
 import io.kotest.core.Tag
-import io.kotest.core.descriptors.append
 import io.kotest.core.extensions.Extension
+import io.kotest.core.spec.RootTest
 import io.kotest.core.spec.Spec
 import io.kotest.core.test.AssertionMode
-import io.kotest.core.test.TestCase
 
 /**
  * A [TestFactory] is a generator of tests along with optional configuration and
@@ -15,31 +13,31 @@ import io.kotest.core.test.TestCase
  */
 data class TestFactory(
    val factoryId: FactoryId,
-   val tests: List<DynamicRootTest>,
+   val rootTests: List<RootTest>,
    val tags: Set<Tag>,
    val assertionMode: AssertionMode?,
    val extensions: List<Extension>,
 )
 
-/**
- * Creates and a returns a [TestCase] for each [DynamicRootTest] in this factory.
- * Tags and assertion mode are applied to the tests.
- *
- * @param description the parent description for the generated tests.
- * @param spec the [Spec] that will contain the generated tests.
- */
-internal fun TestFactory.createTestCases(description: Descriptor.SpecDescriptor, spec: Spec): List<TestCase> {
-   return tests.map { dyn ->
-      TestCase(
-         descriptor = description.append(dyn.name),
-         name = dyn.name,
-         spec = spec,
-         test = dyn.test,
-         type = dyn.type,
-         source = dyn.source,
-         config = dyn.config.copy(tags = dyn.config.tags + this.tags),
-         factoryId = this.factoryId,
-         parent = null,
-      )
-   }
-}
+///**
+// * Creates and a returns a [TestCase] for each [DynamicRootTest] in this factory.
+// * Tags and assertion mode are applied to the tests.
+// *
+// * @param description the parent description for the generated tests.
+// * @param spec the [Spec] that will contain the generated tests.
+// */
+//internal fun TestFactory.createTestCases(description: Descriptor.SpecDescriptor, spec: Spec): List<TestCase> {
+//   return tests.map { dyn ->
+//      TestCase(
+//         descriptor = description.append(dyn.name),
+//         name = dyn.name,
+//         spec = spec,
+//         test = dyn.test,
+//         type = dyn.type,
+//         source = dyn.source,
+//         config = dyn.config.copy(tags = dyn.config.tags + this.tags),
+//         factoryId = this.factoryId,
+//         parent = null,
+//      )
+//   }
+//}

@@ -4,11 +4,13 @@ import io.kotest.common.ExperimentalKotest
 import io.kotest.core.Tag
 import io.kotest.core.extensions.TestCaseExtension
 import io.kotest.core.listeners.TestListener
+import io.kotest.core.test.config.TestCaseConfig
+import io.kotest.core.test.config.TestContainerConfig
 import kotlin.time.Duration
 
 /**
  * Creates and returns a new [TestCaseConfig] from the given parameters, using values
- * from the receiver as defaults.
+ * from the receiver as defaults when the inputs are null.
  */
 internal fun TestCaseConfig.deriveTestCaseConfig(
    enabled: Boolean? = null,
