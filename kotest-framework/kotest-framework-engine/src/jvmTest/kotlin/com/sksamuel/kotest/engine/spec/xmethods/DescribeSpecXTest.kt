@@ -1,4 +1,4 @@
-package com.sksamuel.kotest.engine.spec.xnames
+package com.sksamuel.kotest.engine.spec.xmethods
 
 import io.kotest.core.spec.style.DescribeSpec
 
