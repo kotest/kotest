@@ -3,6 +3,7 @@ package io.kotest.datatest
 import io.kotest.common.ExperimentalKotest
 import io.kotest.core.names.TestName
 import io.kotest.core.spec.style.scopes.RootContext
+import io.kotest.core.spec.style.scopes.addContainer
 import io.kotest.core.test.Identifiers
 import io.kotest.core.test.TestContext
 import kotlin.jvm.JvmName
@@ -60,7 +61,7 @@ fun <T : Any> RootContext.withData(ts: Collection<T>, test: suspend TestContext.
 @ExperimentalKotest
 fun <T : Any> RootContext.withData(nameFn: (T) -> String, ts: Collection<T>, test: suspend TestContext.(T) -> Unit) {
    ts.forEach { t ->
-      registration().addContainerTest(TestName(nameFn(t)), false) { test(t) }
+      addContainer(TestName(nameFn(t)), false, null) { test(t) }
    }
 }
 
@@ -72,6 +73,6 @@ fun <T : Any> RootContext.withData(nameFn: (T) -> String, ts: Collection<T>, tes
 @JvmName("withDataMap")
 fun <T : Any> RootContext.withData(data: Map<String, T>, test: suspend TestContext.(T) -> Unit) {
    data.forEach { (name, t) ->
-      registration().addContainerTest(TestName(name), false) { test(t) }
+      addContainer(TestName(name), false, null) { test(t) }
    }
 }

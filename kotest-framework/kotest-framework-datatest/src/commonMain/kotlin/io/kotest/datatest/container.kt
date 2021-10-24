@@ -7,7 +7,6 @@ import io.kotest.core.test.Identifiers
 import io.kotest.core.test.config.TestCaseConfig
 import io.kotest.core.test.TestContext
 import io.kotest.core.test.TestType
-import io.kotest.core.test.createNestedTest
 import kotlin.jvm.JvmName
 
 /**
