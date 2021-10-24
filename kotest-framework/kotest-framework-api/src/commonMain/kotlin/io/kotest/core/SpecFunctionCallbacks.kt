@@ -10,8 +10,18 @@ import io.kotest.core.test.TestResult
  */
 interface SpecFunctionCallbacks {
 
+   /**
+    * Executed before any tests are invoked on this spec instance.
+    *
+    * For non-default isolation modes, this will run for every spec instance created.
+    */
    fun beforeSpec(spec: Spec) {}
 
+   /**
+    * Executed after the spec instance is complete.
+    *
+    * For non-default isolation modes, this will run for every spec instance created.
+    */
    fun afterSpec(spec: Spec) {}
 
    /**

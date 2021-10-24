@@ -23,7 +23,6 @@ typealias ShouldSpecRootScope = ShouldSpecRootContext
  *    // test here
  *  }
  */
-@KotestDsl
 interface ShouldSpecRootContext : RootContext {
 
    /**

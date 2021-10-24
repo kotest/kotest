@@ -1,33 +1,32 @@
 package com.sksamuel.kotest.engine.spec.bangs
 
-import com.sksamuel.kotest.specs.attemptToFail
 import io.kotest.core.spec.style.BehaviorSpec
 
 class BehaviorSpecBangTest : BehaviorSpec() {
 
   init {
     Given("!BangedGiven") {
-      attemptToFail()
+      error("BAM!")
     }
 
     Given("NonBangedGiven") {
       And("!BangedGivenAnd") {
-        attemptToFail()
+        error("BIFF!")
       }
 
       And("NonBangedGivenAnd") {
         When("!BangedWhen") {
-          attemptToFail()
+          error("BOFF!")
         }
 
         When("NonBangedWhen") {
           And("!BangedWhenAnd") {
-            attemptToFail()
+            error("CLANK!")
           }
 
           And("NonBangedWhenAnd") {
             Then("!BangedThen") {
-              attemptToFail()
+              error("CRRAACK!")
             }
           }
         }

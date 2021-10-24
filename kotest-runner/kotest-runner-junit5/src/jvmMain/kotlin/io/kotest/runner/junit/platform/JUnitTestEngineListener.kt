@@ -8,7 +8,7 @@ import io.kotest.core.descriptors.toDescriptor
 import io.kotest.core.names.UniqueNames
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
-import io.kotest.engine.errors.ExceptionPlaceholderNameResolver
+import io.kotest.engine.errors.ExtensionExceptionExtractor
 import io.kotest.engine.listener.TestEngineListener
 import io.kotest.engine.test.names.getDisplayNameFormatter
 import io.kotest.mpp.log
@@ -118,7 +118,7 @@ class JUnitTestEngineListener(
 
    private fun registerExceptionPlaceholders(ts: List<Throwable>) {
       ts.forEach {
-         val (name, cause) = ExceptionPlaceholderNameResolver.resolve(it)
+         val (name, cause) = ExtensionExceptionExtractor.resolve(it)
          val container = createAndRegisterDummySpec(name)
          listener.executionStarted(container)
          listener.executionFinished(container, TestExecutionResult.failed(cause))

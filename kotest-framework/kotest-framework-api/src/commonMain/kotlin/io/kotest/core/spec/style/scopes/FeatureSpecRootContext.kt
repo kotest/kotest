@@ -13,7 +13,6 @@ typealias FeatureSpecRootScope = FeatureSpecRootContext
  * xfeature("some test")
  *
  */
-@KotestDsl
 interface FeatureSpecRootContext : RootContext {
 
    fun feature(name: String, test: suspend FeatureSpecContainerContext.() -> Unit) = addFeature(name, false, test)

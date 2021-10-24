@@ -1,8 +1,6 @@
 package com.sksamuel.kotest
 
-import com.sksamuel.kotest.extensions.TagFilteredDiscoveryExtensionExampleTest
 import io.kotest.core.config.AbstractProjectConfig
-import io.kotest.core.extensions.Extension
 import io.kotest.core.spec.SpecExecutionOrder
 
 object ProjectConfig : AbstractProjectConfig() {
@@ -10,10 +8,6 @@ object ProjectConfig : AbstractProjectConfig() {
    private val intercepterLog = StringBuilder()
 
    override val specExecutionOrder = SpecExecutionOrder.Lexicographic
-
-   override fun extensions(): List<Extension> {
-      return listOf(TagFilteredDiscoveryExtensionExampleTest.ext)
-   }
 
    override suspend fun beforeProject() {
       intercepterLog.append("B1.")

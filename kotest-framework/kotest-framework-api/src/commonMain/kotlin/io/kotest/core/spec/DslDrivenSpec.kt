@@ -57,7 +57,7 @@ abstract class DslDrivenSpec : Spec() {
     * fire for this spec.
     */
    fun finalizeSpec(f: FinalizeSpec) {
-      configuration.register(object : TestListener {
+      configuration.registry().add(object : TestListener {
          override suspend fun finalizeSpec(kclass: KClass<out Spec>, results: Map<TestCase, TestResult>) {
             if (kclass == this@DslDrivenSpec::class) {
                f(Tuple2(kclass, results))
@@ -71,14 +71,14 @@ abstract class DslDrivenSpec : Spec() {
     * This is a convenience method for creating a [ProjectListener] and registering it.
     */
    fun afterProject(f: AfterProject) {
-      configuration.register(object : ProjectListener {
+      configuration.registry().add(object : ProjectListener {
          override suspend fun afterProject() {
             f()
          }
       })
    }
 
-   @Deprecated("This has no effect and will be removed in 6.0")
+   @Deprecated("This has no effect and will be removed in 6.0", level = DeprecationLevel.ERROR)
    fun aroundSpec(aroundSpecFn: AroundSpecFn) {
       extension(object : SpecExtension {
          override suspend fun intercept(spec: KClass<out Spec>, process: suspend () -> Unit) {

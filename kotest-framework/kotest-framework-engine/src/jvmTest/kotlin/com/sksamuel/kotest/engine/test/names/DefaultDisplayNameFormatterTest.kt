@@ -94,6 +94,36 @@ class DefaultDisplayNameFormatterTest : FunSpec() {
          DefaultDisplayNameFormatter(configuration).format(tc) shouldBe "test[tags = Dummy, NoUse, Foo]"
          configuration.testNameAppendTags = false
       }
+
+      test("bang should not be included in test name") {
+
+         val tc = TestCase(
+            descriptor = SpecWithTag::class.toDescriptor().append("!test"),
+            name = TestName("!test"),
+            spec = SpecWithTag(),
+            test = {},
+            source = sourceRef(),
+            type = TestType.Test,
+            config = TestCaseConfig(tags = setOf(Dummy, NoUse))
+         )
+
+         DefaultDisplayNameFormatter(configuration).format(tc) shouldBe "test"
+      }
+
+      test("focus should not be included in test name") {
+
+         val tc = TestCase(
+            descriptor = SpecWithTag::class.toDescriptor().append("f:test"),
+            name = TestName("f:test"),
+            spec = SpecWithTag(),
+            test = {},
+            source = sourceRef(),
+            type = TestType.Test,
+            config = TestCaseConfig(tags = setOf(Dummy, NoUse))
+         )
+
+         DefaultDisplayNameFormatter(configuration).format(tc) shouldBe "test"
+      }
    }
 }
 

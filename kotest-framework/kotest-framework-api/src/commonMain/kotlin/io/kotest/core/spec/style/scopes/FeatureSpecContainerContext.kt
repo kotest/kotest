@@ -26,7 +26,6 @@ typealias FeatureScope = FeatureSpecContainerContext
  * xscenario("some test").config(...)
  *
  */
-@KotestDsl
 class FeatureSpecContainerContext(
    val testContext: TestContext,
 ) : AbstractContainerContext(testContext) {
