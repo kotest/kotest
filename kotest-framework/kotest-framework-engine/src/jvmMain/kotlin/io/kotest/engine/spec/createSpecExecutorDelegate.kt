@@ -3,7 +3,6 @@ package io.kotest.engine.spec
 import io.kotest.common.ExperimentalKotest
 import io.kotest.core.concurrency.CoroutineDispatcherFactory
 import io.kotest.core.config.Configuration
-import io.kotest.core.config.configuration
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.Spec
 import io.kotest.core.test.TestCase
@@ -37,7 +36,7 @@ class JvmSpecExecutorDelegate(
 
    override suspend fun execute(spec: Spec): Map<TestCase, TestResult> {
 
-      val scheduler = when (val concurrentTests = spec.resolvedConcurrentTests()) {
+      val scheduler = when (val concurrentTests = spec.resolvedConcurrentTests(configuration.concurrentTests)) {
          Configuration.Sequential -> SequentialTestScheduler
          else -> ConcurrentTestScheduler(max(1, concurrentTests))
       }
@@ -81,11 +80,11 @@ class JvmSpecExecutorDelegate(
  * spec.concurrency ?: configuration.concurrentTests
  */
 @OptIn(ExperimentalKotest::class)
-internal fun Spec.resolvedConcurrentTests(): Int {
+internal fun Spec.resolvedConcurrentTests(defaultConcurrentTests: Int): Int {
    val fromSpecConcurrency = this.concurrency ?: this.concurrency()
    return when {
       this::class.isIsolate() -> Configuration.Sequential
       fromSpecConcurrency != null -> max(1, fromSpecConcurrency)
-      else -> configuration.concurrentTests
+      else -> defaultConcurrentTests
    }
 }

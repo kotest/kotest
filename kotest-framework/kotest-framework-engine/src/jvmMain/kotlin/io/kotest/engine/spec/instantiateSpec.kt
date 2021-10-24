@@ -23,12 +23,20 @@ suspend fun <T : Spec> createAndInitializeSpec(kclass: KClass<T>, registry: Exte
    return when (val obj = kclass.objectInstance) {
       null -> runCatching {
          val initial: Spec? = null
-         val spec = registry.all().filterIsInstance<ConstructorExtension>()
+
+         val spec = registry
+            .all()
+            .filterIsInstance<ConstructorExtension>()
             .fold(initial) { spec, ext -> spec ?: ext.instantiate(kclass) } ?: javaReflectNewInstance(kclass)
-         registry.all().filterIsInstance<PostInstantiationExtension>()
+
+         registry
+            .all()
+            .filterIsInstance<PostInstantiationExtension>()
             .fold(spec) { acc, ext -> ext.instantiated(acc) }
       }
       else -> Result.success(obj)
+   }.onSuccess { spec ->
+      spec.globalExtensions().forEach { registry.add(it) }
    }
 }
 

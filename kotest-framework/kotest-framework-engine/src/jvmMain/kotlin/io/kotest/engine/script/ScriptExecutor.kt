@@ -1,6 +1,5 @@
 //package io.kotest.engine.script
 //
-//import io.kotest.core.config.configuration
 //import io.kotest.engine.test.TestCaseExecutor
 //import io.kotest.core.plan.Descriptor
 //import io.kotest.core.plan.toDescriptor

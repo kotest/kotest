@@ -1,6 +1,5 @@
 package com.sksamuel.kotest.engine.spec.annotation
 
-import io.kotest.assertions.fail
 import io.kotest.core.listeners.TestListener
 import io.kotest.core.spec.AutoScan
 import io.kotest.core.spec.IsolationMode

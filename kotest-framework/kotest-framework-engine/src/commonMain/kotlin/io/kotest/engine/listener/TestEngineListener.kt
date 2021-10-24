@@ -24,7 +24,7 @@ interface TestEngineListener {
     *
     * @param context the final context that will be used.
     */
-   suspend fun engineInitialized(context: EngineContext) {}
+   suspend fun engineInitialized(context: EngineContext)
 
    /**
     * Is invoked when the [TestEngine] has finished execution of all specs.
@@ -32,7 +32,7 @@ interface TestEngineListener {
     * If any unexpected errors were detected during execution then it will be passed
     * to this method.
     */
-   suspend fun engineFinished(t: List<Throwable>) {}
+   suspend fun engineFinished(t: List<Throwable>)
 
    /**
     * Invoked when a spec is submitted to the SpecExecutor.
@@ -117,6 +117,8 @@ interface TestEngineListener {
 
 abstract class AbstractTestEngineListener : TestEngineListener {
    override suspend fun engineStarted() {}
+   override suspend fun engineFinished(t: List<Throwable>) {}
+   override suspend fun engineInitialized(context: EngineContext) {}
 }
 
 val NoopTestEngineListener = object : AbstractTestEngineListener() {}

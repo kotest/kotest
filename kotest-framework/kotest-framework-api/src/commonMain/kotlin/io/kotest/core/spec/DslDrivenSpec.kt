@@ -1,14 +1,14 @@
 package io.kotest.core.spec
 
 import io.kotest.core.Tuple2
-import io.kotest.core.config.configuration
 import io.kotest.core.descriptors.toDescriptor
+import io.kotest.core.extensions.Extension
 import io.kotest.core.extensions.SpecExtension
 import io.kotest.core.factory.TestFactory
 import io.kotest.core.factory.addPrefix
 import io.kotest.core.factory.createTestCases
+import io.kotest.core.listeners.FinalizeSpecListener
 import io.kotest.core.listeners.ProjectListener
-import io.kotest.core.listeners.TestListener
 import io.kotest.core.names.TestName
 import io.kotest.core.names.UniqueNames
 import io.kotest.core.test.TestCase
@@ -29,8 +29,14 @@ abstract class DslDrivenSpec : Spec() {
     */
    private var rootTestCases = emptyList<TestCase>()
 
+   private val globalExtensions = mutableListOf<Extension>()
+
    override fun materializeRootTests(): List<RootTest> {
       return rootTestCases.withIndex().map { RootTest(it.value, it.index) }
+   }
+
+   override fun globalExtensions(): List<Extension> {
+      return globalExtensions.toList()
    }
 
    /**
@@ -53,11 +59,12 @@ abstract class DslDrivenSpec : Spec() {
 
    /**
     * Registers a callback that will execute after all tests in this spec have completed.
-    * This is a convenience method for creating a [TestListener] and registering it to only
-    * fire for this spec.
+    *
+    * This is a convenience method for creating a [FinalizeSpecListener] and constraining
+    * it to only fire for this spec.
     */
    fun finalizeSpec(f: FinalizeSpec) {
-      configuration.registry().add(object : TestListener {
+      globalExtensions.add(object : FinalizeSpecListener {
          override suspend fun finalizeSpec(kclass: KClass<out Spec>, results: Map<TestCase, TestResult>) {
             if (kclass == this@DslDrivenSpec::class) {
                f(Tuple2(kclass, results))
@@ -68,10 +75,12 @@ abstract class DslDrivenSpec : Spec() {
 
    /**
     * Registers a callback that will execute after all specs have completed.
-    * This is a convenience method for creating a [ProjectListener] and registering it.
+    *
+    * This is a convenience method for creating a [ProjectListener] and registering
+    * it with project configuration.
     */
    fun afterProject(f: AfterProject) {
-      configuration.registry().add(object : ProjectListener {
+      globalExtensions.add(object : ProjectListener {
          override suspend fun afterProject() {
             f()
          }

@@ -8,6 +8,7 @@ import io.kotest.core.TestConfiguration
 import io.kotest.core.concurrency.CoroutineDispatcherFactory
 import io.kotest.core.config.Configuration
 import io.kotest.core.config.configuration
+import io.kotest.core.extensions.Extension
 import io.kotest.core.names.DuplicateTestNameMode
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestCaseOrder
@@ -29,6 +30,11 @@ abstract class Spec : TestConfiguration(), SpecFunctionConfiguration, SpecFuncti
     * will materialize the tests (Eg when a test is defined as a function as in annotation spec).
     */
    abstract fun materializeRootTests(): List<RootTest>
+
+   /**
+    * Returns any extensions registered via this spec that should be added to the global scope.
+    */
+   abstract fun globalExtensions(): List<Extension>
 
    @JsName("isolation_mode_js")
    var isolationMode: IsolationMode? = null

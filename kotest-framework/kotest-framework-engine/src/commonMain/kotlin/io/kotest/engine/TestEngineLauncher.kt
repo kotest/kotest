@@ -2,7 +2,6 @@
 
 package io.kotest.engine
 
-import io.kotest.common.KotestInternal
 import io.kotest.common.runBlocking
 import io.kotest.common.runPromise
 import io.kotest.core.Tags

@@ -1,13 +1,15 @@
 package io.kotest.engine.listener
 
-import io.kotest.core.config.configuration
+import io.kotest.core.config.Configuration
 import io.kotest.core.descriptors.toDescriptor
+import io.kotest.core.names.DisplayNameFormatter
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestType
 import io.kotest.engine.interceptors.EngineContext
 import io.kotest.engine.teamcity.Locations
 import io.kotest.engine.teamcity.TeamCityMessageBuilder
+import io.kotest.engine.test.names.DefaultDisplayNameFormatter
 import io.kotest.engine.test.names.getDisplayNameFormatter
 import io.kotest.mpp.bestName
 import kotlin.reflect.KClass
@@ -25,7 +27,7 @@ class TeamCityTestEngineListener(
    // these are the specs for which we received the specFinished event
    private val finished = mutableSetOf<KClass<*>>()
 
-   private val formatter = getDisplayNameFormatter(configuration.registry(), configuration)
+   private var formatter: DisplayNameFormatter = DefaultDisplayNameFormatter(Configuration())
 
    private fun TestCase.isContainer() = this.type == TestType.Container
 
@@ -72,7 +74,9 @@ class TeamCityTestEngineListener(
 
    override suspend fun engineStarted() {}
 
-   override suspend fun engineInitialized(context: EngineContext) {}
+   override suspend fun engineInitialized(context: EngineContext) {
+      formatter = getDisplayNameFormatter(context.configuration.registry(), context.configuration)
+   }
 
    override suspend fun engineFinished(t: List<Throwable>) {
       if (t.isNotEmpty()) {

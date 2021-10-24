@@ -2,6 +2,7 @@ package io.kotest.core.spec.style
 
 import io.kotest.core.config.configuration
 import io.kotest.core.descriptors.append
+import io.kotest.core.extensions.Extension
 import io.kotest.core.names.TestName
 import io.kotest.core.spec.RootTest
 import io.kotest.core.spec.Spec
@@ -89,6 +90,10 @@ abstract class AnnotationSpec : Spec() {
       val tests = this::class.findTestCases()
       val nested = this::class.findNestedTests()
       return (tests + nested).withIndex().map { (index, test) -> RootTest(test, index) }
+   }
+
+   override fun globalExtensions(): List<Extension> {
+      return emptyList()
    }
 
    private fun KFunction<*>.isExpectingException(): Boolean {

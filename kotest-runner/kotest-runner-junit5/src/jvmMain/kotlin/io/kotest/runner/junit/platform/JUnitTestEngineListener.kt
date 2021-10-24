@@ -9,7 +9,7 @@ import io.kotest.core.names.UniqueNames
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.engine.errors.ExtensionExceptionExtractor
-import io.kotest.engine.listener.TestEngineListener
+import io.kotest.engine.listener.AbstractTestEngineListener
 import io.kotest.engine.test.names.getDisplayNameFormatter
 import io.kotest.mpp.log
 import org.junit.platform.engine.EngineExecutionListener
@@ -72,7 +72,7 @@ class JUnitTestEngineListener(
    private val listener: EngineExecutionListener,
    val root: EngineDescriptor,
    private val configuration: Configuration,
-) : TestEngineListener {
+) : AbstractTestEngineListener() {
 
    private val formatter = getDisplayNameFormatter(configuration.registry(), configuration)
 
