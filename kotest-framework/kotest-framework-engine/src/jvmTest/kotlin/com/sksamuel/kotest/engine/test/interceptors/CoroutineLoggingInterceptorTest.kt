@@ -7,15 +7,15 @@ import io.kotest.core.config.LogLevel
 import io.kotest.core.config.configuration
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.test.TestCase
-import io.kotest.engine.test.interceptors.LogEntry
-import io.kotest.engine.test.interceptors.LogExtension
-import io.kotest.engine.test.interceptors.TestLogger
-import io.kotest.engine.test.interceptors.debug
-import io.kotest.engine.test.interceptors.error
-import io.kotest.engine.test.interceptors.info
-import io.kotest.engine.test.interceptors.logger
-import io.kotest.engine.test.interceptors.trace
-import io.kotest.engine.test.interceptors.warn
+import io.kotest.engine.test.logging.LogEntry
+import io.kotest.engine.test.logging.LogExtension
+import io.kotest.engine.test.logging.TestLogger
+import io.kotest.engine.test.logging.debug
+import io.kotest.engine.test.logging.error
+import io.kotest.engine.test.logging.info
+import io.kotest.engine.test.logging.logger
+import io.kotest.engine.test.logging.trace
+import io.kotest.engine.test.logging.warn
 import io.kotest.matchers.collections.shouldBeEmpty
 import io.kotest.matchers.collections.shouldContainInOrder
 
@@ -45,7 +45,6 @@ private val database = object : LogExtension {
 }
 
 class CoroutineLoggingInterceptorTest : FunSpec({
-   concurrency = 1
 
    val logLevel = configuration.logLevel
    val extensions = listOf(console, database)
@@ -163,7 +162,7 @@ class CoroutineLoggingInterceptorTest : FunSpec({
       reset(LogLevel.Trace)
 
       test("execute logs") {
-         logAll(logger)
+         logAll(logger!!)
       }
 
       val expected = arrayOf("info", "warn", "error", "debug", "trace")

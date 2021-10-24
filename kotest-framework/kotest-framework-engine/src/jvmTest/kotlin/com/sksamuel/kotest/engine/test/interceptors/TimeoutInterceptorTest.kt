@@ -3,10 +3,10 @@ package com.sksamuel.kotest.engine.test.interceptors
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.config.Configuration
 import io.kotest.core.descriptors.append
-import io.kotest.core.sourceRef
-import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.descriptors.toDescriptor
 import io.kotest.core.names.TestName
+import io.kotest.core.sourceRef
+import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestType

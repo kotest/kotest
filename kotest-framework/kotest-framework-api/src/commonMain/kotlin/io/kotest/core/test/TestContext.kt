@@ -22,9 +22,9 @@ interface TestContext : CoroutineScope {
    val testCase: TestCase
 
    /**
-    * Registers a [NestedTest] with the engine.
+    * Registers a [NestedTest] with the engine as a child of the current [testCase].
     *
-    * Will throw if the current test is not a container test.
+    * Will throw if the current [testCase] is not a container test.
     */
    suspend fun registerTestCase(nested: NestedTest)
 }
