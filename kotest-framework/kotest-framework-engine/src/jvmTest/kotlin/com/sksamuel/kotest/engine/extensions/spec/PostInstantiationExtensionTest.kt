@@ -1,6 +1,6 @@
 package com.sksamuel.kotest.engine.extensions.spec
 
-import io.kotest.core.config.configuration
+import io.kotest.core.config.Configuration
 import io.kotest.core.extensions.PostInstantiationExtension
 import io.kotest.core.spec.Isolate
 import io.kotest.core.spec.Spec
@@ -17,13 +17,13 @@ class PostInstantiationExtensionTest : FunSpec() {
 
       test("post instantiation extensions should be triggered") {
 
-         configuration.registerExtension(MyPostInstantiationExtension)
+         val conf = Configuration()
+         conf.registry().add(MyPostInstantiationExtension)
 
          TestEngineLauncher(NoopTestEngineListener)
             .withClasses(MySpec::class)
+            .withConfiguration(conf)
             .launch()
-
-         configuration.deregisterExtension(MyPostInstantiationExtension)
 
          a shouldBe "foo"
       }

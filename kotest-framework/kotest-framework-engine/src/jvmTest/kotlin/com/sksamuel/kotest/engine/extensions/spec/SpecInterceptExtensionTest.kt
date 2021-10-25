@@ -26,9 +26,14 @@ class SpecInterceptExtensionTest : FunSpec() {
             }
          }
 
-         configuration.register(ext)
-         TestEngineLauncher(NoopTestEngineListener).withClasses(SpecInterceptSingleInstance::class).launch()
-         configuration.deregister(ext)
+         val conf = io.kotest.core.config.Configuration()
+         conf.registry().add(ext)
+
+         TestEngineLauncher(NoopTestEngineListener)
+            .withClasses(SpecInterceptSingleInstance::class)
+            .withConfiguration(conf)
+            .launch()
+
          count shouldBe 1
       }
 

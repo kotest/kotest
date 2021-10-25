@@ -2,8 +2,6 @@ package io.kotest.engine.launcher
 
 import io.kotest.common.KotestInternal
 import io.kotest.core.Tags
-import io.kotest.core.config.configuration
-import io.kotest.core.extensions.DiscoveryExtension
 import io.kotest.core.spec.Spec
 import io.kotest.engine.TestEngineLauncher
 import io.kotest.engine.listener.TestEngineListener
@@ -52,7 +50,6 @@ private fun specs(specClass: KClass<out Spec>?, packageName: String?): Discovery
 private fun scan(packageName: String?): DiscoveryResult {
    val packageSelector = packageName?.let { DiscoverySelector.PackageDiscoverySelector(it) }
    val req = DiscoveryRequest(selectors = listOfNotNull(packageSelector))
-   val extensions = configuration.registry().all().filterIsInstance<DiscoveryExtension>()
-   val discovery = Discovery(extensions)
+   val discovery = Discovery(emptyList())
    return discovery.discover(req)
 }
