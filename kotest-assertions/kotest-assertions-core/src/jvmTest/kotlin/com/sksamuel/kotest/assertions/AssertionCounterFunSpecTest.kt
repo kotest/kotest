@@ -21,7 +21,7 @@ class AssertionCounterFunSpecTest : FunSpec() {
                "AssertionMode.Error assertion mode should fail the test if no assertions were present" -> {
                   when (val result = execute(testCase)) {
                      is TestResult.Error, is TestResult.Failure -> TestResult.Success(result.duration)
-                     else -> TestResult.Error(result.duration, RuntimeException("Should have failed"))
+                     else -> TestResult.Error(result.duration, RuntimeException("Should have failed: ${testCase.name.testName}"))
                   }
                }
                else -> execute(testCase)

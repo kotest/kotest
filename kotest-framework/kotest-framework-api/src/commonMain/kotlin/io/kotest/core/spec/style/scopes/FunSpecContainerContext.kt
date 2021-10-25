@@ -44,8 +44,8 @@ class FunSpecContainerContext(
     * Adds a container test to this context expecting config.
     */
    @ExperimentalKotest
-   fun context(name: String) {
-      ContainerContextConfigBuilder(
+   fun context(name: String): ContainerContextConfigBuilder<FunSpecContainerContext> {
+      return ContainerContextConfigBuilder(
          name = TestName(name),
          context = this,
          xdisabled = false,
@@ -64,8 +64,8 @@ class FunSpecContainerContext(
     * Adds a disabled container to this context, expecting config.
     */
    @ExperimentalKotest
-   fun xcontext(name: String) {
-      ContainerContextConfigBuilder(
+   fun xcontext(name: String): ContainerContextConfigBuilder<FunSpecContainerContext> {
+      return ContainerContextConfigBuilder(
          TestName(name),
          this,
          true

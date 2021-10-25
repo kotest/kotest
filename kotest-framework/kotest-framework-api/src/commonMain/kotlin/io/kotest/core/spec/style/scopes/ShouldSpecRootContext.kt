@@ -44,29 +44,25 @@ interface ShouldSpecRootContext : RootContext {
     * Adds a top level context scope accepting config to the spec.
     */
    @ExperimentalKotest
-   fun context(name: String) {
+   fun context(name: String): RootContextConfigBuilder<ShouldSpecContainerContext> =
       RootContextConfigBuilder(TestName("context ", name, false), false, this) { ShouldSpecContainerContext(it) }
-   }
 
    /**
     * Adds a disabled top level context scope accepting config to the spec.
     */
    @ExperimentalKotest
-   fun xcontext(name: String) {
+   fun xcontext(name: String): RootContextConfigBuilder<ShouldSpecContainerContext> =
       RootContextConfigBuilder(TestName("context ", name, false), true, this) { ShouldSpecContainerContext(it) }
-   }
 
    /**
     * Adds a top level test, with the given name and test function, with test config supplied
     * by invoking .config on the return of this function.
     */
-   fun should(name: String) {
+   fun should(name: String): RootTestWithConfigBuilder =
       RootTestWithConfigBuilder(this, TestName("should ", name, true), false)
-   }
 
-   fun xshould(name: String) {
+   fun xshould(name: String): RootTestWithConfigBuilder =
       RootTestWithConfigBuilder(this, TestName("should ", name, true), true)
-   }
 
    /**
     * Adds a top level test, with the given name and test function, with default test config.

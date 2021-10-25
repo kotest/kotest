@@ -73,7 +73,7 @@ class DefaultDisplayNameFormatterTest : FunSpec() {
             test = {},
             source = sourceRef(),
             type = TestType.Test,
-            config = ResolvedTestConfig(tags = setOf(Dummy, NoUse))
+            config = ResolvedTestConfig.default.copy(tags = setOf(Dummy, NoUse))
          )
          DefaultDisplayNameFormatter(configuration).format(tc) shouldBe "test[tags = Dummy, NoUse]"
          configuration.testNameAppendTags = false
@@ -89,7 +89,7 @@ class DefaultDisplayNameFormatterTest : FunSpec() {
             test = {},
             source = sourceRef(),
             type = TestType.Test,
-            config = ResolvedTestConfig(tags = setOf(Dummy, NoUse))
+            config = ResolvedTestConfig.default.copy(tags = setOf(Dummy, NoUse))
          )
          DefaultDisplayNameFormatter(configuration).format(tc) shouldBe "test[tags = Dummy, NoUse, Foo]"
          configuration.testNameAppendTags = false
@@ -104,7 +104,7 @@ class DefaultDisplayNameFormatterTest : FunSpec() {
             test = {},
             source = sourceRef(),
             type = TestType.Test,
-            config = ResolvedTestConfig(tags = setOf(Dummy, NoUse))
+            config = ResolvedTestConfig.default.copy(tags = setOf(Dummy, NoUse))
          )
 
          DefaultDisplayNameFormatter(configuration).format(tc) shouldBe "test"
@@ -119,7 +119,7 @@ class DefaultDisplayNameFormatterTest : FunSpec() {
             test = {},
             source = sourceRef(),
             type = TestType.Test,
-            config = ResolvedTestConfig(tags = setOf(Dummy, NoUse))
+            config = ResolvedTestConfig.default.copy(tags = setOf(Dummy, NoUse))
          )
 
          DefaultDisplayNameFormatter(configuration).format(tc) shouldBe "test"

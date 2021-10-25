@@ -41,13 +41,13 @@ data class TestCaseConfig(
     */
    val tags: Set<Tag> = emptySet(),
 
-   @Deprecated("Listeners subclass Extensions. Use the extensions variable for both listeners and extensions. Deprecated since 5.0")
    val listeners: List<TestListener> = emptyList(),
    val extensions: List<TestCaseExtension> = emptyList(),
 
    /**
     * If this function evaluates to false, then this test and any nested tests will be disabled.
     */
+   @Deprecated("Use enabledOrReasonIf. Deprecated since 5.0")
    val enabledIf: EnabledIf = { true },
    val severity: TestCaseSeverityLevel? = null,
    val enabledOrReasonIf: EnabledOrReasonIf = { Enabled.enabled },

@@ -16,9 +16,6 @@ import kotlin.time.Duration
  */
 data class ResolvedTestConfig(
 
-   /**
-    * If evaluates to true, then this test case is enabled.
-    */
    val enabled: EnabledOrReasonIf,
 
    val invocations: Int,
@@ -90,6 +87,26 @@ data class ResolvedTestConfig(
       require(threads > 0) { "Number of threads must be greater than 0" }
       require(threads <= invocations) { "Number of threads must be <= number of invocations" }
    }
+
+   companion object {
+      val default = ResolvedTestConfig(
+         { Enabled.enabled },
+         invocations = 1,
+         threads = 1,
+         coroutineDebugProbes = false,
+         testCoroutineDispatcher = false,
+         assertionMode = AssertionMode.None,
+         assertSoftly = false,
+         blockingTest = false,
+         extensions = emptyList(),
+         timeout = Duration.INFINITE,
+         invocationTimeout = Duration.INFINITE,
+         tags = emptySet(),
+         severity = TestCaseSeverityLevel.TRIVIAL,
+         failfast = false,
+      )
+   }
+
 }
 
 val xdisabledMessage = Enabled.disabled("Test was disabled using xdisabled")

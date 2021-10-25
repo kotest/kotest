@@ -21,20 +21,14 @@ fun resolveConfig(
    val defaultTestConfig = spec.defaultTestConfig ?: spec.defaultTestCaseConfig() ?: configuration.defaultTestConfig
 
    val enabled: EnabledOrReasonIf = { testCase ->
-      if (xdisabled == true) {
-         Enabled.disabled
-      } else if (config?.enabled != null) {
-         if (config.enabled) Enabled.enabled else Enabled.disabled
-      } else if (config?.enabledIf != null) {
-         if (config.enabledIf.invoke(testCase)) Enabled.enabled else Enabled.disabled
-      } else if (config?.enabledOrReasonIf != null) {
-         config.enabledOrReasonIf.invoke(testCase)
-      } else if (!defaultTestConfig.enabled) {
-         Enabled.disabled
-      } else if (!defaultTestConfig.enabledIf(testCase)) {
-         Enabled.disabled
-      } else {
-         defaultTestConfig.enabledOrReasonIf(testCase)
+      when {
+         xdisabled == false -> Enabled.disabled
+         config?.enabled == false -> Enabled.disabled
+         config?.enabledIf != null -> Enabled(config.enabledIf.invoke(testCase))
+         config?.enabledOrReasonIf != null -> config.enabledOrReasonIf.invoke(testCase)
+         !defaultTestConfig.enabled -> Enabled.disabled
+         !defaultTestConfig.enabledIf.invoke(testCase) -> Enabled.disabled
+         else -> defaultTestConfig.enabledOrReasonIf.invoke(testCase)
       }
    }
 

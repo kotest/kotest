@@ -48,7 +48,7 @@ data class TestCase(
    // the type specifies if this test case is permitted to contain nested tests (container)
    val type: TestType,
    // resolved config at runtime for this test
-   val config: ResolvedTestConfig,
+   val config: ResolvedTestConfig = ResolvedTestConfig.default,
    // an optional factory id which is used to indicate which factory (if any) generated this test case.
    val factoryId: FactoryId? = null,
    // the parent test case for this test at runtime, or null

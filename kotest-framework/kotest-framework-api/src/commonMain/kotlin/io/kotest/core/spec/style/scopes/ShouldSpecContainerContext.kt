@@ -48,13 +48,13 @@ class ShouldSpecContainerContext(
    }
 
    @ExperimentalKotest
-   fun context(name: String) {
-      ContainerContextConfigBuilder(TestName(name), this, false) { ShouldSpecContainerContext(it) }
+   fun context(name: String): ContainerContextConfigBuilder<ShouldSpecContainerContext> {
+      return ContainerContextConfigBuilder(TestName(name), this, false) { ShouldSpecContainerContext(it) }
    }
 
    @ExperimentalKotest
-   fun xcontext(name: String) {
-      ContainerContextConfigBuilder(TestName(name), this, true) { ShouldSpecContainerContext(it) }
+   fun xcontext(name: String): ContainerContextConfigBuilder<ShouldSpecContainerContext> {
+      return ContainerContextConfigBuilder(TestName(name), this, true) { ShouldSpecContainerContext(it) }
    }
 
    suspend fun should(name: String): TestWithConfigBuilder {

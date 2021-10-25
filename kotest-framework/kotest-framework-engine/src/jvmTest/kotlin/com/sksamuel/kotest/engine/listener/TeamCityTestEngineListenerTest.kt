@@ -40,7 +40,7 @@ class TeamCityTestEngineListenerTest : FunSpec() {
       { },
       sourceRef(),
       TestType.Container,
-      ResolvedTestConfig(),
+      ResolvedTestConfig.default,
       null,
       null
    )

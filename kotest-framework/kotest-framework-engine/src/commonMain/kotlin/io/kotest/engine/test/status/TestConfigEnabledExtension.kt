@@ -10,12 +10,12 @@ import io.kotest.mpp.log
  */
 internal object TestConfigEnabledExtension : TestEnabledExtension {
    override fun isEnabled(testCase: TestCase): Enabled {
-      val enabledOrReasonIf = testCase.config.enabled(testCase)
+      val enabled = testCase.config.enabled(testCase)
       return when {
-         enabledOrReasonIf.isEnabled -> Enabled.enabled
+         enabled.isEnabled -> Enabled.enabled
          else -> {
-            log { "${testCase.descriptor.path()} is disabled by enabledOrReasonIf function in config: ${enabledOrReasonIf.reason}" }
-            return enabledOrReasonIf
+            log { "${testCase.descriptor.path()} is disabled by enabledOrReasonIf function in config: ${enabled.reason}" }
+            return enabled
          }
       }
    }

@@ -47,7 +47,7 @@ class DescribeSpecContainerContext(
    }
 
    @ExperimentalKotest
-   fun context(name: String) =
+   fun context(name: String): ContainerContextConfigBuilder<DescribeSpecContainerContext> =
       ContainerContextConfigBuilder(TestName(name), this, false) { DescribeSpecContainerContext(it) }
 
    /**
@@ -58,7 +58,7 @@ class DescribeSpecContainerContext(
    }
 
    @ExperimentalKotest
-   fun xcontext(name: String) =
+   fun xcontext(name: String): ContainerContextConfigBuilder<DescribeSpecContainerContext> =
       ContainerContextConfigBuilder(TestName("Context: ", name, false), this, true) { DescribeSpecContainerContext(it) }
 
    /**
@@ -76,7 +76,7 @@ class DescribeSpecContainerContext(
    }
 
    @ExperimentalKotest
-   fun describe(name: String) =
+   fun describe(name: String): ContainerContextConfigBuilder<DescribeSpecContainerContext> =
       ContainerContextConfigBuilder(
          TestName("Describe: ", name, false),
          this,
@@ -84,7 +84,7 @@ class DescribeSpecContainerContext(
       ) { DescribeSpecContainerContext(it) }
 
    @ExperimentalKotest
-   fun xdescribe(name: String) =
+   fun xdescribe(name: String): ContainerContextConfigBuilder<DescribeSpecContainerContext> =
       ContainerContextConfigBuilder(
          TestName("Describe: ", name, false),
          this,

@@ -27,14 +27,12 @@ interface FunSpecRootContext : RootContext {
       addContainer(TestName("context ", name, false), true, null) { FunSpecContainerContext(this).test() }
 
    @ExperimentalKotest
-   fun context(name: String) {
+   fun context(name: String): RootContextConfigBuilder<FunSpecContainerContext> =
       RootContextConfigBuilder(TestName("context ", name, false), false, this) { FunSpecContainerContext(it) }
-   }
 
    @ExperimentalKotest
-   fun xcontext(name: String) {
+   fun xcontext(name: String): RootContextConfigBuilder<FunSpecContainerContext> =
       RootContextConfigBuilder(TestName("context ", name, false), true, this) { FunSpecContainerContext(it) }
-   }
 
    /**
     * Adds a [RootTest], with the given name and config taken from the config builder.

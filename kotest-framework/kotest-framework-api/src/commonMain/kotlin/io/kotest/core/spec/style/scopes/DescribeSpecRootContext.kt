@@ -27,11 +27,11 @@ interface DescribeSpecRootContext : RootContext {
    }
 
    @ExperimentalKotest
-   fun context(name: String) =
+   fun context(name: String): RootContextConfigBuilder<DescribeSpecContainerContext> =
       RootContextConfigBuilder(TestName(name), false, this) { DescribeSpecContainerContext(it) }
 
    @ExperimentalKotest
-   fun xcontext(name: String) =
+   fun xcontext(name: String): RootContextConfigBuilder<DescribeSpecContainerContext> =
       RootContextConfigBuilder(TestName(name), true, this) { DescribeSpecContainerContext(it) }
 
    fun describe(name: String, test: suspend DescribeSpecContainerContext.() -> Unit) {
@@ -43,14 +43,12 @@ interface DescribeSpecRootContext : RootContext {
    }
 
    @ExperimentalKotest
-   fun describe(name: String) {
+   fun describe(name: String): RootContextConfigBuilder<DescribeSpecContainerContext> =
       RootContextConfigBuilder(TestName("Describe: ", name, false), false, this) { DescribeSpecContainerContext(it) }
-   }
 
    @ExperimentalKotest
-   fun xdescribe(name: String) {
+   fun xdescribe(name: String): RootContextConfigBuilder<DescribeSpecContainerContext> =
       RootContextConfigBuilder(TestName("Describe: ", name, false), true, this) { DescribeSpecContainerContext(it) }
-   }
 
    fun it(name: String, test: suspend TestContext.() -> Unit) {
       addTest(TestName(name), false, null, test)
