@@ -20,10 +20,6 @@ internal class DescribeSpecForAllDataTest : DescribeSpec() {
          count shouldBe 174
       }
 
-      it("inside an it") {
-         registerContextTests().assertDataTestResults()
-      }
-
       describe("inside a describe") {
          registerContextTests().assertDataTestResults()
          describe("inside another describe") {

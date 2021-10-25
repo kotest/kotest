@@ -20,10 +20,6 @@ internal class ExpectSpecForAllDataTest : ExpectSpec() {
          count shouldBe 174
       }
 
-      expect("inside an expect") {
-         registerContextTests().assertDataTestResults()
-      }
-
       context("inside a context") {
          registerContextTests().assertDataTestResults()
          context("inside another context") {

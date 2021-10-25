@@ -20,10 +20,6 @@ internal class ShouldSpecForAllDataTest : ShouldSpec() {
          count shouldBe 174
       }
 
-      should("inside a should") {
-         registerContextTests().assertDataTestResults()
-      }
-
       context("inside a context") {
          registerContextTests().assertDataTestResults()
          context("inside another context") {

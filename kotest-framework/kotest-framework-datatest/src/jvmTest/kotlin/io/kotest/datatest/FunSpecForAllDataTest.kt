@@ -23,10 +23,6 @@ class FunSpecForAllDataTest : FunSpec() {
          count shouldBe 174
       }
 
-      test("inside a test case") {
-         registerContextTests().assertDataTestResults()
-      }
-
       context("inside a context") {
          registerContextTests().assertDataTestResults()
          context("inside another context") {

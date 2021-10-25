@@ -3,7 +3,6 @@ package io.kotest.datatest
 import io.kotest.common.ExperimentalKotest
 import io.kotest.core.spec.style.scopes.ContainerContext
 import io.kotest.core.spec.style.scopes.RootContext
-import io.kotest.core.test.TestContext
 import io.kotest.matchers.collections.shouldContainExactly
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldHaveLength
