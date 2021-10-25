@@ -59,6 +59,8 @@ data class UnresolvedTestConfig(
    // if null, defaults will be applied
    val assertionMode: AssertionMode? = null,
 
+   val assertSoftly: Boolean? = null,
+
    // when set to true, installs a coroutine debug probe for tracing coroutines when an error occurs
    val coroutineDebugProbes: Boolean? = null,
 

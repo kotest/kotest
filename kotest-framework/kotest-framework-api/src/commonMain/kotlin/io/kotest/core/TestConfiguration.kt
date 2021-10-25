@@ -58,6 +58,8 @@ abstract class TestConfiguration {
     */
    var assertions: AssertionMode? = null
 
+   var assertSoftly: Boolean? = null
+
    /**
     * Register a single [TestListener] of type T return that listener.
     */

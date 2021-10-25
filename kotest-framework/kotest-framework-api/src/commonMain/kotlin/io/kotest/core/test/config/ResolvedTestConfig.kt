@@ -62,6 +62,11 @@ data class ResolvedTestConfig(
    val assertionMode: AssertionMode,
 
    /**
+    * Whether soft assertion mode should be applied for the entire test.
+    */
+   val assertSoftly: Boolean,
+
+   /**
     * When set to true, a coroutine debug probe is installed for tracing coroutines when an error occurs.
     */
    val coroutineDebugProbes: Boolean,

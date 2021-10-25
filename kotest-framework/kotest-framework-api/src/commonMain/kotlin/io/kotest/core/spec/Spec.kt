@@ -18,8 +18,8 @@ import io.kotest.core.test.TestCaseSeverityLevel
 import io.kotest.core.test.TestContext
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestType
-import io.kotest.core.test.config.TestCaseConfig
 import io.kotest.core.test.config.ResolvedTestConfig
+import io.kotest.core.test.config.TestCaseConfig
 import io.kotest.core.test.config.UnresolvedTestConfig
 import kotlin.js.JsName
 
