@@ -9,7 +9,7 @@ class WordSpecParenthesisTest : WordSpec() {
    var names = mutableListOf<String>()
 
    override fun afterSpec(spec: Spec) {
-      names.shouldBe(listOf("parenthesis (here)  should", "work (here)"))
+      names.shouldBe(listOf("parenthesis (here) should", "work (here)"))
    }
 
    init {

@@ -11,7 +11,7 @@ class FunSpecMultiLineTest : FunSpec() {
       val names = mutableSetOf<String>()
 
       afterSpec {
-         names shouldBe setOf("test    case    1", "test    case    2")
+         names shouldBe setOf("test case 1", "test case 2")
       }
 
 
