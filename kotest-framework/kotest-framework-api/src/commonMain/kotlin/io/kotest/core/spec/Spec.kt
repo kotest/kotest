@@ -261,10 +261,18 @@ abstract class Spec : TestConfiguration() {
     */
    var testOrder: TestCaseOrder? = null
 
-   // When set to true, execution will switch to a dedicated thread for each test case in this spec,
-   // therefore allowing the test engine to safely interrupt tests via Thread.interrupt when they time out.
-   // This is useful if you are testing blocking code and want to use timeouts because coroutine timeouts
-   // are cooperative by nature.
+   /**
+    * When set to true, execution will switch to a dedicated thread for each test
+    * case in this spec, therefore allowing the test engine to safely interrupt
+    * tests via Thread.interrupt when they time out.
+    *
+    * This is useful if you are testing blocking code and want to use timeouts
+    * because coroutine timeouts are cooperative by nature.
+    *
+    * Without setting this value, the test engine will be unable to interrupt
+    * threads that are blocked.
+    */
+   @JsName("blockingTest_js")
    var blockingTest: Boolean? = null
 
    @JsName("coroutineDispatcherFactory_js")

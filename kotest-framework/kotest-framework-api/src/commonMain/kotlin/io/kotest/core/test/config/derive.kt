@@ -47,7 +47,7 @@ fun resolveConfig(
    val invocations = config?.invocations
       ?: defaultTestConfig.invocations
 
-   val invocationTimeout = config?.timeout
+   val invocationTimeout = config?.invocationTimeout
       ?: spec.invocationTimeout?.milliseconds
       ?: spec.invocationTimeout()?.milliseconds
       ?: defaultTestConfig.invocationTimeout

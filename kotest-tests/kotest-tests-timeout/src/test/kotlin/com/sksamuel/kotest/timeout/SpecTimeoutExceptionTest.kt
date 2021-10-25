@@ -6,24 +6,19 @@ import io.kotest.matchers.shouldBe
 import kotlinx.coroutines.delay
 import kotlin.time.Duration
 
-
 // tests that the values in the timeout exception are populated correctly
-class TestTimeoutExceptionTest : FunSpec() {
+class SpecTimeoutExceptionTest : FunSpec() {
    init {
 
-      timeout = 250
+      timeout = 21
 
-      test("timeout exception should use the value that caused the test to fail").config(
-         timeout = Duration.milliseconds(
-            23
-         )
-      ) {
+      test("timeout exception should use the value that caused the test to fail") {
          delay(Duration.milliseconds(100))
       }
 
       aroundTest { (test, execute) ->
          val result = execute(test)
-         result.errorOrNull?.message shouldBe "Test 'timeout exception should use the value that caused the test to fail' did not complete within 23ms"
+         result.errorOrNull?.message shouldBe "Test 'timeout exception should use the value that caused the test to fail' did not complete within 21ms"
          TestResult.success(0)
       }
    }
