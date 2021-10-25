@@ -29,13 +29,6 @@ class FeatureSpecContainerContext(
 
    override suspend fun registerTestCase(nested: NestedTest) = testContext.registerTestCase(nested)
 
-   override suspend fun addTest(name: String, type: TestType, test: suspend TestContext.() -> Unit) {
-      when (type) {
-         TestType.Container -> feature(name, test)
-         TestType.Test -> scenario(name, test)
-      }
-   }
-
    suspend fun feature(name: String, test: suspend FeatureSpecContainerContext.() -> Unit) {
       registerContainer(
          TestName("Feature: ", name, false),

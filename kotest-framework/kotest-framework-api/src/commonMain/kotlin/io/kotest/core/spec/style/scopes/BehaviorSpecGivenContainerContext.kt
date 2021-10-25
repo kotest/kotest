@@ -4,7 +4,6 @@ import io.kotest.core.names.TestName
 import io.kotest.core.spec.KotestDsl
 import io.kotest.core.test.NestedTest
 import io.kotest.core.test.TestContext
-import io.kotest.core.test.TestType
 
 @Deprecated("This interface has been renamed to BehaviorSpecGivenContainerContext. Deprecated since 4.5.")
 typealias GivenScope = BehaviorSpecGivenContainerContext
@@ -30,15 +29,6 @@ typealias GivenScope = BehaviorSpecGivenContainerContext
 class BehaviorSpecGivenContainerContext(
    val testContext: TestContext,
 ) : AbstractContainerContext(testContext) {
-
-   override suspend fun registerTestCase(nested: NestedTest) = testContext.registerTestCase(nested)
-
-   override suspend fun addTest(name: String, type: TestType, test: suspend TestContext.() -> Unit) {
-      when (type) {
-         TestType.Container -> `when`(name, test)
-         TestType.Test -> then(name, test)
-      }
-   }
 
    suspend fun And(name: String, test: suspend BehaviorSpecGivenContainerContext.() -> Unit) =
       addAnd(name, test, xdisabled = false)

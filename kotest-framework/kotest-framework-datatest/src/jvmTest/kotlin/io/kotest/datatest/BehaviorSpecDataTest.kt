@@ -17,7 +17,7 @@ internal class BehaviorSpecDataTest : BehaviorSpec() {
 
       afterSpec {
          results.assertDataTestResults()
-         count shouldBe 209
+         count shouldBe 174
       }
 
       given("inside a given") {
@@ -28,9 +28,6 @@ internal class BehaviorSpecDataTest : BehaviorSpec() {
          When("inside a when") {
             registerContextTests().assertDataTestResults()
             and("inside an and") {
-               registerContextTests().assertDataTestResults()
-            }
-            then("inside a then") {
                registerContextTests().assertDataTestResults()
             }
          }

@@ -20,7 +20,7 @@ class FunSpecForAllDataTest : FunSpec() {
 
       afterSpec {
          results.assertDataTestResults()
-         count shouldBe 174
+         count shouldBe 104
       }
 
       context("inside a context") {

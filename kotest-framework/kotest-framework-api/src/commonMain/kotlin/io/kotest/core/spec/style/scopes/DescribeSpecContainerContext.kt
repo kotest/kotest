@@ -3,9 +3,7 @@ package io.kotest.core.spec.style.scopes
 import io.kotest.common.ExperimentalKotest
 import io.kotest.core.descriptors.append
 import io.kotest.core.names.TestName
-import io.kotest.core.test.NestedTest
 import io.kotest.core.test.TestContext
-import io.kotest.core.test.TestType
 
 @Deprecated("This interface has been renamed to DescribeSpecContainerContext. Deprecated since 4.5.")
 typealias DescribeScope = DescribeSpecContainerContext
@@ -29,15 +27,6 @@ typealias DescribeScope = DescribeSpecContainerContext
 class DescribeSpecContainerContext(
    val testContext: TestContext,
 ) : AbstractContainerContext(testContext) {
-
-   override suspend fun registerTestCase(nested: NestedTest) = testContext.registerTestCase(nested)
-
-   override suspend fun addTest(name: String, type: TestType, test: suspend TestContext.() -> Unit) {
-      when (type) {
-         TestType.Container -> describe(name, test)
-         TestType.Test -> it(name, test)
-      }
-   }
 
    /**
     * Registers a container test.

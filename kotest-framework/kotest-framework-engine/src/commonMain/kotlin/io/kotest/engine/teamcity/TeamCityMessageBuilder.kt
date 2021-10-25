@@ -2,7 +2,6 @@ package io.kotest.engine.teamcity
 
 import io.kotest.common.errors.ComparisonError
 import kotlin.time.Duration
-import kotlin.time.milliseconds
 
 /**
  * Creates a TeamCity message builder to be used for a single string.
@@ -65,7 +64,10 @@ class TeamCityMessageBuilder(
          return TeamCityMessageBuilder(prefix, Messages.TEST_STD_ERR).addAttribute(Attributes.NAME, name)
       }
 
+      // note it seems that not attaching a message renders test failed irrelevant
       fun testFailed(name: String): TeamCityMessageBuilder = testFailed(TeamCityPrefix, name)
+
+      // note it seems that not attaching a message renders test failed irrelevant
       fun testFailed(prefix: String, name: String): TeamCityMessageBuilder {
          return TeamCityMessageBuilder(prefix, Messages.TEST_FAILED).addAttribute(Attributes.NAME, name)
       }
@@ -125,6 +127,7 @@ class TeamCityMessageBuilder(
    fun locationHint(value: String): TeamCityMessageBuilder = addAttribute(Attributes.LOCATION_HINT, value)
    fun resultStatus(value: String): TeamCityMessageBuilder = addAttribute(Attributes.RESULT_STATUS, value)
 
+   // note it seems that not attaching a message renders test failed irrelevant
    fun withException(error: Throwable?): TeamCityMessageBuilder {
       if (error == null) return this
 

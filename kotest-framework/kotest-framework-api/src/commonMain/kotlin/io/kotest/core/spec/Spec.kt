@@ -10,6 +10,9 @@ import io.kotest.core.config.Configuration
 import io.kotest.core.extensions.Extension
 import io.kotest.core.extensions.TestCaseExtension
 import io.kotest.core.factory.FactoryId
+import io.kotest.core.listeners.AfterSpecListener
+import io.kotest.core.listeners.AfterTestListener
+import io.kotest.core.listeners.BeforeTestListener
 import io.kotest.core.listeners.TestListener
 import io.kotest.core.names.DuplicateTestNameMode
 import io.kotest.core.names.TestName
@@ -326,7 +329,7 @@ abstract class Spec : TestConfiguration() {
     * The [TestCase] about to be executed is provided as the parameter.
     */
    override fun beforeTest(f: BeforeTest) {
-      register(object : TestListener {
+      register(object : BeforeTestListener {
          override suspend fun beforeAny(testCase: TestCase) {
             if (testCase.spec::class == this@Spec::class)
                f(testCase)
@@ -341,7 +344,7 @@ abstract class Spec : TestConfiguration() {
     * and the [TestResult] outcome of that test.
     */
    override fun afterTest(f: AfterTest) {
-      register(object : TestListener {
+      register(object : AfterTestListener {
          override suspend fun afterAny(testCase: TestCase, result: TestResult) {
             if (testCase.spec::class == this@Spec::class)
                f(Tuple2(testCase, result))
@@ -355,7 +358,7 @@ abstract class Spec : TestConfiguration() {
     * The spec instance is provided as a parameter.
     */
    override fun afterSpec(f: AfterSpec) {
-      register(object : TestListener {
+      register(object : AfterSpecListener {
          override suspend fun afterSpec(spec: Spec) {
             if (spec::class == this@Spec::class)
                f(spec)

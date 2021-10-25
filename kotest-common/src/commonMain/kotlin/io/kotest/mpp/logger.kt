@@ -6,14 +6,14 @@ import kotlin.time.TimeSource
 val start = TimeSource.Monotonic.markNow()
 
 @PublishedApi
-internal fun isLoggingEnabled() = true
-//sysprop("KOTEST_DEBUG")?.uppercase() == "TRUE" || env("KOTEST_DEBUG")?.uppercase() == "TRUE"
+internal fun isLoggingEnabled() =
+  sysprop("KOTEST_DEBUG")?.uppercase() == "TRUE" || env("KOTEST_DEBUG")?.uppercase() == "TRUE"
 
 fun log(f: () -> String) {
    log(null, f)
 }
 
-inline fun log(t: Throwable?, noinline f: () -> String) {
+fun log(t: Throwable?, f: () -> String) {
    if (isLoggingEnabled()) {
       writeLog(start, t, f)
       println(start.elapsedNow().inWholeMicroseconds.toString() + " " + f())

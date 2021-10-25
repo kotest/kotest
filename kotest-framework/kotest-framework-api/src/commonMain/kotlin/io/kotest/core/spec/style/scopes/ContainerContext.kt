@@ -4,7 +4,15 @@ import io.kotest.core.Tuple2
 import io.kotest.core.listeners.TestListener
 import io.kotest.core.names.TestName
 import io.kotest.core.sourceRef
-import io.kotest.core.spec.*
+import io.kotest.core.spec.AfterAny
+import io.kotest.core.spec.AfterContainer
+import io.kotest.core.spec.AfterEach
+import io.kotest.core.spec.AfterTest
+import io.kotest.core.spec.BeforeAny
+import io.kotest.core.spec.BeforeContainer
+import io.kotest.core.spec.BeforeEach
+import io.kotest.core.spec.BeforeTest
+import io.kotest.core.spec.KotestDsl
 import io.kotest.core.test.NestedTest
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestContext
@@ -17,22 +25,10 @@ import kotlin.coroutines.CoroutineContext
 typealias ContainerScope = ContainerContext
 
 /**
- * Extends a [TestContext] with methods used by test containers.
+ * Extends a [TestContext] with convenience methods for registering tests and listeners.
  */
+@KotestDsl
 interface ContainerContext : TestContext {
-
-   /**
-    * Registers a test on this scope, wrapping the test in the most appropriate scope for the
-    * given test type.
-    *
-    * For example, invoking this method on a [DescribeSpec] with a test type of Container, will
-    * add a `describe` block, and invoking with a test type of Test will add an `it` block.
-    */
-   suspend fun addTest(
-      name: String,
-      type: TestType,
-      test: suspend TestContext.() -> Unit,
-   )
 
    suspend fun registerContainer(
       name: TestName,
@@ -45,12 +41,7 @@ interface ContainerContext : TestContext {
             name = name,
             disabled = disabled,
             config = config,
-            test = {
-               IncompleteContainerContext(this).apply {
-                  this.test()
-                  if (!hasNestedTest) throw IncompleteContainerException(name.testName)
-               }
-            },
+            test = test,
             type = TestType.Container,
             source = sourceRef(),
          )
@@ -192,7 +183,8 @@ interface ContainerContext : TestContext {
    }
 }
 
-abstract class AbstractContainerContext(testContext: TestContext) : ContainerContext {
+open class AbstractContainerContext(private val testContext: TestContext) : ContainerContext {
    override val testCase: TestCase = testContext.testCase
    override val coroutineContext: CoroutineContext = testContext.coroutineContext
+   override suspend fun registerTestCase(nested: NestedTest) = testContext.registerTestCase(nested)
 }

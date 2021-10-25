@@ -1,5 +1,6 @@
 package io.kotest.core.test
 
+import io.kotest.core.spec.KotestDsl
 import kotlinx.coroutines.CoroutineScope
 import kotlin.coroutines.CoroutineContext
 
@@ -14,6 +15,7 @@ import kotlin.coroutines.CoroutineContext
  * coroutines directly, without requiring them to supply a coroutine scope, and to retrieve
  * elements from the current [CoroutineContext] via [CoroutineContext.get]
  */
+@KotestDsl
 interface TestContext : CoroutineScope {
 
    /**

@@ -17,7 +17,7 @@ internal class FeatureSpecForAllDataTest : FeatureSpec() {
 
       afterSpec {
          results.assertDataTestResults()
-         count shouldBe 139
+         count shouldBe 104
       }
 
       feature("inside a feature") {

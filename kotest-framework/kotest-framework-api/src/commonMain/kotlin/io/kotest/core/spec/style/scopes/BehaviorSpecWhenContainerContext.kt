@@ -2,9 +2,7 @@ package io.kotest.core.spec.style.scopes
 
 import io.kotest.core.names.TestName
 import io.kotest.core.spec.KotestDsl
-import io.kotest.core.test.NestedTest
 import io.kotest.core.test.TestContext
-import io.kotest.core.test.TestType
 
 @Deprecated("This interface has been renamed to BehaviorSpecWhenContainerContext. Deprecated since 4.5.")
 typealias WhenScope = BehaviorSpecWhenContainerContext
@@ -26,15 +24,6 @@ typealias WhenScope = BehaviorSpecWhenContainerContext
 class BehaviorSpecWhenContainerContext(
    val testContext: TestContext,
 ) : AbstractContainerContext(testContext) {
-
-   override suspend fun registerTestCase(nested: NestedTest) = testContext.registerTestCase(nested)
-
-   override suspend fun addTest(name: String, type: TestType, test: suspend TestContext.() -> Unit) {
-      when (type) {
-         TestType.Container -> and(name, test)
-         TestType.Test -> then(name, test)
-      }
-   }
 
    suspend fun And(name: String, test: suspend BehaviorSpecWhenContainerContext.() -> Unit) = addAnd(name, test, xdisabled = false)
    suspend fun and(name: String, test: suspend BehaviorSpecWhenContainerContext.() -> Unit) = addAnd(name, test, xdisabled = false)

@@ -17,7 +17,7 @@ internal class DescribeSpecForAllDataTest : DescribeSpec() {
 
       afterSpec {
          results.assertDataTestResults()
-         count shouldBe 174
+         count shouldBe 104
       }
 
       describe("inside a describe") {

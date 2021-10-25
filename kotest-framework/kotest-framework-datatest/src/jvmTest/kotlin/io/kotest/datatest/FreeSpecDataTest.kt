@@ -5,7 +5,7 @@ import io.kotest.core.spec.style.FreeSpec
 import io.kotest.matchers.shouldBe
 
 @ExperimentalKotest
-class FreeSpecForAllDataClassDataTest : FreeSpec() {
+class FreeSpecDataTest : FreeSpec() {
    init {
 
       val results = registerRootTests()

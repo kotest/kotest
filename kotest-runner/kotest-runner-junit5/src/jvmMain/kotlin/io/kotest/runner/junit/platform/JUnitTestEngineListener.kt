@@ -193,37 +193,46 @@ class JUnitTestEngineListener(
    }
 
    override suspend fun specExit(kclass: KClass<*>, t: Throwable?) {
+      val (name, cause) = if (t == null) Pair("<error>", null) else ExtensionExceptionExtractor.resolve(t)
       when {
-         t == null && ignored -> Unit
-         t == null && inactive -> markSpecInactive(kclass)
+         cause == null && ignored -> Unit
+         cause == null && inactive -> markSpecInactive(kclass)
          // if we have a spec error before we even started the spec, we will start the spec, add a placeholder
          // to hold the error, mark that test as failed, and then fail the spec as well
-         t != null && !started -> {
+         cause != null && !started -> {
             val descriptor = markSpecStarted(kclass)
-            addPlaceholderTest(descriptor, t)
-            log { "JUnitTestEngineListener: Notifying junit that a spec failed [$descriptor, $t]" }
-            listener.executionFinished(descriptor, TestExecutionResult.failed(t))
+            addPlaceholderTest(descriptor, name, cause)
+            log { "JUnitTestEngineListener: Notifying junit that a spec failed [$descriptor, $cause]" }
+            listener.executionFinished(descriptor, TestExecutionResult.failed(cause))
          }
          // if we had an error in the spec, and we had no tests, we'll add the dummy and return
-         t != null && rootTests.isEmpty() -> {
+         cause != null && rootTests.isEmpty() -> {
             val descriptor = descriptors[kclass.toDescriptor()]!!
-            addPlaceholderTest(descriptor, t)
-            log { "JUnitTestEngineListener: Notifying junit that a spec failed [$descriptor, $t]" }
-            listener.executionFinished(descriptor, TestExecutionResult.failed(t))
+            addPlaceholderTest(descriptor, name, cause)
+            log { "JUnitTestEngineListener: Notifying junit that a spec failed [$descriptor, $cause]" }
+            listener.executionFinished(descriptor, TestExecutionResult.failed(cause))
          }
          else -> {
-            val descriptor = descriptors[kclass.toDescriptor()]
-            rootTests.forEach { handleTest(it) }
 
-            val result = when {
-               t != null -> TestExecutionResult.failed(t)
-               instantiationException != null -> TestExecutionResult.failed(instantiationException)
-               else -> TestExecutionResult.successful()
-            }
+            val descriptor = descriptors[kclass.toDescriptor()]
 
             if (descriptor == null) {
                log { "JUnitTestEngineListener: Error retrieving description for spec[${kclass.qualifiedName}]" }
                throw RuntimeException("Error retrieving description for spec ${kclass.qualifiedName}")
+            }
+
+            rootTests.forEach { handleTest(it) }
+
+            val result = when {
+               cause != null -> {
+                  addPlaceholderTest(descriptor, name, cause)
+                  TestExecutionResult.successful()
+               }
+               instantiationException != null -> {
+                  instantiationException?.let { addPlaceholderTest(descriptor, "instantiationException", it) }
+                  TestExecutionResult.successful()
+               }
+               else -> TestExecutionResult.successful()
             }
 
             log { "JUnitTestEngineListener: Notifying junit that a spec has finished [$descriptor, $result]" }
@@ -244,10 +253,10 @@ class JUnitTestEngineListener(
       descriptors.clear()
    }
 
-   private fun addPlaceholderTest(parent: TestDescriptor, t: Throwable) {
+   private fun addPlaceholderTest(parent: TestDescriptor, name: String, t: Throwable) {
       val descriptor = createTestDescriptor(
-         parent.uniqueId.append(Segment.Test.value, "<error>"),
-         "<error>",
+         parent.uniqueId.append(Segment.Test.value, name),
+         name,
          TestDescriptor.Type.TEST,
          null,
          false
@@ -255,7 +264,8 @@ class JUnitTestEngineListener(
       parent.addChild(descriptor)
       listener.dynamicTestRegistered(descriptor)
       listener.executionStarted(descriptor)
-      listener.executionFinished(descriptor, TestResult.Error(Duration.ZERO, t).testExecutionResult())
+      val (_, cause) = ExtensionExceptionExtractor.resolve(t)
+      listener.executionFinished(descriptor, TestResult.Error(Duration.ZERO, cause).testExecutionResult())
    }
 
    override suspend fun testStarted(testCase: TestCase) {

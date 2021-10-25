@@ -69,10 +69,10 @@ class RootDataTestNameFunctionTest : FunSpec({
          "AnotherDummyClass(a : a2, b : b2)",
          "simplea1b1",
          "simplea2b2",
-         "simplea1b1",
-         "simplea2b2",
-         "simplea1b1",
-         "simplea2b2",
+         "(1) simplea1b1",
+         "(1) simplea2b2",
+         "(2) simplea1b1",
+         "(2) simplea2b2",
       )
    }
 

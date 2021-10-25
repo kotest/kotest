@@ -5,10 +5,8 @@ import io.kotest.core.extensions.TestCaseExtension
 import io.kotest.core.names.TestName
 import io.kotest.core.spec.KotestDsl
 import io.kotest.core.test.EnabledIf
-import io.kotest.core.test.NestedTest
 import io.kotest.core.test.TestCaseSeverityLevel
 import io.kotest.core.test.TestContext
-import io.kotest.core.test.TestType
 import kotlin.time.Duration
 
 @Deprecated("This interface has been renamed to WordSpecShouldContainerContext. Deprecated since 4.5.")
@@ -28,15 +26,6 @@ typealias WordSpecShouldScope = WordSpecShouldContainerContext
 class WordSpecShouldContainerContext(
    val testContext: TestContext,
 ) : AbstractContainerContext(testContext) {
-
-   override suspend fun registerTestCase(nested: NestedTest) = testContext.registerTestCase(nested)
-
-   override suspend fun addTest(name: String, type: TestType, test: suspend TestContext.() -> Unit) {
-      when (type) {
-         TestType.Container -> error("Containers cannot be added to this context")
-         TestType.Test -> name(test)
-      }
-   }
 
    suspend fun String.config(
       enabled: Boolean? = null,

@@ -44,25 +44,17 @@ fun RootContext.addTest(
 
 /**
  * Convenience method to add a container type [RootTest] that uses default config.
- *
- * This method wraps the [TestContext] with [IncompleteContainerContext] to detect
- * when no nested tests are added, and if so, throw an exception.
  */
 fun RootContext.addContainer(
    testName: TestName,
    disabled: Boolean,
    config: UnresolvedTestConfig?,
-   test: suspend IncompleteContainerContext.() -> Unit
+   test: suspend ContainerContext.() -> Unit
 ) {
    add(
       RootTest(
          name = testName,
-         test = {
-            IncompleteContainerContext(this).apply {
-               this.test()
-               if (!hasNestedTest) throw IncompleteContainerException(testName.testName)
-            }
-         },
+         test = { AbstractContainerContext(this).test() },
          type = TestType.Container,
          source = sourceRef(),
          disabled = disabled,
