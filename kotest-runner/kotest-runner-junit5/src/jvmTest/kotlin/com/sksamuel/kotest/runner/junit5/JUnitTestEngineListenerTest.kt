@@ -69,12 +69,12 @@ class JUnitTestEngineListenerTest : FunSpec({
          ),
          EventTrackingEngineExecutionListener.Event.ExecutionStarted("com.sksamuel.kotest.runner.junit5.MySpec"),
          EventTrackingEngineExecutionListener.Event.TestRegistered(
-            "<error>",
+            "Exception",
             TestDescriptor.Type.TEST
          ),
-         EventTrackingEngineExecutionListener.Event.ExecutionStarted("<error>"),
+         EventTrackingEngineExecutionListener.Event.ExecutionStarted("Exception"),
          EventTrackingEngineExecutionListener.Event.ExecutionFinished(
-            "<error>",
+            "Exception",
             TestExecutionResult.Status.FAILED
          ),
          EventTrackingEngineExecutionListener.Event.ExecutionFinished(
@@ -271,12 +271,12 @@ class JUnitTestEngineListenerTest : FunSpec({
          EventTrackingEngineExecutionListener.Event.TestRegistered("foo", TestDescriptor.Type.TEST),
          EventTrackingEngineExecutionListener.Event.ExecutionStarted("foo"),
          EventTrackingEngineExecutionListener.Event.ExecutionFinished("foo", TestExecutionResult.Status.SUCCESSFUL),
-//         EventTrackingEngineExecutionListener.Event.TestRegistered(JUnitTestEngineListener.PlaceholderName, TestDescriptor.Type.TEST),
-//         EventTrackingEngineExecutionListener.Event.ExecutionStarted(JUnitTestEngineListener.PlaceholderName),
-//         EventTrackingEngineExecutionListener.Event.ExecutionFinished(JUnitTestEngineListener.PlaceholderName, TestExecutionResult.Status.FAILED),
+         EventTrackingEngineExecutionListener.Event.TestRegistered("Exception", TestDescriptor.Type.TEST),
+         EventTrackingEngineExecutionListener.Event.ExecutionStarted("Exception"),
+         EventTrackingEngineExecutionListener.Event.ExecutionFinished("Exception", TestExecutionResult.Status.FAILED),
          EventTrackingEngineExecutionListener.Event.ExecutionFinished(
             "com.sksamuel.kotest.runner.junit5.MySpec",
-            TestExecutionResult.Status.FAILED
+            TestExecutionResult.Status.SUCCESSFUL
          ),
       )
    }
