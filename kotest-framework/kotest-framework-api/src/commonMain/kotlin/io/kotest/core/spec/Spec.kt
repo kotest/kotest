@@ -15,6 +15,7 @@ import io.kotest.core.names.TestName
 import io.kotest.core.test.AssertionMode
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestCaseOrder
+import io.kotest.core.test.TestCaseSeverityLevel
 import io.kotest.core.test.TestContext
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestType
@@ -190,8 +191,13 @@ abstract class Spec : TestConfiguration() {
     */
    abstract fun globalExtensions(): List<Extension>
 
+   @JsName("severity_js")
+   var severity: TestCaseSeverityLevel? = null
+
    @JsName("isolation_mode_js")
    var isolationMode: IsolationMode? = null
+
+   var failfast: Boolean? = null
 
    /**
     * Sets the number of tests that will be launched concurrently.
@@ -208,7 +214,7 @@ abstract class Spec : TestConfiguration() {
     * To change that behavior, see [dispatcherAffinity].
     */
    @ExperimentalKotest
-   @JsName("concurrency_var")
+   @JsName("concurrency_js")
    var concurrency: Int? = null
 
    /**
@@ -223,7 +229,7 @@ abstract class Spec : TestConfiguration() {
     * Note: This setting has no effect unless the number of threads is increasd; see [Configuration.parallelism].
     */
    @ExperimentalKotest
-   @JsName("dispatcherAffinity_var")
+   @JsName("dispatcherAffinity_js")
    var dispatcherAffinity: Boolean? = null
 
    /**
@@ -242,7 +248,7 @@ abstract class Spec : TestConfiguration() {
     * When using a nested test style, this invocation timeout does not apply to container tests (parent tests)
     * but only leaf tests (outermost tests).
     */
-   @JsName("invocationTimeout_var")
+   @JsName("invocationTimeout_js")
    var invocationTimeout: Long? = null
 
    /**
@@ -257,7 +263,7 @@ abstract class Spec : TestConfiguration() {
    // are cooperative by nature.
    var blockingTest: Boolean? = null
 
-   @JsName("coroutineDispatcherFactory_var")
+   @JsName("coroutineDispatcherFactory_js")
    @ExperimentalKotest
    var coroutineDispatcherFactory: CoroutineDispatcherFactory? = null
 
@@ -280,6 +286,8 @@ abstract class Spec : TestConfiguration() {
     */
    @JsName("threads_var")
    var threads: Int? = null
+
+   var coroutineDebugProbes: Boolean? = null
 
    /**
     * Controls what to do when a duplicated test name is discovered.

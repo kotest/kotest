@@ -78,7 +78,7 @@ data class ResolvedTestConfig(
    // therefore allowing the test engine to safely interrupt tests via Thread.interrupt when they time out.
    // This is useful if you are testing blocking code and want to use timeouts because coroutine timeouts
    // are cooperative by nature.
-   val blockingTest: Boolean
+   val blockingTest: Boolean,
 ) {
    init {
       require(invocations > 0) { "Number of invocations must be greater than 0" }

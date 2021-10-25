@@ -30,7 +30,7 @@ fun NestedTest.toTestCase(
    configuration: Configuration
 ): TestCase {
 
-   val resolvedTestConfig = resolveConfig(config, spec, configuration)
+   val resolvedTestConfig = resolveConfig(config, disabled, spec, configuration)
 
    return TestCase(
       descriptor = parent.descriptor.append(name),

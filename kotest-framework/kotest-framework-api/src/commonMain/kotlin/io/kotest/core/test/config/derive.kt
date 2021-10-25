@@ -73,11 +73,11 @@ fun resolveConfig(
       invocationTimeout = invocationTimeout,
       tags = (config?.tags ?: emptySet()) + (defaultTestConfig.tags) + spec.tags() + spec._tags + spec::class.tags(),
       extensions = extensions,
-      failfast = config?.failfast ?: configuration.failfast,
-      severity = config?.severity ?: configuration.severity,
-      assertionMode = config?.assertionMode ?: configuration.assertionMode,
-      coroutineDebugProbes = config?.coroutineDebugProbes ?: configuration.coroutineDebugProbes,
-      testCoroutineDispatcher = config?.testCoroutineDispatcher ?: configuration.testCoroutineDispatcher,
-      blockingTest = config?.blockingTest ?: configuration.blockingTest,
+      failfast = config?.failfast ?: spec.failfast ?: configuration.failfast,
+      severity = config?.severity ?: spec.severity ?: configuration.severity,
+      assertionMode = config?.assertionMode ?: spec.assertionMode() ?: spec.assertions ?: configuration.assertionMode,
+      coroutineDebugProbes = config?.coroutineDebugProbes ?: spec.coroutineDebugProbes ?: configuration.coroutineDebugProbes,
+      testCoroutineDispatcher = config?.testCoroutineDispatcher ?: spec.testCoroutineDispatcher ?: configuration.testCoroutineDispatcher,
+      blockingTest = config?.blockingTest ?: spec.blockingTest ?: configuration.blockingTest,
    )
 }
