@@ -8,7 +8,7 @@ import io.kotest.core.test.NestedTest
 import io.kotest.core.test.TestCaseSeverityLevel
 import io.kotest.core.test.TestContext
 import io.kotest.core.test.TestType
-import io.kotest.core.test.config.ConfigurableTestConfig
+import io.kotest.core.test.config.UnresolvedTestConfig
 import kotlin.time.Duration
 
 @Deprecated("Renamed to FreeSpecContainerContext. Deprecated since 4.5.")
@@ -104,7 +104,7 @@ class FreeSpecContainerContext(
       severity: TestCaseSeverityLevel? = null,
       failfast: Boolean? = null,
    ): FreeSpecContextConfigBuilder {
-      val config = ConfigurableTestConfig(
+      val config = UnresolvedTestConfig(
          enabled = enabled,
          tags = tags,
          extensions = extensions,

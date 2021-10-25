@@ -1,7 +1,6 @@
 package io.kotest.engine.test.status
 
 import io.kotest.core.Tags
-import io.kotest.core.internal.tags.allTags
 import io.kotest.core.test.Enabled
 import io.kotest.core.test.TestCase
 import io.kotest.engine.tags.isActive
@@ -21,7 +20,7 @@ import io.kotest.mpp.log
  */
 internal class TagsEnabledExtension(private val tags: Tags) : TestEnabledExtension {
    override fun isEnabled(testCase: TestCase): Enabled {
-      val enabledInTags = tags.parse().isActive(testCase.allTags())
+      val enabledInTags = tags.parse().isActive(testCase.config.tags)
       if (!enabledInTags) {
          return Enabled
             .disabled("${testCase.descriptor.path()} is disabled by tags")

@@ -12,7 +12,7 @@ import io.kotest.core.spec.DisplayName
 import io.kotest.core.spec.Isolate
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.test.TestCase
-import io.kotest.core.test.config.TestCaseConfig
+import io.kotest.core.test.config.ResolvedTestConfig
 import io.kotest.core.test.TestType
 import io.kotest.engine.test.names.DefaultDisplayNameFormatter
 import io.kotest.matchers.shouldBe
@@ -73,7 +73,7 @@ class DefaultDisplayNameFormatterTest : FunSpec() {
             test = {},
             source = sourceRef(),
             type = TestType.Test,
-            config = TestCaseConfig(tags = setOf(Dummy, NoUse))
+            config = ResolvedTestConfig(tags = setOf(Dummy, NoUse))
          )
          DefaultDisplayNameFormatter(configuration).format(tc) shouldBe "test[tags = Dummy, NoUse]"
          configuration.testNameAppendTags = false
@@ -89,7 +89,7 @@ class DefaultDisplayNameFormatterTest : FunSpec() {
             test = {},
             source = sourceRef(),
             type = TestType.Test,
-            config = TestCaseConfig(tags = setOf(Dummy, NoUse))
+            config = ResolvedTestConfig(tags = setOf(Dummy, NoUse))
          )
          DefaultDisplayNameFormatter(configuration).format(tc) shouldBe "test[tags = Dummy, NoUse, Foo]"
          configuration.testNameAppendTags = false
@@ -104,7 +104,7 @@ class DefaultDisplayNameFormatterTest : FunSpec() {
             test = {},
             source = sourceRef(),
             type = TestType.Test,
-            config = TestCaseConfig(tags = setOf(Dummy, NoUse))
+            config = ResolvedTestConfig(tags = setOf(Dummy, NoUse))
          )
 
          DefaultDisplayNameFormatter(configuration).format(tc) shouldBe "test"
@@ -119,7 +119,7 @@ class DefaultDisplayNameFormatterTest : FunSpec() {
             test = {},
             source = sourceRef(),
             type = TestType.Test,
-            config = TestCaseConfig(tags = setOf(Dummy, NoUse))
+            config = ResolvedTestConfig(tags = setOf(Dummy, NoUse))
          )
 
          DefaultDisplayNameFormatter(configuration).format(tc) shouldBe "test"

@@ -23,10 +23,11 @@ import io.kotest.core.spec.Spec
 import io.kotest.core.spec.TestCaseExtensionFn
 import io.kotest.core.test.AssertionMode
 import io.kotest.core.test.TestCase
-import io.kotest.core.test.config.TestCaseConfig
 import io.kotest.core.test.TestContext
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestType
+import io.kotest.core.test.config.DefaultTestCaseConfig
+import io.kotest.core.test.config.ResolvedTestConfig
 import kotlin.js.JsName
 
 /**
@@ -48,7 +49,8 @@ abstract class TestConfiguration {
     *
     * Any test case config set a test itself will override any value here.
     */
-   var defaultTestConfig: TestCaseConfig? = null
+   @Deprecated("These settings should be specified individually to provide finer grain control. Deprecated since 5.0")
+   var defaultTestConfig: DefaultTestCaseConfig? = null
 
    /**
     * Sets an assertion mode which is applied to every test.
@@ -146,7 +148,7 @@ abstract class TestConfiguration {
    abstract fun addTest(
       name: TestName,
       test: suspend TestContext.() -> Unit,
-      config: TestCaseConfig,
+      config: ResolvedTestConfig,
       type: TestType
    )
 

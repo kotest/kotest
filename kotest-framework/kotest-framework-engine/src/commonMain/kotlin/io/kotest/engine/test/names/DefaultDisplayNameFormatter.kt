@@ -3,7 +3,6 @@ package io.kotest.engine.test.names
 import io.kotest.core.config.Configuration
 import io.kotest.core.config.ExtensionRegistry
 import io.kotest.core.extensions.DisplayNameFormatterExtension
-import io.kotest.core.internal.tags.allTags
 import io.kotest.core.names.DisplayNameFormatter
 import io.kotest.core.names.TestNameCase
 import io.kotest.core.spec.DisplayName
@@ -78,7 +77,7 @@ class DefaultDisplayNameFormatter(
 }
 
 fun appendTagsInDisplayName(testCase: TestCase, displayName: String): String {
-   val tagNames = testCase.allTags().joinToString(", ")
+   val tagNames = testCase.config.tags.joinToString(", ")
    return if (tagNames.isBlank()) {
       displayName
    } else {

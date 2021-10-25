@@ -1,6 +1,7 @@
 package io.kotest.engine.spec.runners
 
 import io.kotest.common.ExperimentalKotest
+import io.kotest.common.flatMap
 import io.kotest.core.concurrency.CoroutineDispatcherFactory
 import io.kotest.core.config.Configuration
 import io.kotest.core.spec.Spec
@@ -17,7 +18,6 @@ import io.kotest.engine.test.TestCaseExecutionListener
 import io.kotest.engine.test.TestCaseExecutor
 import io.kotest.engine.test.contexts.DuplicateNameHandlingTestContext
 import io.kotest.engine.test.scheduler.TestScheduler
-import io.kotest.common.flatMap
 import io.kotest.mpp.log
 import kotlinx.coroutines.coroutineScope
 import java.util.concurrent.ConcurrentHashMap
@@ -129,7 +129,7 @@ internal class InstancePerTestSpecRunner(
             override val coroutineContext: CoroutineContext = this@coroutineScope.coroutineContext
             override suspend fun registerTestCase(nested: NestedTest) {
 
-               val t = nested.toTestCase(testCase.spec, testCase, configuration.defaultTestConfig)
+               val t = nested.toTestCase(testCase.spec, testCase, configuration)
 
                // if we are currently executing the target, then any registered tests are new, and we
                // should begin execution of them in fresh specs

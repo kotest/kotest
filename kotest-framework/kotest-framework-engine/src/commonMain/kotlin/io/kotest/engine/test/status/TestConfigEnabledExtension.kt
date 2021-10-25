@@ -5,36 +5,18 @@ import io.kotest.core.test.TestCase
 import io.kotest.mpp.log
 
 /**
- * A [TestEnabledExtension] that uses the enabled / enabledIf values in test case config
+ * A [TestEnabledExtension] that uses the enabled value in test case config
  * to determine if a test is enabled.
- *
- * This extension disables a test if:
- *
- * - The `enabledOrReasonIf` function evaluates to [Enabled.disabled] in the [TestCaseConfig] associated with the test.
- * - The `enabled` property is set to false in the [TestCaseConfig] associated with the test.
- * - The `enabledIf` function evaluates to [false] in the [TestCaseConfig] associated with the test.
  */
 internal object TestConfigEnabledExtension : TestEnabledExtension {
    override fun isEnabled(testCase: TestCase): Enabled {
-
-      val enabledOrReasonIf = testCase.config.enabledOrReasonIf(testCase)
-      if (!enabledOrReasonIf.isEnabled) {
-         log { "${testCase.descriptor.path()} is disabled by enabledOrReasonIf function in config: ${enabledOrReasonIf.reason}" }
-         return enabledOrReasonIf
+      val enabledOrReasonIf = testCase.config.enabled(testCase)
+      return when {
+         enabledOrReasonIf.isEnabled -> Enabled.enabled
+         else -> {
+            log { "${testCase.descriptor.path()} is disabled by enabledOrReasonIf function in config: ${enabledOrReasonIf.reason}" }
+            return enabledOrReasonIf
+         }
       }
-
-      if (!testCase.config.enabled) {
-         return Enabled
-            .disabled("${testCase.descriptor.path()} is disabled by enabled property in config")
-            .also { it.reason?.let { log { it } } }
-      }
-
-      if (!testCase.config.enabledIf(testCase)) {
-         return Enabled
-            .disabled("${testCase.descriptor.path()} is disabled by enabledIf function in config")
-            .also { it.reason?.let { log { it } } }
-      }
-
-      return Enabled.enabled
    }
 }

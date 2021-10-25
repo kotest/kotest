@@ -18,23 +18,42 @@ import io.kotest.core.test.TestCaseOrder
 import io.kotest.core.test.TestContext
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestType
-import io.kotest.core.test.config.ConfigurableTestConfig
-import io.kotest.core.test.config.TestCaseConfig
+import io.kotest.core.test.config.DefaultTestCaseConfig
+import io.kotest.core.test.config.ResolvedTestConfig
+import io.kotest.core.test.config.UnresolvedTestConfig
 import kotlin.js.JsName
 
 /**
  * A [Spec] is the top most container of tests.
  *
- * It allows tests to be defined, either through DSL-methods or via declaring functions, or
- * through a user defined way by subclassing this class.
+ * It allows tests to be defined, either through DSL-methods or via annotated methods, or
+ * through any user defined way by subclassing this class and implementing [rootTests].
  *
- * A Spec allows test defaults to be specified - either inline by assignment to var's, or
- * by function overrides.
+ * Test case defaults can be specified by either assignment to the settings var's or
+ * by overriding the applicable setting function and returning the required value.
  *
- * Lifecycle callbacks can be registered, either by lambda accepting functions or
- * by function overrides.
+ * For example, to set a default timeout for all tests in a spec, one can do either:
+ *
+ * `timeout = 100.seconds`
+ *
+ * or `override fun timeout() = 100.seconds`
+ *
+ * The former is useful for declaring inside an init block and the latter useful for outside.
+ * They are functionally equivalent.
+ *
+ * Lifecycle callbacks, such as before and after test can be registered, either by defining
+ * an inline lambda or by overriding the appropriate function.
+ *
+ * For example, to apply a before-test callback, one can do either:
+ *
+ * `beforeTest { println("bonjour!") }`
+ *
+ * or
+ *
+ * `override fun beforeTest() { println("bonjour!") }`
  *
  * Functions to register [AutoCloseable] instances can be found in [AutoClosing].
+ *
  */
 abstract class Spec : TestConfiguration() {
 
@@ -64,12 +83,13 @@ abstract class Spec : TestConfiguration() {
    open fun listeners(): List<TestListener> = emptyList()
 
    /**
-    * Override this function to set default [TestCaseConfig] which will be applied to each
+    * Override this function to set default [ResolvedTestConfig] which will be applied to each
     * test case. If null, then will use project defaults.
     *
     * Any test case config set a test itself will override any value here.
     */
-   open fun defaultTestCaseConfig(): TestCaseConfig? = null
+   @Deprecated("These settings should be specified individually to provide finer grain control. Deprecated since 5.0")
+   open fun defaultTestCaseConfig(): DefaultTestCaseConfig? = null
 
    /**
     * Returns the [IsolationMode] to be used by the test engine when running tests in this spec.
@@ -316,8 +336,6 @@ abstract class Spec : TestConfiguration() {
     * The [TestCase] and it's [TestResult] are provided as parameters.
     */
    open fun afterAny(testCase: TestCase, result: TestResult) {}
-
-   fun declaredTags(): Set<Tag> = tags() + _tags
 }
 
 /**
@@ -330,5 +348,5 @@ data class RootTest(
    val type: TestType,
    val source: SourceRef,
    val disabled: Boolean?, // if the test is explicitly disabled, say through an annotation or method name
-   val config: ConfigurableTestConfig?, // if specified by the test, may be null
+   val config: UnresolvedTestConfig?, // if specified by the test, may be null
 )

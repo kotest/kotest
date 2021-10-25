@@ -2,7 +2,7 @@ package io.kotest.core.spec.style.scopes
 
 import io.kotest.core.names.TestName
 import io.kotest.core.test.TestCase
-import io.kotest.core.test.config.TestCaseConfig
+import io.kotest.core.test.config.ResolvedTestConfig
 import io.kotest.core.test.TestContext
 import io.kotest.core.test.TestType
 
@@ -11,7 +11,7 @@ import io.kotest.core.test.TestType
  */
 interface RootTestRegistration {
 
-   val defaultConfig: TestCaseConfig
+   val defaultConfig: ResolvedTestConfig
 
    /**
     * Adds a new root [TestCase] to this scope with type [TestType.Container].
@@ -34,7 +34,7 @@ interface RootTestRegistration {
    fun addTest(
       name: TestName,
       xdisabled: Boolean,
-      config: TestCaseConfig,
+      config: ResolvedTestConfig,
       test: suspend TestContext.() -> Unit
    ) = addTest(name, xdisabled, config, TestType.Test, test)
 
@@ -46,7 +46,7 @@ interface RootTestRegistration {
    fun addTest(
       name: TestName,
       xdisabled: Boolean,
-      config: TestCaseConfig,
+      config: ResolvedTestConfig,
       type: TestType,
       test: suspend TestContext.() -> Unit
    )

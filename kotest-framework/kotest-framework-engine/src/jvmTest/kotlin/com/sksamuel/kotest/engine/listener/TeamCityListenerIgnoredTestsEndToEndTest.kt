@@ -7,7 +7,7 @@ import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.descriptors.toDescriptor
 import io.kotest.core.names.TestName
 import io.kotest.core.test.TestCase
-import io.kotest.core.test.config.TestCaseConfig
+import io.kotest.core.test.config.ResolvedTestConfig
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestType
 import io.kotest.engine.listener.TeamCityTestEngineListener
@@ -26,7 +26,7 @@ class TeamCityListenerIgnoredTestsEndToEndTest : FunSpec() {
       test = { },
       source = sourceRef(),
       type = TestType.Test,
-      config = TestCaseConfig(enabled = false),
+      config = ResolvedTestConfig(enabled = false),
       factoryId = null,
    )
 

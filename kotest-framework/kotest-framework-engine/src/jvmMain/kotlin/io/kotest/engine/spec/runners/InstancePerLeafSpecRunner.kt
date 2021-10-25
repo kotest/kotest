@@ -108,8 +108,7 @@ internal class InstancePerLeafSpecRunner(
             override val coroutineContext: CoroutineContext = this@coroutineScope.coroutineContext
             override suspend fun registerTestCase(nested: NestedTest) {
 
-               val t = nested.toTestCase(test.spec, test, configuration.defaultTestConfig)
-
+               val t = nested.toTestCase(test.spec, test, configuration)
                // if this test is our target then we definitely run it
                // or if the test is on the path to our target we must run it
                if (t.descriptor.isOnPath(target.descriptor)) {

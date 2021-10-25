@@ -5,7 +5,7 @@ import io.kotest.core.names.TestNameCase
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.SpecExecutionOrder
 import io.kotest.core.test.AssertionMode
-import io.kotest.core.test.config.TestCaseConfig
+import io.kotest.core.test.config.ResolvedTestConfig
 import io.kotest.core.test.TestCaseOrder
 
 data class EngineConfiguration(
@@ -24,7 +24,7 @@ data class EngineConfiguration(
    val projectTimeout: Long,
    val logLevel: LogLevel,
    val testCoroutineDispatcher: Boolean,
-   val defaultTestConfig: TestCaseConfig,
+   val defaultTestConfig: ResolvedTestConfig,
    val failOnEmptyTestSuite: Boolean,
    val dumpConfig: Boolean,
    val coroutineDebugProbes: Boolean,

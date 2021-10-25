@@ -9,18 +9,16 @@ import io.kotest.core.test.EnabledOrReasonIf
 import io.kotest.core.test.TestCaseSeverityLevel
 import kotlin.time.Duration
 
-data class ConfigurableTestConfig(
+/**
+ * Test config that is attached to a [RootTest] or [NestedTest] during compile time.
+ *
+ * This config is not resolved, and will be converted to a [ResolvedTestConfig] once
+ * resolved at runtime.
+ */
+data class UnresolvedTestConfig(
 
-   /**
-    * If set to false, this test and any nested tests will be disabled.
-    */
    val enabled: Boolean? = null,
-
-   /**
-    * If this function evaluates to false, then this test and any nested tests will be disabled.
-    */
    val enabledIf: EnabledIf? = null,
-
    val enabledOrReasonIf: EnabledOrReasonIf? = null,
 
    val invocations: Int? = null,

@@ -13,7 +13,7 @@ import io.kotest.core.spec.Spec
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.test.Enabled
 import io.kotest.core.test.TestCase
-import io.kotest.core.test.config.TestCaseConfig
+import io.kotest.core.test.config.ResolvedTestConfig
 import io.kotest.core.test.TestCaseOrder
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestStatus
@@ -99,7 +99,7 @@ class IgnoredTestReasonFake : FunSpec({
 @Order(1)
 class IgnoredTestReasonSpec : FunSpec({
    tags(tag)
-   defaultTestConfig = TestCaseConfig(enabledOrReasonIf = {
+   defaultTestConfig = ResolvedTestConfig(enabledOrReasonIf = {
       if (fakeRan) Enabled.enabled else Enabled.disabled("The spec this depends on [IgnoredTestReasonFake] didn't run")
    })
 

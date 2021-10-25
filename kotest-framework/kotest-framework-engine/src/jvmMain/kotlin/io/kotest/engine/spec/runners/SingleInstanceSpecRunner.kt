@@ -1,6 +1,7 @@
 package io.kotest.engine.spec.runners
 
 import io.kotest.common.ExperimentalKotest
+import io.kotest.common.flatMap
 import io.kotest.core.concurrency.CoroutineDispatcherFactory
 import io.kotest.core.config.Configuration
 import io.kotest.core.spec.Spec
@@ -16,7 +17,6 @@ import io.kotest.engine.test.TestCaseExecutor
 import io.kotest.engine.test.contexts.DuplicateNameHandlingTestContext
 import io.kotest.engine.test.listener.TestCaseExecutionListenerToTestEngineListenerAdapter
 import io.kotest.engine.test.scheduler.TestScheduler
-import io.kotest.common.flatMap
 import io.kotest.mpp.log
 import kotlinx.coroutines.coroutineScope
 import java.util.concurrent.ConcurrentHashMap
@@ -72,7 +72,7 @@ internal class SingleInstanceSpecRunner(
       // in the single instance runner we execute each nested test as soon as they are registered
       override suspend fun registerTestCase(nested: NestedTest) {
          log { "Nested test case discovered '${nested}'" }
-         val nestedTestCase = nested.toTestCase(testCase.spec, testCase, configuration.defaultTestConfig)
+         val nestedTestCase = nested.toTestCase(testCase.spec, testCase, configuration)
          if (failedfast) {
             log { "A previous nested test failed and failfast is enabled - will mark this as ignored" }
             listener.testIgnored(nestedTestCase, "Failfast enabled on parent test")

@@ -4,7 +4,7 @@ import io.kotest.common.ExperimentalKotest
 import io.kotest.core.descriptors.append
 import io.kotest.core.names.TestName
 import io.kotest.core.test.Identifiers
-import io.kotest.core.test.config.TestCaseConfig
+import io.kotest.core.test.config.ResolvedTestConfig
 import io.kotest.core.test.TestContext
 import io.kotest.core.test.TestType
 import kotlin.jvm.JvmName
@@ -91,7 +91,7 @@ suspend fun <T : Any> TestContext.withData(
             descriptor = testCase.descriptor.append(name),
             name = TestName(name),
             xdisabled = false,
-            config = TestCaseConfig(),
+            config = ResolvedTestConfig(),
             type = TestType.Container,
             factoryId = null
          ) { test(t) }
@@ -112,7 +112,7 @@ suspend fun <T : Any> TestContext.withData(data: Map<String, T>, test: suspend T
             descriptor = testCase.descriptor.append(name),
             name = TestName(name),
             xdisabled = false,
-            config = TestCaseConfig(),
+            config = ResolvedTestConfig(),
             type = TestType.Container,
             factoryId = null,
          ) { test(t) }

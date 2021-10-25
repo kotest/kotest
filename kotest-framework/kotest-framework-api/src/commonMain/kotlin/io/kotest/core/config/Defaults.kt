@@ -7,18 +7,18 @@ import io.kotest.core.spec.SpecExecutionOrder
 import io.kotest.core.test.AssertionMode
 import io.kotest.core.test.TestCaseOrder
 import io.kotest.core.test.TestCaseSeverityLevel
-import io.kotest.core.test.config.TestCaseConfig
+import io.kotest.core.test.config.DefaultTestCaseConfig
 
 object Defaults {
 
    val assertionMode: AssertionMode = AssertionMode.None
-   val testCaseConfig: TestCaseConfig = TestCaseConfig()
+   val testCaseConfig: DefaultTestCaseConfig = DefaultTestCaseConfig()
    val testCaseOrder: TestCaseOrder = TestCaseOrder.Sequential
    val isolationMode: IsolationMode = IsolationMode.SingleInstance
    val duplicateTestNameMode: DuplicateTestNameMode = DuplicateTestNameMode.Warn
    const val displayFullTestPath: Boolean = false
 
-   val severity: TestCaseSeverityLevel? = null
+   val severity: TestCaseSeverityLevel = TestCaseSeverityLevel.TRIVIAL
 
    const val coroutineDebugProbes: Boolean = false
    const val testCoroutineDispatcher: Boolean = false

@@ -4,9 +4,8 @@ import io.kotest.core.SourceRef
 import io.kotest.core.descriptors.Descriptor
 import io.kotest.core.factory.FactoryId
 import io.kotest.core.names.TestName
-import io.kotest.core.sourceRef
 import io.kotest.core.spec.Spec
-import io.kotest.core.test.config.TestCaseConfig
+import io.kotest.core.test.config.ResolvedTestConfig
 
 /**
  * A [TestCase] describes a test lambda at runtime.
@@ -36,76 +35,27 @@ import io.kotest.core.test.config.TestCaseConfig
  *
  */
 data class TestCase(
+   // parseable, stable, consistent identifer for this test element
    val descriptor: Descriptor.TestDescriptor,
+   // the name of the test as entered by the user
    val name: TestName,
    // the spec instance that contains this testcase
    val spec: Spec,
    // a closure of the test function
    val test: suspend TestContext.() -> Unit,
+   // a reference to the source code where this test case was defined
    val source: SourceRef,
    // the type specifies if this test case is permitted to contain nested tests (container)
    val type: TestType,
-   // config used when running the test, such as number of
-   // invocations, threads, etc
-   val config: TestCaseConfig = TestCaseConfig(),
+   // resolved config at runtime for this test
+   val config: ResolvedTestConfig,
    // an optional factory id which is used to indicate which factory (if any) generated this test case.
    val factoryId: FactoryId? = null,
    // the parent test case for this test at runtime, or null
    val parent: TestCase? = null,
 ) {
-
    @Deprecated("Use testCase.name or testCase.descriptor. This was deprecated in 5.0.")
    val displayName: String = descriptor.id.value
-
-   init {
-      if (type == TestType.Test && config.failfast == true) error("Cannot set fail fast on leaf test")
-   }
-
-   companion object {
-
-      /**
-       * Creates a [TestCase] of type [TestType.Test], with default config, and derived source ref.
-       */
-      fun test(
-         descriptor: Descriptor.TestDescriptor,
-         name: TestName,
-         spec: Spec,
-         parent: TestCase?,
-         test: suspend TestContext.() -> Unit
-      ): TestCase =
-         TestCase(
-            descriptor = descriptor,
-            name = name,
-            spec = spec,
-            test = test,
-            source = sourceRef(),
-            type = TestType.Test,
-            config = TestCaseConfig(),
-            factoryId = null,
-            parent = parent,
-         )
-
-      /**
-       * Creates a [TestCase] of type [TestType.Container], with default config, and derived source ref.
-       */
-      fun container(
-         descriptor: Descriptor.TestDescriptor,
-         name: TestName,
-         spec: Spec,
-         parent: TestCase?,
-         test: suspend TestContext.() -> Unit
-      ): TestCase = TestCase(
-         descriptor = descriptor,
-         name = name,
-         spec = spec,
-         test = test,
-         source = sourceRef(),
-         type = TestType.Container,
-         config = TestCaseConfig(),
-         factoryId = null,
-         parent = parent,
-      )
-   }
 }
 
 /**

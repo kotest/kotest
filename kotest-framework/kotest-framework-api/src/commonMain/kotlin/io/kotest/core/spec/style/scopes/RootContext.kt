@@ -5,7 +5,7 @@ import io.kotest.core.sourceRef
 import io.kotest.core.spec.RootTest
 import io.kotest.core.test.TestContext
 import io.kotest.core.test.TestType
-import io.kotest.core.test.config.ConfigurableTestConfig
+import io.kotest.core.test.config.UnresolvedTestConfig
 
 @Deprecated("Renamed to RootContext. Deprecated since 4.5.")
 typealias RootScope = RootContext
@@ -26,7 +26,7 @@ interface RootContext {
 fun RootContext.addTest(
    testName: TestName,
    disabled: Boolean,
-   config: ConfigurableTestConfig?,
+   config: UnresolvedTestConfig?,
    test: suspend TestContext.() -> Unit
 ) {
    add(
@@ -36,7 +36,7 @@ fun RootContext.addTest(
          type = TestType.Test,
          source = sourceRef(),
          disabled = disabled,
-         config = null
+         config = config
       )
    )
 }
@@ -50,7 +50,7 @@ fun RootContext.addTest(
 fun RootContext.addContainer(
    testName: TestName,
    disabled: Boolean,
-   config: ConfigurableTestConfig?,
+   config: UnresolvedTestConfig?,
    test: suspend IncompleteContainerContext.() -> Unit
 ) {
    add(
@@ -65,7 +65,7 @@ fun RootContext.addContainer(
          type = TestType.Container,
          source = sourceRef(),
          disabled = disabled,
-         config = null
+         config = config
       )
    )
 }

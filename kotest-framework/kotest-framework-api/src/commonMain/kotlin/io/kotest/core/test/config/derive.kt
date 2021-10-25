@@ -1,23 +1,83 @@
 package io.kotest.core.test.config
 
-fun deriveTestCaseConfig(config: ConfigurableTestConfig?, defaultTestCaseConfig: TestCaseConfig): TestCaseConfig {
-   if (config == null) return defaultTestCaseConfig
-   return TestCaseConfig(
-      enabled = config.enabled ?: defaultTestCaseConfig.enabled,
-      enabledOrReasonIf = config.enabledOrReasonIf ?: defaultTestCaseConfig.enabledOrReasonIf,
-      enabledIf = config.enabledIf ?: defaultTestCaseConfig.enabledIf,
-      threads = config.threads ?: defaultTestCaseConfig.threads,
-      invocations = config.invocations ?: defaultTestCaseConfig.invocations,
-      timeout = config.timeout ?: defaultTestCaseConfig.timeout,
-      invocationTimeout = config.invocationTimeout ?: defaultTestCaseConfig.invocationTimeout,
-      tags = (config.tags ?: emptySet()) + defaultTestCaseConfig.tags,
-      listeners = (config.listeners ?: emptyList()) + defaultTestCaseConfig.listeners,
-      extensions = (config.extensions ?: emptyList()) + defaultTestCaseConfig.extensions,
-      failfast = config.failfast ?: defaultTestCaseConfig.failfast,
-      severity = config.severity ?: defaultTestCaseConfig.severity,
-      assertionMode = config.assertionMode ?: defaultTestCaseConfig.assertionMode,
-      coroutineDebugProbes = config.coroutineDebugProbes ?: defaultTestCaseConfig.coroutineDebugProbes,
-      testCoroutineDispatcher = config.testCoroutineDispatcher ?: defaultTestCaseConfig.testCoroutineDispatcher,
-      blockingTest = config.blockingTest ?: defaultTestCaseConfig.blockingTest,
+import io.kotest.core.config.Configuration
+import io.kotest.core.internal.tags.tags
+import io.kotest.core.spec.Spec
+import io.kotest.core.test.Enabled
+import io.kotest.core.test.EnabledOrReasonIf
+import kotlin.time.milliseconds
+
+/**
+ * Accepts an [UnresolvedTestConfig] and returns a resolved [ResolvedTestConfig] by completing
+ * the unresolved with defaults from the [spec] or [Configuration].
+ */
+fun resolveConfig(
+   config: UnresolvedTestConfig?,
+   xdisabled: Boolean?,
+   spec: Spec,
+   configuration: Configuration
+): ResolvedTestConfig {
+
+   val defaultTestConfig = spec.defaultTestConfig ?: spec.defaultTestCaseConfig() ?: configuration.defaultTestConfig
+
+   val enabled: EnabledOrReasonIf = { testCase ->
+      if (xdisabled == true) {
+         Enabled.disabled
+      } else if (config?.enabled != null) {
+         if (config.enabled) Enabled.enabled else Enabled.disabled
+      } else if (config?.enabledIf != null) {
+         if (config.enabledIf.invoke(testCase)) Enabled.enabled else Enabled.disabled
+      } else if (config?.enabledOrReasonIf != null) {
+         config.enabledOrReasonIf.invoke(testCase)
+      } else if (!defaultTestConfig.enabled) {
+         Enabled.disabled
+      } else if (!defaultTestConfig.enabledIf(testCase)) {
+         Enabled.disabled
+      } else {
+         defaultTestConfig.enabledOrReasonIf(testCase)
+      }
+   }
+
+   val timeout = config?.timeout
+      ?: spec.timeout?.milliseconds
+      ?: spec.timeout()?.milliseconds
+      ?: defaultTestConfig.timeout
+      ?: configuration.timeout.milliseconds
+
+   val threads = config?.threads
+      ?: spec.threads
+      ?: spec.threads()
+      ?: defaultTestConfig.threads
+
+   val invocations = config?.invocations
+      ?: defaultTestConfig.invocations
+
+   val invocationTimeout = config?.timeout
+      ?: spec.invocationTimeout?.milliseconds
+      ?: spec.invocationTimeout()?.milliseconds
+      ?: defaultTestConfig.invocationTimeout
+      ?: configuration.invocationTimeout.milliseconds
+
+   val extensions = (config?.listeners ?: emptyList()) +
+      (config?.extensions ?: emptyList()) +
+      spec.extensions() +
+      spec.registeredExtensions() +
+      defaultTestConfig.extensions +
+      defaultTestConfig.listeners
+
+   return ResolvedTestConfig(
+      enabled = enabled,
+      threads = threads,
+      invocations = invocations,
+      timeout = timeout,
+      invocationTimeout = invocationTimeout,
+      tags = (config?.tags ?: emptySet()) + (defaultTestConfig.tags) + spec.tags() + spec._tags + spec::class.tags(),
+      extensions = extensions,
+      failfast = config?.failfast ?: configuration.failfast,
+      severity = config?.severity ?: configuration.severity,
+      assertionMode = config?.assertionMode ?: configuration.assertionMode,
+      coroutineDebugProbes = config?.coroutineDebugProbes ?: configuration.coroutineDebugProbes,
+      testCoroutineDispatcher = config?.testCoroutineDispatcher ?: configuration.testCoroutineDispatcher,
+      blockingTest = config?.blockingTest ?: configuration.blockingTest,
    )
 }

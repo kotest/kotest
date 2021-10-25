@@ -4,7 +4,6 @@ import io.kotest.core.Tuple2
 import io.kotest.core.extensions.Extension
 import io.kotest.core.extensions.SpecExtension
 import io.kotest.core.factory.TestFactory
-import io.kotest.core.factory.addPrefix
 import io.kotest.core.listeners.FinalizeSpecListener
 import io.kotest.core.listeners.ProjectListener
 import io.kotest.core.names.TestName
@@ -14,7 +13,7 @@ import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestContext
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestType
-import io.kotest.core.test.config.TestCaseConfig
+import io.kotest.core.test.config.ResolvedTestConfig
 import kotlin.reflect.KClass
 
 /**
@@ -101,7 +100,7 @@ abstract class DslDrivenSpec : Spec(), RootContext {
    /**
     * Adds a new root-level [TestCase] to this [Spec].
     */
-   override fun addTest(name: TestName, test: suspend TestContext.() -> Unit, config: TestCaseConfig, type: TestType) {
+   override fun addTest(name: TestName, test: suspend TestContext.() -> Unit, config: ResolvedTestConfig, type: TestType) {
       rootTests = rootTests + RootTest(
          name = name,
          test = test,

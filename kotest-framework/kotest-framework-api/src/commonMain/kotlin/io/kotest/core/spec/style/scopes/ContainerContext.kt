@@ -10,7 +10,7 @@ import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestContext
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestType
-import io.kotest.core.test.config.ConfigurableTestConfig
+import io.kotest.core.test.config.UnresolvedTestConfig
 import kotlin.coroutines.CoroutineContext
 
 @Deprecated("Use ContainerContext. Deprecated since 4.5.")
@@ -37,7 +37,7 @@ interface ContainerContext : TestContext {
    suspend fun registerContainer(
       name: TestName,
       disabled: Boolean,
-      config: ConfigurableTestConfig?,
+      config: UnresolvedTestConfig?,
       test: suspend TestContext.() -> Unit,
    ) {
       registerTestCase(
@@ -55,7 +55,7 @@ interface ContainerContext : TestContext {
    suspend fun registerTest(
       name: TestName,
       disabled: Boolean,
-      config: ConfigurableTestConfig?,
+      config: UnresolvedTestConfig?,
       test: suspend TestContext.() -> Unit,
    ) {
       registerTestCase(

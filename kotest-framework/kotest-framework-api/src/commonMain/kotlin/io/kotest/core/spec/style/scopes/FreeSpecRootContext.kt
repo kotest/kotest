@@ -6,13 +6,13 @@ import io.kotest.core.names.TestName
 import io.kotest.core.test.EnabledIf
 import io.kotest.core.test.TestCaseSeverityLevel
 import io.kotest.core.test.TestContext
-import io.kotest.core.test.config.ConfigurableTestConfig
+import io.kotest.core.test.config.UnresolvedTestConfig
 import kotlin.time.Duration
 
 @Deprecated("Renamed to FreeSpecRootContext. Deprecated since 4.5.")
 typealias FreeSpecRootScope = FreeSpecRootContext
 
-data class FreeSpecContextConfigBuilder(val name: String, val config: ConfigurableTestConfig)
+data class FreeSpecContextConfigBuilder(val name: String, val config: UnresolvedTestConfig)
 
 interface FreeSpecRootContext : RootContext {
 
@@ -43,7 +43,7 @@ interface FreeSpecRootContext : RootContext {
       severity: TestCaseSeverityLevel? = null,
       failfast: Boolean? = null,
    ): FreeSpecContextConfigBuilder {
-      val config = ConfigurableTestConfig(
+      val config = UnresolvedTestConfig(
          enabled = enabled,
          tags = tags,
          extensions = extensions,
@@ -85,7 +85,7 @@ interface FreeSpecRootContext : RootContext {
       failfast: Boolean? = null,
       test: suspend TestContext.() -> Unit,
    ) {
-      val config = ConfigurableTestConfig(
+      val config = UnresolvedTestConfig(
          enabled = enabled,
          tags = tags,
          extensions = extensions,

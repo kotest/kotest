@@ -12,7 +12,7 @@ import io.kotest.core.sourceRef
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.test.TestCase
-import io.kotest.core.test.config.TestCaseConfig
+import io.kotest.core.test.config.ResolvedTestConfig
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestType
 import io.kotest.data.forAll
@@ -40,7 +40,7 @@ class TeamCityTestEngineListenerTest : FunSpec() {
       { },
       sourceRef(),
       TestType.Container,
-      TestCaseConfig(),
+      ResolvedTestConfig(),
       null,
       null
    )

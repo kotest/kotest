@@ -6,11 +6,12 @@ import io.kotest.core.descriptors.toDescriptor
 import io.kotest.core.spec.Spec
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestCaseOrder
-import io.kotest.core.test.config.deriveTestCaseConfig
+import io.kotest.core.test.config.resolveConfig
 
 /**
  * Materializes and orders [RootTest]s from a [Spec] and any [TestFactory]s into
- * [TestCase]s by resolving them at runtime using the supplied configuration.
+ * [TestCase]s by resolving config at runtime using the supplied project configuration
+ * and using spec defaults.
  */
 class Materializer(private val configuration: Configuration) {
 
@@ -23,9 +24,11 @@ class Materializer(private val configuration: Configuration) {
             type = it.type,
             source = it.source,
             test = it.test,
-            config = deriveTestCaseConfig(
-               it.config,
-               spec.defaultTestConfig ?: spec.defaultTestCaseConfig() ?: configuration.defaultTestConfig
+            config = resolveConfig(
+               config = it.config,
+               xdisabled = it.disabled,
+               spec = spec,
+               configuration = configuration,
             ),
          )
       }

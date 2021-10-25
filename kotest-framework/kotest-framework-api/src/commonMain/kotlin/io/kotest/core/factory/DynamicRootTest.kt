@@ -4,7 +4,7 @@ import io.kotest.core.SourceRef
 import io.kotest.core.names.TestName
 import io.kotest.core.spec.Spec
 import io.kotest.core.test.TestCase
-import io.kotest.core.test.config.TestCaseConfig
+import io.kotest.core.test.config.ResolvedTestConfig
 import io.kotest.core.test.TestContext
 import io.kotest.core.test.TestType
 
@@ -16,7 +16,7 @@ import io.kotest.core.test.TestType
 data class DynamicRootTest(
    val name: TestName,
    val test: suspend TestContext.() -> Unit,
-   val config: TestCaseConfig,
+   val config: ResolvedTestConfig,
    val type: TestType,
    val source: SourceRef,
    val factoryId: FactoryId

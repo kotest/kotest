@@ -7,7 +7,7 @@ import io.kotest.core.names.TestName
 import io.kotest.core.test.EnabledIf
 import io.kotest.core.test.TestCaseSeverityLevel
 import io.kotest.core.test.TestContext
-import io.kotest.core.test.config.ConfigurableTestConfig
+import io.kotest.core.test.config.UnresolvedTestConfig
 import kotlin.time.Duration
 
 class TestWithConfigBuilder(
@@ -31,7 +31,7 @@ class TestWithConfigBuilder(
 
       TestDslState.clear(context.testCase.descriptor.append(name))
 
-      val config = ConfigurableTestConfig(
+      val config = UnresolvedTestConfig(
          enabled = enabled,
          enabledIf = enabledIf,
          tags = tags,
