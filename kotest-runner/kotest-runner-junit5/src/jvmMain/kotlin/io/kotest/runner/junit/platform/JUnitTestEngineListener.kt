@@ -5,11 +5,14 @@ import io.kotest.core.descriptors.Descriptor
 import io.kotest.core.descriptors.DescriptorId
 import io.kotest.core.descriptors.spec
 import io.kotest.core.descriptors.toDescriptor
+import io.kotest.core.names.DisplayNameFormatter
 import io.kotest.core.names.UniqueNames
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.engine.errors.ExtensionExceptionExtractor
+import io.kotest.engine.interceptors.EngineContext
 import io.kotest.engine.listener.AbstractTestEngineListener
+import io.kotest.engine.test.names.DefaultDisplayNameFormatter
 import io.kotest.engine.test.names.getDisplayNameFormatter
 import io.kotest.mpp.log
 import org.junit.platform.engine.EngineExecutionListener
@@ -71,10 +74,9 @@ import kotlin.time.Duration
 class JUnitTestEngineListener(
    private val listener: EngineExecutionListener,
    val root: EngineDescriptor,
-   private val configuration: Configuration,
 ) : AbstractTestEngineListener() {
 
-   private val formatter = getDisplayNameFormatter(configuration.registry(), configuration)
+   private var formatter: DisplayNameFormatter = DefaultDisplayNameFormatter(Configuration())
 
    // contains a mapping of junit TestDescriptor's, so we can find previously registered tests
    private val descriptors = mutableMapOf<Descriptor, TestDescriptor>()
@@ -90,6 +92,8 @@ class JUnitTestEngineListener(
    // the root tests are our entry point when outputting results
    private val rootTests = mutableListOf<TestCase>()
 
+   private var failOnIgnoredTests = false
+
    private val children = mutableMapOf<Descriptor, MutableList<TestCase>>()
 
    private val results = mutableMapOf<Descriptor, TestResult>()
@@ -101,12 +105,17 @@ class JUnitTestEngineListener(
       listener.executionStarted(root)
    }
 
+   override suspend fun engineInitialized(context: EngineContext) {
+      failOnIgnoredTests = context.configuration.failOnIgnoredTests
+      formatter = getDisplayNameFormatter(context.configuration.registry(), context.configuration)
+   }
+
    override suspend fun engineFinished(t: List<Throwable>) {
       log { "JUnitTestEngineListener: Engine finished; throwables=[${t}]" }
 
       registerExceptionPlaceholders(t)
 
-      val result = if (configuration.failOnIgnoredTests && results.values.any { it.isIgnored }) {
+      val result = if (failOnIgnoredTests && results.values.any { it.isIgnored }) {
          TestExecutionResult.failed(RuntimeException("Build contained ignored test"))
       } else {
          TestExecutionResult.successful()

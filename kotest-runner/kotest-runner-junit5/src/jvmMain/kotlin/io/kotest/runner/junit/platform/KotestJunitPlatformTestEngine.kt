@@ -62,7 +62,6 @@ class KotestJunitPlatformTestEngine : TestEngine {
                   request.engineExecutionListener
                ),
                root,
-               configuration,
             )
          )
       )
