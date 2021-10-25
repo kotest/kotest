@@ -40,7 +40,7 @@ class SpecInitializationErrorTest : FunSpec({
          override fun dynamicTestRegistered(testDescriptor: TestDescriptor?) {}
       }
 
-      val listener = JUnitTestEngineListener(engineListener, root, Configuration())
+      val listener = JUnitTestEngineListener(engineListener, root)
       val executor = SpecExecutor(listener, NoopCoroutineDispatcherFactory, Configuration())
       executor.execute(ReflectiveSpecRef(SpecWithFieldError::class))
 
@@ -72,7 +72,7 @@ class SpecInitializationErrorTest : FunSpec({
          override fun dynamicTestRegistered(testDescriptor: TestDescriptor?) {}
       }
 
-      val listener = JUnitTestEngineListener(engineListener, root, Configuration())
+      val listener = JUnitTestEngineListener(engineListener, root)
       val executor = SpecExecutor(listener, NoopCoroutineDispatcherFactory, Configuration())
       executor.execute(ReflectiveSpecRef(SpecWithInitError::class))
 
