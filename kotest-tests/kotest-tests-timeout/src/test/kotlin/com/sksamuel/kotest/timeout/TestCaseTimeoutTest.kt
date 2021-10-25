@@ -6,13 +6,17 @@ import io.kotest.core.descriptors.toDescriptor
 import io.kotest.core.names.TestName
 import io.kotest.core.sourceRef
 import io.kotest.core.spec.style.FunSpec
+import io.kotest.core.spec.style.StringSpec
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestType
 import io.kotest.core.test.config.ResolvedTestConfig
+import io.kotest.engine.TestEngineLauncher
 import io.kotest.engine.concurrency.NoopCoroutineDispatcherFactory
+import io.kotest.engine.listener.CollectingTestEngineListener
 import io.kotest.engine.test.NoopTestCaseExecutionListener
 import io.kotest.engine.test.TestCaseExecutor
 import io.kotest.engine.test.contexts.NoopTestContext
+import io.kotest.matchers.shouldBe
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -70,6 +74,33 @@ class TestCaseTimeoutTest : FunSpec() {
          withContext(Dispatchers.IO) {
             executor.execute(tc, NoopTestContext(testCase, coroutineContext))
          }
+      }
+
+      test("global timeouts should apply if no other timeout is set") {
+
+         val c = Configuration()
+         c.timeout = 1
+
+         val collector = CollectingTestEngineListener()
+         TestEngineLauncher(collector)
+            .withClasses(TestTimeouts::class)
+            .launch()
+         collector.tests.mapKeys { it.key.name.testName }["blocked"]?.isError shouldBe true
+         collector.tests.mapKeys { it.key.name.testName }["suspend"]?.isError shouldBe true
+      }
+   }
+}
+
+private class TestTimeouts : StringSpec() {
+   init {
+      "blocked".config(blockingTest = true) {
+         // high value to ensure its interrupted, we'd notice a test that runs for 10 weeks
+         Thread.sleep(1000000)
+      }
+
+      "suspend" {
+         // high value to ensure its interrupted, we'd notice a test that runs for 10 weeks
+         delay(1000000)
       }
    }
 }
