@@ -1,7 +1,6 @@
 package io.kotest.core.spec
 
 import io.kotest.common.ExperimentalKotest
-import io.kotest.common.SoftDeprecated
 import io.kotest.core.SourceRef
 import io.kotest.core.Tag
 import io.kotest.core.TestConfiguration
@@ -19,7 +18,7 @@ import io.kotest.core.test.TestCaseSeverityLevel
 import io.kotest.core.test.TestContext
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestType
-import io.kotest.core.test.config.DefaultTestCaseConfig
+import io.kotest.core.test.config.TestCaseConfig
 import io.kotest.core.test.config.ResolvedTestConfig
 import io.kotest.core.test.config.UnresolvedTestConfig
 import kotlin.js.JsName
@@ -80,7 +79,7 @@ abstract class Spec : TestConfiguration() {
     * If you wish to register a listener for all specs
     * then use [Configuration.registerListener].
     */
-   @SoftDeprecated("Use extensions")
+   @Deprecated("Override extensions rather than listeners. Listeners are just a type of extension. Deprecated since 5.0")
    open fun listeners(): List<TestListener> = emptyList()
 
    /**
@@ -90,7 +89,7 @@ abstract class Spec : TestConfiguration() {
     * Any test case config set a test itself will override any value here.
     */
    @Deprecated("These settings should be specified individually to provide finer grain control. Deprecated since 5.0")
-   open fun defaultTestCaseConfig(): DefaultTestCaseConfig? = null
+   open fun defaultTestCaseConfig(): TestCaseConfig? = null
 
    /**
     * Returns the [IsolationMode] to be used by the test engine when running tests in this spec.

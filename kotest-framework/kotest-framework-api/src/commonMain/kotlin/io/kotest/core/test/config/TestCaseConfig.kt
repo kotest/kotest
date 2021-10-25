@@ -10,8 +10,7 @@ import io.kotest.core.test.EnabledOrReasonIf
 import io.kotest.core.test.TestCaseSeverityLevel
 import kotlin.time.Duration
 
-// to be renamed back
-data class DefaultTestCaseConfig(
+data class TestCaseConfig(
 
    /**
     * If set to false, this test and any nested tests will be disabled.

@@ -26,7 +26,7 @@ import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestContext
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestType
-import io.kotest.core.test.config.DefaultTestCaseConfig
+import io.kotest.core.test.config.TestCaseConfig
 import io.kotest.core.test.config.ResolvedTestConfig
 import kotlin.js.JsName
 
@@ -50,7 +50,7 @@ abstract class TestConfiguration {
     * Any test case config set a test itself will override any value here.
     */
    @Deprecated("These settings should be specified individually to provide finer grain control. Deprecated since 5.0")
-   var defaultTestConfig: DefaultTestCaseConfig? = null
+   var defaultTestConfig: TestCaseConfig? = null
 
    /**
     * Sets an assertion mode which is applied to every test.

@@ -11,7 +11,7 @@ import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.SpecExecutionOrder
 import io.kotest.core.test.AssertionMode
 import io.kotest.core.test.TestCaseOrder
-import io.kotest.core.test.config.DefaultTestCaseConfig
+import io.kotest.core.test.config.TestCaseConfig
 import io.kotest.core.test.config.ResolvedTestConfig
 import kotlin.reflect.KClass
 import kotlin.time.Duration
@@ -181,7 +181,7 @@ abstract class AbstractProjectConfig {
     * Any [ResolvedTestConfig] set here is used as the default for tests, unless overriden in a spec,
     * or in a test itself. In other words the order is test -> spec -> project config default -> kotest default
     */
-   open val defaultTestCaseConfig: DefaultTestCaseConfig? = null
+   open val defaultTestCaseConfig: TestCaseConfig? = null
 
    /**
     * Some specs have DSLs that include "prefix" words in the test name.

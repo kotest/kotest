@@ -12,7 +12,7 @@ import io.kotest.core.spec.SpecExecutionOrder
 import io.kotest.core.test.AssertionMode
 import io.kotest.core.test.TestCaseOrder
 import io.kotest.core.test.TestCaseSeverityLevel
-import io.kotest.core.test.config.DefaultTestCaseConfig
+import io.kotest.core.test.config.TestCaseConfig
 import io.kotest.core.test.config.ResolvedTestConfig
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlin.time.Duration
@@ -242,7 +242,7 @@ class Configuration {
     * Defaults to [Defaults.testCaseConfig]
     */
    @Deprecated("These settings can be specified individually to provide finer grain control. Deprecated since 5.0")
-   var defaultTestConfig: DefaultTestCaseConfig = Defaults.testCaseConfig
+   var defaultTestConfig: TestCaseConfig = Defaults.testCaseConfig
 
    /**
     * If set to true, then will cause the test suite to fail if there were no executed tests.

@@ -61,7 +61,7 @@ class TestCaseExecutor(
          EnabledCheckInterceptor(configuration),
          LifecycleInterceptor(listener, timeMark, configuration.registry()),
          ExceptionCapturingInterceptor(timeMark),
-         AssertionModeInterceptor(configuration),
+         AssertionModeInterceptor(),
          GlobalSoftAssertInterceptor(configuration),
          CoroutineScopeInterceptor,
          if (platform == Platform.JVM) blockedThreadTimeoutInterceptor(configuration) else null,
