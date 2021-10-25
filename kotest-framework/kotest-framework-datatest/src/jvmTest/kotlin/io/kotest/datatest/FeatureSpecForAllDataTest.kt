@@ -24,9 +24,6 @@ internal class FeatureSpecForAllDataTest : FeatureSpec() {
          registerContextTests().assertDataTestResults()
          feature("inside another feature") {
             registerContextTests().assertDataTestResults()
-            scenario("inside a scenario") {
-               registerContextTests().assertDataTestResults()
-            }
          }
       }
    }

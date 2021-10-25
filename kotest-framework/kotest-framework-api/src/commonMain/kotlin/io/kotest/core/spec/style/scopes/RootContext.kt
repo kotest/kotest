@@ -36,7 +36,8 @@ fun RootContext.addTest(
          type = TestType.Test,
          source = sourceRef(),
          disabled = disabled,
-         config = config
+         config = config,
+         factoryId = null,
       )
    )
 }
@@ -65,7 +66,8 @@ fun RootContext.addContainer(
          type = TestType.Container,
          source = sourceRef(),
          disabled = disabled,
-         config = config
+         config = config,
+         factoryId = null,
       )
    )
 }

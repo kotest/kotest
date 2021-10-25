@@ -1,4 +1,4 @@
-package com.sksamuel.kotest.engine.spec.dsl
+package com.sksamuel.kotest.engine.spec.incomplete
 
 import io.kotest.core.descriptors.DescriptorId
 import io.kotest.core.spec.style.FunSpec
@@ -22,7 +22,7 @@ class WordSpecIncompleteContainerTest : FunSpec() {
          desc[DescriptorId("w when")]?.errorOrNull?.message shouldBe "Test 'w when' requires at least one nested test"
 
          desc[DescriptorId("y should")]?.isError shouldBe true
-         desc[DescriptorId("y should")]?.errorOrNull?.message shouldBe "Test 'y' requires at least one nested test"
+         desc[DescriptorId("y should")]?.errorOrNull?.message shouldBe "Test 'y should' requires at least one nested test"
       }
    }
 }

@@ -369,78 +369,78 @@ class Configuration {
    @Deprecated("Use registry. Deprecated since 5.0")
    fun deregisterFilters(filters: Collection<Extension>) = filters.forEach { registry.remove(it) }
 
-   @Deprecated("Use registry. Deprecated since 5.0")
+   @Deprecated("Use registry. Deprecated since 5.0", ReplaceWith("registry().add(filter)"))
    fun registerFilter(filter: Extension) {
       register(filter)
    }
 
-   @Deprecated("Use registry. Deprecated since 5.0")
+   @Deprecated("Use registry. Deprecated since 5.0", ReplaceWith("registry().remove(filter)"))
    fun deregisterFilter(filter: Extension) {
       deregister(filter)
    }
 
    @Deprecated(
       "Use extensions().add(). Deprecated since 5.0",
-      ReplaceWith("extensions.forEach { extensions().add(it) }")
+      ReplaceWith("extensions.forEach { registry().add(it) }")
    )
    fun registerExtensions(vararg extensions: Extension) = extensions.forEach { registry().add(it) }
 
    @Deprecated(
       "Use extensions().add(). Deprecated since 5.0",
-      ReplaceWith("extensions.forEach { extensions().add(it) }")
+      ReplaceWith("extensions.forEach { registry().add(it) }")
    )
    fun registerExtensions(extensions: List<Extension>) = extensions.forEach { registry().add(it) }
 
    @Deprecated(
       "Use extensions().add(). Deprecated since 5.0",
-      ReplaceWith("extensions.forEach { extensions().remove(it) }")
+      ReplaceWith("extensions.forEach { registry().remove(it) }")
    )
    fun deregisterExtensions(extensions: List<Extension>) = extensions.forEach { registry().remove(it) }
 
-   @Deprecated("Use extensions().add(). Deprecated since 5.0", ReplaceWith("extensions().add(extension)"))
+   @Deprecated("Use extensions().add(). Deprecated since 5.0", ReplaceWith("registry().add(extension)"))
    fun register(extension: Extension) {
       registry().add(extension)
    }
 
-   @Deprecated("Use extensions().add(). Deprecated since 5.0", ReplaceWith("extensions().add(extension)"))
+   @Deprecated("Use extensions().add(). Deprecated since 5.0", ReplaceWith("registry().add(extension)"))
    fun registerExtension(extension: Extension) {
       registry().add(extension)
    }
 
-   @Deprecated("Use extensions().remove(). Deprecated since 5.0", ReplaceWith("extensions().remove(extension)"))
+   @Deprecated("Use extensions().remove(). Deprecated since 5.0", ReplaceWith("registry().remove(extension)"))
    fun deregister(extension: Extension) {
       registry().remove(extension)
    }
 
-   @Deprecated("Use extensions().remove(). Deprecated since 5.0", ReplaceWith("extensions().remove(extension)"))
+   @Deprecated("Use extensions().remove(). Deprecated since 5.0", ReplaceWith("registry().remove(extension)"))
    fun deregisterExtension(extension: Extension) {
       registry().remove(extension)
    }
 
    @Deprecated(
       "Use extensions().add(). Deprecated since 5.0",
-      ReplaceWith("listeners.forEach { extensions().add(it) }")
+      ReplaceWith("listeners.forEach { registry().add(it) }")
    )
    fun registerListeners(vararg listeners: Listener) = listeners.forEach { registry().add(it) }
 
    @Deprecated(
       "Use extensions().add(). Deprecated since 5.0",
-      ReplaceWith("listeners.forEach { extensions().add(it) }")
+      ReplaceWith("listeners.forEach { registry().add(it) }")
    )
    fun registerListeners(listeners: List<Listener>) = listeners.forEach { registry().add(it) }
 
    @Deprecated(
       "Use extensions().remove(). Deprecated since 5.0",
-      ReplaceWith("listeners.forEach { extensions().remove(it) }")
+      ReplaceWith("listeners.forEach { registry().remove(it) }")
    )
    fun deregisterListeners(listeners: List<Listener>) = listeners.forEach { registry().remove(it) }
 
-   @Deprecated("Use extensions().add(). Deprecated since 5.0", ReplaceWith("extensions().add(listener)"))
+   @Deprecated("Use extensions().add(). Deprecated since 5.0", ReplaceWith("registry().add(listener)"))
    fun registerListener(listener: Listener) {
       registry().add(listener)
    }
 
-   @Deprecated("Use extensions().remove(). Deprecated since 5.0", ReplaceWith("extensions().remove(listener)"))
+   @Deprecated("Use extensions().remove(). Deprecated since 5.0", ReplaceWith("registry().remove(listener)"))
    fun deregisterListener(listener: Listener) {
       registry.remove(listener)
    }

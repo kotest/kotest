@@ -1,6 +1,6 @@
 package com.sksamuel.kotest.engine.extensions.spec
 
-import io.kotest.core.config.configuration
+import io.kotest.core.config.Configuration
 import io.kotest.core.listeners.SpecInstantiationListener
 import io.kotest.core.spec.Isolate
 import io.kotest.core.spec.Spec
@@ -27,13 +27,14 @@ class SpecInstantiationListenerTest : FunSpec() {
             }
          }
 
-         configuration.registerExtensions(ext)
+         val c = Configuration()
+         c.registry().add(ext)
 
          TestEngineLauncher(NoopTestEngineListener)
             .withClasses(SpecInstantiationSuccessSpec::class)
+            .withConfiguration(c)
             .launch()
 
-         configuration.deregisterExtension(ext)
          fired shouldBe true
       }
 
@@ -50,13 +51,15 @@ class SpecInstantiationListenerTest : FunSpec() {
                fired = true
             }
          }
-         configuration.registerExtensions(ext)
+
+         val c = Configuration()
+         c.registry().add(ext)
 
          TestEngineLauncher(NoopTestEngineListener)
             .withClasses(SpecInstantiationFailureSpec::class)
+            .withConfiguration(c)
             .launch()
 
-         configuration.deregisterExtension(ext)
          fired shouldBe true
       }
    }

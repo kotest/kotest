@@ -43,9 +43,14 @@ interface ContainerContext : TestContext {
       registerTestCase(
          NestedTest(
             name = name,
-            disabled = false,
+            disabled = disabled,
             config = config,
-            test = test,
+            test = {
+               IncompleteContainerContext(this).apply {
+                  this.test()
+                  if (!hasNestedTest) throw IncompleteContainerException(name.testName)
+               }
+            },
             type = TestType.Container,
             source = sourceRef(),
          )
@@ -61,7 +66,7 @@ interface ContainerContext : TestContext {
       registerTestCase(
          NestedTest(
             name = name,
-            disabled = false,
+            disabled = disabled,
             config = config,
             test = test,
             type = TestType.Test,

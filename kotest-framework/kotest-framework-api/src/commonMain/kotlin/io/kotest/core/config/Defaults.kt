@@ -18,7 +18,7 @@ object Defaults {
    val duplicateTestNameMode: DuplicateTestNameMode = DuplicateTestNameMode.Warn
    const val displayFullTestPath: Boolean = false
 
-   val severity: TestCaseSeverityLevel = TestCaseSeverityLevel.TRIVIAL
+   val severity: TestCaseSeverityLevel = TestCaseSeverityLevel.NORMAL
 
    const val coroutineDebugProbes: Boolean = false
    const val testCoroutineDispatcher: Boolean = false

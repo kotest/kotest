@@ -2,6 +2,7 @@ package io.kotest.core.spec.style
 
 import io.kotest.core.extensions.Extension
 import io.kotest.core.names.TestName
+import io.kotest.core.sourceRef
 import io.kotest.core.spec.RootTest
 import io.kotest.core.spec.Spec
 import io.kotest.core.test.TestCase
@@ -60,35 +61,34 @@ abstract class AnnotationSpec : Spec() {
    }
 
    private fun KFunction<*>.deriveRootTest(disabled: Boolean): RootTest {
-      return TODO()
-//      return if (this.isExpectingException()) {
-//         val expected = this.getExpectedException()
-//         RootTest(
-//            name = TestName(name),
-//            spec = this@AnnotationSpec,
-//            test = callExpectingException(expected),
-//            source = sourceRef(),
-//            type = TestType.Test,
-//            config = null,
-//            disabled = disabled,
-//         )
-//      } else {
-//         RootTest(
-//            name = TestName(name),
-//            spec = this@AnnotationSpec,
-//            test = callNotExpectingException(),
-//            source = sourceRef(),
-//            type = TestType.Test,
-//            config = null,
-//            disabled = disabled,
-//         )
-//      }
+      return if (this.isExpectingException()) {
+         val expected = this.getExpectedException()
+         RootTest(
+            name = TestName(name),
+            test = callExpectingException(expected),
+            source = sourceRef(),
+            type = TestType.Test,
+            config = null,
+            disabled = disabled,
+            factoryId = null,
+         )
+      } else {
+         RootTest(
+            name = TestName(name),
+            test = callNotExpectingException(),
+            source = sourceRef(),
+            type = TestType.Test,
+            config = null,
+            disabled = disabled,
+            factoryId = null,
+         )
+      }
    }
 
    override fun rootTests(): List<RootTest> {
       val tests = this::class.findRootTests()
       val nested = this::class.findNestedTests()
-      return emptyList()
+      return tests + nested
    }
 
    override fun globalExtensions(): List<Extension> {
@@ -103,7 +103,7 @@ abstract class AnnotationSpec : Spec() {
       return annotations.filterIsInstance<Test>().first().expected
    }
 
-   private fun KClass<out AnnotationSpec>.findRootTests(): List<RootTest> {
+   private fun KClass<*>.findRootTests(): List<RootTest> {
       return findTestFunctions().map { f ->
          f.isAccessible = true
          if (f.isIgnoredTest()) {
@@ -115,34 +115,9 @@ abstract class AnnotationSpec : Spec() {
    }
 
    private fun KClass<out AnnotationSpec>.findNestedTests(): List<RootTest> {
-      return TODO()
-//      return nestedClasses
-//         .filter { kclass -> kclass.annotations.map { it.annotationClass }.contains(Nested::class) }
-//         .map { kclass ->
-//            RootTest(
-//               name = TestName(kclass.simpleName ?: kclass.toString()),
-//               spec = this@AnnotationSpec,
-//               test = {
-//                  (kclass.java.newInstance() as AnnotationSpec).materializeRootTests().forEach { root ->
-//                     registerTestCase(
-//                        createNestedTest(
-//                           root.name,
-//                           this.testCase.descriptor.append(testCase.name),
-//                           false,
-//                           testCase.config,
-//                           testCase.type,
-//                           null,
-//                           testCase.test
-//                        )
-//                     )
-//                  }
-//               },
-//               type = TestType.Container,
-//               config = TestCaseConfig(),
-//               disabled = false,
-//               source = sourceRef(),
-//            )
-//         }
+      return nestedClasses
+         .filter { kclass -> kclass.annotations.map { it.annotationClass }.contains(Nested::class) }
+         .flatMap { it.findRootTests() }
    }
 
    private fun KFunction<*>.callExpectingException(expected: KClass<out Throwable>): suspend TestContext.() -> Unit {
@@ -302,12 +277,12 @@ internal fun KClass<out AnnotationSpec>.findAfterSpecFunctions() =
 internal fun KClass<out AnnotationSpec>.findAfterTestFunctions() =
    findFunctionAnnotatedWithAnyOf(AnnotationSpec.AfterEach::class, AnnotationSpec.After::class)
 
-internal fun KClass<out AnnotationSpec>.findTestFunctions(): List<KFunction<*>> =
+internal fun KClass<*>.findTestFunctions(): List<KFunction<*>> =
    findFunctionAnnotatedWithAnyOf(AnnotationSpec.Test::class)
 
 internal fun KFunction<*>.isIgnoredTest() = isFunctionAnnotatedWithAnyOf(AnnotationSpec.Ignore::class)
 
-internal fun KClass<out AnnotationSpec>.findFunctionAnnotatedWithAnyOf(vararg annotation: KClass<*>) =
+internal fun KClass<*>.findFunctionAnnotatedWithAnyOf(vararg annotation: KClass<*>) =
    memberFunctions.filter { it.isFunctionAnnotatedWithAnyOf(*annotation) }
 
 internal fun KFunction<*>.isFunctionAnnotatedWithAnyOf(vararg annotation: KClass<*>) =

@@ -4,10 +4,12 @@ import io.kotest.common.ExperimentalKotest
 import io.kotest.core.SourceRef
 import io.kotest.core.Tag
 import io.kotest.core.TestConfiguration
+import io.kotest.core.Tuple2
 import io.kotest.core.concurrency.CoroutineDispatcherFactory
 import io.kotest.core.config.Configuration
 import io.kotest.core.extensions.Extension
 import io.kotest.core.extensions.TestCaseExtension
+import io.kotest.core.factory.FactoryId
 import io.kotest.core.listeners.TestListener
 import io.kotest.core.names.DuplicateTestNameMode
 import io.kotest.core.names.TestName
@@ -319,6 +321,49 @@ abstract class Spec : TestConfiguration() {
    open fun beforeTest(testCase: TestCase) {}
 
    /**
+    * Registers a callback to be executed before every [TestCase] in this [Spec].
+    *
+    * The [TestCase] about to be executed is provided as the parameter.
+    */
+   override fun beforeTest(f: BeforeTest) {
+      register(object : TestListener {
+         override suspend fun beforeAny(testCase: TestCase) {
+            if (testCase.spec::class == this@Spec::class)
+               f(testCase)
+         }
+      })
+   }
+
+   /**
+    * Registers a callback to be executed after every [TestCase] in this [Spec].
+    *
+    * The callback provides two parameters - the test case that has just completed,
+    * and the [TestResult] outcome of that test.
+    */
+   override fun afterTest(f: AfterTest) {
+      register(object : TestListener {
+         override suspend fun afterAny(testCase: TestCase, result: TestResult) {
+            if (testCase.spec::class == this@Spec::class)
+               f(Tuple2(testCase, result))
+         }
+      })
+   }
+
+
+   /**
+    * Registers a callback to be executed after all tests in this spec.
+    * The spec instance is provided as a parameter.
+    */
+   override fun afterSpec(f: AfterSpec) {
+      register(object : TestListener {
+         override suspend fun afterSpec(spec: Spec) {
+            if (spec::class == this@Spec::class)
+               f(spec)
+         }
+      })
+   }
+
+   /**
     * This function is invoked after every [TestCase] in this Spec.
     * Override this function to provide custom behavior.
     *
@@ -356,4 +401,5 @@ data class RootTest(
    val source: SourceRef,
    val disabled: Boolean?, // if the test is explicitly disabled, say through an annotation or method name
    val config: UnresolvedTestConfig?, // if specified by the test, may be null
+   val factoryId: FactoryId?, // if this root test was added from a factory
 )

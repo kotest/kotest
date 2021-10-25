@@ -1,9 +1,8 @@
 package com.sksamuel.kotest.engine.test.names
 
+import io.kotest.core.NamedTag
 import io.kotest.core.Tag
-import io.kotest.core.annotation.Tags
 import io.kotest.core.config.Configuration
-import io.kotest.core.config.configuration
 import io.kotest.core.descriptors.append
 import io.kotest.core.descriptors.toDescriptor
 import io.kotest.core.names.TestName
@@ -12,8 +11,8 @@ import io.kotest.core.spec.DisplayName
 import io.kotest.core.spec.Isolate
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.test.TestCase
-import io.kotest.core.test.config.ResolvedTestConfig
 import io.kotest.core.test.TestType
+import io.kotest.core.test.config.ResolvedTestConfig
 import io.kotest.engine.test.names.DefaultDisplayNameFormatter
 import io.kotest.matchers.shouldBe
 
@@ -22,24 +21,24 @@ class DefaultDisplayNameFormatterTest : FunSpec() {
    init {
 
       test("@DisplayName should be used for spec name") {
-         DefaultDisplayNameFormatter(configuration).format(SpecWithDisplayName::class) shouldBe "ZZZZZ"
+         DefaultDisplayNameFormatter(Configuration()).format(SpecWithDisplayName::class) shouldBe "ZZZZZ"
       }
 
       test("test name should use full path option") {
          val conf = Configuration()
          conf.displayFullTestPath = true
          val tc1 = TestCase(
-            SpecWithTag::class.toDescriptor().append("test"),
+            SpecWithDisplayName::class.toDescriptor().append("test"),
             TestName("test"),
-            SpecWithTag(),
+            SpecWithDisplayName(),
             {},
             sourceRef(),
             TestType.Test,
          )
          val tc2 = TestCase(
-            SpecWithTag::class.toDescriptor().append("test2"),
+            SpecWithDisplayName::class.toDescriptor().append("test2"),
             TestName("test2"),
-            SpecWithTag(),
+            SpecWithDisplayName(),
             {},
             sourceRef(),
             TestType.Test,
@@ -48,81 +47,50 @@ class DefaultDisplayNameFormatterTest : FunSpec() {
          DefaultDisplayNameFormatter(conf).format(tc2) shouldBe "test test2"
       }
 
-      test("tags should be appended from spec when configuration is set") {
-         configuration.testNameAppendTags = true
+      test("tags should be appended from config when configuration is set") {
+         val c = Configuration()
+         c.testNameAppendTags = true
 
          val tc = TestCase(
-            SpecWithTag::class.toDescriptor().append("test"),
+            SpecWithDisplayName::class.toDescriptor().append("test"),
             TestName("test"),
-            SpecWithTag(),
+            SpecWithDisplayName(),
             {},
             sourceRef(),
             TestType.Test,
+            ResolvedTestConfig.default.copy(tags = setOf(NamedTag("Foo"), Dummy))
          )
-         DefaultDisplayNameFormatter(configuration).format(tc) shouldBe "test[tags = Foo]"
-         configuration.testNameAppendTags = false
+         DefaultDisplayNameFormatter(c).format(tc) shouldBe "test[tags = Foo, Dummy]"
       }
 
-      test("tags should be appended from test when configuration is set") {
-         configuration.testNameAppendTags = true
+      test("bang should not be included in test name") {
 
          val tc = TestCase(
-            descriptor = SpecWithDisplayName::class.toDescriptor().append("test"),
-            name = TestName("test"),
+            descriptor = SpecWithDisplayName::class.toDescriptor().append("!test"),
+            name = TestName("!test"),
             spec = SpecWithDisplayName(),
             test = {},
             source = sourceRef(),
             type = TestType.Test,
             config = ResolvedTestConfig.default.copy(tags = setOf(Dummy, NoUse))
          )
-         DefaultDisplayNameFormatter(configuration).format(tc) shouldBe "test[tags = Dummy, NoUse]"
-         configuration.testNameAppendTags = false
-      }
 
-      test("tags should be appended from test and spec when configuration is set") {
-         configuration.testNameAppendTags = true
-
-         val tc = TestCase(
-            descriptor = SpecWithTag::class.toDescriptor().append("test"),
-            name = TestName("test"),
-            spec = SpecWithTag(),
-            test = {},
-            source = sourceRef(),
-            type = TestType.Test,
-            config = ResolvedTestConfig.default.copy(tags = setOf(Dummy, NoUse))
-         )
-         DefaultDisplayNameFormatter(configuration).format(tc) shouldBe "test[tags = Dummy, NoUse, Foo]"
-         configuration.testNameAppendTags = false
-      }
-
-      test("bang should not be included in test name") {
-
-         val tc = TestCase(
-            descriptor = SpecWithTag::class.toDescriptor().append("!test"),
-            name = TestName("!test"),
-            spec = SpecWithTag(),
-            test = {},
-            source = sourceRef(),
-            type = TestType.Test,
-            config = ResolvedTestConfig.default.copy(tags = setOf(Dummy, NoUse))
-         )
-
-         DefaultDisplayNameFormatter(configuration).format(tc) shouldBe "test"
+         DefaultDisplayNameFormatter(Configuration()).format(tc) shouldBe "test"
       }
 
       test("focus should not be included in test name") {
 
          val tc = TestCase(
-            descriptor = SpecWithTag::class.toDescriptor().append("f:test"),
+            descriptor = SpecWithDisplayName::class.toDescriptor().append("f:test"),
             name = TestName("f:test"),
-            spec = SpecWithTag(),
+            spec = SpecWithDisplayName(),
             test = {},
             source = sourceRef(),
             type = TestType.Test,
             config = ResolvedTestConfig.default.copy(tags = setOf(Dummy, NoUse))
          )
 
-         DefaultDisplayNameFormatter(configuration).format(tc) shouldBe "test"
+         DefaultDisplayNameFormatter(Configuration()).format(tc) shouldBe "test"
       }
    }
 }
@@ -132,10 +100,5 @@ object NoUse : Tag()
 
 @DisplayName("ZZZZZ")
 private class SpecWithDisplayName : FunSpec({
-   test("a") { }
-})
-
-@Tags("Foo")
-private class SpecWithTag : FunSpec({
    test("a") { }
 })

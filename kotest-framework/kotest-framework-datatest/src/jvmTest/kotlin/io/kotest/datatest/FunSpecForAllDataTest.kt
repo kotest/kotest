@@ -27,9 +27,6 @@ class FunSpecForAllDataTest : FunSpec() {
          registerContextTests().assertDataTestResults()
          context("inside another context") {
             registerContextTests().assertDataTestResults()
-            test("inside a contexted test case") {
-               registerContextTests().assertDataTestResults()
-            }
          }
       }
    }

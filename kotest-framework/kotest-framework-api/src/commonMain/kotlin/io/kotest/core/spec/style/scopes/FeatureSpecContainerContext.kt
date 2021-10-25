@@ -37,19 +37,27 @@ class FeatureSpecContainerContext(
    }
 
    suspend fun feature(name: String, test: suspend FeatureSpecContainerContext.() -> Unit) {
-      registerContainer(TestName("Feature: ", name, false), false, null) { FeatureSpecContainerContext(this).test() }
+      registerContainer(
+         TestName("Feature: ", name, false),
+         disabled = false,
+         null
+      ) { FeatureSpecContainerContext(this).test() }
    }
 
    suspend fun xfeature(name: String, test: suspend FeatureSpecContainerContext.() -> Unit) {
-      registerContainer(TestName("Feature: ", name, true), false, null) { FeatureSpecContainerContext(this).test() }
+      registerContainer(
+         TestName("Feature: ", name, true),
+         disabled = true,
+         null
+      ) { FeatureSpecContainerContext(this).test() }
    }
 
    suspend fun scenario(name: String, test: suspend TestContext.() -> Unit) {
-      registerTest(TestName("Scenario: ", name, false), false, null, test)
+      registerTest(TestName("Scenario: ", name, false), disabled = false, null, test)
    }
 
    suspend fun xscenario(name: String, test: suspend TestContext.() -> Unit) {
-      registerTest(TestName("Scenario: ", name, true), false, null, test)
+      registerTest(TestName("Scenario: ", name, true), disabled = true, null, test)
    }
 
    suspend fun scenario(name: String): TestWithConfigBuilder {

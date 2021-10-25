@@ -8,8 +8,8 @@ import io.kotest.core.test.EnabledOrReasonIf
 import kotlin.time.milliseconds
 
 /**
- * Accepts an [UnresolvedTestConfig] and returns a resolved [ResolvedTestConfig] by completing
- * the unresolved with defaults from the [spec] or [Configuration].
+ * Accepts an [UnresolvedTestConfig] and returns a [ResolvedTestConfig] by completing
+ * any nulls in the unresolved config with defaults from the [spec] or [Configuration].
  */
 fun resolveConfig(
    config: UnresolvedTestConfig?,
@@ -22,7 +22,8 @@ fun resolveConfig(
 
    val enabled: EnabledOrReasonIf = { testCase ->
       when {
-         xdisabled == false -> Enabled.disabled
+         // if xdisabled we always override any other enabled/disabled flags
+         xdisabled == true -> Enabled.disabled
          config?.enabled == false -> Enabled.disabled
          config?.enabledIf != null -> Enabled(config.enabledIf.invoke(testCase))
          config?.enabledOrReasonIf != null -> config.enabledOrReasonIf.invoke(testCase)
@@ -54,8 +55,6 @@ fun resolveConfig(
 
    val extensions = (config?.listeners ?: emptyList()) +
       (config?.extensions ?: emptyList()) +
-      spec.extensions() +
-      spec.registeredExtensions() +
       defaultTestConfig.extensions +
       defaultTestConfig.listeners
 

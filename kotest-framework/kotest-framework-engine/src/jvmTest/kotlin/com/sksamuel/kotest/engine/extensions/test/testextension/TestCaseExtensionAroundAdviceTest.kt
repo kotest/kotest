@@ -16,7 +16,7 @@ class TestCaseExtensionAroundAdviceTest : StringSpec() {
             "test1" -> TestResult.Ignored
             "test2" ->
                when (execute(testCase)) {
-                  is TestResult.Error -> TestResult.Success(0.milliseconds)
+                  is TestResult.Error, is TestResult.Failure -> TestResult.Success(0.milliseconds)
                   else -> AssertionError("boom").toTestResult(0.milliseconds)
                }
             "test3" -> execute(testCase.copy(config = testCase.config.copy(enabled = { Enabled.disabled })))

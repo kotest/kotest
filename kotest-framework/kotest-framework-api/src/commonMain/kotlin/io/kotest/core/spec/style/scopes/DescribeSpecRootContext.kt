@@ -28,27 +28,43 @@ interface DescribeSpecRootContext : RootContext {
 
    @ExperimentalKotest
    fun context(name: String): RootContextConfigBuilder<DescribeSpecContainerContext> =
-      RootContextConfigBuilder(TestName(name), false, this) { DescribeSpecContainerContext(it) }
+      RootContextConfigBuilder(TestName(name), xdisabled = false, this) { DescribeSpecContainerContext(it) }
 
    @ExperimentalKotest
    fun xcontext(name: String): RootContextConfigBuilder<DescribeSpecContainerContext> =
-      RootContextConfigBuilder(TestName(name), true, this) { DescribeSpecContainerContext(it) }
+      RootContextConfigBuilder(TestName(name), xdisabled = true, this) { DescribeSpecContainerContext(it) }
 
    fun describe(name: String, test: suspend DescribeSpecContainerContext.() -> Unit) {
-      addTest(TestName("Describe: ", name, false), true, null) { DescribeSpecContainerContext(this).test() }
+      addContainer(
+         TestName("Describe: ", name, false),
+         disabled = false,
+         null
+      ) { DescribeSpecContainerContext(this).test() }
    }
 
    fun xdescribe(name: String, test: suspend DescribeSpecContainerContext.() -> Unit) {
-      addTest(TestName("Describe: ", name, false), true, null) { DescribeSpecContainerContext(this).test() }
+      addContainer(
+         TestName("Describe: ", name, false),
+         disabled = true,
+         null
+      ) { DescribeSpecContainerContext(this).test() }
    }
 
    @ExperimentalKotest
    fun describe(name: String): RootContextConfigBuilder<DescribeSpecContainerContext> =
-      RootContextConfigBuilder(TestName("Describe: ", name, false), false, this) { DescribeSpecContainerContext(it) }
+      RootContextConfigBuilder(
+         TestName("Describe: ", name, false),
+         xdisabled = false,
+         this
+      ) { DescribeSpecContainerContext(it) }
 
    @ExperimentalKotest
    fun xdescribe(name: String): RootContextConfigBuilder<DescribeSpecContainerContext> =
-      RootContextConfigBuilder(TestName("Describe: ", name, false), true, this) { DescribeSpecContainerContext(it) }
+      RootContextConfigBuilder(
+         TestName("Describe: ", name, false),
+         xdisabled = true,
+         this
+      ) { DescribeSpecContainerContext(it) }
 
    fun it(name: String, test: suspend TestContext.() -> Unit) {
       addTest(TestName(name), false, null, test)

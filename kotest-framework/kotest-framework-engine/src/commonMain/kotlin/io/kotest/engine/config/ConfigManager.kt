@@ -1,18 +1,13 @@
 package io.kotest.engine.config
 
+import io.kotest.common.mapError
 import io.kotest.core.config.AbstractProjectConfig
 import io.kotest.core.config.Configuration
-import io.kotest.common.mapError
 import io.kotest.mpp.log
 import kotlin.native.concurrent.ThreadLocal
 
 @ThreadLocal
 object ConfigManager {
-
-   // since we are saddled with the global configuration singleton (for now at least)
-   // we need to make sure we don't initialize it twice
-
-   private var initialized = false
 
    /**
     * Initializes a given [Configuration] instance using the supplied project configs,
@@ -21,10 +16,7 @@ object ConfigManager {
     * @return the initialized input
     */
    fun initialize(configuration: Configuration, projectConfigs: List<AbstractProjectConfig>): Configuration {
-      if (!initialized) {
-         compile(configuration, projectConfigs).getOrThrow()
-         initialized = true
-      }
+      compile(configuration, projectConfigs).getOrThrow()
       return configuration
    }
 

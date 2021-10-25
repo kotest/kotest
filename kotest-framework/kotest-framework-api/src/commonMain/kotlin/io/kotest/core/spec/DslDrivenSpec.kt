@@ -41,12 +41,12 @@ abstract class DslDrivenSpec : Spec(), RootContext {
    }
 
    /**
-    * Include the tests, listeners and extensions from the given [TestFactory] in this spec.
+    * Include the tests and extensions from the given [TestFactory] in this spec.
     * Tests are added in order from where this include was invoked using configuration and
     * settings at the time the method was invoked.
     */
    fun include(factory: TestFactory) {
-      //factory.createTestCases(this::class.toDescriptor(), this).forEach { addRootTest(it) }
+      factory.tests.forEach { add(it.copy(factoryId = factory.factoryId)) }
       register(factory.extensions)
    }
 
@@ -55,7 +55,11 @@ abstract class DslDrivenSpec : Spec(), RootContext {
     * prefixed added to each of the test's name.
     */
    fun include(prefix: String, factory: TestFactory) {
-      TODO() // include(factory.copy(tests = factory.tests.map { it.addPrefix(prefix) }))
+      val renamed = factory.tests.map { test ->
+         val name = test.name.copy(testName = prefix + test.name.testName)
+         test.copy(name = name)
+      }
+      include(factory.copy(tests = renamed))
    }
 
    /**
@@ -106,8 +110,9 @@ abstract class DslDrivenSpec : Spec(), RootContext {
          test = test,
          source = sourceRef(),
          type = type,
-         config = TODO(),
+         config = null, // TODO(),
          disabled = false,
+         factoryId = null,
       )
    }
 //

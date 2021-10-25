@@ -26,8 +26,8 @@ import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestContext
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestType
-import io.kotest.core.test.config.TestCaseConfig
 import io.kotest.core.test.config.ResolvedTestConfig
+import io.kotest.core.test.config.TestCaseConfig
 import kotlin.js.JsName
 
 /**
@@ -159,7 +159,7 @@ abstract class TestConfiguration {
     *
     * The [TestCase] about to be executed is provided as the parameter.
     */
-   fun beforeTest(f: BeforeTest) {
+   open fun beforeTest(f: BeforeTest) {
       register(object : TestListener {
          override suspend fun beforeAny(testCase: TestCase) {
             f(testCase)
@@ -173,7 +173,7 @@ abstract class TestConfiguration {
     * The callback provides two parameters - the test case that has just completed,
     * and the [TestResult] outcome of that test.
     */
-   fun afterTest(f: AfterTest) {
+   open fun afterTest(f: AfterTest) {
       register(object : TestListener {
          override suspend fun afterAny(testCase: TestCase, result: TestResult) {
             f(Tuple2(testCase, result))
@@ -294,7 +294,7 @@ abstract class TestConfiguration {
     * Registers a callback to be executed after all tests in this spec.
     * The spec instance is provided as a parameter.
     */
-   fun afterSpec(f: AfterSpec) {
+   open fun afterSpec(f: AfterSpec) {
       register(object : TestListener {
          override suspend fun afterSpec(spec: Spec) {
             f(spec)
@@ -316,5 +316,7 @@ abstract class TestConfiguration {
    /**
     * Returns any [Extension] instances registered directly on this class.
     */
-   fun registeredExtensions() = _extensions
+   fun registeredExtensions(): List<Extension> {
+      return _extensions.toList()
+   }
 }

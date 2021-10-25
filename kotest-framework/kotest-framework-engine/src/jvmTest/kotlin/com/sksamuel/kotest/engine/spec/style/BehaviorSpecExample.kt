@@ -21,21 +21,25 @@ class BehaviorSpecExample : BehaviorSpec() {
            }
         }
         xWhen("capitalized disabled when") {
+           Then("to keep context happy") {}
            fail("Boom")
         }
         and("another given scope") {
-
+           Then("to keep context happy") {}
         }
         xAnd("capitalized disabled and") {
+           Then("to keep context happy") {}
            fail("Boom")
         }
      }
      xgiven("disabled given") {
         `when`("should be ignored") {
+           Then("to keep context happy") {}
            fail("boom")
         }
      }
      xGiven("a capitalized disabled given") {
+        Then("to keep context happy") {}
         fail("boom")
      }
      Given("a capital given") {
@@ -48,6 +52,7 @@ class BehaviorSpecExample : BehaviorSpec() {
            }
         }
         xwhen("an xdisabled when") {
+           Then("to keep context happy") {}
            fail("boom")
         }
         And("an and scope") {

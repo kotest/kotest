@@ -24,9 +24,6 @@ internal class ExpectSpecForAllDataTest : ExpectSpec() {
          registerContextTests().assertDataTestResults()
          context("inside another context") {
             registerContextTests().assertDataTestResults()
-            expect("inside a contexted expect") {
-               registerContextTests().assertDataTestResults()
-            }
          }
       }
    }

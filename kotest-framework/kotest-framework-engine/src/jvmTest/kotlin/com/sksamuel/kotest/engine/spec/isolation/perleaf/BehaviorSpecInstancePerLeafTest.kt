@@ -13,13 +13,16 @@ class BehaviorSpecInstancePerLeafTest : BehaviorSpec() {
    init {
 
       afterProject {
-         buffer shouldBe "abacdacefghifghjfgklfgkm"
+         buffer shouldBe "abb2acdacefghifghjfgklfgkm"
       }
 
       Given("a") {
          buffer += "a"
          When("b") {
             buffer += "b"
+            Then("b2") {
+               buffer += "b2"
+            }
          }
          When("c") {
             buffer += "c"

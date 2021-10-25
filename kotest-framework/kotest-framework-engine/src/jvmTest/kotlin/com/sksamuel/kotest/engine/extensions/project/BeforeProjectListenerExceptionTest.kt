@@ -1,12 +1,12 @@
 package com.sksamuel.kotest.engine.extensions.project
 
-import io.kotest.core.config.configuration
+import io.kotest.core.config.Configuration
 import io.kotest.core.listeners.ProjectListener
 import io.kotest.core.spec.Isolate
 import io.kotest.core.spec.style.FunSpec
-import io.kotest.engine.KotestEngineLauncher
-import io.kotest.engine.project.BeforeProjectException
+import io.kotest.engine.TestEngineLauncher
 import io.kotest.engine.listener.AbstractTestEngineListener
+import io.kotest.engine.project.BeforeProjectException
 import io.kotest.inspectors.forOne
 import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.throwable.shouldHaveMessage
@@ -17,12 +17,6 @@ class BeforeProjectListenerExceptionTest : FunSpec({
 
    test("exception in beforeProject should use BeforeProjectListenerException") {
 
-      val projectListener = object : ProjectListener {
-         override suspend fun beforeProject() {
-            error("OOOFF")
-         }
-      }
-
       val errors: MutableList<Throwable> = mutableListOf()
 
       val listener = object : AbstractTestEngineListener() {
@@ -31,18 +25,21 @@ class BeforeProjectListenerExceptionTest : FunSpec({
          }
       }
 
-      configuration.registerListener(projectListener)
+      val c = Configuration()
+      c.registry().add(object : ProjectListener {
+         override suspend fun beforeProject() {
+            error("OOOFF")
+         }
+      })
 
-      KotestEngineLauncher()
-         .withListener(listener)
-         .withSpec(DummySpec3::class)
+      TestEngineLauncher(listener)
+         .withClasses(DummySpec3::class)
+         .withConfiguration(c)
          .launch()
 
       errors shouldHaveSize 1
       errors[0].shouldBeInstanceOf<BeforeProjectException>()
       errors[0].cause!! shouldHaveMessage "OOOFF"
-
-      configuration.deregisterListener(projectListener)
    }
 
    test("multiple beforeProject exceptions should be collected") {
@@ -67,12 +64,13 @@ class BeforeProjectListenerExceptionTest : FunSpec({
          }
       }
 
-      configuration.registerListener(projectListener1)
-      configuration.registerListener(projectListener2)
+      val c = Configuration()
+      c.registry().add(projectListener1)
+      c.registry().add(projectListener2)
 
-      KotestEngineLauncher()
-         .withListener(listener)
-         .withSpec(DummySpec3::class)
+      TestEngineLauncher(listener)
+         .withClasses(DummySpec3::class)
+         .withConfiguration(c)
          .launch()
 
       errors shouldHaveSize 2
@@ -85,9 +83,6 @@ class BeforeProjectListenerExceptionTest : FunSpec({
       errors.forOne {
          it.cause!!.shouldHaveMessage("WHAMM")
       }
-
-      configuration.deregisterListener(projectListener1)
-      configuration.deregisterListener(projectListener2)
    }
 })
 

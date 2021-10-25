@@ -1,6 +1,6 @@
 package com.sksamuel.kotest.engine.extensions.spec
 
-import io.kotest.core.config.configuration
+import io.kotest.core.config.Configuration
 import io.kotest.core.extensions.Extension
 import io.kotest.core.listeners.BeforeSpecListener
 import io.kotest.core.listeners.TestListener
@@ -21,15 +21,17 @@ class BeforeSpecListenerTest : FunSpec() {
 
       test("BeforeSpecListener's should be triggered for a spec with tests") {
 
-         configuration.registerExtensions(MyBeforeSpecListener)
+         val c = Configuration()
+         c.registry().add(MyBeforeSpecListener)
+
          counter.set(0)
 
          val listener = CollectingTestEngineListener()
          TestEngineLauncher(listener)
             .withClasses(MyPopulatedSpec3::class)
+            .withConfiguration(c)
             .launch()
 
-         configuration.deregisterExtension(MyBeforeSpecListener)
          listener.specs.size shouldBe 1
          listener.tests.size shouldBe 1
 
@@ -48,14 +50,15 @@ class BeforeSpecListenerTest : FunSpec() {
 
       test("BeforeSpecExtension's should NOT be triggered for a spec without tests") {
 
-         configuration.registerExtensions(MyBeforeSpecListener)
+         val c = Configuration()
+         c.registry().add(MyBeforeSpecListener)
+
          counter.set(0)
 
          TestEngineLauncher(NoopTestEngineListener)
             .withClasses(MyErrorSpec3::class)
+            .withConfiguration(c)
             .launch()
-
-         configuration.deregisterExtension(MyBeforeSpecListener)
 
          counter.get() shouldBe 0
       }
@@ -65,7 +68,6 @@ class BeforeSpecListenerTest : FunSpec() {
 private val counter = AtomicInteger(0)
 
 private object MyBeforeSpecListener : BeforeSpecListener {
-   override val name: String = "MyBeforeSpecExtension"
    override suspend fun beforeSpec(spec: Spec) {
       counter.incrementAndGet()
    }
@@ -92,9 +94,7 @@ private class MyPopulatedSpec3 : FunSpec() {
    }
 
    init {
-
       beforeSpec { counter.incrementAndGet() }
-
       test("foo") {}
    }
 }

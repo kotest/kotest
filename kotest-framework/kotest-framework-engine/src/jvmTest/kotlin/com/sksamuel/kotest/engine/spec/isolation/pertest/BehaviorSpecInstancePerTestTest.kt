@@ -11,8 +11,8 @@ private val specs = mutableSetOf<Int>()
 class BehaviorSpecInstancePerTestTest : BehaviorSpec({
 
    afterProject {
-      tests.size shouldBe 9
-      specs.size shouldBe 9
+      tests.size shouldBe 10
+      specs.size shouldBe 10
    }
 
    afterSpec {
@@ -31,25 +31,28 @@ class BehaviorSpecInstancePerTestTest : BehaviorSpec({
       count.incrementAndGet().shouldBe(1)
       When("b") {
          count.incrementAndGet().shouldBe(2)
-      }
-      When("c") {
-         count.incrementAndGet().shouldBe(2)
-         Then("d") {
+         Then("c") {
             count.incrementAndGet().shouldBe(3)
          }
+      }
+      When("d") {
+         count.incrementAndGet().shouldBe(2)
          Then("e") {
+            count.incrementAndGet().shouldBe(3)
+         }
+         Then("f") {
             count.incrementAndGet().shouldBe(3)
          }
       }
    }
-   Given("f") {
+   Given("g") {
       count.incrementAndGet().shouldBe(1)
-      When("g") {
+      When("h") {
          count.incrementAndGet().shouldBe(2)
-         Then("h") {
+         Then("i") {
             count.incrementAndGet().shouldBe(3)
          }
-         Then("i") {
+         Then("j") {
             count.incrementAndGet().shouldBe(3)
          }
       }

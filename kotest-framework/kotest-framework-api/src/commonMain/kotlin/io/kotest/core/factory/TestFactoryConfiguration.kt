@@ -25,21 +25,12 @@ abstract class TestFactoryConfiguration : TestConfiguration(), RootContext {
    val factoryId: FactoryId = FactoryId.next()
 
    /**
-    * Contains the [DynamicRootTest]s that have been added to this configuration.
+    * Contains the [RootTest]s that have been added to this factory.
     */
-   internal var tests = emptyList<DynamicRootTest>()
-
-   /**
-    * Contains the [RootTest]s that have been registered on this factory.
-    */
-   private var rootTests = emptyList<RootTest>()
-
-   private fun addDynamicTest(test: DynamicRootTest) {
-      this.tests = this.tests + test
-   }
+   internal var tests = emptyList<RootTest>()
 
    override fun add(test: RootTest) {
-      rootTests = rootTests + test
+      tests = tests + test
    }
 
    /**
@@ -48,11 +39,11 @@ abstract class TestFactoryConfiguration : TestConfiguration(), RootContext {
     * settings at the time the method was invoked.
     */
    fun include(factory: TestFactory) {
-      TODO() // factory.tests.forEach { addDynamicTest(it) }
+      factory.tests.forEach { add(it) }
    }
 
    /**
-    * Adds a new [DynamicRootTest] to this factory. When this factory is included
+    * Adds a new [RootTest] to this factory. When this factory is included
     * into a [Spec] these tests will be materialized as [TestCase]s.
     */
    override fun addTest(
@@ -60,5 +51,15 @@ abstract class TestFactoryConfiguration : TestConfiguration(), RootContext {
       test: suspend TestContext.() -> Unit,
       config: ResolvedTestConfig,
       type: TestType,
-   ) = addDynamicTest(DynamicRootTest(name, test, config, type, sourceRef(), factoryId))
+   ) = add(
+      RootTest(
+         name = name,
+         test = test,
+         config = null, // todo thread config
+         type = type,
+         source = sourceRef(),
+         disabled = false, // todo thread disabled
+         factoryId = factoryId,
+      )
+   )
 }

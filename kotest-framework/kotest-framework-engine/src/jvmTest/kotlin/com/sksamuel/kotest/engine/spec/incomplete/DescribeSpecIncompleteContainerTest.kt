@@ -1,4 +1,4 @@
-package com.sksamuel.kotest.engine.spec.dsl
+package com.sksamuel.kotest.engine.spec.incomplete
 
 import io.kotest.core.descriptors.DescriptorId
 import io.kotest.core.spec.style.DescribeSpec
@@ -15,14 +15,20 @@ class DescribeSpecIncompleteContainerTest : FunSpec() {
             .withClasses(IncompleteDescribeSpec::class)
             .launch()
          val desc = collector.tests.mapKeys { it.key.descriptor.id }
-         desc[DescriptorId("foo")]?.isError shouldBe true
-         desc[DescriptorId("foo")]?.errorOrNull?.message shouldBe "Test 'foo' requires at least one nested test"
+         desc[DescriptorId("a")]?.isErrorOrFailure shouldBe true
+         desc[DescriptorId("a")]?.errorOrNull?.message shouldBe "Test 'a' requires at least one nested test"
+         desc[DescriptorId("b")]?.isSuccess shouldBe true
+         desc[DescriptorId("c")]?.isErrorOrFailure shouldBe true
+         desc[DescriptorId("c")]?.errorOrNull?.message shouldBe "Test 'c' requires at least one nested test"
       }
    }
 }
 
 private class IncompleteDescribeSpec : DescribeSpec() {
    init {
-      describe("foo") {}
+      describe("a") {}
+      describe("b") {
+         describe("c") {}
+      }
    }
 }

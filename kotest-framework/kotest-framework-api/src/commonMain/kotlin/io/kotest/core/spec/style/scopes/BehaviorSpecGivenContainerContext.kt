@@ -68,7 +68,7 @@ class BehaviorSpecGivenContainerContext(
    suspend fun xWhen(name: String, test: suspend BehaviorSpecWhenContainerContext.() -> Unit) = addWhen(name, test, xdisabled = true)
 
    private suspend fun addWhen(name: String, test: suspend BehaviorSpecWhenContainerContext.() -> Unit, xdisabled: Boolean) {
-      registerContainer(TestName("When: ", name, true), xdisabled, null) {
+      registerContainer(TestName("When: ", name, true), disabled = xdisabled, null) {
          BehaviorSpecWhenContainerContext(this).test()
       }
    }
@@ -103,6 +103,6 @@ class BehaviorSpecGivenContainerContext(
    suspend fun xThen(name: String, test: suspend TestContext.() -> Unit) = addThen(name, test, xdisabled = true)
 
    private suspend fun addThen(name: String, test: suspend TestContext.() -> Unit, xdisabled: Boolean) {
-      registerTest(TestName("Then: ", name, true), xdisabled, null, test)
+      registerTest(TestName("Then: ", name, true), disabled = xdisabled, null, test)
    }
 }

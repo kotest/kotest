@@ -35,6 +35,10 @@ interface BehaviorSpecRootContext : RootContext {
    fun xGiven(name: String, test: suspend BehaviorSpecGivenContainerContext.() -> Unit) = addGiven(name, true, test)
 
    private fun addGiven(name: String, xdisabled: Boolean, test: suspend BehaviorSpecGivenContainerContext.() -> Unit) {
-      addContainer(TestName("Given: ", name, true), xdisabled, null) { BehaviorSpecGivenContainerContext(this).test() }
+      addContainer(
+         TestName("Given: ", name, true),
+         disabled = xdisabled,
+         null
+      ) { BehaviorSpecGivenContainerContext(this).test() }
    }
 }

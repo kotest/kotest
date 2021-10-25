@@ -24,9 +24,6 @@ internal class DescribeSpecForAllDataTest : DescribeSpec() {
          registerContextTests().assertDataTestResults()
          describe("inside another describe") {
             registerContextTests().assertDataTestResults()
-            it("inside a contexted it") {
-               registerContextTests().assertDataTestResults()
-            }
          }
       }
    }
