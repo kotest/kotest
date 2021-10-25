@@ -38,7 +38,7 @@ data class TestName(
          defaultAffixes: Boolean,
       ): TestName {
 
-         val trimmed = name.removeNewLineCharacter()
+         val trimmed = name.removeAllExtraWhitespaces()
          val (focus, bang, parsedName) = when {
             trimmed.startsWith("!") -> Triple(first = false, second = true, third = trimmed.drop(1).trim())
             trimmed.startsWith("f:") -> Triple(first = true, second = false, third = trimmed.drop(2).trim())

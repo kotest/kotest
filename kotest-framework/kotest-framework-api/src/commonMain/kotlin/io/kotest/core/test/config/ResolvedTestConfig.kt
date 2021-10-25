@@ -85,7 +85,6 @@ data class ResolvedTestConfig(
    init {
       require(invocations > 0) { "Number of invocations must be greater than 0" }
       require(threads > 0) { "Number of threads must be greater than 0" }
-      require(threads <= invocations) { "Number of threads must be <= number of invocations" }
    }
 
    companion object {
