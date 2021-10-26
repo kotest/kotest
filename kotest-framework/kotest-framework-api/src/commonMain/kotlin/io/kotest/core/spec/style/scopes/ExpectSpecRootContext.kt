@@ -14,32 +14,26 @@ typealias ExpectSpecRootScope = ExpectSpecRootContext
 interface ExpectSpecRootContext : RootContext {
 
    fun context(name: String, test: suspend ExpectSpecContainerContext.() -> Unit) {
-      val testName = TestName("Context: ", name, null, false)
-      registration().addContainerTest(testName, xdisabled = false) {
-         ExpectSpecContainerContext(this).test()
-      }
+      addContainer(TestName("Context: ", name, null, false), false, null) { ExpectSpecContainerContext(this).test() }
    }
 
    fun xcontext(name: String, test: suspend ExpectSpecContainerContext.() -> Unit) {
-      val testName = TestName("Context: ", name, null, false)
-      registration().addContainerTest(testName, xdisabled = true) {
-         ExpectSpecContainerContext(this).test()
-      }
+      addContainer(TestName("Context: ", name, null, false), true, null) { ExpectSpecContainerContext(this).test() }
    }
 
    fun expect(name: String, test: suspend TestContext.() -> Unit) {
-      registration().addTest(TestName("Expect: ", name, null, false), xdisabled = false, test = test)
+      addTest(TestName("Expect: ", name, null, false), false, null) { ExpectSpecContainerContext(this).test() }
    }
 
    fun xexpect(name: String, test: suspend TestContext.() -> Unit) {
-      registration().addTest(TestName("Expect: ", name, null, false), xdisabled = true, test = test)
+      addTest(TestName("Expect: ", name, null, false), true, null) { ExpectSpecContainerContext(this).test() }
    }
 
    fun expect(name: String): RootTestWithConfigBuilder {
-      return RootTestWithConfigBuilder(TestName("Expect: ", name, null, false), registration(), xdisabled = false)
+      return RootTestWithConfigBuilder(this, TestName("Expect: ", name, null, false), false)
    }
 
    fun xexpect(name: String): RootTestWithConfigBuilder {
-      return RootTestWithConfigBuilder(TestName("Expect: ", name, null, false), registration(), xdisabled = true)
+      return RootTestWithConfigBuilder(this, TestName("Expect: ", name, null, false), true)
    }
 }

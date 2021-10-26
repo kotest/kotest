@@ -5,10 +5,8 @@ import io.kotest.core.spec.style.StringSpec
 import io.kotest.core.test.Enabled
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
-import io.kotest.core.test.TestStatus
 import io.kotest.engine.test.toTestResult
-
-private const val reason = "this test is skipped cause it's skipped"
+import kotlin.time.milliseconds
 
 // this tests that we can manipulate the result of a test case from an extension
 class TestCaseExtensionAroundAdviceTest : StringSpec() {
@@ -17,16 +15,11 @@ class TestCaseExtensionAroundAdviceTest : StringSpec() {
          return when (testCase.descriptor.id.value) {
             "test1" -> TestResult.Ignored
             "test2" ->
-               when (execute(testCase).status) {
-                  TestStatus.Error -> TestResult.success(0)
-                  else -> AssertionError("boom").toTestResult(0)
+               when (execute(testCase)) {
+                  is TestResult.Error, is TestResult.Failure -> TestResult.Success(0.milliseconds)
+                  else -> AssertionError("boom").toTestResult(0.milliseconds)
                }
-            "test3" -> if (testCase.config.enabled) throw RuntimeException() else execute(testCase)
-            "test4" -> execute(testCase.copy(config = testCase.config.copy(enabled = false)))
-            "test5" -> {
-               val enabled = testCase.config.enabledOrReasonIf(testCase)
-               if (enabled.isEnabled || enabled.reason != reason) throw RuntimeException() else execute(testCase)
-            }
+            "test3" -> execute(testCase.copy(config = testCase.config.copy(enabled = { Enabled.disabled })))
             else -> execute(testCase)
          }
       }
@@ -44,13 +37,9 @@ class TestCaseExtensionAroundAdviceTest : StringSpec() {
       "test2" {
          throw RuntimeException()
       }
-      // the config for this test should be carried through to the extension
-      "test3".config(enabled = false) {
-      }
-      //  config for this test should be overriden so that the test is actually disabled, and therefore the exception will not be thrown
-      "test4".config(enabled = true) {
+      // config for this test should be overriden so that the test is actually disabled, and therefore the exception will not be thrown
+      "test3".config(enabled = true) {
          throw RuntimeException()
       }
-      "test6".config(enabledOrReasonIf = { Enabled.disabled(reason) }) {} // the extension should throw if this test is enabled}
    }
 }

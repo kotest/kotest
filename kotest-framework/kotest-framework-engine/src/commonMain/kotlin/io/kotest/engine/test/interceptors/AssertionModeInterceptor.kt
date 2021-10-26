@@ -2,7 +2,6 @@ package io.kotest.engine.test.interceptors
 
 import io.kotest.assertions.assertionCounter
 import io.kotest.assertions.getAndReset
-import io.kotest.core.config.Configuration
 import io.kotest.core.test.AssertionMode
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestContext
@@ -12,15 +11,11 @@ import io.kotest.core.test.TestType
 /**
  * Wraps the test function checking for assertion mode, if the test is a [TestType.Test].
  */
-internal class AssertionModeInterceptor(private val configuration: Configuration) : TestExecutionInterceptor {
-
-   private fun mode(testCase: TestCase) =
-      testCase.spec.assertions ?: testCase.spec.assertionMode() ?: configuration.assertionMode
+internal class AssertionModeInterceptor() : TestExecutionInterceptor {
 
    private fun shouldApply(testCase: TestCase): Boolean {
       if (testCase.type == TestType.Container) return false
-      val mode = mode(testCase)
-      if (mode == AssertionMode.None) return false
+      if (testCase.config.assertionMode == AssertionMode.None) return false
       return true
    }
 
@@ -40,15 +35,14 @@ internal class AssertionModeInterceptor(private val configuration: Configuration
       val result = test(testCase, context)
 
       val warningMessage = "Test '${testCase.name.testName}' did not invoke any assertions"
-      val mode = mode(testCase)
 
       return when {
          // if we had an error anyway, we don't bother with this check
          result.isErrorOrFailure -> result
          // if we had assertions we're good
          assertionCounter.getAndReset() > 0 -> result
-         mode == AssertionMode.Error -> throw ZeroAssertionsError(warningMessage)
-         mode == AssertionMode.Warn -> {
+         testCase.config.assertionMode == AssertionMode.Error -> throw ZeroAssertionsError(warningMessage)
+         testCase.config.assertionMode == AssertionMode.Warn -> {
             println("Warning: $warningMessage")
             result
          }

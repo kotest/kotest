@@ -14,9 +14,11 @@ abstract class ExpectSpecDuplicateTest(iso: IsolationMode) : ExpectSpec() {
       }
       context("foo") {
          this.testCase.name.testName shouldBe "(1) foo"
+         expect("woo") {}
       }
       context("foo") {
          this.testCase.name.testName shouldBe "(2) foo"
+         expect("woo") {}
       }
    }
 }

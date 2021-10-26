@@ -5,7 +5,7 @@ import io.kotest.matchers.shouldBe
 
 class ShouldSpecLambdaTest : ShouldSpec({
 
-  var name: String? = null
+   var name: String? = null
 
    context("feature 1") {
       should("the name should start off null") {
@@ -22,14 +22,14 @@ class ShouldSpecLambdaTest : ShouldSpec({
             name.shouldBe("boo")
          }
       }
-      context("it should still be boo as this test should run after all the above") {
+      should("it should still be boo as this test should run after all the above") {
          name.shouldBe("boo")
       }
-    name = "koo"
-      context("now the name should be set to koo") {
+      name = "koo"
+      should("now the name should be set to koo") {
          name.shouldBe("koo")
       }
-  }
+   }
 
    context("feature 2 should run after feature 1") {
       should("name should still be the last value which was koo") {

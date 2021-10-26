@@ -11,7 +11,7 @@ import org.junit.platform.testkit.engine.EngineTestKit
 @Isolate
 class AfterProjectListenerExceptionHandlingTest : FunSpec({
 
-   test("an AfterProjectListenerException should add marker test") {
+   test("!an AfterProjectListenerException should add marker test") {
 
       val ext = object : AfterProjectListener {
          override suspend fun afterProject() {
@@ -57,7 +57,7 @@ class AfterProjectListenerExceptionHandlingTest : FunSpec({
       configuration.deregister(ext)
    }
 
-   test("multiple AfterProjectListenerException's should add multiple markers tests") {
+   test("!multiple AfterProjectListenerException's should add multiple markers tests") {
 
       val ext1 = object : AfterProjectListener {
          override suspend fun afterProject() {

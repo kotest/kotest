@@ -3,10 +3,9 @@ package io.kotest.runner.junit4
 import io.kotest.core.config.Configuration
 import io.kotest.core.config.EmptyExtensionRegistry
 import io.kotest.core.spec.Spec
-import io.kotest.core.test.TestCaseOrder
 import io.kotest.engine.TestEngineLauncher
+import io.kotest.engine.spec.Materializer
 import io.kotest.engine.spec.createAndInitializeSpec
-import io.kotest.engine.spec.materializeAndOrderRootTests
 import io.kotest.engine.test.names.DefaultDisplayNameFormatter
 import kotlinx.coroutines.runBlocking
 import org.junit.runner.Description
@@ -29,15 +28,14 @@ class KotestTestRunner(
    override fun getDescription(): Description {
       val spec = runBlocking { createAndInitializeSpec(kclass.kotlin, EmptyExtensionRegistry).getOrThrow() }
       val desc = Description.createSuiteDescription(spec::class.java)
-      spec.materializeAndOrderRootTests(TestCaseOrder.Sequential)
-         .forEach { rootTest ->
-            desc.addChild(
-               describeTestCase(
-                  rootTest.testCase,
-                  formatter.format(rootTest.testCase)
-               )
+      Materializer(Configuration()).materialize(spec).forEach { rootTest ->
+         desc.addChild(
+            describeTestCase(
+               rootTest,
+               formatter.format(rootTest)
             )
-         }
+         )
+      }
       return desc
    }
 }

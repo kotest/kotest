@@ -6,17 +6,14 @@ import io.kotest.core.names.TestName
 import io.kotest.core.test.EnabledIf
 import io.kotest.core.test.EnabledOrReasonIf
 import io.kotest.core.test.TestContext
-import io.kotest.core.test.TestType
-import io.kotest.core.test.deriveTestContainerConfig
-import io.kotest.core.test.toTestCaseConfig
-import io.kotest.core.test.toTestContainerConfig
+import io.kotest.core.test.config.UnresolvedTestConfig
 import kotlin.time.Duration
 
 @ExperimentalKotest
 class RootContextConfigBuilder<T>(
    private val name: TestName,
-   private val registration: RootTestRegistration,
    private val xdisabled: Boolean,
+   private val context: RootContext,
    val contextFn: (TestContext) -> T
 ) {
 
@@ -30,23 +27,14 @@ class RootContextConfigBuilder<T>(
       failfast: Boolean? = null,
       test: suspend T.() -> Unit
    ) {
-
-      val derivedConfig = registration.defaultConfig
-         .toTestContainerConfig()
-         .deriveTestContainerConfig(
-            enabled = enabled,
-            enabledIf = enabledIf,
-            enabledOrReasonIf = enabledOrReasonIf,
-            tags = tags,
-            timeout = timeout,
-            failfast = failfast,
-         )
-
-      registration.addTest(
-         name,
-         xdisabled,
-         derivedConfig.toTestCaseConfig(),
-         TestType.Container
-      ) { contextFn(this).test() }
+      val config = UnresolvedTestConfig(
+         enabled = enabled,
+         enabledIf = enabledIf,
+         enabledOrReasonIf = enabledOrReasonIf,
+         tags = tags,
+         timeout = timeout,
+         failfast = failfast,
+      )
+      context.addContainer(name, xdisabled, config) { contextFn(this).test() }
    }
 }

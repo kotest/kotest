@@ -1,6 +1,5 @@
 //package com.sksamuel.kotest.engine.extensions.spec
 //
-//import io.kotest.core.config.configuration
 //import io.kotest.core.extensions.SpecInitializeExtension
 //import io.kotest.core.listeners.SpecCreationErrorListener
 //import io.kotest.core.spec.Isolate

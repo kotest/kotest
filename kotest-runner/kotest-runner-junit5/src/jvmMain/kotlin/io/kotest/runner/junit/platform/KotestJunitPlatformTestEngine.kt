@@ -1,9 +1,8 @@
 package io.kotest.runner.junit.platform
 
 import io.kotest.common.KotestInternal
-import io.kotest.core.config.configuration
+import io.kotest.core.config.Configuration
 import io.kotest.core.descriptors.toDescriptor
-import io.kotest.core.extensions.DiscoveryExtension
 import io.kotest.core.filter.TestFilter
 import io.kotest.core.filter.TestFilterResult
 import io.kotest.core.spec.Spec
@@ -54,6 +53,8 @@ class KotestJunitPlatformTestEngine : TestEngine {
 
    private fun execute(request: ExecutionRequest, root: KotestEngineDescriptor) {
 
+      val configuration = Configuration()
+
       val listener = ThreadSafeTestEngineListener(
          PinnedSpecTestEngineListener(
             JUnitTestEngineListener(
@@ -61,7 +62,6 @@ class KotestJunitPlatformTestEngine : TestEngine {
                   request.engineExecutionListener
                ),
                root,
-               configuration,
             )
          )
       )
@@ -69,6 +69,7 @@ class KotestJunitPlatformTestEngine : TestEngine {
       TestEngineLauncher(listener)
          .withClasses(root.classes)
          .withExtensions(root.testFilters)
+         .withConfiguration(configuration)
          .launch()
    }
 
@@ -104,8 +105,7 @@ class KotestJunitPlatformTestEngine : TestEngine {
       // therefore, the presence of a MethodSelector means we must run no tests in KT.
       val descriptor = if (request.getSelectorsByType(MethodSelector::class.java).isEmpty()) {
 
-         val extensions = configuration.registry().all().filterIsInstance<DiscoveryExtension>()
-         val discovery = Discovery(extensions)
+         val discovery = Discovery(emptyList())
          val result = discovery.discover(request.toKotestDiscoveryRequest())
          val classes = result.specs.filter { spec ->
             testFilters.all { it.filter(spec.toDescriptor()) == TestFilterResult.Include }

@@ -2,17 +2,19 @@ package com.sksamuel.kotest.timeout
 
 import io.kotest.core.config.Configuration
 import io.kotest.core.descriptors.append
-import io.kotest.core.listeners.TestListener
-import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.descriptors.toDescriptor
+import io.kotest.core.listeners.AfterTestListener
 import io.kotest.core.names.TestName
+import io.kotest.core.sourceRef
+import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.test.TestCase
-import io.kotest.core.test.TestCaseConfig
 import io.kotest.core.test.TestResult
+import io.kotest.core.test.TestType
+import io.kotest.core.test.config.ResolvedTestConfig
 import io.kotest.engine.concurrency.NoopCoroutineDispatcherFactory
 import io.kotest.engine.test.NoopTestCaseExecutionListener
-import io.kotest.engine.test.contexts.NoopTestContext
 import io.kotest.engine.test.TestCaseExecutor
+import io.kotest.engine.test.contexts.NoopTestContext
 import io.kotest.matchers.shouldBe
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
@@ -23,90 +25,82 @@ import kotlin.time.Duration
 
 @DelicateCoroutinesApi
 @Suppress("BlockingMethodInNonBlockingContext")
-class TestCaseTimeoutListenerTest : FunSpec() {
-
-   private val blockingCount = AtomicInteger(0)
-   private val suspendingCount = AtomicInteger(0)
-
+class TestCaseTimeoutAfterTestListenerTest : FunSpec() {
    init {
 
-      blockingTest = true
-
-      afterSpec {
-         suspendingCount.get() shouldBe 1
-         blockingCount.get() shouldBe 1
-      }
-
-      // todo figure this out
-      test("tests which timeout during a blocking operation should still run the 'after test' listeners").config(
+      test("tests that timeout during a blocking operation should still run the 'after test' listeners").config(
          timeout = Duration.milliseconds(10000),
          blockingTest = true,
       ) {
 
+         val blockingCount = AtomicInteger(0)
+
          // this listener will flick the flag to true, so we know it ran
-         val listener = object : TestListener {
-            override suspend fun afterAny(testCase: TestCase, result: TestResult) {
+         val listener = object : AfterTestListener {
+            override suspend fun afterTest(testCase: TestCase, result: TestResult) {
                blockingCount.incrementAndGet()
             }
          }
 
-         val testCase = TestCase.test(
-            TestCaseTimeoutListenerTest::class.toDescriptor().append("wibble"),
-            TestName("wibble"),
-            this@TestCaseTimeoutListenerTest,
+         val tc = TestCase(
+            descriptor = TestCaseTimeoutAfterTestListenerTest::class.toDescriptor().append("wibble"),
+            name = TestName("wibble"),
+            spec = this@TestCaseTimeoutAfterTestListenerTest,
+            test = { Thread.sleep(1000000) },
+            source = sourceRef(),
+            type = TestType.Container,
             parent = null,
-         ) {
-            Thread.sleep(1000000)
-         }.copy(
-            config = TestCaseConfig(
-               true,
-               invocations = 1,
-               threads = 1,
+            config = ResolvedTestConfig.default.copy(
                timeout = Duration.milliseconds(1),
-               listeners = listOf(listener)
-            )
+               extensions = listOf(listener),
+               blockingTest = true
+            ),
          )
 
          val executor = TestCaseExecutor(NoopTestCaseExecutionListener, NoopCoroutineDispatcherFactory, Configuration())
          // needs to run on a separate thread, so we don't interrupt our own thread
          withContext(Dispatchers.IO) {
-            executor.execute(testCase, NoopTestContext(testCase, coroutineContext))
+            executor.execute(tc, NoopTestContext(testCase, coroutineContext))
          }
+
+         blockingCount.get() shouldBe 1
       }
 
       test("tests which timeout during a suspending operation should still run the 'after test' listeners").config(
          timeout = Duration.milliseconds(10000)
       ) {
 
+         val suspendingCount = AtomicInteger(0)
+
          // this listener will flick the flag to true, so we know it ran
-         val listener = object : TestListener {
+         val listener = object : AfterTestListener {
             override suspend fun afterAny(testCase: TestCase, result: TestResult) {
                suspendingCount.incrementAndGet()
             }
          }
 
-         val testCase = TestCase.test(
-            TestCaseTimeoutListenerTest::class.toDescriptor().append("wibble"),
-            TestName("wibble"),
-            this@TestCaseTimeoutListenerTest,
+         val tc = TestCase(
+            descriptor = TestCaseTimeoutAfterTestListenerTest::class.toDescriptor().append("wobble"),
+            name = TestName("wobble"),
+            spec = this@TestCaseTimeoutAfterTestListenerTest,
+            test = { delay(1000000) },
+            source = sourceRef(),
+            type = TestType.Container,
             parent = null,
-         ) {
-            delay(1000000)
-         }.copy(
-            config = TestCaseConfig(
-               true,
-               invocations = 1,
-               threads = 1,
+            config = ResolvedTestConfig.default.copy(
                timeout = Duration.milliseconds(1),
-               listeners = listOf(listener)
-            )
+               extensions = listOf(listener),
+               blockingTest = false
+            ),
          )
 
          val executor = TestCaseExecutor(NoopTestCaseExecutionListener, NoopCoroutineDispatcherFactory, Configuration())
          // needs to run on a separate thread, so we don't interrupt our own thread
          withContext(Dispatchers.IO) {
-            executor.execute(testCase, NoopTestContext(testCase, coroutineContext))
+            executor.execute(tc, NoopTestContext(testCase, coroutineContext))
          }
+
+         suspendingCount.get() shouldBe 1
       }
    }
 }

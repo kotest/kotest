@@ -1,6 +1,5 @@
 package com.sksamuel.kotest.engine.extensions.spec
 
-import io.kotest.core.config.configuration
 import io.kotest.core.extensions.SpecExtension
 import io.kotest.core.spec.Isolate
 import io.kotest.core.spec.IsolationMode
@@ -26,9 +25,14 @@ class SpecInterceptExtensionTest : FunSpec() {
             }
          }
 
-         configuration.register(ext)
-         TestEngineLauncher(NoopTestEngineListener).withClasses(SpecInterceptSingleInstance::class).launch()
-         configuration.deregister(ext)
+         val conf = io.kotest.core.config.Configuration()
+         conf.registry().add(ext)
+
+         TestEngineLauncher(NoopTestEngineListener)
+            .withClasses(SpecInterceptSingleInstance::class)
+            .withConfiguration(conf)
+            .launch()
+
          count shouldBe 1
       }
 
@@ -42,9 +46,14 @@ class SpecInterceptExtensionTest : FunSpec() {
             }
          }
 
-         configuration.register(ext)
-         TestEngineLauncher(NoopTestEngineListener).withClasses(SpecInterceptInstancePerTest::class).launch()
-         configuration.deregister(ext)
+         val conf = io.kotest.core.config.Configuration()
+         conf.registry().add(ext)
+
+         TestEngineLauncher(NoopTestEngineListener)
+            .withClasses(SpecInterceptInstancePerTest::class)
+            .withConfiguration(conf)
+            .launch()
+
          count shouldBe 3
       }
 
@@ -54,10 +63,16 @@ class SpecInterceptExtensionTest : FunSpec() {
             override suspend fun intercept(spec: Spec, execute: suspend (Spec) -> Unit) {}
          }
 
-         configuration.register(ext)
+         val conf = io.kotest.core.config.Configuration()
+         conf.registry().add(ext)
+
          val collecting = CollectingTestEngineListener()
-         TestEngineLauncher(collecting).withClasses(SpecInterceptInstancePerTest::class).launch()
-         configuration.deregister(ext)
+
+         TestEngineLauncher(collecting)
+            .withClasses(SpecInterceptInstancePerTest::class)
+            .withConfiguration(conf)
+            .launch()
+
          collecting.tests.shouldBeEmpty()
       }
    }

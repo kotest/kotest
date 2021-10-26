@@ -40,8 +40,6 @@ kotlin {
 
 tasks.named<Test>("jvmTest") {
    useJUnitPlatform()
-   systemProperty("kotest.framework.timeout", 100)
-   systemProperty("kotest.framework.invocation.timeout", 50)
    filter {
       isFailOnNoMatchingTests = false
    }

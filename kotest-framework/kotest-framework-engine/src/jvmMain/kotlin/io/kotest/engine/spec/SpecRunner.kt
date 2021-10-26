@@ -26,6 +26,8 @@ internal abstract class SpecRunner(
    private val configuration: Configuration,
 ) {
 
+   protected val materializer = Materializer(configuration)
+
    /**
     * Executes all the tests in this spec, returning a Failure if there was an exception in a listener
     * or class initializer. Otherwise, returns the results for the tests in that spec.
@@ -36,7 +38,7 @@ internal abstract class SpecRunner(
     * Executes all the tests in this spec.
     */
    protected suspend fun launch(spec: Spec, run: suspend (TestCase) -> Unit) {
-      val rootTests = spec.materializeAndOrderRootTests(configuration.testCaseOrder).map { it.testCase }
+      val rootTests = materializer.materialize(spec)
       log { "SingleInstanceSpecRunner: Launching ${rootTests.size} root tests with launcher $scheduler" }
       scheduler.schedule(run, rootTests)
    }

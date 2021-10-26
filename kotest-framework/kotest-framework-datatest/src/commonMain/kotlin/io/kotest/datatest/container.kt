@@ -1,13 +1,10 @@
 package io.kotest.datatest
 
 import io.kotest.common.ExperimentalKotest
-import io.kotest.core.descriptors.append
 import io.kotest.core.names.TestName
+import io.kotest.core.spec.style.scopes.AbstractContainerContext
+import io.kotest.core.spec.style.scopes.ContainerContext
 import io.kotest.core.test.Identifiers
-import io.kotest.core.test.TestCaseConfig
-import io.kotest.core.test.TestContext
-import io.kotest.core.test.TestType
-import io.kotest.core.test.createNestedTest
 import kotlin.jvm.JvmName
 
 /**
@@ -16,11 +13,11 @@ import kotlin.jvm.JvmName
  * The test name will be generated from the stable properties of the elements. See [Identifiers].
  */
 @ExperimentalKotest
-suspend fun <T : Any> TestContext.withData(
+suspend fun <T : Any> ContainerContext.withData(
    first: T,
    second: T,
    vararg rest: T,
-   test: suspend TestContext.(T) -> Unit
+   test: suspend ContainerContext.(T) -> Unit
 ) = // we need first and second to help the compiler disambiguate
    withData(listOf(first, second) + rest, test)
 
@@ -30,9 +27,9 @@ suspend fun <T : Any> TestContext.withData(
  * The test names will be generated from the stable properties of the elements. See [Identifiers].
  */
 @ExperimentalKotest
-suspend fun <T : Any> TestContext.withData(
+suspend fun <T : Any> ContainerContext.withData(
    ts: Sequence<T>,
-   test: suspend TestContext.(T) -> Unit
+   test: suspend ContainerContext.(T) -> Unit
 ) = withData(ts.toList(), test)
 
 /**
@@ -41,9 +38,9 @@ suspend fun <T : Any> TestContext.withData(
  * The test names will be generated from the stable properties of the elements. See [Identifiers].
  */
 @ExperimentalKotest
-suspend fun <T : Any> TestContext.withData(
+suspend fun <T : Any> ContainerContext.withData(
    ts: Iterable<T>,
-   test: suspend TestContext.(T) -> Unit
+   test: suspend ContainerContext.(T) -> Unit
 ) {
    withData({ getStableIdentifier(it) }, ts, test)
 }
@@ -54,10 +51,10 @@ suspend fun <T : Any> TestContext.withData(
  * The test name will be generated from the given [nameFn] function.
  */
 @ExperimentalKotest
-suspend fun <T : Any> TestContext.withData(
+suspend fun <T : Any> ContainerContext.withData(
    nameFn: (T) -> String,
    ts: Sequence<T>,
-   test: suspend TestContext.(T) -> Unit
+   test: suspend ContainerContext.(T) -> Unit
 ) = withData(nameFn, ts.toList(), test)
 
 /**
@@ -66,12 +63,12 @@ suspend fun <T : Any> TestContext.withData(
  * The test name will be generated from the stable properties of the elements. See [Identifiers].
  */
 @ExperimentalKotest
-suspend fun <T : Any> TestContext.withData(
+suspend fun <T : Any> ContainerContext.withData(
    nameFn: (T) -> String,
    first: T,
    second: T,
    vararg rest: T,
-   test: suspend TestContext.(T) -> Unit
+   test: suspend ContainerContext.(T) -> Unit
 ) = withData(nameFn, listOf(first, second) + rest, test)
 
 /**
@@ -80,23 +77,13 @@ suspend fun <T : Any> TestContext.withData(
  * The test name will be generated from the stable properties of the elements. See [Identifiers].
  */
 @ExperimentalKotest
-suspend fun <T : Any> TestContext.withData(
+suspend fun <T : Any> ContainerContext.withData(
    nameFn: (T) -> String,
    @BuilderInference ts: Iterable<T>,
-   @BuilderInference test: suspend TestContext.(T) -> Unit
+   @BuilderInference test: suspend ContainerContext.(T) -> Unit
 ) {
    ts.forEach { t ->
-      val name = nameFn(t)
-      this.registerTestCase(
-         createNestedTest(
-            descriptor = testCase.descriptor.append(name),
-            name = TestName(name),
-            xdisabled = false,
-            config = TestCaseConfig(),
-            type = TestType.Container,
-            factoryId = null
-         ) { test(t) }
-      )
+      registerContainer(TestName(nameFn(t)), false, null) { AbstractContainerContext(this).test(t) }
    }
 }
 
@@ -106,17 +93,8 @@ suspend fun <T : Any> TestContext.withData(
  */
 @ExperimentalKotest
 @JvmName("withDataMap")
-suspend fun <T : Any> TestContext.withData(data: Map<String, T>, test: suspend TestContext.(T) -> Unit) {
+suspend fun <T : Any> ContainerContext.withData(data: Map<String, T>, test: suspend ContainerContext.(T) -> Unit) {
    data.forEach { (name, t) ->
-      this.registerTestCase(
-         createNestedTest(
-            descriptor = testCase.descriptor.append(name),
-            name = TestName(name),
-            xdisabled = false,
-            config = TestCaseConfig(),
-            type = TestType.Container,
-            factoryId = null,
-         ) { test(t) }
-      )
+      registerContainer(TestName(name), false, null) { AbstractContainerContext(this).test(t) }
    }
 }

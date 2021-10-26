@@ -15,6 +15,7 @@ import kotlin.reflect.KClass
  * Note: If multiple [DiscoveryExtension]s are registered, the order
  * in which they execute is not specified.
  */
+@Deprecated("Discovery extensions cannot be injected into some platforms. Use TestFilter or SpecFilter extensions and integrate via project config. Deprecated since 5.0")
 interface DiscoveryExtension : Extension {
 
    /**

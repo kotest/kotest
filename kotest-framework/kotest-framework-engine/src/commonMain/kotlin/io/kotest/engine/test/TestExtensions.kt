@@ -1,5 +1,7 @@
 package io.kotest.engine.test
 
+import io.kotest.common.collect
+import io.kotest.common.mapError
 import io.kotest.core.config.ExtensionRegistry
 import io.kotest.core.extensions.Extension
 import io.kotest.core.extensions.TestCaseExtension
@@ -17,8 +19,6 @@ import io.kotest.core.test.TestContext
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestType
 import io.kotest.engine.test.contexts.withCoroutineContext
-import io.kotest.common.collect
-import io.kotest.common.mapError
 import kotlin.coroutines.coroutineContext
 
 /**
@@ -32,8 +32,7 @@ internal class TestExtensions(private val registry: ExtensionRegistry) {
     * the registry.
     */
    fun extensions(testCase: TestCase): List<Extension> {
-      return testCase.config.listeners + //
-         testCase.config.extensions + //
+      return testCase.config.extensions +
          testCase.spec.extensions() + // overriding the extensions function in the spec
          testCase.spec.listeners() + // overriding the listeners function in the spec
          testCase.spec.functionOverrideCallbacks() + // spec level dsl eg beforeTest { }

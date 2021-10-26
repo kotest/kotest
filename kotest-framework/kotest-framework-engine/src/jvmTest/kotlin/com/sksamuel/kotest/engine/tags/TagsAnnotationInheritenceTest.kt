@@ -7,7 +7,7 @@ import io.kotest.core.extensions.TagExtension
 import io.kotest.core.spec.Isolate
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.test.TestCaseOrder
-import io.kotest.engine.spec.materializeAndOrderRootTests
+import io.kotest.engine.spec.Materializer
 import io.kotest.engine.test.status.isEnabledInternal
 import io.kotest.matchers.shouldBe
 
@@ -23,10 +23,11 @@ class TagsAnnotationInheritenceTest : FunSpec() {
 
          val conf = Configuration()
          conf.registry().add(ext)
+         conf.testCaseOrder = TestCaseOrder.Random
 
-         MyTestClass().materializeAndOrderRootTests(TestCaseOrder.Random)
-            .filter { it.testCase.isEnabledInternal(conf).isEnabled }
-            .map { it.testCase.name.testName }
+         Materializer(conf).materialize(MyTestClass())
+            .filter { it.isEnabledInternal(conf).isEnabled }
+            .map { it.name.testName }
             .toSet() shouldBe setOf("a", "b", "c", "d")
       }
 
@@ -37,11 +38,12 @@ class TagsAnnotationInheritenceTest : FunSpec() {
 
          val conf = Configuration()
          conf.registry().add(ext)
+         conf.testCaseOrder = TestCaseOrder.Random
 
          // all tests should be filtered out because of the @Tags
-         MyTestClass().materializeAndOrderRootTests(TestCaseOrder.Random)
-            .filter { it.testCase.isEnabledInternal(conf).isEnabled }
-            .map { it.testCase.name.testName }
+         Materializer(conf).materialize(MyTestClass())
+            .filter { it.isEnabledInternal(conf).isEnabled }
+            .map { it.name.testName }
             .toSet() shouldBe emptySet()
       }
 
@@ -51,10 +53,12 @@ class TagsAnnotationInheritenceTest : FunSpec() {
          }
          val conf = Configuration()
          conf.registry().add(ext)
+         conf.testCaseOrder = TestCaseOrder.Random
+
          // linux is included for all, and we're using an 'or'
-         MyTestClass().materializeAndOrderRootTests(TestCaseOrder.Random)
-            .filter { it.testCase.isEnabledInternal(conf).isEnabled }
-            .map { it.testCase.name.testName }
+         Materializer(conf).materialize(MyTestClass())
+            .filter { it.isEnabledInternal(conf).isEnabled }
+            .map { it.name.testName }
             .toSet() shouldBe setOf("a", "b", "c", "d")
       }
 
@@ -64,10 +68,12 @@ class TagsAnnotationInheritenceTest : FunSpec() {
          }
          val conf = Configuration()
          conf.registry().add(ext)
+         conf.testCaseOrder = TestCaseOrder.Random
+
          // linux should be included for all, but then postgres tests excluded as well
-         MyTestClass().materializeAndOrderRootTests(TestCaseOrder.Random)
-            .filter { it.testCase.isEnabledInternal(conf).isEnabled }
-            .map { it.testCase.name.testName }
+         Materializer(conf).materialize(MyTestClass())
+            .filter { it.isEnabledInternal(conf).isEnabled }
+            .map { it.name.testName }
             .toSet() shouldBe setOf("a", "d")
       }
 
@@ -77,10 +83,12 @@ class TagsAnnotationInheritenceTest : FunSpec() {
          }
          val conf = Configuration()
          conf.registry().add(ext)
+         conf.testCaseOrder = TestCaseOrder.Random
+
          // Mysql tests should be excluded
-         MyTestClass().materializeAndOrderRootTests(TestCaseOrder.Random)
-            .filter { it.testCase.isEnabledInternal(conf).isEnabled }
-            .map { it.testCase.name.testName }
+         Materializer(conf).materialize(MyTestClass())
+            .filter { it.isEnabledInternal(conf).isEnabled }
+            .map { it.name.testName }
             .toSet() shouldBe setOf("b", "d")
       }
 
@@ -90,10 +98,12 @@ class TagsAnnotationInheritenceTest : FunSpec() {
          }
          val conf = Configuration()
          conf.registry().add(ext)
+         conf.testCaseOrder = TestCaseOrder.Random
+
          // Mysql tests should be excluded
-         MyTestClass().materializeAndOrderRootTests(TestCaseOrder.Random)
-            .filter { it.testCase.isEnabledInternal(conf).isEnabled }
-            .map { it.testCase.name.testName }
+         Materializer(conf).materialize(MyTestClass())
+            .filter { it.isEnabledInternal(conf).isEnabled }
+            .map { it.name.testName }
             .toSet() shouldBe setOf("b", "c")
       }
    }

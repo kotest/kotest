@@ -156,6 +156,7 @@ class BehaviorSpecTest : BehaviorSpec() {
          `when`("something delay in when scope") {
             launch { delay(1) }
             and("something delay in when scope provided by and") {
+               Then("to keep context happy") {}
                launch { delay(1) }
             }
             then("one should be one") {

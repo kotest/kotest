@@ -1,58 +1,46 @@
 package io.kotest.core.test
 
 import io.kotest.core.SourceRef
-import io.kotest.core.descriptors.Descriptor
+import io.kotest.core.config.Configuration
 import io.kotest.core.descriptors.append
-import io.kotest.core.factory.FactoryId
 import io.kotest.core.names.TestName
-import io.kotest.core.sourceRef
 import io.kotest.core.spec.Spec
+import io.kotest.core.test.config.UnresolvedTestConfig
+import io.kotest.core.test.config.resolveConfig
 
 /**
- * Describes a test that has been discovered at runtime but has not yet been attached to
- * a parent [TestCase].
+ * Describes a test that has been discovered at runtime but has not yet been
+ * attached to a parent [TestCase].
  */
 data class NestedTest(
-   val descriptor: Descriptor.TestDescriptor,
    val name: TestName,
-   val test: suspend TestContext.() -> Unit,
-   val config: TestCaseConfig,
+   val disabled: Boolean,
+   val config: UnresolvedTestConfig?, // can be null if the test does not specify config
    val type: TestType,
-   val sourceRef: SourceRef,
-   val factoryId: FactoryId?,
-)
-
-fun createNestedTest(
-   name: TestName,
-   descriptor: Descriptor.TestDescriptor,
-   xdisabled: Boolean,
-   config: TestCaseConfig,
-   type: TestType,
-   factoryId: FactoryId?,
-   test: suspend TestContext.() -> Unit,
-) = NestedTest(
-   descriptor = descriptor,
-   name = name,
-   test = test,
-   config = if (xdisabled) config.copy(enabled = false) else config,
-   type = type,
-   sourceRef = sourceRef(),
-   factoryId = factoryId,
+   val source: SourceRef,
+   val test: suspend TestContext.() -> Unit,
 )
 
 /**
- * Realizes a runtime [TestCase] from this [NestedTest], attaching the test to the given spec.
+ * Materializes a runtime [TestCase] from this [NestedTest], attaching the test to the given spec.
  */
-fun NestedTest.toTestCase(spec: Spec, parent: TestCase): TestCase {
+fun NestedTest.toTestCase(
+   spec: Spec,
+   parent: TestCase,
+   configuration: Configuration
+): TestCase {
+
+   val resolvedTestConfig = resolveConfig(config, disabled, spec, configuration)
+
    return TestCase(
       descriptor = parent.descriptor.append(name),
       name = name,
       spec = spec,
       test = test,
-      source = sourceRef,
+      source = source,
       type = type,
-      config = config,
-      factoryId = factoryId,
+      config = resolvedTestConfig,
+      factoryId = parent.factoryId,
       parent = parent,
    )
 }

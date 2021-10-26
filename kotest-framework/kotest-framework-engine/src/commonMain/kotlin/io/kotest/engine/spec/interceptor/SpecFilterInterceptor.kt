@@ -15,6 +15,8 @@ class SpecFilterInterceptor(
    private val registry: ExtensionRegistry
 ) : SpecRefInterceptor {
 
+   private val extensions = SpecExtensions(registry)
+
    override suspend fun intercept(
       fn: suspend (SpecRef) -> Map<TestCase, TestResult>
    ): suspend (SpecRef) -> Map<TestCase, TestResult> = { ref ->
@@ -26,7 +28,7 @@ class SpecFilterInterceptor(
 
       if (excluded) {
          listener.specIgnored(ref.kclass)
-         SpecExtensions(registry).ignored(ref.kclass)
+         extensions.ignored(ref.kclass)
          emptyMap()
       } else {
          fn(ref)

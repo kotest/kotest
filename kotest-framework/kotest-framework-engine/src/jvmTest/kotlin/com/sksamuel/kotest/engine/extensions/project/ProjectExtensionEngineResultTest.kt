@@ -1,6 +1,6 @@
 package com.sksamuel.kotest.engine.extensions.project
 
-import io.kotest.core.config.configuration
+import io.kotest.core.config.Configuration
 import io.kotest.core.extensions.ProjectContext
 import io.kotest.core.extensions.ProjectExtension
 import io.kotest.core.spec.Isolate
@@ -14,28 +14,18 @@ class ProjectExtensionEngineResultTest : FunSpec({
 
    val events = mutableListOf<String>()
 
-   val extensions = listOf(
-      object : ProjectExtension {
-         val name = "hello q"
-         override suspend fun interceptProject(context: ProjectContext, callback: suspend (ProjectContext) -> Unit) {
-            events.add(name)
-            return callback(context)
-         }
-      },
-      object : ProjectExtension {
-         val name = "mon capitaine!"
-         override suspend fun interceptProject(context: ProjectContext, callback: suspend (ProjectContext) -> Unit) {
-            throw ProjectExtensionThrowable(name)
-         }
-      },
-   )
-
-   beforeSpec {
-      configuration.registerExtensions(extensions)
+   val ext1 = object : ProjectExtension {
+      val name = "hello q"
+      override suspend fun interceptProject(context: ProjectContext, callback: suspend (ProjectContext) -> Unit) {
+         events.add(name)
+         return callback(context)
+      }
    }
-
-   afterSpec {
-      configuration.deregisterExtensions(extensions)
+   val ext2 = object : ProjectExtension {
+      val name = "mon capitaine!"
+      override suspend fun interceptProject(context: ProjectContext, callback: suspend (ProjectContext) -> Unit) {
+         throw ProjectExtensionThrowable(name)
+      }
    }
 
    test("ProjectExtension errors should be propogated to the test engine") {
@@ -48,7 +38,14 @@ class ProjectExtensionEngineResultTest : FunSpec({
          }
       }
 
-      TestEngineLauncher(listener).withClasses(PassingProjectTest::class).launch()
+      val c = Configuration()
+      c.registry().add(ext1)
+      c.registry().add(ext2)
+
+      TestEngineLauncher(listener)
+         .withClasses(PassingProjectTest::class)
+         .withConfiguration(c)
+         .launch()
 
       (events + errors.map { it.message }).toSet() shouldBe setOf("hello q", "mon capitaine!")
    }

@@ -5,7 +5,7 @@ import io.kotest.core.spec.Spec
 import io.kotest.core.spec.style.WordSpec
 import io.kotest.matchers.shouldBe
 
-class SpecExtensionTest : WordSpec() {
+class SpecExtensionSingleInstanceTest : WordSpec() {
 
    init {
 
@@ -31,6 +31,5 @@ class SpecExtensionTest : WordSpec() {
          "and not for repeated tests" {
          }
       }
-
    }
 }

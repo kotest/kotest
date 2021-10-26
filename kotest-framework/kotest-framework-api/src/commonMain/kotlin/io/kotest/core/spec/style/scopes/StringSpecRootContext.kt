@@ -42,31 +42,36 @@ interface StringSpecRootContext : RootContext {
       coroutineDebugProbes: Boolean? = null,
       blockingTest: Boolean? = null,
       test: suspend TestContext.() -> Unit,
-   ) = RootTestWithConfigBuilder(TestName(null, this, false), registration(), false).config(
-      enabled = enabled,
-      invocations = invocations,
-      threads = threads,
-      tags = tags,
-      timeout = timeout,
-      extensions = extensions,
-      enabledIf = enabledIf,
-      invocationTimeout = invocationTimeout,
-      severity = severity,
-      enabledOrReasonIf = enabledOrReasonIf,
-      coroutineDebugProbes = coroutineDebugProbes,
-      blockingTest = blockingTest,
-      test = test
-   )
+   ) {
+      RootTestWithConfigBuilder(
+         this@StringSpecRootContext,
+         TestName(null, this, false),
+         false
+      ).config(
+         enabled = enabled,
+         invocations = invocations,
+         threads = threads,
+         tags = tags,
+         timeout = timeout,
+         extensions = extensions,
+         enabledIf = enabledIf,
+         invocationTimeout = invocationTimeout,
+         severity = severity,
+         enabledOrReasonIf = enabledOrReasonIf,
+         coroutineDebugProbes = coroutineDebugProbes,
+         blockingTest = blockingTest,
+         test = test
+      )
+   }
 
    /**
     * Adds a String Spec test using the default test case config.
     */
-   operator fun String.invoke(test: suspend StringSpecScope.() -> Unit) =
-      registration().addTest(
-         TestName(null, this, false),
-         xdisabled = false,
-         test = { StringSpecScope(this.coroutineContext, testCase).test() }
-      )
+   operator fun String.invoke(test: suspend StringSpecScope.() -> Unit) {
+      addTest(TestName(null, this, false), false, null) {
+         StringSpecScope(this.coroutineContext, testCase).test()
+      }
+   }
 }
 
 /**

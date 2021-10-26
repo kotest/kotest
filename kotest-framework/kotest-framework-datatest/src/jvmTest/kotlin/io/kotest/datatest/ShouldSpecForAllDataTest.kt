@@ -17,20 +17,13 @@ internal class ShouldSpecForAllDataTest : ShouldSpec() {
 
       afterSpec {
          results.assertDataTestResults()
-         count shouldBe 174
-      }
-
-      should("inside a should") {
-         registerContextTests().assertDataTestResults()
+         count shouldBe 104
       }
 
       context("inside a context") {
          registerContextTests().assertDataTestResults()
          context("inside another context") {
             registerContextTests().assertDataTestResults()
-            should("inside a contexted should") {
-               registerContextTests().assertDataTestResults()
-            }
          }
       }
    }

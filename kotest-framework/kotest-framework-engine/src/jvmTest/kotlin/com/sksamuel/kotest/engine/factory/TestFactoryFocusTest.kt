@@ -3,7 +3,7 @@ package com.sksamuel.kotest.engine.factory
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.spec.style.funSpec
 
-// tests that focus works in test factories
+// tests that focus in a factory method is propagated through to the included spec
 class TestFactoryFocusTest : FunSpec({
    include(factory)
    test("nothappy2") { error("boom") }

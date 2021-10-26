@@ -1,6 +1,6 @@
 package com.sksamuel.kotest.engine.extensions.spec
 
-import io.kotest.core.config.configuration
+import io.kotest.core.config.Configuration
 import io.kotest.core.extensions.Extension
 import io.kotest.core.listeners.AfterSpecListener
 import io.kotest.core.listeners.TestListener
@@ -22,15 +22,17 @@ class AfterSpecListenerTest : FunSpec() {
 
       test("AfterSpecListener's should be triggered for a spec with tests") {
 
-         configuration.registerExtensions(MyAfterSpecListener)
          counter.set(0)
+
+         val c = Configuration()
+         c.registry().add(MyAfterSpecListener)
 
          val collector = CollectingTestEngineListener()
          TestEngineLauncher(collector)
             .withClasses(MyPopulatedSpec2::class)
+            .withConfiguration(c)
             .launch()
 
-         configuration.deregisterExtension(MyAfterSpecListener)
          collector.specs.size shouldBe 1
          collector.tests.size shouldBe 1
 
@@ -49,14 +51,14 @@ class AfterSpecListenerTest : FunSpec() {
 
       test("AfterSpecListener's should NOT be triggered for a spec without tests") {
 
-         configuration.registerExtensions(MyAfterSpecListener)
+         val c = Configuration()
+         c.registry().add(MyAfterSpecListener)
          counter.set(0)
 
          TestEngineLauncher(NoopTestEngineListener)
             .withClasses(MyEmptySpec2::class)
+            .withConfiguration(c)
             .launch()
-
-         configuration.deregisterExtension(MyAfterSpecListener)
 
          counter.get() shouldBe 0
       }

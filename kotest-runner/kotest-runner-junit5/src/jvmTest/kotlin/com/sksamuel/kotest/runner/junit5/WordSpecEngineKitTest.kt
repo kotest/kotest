@@ -40,15 +40,15 @@ class WordSpecEngineKitTest : FunSpec({
             failed().shouldHaveNames(
                "fail a test",
                "error",
-               "an empty when container should",
-               "an empty should container should",
-               "contain an empty should container should",
                "fail a test",
                "a failing container should"
             )
             succeeded().shouldHaveNames(
                "pass a test",
                "a container should",
+               "an empty when container should",
+               "an empty should container should",
+               "contain an empty should container should",
                "this when container when",
                "pass a test",
                "with a should container should",

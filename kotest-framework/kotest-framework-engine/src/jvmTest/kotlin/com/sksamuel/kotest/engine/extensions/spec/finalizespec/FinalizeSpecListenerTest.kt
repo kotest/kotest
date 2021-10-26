@@ -1,6 +1,6 @@
 package com.sksamuel.kotest.engine.extensions.spec.finalizespec
 
-import io.kotest.core.config.configuration
+import io.kotest.core.config.Configuration
 import io.kotest.core.listeners.FinalizeSpecListener
 import io.kotest.core.listeners.TestListener
 import io.kotest.core.spec.Spec
@@ -36,10 +36,17 @@ private class FinalizeSpecTestListener2 : FinalizeSpecListener {
 class FinalizeSpecTest : FunSpec() {
    init {
       test("finalize spec listeners should be fired") {
-         configuration.registerExtension(FinalizeSpecTestListener1())
-         configuration.registerExtension(FinalizeSpecTestListener2())
+
+         val c = Configuration()
+         c.registry().add(FinalizeSpecTestListener1())
+         c.registry().add(FinalizeSpecTestListener2())
+
          counter.set(0)
-         TestEngineLauncher(NoopTestEngineListener).withClasses(FinalizeSpec::class).launch()
+         TestEngineLauncher(NoopTestEngineListener)
+            .withClasses(FinalizeSpec::class)
+            .withConfiguration(c)
+            .launch()
+
          counter.get().shouldBe(2)
       }
    }

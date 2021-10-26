@@ -1,7 +1,5 @@
 package io.kotest.core.names
 
-import io.kotest.core.config.configuration
-
 /**
  * Models the name of a [io.kotest.core.test.TestCase] as entered by a user.
  *
@@ -40,12 +38,7 @@ data class TestName(
          defaultAffixes: Boolean,
       ): TestName {
 
-         val trimmed = if (configuration.removeTestNameWhitespace) {
-            name.removeAllExtraWhitespaces()
-         } else {
-            name.removeNewLineCharacter()
-         }
-
+         val trimmed = name.removeAllExtraWhitespaces()
          val (focus, bang, parsedName) = when {
             trimmed.startsWith("!") -> Triple(first = false, second = true, third = trimmed.drop(1).trim())
             trimmed.startsWith("f:") -> Triple(first = true, second = false, third = trimmed.drop(2).trim())

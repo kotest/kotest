@@ -10,7 +10,7 @@ import org.junit.platform.testkit.engine.EngineTestKit
 @Isolate
 class BeforeProjectListenerExceptionHandlingTest : FunSpec({
 
-   test("a BeforeProjectListenerException should add marker test using listener name") {
+   test("!a BeforeProjectListenerException should add marker test using listener name") {
 
       val ext = object : ProjectListener {
          override suspend fun beforeProject() {
@@ -48,7 +48,7 @@ class BeforeProjectListenerExceptionHandlingTest : FunSpec({
       configuration.deregister(ext)
    }
 
-   test("multiple BeforeProjectListenerException's should add multiple marker tests") {
+   test("!multiple BeforeProjectListenerException's should add multiple marker tests") {
 
       val ext1 = object : ProjectListener {
          override suspend fun beforeProject() {

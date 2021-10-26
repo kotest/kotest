@@ -1,6 +1,7 @@
 package io.kotest.engine.spec.runners
 
 import io.kotest.common.ExperimentalKotest
+import io.kotest.common.flatMap
 import io.kotest.core.concurrency.CoroutineDispatcherFactory
 import io.kotest.core.config.Configuration
 import io.kotest.core.descriptors.Descriptor
@@ -13,12 +14,10 @@ import io.kotest.core.test.toTestCase
 import io.kotest.engine.listener.TestEngineListener
 import io.kotest.engine.spec.SpecExtensions
 import io.kotest.engine.spec.SpecRunner
-import io.kotest.engine.spec.materializeAndOrderRootTests
 import io.kotest.engine.test.TestCaseExecutionListener
 import io.kotest.engine.test.TestCaseExecutor
 import io.kotest.engine.test.contexts.DuplicateNameHandlingTestContext
 import io.kotest.engine.test.scheduler.TestScheduler
-import io.kotest.common.flatMap
 import io.kotest.mpp.log
 import kotlinx.coroutines.coroutineScope
 import java.util.PriorityQueue
@@ -71,9 +70,7 @@ internal class InstancePerLeafSpecRunner(
     */
    override suspend fun execute(spec: Spec): Result<Map<TestCase, TestResult>> =
       runCatching {
-         spec.materializeAndOrderRootTests(configuration.testCaseOrder).forEach { root ->
-            enqueue(root.testCase)
-         }
+         materializer.materialize(spec).forEach { root -> enqueue(root) }
          while (queue.isNotEmpty()) {
             val (testCase, _) = queue.remove()
             executeInCleanSpec(testCase).getOrThrow()
@@ -91,12 +88,12 @@ internal class InstancePerLeafSpecRunner(
 
    // we need to find the same root test but in the newly created spec
    private suspend fun run(spec: Spec, test: TestCase): Result<Spec> = runCatching {
-      val root = spec.materializeAndOrderRootTests(configuration.testCaseOrder)
-         .firstOrNull { it.testCase.descriptor.isOnPath(test.descriptor) }
+      val root = materializer.materialize(spec)
+         .firstOrNull { it.descriptor.isOnPath(test.descriptor) }
          ?: throw error("Unable to locate root test ${test.descriptor.path()}")
-      log { "InstancePerLeafSpecRunner: Starting root test ${root.testCase.descriptor} in search of ${test.descriptor}" }
+      log { "InstancePerLeafSpecRunner: Starting root test ${root.descriptor} in search of ${test.descriptor}" }
       extensions.beforeSpec(spec).getOrThrow()
-      run(root.testCase, test)
+      run(root, test)
       extensions.afterSpec(spec).getOrThrow()
       spec
    }
@@ -111,8 +108,7 @@ internal class InstancePerLeafSpecRunner(
             override val coroutineContext: CoroutineContext = this@coroutineScope.coroutineContext
             override suspend fun registerTestCase(nested: NestedTest) {
 
-               val t = nested.toTestCase(test.spec, test)
-
+               val t = nested.toTestCase(test.spec, test, configuration)
                // if this test is our target then we definitely run it
                // or if the test is on the path to our target we must run it
                if (t.descriptor.isOnPath(target.descriptor)) {

@@ -10,8 +10,10 @@ import io.kotest.core.names.TestNameCase
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.SpecExecutionOrder
 import io.kotest.core.test.AssertionMode
-import io.kotest.core.test.TestCaseConfig
 import io.kotest.core.test.TestCaseOrder
+import io.kotest.core.test.TestCaseSeverityLevel
+import io.kotest.core.test.config.TestCaseConfig
+import io.kotest.core.test.config.ResolvedTestConfig
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlin.time.Duration
 
@@ -23,10 +25,10 @@ import kotlin.time.Duration
  * Expect this val to disappear in Kotest 6.0
  *
  */
-@Deprecated("Do not set configuration directly on the config object. Use project config classes. This global variable will be removed in 6.0. Deprecated since 5.0")
+@Deprecated("Setting parameters directly on the global configuration object is subject to race conditions and is not always detected. Use project config to configure Kotest safely. Deprecated since 5.0")
 val configuration = Configuration()
 
-@Deprecated("Replaced with io.kotest.core.configuration. Deprecated since 4.2")
+@Deprecated("Setting parameters directly on the global project object is subject to race conditions and is not always detected. Use project config to configure Kotest safely. Deprecated since 4.2")
 val Project = configuration
 
 /**
@@ -217,6 +219,12 @@ class Configuration {
     */
    var logLevel: LogLevel = LogLevel.Off
 
+   var failfast: Boolean = Defaults.failfast
+
+   var blockingTest: Boolean = Defaults.blockingTest
+
+   var severity: TestCaseSeverityLevel = Defaults.severity
+
    /**
     * If set to true then the test engine will install a [TestCoroutineDispatcher].
     *
@@ -228,11 +236,12 @@ class Configuration {
    var testCoroutineDispatcher: Boolean = Defaults.testCoroutineDispatcher
 
    /**
-    * Returns the default [TestCaseConfig] to be assigned to tests when not specified either in
-    * the spec, test factory, or test case itself.
+    * Contains the default [ResolvedTestConfig] to be used by tests when not specified in either
+    * the test, the spec, or the test factory.
     *
     * Defaults to [Defaults.testCaseConfig]
     */
+   @Deprecated("These settings can be specified individually to provide finer grain control. Deprecated since 5.0")
    var defaultTestConfig: TestCaseConfig = Defaults.testCaseConfig
 
    /**
@@ -360,78 +369,78 @@ class Configuration {
    @Deprecated("Use registry. Deprecated since 5.0")
    fun deregisterFilters(filters: Collection<Extension>) = filters.forEach { registry.remove(it) }
 
-   @Deprecated("Use registry. Deprecated since 5.0")
+   @Deprecated("Use registry. Deprecated since 5.0", ReplaceWith("registry().add(filter)"))
    fun registerFilter(filter: Extension) {
       register(filter)
    }
 
-   @Deprecated("Use registry. Deprecated since 5.0")
+   @Deprecated("Use registry. Deprecated since 5.0", ReplaceWith("registry().remove(filter)"))
    fun deregisterFilter(filter: Extension) {
       deregister(filter)
    }
 
    @Deprecated(
       "Use extensions().add(). Deprecated since 5.0",
-      ReplaceWith("extensions.forEach { extensions().add(it) }")
+      ReplaceWith("extensions.forEach { registry().add(it) }")
    )
    fun registerExtensions(vararg extensions: Extension) = extensions.forEach { registry().add(it) }
 
    @Deprecated(
       "Use extensions().add(). Deprecated since 5.0",
-      ReplaceWith("extensions.forEach { extensions().add(it) }")
+      ReplaceWith("extensions.forEach { registry().add(it) }")
    )
    fun registerExtensions(extensions: List<Extension>) = extensions.forEach { registry().add(it) }
 
    @Deprecated(
       "Use extensions().add(). Deprecated since 5.0",
-      ReplaceWith("extensions.forEach { extensions().remove(it) }")
+      ReplaceWith("extensions.forEach { registry().remove(it) }")
    )
    fun deregisterExtensions(extensions: List<Extension>) = extensions.forEach { registry().remove(it) }
 
-   @Deprecated("Use extensions().add(). Deprecated since 5.0", ReplaceWith("extensions().add(extension)"))
+   @Deprecated("Use extensions().add(). Deprecated since 5.0", ReplaceWith("registry().add(extension)"))
    fun register(extension: Extension) {
       registry().add(extension)
    }
 
-   @Deprecated("Use extensions().add(). Deprecated since 5.0", ReplaceWith("extensions().add(extension)"))
+   @Deprecated("Use extensions().add(). Deprecated since 5.0", ReplaceWith("registry().add(extension)"))
    fun registerExtension(extension: Extension) {
       registry().add(extension)
    }
 
-   @Deprecated("Use extensions().remove(). Deprecated since 5.0", ReplaceWith("extensions().remove(extension)"))
+   @Deprecated("Use extensions().remove(). Deprecated since 5.0", ReplaceWith("registry().remove(extension)"))
    fun deregister(extension: Extension) {
       registry().remove(extension)
    }
 
-   @Deprecated("Use extensions().remove(). Deprecated since 5.0", ReplaceWith("extensions().remove(extension)"))
+   @Deprecated("Use extensions().remove(). Deprecated since 5.0", ReplaceWith("registry().remove(extension)"))
    fun deregisterExtension(extension: Extension) {
       registry().remove(extension)
    }
 
    @Deprecated(
       "Use extensions().add(). Deprecated since 5.0",
-      ReplaceWith("listeners.forEach { extensions().add(it) }")
+      ReplaceWith("listeners.forEach { registry().add(it) }")
    )
    fun registerListeners(vararg listeners: Listener) = listeners.forEach { registry().add(it) }
 
    @Deprecated(
       "Use extensions().add(). Deprecated since 5.0",
-      ReplaceWith("listeners.forEach { extensions().add(it) }")
+      ReplaceWith("listeners.forEach { registry().add(it) }")
    )
    fun registerListeners(listeners: List<Listener>) = listeners.forEach { registry().add(it) }
 
    @Deprecated(
       "Use extensions().remove(). Deprecated since 5.0",
-      ReplaceWith("listeners.forEach { extensions().remove(it) }")
+      ReplaceWith("listeners.forEach { registry().remove(it) }")
    )
    fun deregisterListeners(listeners: List<Listener>) = listeners.forEach { registry().remove(it) }
 
-   @Deprecated("Use extensions().add(). Deprecated since 5.0", ReplaceWith("extensions().add(listener)"))
+   @Deprecated("Use extensions().add(). Deprecated since 5.0", ReplaceWith("registry().add(listener)"))
    fun registerListener(listener: Listener) {
       registry().add(listener)
    }
 
-   @Deprecated("Use extensions().remove(). Deprecated since 5.0", ReplaceWith("extensions().remove(listener)"))
+   @Deprecated("Use extensions().remove(). Deprecated since 5.0", ReplaceWith("registry().remove(listener)"))
    fun deregisterListener(listener: Listener) {
       registry.remove(listener)
    }

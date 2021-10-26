@@ -5,18 +5,14 @@ import io.kotest.core.descriptors.append
 import io.kotest.core.extensions.TestCaseExtension
 import io.kotest.core.names.TestName
 import io.kotest.core.test.EnabledIf
-import io.kotest.core.test.TestCaseConfig
 import io.kotest.core.test.TestCaseSeverityLevel
 import io.kotest.core.test.TestContext
-import io.kotest.core.test.TestType
-import io.kotest.core.test.createNestedTest
-import io.kotest.core.test.deriveTestCaseConfig
+import io.kotest.core.test.config.UnresolvedTestConfig
 import kotlin.time.Duration
 
 class TestWithConfigBuilder(
    private val name: TestName,
-   private val context: TestContext,
-   private val defaultTestConfig: TestCaseConfig,
+   private val context: ContainerContext,
    private val xdisabled: Boolean,
 ) {
 
@@ -35,27 +31,18 @@ class TestWithConfigBuilder(
 
       TestDslState.clear(context.testCase.descriptor.append(name))
 
-      val derivedConfig = defaultTestConfig.deriveTestCaseConfig(
-         enabled,
-         tags,
-         extensions,
-         timeout,
-         invocationTimeout,
-         enabledIf,
-         invocations,
-         threads,
-         severity
+      val config = UnresolvedTestConfig(
+         enabled = enabled,
+         enabledIf = enabledIf,
+         tags = tags,
+         extensions = extensions,
+         timeout = timeout,
+         invocationTimeout = invocationTimeout,
+         invocations = invocations,
+         threads = threads,
+         severity = severity
       )
-      context.registerTestCase(
-         createNestedTest(
-            descriptor = context.testCase.descriptor.append(name),
-            name = name,
-            xdisabled = xdisabled,
-            config = derivedConfig,
-            type = TestType.Test,
-            factoryId = null,
-            test = test,
-         )
-      )
+
+      context.registerTest(name, xdisabled, config, test)
    }
 }

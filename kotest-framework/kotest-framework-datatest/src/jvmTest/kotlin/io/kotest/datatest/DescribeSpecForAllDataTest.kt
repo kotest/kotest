@@ -17,20 +17,13 @@ internal class DescribeSpecForAllDataTest : DescribeSpec() {
 
       afterSpec {
          results.assertDataTestResults()
-         count shouldBe 174
-      }
-
-      it("inside an it") {
-         registerContextTests().assertDataTestResults()
+         count shouldBe 104
       }
 
       describe("inside a describe") {
          registerContextTests().assertDataTestResults()
          describe("inside another describe") {
             registerContextTests().assertDataTestResults()
-            it("inside a contexted it") {
-               registerContextTests().assertDataTestResults()
-            }
          }
       }
    }

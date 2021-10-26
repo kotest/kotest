@@ -1,8 +1,8 @@
 package io.kotest.datatest
 
 import io.kotest.common.ExperimentalKotest
+import io.kotest.core.spec.style.scopes.ContainerContext
 import io.kotest.core.spec.style.scopes.RootContext
-import io.kotest.core.test.TestContext
 import io.kotest.matchers.collections.shouldContainExactly
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldHaveLength
@@ -81,7 +81,7 @@ fun RootContext.registerRootTests(): MutableList<String> {
 }
 
 @ExperimentalKotest
-suspend fun TestContext.registerContextTests(): MutableList<String> {
+suspend fun ContainerContext.registerContextTests(): MutableList<String> {
 
    val results = mutableListOf<String>()
 

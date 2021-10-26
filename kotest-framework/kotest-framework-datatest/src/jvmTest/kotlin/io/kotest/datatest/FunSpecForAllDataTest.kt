@@ -20,20 +20,13 @@ class FunSpecForAllDataTest : FunSpec() {
 
       afterSpec {
          results.assertDataTestResults()
-         count shouldBe 174
-      }
-
-      test("inside a test case") {
-         registerContextTests().assertDataTestResults()
+         count shouldBe 104
       }
 
       context("inside a context") {
          registerContextTests().assertDataTestResults()
          context("inside another context") {
             registerContextTests().assertDataTestResults()
-            test("inside a contexted test case") {
-               registerContextTests().assertDataTestResults()
-            }
          }
       }
    }

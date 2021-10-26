@@ -17,20 +17,13 @@ internal class ExpectSpecForAllDataTest : ExpectSpec() {
 
       afterSpec {
          results.assertDataTestResults()
-         count shouldBe 174
-      }
-
-      expect("inside an expect") {
-         registerContextTests().assertDataTestResults()
+         count shouldBe 104
       }
 
       context("inside a context") {
          registerContextTests().assertDataTestResults()
          context("inside another context") {
             registerContextTests().assertDataTestResults()
-            expect("inside a contexted expect") {
-               registerContextTests().assertDataTestResults()
-            }
          }
       }
    }

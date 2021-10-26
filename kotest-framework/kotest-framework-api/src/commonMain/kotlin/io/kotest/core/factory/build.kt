@@ -8,7 +8,6 @@ import io.kotest.core.listeners.TestListener
 internal fun TestFactoryConfiguration.build(): TestFactory {
    return TestFactory(
       factoryId = factoryId,
-      tests = tests,
       tags = _tags,
       extensions = _extensions.map {
          when (it) {
@@ -17,5 +16,6 @@ internal fun TestFactoryConfiguration.build(): TestFactory {
          }
       },
       assertionMode = assertions,
+      tests = tests
    )
 }

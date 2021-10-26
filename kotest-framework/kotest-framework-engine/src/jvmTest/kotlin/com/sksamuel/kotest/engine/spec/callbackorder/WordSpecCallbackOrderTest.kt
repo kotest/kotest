@@ -7,13 +7,15 @@ class WordSpecCallbackOrderTest : WordSpec({
 
    var before = ""
    var after = ""
+   var count = 0
 
    beforeTest {
-      before += it.descriptor.id.value
+      before += it.name.testName
    }
 
    afterTest { (test, _) ->
-      after += test.descriptor.id.value
+      count shouldBe 3
+      after += test.name.testName
    }
 
    afterSpec {
@@ -22,8 +24,11 @@ class WordSpecCallbackOrderTest : WordSpec({
    }
 
    "w" When {
+      count++
       "s" should {
+         count++
          "t" {
+            count++
          }
       }
    }

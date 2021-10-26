@@ -40,12 +40,12 @@ class SpecInitializationErrorTest : FunSpec({
          override fun dynamicTestRegistered(testDescriptor: TestDescriptor?) {}
       }
 
-      val listener = JUnitTestEngineListener(engineListener, root, Configuration())
+      val listener = JUnitTestEngineListener(engineListener, root)
       val executor = SpecExecutor(listener, NoopCoroutineDispatcherFactory, Configuration())
       executor.execute(ReflectiveSpecRef(SpecWithFieldError::class))
 
       finished.toMap() shouldBe mapOf(
-         "<error>" to TestExecutionResult.Status.FAILED,
+         "SpecInstantiationException" to TestExecutionResult.Status.FAILED,
          "com.sksamuel.kotest.runner.junit5.SpecWithFieldError" to TestExecutionResult.Status.FAILED
       )
    }
@@ -72,12 +72,12 @@ class SpecInitializationErrorTest : FunSpec({
          override fun dynamicTestRegistered(testDescriptor: TestDescriptor?) {}
       }
 
-      val listener = JUnitTestEngineListener(engineListener, root, Configuration())
+      val listener = JUnitTestEngineListener(engineListener, root)
       val executor = SpecExecutor(listener, NoopCoroutineDispatcherFactory, Configuration())
       executor.execute(ReflectiveSpecRef(SpecWithInitError::class))
 
       finished.toMap() shouldBe mapOf(
-         "<error>" to TestExecutionResult.Status.FAILED,
+         "SpecInstantiationException" to TestExecutionResult.Status.FAILED,
          "com.sksamuel.kotest.runner.junit5.SpecWithInitError" to TestExecutionResult.Status.FAILED,
       )
    }

@@ -1,15 +1,16 @@
 package com.sksamuel.kotest.engine.listener
 
 import io.kotest.core.descriptors.append
+import io.kotest.core.descriptors.toDescriptor
+import io.kotest.core.names.TestName
 import io.kotest.core.sourceRef
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.style.FunSpec
-import io.kotest.core.descriptors.toDescriptor
-import io.kotest.core.names.TestName
+import io.kotest.core.test.Enabled
 import io.kotest.core.test.TestCase
-import io.kotest.core.test.TestCaseConfig
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestType
+import io.kotest.core.test.config.ResolvedTestConfig
 import io.kotest.engine.listener.TeamCityTestEngineListener
 import io.kotest.extensions.system.captureStandardOut
 import io.kotest.matchers.shouldBe
@@ -26,7 +27,7 @@ class TeamCityListenerIgnoredTestsEndToEndTest : FunSpec() {
       test = { },
       source = sourceRef(),
       type = TestType.Test,
-      config = TestCaseConfig(enabled = false),
+      config = ResolvedTestConfig.default.copy(enabled = { Enabled.disabled }),
       factoryId = null,
    )
 

@@ -4,10 +4,7 @@ import io.kotest.core.factory.TestFactory
 import io.kotest.core.factory.TestFactoryConfiguration
 import io.kotest.core.factory.build
 import io.kotest.core.spec.DslDrivenSpec
-import io.kotest.core.spec.resolvedDefaultConfig
 import io.kotest.core.spec.style.scopes.FeatureSpecRootContext
-import io.kotest.core.spec.style.scopes.RootTestRegistration
-import io.kotest.core.test.TestCaseConfig
 
 /**
  * Creates a [TestFactory] from the given block.
@@ -21,18 +18,10 @@ fun featureSpec(block: FeatureSpecTestFactoryConfiguration.() -> Unit): TestFact
    return config.build()
 }
 
-class FeatureSpecTestFactoryConfiguration : TestFactoryConfiguration(), FeatureSpecRootContext {
-   override fun defaultConfig(): TestCaseConfig = resolvedDefaultConfig()
-   override fun registration(): RootTestRegistration = RootTestRegistration.from(this)
-}
+class FeatureSpecTestFactoryConfiguration : TestFactoryConfiguration(), FeatureSpecRootContext
 
 abstract class FeatureSpec(body: FeatureSpec.() -> Unit = {}) : DslDrivenSpec(), FeatureSpecRootContext {
-
    init {
       body()
    }
-
-   override fun defaultConfig(): TestCaseConfig = this.resolvedDefaultConfig()
-   override fun registration(): RootTestRegistration = RootTestRegistration.from(this)
-
 }

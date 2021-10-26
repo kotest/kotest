@@ -2,6 +2,7 @@ package com.sksamuel.kotest.assertions
 
 import io.kotest.assertions.assertionCounter
 import io.kotest.assertions.throwables.shouldThrow
+import io.kotest.core.extensions.Extension
 import io.kotest.core.extensions.TestCaseExtension
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.test.AssertionMode
@@ -13,14 +14,14 @@ class AssertionCounterFunSpecTest : FunSpec() {
 
    override fun assertionMode() = AssertionMode.Error
 
-   override fun extensions(): List<TestCaseExtension> = listOf(
+   override fun extensions(): List<Extension> = listOf(
       object : TestCaseExtension {
          override suspend fun intercept(testCase: TestCase, execute: suspend (TestCase) -> TestResult): TestResult {
             return when (testCase.name.testName) {
                "AssertionMode.Error assertion mode should fail the test if no assertions were present" -> {
                   when (val result = execute(testCase)) {
                      is TestResult.Error, is TestResult.Failure -> TestResult.Success(result.duration)
-                     else -> TestResult.Error(result.duration, RuntimeException("Should have failed"))
+                     else -> TestResult.Error(result.duration, RuntimeException("Should have failed: ${testCase.name.testName}"))
                   }
                }
                else -> execute(testCase)

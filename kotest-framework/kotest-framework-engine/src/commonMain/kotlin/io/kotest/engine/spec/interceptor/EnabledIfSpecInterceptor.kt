@@ -21,6 +21,8 @@ internal class EnabledIfSpecInterceptor(
    private val registry: ExtensionRegistry,
 ) : SpecRefInterceptor {
 
+   private val extensions = SpecExtensions(registry)
+
    override suspend fun intercept(
       fn: suspend (SpecRef) -> Map<TestCase, TestResult>
    ): suspend (SpecRef) -> Map<TestCase, TestResult> = { ref ->
@@ -35,7 +37,7 @@ internal class EnabledIfSpecInterceptor(
          fn(ref)
       } else {
          listener.specIgnored(ref.kclass)
-         SpecExtensions(registry).ignored(ref.kclass)
+         extensions.ignored(ref.kclass)
          emptyMap()
       }
    }

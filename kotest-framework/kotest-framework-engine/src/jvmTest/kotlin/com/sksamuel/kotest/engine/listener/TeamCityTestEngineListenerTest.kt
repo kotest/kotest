@@ -12,7 +12,7 @@ import io.kotest.core.sourceRef
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.test.TestCase
-import io.kotest.core.test.TestCaseConfig
+import io.kotest.core.test.config.ResolvedTestConfig
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestType
 import io.kotest.data.forAll
@@ -40,7 +40,7 @@ class TeamCityTestEngineListenerTest : FunSpec() {
       { },
       sourceRef(),
       TestType.Container,
-      TestCaseConfig(),
+      ResolvedTestConfig.default,
       null,
       null
    )
@@ -65,12 +65,11 @@ class TeamCityTestEngineListenerTest : FunSpec() {
          val out = captureStandardOut {
             listener.specExit(kclass, Exception("whip!"))
          }
-         out shouldBe """testcity[testSuiteStarted name='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest' id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest' locationHint='kotest://com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest:1' test_type='spec']
-testcity[testStarted name='<error>' id='<error>' parent_id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest' test_type='test']
-testcity[testFailed name='<error>' id='<error>' parent_id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest' message='whip!' test_type='test']
-testcity[testFinished name='<error>' id='<error>' parent_id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest' test_type='test']
-testcity[testSuiteFinished name='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest' id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest' locationHint='kotest://com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest:1' result_status='Error' test_type='spec']
-"""
+         out.shouldContain("""testcity[testSuiteStarted name='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest' id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest' locationHint='kotest://com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest:1' test_type='spec']""")
+         out.shouldContain("""testcity[testStarted name='<error>' id='<error>' parent_id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest' test_type='test']""")
+         out.shouldContain("""testcity[testFailed name='<error>' id='<error>' parent_id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest' message='whip!' details='java.lang.Exception:""")
+         out.shouldContain("""testcity[testFinished name='<error>' id='<error>' parent_id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest' test_type='test' message='whip!' details='java.lang.Exception""")
+         out.shouldContain("""testcity[testSuiteFinished name='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest' id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest' locationHint='kotest://com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest:1' result_status='Error' test_type='spec']""")
       }
 
       test("specExit should write testSuiteFinished in error is null") {

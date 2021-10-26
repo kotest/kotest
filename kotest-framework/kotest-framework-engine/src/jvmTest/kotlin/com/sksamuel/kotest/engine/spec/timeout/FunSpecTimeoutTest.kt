@@ -6,6 +6,7 @@ import io.kotest.core.test.TestResult
 import io.kotest.engine.test.toTestResult
 import kotlinx.coroutines.delay
 import kotlin.time.Duration
+import kotlin.time.milliseconds
 
 @ExperimentalKotest
 class FunSpecTimeoutTest : FunSpec() {
@@ -14,9 +15,9 @@ class FunSpecTimeoutTest : FunSpec() {
       extension { (testCase, execute) ->
          val result = execute(testCase)
          if (testCase.name.testName.contains("timeout:") && result.isSuccess) {
-            AssertionError("${testCase.descriptor.id.value} passed but should fail").toTestResult(0)
+            AssertionError("${testCase.descriptor.id.value} passed but should fail").toTestResult(0.milliseconds)
          } else {
-            TestResult.success(0)
+            TestResult.Success(0.milliseconds)
          }
       }
 

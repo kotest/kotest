@@ -7,7 +7,7 @@ import kotlin.reflect.KClass
  * A [SpecRef] is a reference to a spec that was detected during scans or compilation.
  *
  * Each ref contains a reference to the KClass of that spec and contains a function
- * to retrieve an instance of the [Spec].
+ * to instantiate a [Spec].
  */
 interface SpecRef {
 

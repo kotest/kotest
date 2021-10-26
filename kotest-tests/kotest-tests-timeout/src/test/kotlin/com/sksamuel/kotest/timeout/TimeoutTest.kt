@@ -2,11 +2,15 @@
 
 package com.sksamuel.kotest.timeout
 
+import io.kotest.core.spec.TestCaseExtensionFn
 import io.kotest.core.spec.style.FunSpec
+import io.kotest.core.test.TestResult
+import io.kotest.engine.test.toTestResult
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlin.time.Duration
+import kotlin.time.milliseconds
 
 class TimeoutTest : FunSpec() {
 
@@ -87,5 +91,15 @@ suspend fun someCoroutine() {
       launch {
          delay(10000000)
       }
+   }
+}
+
+/**
+ * A Test Case extension that expects each test to fail, and will invert the test result.
+ */
+val expectFailureExtension: TestCaseExtensionFn = { (testCase, execute) ->
+   when (execute(testCase)) {
+      is TestResult.Failure, is TestResult.Error -> TestResult.Success(0.milliseconds)
+      else -> AssertionError("${testCase.descriptor.id.value} passed but should fail").toTestResult(0.milliseconds)
    }
 }

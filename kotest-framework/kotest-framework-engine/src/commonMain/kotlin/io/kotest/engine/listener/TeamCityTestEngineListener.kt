@@ -124,13 +124,12 @@ class TeamCityTestEngineListener(
 
          // we must print out the stack trace in between the dummy, so it appears when you click on the test name
          t.printStackTrace()
-         val message = t.message?.let { if (it.lines().size == 1) it else null }
 
          val msg2 = TeamCityMessageBuilder
             .testFailed(prefix, dummyTestName)
             .id(dummyTestName)
             .parent(kclass.toDescriptor().path().value)
-            .message(message)
+            .withException(t)
             .testType("Test")
             .build()
 
@@ -141,6 +140,7 @@ class TeamCityTestEngineListener(
             .id(dummyTestName)
             .parent(kclass.toDescriptor().path().value)
             .testType("Test")
+            .withException(t)
             .build()
 
          println(msg3)

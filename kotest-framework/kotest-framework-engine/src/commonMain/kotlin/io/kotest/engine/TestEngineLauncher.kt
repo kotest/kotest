@@ -7,7 +7,6 @@ import io.kotest.common.runPromise
 import io.kotest.core.Tags
 import io.kotest.core.config.AbstractProjectConfig
 import io.kotest.core.config.Configuration
-import io.kotest.core.config.configuration
 import io.kotest.core.extensions.Extension
 import io.kotest.core.internal.KotestEngineProperties
 import io.kotest.core.spec.Spec
@@ -43,7 +42,7 @@ class TestEngineLauncher(
 
    constructor() : this(
       NoopTestEngineListener,
-      configuration,
+      Configuration(),
       emptyList(),
       emptyList(),
       null,
@@ -53,7 +52,7 @@ class TestEngineLauncher(
 
    constructor(listener: TestEngineListener) : this(
       listener,
-      configuration,
+      Configuration(),
       emptyList(),
       emptyList(),
       null,
@@ -111,7 +110,15 @@ class TestEngineLauncher(
    /**
     * Adds a [AbstractProjectConfig] that was detected by the compiler plugin.
     */
+   @Deprecated("Use withProjectConfig. Will be removed once compiler plugins are updated")
    fun withConfig(vararg projectConfig: AbstractProjectConfig): TestEngineLauncher {
+      return withProjectConfig(*projectConfig)
+   }
+
+   /**
+    * Adds a [AbstractProjectConfig] that was detected by the compiler plugin.
+    */
+   fun withProjectConfig(vararg projectConfig: AbstractProjectConfig): TestEngineLauncher {
       return TestEngineLauncher(
          listener = listener,
          conf = conf,

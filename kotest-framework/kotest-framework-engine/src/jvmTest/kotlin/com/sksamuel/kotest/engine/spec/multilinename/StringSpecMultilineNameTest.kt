@@ -10,7 +10,7 @@ class StringSpecMultilineNameTest : StringSpec() {
       val names = mutableSetOf<String>()
 
       afterSpec {
-         names shouldBe setOf("multi line         name test")
+         names shouldBe setOf("multi line name test")
       }
 
       """multi line

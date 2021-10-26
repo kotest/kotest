@@ -1,12 +1,12 @@
 package com.sksamuel.kotest.engine.extensions.spec
 
-import io.kotest.core.config.configuration
+import io.kotest.core.config.Configuration
 import io.kotest.core.listeners.ProjectListener
 import io.kotest.core.spec.Isolate
 import io.kotest.core.spec.style.FunSpec
-import io.kotest.engine.KotestEngineLauncher
-import io.kotest.engine.project.AfterProjectException
+import io.kotest.engine.TestEngineLauncher
 import io.kotest.engine.listener.AbstractTestEngineListener
+import io.kotest.engine.project.AfterProjectException
 import io.kotest.inspectors.forOne
 import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.throwable.shouldHaveMessage
@@ -31,18 +31,17 @@ class AfterProjectListenerExceptionTest : FunSpec({
          }
       }
 
-      configuration.registerExtension(projectListener)
+      val c = Configuration()
+      c.registry().add(projectListener)
 
-      KotestEngineLauncher()
-         .withListener(listener)
-         .withSpec(DummySpec7::class)
+      TestEngineLauncher(listener)
+         .withClasses(DummySpec7::class)
+         .withConfiguration(c)
          .launch()
 
       errors shouldHaveSize 1
       errors[0].shouldBeInstanceOf<AfterProjectException>()
       errors[0].cause!! shouldHaveMessage "ARRGH"
-
-      configuration.deregisterExtension(projectListener)
    }
 
    test("multiple afterProject exceptions should be collected") {
@@ -67,12 +66,13 @@ class AfterProjectListenerExceptionTest : FunSpec({
          }
       }
 
-      configuration.registerExtension(projectListener1)
-      configuration.registerExtension(projectListener2)
+      val c = Configuration()
+      c.registry().add(projectListener1)
+      c.registry().add(projectListener2)
 
-      KotestEngineLauncher()
-         .withListener(listener)
-         .withSpec(DummySpec7::class)
+      TestEngineLauncher(listener)
+         .withClasses(DummySpec7::class)
+         .withConfiguration(c)
          .launch()
 
       errors shouldHaveSize 2
@@ -85,9 +85,6 @@ class AfterProjectListenerExceptionTest : FunSpec({
       errors.forOne {
          it.cause!!.shouldHaveMessage("WHACK")
       }
-
-      configuration.deregisterExtension(projectListener1)
-      configuration.deregisterExtension(projectListener2)
    }
 })
 
