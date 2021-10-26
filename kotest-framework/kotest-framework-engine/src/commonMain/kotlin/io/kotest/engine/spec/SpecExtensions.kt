@@ -41,10 +41,17 @@ internal class SpecExtensions(private val registry: ExtensionRegistry) {
 
    suspend fun beforeSpec(spec: Spec): Result<Spec> {
       log { "SpecExtensions: beforeSpec $spec" }
-      return runCatching {
-         extensions(spec).filterIsInstance<BeforeSpecListener>().forEach { it.beforeSpec(spec) }
-         spec
-      }.fold({ Result.success(it) }, { Result.failure(ExtensionException.BeforeSpecException(it)) })
+
+      val errors = extensions(spec).filterIsInstance<BeforeSpecListener>().mapNotNull { ext ->
+         runCatching { ext.beforeSpec(spec) }
+            .mapError { ExtensionException.BeforeSpecException(it) }.exceptionOrNull()
+      }
+
+      return when {
+         errors.isEmpty() -> Result.success(spec)
+         errors.size == 1 -> Result.failure(errors.first())
+         else -> Result.failure(MultipleExceptions(errors))
+      }
    }
 
    /**

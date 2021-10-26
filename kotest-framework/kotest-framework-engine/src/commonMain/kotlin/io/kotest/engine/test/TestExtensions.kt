@@ -28,7 +28,6 @@ import kotlin.coroutines.coroutineContext
 /**
  * Used to invoke extension points on tests.
  */
-@ExperimentalKotest
 internal class TestExtensions(private val registry: ExtensionRegistry) {
 
    /**

@@ -338,7 +338,7 @@ abstract class Spec : TestConfiguration() {
     */
    override fun beforeTest(f: BeforeTest) {
       register(object : BeforeTestListener {
-         override suspend fun beforeAny(testCase: TestCase) {
+         override suspend fun beforeTest(testCase: TestCase) {
             if (testCase.spec::class == this@Spec::class)
                f(testCase)
          }
@@ -353,7 +353,7 @@ abstract class Spec : TestConfiguration() {
     */
    override fun afterTest(f: AfterTest) {
       register(object : AfterTestListener {
-         override suspend fun afterAny(testCase: TestCase, result: TestResult) {
+         override suspend fun afterTest(testCase: TestCase, result: TestResult) {
             if (testCase.spec::class == this@Spec::class)
                f(Tuple2(testCase, result))
          }
