@@ -12,6 +12,7 @@ import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.engine.listener.TestEngineListener
 import io.kotest.engine.spec.interceptor.ApplyExtensionsInterceptor
+import io.kotest.engine.spec.interceptor.ConfigurationInContextInterceptor
 import io.kotest.engine.spec.interceptor.EnabledIfSpecInterceptor
 import io.kotest.engine.spec.interceptor.IgnoreNestedSpecStylesInterceptor
 import io.kotest.engine.spec.interceptor.IgnoredSpecInterceptor
@@ -89,6 +90,7 @@ class SpecExecutor(
          if (platform == Platform.JS) IgnoreNestedSpecStylesInterceptor(listener, conf.registry()) else null,
          SpecExtensionInterceptor(conf.registry()),
          RunIfActiveInterceptor(listener, conf),
+         ConfigurationInContextInterceptor(conf),
          SpecStartedFinishedInterceptor(listener, conf.registry()),
       )
 

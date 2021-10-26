@@ -16,7 +16,7 @@ class Test : WordSpec() {
             beforeAll.get() shouldBe 2
          }
          // todo
-         "!merge separate settings" {
+         "merge separate settings" {
             configuration.testCaseOrder shouldBe TestCaseOrder.Random
             configuration.specExecutionOrder shouldBe SpecExecutionOrder.Random
          }

@@ -12,8 +12,8 @@ import io.kotest.core.spec.SpecExecutionOrder
 import io.kotest.core.test.AssertionMode
 import io.kotest.core.test.TestCaseOrder
 import io.kotest.core.test.TestCaseSeverityLevel
-import io.kotest.core.test.config.TestCaseConfig
 import io.kotest.core.test.config.ResolvedTestConfig
+import io.kotest.core.test.config.TestCaseConfig
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlin.time.Duration
 
@@ -25,11 +25,11 @@ import kotlin.time.Duration
  * Expect this val to disappear in Kotest 6.0
  *
  */
-@Deprecated("Setting parameters directly on the global configuration object is subject to race conditions and is not always detected. Use project config to configure Kotest safely. Deprecated since 5.0")
+@Deprecated(
+   "Setting parameters directly on the global configuration object is subject to race conditions and is not always detected. Use project config to configure Kotest safely. Deprecated since 5.0",
+   level = DeprecationLevel.ERROR
+)
 val configuration = Configuration()
-
-@Deprecated("Setting parameters directly on the global project object is subject to race conditions and is not always detected. Use project config to configure Kotest safely. Deprecated since 4.2")
-val Project = configuration
 
 /**
  * This class defines project wide settings that are used when executing tests.

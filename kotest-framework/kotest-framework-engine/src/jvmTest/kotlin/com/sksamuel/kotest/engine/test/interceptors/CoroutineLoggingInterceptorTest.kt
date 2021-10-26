@@ -4,7 +4,6 @@
 //import io.kotest.assertions.throwables.shouldThrow
 //import io.kotest.common.ExperimentalKotest
 //import io.kotest.core.config.LogLevel
-//import io.kotest.core.config.configuration
 //import io.kotest.core.spec.style.FunSpec
 //import io.kotest.core.test.TestCase
 //import io.kotest.engine.test.logging.LogEntry
