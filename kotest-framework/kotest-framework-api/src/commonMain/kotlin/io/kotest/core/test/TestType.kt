@@ -3,7 +3,7 @@ package io.kotest.core.test
 enum class TestType {
 
    /**
-    * A container that must contain at least one other test.
+    * A container that can contain other tests.
     */
    Container,
 

@@ -117,7 +117,7 @@ class TestCaseExecutorTest : FunSpec({
       val testCase = Materializer(Configuration()).materialize(BeforeTestWithException()).shuffled().first()
       val result = executor.execute(testCase, context(testCase))
       result.isError shouldBe true
-      result.errorOrNull.shouldBeInstanceOf<ExtensionException.BeforeAnyException>()
+      result.errorOrNull.shouldBeInstanceOf<ExtensionException.BeforeTestException>()
       started shouldBe true
       finished shouldBe true
    }
@@ -138,7 +138,7 @@ class TestCaseExecutorTest : FunSpec({
       val testCase = Materializer(Configuration()).materialize(AfterTestWithException()).shuffled().first()
       val result = executor.execute(testCase, context(testCase))
       result.isError shouldBe true
-      result.errorOrNull.shouldBeInstanceOf<ExtensionException.AfterAnyException>()
+      result.errorOrNull.shouldBeInstanceOf<ExtensionException.AfterTestException>()
       started shouldBe true
       finished shouldBe true
    }

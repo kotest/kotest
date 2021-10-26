@@ -56,7 +56,7 @@ class BeforeSpecListenerTest : FunSpec() {
          counter.set(0)
 
          TestEngineLauncher(NoopTestEngineListener)
-            .withClasses(MyErrorSpec3::class)
+            .withClasses(BeforeSpecErrorNoTests::class)
             .withConfiguration(c)
             .launch()
 
@@ -96,6 +96,12 @@ private class MyPopulatedSpec3 : FunSpec() {
    init {
       beforeSpec { counter.incrementAndGet() }
       test("foo") {}
+   }
+}
+
+private class BeforeSpecErrorNoTests : FunSpec() {
+   override fun beforeSpec(spec: Spec) {
+      error("boom")
    }
 }
 

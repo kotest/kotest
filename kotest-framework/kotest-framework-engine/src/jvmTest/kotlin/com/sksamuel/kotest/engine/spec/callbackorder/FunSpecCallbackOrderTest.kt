@@ -12,7 +12,7 @@ class FunSpecCallbackOrderTest : FunSpec() {
    private var seq = ""
 
    override fun afterSpec(spec: Spec) {
-      seq shouldBe "cabdcabdcabd"
+      seq shouldBe "acbdacbdacbd"
    }
 
    override fun beforeTest(testCase: TestCase) {

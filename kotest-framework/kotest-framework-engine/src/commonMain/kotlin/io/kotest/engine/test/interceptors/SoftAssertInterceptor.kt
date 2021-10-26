@@ -8,7 +8,7 @@ import io.kotest.core.test.TestType
 import io.kotest.mpp.log
 
 /**
- * Executes the test with assertSoftly if global assert mode is enabled for this test
+ * Executes the test with assertSoftly if [assertSoftly] is enabled for this test
  * and if the [TestCase] is a [TestType.Test].
  */
 internal class SoftAssertInterceptor() : TestExecutionInterceptor {
@@ -21,10 +21,10 @@ internal class SoftAssertInterceptor() : TestExecutionInterceptor {
       test: suspend (TestCase, TestContext) -> TestResult
    ): suspend (TestCase, TestContext) -> TestResult = { testCase, context ->
       if (shouldApply(testCase)) {
-         log { "GlobalSoftAssertInterceptor: Invoking test with soft assert" }
+         log { "SoftAssertInterceptor: Invoking test with soft assert" }
          assertSoftly { test(testCase, context) }
       } else {
-         log { "GlobalSoftAssertInterceptor: Invoking test without soft assert" }
+         log { "SoftAssertInterceptor: Invoking test *without* soft assert" }
          test(testCase, context)
       }
    }
