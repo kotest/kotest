@@ -62,6 +62,14 @@ sealed interface TestResult {
          is Success -> TestStatus.Success
       }
 
+   val name: String
+      get() = when (this) {
+         is Error -> "Error"
+         is Failure -> "Failure"
+         is Ignored -> "Ignored"
+         is Success -> "Success"
+      }
+
    val reasonOrNull: String?
       get() = when (this) {
          is Ignored -> this.reason

@@ -1,6 +1,7 @@
 package io.kotest.engine.teamcity
 
 import io.kotest.common.errors.ComparisonError
+import io.kotest.core.test.TestResult
 import kotlin.time.Duration
 
 /**
@@ -125,7 +126,7 @@ class TeamCityMessageBuilder(
    fun actual(value: String): TeamCityMessageBuilder = addAttribute(Attributes.ACTUAL, value.trim())
    fun expected(value: String): TeamCityMessageBuilder = addAttribute(Attributes.EXPECTED, value.trim())
    fun locationHint(value: String): TeamCityMessageBuilder = addAttribute(Attributes.LOCATION_HINT, value)
-   fun resultStatus(value: String): TeamCityMessageBuilder = addAttribute(Attributes.RESULT_STATUS, value)
+   fun result(value: TestResult): TeamCityMessageBuilder = addAttribute(Attributes.RESULT_STATUS, value.name)
 
    // note it seems that not attaching a message renders test failed irrelevant
    fun withException(error: Throwable?): TeamCityMessageBuilder {
@@ -148,13 +149,6 @@ class TeamCityMessageBuilder(
 
    // sets a unique parsable id for this test
    fun id(value: String): TeamCityMessageBuilder = addAttribute(Attributes.ID, value)
-
-   // adds a test-type flag to the message, indicating if this event is for a spec, container or test
-   fun testType(value: String): TeamCityMessageBuilder = addAttribute(Attributes.TEST_TYPE, value.trim().lowercase())
-
-   fun container() = testType("container")
-   fun spec() = testType("spec")
-   fun test() = testType("test")
 
    // workaround for TC colon issue, see main javadoc
    fun escapeColons(value: String) = when (escapeColons) {

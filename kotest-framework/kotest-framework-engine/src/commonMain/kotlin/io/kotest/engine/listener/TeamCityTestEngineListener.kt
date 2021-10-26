@@ -1,290 +1,289 @@
-package io.kotest.engine.listener
-
-import io.kotest.core.config.Configuration
-import io.kotest.core.descriptors.toDescriptor
-import io.kotest.core.names.DisplayNameFormatter
-import io.kotest.core.test.TestCase
-import io.kotest.core.test.TestResult
-import io.kotest.core.test.TestType
-import io.kotest.engine.errors.ExtensionExceptionExtractor
-import io.kotest.engine.interceptors.EngineContext
-import io.kotest.engine.teamcity.Locations
-import io.kotest.engine.teamcity.TeamCityMessageBuilder
-import io.kotest.engine.test.names.DefaultDisplayNameFormatter
-import io.kotest.engine.test.names.getDisplayNameFormatter
-import io.kotest.mpp.bestName
-import kotlin.reflect.KClass
-
-/**
- * A [TestEngineListener] that logs events to the console using a [TeamCityMessageBuilder].
- */
-class TeamCityTestEngineListener(
-   private val prefix: String = TeamCityMessageBuilder.TeamCityPrefix
-) : TestEngineListener {
-
-   // these are the specs that have been started and the test started event sent to team city
-   private val started = mutableSetOf<KClass<*>>()
-
-   // these are the specs for which we received the specFinished event
-   private val finished = mutableSetOf<KClass<*>>()
-
-   private var formatter: DisplayNameFormatter = DefaultDisplayNameFormatter(Configuration())
-
-   private fun TestCase.isContainer() = this.type == TestType.Container
-
-   private fun TestCase.type() = if (isContainer()) "Container" else "Test"
-
-   // intellij has no method for failed suites, so if a container or spec fails we must insert
-   // a dummy "test" in order to tag the error against that
-   private fun insertPlaceholderFailure(name: String, t: Throwable?, testCase: TestCase) {
-      require(testCase.isContainer())
-      val dummyTestName = "$name <error>"
-
-      val msg = TeamCityMessageBuilder
-         .testStarted(prefix, dummyTestName)
-         .id(dummyTestName)
-         .parent(testCase.descriptor.path().value)
-         .testType(testCase.type())
-         .build()
-
-      println(msg)
-
-      // we must print out the stack trace in between the dummy, so it appears when you click on the test name
-      t?.printStackTrace()
-      val message = t?.message?.let { if (it.lines().size == 1) it else null }
-
-      val msg2 = TeamCityMessageBuilder
-         .testFailed(prefix, dummyTestName)
-         .id(dummyTestName)
-         .parent(testCase.descriptor.path().value)
-         .message(message)
-         .testType(testCase.type())
-         .build()
-
-      println(msg2)
-
-      val msg3 = TeamCityMessageBuilder
-         .testFinished(prefix, dummyTestName)
-         .id(dummyTestName)
-         .parent(testCase.descriptor.path().value)
-         .testType(testCase.type())
-         .build()
-
-      println(msg3)
-   }
-
-   override suspend fun engineStarted() {}
-
-   override suspend fun engineInitialized(context: EngineContext) {
-      formatter = getDisplayNameFormatter(context.configuration.registry(), context.configuration)
-   }
-
-   override suspend fun engineFinished(t: List<Throwable>) {
-      if (t.isNotEmpty()) {
-         println(TeamCityMessageBuilder.testStarted(prefix, "Engine failure").build())
-         val errors = t.joinToString("\n") { it.message ?: t::class.bestName() }
-         println(TeamCityMessageBuilder.testFailed(prefix, "Engine failure").message(errors).build())
-         //println(TeamCityMessageBuilder.testFinished(prefix, "Engine failure").build())
-      }
-   }
-
-   override suspend fun specStarted(kclass: KClass<*>) {
-      start(kclass)
-   }
-
-   private fun start(kclass: KClass<*>) {
-      val msg = TeamCityMessageBuilder
-         .testSuiteStarted(prefix, formatter.format(kclass))
-         .id(kclass.toDescriptor().path().value)
-         .locationHint(Locations.locationHint(kclass))
-         .spec()
-         .build()
-      println(msg)
-      started.add(kclass)
-   }
-
-   override suspend fun specFinished(kclass: KClass<*>, results: Map<TestCase, TestResult>) {}
-
-   override suspend fun specExit(kclass: KClass<*>, t: Throwable?) {
-
-      // we must start the test if it wasn't already started
-      if (!started.contains(kclass))
-         start(kclass)
-
-      when (t) {
-         null -> finish(kclass, null)
-         else -> {
-            val (placeholder, cause) = ExtensionExceptionExtractor.resolve(t)
-
-            val msg = TeamCityMessageBuilder
-               .testStarted(prefix, placeholder)
-               .id(placeholder)
-               .parent(kclass.toDescriptor().path().value)
-               .testType("Test")
-               .build()
-
-            println(msg)
-
-            // we must print out the stack trace in between the dummy, so it appears when you click on the test name
-            cause.printStackTrace()
-
-            val msg2 = TeamCityMessageBuilder
-               .testFailed(prefix, placeholder)
-               .id(placeholder)
-               .parent(kclass.toDescriptor().path().value)
-               .withException(cause)
-               .testType("Test")
-               .build()
-
-            println(msg2)
-
-            val msg3 = TeamCityMessageBuilder
-               .testFinished(prefix, placeholder)
-               .id(placeholder)
-               .parent(kclass.toDescriptor().path().value)
-               .testType("Test")
-               .build()
-
-            println(msg3)
-
-            finish(kclass, cause)
-         }
-      }
-   }
-
-   override suspend fun specIgnored(kclass: KClass<*>) {}
-
-   override suspend fun specInactive(kclass: KClass<*>, results: Map<TestCase, TestResult>) {
-      if (results.isEmpty()) {
-         start(kclass)
-         val msg = TeamCityMessageBuilder
-            .testIgnored(prefix, "<no tests>")
-            .id("<no tests>")
-            .parent(kclass.toDescriptor().path().value)
-            .testType("Test")
-            .resultStatus("Ignored")
-            .build()
-         println(msg)
-      } else {
-         start(kclass)
-         results.forEach { (testCase, result) ->
-            testIgnored(testCase, if (result is TestResult.Ignored) result.reason else null)
-         }
-      }
-   }
-
-   private fun finish(kclass: KClass<*>, t: Throwable?) {
-      val msg = TeamCityMessageBuilder
-         .testSuiteFinished(prefix, formatter.format(kclass))
-         .id(kclass.toDescriptor().path().value)
-         .locationHint(Locations.locationHint(kclass))
-         .resultStatus(if (t == null) "Success" else "Error")
-         .spec()
-         .build()
-      println(msg)
-      finished.add(kclass)
-   }
-
-   override suspend fun testStarted(testCase: TestCase) {
-      when (testCase.isContainer()) {
-         true -> startTestSuite(testCase)
-         false -> startTest(testCase)
-      }
-   }
-
-   override suspend fun testIgnored(testCase: TestCase, reason: String?) {
-      val msg = TeamCityMessageBuilder
-         .testIgnored(prefix, formatter.format(testCase))
-         .id(testCase.descriptor.path().value)
-         .parent(testCase.descriptor.parent.path().value)
-         .locationHint(Locations.locationHint(testCase.spec::class))
-         .testType(testCase.type.name)
-         .message(reason)
-         .resultStatus("Ignored")
-         .build()
-      println(msg)
-   }
-
-   override suspend fun testFinished(testCase: TestCase, result: TestResult) {
-      when (result) {
-         is TestResult.Ignored -> return
-         is TestResult.Success -> when (testCase.isContainer()) {
-            true -> finishTestSuite(testCase, result)
-            false -> finishTest(testCase, result)
-         }
-         else -> when (testCase.isContainer()) {
-            true -> {
-               insertPlaceholderFailure(formatter.format(testCase), result.errorOrNull, testCase)
-               finishTestSuite(testCase, result)
-            }
-            false -> {
-               failTest(testCase, result)
-               finishTest(testCase, result)
-            }
-         }
-      }
-   }
-
-   private fun startTest(testCase: TestCase) {
-      val msg = TeamCityMessageBuilder
-         .testStarted(prefix, formatter.format(testCase))
-         .id(testCase.descriptor.path().value)
-         .parent(testCase.descriptor.parent.path().value)
-         .locationHint(Locations.locationHint(testCase.spec::class))
-         .testType(testCase.type.name)
-         .build()
-      println(msg)
-   }
-
-   private fun startTestSuite(testCase: TestCase) {
-      val msg = TeamCityMessageBuilder
-         .testSuiteStarted(prefix, formatter.format(testCase))
-         .id(testCase.descriptor.path().value)
-         .parent(testCase.descriptor.parent.path().value)
-         .locationHint(Locations.locationHint(testCase.spec::class))
-         .testType(testCase.type.name)
-         .build()
-      println(msg)
-   }
-
-   private fun failTest(testCase: TestCase, result: TestResult) {
-      val msg = TeamCityMessageBuilder
-         .testFailed(prefix, formatter.format(testCase))
-         .id(testCase.descriptor.path().value)
-         .parent(testCase.descriptor.parent.path().value)
-         .duration(result.duration)
-         .withException(result.errorOrNull)
-         .locationHint(Locations.locationHint(testCase.spec::class))
-         .testType(testCase.type.name)
-         .resultStatus(result::class.simpleName ?: "Error")
-         .withException(result.errorOrNull)
-         .build()
-      println(msg)
-   }
-
-   private fun finishTest(testCase: TestCase, result: TestResult) {
-      val msg = TeamCityMessageBuilder
-         .testFinished(prefix, formatter.format(testCase))
-         .id(testCase.descriptor.path().value)
-         .parent(testCase.descriptor.parent.path().value)
-         .duration(result.duration)
-         .locationHint(Locations.locationHint(testCase.spec::class))
-         .testType(testCase.type.name)
-         .resultStatus(result::class.simpleName ?: "Error")
-         .build()
-      println(msg)
-   }
-
-   private fun finishTestSuite(testCase: TestCase, result: TestResult) {
-      val msg = TeamCityMessageBuilder
-         .testSuiteFinished(prefix, formatter.format(testCase))
-         .id(testCase.descriptor.path().value)
-         .parent(testCase.descriptor.parent.path().value)
-         .duration(result.duration)
-         .locationHint(Locations.locationHint(testCase.spec::class))
-         .testType(testCase.type.name)
-         .resultStatus(result::class.simpleName ?: "Error")
-         .build()
-      println(msg)
-   }
-}
+//package io.kotest.engine.listener
+//
+//import io.kotest.core.config.Configuration
+//import io.kotest.core.descriptors.Descriptor
+//import io.kotest.core.descriptors.toDescriptor
+//import io.kotest.core.names.DisplayNameFormatter
+//import io.kotest.core.test.TestCase
+//import io.kotest.core.test.TestResult
+//import io.kotest.core.test.isRootTest
+//import io.kotest.engine.errors.ExtensionExceptionExtractor
+//import io.kotest.engine.interceptors.EngineContext
+//import io.kotest.engine.teamcity.Locations
+//import io.kotest.engine.teamcity.TeamCityMessageBuilder
+//import io.kotest.engine.test.MultipleExceptions
+//import io.kotest.engine.test.names.DefaultDisplayNameFormatter
+//import io.kotest.engine.test.names.getDisplayNameFormatter
+//import io.kotest.mpp.bestName
+//import kotlin.reflect.KClass
+//
+///**
+// * A [TestEngineListener] that logs events to the console using a [TeamCityMessageBuilder].
+// */
+//class TeamCityTestEngineListener(
+//   private val prefix: String = TeamCityMessageBuilder.TeamCityPrefix
+//) : TestEngineListener {
+//
+//   private var formatter: DisplayNameFormatter = DefaultDisplayNameFormatter(Configuration())
+//
+//   // these are the specs that have been started and the test started event sent to team city
+//   private val started = mutableSetOf<KClass<*>>()
+//
+//   private val rootTests = mutableListOf<TestCase>()
+//
+//   // once a spec has completed, we want to be able to check whether any given test is
+//   // a container or a leaf test, and so this map contains all test that have children
+//   private val children = mutableMapOf<Descriptor, MutableList<TestCase>>()
+//
+//   private val results = mutableMapOf<Descriptor, TestResult>()
+//
+//   // intellij has no method for failed suites, so if a container or spec fails we must insert
+//   // a dummy "test" in order to tag the error against that
+//   private fun insertPlaceholder(t: Throwable, parent: Descriptor) {
+//
+//      val (name, cause) = ExtensionExceptionExtractor.resolve(t)
+//
+//      val msg1 = TeamCityMessageBuilder
+//         .testStarted(prefix, name)
+//         .id(name)
+//         .parent(parent.path().value)
+//         .build()
+//      println(msg1)
+//
+//      // we must print out the stack trace in between the dummy, so it appears when you click on the test name
+//      //t?.printStackTrace()
+//
+//      val msg2 = TeamCityMessageBuilder
+//         .testFailed(prefix, name)
+//         .id(name)
+//         .parent(parent.path().value)
+//         .withException(cause)
+//         .build()
+//      println(msg2)
+//
+//      val msg3 = TeamCityMessageBuilder
+//         .testFinished(prefix, name)
+//         .id(name)
+//         .parent(parent.path().value)
+//         .build()
+//      println(msg3)
+//   }
+//
+//   override suspend fun engineStarted() {}
+//
+//   override suspend fun engineInitialized(context: EngineContext) {
+//      formatter = getDisplayNameFormatter(context.configuration.registry(), context.configuration)
+//   }
+//
+//   override suspend fun engineFinished(t: List<Throwable>) {
+//      if (t.isNotEmpty()) {
+//         println(TeamCityMessageBuilder.testStarted(prefix, "Engine failure").build())
+//         val errors = t.joinToString("\n") { it.message ?: t::class.bestName() }
+//         println(TeamCityMessageBuilder.testFailed(prefix, "Engine failure").message(errors).build())
+//         //println(TeamCityMessageBuilder.testFinished(prefix, "Engine failure").build())
+//      }
+//   }
+//
+//   override suspend fun specStarted(kclass: KClass<*>) {
+//      // we can output the spec name immediately so there is some feedback that something is happening
+//      // but all tests will only be output later once we have the full tree
+//      startSpec(kclass)
+//   }
+//
+//   private fun startSpec(kclass: KClass<*>) {
+//      val msg = TeamCityMessageBuilder
+//         .testSuiteStarted(prefix, formatter.format(kclass))
+//         .id(kclass.toDescriptor().path().value)
+//         .locationHint(Locations.locationHint(kclass))
+//         .build()
+//      println(msg)
+//      started.add(kclass)
+//   }
+//
+//   private fun finishSpec(kclass: KClass<*>) {
+//      val msg = TeamCityMessageBuilder
+//         .testSuiteFinished(prefix, formatter.format(kclass))
+//         .id(kclass.toDescriptor().path().value)
+//         .locationHint(Locations.locationHint(kclass))
+//         .build()
+//      println(msg)
+//   }
+//
+//   // todo remove ??
+//   override suspend fun specAborted(kclass: KClass<*>, t: Throwable) {}
+//
+//   override suspend fun specFinished(kclass: KClass<*>, results: Map<TestCase, TestResult>) {}
+//
+//   override suspend fun specExit(kclass: KClass<*>, t: Throwable?) {
+//
+//      // we must start the test if it wasn't already started
+//      if (!started.contains(kclass))
+//         startSpec(kclass)
+//
+//      // start by outputting each root test and then any nested children
+//      rootTests.forEach { handleTest(it) }
+//
+//      // if the spec itself has an error, we must insert a placeholder test
+//      when (t) {
+//         null -> Unit
+//         is MultipleExceptions -> t.causes.forEach { insertPlaceholder(it, kclass.toDescriptor()) }
+//         else -> insertPlaceholder(t, kclass.toDescriptor())
+//      }
+//
+//      finishSpec(kclass)
+//   }
+//
+//   private fun handleTest(testCase: TestCase) {
+//      val result = results[testCase.descriptor] ?: return
+//      when (result) {
+//         is TestResult.Ignored -> ignoreTest(testCase, result)
+//         else -> {
+//            val nestedTests = children[testCase.descriptor] ?: emptyList()
+//            if (nestedTests.isEmpty()) {
+//               startTest(testCase)
+//               if (result.isErrorOrFailure) failTest(testCase, result)
+//               finishTest(testCase, result)
+//            } else {
+//               startTestSuite(testCase)
+//               nestedTests.forEach { handleTest(it) }
+//               // test suites cannot be in a failed state, so we must insert a placeholder to hold any error
+//               when (val t = result.errorOrNull) {
+//                  null -> Unit
+//                  is MultipleExceptions -> t.causes.forEach { insertPlaceholder(it, testCase.descriptor) }
+//                  else -> insertPlaceholder(t, testCase.descriptor)
+//               }
+//               if (result.isErrorOrFailure)
+//                  finishTestSuite(testCase, result)
+//            }
+//         }
+//      }
+//   }
+//
+//   // ignored specs are completely hidden from output
+//   override suspend fun specIgnored(kclass: KClass<*>) {}
+//
+//   // inactive specs are included in the output with a placeholder ignored tests in order that
+//   // intellij shows the spec as "ignored" (it won't if the test suite is just empty)
+//   override suspend fun specInactive(kclass: KClass<*>, results: Map<TestCase, TestResult>) {
+//      if (results.isEmpty()) {
+//         startSpec(kclass)
+//         val msg = TeamCityMessageBuilder
+//            .testIgnored(prefix, "<no tests>")
+//            .id("<no tests>")
+//            .parent(kclass.toDescriptor().path().value)
+//            .result(TestResult.Ignored)
+//            .build()
+//         println(msg)
+//      } else {
+//         startSpec(kclass)
+//         results.forEach { (testCase, result) ->
+//            testIgnored(testCase, if (result is TestResult.Ignored) result.reason else null)
+//         }
+//      }
+//   }
+//
+//   override suspend fun testStarted(testCase: TestCase) {
+//      if (testCase.isRootTest()) rootTests.add(testCase)
+//      else addChild(testCase)
+//   }
+//
+//   override suspend fun testIgnored(testCase: TestCase, reason: String?) {
+//      if (testCase.isRootTest()) rootTests.add(testCase)
+//      else addChild(testCase)
+//   }
+//
+//   private fun addChild(testCase: TestCase) {
+//      children.getOrPut(testCase.descriptor.parent) { mutableListOf() }.add(testCase)
+//   }
+//
+//   override suspend fun testFinished(testCase: TestCase, result: TestResult) {
+//      results[testCase.descriptor] = result
+//   }
+//
+//   /**
+//    * For a given [TestCase] will output the "test ignored" message.
+//    */
+//   private fun ignoreTest(testCase: TestCase, result: TestResult.Ignored) {
+//      val msg = TeamCityMessageBuilder
+//         .testIgnored(prefix, formatter.format(testCase))
+//         .id(testCase.descriptor.path().value)
+//         .parent(testCase.descriptor.parent.path().value)
+//         .locationHint(Locations.locationHint(testCase.spec::class))
+//         .message(result.reason)
+//         .result(result)
+//         .build()
+//      println(msg)
+//   }
+//
+//   /**
+//    * For a given [TestCase] will output the "test started" message.
+//    */
+//   private fun startTest(testCase: TestCase) {
+//      val msg = TeamCityMessageBuilder
+//         .testStarted(prefix, formatter.format(testCase))
+//         .id(testCase.descriptor.path().value)
+//         .parent(testCase.descriptor.parent.path().value)
+//         .locationHint(Locations.locationHint(testCase.spec::class))
+//         .build()
+//      println(msg)
+//   }
+//
+//   /**
+//    * For a given [TestCase] will output the "test suite started" message.
+//    */
+//   private fun startTestSuite(testCase: TestCase) {
+//      val msg = TeamCityMessageBuilder
+//         .testSuiteStarted(prefix, formatter.format(testCase))
+//         .id(testCase.descriptor.path().value)
+//         .parent(testCase.descriptor.parent.path().value)
+//         .locationHint(Locations.locationHint(testCase.spec::class))
+//         .build()
+//      println(msg)
+//   }
+//
+//   /**
+//    * For a given [TestCase] will output the "test failed" message.
+//    */
+//   private fun failTest(testCase: TestCase, result: TestResult) {
+//      val msg = TeamCityMessageBuilder
+//         .testFailed(prefix, formatter.format(testCase))
+//         .id(testCase.descriptor.path().value)
+//         .parent(testCase.descriptor.parent.path().value)
+//         .duration(result.duration)
+//         .locationHint(Locations.locationHint(testCase.spec::class))
+//         .withException(result.errorOrNull)
+//         .result(result)
+//         .build()
+//      println(msg)
+//   }
+//
+//   /**
+//    * For a given [TestCase] will output the "test finished" message.
+//    */
+//   private fun finishTest(testCase: TestCase, result: TestResult) {
+//      val msg = TeamCityMessageBuilder
+//         .testFinished(prefix, formatter.format(testCase))
+//         .id(testCase.descriptor.path().value)
+//         .parent(testCase.descriptor.parent.path().value)
+//         .duration(result.duration)
+//         .locationHint(Locations.locationHint(testCase.spec::class))
+//         .result(result)
+//         .build()
+//      println(msg)
+//   }
+//
+//   /**
+//    * For a given [TestCase] will output the "test suite finished" message.
+//    */
+//   private fun finishTestSuite(testCase: TestCase, result: TestResult) {
+//      val msg = TeamCityMessageBuilder
+//         .testSuiteFinished(prefix, formatter.format(testCase))
+//         .id(testCase.descriptor.path().value)
+//         .parent(testCase.descriptor.parent.path().value)
+//         .duration(result.duration)
+//         .locationHint(Locations.locationHint(testCase.spec::class))
+//         .result(result)
+//         .build()
+//      println(msg)
+//   }
+//}

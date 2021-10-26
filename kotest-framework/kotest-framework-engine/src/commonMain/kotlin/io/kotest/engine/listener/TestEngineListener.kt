@@ -59,12 +59,13 @@ interface TestEngineListener {
    suspend fun specInstantiated(spec: Spec) {}
 
    /**
-    * Invoked if an instance of a [Spec] fails to be created reflectively.
+    * Invoked if an instance of a [Spec] fails to be instantiated.
     */
    suspend fun specInstantiationError(kclass: KClass<*>, t: Throwable) {}
 
    /**
-    * Invoked if the spec cannot be instantiated in order to check for active tests.
+    * Invoked if the spec proceed to testing.
+    * // todo remove ??
     */
    suspend fun specAborted(kclass: KClass<*>, t:Throwable) {}
 

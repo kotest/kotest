@@ -12,9 +12,9 @@ import io.kotest.core.sourceRef
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.test.TestCase
-import io.kotest.core.test.config.ResolvedTestConfig
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestType
+import io.kotest.core.test.config.ResolvedTestConfig
 import io.kotest.data.forAll
 import io.kotest.data.row
 import io.kotest.engine.listener.TeamCityTestEngineListener
@@ -51,7 +51,20 @@ class TeamCityTestEngineListenerTest : FunSpec() {
       type = TestType.Test
    )
 
+   override fun afterSpec(spec: Spec) {
+      error("garaeasd")
+   }
+
    init {
+
+      afterSpec {
+         error("tertert")
+      }
+
+      context("fuck me up big style") {
+         test("monkey") { }
+         error("foo")
+      }
 
       test("specStarted should write testSuiteStarted") {
          captureStandardOut {
@@ -82,9 +95,9 @@ class TeamCityTestEngineListenerTest : FunSpec() {
 
       test("inactive spec should write each root test as ignored") {
          val listener = TeamCityTestEngineListener("testcity")
+         listener.specEnter(kclass)
+         listener.specInactive(kclass, mapOf(testCaseTest to TestResult.Ignored(null)))
          val out = captureStandardOut {
-            listener.specEnter(kclass)
-            listener.specInactive(kclass, mapOf(testCaseTest to TestResult.Ignored(null)))
             listener.specExit(kclass, null)
          }
          out.shouldContain("testcity[testSuiteStarted name='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest'")
