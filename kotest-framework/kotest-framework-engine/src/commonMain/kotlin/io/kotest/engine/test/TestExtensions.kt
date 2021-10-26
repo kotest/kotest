@@ -1,5 +1,6 @@
 package io.kotest.engine.test
 
+import io.kotest.common.ExperimentalKotest
 import io.kotest.common.collect
 import io.kotest.common.mapError
 import io.kotest.core.config.ExtensionRegistry
@@ -19,11 +20,13 @@ import io.kotest.core.test.TestContext
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestType
 import io.kotest.engine.test.contexts.withCoroutineContext
+import io.kotest.engine.test.logging.LogExtension
 import kotlin.coroutines.coroutineContext
 
 /**
  * Used to invoke extension points on tests.
  */
+@ExperimentalKotest
 internal class TestExtensions(private val registry: ExtensionRegistry) {
 
    /**
@@ -149,6 +152,10 @@ internal class TestExtensions(private val registry: ExtensionRegistry) {
          }
 
       return execute(testCase, context)
+   }
+
+   fun logExtensions(testCase: TestCase): List<LogExtension> {
+      return extensions(testCase).filterIsInstance<LogExtension>()
    }
 }
 

@@ -2,12 +2,11 @@ package io.kotest.engine.test.interceptors
 
 import io.kotest.common.ExperimentalKotest
 import io.kotest.core.config.Configuration
-import io.kotest.core.config.LogLevel
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestContext
 import io.kotest.core.test.TestResult
+import io.kotest.engine.test.TestExtensions
 import io.kotest.engine.test.contexts.withCoroutineContext
-import io.kotest.engine.test.logging.LogExtension
 import io.kotest.engine.test.logging.SerialLogExtension
 import io.kotest.engine.test.logging.TestContextLoggingCoroutineContextElement
 import io.kotest.engine.test.logging.TestLogger
@@ -23,7 +22,7 @@ internal class CoroutineLoggingInterceptor(
       test: suspend (TestCase, TestContext) -> TestResult
    ): suspend (TestCase, TestContext) -> TestResult = { testCase, context ->
 
-      val extensions = configuration.registry().all().filterIsInstance<LogExtension>()
+      val extensions = TestExtensions(configuration.registry()).logExtensions(testCase)
 
       when {
          configuration.logLevel.isDisabled() || extensions.isEmpty() -> test(testCase, context)
