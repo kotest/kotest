@@ -7,6 +7,7 @@ object Projects {
       const val concurrency = ":kotest-framework:kotest-framework-concurrency"
       const val mppshared = ":kotest-framework:kotest-framework-multiplatform-plugin-shared"
       const val engine = ":kotest-framework:kotest-framework-engine"
+      const val datatest = ":kotest-framework:kotest-framework-datatest"
       const val api = ":kotest-framework:kotest-framework-api"
    }
 
