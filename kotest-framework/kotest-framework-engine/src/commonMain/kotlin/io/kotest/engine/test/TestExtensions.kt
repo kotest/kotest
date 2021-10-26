@@ -19,6 +19,8 @@ import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestContext
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestType
+import io.kotest.engine.extensions.ExtensionException
+import io.kotest.engine.extensions.MultipleExceptions
 import io.kotest.engine.test.contexts.withCoroutineContext
 import io.kotest.engine.test.logging.LogExtension
 import kotlin.coroutines.coroutineContext
@@ -48,7 +50,7 @@ internal class TestExtensions(private val registry: ExtensionRegistry) {
       return extensions.map {
          runCatching {
             it.beforeInvocation(testCase, invocation)
-         }.mapError { BeforeInvocationException(it) }
+         }.mapError { ExtensionException.BeforeInvocationException(it) }
       }.collect { if (it.size == 1) it.first() else MultipleExceptions(it) }.map { testCase }
    }
 
@@ -57,7 +59,7 @@ internal class TestExtensions(private val registry: ExtensionRegistry) {
       return extensions.map {
          runCatching {
             it.afterInvocation(testCase, invocation)
-         }.mapError { AfterInvocationException(it) }
+         }.mapError { ExtensionException.AfterInvocationException(it) }
       }.collect { if (it.size == 1) it.first() else MultipleExceptions(it) }.map { testCase }
    }
 
@@ -74,19 +76,19 @@ internal class TestExtensions(private val registry: ExtensionRegistry) {
       val errors = bc.mapNotNull {
          runCatching {
             if (testCase.type == TestType.Container) it.beforeContainer(testCase)
-         }.mapError { BeforeContainerException(it) }.exceptionOrNull()
+         }.mapError { ExtensionException.BeforeContainerException(it) }.exceptionOrNull()
       } + be.mapNotNull {
          runCatching {
             if (testCase.type == TestType.Test) it.beforeEach(testCase)
-         }.mapError { BeforeEachException(it) }.exceptionOrNull()
+         }.mapError { ExtensionException.BeforeEachException(it) }.exceptionOrNull()
       } + bt.mapNotNull {
          runCatching {
             it.beforeAny(testCase)
-         }.mapError { BeforeAnyException(it) }.exceptionOrNull()
+         }.mapError { ExtensionException.BeforeAnyException(it) }.exceptionOrNull()
       } + bt.mapNotNull {
          runCatching {
             it.beforeTest(testCase)
-         }.mapError { BeforeTestException(it) }.exceptionOrNull()
+         }.mapError { ExtensionException.BeforeTestException(it) }.exceptionOrNull()
       }
 
       return when {
@@ -109,19 +111,19 @@ internal class TestExtensions(private val registry: ExtensionRegistry) {
       val errors = at.mapNotNull {
          runCatching {
             it.afterTest(testCase, result)
-         }.mapError { AfterTestException(it) }.exceptionOrNull()
+         }.mapError { ExtensionException.AfterTestException(it) }.exceptionOrNull()
       } + at.mapNotNull {
          runCatching {
             it.afterAny(testCase, result)
-         }.mapError { AfterAnyException(it) }.exceptionOrNull()
+         }.mapError { ExtensionException.AfterAnyException(it) }.exceptionOrNull()
       } + ac.mapNotNull {
          runCatching {
             if (testCase.type == TestType.Container) it.afterContainer(testCase, result)
-         }.mapError { AfterContainerException(it) }.exceptionOrNull()
+         }.mapError { ExtensionException.AfterContainerException(it) }.exceptionOrNull()
       } + ae.mapNotNull {
          runCatching {
             if (testCase.type == TestType.Test) it.afterEach(testCase, result)
-         }.mapError { AfterEachException(it) }.exceptionOrNull()
+         }.mapError { ExtensionException.AfterEachException(it) }.exceptionOrNull()
       }
 
       return when {
@@ -158,15 +160,3 @@ internal class TestExtensions(private val registry: ExtensionRegistry) {
       return extensions(testCase).filterIsInstance<LogExtension>()
    }
 }
-
-class MultipleExceptions(val causes: List<Throwable>) : RuntimeException(causes.first())
-class BeforeInvocationException(cause: Throwable) : RuntimeException(cause)
-class AfterInvocationException(cause: Throwable) : RuntimeException(cause)
-class BeforeTestException(cause: Throwable) : RuntimeException(cause)
-class AfterTestException(cause: Throwable) : RuntimeException(cause)
-class BeforeEachException(cause: Throwable) : RuntimeException(cause)
-class AfterEachException(cause: Throwable) : RuntimeException(cause)
-class BeforeContainerException(cause: Throwable) : RuntimeException(cause)
-class AfterContainerException(cause: Throwable) : RuntimeException(cause)
-class BeforeAnyException(cause: Throwable) : RuntimeException(cause)
-class AfterAnyException(cause: Throwable) : RuntimeException(cause)

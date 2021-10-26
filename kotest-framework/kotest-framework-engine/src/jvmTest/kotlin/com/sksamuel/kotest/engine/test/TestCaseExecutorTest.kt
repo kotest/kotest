@@ -5,13 +5,11 @@ import io.kotest.core.config.Configuration
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.test.NestedTest
 import io.kotest.core.test.TestCase
-import io.kotest.core.test.TestCaseOrder
 import io.kotest.core.test.TestContext
 import io.kotest.core.test.TestResult
 import io.kotest.engine.concurrency.NoopCoroutineDispatcherFactory
+import io.kotest.engine.extensions.ExtensionException
 import io.kotest.engine.spec.Materializer
-import io.kotest.engine.test.AfterAnyException
-import io.kotest.engine.test.BeforeAnyException
 import io.kotest.engine.test.TestCaseExecutionListener
 import io.kotest.engine.test.TestCaseExecutor
 import io.kotest.engine.test.interceptors.TestTimeoutException
@@ -119,7 +117,7 @@ class TestCaseExecutorTest : FunSpec({
       val testCase = Materializer(Configuration()).materialize(BeforeTestWithException()).shuffled().first()
       val result = executor.execute(testCase, context(testCase))
       result.isError shouldBe true
-      result.errorOrNull.shouldBeInstanceOf<BeforeAnyException>()
+      result.errorOrNull.shouldBeInstanceOf<ExtensionException.BeforeAnyException>()
       started shouldBe true
       finished shouldBe true
    }
@@ -140,7 +138,7 @@ class TestCaseExecutorTest : FunSpec({
       val testCase = Materializer(Configuration()).materialize(AfterTestWithException()).shuffled().first()
       val result = executor.execute(testCase, context(testCase))
       result.isError shouldBe true
-      result.errorOrNull.shouldBeInstanceOf<AfterAnyException>()
+      result.errorOrNull.shouldBeInstanceOf<ExtensionException.AfterAnyException>()
       started shouldBe true
       finished shouldBe true
    }

@@ -6,8 +6,7 @@ import io.kotest.core.listeners.AfterProjectListener
 import io.kotest.core.listeners.BeforeProjectListener
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.engine.EngineResult
-import io.kotest.engine.project.AfterProjectException
-import io.kotest.engine.project.BeforeProjectException
+import io.kotest.engine.extensions.ExtensionException
 import io.kotest.engine.interceptors.EngineContext
 import io.kotest.engine.interceptors.ProjectListenerEngineInterceptor
 import io.kotest.matchers.shouldBe
@@ -112,7 +111,7 @@ class ProjectListenerEngineInterceptorTest : FunSpec({
       val results = ProjectListenerEngineInterceptor.intercept(
          EngineContext.empty.withConfiguration(c)
       ) { EngineResult(emptyList()) }
-      results.errors.filterIsInstance<BeforeProjectException>().size shouldBe 2
+      results.errors.filterIsInstance<ExtensionException.BeforeProjectException>().size shouldBe 2
    }
 
    test("should return AfterProjectListener errors wrapped in AfterProjectListenerException") {
@@ -132,6 +131,6 @@ class ProjectListenerEngineInterceptorTest : FunSpec({
       val results = ProjectListenerEngineInterceptor.intercept(
          EngineContext.empty.withConfiguration(c)
       ) { EngineResult(emptyList()) }
-      results.errors.filterIsInstance<AfterProjectException>().size shouldBe 2
+      results.errors.filterIsInstance<ExtensionException.AfterProjectException>().size shouldBe 2
    }
 })

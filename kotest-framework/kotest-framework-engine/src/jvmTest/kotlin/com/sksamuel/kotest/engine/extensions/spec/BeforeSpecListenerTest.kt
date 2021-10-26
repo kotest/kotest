@@ -8,9 +8,9 @@ import io.kotest.core.spec.Isolate
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.engine.TestEngineLauncher
+import io.kotest.engine.extensions.ExtensionException
 import io.kotest.engine.listener.CollectingTestEngineListener
 import io.kotest.engine.listener.NoopTestEngineListener
-import io.kotest.engine.spec.BeforeSpecException
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.types.shouldBeInstanceOf
 import java.util.concurrent.atomic.AtomicInteger
@@ -44,7 +44,7 @@ class BeforeSpecListenerTest : FunSpec() {
             .withClasses(MyErrorSpec3::class)
             .launch()
          listener.specs.size shouldBe 1
-         listener.specs[MyErrorSpec3::class]!!.shouldBeInstanceOf<BeforeSpecException>()
+         listener.specs[MyErrorSpec3::class]!!.shouldBeInstanceOf<ExtensionException.BeforeSpecException>()
          listener.tests.size shouldBe 0
       }
 

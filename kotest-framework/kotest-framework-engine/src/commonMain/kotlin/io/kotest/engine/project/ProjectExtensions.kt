@@ -3,11 +3,12 @@ package io.kotest.engine.project
 import io.kotest.core.config.ExtensionRegistry
 import io.kotest.core.listeners.AfterProjectListener
 import io.kotest.core.listeners.BeforeProjectListener
+import io.kotest.engine.extensions.ExtensionException
 import io.kotest.mpp.log
 
 class ProjectExtensions(private val registry: ExtensionRegistry) {
 
-   suspend fun beforeProject(): List<BeforeProjectException> {
+   suspend fun beforeProject(): List<ExtensionException.BeforeProjectException> {
       val ext = registry.all().filterIsInstance<BeforeProjectListener>()
       log { "ProjectExtensions: Invoking ${ext.size} BeforeProjectListeners" }
       return ext.mapNotNull {
@@ -15,12 +16,12 @@ class ProjectExtensions(private val registry: ExtensionRegistry) {
             it.beforeProject()
             null
          } catch (t: Throwable) {
-            BeforeProjectException(t)
+            ExtensionException.BeforeProjectException(t)
          }
       }
    }
 
-   suspend fun afterProject(): List<AfterProjectException> {
+   suspend fun afterProject(): List<ExtensionException.AfterProjectException> {
       val ext = registry.all().filterIsInstance<AfterProjectListener>()
       log { "ProjectExtensions: Invoking ${ext.size} AfterProjectListeners" }
       return ext.mapNotNull {
@@ -28,11 +29,8 @@ class ProjectExtensions(private val registry: ExtensionRegistry) {
             it.afterProject()
             null
          } catch (t: Throwable) {
-            AfterProjectException(t)
+            ExtensionException.AfterProjectException(t)
          }
       }
    }
 }
-
-class AfterProjectException(cause: Throwable) : Exception(cause)
-class BeforeProjectException(cause: Throwable) : Exception(cause)

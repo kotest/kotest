@@ -1,5 +1,6 @@
 package io.kotest.engine.spec
 
+import io.kotest.common.mapError
 import io.kotest.core.config.ExtensionRegistry
 import io.kotest.core.extensions.Extension
 import io.kotest.core.extensions.SpecExtension
@@ -15,6 +16,8 @@ import io.kotest.core.spec.Spec
 import io.kotest.core.spec.functionOverrideCallbacks
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
+import io.kotest.engine.extensions.ExtensionException
+import io.kotest.engine.extensions.MultipleExceptions
 import io.kotest.mpp.log
 import kotlin.reflect.KClass
 
@@ -41,9 +44,13 @@ internal class SpecExtensions(private val registry: ExtensionRegistry) {
       return runCatching {
          extensions(spec).filterIsInstance<BeforeSpecListener>().forEach { it.beforeSpec(spec) }
          spec
-      }.fold({ Result.success(it) }, { Result.failure(BeforeSpecException(it)) })
+      }.fold({ Result.success(it) }, { Result.failure(ExtensionException.BeforeSpecException(it)) })
    }
 
+   /**
+    * Runs all the after spec listeners for this [Spec]. All errors are caught and wrapped
+    * in [AfterSpecListener] and if more than one error, all will be returned as a [MultipleE].
+    */
    suspend fun afterSpec(spec: Spec): Result<Spec> = runCatching {
       log { "SpecExtensions: afterSpec $spec" }
 
@@ -52,10 +59,16 @@ internal class SpecExtensions(private val registry: ExtensionRegistry) {
          closeables.forEach { it.value.close() }
       }
 
-      return runCatching {
-         extensions(spec).filterIsInstance<AfterSpecListener>().forEach { it.afterSpec(spec) }
-         spec
-      }.fold({ Result.success(it) }, { Result.failure(AfterSpecException(it)) })
+      val errors = extensions(spec).filterIsInstance<AfterSpecListener>().mapNotNull { ext ->
+         runCatching { ext.afterSpec(spec) }
+            .mapError { ExtensionException.AfterSpecException(it) }.exceptionOrNull()
+      }
+
+      return when {
+         errors.isEmpty() -> Result.success(spec)
+         errors.size == 1 -> Result.failure(errors.first())
+         else -> Result.failure(MultipleExceptions(errors))
+      }
    }
 
    suspend fun specInstantiated(spec: Spec) = runCatching {
@@ -112,6 +125,3 @@ internal class SpecExtensions(private val registry: ExtensionRegistry) {
       exts.forEach { it.ignoredSpec(kclass, null) }
    }
 }
-
-class BeforeSpecException(throwable: Throwable) : RuntimeException(throwable)
-class AfterSpecException(throwable: Throwable) : RuntimeException(throwable)

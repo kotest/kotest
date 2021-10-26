@@ -8,9 +8,9 @@ import io.kotest.core.spec.Isolate
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.engine.TestEngineLauncher
+import io.kotest.engine.extensions.ExtensionException
 import io.kotest.engine.listener.CollectingTestEngineListener
 import io.kotest.engine.listener.NoopTestEngineListener
-import io.kotest.engine.spec.AfterSpecException
 import io.kotest.matchers.booleans.shouldBeTrue
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.types.shouldBeInstanceOf
@@ -45,7 +45,7 @@ class AfterSpecListenerTest : FunSpec() {
             .withClasses(MyErrorSpec2::class)
             .launch()
          collector.specs.size shouldBe 1
-         collector.specs[MyErrorSpec2::class]!!.shouldBeInstanceOf<AfterSpecException>()
+         collector.specs[MyErrorSpec2::class]!!.shouldBeInstanceOf<ExtensionException.AfterSpecException>()
          collector.tests.size shouldBe 1
       }
 
@@ -77,7 +77,7 @@ class AfterSpecListenerTest : FunSpec() {
             .withClasses(InlineAfterSpecError::class)
             .launch()
          collector.specs.size.shouldBe(1)
-         collector.specs[InlineAfterSpecError::class]!!.shouldBeInstanceOf<AfterSpecException>()
+         collector.specs[InlineAfterSpecError::class]!!.shouldBeInstanceOf<ExtensionException.AfterSpecException>()
       }
    }
 }

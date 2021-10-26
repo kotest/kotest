@@ -1,19 +1,6 @@
 package io.kotest.engine.errors
 
-import io.kotest.engine.project.AfterProjectException
-import io.kotest.engine.project.BeforeProjectException
-import io.kotest.engine.spec.AfterSpecException
-import io.kotest.engine.spec.BeforeSpecException
-import io.kotest.engine.test.AfterAnyException
-import io.kotest.engine.test.AfterContainerException
-import io.kotest.engine.test.AfterEachException
-import io.kotest.engine.test.AfterInvocationException
-import io.kotest.engine.test.AfterTestException
-import io.kotest.engine.test.BeforeAnyException
-import io.kotest.engine.test.BeforeContainerException
-import io.kotest.engine.test.BeforeEachException
-import io.kotest.engine.test.BeforeInvocationException
-import io.kotest.engine.test.BeforeTestException
+import io.kotest.engine.extensions.ExtensionException
 
 /**
  * Given a callback exception, will return an appropriate test name for a placeholder error, as
@@ -31,20 +18,22 @@ object ExtensionExceptionExtractor {
    fun resolve(t: Throwable): Pair<String, Throwable> {
       val cause = t.cause ?: t
       val name = when (t) {
-         is BeforeProjectException -> "Before Project Error"
-         is AfterProjectException -> "After Project Error"
-         is BeforeTestException -> "Before Test Error"
-         is AfterTestException -> "After Test Error"
-         is BeforeEachException -> "Before Each Error"
-         is AfterEachException -> "After Each Error"
-         is BeforeContainerException -> "Before Container Error"
-         is AfterContainerException -> "After Container Error"
-         is BeforeAnyException -> "Before Any Error"
-         is AfterAnyException -> "After Any Error"
-         is BeforeInvocationException -> "Before Invocation Error"
-         is AfterInvocationException -> "After Invocation Error"
-         is BeforeSpecException -> "Before Spec Error"
-         is AfterSpecException -> "After Spec Error"
+         is ExtensionException -> when (t) {
+            is ExtensionException.BeforeProjectException -> "Before Project Error"
+            is ExtensionException.AfterProjectException -> "After Project Error"
+            is ExtensionException.BeforeTestException -> "Before Test Error"
+            is ExtensionException.AfterTestException -> "After Test Error"
+            is ExtensionException.BeforeEachException -> "Before Each Error"
+            is ExtensionException.AfterEachException -> "After Each Error"
+            is ExtensionException.BeforeContainerException -> "Before Container Error"
+            is ExtensionException.AfterContainerException -> "After Container Error"
+            is ExtensionException.BeforeAnyException -> "Before Any Error"
+            is ExtensionException.AfterAnyException -> "After Any Error"
+            is ExtensionException.BeforeInvocationException -> "Before Invocation Error"
+            is ExtensionException.AfterInvocationException -> "After Invocation Error"
+            is ExtensionException.BeforeSpecException -> "Before Spec Error"
+            is ExtensionException.AfterSpecException -> "After Spec Error"
+         }
          else -> t::class.simpleName ?: "<error>"
       }
       return Pair(name, cause)
