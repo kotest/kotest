@@ -6,14 +6,9 @@ import io.kotest.core.extensions.SpecExtension
 import io.kotest.core.factory.TestFactory
 import io.kotest.core.listeners.FinalizeSpecListener
 import io.kotest.core.listeners.ProjectListener
-import io.kotest.core.names.TestName
-import io.kotest.core.sourceRef
 import io.kotest.core.spec.style.scopes.RootContext
 import io.kotest.core.test.TestCase
-import io.kotest.core.test.TestContext
 import io.kotest.core.test.TestResult
-import io.kotest.core.test.TestType
-import io.kotest.core.test.config.ResolvedTestConfig
 import kotlin.reflect.KClass
 
 /**
@@ -100,31 +95,4 @@ abstract class DslDrivenSpec : Spec(), RootContext {
          }
       })
    }
-
-   /**
-    * Adds a new root-level [TestCase] to this [Spec].
-    */
-   override fun addTest(name: TestName, test: suspend TestContext.() -> Unit, config: ResolvedTestConfig, type: TestType) {
-      rootTests = rootTests + RootTest(
-         name = name,
-         test = test,
-         source = sourceRef(),
-         type = type,
-         config = null, // TODO(),
-         disabled = false,
-         factoryId = null,
-      )
-   }
-//
-//   /**
-//    * Adds a [RootTest] to this [Spec].
-//    */
-//   private fun addRootTest(testCase: TestCase) {
-//      val uniqueName = UniqueNames.unique(
-//         testCase.name.testName,
-//         rootTestCases.map { it.name.testName }.toSet()
-//      )
-//      val tc = if (uniqueName == null) testCase else testCase.copy(name = testCase.name.copy(testName = uniqueName))
-//      rootTestCases = rootTestCases + tc
-//   }
 }

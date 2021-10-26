@@ -5,7 +5,7 @@ import io.kotest.mpp.sysprop
 
 /**
  * On the JVM we can create a stack trace to get the line number.
- * Users can disable the source ref via the system property
+ * Users can disable the source ref via the system property [KotestEngineProperties.disableSourceRef].
  */
 actual fun sourceRef(): SourceRef {
    if (sysprop(KotestEngineProperties.disableSourceRef, "false") == "true") return SourceRef(-1, "unknown")

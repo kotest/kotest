@@ -36,7 +36,9 @@ object KotestEngineProperties {
 
    /**
     * If set to true, then source ref's will not be created for test cases.
-    * This may reduce functionality (for example if using the intellij plugin).
+    * This may speed up builds (as the engine will not need to create stack traces to
+    * generate line numbers) but will also reduce functionality in the intellij plugin
+    * (by limiting the ability to drill directly into the test inside a file).
     */
    const val disableSourceRef = "kotest.framework.sourceref.disable"
 

@@ -9,7 +9,6 @@ import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestContext
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestType
-import io.kotest.core.test.config.ResolvedTestConfig
 import io.kotest.mpp.unwrapIfReflectionCall
 import kotlin.reflect.KClass
 import kotlin.reflect.KFunction
@@ -20,13 +19,6 @@ import kotlin.reflect.jvm.isAccessible
 typealias Test = AnnotationSpec.Test
 
 abstract class AnnotationSpec : Spec() {
-
-   override fun addTest(
-      name: TestName,
-      test: suspend TestContext.() -> Unit,
-      config: ResolvedTestConfig,
-      type: TestType
-   ) = error("AnnotationSpec does not support dynamically adding tests")
 
    override fun beforeSpec(spec: Spec) {
       executeBeforeSpecFunctions()

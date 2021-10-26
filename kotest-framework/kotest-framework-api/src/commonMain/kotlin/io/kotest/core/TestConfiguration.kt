@@ -6,7 +6,6 @@ import io.kotest.common.SoftDeprecated
 import io.kotest.core.extensions.Extension
 import io.kotest.core.extensions.TestCaseExtension
 import io.kotest.core.listeners.TestListener
-import io.kotest.core.names.TestName
 import io.kotest.core.spec.AfterAny
 import io.kotest.core.spec.AfterContainer
 import io.kotest.core.spec.AfterEach
@@ -23,10 +22,8 @@ import io.kotest.core.spec.Spec
 import io.kotest.core.spec.TestCaseExtensionFn
 import io.kotest.core.test.AssertionMode
 import io.kotest.core.test.TestCase
-import io.kotest.core.test.TestContext
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestType
-import io.kotest.core.test.config.ResolvedTestConfig
 import io.kotest.core.test.config.TestCaseConfig
 import kotlin.js.JsName
 
@@ -146,13 +143,6 @@ abstract class TestConfiguration {
       _autoCloseables = listOf(closeable) + _autoCloseables
       return closeable
    }
-
-   abstract fun addTest(
-      name: TestName,
-      test: suspend TestContext.() -> Unit,
-      config: ResolvedTestConfig,
-      type: TestType
-   )
 
    /**
     * Registers a callback to be executed before every [TestCase].

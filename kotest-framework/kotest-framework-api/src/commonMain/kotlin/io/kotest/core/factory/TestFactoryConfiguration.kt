@@ -1,14 +1,8 @@
 package io.kotest.core.factory
 
 import io.kotest.core.TestConfiguration
-import io.kotest.core.names.TestName
-import io.kotest.core.sourceRef
 import io.kotest.core.spec.RootTest
 import io.kotest.core.spec.style.scopes.RootContext
-import io.kotest.core.test.TestCase
-import io.kotest.core.test.TestContext
-import io.kotest.core.test.TestType
-import io.kotest.core.test.config.ResolvedTestConfig
 
 /**
  * A [TestFactoryConfiguration] extends [TestConfiguration] with the ability to register
@@ -41,25 +35,4 @@ abstract class TestFactoryConfiguration : TestConfiguration(), RootContext {
    fun include(factory: TestFactory) {
       factory.tests.forEach { add(it) }
    }
-
-   /**
-    * Adds a new [RootTest] to this factory. When this factory is included
-    * into a [Spec] these tests will be materialized as [TestCase]s.
-    */
-   override fun addTest(
-      name: TestName,
-      test: suspend TestContext.() -> Unit,
-      config: ResolvedTestConfig,
-      type: TestType,
-   ) = add(
-      RootTest(
-         name = name,
-         test = test,
-         config = null, // todo thread config
-         type = type,
-         source = sourceRef(),
-         disabled = false, // todo thread disabled
-         factoryId = factoryId,
-      )
-   )
 }
