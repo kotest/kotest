@@ -46,7 +46,6 @@ data class UnresolvedTestConfig(
     */
    val tags: Set<Tag>? = null,
 
-   @Deprecated("Listeners subclass Extensions. Use the extensions variable for both listeners and extensions. Deprecated since 5.0")
    val listeners: List<TestListener>? = null,
 
    val extensions: List<TestCaseExtension>? = null,

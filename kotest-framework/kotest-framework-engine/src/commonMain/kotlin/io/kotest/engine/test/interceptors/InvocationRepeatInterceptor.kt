@@ -19,14 +19,18 @@ internal class InvocationRepeatInterceptor(
    override suspend fun intercept(
       test: suspend (TestCase, TestContext) -> TestResult
    ): suspend (TestCase, TestContext) -> TestResult = { testCase, context ->
-      replay(
-         testCase.config.invocations,
-         testCase.config.threads,
-         { TestExtensions(registry).beforeInvocation(testCase, it) },
-         { TestExtensions(registry).afterInvocation(testCase, it) }) {
+      if (testCase.config.invocations < 2) {
          test(testCase, context)
+      } else {
+         replay(
+            testCase.config.invocations,
+            testCase.config.threads,
+            { TestExtensions(registry).beforeInvocation(testCase, it) },
+            { TestExtensions(registry).afterInvocation(testCase, it) }) {
+            test(testCase, context)
+         }
+         TestResult.Success(timeMark.elapsedNow())
       }
-      TestResult.Success(timeMark.elapsedNow())
    }
 }
 

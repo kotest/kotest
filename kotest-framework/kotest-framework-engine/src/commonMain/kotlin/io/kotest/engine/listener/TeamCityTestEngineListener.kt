@@ -6,6 +6,7 @@ import io.kotest.core.names.DisplayNameFormatter
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestType
+import io.kotest.engine.errors.ExtensionExceptionExtractor
 import io.kotest.engine.interceptors.EngineContext
 import io.kotest.engine.teamcity.Locations
 import io.kotest.engine.teamcity.TeamCityMessageBuilder
@@ -105,48 +106,50 @@ class TeamCityTestEngineListener(
    override suspend fun specFinished(kclass: KClass<*>, results: Map<TestCase, TestResult>) {}
 
    override suspend fun specExit(kclass: KClass<*>, t: Throwable?) {
+
       // we must start the test if it wasn't already started
       if (!started.contains(kclass))
          start(kclass)
 
-      if (t != null) {
+      when (t) {
+         null -> finish(kclass, null)
+         else -> {
+            val (placeholder, cause) = ExtensionExceptionExtractor.resolve(t)
 
-         val dummyTestName = "<error>"
+            val msg = TeamCityMessageBuilder
+               .testStarted(prefix, placeholder)
+               .id(placeholder)
+               .parent(kclass.toDescriptor().path().value)
+               .testType("Test")
+               .build()
 
-         val msg = TeamCityMessageBuilder
-            .testStarted(prefix, dummyTestName)
-            .id(dummyTestName)
-            .parent(kclass.toDescriptor().path().value)
-            .testType("Test")
-            .build()
+            println(msg)
 
-         println(msg)
+            // we must print out the stack trace in between the dummy, so it appears when you click on the test name
+            cause.printStackTrace()
 
-         // we must print out the stack trace in between the dummy, so it appears when you click on the test name
-         t.printStackTrace()
+            val msg2 = TeamCityMessageBuilder
+               .testFailed(prefix, placeholder)
+               .id(placeholder)
+               .parent(kclass.toDescriptor().path().value)
+               .withException(cause)
+               .testType("Test")
+               .build()
 
-         val msg2 = TeamCityMessageBuilder
-            .testFailed(prefix, dummyTestName)
-            .id(dummyTestName)
-            .parent(kclass.toDescriptor().path().value)
-            .withException(t)
-            .testType("Test")
-            .build()
+            println(msg2)
 
-         println(msg2)
+            val msg3 = TeamCityMessageBuilder
+               .testFinished(prefix, placeholder)
+               .id(placeholder)
+               .parent(kclass.toDescriptor().path().value)
+               .testType("Test")
+               .build()
 
-         val msg3 = TeamCityMessageBuilder
-            .testFinished(prefix, dummyTestName)
-            .id(dummyTestName)
-            .parent(kclass.toDescriptor().path().value)
-            .testType("Test")
-            .withException(t)
-            .build()
+            println(msg3)
 
-         println(msg3)
-
+            finish(kclass, cause)
+         }
       }
-      finish(kclass, t)
    }
 
    override suspend fun specIgnored(kclass: KClass<*>) {}

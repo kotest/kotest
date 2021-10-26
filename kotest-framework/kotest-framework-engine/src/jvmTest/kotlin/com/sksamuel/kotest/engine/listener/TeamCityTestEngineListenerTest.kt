@@ -66,9 +66,9 @@ class TeamCityTestEngineListenerTest : FunSpec() {
             listener.specExit(kclass, Exception("whip!"))
          }
          out.shouldContain("""testcity[testSuiteStarted name='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest' id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest' locationHint='kotest://com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest:1' test_type='spec']""")
-         out.shouldContain("""testcity[testStarted name='<error>' id='<error>' parent_id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest' test_type='test']""")
-         out.shouldContain("""testcity[testFailed name='<error>' id='<error>' parent_id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest' message='whip!' details='java.lang.Exception:""")
-         out.shouldContain("""testcity[testFinished name='<error>' id='<error>' parent_id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest' test_type='test' message='whip!' details='java.lang.Exception""")
+         out.shouldContain("""testcity[testStarted name='Exception' id='Exception' parent_id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest' test_type='test']""")
+         out.shouldContain("""testcity[testFailed name='Exception' id='Exception' parent_id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest' message='whip!' details='java.lang.Exception:""")
+         out.shouldContain("""testcity[testFinished name='Exception' id='Exception' parent_id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest' test_type='test'""")
          out.shouldContain("""testcity[testSuiteFinished name='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest' id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest' locationHint='kotest://com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest:1' result_status='Error' test_type='spec']""")
       }
 

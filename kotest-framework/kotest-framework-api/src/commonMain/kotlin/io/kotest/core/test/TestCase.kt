@@ -4,6 +4,7 @@ import io.kotest.core.SourceRef
 import io.kotest.core.descriptors.Descriptor
 import io.kotest.core.factory.FactoryId
 import io.kotest.core.names.TestName
+import io.kotest.core.sourceRef
 import io.kotest.core.spec.Spec
 import io.kotest.core.test.config.ResolvedTestConfig
 
@@ -44,7 +45,7 @@ data class TestCase(
    // a closure of the test function
    val test: suspend TestContext.() -> Unit,
    // a reference to the source code where this test case was defined
-   val source: SourceRef,
+   val source: SourceRef = sourceRef(),
    // the type specifies if this test case is permitted to contain nested tests (container)
    val type: TestType,
    // resolved config at runtime for this test
@@ -54,9 +55,17 @@ data class TestCase(
    // the parent test case for this test at runtime, or null
    val parent: TestCase? = null,
 ) {
+
    @Deprecated("Use testCase.name or testCase.descriptor. This was deprecated in 5.0.")
    val displayName: String = descriptor.id.value
 }
+
+/**
+ * Returns true if this test is focused.
+ *
+ * A focused test case is one which is defined at the top level and has a f: prefix
+ */
+fun TestCase.isFocused() = this.parent == null && name.focus
 
 /**
  * Returns true if this descriptor represents a root test case.
