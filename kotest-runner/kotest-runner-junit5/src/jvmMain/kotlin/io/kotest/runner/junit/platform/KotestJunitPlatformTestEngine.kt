@@ -3,6 +3,7 @@ package io.kotest.runner.junit.platform
 import io.kotest.common.KotestInternal
 import io.kotest.core.config.Configuration
 import io.kotest.core.descriptors.toDescriptor
+import io.kotest.core.extensions.Extension
 import io.kotest.core.filter.TestFilter
 import io.kotest.core.filter.TestFilterResult
 import io.kotest.core.spec.Spec
@@ -65,6 +66,13 @@ class KotestJunitPlatformTestEngine : TestEngine {
             )
          )
       )
+
+      request.configurationParameters.get("kotest.extensions").orElseGet { "" }
+         .split(',')
+         .map { it.trim() }
+         .filter { it.isNotBlank() }
+         .map { Class.forName(it).newInstance() as Extension }
+         .forEach { configuration.registry().add(it) }
 
       TestEngineLauncher(listener)
          .withClasses(root.classes)

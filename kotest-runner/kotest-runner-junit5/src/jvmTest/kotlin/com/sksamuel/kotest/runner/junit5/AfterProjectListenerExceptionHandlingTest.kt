@@ -1,30 +1,30 @@
 package com.sksamuel.kotest.runner.junit5
 
-import io.kotest.core.config.configuration
 import io.kotest.core.listeners.AfterProjectListener
-import io.kotest.core.listeners.ProjectListener
-import io.kotest.core.spec.Isolate
 import io.kotest.core.spec.style.FunSpec
 import org.junit.platform.engine.discovery.DiscoverySelectors
 import org.junit.platform.testkit.engine.EngineTestKit
 
-@Isolate
+class BashAfterProjectListener : AfterProjectListener {
+   override suspend fun afterProject() {
+      error("bash!")
+   }
+}
+
+class WhackAfterProjectListener : AfterProjectListener {
+   override suspend fun afterProject() {
+      error("whack!")
+   }
+}
+
 class AfterProjectListenerExceptionHandlingTest : FunSpec({
 
-   test("!an AfterProjectListenerException should add marker test") {
-
-      val ext = object : AfterProjectListener {
-         override suspend fun afterProject() {
-            error("bash!")
-         }
-      }
-
-      configuration.register(ext)
-
+   test("an AfterProjectListenerException should add marker test") {
       EngineTestKit
          .engine("kotest")
          .selectors(DiscoverySelectors.selectClass(AfterProjectListenerExceptionSample::class.java))
          .configurationParameter("allow_private", "true")
+         .configurationParameter("kotest.extensions", "com.sksamuel.kotest.runner.junit5.BashAfterProjectListener")
          .execute()
          .allEvents().apply {
             started().shouldHaveNames(
@@ -53,31 +53,17 @@ class AfterProjectListenerExceptionHandlingTest : FunSpec({
                "After Project Error"
             )
          }
-
-      configuration.deregister(ext)
    }
 
-   test("!multiple AfterProjectListenerException's should add multiple markers tests") {
-
-      val ext1 = object : AfterProjectListener {
-         override suspend fun afterProject() {
-            error("whack")
-         }
-      }
-
-      val ext2 = object : ProjectListener {
-         override suspend fun afterProject() {
-            error("zamm")
-         }
-      }
-
-      configuration.register(ext1)
-      configuration.register(ext2)
-
+   test("multiple AfterProjectListenerException's should add multiple markers tests") {
       EngineTestKit
          .engine("kotest")
          .selectors(DiscoverySelectors.selectClass(AfterProjectListenerExceptionSample::class.java))
          .configurationParameter("allow_private", "true")
+         .configurationParameter(
+            "kotest.extensions",
+            "com.sksamuel.kotest.runner.junit5.BashAfterProjectListener,com.sksamuel.kotest.runner.junit5.WhackAfterProjectListener"
+         )
          .execute()
          .allEvents().apply {
             started().shouldHaveNames(
@@ -109,9 +95,6 @@ class AfterProjectListenerExceptionHandlingTest : FunSpec({
                "After Project Error_1"
             )
          }
-
-      configuration.deregister(ext1)
-      configuration.deregister(ext2)
    }
 })
 
