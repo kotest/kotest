@@ -10,5 +10,8 @@ data class ConfigurationContextElement(val configuration: Configuration) :
 }
 
 val TestContext.configuration: Configuration
-   get() = coroutineContext[ConfigurationContextElement]?.configuration
-      ?: error("Configuration is not injected into this TestContext")
+   get() = coroutineContext.configuration
+
+val CoroutineContext.configuration: Configuration
+   get() = get(ConfigurationContextElement)?.configuration
+      ?: error("Configuration is not injected into this CoroutineContext")
