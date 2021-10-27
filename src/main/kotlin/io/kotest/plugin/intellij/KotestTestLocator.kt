@@ -10,11 +10,12 @@ import com.intellij.psi.PsiFile
 import com.intellij.psi.PsiManager
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.util.ClassUtil
+import com.intellij.util.containers.addIfNotNull
 import io.kotest.plugin.intellij.psi.elementAtLine
 
 /**
  * A parser for location URLs reported by test runners.
- * Kotest reports its location hints as kotest://my.package.classname:line
+ * Kotest reports its location hints as kotest://filename:line
  */
 object KotestTestLocator : SMTestLocator {
 
@@ -30,24 +31,45 @@ object KotestTestLocator : SMTestLocator {
       return virtualFile?.let { manager.findFile(it) }
    }
 
-   override fun getLocation(protocol: String,
-                            path: String,
-                            project: Project,
-                            scope: GlobalSearchScope): List<Location<PsiElement>> {
+   private fun getLocationForFqn(
+      project: Project,
+      scope: GlobalSearchScope,
+      fqn: String,
+      lineNumber: Int
+   ): PsiLocation<PsiElement>? {
+      val psiFile = loadPsiFile(fqn, project, scope)
+      if (psiFile != null) {
+         val element = psiFile.elementAtLine(lineNumber) ?: psiFile
+         return PsiLocation(project, element)
+      }
+      return null
+   }
+
+   override fun getLocation(
+      protocol: String,
+      path: String,
+      project: Project,
+      scope: GlobalSearchScope
+   ): List<Location<PsiElement>> {
       val list = mutableListOf<Location<PsiElement>>()
       if (protocol == Protocol) {
-         val (fqn, line) = path.split(':')
-         val psiFile = loadPsiFile(fqn, project, scope)
-         if (psiFile != null) {
-            val element = psiFile.elementAtLine(line.toInt()) ?: psiFile
-            val location: Location<PsiElement> = PsiLocation(project, element)
-            list.add(location)
+         val tokens = path.split(':')
+         val ident = tokens[0]
+         val lineNumber = tokens.getOrNull(1)?.toIntOrNull()
+         if (lineNumber != null) {
+            val location = when {
+               ident.startsWith("class/") -> getLocationForFqn(project, scope, ident.removePrefix("class/"), lineNumber)
+               ident.startsWith("file/") -> getLocationForFqn(project, scope, ident.removePrefix("file/"), lineNumber)
+               else -> getLocationForFqn(project, scope, ident, lineNumber)
+            }
+            list.addIfNotNull(location)
          }
       }
       return list
    }
 
-   override fun getLocationCacheModificationTracker(project: Project): ModificationTracker = ModificationTracker.EVER_CHANGED
+   override fun getLocationCacheModificationTracker(project: Project): ModificationTracker =
+      ModificationTracker.EVER_CHANGED
 }
 
 

@@ -51,8 +51,8 @@ private fun is420(project: Project): Boolean {
 
 /**
  *
- * In 4.2.1, the launcher is part of engine to accomodate the gradle plugin
- * In 4.2.0, the launcher was in it's own module - io.kotest.framework.launcher
+ * In 4.2.1, the launcher(main method) is part of engine to accommodate the gradle plugin
+ * In 4.2.0, the launcher was in its own module - io.kotest.framework.launcher
  * In 4.1.3, we included the launcher as a separate dependency explicitly
  * In <4.1.3 users were required to add console dependency to the build
  */

@@ -20,11 +20,15 @@ repositories {
 }
 
 
-// useful link for plugin versions https://plugins.jetbrains.com/plugin/6954-kotlin/versions
 // https://jetbrains.org/intellij/sdk/docs/basics/getting_started/build_number_ranges.html
-// json output of versions: https://jb.gg/intellij-platform-builds-list
-// json for ultimate https://data.services.jetbrains.com/products?fields=code,name,releases.downloads,releases.version,releases.build,releases.type&code=IIU
-// when releasing for an EAP, look at snapshots: https://www.jetbrains.com/intellij-repository/snapshots and use eg 211-EAP-SNAPSHOT
+// useful link for kotlin plugin versions:
+//    https://plugins.jetbrains.com/plugin/6954-kotlin/versions
+// json output of versions:
+//    https://jb.gg/intellij-platform-builds-list
+// json output but restricted to IDEA ultimate:
+//    https://data.services.jetbrains.com/products?fields=code,name,releases.downloads,releases.version,releases.build,releases.type&code=IIU
+// when releasing for an EAP, look at snapshots and use eg 211-EAP-SNAPSHOT:
+//    https://www.jetbrains.com/intellij-repository/snapshots
 val plugins = listOf(
    plugin.PluginDescriptor(
       since = "193.4099.13",
@@ -56,7 +60,7 @@ val plugins = listOf(
    ),
    plugin.PluginDescriptor(
       since = "211.6693.111", // this version is 2021.1
-      until = "213.*",
+      until = "212.*",
       sdkVersion = "IC-2021.1",
       sourceFolder = "IC-211",
       deps = listOf("java", "org.jetbrains.plugins.gradle", "org.jetbrains.kotlin:211-1.4.21-release-IJ6693.10")
