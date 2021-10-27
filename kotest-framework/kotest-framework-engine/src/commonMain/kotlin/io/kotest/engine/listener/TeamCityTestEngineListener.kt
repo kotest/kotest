@@ -154,8 +154,7 @@ class TeamCityTestEngineListener(
                   is MultipleExceptions -> t.causes.forEach { insertPlaceholder(it, testCase.descriptor) }
                   else -> insertPlaceholder(t, testCase.descriptor)
                }
-               if (result.isErrorOrFailure)
-                  finishTestSuite(testCase, result)
+               finishTestSuite(testCase, result)
             }
          }
       }
