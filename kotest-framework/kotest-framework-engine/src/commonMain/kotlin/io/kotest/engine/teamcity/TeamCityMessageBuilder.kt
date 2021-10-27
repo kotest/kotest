@@ -125,8 +125,9 @@ class TeamCityMessageBuilder(
    fun type(value: String): TeamCityMessageBuilder = addAttribute(Attributes.TYPE, value.trim())
    fun actual(value: String): TeamCityMessageBuilder = addAttribute(Attributes.ACTUAL, value.trim())
    fun expected(value: String): TeamCityMessageBuilder = addAttribute(Attributes.EXPECTED, value.trim())
-   fun locationHint(value: String): TeamCityMessageBuilder = addAttribute(Attributes.LOCATION_HINT, value)
    fun result(value: TestResult): TeamCityMessageBuilder = addAttribute(Attributes.RESULT_STATUS, value.name)
+   fun locationHint(value: String?): TeamCityMessageBuilder =
+      if (value != null) addAttribute(Attributes.LOCATION_HINT, value) else this
 
    // note it seems that not attaching a message renders test failed irrelevant
    fun withException(error: Throwable?): TeamCityMessageBuilder {
