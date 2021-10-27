@@ -12,7 +12,7 @@ import io.kotest.plugin.intellij.run.KotestRunnableState
 class RerunFailedTestsAction(consoleView: ConsoleView,
                              props: KotestTestConsoleProperties) : JavaRerunFailedTestsAction(consoleView, props) {
 
-   override fun getRunProfile(env: ExecutionEnvironment): MyRunProfile? {
+   override fun getRunProfile(env: ExecutionEnvironment): MyRunProfile {
       val configuration = myConsoleProperties.configuration as KotestConfiguration
       val run = KotestRunnableState(env, configuration)
       return object : MyRunProfile(configuration) {
@@ -22,7 +22,7 @@ class RerunFailedTestsAction(consoleView: ConsoleView,
             return if (scope == null) Module.EMPTY_ARRAY else scope.modulesToCompile
          }
 
-         override fun getState(executor: Executor, environment: ExecutionEnvironment): RunProfileState? {
+         override fun getState(executor: Executor, environment: ExecutionEnvironment): RunProfileState {
             return run
          }
       }

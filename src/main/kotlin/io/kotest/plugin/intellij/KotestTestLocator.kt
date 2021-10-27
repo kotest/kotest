@@ -8,26 +8,27 @@ import com.intellij.openapi.util.ModificationTracker
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.psi.PsiManager
+import com.intellij.psi.search.FilenameIndex
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.util.ClassUtil
-import com.intellij.util.containers.addIfNotNull
 import io.kotest.plugin.intellij.psi.elementAtLine
+import io.kotest.plugin.intellij.psi.isTestFile
 
 /**
  * A parser for location URLs reported by test runners.
+ *
  * Kotest reports its location hints as kotest://filename:line
  */
 object KotestTestLocator : SMTestLocator {
-
-   private const val Protocol = Constants.LocatorProtocol
 
    /**
     * Returns the PSI file that contains the class indicated by the fully qualified name.
     */
    private fun loadPsiFile(fqn: String, project: Project, scope: GlobalSearchScope): PsiFile? {
       val manager = PsiManager.getInstance(project)
-      val lightClass = ClassUtil.findPsiClass(manager, fqn, null, true, scope)
-      val virtualFile = lightClass?.containingFile?.virtualFile
+      // this is better than JavaPsiFacade as it will handle inner classes that use $
+      val psiClass = ClassUtil.findPsiClass(manager, fqn, null, true, scope)
+      val virtualFile = psiClass?.containingFile?.virtualFile
       return virtualFile?.let { manager.findFile(it) }
    }
 
@@ -40,10 +41,25 @@ object KotestTestLocator : SMTestLocator {
       val psiFile = loadPsiFile(fqn, project, scope)
       if (psiFile != null) {
          val element = psiFile.elementAtLine(lineNumber) ?: psiFile
-         return PsiLocation(project, element)
+         return element.toPsiLocation()
       }
       return null
    }
+
+   private fun getLocationForFile(
+      project: Project,
+      scope: GlobalSearchScope,
+      name: String,
+      lineNumber: Int
+   ): PsiLocation<PsiElement>? {
+      return FilenameIndex
+         .getFilesByName(project, name, scope)
+         .firstOrNull { it.isTestFile() }
+         ?.elementAtLine(lineNumber)
+         ?.toPsiLocation()
+   }
+
+   private fun PsiElement.toPsiLocation() = PsiLocation(project, this)
 
    override fun getLocation(
       protocol: String,
@@ -51,21 +67,42 @@ object KotestTestLocator : SMTestLocator {
       project: Project,
       scope: GlobalSearchScope
    ): List<Location<PsiElement>> {
-      val list = mutableListOf<Location<PsiElement>>()
-      if (protocol == Protocol) {
-         val tokens = path.split(':')
-         val ident = tokens[0]
-         val lineNumber = tokens.getOrNull(1)?.toIntOrNull()
-         if (lineNumber != null) {
-            val location = when {
-               ident.startsWith("class/") -> getLocationForFqn(project, scope, ident.removePrefix("class/"), lineNumber)
-               ident.startsWith("file/") -> getLocationForFqn(project, scope, ident.removePrefix("file/"), lineNumber)
-               else -> getLocationForFqn(project, scope, ident, lineNumber)
-            }
-            list.addIfNotNull(location)
-         }
+      return when (protocol) {
+         Constants.FileLocatorProtocol -> parseFile(project, scope, path)
+         Constants.ClassLocatorProtocol -> parseClass(project, scope, path)
+         Constants.OldLocatorProtocol -> parseClass(project, scope, path)
+         else -> emptyList()
       }
-      return list
+   }
+
+   override fun getLocation(
+      protocol: String,
+      path: String,
+      metainfo: String?,
+      project: Project,
+      scope: GlobalSearchScope
+   ): MutableList<Location<PsiElement>> {
+      return super.getLocation(protocol, path, metainfo, project, scope)
+   }
+
+   private fun parseFile(project: Project, scope: GlobalSearchScope, path: String): List<Location<PsiElement>> {
+      val tokens = path.split(':')
+      val ident = tokens[0]
+      val lineNumber = tokens.getOrNull(1)?.toIntOrNull()
+      return if (lineNumber == null)
+         emptyList()
+      else
+         listOfNotNull(getLocationForFile(project, scope, ident, lineNumber))
+   }
+
+   private fun parseClass(project: Project, scope: GlobalSearchScope, path: String): List<Location<PsiElement>> {
+      val tokens = path.split(':')
+      val ident = tokens[0]
+      val lineNumber = tokens.getOrNull(1)?.toIntOrNull()
+      return if (lineNumber == null)
+         emptyList()
+      else
+         listOfNotNull(getLocationForFqn(project, scope, ident, lineNumber))
    }
 
    override fun getLocationCacheModificationTracker(project: Project): ModificationTracker =
