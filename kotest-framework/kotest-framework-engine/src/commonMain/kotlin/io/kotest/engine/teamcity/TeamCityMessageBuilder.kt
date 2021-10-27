@@ -83,7 +83,6 @@ class TeamCityMessageBuilder(
       const val ACTUAL = "actual"
       const val EXPECTED = "expected"
       const val LOCATION_HINT = "locationHint"
-      const val LOCATION = "location"
       const val NAME = "name"
       const val DURATION = "duration"
       const val TYPE = "type"
@@ -91,7 +90,6 @@ class TeamCityMessageBuilder(
       const val MESSAGE = "message"
       const val PARENT_ID = "parent_id"
       const val ID = "id"
-      const val TEST_TYPE = "test_type"
       const val RESULT_STATUS = "result_status"
    }
 
@@ -130,9 +128,6 @@ class TeamCityMessageBuilder(
 
    fun locationHint(value: String?): TeamCityMessageBuilder =
       if (value != null) addAttribute(Attributes.LOCATION_HINT, value) else this
-
-   fun location(value: String?): TeamCityMessageBuilder =
-      if (value != null) addAttribute(Attributes.LOCATION, value) else this
 
    // note it seems that not attaching a message renders test failed irrelevant
    fun withException(error: Throwable?): TeamCityMessageBuilder {

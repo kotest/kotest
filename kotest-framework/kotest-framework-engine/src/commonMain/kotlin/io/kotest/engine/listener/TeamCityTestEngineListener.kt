@@ -210,7 +210,7 @@ class TeamCityTestEngineListener(
          .id(testCase.descriptor.path().value)
          .parent(testCase.descriptor.parent.path().value)
          // note use location for tests, location hint for test suites
-         .location(Locations.location(testCase.source))
+         .locationHint(Locations.location(testCase.source))
          .message(result.reason)
          .result(result)
          .build()
@@ -226,7 +226,7 @@ class TeamCityTestEngineListener(
          .id(testCase.descriptor.path().value)
          .parent(testCase.descriptor.parent.path().value)
          // note use location for tests, location hint for test suites
-         .location(Locations.location(testCase.source))
+         .locationHint(Locations.location(testCase.source))
          .build()
       println(msg)
    }
@@ -241,7 +241,7 @@ class TeamCityTestEngineListener(
          .parent(testCase.descriptor.parent.path().value)
          .duration(result.duration)
          // note use location for tests, location hint for test suites
-         .location(Locations.location(testCase.source))
+         .locationHint(Locations.location(testCase.source))
          .withException(result.errorOrNull)
          .result(result)
          .build()
@@ -258,7 +258,7 @@ class TeamCityTestEngineListener(
          .parent(testCase.descriptor.parent.path().value)
          .duration(result.duration)
          // note use location for tests, location hint for test suites
-         .location(Locations.location(testCase.source))
+         .locationHint(Locations.location(testCase.source))
          .result(result)
          .build()
       println(msg)
