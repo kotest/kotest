@@ -16,7 +16,7 @@ Better to fail fast.
 class MyTests : ShouldSpec() {
   init {
     should("pass for 60 seconds") {
-      continually(60.seconds) {
+      continually(Duration.seconds(60)) {
         // code here that should succeed and continue to succeed for 60 seconds
       }
     }
@@ -30,7 +30,7 @@ The function passed to the `continually` block is executed every 10 milliseconds
 class MyTests: ShouldSpec() {
   init {
     should("pass for 60 seconds") {
-      continually(60.seconds, 5.seconds) {
+      continually(Duration.seconds(60), Duration.seconds(5)) {
         // code here that should succeed and continue to succeed for 60 seconds
       }
     }
