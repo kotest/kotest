@@ -53,12 +53,6 @@ interface TestEngineListener {
    suspend fun specInactive(kclass: KClass<*>, results: Map<TestCase, TestResult>) {}
 
    /**
-    * Invoked each time an instance of a [Spec] is created.
-    * A spec may be created once per class, or once per [TestCase].
-    */
-   suspend fun specInstantiated(spec: Spec) {}
-
-   /**
     * Invoked if the spec proceed to testing.
     * // todo remove ??
     */
