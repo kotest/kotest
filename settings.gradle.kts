@@ -47,7 +47,6 @@ include("kotest-assertions:kotest-assertions-shared")
 // the core assertions that cover things like collections, strings, etc
 // users should depend on this if they want to use kotest assertions in tests
 include("kotest-assertions:kotest-assertions-core")
-include("kotest-assertions:kotest-assertions-compiler")
 include("kotest-assertions:kotest-assertions-json")
 include("kotest-assertions:kotest-assertions-sql")
 
