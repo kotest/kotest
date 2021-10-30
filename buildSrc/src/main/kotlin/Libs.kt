@@ -22,10 +22,6 @@ object Libs {
       const val jsonpath = "com.jayway.jsonpath:json-path:_"
    }
 
-   object Tschuchortdev {
-      const val kotlinCompileTesting = "com.github.tschuchortdev:kotlin-compile-testing:_"
-   }
-
    object JUnit4 {
       const val junit4 = "junit:junit:_"
    }
