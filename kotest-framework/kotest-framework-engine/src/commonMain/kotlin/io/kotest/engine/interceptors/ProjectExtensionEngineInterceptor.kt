@@ -6,6 +6,10 @@ import io.kotest.core.extensions.ProjectExtension
 import io.kotest.engine.EngineResult
 import io.kotest.engine.TestSuite
 
+/**
+ * An [EngineInterceptor] that invokes any [ProjectExtension]s allowing them the chance
+ * to change the [ProjectContext] before the engine begins execution.
+ */
 @KotestInternal
 internal object ProjectExtensionEngineInterceptor : EngineInterceptor {
 
