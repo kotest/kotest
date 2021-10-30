@@ -4,7 +4,14 @@ import io.kotest.assertions.assertSoftly
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.assertions.throwables.shouldThrowAny
 import io.kotest.core.spec.style.WordSpec
-import io.kotest.inspectors.*
+import io.kotest.inspectors.forAll
+import io.kotest.inspectors.forAny
+import io.kotest.inspectors.forAtLeastOne
+import io.kotest.inspectors.forAtMostOne
+import io.kotest.inspectors.forExactly
+import io.kotest.inspectors.forNone
+import io.kotest.inspectors.forOne
+import io.kotest.inspectors.forSome
 import io.kotest.matchers.comparables.beGreaterThan
 import io.kotest.matchers.comparables.beLessThan
 import io.kotest.matchers.ints.shouldBeGreaterThan
@@ -32,6 +39,19 @@ class InspectorsTest : WordSpec() {
          }
          "pass if all elements of a collection pass" {
             list.forAll {
+               it.shouldBeGreaterThan(0)
+            }
+         }
+         "return itself" {
+            array.forAll {
+               it.shouldBeGreaterThan(0)
+            }.forAll {
+               it.shouldBeGreaterThan(0)
+            }
+
+            list.forAll {
+               it.shouldBeGreaterThan(0)
+            }.forAll {
                it.shouldBeGreaterThan(0)
             }
          }
@@ -86,6 +106,18 @@ class InspectorsTest : WordSpec() {
             val items = listOf(1, 2, 3)
             items.forNone {
                if (true) throw NullPointerException()
+            }
+         }
+         "return itself" {
+            list.forNone {
+               it shouldBe 10
+            }.forNone {
+               it shouldBe 10
+            }
+            array.forNone {
+               it shouldBe 10
+            }.forNone {
+               it shouldBe 10
             }
          }
          "fail if one elements passes fn test" {
@@ -147,6 +179,19 @@ The following elements failed:
                it should beGreaterThan(1)
             }
          }
+         "return itself" {
+            list.forSome {
+               it shouldBe 3
+            }.forSome {
+               it shouldBe 3
+            }
+
+            array.forSome {
+               it shouldBe 3
+            }.forSome {
+               it shouldBe 3
+            }
+         }
          "fail if no elements pass test"  {
             shouldThrow<AssertionError> {
                array.forSome {
@@ -200,6 +245,19 @@ The following elements failed:
       "forOne" should {
          "pass if one elements pass test"  {
             list.forOne {
+               it shouldBe 3
+            }
+         }
+         "return itself" {
+            list.forOne {
+               it shouldBe 3
+            }.forOne {
+               it shouldBe 3
+            }
+
+            array.forOne {
+               it shouldBe 3
+            }.forOne {
                it shouldBe 3
             }
          }
@@ -260,6 +318,19 @@ The following elements failed:
          "pass if at least elements pass test"  {
             list.forAny {
                it should beGreaterThan(2)
+            }
+         }
+         "return itself" {
+            list.forAny {
+               it shouldBe 3
+            }.forAny {
+               it shouldBe 3
+            }
+
+            array.forAny {
+               it shouldBe 3
+            }.forAny {
+               it shouldBe 3
             }
          }
          "fail if no elements pass test"  {
