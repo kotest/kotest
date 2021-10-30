@@ -158,7 +158,7 @@ class JUnitTestEngineListener(
       log { "JUnitTestEngineListener: Spec is being flagged as ignored: $kclass" }
       val descriptor: TestDescriptor =
          createDescriptorForSpec(kclass.toDescriptor(), formatter.format(kclass), root)
-      listener.executionSkipped(descriptor, null)
+      listener.executionSkipped(descriptor, reason)
    }
 
    override suspend fun specFinished(kclass: KClass<*>, t: Throwable?) {
