@@ -27,7 +27,5 @@ actual fun sourceRef(): SourceRef {
       fileName != null && frame.lineNumber < 0 -> SourceRef.FileLineSource(fileName, frame.lineNumber)
       fileName != null -> SourceRef.None
       else -> SourceRef.None
-   }.apply {
-      println(this)
    }
 }
