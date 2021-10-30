@@ -56,14 +56,14 @@ class PinnedSpecTestEngineListener(val listener: TestEngineListener) : TestEngin
       }
    }
 
-   override suspend fun specExit(kclass: KClass<*>, t: Throwable?) {
+   override suspend fun specFinished(kclass: KClass<*>, t: Throwable?) {
       if (runningSpec == kclass.toDescriptor().path().value) {
-         listener.specExit(kclass, t)
+         listener.specFinished(kclass, t)
          runningSpec = null
          replay()
       } else {
          queue {
-            specExit(kclass, t)
+            specFinished(kclass, t)
          }
       }
    }
@@ -84,16 +84,6 @@ class PinnedSpecTestEngineListener(val listener: TestEngineListener) : TestEngin
       } else {
          queue {
             specInactive(kclass, results)
-         }
-      }
-   }
-
-   override suspend fun specInstantiationError(kclass: KClass<*>, t: Throwable) {
-      if (runningSpec == kclass.toDescriptor().path().value) {
-         listener.specInstantiationError(kclass, t)
-      } else {
-         queue {
-            specInstantiationError(kclass, t)
          }
       }
    }

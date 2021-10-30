@@ -188,11 +188,7 @@ class JUnitTestEngineListener(
       listener.executionSkipped(descriptor, null)
    }
 
-   override suspend fun specInstantiationError(kclass: KClass<*>, t: Throwable) {
-      instantiationException = t
-   }
-
-   override suspend fun specExit(kclass: KClass<*>, t: Throwable?) {
+   override suspend fun specFinished(kclass: KClass<*>, t: Throwable?) {
       val (name, cause) = if (t == null) Pair("<error>", null) else ExtensionExceptionExtractor.resolve(t)
       when {
          cause == null && ignored -> Unit

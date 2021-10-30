@@ -177,7 +177,7 @@ class EnhancedConsoleTestEngineListener(private val term: TermColors) : Abstract
       println(bold(formatter.format(kclass)))
    }
 
-   override suspend fun specExit(kclass: KClass<*>, t: Throwable?) {
+   override suspend fun specFinished(kclass: KClass<*>, t: Throwable?) {
       if (t != null) {
          errors++
          specsFailed = specsFailed + kclass.toDescriptor()

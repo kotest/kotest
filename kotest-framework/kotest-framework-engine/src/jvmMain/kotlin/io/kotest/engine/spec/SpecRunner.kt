@@ -50,8 +50,5 @@ internal abstract class SpecRunner(
    protected suspend fun createInstance(kclass: KClass<out Spec>): Result<Spec> =
       createAndInitializeSpec(kclass, configuration.registry()).onSuccess {
          runCatching { listener.specInstantiated(it) }
-      }.onFailure {
-         it.printStackTrace()
-         runCatching { listener.specInstantiationError(kclass, it) }
       }
 }

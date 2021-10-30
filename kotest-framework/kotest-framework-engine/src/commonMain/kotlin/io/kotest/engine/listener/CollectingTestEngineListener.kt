@@ -11,14 +11,9 @@ class CollectingTestEngineListener : AbstractTestEngineListener() {
    val tests = concurrentHashMap<TestCase, TestResult>()
    var errors = false
 
-   override suspend fun specExit(kclass: KClass<*>, t: Throwable?) {
+   override suspend fun specFinished(kclass: KClass<*>, t: Throwable?) {
       specs[kclass] = t
       if (t != null) errors = true
-   }
-
-   override suspend fun specInstantiationError(kclass: KClass<*>, t: Throwable) {
-      specs[kclass] = t
-      errors = true
    }
 
    override suspend fun testIgnored(testCase: TestCase, reason: String?) {

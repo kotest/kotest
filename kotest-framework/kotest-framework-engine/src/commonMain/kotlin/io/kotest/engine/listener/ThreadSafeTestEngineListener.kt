@@ -57,21 +57,15 @@ class ThreadSafeTestEngineListener(private val listener: TestEngineListener) : T
       }
    }
 
-   override suspend fun specInstantiationError(kclass: KClass<*>, t: Throwable) {
-      mutex.withLock {
-         listener.specInstantiationError(kclass, t)
-      }
-   }
-
    override suspend fun engineStarted() {
       mutex.withLock {
          listener.engineStarted()
       }
    }
 
-   override suspend fun specExit(kclass: KClass<*>, t: Throwable?) {
+   override suspend fun specFinished(kclass: KClass<*>, t: Throwable?) {
       mutex.withLock {
-         listener.specExit(kclass, t)
+         listener.specFinished(kclass, t)
       }
    }
 

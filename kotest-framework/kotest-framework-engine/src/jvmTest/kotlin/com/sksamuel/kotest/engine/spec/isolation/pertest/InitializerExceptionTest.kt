@@ -95,7 +95,7 @@ class InitializerExceptionTest : WordSpec({
    var error: Throwable? = null
 
    val listener = object :  AbstractTestEngineListener() {
-      override suspend fun specExit(kclass: KClass<*>, t: Throwable?) {
+      override suspend fun specFinished(kclass: KClass<*>, t: Throwable?) {
          if (t != null) error = t
       }
    }

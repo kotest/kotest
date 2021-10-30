@@ -18,9 +18,9 @@ import io.kotest.engine.spec.interceptor.IgnoreNestedSpecStylesInterceptor
 import io.kotest.engine.spec.interceptor.IgnoredSpecInterceptor
 import io.kotest.engine.spec.interceptor.RunIfActiveInterceptor
 import io.kotest.engine.spec.interceptor.SpecEnterInterceptor
-import io.kotest.engine.spec.interceptor.SpecExitInterceptor
 import io.kotest.engine.spec.interceptor.SpecExtensionInterceptor
 import io.kotest.engine.spec.interceptor.SpecFilterInterceptor
+import io.kotest.engine.spec.interceptor.SpecFinishedInterceptor
 import io.kotest.engine.spec.interceptor.SpecRefExtensionInterceptor
 import io.kotest.engine.spec.interceptor.SpecStartedFinishedInterceptor
 import io.kotest.engine.spec.interceptor.SystemPropertySpecFilterInterceptor
@@ -59,7 +59,7 @@ class SpecExecutor(
    private suspend fun referenceInterceptors(ref: SpecRef) {
 
       val interceptors = listOf(
-         SpecExitInterceptor(listener),
+         SpecFinishedInterceptor(listener),
          SpecEnterInterceptor(listener),
          EnabledIfSpecInterceptor(listener, conf.registry()),
          IgnoredSpecInterceptor(listener, conf.registry()),
@@ -72,9 +72,7 @@ class SpecExecutor(
       )
 
       val innerExecute: suspend (SpecRef) -> Map<TestCase, TestResult> = {
-         val spec = createInstance(ref)
-            .onFailure { listener.specAborted(ref.kclass, it) }
-            .getOrThrow()
+         val spec = createInstance(ref).getOrThrow()
          specInterceptors(spec)
       }
 
@@ -112,16 +110,12 @@ class SpecExecutor(
    }
 
    /**
-    * Creates an instance of the given [SpecRef], and notifies of the instantiation event
-    * or error events.
+    * Creates an instance of the given [SpecRef], notifies users of the instantiation event
+    * or instantiation failure, and returns a Result with the error or spec.
     */
    private suspend fun createInstance(ref: SpecRef): Result<Spec> =
       ref.instance(conf.registry())
-         .onFailure {
-            log { "SpecExecutor: instantiation error for ${ref.kclass} $it" }
-            listener.specInstantiationError(ref.kclass, it)
-            extensions.specInstantiationError(ref.kclass, it)
-         }
+         .onFailure { extensions.specInstantiationError(ref.kclass, it) }
          .flatMap { spec -> extensions.specInstantiated(spec).map { spec } }
 }
 

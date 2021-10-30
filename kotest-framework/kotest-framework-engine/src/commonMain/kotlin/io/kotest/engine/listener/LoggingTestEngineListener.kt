@@ -16,7 +16,7 @@ object LoggingTestEngineListener : AbstractTestEngineListener() {
       log { "LoggingTestEngineListener: specEnter '${kclass.bestName()}'" }
    }
 
-   override suspend fun specExit(kclass: KClass<*>, t: Throwable?) {
+   override suspend fun specFinished(kclass: KClass<*>, t: Throwable?) {
       log { "LoggingTestEngineListener: specExit '${kclass.bestName()}' error=$t" }
    }
 

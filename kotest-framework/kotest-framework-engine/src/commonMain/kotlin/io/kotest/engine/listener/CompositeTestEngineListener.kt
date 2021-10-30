@@ -48,12 +48,8 @@ class CompositeTestEngineListener(private val listeners: List<TestEngineListener
       listeners.forEach { it.specInstantiated(spec) }
    }
 
-   override suspend fun specInstantiationError(kclass: KClass<*>, t: Throwable) {
-      listeners.forEach { it.specInstantiationError(kclass, t) }
-   }
-
-   override suspend fun specExit(kclass: KClass<*>, t: Throwable?) {
-      listeners.forEach { it.specExit(kclass, t) }
+   override suspend fun specFinished(kclass: KClass<*>, t: Throwable?) {
+      listeners.forEach { it.specFinished(kclass, t) }
    }
 
    override suspend fun specIgnored(kclass: KClass<*>) {
@@ -62,10 +58,6 @@ class CompositeTestEngineListener(private val listeners: List<TestEngineListener
 
    override suspend fun specEnter(kclass: KClass<*>) {
       listeners.forEach { it.specEnter(kclass) }
-   }
-
-   override suspend fun specAborted(kclass: KClass<*>, t: Throwable) {
-      listeners.forEach { it.specAborted(kclass, t) }
    }
 
    override suspend fun specInactive(kclass: KClass<*>, results: Map<TestCase, TestResult>) {

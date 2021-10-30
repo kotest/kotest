@@ -114,7 +114,7 @@ class TeamCityTestEngineListener(
    // todo remove ??
    override suspend fun specAborted(kclass: KClass<*>, t: Throwable) {}
 
-   override suspend fun specExit(kclass: KClass<*>, t: Throwable?) {
+   override suspend fun specFinished(kclass: KClass<*>, t: Throwable?) {
 
       // we must start the test if it wasn't already started
       if (!started.contains(kclass))

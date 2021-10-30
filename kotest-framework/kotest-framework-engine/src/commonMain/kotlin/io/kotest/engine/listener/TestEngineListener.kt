@@ -59,11 +59,6 @@ interface TestEngineListener {
    suspend fun specInstantiated(spec: Spec) {}
 
    /**
-    * Invoked if an instance of a [Spec] fails to be instantiated.
-    */
-   suspend fun specInstantiationError(kclass: KClass<*>, t: Throwable) {}
-
-   /**
     * Invoked if the spec proceed to testing.
     * // todo remove ??
     */
@@ -83,7 +78,7 @@ interface TestEngineListener {
     * in the spec executor. This callback is invoked after any other interceptors
     * are invoked, and thus will always be called, even if the spec has been skipped.
     */
-   suspend fun specExit(kclass: KClass<*>, t: Throwable?) {}
+   suspend fun specFinished(kclass: KClass<*>, t: Throwable?) {}
 
    /**
     * Invoked if a [TestCase] is about to be executed.

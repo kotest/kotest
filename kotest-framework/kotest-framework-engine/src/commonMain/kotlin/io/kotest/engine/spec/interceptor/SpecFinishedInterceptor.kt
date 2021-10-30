@@ -6,10 +6,12 @@ import io.kotest.core.test.TestResult
 import io.kotest.engine.listener.TestEngineListener
 
 /**
- * A [SpecRefInterceptor] that invokes the specExit callback on the [TestEngineListener].
+ * A [SpecRefInterceptor] that is the final stage in the spec execution pipeline.
+ *
+ * It will invoke [specFinished] on the [TestEngineListener].
  * Any unhandled exception in the spec executor will be passed to this callback.
  */
-internal class SpecExitInterceptor(private val listener: TestEngineListener) : SpecRefInterceptor {
+internal class SpecFinishedInterceptor(private val listener: TestEngineListener) : SpecRefInterceptor {
 
    override suspend fun intercept(
       fn: suspend (SpecRef) -> Map<TestCase, TestResult>
@@ -17,11 +19,11 @@ internal class SpecExitInterceptor(private val listener: TestEngineListener) : S
       runCatching { fn(ref) }
          .fold(
             {
-               listener.specExit(ref.kclass, null)
+               listener.specFinished(ref.kclass, null)
                it
             },
             {
-               listener.specExit(ref.kclass, it)
+               listener.specFinished(ref.kclass, it)
                emptyMap()
             }
          )

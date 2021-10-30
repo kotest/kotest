@@ -72,7 +72,7 @@ class JUnitTestRunnerListenerTest : DescribeSpec({
          listener.testStarted(test2)
          listener.testFinished(test2, createTestResult(0, AssertionError("boom")))
          listener.testFinished(test1, TestResult.success(0))
-         listener.specExit(JUnitTestRunnerListenerTest::class, null)
+         listener.specFinished(JUnitTestRunnerListenerTest::class, null)
          listener.engineFinished(emptyList())
 
          finished.toMap() shouldBe mapOf(

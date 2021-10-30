@@ -1,6 +1,5 @@
 package com.sksamuel.kotest.engine.listener
 
-import io.kotest.core.spec.Spec
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.engine.listener.AbstractTestEngineListener
 import io.kotest.engine.listener.CompositeTestEngineListener
@@ -31,16 +30,16 @@ class CompositeTestEngineListenerTest : FunSpec({
       var fired1 = false
       var fired2 = false
       val l1 = object : AbstractTestEngineListener() {
-         override suspend fun specExit(kclass: KClass<*>, t: Throwable?) {
+         override suspend fun specFinished(kclass: KClass<*>, t: Throwable?) {
             fired1 = true
          }
       }
       val l2 = object : AbstractTestEngineListener() {
-         override suspend fun specExit(kclass: KClass<*>, t: Throwable?) {
+         override suspend fun specFinished(kclass: KClass<*>, t: Throwable?) {
             fired2 = true
          }
       }
-      CompositeTestEngineListener(listOf(l1, l2)).specExit(CompositeTestEngineListenerTest::class, null)
+      CompositeTestEngineListener(listOf(l1, l2)).specFinished(CompositeTestEngineListenerTest::class, null)
       fired1 shouldBe true
       fired2 shouldBe true
    }
