@@ -6,7 +6,7 @@ import io.kotest.core.names.TestName
 import kotlin.reflect.KClass
 
 /**
- * A parseable, stable, consistent identifer for this test element.
+ * A parseable, stable, consistent identifer for a test element.
  *
  * The id should not depend on runtime configuration and should not change between test runs,
  * unless the test, or a parent test, has been modified by the user.

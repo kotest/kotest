@@ -14,12 +14,12 @@ import kotlin.reflect.KClass
 interface TestEngineListener {
 
    /**
-    * Is invoked as soon as the engine has been created.
+    * Invoked as soon as the engine has been created.
     */
    suspend fun engineStarted()
 
    /**
-    * Is invoked when the [TestEngine] has completed setup and is ready to begin
+    * Invoked when the [TestEngine] has completed setup and is ready to begin
     * executing specs.
     *
     * @param context the final context that will be used.
@@ -29,13 +29,13 @@ interface TestEngineListener {
    /**
     * Is invoked when the [TestEngine] has finished execution of all specs.
     *
-    * If any unexpected errors were detected during execution then it will be passed
-    * to this method.
+    * If any unexpected errors were detected during execution then they will be
+    * passed to this method.
     */
    suspend fun engineFinished(t: List<Throwable>)
 
    /**
-    * Is invoked once per [Spec] to indicate that this spec will be instantiated
+    * Invoked once per [Spec] to indicate that this spec will be instantiated
     * and any active tests invoked.
     */
    suspend fun specStarted(kclass: KClass<*>) {}
@@ -47,9 +47,7 @@ interface TestEngineListener {
    suspend fun specIgnored(kclass: KClass<*>, results: Map<TestCase, TestResult>) {}
 
    /**
-    * Is invoked once per [Spec] class to indicate this spec has finished all other operations
-    * in the spec executor. This callback is invoked after any other interceptors
-    * are invoked, and thus will always be called, even if the spec has been skipped.
+    * Is invoked once per [Spec] class to indicate this spec has completed.
     */
    suspend fun specFinished(kclass: KClass<*>, t: Throwable?) {}
 
