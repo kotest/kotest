@@ -44,10 +44,6 @@ class CompositeTestEngineListener(private val listeners: List<TestEngineListener
       listeners.forEach { it.testFinished(testCase, result) }
    }
 
-   override suspend fun specInstantiated(spec: Spec) {
-      listeners.forEach { it.specInstantiated(spec) }
-   }
-
    override suspend fun specFinished(kclass: KClass<*>, t: Throwable?) {
       listeners.forEach { it.specFinished(kclass, t) }
    }

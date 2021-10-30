@@ -68,16 +68,6 @@ class PinnedSpecTestEngineListener(val listener: TestEngineListener) : TestEngin
       }
    }
 
-   override suspend fun specInstantiated(spec: Spec) {
-      if (runningSpec == spec::class.toDescriptor().path().value) {
-         listener.specInstantiated(spec)
-      } else {
-         queue {
-            specInstantiated(spec)
-         }
-      }
-   }
-
    override suspend fun specInactive(kclass: KClass<*>, results: Map<TestCase, TestResult>) {
       if (runningSpec == kclass.toDescriptor().path().value) {
          listener.specInactive(kclass, results)

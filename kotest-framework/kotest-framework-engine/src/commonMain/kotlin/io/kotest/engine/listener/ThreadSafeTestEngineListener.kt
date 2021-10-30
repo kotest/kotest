@@ -51,12 +51,6 @@ class ThreadSafeTestEngineListener(private val listener: TestEngineListener) : T
       }
    }
 
-   override suspend fun specInstantiated(spec: Spec) {
-      mutex.withLock {
-         listener.specInstantiated(spec)
-      }
-   }
-
    override suspend fun engineStarted() {
       mutex.withLock {
          listener.engineStarted()
