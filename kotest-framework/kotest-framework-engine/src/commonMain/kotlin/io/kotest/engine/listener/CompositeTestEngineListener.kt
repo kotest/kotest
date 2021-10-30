@@ -27,20 +27,20 @@ class CompositeTestEngineListener(private val listeners: List<TestEngineListener
       listeners.forEach { it.engineFinished(t) }
    }
 
-   override suspend fun specStarted(kclass: KClass<*>) {
-      listeners.forEach { it.specStarted(kclass) }
-   }
-
    override suspend fun testStarted(testCase: TestCase) {
       listeners.forEach { it.testStarted(testCase) }
+   }
+
+   override suspend fun testFinished(testCase: TestCase, result: TestResult) {
+      listeners.forEach { it.testFinished(testCase, result) }
    }
 
    override suspend fun testIgnored(testCase: TestCase, reason: String?) {
       listeners.forEach { it.testIgnored(testCase, reason) }
    }
 
-   override suspend fun testFinished(testCase: TestCase, result: TestResult) {
-      listeners.forEach { it.testFinished(testCase, result) }
+   override suspend fun specStarted(kclass: KClass<*>) {
+      listeners.forEach { it.specStarted(kclass) }
    }
 
    override suspend fun specFinished(kclass: KClass<*>, t: Throwable?) {
@@ -49,9 +49,5 @@ class CompositeTestEngineListener(private val listeners: List<TestEngineListener
 
    override suspend fun specIgnored(kclass: KClass<*>, results: Map<TestCase, TestResult>) {
       listeners.forEach { it.specIgnored(kclass, results) }
-   }
-
-   override suspend fun specEnter(kclass: KClass<*>) {
-      listeners.forEach { it.specEnter(kclass) }
    }
 }

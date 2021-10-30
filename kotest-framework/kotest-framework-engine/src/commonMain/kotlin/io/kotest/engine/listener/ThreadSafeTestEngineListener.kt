@@ -1,6 +1,5 @@
 package io.kotest.engine.listener
 
-import io.kotest.core.spec.Spec
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.engine.interceptors.EngineContext
@@ -24,12 +23,6 @@ class ThreadSafeTestEngineListener(private val listener: TestEngineListener) : T
    override suspend fun engineFinished(t: List<Throwable>) {
       mutex.withLock {
          listener.engineFinished(t)
-      }
-   }
-
-   override suspend fun specStarted(kclass: KClass<*>) {
-      mutex.withLock {
-         listener.specStarted(kclass)
       }
    }
 
@@ -69,9 +62,9 @@ class ThreadSafeTestEngineListener(private val listener: TestEngineListener) : T
       }
    }
 
-   override suspend fun specEnter(kclass: KClass<*>) {
+   override suspend fun specStarted(kclass: KClass<*>) {
       mutex.withLock {
-         listener.specEnter(kclass)
+         listener.specStarted(kclass)
       }
    }
 }

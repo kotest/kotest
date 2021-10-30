@@ -17,12 +17,12 @@ import io.kotest.engine.spec.interceptor.EnabledIfSpecInterceptor
 import io.kotest.engine.spec.interceptor.IgnoreNestedSpecStylesInterceptor
 import io.kotest.engine.spec.interceptor.IgnoredSpecInterceptor
 import io.kotest.engine.spec.interceptor.RunIfActiveInterceptor
-import io.kotest.engine.spec.interceptor.SpecEnterInterceptor
 import io.kotest.engine.spec.interceptor.SpecExtensionInterceptor
 import io.kotest.engine.spec.interceptor.SpecFilterInterceptor
 import io.kotest.engine.spec.interceptor.SpecFinishedInterceptor
 import io.kotest.engine.spec.interceptor.SpecRefExtensionInterceptor
-import io.kotest.engine.spec.interceptor.SpecStartedFinishedInterceptor
+import io.kotest.engine.spec.interceptor.SpecFinalizeInterceptor
+import io.kotest.engine.spec.interceptor.SpecStartedInterceptor
 import io.kotest.engine.spec.interceptor.SystemPropertySpecFilterInterceptor
 import io.kotest.engine.spec.interceptor.TagsExcludedSpecInterceptor
 import io.kotest.mpp.log
@@ -60,13 +60,13 @@ class SpecExecutor(
 
       val interceptors = listOf(
          SpecFinishedInterceptor(listener),
-         SpecEnterInterceptor(listener),
          EnabledIfSpecInterceptor(listener, conf.registry()),
          IgnoredSpecInterceptor(listener, conf.registry()),
          SpecFilterInterceptor(listener, conf.registry()),
          SystemPropertySpecFilterInterceptor(listener, conf.registry()),
          TagsExcludedSpecInterceptor(listener, conf),
          SpecRefExtensionInterceptor(conf.registry()),
+         SpecStartedInterceptor(listener),
          ApplyExtensionsInterceptor(conf.registry()),
          PrepareSpecInterceptor(conf.registry()),
       )
@@ -89,7 +89,7 @@ class SpecExecutor(
          SpecExtensionInterceptor(conf.registry()),
          RunIfActiveInterceptor(listener, conf),
          ConfigurationInContextInterceptor(conf),
-         SpecStartedFinishedInterceptor(listener, conf.registry()),
+         SpecFinalizeInterceptor(listener, conf.registry()),
       )
 
       val initial: suspend (Spec) -> Map<TestCase, TestResult> = {

@@ -191,24 +191,23 @@ class JUnitTestEngineListener(
    }
 
    override suspend fun specFinished(kclass: KClass<*>, t: Throwable?) {
-      val (name, cause) = if (t == null) Pair("<error>", null) else ExtensionExceptionExtractor.resolve(t)
       when {
-         cause == null && ignored -> Unit
-         cause == null && inactive -> markSpecInactive(kclass)
+         t == null && ignored -> Unit
+         t == null && inactive -> Unit // markSpecInactive(kclass)
          // if we have a spec error before we even started the spec, we will start the spec, add a placeholder
          // to hold the error, mark that test as failed, and then fail the spec as well
-         cause != null && !started -> {
+         t != null && !started -> {
             val descriptor = markSpecStarted(kclass)
-            addPlaceholderTest(descriptor, name, cause)
-            log { "JUnitTestEngineListener: Notifying junit that a spec failed [$descriptor, $cause]" }
-            listener.executionFinished(descriptor, TestExecutionResult.failed(cause))
+            addPlaceholderTest(descriptor, t)
+            log { "JUnitTestEngineListener: Notifying junit that a spec failed [$descriptor, $t]" }
+            listener.executionFinished(descriptor, TestExecutionResult.failed(t))
          }
          // if we had an error in the spec, and we had no tests, we'll add the dummy and return
-         cause != null && rootTests.isEmpty() -> {
+         t != null && rootTests.isEmpty() -> {
             val descriptor = descriptors[kclass.toDescriptor()]!!
-            addPlaceholderTest(descriptor, name, cause)
-            log { "JUnitTestEngineListener: Notifying junit that a spec failed [$descriptor, $cause]" }
-            listener.executionFinished(descriptor, TestExecutionResult.failed(cause))
+            addPlaceholderTest(descriptor, t)
+            log { "JUnitTestEngineListener: Notifying junit that a spec failed [$descriptor, $t]" }
+            listener.executionFinished(descriptor, TestExecutionResult.failed(t))
          }
          else -> {
 
@@ -222,12 +221,12 @@ class JUnitTestEngineListener(
             rootTests.forEach { handleTest(it) }
 
             val result = when {
-               cause != null -> {
-                  addPlaceholderTest(descriptor, name, cause)
+               t != null -> {
+                  addPlaceholderTest(descriptor, t)
                   TestExecutionResult.successful()
                }
                instantiationException != null -> {
-                  instantiationException?.let { addPlaceholderTest(descriptor, "instantiationException", it) }
+                  instantiationException?.let { addPlaceholderTest(descriptor, it) }
                   TestExecutionResult.successful()
                }
                else -> TestExecutionResult.successful()
@@ -251,7 +250,8 @@ class JUnitTestEngineListener(
       descriptors.clear()
    }
 
-   private fun addPlaceholderTest(parent: TestDescriptor, name: String, t: Throwable) {
+   private fun addPlaceholderTest(parent: TestDescriptor, t: Throwable) {
+      val (name, cause) = ExtensionExceptionExtractor.resolve(t)
       val descriptor = createTestDescriptor(
          parent.uniqueId.append(Segment.Test.value, name),
          name,
@@ -262,7 +262,6 @@ class JUnitTestEngineListener(
       parent.addChild(descriptor)
       listener.dynamicTestRegistered(descriptor)
       listener.executionStarted(descriptor)
-      val (_, cause) = ExtensionExceptionExtractor.resolve(t)
       listener.executionFinished(descriptor, TestResult.Error(Duration.ZERO, cause).testExecutionResult())
    }
 

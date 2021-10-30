@@ -25,7 +25,6 @@ class PinnedSpecTestEngineListenerTest : WordSpec({
          val spec2 = IsolationTestSpec2()
          val spec3 = IsolationTestSpec3()
 
-         listener.specEnter(spec1::class)
          listener.specStarted(spec1::class)
          listener.specStarted(spec2::class)
          listener.specStarted(spec3::class)
@@ -44,25 +43,19 @@ class PinnedSpecTestEngineListenerTest : WordSpec({
          val spec2 = IsolationTestSpec2()
          val spec3 = IsolationTestSpec3()
 
-         listener.specEnter(spec1::class)
          listener.specStarted(spec1::class)
-
-         listener.specEnter(spec2::class)
          listener.specStarted(spec2::class)
-
          listener.specFinished(spec2::class, null)
          listener.specFinished(spec3::class, null)
 
          verifyOrder {
             runBlocking {
-               mock.specEnter(spec1::class)
                mock.specStarted(spec1::class)
             }
          }
 
          verify(exactly = 0) {
             runBlocking {
-               mock.specEnter(spec2::class)
                mock.specStarted(spec2::class)
             }
          }
@@ -99,35 +92,29 @@ class PinnedSpecTestEngineListenerTest : WordSpec({
          coroutineScope {
             launch(Dispatchers.IO) {
                delay(kotlin.random.Random.nextLong(1, 100))
-               listener.specEnter(spec1::class)
                listener.specStarted(spec1::class)
                listener.specFinished(spec1::class, null)
             }
             launch(Dispatchers.IO) {
                delay(kotlin.random.Random.nextLong(1, 100))
-               listener.specEnter(spec2::class)
                listener.specStarted(spec2::class)
                listener.specFinished(spec2::class, null)
             }
             launch(Dispatchers.IO) {
                delay(kotlin.random.Random.nextLong(1, 100))
-               listener.specEnter(spec3::class)
                listener.specStarted(spec3::class)
                listener.specFinished(spec3::class, null)
             }
             launch(Dispatchers.IO) {
                delay(kotlin.random.Random.nextLong(1, 100))
-               listener.specEnter(spec4::class)
                listener.specStarted(spec4::class)
                listener.specFinished(spec4::class, null)
 
-               listener.specEnter(spec5::class)
                listener.specStarted(spec5::class)
                listener.specFinished(spec5::class, null)
             }
             launch(Dispatchers.IO) {
                delay(kotlin.random.Random.nextLong(1, 100))
-               listener.specEnter(spec6::class)
                listener.specStarted(spec6::class)
                listener.specFinished(spec6::class, null)
             }
@@ -138,39 +125,33 @@ class PinnedSpecTestEngineListenerTest : WordSpec({
 
          verifyOrder {
             runBlocking {
-               mock.specEnter(spec1::class)
                mock.specStarted(spec1::class)
                mock.specFinished(spec1::class, null)
             }
          }
          verifyOrder {
             runBlocking {
-               mock.specEnter(spec2::class)
                mock.specStarted(spec2::class)
                mock.specFinished(spec2::class, null)
             }
          }
          verifyOrder {
             runBlocking {
-               mock.specEnter(spec3::class)
                mock.specStarted(spec3::class)
                mock.specFinished(spec3::class, null)
             }
          }
          verifyOrder {
             runBlocking {
-               mock.specEnter(spec4::class)
                mock.specStarted(spec4::class)
                mock.specFinished(spec4::class, null)
 
-               mock.specEnter(spec5::class)
                mock.specStarted(spec5::class)
                mock.specFinished(spec5::class, null)
             }
          }
          verifyOrder {
             runBlocking {
-               mock.specEnter(spec6::class)
                mock.specStarted(spec6::class)
                mock.specFinished(spec6::class, null)
             }

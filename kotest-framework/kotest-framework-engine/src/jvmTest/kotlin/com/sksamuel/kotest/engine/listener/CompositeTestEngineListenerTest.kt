@@ -8,25 +8,25 @@ import kotlin.reflect.KClass
 
 class CompositeTestEngineListenerTest : FunSpec({
 
-   test("specEnter should fire for all listeners") {
+   test("specStarted should fire for all listeners") {
       var fired1 = false
       var fired2 = false
       val l1 = object : AbstractTestEngineListener() {
-         override suspend fun specEnter(kclass: KClass<*>) {
+         override suspend fun specStarted(kclass: KClass<*>) {
             fired1 = true
          }
       }
       val l2 = object : AbstractTestEngineListener() {
-         override suspend fun specEnter(kclass: KClass<*>) {
+         override suspend fun specStarted(kclass: KClass<*>) {
             fired2 = true
          }
       }
-      CompositeTestEngineListener(listOf(l1, l2)).specEnter(CompositeTestEngineListenerTest::class)
+      CompositeTestEngineListener(listOf(l1, l2)).specStarted(CompositeTestEngineListenerTest::class)
       fired1 shouldBe true
       fired2 shouldBe true
    }
 
-   test("specExit should fire for all listeners") {
+   test("specFinished should fire for all listeners") {
       var fired1 = false
       var fired2 = false
       val l1 = object : AbstractTestEngineListener() {

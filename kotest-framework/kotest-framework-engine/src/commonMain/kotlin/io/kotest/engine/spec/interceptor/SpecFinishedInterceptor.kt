@@ -8,7 +8,7 @@ import io.kotest.engine.listener.TestEngineListener
 /**
  * A [SpecRefInterceptor] that is the final stage in the spec execution pipeline.
  *
- * It will invoke [specFinished] on the [TestEngineListener].
+ * It will invoke [specFinished] on the [TestEngineListener] if the spec was started.
  * Any unhandled exception in the spec executor will be passed to this callback.
  */
 internal class SpecFinishedInterceptor(private val listener: TestEngineListener) : SpecRefInterceptor {

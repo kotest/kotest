@@ -35,25 +35,16 @@ interface TestEngineListener {
    suspend fun engineFinished(t: List<Throwable>)
 
    /**
-    * Invoked when a spec is submitted to the SpecExecutor.
-    * This callback is invoked before any of the spec level interceptors.
+    * Is invoked once per [Spec] to indicate that this spec will be instantiated
+    * and any active tests invoked.
     */
-   suspend fun specEnter(kclass: KClass<*>) {}
+   suspend fun specStarted(kclass: KClass<*>) {}
 
    /**
     * Invoked when a spec is ignored. If the results map is empty, then this means
     * the spec did not define any tests, or the spec was not instantiated.
     */
    suspend fun specIgnored(kclass: KClass<*>, results: Map<TestCase, TestResult>) {}
-
-   /**
-    * Is invoked once per [Spec] to indicate that this spec is active and ready
-    * to begin executing tests.
-    *
-    * Note: This function differs from [specEnter] in that it will
-    * only be executed if the spec is active and has enabled tests.
-    */
-   suspend fun specStarted(kclass: KClass<*>) {}
 
    /**
     * Is invoked once per [Spec] class to indicate this spec has finished all other operations

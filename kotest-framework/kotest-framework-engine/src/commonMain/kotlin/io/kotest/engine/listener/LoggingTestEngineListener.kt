@@ -12,12 +12,12 @@ object LoggingTestEngineListener : AbstractTestEngineListener() {
       log { "LoggingTestEngineListener: Engine finished $t" }
    }
 
-   override suspend fun specEnter(kclass: KClass<*>) {
-      log { "LoggingTestEngineListener: specEnter '${kclass.bestName()}'" }
+   override suspend fun specStarted(kclass: KClass<*>) {
+      log { "LoggingTestEngineListener: specStarted '${kclass.bestName()}'" }
    }
 
    override suspend fun specFinished(kclass: KClass<*>, t: Throwable?) {
-      log { "LoggingTestEngineListener: specExit '${kclass.bestName()}' error=$t" }
+      log { "LoggingTestEngineListener: specFinished '${kclass.bestName()}' error=$t" }
    }
 
    override suspend fun testStarted(testCase: TestCase) {

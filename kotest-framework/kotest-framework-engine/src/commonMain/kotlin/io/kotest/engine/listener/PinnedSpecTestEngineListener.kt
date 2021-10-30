@@ -44,13 +44,13 @@ class PinnedSpecTestEngineListener(val listener: TestEngineListener) : TestEngin
       listener.engineFinished(t)
    }
 
-   override suspend fun specEnter(kclass: KClass<*>) {
+   override suspend fun specStarted(kclass: KClass<*>) {
       if (runningSpec == null) {
          runningSpec = kclass.toDescriptor().path().value
-         listener.specEnter(kclass)
+         listener.specStarted(kclass)
       } else {
          queue {
-            specEnter(kclass)
+            specStarted(kclass)
          }
       }
    }
@@ -67,22 +67,22 @@ class PinnedSpecTestEngineListener(val listener: TestEngineListener) : TestEngin
       }
    }
 
+   override suspend fun specIgnored(kclass: KClass<*>, results: Map<TestCase, TestResult>) {
+      if (runningSpec == kclass.toDescriptor().path().value) {
+         listener.specIgnored(kclass, results)
+      } else {
+         queue {
+            specIgnored(kclass, results)
+         }
+      }
+   }
+
    override suspend fun testStarted(testCase: TestCase) {
       if (runningSpec == testCase.spec::class.toDescriptor().path().value) {
          listener.testStarted(testCase)
       } else {
          queue {
             testStarted(testCase)
-         }
-      }
-   }
-
-   override suspend fun testIgnored(testCase: TestCase, reason: String?) {
-      if (runningSpec == testCase.spec::class.toDescriptor().path().value) {
-         listener.testIgnored(testCase, reason)
-      } else {
-         queue {
-            testIgnored(testCase, reason)
          }
       }
    }
@@ -97,22 +97,12 @@ class PinnedSpecTestEngineListener(val listener: TestEngineListener) : TestEngin
       }
    }
 
-   override suspend fun specStarted(kclass: KClass<*>) {
-      if (runningSpec == kclass.toDescriptor().path().value) {
-         listener.specStarted(kclass)
+   override suspend fun testIgnored(testCase: TestCase, reason: String?) {
+      if (runningSpec == testCase.spec::class.toDescriptor().path().value) {
+         listener.testIgnored(testCase, reason)
       } else {
          queue {
-            specStarted(kclass)
-         }
-      }
-   }
-
-   override suspend fun specIgnored(kclass: KClass<*>, results: Map<TestCase, TestResult>) {
-      if (runningSpec == kclass.toDescriptor().path().value) {
-         listener.specIgnored(kclass, results)
-      } else {
-         queue {
-            specIgnored(kclass, results)
+            testIgnored(testCase, reason)
          }
       }
    }

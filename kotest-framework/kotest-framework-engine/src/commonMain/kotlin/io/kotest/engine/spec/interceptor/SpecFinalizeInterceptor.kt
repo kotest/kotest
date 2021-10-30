@@ -8,7 +8,7 @@ import io.kotest.engine.listener.TestEngineListener
 import io.kotest.engine.spec.SpecExtensions
 import io.kotest.mpp.log
 
-internal class SpecStartedFinishedInterceptor(
+internal class SpecFinalizeInterceptor(
    private val listener: TestEngineListener,
    private val registry: ExtensionRegistry,
 ) : SpecInterceptor {
@@ -16,9 +16,6 @@ internal class SpecStartedFinishedInterceptor(
    override suspend fun intercept(
       fn: suspend (Spec) -> Map<TestCase, TestResult>
    ): suspend (Spec) -> Map<TestCase, TestResult> = { spec ->
-
-      log { "SpecStartedFinishedInterceptor: listener.specStarted $spec" }
-      listener.specStarted(spec::class)
 
       val results = try {
          fn(spec)
