@@ -79,18 +79,6 @@ interface TestEngineListener {
    suspend fun specStarted(kclass: KClass<*>) {}
 
    /**
-    * Is invoked once per [Spec] to indicate that all [TestCase] instances
-    * of the spec have completed.
-    *
-    * Note: This function differs from [specExit] in that it will
-    * only be executed if the spec was active.
-    *
-    * @param kclass the spec that has completed
-    * @param results if t is null, then the results of the tests that were submitted.
-    */
-   suspend fun specFinished(kclass: KClass<*>, results: Map<TestCase, TestResult>) {}
-
-   /**
     * Is invoked once per [Spec] class to indicate this spec has finished all other operations
     * in the spec executor. This callback is invoked after any other interceptors
     * are invoked, and thus will always be called, even if the spec has been skipped.

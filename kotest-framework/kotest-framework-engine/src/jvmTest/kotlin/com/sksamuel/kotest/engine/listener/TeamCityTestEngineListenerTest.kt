@@ -182,12 +182,6 @@
 //         } shouldBe "testcity[testIgnored name='my test case' id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest/my container -- my test case' parent_id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest/my container' locationHint='kotest://com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest:1' test_type='test' message='ignore me?' result_status='Ignored']$nl"
 //      }
 //
-//      test("specFinish should write nothing") {
-//         captureStandardOut {
-//            TeamCityTestEngineListener("testcity").specFinished(kclass, emptyMap())
-//         } shouldBe ""
-//      }
-//
 //      test("testFinished with error should handle multiline messages") {
 //
 //         val error = shouldFail {

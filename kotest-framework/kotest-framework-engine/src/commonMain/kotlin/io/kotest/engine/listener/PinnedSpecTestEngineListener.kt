@@ -138,16 +138,6 @@ class PinnedSpecTestEngineListener(val listener: TestEngineListener) : TestEngin
       }
    }
 
-   override suspend fun specFinished(kclass: KClass<*>, results: Map<TestCase, TestResult>) {
-      if (runningSpec == kclass.toDescriptor().path().value) {
-         listener.specFinished(kclass, results)
-      } else {
-         queue {
-            specFinished(kclass, results)
-         }
-      }
-   }
-
    override suspend fun specIgnored(kclass: KClass<*>) {
       if (runningSpec == kclass.toDescriptor().path().value) {
          listener.specIgnored(kclass)

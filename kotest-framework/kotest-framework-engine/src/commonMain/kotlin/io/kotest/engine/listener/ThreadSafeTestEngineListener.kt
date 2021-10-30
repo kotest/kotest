@@ -33,12 +33,6 @@ class ThreadSafeTestEngineListener(private val listener: TestEngineListener) : T
       }
    }
 
-   override suspend fun specFinished(kclass: KClass<*>, results: Map<TestCase, TestResult>) {
-      mutex.withLock {
-         listener.specFinished(kclass, results)
-      }
-   }
-
    override suspend fun testStarted(testCase: TestCase) {
       mutex.withLock {
          listener.testStarted(testCase)

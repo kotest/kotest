@@ -27,10 +27,10 @@ internal class SpecStartedFinishedInterceptor(
          throw t
       }
 
-      log { "SpecStartedFinishedInterceptor: listener.specFinished $spec" }
-      listener.specFinished(spec::class, results)
+//      log { "SpecStartedFinishedInterceptor: listener.specFinished $spec" }
+//      listener.specFinished(spec::class, results)
 
-      SpecExtensions(registry).finishSpec(spec::class, results)
+//      SpecExtensions(registry).finishSpec(spec::class, results)
       results
    }
 }
