@@ -95,11 +95,11 @@ internal class SpecExtensions(private val registry: ExtensionRegistry) {
       registry.all().filterIsInstance<InactiveSpecListener>().forEach { it.inactive(spec, results) }
    }
 
-//   suspend fun finishSpec(kclass: KClass<out Spec>, results: Map<TestCase, TestResult>) {
-//      val exts = registry.all().filterIsInstance<FinalizeSpecListener>()
-//      log { "SpecExtensions: finishSpec ${exts.size} extensions on $kclass results:$results" }
-//      exts.forEach { it.finalizeSpec(kclass, results) }
-//   }
+   suspend fun finalizeSpec(kclass: KClass<out Spec>, results: Map<TestCase, TestResult>) {
+      val exts = registry.all().filterIsInstance<FinalizeSpecListener>()
+      log { "SpecExtensions: finishSpec ${exts.size} extensions on $kclass results:$results" }
+      exts.forEach { it.finalizeSpec(kclass, results) }
+   }
 
    suspend fun <T> intercept(spec: Spec, f: suspend () -> T): T {
 

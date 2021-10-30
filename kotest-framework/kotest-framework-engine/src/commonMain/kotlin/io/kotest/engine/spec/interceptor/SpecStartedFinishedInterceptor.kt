@@ -30,7 +30,7 @@ internal class SpecStartedFinishedInterceptor(
 //      log { "SpecStartedFinishedInterceptor: listener.specFinished $spec" }
 //      listener.specFinished(spec::class, results)
 
-//      SpecExtensions(registry).finishSpec(spec::class, results)
+      SpecExtensions(registry).finalizeSpec(spec::class, results)
       results
    }
 }
