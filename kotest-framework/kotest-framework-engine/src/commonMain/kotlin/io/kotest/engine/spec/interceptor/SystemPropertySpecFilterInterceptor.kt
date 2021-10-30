@@ -45,7 +45,7 @@ internal class SystemPropertySpecFilterInterceptor(
       if (included) {
          fn(ref)
       } else {
-         listener.specIgnored(ref.kclass)
+         listener.specIgnored(ref.kclass, emptyMap())
          SpecExtensions(registry).ignored(ref.kclass)
          emptyMap()
       }

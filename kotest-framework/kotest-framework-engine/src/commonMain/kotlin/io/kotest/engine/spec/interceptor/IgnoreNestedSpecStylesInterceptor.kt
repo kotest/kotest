@@ -36,7 +36,7 @@ internal class IgnoreNestedSpecStylesInterceptor(
       } else {
          log { "IgnoreNestedSpecStylesInterceptor: Marking ${spec::class.bestName()} as inactive due to platform limitations" }
          println("WARN: kotest-js only supports top level tests due to underlying platform limitations. '${spec::class.bestName()}' has been marked as ignored")
-         listener.specIgnored(spec::class)
+         listener.specIgnored(spec::class, emptyMap())
          SpecExtensions(registry).inactiveSpec(spec, emptyMap())
          emptyMap()
       }

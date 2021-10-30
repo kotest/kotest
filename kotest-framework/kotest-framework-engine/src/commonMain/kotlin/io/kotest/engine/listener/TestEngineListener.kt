@@ -41,16 +41,10 @@ interface TestEngineListener {
    suspend fun specEnter(kclass: KClass<*>) {}
 
    /**
-    * Invoked when a spec is ignored without being instantiated or executed.
+    * Invoked when a spec is ignored. If the results map is empty, then this means
+    * the spec did not define any tests, or the spec was not instantiated.
     */
-   suspend fun specIgnored(kclass: KClass<*>) {}
-
-   /**
-    * Invoked when a spec has no active tests.
-    *
-    * @param results a map of each root test to an ignored status with possible disabled reason.
-    */
-   suspend fun specInactive(kclass: KClass<*>, results: Map<TestCase, TestResult>) {}
+   suspend fun specIgnored(kclass: KClass<*>, results: Map<TestCase, TestResult>) {}
 
    /**
     * Is invoked once per [Spec] to indicate that this spec is active and ready

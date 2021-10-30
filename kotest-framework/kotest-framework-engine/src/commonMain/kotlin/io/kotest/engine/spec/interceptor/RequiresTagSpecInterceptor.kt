@@ -34,7 +34,7 @@ internal class RequiresTagSpecInterceptor(
       if (isActive) {
          fn(ref)
       } else {
-         listener.specIgnored(ref.kclass)
+         listener.specIgnored(ref.kclass, emptyMap())
          SpecExtensions(registry).ignored(ref.kclass)
          emptyMap()
       }

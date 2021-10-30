@@ -160,14 +160,16 @@ class JUnitTestEngineListener(
       }
    }
 
-   override suspend fun specInactive(kclass: KClass<*>, results: Map<TestCase, TestResult>) {
-      log { "JUnitTestEngineListener: Spec is being flagged as inactive: $kclass" }
-      inactive = true
-      inactiveTests = results
-   }
-
-   override suspend fun specIgnored(kclass: KClass<*>) {
-      ignored = true
+   override suspend fun specIgnored(kclass: KClass<*>, results: Map<TestCase, TestResult>) {
+      log { "JUnitTestEngineListener: Spec is being flagged as ignored: $kclass" }
+      if (results.isEmpty()) {
+         inactive = false
+         ignored = true
+      } else {
+         inactive = true
+         ignored = false
+         inactiveTests = results
+      }
    }
 
    private suspend fun markSpecInactive(kclass: KClass<*>) {

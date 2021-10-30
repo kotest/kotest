@@ -88,7 +88,7 @@ class JUnitTestEngineListenerTest : FunSpec({
       val track = EventTrackingEngineExecutionListener()
       val listener = JUnitTestEngineListener(track, root)
       listener.specEnter(MySpec::class)
-      listener.specIgnored(MySpec::class)
+      listener.specIgnored(MySpec::class, emptyMap())
       listener.specFinished(MySpec::class, null)
       track.events.shouldBeEmpty()
    }
@@ -97,7 +97,7 @@ class JUnitTestEngineListenerTest : FunSpec({
       val track = EventTrackingEngineExecutionListener()
       val listener = JUnitTestEngineListener(track, root)
       listener.specEnter(MySpec::class)
-      listener.specInactive(
+      listener.specIgnored(
          MySpec::class,
          mapOf(tc1 to TestResult.Ignored(null), tc2 to TestResult.Ignored(null))
       )
@@ -311,7 +311,7 @@ class JUnitTestEngineListenerTest : FunSpec({
       val track = EventTrackingEngineExecutionListener()
       val listener = JUnitTestEngineListener(track, root, )
       listener.specEnter(MyIgnoredTest::class)
-      listener.specIgnored(MyIgnoredTest::class)
+      listener.specIgnored(MyIgnoredTest::class, emptyMap())
       listener.specFinished(MyIgnoredTest::class, null)
 
       listener.specEnter(MySpec2::class)
@@ -340,7 +340,7 @@ class JUnitTestEngineListenerTest : FunSpec({
       val track = EventTrackingEngineExecutionListener()
       val listener = JUnitTestEngineListener(track, root, )
       listener.specEnter(MySpec::class)
-      listener.specInactive(MySpec::class, mapOf(tc1 to TestResult.Ignored("wibble")))
+      listener.specIgnored(MySpec::class, mapOf(tc1 to TestResult.Ignored("wibble")))
       listener.specFinished(MySpec::class, null)
 
       listener.specEnter(MySpec2::class)

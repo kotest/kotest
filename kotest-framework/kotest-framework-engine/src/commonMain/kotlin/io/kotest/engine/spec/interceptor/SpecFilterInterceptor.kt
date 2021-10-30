@@ -10,6 +10,9 @@ import io.kotest.engine.listener.TestEngineListener
 import io.kotest.engine.spec.SpecExtensions
 import io.kotest.mpp.log
 
+/**
+ * Evaluates a spec against any registered [SpecFilter]s.
+ */
 class SpecFilterInterceptor(
    private val listener: TestEngineListener,
    private val registry: ExtensionRegistry
@@ -24,10 +27,10 @@ class SpecFilterInterceptor(
       val excluded = registry.all().filterIsInstance<SpecFilter>().any {
          it.filter(ref.kclass) == SpecFilterResult.Exclude
       }
-      log { "FilteredSpecInterceptor: ${ref.kclass} is excludedByFilters = $excluded" }
+      log { "SpecFilterInterceptor: ${ref.kclass} is excludedByFilters = $excluded" }
 
       if (excluded) {
-         listener.specIgnored(ref.kclass)
+         listener.specIgnored(ref.kclass, emptyMap())
          extensions.ignored(ref.kclass)
          emptyMap()
       } else {

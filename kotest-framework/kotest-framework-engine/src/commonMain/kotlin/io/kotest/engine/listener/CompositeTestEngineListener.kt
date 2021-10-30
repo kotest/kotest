@@ -47,15 +47,11 @@ class CompositeTestEngineListener(private val listeners: List<TestEngineListener
       listeners.forEach { it.specFinished(kclass, t) }
    }
 
-   override suspend fun specIgnored(kclass: KClass<*>) {
-      listeners.forEach { it.specIgnored(kclass) }
+   override suspend fun specIgnored(kclass: KClass<*>, results: Map<TestCase, TestResult>) {
+      listeners.forEach { it.specIgnored(kclass, results) }
    }
 
    override suspend fun specEnter(kclass: KClass<*>) {
       listeners.forEach { it.specEnter(kclass) }
-   }
-
-   override suspend fun specInactive(kclass: KClass<*>, results: Map<TestCase, TestResult>) {
-      listeners.forEach { it.specInactive(kclass, results) }
    }
 }

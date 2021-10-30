@@ -36,7 +36,7 @@ internal class EnabledIfSpecInterceptor(
       if (enabled) {
          fn(ref)
       } else {
-         listener.specIgnored(ref.kclass)
+         listener.specIgnored(ref.kclass, emptyMap())
          extensions.ignored(ref.kclass)
          emptyMap()
       }

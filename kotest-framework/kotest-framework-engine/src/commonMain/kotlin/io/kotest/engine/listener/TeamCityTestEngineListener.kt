@@ -156,21 +156,10 @@ class TeamCityTestEngineListener(
    }
 
    // ignored specs are completely hidden from output
-   override suspend fun specIgnored(kclass: KClass<*>) {}
-
    // inactive specs are included in the output with a placeholder ignored tests in order that
    // intellij shows the spec as "ignored" (it won't if the test suite is just empty)
-   override suspend fun specInactive(kclass: KClass<*>, results: Map<TestCase, TestResult>) {
-      if (results.isEmpty()) {
-         startSpec(kclass)
-         val msg = TeamCityMessageBuilder
-            .testIgnored(prefix, "<no tests>")
-            .id("<no tests>")
-            .parent(kclass.toDescriptor().path().value)
-            .result(TestResult.Ignored)
-            .build()
-         println(msg)
-      } else {
+   override suspend fun specIgnored(kclass: KClass<*>, results: Map<TestCase, TestResult>) {
+      if (results.isNotEmpty()) {
          startSpec(kclass)
          results.forEach { (testCase, result) ->
             testIgnored(testCase, if (result is TestResult.Ignored) result.reason else null)

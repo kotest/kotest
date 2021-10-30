@@ -3,7 +3,6 @@
 package io.kotest.engine.listener
 
 import io.kotest.core.descriptors.toDescriptor
-import io.kotest.core.spec.Spec
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.engine.interceptors.EngineContext
@@ -68,16 +67,6 @@ class PinnedSpecTestEngineListener(val listener: TestEngineListener) : TestEngin
       }
    }
 
-   override suspend fun specInactive(kclass: KClass<*>, results: Map<TestCase, TestResult>) {
-      if (runningSpec == kclass.toDescriptor().path().value) {
-         listener.specInactive(kclass, results)
-      } else {
-         queue {
-            specInactive(kclass, results)
-         }
-      }
-   }
-
    override suspend fun testStarted(testCase: TestCase) {
       if (runningSpec == testCase.spec::class.toDescriptor().path().value) {
          listener.testStarted(testCase)
@@ -118,12 +107,12 @@ class PinnedSpecTestEngineListener(val listener: TestEngineListener) : TestEngin
       }
    }
 
-   override suspend fun specIgnored(kclass: KClass<*>) {
+   override suspend fun specIgnored(kclass: KClass<*>, results: Map<TestCase, TestResult>) {
       if (runningSpec == kclass.toDescriptor().path().value) {
-         listener.specIgnored(kclass)
+         listener.specIgnored(kclass, results)
       } else {
          queue {
-            specIgnored(kclass)
+            specIgnored(kclass, results)
          }
       }
    }
