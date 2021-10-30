@@ -53,12 +53,6 @@ interface TestEngineListener {
    suspend fun specInactive(kclass: KClass<*>, results: Map<TestCase, TestResult>) {}
 
    /**
-    * Invoked if the spec proceed to testing.
-    * // todo remove ??
-    */
-   suspend fun specAborted(kclass: KClass<*>, t:Throwable) {}
-
-   /**
     * Is invoked once per [Spec] to indicate that this spec is active and ready
     * to begin executing tests.
     *

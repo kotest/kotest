@@ -25,10 +25,6 @@ class CollectingTestEngineListener : AbstractTestEngineListener() {
       if (result.isFailure || result.isError) errors = true
    }
 
-   override suspend fun specAborted(kclass: KClass<*>, t: Throwable) {
-      errors = true
-   }
-
    override suspend fun engineFinished(t: List<Throwable>) {
       if (t.isNotEmpty()) errors = true
    }

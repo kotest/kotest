@@ -75,12 +75,6 @@ class ThreadSafeTestEngineListener(private val listener: TestEngineListener) : T
       }
    }
 
-   override suspend fun specAborted(kclass: KClass<*>, t: Throwable) {
-      mutex.withLock {
-         listener.specAborted(kclass, t)
-      }
-   }
-
    override suspend fun specEnter(kclass: KClass<*>) {
       mutex.withLock {
          listener.specEnter(kclass)
