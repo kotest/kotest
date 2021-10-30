@@ -30,7 +30,7 @@ class SpecFilterInterceptor(
       log { "SpecFilterInterceptor: ${ref.kclass} is excludedByFilters = $excluded" }
 
       if (excluded) {
-         listener.specIgnored(ref.kclass, emptyMap())
+         listener.specIgnored(ref.kclass, "Disabled due to spec filter")
          extensions.ignored(ref.kclass)
          emptyMap()
       } else {

@@ -81,13 +81,7 @@ class JUnitTestEngineListener(
    // contains a mapping of junit TestDescriptor's, so we can find previously registered tests
    private val descriptors = mutableMapOf<Descriptor, TestDescriptor>()
 
-   // contains an exception throw during instantiation
-   private var instantiationException: Throwable? = null
-
-   private var ignored = false
    private var started = false
-   private var inactive = false
-   private var inactiveTests: Map<TestCase, TestResult> = emptyMap()
 
    // the root tests are our entry point when outputting results
    private val rootTests = mutableListOf<TestCase>()
@@ -160,40 +154,15 @@ class JUnitTestEngineListener(
       }
    }
 
-   override suspend fun specIgnored(kclass: KClass<*>, results: Map<TestCase, TestResult>) {
+   override suspend fun specIgnored(kclass: KClass<*>, reason: String?) {
       log { "JUnitTestEngineListener: Spec is being flagged as ignored: $kclass" }
-      if (results.isEmpty()) {
-         inactive = false
-         ignored = true
-      } else {
-         inactive = true
-         ignored = false
-         inactiveTests = results
-      }
-   }
-
-   private suspend fun markSpecInactive(kclass: KClass<*>) {
-
       val descriptor: TestDescriptor =
          createDescriptorForSpec(kclass.toDescriptor(), formatter.format(kclass), root)
-      descriptors[kclass.toDescriptor()] = descriptor
-
-      log { "JUnitTestEngineListener: Registering junit dynamic test: $descriptor" }
-      listener.dynamicTestRegistered(descriptor)
-
-      inactiveTests.forEach { (tc, result) ->
-         testIgnored(tc, if (result is TestResult.Ignored) result.reason else null)
-         handleTest(tc)
-      }
-
-      log { "JUnitTestEngineListener: Notifying junit that a spec was ignored [$descriptor]" }
       listener.executionSkipped(descriptor, null)
    }
 
    override suspend fun specFinished(kclass: KClass<*>, t: Throwable?) {
       when {
-         t == null && ignored -> Unit
-         t == null && inactive -> Unit // markSpecInactive(kclass)
          // if we have a spec error before we even started the spec, we will start the spec, add a placeholder
          // to hold the error, mark that test as failed, and then fail the spec as well
          t != null && !started -> {
@@ -220,16 +189,12 @@ class JUnitTestEngineListener(
 
             rootTests.forEach { handleTest(it) }
 
-            val result = when {
-               t != null -> {
+            val result = when (t) {
+               null -> TestExecutionResult.successful()
+               else -> {
                   addPlaceholderTest(descriptor, t)
                   TestExecutionResult.successful()
                }
-               instantiationException != null -> {
-                  instantiationException?.let { addPlaceholderTest(descriptor, it) }
-                  TestExecutionResult.successful()
-               }
-               else -> TestExecutionResult.successful()
             }
 
             log { "JUnitTestEngineListener: Notifying junit that a spec has finished [$descriptor, $result]" }
@@ -244,9 +209,6 @@ class JUnitTestEngineListener(
       children.clear()
       results.clear()
       started = false
-      ignored = false
-      inactive = false
-      inactiveTests = emptyMap()
       descriptors.clear()
    }
 

@@ -29,7 +29,7 @@ internal class IgnoredSpecInterceptor(
       log { "IgnoredSpecInterceptor: ${ref.kclass} has @Ignored == $isIgnored" }
 
       if (isIgnored) {
-         listener.specIgnored(ref.kclass, emptyMap())
+         listener.specIgnored(ref.kclass, "Disabled by @Ignored")
          SpecExtensions(registry).ignored(ref.kclass)
          emptyMap()
       } else {

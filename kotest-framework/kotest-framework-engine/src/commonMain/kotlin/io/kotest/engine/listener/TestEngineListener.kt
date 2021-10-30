@@ -38,42 +38,48 @@ interface TestEngineListener {
     * Invoked once per [Spec] to indicate that this spec will be instantiated
     * and any active tests invoked.
     */
-   suspend fun specStarted(kclass: KClass<*>) {}
+   suspend fun specStarted(kclass: KClass<*>)
 
    /**
     * Invoked when a spec is ignored. If the results map is empty, then this means
     * the spec did not define any tests, or the spec was not instantiated.
     */
-   suspend fun specIgnored(kclass: KClass<*>, results: Map<TestCase, TestResult>) {}
+   suspend fun specIgnored(kclass: KClass<*>, reason: String?)
 
    /**
     * Is invoked once per [Spec] class to indicate this spec has completed.
     */
-   suspend fun specFinished(kclass: KClass<*>, t: Throwable?) {}
+   suspend fun specFinished(kclass: KClass<*>, t: Throwable?)
 
    /**
     * Invoked if a [TestCase] is about to be executed.
     * Will not be invoked if the test is ignored.
     */
-   suspend fun testStarted(testCase: TestCase) {}
+   suspend fun testStarted(testCase: TestCase)
 
    /**
     * Invoked if a [TestCase] will not be executed because it is not enabled.
     */
-   suspend fun testIgnored(testCase: TestCase, reason: String?) {}
+   suspend fun testIgnored(testCase: TestCase, reason: String?)
 
    /**
     * Invoked when all the invocations of a [TestCase] have completed.
     * This function will only be invoked if a test case was active.
     * The result passed in here is the result directly from the test run, before any interception.
     */
-   suspend fun testFinished(testCase: TestCase, result: TestResult) {}
+   suspend fun testFinished(testCase: TestCase, result: TestResult)
 }
 
 abstract class AbstractTestEngineListener : TestEngineListener {
    override suspend fun engineStarted() {}
    override suspend fun engineFinished(t: List<Throwable>) {}
    override suspend fun engineInitialized(context: EngineContext) {}
+   override suspend fun specStarted(kclass: KClass<*>) {}
+   override suspend fun specFinished(kclass: KClass<*>, t: Throwable?) {}
+   override suspend fun specIgnored(kclass: KClass<*>, reason: String?) {}
+   override suspend fun testFinished(testCase: TestCase, result: TestResult) {}
+   override suspend fun testIgnored(testCase: TestCase, reason: String?) {}
+   override suspend fun testStarted(testCase: TestCase) {}
 }
 
 val NoopTestEngineListener = object : AbstractTestEngineListener() {}

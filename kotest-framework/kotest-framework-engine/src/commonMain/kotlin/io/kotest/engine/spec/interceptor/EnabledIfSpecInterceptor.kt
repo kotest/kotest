@@ -18,7 +18,7 @@ import io.kotest.mpp.newInstanceNoArgConstructor
  */
 internal class EnabledIfSpecInterceptor(
    private val listener: TestEngineListener,
-   private val registry: ExtensionRegistry,
+   registry: ExtensionRegistry,
 ) : SpecRefInterceptor {
 
    private val extensions = SpecExtensions(registry)
@@ -36,7 +36,7 @@ internal class EnabledIfSpecInterceptor(
       if (enabled) {
          fn(ref)
       } else {
-         listener.specIgnored(ref.kclass, emptyMap())
+         listener.specIgnored(ref.kclass, "Disabled by @EnabledIf")
          extensions.ignored(ref.kclass)
          emptyMap()
       }

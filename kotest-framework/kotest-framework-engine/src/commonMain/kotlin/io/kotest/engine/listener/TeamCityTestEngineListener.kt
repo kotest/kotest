@@ -155,17 +155,8 @@ class TeamCityTestEngineListener(
       }
    }
 
-   // ignored specs are completely hidden from output
-   // inactive specs are included in the output with a placeholder ignored tests in order that
-   // intellij shows the spec as "ignored" (it won't if the test suite is just empty)
-   override suspend fun specIgnored(kclass: KClass<*>, results: Map<TestCase, TestResult>) {
-      if (results.isNotEmpty()) {
-         startSpec(kclass)
-         results.forEach { (testCase, result) ->
-            testIgnored(testCase, if (result is TestResult.Ignored) result.reason else null)
-         }
-      }
-   }
+   // ignored specs are completely hidden from output in team city
+   override suspend fun specIgnored(kclass: KClass<*>, reason: String?) {}
 
    override suspend fun testStarted(testCase: TestCase) {
       if (testCase.isRootTest()) rootTests.add(testCase)

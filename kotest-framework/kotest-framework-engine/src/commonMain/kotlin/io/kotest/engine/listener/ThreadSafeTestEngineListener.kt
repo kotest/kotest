@@ -56,9 +56,9 @@ class ThreadSafeTestEngineListener(private val listener: TestEngineListener) : T
       }
    }
 
-   override suspend fun specIgnored(kclass: KClass<*>, results: Map<TestCase, TestResult>) {
+   override suspend fun specIgnored(kclass: KClass<*>, reason: String?) {
       mutex.withLock {
-         listener.specIgnored(kclass, results)
+         listener.specIgnored(kclass, reason)
       }
    }
 

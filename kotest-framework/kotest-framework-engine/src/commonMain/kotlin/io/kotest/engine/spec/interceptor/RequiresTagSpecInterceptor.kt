@@ -34,7 +34,7 @@ internal class RequiresTagSpecInterceptor(
       if (isActive) {
          fn(ref)
       } else {
-         listener.specIgnored(ref.kclass, emptyMap())
+         listener.specIgnored(ref.kclass, "Disabled due to @RequiresTag")
          SpecExtensions(registry).ignored(ref.kclass)
          emptyMap()
       }
