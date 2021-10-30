@@ -17,6 +17,10 @@ object TestDslState {
       started.remove(name.path().value)
    }
 
+   /**
+    * Will throw an exception if we had a test that was not constructed properly (looks
+    * for any test where we invoked .config but did not pass in a test lambda aftewards).
+    */
    fun checkState() {
       val unfinished = started.map { "Test was not fully defined: $it" }
       if (unfinished.isNotEmpty())

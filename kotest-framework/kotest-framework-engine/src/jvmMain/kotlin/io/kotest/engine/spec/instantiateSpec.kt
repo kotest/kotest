@@ -7,8 +7,8 @@ import io.kotest.core.spec.Spec
 import kotlin.reflect.KClass
 import kotlin.reflect.jvm.isAccessible
 
-internal actual suspend fun instantiate(kclass: KClass<out Spec>, registry: ExtensionRegistry): Result<Spec> {
-   return createAndInitializeSpec(kclass, registry)
+internal actual suspend fun instantiate(kclass: KClass<*>, registry: ExtensionRegistry): Result<Spec> {
+   return createAndInitializeSpec(kclass as KClass<out Spec>, registry)
 }
 
 /**

@@ -10,9 +10,9 @@ import io.kotest.engine.listener.NoopTestEngineListener
 import io.kotest.engine.listener.TestEngineListener
 
 /**
- * Extension that intercepts calls to the engine.
+ * Internal pipeline that intercepts calls to the engine.
  *
- * This extension can be used to execute code before or after the engine
+ * This can be used to execute code before or after the engine
  * and permits changing the [EngineContext].
  */
 @KotestInternal
