@@ -237,6 +237,12 @@ Some elements were missing: [
                listOf<Any>(1L, 2L).shouldContainExactlyInAnyOrder(listOf<Any>(1, 2))
             }.shouldHaveMessage("Collection should contain [1, 2] in any order, but was [1L, 2L]")
          }
+
+         "disambiguate when using optional expected value" {
+            val actual: List<String> = listOf("A", "B", "C")
+            val expected: List<String>? = listOf("A", "B", "C")
+            actual.shouldContainExactlyInAnyOrder(expected)
+         }
       }
    }
 }

@@ -4,6 +4,7 @@ import io.kotest.assertions.show.show
 import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
 import io.kotest.matchers.neverNullMatcher
+import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldNot
 
@@ -43,7 +44,8 @@ infix fun <T> Array<T>.shouldContainExactlyInAnyOrder(expected: Array<T>): Array
  * then calling the hashCode method on each of the two objects must produce the same integer result.
  *
  */
-infix fun <T, C : Collection<T>> C?.shouldContainExactlyInAnyOrder(expected: C): C? {
+infix fun <T, C : Collection<T>> C?.shouldContainExactlyInAnyOrder(expected: Collection<T>?): C? {
+   expected.shouldNotBeNull()
    this should containExactlyInAnyOrder(expected)
    return this
 }
@@ -91,7 +93,8 @@ infix fun <T> Array<T>.shouldNotContainExactlyInAnyOrder(expected: Array<T>): Ar
    return this
 }
 
-infix fun <T, C : Collection<T>> C?.shouldNotContainExactlyInAnyOrder(expected: C): C? {
+infix fun <T, C : Collection<T>> C?.shouldNotContainExactlyInAnyOrder(expected: Collection<T>?): C? {
+   expected.shouldNotBeNull()
    this shouldNot containExactlyInAnyOrder(expected)
    return this
 }
@@ -111,7 +114,6 @@ fun <T, C : Collection<T>> containExactlyInAnyOrder(expected: C): Matcher<C?> = 
    MatcherResult(
       passed,
       { "Collection should contain ${expected.show().value} in any order, but was ${value.show().value}" },
-      {
-         "Collection should not contain exactly ${expected.show().value} in any order"
-      })
+      { "Collection should not contain exactly ${expected.show().value} in any order" }
+   )
 }
