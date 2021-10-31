@@ -28,7 +28,7 @@ repositories {
 
 dependencies {
    compileOnly(gradleApi())
-   compileOnly("org.jetbrains.kotlin:kotlin-gradle-plugin:1.5.31")
+   compileOnly("org.jetbrains.kotlin:kotlin-gradle-plugin:1.6.20-dev-4660")
 }
 
 tasks {
