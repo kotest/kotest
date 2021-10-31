@@ -23,7 +23,7 @@ internal class TagsEnabledExtension(private val tags: Tags) : TestEnabledExtensi
       val enabledInTags = tags.parse().isActive(testCase.config.tags)
       if (!enabledInTags) {
          return Enabled
-            .disabled("${testCase.descriptor.path()} is disabled by tags")
+            .disabled("Disabled by tags: ${tags.expression}")
             .also { it.reason?.let { log { it } } }
       }
       return Enabled.enabled

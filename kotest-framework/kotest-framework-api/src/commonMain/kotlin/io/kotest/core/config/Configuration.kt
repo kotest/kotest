@@ -18,20 +18,6 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlin.time.Duration
 
 /**
- * The global configuration singleton.
- *
- * This is a global singleton for historic reasons and is slowly being replaced with a non-global variable.
- *
- * Expect this val to disappear in Kotest 6.0
- *
- */
-@Deprecated(
-   "Setting parameters directly on the global configuration object is subject to race conditions and is not always detected. Use project config to configure Kotest safely. Deprecated since 5.0",
-   level = DeprecationLevel.ERROR
-)
-val configuration = Configuration()
-
-/**
  * This class defines project wide settings that are used when executing tests.
  *
  * Some settings here are fallback values. That is, a setting specified in a Spec or Test
