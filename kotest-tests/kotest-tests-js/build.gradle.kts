@@ -12,12 +12,6 @@ plugins {
    id("io.kotest.multiplatform").version("5.0.0.5")
 }
 
-repositories {
-   mavenCentral()
-   mavenLocal()
-   maven("https://oss.sonatype.org/content/repositories/snapshots/")
-}
-
 kotlin {
    targets {
       js(IR) {

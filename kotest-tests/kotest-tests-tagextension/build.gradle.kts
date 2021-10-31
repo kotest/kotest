@@ -4,10 +4,6 @@ plugins {
    id("java-library")
 }
 
-repositories {
-   mavenCentral()
-}
-
 dependencies {
    implementation(project(Projects.Framework.engine))
    implementation(project(Projects.Assertions.Shared))

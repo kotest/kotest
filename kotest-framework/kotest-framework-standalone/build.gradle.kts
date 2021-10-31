@@ -15,10 +15,6 @@ plugins {
 
 apply(plugin = "com.github.johnrengelman.shadow")
 
-repositories {
-   mavenCentral()
-}
-
 application {
    mainClassName = "io.kotest.engine.launcher.MainKt"
 }

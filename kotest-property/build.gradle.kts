@@ -5,10 +5,6 @@ plugins {
    id("com.adarshr.test-logger")
 }
 
-repositories {
-   mavenCentral()
-}
-
 kotlin {
 
    targets {
@@ -163,23 +159,6 @@ kotlin {
          languageSettings.optIn("kotlin.ExperimentalStdlibApi")
          languageSettings.optIn("kotlin.experimental.ExperimentalTypeInference")
       }
-   }
-}
-
-
-tasks.named<Test>("jvmTest") {
-   useJUnitPlatform()
-   filter {
-      isFailOnNoMatchingTests = false
-   }
-   testLogging {
-      showExceptions = true
-      showStandardStreams = true
-      events = setOf(
-         org.gradle.api.tasks.testing.logging.TestLogEvent.FAILED,
-         org.gradle.api.tasks.testing.logging.TestLogEvent.PASSED
-      )
-      exceptionFormat = org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
    }
 }
 

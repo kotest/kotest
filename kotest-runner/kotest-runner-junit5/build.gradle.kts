@@ -1,16 +1,9 @@
-import org.gradle.api.tasks.testing.logging.TestExceptionFormat
-import org.gradle.api.tasks.testing.logging.TestLogEvent
-
 plugins {
    id("java")
    kotlin("multiplatform")
    id("java-library")
    id("maven-publish")
    id("com.adarshr.test-logger")
-}
-
-repositories {
-   mavenCentral()
 }
 
 kotlin {
@@ -66,26 +59,6 @@ kotlin {
          languageSettings.optIn("kotlin.time.ExperimentalTime")
          languageSettings.optIn("kotlin.experimental.ExperimentalTypeInference")
       }
-   }
-}
-
-tasks.named<Test>("jvmTest") {
-   useJUnitPlatform()
-   filter {
-      isFailOnNoMatchingTests = false
-   }
-   testLogging {
-      showExceptions = true
-      showStandardStreams = true
-      showCauses = true
-      events = setOf(
-         TestLogEvent.FAILED,
-         TestLogEvent.PASSED,
-         TestLogEvent.STANDARD_OUT,
-         TestLogEvent.STARTED,
-         TestLogEvent.STANDARD_ERROR
-      )
-      exceptionFormat = TestExceptionFormat.FULL
    }
 }
 

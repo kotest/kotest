@@ -4,10 +4,6 @@ plugins {
    id("java-library")
 }
 
-repositories {
-   mavenCentral()
-}
-
 kotlin {
 
    targets {
@@ -35,25 +31,6 @@ kotlin {
             implementation(Libs.Coroutines.coreJvm)
          }
       }
-   }
-}
-
-tasks.named<Test>("jvmTest") {
-   useJUnitPlatform()
-   filter {
-      setFailOnNoMatchingTests(false)
-   }
-   testLogging {
-      showExceptions = true
-      showStandardStreams = true
-      events = setOf(
-         org.gradle.api.tasks.testing.logging.TestLogEvent.SKIPPED,
-         org.gradle.api.tasks.testing.logging.TestLogEvent.FAILED,
-         org.gradle.api.tasks.testing.logging.TestLogEvent.PASSED,
-         org.gradle.api.tasks.testing.logging.TestLogEvent.STANDARD_OUT,
-         org.gradle.api.tasks.testing.logging.TestLogEvent.STANDARD_ERROR
-      )
-      exceptionFormat = org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
    }
 }
 

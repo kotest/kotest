@@ -1,6 +1,3 @@
-import org.gradle.api.tasks.testing.logging.TestExceptionFormat
-import org.gradle.api.tasks.testing.logging.TestLogEvent
-
 plugins {
    id("java")
    id("kotlin-multiplatform")
@@ -50,19 +47,6 @@ kotlin {
          languageSettings.optIn("kotlin.time.ExperimentalTime")
          languageSettings.optIn("kotlin.experimental.ExperimentalTypeInference")
       }
-   }
-}
-
-tasks.named<Test>("jvmTest") {
-   useJUnitPlatform()
-   filter {
-      isFailOnNoMatchingTests = false
-   }
-   testLogging {
-      showExceptions = true
-      showStandardStreams = true
-      events = setOf(TestLogEvent.FAILED, TestLogEvent.PASSED)
-      exceptionFormat = TestExceptionFormat.FULL
    }
 }
 
