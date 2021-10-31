@@ -62,7 +62,7 @@ class KotestTestInstances(private val instance: Spec) : TestInstances {
    override fun getInnermostInstance(): Any = instance
    override fun getEnclosingInstances(): MutableList<Any> = mutableListOf(instance)
    override fun getAllInstances(): MutableList<Any> = mutableListOf(instance)
-   override fun <T : Any?> findInstance(requiredType: Class<T>): Optional<T> =
+   override fun <T : Any> findInstance(requiredType: Class<T>): Optional<T> =
       when (requiredType.name) {
          instance::class.java.name -> Optional.of(instance as T)
          else -> Optional.empty()
