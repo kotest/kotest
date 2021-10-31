@@ -5,7 +5,7 @@ import io.kotest.core.extensions.EnabledExtension
 import io.kotest.core.test.Enabled
 import io.kotest.core.test.TestCase
 import io.kotest.engine.spec.SpecExtensions
-import io.kotest.engine.tags.activeTags
+import io.kotest.engine.tags.runtimeTags
 
 /**
  * Returns [Enabled.enabled] if the given [TestCase] is enabled based on default rules
@@ -32,7 +32,7 @@ internal fun TestCase.isEnabledInternal(conf: Configuration): Enabled {
 
    val extensions = listOf(
       TestConfigEnabledExtension,
-      TagsEnabledExtension(conf.activeTags()),
+      TagsEnabledExtension(conf.runtimeTags()),
       TestFilterEnabledExtension(conf.registry()),
       SystemPropertyTestFilterEnabledExtension,
       FocusEnabledExtension,

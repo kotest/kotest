@@ -15,7 +15,7 @@ import io.kotest.engine.interceptors.EngineContext
 import io.kotest.engine.interceptors.EngineInterceptor
 import io.kotest.engine.listener.TestEngineListener
 import io.kotest.engine.spec.ReflectiveSpecRef
-import io.kotest.engine.tags.activeTags
+import io.kotest.engine.tags.runtimeTags
 import io.kotest.mpp.log
 import kotlinx.coroutines.coroutineScope
 import kotlin.reflect.KClass
@@ -105,7 +105,7 @@ class TestEngine(initial: TestEngineConfig) {
          { context -> extension.intercept(context, next) }
       }
 
-      val tags = config.configuration.activeTags()
+      val tags = config.configuration.runtimeTags()
       log { "TestEngine: Active tags: ${tags.expression}" }
 
       // we want to suspend the engine while we wait for all specs to complete
