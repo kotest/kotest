@@ -52,6 +52,9 @@ See detailed post about 5.0 features and changes [here](blog/release_5.0.md)
 * `shouldEqualJson` now supports high-precision numbers (#2458)
 * Added `shouldHaveSameStructureAs` to file matchers
 * Added `shouldHaveSameStructureAndContentAs` to file matchers
+* `projectContext` is now available inside a test to provide access to the runtime properties of the test engine.
+
+
 
 #### Deprecations
 

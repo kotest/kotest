@@ -1,5 +1,8 @@
 ### Release 5.0
 
+[Breaking Changes](#breaking-changes)
+[Deprecations](#deprecations)
+
 ### Breaking Changes
 
 #### Kotlin 1.6 is now the minimum supported version
