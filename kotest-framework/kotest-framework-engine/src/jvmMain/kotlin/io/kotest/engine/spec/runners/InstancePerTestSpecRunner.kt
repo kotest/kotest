@@ -148,8 +148,8 @@ internal class InstancePerTestSpecRunner(
                   if (isTarget) listener.testStarted(testCase)
                }
 
-               override suspend fun testIgnored(testCase: TestCase) {
-                  if (isTarget) listener.testIgnored(testCase, null)
+               override suspend fun testIgnored(testCase: TestCase, reason: String?) {
+                  if (isTarget) listener.testIgnored(testCase, reason)
                }
 
                override suspend fun testFinished(testCase: TestCase, result: TestResult) {
