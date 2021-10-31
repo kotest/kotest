@@ -9,7 +9,7 @@ import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestType
 import io.kotest.engine.test.AbstractTestCaseExecutionListener
-import io.kotest.engine.test.contexts.TerminalTestContext
+import io.kotest.engine.test.scopes.TerminalTestScope
 import io.kotest.engine.test.interceptors.TestFinishedInterceptor
 import io.kotest.matchers.shouldBe
 
@@ -24,7 +24,7 @@ class TestFinishedExecutionInterceptorTest : FunSpec({
          sourceRef(),
          TestType.Test
       )
-      val context = TerminalTestContext(tc, coroutineContext)
+      val context = TerminalTestScope(tc, coroutineContext)
       var finished = false
       val listener = object : AbstractTestCaseExecutionListener() {
          override suspend fun testFinished(testCase: TestCase, result: TestResult) {
@@ -45,7 +45,7 @@ class TestFinishedExecutionInterceptorTest : FunSpec({
          sourceRef(),
          TestType.Test
       )
-      val context = TerminalTestContext(tc, coroutineContext)
+      val context = TerminalTestScope(tc, coroutineContext)
       var ignored = false
       var r: String? = null
       val listener = object : AbstractTestCaseExecutionListener() {

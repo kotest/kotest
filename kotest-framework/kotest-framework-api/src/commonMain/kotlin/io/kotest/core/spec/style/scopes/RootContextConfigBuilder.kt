@@ -5,7 +5,7 @@ import io.kotest.core.Tag
 import io.kotest.core.names.TestName
 import io.kotest.core.test.EnabledIf
 import io.kotest.core.test.EnabledOrReasonIf
-import io.kotest.core.test.TestContext
+import io.kotest.core.test.TestScope
 import io.kotest.core.test.config.UnresolvedTestConfig
 import kotlin.time.Duration
 
@@ -14,7 +14,7 @@ class RootContextConfigBuilder<T>(
    private val name: TestName,
    private val xdisabled: Boolean,
    private val context: RootContext,
-   val contextFn: (TestContext) -> T
+   val contextFn: (TestScope) -> T
 ) {
 
    @ExperimentalKotest

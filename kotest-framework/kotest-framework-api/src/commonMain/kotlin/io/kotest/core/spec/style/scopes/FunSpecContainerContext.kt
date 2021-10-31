@@ -4,7 +4,7 @@ import io.kotest.common.ExperimentalKotest
 import io.kotest.core.descriptors.append
 import io.kotest.core.names.TestName
 import io.kotest.core.spec.KotestDsl
-import io.kotest.core.test.TestContext
+import io.kotest.core.test.TestScope
 
 @Deprecated("This interface has been renamed to FunSpecContainerContext. Deprecated since 4.5.")
 typealias FunSpecContextScope = FunSpecContainerContext
@@ -19,8 +19,8 @@ typealias FunSpecContextScope = FunSpecContainerContext
  */
 @KotestDsl
 class FunSpecContainerContext(
-   private val testContext: TestContext,
-) : AbstractContainerContext(testContext) {
+   private val testScope: TestScope,
+) : AbstractContainerScope(testScope) {
 
    /**
     * Adds a 'context' container test as a child of the current test case.
@@ -65,7 +65,7 @@ class FunSpecContainerContext(
     * Adds a test case to this context, expecting config.
     */
    suspend fun test(name: String): TestWithConfigBuilder {
-      TestDslState.startTest(testContext.testCase.descriptor.append(name))
+      TestDslState.startTest(testScope.testCase.descriptor.append(name))
       return TestWithConfigBuilder(
          name = TestName(name),
          context = this,
@@ -77,7 +77,7 @@ class FunSpecContainerContext(
     * Adds a disabled test case to this context, expecting config.
     */
    suspend fun xtest(name: String): TestWithConfigBuilder {
-      TestDslState.startTest(testContext.testCase.descriptor.append(name))
+      TestDslState.startTest(testScope.testCase.descriptor.append(name))
       return TestWithConfigBuilder(
          name = TestName(name),
          context = this,
@@ -88,14 +88,14 @@ class FunSpecContainerContext(
    /**
     * Adds a test case to this context.
     */
-   suspend fun test(name: String, test: suspend TestContext.() -> Unit) {
+   suspend fun test(name: String, test: suspend TestScope.() -> Unit) {
       registerTest(TestName(name), false, null, test)
    }
 
    /**
     * Adds a disabled test case to this context.
     */
-   suspend fun xtest(name: String, test: suspend TestContext.() -> Unit) {
+   suspend fun xtest(name: String, test: suspend TestScope.() -> Unit) {
       registerTest(TestName(name), true, null, test)
    }
 }

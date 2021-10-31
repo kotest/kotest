@@ -2,9 +2,9 @@ package io.kotest.engine.test.interceptors
 
 import io.kotest.core.config.Configuration
 import io.kotest.core.test.TestCase
-import io.kotest.core.test.TestContext
+import io.kotest.core.test.TestScope
 import io.kotest.core.test.TestResult
-import io.kotest.engine.test.contexts.withCoroutineContext
+import io.kotest.engine.test.scopes.withCoroutineContext
 import io.kotest.engine.test.resolvedTimeout
 import io.kotest.mpp.NamedThreadFactory
 import io.kotest.mpp.log
@@ -30,8 +30,8 @@ internal actual fun blockedThreadTimeoutInterceptor(configuration: Configuration
 internal class BlockedThreadTimeoutInterceptor(private val configuration: Configuration) : TestExecutionInterceptor {
 
    override suspend fun intercept(
-      test: suspend (TestCase, TestContext) -> TestResult
-   ): suspend (TestCase, TestContext) -> TestResult = { testCase, context ->
+      test: suspend (TestCase, TestScope) -> TestResult
+   ): suspend (TestCase, TestScope) -> TestResult = { testCase, context ->
 
       val interruption = testCase.config.blockingTest ?: testCase.spec.blockingTest ?: false
       if (interruption) {

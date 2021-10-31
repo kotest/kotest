@@ -62,10 +62,10 @@ class ShouldSpecInstancePerLeafTest : ShouldSpec() {
       }
 
       context("picard") {
-         Counters2.executed.add(this.testContext.testCase.descriptor.id.value)
+         Counters2.executed.add(this.testScope.testCase.descriptor.id.value)
          Counters2.threads.add(Thread.currentThread().id)
          context("riker") {
-            Counters2.executed.add(this.testContext.testCase.descriptor.id.value)
+            Counters2.executed.add(this.testScope.testCase.descriptor.id.value)
             Counters2.threads.add(Thread.currentThread().id)
             should("data") {
                Counters2.executed.add(this.testCase.descriptor.id.value)
@@ -81,14 +81,14 @@ class ShouldSpecInstancePerLeafTest : ShouldSpec() {
             }
          }
          context("mott") {
-            Counters2.executed.add(this.testContext.testCase.descriptor.id.value)
+            Counters2.executed.add(this.testScope.testCase.descriptor.id.value)
             Counters2.threads.add(Thread.currentThread().id)
             should("ro") {
                Counters2.executed.add(this.testCase.descriptor.id.value)
                Counters2.threads.add(Thread.currentThread().id)
             }
             context("obrien") {
-               Counters2.executed.add(this.testContext.testCase.descriptor.id.value)
+               Counters2.executed.add(this.testScope.testCase.descriptor.id.value)
                Counters2.threads.add(Thread.currentThread().id)
                should("barclay") {
                   Counters2.executed.add(this.testCase.descriptor.id.value)
@@ -104,7 +104,7 @@ class ShouldSpecInstancePerLeafTest : ShouldSpec() {
             }
          }
          context("crusher") {
-            Counters2.executed.add(this.testContext.testCase.descriptor.id.value)
+            Counters2.executed.add(this.testScope.testCase.descriptor.id.value)
             Counters2.threads.add(Thread.currentThread().id)
             should("troi") {
                Counters2.executed.add(this.testCase.descriptor.id.value)
@@ -124,7 +124,7 @@ class ShouldSpecInstancePerLeafTest : ShouldSpec() {
          }
       }
       context("q") {
-         Counters2.executed.add(this.testContext.testCase.descriptor.id.value)
+         Counters2.executed.add(this.testScope.testCase.descriptor.id.value)
          Counters2.threads.add(Thread.currentThread().id)
          should("wesley") {
             Counters2.executed.add(this.testCase.descriptor.id.value)
@@ -141,7 +141,7 @@ class ShouldSpecInstancePerLeafTest : ShouldSpec() {
          }
       }
       context("kehler") {
-         Counters2.executed.add(this.testContext.testCase.descriptor.id.value)
+         Counters2.executed.add(this.testScope.testCase.descriptor.id.value)
          Counters2.threads.add(Thread.currentThread().id)
          should("keiko") {
             Counters2.executed.add(this.testCase.descriptor.id.value)

@@ -5,7 +5,7 @@ import io.kotest.core.extensions.TestCaseExtension
 import io.kotest.core.names.TestName
 import io.kotest.core.test.EnabledIf
 import io.kotest.core.test.TestCaseSeverityLevel
-import io.kotest.core.test.TestContext
+import io.kotest.core.test.TestScope
 import io.kotest.core.test.config.UnresolvedTestConfig
 import kotlin.time.Duration
 
@@ -17,13 +17,13 @@ data class FreeSpecContextConfigBuilder(val name: String, val config: Unresolved
 interface FreeSpecRootContext : RootContext {
 
    // eg, "this test" - { } // adds a container test
-   infix operator fun String.minus(test: suspend FreeSpecContainerContext.() -> Unit) {
-      addContainer(TestName(this), false, null) { FreeSpecContainerContext(this).test() }
+   infix operator fun String.minus(test: suspend FreeSpecContainerScope.() -> Unit) {
+      addContainer(TestName(this), false, null) { FreeSpecContainerScope(this).test() }
    }
 
    // "this test" { } // adds a leaf test
-   infix operator fun String.invoke(test: suspend FreeSpecTerminalContext.() -> Unit) {
-      addTest(TestName(this), false, null) { FreeSpecTerminalContext(this).test() }
+   infix operator fun String.invoke(test: suspend FreeSpecTerminalScope.() -> Unit) {
+      addTest(TestName(this), false, null) { FreeSpecTerminalScope(this).test() }
    }
 
    /**
@@ -63,8 +63,8 @@ interface FreeSpecRootContext : RootContext {
     *
     * eg, "this test".config(...) - { }
     */
-   infix operator fun FreeSpecContextConfigBuilder.minus(test: suspend FreeSpecContainerContext.() -> Unit) {
-      addContainer(TestName(name), false, config) { FreeSpecContainerContext(this).test() }
+   infix operator fun FreeSpecContextConfigBuilder.minus(test: suspend FreeSpecContainerScope.() -> Unit) {
+      addContainer(TestName(name), false, config) { FreeSpecContainerScope(this).test() }
    }
 
    /**
@@ -83,7 +83,7 @@ interface FreeSpecRootContext : RootContext {
       invocationTimeout: Duration? = null,
       severity: TestCaseSeverityLevel? = null,
       failfast: Boolean? = null,
-      test: suspend TestContext.() -> Unit,
+      test: suspend TestScope.() -> Unit,
    ) {
       val config = UnresolvedTestConfig(
          enabled = enabled,

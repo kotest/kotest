@@ -9,7 +9,7 @@ import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestType
-import io.kotest.engine.test.contexts.NoopTestContext
+import io.kotest.engine.test.scopes.NoopTestScope
 import io.kotest.engine.test.interceptors.InvocationCountCheckInterceptor
 import io.kotest.matchers.booleans.shouldBeTrue
 
@@ -30,7 +30,7 @@ class InvocationCountCheckInterceptorTest : DescribeSpec() {
             InvocationCountCheckInterceptor.intercept { _, _ ->
                fired = true
                TestResult.success(0)
-            }.invoke(tc.copy(config = tc.config.copy(invocations = 1)), NoopTestContext(tc, coroutineContext))
+            }.invoke(tc.copy(config = tc.config.copy(invocations = 1)), NoopTestScope(tc, coroutineContext))
             fired.shouldBeTrue()
          }
 
@@ -47,7 +47,7 @@ class InvocationCountCheckInterceptorTest : DescribeSpec() {
             InvocationCountCheckInterceptor.intercept { _, _ ->
                fired = true
                TestResult.success(0)
-            }.invoke(tc.copy(config = tc.config.copy(invocations = 44)), NoopTestContext(tc, coroutineContext))
+            }.invoke(tc.copy(config = tc.config.copy(invocations = 44)), NoopTestScope(tc, coroutineContext))
             fired.shouldBeTrue()
          }
 
@@ -62,7 +62,7 @@ class InvocationCountCheckInterceptorTest : DescribeSpec() {
             )
             shouldThrowAny {
                InvocationCountCheckInterceptor.intercept { _, _ -> TestResult.success(0) }
-                  .invoke(tc.copy(config = tc.config.copy(invocations = 4)), NoopTestContext(tc, coroutineContext))
+                  .invoke(tc.copy(config = tc.config.copy(invocations = 4)), NoopTestScope(tc, coroutineContext))
             }
          }
       }

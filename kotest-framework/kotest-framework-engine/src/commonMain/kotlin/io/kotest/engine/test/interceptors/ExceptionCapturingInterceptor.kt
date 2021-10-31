@@ -1,7 +1,7 @@
 package io.kotest.engine.test.interceptors
 
 import io.kotest.core.test.TestCase
-import io.kotest.core.test.TestContext
+import io.kotest.core.test.TestScope
 import io.kotest.core.test.TestResult
 import io.kotest.engine.test.createTestResult
 import io.kotest.mpp.log
@@ -14,8 +14,8 @@ import kotlin.time.TimeMark
 internal class ExceptionCapturingInterceptor(private val timeMark: TimeMark) : TestExecutionInterceptor {
 
    override suspend fun intercept(
-      test: suspend (TestCase, TestContext) -> TestResult
-   ): suspend (TestCase, TestContext) -> TestResult = { testCase, context ->
+      test: suspend (TestCase, TestScope) -> TestResult
+   ): suspend (TestCase, TestScope) -> TestResult = { testCase, context ->
       try {
          test(testCase, context).apply {
             log { "ExceptionCapturingInterceptor: Test '${testCase.descriptor.path().value}' completed without exception" }

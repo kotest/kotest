@@ -4,7 +4,6 @@ import io.kotest.core.SourceRef
 import io.kotest.core.config.Configuration
 import io.kotest.core.descriptors.append
 import io.kotest.core.names.TestName
-import io.kotest.core.spec.Spec
 import io.kotest.core.test.config.UnresolvedTestConfig
 import io.kotest.core.test.config.resolveConfig
 
@@ -18,24 +17,23 @@ data class NestedTest(
    val config: UnresolvedTestConfig?, // can be null if the test does not specify config
    val type: TestType,
    val source: SourceRef,
-   val test: suspend TestContext.() -> Unit,
+   val test: suspend TestScope.() -> Unit,
 )
 
 /**
  * Materializes a runtime [TestCase] from this [NestedTest], attaching the test to the given spec.
  */
 fun NestedTest.toTestCase(
-   spec: Spec,
    parent: TestCase,
    configuration: Configuration
 ): TestCase {
 
-   val resolvedTestConfig = resolveConfig(config, disabled, spec, configuration)
+   val resolvedTestConfig = resolveConfig(config, disabled, parent.spec, configuration)
 
    return TestCase(
       descriptor = parent.descriptor.append(name),
       name = name,
-      spec = spec,
+      spec = parent.spec,
       test = test,
       source = source,
       type = type,

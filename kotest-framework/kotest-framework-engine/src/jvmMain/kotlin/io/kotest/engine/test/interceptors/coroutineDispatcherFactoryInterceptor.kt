@@ -2,10 +2,10 @@ package io.kotest.engine.test.interceptors
 
 import io.kotest.core.concurrency.CoroutineDispatcherFactory
 import io.kotest.core.test.TestCase
-import io.kotest.core.test.TestContext
+import io.kotest.core.test.TestScope
 import io.kotest.core.test.TestResult
 import io.kotest.engine.concurrency.FixedThreadCoroutineDispatcherFactory
-import io.kotest.engine.test.contexts.withCoroutineContext
+import io.kotest.engine.test.scopes.withCoroutineContext
 import io.kotest.mpp.log
 import kotlin.coroutines.coroutineContext
 
@@ -20,7 +20,7 @@ internal class CoroutineDispatcherFactoryInterceptor(
    private val defaultCoroutineDispatcherFactory: CoroutineDispatcherFactory
 ) : TestExecutionInterceptor {
 
-   override suspend fun intercept(test: suspend (TestCase, TestContext) -> TestResult): suspend (TestCase, TestContext) -> TestResult {
+   override suspend fun intercept(test: suspend (TestCase, TestScope) -> TestResult): suspend (TestCase, TestScope) -> TestResult {
       return { testCase, context ->
 
          val userFactory = testCase.spec.coroutineDispatcherFactory ?: testCase.spec.coroutineDispatcherFactory()

@@ -3,7 +3,7 @@ package io.kotest.core.spec.style.scopes
 import io.kotest.common.ExperimentalKotest
 import io.kotest.core.names.TestName
 import io.kotest.core.spec.RootTest
-import io.kotest.core.test.TestContext
+import io.kotest.core.test.TestScope
 
 @Deprecated("Renamed to FunSpecRootContext. Deprecated since 4.5.")
 typealias FunSpecRootScope = FunSpecRootContext
@@ -43,12 +43,12 @@ interface FunSpecRootContext : RootContext {
    /**
     * Adds a [RootTest], with the given name and default config.
     */
-   fun test(name: String, test: suspend TestContext.() -> Unit) = addTest(TestName(name), false, null, test)
+   fun test(name: String, test: suspend TestScope.() -> Unit) = addTest(TestName(name), false, null, test)
 
    /**
     * Adds a disabled [RootTest], with the given name and default config.
     */
-   fun xtest(name: String, test: suspend TestContext.() -> Unit) = addTest(TestName(name), true, null, test)
+   fun xtest(name: String, test: suspend TestScope.() -> Unit) = addTest(TestName(name), true, null, test)
 
    /**
     * Adds a disabled [RootTest], with the given name and with config taken from the config builder.

@@ -12,7 +12,7 @@ import io.kotest.engine.describe
 import io.kotest.engine.it
 import io.kotest.engine.listener.TestEngineListener
 import io.kotest.engine.test.TestCaseExecutor
-import io.kotest.engine.test.contexts.TerminalTestContext
+import io.kotest.engine.test.scopes.TerminalTestScope
 import io.kotest.engine.test.interceptors.testNameEscape
 import io.kotest.engine.test.names.getDisplayNameFormatter
 import io.kotest.engine.test.status.isEnabledInternal
@@ -66,7 +66,7 @@ internal class JavascriptSpecExecutorDelegate(private val configuration: Configu
                         PromiseTestCaseExecutionListener(done),
                         NoopCoroutineDispatcherFactory,
                         configuration
-                     ).execute(root, TerminalTestContext(root, cc))
+                     ).execute(root, TerminalTestScope(root, cc))
                   }
 
                   // we don't want to return the promise as the js frameworks will use that for test resolution

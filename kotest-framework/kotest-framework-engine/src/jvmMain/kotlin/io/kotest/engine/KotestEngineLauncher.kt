@@ -24,7 +24,6 @@ class KotestEngineLauncher(
    private val testFilters: List<TestFilter>,
    private val specFilters: List<SpecFilter>,
    private val tags: TagExpression?,
-   private val dumpConfig: Boolean,
    private val scripts: List<KClass<out ScriptTemplateWithArgs>>,
 ) {
 
@@ -45,12 +44,11 @@ class KotestEngineLauncher(
             testFilters = emptyList(),
             specFilters = emptyList(),
             tags = tags,
-            dumpConfig = false,
          )
       }
    }
 
-   constructor() : this(emptyList(), emptyList(), emptyList(), emptyList(), null, false, emptyList())
+   constructor() : this(emptyList(), emptyList(), emptyList(), emptyList(), null, emptyList())
 
    @Deprecated("This class is deprecated since 5.0")
    fun launch(): EngineResult {
@@ -82,7 +80,6 @@ class KotestEngineLauncher(
       testFilters = testFilters,
       specFilters = specFilters,
       tags = tags,
-      dumpConfig = dumpConfig,
       scripts = scripts,
    )
 
@@ -93,7 +90,6 @@ class KotestEngineLauncher(
       testFilters = testFilters,
       specFilters = specFilters,
       tags = tags,
-      dumpConfig = dump,
       scripts = scripts,
    )
 
@@ -105,7 +101,6 @@ class KotestEngineLauncher(
          testFilters = testFilters,
          specFilters = specFilters + filters,
          tags = tags,
-         dumpConfig = dumpConfig,
          scripts = scripts,
       )
    }
@@ -118,7 +113,6 @@ class KotestEngineLauncher(
          testFilters = testFilters + filters,
          specFilters = specFilters,
          tags = tags,
-         dumpConfig = dumpConfig,
          scripts = scripts,
       )
    }
@@ -134,7 +128,6 @@ class KotestEngineLauncher(
          testFilters = testFilters,
          specFilters = specFilters,
          tags = tags,
-         dumpConfig = dumpConfig,
          scripts = scripts,
       )
    }
@@ -153,7 +146,6 @@ class KotestEngineLauncher(
          testFilters = testFilters,
          specFilters = specFilters,
          tags = tags,
-         dumpConfig = dumpConfig,
          scripts = scripts,
       )
    }
@@ -166,7 +158,6 @@ class KotestEngineLauncher(
          testFilters = testFilters,
          specFilters = specFilters,
          tags = tags,
-         dumpConfig = dumpConfig,
          scripts = scripts,
       )
    }

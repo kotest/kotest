@@ -10,7 +10,7 @@ import io.kotest.core.names.TestName
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestType
-import io.kotest.engine.test.contexts.NoopTestContext
+import io.kotest.engine.test.scopes.NoopTestScope
 import io.kotest.engine.test.interceptors.InvocationTimeoutInterceptor
 import io.kotest.engine.test.interceptors.TestTimeoutException
 import kotlinx.coroutines.delay
@@ -36,7 +36,7 @@ class InvocationTimeoutInterceptorTest : FunSpec() {
                TestResult.Success(0.milliseconds)
             }.invoke(
                tc.copy(config = tc.config.copy(invocationTimeout = Duration.milliseconds(1))),
-               NoopTestContext(tc, coroutineContext)
+               NoopTestScope(tc, coroutineContext)
             )
          }
       }

@@ -15,7 +15,7 @@ import io.kotest.core.test.config.ResolvedTestConfig
  * is being executed.
  *
  * It also captures a closure of the body of the test case.
- * This is a function which is invoked with a [TestContext].
+ * This is a function which is invoked with a [TestScope].
  * The context is used so that the test function can, at runtime,
  * register nested tests with the test engine. This allows
  * nested tests to be executed lazily as required, rather
@@ -43,7 +43,7 @@ data class TestCase(
    // the spec instance that contains this testcase
    val spec: Spec,
    // a closure of the test function
-   val test: suspend TestContext.() -> Unit,
+   val test: suspend TestScope.() -> Unit,
    // a reference to the source code where this test case was defined
    val source: SourceRef = sourceRef(),
    // the type specifies if this test case is permitted to contain nested tests (container)

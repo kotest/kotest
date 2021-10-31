@@ -11,8 +11,8 @@ import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.SpecExecutionOrder
 import io.kotest.core.test.AssertionMode
 import io.kotest.core.test.TestCaseOrder
-import io.kotest.core.test.config.TestCaseConfig
 import io.kotest.core.test.config.ResolvedTestConfig
+import io.kotest.core.test.config.TestCaseConfig
 import kotlin.reflect.KClass
 import kotlin.time.Duration
 
@@ -157,7 +157,7 @@ abstract class AbstractProjectConfig {
     * Override this value and set it to true if you want the build to be marked as failed
     * if there was one or more tests that were disabled/ignored.
     */
-   open val failOnIgnoredTests: Boolean = false
+   open val failOnIgnoredTests: Boolean? = null
 
    /**
     * Override this value and set it to true if you want the build to be marked as failed
@@ -234,11 +234,6 @@ abstract class AbstractProjectConfig {
     * then the spec itself will not appear as a node in output.
     */
    open val displaySpecIfNoActiveTests: Boolean? = null
-
-   /**
-    * If set to true, then will output config on startup.
-    */
-   open var dumpConfig: Boolean? = null
 
    open var dispatcherAffinity: Boolean? = null
 

@@ -18,8 +18,7 @@ internal object DumpConfigInterceptor : EngineInterceptor {
       context: EngineContext,
       execute: suspend (EngineContext) -> EngineResult
    ): EngineResult {
-
-      if (syspropEnabled() || context.configuration.dumpConfig) {
+      if (syspropEnabled()) {
          context.configuration.dumpProjectConfig()
       }
       return execute(context)

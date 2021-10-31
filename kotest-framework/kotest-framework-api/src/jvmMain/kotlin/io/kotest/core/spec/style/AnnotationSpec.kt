@@ -6,7 +6,7 @@ import io.kotest.core.sourceRef
 import io.kotest.core.spec.RootTest
 import io.kotest.core.spec.Spec
 import io.kotest.core.test.TestCase
-import io.kotest.core.test.TestContext
+import io.kotest.core.test.TestScope
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestType
 import io.kotest.mpp.unwrapIfReflectionCall
@@ -112,7 +112,7 @@ abstract class AnnotationSpec : Spec() {
          .flatMap { it.findRootTests() }
    }
 
-   private fun KFunction<*>.callExpectingException(expected: KClass<out Throwable>): suspend TestContext.() -> Unit {
+   private fun KFunction<*>.callExpectingException(expected: KClass<out Throwable>): suspend TestScope.() -> Unit {
       return {
          val thrown = try {
             callSuspend(this@AnnotationSpec)
@@ -125,7 +125,7 @@ abstract class AnnotationSpec : Spec() {
       }
    }
 
-   private fun KFunction<*>.callNotExpectingException(): suspend TestContext.() -> Unit {
+   private fun KFunction<*>.callNotExpectingException(): suspend TestScope.() -> Unit {
       return {
          try {
             callSuspend(this@AnnotationSpec)

@@ -2,10 +2,9 @@ package com.sksamuel.kotest.matchers.collections
 
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.assertions.throwables.shouldThrowAny
-import io.kotest.core.spec.KotestDsl
 import io.kotest.core.spec.style.WordSpec
-import io.kotest.core.spec.style.scopes.WordSpecTerminalContext
-import io.kotest.core.spec.style.scopes.WordSpecShouldContainerContext
+import io.kotest.core.spec.style.scopes.WordSpecTerminalScope
+import io.kotest.core.spec.style.scopes.WordSpecShouldContainerScope
 import io.kotest.matchers.sequences.shouldBeLargerThan
 import io.kotest.matchers.sequences.shouldBeSameCountAs
 import io.kotest.matchers.sequences.shouldBeSmallerThan
@@ -40,28 +39,26 @@ import io.kotest.matchers.sequences.shouldNotContainNull
 import io.kotest.matchers.sequences.shouldNotContainOnlyNulls
 import io.kotest.matchers.sequences.shouldNotHaveCount
 import io.kotest.matchers.sequences.shouldNotHaveElementAt
-import io.kotest.matchers.shouldBe
-import java.lang.AssertionError
 
 class SequenceMatchersTest : WordSpec() {
 
    /* PassFail */
-   private suspend fun WordSpecShouldContainerContext.pass(name: String, test: suspend WordSpecTerminalContext.() -> Unit) {
+   private suspend fun WordSpecShouldContainerScope.pass(name: String, test: suspend WordSpecTerminalScope.() -> Unit) {
       ("succeed $name")(test)
    }
 
-   private suspend fun WordSpecShouldContainerContext.succeed(name: String, test: suspend WordSpecTerminalContext.() -> Unit) = pass(name, test)
+   private suspend fun WordSpecShouldContainerScope.succeed(name: String, test: suspend WordSpecTerminalScope.() -> Unit) = pass(name, test)
 
-   fun WordSpecShouldContainerContext.fail(msg: String): Nothing = io.kotest.assertions.fail(msg)
-   suspend fun WordSpecShouldContainerContext.fail(name: String, test: () -> Any?) {
+   fun WordSpecShouldContainerScope.fail(msg: String): Nothing = io.kotest.assertions.fail(msg)
+   suspend fun WordSpecShouldContainerScope.fail(name: String, test: () -> Any?) {
       ("fail $name") { shouldThrowAny(test) }
    }
 
-   suspend inline fun <reified E : Throwable> WordSpecShouldContainerContext.abort(name: String, crossinline test: () -> Any?) {
+   suspend inline fun <reified E : Throwable> WordSpecShouldContainerScope.abort(name: String, crossinline test: () -> Any?) {
       ("abort $name") { shouldThrow<E>(test) }
    }
 
-   suspend inline fun <reified E : Throwable> WordSpecShouldContainerContext.`throw`(name: String, crossinline test: () -> Any?) = abort<E>(
+   suspend inline fun <reified E : Throwable> WordSpecShouldContainerScope.`throw`(name: String, crossinline test: () -> Any?) = abort<E>(
       name,
       test)
 

@@ -8,8 +8,8 @@ import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.engine.listener.TestEngineListener
 import io.kotest.engine.test.TestCaseExecutor
-import io.kotest.engine.test.contexts.DuplicateNameHandlingTestContext
-import io.kotest.engine.test.contexts.InOrderTestContext
+import io.kotest.engine.test.scopes.DuplicateNameHandlingTestScope
+import io.kotest.engine.test.scopes.InOrderTestScope
 import io.kotest.engine.test.listener.TestCaseExecutionListenerToTestEngineListenerAdapter
 import io.kotest.mpp.log
 import kotlin.coroutines.coroutineContext
@@ -40,9 +40,9 @@ internal class DefaultSpecExecutorDelegate(
       materializer.materialize(spec)
          .forEach { testCase ->
             log { "DefaultSpecExecutorDelegate: Executing testCase $testCase" }
-            val context = DuplicateNameHandlingTestContext(
+            val context = DuplicateNameHandlingTestScope(
                configuration.duplicateTestNameMode,
-               InOrderTestContext(
+               InOrderTestScope(
                   testCase,
                   coroutineContext,
                   configuration.duplicateTestNameMode,

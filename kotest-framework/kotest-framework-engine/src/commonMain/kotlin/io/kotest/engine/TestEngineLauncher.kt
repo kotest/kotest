@@ -8,7 +8,6 @@ import io.kotest.core.TagExpression
 import io.kotest.core.config.AbstractProjectConfig
 import io.kotest.core.config.Configuration
 import io.kotest.core.extensions.Extension
-import io.kotest.core.internal.KotestEngineProperties
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.SpecRef
 import io.kotest.engine.config.ConfigManager
@@ -21,7 +20,6 @@ import io.kotest.engine.listener.ThreadSafeTestEngineListener
 import io.kotest.engine.spec.InstanceSpecRef
 import io.kotest.engine.spec.ReflectiveSpecRef
 import io.kotest.mpp.log
-import io.kotest.mpp.sysprop
 import kotlin.reflect.KClass
 
 /**
@@ -37,7 +35,6 @@ class TestEngineLauncher(
    private val refs: List<SpecRef>,
    private val tagExpression: TagExpression?,
    private val extensions: List<Extension>,
-   private val dumpConfig: Boolean,
 ) {
 
    constructor() : this(
@@ -47,7 +44,6 @@ class TestEngineLauncher(
       emptyList(),
       null,
       emptyList(),
-      sysprop(KotestEngineProperties.dumpConfig, "false") == "true",
    )
 
    constructor(listener: TestEngineListener) : this(
@@ -57,7 +53,6 @@ class TestEngineLauncher(
       emptyList(),
       null,
       emptyList(),
-      sysprop(KotestEngineProperties.dumpConfig, "false") == "true",
    )
 
    /**
@@ -78,7 +73,6 @@ class TestEngineLauncher(
          refs = refs,
          tagExpression = tagExpression,
          extensions = extensions,
-         dumpConfig = dumpConfig,
       )
    }
 
@@ -90,7 +84,6 @@ class TestEngineLauncher(
          refs = specs.toList().map { InstanceSpecRef(it) },
          tagExpression = tagExpression,
          extensions = extensions,
-         dumpConfig = dumpConfig,
       )
    }
 
@@ -103,8 +96,15 @@ class TestEngineLauncher(
          refs = specs.toList().map { ReflectiveSpecRef(it) },
          tagExpression = tagExpression,
          extensions = extensions,
-         dumpConfig = dumpConfig,
       )
+   }
+
+   /**
+    * Adds a [AbstractProjectConfig] that was detected by the compiler plugin.
+    */
+   @Deprecated("Use withProjectConfig. Will be removed once compiler plugins are updated")
+   fun withConfig(vararg projectConfig: AbstractProjectConfig): TestEngineLauncher {
+      return withProjectConfig(*projectConfig)
    }
 
    /**
@@ -118,7 +118,6 @@ class TestEngineLauncher(
          refs = refs,
          tagExpression = tagExpression,
          extensions = extensions,
-         dumpConfig = dumpConfig,
       )
    }
 
@@ -130,7 +129,6 @@ class TestEngineLauncher(
          refs = refs,
          tagExpression = expression,
          extensions = extensions,
-         dumpConfig = dumpConfig,
       )
    }
 
@@ -144,7 +142,6 @@ class TestEngineLauncher(
          refs = refs,
          tagExpression = tagExpression,
          extensions = this.extensions + extensions,
-         dumpConfig = dumpConfig,
       )
    }
 
@@ -156,7 +153,6 @@ class TestEngineLauncher(
          refs = refs,
          tagExpression = tagExpression,
          extensions = this.extensions + extensions,
-         dumpConfig = dumpConfig,
       )
    }
 

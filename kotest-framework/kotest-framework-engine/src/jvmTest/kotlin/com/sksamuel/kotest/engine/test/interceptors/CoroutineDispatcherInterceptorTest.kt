@@ -9,7 +9,7 @@ import io.kotest.core.names.TestName
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestType
-import io.kotest.engine.test.contexts.NoopTestContext
+import io.kotest.engine.test.scopes.NoopTestScope
 import io.kotest.engine.test.interceptors.CoroutineDispatcherFactoryInterceptor
 import io.kotest.matchers.string.shouldStartWith
 import kotlinx.coroutines.asCoroutineDispatcher
@@ -45,7 +45,7 @@ class CoroutineDispatcherInterceptorTest : DescribeSpec() {
             CoroutineDispatcherFactoryInterceptor(controller).intercept { _, _ ->
                Thread.currentThread().name.shouldStartWith("foo")
                TestResult.success(0)
-            }.invoke(tc, NoopTestContext(tc, coroutineContext))
+            }.invoke(tc, NoopTestScope(tc, coroutineContext))
          }
       }
    }

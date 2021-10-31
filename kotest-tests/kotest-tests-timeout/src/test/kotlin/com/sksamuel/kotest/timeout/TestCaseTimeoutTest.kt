@@ -15,7 +15,7 @@ import io.kotest.engine.concurrency.NoopCoroutineDispatcherFactory
 import io.kotest.engine.listener.CollectingTestEngineListener
 import io.kotest.engine.test.NoopTestCaseExecutionListener
 import io.kotest.engine.test.TestCaseExecutor
-import io.kotest.engine.test.contexts.NoopTestContext
+import io.kotest.engine.test.scopes.NoopTestScope
 import io.kotest.matchers.shouldBe
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
@@ -49,7 +49,7 @@ class TestCaseTimeoutTest : FunSpec() {
          val executor = TestCaseExecutor(NoopTestCaseExecutionListener, NoopCoroutineDispatcherFactory, Configuration())
          // needs to run on a separate thread, so we don't interrupt our own thread
          withContext(Dispatchers.IO) {
-            executor.execute(tc, NoopTestContext(testCase, coroutineContext))
+            executor.execute(tc, NoopTestScope(testCase, coroutineContext))
          }
       }
 
@@ -72,7 +72,7 @@ class TestCaseTimeoutTest : FunSpec() {
          val executor = TestCaseExecutor(NoopTestCaseExecutionListener, NoopCoroutineDispatcherFactory, Configuration())
          // needs to run on a separate thread, so we don't interrupt our own thread
          withContext(Dispatchers.IO) {
-            executor.execute(tc, NoopTestContext(testCase, coroutineContext))
+            executor.execute(tc, NoopTestScope(testCase, coroutineContext))
          }
       }
 

@@ -6,11 +6,14 @@ import io.kotest.core.names.TestName
 import io.kotest.core.spec.KotestDsl
 import io.kotest.core.test.EnabledIf
 import io.kotest.core.test.TestCaseSeverityLevel
-import io.kotest.core.test.TestContext
+import io.kotest.core.test.TestScope
 import kotlin.time.Duration
 
-@Deprecated("This interface has been renamed to WordSpecShouldContainerContext. Deprecated since 4.5.")
-typealias WordSpecShouldScope = WordSpecShouldContainerContext
+@Deprecated("This interface has been renamed to WordSpecShouldContainerScope. Deprecated since 4.5")
+typealias WordSpecShouldScope = WordSpecShouldContainerScope
+
+@Deprecated("This interface has been renamed to WordSpecShouldContainerScope. Deprecated since 5.0")
+typealias WordSpecShouldContainerContext = WordSpecShouldContainerScope
 
 /**
  * A scope that allows tests to be registered using the syntax:
@@ -23,9 +26,9 @@ typealias WordSpecShouldScope = WordSpecShouldContainerContext
  *
  */
 @KotestDsl
-class WordSpecShouldContainerContext(
-   val testContext: TestContext,
-) : AbstractContainerContext(testContext) {
+class WordSpecShouldContainerScope(
+   val testScope: TestScope,
+) : AbstractContainerScope(testScope) {
 
    suspend fun String.config(
       enabled: Boolean? = null,
@@ -37,11 +40,11 @@ class WordSpecShouldContainerContext(
       enabledIf: EnabledIf? = null,
       invocationTimeout: Duration? = null,
       severity: TestCaseSeverityLevel? = null,
-      test: suspend TestContext.() -> Unit
+      test: suspend TestScope.() -> Unit
    ) {
       TestWithConfigBuilder(
          TestName(this),
-         context = this@WordSpecShouldContainerContext,
+         context = this@WordSpecShouldContainerScope,
          xdisabled = false,
       ).config(
          enabled,
@@ -57,8 +60,8 @@ class WordSpecShouldContainerContext(
       )
    }
 
-   suspend infix operator fun String.invoke(test: suspend WordSpecTerminalContext.() -> Unit) {
-      registerTest(TestName(this), false, null) { WordSpecTerminalContext(this).test() }
+   suspend infix operator fun String.invoke(test: suspend WordSpecTerminalScope.() -> Unit) {
+      registerTest(TestName(this), false, null) { WordSpecTerminalScope(this).test() }
    }
 
    // we need to override the should method to stop people nesting a should inside a should

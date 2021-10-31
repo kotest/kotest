@@ -4,10 +4,13 @@ import io.kotest.core.spec.KotestDsl
 import kotlinx.coroutines.CoroutineScope
 import kotlin.coroutines.CoroutineContext
 
+@Deprecated("Renamed in 5.0 to TestScope")
+typealias TestContext = TestScope
+
 /**
- * A test in Kotest is simply a function `suspend TestContext.() -> Unit`
+ * A test in Kotest is simply a function `suspend TestScope.() -> Unit`
  *
- * The [TestContext] receiver allows the test function to interact with the test engine at runtime.
+ * The [TestScope] receiver allows the test function to interact with the test engine at runtime.
  * For instance fetching details of the executing test case (such as timeouts, tags),
  * registering a dynamic nested test, or adding a test lifecycle callback.
  *
@@ -16,7 +19,7 @@ import kotlin.coroutines.CoroutineContext
  * elements from the current [CoroutineContext] via [CoroutineContext.get]
  */
 @KotestDsl
-interface TestContext : CoroutineScope {
+interface TestScope : CoroutineScope {
 
    /**
     * The currently executing [TestCase].

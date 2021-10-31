@@ -6,7 +6,7 @@ import kotlinx.coroutines.test.DelayController
 
 @ExperimentalStdlibApi
 @ExperimentalCoroutinesApi
-val TestContext.delayController: DelayController
+val TestScope.delayController: DelayController
    get() = when (val dispatcher = this.coroutineContext[CoroutineDispatcher.Key]) {
       is DelayController -> dispatcher
       else -> error("CoroutineDispatcher is not a delayController [$dispatcher]")

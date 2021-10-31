@@ -26,7 +26,6 @@ data class EngineConfiguration(
    val testCoroutineDispatcher: Boolean,
    val defaultTestConfig: ResolvedTestConfig,
    val failOnEmptyTestSuite: Boolean,
-   val dumpConfig: Boolean,
    val coroutineDebugProbes: Boolean,
    val includeTestScopeAffixes: Boolean?,
    val displaySpecIfNoActiveTests: Boolean,

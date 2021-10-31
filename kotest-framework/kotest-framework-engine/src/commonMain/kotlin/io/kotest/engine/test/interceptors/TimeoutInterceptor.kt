@@ -2,9 +2,9 @@ package io.kotest.engine.test.interceptors
 
 import io.kotest.core.config.Configuration
 import io.kotest.core.test.TestCase
-import io.kotest.core.test.TestContext
+import io.kotest.core.test.TestScope
 import io.kotest.core.test.TestResult
-import io.kotest.engine.test.contexts.withCoroutineContext
+import io.kotest.engine.test.scopes.withCoroutineContext
 import io.kotest.engine.test.resolvedTimeout
 import io.kotest.mpp.log
 import kotlinx.coroutines.TimeoutCancellationException
@@ -20,8 +20,8 @@ internal class TimeoutInterceptor(
 ) : TestExecutionInterceptor {
 
    override suspend fun intercept(
-      test: suspend (TestCase, TestContext) -> TestResult
-   ): suspend (TestCase, TestContext) -> TestResult = { testCase, context ->
+      test: suspend (TestCase, TestScope) -> TestResult
+   ): suspend (TestCase, TestScope) -> TestResult = { testCase, context ->
 
       // this timeout applies to the test itself. If the test has multiple invocations then
       // this timeout applies across all invocations. In other words, if a test has invocations = 3,

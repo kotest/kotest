@@ -8,7 +8,7 @@ import io.kotest.core.descriptors.Descriptor
 import io.kotest.core.spec.Spec
 import io.kotest.core.test.NestedTest
 import io.kotest.core.test.TestCase
-import io.kotest.core.test.TestContext
+import io.kotest.core.test.TestScope
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.toTestCase
 import io.kotest.engine.listener.TestEngineListener
@@ -16,7 +16,7 @@ import io.kotest.engine.spec.SpecExtensions
 import io.kotest.engine.spec.SpecRunner
 import io.kotest.engine.test.TestCaseExecutionListener
 import io.kotest.engine.test.TestCaseExecutor
-import io.kotest.engine.test.contexts.DuplicateNameHandlingTestContext
+import io.kotest.engine.test.scopes.DuplicateNameHandlingTestScope
 import io.kotest.engine.test.scheduler.TestScheduler
 import io.kotest.mpp.log
 import kotlinx.coroutines.coroutineScope
@@ -100,7 +100,7 @@ internal class InstancePerLeafSpecRunner(
 
    private suspend fun run(test: TestCase, target: TestCase) {
       coroutineScope {
-         val context = object : TestContext {
+         val context = object : TestScope {
 
             var open = true
 
@@ -108,7 +108,7 @@ internal class InstancePerLeafSpecRunner(
             override val coroutineContext: CoroutineContext = this@coroutineScope.coroutineContext
             override suspend fun registerTestCase(nested: NestedTest) {
 
-               val t = nested.toTestCase(test.spec, test, configuration)
+               val t = nested.toTestCase(test, configuration)
                // if this test is our target then we definitely run it
                // or if the test is on the path to our target we must run it
                if (t.descriptor.isOnPath(target.descriptor)) {
@@ -130,7 +130,7 @@ internal class InstancePerLeafSpecRunner(
             }
          }
 
-         val context2 = DuplicateNameHandlingTestContext(configuration.duplicateTestNameMode, context)
+         val context2 = DuplicateNameHandlingTestScope(configuration.duplicateTestNameMode, context)
 
          val testExecutor = TestCaseExecutor(
             object : TestCaseExecutionListener {

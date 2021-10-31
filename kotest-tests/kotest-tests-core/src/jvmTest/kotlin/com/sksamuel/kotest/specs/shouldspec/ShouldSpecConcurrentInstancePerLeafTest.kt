@@ -67,10 +67,10 @@
 //      }
 //
 //      context("picard") {
-//         synchronized(Counters) { Counters.executed.add(this.testContext.testCase.descriptor.id.value) }
+//         synchronized(Counters) { Counters.executed.add(this.testScope.testCase.descriptor.id.value) }
 //         synchronized(Counters) { Counters.threads.add(Thread.currentThread().id) }
 //         context("riker") {
-//            synchronized(Counters) { Counters.executed.add(this.testContext.testCase.descriptor.id.value) }
+//            synchronized(Counters) { Counters.executed.add(this.testScope.testCase.descriptor.id.value) }
 //            synchronized(Counters) { Counters.threads.add(Thread.currentThread().id) }
 //            should("data") {
 //               synchronized(Counters) { Counters.executed.add(this.testCase.descriptor.id.value) }
@@ -86,14 +86,14 @@
 //            }
 //         }
 //         context("mott") {
-//            synchronized(Counters) { Counters.executed.add(this.testContext.testCase.descriptor.id.value) }
+//            synchronized(Counters) { Counters.executed.add(this.testScope.testCase.descriptor.id.value) }
 //            synchronized(Counters) { Counters.threads.add(Thread.currentThread().id) }
 //            should("ro") {
 //               synchronized(Counters) { Counters.executed.add(this.testCase.descriptor.id.value) }
 //               synchronized(Counters) { Counters.threads.add(Thread.currentThread().id) }
 //            }
 //            context("obrien") {
-//               synchronized(Counters) { Counters.executed.add(this.testContext.testCase.descriptor.id.value) }
+//               synchronized(Counters) { Counters.executed.add(this.testScope.testCase.descriptor.id.value) }
 //               synchronized(Counters) { Counters.threads.add(Thread.currentThread().id) }
 //               should("barclay") {
 //                  synchronized(Counters) { Counters.executed.add(this.testCase.descriptor.id.value) }
@@ -110,7 +110,7 @@
 //            }
 //         }
 //         context("crusher") {
-//            synchronized(Counters) { Counters.executed.add(this.testContext.testCase.descriptor.id.value) }
+//            synchronized(Counters) { Counters.executed.add(this.testScope.testCase.descriptor.id.value) }
 //            synchronized(Counters) { Counters.threads.add(Thread.currentThread().id) }
 //            should("troi") {
 //               synchronized(Counters) { Counters.executed.add(this.testCase.descriptor.id.value) }
@@ -130,7 +130,7 @@
 //         }
 //      }
 //      context("q") {
-//         synchronized(Counters) { Counters.executed.add(this.testContext.testCase.descriptor.id.value) }
+//         synchronized(Counters) { Counters.executed.add(this.testScope.testCase.descriptor.id.value) }
 //         synchronized(Counters) { Counters.threads.add(Thread.currentThread().id) }
 //         should("wesley") {
 //            synchronized(Counters) { Counters.executed.add(this.testCase.descriptor.id.value) }
@@ -147,7 +147,7 @@
 //         }
 //      }
 //      context("kehler") {
-//         synchronized(Counters) { Counters.executed.add(this.testContext.testCase.descriptor.id.value) }
+//         synchronized(Counters) { Counters.executed.add(this.testScope.testCase.descriptor.id.value) }
 //         synchronized(Counters) { Counters.threads.add(Thread.currentThread().id) }
 //         should("keiko") {
 //            synchronized(Counters) { Counters.executed.add(this.testCase.descriptor.id.value) }

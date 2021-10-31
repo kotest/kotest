@@ -3,7 +3,7 @@ package io.kotest.core.spec.style.scopes
 import io.kotest.core.names.TestName
 import io.kotest.core.sourceRef
 import io.kotest.core.spec.RootTest
-import io.kotest.core.test.TestContext
+import io.kotest.core.test.TestScope
 import io.kotest.core.test.TestType
 import io.kotest.core.test.config.UnresolvedTestConfig
 
@@ -27,7 +27,7 @@ fun RootContext.addTest(
    testName: TestName,
    disabled: Boolean,
    config: UnresolvedTestConfig?,
-   test: suspend TestContext.() -> Unit
+   test: suspend TestScope.() -> Unit
 ) {
    add(
       RootTest(
@@ -49,12 +49,12 @@ fun RootContext.addContainer(
    testName: TestName,
    disabled: Boolean,
    config: UnresolvedTestConfig?,
-   test: suspend ContainerContext.() -> Unit
+   test: suspend ContainerScope.() -> Unit
 ) {
    add(
       RootTest(
          name = testName,
-         test = { AbstractContainerContext(this).test() },
+         test = { AbstractContainerScope(this).test() },
          type = TestType.Container,
          source = sourceRef(),
          disabled = disabled,

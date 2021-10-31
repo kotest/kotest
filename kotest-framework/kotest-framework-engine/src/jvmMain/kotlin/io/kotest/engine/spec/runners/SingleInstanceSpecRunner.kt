@@ -7,16 +7,16 @@ import io.kotest.core.config.Configuration
 import io.kotest.core.spec.Spec
 import io.kotest.core.test.NestedTest
 import io.kotest.core.test.TestCase
-import io.kotest.core.test.TestContext
 import io.kotest.core.test.TestResult
+import io.kotest.core.test.TestScope
 import io.kotest.core.test.toTestCase
 import io.kotest.engine.listener.TestEngineListener
 import io.kotest.engine.spec.SpecExtensions
 import io.kotest.engine.spec.SpecRunner
 import io.kotest.engine.test.TestCaseExecutor
-import io.kotest.engine.test.contexts.DuplicateNameHandlingTestContext
 import io.kotest.engine.test.listener.TestCaseExecutionListenerToTestEngineListenerAdapter
 import io.kotest.engine.test.scheduler.TestScheduler
+import io.kotest.engine.test.scopes.DuplicateNameHandlingTestScope
 import io.kotest.mpp.log
 import kotlinx.coroutines.coroutineScope
 import java.util.concurrent.ConcurrentHashMap
@@ -66,21 +66,21 @@ internal class SingleInstanceSpecRunner(
    inner class Context(
       override val testCase: TestCase,
       override val coroutineContext: CoroutineContext,
-   ) : TestContext {
+   ) : TestScope {
 
       private var failedfast = false
 
       // in the single instance runner we execute each nested test as soon as they are registered
       override suspend fun registerTestCase(nested: NestedTest) {
          log { "Nested test case discovered '${nested}'" }
-         val nestedTestCase = nested.toTestCase(testCase.spec, testCase, configuration)
+         val nestedTestCase = nested.toTestCase(testCase, configuration)
          if (failedfast) {
             log { "A previous nested test failed and failfast is enabled - will mark this as ignored" }
             listener.testIgnored(nestedTestCase, "Failfast enabled on parent test")
          } else {
             // if running this nested test results in an error, we won't launch anymore nested tests
             val result = runTest(nestedTestCase, coroutineContext)
-            if (testCase.config.failfast == true) {
+            if (testCase.config.failfast) {
                if (result.isErrorOrFailure) {
                   failedfast = true
                }
@@ -100,14 +100,12 @@ internal class SingleInstanceSpecRunner(
          configuration,
       )
 
-      val context = DuplicateNameHandlingTestContext(
+      val scope = DuplicateNameHandlingTestScope(
          configuration.duplicateTestNameMode,
          Context(testCase, coroutineContext)
       )
 
-      val result = testExecutor.execute(
-         testCase, context
-      )
+      val result = testExecutor.execute(testCase, scope)
       results[testCase] = result
       return result
    }

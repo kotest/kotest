@@ -2,7 +2,7 @@ package io.kotest.core.spec.style.scopes
 
 import io.kotest.common.ExperimentalKotest
 import io.kotest.core.names.TestName
-import io.kotest.core.test.TestContext
+import io.kotest.core.test.TestScope
 
 @Deprecated("Renamed to ShouldSpecRootContext. Deprecated since 4.5.")
 typealias ShouldSpecRootScope = ShouldSpecRootContext
@@ -27,32 +27,32 @@ interface ShouldSpecRootContext : RootContext {
    /**
     * Adds a top level context scope to the spec.
     */
-   fun context(name: String, test: suspend ShouldSpecContainerContext.() -> Unit) {
+   fun context(name: String, test: suspend ShouldSpecContainerScope.() -> Unit) {
       addContainer(TestName("context ", name, false), false, null) {
-         ShouldSpecContainerContext(this).test()
+         ShouldSpecContainerScope(this).test()
       }
    }
 
    /**
     * Adds a top level context scope to the spec.
     */
-   fun xcontext(name: String, test: suspend ShouldSpecContainerContext.() -> Unit) {
-      addContainer(TestName("context ", name, false), true, null) { ShouldSpecContainerContext(this).test() }
+   fun xcontext(name: String, test: suspend ShouldSpecContainerScope.() -> Unit) {
+      addContainer(TestName("context ", name, false), true, null) { ShouldSpecContainerScope(this).test() }
    }
 
    /**
     * Adds a top level context scope accepting config to the spec.
     */
    @ExperimentalKotest
-   fun context(name: String): RootContextConfigBuilder<ShouldSpecContainerContext> =
-      RootContextConfigBuilder(TestName("context ", name, false), false, this) { ShouldSpecContainerContext(it) }
+   fun context(name: String): RootContextConfigBuilder<ShouldSpecContainerScope> =
+      RootContextConfigBuilder(TestName("context ", name, false), false, this) { ShouldSpecContainerScope(it) }
 
    /**
     * Adds a disabled top level context scope accepting config to the spec.
     */
    @ExperimentalKotest
-   fun xcontext(name: String): RootContextConfigBuilder<ShouldSpecContainerContext> =
-      RootContextConfigBuilder(TestName("context ", name, false), true, this) { ShouldSpecContainerContext(it) }
+   fun xcontext(name: String): RootContextConfigBuilder<ShouldSpecContainerScope> =
+      RootContextConfigBuilder(TestName("context ", name, false), true, this) { ShouldSpecContainerScope(it) }
 
    /**
     * Adds a top level test, with the given name and test function, with test config supplied
@@ -67,11 +67,11 @@ interface ShouldSpecRootContext : RootContext {
    /**
     * Adds a top level test, with the given name and test function, with default test config.
     */
-   fun should(name: String, test: suspend TestContext.() -> Unit) {
+   fun should(name: String, test: suspend TestScope.() -> Unit) {
       addTest(TestName("should ", name, false), false, null, test)
    }
 
-   fun xshould(name: String, test: suspend TestContext.() -> Unit) {
+   fun xshould(name: String, test: suspend TestScope.() -> Unit) {
       addTest(TestName("should ", name, false), true, null, test)
    }
 }

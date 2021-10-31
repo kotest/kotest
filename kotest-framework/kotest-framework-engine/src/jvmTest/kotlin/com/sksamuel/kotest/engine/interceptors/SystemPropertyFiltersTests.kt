@@ -8,7 +8,7 @@ import io.kotest.core.internal.KotestEngineProperties
 import io.kotest.core.spec.Isolate
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.style.FunSpec
-import io.kotest.core.test.TestContext
+import io.kotest.core.test.TestScope
 import io.kotest.engine.TestEngineLauncher
 import io.kotest.extensions.system.withSystemProperties
 import io.kotest.matchers.collections.shouldContainExactly
@@ -17,7 +17,7 @@ import kotlin.reflect.KClass
 
 private val executed = mutableListOf<String>()
 
-internal fun TestContext.testAndIncrementCounter() {
+internal fun TestScope.testAndIncrementCounter() {
    1 shouldBe 1 // fake assertion so tests don't fail from fail on no assertion setting if it's set
    executed.add(this.testCase.name.testName)
 }

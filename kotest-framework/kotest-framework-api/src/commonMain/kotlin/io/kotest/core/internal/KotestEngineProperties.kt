@@ -5,8 +5,6 @@ object KotestEngineProperties {
    @Deprecated("Use the val from the spring extension module (io.kotest.extensions:kotest-extensions-spring")
    const val springIgnoreWarning = "kotest.listener.spring.ignore.warning"
 
-   const val gradle5 = "kotest.gradle5.compatibility"
-
    const val scriptsEnabled = "kotest.framework.scripts.enabled"
 
    const val dumpConfig = "kotest.framework.dump.config"
@@ -48,12 +46,12 @@ object KotestEngineProperties {
    const val disableBangPrefix = "kotest.bang.disable"
 
    /**
-    * The default [IsolationMode] for specs.
+    * The default [io.kotest.core.spec.IsolationMode] for specs.
     */
    const val isolationMode = "kotest.framework.isolation.mode"
 
    /**
-    * The default [AssertionMode] for specs.
+    * The default [io.kotest.core.test.AssertionMode] for tests.
     */
    const val assertionMode = "kotest.framework.assertion.mode"
 
@@ -62,12 +60,21 @@ object KotestEngineProperties {
     */
    const val parallelism = "kotest.framework.parallelism"
 
+   /**
+    * The default timeout for test cases.
+    */
    const val timeout = "kotest.framework.timeout"
 
+   /**
+    * The default timeout for the entire test suite.
+    */
    const val projectTimeout = "kotest.framework.projecttimeout"
 
    const val logLevel = "kotest.framework.loglevel"
 
+   /**
+    * The default timeout for each invocation of a test case.
+    */
    const val invocationTimeout = "kotest.framework.invocation.timeout"
 
    const val concurrentSpecs = "kotest.framework.spec.concurrent"
@@ -101,6 +108,9 @@ object KotestEngineProperties {
     * */
    const val testNameAppendTags = "kotest.framework.testname.append.tags"
 
+   /**
+    * Controls the [io.kotest.core.names.DuplicateTestNameMode] mode.
+    */
    const val duplicateTestNameMode = "kotest.framework.testname.duplicate.mode"
 
    const val disableJarDiscovery = "kotest.framework.discovery.jar.scan.disable"

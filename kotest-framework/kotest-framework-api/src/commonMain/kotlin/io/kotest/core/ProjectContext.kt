@@ -2,7 +2,7 @@ package io.kotest.core
 
 import io.kotest.core.config.Configuration
 import io.kotest.core.spec.SpecRef
-import io.kotest.core.test.TestContext
+import io.kotest.core.test.TestScope
 import kotlin.coroutines.AbstractCoroutineContextElement
 import kotlin.coroutines.CoroutineContext
 
@@ -15,7 +15,7 @@ data class ProjectContextElement(val projectContext: ProjectContext) :
    companion object Key : CoroutineContext.Key<ProjectContextElement>
 }
 
-val TestContext.projectContext: ProjectContext
+val TestScope.projectContext: ProjectContext
    get() = coroutineContext.projectContext
 
 val CoroutineContext.projectContext: ProjectContext

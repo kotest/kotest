@@ -7,8 +7,8 @@ import io.kotest.core.config.Configuration
 import io.kotest.core.spec.Spec
 import io.kotest.core.test.NestedTest
 import io.kotest.core.test.TestCase
-import io.kotest.core.test.TestContext
 import io.kotest.core.test.TestResult
+import io.kotest.core.test.TestScope
 import io.kotest.core.test.TestType
 import io.kotest.core.test.toTestCase
 import io.kotest.engine.listener.TestEngineListener
@@ -16,8 +16,8 @@ import io.kotest.engine.spec.SpecExtensions
 import io.kotest.engine.spec.SpecRunner
 import io.kotest.engine.test.TestCaseExecutionListener
 import io.kotest.engine.test.TestCaseExecutor
-import io.kotest.engine.test.contexts.DuplicateNameHandlingTestContext
 import io.kotest.engine.test.scheduler.TestScheduler
+import io.kotest.engine.test.scopes.DuplicateNameHandlingTestScope
 import io.kotest.mpp.log
 import kotlinx.coroutines.coroutineScope
 import java.util.concurrent.ConcurrentHashMap
@@ -123,13 +123,13 @@ internal class InstancePerTestSpecRunner(
    private suspend fun run(test: TestCase, target: TestCase) {
       val isTarget = test.descriptor == target.descriptor
       coroutineScope {
-         val context = object : TestContext {
+         val context = object : TestScope {
 
             override val testCase: TestCase = test
             override val coroutineContext: CoroutineContext = this@coroutineScope.coroutineContext
             override suspend fun registerTestCase(nested: NestedTest) {
 
-               val t = nested.toTestCase(testCase.spec, testCase, configuration)
+               val t = nested.toTestCase(testCase, configuration)
 
                // if we are currently executing the target, then any registered tests are new, and we
                // should begin execution of them in fresh specs
@@ -141,7 +141,7 @@ internal class InstancePerTestSpecRunner(
                }
             }
          }
-         val context2 = DuplicateNameHandlingTestContext(configuration.duplicateTestNameMode, context)
+         val context2 = DuplicateNameHandlingTestScope(configuration.duplicateTestNameMode, context)
          val testExecutor = TestCaseExecutor(
             object : TestCaseExecutionListener {
                override suspend fun testStarted(testCase: TestCase) {

@@ -9,21 +9,21 @@
 //import io.kotest.core.sourceRef
 //import io.kotest.core.test.Description
 //import io.kotest.core.test.config.TestCaseConfig
-//import io.kotest.core.test.TestContext
+//import io.kotest.core.test.testScope
 //import io.kotest.core.test.TestType
 //import io.kotest.core.test.createNestedTest
 //
 ///**
 // * Registers a root test, with the given name.
 // */
-//fun test(name: String, test: suspend TestContext.() -> Unit) {
+//fun test(name: String, test: suspend testScope.() -> Unit) {
 //   ScriptRuntime.registerRootTest(TestName(name), false, TestType.Test, test)
 //}
 //
 ///**
 // * Registers a root test, with the given name.
 // */
-//fun should(name: String, test: suspend TestContext.() -> Unit) {
+//fun should(name: String, test: suspend testScope.() -> Unit) {
 //   ScriptRuntime.registerRootTest(TestName(name), false, TestType.Test, test)
 //}
 //
@@ -50,15 +50,15 @@
 //
 //class ContextScope(
 //   val description: Description,
-//   val testContext: TestContext,
+//   val testScope: testScope,
 //   val descriptor: Descriptor,
 //) {
 //
-//   suspend fun test(name: String, test: suspend TestContext.() -> Unit) {
+//   suspend fun test(name: String, test: suspend testScope.() -> Unit) {
 //      val testName = TestName(name)
 //      registerNestedTest(
 //         name = testName,
-//         testContext = testContext,
+//         testScope = testScope,
 //         xdisabled = false,
 //         test = test,
 //         config = TestCaseConfig(),
@@ -72,11 +72,11 @@
 //      )
 //   }
 //
-//   suspend fun should(name: String, test: suspend TestContext.() -> Unit) {
+//   suspend fun should(name: String, test: suspend testScope.() -> Unit) {
 //      val testName = TestName(name)
 //      registerNestedTest(
 //         name = testName,
-//         testContext = testContext,
+//         testScope = testScope,
 //         xdisabled = false,
 //         test = test,
 //         config = TestCaseConfig(),
@@ -112,7 +112,7 @@
 //
 //class DescribeScope(
 //   val description: Description,
-//   val testContext: TestContext,
+//   val testScope: testScope,
 //   val descriptor: Descriptor,
 //) {
 //
@@ -129,20 +129,20 @@
 //      )
 //      registerNestedTest(
 //         name = testName,
-//         testContext = testContext,
+//         testScope = testScope,
 //         xdisabled = false,
-//         test = { DescribeScope(description.append(testName, TestType.Test), testContext, d).test() },
+//         test = { DescribeScope(description.append(testName, TestType.Test), testScope, d).test() },
 //         config = TestCaseConfig(),
 //         type = TestType.Test,
 //         descriptor = d,
 //      )
 //   }
 //
-//   suspend fun it(name: String, test: suspend TestContext.() -> Unit) {
+//   suspend fun it(name: String, test: suspend testScope.() -> Unit) {
 //      val testName = TestName(name)
 //      registerNestedTest(
 //         name = testName,
-//         testContext = testContext,
+//         testScope = testScope,
 //         xdisabled = false,
 //         test = test,
 //         config = TestCaseConfig(),
@@ -161,12 +161,12 @@
 //   descriptor: Descriptor.TestDescriptor,
 //   name: TestName,
 //   xdisabled: Boolean,
-//   test: suspend TestContext.() -> Unit,
+//   test: suspend testScope.() -> Unit,
 //   config: TestCaseConfig,
-//   testContext: TestContext,
+//   testScope: testScope,
 //   type: TestType,
 //) {
-//   testContext.registerTestCase(
+//   testScope.registerTestCase(
 //      createNestedTest(
 //         name = name,
 //         xdisabled = xdisabled,

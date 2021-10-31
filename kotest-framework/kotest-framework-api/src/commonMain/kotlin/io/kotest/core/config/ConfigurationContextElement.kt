@@ -1,6 +1,6 @@
 package io.kotest.core.config
 
-import io.kotest.core.test.TestContext
+import io.kotest.core.test.TestScope
 import kotlin.coroutines.AbstractCoroutineContextElement
 import kotlin.coroutines.CoroutineContext
 
@@ -9,7 +9,7 @@ data class ConfigurationContextElement(val configuration: Configuration) :
    companion object Key : CoroutineContext.Key<ConfigurationContextElement>
 }
 
-val TestContext.configuration: Configuration
+val TestScope.configuration: Configuration
    get() = coroutineContext.configuration
 
 val CoroutineContext.configuration: Configuration

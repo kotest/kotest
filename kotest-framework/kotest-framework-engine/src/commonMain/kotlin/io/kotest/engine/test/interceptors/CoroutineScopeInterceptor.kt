@@ -1,9 +1,9 @@
 package io.kotest.engine.test.interceptors
 
 import io.kotest.core.test.TestCase
-import io.kotest.core.test.TestContext
+import io.kotest.core.test.TestScope
 import io.kotest.core.test.TestResult
-import io.kotest.engine.test.contexts.withCoroutineContext
+import io.kotest.engine.test.scopes.withCoroutineContext
 import io.kotest.mpp.log
 import kotlinx.coroutines.coroutineScope
 
@@ -13,8 +13,8 @@ import kotlinx.coroutines.coroutineScope
  */
 internal object CoroutineScopeInterceptor : TestExecutionInterceptor {
    override suspend fun intercept(
-      test: suspend (TestCase, TestContext) -> TestResult
-   ): suspend (TestCase, TestContext) -> TestResult = { testCase, context ->
+      test: suspend (TestCase, TestScope) -> TestResult
+   ): suspend (TestCase, TestScope) -> TestResult = { testCase, context ->
       log { "CoroutineScopeInterceptor: Creating test coroutine scope" }
       coroutineScope {
          test(

@@ -20,7 +20,7 @@ import io.kotest.core.test.AssertionMode
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestCaseOrder
 import io.kotest.core.test.TestCaseSeverityLevel
-import io.kotest.core.test.TestContext
+import io.kotest.core.test.TestScope
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestType
 import io.kotest.core.test.config.ResolvedTestConfig
@@ -407,7 +407,7 @@ abstract class Spec : TestConfiguration() {
  */
 data class RootTest(
    val name: TestName,
-   val test: suspend TestContext.() -> Unit,
+   val test: suspend TestScope.() -> Unit,
    val type: TestType,
    val source: SourceRef,
    val disabled: Boolean?, // if the test is explicitly disabled, say through an annotation or method name

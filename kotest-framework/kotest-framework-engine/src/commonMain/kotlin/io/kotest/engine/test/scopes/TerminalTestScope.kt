@@ -1,17 +1,17 @@
-package io.kotest.engine.test.contexts
+package io.kotest.engine.test.scopes
 
 import io.kotest.core.test.NestedTest
 import io.kotest.core.test.TestCase
-import io.kotest.core.test.TestContext
+import io.kotest.core.test.TestScope
 import kotlin.coroutines.CoroutineContext
 
 /**
- * A [TestContext] that errors on registration attempts of nested tests.
+ * A [TestScope] that errors on registration attempts of nested tests.
  */
-class TerminalTestContext(
+class TerminalTestScope(
    override val testCase: TestCase,
    override val coroutineContext: CoroutineContext
-) : TestContext {
+) : TestScope {
    override suspend fun registerTestCase(nested: NestedTest) {
       error("Nested tests are not supported")
    }

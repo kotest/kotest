@@ -6,7 +6,7 @@ import io.kotest.common.platform
 import io.kotest.core.concurrency.CoroutineDispatcherFactory
 import io.kotest.core.config.Configuration
 import io.kotest.core.test.TestCase
-import io.kotest.core.test.TestContext
+import io.kotest.core.test.TestScope
 import io.kotest.core.test.TestResult
 import io.kotest.engine.concurrency.NoopCoroutineDispatcherFactory
 import io.kotest.engine.test.interceptors.AssertionModeInterceptor
@@ -45,8 +45,8 @@ class TestCaseExecutor(
    private val configuration: Configuration,
 ) {
 
-   suspend fun execute(testCase: TestCase, context: TestContext): TestResult {
-      log { "TestCaseExecutor: execute entry point '${testCase.descriptor.path().value}' context=$context" }
+   suspend fun execute(testCase: TestCase, testScope: TestScope): TestResult {
+      log { "TestCaseExecutor: execute entry point '${testCase.descriptor.path().value}' testScope=$testScope" }
 
       val timeMark = TimeSource.Monotonic.markNow()
 
@@ -72,14 +72,14 @@ class TestCaseExecutor(
          if (platform == Platform.JVM && testCase.isTestCoroutineDispatcher(configuration)) TestCoroutineDispatcherInterceptor() else null,
       )
 
-      val innerExecute: suspend (TestCase, TestContext) -> TestResult = { tc, ctx ->
+      val innerExecute: suspend (TestCase, TestScope) -> TestResult = { tc, ctx ->
          tc.test(ctx)
          createTestResult(timeMark.elapsedNow(), null)
       }
 
       val result = interceptors.foldRight(innerExecute) { ext, fn ->
          { tc, ctx -> ext.intercept(fn)(tc, ctx) }
-      }.invoke(testCase, context)
+      }.invoke(testCase, testScope)
 
       return result
    }

@@ -7,7 +7,7 @@
 //import io.kotest.core.test.NestedTest
 //import io.kotest.core.test.TestCase
 //import io.kotest.engine.test.TestCaseExecutionListener
-//import io.kotest.core.test.TestContext
+//import io.kotest.core.test.testScope
 //import io.kotest.core.test.TestResult
 //import io.kotest.core.test.createTestName
 //import io.kotest.core.test.toTestCase
@@ -112,7 +112,7 @@
 //   inner class Context(
 //      override val testCase: TestCase,
 //      override val coroutineContext: CoroutineContext,
-//   ) : TestContext {
+//   ) : testScope {
 //
 //      private val handler = DuplicateTestNameHandler(configuration.duplicateTestNameMode)
 //

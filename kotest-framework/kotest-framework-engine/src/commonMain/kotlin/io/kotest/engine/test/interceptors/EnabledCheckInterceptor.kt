@@ -2,7 +2,7 @@ package io.kotest.engine.test.interceptors
 
 import io.kotest.core.config.Configuration
 import io.kotest.core.test.TestCase
-import io.kotest.core.test.TestContext
+import io.kotest.core.test.TestScope
 import io.kotest.core.test.TestResult
 import io.kotest.engine.test.status.isEnabled
 import io.kotest.mpp.log
@@ -17,8 +17,8 @@ import io.kotest.mpp.log
  */
 internal class EnabledCheckInterceptor(private val configuration: Configuration) : TestExecutionInterceptor {
    override suspend fun intercept(
-      test: suspend (TestCase, TestContext) -> TestResult
-   ): suspend (TestCase, TestContext) -> TestResult = { testCase, context ->
+      test: suspend (TestCase, TestScope) -> TestResult
+   ): suspend (TestCase, TestScope) -> TestResult = { testCase, context ->
       val enabled = testCase.isEnabled(configuration)
       when (enabled.isEnabled) {
          true -> {

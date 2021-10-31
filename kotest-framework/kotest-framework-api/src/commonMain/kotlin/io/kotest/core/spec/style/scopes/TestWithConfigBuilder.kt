@@ -6,13 +6,13 @@ import io.kotest.core.extensions.TestCaseExtension
 import io.kotest.core.names.TestName
 import io.kotest.core.test.EnabledIf
 import io.kotest.core.test.TestCaseSeverityLevel
-import io.kotest.core.test.TestContext
+import io.kotest.core.test.TestScope
 import io.kotest.core.test.config.UnresolvedTestConfig
 import kotlin.time.Duration
 
 class TestWithConfigBuilder(
    private val name: TestName,
-   private val context: ContainerContext,
+   private val context: ContainerScope,
    private val xdisabled: Boolean,
 ) {
 
@@ -26,7 +26,7 @@ class TestWithConfigBuilder(
       enabledIf: EnabledIf? = null,
       invocationTimeout: Duration? = null,
       severity: TestCaseSeverityLevel? = null,
-      test: suspend TestContext.() -> Unit
+      test: suspend TestScope.() -> Unit
    ) {
 
       TestDslState.clear(context.testCase.descriptor.append(name))

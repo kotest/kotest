@@ -2,8 +2,7 @@ package io.kotest.core.spec.style.scopes
 
 import io.kotest.core.names.TestName
 import io.kotest.core.spec.KotestDsl
-import io.kotest.core.test.NestedTest
-import io.kotest.core.test.TestContext
+import io.kotest.core.test.TestScope
 
 @Deprecated("This interface has been renamed to BehaviorSpecGivenContainerContext. Deprecated since 4.5.")
 typealias GivenScope = BehaviorSpecGivenContainerContext
@@ -27,8 +26,8 @@ typealias GivenScope = BehaviorSpecGivenContainerContext
 @Suppress("FunctionName")
 @KotestDsl
 class BehaviorSpecGivenContainerContext(
-   val testContext: TestContext,
-) : AbstractContainerContext(testContext) {
+   val testScope: TestScope,
+) : AbstractContainerScope(testScope) {
 
    suspend fun And(name: String, test: suspend BehaviorSpecGivenContainerContext.() -> Unit) =
       addAnd(name, test, xdisabled = false)
@@ -52,14 +51,14 @@ class BehaviorSpecGivenContainerContext(
       }
    }
 
-   suspend fun When(name: String, test: suspend BehaviorSpecWhenContainerContext.() -> Unit) = addWhen(name, test, xdisabled = false)
-   suspend fun `when`(name: String, test: suspend BehaviorSpecWhenContainerContext.() -> Unit) = addWhen(name, test, xdisabled = false)
-   suspend fun xwhen(name: String, test: suspend BehaviorSpecWhenContainerContext.() -> Unit) = addWhen(name, test, xdisabled = true)
-   suspend fun xWhen(name: String, test: suspend BehaviorSpecWhenContainerContext.() -> Unit) = addWhen(name, test, xdisabled = true)
+   suspend fun When(name: String, test: suspend BehaviorSpecWhenContainerScope.() -> Unit) = addWhen(name, test, xdisabled = false)
+   suspend fun `when`(name: String, test: suspend BehaviorSpecWhenContainerScope.() -> Unit) = addWhen(name, test, xdisabled = false)
+   suspend fun xwhen(name: String, test: suspend BehaviorSpecWhenContainerScope.() -> Unit) = addWhen(name, test, xdisabled = true)
+   suspend fun xWhen(name: String, test: suspend BehaviorSpecWhenContainerScope.() -> Unit) = addWhen(name, test, xdisabled = true)
 
-   private suspend fun addWhen(name: String, test: suspend BehaviorSpecWhenContainerContext.() -> Unit, xdisabled: Boolean) {
+   private suspend fun addWhen(name: String, test: suspend BehaviorSpecWhenContainerScope.() -> Unit, xdisabled: Boolean) {
       registerContainer(TestName("When: ", name, true), disabled = xdisabled, null) {
-         BehaviorSpecWhenContainerContext(this).test()
+         BehaviorSpecWhenContainerScope(this).test()
       }
    }
 
@@ -87,12 +86,12 @@ class BehaviorSpecGivenContainerContext(
       xdisabled = true
    )
 
-   suspend fun Then(name: String, test: suspend TestContext.() -> Unit) = addThen(name, test, xdisabled = false)
-   suspend fun then(name: String, test: suspend TestContext.() -> Unit) = addThen(name, test, xdisabled = false)
-   suspend fun xthen(name: String, test: suspend TestContext.() -> Unit) = addThen(name, test, xdisabled = true)
-   suspend fun xThen(name: String, test: suspend TestContext.() -> Unit) = addThen(name, test, xdisabled = true)
+   suspend fun Then(name: String, test: suspend TestScope.() -> Unit) = addThen(name, test, xdisabled = false)
+   suspend fun then(name: String, test: suspend TestScope.() -> Unit) = addThen(name, test, xdisabled = false)
+   suspend fun xthen(name: String, test: suspend TestScope.() -> Unit) = addThen(name, test, xdisabled = true)
+   suspend fun xThen(name: String, test: suspend TestScope.() -> Unit) = addThen(name, test, xdisabled = true)
 
-   private suspend fun addThen(name: String, test: suspend TestContext.() -> Unit, xdisabled: Boolean) {
+   private suspend fun addThen(name: String, test: suspend TestScope.() -> Unit, xdisabled: Boolean) {
       registerTest(TestName("Then: ", name, true), disabled = xdisabled, null, test)
    }
 }

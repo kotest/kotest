@@ -1,6 +1,5 @@
 package io.kotest.engine.test
 
-import io.kotest.common.ExperimentalKotest
 import io.kotest.common.collect
 import io.kotest.common.mapError
 import io.kotest.core.config.ExtensionRegistry
@@ -16,12 +15,12 @@ import io.kotest.core.listeners.BeforeInvocationListener
 import io.kotest.core.listeners.BeforeTestListener
 import io.kotest.core.spec.functionOverrideCallbacks
 import io.kotest.core.test.TestCase
-import io.kotest.core.test.TestContext
+import io.kotest.core.test.TestScope
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestType
 import io.kotest.engine.extensions.ExtensionException
 import io.kotest.engine.extensions.MultipleExceptions
-import io.kotest.engine.test.contexts.withCoroutineContext
+import io.kotest.engine.test.scopes.withCoroutineContext
 import io.kotest.engine.test.logging.LogExtension
 import kotlin.coroutines.coroutineContext
 
@@ -137,8 +136,8 @@ internal class TestExtensions(private val registry: ExtensionRegistry) {
     */
    suspend fun intercept(
       testCase: TestCase,
-      context: TestContext,
-      inner: suspend (TestCase, TestContext) -> TestResult,
+      context: TestScope,
+      inner: suspend (TestCase, TestScope) -> TestResult,
    ): TestResult {
 
       val execute = extensions(testCase).filterIsInstance<TestCaseExtension>()

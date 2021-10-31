@@ -1,14 +1,14 @@
-package io.kotest.engine.test.contexts
+package io.kotest.engine.test.scopes
 
 import io.kotest.core.names.DuplicateTestNameMode
 import io.kotest.core.test.NestedTest
-import io.kotest.core.test.TestContext
+import io.kotest.core.test.TestScope
 import io.kotest.engine.test.names.DuplicateTestNameHandler
 
-class DuplicateNameHandlingTestContext(
+class DuplicateNameHandlingTestScope(
    mode: DuplicateTestNameMode,
-   private val delegate: TestContext
-) : TestContext by delegate {
+   private val delegate: TestScope
+) : TestScope by delegate {
 
    private val handler = DuplicateTestNameHandler(mode)
 

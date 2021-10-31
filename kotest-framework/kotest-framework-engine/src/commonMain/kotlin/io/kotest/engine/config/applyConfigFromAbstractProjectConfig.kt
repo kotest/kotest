@@ -16,7 +16,6 @@ internal fun applyConfigFromProjectConfig(config: AbstractProjectConfig, configu
 
    // outputs
    config.displaySpecIfNoActiveTests?.let { configuration.displaySpecIfNoActiveTests = it }
-   config.dumpConfig?.let { configuration.dumpConfig = it }
 
    // project run options
    config.failOnIgnoredTests?.let { configuration.failOnIgnoredTests = it }

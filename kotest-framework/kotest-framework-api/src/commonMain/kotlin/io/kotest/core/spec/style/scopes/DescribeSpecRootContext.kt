@@ -2,7 +2,7 @@ package io.kotest.core.spec.style.scopes
 
 import io.kotest.common.ExperimentalKotest
 import io.kotest.core.names.TestName
-import io.kotest.core.test.TestContext
+import io.kotest.core.test.TestScope
 
 @Deprecated("Renamed to DescribeSpecRootContext. Deprecated since 4.5.")
 typealias DescribeSpecRootScope = DescribeSpecRootContext
@@ -18,59 +18,59 @@ typealias DescribeSpecRootScope = DescribeSpecRootContext
  */
 interface DescribeSpecRootContext : RootContext {
 
-   fun context(name: String, test: suspend DescribeSpecContainerContext.() -> Unit) {
-      addContainer(TestName("Context: ", name, false), false, null) { DescribeSpecContainerContext(this).test() }
+   fun context(name: String, test: suspend DescribeSpecContainerScope.() -> Unit) {
+      addContainer(TestName("Context: ", name, false), false, null) { DescribeSpecContainerScope(this).test() }
    }
 
-   fun xcontext(name: String, test: suspend DescribeSpecContainerContext.() -> Unit) {
-      addContainer(TestName("Context: ", name, false), true, null) { DescribeSpecContainerContext(this).test() }
+   fun xcontext(name: String, test: suspend DescribeSpecContainerScope.() -> Unit) {
+      addContainer(TestName("Context: ", name, false), true, null) { DescribeSpecContainerScope(this).test() }
    }
 
    @ExperimentalKotest
-   fun context(name: String): RootContextConfigBuilder<DescribeSpecContainerContext> =
-      RootContextConfigBuilder(TestName(name), xdisabled = false, this) { DescribeSpecContainerContext(it) }
+   fun context(name: String): RootContextConfigBuilder<DescribeSpecContainerScope> =
+      RootContextConfigBuilder(TestName(name), xdisabled = false, this) { DescribeSpecContainerScope(it) }
 
    @ExperimentalKotest
-   fun xcontext(name: String): RootContextConfigBuilder<DescribeSpecContainerContext> =
-      RootContextConfigBuilder(TestName(name), xdisabled = true, this) { DescribeSpecContainerContext(it) }
+   fun xcontext(name: String): RootContextConfigBuilder<DescribeSpecContainerScope> =
+      RootContextConfigBuilder(TestName(name), xdisabled = true, this) { DescribeSpecContainerScope(it) }
 
-   fun describe(name: String, test: suspend DescribeSpecContainerContext.() -> Unit) {
+   fun describe(name: String, test: suspend DescribeSpecContainerScope.() -> Unit) {
       addContainer(
          TestName("Describe: ", name, false),
          disabled = false,
          null
-      ) { DescribeSpecContainerContext(this).test() }
+      ) { DescribeSpecContainerScope(this).test() }
    }
 
-   fun xdescribe(name: String, test: suspend DescribeSpecContainerContext.() -> Unit) {
+   fun xdescribe(name: String, test: suspend DescribeSpecContainerScope.() -> Unit) {
       addContainer(
          TestName("Describe: ", name, false),
          disabled = true,
          null
-      ) { DescribeSpecContainerContext(this).test() }
+      ) { DescribeSpecContainerScope(this).test() }
    }
 
    @ExperimentalKotest
-   fun describe(name: String): RootContextConfigBuilder<DescribeSpecContainerContext> =
+   fun describe(name: String): RootContextConfigBuilder<DescribeSpecContainerScope> =
       RootContextConfigBuilder(
          TestName("Describe: ", name, false),
          xdisabled = false,
          this
-      ) { DescribeSpecContainerContext(it) }
+      ) { DescribeSpecContainerScope(it) }
 
    @ExperimentalKotest
-   fun xdescribe(name: String): RootContextConfigBuilder<DescribeSpecContainerContext> =
+   fun xdescribe(name: String): RootContextConfigBuilder<DescribeSpecContainerScope> =
       RootContextConfigBuilder(
          TestName("Describe: ", name, false),
          xdisabled = true,
          this
-      ) { DescribeSpecContainerContext(it) }
+      ) { DescribeSpecContainerScope(it) }
 
-   fun it(name: String, test: suspend TestContext.() -> Unit) {
+   fun it(name: String, test: suspend TestScope.() -> Unit) {
       addTest(TestName(name), false, null, test)
    }
 
-   fun xit(name: String, test: suspend TestContext.() -> Unit) {
+   fun xit(name: String, test: suspend TestScope.() -> Unit) {
       addTest(TestName(name), true, null, test)
    }
 }

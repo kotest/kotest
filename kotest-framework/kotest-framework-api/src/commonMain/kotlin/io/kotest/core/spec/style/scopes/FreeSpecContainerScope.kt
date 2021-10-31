@@ -5,29 +5,30 @@ import io.kotest.core.extensions.TestCaseExtension
 import io.kotest.core.names.TestName
 import io.kotest.core.test.EnabledIf
 import io.kotest.core.test.TestCaseSeverityLevel
-import io.kotest.core.test.TestContext
+import io.kotest.core.test.TestScope
 import io.kotest.core.test.config.UnresolvedTestConfig
 import kotlin.time.Duration
 
-@Deprecated("Renamed to FreeSpecContainerContext. Deprecated since 4.5.")
-typealias FreeScope = FreeSpecContainerContext
+@Deprecated("Renamed to FreeSpecContainerScope. Deprecated since 4.5")
+typealias FreeScope = FreeSpecContainerScope
 
-class FreeSpecContainerContext(
-   val testContext: TestContext,
-) : AbstractContainerContext(testContext) {
+@Deprecated("Renamed to FreeSpecContainerScope. Deprecated since 5.0")
+typealias FreeSpecContainerContext = FreeSpecContainerScope
+
+class FreeSpecContainerScope(val testScope: TestScope) : AbstractContainerScope(testScope) {
 
    /**
     * Creates a new container scope inside this spec.
     */
-   suspend infix operator fun String.minus(test: suspend FreeSpecContainerContext.() -> Unit) {
-      registerContainer(TestName(this), false, null) { FreeSpecContainerContext(this).test() }
+   suspend infix operator fun String.minus(test: suspend FreeSpecContainerScope.() -> Unit) {
+      registerContainer(TestName(this), false, null) { FreeSpecContainerScope(this).test() }
    }
 
    /**
     * Creates a new terminal test scope inside this spec.
     */
-   suspend infix operator fun String.invoke(test: suspend FreeSpecTerminalContext.() -> Unit) {
-      registerTest(TestName(this), false, null) { FreeSpecTerminalContext(this).test() }
+   suspend infix operator fun String.invoke(test: suspend FreeSpecTerminalScope.() -> Unit) {
+      registerTest(TestName(this), false, null) { FreeSpecTerminalScope(this).test() }
    }
 
    /**
@@ -45,11 +46,11 @@ class FreeSpecContainerContext(
       enabledIf: EnabledIf? = null,
       invocationTimeout: Duration? = null,
       severity: TestCaseSeverityLevel? = null,
-      test: suspend TestContext.() -> Unit,
+      test: suspend TestScope.() -> Unit,
    ) {
       TestWithConfigBuilder(
          TestName(this),
-         this@FreeSpecContainerContext,
+         this@FreeSpecContainerScope,
          xdisabled = false,
       ).config(
          enabled,
@@ -71,8 +72,8 @@ class FreeSpecContainerContext(
     *
     * eg, "this test".config(...) - { }
     */
-   suspend infix operator fun FreeSpecContextConfigBuilder.minus(test: suspend FreeSpecContainerContext.() -> Unit) {
-      registerContainer(TestName(name), false, config) { FreeSpecContainerContext(this).test() }
+   suspend infix operator fun FreeSpecContextConfigBuilder.minus(test: suspend FreeSpecContainerScope.() -> Unit) {
+      registerContainer(TestName(name), false, config) { FreeSpecContainerScope(this).test() }
    }
 
    /**

@@ -3,8 +3,7 @@ package io.kotest.core.spec.style.scopes
 import io.kotest.core.descriptors.append
 import io.kotest.core.names.TestName
 import io.kotest.core.test.NestedTest
-import io.kotest.core.test.TestContext
-import io.kotest.core.test.TestType
+import io.kotest.core.test.TestScope
 
 @Deprecated("renamed to FeatureSpecContainerContext. Deprecated since 4.5.")
 typealias FeatureScope = FeatureSpecContainerContext
@@ -24,10 +23,10 @@ typealias FeatureScope = FeatureSpecContainerContext
  *
  */
 class FeatureSpecContainerContext(
-   val testContext: TestContext,
-) : AbstractContainerContext(testContext) {
+   val testScope: TestScope,
+) : AbstractContainerScope(testScope) {
 
-   override suspend fun registerTestCase(nested: NestedTest) = testContext.registerTestCase(nested)
+   override suspend fun registerTestCase(nested: NestedTest) = testScope.registerTestCase(nested)
 
    suspend fun feature(name: String, test: suspend FeatureSpecContainerContext.() -> Unit) {
       registerContainer(
@@ -45,16 +44,16 @@ class FeatureSpecContainerContext(
       ) { FeatureSpecContainerContext(this).test() }
    }
 
-   suspend fun scenario(name: String, test: suspend TestContext.() -> Unit) {
+   suspend fun scenario(name: String, test: suspend TestScope.() -> Unit) {
       registerTest(TestName("Scenario: ", name, false), disabled = false, null, test)
    }
 
-   suspend fun xscenario(name: String, test: suspend TestContext.() -> Unit) {
+   suspend fun xscenario(name: String, test: suspend TestScope.() -> Unit) {
       registerTest(TestName("Scenario: ", name, true), disabled = true, null, test)
    }
 
    suspend fun scenario(name: String): TestWithConfigBuilder {
-      TestDslState.startTest(testContext.testCase.descriptor.append(name))
+      TestDslState.startTest(testScope.testCase.descriptor.append(name))
       return TestWithConfigBuilder(
          name = TestName("Scenario: ", name, false),
          context = this,
@@ -63,7 +62,7 @@ class FeatureSpecContainerContext(
    }
 
    suspend fun xscenario(name: String): TestWithConfigBuilder {
-      TestDslState.startTest(testContext.testCase.descriptor.append(name))
+      TestDslState.startTest(testScope.testCase.descriptor.append(name))
       return TestWithConfigBuilder(
          name = TestName("Scenario: ", name, false),
          context = this,

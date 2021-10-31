@@ -4,7 +4,7 @@ import io.kotest.assertions.assertionCounter
 import io.kotest.assertions.getAndReset
 import io.kotest.core.test.AssertionMode
 import io.kotest.core.test.TestCase
-import io.kotest.core.test.TestContext
+import io.kotest.core.test.TestScope
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestType
 
@@ -20,15 +20,15 @@ internal class AssertionModeInterceptor() : TestExecutionInterceptor {
    }
 
    override suspend fun intercept(
-      test: suspend (TestCase, TestContext) -> TestResult
-   ): suspend (TestCase, TestContext) -> TestResult = { testCase, context ->
+      test: suspend (TestCase, TestScope) -> TestResult
+   ): suspend (TestCase, TestScope) -> TestResult = { testCase, context ->
       if (shouldApply(testCase)) apply(testCase, context, test) else test(testCase, context)
    }
 
    private suspend fun apply(
       testCase: TestCase,
-      context: TestContext,
-      test: suspend (TestCase, TestContext) -> TestResult
+      context: TestScope,
+      test: suspend (TestCase, TestScope) -> TestResult
    ): TestResult {
 
       assertionCounter.reset()

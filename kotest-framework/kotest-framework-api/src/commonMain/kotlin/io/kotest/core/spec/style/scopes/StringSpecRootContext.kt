@@ -8,7 +8,7 @@ import io.kotest.core.test.EnabledOrReasonIf
 import io.kotest.core.test.NestedTest
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestCaseSeverityLevel
-import io.kotest.core.test.TestContext
+import io.kotest.core.test.TestScope
 import kotlin.coroutines.CoroutineContext
 import kotlin.jvm.JvmName
 import kotlin.time.Duration
@@ -41,7 +41,7 @@ interface StringSpecRootContext : RootContext {
       enabledOrReasonIf: EnabledOrReasonIf? = null,
       coroutineDebugProbes: Boolean? = null,
       blockingTest: Boolean? = null,
-      test: suspend TestContext.() -> Unit,
+      test: suspend TestScope.() -> Unit,
    ) {
       RootTestWithConfigBuilder(
          this@StringSpecRootContext,
@@ -80,7 +80,7 @@ interface StringSpecRootContext : RootContext {
 class StringSpecScope(
    override val coroutineContext: CoroutineContext,
    override val testCase: TestCase
-) : TestContext {
+) : TestScope {
 
    @Deprecated("Cannot nest string scope tests", level = DeprecationLevel.ERROR)
    @JvmName("nestedStringInvoke")

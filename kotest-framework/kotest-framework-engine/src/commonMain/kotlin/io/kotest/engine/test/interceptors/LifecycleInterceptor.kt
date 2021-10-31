@@ -2,7 +2,7 @@ package io.kotest.engine.test.interceptors
 
 import io.kotest.core.config.ExtensionRegistry
 import io.kotest.core.test.TestCase
-import io.kotest.core.test.TestContext
+import io.kotest.core.test.TestScope
 import io.kotest.core.test.TestResult
 import io.kotest.engine.test.TestCaseExecutionListener
 import io.kotest.engine.test.TestExtensions
@@ -33,8 +33,8 @@ internal class LifecycleInterceptor(
 ) : TestExecutionInterceptor {
 
    override suspend fun intercept(
-      test: suspend (TestCase, TestContext) -> TestResult
-   ): suspend (TestCase, TestContext) -> TestResult = { testCase, context ->
+      test: suspend (TestCase, TestScope) -> TestResult
+   ): suspend (TestCase, TestScope) -> TestResult = { testCase, context ->
 
       log { "LifecycleInterceptor: Executing active test '${testCase.descriptor.path().value}' with context $context" }
       listener.testStarted(testCase)

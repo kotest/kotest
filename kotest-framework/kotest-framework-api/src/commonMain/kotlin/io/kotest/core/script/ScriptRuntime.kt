@@ -10,7 +10,7 @@
 //import io.kotest.core.test.DescriptionName
 //import io.kotest.core.test.TestCase
 //import io.kotest.core.test.config.TestCaseConfig
-//import io.kotest.core.test.TestContext
+//import io.kotest.core.test.testScope
 //import io.kotest.core.test.TestType
 //import io.kotest.mpp.log
 //
@@ -40,7 +40,7 @@
 //      name: DescriptionName.TestName,
 //      xdisabled: Boolean,
 //      type: TestType,
-//      test: suspend (TestContext) -> Unit
+//      test: suspend (testScope) -> Unit
 //   ) {
 //      log { "ScriptRuntime: registerRootTest $name" }
 //      val config = if (xdisabled) TestCaseConfig().copy(enabled = false) else TestCaseConfig()
