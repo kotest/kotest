@@ -1,25 +1,26 @@
 name: release_multiplatform_plugin_gradle
 
 on:
-  workflow_dispatch:
+   workflow_dispatch:
 
 jobs:
-  release-plugin:
-    runs-on: ubuntu-latest
+   release-plugin:
+      runs-on: ubuntu-latest
 
-    steps:
-      - name: Checkout the repo
-        uses: actions/checkout@v2
-        with:
-          fetch-depth: 0
+      steps:
+         -  name: Checkout the repo
+            uses: actions/checkout@v2
+            with:
+               fetch-depth: 0
 
-      - name: Setup JDK
-        uses: actions/setup-java@v1
-        with:
-          java-version: '8'
+         -  name: Setup JDK
+            uses: actions/setup-java@v2
+            with:
+               distribution: 'zulu'
+               java-version: '8'
 
-      - name: deploy to gradle
-        run: ./gradlew :kotest-framework:kotest-framework-multiplatform-plugin-gradle:publishPlugins -Dgradle.publish.key=${{ secrets.GRADLE_PUBLISH_KEY }} -Dgradle.publish.secret=${{ secrets.GRADLE_PUBLISH_SECRET }}
+         -  name: deploy to gradle
+            run: ./gradlew :kotest-framework:kotest-framework-multiplatform-plugin-gradle:publishPlugins -Dgradle.publish.key=${{ secrets.GRADLE_PUBLISH_KEY }} -Dgradle.publish.secret=${{ secrets.GRADLE_PUBLISH_SECRET }}
 
 env:
-  GRADLE_OPTS: -Dorg.gradle.configureondemand=true -Dorg.gradle.parallel=false -Dkotlin.incremental=false -Dorg.gradle.jvmargs="-Xmx3g -XX:MaxPermSize=2048m -XX:+HeapDumpOnOutOfMemoryError -Dfile.encoding=UTF-8"
+   GRADLE_OPTS: -Dorg.gradle.configureondemand=true -Dorg.gradle.parallel=false -Dkotlin.incremental=false -Dorg.gradle.jvmargs="-Xmx3g -XX:MaxPermSize=2048m -XX:+HeapDumpOnOutOfMemoryError -Dfile.encoding=UTF-8"
