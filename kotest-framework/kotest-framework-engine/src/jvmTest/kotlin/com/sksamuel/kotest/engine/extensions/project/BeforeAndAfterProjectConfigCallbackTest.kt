@@ -38,7 +38,7 @@ class BeforeAndAfterProjectConfigCallbackTest : WordSpec() {
             TestEngineLauncher(NoopTestEngineListener)
                // two classes so we know these callbacks are only invoked once
                .withClasses(A::class, B::class)
-               .withConfig(config)
+               .withProjectConfig(config)
                .launch()
             beforeAfterProject shouldBe "beforeabafter"
          }
@@ -48,7 +48,7 @@ class BeforeAndAfterProjectConfigCallbackTest : WordSpec() {
             TestEngineLauncher(NoopTestEngineListener)
                // two classes so we know these callbacks are only invoked once
                .withClasses(A::class, B::class)
-               .withConfig(config)
+               .withProjectConfig(config)
                .launch()
             beforeAfterAll shouldBe "beforeallabafterall"
          }

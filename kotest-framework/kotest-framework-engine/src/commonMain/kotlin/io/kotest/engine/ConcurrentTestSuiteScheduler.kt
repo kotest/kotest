@@ -1,6 +1,7 @@
 package io.kotest.engine
 
 import io.kotest.common.ExperimentalKotest
+import io.kotest.core.ProjectContext
 import io.kotest.core.config.Configuration
 import io.kotest.core.spec.DoNotParallelize
 import io.kotest.core.spec.Isolate
@@ -9,6 +10,7 @@ import io.kotest.engine.concurrency.defaultCoroutineDispatcherFactory
 import io.kotest.engine.concurrency.isIsolate
 import io.kotest.engine.listener.TestEngineListener
 import io.kotest.engine.spec.SpecExecutor
+import io.kotest.engine.tags.runtimeTags
 import io.kotest.mpp.log
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
@@ -28,6 +30,7 @@ import kotlinx.coroutines.sync.withPermit
 internal class ConcurrentTestSuiteScheduler(
    private val maxConcurrent: Int,
    private val configuration: Configuration,
+   private val context: ProjectContext,
 ) : TestSuiteScheduler {
 
    override suspend fun schedule(suite: TestSuite, listener: TestEngineListener): EngineResult {
@@ -58,7 +61,12 @@ internal class ConcurrentTestSuiteScheduler(
             semaphore.withPermit {
                log { "DefaultTestSuiteScheduler: Acquired permit for $ref" }
                try {
-                  val executor = SpecExecutor(listener, coroutineDispatcherFactory, configuration)
+                  val executor = SpecExecutor(
+                     listener,
+                     coroutineDispatcherFactory,
+                     configuration,
+                     ProjectContext(configuration.runtimeTags(), specs, configuration)
+                  )
                   executor.execute(ref)
                } catch (t: Throwable) {
                   log { "DefaultTestSuiteScheduler: Unhandled error during spec execution [$ref] [$t]" }

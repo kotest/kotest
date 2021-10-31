@@ -1,8 +1,6 @@
 package io.kotest.core.extensions
 
-import io.kotest.core.TagExpression
-import io.kotest.core.config.Configuration
-import io.kotest.core.spec.SpecRef
+import io.kotest.core.ProjectContext
 
 /**
  * Extension point that allows intercepting execution of projects.
@@ -18,5 +16,3 @@ interface ProjectExtension : Extension {
     */
    suspend fun interceptProject(context: ProjectContext, callback: suspend (ProjectContext) -> Unit)
 }
-
-data class ProjectContext(val tags: TagExpression, val specs: List<SpecRef>, val configuration: Configuration)

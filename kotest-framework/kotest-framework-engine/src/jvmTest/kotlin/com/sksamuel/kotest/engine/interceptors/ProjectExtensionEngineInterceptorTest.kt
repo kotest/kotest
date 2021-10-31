@@ -3,7 +3,7 @@ package com.sksamuel.kotest.engine.interceptors
 import io.kotest.common.KotestInternal
 import io.kotest.core.TagExpression
 import io.kotest.core.config.Configuration
-import io.kotest.core.extensions.ProjectContext
+import io.kotest.core.ProjectContext
 import io.kotest.core.extensions.ProjectExtension
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.engine.EngineResult

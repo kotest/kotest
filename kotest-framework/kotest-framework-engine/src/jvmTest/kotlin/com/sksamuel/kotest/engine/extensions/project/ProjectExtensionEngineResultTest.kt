@@ -1,7 +1,7 @@
 package com.sksamuel.kotest.engine.extensions.project
 
 import io.kotest.core.config.Configuration
-import io.kotest.core.extensions.ProjectContext
+import io.kotest.core.ProjectContext
 import io.kotest.core.extensions.ProjectExtension
 import io.kotest.core.spec.Isolate
 import io.kotest.core.spec.style.FunSpec

@@ -4,6 +4,7 @@ import io.kotest.common.ExperimentalKotest
 import io.kotest.common.Platform
 import io.kotest.common.flatMap
 import io.kotest.common.platform
+import io.kotest.core.ProjectContext
 import io.kotest.core.concurrency.CoroutineDispatcherFactory
 import io.kotest.core.config.Configuration
 import io.kotest.core.spec.Spec
@@ -16,6 +17,7 @@ import io.kotest.engine.spec.interceptor.ConfigurationInContextInterceptor
 import io.kotest.engine.spec.interceptor.EnabledIfSpecInterceptor
 import io.kotest.engine.spec.interceptor.IgnoreNestedSpecStylesInterceptor
 import io.kotest.engine.spec.interceptor.IgnoredSpecInterceptor
+import io.kotest.engine.spec.interceptor.ProjectContextInterceptor
 import io.kotest.engine.spec.interceptor.RequiresTagSpecInterceptor
 import io.kotest.engine.spec.interceptor.SpecExtensionInterceptor
 import io.kotest.engine.spec.interceptor.SpecFilterInterceptor
@@ -24,6 +26,7 @@ import io.kotest.engine.spec.interceptor.SpecRefExtensionInterceptor
 import io.kotest.engine.spec.interceptor.SpecStartedFinishedInterceptor
 import io.kotest.engine.spec.interceptor.SystemPropertySpecFilterInterceptor
 import io.kotest.engine.spec.interceptor.TagsExcludedSpecInterceptor
+import io.kotest.engine.tags.runtimeTags
 import io.kotest.mpp.log
 import kotlin.reflect.KClass
 
@@ -42,6 +45,7 @@ class SpecExecutor(
    private val listener: TestEngineListener,
    private val defaultCoroutineDispatcherFactory: CoroutineDispatcherFactory,
    private val conf: Configuration,
+   private val projectContext: ProjectContext,
 ) {
 
    private val extensions = SpecExtensions(conf.registry())
@@ -85,6 +89,7 @@ class SpecExecutor(
 
       val interceptors = listOfNotNull(
          if (platform == Platform.JS) IgnoreNestedSpecStylesInterceptor(listener, conf.registry()) else null,
+         ProjectContextInterceptor(projectContext),
          SpecExtensionInterceptor(conf.registry()),
          ConfigurationInContextInterceptor(conf),
          SpecFinalizeInterceptor(listener, conf.registry()),

@@ -4,6 +4,7 @@ import io.kotest.common.ExperimentalKotest
 import io.kotest.common.KotestInternal
 import io.kotest.common.Platform
 import io.kotest.common.platform
+import io.kotest.core.ProjectContext
 import io.kotest.core.TagExpression
 import io.kotest.core.config.Configuration
 import io.kotest.core.extensions.Extension
@@ -88,10 +89,17 @@ class TestEngine(initial: TestEngineConfig) {
          val scheduler = when (platform) {
             Platform.JVM -> ConcurrentTestSuiteScheduler(
                config.configuration.concurrentSpecs ?: config.configuration.parallelism,
-               config.configuration
+               config.configuration,
+               ProjectContext(config.configuration.runtimeTags(), suite.specs, config.configuration)
             )
-            Platform.JS -> SequentialTestSuiteScheduler(config.configuration)
-            Platform.Native -> SequentialTestSuiteScheduler(config.configuration)
+            Platform.JS -> SequentialTestSuiteScheduler(
+               config.configuration,
+               ProjectContext(config.configuration.runtimeTags(), suite.specs, config.configuration)
+            )
+            Platform.Native -> SequentialTestSuiteScheduler(
+               config.configuration,
+               ProjectContext(config.configuration.runtimeTags(), suite.specs, config.configuration)
+            )
          }
          scheduler.schedule(context.suite, context.listener)
       }

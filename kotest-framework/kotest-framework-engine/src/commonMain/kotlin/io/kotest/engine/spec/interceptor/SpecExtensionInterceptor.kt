@@ -21,3 +21,4 @@ internal class SpecExtensionInterceptor(
       extensions.intercept(spec) { fn(spec) }
    }
 }
+
