@@ -14,5 +14,5 @@ object EntryPoint {
    const val WithSpecsMethodName = "withSpecs"
 
    // the method invoked to add configs on the launcher, must exist on TestEngineLauncher
-   const val WithConfigMethodName = "withConfig"
+   const val WithConfigMethodName = "withProjectConfig"
 }
