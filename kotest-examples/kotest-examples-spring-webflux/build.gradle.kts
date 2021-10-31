@@ -4,7 +4,7 @@ plugins {
    id("org.springframework.boot") version "2.3.0.RELEASE"
    id("io.spring.dependency-management") version "1.0.11.RELEASE"
    kotlin("jvm")
-   kotlin("plugin.spring") version "1.4.31"
+   kotlin("plugin.spring") version "1.6.20-dev-4660"
 }
 
 group = "com.example"
