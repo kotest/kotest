@@ -47,7 +47,7 @@ The `Arb.values()` method has been removed from the `Arb` interface. This method
 
 The Engine no longer logs config to the console during start **by default**. To enable output, set the system property or env var `kotest.framework.dump.config` to true.
 
-#### Deprecated method changes
+#### Deprecated method removals
 
 * `shouldReceiveWithin` and `shouldReceiveNoElementsWithin` channel matchers have been removed.
 * The deprecated `RuntimeTagExtension` has been undeprecated but moved to a new package.
