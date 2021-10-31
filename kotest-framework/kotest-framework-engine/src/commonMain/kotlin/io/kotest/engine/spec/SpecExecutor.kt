@@ -24,7 +24,6 @@ import io.kotest.engine.spec.interceptor.SpecRefExtensionInterceptor
 import io.kotest.engine.spec.interceptor.SpecStartedFinishedInterceptor
 import io.kotest.engine.spec.interceptor.SystemPropertySpecFilterInterceptor
 import io.kotest.engine.spec.interceptor.TagsExcludedSpecInterceptor
-import io.kotest.engine.tags.ConfigurationTagProvider
 import io.kotest.mpp.log
 import kotlin.reflect.KClass
 
@@ -64,7 +63,7 @@ class SpecExecutor(
          SpecFilterInterceptor(listener, conf.registry()),
          SystemPropertySpecFilterInterceptor(listener, conf.registry()),
          TagsExcludedSpecInterceptor(listener, conf),
-         RequiresTagSpecInterceptor(listener, ConfigurationTagProvider(conf), conf.registry()),
+         RequiresTagSpecInterceptor(listener, conf, conf.registry()),
          SpecRefExtensionInterceptor(conf.registry()),
          SpecStartedFinishedInterceptor(listener),
          ApplyExtensionsInterceptor(conf.registry()),
