@@ -10,6 +10,7 @@ import io.kotest.core.listeners.FinalizeSpecListener
 import io.kotest.core.listeners.IgnoredSpecListener
 import io.kotest.core.listeners.InstantiationErrorListener
 import io.kotest.core.listeners.InstantiationListener
+import io.kotest.core.listeners.PrepareSpecListener
 import io.kotest.core.listeners.SpecInstantiationListener
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.functionOverrideCallbacks
@@ -87,6 +88,23 @@ internal class SpecExtensions(private val registry: ExtensionRegistry) {
       log { "SpecExtensions: specInstantiationError $kclass errror:$t" }
       registry.all().filterIsInstance<SpecInstantiationListener>().forEach { it.specInstantiationError(kclass, t) }
       registry.all().filterIsInstance<InstantiationErrorListener>().forEach { it.instantiationError(kclass, t) }
+   }
+
+   suspend fun prepareSpec(kclass: KClass<out Spec>): Result<KClass<*>> {
+
+      val exts = registry.all().filterIsInstance<PrepareSpecListener>()
+      log { "SpecExtensions: prepareSpec ${exts.size} extensions on $kclass" }
+
+      val errors = exts.mapNotNull {
+         runCatching { it.prepareSpec(kclass) }
+            .mapError { ExtensionException.PrepareSpecException(it) }.exceptionOrNull()
+      }
+
+      return when {
+         errors.isEmpty() -> Result.success(kclass)
+         errors.size == 1 -> Result.failure(errors.first())
+         else -> Result.failure(MultipleExceptions(errors))
+      }
    }
 
    suspend fun finalizeSpec(kclass: KClass<out Spec>, results: Map<TestCase, TestResult>) {

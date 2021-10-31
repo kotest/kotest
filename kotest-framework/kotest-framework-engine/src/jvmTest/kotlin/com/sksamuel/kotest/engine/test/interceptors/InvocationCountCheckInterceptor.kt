@@ -12,6 +12,7 @@ import io.kotest.core.test.TestType
 import io.kotest.engine.test.scopes.NoopTestScope
 import io.kotest.engine.test.interceptors.InvocationCountCheckInterceptor
 import io.kotest.matchers.booleans.shouldBeTrue
+import kotlin.time.milliseconds
 
 class InvocationCountCheckInterceptorTest : DescribeSpec() {
    init {
@@ -29,7 +30,7 @@ class InvocationCountCheckInterceptorTest : DescribeSpec() {
             var fired = false
             InvocationCountCheckInterceptor.intercept { _, _ ->
                fired = true
-               TestResult.success(0)
+               TestResult.Success(0.milliseconds)
             }.invoke(tc.copy(config = tc.config.copy(invocations = 1)), NoopTestScope(tc, coroutineContext))
             fired.shouldBeTrue()
          }
@@ -46,7 +47,7 @@ class InvocationCountCheckInterceptorTest : DescribeSpec() {
             var fired = false
             InvocationCountCheckInterceptor.intercept { _, _ ->
                fired = true
-               TestResult.success(0)
+               TestResult.Success(0.milliseconds)
             }.invoke(tc.copy(config = tc.config.copy(invocations = 44)), NoopTestScope(tc, coroutineContext))
             fired.shouldBeTrue()
          }
@@ -61,7 +62,7 @@ class InvocationCountCheckInterceptorTest : DescribeSpec() {
                TestType.Container,
             )
             shouldThrowAny {
-               InvocationCountCheckInterceptor.intercept { _, _ -> TestResult.success(0) }
+               InvocationCountCheckInterceptor.intercept { _, _ -> TestResult.Success(0.milliseconds) }
                   .invoke(tc.copy(config = tc.config.copy(invocations = 4)), NoopTestScope(tc, coroutineContext))
             }
          }

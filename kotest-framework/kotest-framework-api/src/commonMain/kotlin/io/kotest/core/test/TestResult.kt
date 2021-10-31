@@ -14,13 +14,13 @@ sealed interface TestResult {
 
       @Deprecated(
          "Replaced with TestResult.Failure. Deprecated since 5.0",
-         ReplaceWith("TestResult.Failure(durationMillis.milliseconds)", "kotlin.time.milliseconds")
+         ReplaceWith("TestResult.Failure(durationMillis.milliseconds, error)", "kotlin.time.milliseconds")
       )
       fun failure(error: AssertionError, durationMillis: Long): Failure = Failure(durationMillis.milliseconds, error)
 
       @Deprecated(
          "Replaced with TestResult.Error. Deprecated since 5.0",
-         ReplaceWith("TestResult.Error(durationMillis.milliseconds)", "kotlin.time.milliseconds")
+         ReplaceWith("TestResult.Error(durationMillis.milliseconds, error)", "kotlin.time.milliseconds")
       )
       fun error(error: Throwable, durationMillis: Long): Error = Error(durationMillis.milliseconds, error)
 

@@ -6,6 +6,7 @@ import io.kotest.core.test.TestResult
 import io.kotest.engine.test.toTestResult
 import kotlinx.coroutines.delay
 import kotlin.time.Duration
+import kotlin.time.milliseconds
 
 @ExperimentalKotest
 class ShouldSpecTimeoutTest : ShouldSpec() {
@@ -16,7 +17,7 @@ class ShouldSpecTimeoutTest : ShouldSpec() {
          if (testCase.name.testName.contains("timeout:") && result.isSuccess) {
             AssertionError("${testCase.descriptor.id.value} passed but should fail").toTestResult(0)
          } else {
-            TestResult.success(0)
+            TestResult.Success(0.milliseconds)
          }
       }
 

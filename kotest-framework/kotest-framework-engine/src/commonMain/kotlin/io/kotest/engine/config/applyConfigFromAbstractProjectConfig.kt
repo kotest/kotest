@@ -53,8 +53,6 @@ internal fun applyConfigFromProjectConfig(config: AbstractProjectConfig, configu
    // wrap into a project listener and register as normal
    val projectListener = object : BeforeProjectListener, AfterProjectListener {
 
-      override val name: String = "ProjectConfigBeforeAfterProjectListener"
-
       override suspend fun beforeProject() {
          config.beforeProject()
          config.beforeAll()

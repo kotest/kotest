@@ -46,7 +46,7 @@ class JunitXmlReporter(
 ) : PrepareSpecListener, FinalizeSpecListener {
 
    companion object {
-      const val DefaultLocation = "./build/test-results/test/"
+      const val DefaultBuildDir = "./build"
 
       // sets the build directory, to which test-results will be appended
       const val BuildDirKey = "gradle.build.dir"
@@ -62,7 +62,7 @@ class JunitXmlReporter(
       return if (buildDir != null)
          Paths.get(buildDir).resolve(outputDir)
       else
-         Paths.get(DefaultLocation)
+         Paths.get(DefaultBuildDir).resolve(outputDir)
    }
 
    override suspend fun prepareSpec(kclass: KClass<out Spec>) {
@@ -75,8 +75,6 @@ class JunitXmlReporter(
    }
 
    override suspend fun finalizeSpec(kclass: KClass<out Spec>, results: Map<TestCase, TestResult>) {
-      super.finalizeSpec(kclass, results)
-
       val start = marks[kclass] ?: System.currentTimeMillis()
       val duration = System.currentTimeMillis() - start
 
@@ -138,6 +136,7 @@ class JunitXmlReporter(
       val outputter = XMLOutputter(Format.getPrettyFormat())
       val writer = Files.newBufferedWriter(path, StandardOpenOption.TRUNCATE_EXISTING, StandardOpenOption.CREATE)
       outputter.output(document, writer)
+      writer.flush()
       writer.close()
    }
 

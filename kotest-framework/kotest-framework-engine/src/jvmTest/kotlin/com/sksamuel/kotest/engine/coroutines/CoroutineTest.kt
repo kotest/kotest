@@ -10,6 +10,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Semaphore
 import kotlinx.coroutines.sync.withPermit
+import kotlin.time.milliseconds
 
 // tests kotest's interaction with coroutines
 @ExperimentalCoroutinesApi
@@ -20,11 +21,11 @@ class CoroutineTest : FunSpec() {
          val result = execute(testCase)
          when {
             testCase.name.testName == "exceptions inside launched coroutine should be propagated" &&
-               result.isError -> TestResult.success(0)
+               result.isError -> TestResult.Success(0.milliseconds)
             testCase.name.testName == "exception in launched coroutine should cancel siblings" &&
-               result.isError -> TestResult.success(0)
+               result.isError -> TestResult.Success(0.milliseconds)
             testCase.name.testName == "exception in test coroutine should cancel launched coroutines" &&
-               result.isError -> TestResult.success(0)
+               result.isError -> TestResult.Success(0.milliseconds)
             else -> result
          }
       }

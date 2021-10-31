@@ -6,8 +6,7 @@ import kotlin.reflect.KClass
 /**
  * This listener is invoked before any tests execute for a spec.
  *
- * Invoked once per spec class if the spec has enabled root tests.
- * If the created spec is not active, then this listener will not be invoked.
+ * Invoked once per spec class if the spec is not skipped.
  *
  * If a spec is instantiated multiple times because the isolation mode
  * is set to create multiple instances, then this listener will not be
