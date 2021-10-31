@@ -66,7 +66,7 @@ class KotestEngineLauncher(
          )
       ).withExtensions(testFilters)
          .withExtensions(specFilters)
-         .withExplicitTags(tags)
+         .withTagExpression(tags)
          .withClasses(specs)
 
       return launcher.launch()

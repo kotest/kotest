@@ -30,7 +30,7 @@ internal fun setupLauncher(
 
    TestEngineLauncher(listener)
       .withExtensions(listOfNotNull(filter))
-      .withExplicitTags(TagExpression(args.tagExpression))
+      .withTagExpression(args.tagExpression?.let { TagExpression(it) })
       .withClasses(specs)
 }
 

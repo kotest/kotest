@@ -35,7 +35,7 @@ class TestEngineLauncher(
    private val conf: Configuration,
    private val configs: List<AbstractProjectConfig>,
    private val refs: List<SpecRef>,
-   private val explicitTags: TagExpression?,
+   private val tagExpression: TagExpression?,
    private val extensions: List<Extension>,
    private val dumpConfig: Boolean,
 ) {
@@ -76,7 +76,7 @@ class TestEngineLauncher(
          conf = conf,
          configs = configs,
          refs = refs,
-         explicitTags = explicitTags,
+         tagExpression = tagExpression,
          extensions = extensions,
          dumpConfig = dumpConfig,
       )
@@ -88,7 +88,7 @@ class TestEngineLauncher(
          conf = conf,
          configs = configs,
          refs = specs.toList().map { InstanceSpecRef(it) },
-         explicitTags = explicitTags,
+         tagExpression = tagExpression,
          extensions = extensions,
          dumpConfig = dumpConfig,
       )
@@ -101,7 +101,7 @@ class TestEngineLauncher(
          conf = conf,
          configs = configs,
          refs = specs.toList().map { ReflectiveSpecRef(it) },
-         explicitTags = explicitTags,
+         tagExpression = tagExpression,
          extensions = extensions,
          dumpConfig = dumpConfig,
       )
@@ -116,19 +116,19 @@ class TestEngineLauncher(
          conf = conf,
          configs = configs + projectConfig,
          refs = refs,
-         explicitTags = explicitTags,
+         tagExpression = tagExpression,
          extensions = extensions,
          dumpConfig = dumpConfig,
       )
    }
 
-   fun withExplicitTags(tags: TagExpression?): TestEngineLauncher {
+   fun withTagExpression(expression: TagExpression?): TestEngineLauncher {
       return TestEngineLauncher(
          listener = listener,
          conf = conf,
          configs = configs,
          refs = refs,
-         explicitTags = tags,
+         tagExpression = expression,
          extensions = extensions,
          dumpConfig = dumpConfig,
       )
@@ -142,7 +142,7 @@ class TestEngineLauncher(
          conf = conf,
          configs = configs,
          refs = refs,
-         explicitTags = explicitTags,
+         tagExpression = tagExpression,
          extensions = this.extensions + extensions,
          dumpConfig = dumpConfig,
       )
@@ -154,7 +154,7 @@ class TestEngineLauncher(
          conf = configuration,
          configs = configs,
          refs = refs,
-         explicitTags = explicitTags,
+         tagExpression = tagExpression,
          extensions = this.extensions + extensions,
          dumpConfig = dumpConfig,
       )
@@ -170,7 +170,7 @@ class TestEngineLauncher(
          interceptors = testEngineInterceptors(),
          configuration = ConfigManager.initialize(conf, configs + detectAbstractProjectConfigs()),
          extensions,
-         explicitTags,
+         tagExpression,
       )
    }
 
