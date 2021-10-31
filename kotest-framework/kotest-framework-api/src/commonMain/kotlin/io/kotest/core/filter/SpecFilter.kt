@@ -24,12 +24,7 @@ sealed interface SpecFilterResult {
    object Include : SpecFilterResult
 
    /**
-    * Exclude the spec at runtime. It will not appear in the output at all.
+    * Exclude the spec at runtimewith an optional reason.
     */
-   object Exclude : SpecFilterResult
-
-   /**
-    * Mark the spec as skipped with an optional reason.
-    */
-   data class Ignore(val reason: String?) : SpecFilterResult
+   data class Exclude(val reason: String?) : SpecFilterResult
 }

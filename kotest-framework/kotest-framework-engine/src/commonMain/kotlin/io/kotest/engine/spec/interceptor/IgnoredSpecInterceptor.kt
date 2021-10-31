@@ -30,7 +30,7 @@ internal class IgnoredSpecInterceptor(
 
       if (isIgnored) {
          listener.specIgnored(ref.kclass, "Disabled by @Ignored")
-         SpecExtensions(registry).ignored(ref.kclass)
+         SpecExtensions(registry).ignored(ref.kclass, "Disabled by @Ignored")
          emptyMap()
       } else {
          fn(ref)

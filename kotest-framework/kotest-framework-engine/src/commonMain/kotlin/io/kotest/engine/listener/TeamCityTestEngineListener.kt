@@ -94,7 +94,6 @@ class TeamCityTestEngineListener(
       val msg = TeamCityMessageBuilder
          .testSuiteStarted(prefix, formatter.format(kclass))
          .id(kclass.toDescriptor().path().value)
-         // note use location for tests, location hint for test suites
          .locationHint(Locations.location(kclass))
          .build()
       println(msg)
@@ -105,7 +104,6 @@ class TeamCityTestEngineListener(
       val msg = TeamCityMessageBuilder
          .testSuiteFinished(prefix, formatter.format(kclass))
          .id(kclass.toDescriptor().path().value)
-         // note use location for tests, location hint for test suites
          .locationHint(Locations.location(kclass))
          .build()
       println(msg)
@@ -166,6 +164,7 @@ class TeamCityTestEngineListener(
    override suspend fun testIgnored(testCase: TestCase, reason: String?) {
       if (testCase.isRootTest()) rootTests.add(testCase)
       else addChild(testCase)
+      results[testCase.descriptor] = TestResult.Ignored(reason)
    }
 
    private fun addChild(testCase: TestCase) {

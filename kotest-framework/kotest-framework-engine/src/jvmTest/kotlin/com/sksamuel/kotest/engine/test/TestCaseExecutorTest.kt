@@ -41,7 +41,7 @@ class TestCaseExecutorTest : FunSpec({
             started = true
          }
 
-         override suspend fun testIgnored(testCase: TestCase) {}
+         override suspend fun testIgnored(testCase: TestCase, reason: String?) {}
          override suspend fun testFinished(testCase: TestCase, result: TestResult) {
             finished = true
             result.isSuccess shouldBe true
@@ -62,7 +62,7 @@ class TestCaseExecutorTest : FunSpec({
             started = true
          }
 
-         override suspend fun testIgnored(testCase: TestCase) {}
+         override suspend fun testIgnored(testCase: TestCase, reason: String?) {}
          override suspend fun testFinished(testCase: TestCase, result: TestResult) {
             finished = true
             result.isError shouldBe true
@@ -80,7 +80,7 @@ class TestCaseExecutorTest : FunSpec({
    test("TestCaseExecutor should invoke before test") {
       val executor = TestCaseExecutor(object : TestCaseExecutionListener {
          override suspend fun testStarted(testCase: TestCase) {}
-         override suspend fun testIgnored(testCase: TestCase) {}
+         override suspend fun testIgnored(testCase: TestCase, reason: String?) {}
          override suspend fun testFinished(testCase: TestCase, result: TestResult) {}
       }, NoopCoroutineDispatcherFactory, Configuration())
       val spec = BeforeTest()
@@ -92,7 +92,7 @@ class TestCaseExecutorTest : FunSpec({
    test("TestCaseExecutor should invoke after test") {
       val executor = TestCaseExecutor(object : TestCaseExecutionListener {
          override suspend fun testStarted(testCase: TestCase) {}
-         override suspend fun testIgnored(testCase: TestCase) {}
+         override suspend fun testIgnored(testCase: TestCase, reason: String?) {}
          override suspend fun testFinished(testCase: TestCase, result: TestResult) {}
       }, NoopCoroutineDispatcherFactory, Configuration())
       val spec = AfterTest()
@@ -109,7 +109,7 @@ class TestCaseExecutorTest : FunSpec({
             started = true
          }
 
-         override suspend fun testIgnored(testCase: TestCase) {}
+         override suspend fun testIgnored(testCase: TestCase, reason: String?) {}
          override suspend fun testFinished(testCase: TestCase, result: TestResult) {
             finished = true
          }
@@ -130,7 +130,7 @@ class TestCaseExecutorTest : FunSpec({
             started = true
          }
 
-         override suspend fun testIgnored(testCase: TestCase) {}
+         override suspend fun testIgnored(testCase: TestCase, reason: String?) {}
          override suspend fun testFinished(testCase: TestCase, result: TestResult) {
             finished = true
          }

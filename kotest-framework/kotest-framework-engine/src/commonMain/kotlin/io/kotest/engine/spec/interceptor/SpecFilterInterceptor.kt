@@ -24,17 +24,20 @@ class SpecFilterInterceptor(
       fn: suspend (SpecRef) -> Map<TestCase, TestResult>
    ): suspend (SpecRef) -> Map<TestCase, TestResult> = { ref ->
 
-      val excluded = registry.all().filterIsInstance<SpecFilter>().any {
-         it.filter(ref.kclass) == SpecFilterResult.Exclude
-      }
+      val excluded = registry.all().filterIsInstance<SpecFilter>().mapNotNull {
+         val result = it.filter(ref.kclass)
+         if (result is SpecFilterResult.Exclude) result else null
+      }.firstOrNull()
+
       log { "SpecFilterInterceptor: ${ref.kclass} is excludedByFilters = $excluded" }
 
-      if (excluded) {
-         listener.specIgnored(ref.kclass, "Disabled due to spec filter")
-         extensions.ignored(ref.kclass)
-         emptyMap()
-      } else {
+      if (excluded == null) {
          fn(ref)
+      } else {
+         val reason = excluded.reason ?: "Disabled by spec filter"
+         listener.specIgnored(ref.kclass, reason)
+         extensions.ignored(ref.kclass, reason)
+         emptyMap()
       }
    }
 }

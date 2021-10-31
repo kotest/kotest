@@ -45,8 +45,8 @@ internal class SystemPropertySpecFilterInterceptor(
       if (included) {
          fn(ref)
       } else {
-         listener.specIgnored(ref.kclass, "Filtered by system property")
-         SpecExtensions(registry).ignored(ref.kclass)
+         listener.specIgnored(ref.kclass, "Filtered by spec filter system property")
+         SpecExtensions(registry).ignored(ref.kclass, "Filtered by spec filter system property")
          emptyMap()
       }
    }
@@ -55,7 +55,7 @@ internal class SystemPropertySpecFilterInterceptor(
 private fun Regex.toSpecFilter(): SpecFilter = object : SpecFilter {
    override fun filter(kclass: KClass<*>): SpecFilterResult {
       val name = kclass.bestName()
-      return if (this@toSpecFilter.matches(name)) SpecFilterResult.Include else SpecFilterResult.Exclude
+      return if (this@toSpecFilter.matches(name)) SpecFilterResult.Include else SpecFilterResult.Exclude("Disabled by spec filter: $this")
    }
 }
 

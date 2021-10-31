@@ -12,7 +12,6 @@ import io.kotest.core.listeners.BeforeSpecListener
 import io.kotest.core.listeners.BeforeTestListener
 import io.kotest.core.listeners.FinalizeSpecListener
 import io.kotest.core.listeners.IgnoredSpecListener
-import io.kotest.core.listeners.InactiveSpecListener
 import io.kotest.core.listeners.InstantiationErrorListener
 import io.kotest.core.listeners.PrepareSpecListener
 import io.kotest.core.listeners.SpecInstantiationListener
@@ -31,7 +30,6 @@ internal class SpecWrapperExtension(
    InstantiationErrorListener,
    SpecExtension,
    IgnoredSpecListener,
-   InactiveSpecListener,
    AfterSpecListener,
    BeforeSpecListener,
    PrepareSpecListener,
@@ -96,10 +94,6 @@ internal class SpecWrapperExtension(
 
    override suspend fun finalizeSpec(kclass: KClass<out Spec>, results: Map<TestCase, TestResult>) {
       if (delegate is FinalizeSpecListener && kclass == target) delegate.finalizeSpec(kclass, results)
-   }
-
-   override suspend fun inactive(spec: Spec, results: Map<TestCase, TestResult>) {
-      if (delegate is InactiveSpecListener && spec::class == target) delegate.inactive(spec, results)
    }
 
    override fun specInstantiated(spec: Spec) {

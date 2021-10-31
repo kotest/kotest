@@ -8,7 +8,6 @@ import io.kotest.core.listeners.AfterSpecListener
 import io.kotest.core.listeners.BeforeSpecListener
 import io.kotest.core.listeners.FinalizeSpecListener
 import io.kotest.core.listeners.IgnoredSpecListener
-import io.kotest.core.listeners.InactiveSpecListener
 import io.kotest.core.listeners.InstantiationErrorListener
 import io.kotest.core.listeners.InstantiationListener
 import io.kotest.core.listeners.SpecInstantiationListener
@@ -90,11 +89,6 @@ internal class SpecExtensions(private val registry: ExtensionRegistry) {
       registry.all().filterIsInstance<InstantiationErrorListener>().forEach { it.instantiationError(kclass, t) }
    }
 
-   suspend fun inactiveSpec(spec: Spec, results: Map<TestCase, TestResult>) {
-      log { "SpecExtensions: inactiveSpec $spec" }
-      registry.all().filterIsInstance<InactiveSpecListener>().forEach { it.inactive(spec, results) }
-   }
-
    suspend fun finalizeSpec(kclass: KClass<out Spec>, results: Map<TestCase, TestResult>) {
       val exts = registry.all().filterIsInstance<FinalizeSpecListener>()
       log { "SpecExtensions: finishSpec ${exts.size} extensions on $kclass results:$results" }
@@ -126,9 +120,9 @@ internal class SpecExtensions(private val registry: ExtensionRegistry) {
    /**
     * Notify all [IgnoredSpecListener]s that the given [kclass] has been ignored.
     */
-   suspend fun ignored(kclass: KClass<out Spec>) {
+   suspend fun ignored(kclass: KClass<out Spec>, reason: String?) {
       val exts = registry.all().filterIsInstance<IgnoredSpecListener>()
       log { "SpecExtensions: ignored ${exts.size} extensions on $kclass" }
-      exts.forEach { it.ignoredSpec(kclass, null) }
+      exts.forEach { it.ignoredSpec(kclass, reason) }
    }
 }

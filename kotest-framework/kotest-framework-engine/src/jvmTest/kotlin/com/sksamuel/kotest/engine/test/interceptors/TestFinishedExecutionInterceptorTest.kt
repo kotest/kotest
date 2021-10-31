@@ -8,7 +8,7 @@ import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestType
-import io.kotest.engine.test.TestCaseExecutionListener
+import io.kotest.engine.test.AbstractTestCaseExecutionListener
 import io.kotest.engine.test.contexts.TerminalTestContext
 import io.kotest.engine.test.interceptors.TestFinishedInterceptor
 import io.kotest.matchers.shouldBe
@@ -26,7 +26,7 @@ class TestFinishedExecutionInterceptorTest : FunSpec({
       )
       val context = TerminalTestContext(tc, coroutineContext)
       var finished = false
-      val listener = object : TestCaseExecutionListener {
+      val listener = object : AbstractTestCaseExecutionListener() {
          override suspend fun testFinished(testCase: TestCase, result: TestResult) {
             super.testFinished(testCase, result)
             finished = true
@@ -47,12 +47,15 @@ class TestFinishedExecutionInterceptorTest : FunSpec({
       )
       val context = TerminalTestContext(tc, coroutineContext)
       var ignored = false
-      val listener = object : TestCaseExecutionListener {
-         override suspend fun testIgnored(testCase: TestCase) {
+      var r: String? = null
+      val listener = object : AbstractTestCaseExecutionListener() {
+         override suspend fun testIgnored(testCase: TestCase, reason: String?) {
             ignored = true
+            r = reason
          }
       }
-      TestFinishedInterceptor(listener).intercept { _, _ -> TestResult.Ignored(null) }.invoke(tc, context)
+      TestFinishedInterceptor(listener).intercept { _, _ -> TestResult.Ignored("wobble") }.invoke(tc, context)
       ignored shouldBe true
+      r shouldBe "wobble"
    }
 })

@@ -7,7 +7,7 @@ import io.kotest.core.spec.style.FunSpec
 import kotlin.reflect.KClass
 
 class MySpecDisabler : EnabledCondition {
-   override fun enabled(specKlass: KClass<out Spec>): Boolean {
+   override fun enabled(kclass: KClass<out Spec>): Boolean {
       return false
    }
 }

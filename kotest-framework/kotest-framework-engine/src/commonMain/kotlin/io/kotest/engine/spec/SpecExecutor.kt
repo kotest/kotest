@@ -16,14 +16,15 @@ import io.kotest.engine.spec.interceptor.ConfigurationInContextInterceptor
 import io.kotest.engine.spec.interceptor.EnabledIfSpecInterceptor
 import io.kotest.engine.spec.interceptor.IgnoreNestedSpecStylesInterceptor
 import io.kotest.engine.spec.interceptor.IgnoredSpecInterceptor
-import io.kotest.engine.spec.interceptor.RunIfActiveInterceptor
+import io.kotest.engine.spec.interceptor.RequiresTagSpecInterceptor
 import io.kotest.engine.spec.interceptor.SpecExtensionInterceptor
 import io.kotest.engine.spec.interceptor.SpecFilterInterceptor
-import io.kotest.engine.spec.interceptor.SpecStartedFinishedInterceptor
-import io.kotest.engine.spec.interceptor.SpecRefExtensionInterceptor
 import io.kotest.engine.spec.interceptor.SpecFinalizeInterceptor
+import io.kotest.engine.spec.interceptor.SpecRefExtensionInterceptor
+import io.kotest.engine.spec.interceptor.SpecStartedFinishedInterceptor
 import io.kotest.engine.spec.interceptor.SystemPropertySpecFilterInterceptor
 import io.kotest.engine.spec.interceptor.TagsExcludedSpecInterceptor
+import io.kotest.engine.tags.ConfigurationTagProvider
 import io.kotest.mpp.log
 import kotlin.reflect.KClass
 
@@ -63,6 +64,7 @@ class SpecExecutor(
          SpecFilterInterceptor(listener, conf.registry()),
          SystemPropertySpecFilterInterceptor(listener, conf.registry()),
          TagsExcludedSpecInterceptor(listener, conf),
+         RequiresTagSpecInterceptor(listener, ConfigurationTagProvider(conf), conf.registry()),
          SpecRefExtensionInterceptor(conf.registry()),
          SpecStartedFinishedInterceptor(listener),
          ApplyExtensionsInterceptor(conf.registry()),
@@ -85,7 +87,6 @@ class SpecExecutor(
       val interceptors = listOfNotNull(
          if (platform == Platform.JS) IgnoreNestedSpecStylesInterceptor(listener, conf.registry()) else null,
          SpecExtensionInterceptor(conf.registry()),
-         RunIfActiveInterceptor(listener, conf),
          ConfigurationInContextInterceptor(conf),
          SpecFinalizeInterceptor(listener, conf.registry()),
       )

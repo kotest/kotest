@@ -140,9 +140,9 @@ internal class InstancePerLeafSpecRunner(
                   }
                }
 
-               override suspend fun testIgnored(testCase: TestCase) {
+               override suspend fun testIgnored(testCase: TestCase, reason: String?) {
                   if (ignored.add(testCase.descriptor))
-                     listener.testIgnored(testCase, null)
+                     listener.testIgnored(testCase, reason)
                }
 
                override suspend fun testFinished(testCase: TestCase, result: TestResult) {

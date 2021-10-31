@@ -11,7 +11,7 @@ internal class TestFinishedInterceptor(private val listener: TestCaseExecutionLi
    ): suspend (TestCase, TestContext) -> TestResult = { testCase, context ->
       val result = test(testCase, context)
       when (result) {
-         is TestResult.Ignored -> listener.testIgnored(testCase)
+         is TestResult.Ignored -> listener.testIgnored(testCase, result.reason)
          else -> listener.testFinished(testCase, result)
       }
       result

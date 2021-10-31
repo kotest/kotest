@@ -23,9 +23,9 @@ fun resolveConfig(
    val enabled: EnabledOrReasonIf = { testCase ->
       when {
          // if xdisabled we always override any other enabled/disabled flags
-         xdisabled == true -> Enabled.disabled
-         config?.enabled == false -> Enabled.disabled
-         config?.enabledIf != null -> Enabled(config.enabledIf.invoke(testCase))
+         xdisabled == true -> Enabled.disabled("Disabled by xmethod")
+         config?.enabled == false -> Enabled.disabled("Disabled by enabled flag in config")
+         config?.enabledIf != null -> if (config.enabledIf.invoke(testCase)) Enabled.enabled else Enabled.disabled("Disabled by enabledIf flag in config")
          config?.enabledOrReasonIf != null -> config.enabledOrReasonIf.invoke(testCase)
          !defaultTestConfig.enabled -> Enabled.disabled
          !defaultTestConfig.enabledIf.invoke(testCase) -> Enabled.disabled

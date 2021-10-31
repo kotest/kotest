@@ -58,11 +58,11 @@ class EnabledIfSpecInterceptorTest : FunSpec({
 })
 
 class MyEnabledCondition : EnabledCondition {
-   override fun enabled(specKlass: KClass<out Spec>): Boolean = true
+   override fun enabled(kclass: KClass<out Spec>): Boolean = true
 }
 
 class MyDisabledCondition : EnabledCondition {
-   override fun enabled(specKlass: KClass<out Spec>): Boolean = false
+   override fun enabled(kclass: KClass<out Spec>): Boolean = false
 }
 
 

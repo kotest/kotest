@@ -1,4 +1,4 @@
-package com.sksamuel.kotest.specs.funspec
+package com.sksamuel.kotest.engine.spec.focus
 
 import io.kotest.core.spec.style.FunSpec
 

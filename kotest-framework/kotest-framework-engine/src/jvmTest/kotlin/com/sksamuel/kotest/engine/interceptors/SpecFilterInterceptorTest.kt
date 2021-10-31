@@ -17,7 +17,7 @@ class SpecFilterInterceptorTest : FunSpec() {
          val c = Configuration()
          c.registry().add(object : SpecFilter {
             override fun filter(kclass: KClass<*>): SpecFilterResult {
-               return if (kclass.simpleName == "FooSpec") SpecFilterResult.Exclude else SpecFilterResult.Include
+               return if (kclass.simpleName == "FooSpec") SpecFilterResult.Exclude("foo") else SpecFilterResult.Include
             }
          })
          var fired = false

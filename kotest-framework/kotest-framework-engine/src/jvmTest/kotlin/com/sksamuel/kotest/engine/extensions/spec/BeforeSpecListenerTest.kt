@@ -38,17 +38,7 @@ class BeforeSpecListenerTest : FunSpec() {
          counter.get() shouldBe 5
       }
 
-      test("BeforeSpecListener's exceptions should be propagated to specExit") {
-         val listener = CollectingTestEngineListener()
-         TestEngineLauncher(listener)
-            .withClasses(MyErrorSpec3::class)
-            .launch()
-         listener.specs.size shouldBe 1
-         listener.specs[MyErrorSpec3::class]!!.shouldBeInstanceOf<ExtensionException.BeforeSpecException>()
-         listener.tests.size shouldBe 0
-      }
-
-      test("BeforeSpecExtension's should NOT be triggered for a spec without tests") {
+      test("BeforeSpecExtension's should be triggered for a spec without tests") {
 
          val c = Configuration()
          c.registry().add(MyBeforeSpecListener)
@@ -60,8 +50,20 @@ class BeforeSpecListenerTest : FunSpec() {
             .withConfiguration(c)
             .launch()
 
-         counter.get() shouldBe 0
+         counter.get() shouldBe 1
       }
+
+      test("BeforeSpecListener's exceptions should be propagated to specExit") {
+         val listener = CollectingTestEngineListener()
+         TestEngineLauncher(listener)
+            .withClasses(MyErrorSpec3::class)
+            .launch()
+         listener.specs.size shouldBe 1
+         listener.specs[MyErrorSpec3::class]!!.shouldBeInstanceOf<ExtensionException.BeforeSpecException>()
+         listener.tests.size shouldBe 0
+      }
+
+
    }
 }
 

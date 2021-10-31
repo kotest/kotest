@@ -16,8 +16,8 @@ class TestCaseExecutionListenerToTestEngineListenerAdapter(
       listener.testFinished(testCase, result)
    }
 
-   override suspend fun testIgnored(testCase: TestCase) {
-      listener.testIgnored(testCase, null)
+   override suspend fun testIgnored(testCase: TestCase, reason: String?) {
+      listener.testIgnored(testCase, reason)
    }
 
    override suspend fun testStarted(testCase: TestCase) {

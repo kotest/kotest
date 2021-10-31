@@ -28,7 +28,7 @@ class TagsExcludedSpecInterceptor(
          fn(ref)
       } else {
          listener.specIgnored(ref.kclass, null)
-         SpecExtensions(conf.registry()).ignored(ref.kclass)
+         SpecExtensions(conf.registry()).ignored(ref.kclass, "Skipped by tags")
          emptyMap()
       }
    }

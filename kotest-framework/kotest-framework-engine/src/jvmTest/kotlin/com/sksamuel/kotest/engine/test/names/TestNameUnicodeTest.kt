@@ -1,11 +1,11 @@
-package com.sksamuel.kotest.engine
+package com.sksamuel.kotest.engine.test.names
 
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.matchers.shouldBe
 
 // some characters are being filtered out of ids and breaking nested tests
 // https://github.com/kotest/kotest/issues/1828
-class TestIdTest : DescribeSpec({
+class TestNameUnicodeTest : DescribeSpec({
 
    var count = 0
 
