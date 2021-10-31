@@ -33,6 +33,9 @@ allprojects {
    repositories {
       mavenCentral()
       google()
+      maven {
+         url = uri("https://maven.pkg.jetbrains.space/kotlin/p/kotlin/dev")
+      }
    }
 
    group = "io.kotest"
