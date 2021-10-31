@@ -1,6 +1,6 @@
 package io.kotest.engine.spec.interceptor
 
-import io.kotest.core.Tags
+import io.kotest.core.TagExpression
 import io.kotest.core.config.Configuration
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.SpecRef
@@ -13,7 +13,7 @@ import io.kotest.engine.tags.isPotentiallyActive
 import io.kotest.engine.tags.parse
 
 /**
- * Filters any [Spec] that can be eagerly excluded based on the @[Tags] annotation at the class level.
+ * Filters any [Spec] that can be eagerly excluded based on the @[TagExpression] annotation at the class level.
  */
 class TagsExcludedSpecInterceptor(
    private val listener: TestEngineListener,

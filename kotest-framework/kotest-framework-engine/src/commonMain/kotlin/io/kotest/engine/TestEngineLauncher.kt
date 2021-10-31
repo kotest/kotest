@@ -4,7 +4,7 @@ package io.kotest.engine
 
 import io.kotest.common.runBlocking
 import io.kotest.common.runPromise
-import io.kotest.core.Tags
+import io.kotest.core.TagExpression
 import io.kotest.core.config.AbstractProjectConfig
 import io.kotest.core.config.Configuration
 import io.kotest.core.extensions.Extension
@@ -35,7 +35,7 @@ class TestEngineLauncher(
    private val conf: Configuration,
    private val configs: List<AbstractProjectConfig>,
    private val refs: List<SpecRef>,
-   private val explicitTags: Tags?,
+   private val explicitTags: TagExpression?,
    private val extensions: List<Extension>,
    private val dumpConfig: Boolean,
 ) {
@@ -122,7 +122,7 @@ class TestEngineLauncher(
       )
    }
 
-   fun withExplicitTags(tags: Tags?): TestEngineLauncher {
+   fun withExplicitTags(tags: TagExpression?): TestEngineLauncher {
       return TestEngineLauncher(
          listener = listener,
          conf = conf,

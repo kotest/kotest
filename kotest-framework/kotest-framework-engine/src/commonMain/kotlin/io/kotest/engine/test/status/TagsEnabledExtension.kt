@@ -1,6 +1,6 @@
 package io.kotest.engine.test.status
 
-import io.kotest.core.Tags
+import io.kotest.core.TagExpression
 import io.kotest.core.test.Enabled
 import io.kotest.core.test.TestCase
 import io.kotest.engine.tags.isActive
@@ -18,7 +18,7 @@ import io.kotest.mpp.log
  *
  *  Note: tags are attached to tests either through test config, or at the spec level.
  */
-internal class TagsEnabledExtension(private val tags: Tags) : TestEnabledExtension {
+internal class TagsEnabledExtension(private val tags: TagExpression) : TestEnabledExtension {
    override fun isEnabled(testCase: TestCase): Enabled {
       val enabledInTags = tags.parse().isActive(testCase.config.tags)
       if (!enabledInTags) {

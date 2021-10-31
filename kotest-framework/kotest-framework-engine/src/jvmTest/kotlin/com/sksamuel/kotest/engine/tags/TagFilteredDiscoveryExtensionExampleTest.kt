@@ -11,8 +11,8 @@ class TagFilteredDiscoveryExtensionExampleTest : StringSpec() {
 
    companion object {
       val ext = object : TagExtension {
-         override fun tags(): io.kotest.core.Tags =
-            io.kotest.core.Tags(emptySet(), setOf(NamedTag("SpecExcluded")))
+         override fun tags(): io.kotest.core.TagExpression =
+            io.kotest.core.TagExpression(emptySet(), setOf(NamedTag("SpecExcluded")))
       }
    }
 

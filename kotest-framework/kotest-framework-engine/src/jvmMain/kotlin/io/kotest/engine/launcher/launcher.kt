@@ -1,7 +1,7 @@
 package io.kotest.engine.launcher
 
 import io.kotest.common.KotestInternal
-import io.kotest.core.Tags
+import io.kotest.core.TagExpression
 import io.kotest.core.spec.Spec
 import io.kotest.engine.TestEngineLauncher
 import io.kotest.engine.listener.TestEngineListener
@@ -30,7 +30,7 @@ internal fun setupLauncher(
 
    TestEngineLauncher(listener)
       .withExtensions(listOfNotNull(filter))
-      .withExplicitTags(Tags(args.tagExpression))
+      .withExplicitTags(TagExpression(args.tagExpression))
       .withClasses(specs)
 }
 

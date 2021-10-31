@@ -1,16 +1,16 @@
 package io.kotest.core.extensions
 
-import io.kotest.core.Tags
+import io.kotest.core.TagExpression
 
 /**
- * Provides [Tags] to be used by the Test Engine in determining active tests.
+ * Provides [TagExpression] to be used by the Test Engine in determining active tests.
  *
  * A [Tag] can be added to any test and then specific tags can be included
  * or excluded via [TagExtension] instances, which will cause tests that do not
  * match to be skipped.
  *
  * Note: If multiple extensions are registered then all returned
- * [Tags] are combined using ORs
+ * [TagExpression] are combined using ORs
  *
  * The [SystemPropertyTagExtension] is automatically registered which
  * includes and excludes tags using the system properties
@@ -18,5 +18,5 @@ import io.kotest.core.Tags
  *
  */
 interface TagExtension : Extension {
-   fun tags(): Tags
+   fun tags(): TagExpression
 }

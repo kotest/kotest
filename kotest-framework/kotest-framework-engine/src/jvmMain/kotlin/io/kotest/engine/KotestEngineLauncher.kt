@@ -1,7 +1,7 @@
 package io.kotest.engine
 
 import io.kotest.common.KotestInternal
-import io.kotest.core.Tags
+import io.kotest.core.TagExpression
 import io.kotest.core.filter.SpecFilter
 import io.kotest.core.filter.TestFilter
 import io.kotest.core.spec.Spec
@@ -23,7 +23,7 @@ class KotestEngineLauncher(
    private val specs: List<KClass<out Spec>>,
    private val testFilters: List<TestFilter>,
    private val specFilters: List<SpecFilter>,
-   private val tags: Tags?,
+   private val tags: TagExpression?,
    private val dumpConfig: Boolean,
    private val scripts: List<KClass<out ScriptTemplateWithArgs>>,
 ) {
@@ -36,7 +36,7 @@ class KotestEngineLauncher(
       fun default(
          listeners: List<TestEngineListener>,
          specs: List<KClass<out Spec>>,
-         tags: Tags?
+         tags: TagExpression?
       ): KotestEngineLauncher {
          return KotestEngineLauncher(
             listeners = listeners,
@@ -159,7 +159,7 @@ class KotestEngineLauncher(
    }
 
    @Deprecated("This class is deprecated since 5.0")
-   fun withTags(tags: Tags?): KotestEngineLauncher {
+   fun withTags(tags: TagExpression?): KotestEngineLauncher {
       return KotestEngineLauncher(
          listeners = listeners,
          specs = specs,

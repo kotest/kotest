@@ -2,7 +2,7 @@ package com.sksamuel.kotest.engine.tags
 
 import io.kotest.core.NamedTag
 import io.kotest.core.Tag
-import io.kotest.core.Tags
+import io.kotest.core.TagExpression
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.engine.tags.isActive
 import io.kotest.engine.tags.parse
@@ -16,7 +16,7 @@ class TagsTest : StringSpec() {
 
    init {
       "test with include and exclude tags" {
-         val tags = Tags(setOf(Foo, NamedTag("boo")), setOf(Moo))
+         val tags = TagExpression(setOf(Foo, NamedTag("boo")), setOf(Moo))
          tags.parse().isActive(Foo) shouldBe true
          tags.parse().isActive(NamedTag("boo")) shouldBe true
          tags.parse().isActive(Moo) shouldBe false // moo excluded
@@ -27,7 +27,7 @@ class TagsTest : StringSpec() {
          tags.parse().isActive(setOf(NamedTag("boo"), Foo)) shouldBe true // has both the included
       }
       "test with include tags" {
-         val tags = Tags(setOf(Foo, NamedTag("boo")), emptySet())
+         val tags = TagExpression(setOf(Foo, NamedTag("boo")), emptySet())
          tags.parse().isActive(Foo) shouldBe true
          tags.parse().isActive(NamedTag("boo")) shouldBe true
          tags.parse().isActive(Moo) shouldBe false
@@ -35,7 +35,7 @@ class TagsTest : StringSpec() {
          tags.parse().isActive(Roo) shouldBe false
       }
       "test with exclude tags" {
-         val tags = Tags(emptySet(), setOf(Moo))
+         val tags = TagExpression(emptySet(), setOf(Moo))
          tags.parse().isActive(Foo) shouldBe true
          tags.parse().isActive(NamedTag("boo")) shouldBe true
          tags.parse().isActive(Moo) shouldBe false
@@ -43,7 +43,7 @@ class TagsTest : StringSpec() {
          tags.parse().isActive(Roo) shouldBe true
       }
       "test with no tags" {
-         val tags = Tags(emptySet(), emptySet())
+         val tags = TagExpression(emptySet(), emptySet())
          tags.parse().isActive(Foo) shouldBe true
          tags.parse().isActive(NamedTag("boo")) shouldBe true
          tags.parse().isActive(Moo) shouldBe true
@@ -51,7 +51,7 @@ class TagsTest : StringSpec() {
          tags.parse().isActive(Roo) shouldBe true
       }
       "test with simple expression" {
-         val tags = Tags("Foo")
+         val tags = TagExpression("Foo")
          tags.parse().isActive(Foo) shouldBe true
          tags.parse().isActive(Roo) shouldBe false
          tags.parse().isActive(Moo) shouldBe false
@@ -59,7 +59,7 @@ class TagsTest : StringSpec() {
          tags.parse().isActive(setOf(Foo, Moo, Roo)) shouldBe true
       }
       "test with or expression" {
-         val tags = Tags("Foo | Roo")
+         val tags = TagExpression("Foo | Roo")
          tags.parse().isActive(Foo) shouldBe true
          tags.parse().isActive(Roo) shouldBe true
          tags.parse().isActive(Moo) shouldBe false
@@ -67,7 +67,7 @@ class TagsTest : StringSpec() {
          tags.parse().isActive(setOf(Foo, Moo, Roo)) shouldBe true
       }
       "test with and expression" {
-         val tags = Tags("Foo & Roo")
+         val tags = TagExpression("Foo & Roo")
          tags.parse().isActive(Foo) shouldBe false
          tags.parse().isActive(Roo) shouldBe false
          tags.parse().isActive(Moo) shouldBe false
@@ -76,7 +76,7 @@ class TagsTest : StringSpec() {
          tags.parse().isActive(setOf(Foo, Moo)) shouldBe false
       }
       "test with not expression" {
-         val tags = Tags("!Roo")
+         val tags = TagExpression("!Roo")
          tags.parse().isActive(Foo) shouldBe true
          tags.parse().isActive(Roo) shouldBe false
          tags.parse().isActive(Moo) shouldBe true
@@ -85,7 +85,7 @@ class TagsTest : StringSpec() {
          tags.parse().isActive(setOf(Foo, Moo)) shouldBe true
       }
       "test with not expression and join" {
-         val tags = Tags("!Roo & Foo")
+         val tags = TagExpression("!Roo & Foo")
          tags.parse().isActive(Foo) shouldBe true
          tags.parse().isActive(Roo) shouldBe false // roo excluded
          tags.parse().isActive(Moo) shouldBe false // missing foo
@@ -95,7 +95,7 @@ class TagsTest : StringSpec() {
          tags.parse().isActive(setOf(Moo, Roo)) shouldBe false
       }
       "test with parens" {
-         val tags = Tags("(Roo | Foo) & Moo")
+         val tags = TagExpression("(Roo | Foo) & Moo")
          tags.parse().isActive(Foo) shouldBe false // missing Moo
          tags.parse().isActive(Roo) shouldBe false // missing Moo
          tags.parse().isActive(Moo) shouldBe false // missing Roo | Foo
@@ -104,7 +104,7 @@ class TagsTest : StringSpec() {
          tags.parse().isActive(setOf(Foo, Moo, Roo)) shouldBe true
       }
       "test with not on parens" {
-         val tags = Tags("!(Roo | Foo) & Moo")
+         val tags = TagExpression("!(Roo | Foo) & Moo")
          tags.parse().isActive(Foo) shouldBe false // Foo excluded
          tags.parse().isActive(Roo) shouldBe false // Roo excluded
          tags.parse().isActive(Moo) shouldBe true

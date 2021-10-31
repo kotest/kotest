@@ -2,7 +2,7 @@ package com.sksamuel.kotest.engine.tags
 
 import io.kotest.assertions.fail
 import io.kotest.core.Tag
-import io.kotest.core.Tags
+import io.kotest.core.TagExpression
 import io.kotest.core.extensions.TagExtension
 import io.kotest.core.spec.Isolate
 import io.kotest.core.spec.style.FunSpec
@@ -14,7 +14,7 @@ import io.kotest.engine.listener.AbstractTestEngineListener
 object Exclude : Tag()
 
 private object ExcludeTagExtension : TagExtension {
-   override fun tags(): Tags = Tags.exclude(Exclude)
+   override fun tags(): TagExpression = TagExpression.exclude(Exclude)
 }
 
 @Isolate

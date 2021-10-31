@@ -4,7 +4,7 @@ import io.kotest.common.ExperimentalKotest
 import io.kotest.common.KotestInternal
 import io.kotest.common.Platform
 import io.kotest.common.platform
-import io.kotest.core.Tags
+import io.kotest.core.TagExpression
 import io.kotest.core.config.Configuration
 import io.kotest.core.extensions.Extension
 import io.kotest.core.spec.Spec
@@ -54,7 +54,7 @@ data class TestEngineConfig(
    val interceptors: List<EngineInterceptor>,
    val configuration: Configuration,
    val extensions: List<Extension>,
-   val explicitTags: Tags?,
+   val explicitTags: TagExpression?,
 )
 
 @KotestInternal

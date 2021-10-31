@@ -8,6 +8,8 @@ slug: changelog.html
 
 _**Kotlin 1.6 is now the minimum supported version**_
 
+See detailed post about 5.0 features and changes [here](blog/release_5.0.md)
+
 #### Breaking Changes and removed deprecated methods
 
 * Javascript support has been reworked to use the IR compiler. The legacy compiler is no longer supported. If you are running tests on JS legacy then you will need to continue using Kotest 4.6.x or test only IR.

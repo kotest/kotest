@@ -1,7 +1,7 @@
 package com.sksamuel.kotest.engine.tags
 
 import io.kotest.core.Tag
-import io.kotest.core.Tags
+import io.kotest.core.TagExpression
 import io.kotest.core.config.Configuration
 import io.kotest.core.extensions.TagExtension
 import io.kotest.core.spec.Isolate
@@ -18,7 +18,7 @@ class TagsAnnotationInheritenceTest : FunSpec() {
       test("simple tag") {
 
          val ext = object : TagExtension {
-            override fun tags(): Tags = Tags.include(Linux)
+            override fun tags(): TagExpression = TagExpression.include(Linux)
          }
 
          val conf = Configuration()
@@ -33,7 +33,7 @@ class TagsAnnotationInheritenceTest : FunSpec() {
 
       test("simple exclude tag") {
          val ext = object : TagExtension {
-            override fun tags(): Tags = Tags.exclude(Linux)
+            override fun tags(): TagExpression = TagExpression.exclude(Linux)
          }
 
          val conf = Configuration()
@@ -49,7 +49,7 @@ class TagsAnnotationInheritenceTest : FunSpec() {
 
       test("inheritence with OR") {
          val ext = object : TagExtension {
-            override fun tags(): Tags = Tags("Linux | Mysql")
+            override fun tags(): TagExpression = TagExpression("Linux | Mysql")
          }
          val conf = Configuration()
          conf.registry().add(ext)
@@ -64,7 +64,7 @@ class TagsAnnotationInheritenceTest : FunSpec() {
 
       test("inheritence with AND") {
          val ext = object : TagExtension {
-            override fun tags(): Tags = Tags.include(Linux).exclude(Postgres)
+            override fun tags(): TagExpression = TagExpression.include(Linux).exclude(Postgres)
          }
          val conf = Configuration()
          conf.registry().add(ext)
@@ -79,7 +79,7 @@ class TagsAnnotationInheritenceTest : FunSpec() {
 
       test("@Tags should be ignored when not applicable to an exclude") {
          val ext = object : TagExtension {
-            override fun tags(): Tags = Tags.exclude(Mysql)
+            override fun tags(): TagExpression = TagExpression.exclude(Mysql)
          }
          val conf = Configuration()
          conf.registry().add(ext)
@@ -94,7 +94,7 @@ class TagsAnnotationInheritenceTest : FunSpec() {
 
       test("@Tags should be ignored when not applicable to an test") {
          val ext = object : TagExtension {
-            override fun tags(): Tags = Tags.include(Postgres)
+            override fun tags(): TagExpression = TagExpression.include(Postgres)
          }
          val conf = Configuration()
          conf.registry().add(ext)

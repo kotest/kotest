@@ -39,6 +39,12 @@ recommended approach to defining Kotest configuration remains
 either [ProjectConfig](https://kotest.io/docs/framework/project-config.html)
 or [system properties](https://kotest.io/docs/framework/framework-config-props.html).
 
+#### Experimental data testing classes moved
+
+The experimental data-test `withData` functions added in 4.5 under the package name `io.kotest.datatest` have moved to a new module `kotest-framework-datatest`.
+
+Note: These are separate from the `forAll` and `forNone` data test functions which have been part of Kotest since version 2.0.
+
 #### Deprecated property test Arb.value removed
 
 The `Arb.values()` method has been removed from the `Arb` interface. This method was deprecated in 4.3 in favour of using `Arb.sample` which was introduced to allow for Arb flat-mapping. This will only affect anyone who has written a custom arb that extends `Arb` directly and is still using the deprecated method. Any existing uses of the `arbitrary` builders is unaffected and those builders are always the preferred way to create custom arbitraries.
@@ -58,3 +64,35 @@ The Engine no longer logs config to the console during start **by default**. To 
 When using inspectors, the deprecated `kotlintest.assertions.output.max` system property has been removed.
 This was replaced with `kotest.assertions.output.max` in release 4.0 when the project was renamed
 from KotlinTest to Kotest.
+
+### Deprecations
+
+#### Test Status
+
+The `TestStatus` enum has been deprecated in favour of the `TestResult` ADT. Instead of matching on`result.status` in `AfterTestListener` you should now match directly on the result. Eg
+
+```kotlin
+when (result) {
+  is TestResult.Success -> ...
+  is TestResult.Error -> ...
+}
+```
+
+#### SpecExtension method deprecation
+
+The `intercept(KClass)` method in SpecExtension has been deprecated and `SpecRefExtension` has been added. The deprecated method had ambigious behavior when used with an `IsolationMode` that created multiple instances of a spec. The new methods have precise guarantees of when they will execute.
+
+* `SpecRefExtension`s will execute once per class.
+* `SpecExtension`s will execute once per instance.
+
+#### Listener names
+
+The `val name` inside `Listener` has been deprecated. This was used so that errors from multiple before/after spec callbacks could appear with customized unique names. The framework now takes ensures that names are unique so this val is no longer needed and is now ignored.
+
+
+#### Other deprecations
+
+* `SpecIgnoredListner` (note the typo) has been renamed to `IgnoredSpecListener` to align with the ignored/inactive nomenclature that Kotest uses.
+* The `listeners` method to add listeners to a Spec has been deprecated. When adding listeners to specs directly, you should now prefer `extensions()` rather than `listeners()`.
+* `SpecInstantiationListener` has been deprecated in favour of `InstantiationListener` and `InstantiationErrorListener`, both of which support suspension functions. `SpecInstantiationListener` is a hold-over from before coroutines existed and will be removed in a future version.
+* `CompareMode` /`CompareOrder` for `shouldEqualJson` has been deprecated in favor of `compareJsonOptions { }`

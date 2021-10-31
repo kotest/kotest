@@ -1,6 +1,6 @@
 package io.kotest.core.extensions
 
-import io.kotest.core.Tags
+import io.kotest.core.TagExpression
 import io.kotest.core.config.Configuration
 import io.kotest.core.spec.SpecRef
 
@@ -19,4 +19,4 @@ interface ProjectExtension : Extension {
    suspend fun interceptProject(context: ProjectContext, callback: suspend (ProjectContext) -> Unit)
 }
 
-data class ProjectContext(val tags: Tags, val specs: List<SpecRef>, val configuration: Configuration)
+data class ProjectContext(val tags: TagExpression, val specs: List<SpecRef>, val configuration: Configuration)

@@ -1,7 +1,7 @@
 package com.sksamuel.kotest.engine.tags
 
 import io.kotest.core.Tag
-import io.kotest.core.Tags
+import io.kotest.core.TagExpression
 import io.kotest.core.config.Configuration
 import io.kotest.core.extensions.TagExtension
 import io.kotest.core.spec.style.StringSpec
@@ -14,8 +14,8 @@ class TagExtensionTest : StringSpec() {
    init {
       "tag extensions should be used when calculating runtime tags" {
          val ext = object : TagExtension {
-            override fun tags(): Tags =
-               Tags(setOf(TagA), setOf(TagB))
+            override fun tags(): TagExpression =
+               TagExpression(setOf(TagA), setOf(TagB))
          }
          val c = Configuration().apply { registry().add(ext) }
          val collector = CollectingTestEngineListener()

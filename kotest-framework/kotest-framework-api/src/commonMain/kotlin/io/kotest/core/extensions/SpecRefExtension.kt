@@ -1,5 +1,6 @@
 package io.kotest.core.extensions
 
+import io.kotest.common.ExperimentalKotest
 import io.kotest.core.spec.SpecRef
 
 /**
@@ -13,6 +14,7 @@ import io.kotest.core.spec.SpecRef
  *
  * Any coroutine context changes are propagated downstream.
  */
+@ExperimentalKotest
 interface SpecRefExtension {
    suspend fun interceptRef(ref: SpecRef, process: suspend () -> Unit)
 }

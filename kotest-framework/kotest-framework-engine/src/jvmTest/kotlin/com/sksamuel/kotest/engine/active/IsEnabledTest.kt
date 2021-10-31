@@ -2,7 +2,7 @@ package com.sksamuel.kotest.engine.active
 
 import io.kotest.common.ExperimentalKotest
 import io.kotest.core.NamedTag
-import io.kotest.core.Tags
+import io.kotest.core.TagExpression
 import io.kotest.core.config.Configuration
 import io.kotest.core.descriptors.Descriptor
 import io.kotest.core.descriptors.append
@@ -46,8 +46,8 @@ class IsEnabledTest : StringSpec() {
          val mytag = NamedTag("mytag")
 
          val ext = object : TagExtension {
-            override fun tags(): Tags =
-               Tags(emptySet(), setOf(mytag))
+            override fun tags(): TagExpression =
+               TagExpression(emptySet(), setOf(mytag))
          }
 
          val c = Configuration()
@@ -71,7 +71,7 @@ class IsEnabledTest : StringSpec() {
          val mytag = NamedTag("mytag")
 
          val ext = object : TagExtension {
-            override fun tags(): Tags = Tags("!mytag")
+            override fun tags(): TagExpression = TagExpression("!mytag")
          }
 
          val c = Configuration()
@@ -95,7 +95,7 @@ class IsEnabledTest : StringSpec() {
          val yourtag = NamedTag("yourtag")
 
          val ext = object : TagExtension {
-            override fun tags(): Tags = Tags(setOf(yourtag), emptySet())
+            override fun tags(): TagExpression = TagExpression(setOf(yourtag), emptySet())
          }
 
          val c = Configuration()
@@ -118,7 +118,7 @@ class IsEnabledTest : StringSpec() {
       "isEnabledInternal should return false if it has no tags and a tag expression with include is set" {
 
          val ext = object : TagExtension {
-            override fun tags(): Tags = Tags("yourtag")
+            override fun tags(): TagExpression = TagExpression("yourtag")
          }
 
          val c = Configuration()

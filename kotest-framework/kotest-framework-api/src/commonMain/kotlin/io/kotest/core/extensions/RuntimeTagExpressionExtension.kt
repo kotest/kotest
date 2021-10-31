@@ -1,6 +1,6 @@
 package io.kotest.core.extensions
 
-import io.kotest.core.Tags
+import io.kotest.core.TagExpression
 
 /**
  * Allows including/excluding tags at runtime using a tag expression.
@@ -11,5 +11,5 @@ import io.kotest.core.Tags
  *
  */
 class RuntimeTagExpressionExtension(private val expression: String) : TagExtension {
-   override fun tags(): Tags = Tags(expression)
+   override fun tags(): TagExpression = TagExpression(expression)
 }

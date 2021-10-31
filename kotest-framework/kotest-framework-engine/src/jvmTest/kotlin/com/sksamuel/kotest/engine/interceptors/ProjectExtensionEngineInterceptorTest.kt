@@ -1,7 +1,7 @@
 package com.sksamuel.kotest.engine.interceptors
 
 import io.kotest.common.KotestInternal
-import io.kotest.core.Tags
+import io.kotest.core.TagExpression
 import io.kotest.core.config.Configuration
 import io.kotest.core.extensions.ProjectContext
 import io.kotest.core.extensions.ProjectExtension
@@ -82,7 +82,7 @@ class ProjectExtensionEngineInterceptorTest : FunSpec({
    }
 
    test("should propagate tag changes") {
-      var tags = Tags("none")
+      var tags = TagExpression("none")
 
       val ext = object : ProjectExtension {
          override suspend fun interceptProject(context: ProjectContext, callback: suspend (ProjectContext) -> Unit) {
@@ -92,7 +92,7 @@ class ProjectExtensionEngineInterceptorTest : FunSpec({
 
       val c = Configuration()
       c.registry().add(ext)
-      ProjectExtensionEngineInterceptor.intercept(EngineContext.empty.withTags(Tags("foo")).withConfiguration(c)) {
+      ProjectExtensionEngineInterceptor.intercept(EngineContext.empty.withTags(TagExpression("foo")).withConfiguration(c)) {
          tags = it.tags
          EngineResult.empty
       }
