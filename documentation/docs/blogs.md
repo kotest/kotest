@@ -27,6 +27,7 @@ These blogs and articles can be useful in addition to the official docs to show 
 * [How To Write Human-Readable Tests in Kotlin With Kotest and MockK (2021)](https://betterprogramming.pub/how-to-write-human-readable-tests-in-kotlin-with-kotest-and-mockk-1b614da32148)
 * [Backend testing taxonomy - Scopes and Techniques (2021)](https://www.47deg.com/blog/backend-testing-taxonomy-scopes-and-techniques/#backend-testing-taxonomy-scopes-and-techniques-0)
 * [What If Kotest Had HTML Reports? (2021)](https://hugomartins.io/essays/2021/03/what-if-kotest-had-html-reports/)
+* [From TDD to PBT via Kotest](https://garthgilmour.medium.com/from-tdd-to-pbt-via-kotest-621957e58764)
 
 
 Please open a PR to add your blog or article here.
