@@ -1,10 +1,11 @@
 package io.kotest.core.test
 
+import io.kotest.common.SoftDeprecated
 import io.kotest.core.spec.KotestDsl
 import kotlinx.coroutines.CoroutineScope
 import kotlin.coroutines.CoroutineContext
 
-@Deprecated("Renamed in 5.0 to TestScope")
+@SoftDeprecated("Renamed in 5.0 to TestScope")
 typealias TestContext = TestScope
 
 /**
