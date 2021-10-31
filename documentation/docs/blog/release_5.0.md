@@ -29,12 +29,14 @@ In previous versions Kotest supported configuration updates via a global configu
 From this release onwards, this top level val has been removed.
 
 The reason for the removal is that having global state complicated using multiple instances of the Test Engine in the same JVM and
-also because updating global it did not have precise semanatics around when updates would be seen.
+also because there was not precise semanatics around the orders of updates to a top level val.
 
-This was mainly an issue when testing Kotest itself, since users don't typically create an instance of `TestEngine` but instead
-run tests via gradle or intellij. This top level val was not discussed in documentation so users should have been largely
-unaware it existed anyway, and the recommended approach to setting configuration remains using either the [ProjectConfig] objects
-or via system properties.
+The former was mainly an issue when testing Kotest itself, since users don't typically create instances of `TestEngine` directly but instead
+run tests via gradle or intellij.
+
+This top level val was not included in documentation so users should have been largely
+unaware it existed anyway. The recommended approach to defining Kotest configuration remains either [ProjectConfig](../framework/project_config)
+or [system properties](../framework/config_props).
 
 #### Deprecated property test Arb.value removed
 
