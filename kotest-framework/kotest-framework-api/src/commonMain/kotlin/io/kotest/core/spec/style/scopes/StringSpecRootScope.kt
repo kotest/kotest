@@ -13,8 +13,8 @@ import kotlin.coroutines.CoroutineContext
 import kotlin.jvm.JvmName
 import kotlin.time.Duration
 
-@Deprecated("Renamed to StringSpecRootContext. Deprecated since 4.5.")
-typealias StringSpecRootScope = StringSpecRootContext
+@Deprecated("Renamed to StringSpecRootScope. Deprecated since 5.0")
+typealias StringSpecRootContext = StringSpecRootScope
 
 /**
  * Defines the DSL for creating tests in the 'StringSpec' style.
@@ -26,7 +26,7 @@ typealias StringSpecRootScope = StringSpecRootContext
  * }
  *
  */
-interface StringSpecRootContext : RootContext {
+interface StringSpecRootScope : RootScope {
 
    fun String.config(
       enabled: Boolean? = null,
@@ -44,7 +44,7 @@ interface StringSpecRootContext : RootContext {
       test: suspend TestScope.() -> Unit,
    ) {
       RootTestWithConfigBuilder(
-         this@StringSpecRootContext,
+         this@StringSpecRootScope,
          TestName(null, this, false),
          false
       ).config(

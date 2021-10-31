@@ -4,7 +4,7 @@ import io.kotest.core.factory.TestFactory
 import io.kotest.core.factory.TestFactoryConfiguration
 import io.kotest.core.factory.build
 import io.kotest.core.spec.DslDrivenSpec
-import io.kotest.core.spec.style.scopes.FeatureSpecRootContext
+import io.kotest.core.spec.style.scopes.FeatureSpecRootScope
 
 /**
  * Creates a [TestFactory] from the given block.
@@ -18,9 +18,9 @@ fun featureSpec(block: FeatureSpecTestFactoryConfiguration.() -> Unit): TestFact
    return config.build()
 }
 
-class FeatureSpecTestFactoryConfiguration : TestFactoryConfiguration(), FeatureSpecRootContext
+class FeatureSpecTestFactoryConfiguration : TestFactoryConfiguration(), FeatureSpecRootScope
 
-abstract class FeatureSpec(body: FeatureSpec.() -> Unit = {}) : DslDrivenSpec(), FeatureSpecRootContext {
+abstract class FeatureSpec(body: FeatureSpec.() -> Unit = {}) : DslDrivenSpec(), FeatureSpecRootScope {
    init {
       body()
    }

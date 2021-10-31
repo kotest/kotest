@@ -4,7 +4,7 @@ import io.kotest.core.factory.TestFactory
 import io.kotest.core.factory.TestFactoryConfiguration
 import io.kotest.core.factory.build
 import io.kotest.core.spec.DslDrivenSpec
-import io.kotest.core.spec.style.scopes.WordSpecRootContext
+import io.kotest.core.spec.style.scopes.WordSpecRootScope
 
 /**
  * Creates a [TestFactory] from the given block.
@@ -21,9 +21,9 @@ fun wordSpec(block: WordSpecTestFactoryConfiguration.() -> Unit): TestFactory {
 /**
  * Decorates a [TestFactoryConfiguration] with the WordSpec DSL.
  */
-class WordSpecTestFactoryConfiguration : TestFactoryConfiguration(), WordSpecRootContext
+class WordSpecTestFactoryConfiguration : TestFactoryConfiguration(), WordSpecRootScope
 
-abstract class WordSpec(body: WordSpec.() -> Unit = {}) : DslDrivenSpec(), WordSpecRootContext {
+abstract class WordSpec(body: WordSpec.() -> Unit = {}) : DslDrivenSpec(), WordSpecRootScope {
 
    init {
       body()

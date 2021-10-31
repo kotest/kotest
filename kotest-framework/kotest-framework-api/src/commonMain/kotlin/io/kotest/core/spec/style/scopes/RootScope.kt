@@ -7,13 +7,13 @@ import io.kotest.core.test.TestScope
 import io.kotest.core.test.TestType
 import io.kotest.core.test.config.UnresolvedTestConfig
 
-@Deprecated("Renamed to RootContext. Deprecated since 4.5.")
-typealias RootScope = RootContext
+@Deprecated("Renamed to RootContext. Deprecated since 5.0")
+typealias RootContext = RootScope
 
 /**
- * A root context allows for [RootTest]s to be registered via a DSL.
+ * A [RootScope] allows for [RootTest]s to be registered via a DSL.
  */
-interface RootContext {
+interface RootScope {
    /**
     * Register a new [RootTest].
     */
@@ -23,7 +23,7 @@ interface RootContext {
 /**
  * Convenience method to add a test type [RootTest] that uses default config.
  */
-fun RootContext.addTest(
+fun RootScope.addTest(
    testName: TestName,
    disabled: Boolean,
    config: UnresolvedTestConfig?,
@@ -45,7 +45,7 @@ fun RootContext.addTest(
 /**
  * Convenience method to add a container type [RootTest] that uses default config.
  */
-fun RootContext.addContainer(
+fun RootScope.addContainer(
    testName: TestName,
    disabled: Boolean,
    config: UnresolvedTestConfig?,

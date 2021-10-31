@@ -2,14 +2,14 @@ package io.kotest.core.factory
 
 import io.kotest.core.TestConfiguration
 import io.kotest.core.spec.RootTest
-import io.kotest.core.spec.style.scopes.RootContext
+import io.kotest.core.spec.style.scopes.RootScope
 
 /**
  * A [TestFactoryConfiguration] extends [TestConfiguration] with the ability to register
  * [DynamicRootTest]s. This class shouldn't be used directly, but as the base for a particular
  * layout style, eg [FunSpecTestFactoryConfiguration].
  */
-abstract class TestFactoryConfiguration : TestConfiguration(), RootContext {
+abstract class TestFactoryConfiguration : TestConfiguration(), RootScope {
 
    /**
     * This [factoryId] is a unique id across all factories. The id is used by

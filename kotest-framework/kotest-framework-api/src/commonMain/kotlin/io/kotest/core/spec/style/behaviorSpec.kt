@@ -4,7 +4,7 @@ import io.kotest.core.factory.TestFactory
 import io.kotest.core.factory.TestFactoryConfiguration
 import io.kotest.core.factory.build
 import io.kotest.core.spec.DslDrivenSpec
-import io.kotest.core.spec.style.scopes.BehaviorSpecRootContext
+import io.kotest.core.spec.style.scopes.BehaviorSpecRootScope
 
 /**
  * Creates a [TestFactory] from the given block.
@@ -18,10 +18,9 @@ fun behaviorSpec(block: BehaviorSpecTestFactoryConfiguration.() -> Unit): TestFa
    return config.build()
 }
 
-class BehaviorSpecTestFactoryConfiguration : TestFactoryConfiguration(), BehaviorSpecRootContext {
-}
+class BehaviorSpecTestFactoryConfiguration : TestFactoryConfiguration(), BehaviorSpecRootScope
 
-abstract class BehaviorSpec(body: BehaviorSpec.() -> Unit = {}) : DslDrivenSpec(), BehaviorSpecRootContext {
+abstract class BehaviorSpec(body: BehaviorSpec.() -> Unit = {}) : DslDrivenSpec(), BehaviorSpecRootScope {
    init {
       body()
    }

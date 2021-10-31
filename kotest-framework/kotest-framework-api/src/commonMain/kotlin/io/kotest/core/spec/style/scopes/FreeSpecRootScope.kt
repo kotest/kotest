@@ -9,12 +9,12 @@ import io.kotest.core.test.TestScope
 import io.kotest.core.test.config.UnresolvedTestConfig
 import kotlin.time.Duration
 
-@Deprecated("Renamed to FreeSpecRootContext. Deprecated since 4.5.")
-typealias FreeSpecRootScope = FreeSpecRootContext
+@Deprecated("Renamed to FreeSpecRootContext. Deprecated since 5.0")
+typealias FreeSpecRootContext = FreeSpecRootScope
 
 data class FreeSpecContextConfigBuilder(val name: String, val config: UnresolvedTestConfig)
 
-interface FreeSpecRootContext : RootContext {
+interface FreeSpecRootScope : RootScope {
 
    // eg, "this test" - { } // adds a container test
    infix operator fun String.minus(test: suspend FreeSpecContainerScope.() -> Unit) {

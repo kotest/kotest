@@ -11,7 +11,7 @@ import io.kotest.core.test.config.UnresolvedTestConfig
 import kotlin.time.Duration
 
 class RootTestWithConfigBuilder(
-   private val context: RootContext,
+   private val context: RootScope,
    private val name: TestName,
    private val xdisabled: Boolean
 ) {

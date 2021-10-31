@@ -4,8 +4,8 @@ import io.kotest.common.ExperimentalKotest
 import io.kotest.core.names.TestName
 import io.kotest.core.test.TestScope
 
-@Deprecated("Renamed to ShouldSpecRootContext. Deprecated since 4.5.")
-typealias ShouldSpecRootScope = ShouldSpecRootContext
+@Deprecated("Renamed to ShouldSpecRootContext. Deprecated since 5.0")
+typealias ShouldSpecRootContext = ShouldSpecRootScope
 
 /**
  * Allows tests to be registered in the 'ShouldSpec' fashion.
@@ -22,7 +22,7 @@ typealias ShouldSpecRootScope = ShouldSpecRootContext
  *    // test here
  *  }
  */
-interface ShouldSpecRootContext : RootContext {
+interface ShouldSpecRootScope : RootScope {
 
    /**
     * Adds a top level context scope to the spec.
@@ -44,15 +44,15 @@ interface ShouldSpecRootContext : RootContext {
     * Adds a top level context scope accepting config to the spec.
     */
    @ExperimentalKotest
-   fun context(name: String): RootContextConfigBuilder<ShouldSpecContainerScope> =
-      RootContextConfigBuilder(TestName("context ", name, false), false, this) { ShouldSpecContainerScope(it) }
+   fun context(name: String): RootContainerWithConfigBuilder<ShouldSpecContainerScope> =
+      RootContainerWithConfigBuilder(TestName("context ", name, false), false, this) { ShouldSpecContainerScope(it) }
 
    /**
     * Adds a disabled top level context scope accepting config to the spec.
     */
    @ExperimentalKotest
-   fun xcontext(name: String): RootContextConfigBuilder<ShouldSpecContainerScope> =
-      RootContextConfigBuilder(TestName("context ", name, false), true, this) { ShouldSpecContainerScope(it) }
+   fun xcontext(name: String): RootContainerWithConfigBuilder<ShouldSpecContainerScope> =
+      RootContainerWithConfigBuilder(TestName("context ", name, false), true, this) { ShouldSpecContainerScope(it) }
 
    /**
     * Adds a top level test, with the given name and test function, with test config supplied

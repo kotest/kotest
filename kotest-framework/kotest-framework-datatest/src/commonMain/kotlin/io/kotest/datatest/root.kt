@@ -3,7 +3,7 @@ package io.kotest.datatest
 import io.kotest.common.ExperimentalKotest
 import io.kotest.core.names.TestName
 import io.kotest.core.spec.style.scopes.ContainerScope
-import io.kotest.core.spec.style.scopes.RootContext
+import io.kotest.core.spec.style.scopes.RootScope
 import io.kotest.core.spec.style.scopes.addContainer
 import io.kotest.core.test.Identifiers
 import kotlin.jvm.JvmName
@@ -14,12 +14,12 @@ import kotlin.jvm.JvmName
  * The test name will be generated from the stable properties of the elements. See [Identifiers].
  */
 @ExperimentalKotest
-fun <T : Any> RootContext.withData(first: T, second: T, vararg rest: T, test: suspend ContainerScope.(T) -> Unit) {
+fun <T : Any> RootScope.withData(first: T, second: T, vararg rest: T, test: suspend ContainerScope.(T) -> Unit) {
    withData(listOf(first, second) + rest, test)
 }
 
 @ExperimentalKotest
-fun <T : Any> RootContext.withData(
+fun <T : Any> RootScope.withData(
    nameFn: (T) -> String,
    first: T,
    second: T,
@@ -33,7 +33,7 @@ fun <T : Any> RootContext.withData(
  * The test name will be generated from the stable properties of the elements. See [Identifiers].
  */
 @ExperimentalKotest
-fun <T : Any> RootContext.withData(ts: Sequence<T>, test: suspend ContainerScope.(T) -> Unit) {
+fun <T : Any> RootScope.withData(ts: Sequence<T>, test: suspend ContainerScope.(T) -> Unit) {
    withData(ts.toList(), test)
 }
 
@@ -43,7 +43,7 @@ fun <T : Any> RootContext.withData(ts: Sequence<T>, test: suspend ContainerScope
  * The test name will be generated from the stable properties of the elements. See [Identifiers].
  */
 @ExperimentalKotest
-fun <T : Any> RootContext.withData(nameFn: (T) -> String, ts: Sequence<T>, test: suspend ContainerScope.(T) -> Unit) {
+fun <T : Any> RootScope.withData(nameFn: (T) -> String, ts: Sequence<T>, test: suspend ContainerScope.(T) -> Unit) {
    withData(nameFn, ts.toList(), test)
 }
 
@@ -53,7 +53,7 @@ fun <T : Any> RootContext.withData(nameFn: (T) -> String, ts: Sequence<T>, test:
  * The test name will be generated from the stable properties of the elements. See [Identifiers].
  */
 @ExperimentalKotest
-fun <T : Any> RootContext.withData(ts: Collection<T>, test: suspend ContainerScope.(T) -> Unit) {
+fun <T : Any> RootScope.withData(ts: Collection<T>, test: suspend ContainerScope.(T) -> Unit) {
    withData({ getStableIdentifier(it) }, ts, test)
 }
 
@@ -63,7 +63,7 @@ fun <T : Any> RootContext.withData(ts: Collection<T>, test: suspend ContainerSco
  * The test name will be generated from the given [nameFn] function.
  */
 @ExperimentalKotest
-fun <T : Any> RootContext.withData(
+fun <T : Any> RootScope.withData(
    nameFn: (T) -> String,
    ts: Collection<T>,
    test: suspend ContainerScope.(T) -> Unit
@@ -79,7 +79,7 @@ fun <T : Any> RootContext.withData(
  */
 @ExperimentalKotest
 @JvmName("withDataMap")
-fun <T : Any> RootContext.withData(data: Map<String, T>, test: suspend ContainerScope.(T) -> Unit) {
+fun <T : Any> RootScope.withData(data: Map<String, T>, test: suspend ContainerScope.(T) -> Unit) {
    data.forEach { (name, t) ->
       addContainer(TestName(name), false, null) { test(t) }
    }

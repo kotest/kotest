@@ -6,7 +6,7 @@ import io.kotest.core.extensions.SpecExtension
 import io.kotest.core.factory.TestFactory
 import io.kotest.core.listeners.FinalizeSpecListener
 import io.kotest.core.listeners.ProjectListener
-import io.kotest.core.spec.style.scopes.RootContext
+import io.kotest.core.spec.style.scopes.RootScope
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import kotlin.reflect.KClass
@@ -14,7 +14,7 @@ import kotlin.reflect.KClass
 /**
  * Base class for specs that allow for registration of tests via the DSL.
  */
-abstract class DslDrivenSpec : Spec(), RootContext {
+abstract class DslDrivenSpec : Spec(), RootScope {
 
    /**
     * Contains the [RootTest]s that have been registered on this spec.

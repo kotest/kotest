@@ -4,8 +4,8 @@ import io.kotest.common.ExperimentalKotest
 import io.kotest.core.names.TestName
 import io.kotest.core.test.TestScope
 
-@Deprecated("Renamed to DescribeSpecRootContext. Deprecated since 4.5.")
-typealias DescribeSpecRootScope = DescribeSpecRootContext
+@Deprecated("Renamed to DescribeSpecRootScope. Deprecated since 5.0")
+typealias DescribeSpecRootContext = DescribeSpecRootScope
 
 /**
  * A context that allows root tests to be registered using the syntax:
@@ -16,7 +16,7 @@ typealias DescribeSpecRootScope = DescribeSpecRootContext
  *
  * xdescribe("some disabled test")
  */
-interface DescribeSpecRootContext : RootContext {
+interface DescribeSpecRootScope : RootScope {
 
    fun context(name: String, test: suspend DescribeSpecContainerScope.() -> Unit) {
       addContainer(TestName("Context: ", name, false), false, null) { DescribeSpecContainerScope(this).test() }
@@ -27,12 +27,12 @@ interface DescribeSpecRootContext : RootContext {
    }
 
    @ExperimentalKotest
-   fun context(name: String): RootContextConfigBuilder<DescribeSpecContainerScope> =
-      RootContextConfigBuilder(TestName(name), xdisabled = false, this) { DescribeSpecContainerScope(it) }
+   fun context(name: String): RootContainerWithConfigBuilder<DescribeSpecContainerScope> =
+      RootContainerWithConfigBuilder(TestName(name), xdisabled = false, this) { DescribeSpecContainerScope(it) }
 
    @ExperimentalKotest
-   fun xcontext(name: String): RootContextConfigBuilder<DescribeSpecContainerScope> =
-      RootContextConfigBuilder(TestName(name), xdisabled = true, this) { DescribeSpecContainerScope(it) }
+   fun xcontext(name: String): RootContainerWithConfigBuilder<DescribeSpecContainerScope> =
+      RootContainerWithConfigBuilder(TestName(name), xdisabled = true, this) { DescribeSpecContainerScope(it) }
 
    fun describe(name: String, test: suspend DescribeSpecContainerScope.() -> Unit) {
       addContainer(
@@ -51,16 +51,16 @@ interface DescribeSpecRootContext : RootContext {
    }
 
    @ExperimentalKotest
-   fun describe(name: String): RootContextConfigBuilder<DescribeSpecContainerScope> =
-      RootContextConfigBuilder(
+   fun describe(name: String): RootContainerWithConfigBuilder<DescribeSpecContainerScope> =
+      RootContainerWithConfigBuilder(
          TestName("Describe: ", name, false),
          xdisabled = false,
          this
       ) { DescribeSpecContainerScope(it) }
 
    @ExperimentalKotest
-   fun xdescribe(name: String): RootContextConfigBuilder<DescribeSpecContainerScope> =
-      RootContextConfigBuilder(
+   fun xdescribe(name: String): RootContainerWithConfigBuilder<DescribeSpecContainerScope> =
+      RootContainerWithConfigBuilder(
          TestName("Describe: ", name, false),
          xdisabled = true,
          this

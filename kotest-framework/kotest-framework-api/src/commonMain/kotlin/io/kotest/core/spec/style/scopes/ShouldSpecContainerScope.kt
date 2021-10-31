@@ -40,13 +40,13 @@ class ShouldSpecContainerScope(
    }
 
    @ExperimentalKotest
-   fun context(name: String): ContainerContextConfigBuilder<ShouldSpecContainerScope> {
-      return ContainerContextConfigBuilder(TestName(name), this, false) { ShouldSpecContainerScope(it) }
+   fun context(name: String): ContainerWithConfigBuilder<ShouldSpecContainerScope> {
+      return ContainerWithConfigBuilder(TestName(name), this, false) { ShouldSpecContainerScope(it) }
    }
 
    @ExperimentalKotest
-   fun xcontext(name: String): ContainerContextConfigBuilder<ShouldSpecContainerScope> {
-      return ContainerContextConfigBuilder(TestName(name), this, true) { ShouldSpecContainerScope(it) }
+   fun xcontext(name: String): ContainerWithConfigBuilder<ShouldSpecContainerScope> {
+      return ContainerWithConfigBuilder(TestName(name), this, true) { ShouldSpecContainerScope(it) }
    }
 
    suspend fun should(name: String): TestWithConfigBuilder {

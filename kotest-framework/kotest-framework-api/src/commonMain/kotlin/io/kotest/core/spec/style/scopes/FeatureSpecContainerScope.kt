@@ -5,8 +5,11 @@ import io.kotest.core.names.TestName
 import io.kotest.core.test.NestedTest
 import io.kotest.core.test.TestScope
 
-@Deprecated("renamed to FeatureSpecContainerContext. Deprecated since 4.5.")
-typealias FeatureScope = FeatureSpecContainerContext
+@Deprecated("renamed to FeatureSpecContainerScope. Deprecated since 4.5")
+typealias FeatureScope = FeatureSpecContainerScope
+
+@Deprecated("renamed to FeatureSpecContainerScope. Deprecated since 5.0")
+typealias FeatureSpecContainerContext = FeatureSpecContainerScope
 
 /**
  * A scope that allows tests to be registered using the syntax:
@@ -22,26 +25,24 @@ typealias FeatureScope = FeatureSpecContainerContext
  * xscenario("some test").config(...)
  *
  */
-class FeatureSpecContainerContext(
-   val testScope: TestScope,
-) : AbstractContainerScope(testScope) {
+class FeatureSpecContainerScope(val testScope: TestScope) : AbstractContainerScope(testScope) {
 
    override suspend fun registerTestCase(nested: NestedTest) = testScope.registerTestCase(nested)
 
-   suspend fun feature(name: String, test: suspend FeatureSpecContainerContext.() -> Unit) {
+   suspend fun feature(name: String, test: suspend FeatureSpecContainerScope.() -> Unit) {
       registerContainer(
          TestName("Feature: ", name, false),
          disabled = false,
          null
-      ) { FeatureSpecContainerContext(this).test() }
+      ) { FeatureSpecContainerScope(this).test() }
    }
 
-   suspend fun xfeature(name: String, test: suspend FeatureSpecContainerContext.() -> Unit) {
+   suspend fun xfeature(name: String, test: suspend FeatureSpecContainerScope.() -> Unit) {
       registerContainer(
          TestName("Feature: ", name, true),
          disabled = true,
          null
-      ) { FeatureSpecContainerContext(this).test() }
+      ) { FeatureSpecContainerScope(this).test() }
    }
 
    suspend fun scenario(name: String, test: suspend TestScope.() -> Unit) {

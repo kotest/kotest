@@ -2,10 +2,10 @@ package io.kotest.core.spec.style.scopes
 
 import io.kotest.core.names.TestName
 
-@Deprecated("Renamed to WordSpecRootContext. Deprecated since 4.5.")
-typealias WordSpecRootScope = WordSpecRootContext
+@Deprecated("Renamed to WordSpecRootContext. Deprecated since 5.0")
+typealias WordSpecRootContext = WordSpecRootScope
 
-interface WordSpecRootContext : RootContext {
+interface WordSpecRootScope : RootScope {
 
    infix fun String.should(test: suspend WordSpecShouldContainerScope.() -> Unit) = addShould(this, false, test)
 

@@ -6,8 +6,11 @@ import io.kotest.core.names.TestName
 import io.kotest.core.spec.KotestDsl
 import io.kotest.core.test.TestScope
 
-@Deprecated("This interface has been renamed to FunSpecContainerContext. Deprecated since 4.5.")
-typealias FunSpecContextScope = FunSpecContainerContext
+@Deprecated("This interface has been renamed to FunSpecContainerScope. Deprecated since 4.5")
+typealias FunSpecContextScope = FunSpecContainerScope
+
+@Deprecated("This interface has been renamed to FunSpecContainerScope. Deprecated since 5.0")
+typealias FunSpecContainerContext = FunSpecContainerScope
 
 /**
  * A context that allows tests to be registered using the syntax:
@@ -18,47 +21,47 @@ typealias FunSpecContextScope = FunSpecContainerContext
  *
  */
 @KotestDsl
-class FunSpecContainerContext(
+class FunSpecContainerScope(
    private val testScope: TestScope,
 ) : AbstractContainerScope(testScope) {
 
    /**
     * Adds a 'context' container test as a child of the current test case.
     */
-   suspend fun context(name: String, test: suspend FunSpecContainerContext.() -> Unit) {
-      registerContainer(TestName(name), false, null) { FunSpecContainerContext(this).test() }
+   suspend fun context(name: String, test: suspend FunSpecContainerScope.() -> Unit) {
+      registerContainer(TestName(name), false, null) { FunSpecContainerScope(this).test() }
    }
 
    /**
     * Adds a container test to this context expecting config.
     */
    @ExperimentalKotest
-   fun context(name: String): ContainerContextConfigBuilder<FunSpecContainerContext> {
-      return ContainerContextConfigBuilder(
+   fun context(name: String): ContainerWithConfigBuilder<FunSpecContainerScope> {
+      return ContainerWithConfigBuilder(
          name = TestName(name),
          context = this,
          xdisabled = false,
-         contextFn = { FunSpecContainerContext(it) }
+         contextFn = { FunSpecContainerScope(it) }
       )
    }
 
    /**
     * Adds a disabled container test to this context.
     */
-   suspend fun xcontext(name: String, test: suspend FunSpecContainerContext.() -> Unit) {
-      registerContainer(TestName(name), true, null) { FunSpecContainerContext(this).test() }
+   suspend fun xcontext(name: String, test: suspend FunSpecContainerScope.() -> Unit) {
+      registerContainer(TestName(name), true, null) { FunSpecContainerScope(this).test() }
    }
 
    /**
     * Adds a disabled container to this context, expecting config.
     */
    @ExperimentalKotest
-   fun xcontext(name: String): ContainerContextConfigBuilder<FunSpecContainerContext> {
-      return ContainerContextConfigBuilder(
+   fun xcontext(name: String): ContainerWithConfigBuilder<FunSpecContainerScope> {
+      return ContainerWithConfigBuilder(
          TestName(name),
          this,
          true
-      ) { FunSpecContainerContext(it) }
+      ) { FunSpecContainerScope(it) }
    }
 
    /**

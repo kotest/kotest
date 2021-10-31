@@ -4,14 +4,14 @@ import io.kotest.core.names.TestName
 import io.kotest.core.spec.KotestDsl
 import io.kotest.core.test.TestScope
 
-@Deprecated("Renamed to ExpectSpecRootContext. Deprecated since 4.5.")
-typealias ExpectSpecRootScope = ExpectSpecRootContext
+@Deprecated("Renamed to ExpectSpecRootScope. Deprecated since 5.0")
+typealias ExpectSpecRootContext = ExpectSpecRootScope
 
 /**
  * Top level registration methods for ExpectSpec methods.
  */
 @KotestDsl
-interface ExpectSpecRootContext : RootContext {
+interface ExpectSpecRootScope : RootScope {
 
    fun context(name: String, test: suspend ExpectSpecContainerScope.() -> Unit) {
       addContainer(TestName("Context: ", name, null, false), false, null) { ExpectSpecContainerScope(this).test() }

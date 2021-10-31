@@ -39,8 +39,8 @@ class DescribeSpecContainerScope(
    }
 
    @ExperimentalKotest
-   fun context(name: String): ContainerContextConfigBuilder<DescribeSpecContainerScope> =
-      ContainerContextConfigBuilder(TestName(name), this, false) { DescribeSpecContainerScope(it) }
+   fun context(name: String): ContainerWithConfigBuilder<DescribeSpecContainerScope> =
+      ContainerWithConfigBuilder(TestName(name), this, false) { DescribeSpecContainerScope(it) }
 
    /**
     * Registers a disabled container test.
@@ -50,8 +50,8 @@ class DescribeSpecContainerScope(
    }
 
    @ExperimentalKotest
-   fun xcontext(name: String): ContainerContextConfigBuilder<DescribeSpecContainerScope> =
-      ContainerContextConfigBuilder(TestName("Context: ", name, false), this, true) { DescribeSpecContainerScope(it) }
+   fun xcontext(name: String): ContainerWithConfigBuilder<DescribeSpecContainerScope> =
+      ContainerWithConfigBuilder(TestName("Context: ", name, false), this, true) { DescribeSpecContainerScope(it) }
 
    /**
     * Registers a container test.
@@ -68,16 +68,16 @@ class DescribeSpecContainerScope(
    }
 
    @ExperimentalKotest
-   fun describe(name: String): ContainerContextConfigBuilder<DescribeSpecContainerScope> =
-      ContainerContextConfigBuilder(
+   fun describe(name: String): ContainerWithConfigBuilder<DescribeSpecContainerScope> =
+      ContainerWithConfigBuilder(
          TestName("Describe: ", name, false),
          this,
          false
       ) { DescribeSpecContainerScope(it) }
 
    @ExperimentalKotest
-   fun xdescribe(name: String): ContainerContextConfigBuilder<DescribeSpecContainerScope> =
-      ContainerContextConfigBuilder(
+   fun xdescribe(name: String): ContainerWithConfigBuilder<DescribeSpecContainerScope> =
+      ContainerWithConfigBuilder(
          TestName("Describe: ", name, false),
          this,
          true

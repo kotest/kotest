@@ -10,7 +10,7 @@ import io.kotest.core.test.config.UnresolvedTestConfig
 import kotlin.time.Duration
 
 @ExperimentalKotest
-class ContainerContextConfigBuilder<T>(
+class ContainerWithConfigBuilder<T>(
    private val name: TestName,
    private val context: ContainerScope,
    private val xdisabled: Boolean,

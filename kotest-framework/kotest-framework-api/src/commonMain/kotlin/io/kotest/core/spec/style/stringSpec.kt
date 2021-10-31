@@ -4,7 +4,7 @@ import io.kotest.core.factory.TestFactory
 import io.kotest.core.factory.TestFactoryConfiguration
 import io.kotest.core.factory.build
 import io.kotest.core.spec.DslDrivenSpec
-import io.kotest.core.spec.style.scopes.StringSpecRootContext
+import io.kotest.core.spec.style.scopes.StringSpecRootScope
 
 /**
  * Creates a [TestFactory] from the given block.
@@ -21,9 +21,9 @@ fun stringSpec(block: StringSpecTestFactoryConfiguration.() -> Unit): TestFactor
 /**
  * Decorates a [TestFactoryConfiguration] with the StringSpec DSL.
  */
-class StringSpecTestFactoryConfiguration : TestFactoryConfiguration(), StringSpecRootContext
+class StringSpecTestFactoryConfiguration : TestFactoryConfiguration(), StringSpecRootScope
 
-abstract class StringSpec(body: StringSpec.() -> Unit = {}) : DslDrivenSpec(), StringSpecRootContext {
+abstract class StringSpec(body: StringSpec.() -> Unit = {}) : DslDrivenSpec(), StringSpecRootScope {
    init {
       body()
    }

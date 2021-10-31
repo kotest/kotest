@@ -4,8 +4,11 @@ import io.kotest.core.names.TestName
 import io.kotest.core.spec.KotestDsl
 import io.kotest.core.test.TestScope
 
-@Deprecated("This interface has been renamed to BehaviorSpecGivenContainerContext. Deprecated since 4.5.")
-typealias GivenScope = BehaviorSpecGivenContainerContext
+@Deprecated("This interface has been renamed to BehaviorSpecGivenContainerScope. Deprecated since 4.5")
+typealias GivenScope = BehaviorSpecGivenContainerScope
+
+@Deprecated("This interface has been renamed to BehaviorSpecGivenContainerScope. Deprecated since 5.0")
+typealias BehaviorSpecGivenContainerContext = BehaviorSpecGivenContainerScope
 
 /**
  * A context that allows tests to be registered using the syntax:
@@ -25,29 +28,29 @@ typealias GivenScope = BehaviorSpecGivenContainerContext
  */
 @Suppress("FunctionName")
 @KotestDsl
-class BehaviorSpecGivenContainerContext(
+class BehaviorSpecGivenContainerScope(
    val testScope: TestScope,
 ) : AbstractContainerScope(testScope) {
 
-   suspend fun And(name: String, test: suspend BehaviorSpecGivenContainerContext.() -> Unit) =
+   suspend fun And(name: String, test: suspend BehaviorSpecGivenContainerScope.() -> Unit) =
       addAnd(name, test, xdisabled = false)
 
-   suspend fun and(name: String, test: suspend BehaviorSpecGivenContainerContext.() -> Unit) =
+   suspend fun and(name: String, test: suspend BehaviorSpecGivenContainerScope.() -> Unit) =
       addAnd(name, test, xdisabled = false)
 
-   suspend fun xand(name: String, test: suspend BehaviorSpecGivenContainerContext.() -> Unit) =
+   suspend fun xand(name: String, test: suspend BehaviorSpecGivenContainerScope.() -> Unit) =
       addAnd(name, test, xdisabled = true)
 
-   suspend fun xAnd(name: String, test: suspend BehaviorSpecGivenContainerContext.() -> Unit) =
+   suspend fun xAnd(name: String, test: suspend BehaviorSpecGivenContainerScope.() -> Unit) =
       addAnd(name, test, xdisabled = true)
 
    private suspend fun addAnd(
       name: String,
-      test: suspend BehaviorSpecGivenContainerContext.() -> Unit,
+      test: suspend BehaviorSpecGivenContainerScope.() -> Unit,
       xdisabled: Boolean
    ) {
       registerContainer(TestName("And: ", name, true), xdisabled, null) {
-         BehaviorSpecGivenContainerContext(this).test()
+         BehaviorSpecGivenContainerScope(this).test()
       }
    }
 
@@ -64,25 +67,25 @@ class BehaviorSpecGivenContainerContext(
 
    fun Then(name: String) = TestWithConfigBuilder(
       TestName("Then: ", name, true),
-      this@BehaviorSpecGivenContainerContext,
+      this@BehaviorSpecGivenContainerScope,
       xdisabled = false
    )
 
    fun then(name: String) = TestWithConfigBuilder(
       TestName("Then: ", name, true),
-      this@BehaviorSpecGivenContainerContext,
+      this@BehaviorSpecGivenContainerScope,
       xdisabled = false
    )
 
    fun xthen(name: String) = TestWithConfigBuilder(
       TestName("Then: ", name, true),
-      this@BehaviorSpecGivenContainerContext,
+      this@BehaviorSpecGivenContainerScope,
       xdisabled = true
    )
 
    fun xThen(name: String) = TestWithConfigBuilder(
       TestName("Then: ", name, true),
-      this@BehaviorSpecGivenContainerContext,
+      this@BehaviorSpecGivenContainerScope,
       xdisabled = true
    )
 
