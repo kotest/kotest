@@ -16,9 +16,6 @@ import io.kotest.core.Tags
  * includes and excludes tags using the system properties
  * 'kotest.tags.include' and 'kotest.tags.exclude'.
  *
- * The [RuntimeTagExtension] is automatically registered, which allows
- * tags to be configured at runtime through project config by setting
- * the properties `included` and `excluded`.
  */
 interface TagExtension : Extension {
    fun tags(): Tags
