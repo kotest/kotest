@@ -47,7 +47,6 @@ data class TestCaseConfig(
    /**
     * If this function evaluates to false, then this test and any nested tests will be disabled.
     */
-   @Deprecated("Use enabledOrReasonIf. Deprecated since 5.0")
    val enabledIf: EnabledIf = { true },
    val severity: TestCaseSeverityLevel? = null,
    val enabledOrReasonIf: EnabledOrReasonIf = { Enabled.enabled },

@@ -63,7 +63,7 @@ See detailed post about 5.0 features and changes [here](blog/release_5.0.md)
 * The global `configuration` object has been deprecated as the first step to removing this global var. To configure the project, the preferred method remains [ProjectConfig](/), which is detected on all three platforms (JVM, JS and Native).
 * `SpecInstantiationListener` has been deprecated in favour of `InstantiationListener` and `InstantiationErrorListener`, both of which support coroutines in the callbacks. `SpecInstantiationListener` is a hold-over from before coroutines existed and will be removed in a future version.
 * The `listeners` method to add listeners to a Spec has been deprecated. When adding listeners to specs directly, you should now prefer `fun extensions()` rather than `fun listeners()`.
-* `SpecIgnoredListner` (note the typo) has been renamed to `InactiveSpecListener` to align with the ignored/inactive nomenclature that Kotest uses.
+* `SpecIgnoredListner` (note the typo) has been renamed to `InactiveSpecListener`.
 
 
 ### 4.6.3 September 2021

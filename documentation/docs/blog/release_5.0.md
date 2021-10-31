@@ -78,21 +78,61 @@ when (result) {
 }
 ```
 
-#### SpecExtension method deprecation
+#### SpecExtension.intercept(KClass) method deprecation
 
 The `intercept(KClass)` method in SpecExtension has been deprecated and `SpecRefExtension` has been added. The deprecated method had ambigious behavior when used with an `IsolationMode` that created multiple instances of a spec. The new methods have precise guarantees of when they will execute.
 
 * `SpecRefExtension`s will execute once per class.
 * `SpecExtension`s will execute once per instance.
 
+### Default test case config
+
+The `defaultTestCaseConfig` containers in Spec's and project configuration have been deprecated. This is because it was not possible to specify at both the spec level and the project-configuration level and allow settings to fall through.
+
+Instead, you should set per-setting defaults, and these will fall through from test -> spec -> configuration.
+
+For example, instead of this:
+
+```kotlin
+class MySpec: FunSpec() {
+  init {
+    override fun defaultTestCaseConfig() = TestCaseConfig(tags = setOf(Foo, Bar), timeout = 100.seconds)
+    test("foo") {
+      // will time out after 100 seconds and has tags Foo and Bar applied
+    }
+  }
+}
+```
+
+You should do:
+
+```kotlin
+class MySpec: FunSpec() {
+  init {
+
+    tags(Foo, Bar)
+    timeout = 100.seconds
+
+    test("foo") {
+       // will time out after 100 seconds and has tags Foo and Bar applied
+    }
+  }
+}
+```
+
+Note that the second variation has always been possible, but the first variation is no longer recommended.
+
+
 #### Listener names
 
 The `val name` inside `Listener` has been deprecated. This was used so that errors from multiple before/after spec callbacks could appear with customized unique names. The framework now takes ensures that names are unique so this val is no longer needed and is now ignored.
 
-
 #### Other deprecations
 
-* `SpecIgnoredListner` (note the typo) has been renamed to `IgnoredSpecListener` to align with the ignored/inactive nomenclature that Kotest uses.
-* The `listeners` method to add listeners to a Spec has been deprecated. When adding listeners to specs directly, you should now prefer `extensions()` rather than `listeners()`.
-* `SpecInstantiationListener` has been deprecated in favour of `InstantiationListener` and `InstantiationErrorListener`, both of which support suspension functions. `SpecInstantiationListener` is a hold-over from before coroutines existed and will be removed in a future version.
+* `SpecInstantiationListener` has been deprecated in favour of `InstantiationListener` and `InstantiationErrorListener`,
+  both of which support suspension functions. `SpecInstantiationListener` is a hold-over from before coroutines existed
+  in Kotlin and so had no support for coroutines.
+* `SpecIgnoredListner` (note the typo) has been renamed to `IgnoredSpecListener`.
+* The `listeners` method to add listeners to a Spec has been deprecated. When adding listeners to specs directly, you
+  should now prefer `extensions()` rather than `listeners()`.
 * `CompareMode` /`CompareOrder` for `shouldEqualJson` has been deprecated in favor of `compareJsonOptions { }`
