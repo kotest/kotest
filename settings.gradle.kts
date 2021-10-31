@@ -101,7 +101,7 @@ include("kotest-tests:kotest-tests-js")
 include("kotest-bom")
 
 plugins {
-   id("com.gradle.enterprise") version "3.6.1"
+   id("com.gradle.enterprise") version "3.7.1"
    // See https://jmfayard.github.io/refreshVersions
    id("de.fayard.refreshVersions") version "0.10.1"
 }
