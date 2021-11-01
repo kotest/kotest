@@ -2,8 +2,8 @@ package io.kotest.engine.concurrency
 
 import io.kotest.core.concurrency.CoroutineDispatcherFactory
 import io.kotest.core.test.TestCase
+import io.kotest.mpp.Logger
 import io.kotest.mpp.bestName
-import io.kotest.mpp.log
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.asCoroutineDispatcher
 import kotlinx.coroutines.withContext
@@ -33,12 +33,13 @@ class FixedThreadCoroutineDispatcherFactory(
    private val affinity: Boolean,
 ) : CoroutineDispatcherFactory {
 
+   private val logger = Logger(FixedThreadCoroutineDispatcherFactory::class)
    private val dispatchers = List(threads) { Executors.newSingleThreadExecutor().asCoroutineDispatcher() }
 
    override suspend fun <T> withDispatcher(testCase: TestCase, f: suspend () -> T): T {
 
       val resolvedAffinity = testCase.spec.dispatcherAffinity ?: testCase.spec.dispatcherAffinity() ?: affinity
-      log { "FixedThreadCoroutineDispatcherFactory: For '${testCase.descriptor.path().value}' affinity=$resolvedAffinity" }
+      logger.log { Pair(testCase.name.testName, "affinity=$resolvedAffinity") }
 
       // if dispatcher affinity is set to true, we pick a dispatcher for the spec and stick with it
       // otherwise each test just gets a random dispatcher
@@ -47,6 +48,7 @@ class FixedThreadCoroutineDispatcherFactory(
          else -> dispatchers.random()
       }
 
+      logger.log { Pair(testCase.name.testName, "Switching dispatcher to $dispatcher") }
       return withContext(dispatcher) {
          f()
       }

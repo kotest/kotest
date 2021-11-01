@@ -7,7 +7,7 @@ val file: FileWriter by lazy { FileWriter("/home/sam/development/workspace/kotes
 
 actual fun writeLog(start: TimeMark, t: Throwable?, f: () -> String) {
    file.write(start.elapsedNow().inWholeMicroseconds.toString())
-   file.write(" ")
+   file.write("  ")
    file.write(f())
    file.write("\n")
    file.flush()

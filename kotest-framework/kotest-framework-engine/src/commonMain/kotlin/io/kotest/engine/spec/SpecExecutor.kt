@@ -28,7 +28,8 @@ import io.kotest.engine.spec.interceptor.SpecRefInterceptor
 import io.kotest.engine.spec.interceptor.SpecStartedInterceptor
 import io.kotest.engine.spec.interceptor.SystemPropertySpecFilterInterceptor
 import io.kotest.engine.spec.interceptor.TagsExcludedSpecInterceptor
-import io.kotest.mpp.log
+import io.kotest.mpp.Logger
+import io.kotest.mpp.bestName
 import kotlin.reflect.KClass
 
 /**
@@ -49,10 +50,11 @@ class SpecExecutor(
    private val projectContext: ProjectContext,
 ) {
 
+   private val logger = Logger(SpecExecutorDelegate::class)
    private val extensions = SpecExtensions(conf.registry())
 
    suspend fun execute(ref: SpecRef) {
-      log { "SpecExecutor: Received $ref" }
+      logger.log { Pair(ref.kclass.bestName(), "Received $ref") }
       referenceInterceptors(ref)
    }
 
@@ -81,7 +83,7 @@ class SpecExecutor(
          createInstance(ref).flatMap { specInterceptors(it) }
       }
 
-      log { "SpecExecutor: Executing ${interceptors.size} reference interceptors" }
+      logger.log { Pair(ref.kclass.bestName(), "Executing ${interceptors.size} reference interceptors") }
       interceptors.foldRight(innerExecute) { ext: SpecRefInterceptor, fn: suspend (SpecRef) -> Result<Map<TestCase, TestResult>> ->
          { ref -> ext.intercept(ref, fn) }
       }.invoke(ref)
@@ -99,15 +101,15 @@ class SpecExecutor(
       val initial: suspend (Spec) -> Result<Map<TestCase, TestResult>> = {
          try {
             val delegate = createSpecExecutorDelegate(listener, defaultCoroutineDispatcherFactory, conf)
-            log { "SpecExecutor: delegate=$delegate" }
+            logger.log { Pair(spec::class.bestName(), "delegate=$delegate") }
             Result.success(delegate.execute(spec))
          } catch (t: Throwable) {
-            log { "SpecExecutor: Error executing spec $t" }
+            logger.log { Pair(spec::class.bestName(), "Error executing spec $t") }
             Result.failure(t)
          }
       }
 
-      log { "SpecExecutor: Executing ${interceptors.size} spec interceptors" }
+      logger.log { Pair(spec::class.bestName(), "Executing ${interceptors.size} spec interceptors") }
       return interceptors.foldRight(initial) { ext, fn ->
          { spec -> ext.intercept(spec, fn) }
       }.invoke(spec)

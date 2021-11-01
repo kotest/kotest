@@ -1,6 +1,6 @@
 @file:Suppress("BlockingMethodInNonBlockingContext")
 
-package com.sksamuel.kotest.timeout
+package com.sksamuel.kotest.engine.test.timeout
 
 import io.kotest.core.spec.TestCaseExtensionFn
 import io.kotest.core.spec.style.FunSpec
@@ -60,10 +60,10 @@ class TimeoutTest : FunSpec() {
 
       test("an invocation timeout should interrupt a test that otherwise would complete").config(
          invocationTimeout = Duration.milliseconds(1),
-         timeout = Duration.milliseconds(10000),
+         timeout = Duration.hours(1),
          invocations = 3
       ) {
-         delay(50)
+         delay(Duration.hours(1))
       }
 
       test("a invocation timeout should apply even to a single invocation").config(

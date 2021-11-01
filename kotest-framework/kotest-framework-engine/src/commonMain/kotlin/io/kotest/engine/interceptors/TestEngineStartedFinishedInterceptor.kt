@@ -3,7 +3,7 @@ package io.kotest.engine.interceptors
 import io.kotest.common.KotestInternal
 import io.kotest.engine.EngineResult
 import io.kotest.engine.TestSuite
-import io.kotest.mpp.log
+import io.kotest.mpp.Logger
 
 /**
  * Notifies the test listener that the engine is ready to execute tests, and the final [TestSuite]
@@ -11,6 +11,8 @@ import io.kotest.mpp.log
  */
 @KotestInternal
 internal object TestEngineStartedFinishedInterceptor : EngineInterceptor {
+
+   private val logger = Logger(TestEngineStartedFinishedInterceptor::class)
 
    override suspend fun intercept(
       context: EngineContext,
@@ -21,7 +23,7 @@ internal object TestEngineStartedFinishedInterceptor : EngineInterceptor {
       val result = execute(context)
 
       result.errors.forEach {
-         log(it) { "TestEngineListenerStartedFinishedInterceptor: Error during test engine run" }
+         logger.log { Pair(null, "Error during test engine run: $it") }
          it.printStackTrace()
       }
 

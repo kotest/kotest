@@ -67,7 +67,6 @@ class IsEnabledTest : StringSpec() {
       }
 
       "isEnabledInternal should return false if it is excluded by a tag expression" {
-
          val mytag = NamedTag("mytag")
 
          val ext = object : TagExtension {
@@ -91,7 +90,6 @@ class IsEnabledTest : StringSpec() {
       }
 
       "isEnabledInternal should return false if it has no tags and included tags are set" {
-
          val yourtag = NamedTag("yourtag")
 
          val ext = object : TagExtension {
@@ -116,7 +114,6 @@ class IsEnabledTest : StringSpec() {
       }
 
       "isEnabledInternal should return false if it has no tags and a tag expression with include is set" {
-
          val ext = object : TagExtension {
             override fun tags(): TagExpression = TagExpression("yourtag")
          }

@@ -1,23 +1,22 @@
 package io.kotest.engine.test.interceptors
 
-import io.kotest.core.config.Configuration
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestScope
-import io.kotest.engine.test.resolvedTimeout
 import io.kotest.engine.test.scopes.withCoroutineContext
-import io.kotest.mpp.log
-import kotlinx.coroutines.TimeoutCancellationException
+import io.kotest.mpp.Logger
 import kotlinx.coroutines.withTimeout
 import kotlin.time.Duration
-import kotlin.time.milliseconds
+import kotlin.time.TimeMark
 
 /**
  * A [TestExecutionInterceptor] that installs a general timeout for all invocations of a test.
  */
 internal class TimeoutInterceptor(
-   private val configuration: Configuration
+   private val mark: TimeMark,
 ) : TestExecutionInterceptor {
+
+   private val logger = Logger(TimeoutInterceptor::class)
 
    override suspend fun intercept(
       testCase: TestCase,
@@ -28,17 +27,15 @@ internal class TimeoutInterceptor(
       // this timeout applies to the test itself. If the test has multiple invocations then
       // this timeout applies across all invocations. In other words, if a test has invocations = 3,
       // each test takes 300ms, and a timeout of 800ms, this would fail, becauase 3 x 300 > 800.
-      val timeout = resolvedTimeout(testCase, configuration.timeout.milliseconds)
-      log { "TimeoutInterceptor: Test '${testCase.name.testName}' will execute with timeout ${timeout}ms" }
+      logger.log { Pair(testCase.name.testName, "Switching context to add timeout ${testCase.config.timeout}") }
 
       return try {
-         log { "TimeoutInterceptor: Switching context to add timeout $timeout" }
-         withTimeout(timeout) {
+         withTimeout(testCase.config.timeout) {
             test(testCase, scope.withCoroutineContext(coroutineContext))
          }
-      } catch (e: TimeoutCancellationException) {
-         log { "TimeoutInterceptor: Caught TimeoutCancellationException ${e.message} for '${testCase.descriptor.path().value}'" }
-         throw TestTimeoutException(timeout, testCase.name.testName)
+      } catch (t: Throwable) {
+         logger.log { Pair(testCase.name.testName, "Caught timeout $t") }
+         TestResult.Error(mark.elapsedNow(), TestTimeoutException(testCase.config.timeout, testCase.name.testName))
       }
    }
 }

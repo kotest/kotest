@@ -8,8 +8,9 @@ import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.engine.listener.TestEngineListener
 import io.kotest.engine.spec.SpecExtensions
+import io.kotest.mpp.Logger
+import io.kotest.mpp.bestName
 import io.kotest.mpp.hasAnnotation
-import io.kotest.mpp.log
 
 /**
  * Skips any spec marked with the [Ignored] annotation and notifies the [TestEngineListener]
@@ -22,6 +23,7 @@ internal class IgnoredSpecInterceptor(
    registry: ExtensionRegistry,
 ) : SpecRefInterceptor {
 
+   private val logger = Logger(IgnoredSpecInterceptor::class)
    private val extensions = SpecExtensions(registry)
 
    override suspend fun intercept(
@@ -30,7 +32,7 @@ internal class IgnoredSpecInterceptor(
    ): Result<Map<TestCase, TestResult>> {
 
       val isIgnored = ref.kclass.hasAnnotation<Ignored>()
-      log { "IgnoredSpecInterceptor: ${ref.kclass} has @Ignored == $isIgnored" }
+      logger.log { Pair(ref.kclass.bestName(), "@Ignored == $isIgnored") }
 
       return if (isIgnored) {
          runCatching { listener.specIgnored(ref.kclass, "Disabled by @Ignored") }

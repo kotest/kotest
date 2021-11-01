@@ -1,4 +1,4 @@
-package com.sksamuel.kotest.timeout
+package com.sksamuel.kotest.engine.test.timeout
 
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.test.TestResult

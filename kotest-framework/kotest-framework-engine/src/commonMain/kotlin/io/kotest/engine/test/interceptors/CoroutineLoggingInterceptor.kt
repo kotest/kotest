@@ -10,10 +10,13 @@ import io.kotest.engine.test.logging.SerialLogExtension
 import io.kotest.engine.test.logging.TestLogger
 import io.kotest.engine.test.logging.TestScopeLoggingCoroutineContextElement
 import io.kotest.engine.test.scopes.withCoroutineContext
+import io.kotest.mpp.Logger
 import kotlinx.coroutines.withContext
 
 @ExperimentalKotest
 internal class CoroutineLoggingInterceptor(private val configuration: Configuration) : TestExecutionInterceptor {
+
+   private val logger = Logger(CoroutineLoggingInterceptor::class)
 
    override suspend fun intercept(
       testCase: TestCase,
@@ -22,16 +25,15 @@ internal class CoroutineLoggingInterceptor(private val configuration: Configurat
    ): TestResult {
       val extensions = TestExtensions(configuration.registry()).logExtensions(testCase)
       return when {
-         configuration.logLevel.isDisabled() || extensions.isEmpty() -> test(testCase, scope)
+         configuration.logLevel.isDisabled() || extensions.isEmpty() -> {
+            logger.log { Pair(testCase.name.testName, "Test logging is disabled (exts = $extensions)") }
+            test(testCase, scope)
+         }
          else -> {
             val logger = TestLogger(configuration.logLevel)
-            try {
-               withContext(TestScopeLoggingCoroutineContextElement(logger)) {
-                  test(testCase, scope.withCoroutineContext(coroutineContext))
-               }
-            } catch (ex: Exception) {
-               throw ex
-            } finally {
+            withContext(TestScopeLoggingCoroutineContextElement(logger)) {
+               test(testCase, scope.withCoroutineContext(coroutineContext))
+            }.apply {
                extensions.map { SerialLogExtension(it) }.forEach { extension ->
                   runCatching {
                      extension.handleLogs(testCase, logger.logs.filter { it.level >= configuration.logLevel })

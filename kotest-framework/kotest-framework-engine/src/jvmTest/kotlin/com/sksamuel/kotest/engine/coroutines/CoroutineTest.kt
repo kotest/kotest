@@ -8,8 +8,6 @@ import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.sync.Semaphore
-import kotlinx.coroutines.sync.withPermit
 import kotlin.time.milliseconds
 
 // tests kotest's interaction with coroutines
@@ -30,28 +28,28 @@ class CoroutineTest : FunSpec() {
          }
       }
 
-      test("multiple coroutines should be launchable from a test") {
-         launch {
-            delay(10)
-         }
-         launch {
-            delay(10)
-         }
-      }
-
-      test("multiple coroutines should be able to use semaphores") {
-         val sem = Semaphore(1)
-         launch {
-            sem.withPermit {
-               delay(10)
-            }
-         }
-         launch {
-            sem.withPermit {
-               delay(10)
-            }
-         }
-      }
+//      test("multiple coroutines should be launchable from a test") {
+//         launch {
+//            delay(10)
+//         }
+//         launch {
+//            delay(10)
+//         }
+//      }
+//
+//      test("multiple coroutines should be able to use semaphores") {
+//         val sem = Semaphore(1)
+//         launch {
+//            sem.withPermit {
+//               delay(10)
+//            }
+//         }
+//         launch {
+//            sem.withPermit {
+//               delay(10)
+//            }
+//         }
+//      }
 
       test("exceptions inside launched coroutine should be propagated") {
          launch {

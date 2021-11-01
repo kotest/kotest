@@ -14,7 +14,8 @@ import io.kotest.engine.spec.runners.InstancePerTestSpecRunner
 import io.kotest.engine.spec.runners.SingleInstanceSpecRunner
 import io.kotest.engine.test.scheduler.ConcurrentTestScheduler
 import io.kotest.engine.test.scheduler.SequentialTestScheduler
-import io.kotest.mpp.log
+import io.kotest.mpp.Logger
+import io.kotest.mpp.bestName
 import kotlin.math.max
 
 @ExperimentalKotest
@@ -31,6 +32,8 @@ class JvmSpecExecutorDelegate(
    private val configuration: Configuration,
 ) : SpecExecutorDelegate {
 
+   private val logger = Logger(JvmSpecExecutorDelegate::class)
+
    private fun Spec.resolvedIsolationMode() =
       this.isolationMode() ?: this.isolationMode ?: configuration.isolationMode
 
@@ -42,7 +45,8 @@ class JvmSpecExecutorDelegate(
       }
 
       val isolation = spec.resolvedIsolationMode()
-      log { "JvmSpecExecutorDelegate: isolation=$isolation for $spec" }
+      logger.log { Pair(spec::class.bestName(), "isolation=$isolation") }
+
       val runner = when (isolation) {
          IsolationMode.SingleInstance -> SingleInstanceSpecRunner(
             listener,

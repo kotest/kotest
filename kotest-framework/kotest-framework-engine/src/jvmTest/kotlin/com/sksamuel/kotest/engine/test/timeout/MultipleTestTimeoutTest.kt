@@ -1,7 +1,6 @@
-package com.sksamuel.kotest.engine
+package com.sksamuel.kotest.engine.test.timeout
 
 import io.kotest.core.spec.style.FreeSpec
-import kotlin.time.Duration
 
 @Suppress("BlockingMethodInNonBlockingContext")
 class MultipleTestTimeoutTest : FreeSpec() {
@@ -14,33 +13,36 @@ class MultipleTestTimeoutTest : FreeSpec() {
 
   init {
      // 10 millis sleep will "accumulate" between tests. If the context is still shared,
-     // one of them will fail due to timeout.
-     "Test 1".config(timeout = Duration.milliseconds(30)) {
+     // one of them will fail due to the cumulative time exceeding the timeouts.
+
+     timeout = 40
+
+     "Test 1" {
         Thread.sleep(10)
      }
 
-     "Test 2".config(timeout = Duration.milliseconds(30)) {
+     "Test 2" {
         Thread.sleep(10)
      }
 
-     "Test 3".config(timeout = Duration.milliseconds(30)) {
+     "Test 3" {
         Thread.sleep(10)
      }
 
-     "Test 4".config(timeout = Duration.milliseconds(30)) {
+     "Test 4" {
         Thread.sleep(10)
      }
 
-     "Test 5".config(timeout = Duration.milliseconds(30)) {
+     "Test 5" {
         Thread.sleep(10)
      }
 
-     "Test 6".config(timeout = Duration.milliseconds(30)) {
+     "Test 6" {
         Thread.sleep(10)
      }
 
-     "Test 7".config(timeout = Duration.milliseconds(30)) {
-        Thread.sleep(100)
+     "Test 7" {
+        Thread.sleep(10)
      }
   }
 }

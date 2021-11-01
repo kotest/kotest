@@ -6,7 +6,7 @@ import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestScope
 import io.kotest.engine.concurrency.FixedThreadCoroutineDispatcherFactory
 import io.kotest.engine.test.scopes.withCoroutineContext
-import io.kotest.mpp.log
+import io.kotest.mpp.Logger
 import kotlin.coroutines.coroutineContext
 
 internal actual fun coroutineDispatcherFactoryInterceptor(
@@ -20,6 +20,8 @@ internal class CoroutineDispatcherFactoryInterceptor(
    private val defaultCoroutineDispatcherFactory: CoroutineDispatcherFactory
 ) : TestExecutionInterceptor {
 
+   private val logger = Logger(CoroutineDispatcherFactoryInterceptor::class)
+
    override suspend fun intercept(
       testCase: TestCase,
       scope: TestScope,
@@ -29,7 +31,7 @@ internal class CoroutineDispatcherFactoryInterceptor(
       val userFactory = testCase.spec.coroutineDispatcherFactory ?: testCase.spec.coroutineDispatcherFactory()
       val threads = testCase.spec.threads ?: testCase.spec.threads() ?: 1
 
-      log { "CoroutineDispatcherFactoryInterceptor: userFactory=$userFactory; threads=$threads" }
+      logger.log { Pair(testCase.name.testName, "userFactory=$userFactory; threads=$threads") }
 
       val f = when {
          userFactory != null -> userFactory
@@ -37,6 +39,7 @@ internal class CoroutineDispatcherFactoryInterceptor(
          else -> defaultCoroutineDispatcherFactory
       }
 
+      logger.log { Pair(testCase.name.testName, "Switching dispatcher using factory $f") }
       return f.withDispatcher(testCase) {
          test(testCase, scope.withCoroutineContext(coroutineContext))
       }

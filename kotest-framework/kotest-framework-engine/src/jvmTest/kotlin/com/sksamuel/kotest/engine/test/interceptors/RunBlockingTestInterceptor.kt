@@ -14,6 +14,7 @@ import io.kotest.engine.test.interceptors.TestCoroutineDispatcherInterceptor
 import io.kotest.matchers.booleans.shouldBeTrue
 import io.kotest.matchers.nulls.shouldNotBeNull
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlin.time.milliseconds
 
 @ExperimentalStdlibApi
 @ExperimentalCoroutinesApi
@@ -34,7 +35,7 @@ class RunBlockingTestInterceptorTest : FunSpec() {
          TestCoroutineDispatcherInterceptor().intercept(tc, NoopTestScope(tc, coroutineContext)) { _, context ->
             context.delayController.shouldNotBeNull()
             fired = true
-            TestResult.success(0)
+            TestResult.Success(0.milliseconds)
          }
          fired.shouldBeTrue()
 

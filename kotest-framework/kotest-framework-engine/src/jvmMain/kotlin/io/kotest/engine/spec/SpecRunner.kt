@@ -7,8 +7,10 @@ import io.kotest.core.spec.Spec
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.engine.listener.TestEngineListener
+import io.kotest.engine.spec.runners.SingleInstanceSpecRunner
 import io.kotest.engine.test.scheduler.TestScheduler
-import io.kotest.mpp.log
+import io.kotest.mpp.Logger
+import io.kotest.mpp.bestName
 import kotlin.reflect.KClass
 
 /**
@@ -27,6 +29,7 @@ internal abstract class SpecRunner(
 ) {
 
    protected val materializer = Materializer(configuration)
+   private val logger = Logger(SingleInstanceSpecRunner::class)
 
    /**
     * Executes all the tests in this spec, returning a Failure if there was an exception in a listener
@@ -39,7 +42,7 @@ internal abstract class SpecRunner(
     */
    protected suspend fun launch(spec: Spec, run: suspend (TestCase) -> Unit) {
       val rootTests = materializer.materialize(spec)
-      log { "SingleInstanceSpecRunner: Launching ${rootTests.size} root tests with launcher $scheduler" }
+      logger.log { Pair(spec::class.bestName(), "Launching ${rootTests.size} root tests with launcher $scheduler") }
       scheduler.schedule(run, rootTests)
    }
 

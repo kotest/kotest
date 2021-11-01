@@ -12,6 +12,7 @@ import kotlinx.coroutines.supervisorScope
  * so that any child coroutines from this point on do not cancel any parent coroutines.
  */
 internal object SupervisorScopeInterceptor : TestExecutionInterceptor {
+
    override suspend fun intercept(
       testCase: TestCase,
       scope: TestScope,

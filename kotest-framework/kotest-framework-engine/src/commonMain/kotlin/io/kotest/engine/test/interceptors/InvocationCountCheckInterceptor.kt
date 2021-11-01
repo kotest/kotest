@@ -4,7 +4,7 @@ import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestScope
 import io.kotest.core.test.TestType
-import io.kotest.mpp.log
+import io.kotest.mpp.Logger
 import kotlin.time.Duration
 
 /**
@@ -12,14 +12,16 @@ import kotlin.time.Duration
  */
 internal object InvocationCountCheckInterceptor : TestExecutionInterceptor {
 
+   private val logger = Logger(InvocationCountCheckInterceptor::class)
+
    override suspend fun intercept(
       testCase: TestCase,
       scope: TestScope,
       test: suspend (TestCase, TestScope) -> TestResult
    ): TestResult {
-      log { "InvocationCountCheckInterceptor: Checking that invocation count is 1 for containers" }
+      logger.log { Pair(testCase.name.testName, "Checking that invocation count is 1 for containers") }
       return if (testCase.config.invocations > 1 && testCase.type == TestType.Container)
-         TestResult.Error(Duration.ZERO, Exception("Cannot execute multiple invocations in parent tests"))
+         TestResult.Error(Duration.Companion.ZERO, Exception("Cannot execute multiple invocations in parent tests"))
       else
          test(testCase, scope)
    }

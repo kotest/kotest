@@ -1,4 +1,4 @@
-package com.sksamuel.kotest.engine.spec.timeout
+package com.sksamuel.kotest.engine.test.timeout
 
 import io.kotest.common.ExperimentalKotest
 import io.kotest.core.spec.style.ShouldSpec
@@ -15,32 +15,26 @@ class ShouldSpecTimeoutTest : ShouldSpec() {
       extension { (testCase, execute) ->
          val result = execute(testCase)
          if (testCase.name.testName.contains("timeout:") && result.isSuccess) {
-            AssertionError("${testCase.descriptor.id.value} passed but should fail").toTestResult(0)
+            AssertionError("${testCase.descriptor.id.value} passed but should fail").toTestResult(Duration.ZERO)
          } else {
             TestResult.Success(0.milliseconds)
          }
       }
 
       should("timeout: root test case should timeout when duration longer than config").config(
-          timeout = Duration.milliseconds(
-              10
-          )
+         timeout = Duration.milliseconds(10)
       ) {
           delay(Duration.milliseconds(20))
       }
 
       context("timeout: container should timeout when duration longer than config").config(
-          timeout = Duration.milliseconds(
-              10
-          )
+         timeout = Duration.milliseconds(10)
       ) {
           delay(Duration.milliseconds(20))
       }
 
       context("timeout: container should timeout when nested test duration longer than container config").config(
-          timeout = Duration.milliseconds(
-              10
-          )
+         timeout = Duration.milliseconds(10)
       ) {
           should("timeout: a") {
               delay(Duration.milliseconds(20))
@@ -54,9 +48,7 @@ class ShouldSpecTimeoutTest : ShouldSpec() {
           }
 
           context("timeout: nested container should override container timeouts").config(
-              timeout = Duration.milliseconds(
-                  10
-              )
+             timeout = Duration.milliseconds(10)
           ) {
               delay(Duration.milliseconds(20))
           }

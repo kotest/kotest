@@ -11,7 +11,8 @@ import io.kotest.engine.concurrency.isIsolate
 import io.kotest.engine.listener.TestEngineListener
 import io.kotest.engine.spec.SpecExecutor
 import io.kotest.engine.tags.runtimeTags
-import io.kotest.mpp.log
+import io.kotest.mpp.Logger
+import io.kotest.mpp.bestName
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Semaphore
@@ -33,17 +34,19 @@ internal class ConcurrentTestSuiteScheduler(
    private val context: ProjectContext,
 ) : TestSuiteScheduler {
 
+   private val logger = Logger(ConcurrentTestSuiteScheduler::class)
+
    override suspend fun schedule(suite: TestSuite, listener: TestEngineListener): EngineResult {
-      log { "DefaultTestSuiteScheduler: Launching ${suite.specs.size} specs" }
+      logger.log { Pair(null, "Launching ${suite.specs.size} specs") }
 
       val (sequential, concurrent) = suite.specs.partition { it.kclass.isIsolate() }
-      log { "DefaultTestSuiteScheduler: Split specs based on isolation annotations [${sequential.size} sequential ${concurrent.size} concurrent]" }
+      logger.log { Pair(null, "Split on isIsolate: ${sequential.size} sequential ${concurrent.size} concurrent") }
 
       schedule(concurrent, listener, maxConcurrent)
-      log { "DefaultSpecLauncher: Concurrent specs have completed" }
+      logger.log { Pair(null, "Concurrent specs have completed") }
 
       schedule(sequential, listener, 1)
-      log { "DefaultSpecLauncher: Sequential specs have completed" }
+      logger.log { Pair(null, "Sequential specs have completed") }
 
       return EngineResult(emptyList())
    }
@@ -56,10 +59,10 @@ internal class ConcurrentTestSuiteScheduler(
       val coroutineDispatcherFactory = defaultCoroutineDispatcherFactory(configuration)
       val semaphore = Semaphore(concurrency)
       specs.forEach { ref ->
-         log { "DefaultTestSuiteScheduler: Scheduling coroutine for spec [$ref]" }
+         logger.log { Pair(ref.kclass.bestName(), "Scheduling coroutine") }
          launch {
             semaphore.withPermit {
-               log { "DefaultTestSuiteScheduler: Acquired permit for $ref" }
+               logger.log { Pair(ref.kclass.bestName(), "Acquired permit") }
                try {
                   val executor = SpecExecutor(
                      listener,
@@ -67,12 +70,14 @@ internal class ConcurrentTestSuiteScheduler(
                      configuration,
                      ProjectContext(configuration.runtimeTags(), specs, configuration)
                   )
+                  logger.log { Pair(ref.kclass.bestName(), "Executing ref") }
                   executor.execute(ref)
                } catch (t: Throwable) {
-                  log { "DefaultTestSuiteScheduler: Unhandled error during spec execution [$ref] [$t]" }
+                  logger.log { Pair(ref.kclass.bestName(), "Unhandled error during spec execution $t") }
                   throw t
                }
             }
+            logger.log { Pair(ref.kclass.bestName(), "Released permit") }
          }
       }
    }

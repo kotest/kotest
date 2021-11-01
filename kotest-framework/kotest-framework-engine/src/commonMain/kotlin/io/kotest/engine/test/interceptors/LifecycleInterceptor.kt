@@ -7,7 +7,7 @@ import io.kotest.core.test.TestScope
 import io.kotest.engine.test.TestCaseExecutionListener
 import io.kotest.engine.test.TestExtensions
 import io.kotest.engine.test.createTestResult
-import io.kotest.mpp.log
+import io.kotest.mpp.Logger
 import kotlin.time.TimeMark
 
 /**
@@ -33,6 +33,7 @@ internal class LifecycleInterceptor(
 ) : TestExecutionInterceptor {
 
    private val extensions = TestExtensions(registry)
+   private val logger = Logger(LifecycleInterceptor::class)
 
    override suspend fun intercept(
       testCase: TestCase,
@@ -40,34 +41,27 @@ internal class LifecycleInterceptor(
       test: suspend (TestCase, TestScope) -> TestResult
    ): TestResult {
 
-      log { "LifecycleInterceptor: Executing active test '${testCase.descriptor.path().value}' with scope $scope" }
+      logger.log { Pair(testCase.name.testName, "Notifying listener test started") }
       listener.testStarted(testCase)
 
-      return extensions
-         .beforeTestBeforeAnyBeforeContainer(testCase)
-         .map { test(testCase, scope) }
+      return extensions.beforeTestBeforeAnyBeforeContainer(testCase)
          .fold(
-            { result ->
-               log { "LifecycleInterceptor: '${testCase.descriptor.path().value}'=${result}" }
-               // an error in the after test callbacks will override the result of the test if it was successful,
-               // if the test already failed, that result will be used.
+            {
+               val result = test(testCase, scope)
+               // any error in the after listeners will override the test result unless the test was already an error
                extensions
                   .afterTestAfterAnyAfterContainer(testCase, result)
                   .fold(
                      { result },
-                     {
-                        when (result) {
-                           is TestResult.Success, is TestResult.Ignored -> createTestResult(timeMark.elapsedNow(), it)
-                           else -> result
-                        }
-                     },
+                     { if (result.isErrorOrFailure) result else createTestResult(timeMark.elapsedNow(), it) }
                   )
             },
-            { throwable ->
-               val result = createTestResult(timeMark.elapsedNow(), throwable)
+            {
+               val result = createTestResult(timeMark.elapsedNow(), it)
+               // can ignore errors here as we already have the before errors to show
                extensions.afterTestAfterAnyAfterContainer(testCase, result)
-                  .fold({ result }, { TestResult.Error(timeMark.elapsedNow(), it) })
-            },
+               result
+            }
          )
    }
 }

@@ -17,7 +17,8 @@ import io.kotest.engine.test.TestCaseExecutor
 import io.kotest.engine.test.listener.TestCaseExecutionListenerToTestEngineListenerAdapter
 import io.kotest.engine.test.scheduler.TestScheduler
 import io.kotest.engine.test.scopes.DuplicateNameHandlingTestScope
-import io.kotest.mpp.log
+import io.kotest.mpp.Logger
+import io.kotest.mpp.bestName
 import kotlinx.coroutines.coroutineScope
 import java.util.concurrent.ConcurrentHashMap
 import kotlin.coroutines.CoroutineContext
@@ -37,15 +38,16 @@ internal class SingleInstanceSpecRunner(
 
    private val results = ConcurrentHashMap<TestCase, TestResult>()
    private val extensions = SpecExtensions(configuration.registry())
+   private val logger = Logger(SingleInstanceSpecRunner::class)
 
    override suspend fun execute(spec: Spec): Result<Map<TestCase, TestResult>> {
-      log { "SingleInstanceSpecRunner: executing spec [$spec]" }
+      logger.log { Pair(spec::class.bestName(), "executing spec $spec") }
 
       suspend fun interceptAndRun(context: CoroutineContext) = kotlin.runCatching {
          val rootTests = materializer.materialize(spec)
-         log { "SingleInstanceSpecRunner: Materialized root tests: ${rootTests.size}" }
+         logger.log { Pair(spec::class.bestName(), "Materialized root tests: ${rootTests.size}") }
          launch(spec) {
-            log { "SingleInstanceSpecRunner: Executing test $it" }
+            logger.log { Pair(it.name.testName, "Executing test $it") }
             runTest(it, context)
          }
       }
@@ -72,16 +74,18 @@ internal class SingleInstanceSpecRunner(
 
       // in the single instance runner we execute each nested test as soon as they are registered
       override suspend fun registerTestCase(nested: NestedTest) {
-         log { "Nested test case discovered '${nested}'" }
+         logger.log { Pair(testCase.name.testName, "Nested test case discovered '${nested}") }
+
          val nestedTestCase = nested.toTestCase(testCase, configuration)
          if (failedfast) {
-            log { "A previous nested test failed and failfast is enabled - will mark this as ignored" }
+            logger.log { Pair(testCase.name.testName, "Skipping test due to fail fast") }
             listener.testIgnored(nestedTestCase, "Failfast enabled on parent test")
          } else {
             // if running this nested test results in an error, we won't launch anymore nested tests
             val result = runTest(nestedTestCase, coroutineContext)
             if (testCase.config.failfast) {
                if (result.isErrorOrFailure) {
+                  logger.log { Pair(testCase.name.testName, "Test failed - setting failedfast=true") }
                   failedfast = true
                }
             }

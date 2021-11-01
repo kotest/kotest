@@ -13,7 +13,10 @@ class InvocationThreadErrorTest : FunSpec({
       TestEngineLauncher(listener)
          .withClasses(InvocationErrorsTests::class)
          .launch()
-      listener.tests.size shouldBe 2
+      listener.tests.keys.map { it.name.testName } shouldBe setOf(
+         "multiple invocations",
+         "multiple invocations on multiple threads"
+      )
       listener.tests.values.forAll { it.isError shouldBe true }
    }
 })

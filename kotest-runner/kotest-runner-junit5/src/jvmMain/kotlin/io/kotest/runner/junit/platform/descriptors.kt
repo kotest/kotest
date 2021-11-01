@@ -66,7 +66,7 @@ fun createTestDescriptor(
    type: TestDescriptor.Type,
    source: TestSource?,
    mayRegisterTests: Boolean
-): AbstractTestDescriptor = object : AbstractTestDescriptor(id, displayName, source) {
+): TestDescriptor = object : AbstractTestDescriptor(id, displayName, source) {
    override fun getType(): TestDescriptor.Type = type
    override fun mayRegisterTests(): Boolean = mayRegisterTests
 }

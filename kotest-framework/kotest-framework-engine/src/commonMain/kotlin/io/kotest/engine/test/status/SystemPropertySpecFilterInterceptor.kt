@@ -6,8 +6,8 @@ import io.kotest.core.filter.TestFilterResult
 import io.kotest.core.internal.KotestEngineProperties
 import io.kotest.core.test.Enabled
 import io.kotest.core.test.TestCase
+import io.kotest.mpp.Logger
 import io.kotest.mpp.env
-import io.kotest.mpp.log
 import io.kotest.mpp.sysprop
 
 /**
@@ -19,6 +19,8 @@ import io.kotest.mpp.sysprop
  */
 internal object SystemPropertyTestFilterEnabledExtension : TestEnabledExtension {
 
+   private val logger = Logger(SystemPropertyTestFilterEnabledExtension::class)
+
    private fun syspropOrEnv(name: String) = sysprop(name) ?: env(name) ?: ""
 
    override fun isEnabled(testCase: TestCase): Enabled {
@@ -29,7 +31,7 @@ internal object SystemPropertyTestFilterEnabledExtension : TestEnabledExtension 
          .filterIsInstance<TestFilterResult.Exclude>()
          .firstOrNull()
 
-      log { "SystemPropertyTestFilterEnabledExtension: ${testCase.descriptor} excluded = $excluded" }
+      logger.log { Pair(testCase.name.testName, "excluded = $excluded") }
       return if (excluded == null) Enabled.enabled else Enabled.disabled(excluded.reason)
    }
 }

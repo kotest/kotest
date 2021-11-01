@@ -12,11 +12,8 @@ import io.kotest.engine.concurrency.NoopCoroutineDispatcherFactory
 import io.kotest.engine.test.interceptors.AssertionModeInterceptor
 import io.kotest.engine.test.interceptors.CoroutineDebugProbeInterceptor
 import io.kotest.engine.test.interceptors.CoroutineLoggingInterceptor
-import io.kotest.engine.test.interceptors.CoroutineScopeInterceptor
 import io.kotest.engine.test.interceptors.EnabledCheckInterceptor
-import io.kotest.engine.test.interceptors.ExceptionCapturingInterceptor
 import io.kotest.engine.test.interceptors.InvocationCountCheckInterceptor
-import io.kotest.engine.test.interceptors.InvocationRepeatInterceptor
 import io.kotest.engine.test.interceptors.InvocationTimeoutInterceptor
 import io.kotest.engine.test.interceptors.LifecycleInterceptor
 import io.kotest.engine.test.interceptors.SoftAssertInterceptor
@@ -28,7 +25,7 @@ import io.kotest.engine.test.interceptors.TimeoutInterceptor
 import io.kotest.engine.test.interceptors.blockedThreadTimeoutInterceptor
 import io.kotest.engine.test.interceptors.coroutineDispatcherFactoryInterceptor
 import io.kotest.engine.test.interceptors.coroutineErrorCollectorInterceptor
-import io.kotest.mpp.log
+import io.kotest.mpp.Logger
 import kotlin.time.TimeSource
 
 /**
@@ -44,9 +41,10 @@ class TestCaseExecutor(
    private val configuration: Configuration,
 ) {
 
-   suspend fun execute(testCase: TestCase, testScope: TestScope): TestResult {
-      log { "TestCaseExecutor: execute entry point '${testCase.descriptor.path().value}' testScope=$testScope" }
+   private val logger = Logger(TestCaseExecutor::class)
+   private val extensions = TestExtensions(configuration.registry())
 
+   suspend fun execute(testCase: TestCase, testScope: TestScope): TestResult {
       val timeMark = TimeSource.Monotonic.markNow()
 
       val interceptors = listOfNotNull(
@@ -59,27 +57,24 @@ class TestCaseExecutor(
          TestCaseExtensionInterceptor(configuration.registry()),
          EnabledCheckInterceptor(configuration),
          LifecycleInterceptor(listener, timeMark, configuration.registry()),
-         ExceptionCapturingInterceptor(timeMark),
          AssertionModeInterceptor(),
          SoftAssertInterceptor(),
-         CoroutineScopeInterceptor,
-         if (platform == Platform.JVM) blockedThreadTimeoutInterceptor(configuration) else null,
-         TimeoutInterceptor(configuration),
-         InvocationRepeatInterceptor(configuration.registry(), timeMark),
-         InvocationTimeoutInterceptor(configuration),
          CoroutineLoggingInterceptor(configuration),
+         if (platform == Platform.JVM) blockedThreadTimeoutInterceptor(configuration, timeMark) else null,
+         TimeoutInterceptor(timeMark),
+         TestInvocationInterceptor(configuration.registry(), timeMark),
+         InvocationTimeoutInterceptor(timeMark),
          if (platform == Platform.JVM && testCase.config.testCoroutineDispatcher) TestCoroutineDispatcherInterceptor() else null,
       )
 
-      val innerExecute: suspend (TestCase, TestScope) -> TestResult = { tc, ctx ->
-         tc.test(ctx)
-         createTestResult(timeMark.elapsedNow(), null)
+      val innerExecute: suspend (TestCase, TestScope) -> TestResult = { tc, scope ->
+         logger.log { Pair(testCase.name.testName, "Executing test") }
+         tc.test(scope)
+         TestResult.Success(timeMark.elapsedNow())
       }
 
-      val result = interceptors.foldRight(innerExecute) { ext, fn ->
+      return interceptors.foldRight(innerExecute) { ext, fn ->
          { tc, sc -> ext.intercept(tc, sc, fn) }
       }.invoke(testCase, testScope)
-
-      return result
    }
 }

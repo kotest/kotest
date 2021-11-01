@@ -12,6 +12,7 @@ import io.kotest.engine.test.AbstractTestCaseExecutionListener
 import io.kotest.engine.test.scopes.TerminalTestScope
 import io.kotest.engine.test.interceptors.TestFinishedInterceptor
 import io.kotest.matchers.shouldBe
+import kotlin.time.TimeSource
 
 class TestFinishedExecutionInterceptorTest : FunSpec({
 

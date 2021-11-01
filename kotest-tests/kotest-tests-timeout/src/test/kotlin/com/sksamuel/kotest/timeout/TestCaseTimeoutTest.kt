@@ -75,19 +75,6 @@ class TestCaseTimeoutTest : FunSpec() {
             executor.execute(tc, NoopTestScope(testCase, coroutineContext))
          }
       }
-
-      test("global timeouts should apply if no other timeout is set") {
-
-         val c = Configuration()
-         c.timeout = 1
-
-         val collector = CollectingTestEngineListener()
-         TestEngineLauncher(collector)
-            .withClasses(TestTimeouts::class)
-            .launch()
-         collector.tests.mapKeys { it.key.name.testName }["blocked"]?.isError shouldBe true
-         collector.tests.mapKeys { it.key.name.testName }["suspend"]?.isError shouldBe true
-      }
    }
 }
 

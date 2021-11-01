@@ -5,7 +5,7 @@ import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestScope
 import io.kotest.engine.test.status.isEnabled
-import io.kotest.mpp.log
+import io.kotest.mpp.Logger
 
 /**
  * Checks the enabled status of a [TestCase] before invoking it.
@@ -17,6 +17,8 @@ import io.kotest.mpp.log
  */
 internal class EnabledCheckInterceptor(private val configuration: Configuration) : TestExecutionInterceptor {
 
+   private val logger = Logger(EnabledCheckInterceptor::class)
+
    override suspend fun intercept(
       testCase: TestCase,
       scope: TestScope,
@@ -25,11 +27,11 @@ internal class EnabledCheckInterceptor(private val configuration: Configuration)
       val enabled = testCase.isEnabled(configuration)
       return when (enabled.isEnabled) {
          true -> {
-            log { "EnabledCheckInterceptor: ${testCase.descriptor.path().value} is enabled" }
+            logger.log { Pair(testCase.name.testName, "Test is enabled") }
             test(testCase, scope)
          }
          false -> {
-            log { "EnabledCheckInterceptor: ${testCase.descriptor.path().value} is disabled: ${enabled.reason}" }
+            logger.log { Pair(testCase.name.testName, "Test is disabled: ${enabled.reason}") }
             TestResult.Ignored(enabled)
          }
       }

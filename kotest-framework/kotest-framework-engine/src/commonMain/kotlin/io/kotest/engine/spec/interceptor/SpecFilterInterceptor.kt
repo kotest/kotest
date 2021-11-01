@@ -8,7 +8,8 @@ import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.engine.listener.TestEngineListener
 import io.kotest.engine.spec.SpecExtensions
-import io.kotest.mpp.log
+import io.kotest.mpp.Logger
+import io.kotest.mpp.bestName
 
 /**
  * Evaluates a spec against any registered [SpecFilter]s.
@@ -19,6 +20,7 @@ class SpecFilterInterceptor(
 ) : SpecRefInterceptor {
 
    private val extensions = SpecExtensions(registry)
+   private val logger = Logger(SpecFilterInterceptor::class)
 
    override suspend fun intercept(
       ref: SpecRef,
@@ -29,8 +31,7 @@ class SpecFilterInterceptor(
          val result = it.filter(ref.kclass)
          if (result is SpecFilterResult.Exclude) result else null
       }.firstOrNull()
-
-      log { "SpecFilterInterceptor: ${ref.kclass} is excludedByFilters = $excluded" }
+      logger.log { Pair(ref.kclass.bestName(), "excludedByFilters == $excluded") }
 
       return if (excluded == null) {
          fn(ref)

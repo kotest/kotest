@@ -7,7 +7,7 @@ import kotlinx.coroutines.asContextElement
 actual val errorCollector: ErrorCollector get() = ThreadLocalErrorCollector.instance.get()
 
 /**
- * A [CoroutineContext.Element] which keeps the error collector synchronized with thread-switching coroutines.
+ * A [kotlin.coroutines.CoroutineContext.Element] which keeps the error collector synchronized with thread-switching coroutines.
  *
  * When using [withClue] or [assertSoftly] on the JVM without the Kotest framework, this context element
  * should be added to each top-level coroutine context, e.g. via

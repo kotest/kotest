@@ -25,7 +25,7 @@ internal object FocusEnabledExtension : TestEnabledExtension {
       // if anything else is focused we're outta luck
       if (testCase.spec.rootTests().any { it.name.focus }) {
          return Enabled
-            .disabled("${testCase.descriptor.path()} is disabled by another test having focus")
+            .disabled("${testCase.descriptor.path().value} is disabled by another test having focus")
             .also { it.reason?.let { log { it } } }
       }
 

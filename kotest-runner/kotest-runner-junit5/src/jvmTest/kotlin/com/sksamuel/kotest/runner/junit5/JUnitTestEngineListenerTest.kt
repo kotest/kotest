@@ -235,7 +235,7 @@ class JUnitTestEngineListenerTest : FunSpec({
          EventTrackingEngineExecutionListener.Event.ExecutionFinished("Exception", TestExecutionResult.Status.FAILED),
          EventTrackingEngineExecutionListener.Event.ExecutionFinished(
             "com.sksamuel.kotest.runner.junit5.MySpec",
-            TestExecutionResult.Status.SUCCESSFUL
+            TestExecutionResult.Status.FAILED
          ),
       )
    }

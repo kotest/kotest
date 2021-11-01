@@ -6,7 +6,6 @@ import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestScope
 import io.kotest.engine.test.TestExtensions
-import kotlin.time.Duration
 
 /**
  * This [TestExecutionInterceptor] executes any user level [TestCaseExtension]s.
@@ -22,7 +21,6 @@ internal class TestCaseExtensionInterceptor(registry: ExtensionRegistry) : TestE
       scope: TestScope,
       test: suspend (TestCase, TestScope) -> TestResult
    ): TestResult {
-      return runCatching { extensions.intercept(testCase, scope) { tc, s -> test(tc, s) } }
-         .getOrElse { TestResult.Error(Duration.ZERO, it) }
+      return extensions.intercept(testCase, scope) { tc, s -> test(tc, s) }
    }
 }
