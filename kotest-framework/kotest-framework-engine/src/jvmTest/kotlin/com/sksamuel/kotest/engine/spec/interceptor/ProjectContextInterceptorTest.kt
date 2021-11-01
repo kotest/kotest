@@ -1,4 +1,4 @@
-package com.sksamuel.kotest.engine.interceptors
+package com.sksamuel.kotest.engine.spec.interceptor
 
 import io.kotest.core.ProjectContext
 import io.kotest.core.config.Configuration
@@ -18,15 +18,15 @@ class ProjectContextInterceptorTest : FunSpec() {
 
       val c = ProjectContext(Configuration())
       var fired = false
-      val fn: suspend (Spec) -> Map<TestCase, TestResult> = {
+      val fn: suspend (Spec) -> Result<Map<TestCase, TestResult>> = {
          fired = true
          coroutineContext.projectContext shouldBe c
-         emptyMap()
+         Result.success(emptyMap())
       }
 
       test("ProjectContextInterceptor should set project context on coroutine scope") {
          fired.shouldBeFalse()
-         ProjectContextInterceptor(c).intercept(fn).invoke(BazSpec())
+         ProjectContextInterceptor(c).intercept(BazSpec(), fn)
          fired.shouldBeTrue()
       }
    }

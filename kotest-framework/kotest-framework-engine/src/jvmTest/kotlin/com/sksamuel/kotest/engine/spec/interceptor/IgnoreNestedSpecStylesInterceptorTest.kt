@@ -13,20 +13,16 @@ class IgnoreNestedSpecStylesInterceptorTest : FunSpec({
    test("IgnoreNestedSpecStylesInterceptor should skip any nested spec style") {
 
       IgnoreNestedSpecStylesInterceptor(NoopTestEngineListener, EmptyExtensionRegistry)
-         .intercept { error("boom") }
-         .invoke(MyBehaviorSpec())
+         .intercept(MyBehaviorSpec()) { error("boom") }
 
       IgnoreNestedSpecStylesInterceptor(NoopTestEngineListener, EmptyExtensionRegistry)
-         .intercept { error("boom") }
-         .invoke(MyWordSpec())
+         .intercept(MyWordSpec()) { error("boom") }
 
       IgnoreNestedSpecStylesInterceptor(NoopTestEngineListener, EmptyExtensionRegistry)
-         .intercept { error("boom") }
-         .invoke(MyFreeSpec())
+         .intercept(MyFreeSpec()) { error("boom") }
 
       IgnoreNestedSpecStylesInterceptor(NoopTestEngineListener, EmptyExtensionRegistry)
-         .intercept { error("boom") }
-         .invoke(MyDescribeSpec())
+         .intercept(MyDescribeSpec()) { error("boom") }
    }
 })
 

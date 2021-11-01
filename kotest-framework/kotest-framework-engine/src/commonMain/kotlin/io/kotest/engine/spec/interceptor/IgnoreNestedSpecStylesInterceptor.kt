@@ -1,5 +1,6 @@
 package io.kotest.engine.spec.interceptor
 
+import io.kotest.common.flatMap
 import io.kotest.core.config.ExtensionRegistry
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.style.ExpectSpec
@@ -19,26 +20,29 @@ import io.kotest.mpp.log
  */
 internal class IgnoreNestedSpecStylesInterceptor(
    private val listener: TestEngineListener,
-   private val registry: ExtensionRegistry,
+   registry: ExtensionRegistry,
 ) : SpecInterceptor {
 
+   private val extensions = SpecExtensions(registry)
+
    override suspend fun intercept(
-      fn: suspend (Spec) -> Map<TestCase, TestResult>
-   ): suspend (Spec) -> Map<TestCase, TestResult> = { spec ->
+      spec: Spec,
+      fn: suspend (Spec) -> Result<Map<TestCase, TestResult>>
+   ): Result<Map<TestCase, TestResult>> {
 
       fun isValid(spec: Spec) = when (spec) {
          is FunSpec, is ExpectSpec, is FeatureSpec, is ShouldSpec, is StringSpec -> true
          else -> false
       }
 
-      if (isValid(spec)) {
+      return if (isValid(spec)) {
          fn(spec)
       } else {
          log { "IgnoreNestedSpecStylesInterceptor: Marking ${spec::class.bestName()} as inactive due to platform limitations" }
          println("WARN: kotest-js only supports top level tests due to underlying platform limitations. '${spec::class.bestName()}' has been marked as ignored")
-         listener.specIgnored(spec::class, "Disabled due to platform limitations")
-         SpecExtensions(registry).ignored(spec::class, "Disabled due to platform limitations")
-         emptyMap()
+         runCatching { listener.specIgnored(spec::class, "Disabled due to platform limitations") }
+            .flatMap { extensions.ignored(spec::class, "Disabled due to platform limitations") }
+            .map { emptyMap() }
       }
    }
 }

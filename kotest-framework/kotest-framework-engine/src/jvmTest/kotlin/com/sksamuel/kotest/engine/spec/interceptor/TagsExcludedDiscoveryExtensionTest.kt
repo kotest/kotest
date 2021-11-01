@@ -21,29 +21,28 @@ class TagsExcludedDiscoveryExtensionTest : FunSpec() {
 
          val tags = TagExpression.Empty.include(NamedTag("SpecIncluded")).exclude(NamedTag("SpecExcluded"))
          val conf = Configuration()
-         conf.registerExtension(SpecifiedTagsTagExtension(tags))
+         conf.registry().add(SpecifiedTagsTagExtension(tags))
 
          // will be excluded explicitly
          TagsExcludedSpecInterceptor(NoopTestEngineListener, conf)
-            .intercept { error("foo") }
-            .invoke(ReflectiveSpecRef(ExcludedSpec::class))
+            .intercept(ReflectiveSpecRef(ExcludedSpec::class)) { error("foo") }
 
          // will be included as includes are ignored at the class level
          var executed = false
          TagsExcludedSpecInterceptor(NoopTestEngineListener, conf)
-            .intercept {
+            .intercept(ReflectiveSpecRef(IncludedSpec::class)) {
                executed = true
-               emptyMap()
-            }.invoke(ReflectiveSpecRef(IncludedSpec::class))
+               Result.success(emptyMap())
+            }
          executed.shouldBeTrue()
 
          // will be included as we can must check the spec itself later to see if the test themselves have the include or exclude
          executed = false
          TagsExcludedSpecInterceptor(NoopTestEngineListener, conf)
-            .intercept {
+            .intercept(ReflectiveSpecRef(UntaggedSpec::class)) {
                executed = true
-               emptyMap()
-            }.invoke(ReflectiveSpecRef(UntaggedSpec::class))
+               Result.success(emptyMap())
+            }
          executed.shouldBeTrue()
       }
 
@@ -51,30 +50,30 @@ class TagsExcludedDiscoveryExtensionTest : FunSpec() {
 
          val tags = TagExpression.Empty.include(NamedTag("SpecIncluded"))
          val conf = Configuration()
-         conf.registerExtension(SpecifiedTagsTagExtension(tags))
+         conf.registry().add(SpecifiedTagsTagExtension(tags))
 
          var executed = false
          TagsExcludedSpecInterceptor(NoopTestEngineListener, conf)
-            .intercept {
+            .intercept(ReflectiveSpecRef(ExcludedSpec::class)) {
                executed = true
-               emptyMap()
-            }.invoke(ReflectiveSpecRef(ExcludedSpec::class))
+               Result.success(emptyMap())
+            }
          executed.shouldBeTrue()
 
          executed = false
          TagsExcludedSpecInterceptor(NoopTestEngineListener, conf)
-            .intercept {
+            .intercept(ReflectiveSpecRef(IncludedSpec::class)) {
                executed = true
-               emptyMap()
-            }.invoke(ReflectiveSpecRef(IncludedSpec::class))
+               Result.success(emptyMap())
+            }
          executed.shouldBeTrue()
 
          executed = false
          TagsExcludedSpecInterceptor(NoopTestEngineListener, conf)
-            .intercept {
+            .intercept(ReflectiveSpecRef(UntaggedSpec::class)) {
                executed = true
-               emptyMap()
-            }.invoke(ReflectiveSpecRef(UntaggedSpec::class))
+               Result.success(emptyMap())
+            }
          executed.shouldBeTrue()
       }
 
@@ -82,27 +81,27 @@ class TagsExcludedDiscoveryExtensionTest : FunSpec() {
 
          val tags = TagExpression.Empty.exclude(NamedTag("SpecExcluded"))
          val conf = Configuration()
-         conf.registerExtension(SpecifiedTagsTagExtension(tags))
+         conf.registry().add(SpecifiedTagsTagExtension(tags))
 
          TagsExcludedSpecInterceptor(NoopTestEngineListener, conf)
-            .intercept {
+            .intercept(ReflectiveSpecRef(ExcludedSpec::class)) {
                error("foo")
-            }.invoke(ReflectiveSpecRef(ExcludedSpec::class))
+            }
 
          var executed = false
          TagsExcludedSpecInterceptor(NoopTestEngineListener, conf)
-            .intercept {
+            .intercept(ReflectiveSpecRef(IncludedSpec::class)) {
                executed = true
-               emptyMap()
-            }.invoke(ReflectiveSpecRef(IncludedSpec::class))
+               Result.success(emptyMap())
+            }
          executed.shouldBeTrue()
 
          executed = false
          TagsExcludedSpecInterceptor(NoopTestEngineListener, conf)
-            .intercept {
+            .intercept(ReflectiveSpecRef(UntaggedSpec::class)) {
                executed = true
-               emptyMap()
-            }.invoke(ReflectiveSpecRef(UntaggedSpec::class))
+               Result.success(emptyMap())
+            }
          executed.shouldBeTrue()
       }
    }

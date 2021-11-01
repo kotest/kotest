@@ -14,9 +14,10 @@ import kotlinx.coroutines.withContext
 class ConfigurationInContextInterceptor(private val conf: Configuration) : SpecInterceptor {
 
    override suspend fun intercept(
-      fn: suspend (Spec) -> Map<TestCase, TestResult>
-   ): suspend (Spec) -> Map<TestCase, TestResult> = { spec ->
-      withContext(ConfigurationContextElement(conf)) {
+      spec: Spec,
+      fn: suspend (Spec) -> Result<Map<TestCase, TestResult>>
+   ): Result<Map<TestCase, TestResult>> {
+      return withContext(ConfigurationContextElement(conf)) {
          fn(spec)
       }
    }

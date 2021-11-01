@@ -34,6 +34,8 @@ object ExtensionExceptionExtractor {
             is ExtensionException.BeforeSpecException -> "Before Spec Error"
             is ExtensionException.AfterSpecException -> "After Spec Error"
             is ExtensionException.PrepareSpecException -> "Prepare Spec Error"
+            is ExtensionException.FinalizeSpecException -> "Finalize Spec Error"
+            is ExtensionException.IgnoredSpecException -> "Ignored Spec Error"
          }
          else -> t::class.simpleName ?: "<error>"
       }

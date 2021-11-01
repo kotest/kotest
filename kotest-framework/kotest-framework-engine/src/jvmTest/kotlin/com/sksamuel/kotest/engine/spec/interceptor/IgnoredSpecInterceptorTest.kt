@@ -18,17 +18,16 @@ class IgnoredSpecInterceptorTest : FunSpec({
    test("IgnoredSpecInterceptor should pass any class not annotated with @Ignored") {
       var fired = false
       IgnoredSpecInterceptor(NoopTestEngineListener, EmptyExtensionRegistry)
-         .intercept {
+         .intercept(ReflectiveSpecRef(NotIgnoredSpec::class)) {
             fired = true
-            emptyMap()
-         }.invoke(ReflectiveSpecRef(NotIgnoredSpec::class))
+            Result.success(emptyMap())
+         }
       fired.shouldBeTrue()
    }
 
    test("IgnoredSpecInterceptor should skip any spec annotated with @Ignored") {
       IgnoredSpecInterceptor(NoopTestEngineListener, EmptyExtensionRegistry)
-         .intercept { error("boom") }
-         .invoke(ReflectiveSpecRef(MyIgnoredSpec::class))
+         .intercept(ReflectiveSpecRef(MyIgnoredSpec::class)) { error("boom") }
    }
 
    test("IgnoredSpecInterceptor should fire listeners on skip") {
@@ -39,8 +38,7 @@ class IgnoredSpecInterceptorTest : FunSpec({
          }
       }
       IgnoredSpecInterceptor(NoopTestEngineListener, FixedExtensionRegistry(ext))
-         .intercept { error("boom") }
-         .invoke(ReflectiveSpecRef(MyIgnoredSpec::class))
+         .intercept(ReflectiveSpecRef(MyIgnoredSpec::class)) { error("boom") }
       fired.shouldBeTrue()
    }
 })

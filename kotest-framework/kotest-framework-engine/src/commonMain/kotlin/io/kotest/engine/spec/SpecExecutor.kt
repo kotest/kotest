@@ -15,18 +15,19 @@ import io.kotest.engine.listener.TestEngineListener
 import io.kotest.engine.spec.interceptor.ApplyExtensionsInterceptor
 import io.kotest.engine.spec.interceptor.ConfigurationInContextInterceptor
 import io.kotest.engine.spec.interceptor.EnabledIfSpecInterceptor
+import io.kotest.engine.spec.interceptor.FinalizeSpecInterceptor
 import io.kotest.engine.spec.interceptor.IgnoreNestedSpecStylesInterceptor
 import io.kotest.engine.spec.interceptor.IgnoredSpecInterceptor
 import io.kotest.engine.spec.interceptor.ProjectContextInterceptor
 import io.kotest.engine.spec.interceptor.RequiresTagSpecInterceptor
 import io.kotest.engine.spec.interceptor.SpecExtensionInterceptor
 import io.kotest.engine.spec.interceptor.SpecFilterInterceptor
-import io.kotest.engine.spec.interceptor.SpecFinalizeInterceptor
+import io.kotest.engine.spec.interceptor.SpecFinishedInterceptor
 import io.kotest.engine.spec.interceptor.SpecRefExtensionInterceptor
-import io.kotest.engine.spec.interceptor.SpecStartedFinishedInterceptor
+import io.kotest.engine.spec.interceptor.SpecRefInterceptor
+import io.kotest.engine.spec.interceptor.SpecStartedInterceptor
 import io.kotest.engine.spec.interceptor.SystemPropertySpecFilterInterceptor
 import io.kotest.engine.spec.interceptor.TagsExcludedSpecInterceptor
-import io.kotest.engine.tags.runtimeTags
 import io.kotest.mpp.log
 import kotlin.reflect.KClass
 
@@ -69,46 +70,46 @@ class SpecExecutor(
          TagsExcludedSpecInterceptor(listener, conf),
          RequiresTagSpecInterceptor(listener, conf, conf.registry()),
          SpecRefExtensionInterceptor(conf.registry()),
-         SpecStartedFinishedInterceptor(listener),
+         SpecStartedInterceptor(listener),
+         SpecFinishedInterceptor(listener),
          ApplyExtensionsInterceptor(conf.registry()),
          PrepareSpecInterceptor(conf.registry()),
+         FinalizeSpecInterceptor(conf.registry()),
       )
 
-      val innerExecute: suspend (SpecRef) -> Map<TestCase, TestResult> = {
-         val spec = createInstance(ref).getOrThrow()
-         specInterceptors(spec)
+      val innerExecute: suspend (SpecRef) -> Result<Map<TestCase, TestResult>> = {
+         createInstance(ref).flatMap { specInterceptors(it) }
       }
 
       log { "SpecExecutor: Executing ${interceptors.size} reference interceptors" }
-      interceptors.foldRight(innerExecute) { ext, fn ->
-         { r -> ext.intercept(fn)(r) }
+      interceptors.foldRight(innerExecute) { ext: SpecRefInterceptor, fn: suspend (SpecRef) -> Result<Map<TestCase, TestResult>> ->
+         { ref -> ext.intercept(ref, fn) }
       }.invoke(ref)
    }
 
-   private suspend fun specInterceptors(spec: Spec): Map<TestCase, TestResult> {
+   private suspend fun specInterceptors(spec: Spec): Result<Map<TestCase, TestResult>> {
 
       val interceptors = listOfNotNull(
          if (platform == Platform.JS) IgnoreNestedSpecStylesInterceptor(listener, conf.registry()) else null,
          ProjectContextInterceptor(projectContext),
          SpecExtensionInterceptor(conf.registry()),
          ConfigurationInContextInterceptor(conf),
-         SpecFinalizeInterceptor(listener, conf.registry()),
       )
 
-      val initial: suspend (Spec) -> Map<TestCase, TestResult> = {
+      val initial: suspend (Spec) -> Result<Map<TestCase, TestResult>> = {
          try {
             val delegate = createSpecExecutorDelegate(listener, defaultCoroutineDispatcherFactory, conf)
             log { "SpecExecutor: delegate=$delegate" }
-            delegate.execute(spec)
+            Result.success(delegate.execute(spec))
          } catch (t: Throwable) {
             log { "SpecExecutor: Error executing spec $t" }
-            throw t
+            Result.failure(t)
          }
       }
 
       log { "SpecExecutor: Executing ${interceptors.size} spec interceptors" }
       return interceptors.foldRight(initial) { ext, fn ->
-         { r -> ext.intercept(fn)(r) }
+         { spec -> ext.intercept(spec, fn) }
       }.invoke(spec)
    }
 

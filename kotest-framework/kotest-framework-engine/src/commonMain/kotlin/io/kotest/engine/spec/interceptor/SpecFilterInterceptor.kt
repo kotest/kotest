@@ -21,8 +21,9 @@ class SpecFilterInterceptor(
    private val extensions = SpecExtensions(registry)
 
    override suspend fun intercept(
-      fn: suspend (SpecRef) -> Map<TestCase, TestResult>
-   ): suspend (SpecRef) -> Map<TestCase, TestResult> = { ref ->
+      ref: SpecRef,
+      fn: suspend (SpecRef) -> Result<Map<TestCase, TestResult>>
+   ): Result<Map<TestCase, TestResult>> {
 
       val excluded = registry.all().filterIsInstance<SpecFilter>().mapNotNull {
          val result = it.filter(ref.kclass)
@@ -31,13 +32,13 @@ class SpecFilterInterceptor(
 
       log { "SpecFilterInterceptor: ${ref.kclass} is excludedByFilters = $excluded" }
 
-      if (excluded == null) {
+      return if (excluded == null) {
          fn(ref)
       } else {
          val reason = excluded.reason ?: "Disabled by spec filter"
          listener.specIgnored(ref.kclass, reason)
          extensions.ignored(ref.kclass, reason)
-         emptyMap()
+         Result.success(emptyMap())
       }
    }
 }

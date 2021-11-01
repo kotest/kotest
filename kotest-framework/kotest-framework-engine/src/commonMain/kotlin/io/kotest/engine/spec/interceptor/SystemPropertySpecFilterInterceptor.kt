@@ -1,6 +1,7 @@
 package io.kotest.engine.spec.interceptor
 
 import io.kotest.common.KotestInternal
+import io.kotest.common.flatMap
 import io.kotest.core.config.ExtensionRegistry
 import io.kotest.core.filter.SpecFilter
 import io.kotest.core.filter.SpecFilterResult
@@ -26,14 +27,16 @@ import kotlin.reflect.KClass
 @OptIn(KotestInternal::class)
 internal class SystemPropertySpecFilterInterceptor(
    private val listener: TestEngineListener,
-   private val registry: ExtensionRegistry
+   registry: ExtensionRegistry
 ) : SpecRefInterceptor {
 
+   private val extensions = SpecExtensions(registry)
    private fun syspropOrEnv(name: String) = sysprop(name) ?: env(name) ?: ""
 
    override suspend fun intercept(
-      fn: suspend (SpecRef) -> Map<TestCase, TestResult>
-   ): suspend (SpecRef) -> Map<TestCase, TestResult> = { ref ->
+      ref: SpecRef,
+      fn: suspend (SpecRef) -> Result<Map<TestCase, TestResult>>
+   ): Result<Map<TestCase, TestResult>> {
 
       val included = syspropOrEnv(KotestEngineProperties.filterSpecs)
          .propertyToRegexes()
@@ -42,12 +45,12 @@ internal class SystemPropertySpecFilterInterceptor(
 
       log { "SystemPropertySpecFilterInterceptor: ${ref.kclass} included = $included" }
 
-      if (included) {
+      return if (included) {
          fn(ref)
       } else {
-         listener.specIgnored(ref.kclass, "Filtered by spec filter system property")
-         SpecExtensions(registry).ignored(ref.kclass, "Filtered by spec filter system property")
-         emptyMap()
+         runCatching { listener.specIgnored(ref.kclass, "Filtered by spec filter system property") }
+            .flatMap { extensions.ignored(ref.kclass, "Filtered by spec filter system property") }
+            .map { emptyMap() }
       }
    }
 }

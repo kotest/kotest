@@ -107,10 +107,25 @@ internal class SpecExtensions(private val registry: ExtensionRegistry) {
       }
    }
 
-   suspend fun finalizeSpec(kclass: KClass<out Spec>, results: Map<TestCase, TestResult>) {
+   suspend fun finalizeSpec(
+      kclass: KClass<out Spec>,
+      results: Map<TestCase, TestResult>,
+      t: Throwable?
+   ): Result<KClass<out Spec>> {
+
       val exts = registry.all().filterIsInstance<FinalizeSpecListener>()
       log { "SpecExtensions: finishSpec ${exts.size} extensions on $kclass results:$results" }
-      exts.forEach { it.finalizeSpec(kclass, results) }
+
+      val errors = exts.mapNotNull {
+         runCatching { it.finalizeSpec(kclass, results) }
+            .mapError { ExtensionException.FinalizeSpecException(it) }.exceptionOrNull()
+      }
+
+      return when {
+         errors.isEmpty() -> Result.success(kclass)
+         errors.size == 1 -> Result.failure(errors.first())
+         else -> Result.failure(MultipleExceptions(errors))
+      }
    }
 
    suspend fun <T> intercept(spec: Spec, f: suspend () -> T): T {
@@ -138,9 +153,20 @@ internal class SpecExtensions(private val registry: ExtensionRegistry) {
    /**
     * Notify all [IgnoredSpecListener]s that the given [kclass] has been ignored.
     */
-   suspend fun ignored(kclass: KClass<out Spec>, reason: String?) {
+   suspend fun ignored(kclass: KClass<out Spec>, reason: String?): Result<KClass<out Spec>> {
+
       val exts = registry.all().filterIsInstance<IgnoredSpecListener>()
       log { "SpecExtensions: ignored ${exts.size} extensions on $kclass" }
-      exts.forEach { it.ignoredSpec(kclass, reason) }
+
+      val errors = exts.mapNotNull {
+         runCatching { it.ignoredSpec(kclass, reason) }
+            .mapError { ExtensionException.IgnoredSpecException(it) }.exceptionOrNull()
+      }
+
+      return when {
+         errors.isEmpty() -> Result.success(kclass)
+         errors.size == 1 -> Result.failure(errors.first())
+         else -> Result.failure(MultipleExceptions(errors))
+      }
    }
 }

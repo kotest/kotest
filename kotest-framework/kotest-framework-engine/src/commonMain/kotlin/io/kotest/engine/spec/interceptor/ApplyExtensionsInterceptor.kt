@@ -1,5 +1,6 @@
 package io.kotest.engine.spec.interceptor
 
+import io.kotest.common.flatMap
 import io.kotest.core.config.ExtensionRegistry
 import io.kotest.core.extensions.ApplyExtension
 import io.kotest.core.spec.SpecRef
@@ -20,17 +21,19 @@ import io.kotest.mpp.newInstanceNoArgConstructorOrObjectInstance
 internal class ApplyExtensionsInterceptor(private val registry: ExtensionRegistry) : SpecRefInterceptor {
 
    override suspend fun intercept(
-      fn: suspend (SpecRef) -> Map<TestCase, TestResult>
-   ): suspend (SpecRef) -> Map<TestCase, TestResult> = { ref ->
-
-      val extensions = ref.kclass.annotation<ApplyExtension>()?.extensions?.map { extensionClass ->
-         val extension = extensionClass.newInstanceNoArgConstructorOrObjectInstance()
-         SpecWrapperExtension(extension, ref.kclass)
-      } ?: emptyList()
-
-      extensions.forEach { registry.add(it) }
-      fn(ref).apply {
-         extensions.forEach { registry.remove(it) }
+      ref: SpecRef,
+      fn: suspend (SpecRef) -> Result<Map<TestCase, TestResult>>
+   ): Result<Map<TestCase, TestResult>> {
+      return runCatching {
+         ref.kclass.annotation<ApplyExtension>()?.extensions?.map { extensionClass ->
+            val extension = extensionClass.newInstanceNoArgConstructorOrObjectInstance()
+            SpecWrapperExtension(extension, ref.kclass)
+         } ?: emptyList()
+      }.flatMap { exts ->
+         exts.forEach { registry.add(it) }
+         fn(ref).apply {
+            exts.forEach { registry.remove(it) }
+         }
       }
    }
 }

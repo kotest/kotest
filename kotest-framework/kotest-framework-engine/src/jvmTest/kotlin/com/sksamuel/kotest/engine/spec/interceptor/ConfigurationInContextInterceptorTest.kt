@@ -19,11 +19,11 @@ class ConfigurationInContextInterceptorTest : FunSpec() {
 
       test("config should be injected into the test context") {
          var fired = false
-         ConfigurationInContextInterceptor(c).intercept {
+         ConfigurationInContextInterceptor(c).intercept(DummySpec()) {
             testConfig()
             fired = true
-            emptyMap()
-         }.invoke(DummySpec())
+            Result.success(emptyMap())
+         }
          fired.shouldBeTrue()
       }
    }

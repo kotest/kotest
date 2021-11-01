@@ -1,5 +1,6 @@
 package io.kotest.engine.spec.interceptor
 
+import io.kotest.common.flatMap
 import io.kotest.core.NamedTag
 import io.kotest.core.annotation.RequiresTag
 import io.kotest.core.config.Configuration
@@ -26,23 +27,21 @@ internal class RequiresTagSpecInterceptor(
 ) : SpecRefInterceptor {
 
    override suspend fun intercept(
-      fn: suspend (SpecRef) -> Map<TestCase, TestResult>
-   ): suspend (SpecRef) -> Map<TestCase, TestResult> = { ref ->
-      val annotation = ref.kclass.annotation<RequiresTag>()
-      if (annotation == null) {
-         fn(ref)
-      } else {
-
-         val requiredTags = annotation.values.map { NamedTag(it) }.toSet()
-         val expr = configuration.runtimeTags().parse()
-
-         val isActive = requiredTags.isEmpty() || expr.isActive(requiredTags)
-         if (isActive) {
-            fn(ref)
-         } else {
-            listener.specIgnored(ref.kclass, "Disabled by @RequiresTag")
-            SpecExtensions(registry).ignored(ref.kclass, "Disabled by @RequiresTag")
-            emptyMap()
+      ref: SpecRef,
+      fn: suspend (SpecRef) -> Result<Map<TestCase, TestResult>>
+   ): Result<Map<TestCase, TestResult>> {
+      return when (val annotation = ref.kclass.annotation<RequiresTag>()) {
+         null -> fn(ref)
+         else -> {
+            val requiredTags = annotation.values.map { NamedTag(it) }.toSet()
+            val expr = configuration.runtimeTags().parse()
+            if (requiredTags.isEmpty() || expr.isActive(requiredTags)) {
+               fn(ref)
+            } else {
+               runCatching { listener.specIgnored(ref.kclass, "Disabled by @RequiresTag") }
+                  .flatMap { SpecExtensions(registry).ignored(ref.kclass, "Disabled by @RequiresTag") }
+                  .map { emptyMap() }
+            }
          }
       }
    }

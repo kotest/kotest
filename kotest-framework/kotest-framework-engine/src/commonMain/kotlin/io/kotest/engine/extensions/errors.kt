@@ -16,6 +16,8 @@ sealed class ExtensionException(val t: Throwable) : Exception(t) {
    class BeforeAnyException(cause: Throwable) : ExtensionException(cause)
    class AfterAnyException(cause: Throwable) : ExtensionException(cause)
    class PrepareSpecException(cause: Throwable) : ExtensionException(cause)
+   class FinalizeSpecException(cause: Throwable) : ExtensionException(cause)
+   class IgnoredSpecException(cause: Throwable) : ExtensionException(cause)
 }
 
 class MultipleExceptions(val causes: List<Throwable>) : Exception(causes.first())

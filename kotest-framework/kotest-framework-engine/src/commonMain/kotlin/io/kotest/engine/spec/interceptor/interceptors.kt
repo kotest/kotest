@@ -9,12 +9,18 @@ import io.kotest.core.test.TestResult
  * Interceptors that are executed before a spec is instantiated.
  */
 internal interface SpecRefInterceptor {
-   suspend fun intercept(fn: suspend (SpecRef) -> Map<TestCase, TestResult>): suspend (SpecRef) -> Map<TestCase, TestResult>
+   suspend fun intercept(
+      ref: SpecRef,
+      fn: suspend (SpecRef) -> Result<Map<TestCase, TestResult>>,
+   ): Result<Map<TestCase, TestResult>>
 }
 
 /**
  * Interceptors that are executed after a spec is instantiated.
  */
 internal interface SpecInterceptor {
-   suspend fun intercept(fn: suspend (Spec) -> Map<TestCase, TestResult>): suspend (Spec) -> Map<TestCase, TestResult>
+   suspend fun intercept(
+      spec: Spec,
+      fn: suspend (Spec) -> Result<Map<TestCase, TestResult>>
+   ): Result<Map<TestCase, TestResult>>
 }

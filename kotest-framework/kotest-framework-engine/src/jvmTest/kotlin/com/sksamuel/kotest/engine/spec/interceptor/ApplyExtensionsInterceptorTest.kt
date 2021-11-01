@@ -15,11 +15,11 @@ class ApplyExtensionsInterceptorTest : FunSpec() {
 
          val registry = DefaultExtensionRegistry()
          ApplyExtensionsInterceptor(registry)
-            .intercept {
+            .intercept(ReflectiveSpecRef(MyAnnotatedSpec::class)) {
                val wrapper = registry.all().single() as SpecWrapperExtension
                wrapper.delegate.shouldBeInstanceOf<Foo>()
-               emptyMap()
-            }.invoke(ReflectiveSpecRef(MyAnnotatedSpec::class))
+               Result.success(emptyMap())
+            }
       }
    }
 }

@@ -21,16 +21,16 @@ class SpecFilterInterceptorTest : FunSpec() {
             }
          })
          var fired = false
-         SpecFilterInterceptor(NoopTestEngineListener, c.registry()).intercept {
+         SpecFilterInterceptor(NoopTestEngineListener, c.registry()).intercept(ReflectiveSpecRef(FooSpec::class)) {
             fired = true
-            emptyMap()
-         }.invoke(ReflectiveSpecRef(FooSpec::class))
+            Result.success(emptyMap())
+         }
          fired.shouldBeFalse()
 
-         SpecFilterInterceptor(NoopTestEngineListener, c.registry()).intercept {
+         SpecFilterInterceptor(NoopTestEngineListener, c.registry()).intercept(ReflectiveSpecRef(BarSpec::class)) {
             fired = true
-            emptyMap()
-         }.invoke(ReflectiveSpecRef(BarSpec::class))
+            Result.success(emptyMap())
+         }
          fired.shouldBeTrue()
       }
    }

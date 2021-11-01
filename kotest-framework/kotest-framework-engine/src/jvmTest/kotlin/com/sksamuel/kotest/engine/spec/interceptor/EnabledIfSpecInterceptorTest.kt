@@ -20,27 +20,26 @@ class EnabledIfSpecInterceptorTest : FunSpec({
    test("EnabledIfSpecInterceptor should proceed for any spec not annotated with @EnabledIf") {
       var fired = false
       EnabledIfSpecInterceptor(NoopTestEngineListener, EmptyExtensionRegistry)
-         .intercept {
+         .intercept(ReflectiveSpecRef(MyUnannotatedSpec::class)) {
             fired = true
-            emptyMap()
-         }.invoke(ReflectiveSpecRef(MyUnannotatedSpec::class))
+            Result.success(emptyMap())
+         }
       fired.shouldBeTrue()
    }
 
    test("EnabledIfSpecInterceptor should proceed any spec annotated with @EnabledIf that passes predicate") {
       var fired = false
       EnabledIfSpecInterceptor(NoopTestEngineListener, EmptyExtensionRegistry)
-         .intercept {
+         .intercept(ReflectiveSpecRef(MyEnabledSpec::class)) {
             fired = true
-            emptyMap()
-         }.invoke(ReflectiveSpecRef(MyEnabledSpec::class))
+            Result.success(emptyMap())
+         }
       fired.shouldBeTrue()
    }
 
    test("EnabledIfSpecInterceptor should skip any spec annotated with @EnabledIf that fails predicate") {
       EnabledIfSpecInterceptor(NoopTestEngineListener, EmptyExtensionRegistry)
-         .intercept { error("boom") }
-         .invoke(ReflectiveSpecRef(MyDisabledSpec::class))
+         .intercept(ReflectiveSpecRef(MyDisabledSpec::class)) { error("boom") }
    }
 
    test("EnabledIfSpecInterceptor should fire listeners on skip") {
@@ -51,8 +50,7 @@ class EnabledIfSpecInterceptorTest : FunSpec({
          }
       }
       EnabledIfSpecInterceptor(NoopTestEngineListener, FixedExtensionRegistry(ext))
-         .intercept { error("boom") }
-         .invoke(ReflectiveSpecRef(MyDisabledSpec::class))
+         .intercept(ReflectiveSpecRef(MyDisabledSpec::class)) { error("boom") }
       fired.shouldBeTrue()
    }
 })
