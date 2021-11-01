@@ -10,9 +10,9 @@ interface TestCaseExecutionListener {
 }
 
 abstract class AbstractTestCaseExecutionListener : TestCaseExecutionListener {
-   override suspend fun testFinished(testCase: TestCase, result: TestResult) {}
-   override suspend fun testIgnored(testCase: TestCase, reason: String?) {}
    override suspend fun testStarted(testCase: TestCase) {}
+   override suspend fun testIgnored(testCase: TestCase, reason: String?) {}
+   override suspend fun testFinished(testCase: TestCase, result: TestResult) {}
 }
 
 object NoopTestCaseExecutionListener : AbstractTestCaseExecutionListener()

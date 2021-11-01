@@ -2,10 +2,10 @@ package io.kotest.engine.test.interceptors
 
 import io.kotest.core.config.Configuration
 import io.kotest.core.test.TestCase
-import io.kotest.core.test.TestScope
 import io.kotest.core.test.TestResult
-import io.kotest.engine.test.scopes.withCoroutineContext
+import io.kotest.core.test.TestScope
 import io.kotest.engine.test.resolvedTimeout
+import io.kotest.engine.test.scopes.withCoroutineContext
 import io.kotest.mpp.NamedThreadFactory
 import io.kotest.mpp.log
 import kotlinx.coroutines.asCoroutineDispatcher
@@ -30,11 +30,11 @@ internal actual fun blockedThreadTimeoutInterceptor(configuration: Configuration
 internal class BlockedThreadTimeoutInterceptor(private val configuration: Configuration) : TestExecutionInterceptor {
 
    override suspend fun intercept(
+      testCase: TestCase,
+      scope: TestScope,
       test: suspend (TestCase, TestScope) -> TestResult
-   ): suspend (TestCase, TestScope) -> TestResult = { testCase, context ->
-
-      val interruption = testCase.config.blockingTest ?: testCase.spec.blockingTest ?: false
-      if (interruption) {
+   ): TestResult {
+      return if (testCase.config.blockingTest) {
 
          // we must switch execution onto a throwaway thread so the interruption task
          // doesn't play havok with a thread in use elsewhere
@@ -52,7 +52,7 @@ internal class BlockedThreadTimeoutInterceptor(private val configuration: Config
 
          try {
             withContext(executor.asCoroutineDispatcher()) {
-               test(testCase, context.withCoroutineContext(coroutineContext))
+               test(testCase, scope.withCoroutineContext(coroutineContext))
             }
          } catch (t: InterruptedException) {
             log { "BlockedThreadTimeoutInterceptor: Caught InterruptedException ${t.message}" }
@@ -65,7 +65,7 @@ internal class BlockedThreadTimeoutInterceptor(private val configuration: Config
             }
          }
       } else {
-         test(testCase, context)
+         test(testCase, scope)
       }
    }
 }

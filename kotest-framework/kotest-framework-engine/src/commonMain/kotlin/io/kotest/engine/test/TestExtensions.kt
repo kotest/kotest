@@ -15,13 +15,13 @@ import io.kotest.core.listeners.BeforeInvocationListener
 import io.kotest.core.listeners.BeforeTestListener
 import io.kotest.core.spec.functionOverrideCallbacks
 import io.kotest.core.test.TestCase
-import io.kotest.core.test.TestScope
 import io.kotest.core.test.TestResult
+import io.kotest.core.test.TestScope
 import io.kotest.core.test.TestType
 import io.kotest.engine.extensions.ExtensionException
 import io.kotest.engine.extensions.MultipleExceptions
-import io.kotest.engine.test.scopes.withCoroutineContext
 import io.kotest.engine.test.logging.LogExtension
+import io.kotest.engine.test.scopes.withCoroutineContext
 import kotlin.coroutines.coroutineContext
 
 /**
@@ -100,7 +100,7 @@ internal class TestExtensions(private val registry: ExtensionRegistry) {
     * Invokes all beforeXYZ callbacks for this test.
     * Returns a Result of [MultipleExceptions] if there are any exceptions.
     */
-   suspend fun afterTestAfterAnyAfterContainer(testCase: TestCase, result: TestResult): Result<TestCase> {
+   suspend fun afterTestAfterAnyAfterContainer(testCase: TestCase, result: TestResult): Result<TestResult> {
 
       val at = extensions(testCase).filterIsInstance<AfterTestListener>()
       val ac = extensions(testCase).filterIsInstance<AfterContainerListener>()
@@ -125,7 +125,7 @@ internal class TestExtensions(private val registry: ExtensionRegistry) {
       }
 
       return when {
-         errors.isEmpty() -> Result.success(testCase)
+         errors.isEmpty() -> Result.success(result)
          errors.size == 1 -> Result.failure(errors.first())
          else -> Result.failure(MultipleExceptions(errors))
       }

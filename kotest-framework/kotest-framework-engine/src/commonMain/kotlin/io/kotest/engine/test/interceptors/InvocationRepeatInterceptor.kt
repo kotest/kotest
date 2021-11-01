@@ -2,8 +2,8 @@ package io.kotest.engine.test.interceptors
 
 import io.kotest.core.config.ExtensionRegistry
 import io.kotest.core.test.TestCase
-import io.kotest.core.test.TestScope
 import io.kotest.core.test.TestResult
+import io.kotest.core.test.TestScope
 import io.kotest.engine.test.TestExtensions
 import io.kotest.mpp.replay
 import kotlin.time.TimeMark
@@ -17,17 +17,19 @@ internal class InvocationRepeatInterceptor(
 ) : TestExecutionInterceptor {
 
    override suspend fun intercept(
+      testCase: TestCase,
+      scope: TestScope,
       test: suspend (TestCase, TestScope) -> TestResult
-   ): suspend (TestCase, TestScope) -> TestResult = { testCase, context ->
-      if (testCase.config.invocations < 2) {
-         test(testCase, context)
+   ): TestResult {
+      return if (testCase.config.invocations < 2) {
+         test(testCase, scope)
       } else {
          replay(
             testCase.config.invocations,
             testCase.config.threads,
             { TestExtensions(registry).beforeInvocation(testCase, it) },
             { TestExtensions(registry).afterInvocation(testCase, it) }) {
-            test(testCase, context)
+            test(testCase, scope)
          }
          TestResult.Success(timeMark.elapsedNow())
       }

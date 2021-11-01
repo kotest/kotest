@@ -29,10 +29,10 @@ class EnabledCheckTestExecutionInterceptorTest : FunSpec({
       val context = TerminalTestScope(tc, coroutineContext)
       // the test starts with ! so should not be enabled, therefore the chain should be ignored
       var fired = false
-      EnabledCheckInterceptor(Configuration()).intercept { _, _ ->
+      EnabledCheckInterceptor(Configuration()).intercept(tc, context) { _, _ ->
          fired = true
          TestResult.Success(0.seconds)
-      }.invoke(tc, context)
+      }
       fired shouldBe true
    }
 
@@ -48,7 +48,7 @@ class EnabledCheckTestExecutionInterceptorTest : FunSpec({
       )
       val context = TerminalTestScope(tc, coroutineContext)
       // the test starts with ! so should not be enabled, therefore the chain should be ignored
-      EnabledCheckInterceptor(Configuration()).intercept { _, _ -> error("boom") }.invoke(tc, context)
+      EnabledCheckInterceptor(Configuration()).intercept(tc, context) { _, _ -> error("boom") }
    }
 
 })

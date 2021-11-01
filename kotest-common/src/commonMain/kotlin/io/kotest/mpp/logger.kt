@@ -6,8 +6,8 @@ import kotlin.time.TimeSource
 val start = TimeSource.Monotonic.markNow()
 
 @PublishedApi
-internal fun isLoggingEnabled() =
-  sysprop("KOTEST_DEBUG")?.uppercase() == "TRUE" || env("KOTEST_DEBUG")?.uppercase() == "TRUE"
+internal fun isLoggingEnabled() = true
+//  sysprop("KOTEST_DEBUG")?.uppercase() == "TRUE" || env("KOTEST_DEBUG")?.uppercase() == "TRUE"
 
 fun log(f: () -> String) {
    log(null, f)

@@ -2,8 +2,8 @@ package io.kotest.engine.test.interceptors
 
 import io.kotest.assertions.assertSoftly
 import io.kotest.core.test.TestCase
-import io.kotest.core.test.TestScope
 import io.kotest.core.test.TestResult
+import io.kotest.core.test.TestScope
 import io.kotest.core.test.TestType
 import io.kotest.mpp.log
 
@@ -18,14 +18,16 @@ internal class SoftAssertInterceptor() : TestExecutionInterceptor {
    }
 
    override suspend fun intercept(
+      testCase: TestCase,
+      scope: TestScope,
       test: suspend (TestCase, TestScope) -> TestResult
-   ): suspend (TestCase, TestScope) -> TestResult = { testCase, context ->
-      if (shouldApply(testCase)) {
+   ): TestResult {
+      return if (shouldApply(testCase)) {
          log { "SoftAssertInterceptor: Invoking test with soft assert" }
-         assertSoftly { test(testCase, context) }
+         assertSoftly { test(testCase, scope) }
       } else {
          log { "SoftAssertInterceptor: Invoking test *without* soft assert" }
-         test(testCase, context)
+         test(testCase, scope)
       }
    }
 }

@@ -2,10 +2,10 @@ package io.kotest.engine.test.interceptors
 
 import io.kotest.core.config.Configuration
 import io.kotest.core.test.TestCase
-import io.kotest.core.test.TestScope
 import io.kotest.core.test.TestResult
-import io.kotest.engine.test.scopes.withCoroutineContext
+import io.kotest.core.test.TestScope
 import io.kotest.engine.test.resolvedTimeout
+import io.kotest.engine.test.scopes.withCoroutineContext
 import io.kotest.mpp.log
 import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.withTimeout
@@ -20,8 +20,10 @@ internal class TimeoutInterceptor(
 ) : TestExecutionInterceptor {
 
    override suspend fun intercept(
+      testCase: TestCase,
+      scope: TestScope,
       test: suspend (TestCase, TestScope) -> TestResult
-   ): suspend (TestCase, TestScope) -> TestResult = { testCase, context ->
+   ): TestResult {
 
       // this timeout applies to the test itself. If the test has multiple invocations then
       // this timeout applies across all invocations. In other words, if a test has invocations = 3,
@@ -29,10 +31,10 @@ internal class TimeoutInterceptor(
       val timeout = resolvedTimeout(testCase, configuration.timeout.milliseconds)
       log { "TimeoutInterceptor: Test '${testCase.name.testName}' will execute with timeout ${timeout}ms" }
 
-      try {
+      return try {
          log { "TimeoutInterceptor: Switching context to add timeout $timeout" }
          withTimeout(timeout) {
-            test(testCase, context.withCoroutineContext(coroutineContext))
+            test(testCase, scope.withCoroutineContext(coroutineContext))
          }
       } catch (e: TimeoutCancellationException) {
          log { "TimeoutInterceptor: Caught TimeoutCancellationException ${e.message} for '${testCase.descriptor.path().value}'" }

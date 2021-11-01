@@ -31,11 +31,11 @@ class RunBlockingTestInterceptorTest : FunSpec() {
          )
 
          var fired = false
-         TestCoroutineDispatcherInterceptor().intercept { _, context ->
+         TestCoroutineDispatcherInterceptor().intercept(tc, NoopTestScope(tc, coroutineContext)) { _, context ->
             context.delayController.shouldNotBeNull()
             fired = true
             TestResult.success(0)
-         }.invoke(tc, NoopTestScope(tc, coroutineContext))
+         }
          fired.shouldBeTrue()
 
       }

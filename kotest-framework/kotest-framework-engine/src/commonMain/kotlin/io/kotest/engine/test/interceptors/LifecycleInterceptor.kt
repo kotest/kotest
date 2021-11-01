@@ -2,8 +2,8 @@ package io.kotest.engine.test.interceptors
 
 import io.kotest.core.config.ExtensionRegistry
 import io.kotest.core.test.TestCase
-import io.kotest.core.test.TestScope
 import io.kotest.core.test.TestResult
+import io.kotest.core.test.TestScope
 import io.kotest.engine.test.TestCaseExecutionListener
 import io.kotest.engine.test.TestExtensions
 import io.kotest.engine.test.createTestResult
@@ -29,25 +29,29 @@ import kotlin.time.TimeMark
 internal class LifecycleInterceptor(
    private val listener: TestCaseExecutionListener,
    private val timeMark: TimeMark,
-   private val registry: ExtensionRegistry,
+   registry: ExtensionRegistry,
 ) : TestExecutionInterceptor {
 
-   override suspend fun intercept(
-      test: suspend (TestCase, TestScope) -> TestResult
-   ): suspend (TestCase, TestScope) -> TestResult = { testCase, context ->
+   private val extensions = TestExtensions(registry)
 
-      log { "LifecycleInterceptor: Executing active test '${testCase.descriptor.path().value}' with context $context" }
+   override suspend fun intercept(
+      testCase: TestCase,
+      scope: TestScope,
+      test: suspend (TestCase, TestScope) -> TestResult
+   ): TestResult {
+
+      log { "LifecycleInterceptor: Executing active test '${testCase.descriptor.path().value}' with scope $scope" }
       listener.testStarted(testCase)
 
-      TestExtensions(registry)
+      return extensions
          .beforeTestBeforeAnyBeforeContainer(testCase)
+         .map { test(testCase, scope) }
          .fold(
-            {
-               val result = test(testCase, context)
+            { result ->
                log { "LifecycleInterceptor: '${testCase.descriptor.path().value}'=${result}" }
                // an error in the after test callbacks will override the result of the test if it was successful,
                // if the test already failed, that result will be used.
-               TestExtensions(registry)
+               extensions
                   .afterTestAfterAnyAfterContainer(testCase, result)
                   .fold(
                      { result },
@@ -59,11 +63,10 @@ internal class LifecycleInterceptor(
                      },
                   )
             },
-            {
-               createTestResult(timeMark.elapsedNow(), it).apply {
-                  TestExtensions(registry)
-                     .afterTestAfterAnyAfterContainer(testCase, this)
-               }
+            { throwable ->
+               val result = createTestResult(timeMark.elapsedNow(), throwable)
+               extensions.afterTestAfterAnyAfterContainer(testCase, result)
+                  .fold({ result }, { TestResult.Error(timeMark.elapsedNow(), it) })
             },
          )
    }

@@ -32,7 +32,7 @@ class TestFinishedExecutionInterceptorTest : FunSpec({
             finished = true
          }
       }
-      TestFinishedInterceptor(listener).intercept { _, _ -> TestResult.success(0) }.invoke(tc, context)
+      TestFinishedInterceptor(listener).intercept(tc, context) { _, _ -> TestResult.success(0) }
       finished shouldBe true
    }
 
@@ -54,7 +54,7 @@ class TestFinishedExecutionInterceptorTest : FunSpec({
             r = reason
          }
       }
-      TestFinishedInterceptor(listener).intercept { _, _ -> TestResult.Ignored("wobble") }.invoke(tc, context)
+      TestFinishedInterceptor(listener).intercept(tc, context) { _, _ -> TestResult.Ignored("wobble") }
       ignored shouldBe true
       r shouldBe "wobble"
    }

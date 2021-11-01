@@ -31,13 +31,13 @@ class TimeoutInterceptorTest : FunSpec() {
          )
 
          shouldThrow<TestTimeoutException> {
-            TimeoutInterceptor(Configuration()).intercept { _, _ ->
-               delay(10000)
-               TestResult.Success(0.milliseconds)
-            }.invoke(
+            TimeoutInterceptor(Configuration()).intercept(
                tc.copy(config = tc.config.copy(timeout = Duration.milliseconds(1))),
                NoopTestScope(tc, coroutineContext)
-            )
+            ) { _, _ ->
+               delay(10000)
+               TestResult.Success(0.milliseconds)
+            }
          }
       }
    }

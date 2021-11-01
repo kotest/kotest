@@ -270,7 +270,7 @@ class JUnitTestEngineListener(
          descriptors[testCase.descriptor] = this
       }
 
-      val result = results[testCase.descriptor] ?: error("Must have result for a finished test: ${testCase.descriptor}")
+      val result = results[testCase.descriptor] ?: error("No descriptor for test: ${testCase.descriptor.path(true).value}")
 
       log { "JUnitTestEngineListener: Registering junit dynamic test: $descriptor" }
       listener.dynamicTestRegistered(descriptor)
