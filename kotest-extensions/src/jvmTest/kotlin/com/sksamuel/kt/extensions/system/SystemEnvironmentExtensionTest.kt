@@ -30,20 +30,20 @@ class SystemEnvironmentExtensionTest : FreeSpec() {
    }
 
    init {
+         "Should return original environment to its place after execution" - {
+            val before = System.getenv().toMap()
+
+            executeOnAllEnvironmentOverloads {
+               System.getenv() shouldNotBe before
+            }
+            System.getenv() shouldBe before
+
+         }
+
       "Should set environment to specific map" - {
          executeOnAllEnvironmentOverloads {
             System.getenv(key) shouldBe value
          }
-      }
-
-      "Should return original environment to its place after execution" - {
-         val before = System.getenv().toMap()
-
-         executeOnAllEnvironmentOverloads {
-            System.getenv() shouldNotBe before
-         }
-         System.getenv() shouldBe before
-
       }
 
       "Should return the computed value" - {
