@@ -15,7 +15,7 @@ class TestCaseSourceRefTest : FunSpec() {
          tests[1].source shouldBe SourceRef.ClassLineSource("com.sksamuel.kotest.engine.test.MySpec", 31)
       }
 
-      test("source ref should be performant").config(timeout = Duration.seconds(10)) {
+      test("source ref should be performant").config(timeout = Duration.seconds(30)) {
          repeat(100000) {
             Materializer(Configuration()).materialize(MySpec()).first().source
          }
