@@ -8,18 +8,19 @@ import kotlin.time.Duration
 import kotlin.time.milliseconds
 
 // tests that the values in the timeout exception are populated correctly
-class SpecTimeoutExceptionTest : FunSpec() {
+class SpecInvocationTimeoutMessageExceptionTest : FunSpec() {
    init {
 
-      timeout = 21
+      timeout = 897
+      invocationTimeout = 12 // millis
 
       test("timeout exception should use the value that caused the test to fail") {
-         delay(Duration.milliseconds(100))
+         delay(Duration.milliseconds(250))
       }
 
       aroundTest { (test, execute) ->
          val result = execute(test)
-         result.errorOrNull?.message shouldBe "Test 'timeout exception should use the value that caused the test to fail' did not complete within 21ms"
+         result.errorOrNull?.message shouldBe "Test 'timeout exception should use the value that caused the test to fail' did not complete within 12ms"
          TestResult.Success(0.milliseconds)
       }
    }

@@ -1,10 +1,10 @@
-package com.sksamuel.kotest.timeout
+package com.sksamuel.kotest.engine.test.timeout
 
 import io.kotest.core.spec.style.FreeSpec
 import kotlinx.coroutines.delay
 import kotlin.time.Duration
 
-class SpecLevelInvocationTimeoutContainerTest : FreeSpec({
+class SpecInvocationTimeoutShouldNotApplyToContainersTest : FreeSpec({
 
    timeout = Duration.minutes(1).inWholeMilliseconds
    invocationTimeout = Duration.milliseconds(50).inWholeMilliseconds

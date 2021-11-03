@@ -1,4 +1,4 @@
-package com.sksamuel.kotest.timeout
+package com.sksamuel.kotest.engine.test.timeout
 
 import io.kotest.core.config.Configuration
 import io.kotest.core.descriptors.append
@@ -25,7 +25,7 @@ import kotlin.time.Duration
 
 @DelicateCoroutinesApi
 @Suppress("BlockingMethodInNonBlockingContext")
-class TestCaseTimeoutAfterTestListenerTest : FunSpec() {
+class TestTimeoutAfterTestListenerTest : FunSpec() {
    init {
 
       test("tests that timeout during a blocking operation should still run the 'after test' listeners").config(
@@ -43,9 +43,9 @@ class TestCaseTimeoutAfterTestListenerTest : FunSpec() {
          }
 
          val tc = TestCase(
-            descriptor = TestCaseTimeoutAfterTestListenerTest::class.toDescriptor().append("wibble"),
+            descriptor = TestTimeoutAfterTestListenerTest::class.toDescriptor().append("wibble"),
             name = TestName("wibble"),
-            spec = this@TestCaseTimeoutAfterTestListenerTest,
+            spec = this@TestTimeoutAfterTestListenerTest,
             test = { Thread.sleep(1000000) },
             source = sourceRef(),
             type = TestType.Container,
@@ -80,9 +80,9 @@ class TestCaseTimeoutAfterTestListenerTest : FunSpec() {
          }
 
          val tc = TestCase(
-            descriptor = TestCaseTimeoutAfterTestListenerTest::class.toDescriptor().append("wobble"),
+            descriptor = TestTimeoutAfterTestListenerTest::class.toDescriptor().append("wobble"),
             name = TestName("wobble"),
-            spec = this@TestCaseTimeoutAfterTestListenerTest,
+            spec = this@TestTimeoutAfterTestListenerTest,
             test = { delay(1000000) },
             source = sourceRef(),
             type = TestType.Container,

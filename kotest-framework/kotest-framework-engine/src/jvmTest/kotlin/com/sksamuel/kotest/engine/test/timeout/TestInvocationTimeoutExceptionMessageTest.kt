@@ -9,7 +9,7 @@ import kotlin.time.Duration
 import kotlin.time.milliseconds
 
 // tests that the values in the timeout exception are populated correctly
-class TestInvocationTimeoutExceptionTest : FunSpec() {
+class TestInvocationTimeoutExceptionMessageTest : FunSpec() {
    init {
 
       timeout = 965

@@ -1,4 +1,4 @@
-package com.sksamuel.kotest.timeout
+package com.sksamuel.kotest.engine.test.timeout
 
 import io.kotest.core.config.Configuration
 import io.kotest.core.descriptors.append
@@ -6,17 +6,13 @@ import io.kotest.core.descriptors.toDescriptor
 import io.kotest.core.names.TestName
 import io.kotest.core.sourceRef
 import io.kotest.core.spec.style.FunSpec
-import io.kotest.core.spec.style.StringSpec
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestType
 import io.kotest.core.test.config.ResolvedTestConfig
-import io.kotest.engine.TestEngineLauncher
 import io.kotest.engine.concurrency.NoopCoroutineDispatcherFactory
-import io.kotest.engine.listener.CollectingTestEngineListener
 import io.kotest.engine.test.NoopTestCaseExecutionListener
 import io.kotest.engine.test.TestCaseExecutor
 import io.kotest.engine.test.scopes.NoopTestScope
-import io.kotest.matchers.shouldBe
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -25,7 +21,7 @@ import kotlin.time.Duration
 
 @DelicateCoroutinesApi
 @Suppress("BlockingMethodInNonBlockingContext")
-class TestCaseTimeoutTest : FunSpec() {
+class TestTimeoutTest : FunSpec() {
    init {
 
       test("tests that timeout during a blocking operation should be interrupted").config(
@@ -33,9 +29,9 @@ class TestCaseTimeoutTest : FunSpec() {
          blockingTest = true,
       ) {
          val tc = TestCase(
-            descriptor = TestCaseTimeoutTest::class.toDescriptor().append("wibble"),
+            descriptor = TestTimeoutTest::class.toDescriptor().append("wibble"),
             name = TestName("wibble"),
-            spec = this@TestCaseTimeoutTest,
+            spec = this@TestTimeoutTest,
             test = { Thread.sleep(10000000) },
             source = sourceRef(),
             type = TestType.Container,
@@ -57,9 +53,9 @@ class TestCaseTimeoutTest : FunSpec() {
          timeout = Duration.milliseconds(10000)
       ) {
          val tc = TestCase(
-            descriptor = TestCaseTimeoutTest::class.toDescriptor().append("wobble"),
+            descriptor = TestTimeoutTest::class.toDescriptor().append("wobble"),
             name = TestName("wobble"),
-            spec = this@TestCaseTimeoutTest,
+            spec = this@TestTimeoutTest,
             test = { delay(1000000) },
             source = sourceRef(),
             type = TestType.Container,
@@ -74,20 +70,6 @@ class TestCaseTimeoutTest : FunSpec() {
          withContext(Dispatchers.IO) {
             executor.execute(tc, NoopTestScope(testCase, coroutineContext))
          }
-      }
-   }
-}
-
-private class TestTimeouts : StringSpec() {
-   init {
-      "blocked".config(blockingTest = true) {
-         // high value to ensure its interrupted, we'd notice a test that runs for 10 weeks
-         Thread.sleep(1000000)
-      }
-
-      "suspend" {
-         // high value to ensure its interrupted, we'd notice a test that runs for 10 weeks
-         delay(1000000)
       }
    }
 }
