@@ -42,7 +42,6 @@ class TestCaseExecutor(
 ) {
 
    private val logger = Logger(TestCaseExecutor::class)
-   private val extensions = TestExtensions(configuration.registry())
 
    suspend fun execute(testCase: TestCase, testScope: TestScope): TestResult {
       val timeMark = TimeSource.Monotonic.markNow()
