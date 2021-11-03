@@ -21,7 +21,8 @@ import kotlin.reflect.KClass
  * A [TestEngineListener] that logs events to the console using a [TeamCityMessageBuilder].
  */
 class TeamCityTestEngineListener(
-   private val prefix: String = TeamCityMessageBuilder.TeamCityPrefix
+   private val prefix: String = TeamCityMessageBuilder.TeamCityPrefix,
+   private val details: Boolean = true,
 ) : TestEngineListener {
 
    private var formatter: DisplayNameFormatter = DefaultDisplayNameFormatter(Configuration())
@@ -57,7 +58,7 @@ class TeamCityTestEngineListener(
          .testFailed(prefix, name)
          .id(name)
          .parent(parent.path().value)
-         .withException(cause)
+         .withException(cause, details)
          .build()
       println(msg2)
 
@@ -77,10 +78,13 @@ class TeamCityTestEngineListener(
 
    override suspend fun engineFinished(t: List<Throwable>) {
       if (t.isNotEmpty()) {
-         println(TeamCityMessageBuilder.testStarted(prefix, "Engine failure").build())
-         val errors = t.joinToString("\n") { it.message ?: t::class.bestName() }
-         println(TeamCityMessageBuilder.testFailed(prefix, "Engine failure").message(errors).build())
-         println(TeamCityMessageBuilder.testFinished(prefix, "Engine failure").build())
+         t.withIndex().forEach { (index, error) ->
+            val testName = if (t.size == 1) "Engine exception" else "Engine exception ${index + 1}"
+            println(TeamCityMessageBuilder.testStarted(prefix, testName).build())
+            val message = error.message ?: t::class.bestName()
+            println(TeamCityMessageBuilder.testFailed(prefix, testName).message(message).build())
+            println(TeamCityMessageBuilder.testFinished(prefix, testName).build())
+         }
       }
    }
 
@@ -183,7 +187,6 @@ class TeamCityTestEngineListener(
          .testIgnored(prefix, formatter.format(testCase))
          .id(testCase.descriptor.path().value)
          .parent(testCase.descriptor.parent.path().value)
-         // note use location for tests, location hint for test suites
          .locationHint(Locations.location(testCase.source))
          .message(result.reason)
          .result(result)
@@ -199,7 +202,6 @@ class TeamCityTestEngineListener(
          .testStarted(prefix, formatter.format(testCase))
          .id(testCase.descriptor.path().value)
          .parent(testCase.descriptor.parent.path().value)
-         // note use location for tests, location hint for test suites
          .locationHint(Locations.location(testCase.source))
          .build()
       println(msg)
@@ -214,9 +216,8 @@ class TeamCityTestEngineListener(
          .id(testCase.descriptor.path().value)
          .parent(testCase.descriptor.parent.path().value)
          .duration(result.duration)
-         // note use location for tests, location hint for test suites
          .locationHint(Locations.location(testCase.source))
-         .withException(result.errorOrNull)
+         .withException(result.errorOrNull, details)
          .result(result)
          .build()
       println(msg)
@@ -231,7 +232,6 @@ class TeamCityTestEngineListener(
          .id(testCase.descriptor.path().value)
          .parent(testCase.descriptor.parent.path().value)
          .duration(result.duration)
-         // note use location for tests, location hint for test suites
          .locationHint(Locations.location(testCase.source))
          .result(result)
          .build()
@@ -246,7 +246,6 @@ class TeamCityTestEngineListener(
          .testSuiteStarted(prefix, formatter.format(testCase))
          .id(testCase.descriptor.path().value)
          .parent(testCase.descriptor.parent.path().value)
-         // note use location for tests, location hint for test suites
          .locationHint(Locations.location(testCase.source))
          .build()
       println(msg)
@@ -261,7 +260,6 @@ class TeamCityTestEngineListener(
          .id(testCase.descriptor.path().value)
          .parent(testCase.descriptor.parent.path().value)
          .duration(result.duration)
-         // note use location for tests, location hint for test suites
          .locationHint(Locations.location(testCase.source))
          .result(result)
          .build()

@@ -130,13 +130,14 @@ class TeamCityMessageBuilder(
       if (value != null) addAttribute(Attributes.LOCATION_HINT, value) else this
 
    // note it seems that not attaching a message renders test failed irrelevant
-   fun withException(error: Throwable?): TeamCityMessageBuilder {
+   fun withException(error: Throwable?, showDetails: Boolean = true): TeamCityMessageBuilder {
       if (error == null) return this
 
-      val line1 = error.message?.lines()?.firstOrNull()
+      val line1 = error.message?.trim()?.lines()?.firstOrNull()
       val message = if (line1.isNullOrBlank()) "Test failed" else line1
       message(escapeColons(message))
-      details(escapeColons(error.stackTraceToString()))
+      if (showDetails)
+         details(escapeColons(error.stackTraceToString()))
 
       when (error) {
          is ComparisonError -> type("comparisonFailure").actual(error.actualValue).expected(error.expectedValue)

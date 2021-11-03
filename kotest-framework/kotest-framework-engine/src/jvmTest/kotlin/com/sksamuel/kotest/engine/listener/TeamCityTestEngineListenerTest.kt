@@ -1,232 +1,311 @@
-//package com.sksamuel.kotest.engine.listener
-//
-//import io.kotest.assertions.Actual
-//import io.kotest.assertions.Expected
-//import io.kotest.assertions.failure
-//import io.kotest.assertions.shouldFail
-//import io.kotest.assertions.show.Printed
-//import io.kotest.core.descriptors.append
-//import io.kotest.core.descriptors.toDescriptor
-//import io.kotest.core.names.TestName
-//import io.kotest.core.sourceRef
-//import io.kotest.core.spec.Spec
-//import io.kotest.core.spec.style.FunSpec
-//import io.kotest.core.test.TestCase
-//import io.kotest.core.test.TestResult
-//import io.kotest.core.test.TestType
-//import io.kotest.core.test.config.ResolvedTestConfig
-//import io.kotest.data.forAll
-//import io.kotest.data.row
-//import io.kotest.engine.listener.TeamCityTestEngineListener
-//import io.kotest.extensions.system.captureStandardOut
-//import io.kotest.matchers.shouldBe
-//import io.kotest.matchers.string.shouldContain
-//import io.kotest.matchers.string.shouldEndWith
-//import io.kotest.matchers.string.shouldHaveLineCount
-//import io.kotest.matchers.string.shouldStartWith
-//import kotlin.math.max
-//import kotlin.reflect.KClass
-//
-//private val nl = System.lineSeparator()
-//
-//class TeamCityTestEngineListenerTest : FunSpec() {
-//
-//   private val kclass: KClass<out Spec> = TeamCityTestEngineListenerTest::class
-//
-//   private val testCaseContainer = TestCase(
-//      kclass.toDescriptor().append("my container"),
-//      TestName("my container"),
-//      this@TeamCityTestEngineListenerTest,
-//      { },
-//      sourceRef(),
-//      TestType.Container,
-//      ResolvedTestConfig.default,
-//      null,
-//      null
-//   )
-//
-//   private val testCaseTest = testCaseContainer.copy(
-//      descriptor = testCaseContainer.descriptor.append("my test case"),
-//      TestName("my test case"),
-//      type = TestType.Test
-//   )
-//
-//   override fun afterSpec(spec: Spec) {
-//      error("garaeasd")
-//   }
-//
-//   init {
-//
-//      afterSpec {
-//         error("tertert")
-//      }
-//
-//      context("fuck me up big style") {
-//         test("monkey") { }
-//         error("foo")
-//      }
-//
-//      test("specStarted should write testSuiteStarted") {
-//         captureStandardOut {
-//            TeamCityTestEngineListener("testcity").specStarted(kclass)
-//         } shouldBe "testcity[testSuiteStarted name='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest' id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest' locationHint='kotest://com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest:1' test_type='spec']$nl"
-//      }
-//
-//      test("specExit errors should add placeholder test") {
-//         val listener = TeamCityTestEngineListener("testcity")
-//         listener.specEnter(kclass)
-//         val out = captureStandardOut {
-//            listener.specExit(kclass, Exception("whip!"))
-//         }
-//         out.shouldContain("""testcity[testSuiteStarted name='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest' id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest' locationHint='kotest://com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest:1' test_type='spec']""")
-//         out.shouldContain("""testcity[testStarted name='Exception' id='Exception' parent_id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest' test_type='test']""")
-//         out.shouldContain("""testcity[testFailed name='Exception' id='Exception' parent_id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest' message='whip!' details='java.lang.Exception:""")
-//         out.shouldContain("""testcity[testFinished name='Exception' id='Exception' parent_id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest' test_type='test'""")
-//         out.shouldContain("""testcity[testSuiteFinished name='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest' id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest' locationHint='kotest://com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest:1' result_status='Error' test_type='spec']""")
-//      }
-//
-//      test("specExit should write testSuiteFinished in error is null") {
-//         val listener = TeamCityTestEngineListener("testcity")
-//         listener.specStarted(kclass)
-//         captureStandardOut {
-//            listener.specExit(kclass, null)
-//         } shouldBe "testcity[testSuiteFinished name='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest' id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest' locationHint='kotest://com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest:1' result_status='Success' test_type='spec']$nl"
-//      }
-//
-//      test("inactive spec should write each root test as ignored") {
-//         val listener = TeamCityTestEngineListener("testcity")
-//         listener.specEnter(kclass)
-//         listener.specInactive(kclass, mapOf(testCaseTest to TestResult.Ignored(null)))
-//         val out = captureStandardOut {
-//            listener.specExit(kclass, null)
-//         }
-//         out.shouldContain("testcity[testSuiteStarted name='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest'")
-//         out.shouldContain("testcity[testIgnored name='my test case'")
-//         out.shouldContain("testcity[testSuiteFinished name='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest'")
-//      }
-//
-//      test("inactive spec should write dummy ignored test if there are no tests") {
-//         val listener = TeamCityTestEngineListener("testcity")
-//         val out = captureStandardOut {
-//            listener.specEnter(kclass)
-//            listener.specInactive(kclass, emptyMap())
-//            listener.specExit(kclass, null)
-//         }
-//         out.shouldContain("testcity[testSuiteStarted name='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest'")
-//         out.shouldContain("testcity[testIgnored name='<no tests>'")
-//         out.shouldContain("testcity[testSuiteFinished name='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest'")
-//      }
-//
-//      test("testStarted should write testSuiteStarted for parent test") {
-//         captureStandardOut {
-//            TeamCityTestEngineListener("testcity").testStarted(testCaseContainer)
-//         } shouldBe "testcity[testSuiteStarted name='my container' id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest/my container' parent_id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest' locationHint='kotest://com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest:1' test_type='container']$nl"
-//      }
-//
-//      test("testStarted should write testStarted for TestType.Test") {
-//         captureStandardOut {
-//            TeamCityTestEngineListener("testcity").testStarted(testCaseTest)
-//         } shouldBe "testcity[testStarted name='my test case' id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest/my container -- my test case' parent_id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest/my container' locationHint='kotest://com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest:1' test_type='test']$nl"
-//      }
-//
-//      test("testFinished should write testFinished for TestType.Test success") {
-//         captureStandardOut {
-//            TeamCityTestEngineListener("testcity").testFinished(testCaseTest, TestResult.success(234))
-//         } shouldBe "testcity[testFinished name='my test case' id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest/my container -- my test case' parent_id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest/my container' duration='234' locationHint='kotest://com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest:1' test_type='test' result_status='Success']$nl"
-//      }
-//
-//      test("testFinished should write testSuiteFinished for TestType.Container success") {
-//         captureStandardOut {
-//            TeamCityTestEngineListener("testcity").testFinished(testCaseContainer, TestResult.success(15))
-//         } shouldBe "testcity[testSuiteFinished name='my container' id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest/my container' parent_id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest' duration='15' locationHint='kotest://com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest:1' test_type='container' result_status='Success']$nl"
-//      }
-//
-//      test("testFinished should write testFailed and testFinished for TestType.Test failure") {
-//         val msg = captureStandardOut {
-//            TeamCityTestEngineListener("testcity").testFinished(
-//               testCaseTest,
-//               TestResult.failure(AssertionError("wibble"), 51)
-//            )
-//         }
-//         msg.shouldStartWith("testcity[testFailed name='my test case' id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest/my container -- my test case' parent_id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest/my container' duration='51' message='wibble' details='java.lang.AssertionError: wibble|n\tat com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest")
-//         msg.shouldEndWith("testcity[testFinished name='my test case' id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest/my container -- my test case' parent_id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest/my container' duration='51' locationHint='kotest://com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest:1' test_type='test' result_status='Failure']$nl")
-//      }
-//
-//      test("testFinished should insert dummy test and write testSuiteFinished for TestType.Container failure") {
-//         val out = captureStandardOut {
-//            TeamCityTestEngineListener("testcity").testFinished(
-//               testCaseContainer,
-//               TestResult.failure(AssertionError("wibble"), 51)
-//            )
-//         }
-//         out.shouldContain("testcity[testStarted name='my container <error>'")
-//         out.shouldContain("testcity[testFailed name='my container <error>'")
-//         out.shouldContain("testcity[testFinished name='my container <error>'")
-//      }
-//
-//      test("testFinished should write nothing for TestType.Test ignored") {
-//         captureStandardOut {
-//            TeamCityTestEngineListener("testcity").testFinished(testCaseTest, TestResult.Ignored("ignore me?"))
-//         } shouldBe ""
-//      }
-//
-//      test("testFinished should write nothing for container ignored") {
-//         captureStandardOut {
-//            TeamCityTestEngineListener("testcity").testFinished(testCaseContainer, TestResult.Ignored("ignore me?"))
-//         } shouldBe ""
-//      }
-//
-//      test("testIgnored should write testIgnored") {
-//         captureStandardOut {
-//            TeamCityTestEngineListener("testcity").testIgnored(testCaseTest, "ignore me?")
-//         } shouldBe "testcity[testIgnored name='my test case' id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest/my container -- my test case' parent_id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest/my container' locationHint='kotest://com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest:1' test_type='test' message='ignore me?' result_status='Ignored']$nl"
-//      }
-//
-//      test("testFinished with error should handle multiline messages") {
-//
-//         val error = shouldFail {
-//            forAll(
-//               row(2, 3, 1),
-//               row(0, 2, 0)
-//            ) { a, b, max ->
-//               max(a, b) shouldBe max
-//            }
-//         }
-//
-//         val out = captureStandardOut {
-//            TeamCityTestEngineListener("testcity").testFinished(testCaseTest, TestResult.error(error, 8123))
-//         }
-//         out.shouldStartWith("testcity[testFailed name='my test case' id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest/my container -- my test case' parent_id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest/my container' duration='8123' message='Test failed' details='java.lang.AssertionError: |nThe following 2 assertions failed:|n1) Test failed for (a, 2), (b, 3), (max, 1) with error expected:<1> but was:<3>|n	at com.sksa")
-//         out.shouldEndWith("testcity[testFinished name='my test case' id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest/my container -- my test case' parent_id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest/my container' duration='8123' locationHint='kotest://com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest:1' test_type='test' result_status='Error']$nl")
-//      }
-//
-//      test("engine errors should be output as a placeholder engine test") {
-//         val out = captureStandardOut {
-//            TeamCityTestEngineListener("testcity").engineFinished(listOf(Exception("foo")))
-//         }
-//         out shouldBe "testcity[testStarted name='Engine failure']${nl}testcity[testFailed name='Engine failure' message='foo']${nl}"
-//      }
-//
-//      test("multiple engine errors should be output as a placeholder engine test") {
-//         val out = captureStandardOut {
-//            TeamCityTestEngineListener("testcity").engineFinished(listOf(Exception("foo"), Exception("bar")))
-//         }
-//         out shouldBe "testcity[testStarted name='Engine failure']${nl}testcity[testFailed name='Engine failure' message='foo|nbar']${nl}"
-//      }
-//
-//      test("should use comparison values with a supported exception type") {
-//         val out = captureStandardOut {
-//            TeamCityTestEngineListener("testcity").testFinished(
-//               testCaseTest,
-//               TestResult.error(failure(Expected(Printed("expected")), Actual(Printed("actual"))), 14)
-//            )
-//         }
-//         out.shouldHaveLineCount(3)
-//         out.shouldStartWith("testcity[testFailed name='my test case' id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest/my container -- my test case' parent_id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest/my container' duration='14' message='expected:<expected> but was:<actual>' details='io.kotest.assertions.AssertionFailedError: expected:<expected> but was:<actual>|n\tat com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest")
-//         out.shouldContain("type='comparisonFailure'")
-//         out.shouldContain("actual='actual'")
-//         out.shouldContain("expected='expected'")
-//         out.shouldEndWith("testcity[testFinished name='my test case' id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest/my container -- my test case' parent_id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest/my container' duration='14' locationHint='kotest://com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest:1' test_type='test' result_status='Error']$nl")
-//      }
-//   }
-//}
+package com.sksamuel.kotest.engine.listener
+
+import io.kotest.assertions.Actual
+import io.kotest.assertions.Expected
+import io.kotest.assertions.failure
+import io.kotest.assertions.show.Printed
+import io.kotest.core.SourceRef
+import io.kotest.core.descriptors.append
+import io.kotest.core.descriptors.toDescriptor
+import io.kotest.core.names.TestName
+import io.kotest.core.spec.style.FunSpec
+import io.kotest.core.test.TestCase
+import io.kotest.core.test.TestResult
+import io.kotest.core.test.TestType
+import io.kotest.core.test.config.ResolvedTestConfig
+import io.kotest.engine.listener.TeamCityTestEngineListener
+import io.kotest.extensions.system.captureStandardOut
+import io.kotest.matchers.shouldBe
+import java.io.FileNotFoundException
+import kotlin.time.Duration
+
+class TeamCityTestEngineListenerTest : FunSpec() {
+
+   init {
+
+      val a = TestCase(
+         TeamCityTestEngineListenerTest::class.toDescriptor().append("a"),
+         TestName("a"),
+         this@TeamCityTestEngineListenerTest,
+         { },
+         SourceRef.ClassLineSource("foo.bar.Test", 12),
+         TestType.Container,
+         ResolvedTestConfig.default,
+         null,
+         null
+      )
+
+      val b = a.copy(
+         parent = a,
+         name = TestName("b"),
+         descriptor = a.descriptor.append("b"),
+         source = SourceRef.ClassLineSource("foo.bar.Test", 17),
+      )
+
+      val c = b.copy(
+         parent = b,
+         name = TestName("c"),
+         descriptor = b.descriptor.append("c"),
+         type = TestType.Test,
+         source = SourceRef.ClassLineSource("foo.bar.Test", 33),
+      )
+
+      test("should support nested tests") {
+         val output = captureStandardOut {
+            val listener = TeamCityTestEngineListener("a")
+            listener.engineStarted()
+            listener.specStarted(TeamCityTestEngineListenerTest::class)
+            listener.testStarted(a)
+            listener.testStarted(b)
+            listener.testStarted(c)
+            listener.testFinished(c, TestResult.Success(Duration.milliseconds(123)))
+            listener.testFinished(b, TestResult.Success(Duration.milliseconds(324)))
+            listener.testFinished(a, TestResult.Success(Duration.milliseconds(653)))
+            listener.specFinished(TeamCityTestEngineListenerTest::class, null)
+            listener.engineFinished(emptyList())
+         }
+         output shouldBe """a[testSuiteStarted name='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest' id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest' locationHint='kotest:class://com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest:1']
+a[testSuiteStarted name='a' id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest/a' parent_id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest' locationHint='kotest:class://foo.bar.Test:12']
+a[testSuiteStarted name='b' id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest/a -- b' parent_id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest/a' locationHint='kotest:class://foo.bar.Test:17']
+a[testStarted name='c' id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest/a -- b -- c' parent_id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest/a -- b' locationHint='kotest:class://foo.bar.Test:33']
+a[testFinished name='c' id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest/a -- b -- c' parent_id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest/a -- b' duration='123' locationHint='kotest:class://foo.bar.Test:33' result_status='Success']
+a[testSuiteFinished name='b' id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest/a -- b' parent_id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest/a' duration='324' locationHint='kotest:class://foo.bar.Test:17' result_status='Success']
+a[testSuiteFinished name='a' id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest/a' parent_id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest' duration='653' locationHint='kotest:class://foo.bar.Test:12' result_status='Success']
+a[testSuiteFinished name='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest' id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest' locationHint='kotest:class://com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest:1']
+"""
+      }
+
+      test("should support errors in tests") {
+         val output = captureStandardOut {
+            val listener = TeamCityTestEngineListener("a", details = false)
+            listener.engineStarted()
+            listener.specStarted(TeamCityTestEngineListenerTest::class)
+            listener.testStarted(a)
+            listener.testStarted(b)
+            listener.testStarted(c)
+            listener.testFinished(c, TestResult.Error(Duration.milliseconds(653), Exception("boom")))
+            listener.testFinished(b, TestResult.Success(Duration.milliseconds(123)))
+            listener.testFinished(a, TestResult.Success(Duration.milliseconds(324)))
+            listener.specFinished(TeamCityTestEngineListenerTest::class, null)
+            listener.engineFinished(emptyList())
+         }
+         output shouldBe """a[testSuiteStarted name='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest' id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest' locationHint='kotest:class://com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest:1']
+a[testSuiteStarted name='a' id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest/a' parent_id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest' locationHint='kotest:class://foo.bar.Test:12']
+a[testSuiteStarted name='b' id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest/a -- b' parent_id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest/a' locationHint='kotest:class://foo.bar.Test:17']
+a[testStarted name='c' id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest/a -- b -- c' parent_id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest/a -- b' locationHint='kotest:class://foo.bar.Test:33']
+a[testFailed name='c' id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest/a -- b -- c' parent_id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest/a -- b' duration='653' locationHint='kotest:class://foo.bar.Test:33' message='boom' result_status='Error']
+a[testFinished name='c' id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest/a -- b -- c' parent_id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest/a -- b' duration='653' locationHint='kotest:class://foo.bar.Test:33' result_status='Error']
+a[testSuiteFinished name='b' id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest/a -- b' parent_id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest/a' duration='123' locationHint='kotest:class://foo.bar.Test:17' result_status='Success']
+a[testSuiteFinished name='a' id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest/a' parent_id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest' duration='324' locationHint='kotest:class://foo.bar.Test:12' result_status='Success']
+a[testSuiteFinished name='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest' id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest' locationHint='kotest:class://com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest:1']
+"""
+      }
+
+      test("should support ignored tests with reason") {
+         val output = captureStandardOut {
+            val listener = TeamCityTestEngineListener("a", details = false)
+            listener.engineStarted()
+            listener.specStarted(TeamCityTestEngineListenerTest::class)
+            listener.testStarted(a)
+            listener.testStarted(b)
+            listener.testStarted(c)
+            listener.testFinished(c, TestResult.Ignored("don't like it"))
+            listener.testFinished(b, TestResult.Success(Duration.milliseconds(123)))
+            listener.testFinished(a, TestResult.Success(Duration.milliseconds(324)))
+            listener.specFinished(TeamCityTestEngineListenerTest::class, null)
+            listener.engineFinished(emptyList())
+         }
+         output shouldBe """a[testSuiteStarted name='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest' id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest' locationHint='kotest:class://com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest:1']
+a[testSuiteStarted name='a' id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest/a' parent_id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest' locationHint='kotest:class://foo.bar.Test:12']
+a[testSuiteStarted name='b' id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest/a -- b' parent_id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest/a' locationHint='kotest:class://foo.bar.Test:17']
+a[testIgnored name='c' id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest/a -- b -- c' parent_id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest/a -- b' locationHint='kotest:class://foo.bar.Test:33' message='don|'t like it' result_status='Ignored']
+a[testSuiteFinished name='b' id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest/a -- b' parent_id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest/a' duration='123' locationHint='kotest:class://foo.bar.Test:17' result_status='Success']
+a[testSuiteFinished name='a' id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest/a' parent_id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest' duration='324' locationHint='kotest:class://foo.bar.Test:12' result_status='Success']
+a[testSuiteFinished name='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest' id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest' locationHint='kotest:class://com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest:1']
+"""
+      }
+
+      test("should support errors in test suites by adding placeholder test") {
+         val output = captureStandardOut {
+            val listener = TeamCityTestEngineListener("a", details = false)
+            listener.engineStarted()
+            listener.specStarted(TeamCityTestEngineListenerTest::class)
+            listener.testStarted(a)
+            listener.testStarted(b)
+            listener.testStarted(c)
+            listener.testFinished(c, TestResult.Success(Duration.milliseconds(123)))
+            listener.testFinished(b, TestResult.Error(Duration.milliseconds(653), Exception("boom")))
+            listener.testFinished(a, TestResult.Success(Duration.milliseconds(324)))
+            listener.specFinished(TeamCityTestEngineListenerTest::class, null)
+            listener.engineFinished(emptyList())
+         }
+         output shouldBe """a[testSuiteStarted name='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest' id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest' locationHint='kotest:class://com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest:1']
+a[testSuiteStarted name='a' id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest/a' parent_id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest' locationHint='kotest:class://foo.bar.Test:12']
+a[testSuiteStarted name='b' id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest/a -- b' parent_id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest/a' locationHint='kotest:class://foo.bar.Test:17']
+a[testStarted name='c' id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest/a -- b -- c' parent_id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest/a -- b' locationHint='kotest:class://foo.bar.Test:33']
+a[testFinished name='c' id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest/a -- b -- c' parent_id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest/a -- b' duration='123' locationHint='kotest:class://foo.bar.Test:33' result_status='Success']
+a[testStarted name='Exception' id='Exception' parent_id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest/a -- b']
+a[testFailed name='Exception' id='Exception' parent_id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest/a -- b' message='boom']
+a[testFinished name='Exception' id='Exception' parent_id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest/a -- b']
+a[testSuiteFinished name='b' id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest/a -- b' parent_id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest/a' duration='653' locationHint='kotest:class://foo.bar.Test:17' result_status='Error']
+a[testSuiteFinished name='a' id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest/a' parent_id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest' duration='324' locationHint='kotest:class://foo.bar.Test:12' result_status='Success']
+a[testSuiteFinished name='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest' id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest' locationHint='kotest:class://com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest:1']
+"""
+      }
+
+      test("should support errors in specs by adding placeholder test") {
+         val output = captureStandardOut {
+            val listener = TeamCityTestEngineListener("a", details = false)
+            listener.engineStarted()
+            listener.specStarted(TeamCityTestEngineListenerTest::class)
+            listener.testStarted(a)
+            listener.testStarted(b)
+            listener.testStarted(c)
+            listener.testFinished(c, TestResult.Success(Duration.milliseconds(123)))
+            listener.testFinished(b, TestResult.Success(Duration.milliseconds(555)))
+            listener.testFinished(a, TestResult.Success(Duration.milliseconds(324)))
+            listener.specFinished(TeamCityTestEngineListenerTest::class, Exception("wobble"))
+            listener.engineFinished(emptyList())
+         }
+         output shouldBe """a[testSuiteStarted name='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest' id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest' locationHint='kotest:class://com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest:1']
+a[testSuiteStarted name='a' id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest/a' parent_id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest' locationHint='kotest:class://foo.bar.Test:12']
+a[testSuiteStarted name='b' id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest/a -- b' parent_id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest/a' locationHint='kotest:class://foo.bar.Test:17']
+a[testStarted name='c' id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest/a -- b -- c' parent_id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest/a -- b' locationHint='kotest:class://foo.bar.Test:33']
+a[testFinished name='c' id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest/a -- b -- c' parent_id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest/a -- b' duration='123' locationHint='kotest:class://foo.bar.Test:33' result_status='Success']
+a[testSuiteFinished name='b' id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest/a -- b' parent_id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest/a' duration='555' locationHint='kotest:class://foo.bar.Test:17' result_status='Success']
+a[testSuiteFinished name='a' id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest/a' parent_id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest' duration='324' locationHint='kotest:class://foo.bar.Test:12' result_status='Success']
+a[testStarted name='Exception' id='Exception' parent_id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest']
+a[testFailed name='Exception' id='Exception' parent_id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest' message='wobble']
+a[testFinished name='Exception' id='Exception' parent_id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest']
+a[testSuiteFinished name='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest' id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest' locationHint='kotest:class://com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest:1']
+"""
+      }
+
+      test("should support multiline error messages") {
+         val output = captureStandardOut {
+            val listener = TeamCityTestEngineListener("a", details = false)
+            listener.engineStarted()
+            listener.specStarted(TeamCityTestEngineListenerTest::class)
+            listener.testStarted(a)
+            listener.testStarted(b)
+            listener.testStarted(c)
+            listener.testFinished(
+               c,
+               TestResult.Error(
+                  Duration.milliseconds(123), FileNotFoundException(
+                     """
+               well this is a
+               big
+               message"""
+                  )
+               )
+            )
+            listener.testFinished(b, TestResult.Success(Duration.milliseconds(555)))
+            listener.testFinished(a, TestResult.Success(Duration.milliseconds(324)))
+            listener.specFinished(TeamCityTestEngineListenerTest::class, null)
+            listener.engineFinished(emptyList())
+         }
+         output shouldBe """a[testSuiteStarted name='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest' id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest' locationHint='kotest:class://com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest:1']
+a[testSuiteStarted name='a' id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest/a' parent_id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest' locationHint='kotest:class://foo.bar.Test:12']
+a[testSuiteStarted name='b' id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest/a -- b' parent_id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest/a' locationHint='kotest:class://foo.bar.Test:17']
+a[testStarted name='c' id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest/a -- b -- c' parent_id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest/a -- b' locationHint='kotest:class://foo.bar.Test:33']
+a[testFailed name='c' id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest/a -- b -- c' parent_id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest/a -- b' duration='123' locationHint='kotest:class://foo.bar.Test:33' message='well this is a' result_status='Error']
+a[testFinished name='c' id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest/a -- b -- c' parent_id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest/a -- b' duration='123' locationHint='kotest:class://foo.bar.Test:33' result_status='Error']
+a[testSuiteFinished name='b' id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest/a -- b' parent_id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest/a' duration='555' locationHint='kotest:class://foo.bar.Test:17' result_status='Success']
+a[testSuiteFinished name='a' id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest/a' parent_id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest' duration='324' locationHint='kotest:class://foo.bar.Test:12' result_status='Success']
+a[testSuiteFinished name='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest' id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest' locationHint='kotest:class://com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest:1']
+"""
+      }
+
+      test("should write engine errors") {
+         val output = captureStandardOut {
+            val listener = TeamCityTestEngineListener("a", details = false)
+            listener.engineStarted()
+            listener.specStarted(TeamCityTestEngineListenerTest::class)
+            listener.testStarted(a)
+            listener.testStarted(b)
+            listener.testStarted(c)
+            listener.testFinished(c, TestResult.Success(Duration.milliseconds(555)))
+            listener.testFinished(b, TestResult.Success(Duration.milliseconds(555)))
+            listener.testFinished(a, TestResult.Success(Duration.milliseconds(324)))
+            listener.specFinished(TeamCityTestEngineListenerTest::class, null)
+            listener.engineFinished(listOf(Exception("big whoop")))
+         }
+         output shouldBe """a[testSuiteStarted name='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest' id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest' locationHint='kotest:class://com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest:1']
+a[testSuiteStarted name='a' id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest/a' parent_id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest' locationHint='kotest:class://foo.bar.Test:12']
+a[testSuiteStarted name='b' id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest/a -- b' parent_id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest/a' locationHint='kotest:class://foo.bar.Test:17']
+a[testStarted name='c' id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest/a -- b -- c' parent_id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest/a -- b' locationHint='kotest:class://foo.bar.Test:33']
+a[testFinished name='c' id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest/a -- b -- c' parent_id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest/a -- b' duration='555' locationHint='kotest:class://foo.bar.Test:33' result_status='Success']
+a[testSuiteFinished name='b' id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest/a -- b' parent_id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest/a' duration='555' locationHint='kotest:class://foo.bar.Test:17' result_status='Success']
+a[testSuiteFinished name='a' id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest/a' parent_id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest' duration='324' locationHint='kotest:class://foo.bar.Test:12' result_status='Success']
+a[testSuiteFinished name='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest' id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest' locationHint='kotest:class://com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest:1']
+a[testStarted name='Engine exception']
+a[testFailed name='Engine exception' message='big whoop']
+a[testFinished name='Engine exception']
+"""
+      }
+
+      test("should write multiple engine errors") {
+         val output = captureStandardOut {
+            val listener = TeamCityTestEngineListener("a", details = false)
+            listener.engineStarted()
+            listener.specStarted(TeamCityTestEngineListenerTest::class)
+            listener.testStarted(a)
+            listener.testStarted(b)
+            listener.testStarted(c)
+            listener.testFinished(c, TestResult.Success(Duration.milliseconds(555)))
+            listener.testFinished(b, TestResult.Success(Duration.milliseconds(555)))
+            listener.testFinished(a, TestResult.Success(Duration.milliseconds(324)))
+            listener.specFinished(TeamCityTestEngineListenerTest::class, null)
+            listener.engineFinished(listOf(Exception("big whoop"), Exception("big whoop 2")))
+         }
+         output shouldBe """a[testSuiteStarted name='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest' id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest' locationHint='kotest:class://com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest:1']
+a[testSuiteStarted name='a' id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest/a' parent_id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest' locationHint='kotest:class://foo.bar.Test:12']
+a[testSuiteStarted name='b' id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest/a -- b' parent_id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest/a' locationHint='kotest:class://foo.bar.Test:17']
+a[testStarted name='c' id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest/a -- b -- c' parent_id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest/a -- b' locationHint='kotest:class://foo.bar.Test:33']
+a[testFinished name='c' id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest/a -- b -- c' parent_id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest/a -- b' duration='555' locationHint='kotest:class://foo.bar.Test:33' result_status='Success']
+a[testSuiteFinished name='b' id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest/a -- b' parent_id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest/a' duration='555' locationHint='kotest:class://foo.bar.Test:17' result_status='Success']
+a[testSuiteFinished name='a' id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest/a' parent_id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest' duration='324' locationHint='kotest:class://foo.bar.Test:12' result_status='Success']
+a[testSuiteFinished name='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest' id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest' locationHint='kotest:class://com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest:1']
+a[testStarted name='Engine exception 1']
+a[testFailed name='Engine exception 1' message='big whoop']
+a[testFinished name='Engine exception 1']
+a[testStarted name='Engine exception 2']
+a[testFailed name='Engine exception 2' message='big whoop 2']
+a[testFinished name='Engine exception 2']
+"""
+      }
+
+      test("should use comparison values with a supported exception type") {
+         val output = captureStandardOut {
+            val listener = TeamCityTestEngineListener("a", details = false)
+            listener.engineStarted()
+            listener.specStarted(TeamCityTestEngineListenerTest::class)
+            listener.testStarted(a)
+            listener.testStarted(b)
+            listener.testStarted(c)
+            listener.testFinished(
+               c,
+               TestResult.Error(
+                  Duration.milliseconds(555),
+                  failure(Expected(Printed("expected")), Actual(Printed("actual")))
+               )
+            )
+            listener.testFinished(b, TestResult.Success(Duration.milliseconds(555)))
+            listener.testFinished(a, TestResult.Success(Duration.milliseconds(324)))
+            listener.specFinished(TeamCityTestEngineListenerTest::class, null)
+            listener.engineFinished(emptyList())
+         }
+         output shouldBe """a[testSuiteStarted name='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest' id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest' locationHint='kotest:class://com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest:1']
+a[testSuiteStarted name='a' id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest/a' parent_id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest' locationHint='kotest:class://foo.bar.Test:12']
+a[testSuiteStarted name='b' id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest/a -- b' parent_id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest/a' locationHint='kotest:class://foo.bar.Test:17']
+a[testStarted name='c' id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest/a -- b -- c' parent_id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest/a -- b' locationHint='kotest:class://foo.bar.Test:33']
+a[testFailed name='c' id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest/a -- b -- c' parent_id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest/a -- b' duration='555' locationHint='kotest:class://foo.bar.Test:33' message='expected:<expected> but was:<actual>' type='comparisonFailure' actual='actual' expected='expected' result_status='Error']
+a[testFinished name='c' id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest/a -- b -- c' parent_id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest/a -- b' duration='555' locationHint='kotest:class://foo.bar.Test:33' result_status='Error']
+a[testSuiteFinished name='b' id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest/a -- b' parent_id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest/a' duration='555' locationHint='kotest:class://foo.bar.Test:17' result_status='Success']
+a[testSuiteFinished name='a' id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest/a' parent_id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest' duration='324' locationHint='kotest:class://foo.bar.Test:12' result_status='Success']
+a[testSuiteFinished name='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest' id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest' locationHint='kotest:class://com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest:1']
+"""
+      }
+   }
+}
