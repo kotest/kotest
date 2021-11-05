@@ -73,7 +73,8 @@ _as well as_ type, you can use `CompareMode.Exact`
 
 ### CompareOrder
 
-`shouldEqualJson` additionally supports a parameter called `CompareOrder` which can be used to control whether field order in objects, and element order in arrays is considered. By default, the order of items in arrays matter, but fields in an object does not matter, and so
+`shouldEqualJson` additionally supports a parameter called `CompareOrder` which can be used to force object comparision
+to consider field order. By default, the order of fields in an object does not matter, and so
 
 ```json
 { "a": "foo", "b": "bar" }
@@ -96,19 +97,6 @@ a.shouldEqualJson(b, CompareOrder.Strict)
 
 // this would pass
 a.shouldEqualJson(b)
-```
-
-Similarly, if you want to allow arrays to have different order of items, you can set this parameter to `CompareOrder.LenientAll`. Example:
-
-```kotlin
-val a = """ { "attendees": [ "foo", "bar" ] } """
-val b = """ { "attendees": [ "bar", "foo" ] } """
-
-// this would fail
-a.shouldEqualJson(b)
-
-// this would pass
-a.shouldEqualJson(b, CompareOrder.LenientAll)
 ```
 
 Targets: **JVM**, **JS**
