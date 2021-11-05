@@ -11,7 +11,7 @@ plugins {
    id("java-library")
    id("maven-publish")
    id("java-gradle-plugin")
-   id("com.gradle.plugin-publish") version "0.16.0"
+   id("com.gradle.plugin-publish") version "0.17.0"
 }
 
 version = Ci.gradleVersion
