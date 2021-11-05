@@ -45,7 +45,7 @@ The most finely grained location for timeouts it on leaf tests directly.
 class TimeoutTest : DescribeSpec({
 
    describe("my test context") {
-        it("timeout after 750ms").config(timeout = 750.milliseconds, invocationTimeout = 250.milliseconds) {
+        it("timeout after 750ms").config(timeout = Duration.milliseconds(750), invocationTimeout = Duration.milliseconds(250)) {
         }
    }
 
@@ -62,11 +62,11 @@ Timeouts can be specified at the spec level for every test in that spec, unless 
 ```kotlin
 class TimeoutTest : DescribeSpec({
 
-   timeout = 1250.milliseconds
+   timeout = Duration.milliseconds(1250)
 
    describe("I will timeout in 1250 millis") {
       it("And so will I") { }
-      it("But I'm a little faster").config(timeout = 500.milliseconds) { }
+      it("But I'm a little faster").config(timeout = Duration.milliseconds(500)) { }
    }
 
 })
@@ -93,8 +93,8 @@ We can set a global default for both timeout and invocationTimeout inside [proje
 
 ```kotlin
 object ProjectConfig : AbstractProjectConfig {
-    override val timeout = 2.seconds
-    override val invocationTimeout = 1.second
+    override val timeout = Duration.seconds(2)
+    override val invocationTimeout = Duration.seconds(1)
 }
 ```
 
