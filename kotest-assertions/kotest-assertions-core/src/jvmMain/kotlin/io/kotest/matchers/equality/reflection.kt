@@ -332,7 +332,7 @@ fun <T : Any> T.shouldNotBeEqualToComparingFieldsExcept(
    ignoreProperty: KProperty<*>,
    vararg ignoreProperties: KProperty<*>
 ) {
-   this should beEqualComparingFields(other, true, listOf(ignoreProperty) + ignoreProperties)
+   this shouldNot beEqualComparingFields(other, true, listOf(ignoreProperty) + ignoreProperties)
 }
 
 infix fun <T : Any> T.shouldBeEqualToComparingFields(other: T) {
