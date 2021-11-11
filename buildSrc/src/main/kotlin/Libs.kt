@@ -60,7 +60,7 @@ object Libs {
       const val netty = "org.mock-server:mockserver-netty:_"
    }
 
-   object rgxgen {
+   object Rgxgen {
       const val rgxgen = "com.github.curious-odd-man:rgxgen:_"
    }
 
