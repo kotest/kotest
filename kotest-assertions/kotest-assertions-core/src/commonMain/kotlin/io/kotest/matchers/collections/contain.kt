@@ -1,6 +1,6 @@
 package io.kotest.matchers.collections
 
-import io.kotest.assertions.show.show
+import io.kotest.assertions.print.print
 import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
 import io.kotest.matchers.should
@@ -39,7 +39,7 @@ infix fun <T, C : Collection<T>> C.shouldContain(t: T): C {
 fun <T, C : Collection<T>> contain(t: T) = object : Matcher<C> {
    override fun test(value: C) = MatcherResult(
       value.contains(t),
-      { "Collection should contain element ${t.show().value}; listing some elements ${value.take(5)}" },
-      { "Collection should not contain element ${t.show().value}" }
+      { "Collection should contain element ${t.print().value}; listing some elements ${value.take(5)}" },
+      { "Collection should not contain element ${t.print().value}" }
    )
 }

@@ -1,7 +1,7 @@
-package io.kotest.assertions.show
+package io.kotest.assertions.print
 
-actual fun <A : Any> dataClassShow(): Show<A> = object : Show<A> {
-   override fun show(a: A): Printed {
+actual fun <A : Any> dataClassPrint(): Print<A> = object : Print<A> {
+   override fun print(a: A): Printed {
       require(a::class.isData) { "This instance of the Show typeclass only supports data classes" }
       return Printed(a.toString())
 //    return "${a::class.simpleName}(\n" +

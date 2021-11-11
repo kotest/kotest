@@ -2,7 +2,7 @@ package io.kotest.data
 
 import io.kotest.assertions.failure
 import io.kotest.assertions.multiAssertionError
-import io.kotest.assertions.show.show
+import io.kotest.assertions.print.print
 
 @PublishedApi
 internal class ErrorCollector {
@@ -24,7 +24,7 @@ internal class ErrorCollector {
 @PublishedApi
 internal fun error(e: Throwable, headers: List<String>, values: List<*>): Throwable {
    val valuesInPrintableFormat = values.map { value ->
-      value?.let { it.show().value }
+      value?.let { it.print().value }
    }
    val params = headers.zip(valuesInPrintableFormat).joinToString(", ")
    // Include class name for non-assertion errors, since the class is often meaningful and there might not

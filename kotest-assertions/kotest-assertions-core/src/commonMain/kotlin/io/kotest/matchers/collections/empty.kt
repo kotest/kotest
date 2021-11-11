@@ -1,6 +1,6 @@
 package io.kotest.matchers.collections
 
-import io.kotest.assertions.show.show
+import io.kotest.assertions.print.print
 import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
 import io.kotest.matchers.invokeMatcher
@@ -46,7 +46,7 @@ fun <T> Collection<T>?.shouldNotBeEmpty(): Collection<T> {
 fun <T> beEmpty(): Matcher<Collection<T>> = object : Matcher<Collection<T>> {
    override fun test(value: Collection<T>): MatcherResult = MatcherResult(
       value.isEmpty(),
-      { "Collection should be empty but contained ${value.first().show().value}" },
+      { "Collection should be empty but contained ${value.first().print().value}" },
       { "Collection should not be empty" }
    )
 }
@@ -54,7 +54,7 @@ fun <T> beEmpty(): Matcher<Collection<T>> = object : Matcher<Collection<T>> {
 fun <T> beEmptyArray(): Matcher<Array<T>> = object : Matcher<Array<T>> {
    override fun test(value: Array<T>): MatcherResult = MatcherResult(
       value.isEmpty(),
-      { "Array should be empty but contained ${value.first().show().value}" },
+      { "Array should be empty but contained ${value.first().print().value}" },
       { "Array should not be empty" }
    )
 }

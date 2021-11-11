@@ -1,6 +1,6 @@
 package io.kotest.matchers.collections
 
-import io.kotest.assertions.show.show
+import io.kotest.assertions.print.print
 import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
 import io.kotest.matchers.neverNullMatcher
@@ -23,8 +23,8 @@ fun <T> existInOrder(predicates: List<(T) -> Boolean>): Matcher<Collection<T>?> 
 
    MatcherResult(
       subsequenceIndex == predicates.size,
-      { "${actual.show().value} did not match the predicates ${predicates.show().value} in order" },
-      { "${actual.show().value} should not match the predicates ${predicates.show().value} in order" }
+      { "${actual.print().value} did not match the predicates ${predicates.print().value} in order" },
+      { "${actual.print().value} should not match the predicates ${predicates.print().value} in order" }
    )
 }
 
@@ -33,7 +33,7 @@ fun <T> haveSize(size: Int): Matcher<Collection<T>> = haveSizeMatcher(size)
 fun <T> singleElement(t: T): Matcher<Collection<T>> = object : Matcher<Collection<T>> {
   override fun test(value: Collection<T>) = MatcherResult(
      value.size == 1 && value.first() == t,
-     { "Collection should be a single element of $t but has ${value.size} elements: ${value.show().value}" },
+     { "Collection should be a single element of $t but has ${value.size} elements: ${value.print().value}" },
      { "Collection should not be a single element of $t" }
   )
 }
@@ -43,7 +43,7 @@ fun <T> singleElement(p: (T) -> Boolean): Matcher<Collection<T>> = object : Matc
       val filteredValue: List<T> = value.filter(p)
       return MatcherResult(
          filteredValue.size == 1,
-         { "Collection should have a single element by a given predicate but has ${filteredValue.size} elements: ${value.show().value}" },
+         { "Collection should have a single element by a given predicate but has ${filteredValue.size} elements: ${value.print().value}" },
          { "Collection should not have a single element by a given predicate" }
       )
    }
@@ -59,8 +59,8 @@ fun <T : Comparable<T>> sorted(): Matcher<List<T>> = object : Matcher<List<T>> {
     }
     return MatcherResult(
        failure == null,
-       { "List ${value.show().value} should be sorted$elementMessage" },
-       { "List ${value.show().value} should not be sorted" }
+       { "List ${value.print().value} should be sorted$elementMessage" },
+       { "List ${value.print().value} should not be sorted" }
     )
   }
 }

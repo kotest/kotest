@@ -1,6 +1,6 @@
 package io.kotest.matchers.string
 
-import io.kotest.assertions.show.show
+import io.kotest.assertions.print.print
 import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
 import io.kotest.matchers.neverNullMatcher
@@ -20,8 +20,8 @@ infix fun <A : CharSequence> A?.shouldNotEndWith(suffix: CharSequence): A {
 fun endWith(suffix: CharSequence): Matcher<CharSequence?> = neverNullMatcher { value ->
    MatcherResult(
       value.endsWith(suffix),
-      { "${value.show().value} should end with ${suffix.show().value}" },
+      { "${value.print().value} should end with ${suffix.print().value}" },
       {
-         "${value.show().value} should not end with ${suffix.show().value}"
+         "${value.print().value} should not end with ${suffix.print().value}"
       })
 }

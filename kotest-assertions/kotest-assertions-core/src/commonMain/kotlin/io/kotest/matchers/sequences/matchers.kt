@@ -3,7 +3,7 @@
 package io.kotest.matchers.sequences
 
 import io.kotest.assertions.eq.eq
-import io.kotest.assertions.show.show
+import io.kotest.assertions.print.print
 import io.kotest.matchers.*
 
 private fun <T> Sequence<T>.toString(limit: Int = 10) = this.joinToString(", ", limit = limit)
@@ -92,7 +92,7 @@ fun <T, C : Sequence<T>> containExactly(expected: C): Matcher<C?> = neverNullMat
       val actualElement = actualIterator.next()
       val expectedElement = expectedIterator.next()
       if (eq(actualElement.value, expectedElement.value) != null) {
-         failMessage += " (expected ${expectedElement.value.show().value} at ${expectedElement.index} but found ${actualElement.value.show().value})"
+         failMessage += " (expected ${expectedElement.value.print().value} at ${expectedElement.index} but found ${actualElement.value.print().value})"
          passed = false
       }
    }

@@ -1,10 +1,10 @@
 @file:JvmName("platformjvm")
-package io.kotest.assertions.show
+package io.kotest.assertions.print
 
 import kotlin.reflect.KClass
 
 /**
- * Return a [Show] based on available runtime classes.
+ * Return a [Print] based on available runtime classes.
  * Ex. A standard Java 8 JVM will have the 'java.nio.file.Path'
  * type while certain versions of the Android JVM will not.
  *
@@ -13,14 +13,14 @@ import kotlin.reflect.KClass
  * called on a JVM platform that may not have the
  * required compiled types.
  *
- * @return [PathShow] if [A] is a 'java.nio.file.Path',
- * or [FileShow] if [A] is `java.io.File`,
+ * @return [PathPrint] if [A] is a 'java.nio.file.Path',
+ * or [FilePrint] if [A] is `java.io.File`,
  * or `null` otherwise.
  */
 @Suppress("UNCHECKED_CAST")
-actual fun <A : Any> platformShow(a: A): Show<A>? = when {
-  javaNioPathKlass()?.isInstance(a) ?: false -> PathShow as Show<A>
-  javaIoFileKlass()?.isInstance(a) ?: false -> FileShow as Show<A>
+actual fun <A : Any> platformPrint(a: A): Print<A>? = when {
+  javaNioPathKlass()?.isInstance(a) ?: false -> PathPrint as Print<A>
+  javaIoFileKlass()?.isInstance(a) ?: false -> FilePrint as Print<A>
   else -> null
 }
 

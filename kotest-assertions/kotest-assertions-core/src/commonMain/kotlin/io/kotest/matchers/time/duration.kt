@@ -1,6 +1,6 @@
 package io.kotest.matchers.time
 
-import io.kotest.assertions.show.show
+import io.kotest.assertions.print.print
 import io.kotest.matchers.MatcherResult
 import io.kotest.matchers.neverNullMatcher
 import io.kotest.matchers.should
@@ -15,9 +15,9 @@ infix fun Duration.shouldNotHaveSeconds(seconds: Long) = this shouldNot haveSeco
 fun haveSeconds(seconds: Long) = neverNullMatcher<Duration> { value ->
    MatcherResult(
       value.toLong(DurationUnit.SECONDS) == seconds,
-      { "${value.show().value} should have $seconds seconds" },
+      { "${value.print().value} should have $seconds seconds" },
       {
-         "${value.show().value} should not have $seconds seconds"
+         "${value.print().value} should not have $seconds seconds"
       })
 }
 
@@ -30,9 +30,9 @@ infix fun Duration.shouldNotHaveMillis(millis: Long) = this shouldNot haveMillis
 fun haveMillis(millis: Long) = neverNullMatcher<Duration> { value ->
    MatcherResult(
       value.toLong(DurationUnit.MILLISECONDS) == millis,
-      { "${value.show().value} should have $millis millis" },
+      { "${value.print().value} should have $millis millis" },
       {
-         "${value.show().value} should not have $millis millis"
+         "${value.print().value} should not have $millis millis"
       })
 }
 
@@ -43,9 +43,9 @@ infix fun Duration.shouldNotHaveMinutes(minutes: Long) = this shouldNot haveMinu
 fun haveMinutes(minutes: Long) = neverNullMatcher<Duration> { value ->
    MatcherResult(
       value.toLong(DurationUnit.MINUTES) == minutes,
-      { "${value.show().value} should have $minutes minutes" },
+      { "${value.print().value} should have $minutes minutes" },
       {
-         "${value.show().value} should not have $minutes minutes"
+         "${value.print().value} should not have $minutes minutes"
       })
 }
 
@@ -58,9 +58,9 @@ infix fun Duration.shouldNotHaveHours(hours: Long) = this shouldNot haveHours(ho
 fun haveHours(hours: Long) = neverNullMatcher<Duration> { value ->
    MatcherResult(
       value.toLong(DurationUnit.HOURS) == hours,
-      { "${value.show().value} should have $hours hours" },
+      { "${value.print().value} should have $hours hours" },
       {
-         "${value.show().value} should not have $hours hours"
+         "${value.print().value} should not have $hours hours"
       })
 }
 

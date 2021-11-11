@@ -1,6 +1,6 @@
 package io.kotest.property.internal
 
-import io.kotest.assertions.show.show
+import io.kotest.assertions.print.print
 import io.kotest.mpp.stacktraces
 import io.kotest.property.AfterPropertyContextElement
 import io.kotest.property.BeforePropertyContextElement
@@ -68,7 +68,7 @@ internal suspend fun handleException(
 
       println("Property test failed for inputs\n")
       inputs.withIndex().forEach { (index, value) ->
-         println("$index) ${value.show().value}")
+         println("$index) ${value.print().value}")
       }
       println()
 
@@ -86,7 +86,7 @@ internal suspend fun handleException(
       var error = "Property failed ${context.failures()} times (maxFailure rate was ${config.maxFailure})\n"
       error += "Last error was caused by args:\n"
       inputs.withIndex().forEach { (index, value) ->
-         error += "  $index) ${value.show().value}\n"
+         error += "  $index) ${value.print().value}\n"
       }
       throwPropertyTestAssertionError(shrinkfn(), AssertionError(error), context.attempts(), seed)
    }

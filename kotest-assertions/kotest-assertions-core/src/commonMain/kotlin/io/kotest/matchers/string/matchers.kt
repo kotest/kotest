@@ -1,7 +1,7 @@
 package io.kotest.matchers.string
 
 import io.kotest.assertions.failure
-import io.kotest.assertions.show.show
+import io.kotest.assertions.print.print
 import io.kotest.matchers.*
 import io.kotest.matchers.neverNullMatcher
 import io.kotest.matchers.string.UUIDVersion.ANY
@@ -21,8 +21,8 @@ fun String?.shouldNotContainOnlyDigits(): String? {
 fun containOnlyDigits() = neverNullMatcher<String> { value ->
    MatcherResult(
       value.toCharArray().all { it in '0'..'9' },
-      { "${value.show().value} should contain only digits" },
-      { "${value.show().value} should not contain only digits" })
+      { "${value.print().value} should contain only digits" },
+      { "${value.print().value} should not contain only digits" })
 }
 
 fun String?.shouldContainADigit(): String? {
@@ -38,8 +38,8 @@ fun String?.shouldNotContainADigit(): String? {
 fun containADigit() = neverNullMatcher<String> { value ->
    MatcherResult(
       value.toCharArray().any { it in '0'..'9' },
-      { "${value.show().value} should contain at least one digit" },
-      { "${value.show().value} should not contain any digits" })
+      { "${value.print().value} should contain at least one digit" },
+      { "${value.print().value} should not contain any digits" })
 }
 
 infix fun String?.shouldContainOnlyOnce(substr: String): String? {
@@ -55,8 +55,8 @@ infix fun String?.shouldNotContainOnlyOnce(substr: String): String? {
 fun containOnlyOnce(substring: String) = neverNullMatcher<String> { value ->
    MatcherResult(
       value.indexOf(substring) >= 0 && value.indexOf(substring) == value.lastIndexOf(substring),
-      { "${value.show().value} should contain the substring ${substring.show().value} exactly once" },
-      { "${value.show().value} should not contain the substring ${substring.show().value} exactly once" })
+      { "${value.print().value} should contain the substring ${substring.print().value} exactly once" },
+      { "${value.print().value} should not contain the substring ${substring.print().value} exactly once" })
 }
 
 fun String?.shouldBeEmpty(): String? {
@@ -72,8 +72,8 @@ fun String?.shouldNotBeEmpty(): String? {
 fun beEmpty() = neverNullMatcher<String> { value ->
    MatcherResult(
       value.isEmpty(),
-      { "${value.show().value} should be empty" },
-      { "${value.show().value} should not be empty" })
+      { "${value.print().value} should be empty" },
+      { "${value.print().value} should not be empty" })
 }
 
 fun String?.shouldBeBlank(): String? {
@@ -90,8 +90,8 @@ fun containOnlyWhitespace() = beBlank()
 fun beBlank() = neverNullMatcher<String> { value ->
    MatcherResult(
       value.isBlank(),
-      { "${value.show().value} should contain only whitespace" },
-      { "${value.show().value} should not contain only whitespace" }
+      { "${value.print().value} should contain only whitespace" },
+      { "${value.print().value} should not contain only whitespace" }
    )
 }
 
@@ -108,8 +108,8 @@ infix fun String?.shouldNotContainIgnoringCase(substr: String): String? {
 fun containIgnoringCase(substr: String) = neverNullMatcher<String> { value ->
    MatcherResult(
       value.lowercase().indexOf(substr.lowercase()) >= 0,
-      { "${value.show().value} should contain the substring ${substr.show().value} (case insensitive)" },
-      { "${value.show().value} should not contain the substring ${substr.show().value} (case insensitive)" }
+      { "${value.print().value} should contain the substring ${substr.print().value} (case insensitive)" },
+      { "${value.print().value} should not contain the substring ${substr.print().value} (case insensitive)" }
    )
 }
 
@@ -126,8 +126,8 @@ infix fun String?.shouldNotContain(regex: Regex): String? {
 fun contain(regex: Regex) = neverNullMatcher<String> { value ->
    MatcherResult(
       value.contains(regex),
-      { "${value.show().value} should contain regex $regex" },
-      { "${value.show().value} should not contain regex $regex" })
+      { "${value.print().value} should contain regex $regex" },
+      { "${value.print().value} should not contain regex $regex" })
 }
 
 fun String?.shouldContainInOrder(vararg substrings: String): String? {
@@ -146,8 +146,8 @@ fun containInOrder(vararg substrings: String) = neverNullMatcher<String> { value
 
    MatcherResult(
       recTest(value, substrings.filter { it.isNotEmpty() }),
-      { "${value.show().value} should include substrings ${substrings.show().value} in order" },
-      { "${value.show().value} should not include substrings ${substrings.show().value} in order" })
+      { "${value.print().value} should include substrings ${substrings.print().value} in order" },
+      { "${value.print().value} should not include substrings ${substrings.print().value} in order" })
 }
 
 infix fun String?.shouldContain(substr: String): String? {
@@ -175,8 +175,8 @@ infix fun String?.shouldNotInclude(substr: String): String? {
 fun include(substr: String) = neverNullMatcher<String> { value ->
    MatcherResult(
       value.contains(substr),
-      { "${value.show().value} should include substring ${substr.show().value}" },
-      { "${value.show().value} should not include substring ${substr.show().value}" })
+      { "${value.print().value} should include substring ${substr.print().value}" },
+      { "${value.print().value} should not include substring ${substr.print().value}" })
 }
 
 /**
@@ -238,9 +238,9 @@ infix fun String?.shouldNotBeEqualIgnoringCase(other: String): String? {
 fun beEqualIgnoringCase(other: String) = neverNullMatcher<String> { value ->
    MatcherResult(
       value.equals(other, ignoreCase = true),
-      { "${value.show().value} should be equal ignoring case ${other.show().value}" },
+      { "${value.print().value} should be equal ignoring case ${other.print().value}" },
       {
-         "${value.show().value} should not be equal ignoring case ${other.show().value}"
+         "${value.print().value} should not be equal ignoring case ${other.print().value}"
       })
 }
 

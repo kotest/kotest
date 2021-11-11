@@ -2,8 +2,8 @@ package io.kotest.matchers.collections
 
 import io.kotest.assertions.AssertionsConfig
 import io.kotest.assertions.eq.eq
-import io.kotest.assertions.show.Printed
-import io.kotest.assertions.show.show
+import io.kotest.assertions.print.Printed
+import io.kotest.assertions.print.print
 import io.kotest.matchers.ComparableMatcherResult
 import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
@@ -73,8 +73,8 @@ fun <T, C : Collection<T>> containExactly(expected: C): Matcher<C?> = neverNullM
          passed,
          failureMessage,
          negatedFailureMessage,
-         actual.show().value,
-         expected.show().value,
+         actual.print().value,
+         expected.print().value,
       )
    } else {
       MatcherResult(
@@ -98,7 +98,7 @@ infix fun <T, C : Collection<T>> C?.shouldNotContainExactly(expected: C) = this 
 fun <T> Collection<T>?.shouldNotContainExactly(vararg expected: T) = this shouldNot containExactly(*expected)
 
 fun <T, C : Collection<T>> C.printed(): Printed {
-   val expectedPrinted = take(20).joinToString(",\n  ", prefix = "[\n  ", postfix = "\n]") { it.show().value }
+   val expectedPrinted = take(20).joinToString(",\n  ", prefix = "[\n  ", postfix = "\n]") { it.print().value }
    val expectedMore = if (size > 20) " ... (plus ${size - 20} more)" else ""
    return Printed("$expectedPrinted$expectedMore")
 }
