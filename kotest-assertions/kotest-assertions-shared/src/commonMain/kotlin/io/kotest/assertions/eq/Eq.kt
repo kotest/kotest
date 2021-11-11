@@ -2,6 +2,7 @@ package io.kotest.assertions.eq
 
 import io.kotest.assertions.AssertionsConfig
 import io.kotest.assertions.print.print
+import kotlin.js.JsName
 
 /**
  * A [Eq] typeclass compares two values for equality, returning an [AssertionError] if they are
@@ -11,6 +12,11 @@ import io.kotest.assertions.print.print
  */
 interface Eq<T> {
    fun equals(actual: T, expected: T, strictNumberEq: Boolean = false): Throwable?
+
+   @JsName("Equals")
+   fun equals(actual: T, expected: T): Throwable? {
+      return equals(actual, expected, false)
+   }
 }
 
 /**
