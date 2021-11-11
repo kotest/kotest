@@ -1,5 +1,6 @@
 package io.kotest.matchers.collections
 
+import io.kotest.assertions.print.print
 import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
 import io.kotest.matchers.should
@@ -84,11 +85,10 @@ fun <T> T.shouldNotBeOneOf(vararg any: T): T {
 fun <T> beOneOf(collection: Collection<T>) = object : Matcher<T> {
    override fun test(value: T): MatcherResult {
       if (collection.isEmpty()) throwEmptyCollectionError()
-
       val match = collection.any { it === value }
       return MatcherResult(
          match,
-         { "Collection should contain the instance of value, but doesn't." },
-         { "Collection should not contain the instance of value, but does." })
+         { "Collection should contain the instance ${value.print().value} with hashcode ${value.hashCode()}." },
+         { "Collection should not contain the instance ${value.print().value} with hashcode ${value.hashCode()}." })
    }
 }
