@@ -1,11 +1,11 @@
 object Libs {
 
    object Kotlin {
-      const val kotlinScriptRuntime = "org.jetbrains.kotlin:kotlin-script-runtime:1.6.20-RC2"
-      const val kotlinScriptUtil = "org.jetbrains.kotlin:kotlin-script-util:1.6.20-RC2"
-      const val kotlinScriptJvm = "org.jetbrains.kotlin:kotlin-scripting-jvm:1.6.20-RC2"
-      const val compiler = "org.jetbrains.kotlin:kotlin-compiler:1.6.20-RC2"
-      const val compilerEmbeddable = "org.jetbrains.kotlin:kotlin-compiler-embeddable:1.6.20-RC2"
+      const val kotlinScriptRuntime = "org.jetbrains.kotlin:kotlin-script-runtime:1.6.0-RC2"
+      const val kotlinScriptUtil = "org.jetbrains.kotlin:kotlin-script-util:1.6.0-RC2"
+      const val kotlinScriptJvm = "org.jetbrains.kotlin:kotlin-scripting-jvm:1.6.0-RC2"
+      const val compiler = "org.jetbrains.kotlin:kotlin-compiler:1.6.0-RC2"
+      const val compilerEmbeddable = "org.jetbrains.kotlin:kotlin-compiler-embeddable:1.6.0-RC2"
    }
 
    object Kotest {
