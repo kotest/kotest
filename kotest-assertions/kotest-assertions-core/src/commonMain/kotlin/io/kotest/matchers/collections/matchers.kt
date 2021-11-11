@@ -1,6 +1,6 @@
 package io.kotest.matchers.collections
 
-import io.kotest.assertions.show.show
+import io.kotest.assertions.print.print
 import io.kotest.matchers.*
 
 
@@ -18,8 +18,8 @@ fun <T, L : List<T>> haveElementAt(index: Int, element: T) = object : Matcher<L>
    override fun test(value: L) =
       MatcherResult(
          value[index] == element,
-         { "Collection should contain ${element.show().value} at index $index" },
-         { "Collection should not contain ${element.show().value} at index $index" }
+         { "Collection should contain ${element.print().value} at index $index" },
+         { "Collection should not contain ${element.print().value} at index $index" }
       )
 }
 
@@ -99,8 +99,8 @@ fun <T> containAnyOf(ts: Collection<T>) = object : Matcher<Collection<T>> {
       if (ts.isEmpty()) throwEmptyCollectionError()
       return MatcherResult(
          ts.any { it in value },
-         { "Collection should contain any of ${ts.joinToString(separator = ", ", limit = 10) { it.show().value }}" },
-         { "Collection should not contain any of ${ts.joinToString(separator = ", ", limit = 10) { it.show().value }}" }
+         { "Collection should contain any of ${ts.joinToString(separator = ", ", limit = 10) { it.print().value }}" },
+         { "Collection should not contain any of ${ts.joinToString(separator = ", ", limit = 10) { it.print().value }}" }
       )
    }
 }

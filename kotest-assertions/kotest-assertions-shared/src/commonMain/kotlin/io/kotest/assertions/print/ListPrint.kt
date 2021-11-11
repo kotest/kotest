@@ -1,14 +1,10 @@
-package io.kotest.assertions.show
+package io.kotest.assertions.print
 
-class IterableShow<T> : Show<Iterable<T>> {
-   override fun show(a: Iterable<T>): Printed = ListShow<T>().show(a.toList())
-}
-
-class ListShow<T> : Show<List<T>> {
+class ListPrint<T> : Print<List<T>> {
 
    private val maxCollectionSnippetSize = 20
 
-   override fun show(a: List<T>): Printed {
+   override fun print(a: List<T>): Printed {
       return if (a.isEmpty()) Printed("[]") else {
          val remainingItems = a.size - maxCollectionSnippetSize
 

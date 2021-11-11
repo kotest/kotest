@@ -10,8 +10,8 @@ import io.kotest.assertions.eq.expectedIsNull
 import io.kotest.assertions.errorCollector
 import io.kotest.assertions.failure
 import io.kotest.assertions.intellijFormatError
-import io.kotest.assertions.show.Printed
-import io.kotest.assertions.show.show
+import io.kotest.assertions.print.Printed
+import io.kotest.assertions.print.print
 
 @Suppress("UNCHECKED_CAST")
 infix fun <T, U : T> T.shouldBe(expected: U?) {
@@ -76,11 +76,11 @@ fun <T> equalityMatcher(expected: T) = object : Matcher<T> {
       return MatcherResult(
          t == null,
          {
-            val e = Expected(expected.show())
-            val a = Actual(value.show())
+            val e = Expected(expected.print())
+            val a = Actual(value.print())
             failure(e, a).message ?: intellijFormatError(e, a)
          },
-         { "${expected.show().value} should not equal ${value.show().value}" }
+         { "${expected.print().value} should not equal ${value.print().value}" }
       )
    }
 }

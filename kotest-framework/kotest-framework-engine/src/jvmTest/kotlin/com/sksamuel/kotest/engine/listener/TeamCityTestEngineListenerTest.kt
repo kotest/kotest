@@ -3,7 +3,7 @@ package com.sksamuel.kotest.engine.listener
 import io.kotest.assertions.Actual
 import io.kotest.assertions.Expected
 import io.kotest.assertions.failure
-import io.kotest.assertions.show.Printed
+import io.kotest.assertions.print.Printed
 import io.kotest.core.SourceRef
 import io.kotest.core.descriptors.append
 import io.kotest.core.descriptors.toDescriptor

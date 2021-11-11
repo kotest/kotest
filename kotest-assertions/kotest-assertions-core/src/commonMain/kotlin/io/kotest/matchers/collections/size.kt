@@ -1,6 +1,6 @@
 package io.kotest.matchers.collections
 
-import io.kotest.assertions.show.show
+import io.kotest.assertions.print.print
 import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
 import io.kotest.matchers.should
@@ -122,7 +122,7 @@ fun <T> haveSizeMatcher(size: Int) = object : Matcher<Collection<T>> {
    override fun test(value: Collection<T>) =
       MatcherResult(
          value.size == size,
-         { "Collection should have size $size but has size ${value.size}. Values: ${value.show().value}" },
-         { "Collection should not have size $size. Values: ${value.show().value}" }
+         { "Collection should have size $size but has size ${value.size}. Values: ${value.print().value}" },
+         { "Collection should not have size $size. Values: ${value.print().value}" }
       )
 }

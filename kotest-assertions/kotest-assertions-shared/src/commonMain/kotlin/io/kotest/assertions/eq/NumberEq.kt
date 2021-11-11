@@ -3,12 +3,12 @@ package io.kotest.assertions.eq
 import io.kotest.assertions.Actual
 import io.kotest.assertions.Expected
 import io.kotest.assertions.failure
-import io.kotest.assertions.show.show
+import io.kotest.assertions.print.print
 
 object NumberEq : Eq<Number> {
 
    override fun equals(actual: Number, expected: Number, strictNumberEq: Boolean): Throwable? {
-      return if (compare(actual, expected, strictNumberEq)) null else failure(Expected(expected.show()), Actual(actual.show()))
+      return if (compare(actual, expected, strictNumberEq)) null else failure(Expected(expected.print()), Actual(actual.print()))
    }
 
    private fun compare(a: Number, b: Number, strictNumberEq: Boolean): Boolean {

@@ -89,8 +89,6 @@ fun <T> beOneOf(collection: Collection<T>) = object : Matcher<T> {
       return MatcherResult(
          match,
          { "Collection should contain the instance of value, but doesn't." },
-         {
-            "Collection should not contain the instance of value, but does."
-         })
+         { "Collection should not contain the instance of value, but does." })
    }
 }

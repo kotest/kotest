@@ -3,7 +3,7 @@ package io.kotest.assertions.eq
 import io.kotest.assertions.Actual
 import io.kotest.assertions.Expected
 import io.kotest.assertions.failure
-import io.kotest.assertions.show.show
+import io.kotest.assertions.print.print
 import io.kotest.mpp.Property
 import io.kotest.mpp.bestName
 import io.kotest.mpp.reflection
@@ -40,7 +40,7 @@ internal object DataClassEq : Eq<Any> {
          val detailedDiffMsg = runCatching {
             dataClassDiff(actual, expected, strictNumberEq = strictNumberEq)?.let { diff -> formatDifferences(diff) + "\n\n" } ?: ""
          }.getOrElse { "" }
-         failure(Expected(expected.show()), Actual(actual.show()), detailedDiffMsg)
+         failure(Expected(expected.print()), Actual(actual.print()), detailedDiffMsg)
       }
 
    private fun test(a: Any?, b: Any?): Boolean = makeComparable(a) == makeComparable(b)

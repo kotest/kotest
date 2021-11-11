@@ -1,6 +1,6 @@
 package io.kotest.matchers.string
 
-import io.kotest.assertions.show.show
+import io.kotest.assertions.print.print
 import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
 import io.kotest.matchers.neverNullMatcher
@@ -25,9 +25,9 @@ infix fun <A : CharSequence> A?.shouldNotMatch(regex: String): A {
 fun match(regex: Regex): Matcher<CharSequence?> = neverNullMatcher { value ->
    MatcherResult(
       value.matches(regex),
-      { "${value.show().value} should match regex $regex" },
+      { "${value.print().value} should match regex $regex" },
       {
-         "${value.show().value} should not match regex $regex"
+         "${value.print().value} should not match regex $regex"
       })
 }
 

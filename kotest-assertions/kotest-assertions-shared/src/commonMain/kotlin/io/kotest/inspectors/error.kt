@@ -3,7 +3,7 @@ package io.kotest.inspectors
 import io.kotest.assertions.AssertionsConfig
 import io.kotest.assertions.exceptionToMessage
 import io.kotest.assertions.failure
-import io.kotest.assertions.show.show
+import io.kotest.assertions.print.print
 
 /**
  * Build assertion error message.
@@ -38,7 +38,7 @@ fun <T> buildAssertionError(msg: String, results: List<ElementResult<T>>): Nothi
    if (failed.isEmpty()) {
       builder.append("--none--")
    } else {
-      builder.append(failed.take(maxResults).joinToString("\n") { it.t.show().value + " => " + exceptionToMessage(it.throwable) })
+      builder.append(failed.take(maxResults).joinToString("\n") { it.t.print().value + " => " + exceptionToMessage(it.throwable) })
       if (failed.size > maxResults) {
          builder.append("\n... and ${failed.size - maxResults} more failed elements")
       }

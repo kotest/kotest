@@ -1,7 +1,7 @@
 package io.kotest.matchers.equality
 
 import io.kotest.assertions.eq.eq
-import io.kotest.assertions.show.show
+import io.kotest.assertions.print.print
 import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
 import io.kotest.matchers.should
@@ -405,14 +405,14 @@ fun <T : Any> beEqualComparingFields(
       return MatcherResult(
          failed.isEmpty(),
          {
-            """Expected ${value.show().value} to equal ${other.show().value}
+            """Expected ${value.print().value} to equal ${other.print().value}
             | Using fields: ${fieldsToCompare.joinToString(", ") { it.name }}
             | Value differ at:
             | ${failed.withIndex().joinToString("\n") { "${it.index + 1}) ${it.value}" }}
          """.trimMargin()
          },
          {
-            """Expected ${value.show().value} to not equal ${other.show().value}
+            """Expected ${value.print().value} to not equal ${other.print().value}
             | Using fields: ${fieldsToCompare.joinToString(", ") { it.name }}
          """.trimMargin()
          }
@@ -427,6 +427,6 @@ private fun <T> checkEqualityOfFields(fields: List<KProperty<*>>, value: T, othe
 
       val isEqual = eq(actual, expected) == null
 
-      if (isEqual) null else "${it.name}: ${actual.show().value} != ${expected.show().value}"
+      if (isEqual) null else "${it.name}: ${actual.print().value} != ${expected.print().value}"
    }
 }

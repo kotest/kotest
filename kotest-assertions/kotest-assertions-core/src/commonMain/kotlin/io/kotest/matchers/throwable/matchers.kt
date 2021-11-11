@@ -1,6 +1,6 @@
 package io.kotest.matchers.throwable
 
-import io.kotest.assertions.show.show
+import io.kotest.assertions.print.print
 import io.kotest.matchers.ComparableMatcherResult
 import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
@@ -15,15 +15,15 @@ fun haveMessage(message: String) = object : Matcher<Throwable> {
    override fun test(value: Throwable) = ComparableMatcherResult(
       value.message?.trim() == message.trim(),
       {
-         "Throwable should have message:\n${message.trim().show().value}\n\nActual was:\n${
-            value.message?.trim().show().value
+         "Throwable should have message:\n${message.trim().print().value}\n\nActual was:\n${
+            value.message?.trim().print().value
          }\n"
       },
       {
-         "Throwable should not have message:\n${message.trim().show().value}"
+         "Throwable should not have message:\n${message.trim().print().value}"
       },
-      actual = value.message?.trim().show().value,
-      expected = message.trim().show().value,
+      actual = value.message?.trim().print().value,
+      expected = message.trim().print().value,
    )
 }
 
@@ -33,8 +33,8 @@ infix fun Throwable.shouldNotHaveMessage(message: Regex) = this shouldNot haveMe
 fun haveMessage(regex: Regex) = object : Matcher<Throwable> {
    override fun test(value: Throwable) = MatcherResult(
       value.message?.matches(regex) ?: false,
-      { "Throwable should match regex: ${regex.show().value}\nActual was:\n${value.message?.trim().show().value}\n" },
-      { "Throwable should not match regex: ${regex.show().value}" })
+      { "Throwable should match regex: ${regex.print().value}\nActual was:\n${value.message?.trim().print().value}\n" },
+      { "Throwable should not match regex: ${regex.print().value}" })
 }
 
 

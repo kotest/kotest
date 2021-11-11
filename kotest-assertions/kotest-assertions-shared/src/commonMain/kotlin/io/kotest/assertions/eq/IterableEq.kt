@@ -3,7 +3,7 @@ package io.kotest.assertions.eq
 import io.kotest.assertions.Actual
 import io.kotest.assertions.Expected
 import io.kotest.assertions.failure
-import io.kotest.assertions.show.show
+import io.kotest.assertions.print.print
 
 object IterableEq : Eq<Iterable<*>> {
 
@@ -87,7 +87,7 @@ object IterableEq : Eq<Iterable<*>> {
       }
       val detailErrorMessage = StringBuilder().apply {
          if (elementDifferAtIndex.isNotEmpty()) {
-            append("Element differ at index: ${elementDifferAtIndex.show().value}\n")
+            append("Element differ at index: ${elementDifferAtIndex.print().value}\n")
          }
          if (unexpectedElementAtIndex != null) {
             append("Unexpected elements from index $unexpectedElementAtIndex\n")
@@ -98,9 +98,9 @@ object IterableEq : Eq<Iterable<*>> {
       }.toString()
 
       return if (detailErrorMessage.isNotBlank()) {
-         failure(Expected(expected.show()), Actual(actual.show()), detailErrorMessage)
+         failure(Expected(expected.print()), Actual(actual.print()), detailErrorMessage)
       } else null
    }
 
-   private fun generateError(actual: Any, expected: Any) = failure(Expected(expected.show()), Actual(actual.show()))
+   private fun generateError(actual: Any, expected: Any) = failure(Expected(expected.print()), Actual(actual.print()))
 }
