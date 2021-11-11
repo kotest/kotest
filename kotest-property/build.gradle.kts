@@ -60,7 +60,7 @@ kotlin {
          dependsOn(commonMain)
          dependencies {
             implementation(Libs.Wumpz.diffutils)
-            implementation(Libs.rgxgen.rgxgen)
+            implementation(Libs.Rgxgen.rgxgen)
             implementation(kotlin("reflect"))
          }
       }

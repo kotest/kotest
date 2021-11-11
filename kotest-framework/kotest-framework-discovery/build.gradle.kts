@@ -23,7 +23,7 @@ kotlin {
          dependencies {
             compileOnly(kotlin("stdlib"))
             implementation(kotlin("reflect"))
-            implementation(Libs.Kotlin.kotlinScriptRuntime)
+//            implementation(Libs.Kotlin.kotlinScriptRuntime)
 
             api(project(Projects.Common))
             // needed to compile against Spec

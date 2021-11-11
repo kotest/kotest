@@ -10,7 +10,7 @@ import io.kotest.engine.listener.PinnedSpecTestEngineListener
 import io.kotest.engine.listener.TestEngineListener
 import io.kotest.engine.listener.ThreadSafeTestEngineListener
 import kotlin.reflect.KClass
-import kotlin.script.templates.standard.ScriptTemplateWithArgs
+//import kotlin.script.templates.standard.ScriptTemplateWithArgs
 
 /**
  * A builder class for creating and executing tests via the [TestEngine].
@@ -24,7 +24,7 @@ class KotestEngineLauncher(
    private val testFilters: List<TestFilter>,
    private val specFilters: List<SpecFilter>,
    private val tags: TagExpression?,
-   private val scripts: List<KClass<out ScriptTemplateWithArgs>>,
+   private val scripts: List<KClass<*>>,
 ) {
 
    companion object {
@@ -121,7 +121,7 @@ class KotestEngineLauncher(
    fun withFilters(filters: List<TestFilter>): KotestEngineLauncher = withTestFilters(filters)
 
    @Deprecated("This class is deprecated since 5.0")
-   fun withScripts(scripts: List<KClass<out ScriptTemplateWithArgs>>): KotestEngineLauncher {
+   fun withScripts(scripts: List<KClass<*>>): KotestEngineLauncher {
       return KotestEngineLauncher(
          listeners = listeners,
          specs = specs,
