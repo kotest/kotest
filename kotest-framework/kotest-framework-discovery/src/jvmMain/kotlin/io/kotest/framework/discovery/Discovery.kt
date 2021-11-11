@@ -13,7 +13,7 @@ import io.kotest.mpp.sysprop
 import java.lang.management.ManagementFactory
 import java.util.concurrent.ConcurrentHashMap
 import kotlin.reflect.KClass
-import kotlin.script.templates.standard.ScriptTemplateWithArgs
+//import kotlin.script.templates.standard.ScriptTemplateWithArgs
 
 /**
  * Contains the results of a discovery request scan.
@@ -23,7 +23,7 @@ import kotlin.script.templates.standard.ScriptTemplateWithArgs
  */
 data class DiscoveryResult(
    val specs: List<KClass<out Spec>>,
-   val scripts: List<KClass<out ScriptTemplateWithArgs>>,
+   val scripts: List<KClass<*>>,
    val error: Throwable?, // this error is set if there was an exception during discovery
 ) {
    companion object {
@@ -45,7 +45,7 @@ class Discovery(private val discoveryExtensions: List<DiscoveryExtension> = empt
    private val scanResult = lazy { classgraph().scan() }
 
    // filter functions
-   private val isScript: (KClass<*>) -> Boolean = { ScriptTemplateWithArgs::class.java.isAssignableFrom(it.java) }
+   //private val isScript: (KClass<*>) -> Boolean = { ScriptTemplateWithArgs::class.java.isAssignableFrom(it.java) }
    private val isSpecSubclassKt: (KClass<*>) -> Boolean = { Spec::class.java.isAssignableFrom(it.java) }
    private val isSpecSubclass: (Class<*>) -> Boolean = { Spec::class.java.isAssignableFrom(it) }
    private val isAbstract: (KClass<*>) -> Boolean = { it.isAbstract }
@@ -70,18 +70,18 @@ class Discovery(private val discoveryExtensions: List<DiscoveryExtension> = empt
    fun discover(request: DiscoveryRequest): DiscoveryResult =
       requests.getOrPut(request) { doDiscovery(request).getOrElse { DiscoveryResult.error(it) } }
 
-   /**
-    * Scans the classpaths for kotlin script files.
-    */
-   private fun discoverScripts(): List<KClass<out ScriptTemplateWithArgs>> {
-      log { "Discovery: Running script scan" }
-      return scanResult.value
-         .allClasses
-         .filter { it.extendsSuperclass(ScriptTemplateWithArgs::class.java.name) }
-         .map { it.load(false) }
-         .filter(isScript)
-         .filterIsInstance<KClass<out ScriptTemplateWithArgs>>()
-   }
+//   /**
+//    * Scans the classpaths for kotlin script files.
+//    */
+//   private fun discoverScripts(): List<KClass<out ScriptTemplateWithArgs>> {
+//      log { "Discovery: Running script scan" }
+//      return scanResult.value
+//         .allClasses
+//         .filter { it.extendsSuperclass(ScriptTemplateWithArgs::class.java.name) }
+//         .map { it.load(false) }
+//         .filter(isScript)
+//         .filterIsInstance<KClass<out ScriptTemplateWithArgs>>()
+//   }
 
    /**
     * Loads a class reference from a [ClassInfo].
@@ -119,15 +119,15 @@ class Discovery(private val discoveryExtensions: List<DiscoveryExtension> = empt
       val scriptsEnabled = System.getProperty(KotestEngineProperties.scriptsEnabled) == "true" ||
          System.getenv(KotestEngineProperties.scriptsEnabled) == "true"
 
-      val scripts = when {
-         scriptsEnabled -> discoverScripts()
-         else -> emptyList()
-      }
+//      val scripts = when {
+//         scriptsEnabled -> discoverScripts()
+//         else -> emptyList()
+//      }
 
       if (scanResult.isInitialized()) runCatching { scanResult.value.close() }
 
-      log { "Discovery result [${afterExtensions.size} specs; ${scripts.size} scripts]" }
-      DiscoveryResult(afterExtensions, scripts, null)
+      log { "Discovery result [${afterExtensions.size} specs; scripts]" }
+      DiscoveryResult(afterExtensions, emptyList(), null)
    }
 
    /**

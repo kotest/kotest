@@ -78,9 +78,9 @@ kotlin {
       val jvmMain by getting {
          dependsOn(commonMain)
          dependencies {
-            api(Libs.Kotlin.kotlinScriptRuntime)
-            implementation(Libs.Kotlin.kotlinScriptUtil)
-            implementation(Libs.Kotlin.kotlinScriptJvm)
+//            api(Libs.Kotlin.kotlinScriptRuntime)
+//            implementation(Libs.Kotlin.kotlinScriptUtil)
+//            implementation(Libs.Kotlin.kotlinScriptJvm)
             implementation(Libs.Coroutines.test)
 
             api(Libs.Classgraph.classgraph)

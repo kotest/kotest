@@ -51,7 +51,7 @@ kotlin {
             compileOnly(kotlin("stdlib"))
             implementation(kotlin("reflect"))
             api(Libs.Coroutines.coreCommon)
-            implementation(Libs.Kotlin.kotlinScriptRuntime)
+//            implementation(Libs.Kotlin.kotlinScriptRuntime)
             implementation(project(Projects.Common))
             api(project(Projects.Assertions.Shared))
          }

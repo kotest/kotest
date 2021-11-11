@@ -22,7 +22,7 @@ import org.junit.platform.engine.support.descriptor.EngineDescriptor
 import org.junit.platform.launcher.LauncherDiscoveryRequest
 import java.util.Optional
 import kotlin.reflect.KClass
-import kotlin.script.templates.standard.ScriptTemplateWithArgs
+//import kotlin.script.templates.standard.ScriptTemplateWithArgs
 
 /**
  * A Kotest implementation of a Junit Platform [TestEngine].
@@ -131,7 +131,7 @@ class KotestJunitPlatformTestEngine : TestEngine {
 class KotestEngineDescriptor(
    id: UniqueId,
    val classes: List<KClass<out Spec>>,
-   val scripts: List<KClass<out ScriptTemplateWithArgs>>,
+   val scripts: List<KClass<*>>,
    val testFilters: List<TestFilter>,
    val error: Throwable?, // an error during discovery
 ) : EngineDescriptor(id, "Kotest") {

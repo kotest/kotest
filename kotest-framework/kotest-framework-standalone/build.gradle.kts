@@ -36,9 +36,9 @@ dependencies {
    implementation(project(Projects.Framework.engine))
    api(project(Projects.Framework.api))
 
-   api(Libs.Kotlin.kotlinScriptRuntime)
-   implementation(Libs.Kotlin.kotlinScriptUtil)
-   implementation(Libs.Kotlin.kotlinScriptJvm)
+//   api(Libs.Kotlin.kotlinScriptRuntime)
+//   implementation(Libs.Kotlin.kotlinScriptUtil)
+//   implementation(Libs.Kotlin.kotlinScriptJvm)
    implementation(Libs.Coroutines.test)
 }
 
