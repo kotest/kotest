@@ -10,7 +10,7 @@ class TestFactoryPrefixTest : FunSpec({
    include("wibble", factory())
    include("wobble", factory())
    afterSpec {
-      names shouldBe listOf("wibblea", "wobblea")
+      names shouldBe listOf("wibble a", "wobble a")
    }
 })
 

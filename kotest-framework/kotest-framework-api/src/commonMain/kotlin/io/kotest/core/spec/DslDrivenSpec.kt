@@ -51,7 +51,7 @@ abstract class DslDrivenSpec : Spec(), RootScope {
     */
    fun include(prefix: String, factory: TestFactory) {
       val renamed = factory.tests.map { test ->
-         val name = test.name.copy(testName = prefix + test.name.testName)
+         val name = test.name.copy(testName = prefix + " " + test.name.testName)
          test.copy(name = name)
       }
       include(factory.copy(tests = renamed))
