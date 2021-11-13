@@ -8,27 +8,47 @@ import io.kotest.matchers.shouldNot
 import io.kotest.matchers.shouldNotBe
 
 fun exactly(d: Float): Matcher<Float> = object : Matcher<Float> {
-  override fun test(value: Float) = MatcherResult(value == d, "$value is not equal to expected value $d", "$value should not be equal to $d")
+   override fun test(value: Float) =
+      MatcherResult(
+         value == d,
+         { "$value is not equal to expected value $d" },
+         { "$value should not be equal to $d" })
 }
 
 fun lt(x: Float) = beLessThan(x)
 fun beLessThan(x: Float) = object : Matcher<Float> {
-  override fun test(value: Float) = MatcherResult(value < x, "$value should be < $x", "$value should not be < $x")
+   override fun test(value: Float) =
+      MatcherResult(
+         value < x,
+         { "$value should be < $x" },
+         { "$value should not be < $x" })
 }
 
 fun lte(x: Float) = beLessThanOrEqualTo(x)
 fun beLessThanOrEqualTo(x: Float) = object : Matcher<Float> {
-  override fun test(value: Float) = MatcherResult(value <= x, "$value should be <= $x", "$value should not be <= $x")
+   override fun test(value: Float) =
+      MatcherResult(
+         value <= x,
+         { "$value should be <= $x" },
+         { "$value should not be <= $x" })
 }
 
 fun gt(x: Float) = beGreaterThan(x)
 fun beGreaterThan(x: Float) = object : Matcher<Float> {
-  override fun test(value: Float) = MatcherResult(value > x, "$value should be > $x", "$value should not be > $x")
+   override fun test(value: Float) =
+      MatcherResult(
+         value > x,
+         { "$value should be > $x" },
+         { "$value should not be > $x" })
 }
 
 fun gte(x: Float) = beGreaterThanOrEqualTo(x)
 fun beGreaterThanOrEqualTo(x: Float) = object : Matcher<Float> {
-  override fun test(value: Float) = MatcherResult(value >= x, "$value should be >= $x", "$value should not be >= $x")
+   override fun test(value: Float) =
+      MatcherResult(
+         value >= x,
+         { "$value should be >= $x" },
+         { "$value should not be >= $x" })
 }
 
 infix fun Float.shouldBeLessThan(x: Float) = this shouldBe lt(x)
@@ -83,7 +103,6 @@ fun beWithinPercentageOf(other: Float, percentage: Double) = object : Matcher<Fl
 
    override fun test(value: Float) = MatcherResult(
       value in range,
-      "$value should be in $range",
-      "$value should not be in $range"
-   )
+      { "$value should be in $range" },
+      { "$value should not be in $range" })
 }

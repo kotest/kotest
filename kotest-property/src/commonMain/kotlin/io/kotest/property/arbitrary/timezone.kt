@@ -9,7 +9,7 @@ import io.kotest.property.Arb
  * commonly used.
  *
  * The list of codes used by this Arb is limited to a small selection of relatively well known
- * codes (to this author) and is not meant to be a comprehensive or inclusion list.
+ * codes (to this author) and is not meant to be a comprehensive or inclusive list.
  *
  */
 fun Arb.Companion.timezoneCodeThree() = Arb.of(

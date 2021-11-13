@@ -1,37 +1,40 @@
 package io.kotest.engine.test.status
 
-import io.kotest.common.ExperimentalKotest
+import io.kotest.core.config.Configuration
 import io.kotest.core.extensions.EnabledExtension
-import io.kotest.core.plan.toDescriptor
 import io.kotest.core.test.Enabled
 import io.kotest.core.test.TestCase
-import io.kotest.engine.extensions.resolvedExtensions
+import io.kotest.engine.spec.SpecExtensions
+import io.kotest.engine.tags.runtimeTags
 
 /**
- * Returns [Enabled.isEnabled] if the given [TestCase] is enabled based on default rules at [isEnabledInternal]
- * or any registered [EnabledExtension]s.
+ * Returns [Enabled.enabled] if the given [TestCase] is enabled based on default rules
+ * from [isEnabledInternal] or any registered [EnabledExtension]s.
  */
-@OptIn(ExperimentalKotest::class)
-suspend fun TestCase.isEnabled(): Enabled {
-   val descriptor = this.descriptor ?: this.description.toDescriptor(this.source)
-   val internal = isEnabledInternal()
+suspend fun TestCase.isEnabled(conf: Configuration): Enabled {
+   val internal = isEnabledInternal(conf)
    return if (!internal.isEnabled) {
       internal
    } else {
-      this.spec.resolvedExtensions()
-         .filterIsInstance<EnabledExtension>().map { it.isEnabled(descriptor) }.let { Enabled.fold(it) }
+      val disabled = SpecExtensions(conf.registry())
+         .extensions(spec)
+         .filterIsInstance<EnabledExtension>()
+         .map { it.isEnabled(descriptor) }
+         .firstOrNull { it.isDisabled }
+      disabled ?: Enabled.enabled
    }
 }
 
 /**
  * Determines enabled status by using [TestEnabledExtension]s.
  */
-fun TestCase.isEnabledInternal(): Enabled {
+internal fun TestCase.isEnabledInternal(conf: Configuration): Enabled {
 
    val extensions = listOf(
       TestConfigEnabledExtension,
-      TagsEnabledExtension,
-      TestFilterEnabledExtension,
+      TagsEnabledExtension(conf.runtimeTags()),
+      TestFilterEnabledExtension(conf.registry()),
+      SystemPropertyTestFilterEnabledExtension,
       FocusEnabledExtension,
       BangTestEnabledExtension,
       SeverityLevelEnabledExtension,

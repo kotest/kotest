@@ -58,7 +58,6 @@ fun <T> beEmpty() = object : Matcher<Channel<T>> {
 @ExperimentalCoroutinesApi
 suspend fun <T> Channel<T>.shouldHaveSize(n: Int) {
    repeat(n) {
-      println("Receiving $it")
       this@shouldHaveSize.receive()
    }
    this@shouldHaveSize.shouldBeClosed()

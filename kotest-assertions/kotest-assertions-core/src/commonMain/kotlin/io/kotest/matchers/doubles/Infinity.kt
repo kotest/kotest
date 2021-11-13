@@ -3,9 +3,7 @@ package io.kotest.matchers.doubles
 import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
 import io.kotest.matchers.should
-import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNot
-import io.kotest.matchers.shouldNotBe
 
 /**
  * Verifies that this double is [Double.POSITIVE_INFINITY]
@@ -50,11 +48,12 @@ fun Double.shouldNotBePositiveInfinity(): Double {
  * ```
  */
 fun bePositiveInfinity() = object : Matcher<Double> {
-  override fun test(value: Double) = MatcherResult(
-    value == Double.POSITIVE_INFINITY,
-    "$value should be POSITIVE_INFINITY",
-    "$value should not be POSITIVE_INFINITY"
-  )
+   override fun test(value: Double) = MatcherResult(
+      value == Double.POSITIVE_INFINITY,
+      { "$value should be POSITIVE_INFINITY" },
+      {
+         "$value should not be POSITIVE_INFINITY"
+      })
 }
 
 
@@ -101,9 +100,10 @@ fun Double.shouldNotBeNegativeInfinity(): Double {
  * ```
  */
 fun beNegativeInfinity() = object : Matcher<Double> {
-  override fun test(value: Double) = MatcherResult(
-    value == Double.NEGATIVE_INFINITY,
-    "$value should be NEGATIVE_INFINITY",
-    "$value should not be NEGATIVE_INFINITY"
-  )
+   override fun test(value: Double) = MatcherResult(
+      value == Double.NEGATIVE_INFINITY,
+      { "$value should be NEGATIVE_INFINITY" },
+      {
+         "$value should not be NEGATIVE_INFINITY"
+      })
 }

@@ -1,64 +1,44 @@
 package io.kotest.core.test
 
 import io.kotest.core.SourceRef
-import io.kotest.core.config.configuration
-import io.kotest.core.factory.FactoryId
-import io.kotest.core.plan.Descriptor
-import io.kotest.core.sourceRef
-import io.kotest.core.spec.Spec
+import io.kotest.core.config.Configuration
+import io.kotest.core.descriptors.append
+import io.kotest.core.names.TestName
+import io.kotest.core.test.config.UnresolvedTestConfig
+import io.kotest.core.test.config.resolveConfig
 
 /**
- * Describes a test that has been discovered at runtime but has not yet been attached to
- * a parent [TestCase].
+ * Describes a test that has been discovered at runtime but has not yet been
+ * attached to a parent [TestCase].
  */
 data class NestedTest(
-   val name: DescriptionName.TestName,
-   val test: suspend TestContext.() -> Unit,
-   val config: TestCaseConfig,
+   val name: TestName,
+   val disabled: Boolean,
+   val config: UnresolvedTestConfig?, // can be null if the test does not specify config
    val type: TestType,
-   val sourceRef: SourceRef,
-   val factoryId: FactoryId?,
-   val descriptor: Descriptor.TestDescriptor?,
-)
-
-fun createNestedTest(
-   name: DescriptionName.TestName,
-   xdisabled: Boolean,
-   config: TestCaseConfig,
-   type: TestType,
-   descriptor: Descriptor.TestDescriptor?,
-   factoryId: FactoryId?,
-   test: suspend TestContext.() -> Unit,
-) = NestedTest(
-   name = name,
-   test = test,
-   config = if (xdisabled) config.copy(enabled = false) else config,
-   type = type,
-   sourceRef = sourceRef(),
-   factoryId = factoryId,
-   descriptor = descriptor
+   val source: SourceRef,
+   val test: suspend TestScope.() -> Unit,
 )
 
 /**
- * Returns a full [TestCase] from this nested test, attaching the nested test to the given spec.
- *
- * @param name override the name or can be null to use the original name
+ * Materializes a runtime [TestCase] from this [NestedTest], attaching the test to the given spec.
  */
-fun NestedTest.toTestCase(spec: Spec, parent: TestCase, name: DescriptionName.TestName? = null): TestCase {
-   val testCase = TestCase(
-      description = parent.description.append(name ?: this.name, type),
-      spec = spec,
+fun NestedTest.toTestCase(
+   parent: TestCase,
+   configuration: Configuration
+): TestCase {
+
+   val resolvedTestConfig = resolveConfig(config, disabled, parent.spec, configuration)
+
+   return TestCase(
+      descriptor = parent.descriptor.append(name),
+      name = name,
+      spec = parent.spec,
       test = test,
-      source = sourceRef,
+      source = source,
       type = type,
-      config = config,
-      factoryId = factoryId,
-      descriptor = descriptor,
+      config = resolvedTestConfig,
+      factoryId = parent.factoryId,
       parent = parent,
    )
-   return if (configuration.testNameAppendTags) {
-      TestCase.appendTagsInDisplayName(testCase)
-   } else {
-      testCase
-   }
 }

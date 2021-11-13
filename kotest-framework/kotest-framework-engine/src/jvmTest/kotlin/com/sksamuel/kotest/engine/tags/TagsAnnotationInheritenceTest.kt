@@ -1,13 +1,14 @@
 package com.sksamuel.kotest.engine.tags
 
 import io.kotest.core.Tag
-import io.kotest.core.Tags
-import io.kotest.core.config.configuration
+import io.kotest.core.TagExpression
+import io.kotest.core.config.Configuration
 import io.kotest.core.extensions.TagExtension
-import io.kotest.engine.test.status.isEnabledInternal
 import io.kotest.core.spec.Isolate
-import io.kotest.engine.spec.materializeAndOrderRootTests
 import io.kotest.core.spec.style.FunSpec
+import io.kotest.core.test.TestCaseOrder
+import io.kotest.engine.spec.Materializer
+import io.kotest.engine.test.status.isEnabledInternal
 import io.kotest.matchers.shouldBe
 
 @Isolate
@@ -15,74 +16,95 @@ class TagsAnnotationInheritenceTest : FunSpec() {
    init {
 
       test("simple tag") {
+
          val ext = object : TagExtension {
-            override fun tags(): Tags = Tags.include(Linux)
+            override fun tags(): TagExpression = TagExpression.include(Linux)
          }
-         configuration.registerExtension(ext)
-         MyTestClass().materializeAndOrderRootTests()
-            .filter { it.testCase.isEnabledInternal().isEnabled }
-            .map { it.testCase.displayName } shouldBe listOf("a", "b", "c", "d")
-         configuration.deregisterExtension(ext)
+
+         val conf = Configuration()
+         conf.registry().add(ext)
+         conf.testCaseOrder = TestCaseOrder.Random
+
+         Materializer(conf).materialize(MyTestClass())
+            .filter { it.isEnabledInternal(conf).isEnabled }
+            .map { it.name.testName }
+            .toSet() shouldBe setOf("a", "b", "c", "d")
       }
 
       test("simple exclude tag") {
          val ext = object : TagExtension {
-            override fun tags(): Tags = Tags.exclude(Linux)
+            override fun tags(): TagExpression = TagExpression.exclude(Linux)
          }
-         configuration.registerExtension(ext)
+
+         val conf = Configuration()
+         conf.registry().add(ext)
+         conf.testCaseOrder = TestCaseOrder.Random
+
          // all tests should be filtered out because of the @Tags
-         MyTestClass().materializeAndOrderRootTests()
-            .filter { it.testCase.isEnabledInternal().isEnabled }
-            .map { it.testCase.displayName } shouldBe emptyList()
-         configuration.deregisterExtension(ext)
+         Materializer(conf).materialize(MyTestClass())
+            .filter { it.isEnabledInternal(conf).isEnabled }
+            .map { it.name.testName }
+            .toSet() shouldBe emptySet()
       }
 
       test("inheritence with OR") {
          val ext = object : TagExtension {
-            override fun tags(): Tags = Tags("Linux | Mysql")
+            override fun tags(): TagExpression = TagExpression("Linux | Mysql")
          }
-         configuration.registerExtension(ext)
-         // linux is included for all and we're using an or
-         MyTestClass().materializeAndOrderRootTests()
-            .filter { it.testCase.isEnabledInternal().isEnabled }
-            .map { it.testCase.displayName } shouldBe listOf("a", "b", "c", "d")
-         configuration.deregisterExtension(ext)
+         val conf = Configuration()
+         conf.registry().add(ext)
+         conf.testCaseOrder = TestCaseOrder.Random
+
+         // linux is included for all, and we're using an 'or'
+         Materializer(conf).materialize(MyTestClass())
+            .filter { it.isEnabledInternal(conf).isEnabled }
+            .map { it.name.testName }
+            .toSet() shouldBe setOf("a", "b", "c", "d")
       }
 
       test("inheritence with AND") {
          val ext = object : TagExtension {
-            override fun tags(): Tags = Tags.include(Linux).exclude(Postgres)
+            override fun tags(): TagExpression = TagExpression.include(Linux).exclude(Postgres)
          }
-         configuration.registerExtension(ext)
+         val conf = Configuration()
+         conf.registry().add(ext)
+         conf.testCaseOrder = TestCaseOrder.Random
+
          // linux should be included for all, but then postgres tests excluded as well
-         MyTestClass().materializeAndOrderRootTests()
-            .filter { it.testCase.isEnabledInternal().isEnabled }
-            .map { it.testCase.displayName } shouldBe listOf("a", "d")
-         configuration.deregisterExtension(ext)
+         Materializer(conf).materialize(MyTestClass())
+            .filter { it.isEnabledInternal(conf).isEnabled }
+            .map { it.name.testName }
+            .toSet() shouldBe setOf("a", "d")
       }
 
       test("@Tags should be ignored when not applicable to an exclude") {
          val ext = object : TagExtension {
-            override fun tags(): Tags = Tags.exclude(Mysql)
+            override fun tags(): TagExpression = TagExpression.exclude(Mysql)
          }
-         configuration.registerExtension(ext)
+         val conf = Configuration()
+         conf.registry().add(ext)
+         conf.testCaseOrder = TestCaseOrder.Random
+
          // Mysql tests should be excluded
-         MyTestClass().materializeAndOrderRootTests()
-            .filter { it.testCase.isEnabledInternal().isEnabled }
-            .map { it.testCase.displayName } shouldBe listOf("b", "d")
-         configuration.deregisterExtension(ext)
+         Materializer(conf).materialize(MyTestClass())
+            .filter { it.isEnabledInternal(conf).isEnabled }
+            .map { it.name.testName }
+            .toSet() shouldBe setOf("b", "d")
       }
 
       test("@Tags should be ignored when not applicable to an test") {
          val ext = object : TagExtension {
-            override fun tags(): Tags = Tags.include(Postgres)
+            override fun tags(): TagExpression = TagExpression.include(Postgres)
          }
-         configuration.registerExtension(ext)
+         val conf = Configuration()
+         conf.registry().add(ext)
+         conf.testCaseOrder = TestCaseOrder.Random
+
          // Mysql tests should be excluded
-         MyTestClass().materializeAndOrderRootTests()
-            .filter { it.testCase.isEnabledInternal().isEnabled }
-            .map { it.testCase.displayName } shouldBe listOf("b", "c")
-         configuration.deregisterExtension(ext)
+         Materializer(conf).materialize(MyTestClass())
+            .filter { it.isEnabledInternal(conf).isEnabled }
+            .map { it.name.testName }
+            .toSet() shouldBe setOf("b", "c")
       }
    }
 }

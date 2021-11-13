@@ -5,10 +5,6 @@ plugins {
    id("com.adarshr.test-logger")
 }
 
-repositories {
-   mavenCentral()
-}
-
 kotlin {
 
    targets {
@@ -25,7 +21,6 @@ kotlin {
       }
 
       linuxX64()
-      linuxArm64()
 
       mingwX64()
 
@@ -55,9 +50,9 @@ kotlin {
             implementation(kotlin("reflect"))
             implementation(Libs.Coroutines.coreCommon)
             implementation(project(Projects.Common))
-            implementation(project(Projects.AssertionsApi))
+            implementation(project(Projects.Assertions.Api))
             // this is api because we want to expose `shouldBe` etc
-            api(project(Projects.AssertionsShared))
+            api(project(Projects.Assertions.Shared))
          }
       }
 
@@ -73,8 +68,10 @@ kotlin {
          dependencies {
             implementation(project(Projects.Property))
             implementation(project(Projects.JunitRunner))
+            implementation(Libs.Coroutines.coreJvm)
             implementation(Libs.OpenTest4j.opentest4j)
             implementation(Libs.Apache.commonslang)
+            implementation(Libs.Mocking.mockk)
          }
       }
 
@@ -83,30 +80,6 @@ kotlin {
          languageSettings.optIn("kotlin.experimental.ExperimentalTypeInference")
          languageSettings.optIn("kotlin.contracts.ExperimentalContracts")
       }
-   }
-}
-
-tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
-   kotlinOptions.jvmTarget = "1.8"
-   kotlinOptions.apiVersion = "1.5"
-}
-
-tasks.named<Test>("jvmTest") {
-   useJUnitPlatform()
-   filter {
-      isFailOnNoMatchingTests = false
-   }
-   testLogging {
-      showExceptions = true
-      events = setOf(
-         org.gradle.api.tasks.testing.logging.TestLogEvent.STARTED,
-         org.gradle.api.tasks.testing.logging.TestLogEvent.SKIPPED,
-         org.gradle.api.tasks.testing.logging.TestLogEvent.FAILED,
-         org.gradle.api.tasks.testing.logging.TestLogEvent.PASSED,
-         org.gradle.api.tasks.testing.logging.TestLogEvent.STANDARD_OUT,
-         org.gradle.api.tasks.testing.logging.TestLogEvent.STANDARD_ERROR
-      )
-      exceptionFormat = org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
    }
 }
 

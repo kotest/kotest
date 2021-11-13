@@ -4,16 +4,12 @@ plugins {
    id("org.springframework.boot") version "2.3.0.RELEASE"
    id("io.spring.dependency-management") version "1.0.11.RELEASE"
    kotlin("jvm")
-   kotlin("plugin.spring") version "1.4.31"
+   kotlin("plugin.spring") version "1.6.20-dev-4892"
 }
 
 group = "com.example"
 version = "0.0.1-SNAPSHOT"
 java.sourceCompatibility = JavaVersion.VERSION_1_8
-
-repositories {
-   mavenCentral()
-}
 
 dependencies {
    implementation("org.springframework.boot:spring-boot-starter-webflux")
@@ -26,7 +22,7 @@ dependencies {
       exclude(group = "org.junit.vintage", module = "junit-vintage-engine")
       exclude(module = "mockito-core")
    }
-   testImplementation("com.ninja-squad:springmockk:2.0.1")
+   testImplementation("com.ninja-squad:springmockk:3.0.1")
    testImplementation("io.projectreactor:reactor-test")
    testImplementation(project(Projects.JunitRunner))
    testImplementation(project(":kotest-extensions:kotest-extensions-spring"))

@@ -9,7 +9,7 @@ import io.kotest.core.test.TestCase
  *
  */
 @ExperimentalKotest
-interface TestScheduler {
+internal interface TestScheduler {
 
    /**
     * Implement this method to invoke the given tests.

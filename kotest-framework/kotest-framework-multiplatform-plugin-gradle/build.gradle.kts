@@ -11,7 +11,7 @@ plugins {
    id("java-library")
    id("maven-publish")
    id("java-gradle-plugin")
-   id("com.gradle.plugin-publish") version "0.15.0"
+   id("com.gradle.plugin-publish") version "0.17.0"
 }
 
 version = Ci.gradleVersion
@@ -28,7 +28,7 @@ repositories {
 
 dependencies {
    compileOnly(gradleApi())
-   compileOnly("org.jetbrains.kotlin:kotlin-gradle-plugin:1.5.30")
+   compileOnly("org.jetbrains.kotlin:kotlin-gradle-plugin:1.6.255-SNAPSHOT")
 }
 
 tasks {
@@ -47,9 +47,4 @@ tasks {
          }
       }
    }
-}
-
-tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
-   kotlinOptions.jvmTarget = "1.8"
-   kotlinOptions.apiVersion = "1.5"
 }

@@ -1,7 +1,6 @@
 package io.kotest.assertions
 
 import io.kotest.common.ExperimentalKotest
-import kotlin.coroutines.coroutineContext
 
 /**
  * Executes the given lambda and expects exactly one assertion to succeed.

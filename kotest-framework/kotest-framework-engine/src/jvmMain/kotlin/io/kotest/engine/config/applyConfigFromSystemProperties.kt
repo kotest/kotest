@@ -1,66 +1,76 @@
 package io.kotest.engine.config
 
 import io.kotest.core.config.Configuration
+import io.kotest.core.config.LogLevel
 import io.kotest.core.internal.KotestEngineProperties
+import io.kotest.core.names.DuplicateTestNameMode
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.test.AssertionMode
-import io.kotest.core.test.DuplicateTestNameMode
-import io.kotest.fp.fmap
-import io.kotest.fp.foreach
+import io.kotest.mpp.env
 import io.kotest.mpp.sysprop
+import kotlin.time.Duration
+import kotlin.time.milliseconds
 
 /**
  * Uses system properties to load configuration values onto the supplied [Configuration] object.
  *
  * Note: This function will have no effect on non-JVM targets.
  */
-actual fun applyConfigFromSystemProperties(configuration: Configuration) {
-   isolationMode().foreach { configuration.isolationMode = it }
-   assertionMode().foreach { configuration.assertionMode = it }
-   parallelism().foreach { configuration.parallelism = it }
-   concurrentTests().foreach { configuration.concurrentTests = it }
-   concurrentSpecs().foreach { configuration.concurrentSpecs = it }
-   timeout().foreach { configuration.timeout = it }
-   invocationTimeout().foreach { configuration.invocationTimeout = it }
-   allowMultilineTestName().foreach { configuration.removeTestNameWhitespace = it }
-   globalAssertSoftly().foreach { configuration.globalAssertSoftly = it }
-   testNameAppendTags().foreach { configuration.testNameAppendTags = it }
-   duplicateTestNameMode().foreach { configuration.duplicateTestNameMode = it }
-   projectTimeout().foreach { configuration.projectTimeout = it }
+internal actual fun applyConfigFromSystemProperties(configuration: Configuration) {
+   isolationMode()?.let { configuration.isolationMode = it }
+   assertionMode()?.let { configuration.assertionMode = it }
+   parallelism()?.let { configuration.parallelism = it }
+   concurrentTests()?.let { configuration.concurrentTests = it }
+   concurrentSpecs()?.let { configuration.concurrentSpecs = it }
+   timeout()?.let { configuration.timeout = it }
+   invocationTimeout()?.let { configuration.invocationTimeout = it }
+   allowMultilineTestName()?.let { configuration.removeTestNameWhitespace = it }
+   globalAssertSoftly()?.let { configuration.globalAssertSoftly = it }
+   testNameAppendTags()?.let { configuration.testNameAppendTags = it }
+   duplicateTestNameMode()?.let { configuration.duplicateTestNameMode = it }
+   projectTimeout()?.let { configuration.projectTimeout = it }
+   logLevel().let { configuration.logLevel = it }
 }
 
 internal fun isolationMode(): IsolationMode? =
-   sysprop(KotestEngineProperties.isolationMode).fmap { IsolationMode.valueOf(it) }
+   sysprop(KotestEngineProperties.isolationMode)?.let { IsolationMode.valueOf(it) }
 
 internal fun assertionMode(): AssertionMode? =
-   sysprop(KotestEngineProperties.assertionMode).fmap { AssertionMode.valueOf(it) }
+   sysprop(KotestEngineProperties.assertionMode)?.let { AssertionMode.valueOf(it) }
 
 internal fun parallelism(): Int? =
-   sysprop(KotestEngineProperties.parallelism).fmap { it.toInt() }
+   sysprop(KotestEngineProperties.parallelism)?.toInt()
 
 internal fun timeout(): Long? =
-   sysprop(KotestEngineProperties.timeout).fmap { it.toLong() }
+   sysprop(KotestEngineProperties.timeout)?.toLong()
 
 internal fun invocationTimeout(): Long? =
-   sysprop(KotestEngineProperties.invocationTimeout).fmap { it.toLong() }
+   sysprop(KotestEngineProperties.invocationTimeout)?.toLong()
 
 internal fun allowMultilineTestName(): Boolean? =
-   sysprop(KotestEngineProperties.allowMultilineTestName).fmap { it.uppercase() == "TRUE" }
+   sysprop(KotestEngineProperties.allowMultilineTestName)?.let { it.uppercase() == "TRUE" }
 
 internal fun concurrentSpecs(): Int? =
-   sysprop(KotestEngineProperties.concurrentSpecs).fmap { it.toInt() }
+   sysprop(KotestEngineProperties.concurrentSpecs)?.toInt()
 
 internal fun concurrentTests(): Int? =
-   sysprop(KotestEngineProperties.concurrentTests).fmap { it.toInt() }
+   sysprop(KotestEngineProperties.concurrentTests)?.toInt()
 
 internal fun globalAssertSoftly(): Boolean? =
-   sysprop(KotestEngineProperties.globalAssertSoftly).fmap { it.uppercase() == "TRUE" }
+   sysprop(KotestEngineProperties.globalAssertSoftly)?.let { it.uppercase() == "TRUE" }
 
 internal fun testNameAppendTags(): Boolean? =
-   sysprop(KotestEngineProperties.testNameAppendTags).fmap { it.uppercase() == "TRUE" }
+   sysprop(KotestEngineProperties.testNameAppendTags)?.let { it.uppercase() == "TRUE" }
 
 internal fun duplicateTestNameMode(): DuplicateTestNameMode? =
-   sysprop(KotestEngineProperties.testNameAppendTags).fmap { DuplicateTestNameMode.valueOf(it) }
+   sysprop(KotestEngineProperties.duplicateTestNameMode)?.let { DuplicateTestNameMode.valueOf(it) }
 
-internal fun projectTimeout(): Long? =
-   sysprop(KotestEngineProperties.projectTimeout).fmap { it.toLong() }
+internal fun projectTimeout(): Duration? =
+   sysprop(KotestEngineProperties.projectTimeout)?.toLong()?.milliseconds
+
+internal fun logLevel(): LogLevel {
+   val levelProp = sysprop(KotestEngineProperties.logLevel)?.let { LogLevel.from(it) }
+   val levelEnv = env(KotestEngineProperties.logLevel)?.let { LogLevel.from(it) }
+
+   return levelProp ?: levelEnv ?: LogLevel.Off
+}

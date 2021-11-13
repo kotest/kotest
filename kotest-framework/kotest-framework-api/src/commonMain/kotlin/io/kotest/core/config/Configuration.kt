@@ -4,29 +4,18 @@ package io.kotest.core.config
 
 import io.kotest.common.ExperimentalKotest
 import io.kotest.core.extensions.Extension
-import io.kotest.core.extensions.TestCaseExtension
-import io.kotest.core.filter.Filter
 import io.kotest.core.listeners.Listener
-import io.kotest.core.listeners.SpecInstantiationListener
-import io.kotest.core.listeners.TestListener
+import io.kotest.core.names.DuplicateTestNameMode
+import io.kotest.core.names.TestNameCase
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.SpecExecutionOrder
 import io.kotest.core.test.AssertionMode
-import io.kotest.core.test.DuplicateTestNameMode
-import io.kotest.core.test.TestCaseConfig
 import io.kotest.core.test.TestCaseOrder
-import io.kotest.core.test.TestNameCase
+import io.kotest.core.test.TestCaseSeverityLevel
+import io.kotest.core.test.config.ResolvedTestConfig
+import io.kotest.core.test.config.TestCaseConfig
 import kotlinx.coroutines.CoroutineDispatcher
-
-/**
- * The global configuration singleton.
- *
- * This is a global singleton for historic reasons and is slowly being replaced with a non-global variable.
- *
- * Expect this val to disappear in Kotest 6.0
- *
- */
-val configuration = Configuration()
+import kotlin.time.Duration
 
 /**
  * This class defines project wide settings that are used when executing tests.
@@ -44,8 +33,7 @@ class Configuration {
       const val MaxConcurrency = Int.MAX_VALUE
    }
 
-   private val filters = mutableListOf<Filter>()
-   private val extensions = mutableListOf<Extension>()
+   private val registry: ExtensionRegistry = DefaultExtensionRegistry()
 
    /**
     * If enabled, then all failing spec names will be written to a "failure file".
@@ -99,7 +87,7 @@ class Configuration {
    /**
     * The parallelism factor determines how many threads are used to execute specs and tests.
     *
-    * By default a single threaded [CoroutineDispatcher] is used for all tests.
+    * By default, a single threaded [CoroutineDispatcher] is used for all tests.
     *
     * Increasing this value to k > 1, means that k dispatchers are created, allowing different
     * specs to execute on different dispatchers (each backed by a separate thread).
@@ -120,14 +108,13 @@ class Configuration {
 
    /**
     * By default, all tests inside a single spec are executed using the same dispatcher to ensure
-    * that callbacks all operate on the same thread. In other words, a spec is sticky with regards
-    * to the execution thread. To change this, set this value to false.
+    * that callbacks all operate on the same thread. In other words, a spec is sticky in regard to
+    * the execution thread. To change this, set this value to false.
     *
     * When this value is false, the framework is free to assign different dispatchers to different
     * root tests (nested tests always run in the same thread as their parent test).
     *
-    * Note: Setting this value alone will not increase the number of threads used. For that,
-    * see [Configuration.parallelism].
+    * Note: This setting has no effect unless the number of threads is increasd; see [parallelism].
     *
     * Defaults to [Defaults.dispatcherAffinity].
     */
@@ -155,7 +142,7 @@ class Configuration {
     * blocked. See [Configuration.parallelism].
     *
     * Note: This setting can be > 1 and specs can still choose to "opt out" by using the
-    * [Isolate] annotation. That annotation ensures that a spec never runs concurrently
+    * [io.kotest.core.spec.Isolate] annotation. That annotation ensures that a spec never runs concurrently
     * with any other regardless of the setting here.
     */
    @ExperimentalKotest
@@ -210,16 +197,37 @@ class Configuration {
    /**
     * A timeout that is applied to the overall project if not null,
     * if the sum duration of all the tests exceeds this the suite will fail.
-    * TODO: make this a [kotlin.time.Duration] when that API stabilizes
     */
-   var projectTimeout: Long = Long.MAX_VALUE
+   var projectTimeout: Duration? = null
 
    /**
-    * Returns the default [TestCaseConfig] to be assigned to tests when not specified either in
-    * the spec, test factory, or test case itself.
+    * Controls which log functions on TestCase will be invoked or skipped
+    */
+   var logLevel: LogLevel = LogLevel.Off
+
+   var failfast: Boolean = Defaults.failfast
+
+   var blockingTest: Boolean = Defaults.blockingTest
+
+   var severity: TestCaseSeverityLevel = Defaults.severity
+
+   /**
+    * If set to true then the test engine will install a [TestCoroutineDispatcher].
+    *
+    * This can be retrieved via `delayController` in your tests.
+    *
+    * @see https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-test/index.html
+    */
+   @ExperimentalKotest
+   var testCoroutineDispatcher: Boolean = Defaults.testCoroutineDispatcher
+
+   /**
+    * Contains the default [ResolvedTestConfig] to be used by tests when not specified in either
+    * the test, the spec, or the test factory.
     *
     * Defaults to [Defaults.testCaseConfig]
     */
+   @Deprecated("These settings can be specified individually to provide finer grain control. Deprecated since 5.0")
    var defaultTestConfig: TestCaseConfig = Defaults.testCaseConfig
 
    /**
@@ -310,73 +318,121 @@ class Configuration {
     */
    var duplicateTestNameMode: DuplicateTestNameMode = Defaults.duplicateTestNameMode
 
+   var displayFullTestPath: Boolean = Defaults.displayFullTestPath
+
    /**
     * Returns all globally registered [Listener]s.
     */
-   @Deprecated("Listeners have been subsumed into extensions")
-   fun listeners() = extensions()
+   @Deprecated("Listeners have been subsumed into extensions", level = DeprecationLevel.ERROR)
+   fun listeners(): Nothing = throw UnsupportedOperationException()
 
    /**
-    * Returns all globally registered [Extension]s.
+    * Returns the [ExtensionRegistry] that contains all extensions registered through
+    * this configuration instance.
     */
-   fun extensions() = extensions.toList()
+   fun registry(): ExtensionRegistry = registry
+
+   @Deprecated("Use registry. Deprecated since 5.0")
+   fun extensions(): List<Extension> = registry().all()
 
    /**
     * Returns all globally registered [Filter]s.
     */
-   fun filters() = filters.toList()
+   @Deprecated("Listeners have been subsumed into extensions", level = DeprecationLevel.ERROR)
+   fun filters(): Nothing = throw UnsupportedOperationException()
 
-   fun registerFilters(vararg filters: Filter) = filters.forEach { registerFilter(it) }
-   fun registerFilters(filters: Collection<Filter>) = filters.forEach { registerFilter(it) }
-   fun deregisterFilters(filters: Collection<Filter>) = filters.forEach { deregisterFilter(it) }
+   @Deprecated("Use registry. Deprecated since 5.0")
+   fun registerFilters(vararg filters: Extension) = filters.forEach { registry.add(it) }
 
-   fun registerFilter(filter: Filter) {
-      filters.add(filter)
+   @Deprecated("Use registry. Deprecated since 5.0")
+   fun registerFilters(filters: Collection<Extension>) = filters.forEach { registry.add(it) }
+
+   @Deprecated("Use registry. Deprecated since 5.0")
+   fun deregisterFilters(filters: Collection<Extension>) = filters.forEach { registry.remove(it) }
+
+   @Deprecated("Use registry. Deprecated since 5.0", ReplaceWith("registry().add(filter)"))
+   fun registerFilter(filter: Extension) {
+      register(filter)
    }
 
-   fun deregisterFilter(filter: Filter) {
-      filters.remove(filter)
+   @Deprecated("Use registry. Deprecated since 5.0", ReplaceWith("registry().remove(filter)"))
+   fun deregisterFilter(filter: Extension) {
+      deregister(filter)
    }
 
-   fun registerExtensions(vararg extensions: Extension) = extensions.forEach { registerExtension(it) }
-   fun registerExtensions(extensions: List<Extension>) = extensions.forEach { registerExtension(it) }
-   fun deregisterExtensions(extensions: List<Extension>) = extensions.forEach { deregisterExtension(it) }
+   @Deprecated(
+      "Use extensions().add(). Deprecated since 5.0",
+      ReplaceWith("extensions.forEach { registry().add(it) }")
+   )
+   fun registerExtensions(vararg extensions: Extension) = extensions.forEach { registry().add(it) }
 
+   @Deprecated(
+      "Use extensions().add(). Deprecated since 5.0",
+      ReplaceWith("extensions.forEach { registry().add(it) }")
+   )
+   fun registerExtensions(extensions: List<Extension>) = extensions.forEach { registry().add(it) }
+
+   @Deprecated(
+      "Use extensions().add(). Deprecated since 5.0",
+      ReplaceWith("extensions.forEach { registry().remove(it) }")
+   )
+   fun deregisterExtensions(extensions: List<Extension>) = extensions.forEach { registry().remove(it) }
+
+   @Deprecated("Use extensions().add(). Deprecated since 5.0", ReplaceWith("registry().add(extension)"))
+   fun register(extension: Extension) {
+      registry().add(extension)
+   }
+
+   @Deprecated("Use extensions().add(). Deprecated since 5.0", ReplaceWith("registry().add(extension)"))
    fun registerExtension(extension: Extension) {
-      extensions.add(extension)
+      registry().add(extension)
    }
 
+   @Deprecated("Use extensions().remove(). Deprecated since 5.0", ReplaceWith("registry().remove(extension)"))
+   fun deregister(extension: Extension) {
+      registry().remove(extension)
+   }
+
+   @Deprecated("Use extensions().remove(). Deprecated since 5.0", ReplaceWith("registry().remove(extension)"))
    fun deregisterExtension(extension: Extension) {
-      extensions.remove(extension)
+      registry().remove(extension)
    }
 
-   @Deprecated("Use registerExtension. This will be removed in 6.0.")
-   fun registerListeners(vararg listeners: Listener) = listeners.forEach { registerExtension(it) }
+   @Deprecated(
+      "Use extensions().add(). Deprecated since 5.0",
+      ReplaceWith("listeners.forEach { registry().add(it) }")
+   )
+   fun registerListeners(vararg listeners: Listener) = listeners.forEach { registry().add(it) }
 
-   @Deprecated("Use registerExtension. This will be removed in 6.0.")
-   fun registerListeners(listeners: List<Listener>) = listeners.forEach { registerExtension(it) }
+   @Deprecated(
+      "Use extensions().add(). Deprecated since 5.0",
+      ReplaceWith("listeners.forEach { registry().add(it) }")
+   )
+   fun registerListeners(listeners: List<Listener>) = listeners.forEach { registry().add(it) }
 
-   @Deprecated("Use deregisterExtension. This will be removed in 6.0.")
-   fun deregisterListeners(listeners: List<Listener>) = listeners.forEach { deregisterExtension(it) }
+   @Deprecated(
+      "Use extensions().remove(). Deprecated since 5.0",
+      ReplaceWith("listeners.forEach { registry().remove(it) }")
+   )
+   fun deregisterListeners(listeners: List<Listener>) = listeners.forEach { registry().remove(it) }
 
-   @Deprecated("Use registerExtension. This will be removed in 6.0.")
-   fun registerListener(listener: Listener) = registerExtension(listener)
+   @Deprecated("Use extensions().add(). Deprecated since 5.0", ReplaceWith("registry().add(listener)"))
+   fun registerListener(listener: Listener) {
+      registry().add(listener)
+   }
 
-   @Deprecated("Use deregisterListener. This will be removed in 6.0.")
+   @Deprecated("Use extensions().remove(). Deprecated since 5.0", ReplaceWith("registry().remove(listener)"))
    fun deregisterListener(listener: Listener) {
-      deregisterExtension(listener)
+      registry.remove(listener)
    }
 
-   @Deprecated("Use removeExtensions. This will be removed in 6.0.")
+   @Deprecated("Use extensions().clear(). Deprecated since 5.0", ReplaceWith("extensions().clear()"))
    fun removeListeners() {
-      removeExtensions()
+      registry().clear()
    }
 
+   @Deprecated("Use extensions().clear(). Deprecated since 5.0", ReplaceWith("extensions().clear()"))
    fun removeExtensions() {
-      extensions.clear()
-   }
-
-   fun removeFilters() {
-      filters.clear()
+      registry().clear()
    }
 }

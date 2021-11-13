@@ -5,10 +5,6 @@ plugins {
    id("com.adarshr.test-logger")
 }
 
-repositories {
-   mavenCentral()
-}
-
 kotlin {
 
    targets {
@@ -27,7 +23,6 @@ kotlin {
       }
 
       linuxX64()
-      linuxArm64()
 
       mingwX64()
 
@@ -55,10 +50,10 @@ kotlin {
          dependencies {
             compileOnly(kotlin("stdlib"))
             implementation(kotlin("reflect"))
-            implementation(Libs.Coroutines.coreCommon)
-            implementation(Libs.Kotlin.kotlinScriptRuntime)
+            api(Libs.Coroutines.coreCommon)
+//            implementation(Libs.Kotlin.kotlinScriptRuntime)
             implementation(project(Projects.Common))
-            api(project(Projects.AssertionsShared))
+            api(project(Projects.Assertions.Shared))
          }
       }
 
@@ -68,6 +63,9 @@ kotlin {
 
       val jvmMain by getting {
          dependsOn(commonMain)
+         dependencies {
+            api(Libs.Coroutines.test)
+         }
       }
 
       val desktopMain by creating {
@@ -87,10 +85,6 @@ kotlin {
       }
 
       val linuxX64Main by getting {
-         dependsOn(desktopMain)
-      }
-
-      val linuxArm64Main by getting {
          dependsOn(desktopMain)
       }
 
@@ -142,7 +136,7 @@ kotlin {
          dependencies {
             implementation(kotlin("reflect"))
             implementation(project(Projects.Framework.engine))
-            implementation(project(Projects.AssertionsCore))
+            implementation(project(Projects.Assertions.Core))
             // we use the internals of the JVM project in the tests
             implementation(project(Projects.JunitRunner))
             implementation(Libs.Coroutines.coreJvm)
@@ -160,24 +154,6 @@ kotlin {
          languageSettings.optIn("kotlin.time.ExperimentalTime")
          languageSettings.optIn("kotlin.experimental.ExperimentalTypeInference")
       }
-   }
-}
-
-tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
-   kotlinOptions.jvmTarget = "1.8"
-   kotlinOptions.apiVersion = "1.5"
-}
-
-tasks.named<Test>("jvmTest") {
-   useJUnitPlatform()
-   filter {
-      isFailOnNoMatchingTests = false
-   }
-   testLogging {
-      showExceptions = true
-      showStandardStreams = true
-      events = setOf(org.gradle.api.tasks.testing.logging.TestLogEvent.FAILED, org.gradle.api.tasks.testing.logging.TestLogEvent.PASSED)
-      exceptionFormat = org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
    }
 }
 
@@ -227,7 +203,8 @@ slug: framework-config-props.html
 
    foundFiles.forEach { file ->
       val name = file.name
-      val content = file.readLines().joinToString(separator = System.lineSeparator())
+      // intentionally use \n instead of System.lineSeparator to respect .editorconfig
+      val content = file.readLines().joinToString(separator = "\n")
 
       sb.append(fileTemplate.format(name, content))
    }

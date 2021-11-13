@@ -14,8 +14,6 @@ import io.kotest.matchers.collections.containDuplicates
 import io.kotest.matchers.collections.containNoNulls
 import io.kotest.matchers.collections.containNull
 import io.kotest.matchers.collections.containOnlyNulls
-import io.kotest.matchers.collections.containsInOrder
-import io.kotest.matchers.collections.endWith
 import io.kotest.matchers.collections.existInOrder
 import io.kotest.matchers.collections.haveElementAt
 import io.kotest.matchers.collections.haveSize
@@ -29,7 +27,6 @@ import io.kotest.matchers.collections.shouldBeMonotonicallyDecreasing
 import io.kotest.matchers.collections.shouldBeMonotonicallyDecreasingWith
 import io.kotest.matchers.collections.shouldBeMonotonicallyIncreasing
 import io.kotest.matchers.collections.shouldBeMonotonicallyIncreasingWith
-import io.kotest.matchers.collections.shouldBeOneOf
 import io.kotest.matchers.collections.shouldBeSameSizeAs
 import io.kotest.matchers.collections.shouldBeSingleton
 import io.kotest.matchers.collections.shouldBeSmallerThan
@@ -44,7 +41,6 @@ import io.kotest.matchers.collections.shouldContainDuplicates
 import io.kotest.matchers.collections.shouldContainNoNulls
 import io.kotest.matchers.collections.shouldContainNull
 import io.kotest.matchers.collections.shouldContainOnlyNulls
-import io.kotest.matchers.collections.shouldEndWith
 import io.kotest.matchers.collections.shouldExist
 import io.kotest.matchers.collections.shouldHaveAtLeastSize
 import io.kotest.matchers.collections.shouldHaveAtMostSize
@@ -56,7 +52,6 @@ import io.kotest.matchers.collections.shouldNotBeMonotonicallyDecreasing
 import io.kotest.matchers.collections.shouldNotBeMonotonicallyDecreasingWith
 import io.kotest.matchers.collections.shouldNotBeMonotonicallyIncreasing
 import io.kotest.matchers.collections.shouldNotBeMonotonicallyIncreasingWith
-import io.kotest.matchers.collections.shouldNotBeOneOf
 import io.kotest.matchers.collections.shouldNotBeSingleton
 import io.kotest.matchers.collections.shouldNotBeSorted
 import io.kotest.matchers.collections.shouldNotBeSortedWith
@@ -69,14 +64,10 @@ import io.kotest.matchers.collections.shouldNotContainDuplicates
 import io.kotest.matchers.collections.shouldNotContainNoNulls
 import io.kotest.matchers.collections.shouldNotContainNull
 import io.kotest.matchers.collections.shouldNotContainOnlyNulls
-import io.kotest.matchers.collections.shouldNotEndWith
 import io.kotest.matchers.collections.shouldNotHaveElementAt
 import io.kotest.matchers.collections.shouldNotHaveSize
-import io.kotest.matchers.collections.shouldNotStartWith
-import io.kotest.matchers.collections.shouldStartWith
 import io.kotest.matchers.collections.singleElement
 import io.kotest.matchers.collections.sorted
-import io.kotest.matchers.collections.startWith
 import io.kotest.matchers.collections.strictlyDecreasing
 import io.kotest.matchers.collections.strictlyDecreasingWith
 import io.kotest.matchers.collections.strictlyIncreasing
@@ -88,7 +79,6 @@ import io.kotest.matchers.shouldNot
 import io.kotest.matchers.shouldNotBe
 import io.kotest.matchers.shouldNotHave
 import io.kotest.matchers.throwable.shouldHaveMessage
-import java.util.Comparator
 
 class CollectionMatchersTest : WordSpec() {
 
@@ -601,83 +591,6 @@ class CollectionMatchersTest : WordSpec() {
                { it == 2 }
             )
          }
-      }
-
-
-
-      "Be one of" should {
-         "Pass when the element instance is in the list" {
-            val foo = Foo("Bar")
-            val list = listOf(foo)
-
-            foo shouldBeOneOf list
-         }
-
-         "Fail when the element instance is not in the list" {
-            val foo1 = Foo("Bar")
-            val foo2 = Foo("Booz")
-
-            val list = listOf(foo1)
-            shouldThrow<AssertionError> {
-               foo2.shouldBeOneOf(list)
-            }.shouldHaveMessage("Collection should contain the instance of value, but doesn't.")
-         }
-
-         "Fail when there's an equal element, but not the same instance in the list" {
-            val foo1 = Foo("Bar")
-            val foo2 = Foo("Bar")
-
-            val list = listOf(foo1)
-            shouldThrow<AssertionError> {
-               foo2 shouldBeOneOf list
-            }.shouldHaveMessage("Collection should contain the instance of value, but doesn't.")
-         }
-
-         "Fail when the list is empty" {
-            val foo = Foo("Bar")
-
-            val list = emptyList<Foo>()
-            shouldThrow<AssertionError> {
-               foo shouldBeOneOf list
-            }.shouldHaveMessage("Asserting content on empty collection. Use Collection.shouldBeEmpty() instead.")
-         }
-      }
-
-      "Be one of (negative)" should {
-         "Fail when the element instance is in the list" {
-            val foo = Foo("Bar")
-            val list = listOf(foo)
-
-            shouldThrow<AssertionError> {
-               foo shouldNotBeOneOf list
-            }.shouldHaveMessage("Collection should not contain the instance of value, but does.")
-         }
-
-         "Pass when the element instance is not in the list" {
-            val foo1 = Foo("Bar")
-            val foo2 = Foo("Booz")
-
-            val list = listOf(foo1)
-            foo2.shouldNotBeOneOf(list)
-         }
-
-         "Pass when there's an equal element, but not the same instance in the list" {
-            val foo1 = Foo("Bar")
-            val foo2 = Foo("Bar")
-
-            val list = listOf(foo1)
-            foo2 shouldNotBeOneOf list
-         }
-
-         "Fail when the list is empty" {
-            val foo = Foo("Bar")
-
-            val list = emptyList<Foo>()
-            shouldThrow<AssertionError> {
-               foo shouldNotBeOneOf list
-            }.shouldHaveMessage("Asserting content on empty collection. Use Collection.shouldBeEmpty() instead.")
-         }
-
       }
 
       "Contain any" should {

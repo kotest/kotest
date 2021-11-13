@@ -1,108 +1,86 @@
 package com.sksamuel.kotest.runner.junit5
 
-import io.kotest.core.config.configuration
 import io.kotest.core.listeners.ProjectListener
-import io.kotest.core.spec.Isolate
 import io.kotest.core.spec.style.FunSpec
-import io.kotest.extensions.system.withEnvironment
-import io.mockk.every
-import io.mockk.mockkObject
-import io.mockk.unmockkObject
 import org.junit.platform.engine.discovery.DiscoverySelectors
 import org.junit.platform.testkit.engine.EngineTestKit
 
-@Isolate
+class ZammBeforeProjectListener : ProjectListener {
+   override suspend fun beforeProject() {
+      error("zamm!")
+   }
+}
+
+class WhackBeforeProjectListener : ProjectListener {
+   override suspend fun beforeProject() {
+      error("whack!")
+   }
+}
+
 class BeforeProjectListenerExceptionHandlingTest : FunSpec({
 
-   beforeTest { mockkObject(configuration) }
-   afterTest { unmockkObject(configuration) }
+   test("a BeforeProjectListenerException should add marker test using listener name") {
 
-   test("!an BeforeProjectListenerException should add marker spec") {
-      every { configuration.extensions() } returns listOf(
-         object : ProjectListener {
-            override suspend fun beforeProject() {
-               if (System.getenv("foo") == "true") error("beforeProjectError")
-            }
+      EngineTestKit
+         .engine("kotest")
+         .selectors(DiscoverySelectors.selectClass(BeforeProjectListenerExceptionSample::class.java))
+         .configurationParameter("allow_private", "true")
+         .configurationParameter("kotest.extensions", "com.sksamuel.kotest.runner.junit5.ZammBeforeProjectListener")
+         .execute()
+         .allEvents().apply {
+            started().shouldHaveNames(
+               "Kotest",
+               "Before Project Error"
+            )
+            aborted().shouldBeEmpty()
+            skipped().shouldBeEmpty()
+            failed().shouldHaveNames("Before Project Error")
+            succeeded().shouldHaveNames(
+               "Kotest"
+            )
+            finished().shouldHaveNames(
+               "Before Project Error",
+               "Kotest"
+            )
+            dynamicallyRegistered().shouldHaveNames(
+               "Before Project Error"
+            )
          }
-      )
-      // use an env so that we only trigger the after all failure in the test, not while running the overall test suite
-      withEnvironment("foo", "true") {
-         EngineTestKit
-            .engine("kotest")
-            .selectors(DiscoverySelectors.selectClass(BeforeProjectListenerExceptionSample::class.java))
-            .configurationParameter("allow_private", "true")
-            .execute()
-            .allEvents().apply {
-               started().shouldHaveNames(
-                  "Kotest",
-                  "defaultProjectListener"
-               )
-               aborted().shouldBeEmpty()
-               skipped().shouldBeEmpty()
-               failed().shouldHaveNames("defaultProjectListener")
-               succeeded().shouldHaveNames(
-                  "Kotest"
-               )
-               finished().shouldHaveNames(
-                  "defaultProjectListener",
-                  "Kotest"
-               )
-               dynamicallyRegistered().shouldHaveNames(
-                  "defaultProjectListener"
-               )
-            }
-      }
    }
 
-   test("!an BeforeProjectListener2Exception should add 2 markers spec") {
-      every { configuration.extensions() } returns listOf(
-         object : ProjectListener {
-            override val name: String
-               get() = "MyBeforeProjectListenerName1"
+   test("multiple BeforeProjectListenerException's should add multiple marker tests") {
 
-            override suspend fun beforeProject() {
-               if (System.getenv("foo") == "true") error("beforeProjectError")
-            }
-         },
-         object : ProjectListener {
-            override val name: String
-               get() = "MyBeforeProjectListenerName2"
-
-            override suspend fun beforeProject() {
-               if (System.getenv("foo") == "true") error("beforeProjectError")
-            }
+      EngineTestKit
+         .engine("kotest")
+         .selectors(DiscoverySelectors.selectClass(BeforeProjectListenerExceptionSample::class.java))
+         .configurationParameter("allow_private", "true")
+         .configurationParameter(
+            "kotest.extensions",
+            "com.sksamuel.kotest.runner.junit5.ZammBeforeProjectListener,com.sksamuel.kotest.runner.junit5.WhackBeforeProjectListener"
+         )
+         .execute()
+         .allEvents().apply {
+            started().shouldHaveNames(
+               "Kotest",
+               "Before Project Error",
+               "Before Project Error_1"
+            )
+            aborted().shouldBeEmpty()
+            skipped().shouldBeEmpty()
+            failed().shouldHaveNames("Before Project Error", "Before Project Error_1")
+            succeeded().shouldHaveNames(
+               "Kotest"
+            )
+            finished().shouldHaveNames(
+               "Before Project Error",
+               "Before Project Error_1",
+               "Kotest"
+            )
+            dynamicallyRegistered().shouldHaveNames(
+               "Before Project Error",
+               "Before Project Error_1"
+            )
          }
-      )
-      // use an env so that we only trigger the after all failure in the test, not while running the overall test suite
-      withEnvironment("foo", "true") {
-         EngineTestKit
-            .engine("kotest")
-            .selectors(DiscoverySelectors.selectClass(BeforeProjectListenerExceptionSample::class.java))
-            .configurationParameter("allow_private", "true")
-            .execute()
-            .allEvents().apply {
-               started().shouldHaveNames(
-                  "Kotest",
-                  "MyBeforeProjectListenerName1",
-                  "MyBeforeProjectListenerName2"
-               )
-               aborted().shouldBeEmpty()
-               skipped().shouldBeEmpty()
-               failed().shouldHaveNames("MyBeforeProjectListenerName1", "MyBeforeProjectListenerName2")
-               succeeded().shouldHaveNames(
-                  "Kotest"
-               )
-               finished().shouldHaveNames(
-                  "MyBeforeProjectListenerName1",
-                  "MyBeforeProjectListenerName2",
-                  "Kotest"
-               )
-               dynamicallyRegistered().shouldHaveNames(
-                  "MyBeforeProjectListenerName1",
-                  "MyBeforeProjectListenerName2"
-               )
-            }
-      }
    }
 })
 

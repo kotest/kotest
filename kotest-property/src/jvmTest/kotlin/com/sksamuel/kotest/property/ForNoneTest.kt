@@ -13,7 +13,6 @@ import io.kotest.property.arbitrary.map
 import io.kotest.property.arbitrary.withEdgecases
 import io.kotest.property.exhaustive.constant
 import io.kotest.property.exhaustive.ints
-import io.kotest.property.exhaustive.longs
 import io.kotest.property.forNone
 
 class ForNoneTest : FunSpec({
@@ -37,16 +36,6 @@ class ForNoneTest : FunSpec({
       context.attempts() shouldBe 1000
       context.successes() shouldBe 1000
       context.failures() shouldBe 0
-   }
-
-   test("should throw error if iterations is less than min") {
-      shouldThrowAny {
-         forNone(
-            10,
-            Exhaustive.ints(0..100),
-            Exhaustive.longs(200L..300L)
-         ) { a, b -> a + b != b + a }
-      }.message shouldBe "Require at least 101 iterations to cover requirements"
    }
 
    test("should not throw error if iterations is less than edge cases") {

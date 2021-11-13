@@ -5,13 +5,14 @@ import io.kotest.core.extensions.Extension
 import io.kotest.core.filter.Filter
 import io.kotest.core.listeners.Listener
 import io.kotest.core.listeners.ProjectListener
+import io.kotest.core.names.DuplicateTestNameMode
+import io.kotest.core.names.TestNameCase
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.SpecExecutionOrder
 import io.kotest.core.test.AssertionMode
-import io.kotest.core.test.DuplicateTestNameMode
-import io.kotest.core.test.TestCaseConfig
 import io.kotest.core.test.TestCaseOrder
-import io.kotest.core.test.TestNameCase
+import io.kotest.core.test.config.ResolvedTestConfig
+import io.kotest.core.test.config.TestCaseConfig
 import kotlin.reflect.KClass
 import kotlin.time.Duration
 
@@ -41,11 +42,13 @@ abstract class AbstractProjectConfig {
    /**
     * List of project wide [Listener] instances.
     */
+   @Deprecated("Use extensions. This will be removed in 6.0")
    open fun listeners(): List<Listener> = emptyList()
 
    /**
     * List of project wide [Filter] instances.
     */
+   @Deprecated("Use extensions. This will be removed in 6.0")
    open fun filters(): List<Filter> = emptyList()
 
    /**
@@ -80,27 +83,30 @@ abstract class AbstractProjectConfig {
     * A timeout that is applied to the overall project if not null,
     * if the sum duration of all the tests exceeds this the suite will fail.
     */
-   open val projectTimeout: Long? = null
+   open val projectTimeout: Duration? = null
+
+   /**
+    * Controls which log functions on TestCase will be invoked or skipped
+    */
+   open val logLevel: LogLevel? = null
 
    /**
     * The parallelism factor determines how many threads are used to launch tests.
     *
     * The tests inside the same spec are always executed using the same thread, to ensure
     * that callbacks all operate on the same thread. In other words, a spec is sticky
-    * with regards to the execution thread.
+    * in regard to the execution thread.
     *
     * Increasing this value to k > 1, means that k threads are created, allowing different
     * specs to execute on different threads. For n specs, if you set this value to k, then
     * on average, each thread will service n/k specs.
     *
-    * The thread choosen for a particular thread can be determined by the ThreadAllocationExtension,
-    * which by default chooses in a round robin fashion.
-    *
     * An alternative way to enable this is the system property kotest.framework.parallelism
     * which will always (if defined) take priority over the value here.
     *
     * Note: For backwards compatibility, setting this value to > 1 will implicitly set
-    * [specConcurrentDispatch] to true unless that value has been explicitly set to false.
+    * [concurrentSpecs] to [Configuration.MaxConcurrency] unless that option has been explicitly
+    * set to another value.
     */
    open val parallelism: Int? = null
 
@@ -151,7 +157,7 @@ abstract class AbstractProjectConfig {
     * Override this value and set it to true if you want the build to be marked as failed
     * if there was one or more tests that were disabled/ignored.
     */
-   open val failOnIgnoredTests: Boolean = false
+   open val failOnIgnoredTests: Boolean? = null
 
    /**
     * Override this value and set it to true if you want the build to be marked as failed
@@ -172,7 +178,7 @@ abstract class AbstractProjectConfig {
    open val assertionMode: AssertionMode? = null
 
    /**
-    * Any [TestCaseConfig] set here is used as the default for tests, unless overriden in a spec,
+    * Any [ResolvedTestConfig] set here is used as the default for tests, unless overriden in a spec,
     * or in a test itself. In other words the order is test -> spec -> project config default -> kotest default
     */
    open val defaultTestCaseConfig: TestCaseConfig? = null
@@ -228,6 +234,8 @@ abstract class AbstractProjectConfig {
     * then the spec itself will not appear as a node in output.
     */
    open val displaySpecIfNoActiveTests: Boolean? = null
+
+   open var dispatcherAffinity: Boolean? = null
 
    /**
     * Executed before the first test of the project, but after the

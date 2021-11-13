@@ -3,9 +3,7 @@ package io.kotest.matchers.floats
 import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
 import io.kotest.matchers.should
-import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNot
-import io.kotest.matchers.shouldNotBe
 
 /**
  * Asserts that this [Float] is [Float.NaN]
@@ -57,9 +55,8 @@ fun Float.shouldNotBeNaN(): Float {
  * @see [Float.shouldNotBeNaN]
  */
 fun beNaN() = object : Matcher<Float> {
-  override fun test(value: Float) = MatcherResult(
-    value.isNaN(),
-    "$value should be NaN",
-    "$value should not be NaN"
-  )
+   override fun test(value: Float) = MatcherResult(
+      value.isNaN(),
+      { "$value should be NaN" },
+      { "$value should not be NaN" })
 }

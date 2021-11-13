@@ -1,15 +1,14 @@
 package io.kotest.engine.test.interceptors
 
+import io.kotest.core.config.ExtensionRegistry
 import io.kotest.core.test.TestCase
-import io.kotest.core.test.TestContext
 import io.kotest.core.test.TestResult
-import io.kotest.core.test.TestStatus
-import io.kotest.engine.events.invokeAllAfterTestCallbacks
-import io.kotest.engine.events.invokeAllBeforeTestCallbacks
+import io.kotest.core.test.TestScope
 import io.kotest.engine.test.TestCaseExecutionListener
+import io.kotest.engine.test.TestExtensions
 import io.kotest.engine.test.createTestResult
-import io.kotest.mpp.log
-import io.kotest.mpp.timeInMillis
+import io.kotest.mpp.Logger
+import kotlin.time.TimeMark
 
 /**
  * Executes a test taking care of invoking user level listeners.
@@ -29,38 +28,39 @@ import io.kotest.mpp.timeInMillis
  */
 internal class LifecycleInterceptor(
    private val listener: TestCaseExecutionListener,
-   private val start: Long
+   private val timeMark: TimeMark,
+   registry: ExtensionRegistry,
 ) : TestExecutionInterceptor {
 
-   override suspend fun intercept(
-      test: suspend (TestCase, TestContext) -> TestResult
-   ): suspend (TestCase, TestContext) -> TestResult = { testCase, context ->
+   private val extensions = TestExtensions(registry)
+   private val logger = Logger(LifecycleInterceptor::class)
 
-      log { "Executing active test $testCase with context $context" }
+   override suspend fun intercept(
+      testCase: TestCase,
+      scope: TestScope,
+      test: suspend (TestCase, TestScope) -> TestResult
+   ): TestResult {
+
+      logger.log { Pair(testCase.name.testName, "Notifying listener test started") }
       listener.testStarted(testCase)
 
-      testCase.invokeAllBeforeTestCallbacks()
+      return extensions.beforeTestBeforeAnyBeforeContainer(testCase)
          .fold(
             {
-               createTestResult(timeInMillis() - start, it).apply {
-                  testCase.invokeAllAfterTestCallbacks(this)
-               }
+               val result = test(testCase, scope)
+               // any error in the after listeners will override the test result unless the test was already an error
+               extensions
+                  .afterTestAfterAnyAfterContainer(testCase, result)
+                  .fold(
+                     { result },
+                     { if (result.isErrorOrFailure) result else createTestResult(timeMark.elapsedNow(), it) }
+                  )
             },
             {
-               val result = test(testCase, context)
-               // an error in the after test callbacks will override the result of the test if it was successfuls\
-               // if the test already failed, that result will be used
-               // todo combine into multiple errors ?
-               testCase.invokeAllAfterTestCallbacks(result)
-                  .fold(
-                     {
-                        when (result.status) {
-                           TestStatus.Success, TestStatus.Ignored -> createTestResult(timeInMillis() - start, it)
-                           else -> result
-                        }
-                     },
-                     { result }
-                  )
+               val result = createTestResult(timeMark.elapsedNow(), it)
+               // can ignore errors here as we already have the before errors to show
+               extensions.afterTestAfterAnyAfterContainer(testCase, result)
+               result
             }
          )
    }

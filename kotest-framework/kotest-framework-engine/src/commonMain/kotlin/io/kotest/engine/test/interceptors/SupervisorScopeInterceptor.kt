@@ -1,8 +1,9 @@
 package io.kotest.engine.test.interceptors
 
 import io.kotest.core.test.TestCase
-import io.kotest.core.test.TestContext
 import io.kotest.core.test.TestResult
+import io.kotest.core.test.TestScope
+import io.kotest.engine.test.scopes.withCoroutineContext
 import kotlinx.coroutines.supervisorScope
 
 /**
@@ -11,11 +12,15 @@ import kotlinx.coroutines.supervisorScope
  * so that any child coroutines from this point on do not cancel any parent coroutines.
  */
 internal object SupervisorScopeInterceptor : TestExecutionInterceptor {
+
    override suspend fun intercept(
-      test: suspend (TestCase, TestContext) -> TestResult
-   ): suspend (TestCase, TestContext) -> TestResult {
-      return { testCase, context ->
-         supervisorScope { test(testCase, context) }
+      testCase: TestCase,
+      scope: TestScope,
+      test: suspend (TestCase, TestScope) -> TestResult
+   ): TestResult {
+      // a timeout in a parent test will still cause this to fail
+      return supervisorScope {
+         test(testCase, scope.withCoroutineContext(coroutineContext))
       }
    }
 }

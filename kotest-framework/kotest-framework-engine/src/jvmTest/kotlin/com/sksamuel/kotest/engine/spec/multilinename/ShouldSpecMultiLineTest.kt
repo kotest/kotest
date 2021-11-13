@@ -11,7 +11,7 @@ class ShouldSpecMultiLineTest : ShouldSpec() {
       val names = mutableSetOf<String>()
 
       afterSpec {
-         names shouldBe setOf("should test    case    1", "should test    case    2")
+         names shouldBe setOf("test case 1", "test case 2")
       }
 
       should(
@@ -21,7 +21,7 @@ class ShouldSpecMultiLineTest : ShouldSpec() {
     1
     """
       ) {
-         names.add(this.testCase.displayName)
+         names.add(this.testCase.name.testName)
       }
 
       context("context") {
@@ -32,7 +32,7 @@ class ShouldSpecMultiLineTest : ShouldSpec() {
     2
     """
          ) {
-            names.add(this.testCase.displayName)
+            names.add(this.testCase.name.testName)
 
          }
       }

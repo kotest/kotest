@@ -1,26 +1,33 @@
 package com.sksamuel.kotest.engine
 
-import io.kotest.core.listeners.ProjectListener
-import io.kotest.core.spec.AutoScan
+import io.kotest.common.KotestInternal
+import io.kotest.core.descriptors.DescriptorId
 import io.kotest.core.spec.Isolate
 import io.kotest.core.spec.style.FunSpec
+import io.kotest.engine.TestEngineLauncher
+import io.kotest.engine.listener.CollectingTestEngineListener
+import io.kotest.matchers.maps.shouldHaveSize
 import io.kotest.matchers.shouldBe
-import java.util.concurrent.atomic.AtomicBoolean
 
-@Isolate
+@KotestInternal
 class IsolatedAnnotationTest : FunSpec() {
    init {
       test("classes annotated with @Isolate should run") {
-         invoked.set(true)
+
+         val collector = CollectingTestEngineListener()
+         TestEngineLauncher(collector)
+            .withClasses(MyIsolatedSpec::class)
+            .launch()
+         collector.tests.shouldHaveSize(1)
+         collector.tests.mapKeys { it.key.descriptor.id }[DescriptorId("a")]!!.isSuccess shouldBe true
       }
    }
 }
 
-@AutoScan
-class IsolatedAnnotationTestAfterProject : ProjectListener {
-   override suspend fun afterProject() {
-//      invoked.get() shouldBe true
+@Isolate
+private class MyIsolatedSpec : FunSpec() {
+   init {
+      test("a") {
+      }
    }
 }
-
-val invoked = AtomicBoolean(false)

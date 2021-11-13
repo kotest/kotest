@@ -4,13 +4,9 @@ plugins {
    id("java-library")
 }
 
-repositories {
-   mavenCentral()
-}
-
 dependencies {
    implementation(project(Projects.Framework.engine))
-   implementation(project(Projects.AssertionsShared))
+   implementation(project(Projects.Assertions.Shared))
    implementation(project(Projects.JunitRunner))
    implementation(Libs.Coroutines.coreJvm)
 }

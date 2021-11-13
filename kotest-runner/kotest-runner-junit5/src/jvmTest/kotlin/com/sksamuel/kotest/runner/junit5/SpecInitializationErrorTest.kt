@@ -1,16 +1,22 @@
 package com.sksamuel.kotest.runner.junit5
 
+import io.kotest.common.ExperimentalKotest
+import io.kotest.core.ProjectContext
+import io.kotest.core.config.Configuration
 import io.kotest.core.spec.style.FunSpec
-import io.kotest.runner.junit.platform.JUnitTestEngineListener
-import io.kotest.runner.junit.platform.KotestEngineDescriptor
+import io.kotest.engine.concurrency.NoopCoroutineDispatcherFactory
+import io.kotest.engine.spec.ReflectiveSpecRef
 import io.kotest.engine.spec.SpecExecutor
 import io.kotest.matchers.shouldBe
+import io.kotest.runner.junit.platform.JUnitTestEngineListener
+import io.kotest.runner.junit.platform.KotestEngineDescriptor
 import org.junit.platform.engine.EngineExecutionListener
 import org.junit.platform.engine.TestDescriptor
 import org.junit.platform.engine.TestExecutionResult
 import org.junit.platform.engine.UniqueId
 import org.junit.platform.engine.reporting.ReportEntry
 
+@ExperimentalKotest
 class SpecInitializationErrorTest : FunSpec({
 
    test("an error in a class field should fail spec") {
@@ -36,11 +42,11 @@ class SpecInitializationErrorTest : FunSpec({
       }
 
       val listener = JUnitTestEngineListener(engineListener, root)
-      val executor = SpecExecutor(listener)
-      executor.execute(SpecWithFieldError::class)
+      val executor = SpecExecutor(listener, NoopCoroutineDispatcherFactory, Configuration(), ProjectContext(Configuration()))
+      executor.execute(ReflectiveSpecRef(SpecWithFieldError::class))
 
       finished.toMap() shouldBe mapOf(
-         "Spec execution failed" to TestExecutionResult.Status.ABORTED,
+         "SpecInstantiationException" to TestExecutionResult.Status.FAILED,
          "com.sksamuel.kotest.runner.junit5.SpecWithFieldError" to TestExecutionResult.Status.FAILED
       )
    }
@@ -68,12 +74,12 @@ class SpecInitializationErrorTest : FunSpec({
       }
 
       val listener = JUnitTestEngineListener(engineListener, root)
-      val executor = SpecExecutor(listener)
-      executor.execute(SpecWithInitError::class)
+      val executor = SpecExecutor(listener, NoopCoroutineDispatcherFactory, Configuration(), ProjectContext(Configuration()))
+      executor.execute(ReflectiveSpecRef(SpecWithInitError::class))
 
       finished.toMap() shouldBe mapOf(
-         "Spec execution failed" to TestExecutionResult.Status.ABORTED,
-         "com.sksamuel.kotest.runner.junit5.SpecWithInitError" to TestExecutionResult.Status.FAILED
+         "SpecInstantiationException" to TestExecutionResult.Status.FAILED,
+         "com.sksamuel.kotest.runner.junit5.SpecWithInitError" to TestExecutionResult.Status.FAILED,
       )
    }
 })

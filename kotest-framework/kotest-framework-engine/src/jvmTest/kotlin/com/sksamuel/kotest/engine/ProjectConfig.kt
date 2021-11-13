@@ -1,9 +1,15 @@
 package com.sksamuel.kotest.engine
 
+import com.sksamuel.kotest.engine.tags.TagFilteredDiscoveryExtensionExampleTest
 import io.kotest.core.config.AbstractProjectConfig
-import io.kotest.core.filter.Filter
+import io.kotest.core.extensions.Extension
 
 class ProjectConfig : AbstractProjectConfig() {
-   override fun filters(): List<Filter> = listOf(TestFilterTestFilter)
-   override val parallelism: Int = 4
+
+   override fun extensions(): List<Extension> = listOf(
+      TagFilteredDiscoveryExtensionExampleTest.ext,
+      TestFilterTestFilter,
+   )
+
+   override val parallelism: Int = 1
 }

@@ -46,7 +46,7 @@ class ParamDetectionTest : StringSpec({
          ) { foo, bar, woo, boo ->
             foo * bar * woo * boo shouldBe 0
          }
-      }.message shouldBe "Test failed for (foo, 1), (bar, 2), (woo, 3), (woo, 4) with error expected:<0> but was:<24>"
+      }.message shouldBe "Test failed for (foo, 1), (bar, 2), (woo, 3), (boo, 4) with error expected:<0> but was:<24>"
    }
 
    "row5 should detect header names from params" {

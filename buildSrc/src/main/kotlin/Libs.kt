@@ -1,11 +1,11 @@
 object Libs {
 
    object Kotlin {
-      const val kotlinScriptRuntime = "org.jetbrains.kotlin:kotlin-script-runtime:_"
-      const val kotlinScriptUtil = "org.jetbrains.kotlin:kotlin-script-util:_"
-      const val kotlinScriptJvm = "org.jetbrains.kotlin:kotlin-scripting-jvm:_"
-      const val compiler = "org.jetbrains.kotlin:kotlin-compiler:_"
-      const val compilerEmbeddable = "org.jetbrains.kotlin:kotlin-compiler-embeddable:_"
+      const val kotlinScriptRuntime = "org.jetbrains.kotlin:kotlin-script-runtime:1.6.0-RC2"
+      const val kotlinScriptUtil = "org.jetbrains.kotlin:kotlin-script-util:1.6.0-RC2"
+      const val kotlinScriptJvm = "org.jetbrains.kotlin:kotlin-scripting-jvm:1.6.0-RC2"
+      const val compiler = "org.jetbrains.kotlin:kotlin-compiler:1.6.0-RC2"
+      const val compilerEmbeddable = "org.jetbrains.kotlin:kotlin-compiler-embeddable:1.6.0-RC2"
    }
 
    object Kotest {
@@ -20,10 +20,6 @@ object Libs {
 
    object Jayway {
       const val jsonpath = "com.jayway.jsonpath:json-path:_"
-   }
-
-   object Tschuchortdev {
-      const val kotlinCompileTesting = "com.github.tschuchortdev:kotlin-compile-testing:_"
    }
 
    object JUnit4 {
@@ -64,7 +60,7 @@ object Libs {
       const val netty = "org.mock-server:mockserver-netty:_"
    }
 
-   object rgxgen {
+   object Rgxgen {
       const val rgxgen = "com.github.curious-odd-man:rgxgen:_"
    }
 

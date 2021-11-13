@@ -1,6 +1,6 @@
 package io.kotest.matchers.collections
 
-import io.kotest.assertions.show.show
+import io.kotest.assertions.print.print
 import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
 import io.kotest.matchers.should
@@ -129,8 +129,9 @@ fun <T> beIn(collection: Collection<T>) = object : Matcher<T> {
 
       return MatcherResult(
          match,
-         "Collection should contain ${value.show().value}, but doesn't. Possible values: ${collection.show().value}",
-         "Collection should not contain ${value.show().value}, but does. Forbidden values: ${collection.show().value}"
-      )
+         { "Collection should contain ${value.print().value}, but doesn't. Possible values: ${collection.print().value}" },
+         {
+            "Collection should not contain ${value.print().value}, but does. Forbidden values: ${collection.print().value}"
+         })
    }
 }

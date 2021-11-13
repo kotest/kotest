@@ -5,10 +5,6 @@ plugins {
    id("com.adarshr.test-logger")
 }
 
-repositories {
-   mavenCentral()
-}
-
 kotlin {
 
    targets {
@@ -25,7 +21,6 @@ kotlin {
       }
 
       linuxX64()
-      linuxArm64()
 
       mingwX64()
 

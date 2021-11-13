@@ -2,6 +2,9 @@ package io.kotest.core.listeners
 
 import io.kotest.core.test.TestCase
 
+@Deprecated("Renamed to IgnoredSpecListener. Deprecated since 5.0")
+typealias SpecIgnoredListner = IgnoredSpecListener
+
 /**
  * A [TestListener] contains functions that are invoked as part of the lifecycle of a [TestCase].
  *
@@ -21,7 +24,6 @@ interface TestListener :
    AfterInvocationListener,
    PrepareSpecListener,
    FinalizeSpecListener,
-   SpecIgnoredListener,
    Listener {
 
    override val name: String

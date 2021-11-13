@@ -1,9 +1,8 @@
 package io.kotest.engine.interceptors
 
+import io.kotest.common.JVMOnly
 import io.kotest.core.internal.KotestEngineProperties
 import io.kotest.engine.EngineResult
-import io.kotest.engine.TestSuite
-import io.kotest.engine.listener.TestEngineListener
 import io.kotest.mpp.log
 import java.util.Properties
 
@@ -14,6 +13,7 @@ import java.util.Properties
  *
  * This is a JVM only extension.
  */
+@JVMOnly
 internal object KotestPropertiesInterceptor : EngineInterceptor {
 
    private const val DefaultKotestPropertiesFilename = "/kotest.properties"
@@ -45,11 +45,10 @@ internal object KotestPropertiesInterceptor : EngineInterceptor {
    }
 
    override suspend fun intercept(
-      suite: TestSuite,
-      listener: TestEngineListener,
-      execute: suspend (TestSuite, TestEngineListener) -> EngineResult
+      context: EngineContext,
+      execute: suspend (EngineContext) -> EngineResult
    ): EngineResult {
       loadAndApplySystemProps()
-      return execute(suite, listener)
+      return execute(context)
    }
 }

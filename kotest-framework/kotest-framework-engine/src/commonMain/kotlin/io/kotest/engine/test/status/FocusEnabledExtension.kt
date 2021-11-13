@@ -1,25 +1,32 @@
 package io.kotest.engine.test.status
 
-import io.kotest.engine.spec.focusTests
 import io.kotest.core.test.Enabled
 import io.kotest.core.test.TestCase
-import io.kotest.core.test.isFocused
+import io.kotest.core.test.isRootTest
 import io.kotest.mpp.log
 
 /**
- * This [TestEnabledExtension] disables tests if the containing spec has focused tests, and this
- * test is not focused.
+ * This [TestEnabledExtension] disables tests if the containing spec has focused tests,
+ * and this test is not focused.
  *
- * Note: This extension only applies to root tests. Nested tests are not affected by this extension.
+ * Note: This extension only applies to root tests.
+ * Nested tests are not affected by this extension.
  */
-object FocusEnabledExtension : TestEnabledExtension {
+internal object FocusEnabledExtension : TestEnabledExtension {
+
    override fun isEnabled(testCase: TestCase): Enabled {
 
-      if (!testCase.description.isRootTest()) return Enabled.enabled
+      // focus only applies to root tests
+      if (!testCase.isRootTest()) return Enabled.enabled
 
-      if (!testCase.isFocused() && testCase.spec.focusTests().isNotEmpty()) {
-         return Enabled.disabled("${testCase.description.testPath()} is disabled by another test having focus")
-            .also { log { it.reason } }
+      // if we are focused doesn't matter what anyone else does
+      if (testCase.name.focus) return Enabled.enabled
+
+      // if anything else is focused we're outta luck
+      if (testCase.spec.rootTests().any { it.name.focus }) {
+         return Enabled
+            .disabled("${testCase.descriptor.path().value} is disabled by another test having focus")
+            .also { it.reason?.let { log { it } } }
       }
 
       return Enabled.enabled

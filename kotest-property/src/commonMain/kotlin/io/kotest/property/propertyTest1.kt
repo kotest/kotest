@@ -23,7 +23,7 @@ suspend fun <A> checkAll(
    iterations: Int,
    genA: Gen<A>,
    property: suspend PropertyContext.(A) -> Unit
-): PropertyContext = proptest(genA, PropTestConfig(iterations = iterations), property)
+): PropertyContext = proptest(genA, PropTestConfig(constraints = Constraints.iterations(iterations)), property)
 
 @JvmName("checkAllExt")
 suspend fun <A> Gen<A>.checkAll(config: PropTestConfig, property: suspend PropertyContext.(A) -> Unit) =
@@ -62,7 +62,7 @@ suspend inline fun <reified A> checkAll(
    noinline property: suspend PropertyContext.(A) -> Unit
 ): PropertyContext = proptest(
    Arb.default<A>(),
-   PropTestConfig(iterations = iterations),
+   PropTestConfig(constraints = Constraints.iterations(iterations)),
    property
 )
 
@@ -132,7 +132,7 @@ suspend inline fun <reified A> forAll(
 suspend inline fun <reified A> forAll(
    iterations: Int,
    crossinline property: PropertyContext.(A) -> Boolean
-) = forAll(PropTestConfig(iterations = iterations), property)
+): PropertyContext = forAll(PropTestConfig(constraints = Constraints.iterations(iterations)), property)
 
 suspend inline fun <reified A> forAll(
    config: PropTestConfig,

@@ -1,20 +1,21 @@
 package io.kotest.core.test
 
-import io.kotest.common.ExperimentalKotest
 import io.kotest.core.SourceRef
+import io.kotest.core.descriptors.Descriptor
 import io.kotest.core.factory.FactoryId
-import io.kotest.core.internal.tags.allTags
-import io.kotest.core.plan.Descriptor
+import io.kotest.core.names.TestName
 import io.kotest.core.sourceRef
 import io.kotest.core.spec.Spec
+import io.kotest.core.test.config.ResolvedTestConfig
 
 /**
- * A [TestCase] describes an actual block of code that will be tested.
+ * A [TestCase] describes a test lambda at runtime.
+ *
  * It contains a reference back to the [Spec] instance in which it
  * is being executed.
  *
  * It also captures a closure of the body of the test case.
- * This is a function which is invoked with a [TestContext].
+ * This is a function which is invoked with a [TestScope].
  * The context is used so that the test function can, at runtime,
  * register nested tests with the test engine. This allows
  * nested tests to be executed lazily as required, rather
@@ -35,82 +36,40 @@ import io.kotest.core.spec.Spec
  *
  */
 data class TestCase(
-   // the description contains the names of all parents, plus the name of this test case
-   val description: Description.Test,
+   // parseable, stable, consistent identifer for this test element
+   val descriptor: Descriptor.TestDescriptor,
+   // the name of the test as entered by the user
+   val name: TestName,
    // the spec instance that contains this testcase
    val spec: Spec,
    // a closure of the test function
-   val test: suspend TestContext.() -> Unit,
-   val source: SourceRef,
+   val test: suspend TestScope.() -> Unit,
+   // a reference to the source code where this test case was defined
+   val source: SourceRef = sourceRef(),
+   // the type specifies if this test case is permitted to contain nested tests (container)
    val type: TestType,
-   // config used when running the test, such as number of
-   // invocations, threads, etc
-   val config: TestCaseConfig = TestCaseConfig(),
+   // resolved config at runtime for this test
+   val config: ResolvedTestConfig = ResolvedTestConfig.default,
    // an optional factory id which is used to indicate which factory (if any) generated this test case.
    val factoryId: FactoryId? = null,
-
-   // only set for scripts
-   @ExperimentalKotest val descriptor: Descriptor.TestDescriptor? = null,
-
-   // not null if this test has a parent test
-   @ExperimentalKotest val parent: TestCase? = null,
+   // the parent test case for this test at runtime, or null
+   val parent: TestCase? = null,
 ) {
 
-   val displayName = description.displayName()
-
-   companion object {
-
-      /**
-       * Creates a [TestCase] of type [TestType.Test], with default config, and derived source ref.
-       */
-      fun test(
-         description: Description.Test,
-         spec: Spec,
-         parent: TestCase?,
-         test: suspend TestContext.() -> Unit
-      ): TestCase =
-         TestCase(
-            description = description,
-            spec = spec,
-            test = test,
-            source = sourceRef(),
-            type = TestType.Test,
-            config = TestCaseConfig(),
-            factoryId = null,
-            parent = parent,
-         )
-
-      /**
-       * Creates a [TestCase] of type [TestType.Container], with default config, and derived source ref.
-       */
-      fun container(
-         description: Description.Test,
-         spec: Spec,
-         parent: TestCase?,
-         test: suspend TestContext.() -> Unit
-      ): TestCase = TestCase(
-         description = description,
-         spec = spec,
-         test = test,
-         source = sourceRef(),
-         type = TestType.Container,
-         config = TestCaseConfig(),
-         factoryId = null,
-         parent = parent,
-      )
-
-      // todo this should move to runtime inside the runners
-      fun appendTagsInDisplayName(testCase: TestCase): TestCase {
-         val tagNames = testCase.allTags().joinToString(", ")
-
-         return if (tagNames.isNotBlank()) {
-            val description = testCase.description
-            val originalName = description.name
-            val nameWithTagsAppended = originalName.copy(displayName = "${originalName.displayName}[tags = $tagNames]")
-            testCase.copy(description = description.copy(name = nameWithTagsAppended))
-         } else {
-            testCase
-         }
-      }
-   }
+   @Deprecated("Use testCase.name or testCase.descriptor. This was deprecated in 5.0.")
+   val displayName: String = descriptor.id.value
 }
+
+/**
+ * Returns true if this test is focused.
+ *
+ * A focused test case is one which is defined at the top level and has a f: prefix
+ */
+fun TestCase.isFocused() = this.parent == null && name.focus
+
+/**
+ * Returns true if this descriptor represents a root test case.
+ *
+ * A root test case is one which is defined at the top level in a spec.
+ */
+fun TestCase.isRootTest() = this.parent == null

@@ -25,14 +25,15 @@ import java.time.LocalDateTime
  * ```
  */
 fun beInToday() = object : Matcher<LocalDateTime> {
-  override fun test(value: LocalDateTime): MatcherResult {
-    val passed = value.toLocalDate() == LocalDate.now()
-    return MatcherResult(
-      passed,
-      "$value should be today",
-      "$value should not be today"
-    )
-  }
+   override fun test(value: LocalDateTime): MatcherResult {
+      val passed = value.toLocalDate() == LocalDate.now()
+      return MatcherResult(
+         passed,
+         { "$value should be today" },
+         {
+            "$value should not be today"
+         })
+   }
 }
 
 /**
@@ -53,14 +54,15 @@ fun beInToday() = object : Matcher<LocalDateTime> {
  * ```
  */
 fun beToday() = object : Matcher<LocalDate> {
-  override fun test(value: LocalDate): MatcherResult {
-    val passed = value == LocalDate.now()
-    return MatcherResult(
-      passed,
-      "$value should be today",
-      "$value should not be today"
-    )
-  }
+   override fun test(value: LocalDate): MatcherResult {
+      val passed = value == LocalDate.now()
+      return MatcherResult(
+         passed,
+         { "$value should be today" },
+         {
+            "$value should not be today"
+         })
+   }
 }
 
 /**

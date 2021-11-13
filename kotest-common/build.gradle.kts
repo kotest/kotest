@@ -5,10 +5,6 @@ plugins {
    id("com.adarshr.test-logger")
 }
 
-repositories {
-   mavenCentral()
-}
-
 kotlin {
 
    targets {
@@ -25,7 +21,6 @@ kotlin {
       }
 
       linuxX64()
-      linuxArm64()
 
       mingwX64()
 
@@ -53,14 +48,18 @@ kotlin {
          dependencies {
             compileOnly(kotlin("stdlib"))
             implementation(kotlin("reflect"))
+            implementation(Libs.Coroutines.coreCommon)
+         }
+      }
+
+      val commonTest by getting {
+         dependencies {
+            implementation(project(Projects.Framework.engine))
          }
       }
 
       val jvmMain by getting {
          dependsOn(commonMain)
-         dependencies {
-            implementation(Libs.Coroutines.coreJvm)
-         }
       }
 
       val desktopMain by creating {
@@ -80,10 +79,6 @@ kotlin {
       }
 
       val linuxX64Main by getting {
-         dependsOn(desktopMain)
-      }
-
-      val linuxArm64Main by getting {
          dependsOn(desktopMain)
       }
 

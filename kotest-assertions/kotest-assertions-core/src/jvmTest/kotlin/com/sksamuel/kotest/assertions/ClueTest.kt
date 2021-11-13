@@ -11,15 +11,20 @@ import io.kotest.matchers.nulls.shouldBeNull
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldContain
 import io.kotest.matchers.string.shouldStartWith
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.withTimeout
 import java.util.*
 
 class ClueTest : FreeSpec({
 
    "withClue()" - {
       fun withClueEcho(other: String) = object : Matcher<String> {
-         override fun test(value: String)= MatcherResult(false,
-            "Should have the details of '$value' and $other",
-            "Should have the details of '$value' and $other")
+         override fun test(value: String) = MatcherResult(
+            false,
+            { "Should have the details of '$value' and $other" },
+            {
+               "Should have the details of '$value' and $other"
+            })
       }
 
       "should prepend clue to message with a newline" {
@@ -124,7 +129,7 @@ class ClueTest : FreeSpec({
                shouldThrow<AssertionError> {inner.a shouldBe 10}.message shouldBe "HttpResponse(status=404, body=not found)\nMyData(a=20, b=nest it)\nexpected:<10> but was:<20>"
             }
             //after nesting, everything looks as before
-            shouldThrow<AssertionError> {it.status shouldBe 200}.message shouldBe "HttpResponse(status=404, body=not found)\nexpected:<200> but was:<404>"
+            shouldThrow<AssertionError> { it.status shouldBe 200 }.message shouldBe "HttpResponse(status=404, body=not found)\nexpected:<200> but was:<404>"
          }
       }
 
@@ -133,6 +138,16 @@ class ClueTest : FreeSpec({
             null.asClue { 1 shouldBe 2 }
          }
          ex.message shouldBe "null\nexpected:<2> but was:<1>"
+      }
+
+      "clue should work for withTimeout" {
+         shouldThrow<AssertionError> {
+            withClue("timey timey") {
+               withTimeout(2) {
+                  delay(1000)
+               }
+            }
+         }.message shouldBe "timey timey\nTimed out waiting for 2 ms"
       }
    }
 

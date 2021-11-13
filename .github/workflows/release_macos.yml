@@ -23,8 +23,9 @@ jobs:
                ref: ${{ github.event.inputs.branch }}
 
          -  name: Setup JDK
-            uses: actions/setup-java@v1
+            uses: actions/setup-java@v2
             with:
+               distribution: 'zulu'
                java-version: '8'
 
          -  name: publish macosx64 release

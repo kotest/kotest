@@ -5,9 +5,9 @@ package io.kotest.core.extensions
  * with the Kotest Engine, changing the behavior of the engine
  * at runtime.
  *
- * How do they differ from Listeners? - They differ because listeners
- * are purely "callback only" they are notified of events but they are
- * unable to change the operation of the Engine.
+ * In Kotest we use the nomenclature Extension and Listener. Listeners
+ * are extension's themselves, but we use this term for callbacks that
+ * receive events but do not change the behavior of the engine.
  *
  * Which should I use? - Always use a listener if you can - they are
  * simpler. Only use an extension if you need to adjust the runtime

@@ -47,5 +47,9 @@ infix fun Double.shouldNotBeLessThanOrEqual(x: Double): Double {
 
 fun lte(x: Double) = beLessThanOrEqualTo(x)
 fun beLessThanOrEqualTo(x: Double) = object : Matcher<Double> {
-  override fun test(value: Double) = MatcherResult(value <= x, "$value should be <= $x", "$value should not be <= $x")
+   override fun test(value: Double) =
+      MatcherResult(
+         value <= x,
+         { "$value should be <= $x" },
+         { "$value should not be <= $x" })
 }

@@ -3,7 +3,7 @@
 package io.kotest.matchers.sequences
 
 import io.kotest.assertions.eq.eq
-import io.kotest.assertions.show.show
+import io.kotest.assertions.print.print
 import io.kotest.matchers.*
 
 private fun <T> Sequence<T>.toString(limit: Int = 10) = this.joinToString(", ", limit = limit)
@@ -22,9 +22,10 @@ fun <T> containOnlyNulls() = object : Matcher<Sequence<T>> {
    override fun test(value: Sequence<T>) =
       MatcherResult(
          value.all { it == null },
-         "Sequence should contain only nulls",
-         "Sequence should not contain only nulls"
-      )
+         { "Sequence should contain only nulls" },
+         {
+            "Sequence should not contain only nulls"
+         })
 }
 
 fun <T> Sequence<T>.shouldContainNull() = this should containNull()
@@ -33,9 +34,10 @@ fun <T> containNull() = object : Matcher<Sequence<T>> {
    override fun test(value: Sequence<T>) =
       MatcherResult(
          value.any { it == null },
-         "Sequence should contain at least one null",
-         "Sequence should not contain any nulls"
-      )
+         { "Sequence should contain at least one null" },
+         {
+            "Sequence should not contain any nulls"
+         })
 }
 
 fun <T> Sequence<T>.shouldHaveElementAt(index: Int, element: T) = this should haveElementAt(index, element)
@@ -90,7 +92,7 @@ fun <T, C : Sequence<T>> containExactly(expected: C): Matcher<C?> = neverNullMat
       val actualElement = actualIterator.next()
       val expectedElement = expectedIterator.next()
       if (eq(actualElement.value, expectedElement.value) != null) {
-         failMessage += " (expected ${expectedElement.value.show().value} at ${expectedElement.index} but found ${actualElement.value.show().value})"
+         failMessage += " (expected ${expectedElement.value.print().value} at ${expectedElement.index} but found ${actualElement.value.print().value})"
          passed = false
       }
    }
@@ -107,9 +109,10 @@ fun <T, C : Sequence<T>> containExactly(expected: C): Matcher<C?> = neverNullMat
 
    MatcherResult(
       passed,
-      failMessage,
-      "Sequence should not be exactly $expected"
-   )
+      { failMessage },
+      {
+         "Sequence should not be exactly $expected"
+      })
 }
 
 @Deprecated("use shouldNotContainAllInAnyOrder", ReplaceWith("shouldNotContainAllInAnyOrder"))

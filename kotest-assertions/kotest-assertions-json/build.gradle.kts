@@ -6,10 +6,6 @@ plugins {
    id("com.adarshr.test-logger")
 }
 
-repositories {
-   mavenCentral()
-}
-
 kotlin {
 
    targets {
@@ -31,15 +27,15 @@ kotlin {
       val commonMain by getting {
          dependencies {
             implementation(Libs.Serialization.json)
-            implementation(project(Projects.AssertionsShared))
+            implementation(project(Projects.Assertions.Shared))
             implementation(Libs.Jayway.jsonpath)
          }
       }
 
       val commonTest by getting {
          dependencies {
-            implementation(project(Projects.AssertionsCore))
-            implementation(project(Projects.Api))
+            implementation(project(Projects.Assertions.Core))
+            implementation(project(Projects.Framework.api))
             implementation(project(Projects.Framework.engine))
             implementation(project(Projects.Property))
          }
@@ -63,22 +59,6 @@ kotlin {
          languageSettings.optIn("kotlin.experimental.ExperimentalTypeInference")
          languageSettings.optIn("kotlin.contracts.ExperimentalContracts")
       }
-   }
-}
-
-tasks.named<Test>("jvmTest") {
-   useJUnitPlatform()
-   filter {
-      isFailOnNoMatchingTests = false
-   }
-   testLogging {
-      showExceptions = true
-      showStandardStreams = true
-      events = setOf(
-         org.gradle.api.tasks.testing.logging.TestLogEvent.FAILED,
-         org.gradle.api.tasks.testing.logging.TestLogEvent.PASSED
-      )
-      exceptionFormat = org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
    }
 }
 

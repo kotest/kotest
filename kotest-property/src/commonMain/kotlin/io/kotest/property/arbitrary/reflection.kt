@@ -8,21 +8,21 @@ import kotlin.reflect.KClass
 inline fun <reified A> Arb.Companion.default(): Arb<A> = forClass(A::class)
 
 @Suppress("UNCHECKED_CAST")
-fun <A> defaultForClass(kClass: KClass<*>): Arb<A>? {
+fun defaultForClass(kClass: KClass<*>): Arb<*>? {
    return when (kClass.bestName()) {
-      "java.lang.String", "kotlin.String", "String" -> Arb.string() as Arb<A>
-      "java.lang.Character", "kotlin.Char", "Char" -> Arb.char() as Arb<A>
-      "java.lang.Long", "kotlin.Long", "Long" -> Arb.long() as Arb<A>
-      "kotlin.ULong", "ULong" -> Arb.uLong() as Arb<A>
-      "java.lang.Integer", "kotlin.Int", "Int" -> Arb.int() as Arb<A>
-      "kotlin.UInt", "UInt" -> Arb.uInt() as Arb<A>
-      "java.lang.Short", "kotlin.Short", "Short" -> Arb.short() as Arb<A>
-      "kotlin.UShort", "UShort" -> Arb.uShort() as Arb<A>
-      "java.lang.Byte", "kotlin.Byte", "Byte" -> Arb.byte() as Arb<A>
-      "kotlin.UByte", "UByte" -> Arb.uByte() as Arb<A>
-      "java.lang.Double", "kotlin.Double", "Double" -> Arb.double() as Arb<A>
-      "java.lang.Float", "kotlin.Float", "Float" -> Arb.float() as Arb<A>
-      "java.lang.Boolean", "kotlin.Boolean", "Boolean" -> Arb.boolean() as Arb<A>
+      "java.lang.String", "kotlin.String", "String" -> Arb.string()
+      "java.lang.Character", "kotlin.Char", "Char" -> Arb.char()
+      "java.lang.Long", "kotlin.Long", "Long" -> Arb.long()
+      "kotlin.ULong", "ULong" -> Arb.uLong()
+      "java.lang.Integer", "kotlin.Int", "Int" -> Arb.int()
+      "kotlin.UInt", "UInt" -> Arb.uInt()
+      "java.lang.Short", "kotlin.Short", "Short" -> Arb.short()
+      "kotlin.UShort", "UShort" -> Arb.uShort()
+      "java.lang.Byte", "kotlin.Byte", "Byte" -> Arb.byte()
+      "kotlin.UByte", "UByte" -> Arb.uByte()
+      "java.lang.Double", "kotlin.Double", "Double" -> Arb.double()
+      "java.lang.Float", "kotlin.Float", "Float" -> Arb.float()
+      "java.lang.Boolean", "kotlin.Boolean", "Boolean" -> Arb.boolean()
       else -> null
    }
 }
@@ -30,7 +30,7 @@ fun <A> defaultForClass(kClass: KClass<*>): Arb<A>? {
 expect inline fun <reified A> targetDefaultForClass(): Arb<A>?
 
 inline fun <reified A> Arb.Companion.forClass(kClass: KClass<*>): Arb<A> =
-   defaultForClass(kClass)
+   defaultForClass(kClass) as Arb<A>?
       ?: targetDefaultForClass()
       ?: throw NoGeneratorFoundException("Cannot infer generator for ${A::class}; specify generators explicitly")
 

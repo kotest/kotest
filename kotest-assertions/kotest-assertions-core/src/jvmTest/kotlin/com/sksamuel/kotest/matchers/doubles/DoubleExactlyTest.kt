@@ -14,7 +14,7 @@ class DoubleExactlyTest : FreeSpec() {
    init {
 
       "for every numeric Double" - {
-         "Should be exactly itself" - {
+         "Should be exactly itself" {
             checkAll(100, numericDoubles) {
                it shouldExactlyMatch it
             }

@@ -17,7 +17,7 @@ class EnumValueInDataClassNamingTest : FunSpec() {
    }
 
    override fun afterAny(testCase: TestCase, result: TestResult) {
-      names.add(testCase.description.displayName())
+      names.add(testCase.descriptor.id.value)
    }
 
    override fun afterSpec(spec: Spec) {

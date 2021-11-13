@@ -1,38 +1,43 @@
 package io.kotest.engine.interceptors
 
-import io.kotest.core.config.configuration
+import io.kotest.common.JVMOnly
+import io.kotest.common.KotestInternal
 import io.kotest.core.spec.Spec
-import io.kotest.core.test.TestStatus
 import io.kotest.engine.EngineResult
-import io.kotest.engine.TestSuite
 import io.kotest.engine.listener.CollectingTestEngineListener
-import io.kotest.engine.listener.CompositeTestEngineListener
-import io.kotest.engine.listener.TestEngineListener
 import java.nio.file.Files
 import java.nio.file.Paths
 import kotlin.reflect.KClass
 
-internal class WriteFailuresInterceptor(private val filename: String) : EngineInterceptor {
+/**
+ * Writes failed specs to a file so that the [io.kotest.engine.spec.FailureFirstSorter]
+ * can use the file to run failed specs first.
+ *
+ * Note: This is a JVM only feature.
+ */
+@OptIn(KotestInternal::class)
+@JVMOnly
+internal object WriteFailuresInterceptor : EngineInterceptor {
 
    override suspend fun intercept(
-      suite: TestSuite,
-      listener: TestEngineListener,
-      execute: suspend (TestSuite, TestEngineListener) -> EngineResult
+      context: EngineContext,
+      execute: suspend (EngineContext) -> EngineResult
    ): EngineResult {
-      val collector = CollectingTestEngineListener()
-      val comp = CompositeTestEngineListener(listOf(listener, collector))
-      val result = execute(suite, comp)
-      if (configuration.writeSpecFailureFile) {
+      return if (context.configuration.writeSpecFailureFile) {
+         val collector = CollectingTestEngineListener()
+         val result = execute(context.mergeListener(collector))
          val failedSpecs = collector.tests
-            .filterValues { it.status == TestStatus.Failure || it.status == TestStatus.Error }
+            .filterValues { it.isErrorOrFailure }
             .map { it.key.spec::class }
             .toSet()
-         writeSpecFailures(failedSpecs)
+         writeSpecFailures(failedSpecs, context.configuration.specFailureFilePath)
+         result
+      } else {
+         execute(context)
       }
-      return result
    }
 
-   private fun writeSpecFailures(failures: Set<KClass<out Spec>>) {
+   private fun writeSpecFailures(failures: Set<KClass<out Spec>>, filename: String) {
       val path = Paths.get(filename).toAbsolutePath()
       path.parent.toFile().mkdirs()
       val content = failures.distinct().joinToString("\n") { it.java.canonicalName }

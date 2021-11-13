@@ -6,7 +6,7 @@ import io.kotest.matchers.shouldBe
 import java.util.concurrent.atomic.AtomicBoolean
 
 private fun factory(ref: AtomicBoolean) = funSpec {
-   test("this should becalled") {
+   test("this should be called") {
       ref.set(true)
    }
 }
@@ -14,7 +14,7 @@ private fun factory(ref: AtomicBoolean) = funSpec {
 class TestFactoryTest : FunSpec({
    val ref = AtomicBoolean(false)
    include(factory(ref))
-   afterSpec {
+   afterProject {
       ref.get() shouldBe true
    }
 })

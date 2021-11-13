@@ -5,10 +5,6 @@ plugins {
    id("com.adarshr.test-logger")
 }
 
-repositories {
-   mavenCentral()
-}
-
 kotlin {
 
    targets {
@@ -27,7 +23,6 @@ kotlin {
       }
 
       linuxX64()
-      linuxArm64()
 
       mingwX64()
 
@@ -56,7 +51,7 @@ kotlin {
             compileOnly(kotlin("stdlib"))
             implementation(kotlin("reflect"))
             api(project(Projects.Common))
-            api(project(Projects.AssertionsShared))
+            api(project(Projects.Assertions.Shared))
             implementation(Libs.Coroutines.coreCommon)
          }
       }
@@ -65,14 +60,15 @@ kotlin {
          dependsOn(commonMain)
          dependencies {
             implementation(Libs.Wumpz.diffutils)
-            implementation(Libs.rgxgen.rgxgen)
+            implementation(Libs.Rgxgen.rgxgen)
+            implementation(kotlin("reflect"))
          }
       }
 
       val commonTest by getting {
          dependencies {
             implementation(project(Projects.Framework.engine))
-            implementation(project(Projects.AssertionsCore))
+            implementation(project(Projects.Assertions.Core))
          }
       }
 
@@ -85,6 +81,17 @@ kotlin {
 
       val desktopMain by creating {
          dependsOn(commonMain)
+      }
+
+      val desktopTest by creating {
+         dependsOn(commonTest)
+         dependencies {
+            implementation(kotlin("test-common"))
+         }
+      }
+
+      val iosX64Test by getting {
+         dependsOn(desktopTest)
       }
 
       val macosX64Main by getting {
@@ -100,10 +107,6 @@ kotlin {
       }
 
       val linuxX64Main by getting {
-         dependsOn(desktopMain)
-      }
-
-      val linuxArm64Main by getting {
          dependsOn(desktopMain)
       }
 
@@ -153,29 +156,9 @@ kotlin {
 
       all {
          languageSettings.optIn("kotlin.time.ExperimentalTime")
+         languageSettings.optIn("kotlin.ExperimentalStdlibApi")
          languageSettings.optIn("kotlin.experimental.ExperimentalTypeInference")
       }
-   }
-}
-
-tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
-   kotlinOptions.jvmTarget = "1.8"
-   kotlinOptions.apiVersion = "1.5"
-}
-
-tasks.named<Test>("jvmTest") {
-   useJUnitPlatform()
-   filter {
-      isFailOnNoMatchingTests = false
-   }
-   testLogging {
-      showExceptions = true
-      showStandardStreams = true
-      events = setOf(
-         org.gradle.api.tasks.testing.logging.TestLogEvent.FAILED,
-         org.gradle.api.tasks.testing.logging.TestLogEvent.PASSED
-      )
-      exceptionFormat = org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
    }
 }
 

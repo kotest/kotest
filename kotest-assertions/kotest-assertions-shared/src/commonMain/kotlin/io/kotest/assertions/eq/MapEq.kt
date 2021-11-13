@@ -3,17 +3,16 @@ package io.kotest.assertions.eq
 import io.kotest.assertions.Actual
 import io.kotest.assertions.Expected
 import io.kotest.assertions.failure
-import io.kotest.assertions.show.Printed
-import io.kotest.assertions.show.show
+import io.kotest.assertions.print.Printed
+import io.kotest.assertions.print.print
 
 internal object MapEq : Eq<Map<*, *>?> {
    override fun equals(actual: Map<*, *>?, expected: Map<*, *>?, strictNumberEq: Boolean): Throwable? {
       return when {
          actual == null && expected == null -> null
-
          actual != null && expected != null -> {
             val haveUnequalKeys = eq(actual.keys, expected.keys, strictNumberEq)
-            if(haveUnequalKeys != null) generateError(actual, expected)
+            if (haveUnequalKeys != null) generateError(actual, expected)
             else {
                val hasDifferentValue = actual.keys.any { key ->
                   eq(actual[key], expected[key], strictNumberEq) != null
@@ -30,8 +29,8 @@ internal object MapEq : Eq<Map<*, *>?> {
 
 private fun generateError(actual: Map<*, *>?, expected: Map<*, *>?): Throwable {
    return failure(
-      Expected(expected.print()),
-      Actual(actual.print()),
+      Expected(print(expected)),
+      Actual(print(actual)),
       buildFailureMessage(
          actual,
          expected
@@ -51,17 +50,17 @@ private fun buildFailureMessage(actual: Map<*, *>?, expected: Map<*, *>?): Strin
 }
 
 
-private fun Map<*, *>?.print(): Printed {
-   if (this == null) return null.show()
-   if (isEmpty()) return Printed("{}")
+private fun print(map: Map<*, *>?): Printed {
+   if (map == null) return null.print()
+   if (map.isEmpty()) return Printed("{}")
    val indentation = "  "
    val newLine = "\n"
-   return Printed(toList()
+   return Printed(map.toList()
       .joinToString(
          separator = ",$newLine",
          prefix = "{$newLine",
          postfix = "$newLine}",
          limit = 10
-      ) { "$indentation${it.first.show().value} = ${it.second.show().value}" }
+      ) { "$indentation${it.first.print().value} = ${it.second.print().value}" }
    )
 }

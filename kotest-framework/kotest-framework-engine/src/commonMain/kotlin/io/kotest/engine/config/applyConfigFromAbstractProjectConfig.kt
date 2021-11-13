@@ -4,7 +4,6 @@ import io.kotest.core.config.AbstractProjectConfig
 import io.kotest.core.config.Configuration
 import io.kotest.core.listeners.AfterProjectListener
 import io.kotest.core.listeners.BeforeProjectListener
-import io.kotest.fp.foreach
 
 /**
  * Applies settings from a [AbstractProjectConfig] instance to the given [Configuration].
@@ -12,48 +11,47 @@ import io.kotest.fp.foreach
 internal fun applyConfigFromProjectConfig(config: AbstractProjectConfig, configuration: Configuration) {
 
    // assertions
-   config.assertionMode.foreach { configuration.assertionMode = it }
-   config.globalAssertSoftly.foreach { configuration.globalAssertSoftly = it }
+   config.assertionMode?.let { configuration.assertionMode = it }
+   config.globalAssertSoftly?.let { configuration.globalAssertSoftly = it }
 
    // outputs
-   config.displaySpecIfNoActiveTests.foreach { configuration.displaySpecIfNoActiveTests = it }
+   config.displaySpecIfNoActiveTests?.let { configuration.displaySpecIfNoActiveTests = it }
 
    // project run options
-   config.failOnIgnoredTests.foreach { configuration.failOnIgnoredTests = it }
-   config.failOnEmptyTestSuite.foreach { configuration.failOnEmptyTestSuite = it }
-   config.testCaseOrder.foreach { configuration.testCaseOrder = it }
-   config.specExecutionOrder.foreach { configuration.specExecutionOrder = it }
-   config.writeSpecFailureFile.foreach { configuration.writeSpecFailureFile = it }
+   config.failOnIgnoredTests?.let { configuration.failOnIgnoredTests = it }
+   config.failOnEmptyTestSuite?.let { configuration.failOnEmptyTestSuite = it }
+   config.testCaseOrder?.let { configuration.testCaseOrder = it }
+   config.specExecutionOrder?.let { configuration.specExecutionOrder = it }
+   config.writeSpecFailureFile?.let { configuration.writeSpecFailureFile = it }
 
    // concurrency
-   config.parallelism.foreach { configuration.parallelism = it }
-   config.concurrentTests.foreach { configuration.concurrentTests = it }
-   config.concurrentSpecs.foreach { configuration.concurrentSpecs = it }
-   config.isolationMode.foreach { configuration.isolationMode = it }
+   config.parallelism?.let { configuration.parallelism = it }
+   config.concurrentTests?.let { configuration.concurrentTests = it }
+   config.concurrentSpecs?.let { configuration.concurrentSpecs = it }
+   config.isolationMode?.let { configuration.isolationMode = it }
+   config.dispatcherAffinity?.let { configuration.dispatcherAffinity = it }
 
    // timeouts
-   config.timeout.foreach { configuration.timeout = it.inWholeMilliseconds }
-   config.invocationTimeout.foreach { configuration.invocationTimeout = it }
-   config.projectTimeout.foreach { configuration.projectTimeout = it }
+   config.timeout?.let { configuration.timeout = it.inWholeMilliseconds }
+   config.invocationTimeout?.let { configuration.invocationTimeout = it }
+   config.projectTimeout?.let { configuration.projectTimeout = it }
 
    // test names
-   config.includeTestScopePrefixes.foreach { configuration.includeTestScopeAffixes = it }
-   config.testNameRemoveWhitespace.foreach { configuration.removeTestNameWhitespace = it }
-   config.testNameAppendTags.foreach { configuration.testNameAppendTags = it }
-   config.duplicateTestNameMode.foreach { configuration.duplicateTestNameMode = it }
-   config.testNameCase.foreach { configuration.testNameCase = it }
+   config.includeTestScopePrefixes?.let { configuration.includeTestScopeAffixes = it }
+   config.testNameRemoveWhitespace?.let { configuration.removeTestNameWhitespace = it }
+   config.testNameAppendTags?.let { configuration.testNameAppendTags = it }
+   config.duplicateTestNameMode?.let { configuration.duplicateTestNameMode = it }
+   config.testNameCase?.let { configuration.testNameCase = it }
 
    // config
-   config.defaultTestCaseConfig.foreach { configuration.defaultTestConfig = it }
+   config.defaultTestCaseConfig?.let { configuration.defaultTestConfig = it }
 
    // debug
-   config.coroutineDebugProbes.foreach { configuration.coroutineDebugProbes = it }
+   config.coroutineDebugProbes?.let { configuration.coroutineDebugProbes = it }
 
    // the project config object allows us to define project event methods, which we
    // wrap into a project listener and register as normal
    val projectListener = object : BeforeProjectListener, AfterProjectListener {
-
-      override val name: String = "ProjectConfigBeforeAfterProjectListener"
 
       override suspend fun beforeProject() {
          config.beforeProject()
@@ -66,7 +64,6 @@ internal fun applyConfigFromProjectConfig(config: AbstractProjectConfig, configu
       }
    }
 
-   configuration.registerListeners(config.listeners() + listOf(projectListener))
-   configuration.registerExtensions(config.extensions())
-   configuration.registerFilters(config.filters())
+   val exts = config.listeners() + listOf(projectListener) + config.extensions() + config.filters()
+   exts.forEach { configuration.registry().add(it) }
 }

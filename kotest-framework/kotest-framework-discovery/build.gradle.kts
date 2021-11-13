@@ -5,10 +5,6 @@ plugins {
    id("com.adarshr.test-logger")
 }
 
-repositories {
-   mavenCentral()
-}
-
 kotlin {
 
    targets {
@@ -27,12 +23,12 @@ kotlin {
          dependencies {
             compileOnly(kotlin("stdlib"))
             implementation(kotlin("reflect"))
-            implementation(Libs.Kotlin.kotlinScriptRuntime)
+//            implementation(Libs.Kotlin.kotlinScriptRuntime)
 
             api(project(Projects.Common))
             // needed to compile against Spec
             // but runtime classes must be provided by modules using discovery
-            compileOnly(project(Projects.Api))
+            compileOnly(project(Projects.Framework.api))
 
             // needed to scan the classpath for classes
             implementation(Libs.Classgraph.classgraph)
@@ -44,11 +40,6 @@ kotlin {
          languageSettings.optIn("kotlin.experimental.ExperimentalTypeInference")
       }
    }
-}
-
-tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
-   kotlinOptions.jvmTarget = "1.8"
-   kotlinOptions.apiVersion = "1.5"
 }
 
 apply(from = "../../publish-mpp.gradle.kts")

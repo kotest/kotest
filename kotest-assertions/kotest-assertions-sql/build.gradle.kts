@@ -5,10 +5,6 @@ plugins {
    id("com.adarshr.test-logger")
 }
 
-repositories {
-   jcenter()
-}
-
 kotlin {
    sourceSets {
 
@@ -33,8 +29,8 @@ kotlin {
       val jvmMain by getting {
          dependencies {
             compileOnly(kotlin("stdlib"))
-            implementation(project(Projects.AssertionsShared))
-            implementation(project(Projects.AssertionsCore))
+            implementation(project(Projects.Assertions.Shared))
+            implementation(project(Projects.Assertions.Core))
          }
       }
 
@@ -45,22 +41,6 @@ kotlin {
             implementation(Libs.Mocking.mockk)
          }
       }
-   }
-}
-
-tasks.named<Test>("jvmTest") {
-   useJUnitPlatform()
-   filter {
-      isFailOnNoMatchingTests = false
-   }
-   testLogging {
-      showExceptions = true
-      showStandardStreams = true
-      events = setOf(
-         org.gradle.api.tasks.testing.logging.TestLogEvent.FAILED,
-         org.gradle.api.tasks.testing.logging.TestLogEvent.PASSED
-      )
-      exceptionFormat = org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
    }
 }
 

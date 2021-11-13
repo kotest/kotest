@@ -1,33 +1,31 @@
 package io.kotest.engine.interceptors
 
-import io.kotest.core.config.configuration
+import io.kotest.common.KotestInternal
 import io.kotest.core.extensions.SpecExecutionOrderExtension
 import io.kotest.engine.EngineResult
 import io.kotest.engine.TestSuite
-import io.kotest.engine.listener.TestEngineListener
 import io.kotest.engine.spec.DefaultSpecExecutionOrderExtension
 import io.kotest.mpp.log
 
 /**
- * An [EngineInterceptor] that sorts specs according to registered [SpecExecutionOrderExtension]s
+ * An [EngineInterceptor] that sorts the [TestSuite] according to registered [SpecExecutionOrderExtension]s
  * or falling back to the [DefaultSpecExecutionOrderExtension].
  */
+@KotestInternal
 internal object SpecSortEngineInterceptor : EngineInterceptor {
 
    override suspend fun intercept(
-      suite: TestSuite,
-      listener: TestEngineListener,
-      execute: suspend (TestSuite, TestEngineListener) -> EngineResult
+      context: EngineContext,
+      execute: suspend (EngineContext) -> EngineResult
    ): EngineResult {
 
       // spec classes are ordered using SpecExecutionOrderExtension extensions
-      val exts = configuration.extensions().filterIsInstance<SpecExecutionOrderExtension>().ifEmpty {
-         listOf(DefaultSpecExecutionOrderExtension(configuration.specExecutionOrder))
+      val exts = context.configuration.registry().all().filterIsInstance<SpecExecutionOrderExtension>().ifEmpty {
+         listOf(DefaultSpecExecutionOrderExtension(context.configuration.specExecutionOrder))
       }
 
-      log { "SpecSortEngineExtension: Sorting specs using extensions $exts" }
-      val specs = exts.fold(suite.specs) { acc, op -> op.sortSpecs(acc) }
-      val classes = exts.fold(suite.classes) { acc, op -> op.sortClasses(acc) }
-      return execute(suite.copy(specs = specs, classes = classes), listener)
+      log { "SpecSortEngineInterceptor: Sorting specs using extensions $exts" }
+      val specs = exts.fold(context.suite.specs) { acc, op -> op.sort(acc) }
+      return execute(context.withTestSuite(TestSuite(specs)))
    }
 }

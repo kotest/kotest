@@ -1,6 +1,3 @@
-import org.gradle.api.tasks.testing.logging.TestExceptionFormat
-import org.gradle.api.tasks.testing.logging.TestLogEvent
-
 buildscript {
    repositories {
       mavenCentral()
@@ -14,10 +11,6 @@ plugins {
    id("java")
    id("kotlin-multiplatform")
    id("java-library")
-}
-
-repositories {
-   mavenCentral()
 }
 
 kotlin {
@@ -38,7 +31,6 @@ kotlin {
       }
 
       linuxX64()
-      linuxArm64()
 
       mingwX64()
 
@@ -66,12 +58,12 @@ kotlin {
          dependencies {
             compileOnly(kotlin("stdlib"))
             implementation(kotlin("reflect"))
-            api(project(Projects.AssertionsShared))
+            api(project(Projects.Assertions.Shared))
             implementation(project(Projects.Common))
 
             // this is API because we want people to be able to use the functionality in their tests
             // without needing to declare this dependency as well
-            api(project(Projects.Api))
+            api(project(Projects.Framework.api))
 
             // used to install the debug probes for coroutines
             implementation(Libs.Coroutines.debug)
@@ -81,18 +73,15 @@ kotlin {
 
       val jsMain by getting {
          dependsOn(commonMain)
-         dependencies {
-            // this must be api as it's compiled into the final source
-            api(kotlin("test-js"))
-         }
       }
 
       val jvmMain by getting {
          dependsOn(commonMain)
          dependencies {
-            api(Libs.Kotlin.kotlinScriptRuntime)
-            implementation(Libs.Kotlin.kotlinScriptUtil)
-            implementation(Libs.Kotlin.kotlinScriptJvm)
+//            api(Libs.Kotlin.kotlinScriptRuntime)
+//            implementation(Libs.Kotlin.kotlinScriptUtil)
+//            implementation(Libs.Kotlin.kotlinScriptJvm)
+            implementation(Libs.Coroutines.test)
 
             api(Libs.Classgraph.classgraph)
 
@@ -109,8 +98,9 @@ kotlin {
 
       val jvmTest by getting {
          dependencies {
-            implementation(project(Projects.AssertionsCore))
+            implementation(project(Projects.Assertions.Core))
             implementation(project(Projects.JunitRunner))
+            implementation(Libs.Coroutines.coreJvm)
             implementation(Libs.Mocking.mockk)
          }
       }
@@ -132,10 +122,6 @@ kotlin {
       }
 
       val linuxX64Main by getting {
-         dependsOn(desktopMain)
-      }
-
-      val linuxArm64Main by getting {
          dependsOn(desktopMain)
       }
 
@@ -189,24 +175,5 @@ kotlin {
       }
    }
 }
-
-tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
-   kotlinOptions.jvmTarget = "1.8"
-   kotlinOptions.apiVersion = "1.5"
-}
-
-tasks.named<Test>("jvmTest") {
-   useJUnitPlatform()
-   filter {
-      isFailOnNoMatchingTests = false
-   }
-   testLogging {
-      showExceptions = true
-      showStandardStreams = true
-      events = setOf(TestLogEvent.FAILED, TestLogEvent.PASSED, TestLogEvent.STANDARD_ERROR, TestLogEvent.STANDARD_OUT)
-      exceptionFormat = TestExceptionFormat.FULL
-   }
-}
-
 
 apply(from = "../../publish-mpp.gradle.kts")

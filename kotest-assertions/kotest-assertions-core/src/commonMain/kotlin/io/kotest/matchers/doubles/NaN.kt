@@ -3,9 +3,7 @@ package io.kotest.matchers.doubles
 import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
 import io.kotest.matchers.should
-import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNot
-import io.kotest.matchers.shouldNotBe
 
 /**
  * Asserts that this [Double] is [Double.NaN]
@@ -57,9 +55,10 @@ fun Double.shouldNotBeNaN(): Double {
  * @see [Double.shouldNotBeNaN]
  */
 fun beNaN() = object : Matcher<Double> {
-  override fun test(value: Double) = MatcherResult(
-    value.isNaN(),
-    "$value should be NaN",
-    "$value should not be NaN"
-  )
+   override fun test(value: Double) = MatcherResult(
+      value.isNaN(),
+      { "$value should be NaN" },
+      {
+         "$value should not be NaN"
+      })
 }

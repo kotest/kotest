@@ -2,54 +2,50 @@ package io.kotest.engine.test.interceptors
 
 import io.kotest.assertions.assertionCounter
 import io.kotest.assertions.getAndReset
-import io.kotest.core.config.configuration
 import io.kotest.core.test.AssertionMode
 import io.kotest.core.test.TestCase
-import io.kotest.core.test.TestContext
 import io.kotest.core.test.TestResult
-import io.kotest.core.test.TestStatus
+import io.kotest.core.test.TestScope
 import io.kotest.core.test.TestType
+import kotlin.time.Duration
 
 /**
  * Wraps the test function checking for assertion mode, if the test is a [TestType.Test].
  */
-internal object AssertionModeInterceptor : TestExecutionInterceptor {
-
-   private fun mode(testCase: TestCase) =
-      testCase.spec.assertions ?: testCase.spec.assertionMode() ?: configuration.assertionMode
+internal class AssertionModeInterceptor() : TestExecutionInterceptor {
 
    private fun shouldApply(testCase: TestCase): Boolean {
       if (testCase.type == TestType.Container) return false
-      val mode = mode(testCase)
-      if (mode == AssertionMode.None) return false
+      if (testCase.config.assertionMode == AssertionMode.None) return false
       return true
    }
 
    override suspend fun intercept(
-      test: suspend (TestCase, TestContext) -> TestResult
-   ): suspend (TestCase, TestContext) -> TestResult = { testCase, context ->
-      if (shouldApply(testCase)) apply(testCase, context, test) else test(testCase, context)
+      testCase: TestCase,
+      scope: TestScope,
+      test: suspend (TestCase, TestScope) -> TestResult
+   ): TestResult {
+      return if (shouldApply(testCase)) apply(testCase, scope, test) else test(testCase, scope)
    }
 
    private suspend fun apply(
       testCase: TestCase,
-      context: TestContext,
-      test: suspend (TestCase, TestContext) -> TestResult
+      scope: TestScope,
+      test: suspend (TestCase, TestScope) -> TestResult
    ): TestResult {
 
+      val warningMessage = "Test '${testCase.name.testName}' did not invoke any assertions"
       assertionCounter.reset()
-      val result = test(testCase, context)
 
-      val warningMessage = "Test '${testCase.displayName}' did not invoke any assertions"
-      val mode = mode(testCase)
-
+      val result = test(testCase, scope)
       return when {
          // if we had an error anyway, we don't bother with this check
-         result.status in listOf(TestStatus.Error, TestStatus.Failure) -> result
+         result.isErrorOrFailure -> result
          // if we had assertions we're good
          assertionCounter.getAndReset() > 0 -> result
-         mode == AssertionMode.Error -> throw ZeroAssertionsError(warningMessage)
-         mode == AssertionMode.Warn -> {
+         testCase.config.assertionMode == AssertionMode.Error ->
+            TestResult.Failure(Duration.Companion.ZERO, ZeroAssertionsError(warningMessage))
+         testCase.config.assertionMode == AssertionMode.Warn -> {
             println("Warning: $warningMessage")
             result
          }

@@ -2,14 +2,9 @@ plugins {
    kotlin("multiplatform")
 }
 
-repositories {
-   mavenCentral()
-}
-
 kotlin {
    targets {
       linuxX64()
-      linuxArm64()
 
       mingwX64()
 
@@ -37,7 +32,7 @@ kotlin {
             implementation(kotlin("stdlib"))
             implementation(kotlin("test-common"))
             implementation(kotlin("test-annotations-common"))
-            implementation(project(Projects.AssertionsCore))
+            implementation(project(Projects.Assertions.Core))
          }
       }
 
@@ -58,10 +53,6 @@ kotlin {
       }
 
       val linuxX64Test by getting {
-         dependsOn(nativeTest)
-      }
-
-      val linuxArm64Test by getting {
          dependsOn(nativeTest)
       }
 

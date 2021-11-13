@@ -1,10 +1,7 @@
-enableFeaturePreview("GRADLE_METADATA")
-
 pluginManagement {
    repositories {
       mavenCentral()
       gradlePluginPortal()
-      jcenter()
    }
 }
 
@@ -27,6 +24,9 @@ include("kotest-framework:kotest-framework-discovery")
 // brings in the API dependency
 include("kotest-framework:kotest-framework-engine")
 
+// a fat jar that includes everything needed to execute the engine
+include("kotest-framework:kotest-framework-standalone")
+
 // compiler plugins to integrate tests with the engine
 include("kotest-framework:kotest-framework-multiplatform-plugin-js")
 include("kotest-framework:kotest-framework-multiplatform-plugin-native")
@@ -47,7 +47,6 @@ include("kotest-assertions:kotest-assertions-shared")
 // the core assertions that cover things like collections, strings, etc
 // users should depend on this if they want to use kotest assertions in tests
 include("kotest-assertions:kotest-assertions-core")
-include("kotest-assertions:kotest-assertions-compiler")
 include("kotest-assertions:kotest-assertions-json")
 include("kotest-assertions:kotest-assertions-sql")
 
@@ -85,10 +84,11 @@ include("kotest-tests:kotest-tests-concurrency-specs")
 include("kotest-tests:kotest-tests-junitxml")
 include("kotest-tests:kotest-tests-htmlreporter")
 include("kotest-tests:kotest-tests-multipleconfig")
-//include("kotest-tests:kotest-tests-parallelism")
+include("kotest-tests:kotest-tests-test-parallelism")
+//include("kotest-tests:kotest-tests-spec-parallelism")
 include("kotest-tests:kotest-tests-tagextension")
-//include("kotest-tests:kotest-tests-timeout")
-//include("kotest-tests:kotest-tests-timeout-sysprop")
+include("kotest-tests:kotest-tests-timeout-project")
+include("kotest-tests:kotest-tests-timeout-sysprop")
 include("kotest-tests:kotest-tests-multiname-test-name-sysprop")
 include("kotest-tests:kotest-tests-native")
 include("kotest-tests:kotest-tests-js")
@@ -101,9 +101,9 @@ include("kotest-tests:kotest-tests-js")
 include("kotest-bom")
 
 plugins {
-   id("com.gradle.enterprise") version "3.6.1"
+   id("com.gradle.enterprise") version "3.7.1"
    // See https://jmfayard.github.io/refreshVersions
-   id("de.fayard.refreshVersions") version "0.10.1"
+   id("de.fayard.refreshVersions") version "0.23.0"
 }
 
 gradleEnterprise {

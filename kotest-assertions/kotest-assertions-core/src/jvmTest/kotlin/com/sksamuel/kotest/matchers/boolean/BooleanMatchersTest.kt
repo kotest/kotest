@@ -17,7 +17,7 @@ class BooleanMatchersTest : FreeSpec() {
          (3 + 3 == 6).shouldBeTrue()
       }
 
-      "Boolean shouldBeTrue should fail for false booleans" - {
+      "Boolean shouldBeTrue should fail for false booleans" {
          shouldThrow<AssertionError> { false.shouldBeTrue() }
       }
 
@@ -26,7 +26,7 @@ class BooleanMatchersTest : FreeSpec() {
          (3 + 3 == 42).shouldBeFalse()
       }
 
-      "Boolean shouldBeFalse should fail for true booleans" - {
+      "Boolean shouldBeFalse should fail for true booleans" {
          shouldThrow<AssertionError> { true.shouldBeFalse() }
       }
 

@@ -1,7 +1,7 @@
 package io.kotest.property.internal
 
 import io.kotest.assertions.failure
-import io.kotest.assertions.show.show
+import io.kotest.assertions.print.print
 
 /**
  * Generates an [AssertionError] for a property test without arg details and then throws it.
@@ -60,9 +60,9 @@ internal fun propertyTestFailureMessage(
       sb.append("\n")
       results.withIndex().forEach { (index, result) ->
          val input = if (result.initial == result.shrink) {
-            "\tArg ${index}: ${result.initial.show().value}"
+            "\tArg ${index}: ${result.initial.print().value}"
          } else {
-            "\tArg ${index}: ${result.shrink.show().value} (shrunk from ${result.initial})"
+            "\tArg ${index}: ${result.shrink.print().value} (shrunk from ${result.initial})"
          }
          sb.append(input)
          sb.append("\n")

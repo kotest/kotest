@@ -3,7 +3,7 @@ package io.kotest.engine.cli
 /**
  * Parses args in the format --name value.
  */
-fun parseArgs(args: List<String>): Map<String, String> {
+internal fun parseArgs(args: List<String>): Map<String, String> {
    val argsmap = mutableMapOf<String, String>()
    var name = ""
    var value = ""

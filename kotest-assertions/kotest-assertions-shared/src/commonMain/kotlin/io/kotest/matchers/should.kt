@@ -1,10 +1,17 @@
 package io.kotest.matchers
 
-import io.kotest.assertions.*
+import io.kotest.assertions.Actual
+import io.kotest.assertions.Expected
+import io.kotest.assertions.assertionCounter
+import io.kotest.assertions.collectOrThrow
 import io.kotest.assertions.eq.actualIsNull
 import io.kotest.assertions.eq.eq
 import io.kotest.assertions.eq.expectedIsNull
-import io.kotest.assertions.show.show
+import io.kotest.assertions.errorCollector
+import io.kotest.assertions.failure
+import io.kotest.assertions.intellijFormatError
+import io.kotest.assertions.print.Printed
+import io.kotest.assertions.print.print
 
 @Suppress("UNCHECKED_CAST")
 infix fun <T, U : T> T.shouldBe(expected: U?) {
@@ -35,7 +42,16 @@ fun <T> invokeMatcher(t: T, matcher: Matcher<T>): T {
    assertionCounter.inc()
    val result = matcher.test(t)
    if (!result.passed()) {
-      errorCollector.collectOrThrow(failure(result.failureMessage()))
+      when (result) {
+         is ComparableMatcherResult -> errorCollector.collectOrThrow(
+            failure(
+               Expected(Printed(result.expected())),
+               Actual(Printed(result.actual())),
+               result.failureMessage()
+            )
+         )
+         else -> errorCollector.collectOrThrow(failure(result.failureMessage()))
+      }
    }
    return t
 }
@@ -60,11 +76,11 @@ fun <T> equalityMatcher(expected: T) = object : Matcher<T> {
       return MatcherResult(
          t == null,
          {
-            val e = Expected(expected.show())
-            val a = Actual(value.show())
+            val e = Expected(expected.print())
+            val a = Actual(value.print())
             failure(e, a).message ?: intellijFormatError(e, a)
          },
-         { "${expected.show().value} should not equal ${value.show().value}" }
+         { "${expected.print().value} should not equal ${value.print().value}" }
       )
    }
 }
