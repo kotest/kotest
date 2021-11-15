@@ -22,8 +22,8 @@ interface Eq<T> {
 /**
  * Locates the applicable [Eq] for the inputs, and invokes it, returning the error if any.
  */
-fun <T : Any?> eq(actual: T, expected: T, strictNumberEq: Boolean = false): Throwable? {
-   // if we have null and non-null, usually that's a failure, but people can override equals to allow it
+fun <T : Any?> eq(actual: T, expected: T, strictNumberEq: Boolean): Throwable? {
+   // if we have null and non null, usually that's a failure, but people can override equals to allow it
    return when {
       actual === expected -> null
       actual == null && expected == null -> null
@@ -43,6 +43,10 @@ fun <T : Any?> eq(actual: T, expected: T, strictNumberEq: Boolean = false): Thro
       }
       else -> null
    }
+}
+
+fun <T : Any?> eq(actual: T, expected: T): Throwable? {
+   return eq(actual, expected, false)
 }
 
 private fun <T> shouldShowDataClassDiff(actual: T, expected: T) =
