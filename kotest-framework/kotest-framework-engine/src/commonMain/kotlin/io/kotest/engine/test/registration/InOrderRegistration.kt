@@ -33,9 +33,14 @@ class InOrderRegistration(
          TestCaseExecutionListenerToTestEngineListenerAdapter(listener),
          coroutineDispatcherFactory,
          configuration,
-         DuplicateNameHandlingRegistration(
-            configuration.duplicateTestNameMode,
-            InOrderRegistration(testCase, listener, coroutineDispatcherFactory, configuration)
+         FailFastRegistration(
+            testCase,
+            configuration,
+            listener,
+            DuplicateNameHandlingRegistration(
+               configuration.duplicateTestNameMode,
+               InOrderRegistration(testCase, listener, coroutineDispatcherFactory, configuration)
+            ),
          )
       ).execute(testCase, defaultTestScope(testCase))
    }
