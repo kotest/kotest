@@ -1,6 +1,7 @@
 package com.sksamuel.kotest.inspectors
 
 import io.kotest.assertions.assertSoftly
+import io.kotest.assertions.shouldFail
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.assertions.throwables.shouldThrowAny
 import io.kotest.core.spec.style.WordSpec
@@ -11,6 +12,7 @@ import io.kotest.inspectors.forAtMostOne
 import io.kotest.inspectors.forExactly
 import io.kotest.inspectors.forNone
 import io.kotest.inspectors.forOne
+import io.kotest.inspectors.forSingle
 import io.kotest.inspectors.forSome
 import io.kotest.matchers.comparables.beGreaterThan
 import io.kotest.matchers.comparables.beLessThan
@@ -447,6 +449,66 @@ The following elements failed:
 
             assertSoftly(dummyEntries) {
                forAtLeastOne {
+                  it.id shouldBe 1
+                  it.name shouldBe "first"
+               }
+            }
+         }
+      }
+
+      "forSingle" should {
+         "fail if collection consists of multiple elements" {
+            shouldFail {
+               listOf(
+                  DummyEntry(id = 1, name = "first"),
+                  DummyEntry(id = 2, name = "second"),
+               ).forSingle {
+                  it.id shouldBe 1
+               }
+            }.message shouldBe """
+               Expected a single element in the collection but found 2.
+
+               The following elements passed:
+               DummyEntry(id=1, name=first)
+
+               The following elements failed:
+               DummyEntry(id=2, name=second) => expected:<1> but was:<2>
+            """.trimIndent()
+         }
+
+         "fail for empty collection" {
+            shouldFail {
+               arrayOf<Int>().forSingle {
+                  it shouldBe 3
+               }
+            }.message shouldBe """
+               Expected a single element in the collection, but it was empty.
+            """.trimIndent()
+         }
+
+         "fail if single element doesn't match" {
+            shouldFail {
+               arrayOf(2).forSingle {
+                  it shouldBe 3
+               }
+            }.message shouldBe """
+               Expected a single element to pass, but it failed.
+
+               The following elements passed:
+               --none--
+
+               The following elements failed:
+               2 => expected:<3> but was:<2>
+            """.trimIndent()
+         }
+
+         "work inside assertSoftly block" {
+            val dummyEntries = listOf(
+               DummyEntry(id = 1, name = "first"),
+            )
+
+            assertSoftly(dummyEntries) {
+               forSingle {
                   it.id shouldBe 1
                   it.name shouldBe "first"
                }
