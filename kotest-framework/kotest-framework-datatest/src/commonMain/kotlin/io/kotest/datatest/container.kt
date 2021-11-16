@@ -1,6 +1,5 @@
 package io.kotest.datatest
 
-import io.kotest.common.ExperimentalKotest
 import io.kotest.core.names.TestName
 import io.kotest.core.spec.style.scopes.AbstractContainerScope
 import io.kotest.core.spec.style.scopes.ContainerScope
@@ -12,7 +11,6 @@ import kotlin.jvm.JvmName
  *
  * The test name will be generated from the stable properties of the elements. See [Identifiers].
  */
-@ExperimentalKotest
 suspend fun <T : Any> ContainerScope.withData(
    first: T,
    second: T,
@@ -26,7 +24,6 @@ suspend fun <T : Any> ContainerScope.withData(
  *
  * The test names will be generated from the stable properties of the elements. See [Identifiers].
  */
-@ExperimentalKotest
 suspend fun <T : Any> ContainerScope.withData(
    ts: Sequence<T>,
    test: suspend ContainerScope.(T) -> Unit
@@ -37,7 +34,6 @@ suspend fun <T : Any> ContainerScope.withData(
  *
  * The test names will be generated from the stable properties of the elements. See [Identifiers].
  */
-@ExperimentalKotest
 suspend fun <T : Any> ContainerScope.withData(
    ts: Iterable<T>,
    test: suspend ContainerScope.(T) -> Unit
@@ -50,7 +46,6 @@ suspend fun <T : Any> ContainerScope.withData(
  *
  * The test name will be generated from the given [nameFn] function.
  */
-@ExperimentalKotest
 suspend fun <T : Any> ContainerScope.withData(
    nameFn: (T) -> String,
    ts: Sequence<T>,
@@ -62,7 +57,6 @@ suspend fun <T : Any> ContainerScope.withData(
  *
  * The test name will be generated from the stable properties of the elements. See [Identifiers].
  */
-@ExperimentalKotest
 suspend fun <T : Any> ContainerScope.withData(
    nameFn: (T) -> String,
    first: T,
@@ -76,7 +70,6 @@ suspend fun <T : Any> ContainerScope.withData(
  *
  * The test name will be generated from the stable properties of the elements. See [Identifiers].
  */
-@ExperimentalKotest
 suspend fun <T : Any> ContainerScope.withData(
    nameFn: (T) -> String,
    @BuilderInference ts: Iterable<T>,
@@ -91,7 +84,6 @@ suspend fun <T : Any> ContainerScope.withData(
  * Registers tests inside the given test context for each tuple of [data], with the first value
  * of the tuple used as the test name, and the second value passed to the test.
  */
-@ExperimentalKotest
 @JvmName("withDataMap")
 suspend fun <T : Any> ContainerScope.withData(data: Map<String, T>, test: suspend ContainerScope.(T) -> Unit) {
    data.forEach { (name, t) ->
