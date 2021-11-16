@@ -21,7 +21,7 @@ interface RootScope {
 }
 
 /**
- * Convenience method to add a test type [RootTest] that uses default config.
+ * Convenience method to add a [TestType.Test] test to this [RootScope].
  */
 fun RootScope.addTest(
    testName: TestName,
@@ -43,7 +43,7 @@ fun RootScope.addTest(
 }
 
 /**
- * Convenience method to add a container type [RootTest] that uses default config.
+ * Convenience method to add a [TestType.Container] test to this [RootScope].
  */
 fun RootScope.addContainer(
    testName: TestName,
