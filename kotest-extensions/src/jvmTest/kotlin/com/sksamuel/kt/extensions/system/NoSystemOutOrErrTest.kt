@@ -1,7 +1,7 @@
 //package com.sksamuel.kt.extensions.system
 //
 //import io.kotest.assertions.throwables.shouldThrow
-//import io.kotest.core.spec.Isolate
+//import io.kotest.core.annotation.Isolate
 //import io.kotest.extensions.system.NoSystemErrListener
 //import io.kotest.extensions.system.NoSystemOutListener
 //import io.kotest.extensions.system.SystemErrWriteException

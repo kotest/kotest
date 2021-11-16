@@ -127,6 +127,8 @@ abstract class TestConfiguration {
       _tags = _tags + tags.toSet()
    }
 
+   fun appliedTags() = _tags
+
    /**
     * Registers an [AutoCloseable] to be closed when the spec is completed.
     */

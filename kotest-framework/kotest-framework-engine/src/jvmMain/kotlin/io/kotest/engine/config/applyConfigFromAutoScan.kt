@@ -3,7 +3,7 @@ package io.kotest.engine.config
 import io.kotest.core.config.Configuration
 import io.kotest.core.extensions.Extension
 import io.kotest.core.internal.KotestEngineProperties
-import io.kotest.core.spec.AutoScan
+import io.kotest.core.annotation.AutoScan
 import io.kotest.mpp.instantiateOrObject
 
 /**

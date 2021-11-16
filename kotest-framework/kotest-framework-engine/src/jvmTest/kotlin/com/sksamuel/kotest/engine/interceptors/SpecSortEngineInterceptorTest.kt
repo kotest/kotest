@@ -4,7 +4,7 @@ import com.sksamuel.kotest.engine.active.BangDisableFunSpec
 import com.sksamuel.kotest.engine.active.FocusTest
 import com.sksamuel.kotest.engine.active.IgnoredTestsTest
 import io.kotest.core.config.Configuration
-import io.kotest.core.spec.Isolate
+import io.kotest.core.annotation.Isolate
 import io.kotest.core.spec.SpecExecutionOrder
 import io.kotest.core.spec.SpecRef
 import io.kotest.core.spec.style.FunSpec

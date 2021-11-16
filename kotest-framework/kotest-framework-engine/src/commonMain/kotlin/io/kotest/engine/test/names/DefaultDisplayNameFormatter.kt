@@ -1,5 +1,7 @@
 package io.kotest.engine.test.names
 
+import io.kotest.common.Platform
+import io.kotest.common.platform
 import io.kotest.core.config.Configuration
 import io.kotest.core.config.ExtensionRegistry
 import io.kotest.core.extensions.DisplayNameFormatterExtension
@@ -72,7 +74,11 @@ class DefaultDisplayNameFormatter(
     * clash with another spec.
     */
    override fun format(kclass: KClass<*>): String {
-      return kclass.annotation<DisplayName>()?.name ?: kclass.bestName()
+      return when (platform) {
+         Platform.JVM -> kclass.annotation<DisplayName>()?.name ?: kclass.bestName()
+         Platform.JS -> kclass.bestName()
+         Platform.Native -> kclass.bestName()
+      }
    }
 }
 

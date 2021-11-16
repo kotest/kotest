@@ -1,6 +1,6 @@
 package com.sksamuel.kotest.engine.launcher
 
-import io.kotest.core.spec.Isolate
+import io.kotest.core.annotation.Isolate
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.engine.launcher.LauncherArgs
 import io.kotest.engine.launcher.setupLauncher

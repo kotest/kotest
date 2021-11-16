@@ -2,7 +2,7 @@ package com.sksamuel.kt.extensions.time
 
 import com.sksamuel.kt.extensions.system.SystemPropertyListenerTest
 import io.kotest.core.listeners.TestListener
-import io.kotest.core.spec.AutoScan
+import io.kotest.core.annotation.AutoScan
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.core.test.TestCase

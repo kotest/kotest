@@ -1,6 +1,6 @@
 package com.sksamuel.kotest.runner.junit5
 
-import io.kotest.core.spec.Isolate
+import io.kotest.core.annotation.Isolate
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.framework.discovery.Discovery
 import io.kotest.framework.discovery.DiscoveryFilter

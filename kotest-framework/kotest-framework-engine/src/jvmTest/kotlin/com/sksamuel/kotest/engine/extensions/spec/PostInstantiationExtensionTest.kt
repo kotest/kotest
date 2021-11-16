@@ -2,7 +2,7 @@ package com.sksamuel.kotest.engine.extensions.spec
 
 import io.kotest.core.config.Configuration
 import io.kotest.core.extensions.PostInstantiationExtension
-import io.kotest.core.spec.Isolate
+import io.kotest.core.annotation.Isolate
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.engine.TestEngineLauncher

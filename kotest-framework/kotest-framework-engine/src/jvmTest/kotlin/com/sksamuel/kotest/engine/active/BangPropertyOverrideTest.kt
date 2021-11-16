@@ -1,7 +1,7 @@
 package com.sksamuel.kotest.engine.active
 
 import io.kotest.core.internal.KotestEngineProperties
-import io.kotest.core.spec.Isolate
+import io.kotest.core.annotation.Isolate
 import io.kotest.core.spec.style.WordSpec
 import io.kotest.extensions.system.withSystemProperty
 import io.kotest.matchers.booleans.shouldBeTrue

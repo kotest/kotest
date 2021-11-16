@@ -5,7 +5,7 @@ import com.sksamuel.kotest.engine.interceptors.filters2.FooTests
 import io.kotest.common.KotestInternal
 import io.kotest.core.config.Configuration
 import io.kotest.core.internal.KotestEngineProperties
-import io.kotest.core.spec.Isolate
+import io.kotest.core.annotation.Isolate
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.test.TestScope

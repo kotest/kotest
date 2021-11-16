@@ -4,7 +4,7 @@ import io.kotest.core.Tag
 import io.kotest.core.TagExpression
 import io.kotest.core.config.Configuration
 import io.kotest.core.extensions.TagExtension
-import io.kotest.core.spec.Isolate
+import io.kotest.core.annotation.Isolate
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.test.TestCaseOrder
 import io.kotest.engine.spec.Materializer

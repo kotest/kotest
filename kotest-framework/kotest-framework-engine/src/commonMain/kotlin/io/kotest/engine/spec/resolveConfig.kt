@@ -1,18 +1,20 @@
-package io.kotest.core.test.config
+package io.kotest.engine.spec
 
 import io.kotest.core.config.Configuration
-import io.kotest.core.internal.tags.tags
+import io.kotest.engine.tags.tags
 import io.kotest.core.spec.Spec
 import io.kotest.core.test.Enabled
 import io.kotest.core.test.EnabledOrReasonIf
 import io.kotest.core.test.TestCase
+import io.kotest.core.test.config.ResolvedTestConfig
+import io.kotest.core.test.config.UnresolvedTestConfig
 import kotlin.time.milliseconds
 
 /**
  * Accepts an [UnresolvedTestConfig] and returns a [ResolvedTestConfig] by completing
  * any nulls in the unresolved config with defaults from the [spec] or [Configuration].
  */
-fun resolveConfig(
+internal fun resolveConfig(
    config: UnresolvedTestConfig?,
    xdisabled: Boolean?,
    parent: TestCase?,
@@ -29,8 +31,8 @@ fun resolveConfig(
          // if xdisabled we always override any other enabled/disabled flags
          xdisabled == true -> Enabled.disabled("Disabled by xmethod")
          config?.enabled == false -> Enabled.disabled("Disabled by enabled flag in config")
-         config?.enabledIf != null -> if (config.enabledIf.invoke(testCase)) Enabled.enabled else Enabled.disabled("Disabled by enabledIf flag in config")
-         config?.enabledOrReasonIf != null -> config.enabledOrReasonIf.invoke(testCase)
+         config?.enabledIf != null -> if (config.enabledIf!!.invoke(testCase)) Enabled.enabled else Enabled.disabled("Disabled by enabledIf flag in config")
+         config?.enabledOrReasonIf != null -> config.enabledOrReasonIf!!.invoke(testCase)
          !defaultTestConfig.enabled -> Enabled.disabled
          !defaultTestConfig.enabledIf.invoke(testCase) -> Enabled.disabled
          else -> defaultTestConfig.enabledOrReasonIf.invoke(testCase)
@@ -70,7 +72,7 @@ fun resolveConfig(
       invocations = invocations,
       timeout = timeout,
       invocationTimeout = invocationTimeout,
-      tags = (config?.tags ?: emptySet()) + (defaultTestConfig.tags) + (parent?.config?.tags ?: emptySet()) + spec.tags() + spec._tags + spec::class.tags(),
+      tags = (config?.tags ?: emptySet()) + (defaultTestConfig.tags) + (parent?.config?.tags ?: emptySet()) + spec.tags() + spec.appliedTags() + spec::class.tags(),
       extensions = extensions,
       failfast = config?.failfast ?: parent?.config?.failfast ?: spec.failfast ?: configuration.failfast,
       severity = config?.severity ?: parent?.config?.severity ?: spec.severity ?: configuration.severity,

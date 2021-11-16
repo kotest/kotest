@@ -1,6 +1,6 @@
 package com.sksamuel.kt.extensions.locale
 
-import io.kotest.core.spec.Isolate
+import io.kotest.core.annotation.Isolate
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.extensions.locale.LocaleTestListener
 import io.kotest.matchers.shouldBe

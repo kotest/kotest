@@ -1,4 +1,4 @@
-package io.kotest.core.internal.tags
+package io.kotest.engine.tags
 
 import io.kotest.core.NamedTag
 import io.kotest.core.Tag

@@ -1,37 +1,8 @@
 package io.kotest.core.spec
 
-/**
- * Add this annotation to [Extension]s and they will be registered automatically for all specs.
- */
-annotation class AutoScan
+// these are backwards compatible typealiases
 
-/**
- * Note: This name must be globally unique. Two specs, even in different packages,
- * cannot share the same name, so if @DisplayName is used, developers must ensure it does not
- * clash with another spec.
- *
- * This annotation only works on JVM targets. On other targets this annotation will be ignored.
- */
-@Target(AnnotationTarget.CLASS)
-@Retention(AnnotationRetention.RUNTIME)
-annotation class DisplayName(val name: String)
-
-@Target(AnnotationTarget.CLASS, AnnotationTarget.FUNCTION, AnnotationTarget.TYPE)
-@Retention(AnnotationRetention.SOURCE)
-@DslMarker
-annotation class KotestDsl
-
-/**
- * Use [Isolate].
- */
-@Target(AnnotationTarget.CLASS)
-@Retention(AnnotationRetention.RUNTIME)
-annotation class DoNotParallelize
-
-/**
- * When added to a spec, will mark that spec to not run in parallel, regardless
- * of concurrency or parallelism settings.
- */
-@Target(AnnotationTarget.CLASS)
-@Retention(AnnotationRetention.RUNTIME)
-annotation class Isolate
+typealias DisplayName = io.kotest.core.annotation.DisplayName
+typealias DoNotParallelize = io.kotest.core.annotation.DoNotParallelize
+typealias Isolate = io.kotest.core.annotation.Isolate
+typealias AutoScan = io.kotest.core.annotation.AutoScan

@@ -2,7 +2,7 @@ package com.sksamuel.kotest.engine.config
 
 import io.kotest.core.config.Configuration
 import io.kotest.core.names.DuplicateTestNameMode
-import io.kotest.core.spec.Isolate
+import io.kotest.core.annotation.Isolate
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.SpecExecutionOrder
 import io.kotest.core.spec.style.FunSpec

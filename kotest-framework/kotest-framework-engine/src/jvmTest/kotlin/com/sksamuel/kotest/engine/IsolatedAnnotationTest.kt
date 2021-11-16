@@ -2,7 +2,7 @@ package com.sksamuel.kotest.engine
 
 import io.kotest.common.KotestInternal
 import io.kotest.core.descriptors.DescriptorId
-import io.kotest.core.spec.Isolate
+import io.kotest.core.annotation.Isolate
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.engine.TestEngineLauncher
 import io.kotest.engine.listener.CollectingTestEngineListener

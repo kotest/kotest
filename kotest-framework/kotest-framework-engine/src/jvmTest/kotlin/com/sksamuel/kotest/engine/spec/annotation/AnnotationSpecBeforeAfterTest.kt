@@ -1,7 +1,7 @@
 package com.sksamuel.kotest.engine.spec.annotation
 
 import io.kotest.core.listeners.TestListener
-import io.kotest.core.spec.AutoScan
+import io.kotest.core.annotation.AutoScan
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.style.AnnotationSpec

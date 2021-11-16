@@ -3,8 +3,8 @@ package io.kotest.engine
 import io.kotest.common.ExperimentalKotest
 import io.kotest.core.ProjectContext
 import io.kotest.core.config.Configuration
-import io.kotest.core.spec.DoNotParallelize
-import io.kotest.core.spec.Isolate
+import io.kotest.core.annotation.DoNotParallelize
+import io.kotest.core.annotation.Isolate
 import io.kotest.core.spec.SpecRef
 import io.kotest.engine.concurrency.defaultCoroutineDispatcherFactory
 import io.kotest.engine.concurrency.isIsolate

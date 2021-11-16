@@ -1,7 +1,7 @@
 package com.sksamuel.kotest.engine.extensions.spec
 
 import io.kotest.core.listeners.PrepareSpecListener
-import io.kotest.core.spec.AutoScan
+import io.kotest.core.annotation.AutoScan
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.style.FunSpec

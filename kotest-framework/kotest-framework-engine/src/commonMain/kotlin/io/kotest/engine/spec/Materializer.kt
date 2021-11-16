@@ -8,7 +8,6 @@ import io.kotest.core.spec.Spec
 import io.kotest.core.test.NestedTest
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestCaseOrder
-import io.kotest.core.test.config.resolveConfig
 import io.kotest.engine.test.names.DuplicateTestNameHandler
 
 /**

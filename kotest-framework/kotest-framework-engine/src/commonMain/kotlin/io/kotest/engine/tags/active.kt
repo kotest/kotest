@@ -1,7 +1,6 @@
 package io.kotest.engine.tags
 
 import io.kotest.core.Tag
-import io.kotest.core.internal.tags.tags
 import io.kotest.core.spec.Spec
 import kotlin.reflect.KClass
 

@@ -3,7 +3,7 @@ package com.sksamuel.kotest.engine.active
 import io.kotest.core.descriptors.Descriptor
 import io.kotest.core.filter.TestFilter
 import io.kotest.core.filter.TestFilterResult
-import io.kotest.core.spec.Isolate
+import io.kotest.core.annotation.Isolate
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.test.TestCase
 import io.kotest.engine.KotestEngineLauncher

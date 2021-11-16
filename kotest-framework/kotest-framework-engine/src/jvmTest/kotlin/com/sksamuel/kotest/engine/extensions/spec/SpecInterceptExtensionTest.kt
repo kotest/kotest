@@ -1,7 +1,7 @@
 package com.sksamuel.kotest.engine.extensions.spec
 
 import io.kotest.core.extensions.SpecExtension
-import io.kotest.core.spec.Isolate
+import io.kotest.core.annotation.Isolate
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.style.FunSpec

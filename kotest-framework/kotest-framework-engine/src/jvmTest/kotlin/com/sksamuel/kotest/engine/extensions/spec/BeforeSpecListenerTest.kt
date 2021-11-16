@@ -4,7 +4,7 @@ import io.kotest.core.config.Configuration
 import io.kotest.core.extensions.Extension
 import io.kotest.core.listeners.BeforeSpecListener
 import io.kotest.core.listeners.TestListener
-import io.kotest.core.spec.Isolate
+import io.kotest.core.annotation.Isolate
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.engine.TestEngineLauncher

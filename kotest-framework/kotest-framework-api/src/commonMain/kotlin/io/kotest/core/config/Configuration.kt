@@ -142,7 +142,7 @@ class Configuration {
     * blocked. See [Configuration.parallelism].
     *
     * Note: This setting can be > 1 and specs can still choose to "opt out" by using the
-    * [io.kotest.core.spec.Isolate] annotation. That annotation ensures that a spec never runs concurrently
+    * [io.kotest.core.annotation.Isolate] annotation. That annotation ensures that a spec never runs concurrently
     * with any other regardless of the setting here.
     */
    @ExperimentalKotest

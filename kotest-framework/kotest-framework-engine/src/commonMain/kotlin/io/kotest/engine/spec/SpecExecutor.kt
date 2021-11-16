@@ -64,17 +64,17 @@ class SpecExecutor(
 
    private suspend fun referenceInterceptors(ref: SpecRef) {
 
-      val interceptors = listOf(
-         EnabledIfSpecInterceptor(listener, conf.registry()),
+      val interceptors = listOfNotNull(
+         if (platform == Platform.JVM) EnabledIfSpecInterceptor(listener, conf.registry()) else null,
          IgnoredSpecInterceptor(listener, conf.registry()),
          SpecFilterInterceptor(listener, conf.registry()),
          SystemPropertySpecFilterInterceptor(listener, conf.registry()),
          TagsExcludedSpecInterceptor(listener, conf),
-         RequiresTagSpecInterceptor(listener, conf, conf.registry()),
+         if (platform == Platform.JVM) RequiresTagSpecInterceptor(listener, conf, conf.registry()) else null,
          SpecRefExtensionInterceptor(conf.registry()),
          SpecStartedInterceptor(listener),
          SpecFinishedInterceptor(listener),
-         ApplyExtensionsInterceptor(conf.registry()),
+         if (platform == Platform.JVM) ApplyExtensionsInterceptor(conf.registry()) else null,
          PrepareSpecInterceptor(conf.registry()),
          FinalizeSpecInterceptor(conf.registry()),
       )

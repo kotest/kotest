@@ -4,7 +4,7 @@ import io.kotest.assertions.fail
 import io.kotest.core.Tag
 import io.kotest.core.TagExpression
 import io.kotest.core.extensions.TagExtension
-import io.kotest.core.spec.Isolate
+import io.kotest.core.annotation.Isolate
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.core.test.TestCase

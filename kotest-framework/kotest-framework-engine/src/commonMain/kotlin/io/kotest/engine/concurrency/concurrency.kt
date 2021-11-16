@@ -1,7 +1,7 @@
 package io.kotest.engine.concurrency
 
-import io.kotest.core.spec.DoNotParallelize
-import io.kotest.core.spec.Isolate
+import io.kotest.core.annotation.DoNotParallelize
+import io.kotest.core.annotation.Isolate
 import io.kotest.mpp.annotation
 import kotlin.reflect.KClass
 

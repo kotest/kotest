@@ -1,6 +1,6 @@
 package com.sksamuel.kotest.engine.coroutines
 
-import io.kotest.core.spec.Isolate
+import io.kotest.core.annotation.Isolate
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.longs.shouldBeGreaterThan
 import kotlinx.coroutines.delay
