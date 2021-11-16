@@ -51,7 +51,7 @@ jobs:
             run: ./gradlew publishKotestBomPublicationToDeployRepository
 
    publish_macos:
-      runs-on: macos-latest
+      runs-on: macos-11
       needs: publish_linux
 
       steps:
