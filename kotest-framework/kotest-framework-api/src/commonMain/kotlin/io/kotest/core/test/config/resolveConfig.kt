@@ -5,6 +5,7 @@ import io.kotest.core.internal.tags.tags
 import io.kotest.core.spec.Spec
 import io.kotest.core.test.Enabled
 import io.kotest.core.test.EnabledOrReasonIf
+import io.kotest.core.test.TestCase
 import kotlin.time.milliseconds
 
 /**
@@ -14,11 +15,14 @@ import kotlin.time.milliseconds
 fun resolveConfig(
    config: UnresolvedTestConfig?,
    xdisabled: Boolean?,
-   spec: Spec,
+   parent: TestCase?,
+   spec:Spec,
    configuration: Configuration
 ): ResolvedTestConfig {
 
-   val defaultTestConfig = spec.defaultTestConfig ?: spec.defaultTestCaseConfig() ?: configuration.defaultTestConfig
+   val defaultTestConfig = spec.defaultTestConfig
+      ?: spec.defaultTestCaseConfig()
+      ?: configuration.defaultTestConfig
 
    val enabled: EnabledOrReasonIf = { testCase ->
       when {
@@ -34,6 +38,7 @@ fun resolveConfig(
    }
 
    val timeout = config?.timeout
+      ?: parent?.config?.timeout
       ?: spec.timeout?.milliseconds
       ?: spec.timeout()?.milliseconds
       ?: defaultTestConfig.timeout
@@ -48,6 +53,7 @@ fun resolveConfig(
       ?: defaultTestConfig.invocations
 
    val invocationTimeout = config?.invocationTimeout
+      ?: parent?.config?.invocationTimeout
       ?: spec.invocationTimeout?.milliseconds
       ?: spec.invocationTimeout()?.milliseconds
       ?: defaultTestConfig.invocationTimeout
@@ -64,14 +70,14 @@ fun resolveConfig(
       invocations = invocations,
       timeout = timeout,
       invocationTimeout = invocationTimeout,
-      tags = (config?.tags ?: emptySet()) + (defaultTestConfig.tags) + spec.tags() + spec._tags + spec::class.tags(),
+      tags = (config?.tags ?: emptySet()) + (defaultTestConfig.tags) + (parent?.config?.tags ?: emptySet()) + spec.tags() + spec._tags + spec::class.tags(),
       extensions = extensions,
-      failfast = config?.failfast ?: spec.failfast ?: configuration.failfast,
-      severity = config?.severity ?: spec.severity ?: configuration.severity,
-      assertSoftly = config?.assertSoftly ?: spec.assertSoftly ?: configuration.globalAssertSoftly,
-      assertionMode = config?.assertionMode ?: spec.assertions ?: spec.assertionMode() ?: configuration.assertionMode,
-      coroutineDebugProbes = config?.coroutineDebugProbes ?: spec.coroutineDebugProbes ?: configuration.coroutineDebugProbes,
-      testCoroutineDispatcher = config?.testCoroutineDispatcher ?: spec.testCoroutineDispatcher ?: configuration.testCoroutineDispatcher,
-      blockingTest = config?.blockingTest ?: spec.blockingTest ?: configuration.blockingTest,
+      failfast = config?.failfast ?: parent?.config?.failfast ?: spec.failfast ?: configuration.failfast,
+      severity = config?.severity ?: parent?.config?.severity ?: spec.severity ?: configuration.severity,
+      assertSoftly = config?.assertSoftly ?: parent?.config?.assertSoftly ?:spec.assertSoftly ?: configuration.globalAssertSoftly,
+      assertionMode = config?.assertionMode ?: parent?.config?.assertionMode ?: spec.assertions ?: spec.assertionMode() ?: configuration.assertionMode,
+      coroutineDebugProbes = config?.coroutineDebugProbes ?: parent?.config?.coroutineDebugProbes ?:spec.coroutineDebugProbes ?: configuration.coroutineDebugProbes,
+      testCoroutineDispatcher = config?.testCoroutineDispatcher ?: parent?.config?.testCoroutineDispatcher ?: spec.testCoroutineDispatcher ?: configuration.testCoroutineDispatcher,
+      blockingTest = config?.blockingTest ?: parent?.config?.blockingTest ?: spec.blockingTest ?: configuration.blockingTest,
    )
 }

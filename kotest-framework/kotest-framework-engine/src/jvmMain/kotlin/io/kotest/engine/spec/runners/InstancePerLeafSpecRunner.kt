@@ -10,8 +10,8 @@ import io.kotest.core.test.NestedTest
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestScope
 import io.kotest.core.test.TestResult
-import io.kotest.core.test.toTestCase
 import io.kotest.engine.listener.TestEngineListener
+import io.kotest.engine.spec.Materializer
 import io.kotest.engine.spec.SpecExtensions
 import io.kotest.engine.spec.SpecRunner
 import io.kotest.engine.test.TestCaseExecutionListener
@@ -108,7 +108,7 @@ internal class InstancePerLeafSpecRunner(
             override val coroutineContext: CoroutineContext = this@coroutineScope.coroutineContext
             override suspend fun registerTestCase(nested: NestedTest) {
 
-               val t = nested.toTestCase(test, configuration)
+               val t = Materializer(configuration).materialize(nested, testCase)
                // if this test is our target then we definitely run it
                // or if the test is on the path to our target we must run it
                if (t.descriptor.isOnPath(target.descriptor)) {

@@ -51,6 +51,23 @@ class FailFastTestTest : FunSpec() {
          results["w"]?.isIgnored shouldBe true
          results.shouldNotContainKey("x")
       }
+
+      test("fail fast should propagate down") {
+
+         val listener = CollectingTestEngineListener()
+
+         TestEngineLauncher(listener)
+            .withClasses(GrandfatherFailFastFreeSpec::class)
+            .launch()
+
+         val results = listener.tests.mapKeys { it.key.name.testName }
+         results["a"]?.isSuccess shouldBe true
+         results["b"]?.isSuccess shouldBe true
+         results["c"]?.isSuccess shouldBe true
+         results["d"]?.isSuccess shouldBe true
+         results["e"]?.isError shouldBe true
+         results["f"]?.isIgnored shouldBe true
+      }
    }
 }
 
@@ -95,6 +112,19 @@ private class FailFastFreeSpec() : FreeSpec() {
             "w" - {  // skipped
                "x" {} // skipped
             }
+         }
+      }
+   }
+}
+
+private class GrandfatherFailFastFreeSpec() : FreeSpec() {
+   init {
+      "a".config(failfast = true) - {
+         "b" {} // pass
+         "c" - {
+            "d" {} // pass
+            "e" { error("boom") }
+            "f" {} // will be skipped
          }
       }
    }

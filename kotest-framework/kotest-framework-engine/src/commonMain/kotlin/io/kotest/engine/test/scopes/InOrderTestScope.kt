@@ -8,8 +8,8 @@ import io.kotest.core.test.NestedTest
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestScope
-import io.kotest.core.test.toTestCase
 import io.kotest.engine.listener.TestEngineListener
+import io.kotest.engine.spec.Materializer
 import io.kotest.engine.test.TestCaseExecutor
 import io.kotest.engine.test.listener.TestCaseExecutionListenerToTestEngineListenerAdapter
 import io.kotest.mpp.log
@@ -32,7 +32,7 @@ class InOrderTestScope(
 
    override suspend fun registerTestCase(nested: NestedTest) {
       log { "InOrderTestScope: Nested test case discovered $nested" }
-      val nestedTestCase = nested.toTestCase(testCase, configuration)
+      val nestedTestCase = Materializer(configuration).materialize(nested, testCase)
 
       if (failed && testCase.config.failfast) {
          log { "InOrderTestScope: A previous nested test failed and failfast is enabled - will mark this as ignored" }

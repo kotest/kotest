@@ -9,8 +9,8 @@ import io.kotest.core.test.NestedTest
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestScope
-import io.kotest.core.test.toTestCase
 import io.kotest.engine.listener.TestEngineListener
+import io.kotest.engine.spec.Materializer
 import io.kotest.engine.spec.SpecExtensions
 import io.kotest.engine.spec.SpecRunner
 import io.kotest.engine.test.TestCaseExecutor
@@ -76,7 +76,7 @@ internal class SingleInstanceSpecRunner(
       override suspend fun registerTestCase(nested: NestedTest) {
          logger.log { Pair(testCase.name.testName, "Nested test case discovered '${nested}") }
 
-         val nestedTestCase = nested.toTestCase(testCase, configuration)
+         val nestedTestCase = Materializer(configuration).materialize(nested, testCase)
          if (failedfast) {
             logger.log { Pair(testCase.name.testName, "Skipping test due to fail fast") }
             listener.testIgnored(nestedTestCase, "Failfast enabled on parent test")

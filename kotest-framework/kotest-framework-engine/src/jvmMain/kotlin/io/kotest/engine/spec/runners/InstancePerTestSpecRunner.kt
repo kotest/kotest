@@ -10,8 +10,8 @@ import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestScope
 import io.kotest.core.test.TestType
-import io.kotest.core.test.toTestCase
 import io.kotest.engine.listener.TestEngineListener
+import io.kotest.engine.spec.Materializer
 import io.kotest.engine.spec.SpecExtensions
 import io.kotest.engine.spec.SpecRunner
 import io.kotest.engine.test.TestCaseExecutionListener
@@ -129,7 +129,7 @@ internal class InstancePerTestSpecRunner(
             override val coroutineContext: CoroutineContext = this@coroutineScope.coroutineContext
             override suspend fun registerTestCase(nested: NestedTest) {
 
-               val t = nested.toTestCase(testCase, configuration)
+               val t = Materializer(configuration).materialize(nested, testCase)
 
                // if we are currently executing the target, then any registered tests are new, and we
                // should begin execution of them in fresh specs
