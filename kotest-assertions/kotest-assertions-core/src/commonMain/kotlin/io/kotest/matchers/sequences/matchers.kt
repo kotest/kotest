@@ -347,6 +347,14 @@ fun <T> atMostCount(n: Int) = object : Matcher<Sequence<T>> {
 infix fun <T> Sequence<T>.shouldHaveAtMostSize(n: Int) = this shouldHave atMostCount(n)
 
 
+@Deprecated(
+   "Use `forAny` inspection instead",
+   ReplaceWith(
+      "forAny { p() shouldBe true }",
+      "io.kotest.matchers.shouldBe",
+      "io.kotest.inspectors.forAny",
+   )
+)
 infix fun <T> Sequence<T>.shouldExist(p: (T) -> Boolean) = this should exist(p)
 fun <T> exist(p: (T) -> Boolean) = object : Matcher<Sequence<T>> {
    override fun test(value: Sequence<T>) = MatcherResult(
