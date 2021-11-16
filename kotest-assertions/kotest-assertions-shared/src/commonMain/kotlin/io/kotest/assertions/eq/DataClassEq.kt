@@ -39,8 +39,8 @@ internal object DataClassEq : Eq<Any> {
       } else {
          val detailedDiffMsg = runCatching {
             dataClassDiff(actual, expected, strictNumberEq = strictNumberEq)?.let { diff -> formatDifferences(diff) + "\n\n" } ?: ""
-         }.getOrElse { "" }
-         failure(Expected(expected.print()), Actual(actual.print()), detailedDiffMsg)
+         }
+         failure(Expected(expected.print()), Actual(actual.print()), detailedDiffMsg.getOrElse { "" })
       }
 
    private fun test(a: Any?, b: Any?): Boolean = makeComparable(a) == makeComparable(b)
