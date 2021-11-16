@@ -5,10 +5,10 @@ import io.kotest.common.flatMap
 import io.kotest.core.concurrency.CoroutineDispatcherFactory
 import io.kotest.core.config.Configuration
 import io.kotest.core.descriptors.Descriptor
+import io.kotest.core.spec.Registration
 import io.kotest.core.spec.Spec
 import io.kotest.core.test.NestedTest
 import io.kotest.core.test.TestCase
-import io.kotest.core.test.TestScope
 import io.kotest.core.test.TestResult
 import io.kotest.engine.listener.TestEngineListener
 import io.kotest.engine.spec.Materializer
@@ -16,13 +16,12 @@ import io.kotest.engine.spec.SpecExtensions
 import io.kotest.engine.spec.SpecRunner
 import io.kotest.engine.test.TestCaseExecutionListener
 import io.kotest.engine.test.TestCaseExecutor
-import io.kotest.engine.test.scopes.DuplicateNameHandlingTestScope
+import io.kotest.engine.test.defaultTestScope
 import io.kotest.engine.test.scheduler.TestScheduler
 import io.kotest.mpp.log
 import kotlinx.coroutines.coroutineScope
 import java.util.PriorityQueue
 import java.util.concurrent.atomic.AtomicInteger
-import kotlin.coroutines.CoroutineContext
 
 @ExperimentalKotest
 internal class InstancePerLeafSpecRunner(
@@ -98,65 +97,71 @@ internal class InstancePerLeafSpecRunner(
       spec
    }
 
-   private suspend fun run(test: TestCase, target: TestCase) {
-      coroutineScope {
-         val context = object : TestScope {
+   inner class InstancePerLeafRegistration(
+      private val testCase: TestCase,
+      private val target: TestCase
+   ) : Registration {
 
-            var open = true
+      private var open = true
 
-            override val testCase: TestCase = test
-            override val coroutineContext: CoroutineContext = this@coroutineScope.coroutineContext
-            override suspend fun registerTestCase(nested: NestedTest) {
-
-               val t = Materializer(configuration).materialize(nested, testCase)
-               // if this test is our target then we definitely run it
-               // or if the test is on the path to our target we must run it
-               if (t.descriptor.isOnPath(target.descriptor)) {
+      override suspend fun registerNestedTest(nested: NestedTest): TestResult? {
+         val t = Materializer(configuration).materialize(nested, testCase)
+         // if this test is our target then we definitely run it
+         // or if the test is on the path to our target we must run it
+         return if (t.descriptor.isOnPath(target.descriptor)) {
+            open = false
+            seen.add(t.descriptor)
+            run(t, target)
+            // otherwise, if we're already past our target we're discovering and so
+            // the first discovery we run, the rest we queue
+         } else if (target.descriptor.isOnPath(t.descriptor)) {
+            if (seen.add(t.descriptor)) {
+               if (open) {
                   open = false
-                  seen.add(t.descriptor)
                   run(t, target)
-                  // otherwise, if we're already past our target we're discovering and so
-                  // the first discovery we run, the rest we queue
-               } else if (target.descriptor.isOnPath(t.descriptor)) {
-                  if (seen.add(t.descriptor)) {
-                     if (open) {
-                        open = false
-                        run(t, target)
-                     } else {
-                        enqueue(t)
-                     }
-                  }
+               } else {
+                  enqueue(t)
+                  null
                }
+            } else {
+               null
             }
+         } else {
+            null
          }
+      }
+   }
 
-         val context2 = DuplicateNameHandlingTestScope(configuration.duplicateTestNameMode, context)
+   inner class Listener : TestCaseExecutionListener {
+      override suspend fun testStarted(testCase: TestCase) {
+         if (started.add(testCase.descriptor)) {
+            listener.testStarted(testCase)
+         }
+      }
 
+      override suspend fun testIgnored(testCase: TestCase, reason: String?) {
+         if (ignored.add(testCase.descriptor))
+            listener.testIgnored(testCase, reason)
+      }
+
+      override suspend fun testFinished(testCase: TestCase, result: TestResult) {
+         if (!queue.any { it.testCase.descriptor.isDescendentOf(testCase.descriptor) }) {
+            listener.testFinished(testCase, result)
+         }
+      }
+   }
+
+   private suspend fun run(test: TestCase, target: TestCase): TestResult {
+      return coroutineScope {
          val testExecutor = TestCaseExecutor(
-            object : TestCaseExecutionListener {
-               override suspend fun testStarted(testCase: TestCase) {
-                  if (started.add(testCase.descriptor)) {
-                     listener.testStarted(testCase)
-                  }
-               }
-
-               override suspend fun testIgnored(testCase: TestCase, reason: String?) {
-                  if (ignored.add(testCase.descriptor))
-                     listener.testIgnored(testCase, reason)
-               }
-
-               override suspend fun testFinished(testCase: TestCase, result: TestResult) {
-                  if (!queue.any { it.testCase.descriptor.isDescendentOf(testCase.descriptor) }) {
-                     listener.testFinished(testCase, result)
-                  }
-               }
-            },
+            Listener(),
             defaultCoroutineDispatcherFactory,
             configuration,
+            InstancePerLeafRegistration(test, target),
          )
-
-         val result = testExecutor.execute(test, context2)
+         val result = testExecutor.execute(test, defaultTestScope(test))
          results[test] = result
+         result
       }
    }
 }

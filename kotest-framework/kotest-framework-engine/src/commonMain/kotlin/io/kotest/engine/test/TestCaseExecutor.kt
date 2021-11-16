@@ -5,10 +5,12 @@ import io.kotest.common.Platform
 import io.kotest.common.platform
 import io.kotest.core.concurrency.CoroutineDispatcherFactory
 import io.kotest.core.config.Configuration
+import io.kotest.core.spec.Registration
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestScope
 import io.kotest.engine.concurrency.NoopCoroutineDispatcherFactory
+import io.kotest.engine.test.registration.TerminalRegistration
 import io.kotest.engine.test.interceptors.AssertionModeInterceptor
 import io.kotest.engine.test.interceptors.CoroutineDebugProbeInterceptor
 import io.kotest.engine.test.interceptors.CoroutineLoggingInterceptor
@@ -16,6 +18,7 @@ import io.kotest.engine.test.interceptors.EnabledCheckInterceptor
 import io.kotest.engine.test.interceptors.InvocationCountCheckInterceptor
 import io.kotest.engine.test.interceptors.InvocationTimeoutInterceptor
 import io.kotest.engine.test.interceptors.LifecycleInterceptor
+import io.kotest.engine.test.interceptors.RegistrationInterceptor
 import io.kotest.engine.test.interceptors.SoftAssertInterceptor
 import io.kotest.engine.test.interceptors.SupervisorScopeInterceptor
 import io.kotest.engine.test.interceptors.TestCaseExtensionInterceptor
@@ -39,6 +42,7 @@ class TestCaseExecutor(
    private val listener: TestCaseExecutionListener,
    private val defaultCoroutineDispatcherFactory: CoroutineDispatcherFactory = NoopCoroutineDispatcherFactory,
    private val configuration: Configuration,
+   private val registration: Registration = TerminalRegistration,
 ) {
 
    private val logger = Logger(TestCaseExecutor::class)
@@ -58,6 +62,7 @@ class TestCaseExecutor(
          LifecycleInterceptor(listener, timeMark, configuration.registry()),
          AssertionModeInterceptor(),
          SoftAssertInterceptor(),
+         RegistrationInterceptor(registration),
          CoroutineLoggingInterceptor(configuration),
          if (platform == Platform.JVM) blockedThreadTimeoutInterceptor(configuration, timeMark) else null,
          TimeoutInterceptor(timeMark),

@@ -9,7 +9,7 @@ import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestType
 import io.kotest.core.test.delayController
-import io.kotest.engine.test.scopes.NoopTestScope
+import io.kotest.engine.test.DefaultTestScope
 import io.kotest.engine.test.interceptors.TestCoroutineDispatcherInterceptor
 import io.kotest.matchers.booleans.shouldBeTrue
 import io.kotest.matchers.nulls.shouldNotBeNull
@@ -32,7 +32,7 @@ class RunBlockingTestInterceptorTest : FunSpec() {
          )
 
          var fired = false
-         TestCoroutineDispatcherInterceptor().intercept(tc, NoopTestScope(tc, coroutineContext)) { _, context ->
+         TestCoroutineDispatcherInterceptor().intercept(tc, DefaultTestScope(tc, coroutineContext)) { _, context ->
             context.delayController.shouldNotBeNull()
             fired = true
             TestResult.Success(0.milliseconds)

@@ -9,7 +9,7 @@ import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestType
-import io.kotest.engine.test.scopes.TerminalTestScope
+import io.kotest.engine.test.DefaultTestScope
 import io.kotest.engine.test.interceptors.EnabledCheckInterceptor
 import io.kotest.matchers.shouldBe
 import kotlin.time.seconds
@@ -26,7 +26,7 @@ class EnabledCheckTestExecutionInterceptorTest : FunSpec({
          sourceRef(),
          TestType.Test
       )
-      val context = TerminalTestScope(tc, coroutineContext)
+      val context = DefaultTestScope(tc, coroutineContext)
       // the test starts with ! so should not be enabled, therefore the chain should be ignored
       var fired = false
       EnabledCheckInterceptor(Configuration()).intercept(tc, context) { _, _ ->
@@ -46,7 +46,7 @@ class EnabledCheckTestExecutionInterceptorTest : FunSpec({
          sourceRef(),
          TestType.Test
       )
-      val context = TerminalTestScope(tc, coroutineContext)
+      val context = DefaultTestScope(tc, coroutineContext)
       // the test starts with ! so should not be enabled, therefore the chain should be ignored
       EnabledCheckInterceptor(Configuration()).intercept(tc, context) { _, _ -> error("boom") }
    }

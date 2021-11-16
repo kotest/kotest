@@ -1,23 +1,23 @@
-package io.kotest.engine.test.scopes
+package io.kotest.engine.test.registration
 
 import io.kotest.core.names.DuplicateTestNameMode
+import io.kotest.core.spec.Registration
 import io.kotest.core.test.NestedTest
-import io.kotest.core.test.TestScope
+import io.kotest.core.test.TestResult
 import io.kotest.engine.test.names.DuplicateTestNameHandler
 
-class DuplicateNameHandlingTestScope(
+class DuplicateNameHandlingRegistration(
    mode: DuplicateTestNameMode,
-   private val delegate: TestScope
-) : TestScope by delegate {
+   private val delegate: Registration
+) : Registration {
 
    private val handler = DuplicateTestNameHandler(mode)
 
-   // in the single instance runner we execute each nested test as soon as they are registered
-   override suspend fun registerTestCase(nested: NestedTest) {
+   override suspend fun registerNestedTest(nested: NestedTest): TestResult? {
       val withOverrideName = when (val uniqueName = handler.handle(nested.name)) {
          null -> nested
          else -> nested.copy(name = nested.name.copy(testName = uniqueName))
       }
-      delegate.registerTestCase(withOverrideName)
+      return delegate.registerNestedTest(withOverrideName)
    }
 }

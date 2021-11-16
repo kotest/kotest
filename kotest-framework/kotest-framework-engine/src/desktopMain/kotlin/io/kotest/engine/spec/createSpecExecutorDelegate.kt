@@ -7,12 +7,13 @@ import io.kotest.core.spec.Spec
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.engine.listener.TestEngineListener
+import io.kotest.engine.test.registration.DuplicateNameHandlingRegistration
+import io.kotest.engine.test.registration.InOrderRegistration
 import io.kotest.engine.test.TestCaseExecutor
-import io.kotest.engine.test.scopes.DuplicateNameHandlingTestScope
-import io.kotest.engine.test.scopes.InOrderTestScope
+import io.kotest.engine.test.defaultTestScope
 import io.kotest.engine.test.listener.TestCaseExecutionListenerToTestEngineListenerAdapter
-import io.kotest.mpp.log
-import kotlin.coroutines.coroutineContext
+import io.kotest.mpp.Logger
+import io.kotest.mpp.bestName
 
 @ExperimentalKotest
 internal actual fun createSpecExecutorDelegate(
@@ -34,28 +35,22 @@ internal class DefaultSpecExecutorDelegate(
 ) : SpecExecutorDelegate {
 
    private val materializer = Materializer(configuration)
+   private val logger = Logger(this::class)
 
    override suspend fun execute(spec: Spec): Map<TestCase, TestResult> {
-      log { "DefaultSpecExecutorDelegate: Executing spec $spec" }
+      logger.log { Pair(spec::class.bestName(), "Executing spec $spec") }
       materializer.materialize(spec)
          .forEach { testCase ->
-            log { "DefaultSpecExecutorDelegate: Executing testCase $testCase" }
-            val context = DuplicateNameHandlingTestScope(
-               configuration.duplicateTestNameMode,
-               InOrderTestScope(
-                  testCase,
-                  coroutineContext,
-                  configuration.duplicateTestNameMode,
-                  listener,
-                  coroutineDispatcherFactory,
-                  configuration
-               )
-            )
+            logger.log { Pair(spec::class.bestName(), "Executing testCase $testCase") }
             TestCaseExecutor(
                TestCaseExecutionListenerToTestEngineListenerAdapter(listener),
                coroutineDispatcherFactory,
-               configuration
-            ).execute(testCase, context)
+               configuration,
+               DuplicateNameHandlingRegistration(
+                  configuration.duplicateTestNameMode,
+                  InOrderRegistration(testCase, listener, coroutineDispatcherFactory, configuration)
+               )
+            ).execute(testCase, defaultTestScope(testCase))
          }
       return emptyMap()
    }

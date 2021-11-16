@@ -11,7 +11,7 @@ import kotlinx.coroutines.withContext
  * A [SpecInterceptor] that injects the [Configuration] into the coroutine context
  * so it can be extracted in specs and tests.
  */
-class ConfigurationInContextInterceptor(private val conf: Configuration) : SpecInterceptor {
+internal class ConfigurationInContextInterceptor(private val conf: Configuration) : SpecInterceptor {
 
    override suspend fun intercept(
       spec: Spec,

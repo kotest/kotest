@@ -11,14 +11,12 @@ import io.kotest.core.test.TestCaseOrder
 import io.kotest.engine.test.names.DuplicateTestNameHandler
 
 /**
- *
- * Materializes tests at runtime from test definitions.
- *
+ * Materializes tests at runtime from test definitions, attaching them to the test tree.
  */
 class Materializer(private val configuration: Configuration) {
 
    /**
-    * Materializes [RootTest]s from a [Spec] and any [TestFactory]s into
+    * Materializes all [RootTest]s from a [Spec] and any [TestFactory]s into
     * [TestCase]s by resolving config at runtime using the supplied project configuration
     * and using spec defaults.
     *

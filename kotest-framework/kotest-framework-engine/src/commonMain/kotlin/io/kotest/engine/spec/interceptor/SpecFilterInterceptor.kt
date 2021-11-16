@@ -14,13 +14,13 @@ import io.kotest.mpp.bestName
 /**
  * Evaluates a spec against any registered [SpecFilter]s.
  */
-class SpecFilterInterceptor(
+internal class SpecFilterInterceptor(
    private val listener: TestEngineListener,
    private val registry: ExtensionRegistry
 ) : SpecRefInterceptor {
 
    private val extensions = SpecExtensions(registry)
-   private val logger = Logger(SpecFilterInterceptor::class)
+   private val logger = Logger(this::class)
 
    override suspend fun intercept(
       ref: SpecRef,

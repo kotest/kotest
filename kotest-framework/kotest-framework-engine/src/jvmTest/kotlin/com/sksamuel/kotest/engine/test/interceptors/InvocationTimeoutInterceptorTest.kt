@@ -9,8 +9,8 @@ import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestType
+import io.kotest.engine.test.DefaultTestScope
 import io.kotest.engine.test.interceptors.InvocationTimeoutInterceptor
-import io.kotest.engine.test.scopes.NoopTestScope
 import kotlinx.coroutines.delay
 import kotlin.time.Duration
 import kotlin.time.ExperimentalTime
@@ -34,7 +34,7 @@ class InvocationTimeoutInterceptorTest : FunSpec() {
          shouldThrowAny {
             InvocationTimeoutInterceptor(TimeSource.Monotonic.markNow()).intercept(
                tc.copy(config = tc.config.copy(invocationTimeout = Duration.milliseconds(1))),
-               NoopTestScope(tc, coroutineContext)
+               DefaultTestScope(tc, coroutineContext)
             ) { _, _ ->
                delay(10000)
                TestResult.Success(0.milliseconds)

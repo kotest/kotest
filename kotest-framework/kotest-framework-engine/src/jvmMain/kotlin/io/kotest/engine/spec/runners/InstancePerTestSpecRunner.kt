@@ -4,24 +4,24 @@ import io.kotest.common.ExperimentalKotest
 import io.kotest.common.flatMap
 import io.kotest.core.concurrency.CoroutineDispatcherFactory
 import io.kotest.core.config.Configuration
+import io.kotest.core.spec.Registration
 import io.kotest.core.spec.Spec
 import io.kotest.core.test.NestedTest
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
-import io.kotest.core.test.TestScope
 import io.kotest.core.test.TestType
 import io.kotest.engine.listener.TestEngineListener
 import io.kotest.engine.spec.Materializer
 import io.kotest.engine.spec.SpecExtensions
 import io.kotest.engine.spec.SpecRunner
+import io.kotest.engine.test.DefaultTestScope
 import io.kotest.engine.test.TestCaseExecutionListener
 import io.kotest.engine.test.TestCaseExecutor
+import io.kotest.engine.test.registration.DuplicateNameHandlingRegistration
 import io.kotest.engine.test.scheduler.TestScheduler
-import io.kotest.engine.test.scopes.DuplicateNameHandlingTestScope
 import io.kotest.mpp.log
 import kotlinx.coroutines.coroutineScope
 import java.util.concurrent.ConcurrentHashMap
-import kotlin.coroutines.CoroutineContext
 
 /**
  * Implementation of [SpecRunner] that executes each [TestCase] in a fresh instance
@@ -120,28 +120,28 @@ internal class InstancePerTestSpecRunner(
       spec
    }
 
-   private suspend fun run(test: TestCase, target: TestCase) {
+   private suspend fun run(test: TestCase, target: TestCase): TestResult {
       val isTarget = test.descriptor == target.descriptor
-      coroutineScope {
-         val context = object : TestScope {
+      return coroutineScope {
 
-            override val testCase: TestCase = test
-            override val coroutineContext: CoroutineContext = this@coroutineScope.coroutineContext
-            override suspend fun registerTestCase(nested: NestedTest) {
-
-               val t = Materializer(configuration).materialize(nested, testCase)
+         val registration = object : Registration {
+            override suspend fun registerNestedTest(nested: NestedTest): TestResult? {
+               val t = Materializer(configuration).materialize(nested, test)
 
                // if we are currently executing the target, then any registered tests are new, and we
                // should begin execution of them in fresh specs
                // otherwise if the test is on the path we can continue in the same spec
-               if (isTarget) {
+               return if (isTarget) {
                   executeInCleanSpec(t).getOrThrow()
+                  null
                } else if (t.descriptor.isOnPath(target.descriptor)) {
                   run(t, target)
+               } else {
+                  null
                }
             }
          }
-         val context2 = DuplicateNameHandlingTestScope(configuration.duplicateTestNameMode, context)
+
          val testExecutor = TestCaseExecutor(
             object : TestCaseExecutionListener {
                override suspend fun testStarted(testCase: TestCase) {
@@ -157,11 +157,13 @@ internal class InstancePerTestSpecRunner(
                }
             },
             defaultCoroutineDispatcherFactory,
-            configuration
+            configuration,
+            DuplicateNameHandlingRegistration(configuration.duplicateTestNameMode, registration),
          )
 
-         val result = testExecutor.execute(test, context2)
+         val result = testExecutor.execute(test, DefaultTestScope(test, this@coroutineScope.coroutineContext))
          results[test] = result
+         result
       }
    }
 }

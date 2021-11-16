@@ -3,10 +3,9 @@ package com.sksamuel.kotest.engine.test
 import io.kotest.common.ExperimentalKotest
 import io.kotest.core.config.Configuration
 import io.kotest.core.spec.style.FunSpec
-import io.kotest.core.test.NestedTest
 import io.kotest.core.test.TestCase
-import io.kotest.core.test.TestScope
 import io.kotest.core.test.TestResult
+import io.kotest.core.test.TestScope
 import io.kotest.engine.concurrency.NoopCoroutineDispatcherFactory
 import io.kotest.engine.extensions.ExtensionException
 import io.kotest.engine.spec.Materializer
@@ -29,7 +28,6 @@ class TestCaseExecutorTest : FunSpec({
 
    fun context(testCase: TestCase) = object : TestScope {
       override val testCase: TestCase = testCase
-      override suspend fun registerTestCase(nested: NestedTest) {}
       override val coroutineContext: CoroutineContext = GlobalScope.coroutineContext
    }
 

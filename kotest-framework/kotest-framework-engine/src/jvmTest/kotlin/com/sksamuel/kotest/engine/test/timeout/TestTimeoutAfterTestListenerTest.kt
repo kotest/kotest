@@ -12,9 +12,9 @@ import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestType
 import io.kotest.core.test.config.ResolvedTestConfig
 import io.kotest.engine.concurrency.NoopCoroutineDispatcherFactory
+import io.kotest.engine.test.DefaultTestScope
 import io.kotest.engine.test.NoopTestCaseExecutionListener
 import io.kotest.engine.test.TestCaseExecutor
-import io.kotest.engine.test.scopes.NoopTestScope
 import io.kotest.matchers.shouldBe
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
@@ -60,7 +60,7 @@ class TestTimeoutAfterTestListenerTest : FunSpec() {
          val executor = TestCaseExecutor(NoopTestCaseExecutionListener, NoopCoroutineDispatcherFactory, Configuration())
          // needs to run on a separate thread, so we don't interrupt our own thread
          withContext(Dispatchers.IO) {
-            executor.execute(tc, NoopTestScope(testCase, coroutineContext))
+            executor.execute(tc, DefaultTestScope(testCase, coroutineContext))
          }
 
          blockingCount.get() shouldBe 1
@@ -97,7 +97,7 @@ class TestTimeoutAfterTestListenerTest : FunSpec() {
          val executor = TestCaseExecutor(NoopTestCaseExecutionListener, NoopCoroutineDispatcherFactory, Configuration())
          // needs to run on a separate thread, so we don't interrupt our own thread
          withContext(Dispatchers.IO) {
-            executor.execute(tc, NoopTestScope(testCase, coroutineContext))
+            executor.execute(tc, DefaultTestScope(testCase, coroutineContext))
          }
 
          suspendingCount.get() shouldBe 1

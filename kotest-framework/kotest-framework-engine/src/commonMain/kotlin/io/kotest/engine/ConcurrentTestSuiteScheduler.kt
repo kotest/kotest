@@ -34,7 +34,7 @@ internal class ConcurrentTestSuiteScheduler(
    private val context: ProjectContext,
 ) : TestSuiteScheduler {
 
-   private val logger = Logger(ConcurrentTestSuiteScheduler::class)
+   private val logger = Logger(this::class)
 
    override suspend fun schedule(suite: TestSuite, listener: TestEngineListener): EngineResult {
       logger.log { Pair(null, "Launching ${suite.specs.size} specs") }
@@ -68,7 +68,7 @@ internal class ConcurrentTestSuiteScheduler(
                      listener,
                      coroutineDispatcherFactory,
                      configuration,
-                     ProjectContext(configuration.runtimeTags(), specs, configuration)
+                     context
                   )
                   logger.log { Pair(ref.kclass.bestName(), "Executing ref") }
                   executor.execute(ref)

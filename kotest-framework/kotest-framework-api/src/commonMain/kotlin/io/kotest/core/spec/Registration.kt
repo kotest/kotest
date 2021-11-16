@@ -1,17 +1,26 @@
-package io.kotest.engine.test.scopes
+package io.kotest.core.spec
 
 import io.kotest.core.test.NestedTest
 import io.kotest.core.test.TestResult
 import kotlin.coroutines.AbstractCoroutineContextElement
 import kotlin.coroutines.CoroutineContext
 
+/**
+ * Runtime hook into the engine to execute nested tests.
+ */
+interface Registration {
+
+   /**
+    * Registers the given [NestedTest] and returns the [TestResult] if the test
+    * was immediately executed. If the test was deferred for execution later,
+    * then this function will return null.
+    */
+   suspend fun registerNestedTest(nested: NestedTest): TestResult?
+}
+
 data class RegistrationContextElement(val registration: Registration) :
    AbstractCoroutineContextElement(RegistrationContextElement) {
    companion object Key : CoroutineContext.Key<RegistrationContextElement>
-}
-
-interface Registration {
-   suspend fun runNestedTestCase(nested: NestedTest): TestResult?
 }
 
 val CoroutineContext.registration: Registration

@@ -8,8 +8,8 @@ import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestType
+import io.kotest.engine.test.DefaultTestScope
 import io.kotest.engine.test.interceptors.InvocationCountCheckInterceptor
-import io.kotest.engine.test.scopes.NoopTestScope
 import io.kotest.matchers.booleans.shouldBeTrue
 import io.kotest.matchers.shouldBe
 import kotlin.time.milliseconds
@@ -30,7 +30,7 @@ class InvocationCountCheckInterceptorTest : DescribeSpec() {
             var fired = false
             InvocationCountCheckInterceptor.intercept(
                tc.copy(config = tc.config.copy(invocations = 1)),
-               NoopTestScope(tc, coroutineContext)
+               DefaultTestScope(tc, coroutineContext)
             ) { _, _ ->
                fired = true
                TestResult.Success(0.milliseconds)
@@ -50,7 +50,7 @@ class InvocationCountCheckInterceptorTest : DescribeSpec() {
             var fired = false
             InvocationCountCheckInterceptor.intercept(
                tc.copy(config = tc.config.copy(invocations = 44)),
-               NoopTestScope(tc, coroutineContext)
+               DefaultTestScope(tc, coroutineContext)
             ) { _, _ ->
                fired = true
                TestResult.Success(0.milliseconds)
@@ -70,7 +70,7 @@ class InvocationCountCheckInterceptorTest : DescribeSpec() {
 
             InvocationCountCheckInterceptor.intercept(
                tc.copy(config = tc.config.copy(invocations = 4)),
-               NoopTestScope(tc, coroutineContext)
+               DefaultTestScope(tc, coroutineContext)
             ) { _, _ -> TestResult.Success(0.milliseconds) }.isError shouldBe true
          }
       }

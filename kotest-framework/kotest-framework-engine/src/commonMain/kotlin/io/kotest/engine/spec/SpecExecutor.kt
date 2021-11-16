@@ -18,6 +18,7 @@ import io.kotest.engine.spec.interceptor.EnabledIfSpecInterceptor
 import io.kotest.engine.spec.interceptor.FinalizeSpecInterceptor
 import io.kotest.engine.spec.interceptor.IgnoreNestedSpecStylesInterceptor
 import io.kotest.engine.spec.interceptor.IgnoredSpecInterceptor
+import io.kotest.engine.spec.interceptor.PrepareSpecInterceptor
 import io.kotest.engine.spec.interceptor.ProjectContextInterceptor
 import io.kotest.engine.spec.interceptor.RequiresTagSpecInterceptor
 import io.kotest.engine.spec.interceptor.SpecExtensionInterceptor
