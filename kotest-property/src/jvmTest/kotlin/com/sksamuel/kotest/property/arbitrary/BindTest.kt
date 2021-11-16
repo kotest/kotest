@@ -19,34 +19,27 @@ import io.kotest.property.arbitrary.bind
 import io.kotest.property.arbitrary.boolean
 import io.kotest.property.arbitrary.double
 import io.kotest.property.arbitrary.filter
-import io.kotest.property.arbitrary.map
 import io.kotest.property.arbitrary.negativeInt
 import io.kotest.property.arbitrary.positiveInt
 import io.kotest.property.arbitrary.string
 import io.kotest.property.arbitrary.take
 import io.kotest.property.arbitrary.withEdgecases
+import io.kotest.property.arbitrary.zip
 import io.kotest.property.checkAll
 import io.kotest.matchers.doubles.beGreaterThan as gtd
 
 class BindTest : StringSpec({
 
-   data class FooA(val a: String)
    data class User(val email: String, val id: Int)
    data class FooC(val a: String, val b: Int, val c: Double)
    data class FooD(val a: String, val b: Int, val c: Double, val d: Int)
    data class FooE(val a: String, val b: Int, val c: Double, val d: Int, val e: Boolean)
 
-   "Arb.bindA" {
-      val gen = Arb.string().map { FooA(it) }
-      checkAll(gen) {
-         it.a shouldNotBe null
-      }
-   }
-
    "Arb.bind(a,b) should generate distinct values" {
       val arbA = Arb.string()
       val arbB = Arb.string()
       Arb.bind(arbA, arbB) { a, b -> a + b }.take(1000).toSet().shouldHaveAtLeastSize(100)
+      Arb.zip(arbA, arbB) { a, b -> a + b }.take(1000).toSet().shouldHaveAtLeastSize(100)
    }
 
    "Arb.bindB" {
@@ -59,6 +52,15 @@ class BindTest : StringSpec({
 
    "Arb.bindC" {
       val gen = Arb.bind(Arb.string(), Arb.positiveInt(), Arb.double().filter { it > 0 }, ::FooC)
+      checkAll(gen) {
+         it.a shouldNotBe null
+         it.b should beGreaterThan(0)
+         it.c should gtd(0.0)
+      }
+   }
+
+   "Arb.zipC" {
+      val gen = Arb.zip(Arb.string(), Arb.positiveInt(), Arb.double().filter { it > 0 }, ::FooC)
       checkAll(gen) {
          it.a shouldNotBe null
          it.b should beGreaterThan(0)
@@ -94,6 +96,23 @@ class BindTest : StringSpec({
 
    "Arb.bindE" {
       val gen = Arb.bind(
+         Arb.string(),
+         Arb.positiveInt(),
+         Arb.double().filter { it > 0 },
+         Arb.negativeInt(),
+         Arb.boolean(),
+         ::FooE
+      )
+      checkAll(gen) {
+         it.a shouldNotBe null
+         it.b should beGreaterThan(0)
+         it.c should gtd(0.0)
+         it.d should beLessThan(0)
+      }
+   }
+
+   "Arb.zipE" {
+      val gen = Arb.zip(
          Arb.string(),
          Arb.positiveInt(),
          Arb.double().filter { it > 0 },

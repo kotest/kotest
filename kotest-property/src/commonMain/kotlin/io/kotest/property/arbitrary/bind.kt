@@ -384,9 +384,9 @@ fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, T> Arb.Companion.bind(
    bindFn
 )
 
-private fun Arb.Companion.unit(): Arb<Unit> = arbitrary { }
+internal fun Arb.Companion.unit(): Arb<Unit> = arbitrary { }
 
-private fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, T> Arb.Companion.bindN(
+internal fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, T> Arb.Companion.bindN(
    genA: Gen<A>,
    genB: Gen<B>,
    genC: Gen<C>,
@@ -500,12 +500,12 @@ private fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, T> Arb.Companion.bindN(
 
 fun <A, B> Arb.Companion.bind(arbs: List<Arb<A>>, fn: (List<A>) -> B): Arb<B> = bind(arbs).map(fn)
 
-private fun <T> Gen<T>.toArb(): Arb<T> = when (this) {
+internal fun <T> Gen<T>.toArb(): Arb<T> = when (this) {
    is Arb -> this
    is Exhaustive -> this.toArb()
 }
 
-private fun <A> Arb.Companion.bind(arbs: List<Arb<A>>): Arb<List<A>> = when (arbs.size) {
+internal fun <A> Arb.Companion.bind(arbs: List<Arb<A>>): Arb<List<A>> = when (arbs.size) {
    0 -> Arb.constant(emptyList())
    1 -> arbs[0].map { listOf(it) }
    else -> {
