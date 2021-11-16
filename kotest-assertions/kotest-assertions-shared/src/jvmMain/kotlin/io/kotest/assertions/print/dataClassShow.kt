@@ -7,29 +7,27 @@ private fun <A : Any> safePrint(a: A): String {
    return "${a::class.simpleName}"
 }
 
-private fun <A : Any> recursiveSafePrint(a: A, seen: MutableSet<Int>): String {
-   return if (!seen.contains(a.hashCode())) {
-      seen.add(a.hashCode())
+private fun <A : Any> recursiveSafePrint(a: A, depth: Int): String {
+   return if (depth > 0) {
       a::class.memberProperties
          .filter { it.isAccessible }
-         .map { Pair(it.name, runCatching {
-            it.getter.call(a)
-         })}
-         .filterNot { (_, it) -> if (it.isSuccess) { seen.contains(it.getOrNull()?.hashCode()) } else false }
+         .map {
+            val value = try {
+               it.getter.call(a)
+            } catch (ex: Exception) {
+               "unknown"
+            }
+
+            Pair(it.name, value)
+         }
+//         .filterNot { (_, it) -> seen.contains(it.hashCode()) }
          .joinToString(prefix = "${a::class.simpleName}(\n", postfix = "\n") { (name, value) ->
-            value.fold(
-               onFailure = {
-                  "unknown"
-               },
-               onSuccess = {
-                  if (it == null)
-                     "$name=null"
-                  else if (it::class.isData)
-                     "$name=${recursiveSafePrint(it, seen)}"
-                  else
-                     "$name=unknown"
-               }
-            )
+            if (value == null)
+               "$name=null"
+            else if (value::class.isData)
+               "$name=${recursiveSafePrint(value, depth - 1)}"
+            else
+               "$name=unknown"
          }
    } else "${a::class.simpleName} - recursive reference detected"
 }
@@ -38,7 +36,7 @@ actual fun <A : Any> dataClassPrint(): Print<A> = object : Print<A> {
    override fun print(a: A): Printed {
       require(a::class.isData) { "This instance of the Show typeclass only supports data classes" }
 //      return Printed(a.toString())
-      return Printed(recursiveSafePrint(a, mutableSetOf()))
+      return Printed(recursiveSafePrint(a, 5))
 //    return "${a::class.simpleName}(\n" +
 //      a::class.memberProperties.joinToString("\n") {
 //        "- ${it.name}: ${it.getter.call(a)}"

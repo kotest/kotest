@@ -7,9 +7,7 @@ import io.kotest.mpp.uniqueId
 data class Foo(val name: String, val bar: Bar?, val parentFoos: List<Foo>) {
    private val id = uniqueId()
 
-   override fun hashCode(): Int {
-      return toString().hashCode()
-   }
+   override fun hashCode() = id.hashCode()
 
    override fun equals(other: Any?): Boolean {
       if (this === other) return true
