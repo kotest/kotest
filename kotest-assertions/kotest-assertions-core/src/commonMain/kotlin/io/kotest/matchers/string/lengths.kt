@@ -21,9 +21,7 @@ fun haveMaxLength(length: Int): Matcher<CharSequence?> = neverNullMatcher { valu
    MatcherResult(
       value.length <= length,
       { "${value.print().value} should have maximum length of $length" },
-      {
-         "${value.print().value} should have minimum length of ${length - 1}"
-      })
+      { "${value.print().value} should have minimum length of ${length - 1}" })
 }
 
 infix fun <A : CharSequence> A?.shouldHaveMinLength(length: Int): A {
@@ -40,15 +38,24 @@ fun haveMinLength(length: Int): Matcher<CharSequence?> = neverNullMatcher { valu
    MatcherResult(
       value.length >= length,
       { "${value.print().value} should have minimum length of $length" },
-      {
-         "${value.print().value} should have maximum length of ${length - 1}"
-      })
+      { "${value.print().value} should have maximum length of ${length - 1}" })
+}
+
+fun <A : CharSequence> A?.shouldHaveLengthBetween(range: IntRange): A {
+   this should haveLengthBetween(range.first, range.last)
+   return this!!
 }
 
 fun <A : CharSequence> A?.shouldHaveLengthBetween(min: Int, max: Int): A {
    this should haveLengthBetween(min, max)
    return this!!
 }
+
+fun <A : CharSequence> A?.shouldNotHaveLengthBetween(range: IntRange): A {
+   this shouldNot haveLengthBetween(range.first, range.last)
+   return this!!
+}
+
 
 fun <A : CharSequence> A?.shouldNotHaveLengthBetween(min: Int, max: Int): A {
    this shouldNot haveLengthBetween(min, max)
@@ -61,9 +68,7 @@ fun haveLengthBetween(min: Int, max: Int): Matcher<CharSequence?> {
       MatcherResult(
          value.length in min..max,
          { "${value.print().value} should have length in $min..$max but was ${value.length}" },
-         {
-            "${value.print().value} should not have length between $min and $max"
-         })
+         { "${value.print().value} should not have length between $min and $max" })
    }
 }
 
@@ -83,9 +88,7 @@ fun haveLengthIn(range: IntRange): Matcher<CharSequence?> {
       MatcherResult(
          value.length in range,
          { "${value.print().value} should have length in $range but was ${value.length}" },
-         {
-            "${value.print().value} should not have length between $range"
-         })
+         { "${value.print().value} should not have length between $range" })
    }
 }
 
@@ -115,9 +118,7 @@ fun haveSameLengthAs(other: CharSequence?): Matcher<CharSequence?> = neverNullMa
    MatcherResult(
       value.length == other?.length,
       { "${value.print().value} should have the same length as ${other.print().value}" },
-      {
-         "${value.print().value} should not have the same length as ${other.print().value}"
-      })
+      { "${value.print().value} should not have the same length as ${other.print().value}" })
 }
 
 fun strlen(length: Int): Matcher<String?> = haveLength(length)
@@ -126,7 +127,5 @@ fun haveLength(length: Int): Matcher<CharSequence?> = neverNullMatcher { value -
    MatcherResult(
       value.length == length,
       { "${value.print().value} should have length $length, but instead was ${value.length}" },
-      {
-         "${value.print().value} should not have length $length"
-      })
+      { "${value.print().value} should not have length $length" })
 }
