@@ -8,7 +8,7 @@ import io.kotest.core.test.EnabledOrReasonIf
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.config.ResolvedTestConfig
 import io.kotest.core.test.config.UnresolvedTestConfig
-import kotlin.time.milliseconds
+import kotlin.time.Duration.Companion.milliseconds
 
 /**
  * Accepts an [UnresolvedTestConfig] and returns a [ResolvedTestConfig] by completing

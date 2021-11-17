@@ -4,8 +4,7 @@ import io.kotest.core.spec.style.ShouldSpec
 import io.kotest.matchers.ints.shouldBeLessThan
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import kotlin.time.Duration
-import kotlin.time.milliseconds
+import kotlin.time.Duration.Companion.milliseconds
 
 class ShouldSpecTest : ShouldSpec() {
 
@@ -14,7 +13,7 @@ class ShouldSpecTest : ShouldSpec() {
          should("a test") {
             1.shouldBeLessThan(2)
          }
-         should("a test with config").config(enabled = true, timeout = Duration.milliseconds(12321)) {
+         should("a test with config").config(enabled = true, timeout = 12321.milliseconds) {
              1.shouldBeLessThan(2)
          }
          context("a nested context") {
@@ -28,7 +27,7 @@ class ShouldSpecTest : ShouldSpec() {
          xshould("an ignored should test") {
             error("boom")
          }
-         xshould("ignored test with config").config(timeout = Duration.milliseconds(12343)) {
+         xshould("ignored test with config").config(timeout = 12343.milliseconds) {
              error("boom")
          }
       }

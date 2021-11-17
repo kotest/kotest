@@ -15,7 +15,7 @@ import io.kotest.engine.test.names.formatTestPath
 import io.kotest.engine.test.names.getDisplayNameFormatter
 import kotlin.reflect.KClass
 import kotlin.time.Duration
-import kotlin.time.milliseconds
+import kotlin.time.Duration.Companion.milliseconds
 
 /**
  * Generates test output to the console in an enhanced, formatted, coloured, way.

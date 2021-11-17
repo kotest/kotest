@@ -20,8 +20,7 @@ import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlin.coroutines.CoroutineContext
-import kotlin.time.Duration
-import kotlin.time.milliseconds
+import kotlin.time.Duration.Companion.milliseconds
 
 @ExperimentalKotest
 @DelicateCoroutinesApi
@@ -146,7 +145,7 @@ class TestCaseExecutorTest : FunSpec({
 
 private class Tests : FunSpec({
    test("a") {}
-   test("b").config(timeout = Duration.milliseconds(100)) { delay(1000000) }
+   test("b").config(timeout = 100.milliseconds) { delay(1000000) }
 })
 
 

@@ -9,7 +9,7 @@ import io.kotest.core.test.AssertionMode
 import io.kotest.mpp.env
 import io.kotest.mpp.sysprop
 import kotlin.time.Duration
-import kotlin.time.milliseconds
+import kotlin.time.Duration.Companion.milliseconds
 
 /**
  * Uses system properties to load configuration values onto the supplied [Configuration] object.

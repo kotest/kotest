@@ -4,8 +4,7 @@ import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.test.TestResult
 import io.kotest.matchers.shouldBe
 import kotlinx.coroutines.delay
-import kotlin.time.Duration
-import kotlin.time.milliseconds
+import kotlin.time.Duration.Companion.milliseconds
 
 // tests that the values in the timeout exception are populated correctly
 class SpecInvocationTimeoutMessageExceptionTest : FunSpec() {
@@ -15,7 +14,7 @@ class SpecInvocationTimeoutMessageExceptionTest : FunSpec() {
       invocationTimeout = 12 // millis
 
       test("timeout exception should use the value that caused the test to fail") {
-         delay(Duration.milliseconds(250))
+         delay(250.milliseconds)
       }
 
       aroundTest { (test, execute) ->

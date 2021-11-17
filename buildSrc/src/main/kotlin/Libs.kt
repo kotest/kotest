@@ -1,6 +1,7 @@
 object Libs {
 
    object Kotlin {
+      const val version = "1.6.0"
       const val kotlinScriptRuntime = "org.jetbrains.kotlin:kotlin-script-runtime:_"
       const val kotlinScriptUtil = "org.jetbrains.kotlin:kotlin-script-util:_"
       const val kotlinScriptJvm = "org.jetbrains.kotlin:kotlin-scripting-jvm:_"

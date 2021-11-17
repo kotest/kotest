@@ -4,7 +4,7 @@ import io.kotest.core.test.TestResult
 import io.kotest.mpp.bestName
 import kotlin.jvm.JvmName
 import kotlin.time.Duration
-import kotlin.time.milliseconds
+import kotlin.time.Duration.Companion.milliseconds
 
 /**
  * Returns a [TestResult] derived from a throwable.

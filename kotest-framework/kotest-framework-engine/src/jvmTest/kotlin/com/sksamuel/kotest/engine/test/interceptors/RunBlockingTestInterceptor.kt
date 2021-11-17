@@ -14,7 +14,7 @@ import io.kotest.engine.test.interceptors.TestCoroutineDispatcherInterceptor
 import io.kotest.matchers.booleans.shouldBeTrue
 import io.kotest.matchers.nulls.shouldNotBeNull
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlin.time.milliseconds
+import kotlin.time.Duration.Companion.milliseconds
 
 @ExperimentalStdlibApi
 @ExperimentalCoroutinesApi

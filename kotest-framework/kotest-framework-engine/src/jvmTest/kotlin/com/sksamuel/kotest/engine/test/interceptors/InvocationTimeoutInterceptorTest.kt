@@ -12,11 +12,8 @@ import io.kotest.core.test.TestType
 import io.kotest.engine.test.interceptors.InvocationTimeoutInterceptor
 import io.kotest.engine.test.scopes.NoopTestScope
 import kotlinx.coroutines.delay
-import kotlin.time.Duration
-import kotlin.time.ExperimentalTime
-import kotlin.time.milliseconds
+import kotlin.time.Duration.Companion.milliseconds
 
-@OptIn(ExperimentalTime::class)
 class InvocationTimeoutInterceptorTest : FunSpec() {
    init {
       test("InvocationTimeoutInterceptor should error after timeout") {
@@ -32,7 +29,7 @@ class InvocationTimeoutInterceptorTest : FunSpec() {
 
          shouldThrowAny {
             InvocationTimeoutInterceptor.intercept(
-               tc.copy(config = tc.config.copy(invocationTimeout = Duration.milliseconds(1))),
+               tc.copy(config = tc.config.copy(invocationTimeout = 1.milliseconds)),
                NoopTestScope(tc, coroutineContext)
             ) { _, _ ->
                delay(10000)

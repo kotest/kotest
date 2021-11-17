@@ -15,7 +15,7 @@ import io.kotest.matchers.string.shouldStartWith
 import kotlinx.coroutines.asCoroutineDispatcher
 import kotlinx.coroutines.withContext
 import java.util.concurrent.Executors
-import kotlin.time.milliseconds
+import kotlin.time.Duration.Companion.milliseconds
 
 class CoroutineDispatcherInterceptorTest : DescribeSpec() {
    init {

@@ -2,8 +2,7 @@ package com.sksamuel.kotest.engine.spec.style
 
 import io.kotest.assertions.fail
 import io.kotest.core.spec.style.DescribeSpec
-import kotlin.time.Duration
-import kotlin.time.milliseconds
+import kotlin.time.Duration.Companion.milliseconds
 
 class DescribeSpecExample : DescribeSpec() {
    init {
@@ -33,7 +32,7 @@ class DescribeSpecExample : DescribeSpec() {
                it("test name") {
                   // test here
                }
-               it("test name 2").config(timeout = Duration.milliseconds(1512)) {
+               it("test name 2").config(timeout = 1512.milliseconds) {
                    // test here
                }
             }
@@ -65,7 +64,7 @@ class DescribeSpecExample : DescribeSpec() {
                it("test name") {
                   // test here
                }
-               it("test name 2").config(timeout = Duration.milliseconds(1512)) {
+               it("test name 2").config(timeout = 1512.milliseconds) {
                    // test here
                }
             }
