@@ -10,8 +10,7 @@ import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
 import java.nio.file.Paths
 import java.util.concurrent.ConcurrentLinkedQueue
-import kotlin.time.Duration
-import kotlin.time.seconds
+import kotlin.time.Duration.Companion.seconds
 
 class IterableEqTest : FunSpec({
 
@@ -88,17 +87,17 @@ class IterableEqTest : FunSpec({
       )
    }
 
-   test("should have linear performance for lists").config(timeout = Duration.seconds(5)) {
+   test("should have linear performance for lists").config(timeout = 5.seconds) {
        val a = List(10000000) { "foo" }
        val b = List(10000000) { "foo" }
        IterableEq.equals(a, b) shouldBe null
    }
 
-   test("should have linear performance for primitive sets").config(timeout = Duration.seconds(5)) {
+   test("should have linear performance for primitive sets").config(timeout = 5.seconds) {
        IterableEq.equals(List(1000) { it }.toSet(), List(1000) { it }.reversed().toSet()) shouldBe null
    }
 
-   test("should have linear performance for string sets").config(timeout = Duration.seconds(5)) {
+   test("should have linear performance for string sets").config(timeout = 5.seconds) {
        IterableEq.equals(
            List(1000) { it.toString() }.toSet(),
            List(1000) { it.toString() }.reversed().toSet()

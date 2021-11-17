@@ -2,7 +2,8 @@ package com.sksamuel.kotest.engine.test.timeout
 
 import io.kotest.core.spec.style.FunSpec
 import kotlinx.coroutines.delay
-import kotlin.time.Duration
+import kotlin.time.Duration.Companion.hours
+import kotlin.time.Duration.Companion.milliseconds
 
 /**
  * Tests that a test case `invocationTimeout` overrides spec level `invocationTimeout`.
@@ -15,9 +16,9 @@ class TestInvocationTimeoutOverridesSpecInlineTest : FunSpec() {
 
       test("test case config timeout should take precedence").config(
          invocations = 3,
-         invocationTimeout = Duration.milliseconds(1),
+         invocationTimeout = 1.milliseconds,
       ) {
-         delay(Duration.hours(10))
+         delay(10.hours)
       }
    }
 }

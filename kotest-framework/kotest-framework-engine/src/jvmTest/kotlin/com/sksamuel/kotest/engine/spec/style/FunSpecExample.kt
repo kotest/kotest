@@ -13,7 +13,7 @@ import io.kotest.extensions.locale.LocaleTestListener
 import io.kotest.extensions.locale.TimeZoneTestListener
 import java.util.Locale
 import java.util.TimeZone
-import kotlin.time.Duration
+import kotlin.time.Duration.Companion.milliseconds
 
 class FunSpecExample : FunSpec() {
 
@@ -38,18 +38,18 @@ class FunSpecExample : FunSpec() {
       println("Test ${testCase.descriptor} completed with result $result")
    }
 
-   override fun isolationMode(): IsolationMode? = IsolationMode.InstancePerLeaf
+   override fun isolationMode(): IsolationMode = IsolationMode.InstancePerLeaf
 
    override fun listeners(): List<TestListener> =
       listOf(LocaleTestListener(Locale.CANADA_FRENCH), TimeZoneTestListener(TimeZone.getTimeZone("GMT")))
 
-   override fun testCaseOrder(): TestCaseOrder? = TestCaseOrder.Random
+   override fun testCaseOrder(): TestCaseOrder = TestCaseOrder.Random
 
    init {
       test("this is a test") {
          // test here
       }
-      test("this test has config").config(timeout = Duration.milliseconds(412), enabled = true) {
+      test("this test has config").config(timeout = 412.milliseconds, enabled = true) {
           // test here
       }
    }

@@ -11,14 +11,15 @@ import io.kotest.matchers.comparables.shouldBeLessThan
 import io.kotest.matchers.shouldBe
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.TimeUnit
-import kotlin.time.Duration
+import kotlin.time.Duration.Companion.milliseconds
+import kotlin.time.Duration.Companion.seconds
 import kotlin.time.TimeSource
 
 class UntilTest : FunSpec({
 
    test("until with immediate boolean predicate") {
       var attempts = 0
-       until(Duration.seconds(1)) {
+       until(1.seconds) {
            attempts++
            System.currentTimeMillis() > 0
        }
@@ -27,7 +28,7 @@ class UntilTest : FunSpec({
 
    test("until with boolean predicate that resolves before time duration") {
       var attempts = 0
-       until(Duration.seconds(3)) {
+       until(3.seconds) {
            attempts++
            attempts == 2
        }
@@ -36,7 +37,7 @@ class UntilTest : FunSpec({
 
    test("until with boolean predicate and interval") {
       var attempts = 0
-       until(Duration.seconds(2), Duration.milliseconds(10).fixed()) {
+       until(2.seconds, 10.milliseconds.fixed()) {
            attempts++
            attempts == 100
        }
@@ -45,7 +46,7 @@ class UntilTest : FunSpec({
 
    test("until with patience config") {
       var attempts = 0
-      until(PatienceConfig(Duration.seconds(2), Duration.milliseconds(10).fixed())) {
+      until(PatienceConfig(2.seconds, 10.milliseconds.fixed())) {
          attempts++
          attempts == 100
       }
@@ -55,7 +56,7 @@ class UntilTest : FunSpec({
    test("until with predicate") {
       var attempts = 0
       var t = ""
-       until(Duration.seconds(5), { t == "xxx" }) {
+       until(5.seconds, { t == "xxx" }) {
            attempts++
            t += "x"
        }
@@ -66,19 +67,19 @@ class UntilTest : FunSpec({
       val start = TimeSource.Monotonic.markNow()
       var attempts = 0
       var t = ""
-       until(Duration.seconds(1), Duration.milliseconds(10).fixed(), { t == "xxxx" }) {
+       until(1.seconds, 10.milliseconds.fixed(), { t == "xxxx" }) {
            attempts++
            t += "x"
        }
       attempts shouldBe 4
-      start.elapsedNow().shouldBeLessThan(Duration.milliseconds(100))
+      start.elapsedNow().shouldBeLessThan(100.milliseconds)
    }
 
    test("until with predicate, interval, and listener") {
       var t = ""
       val latch = CountDownLatch(5)
       val result =
-          until(Duration.seconds(1), Duration.milliseconds(10).fixed(), { t == "xxxxx" }, { latch.countDown() }) {
+          until(1.seconds, 10.milliseconds.fixed(), { t == "xxxxx" }, { latch.countDown() }) {
               t += "x"
               t
           }
@@ -88,7 +89,7 @@ class UntilTest : FunSpec({
 
    test("until should throw when the predicate doesn't equal true in the time period") {
       shouldThrow<AssertionError> {
-          until(Duration.seconds(1), { it == 2 }) {
+          until(1.seconds, { it == 2 }) {
               1
           }
       }
@@ -98,7 +99,7 @@ class UntilTest : FunSpec({
       val start = TimeSource.Monotonic.markNow()
       var t = ""
       var attempts = 0
-      val result = until(Duration.seconds(10), Duration.milliseconds(10).fibonacci(), { t == "xxxxxx" }) {
+      val result = until(10.seconds, 10.milliseconds.fibonacci(), { t == "xxxxxx" }) {
           attempts++
           t += "x"
           t

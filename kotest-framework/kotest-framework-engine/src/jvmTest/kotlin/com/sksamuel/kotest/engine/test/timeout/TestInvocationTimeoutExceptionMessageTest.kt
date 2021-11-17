@@ -5,8 +5,8 @@ import io.kotest.core.test.TestResult
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldEndWith
 import kotlinx.coroutines.delay
-import kotlin.time.Duration
-import kotlin.time.milliseconds
+import kotlin.time.Duration.Companion.milliseconds
+import kotlin.time.Duration.Companion.minutes
 
 // tests that the values in the timeout exception are populated correctly
 class TestInvocationTimeoutExceptionMessageTest : FunSpec() {
@@ -17,15 +17,15 @@ class TestInvocationTimeoutExceptionMessageTest : FunSpec() {
 
       test("timeout exception should use the value that caused the test to fail 1")
          .config(invocationTimeout = 44.milliseconds) {
-            delay(Duration.minutes(500))
+            delay(500.minutes)
          }
 
       test("timeout exception should use the value that caused the test to fail 2")
          .config(
-            timeout = Duration.milliseconds(454),
-            invocationTimeout = Duration.milliseconds(44)
+            timeout = 454.milliseconds,
+            invocationTimeout = 44.milliseconds
          ) {
-            delay(Duration.minutes(500))
+            delay(500.minutes)
          }
 
       aroundTest { (test, execute) ->

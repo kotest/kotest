@@ -59,7 +59,7 @@ suspend fun <T> eventually(duration: Duration, exceptionClass: KClass<out Throwa
  */
 suspend fun <T> eventually(
    duration: Duration = Duration.INFINITE,
-   interval: Interval = Duration.milliseconds(25).fixed(),
+   interval: Interval = 25.milliseconds.fixed(),
    predicate: EventuallyPredicate<T> = { true },
    listener: EventuallyListener<T> = EventuallyListener { },
    retries: Int = Int.MAX_VALUE,

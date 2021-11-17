@@ -3,11 +3,12 @@ package com.sksamuel.kotest.engine.test.timeout
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.spec.style.funSpec
 import kotlinx.coroutines.delay
-import kotlin.time.Duration
+import kotlin.time.Duration.Companion.hours
+import kotlin.time.Duration.Companion.milliseconds
 
 private val factory = funSpec {
    test("long running test") {
-      delay(Duration.hours(10))
+      delay(10.hours)
    }
 }
 
@@ -18,10 +19,10 @@ class SpecTimeoutInlineTest : FunSpec() {
    init {
       extension(expectFailureExtension)
 
-      timeout = Duration.milliseconds(10).inWholeMilliseconds
+      timeout = 10.milliseconds.inWholeMilliseconds
 
       test("should timeout from spec setting") {
-         delay(Duration.hours(10))
+         delay(10.hours)
       }
 
       // should apply to factories too

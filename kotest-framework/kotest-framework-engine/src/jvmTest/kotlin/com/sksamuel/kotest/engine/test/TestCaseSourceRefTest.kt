@@ -5,7 +5,7 @@ import io.kotest.core.config.Configuration
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.engine.spec.Materializer
 import io.kotest.matchers.shouldBe
-import kotlin.time.Duration
+import kotlin.time.Duration.Companion.seconds
 
 class TestCaseSourceRefTest : FunSpec() {
    init {
@@ -15,7 +15,7 @@ class TestCaseSourceRefTest : FunSpec() {
          tests[1].source shouldBe SourceRef.ClassLineSource("com.sksamuel.kotest.engine.test.MySpec", 31)
       }
 
-      test("source ref should be performant").config(timeout = Duration.seconds(30)) {
+      test("source ref should be performant").config(timeout = 30.seconds) {
          repeat(100000) {
             Materializer(Configuration()).materialize(MySpec()).first().source
          }

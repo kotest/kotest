@@ -18,6 +18,7 @@ import io.kotest.extensions.system.captureStandardOut
 import io.kotest.matchers.shouldBe
 import java.io.FileNotFoundException
 import kotlin.time.Duration
+import kotlin.time.Duration.Companion.milliseconds
 
 class TeamCityTestEngineListenerTest : FunSpec() {
 
@@ -58,9 +59,9 @@ class TeamCityTestEngineListenerTest : FunSpec() {
             listener.testStarted(a)
             listener.testStarted(b)
             listener.testStarted(c)
-            listener.testFinished(c, TestResult.Success(Duration.milliseconds(123)))
-            listener.testFinished(b, TestResult.Success(Duration.milliseconds(324)))
-            listener.testFinished(a, TestResult.Success(Duration.milliseconds(653)))
+            listener.testFinished(c, TestResult.Success(123.milliseconds))
+            listener.testFinished(b, TestResult.Success(324.milliseconds))
+            listener.testFinished(a, TestResult.Success(653.milliseconds))
             listener.specFinished(TeamCityTestEngineListenerTest::class, null)
             listener.engineFinished(emptyList())
          }
@@ -83,9 +84,9 @@ a[testSuiteFinished name='com.sksamuel.kotest.engine.listener.TeamCityTestEngine
             listener.testStarted(a)
             listener.testStarted(b)
             listener.testStarted(c)
-            listener.testFinished(c, TestResult.Error(Duration.milliseconds(653), Exception("boom")))
-            listener.testFinished(b, TestResult.Success(Duration.milliseconds(123)))
-            listener.testFinished(a, TestResult.Success(Duration.milliseconds(324)))
+            listener.testFinished(c, TestResult.Error(653.milliseconds, Exception("boom")))
+            listener.testFinished(b, TestResult.Success(123.milliseconds))
+            listener.testFinished(a, TestResult.Success(324.milliseconds))
             listener.specFinished(TeamCityTestEngineListenerTest::class, null)
             listener.engineFinished(emptyList())
          }
@@ -110,8 +111,8 @@ a[testSuiteFinished name='com.sksamuel.kotest.engine.listener.TeamCityTestEngine
             listener.testStarted(b)
             listener.testStarted(c)
             listener.testFinished(c, TestResult.Ignored("don't like it"))
-            listener.testFinished(b, TestResult.Success(Duration.milliseconds(123)))
-            listener.testFinished(a, TestResult.Success(Duration.milliseconds(324)))
+            listener.testFinished(b, TestResult.Success(123.milliseconds))
+            listener.testFinished(a, TestResult.Success(324.milliseconds))
             listener.specFinished(TeamCityTestEngineListenerTest::class, null)
             listener.engineFinished(emptyList())
          }
@@ -133,9 +134,9 @@ a[testSuiteFinished name='com.sksamuel.kotest.engine.listener.TeamCityTestEngine
             listener.testStarted(a)
             listener.testStarted(b)
             listener.testStarted(c)
-            listener.testFinished(c, TestResult.Success(Duration.milliseconds(123)))
-            listener.testFinished(b, TestResult.Error(Duration.milliseconds(653), Exception("boom")))
-            listener.testFinished(a, TestResult.Success(Duration.milliseconds(324)))
+            listener.testFinished(c, TestResult.Success(123.milliseconds))
+            listener.testFinished(b, TestResult.Error(653.milliseconds, Exception("boom")))
+            listener.testFinished(a, TestResult.Success(324.milliseconds))
             listener.specFinished(TeamCityTestEngineListenerTest::class, null)
             listener.engineFinished(emptyList())
          }
@@ -161,9 +162,9 @@ a[testSuiteFinished name='com.sksamuel.kotest.engine.listener.TeamCityTestEngine
             listener.testStarted(a)
             listener.testStarted(b)
             listener.testStarted(c)
-            listener.testFinished(c, TestResult.Success(Duration.milliseconds(123)))
-            listener.testFinished(b, TestResult.Success(Duration.milliseconds(555)))
-            listener.testFinished(a, TestResult.Success(Duration.milliseconds(324)))
+            listener.testFinished(c, TestResult.Success(123.milliseconds))
+            listener.testFinished(b, TestResult.Success(555.milliseconds))
+            listener.testFinished(a, TestResult.Success(324.milliseconds))
             listener.specFinished(TeamCityTestEngineListenerTest::class, Exception("wobble"))
             listener.engineFinished(emptyList())
          }
@@ -192,7 +193,7 @@ a[testSuiteFinished name='com.sksamuel.kotest.engine.listener.TeamCityTestEngine
             listener.testFinished(
                c,
                TestResult.Error(
-                  Duration.milliseconds(123), FileNotFoundException(
+                  123.milliseconds, FileNotFoundException(
                      """
                well this is a
                big
@@ -200,8 +201,8 @@ a[testSuiteFinished name='com.sksamuel.kotest.engine.listener.TeamCityTestEngine
                   )
                )
             )
-            listener.testFinished(b, TestResult.Success(Duration.milliseconds(555)))
-            listener.testFinished(a, TestResult.Success(Duration.milliseconds(324)))
+            listener.testFinished(b, TestResult.Success(555.milliseconds))
+            listener.testFinished(a, TestResult.Success(324.milliseconds))
             listener.specFinished(TeamCityTestEngineListenerTest::class, null)
             listener.engineFinished(emptyList())
          }
@@ -225,9 +226,9 @@ a[testSuiteFinished name='com.sksamuel.kotest.engine.listener.TeamCityTestEngine
             listener.testStarted(a)
             listener.testStarted(b)
             listener.testStarted(c)
-            listener.testFinished(c, TestResult.Success(Duration.milliseconds(555)))
-            listener.testFinished(b, TestResult.Success(Duration.milliseconds(555)))
-            listener.testFinished(a, TestResult.Success(Duration.milliseconds(324)))
+            listener.testFinished(c, TestResult.Success(555.milliseconds))
+            listener.testFinished(b, TestResult.Success(555.milliseconds))
+            listener.testFinished(a, TestResult.Success(324.milliseconds))
             listener.specFinished(TeamCityTestEngineListenerTest::class, null)
             listener.engineFinished(listOf(Exception("big whoop")))
          }
@@ -253,9 +254,9 @@ a[testFinished name='Engine exception']
             listener.testStarted(a)
             listener.testStarted(b)
             listener.testStarted(c)
-            listener.testFinished(c, TestResult.Success(Duration.milliseconds(555)))
-            listener.testFinished(b, TestResult.Success(Duration.milliseconds(555)))
-            listener.testFinished(a, TestResult.Success(Duration.milliseconds(324)))
+            listener.testFinished(c, TestResult.Success(555.milliseconds))
+            listener.testFinished(b, TestResult.Success(555.milliseconds))
+            listener.testFinished(a, TestResult.Success(324.milliseconds))
             listener.specFinished(TeamCityTestEngineListenerTest::class, null)
             listener.engineFinished(listOf(Exception("big whoop"), Exception("big whoop 2")))
          }
@@ -287,12 +288,12 @@ a[testFinished name='Engine exception 2']
             listener.testFinished(
                c,
                TestResult.Error(
-                  Duration.milliseconds(555),
+                  555.milliseconds,
                   failure(Expected(Printed("expected")), Actual(Printed("actual")))
                )
             )
-            listener.testFinished(b, TestResult.Success(Duration.milliseconds(555)))
-            listener.testFinished(a, TestResult.Success(Duration.milliseconds(324)))
+            listener.testFinished(b, TestResult.Success(555.milliseconds))
+            listener.testFinished(a, TestResult.Success(324.milliseconds))
             listener.specFinished(TeamCityTestEngineListenerTest::class, null)
             listener.engineFinished(emptyList())
          }

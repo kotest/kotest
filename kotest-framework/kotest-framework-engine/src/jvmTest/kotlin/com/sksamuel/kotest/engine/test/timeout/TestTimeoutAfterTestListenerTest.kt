@@ -22,6 +22,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
 import java.util.concurrent.atomic.AtomicInteger
 import kotlin.time.Duration
+import kotlin.time.Duration.Companion.milliseconds
 
 @DelicateCoroutinesApi
 @Suppress("BlockingMethodInNonBlockingContext")
@@ -29,7 +30,7 @@ class TestTimeoutAfterTestListenerTest : FunSpec() {
    init {
 
       test("tests that timeout during a blocking operation should still run the 'after test' listeners").config(
-         timeout = Duration.milliseconds(10000),
+         timeout = 10000.milliseconds,
          blockingTest = true,
       ) {
 
@@ -51,7 +52,7 @@ class TestTimeoutAfterTestListenerTest : FunSpec() {
             type = TestType.Container,
             parent = null,
             config = ResolvedTestConfig.default.copy(
-               timeout = Duration.milliseconds(1),
+               timeout = 1.milliseconds,
                extensions = listOf(listener),
                blockingTest = true
             ),
@@ -67,7 +68,7 @@ class TestTimeoutAfterTestListenerTest : FunSpec() {
       }
 
       test("tests which timeout during a suspending operation should still run the 'after test' listeners").config(
-         timeout = Duration.milliseconds(10000)
+         timeout = 10000.milliseconds
       ) {
 
          val suspendingCount = AtomicInteger(0)
@@ -88,7 +89,7 @@ class TestTimeoutAfterTestListenerTest : FunSpec() {
             type = TestType.Container,
             parent = null,
             config = ResolvedTestConfig.default.copy(
-               timeout = Duration.milliseconds(1),
+               timeout = 1.milliseconds,
                extensions = listOf(listener),
                blockingTest = false
             ),

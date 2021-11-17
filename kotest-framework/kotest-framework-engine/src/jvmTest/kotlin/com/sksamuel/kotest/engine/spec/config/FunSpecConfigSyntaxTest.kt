@@ -5,7 +5,7 @@ import io.kotest.core.Tag
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 import java.util.concurrent.atomic.AtomicInteger
-import kotlin.time.Duration
+import kotlin.time.Duration.Companion.seconds
 import kotlin.time.ExperimentalTime
 
 object Tag1 : Tag()
@@ -15,7 +15,6 @@ object Tag2 : Tag()
  * A test that just ensures the syntax for test configs does not break between releases.
  * The actual functionality of things like tags and timeouts is tested elsewhere.
  */
-@ExperimentalTime
 @ExperimentalKotest
 class FunSpecConfigSyntaxTest : FunSpec() {
    init {
@@ -42,7 +41,7 @@ class FunSpecConfigSyntaxTest : FunSpec() {
          counter.incrementAndGet()
       }
 
-      test("a test with timeout").config(timeout = Duration.seconds(1)) {
+      test("a test with timeout").config(timeout = 1.seconds) {
           counter.incrementAndGet()
       }
 
@@ -54,7 +53,7 @@ class FunSpecConfigSyntaxTest : FunSpec() {
          counter.incrementAndGet()
       }
 
-      context("an outer context with timeout").config(timeout = Duration.seconds(2)) {
+      context("an outer context with timeout").config(timeout = 2.seconds) {
           counter.incrementAndGet()
           test("an inner test") {
               counter.incrementAndGet()
@@ -87,7 +86,7 @@ class FunSpecConfigSyntaxTest : FunSpec() {
 
       context("an outer context") {
          counter.incrementAndGet()
-         context("an inner context with timeout").config(timeout = Duration.seconds(2)) {
+         context("an inner context with timeout").config(timeout = 2.seconds) {
              counter.incrementAndGet()
              test("an inner test") {
                  counter.incrementAndGet()

@@ -12,6 +12,8 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.nio.file.Paths
 import kotlin.time.Duration
+import kotlin.time.Duration.Companion.hours
+import kotlin.time.Duration.Companion.milliseconds
 
 class FunSpecTest : FunSpec() {
 
@@ -30,7 +32,7 @@ class FunSpecTest : FunSpec() {
          }
       }
 
-      test("test with timeout").config(timeout = Duration.milliseconds(1234)) {
+      test("test with timeout").config(timeout = 1234.milliseconds) {
           count += 1
       }
 
@@ -45,7 +47,7 @@ class FunSpecTest : FunSpec() {
          xtest("a disabled test inside the context") {
             error("boom")
          }
-         xtest("a disabled test with config").config(timeout = Duration.hours(1231)) {
+         xtest("a disabled test with config").config(timeout = 1231.hours) {
             error("boom")
          }
          context("and even other contexts!") {

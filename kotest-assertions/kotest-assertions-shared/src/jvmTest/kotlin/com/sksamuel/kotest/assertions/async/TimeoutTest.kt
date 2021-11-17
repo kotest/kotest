@@ -6,13 +6,14 @@ import io.kotest.core.spec.style.FunSpec
 import kotlinx.coroutines.delay
 import java.time.Duration
 import java.util.concurrent.TimeUnit
+import kotlin.time.Duration.Companion.milliseconds
 
 class TimeoutTest : FunSpec({
    test("shouldTimeout should capture the error if a coroutine takes longer than the given timeout") {
       shouldTimeout(Duration.ofMillis(2)) {
          delay(25)
       }
-       shouldTimeout(kotlin.time.Duration.milliseconds(2)) {
+       shouldTimeout(2.milliseconds) {
            delay(25)
        }
       shouldTimeout(2, TimeUnit.MILLISECONDS) {
@@ -26,7 +27,7 @@ class TimeoutTest : FunSpec({
          }
       }
       shouldFail {
-          shouldTimeout(kotlin.time.Duration.milliseconds(50)) {
+          shouldTimeout(50.milliseconds) {
               delay(1)
           }
       }

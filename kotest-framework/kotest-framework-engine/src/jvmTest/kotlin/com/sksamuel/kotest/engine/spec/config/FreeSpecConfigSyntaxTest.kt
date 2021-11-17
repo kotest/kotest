@@ -4,7 +4,7 @@ import io.kotest.common.ExperimentalKotest
 import io.kotest.core.spec.style.FreeSpec
 import io.kotest.matchers.shouldBe
 import java.util.concurrent.atomic.AtomicInteger
-import kotlin.time.Duration
+import kotlin.time.Duration.Companion.seconds
 import kotlin.time.ExperimentalTime
 
 /**
@@ -38,7 +38,7 @@ class FreeSpecConfigSyntaxTest : FreeSpec() {
          counter.incrementAndGet()
       }
 
-      "a test with timeout".config(timeout = Duration.seconds(1)) {
+      "a test with timeout".config(timeout = 1.seconds) {
          counter.incrementAndGet()
       }
 
@@ -50,7 +50,7 @@ class FreeSpecConfigSyntaxTest : FreeSpec() {
          counter.incrementAndGet()
       }
 
-      "an outer context with timeout".config(timeout = Duration.seconds(2)) - {
+      "an outer context with timeout".config(timeout = 2.seconds) - {
          counter.incrementAndGet()
          "an inner test" {
             counter.incrementAndGet()
@@ -88,7 +88,7 @@ class FreeSpecConfigSyntaxTest : FreeSpec() {
          }
 
          counter.incrementAndGet()
-         "an inner context with timeout".config(timeout = Duration.seconds(2)) - {
+         "an inner context with timeout".config(timeout = 2.seconds) - {
             counter.incrementAndGet()
             "an inner test" {
                counter.incrementAndGet()

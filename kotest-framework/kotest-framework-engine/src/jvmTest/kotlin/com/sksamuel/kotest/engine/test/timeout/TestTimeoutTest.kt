@@ -17,7 +17,7 @@ import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
-import kotlin.time.Duration
+import kotlin.time.Duration.Companion.milliseconds
 
 @DelicateCoroutinesApi
 @Suppress("BlockingMethodInNonBlockingContext")
@@ -25,7 +25,7 @@ class TestTimeoutTest : FunSpec() {
    init {
 
       test("tests that timeout during a blocking operation should be interrupted").config(
-         timeout = Duration.milliseconds(10000),
+         timeout = 10000.milliseconds,
          blockingTest = true,
       ) {
          val tc = TestCase(
@@ -37,7 +37,7 @@ class TestTimeoutTest : FunSpec() {
             type = TestType.Container,
             parent = null,
             config = ResolvedTestConfig.default.copy(
-               timeout = Duration.milliseconds(1),
+               timeout = 1.milliseconds,
                blockingTest = true
             ),
          )
@@ -50,7 +50,7 @@ class TestTimeoutTest : FunSpec() {
       }
 
       test("tests which timeout during a suspending operation should be cancelled").config(
-         timeout = Duration.milliseconds(10000)
+         timeout = 10000.milliseconds
       ) {
          val tc = TestCase(
             descriptor = TestTimeoutTest::class.toDescriptor().append("wobble"),
@@ -61,7 +61,7 @@ class TestTimeoutTest : FunSpec() {
             type = TestType.Container,
             parent = null,
             config = ResolvedTestConfig.default.copy(
-               timeout = Duration.milliseconds(1),
+               timeout = 1.milliseconds,
             ),
          )
 

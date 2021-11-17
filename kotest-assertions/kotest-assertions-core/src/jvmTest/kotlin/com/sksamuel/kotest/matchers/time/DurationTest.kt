@@ -11,7 +11,6 @@ import io.kotest.matchers.time.shouldNotHaveHours
 import io.kotest.matchers.time.shouldNotHaveMillis
 import io.kotest.matchers.time.shouldNotHaveMinutes
 import io.kotest.matchers.time.shouldNotHaveSeconds
-import kotlin.time.Duration
 import kotlin.time.Duration.Companion.hours
 import kotlin.time.Duration.Companion.minutes
 import kotlin.time.Duration.Companion.seconds

@@ -1,7 +1,7 @@
 package com.sksamuel.kotest.engine.spec.style
 
 import io.kotest.core.spec.style.WordSpec
-import kotlin.time.Duration
+import kotlin.time.Duration.Companion.milliseconds
 
 class WordSpecExample : WordSpec() {
    init {
@@ -9,7 +9,7 @@ class WordSpecExample : WordSpec() {
          "return the last element when popped" {
             // test here
          }
-         "push elements to the top".config(timeout = Duration.milliseconds(1500)) {
+         "push elements to the top".config(timeout = 1500.milliseconds) {
          }
       }
 
