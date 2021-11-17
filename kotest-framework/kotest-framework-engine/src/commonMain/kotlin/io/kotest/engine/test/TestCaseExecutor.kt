@@ -56,13 +56,13 @@ class TestCaseExecutor(
          TestCaseExtensionInterceptor(configuration.registry()),
          EnabledCheckInterceptor(configuration),
          LifecycleInterceptor(listener, timeMark, configuration.registry()),
-         AssertionModeInterceptor(),
+         AssertionModeInterceptor,
          SoftAssertInterceptor(),
          CoroutineLoggingInterceptor(configuration),
          if (platform == Platform.JVM) blockedThreadTimeoutInterceptor(configuration, timeMark) else null,
          TimeoutInterceptor(timeMark),
          TestInvocationInterceptor(configuration.registry(), timeMark),
-         InvocationTimeoutInterceptor(timeMark),
+         InvocationTimeoutInterceptor,
          if (platform == Platform.JVM && testCase.config.testCoroutineDispatcher) TestCoroutineDispatcherInterceptor() else null,
       )
 

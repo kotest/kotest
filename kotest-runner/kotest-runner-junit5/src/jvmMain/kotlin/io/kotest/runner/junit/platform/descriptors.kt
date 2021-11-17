@@ -3,7 +3,6 @@ package io.kotest.runner.junit.platform
 import io.kotest.core.descriptors.Descriptor
 import io.kotest.core.descriptors.spec
 import io.kotest.core.test.TestCase
-import io.kotest.core.test.TestType
 import org.junit.platform.engine.TestDescriptor
 import org.junit.platform.engine.TestSource
 import org.junit.platform.engine.UniqueId
@@ -32,14 +31,12 @@ fun createDescriptorForSpec(
  * The created descriptor will have segment type [Segment.Test] and will use [displayName].
  */
 fun createTestDescriptor(
-   testCase: TestCase,
+   id: UniqueId,
    displayName: String,
-   parent: TestDescriptor,
    type: TestDescriptor.Type,
-): TestDescriptor {
-
-   val source = ClassSource.from(testCase.descriptor.spec().kclass.java)
-   // FileSource.from(File(desc.source.filename), FilePosition.from(desc.source.lineNumber))
+   source: TestSource?,
+   mayRegisterTests: Boolean
+): TestDescriptor = object : AbstractTestDescriptor(id, displayName, source) {
 
    // there is a bug in gradle 4.7+ whereby CONTAINER_AND_TEST breaks test reporting or hangs the build, as it is not handled
    // see https://github.com/gradle/gradle/issues/4912
@@ -47,26 +44,7 @@ fun createTestDescriptor(
    // update jan 2020: Seems we can use CONTAINER_AND_TEST now in gradle 6, and CONTAINER is invisible in output
    // update sep 2021: gradle 7.1 seems we can use TEST for everything but CONTAINER_AND_TEST will not show without a contained test
    // update for 5.0.0.M2 - will just dynamically add tests after they have completed, and we can see the full tree
-//   val type = when (testCase.type) {
-//      TestType.Container -> TestDescriptor.Type.CONTAINER_AND_TEST
-//      TestType.Test -> TestDescriptor.Type.TEST
-//   }
-
-   val mayRegisterTests = testCase.type == TestType.Container
-   val id = parent.uniqueId.append(testCase.descriptor)
-
-   return createTestDescriptor(id, displayName, type, source, mayRegisterTests).apply {
-      parent.addChild(this)
-   }
-}
-
-fun createTestDescriptor(
-   id: UniqueId,
-   displayName: String,
-   type: TestDescriptor.Type,
-   source: TestSource?,
-   mayRegisterTests: Boolean
-): TestDescriptor = object : AbstractTestDescriptor(id, displayName, source) {
+   // update 5.0.0.M3 - if we add dynamically afterwards then the timings are all messed up, seems gradle keeps the time itself
    override fun getType(): TestDescriptor.Type = type
    override fun mayRegisterTests(): Boolean = mayRegisterTests
 }

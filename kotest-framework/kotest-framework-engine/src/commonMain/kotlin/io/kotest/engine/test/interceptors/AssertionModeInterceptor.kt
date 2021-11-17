@@ -10,14 +10,13 @@ import io.kotest.core.test.TestType
 import kotlin.time.Duration
 
 /**
- * Wraps the test function checking for assertion mode, if the test is a [TestType.Test].
+ * Wraps the test function checking for assertion mode,
+ * only if the test is a [TestType.Test].
  */
-internal class AssertionModeInterceptor() : TestExecutionInterceptor {
+internal object AssertionModeInterceptor : TestExecutionInterceptor {
 
    private fun shouldApply(testCase: TestCase): Boolean {
-      if (testCase.type == TestType.Container) return false
-      if (testCase.config.assertionMode == AssertionMode.None) return false
-      return true
+      return testCase.type == TestType.Test && testCase.config.assertionMode != AssertionMode.None
    }
 
    override suspend fun intercept(

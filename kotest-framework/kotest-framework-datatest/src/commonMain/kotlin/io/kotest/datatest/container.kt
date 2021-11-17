@@ -4,6 +4,7 @@ import io.kotest.core.names.TestName
 import io.kotest.core.spec.style.scopes.AbstractContainerScope
 import io.kotest.core.spec.style.scopes.ContainerScope
 import io.kotest.core.test.Identifiers
+import io.kotest.core.test.TestType
 import kotlin.jvm.JvmName
 
 /**
@@ -76,7 +77,7 @@ suspend fun <T : Any> ContainerScope.withData(
    @BuilderInference test: suspend ContainerScope.(T) -> Unit
 ) {
    ts.forEach { t ->
-      registerContainer(TestName(nameFn(t)), false, null) { AbstractContainerScope(this).test(t) }
+      registerTest(TestName(nameFn(t)), false, null, TestType.Dynamic) { AbstractContainerScope(this).test(t) }
    }
 }
 
@@ -87,6 +88,6 @@ suspend fun <T : Any> ContainerScope.withData(
 @JvmName("withDataMap")
 suspend fun <T : Any> ContainerScope.withData(data: Map<String, T>, test: suspend ContainerScope.(T) -> Unit) {
    data.forEach { (name, t) ->
-      registerContainer(TestName(name), false, null) { AbstractContainerScope(this).test(t) }
+      registerTest(TestName(name), false, null, TestType.Dynamic) { AbstractContainerScope(this).test(t) }
    }
 }

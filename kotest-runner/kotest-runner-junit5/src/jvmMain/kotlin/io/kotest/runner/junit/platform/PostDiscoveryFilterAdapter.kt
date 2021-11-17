@@ -24,6 +24,7 @@ class PostDiscoveryFilterAdapter(
    private val filter: PostDiscoveryFilter,
    private val uniqueId: UniqueId
 ) : TestFilter {
+
    override fun filter(descriptor: Descriptor): TestFilterResult {
       val testDescriptor = createTestDescriptor(uniqueId, descriptor, descriptor.id.value)
       return filter
@@ -31,24 +32,24 @@ class PostDiscoveryFilterAdapter(
          .test(testDescriptor)
          .toTestFilterResult("Excluded by JUnit ClassMethodNameFilter: $filter")
    }
-}
 
-/**
- * Creates a new [TestDescriptor] from the given Kotest [descriptor], chaining from
- * the [root] uniqueId.
- *
- * The [TestSource] is fudged since JUnit makes assumptions that tests are methods.
- */
-private fun createTestDescriptor(root: UniqueId, descriptor: Descriptor, displayName: String): TestDescriptor {
+   /**
+    * Creates a new [TestDescriptor] from the given Kotest [descriptor], chaining from
+    * the [root] uniqueId. The [TestSource] is fudged since JUnit makes assumptions that tests are methods.
+    * This descriptor is only used by the filter adapter.
+    */
+   private fun createTestDescriptor(root: UniqueId, descriptor: Descriptor, displayName: String): TestDescriptor {
 
-   val id: UniqueId = descriptor.chain().fold(root) { acc, desc -> acc.append(desc) }
+      val id: UniqueId = descriptor.chain().fold(root) { acc, desc -> acc.append(desc) }
 
-   val source = when (descriptor) {
-      is Descriptor.SpecDescriptor -> ClassSource.from(descriptor.kclass.java)
-      // this isn't a method, but we can use MethodSource with the test name, so it's at least
-      // somewhat compatible for top level tests.
-      is Descriptor.TestDescriptor -> MethodSource.from(descriptor.spec().kclass.java.name, descriptor.path().value)
+      val source = when (descriptor) {
+         is Descriptor.SpecDescriptor -> ClassSource.from(descriptor.kclass.java)
+         // this isn't a method, but we can use MethodSource with the test name, so it's at least
+         // somewhat compatible for top level tests.
+         is Descriptor.TestDescriptor -> MethodSource.from(descriptor.spec().kclass.java.name, descriptor.path().value)
+      }
+
+      return createTestDescriptor(id, displayName, TestDescriptor.Type.CONTAINER, source, false)
    }
 
-   return createTestDescriptor(id, displayName, TestDescriptor.Type.CONTAINER, source, false)
 }

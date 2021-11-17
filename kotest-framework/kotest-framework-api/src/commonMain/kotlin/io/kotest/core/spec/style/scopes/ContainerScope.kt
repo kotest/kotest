@@ -30,6 +30,25 @@ typealias ContainerContext = ContainerScope
 @KotestDsl
 interface ContainerScope : TestScope {
 
+   suspend fun registerTest(
+      name: TestName,
+      disabled: Boolean,
+      config: UnresolvedTestConfig?,
+      type: TestType,
+      test: suspend TestScope.() -> Unit,
+   ) {
+      registerTestCase(
+         NestedTest(
+            name = name,
+            disabled = disabled,
+            config = config,
+            test = test,
+            type = type,
+            source = sourceRef(),
+         )
+      )
+   }
+
    suspend fun registerContainer(
       name: TestName,
       disabled: Boolean,

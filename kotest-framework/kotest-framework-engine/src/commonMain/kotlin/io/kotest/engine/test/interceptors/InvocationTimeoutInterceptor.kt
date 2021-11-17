@@ -9,17 +9,14 @@ import io.kotest.mpp.Logger
 import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.withTimeout
 import kotlin.math.min
-import kotlin.time.TimeMark
 import kotlin.time.milliseconds
 
 /**
  * Installs an invocation timeout.
  */
-internal class InvocationTimeoutInterceptor(
-   private val mark: TimeMark,
-) : TestExecutionInterceptor {
+internal object InvocationTimeoutInterceptor : TestExecutionInterceptor {
 
-   private val logger = Logger(InvocationTimeoutInterceptor::class)
+   private val logger = Logger(this::class)
 
    override suspend fun intercept(
       testCase: TestCase,

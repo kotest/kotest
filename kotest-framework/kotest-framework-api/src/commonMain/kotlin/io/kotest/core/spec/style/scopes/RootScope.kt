@@ -21,6 +21,29 @@ interface RootScope {
 }
 
 /**
+ * Convenience method to add a test of type [type] to this [RootScope].
+ */
+fun RootScope.addTest(
+   testName: TestName,
+   disabled: Boolean,
+   config: UnresolvedTestConfig?,
+   type: TestType,
+   test: suspend ContainerScope.() -> Unit
+) {
+   add(
+      RootTest(
+         name = testName,
+         test = { AbstractContainerScope(this).test() },
+         type = type,
+         source = sourceRef(),
+         disabled = disabled,
+         config = config,
+         factoryId = null,
+      )
+   )
+}
+
+/**
  * Convenience method to add a [TestType.Test] test to this [RootScope].
  */
 fun RootScope.addTest(
@@ -29,17 +52,7 @@ fun RootScope.addTest(
    config: UnresolvedTestConfig?,
    test: suspend TestScope.() -> Unit
 ) {
-   add(
-      RootTest(
-         name = testName,
-         test = test,
-         type = TestType.Test,
-         source = sourceRef(),
-         disabled = disabled,
-         config = config,
-         factoryId = null,
-      )
-   )
+   addTest(testName, disabled, config, TestType.Test, test)
 }
 
 /**
@@ -51,15 +64,5 @@ fun RootScope.addContainer(
    config: UnresolvedTestConfig?,
    test: suspend ContainerScope.() -> Unit
 ) {
-   add(
-      RootTest(
-         name = testName,
-         test = { AbstractContainerScope(this).test() },
-         type = TestType.Container,
-         source = sourceRef(),
-         disabled = disabled,
-         config = config,
-         factoryId = null,
-      )
-   )
+   addTest(testName, disabled, config, TestType.Container, test)
 }

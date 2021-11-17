@@ -3,8 +3,9 @@ package io.kotest.datatest
 import io.kotest.core.names.TestName
 import io.kotest.core.spec.style.scopes.ContainerScope
 import io.kotest.core.spec.style.scopes.RootScope
-import io.kotest.core.spec.style.scopes.addContainer
+import io.kotest.core.spec.style.scopes.addTest
 import io.kotest.core.test.Identifiers
+import io.kotest.core.test.TestType
 import kotlin.jvm.JvmName
 
 /**
@@ -62,7 +63,7 @@ fun <T : Any> RootScope.withData(
    test: suspend ContainerScope.(T) -> Unit
 ) {
    ts.forEach { t ->
-      addContainer(TestName(nameFn(t)), false, null) { test(t) }
+      addTest(TestName(nameFn(t)), false, null, TestType.Dynamic) { test(t) }
    }
 }
 
@@ -73,6 +74,6 @@ fun <T : Any> RootScope.withData(
 @JvmName("withDataMap")
 fun <T : Any> RootScope.withData(data: Map<String, T>, test: suspend ContainerScope.(T) -> Unit) {
    data.forEach { (name, t) ->
-      addContainer(TestName(name), false, null) { test(t) }
+      addTest(TestName(name), false, null, TestType.Dynamic) { test(t) }
    }
 }
