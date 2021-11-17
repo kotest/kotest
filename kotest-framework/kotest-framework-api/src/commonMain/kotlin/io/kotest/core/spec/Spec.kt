@@ -1,6 +1,7 @@
 package io.kotest.core.spec
 
 import io.kotest.common.ExperimentalKotest
+import io.kotest.common.SoftDeprecated
 import io.kotest.core.SourceRef
 import io.kotest.core.Tag
 import io.kotest.core.TestConfiguration
@@ -84,7 +85,7 @@ abstract class Spec : TestConfiguration() {
     * If you wish to register a listener for all specs
     * then use [Configuration.registerListener].
     */
-   @Deprecated("Override extensions rather than listeners. Listeners are just a type of extension. Deprecated since 5.0")
+   @SoftDeprecated("Override extensions rather than listeners. Listeners are just a type of extension. Deprecated since 5.0")
    open fun listeners(): List<TestListener> = emptyList()
 
    /**
@@ -272,6 +273,7 @@ abstract class Spec : TestConfiguration() {
     * Without setting this value, the test engine will be unable to interrupt
     * threads that are blocked.
     */
+   @ExperimentalKotest
    @JsName("blockingTest_js")
    var blockingTest: Boolean? = null
 
