@@ -1,38 +1,43 @@
 plugins {
    id("java")
-   kotlin("jvm")
+   kotlin("multiplatform")
    id("java-library")
 }
 
-dependencies {
-   implementation(project(Projects.Framework.engine))
-   implementation(project(Projects.Assertions.Shared))
-   implementation(project(Projects.JunitRunner))
-   implementation(Libs.Coroutines.coreJvm)
-}
-
 kotlin {
+
+   targets {
+      jvm {
+         compilations.all {
+            kotlinOptions {
+               jvmTarget = "1.8"
+            }
+         }
+      }
+   }
+
    sourceSets {
+
+      val commonMain by getting {
+         dependencies {
+            compileOnly(kotlin("stdlib"))
+            implementation(kotlin("reflect"))
+         }
+      }
+
+      val jvmTest by getting {
+         dependencies {
+            implementation(project(Projects.Framework.engine))
+            implementation(project(Projects.Assertions.Shared))
+            implementation(project(Projects.JunitRunner))
+            implementation(Libs.Coroutines.coreJvm)
+         }
+      }
+
       all {
          languageSettings.optIn("kotlin.time.ExperimentalTime")
          languageSettings.optIn("kotlin.experimental.ExperimentalTypeInference")
       }
-   }
-}
-
-tasks.named<Test>("test") {
-   useJUnitPlatform()
-   filter {
-      isFailOnNoMatchingTests = false
-   }
-   testLogging {
-      showExceptions = true
-      showStandardStreams = true
-      events = setOf(
-         org.gradle.api.tasks.testing.logging.TestLogEvent.FAILED,
-         org.gradle.api.tasks.testing.logging.TestLogEvent.PASSED
-      )
-      exceptionFormat = org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
    }
 }
 
