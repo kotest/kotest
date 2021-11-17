@@ -33,7 +33,7 @@ kotlin {
             api(project(Projects.Assertions.Shared))
             api(project(Projects.Framework.engine))
             api(project(Projects.Extensions))
-            api("junit:junit:4.13.2")
+            api(Testing.junit4)
             api(Libs.Coroutines.coreJvm)
          }
       }

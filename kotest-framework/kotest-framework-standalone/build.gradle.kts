@@ -10,7 +10,7 @@ plugins {
    application
    id("kotlin")
    id("java-library")
-   id("com.github.johnrengelman.shadow") version "7.1.0"
+   id("com.github.johnrengelman.shadow")
 }
 
 apply(plugin = "com.github.johnrengelman.shadow")

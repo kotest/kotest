@@ -11,7 +11,7 @@ plugins {
    id("java-library")
    id("maven-publish")
    id("java-gradle-plugin")
-   id("com.gradle.plugin-publish") version "0.17.0"
+   id("com.gradle.plugin-publish")
 }
 
 version = Ci.gradleVersion
@@ -28,7 +28,7 @@ repositories {
 
 dependencies {
    compileOnly(gradleApi())
-   compileOnly("org.jetbrains.kotlin:kotlin-gradle-plugin:1.6.255-SNAPSHOT")
+   compileOnly("org.jetbrains.kotlin:kotlin-gradle-plugin:_")
 }
 
 tasks {
