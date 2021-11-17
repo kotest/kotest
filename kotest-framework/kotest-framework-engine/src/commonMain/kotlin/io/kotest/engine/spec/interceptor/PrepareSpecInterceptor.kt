@@ -1,11 +1,11 @@
-package io.kotest.engine.spec
+package io.kotest.engine.spec.interceptor
 
 import io.kotest.common.flatMap
 import io.kotest.core.config.ExtensionRegistry
 import io.kotest.core.spec.SpecRef
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
-import io.kotest.engine.spec.interceptor.SpecRefInterceptor
+import io.kotest.engine.spec.SpecExtensions
 
 class PrepareSpecInterceptor(registry: ExtensionRegistry) : SpecRefInterceptor {
 
