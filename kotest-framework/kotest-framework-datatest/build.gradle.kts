@@ -19,6 +19,27 @@ kotlin {
          browser()
          nodejs()
       }
+
+      linuxX64()
+
+      mingwX64()
+
+      macosX64()
+      macosArm64()
+
+      tvos()
+      tvosSimulatorArm64()
+
+      watchosArm32()
+      watchosArm64()
+      watchosX86()
+      watchosX64()
+      watchosSimulatorArm64()
+
+      iosX64()
+      iosArm64()
+      iosArm32()
+      iosSimulatorArm64()
    }
 
    sourceSets {
@@ -29,18 +50,6 @@ kotlin {
             implementation(Libs.Coroutines.coreCommon)
             implementation(project(Projects.Common))
             implementation(project(Projects.Framework.api))
-         }
-      }
-
-      val jsMain by getting {
-         dependsOn(commonMain)
-         dependencies {
-         }
-      }
-
-      val jvmMain by getting {
-         dependsOn(commonMain)
-         dependencies {
          }
       }
 
