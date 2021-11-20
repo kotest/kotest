@@ -22,7 +22,7 @@ For example:
 
 ```kotlin
 plugins {
-   id("io.kotest.multiplatform") version "5.0.0.5"
+   id("io.kotest.multiplatform") version "5.0.0"
 }
 ```
 
@@ -35,7 +35,7 @@ For example, either:
 ```kotlin
 val commonTest by getting {
    dependencies {
-      implementation("io.kotest:kotest-framework-engine:5.0.0.M1")
+      implementation("io.kotest:kotest-framework-engine:5.0.0.RC")
    }
 }
 ```
@@ -45,7 +45,7 @@ Or
 ```kotlin
 val jsTest by getting {
    dependencies {
-      implementation("io.kotest:kotest-framework-engine-js:5.0.0.M1")
+      implementation("io.kotest:kotest-framework-engine-js:5.0.0.RC")
    }
 }
 ```
@@ -55,7 +55,7 @@ Or
 ```kotlin
 val linuxX64Test by getting {
    dependencies {
-      implementation("io.kotest:kotest-framework-engine-linuxx64:5.0.0.M1")
+      implementation("io.kotest:kotest-framework-engine-linuxx64:5.0.0.RC")
    }
 }
 ```
