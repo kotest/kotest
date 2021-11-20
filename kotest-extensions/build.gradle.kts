@@ -7,15 +7,7 @@ plugins {
 kotlin {
 
    targets {
-jvm()
-   }
-
-   targets.all {
-      compilations.all {
-         kotlinOptions {
-            freeCompilerArgs + "-Xuse-experimental=kotlin.Experimental"
-         }
-      }
+      jvm()
    }
 
    sourceSets {

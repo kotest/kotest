@@ -10,14 +10,6 @@ kotlin {
       jvm()
    }
 
-   targets.all {
-      compilations.all {
-         kotlinOptions {
-            freeCompilerArgs + "-Xuse-experimental=kotlin.Experimental"
-         }
-      }
-   }
-
    sourceSets {
 
       val commonMain by getting {

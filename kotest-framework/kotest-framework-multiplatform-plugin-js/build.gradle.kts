@@ -11,14 +11,7 @@ repositories {
 
 kotlin {
    targets {
-      jvm {
-         compilations.all {
-            kotlinOptions {
-               jvmTarget = "1.8"
-               freeCompilerArgs
-            }
-         }
-      }
+      jvm()
    }
    sourceSets {
       val jvmMain by getting {

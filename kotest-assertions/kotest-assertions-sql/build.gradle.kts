@@ -12,14 +12,6 @@ kotlin {
          jvm()
       }
 
-      targets.all {
-         compilations.all {
-            kotlinOptions {
-               freeCompilerArgs = freeCompilerArgs + "-Xopt-in=kotlin.RequiresOptIn"
-            }
-         }
-      }
-
       val jvmMain by getting {
          dependencies {
             compileOnly(kotlin("stdlib"))
