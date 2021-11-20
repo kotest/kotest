@@ -1,7 +1,7 @@
 object Libs {
 
    object Kotlin {
-      const val version = "1.6.0"
+      const val version = "_"
       const val kotlinScriptRuntime = "org.jetbrains.kotlin:kotlin-script-runtime:_"
       const val kotlinScriptUtil = "org.jetbrains.kotlin:kotlin-script-util:_"
       const val kotlinScriptJvm = "org.jetbrains.kotlin:kotlin-scripting-jvm:_"
@@ -21,10 +21,6 @@ object Libs {
 
    object Jayway {
       const val jsonpath = "com.jayway.jsonpath:json-path:_"
-   }
-
-   object JUnit4 {
-      const val junit4 = "junit:junit:_"
    }
 
    object JUnitPlatform {
@@ -90,9 +86,5 @@ object Libs {
       const val clientJs = "io.ktor:ktor-client-js:_"
       const val clientCore = "io.ktor:ktor-client-core:_"
       const val clientApache = "io.ktor:ktor-client-apache:_"
-   }
-
-   object KotlinTime {
-      const val kotlintime = "org.jetbrains.kotlinx:kotlinx-datetime:_"
    }
 }
