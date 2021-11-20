@@ -25,6 +25,10 @@ class KotestExtensionContext(
 
    override fun getUniqueId(): String = spec::class.toDescriptor().id.value
 
+   override fun <T : Any?> getConfigurationParameter(key: String?, transformer: Function<String, T>?): Optional<T> {
+      return Optional.empty()
+   }
+
    override fun getDisplayName(): String = when (testCase) {
       null -> formatter.format(spec::class)
       else -> formatter.format(testCase)
