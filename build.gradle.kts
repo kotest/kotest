@@ -24,6 +24,7 @@ tasks {
 }
 
 allprojects {
+   apply(plugin = "com.adarshr.test-logger")
 
    repositories {
       mavenCentral()

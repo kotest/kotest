@@ -2,20 +2,14 @@ plugins {
    id("java")
    id("kotlin-multiplatform")
    id("java-library")
-   id("com.adarshr.test-logger")
+
 }
 
 kotlin {
 
    targets {
 
-      jvm {
-         compilations.all {
-            kotlinOptions {
-               jvmTarget = "1.8"
-            }
-         }
-      }
+      jvm()
 
       js(BOTH) {
          browser()
