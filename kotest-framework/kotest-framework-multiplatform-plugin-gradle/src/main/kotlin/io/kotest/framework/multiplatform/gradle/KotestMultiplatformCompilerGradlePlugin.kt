@@ -32,18 +32,25 @@ class KotestMultiplatformCompilerGradlePlugin : KotlinCompilerPluginSupportPlugi
       extension = target.extensions.create("kotest", KotestPluginExtension::class.java)
    }
 
+   /**
+    * Returns the version to use for the compiler plugins.
+    *
+    * Takes the version from the extension configuration first, or if not
+    * specified, then defaults to using the same version as the engine dependency.
+    */
    private fun version(): String? {
       val project = target ?: error(missingProjectValError)
 
       val versionFromExtension = extension?.compilerPluginVersion?.orNull
       if (versionFromExtension != null) {
-         println("Using compiler plugin version: $versionFromExtension")
+         println("Kotest compiler plugin [$versionFromExtension]")
          return versionFromExtension
       }
 
       val version = engineDeps(project).firstOrNull()?.version ?: return null
-      if (version.contains("LOCAL"))
-         println("Using DEV version for compiler plugin: $version")
+      if (version.contains("LOCAL")) {
+         println("Detected dev engine version [$version]")
+      }
       return version
    }
 
@@ -60,7 +67,7 @@ class KotestMultiplatformCompilerGradlePlugin : KotlinCompilerPluginSupportPlugi
 
    override fun isApplicable(kotlinCompilation: KotlinCompilation<*>): Boolean {
       return when {
-         // if we can't find the engine dep then we won't apply the plugin to this module
+         // if we can't find a version to use then we won't apply to this module
          version() == null -> false
          kotlinCompilation is KotlinJsCompilation -> true
          kotlinCompilation is AbstractKotlinNativeCompilation -> true
