@@ -88,7 +88,7 @@ include("kotest-tests:kotest-tests-timeout-project")
 include("kotest-tests:kotest-tests-timeout-sysprop")
 include("kotest-tests:kotest-tests-multiname-test-name-sysprop")
 include("kotest-tests:kotest-tests-native")
-// include("kotest-tests:kotest-tests-js")
+include("kotest-tests:kotest-tests-js")
 
 // BOM for whole kotest project
 include("kotest-bom")
