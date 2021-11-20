@@ -17,7 +17,12 @@ import io.kotest.plugin.intellij.psi.isTestFile
 /**
  * A parser for location URLs reported by test runners.
  *
- * Kotest reports its location hints as kotest://filename:line
+ * Kotest 5.0 reports its location hints as
+ *   kotest:file://filename:linenumber
+ * or
+ *   kotest:class://fqn:lineNumber
+ *
+ * Kotest 4 reported it's located hints as kotest://class:linenumber
  */
 object KotestTestLocator : SMTestLocator {
 
@@ -73,16 +78,6 @@ object KotestTestLocator : SMTestLocator {
          Constants.OldLocatorProtocol -> parseClass(project, scope, path)
          else -> emptyList()
       }
-   }
-
-   override fun getLocation(
-      protocol: String,
-      path: String,
-      metainfo: String?,
-      project: Project,
-      scope: GlobalSearchScope
-   ): MutableList<Location<PsiElement>> {
-      return super.getLocation(protocol, path, metainfo, project, scope)
    }
 
    private fun parseFile(project: Project, scope: GlobalSearchScope, path: String): List<Location<PsiElement>> {

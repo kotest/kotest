@@ -11,14 +11,9 @@ class KotestTestConsoleProperties(config: KotestConfiguration,
                                   executor: Executor) : JavaAwareTestConsoleProperties<KotestConfiguration>(Constants.FrameworkName, config, executor) {
    init {
       isPrintTestingStartedTime = true
-      isIdBasedTestTree = false
    }
 
    override fun getTestLocator(): SMTestLocator = KotestTestLocator
-
-   override fun isDebug(): Boolean {
-      return false
-   }
 
    override fun initScope(): GlobalSearchScope {
       val sourceScope = configuration.testSearchScope.getSourceScope(configuration)
