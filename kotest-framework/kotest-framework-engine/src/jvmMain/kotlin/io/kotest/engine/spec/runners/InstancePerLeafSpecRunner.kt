@@ -69,11 +69,11 @@ internal class InstancePerLeafSpecRunner(
     */
    override suspend fun execute(spec: Spec): Result<Map<TestCase, TestResult>> =
       runCatching {
-         materializer.materialize(spec).forEach { root -> enqueue(root) }
-         while (queue.isNotEmpty()) {
-            val (testCase, _) = queue.remove()
-            executeInCleanSpec(testCase).getOrThrow()
-         }
+//         materializer.materialize(spec).forEach { root -> enqueue(root) }
+//         while (queue.isNotEmpty()) {
+//            val (testCase, _) = queue.remove()
+//            executeInCleanSpec(testCase).getOrThrow()
+//         }
          results
       }
 

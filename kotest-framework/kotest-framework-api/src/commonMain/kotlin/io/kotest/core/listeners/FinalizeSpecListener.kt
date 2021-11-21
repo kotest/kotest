@@ -29,4 +29,10 @@ interface FinalizeSpecListener : Listener {
       kclass: KClass<out Spec>,
       results: Map<TestCase, TestResult>,
    ): Unit = Unit
+
+   suspend fun finalizeSpec(
+      kclass: KClass<out Spec>,
+      results: Map<TestCase, TestResult>,
+      t:Throwable?,
+   ): Unit = Unit
 }

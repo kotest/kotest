@@ -1,13 +1,15 @@
 package io.kotest.runner.junit.platform
 
+import io.kotest.core.SourceRef
 import io.kotest.core.descriptors.Descriptor
-import io.kotest.core.descriptors.spec
-import io.kotest.core.test.TestCase
 import org.junit.platform.engine.TestDescriptor
 import org.junit.platform.engine.TestSource
 import org.junit.platform.engine.UniqueId
 import org.junit.platform.engine.support.descriptor.AbstractTestDescriptor
 import org.junit.platform.engine.support.descriptor.ClassSource
+import org.junit.platform.engine.support.descriptor.FilePosition
+import org.junit.platform.engine.support.descriptor.FileSource
+import java.io.File
 
 /**
  * Creates a new spec-level [TestDescriptor] from the given class, appending it to the
@@ -47,4 +49,15 @@ fun createTestDescriptor(
    // update 5.0.0.M3 - if we add dynamically afterwards then the timings are all messed up, seems gradle keeps the time itself
    override fun getType(): TestDescriptor.Type = type
    override fun mayRegisterTests(): Boolean = mayRegisterTests
+}
+
+/**
+ * Returns a JUnit platform [TestSource] for this Kotest [SourceRef]
+ */
+fun SourceRef.toTestSource(): TestSource? = when (this) {
+   is SourceRef.ClassLineSource -> ClassSource.from(this.fqn, FilePosition.from(this.lineNumber))
+   is SourceRef.ClassSource -> ClassSource.from(this.fqn)
+   is SourceRef.FileLineSource -> FileSource.from(File(this.fileName), FilePosition.from(this.lineNumber))
+   is SourceRef.FileSource -> FileSource.from(File(this.fileName))
+   SourceRef.None -> null
 }

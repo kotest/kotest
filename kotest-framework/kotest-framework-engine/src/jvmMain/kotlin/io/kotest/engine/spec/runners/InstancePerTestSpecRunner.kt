@@ -80,10 +80,10 @@ internal class InstancePerTestSpecRunner(
     */
    override suspend fun execute(spec: Spec): Result<Map<TestCase, TestResult>> =
       runCatching {
-         launch(spec) {
-            executeInCleanSpec(it)
-               .getOrThrow()
-         }
+//         launch(spec) {
+//            executeInCleanSpec(it)
+//               .getOrThrow()
+//         }
          results
       }
 

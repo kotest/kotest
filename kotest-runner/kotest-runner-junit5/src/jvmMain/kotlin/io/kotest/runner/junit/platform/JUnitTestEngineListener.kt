@@ -141,7 +141,7 @@ class JUnitTestEngineListener(
 
          val descriptor = getOrCreateSpecDescriptor(kclass)
 
-         logger.log { Pair(kclass.bestName(), "Registering dynamic spec $descriptor") }
+         logger.log { Pair(kclass.bestName(), "Registering spec $descriptor") }
          listener.dynamicTestRegistered(descriptor)
 
          logger.log { Pair(kclass.bestName(), "Spec executionStarted $descriptor") }
@@ -179,14 +179,14 @@ class JUnitTestEngineListener(
          // to hold the error, mark that test as failed, and then fail the spec as well
          t != null && !started -> {
             val descriptor = markSpecStarted(kclass)
-            addPlaceholderTest(descriptor, t)
+            addPlaceholderTest(descriptor, t, kclass)
             logger.log { Pair(kclass.bestName(), "execution failed: $descriptor $t") }
             listener.executionFinished(descriptor, TestExecutionResult.failed(t))
          }
          // if we had an error in the spec, and we had no tests, we'll add the dummy and return
          t != null && rootTests.isEmpty() -> {
             val descriptor = descriptors[kclass.toDescriptor()]!!
-            addPlaceholderTest(descriptor, t)
+            addPlaceholderTest(descriptor, t, kclass)
             logger.log { Pair(kclass.bestName(), "execution failed: $descriptor $t") }
             listener.executionFinished(descriptor, TestExecutionResult.failed(t))
          }
@@ -202,7 +202,7 @@ class JUnitTestEngineListener(
             val result = when (t) {
                null -> TestExecutionResult.successful()
                else -> {
-                  addPlaceholderTest(descriptor, t)
+                  addPlaceholderTest(descriptor, t, kclass)
                   TestExecutionResult.successful()
                }
             }
@@ -223,13 +223,13 @@ class JUnitTestEngineListener(
       startedTests.clear()
    }
 
-   private fun addPlaceholderTest(parent: TestDescriptor, t: Throwable) {
+   private fun addPlaceholderTest(parent: TestDescriptor, t: Throwable, kclass: KClass<*>) {
       val (name, cause) = ExtensionExceptionExtractor.resolve(t)
       val descriptor = createTestDescriptor(
          parent.uniqueId.append(Segment.Test.value, name),
          name,
          TestDescriptor.Type.TEST,
-         null,
+         ClassSource.from(kclass.java),
          false
       )
       parent.addChild(descriptor)
@@ -241,14 +241,14 @@ class JUnitTestEngineListener(
    // we don't inform junit of a started test just yet, as we want to wait and see if it has nested tests
    // this is so we can dynamically set junit's container/test type depending on the child count
    override suspend fun testStarted(testCase: TestCase) {
-      logger.log { Pair(testCase.name.testName, "test started") }
+      logger.log { Pair(testCase.name.testName, "Test start event received") }
       if (testCase.parent != null) rootTests.add(testCase)
       addChild(testCase)
    }
 
    // this test can be output now it has completed as we have all we need to know to complete it
    override suspend fun testFinished(testCase: TestCase, result: TestResult) {
-      logger.log { Pair(testCase.name.testName, "test finished $result") }
+      logger.log { Pair(testCase.name.testName, "Test finished: $result") }
       results[testCase.descriptor] = result
 
       val descriptor = getOrCreateTestDescriptor(testCase)
@@ -257,7 +257,7 @@ class JUnitTestEngineListener(
       startParents(testCase)
       startTestIfNotStarted(testCase)
 
-      logger.log { Pair(testCase.name.testName, "executionFinished: $descriptor") }
+      logger.log { Pair(testCase.name.testName, "Test finished: $descriptor") }
       listener.executionFinished(descriptor, result.testExecutionResult())
    }
 
@@ -317,7 +317,6 @@ class JUnitTestEngineListener(
       }
 
       val id = parent.uniqueId.append(testCase.descriptor)
-      val source = ClassSource.from(testCase.spec::class.java)
 
       // we dynamically work out the type by looking to see if this test had any children
       val c = children[testCase.descriptor]
@@ -330,7 +329,7 @@ class JUnitTestEngineListener(
          id,
          formatter.format(testCase),
          type,
-         source,
+         testCase.source.toTestSource() ?: ClassSource.from(testCase.spec::class.java),
          type == TestDescriptor.Type.CONTAINER
       ).apply {
          parent.addChild(this)
