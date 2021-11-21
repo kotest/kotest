@@ -1,10 +1,11 @@
-package io.kotest.engine.test
+package io.kotest.engine.test.interceptors
 
 import io.kotest.core.config.ExtensionRegistry
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestScope
-import io.kotest.engine.test.interceptors.TestExecutionInterceptor
+import io.kotest.engine.test.TestExtensions
+import io.kotest.engine.test.createTestResult
 import io.kotest.mpp.Logger
 import io.kotest.mpp.replay
 import kotlinx.coroutines.coroutineScope

@@ -6,7 +6,7 @@ import io.kotest.engine.listener.TestEngineListener
 import io.kotest.engine.test.TestCaseExecutionListener
 
 /**
- * Converts events fired to a [TestCaseExecutionListener] into events fired to a [TestEngineListener]
+ * Propagates events fired to a [TestCaseExecutionListener] into a [TestEngineListener].
  */
 class TestCaseExecutionListenerToTestEngineListenerAdapter(
    private val listener: TestEngineListener

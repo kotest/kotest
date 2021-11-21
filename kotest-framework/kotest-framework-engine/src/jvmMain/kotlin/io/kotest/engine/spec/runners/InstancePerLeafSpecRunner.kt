@@ -103,7 +103,7 @@ internal class InstancePerLeafSpecRunner(
 
             var open = true
 
-            override suspend fun runNestedTestCase(nested: NestedTest): TestResult? {
+            override suspend fun runNestedTestCase(parent: TestCase, nested: NestedTest): TestResult? {
                val t = Materializer(configuration).materialize(nested, test)
                // if this test is our target then we definitely run it
                // or if the test is on the path to our target we must run it

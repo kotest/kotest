@@ -4,23 +4,24 @@ import io.kotest.common.ExperimentalKotest
 import io.kotest.common.flatMap
 import io.kotest.core.concurrency.CoroutineDispatcherFactory
 import io.kotest.core.config.Configuration
+import io.kotest.core.spec.Registration
 import io.kotest.core.spec.Spec
 import io.kotest.core.test.NestedTest
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
-import io.kotest.core.test.TestScope
 import io.kotest.core.test.TestType
 import io.kotest.engine.listener.TestEngineListener
-import io.kotest.engine.spec.Materializer
 import io.kotest.engine.spec.SpecExtensions
 import io.kotest.engine.spec.SpecRunner
-import io.kotest.engine.test.TestCaseExecutionListener
+import io.kotest.engine.test.NoopTestCaseExecutionListener
 import io.kotest.engine.test.TestCaseExecutor
+import io.kotest.engine.test.listener.TestCaseExecutionListenerToTestEngineListenerAdapter
+import io.kotest.engine.test.registration.DuplicateNameHandlingRegistration
 import io.kotest.engine.test.scheduler.TestScheduler
-import io.kotest.mpp.log
+import io.kotest.mpp.Logger
+import io.kotest.mpp.bestName
 import kotlinx.coroutines.coroutineScope
 import java.util.concurrent.ConcurrentHashMap
-import kotlin.coroutines.CoroutineContext
 
 /**
  * Implementation of [SpecRunner] that executes each [TestCase] in a fresh instance
@@ -61,6 +62,7 @@ internal class InstancePerTestSpecRunner(
    private val configuration: Configuration,
 ) : SpecRunner(listener, schedule, configuration) {
 
+   private val logger = Logger(this::class)
    private val extensions = SpecExtensions(configuration.registry())
    private val results = ConcurrentHashMap<TestCase, TestResult>()
 
@@ -110,49 +112,56 @@ internal class InstancePerTestSpecRunner(
          }
    }
 
-   private suspend fun run(spec: Spec, test: TestCase): Result<Spec> = kotlin.runCatching {
-      log { "Created new spec instance $spec" }
+   private suspend fun run(spec: Spec, target: TestCase): Result<Spec> = kotlin.runCatching {
+      logger.log { Pair(spec::class.bestName(), "Created new spec instance: $spec") }
       // we need to find the same root test but in the newly created spec
-      val root = materializer.materialize(spec).first { it.descriptor.isOnPath(test.descriptor) }
-      log { "Starting root test ${root.descriptor} in search of ${test.descriptor}" }
-      run(root, test)
+      val root = materializer.materialize(spec).first { it.descriptor.isOnPath(target.descriptor) }
+      logger.log { Pair(spec::class.bestName(), "Starting root test ${root.descriptor} for ${target.descriptor}") }
+      run(root, target)
       spec
    }
 
-   private suspend fun run(test: TestCase, target: TestCase) {
-      val isTarget = test.descriptor == target.descriptor
-      coroutineScope {
-//         val context2 = DuplicateNameHandlingTestScope(configuration.duplicateTestNameMode, context)
-//         val t = Materializer(configuration).materialize(nested, testCase)
-//
-//          if we are currently executing the target, then any registered tests are new, and we
-//          should begin execution of them in fresh specs
-//          otherwise if the test is on the path we can continue in the same spec
-//         if (isTarget) {
-//            executeInCleanSpec(t).getOrThrow()
-//         } else if (t.descriptor.isOnPath(target.descriptor)) {
-//            run(t, target)
-//         }
+   private suspend fun run(test: TestCase, target: TestCase): TestResult {
+      return coroutineScope {
          val testExecutor = TestCaseExecutor(
-            object : TestCaseExecutionListener {
-               override suspend fun testStarted(testCase: TestCase) {
-                  if (isTarget) listener.testStarted(testCase)
-               }
-
-               override suspend fun testIgnored(testCase: TestCase, result: TestResult) {
-                  if (isTarget) listener.testIgnored(testCase, result.reasonOrNull)
-               }
-
-               override suspend fun testFinished(testCase: TestCase, result: TestResult) {
-                  if (isTarget) listener.testFinished(testCase, result)
-               }
-            },
+            // we only log events for this test if it is the target, otherwise, those events will have been logged elsewhere
+            if (test.descriptor == target.descriptor)
+               TestCaseExecutionListenerToTestEngineListenerAdapter(listener)
+            else
+               NoopTestCaseExecutionListener,
             defaultCoroutineDispatcherFactory,
-            configuration
+            configuration,
+            // we only care about handling duplicate names if we are the target
+            if (test.descriptor == target.descriptor) {
+               DuplicateNameHandlingRegistration(
+                  test.spec.duplicateTestNameMode ?: configuration.duplicateTestNameMode,
+                  registration(target)
+               )
+            } else registration(target),
          )
-
          val result = testExecutor.execute(test)
          results[test] = result
+         result
+      }
+   }
+
+   private fun registration(target: TestCase) = object : Registration {
+      override suspend fun runNestedTestCase(parent: TestCase, nested: NestedTest): TestResult? {
+         val isTarget = parent.descriptor == target.descriptor
+         val t = materializer.materialize(nested, parent)
+         // If we are currently executing the target, then any discovered tests are definitely new (as we have
+         // not previously executed this scope), and so they all need to be deferred to fresh specs.
+         // Otherwise, if the test is on the path we can continue in the same spec as we are "en route" to the target.
+         // Finally, if the test is neither our target, nor on the path, it can be ignored as it is not relevant
+         // to finding the target test.
+         return if (isTarget) {
+            executeInCleanSpec(t).getOrThrow()
+            null
+         } else if (t.descriptor.isOnPath(target.descriptor)) {
+            run(t, target)
+         } else {
+            null
+         }
       }
    }
 }

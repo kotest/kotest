@@ -39,6 +39,7 @@ interface ContainerScope : TestScope {
       test: suspend TestScope.() -> Unit,
    ) {
       coroutineContext.registration.runNestedTestCase(
+         testCase,
          NestedTest(
             name = name,
             disabled = disabled,

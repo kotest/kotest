@@ -1,4 +1,4 @@
-package io.kotest.engine.test.registration
+package io.kotest.engine.test
 
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestScope

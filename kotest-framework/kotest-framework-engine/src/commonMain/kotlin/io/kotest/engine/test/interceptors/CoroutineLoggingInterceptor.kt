@@ -9,7 +9,7 @@ import io.kotest.engine.test.TestExtensions
 import io.kotest.engine.test.logging.SerialLogExtension
 import io.kotest.engine.test.logging.TestLogger
 import io.kotest.engine.test.logging.TestScopeLoggingCoroutineContextElement
-import io.kotest.engine.test.registration.withCoroutineContext
+import io.kotest.engine.test.withCoroutineContext
 import io.kotest.mpp.Logger
 import kotlinx.coroutines.withContext
 

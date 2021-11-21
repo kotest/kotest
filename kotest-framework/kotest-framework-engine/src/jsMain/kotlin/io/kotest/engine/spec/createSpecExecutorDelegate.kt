@@ -14,12 +14,12 @@ import io.kotest.engine.listener.TestEngineListener
 import io.kotest.engine.test.TestCaseExecutor
 import io.kotest.engine.test.interceptors.testNameEscape
 import io.kotest.engine.test.names.getDisplayNameFormatter
+import io.kotest.engine.test.registration.TerminalRegistration
 import io.kotest.engine.test.status.isEnabledInternal
 import io.kotest.engine.xit
 import io.kotest.mpp.bestName
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.promise
-import kotlin.coroutines.coroutineContext
 
 @ExperimentalKotest
 internal actual fun createSpecExecutorDelegate(
@@ -42,7 +42,6 @@ internal class JavascriptSpecExecutorDelegate(private val configuration: Configu
    private val materializer = Materializer(configuration)
 
    override suspend fun execute(spec: Spec): Map<TestCase, TestResult> {
-      val cc = coroutineContext
       // we use the spec itself as an outer/parent test.
       describe(testNameEscape(spec::class.bestName())) {
          materializer.materialize(spec).forEach { root ->
@@ -62,7 +61,9 @@ internal class JavascriptSpecExecutorDelegate(private val configuration: Configu
                      TestCaseExecutor(
                         PromiseTestCaseExecutionListener(done),
                         NoopCoroutineDispatcherFactory,
-                        configuration
+                        configuration,
+                        // JS doesn't support nested tests due to frameworks not being async in describe blocks
+                        TerminalRegistration,
                      ).execute(root)
                   }
 

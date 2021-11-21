@@ -21,7 +21,6 @@ import io.kotest.core.test.TestType
 import io.kotest.engine.extensions.ExtensionException
 import io.kotest.engine.extensions.MultipleExceptions
 import io.kotest.engine.test.logging.LogExtension
-import io.kotest.engine.test.registration.withCoroutineContext
 import kotlin.coroutines.coroutineContext
 
 /**

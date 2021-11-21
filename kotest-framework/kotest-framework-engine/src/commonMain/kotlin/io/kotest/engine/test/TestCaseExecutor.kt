@@ -4,6 +4,7 @@ import io.kotest.common.Platform
 import io.kotest.common.platform
 import io.kotest.core.concurrency.CoroutineDispatcherFactory
 import io.kotest.core.config.Configuration
+import io.kotest.core.spec.Registration
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestScope
@@ -15,16 +16,17 @@ import io.kotest.engine.test.interceptors.EnabledCheckInterceptor
 import io.kotest.engine.test.interceptors.InvocationCountCheckInterceptor
 import io.kotest.engine.test.interceptors.InvocationTimeoutInterceptor
 import io.kotest.engine.test.interceptors.LifecycleInterceptor
+import io.kotest.engine.test.interceptors.RegistrationInterceptor
 import io.kotest.engine.test.interceptors.SoftAssertInterceptor
 import io.kotest.engine.test.interceptors.SupervisorScopeInterceptor
 import io.kotest.engine.test.interceptors.TestCaseExtensionInterceptor
 import io.kotest.engine.test.interceptors.TestCoroutineDispatcherInterceptor
 import io.kotest.engine.test.interceptors.TestFinishedInterceptor
+import io.kotest.engine.test.interceptors.TestInvocationInterceptor
 import io.kotest.engine.test.interceptors.TimeoutInterceptor
 import io.kotest.engine.test.interceptors.blockedThreadTimeoutInterceptor
 import io.kotest.engine.test.interceptors.coroutineDispatcherFactoryInterceptor
 import io.kotest.engine.test.interceptors.coroutineErrorCollectorInterceptor
-import io.kotest.engine.test.registration.DefaultTestScope
 import io.kotest.mpp.Logger
 import kotlin.coroutines.coroutineContext
 import kotlin.time.TimeSource
@@ -39,6 +41,7 @@ class TestCaseExecutor(
    private val listener: TestCaseExecutionListener,
    private val defaultCoroutineDispatcherFactory: CoroutineDispatcherFactory = NoopCoroutineDispatcherFactory,
    private val configuration: Configuration,
+   private val registration: Registration? = null,
 ) {
 
    private val logger = Logger(TestCaseExecutor::class)
@@ -64,6 +67,7 @@ class TestCaseExecutor(
          TestInvocationInterceptor(configuration.registry(), timeMark),
          InvocationTimeoutInterceptor,
          if (platform == Platform.JVM && testCase.config.testCoroutineDispatcher) TestCoroutineDispatcherInterceptor() else null,
+         registration?.let { RegistrationInterceptor(it) },
       )
 
       val innerExecute: suspend (TestCase, TestScope) -> TestResult = { tc, scope ->
