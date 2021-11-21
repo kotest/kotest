@@ -83,21 +83,15 @@ object KotestTestLocator : SMTestLocator {
    private fun parseFile(project: Project, scope: GlobalSearchScope, path: String): List<Location<PsiElement>> {
       val tokens = path.split(':')
       val ident = tokens[0]
-      val lineNumber = tokens.getOrNull(1)?.toIntOrNull()
-      return if (lineNumber == null)
-         emptyList()
-      else
-         listOfNotNull(getLocationForFile(project, scope, ident, lineNumber))
+      val lineNumber = tokens.getOrNull(1)?.toIntOrNull() ?: 1
+      return listOfNotNull(getLocationForFile(project, scope, ident, lineNumber))
    }
 
    private fun parseClass(project: Project, scope: GlobalSearchScope, path: String): List<Location<PsiElement>> {
       val tokens = path.split(':')
       val ident = tokens[0]
-      val lineNumber = tokens.getOrNull(1)?.toIntOrNull()
-      return if (lineNumber == null)
-         emptyList()
-      else
-         listOfNotNull(getLocationForFqn(project, scope, ident, lineNumber))
+      val lineNumber = tokens.getOrNull(1)?.toIntOrNull() ?: 1
+      return listOfNotNull(getLocationForFqn(project, scope, ident, lineNumber))
    }
 
    override fun getLocationCacheModificationTracker(project: Project): ModificationTracker =
