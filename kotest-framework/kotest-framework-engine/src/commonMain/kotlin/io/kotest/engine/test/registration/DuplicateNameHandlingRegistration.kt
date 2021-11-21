@@ -8,7 +8,7 @@ import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.engine.test.names.DuplicateTestNameHandler
 
-class DuplicateNameHandlingRegistration(
+internal class DuplicateNameHandlingRegistration(
    private val mode: DuplicateTestNameMode,
    private val delegate: Registration,
 ) : Registration {

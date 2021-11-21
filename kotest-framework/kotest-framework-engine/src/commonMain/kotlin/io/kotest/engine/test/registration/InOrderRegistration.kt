@@ -27,9 +27,13 @@ internal class InOrderRegistration(
          listener,
          coroutineDispatcherFactory,
          configuration,
-         DuplicateNameHandlingRegistration(
-            parent.spec.duplicateTestNameMode ?: configuration.duplicateTestNameMode,
-            this
+         FailFastRegistration(
+            listener,
+            configuration,
+            DuplicateNameHandlingRegistration(
+               parent.spec.duplicateTestNameMode ?: configuration.duplicateTestNameMode,
+               this
+            ),
          ),
       ).execute(nestedTestCase)
    }

@@ -14,7 +14,7 @@ import io.kotest.mpp.Logger
  * A [Registration] that will ignore any nested test cases if another test
  * case has already failed.
  */
-class FailFastRegistration(
+internal class FailFastRegistration(
    private val listener: TestCaseExecutionListener,
    private val configuration: Configuration,
    private val delegate: Registration,
@@ -24,7 +24,8 @@ class FailFastRegistration(
    private val failures = mutableSetOf<Descriptor.TestDescriptor>()
 
    override suspend fun runNestedTestCase(parent: TestCase, nested: NestedTest): TestResult? {
-      // if we have already failed and failfast is enabled, we ignore any other registration attempts
+      // if we have already seen a failed test for this parent,
+      // and failfast is enabled, then we ignore any other registration attempts
       return if (parent.config.failfast && failures.contains(parent.descriptor)) {
          val nestedTestCase = Materializer(configuration).materialize(nested, parent)
          logger.log { Pair(parent.name.testName, "Failfast enabled - will ignore this nested test") }
