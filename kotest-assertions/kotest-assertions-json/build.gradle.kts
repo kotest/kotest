@@ -44,8 +44,6 @@ kotlin {
       val jvmTest by getting {
          dependsOn(jvmMain)
          dependencies {
-            implementation(project(Projects.Assertions.Core))
-            implementation(project(Projects.Framework.engine))
             implementation(project(Projects.JunitRunner))
          }
       }

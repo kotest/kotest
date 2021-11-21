@@ -43,11 +43,9 @@ internal class SpecExtensions(private val registry: ExtensionRegistry) {
    }
 
    suspend fun beforeSpec(spec: Spec): Result<Spec> {
+      logger.log { Pair(spec::class.bestName(), "beforeSpec $spec") }
 
-      val beforeSpecs = extensions(spec).filterIsInstance<BeforeSpecListener>()
-      logger.log { Pair(spec::class.bestName(), "Invoking ${beforeSpecs.size} 'beforeSpec' listeners") }
-
-      val errors = beforeSpecs.mapNotNull { ext ->
+      val errors = extensions(spec).filterIsInstance<BeforeSpecListener>().mapNotNull { ext ->
          runCatching { ext.beforeSpec(spec) }
             .mapError { ExtensionException.BeforeSpecException(it) }.exceptionOrNull()
       }
