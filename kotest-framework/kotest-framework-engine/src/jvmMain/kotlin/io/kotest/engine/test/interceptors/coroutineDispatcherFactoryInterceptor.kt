@@ -5,7 +5,7 @@ import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestScope
 import io.kotest.engine.concurrency.FixedThreadCoroutineDispatcherFactory
-import io.kotest.engine.test.scopes.withCoroutineContext
+import io.kotest.engine.test.registration.withCoroutineContext
 import io.kotest.mpp.Logger
 import kotlin.coroutines.coroutineContext
 

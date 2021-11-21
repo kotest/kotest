@@ -1,7 +1,6 @@
 package io.kotest.core.spec.style.scopes
 
 import io.kotest.core.spec.KotestDsl
-import io.kotest.core.test.NestedTest
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestScope
 import kotlin.coroutines.CoroutineContext
@@ -11,10 +10,6 @@ import kotlin.coroutines.CoroutineContext
  */
 @KotestDsl
 class WordSpecTerminalScope(val testScope: TestScope) : TestScope {
-
-   override suspend fun registerTestCase(nested: NestedTest) {
-      testScope.registerTestCase(nested)
-   }
 
    override val coroutineContext: CoroutineContext = testScope.coroutineContext
    override val testCase: TestCase = testScope.testCase

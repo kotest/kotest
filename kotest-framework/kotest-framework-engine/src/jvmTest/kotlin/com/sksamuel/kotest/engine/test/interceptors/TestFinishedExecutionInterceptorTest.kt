@@ -9,10 +9,9 @@ import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestType
 import io.kotest.engine.test.AbstractTestCaseExecutionListener
-import io.kotest.engine.test.scopes.TerminalTestScope
+import io.kotest.engine.test.registration.TerminalTestScope
 import io.kotest.engine.test.interceptors.TestFinishedInterceptor
 import io.kotest.matchers.shouldBe
-import kotlin.time.TimeSource
 
 class TestFinishedExecutionInterceptorTest : FunSpec({
 
@@ -48,15 +47,15 @@ class TestFinishedExecutionInterceptorTest : FunSpec({
       )
       val context = TerminalTestScope(tc, coroutineContext)
       var ignored = false
-      var r: String? = null
+      var reason: String? = null
       val listener = object : AbstractTestCaseExecutionListener() {
-         override suspend fun testIgnored(testCase: TestCase, reason: String?) {
+         override suspend fun testIgnored(testCase: TestCase, result: TestResult) {
             ignored = true
-            r = reason
+            reason = result.reasonOrNull
          }
       }
       TestFinishedInterceptor(listener).intercept(tc, context) { _, _ -> TestResult.Ignored("wobble") }
       ignored shouldBe true
-      r shouldBe "wobble"
+      reason shouldBe "wobble"
    }
 })

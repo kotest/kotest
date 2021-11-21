@@ -5,10 +5,10 @@ import io.kotest.common.flatMap
 import io.kotest.core.concurrency.CoroutineDispatcherFactory
 import io.kotest.core.config.Configuration
 import io.kotest.core.descriptors.Descriptor
+import io.kotest.core.spec.Registration
 import io.kotest.core.spec.Spec
 import io.kotest.core.test.NestedTest
 import io.kotest.core.test.TestCase
-import io.kotest.core.test.TestScope
 import io.kotest.core.test.TestResult
 import io.kotest.engine.listener.TestEngineListener
 import io.kotest.engine.spec.Materializer
@@ -16,13 +16,11 @@ import io.kotest.engine.spec.SpecExtensions
 import io.kotest.engine.spec.SpecRunner
 import io.kotest.engine.test.TestCaseExecutionListener
 import io.kotest.engine.test.TestCaseExecutor
-import io.kotest.engine.test.scopes.DuplicateNameHandlingTestScope
 import io.kotest.engine.test.scheduler.TestScheduler
 import io.kotest.mpp.log
 import kotlinx.coroutines.coroutineScope
 import java.util.PriorityQueue
 import java.util.concurrent.atomic.AtomicInteger
-import kotlin.coroutines.CoroutineContext
 
 @ExperimentalKotest
 internal class InstancePerLeafSpecRunner(
@@ -100,15 +98,13 @@ internal class InstancePerLeafSpecRunner(
 
    private suspend fun run(test: TestCase, target: TestCase) {
       coroutineScope {
-         val context = object : TestScope {
+
+         val registration = object : Registration {
 
             var open = true
 
-            override val testCase: TestCase = test
-            override val coroutineContext: CoroutineContext = this@coroutineScope.coroutineContext
-            override suspend fun registerTestCase(nested: NestedTest) {
-
-               val t = Materializer(configuration).materialize(nested, testCase)
+            override suspend fun runNestedTestCase(nested: NestedTest): TestResult? {
+               val t = Materializer(configuration).materialize(nested, test)
                // if this test is our target then we definitely run it
                // or if the test is on the path to our target we must run it
                if (t.descriptor.isOnPath(target.descriptor)) {
@@ -127,10 +123,16 @@ internal class InstancePerLeafSpecRunner(
                      }
                   }
                }
+               return null
             }
          }
 
-         val context2 = DuplicateNameHandlingTestScope(configuration.duplicateTestNameMode, context)
+//         val context = object : TestScope {
+//            override val testCase: TestCase = test
+//            override val coroutineContext: CoroutineContext = this@coroutineScope.coroutineContext
+//         }
+
+         //val context2 = DuplicateNameHandlingTestScope(configuration.duplicateTestNameMode, context)
 
          val testExecutor = TestCaseExecutor(
             object : TestCaseExecutionListener {
@@ -140,9 +142,9 @@ internal class InstancePerLeafSpecRunner(
                   }
                }
 
-               override suspend fun testIgnored(testCase: TestCase, reason: String?) {
+               override suspend fun testIgnored(testCase: TestCase, result: TestResult) {
                   if (ignored.add(testCase.descriptor))
-                     listener.testIgnored(testCase, reason)
+                     listener.testIgnored(testCase, result.reasonOrNull)
                }
 
                override suspend fun testFinished(testCase: TestCase, result: TestResult) {
@@ -155,8 +157,9 @@ internal class InstancePerLeafSpecRunner(
             configuration,
          )
 
-         val result = testExecutor.execute(test, context2)
+         val result = testExecutor.execute(test)
          results[test] = result
+         result
       }
    }
 }

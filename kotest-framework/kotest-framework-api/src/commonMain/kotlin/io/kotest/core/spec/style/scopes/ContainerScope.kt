@@ -13,6 +13,7 @@ import io.kotest.core.spec.BeforeContainer
 import io.kotest.core.spec.BeforeEach
 import io.kotest.core.spec.BeforeTest
 import io.kotest.core.spec.KotestDsl
+import io.kotest.core.spec.registration
 import io.kotest.core.test.NestedTest
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
@@ -37,7 +38,7 @@ interface ContainerScope : TestScope {
       type: TestType,
       test: suspend TestScope.() -> Unit,
    ) {
-      registerTestCase(
+      coroutineContext.registration.runNestedTestCase(
          NestedTest(
             name = name,
             disabled = disabled,
@@ -54,36 +55,14 @@ interface ContainerScope : TestScope {
       disabled: Boolean,
       config: UnresolvedTestConfig?,
       test: suspend TestScope.() -> Unit,
-   ) {
-      registerTestCase(
-         NestedTest(
-            name = name,
-            disabled = disabled,
-            config = config,
-            test = test,
-            type = TestType.Container,
-            source = sourceRef(),
-         )
-      )
-   }
+   ) = registerTest(name, disabled, config, TestType.Test, test)
 
    suspend fun registerTest(
       name: TestName,
       disabled: Boolean,
       config: UnresolvedTestConfig?,
       test: suspend TestScope.() -> Unit,
-   ) {
-      registerTestCase(
-         NestedTest(
-            name = name,
-            disabled = disabled,
-            config = config,
-            test = test,
-            type = TestType.Test,
-            source = sourceRef(),
-         )
-      )
-   }
+   ) = registerTest(name, disabled, config, TestType.Container, test)
 
    private fun addListener(listener: TestListener) {
       testCase.spec.listener(listener)
@@ -202,8 +181,7 @@ interface ContainerScope : TestScope {
    }
 }
 
-open class AbstractContainerScope(private val testScope: TestScope) : ContainerScope {
+open class AbstractContainerScope(testScope: TestScope) : ContainerScope {
    override val testCase: TestCase = testScope.testCase
    override val coroutineContext: CoroutineContext = testScope.coroutineContext
-   override suspend fun registerTestCase(nested: NestedTest) = testScope.registerTestCase(nested)
 }

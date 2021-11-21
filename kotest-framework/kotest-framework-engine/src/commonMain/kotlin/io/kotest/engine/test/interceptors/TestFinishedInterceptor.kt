@@ -22,7 +22,7 @@ internal class TestFinishedInterceptor(
       logger.log { Pair(testCase.name.testName, "Test result $result") }
 
       when (result) {
-         is TestResult.Ignored -> listener.testIgnored(testCase, result.reason)
+         is TestResult.Ignored -> listener.testIgnored(testCase, result)
          else -> listener.testFinished(testCase, result)
       }
 

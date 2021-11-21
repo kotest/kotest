@@ -10,7 +10,7 @@ import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestType
 import io.kotest.engine.test.interceptors.InvocationTimeoutInterceptor
-import io.kotest.engine.test.scopes.NoopTestScope
+import io.kotest.engine.test.registration.NoopTestScope
 import kotlinx.coroutines.delay
 import kotlin.time.Duration.Companion.milliseconds
 

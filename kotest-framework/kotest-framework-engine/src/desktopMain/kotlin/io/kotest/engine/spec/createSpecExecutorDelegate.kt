@@ -8,8 +8,6 @@ import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.engine.listener.TestEngineListener
 import io.kotest.engine.test.TestCaseExecutor
-import io.kotest.engine.test.scopes.DuplicateNameHandlingTestScope
-import io.kotest.engine.test.scopes.InOrderTestScope
 import io.kotest.engine.test.listener.TestCaseExecutionListenerToTestEngineListenerAdapter
 import io.kotest.mpp.log
 import kotlin.coroutines.coroutineContext
@@ -40,22 +38,22 @@ internal class DefaultSpecExecutorDelegate(
       materializer.materialize(spec)
          .forEach { testCase ->
             log { "DefaultSpecExecutorDelegate: Executing testCase $testCase" }
-            val context = DuplicateNameHandlingTestScope(
-               configuration.duplicateTestNameMode,
-               InOrderTestScope(
-                  testCase,
-                  coroutineContext,
-                  configuration.duplicateTestNameMode,
-                  listener,
-                  coroutineDispatcherFactory,
-                  configuration
-               )
-            )
+//            val context = DuplicateNameHandlingTestScope(
+//               configuration.duplicateTestNameMode,
+//               InOrderTestScope(
+//                  testCase,
+//                  coroutineContext,
+//                  configuration.duplicateTestNameMode,
+//                  listener,
+//                  coroutineDispatcherFactory,
+//                  configuration
+//               )
+//            )
             TestCaseExecutor(
                TestCaseExecutionListenerToTestEngineListenerAdapter(listener),
                coroutineDispatcherFactory,
                configuration
-            ).execute(testCase, context)
+            ).execute(testCase)
          }
       return emptyMap()
    }

@@ -20,4 +20,4 @@ val TestScope.projectContext: ProjectContext
 
 val CoroutineContext.projectContext: ProjectContext
    get() = get(ProjectContextElement)?.projectContext
-      ?: error("projectContext is not injected into this CoroutineContext")
+      ?: error("ProjectContext is not injected into this CoroutineContext")

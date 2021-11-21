@@ -8,7 +8,7 @@ import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestType
 import io.kotest.engine.test.interceptors.ExceptionCapturingInterceptor
-import io.kotest.engine.test.scopes.TerminalTestScope
+import io.kotest.engine.test.registration.TerminalTestScope
 import io.kotest.matchers.booleans.shouldBeTrue
 import kotlin.time.TimeSource
 

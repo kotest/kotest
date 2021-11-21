@@ -1,6 +1,5 @@
-package io.kotest.engine.test.scopes
+package io.kotest.engine.test.registration
 
-import io.kotest.core.test.NestedTest
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestScope
 import kotlin.coroutines.CoroutineContext
@@ -11,6 +10,4 @@ import kotlin.coroutines.CoroutineContext
 class NoopTestScope(
    override val testCase: TestCase,
    override val coroutineContext: CoroutineContext
-) : TestScope {
-   override suspend fun registerTestCase(nested: NestedTest) {}
-}
+) : TestScope

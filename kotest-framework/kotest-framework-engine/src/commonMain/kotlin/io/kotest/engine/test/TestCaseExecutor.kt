@@ -1,6 +1,5 @@
 package io.kotest.engine.test
 
-import io.kotest.common.ExperimentalKotest
 import io.kotest.common.Platform
 import io.kotest.common.platform
 import io.kotest.core.concurrency.CoroutineDispatcherFactory
@@ -25,7 +24,9 @@ import io.kotest.engine.test.interceptors.TimeoutInterceptor
 import io.kotest.engine.test.interceptors.blockedThreadTimeoutInterceptor
 import io.kotest.engine.test.interceptors.coroutineDispatcherFactoryInterceptor
 import io.kotest.engine.test.interceptors.coroutineErrorCollectorInterceptor
+import io.kotest.engine.test.registration.DefaultTestScope
 import io.kotest.mpp.Logger
+import kotlin.coroutines.coroutineContext
 import kotlin.time.TimeSource
 
 /**
@@ -34,7 +35,6 @@ import kotlin.time.TimeSource
  * Uses a [TestCaseExecutionListener] to notify callers of events in the test lifecycle.
  *
  */
-@OptIn(ExperimentalKotest::class)
 class TestCaseExecutor(
    private val listener: TestCaseExecutionListener,
    private val defaultCoroutineDispatcherFactory: CoroutineDispatcherFactory = NoopCoroutineDispatcherFactory,
@@ -43,7 +43,7 @@ class TestCaseExecutor(
 
    private val logger = Logger(TestCaseExecutor::class)
 
-   suspend fun execute(testCase: TestCase, testScope: TestScope): TestResult {
+   suspend fun execute(testCase: TestCase): TestResult {
       val timeMark = TimeSource.Monotonic.markNow()
 
       val interceptors = listOfNotNull(
@@ -74,6 +74,6 @@ class TestCaseExecutor(
 
       return interceptors.foldRight(innerExecute) { ext, fn ->
          { tc, sc -> ext.intercept(tc, sc, fn) }
-      }.invoke(testCase, testScope)
+      }.invoke(testCase, DefaultTestScope(testCase, coroutineContext))
    }
 }

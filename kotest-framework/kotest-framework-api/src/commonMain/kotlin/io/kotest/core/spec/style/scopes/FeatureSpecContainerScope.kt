@@ -2,7 +2,6 @@ package io.kotest.core.spec.style.scopes
 
 import io.kotest.core.descriptors.append
 import io.kotest.core.names.TestName
-import io.kotest.core.test.NestedTest
 import io.kotest.core.test.TestScope
 
 @Deprecated("renamed to FeatureSpecContainerScope. Deprecated since 4.5")
@@ -26,8 +25,6 @@ typealias FeatureSpecContainerContext = FeatureSpecContainerScope
  *
  */
 class FeatureSpecContainerScope(val testScope: TestScope) : AbstractContainerScope(testScope) {
-
-   override suspend fun registerTestCase(nested: NestedTest) = testScope.registerTestCase(nested)
 
    suspend fun feature(name: String, test: suspend FeatureSpecContainerScope.() -> Unit) {
       registerContainer(

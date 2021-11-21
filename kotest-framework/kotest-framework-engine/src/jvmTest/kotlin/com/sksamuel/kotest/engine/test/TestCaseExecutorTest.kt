@@ -3,13 +3,12 @@ package com.sksamuel.kotest.engine.test
 import io.kotest.common.ExperimentalKotest
 import io.kotest.core.config.Configuration
 import io.kotest.core.spec.style.FunSpec
-import io.kotest.core.test.NestedTest
 import io.kotest.core.test.TestCase
-import io.kotest.core.test.TestScope
 import io.kotest.core.test.TestResult
 import io.kotest.engine.concurrency.NoopCoroutineDispatcherFactory
 import io.kotest.engine.extensions.ExtensionException
 import io.kotest.engine.spec.Materializer
+import io.kotest.engine.test.NoopTestCaseExecutionListener
 import io.kotest.engine.test.TestCaseExecutionListener
 import io.kotest.engine.test.TestCaseExecutor
 import io.kotest.engine.test.interceptors.TestTimeoutException
@@ -17,20 +16,12 @@ import io.kotest.matchers.booleans.shouldBeTrue
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.types.shouldBeInstanceOf
 import kotlinx.coroutines.DelicateCoroutinesApi
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
-import kotlin.coroutines.CoroutineContext
 import kotlin.time.Duration.Companion.milliseconds
 
 @ExperimentalKotest
 @DelicateCoroutinesApi
 class TestCaseExecutorTest : FunSpec({
-
-   fun context(testCase: TestCase) = object : TestScope {
-      override val testCase: TestCase = testCase
-      override suspend fun registerTestCase(nested: NestedTest) {}
-      override val coroutineContext: CoroutineContext = GlobalScope.coroutineContext
-   }
 
    test("test executor happy path") {
       var started = false
@@ -40,7 +31,7 @@ class TestCaseExecutorTest : FunSpec({
             started = true
          }
 
-         override suspend fun testIgnored(testCase: TestCase, reason: String?) {}
+         override suspend fun testIgnored(testCase: TestCase, result: TestResult) {}
          override suspend fun testFinished(testCase: TestCase, result: TestResult) {
             finished = true
             result.isSuccess shouldBe true
@@ -48,7 +39,7 @@ class TestCaseExecutorTest : FunSpec({
       }
       val executor = TestCaseExecutor(listener, NoopCoroutineDispatcherFactory, Configuration())
       val testCase = Materializer(Configuration()).materialize(Tests()).first { it.name.testName == "a" }
-      executor.execute(testCase, context(testCase)).isSuccess shouldBe true
+      executor.execute(testCase).isSuccess shouldBe true
       started shouldBe true
       finished shouldBe true
    }
@@ -61,7 +52,7 @@ class TestCaseExecutorTest : FunSpec({
             started = true
          }
 
-         override suspend fun testIgnored(testCase: TestCase, reason: String?) {}
+         override suspend fun testIgnored(testCase: TestCase, result: TestResult) {}
          override suspend fun testFinished(testCase: TestCase, result: TestResult) {
             finished = true
             result.isError shouldBe true
@@ -69,7 +60,7 @@ class TestCaseExecutorTest : FunSpec({
       }
       val executor = TestCaseExecutor(listener, NoopCoroutineDispatcherFactory, Configuration())
       val testCase = Materializer(Configuration()).materialize(Tests()).first { it.name.testName == "b" }
-      val result = executor.execute(testCase, context(testCase))
+      val result = executor.execute(testCase)
       result.isError shouldBe true
       result.errorOrNull shouldBe TestTimeoutException(100.milliseconds, "b")
       started shouldBe true
@@ -77,26 +68,18 @@ class TestCaseExecutorTest : FunSpec({
    }
 
    test("TestCaseExecutor should invoke before test") {
-      val executor = TestCaseExecutor(object : TestCaseExecutionListener {
-         override suspend fun testStarted(testCase: TestCase) {}
-         override suspend fun testIgnored(testCase: TestCase, reason: String?) {}
-         override suspend fun testFinished(testCase: TestCase, result: TestResult) {}
-      }, NoopCoroutineDispatcherFactory, Configuration())
+      val executor = TestCaseExecutor(NoopTestCaseExecutionListener, NoopCoroutineDispatcherFactory, Configuration())
       val spec = BeforeTest()
       val testCase = Materializer(Configuration()).materialize(spec).shuffled().first()
-      executor.execute(testCase, context(testCase))
+      executor.execute(testCase)
       spec.before.shouldBeTrue()
    }
 
    test("TestCaseExecutor should invoke after test") {
-      val executor = TestCaseExecutor(object : TestCaseExecutionListener {
-         override suspend fun testStarted(testCase: TestCase) {}
-         override suspend fun testIgnored(testCase: TestCase, reason: String?) {}
-         override suspend fun testFinished(testCase: TestCase, result: TestResult) {}
-      }, NoopCoroutineDispatcherFactory, Configuration())
+      val executor = TestCaseExecutor(NoopTestCaseExecutionListener, NoopCoroutineDispatcherFactory, Configuration())
       val spec = AfterTest()
       val testCase = Materializer(Configuration()).materialize(spec).shuffled().first()
-      executor.execute(testCase, context(testCase))
+      executor.execute(testCase)
       spec.after.shouldBeTrue()
    }
 
@@ -108,13 +91,13 @@ class TestCaseExecutorTest : FunSpec({
             started = true
          }
 
-         override suspend fun testIgnored(testCase: TestCase, reason: String?) {}
+         override suspend fun testIgnored(testCase: TestCase, result: TestResult) {}
          override suspend fun testFinished(testCase: TestCase, result: TestResult) {
             finished = true
          }
       }, NoopCoroutineDispatcherFactory, Configuration())
       val testCase = Materializer(Configuration()).materialize(BeforeTestWithException()).shuffled().first()
-      val result = executor.execute(testCase, context(testCase))
+      val result = executor.execute(testCase)
       result.isError shouldBe true
       result.errorOrNull.shouldBeInstanceOf<ExtensionException.BeforeTestException>()
       started shouldBe true
@@ -129,13 +112,13 @@ class TestCaseExecutorTest : FunSpec({
             started = true
          }
 
-         override suspend fun testIgnored(testCase: TestCase, reason: String?) {}
+         override suspend fun testIgnored(testCase: TestCase, result: TestResult) {}
          override suspend fun testFinished(testCase: TestCase, result: TestResult) {
             finished = true
          }
       }, NoopCoroutineDispatcherFactory, Configuration())
       val testCase = Materializer(Configuration()).materialize(AfterTestWithException()).shuffled().first()
-      val result = executor.execute(testCase, context(testCase))
+      val result = executor.execute(testCase)
       result.isError shouldBe true
       result.errorOrNull.shouldBeInstanceOf<ExtensionException.AfterTestException>()
       started shouldBe true

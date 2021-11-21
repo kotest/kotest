@@ -17,7 +17,6 @@ import io.kotest.engine.spec.SpecRunner
 import io.kotest.engine.test.TestCaseExecutionListener
 import io.kotest.engine.test.TestCaseExecutor
 import io.kotest.engine.test.scheduler.TestScheduler
-import io.kotest.engine.test.scopes.DuplicateNameHandlingTestScope
 import io.kotest.mpp.log
 import kotlinx.coroutines.coroutineScope
 import java.util.concurrent.ConcurrentHashMap
@@ -123,33 +122,25 @@ internal class InstancePerTestSpecRunner(
    private suspend fun run(test: TestCase, target: TestCase) {
       val isTarget = test.descriptor == target.descriptor
       coroutineScope {
-         val context = object : TestScope {
-
-            override val testCase: TestCase = test
-            override val coroutineContext: CoroutineContext = this@coroutineScope.coroutineContext
-            override suspend fun registerTestCase(nested: NestedTest) {
-
-               val t = Materializer(configuration).materialize(nested, testCase)
-
-               // if we are currently executing the target, then any registered tests are new, and we
-               // should begin execution of them in fresh specs
-               // otherwise if the test is on the path we can continue in the same spec
-               if (isTarget) {
-                  executeInCleanSpec(t).getOrThrow()
-               } else if (t.descriptor.isOnPath(target.descriptor)) {
-                  run(t, target)
-               }
-            }
-         }
-         val context2 = DuplicateNameHandlingTestScope(configuration.duplicateTestNameMode, context)
+//         val context2 = DuplicateNameHandlingTestScope(configuration.duplicateTestNameMode, context)
+//         val t = Materializer(configuration).materialize(nested, testCase)
+//
+//          if we are currently executing the target, then any registered tests are new, and we
+//          should begin execution of them in fresh specs
+//          otherwise if the test is on the path we can continue in the same spec
+//         if (isTarget) {
+//            executeInCleanSpec(t).getOrThrow()
+//         } else if (t.descriptor.isOnPath(target.descriptor)) {
+//            run(t, target)
+//         }
          val testExecutor = TestCaseExecutor(
             object : TestCaseExecutionListener {
                override suspend fun testStarted(testCase: TestCase) {
                   if (isTarget) listener.testStarted(testCase)
                }
 
-               override suspend fun testIgnored(testCase: TestCase, reason: String?) {
-                  if (isTarget) listener.testIgnored(testCase, reason)
+               override suspend fun testIgnored(testCase: TestCase, result: TestResult) {
+                  if (isTarget) listener.testIgnored(testCase, result.reasonOrNull)
                }
 
                override suspend fun testFinished(testCase: TestCase, result: TestResult) {
@@ -160,7 +151,7 @@ internal class InstancePerTestSpecRunner(
             configuration
          )
 
-         val result = testExecutor.execute(test, context2)
+         val result = testExecutor.execute(test)
          results[test] = result
       }
    }
