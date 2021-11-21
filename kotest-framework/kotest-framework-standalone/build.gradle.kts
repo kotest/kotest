@@ -7,39 +7,46 @@ buildscript {
 
 plugins {
    java
+   `java-library`
+   kotlin("multiplatform")
    application
-   id("kotlin")
-   id("java-library")
    id("com.github.johnrengelman.shadow")
 }
 
 apply(plugin = "com.github.johnrengelman.shadow")
 
+kotlin {
+   targets {
+      jvm()
+   }
+}
+
 application {
-   mainClassName = "io.kotest.engine.launcher.MainKt"
+   mainClass.set("io.kotest.engine.launcher.MainKt")
 }
 
 tasks {
+   jar {
+      archiveClassifier.set("default")
+   }
    shadowJar {
+      archiveClassifier.set(null as String?)
+      archiveBaseName.set("kotest-framework-standalone-jvm")
+      exclude("**/module-info.class")
       mergeServiceFiles()
       manifest {
          attributes(Pair("Main-Class", "io.kotest.engine.launcher.MainKt"))
       }
+   }
+   getByName("jvmJar") {
+      finalizedBy(getByName("shadowJar"))
    }
 }
 
 dependencies {
    implementation(kotlin("stdlib"))
    implementation(kotlin("reflect"))
-   api(project(Projects.Assertions.Shared))
-   implementation(project(Projects.Common))
    implementation(project(Projects.Framework.engine))
-   api(project(Projects.Framework.api))
-
-//   api(Libs.Kotlin.kotlinScriptRuntime)
-//   implementation(Libs.Kotlin.kotlinScriptUtil)
-//   implementation(Libs.Kotlin.kotlinScriptJvm)
-   implementation(Libs.Coroutines.test)
 }
 
 apply(from = "../../publish-mpp.gradle.kts")
