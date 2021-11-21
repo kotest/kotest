@@ -56,14 +56,14 @@ interface ContainerScope : TestScope {
       disabled: Boolean,
       config: UnresolvedTestConfig?,
       test: suspend TestScope.() -> Unit,
-   ) = registerTest(name, disabled, config, TestType.Test, test)
+   ) = registerTest(name, disabled, config, TestType.Container, test)
 
    suspend fun registerTest(
       name: TestName,
       disabled: Boolean,
       config: UnresolvedTestConfig?,
       test: suspend TestScope.() -> Unit,
-   ) = registerTest(name, disabled, config, TestType.Container, test)
+   ) = registerTest(name, disabled, config, TestType.Test, test)
 
    private fun addListener(listener: TestListener) {
       testCase.spec.listener(listener)

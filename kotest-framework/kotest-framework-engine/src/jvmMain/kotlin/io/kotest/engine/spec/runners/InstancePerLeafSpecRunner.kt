@@ -16,6 +16,7 @@ import io.kotest.engine.spec.SpecExtensions
 import io.kotest.engine.spec.SpecRunner
 import io.kotest.engine.test.TestCaseExecutionListener
 import io.kotest.engine.test.TestCaseExecutor
+import io.kotest.engine.test.registration.DuplicateNameHandlingRegistration
 import io.kotest.engine.test.scheduler.TestScheduler
 import io.kotest.mpp.log
 import kotlinx.coroutines.coroutineScope
@@ -127,13 +128,6 @@ internal class InstancePerLeafSpecRunner(
             }
          }
 
-//         val context = object : TestScope {
-//            override val testCase: TestCase = test
-//            override val coroutineContext: CoroutineContext = this@coroutineScope.coroutineContext
-//         }
-
-         //val context2 = DuplicateNameHandlingTestScope(configuration.duplicateTestNameMode, context)
-
          val testExecutor = TestCaseExecutor(
             object : TestCaseExecutionListener {
                override suspend fun testStarted(testCase: TestCase) {
@@ -155,6 +149,10 @@ internal class InstancePerLeafSpecRunner(
             },
             defaultCoroutineDispatcherFactory,
             configuration,
+            DuplicateNameHandlingRegistration(
+               test.spec.duplicateTestNameMode ?: configuration.duplicateTestNameMode,
+               registration
+            )
          )
 
          val result = testExecutor.execute(test)

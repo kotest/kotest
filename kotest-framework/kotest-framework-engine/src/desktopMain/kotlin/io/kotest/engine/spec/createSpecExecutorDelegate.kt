@@ -9,6 +9,9 @@ import io.kotest.core.test.TestResult
 import io.kotest.engine.listener.TestEngineListener
 import io.kotest.engine.test.TestCaseExecutor
 import io.kotest.engine.test.listener.TestCaseExecutionListenerToTestEngineListenerAdapter
+import io.kotest.engine.test.registration.DuplicateNameHandlingRegistration
+import io.kotest.engine.test.registration.FailFastRegistration
+import io.kotest.engine.test.registration.InOrderRegistration
 import io.kotest.mpp.log
 
 @ExperimentalKotest
@@ -25,12 +28,13 @@ internal actual fun createSpecExecutorDelegate(
  */
 @ExperimentalKotest
 internal class DefaultSpecExecutorDelegate(
-   private val listener: TestEngineListener,
+   listener: TestEngineListener,
    private val coroutineDispatcherFactory: CoroutineDispatcherFactory,
    private val configuration: Configuration
 ) : SpecExecutorDelegate {
 
    private val materializer = Materializer(configuration)
+   private val testCaseListener = TestCaseExecutionListenerToTestEngineListenerAdapter(listener)
 
    override suspend fun execute(spec: Spec): Map<TestCase, TestResult> {
       log { "DefaultSpecExecutorDelegate: Executing spec $spec" }
@@ -38,9 +42,17 @@ internal class DefaultSpecExecutorDelegate(
          .forEach { testCase ->
             log { "DefaultSpecExecutorDelegate: Executing testCase $testCase" }
             TestCaseExecutor(
-               TestCaseExecutionListenerToTestEngineListenerAdapter(listener),
+               testCaseListener,
                coroutineDispatcherFactory,
-               configuration
+               configuration,
+               FailFastRegistration(
+                  testCaseListener,
+                  configuration,
+                  DuplicateNameHandlingRegistration(
+                     testCase.spec.duplicateTestNameMode ?: configuration.duplicateTestNameMode,
+                     InOrderRegistration(testCaseListener, coroutineDispatcherFactory, configuration)
+                  ),
+               )
             ).execute(testCase)
          }
       return emptyMap()
