@@ -11,8 +11,8 @@ class TestCaseSourceRefTest : FunSpec() {
    init {
       test("source ref should include file name and line number") {
          val tests = Materializer(Configuration()).materialize(MySpec())
-         tests.first().source shouldBe SourceRef.ClassLineSource("com.sksamuel.kotest.engine.test.MySpec", 28)
-         tests[1].source shouldBe SourceRef.ClassLineSource("com.sksamuel.kotest.engine.test.MySpec", 31)
+         tests.first().source shouldBe SourceRef.ClassSource("com.sksamuel.kotest.engine.test.MySpec", 28)
+         tests[1].source shouldBe SourceRef.ClassSource("com.sksamuel.kotest.engine.test.MySpec", 31)
       }
 
       test("source ref should be performant").config(timeout = 30.seconds) {

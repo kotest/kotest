@@ -14,10 +14,8 @@ object Locations {
    private fun classHint(fqn: String, lineNumber: Int) = "kotest:class://${fqn}:${lineNumber}"
 
    fun location(sourceRef: SourceRef): String? = when (sourceRef) {
-      is SourceRef.FileLineSource -> fileHint(sourceRef.fileName, sourceRef.lineNumber)
-      is SourceRef.FileSource -> fileHint(sourceRef.fileName, 1)
-      is SourceRef.ClassLineSource -> classHint(sourceRef.fqn, sourceRef.lineNumber)
-      is SourceRef.ClassSource -> classHint(sourceRef.fqn, 1)
+      is SourceRef.FileSource -> fileHint(sourceRef.fileName, sourceRef.lineNumber ?: 1)
+      is SourceRef.ClassSource -> classHint(sourceRef.fqn, sourceRef.lineNumber ?: 1)
       SourceRef.None -> null
    }
 }

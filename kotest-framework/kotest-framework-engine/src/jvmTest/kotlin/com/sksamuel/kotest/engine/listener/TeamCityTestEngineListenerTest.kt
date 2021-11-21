@@ -17,7 +17,6 @@ import io.kotest.engine.listener.TeamCityTestEngineListener
 import io.kotest.extensions.system.captureStandardOut
 import io.kotest.matchers.shouldBe
 import java.io.FileNotFoundException
-import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
 
 class TeamCityTestEngineListenerTest : FunSpec() {
@@ -29,7 +28,7 @@ class TeamCityTestEngineListenerTest : FunSpec() {
          TestName("a"),
          this@TeamCityTestEngineListenerTest,
          { },
-         SourceRef.ClassLineSource("foo.bar.Test", 12),
+         SourceRef.ClassSource("foo.bar.Test", 12),
          TestType.Container,
          ResolvedTestConfig.default,
          null,
@@ -40,7 +39,7 @@ class TeamCityTestEngineListenerTest : FunSpec() {
          parent = a,
          name = TestName("b"),
          descriptor = a.descriptor.append("b"),
-         source = SourceRef.ClassLineSource("foo.bar.Test", 17),
+         source = SourceRef.ClassSource("foo.bar.Test", 17),
       )
 
       val c = b.copy(
@@ -48,7 +47,7 @@ class TeamCityTestEngineListenerTest : FunSpec() {
          name = TestName("c"),
          descriptor = b.descriptor.append("c"),
          type = TestType.Test,
-         source = SourceRef.ClassLineSource("foo.bar.Test", 33),
+         source = SourceRef.ClassSource("foo.bar.Test", 33),
       )
 
       test("should support nested tests") {

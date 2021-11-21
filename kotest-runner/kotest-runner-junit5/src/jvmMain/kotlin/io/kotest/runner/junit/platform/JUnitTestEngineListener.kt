@@ -162,6 +162,7 @@ class JUnitTestEngineListener(
       if (existing != null) return existing
 
       val descriptor = createDescriptorForSpec(kclass.toDescriptor(), formatter.format(kclass), root)
+      logger.log { Pair(kclass.bestName(), "Spec will use source: ${descriptor.source}")}
       descriptors[kclass.toDescriptor()] = descriptor
       return descriptor
    }
@@ -179,14 +180,14 @@ class JUnitTestEngineListener(
          // to hold the error, mark that test as failed, and then fail the spec as well
          t != null && !started -> {
             val descriptor = markSpecStarted(kclass)
-            addPlaceholderTest(descriptor, t)
+            addPlaceholderTest(descriptor, t, kclass)
             logger.log { Pair(kclass.bestName(), "execution failed: $descriptor $t") }
             listener.executionFinished(descriptor, TestExecutionResult.failed(t))
          }
          // if we had an error in the spec, and we had no tests, we'll add the dummy and return
          t != null && rootTests.isEmpty() -> {
             val descriptor = descriptors[kclass.toDescriptor()]!!
-            addPlaceholderTest(descriptor, t)
+            addPlaceholderTest(descriptor, t, kclass)
             logger.log { Pair(kclass.bestName(), "execution failed: $descriptor $t") }
             listener.executionFinished(descriptor, TestExecutionResult.failed(t))
          }
@@ -202,7 +203,7 @@ class JUnitTestEngineListener(
             val result = when (t) {
                null -> TestExecutionResult.successful()
                else -> {
-                  addPlaceholderTest(descriptor, t)
+                  addPlaceholderTest(descriptor, t, kclass)
                   TestExecutionResult.successful()
                }
             }
@@ -223,13 +224,13 @@ class JUnitTestEngineListener(
       startedTests.clear()
    }
 
-   private fun addPlaceholderTest(parent: TestDescriptor, t: Throwable) {
+   private fun addPlaceholderTest(parent: TestDescriptor, t: Throwable, kclass: KClass<*>) {
       val (name, cause) = ExtensionExceptionExtractor.resolve(t)
       val descriptor = createTestDescriptor(
          parent.uniqueId.append(Segment.Test.value, name),
          name,
          TestDescriptor.Type.TEST,
-         null,
+         ClassSource.from(kclass.java),
          false
       )
       parent.addChild(descriptor)
@@ -317,7 +318,6 @@ class JUnitTestEngineListener(
       }
 
       val id = parent.uniqueId.append(testCase.descriptor)
-      val source = ClassSource.from(testCase.spec::class.java)
 
       // we dynamically work out the type by looking to see if this test had any children
       val c = children[testCase.descriptor]
@@ -325,6 +325,9 @@ class JUnitTestEngineListener(
          c == null || c.isEmpty() -> TestDescriptor.Type.TEST
          else -> TestDescriptor.Type.CONTAINER
       }
+
+      val source = runCatching { testCase.source.toTestSource() }.getOrNull()
+      logger.log { Pair(testCase.name.testName, "Test will use source: $source")}
 
       return createTestDescriptor(
          id,

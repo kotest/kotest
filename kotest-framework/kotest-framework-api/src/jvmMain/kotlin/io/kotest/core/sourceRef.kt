@@ -1,7 +1,10 @@
 package io.kotest.core
 
 import io.kotest.core.internal.KotestEngineProperties
+import io.kotest.core.spec.Spec
 import io.kotest.mpp.sysprop
+import kotlin.reflect.KClass
+import kotlin.reflect.full.isSubclassOf
 
 /**
  * On the JVM we can create a stack trace to get the line number.
@@ -14,18 +17,30 @@ actual fun sourceRef(): SourceRef {
    if (stack.isEmpty()) return SourceRef.None
 
    val frame = stack.dropWhile {
-      it.className.startsWith("io.kotest") || it.className.startsWith("java.lang") || it.className.startsWith("com.sun")
+      it.className.startsWith("io.kotest") ||
+         it.className.startsWith("java.lang") ||
+         it.className.startsWith("com.sun") ||
+         it.className.startsWith("kotlin.") ||
+         it.className.startsWith("kotlinx.")
    }.firstOrNull()
 
    val fileName = frame?.fileName
-   val className = frame?.className
+
+   // preference is given to the class name but we must try to find the enclosing spec
+   val kclass = frame?.className?.let { fqn ->
+      runCatching {
+         var temp: KClass<*>? = Class.forName(fqn).kotlin
+         while (temp != null && !temp.isSubclassOf(Spec::class)) {
+            temp = temp.java.enclosingClass?.kotlin
+         }
+         temp
+      }.getOrNull()
+   }
 
    return when {
       frame == null -> SourceRef.None
-      className != null && frame.lineNumber < 0 -> SourceRef.ClassSource(className)
-      className != null -> SourceRef.ClassLineSource(className, frame.lineNumber)
-      fileName != null && frame.lineNumber < 0 -> SourceRef.FileLineSource(fileName, frame.lineNumber)
-      fileName != null -> SourceRef.None
+      kclass != null -> SourceRef.ClassSource(kclass.java.name, frame.lineNumber.takeIf { it > 0 })
+      fileName != null -> SourceRef.FileSource(fileName, frame.lineNumber.takeIf { it > 0 })
       else -> SourceRef.None
    }
 }
