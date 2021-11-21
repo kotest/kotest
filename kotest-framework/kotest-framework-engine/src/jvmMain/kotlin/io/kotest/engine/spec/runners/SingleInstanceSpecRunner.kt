@@ -12,6 +12,8 @@ import io.kotest.engine.spec.SpecExtensions
 import io.kotest.engine.spec.SpecRunner
 import io.kotest.engine.test.TestCaseExecutor
 import io.kotest.engine.test.listener.TestCaseExecutionListenerToTestEngineListenerAdapter
+import io.kotest.engine.test.registration.DuplicateNameHandlingRegistration
+import io.kotest.engine.test.registration.FailFastRegistration
 import io.kotest.engine.test.registration.InOrderRegistration
 import io.kotest.engine.test.scheduler.TestScheduler
 import io.kotest.mpp.Logger
@@ -28,21 +30,14 @@ import java.util.concurrent.ConcurrentHashMap
 internal class SingleInstanceSpecRunner(
    listener: TestEngineListener,
    scheduler: TestScheduler,
-   defaultCoroutineDispatcherFactory: CoroutineDispatcherFactory,
-   configuration: Configuration,
+   private val defaultCoroutineDispatcherFactory: CoroutineDispatcherFactory,
+   private val configuration: Configuration,
 ) : SpecRunner(listener, scheduler, configuration) {
 
    private val results = ConcurrentHashMap<TestCase, TestResult>()
    private val extensions = SpecExtensions(configuration.registry())
    private val logger = Logger(SingleInstanceSpecRunner::class)
    private val testCaseListener = TestCaseExecutionListenerToTestEngineListenerAdapter(listener)
-   private val registration = InOrderRegistration(testCaseListener, defaultCoroutineDispatcherFactory, configuration)
-   private val testExecutor = TestCaseExecutor(
-      testCaseListener,
-      defaultCoroutineDispatcherFactory,
-      configuration,
-      registration,
-   )
 
    override suspend fun execute(spec: Spec): Result<Map<TestCase, TestResult>> {
       logger.log { Pair(spec::class.bestName(), "executing spec $spec") }
@@ -68,6 +63,21 @@ internal class SingleInstanceSpecRunner(
    }
 
    private suspend fun runTest(testCase: TestCase): TestResult {
+
+      val testExecutor = TestCaseExecutor(
+         testCaseListener,
+         defaultCoroutineDispatcherFactory,
+         configuration,
+         FailFastRegistration(
+            testCaseListener,
+            configuration,
+            DuplicateNameHandlingRegistration(
+               testCase.spec.duplicateTestNameMode ?: configuration.duplicateTestNameMode,
+               InOrderRegistration(testCaseListener, defaultCoroutineDispatcherFactory, configuration)
+            )
+         ),
+      )
+
       val result = testExecutor.execute(testCase)
       results[testCase] = result
       return result

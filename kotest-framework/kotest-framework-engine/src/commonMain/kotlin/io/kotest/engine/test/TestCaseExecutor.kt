@@ -63,11 +63,11 @@ class TestCaseExecutor(
          SoftAssertInterceptor(),
          CoroutineLoggingInterceptor(configuration),
          if (platform == Platform.JVM) blockedThreadTimeoutInterceptor(configuration, timeMark) else null,
+         registration?.let { RegistrationInterceptor(it) },
          TimeoutInterceptor(timeMark),
          TestInvocationInterceptor(configuration.registry(), timeMark),
          InvocationTimeoutInterceptor,
          if (platform == Platform.JVM && testCase.config.testCoroutineDispatcher) TestCoroutineDispatcherInterceptor() else null,
-         registration?.let { RegistrationInterceptor(it) },
       )
 
       val innerExecute: suspend (TestCase, TestScope) -> TestResult = { tc, scope ->
