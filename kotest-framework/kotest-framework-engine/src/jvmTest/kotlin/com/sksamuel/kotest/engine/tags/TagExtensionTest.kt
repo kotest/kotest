@@ -2,10 +2,10 @@ package com.sksamuel.kotest.engine.tags
 
 import io.kotest.core.Tag
 import io.kotest.core.TagExpression
-import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.extensions.TagExtension
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.engine.TestEngineLauncher
+import io.kotest.engine.config.MutableConfiguration
 import io.kotest.engine.listener.CollectingTestEngineListener
 import io.kotest.matchers.shouldBe
 
@@ -17,7 +17,7 @@ class TagExtensionTest : StringSpec() {
             override fun tags(): TagExpression =
                TagExpression(setOf(TagA), setOf(TagB))
          }
-         val c = ProjectConfiguration().apply { registry().add(ext) }
+         val c = MutableConfiguration().apply { registry().add(ext) }
          val collector = CollectingTestEngineListener()
          TestEngineLauncher(collector).withClasses(TestWithTags::class).withConfiguration(c).launch()
          collector.tests.mapKeys { it.key.name.testName }.mapValues { it.value.reasonOrNull } shouldBe

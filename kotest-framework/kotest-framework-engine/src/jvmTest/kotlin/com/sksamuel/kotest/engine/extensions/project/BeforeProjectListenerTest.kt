@@ -1,10 +1,10 @@
 package com.sksamuel.kotest.engine.extensions.project
 
-import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.listeners.BeforeProjectListener
 import io.kotest.core.listeners.ProjectListener
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.engine.TestEngineLauncher
+import io.kotest.engine.config.MutableConfiguration
 import io.kotest.engine.listener.NoopTestEngineListener
 import io.kotest.matchers.shouldBe
 
@@ -14,7 +14,7 @@ class BeforeProjectListenerTest : FunSpec({
 
       var fired = false
 
-      val c = ProjectConfiguration()
+      val c = MutableConfiguration()
       c.registry().add(object : ProjectListener {
          override suspend fun beforeProject() {
             fired = true
@@ -33,7 +33,7 @@ class BeforeProjectListenerTest : FunSpec({
 
       var fired = false
 
-      val c = ProjectConfiguration()
+      val c = MutableConfiguration()
       c.registry().add(object : BeforeProjectListener {
          override suspend fun beforeProject() {
             fired = true

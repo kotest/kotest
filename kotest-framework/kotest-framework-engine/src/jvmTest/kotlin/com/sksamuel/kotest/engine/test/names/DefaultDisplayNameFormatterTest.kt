@@ -48,7 +48,7 @@ class DefaultDisplayNameFormatterTest : FunSpec() {
       }
 
       test("tags should be appended from config when configuration is set") {
-         val c = ProjectConfiguration()
+         val c = MutableConfiguration()
          c.testNameAppendTags = true
 
          val tc = TestCase(

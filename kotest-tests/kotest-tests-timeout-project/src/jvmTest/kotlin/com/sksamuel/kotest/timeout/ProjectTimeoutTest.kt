@@ -14,7 +14,7 @@ class ProjectTimeoutTest : FunSpec({
 
    test("a project times out when the sum duration of its tests exceeds the specified project timeout") {
 
-      val c = ProjectConfiguration()
+      val c = MutableConfiguration()
       c.projectTimeout = 10.milliseconds
 
       // project timeout is set to 30

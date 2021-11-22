@@ -26,7 +26,7 @@ class IgnoredTestReasonTest : FunSpec() {
          val ext = object : EnabledExtension {
             override suspend fun isEnabled(descriptor: Descriptor): Enabled = Enabled.disabled("wibble")
          }
-         val c = ProjectConfiguration().apply { registry().add(ext) }
+         val c = MutableConfiguration().apply { registry().add(ext) }
          val collector = CollectingTestEngineListener()
          TestEngineLauncher(collector)
             .withClasses(MyFunSpec::class)

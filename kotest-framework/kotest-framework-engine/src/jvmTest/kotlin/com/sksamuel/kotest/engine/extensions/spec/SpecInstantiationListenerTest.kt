@@ -27,7 +27,7 @@ class SpecInstantiationListenerTest : FunSpec() {
             }
          }
 
-         val c = ProjectConfiguration()
+         val c = MutableConfiguration()
          c.registry().add(ext)
 
          TestEngineLauncher(NoopTestEngineListener)
@@ -52,7 +52,7 @@ class SpecInstantiationListenerTest : FunSpec() {
             }
          }
 
-         val c = ProjectConfiguration()
+         val c = MutableConfiguration()
          c.registry().add(ext)
 
          TestEngineLauncher(NoopTestEngineListener)

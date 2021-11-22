@@ -21,7 +21,7 @@ class BeforeSpecListenerTest : FunSpec() {
 
       test("BeforeSpecListener's should be triggered for a spec with tests") {
 
-         val c = ProjectConfiguration()
+         val c = MutableConfiguration()
          c.registry().add(MyBeforeSpecListener)
 
          counter.set(0)
@@ -40,7 +40,7 @@ class BeforeSpecListenerTest : FunSpec() {
 
       test("BeforeSpecExtension's should be triggered for a spec without tests") {
 
-         val c = ProjectConfiguration()
+         val c = MutableConfiguration()
          c.registry().add(MyBeforeSpecListener)
 
          counter.set(0)

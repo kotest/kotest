@@ -1,10 +1,10 @@
 package com.sksamuel.kotest.engine.extensions.spec
 
-import io.kotest.core.config.ProjectConfiguration
-import io.kotest.core.listeners.ProjectListener
 import io.kotest.core.annotation.Isolate
+import io.kotest.core.listeners.ProjectListener
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.engine.TestEngineLauncher
+import io.kotest.engine.config.MutableConfiguration
 import io.kotest.engine.extensions.ExtensionException
 import io.kotest.engine.listener.AbstractTestEngineListener
 import io.kotest.inspectors.forOne
@@ -31,7 +31,7 @@ class AfterProjectListenerExceptionTest : FunSpec({
          }
       }
 
-      val c = ProjectConfiguration()
+      val c = MutableConfiguration()
       c.registry().add(projectListener)
 
       TestEngineLauncher(listener)
@@ -66,7 +66,7 @@ class AfterProjectListenerExceptionTest : FunSpec({
          }
       }
 
-      val c = ProjectConfiguration()
+      val c = MutableConfiguration()
       c.registry().add(projectListener1)
       c.registry().add(projectListener2)
 

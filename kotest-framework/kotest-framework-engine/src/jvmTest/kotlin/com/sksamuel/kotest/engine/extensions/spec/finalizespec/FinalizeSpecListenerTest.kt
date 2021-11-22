@@ -1,6 +1,5 @@
 package com.sksamuel.kotest.engine.extensions.spec.finalizespec
 
-import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.listeners.FinalizeSpecListener
 import io.kotest.core.listeners.TestListener
 import io.kotest.core.spec.Spec
@@ -8,6 +7,7 @@ import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.engine.TestEngineLauncher
+import io.kotest.engine.config.MutableConfiguration
 import io.kotest.engine.listener.NoopTestEngineListener
 import io.kotest.matchers.shouldBe
 import java.util.concurrent.atomic.AtomicInteger
@@ -37,7 +37,7 @@ class FinalizeSpecTest : FunSpec() {
    init {
       test("finalize spec listeners should be fired") {
 
-         val c = ProjectConfiguration()
+         val c = MutableConfiguration()
          c.registry().add(FinalizeSpecTestListener1())
          c.registry().add(FinalizeSpecTestListener2())
 

@@ -1,11 +1,12 @@
 package com.sksamuel.kotest.engine.interceptors
 
 import io.kotest.common.KotestInternal
-import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.listeners.AfterProjectListener
 import io.kotest.core.listeners.BeforeProjectListener
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.engine.EngineResult
+import io.kotest.engine.config.MutableConfiguration
+import io.kotest.engine.config.toConfiguration
 import io.kotest.engine.extensions.ExtensionException
 import io.kotest.engine.interceptors.EngineContext
 import io.kotest.engine.interceptors.ProjectListenerEngineInterceptor
@@ -21,10 +22,10 @@ class ProjectListenerEngineInterceptorTest : FunSpec({
             fired = true
          }
       }
-      val c = ProjectConfiguration()
+      val c = MutableConfiguration()
       c.registry().add(listener)
       ProjectListenerEngineInterceptor.intercept(
-         EngineContext.empty.withProjectConfiguration(c)
+         EngineContext.empty.withProjectConfiguration(c.toConfiguration())
       ) { EngineResult(emptyList()) }
 
       fired shouldBe true
@@ -43,11 +44,11 @@ class ProjectListenerEngineInterceptorTest : FunSpec({
             fired2 = true
          }
       }
-      val c = ProjectConfiguration()
+      val c = MutableConfiguration()
       c.registry().add(listener1)
       c.registry().add(listener2)
       ProjectListenerEngineInterceptor.intercept(
-         EngineContext.empty.withProjectConfiguration(c)
+         EngineContext.empty.withProjectConfiguration(c.toConfiguration())
       ) { EngineResult(emptyList()) }
 
       fired1 shouldBe true
@@ -61,10 +62,10 @@ class ProjectListenerEngineInterceptorTest : FunSpec({
             fired = true
          }
       }
-      val c = ProjectConfiguration()
+      val c = MutableConfiguration()
       c.registry().add(listener)
       ProjectListenerEngineInterceptor.intercept(
-         EngineContext.empty.withProjectConfiguration(c)
+         EngineContext.empty.withProjectConfiguration(c.toConfiguration())
       ) { EngineResult(emptyList()) }
 
       fired shouldBe true
@@ -83,11 +84,11 @@ class ProjectListenerEngineInterceptorTest : FunSpec({
             fired2 = true
          }
       }
-      val c = ProjectConfiguration()
+      val c = MutableConfiguration()
       c.registry().add(listener1)
       c.registry().add(listener2)
       ProjectListenerEngineInterceptor.intercept(
-         EngineContext.empty.withProjectConfiguration(c)
+         EngineContext.empty.withProjectConfiguration(c.toConfiguration())
       ) { EngineResult(emptyList()) }
 
       fired1 shouldBe true
@@ -105,11 +106,11 @@ class ProjectListenerEngineInterceptorTest : FunSpec({
             error("zapp!")
          }
       }
-      val c = ProjectConfiguration()
+      val c = MutableConfiguration()
       c.registry().add(listener1)
       c.registry().add(listener2)
       val results = ProjectListenerEngineInterceptor.intercept(
-         EngineContext.empty.withProjectConfiguration(c)
+         EngineContext.empty.withProjectConfiguration(c.toConfiguration())
       ) { EngineResult(emptyList()) }
       results.errors.filterIsInstance<ExtensionException.BeforeProjectException>().size shouldBe 2
    }
@@ -125,11 +126,11 @@ class ProjectListenerEngineInterceptorTest : FunSpec({
             error("zapp!")
          }
       }
-      val c = ProjectConfiguration()
+      val c = MutableConfiguration()
       c.registry().add(listener1)
       c.registry().add(listener2)
       val results = ProjectListenerEngineInterceptor.intercept(
-         EngineContext.empty.withProjectConfiguration(c)
+         EngineContext.empty.withProjectConfiguration(c.toConfiguration())
       ) { EngineResult(emptyList()) }
       results.errors.filterIsInstance<ExtensionException.AfterProjectException>().size shouldBe 2
    }

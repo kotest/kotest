@@ -3,7 +3,6 @@ package com.sksamuel.kotest.engine.active
 import io.kotest.common.ExperimentalKotest
 import io.kotest.core.NamedTag
 import io.kotest.core.TagExpression
-import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.descriptors.Descriptor
 import io.kotest.core.descriptors.append
 import io.kotest.core.descriptors.toDescriptor
@@ -19,6 +18,8 @@ import io.kotest.core.test.Enabled
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestType
 import io.kotest.core.test.config.ResolvedTestConfig
+import io.kotest.engine.config.MutableConfiguration
+import io.kotest.engine.config.toConfiguration
 import io.kotest.engine.test.status.isEnabled
 import io.kotest.engine.test.status.isEnabledInternal
 import io.kotest.matchers.shouldBe
@@ -38,7 +39,7 @@ class IsEnabledTest : StringSpec() {
             config = ResolvedTestConfig.default.copy(enabled = { Enabled.disabled }),
             type = TestType.Test,
          )
-         test.isEnabledInternal(ProjectConfiguration()).isEnabled shouldBe false
+         test.isEnabledInternal(MutableConfiguration().toConfiguration()).isEnabled shouldBe false
       }
 
       "isEnabledInternal should return false if it has an excluded tag" {
@@ -50,7 +51,7 @@ class IsEnabledTest : StringSpec() {
                TagExpression(emptySet(), setOf(mytag))
          }
 
-         val c = ProjectConfiguration()
+         val c = MutableConfiguration()
          c.registry().add(ext)
 
          val test = TestCase(
@@ -63,7 +64,7 @@ class IsEnabledTest : StringSpec() {
             type = TestType.Test,
          )
 
-         test.isEnabledInternal(c).isEnabled shouldBe false
+         test.isEnabledInternal(c.toConfiguration()).isEnabled shouldBe false
       }
 
       "isEnabledInternal should return false if it is excluded by a tag expression" {
@@ -73,7 +74,7 @@ class IsEnabledTest : StringSpec() {
             override fun tags(): TagExpression = TagExpression("!mytag")
          }
 
-         val c = ProjectConfiguration()
+         val c = MutableConfiguration()
          c.registry().add(ext)
 
          val test = TestCase(
@@ -86,7 +87,7 @@ class IsEnabledTest : StringSpec() {
             type = TestType.Test,
          )
 
-         test.isEnabledInternal(c).isEnabled shouldBe false
+         test.isEnabledInternal(c.toConfiguration()).isEnabled shouldBe false
       }
 
       "isEnabledInternal should return false if it has no tags and included tags are set" {
@@ -96,7 +97,7 @@ class IsEnabledTest : StringSpec() {
             override fun tags(): TagExpression = TagExpression(setOf(yourtag), emptySet())
          }
 
-         val c = ProjectConfiguration()
+         val c = MutableConfiguration()
          c.registry().add(ext)
 
          val mytag = NamedTag("mytag")
@@ -110,7 +111,7 @@ class IsEnabledTest : StringSpec() {
             type = TestType.Test,
          )
 
-         test.isEnabledInternal(c).isEnabled shouldBe false
+         test.isEnabledInternal(c.toConfiguration()).isEnabled shouldBe false
       }
 
       "isEnabledInternal should return false if it has no tags and a tag expression with include is set" {
@@ -118,7 +119,7 @@ class IsEnabledTest : StringSpec() {
             override fun tags(): TagExpression = TagExpression("yourtag")
          }
 
-         val c = ProjectConfiguration()
+         val c = MutableConfiguration()
          c.registry().add(ext)
 
          val mytag = NamedTag("mytag")
@@ -131,7 +132,7 @@ class IsEnabledTest : StringSpec() {
             config = ResolvedTestConfig.default.copy(tags = setOf(mytag)),
             type = TestType.Test,
          )
-         test.isEnabledInternal(c).isEnabled shouldBe false
+         test.isEnabledInternal(c.toConfiguration()).isEnabled shouldBe false
       }
 
       "isEnabledInternal should return false if the test name begins with a !" {
@@ -144,7 +145,7 @@ class IsEnabledTest : StringSpec() {
             config = ResolvedTestConfig.default,
             type = TestType.Test,
          )
-         test.isEnabledInternal(ProjectConfiguration()).isEnabled shouldBe false
+         test.isEnabledInternal(MutableConfiguration().toConfiguration()).isEnabled shouldBe false
       }
 
       "isEnabledInternal should return false if the test is not focused and the spec contains OTHER focused tests" {
@@ -157,7 +158,7 @@ class IsEnabledTest : StringSpec() {
             config = ResolvedTestConfig.default,
             type = TestType.Test,
          )
-         test.isEnabledInternal(ProjectConfiguration()).isEnabled shouldBe false
+         test.isEnabledInternal(MutableConfiguration().toConfiguration()).isEnabled shouldBe false
       }
 
       "isEnabledInternal should return true if the test is focused and top level" {
@@ -170,7 +171,7 @@ class IsEnabledTest : StringSpec() {
             config = ResolvedTestConfig.default,
             type = TestType.Test,
          )
-         test.isEnabledInternal(ProjectConfiguration()).isEnabled shouldBe true
+         test.isEnabledInternal(MutableConfiguration().toConfiguration()).isEnabled shouldBe true
       }
 
       "isEnabledInternal should return true if not top level even if spec has top level focused tests" {
@@ -183,7 +184,7 @@ class IsEnabledTest : StringSpec() {
             config = ResolvedTestConfig.default,
             type = TestType.Test,
          )
-         test.isEnabledInternal(ProjectConfiguration()).isEnabled shouldBe true
+         test.isEnabledInternal(MutableConfiguration().toConfiguration()).isEnabled shouldBe true
       }
 
       "isEnabledInternal should return false if a test filter excludes the test" {
@@ -194,7 +195,7 @@ class IsEnabledTest : StringSpec() {
             }
          }
 
-         val c = ProjectConfiguration()
+         val c = MutableConfiguration()
          c.registry().add(filter)
 
          TestCase(
@@ -205,7 +206,7 @@ class IsEnabledTest : StringSpec() {
             test = {},
             config = ResolvedTestConfig.default,
             type = TestType.Test,
-         ).isEnabledInternal(c).isEnabled shouldBe true
+         ).isEnabledInternal(c.toConfiguration()).isEnabled shouldBe true
 
          TestCase(
             name = TestName("g"),
@@ -215,7 +216,7 @@ class IsEnabledTest : StringSpec() {
             test = {},
             config = ResolvedTestConfig.default,
             type = TestType.Test,
-         ).isEnabledInternal(c).isEnabled shouldBe false
+         ).isEnabledInternal(c.toConfiguration()).isEnabled shouldBe false
       }
 
       "isEnabled should use extensions when registered" {
@@ -228,7 +229,7 @@ class IsEnabledTest : StringSpec() {
                   Enabled.disabled("descriptor name does not contain activateme")
          }
 
-         val c = ProjectConfiguration()
+         val c = MutableConfiguration()
          c.registry().add(ext)
 
          // this should be disabled because the extension says it is, even though it's normally enabled
@@ -240,7 +241,7 @@ class IsEnabledTest : StringSpec() {
             test = {},
             config = ResolvedTestConfig.default,
             type = TestType.Test,
-         ).isEnabled(c).isEnabled shouldBe false
+         ).isEnabled(c.toConfiguration()).isEnabled shouldBe false
 
          TestCase(
             name = TestName("activateme"),
@@ -250,7 +251,7 @@ class IsEnabledTest : StringSpec() {
             test = {},
             config = ResolvedTestConfig.default,
             type = TestType.Test,
-         ).isEnabled(c).isEnabled shouldBe true
+         ).isEnabled(c.toConfiguration()).isEnabled shouldBe true
       }
    }
 }

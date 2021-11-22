@@ -1,11 +1,11 @@
 package com.sksamuel.kotest.engine.extensions.project
 
-import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.ProjectContext
-import io.kotest.core.extensions.ProjectExtension
 import io.kotest.core.annotation.Isolate
+import io.kotest.core.extensions.ProjectExtension
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.engine.TestEngineLauncher
+import io.kotest.engine.config.MutableConfiguration
 import io.kotest.engine.listener.AbstractTestEngineListener
 import io.kotest.matchers.shouldBe
 
@@ -38,7 +38,7 @@ class ProjectExtensionEngineResultTest : FunSpec({
          }
       }
 
-      val c = ProjectConfiguration()
+      val c = MutableConfiguration()
       c.registry().add(ext1)
       c.registry().add(ext2)
 

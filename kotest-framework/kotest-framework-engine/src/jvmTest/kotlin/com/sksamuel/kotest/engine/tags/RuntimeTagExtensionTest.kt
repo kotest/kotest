@@ -9,6 +9,7 @@ import io.kotest.core.annotation.Isolate
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.engine.TestEngineLauncher
+import io.kotest.engine.config.MutableConfiguration
 import io.kotest.engine.listener.NoopTestEngineListener
 import io.kotest.matchers.collections.shouldBeEmpty
 
@@ -19,7 +20,7 @@ class RuntimeTagExtensionTest : StringSpec() {
    init {
 
       "Tests with tag should not execute when excluded by a RuntimeTagExtension" {
-         val c = ProjectConfiguration()
+         val c = MutableConfiguration()
          c.registry().add(RuntimeTagExtension(included = emptySet(), excluded = setOf(MyRuntimeExcludedTag)))
          TestEngineLauncher(NoopTestEngineListener)
             .withClasses(TestWithTag::class)
@@ -28,7 +29,7 @@ class RuntimeTagExtensionTest : StringSpec() {
       }
 
       "Tests with tag should not execute when excluded by a RuntimeTagExpressionExtension" {
-         val c = ProjectConfiguration()
+         val c = MutableConfiguration()
          c.registry().add(RuntimeTagExpressionExtension("!MyRuntimeExcludedTag"))
          TestEngineLauncher(NoopTestEngineListener)
             .withClasses(TestWithTag::class)
