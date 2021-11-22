@@ -1,6 +1,5 @@
 package com.sksamuel.kotest.engine.test
 
-import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.descriptors.Descriptor
 import io.kotest.core.extensions.EnabledExtension
 import io.kotest.core.spec.style.DescribeSpec
@@ -8,6 +7,7 @@ import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.spec.style.ShouldSpec
 import io.kotest.core.test.Enabled
 import io.kotest.engine.TestEngineLauncher
+import io.kotest.engine.config.MutableConfiguration
 import io.kotest.engine.listener.CollectingTestEngineListener
 import io.kotest.matchers.shouldBe
 

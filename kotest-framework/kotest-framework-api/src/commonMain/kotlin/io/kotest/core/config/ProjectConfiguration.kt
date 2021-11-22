@@ -164,7 +164,7 @@ data class ProjectConfiguration(
     *
     * Defaults to [Defaults.defaultTimeoutInMillis].
     */
-   val timeout: Duration,
+   var timeout: Duration,
 
    /**
     * Returns the timeout for any single invocation of a test.
@@ -173,19 +173,19 @@ data class ProjectConfiguration(
     *
     * Defaults to [Defaults.defaultInvocationTimeoutInMillis].
     */
-   val invocationTimeout: Duration,
+   var invocationTimeout: Duration,
 
    /**
     * A timeout that is applied to the overall project if not null.
     *
     * If the execution time of all tests exceeds this value then the test suite will fail.
     */
-   val projectTimeout: Duration?,
+   var projectTimeout: Duration?,
 
    /**
     * Controls which log functions on TestCase will be invoked or skipped
     */
-   val logLevel: LogLevel,
+   var logLevel: LogLevel,
 
    /**
     * If set to true then the test engine will install a [TestCoroutineDispatcher].
