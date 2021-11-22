@@ -15,21 +15,16 @@ internal class SoftAssertInterceptor() : TestExecutionInterceptor {
 
    private val logger = Logger(SoftAssertInterceptor::class)
 
-   private fun shouldApply(testCase: TestCase): Boolean {
-      return testCase.type == TestType.Test && testCase.config.assertSoftly
-   }
-
    override suspend fun intercept(
       testCase: TestCase,
       scope: TestScope,
       test: suspend (TestCase, TestScope) -> TestResult
    ): TestResult {
-      return if (shouldApply(testCase)) {
-         logger.log { Pair(testCase.name.testName, "Invoking test with soft assert") }
-         assertSoftly { test(testCase, scope) }
-      } else {
-         logger.log { Pair(testCase.name.testName, "Invoking test *without* soft assert") }
-         test(testCase, scope)
-      }
+
+      if (testCase.type != TestType.Test) return test(testCase, scope)
+      if (!testCase.config.assertSoftly) return test(testCase, scope)
+
+      logger.log { Pair(testCase.name.testName, "Invoking test with soft assert") }
+      return assertSoftly { test(testCase, scope) }
    }
 }

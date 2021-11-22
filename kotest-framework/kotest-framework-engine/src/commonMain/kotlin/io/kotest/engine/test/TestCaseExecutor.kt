@@ -49,7 +49,7 @@ class TestCaseExecutor(
       val interceptors = listOfNotNull(
          TestFinishedInterceptor(listener),
          InvocationCountCheckInterceptor,
-         CoroutineDebugProbeInterceptor(configuration),
+         CoroutineDebugProbeInterceptor,
          SupervisorScopeInterceptor,
          if (platform == Platform.JVM) coroutineDispatcherFactoryInterceptor(defaultCoroutineDispatcherFactory) else null,
          if (platform == Platform.JVM) coroutineErrorCollectorInterceptor() else null,

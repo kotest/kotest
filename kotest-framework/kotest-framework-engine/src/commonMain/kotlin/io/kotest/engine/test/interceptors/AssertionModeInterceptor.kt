@@ -15,23 +15,14 @@ import kotlin.time.Duration
  */
 internal object AssertionModeInterceptor : TestExecutionInterceptor {
 
-   private fun shouldApply(testCase: TestCase): Boolean {
-      return testCase.type == TestType.Test && testCase.config.assertionMode != AssertionMode.None
-   }
-
    override suspend fun intercept(
       testCase: TestCase,
       scope: TestScope,
       test: suspend (TestCase, TestScope) -> TestResult
    ): TestResult {
-      return if (shouldApply(testCase)) apply(testCase, scope, test) else test(testCase, scope)
-   }
 
-   private suspend fun apply(
-      testCase: TestCase,
-      scope: TestScope,
-      test: suspend (TestCase, TestScope) -> TestResult
-   ): TestResult {
+      if (testCase.type != TestType.Test) return test(testCase, scope)
+      if (testCase.config.assertionMode == AssertionMode.None) return test(testCase, scope)
 
       val warningMessage = "Test '${testCase.name.testName}' did not invoke any assertions"
       assertionCounter.reset()
