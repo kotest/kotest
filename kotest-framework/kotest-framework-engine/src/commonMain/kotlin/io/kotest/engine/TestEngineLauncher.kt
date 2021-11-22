@@ -35,7 +35,6 @@ class TestEngineLauncher(
    private val configs: List<AbstractProjectConfig>,
    private val refs: List<SpecRef>,
    private val tagExpression: TagExpression?,
-   private val extensions: List<Extension>,
 ) {
 
    constructor() : this(
@@ -44,7 +43,6 @@ class TestEngineLauncher(
       emptyList(),
       emptyList(),
       null,
-      emptyList(),
    )
 
    constructor(listener: TestEngineListener) : this(
@@ -53,7 +51,6 @@ class TestEngineLauncher(
       emptyList(),
       emptyList(),
       null,
-      emptyList(),
    )
 
    /**
@@ -73,7 +70,6 @@ class TestEngineLauncher(
          configs = configs,
          refs = refs,
          tagExpression = tagExpression,
-         extensions = extensions,
       )
    }
 
@@ -84,7 +80,6 @@ class TestEngineLauncher(
          configs = configs,
          refs = specs.toList().map { InstanceSpecRef(it) },
          tagExpression = tagExpression,
-         extensions = extensions,
       )
    }
 
@@ -96,7 +91,6 @@ class TestEngineLauncher(
          configs = configs,
          refs = specs.toList().map { ReflectiveSpecRef(it) },
          tagExpression = tagExpression,
-         extensions = extensions,
       )
    }
 
@@ -118,7 +112,6 @@ class TestEngineLauncher(
          configs = configs + projectConfig,
          refs = refs,
          tagExpression = tagExpression,
-         extensions = extensions,
       )
    }
 
@@ -129,21 +122,26 @@ class TestEngineLauncher(
          configs = configs,
          refs = refs,
          tagExpression = expression,
-         extensions = extensions,
       )
    }
 
+   /**
+    * Returns a copy of this launcher with the given [extensions] added to the configuration.
+    *
+    * Note: If after invoking this method, the [withConfiguration] is invoked, then any changes
+    * here will be lost.
+    */
    fun withExtensions(vararg extensions: Extension): TestEngineLauncher = withExtensions(extensions.toList())
 
+   /**
+    * Returns a copy of this launcher with the given [extensions] added to the configuration.
+    *
+    * Note: If after invoking this method, the [withConfiguration] is invoked, then any changes
+    * here will be lost.
+    */
    fun withExtensions(extensions: List<Extension>): TestEngineLauncher {
-      return TestEngineLauncher(
-         listener = listener,
-         conf = conf,
-         configs = configs,
-         refs = refs,
-         tagExpression = tagExpression,
-         extensions = this.extensions + extensions,
-      )
+      extensions.forEach { conf.registry.add(it) }
+      return this
    }
 
    fun withConfiguration(configuration: ProjectConfiguration): TestEngineLauncher {
@@ -153,7 +151,6 @@ class TestEngineLauncher(
          configs = configs,
          refs = refs,
          tagExpression = tagExpression,
-         extensions = this.extensions + extensions,
       )
    }
 
@@ -166,7 +163,6 @@ class TestEngineLauncher(
          ),
          interceptors = testEngineInterceptors(),
          configuration = ConfigManager.initialize(conf, configs + detectAbstractProjectConfigs()),
-         extensions,
          tagExpression,
       )
    }

@@ -33,7 +33,6 @@ data class TestEngineConfig(
    val listener: TestEngineListener,
    val interceptors: List<EngineInterceptor>,
    val configuration: ProjectConfiguration,
-   val extensions: List<Extension>,
    val explicitTags: TagExpression?,
 )
 
@@ -49,12 +48,8 @@ class TestEngine(initial: TestEngineConfig) {
    val config = testEngineConfigInterceptors
       .foldRight(initial) { p, c -> p.process(c) }
       .apply {
-
          // if the engine was configured with explicit tags, we register those via a tag extension
          explicitTags?.let { configuration.registry.add(SpecifiedTagsTagExtension(it)) }
-
-         // if the engine was configured with extensions, those are registered with the configuration object
-         extensions.forEach { configuration.registry.add(it) }
       }
 
    /**

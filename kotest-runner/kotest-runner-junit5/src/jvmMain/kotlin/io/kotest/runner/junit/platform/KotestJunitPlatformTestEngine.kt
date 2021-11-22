@@ -75,8 +75,8 @@ class KotestJunitPlatformTestEngine : TestEngine {
          .forEach { configuration.registry.add(it) }
 
       TestEngineLauncher(listener)
-         .withClasses(root.classes)
          .withExtensions(root.testFilters)
+         .withClasses(root.classes)
          .withConfiguration(configuration)
          .launch()
    }
