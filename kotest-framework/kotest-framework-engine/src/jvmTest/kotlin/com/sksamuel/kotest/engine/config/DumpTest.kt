@@ -7,19 +7,21 @@ import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.SpecExecutionOrder
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.test.TestCaseOrder
+import io.kotest.engine.config.MutableConfiguration
 import io.kotest.engine.config.createConfigSummary
+import io.kotest.engine.config.toConfiguration
 import io.kotest.matchers.string.shouldInclude
-import kotlin.time.seconds
+import kotlin.time.Duration.Companion.seconds
 
 @Isolate
 class DumpTest : FunSpec({
 
    test("dump should include test timeouts") {
-      ProjectConfiguration().apply {
+      MutableConfiguration().apply {
          timeout = 12
          invocationTimeout = 34234
          projectTimeout = 44444.seconds
-      }.createConfigSummary().apply {
+      }.toConfiguration().createConfigSummary().apply {
          this.shouldInclude("Default test timeout: 12ms")
          this.shouldInclude("Default test invocation timeout: 34234ms")
          this.shouldInclude("Overall project timeout: 12h 20m 44sms")
@@ -27,74 +29,74 @@ class DumpTest : FunSpec({
    }
 
    test("dump should include affinity") {
-      ProjectConfiguration().apply {
+      MutableConfiguration().apply {
          timeout = 12
          invocationTimeout = 34234
-      }.createConfigSummary().apply {
+      }.toConfiguration().createConfigSummary().apply {
          this.shouldInclude("Dispatcher affinity: true")
       }
    }
 
    test("dump should include test order") {
-      ProjectConfiguration().apply {
+      MutableConfiguration().apply {
          testCaseOrder = TestCaseOrder.Random
-      }.createConfigSummary().apply {
+      }.toConfiguration().createConfigSummary().apply {
          this.shouldInclude("Default test execution order: Random")
       }
    }
 
    test("dump should include Spec execution order") {
-      ProjectConfiguration().apply {
+      MutableConfiguration().apply {
          specExecutionOrder = SpecExecutionOrder.Annotated
-      }.createConfigSummary().apply {
+      }.toConfiguration().createConfigSummary().apply {
          this.shouldInclude("Spec execution order: Annotated")
       }
    }
 
    test("dump should include Duplicate test name mode") {
-      ProjectConfiguration().apply {
+      MutableConfiguration().apply {
          duplicateTestNameMode = DuplicateTestNameMode.Silent
-      }.createConfigSummary().apply {
+      }.toConfiguration().createConfigSummary().apply {
          this.shouldInclude("Duplicate test name mode: Silent")
       }
    }
 
    test("dump should include default isolation mode") {
-      ProjectConfiguration().apply {
+      MutableConfiguration().apply {
          isolationMode = IsolationMode.InstancePerLeaf
-      }.createConfigSummary().apply {
+      }.toConfiguration().createConfigSummary().apply {
          this.shouldInclude("Default isolation mode: InstancePerLeaf")
       }
    }
 
    test("dump should include failOnEmptyTestSuite") {
-      ProjectConfiguration().apply {
+      MutableConfiguration().apply {
          failOnEmptyTestSuite = true
-      }.createConfigSummary().apply {
+      }.toConfiguration().createConfigSummary().apply {
          this.shouldInclude("Fail on empty test suite: true")
       }
    }
 
    test("dump should include coroutineDebugProbes") {
-      ProjectConfiguration().apply {
+      MutableConfiguration().apply {
          coroutineDebugProbes = true
-      }.createConfigSummary().apply {
+      }.toConfiguration().createConfigSummary().apply {
          this.shouldInclude("Coroutine debug probe: true")
       }
    }
 
    test("dump should include failOnIgnoredTests") {
-      ProjectConfiguration().apply {
+      MutableConfiguration().apply {
          failOnIgnoredTests = true
-      }.createConfigSummary().apply {
+      }.toConfiguration().createConfigSummary().apply {
          this.shouldInclude("Fail on ignored tests: true")
       }
    }
 
    test("dump should include globalAssertSoftly") {
-      ProjectConfiguration().apply {
+      MutableConfiguration().apply {
          globalAssertSoftly = true
-      }.createConfigSummary().apply {
+      }.toConfiguration().createConfigSummary().apply {
          this.shouldInclude("Global soft assertions: true")
       }
    }
