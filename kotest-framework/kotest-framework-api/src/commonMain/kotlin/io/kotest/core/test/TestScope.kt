@@ -1,5 +1,6 @@
 package io.kotest.core.test
 
+import io.kotest.common.KotestInternal
 import io.kotest.common.SoftDeprecated
 import io.kotest.core.spec.KotestTestScope
 import kotlinx.coroutines.CoroutineScope
@@ -32,5 +33,6 @@ interface TestScope : CoroutineScope {
     *
     * Will throw if the current [testCase] is not a container test.
     */
+   @KotestInternal
    suspend fun registerTestCase(nested: NestedTest)
 }
