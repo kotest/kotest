@@ -37,7 +37,7 @@ object Defaults {
 
    const val failOnIgnoredTests: Boolean = false
    const val failfast: Boolean = false
-   val defaultIncludeTestScopeAffixes: Boolean? = null
+   const val defaultIncludeTestScopeAffixes: Boolean = false
    const val writeSpecFailureFile = false
    const val globalAssertSoftly = false
 
@@ -45,5 +45,6 @@ object Defaults {
    val specExecutionOrder = SpecExecutionOrder.Lexicographic
 
    const val concurrentTests = 1
+   const val concurrentSpecs = 1
    const val dispatcherAffinity = true
 }

@@ -3,11 +3,11 @@
 package io.kotest.engine.config
 
 import io.kotest.common.ExperimentalKotest
-import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.config.DefaultExtensionRegistry
 import io.kotest.core.config.Defaults
 import io.kotest.core.config.ExtensionRegistry
 import io.kotest.core.config.LogLevel
+import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.listeners.Listener
 import io.kotest.core.names.DuplicateTestNameMode
 import io.kotest.core.names.TestNameCase
@@ -46,7 +46,7 @@ class MutableConfiguration {
    var assertionMode: AssertionMode = Defaults.assertionMode
    var parallelism: Int = Defaults.parallelism
    var dispatcherAffinity: Boolean = Defaults.dispatcherAffinity
-   var concurrentSpecs: Int? = null
+   var concurrentSpecs: Int = Defaults.concurrentSpecs
 
    @ExperimentalKotest
    var concurrentTests: Int = Defaults.concurrentTests
@@ -65,7 +65,7 @@ class MutableConfiguration {
    var defaultTestConfig: TestCaseConfig = Defaults.testCaseConfig
    var failOnEmptyTestSuite: Boolean = Defaults.failOnEmptyTestSuite
    var coroutineDebugProbes: Boolean = Defaults.coroutineDebugProbes
-   var includeTestScopeAffixes: Boolean? = Defaults.defaultIncludeTestScopeAffixes
+   var includeTestScopeAffixes: Boolean = Defaults.defaultIncludeTestScopeAffixes
    var displaySpecIfNoActiveTests: Boolean = Defaults.displaySpecIfNoActiveTests
    var isolationMode: IsolationMode = Defaults.isolationMode
    var testCaseOrder: TestCaseOrder = Defaults.testCaseOrder
