@@ -29,7 +29,10 @@ class FeatureSpecExample : FeatureSpec() {
 
       feature("this feature has config").config(timeout = 10.seconds) {
          scenario("nested scenario will inherit config") {
-            fail("never executed")
+            1.shouldBeLessThan(4)
+         }
+         xfeature("disabled scenario") {
+            error("Boom")
          }
       }
 
