@@ -1,10 +1,10 @@
 package io.kotest.engine.config
 
-import io.kotest.core.config.Configuration
+import io.kotest.core.config.ProjectConfiguration
 import io.kotest.engine.tags.runtimeTags
 import io.kotest.mpp.bestName
 
-fun Configuration.createConfigSummary(): String {
+fun ProjectConfiguration.createConfigSummary(): String {
 
    val sb = StringBuilder()
 
@@ -41,9 +41,9 @@ fun Configuration.createConfigSummary(): String {
    sb.buildOutput("Remove test name whitespace", removeTestNameWhitespace.toString())
    sb.buildOutput("Append tags to test names", testNameAppendTags.toString())
 
-   if (registry().isNotEmpty()) {
+   if (extensions.isNotEmpty()) {
       sb.buildOutput("Extensions")
-      registry().all().map(::mapClassName).forEach {
+      extensions.all().map(::mapClassName).forEach {
          sb.buildOutput(it, indentation = 1)
       }
    }
@@ -52,7 +52,7 @@ fun Configuration.createConfigSummary(): String {
    return sb.toString()
 }
 
-fun Configuration.dumpProjectConfig() {
+fun ProjectConfiguration.dumpProjectConfig() {
    println("~~~ Kotest Configuration ~~~")
    println(createConfigSummary())
 }

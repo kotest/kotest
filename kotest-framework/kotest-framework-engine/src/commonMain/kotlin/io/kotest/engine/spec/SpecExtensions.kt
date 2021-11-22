@@ -27,7 +27,7 @@ import kotlin.reflect.KClass
  */
 internal class SpecExtensions(private val registry: ExtensionRegistry) {
 
-   private val logger = Logger(SpecExtensions::class)
+   private val logger = Logger(this::class)
 
    /**
     * Returns all [Extension]s applicable to a [Spec]. This includes extensions via

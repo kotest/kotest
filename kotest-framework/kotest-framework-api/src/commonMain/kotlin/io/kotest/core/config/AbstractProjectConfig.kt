@@ -105,7 +105,7 @@ abstract class AbstractProjectConfig {
     * which will always (if defined) take priority over the value here.
     *
     * Note: For backwards compatibility, setting this value to > 1 will implicitly set
-    * [concurrentSpecs] to [Configuration.MaxConcurrency] unless that option has been explicitly
+    * [concurrentSpecs] to [ProjectConfiguration.MaxConcurrency] unless that option has been explicitly
     * set to another value.
     */
    open val parallelism: Int? = null

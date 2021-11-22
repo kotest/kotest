@@ -2,7 +2,6 @@ package io.kotest.engine.interceptors
 
 import io.kotest.common.KotestInternal
 import io.kotest.engine.EngineResult
-import io.kotest.engine.TestSuite
 import io.kotest.mpp.Logger
 
 /**
@@ -12,7 +11,7 @@ import io.kotest.mpp.Logger
 @KotestInternal
 internal object TestEngineStartedFinishedInterceptor : EngineInterceptor {
 
-   private val logger = Logger(TestEngineStartedFinishedInterceptor::class)
+   private val logger = Logger(this::class)
 
    override suspend fun intercept(
       context: EngineContext,

@@ -33,7 +33,7 @@ class FixedThreadCoroutineDispatcherFactory(
    private val affinity: Boolean,
 ) : CoroutineDispatcherFactory {
 
-   private val logger = Logger(FixedThreadCoroutineDispatcherFactory::class)
+   private val logger = Logger(this::class)
    private val dispatchers = List(threads) { Executors.newSingleThreadExecutor().asCoroutineDispatcher() }
 
    override suspend fun <T> withDispatcher(testCase: TestCase, f: suspend () -> T): T {

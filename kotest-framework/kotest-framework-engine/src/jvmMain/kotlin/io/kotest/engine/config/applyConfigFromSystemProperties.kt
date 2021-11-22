@@ -1,6 +1,5 @@
 package io.kotest.engine.config
 
-import io.kotest.core.config.Configuration
 import io.kotest.core.config.LogLevel
 import io.kotest.core.internal.KotestEngineProperties
 import io.kotest.core.names.DuplicateTestNameMode
@@ -12,11 +11,11 @@ import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
 
 /**
- * Uses system properties to load configuration values onto the supplied [Configuration] object.
+ * Uses system properties to load configuration values onto the supplied [MutableConfiguration] object.
  *
  * Note: This function will have no effect on non-JVM targets.
  */
-internal actual fun applyConfigFromSystemProperties(configuration: Configuration) {
+internal actual fun applyConfigFromSystemProperties(configuration: MutableConfiguration) {
    isolationMode()?.let { configuration.isolationMode = it }
    assertionMode()?.let { configuration.assertionMode = it }
    parallelism()?.let { configuration.parallelism = it }

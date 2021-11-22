@@ -2,7 +2,7 @@ package io.kotest.engine.spec.interceptor
 
 import io.kotest.common.flatMap
 import io.kotest.core.TagExpression
-import io.kotest.core.config.Configuration
+import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.SpecRef
 import io.kotest.core.test.TestCase
@@ -18,10 +18,10 @@ import io.kotest.engine.tags.runtimeTags
  */
 class TagsExcludedSpecInterceptor(
    private val listener: TestEngineListener,
-   private val conf: Configuration,
+   private val conf: ProjectConfiguration,
 ) : SpecRefInterceptor {
 
-   private val extensions = SpecExtensions(conf.registry())
+   private val extensions = SpecExtensions(conf.extensions)
 
    override suspend fun intercept(
       ref: SpecRef,

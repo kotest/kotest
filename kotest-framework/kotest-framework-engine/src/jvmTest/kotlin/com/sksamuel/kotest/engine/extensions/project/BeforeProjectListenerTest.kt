@@ -1,6 +1,6 @@
 package com.sksamuel.kotest.engine.extensions.project
 
-import io.kotest.core.config.Configuration
+import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.listeners.BeforeProjectListener
 import io.kotest.core.listeners.ProjectListener
 import io.kotest.core.spec.style.FunSpec
@@ -14,7 +14,7 @@ class BeforeProjectListenerTest : FunSpec({
 
       var fired = false
 
-      val c = Configuration()
+      val c = ProjectConfiguration()
       c.registry().add(object : ProjectListener {
          override suspend fun beforeProject() {
             fired = true
@@ -33,7 +33,7 @@ class BeforeProjectListenerTest : FunSpec({
 
       var fired = false
 
-      val c = Configuration()
+      val c = ProjectConfiguration()
       c.registry().add(object : BeforeProjectListener {
          override suspend fun beforeProject() {
             fired = true

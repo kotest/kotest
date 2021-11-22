@@ -2,14 +2,13 @@ package io.kotest.engine.listener
 
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
-import io.kotest.engine.spec.SpecExecutorDelegate
 import io.kotest.mpp.Logger
 import io.kotest.mpp.bestName
 import kotlin.reflect.KClass
 
 object LoggingTestEngineListener : AbstractTestEngineListener() {
 
-   private val logger = Logger(SpecExecutorDelegate::class)
+   private val logger = Logger(this::class)
 
    override suspend fun engineFinished(t: List<Throwable>) {
       logger.log { Pair(null, "Engine finished $t") }

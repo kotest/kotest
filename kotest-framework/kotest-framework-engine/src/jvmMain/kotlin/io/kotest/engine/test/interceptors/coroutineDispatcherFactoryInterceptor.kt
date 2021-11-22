@@ -20,7 +20,7 @@ internal class CoroutineDispatcherFactoryInterceptor(
    private val defaultCoroutineDispatcherFactory: CoroutineDispatcherFactory
 ) : TestExecutionInterceptor {
 
-   private val logger = Logger(CoroutineDispatcherFactoryInterceptor::class)
+   private val logger = Logger(this::class)
 
    override suspend fun intercept(
       testCase: TestCase,

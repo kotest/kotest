@@ -19,7 +19,7 @@ import io.kotest.mpp.sysprop
  */
 internal object SystemPropertyTestFilterEnabledExtension : TestEnabledExtension {
 
-   private val logger = Logger(SystemPropertyTestFilterEnabledExtension::class)
+   private val logger = Logger(this::class)
 
    private fun syspropOrEnv(name: String) = sysprop(name) ?: env(name) ?: ""
 

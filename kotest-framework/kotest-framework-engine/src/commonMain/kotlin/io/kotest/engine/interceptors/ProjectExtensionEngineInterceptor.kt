@@ -4,11 +4,10 @@ import io.kotest.common.KotestInternal
 import io.kotest.core.ProjectContext
 import io.kotest.core.extensions.ProjectExtension
 import io.kotest.engine.EngineResult
-import io.kotest.engine.TestSuite
 
 /**
  * An [EngineInterceptor] that invokes any [ProjectExtension]s allowing them the chance
- * to change the [ProjectContext] before the engine begins execution.
+ * to change the [EngineContext] before the engine begins execution.
  */
 @KotestInternal
 internal object ProjectExtensionEngineInterceptor : EngineInterceptor {
@@ -22,7 +21,7 @@ internal object ProjectExtensionEngineInterceptor : EngineInterceptor {
       val initial: suspend (ProjectContext) -> Unit = { result = execute(it.toEngineContext(context)) }
       val chain = context
          .configuration
-         .registry()
+         .extensions
          .all()
          .filterIsInstance<ProjectExtension>()
          .foldRight(initial) { extension, acc: suspend (ProjectContext) -> Unit ->
@@ -36,22 +35,5 @@ internal object ProjectExtensionEngineInterceptor : EngineInterceptor {
       } catch (t: Throwable) {
          result.addError(t)
       }
-   }
-
-   private fun ProjectContext.toEngineContext(context: EngineContext): EngineContext {
-      return EngineContext(
-         TestSuite(specs),
-         context.listener,
-         tags,
-         configuration
-      )
-   }
-
-   private fun EngineContext.toProjectContext(): ProjectContext {
-      return ProjectContext(
-         tags,
-         suite.specs,
-         configuration
-      )
    }
 }

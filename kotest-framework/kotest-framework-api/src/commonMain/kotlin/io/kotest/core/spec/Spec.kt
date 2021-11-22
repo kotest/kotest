@@ -7,7 +7,6 @@ import io.kotest.core.Tag
 import io.kotest.core.TestConfiguration
 import io.kotest.core.Tuple2
 import io.kotest.core.concurrency.CoroutineDispatcherFactory
-import io.kotest.core.config.Configuration
 import io.kotest.core.extensions.Extension
 import io.kotest.core.extensions.TestCaseExtension
 import io.kotest.core.factory.FactoryId

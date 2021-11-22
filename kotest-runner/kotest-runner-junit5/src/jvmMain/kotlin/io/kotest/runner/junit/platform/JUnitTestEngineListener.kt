@@ -1,6 +1,5 @@
 package io.kotest.runner.junit.platform
 
-import io.kotest.core.config.Configuration
 import io.kotest.core.descriptors.Descriptor
 import io.kotest.core.descriptors.DescriptorId
 import io.kotest.core.descriptors.toDescriptor
@@ -8,6 +7,8 @@ import io.kotest.core.names.DisplayNameFormatter
 import io.kotest.core.names.UniqueNames
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
+import io.kotest.engine.config.MutableConfiguration
+import io.kotest.engine.config.toConfiguration
 import io.kotest.engine.errors.ExtensionExceptionExtractor
 import io.kotest.engine.interceptors.EngineContext
 import io.kotest.engine.listener.AbstractTestEngineListener
@@ -76,9 +77,9 @@ class JUnitTestEngineListener(
    val root: EngineDescriptor,
 ) : AbstractTestEngineListener() {
 
-   private val logger = Logger(JUnitTestEngineListener::class)
+   private val logger = Logger(this::class)
 
-   private var formatter: DisplayNameFormatter = DefaultDisplayNameFormatter(Configuration())
+   private var formatter: DisplayNameFormatter = DefaultDisplayNameFormatter(MutableConfiguration().toConfiguration())
 
    // contains a mapping of junit TestDescriptor's, so we can find previously registered tests
    private val descriptors = mutableMapOf<Descriptor, TestDescriptor>()
@@ -105,7 +106,7 @@ class JUnitTestEngineListener(
 
    override suspend fun engineInitialized(context: EngineContext) {
       failOnIgnoredTests = context.configuration.failOnIgnoredTests
-      formatter = getDisplayNameFormatter(context.configuration.registry(), context.configuration)
+      formatter = getDisplayNameFormatter(context.configuration.extensions, context.configuration)
    }
 
    override suspend fun engineFinished(t: List<Throwable>) {

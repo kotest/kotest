@@ -1,7 +1,7 @@
 package com.sksamuel.kotest.parallelism
 
 import io.kotest.core.config.AbstractProjectConfig
-import io.kotest.core.config.Configuration
+import io.kotest.core.config.ProjectConfiguration
 
 object ProjectConfig : AbstractProjectConfig() {
 
@@ -14,7 +14,7 @@ object ProjectConfig : AbstractProjectConfig() {
    // set the number of threads so that each test runs in its own thread
    override val parallelism = 10
 
-   override val concurrentSpecs: Int = Configuration.MaxConcurrency
+   override val concurrentSpecs: Int = ProjectConfiguration.MaxConcurrency
 
    override suspend fun afterProject() {
       val duration = System.currentTimeMillis() - start

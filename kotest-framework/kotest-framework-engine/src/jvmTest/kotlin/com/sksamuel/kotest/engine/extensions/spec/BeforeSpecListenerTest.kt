@@ -1,6 +1,6 @@
 package com.sksamuel.kotest.engine.extensions.spec
 
-import io.kotest.core.config.Configuration
+import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.extensions.Extension
 import io.kotest.core.listeners.BeforeSpecListener
 import io.kotest.core.listeners.TestListener
@@ -21,7 +21,7 @@ class BeforeSpecListenerTest : FunSpec() {
 
       test("BeforeSpecListener's should be triggered for a spec with tests") {
 
-         val c = Configuration()
+         val c = ProjectConfiguration()
          c.registry().add(MyBeforeSpecListener)
 
          counter.set(0)
@@ -40,7 +40,7 @@ class BeforeSpecListenerTest : FunSpec() {
 
       test("BeforeSpecExtension's should be triggered for a spec without tests") {
 
-         val c = Configuration()
+         val c = ProjectConfiguration()
          c.registry().add(MyBeforeSpecListener)
 
          counter.set(0)

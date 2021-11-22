@@ -1,7 +1,7 @@
 package io.kotest.engine.spec
 
 import io.kotest.common.ExperimentalKotest
-import io.kotest.core.config.Configuration
+import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.Spec
 import io.kotest.core.test.TestCase
@@ -25,11 +25,11 @@ import kotlin.reflect.KClass
 internal abstract class SpecRunner(
    val listener: TestEngineListener,
    private val scheduler: TestScheduler,
-   private val configuration: Configuration,
+   private val configuration: ProjectConfiguration,
 ) {
 
    protected val materializer = Materializer(configuration)
-   private val logger = Logger(SingleInstanceSpecRunner::class)
+   private val logger = Logger(this::class)
 
    /**
     * Executes all the tests in this spec, returning a Failure if there was an exception in a listener
@@ -51,5 +51,5 @@ internal abstract class SpecRunner(
     * and notifies the [TestEngineListener] of the instantiation event.
     */
    protected suspend fun createInstance(kclass: KClass<out Spec>): Result<Spec> =
-      createAndInitializeSpec(kclass, configuration.registry())
+      createAndInitializeSpec(kclass, configuration.extensions)
 }

@@ -2,25 +2,25 @@ package io.kotest.engine.spec
 
 import io.kotest.common.ExperimentalKotest
 import io.kotest.core.concurrency.CoroutineDispatcherFactory
-import io.kotest.core.config.Configuration
+import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.spec.Spec
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
+import io.kotest.engine.interceptors.EngineContext
 import io.kotest.engine.listener.TestEngineListener
 import io.kotest.engine.test.TestCaseExecutor
+import io.kotest.engine.test.listener.TestCaseExecutionListenerToTestEngineListenerAdapter
 import io.kotest.engine.test.scopes.DuplicateNameHandlingTestScope
 import io.kotest.engine.test.scopes.InOrderTestScope
-import io.kotest.engine.test.listener.TestCaseExecutionListenerToTestEngineListenerAdapter
 import io.kotest.mpp.log
 import kotlin.coroutines.coroutineContext
 
 @ExperimentalKotest
 internal actual fun createSpecExecutorDelegate(
    listener: TestEngineListener,
-   defaultCoroutineDispatcherFactory: CoroutineDispatcherFactory,
-   configuration: Configuration,
-): SpecExecutorDelegate =
-   DefaultSpecExecutorDelegate(listener, defaultCoroutineDispatcherFactory, configuration)
+   coroutineDispatcherFactory: CoroutineDispatcherFactory,
+   context: EngineContext,
+): SpecExecutorDelegate = DefaultSpecExecutorDelegate(listener, coroutineDispatcherFactory, context.configuration)
 
 /**
  * A [SpecExecutorDelegate] that executes tests sequentially, using the calling thread
@@ -30,7 +30,7 @@ internal actual fun createSpecExecutorDelegate(
 internal class DefaultSpecExecutorDelegate(
    private val listener: TestEngineListener,
    private val coroutineDispatcherFactory: CoroutineDispatcherFactory,
-   private val configuration: Configuration
+   private val configuration: ProjectConfiguration
 ) : SpecExecutorDelegate {
 
    private val materializer = Materializer(configuration)

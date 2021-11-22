@@ -10,7 +10,7 @@ internal class TestFinishedInterceptor(
    private val listener: TestCaseExecutionListener,
 ) : TestExecutionInterceptor {
 
-   private val logger = Logger(TestFinishedInterceptor::class)
+   private val logger = Logger(this::class)
 
    override suspend fun intercept(
       testCase: TestCase,

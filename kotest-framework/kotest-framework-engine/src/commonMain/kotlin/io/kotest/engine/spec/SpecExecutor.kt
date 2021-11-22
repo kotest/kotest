@@ -4,13 +4,13 @@ import io.kotest.common.ExperimentalKotest
 import io.kotest.common.Platform
 import io.kotest.common.flatMap
 import io.kotest.common.platform
-import io.kotest.core.ProjectContext
 import io.kotest.core.concurrency.CoroutineDispatcherFactory
-import io.kotest.core.config.Configuration
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.SpecRef
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
+import io.kotest.engine.interceptors.EngineContext
+import io.kotest.engine.interceptors.toProjectContext
 import io.kotest.engine.listener.TestEngineListener
 import io.kotest.engine.spec.interceptor.ApplyExtensionsInterceptor
 import io.kotest.engine.spec.interceptor.ConfigurationInContextInterceptor
@@ -47,12 +47,11 @@ import kotlin.reflect.KClass
 class SpecExecutor(
    private val listener: TestEngineListener,
    private val defaultCoroutineDispatcherFactory: CoroutineDispatcherFactory,
-   private val conf: Configuration,
-   private val projectContext: ProjectContext,
+   private val context: EngineContext,
 ) {
 
-   private val logger = Logger(SpecExecutorDelegate::class)
-   private val extensions = SpecExtensions(conf.registry())
+   private val logger = Logger(this::class)
+   private val extensions = SpecExtensions(context.configuration.extensions)
 
    suspend fun execute(ref: SpecRef) {
       logger.log { Pair(ref.kclass.bestName(), "Received $ref") }
@@ -66,18 +65,18 @@ class SpecExecutor(
    private suspend fun referenceInterceptors(ref: SpecRef) {
 
       val interceptors = listOfNotNull(
-         if (platform == Platform.JVM) EnabledIfSpecInterceptor(listener, conf.registry()) else null,
-         IgnoredSpecInterceptor(listener, conf.registry()),
-         SpecFilterInterceptor(listener, conf.registry()),
-         SystemPropertySpecFilterInterceptor(listener, conf.registry()),
-         TagsExcludedSpecInterceptor(listener, conf),
-         if (platform == Platform.JVM) RequiresTagSpecInterceptor(listener, conf, conf.registry()) else null,
-         SpecRefExtensionInterceptor(conf.registry()),
+         if (platform == Platform.JVM) EnabledIfSpecInterceptor(listener, context.configuration.extensions) else null,
+         IgnoredSpecInterceptor(listener, context.configuration.extensions),
+         SpecFilterInterceptor(listener, context.configuration.extensions),
+         SystemPropertySpecFilterInterceptor(listener, context.configuration.extensions),
+         TagsExcludedSpecInterceptor(listener, context.configuration),
+         if (platform == Platform.JVM) RequiresTagSpecInterceptor(listener, context.configuration) else null,
+         SpecRefExtensionInterceptor(context.configuration.extensions),
          SpecStartedInterceptor(listener),
          SpecFinishedInterceptor(listener),
-         if (platform == Platform.JVM) ApplyExtensionsInterceptor(conf.registry()) else null,
-         PrepareSpecInterceptor(conf.registry()),
-         FinalizeSpecInterceptor(conf.registry()),
+         if (platform == Platform.JVM) ApplyExtensionsInterceptor(context.configuration.extensions) else null,
+         PrepareSpecInterceptor(context.configuration.extensions),
+         FinalizeSpecInterceptor(context.configuration.extensions),
       )
 
       val innerExecute: suspend (SpecRef) -> Result<Map<TestCase, TestResult>> = {
@@ -93,15 +92,19 @@ class SpecExecutor(
    private suspend fun specInterceptors(spec: Spec): Result<Map<TestCase, TestResult>> {
 
       val interceptors = listOfNotNull(
-         if (platform == Platform.JS) IgnoreNestedSpecStylesInterceptor(listener, conf.registry()) else null,
-         ProjectContextInterceptor(projectContext),
-         SpecExtensionInterceptor(conf.registry()),
-         ConfigurationInContextInterceptor(conf),
+         if (platform == Platform.JS) IgnoreNestedSpecStylesInterceptor(
+            listener,
+            context.configuration.extensions
+         ) else null,
+         ProjectContextInterceptor(context.toProjectContext()),
+         SpecExtensionInterceptor(context.configuration.extensions),
+         ConfigurationInContextInterceptor(context.configuration),
       )
 
       val initial: suspend (Spec) -> Result<Map<TestCase, TestResult>> = {
          try {
-            val delegate = createSpecExecutorDelegate(listener, defaultCoroutineDispatcherFactory, conf)
+            val delegate =
+               createSpecExecutorDelegate(listener, defaultCoroutineDispatcherFactory, context)
             logger.log { Pair(spec::class.bestName(), "delegate=$delegate") }
             Result.success(delegate.execute(spec))
          } catch (t: Throwable) {
@@ -121,7 +124,7 @@ class SpecExecutor(
     * or instantiation failure, and returns a Result with the error or spec.
     */
    private suspend fun createInstance(ref: SpecRef): Result<Spec> =
-      ref.instance(conf.registry())
+      ref.instance(context.configuration.extensions)
          .onFailure { extensions.specInstantiationError(ref.kclass, it) }
          .flatMap { spec -> extensions.specInstantiated(spec).map { spec } }
 }
@@ -133,7 +136,7 @@ interface SpecExecutorDelegate {
 @ExperimentalKotest
 internal expect fun createSpecExecutorDelegate(
    listener: TestEngineListener,
-   defaultCoroutineDispatcherFactory: CoroutineDispatcherFactory,
-   configuration: Configuration,
+   coroutineDispatcherFactory: CoroutineDispatcherFactory,
+   context: EngineContext,
 ): SpecExecutorDelegate
 

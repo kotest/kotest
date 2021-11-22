@@ -2,15 +2,15 @@ package io.kotest.engine
 
 import io.kotest.common.ExperimentalKotest
 import io.kotest.core.ProjectContext
-import io.kotest.core.config.Configuration
+import io.kotest.core.TestSuite
 import io.kotest.core.annotation.DoNotParallelize
 import io.kotest.core.annotation.Isolate
 import io.kotest.core.spec.SpecRef
 import io.kotest.engine.concurrency.defaultCoroutineDispatcherFactory
 import io.kotest.engine.concurrency.isIsolate
+import io.kotest.engine.interceptors.EngineContext
 import io.kotest.engine.listener.TestEngineListener
 import io.kotest.engine.spec.SpecExecutor
-import io.kotest.engine.tags.runtimeTags
 import io.kotest.mpp.Logger
 import io.kotest.mpp.bestName
 import kotlinx.coroutines.coroutineScope
@@ -30,11 +30,10 @@ import kotlinx.coroutines.sync.withPermit
 @ExperimentalKotest
 internal class ConcurrentTestSuiteScheduler(
    private val maxConcurrent: Int,
-   private val configuration: Configuration,
-   private val context: ProjectContext,
+   private val context: EngineContext,
 ) : TestSuiteScheduler {
 
-   private val logger = Logger(ConcurrentTestSuiteScheduler::class)
+   private val logger = Logger(this::class)
 
    override suspend fun schedule(suite: TestSuite, listener: TestEngineListener): EngineResult {
       logger.log { Pair(null, "Launching ${suite.specs.size} specs") }
@@ -56,7 +55,7 @@ internal class ConcurrentTestSuiteScheduler(
       listener: TestEngineListener,
       concurrency: Int,
    ) = coroutineScope { // we don't want this function to return until all specs are completed
-      val coroutineDispatcherFactory = defaultCoroutineDispatcherFactory(configuration)
+      val coroutineDispatcherFactory = defaultCoroutineDispatcherFactory(context.configuration)
       val semaphore = Semaphore(concurrency)
       specs.forEach { ref ->
          logger.log { Pair(ref.kclass.bestName(), "Scheduling coroutine") }
@@ -67,8 +66,7 @@ internal class ConcurrentTestSuiteScheduler(
                   val executor = SpecExecutor(
                      listener,
                      coroutineDispatcherFactory,
-                     configuration,
-                     ProjectContext(configuration.runtimeTags(), specs, configuration)
+                     context
                   )
                   logger.log { Pair(ref.kclass.bestName(), "Executing ref") }
                   executor.execute(ref)

@@ -1,9 +1,10 @@
 package com.sksamuel.kotest.engine
 
-import io.kotest.core.config.Configuration
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.core.test.TestCaseOrder
+import io.kotest.engine.config.MutableConfiguration
+import io.kotest.engine.config.toConfiguration
 import io.kotest.engine.spec.Materializer
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
@@ -11,35 +12,35 @@ import io.kotest.matchers.shouldNotBe
 class TestCaseOrderTest : FunSpec() {
    init {
       test("sequential test case ordering specified in the spec") {
-         Materializer(Configuration()).materialize(SequentialSpec()).map { it.name.testName } shouldBe
+         Materializer(MutableConfiguration().toConfiguration()).materialize(SequentialSpec()).map { it.name.testName } shouldBe
             listOf("c", "b", "d", "e", "a")
       }
       test("Lexicographic test case ordering specified in the spec") {
-         Materializer(Configuration()).materialize(LexicographicSpec()).map { it.name.testName } shouldBe
+         Materializer(MutableConfiguration().toConfiguration()).materialize(LexicographicSpec()).map { it.name.testName } shouldBe
             listOf("a", "b", "c", "d", "e")
       }
       test("random test case ordering specified in the spec") {
-         val a = Materializer(Configuration()).materialize(RandomSpec()).map { it.name.testName }
-         val b = Materializer(Configuration()).materialize(RandomSpec()).map { it.name.testName }
+         val a = Materializer(MutableConfiguration().toConfiguration()).materialize(RandomSpec()).map { it.name.testName }
+         val b = Materializer(MutableConfiguration().toConfiguration()).materialize(RandomSpec()).map { it.name.testName }
          a shouldNotBe b
       }
       test("sequential test case ordering specified in project config") {
-         val c = Configuration()
+         val c = MutableConfiguration()
          c.testCaseOrder = TestCaseOrder.Sequential
-         Materializer(c).materialize(UnspecifiedSpec()).map { it.name.testName } shouldBe
+         Materializer(c.toConfiguration()).materialize(UnspecifiedSpec()).map { it.name.testName } shouldBe
             listOf("d", "b", "c", "e", "h", "f", "g", "i", "a", "l", "j", "k", "m", "p", "n", "o", "q", "r")
       }
       test("Lexicographic test case ordering specified in project config") {
-         val c = Configuration()
+         val c = MutableConfiguration()
          c.testCaseOrder = TestCaseOrder.Lexicographic
-         Materializer(c).materialize(UnspecifiedSpec()).map { it.name.testName } shouldBe
+         Materializer(c.toConfiguration()).materialize(UnspecifiedSpec()).map { it.name.testName } shouldBe
             listOf("a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r")
       }
       test("random test case ordering specified in project config") {
-         val c = Configuration()
+         val c = MutableConfiguration()
          c.testCaseOrder = TestCaseOrder.Random
-         val a = Materializer(c).materialize(UnspecifiedSpec()).map { it.name.testName }
-         val b = Materializer(c).materialize(UnspecifiedSpec()).map { it.name.testName }
+         val a = Materializer(c.toConfiguration()).materialize(UnspecifiedSpec()).map { it.name.testName }
+         val b = Materializer(c.toConfiguration()).materialize(UnspecifiedSpec()).map { it.name.testName }
          a shouldNotBe b
       }
    }

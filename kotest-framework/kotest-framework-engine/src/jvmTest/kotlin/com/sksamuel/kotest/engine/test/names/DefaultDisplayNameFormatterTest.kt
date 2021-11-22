@@ -2,7 +2,7 @@ package com.sksamuel.kotest.engine.test.names
 
 import io.kotest.core.NamedTag
 import io.kotest.core.Tag
-import io.kotest.core.config.Configuration
+import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.descriptors.append
 import io.kotest.core.descriptors.toDescriptor
 import io.kotest.core.names.TestName
@@ -21,11 +21,11 @@ class DefaultDisplayNameFormatterTest : FunSpec() {
    init {
 
       test("@DisplayName should be used for spec name") {
-         DefaultDisplayNameFormatter(Configuration()).format(SpecWithDisplayName::class) shouldBe "ZZZZZ"
+         DefaultDisplayNameFormatter(ProjectConfiguration()).format(SpecWithDisplayName::class) shouldBe "ZZZZZ"
       }
 
       test("test name should use full path option") {
-         val conf = Configuration()
+         val conf = ProjectConfiguration()
          conf.displayFullTestPath = true
          val tc1 = TestCase(
             SpecWithDisplayName::class.toDescriptor().append("test"),
@@ -48,7 +48,7 @@ class DefaultDisplayNameFormatterTest : FunSpec() {
       }
 
       test("tags should be appended from config when configuration is set") {
-         val c = Configuration()
+         val c = ProjectConfiguration()
          c.testNameAppendTags = true
 
          val tc = TestCase(
@@ -75,7 +75,7 @@ class DefaultDisplayNameFormatterTest : FunSpec() {
             config = ResolvedTestConfig.default.copy(tags = setOf(Dummy, NoUse))
          )
 
-         DefaultDisplayNameFormatter(Configuration()).format(tc) shouldBe "test"
+         DefaultDisplayNameFormatter(ProjectConfiguration()).format(tc) shouldBe "test"
       }
 
       test("focus should not be included in test name") {
@@ -90,7 +90,7 @@ class DefaultDisplayNameFormatterTest : FunSpec() {
             config = ResolvedTestConfig.default.copy(tags = setOf(Dummy, NoUse))
          )
 
-         DefaultDisplayNameFormatter(Configuration()).format(tc) shouldBe "test"
+         DefaultDisplayNameFormatter(ProjectConfiguration()).format(tc) shouldBe "test"
       }
    }
 }

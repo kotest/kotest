@@ -1,13 +1,13 @@
 package io.kotest.runner.junit.platform
 
 import io.kotest.common.KotestInternal
-import io.kotest.core.config.Configuration
 import io.kotest.core.descriptors.toDescriptor
 import io.kotest.core.extensions.Extension
 import io.kotest.core.filter.TestFilter
 import io.kotest.core.filter.TestFilterResult
 import io.kotest.core.spec.Spec
 import io.kotest.engine.TestEngineLauncher
+import io.kotest.engine.config.MutableConfiguration
 import io.kotest.engine.listener.PinnedSpecTestEngineListener
 import io.kotest.engine.listener.ThreadSafeTestEngineListener
 import io.kotest.framework.discovery.Discovery
@@ -22,6 +22,7 @@ import org.junit.platform.engine.support.descriptor.EngineDescriptor
 import org.junit.platform.launcher.LauncherDiscoveryRequest
 import java.util.Optional
 import kotlin.reflect.KClass
+
 //import kotlin.script.templates.standard.ScriptTemplateWithArgs
 
 /**
@@ -54,7 +55,7 @@ class KotestJunitPlatformTestEngine : TestEngine {
 
    private fun execute(request: ExecutionRequest, root: KotestEngineDescriptor) {
 
-      val configuration = Configuration()
+      val configuration = MutableConfiguration()
 
       val listener = ThreadSafeTestEngineListener(
          PinnedSpecTestEngineListener(
@@ -75,9 +76,9 @@ class KotestJunitPlatformTestEngine : TestEngine {
          .forEach { configuration.registry().add(it) }
 
       TestEngineLauncher(listener)
+         .withConfiguration(configuration)
          .withClasses(root.classes)
          .withExtensions(root.testFilters)
-         .withConfiguration(configuration)
          .launch()
    }
 

@@ -2,7 +2,7 @@ package com.sksamuel.kotest.tests.concurrency
 
 import io.kotest.common.ExperimentalKotest
 import io.kotest.core.config.AbstractProjectConfig
-import io.kotest.core.config.Configuration
+import io.kotest.core.config.ProjectConfiguration
 import io.kotest.matchers.longs.shouldBeLessThan
 
 class ProjectConfig : AbstractProjectConfig() {
@@ -10,7 +10,7 @@ class ProjectConfig : AbstractProjectConfig() {
    private var start = 0L
 
    @ExperimentalKotest
-   override val concurrentSpecs: Int = Configuration.MaxConcurrency
+   override val concurrentSpecs: Int = ProjectConfiguration.MaxConcurrency
 
    override suspend fun beforeProject() {
       start = System.currentTimeMillis()

@@ -20,7 +20,7 @@ class SpecFilterInterceptor(
 ) : SpecRefInterceptor {
 
    private val extensions = SpecExtensions(registry)
-   private val logger = Logger(SpecFilterInterceptor::class)
+   private val logger = Logger(this::class)
 
    override suspend fun intercept(
       ref: SpecRef,

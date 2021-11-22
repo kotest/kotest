@@ -1,12 +1,13 @@
 package io.kotest.engine.listener
 
-import io.kotest.core.config.Configuration
 import io.kotest.core.descriptors.Descriptor
 import io.kotest.core.descriptors.toDescriptor
 import io.kotest.core.names.DisplayNameFormatter
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.isRootTest
+import io.kotest.engine.config.MutableConfiguration
+import io.kotest.engine.config.toConfiguration
 import io.kotest.engine.errors.ExtensionExceptionExtractor
 import io.kotest.engine.extensions.MultipleExceptions
 import io.kotest.engine.interceptors.EngineContext
@@ -25,7 +26,7 @@ class TeamCityTestEngineListener(
    private val details: Boolean = true,
 ) : TestEngineListener {
 
-   private var formatter: DisplayNameFormatter = DefaultDisplayNameFormatter(Configuration())
+   private var formatter: DisplayNameFormatter = DefaultDisplayNameFormatter(MutableConfiguration().toConfiguration())
 
    // these are the specs that have been started and the test started event sent to team city
    private val started = mutableSetOf<KClass<*>>()
@@ -73,7 +74,7 @@ class TeamCityTestEngineListener(
    override suspend fun engineStarted() {}
 
    override suspend fun engineInitialized(context: EngineContext) {
-      formatter = getDisplayNameFormatter(context.configuration.registry(), context.configuration)
+      formatter = getDisplayNameFormatter(context.configuration.extensions, context.configuration)
    }
 
    override suspend fun engineFinished(t: List<Throwable>) {

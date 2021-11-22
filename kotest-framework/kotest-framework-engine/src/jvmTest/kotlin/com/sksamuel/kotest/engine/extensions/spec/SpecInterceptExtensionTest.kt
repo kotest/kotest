@@ -25,7 +25,7 @@ class SpecInterceptExtensionTest : FunSpec() {
             }
          }
 
-         val conf = io.kotest.core.config.Configuration()
+         val conf = io.kotest.core.config.ProjectConfiguration()
          conf.registry().add(ext)
 
          TestEngineLauncher(NoopTestEngineListener)
@@ -46,7 +46,7 @@ class SpecInterceptExtensionTest : FunSpec() {
             }
          }
 
-         val conf = io.kotest.core.config.Configuration()
+         val conf = io.kotest.core.config.ProjectConfiguration()
          conf.registry().add(ext)
 
          TestEngineLauncher(NoopTestEngineListener)
@@ -63,7 +63,7 @@ class SpecInterceptExtensionTest : FunSpec() {
             override suspend fun intercept(spec: Spec, execute: suspend (Spec) -> Unit) {}
          }
 
-         val conf = io.kotest.core.config.Configuration()
+         val conf = io.kotest.core.config.ProjectConfiguration()
          conf.registry().add(ext)
 
          val collecting = CollectingTestEngineListener()

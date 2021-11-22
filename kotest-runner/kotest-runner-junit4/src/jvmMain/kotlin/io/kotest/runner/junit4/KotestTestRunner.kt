@@ -1,6 +1,6 @@
 package io.kotest.runner.junit4
 
-import io.kotest.core.config.Configuration
+import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.config.EmptyExtensionRegistry
 import io.kotest.core.spec.Spec
 import io.kotest.engine.TestEngineLauncher
@@ -16,7 +16,7 @@ class KotestTestRunner(
    private val kclass: Class<out Spec>
 ) : Runner() {
 
-   private val formatter = DefaultDisplayNameFormatter(Configuration())
+   private val formatter = DefaultDisplayNameFormatter(ProjectConfiguration())
 
    override fun run(notifier: RunNotifier) {
       runBlocking {
@@ -28,7 +28,7 @@ class KotestTestRunner(
    override fun getDescription(): Description {
       val spec = runBlocking { createAndInitializeSpec(kclass.kotlin, EmptyExtensionRegistry).getOrThrow() }
       val desc = Description.createSuiteDescription(spec::class.java)
-      Materializer(Configuration()).materialize(spec).forEach { rootTest ->
+      Materializer(ProjectConfiguration()).materialize(spec).forEach { rootTest ->
          desc.addChild(
             describeTestCase(
                rootTest,

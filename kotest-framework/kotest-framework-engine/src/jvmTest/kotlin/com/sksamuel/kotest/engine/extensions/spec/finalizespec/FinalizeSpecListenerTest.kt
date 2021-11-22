@@ -1,6 +1,6 @@
 package com.sksamuel.kotest.engine.extensions.spec.finalizespec
 
-import io.kotest.core.config.Configuration
+import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.listeners.FinalizeSpecListener
 import io.kotest.core.listeners.TestListener
 import io.kotest.core.spec.Spec
@@ -37,7 +37,7 @@ class FinalizeSpecTest : FunSpec() {
    init {
       test("finalize spec listeners should be fired") {
 
-         val c = Configuration()
+         val c = ProjectConfiguration()
          c.registry().add(FinalizeSpecTestListener1())
          c.registry().add(FinalizeSpecTestListener2())
 

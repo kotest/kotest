@@ -1,7 +1,7 @@
 package com.sksamuel.kotest.engine.interceptors
 
 import io.kotest.common.KotestInternal
-import io.kotest.core.config.Configuration
+import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.listeners.AfterProjectListener
 import io.kotest.core.listeners.BeforeProjectListener
 import io.kotest.core.spec.style.FunSpec
@@ -21,10 +21,10 @@ class ProjectListenerEngineInterceptorTest : FunSpec({
             fired = true
          }
       }
-      val c = Configuration()
+      val c = ProjectConfiguration()
       c.registry().add(listener)
       ProjectListenerEngineInterceptor.intercept(
-         EngineContext.empty.withConfiguration(c)
+         EngineContext.empty.withProjectConfiguration(c)
       ) { EngineResult(emptyList()) }
 
       fired shouldBe true
@@ -43,11 +43,11 @@ class ProjectListenerEngineInterceptorTest : FunSpec({
             fired2 = true
          }
       }
-      val c = Configuration()
+      val c = ProjectConfiguration()
       c.registry().add(listener1)
       c.registry().add(listener2)
       ProjectListenerEngineInterceptor.intercept(
-         EngineContext.empty.withConfiguration(c)
+         EngineContext.empty.withProjectConfiguration(c)
       ) { EngineResult(emptyList()) }
 
       fired1 shouldBe true
@@ -61,10 +61,10 @@ class ProjectListenerEngineInterceptorTest : FunSpec({
             fired = true
          }
       }
-      val c = Configuration()
+      val c = ProjectConfiguration()
       c.registry().add(listener)
       ProjectListenerEngineInterceptor.intercept(
-         EngineContext.empty.withConfiguration(c)
+         EngineContext.empty.withProjectConfiguration(c)
       ) { EngineResult(emptyList()) }
 
       fired shouldBe true
@@ -83,11 +83,11 @@ class ProjectListenerEngineInterceptorTest : FunSpec({
             fired2 = true
          }
       }
-      val c = Configuration()
+      val c = ProjectConfiguration()
       c.registry().add(listener1)
       c.registry().add(listener2)
       ProjectListenerEngineInterceptor.intercept(
-         EngineContext.empty.withConfiguration(c)
+         EngineContext.empty.withProjectConfiguration(c)
       ) { EngineResult(emptyList()) }
 
       fired1 shouldBe true
@@ -105,11 +105,11 @@ class ProjectListenerEngineInterceptorTest : FunSpec({
             error("zapp!")
          }
       }
-      val c = Configuration()
+      val c = ProjectConfiguration()
       c.registry().add(listener1)
       c.registry().add(listener2)
       val results = ProjectListenerEngineInterceptor.intercept(
-         EngineContext.empty.withConfiguration(c)
+         EngineContext.empty.withProjectConfiguration(c)
       ) { EngineResult(emptyList()) }
       results.errors.filterIsInstance<ExtensionException.BeforeProjectException>().size shouldBe 2
    }
@@ -125,11 +125,11 @@ class ProjectListenerEngineInterceptorTest : FunSpec({
             error("zapp!")
          }
       }
-      val c = Configuration()
+      val c = ProjectConfiguration()
       c.registry().add(listener1)
       c.registry().add(listener2)
       val results = ProjectListenerEngineInterceptor.intercept(
-         EngineContext.empty.withConfiguration(c)
+         EngineContext.empty.withProjectConfiguration(c)
       ) { EngineResult(emptyList()) }
       results.errors.filterIsInstance<ExtensionException.AfterProjectException>().size shouldBe 2
    }

@@ -1,6 +1,6 @@
 package io.kotest.runner.junit4
 
-import io.kotest.core.config.Configuration
+import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.engine.listener.AbstractTestEngineListener
@@ -13,7 +13,7 @@ class JUnitTestEngineListener(
    private val notifier: RunNotifier,
 ) : AbstractTestEngineListener() {
 
-   private val formatter = DefaultDisplayNameFormatter(Configuration())
+   private val formatter = DefaultDisplayNameFormatter(ProjectConfiguration())
 
    override suspend fun testStarted(testCase: TestCase) {
       notifier.fireTestStarted(describeTestCase(testCase, formatter.format(testCase)))

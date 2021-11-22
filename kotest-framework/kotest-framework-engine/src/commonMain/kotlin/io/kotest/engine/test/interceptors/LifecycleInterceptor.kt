@@ -33,7 +33,7 @@ internal class LifecycleInterceptor(
 ) : TestExecutionInterceptor {
 
    private val extensions = TestExtensions(registry)
-   private val logger = Logger(LifecycleInterceptor::class)
+   private val logger = Logger(this::class)
 
    override suspend fun intercept(
       testCase: TestCase,

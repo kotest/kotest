@@ -2,12 +2,14 @@ package io.kotest.engine.spec
 
 import io.kotest.common.ExperimentalKotest
 import io.kotest.core.concurrency.CoroutineDispatcherFactory
-import io.kotest.core.config.Configuration
+import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.Spec
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.engine.concurrency.isIsolate
+import io.kotest.engine.config.MutableConfiguration
+import io.kotest.engine.interceptors.EngineContext
 import io.kotest.engine.listener.TestEngineListener
 import io.kotest.engine.spec.runners.InstancePerLeafSpecRunner
 import io.kotest.engine.spec.runners.InstancePerTestSpecRunner
@@ -21,18 +23,18 @@ import kotlin.math.max
 @ExperimentalKotest
 internal actual fun createSpecExecutorDelegate(
    listener: TestEngineListener,
-   defaultCoroutineDispatcherFactory: CoroutineDispatcherFactory,
-   configuration: Configuration,
-): SpecExecutorDelegate = JvmSpecExecutorDelegate(listener, defaultCoroutineDispatcherFactory, configuration)
+   coroutineDispatcherFactory: CoroutineDispatcherFactory,
+   context: EngineContext,
+): SpecExecutorDelegate = JvmSpecExecutorDelegate(listener, coroutineDispatcherFactory, context.configuration)
 
 @ExperimentalKotest
 class JvmSpecExecutorDelegate(
    private val listener: TestEngineListener,
    private val dispatcherFactory: CoroutineDispatcherFactory,
-   private val configuration: Configuration,
+   private val configuration: ProjectConfiguration,
 ) : SpecExecutorDelegate {
 
-   private val logger = Logger(JvmSpecExecutorDelegate::class)
+   private val logger = Logger(this::class)
 
    private fun Spec.resolvedIsolationMode() =
       this.isolationMode() ?: this.isolationMode ?: configuration.isolationMode
@@ -40,7 +42,7 @@ class JvmSpecExecutorDelegate(
    override suspend fun execute(spec: Spec): Map<TestCase, TestResult> {
 
       val scheduler = when (val concurrentTests = spec.resolvedConcurrentTests(configuration.concurrentTests)) {
-         Configuration.Sequential -> SequentialTestScheduler
+         MutableConfiguration.Sequential -> SequentialTestScheduler
          else -> ConcurrentTestScheduler(max(1, concurrentTests))
       }
 
@@ -87,7 +89,7 @@ class JvmSpecExecutorDelegate(
 internal fun Spec.resolvedConcurrentTests(defaultConcurrentTests: Int): Int {
    val fromSpecConcurrency = this.concurrency ?: this.concurrency()
    return when {
-      this::class.isIsolate() -> Configuration.Sequential
+      this::class.isIsolate() -> MutableConfiguration.Sequential
       fromSpecConcurrency != null -> max(1, fromSpecConcurrency)
       else -> defaultConcurrentTests
    }

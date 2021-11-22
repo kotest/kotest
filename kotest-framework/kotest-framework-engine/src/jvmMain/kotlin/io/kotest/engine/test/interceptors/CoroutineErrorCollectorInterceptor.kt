@@ -17,7 +17,7 @@ internal actual fun coroutineErrorCollectorInterceptor(): TestExecutionIntercept
  */
 internal object CoroutineErrorCollectorInterceptor : TestExecutionInterceptor {
 
-   private val logger = Logger(CoroutineErrorCollectorInterceptor::class)
+   private val logger = Logger(this::class)
 
    override suspend fun intercept(
       testCase: TestCase,

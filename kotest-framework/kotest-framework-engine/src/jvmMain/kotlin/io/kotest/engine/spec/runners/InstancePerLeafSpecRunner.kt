@@ -3,21 +3,21 @@ package io.kotest.engine.spec.runners
 import io.kotest.common.ExperimentalKotest
 import io.kotest.common.flatMap
 import io.kotest.core.concurrency.CoroutineDispatcherFactory
-import io.kotest.core.config.Configuration
+import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.descriptors.Descriptor
 import io.kotest.core.spec.Spec
 import io.kotest.core.test.NestedTest
 import io.kotest.core.test.TestCase
-import io.kotest.core.test.TestScope
 import io.kotest.core.test.TestResult
+import io.kotest.core.test.TestScope
 import io.kotest.engine.listener.TestEngineListener
 import io.kotest.engine.spec.Materializer
 import io.kotest.engine.spec.SpecExtensions
 import io.kotest.engine.spec.SpecRunner
 import io.kotest.engine.test.TestCaseExecutionListener
 import io.kotest.engine.test.TestCaseExecutor
-import io.kotest.engine.test.scopes.DuplicateNameHandlingTestScope
 import io.kotest.engine.test.scheduler.TestScheduler
+import io.kotest.engine.test.scopes.DuplicateNameHandlingTestScope
 import io.kotest.mpp.log
 import kotlinx.coroutines.coroutineScope
 import java.util.PriorityQueue
@@ -29,10 +29,10 @@ internal class InstancePerLeafSpecRunner(
    listener: TestEngineListener,
    scheduler: TestScheduler,
    private val defaultCoroutineDispatcherFactory: CoroutineDispatcherFactory,
-   private val configuration: Configuration,
+   private val configuration: ProjectConfiguration,
 ) : SpecRunner(listener, scheduler, configuration) {
 
-   private val extensions = SpecExtensions(configuration.registry())
+   private val extensions = SpecExtensions(configuration.extensions)
    private val results = mutableMapOf<TestCase, TestResult>()
 
    // keeps track of tests we've already discovered

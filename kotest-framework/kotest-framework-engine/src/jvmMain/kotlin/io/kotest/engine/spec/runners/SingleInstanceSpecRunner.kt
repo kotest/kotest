@@ -3,7 +3,7 @@ package io.kotest.engine.spec.runners
 import io.kotest.common.ExperimentalKotest
 import io.kotest.common.flatMap
 import io.kotest.core.concurrency.CoroutineDispatcherFactory
-import io.kotest.core.config.Configuration
+import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.spec.Spec
 import io.kotest.core.test.NestedTest
 import io.kotest.core.test.TestCase
@@ -33,12 +33,12 @@ internal class SingleInstanceSpecRunner(
    listener: TestEngineListener,
    scheduler: TestScheduler,
    private val defaultCoroutineDispatcherFactory: CoroutineDispatcherFactory,
-   private val configuration: Configuration,
+   private val configuration: ProjectConfiguration,
 ) : SpecRunner(listener, scheduler, configuration) {
 
    private val results = ConcurrentHashMap<TestCase, TestResult>()
-   private val extensions = SpecExtensions(configuration.registry())
-   private val logger = Logger(SingleInstanceSpecRunner::class)
+   private val extensions = SpecExtensions(configuration.extensions)
+   private val logger = Logger(this::class)
 
    override suspend fun execute(spec: Spec): Result<Map<TestCase, TestResult>> {
       logger.log { Pair(spec::class.bestName(), "executing spec $spec") }
@@ -56,7 +56,7 @@ internal class SingleInstanceSpecRunner(
          return coroutineScope {
             extensions.beforeSpec(spec)
                .flatMap { interceptAndRun(coroutineContext) }
-               .flatMap { SpecExtensions(configuration.registry()).afterSpec(spec) }
+               .flatMap { SpecExtensions(configuration.extensions).afterSpec(spec) }
                .map { results }
          }
       } catch (e: Exception) {

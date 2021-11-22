@@ -3,7 +3,7 @@ package com.sksamuel.kotest.engine.spec.interceptor
 import io.kotest.common.ExperimentalKotest
 import io.kotest.core.NamedTag
 import io.kotest.core.TagExpression
-import io.kotest.core.config.Configuration
+import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.spec.style.BehaviorSpec
 import io.kotest.core.spec.style.ExpectSpec
 import io.kotest.core.spec.style.FunSpec
@@ -20,7 +20,7 @@ class TagsExcludedDiscoveryExtensionTest : FunSpec() {
       test("TagsExcludedSpecInterceptor should support include & exclude") {
 
          val tags = TagExpression.Empty.include(NamedTag("SpecIncluded")).exclude(NamedTag("SpecExcluded"))
-         val conf = Configuration()
+         val conf = ProjectConfiguration()
          conf.registry().add(SpecifiedTagsTagExtension(tags))
 
          // will be excluded explicitly
@@ -49,7 +49,7 @@ class TagsExcludedDiscoveryExtensionTest : FunSpec() {
       test("TagsExcludedSpecInterceptor should ignore include only") {
 
          val tags = TagExpression.Empty.include(NamedTag("SpecIncluded"))
-         val conf = Configuration()
+         val conf = ProjectConfiguration()
          conf.registry().add(SpecifiedTagsTagExtension(tags))
 
          var executed = false
@@ -80,7 +80,7 @@ class TagsExcludedDiscoveryExtensionTest : FunSpec() {
       test("TagsExcludedSpecInterceptor should support exclude only") {
 
          val tags = TagExpression.Empty.exclude(NamedTag("SpecExcluded"))
-         val conf = Configuration()
+         val conf = ProjectConfiguration()
          conf.registry().add(SpecifiedTagsTagExtension(tags))
 
          TagsExcludedSpecInterceptor(NoopTestEngineListener, conf)

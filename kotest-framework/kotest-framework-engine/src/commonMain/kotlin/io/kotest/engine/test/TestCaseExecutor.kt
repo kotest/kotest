@@ -4,7 +4,7 @@ import io.kotest.common.ExperimentalKotest
 import io.kotest.common.Platform
 import io.kotest.common.platform
 import io.kotest.core.concurrency.CoroutineDispatcherFactory
-import io.kotest.core.config.Configuration
+import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestScope
@@ -38,10 +38,10 @@ import kotlin.time.TimeSource
 class TestCaseExecutor(
    private val listener: TestCaseExecutionListener,
    private val defaultCoroutineDispatcherFactory: CoroutineDispatcherFactory = NoopCoroutineDispatcherFactory,
-   private val configuration: Configuration,
+   private val configuration: ProjectConfiguration,
 ) {
 
-   private val logger = Logger(TestCaseExecutor::class)
+   private val logger = Logger(this::class)
 
    suspend fun execute(testCase: TestCase, testScope: TestScope): TestResult {
       val timeMark = TimeSource.Monotonic.markNow()
@@ -53,15 +53,15 @@ class TestCaseExecutor(
          SupervisorScopeInterceptor,
          if (platform == Platform.JVM) coroutineDispatcherFactoryInterceptor(defaultCoroutineDispatcherFactory) else null,
          if (platform == Platform.JVM) coroutineErrorCollectorInterceptor() else null,
-         TestCaseExtensionInterceptor(configuration.registry()),
+         TestCaseExtensionInterceptor(configuration.extensions),
          EnabledCheckInterceptor(configuration),
-         LifecycleInterceptor(listener, timeMark, configuration.registry()),
+         LifecycleInterceptor(listener, timeMark, configuration.extensions),
          AssertionModeInterceptor,
          SoftAssertInterceptor(),
          CoroutineLoggingInterceptor(configuration),
          if (platform == Platform.JVM) blockedThreadTimeoutInterceptor(configuration, timeMark) else null,
          TimeoutInterceptor(timeMark),
-         TestInvocationInterceptor(configuration.registry(), timeMark),
+         TestInvocationInterceptor(configuration.extensions, timeMark),
          InvocationTimeoutInterceptor,
          if (platform == Platform.JVM && testCase.config.testCoroutineDispatcher) TestCoroutineDispatcherInterceptor() else null,
       )

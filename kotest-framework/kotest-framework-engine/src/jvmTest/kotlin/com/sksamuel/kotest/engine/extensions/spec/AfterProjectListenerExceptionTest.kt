@@ -1,6 +1,6 @@
 package com.sksamuel.kotest.engine.extensions.spec
 
-import io.kotest.core.config.Configuration
+import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.listeners.ProjectListener
 import io.kotest.core.annotation.Isolate
 import io.kotest.core.spec.style.FunSpec
@@ -31,7 +31,7 @@ class AfterProjectListenerExceptionTest : FunSpec({
          }
       }
 
-      val c = Configuration()
+      val c = ProjectConfiguration()
       c.registry().add(projectListener)
 
       TestEngineLauncher(listener)
@@ -66,7 +66,7 @@ class AfterProjectListenerExceptionTest : FunSpec({
          }
       }
 
-      val c = Configuration()
+      val c = ProjectConfiguration()
       c.registry().add(projectListener1)
       c.registry().add(projectListener2)
 

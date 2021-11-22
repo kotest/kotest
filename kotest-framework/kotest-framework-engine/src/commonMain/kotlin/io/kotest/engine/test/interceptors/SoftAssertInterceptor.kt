@@ -13,7 +13,7 @@ import io.kotest.mpp.Logger
  */
 internal class SoftAssertInterceptor() : TestExecutionInterceptor {
 
-   private val logger = Logger(SoftAssertInterceptor::class)
+   private val logger = Logger(this::class)
 
    private fun shouldApply(testCase: TestCase): Boolean {
       return testCase.type == TestType.Test && testCase.config.assertSoftly

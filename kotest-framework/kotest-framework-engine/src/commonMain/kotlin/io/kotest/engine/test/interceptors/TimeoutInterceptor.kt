@@ -16,7 +16,7 @@ internal class TimeoutInterceptor(
    private val mark: TimeMark,
 ) : TestExecutionInterceptor {
 
-   private val logger = Logger(TimeoutInterceptor::class)
+   private val logger = Logger(this::class)
 
    override suspend fun intercept(
       testCase: TestCase,

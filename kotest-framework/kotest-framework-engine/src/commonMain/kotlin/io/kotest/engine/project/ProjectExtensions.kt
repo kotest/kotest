@@ -8,7 +8,7 @@ import io.kotest.mpp.Logger
 
 class ProjectExtensions(private val registry: ExtensionRegistry) {
 
-   private val logger = Logger(ProjectExtensions::class)
+   private val logger = Logger(this::class)
 
    suspend fun beforeProject(): List<ExtensionException.BeforeProjectException> {
       val ext = registry.all().filterIsInstance<BeforeProjectListener>()

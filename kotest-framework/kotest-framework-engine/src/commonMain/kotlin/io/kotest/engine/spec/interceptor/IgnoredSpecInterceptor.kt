@@ -23,7 +23,7 @@ internal class IgnoredSpecInterceptor(
    registry: ExtensionRegistry,
 ) : SpecRefInterceptor {
 
-   private val logger = Logger(IgnoredSpecInterceptor::class)
+   private val logger = Logger(this::class)
    private val extensions = SpecExtensions(registry)
 
    override suspend fun intercept(

@@ -1,6 +1,6 @@
 package com.sksamuel.kotest.engine.config
 
-import io.kotest.core.config.Configuration
+import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.names.DuplicateTestNameMode
 import io.kotest.core.annotation.Isolate
 import io.kotest.core.spec.IsolationMode
@@ -15,7 +15,7 @@ import kotlin.time.seconds
 class DumpTest : FunSpec({
 
    test("dump should include test timeouts") {
-      Configuration().apply {
+      ProjectConfiguration().apply {
          timeout = 12
          invocationTimeout = 34234
          projectTimeout = 44444.seconds
@@ -27,7 +27,7 @@ class DumpTest : FunSpec({
    }
 
    test("dump should include affinity") {
-      Configuration().apply {
+      ProjectConfiguration().apply {
          timeout = 12
          invocationTimeout = 34234
       }.createConfigSummary().apply {
@@ -36,7 +36,7 @@ class DumpTest : FunSpec({
    }
 
    test("dump should include test order") {
-      Configuration().apply {
+      ProjectConfiguration().apply {
          testCaseOrder = TestCaseOrder.Random
       }.createConfigSummary().apply {
          this.shouldInclude("Default test execution order: Random")
@@ -44,7 +44,7 @@ class DumpTest : FunSpec({
    }
 
    test("dump should include Spec execution order") {
-      Configuration().apply {
+      ProjectConfiguration().apply {
          specExecutionOrder = SpecExecutionOrder.Annotated
       }.createConfigSummary().apply {
          this.shouldInclude("Spec execution order: Annotated")
@@ -52,7 +52,7 @@ class DumpTest : FunSpec({
    }
 
    test("dump should include Duplicate test name mode") {
-      Configuration().apply {
+      ProjectConfiguration().apply {
          duplicateTestNameMode = DuplicateTestNameMode.Silent
       }.createConfigSummary().apply {
          this.shouldInclude("Duplicate test name mode: Silent")
@@ -60,7 +60,7 @@ class DumpTest : FunSpec({
    }
 
    test("dump should include default isolation mode") {
-      Configuration().apply {
+      ProjectConfiguration().apply {
          isolationMode = IsolationMode.InstancePerLeaf
       }.createConfigSummary().apply {
          this.shouldInclude("Default isolation mode: InstancePerLeaf")
@@ -68,7 +68,7 @@ class DumpTest : FunSpec({
    }
 
    test("dump should include failOnEmptyTestSuite") {
-      Configuration().apply {
+      ProjectConfiguration().apply {
          failOnEmptyTestSuite = true
       }.createConfigSummary().apply {
          this.shouldInclude("Fail on empty test suite: true")
@@ -76,7 +76,7 @@ class DumpTest : FunSpec({
    }
 
    test("dump should include coroutineDebugProbes") {
-      Configuration().apply {
+      ProjectConfiguration().apply {
          coroutineDebugProbes = true
       }.createConfigSummary().apply {
          this.shouldInclude("Coroutine debug probe: true")
@@ -84,7 +84,7 @@ class DumpTest : FunSpec({
    }
 
    test("dump should include failOnIgnoredTests") {
-      Configuration().apply {
+      ProjectConfiguration().apply {
          failOnIgnoredTests = true
       }.createConfigSummary().apply {
          this.shouldInclude("Fail on ignored tests: true")
@@ -92,7 +92,7 @@ class DumpTest : FunSpec({
    }
 
    test("dump should include globalAssertSoftly") {
-      Configuration().apply {
+      ProjectConfiguration().apply {
          globalAssertSoftly = true
       }.createConfigSummary().apply {
          this.shouldInclude("Global soft assertions: true")

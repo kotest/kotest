@@ -20,7 +20,7 @@ internal object KotestPropertiesInterceptor : EngineInterceptor {
 
    /**
     * Returns the filename to use for kotest system properties. Allows the filename
-    * to be overriden, for example, for different envs.
+    * to be overridden, for example, for different envs.
     */
    private fun systemPropsFilename(): String =
       System.getProperty(KotestEngineProperties.propertiesFilename) ?: DefaultKotestPropertiesFilename

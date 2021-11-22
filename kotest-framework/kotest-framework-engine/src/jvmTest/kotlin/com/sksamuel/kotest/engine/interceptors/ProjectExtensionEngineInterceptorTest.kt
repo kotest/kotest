@@ -2,12 +2,11 @@ package com.sksamuel.kotest.engine.interceptors
 
 import io.kotest.common.KotestInternal
 import io.kotest.core.TagExpression
-import io.kotest.core.config.Configuration
+import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.ProjectContext
 import io.kotest.core.extensions.ProjectExtension
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.engine.EngineResult
-import io.kotest.engine.interceptors.EngineContext
 import io.kotest.engine.interceptors.ProjectExtensionEngineInterceptor
 import io.kotest.matchers.shouldBe
 
@@ -33,10 +32,10 @@ class ProjectExtensionEngineInterceptorTest : FunSpec({
          }
       }
 
-      val c = Configuration()
+      val c = ProjectConfiguration()
       c.registry().add(ext1)
       c.registry().add(ext2)
-      ProjectExtensionEngineInterceptor.intercept(EngineContext.empty.withConfiguration(c)) { EngineResult.empty }
+      ProjectExtensionEngineInterceptor.intercept(ProjectContext.empty.withConfiguration(c)) { EngineResult.empty }
 
       fired1 shouldBe true
       fired2 shouldBe true
@@ -58,10 +57,10 @@ class ProjectExtensionEngineInterceptorTest : FunSpec({
          }
       }
 
-      val c = Configuration()
+      val c = ProjectConfiguration()
       c.registry().add(ext1)
       c.registry().add(ext2)
-      ProjectExtensionEngineInterceptor.intercept(EngineContext.empty.withConfiguration(c)) {
+      ProjectExtensionEngineInterceptor.intercept(ProjectContext.empty.withConfiguration(c)) {
          fired = true
          EngineResult.empty
       }
@@ -73,7 +72,7 @@ class ProjectExtensionEngineInterceptorTest : FunSpec({
 
       var fired = false
 
-      ProjectExtensionEngineInterceptor.intercept(EngineContext.empty) {
+      ProjectExtensionEngineInterceptor.intercept(ProjectContext.empty) {
          fired = true
          EngineResult.empty
       }
@@ -90,9 +89,9 @@ class ProjectExtensionEngineInterceptorTest : FunSpec({
          }
       }
 
-      val c = Configuration()
+      val c = ProjectConfiguration()
       c.registry().add(ext)
-      ProjectExtensionEngineInterceptor.intercept(EngineContext.empty.withTags(TagExpression("foo")).withConfiguration(c)) {
+      ProjectExtensionEngineInterceptor.intercept(ProjectContext.empty.withTags(TagExpression("foo")).withConfiguration(c)) {
          tags = it.tags
          EngineResult.empty
       }

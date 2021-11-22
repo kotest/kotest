@@ -1,10 +1,5 @@
-@file:Suppress("MemberVisibilityCanBePrivate")
-
 package io.kotest.core.config
 
-import io.kotest.common.ExperimentalKotest
-import io.kotest.core.extensions.Extension
-import io.kotest.core.listeners.Listener
 import io.kotest.core.names.DuplicateTestNameMode
 import io.kotest.core.names.TestNameCase
 import io.kotest.core.spec.IsolationMode
@@ -18,22 +13,11 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlin.time.Duration
 
 /**
- * This class defines project wide settings that are used when executing tests.
- *
- * Some settings here are fallback values. That is, a setting specified in a Spec or Test
- * will override the value here.
+ * An immutable configuration class used once the Engine has been initialized.
  */
-class Configuration {
+data class ProjectConfiguration(
 
-   companion object {
-      @ExperimentalKotest
-      const val Sequential = 1
-
-      @ExperimentalKotest
-      const val MaxConcurrency = Int.MAX_VALUE
-   }
-
-   private val registry: ExtensionRegistry = DefaultExtensionRegistry()
+   val extensions: ExtensionRegistry,
 
    /**
     * If enabled, then all failing spec names will be written to a "failure file".
@@ -43,7 +27,7 @@ class Configuration {
     *
     * Note: Only has an effect on the JVM.
     */
-   var writeSpecFailureFile: Boolean = Defaults.writeSpecFailureFile
+   val writeSpecFailureFile: Boolean,
 
    /**
     * The path to write the failed spec list to, if enabled.
@@ -52,14 +36,14 @@ class Configuration {
     *
     * Note: Only has an effect on the JVM.
     */
-   var specFailureFilePath: String = Defaults.specFailureFilePath
+   val specFailureFilePath: String,
 
    /**
     * If true, then all test cases are implicitly wrapped in an assertSoftly call.
     *
     * Defaults to [Defaults.globalAssertSoftly].
     */
-   var globalAssertSoftly: Boolean = Defaults.globalAssertSoftly
+   val globalAssertSoftly: Boolean,
 
    /**
     * The casing of the tests' names can be adjusted using different strategies. It affects tests'
@@ -69,7 +53,7 @@ class Configuration {
     *
     * Defaults to [Defaults.defaultTestNameCase]
     */
-   var testNameCase: TestNameCase = Defaults.defaultTestNameCase
+   val testNameCase: TestNameCase,
 
    /**
     * If true, then the test execution will fail if any test is set to ignore.
@@ -77,12 +61,12 @@ class Configuration {
     *
     * Defaults to [Defaults.failOnIgnoredTests].
     */
-   var failOnIgnoredTests: Boolean = Defaults.failOnIgnoredTests
+   val failOnIgnoredTests: Boolean,
 
    /**
     * Returns the default assertion mode.
     */
-   var assertionMode: AssertionMode = Defaults.assertionMode
+   val assertionMode: AssertionMode,
 
    /**
     * The parallelism factor determines how many threads are used to execute specs and tests.
@@ -100,11 +84,11 @@ class Configuration {
     * which will always (if defined) take priority over the value here.
     *
     * Note: For backwards compatibility, setting this value to k will implicitly set
-    * [Configuration.concurrentSpecs] to the k unless that value has also been set.
+    * [MutableConfiguration.concurrentSpecs] to the k unless that value has also been set.
     *
     * Defaults to [Defaults.parallelism].
     */
-   var parallelism: Int = Defaults.parallelism
+   val parallelism: Int,
 
    /**
     * By default, all tests inside a single spec are executed using the same dispatcher to ensure
@@ -118,61 +102,58 @@ class Configuration {
     *
     * Defaults to [Defaults.dispatcherAffinity].
     */
-   @ExperimentalKotest
-   var dispatcherAffinity: Boolean = Defaults.dispatcherAffinity
+   val dispatcherAffinity: Boolean,
 
    /**
     * Each spec is launched into its own coroutine. By default, the test engine waits for that
-    * coroutine to finish before launching the next spec. By setting [Configuration.concurrentSpecs]
+    * coroutine to finish before launching the next spec. By setting [MutableConfiguration.concurrentSpecs]
     * to a value higher than 1, multiple specs will be launched at the same time.
     *
     * For example, setting this value to 5 will result in 5 specs running concurrently. Once
     * one of those specs completes, another will be launched (if any are remaining), and so on.
     *
-    * Setting this value to [Configuration.MaxConcurrency] will result in all specs being launched together.
+    * Setting this value to [MutableConfiguration.MaxConcurrency] will result in all specs being launched together.
     *
     * The maximum number of coroutines that can be launched at any time is given
-    * by [Configuration.concurrentSpecs] * [Configuration.concurrentTests].
+    * by [MutableConfiguration.concurrentSpecs] * [MutableConfiguration.concurrentTests].
     *
     * Tests inside each spec will continue to be launched sequentially. To change that
-    * see [Configuration.concurrentTests].
+    * see [MutableConfiguration.concurrentTests].
     *
     * Note: This value does not change the number of threads used by the test engine. If a test uses a
     * blocking method, then that thread cannot be utilized by another coroutine while the thread is
-    * blocked. See [Configuration.parallelism].
+    * blocked. See [MutableConfiguration.parallelism].
     *
     * Note: This setting can be > 1 and specs can still choose to "opt out" by using the
     * [io.kotest.core.annotation.Isolate] annotation. That annotation ensures that a spec never runs concurrently
     * with any other regardless of the setting here.
     */
-   @ExperimentalKotest
-   var concurrentSpecs: Int? = null
+   val concurrentSpecs: Int,
 
    /**
     * Each root test is launched into its own coroutine. By default, the test engine waits
     * for that coroutine to finish before launching the next test of the same spec. By setting
-    * [Configuration.concurrentTests] to a value higher than 1, multiple tests will be launched
+    * [MutableConfiguration.concurrentTests] to a value higher than 1, multiple tests will be launched
     * at the same time.
     *
     * For example, setting this value to 5 will result in at most 5 tests running concurrently per spec.
     * Once one of those tests completes, another will be launched (if there are further tests in the spec),
     * and so on.
     *
-    * Setting this value to [Configuration.MaxConcurrency] will result in all tests of a spec being
+    * Setting this value to [MutableConfiguration.MaxConcurrency] will result in all tests of a spec being
     * launched together when the spec is instantiated
     *
     * Setting this value will result in tests inside a spec executing concurrently, but will not change
-    * how many specs are launched concurrently. For that, see [Configuration.concurrentSpecs].
+    * how many specs are launched concurrently. For that, see [MutableConfiguration.concurrentSpecs].
     *
     * The maximum number of coroutines that can be launched at any time is given
-    * by [Configuration.concurrentSpecs] * [Configuration.concurrentTests].
+    * by [MutableConfiguration.concurrentSpecs] * [MutableConfiguration.concurrentTests].
     *
     * Note: This value does not change the number of threads used by the test engine. If a test uses a
     * blocking method, then that thread cannot be utilized by another coroutine while the thread is
-    * blocked. See [Configuration.parallelism].
+    * blocked. See [MutableConfiguration.parallelism].
     */
-   @ExperimentalKotest
-   var concurrentTests: Int = Defaults.concurrentTests
+   val concurrentTests: Int,
 
    /**
     * Returns the timeout for the execution of a test case in milliseconds.
@@ -183,7 +164,7 @@ class Configuration {
     *
     * Defaults to [Defaults.defaultTimeoutInMillis].
     */
-   var timeout: Long = Defaults.defaultTimeoutInMillis
+   val timeout: Duration,
 
    /**
     * Returns the timeout for any single invocation of a test.
@@ -192,24 +173,19 @@ class Configuration {
     *
     * Defaults to [Defaults.defaultInvocationTimeoutInMillis].
     */
-   var invocationTimeout: Long = Defaults.defaultInvocationTimeoutInMillis
+   val invocationTimeout: Duration,
 
    /**
-    * A timeout that is applied to the overall project if not null,
-    * if the sum duration of all the tests exceeds this the suite will fail.
+    * A timeout that is applied to the overall project if not null.
+    *
+    * If the execution time of all tests exceeds this value then the test suite will fail.
     */
-   var projectTimeout: Duration? = null
+   val projectTimeout: Duration?,
 
    /**
     * Controls which log functions on TestCase will be invoked or skipped
     */
-   var logLevel: LogLevel = LogLevel.Off
-
-   var failfast: Boolean = Defaults.failfast
-
-   var blockingTest: Boolean = Defaults.blockingTest
-
-   var severity: TestCaseSeverityLevel = Defaults.severity
+   val logLevel: LogLevel,
 
    /**
     * If set to true then the test engine will install a [TestCoroutineDispatcher].
@@ -218,8 +194,7 @@ class Configuration {
     *
     * @see https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-test/index.html
     */
-   @ExperimentalKotest
-   var testCoroutineDispatcher: Boolean = Defaults.testCoroutineDispatcher
+   val testCoroutineDispatcher: Boolean,
 
    /**
     * Contains the default [ResolvedTestConfig] to be used by tests when not specified in either
@@ -227,20 +202,19 @@ class Configuration {
     *
     * Defaults to [Defaults.testCaseConfig]
     */
-   @Deprecated("These settings can be specified individually to provide finer grain control. Deprecated since 5.0")
-   var defaultTestConfig: TestCaseConfig = Defaults.testCaseConfig
+   val defaultTestConfig: TestCaseConfig,
 
    /**
     * If set to true, then will cause the test suite to fail if there were no executed tests.
     */
-   var failOnEmptyTestSuite: Boolean = Defaults.failOnEmptyTestSuite
+   val failOnEmptyTestSuite: Boolean,
 
    /**
     * Set to true to enable enhanced tracing of coroutines when an error occurs.
     *
     * Defaults to [Defaults.coroutineDebugProbes]
     */
-   var coroutineDebugProbes: Boolean = Defaults.coroutineDebugProbes
+   val coroutineDebugProbes: Boolean,
 
    /**
     * Some specs have DSLs that include prefix or suffix words in the test name.
@@ -267,7 +241,7 @@ class Configuration {
     *
     * Defaults to null, which is to use the default.
     */
-   var includeTestScopeAffixes: Boolean? = Defaults.defaultIncludeTestScopeAffixes
+   val includeTestScopeAffixes: Boolean,
 
    /**
     * Set to false and if a spec has no active tests (all disabled due to config or tags say)
@@ -277,7 +251,7 @@ class Configuration {
     *
     * Note: This only works for JUnit and Intellij runners.
     */
-   var displaySpecIfNoActiveTests: Boolean = Defaults.displaySpecIfNoActiveTests
+   val displaySpecIfNoActiveTests: Boolean,
 
    /**
     * Controls the default [IsolationMode] that each spec will execute in.
@@ -286,7 +260,7 @@ class Configuration {
     *
     * Default to [Defaults.isolationMode]
     */
-   var isolationMode: IsolationMode = Defaults.isolationMode
+   val isolationMode: IsolationMode,
 
    /**
     * Controls the ordering of root test cases in each spec.
@@ -297,18 +271,16 @@ class Configuration {
     *
     * Defaults to [Defaults.testCaseOrder]
     */
-   var testCaseOrder: TestCaseOrder = Defaults.testCaseOrder
+   val testCaseOrder: TestCaseOrder,
 
    /**
     * Returns the sort order to use when executing specs.
     *
     * Defaults to [Defaults.specExecutionOrder]
     */
-   var specExecutionOrder: SpecExecutionOrder = Defaults.specExecutionOrder
-
-   var removeTestNameWhitespace: Boolean = false
-
-   var testNameAppendTags: Boolean = false
+   val specExecutionOrder: SpecExecutionOrder,
+   val removeTestNameWhitespace: Boolean,
+   val testNameAppendTags: Boolean,
 
    /**
     * Controls what to do when a duplicated test name is discovered.
@@ -316,123 +288,13 @@ class Configuration {
     *
     * Defaults to [Defaults.duplicateTestNameMode]
     */
-   var duplicateTestNameMode: DuplicateTestNameMode = Defaults.duplicateTestNameMode
+   val duplicateTestNameMode: DuplicateTestNameMode,
 
-   var displayFullTestPath: Boolean = Defaults.displayFullTestPath
+   val displayFullTestPath: Boolean,
 
-   /**
-    * Returns all globally registered [Listener]s.
-    */
-   @Deprecated("Listeners have been subsumed into extensions", level = DeprecationLevel.ERROR)
-   fun listeners(): Nothing = throw UnsupportedOperationException()
+   var failfast: Boolean,
 
-   /**
-    * Returns the [ExtensionRegistry] that contains all extensions registered through
-    * this configuration instance.
-    */
-   fun registry(): ExtensionRegistry = registry
+   var blockingTest: Boolean,
 
-   @Deprecated("Use registry. Deprecated since 5.0")
-   fun extensions(): List<Extension> = registry().all()
-
-   /**
-    * Returns all globally registered [Filter]s.
-    */
-   @Deprecated("Listeners have been subsumed into extensions", level = DeprecationLevel.ERROR)
-   fun filters(): Nothing = throw UnsupportedOperationException()
-
-   @Deprecated("Use registry. Deprecated since 5.0")
-   fun registerFilters(vararg filters: Extension) = filters.forEach { registry.add(it) }
-
-   @Deprecated("Use registry. Deprecated since 5.0")
-   fun registerFilters(filters: Collection<Extension>) = filters.forEach { registry.add(it) }
-
-   @Deprecated("Use registry. Deprecated since 5.0")
-   fun deregisterFilters(filters: Collection<Extension>) = filters.forEach { registry.remove(it) }
-
-   @Deprecated("Use registry. Deprecated since 5.0", ReplaceWith("registry().add(filter)"))
-   fun registerFilter(filter: Extension) {
-      register(filter)
-   }
-
-   @Deprecated("Use registry. Deprecated since 5.0", ReplaceWith("registry().remove(filter)"))
-   fun deregisterFilter(filter: Extension) {
-      deregister(filter)
-   }
-
-   @Deprecated(
-      "Use extensions().add(). Deprecated since 5.0",
-      ReplaceWith("extensions.forEach { registry().add(it) }")
-   )
-   fun registerExtensions(vararg extensions: Extension) = extensions.forEach { registry().add(it) }
-
-   @Deprecated(
-      "Use extensions().add(). Deprecated since 5.0",
-      ReplaceWith("extensions.forEach { registry().add(it) }")
-   )
-   fun registerExtensions(extensions: List<Extension>) = extensions.forEach { registry().add(it) }
-
-   @Deprecated(
-      "Use extensions().add(). Deprecated since 5.0",
-      ReplaceWith("extensions.forEach { registry().remove(it) }")
-   )
-   fun deregisterExtensions(extensions: List<Extension>) = extensions.forEach { registry().remove(it) }
-
-   @Deprecated("Use extensions().add(). Deprecated since 5.0", ReplaceWith("registry().add(extension)"))
-   fun register(extension: Extension) {
-      registry().add(extension)
-   }
-
-   @Deprecated("Use extensions().add(). Deprecated since 5.0", ReplaceWith("registry().add(extension)"))
-   fun registerExtension(extension: Extension) {
-      registry().add(extension)
-   }
-
-   @Deprecated("Use extensions().remove(). Deprecated since 5.0", ReplaceWith("registry().remove(extension)"))
-   fun deregister(extension: Extension) {
-      registry().remove(extension)
-   }
-
-   @Deprecated("Use extensions().remove(). Deprecated since 5.0", ReplaceWith("registry().remove(extension)"))
-   fun deregisterExtension(extension: Extension) {
-      registry().remove(extension)
-   }
-
-   @Deprecated(
-      "Use extensions().add(). Deprecated since 5.0",
-      ReplaceWith("listeners.forEach { registry().add(it) }")
-   )
-   fun registerListeners(vararg listeners: Listener) = listeners.forEach { registry().add(it) }
-
-   @Deprecated(
-      "Use extensions().add(). Deprecated since 5.0",
-      ReplaceWith("listeners.forEach { registry().add(it) }")
-   )
-   fun registerListeners(listeners: List<Listener>) = listeners.forEach { registry().add(it) }
-
-   @Deprecated(
-      "Use extensions().remove(). Deprecated since 5.0",
-      ReplaceWith("listeners.forEach { registry().remove(it) }")
-   )
-   fun deregisterListeners(listeners: List<Listener>) = listeners.forEach { registry().remove(it) }
-
-   @Deprecated("Use extensions().add(). Deprecated since 5.0", ReplaceWith("registry().add(listener)"))
-   fun registerListener(listener: Listener) {
-      registry().add(listener)
-   }
-
-   @Deprecated("Use extensions().remove(). Deprecated since 5.0", ReplaceWith("registry().remove(listener)"))
-   fun deregisterListener(listener: Listener) {
-      registry.remove(listener)
-   }
-
-   @Deprecated("Use extensions().clear(). Deprecated since 5.0", ReplaceWith("extensions().clear()"))
-   fun removeListeners() {
-      registry().clear()
-   }
-
-   @Deprecated("Use extensions().clear(). Deprecated since 5.0", ReplaceWith("extensions().clear()"))
-   fun removeExtensions() {
-      registry().clear()
-   }
-}
+   var severity: TestCaseSeverityLevel,
+)

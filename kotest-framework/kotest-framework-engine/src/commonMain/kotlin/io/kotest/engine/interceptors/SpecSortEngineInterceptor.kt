@@ -1,9 +1,9 @@
 package io.kotest.engine.interceptors
 
 import io.kotest.common.KotestInternal
+import io.kotest.core.TestSuite
 import io.kotest.core.extensions.SpecExecutionOrderExtension
 import io.kotest.engine.EngineResult
-import io.kotest.engine.TestSuite
 import io.kotest.engine.spec.DefaultSpecExecutionOrderExtension
 import io.kotest.mpp.log
 
@@ -20,7 +20,7 @@ internal object SpecSortEngineInterceptor : EngineInterceptor {
    ): EngineResult {
 
       // spec classes are ordered using SpecExecutionOrderExtension extensions
-      val exts = context.configuration.registry().all().filterIsInstance<SpecExecutionOrderExtension>().ifEmpty {
+      val exts = context.configuration.extensions.all().filterIsInstance<SpecExecutionOrderExtension>().ifEmpty {
          listOf(DefaultSpecExecutionOrderExtension(context.configuration.specExecutionOrder))
       }
 

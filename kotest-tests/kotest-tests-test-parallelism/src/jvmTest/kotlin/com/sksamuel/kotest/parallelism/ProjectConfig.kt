@@ -1,7 +1,7 @@
 package com.sksamuel.kotest.parallelism
 
 import io.kotest.core.config.AbstractProjectConfig
-import io.kotest.core.config.Configuration
+import io.kotest.core.config.ProjectConfiguration
 
 object ProjectConfig : AbstractProjectConfig() {
 
@@ -15,7 +15,7 @@ object ProjectConfig : AbstractProjectConfig() {
    override val parallelism = 10
 
    // allow all tests to be dispatched at once
-   override val concurrentTests: Int = Configuration.MaxConcurrency
+   override val concurrentTests: Int = ProjectConfiguration.MaxConcurrency
 
    // allow each test its own thread
    override var dispatcherAffinity: Boolean? = false

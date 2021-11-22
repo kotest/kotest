@@ -14,7 +14,7 @@ import kotlin.time.TimeMark
  */
 internal class ExceptionCapturingInterceptor(private val timeMark: TimeMark) : TestExecutionInterceptor {
 
-   private val logger = Logger(ExceptionCapturingInterceptor::class)
+   private val logger = Logger(this::class)
 
    override suspend fun intercept(
       testCase: TestCase,

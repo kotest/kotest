@@ -1,7 +1,6 @@
 package io.kotest.engine.listener
 
 import com.github.ajalt.mordant.TermColors
-import io.kotest.core.config.Configuration
 import io.kotest.core.descriptors.Descriptor
 import io.kotest.core.descriptors.spec
 import io.kotest.core.descriptors.toDescriptor
@@ -9,6 +8,8 @@ import io.kotest.core.names.DisplayNameFormatter
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestType
+import io.kotest.engine.config.MutableConfiguration
+import io.kotest.engine.config.toConfiguration
 import io.kotest.engine.interceptors.EngineContext
 import io.kotest.engine.test.names.DefaultDisplayNameFormatter
 import io.kotest.engine.test.names.formatTestPath
@@ -33,7 +34,7 @@ class EnhancedConsoleTestEngineListener(private val term: TermColors) : Abstract
    private var slow = 500.milliseconds
    private var verySlow = 5000.milliseconds
 
-   private var formatter:DisplayNameFormatter = DefaultDisplayNameFormatter(Configuration())
+   private var formatter:DisplayNameFormatter = DefaultDisplayNameFormatter(MutableConfiguration().toConfiguration())
 
    private fun green(str: String) = term.green(str)
    private fun greenBold(str: String) = term.green.plus(term.bold).invoke(str)
@@ -76,7 +77,7 @@ class EnhancedConsoleTestEngineListener(private val term: TermColors) : Abstract
 
    override suspend fun engineInitialized(context: EngineContext) {
 
-      formatter = getDisplayNameFormatter(context.configuration.registry(), context.configuration)
+      formatter = getDisplayNameFormatter(context.configuration.extensions, context.configuration)
 
       println(bold(">> Kotest"))
       println("- " + intros.shuffled().first())
