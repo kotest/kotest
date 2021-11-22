@@ -3,7 +3,7 @@ package io.kotest.core.spec.style.scopes
 import io.kotest.common.ExperimentalKotest
 import io.kotest.core.descriptors.append
 import io.kotest.core.names.TestName
-import io.kotest.core.spec.KotestDsl
+import io.kotest.core.spec.KotestTestScope
 import io.kotest.core.test.TestScope
 
 @Deprecated("This interface has been renamed to ShouldSpecContainerScope. Deprecated since 4.5")
@@ -20,7 +20,7 @@ typealias ShouldSpecContainerContext = ShouldSpecContainerScope
  * should("some test").config(...)
  *
  */
-@KotestDsl
+@KotestTestScope
 class ShouldSpecContainerScope(
    val testScope: TestScope,
 ) : AbstractContainerScope(testScope) {

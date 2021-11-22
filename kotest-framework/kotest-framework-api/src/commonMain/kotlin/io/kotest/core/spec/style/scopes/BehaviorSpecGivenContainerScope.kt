@@ -1,7 +1,7 @@
 package io.kotest.core.spec.style.scopes
 
 import io.kotest.core.names.TestName
-import io.kotest.core.spec.KotestDsl
+import io.kotest.core.spec.KotestTestScope
 import io.kotest.core.test.TestScope
 
 @Deprecated("This interface has been renamed to BehaviorSpecGivenContainerScope. Deprecated since 4.5")
@@ -27,7 +27,7 @@ typealias BehaviorSpecGivenContainerContext = BehaviorSpecGivenContainerScope
  *
  */
 @Suppress("FunctionName")
-@KotestDsl
+@KotestTestScope
 class BehaviorSpecGivenContainerScope(
    val testScope: TestScope,
 ) : AbstractContainerScope(testScope) {

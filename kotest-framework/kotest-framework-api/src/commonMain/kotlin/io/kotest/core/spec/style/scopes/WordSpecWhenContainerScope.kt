@@ -1,7 +1,7 @@
 package io.kotest.core.spec.style.scopes
 
 import io.kotest.core.names.TestName
-import io.kotest.core.spec.KotestDsl
+import io.kotest.core.spec.KotestTestScope
 import io.kotest.core.test.TestScope
 
 @Deprecated("Renamed to WordSpecWhenContainerScope. Deprecated since 4.5")
@@ -11,7 +11,7 @@ typealias WordSpecWhenScope = WordSpecWhenContainerScope
 typealias WordSpecWhenContainerContext = WordSpecWhenContainerScope
 
 @Suppress("FunctionName")
-@KotestDsl
+@KotestTestScope
 class WordSpecWhenContainerScope(
    val testScope: TestScope,
 ) : AbstractContainerScope(testScope) {

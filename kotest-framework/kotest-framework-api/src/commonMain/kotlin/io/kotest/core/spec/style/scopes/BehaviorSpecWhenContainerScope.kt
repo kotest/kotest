@@ -1,7 +1,7 @@
 package io.kotest.core.spec.style.scopes
 
 import io.kotest.core.names.TestName
-import io.kotest.core.spec.KotestDsl
+import io.kotest.core.spec.KotestTestScope
 import io.kotest.core.test.TestScope
 
 @Deprecated("This interface has been renamed to BehaviorSpecWhenContainerScope. Deprecated since 4.5")
@@ -23,7 +23,7 @@ typealias BehaviorSpecWhenContainerContext = BehaviorSpecWhenContainerScope
  *
  */
 @Suppress("FunctionName")
-@KotestDsl
+@KotestTestScope
 class BehaviorSpecWhenContainerScope(val testScope: TestScope) : AbstractContainerScope(testScope) {
 
    suspend fun And(name: String, test: suspend BehaviorSpecWhenContainerScope.() -> Unit) =

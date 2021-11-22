@@ -3,6 +3,7 @@ package io.kotest.core.spec.style.scopes
 import io.kotest.common.ExperimentalKotest
 import io.kotest.core.descriptors.append
 import io.kotest.core.names.TestName
+import io.kotest.core.spec.KotestTestScope
 import io.kotest.core.test.TestScope
 
 @Deprecated("This interface has been renamed to DescribeSpecContainerScope. Deprecated since 4.5")
@@ -27,6 +28,7 @@ typealias DescribeSpecContainerContext = DescribeSpecContainerScope
  * xit("some test")
  * xit("some test").config(...)
  */
+@KotestTestScope
 class DescribeSpecContainerScope(
    val testScope: TestScope,
 ) : AbstractContainerScope(testScope) {

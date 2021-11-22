@@ -3,6 +3,7 @@ package io.kotest.core.spec.style.scopes
 import io.kotest.core.Tag
 import io.kotest.core.extensions.TestCaseExtension
 import io.kotest.core.names.TestName
+import io.kotest.core.spec.KotestTestScope
 import io.kotest.core.test.EnabledIf
 import io.kotest.core.test.EnabledOrReasonIf
 import io.kotest.core.test.NestedTest
@@ -10,7 +11,6 @@ import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestCaseSeverityLevel
 import io.kotest.core.test.TestScope
 import kotlin.coroutines.CoroutineContext
-import kotlin.jvm.JvmName
 import kotlin.time.Duration
 
 @Deprecated("Renamed to StringSpecRootScope. Deprecated since 5.0")
@@ -77,16 +77,11 @@ interface StringSpecRootScope : RootScope {
 /**
  * This scope exists purely to stop nested string scopes.
  */
+@KotestTestScope
 class StringSpecScope(
    override val coroutineContext: CoroutineContext,
    override val testCase: TestCase
 ) : TestScope {
-
-   @Deprecated("Cannot nest string scope tests", level = DeprecationLevel.ERROR)
-   @JvmName("nestedStringInvoke")
-   operator fun String.invoke(test: suspend StringSpecScope.() -> Unit) {
-   }
-
    override suspend fun registerTestCase(nested: NestedTest) {
       error("Cannot add nested tests using StringSpec")
    }

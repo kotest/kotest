@@ -1,11 +1,14 @@
-package io.kotest.datatest
+package io.kotest.datatest.styles
 
 import io.kotest.common.ExperimentalKotest
 import io.kotest.core.spec.style.BehaviorSpec
+import io.kotest.datatest.assertDataTestResults
+import io.kotest.datatest.registerContextTests
+import io.kotest.datatest.registerRootTests
 import io.kotest.matchers.shouldBe
 
 @ExperimentalKotest
-internal class BehaviorSpecDataTest : BehaviorSpec() {
+class BehaviorSpecDataTest : BehaviorSpec() {
    init {
 
       val results = registerRootTests()

@@ -1,6 +1,6 @@
 package io.kotest.core.spec.style.scopes
 
-import io.kotest.core.spec.KotestDsl
+import io.kotest.core.spec.KotestTestScope
 import io.kotest.core.test.NestedTest
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestScope
@@ -9,7 +9,7 @@ import kotlin.coroutines.CoroutineContext
 /**
  * This scope exists so we can add a deprecated `should` method to stop nesting a `should` inside a `should`
  */
-@KotestDsl
+@KotestTestScope
 class WordSpecTerminalScope(val testScope: TestScope) : TestScope {
 
    override suspend fun registerTestCase(nested: NestedTest) {

@@ -12,7 +12,7 @@ import io.kotest.core.spec.BeforeAny
 import io.kotest.core.spec.BeforeContainer
 import io.kotest.core.spec.BeforeEach
 import io.kotest.core.spec.BeforeTest
-import io.kotest.core.spec.KotestDsl
+import io.kotest.core.spec.KotestTestScope
 import io.kotest.core.test.NestedTest
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
@@ -27,7 +27,7 @@ typealias ContainerContext = ContainerScope
 /**
  * Extends a [TestScope] with convenience methods for registering tests and listeners.
  */
-@KotestDsl
+@KotestTestScope
 interface ContainerScope : TestScope {
 
    suspend fun registerTest(
@@ -202,6 +202,7 @@ interface ContainerScope : TestScope {
    }
 }
 
+@KotestTestScope
 open class AbstractContainerScope(private val testScope: TestScope) : ContainerScope {
    override val testCase: TestCase = testScope.testCase
    override val coroutineContext: CoroutineContext = testScope.coroutineContext

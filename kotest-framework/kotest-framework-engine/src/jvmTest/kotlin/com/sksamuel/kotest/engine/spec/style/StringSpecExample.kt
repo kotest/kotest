@@ -8,7 +8,6 @@ class StringSpecExample : StringSpec() {
       // test here
     }
     "this test has config".config(enabled = false) {
-
     }
   }
 }

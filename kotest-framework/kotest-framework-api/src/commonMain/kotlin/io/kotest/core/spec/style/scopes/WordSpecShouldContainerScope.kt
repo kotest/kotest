@@ -3,7 +3,7 @@ package io.kotest.core.spec.style.scopes
 import io.kotest.core.Tag
 import io.kotest.core.extensions.TestCaseExtension
 import io.kotest.core.names.TestName
-import io.kotest.core.spec.KotestDsl
+import io.kotest.core.spec.KotestTestScope
 import io.kotest.core.test.EnabledIf
 import io.kotest.core.test.TestCaseSeverityLevel
 import io.kotest.core.test.TestScope
@@ -25,7 +25,7 @@ typealias WordSpecShouldContainerContext = WordSpecShouldContainerScope
  * "some context".config(...) { }
  *
  */
-@KotestDsl
+@KotestTestScope
 class WordSpecShouldContainerScope(
    val testScope: TestScope,
 ) : AbstractContainerScope(testScope) {

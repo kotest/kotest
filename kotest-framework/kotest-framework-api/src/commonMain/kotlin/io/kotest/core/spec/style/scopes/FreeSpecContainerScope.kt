@@ -3,6 +3,7 @@ package io.kotest.core.spec.style.scopes
 import io.kotest.core.Tag
 import io.kotest.core.extensions.TestCaseExtension
 import io.kotest.core.names.TestName
+import io.kotest.core.spec.KotestTestScope
 import io.kotest.core.test.EnabledIf
 import io.kotest.core.test.TestCaseSeverityLevel
 import io.kotest.core.test.TestScope
@@ -15,6 +16,7 @@ typealias FreeScope = FreeSpecContainerScope
 @Deprecated("Renamed to FreeSpecContainerScope. Deprecated since 5.0")
 typealias FreeSpecContainerContext = FreeSpecContainerScope
 
+@KotestTestScope
 class FreeSpecContainerScope(val testScope: TestScope) : AbstractContainerScope(testScope) {
 
    /**

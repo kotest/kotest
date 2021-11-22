@@ -1,7 +1,7 @@
 package io.kotest.core.test
 
 import io.kotest.common.SoftDeprecated
-import io.kotest.core.spec.KotestDsl
+import io.kotest.core.spec.KotestTestScope
 import kotlinx.coroutines.CoroutineScope
 import kotlin.coroutines.CoroutineContext
 
@@ -19,7 +19,7 @@ typealias TestContext = TestScope
  * coroutines directly, without requiring them to supply a coroutine scope, and to retrieve
  * elements from the current [CoroutineContext] via [CoroutineContext.get]
  */
-@KotestDsl
+@KotestTestScope
 interface TestScope : CoroutineScope {
 
    /**

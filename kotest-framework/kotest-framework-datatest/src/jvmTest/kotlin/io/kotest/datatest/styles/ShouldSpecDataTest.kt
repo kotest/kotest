@@ -1,11 +1,14 @@
-package io.kotest.datatest
+package io.kotest.datatest.styles
 
 import io.kotest.common.ExperimentalKotest
-import io.kotest.core.spec.style.DescribeSpec
+import io.kotest.core.spec.style.ShouldSpec
+import io.kotest.datatest.assertDataTestResults
+import io.kotest.datatest.registerContextTests
+import io.kotest.datatest.registerRootTests
 import io.kotest.matchers.shouldBe
 
 @ExperimentalKotest
-internal class DescribeSpecForAllDataTest : DescribeSpec() {
+class ShouldSpecDataTest : ShouldSpec() {
    init {
 
       val results = registerRootTests()
@@ -20,9 +23,9 @@ internal class DescribeSpecForAllDataTest : DescribeSpec() {
          count shouldBe 104
       }
 
-      describe("inside a describe") {
+      context("inside a context") {
          registerContextTests().assertDataTestResults()
-         describe("inside another describe") {
+         context("inside another context") {
             registerContextTests().assertDataTestResults()
          }
       }

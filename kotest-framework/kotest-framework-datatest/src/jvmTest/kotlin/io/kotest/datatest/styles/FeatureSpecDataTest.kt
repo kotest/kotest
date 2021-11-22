@@ -1,11 +1,14 @@
-package io.kotest.datatest
+package io.kotest.datatest.styles
 
 import io.kotest.common.ExperimentalKotest
-import io.kotest.core.spec.style.FreeSpec
+import io.kotest.core.spec.style.FeatureSpec
+import io.kotest.datatest.assertDataTestResults
+import io.kotest.datatest.registerContextTests
+import io.kotest.datatest.registerRootTests
 import io.kotest.matchers.shouldBe
 
 @ExperimentalKotest
-class FreeSpecDataTest : FreeSpec() {
+class FeatureSpecDataTest : FeatureSpec() {
    init {
 
       val results = registerRootTests()
@@ -20,9 +23,9 @@ class FreeSpecDataTest : FreeSpec() {
          count shouldBe 104
       }
 
-      "inside a context" - {
+      feature("inside a feature") {
          registerContextTests().assertDataTestResults()
-         "inside another context" - {
+         feature("inside another feature") {
             registerContextTests().assertDataTestResults()
          }
       }
