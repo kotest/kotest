@@ -41,8 +41,8 @@ class ProjectListenerExactlyOnceTest : WordSpec() {
          "run beforeAll/afterAll once" {
 
             val c = Configuration()
-            c.registry().add(TestProjectListener)
-            c.registry().add(TestBeforeProjectListener)
+            c.registry.add(TestProjectListener)
+            c.registry.add(TestBeforeProjectListener)
 
             TestEngineLauncher(NoopTestEngineListener)
                .withClasses(MyTest1::class, MyTest2::class)

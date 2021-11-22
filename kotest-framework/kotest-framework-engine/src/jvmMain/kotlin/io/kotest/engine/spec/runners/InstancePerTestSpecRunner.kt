@@ -62,7 +62,7 @@ internal class InstancePerTestSpecRunner(
    private val configuration: Configuration,
 ) : SpecRunner(listener, schedule, configuration) {
 
-   private val extensions = SpecExtensions(configuration.registry())
+   private val extensions = SpecExtensions(configuration.registry)
    private val results = ConcurrentHashMap<TestCase, TestResult>()
 
    /**

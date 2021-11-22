@@ -25,7 +25,7 @@ internal actual fun applyConfigFromAutoScan(configuration: Configuration) {
       .map { Class.forName(it.name) }
       .mapNotNull { instantiateOrObject(it).getOrNull() }
       .filterIsInstance<Extension>().forEach {
-         configuration.registry().add(it)
+         configuration.registry.add(it)
       }
    scan.close()
 }

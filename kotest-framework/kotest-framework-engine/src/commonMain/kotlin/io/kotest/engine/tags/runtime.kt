@@ -10,6 +10,6 @@ import io.kotest.core.extensions.TagExtension
  * any returned tags into a [TagExpression] container.
  */
 fun Configuration.runtimeTags(): TagExpression {
-   val extensions = this.registry().all().filterIsInstance<TagExtension>()
+   val extensions = this.registry.all().filterIsInstance<TagExtension>()
    return if (extensions.isEmpty()) TagExpression.Empty else extensions.map { it.tags() }.reduce { a, b -> a.combine(b) }
 }

@@ -51,5 +51,5 @@ internal abstract class SpecRunner(
     * and notifies the [TestEngineListener] of the instantiation event.
     */
    protected suspend fun createInstance(kclass: KClass<out Spec>): Result<Spec> =
-      createAndInitializeSpec(kclass, configuration.registry())
+      createAndInitializeSpec(kclass, configuration.registry)
 }

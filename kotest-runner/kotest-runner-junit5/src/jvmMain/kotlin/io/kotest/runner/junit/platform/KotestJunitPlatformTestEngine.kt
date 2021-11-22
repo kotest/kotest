@@ -72,7 +72,7 @@ class KotestJunitPlatformTestEngine : TestEngine {
          .map { it.trim() }
          .filter { it.isNotBlank() }
          .map { Class.forName(it).newInstance() as Extension }
-         .forEach { configuration.registry().add(it) }
+         .forEach { configuration.registry.add(it) }
 
       TestEngineLauncher(listener)
          .withClasses(root.classes)

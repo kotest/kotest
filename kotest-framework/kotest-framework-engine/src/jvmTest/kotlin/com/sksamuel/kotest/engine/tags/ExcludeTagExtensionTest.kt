@@ -29,7 +29,7 @@ class ExcludeTagExtensionTest : FunSpec() {
          }
 
          val conf = io.kotest.core.config.Configuration()
-         conf.registry().add(ExcludeTagExtension)
+         conf.registry.add(ExcludeTagExtension)
 
          TestEngineLauncher(listener)
             .withClasses(ExcludedSpec::class)

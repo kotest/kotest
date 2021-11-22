@@ -15,7 +15,7 @@ class AfterProjectListenerTest : FunSpec({
       var fired = false
 
       val c = Configuration()
-      c.registry().add(object : ProjectListener {
+      c.registry.add(object : ProjectListener {
          override suspend fun afterProject() {
             fired = true
          }
@@ -35,7 +35,7 @@ class AfterProjectListenerTest : FunSpec({
       var fired = false
 
       val c = Configuration()
-      c.registry().add(object : AfterProjectListener {
+      c.registry.add(object : AfterProjectListener {
          override suspend fun afterProject() {
             fired = true
          }

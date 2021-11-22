@@ -17,7 +17,7 @@ class TagExtensionTest : StringSpec() {
             override fun tags(): TagExpression =
                TagExpression(setOf(TagA), setOf(TagB))
          }
-         val c = Configuration().apply { registry().add(ext) }
+         val c = Configuration().apply { registry.add(ext) }
          val collector = CollectingTestEngineListener()
          TestEngineLauncher(collector).withClasses(TestWithTags::class).withConfiguration(c).launch()
          collector.tests.mapKeys { it.key.name.testName }.mapValues { it.value.reasonOrNull } shouldBe

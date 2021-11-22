@@ -26,7 +26,7 @@ class BeforeProjectListenerExceptionTest : FunSpec({
       }
 
       val c = Configuration()
-      c.registry().add(object : ProjectListener {
+      c.registry.add(object : ProjectListener {
          override suspend fun beforeProject() {
             error("OOOFF")
          }
@@ -65,8 +65,8 @@ class BeforeProjectListenerExceptionTest : FunSpec({
       }
 
       val c = Configuration()
-      c.registry().add(projectListener1)
-      c.registry().add(projectListener2)
+      c.registry.add(projectListener1)
+      c.registry.add(projectListener2)
 
       TestEngineLauncher(listener)
          .withClasses(DummySpec3::class)

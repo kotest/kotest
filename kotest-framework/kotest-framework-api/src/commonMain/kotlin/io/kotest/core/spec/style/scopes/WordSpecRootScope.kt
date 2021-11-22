@@ -1,6 +1,7 @@
 package io.kotest.core.spec.style.scopes
 
 import io.kotest.core.names.TestName
+import io.kotest.core.spec.KotestTestScope
 
 @Deprecated("Renamed to WordSpecRootContext. Deprecated since 5.0")
 typealias WordSpecRootContext = WordSpecRootScope

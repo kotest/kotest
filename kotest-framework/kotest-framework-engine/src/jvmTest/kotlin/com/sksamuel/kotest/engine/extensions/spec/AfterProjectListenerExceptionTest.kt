@@ -32,7 +32,7 @@ class AfterProjectListenerExceptionTest : FunSpec({
       }
 
       val c = Configuration()
-      c.registry().add(projectListener)
+      c.registry.add(projectListener)
 
       TestEngineLauncher(listener)
          .withClasses(DummySpec7::class)
@@ -67,8 +67,8 @@ class AfterProjectListenerExceptionTest : FunSpec({
       }
 
       val c = Configuration()
-      c.registry().add(projectListener1)
-      c.registry().add(projectListener2)
+      c.registry.add(projectListener1)
+      c.registry.add(projectListener2)
 
       TestEngineLauncher(listener)
          .withClasses(DummySpec7::class)

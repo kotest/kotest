@@ -72,8 +72,8 @@ abstract class Spec : TestConfiguration() {
     * Override this function to register instances of [TestCaseExtension]
     * which will be invoked during execution of this spec.
     *
-    * If you wish to register an extension for all specs
-    * then use [Configuration.registerExtension].
+    * If you wish to register an extension for all specs then register the extension
+    * with project config.
     */
    open fun extensions(): List<Extension> = listOf()
 

@@ -39,8 +39,8 @@ class ProjectExtensionEngineResultTest : FunSpec({
       }
 
       val c = Configuration()
-      c.registry().add(ext1)
-      c.registry().add(ext2)
+      c.registry.add(ext1)
+      c.registry.add(ext2)
 
       TestEngineLauncher(listener)
          .withClasses(PassingProjectTest::class)

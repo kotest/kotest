@@ -65,5 +65,5 @@ internal fun applyConfigFromProjectConfig(config: AbstractProjectConfig, configu
    }
 
    val exts = config.listeners() + listOf(projectListener) + config.extensions() + config.filters()
-   exts.forEach { configuration.registry().add(it) }
+   exts.forEach { configuration.registry.add(it) }
 }

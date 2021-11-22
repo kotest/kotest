@@ -22,7 +22,7 @@ internal object ProjectExtensionEngineInterceptor : EngineInterceptor {
       val initial: suspend (ProjectContext) -> Unit = { result = execute(it.toEngineContext(context)) }
       val chain = context
          .configuration
-         .registry()
+         .registry
          .all()
          .filterIsInstance<ProjectExtension>()
          .foldRight(initial) { extension, acc: suspend (ProjectContext) -> Unit ->

@@ -16,7 +16,7 @@ suspend fun TestCase.isEnabled(conf: Configuration): Enabled {
    return if (!internal.isEnabled) {
       internal
    } else {
-      val disabled = SpecExtensions(conf.registry())
+      val disabled = SpecExtensions(conf.registry)
          .extensions(spec)
          .filterIsInstance<EnabledExtension>()
          .map { it.isEnabled(descriptor) }
@@ -33,7 +33,7 @@ internal fun TestCase.isEnabledInternal(conf: Configuration): Enabled {
    val extensions = listOf(
       TestConfigEnabledExtension,
       TagsEnabledExtension(conf.runtimeTags()),
-      TestFilterEnabledExtension(conf.registry()),
+      TestFilterEnabledExtension(conf.registry),
       SystemPropertyTestFilterEnabledExtension,
       FocusEnabledExtension,
       BangTestEnabledExtension,

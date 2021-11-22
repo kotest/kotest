@@ -51,7 +51,7 @@ class IsEnabledTest : StringSpec() {
          }
 
          val c = Configuration()
-         c.registry().add(ext)
+         c.registry.add(ext)
 
          val test = TestCase(
             name = TestName("foo"),
@@ -74,7 +74,7 @@ class IsEnabledTest : StringSpec() {
          }
 
          val c = Configuration()
-         c.registry().add(ext)
+         c.registry.add(ext)
 
          val test = TestCase(
             name = TestName("foo"),
@@ -97,7 +97,7 @@ class IsEnabledTest : StringSpec() {
          }
 
          val c = Configuration()
-         c.registry().add(ext)
+         c.registry.add(ext)
 
          val mytag = NamedTag("mytag")
          val test = TestCase(
@@ -119,7 +119,7 @@ class IsEnabledTest : StringSpec() {
          }
 
          val c = Configuration()
-         c.registry().add(ext)
+         c.registry.add(ext)
 
          val mytag = NamedTag("mytag")
          val test = TestCase(
@@ -195,7 +195,7 @@ class IsEnabledTest : StringSpec() {
          }
 
          val c = Configuration()
-         c.registry().add(filter)
+         c.registry.add(filter)
 
          TestCase(
             name = TestName("f"),
@@ -229,7 +229,7 @@ class IsEnabledTest : StringSpec() {
          }
 
          val c = Configuration()
-         c.registry().add(ext)
+         c.registry.add(ext)
 
          // this should be disabled because the extension says it is, even though it's normally enabled
          TestCase(

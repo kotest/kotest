@@ -606,7 +606,7 @@ class BindTest : StringSpec({
       )
    }
 
-   "Arb.bind shrinks" {
+   "!Arb.bind shrinks" {
       data class Person(val name: String, val age: Int)
 
       val arb = Arb.bind<Person>()

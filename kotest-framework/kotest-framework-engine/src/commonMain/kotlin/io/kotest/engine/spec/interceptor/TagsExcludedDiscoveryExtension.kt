@@ -21,7 +21,7 @@ class TagsExcludedSpecInterceptor(
    private val conf: Configuration,
 ) : SpecRefInterceptor {
 
-   private val extensions = SpecExtensions(conf.registry())
+   private val extensions = SpecExtensions(conf.registry)
 
    override suspend fun intercept(
       ref: SpecRef,

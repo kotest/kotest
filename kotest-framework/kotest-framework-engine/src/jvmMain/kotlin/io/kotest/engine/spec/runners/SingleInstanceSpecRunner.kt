@@ -37,7 +37,7 @@ internal class SingleInstanceSpecRunner(
 ) : SpecRunner(listener, scheduler, configuration) {
 
    private val results = ConcurrentHashMap<TestCase, TestResult>()
-   private val extensions = SpecExtensions(configuration.registry())
+   private val extensions = SpecExtensions(configuration.registry)
    private val logger = Logger(SingleInstanceSpecRunner::class)
 
    override suspend fun execute(spec: Spec): Result<Map<TestCase, TestResult>> {
@@ -56,7 +56,7 @@ internal class SingleInstanceSpecRunner(
          return coroutineScope {
             extensions.beforeSpec(spec)
                .flatMap { interceptAndRun(coroutineContext) }
-               .flatMap { SpecExtensions(configuration.registry()).afterSpec(spec) }
+               .flatMap { SpecExtensions(configuration.registry).afterSpec(spec) }
                .map { results }
          }
       } catch (e: Exception) {

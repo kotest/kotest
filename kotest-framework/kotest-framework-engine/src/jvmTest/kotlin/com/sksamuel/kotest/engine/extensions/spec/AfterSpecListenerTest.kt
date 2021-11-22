@@ -25,7 +25,7 @@ class AfterSpecListenerTest : FunSpec() {
          counter.set(0)
 
          val c = Configuration()
-         c.registry().add(MyAfterSpecListener)
+         c.registry.add(MyAfterSpecListener)
 
          val collector = CollectingTestEngineListener()
          TestEngineLauncher(collector)
@@ -52,7 +52,7 @@ class AfterSpecListenerTest : FunSpec() {
       test("AfterSpecListener's should NOT be triggered for a spec without tests") {
 
          val c = Configuration()
-         c.registry().add(MyAfterSpecListener)
+         c.registry.add(MyAfterSpecListener)
          counter.set(0)
 
          TestEngineLauncher(NoopTestEngineListener)

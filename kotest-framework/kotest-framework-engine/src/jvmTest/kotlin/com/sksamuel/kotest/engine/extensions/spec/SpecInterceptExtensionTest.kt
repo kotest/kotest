@@ -26,7 +26,7 @@ class SpecInterceptExtensionTest : FunSpec() {
          }
 
          val conf = io.kotest.core.config.Configuration()
-         conf.registry().add(ext)
+         conf.registry.add(ext)
 
          TestEngineLauncher(NoopTestEngineListener)
             .withClasses(SpecInterceptSingleInstance::class)
@@ -47,7 +47,7 @@ class SpecInterceptExtensionTest : FunSpec() {
          }
 
          val conf = io.kotest.core.config.Configuration()
-         conf.registry().add(ext)
+         conf.registry.add(ext)
 
          TestEngineLauncher(NoopTestEngineListener)
             .withClasses(SpecInterceptInstancePerTest::class)
@@ -64,7 +64,7 @@ class SpecInterceptExtensionTest : FunSpec() {
          }
 
          val conf = io.kotest.core.config.Configuration()
-         conf.registry().add(ext)
+         conf.registry.add(ext)
 
          val collecting = CollectingTestEngineListener()
 

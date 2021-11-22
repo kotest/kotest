@@ -38,8 +38,8 @@ class FinalizeSpecTest : FunSpec() {
       test("finalize spec listeners should be fired") {
 
          val c = Configuration()
-         c.registry().add(FinalizeSpecTestListener1())
-         c.registry().add(FinalizeSpecTestListener2())
+         c.registry.add(FinalizeSpecTestListener1())
+         c.registry.add(FinalizeSpecTestListener2())
 
          counter.set(0)
          TestEngineLauncher(NoopTestEngineListener)

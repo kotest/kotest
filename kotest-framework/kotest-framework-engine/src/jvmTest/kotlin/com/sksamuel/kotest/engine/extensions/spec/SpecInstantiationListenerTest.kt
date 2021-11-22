@@ -28,7 +28,7 @@ class SpecInstantiationListenerTest : FunSpec() {
          }
 
          val c = Configuration()
-         c.registry().add(ext)
+         c.registry.add(ext)
 
          TestEngineLauncher(NoopTestEngineListener)
             .withClasses(SpecInstantiationSuccessSpec::class)
@@ -53,7 +53,7 @@ class SpecInstantiationListenerTest : FunSpec() {
          }
 
          val c = Configuration()
-         c.registry().add(ext)
+         c.registry.add(ext)
 
          TestEngineLauncher(NoopTestEngineListener)
             .withClasses(SpecInstantiationFailureSpec::class)

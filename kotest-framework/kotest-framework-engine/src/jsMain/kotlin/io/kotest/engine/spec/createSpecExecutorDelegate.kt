@@ -36,7 +36,7 @@ internal actual fun createSpecExecutorDelegate(
 internal class JavascriptSpecExecutorDelegate(private val configuration: Configuration) : SpecExecutorDelegate {
 
    private val formatter = getDisplayNameFormatter(
-      configuration.registry(),
+      configuration.registry,
       configuration
    )
 

@@ -41,9 +41,9 @@ fun Configuration.createConfigSummary(): String {
    sb.buildOutput("Remove test name whitespace", removeTestNameWhitespace.toString())
    sb.buildOutput("Append tags to test names", testNameAppendTags.toString())
 
-   if (registry().isNotEmpty()) {
+   if (registry.isNotEmpty()) {
       sb.buildOutput("Extensions")
-      registry().all().map(::mapClassName).forEach {
+      registry.all().map(::mapClassName).forEach {
          sb.buildOutput(it, indentation = 1)
       }
    }

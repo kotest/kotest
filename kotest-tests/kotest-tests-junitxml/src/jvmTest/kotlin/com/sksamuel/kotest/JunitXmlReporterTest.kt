@@ -1,7 +1,7 @@
 package com.sksamuel.kotest
 
-import io.kotest.core.spec.Order
 import io.kotest.assertions.assertSoftly
+import io.kotest.core.spec.Order
 import io.kotest.core.spec.style.WordSpec
 import io.kotest.matchers.shouldBe
 import org.jdom2.Element

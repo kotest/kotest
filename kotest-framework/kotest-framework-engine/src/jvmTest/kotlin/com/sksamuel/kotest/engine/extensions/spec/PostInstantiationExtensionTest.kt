@@ -18,7 +18,7 @@ class PostInstantiationExtensionTest : FunSpec() {
       test("post instantiation extensions should be triggered") {
 
          val conf = Configuration()
-         conf.registry().add(MyPostInstantiationExtension)
+         conf.registry.add(MyPostInstantiationExtension)
 
          TestEngineLauncher(NoopTestEngineListener)
             .withClasses(MySpec::class)

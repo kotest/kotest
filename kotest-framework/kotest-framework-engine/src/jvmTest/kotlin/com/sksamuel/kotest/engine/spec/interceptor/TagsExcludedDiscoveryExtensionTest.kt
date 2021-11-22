@@ -21,7 +21,7 @@ class TagsExcludedDiscoveryExtensionTest : FunSpec() {
 
          val tags = TagExpression.Empty.include(NamedTag("SpecIncluded")).exclude(NamedTag("SpecExcluded"))
          val conf = Configuration()
-         conf.registry().add(SpecifiedTagsTagExtension(tags))
+         conf.registry.add(SpecifiedTagsTagExtension(tags))
 
          // will be excluded explicitly
          TagsExcludedSpecInterceptor(NoopTestEngineListener, conf)
@@ -50,7 +50,7 @@ class TagsExcludedDiscoveryExtensionTest : FunSpec() {
 
          val tags = TagExpression.Empty.include(NamedTag("SpecIncluded"))
          val conf = Configuration()
-         conf.registry().add(SpecifiedTagsTagExtension(tags))
+         conf.registry.add(SpecifiedTagsTagExtension(tags))
 
          var executed = false
          TagsExcludedSpecInterceptor(NoopTestEngineListener, conf)
@@ -81,7 +81,7 @@ class TagsExcludedDiscoveryExtensionTest : FunSpec() {
 
          val tags = TagExpression.Empty.exclude(NamedTag("SpecExcluded"))
          val conf = Configuration()
-         conf.registry().add(SpecifiedTagsTagExtension(tags))
+         conf.registry.add(SpecifiedTagsTagExtension(tags))
 
          TagsExcludedSpecInterceptor(NoopTestEngineListener, conf)
             .intercept(ReflectiveSpecRef(ExcludedSpec::class)) {

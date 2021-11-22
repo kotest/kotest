@@ -105,7 +105,7 @@ class JUnitTestEngineListener(
 
    override suspend fun engineInitialized(context: EngineContext) {
       failOnIgnoredTests = context.configuration.failOnIgnoredTests
-      formatter = getDisplayNameFormatter(context.configuration.registry(), context.configuration)
+      formatter = getDisplayNameFormatter(context.configuration.registry, context.configuration)
    }
 
    override suspend fun engineFinished(t: List<Throwable>) {

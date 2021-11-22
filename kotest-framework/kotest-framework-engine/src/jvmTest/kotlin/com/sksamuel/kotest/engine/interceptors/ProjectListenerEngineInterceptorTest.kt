@@ -22,7 +22,7 @@ class ProjectListenerEngineInterceptorTest : FunSpec({
          }
       }
       val c = Configuration()
-      c.registry().add(listener)
+      c.registry.add(listener)
       ProjectListenerEngineInterceptor.intercept(
          EngineContext.empty.withConfiguration(c)
       ) { EngineResult(emptyList()) }
@@ -44,8 +44,8 @@ class ProjectListenerEngineInterceptorTest : FunSpec({
          }
       }
       val c = Configuration()
-      c.registry().add(listener1)
-      c.registry().add(listener2)
+      c.registry.add(listener1)
+      c.registry.add(listener2)
       ProjectListenerEngineInterceptor.intercept(
          EngineContext.empty.withConfiguration(c)
       ) { EngineResult(emptyList()) }
@@ -62,7 +62,7 @@ class ProjectListenerEngineInterceptorTest : FunSpec({
          }
       }
       val c = Configuration()
-      c.registry().add(listener)
+      c.registry.add(listener)
       ProjectListenerEngineInterceptor.intercept(
          EngineContext.empty.withConfiguration(c)
       ) { EngineResult(emptyList()) }
@@ -84,8 +84,8 @@ class ProjectListenerEngineInterceptorTest : FunSpec({
          }
       }
       val c = Configuration()
-      c.registry().add(listener1)
-      c.registry().add(listener2)
+      c.registry.add(listener1)
+      c.registry.add(listener2)
       ProjectListenerEngineInterceptor.intercept(
          EngineContext.empty.withConfiguration(c)
       ) { EngineResult(emptyList()) }
@@ -106,8 +106,8 @@ class ProjectListenerEngineInterceptorTest : FunSpec({
          }
       }
       val c = Configuration()
-      c.registry().add(listener1)
-      c.registry().add(listener2)
+      c.registry.add(listener1)
+      c.registry.add(listener2)
       val results = ProjectListenerEngineInterceptor.intercept(
          EngineContext.empty.withConfiguration(c)
       ) { EngineResult(emptyList()) }
@@ -126,8 +126,8 @@ class ProjectListenerEngineInterceptorTest : FunSpec({
          }
       }
       val c = Configuration()
-      c.registry().add(listener1)
-      c.registry().add(listener2)
+      c.registry.add(listener1)
+      c.registry.add(listener2)
       val results = ProjectListenerEngineInterceptor.intercept(
          EngineContext.empty.withConfiguration(c)
       ) { EngineResult(emptyList()) }

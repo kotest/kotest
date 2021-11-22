@@ -22,7 +22,7 @@ class TagsAnnotationInheritenceTest : FunSpec() {
          }
 
          val conf = Configuration()
-         conf.registry().add(ext)
+         conf.registry.add(ext)
          conf.testCaseOrder = TestCaseOrder.Random
 
          Materializer(conf).materialize(MyTestClass())
@@ -37,7 +37,7 @@ class TagsAnnotationInheritenceTest : FunSpec() {
          }
 
          val conf = Configuration()
-         conf.registry().add(ext)
+         conf.registry.add(ext)
          conf.testCaseOrder = TestCaseOrder.Random
 
          // all tests should be filtered out because of the @Tags
@@ -52,7 +52,7 @@ class TagsAnnotationInheritenceTest : FunSpec() {
             override fun tags(): TagExpression = TagExpression("Linux | Mysql")
          }
          val conf = Configuration()
-         conf.registry().add(ext)
+         conf.registry.add(ext)
          conf.testCaseOrder = TestCaseOrder.Random
 
          // linux is included for all, and we're using an 'or'
@@ -67,7 +67,7 @@ class TagsAnnotationInheritenceTest : FunSpec() {
             override fun tags(): TagExpression = TagExpression.include(Linux).exclude(Postgres)
          }
          val conf = Configuration()
-         conf.registry().add(ext)
+         conf.registry.add(ext)
          conf.testCaseOrder = TestCaseOrder.Random
 
          // linux should be included for all, but then postgres tests excluded as well
@@ -82,7 +82,7 @@ class TagsAnnotationInheritenceTest : FunSpec() {
             override fun tags(): TagExpression = TagExpression.exclude(Mysql)
          }
          val conf = Configuration()
-         conf.registry().add(ext)
+         conf.registry.add(ext)
          conf.testCaseOrder = TestCaseOrder.Random
 
          // Mysql tests should be excluded
@@ -97,7 +97,7 @@ class TagsAnnotationInheritenceTest : FunSpec() {
             override fun tags(): TagExpression = TagExpression.include(Postgres)
          }
          val conf = Configuration()
-         conf.registry().add(ext)
+         conf.registry.add(ext)
          conf.testCaseOrder = TestCaseOrder.Random
 
          // Mysql tests should be excluded

@@ -57,7 +57,7 @@ class ShouldLogWithTestAndProjectLevelExtensions : FunSpec() {
       register(db1)
       beforeTest {
          coroutineContext.configuration.logLevel = LogLevel.Debug
-         coroutineContext.configuration.registry().add(db2)
+         coroutineContext.configuration.registry.add(db2)
       }
       test("should log to project and test extensions") {
          debug { "wobble" }

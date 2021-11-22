@@ -34,8 +34,8 @@ class ProjectExtensionEngineInterceptorTest : FunSpec({
       }
 
       val c = Configuration()
-      c.registry().add(ext1)
-      c.registry().add(ext2)
+      c.registry.add(ext1)
+      c.registry.add(ext2)
       ProjectExtensionEngineInterceptor.intercept(EngineContext.empty.withConfiguration(c)) { EngineResult.empty }
 
       fired1 shouldBe true
@@ -59,8 +59,8 @@ class ProjectExtensionEngineInterceptorTest : FunSpec({
       }
 
       val c = Configuration()
-      c.registry().add(ext1)
-      c.registry().add(ext2)
+      c.registry.add(ext1)
+      c.registry.add(ext2)
       ProjectExtensionEngineInterceptor.intercept(EngineContext.empty.withConfiguration(c)) {
          fired = true
          EngineResult.empty
@@ -91,7 +91,7 @@ class ProjectExtensionEngineInterceptorTest : FunSpec({
       }
 
       val c = Configuration()
-      c.registry().add(ext)
+      c.registry.add(ext)
       ProjectExtensionEngineInterceptor.intercept(EngineContext.empty.withTags(TagExpression("foo")).withConfiguration(c)) {
          tags = it.tags
          EngineResult.empty

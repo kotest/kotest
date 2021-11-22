@@ -52,7 +52,7 @@ class SpecExecutor(
 ) {
 
    private val logger = Logger(SpecExecutorDelegate::class)
-   private val extensions = SpecExtensions(conf.registry())
+   private val extensions = SpecExtensions(conf.registry)
 
    suspend fun execute(ref: SpecRef) {
       logger.log { Pair(ref.kclass.bestName(), "Received $ref") }
@@ -66,18 +66,18 @@ class SpecExecutor(
    private suspend fun referenceInterceptors(ref: SpecRef) {
 
       val interceptors = listOfNotNull(
-         if (platform == Platform.JVM) EnabledIfSpecInterceptor(listener, conf.registry()) else null,
-         IgnoredSpecInterceptor(listener, conf.registry()),
-         SpecFilterInterceptor(listener, conf.registry()),
-         SystemPropertySpecFilterInterceptor(listener, conf.registry()),
+         if (platform == Platform.JVM) EnabledIfSpecInterceptor(listener, conf.registry) else null,
+         IgnoredSpecInterceptor(listener, conf.registry),
+         SpecFilterInterceptor(listener, conf.registry),
+         SystemPropertySpecFilterInterceptor(listener, conf.registry),
          TagsExcludedSpecInterceptor(listener, conf),
-         if (platform == Platform.JVM) RequiresTagSpecInterceptor(listener, conf, conf.registry()) else null,
-         SpecRefExtensionInterceptor(conf.registry()),
+         if (platform == Platform.JVM) RequiresTagSpecInterceptor(listener, conf, conf.registry) else null,
+         SpecRefExtensionInterceptor(conf.registry),
          SpecStartedInterceptor(listener),
          SpecFinishedInterceptor(listener),
-         if (platform == Platform.JVM) ApplyExtensionsInterceptor(conf.registry()) else null,
-         PrepareSpecInterceptor(conf.registry()),
-         FinalizeSpecInterceptor(conf.registry()),
+         if (platform == Platform.JVM) ApplyExtensionsInterceptor(conf.registry) else null,
+         PrepareSpecInterceptor(conf.registry),
+         FinalizeSpecInterceptor(conf.registry),
       )
 
       val innerExecute: suspend (SpecRef) -> Result<Map<TestCase, TestResult>> = {
@@ -93,9 +93,9 @@ class SpecExecutor(
    private suspend fun specInterceptors(spec: Spec): Result<Map<TestCase, TestResult>> {
 
       val interceptors = listOfNotNull(
-         if (platform == Platform.JS) IgnoreNestedSpecStylesInterceptor(listener, conf.registry()) else null,
+         if (platform == Platform.JS) IgnoreNestedSpecStylesInterceptor(listener, conf.registry) else null,
          ProjectContextInterceptor(projectContext),
-         SpecExtensionInterceptor(conf.registry()),
+         SpecExtensionInterceptor(conf.registry),
          ConfigurationInContextInterceptor(conf),
       )
 
@@ -121,7 +121,7 @@ class SpecExecutor(
     * or instantiation failure, and returns a Result with the error or spec.
     */
    private suspend fun createInstance(ref: SpecRef): Result<Spec> =
-      ref.instance(conf.registry())
+      ref.instance(conf.registry)
          .onFailure { extensions.specInstantiationError(ref.kclass, it) }
          .flatMap { spec -> extensions.specInstantiated(spec).map { spec } }
 }

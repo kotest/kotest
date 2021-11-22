@@ -18,7 +18,7 @@ class KotestExtensionContext(
    private val testCase: TestCase?
 ) : ExtensionContext {
 
-   private val formatter = getDisplayNameFormatter(Configuration().registry(), Configuration())
+   private val formatter = getDisplayNameFormatter(Configuration().registry, Configuration())
 
    override fun getParent(): Optional<ExtensionContext> = Optional.empty()
    override fun getRoot(): ExtensionContext = this

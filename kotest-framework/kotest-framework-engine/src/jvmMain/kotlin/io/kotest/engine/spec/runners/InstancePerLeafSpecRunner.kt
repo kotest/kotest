@@ -32,7 +32,7 @@ internal class InstancePerLeafSpecRunner(
    private val configuration: Configuration,
 ) : SpecRunner(listener, scheduler, configuration) {
 
-   private val extensions = SpecExtensions(configuration.registry())
+   private val extensions = SpecExtensions(configuration.registry)
    private val results = mutableMapOf<TestCase, TestResult>()
 
    // keeps track of tests we've already discovered

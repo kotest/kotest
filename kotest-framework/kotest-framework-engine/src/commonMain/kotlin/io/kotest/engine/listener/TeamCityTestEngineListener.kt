@@ -73,7 +73,7 @@ class TeamCityTestEngineListener(
    override suspend fun engineStarted() {}
 
    override suspend fun engineInitialized(context: EngineContext) {
-      formatter = getDisplayNameFormatter(context.configuration.registry(), context.configuration)
+      formatter = getDisplayNameFormatter(context.configuration.registry, context.configuration)
    }
 
    override suspend fun engineFinished(t: List<Throwable>) {

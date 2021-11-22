@@ -54,7 +54,7 @@ class JunitXmlReporter(
       const val AttributeName = "name"
    }
 
-   private val formatter = getDisplayNameFormatter(Configuration().registry(), Configuration())
+   private val formatter = getDisplayNameFormatter(Configuration().registry, Configuration())
    private var marks = ConcurrentHashMap<KClass<out Spec>, Long>()
 
    private fun outputDir(): Path {

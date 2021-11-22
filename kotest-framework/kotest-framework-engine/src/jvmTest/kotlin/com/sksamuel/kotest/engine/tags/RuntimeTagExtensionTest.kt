@@ -20,7 +20,7 @@ class RuntimeTagExtensionTest : StringSpec() {
 
       "Tests with tag should not execute when excluded by a RuntimeTagExtension" {
          val c = Configuration()
-         c.registry().add(RuntimeTagExtension(included = emptySet(), excluded = setOf(MyRuntimeExcludedTag)))
+         c.registry.add(RuntimeTagExtension(included = emptySet(), excluded = setOf(MyRuntimeExcludedTag)))
          TestEngineLauncher(NoopTestEngineListener)
             .withClasses(TestWithTag::class)
             .launch()
@@ -29,7 +29,7 @@ class RuntimeTagExtensionTest : StringSpec() {
 
       "Tests with tag should not execute when excluded by a RuntimeTagExpressionExtension" {
          val c = Configuration()
-         c.registry().add(RuntimeTagExpressionExtension("!MyRuntimeExcludedTag"))
+         c.registry.add(RuntimeTagExpressionExtension("!MyRuntimeExcludedTag"))
          TestEngineLauncher(NoopTestEngineListener)
             .withClasses(TestWithTag::class)
             .launch()

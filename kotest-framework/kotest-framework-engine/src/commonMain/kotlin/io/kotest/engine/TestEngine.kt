@@ -72,10 +72,10 @@ class TestEngine(initial: TestEngineConfig) {
       .apply {
 
          // if the engine was configured with explicit tags, we register those via a tag extension
-         explicitTags?.let { configuration.registry().add(SpecifiedTagsTagExtension(it)) }
+         explicitTags?.let { configuration.registry.add(SpecifiedTagsTagExtension(it)) }
 
          // if the engine was configured with extensions, those are registered with the configuration object
-         extensions.forEach { configuration.registry().add(it) }
+         extensions.forEach { configuration.registry.add(it) }
       }
 
    /**
