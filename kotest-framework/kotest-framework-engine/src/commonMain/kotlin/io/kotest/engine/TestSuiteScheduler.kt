@@ -4,7 +4,6 @@ import io.kotest.common.ExperimentalKotest
 import io.kotest.core.project.TestSuite
 import io.kotest.engine.concurrency.NoopCoroutineDispatcherFactory
 import io.kotest.engine.interceptors.EngineContext
-import io.kotest.engine.listener.NoopTestEngineListener
 import io.kotest.engine.listener.TestEngineListener
 import io.kotest.engine.spec.SpecExecutor
 import io.kotest.mpp.log
@@ -34,7 +33,7 @@ internal class SequentialTestSuiteScheduler(
    ): EngineResult {
       log { "LoopingTestSuiteScheduler: Executing ${suite.specs} specs" }
       suite.specs.forEach {
-         val executor = SpecExecutor(NoopTestEngineListener, NoopCoroutineDispatcherFactory, context)
+         val executor = SpecExecutor(context.listener, NoopCoroutineDispatcherFactory, context)
          executor.execute(it)
       }
       return EngineResult(emptyList())

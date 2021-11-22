@@ -82,7 +82,7 @@ internal class InstancePerLeafSpecRunner(
       return createInstance(test.spec::class).flatMap { spec ->
          extensions.intercept(spec) {
             run(spec, test)
-         }
+         } ?: Result.success(spec)
       }
    }
 

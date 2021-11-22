@@ -18,7 +18,7 @@ internal class SpecExtensionInterceptor(registry: ExtensionRegistry) : SpecInter
       spec: Spec,
       fn: suspend (Spec) -> Result<Map<TestCase, TestResult>>
    ): Result<Map<TestCase, TestResult>> {
-      return extensions.intercept(spec) { fn(spec) }
+      return extensions.intercept(spec) { fn(spec) } ?: Result.success(emptyMap())
    }
 }
 

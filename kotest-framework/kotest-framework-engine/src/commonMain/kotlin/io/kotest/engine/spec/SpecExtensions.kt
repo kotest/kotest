@@ -131,7 +131,7 @@ internal class SpecExtensions(private val registry: ExtensionRegistry) {
       }
    }
 
-   suspend fun <T> intercept(spec: Spec, f: suspend () -> T): T {
+   suspend fun <T> intercept(spec: Spec, f: suspend () -> T): T? {
 
       val exts = extensions(spec).filterIsInstance<SpecExtension>()
       logger.log { Pair(spec::class.bestName(), "Intercepting spec with ${exts.size} spec extensions") }
@@ -150,7 +150,7 @@ internal class SpecExtensions(private val registry: ExtensionRegistry) {
          }
       }
       chain.invoke()
-      return result!!
+      return result
    }
 
    /**
