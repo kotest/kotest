@@ -2,9 +2,6 @@ package io.kotest.core.internal
 
 object KotestEngineProperties {
 
-   @Deprecated("Use the val from the spring extension module (io.kotest.extensions:kotest-extensions-spring")
-   const val springIgnoreWarning = "kotest.listener.spring.ignore.warning"
-
    const val scriptsEnabled = "kotest.framework.scripts.enabled"
 
    const val dumpConfig = "kotest.framework.dump.config"
