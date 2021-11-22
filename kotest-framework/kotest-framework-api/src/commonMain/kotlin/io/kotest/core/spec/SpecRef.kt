@@ -1,5 +1,6 @@
 package io.kotest.core.spec
 
+import io.kotest.common.ExperimentalKotest
 import io.kotest.core.config.ExtensionRegistry
 import kotlin.reflect.KClass
 
@@ -9,6 +10,7 @@ import kotlin.reflect.KClass
  * Each ref contains a reference to the KClass of that spec and contains a function
  * to instantiate a [Spec].
  */
+@ExperimentalKotest
 interface SpecRef {
 
    /**

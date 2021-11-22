@@ -6,12 +6,12 @@ import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.descriptors.append
 import io.kotest.core.descriptors.toDescriptor
 import io.kotest.core.names.TestName
+import io.kotest.core.project.TestSuite
 import io.kotest.core.sourceRef
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestType
-import io.kotest.engine.TestSuite
 import io.kotest.engine.interceptors.EngineContext
 import io.kotest.engine.listener.NoopTestEngineListener
 import io.kotest.matchers.shouldBe

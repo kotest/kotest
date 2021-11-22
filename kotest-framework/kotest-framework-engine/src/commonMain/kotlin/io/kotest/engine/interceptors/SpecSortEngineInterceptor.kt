@@ -2,8 +2,8 @@ package io.kotest.engine.interceptors
 
 import io.kotest.common.KotestInternal
 import io.kotest.core.extensions.SpecExecutionOrderExtension
+import io.kotest.core.project.TestSuite
 import io.kotest.engine.EngineResult
-import io.kotest.engine.TestSuite
 import io.kotest.engine.spec.DefaultSpecExecutionOrderExtension
 import io.kotest.mpp.log
 

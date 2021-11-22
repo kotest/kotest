@@ -1,6 +1,6 @@
 package io.kotest.core.extensions
 
-import io.kotest.core.ProjectContext
+import io.kotest.core.project.ProjectContext
 
 /**
  * Extension point that allows intercepting execution of projects.

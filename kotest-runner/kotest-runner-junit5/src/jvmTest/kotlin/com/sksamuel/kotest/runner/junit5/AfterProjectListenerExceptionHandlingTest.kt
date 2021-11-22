@@ -1,3 +1,5 @@
+@file:Suppress("unused")
+
 package com.sksamuel.kotest.runner.junit5
 
 import io.kotest.core.listeners.AfterProjectListener

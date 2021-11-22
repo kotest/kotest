@@ -30,7 +30,6 @@ data class Config(var a: String)
 
 class MyMountable : MountableExtension<Config, Config>, BeforeSpecListener {
 
-   override val name: String = "MyMountable"
    val before = AtomicBoolean(false)
 
    override suspend fun beforeSpec(spec: Spec) {

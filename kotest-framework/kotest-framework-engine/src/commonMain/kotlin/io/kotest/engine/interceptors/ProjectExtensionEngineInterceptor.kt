@@ -1,14 +1,16 @@
 package io.kotest.engine.interceptors
 
 import io.kotest.common.KotestInternal
-import io.kotest.core.ProjectContext
 import io.kotest.core.extensions.ProjectExtension
+import io.kotest.core.project.ProjectContext
 import io.kotest.engine.EngineResult
-import io.kotest.engine.TestSuite
 
 /**
- * An [EngineInterceptor] that invokes any [ProjectExtension]s allowing them the chance
- * to change the [ProjectContext] before the engine begins execution.
+ * An [EngineInterceptor] that invokes any [ProjectExtension]s before the engine begins execution.
+ *
+ * Project extensions can adapt the [ProjectContext] which is the public API version of
+ * the [EngineContext]. Any changes to the project context are reflected downstream in
+ * the engine context passed to the execute function.
  */
 @KotestInternal
 internal object ProjectExtensionEngineInterceptor : EngineInterceptor {
@@ -36,22 +38,5 @@ internal object ProjectExtensionEngineInterceptor : EngineInterceptor {
       } catch (t: Throwable) {
          result.addError(t)
       }
-   }
-
-   private fun ProjectContext.toEngineContext(context: EngineContext): EngineContext {
-      return EngineContext(
-         TestSuite(specs),
-         context.listener,
-         tags,
-         configuration
-      )
-   }
-
-   private fun EngineContext.toProjectContext(): ProjectContext {
-      return ProjectContext(
-         tags,
-         suite.specs,
-         configuration
-      )
    }
 }

@@ -2,12 +2,12 @@ package io.kotest.engine.interceptors
 
 import io.kotest.common.KotestInternal
 import io.kotest.engine.EngineResult
-import io.kotest.engine.TestSuite
 import io.kotest.mpp.Logger
 
 /**
- * Notifies the test listener that the engine is ready to execute tests, and the final [TestSuite]
- * is ready to be used, and that all tests have completed, with any unexpected errors.
+ * Notifies the test listener that the engine is ready to execute tests,
+ * and the final [TestSuite] is ready to be used, and that all tests
+ * have completed, with any unexpected errors.
  */
 @KotestInternal
 internal object TestEngineStartedFinishedInterceptor : EngineInterceptor {

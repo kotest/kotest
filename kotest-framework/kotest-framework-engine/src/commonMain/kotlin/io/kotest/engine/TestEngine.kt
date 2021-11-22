@@ -4,22 +4,18 @@ import io.kotest.common.ExperimentalKotest
 import io.kotest.common.KotestInternal
 import io.kotest.common.Platform
 import io.kotest.common.platform
-import io.kotest.core.ProjectContext
 import io.kotest.core.TagExpression
 import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.extensions.Extension
-import io.kotest.core.spec.Spec
-import io.kotest.core.spec.SpecRef
+import io.kotest.core.project.TestSuite
 import io.kotest.engine.extensions.SpecifiedTagsTagExtension
 import io.kotest.engine.extensions.TestEngineConfigInterceptor
 import io.kotest.engine.interceptors.EngineContext
 import io.kotest.engine.interceptors.EngineInterceptor
 import io.kotest.engine.listener.TestEngineListener
-import io.kotest.engine.spec.ReflectiveSpecRef
 import io.kotest.engine.tags.runtimeTags
 import io.kotest.mpp.log
 import kotlinx.coroutines.coroutineScope
-import kotlin.reflect.KClass
 
 data class EngineResult(val errors: List<Throwable>) {
 
@@ -29,23 +25,6 @@ data class EngineResult(val errors: List<Throwable>) {
 
    fun addError(t: Throwable): EngineResult {
       return EngineResult(errors + t)
-   }
-}
-
-/**
- * Contains the discovered specs that will be executed.
- *
- * All specs are wrapped in a [SpecRef].
- *
- * On platforms that lack reflective capability, such as nodeJS or native, the specs are
- * either preconstructed or constructed through a simple function. On the JVM, the [KClass]
- * instance is used to reflectively instantiate.
- */
-data class TestSuite(val specs: List<SpecRef>) {
-   @ExperimentalKotest
-   companion object {
-      operator fun invoke(classes: List<KClass<out Spec>>) = TestSuite(classes.map { ReflectiveSpecRef(it) })
-      val empty = TestSuite(emptyList())
    }
 }
 
@@ -89,17 +68,10 @@ class TestEngine(initial: TestEngineConfig) {
          val scheduler = when (platform) {
             Platform.JVM -> ConcurrentTestSuiteScheduler(
                config.configuration.concurrentSpecs ?: config.configuration.parallelism,
-               config.configuration,
-               ProjectContext(config.configuration.runtimeTags(), suite.specs, config.configuration)
+               context,
             )
-            Platform.JS -> SequentialTestSuiteScheduler(
-               config.configuration,
-               ProjectContext(config.configuration.runtimeTags(), suite.specs, config.configuration)
-            )
-            Platform.Native -> SequentialTestSuiteScheduler(
-               config.configuration,
-               ProjectContext(config.configuration.runtimeTags(), suite.specs, config.configuration)
-            )
+            Platform.JS -> SequentialTestSuiteScheduler(context)
+            Platform.Native -> SequentialTestSuiteScheduler(context)
          }
          scheduler.schedule(context.suite, context.listener)
       }

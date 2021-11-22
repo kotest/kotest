@@ -1,7 +1,7 @@
 package io.kotest.engine.spec.interceptor
 
-import io.kotest.core.ProjectContext
-import io.kotest.core.ProjectContextElement
+import io.kotest.core.project.ProjectContext
+import io.kotest.core.project.ProjectContextElement
 import io.kotest.core.spec.Spec
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult

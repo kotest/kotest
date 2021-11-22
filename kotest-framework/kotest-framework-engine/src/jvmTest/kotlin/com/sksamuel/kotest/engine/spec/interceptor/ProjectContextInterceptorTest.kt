@@ -1,8 +1,8 @@
 package com.sksamuel.kotest.engine.spec.interceptor
 
-import io.kotest.core.ProjectContext
+import io.kotest.core.project.ProjectContext
 import io.kotest.core.config.ProjectConfiguration
-import io.kotest.core.projectContext
+import io.kotest.core.project.projectContext
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.test.TestCase

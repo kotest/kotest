@@ -1,13 +1,13 @@
-package io.kotest.core
+package io.kotest.core.project
 
+import io.kotest.core.TagExpression
 import io.kotest.core.config.ProjectConfiguration
-import io.kotest.core.spec.SpecRef
 import io.kotest.core.test.TestScope
 import kotlin.coroutines.AbstractCoroutineContextElement
 import kotlin.coroutines.CoroutineContext
 
-data class ProjectContext(val tags: TagExpression, val specs: List<SpecRef>, val configuration: ProjectConfiguration) {
-   constructor(configuration: ProjectConfiguration) : this(TagExpression.Empty, emptyList(), configuration)
+data class ProjectContext(val suite: TestSuite, val tags: TagExpression, val configuration: ProjectConfiguration) {
+   constructor(configuration: ProjectConfiguration) : this(TestSuite.empty, TagExpression.Empty, configuration)
 }
 
 data class ProjectContextElement(val projectContext: ProjectContext) :

@@ -17,6 +17,7 @@ import org.junit.platform.engine.TestDescriptor
 import org.junit.platform.engine.TestExecutionResult
 import org.junit.platform.engine.UniqueId
 import org.junit.platform.engine.reporting.ReportEntry
+import kotlin.time.Duration.Companion.milliseconds
 
 class JUnitTestRunnerListenerTest : DescribeSpec({
 
@@ -70,8 +71,8 @@ class JUnitTestRunnerListenerTest : DescribeSpec({
          listener.specStarted(JUnitTestRunnerListenerTest::class)
          listener.testStarted(test1)
          listener.testStarted(test2)
-         listener.testFinished(test2, createTestResult(0, AssertionError("boom")))
-         listener.testFinished(test1, TestResult.success(0))
+         listener.testFinished(test2, createTestResult(0.milliseconds, AssertionError("boom")))
+         listener.testFinished(test1, TestResult.Success(0.milliseconds))
          listener.specFinished(JUnitTestRunnerListenerTest::class, null)
          listener.engineFinished(emptyList())
 
