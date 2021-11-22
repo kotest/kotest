@@ -21,8 +21,8 @@ import io.kotest.core.test.AssertionMode
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestCaseOrder
 import io.kotest.core.test.TestCaseSeverityLevel
-import io.kotest.core.test.TestScope
 import io.kotest.core.test.TestResult
+import io.kotest.core.test.TestScope
 import io.kotest.core.test.TestType
 import io.kotest.core.test.config.ResolvedTestConfig
 import io.kotest.core.test.config.TestCaseConfig
@@ -301,6 +301,11 @@ abstract class Spec : TestConfiguration() {
    @JsName("threads_var")
    var threads: Int? = null
 
+   /**
+    * Set to true to enable enhanced tracing of coroutines when an error occurs.
+    *
+    * This value overrides the global configuration value.
+    */
    var coroutineDebugProbes: Boolean? = null
 
    /**

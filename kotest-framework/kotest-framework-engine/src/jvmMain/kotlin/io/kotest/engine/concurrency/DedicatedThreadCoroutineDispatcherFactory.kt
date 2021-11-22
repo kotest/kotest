@@ -8,7 +8,7 @@ import java.util.concurrent.Executors
 
 /**
  * A [CoroutineDispatcherFactory] that creates a dedicated thread for each test case.
- * Once the test completes, the thread is stopped.
+ * Once the test completes, the thread is shutdown.
  */
 object DedicatedThreadCoroutineDispatcherFactory : CoroutineDispatcherFactory {
 

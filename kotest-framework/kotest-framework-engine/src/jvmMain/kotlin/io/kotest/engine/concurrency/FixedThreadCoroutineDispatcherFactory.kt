@@ -54,7 +54,10 @@ class FixedThreadCoroutineDispatcherFactory(
       }
    }
 
-   private fun dispatcherFor(kClass: KClass<*>): CoroutineDispatcher =
-      dispatchers[abs(kClass.bestName().hashCode()) % dispatchers.size]
+   /**
+    * Returns a consistent dispatcher for the given [kclass].
+    */
+   private fun dispatcherFor(kclass: KClass<*>): CoroutineDispatcher =
+      dispatchers[abs(kclass.bestName().hashCode()) % dispatchers.size]
 
 }
