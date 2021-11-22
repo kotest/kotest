@@ -4,11 +4,12 @@ import io.kotest.assertions.fail
 import io.kotest.core.spec.style.FeatureSpec
 import io.kotest.matchers.ints.shouldBeLessThan
 import io.kotest.matchers.string.shouldHaveLength
+import kotlin.time.Duration.Companion.seconds
 
 class FeatureSpecExample : FeatureSpec() {
    init {
 
-      feature("some feature") {
+      feature("a top level feature") {
          scenario("some scenario") {
             1.shouldBeLessThan(4)
          }
@@ -26,15 +27,14 @@ class FeatureSpecExample : FeatureSpec() {
          }
       }
 
-      feature("this feature") {
-         feature("has nested feature contexts") {
-            scenario("test without config") {
-               1.shouldBeLessThan(4)
-            }
-            scenario("test with config").config(enabled = false) {
-               fail("never executed")
-            }
+      feature("this feature has config").config(timeout = 10.seconds) {
+         scenario("nested scenario will inherit config") {
+            fail("never executed")
          }
+      }
+
+      xfeature("top level disabled feature") {
+         error("Boom")
       }
    }
 }
