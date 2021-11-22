@@ -1,10 +1,10 @@
 package io.kotest.engine.config
 
-import io.kotest.core.config.Configuration
+import io.kotest.core.config.ProjectConfiguration
 import io.kotest.engine.tags.runtimeTags
 import io.kotest.mpp.bestName
 
-fun Configuration.createConfigSummary(): String {
+fun ProjectConfiguration.createConfigSummary(): String {
 
    val sb = StringBuilder()
 
@@ -52,7 +52,7 @@ fun Configuration.createConfigSummary(): String {
    return sb.toString()
 }
 
-fun Configuration.dumpProjectConfig() {
+fun ProjectConfiguration.dumpProjectConfig() {
    println("~~~ Kotest Configuration ~~~")
    println(createConfigSummary())
 }

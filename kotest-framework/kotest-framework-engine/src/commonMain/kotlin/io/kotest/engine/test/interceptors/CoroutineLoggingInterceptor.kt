@@ -1,7 +1,7 @@
 package io.kotest.engine.test.interceptors
 
 import io.kotest.common.ExperimentalKotest
-import io.kotest.core.config.Configuration
+import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestScope
@@ -14,7 +14,7 @@ import io.kotest.mpp.Logger
 import kotlinx.coroutines.withContext
 
 @ExperimentalKotest
-internal class CoroutineLoggingInterceptor(private val configuration: Configuration) : TestExecutionInterceptor {
+internal class CoroutineLoggingInterceptor(private val configuration: ProjectConfiguration) : TestExecutionInterceptor {
 
    private val logger = Logger(CoroutineLoggingInterceptor::class)
 

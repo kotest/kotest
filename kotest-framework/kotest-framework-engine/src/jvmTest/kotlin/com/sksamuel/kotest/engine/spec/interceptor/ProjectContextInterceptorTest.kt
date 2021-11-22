@@ -1,7 +1,7 @@
 package com.sksamuel.kotest.engine.spec.interceptor
 
 import io.kotest.core.ProjectContext
-import io.kotest.core.config.Configuration
+import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.projectContext
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.style.FunSpec
@@ -16,7 +16,7 @@ import kotlin.coroutines.coroutineContext
 class ProjectContextInterceptorTest : FunSpec() {
    init {
 
-      val c = ProjectContext(Configuration())
+      val c = ProjectContext(ProjectConfiguration())
       var fired = false
       val fn: suspend (Spec) -> Result<Map<TestCase, TestResult>> = {
          fired = true

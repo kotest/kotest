@@ -6,7 +6,7 @@ import io.kotest.common.flatMap
 import io.kotest.common.platform
 import io.kotest.core.ProjectContext
 import io.kotest.core.concurrency.CoroutineDispatcherFactory
-import io.kotest.core.config.Configuration
+import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.SpecRef
 import io.kotest.core.test.TestCase
@@ -47,7 +47,7 @@ import kotlin.reflect.KClass
 class SpecExecutor(
    private val listener: TestEngineListener,
    private val defaultCoroutineDispatcherFactory: CoroutineDispatcherFactory,
-   private val conf: Configuration,
+   private val conf: ProjectConfiguration,
    private val projectContext: ProjectContext,
 ) {
 
@@ -134,6 +134,6 @@ interface SpecExecutorDelegate {
 internal expect fun createSpecExecutorDelegate(
    listener: TestEngineListener,
    defaultCoroutineDispatcherFactory: CoroutineDispatcherFactory,
-   configuration: Configuration,
+   configuration: ProjectConfiguration,
 ): SpecExecutorDelegate
 

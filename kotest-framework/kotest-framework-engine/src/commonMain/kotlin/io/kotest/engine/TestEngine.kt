@@ -6,7 +6,7 @@ import io.kotest.common.Platform
 import io.kotest.common.platform
 import io.kotest.core.ProjectContext
 import io.kotest.core.TagExpression
-import io.kotest.core.config.Configuration
+import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.extensions.Extension
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.SpecRef
@@ -53,7 +53,7 @@ data class TestSuite(val specs: List<SpecRef>) {
 data class TestEngineConfig(
    val listener: TestEngineListener,
    val interceptors: List<EngineInterceptor>,
-   val configuration: Configuration,
+   val configuration: ProjectConfiguration,
    val extensions: List<Extension>,
    val explicitTags: TagExpression?,
 )

@@ -1,7 +1,7 @@
 package io.kotest.runner.junit.platform
 
 import io.kotest.common.KotestInternal
-import io.kotest.core.config.Configuration
+import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.descriptors.toDescriptor
 import io.kotest.core.extensions.Extension
 import io.kotest.core.filter.TestFilter
@@ -54,7 +54,7 @@ class KotestJunitPlatformTestEngine : TestEngine {
 
    private fun execute(request: ExecutionRequest, root: KotestEngineDescriptor) {
 
-      val configuration = Configuration()
+      val configuration = ProjectConfiguration()
 
       val listener = ThreadSafeTestEngineListener(
          PinnedSpecTestEngineListener(

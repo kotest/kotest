@@ -1,6 +1,6 @@
 package io.kotest.engine.spec
 
-import io.kotest.core.config.Configuration
+import io.kotest.core.config.ProjectConfiguration
 import io.kotest.engine.tags.tags
 import io.kotest.core.spec.Spec
 import io.kotest.core.test.Enabled
@@ -12,14 +12,14 @@ import kotlin.time.Duration.Companion.milliseconds
 
 /**
  * Accepts an [UnresolvedTestConfig] and returns a [ResolvedTestConfig] by completing
- * any nulls in the unresolved config with defaults from the [spec] or [Configuration].
+ * any nulls in the unresolved config with defaults from the [spec] or [ProjectConfiguration].
  */
 internal fun resolveConfig(
    config: UnresolvedTestConfig?,
    xdisabled: Boolean?,
    parent: TestCase?,
    spec:Spec,
-   configuration: Configuration
+   configuration: ProjectConfiguration
 ): ResolvedTestConfig {
 
    val defaultTestConfig = spec.defaultTestConfig

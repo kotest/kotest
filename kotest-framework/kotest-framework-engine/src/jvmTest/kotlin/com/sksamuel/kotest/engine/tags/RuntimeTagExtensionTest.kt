@@ -2,7 +2,7 @@ package com.sksamuel.kotest.engine.tags
 
 import io.kotest.assertions.fail
 import io.kotest.core.Tag
-import io.kotest.core.config.Configuration
+import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.extensions.RuntimeTagExpressionExtension
 import io.kotest.core.extensions.RuntimeTagExtension
 import io.kotest.core.annotation.Isolate
@@ -19,7 +19,7 @@ class RuntimeTagExtensionTest : StringSpec() {
    init {
 
       "Tests with tag should not execute when excluded by a RuntimeTagExtension" {
-         val c = Configuration()
+         val c = ProjectConfiguration()
          c.registry.add(RuntimeTagExtension(included = emptySet(), excluded = setOf(MyRuntimeExcludedTag)))
          TestEngineLauncher(NoopTestEngineListener)
             .withClasses(TestWithTag::class)
@@ -28,7 +28,7 @@ class RuntimeTagExtensionTest : StringSpec() {
       }
 
       "Tests with tag should not execute when excluded by a RuntimeTagExpressionExtension" {
-         val c = Configuration()
+         val c = ProjectConfiguration()
          c.registry.add(RuntimeTagExpressionExtension("!MyRuntimeExcludedTag"))
          TestEngineLauncher(NoopTestEngineListener)
             .withClasses(TestWithTag::class)

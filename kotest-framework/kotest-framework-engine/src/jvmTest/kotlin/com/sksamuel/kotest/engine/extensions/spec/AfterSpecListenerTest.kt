@@ -1,6 +1,6 @@
 package com.sksamuel.kotest.engine.extensions.spec
 
-import io.kotest.core.config.Configuration
+import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.extensions.Extension
 import io.kotest.core.listeners.AfterSpecListener
 import io.kotest.core.listeners.TestListener
@@ -24,7 +24,7 @@ class AfterSpecListenerTest : FunSpec() {
 
          counter.set(0)
 
-         val c = Configuration()
+         val c = ProjectConfiguration()
          c.registry.add(MyAfterSpecListener)
 
          val collector = CollectingTestEngineListener()
@@ -51,7 +51,7 @@ class AfterSpecListenerTest : FunSpec() {
 
       test("AfterSpecListener's should NOT be triggered for a spec without tests") {
 
-         val c = Configuration()
+         val c = ProjectConfiguration()
          c.registry.add(MyAfterSpecListener)
          counter.set(0)
 

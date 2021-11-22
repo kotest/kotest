@@ -2,7 +2,7 @@ package io.kotest.engine
 
 import io.kotest.common.ExperimentalKotest
 import io.kotest.core.ProjectContext
-import io.kotest.core.config.Configuration
+import io.kotest.core.config.ProjectConfiguration
 import io.kotest.engine.concurrency.NoopCoroutineDispatcherFactory
 import io.kotest.engine.listener.NoopTestEngineListener
 import io.kotest.engine.listener.TestEngineListener
@@ -25,7 +25,7 @@ internal interface TestSuiteScheduler {
  */
 @ExperimentalKotest
 internal class SequentialTestSuiteScheduler(
-   private val configuration: Configuration,
+   private val configuration: ProjectConfiguration,
    private val context: ProjectContext
 ) : TestSuiteScheduler {
 

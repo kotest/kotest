@@ -2,7 +2,7 @@ package io.kotest.engine.interceptors
 
 import io.kotest.common.KotestInternal
 import io.kotest.core.TagExpression
-import io.kotest.core.config.Configuration
+import io.kotest.core.config.ProjectConfiguration
 import io.kotest.engine.EngineResult
 import io.kotest.engine.TestSuite
 import io.kotest.engine.listener.CompositeTestEngineListener
@@ -24,11 +24,11 @@ data class EngineContext(
    val suite: TestSuite,
    val listener: TestEngineListener,
    val tags: TagExpression,
-   val configuration: Configuration,
+   val configuration: ProjectConfiguration,
 ) {
 
    companion object {
-      val empty = EngineContext(TestSuite.empty, NoopTestEngineListener, TagExpression.Empty, Configuration())
+      val empty = EngineContext(TestSuite.empty, NoopTestEngineListener, TagExpression.Empty, ProjectConfiguration())
    }
 
    /**
@@ -42,7 +42,7 @@ data class EngineContext(
       return EngineContext(suite, listener, tags, configuration)
    }
 
-   fun withConfiguration(c: Configuration): EngineContext {
+   fun withConfiguration(c: ProjectConfiguration): EngineContext {
       return EngineContext(suite, listener, tags, c)
    }
 

@@ -2,7 +2,7 @@ package com.sksamuel.kotest.engine.interceptors
 
 import io.kotest.common.KotestInternal
 import io.kotest.core.TagExpression
-import io.kotest.core.config.Configuration
+import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.ProjectContext
 import io.kotest.core.extensions.ProjectExtension
 import io.kotest.core.spec.style.FunSpec
@@ -33,7 +33,7 @@ class ProjectExtensionEngineInterceptorTest : FunSpec({
          }
       }
 
-      val c = Configuration()
+      val c = ProjectConfiguration()
       c.registry.add(ext1)
       c.registry.add(ext2)
       ProjectExtensionEngineInterceptor.intercept(EngineContext.empty.withConfiguration(c)) { EngineResult.empty }
@@ -58,7 +58,7 @@ class ProjectExtensionEngineInterceptorTest : FunSpec({
          }
       }
 
-      val c = Configuration()
+      val c = ProjectConfiguration()
       c.registry.add(ext1)
       c.registry.add(ext2)
       ProjectExtensionEngineInterceptor.intercept(EngineContext.empty.withConfiguration(c)) {
@@ -90,7 +90,7 @@ class ProjectExtensionEngineInterceptorTest : FunSpec({
          }
       }
 
-      val c = Configuration()
+      val c = ProjectConfiguration()
       c.registry.add(ext)
       ProjectExtensionEngineInterceptor.intercept(EngineContext.empty.withTags(TagExpression("foo")).withConfiguration(c)) {
          tags = it.tags

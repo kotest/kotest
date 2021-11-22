@@ -1,6 +1,6 @@
 package com.sksamuel.kotest.engine.spec.interceptor
 
-import io.kotest.core.config.Configuration
+import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.config.configuration
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.engine.spec.interceptor.ConfigurationInContextInterceptor
@@ -11,7 +11,7 @@ import kotlin.coroutines.coroutineContext
 class ConfigurationInContextInterceptorTest : FunSpec() {
    init {
 
-      val c = Configuration()
+      val c = ProjectConfiguration()
 
       suspend fun testConfig() {
          coroutineContext.configuration shouldBe c

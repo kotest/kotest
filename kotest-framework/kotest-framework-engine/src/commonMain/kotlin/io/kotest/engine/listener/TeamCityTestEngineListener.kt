@@ -1,6 +1,6 @@
 package io.kotest.engine.listener
 
-import io.kotest.core.config.Configuration
+import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.descriptors.Descriptor
 import io.kotest.core.descriptors.toDescriptor
 import io.kotest.core.names.DisplayNameFormatter
@@ -25,7 +25,7 @@ class TeamCityTestEngineListener(
    private val details: Boolean = true,
 ) : TestEngineListener {
 
-   private var formatter: DisplayNameFormatter = DefaultDisplayNameFormatter(Configuration())
+   private var formatter: DisplayNameFormatter = DefaultDisplayNameFormatter(ProjectConfiguration())
 
    // these are the specs that have been started and the test started event sent to team city
    private val started = mutableSetOf<KClass<*>>()

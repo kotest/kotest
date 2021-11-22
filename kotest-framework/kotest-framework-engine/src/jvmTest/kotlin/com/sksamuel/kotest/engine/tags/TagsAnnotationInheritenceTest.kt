@@ -2,7 +2,7 @@ package com.sksamuel.kotest.engine.tags
 
 import io.kotest.core.Tag
 import io.kotest.core.TagExpression
-import io.kotest.core.config.Configuration
+import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.extensions.TagExtension
 import io.kotest.core.annotation.Isolate
 import io.kotest.core.spec.style.FunSpec
@@ -21,7 +21,7 @@ class TagsAnnotationInheritenceTest : FunSpec() {
             override fun tags(): TagExpression = TagExpression.include(Linux)
          }
 
-         val conf = Configuration()
+         val conf = ProjectConfiguration()
          conf.registry.add(ext)
          conf.testCaseOrder = TestCaseOrder.Random
 
@@ -36,7 +36,7 @@ class TagsAnnotationInheritenceTest : FunSpec() {
             override fun tags(): TagExpression = TagExpression.exclude(Linux)
          }
 
-         val conf = Configuration()
+         val conf = ProjectConfiguration()
          conf.registry.add(ext)
          conf.testCaseOrder = TestCaseOrder.Random
 
@@ -51,7 +51,7 @@ class TagsAnnotationInheritenceTest : FunSpec() {
          val ext = object : TagExtension {
             override fun tags(): TagExpression = TagExpression("Linux | Mysql")
          }
-         val conf = Configuration()
+         val conf = ProjectConfiguration()
          conf.registry.add(ext)
          conf.testCaseOrder = TestCaseOrder.Random
 
@@ -66,7 +66,7 @@ class TagsAnnotationInheritenceTest : FunSpec() {
          val ext = object : TagExtension {
             override fun tags(): TagExpression = TagExpression.include(Linux).exclude(Postgres)
          }
-         val conf = Configuration()
+         val conf = ProjectConfiguration()
          conf.registry.add(ext)
          conf.testCaseOrder = TestCaseOrder.Random
 
@@ -81,7 +81,7 @@ class TagsAnnotationInheritenceTest : FunSpec() {
          val ext = object : TagExtension {
             override fun tags(): TagExpression = TagExpression.exclude(Mysql)
          }
-         val conf = Configuration()
+         val conf = ProjectConfiguration()
          conf.registry.add(ext)
          conf.testCaseOrder = TestCaseOrder.Random
 
@@ -96,7 +96,7 @@ class TagsAnnotationInheritenceTest : FunSpec() {
          val ext = object : TagExtension {
             override fun tags(): TagExpression = TagExpression.include(Postgres)
          }
-         val conf = Configuration()
+         val conf = ProjectConfiguration()
          conf.registry.add(ext)
          conf.testCaseOrder = TestCaseOrder.Random
 

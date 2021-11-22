@@ -1,7 +1,7 @@
 package io.kotest.engine.spec
 
 import io.kotest.common.ExperimentalKotest
-import io.kotest.core.config.Configuration
+import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.Spec
 import io.kotest.core.test.TestCase
@@ -25,7 +25,7 @@ import kotlin.reflect.KClass
 internal abstract class SpecRunner(
    val listener: TestEngineListener,
    private val scheduler: TestScheduler,
-   private val configuration: Configuration,
+   private val configuration: ProjectConfiguration,
 ) {
 
    protected val materializer = Materializer(configuration)

@@ -1,7 +1,7 @@
 package io.kotest.engine.listener
 
 import com.github.ajalt.mordant.TermColors
-import io.kotest.core.config.Configuration
+import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.descriptors.Descriptor
 import io.kotest.core.descriptors.spec
 import io.kotest.core.descriptors.toDescriptor
@@ -33,7 +33,7 @@ class EnhancedConsoleTestEngineListener(private val term: TermColors) : Abstract
    private var slow = 500.milliseconds
    private var verySlow = 5000.milliseconds
 
-   private var formatter:DisplayNameFormatter = DefaultDisplayNameFormatter(Configuration())
+   private var formatter:DisplayNameFormatter = DefaultDisplayNameFormatter(ProjectConfiguration())
 
    private fun green(str: String) = term.green(str)
    private fun greenBold(str: String) = term.green.plus(term.bold).invoke(str)

@@ -2,7 +2,7 @@ package io.kotest.engine.spec
 
 import io.kotest.common.ExperimentalKotest
 import io.kotest.core.concurrency.CoroutineDispatcherFactory
-import io.kotest.core.config.Configuration
+import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.spec.Spec
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
@@ -18,7 +18,7 @@ import kotlin.coroutines.coroutineContext
 internal actual fun createSpecExecutorDelegate(
    listener: TestEngineListener,
    defaultCoroutineDispatcherFactory: CoroutineDispatcherFactory,
-   configuration: Configuration,
+   configuration: ProjectConfiguration,
 ): SpecExecutorDelegate =
    DefaultSpecExecutorDelegate(listener, defaultCoroutineDispatcherFactory, configuration)
 
@@ -30,7 +30,7 @@ internal actual fun createSpecExecutorDelegate(
 internal class DefaultSpecExecutorDelegate(
    private val listener: TestEngineListener,
    private val coroutineDispatcherFactory: CoroutineDispatcherFactory,
-   private val configuration: Configuration
+   private val configuration: ProjectConfiguration
 ) : SpecExecutorDelegate {
 
    private val materializer = Materializer(configuration)

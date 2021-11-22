@@ -1,6 +1,6 @@
 package io.kotest.engine.test.interceptors
 
-import io.kotest.core.config.Configuration
+import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestScope
@@ -24,12 +24,12 @@ private val scheduler =
  * to a new thread, so it can be interrupted if the test times out.
  */
 internal actual fun blockedThreadTimeoutInterceptor(
-   configuration: Configuration,
+   configuration: ProjectConfiguration,
    start: TimeMark,
 ): TestExecutionInterceptor = BlockedThreadTimeoutInterceptor(configuration, start)
 
 internal class BlockedThreadTimeoutInterceptor(
-   private val configuration: Configuration,
+   private val configuration: ProjectConfiguration,
    private val start: TimeMark,
 ) : TestExecutionInterceptor {
 

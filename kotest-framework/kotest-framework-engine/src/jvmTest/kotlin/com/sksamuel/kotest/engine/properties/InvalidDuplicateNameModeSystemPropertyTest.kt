@@ -1,6 +1,6 @@
 package com.sksamuel.kotest.engine.properties
 
-import io.kotest.core.config.Configuration
+import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.internal.KotestEngineProperties
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.engine.config.ConfigManager
@@ -11,7 +11,7 @@ class InvalidDuplicateNameModeSystemPropertyTest : FunSpec() {
    init {
       test("invalid duplicate name mode value should error") {
          withSystemProperty(KotestEngineProperties.duplicateTestNameMode, "qwerty") {
-            ConfigManager.compile(Configuration(), emptyList()).shouldBeFailure()
+            ConfigManager.compile(ProjectConfiguration(), emptyList()).shouldBeFailure()
          }
       }
    }

@@ -1,6 +1,6 @@
 package com.sksamuel.kotest.engine.test
 
-import io.kotest.core.config.Configuration
+import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.descriptors.Descriptor
 import io.kotest.core.extensions.EnabledExtension
 import io.kotest.core.spec.style.DescribeSpec
@@ -26,7 +26,7 @@ class IgnoredTestReasonTest : FunSpec() {
          val ext = object : EnabledExtension {
             override suspend fun isEnabled(descriptor: Descriptor): Enabled = Enabled.disabled("wibble")
          }
-         val c = Configuration().apply { registry.add(ext) }
+         val c = ProjectConfiguration().apply { registry.add(ext) }
          val collector = CollectingTestEngineListener()
          TestEngineLauncher(collector)
             .withClasses(MyFunSpec::class)

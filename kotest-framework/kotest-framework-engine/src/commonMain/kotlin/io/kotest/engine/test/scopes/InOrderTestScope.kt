@@ -2,7 +2,7 @@ package io.kotest.engine.test.scopes
 
 import io.kotest.common.ExperimentalKotest
 import io.kotest.core.concurrency.CoroutineDispatcherFactory
-import io.kotest.core.config.Configuration
+import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.names.DuplicateTestNameMode
 import io.kotest.core.test.NestedTest
 import io.kotest.core.test.TestCase
@@ -25,7 +25,7 @@ class InOrderTestScope(
    private val mode: DuplicateTestNameMode,
    private val listener: TestEngineListener,
    private val coroutineDispatcherFactory: CoroutineDispatcherFactory,
-   private val configuration: Configuration,
+   private val configuration: ProjectConfiguration,
 ) : TestScope {
 
    private var failed = false

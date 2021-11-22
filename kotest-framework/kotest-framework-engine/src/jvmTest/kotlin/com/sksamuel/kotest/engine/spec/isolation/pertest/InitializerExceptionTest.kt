@@ -1,7 +1,7 @@
 package com.sksamuel.kotest.engine.spec.isolation.pertest
 
 import io.kotest.core.ProjectContext
-import io.kotest.core.config.Configuration
+import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.style.BehaviorSpec
 import io.kotest.core.spec.style.DescribeSpec
@@ -103,47 +103,47 @@ class InitializerExceptionTest : WordSpec({
 
    "an exception in the initializer" should {
       "fail the test for behavior spec" {
-         val executor = SpecExecutor(listener, NoopCoroutineDispatcherFactory, Configuration(), ProjectContext(Configuration()))
+         val executor = SpecExecutor(listener, NoopCoroutineDispatcherFactory, ProjectConfiguration(), ProjectContext(ProjectConfiguration()))
          executor.execute(BehaviorSpecWithInitError::class)
          error.shouldBeInstanceOf<SpecInstantiationException>()
       }
       "fail the test for feature spec" {
-         val executor = SpecExecutor(listener, NoopCoroutineDispatcherFactory, Configuration(), ProjectContext(Configuration()))
+         val executor = SpecExecutor(listener, NoopCoroutineDispatcherFactory, ProjectConfiguration(), ProjectContext(ProjectConfiguration()))
          executor.execute(FeatureSpecWithInitError::class)
          error.shouldBeInstanceOf<SpecInstantiationException>()
       }
       "fail the test for word spec" {
-         val executor = SpecExecutor(listener, NoopCoroutineDispatcherFactory, Configuration(), ProjectContext(Configuration()))
+         val executor = SpecExecutor(listener, NoopCoroutineDispatcherFactory, ProjectConfiguration(), ProjectContext(ProjectConfiguration()))
          executor.execute(WordSpecWithInitError::class)
          error.shouldBeInstanceOf<SpecInstantiationException>()
       }
       "fail the test for should spec" {
-         val executor = SpecExecutor(listener, NoopCoroutineDispatcherFactory, Configuration(), ProjectContext(Configuration()))
+         val executor = SpecExecutor(listener, NoopCoroutineDispatcherFactory, ProjectConfiguration(), ProjectContext(ProjectConfiguration()))
          executor.execute(ShouldSpecWithInitError::class)
          error.shouldBeInstanceOf<SpecInstantiationException>()
       }
       "fail the test for string spec" {
-         val executor = SpecExecutor(listener, NoopCoroutineDispatcherFactory, Configuration(), ProjectContext(Configuration()))
+         val executor = SpecExecutor(listener, NoopCoroutineDispatcherFactory, ProjectConfiguration(), ProjectContext(ProjectConfiguration()))
          executor.execute(StringSpecWithInitError::class)
          error.shouldBeInstanceOf<SpecInstantiationException>()
       }
       "fail the test for describe spec" {
-         val executor = SpecExecutor(listener, NoopCoroutineDispatcherFactory, Configuration(), ProjectContext(Configuration()))
+         val executor = SpecExecutor(listener, NoopCoroutineDispatcherFactory, ProjectConfiguration(), ProjectContext(ProjectConfiguration()))
          executor.execute(DescribeSpecWithInitError::class)
          error.shouldBeInstanceOf<SpecInstantiationException>()
       }
       "fail the test for free spec" {
-         val executor = SpecExecutor(listener, NoopCoroutineDispatcherFactory, Configuration(), ProjectContext(Configuration()))
+         val executor = SpecExecutor(listener, NoopCoroutineDispatcherFactory, ProjectConfiguration(), ProjectContext(ProjectConfiguration()))
          executor.execute(FreeSpecWithInitError::class)
          error.shouldBeInstanceOf<SpecInstantiationException>()
       }
       "fail the test for fun spec" {
-         val executor = SpecExecutor(listener, NoopCoroutineDispatcherFactory, Configuration(), ProjectContext(Configuration()))
+         val executor = SpecExecutor(listener, NoopCoroutineDispatcherFactory, ProjectConfiguration(), ProjectContext(ProjectConfiguration()))
          executor.execute(FunSpecWithInitError::class)
          error.shouldBeInstanceOf<SpecInstantiationException>()
       }
       "fail the test for expect spec" {
-         val executor = SpecExecutor(listener, NoopCoroutineDispatcherFactory, Configuration(), ProjectContext(Configuration()))
+         val executor = SpecExecutor(listener, NoopCoroutineDispatcherFactory, ProjectConfiguration(), ProjectContext(ProjectConfiguration()))
          executor.execute(ExpectSpecWithInitError::class)
          error.shouldBeInstanceOf<SpecInstantiationException>()
       }

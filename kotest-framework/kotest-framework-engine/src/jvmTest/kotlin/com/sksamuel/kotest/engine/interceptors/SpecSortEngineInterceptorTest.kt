@@ -3,7 +3,7 @@ package com.sksamuel.kotest.engine.interceptors
 import com.sksamuel.kotest.engine.active.BangDisableFunSpec
 import com.sksamuel.kotest.engine.active.FocusTest
 import com.sksamuel.kotest.engine.active.IgnoredTestsTest
-import io.kotest.core.config.Configuration
+import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.annotation.Isolate
 import io.kotest.core.spec.SpecExecutionOrder
 import io.kotest.core.spec.SpecRef
@@ -19,7 +19,7 @@ class SpecSortEngineInterceptorTest : FunSpec({
 
    test("should sort classes") {
 
-      val c = Configuration()
+      val c = ProjectConfiguration()
       c.specExecutionOrder = SpecExecutionOrder.Lexicographic
 
       var sorted = emptyList<SpecRef>()

@@ -1,6 +1,6 @@
 package com.sksamuel.kotest.engine.test.timeout
 
-import io.kotest.core.config.Configuration
+import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.descriptors.append
 import io.kotest.core.descriptors.toDescriptor
 import io.kotest.core.listeners.AfterTestListener
@@ -21,7 +21,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
 import java.util.concurrent.atomic.AtomicInteger
-import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
 
 @DelicateCoroutinesApi
@@ -58,7 +57,7 @@ class TestTimeoutAfterTestListenerTest : FunSpec() {
             ),
          )
 
-         val executor = TestCaseExecutor(NoopTestCaseExecutionListener, NoopCoroutineDispatcherFactory, Configuration())
+         val executor = TestCaseExecutor(NoopTestCaseExecutionListener, NoopCoroutineDispatcherFactory, ProjectConfiguration())
          // needs to run on a separate thread, so we don't interrupt our own thread
          withContext(Dispatchers.IO) {
             executor.execute(tc, NoopTestScope(testCase, coroutineContext))
@@ -95,7 +94,7 @@ class TestTimeoutAfterTestListenerTest : FunSpec() {
             ),
          )
 
-         val executor = TestCaseExecutor(NoopTestCaseExecutionListener, NoopCoroutineDispatcherFactory, Configuration())
+         val executor = TestCaseExecutor(NoopTestCaseExecutionListener, NoopCoroutineDispatcherFactory, ProjectConfiguration())
          // needs to run on a separate thread, so we don't interrupt our own thread
          withContext(Dispatchers.IO) {
             executor.execute(tc, NoopTestScope(testCase, coroutineContext))

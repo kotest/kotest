@@ -2,7 +2,7 @@ package io.kotest.engine.spec
 
 import io.kotest.common.ExperimentalKotest
 import io.kotest.core.concurrency.CoroutineDispatcherFactory
-import io.kotest.core.config.Configuration
+import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.Spec
 import io.kotest.core.test.TestCase
@@ -22,14 +22,14 @@ import kotlin.math.max
 internal actual fun createSpecExecutorDelegate(
    listener: TestEngineListener,
    defaultCoroutineDispatcherFactory: CoroutineDispatcherFactory,
-   configuration: Configuration,
+   configuration: ProjectConfiguration,
 ): SpecExecutorDelegate = JvmSpecExecutorDelegate(listener, defaultCoroutineDispatcherFactory, configuration)
 
 @ExperimentalKotest
 class JvmSpecExecutorDelegate(
    private val listener: TestEngineListener,
    private val dispatcherFactory: CoroutineDispatcherFactory,
-   private val configuration: Configuration,
+   private val configuration: ProjectConfiguration,
 ) : SpecExecutorDelegate {
 
    private val logger = Logger(JvmSpecExecutorDelegate::class)
@@ -40,7 +40,7 @@ class JvmSpecExecutorDelegate(
    override suspend fun execute(spec: Spec): Map<TestCase, TestResult> {
 
       val scheduler = when (val concurrentTests = spec.resolvedConcurrentTests(configuration.concurrentTests)) {
-         Configuration.Sequential -> SequentialTestScheduler
+         ProjectConfiguration.Sequential -> SequentialTestScheduler
          else -> ConcurrentTestScheduler(max(1, concurrentTests))
       }
 
@@ -87,7 +87,7 @@ class JvmSpecExecutorDelegate(
 internal fun Spec.resolvedConcurrentTests(defaultConcurrentTests: Int): Int {
    val fromSpecConcurrency = this.concurrency ?: this.concurrency()
    return when {
-      this::class.isIsolate() -> Configuration.Sequential
+      this::class.isIsolate() -> ProjectConfiguration.Sequential
       fromSpecConcurrency != null -> max(1, fromSpecConcurrency)
       else -> defaultConcurrentTests
    }

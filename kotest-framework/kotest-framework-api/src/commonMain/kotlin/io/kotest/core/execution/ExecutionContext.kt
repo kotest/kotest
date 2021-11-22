@@ -1,7 +1,7 @@
 package io.kotest.core.execution
 
-import io.kotest.core.config.Configuration
+import io.kotest.core.config.ProjectConfiguration
 
 data class ExecutionContext(
-   val configuration: Configuration,
+   val configuration: ProjectConfiguration,
 )

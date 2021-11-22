@@ -1,12 +1,12 @@
 package io.kotest.engine.config
 
 import io.kotest.core.config.AbstractProjectConfig
-import io.kotest.core.config.Configuration
+import io.kotest.core.config.ProjectConfiguration
 
-internal actual fun applyConfigFromSystemProperties(configuration: Configuration) {}
+internal actual fun applyConfigFromSystemProperties(configuration: ProjectConfiguration) {}
 
-internal actual fun applyConfigFromAutoScan(configuration: Configuration) {}
+internal actual fun applyConfigFromAutoScan(configuration: ProjectConfiguration) {}
 
-internal actual fun applyPlatformDefaults(configuration: Configuration) {}
+internal actual fun applyPlatformDefaults(configuration: ProjectConfiguration) {}
 
 internal actual fun detectAbstractProjectConfigs(): List<AbstractProjectConfig> = emptyList()

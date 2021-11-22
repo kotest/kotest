@@ -1,14 +1,14 @@
 package io.kotest.engine.config
 
 import io.kotest.core.config.AbstractProjectConfig
-import io.kotest.core.config.Configuration
+import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.listeners.AfterProjectListener
 import io.kotest.core.listeners.BeforeProjectListener
 
 /**
- * Applies settings from a [AbstractProjectConfig] instance to the given [Configuration].
+ * Applies settings from a [AbstractProjectConfig] instance to the given [ProjectConfiguration].
  */
-internal fun applyConfigFromProjectConfig(config: AbstractProjectConfig, configuration: Configuration) {
+internal fun applyConfigFromProjectConfig(config: AbstractProjectConfig, configuration: ProjectConfiguration) {
 
    // assertions
    config.assertionMode?.let { configuration.assertionMode = it }

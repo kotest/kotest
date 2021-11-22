@@ -2,7 +2,7 @@ package io.kotest.engine.test.names
 
 import io.kotest.common.Platform
 import io.kotest.common.platform
-import io.kotest.core.config.Configuration
+import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.config.ExtensionRegistry
 import io.kotest.core.extensions.DisplayNameFormatterExtension
 import io.kotest.core.names.DisplayNameFormatter
@@ -13,7 +13,7 @@ import io.kotest.mpp.annotation
 import io.kotest.mpp.bestName
 import kotlin.reflect.KClass
 
-fun getDisplayNameFormatter(registry: ExtensionRegistry, configuration: Configuration): DisplayNameFormatter {
+fun getDisplayNameFormatter(registry: ExtensionRegistry, configuration: ProjectConfiguration): DisplayNameFormatter {
    return registry.all()
       .filterIsInstance<DisplayNameFormatterExtension>()
       .firstOrNull()
@@ -25,7 +25,7 @@ fun getDisplayNameFormatter(registry: ExtensionRegistry, configuration: Configur
  * Used when there are no registered [io.kotest.core.extensions.DisplayNameFormatterExtension]s.
  */
 class DefaultDisplayNameFormatter(
-   private val configuration: Configuration,
+   private val configuration: ProjectConfiguration,
 ) : DisplayNameFormatter {
 
    override fun format(testCase: TestCase): String {

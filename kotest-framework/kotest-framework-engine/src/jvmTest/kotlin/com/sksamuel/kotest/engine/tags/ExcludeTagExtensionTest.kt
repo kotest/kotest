@@ -28,7 +28,7 @@ class ExcludeTagExtensionTest : FunSpec() {
             }
          }
 
-         val conf = io.kotest.core.config.Configuration()
+         val conf = io.kotest.core.config.ProjectConfiguration()
          conf.registry.add(ExcludeTagExtension)
 
          TestEngineLauncher(listener)

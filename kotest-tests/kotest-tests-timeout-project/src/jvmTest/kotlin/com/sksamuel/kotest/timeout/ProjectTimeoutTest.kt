@@ -1,6 +1,6 @@
 package com.sksamuel.kotest.timeout
 
-import io.kotest.core.config.Configuration
+import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.engine.TestEngineLauncher
 import io.kotest.engine.interceptors.ProjectTimeoutException
@@ -14,7 +14,7 @@ class ProjectTimeoutTest : FunSpec({
 
    test("a project times out when the sum duration of its tests exceeds the specified project timeout") {
 
-      val c = Configuration()
+      val c = ProjectConfiguration()
       c.projectTimeout = 10.milliseconds
 
       // project timeout is set to 30

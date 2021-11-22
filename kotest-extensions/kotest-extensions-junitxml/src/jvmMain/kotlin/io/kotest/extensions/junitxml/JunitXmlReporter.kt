@@ -1,6 +1,6 @@
 package io.kotest.extensions.junitxml
 
-import io.kotest.core.config.Configuration
+import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.listeners.FinalizeSpecListener
 import io.kotest.core.listeners.PrepareSpecListener
 import io.kotest.core.spec.Spec
@@ -54,7 +54,7 @@ class JunitXmlReporter(
       const val AttributeName = "name"
    }
 
-   private val formatter = getDisplayNameFormatter(Configuration().registry, Configuration())
+   private val formatter = getDisplayNameFormatter(ProjectConfiguration().registry, ProjectConfiguration())
    private var marks = ConcurrentHashMap<KClass<out Spec>, Long>()
 
    private fun outputDir(): Path {

@@ -1,6 +1,6 @@
 package io.kotest.runner.junit.platform
 
-import io.kotest.core.config.Configuration
+import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.descriptors.Descriptor
 import io.kotest.core.descriptors.DescriptorId
 import io.kotest.core.descriptors.toDescriptor
@@ -78,7 +78,7 @@ class JUnitTestEngineListener(
 
    private val logger = Logger(JUnitTestEngineListener::class)
 
-   private var formatter: DisplayNameFormatter = DefaultDisplayNameFormatter(Configuration())
+   private var formatter: DisplayNameFormatter = DefaultDisplayNameFormatter(ProjectConfiguration())
 
    // contains a mapping of junit TestDescriptor's, so we can find previously registered tests
    private val descriptors = mutableMapOf<Descriptor, TestDescriptor>()

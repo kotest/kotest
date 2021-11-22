@@ -1,6 +1,6 @@
 package io.kotest.engine.config
 
-import io.kotest.core.config.Configuration
+import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.extensions.Extension
 import io.kotest.core.internal.KotestEngineProperties
 import io.kotest.core.annotation.AutoScan
@@ -13,7 +13,7 @@ import io.kotest.mpp.instantiateOrObject
  *
  * Note: This function will have no effect on non-JVM targets.
  */
-internal actual fun applyConfigFromAutoScan(configuration: Configuration) {
+internal actual fun applyConfigFromAutoScan(configuration: ProjectConfiguration) {
 
    // this property is used to disable class path scanning for configurations
    if (System.getProperty(KotestEngineProperties.disableAutoScanClassPathScanning) == "true")

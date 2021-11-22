@@ -6,7 +6,7 @@ import io.kotest.common.runBlocking
 import io.kotest.common.runPromise
 import io.kotest.core.TagExpression
 import io.kotest.core.config.AbstractProjectConfig
-import io.kotest.core.config.Configuration
+import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.extensions.Extension
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.SpecRef
@@ -30,7 +30,7 @@ import kotlin.reflect.KClass
  */
 class TestEngineLauncher(
    private val listener: TestEngineListener,
-   private val conf: Configuration,
+   private val conf: ProjectConfiguration,
    private val configs: List<AbstractProjectConfig>,
    private val refs: List<SpecRef>,
    private val tagExpression: TagExpression?,
@@ -39,7 +39,7 @@ class TestEngineLauncher(
 
    constructor() : this(
       NoopTestEngineListener,
-      Configuration(),
+      ProjectConfiguration(),
       emptyList(),
       emptyList(),
       null,
@@ -48,7 +48,7 @@ class TestEngineLauncher(
 
    constructor(listener: TestEngineListener) : this(
       listener,
-      Configuration(),
+      ProjectConfiguration(),
       emptyList(),
       emptyList(),
       null,
@@ -145,7 +145,7 @@ class TestEngineLauncher(
       )
    }
 
-   fun withConfiguration(configuration: Configuration): TestEngineLauncher {
+   fun withConfiguration(configuration: ProjectConfiguration): TestEngineLauncher {
       return TestEngineLauncher(
          listener = listener,
          conf = configuration,

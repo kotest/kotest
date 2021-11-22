@@ -1,6 +1,6 @@
 package com.sksamuel.kotest.engine.interceptors
 
-import io.kotest.core.config.Configuration
+import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.engine.EngineResult
 import io.kotest.engine.interceptors.EngineContext
@@ -14,7 +14,7 @@ import kotlin.time.milliseconds
 class ProjectTimeoutEngineInterceptorTest : FunSpec({
 
    test("should return ProjectTimeoutException when project times out") {
-      val c = Configuration()
+      val c = ProjectConfiguration()
       c.projectTimeout = 1.milliseconds
       val result = ProjectTimeoutEngineInterceptor.intercept(EngineContext.empty.withConfiguration(c)) {
          delay(1000)
@@ -25,7 +25,7 @@ class ProjectTimeoutEngineInterceptorTest : FunSpec({
    }
 
    test("should not return ProjectTimeoutException when project does not time out") {
-      val c = Configuration()
+      val c = ProjectConfiguration()
       c.projectTimeout = 100000.milliseconds
       val result = ProjectTimeoutEngineInterceptor.intercept(EngineContext.empty.withConfiguration(c)) {
          delay(1)

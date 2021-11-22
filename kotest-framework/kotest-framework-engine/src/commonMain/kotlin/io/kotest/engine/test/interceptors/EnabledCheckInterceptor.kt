@@ -1,6 +1,6 @@
 package io.kotest.engine.test.interceptors
 
-import io.kotest.core.config.Configuration
+import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestScope
@@ -15,7 +15,7 @@ import io.kotest.mpp.Logger
  * Note: This extension must execute before any other extension that invokes methods
  * on the listener, as in runners like junit, ignored cannot happen after "started".
  */
-internal class EnabledCheckInterceptor(private val configuration: Configuration) : TestExecutionInterceptor {
+internal class EnabledCheckInterceptor(private val configuration: ProjectConfiguration) : TestExecutionInterceptor {
 
    private val logger = Logger(EnabledCheckInterceptor::class)
 

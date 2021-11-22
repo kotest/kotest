@@ -2,7 +2,7 @@ package io.kotest.engine.test.interceptors
 
 import io.kotest.common.platform
 import io.kotest.core.concurrency.CoroutineDispatcherFactory
-import io.kotest.core.config.Configuration
+import io.kotest.core.config.ProjectConfiguration
 import kotlin.time.TimeMark
 
 internal actual fun coroutineDispatcherFactoryInterceptor(
@@ -10,7 +10,7 @@ internal actual fun coroutineDispatcherFactoryInterceptor(
 ): TestExecutionInterceptor = error("Unsupported on $platform")
 
 internal actual fun blockedThreadTimeoutInterceptor(
-   configuration: Configuration,
+   configuration: ProjectConfiguration,
    start: TimeMark,
 ): TestExecutionInterceptor = error("Unsupported on $platform")
 

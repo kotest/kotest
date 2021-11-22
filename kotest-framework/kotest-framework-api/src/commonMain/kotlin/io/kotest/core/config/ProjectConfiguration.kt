@@ -23,7 +23,7 @@ import kotlin.time.Duration
  * Some settings here are fallback values. That is, a setting specified in a Spec or Test
  * will override the value here.
  */
-class Configuration {
+class ProjectConfiguration {
 
    companion object {
       @ExperimentalKotest
@@ -104,7 +104,7 @@ class Configuration {
     * which will always (if defined) take priority over the value here.
     *
     * Note: For backwards compatibility, setting this value to k will implicitly set
-    * [Configuration.concurrentSpecs] to the k unless that value has also been set.
+    * [ProjectConfiguration.concurrentSpecs] to the k unless that value has also been set.
     *
     * Defaults to [Defaults.parallelism].
     */
@@ -127,23 +127,23 @@ class Configuration {
 
    /**
     * Each spec is launched into its own coroutine. By default, the test engine waits for that
-    * coroutine to finish before launching the next spec. By setting [Configuration.concurrentSpecs]
+    * coroutine to finish before launching the next spec. By setting [ProjectConfiguration.concurrentSpecs]
     * to a value higher than 1, multiple specs will be launched at the same time.
     *
     * For example, setting this value to 5 will result in 5 specs running concurrently. Once
     * one of those specs completes, another will be launched (if any are remaining), and so on.
     *
-    * Setting this value to [Configuration.MaxConcurrency] will result in all specs being launched together.
+    * Setting this value to [ProjectConfiguration.MaxConcurrency] will result in all specs being launched together.
     *
     * The maximum number of coroutines that can be launched at any time is given
-    * by [Configuration.concurrentSpecs] * [Configuration.concurrentTests].
+    * by [ProjectConfiguration.concurrentSpecs] * [ProjectConfiguration.concurrentTests].
     *
     * Tests inside each spec will continue to be launched sequentially. To change that
-    * see [Configuration.concurrentTests].
+    * see [ProjectConfiguration.concurrentTests].
     *
     * Note: This value does not change the number of threads used by the test engine. If a test uses a
     * blocking method, then that thread cannot be utilized by another coroutine while the thread is
-    * blocked. See [Configuration.parallelism].
+    * blocked. See [ProjectConfiguration.parallelism].
     *
     * Note: This setting can be > 1 and specs can still choose to "opt out" by using the
     * [io.kotest.core.annotation.Isolate] annotation. That annotation ensures that a spec never runs concurrently
@@ -155,25 +155,25 @@ class Configuration {
    /**
     * Each root test is launched into its own coroutine. By default, the test engine waits
     * for that coroutine to finish before launching the next test of the same spec. By setting
-    * [Configuration.concurrentTests] to a value higher than 1, multiple tests will be launched
+    * [ProjectConfiguration.concurrentTests] to a value higher than 1, multiple tests will be launched
     * at the same time.
     *
     * For example, setting this value to 5 will result in at most 5 tests running concurrently per spec.
     * Once one of those tests completes, another will be launched (if there are further tests in the spec),
     * and so on.
     *
-    * Setting this value to [Configuration.MaxConcurrency] will result in all tests of a spec being
+    * Setting this value to [ProjectConfiguration.MaxConcurrency] will result in all tests of a spec being
     * launched together when the spec is instantiated
     *
     * Setting this value will result in tests inside a spec executing concurrently, but will not change
-    * how many specs are launched concurrently. For that, see [Configuration.concurrentSpecs].
+    * how many specs are launched concurrently. For that, see [ProjectConfiguration.concurrentSpecs].
     *
     * The maximum number of coroutines that can be launched at any time is given
-    * by [Configuration.concurrentSpecs] * [Configuration.concurrentTests].
+    * by [ProjectConfiguration.concurrentSpecs] * [ProjectConfiguration.concurrentTests].
     *
     * Note: This value does not change the number of threads used by the test engine. If a test uses a
     * blocking method, then that thread cannot be utilized by another coroutine while the thread is
-    * blocked. See [Configuration.parallelism].
+    * blocked. See [ProjectConfiguration.parallelism].
     */
    @ExperimentalKotest
    var concurrentTests: Int = Defaults.concurrentTests

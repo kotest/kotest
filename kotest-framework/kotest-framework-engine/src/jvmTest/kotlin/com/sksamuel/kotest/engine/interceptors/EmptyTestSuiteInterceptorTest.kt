@@ -2,7 +2,7 @@ package com.sksamuel.kotest.engine.interceptors
 
 import io.kotest.common.ExperimentalKotest
 import io.kotest.common.KotestInternal
-import io.kotest.core.config.Configuration
+import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.descriptors.append
 import io.kotest.core.descriptors.toDescriptor
 import io.kotest.core.names.TestName
@@ -24,7 +24,7 @@ class EmptyTestSuiteInterceptorTest : FunSpec() {
    init {
 
       test("should error on empty test suite") {
-         val conf = Configuration()
+         val conf = ProjectConfiguration()
          conf.failOnEmptyTestSuite = true
          val result =
             EmptyTestSuiteInterceptor.intercept(EngineContext.empty.withConfiguration(conf)) { EngineResult.empty }
@@ -42,7 +42,7 @@ class EmptyTestSuiteInterceptorTest : FunSpec() {
             TestType.Test
          )
 
-         val conf = Configuration()
+         val conf = ProjectConfiguration()
          conf.failOnEmptyTestSuite = true
          val result = EmptyTestSuiteInterceptor.intercept(
             EngineContext.empty.withConfiguration(conf)

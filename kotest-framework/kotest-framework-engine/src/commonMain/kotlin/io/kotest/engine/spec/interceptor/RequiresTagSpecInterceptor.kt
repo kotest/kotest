@@ -3,7 +3,7 @@ package io.kotest.engine.spec.interceptor
 import io.kotest.common.flatMap
 import io.kotest.core.NamedTag
 import io.kotest.core.annotation.RequiresTag
-import io.kotest.core.config.Configuration
+import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.config.ExtensionRegistry
 import io.kotest.core.filter.SpecFilter
 import io.kotest.core.spec.SpecRef
@@ -22,7 +22,7 @@ import io.kotest.mpp.annotation
  */
 internal class RequiresTagSpecInterceptor(
    private val listener: TestEngineListener,
-   private val configuration: Configuration,
+   private val configuration: ProjectConfiguration,
    private val registry: ExtensionRegistry,
 ) : SpecRefInterceptor {
 

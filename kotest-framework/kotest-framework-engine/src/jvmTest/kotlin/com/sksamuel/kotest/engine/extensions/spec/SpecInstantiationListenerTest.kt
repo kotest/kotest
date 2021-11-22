@@ -1,6 +1,6 @@
 package com.sksamuel.kotest.engine.extensions.spec
 
-import io.kotest.core.config.Configuration
+import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.listeners.SpecInstantiationListener
 import io.kotest.core.annotation.Isolate
 import io.kotest.core.spec.Spec
@@ -27,7 +27,7 @@ class SpecInstantiationListenerTest : FunSpec() {
             }
          }
 
-         val c = Configuration()
+         val c = ProjectConfiguration()
          c.registry.add(ext)
 
          TestEngineLauncher(NoopTestEngineListener)
@@ -52,7 +52,7 @@ class SpecInstantiationListenerTest : FunSpec() {
             }
          }
 
-         val c = Configuration()
+         val c = ProjectConfiguration()
          c.registry.add(ext)
 
          TestEngineLauncher(NoopTestEngineListener)

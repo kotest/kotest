@@ -1,6 +1,6 @@
 package com.sksamuel.kotest.engine.test.interceptors
 
-import io.kotest.core.config.Configuration
+import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.descriptors.append
 import io.kotest.core.descriptors.toDescriptor
 import io.kotest.core.names.TestName
@@ -29,7 +29,7 @@ class EnabledCheckTestExecutionInterceptorTest : FunSpec({
       val context = TerminalTestScope(tc, coroutineContext)
       // the test starts with ! so should not be enabled, therefore the chain should be ignored
       var fired = false
-      EnabledCheckInterceptor(Configuration()).intercept(tc, context) { _, _ ->
+      EnabledCheckInterceptor(ProjectConfiguration()).intercept(tc, context) { _, _ ->
          fired = true
          TestResult.Success(0.seconds)
       }
@@ -48,7 +48,7 @@ class EnabledCheckTestExecutionInterceptorTest : FunSpec({
       )
       val context = TerminalTestScope(tc, coroutineContext)
       // the test starts with ! so should not be enabled, therefore the chain should be ignored
-      EnabledCheckInterceptor(Configuration()).intercept(tc, context) { _, _ -> error("boom") }
+      EnabledCheckInterceptor(ProjectConfiguration()).intercept(tc, context) { _, _ -> error("boom") }
    }
 
 })

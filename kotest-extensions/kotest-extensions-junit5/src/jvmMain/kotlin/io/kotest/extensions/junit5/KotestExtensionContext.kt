@@ -1,6 +1,6 @@
 package io.kotest.extensions.junit5
 
-import io.kotest.core.config.Configuration
+import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.descriptors.toDescriptor
 import io.kotest.core.spec.Spec
 import io.kotest.core.test.TestCase
@@ -18,7 +18,7 @@ class KotestExtensionContext(
    private val testCase: TestCase?
 ) : ExtensionContext {
 
-   private val formatter = getDisplayNameFormatter(Configuration().registry, Configuration())
+   private val formatter = getDisplayNameFormatter(ProjectConfiguration().registry, ProjectConfiguration())
 
    override fun getParent(): Optional<ExtensionContext> = Optional.empty()
    override fun getRoot(): ExtensionContext = this

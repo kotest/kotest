@@ -2,7 +2,7 @@ package io.kotest.engine.config
 
 import io.kotest.common.mapError
 import io.kotest.core.config.AbstractProjectConfig
-import io.kotest.core.config.Configuration
+import io.kotest.core.config.ProjectConfiguration
 import io.kotest.mpp.log
 import kotlin.native.concurrent.ThreadLocal
 
@@ -10,17 +10,17 @@ import kotlin.native.concurrent.ThreadLocal
 object ConfigManager {
 
    /**
-    * Initializes a given [Configuration] instance using the supplied project configs,
+    * Initializes a given [ProjectConfiguration] instance using the supplied project configs,
     * system properties, autoscan, and detected project configs on the classpath.
     *
     * @return the initialized input
     */
-   fun initialize(configuration: Configuration, projectConfigs: List<AbstractProjectConfig>): Configuration {
+   fun initialize(configuration: ProjectConfiguration, projectConfigs: List<AbstractProjectConfig>): ProjectConfiguration {
       compile(configuration, projectConfigs).getOrThrow()
       return configuration
    }
 
-   fun compile(configuration: Configuration, projectConfigs: List<AbstractProjectConfig>) = runCatching {
+   fun compile(configuration: ProjectConfiguration, projectConfigs: List<AbstractProjectConfig>) = runCatching {
       log { "ConfigManager: compiling config projectConfigs=$projectConfigs" }
       applyPlatformDefaults(configuration)
       applyConfigFromSystemProperties(configuration)
@@ -32,18 +32,18 @@ object ConfigManager {
 class ConfigurationException(cause: Throwable) : Exception(cause)
 
 /**
- * Uses system properties to load configuration values onto the supplied [Configuration] object.
+ * Uses system properties to load configuration values onto the supplied [ProjectConfiguration] object.
  *
  * Note: This function will have no effect on non-JVM targets.
  */
-internal expect fun applyConfigFromSystemProperties(configuration: Configuration)
+internal expect fun applyConfigFromSystemProperties(configuration: ProjectConfiguration)
 
 /**
  * Modifies configuration with some defaults based on the platform.
  *
  * For example on JVM it will add System property based tag detection.
  */
-internal expect fun applyPlatformDefaults(configuration: Configuration)
+internal expect fun applyPlatformDefaults(configuration: ProjectConfiguration)
 
 /**
  *
@@ -52,7 +52,7 @@ internal expect fun applyPlatformDefaults(configuration: Configuration)
  *
  * Note: This will only have an effect on JVM targets.
  */
-internal expect fun applyConfigFromAutoScan(configuration: Configuration)
+internal expect fun applyConfigFromAutoScan(configuration: ProjectConfiguration)
 
 /**
  * Scan the classpath for [AbstractProjectConfig] instances.

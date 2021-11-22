@@ -1,6 +1,6 @@
 package com.sksamuel.kotest.engine.test.timeout
 
-import io.kotest.core.config.Configuration
+import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.engine.TestEngineLauncher
@@ -12,7 +12,7 @@ class GlobalTimeoutTest : FunSpec() {
    init {
       test("global timeouts should apply if no other timeout is set")
       {
-         val c = Configuration().apply { timeout = 3 }
+         val c = ProjectConfiguration().apply { timeout = 3 }
          val collector = CollectingTestEngineListener()
          TestEngineLauncher(collector)
             .withClasses(TestTimeouts::class)

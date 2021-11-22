@@ -1,6 +1,6 @@
 package com.sksamuel.kotest.engine.extensions.project
 
-import io.kotest.core.config.Configuration
+import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.listeners.BeforeProjectListener
 import io.kotest.core.listeners.ProjectListener
 import io.kotest.core.annotation.Isolate
@@ -40,7 +40,7 @@ class ProjectListenerExactlyOnceTest : WordSpec() {
       "Test Engine" should {
          "run beforeAll/afterAll once" {
 
-            val c = Configuration()
+            val c = ProjectConfiguration()
             c.registry.add(TestProjectListener)
             c.registry.add(TestBeforeProjectListener)
 

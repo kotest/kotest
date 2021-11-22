@@ -1,6 +1,6 @@
 package com.sksamuel.kotest.engine.extensions.project
 
-import io.kotest.core.config.Configuration
+import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.ProjectContext
 import io.kotest.core.extensions.ProjectExtension
 import io.kotest.core.annotation.Isolate
@@ -38,7 +38,7 @@ class ProjectExtensionEngineResultTest : FunSpec({
          }
       }
 
-      val c = Configuration()
+      val c = ProjectConfiguration()
       c.registry.add(ext1)
       c.registry.add(ext2)
 

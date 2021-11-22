@@ -2,7 +2,7 @@ package io.kotest.engine
 
 import io.kotest.common.ExperimentalKotest
 import io.kotest.core.ProjectContext
-import io.kotest.core.config.Configuration
+import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.annotation.DoNotParallelize
 import io.kotest.core.annotation.Isolate
 import io.kotest.core.spec.SpecRef
@@ -30,7 +30,7 @@ import kotlinx.coroutines.sync.withPermit
 @ExperimentalKotest
 internal class ConcurrentTestSuiteScheduler(
    private val maxConcurrent: Int,
-   private val configuration: Configuration,
+   private val configuration: ProjectConfiguration,
    private val context: ProjectContext,
 ) : TestSuiteScheduler {
 

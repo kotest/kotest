@@ -2,7 +2,7 @@ package io.kotest.engine.test.interceptors
 
 import io.kotest.common.JVMOnly
 import io.kotest.core.concurrency.CoroutineDispatcherFactory
-import io.kotest.core.config.Configuration
+import io.kotest.core.config.ProjectConfiguration
 import kotlin.time.TimeMark
 
 /**
@@ -19,7 +19,7 @@ internal expect fun coroutineDispatcherFactoryInterceptor(
  */
 @JVMOnly
 internal expect fun blockedThreadTimeoutInterceptor(
-   configuration: Configuration,
+   configuration: ProjectConfiguration,
    start: TimeMark,
 ): TestExecutionInterceptor
 

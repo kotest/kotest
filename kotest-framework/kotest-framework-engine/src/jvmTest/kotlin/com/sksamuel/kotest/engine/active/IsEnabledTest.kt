@@ -3,7 +3,7 @@ package com.sksamuel.kotest.engine.active
 import io.kotest.common.ExperimentalKotest
 import io.kotest.core.NamedTag
 import io.kotest.core.TagExpression
-import io.kotest.core.config.Configuration
+import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.descriptors.Descriptor
 import io.kotest.core.descriptors.append
 import io.kotest.core.descriptors.toDescriptor
@@ -38,7 +38,7 @@ class IsEnabledTest : StringSpec() {
             config = ResolvedTestConfig.default.copy(enabled = { Enabled.disabled }),
             type = TestType.Test,
          )
-         test.isEnabledInternal(Configuration()).isEnabled shouldBe false
+         test.isEnabledInternal(ProjectConfiguration()).isEnabled shouldBe false
       }
 
       "isEnabledInternal should return false if it has an excluded tag" {
@@ -50,7 +50,7 @@ class IsEnabledTest : StringSpec() {
                TagExpression(emptySet(), setOf(mytag))
          }
 
-         val c = Configuration()
+         val c = ProjectConfiguration()
          c.registry.add(ext)
 
          val test = TestCase(
@@ -73,7 +73,7 @@ class IsEnabledTest : StringSpec() {
             override fun tags(): TagExpression = TagExpression("!mytag")
          }
 
-         val c = Configuration()
+         val c = ProjectConfiguration()
          c.registry.add(ext)
 
          val test = TestCase(
@@ -96,7 +96,7 @@ class IsEnabledTest : StringSpec() {
             override fun tags(): TagExpression = TagExpression(setOf(yourtag), emptySet())
          }
 
-         val c = Configuration()
+         val c = ProjectConfiguration()
          c.registry.add(ext)
 
          val mytag = NamedTag("mytag")
@@ -118,7 +118,7 @@ class IsEnabledTest : StringSpec() {
             override fun tags(): TagExpression = TagExpression("yourtag")
          }
 
-         val c = Configuration()
+         val c = ProjectConfiguration()
          c.registry.add(ext)
 
          val mytag = NamedTag("mytag")
@@ -144,7 +144,7 @@ class IsEnabledTest : StringSpec() {
             config = ResolvedTestConfig.default,
             type = TestType.Test,
          )
-         test.isEnabledInternal(Configuration()).isEnabled shouldBe false
+         test.isEnabledInternal(ProjectConfiguration()).isEnabled shouldBe false
       }
 
       "isEnabledInternal should return false if the test is not focused and the spec contains OTHER focused tests" {
@@ -157,7 +157,7 @@ class IsEnabledTest : StringSpec() {
             config = ResolvedTestConfig.default,
             type = TestType.Test,
          )
-         test.isEnabledInternal(Configuration()).isEnabled shouldBe false
+         test.isEnabledInternal(ProjectConfiguration()).isEnabled shouldBe false
       }
 
       "isEnabledInternal should return true if the test is focused and top level" {
@@ -170,7 +170,7 @@ class IsEnabledTest : StringSpec() {
             config = ResolvedTestConfig.default,
             type = TestType.Test,
          )
-         test.isEnabledInternal(Configuration()).isEnabled shouldBe true
+         test.isEnabledInternal(ProjectConfiguration()).isEnabled shouldBe true
       }
 
       "isEnabledInternal should return true if not top level even if spec has top level focused tests" {
@@ -183,7 +183,7 @@ class IsEnabledTest : StringSpec() {
             config = ResolvedTestConfig.default,
             type = TestType.Test,
          )
-         test.isEnabledInternal(Configuration()).isEnabled shouldBe true
+         test.isEnabledInternal(ProjectConfiguration()).isEnabled shouldBe true
       }
 
       "isEnabledInternal should return false if a test filter excludes the test" {
@@ -194,7 +194,7 @@ class IsEnabledTest : StringSpec() {
             }
          }
 
-         val c = Configuration()
+         val c = ProjectConfiguration()
          c.registry.add(filter)
 
          TestCase(
@@ -228,7 +228,7 @@ class IsEnabledTest : StringSpec() {
                   Enabled.disabled("descriptor name does not contain activateme")
          }
 
-         val c = Configuration()
+         val c = ProjectConfiguration()
          c.registry.add(ext)
 
          // this should be disabled because the extension says it is, even though it's normally enabled
