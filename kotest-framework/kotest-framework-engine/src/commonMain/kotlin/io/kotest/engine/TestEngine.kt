@@ -6,10 +6,7 @@ import io.kotest.common.Platform
 import io.kotest.common.platform
 import io.kotest.core.TagExpression
 import io.kotest.core.config.ProjectConfiguration
-import io.kotest.core.extensions.Extension
 import io.kotest.core.project.TestSuite
-import io.kotest.engine.extensions.SpecifiedTagsTagExtension
-import io.kotest.engine.extensions.TestEngineConfigInterceptor
 import io.kotest.engine.interceptors.EngineContext
 import io.kotest.engine.interceptors.EngineInterceptor
 import io.kotest.engine.listener.TestEngineListener
@@ -36,21 +33,11 @@ data class TestEngineConfig(
    val explicitTags: TagExpression?,
 )
 
-@KotestInternal
-private val testEngineConfigInterceptors = emptyList<TestEngineConfigInterceptor>()
-
 /**
  * Multiplatform Kotest Test Engine.
  */
 @KotestInternal
-class TestEngine(initial: TestEngineConfig) {
-
-   val config = testEngineConfigInterceptors
-      .foldRight(initial) { p, c -> p.process(c) }
-      .apply {
-         // if the engine was configured with explicit tags, we register those via a tag extension
-         explicitTags?.let { configuration.registry.add(SpecifiedTagsTagExtension(it)) }
-      }
+class TestEngine(private val config: TestEngineConfig) {
 
    /**
     * Starts execution of the given [TestSuite], intercepting calls via [EngineInterceptor]s.

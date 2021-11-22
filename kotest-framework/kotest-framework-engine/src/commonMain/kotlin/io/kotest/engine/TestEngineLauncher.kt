@@ -13,6 +13,7 @@ import io.kotest.core.spec.Spec
 import io.kotest.core.spec.SpecRef
 import io.kotest.engine.config.ConfigManager
 import io.kotest.engine.config.detectAbstractProjectConfigs
+import io.kotest.engine.extensions.SpecifiedTagsTagExtension
 import io.kotest.engine.listener.NoopTestEngineListener
 import io.kotest.engine.listener.PinnedSpecTestEngineListener
 import io.kotest.engine.listener.TeamCityTestEngineListener
@@ -31,7 +32,7 @@ import kotlin.reflect.KClass
  */
 class TestEngineLauncher(
    private val listener: TestEngineListener,
-   private val conf: ProjectConfiguration,
+   private val projectConfiguration: ProjectConfiguration,
    private val configs: List<AbstractProjectConfig>,
    private val refs: List<SpecRef>,
    private val tagExpression: TagExpression?,
@@ -66,7 +67,7 @@ class TestEngineLauncher(
    fun withListener(listener: TestEngineListener): TestEngineLauncher {
       return TestEngineLauncher(
          listener = listener,
-         conf = conf,
+         projectConfiguration = projectConfiguration,
          configs = configs,
          refs = refs,
          tagExpression = tagExpression,
@@ -76,7 +77,7 @@ class TestEngineLauncher(
    fun withSpecs(vararg specs: Spec): TestEngineLauncher {
       return TestEngineLauncher(
          listener = listener,
-         conf = conf,
+         projectConfiguration = projectConfiguration,
          configs = configs,
          refs = specs.toList().map { InstanceSpecRef(it) },
          tagExpression = tagExpression,
@@ -87,7 +88,7 @@ class TestEngineLauncher(
    fun withClasses(specs: List<KClass<out Spec>>): TestEngineLauncher {
       return TestEngineLauncher(
          listener = listener,
-         conf = conf,
+         projectConfiguration = projectConfiguration,
          configs = configs,
          refs = specs.toList().map { ReflectiveSpecRef(it) },
          tagExpression = tagExpression,
@@ -108,7 +109,7 @@ class TestEngineLauncher(
    fun withProjectConfig(vararg projectConfig: AbstractProjectConfig): TestEngineLauncher {
       return TestEngineLauncher(
          listener = listener,
-         conf = conf,
+         projectConfiguration = projectConfiguration,
          configs = configs + projectConfig,
          refs = refs,
          tagExpression = tagExpression,
@@ -118,7 +119,7 @@ class TestEngineLauncher(
    fun withTagExpression(expression: TagExpression?): TestEngineLauncher {
       return TestEngineLauncher(
          listener = listener,
-         conf = conf,
+         projectConfiguration = projectConfiguration,
          configs = configs,
          refs = refs,
          tagExpression = expression,
@@ -140,14 +141,14 @@ class TestEngineLauncher(
     * here will be lost.
     */
    fun withExtensions(extensions: List<Extension>): TestEngineLauncher {
-      extensions.forEach { conf.registry.add(it) }
+      extensions.forEach { projectConfiguration.registry.add(it) }
       return this
    }
 
    fun withConfiguration(configuration: ProjectConfiguration): TestEngineLauncher {
       return TestEngineLauncher(
          listener = listener,
-         conf = configuration,
+         projectConfiguration = configuration,
          configs = configs,
          refs = refs,
          tagExpression = tagExpression,
@@ -155,6 +156,10 @@ class TestEngineLauncher(
    }
 
    fun toConfig(): TestEngineConfig {
+
+      // if the engine was configured with explicit tags, we register those via a tag extension
+      tagExpression?.let { projectConfiguration.registry.add(SpecifiedTagsTagExtension(it)) }
+
       return TestEngineConfig(
          listener = ThreadSafeTestEngineListener(
             PinnedSpecTestEngineListener(
@@ -162,7 +167,7 @@ class TestEngineLauncher(
             )
          ),
          interceptors = testEngineInterceptors(),
-         configuration = ConfigManager.initialize(conf, configs + detectAbstractProjectConfigs()),
+         configuration = ConfigManager.initialize(projectConfiguration, configs + detectAbstractProjectConfigs()),
          tagExpression,
       )
    }
