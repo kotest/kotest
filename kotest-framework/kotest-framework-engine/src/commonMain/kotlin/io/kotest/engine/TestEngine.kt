@@ -41,9 +41,12 @@ class TestEngine(private val config: TestEngineConfig) {
 
    /**
     * Starts execution of the given [TestSuite], intercepting calls via [EngineInterceptor]s.
+    *
+    * It is recommended that this method is not invoked, but instead the engine
+    * is launched via the [TestEngineLauncher].
     */
    @OptIn(KotestInternal::class, ExperimentalKotest::class)
-   suspend fun execute(suite: TestSuite): EngineResult {
+   internal suspend fun execute(suite: TestSuite): EngineResult {
       log { "TestEngine: Executing test suite with ${suite.specs.size} specs" }
 
       val innerExecute: suspend (EngineContext) -> EngineResult = { context ->
