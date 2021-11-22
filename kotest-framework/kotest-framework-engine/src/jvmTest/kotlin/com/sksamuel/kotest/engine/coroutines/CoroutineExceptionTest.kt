@@ -4,7 +4,7 @@ import io.kotest.core.annotation.Isolate
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
-import io.kotest.engine.KotestEngineLauncher
+import io.kotest.engine.TestEngineLauncher
 import io.kotest.engine.listener.AbstractTestEngineListener
 import io.kotest.matchers.shouldBe
 import kotlinx.coroutines.launch
@@ -27,9 +27,8 @@ class CoroutineExceptionTest : FunSpec({
          }
       }
 
-      KotestEngineLauncher()
-         .withListener(listener)
-         .withSpec(FailingCoroutineTest::class)
+      TestEngineLauncher(listener)
+         .withClasses(FailingCoroutineTest::class)
          .launch()
 
       _result?.isError shouldBe true

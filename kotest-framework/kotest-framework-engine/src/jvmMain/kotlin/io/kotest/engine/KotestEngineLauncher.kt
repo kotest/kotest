@@ -29,9 +29,6 @@ class KotestEngineLauncher(
 
    companion object {
 
-      /**
-       * Returns a [KotestEngineLauncher] with common filters and settings.
-       */
       fun default(
          listeners: List<TestEngineListener>,
          specs: List<KClass<out Spec>>,

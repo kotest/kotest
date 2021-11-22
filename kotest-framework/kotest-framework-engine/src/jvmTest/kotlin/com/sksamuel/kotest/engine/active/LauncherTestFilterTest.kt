@@ -1,12 +1,12 @@
 package com.sksamuel.kotest.engine.active
 
+import io.kotest.core.annotation.Isolate
 import io.kotest.core.descriptors.Descriptor
 import io.kotest.core.filter.TestFilter
 import io.kotest.core.filter.TestFilterResult
-import io.kotest.core.annotation.Isolate
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.test.TestCase
-import io.kotest.engine.KotestEngineLauncher
+import io.kotest.engine.TestEngineLauncher
 import io.kotest.engine.listener.AbstractTestEngineListener
 
 private var counter = 0
@@ -33,10 +33,9 @@ class LauncherTestFilterTest : FunSpec() {
             }
          }
 
-         KotestEngineLauncher()
-            .withListener(listener)
-            .withSpec(MyTestClass::class)
-            .withFilter(filter)
+         TestEngineLauncher(listener)
+            .withClasses(MyTestClass::class)
+            .withExtensions(filter)
             .launch()
       }
 
@@ -55,10 +54,9 @@ class LauncherTestFilterTest : FunSpec() {
             }
          }
 
-         KotestEngineLauncher()
-            .withListener(listener)
-            .withSpec(MyTestClass::class)
-            .withFilter(filter)
+         TestEngineLauncher(listener)
+            .withClasses(MyTestClass::class)
+            .withExtensions(filter)
             .launch()
       }
    }
