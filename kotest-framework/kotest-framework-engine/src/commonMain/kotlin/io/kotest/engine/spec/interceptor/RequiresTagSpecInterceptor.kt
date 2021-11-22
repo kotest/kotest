@@ -3,6 +3,7 @@ package io.kotest.engine.spec.interceptor
 import io.kotest.common.flatMap
 import io.kotest.core.NamedTag
 import io.kotest.core.annotation.RequiresTag
+import io.kotest.core.annotation.requirestag.wrapper
 import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.config.ExtensionRegistry
 import io.kotest.core.filter.SpecFilter
@@ -33,7 +34,7 @@ internal class RequiresTagSpecInterceptor(
       return when (val annotation = ref.kclass.annotation<RequiresTag>()) {
          null -> fn(ref)
          else -> {
-            val requiredTags = annotation.values.map { NamedTag(it) }.toSet()
+            val requiredTags = annotation.wrapper.map { NamedTag(it) }.toSet()
             val expr = configuration.runtimeTags().parse()
             if (requiredTags.isEmpty() || expr.isActive(requiredTags)) {
                fn(ref)

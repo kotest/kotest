@@ -2,6 +2,7 @@ package io.kotest.engine.spec.interceptor
 
 import io.kotest.common.flatMap
 import io.kotest.core.annotation.EnabledIf
+import io.kotest.core.annotation.enabledif.wrapper
 import io.kotest.core.config.ExtensionRegistry
 import io.kotest.core.spec.SpecRef
 import io.kotest.core.test.TestCase
@@ -31,7 +32,7 @@ internal class EnabledIfSpecInterceptor(
 
       val enabled = ref.kclass
          .annotation<EnabledIf>()
-         ?.enabledIf
+         ?.wrapper
          ?.newInstanceNoArgConstructor()
          ?.enabled(ref.kclass) ?: true
 

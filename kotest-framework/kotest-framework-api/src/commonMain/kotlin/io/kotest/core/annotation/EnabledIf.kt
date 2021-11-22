@@ -16,3 +16,7 @@ annotation class EnabledIf(val enabledIf: KClass<out EnabledCondition>)
 fun interface EnabledCondition {
    fun enabled(kclass: KClass<out Spec>): Boolean
 }
+
+class AlwaysEnabledCondition : EnabledCondition {
+   override fun enabled(kclass: KClass<out Spec>): Boolean = true
+}

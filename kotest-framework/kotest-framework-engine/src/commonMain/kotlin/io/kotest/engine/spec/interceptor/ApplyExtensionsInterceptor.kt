@@ -3,6 +3,7 @@ package io.kotest.engine.spec.interceptor
 import io.kotest.common.flatMap
 import io.kotest.core.config.ExtensionRegistry
 import io.kotest.core.extensions.ApplyExtension
+import io.kotest.core.extensions.wrapper
 import io.kotest.core.spec.SpecRef
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
@@ -25,7 +26,7 @@ internal class ApplyExtensionsInterceptor(private val registry: ExtensionRegistr
       fn: suspend (SpecRef) -> Result<Map<TestCase, TestResult>>
    ): Result<Map<TestCase, TestResult>> {
       return runCatching {
-         ref.kclass.annotation<ApplyExtension>()?.extensions?.map { extensionClass ->
+         ref.kclass.annotation<ApplyExtension>()?.wrapper?.map { extensionClass ->
             val extension = extensionClass.newInstanceNoArgConstructorOrObjectInstance()
             SpecWrapperExtension(extension, ref.kclass)
          } ?: emptyList()

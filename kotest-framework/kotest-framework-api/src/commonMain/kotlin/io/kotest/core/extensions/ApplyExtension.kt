@@ -18,3 +18,5 @@ import kotlin.reflect.KClass
 @Retention(AnnotationRetention.RUNTIME)
 @Target(AnnotationTarget.CLASS)
 annotation class ApplyExtension(vararg val extensions: KClass<out Extension>)
+
+expect val ApplyExtension.wrapper: Array<out KClass<out Extension>>
