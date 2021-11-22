@@ -326,14 +326,11 @@ class JUnitTestEngineListener(
          else -> TestDescriptor.Type.CONTAINER
       }
 
-      val source = runCatching { testCase.source.toTestSource() }.getOrNull()
-      logger.log { Pair(testCase.name.testName, "Test will use source: $source")}
-
       return createTestDescriptor(
          id,
          formatter.format(testCase),
          type,
-         source,
+         ClassSource.from(testCase.spec::class.java, null), // junit hides tests if we don't send this
          type == TestDescriptor.Type.CONTAINER
       ).apply {
          parent.addChild(this)
