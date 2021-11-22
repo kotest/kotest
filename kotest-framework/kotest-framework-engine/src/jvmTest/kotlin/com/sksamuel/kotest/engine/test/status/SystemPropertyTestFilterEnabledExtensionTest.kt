@@ -4,7 +4,7 @@ import io.kotest.core.descriptors.append
 import io.kotest.core.descriptors.toDescriptor
 import io.kotest.core.internal.KotestEngineProperties
 import io.kotest.core.names.TestName
-import io.kotest.core.sourceRef
+import io.kotest.core.source.sourceRef
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.test.Enabled
 import io.kotest.core.test.TestCase

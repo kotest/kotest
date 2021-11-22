@@ -1,4 +1,4 @@
-package io.kotest.core
+package io.kotest.core.source
 
 /**
  * Returns a [SourceRef] for the current execution point.

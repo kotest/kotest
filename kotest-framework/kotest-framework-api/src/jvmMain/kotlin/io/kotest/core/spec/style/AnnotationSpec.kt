@@ -2,7 +2,7 @@ package io.kotest.core.spec.style
 
 import io.kotest.core.extensions.Extension
 import io.kotest.core.names.TestName
-import io.kotest.core.sourceRef
+import io.kotest.core.source.sourceRef
 import io.kotest.core.spec.RootTest
 import io.kotest.core.spec.Spec
 import io.kotest.core.test.TestCase

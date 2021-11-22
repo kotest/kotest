@@ -1,6 +1,6 @@
 package com.sksamuel.kotest.engine.test
 
-import io.kotest.core.SourceRef
+import io.kotest.core.source.SourceRef
 import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.engine.spec.Materializer

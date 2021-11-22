@@ -2,7 +2,7 @@ package io.kotest.core.spec
 
 import io.kotest.common.ExperimentalKotest
 import io.kotest.common.SoftDeprecated
-import io.kotest.core.SourceRef
+import io.kotest.core.source.SourceRef
 import io.kotest.core.Tag
 import io.kotest.core.TestConfiguration
 import io.kotest.core.Tuple2

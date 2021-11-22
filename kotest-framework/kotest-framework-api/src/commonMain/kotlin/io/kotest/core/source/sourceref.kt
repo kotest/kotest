@@ -1,4 +1,4 @@
-package io.kotest.core
+package io.kotest.core.source
 
 sealed interface SourceRef {
 

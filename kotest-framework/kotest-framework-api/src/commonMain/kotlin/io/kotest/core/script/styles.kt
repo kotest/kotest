@@ -6,7 +6,7 @@
 //import io.kotest.core.plan.Name
 //import io.kotest.core.Source
 //import io.kotest.core.plan.toDescriptor
-//import io.kotest.core.sourceRef
+//import io.kotest.core.source.sourceRef
 //import io.kotest.core.test.Description
 //import io.kotest.core.test.config.TestCaseConfig
 //import io.kotest.core.test.testScope

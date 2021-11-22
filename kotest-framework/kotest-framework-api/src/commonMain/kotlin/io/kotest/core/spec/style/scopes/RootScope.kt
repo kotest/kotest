@@ -1,7 +1,7 @@
 package io.kotest.core.spec.style.scopes
 
 import io.kotest.core.names.TestName
-import io.kotest.core.sourceRef
+import io.kotest.core.source.sourceRef
 import io.kotest.core.spec.RootTest
 import io.kotest.core.test.TestScope
 import io.kotest.core.test.TestType

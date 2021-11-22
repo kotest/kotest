@@ -1,6 +1,6 @@
 package com.sksamuel.kotest.engine.teamcity
 
-import io.kotest.core.SourceRef
+import io.kotest.core.source.SourceRef
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.engine.teamcity.Locations
 import io.kotest.matchers.shouldBe

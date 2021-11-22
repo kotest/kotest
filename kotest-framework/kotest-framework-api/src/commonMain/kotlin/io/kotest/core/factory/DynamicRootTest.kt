@@ -1,6 +1,6 @@
 package io.kotest.core.factory
 
-import io.kotest.core.SourceRef
+import io.kotest.core.source.SourceRef
 import io.kotest.core.names.TestName
 import io.kotest.core.spec.Spec
 import io.kotest.core.test.TestCase

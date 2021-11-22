@@ -1,6 +1,6 @@
 package io.kotest.engine.teamcity
 
-import io.kotest.core.SourceRef
+import io.kotest.core.source.SourceRef
 import io.kotest.mpp.bestName
 import kotlin.reflect.KClass
 

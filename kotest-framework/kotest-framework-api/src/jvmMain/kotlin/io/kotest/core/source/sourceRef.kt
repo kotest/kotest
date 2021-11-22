@@ -1,4 +1,4 @@
-package io.kotest.core
+package io.kotest.core.source
 
 import io.kotest.core.internal.KotestEngineProperties
 import io.kotest.core.spec.Spec

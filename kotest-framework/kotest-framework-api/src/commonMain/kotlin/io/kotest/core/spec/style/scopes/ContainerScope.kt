@@ -3,7 +3,7 @@ package io.kotest.core.spec.style.scopes
 import io.kotest.core.Tuple2
 import io.kotest.core.listeners.TestListener
 import io.kotest.core.names.TestName
-import io.kotest.core.sourceRef
+import io.kotest.core.source.sourceRef
 import io.kotest.core.spec.AfterAny
 import io.kotest.core.spec.AfterContainer
 import io.kotest.core.spec.AfterEach

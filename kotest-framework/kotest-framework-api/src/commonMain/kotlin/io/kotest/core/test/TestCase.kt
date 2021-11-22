@@ -1,10 +1,10 @@
 package io.kotest.core.test
 
-import io.kotest.core.SourceRef
+import io.kotest.core.source.SourceRef
 import io.kotest.core.descriptors.Descriptor
 import io.kotest.core.factory.FactoryId
 import io.kotest.core.names.TestName
-import io.kotest.core.sourceRef
+import io.kotest.core.source.sourceRef
 import io.kotest.core.spec.Spec
 import io.kotest.core.test.config.ResolvedTestConfig
 

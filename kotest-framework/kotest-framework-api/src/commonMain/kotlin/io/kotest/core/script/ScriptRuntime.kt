@@ -5,7 +5,7 @@
 //import io.kotest.core.plan.DisplayName
 //import io.kotest.core.plan.Name
 //import io.kotest.core.Source
-//import io.kotest.core.sourceRef
+//import io.kotest.core.source.sourceRef
 //import io.kotest.core.spec.style.FunSpec
 //import io.kotest.core.test.DescriptionName
 //import io.kotest.core.test.TestCase
