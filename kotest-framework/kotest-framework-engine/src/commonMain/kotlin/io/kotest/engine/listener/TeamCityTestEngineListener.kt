@@ -27,8 +27,8 @@ class TeamCityTestEngineListener(
 
    private var formatter: DisplayNameFormatter = DefaultDisplayNameFormatter(ProjectConfiguration())
 
-   // these are the specs that have been started and the test started event sent to team city
-   private val started = mutableSetOf<KClass<*>>()
+   // set to true if the spec has been started
+   private var started = false
 
    private val rootTests = mutableListOf<TestCase>()
 
@@ -94,29 +94,13 @@ class TeamCityTestEngineListener(
       startSpec(kclass)
    }
 
-   private fun startSpec(kclass: KClass<*>) {
-      val msg = TeamCityMessageBuilder
-         .testSuiteStarted(prefix, formatter.format(kclass))
-         .id(kclass.toDescriptor().path().value)
-         .locationHint(Locations.location(kclass))
-         .build()
-      println(msg)
-      started.add(kclass)
-   }
-
-   private fun finishSpec(kclass: KClass<*>) {
-      val msg = TeamCityMessageBuilder
-         .testSuiteFinished(prefix, formatter.format(kclass))
-         .id(kclass.toDescriptor().path().value)
-         .locationHint(Locations.location(kclass))
-         .build()
-      println(msg)
-   }
+   // ignored specs are completely hidden from output in team city
+   override suspend fun specIgnored(kclass: KClass<*>, reason: String?) {}
 
    override suspend fun specFinished(kclass: KClass<*>, t: Throwable?) {
 
       // we must start the test if it wasn't already started
-      if (!started.contains(kclass))
+      if (!started)
          startSpec(kclass)
 
       // start by outputting each root test and then any nested children
@@ -130,6 +114,29 @@ class TeamCityTestEngineListener(
       }
 
       finishSpec(kclass)
+      results.clear()
+      rootTests.clear()
+      started = false
+      children.clear()
+   }
+
+   private fun startSpec(kclass: KClass<*>) {
+      val msg = TeamCityMessageBuilder
+         .testSuiteStarted(prefix, formatter.format(kclass))
+         .id(kclass.toDescriptor().path().value)
+         .locationHint(Locations.location(kclass))
+         .build()
+      println(msg)
+      started = true
+   }
+
+   private fun finishSpec(kclass: KClass<*>) {
+      val msg = TeamCityMessageBuilder
+         .testSuiteFinished(prefix, formatter.format(kclass))
+         .id(kclass.toDescriptor().path().value)
+         .locationHint(Locations.location(kclass))
+         .build()
+      println(msg)
    }
 
    private fun handleTest(testCase: TestCase) {
@@ -156,9 +163,6 @@ class TeamCityTestEngineListener(
          }
       }
    }
-
-   // ignored specs are completely hidden from output in team city
-   override suspend fun specIgnored(kclass: KClass<*>, reason: String?) {}
 
    override suspend fun testStarted(testCase: TestCase) {
       if (testCase.isRootTest()) rootTests.add(testCase)
