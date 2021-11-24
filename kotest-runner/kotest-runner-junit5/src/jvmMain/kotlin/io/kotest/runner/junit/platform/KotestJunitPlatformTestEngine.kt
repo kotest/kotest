@@ -27,7 +27,6 @@ import kotlin.reflect.KClass
 /**
  * A Kotest implementation of a Junit Platform [TestEngine].
  */
-@KotestInternal
 class KotestJunitPlatformTestEngine : TestEngine {
 
    companion object {
