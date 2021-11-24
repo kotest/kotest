@@ -19,8 +19,6 @@ import io.kotest.engine.listener.PinnedSpecTestEngineListener
 import io.kotest.engine.listener.TeamCityTestEngineListener
 import io.kotest.engine.listener.TestEngineListener
 import io.kotest.engine.listener.ThreadSafeTestEngineListener
-import io.kotest.engine.spec.InstanceSpecRef
-import io.kotest.engine.spec.ReflectiveSpecRef
 import io.kotest.mpp.log
 import kotlin.reflect.KClass
 
@@ -79,7 +77,7 @@ class TestEngineLauncher(
          listener = listener,
          projectConfiguration = projectConfiguration,
          configs = configs,
-         refs = specs.toList().map { InstanceSpecRef(it) },
+         refs = specs.toList().map { SpecRef.Singleton(it) },
          tagExpression = tagExpression,
       )
    }
@@ -90,7 +88,7 @@ class TestEngineLauncher(
          listener = listener,
          projectConfiguration = projectConfiguration,
          configs = configs,
-         refs = specs.toList().map { ReflectiveSpecRef(it) },
+         refs = specs.toList().map { SpecRef.Reference(it) },
          tagExpression = tagExpression,
       )
    }

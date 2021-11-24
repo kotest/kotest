@@ -1,17 +1,16 @@
 package io.kotest.core.spec
 
-import io.kotest.common.ExperimentalKotest
-import io.kotest.core.config.ExtensionRegistry
 import kotlin.reflect.KClass
 
 /**
- * A [SpecRef] is a reference to a spec that was detected during scans or compilation.
+ * A [SpecRef] is a reference to a spec that was detected during classpath
+ * scanning or during compilation.
  *
- * Each ref contains a reference to the KClass of that spec and contains a function
- * to instantiate a [Spec].
+ * On platforms that lack reflective capability, such as nodeJS, web or kotlin/native,
+ * specs are preconstructed or constructed through a simple function. On the JVM, the
+ * powerful reflection support means instances can be created via the [KClass] reference.
  */
-@ExperimentalKotest
-interface SpecRef {
+sealed interface SpecRef {
 
    /**
     * The KClass for the spec that this [SpecRef] references.
@@ -19,12 +18,20 @@ interface SpecRef {
    val kclass: KClass<out Spec>
 
    /**
-    * Returns an instance of the spec that this [SpecRef] references.
-    *
-    * May return an error if an instance could not be created (eg, on JVM, instances are created
-    * refectively, and this may error if the constructor is not known).
-    *
-    * @param registry the extension's registry, used to lookup extensions for the instantiation process.
+    * A [SpecRef] that contains only a [kclass] reference and instances
+    * must be created using reflection.
     */
-   suspend fun instance(registry: ExtensionRegistry): Result<Spec>
+   data class Reference(override val kclass: KClass<out Spec>) : SpecRef
+
+   /**
+    * A [SpecRef] that contains a singleton spec [instance].
+    */
+   data class Singleton(val instance: Spec) : SpecRef {
+      override val kclass: KClass<out Spec> = instance::class
+   }
+
+   /**
+    * A [SpecRef] that contains a function that can be invoked to construct a spec.
+    */
+   data class Function(val f: () -> Spec, override val kclass: KClass<out Spec>) : SpecRef
 }

@@ -2,10 +2,10 @@ package com.sksamuel.kotest.engine.spec.sorts
 
 import io.kotest.core.spec.Order
 import io.kotest.core.spec.SpecExecutionOrder
+import io.kotest.core.spec.SpecRef
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.engine.spec.DefaultSpecExecutionOrderExtension
-import io.kotest.engine.spec.ReflectiveSpecRef
 import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.shouldBe
 
@@ -16,48 +16,48 @@ class DefaultSpecExecutionOrderExtensionTest : DescribeSpec({
       it("SpecExecutionOrder.Undefined") {
          DefaultSpecExecutionOrderExtension(SpecExecutionOrder.Undefined).sort(
             listOf(
-               ReflectiveSpecRef(ASpec::class),
-               ReflectiveSpecRef(ZSpec::class),
-               ReflectiveSpecRef(SpecA::class),
-               ReflectiveSpecRef(SpecZ::class),
+               SpecRef.Reference(ASpec::class),
+               SpecRef.Reference(ZSpec::class),
+               SpecRef.Reference(SpecA::class),
+               SpecRef.Reference(SpecZ::class),
             )
          ) shouldBe listOf(
-            ReflectiveSpecRef(ASpec::class),
-            ReflectiveSpecRef(ZSpec::class),
-            ReflectiveSpecRef(SpecA::class),
-            ReflectiveSpecRef(SpecZ::class),
+            SpecRef.Reference(ASpec::class),
+            SpecRef.Reference(ZSpec::class),
+            SpecRef.Reference(SpecA::class),
+            SpecRef.Reference(SpecZ::class),
          )
       }
 
       it("SpecExecutionOrder.Annotated") {
          DefaultSpecExecutionOrderExtension(SpecExecutionOrder.Annotated).sort(
             listOf(
-               ReflectiveSpecRef(ASpec::class),
-               ReflectiveSpecRef(ZSpec::class),
-               ReflectiveSpecRef(SpecA::class),
-               ReflectiveSpecRef(SpecZ::class),
+               SpecRef.Reference(ASpec::class),
+               SpecRef.Reference(ZSpec::class),
+               SpecRef.Reference(SpecA::class),
+               SpecRef.Reference(SpecZ::class),
             )
          ) shouldBe listOf(
-            ReflectiveSpecRef(SpecA::class),
-            ReflectiveSpecRef(ASpec::class),
-            ReflectiveSpecRef(ZSpec::class),
-            ReflectiveSpecRef(SpecZ::class),
+            SpecRef.Reference(SpecA::class),
+            SpecRef.Reference(ASpec::class),
+            SpecRef.Reference(ZSpec::class),
+            SpecRef.Reference(SpecZ::class),
          )
       }
 
       it("SpecExecutionOrder.Lexicographic") {
          DefaultSpecExecutionOrderExtension(SpecExecutionOrder.Lexicographic).sort(
             listOf(
-               ReflectiveSpecRef(ASpec::class),
-               ReflectiveSpecRef(ZSpec::class),
-               ReflectiveSpecRef(SpecA::class),
-               ReflectiveSpecRef(SpecZ::class),
+               SpecRef.Reference(ASpec::class),
+               SpecRef.Reference(ZSpec::class),
+               SpecRef.Reference(SpecA::class),
+               SpecRef.Reference(SpecZ::class),
             )
          ) shouldBe listOf(
-            ReflectiveSpecRef(ASpec::class),
-            ReflectiveSpecRef(SpecA::class),
-            ReflectiveSpecRef(SpecZ::class),
-            ReflectiveSpecRef(ZSpec::class),
+            SpecRef.Reference(ASpec::class),
+            SpecRef.Reference(SpecA::class),
+            SpecRef.Reference(SpecZ::class),
+            SpecRef.Reference(ZSpec::class),
          )
       }
 
@@ -66,10 +66,10 @@ class DefaultSpecExecutionOrderExtensionTest : DescribeSpec({
          List(10000) {
             DefaultSpecExecutionOrderExtension(SpecExecutionOrder.Random).sort(
                listOf(
-                  ReflectiveSpecRef(ASpec::class),
-                  ReflectiveSpecRef(ZSpec::class),
-                  ReflectiveSpecRef(SpecA::class),
-                  ReflectiveSpecRef(SpecZ::class),
+                  SpecRef.Reference(ASpec::class),
+                  SpecRef.Reference(ZSpec::class),
+                  SpecRef.Reference(SpecA::class),
+                  SpecRef.Reference(SpecZ::class),
                )
             )
          }.distinct().shouldHaveSize(24)

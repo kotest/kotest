@@ -2,10 +2,10 @@ package com.sksamuel.kotest.runner.junit5
 
 import io.kotest.common.ExperimentalKotest
 import io.kotest.core.config.ProjectConfiguration
+import io.kotest.core.spec.SpecRef
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.engine.concurrency.NoopCoroutineDispatcherFactory
 import io.kotest.engine.interceptors.EngineContext
-import io.kotest.engine.spec.ReflectiveSpecRef
 import io.kotest.engine.spec.SpecExecutor
 import io.kotest.matchers.shouldBe
 import io.kotest.runner.junit.platform.JUnitTestEngineListener
@@ -43,7 +43,7 @@ class SpecInitializationErrorTest : FunSpec({
 
       val listener = JUnitTestEngineListener(engineListener, root)
       val executor = SpecExecutor(listener, NoopCoroutineDispatcherFactory, EngineContext(ProjectConfiguration()))
-      executor.execute(ReflectiveSpecRef(SpecWithFieldError::class))
+      executor.execute(SpecRef.Reference(SpecWithFieldError::class))
 
       finished.toMap() shouldBe mapOf(
          "SpecInstantiationException" to TestExecutionResult.Status.FAILED,
@@ -75,7 +75,7 @@ class SpecInitializationErrorTest : FunSpec({
 
       val listener = JUnitTestEngineListener(engineListener, root)
       val executor = SpecExecutor(listener, NoopCoroutineDispatcherFactory, EngineContext(ProjectConfiguration()))
-      executor.execute(ReflectiveSpecRef(SpecWithInitError::class))
+      executor.execute(SpecRef.Reference(SpecWithInitError::class))
 
       finished.toMap() shouldBe mapOf(
          "SpecInstantiationException" to TestExecutionResult.Status.FAILED,

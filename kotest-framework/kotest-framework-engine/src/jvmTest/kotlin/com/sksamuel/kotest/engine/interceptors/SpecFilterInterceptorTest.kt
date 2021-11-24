@@ -3,9 +3,9 @@ package com.sksamuel.kotest.engine.interceptors
 import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.filter.SpecFilter
 import io.kotest.core.filter.SpecFilterResult
+import io.kotest.core.spec.SpecRef
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.engine.listener.NoopTestEngineListener
-import io.kotest.engine.spec.ReflectiveSpecRef
 import io.kotest.engine.spec.interceptor.SpecFilterInterceptor
 import io.kotest.matchers.booleans.shouldBeFalse
 import io.kotest.matchers.booleans.shouldBeTrue
@@ -21,13 +21,13 @@ class SpecFilterInterceptorTest : FunSpec() {
             }
          })
          var fired = false
-         SpecFilterInterceptor(NoopTestEngineListener, c.registry).intercept(ReflectiveSpecRef(FooSpec::class)) {
+         SpecFilterInterceptor(NoopTestEngineListener, c.registry).intercept(SpecRef.Reference(FooSpec::class)) {
             fired = true
             Result.success(emptyMap())
          }
          fired.shouldBeFalse()
 
-         SpecFilterInterceptor(NoopTestEngineListener, c.registry).intercept(ReflectiveSpecRef(BarSpec::class)) {
+         SpecFilterInterceptor(NoopTestEngineListener, c.registry).intercept(SpecRef.Reference(BarSpec::class)) {
             fired = true
             Result.success(emptyMap())
          }

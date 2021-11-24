@@ -60,7 +60,7 @@ class SpecExecutor(
    }
 
    suspend fun execute(kclass: KClass<out Spec>) {
-      execute(ReflectiveSpecRef(kclass))
+      execute(SpecRef.Reference(kclass))
    }
 
    private suspend fun referenceInterceptors(ref: SpecRef) {

@@ -12,7 +12,6 @@ import io.kotest.core.spec.style.FunSpec
 import io.kotest.engine.EngineResult
 import io.kotest.engine.interceptors.EngineContext
 import io.kotest.engine.interceptors.SpecSortEngineInterceptor
-import io.kotest.engine.spec.ReflectiveSpecRef
 import io.kotest.matchers.shouldBe
 
 @Isolate
@@ -28,9 +27,9 @@ class SpecSortEngineInterceptorTest : FunSpec({
          EngineContext.empty.withConfiguration(c).withTestSuite(
             TestSuite(
                listOf(
-                  ReflectiveSpecRef(IgnoredTestsTest::class),
-                  ReflectiveSpecRef(BangDisableFunSpec::class),
-                  ReflectiveSpecRef(FocusTest::class),
+                  SpecRef.Reference(IgnoredTestsTest::class),
+                  SpecRef.Reference(BangDisableFunSpec::class),
+                  SpecRef.Reference(FocusTest::class),
                )
             )
          )

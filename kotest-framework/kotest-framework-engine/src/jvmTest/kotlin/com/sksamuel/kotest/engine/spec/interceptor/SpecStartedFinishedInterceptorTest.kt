@@ -1,8 +1,8 @@
 package com.sksamuel.kotest.engine.spec.interceptor
 
+import io.kotest.core.spec.SpecRef
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.engine.listener.AbstractTestEngineListener
-import io.kotest.engine.spec.ReflectiveSpecRef
 import io.kotest.engine.spec.interceptor.SpecFinishedInterceptor
 import io.kotest.engine.spec.interceptor.SpecStartedInterceptor
 import io.kotest.matchers.shouldBe
@@ -19,7 +19,7 @@ class SpecStartedFinishedInterceptorTest : FunSpec() {
             }
          }
          SpecStartedInterceptor(listener)
-            .intercept(ReflectiveSpecRef(FooSpec::class)) {
+            .intercept(SpecRef.Reference(FooSpec::class)) {
                result += "b"
                Result.success(emptyMap())
             }
@@ -34,7 +34,7 @@ class SpecStartedFinishedInterceptorTest : FunSpec() {
             }
          }
          SpecFinishedInterceptor(listener)
-            .intercept(ReflectiveSpecRef(FooSpec::class)) {
+            .intercept(SpecRef.Reference(FooSpec::class)) {
                result += "b"
                Result.success(emptyMap())
             }

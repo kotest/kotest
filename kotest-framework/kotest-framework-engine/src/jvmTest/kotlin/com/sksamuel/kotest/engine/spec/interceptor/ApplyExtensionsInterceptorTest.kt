@@ -3,9 +3,9 @@ package com.sksamuel.kotest.engine.spec.interceptor
 import io.kotest.core.config.DefaultExtensionRegistry
 import io.kotest.core.extensions.ApplyExtension
 import io.kotest.core.extensions.Extension
+import io.kotest.core.spec.SpecRef
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.engine.extensions.SpecWrapperExtension
-import io.kotest.engine.spec.ReflectiveSpecRef
 import io.kotest.engine.spec.interceptor.ApplyExtensionsInterceptor
 import io.kotest.matchers.types.shouldBeInstanceOf
 
@@ -15,7 +15,7 @@ class ApplyExtensionsInterceptorTest : FunSpec() {
       test("ApplyExtensionsInterceptor should apply extensions") {
          val registry = DefaultExtensionRegistry()
          ApplyExtensionsInterceptor(registry)
-            .intercept(ReflectiveSpecRef(MyAnnotatedSpec::class)) {
+            .intercept(SpecRef.Reference(MyAnnotatedSpec::class)) {
                val wrapper = registry.all().single() as SpecWrapperExtension
                wrapper.delegate.shouldBeInstanceOf<Foo>()
                Result.success(emptyMap())
@@ -25,7 +25,7 @@ class ApplyExtensionsInterceptorTest : FunSpec() {
       test("ApplyExtensionsInterceptor should apply extensions where the primary constructor is not no-args") {
          val registry = DefaultExtensionRegistry()
          ApplyExtensionsInterceptor(registry)
-            .intercept(ReflectiveSpecRef(MyAnnotatedSpec2::class)) {
+            .intercept(SpecRef.Reference(MyAnnotatedSpec2::class)) {
                val wrapper = registry.all().single() as SpecWrapperExtension
                wrapper.delegate.shouldBeInstanceOf<Bar>()
                Result.success(emptyMap())

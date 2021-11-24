@@ -4,12 +4,12 @@ import io.kotest.common.ExperimentalKotest
 import io.kotest.core.NamedTag
 import io.kotest.core.TagExpression
 import io.kotest.core.config.ProjectConfiguration
+import io.kotest.core.spec.SpecRef
 import io.kotest.core.spec.style.BehaviorSpec
 import io.kotest.core.spec.style.ExpectSpec
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.engine.extensions.SpecifiedTagsTagExtension
 import io.kotest.engine.listener.NoopTestEngineListener
-import io.kotest.engine.spec.ReflectiveSpecRef
 import io.kotest.engine.spec.interceptor.TagsExcludedSpecInterceptor
 import io.kotest.matchers.booleans.shouldBeTrue
 
@@ -25,12 +25,12 @@ class TagsExcludedDiscoveryExtensionTest : FunSpec() {
 
          // will be excluded explicitly
          TagsExcludedSpecInterceptor(NoopTestEngineListener, conf)
-            .intercept(ReflectiveSpecRef(ExcludedSpec::class)) { error("foo") }
+            .intercept(SpecRef.Reference(ExcludedSpec::class)) { error("foo") }
 
          // will be included as includes are ignored at the class level
          var executed = false
          TagsExcludedSpecInterceptor(NoopTestEngineListener, conf)
-            .intercept(ReflectiveSpecRef(IncludedSpec::class)) {
+            .intercept(SpecRef.Reference(IncludedSpec::class)) {
                executed = true
                Result.success(emptyMap())
             }
@@ -39,7 +39,7 @@ class TagsExcludedDiscoveryExtensionTest : FunSpec() {
          // will be included as we can must check the spec itself later to see if the test themselves have the include or exclude
          executed = false
          TagsExcludedSpecInterceptor(NoopTestEngineListener, conf)
-            .intercept(ReflectiveSpecRef(UntaggedSpec::class)) {
+            .intercept(SpecRef.Reference(UntaggedSpec::class)) {
                executed = true
                Result.success(emptyMap())
             }
@@ -54,7 +54,7 @@ class TagsExcludedDiscoveryExtensionTest : FunSpec() {
 
          var executed = false
          TagsExcludedSpecInterceptor(NoopTestEngineListener, conf)
-            .intercept(ReflectiveSpecRef(ExcludedSpec::class)) {
+            .intercept(SpecRef.Reference(ExcludedSpec::class)) {
                executed = true
                Result.success(emptyMap())
             }
@@ -62,7 +62,7 @@ class TagsExcludedDiscoveryExtensionTest : FunSpec() {
 
          executed = false
          TagsExcludedSpecInterceptor(NoopTestEngineListener, conf)
-            .intercept(ReflectiveSpecRef(IncludedSpec::class)) {
+            .intercept(SpecRef.Reference(IncludedSpec::class)) {
                executed = true
                Result.success(emptyMap())
             }
@@ -70,7 +70,7 @@ class TagsExcludedDiscoveryExtensionTest : FunSpec() {
 
          executed = false
          TagsExcludedSpecInterceptor(NoopTestEngineListener, conf)
-            .intercept(ReflectiveSpecRef(UntaggedSpec::class)) {
+            .intercept(SpecRef.Reference(UntaggedSpec::class)) {
                executed = true
                Result.success(emptyMap())
             }
@@ -84,13 +84,13 @@ class TagsExcludedDiscoveryExtensionTest : FunSpec() {
          conf.registry.add(SpecifiedTagsTagExtension(tags))
 
          TagsExcludedSpecInterceptor(NoopTestEngineListener, conf)
-            .intercept(ReflectiveSpecRef(ExcludedSpec::class)) {
+            .intercept(SpecRef.Reference(ExcludedSpec::class)) {
                error("foo")
             }
 
          var executed = false
          TagsExcludedSpecInterceptor(NoopTestEngineListener, conf)
-            .intercept(ReflectiveSpecRef(IncludedSpec::class)) {
+            .intercept(SpecRef.Reference(IncludedSpec::class)) {
                executed = true
                Result.success(emptyMap())
             }
@@ -98,7 +98,7 @@ class TagsExcludedDiscoveryExtensionTest : FunSpec() {
 
          executed = false
          TagsExcludedSpecInterceptor(NoopTestEngineListener, conf)
-            .intercept(ReflectiveSpecRef(UntaggedSpec::class)) {
+            .intercept(SpecRef.Reference(UntaggedSpec::class)) {
                executed = true
                Result.success(emptyMap())
             }

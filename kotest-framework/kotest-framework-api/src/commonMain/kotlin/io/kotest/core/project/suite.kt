@@ -1,16 +1,11 @@
 package io.kotest.core.project
 
 import io.kotest.core.spec.SpecRef
-import kotlin.reflect.KClass
 
 /**
  * Contains the discovered specs that will be executed.
  *
- * All specs are wrapped in a [SpecRef].
- *
- * On platforms that lack reflective capability, such as nodeJS or native, the specs are
- * either preconstructed or constructed through a simple function. On the JVM, the [KClass]
- * instance is used to reflectively instantiate.
+ * All specs are represented as [SpecRef]s.
  */
 data class TestSuite(val specs: List<SpecRef>) {
    companion object {
