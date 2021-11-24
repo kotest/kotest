@@ -9,7 +9,7 @@ import io.kotest.engine.interceptors.ProjectTimeoutException
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.types.shouldBeInstanceOf
 import kotlinx.coroutines.delay
-import kotlin.time.milliseconds
+import kotlin.time.Duration.Companion.milliseconds
 
 class ProjectTimeoutEngineInterceptorTest : FunSpec({
 

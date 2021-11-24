@@ -3,7 +3,7 @@ package com.sksamuel.kotest.engine.teamcity
 import io.kotest.core.spec.style.ShouldSpec
 import io.kotest.engine.teamcity.TeamCityMessageBuilder
 import io.kotest.matchers.shouldBe
-import kotlin.time.milliseconds
+import kotlin.time.Duration.Companion.milliseconds
 
 class TeamCityMessageBuilderTest : ShouldSpec({
 

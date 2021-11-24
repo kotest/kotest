@@ -8,7 +8,7 @@ import io.kotest.engine.listener.NoopTestEngineListener
 import io.kotest.inspectors.forOne
 import io.kotest.matchers.types.shouldBeInstanceOf
 import kotlinx.coroutines.delay
-import kotlin.time.milliseconds
+import kotlin.time.Duration.Companion.milliseconds
 
 class ProjectTimeoutTest : FunSpec({
 

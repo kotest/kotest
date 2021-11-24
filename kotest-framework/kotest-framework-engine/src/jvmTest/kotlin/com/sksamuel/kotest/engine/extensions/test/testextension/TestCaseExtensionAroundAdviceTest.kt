@@ -6,7 +6,7 @@ import io.kotest.core.test.Enabled
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.engine.test.toTestResult
-import kotlin.time.milliseconds
+import kotlin.time.Duration.Companion.milliseconds
 
 // this tests that we can manipulate the result of a test case from an extension
 class TestCaseExtensionAroundAdviceTest : StringSpec() {
