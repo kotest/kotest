@@ -9,10 +9,11 @@ import io.kotest.engine.test.toTestResult
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import kotlin.time.Duration
 import kotlin.time.Duration.Companion.hours
 import kotlin.time.Duration.Companion.milliseconds
+import kotlin.time.ExperimentalTime
 
+@ExperimentalTime
 class TimeoutTest : FunSpec() {
 
    init {
