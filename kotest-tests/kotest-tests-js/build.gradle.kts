@@ -26,7 +26,6 @@ kotlin {
             implementation(kotlin("stdlib"))
             implementation(project(Projects.Assertions.Core))
             implementation(project(Projects.Framework.engine))
-            // not sure why this is required for the js tests to appear
             implementation(project(Projects.Framework.datatest))
          }
       }
@@ -35,7 +34,7 @@ kotlin {
 
 // must be a published version and not one in the current build
 configure<io.kotest.framework.multiplatform.gradle.KotestPluginExtension> {
-   compilerPluginVersion.set("5.0.0.RC")
+   compilerPluginVersion.set("5.0.0.RC2")
 }
 
 apply(from = "../../nopublish.gradle")
