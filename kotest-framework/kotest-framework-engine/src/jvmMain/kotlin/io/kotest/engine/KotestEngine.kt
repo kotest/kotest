@@ -80,7 +80,7 @@ class KotestEngine(private val config: KotestEngineConfig) {
             }
          )
 
-      Try { submitAll(plan) }
+      submitAll(plan)
          .fold(
             { error ->
                log(error) { "KotestEngine: Error during submit all" }
