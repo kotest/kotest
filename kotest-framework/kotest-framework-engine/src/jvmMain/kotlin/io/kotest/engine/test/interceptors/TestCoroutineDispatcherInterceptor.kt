@@ -13,6 +13,12 @@ import kotlinx.coroutines.test.TestCoroutineDispatcher
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.withTimeoutOrNull
 
+/**
+ * A [TestExecutionInterceptor] that uses a [TestCoroutineDispatcher] as the coroutine
+ * dispatcher for the test.
+ *
+ *
+ */
 @ExperimentalCoroutinesApi
 actual class TestCoroutineDispatcherInterceptor : TestExecutionInterceptor {
 

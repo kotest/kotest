@@ -9,8 +9,8 @@ import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestType
 import io.kotest.core.test.delayController
-import io.kotest.engine.test.scopes.NoopTestScope
 import io.kotest.engine.test.interceptors.TestCoroutineDispatcherInterceptor
+import io.kotest.engine.test.scopes.NoopTestScope
 import io.kotest.matchers.booleans.shouldBeTrue
 import io.kotest.matchers.nulls.shouldNotBeNull
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -18,9 +18,9 @@ import kotlin.time.Duration.Companion.milliseconds
 
 @ExperimentalStdlibApi
 @ExperimentalCoroutinesApi
-class RunBlockingTestInterceptorTest : FunSpec() {
+class TestCoroutineDispatcherInterceptorTest : FunSpec() {
    init {
-      test("RunBlockingTestInterceptor should install a DelayController") {
+      test("TestCoroutineDispatcherInterceptor should install a DelayController") {
 
          val tc = TestCase(
             InvocationCountCheckInterceptorTest::class.toDescriptor().append("foo"),
