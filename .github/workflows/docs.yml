@@ -11,9 +11,9 @@ jobs:
       runs-on: ubuntu-latest
       steps:
          -  uses: actions/checkout@v2
-         -  uses: actions/setup-node@v1
+         -  uses: actions/setup-node@v2
             with:
-               node-version: '12.x'
+               node-version: '14.x'
          -  name: Release to GitHub Pages
             env:
                USE_SSH: true

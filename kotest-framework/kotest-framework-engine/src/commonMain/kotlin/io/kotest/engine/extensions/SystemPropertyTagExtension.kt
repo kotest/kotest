@@ -2,11 +2,9 @@ package io.kotest.engine.extensions
 
 import io.kotest.core.NamedTag
 import io.kotest.core.Tag
-import io.kotest.core.Tags
+import io.kotest.core.TagExpression
 import io.kotest.core.extensions.TagExtension
 import io.kotest.core.internal.KotestEngineProperties
-import io.kotest.fp.getOrElse
-import io.kotest.fp.toOption
 import io.kotest.mpp.env
 import io.kotest.mpp.sysprop
 
@@ -21,17 +19,15 @@ import io.kotest.mpp.sysprop
  */
 object SystemPropertyTagExtension : TagExtension {
 
-   override fun tags(): Tags {
+   override fun tags(): TagExpression {
 
       fun readTagsProperty(name: String): List<Tag> =
-         (sysprop(name) ?: env(name)).toOption().getOrElse("").split(',').filter { it.isNotBlank() }.map {
-            NamedTag(it.trim())
-         }
+         (sysprop(name) ?: env(name) ?: "").split(',').filter { it.isNotBlank() }.map { NamedTag(it.trim()) }
 
       val includedTags = readTagsProperty(KotestEngineProperties.includeTags)
       val excludedTags = readTagsProperty(KotestEngineProperties.excludeTags)
       val expression = sysprop(KotestEngineProperties.tagExpression) ?: env(KotestEngineProperties.tagExpression)
 
-      return if (expression == null) Tags(includedTags.toSet(), excludedTags.toSet()) else Tags(expression)
+      return if (expression == null) TagExpression(includedTags.toSet(), excludedTags.toSet()) else TagExpression(expression)
    }
 }

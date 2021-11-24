@@ -40,16 +40,6 @@ class ForAll2Test : FunSpec({
       context.failures() shouldBe 0
    }
 
-   test("should throw error if iterations is less than min") {
-      shouldThrowAny {
-         forAll(
-            10,
-            Exhaustive.ints(0..100),
-            Exhaustive.longs(200L..300L)
-         ) { a, b -> a + b == b + a }
-      }.message shouldBe "Require at least 101 iterations to cover requirements"
-   }
-
    test("should not throw error if iterations is less than edge cases") {
       shouldNotThrowAny {
          forAll(

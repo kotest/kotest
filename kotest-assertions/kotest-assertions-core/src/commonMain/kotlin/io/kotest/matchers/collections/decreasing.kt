@@ -1,6 +1,6 @@
 package io.kotest.matchers.collections
 
-import io.kotest.assertions.show.show
+import io.kotest.assertions.print.print
 import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
 import io.kotest.matchers.should
@@ -110,7 +110,7 @@ fun <T> monotonicallyDecreasingWith(comparator: Comparator<in T>): Matcher<List<
 
 private fun <T> testMonotonicallyDecreasingWith(value: List<T>, comparator: Comparator<in T>): MatcherResult {
    val failure = value.zipWithNext().withIndex().find { (_, pair) -> comparator.compare(pair.first, pair.second) < 0 }
-   val snippet = value.show().value
+   val snippet = value.print().value
    val elementMessage = when (failure) {
       null -> ""
       else -> ". Element ${failure.value.second} at index ${failure.index + 1} was not monotonically decreased from previous element."
@@ -141,7 +141,7 @@ fun <T> strictlyDecreasingWith(comparator: Comparator<in T>): Matcher<List<T>> =
 
 private fun <T> testStrictlyDecreasingWith(value: List<T>, comparator: Comparator<in T>): MatcherResult {
    val failure = value.zipWithNext().withIndex().find { (_, pair) -> comparator.compare(pair.first, pair.second) <= 0 }
-   val snippet = value.show().value
+   val snippet = value.print().value
    val elementMessage = when (failure) {
       null -> ""
       else -> ". Element ${failure.value.second} at index ${failure.index + 1} was not strictly decreased from previous element."

@@ -1,6 +1,6 @@
 package io.kotest.matchers.string
 
-import io.kotest.assertions.show.show
+import io.kotest.assertions.print.print
 import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
 import io.kotest.matchers.should
@@ -70,8 +70,8 @@ private val falsyValues = listOf("false", "no", "n", "0")
 fun beTruthy(): Matcher<CharSequence?> = object : Matcher<CharSequence?> {
    override fun test(value: CharSequence?) = MatcherResult(
       truthyValues.any { it.equals(value?.toString(), ignoreCase = true) },
-      { """${value.show().value} should be equal (ignoring case) to one of: $truthyValues""" },
-      { """${value.show().value} should not be equal (ignoring case) to one of: $truthyValues""" }
+      { """${value.print().value} should be equal (ignoring case) to one of: $truthyValues""" },
+      { """${value.print().value} should not be equal (ignoring case) to one of: $truthyValues""" }
    )
 }
 
@@ -96,8 +96,8 @@ fun beFalsy(): Matcher<CharSequence?> = object : Matcher<CharSequence?> {
    override fun test(value: CharSequence?): MatcherResult {
       return MatcherResult(
          falsyValues.any { it.equals(value?.toString(), ignoreCase = true) },
-         { """${value.show().value} should be equal (ignoring case) to one of: $falsyValues""" },
-         { """${value.show().value} should not be equal (ignoring case) to one of: $falsyValues""" }
+         { """${value.print().value} should be equal (ignoring case) to one of: $falsyValues""" },
+         { """${value.print().value} should not be equal (ignoring case) to one of: $falsyValues""" }
       )
    }
 }

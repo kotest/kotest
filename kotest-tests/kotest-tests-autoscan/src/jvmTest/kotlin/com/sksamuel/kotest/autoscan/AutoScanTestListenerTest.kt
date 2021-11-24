@@ -1,7 +1,7 @@
 package com.sksamuel.kotest.autoscan
 
 import io.kotest.core.listeners.TestListener
-import io.kotest.core.spec.AutoScan
+import io.kotest.core.annotation.AutoScan
 import io.kotest.core.spec.style.WordSpec
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult

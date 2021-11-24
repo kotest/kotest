@@ -6,24 +6,32 @@ slug: changelog.html
 
 ### [Unreleased 5.0.0]
 
-_**Kotlin 1.5 is now the minimum supported version**_
+_**Kotlin 1.6 is now the minimum supported version**_
 
-#### Breaking Changes
+See detailed post about 5.0 features and changes [here](blog/release_5.0.md)
 
-* Javascript support has been reworked to use the IR compiler. The legacy compiler is no longer supported.
-* Native test support.
-* `Arb.values` has been removed. This was deprecated in 4.3 in favour of `Arb.sample`. Any custom arbs that override this method should be updated. Any custom arbs that use the `arbitrary` builders are not affected. (#2277)
+#### Breaking Changes and removed deprecated methods
+
+* Javascript support has been reworked to use the IR compiler. The legacy compiler is no longer supported. If you are running tests on JS legacy then you will need to continue using Kotest 4.6.x or test only IR.
+* `Arb.values` has been removed. This was deprecated in 4.3 in favour of `Arb.sample`. Any custom arbs that override this method should be updated. Any custom arbs that use the recommended `arbitrary` builders are not affected. (#2277)
 * The Engine no longer logs config to the console during start **by default**. To enable, set the system property `kotest.framework.dump.config` to true. (#2276)
 * Removed deprecated `shouldReceiveWithin` and `shouldReceiveNoElementsWithin` channel matchers.
-* `TestEngineListener` methods are now suspendable. This is only of interest if you have implemented customizations of the Test Engine through plugins. Note: This is not related to public TestListener methods that are used by test cases.
+* `equalJson` has an added parameter to support the new `shouldEqualSpecifiedJson` assertion
+* The deprecated `RuntimeTagExtension` has been undeprecated but moved to a new package.
+* When using inspectors, the deprecated `kotlintest.assertions.output.max` system property has been removed. This was replaced with `kotest.assertions.output.max` in 4.0.
+
 
 #### Fixes
 
 * String matchers now also work on CharSequence where applicable #2278
 * Fix Arb.long/ulong producing values outside range (#2330)
 
-#### Improvements
+#### Features
 
+* Javascript IR support has been added to the framework.
+* Native test support has been added to the framework.
+* Config option to enable [coroutine debugging](https://github.com/Kotlin/kotlinx.coroutines/tree/master/kotlinx-coroutines-debug)
+* Config option to enable `TestCoroutineDispatcher`s in tests.
 * Failfast option added [see docs] #2243
 * Unfinished tests should error (#2281)
 * Added option to fail test run if no tests were executed (#2287)
@@ -38,16 +46,53 @@ _**Kotlin 1.5 is now the minimum supported version**_
 * Improve Arb.primitive consistency (#2299)
 * Add Arb.ints zero inclusive variants (#2294)
 * Add unsigned types for Arb (#2290)
+* Added arb for ip addresses V4 #2407
+* Added arb for hexidecimal codepoints #2409
+* Added `shouldEqualSpecifiedJson` to match a JSON structure on a subset of (specified) keys. (#2298)
+* `shouldEqualJson` now supports high-precision numbers (#2458)
+* Added `shouldHaveSameStructureAs` to file matchers
+* Added `shouldHaveSameStructureAndContentAs` to file matchers
+* `projectContext` is now available inside a test to provide access to the runtime properties of the test engine.
+
+
 
 #### Deprecations
 
-* `beforeTest` / `afterTest` have been deprecated in favour of `beforeAny` / `afterAny`.
-* Datatest2 has been deprecated
+* The experimental datatest functions added in 4.5 have moved to a new module `kotest-framework-datatest` and the original aliases has been deprecated.
+* `CompareMode` /`CompareOrder` for `shouldEqualJson` has been deprecated in favor of `compareJsonOptions { }`
+* `TestStatus` has been deprecated and `TestResult` reworked to be an ADT. If you were pattern matching on `TestResult.status` you can now match on the result instance itself.
+* `val name` inside `Listener` has been deprecated. This was used so that multiple errors from multiple before/after spec callbacks could appear with customized unique names. The framework now takes care of making sure the names are unique so this val is no longer needed and is now ignored.
+* `SpecExtension.intercept(KClass)` has been deprecated in favor of `SpecRefExtension` and `SpecExtension.intercept(spec)`. The deprecated method had ambigious behavior when used with an IsolationMode that created multiple instances of a spec. The new methods have precise guarantees of when they will execute.
+* The global `configuration` object has been deprecated as the first step to removing this global var. To configure the project, the preferred method remains [ProjectConfig](/), which is detected on all three platforms (JVM, JS and Native).
+* `SpecInstantiationListener` has been deprecated in favour of `InstantiationListener` and `InstantiationErrorListener`, both of which support coroutines in the callbacks. `SpecInstantiationListener` is a hold-over from before coroutines existed and will be removed in a future version.
+* The `listeners` method to add listeners to a Spec has been deprecated. When adding listeners to specs directly, you should now prefer `fun extensions()` rather than `fun listeners()`.
+* `SpecIgnoredListner` (note the typo) has been renamed to `InactiveSpecListener`.
 
 
-## 4.6.1 July 2021
+### 4.6.3 September 2021
 
-### Fixes
+#### Fixes
+
+* StackOverflow when using checkAll with certain arity functions #2513
+* Added arity8 and arity9 forall for table testing #2444
+
+
+### 4.6.2 August 2021
+
+#### Fixes
+
+* Reverted use of 1.5 API introduced erroneously in 4.6.1
+* autoClose breaks lazy #2388
+* minDate not respected in Arb.localDate #2369
+* Sequence.containExactly should work for single pass sequences #2412
+* BigDecimal edge case for equals vs compareTo discrepancy #2403
+* PropTestConfig's iterations parameter is not respected. #2428
+* tempfile and tempdir should fail test when deletion fails #2351
+
+
+### 4.6.1 July 2021
+
+#### Fixes
 
 * HTMLReporter - css not loading (href of the file is absolute, not relative) #2342
 * Annotations such as @Ignore and @Isolate now work when composed #2279

@@ -15,21 +15,21 @@ import io.kotest.mpp.sysprop
  *
  * Note: If no minimum severity level is specified, then this extension has no effect.
  */
-object SeverityLevelEnabledExtension : TestEnabledExtension {
+internal object SeverityLevelEnabledExtension : TestEnabledExtension {
    override fun isEnabled(testCase: TestCase): Enabled {
 
+      // if min level is not defined, then we always allow through
       val minLevel = sysprop(KotestEngineProperties.testSeverity)
          ?.let { TestCaseSeverityLevel.valueOf(it) }
          ?: return Enabled.enabled
 
       val testLevel = testCase.config.severity
-         ?.let { TestCaseSeverityLevel.valueOf(it.name) }
-         ?: TestCaseSeverityLevel.valueOf("NORMAL")
 
       return when {
          testLevel.level >= minLevel.level -> Enabled.enabled
-         else -> Enabled.disabled("${testCase.description.testPath()} is disabled by severityLevel")
-            .also { log { it.reason } }
+         else -> Enabled
+            .disabled("${testCase.descriptor.path()} is disabled by severityLevel")
+            .also { it.reason?.let { log { it } } }
       }
    }
 }

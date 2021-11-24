@@ -1,20 +1,31 @@
 name: release_multiplatform_plugin_gradle
 
 on:
-  workflow_dispatch:
-
-jobs:
-  release-plugin:
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout the repo
-        uses: actions/checkout@v2
-        with:
-          fetch-depth: 0
-
-      - name: deploy to gradle
-        run: ./gradlew :kotest-framework:kotest-framework-multiplatform-plugin-gradle:publishPlugins -Dgradle.publish.key=${{ secrets.GRADLE_PUBLISH_KEY }} -Dgradle.publish.secret=${{ secrets.GRADLE_PUBLISH_SECRET }}
+   workflow_dispatch:
+      inputs:
+         version:
+            description: "The release version (leave blank for snapshot)"
+            required: false
 
 env:
-  GRADLE_OPTS: -Dorg.gradle.configureondemand=true -Dorg.gradle.parallel=false -Dkotlin.incremental=false -Dorg.gradle.jvmargs="-Xmx3g -XX:MaxPermSize=2048m -XX:+HeapDumpOnOutOfMemoryError -Dfile.encoding=UTF-8"
+   RELEASE_VERSION: ${{ github.event.inputs.version }}
+   GRADLE_OPTS: -Dorg.gradle.configureondemand=true -Dorg.gradle.parallel=false -Dkotlin.incremental=false -Dorg.gradle.jvmargs="-Xmx3g -XX:MaxPermSize=2048m -XX:+HeapDumpOnOutOfMemoryError -Dfile.encoding=UTF-8"
+
+jobs:
+   release-plugin:
+      runs-on: ubuntu-latest
+
+      steps:
+         -  name: Checkout the repo
+            uses: actions/checkout@v2
+            with:
+               fetch-depth: 0
+
+         -  name: Setup JDK
+            uses: actions/setup-java@v2
+            with:
+               distribution: 'zulu'
+               java-version: '8'
+
+         -  name: deploy to gradle
+            run: ./gradlew :kotest-framework:kotest-framework-multiplatform-plugin-gradle:publishPlugins -Dgradle.publish.key=${{ secrets.GRADLE_PUBLISH_KEY }} -Dgradle.publish.secret=${{ secrets.GRADLE_PUBLISH_SECRET }}

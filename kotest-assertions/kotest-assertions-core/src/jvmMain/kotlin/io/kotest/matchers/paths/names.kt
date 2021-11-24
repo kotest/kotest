@@ -11,9 +11,10 @@ fun Path.shouldNotHaveExtension(vararg exts: String) = this shouldNot haveExtens
 fun haveExtension(vararg exts: String) = object : Matcher<Path> {
    override fun test(value: Path) = MatcherResult(
       exts.any { value.fileName.toString().endsWith(it) },
-      "Path $value should end with one of ${exts.joinToString(",")}",
-      "Path $value should not end with one of ${exts.joinToString(",")}"
-   )
+      { "Path $value should end with one of ${exts.joinToString(",")}" },
+      {
+         "Path $value should not end with one of ${exts.joinToString(",")}"
+      })
 }
 
 
@@ -25,8 +26,9 @@ fun haveNameWithoutExtension(name: String) = object : Matcher<Path> {
       val actual = if (filename.contains(".")) filename.split('.').dropLast(1).joinToString(".") else filename
       return MatcherResult(
          actual == name,
-         "Path $value should have name without extension of $name but was $actual",
-         "Path $value should not have name without extension of $name"
-      )
+         { "Path $value should have name without extension of $name but was $actual" },
+         {
+            "Path $value should not have name without extension of $name"
+         })
    }
 }

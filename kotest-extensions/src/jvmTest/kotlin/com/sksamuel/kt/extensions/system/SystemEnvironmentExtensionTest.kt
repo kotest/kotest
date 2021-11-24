@@ -1,11 +1,11 @@
 package com.sksamuel.kt.extensions.system
 
 import io.kotest.core.listeners.TestListener
-import io.kotest.core.spec.AutoScan
+import io.kotest.core.annotation.AutoScan
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.style.FreeSpec
 import io.kotest.core.spec.style.WordSpec
-import io.kotest.core.spec.style.scopes.FreeSpecContainerContext
+import io.kotest.core.spec.style.scopes.FreeSpecContainerScope
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.extensions.system.OverrideMode
@@ -14,8 +14,6 @@ import io.kotest.extensions.system.withEnvironment
 import io.kotest.inspectors.forAll
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
-import io.mockk.every
-import io.mockk.mockk
 import kotlin.reflect.KClass
 
 class SystemEnvironmentExtensionTest : FreeSpec() {
@@ -23,27 +21,21 @@ class SystemEnvironmentExtensionTest : FreeSpec() {
    private val key = "SystemEnvironmentExtensionTestFoo"
    private val value = "SystemEnvironmentExtensionTestBar"
 
-   private val mode: OverrideMode = mockk {
-      every { override(any(), any()) } answers {
-         firstArg<Map<String, String>>().plus(secondArg<Map<String, String>>()).toMutableMap()
-      }
-   }
-
    init {
+         "Should return original environment to its place after execution" - {
+            val before = System.getenv().toMap()
+
+            executeOnAllEnvironmentOverloads {
+               System.getenv() shouldNotBe before
+            }
+            System.getenv() shouldBe before
+
+         }
+
       "Should set environment to specific map" - {
          executeOnAllEnvironmentOverloads {
             System.getenv(key) shouldBe value
          }
-      }
-
-      "Should return original environment to its place after execution" - {
-         val before = System.getenv().toMap()
-
-         executeOnAllEnvironmentOverloads {
-            System.getenv() shouldNotBe before
-         }
-         System.getenv() shouldBe before
-
       }
 
       "Should return the computed value" - {
@@ -55,19 +47,19 @@ class SystemEnvironmentExtensionTest : FreeSpec() {
       }
    }
 
-   private suspend fun <T> FreeSpecContainerContext.executeOnAllEnvironmentOverloads(block: suspend () -> T): List<T> {
+   private suspend fun <T> FreeSpecContainerScope.executeOnAllEnvironmentOverloads(block: suspend () -> T): List<T> {
       val results = mutableListOf<T>()
 
       "String String overload" {
-         results += withEnvironment(key, value, mode) { block() }
+         results += withEnvironment(key, value, OverrideMode.SetOrOverride) { block() }
       }
 
       "Pair overload" {
-         results += withEnvironment(key to value, mode) { block() }
+         results += withEnvironment(key to value, OverrideMode.SetOrOverride) { block() }
       }
 
       "Map overload" {
-         results += withEnvironment(mapOf(key to value), mode) { block() }
+         results += withEnvironment(mapOf(key to value), OverrideMode.SetOrOverride) { block() }
       }
 
       return results

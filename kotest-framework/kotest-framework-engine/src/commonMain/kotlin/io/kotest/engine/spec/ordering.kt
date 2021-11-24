@@ -1,18 +1,24 @@
 package io.kotest.engine.spec
 
+import io.kotest.core.extensions.SpecExecutionOrderExtension
 import io.kotest.core.spec.SpecExecutionOrder
-import io.kotest.core.spec.Spec
-import kotlin.reflect.KClass
+import io.kotest.core.spec.SpecRef
 
-fun List<KClass<out Spec>>.sort(order: SpecExecutionOrder): List<KClass<out Spec>> {
-   return when (order) {
-      SpecExecutionOrder.Undefined -> this
-      SpecExecutionOrder.Lexicographic -> LexicographicSpecSorter.sort(this)
-      SpecExecutionOrder.Random -> RandomSpecSorter.sort(this)
-      SpecExecutionOrder.Annotated -> AnnotatedSpecSorter.sort(this)
-      SpecExecutionOrder.FailureFirst -> failureFirstSort(this)
+/**
+ * A [SpecExecutionOrderExtension] which uses the value of the given [SpecExecutionOrder] parameter
+ * to delegate to a [SpecSorter] perform sorting.
+ */
+internal class DefaultSpecExecutionOrderExtension(
+   private val order: SpecExecutionOrder
+) : SpecExecutionOrderExtension {
+
+   override fun sort(specs: List<SpecRef>): List<SpecRef> {
+      return when (order) {
+         SpecExecutionOrder.Undefined -> specs
+         SpecExecutionOrder.Lexicographic -> LexicographicSpecSorter.sort(specs)
+         SpecExecutionOrder.Random -> RandomSpecSorter.sort(specs)
+         SpecExecutionOrder.Annotated -> AnnotatedSpecSorter.sort(specs)
+         SpecExecutionOrder.FailureFirst -> FailureFirstSorter().sort(specs)
+      }
    }
 }
-
-expect fun failureFirstSort(classes: List<KClass<out Spec>>): List<KClass<out Spec>>
-

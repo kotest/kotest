@@ -4,10 +4,7 @@ import io.kotest.core.factory.TestFactory
 import io.kotest.core.factory.TestFactoryConfiguration
 import io.kotest.core.factory.build
 import io.kotest.core.spec.DslDrivenSpec
-import io.kotest.core.spec.resolvedDefaultConfig
-import io.kotest.core.spec.style.scopes.ExpectSpecRootContext
-import io.kotest.core.spec.style.scopes.RootTestRegistration
-import io.kotest.core.test.TestCaseConfig
+import io.kotest.core.spec.style.scopes.ExpectSpecRootScope
 
 /**
  * Creates a [TestFactory] from the given block.
@@ -21,17 +18,10 @@ fun expectSpec(block: ExpectSpecTestFactoryConfiguration.() -> Unit): TestFactor
    return config.build()
 }
 
-class ExpectSpecTestFactoryConfiguration : TestFactoryConfiguration(), ExpectSpecRootContext {
-   override fun defaultConfig(): TestCaseConfig = resolvedDefaultConfig()
-   override fun registration(): RootTestRegistration = RootTestRegistration.from(this)
-}
+class ExpectSpecTestFactoryConfiguration : TestFactoryConfiguration(), ExpectSpecRootScope
 
-abstract class ExpectSpec(body: ExpectSpec.() -> Unit = {}) : DslDrivenSpec(), ExpectSpecRootContext {
-
+abstract class ExpectSpec(body: ExpectSpec.() -> Unit = {}) : DslDrivenSpec(), ExpectSpecRootScope {
    init {
       body()
    }
-
-   override fun defaultConfig(): TestCaseConfig = resolvedDefaultConfig()
-   override fun registration(): RootTestRegistration = RootTestRegistration.from(this)
 }

@@ -1,8 +1,9 @@
 package io.kotest.assertions.eq
 
 import io.kotest.assertions.*
-import io.kotest.assertions.show.Printed
-import io.kotest.assertions.show.show
+import io.kotest.assertions.print.Printed
+import io.kotest.assertions.print.print
+import io.kotest.common.isIntellij
 
 /**
  * An [Eq] implementation for String's that generates diffs for errors when the string inputs
@@ -29,7 +30,7 @@ object StringEq : Eq<String> {
             )
          }
          useDiff(expected, actual) -> diff(expected, actual)
-         else -> failure(Expected(expected.show()), Actual(actual.show()))
+         else -> failure(Expected(expected.print()), Actual(actual.print()))
       }
    }
 
@@ -42,12 +43,13 @@ object StringEq : Eq<String> {
    private fun diff(expected: String, actual: String): Throwable {
       val result = diffLargeString(expected, actual)
       return if (result == null)
-         failure(Expected(expected.show()), Actual(actual.show()))
+         failure(Expected(expected.print()), Actual(actual.print()))
       else
          failure(Expected(Printed(result.first)), Actual(Printed(result.second)))
    }
 
    private fun useDiff(expected: String, actual: String): Boolean {
+      if (isIntellij()) return false
       val minSizeForDiff = AssertionsConfig.largeStringDiffMinSize
       return expected.lines().size >= minSizeForDiff
          && actual.lines().size >= minSizeForDiff &&

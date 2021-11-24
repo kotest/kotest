@@ -66,7 +66,7 @@ inline fun <T> withEnvironment(environment: Map<String, String?>, mode: Override
    val originalEnvironment = if (isWindows) {
       System.getenv().toSortedMap(String.CASE_INSENSITIVE_ORDER)
    } else {
-      System.getenv()
+      System.getenv().toMap()
    }
 
    setEnvironmentMap(mode.override(originalEnvironment, environment))

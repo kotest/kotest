@@ -1,7 +1,6 @@
 package io.kotest.assertions
 
 import io.kotest.common.ExperimentalKotest
-import kotlin.coroutines.coroutineContext
 
 /**
  * Runs multiple assertions and expects at least one to succeed, will suppress all exceptions otherwise.

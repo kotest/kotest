@@ -1,8 +1,8 @@
 package io.kotest.inspectors
 
-fun <T> Sequence<T>.forAll(fn: (T) -> Unit) = toList().forAll(fn)
-fun <T> Array<T>.forAll(fn: (T) -> Unit) = asList().forAll(fn)
-fun <T> Collection<T>.forAll(fn: (T) -> Unit) {
+inline fun <T> Sequence<T>.forAll(fn: (T) -> Unit): Sequence<T> = apply { toList().forAll(fn) }
+inline fun <T> Array<T>.forAll(fn: (T) -> Unit): Array<T> = apply { asList().forAll(fn) }
+inline fun <T, C : Collection<T>> C.forAll(fn: (T) -> Unit): C = apply {
    val results = runTests(this, fn)
    val passed = results.filterIsInstance<ElementPass<T>>()
    if (passed.size < this.size) {
@@ -11,24 +11,24 @@ fun <T> Collection<T>.forAll(fn: (T) -> Unit) {
    }
 }
 
-fun <T> Sequence<T>.forOne(fn: (T) -> Unit) = toList().forOne(fn)
-fun <T> Array<T>.forOne(fn: (T) -> Unit) = asList().forOne(fn)
-fun <T> Collection<T>.forOne(fn: (T) -> Unit) = forExactly(1, fn)
+inline fun <T> Sequence<T>.forOne(fn: (T) -> Unit): Sequence<T> = apply { toList().forOne(fn) }
+inline fun <T> Array<T>.forOne(fn: (T) -> Unit): Array<T> = apply { asList().forOne(fn) }
+inline fun <T, C : Collection<T>> C.forOne(fn: (T) -> Unit): C = forExactly(1, fn)
 
-fun <T> Sequence<T>.forExactly(k: Int, fn: (T) -> Unit) = toList().forExactly(k, fn)
-fun <T> Array<T>.forExactly(k: Int, fn: (T) -> Unit) = toList().forExactly(k, fn)
-fun <T> Collection<T>.forExactly(k: Int, fn: (T) -> Unit) {
+inline fun <T> Sequence<T>.forExactly(k: Int, fn: (T) -> Unit): Sequence<T> = apply { toList().forExactly(k, fn) }
+inline fun <T> Array<T>.forExactly(k: Int, fn: (T) -> Unit): Array<T> = apply { toList().forExactly(k, fn) }
+inline fun <T, C : Collection<T>> C.forExactly(k: Int, fn: (T) -> Unit): C = apply {
    val results = runTests(this, fn)
    val passed = results.filterIsInstance<ElementPass<T>>()
    if (passed.size != k) {
-    val msg = "${passed.size} elements passed but expected $k"
-    buildAssertionError(msg, results)
-  }
+      val msg = "${passed.size} elements passed but expected $k"
+      buildAssertionError(msg, results)
+   }
 }
 
-fun <T> Sequence<T>.forSome(fn: (T) -> Unit) = toList().forSome(fn)
-fun <T> Array<T>.forSome(fn: (T) -> Unit) = toList().forSome(fn)
-fun <T> Collection<T>.forSome(fn: (T) -> Unit) {
+inline fun <T> Sequence<T>.forSome(fn: (T) -> Unit): Sequence<T> = apply { toList().forSome(fn) }
+inline fun <T> Array<T>.forSome(fn: (T) -> Unit): Array<T> = apply { toList().forSome(fn) }
+inline fun <T, C : Collection<T>> C.forSome(fn: (T) -> Unit): C = apply {
    val results = runTests(this, fn)
    val passed = results.filterIsInstance<ElementPass<T>>()
    if (passed.isEmpty()) {
@@ -38,32 +38,32 @@ fun <T> Collection<T>.forSome(fn: (T) -> Unit) {
    }
 }
 
-fun <T> Sequence<T>.forAny(fn: (T) -> Unit) = toList().forAny(fn)
-fun <T> Array<T>.forAny(fn: (T) -> Unit) = toList().forAny(fn)
-fun <T> Collection<T>.forAny(fn: (T) -> Unit) = forAtLeastOne(fn)
+inline fun <T> Sequence<T>.forAny(fn: (T) -> Unit): Sequence<T> = apply { toList().forAny(fn) }
+inline fun <T> Array<T>.forAny(fn: (T) -> Unit): Array<T> = apply { toList().forAny(fn) }
+inline fun <T, C : Collection<T>> C.forAny(fn: (T) -> Unit): C = apply { forAtLeastOne(fn) }
 
-fun <T> Sequence<T>.forAtLeastOne(fn: (T) -> Unit) = toList().forAtLeastOne(fn)
-fun <T> Array<T>.forAtLeastOne(fn: (T) -> Unit) = toList().forAtLeastOne(fn)
-fun <T> Collection<T>.forAtLeastOne(f: (T) -> Unit) = forAtLeast(1, f)
+inline fun <T> Sequence<T>.forAtLeastOne(fn: (T) -> Unit): Sequence<T> = apply { toList().forAtLeastOne(fn) }
+inline fun <T> Array<T>.forAtLeastOne(fn: (T) -> Unit): Array<T> = apply { toList().forAtLeastOne(fn) }
+inline fun <T, C : Collection<T>> C.forAtLeastOne(f: (T) -> Unit) = forAtLeast(1, f)
 
-fun <T> Sequence<T>.forAtLeast(k: Int, fn: (T) -> Unit) = toList().forAtLeast(k, fn)
-fun <T> Array<T>.forAtLeast(k: Int, fn: (T) -> Unit) = toList().forAtLeast(k, fn)
-fun <T> Collection<T>.forAtLeast(k: Int, fn: (T) -> Unit) {
+inline fun <T> Sequence<T>.forAtLeast(k: Int, fn: (T) -> Unit): Sequence<T> = apply { toList().forAtLeast(k, fn) }
+inline fun <T> Array<T>.forAtLeast(k: Int, fn: (T) -> Unit): Array<T> = apply { toList().forAtLeast(k, fn) }
+inline fun <T, C : Collection<T>> C.forAtLeast(k: Int, fn: (T) -> Unit): C = apply {
    val results = runTests(this, fn)
    val passed = results.filterIsInstance<ElementPass<T>>()
    if (passed.size < k) {
-    val msg = "${passed.size} elements passed but expected at least $k"
-    buildAssertionError(msg, results)
-  }
+      val msg = "${passed.size} elements passed but expected at least $k"
+      buildAssertionError(msg, results)
+   }
 }
 
-fun <T> Sequence<T>.forAtMostOne(fn: (T) -> Unit) = toList().forAtMostOne(fn)
-fun <T> Array<T>.forAtMostOne(fn: (T) -> Unit) = toList().forAtMostOne(fn)
-fun <T> Collection<T>.forAtMostOne(fn: (T) -> Unit) = forAtMost(1, fn)
+inline fun <T> Sequence<T>.forAtMostOne(fn: (T) -> Unit): Sequence<T> = apply { toList().forAtMostOne(fn) }
+inline fun <T> Array<T>.forAtMostOne(fn: (T) -> Unit): Array<T> = apply { toList().forAtMostOne(fn) }
+inline fun <T, C : Collection<T>> C.forAtMostOne(fn: (T) -> Unit) = forAtMost(1, fn)
 
-fun <T> Sequence<T>.forAtMost(k: Int, fn: (T) -> Unit) = toList().forAtMost(k, fn)
-fun <T> Array<T>.forAtMost(k: Int, fn: (T) -> Unit) = toList().forAtMost(k, fn)
-fun <T> Collection<T>.forAtMost(k: Int, fn: (T) -> Unit) {
+inline fun <T> Sequence<T>.forAtMost(k: Int, fn: (T) -> Unit): Sequence<T> = apply { toList().forAtMost(k, fn) }
+inline fun <T> Array<T>.forAtMost(k: Int, fn: (T) -> Unit): Array<T> = apply { toList().forAtMost(k, fn) }
+inline fun <T, C : Collection<T>> C.forAtMost(k: Int, fn: (T) -> Unit): C = apply {
    val results = runTests(this, fn)
    val passed = results.filterIsInstance<ElementPass<T>>()
    if (passed.size > k) {
@@ -72,13 +72,13 @@ fun <T> Collection<T>.forAtMost(k: Int, fn: (T) -> Unit) {
    }
 }
 
-fun <T> Sequence<T>.forNone(fn: (T) -> Unit) = toList().forNone(fn)
-fun <T> Array<T>.forNone(fn: (T) -> Unit) = toList().forNone(fn)
-fun <T> Collection<T>.forNone(f: (T) -> Unit) {
+inline fun <T> Sequence<T>.forNone(fn: (T) -> Unit): Sequence<T> = apply { toList().forNone(fn) }
+inline fun <T> Array<T>.forNone(fn: (T) -> Unit): Array<T> = apply { toList().forNone(fn) }
+inline fun <T, C : Collection<T>> C.forNone(f: (T) -> Unit): C = apply {
    val results = runTests(this, f)
    val passed = results.filterIsInstance<ElementPass<T>>()
    if (passed.isNotEmpty()) {
-    val msg = "${passed.size} elements passed but expected ${0}"
-    buildAssertionError(msg, results)
-  }
+      val msg = "${passed.size} elements passed but expected ${0}"
+      buildAssertionError(msg, results)
+   }
 }

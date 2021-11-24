@@ -29,6 +29,7 @@ module.exports = {
       'extensions/kafka',
       'extensions/mockserver',
       'extensions/junit_xml',
+      'extensions/html_reporter',
       'extensions/allure',
       'extensions/instant',
       'extensions/koin',

@@ -13,7 +13,7 @@ suspend fun <A> Gen<A>.checkAll(property: suspend PropertyContext.(A) -> Unit) =
 suspend fun <A> checkAll(
    genA: Gen<A>,
    property: suspend PropertyContext.(A) -> Unit
-): PropertyContext = proptest(computeDefaultIteration(genA), genA, PropTestConfig(), property)
+): PropertyContext = proptest(genA, PropTestConfig(), property)
 
 @JvmName("checkAllExt")
 suspend fun <A> Gen<A>.checkAll(iterations: Int, property: suspend PropertyContext.(A) -> Unit) =
@@ -23,7 +23,7 @@ suspend fun <A> checkAll(
    iterations: Int,
    genA: Gen<A>,
    property: suspend PropertyContext.(A) -> Unit
-): PropertyContext = proptest(iterations, genA, PropTestConfig(), property)
+): PropertyContext = proptest(genA, PropTestConfig(constraints = Constraints.iterations(iterations)), property)
 
 @JvmName("checkAllExt")
 suspend fun <A> Gen<A>.checkAll(config: PropTestConfig, property: suspend PropertyContext.(A) -> Unit) =
@@ -33,7 +33,7 @@ suspend fun <A> checkAll(
    config: PropTestConfig,
    genA: Gen<A>,
    property: suspend PropertyContext.(A) -> Unit
-): PropertyContext = proptest(computeDefaultIteration(genA), genA, config, property)
+): PropertyContext = proptest(genA, config, property)
 
 @JvmName("checkAllExt")
 suspend fun <A> Gen<A>.checkAll(
@@ -47,12 +47,11 @@ suspend fun <A> checkAll(
    config: PropTestConfig,
    genA: Gen<A>,
    property: suspend PropertyContext.(A) -> Unit
-): PropertyContext = proptest(iterations, genA, config, property)
+): PropertyContext = proptest(genA, config.copy(iterations = iterations), property)
 
 suspend inline fun <reified A> checkAll(
    noinline property: suspend PropertyContext.(A) -> Unit
 ): PropertyContext = proptest(
-   PropertyTesting.defaultIterationCount,
    Arb.default<A>(),
    PropTestConfig(),
    property
@@ -62,25 +61,27 @@ suspend inline fun <reified A> checkAll(
    iterations: Int,
    noinline property: suspend PropertyContext.(A) -> Unit
 ): PropertyContext = proptest(
-   iterations,
    Arb.default<A>(),
-   PropTestConfig(),
+   PropTestConfig(constraints = Constraints.iterations(iterations)),
    property
 )
 
 suspend inline fun <reified A> checkAll(
    config: PropTestConfig,
    noinline property: suspend PropertyContext.(A) -> Unit
-): PropertyContext = checkAll(PropertyTesting.defaultIterationCount, config, property)
-
-suspend inline fun <reified A> checkAll(
-   iterations: Int,
-   config: PropTestConfig,
-   noinline property: suspend PropertyContext.(A) -> Unit
 ): PropertyContext = proptest(
-   iterations,
    Arb.default<A>(),
    config,
+   property
+)
+
+suspend inline fun <reified A> checkAll(
+   iterations: Int,
+   config: PropTestConfig,
+   noinline property: suspend PropertyContext.(A) -> Unit
+): PropertyContext = proptest(
+   Arb.default<A>(),
+   config.copy(iterations = iterations),
    property
 )
 
@@ -91,7 +92,7 @@ suspend fun <A> Gen<A>.forAll(property: suspend PropertyContext.(A) -> Boolean) 
 suspend fun <A> forAll(
    genA: Gen<A>,
    property: suspend PropertyContext.(A) -> Boolean
-) = forAll(computeDefaultIteration(genA), PropTestConfig(), genA, property)
+) = forAll(PropTestConfig(), genA, property)
 
 @JvmName("forAllExt")
 suspend fun <A> Gen<A>.forAll(iterations: Int, property: suspend PropertyContext.(A) -> Boolean) =
@@ -111,41 +112,43 @@ suspend fun <A> forAll(
    config: PropTestConfig,
    genA: Gen<A>,
    property: suspend PropertyContext.(A) -> Boolean
-) = forAll(computeDefaultIteration(genA), config, genA, property)
+) = proptest(genA, config) { a -> property(a) shouldBe true }
 
 @JvmName("forAllExt")
 suspend fun <A> Gen<A>.forAll(iterations: Int, config: PropTestConfig, property: suspend PropertyContext.(A) -> Boolean) =
-   forAll(iterations, config, this, property)
+   forAll(config.copy(iterations = iterations), this, property)
 
 suspend fun <A> forAll(
    iterations: Int,
    config: PropTestConfig,
    genA: Gen<A>,
    property: suspend PropertyContext.(A) -> Boolean
-) = proptest(iterations, genA, config) { a -> property(a) shouldBe true }
+) = forAll(config.copy(iterations = iterations), genA, property)
 
 suspend inline fun <reified A> forAll(
    crossinline property: PropertyContext.(A) -> Boolean
-) = forAll(PropertyTesting.defaultIterationCount, PropTestConfig(), property)
+) = forAll(PropTestConfig(), property)
 
 suspend inline fun <reified A> forAll(
    iterations: Int,
    crossinline property: PropertyContext.(A) -> Boolean
-) = forAll(iterations, PropTestConfig(), property)
+): PropertyContext = forAll(PropTestConfig(constraints = Constraints.iterations(iterations)), property)
 
 suspend inline fun <reified A> forAll(
    config: PropTestConfig,
    crossinline property: PropertyContext.(A) -> Boolean
-) = forAll(PropertyTesting.defaultIterationCount, config, property)
+) = proptest<A>(
+   Arb.default<A>(),
+   config
+) { a -> property(a) shouldBe true }
 
 suspend inline fun <reified A> forAll(
    iterations: Int,
    config: PropTestConfig,
    crossinline property: PropertyContext.(A) -> Boolean
 ) = proptest<A>(
-   iterations,
    Arb.default<A>(),
-   config
+   config.copy(iterations = iterations)
 ) { a -> property(a) shouldBe true }
 
 @JvmName("forNoneExt")
@@ -155,7 +158,7 @@ suspend fun <A> Gen<A>.forNone(property: suspend PropertyContext.(A) -> Boolean)
 suspend fun <A> forNone(
    genA: Gen<A>,
    property: suspend PropertyContext.(A) -> Boolean
-) = forNone(computeDefaultIteration(genA), PropTestConfig(), genA, property)
+) = forNone(PropTestConfig(), genA, property)
 
 @JvmName("forNoneExt")
 suspend fun <A> Gen<A>.forNone(iterations: Int, property: suspend PropertyContext.(A) -> Boolean) =
@@ -175,7 +178,10 @@ suspend fun <A> forNone(
    config: PropTestConfig,
    genA: Gen<A>,
    property: suspend PropertyContext.(A) -> Boolean
-) = forNone(computeDefaultIteration(genA), config, genA, property)
+) = proptest<A>(
+   genA,
+   config
+) { a -> property(a) shouldBe false }
 
 @JvmName("forNoneExt")
 suspend fun <A> Gen<A>.forNone(
@@ -190,11 +196,11 @@ suspend fun <A> forNone(
    config: PropTestConfig,
    genA: Gen<A>,
    property: suspend PropertyContext.(A) -> Boolean
-) = proptest(iterations, genA, config) { a -> property(a) shouldBe false }
+) = forNone(config.copy(iterations = iterations), genA, property)
 
 suspend inline fun <reified A> forNone(
    crossinline property: PropertyContext.(A) -> Boolean
-) = forNone(PropertyTesting.defaultIterationCount, PropTestConfig(), property)
+) = forNone(PropTestConfig(), property)
 
 suspend inline fun <reified A> forNone(
    iterations: Int,
@@ -204,14 +210,13 @@ suspend inline fun <reified A> forNone(
 suspend inline fun <reified A> forNone(
    config: PropTestConfig,
    crossinline property: PropertyContext.(A) -> Boolean
-) = forNone(PropertyTesting.defaultIterationCount, config, property)
+) = proptest<A>(
+   Arb.default<A>(),
+   config
+) { a -> property(a) shouldBe false }
 
 suspend inline fun <reified A> forNone(
    iterations: Int,
    config: PropTestConfig,
    crossinline property: PropertyContext.(A) -> Boolean
-) = proptest<A>(
-   iterations,
-   Arb.default<A>(),
-   config
-) { a -> property(a) shouldBe false }
+) = forNone(config.copy(iterations = iterations), property)

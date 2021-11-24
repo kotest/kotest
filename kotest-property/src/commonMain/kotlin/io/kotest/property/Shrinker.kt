@@ -21,7 +21,7 @@ package io.kotest.property
  * Note: It is important that you do not return the degenerate case as the first step in a shrinker.
  * Otherwise, this could be tested first, it could pass, and no other routes would be explored.
  */
-interface Shrinker<A> {
+fun interface Shrinker<A> {
 
    /**
     * Returns the "next level" of shrinks for the given value, or empty list if a "base case" has been reached.
@@ -58,4 +58,16 @@ fun <A, B> RTree<A>.map(f: (A) -> B): RTree<B> {
    return RTree(b, c)
 }
 
+fun <A> RTree<A>.filter(predicate: (A) -> Boolean): RTree<A>? {
+   val a = value()
+   return when {
+      predicate(a) -> RTree({ a }, lazy { children.value.mapNotNull { it.filter(predicate) } })
+      else -> null
+   }
+}
+
 fun <A> RTree<A>.isEmpty() = this.children.value.isEmpty()
+
+fun <A, B> Shrinker<A>.bimap(f: (B) -> A, g: (A) -> B): Shrinker<B> = object : Shrinker<B> {
+   override fun shrink(value: B): List<B> = this@bimap.shrink(f(value)).map(g)
+}

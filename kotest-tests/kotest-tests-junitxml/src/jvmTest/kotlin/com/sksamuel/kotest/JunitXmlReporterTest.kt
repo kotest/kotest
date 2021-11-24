@@ -1,14 +1,14 @@
 package com.sksamuel.kotest
 
-import io.kotest.core.spec.Order
 import io.kotest.assertions.assertSoftly
+import io.kotest.core.spec.Order
 import io.kotest.core.spec.style.WordSpec
 import io.kotest.matchers.shouldBe
 import org.jdom2.Element
 import org.jdom2.input.SAXBuilder
 
 // this must have a higher order number than the dummy tests
-// so that when we get to this test, we have some data
+// so that when we get to this test, we already have written some data
 @Order(1)
 class JunitXmlReporterTest : WordSpec() {
 
@@ -63,7 +63,7 @@ class JunitXmlReporterTest : WordSpec() {
             }
          }
 
-         "include test names" {
+         "!include test names" {
             val root = loadTestFile("without_containers/TEST-com.sksamuel.kotest.DummyBehaviorSpecTest.xml")
             root.getChildren("testcase").map { it.getAttributeValue("name") }.toSet() shouldBe
                setOf(

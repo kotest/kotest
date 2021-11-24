@@ -37,7 +37,8 @@ fun <T> Collection<T>.shouldNotContainDuplicates(): Collection<T> {
 fun <T> containDuplicates() = object : Matcher<Collection<T>> {
    override fun test(value: Collection<T>) = MatcherResult(
       value.toSet().size < value.size,
-      "Collection should contain duplicates",
-      "Collection should not contain duplicates"
-   )
+      { "Collection should contain duplicates" },
+      {
+         "Collection should not contain duplicates"
+      })
 }

@@ -1,10 +1,10 @@
 package io.kotest.engine.config
 
-import io.kotest.core.config.Configuration
-import io.kotest.engine.tags.activeTags
+import io.kotest.core.config.ProjectConfiguration
+import io.kotest.engine.tags.runtimeTags
 import io.kotest.mpp.bestName
 
-fun Configuration.createConfigSummary(): String {
+fun ProjectConfiguration.createConfigSummary(): String {
 
    val sb = StringBuilder()
 
@@ -12,9 +12,16 @@ fun Configuration.createConfigSummary(): String {
    sb.buildOutput("Concurrent specs", concurrentSpecs.toString())
    sb.buildOutput("Global concurrent tests", concurrentTests.toString())
    sb.buildOutput("Dispatcher affinity", dispatcherAffinity.toString())
+
+   sb.buildOutput("Coroutine debug probe", coroutineDebugProbes.toString())
+
+   sb.buildOutput("Spec execution order", specExecutionOrder.name)
+   sb.buildOutput("Default test execution order", testCaseOrder.name)
+
    sb.buildOutput("Default test timeout", timeout.toString() + "ms")
-   sb.buildOutput("Default test order", testCaseOrder.name)
-   sb.buildOutput("Overall project timeout", projectTimeout.toString() + "ms") // TODO: make duration when kotlin.time stabilizes
+   sb.buildOutput("Default test invocation timeout", invocationTimeout.toString() + "ms")
+   if (projectTimeout != null)
+      sb.buildOutput("Overall project timeout", projectTimeout.toString() + "ms")
    sb.buildOutput("Default isolation mode", isolationMode.name)
    sb.buildOutput("Global soft assertions", globalAssertSoftly.toString())
    sb.buildOutput("Write spec failure file", writeSpecFailureFile.toString())
@@ -23,7 +30,10 @@ fun Configuration.createConfigSummary(): String {
          specFailureFilePath.replaceFirstChar { if (it.isLowerCase()) it.titlecase() else it.toString() })
    }
    sb.buildOutput("Fail on ignored tests", failOnIgnoredTests.toString())
-   sb.buildOutput("Spec execution order", specExecutionOrder::class.simpleName)
+   sb.buildOutput("Fail on empty test suite", failOnEmptyTestSuite.toString())
+
+
+   sb.buildOutput("Duplicate test name mode", duplicateTestNameMode.name)
 
    if (includeTestScopeAffixes != null)
       sb.buildOutput("Include test scope affixes", includeTestScopeAffixes.toString())
@@ -31,25 +41,18 @@ fun Configuration.createConfigSummary(): String {
    sb.buildOutput("Remove test name whitespace", removeTestNameWhitespace.toString())
    sb.buildOutput("Append tags to test names", testNameAppendTags.toString())
 
-   if (extensions().isNotEmpty()) {
+   if (registry.isNotEmpty()) {
       sb.buildOutput("Extensions")
-      extensions().map(::mapClassName).forEach {
+      registry.all().map(::mapClassName).forEach {
          sb.buildOutput(it, indentation = 1)
       }
    }
 
-   if (listeners().isNotEmpty()) {
-      sb.buildOutput("Listeners")
-      listeners().map(::mapClassName).forEach {
-         sb.buildOutput(it, indentation = 1)
-      }
-   }
-
-   activeTags().expression?.let { sb.buildOutput("Tags", it) }
+   runtimeTags().expression?.let { sb.buildOutput("Tags", it) }
    return sb.toString()
 }
 
-fun Configuration.dumpProjectConfig() {
+fun ProjectConfiguration.dumpProjectConfig() {
    println("~~~ Kotest Configuration ~~~")
    println(createConfigSummary())
 }

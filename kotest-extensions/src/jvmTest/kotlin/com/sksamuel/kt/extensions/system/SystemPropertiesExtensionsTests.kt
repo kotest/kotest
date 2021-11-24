@@ -1,11 +1,11 @@
 package com.sksamuel.kt.extensions.system
 
 import io.kotest.core.listeners.TestListener
-import io.kotest.core.spec.AutoScan
+import io.kotest.core.annotation.AutoScan
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.style.FreeSpec
 import io.kotest.core.spec.style.WordSpec
-import io.kotest.core.spec.style.scopes.FreeSpecContainerContext
+import io.kotest.core.spec.style.scopes.FreeSpecContainerScope
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.extensions.system.OverrideMode
@@ -58,7 +58,7 @@ class SystemPropertiesExtensionsTest : FreeSpec() {
       }
    }
 
-   private suspend fun <T> FreeSpecContainerContext.executeOnAllPropertyOverloads(block: suspend () -> T): List<T> {
+   private suspend fun <T> FreeSpecContainerScope.executeOnAllPropertyOverloads(block: suspend () -> T): List<T> {
       val results = mutableListOf<T>()
 
       "String String overload" {

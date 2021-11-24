@@ -10,13 +10,13 @@ import io.kotest.matchers.comparables.shouldBeLessThan
 import io.kotest.matchers.shouldBe
 import kotlin.math.pow
 import kotlin.time.Duration
-import kotlin.time.milliseconds
-import kotlin.time.seconds
+import kotlin.time.Duration.Companion.milliseconds
+import kotlin.time.Duration.Companion.seconds
 
 class ExponentialIntervalTest : FunSpec() {
    init {
       test("exponential interval should have a reasonable default next") {
-         val identity = Duration.seconds(2)
+         val identity = 2.seconds
 
          assertSoftly(identity.exponential()) {
             next(0) shouldBe identity * 1
@@ -33,8 +33,8 @@ class ExponentialIntervalTest : FunSpec() {
 
       test("exponential interval should have a reasonable default max") {
           val max = ExponentialInterval.defaultMax
-          val default = Duration.milliseconds(25).exponential()
-          val unbounded = Duration.milliseconds(25).exponential(max = null)
+          val default = 25.milliseconds.exponential()
+          val unbounded = 25.milliseconds.exponential(max = null)
 
           val first = 0
           val last = 20
@@ -56,7 +56,7 @@ class ExponentialIntervalTest : FunSpec() {
       }
 
       test("exponential interval should respect user specified max") {
-          val base = Duration.milliseconds(25)
+          val base = 25.milliseconds
           val n = 5
           val max = base * ExponentialInterval.defaultFactor.pow(n)
           val bounded = base.exponential(max = max)

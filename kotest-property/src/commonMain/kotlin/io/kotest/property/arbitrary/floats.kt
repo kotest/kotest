@@ -3,25 +3,18 @@ package io.kotest.property.arbitrary
 import io.kotest.property.Arb
 import io.kotest.property.Gen
 import io.kotest.property.Shrinker
-import kotlin.math.abs
-import kotlin.math.round
+import kotlin.math.absoluteValue
 
 private val numericEdgeCases = listOf(-1.0F, -Float.MIN_VALUE, -0.0F, 0.0F, Float.MIN_VALUE, 1.0F)
 
 private val nonFiniteEdgeCases = listOf(Float.NEGATIVE_INFINITY, Float.NaN, Float.POSITIVE_INFINITY)
 
 object FloatShrinker : Shrinker<Float> {
-   override fun shrink(value: Float): List<Float> {
-      if (value == 0f || !value.isFinite())
-         return emptyList()
-
-      val bits = value.toBits()
-
-      return if (bits and 0x007F_FFFF == 0)
+   override fun shrink(value: Float): List<Float> =
+      if (value == 0f || !value.isFinite() || value.absoluteValue < 10 * Float.MIN_VALUE)
          emptyList()
       else
-         listOf(Float.fromBits(bits and (bits - 1)))
-   }
+         listOfNotNull(DoubleShrinker.shrink(value.toString())?.toFloat())
 }
 
 /**

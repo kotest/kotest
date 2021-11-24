@@ -30,8 +30,8 @@ fun beInRange(range: CharRange) = object : Matcher<Char> {
    override fun test(value: Char): MatcherResult =
       MatcherResult(
          value in range,
-         "$value should be in range $range",
-         "$value should not be in range $range"
+         { "$value should be in range $range" },
+         { "$value should not be in range $range" }
       )
 }
 
@@ -59,8 +59,8 @@ fun Char.shouldNotBeBetween(from: Char, to: Char): Char {
 fun between(from: Char, to: Char) = object : Matcher<Char> {
    override fun test(value: Char) = MatcherResult(
       value in from..to,
-      "$value is between ($from, $to)",
-      "$value is not between ($from, $to)"
+      { "$value is between ($from, $to)" },
+      { "$value is not between ($from, $to)" }
    )
 }
 
@@ -87,7 +87,7 @@ infix fun Char.shouldNotBeEqualToIgnoreCase(other: Char): Char {
 fun beEqualIgnoreCase(other: Char) = object : Matcher<Char> {
    override fun test(value: Char) = MatcherResult(
       value.equals(other, ignoreCase = true),
-      "$value should be equal ignoring case $other",
-      "$value should not be equal ignoring case $other"
-   )
+      { "$value should be equal ignoring case $other" }, {
+         "$value should not be equal ignoring case $other"
+      })
 }

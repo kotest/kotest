@@ -25,7 +25,10 @@ fun Long.shouldNotBeBetween(a: Long, b: Long): Long {
  * Verifies that the given Long is between a and b inclusive.
  */
 fun between(a: Long, b: Long): Matcher<Long> = object : Matcher<Long> {
-   override fun test(value: Long) = MatcherResult(value in a..b,
-      "$value should be between ($a, $b)",
-      "$value should not be between ($a, $b)")
+   override fun test(value: Long) = MatcherResult(
+      value in a..b,
+      { "$value should be between ($a, $b)" },
+      {
+         "$value should not be between ($a, $b)"
+      })
 }

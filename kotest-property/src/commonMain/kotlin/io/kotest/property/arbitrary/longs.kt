@@ -3,6 +3,7 @@ package io.kotest.property.arbitrary
 import io.kotest.property.Arb
 import io.kotest.property.Gen
 import io.kotest.property.Shrinker
+import io.kotest.property.arbitrary.numbers.LongClassifier
 import kotlin.math.abs
 import kotlin.random.nextLong
 import kotlin.random.nextULong
@@ -27,27 +28,32 @@ fun Arb.Companion.long(min: Long = Long.MIN_VALUE, max: Long = Long.MAX_VALUE) =
 
 /**
  * Returns an [Arb] that produces [Long]s in [range].
- * The edge cases are [LongRange.first], -1, 0, 1 and [LongRange.last] which are only included if they are in the
- * provided range.
+ *
+ * The edge cases are [LongRange.first], -1, 0, 1 and [LongRange.last].
+ *
+ * -1, 0, and 1 are only included if they are present in the given range.
  */
 fun Arb.Companion.long(range: LongRange = Long.MIN_VALUE..Long.MAX_VALUE): Arb<Long> {
    val edgeCases = longArrayOf(range.first, -1, 0, 1, range.last).filter { it in range }.distinct()
-   return arbitrary(edgeCases, LongShrinker(range)) {
+   return ArbitraryBuilder.create {
       var value = it.random.nextLong(range)
-      while(value !in range) value = it.random.nextLong(range) // temporary workaround for KT-47304
+      while (value !in range) value = it.random.nextLong(range) // temporary workaround for KT-47304
       value
-   }
+   }.withEdgecases(edgeCases)
+      .withShrinker(LongShrinker(range))
+      .withClassifier(LongClassifier(range))
+      .build()
 }
 
 /**
  * Returns an [Arb] that produces positive [Long]s from 1 to [max] (inclusive).
- * The edge cases are 1 and [max] which are only included if they are in the provided range.
+ * The edge cases are 1 and [max].
  */
 fun Arb.Companion.positiveLong(max: Long = Long.MAX_VALUE): Arb<Long> = long(1L, max)
 
 /**
  * Returns an [Arb] that produces negative [Long]s from [min] to -1 (inclusive).
- * The edge cases are [min] and -1 which are only included if they are in the provided range.
+ * The edge cases are [min] and -1.
  */
 fun Arb.Companion.negativeLong(min: Long = Long.MIN_VALUE): Arb<Long> = long(min, -1L)
 

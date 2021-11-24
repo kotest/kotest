@@ -1,6 +1,6 @@
 package io.kotest.matchers.collections
 
-import io.kotest.assertions.show.show
+import io.kotest.assertions.print.print
 import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
 import io.kotest.matchers.should
@@ -65,9 +65,8 @@ infix fun <T, U> Collection<T>.shouldBeSameSizeAs(other: Collection<U>): Collect
 fun <T, U> beSameSizeAs(other: Collection<U>) = object : Matcher<Collection<T>> {
    override fun test(value: Collection<T>) = MatcherResult(
       value.size == other.size,
-      "Collection of size ${value.size} should be the same size as collection of size ${other.size}",
-      "Collection of size ${value.size} should not be the same size as collection of size ${other.size}"
-   )
+      { "Collection of size ${value.size} should be the same size as collection of size ${other.size}" },
+      { "Collection of size ${value.size} should not be the same size as collection of size ${other.size}" })
 }
 
 infix fun <T> Iterable<T>.shouldHaveAtLeastSize(n: Int): Iterable<T> {
@@ -88,9 +87,10 @@ infix fun <T> Collection<T>.shouldHaveAtLeastSize(n: Int): Collection<T> {
 fun <T> atLeastSize(n: Int) = object : Matcher<Collection<T>> {
    override fun test(value: Collection<T>) = MatcherResult(
       value.size >= n,
-      "Collection should contain at least $n elements",
-      "Collection should contain less than $n elements"
-   )
+      { "Collection should contain at least $n elements" },
+      {
+         "Collection should contain less than $n elements"
+      })
 }
 
 infix fun <T> Iterable<T>.shouldHaveAtMostSize(n: Int): Iterable<T> {
@@ -111,9 +111,10 @@ infix fun <T> Collection<T>.shouldHaveAtMostSize(n: Int): Collection<T> {
 fun <T> atMostSize(n: Int) = object : Matcher<Collection<T>> {
    override fun test(value: Collection<T>) = MatcherResult(
       value.size <= n,
-      "Collection should contain at most $n elements",
-      "Collection should contain more than $n elements"
-   )
+      { "Collection should contain at most $n elements" },
+      {
+         "Collection should contain more than $n elements"
+      })
 }
 
 
@@ -121,7 +122,7 @@ fun <T> haveSizeMatcher(size: Int) = object : Matcher<Collection<T>> {
    override fun test(value: Collection<T>) =
       MatcherResult(
          value.size == size,
-         { "Collection should have size $size but has size ${value.size}. Values: ${value.show().value}" },
-         { "Collection should not have size $size. Values: ${value.show().value}" }
+         { "Collection should have size $size but has size ${value.size}. Values: ${value.print().value}" },
+         { "Collection should not have size $size. Values: ${value.print().value}" }
       )
 }

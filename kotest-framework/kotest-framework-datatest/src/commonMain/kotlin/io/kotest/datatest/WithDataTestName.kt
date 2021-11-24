@@ -1,9 +1,8 @@
 package io.kotest.datatest
 
 /**
- *  In case you want to customise the test name generation for a given type when used in data test,
- *  you can implement [WithDataTestName] and implement [dataTestName] method to customise the test
- *  case name.
+ *  In case you want to customise the test name generation for a given type when used in data testing,
+ *  you can implement the [WithDataTestName] interface and return the test name to be used.
  *
  *  Note:
  *  1) If you want to use the toString method for creating test name for a type use [IsStableType] annotation on that type.

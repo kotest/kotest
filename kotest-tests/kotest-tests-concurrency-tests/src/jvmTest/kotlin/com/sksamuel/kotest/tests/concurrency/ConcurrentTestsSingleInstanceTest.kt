@@ -1,7 +1,7 @@
 package com.sksamuel.kotest.tests.concurrency
 
 import io.kotest.common.ExperimentalKotest
-import io.kotest.core.config.Configuration
+import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.style.FunSpec
@@ -22,15 +22,15 @@ class ConcurrentTestsSingleInstanceTest : FunSpec() {
    private var start = 0L
 
    override fun isolationMode() = IsolationMode.SingleInstance
-   override fun concurrency(): Int = Configuration.MaxConcurrency
+   override fun concurrency(): Int = ProjectConfiguration.MaxConcurrency
    override fun testCaseOrder() = TestCaseOrder.Sequential
 
    override fun beforeTest(testCase: TestCase) {
-      befores += testCase.displayName
+      befores += testCase.name.testName
    }
 
    override fun afterTest(testCase: TestCase, result: TestResult) {
-      afters += testCase.displayName
+      afters += testCase.name.testName
    }
 
    override fun beforeSpec(spec: Spec) {

@@ -1,6 +1,6 @@
 plugins {
    id("java")
-   id("kotlin-multiplatform")
+   kotlin("multiplatform")
    id("java-library")
 }
 
@@ -11,20 +11,13 @@ repositories {
 
 kotlin {
    targets {
-      jvm {
-         compilations.all {
-            kotlinOptions {
-               jvmTarget = "1.8"
-               freeCompilerArgs
-            }
-         }
-      }
+      jvm()
    }
    sourceSets {
       val jvmMain by getting {
          dependencies {
-            implementation("org.jetbrains.kotlin:kotlin-stdlib")
-            compileOnly("org.jetbrains.kotlin:kotlin-compiler-embeddable:1.5.21")
+            implementation(kotlin("stdlib"))
+            compileOnly(Libs.Kotlin.compilerEmbeddable)
          }
       }
    }

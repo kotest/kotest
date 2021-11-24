@@ -8,7 +8,9 @@ import io.kotest.matchers.comparables.shouldBeGreaterThanOrEqualTo
 import io.kotest.matchers.comparables.shouldBeLessThan
 import io.kotest.matchers.shouldBe
 import kotlin.math.pow
-import kotlin.time.Duration
+import kotlin.time.Duration.Companion.milliseconds
+import kotlin.time.Duration.Companion.minutes
+import kotlin.time.Duration.Companion.seconds
 
 @ExperimentalKotest
 class IntervalSpec : FunSpec({
@@ -23,7 +25,7 @@ class IntervalSpec : FunSpec({
 
    context("exponential interval") {
       test("has a reasonable default next") {
-         val identity = Duration.seconds(2).inWholeMilliseconds
+         val identity = 2.seconds.inWholeMilliseconds
 
          all(identity.exponential()) {
             next(0) shouldBe identity * 1
@@ -40,8 +42,8 @@ class IntervalSpec : FunSpec({
 
       test("has a reasonable default max") {
          val max = ExponentialInterval.defaultMax
-         val default = Duration.milliseconds(25).inWholeMilliseconds.exponential()
-         val unbounded = Duration.milliseconds(25).inWholeMilliseconds.exponential(max = null)
+         val default = 25.milliseconds.inWholeMilliseconds.exponential()
+         val unbounded = 25.milliseconds.inWholeMilliseconds.exponential(max = null)
 
          val first = 0
          val last = 20
@@ -63,7 +65,7 @@ class IntervalSpec : FunSpec({
       }
 
       test("respects user specified max") {
-         val base = Duration.milliseconds(25).inWholeMilliseconds
+         val base = 25.milliseconds.inWholeMilliseconds
          val n = 5
          val max = base * ExponentialInterval.defaultFactor.pow(n).toLong()
          val bounded = base.exponential(max = max)
@@ -105,8 +107,8 @@ class IntervalSpec : FunSpec({
 
       test("has a reasonable default max") {
          val max = FibonacciInterval.defaultMax
-         val default = Duration.minutes(10).inWholeMilliseconds.fibonacci()
-         val unbounded = Duration.minutes(10).inWholeMilliseconds.fibonacci(null)
+         val default = 10.minutes.inWholeMilliseconds.fibonacci()
+         val unbounded = 10.minutes.inWholeMilliseconds.fibonacci(null)
 
          val first = 0
          val last = 20
@@ -128,9 +130,9 @@ class IntervalSpec : FunSpec({
       }
 
       test("respects user specified max") {
-         val max = FibonacciInterval.defaultMax + Duration.minutes(15).inWholeMilliseconds
-         val bounded = Duration.minutes(10).inWholeMilliseconds.fibonacci(max)
-         val unbounded = Duration.minutes(10).inWholeMilliseconds.fibonacci(null)
+         val max = FibonacciInterval.defaultMax + 15.minutes.inWholeMilliseconds
+         val bounded = 10.minutes.inWholeMilliseconds.fibonacci(max)
+         val unbounded = 10.minutes.inWholeMilliseconds.fibonacci(null)
 
          val first = 0
          val last = 20

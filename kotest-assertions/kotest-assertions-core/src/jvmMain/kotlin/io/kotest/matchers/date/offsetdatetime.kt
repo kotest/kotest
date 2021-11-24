@@ -7,14 +7,15 @@ import io.kotest.matchers.shouldNot
 import java.time.OffsetDateTime
 
 fun beInTodayODT() = object : Matcher<OffsetDateTime> {
-  override fun test(value: OffsetDateTime): MatcherResult {
-    val passed = value.toLocalDate() == OffsetDateTime.now().toLocalDate()
-    return MatcherResult(
-      passed,
-      "$value should be today",
-      "$value should not be today"
-    )
-  }
+   override fun test(value: OffsetDateTime): MatcherResult {
+      val passed = value.toLocalDate() == OffsetDateTime.now().toLocalDate()
+      return MatcherResult(
+         passed,
+         { "$value should be today" },
+         {
+            "$value should not be today"
+         })
+   }
 }
 
 /**

@@ -1,7 +1,5 @@
 package com.sksamuel.kotest.tests.concurrency
 
-import io.kotest.core.listeners.ProjectListener
-import io.kotest.core.listeners.TestListener
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.style.FunSpec
@@ -21,11 +19,11 @@ class ConcurrentSpecsSingleInstanceTest1 : FunSpec() {
    override fun testCaseOrder() = TestCaseOrder.Sequential
 
    override fun beforeTest(testCase: TestCase) {
-      befores += testCase.displayName
+      befores += testCase.name.testName
    }
 
    override fun afterTest(testCase: TestCase, result: TestResult) {
-      afters += testCase.displayName
+      afters += testCase.name.testName
    }
 
    override fun afterSpec(spec: Spec) {
@@ -52,11 +50,11 @@ class ConcurrentSpecsSingleInstanceTest2 : FunSpec() {
    override fun testCaseOrder() = TestCaseOrder.Sequential
 
    override fun beforeTest(testCase: TestCase) {
-      befores += testCase.displayName
+      befores += testCase.name.testName
    }
 
    override fun afterTest(testCase: TestCase, result: TestResult) {
-      afters += testCase.displayName
+      afters += testCase.name.testName
    }
 
    override fun afterSpec(spec: Spec) {
@@ -83,11 +81,11 @@ class ConcurrentSpecsSingleInstanceTest3 : FunSpec() {
    override fun testCaseOrder() = TestCaseOrder.Sequential
 
    override fun beforeTest(testCase: TestCase) {
-      befores += testCase.displayName
+      befores += testCase.name.testName
    }
 
    override fun afterTest(testCase: TestCase, result: TestResult) {
-      afters += testCase.displayName
+      afters += testCase.name.testName
    }
 
    override fun afterSpec(spec: Spec) {

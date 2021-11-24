@@ -14,7 +14,7 @@ import io.kotest.property.arbitrary.int
 import io.kotest.property.arbitrary.long
 import io.kotest.property.arbitrary.orNull
 import io.kotest.property.forAll
-import kotlin.time.Duration
+import kotlin.time.Duration.Companion.seconds
 
 class OrNullTest : FunSpec({
 
@@ -30,7 +30,7 @@ class OrNullTest : FunSpec({
    }
 
    test("null probability values can be specified") {
-       retry(3, timeout = Duration.seconds(2), delay = Duration.seconds(0.1)) {
+       retry(3, timeout = 2.seconds, delay = 0.1.seconds) {
            listOf(0.0, 0.1, 0.25, 0.5, 0.75, 0.9, 1.0)
                .forAll { p: Double ->
                    val nullCount = Arb.long().orNull(nullProbability = p).samples(RandomSource.default())

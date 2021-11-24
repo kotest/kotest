@@ -1,7 +1,8 @@
 package io.kotest.assertions.eq
 
 import io.kotest.assertions.AssertionsConfig
-import io.kotest.assertions.show.show
+import io.kotest.assertions.print.print
+import kotlin.js.JsName
 
 /**
  * A [Eq] typeclass compares two values for equality, returning an [AssertionError] if they are
@@ -11,12 +12,17 @@ import io.kotest.assertions.show.show
  */
 interface Eq<T> {
    fun equals(actual: T, expected: T, strictNumberEq: Boolean = false): Throwable?
+
+   @JsName("Equals")
+   fun equals(actual: T, expected: T): Throwable? {
+      return equals(actual, expected, false)
+   }
 }
 
 /**
  * Locates the applicable [Eq] for the inputs, and invokes it, returning the error if any.
  */
-fun <T : Any?> eq(actual: T, expected: T, strictNumberEq: Boolean = false): Throwable? {
+fun <T : Any?> eq(actual: T, expected: T, strictNumberEq: Boolean): Throwable? {
    // if we have null and non null, usually that's a failure, but people can override equals to allow it
    return when {
       actual === expected -> null
@@ -39,13 +45,17 @@ fun <T : Any?> eq(actual: T, expected: T, strictNumberEq: Boolean = false): Thro
    }
 }
 
+fun <T : Any?> eq(actual: T, expected: T): Throwable? {
+   return eq(actual, expected, false)
+}
+
 private fun <T> shouldShowDataClassDiff(actual: T, expected: T) =
    AssertionsConfig.showDataClassDiff && isDataClassInstance(actual) && isDataClassInstance(expected)
 
 fun actualIsNull(expected: Any): AssertionError {
-   return AssertionError("Expected ${expected.show().value} but actual was null")
+   return AssertionError("Expected ${expected.print().value} but actual was null")
 }
 
 fun expectedIsNull(actual: Any): AssertionError {
-   return AssertionError("Expected null but actual was ${actual.show().value}")
+   return AssertionError("Expected null but actual was ${actual.print().value}")
 }

@@ -2,6 +2,7 @@ package io.kotest.matchers.floats
 
 import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
+import io.kotest.matchers.MatcherResult.Companion.invoke
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
 import kotlin.math.abs
@@ -80,15 +81,22 @@ fun between(a: Float, b: Float, tolerance: Float): Matcher<Float> = object : Mat
     val differenceToMaximum = b - value
 
     if (differenceToMinimum < 0 && abs(differenceToMinimum) > tolerance) {
-      return MatcherResult(false, "$value should be bigger than $a", "$value should not be bigger than $a")
+      return invoke(
+         false,
+         { "$value should be bigger than $a" },
+         { "$value should not be bigger than $a" })
     }
 
     if (differenceToMaximum < 0 && abs(differenceToMaximum) > tolerance) {
-      return MatcherResult(false, "$value should be smaller than $b", "$value should not be smaller than $b")
+      return invoke(
+         false,
+         { "$value should be smaller than $b" },
+         { "$value should not be smaller than $b" })
     }
 
-    return MatcherResult(true,
-      "$value should be smaller than $b and bigger than $a",
-      "$value should not be smaller than $b and should not be bigger than $a")
+    return invoke(
+       true,
+       { "$value should be smaller than $b and bigger than $a" },
+       { "$value should not be smaller than $b and should not be bigger than $a" })
   }
 }

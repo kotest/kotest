@@ -8,9 +8,9 @@ import io.kotest.assertions.until.fixed
 import kotlinx.coroutines.delay
 import kotlin.reflect.KClass
 import kotlin.time.Duration
+import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.TimeMark
 import kotlin.time.TimeSource
-import kotlin.time.milliseconds
 
 /**
  * Runs a function until it doesn't throw as long as the specified duration hasn't passed
@@ -59,7 +59,7 @@ suspend fun <T> eventually(duration: Duration, exceptionClass: KClass<out Throwa
  */
 suspend fun <T> eventually(
    duration: Duration = Duration.INFINITE,
-   interval: Interval = Duration.milliseconds(25).fixed(),
+   interval: Interval = 25.milliseconds.fixed(),
    predicate: EventuallyPredicate<T> = { true },
    listener: EventuallyListener<T> = EventuallyListener { },
    retries: Int = Int.MAX_VALUE,
@@ -150,7 +150,7 @@ suspend fun <T> eventually(
 
 data class EventuallyConfig(
    val duration: Duration = Duration.INFINITE,
-   val interval: Interval = Duration.milliseconds(25).fixed(),
+   val interval: Interval = 25.milliseconds.fixed(),
    val retries: Int = Int.MAX_VALUE,
    val exceptionClass: KClass<out Throwable>? = null,
 ) {

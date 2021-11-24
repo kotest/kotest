@@ -1,13 +1,17 @@
 package com.sksamuel.kotest.property.arbitrary
 
+import io.kotest.assertions.throwables.shouldThrowAny
 import io.kotest.core.spec.style.StringSpec
+import io.kotest.extensions.system.captureStandardOut
 import io.kotest.matchers.collections.shouldContainExactly
 import io.kotest.matchers.collections.shouldHaveAtLeastSize
 import io.kotest.matchers.comparables.beGreaterThan
 import io.kotest.matchers.comparables.beLessThan
+import io.kotest.matchers.comparables.shouldBeGreaterThan
+import io.kotest.matchers.ints.shouldBeLessThan
 import io.kotest.matchers.should
-import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
+import io.kotest.matchers.string.shouldContain
 import io.kotest.property.Arb
 import io.kotest.property.EdgeConfig
 import io.kotest.property.RandomSource
@@ -15,34 +19,27 @@ import io.kotest.property.arbitrary.bind
 import io.kotest.property.arbitrary.boolean
 import io.kotest.property.arbitrary.double
 import io.kotest.property.arbitrary.filter
-import io.kotest.property.arbitrary.map
 import io.kotest.property.arbitrary.negativeInt
 import io.kotest.property.arbitrary.positiveInt
 import io.kotest.property.arbitrary.string
 import io.kotest.property.arbitrary.take
 import io.kotest.property.arbitrary.withEdgecases
+import io.kotest.property.arbitrary.zip
 import io.kotest.property.checkAll
 import io.kotest.matchers.doubles.beGreaterThan as gtd
 
 class BindTest : StringSpec({
 
-   data class FooA(val a: String)
    data class User(val email: String, val id: Int)
    data class FooC(val a: String, val b: Int, val c: Double)
    data class FooD(val a: String, val b: Int, val c: Double, val d: Int)
    data class FooE(val a: String, val b: Int, val c: Double, val d: Int, val e: Boolean)
 
-   "Arb.bindA" {
-      val gen = Arb.string().map { FooA(it) }
-      checkAll(gen) {
-         it.a shouldNotBe null
-      }
-   }
-
    "Arb.bind(a,b) should generate distinct values" {
       val arbA = Arb.string()
       val arbB = Arb.string()
       Arb.bind(arbA, arbB) { a, b -> a + b }.take(1000).toSet().shouldHaveAtLeastSize(100)
+      Arb.zip(arbA, arbB) { a, b -> a + b }.take(1000).toSet().shouldHaveAtLeastSize(100)
    }
 
    "Arb.bindB" {
@@ -55,6 +52,15 @@ class BindTest : StringSpec({
 
    "Arb.bindC" {
       val gen = Arb.bind(Arb.string(), Arb.positiveInt(), Arb.double().filter { it > 0 }, ::FooC)
+      checkAll(gen) {
+         it.a shouldNotBe null
+         it.b should beGreaterThan(0)
+         it.c should gtd(0.0)
+      }
+   }
+
+   "Arb.zipC" {
+      val gen = Arb.zip(Arb.string(), Arb.positiveInt(), Arb.double().filter { it > 0 }, ::FooC)
       checkAll(gen) {
          it.a shouldNotBe null
          it.b should beGreaterThan(0)
@@ -90,6 +96,23 @@ class BindTest : StringSpec({
 
    "Arb.bindE" {
       val gen = Arb.bind(
+         Arb.string(),
+         Arb.positiveInt(),
+         Arb.double().filter { it > 0 },
+         Arb.negativeInt(),
+         Arb.boolean(),
+         ::FooE
+      )
+      checkAll(gen) {
+         it.a shouldNotBe null
+         it.b should beGreaterThan(0)
+         it.c should gtd(0.0)
+         it.d should beLessThan(0)
+      }
+   }
+
+   "Arb.zipE" {
+      val gen = Arb.zip(
          Arb.string(),
          Arb.positiveInt(),
          Arb.double().filter { it > 0 },
@@ -583,27 +606,22 @@ class BindTest : StringSpec({
       )
    }
 
-   "Arb.reflectiveBind" {
-      val arb = Arb.bind<Wobble>()
-      arb.take(10).toList().size shouldBe 10
-   }
+   "!Arb.bind shrinks" {
+      data class Person(val name: String, val age: Int)
 
-   "Arb.reflectiveBind should generate probabilistic edge cases" {
-      val arb = Arb.bind<Wobble>()
-      val edgeCases = arb
-         .generate(RandomSource.seeded(1234L), EdgeConfig(edgecasesGenerationProbability = 1.0))
-         .take(5)
-         .map { it.value }
-         .toList()
+      val arb = Arb.bind<Person>()
 
-      edgeCases shouldContainExactly listOf(
-         Wobble(a = "a", b = false, c = 1, d = -Double.MIN_VALUE, e = Float.POSITIVE_INFINITY),
-         Wobble(a = "", b = true, c = 2147483647, d = -1.0, e = Float.MIN_VALUE),
-         Wobble(a = "", b = false, c = -1, d = -Double.MIN_VALUE, e = 1.0F),
-         Wobble(a = "a", b = true, c = 2147483647, d = -Double.MAX_VALUE, e = -1.0F),
-         Wobble(a = "", b = false, c = 1, d = -0.0, e = Float.NaN)
-      )
+      val stdout = captureStandardOut {
+         shouldThrowAny {
+            checkAll(arb) { person ->
+               person.name.length shouldBeLessThan 10
+               person.age shouldBeGreaterThan -1
+               person.age shouldBeLessThan 130
+            }
+         }
+      }
+
+      stdout shouldContain "Shrink result"
+      stdout shouldContain "Person(name=, age=-1)"
    }
 })
-
-data class Wobble(val a: String, val b: Boolean, val c: Int, val d: Double, val e: Float)

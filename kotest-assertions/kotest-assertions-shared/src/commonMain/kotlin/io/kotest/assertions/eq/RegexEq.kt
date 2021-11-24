@@ -3,8 +3,8 @@ package io.kotest.assertions.eq
 import io.kotest.assertions.Actual
 import io.kotest.assertions.Expected
 import io.kotest.assertions.failure
-import io.kotest.assertions.show.Printed
-import io.kotest.assertions.show.show
+import io.kotest.assertions.print.Printed
+import io.kotest.assertions.print.print
 
 /**
  * An implementation of [Eq] for comparing [Regex]s.
@@ -24,7 +24,7 @@ private fun patternsAreNotEqual(actual: Regex, expected: Regex): Throwable? {
 
 private fun optionsAreNotEqual(actual: Regex, expected: Regex): Throwable? {
    return if (actual.options == expected.options) null else failure(
-      Expected(expected.options.show()),
-      Actual(actual.options.show())
+      Expected(expected.options.print()),
+      Actual(actual.options.print())
    )
 }

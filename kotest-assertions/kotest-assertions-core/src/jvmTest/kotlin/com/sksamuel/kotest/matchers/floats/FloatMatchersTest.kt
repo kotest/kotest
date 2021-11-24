@@ -1,5 +1,6 @@
 package com.sksamuel.kotest.matchers.floats
 
+import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.floats.shouldBeExactly
 import io.kotest.matchers.floats.shouldBeGreaterThan
 import io.kotest.matchers.floats.shouldBeGreaterThanOrEqual
@@ -12,7 +13,6 @@ import io.kotest.matchers.floats.shouldNotBeGreaterThanOrEqual
 import io.kotest.matchers.floats.shouldNotBeLessThan
 import io.kotest.matchers.floats.shouldNotBeLessThanOrEqual
 import io.kotest.matchers.floats.shouldNotBeZero
-import io.kotest.core.spec.style.StringSpec
 
 class FloatMatchersTest : StringSpec() {
   init {
@@ -105,4 +105,5 @@ class FloatMatchersTest : StringSpec() {
       Float.NEGATIVE_INFINITY.shouldNotBeZero()
     }
   }
+
 }

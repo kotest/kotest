@@ -13,7 +13,7 @@ class MultilineStringSpecTestNameTest : StringSpec({
                first test line three
                               """ {
       // dummy test
-      testNames.add(this.testCase.displayName)
+      testNames.add(this.testCase.name.testName)
    }
 
    """2         second test line one
@@ -21,7 +21,7 @@ class MultilineStringSpecTestNameTest : StringSpec({
                second test line three
                               """ {
       // dummy test
-      testNames.add(this.testCase.displayName)
+      testNames.add(this.testCase.name.testName)
    }
 
 """
@@ -31,7 +31,7 @@ test
 last
 line
 """ {
-testNames.add(this.testCase.displayName)
+testNames.add(this.testCase.name.testName)
 }
 
    afterSpec {

@@ -2,6 +2,7 @@ package io.kotest.property.arbitrary
 
 import io.kotest.property.Arb
 import io.kotest.property.Gen
+import io.kotest.property.bimap
 import kotlin.random.nextUInt
 
 /**

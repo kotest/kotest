@@ -44,7 +44,7 @@ abstract class TimeZoneListener(private val timeZone: TimeZone) {
  * Replaces the default TimeZone
  *
  * This function replaces the current default timezone with [timeZone], then executes the test and finally
- * returns the original default timezone to it's place.
+ * returns the original default timezone to its place.
  *
  * **Attention:** This code is subject to race conditions. The System can only have one default timezone, and if you
  * change the timezone while it was already changed, the result may be inconsistent.
@@ -64,7 +64,7 @@ class TimeZoneTestListener(timeZone: TimeZone) : TimeZoneListener(timeZone), Tes
  * Replaces the default TimeZone
  *
  * This function replaces the current default timezone with [timeZone], then executes the project and finally
- * returns the original default timezone to it's place.
+ * returns the original default timezone to its place.
  *
  * **Attention:** This code is subject to race conditions. The System can only have one default timezone, and if you
  * change the timezone while it was already changed, the result may be inconsistent.

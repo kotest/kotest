@@ -75,7 +75,7 @@ for each.
 
 ![data test example output](datatest1.png)
 
-The test names are generated from the data classes themselves but can be [customized](#custom-test-names).
+The test names are generated from the data classes themselves but can be [customized](https://kotest.io/docs/framework/datatesting/custom-test-names.html).
 
 If there is an error for any particular input row, then the test will fail and Kotest will output the values that
 failed. For example, if we change the previous example to include the row `PythagTriple(5, 4, 3)`

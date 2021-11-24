@@ -13,7 +13,7 @@ class ShouldBeUUIDTest : FreeSpec({
 
    "Should be UUID" - {
       "Should pass for Java generated UUIDs" {
-         Arb.uuid().checkAll { uuid ->
+         Arb.uuid().checkAll(100) { uuid ->
             uuid.toString().shouldBeUUID()
             uuid.toString().uppercase().shouldBeUUID()
             uuid.toString().lowercase().shouldBeUUID()
@@ -32,7 +32,7 @@ class ShouldBeUUIDTest : FreeSpec({
       }
 
       "Should fail for strings" {
-         Arb.string(31, 41).checkAll(iterations = 10_000) { str ->
+         Arb.string(31, 41).checkAll(iterations = 100) { str ->
             shouldThrow<AssertionError> { str.shouldBeUUID() }
             str.shouldNotBeUUID()
          }

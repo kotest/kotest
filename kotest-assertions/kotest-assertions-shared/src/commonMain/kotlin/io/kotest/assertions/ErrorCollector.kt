@@ -47,6 +47,30 @@ interface ErrorCollector {
    fun clueContext(): List<Clue>
 }
 
+object NoopErrorCollector : ErrorCollector {
+
+   override fun getCollectionMode(): ErrorCollectionMode = ErrorCollectionMode.Hard
+
+   override fun setCollectionMode(mode: ErrorCollectionMode) {
+   }
+
+   override fun errors(): List<Throwable> = emptyList()
+
+   override fun pushError(t: Throwable) {
+   }
+
+   override fun clear() {
+   }
+
+   override fun pushClue(clue: Clue) {
+   }
+
+   override fun popClue() {
+   }
+
+   override fun clueContext(): List<Clue> = emptyList()
+}
+
 open class BasicErrorCollector : ErrorCollector {
 
    private val failures = mutableListOf<Throwable>()
@@ -67,7 +91,7 @@ open class BasicErrorCollector : ErrorCollector {
       clues.removeAt(0)
    }
 
-   override fun clueContext(): List<Clue> = clues.toList()
+   override fun clueContext(): List<Clue> = clues.reversed()
 
    override fun pushError(t: Throwable) {
       failures.add(t)

@@ -14,9 +14,10 @@ fun <T> completedExceptionally() = object : Matcher<CompletableFuture<T>> {
    override fun test(value: CompletableFuture<T>): MatcherResult =
       MatcherResult(
          value.isCompletedExceptionally,
-         "Future should be completed exceptionally",
-         "Future should not be completed exceptionally"
-      )
+         { "Future should be completed exceptionally" },
+         {
+            "Future should not be completed exceptionally"
+         })
 }
 
 
@@ -26,9 +27,10 @@ fun <T> completed() = object : Matcher<CompletableFuture<T>> {
    override fun test(value: CompletableFuture<T>): MatcherResult =
       MatcherResult(
          value.isDone,
-         "Future should be completed",
-         "Future should not be completed"
-      )
+         { "Future should be completed" },
+         {
+            "Future should not be completed"
+         })
 }
 
 fun <T> CompletableFuture<T>.shouldBeCancelled() = this shouldBe cancelled<T>()
@@ -37,9 +39,10 @@ fun <T> cancelled() = object : Matcher<CompletableFuture<T>> {
    override fun test(value: CompletableFuture<T>): MatcherResult =
       MatcherResult(
          value.isCancelled,
-         "Future should be completed",
-         "Future should not be completed"
-      )
+         { "Future should be completed" },
+         {
+            "Future should not be completed"
+         })
 }
 
 infix fun CompletableFuture<*>.shouldCompleteExceptionallyWith(throwable: Throwable) =

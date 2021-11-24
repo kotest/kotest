@@ -21,6 +21,12 @@ interface AssertionCounter {
 // the single assertion counter instance to be used by all clients
 expect val assertionCounter: AssertionCounter
 
+object NoopAssertionsCounter : AssertionCounter {
+   override fun get(): Int = 1
+   override fun reset() {}
+   override fun inc() {}
+}
+
 open class BasicAssertionCounter : AssertionCounter {
    private var counter = 0
    override fun get(): Int = counter

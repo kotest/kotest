@@ -12,11 +12,6 @@ package io.kotest.core.internal
 
 object KotestEngineProperties {
 
-   @Deprecated("Use the val from the spring extension module (io.kotest.extensions:kotest-extensions-spring")
-   const val springIgnoreWarning = "kotest.listener.spring.ignore.warning"
-
-   const val gradle5 = "kotest.gradle5.compatibility"
-
    const val scriptsEnabled = "kotest.framework.scripts.enabled"
 
    const val dumpConfig = "kotest.framework.dump.config"
@@ -30,11 +25,25 @@ object KotestEngineProperties {
 
    const val includeTags = "kotest.tags.include"
 
+   /**
+    * A regex expression that is used to match the test [io.kotest.core.descriptors.Descriptor]'s path
+    * to determine if a test should be included in the test plan or not.
+    */
+   const val filterTests = "kotest.filter.tests"
+
+   /**
+    * A regex expression that is used to match the [io.kotest.mpp.bestName] of a class
+    * to determine if a spec should be included in the test plan or not.
+    */
+   const val filterSpecs = "kotest.filter.specs"
+
    const val propertiesFilename = "kotest.properties.filename"
 
    /**
     * If set to true, then source ref's will not be created for test cases.
-    * This may reduce functionality (for example if using the intellij plugin).
+    * This may speed up builds (as the engine will not need to create stack traces to
+    * generate line numbers) but will also reduce functionality in the intellij plugin
+    * (by limiting the ability to drill directly into the test inside a file).
     */
    const val disableSourceRef = "kotest.framework.sourceref.disable"
 
@@ -44,12 +53,12 @@ object KotestEngineProperties {
    const val disableBangPrefix = "kotest.bang.disable"
 
    /**
-    * The default [IsolationMode] for specs.
+    * The default [io.kotest.core.spec.IsolationMode] for specs.
     */
    const val isolationMode = "kotest.framework.isolation.mode"
 
    /**
-    * The default [AssertionMode] for specs.
+    * The default [io.kotest.core.test.AssertionMode] for tests.
     */
    const val assertionMode = "kotest.framework.assertion.mode"
 
@@ -58,10 +67,21 @@ object KotestEngineProperties {
     */
    const val parallelism = "kotest.framework.parallelism"
 
+   /**
+    * The default timeout for test cases.
+    */
    const val timeout = "kotest.framework.timeout"
 
-   const val projectTimeout = "kotest.framework.projectTimeout"
+   /**
+    * The default timeout for the entire test suite.
+    */
+   const val projectTimeout = "kotest.framework.projecttimeout"
 
+   const val logLevel = "kotest.framework.loglevel"
+
+   /**
+    * The default timeout for each invocation of a test case.
+    */
    const val invocationTimeout = "kotest.framework.invocation.timeout"
 
    const val concurrentSpecs = "kotest.framework.spec.concurrent"
@@ -95,6 +115,9 @@ object KotestEngineProperties {
     * */
    const val testNameAppendTags = "kotest.framework.testname.append.tags"
 
+   /**
+    * Controls the [io.kotest.core.names.DuplicateTestNameMode] mode.
+    */
    const val duplicateTestNameMode = "kotest.framework.testname.duplicate.mode"
 
    const val disableJarDiscovery = "kotest.framework.discovery.jar.scan.disable"

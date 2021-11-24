@@ -1,9 +1,9 @@
 package com.sksamuel.kotest.engine.objects
 
-import io.kotest.core.config.configuration
+import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.listeners.ProjectListener
 import io.kotest.core.spec.style.FunSpec
-import io.kotest.engine.KotestEngineLauncher
+import io.kotest.engine.TestEngineLauncher
 import io.kotest.engine.listener.NoopTestEngineListener
 import io.kotest.matchers.shouldBe
 
@@ -13,15 +13,16 @@ class ObjectSpecTest : FunSpec() {
 
          var fired = false
 
-         configuration.registerListener(object : ProjectListener {
+         val c = ProjectConfiguration()
+         c.registry.add(object : ProjectListener {
             override suspend fun afterProject() {
                fired = true
             }
          })
 
-         KotestEngineLauncher()
-            .withListener(NoopTestEngineListener)
-            .withSpec(DummyObjectSpec::class)
+         TestEngineLauncher(NoopTestEngineListener)
+            .withClasses(DummyObjectSpec::class)
+            .withConfiguration(c)
             .launch()
 
          fired shouldBe true

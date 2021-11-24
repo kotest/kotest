@@ -6,7 +6,10 @@ import java.io.File
 fun TestConfiguration.tempdir(prefix: String? = null, suffix: String? = null): File {
    val dir = kotlin.io.path.createTempDirectory(prefix ?: javaClass.name).toFile()
    afterSpec {
-      dir.deleteRecursively()
+      if (!dir.deleteRecursively())
+         throw TempDirDeletionException(dir)
    }
    return dir
 }
+
+class TempDirDeletionException(val file: File) : Exception("Temp dir '$file' could not be deleted")

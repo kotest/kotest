@@ -3,13 +3,16 @@ package io.kotest.property.arbitrary
 import io.kotest.property.Arb
 import java.time.Instant
 import java.time.LocalDate
+import java.time.LocalDate.of
 import java.time.LocalDateTime
 import java.time.LocalTime
 import java.time.Period
 import java.time.Year
+import java.time.Year.isLeap
 import java.time.temporal.ChronoUnit
 import java.time.temporal.TemporalQueries.localDate
 import java.time.temporal.TemporalQueries.localTime
+import java.util.concurrent.TimeUnit
 import kotlin.random.Random
 
 /**
@@ -48,27 +51,14 @@ fun Arb.Companion.localDate(
    maxDate: LocalDate = LocalDate.of(2030, 12, 31)
 ): Arb<LocalDate> {
 
-   val feb28DateThisYear = LocalDate.of(LocalDate.now().year, 2, 28)
-   val minDateYear = if (minDate.isBefore(feb28DateThisYear)) minDate.year else minDate.year + 1
-   val yearRange = (minDateYear..maxDate.year)
+   val leapYears = (minDate.year..maxDate.year).filter { isLeap(it.toLong()) }
 
-   val feb28Date = LocalDate.of(yearRange.random(), 2, 28)
-   val feb29Year = yearRange.firstOrNull { Year.of(it).isLeap }
-   val feb29Date = feb29Year?.let { LocalDate.of(it, 2, 29) }
+   val february28s = leapYears.map { LocalDate.of(it, 2, 28) }
+   val february29s = february28s.map { it.plusDays(1) }
 
-   val edgeCases = listOfNotNull(
-      feb28Date,
-      feb29Date,
-      LocalDate.of(minDate.year, minDate.month, minDate.dayOfMonth),
-      LocalDate.of(maxDate.year, maxDate.month, maxDate.dayOfMonth)
-   )
-
-   return arbitrary(edgeCases) {
-      val minDateGenerated = LocalDate.of(minDate.year, minDate.month, minDate.dayOfMonth)
-      val maxDateGenerated = LocalDate.of(maxDate.year, maxDate.month, maxDate.dayOfMonth)
-      val days = ChronoUnit.DAYS.between(minDateGenerated, maxDateGenerated)
-      minDateGenerated.plusDays(it.random.nextLong(days + 1))
-   }
+   return arbitrary(february28s + february29s + minDate + maxDate) {
+      minDate.plusDays(it.random.nextLong(ChronoUnit.DAYS.between(minDate, maxDate)))
+   }.filter { it in minDate..maxDate }
 }
 
 /**
@@ -121,8 +111,8 @@ fun InstantRange.random(random: Random): Instant {
 
       val nanos = when {
          seconds == start.epochSecond && seconds == endInclusive.epochSecond -> start.nano..endInclusive.nano
-         seconds == start.epochSecond -> endInclusive.nano..999_999_999
-         seconds == start.epochSecond -> 0..endInclusive.nano
+         seconds == start.epochSecond -> start.nano..999_999_999
+         seconds == endInclusive.epochSecond -> 0..endInclusive.nano
          else -> 0..999_999_999
       }.random(random)
 

@@ -4,10 +4,7 @@ import io.kotest.core.factory.TestFactory
 import io.kotest.core.factory.TestFactoryConfiguration
 import io.kotest.core.factory.build
 import io.kotest.core.spec.DslDrivenSpec
-import io.kotest.core.spec.resolvedDefaultConfig
-import io.kotest.core.spec.style.scopes.BehaviorSpecRootContext
-import io.kotest.core.spec.style.scopes.RootTestRegistration
-import io.kotest.core.test.TestCaseConfig
+import io.kotest.core.spec.style.scopes.BehaviorSpecRootScope
 
 /**
  * Creates a [TestFactory] from the given block.
@@ -21,17 +18,10 @@ fun behaviorSpec(block: BehaviorSpecTestFactoryConfiguration.() -> Unit): TestFa
    return config.build()
 }
 
-class BehaviorSpecTestFactoryConfiguration : TestFactoryConfiguration(), BehaviorSpecRootContext {
-   override fun registration(): RootTestRegistration = RootTestRegistration.from(this)
-   override fun defaultConfig(): TestCaseConfig = resolvedDefaultConfig()
-}
+class BehaviorSpecTestFactoryConfiguration : TestFactoryConfiguration(), BehaviorSpecRootScope
 
-abstract class BehaviorSpec(body: BehaviorSpec.() -> Unit = {}) : DslDrivenSpec(), BehaviorSpecRootContext {
-
+abstract class BehaviorSpec(body: BehaviorSpec.() -> Unit = {}) : DslDrivenSpec(), BehaviorSpecRootScope {
    init {
       body()
    }
-
-   override fun registration(): RootTestRegistration = RootTestRegistration.from(this)
-   override fun defaultConfig(): TestCaseConfig = resolvedDefaultConfig()
 }

@@ -2,26 +2,15 @@ plugins {
    id("java")
    kotlin("multiplatform")
    id("java-library")
-   id("com.adarshr.test-logger")
-}
-
-repositories {
-   mavenCentral()
 }
 
 kotlin {
 
    targets {
 
-      jvm {
-         compilations.all {
-            kotlinOptions {
-               jvmTarget = "1.8"
-            }
-         }
-      }
+      jvm()
 
-      js(BOTH) {
+      js(IR) {
          browser()
          nodejs()
       }
@@ -31,16 +20,21 @@ kotlin {
       mingwX64()
 
       macosX64()
+      macosArm64()
+
       tvos()
+      tvosSimulatorArm64()
 
       watchosArm32()
       watchosArm64()
       watchosX86()
       watchosX64()
+      watchosSimulatorArm64()
 
       iosX64()
       iosArm64()
       iosArm32()
+      iosSimulatorArm64()
    }
 
    sourceSets {
@@ -49,24 +43,21 @@ kotlin {
          dependencies {
             compileOnly(kotlin("stdlib"))
             implementation(kotlin("reflect"))
-            implementation(Libs.Coroutines.coreCommon)
-            implementation(Libs.Kotlin.kotlinScriptRuntime)
+            api(Libs.Coroutines.coreCommon)
+//            implementation(Libs.Kotlin.kotlinScriptRuntime)
             implementation(project(Projects.Common))
-            api(project(Projects.AssertionsShared))
+            api(project(Projects.Assertions.Shared))
          }
       }
 
       val jsMain by getting {
          dependsOn(commonMain)
-         dependencies {
-            implementation(Libs.Coroutines.coreJs)
-         }
       }
 
       val jvmMain by getting {
          dependsOn(commonMain)
          dependencies {
-            implementation(Libs.Coroutines.coreJvm)
+            api(Libs.Coroutines.test)
          }
       }
 
@@ -75,6 +66,10 @@ kotlin {
       }
 
       val macosX64Main by getting {
+         dependsOn(desktopMain)
+      }
+
+      val macosArm64Main by getting {
          dependsOn(desktopMain)
       }
 
@@ -98,6 +93,10 @@ kotlin {
          dependsOn(desktopMain)
       }
 
+      val iosSimulatorArm64Main by getting {
+         dependsOn(desktopMain)
+      }
+
       val watchosArm32Main by getting {
          dependsOn(desktopMain)
       }
@@ -114,15 +113,23 @@ kotlin {
          dependsOn(desktopMain)
       }
 
+      val watchosSimulatorArm64Main by getting {
+         dependsOn(desktopMain)
+      }
+
       val tvosMain by getting {
+         dependsOn(desktopMain)
+      }
+
+      val tvosSimulatorArm64Main by getting {
          dependsOn(desktopMain)
       }
 
       val jvmTest by getting {
          dependencies {
             implementation(kotlin("reflect"))
-            implementation(project(Projects.Engine))
-            implementation(project(Projects.AssertionsCore))
+            implementation(project(Projects.Framework.engine))
+            implementation(project(Projects.Assertions.Core))
             // we use the internals of the JVM project in the tests
             implementation(project(Projects.JunitRunner))
             implementation(Libs.Coroutines.coreJvm)
@@ -137,27 +144,9 @@ kotlin {
       }
 
       all {
-         languageSettings.useExperimentalAnnotation("kotlin.time.ExperimentalTime")
-         languageSettings.useExperimentalAnnotation("kotlin.experimental.ExperimentalTypeInference")
+         languageSettings.optIn("kotlin.time.ExperimentalTime")
+         languageSettings.optIn("kotlin.experimental.ExperimentalTypeInference")
       }
-   }
-}
-
-tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
-   kotlinOptions.jvmTarget = "1.8"
-   kotlinOptions.apiVersion = "1.5"
-}
-
-tasks.named<Test>("jvmTest") {
-   useJUnitPlatform()
-   filter {
-      isFailOnNoMatchingTests = false
-   }
-   testLogging {
-      showExceptions = true
-      showStandardStreams = true
-      events = setOf(org.gradle.api.tasks.testing.logging.TestLogEvent.FAILED, org.gradle.api.tasks.testing.logging.TestLogEvent.PASSED)
-      exceptionFormat = org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
    }
 }
 
@@ -207,7 +196,8 @@ slug: framework-config-props.html
 
    foundFiles.forEach { file ->
       val name = file.name
-      val content = file.readLines().joinToString(separator = System.lineSeparator())
+      // intentionally use \n instead of System.lineSeparator to respect .editorconfig
+      val content = file.readLines().joinToString(separator = "\n")
 
       sb.append(fileTemplate.format(name, content))
    }

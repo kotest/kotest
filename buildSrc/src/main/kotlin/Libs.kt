@@ -1,9 +1,11 @@
 object Libs {
 
    object Kotlin {
+      const val version = "_"
       const val kotlinScriptRuntime = "org.jetbrains.kotlin:kotlin-script-runtime:_"
       const val kotlinScriptUtil = "org.jetbrains.kotlin:kotlin-script-util:_"
       const val kotlinScriptJvm = "org.jetbrains.kotlin:kotlin-scripting-jvm:_"
+      const val compiler = "org.jetbrains.kotlin:kotlin-compiler:_"
       const val compilerEmbeddable = "org.jetbrains.kotlin:kotlin-compiler-embeddable:_"
    }
 
@@ -19,14 +21,6 @@ object Libs {
 
    object Jayway {
       const val jsonpath = "com.jayway.jsonpath:json-path:_"
-   }
-
-   object Tschuchortdev {
-      const val kotlinCompileTesting = "com.github.tschuchortdev:kotlin-compile-testing:_"
-   }
-
-   object JUnit4 {
-      const val junit4 = "junit:junit:_"
    }
 
    object JUnitPlatform {
@@ -63,7 +57,7 @@ object Libs {
       const val netty = "org.mock-server:mockserver-netty:_"
    }
 
-   object rgxgen {
+   object Rgxgen {
       const val rgxgen = "com.github.curious-odd-man:rgxgen:_"
    }
 
@@ -76,9 +70,9 @@ object Libs {
    }
 
    object Coroutines {
+      const val debug = "org.jetbrains.kotlinx:kotlinx-coroutines-debug:_"
       const val coreCommon = "org.jetbrains.kotlinx:kotlinx-coroutines-core:_"
       const val coreJvm = "org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm:_"
-      const val coreJs = "org.jetbrains.kotlinx:kotlinx-coroutines-core-js:_"
       const val coreNative = "org.jetbrains.kotlinx:kotlinx-coroutines-core-native:_"
       const val jdk8 = "org.jetbrains.kotlinx:kotlinx-coroutines-jdk8:_"
       const val test = "org.jetbrains.kotlinx:kotlinx-coroutines-test:_"
@@ -92,9 +86,5 @@ object Libs {
       const val clientJs = "io.ktor:ktor-client-js:_"
       const val clientCore = "io.ktor:ktor-client-core:_"
       const val clientApache = "io.ktor:ktor-client-apache:_"
-   }
-
-   object KotlinTime {
-      const val kotlintime = "org.jetbrains.kotlinx:kotlinx-datetime:_"
    }
 }

@@ -14,25 +14,25 @@ class DoubleExactlyTest : FreeSpec() {
    init {
 
       "for every numeric Double" - {
-         "Should be exactly itself" - {
-            checkAll(numericDoubles) {
+         "Should be exactly itself" {
+            checkAll(100, numericDoubles) {
                it shouldExactlyMatch it
             }
          }
 
          "Should not be exactly" - {
             "Any number smaller than itself" {
-               checkAll(nonMinNorMaxValueDoubles) {
+               checkAll(100, nonMinNorMaxValueDoubles) {
                   it shouldNotMatchExactly it.slightlySmaller()
                }
             }
             "Any number bigger than itself" {
-               checkAll(nonMinNorMaxValueDoubles) {
+               checkAll(100, nonMinNorMaxValueDoubles) {
                   it shouldNotMatchExactly it.slightlyGreater()
                }
             }
             "Anything that's not numeric" {
-               checkAll(numericDoubles) {
+               checkAll(100, numericDoubles) {
                   nonNumericDoubles.forEach { nonNumeric ->
                      it shouldNotMatchExactly nonNumeric
                   }
@@ -47,7 +47,7 @@ class DoubleExactlyTest : FreeSpec() {
             "Should not be exactly" - {
 
                "Any number" {
-                  checkAll(numericDoubles) {
+                  checkAll(100, numericDoubles) {
                      Double.NaN shouldNotMatchExactly it
                   }
                }
@@ -74,7 +74,7 @@ class DoubleExactlyTest : FreeSpec() {
             "Should not be exactly" - {
 
                "Any numeric double" {
-                  checkAll(numericDoubles) {
+                  checkAll(100, numericDoubles) {
                      Double.POSITIVE_INFINITY shouldNotMatchExactly it
                   }
                }
@@ -98,7 +98,7 @@ class DoubleExactlyTest : FreeSpec() {
             "Should not be exactly" - {
 
                "Any numeric double" {
-                  checkAll(numericDoubles) {
+                  checkAll(100, numericDoubles) {
                      Double.NEGATIVE_INFINITY shouldNotMatchExactly it
                   }
                }

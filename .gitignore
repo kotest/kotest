@@ -19,8 +19,10 @@ out/
 
 build
 target
-.idea
 .gradle
+
+build/test-results
+kotest-tests/kotest-tests-htmlreporter/reports/
 
 allure-results/
 

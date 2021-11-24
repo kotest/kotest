@@ -1,7 +1,7 @@
 package com.sksamuel.kotest.engine.active
 
 import io.kotest.core.annotation.Ignored
-import io.kotest.core.spec.Isolate
+import io.kotest.core.annotation.Isolate
 import io.kotest.core.spec.style.FunSpec
 
 @Isolate

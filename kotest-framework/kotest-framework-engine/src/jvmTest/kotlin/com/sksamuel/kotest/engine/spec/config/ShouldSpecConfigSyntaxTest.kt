@@ -5,6 +5,7 @@ import io.kotest.core.spec.style.ShouldSpec
 import io.kotest.matchers.shouldBe
 import java.util.concurrent.atomic.AtomicInteger
 import kotlin.time.Duration
+import kotlin.time.Duration.Companion.seconds
 
 /**
  * A test that just ensures the syntax for test configs does not break between releases.
@@ -36,7 +37,7 @@ class ShouldSpecConfigSyntaxTest : ShouldSpec() {
          counter.incrementAndGet()
       }
 
-      should("a test with timeout").config(timeout = Duration.seconds(1)) {
+      should("a test with timeout").config(timeout = 1.seconds) {
           counter.incrementAndGet()
       }
 
@@ -48,7 +49,7 @@ class ShouldSpecConfigSyntaxTest : ShouldSpec() {
          counter.incrementAndGet()
       }
 
-      context("an outer context with timeout").config(timeout = Duration.seconds(2)) {
+      context("an outer context with timeout").config(timeout = 2.seconds) {
           counter.incrementAndGet()
           should("an inner test") {
               counter.incrementAndGet()
@@ -79,7 +80,7 @@ class ShouldSpecConfigSyntaxTest : ShouldSpec() {
 
       context("an outer context") {
          counter.incrementAndGet()
-         context("an inner context with timeout").config(timeout = Duration.seconds(2)) {
+         context("an inner context with timeout").config(timeout = 2.seconds) {
              counter.incrementAndGet()
              should("an inner test") {
                  counter.incrementAndGet()

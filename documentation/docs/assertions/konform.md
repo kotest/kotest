@@ -10,7 +10,7 @@ sidebar_label: Konform
 Kotest provides various matchers for use with [Konform](https://github.com/konform-kt/konform).
 They can be used in your tests to assert that a given object is validated or fails validation.
 
-To use these matchers add `implementation 'io.kotest:kotest-assertions-konform-jvm:<version>'` or `implementation 'io.kotest:kotest-assertions-konform-js:<version>` to your build.
+To use these matchers add `implementation 'io.kotest.extensions:kotest-assertions-konform:<version>'` to your build. This module is available for both JVM and JS targets.
 
 Let's start with a basic data class:
 

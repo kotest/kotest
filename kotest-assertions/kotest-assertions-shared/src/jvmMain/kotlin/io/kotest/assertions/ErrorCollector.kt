@@ -2,49 +2,24 @@
 
 package io.kotest.assertions
 
-import java.util.*
+import kotlinx.coroutines.asContextElement
 
-actual val errorCollector: ErrorCollector = ThreadLocalErrorCollector
+actual val errorCollector: ErrorCollector get() = ThreadLocalErrorCollector.instance.get()
 
-object ThreadLocalErrorCollector : ErrorCollector {
+/**
+ * A [kotlin.coroutines.CoroutineContext.Element] which keeps the error collector synchronized with thread-switching coroutines.
+ *
+ * When using [withClue] or [assertSoftly] on the JVM without the Kotest framework, this context element
+ * should be added to each top-level coroutine context, e.g. via
+ * - runBlocking(errorCollectorContextElement) { ... }
+ * - runBlockingTest(Dispatchers.IO + errorCollectorContextElement) { ... }
+ */
+val errorCollectorContextElement get() = ThreadLocalErrorCollector.instance.asContextElement()
 
-   private val clueContext = object : ThreadLocal<Stack<Clue>>() {
-      override fun initialValue(): Stack<Clue> = Stack()
+class ThreadLocalErrorCollector : BasicErrorCollector() {
+   companion object {
+      val instance = object : ThreadLocal<ErrorCollector>() {
+         override fun initialValue() = ThreadLocalErrorCollector()
+      }
    }
-
-   private val failures = object : ThreadLocal<MutableList<Throwable>>() {
-      override fun initialValue(): MutableList<Throwable> = mutableListOf()
-   }
-
-   private val collectionMode = object : ThreadLocal<ErrorCollectionMode>() {
-      override fun initialValue() = ErrorCollectionMode.Hard
-   }
-
-   override fun setCollectionMode(mode: ErrorCollectionMode) = collectionMode.set(mode)
-
-   override fun getCollectionMode(): ErrorCollectionMode = collectionMode.get()
-
-   override fun pushClue(clue: Clue) {
-      clueContext.get().push(clue)
-   }
-
-   override fun popClue() {
-      clueContext.get().pop()
-   }
-
-   override fun clueContext(): List<Clue> = clueContext.get()
-
-   override fun errors(): List<Throwable> = failures.get().toList()
-
-   /**
-    * Adds the given error to the current context.
-    */
-   override fun pushError(t: Throwable) {
-      failures.get().add(t)
-   }
-
-   /**
-    * Clears all errors from the current context.
-    */
-   override fun clear() = failures.get().clear()
 }
