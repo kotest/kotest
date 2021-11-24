@@ -6,6 +6,8 @@ slug: changelog.html
 
 ### 5.0.0 November 2021
 
+_**This document is a work in progress and will be finalized within a few days of the 5.0 release._**
+
 _**Kotlin 1.6 is now the minimum supported version**_
 
 See detailed post about 5.0 features and changes [here](blog/release_5.0.md)
