@@ -5,7 +5,7 @@ import io.kotest.matchers.shouldBe
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.should
 
-class StringSpecConstructorTest : StringSpec({
+class StringSpecConstructorExampleTest : StringSpec({
 
   "strings.size should return size of string" {
     "hello".length shouldBe 5
