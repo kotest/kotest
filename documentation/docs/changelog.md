@@ -4,7 +4,7 @@ sidebar_label: Changelog
 slug: changelog.html
 ---
 
-### [Unreleased 5.0.0]
+### 5.0.0 November 2021
 
 _**Kotlin 1.6 is now the minimum supported version**_
 
@@ -67,6 +67,11 @@ See detailed post about 5.0 features and changes [here](blog/release_5.0.md)
 * `SpecInstantiationListener` has been deprecated in favour of `InstantiationListener` and `InstantiationErrorListener`, both of which support coroutines in the callbacks. `SpecInstantiationListener` is a hold-over from before coroutines existed and will be removed in a future version.
 * The `listeners` method to add listeners to a Spec has been deprecated. When adding listeners to specs directly, you should now prefer `fun extensions()` rather than `fun listeners()`.
 * `SpecIgnoredListner` (note the typo) has been renamed to `InactiveSpecListener`.
+
+
+Thanks to all authors who contributed to this huge release. In alphabetical order (all commits since 4.6.0):
+AJ Alt, Ali Khaleqi Yekta, Alphonse Bendt, Andrew Tasso, Ashish Kumar, Ashish Kumar Joy, Bart van Helvert, Charles Korn, Christoph Pickl, Cory Thomas, dave08, Derek Chen-Becker, dimsuz, Emil Kantis, Federico Aloi, Hugo Martins, IgorTs2004, Imran Settuba, Ing. Jan Kaláb, IvanPavlov1995, Javier Segovia Córdoba, Jean-Michel Fayard, Jerry Preissler, Jim Schneidereit, Leonardo Colman, Marcono1234, Marvin Sielenkemper, Mervyn McCreight, Michael Werner, Mikhail Pogorelov, Mitchell Yuwono, Nico Richard, niqdev, OliverO2, Rustam Musin, Scott Busche, Sebastian Schuberth, Simon Vergauwen, sksamuel, Srki Rakic, SuhyeonPark, Tobie Wee
+
 
 
 ### 4.6.3 September 2021

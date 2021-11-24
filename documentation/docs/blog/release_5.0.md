@@ -1,9 +1,12 @@
-### Release 5.0
+# Release 5.0
 
-[Breaking Changes](#breaking-changes)
-[Deprecations](#deprecations)
+_**This document is a work in progress and will be finalized within a few days of the 5.0 release.**_
 
-### Breaking Changes
+- [Breaking Changes](#breaking-changes)
+- [Deprecations](#deprecations)
+
+
+## Breaking Changes
 
 #### Kotlin 1.6 is now the minimum supported version
 
@@ -68,7 +71,7 @@ When using inspectors, the deprecated `kotlintest.assertions.output.max` system 
 This was replaced with `kotest.assertions.output.max` in release 4.0 when the project was renamed
 from KotlinTest to Kotest.
 
-### Deprecations
+## Deprecations
 
 #### Test Status
 
