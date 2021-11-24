@@ -76,11 +76,10 @@ We also provide generators for [Arrow](arrow.md) as a separate module.
 | **Enums** |
 | `Arb.enum<T>()` | Randomly selects constants from the given enum. | ✓ | ✓ | ✓ |
 | `Exhaustive.enum<T>()` | Iterates all the constants defined in the given enum. | ✓ | ✓ | ✓ |
-| **Geo** |
-| `Arb.geoLocation()` | Generates instances of `GeoLocation` which contains a lat and a long in the range -180 to 180. | ✓ | ✓ | ✓ |
 | **Regional** |
 | `Arb.locale()` | Generates locales in the Java format, eg `en_US` or `ca_ES_VALENCIA`. | ✓ | ✓ | ✓ |
 | `Arb.timezoneCodeThree()` | Generates timezones in the format ABC, for example BST or EST. Does not include all possible timezones, and is only used for sampling data. | ✓ | ✓ | ✓ |
+| `Arb.geoLocation()` | Generates `GeoLocation` objects with random latitude/longitude points uniformly distributed on the globe. | ✓ | ✓ | ✓ |
 | **Strings** |
 | `Arb.string(range)` | Generates random printable strings with a randomly chosen size from the given range. If range is not specified then (0..100) is used. The edge cases include empty string, a blank string and a unicode string. | ✓ | ✓ | ✓ |
 | `Arb.stringPattern(pattern)` | Generates strings that match given pattern using [Generex](https://github.com/mifmif/Generex) | ✓ |   |   |
