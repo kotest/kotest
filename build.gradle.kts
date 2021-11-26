@@ -9,7 +9,7 @@ buildscript {
 plugins {
    kotlin("jvm")
    java
-   id("org.jetbrains.intellij").version("0.7.3")
+   id("org.jetbrains.intellij") version "1.3.0"
 }
 
 repositories {
@@ -27,8 +27,15 @@ repositories {
 //    https://jb.gg/intellij-platform-builds-list
 // json output but restricted to IDEA ultimate:
 //    https://data.services.jetbrains.com/products?fields=code,name,releases.downloads,releases.version,releases.build,releases.type&code=IIU
-// when releasing for an EAP, look at snapshots and use eg 211-EAP-SNAPSHOT:
+// when releasing for an EAP, look at snapshots
 //    https://www.jetbrains.com/intellij-repository/snapshots
+
+// for the sdk version we can use IC-2021.1 if the product is released
+// or IC-213-EAP-SNAPSHOT if not
+
+// for since we can use an early build number without eap/snapshot eg 213.5281.15
+// and until we can use 213.*
+
 val plugins = listOf(
    plugin.PluginDescriptor(
       since = "193.4099.13",
@@ -60,14 +67,21 @@ val plugins = listOf(
    ),
    plugin.PluginDescriptor(
       since = "211.6693.111", // this version is 2021.1
-      until = "213.*",
+      until = "212.*",
       sdkVersion = "IC-2021.1",
       sourceFolder = "IC-211",
       deps = listOf("java", "org.jetbrains.plugins.gradle", "org.jetbrains.kotlin:211-1.4.21-release-IJ6693.10")
+   ),
+   plugin.PluginDescriptor(
+      since = "213.3714", // this version is 2021.3 EAP
+      until = "213.*",
+      sdkVersion = "IC-213-EAP-SNAPSHOT",
+      sourceFolder = "IC-213",
+      deps = listOf("java", "org.jetbrains.plugins.gradle", "org.jetbrains.kotlin")
    )
 )
 
-val productName = System.getenv("PRODUCT_NAME") ?: System.getenv("SOURCE_FOLDER") ?: "IC-211"
+val productName = System.getenv("PRODUCT_NAME") ?: System.getenv("SOURCE_FOLDER") ?: "IC-213"
 val descriptor = plugins.first { it.sourceFolder == productName }
 
 val jetbrainsToken: String by project
@@ -75,13 +89,13 @@ val jetbrainsToken: String by project
 version = "1.1." + (System.getenv("GITHUB_RUN_NUMBER") ?: "0-SNAPSHOT")
 
 intellij {
-   sandboxDirectory = project.property("sandbox").toString()
-   version = descriptor.sdkVersion
-   pluginName = "kotest-plugin-intellij"
-   setPlugins(*descriptor.deps.toTypedArray())
-   downloadSources = true
-   type = "IC"
-   updateSinceUntilBuild = false
+   sandboxDir.set(project.property("sandbox").toString())
+   version.set(descriptor.sdkVersion)
+   pluginName.set("kotest-plugin-intellij")
+   plugins.addAll(*descriptor.deps.toTypedArray())
+   downloadSources.set(true)
+   type.set("IC")
+   updateSinceUntilBuild.set(false)
 }
 
 dependencies {
@@ -131,12 +145,12 @@ tasks {
    }
 
    publishPlugin {
-      token(System.getenv("JETBRAINS_TOKEN") ?: jetbrainsToken)
+      token.set(System.getenv("JETBRAINS_TOKEN") ?: jetbrainsToken)
    }
 
    patchPluginXml {
-      setVersion("${project.version}-${descriptor.sdkVersion}")
-      setSinceBuild(descriptor.since)
-      setUntilBuild(descriptor.until)
+      version.set("${project.version}-${descriptor.sdkVersion}")
+      sinceBuild.set(descriptor.since)
+      untilBuild.set(descriptor.until)
    }
 }
