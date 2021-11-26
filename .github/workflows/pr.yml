@@ -12,7 +12,7 @@ jobs:
 
       strategy:
          matrix:
-            product: [ "IC-193", "IC-201", "IC-202", "IC-203", "IC-211" ]
+            product: [ "IC-193", "IC-201", "IC-202", "IC-203", "IC-211", "IC-213" ]
          max-parallel: 5
 
       steps:
