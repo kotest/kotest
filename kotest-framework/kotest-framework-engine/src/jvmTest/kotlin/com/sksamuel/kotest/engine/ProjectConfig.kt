@@ -8,7 +8,6 @@ class ProjectConfig : AbstractProjectConfig() {
 
    override fun extensions(): List<Extension> = listOf(
       TagFilteredDiscoveryExtensionExampleTest.ext,
-      TestFilterTestFilter,
    )
 
    override val parallelism: Int = 1

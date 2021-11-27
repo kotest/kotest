@@ -1,6 +1,7 @@
 package io.kotest.engine.listener
 
 import io.kotest.common.concurrentHashMap
+import io.kotest.core.descriptors.Descriptor
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import kotlin.reflect.KClass
@@ -11,6 +12,9 @@ class CollectingTestEngineListener : AbstractTestEngineListener() {
    val tests = concurrentHashMap<TestCase, TestResult>()
    val names = mutableListOf<String>()
    var errors = false
+
+   fun result(descriptor: Descriptor.TestDescriptor): TestResult? = tests.mapKeys { it.key.descriptor }[descriptor]
+   fun result(testname: String): TestResult? = tests.mapKeys { it.key.name.testName }[testname]
 
    override suspend fun specFinished(kclass: KClass<*>, t: Throwable?) {
       specs[kclass] = t
