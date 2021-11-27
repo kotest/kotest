@@ -4,6 +4,13 @@ sidebar_label: Changelog
 slug: changelog.html
 ---
 
+### 5.0.1 [Unreleased]
+
+#### Fixes
+
+* Display names now include affixes when configured
+* Fixed WordSpec to work with intellij plugin when used nested contexts
+
 ### 5.0.0 November 2021
 
 _**This document is a work in progress and will be finalized within a few days of the 5.0 release._**
