@@ -27,11 +27,10 @@ object DescribeSpecStyle : SpecStyle {
 
    private fun locateParent(element: PsiElement): Test? {
       // if parent is null then we have hit the end
-      return when (val p = element.parent) {
-         null -> null
-         is KtCallExpression -> p.tryDescribe() ?: p.tryXDescribe() ?: p.tryContext() ?: p.tryXContent()
-         else -> locateParent(p)
-      }
+      val p = element.parent ?: return null
+      fun tryDots() = if (p is KtCallExpression) p.tryDescribe() ?: p.tryXDescribe() ?: p.tryContext() ?: p.tryXContent()  else null
+      fun tryCalls() = if (p is KtDotQualifiedExpression) p.tryDescribeWithConfig() ?: p.tryXDescribeWithConfig() else null
+      return tryDots() ?: tryCalls() ?: locateParent(p)
    }
 
    /**
@@ -129,7 +128,29 @@ object DescribeSpecStyle : SpecStyle {
     */
    private fun KtDotQualifiedExpression.tryXItWithConfig(): Test? {
       val name = extractLhsStringArgForDotExpressionWithRhsFinalLambda("xit", "config") ?: return null
-      return buildTest(TestName(null,name.text, name.interpolated), true, this, TestType.Test)
+      return buildTest(TestName(null, name.text, name.interpolated), true, this, TestType.Test)
+   }
+
+   /**
+    * Finds tests in the form:
+    *
+    *   describe("test name").config { }
+    *
+    */
+   private fun KtDotQualifiedExpression.tryDescribeWithConfig(): Test? {
+      val name = extractLhsStringArgForDotExpressionWithRhsFinalLambda("describe", "config") ?: return null
+      return buildTest(TestName(null, name.text, name.interpolated), name.text.startsWith("!"), this, TestType.Test)
+   }
+
+   /**
+    * Finds tests in the form:
+    *
+    *   xdescribe("test name").config { }
+    *
+    */
+   private fun KtDotQualifiedExpression.tryXDescribeWithConfig(): Test? {
+      val name = extractLhsStringArgForDotExpressionWithRhsFinalLambda("xdescribe", "config") ?: return null
+      return buildTest(TestName(null, name.text, name.interpolated), true, this, TestType.Test)
    }
 
    private fun buildTest(testName: TestName, xdisabled: Boolean, element: PsiElement, testType: TestType): Test {
@@ -140,7 +161,11 @@ object DescribeSpecStyle : SpecStyle {
       return when (element) {
          is KtCallExpression -> element.tryIt() ?: element.tryXIt() ?: element.tryDescribe() ?: element.tryXDescribe()
          ?: element.tryContext() ?: element.tryXContent()
-         is KtDotQualifiedExpression -> element.tryItWithConfig() ?: element.tryXItWithConfig()
+         is KtDotQualifiedExpression ->
+            element.tryDescribeWithConfig()
+               ?: element.tryXDescribeWithConfig()
+               ?: element.tryItWithConfig()
+               ?: element.tryXItWithConfig()
          else -> null
       }
    }

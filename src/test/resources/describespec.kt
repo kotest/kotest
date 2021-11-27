@@ -83,6 +83,16 @@ class DescribeSpecExample : DescribeSpec() {
             }
          }
       }
+      describe("describe with config").config(enabled = true) {
+         it("it block") {
+            // test here
+         }
+      }
+      xdescribe("xdescribe with config").config(enabled = true) {
+         it("it block") {
+            // test here
+         }
+      }
    }
 }
 
