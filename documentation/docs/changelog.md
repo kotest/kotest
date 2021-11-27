@@ -23,7 +23,7 @@ See detailed post about 5.0 features and changes [here](blog/release_5.0.md)
 * `Arb.values` has been removed. This was deprecated in 4.3 in favour of `Arb.sample`. Any custom arbs that override this method should be updated. Any custom arbs that use the recommended `arbitrary` builders are not affected. [#2277](https://github.com/kotest/kotest/issues/2277)
 * The Engine no longer logs config to the console during start **by default**. To enable, set the system property `kotest.framework.dump.config` to true. [#2276](https://github.com/kotest/kotest/issues/2276)
 * `TextContext` has been renamed to `TestScope`. This is the receiver type used in test lambdas. This change will only affect you if you have custom extension functions that use `TestContext`.
-* The experimental datatest functions added in 4.5 have moved to a new module `kotest-framework-datatest`.
+* The experimental datatest functions added in 4.5 have moved to a new module `kotest-framework-datatest` and they have been promoted to stable.
 * `equalJson` has an added parameter to support the new `shouldEqualSpecifiedJson` assertion
 * Changed `PostInstantiationExtension` to be suspendable
 * `ConstructorExtension` is now JVM only. Previously it was available on other targets but had no effect outside the JVM.
