@@ -4,7 +4,8 @@ package io.kotest.core.names
  * Models the name of a [io.kotest.core.test.TestCase] as entered by a user.
  *
  * A test case can sometimes have a prefix and/or suffix set by the spec style,
- * eg when using BehaviorSpec or WordSpec.
+ * eg when using BehaviorSpec or WordSpec. Note that the prefix or suffix should include
+ * any whitespace required.
  *
  * Test names can be prefixed with ! or f: to indicate bang or focus respectively.
  *

@@ -67,17 +67,17 @@ class SystemPropertyTestFilterEnabledExtensionTest : FunSpec() {
 
          withSystemProperty(KotestEngineProperties.filterTests, "goo") {
             SystemPropertyTestFilterEnabledExtension.isEnabled(tc)
-               .shouldBe(Enabled.disabled("Excluded by test filter regex: goo"))
+               .shouldBe(Enabled.disabled("Excluded by --kotest.filter.tests: goo"))
          }
 
          withSystemProperty(KotestEngineProperties.filterTests, "g*") {
             SystemPropertyTestFilterEnabledExtension.isEnabled(tc)
-               .shouldBe(Enabled.disabled("Excluded by test filter regex: g.*?"))
+               .shouldBe(Enabled.disabled("Excluded by --kotest.filter.tests: g.*?"))
          }
 
          withSystemProperty(KotestEngineProperties.filterTests, "*p") {
             SystemPropertyTestFilterEnabledExtension.isEnabled(tc)
-               .shouldBe(Enabled.disabled("Excluded by test filter regex: .*?p"))
+               .shouldBe(Enabled.disabled("Excluded by --kotest.filter.tests: .*?p"))
          }
       }
    }

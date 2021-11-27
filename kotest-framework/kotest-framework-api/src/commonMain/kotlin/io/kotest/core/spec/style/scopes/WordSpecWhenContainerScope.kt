@@ -21,6 +21,10 @@ class WordSpecWhenContainerScope(
    suspend infix fun String.xshould(test: suspend WordSpecShouldContainerScope.() -> Unit) = addShould(this, test, true)
 
    private suspend fun addShould(name: String, test: suspend WordSpecShouldContainerScope.() -> Unit, xdisabled: Boolean) {
-      registerContainer(TestName("$name should"), xdisabled, null) { WordSpecShouldContainerScope(this).test() }
+      registerContainer(
+         TestName(null, name, "should", true),
+         xdisabled,
+         null
+      ) { WordSpecShouldContainerScope(this).test() }
    }
 }

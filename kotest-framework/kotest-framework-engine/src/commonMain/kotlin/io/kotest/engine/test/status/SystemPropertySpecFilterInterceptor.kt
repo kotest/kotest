@@ -42,7 +42,7 @@ private fun Regex.toTestFilter(): TestFilter = object : TestFilter {
       return if (this@toTestFilter.matches(name))
          TestFilterResult.Include
       else
-         TestFilterResult.Exclude("Excluded by --test: ${this@toTestFilter}")
+         TestFilterResult.Exclude("Excluded by --kotest.filter.tests: ${this@toTestFilter}")
    }
 }
 

@@ -62,6 +62,29 @@ class TestPathTestCaseFilterTest : FunSpec() {
             WordSpec1::class.toDescriptor().append("a container should").append("skip a test")
          ) shouldBe TestFilterResult.Exclude("Excluded by test path filter: 'a container -- pass a test'")
       }
+
+      test("filter should work for word spec with when") {
+
+         TestPathTestCaseFilter("a when", WordSpec2::class).filter(
+            WordSpec2::class.toDescriptor().append("a when")
+         ) shouldBe TestFilterResult.Include
+
+         TestPathTestCaseFilter("a when -- a should", WordSpec2::class).filter(
+            WordSpec2::class.toDescriptor().append("a when").append("a should")
+         ) shouldBe TestFilterResult.Include
+
+         TestPathTestCaseFilter("a when -- a should", WordSpec2::class).filter(
+            WordSpec2::class.toDescriptor().append("a when").append("a shouldnt")
+         ) shouldBe TestFilterResult.Exclude("Excluded by test path filter: 'a when -- a should'")
+
+         TestPathTestCaseFilter("a when -- a should -- a test", WordSpec2::class).filter(
+            WordSpec2::class.toDescriptor().append("a when").append("a should").append("a test")
+         ) shouldBe TestFilterResult.Include
+
+         TestPathTestCaseFilter("a when -- a should -- a test", WordSpec2::class).filter(
+            WordSpec2::class.toDescriptor().append("a when").append("a should").append("boo")
+         ) shouldBe TestFilterResult.Exclude("Excluded by test path filter: 'a when -- a should -- a test'")
+      }
    }
 }
 
@@ -84,6 +107,16 @@ private class WordSpec1 : WordSpec() {
       "a container" should {
          "skip a test".config(enabled = false) {}
          "pass a test" { 1 shouldBe 1 }
+      }
+   }
+}
+
+private class WordSpec2 : WordSpec() {
+   init {
+      "a when" When {
+         "a should" should {
+            "a test" { }
+         }
       }
    }
 }

@@ -19,8 +19,8 @@ class WordSpecCallbackOrderTest : WordSpec({
    }
 
    afterSpec {
-      before shouldBe "w whens shouldt"
-      after shouldBe "ts shouldw when"
+      before shouldBe "wst"
+      after shouldBe "tsw"
    }
 
    "w" When {
