@@ -3,8 +3,8 @@ package io.kotest.engine.test.names
 import io.kotest.common.Platform
 import io.kotest.common.platform
 import io.kotest.core.annotation.displayname.wrapper
-import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.config.ExtensionRegistry
+import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.extensions.DisplayNameFormatterExtension
 import io.kotest.core.names.DisplayNameFormatter
 import io.kotest.core.names.TestNameCase
@@ -31,24 +31,29 @@ class DefaultDisplayNameFormatter(
 
    override fun format(testCase: TestCase): String {
 
-      val withPrefix = when (configuration.includeTestScopeAffixes ?: testCase.name.defaultAffixes) {
+      val prefix = when (configuration.includeTestScopeAffixes ?: testCase.name.defaultAffixes) {
          true -> testCase.name.prefix ?: ""
          false -> ""
       }
 
-      val displayName = if (withPrefix.isBlank()) {
+      val suffix = when (configuration.includeTestScopeAffixes ?: testCase.name.defaultAffixes) {
+         true -> testCase.name.suffix ?: ""
+         false -> ""
+      }
+
+      val displayName = if (prefix.isBlank()) {
          when (configuration.testNameCase) {
-            TestNameCase.Sentence -> testCase.name.testName.capital()
-            TestNameCase.InitialLowercase -> testCase.name.testName.uncapitalize()
-            TestNameCase.Lowercase -> testCase.name.testName.lowercase()
-            else -> testCase.name.testName
+            TestNameCase.Sentence -> testCase.name.testName.capital() + suffix
+            TestNameCase.InitialLowercase -> testCase.name.testName.uncapitalize() + suffix
+            TestNameCase.Lowercase -> testCase.name.testName.lowercase() + suffix
+            else -> testCase.name.testName + suffix
          }
       } else {
          when (configuration.testNameCase) {
-            TestNameCase.Sentence -> "${withPrefix.capital()}${testCase.name.testName.uncapitalize()}"
-            TestNameCase.InitialLowercase -> "${withPrefix.uncapitalize()}${testCase.name.testName.uncapitalize()}"
-            TestNameCase.Lowercase -> "${withPrefix.lowercase()}${testCase.name.testName.lowercase()}"
-            else -> "$withPrefix${testCase.name.testName}"
+            TestNameCase.Sentence -> "${prefix.capital()}${testCase.name.testName.uncapitalize()}$suffix"
+            TestNameCase.InitialLowercase -> "${prefix.uncapitalize()}${testCase.name.testName.uncapitalize()}$suffix"
+            TestNameCase.Lowercase -> "${prefix.lowercase()}${testCase.name.testName.lowercase()}$suffix"
+            else -> "$prefix${testCase.name.testName}$suffix"
          }
       }
 

@@ -92,6 +92,70 @@ class DefaultDisplayNameFormatterTest : FunSpec() {
 
          DefaultDisplayNameFormatter(ProjectConfiguration()).format(tc) shouldBe "test"
       }
+
+      test("name should include prefix if affixes are included by default") {
+
+         val tc = TestCase(
+            descriptor = SpecWithDisplayName::class.toDescriptor().append("f:test"),
+            name = TestName("prefix", "foo", null, true),
+            spec = SpecWithDisplayName(),
+            test = {},
+            source = sourceRef(),
+            type = TestType.Test,
+            config = ResolvedTestConfig.default.copy(tags = setOf(Dummy, NoUse))
+         )
+
+         DefaultDisplayNameFormatter(ProjectConfiguration()).format(tc) shouldBe "prefixfoo"
+      }
+
+      test("name should include prefix if affixes are excluded by default but enabled by config") {
+
+         val tc = TestCase(
+            descriptor = SpecWithDisplayName::class.toDescriptor().append("f:test"),
+            name = TestName("prefix", "foo", null, false),
+            spec = SpecWithDisplayName(),
+            test = {},
+            source = sourceRef(),
+            type = TestType.Test,
+            config = ResolvedTestConfig.default.copy(tags = setOf(Dummy, NoUse))
+         )
+
+         val c = ProjectConfiguration()
+         c.includeTestScopeAffixes = true
+         DefaultDisplayNameFormatter(c).format(tc) shouldBe "prefixfoo"
+      }
+
+      test("name should include suffix if affixes are included by default") {
+
+         val tc = TestCase(
+            descriptor = SpecWithDisplayName::class.toDescriptor().append("f:test"),
+            name = TestName(null, "foo", "suffix", true),
+            spec = SpecWithDisplayName(),
+            test = {},
+            source = sourceRef(),
+            type = TestType.Test,
+            config = ResolvedTestConfig.default.copy(tags = setOf(Dummy, NoUse))
+         )
+
+         DefaultDisplayNameFormatter(ProjectConfiguration()).format(tc) shouldBe "foosuffix"
+      }
+
+      test("name should include suffix if affixes are excluded by default but enabled in config") {
+
+         val tc = TestCase(
+            descriptor = SpecWithDisplayName::class.toDescriptor().append("f:test"),
+            name = TestName(null, "foo", "suffix", false),
+            spec = SpecWithDisplayName(),
+            test = {},
+            source = sourceRef(),
+            type = TestType.Test,
+            config = ResolvedTestConfig.default.copy(tags = setOf(Dummy, NoUse))
+         )
+
+         val c = ProjectConfiguration()
+         c.includeTestScopeAffixes = true
+         DefaultDisplayNameFormatter(c).format(tc) shouldBe "foosuffix"
+      }
    }
 }
 

@@ -52,7 +52,7 @@ class DescribeSpecExample : DescribeSpec() {
          }
       }
 
-      describe("some other thing") {
+      describe("a describe with config").config(timeout = 234.milliseconds) {
          describe("with some describe") {
             it("test name") {
                // test here
@@ -72,6 +72,10 @@ class DescribeSpecExample : DescribeSpec() {
       }
 
       xdescribe("disabled top level describe") {
+         fail("should not be invoked")
+      }
+
+      xdescribe("disabled top level describe with config").config(timeout = 123.milliseconds) {
          fail("should not be invoked")
       }
 

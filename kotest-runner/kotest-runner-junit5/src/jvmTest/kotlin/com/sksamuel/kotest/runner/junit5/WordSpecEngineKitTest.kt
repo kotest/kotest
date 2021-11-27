@@ -104,7 +104,7 @@ class WordSpecEngineKitTest : FunSpec({
    }
 })
 
-private class WordSpecSample : WordSpec({
+class WordSpecSample : WordSpec({
 
    "a container" should {
       "skip a test".config(enabled = false) {}

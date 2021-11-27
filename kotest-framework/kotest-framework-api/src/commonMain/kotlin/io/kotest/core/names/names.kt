@@ -57,4 +57,3 @@ data class TestName(
 }
 
 private fun String.removeAllExtraWhitespaces() = this.split(Regex("\\s")).filterNot { it == "" }.joinToString(" ")
-private fun String.removeNewLineCharacter() = this.replace("\n", "").trim()

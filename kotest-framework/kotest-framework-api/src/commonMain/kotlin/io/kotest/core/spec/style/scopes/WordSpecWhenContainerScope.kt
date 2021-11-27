@@ -22,7 +22,7 @@ class WordSpecWhenContainerScope(
 
    private suspend fun addShould(name: String, test: suspend WordSpecShouldContainerScope.() -> Unit, xdisabled: Boolean) {
       registerContainer(
-         TestName(null, name, "should", true),
+         TestName(null, name, " should", true),
          xdisabled,
          null
       ) { WordSpecShouldContainerScope(this).test() }
