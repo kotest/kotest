@@ -12,7 +12,7 @@ import io.kotest.matchers.maps.shouldBeEmpty
 import io.kotest.matchers.shouldBe
 
 @Isolate
-class SpecInterceptExtensionTest : FunSpec() {
+class SpecExtensionTest : FunSpec() {
    init {
 
       test("SpecExtension should be invoked IsolationMode.Single") {
