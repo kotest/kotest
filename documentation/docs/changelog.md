@@ -41,8 +41,9 @@ See detailed post about 5.0 features and changes [here](blog/release_5.0.md)
 
 * Support composed annotations plus caching of annotation lookups [#2279](https://github.com/kotest/kotest/issues/2279)
 * Fix autoClose lazyness [#2395](https://github.com/kotest/kotest/issues/2395)
-* Strip . from JS test names #[#2483](https://github.com/kotest/kotest/issues/2483)
+* Strip . from JS test names [#2483](https://github.com/kotest/kotest/issues/2483)
 * Escape colons for team city output [#2445](https://github.com/kotest/kotest/issues/2445)
+* Delete temporary directories recursively when using `tempdir` [#2227](https://github.com/kotest/kotest/issues/2227)
 
 
 #### Assertions
@@ -83,16 +84,15 @@ See detailed post about 5.0 features and changes [here](blog/release_5.0.md)
 * Native test support has been added.
 * Config option to enable [coroutine debugging](https://github.com/Kotlin/kotlinx.coroutines/tree/master/kotlinx-coroutines-debug)
 * Config option to enable `TestCoroutineDispatcher`s in tests.
-* Failfast option added [see docs] [#2243](https://github.com/kotest/kotest/issues/2243)
+* Failfast option added [#2243](https://github.com/kotest/kotest/issues/2243)
 * Unfinished tests should error [#2281](https://github.com/kotest/kotest/issues/2281)
 * Added option to fail test run if no tests were executed [#2287](https://github.com/kotest/kotest/issues/2287)
-* Added @RequiresTag for improved spec exclude capability [#1820](https://github.com/kotest/kotest/issues/1820)
+* Added `@RequiresTag` for improved spec exclude capability [#1820](https://github.com/kotest/kotest/issues/1820)
 * Add fun interace to EnabledCondition [#2343](https://github.com/kotest/kotest/issues/2343)
 * In Project Config, `beforeAll` / `afterAll` are now deprecated and `beforeProject` / `afterProject`, which are suspend functions, have been added [#2333](https://github.com/kotest/kotest/issues/2333)
-* Delete temporary directories recursively when using `tempdir` [#2227](https://github.com/kotest/kotest/issues/2227)
 * `projectContext` is now available as an extension value inside a test lamba to provide access to the runtime state of the test engine.
 * Added standalone module that can be used by tool builders to launch Kotest [#2416](https://github.com/kotest/kotest/issues/2416)
-* Datatest module is now published for all targets
+* `kotest-framework-datatest` module is now published for all targets
 * Framework now supports a project wide timeout [#2273](https://github.com/kotest/kotest/issues/2273)
 * New `ProjectExtension` extension point has been added.
 * Allow extensions to be registered via `@ApplyExtension` annotation [#2551](https://github.com/kotest/kotest/issues/2551)
@@ -101,32 +101,32 @@ See detailed post about 5.0 features and changes [here](blog/release_5.0.md)
 * Add configuration option to send full test name paths to junit 5 [#2525](https://github.com/kotest/kotest/issues/2525)
 * Added support for @Nested in AnnotationSpec [#2367](https://github.com/kotest/kotest/issues/2367)
 * Added system properties for filtering tests and specs [#2547](https://github.com/kotest/kotest/issues/2547)
-* Should error when Container tests do not contain a nested test [#2383](https://github.com/kotest/kotest/issues/2383)
+* Should error when container tests do not contain a nested test [#2383](https://github.com/kotest/kotest/issues/2383)
 
 
 #### Assertions
 
-* Return the resulting value of the function block from shouldCompleteWithin [#2309](https://github.com/kotest/kotest/issues/2309)
+* Return the resulting value of the function block from `shouldCompleteWithin` [#2309](https://github.com/kotest/kotest/issues/2309)
 * Added `shouldEqualSpecifiedJson` to match a JSON structure on a subset of (specified) keys. [#2298](https://github.com/kotest/kotest/issues/2298)
 * `shouldEqualJson` now supports high-precision numbers [#2458](https://github.com/kotest/kotest/issues/2458)
 * Added `shouldHaveSameStructureAs` to file matchers
 * Added `shouldHaveSameStructureAndContentAs` to file matchers
 * Inspectors are now inline so can now contain suspendable functions [#2657](https://github.com/kotest/kotest/issues/2657)
-* String.shouldHaveLengthBetween should accept ranges [#2643](https://github.com/kotest/kotest/issues/2643)
-* beOneOf assertion now tells you what the missing value was [#2624](https://github.com/kotest/kotest/issues/2624)
+* `String.shouldHaveLengthBetween` should accept ranges [#2643](https://github.com/kotest/kotest/issues/2643)
+* `beOneOf` assertion now tells you what the missing value was [#2624](https://github.com/kotest/kotest/issues/2624)
 * String matchers have been updated to work with any `CharSequence` [#2278](https://github.com/kotest/kotest/issues/2278)
-* Add shouldThrowMessage matcher [#2376](https://github.com/kotest/kotest/issues/2376)
+* Add `shouldThrowMessage` matcher [#2376](https://github.com/kotest/kotest/issues/2376)
 * Add Percentage tolerance matchers [#2404](https://github.com/kotest/kotest/issues/2404)
 * Add NaN matchers to Float [#2419](https://github.com/kotest/kotest/issues/2419)
 * Replaced eager matchers with lazy counterpart [#2454](https://github.com/kotest/kotest/issues/2454)
 * Compare JSON literals in Strict mode [#2464](https://github.com/kotest/kotest/issues/2464)
 * Added matchers for empty json [#2543](https://github.com/kotest/kotest/issues/2543)
-* Added comparable matcher result and applied to shouldContainExactly [#2559](https://github.com/kotest/kotest/issues/2559)
-* Updated iterables.shouldContain to return the receiver for chaining
+* Added comparable matcher result and applied to `shouldContainExactly` [#2559](https://github.com/kotest/kotest/issues/2559)
+* Updated `iterables.shouldContain` to return the receiver for chaining
 * Added aliases for inspectors [#2578](https://github.com/kotest/kotest/issues/2578)
 * Inspectors should return the collection to allow chaining [#2588](https://github.com/kotest/kotest/issues/2588)
 * Disable string diff in intellij [#1999](https://github.com/kotest/kotest/issues/1999)
-* CompareJsonOptions [#2523](https://github.com/kotest/kotest/issues/2523)
+* `CompareJsonOptions` has been added for more control when comparing json [#2520](https://github.com/kotest/kotest/issues/2520)
 * Support for ignoring unknown keys in JSON asserts [#2303](https://github.com/kotest/kotest/issues/2303)
 * Add support for Linux ARM64 and macOS ARM64 (Silicon) targets. [#2449](https://github.com/kotest/kotest/issues/2449)
 
@@ -137,28 +137,28 @@ See detailed post about 5.0 features and changes [here](blog/release_5.0.md)
 * Generex has been replaced with Rgxgen [#2323](https://github.com/kotest/kotest/issues/2323)
 * Improve Arb function naming [#2310](https://github.com/kotest/kotest/issues/2310)
 * Improve Arb.primitive consistency [#2299](https://github.com/kotest/kotest/issues/2299)
-* Add Arb.ints zero inclusive variants [#2294](https://github.com/kotest/kotest/issues/2294)
+* Add `Arb.ints` zero inclusive variants [#2294](https://github.com/kotest/kotest/issues/2294)
 * Add unsigned types for Arb [#2290](https://github.com/kotest/kotest/issues/2290)
 * Added arb for ip addresses V4 [#2407](https://github.com/kotest/kotest/issues/2407)
 * Added arb for hexidecimal codepoints [#2409](https://github.com/kotest/kotest/issues/2409)
 * Added continuation arbs builder that allow arbs to be used in a similar fashion to for comprehensions. [#2494](https://github.com/kotest/kotest/issues/2494)
-* Added Arb.zip as an alias for Arb.bind [#2644](https://github.com/kotest/kotest/issues/2644)
+* Added `Arb.zip` as an alias for `Arb.bind` [#2644](https://github.com/kotest/kotest/issues/2644)
 * Add primitive arrays to Arb [#2301](https://github.com/kotest/kotest/issues/2301)
 * improved geo location generator [#2390](https://github.com/kotest/kotest/issues/2390)
 * Fix LocalDate arb generating wrong dates outside constraints [#2405](https://github.com/kotest/kotest/issues/2405)
 * Add zip for Exhaustive [#2415](https://github.com/kotest/kotest/issues/2415)
 * Add cartesian pairs helpers for Exhaustive [#2415](https://github.com/kotest/kotest/issues/2415)
-* Add Arb.distinct that will terminate [#2262](https://github.com/kotest/kotest/issues/2262)
+* Add `Arb.distinct` that will terminate [#2262](https://github.com/kotest/kotest/issues/2262)
 * Add arb for timezone [#2421](https://github.com/kotest/kotest/issues/2421)
 * Added auto classifiers [#2267](https://github.com/kotest/kotest/issues/2267)
 * Added arity8 and arity9 forall for table testing [#2444](https://github.com/kotest/kotest/issues/2444)
-* Property Module: Allow global seed configuration. Synchronize defaults. [#2439](https://github.com/kotest/kotest/issues/2439)
-* support Arb.bind for more complex data classes [#2532](https://github.com/kotest/kotest/issues/2532)
+* Allow global seed configuration. Synchronize defaults. [#2439](https://github.com/kotest/kotest/issues/2439)
+* Support complex data classes in `Arb.bind` [#2532](https://github.com/kotest/kotest/issues/2532)
 * Shrink when using `Arb.bind` [#2542](https://github.com/kotest/kotest/issues/2542)
 * Introduce constraints for property testing [#2492](https://github.com/kotest/kotest/issues/2492)
 * Property testing should use bind as default for data class [#2355](https://github.com/kotest/kotest/issues/2355)
 * Platform independent double shrinker [#2517](https://github.com/kotest/kotest/issues/2517)
-* Arb.pair should return Arb<Pair<K, V>> [#2563](https://github.com/kotest/kotest/issues/2563)
+* `Arb.pair` should return `Arb<Pair<K, V>>` [#2563](https://github.com/kotest/kotest/issues/2563)
 * Add support for Linux ARM64 and macOS ARM64 (Silicon) targets. [#2449](https://github.com/kotest/kotest/issues/2449)
 
 
