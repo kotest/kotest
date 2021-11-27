@@ -27,37 +27,88 @@ object ShouldSpecStyle : SpecStyle {
 
    private fun locateParent(element: PsiElement): Test? {
       // if parent is null then we have hit the end
-      return when (val p = element.context) {
-         null -> null
-         is KtCallExpression -> p.tryContext()
-         else -> locateParent(p)
-      }
+      val p = element.context ?: return null
+      return p.tryKtCallExpression() ?: p.tryKtDotQualifiedExpression() ?: locateParent(p)
    }
 
    private fun KtCallExpression.tryContext(): Test? {
       val context = extractStringArgForFunctionWithStringAndLambdaArgs("context") ?: return null
-      return buildTest(TestName(null, context.text, context.interpolated), this, TestType.Container)
+      return buildTest(TestName(null, context.text, context.interpolated), this, TestType.Container, false)
    }
 
+   /**
+    * A test of the form:
+    *
+    *   should("test name").config(...) { }
+    *
+    */
    private fun KtDotQualifiedExpression.tryShouldWithConfig(): Test? {
       val should = extractLhsStringArgForDotExpressionWithRhsFinalLambda("should", "config") ?: return null
-      return buildTest(TestName(null, should.text, should.interpolated), this, TestType.Test)
+      return buildTest(TestName(null, should.text, should.interpolated), this, TestType.Test, false)
    }
 
+   /**
+    * A test of the form:
+    *
+    *   context("test name").config(...) { }
+    *
+    */
+   private fun KtDotQualifiedExpression.tryContextWithConfig(): Test? {
+      val context = extractLhsStringArgForDotExpressionWithRhsFinalLambda("context", "config") ?: return null
+      return buildTest(TestName(null, context.text, context.interpolated), this, TestType.Test, false)
+   }
+
+   /**
+    * A test of the form:
+    *
+    *   context("test name").config(...) { }
+    *
+    */
+   private fun KtDotQualifiedExpression.tryXContextWithConfig(): Test? {
+      val context = extractLhsStringArgForDotExpressionWithRhsFinalLambda("xcontext", "config") ?: return null
+      return buildTest(TestName(null, context.text, context.interpolated), this, TestType.Test, true)
+   }
+
+   /**
+    * A test of the form:
+    *
+    *   should("test name") { }
+    *
+    */
    private fun KtCallExpression.tryShould(): Test? {
       val should = extractStringArgForFunctionWithStringAndLambdaArgs("should") ?: return null
-      return buildTest(TestName(null, should.text, should.interpolated), this, TestType.Test)
+      return buildTest(TestName(null, should.text, should.interpolated), this, TestType.Test, false)
    }
 
-   private fun buildTest(testName: TestName, element: PsiElement, type: TestType): Test {
-      val contexts = locateParent(element)
-      return Test(testName, contexts, type, false, element)
+   /**
+    * A test of the form:
+    *
+    *   should("test name") { }
+    *
+    */
+   private fun KtCallExpression.tryXShould(): Test? {
+      val should = extractStringArgForFunctionWithStringAndLambdaArgs("xshould") ?: return null
+      return buildTest(TestName(null, should.text, should.interpolated), this, TestType.Test, true)
    }
+
+   private fun buildTest(testName: TestName, element: PsiElement, type: TestType, xdisabled: Boolean): Test {
+      val contexts = locateParent(element)
+      return Test(testName, contexts, type, xdisabled, element)
+   }
+
+   private fun PsiElement.tryKtCallExpression() =
+      if (this is KtCallExpression) tryShould() ?: tryXShould() ?: tryContext() else null
+
+   private fun PsiElement.tryKtDotQualifiedExpression() =
+      if (this is KtDotQualifiedExpression) tryShouldWithConfig()
+         ?: tryContextWithConfig()
+         ?: tryXContextWithConfig()
+      else null
 
    override fun test(element: PsiElement): Test? {
       return when (element) {
-         is KtCallExpression -> element.tryShould() ?: element.tryContext()
-         is KtDotQualifiedExpression -> element.tryShouldWithConfig()
+         is KtCallExpression -> element.tryKtCallExpression()
+         is KtDotQualifiedExpression -> element.tryKtDotQualifiedExpression()
          else -> null
       }
    }
