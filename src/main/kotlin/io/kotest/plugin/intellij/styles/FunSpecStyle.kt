@@ -27,11 +27,12 @@ object FunSpecStyle : SpecStyle {
 
    private fun locateParent(element: PsiElement): Test? {
       // if parent is null then we have hit the end
-      return when (val p = element.parent) {
-         null -> null
-         is KtCallExpression -> p.tryContext() ?: p.tryXContext()
-         else -> locateParent(p)
-      }
+      val p = element.parent ?: return null
+      fun tryKtDotQualifiedExpression() =
+         if (p is KtDotQualifiedExpression) p.tryContextWithConfig() ?: p.tryXContextWithConfig() else null
+      fun tryKtCallExpression() =
+         if (p is KtCallExpression) p.tryContext() ?: p.tryXContext() else null
+      return tryKtDotQualifiedExpression() ?: tryKtCallExpression() ?: locateParent(p)
    }
 
    private fun KtCallExpression.tryContext(): Test? {
@@ -39,9 +40,37 @@ object FunSpecStyle : SpecStyle {
       return buildTest(TestName(null, context.text, context.interpolated), this, TestType.Container, false)
    }
 
+   /**
+    * A test of the form:
+    *
+    *   xcontext("test name") { }
+    *
+    */
    private fun KtCallExpression.tryXContext(): Test? {
       val context = extractStringArgForFunctionWithStringAndLambdaArgs("xcontext") ?: return null
       return buildTest(TestName(null, context.text, context.interpolated), this, TestType.Container, true)
+   }
+
+   /**
+    * A test of the form:
+    *
+    *   context("test name").config(...) { }
+    *
+    */
+   private fun KtDotQualifiedExpression.tryContextWithConfig(): Test? {
+      val context = extractLhsStringArgForDotExpressionWithRhsFinalLambda("context", "config") ?: return null
+      return buildTest(TestName(null, context.text, context.interpolated), this, TestType.Test, false)
+   }
+
+   /**
+    * A test of the form:
+    *
+    *   context("test name").config(...) { }
+    *
+    */
+   private fun KtDotQualifiedExpression.tryXContextWithConfig(): Test? {
+      val context = extractLhsStringArgForDotExpressionWithRhsFinalLambda("xcontext", "config") ?: return null
+      return buildTest(TestName(null, context.text, context.interpolated), this, TestType.Test, true)
    }
 
    /**
@@ -102,7 +131,7 @@ object FunSpecStyle : SpecStyle {
    override fun test(element: PsiElement): Test? {
       return when (element) {
          is KtCallExpression -> element.tryContext() ?: element.tryXContext() ?: element.tryTest() ?: element.tryXTest()
-         is KtDotQualifiedExpression -> element.tryTestWithConfig() ?: element.tryXTestWithConfig()
+         is KtDotQualifiedExpression -> element.tryContextWithConfig() ?: element.tryXContextWithConfig() ?: element.tryTestWithConfig() ?: element.tryXTestWithConfig()
          else -> null
       }
    }
@@ -111,15 +140,24 @@ object FunSpecStyle : SpecStyle {
     * For a FunSpec we consider the following scenarios:
     *
     * test("test name") { }
+    * xtest("test name") { }
     * test("test name").config(...) {}
+    * xtest("test name").config(...) {}
+    * context("test name") {}
+    * xcontext("test name") {}
     * context("test name").config(...) {}
+    * xcontext("test name").config(...) {}
     */
    override fun test(element: LeafPsiElement): Test? {
       val ktcall = element.ifCallExpressionLambdaOpenBrace()
-      if (ktcall != null) return test(ktcall)
+      if (ktcall != null) {
+         return test(ktcall)
+      }
 
       val ktdot = element.ifDotExpressionSeparator()
-      if (ktdot != null) return test(ktdot)
+      if (ktdot != null) {
+         return test(ktdot)
+      }
 
       return null
    }

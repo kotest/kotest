@@ -67,4 +67,13 @@ class FunSpecExampleTest : FunSpec({
       }
    }
 
+   context("context with config").config(enabled = true) {
+      test("a test inside a context with config") {
+      }
+   }
+
+   xcontext("xcontext with config").config(enabled = true) {
+      test("a test inside an xcontext with config") {
+      }
+   }
 })

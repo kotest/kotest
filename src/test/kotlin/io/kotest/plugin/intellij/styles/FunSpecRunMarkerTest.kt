@@ -69,9 +69,13 @@ class FunSpecRunMarkerTest : LightJavaCodeInsightFixtureTestCase() {
          Gutter("Disabled - an xcontext a test", 1107, AllIcons.RunConfigurations.TestIgnored),
          Gutter("Disabled - an xcontext a nested xcontext", 1152, AllIcons.RunConfigurations.TestIgnored),
          Gutter("Disabled - an xcontext a nested xcontext a test", 1178, AllIcons.RunConfigurations.TestIgnored),
+         Gutter("Run context with config", 1238),
+         Gutter("Run context with config a test inside a context with config", 1314),
+         Gutter("Disabled - xcontext with config", 1365, AllIcons.RunConfigurations.TestIgnored),
+         Gutter("Disabled - xcontext with config a test inside an xcontext with config", 1443, AllIcons.RunConfigurations.TestIgnored),
       )
 
-      expected.size shouldBe gutters.size
+      gutters.size shouldBe expected.size
 
       assertSoftly {
          expected.withIndex().forEach { (index, a) ->

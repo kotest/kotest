@@ -7,8 +7,8 @@ buildscript {
 }
 
 plugins {
-   kotlin("jvm")
    java
+   kotlin("jvm")
    id("org.jetbrains.intellij") version "1.3.0"
 }
 
@@ -81,7 +81,7 @@ val plugins = listOf(
    )
 )
 
-val productName = System.getenv("PRODUCT_NAME") ?: System.getenv("SOURCE_FOLDER") ?: "IC-213"
+val productName = System.getenv("PRODUCT_NAME") ?: System.getenv("SOURCE_FOLDER") ?: "IC-211"
 val descriptor = plugins.first { it.sourceFolder == productName }
 
 val jetbrainsToken: String by project
