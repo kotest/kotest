@@ -101,11 +101,11 @@ See detailed post about 5.0 features and changes [here](blog/release_5.0.md)
 
 * Javascript IR support has been added.
 * Native test support has been added.
-* Config option to enable [coroutine debugging](http://localhost:3000/docs/framework/coroutine-debugging.html)
+* Config option to enable [coroutine debugging](https://kotest.io/docs/framework/coroutine-debugging.html)
 * Config option to enable [TestCoroutineDispatchers](https://kotest.io/docs/framework/test-coroutine-dispatcher.html) in tests.
-* Failfast option added [#2243](https://github.com/kotest/kotest/issues/2243)
+* [Failfast option added](https://kotest.io/docs/framework/fail-fast.html) [#2243](https://github.com/kotest/kotest/issues/2243)
 * Unfinished tests should error [#2281](https://github.com/kotest/kotest/issues/2281)
-* Added option to fail test run if no tests were executed [#2287](https://github.com/kotest/kotest/issues/2287)
+* Added option to [fail test run if no tests were executed](https://kotest.io/docs/framework/fail-on-empty-test-suite.html) [#2287](https://github.com/kotest/kotest/issues/2287)
 * Added `@RequiresTag` for improved spec exclude capability [#1820](https://github.com/kotest/kotest/issues/1820)
 * Add fun interace to EnabledCondition [#2343](https://github.com/kotest/kotest/issues/2343)
 * In Project Config, `beforeAll` / `afterAll` are now deprecated and `beforeProject` / `afterProject`, which are suspend functions, have been added [#2333](https://github.com/kotest/kotest/issues/2333)
@@ -113,13 +113,13 @@ See detailed post about 5.0 features and changes [here](blog/release_5.0.md)
 * Added standalone module that can be used by tool builders to launch Kotest [#2416](https://github.com/kotest/kotest/issues/2416)
 * `kotest-framework-datatest` module is now published for all targets
 * Framework now supports a [project wide timeout](https://kotest.io/docs/framework/project-timeouts.html) [#2273](https://github.com/kotest/kotest/issues/2273)
-* New `ProjectExtension` extension point has been added.
+* New [ProjectExtension](https://kotest.io/docs/framework/extensions/advanced-extensions.html) extension point has been added.
 * Allow extensions to be registered via `@ApplyExtension` annotation [#2551](https://github.com/kotest/kotest/issues/2551)
 * Add logging to test scopes [#2443](https://github.com/kotest/kotest/issues/2443)
-* Added `DisplayNameFormatterExtension` extension point [#2507](https://github.com/kotest/kotest/issues/2507)
+* Added `DisplayNameFormatterExtension` [extension point](https://kotest.io/docs/framework/extensions/advanced-extensions.html) [#2507](https://github.com/kotest/kotest/issues/2507)
 * Add configuration option to send full test name paths to junit 5 [#2525](https://github.com/kotest/kotest/issues/2525)
 * Added support for @Nested in AnnotationSpec [#2367](https://github.com/kotest/kotest/issues/2367)
-* Added system properties for filtering tests and specs [#2547](https://github.com/kotest/kotest/issues/2547)
+* Added [system properties for filtering tests and specs](https://kotest.io/docs/framework/conditional/conditional-tests-with-gradle.html) [#2547](https://github.com/kotest/kotest/issues/2547)
 * Should error when container tests do not contain a nested test [#2383](https://github.com/kotest/kotest/issues/2383)
 
 
