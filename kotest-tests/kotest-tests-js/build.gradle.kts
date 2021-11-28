@@ -34,7 +34,7 @@ kotlin {
 
 // must be a published version and not one in the current build
 configure<io.kotest.framework.multiplatform.gradle.KotestPluginExtension> {
-   compilerPluginVersion.set("5.0.0.RC2")
+   compilerPluginVersion.set("5.0.0")
 }
 
 apply(from = "../../nopublish.gradle")

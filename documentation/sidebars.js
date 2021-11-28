@@ -144,6 +144,14 @@ module.exports = {
       },
       'framework/test_extensions',
       'framework/test_factories',
-      'framework/timeout',
+      {
+         type: "category",
+         label: "Timeouts",
+         collapsed: true,
+         items: [
+            'framework/test_timeouts',
+            'framework/project_timeout',
+         ]
+      },
    ],
 };

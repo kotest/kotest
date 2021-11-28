@@ -11,6 +11,9 @@ slug: changelog.html
 * Display names now include affixes when configured
 * Fixed WordSpec to work with intellij plugin when used nested contexts
 
+
+
+
 ## 5.0.0 November 2021
 
 ### _**Kotlin 1.6 is now the minimum supported version**_
