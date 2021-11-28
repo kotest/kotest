@@ -162,5 +162,13 @@ module.exports = {
             'framework/project_timeout',
          ]
       },
+      {
+         type: "category",
+         label: "Other settings",
+         collapsed: true,
+         items: [
+            'framework/fail_on_empty',
+         ]
+      },
    ],
 };
