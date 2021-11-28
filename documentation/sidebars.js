@@ -120,8 +120,8 @@ module.exports = {
          collapsed: true,
          items: [
             'framework/datatesting/introduction',
+            'framework/datatesting/test_names',
             'framework/datatesting/nested',
-            'framework/datatesting/custom-test-names',
          ]
       },
       {

@@ -68,7 +68,7 @@ for each.
 
 ![data test example output](datatest1.png)
 
-The test names are generated from the data classes themselves but can be [customized](https://kotest.io/docs/framework/datatesting/custom-test-names.html).
+The test names are generated from the data classes themselves but can be [customized](test_names.md).
 
 If there is an error for any particular input row, then the test will fail and Kotest will output the values that
 failed. For example, if we change the previous example to include the row `PythagTriple(5, 4, 3)`
@@ -101,22 +101,6 @@ class MyTests : FunSpec({
 })
 ```
 
-:::note
+:::caution
 Data tests can only be defined at the root or in container scopes. They cannot be defined inside leaf scopes.
 :::
-
-
-## Stable Names
-
-When generating test names, Kotest needs a _stable_ test name. Otherwise, test reports can be messed up if the name used
-changes over the course of the test suite execution.
-
-Kotest will only use the `toString()` of the input class if it thinks the input class has a stable `toString()` value
-otherwise it will use the class name.
-
-You can force Kotest to use the `toString()` for test names by annotating your type with `@IsStableType`. Then
-the `toString()` will be used regardless.
-
-Alternatively, you can completely customize the display name of the test.
-See [customing test names](custom_test_names.md).
-

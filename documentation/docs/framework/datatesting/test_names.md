@@ -1,15 +1,31 @@
 ---
-id: custom-test-names
-title: Custom Test Names
+id: test_names
+title: Data Test Names
 slug: custom-test-names.html
+sidebar_label: Data Test Names
 ---
 
 
 By default, the name of each test is simply the `toString()` on the input row.
-This typically works well for data classes on the JVM.
+This typically works well for data classes on the JVM but requires the input rows to be _stable_.
 
-However, we can customize this if we wish, if, for example we are not using stable data classes, or if we are
-executing on a non-JVM target.
+However, we can specify how the test names are geenerated if we are not using stable data classes, or if we are
+executing on a non-JVM target, or simply wish to customize.
+
+### Stable Names
+
+When generating tests, Kotest needs a _stable_ test name over the course of the test suite execution.
+The test name is used as the basis of an identifier that points to a test when notifying gradle or intellij of a test status.
+If the name is not stable, then the id can change, leading to errors where
+tests don't appear, or look like they didn't complete.
+
+Kotest will only use the `toString()` of the input class if it thinks the input class has a stable `toString()` value
+otherwise it will use the class name.
+
+You can force Kotest to use the `toString()` for test names by annotating your type with `@IsStableType`. Then
+the `toString()` will be used regardless.
+
+Alternatively, you can completely customize the display name of the test.
 
 ### Using a map
 
@@ -30,6 +46,8 @@ context("Pythag triples tests") {
   }
 }
 ```
+
+
 
 ### Test Name Function
 
@@ -53,6 +71,8 @@ context("Pythag triples tests") {
 The output from this example is now slightly clearer:
 
 ![data test example output](datatest3.png)
+
+
 
 ### WithDataTestName
 
