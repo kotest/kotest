@@ -14,16 +14,16 @@ Note: The maven group id differs from the main project as this is an optional ex
 
 | Option | |
 | -------- | ---- |
+| `option.shouldBeSome()` | Asserts that the option is of type Some and returns value |
 | `option.shouldBeSome(v)` | Asserts that the option is of type Some with value v |
 | `option.shouldBeNone()` | Asserts that the option is of type None |
 
 | Either | |
 | -------- | ---- |
-| `either.shouldBeRight()` | Asserts that the either is of type Right |
+| `either.shouldBeRight()` | Asserts that the either is of type Right and returns the Right value |
 | `either.shouldBeRight(v)` | Asserts that the either is of type Right with specified value v |
-| `either.shouldBeLeft()` | Asserts that the either is of type Left |
+| `either.shouldBeLeft()` | Asserts that the either is of type Left and returns the Left value |
 | `either.shouldBeLeft(v)` | Asserts that the either is of type Left with specific value v |
-| `either.shouldBeLeftOfType<A>()` | Asserts that the either is of type Left with a specified type A |
 
 | NonEmptyList | |
 | -------- | ---- |
@@ -38,6 +38,6 @@ Note: The maven group id differs from the main project as this is an optional ex
 
 | Validated | |
 | -------- | ---- |
-| `validated.shouldBeValid()` | Asserts that the validated is of type Valid |
+| `validated.shouldBeValid()` | Asserts that the validated is of type Valid and returns the Valid value |
 | `validated.shouldBeValid(v)` | Asserts that the validated is of type Valid with specific value v |
-| `validated.shouldBeInvalid()` | Asserts that the validated is of type Invalid |
+| `validated.shouldBeInvalid()` | Asserts that the validated is of type Invalid and returns the Invalid value|
