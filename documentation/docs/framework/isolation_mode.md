@@ -31,6 +31,13 @@ class MyTestClass : WordSpec() {
 }
 ```
 
+
+:::warning
+The default in Kotest is Single Instance which is the same as ScalaTest (the inspiration for this framework), Jest, Jasmine, and other Javascript frameworks, but different to JUnit.
+:::
+
+
+
 ## Single Instance
 
 The default isolation mode is `SingleInstance` whereby one instance of the Spec class is created and then each test case
@@ -52,11 +59,6 @@ class SingleInstanceExample : WordSpec({
    }
 })
 ```
-
-
-:::caution
-The default is the same as ScalaTest (the inspiration for this framework), Jest, Jasmine, and other Javascript frameworks, but different to JUnit.
-:::
 
 
 
