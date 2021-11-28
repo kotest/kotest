@@ -5,6 +5,8 @@ slug: enabled-config-flag.html
 sidebar_label: Enabled Flags
 ---
 
+Kotest supports disabling tests by setting a configuration flag on a test.
+These configuration flags are very similar: `enabled`, `enabledIf`, and `enabledOrReasonIf`.
 
 ### Enabled
 
