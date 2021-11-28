@@ -11,8 +11,7 @@ import io.kotest.engine.interceptors.EngineContext
 import io.kotest.engine.interceptors.EngineInterceptor
 import io.kotest.engine.listener.TestEngineListener
 import io.kotest.engine.tags.runtimeTags
-import io.kotest.mpp.log
-import kotlinx.coroutines.coroutineScope
+import io.kotest.mpp.Logger
 
 data class EngineResult(val errors: List<Throwable>) {
 
@@ -39,6 +38,8 @@ data class TestEngineConfig(
 @KotestInternal
 class TestEngine(private val config: TestEngineConfig) {
 
+   private val logger = Logger(this::class)
+
    /**
     * Starts execution of the given [TestSuite], intercepting calls via [EngineInterceptor]s.
     *
@@ -47,7 +48,7 @@ class TestEngine(private val config: TestEngineConfig) {
     */
    @OptIn(KotestInternal::class, ExperimentalKotest::class)
    internal suspend fun execute(suite: TestSuite): EngineResult {
-      log { "TestEngine: Executing test suite with ${suite.specs.size} specs" }
+      logger.log { Pair(null, "Executing test suite with ${suite.specs.size} specs") }
 
       val innerExecute: suspend (EngineContext) -> EngineResult = { context ->
          val scheduler = when (platform) {
@@ -61,22 +62,16 @@ class TestEngine(private val config: TestEngineConfig) {
          scheduler.schedule(context.suite, context.listener)
       }
 
-      log { "TestEngine: ${config.interceptors.size} engine interceptors:" }
-      config.interceptors.forEach {
-         log { "\t\t${it::class.simpleName}" }
-      }
+      logger.log { Pair(null, "${config.interceptors.size} engine interceptors") }
 
       val execute = config.interceptors.foldRight(innerExecute) { extension, next ->
          { context -> extension.intercept(context, next) }
       }
 
       val tags = config.configuration.runtimeTags()
-      log { "TestEngine: Active tags: ${tags.expression}" }
+      logger.log { Pair(null, "TestEngine: Active tags: ${tags.expression}") }
 
-      // we want to suspend the engine while we wait for all specs to complete
-      return coroutineScope {
-         execute(EngineContext(suite, config.listener, tags, config.configuration))
-      }
+      return execute(EngineContext(suite, config.listener, tags, config.configuration))
    }
 }
 
