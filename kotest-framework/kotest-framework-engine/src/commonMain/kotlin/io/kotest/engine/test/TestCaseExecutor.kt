@@ -49,7 +49,6 @@ class TestCaseExecutor(
       val interceptors = listOfNotNull(
          TestFinishedInterceptor(listener),
          InvocationCountCheckInterceptor,
-         CoroutineDebugProbeInterceptor,
          SupervisorScopeInterceptor,
          if (platform == Platform.JVM) coroutineDispatcherFactoryInterceptor(defaultCoroutineDispatcherFactory) else null,
          if (platform == Platform.JVM) coroutineErrorCollectorInterceptor() else null,
@@ -64,6 +63,7 @@ class TestCaseExecutor(
          TestInvocationInterceptor(configuration.registry, timeMark),
          InvocationTimeoutInterceptor,
          if (platform == Platform.JVM && testCase.config.testCoroutineDispatcher) TestCoroutineDispatcherInterceptor() else null,
+         CoroutineDebugProbeInterceptor,
       )
 
       val innerExecute: suspend (TestCase, TestScope) -> TestResult = { tc, scope ->
