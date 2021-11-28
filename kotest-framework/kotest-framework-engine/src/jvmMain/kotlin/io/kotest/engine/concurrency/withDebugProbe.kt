@@ -10,7 +10,12 @@ internal actual inline fun <T> withDebugProbe(f: () -> T): T {
       DebugProbes.sanitizeStackTraces = true
       DebugProbes.install()
       try {
-         f()
+         val t = f()
+         DebugProbes.dumpCoroutines()
+         t
+      } catch (t: Throwable) {
+         DebugProbes.dumpCoroutines()
+         throw t
       } catch (t: Throwable) {
          DebugProbes.dumpCoroutines()
          throw t
