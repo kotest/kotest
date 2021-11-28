@@ -84,6 +84,14 @@ module.exports = {
       'framework/exceptions',
       {
          type: "category",
+         label: "Coroutines",
+         collapsed: true,
+         items: [
+            'framework/test_coroutine_dispatcher',
+         ]
+      },
+      {
+         type: "category",
          label: "Data Driven Testing",
          collapsed: true,
          items: [
