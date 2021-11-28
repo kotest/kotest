@@ -9,7 +9,7 @@ There are several ways to disable tests. Some of these are hardcoded in your tes
 
 See:
 
-* [Gradle](conditional/gradle)
+* [Gradle](conditional/gradle.md)
 * [Annotations](conditional/annotations.md)
 * [Enabled flags](conditional/config_enabled.md)
 * [Focus and bang](conditional/focus.md)
