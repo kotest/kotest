@@ -13,6 +13,23 @@ slug: changelog.html
 
 
 
+## 4.6.4 November 2021
+
+
+### Fixes
+
+* Fixes `ShouldContainExactly` for collection containing byte arrays (#2360)
+* Fix InstantRange random nanos selection when the seconds equal the ends of the range (#2441)
+* Fix endless recursion in 2-arity `checkAll` (#2510)
+* Fix wrong index in forAll4 (#2533)
+* Fixes `withEnvironment` empty system environment variables on Linux (#2615)
+* Change should to `shouldNot` on `shouldNotBeEqualToComparingFieldsExcept` (#2637)
+* Remove accidentally nested Try (#2669)
+
+
+
+
+
 
 ## 5.0.0 November 2021
 
