@@ -88,6 +88,7 @@ module.exports = {
          collapsed: true,
          items: [
             'framework/test_coroutine_dispatcher',
+            'framework/coroutine_debugging',
          ]
       },
       {

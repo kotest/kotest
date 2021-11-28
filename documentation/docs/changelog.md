@@ -77,7 +77,6 @@ See detailed post about 5.0 features and changes [here](blog/release_5.0.md)
 * Fix InstantRange random nanos selection when the seconds equal the ends of the range [#2441](https://github.com/kotest/kotest/issues/2441)
 
 
-
 ### Features
 
 
@@ -85,8 +84,8 @@ See detailed post about 5.0 features and changes [here](blog/release_5.0.md)
 
 * Javascript IR support has been added.
 * Native test support has been added.
-* Config option to enable [coroutine debugging](https://github.com/Kotlin/kotlinx.coroutines/tree/master/kotlinx-coroutines-debug)
-* Config option to enable `TestCoroutineDispatcher`s in tests.
+* Config option to enable [coroutine debugging](http://localhost:3000/docs/framework/coroutine-debugging.html)
+* Config option to enable [TestCoroutineDispatchers](https://kotest.io/docs/framework/test-coroutine-dispatcher.html) in tests.
 * Failfast option added [#2243](https://github.com/kotest/kotest/issues/2243)
 * Unfinished tests should error [#2281](https://github.com/kotest/kotest/issues/2281)
 * Added option to fail test run if no tests were executed [#2287](https://github.com/kotest/kotest/issues/2287)
@@ -96,7 +95,7 @@ See detailed post about 5.0 features and changes [here](blog/release_5.0.md)
 * `projectContext` is now available as an extension value inside a test lamba to provide access to the runtime state of the test engine.
 * Added standalone module that can be used by tool builders to launch Kotest [#2416](https://github.com/kotest/kotest/issues/2416)
 * `kotest-framework-datatest` module is now published for all targets
-* Framework now supports a project wide timeout [#2273](https://github.com/kotest/kotest/issues/2273)
+* Framework now supports a [project wide timeout](https://kotest.io/docs/framework/project-timeouts.html) [#2273](https://github.com/kotest/kotest/issues/2273)
 * New `ProjectExtension` extension point has been added.
 * Allow extensions to be registered via `@ApplyExtension` annotation [#2551](https://github.com/kotest/kotest/issues/2551)
 * Add logging to test scopes [#2443](https://github.com/kotest/kotest/issues/2443)

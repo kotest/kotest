@@ -9,7 +9,7 @@ import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.test.TestCaseOrder
 import io.kotest.engine.config.createConfigSummary
 import io.kotest.matchers.string.shouldInclude
-import kotlin.time.seconds
+import kotlin.time.Duration.Companion.seconds
 
 @Isolate
 class DumpTest : FunSpec({
