@@ -16,9 +16,6 @@ internal actual inline fun <T> withDebugProbe(f: () -> T): T {
       } catch (t: Throwable) {
          DebugProbes.dumpCoroutines()
          throw t
-      } catch (t: Throwable) {
-         DebugProbes.dumpCoroutines()
-         throw t
       } finally {
          DebugProbes.uninstall()
       }
