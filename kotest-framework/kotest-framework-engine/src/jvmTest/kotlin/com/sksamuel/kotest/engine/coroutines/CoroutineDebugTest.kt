@@ -24,7 +24,7 @@ class CoroutineDebugTest : FunSpec() {
                .launch()
                .errors.shouldBeEmpty()
          }
-         output shouldContain "Coroutine DeferredCoroutine"
+         output shouldContain "DeferredCoroutine"
       }
    }
 }
