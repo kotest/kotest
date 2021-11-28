@@ -6,9 +6,15 @@ import io.kotest.core.test.TestCase
 import io.kotest.matchers.shouldBe
 
 class BeforeTestExecutionOrderTest : FunSpec() {
+
+   var order = ""
+
+   override fun beforeTest(testCase: TestCase) {
+      order += "!!"
+   }
+
    init {
 
-      var order = ""
 
       beforeTest {
          order += "a"
@@ -26,37 +32,47 @@ class BeforeTestExecutionOrderTest : FunSpec() {
          }
       })
 
+      beforeTest {
+         order += "d"
+      }
+
       register(
          object : BeforeTestListener {
             override suspend fun beforeTest(testCase: TestCase) {
-               order += "d"
+               order += "e"
             }
          },
          object : BeforeTestListener {
             override suspend fun beforeTest(testCase: TestCase) {
-               order += "e"
+               order += "f"
             }
          }
       )
 
       register(object : BeforeTestListener {
          override suspend fun beforeTest(testCase: TestCase) {
-            order += "f"
+            order += "g"
          }
       })
 
       beforeTest {
-         order += "g"
+         order += "h"
       }
 
       extensions(object : BeforeTestListener {
          override suspend fun beforeTest(testCase: TestCase) {
-            order += "h"
+            order += "i"
+         }
+      })
+
+      register(object : BeforeTestListener {
+         override suspend fun beforeTest(testCase: TestCase) {
+            order += "j"
          }
       })
 
       test("beforeTest extensions registered in a spec should be executed in registration order") {
-         order shouldBe "abcdefgh"
+         order shouldBe "!!abcdefghij"
       }
    }
 }
