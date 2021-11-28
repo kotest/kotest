@@ -63,7 +63,7 @@ class MapInspectorsTest : WordSpec() {
          "return itself" {
             map.forAllValues {
                it.toInt().shouldBeGreaterThan(0)
-            }.forAllKeys {
+            }.forAllValues {
                it.toInt().shouldBeGreaterThan(0)
             }
          }
