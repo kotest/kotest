@@ -79,7 +79,18 @@ module.exports = {
       'framework/index',
       'framework/writing_tests',
       'framework/styles',
-      'framework/conditional_evaluation',
+      {
+         type: "category",
+         label: "Conditional Evaluation",
+         collapsed: true,
+         items: [
+            'framework/conditional/enabled_config_flags',
+            'framework/conditional/focus_and_bang',
+            'framework/conditional/xmethods',
+            'framework/conditional/annotations',
+            'framework/conditional/gradle',
+         ]
+      },
       'framework/isolation_mode',
       'framework/exceptions',
       {
