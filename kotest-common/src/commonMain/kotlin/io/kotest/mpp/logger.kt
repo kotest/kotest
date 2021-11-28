@@ -1,6 +1,7 @@
 package io.kotest.mpp
 
 import kotlin.reflect.KClass
+import kotlin.time.ExperimentalTime
 import kotlin.time.TimeMark
 import kotlin.time.TimeSource
 
@@ -36,4 +37,5 @@ fun log(t: Throwable?, f: () -> String) {
    }
 }
 
+@ExperimentalTime
 expect fun writeLog(start: TimeMark, t: Throwable?, f: () -> String)
