@@ -167,6 +167,7 @@ module.exports = {
          label: "Other settings",
          collapsed: true,
          items: [
+            'framework/fail_fast',
             'framework/fail_on_empty',
          ]
       },
