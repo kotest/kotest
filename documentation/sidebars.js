@@ -85,7 +85,7 @@ module.exports = {
       {
          type: "category",
          label: "Data Driven Testing",
-         collapsed: false,
+         collapsed: true,
          items: [
             'framework/datatesting/introduction',
             'framework/datatesting/nested',
@@ -95,7 +95,7 @@ module.exports = {
       {
          type: "category",
          label: "Non-deterministic Testing",
-         collapsed: false,
+         collapsed: true,
          items: [
             'framework/concurrency/eventually',
             'assertions/continually',
@@ -107,7 +107,7 @@ module.exports = {
       {
          type: "category",
          label: "Integrations",
-         collapsed: false,
+         collapsed: true,
          items: [
             'framework/integrations/mocks',
             'framework/integrations/jacoco',
@@ -116,7 +116,7 @@ module.exports = {
       {
          type: "category",
          label: "Ordering",
-         collapsed: false,
+         collapsed: true,
          items: [
             'framework/spec_ordering',
             'framework/test_ordering',
@@ -126,7 +126,7 @@ module.exports = {
       {
          type: "category",
          label: "Resources",
-         collapsed: false,
+         collapsed: true,
          items: [
             'framework/autoclose',
             'framework/tempfile',
@@ -135,7 +135,7 @@ module.exports = {
       {
          type: "category",
          label: "Configuration",
-         collapsed: false,
+         collapsed: true,
          items: [
             'framework/test_case_config',
             'framework/project_config',
