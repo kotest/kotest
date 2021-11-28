@@ -5,8 +5,8 @@ import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestScope
 import io.kotest.engine.test.scopes.withCoroutineContext
+import io.kotest.mpp.Logger
 import io.kotest.mpp.NamedThreadFactory
-import io.kotest.mpp.log
 import kotlinx.coroutines.asCoroutineDispatcher
 import kotlinx.coroutines.withContext
 import java.util.concurrent.Executors
@@ -26,12 +26,13 @@ private val scheduler =
 internal actual fun blockedThreadTimeoutInterceptor(
    configuration: ProjectConfiguration,
    start: TimeMark,
-): TestExecutionInterceptor = BlockedThreadTimeoutInterceptor(configuration, start)
+): TestExecutionInterceptor = BlockedThreadTimeoutInterceptor(start)
 
 internal class BlockedThreadTimeoutInterceptor(
-   private val configuration: ProjectConfiguration,
    private val start: TimeMark,
 ) : TestExecutionInterceptor {
+
+   private val logger = Logger(this::class)
 
    override suspend fun intercept(
       testCase: TestCase,
@@ -46,9 +47,9 @@ internal class BlockedThreadTimeoutInterceptor(
 
          // we schedule a task that will interrupt the coroutine after the timeout has expired
          // this task will use the values in the coroutine status element to know which thread to interrupt
-         log { "BlockedThreadTimeoutInterceptor: Scheduler will interrupt this test in ${testCase.config.timeout}" }
+         logger.log { Pair(testCase.name.testName, "Scheduler will interrupt this test in ${testCase.config.timeout}") }
          val task = scheduler.schedule({
-            log { "BlockedThreadTimeoutInterceptor: Scheduled timeout has hit" }
+            logger.log { Pair(testCase.name.testName, "Scheduled timeout has hit") }
             executor.shutdownNow()
          }, testCase.config.timeout.inWholeMilliseconds, TimeUnit.MILLISECONDS)
 
@@ -57,7 +58,7 @@ internal class BlockedThreadTimeoutInterceptor(
                test(testCase, scope.withCoroutineContext(coroutineContext))
             }
          } catch (t: InterruptedException) {
-            log { "BlockedThreadTimeoutInterceptor: Caught InterruptedException ${t.message}" }
+            logger.log { Pair(testCase.name.testName, "Caught InterruptedException ${t.message}") }
             TestResult.Error(
                start.elapsedNow(),
                BlockedThreadTestTimeoutException(testCase.config.timeout, testCase.name.testName)
@@ -65,7 +66,7 @@ internal class BlockedThreadTimeoutInterceptor(
          } finally {
             // we should stop the scheduled task from running just to be tidy
             if (!task.isDone) {
-               log { "BlockedThreadTimeoutInterceptor: Cancelling scheduled interupt task ${System.identityHashCode(task)}" }
+               logger.log { Pair(testCase.name.testName, "Cancelling scheduled task ${System.identityHashCode(task)}") }
                task.cancel(false)
             }
          }

@@ -109,8 +109,8 @@ module.exports = {
          label: "Coroutines",
          collapsed: true,
          items: [
-            'framework/test_coroutine_dispatcher',
-            'framework/coroutine_debugging',
+            'framework/coroutines/test_coroutine_dispatcher',
+            'framework/coroutines/coroutine_debugging',
          ]
       },
       'framework/exceptions',
@@ -179,8 +179,9 @@ module.exports = {
          label: "Timeouts",
          collapsed: true,
          items: [
-            'framework/test_timeouts',
-            'framework/project_timeout',
+            'framework/timeouts/test_timeouts',
+            'framework/timeouts/project_timeout',
+            'framework/timeouts/blocking_tests',
          ]
       },
       {

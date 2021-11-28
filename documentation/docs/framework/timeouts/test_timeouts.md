@@ -1,7 +1,7 @@
 ---
+id: test_timeouts
 title: Test Timeouts
 slug: test-timeouts.html
-id: test_timeouts
 sidebar_label: Test Timeouts
 ---
 

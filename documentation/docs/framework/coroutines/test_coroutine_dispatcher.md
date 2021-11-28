@@ -62,7 +62,7 @@ class TestDispatcherTest : FunSpec() {
 ```
 
 
-Finally, you can enable test dispatchers for all tests in a module by using [ProjectConfig](project_config.md):
+Finally, you can enable test dispatchers for all tests in a module by using [ProjectConfig](../project_config.md):
 
 ```kotlin
 class ProjectConfig : AbstractProjectConfig() {

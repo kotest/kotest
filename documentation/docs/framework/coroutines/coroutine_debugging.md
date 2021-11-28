@@ -70,7 +70,7 @@ class CoroutineDebugging : FunSpec() {
 ### Project wide config
 
 
-Coroutine debugging can be enabled for all tests in a project by using [ProjectConfig](project_config.md):
+Coroutine debugging can be enabled for all tests in a project by using [ProjectConfig](../project_config.md):
 
 
 ```kotlin

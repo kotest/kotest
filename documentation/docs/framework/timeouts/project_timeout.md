@@ -1,7 +1,7 @@
 ---
+id: project_timeout
 title: Project Timeout
 slug: project-timeouts.html
-id: project_timeout
 sidebar_label: Project Timeout
 ---
 
@@ -9,7 +9,7 @@ sidebar_label: Project Timeout
 Kotest supports a project level timeout.
 This timeout applies to all tests in a module and includes the setup/teardown time of every spec/test in the module.
 
-To enable this, we can use [ProjectConfig](project_config.md).
+To enable this, we can use [ProjectConfig](../project_config.md).
 
 ```kotlin
 class ProjectConfig : AbstractProjectConfig() {
