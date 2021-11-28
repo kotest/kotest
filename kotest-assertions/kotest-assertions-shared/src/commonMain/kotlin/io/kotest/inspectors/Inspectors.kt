@@ -22,6 +22,10 @@ inline fun <T, C : Collection<T>> C.forAll(fn: (T) -> Unit): C = apply {
    }
 }
 
+inline fun <K, V, C : Map<K, V>> C.forOneValue(fn: (V) -> Unit): C = apply { values.forExactly(1, fn) }
+inline fun <K, V, C : Map<K, V>> C.forOneKey(fn: (K) -> Unit): C = apply { keys.forExactly(1, fn) }
+inline fun <K, V, C : Map<K, V>> C.forOne(fn: (Map.Entry<K, V>) -> Unit): C = apply { forExactly(1, fn) }
+
 inline fun <T> Sequence<T>.forOne(fn: (T) -> Unit): Sequence<T> = apply { toList().forOne(fn) }
 inline fun <T> Array<T>.forOne(fn: (T) -> Unit): Array<T> = apply { asList().forOne(fn) }
 inline fun <T, C : Collection<T>> C.forOne(fn: (T) -> Unit): C = forExactly(1, fn)
@@ -72,8 +76,8 @@ inline fun <T, C : Collection<T>> C.forSome(fn: (T) -> Unit): C = apply {
    }
 }
 
-inline fun <K, V, C : Map<K, V>> C.forAnyValues(fn: (V) -> Unit): C = apply { values.forAny(fn) }
-inline fun <K, V, C : Map<K, V>> C.forAnyKeys(fn: (K) -> Unit): C = apply { keys.forAny(fn) }
+inline fun <K, V, C : Map<K, V>> C.forAnyValue(fn: (V) -> Unit): C = apply { values.forAny(fn) }
+inline fun <K, V, C : Map<K, V>> C.forAnyKey(fn: (K) -> Unit): C = apply { keys.forAny(fn) }
 inline fun <K, V, C : Map<K, V>> C.forAny(fn: (Map.Entry<K, V>) -> Unit): C = apply { forAtLeastOne(fn) }
 inline fun <T> Sequence<T>.forAny(fn: (T) -> Unit): Sequence<T> = apply { toList().forAny(fn) }
 inline fun <T> Array<T>.forAny(fn: (T) -> Unit): Array<T> = apply { toList().forAny(fn) }
@@ -115,6 +119,8 @@ inline fun <T> Sequence<T>.forAtMostOne(fn: (T) -> Unit): Sequence<T> = apply { 
 inline fun <T> Array<T>.forAtMostOne(fn: (T) -> Unit): Array<T> = apply { toList().forAtMostOne(fn) }
 inline fun <T, C : Collection<T>> C.forAtMostOne(fn: (T) -> Unit) = forAtMost(1, fn)
 
+inline fun <K, V, C : Map<K, V>> C.forValuesAtMost(k: Int, fn: (V) -> Unit): C = apply { values.forAtMost(k, fn) }
+inline fun <K, V, C : Map<K, V>> C.forKeysAtMost(k: Int, fn: (K) -> Unit): C = apply { keys.forAtMost(k, fn) }
 inline fun <K, V, C : Map<K, V>> C.forAtMost(k: Int, fn: (Map.Entry<K, V>) -> Unit): C = apply {
    val results = runTests(this, fn)
    val passed = results.filterIsInstance<ElementPass<Map.Entry<K, V>>>()
@@ -135,6 +141,8 @@ inline fun <T, C : Collection<T>> C.forAtMost(k: Int, fn: (T) -> Unit): C = appl
    }
 }
 
+inline fun <K, V, C : Map<K, V>> C.forNoneValue(fn: (V) -> Unit): C = apply { values.forNone(fn) }
+inline fun <K, V, C : Map<K, V>> C.forNoneKey(fn: (K) -> Unit): C = apply { keys.forNone(fn) }
 inline fun <K, V, C : Map<K, V>> C.forNone(fn: (Map.Entry<K, V>) -> Unit): C = apply {
    val results = runTests(this, fn)
    val passed = results.filterIsInstance<ElementPass<Map.Entry<K, V>>>()
