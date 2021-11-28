@@ -2,7 +2,7 @@
 ==========
 
 [![Build Status](https://github.com/kotest/kotest/workflows/build/badge.svg)](https://github.com/kotest/kotest/actions)
-[<img src="https://img.shields.io/maven-central/v/io.kotest/kotest-framework-api-jvm.svg?label=latest%20release"/>](https://search.maven.org/search?q=g:io.kotest%20OR%20g:io.kotest.extensions)
+[<img src="https://img.shields.io/maven-central/v/io.kotest/kotest-framework-api-jvm.svg?label=latest%20release"/>](https://search.maven.org/search?q=g:io.kotest%20OR%20g:io.kotest)
 ![intellij-badge](https://img.shields.io/jetbrains/plugin/v/14080-kotest?label=intellij%20plugin)
 ![GitHub](https://img.shields.io/github/license/kotest/kotest)
 [![kotest @ kotlinlang.slack.com](https://img.shields.io/static/v1?label=kotlinlang&message=kotest&color=blue&logo=slack)](https://kotlinlang.slack.com/archives/CT0G9SD7Z)
