@@ -110,7 +110,8 @@ class MyTestClass : FunSpec({
 ```
 
 :::caution
-When tagging tests in this way, the Spec will still need to be instantiated in order to retrieve the tags. If no root tests are active at runtime, the [beforeSpec](listeners.md) and [afterSpec](listeners.md) callbacks will _not_ be invoked.
+When tagging tests in this way, the Spec will still need to be instantiated in order to retrieve the tags.
+If no root tests are active at runtime, the [beforeSpec](lifecycle_hooks.md) and [afterSpec](lifecycle_hooks.md) callbacks will _not_ be invoked.
 :::
 
 

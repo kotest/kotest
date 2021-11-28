@@ -190,7 +190,7 @@ See detailed post about 5.0 features and changes [here](blog/release_5.0.md)
 * `TestStatus` has been deprecated and `TestResult` reworked to be an ADT. If you were pattern matching on `TestResult.status` you can now match on the result instance itself.
 * `val name` inside `Listener` has been deprecated. This was used so that multiple errors from multiple before/after spec callbacks could appear with customized unique names. The framework now takes care of making sure the names are unique so this val is no longer needed and is now ignored.
 * `SpecExtension.intercept(KClass)` has been deprecated in favor of `SpecRefExtension` and `SpecExtension.intercept(spec)`. The deprecated method had ambigious behavior when used with an IsolationMode that created multiple instances of a spec. The new methods have precise guarantees of when they will execute.
-* The global `configuration` object has been deprecated as the first step to removing this global var. To configure the project, the preferred method remains [ProjectConfig](/), which is detected on all three platforms (JVM, JS and Native).
+* The global `configuration` object has been deprecated as the first step to removing this global var. To configure the project, the preferred method remains [ProjectConfig](https://kotest.io/docs/framework/project-config.html), which is detected on all three platforms (JVM, JS and Native).
 * `SpecInstantiationListener` has been deprecated in favour of `InstantiationListener` and `InstantiationErrorListener`, both of which support coroutines in the callbacks. `SpecInstantiationListener` is a hold-over from before coroutines existed and will be removed in a future version.
 * The `listeners` method to add listeners to a Spec has been deprecated. When adding listeners to specs directly, you should now prefer `fun extensions()` rather than `fun listeners()`.
 * `SpecIgnoredListner` (note the typo) has been renamed to `InactiveSpecListener`.
@@ -717,8 +717,8 @@ Major changes:
 * Many new property test generators have been added. The full list is [here](proptest/gens.md).
 * Composable specs have been added in the form of _Test Factories_.
 * Project config no longer requires placing in a special package name, but can be placed anywhere in the [classpath](framework/project_config.md).
-* @Autoscan has been added for [listeners](framework/listeners.md) and extensions.
-* Added DSL version of test lifecycle [callbacks](framework/listeners.md#dsl-methods).
+* @Autoscan has been added for [listeners](framework/extensions/extensions.md) and extensions.
+* Added DSL version of test lifecycle [callbacks](framework/extensions/extensions.md#dsl-methods).
 
 Minor changes.
 

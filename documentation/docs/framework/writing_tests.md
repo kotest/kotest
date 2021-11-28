@@ -156,4 +156,4 @@ class ReusableCallbacks : FunSpec({
 })
 ```
 
-For details of all callbacks and when they are invoked, see [here](listeners.md).
+For details of all callbacks and when they are invoked, see [here](lifecycle_hooks.md) and [here](extensions/extensions.md).

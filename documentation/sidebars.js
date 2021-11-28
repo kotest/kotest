@@ -92,7 +92,18 @@ module.exports = {
          ]
       },
       'framework/isolation_mode',
-      'framework/exceptions',
+      'framework/lifecycle_hooks',
+      {
+         type: "category",
+         label: "Extensions",
+         collapsed: true,
+         items: [
+            'framework/extensions/extensions_introduction',
+            'framework/extensions/simple_extensions',
+            'framework/extensions/advanced_extensions',
+            'framework/extensions/extension_examples',
+         ]
+      },
       {
          type: "category",
          label: "Coroutines",
@@ -102,6 +113,7 @@ module.exports = {
             'framework/coroutine_debugging',
          ]
       },
+      'framework/exceptions',
       {
          type: "category",
          label: "Data Driven Testing",
@@ -123,7 +135,6 @@ module.exports = {
             'assertions/retry',
          ]
       },
-      'framework/listeners',
       {
          type: "category",
          label: "Integrations",
@@ -162,7 +173,6 @@ module.exports = {
             'framework/framework_config_props',
          ]
       },
-      'framework/test_extensions',
       'framework/test_factories',
       {
          type: "category",
