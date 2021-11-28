@@ -6,7 +6,7 @@ import io.kotest.engine.concurrency.NoopCoroutineDispatcherFactory
 import io.kotest.engine.interceptors.EngineContext
 import io.kotest.engine.listener.TestEngineListener
 import io.kotest.engine.spec.SpecExecutor
-import io.kotest.mpp.log
+import io.kotest.mpp.Logger
 
 /**
  * A [TestSuiteScheduler] is responsible for launching each spec from a [TestSuite] into a coroutine.
@@ -27,16 +27,28 @@ internal class SequentialTestSuiteScheduler(
    private val context: EngineContext
 ) : TestSuiteScheduler {
 
+   private val logger = Logger(this::class)
+
    override suspend fun schedule(
       suite: TestSuite,
       listener: TestEngineListener,
    ): EngineResult {
-      log { "LoopingTestSuiteScheduler: Executing ${suite.specs} specs" }
+
+      logger.log { Pair(null, "Executing ${suite.specs} specs") }
+
+      val errors = mutableListOf<Throwable>()
+
       suite.specs.forEach {
-         val executor = SpecExecutor(context.listener, NoopCoroutineDispatcherFactory, context)
-         executor.execute(it)
+         try {
+            val executor = SpecExecutor(context.listener, NoopCoroutineDispatcherFactory, context)
+            executor.execute(it)
+         } catch (e:Throwable) {
+            println(e)
+            errors.add(e)
+         }
       }
-      return EngineResult(emptyList())
+
+      return EngineResult(errors.toList())
    }
 }
 
