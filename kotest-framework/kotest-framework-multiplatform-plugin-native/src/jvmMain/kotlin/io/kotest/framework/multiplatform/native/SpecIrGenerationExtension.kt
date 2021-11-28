@@ -23,6 +23,7 @@ import org.jetbrains.kotlin.ir.util.getSimpleFunction
 import org.jetbrains.kotlin.ir.util.kotlinFqName
 import org.jetbrains.kotlin.name.FqName
 import org.jetbrains.kotlin.name.Name
+import java.util.concurrent.CopyOnWriteArrayList
 
 class SpecIrGenerationExtension(private val messageCollector: MessageCollector) : IrGenerationExtension {
 
@@ -30,7 +31,7 @@ class SpecIrGenerationExtension(private val messageCollector: MessageCollector) 
 
       moduleFragment.transform(object : IrElementTransformerVoidWithContext() {
 
-         val specs = mutableListOf<IrClass>()
+         val specs = CopyOnWriteArrayList<IrClass>()
 
          override fun visitModuleFragment(declaration: IrModuleFragment): IrModuleFragment {
             val fragment = super.visitModuleFragment(declaration)
