@@ -11,7 +11,11 @@ import io.kotest.inspectors.forAny
 import io.kotest.inspectors.forAnyKey
 import io.kotest.inspectors.forAnyValue
 import io.kotest.inspectors.forAtLeastOne
+import io.kotest.inspectors.forAtLeastOneKey
+import io.kotest.inspectors.forAtLeastOneValue
 import io.kotest.inspectors.forAtMostOne
+import io.kotest.inspectors.forAtMostOneKey
+import io.kotest.inspectors.forAtMostOneValue
 import io.kotest.inspectors.forExactly
 import io.kotest.inspectors.forKeysExactly
 import io.kotest.inspectors.forNone
@@ -518,6 +522,36 @@ The following elements failed:
          }
       }
 
+      "forAtMostOneKey" should {
+         "pass if one key pass fn test for a map"  {
+            map.forAtMostOneKey {
+               it shouldBe 1
+            }
+         }
+         "return itself" {
+            map.forAtMostOneKey {
+               it shouldBe 1
+            }.forAtMostOneKey {
+               it shouldBe 1
+            }
+         }
+      }
+
+      "forAtMostOneValue" should {
+         "pass if one value pass fn test for a map"  {
+            map.forAtMostOneValue {
+               it.toInt() shouldBe 1
+            }
+         }
+         "return itself" {
+            map.forAtMostOneValue {
+               it.toInt() shouldBe 1
+            }.forAtMostOneValue {
+               it.toInt() shouldBe 1
+            }
+         }
+      }
+
       "forAtMostOne" should {
          "pass if one elements pass test"  {
             map.forAtMostOne {
@@ -549,6 +583,37 @@ The following elements failed:
             }
          }
       }
+
+      "forAtLeastOneKey" should {
+         "pass if one key pass fn test for a map"  {
+            map.forAtLeastOneKey {
+               it shouldBe 1
+            }
+         }
+         "return itself" {
+            map.forAtLeastOneKey {
+               it shouldBe 1
+            }.forAtLeastOneKey {
+               it shouldBe 1
+            }
+         }
+      }
+
+      "forAtLeastOneValue" should {
+         "pass if one value pass fn test for a map"  {
+            map.forAtLeastOneValue {
+               it.toInt() shouldBe 1
+            }
+         }
+         "return itself" {
+            map.forAtLeastOneValue {
+               it.toInt() shouldBe 1
+            }.forAtLeastOneValue {
+               it.toInt() shouldBe 1
+            }
+         }
+      }
+
 
       "forAtLeastOne" should {
          "pass if one elements pass test"  {
