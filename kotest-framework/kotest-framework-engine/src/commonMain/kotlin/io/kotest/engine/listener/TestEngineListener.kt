@@ -15,24 +15,44 @@ import kotlin.reflect.KClass
  */
 @KotestInternal
 interface TestEngineListener {
+
+   /**
+    * Invoked when the execution of a leaf test or subtree is about to start.
+    *
+    * The [node] may represent a tree of tests (a container), in which case
+    * any child events will fire before [executionFinished] is invoked
+    * for this node.
+    *
+    * If this event is invoked, then [executionIgnored] will not be invoked
+    * for the same node.
+    *
+    * @param node the leaf test or subtree
+    */
    suspend fun executionStarted(node: Node)
 
    /**
-    * Must be called when the execution of a node of the test tree
-    * has been skipped.
+    * Invoked when the execution of a leaf node or subtree has been skipped.
     *
-    * The [Node] may be a test case or a spec. Once a node is marked
-    * as ignored, then no events should be fired for sub nodes.
+    * The [Node] may be a leaf test or a container of tests. Once a node is
+    * marked as ignored, then no further events will fire for either children
+    * or this node.
     *
-    * <p>A skipped test or subtree of tests must not be reported as
-    * {@linkplain #executionStarted started} or
-    * {@linkplain #executionFinished finished}.
-    *
-    * @param testDescriptor the descriptor of the skipped test or container
-    * @param reason a human-readable message describing why the execution
-    * has been skipped
+    * @param node   the leaf test or subtree
+    * @param reason a human-readable message detailing why execution
+    *               was skipped
     */
    suspend fun executionIgnored(node: Node, reason: String?)
+
+   /**
+    * Invoked when the execution of a leaf node or subtree has completed.
+    *
+    * The [Node] may be a leaf test or a container of tests. Once a node is
+    * marked as finished, then all child events have fired, and no further
+    * events will fire for this node.
+    *
+    * @param node   the leaf test or subtree
+    * @param result the result of the test or container
+    */
    suspend fun executionFinished(node: Node, result: TestResult)
 }
 

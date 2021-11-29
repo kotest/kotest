@@ -20,6 +20,5 @@ internal actual fun testEngineInterceptors(): List<EngineInterceptor> {
       ProjectExtensionEngineInterceptor,
       ProjectListenerEngineInterceptor,
       EmptyTestSuiteInterceptor,
-      TestEngineInitializedInterceptor,
    )
 }

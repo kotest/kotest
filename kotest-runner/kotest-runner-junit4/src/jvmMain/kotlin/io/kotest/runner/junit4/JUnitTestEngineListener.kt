@@ -4,6 +4,7 @@ import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.engine.listener.AbstractTestEngineListener
+import io.kotest.engine.listener.Node
 import io.kotest.engine.test.names.DefaultDisplayNameFormatter
 import org.junit.runner.Description
 import org.junit.runner.notification.Failure
@@ -15,11 +16,15 @@ class JUnitTestEngineListener(
 
    private val formatter = DefaultDisplayNameFormatter(ProjectConfiguration())
 
-   override suspend fun testStarted(testCase: TestCase) {
-      notifier.fireTestStarted(describeTestCase(testCase, formatter.format(testCase)))
+   override suspend fun executionStarted(node: Node) {
+      if (node is Node.Test) notifier.fireTestStarted(describeTestCase(node.testCase, formatter.format(node.testCase)))
    }
 
-   override suspend fun testFinished(testCase: TestCase, result: TestResult) {
+   override suspend fun executionFinished(node: Node, result: TestResult) {
+      if (node is Node.Test) testFinished(node.testCase, result)
+   }
+
+   private suspend fun testFinished(testCase: TestCase, result: TestResult) {
       val desc = describeTestCase(testCase, formatter.format(testCase))
       when (result) {
          is TestResult.Success -> notifier.fireTestFinished(desc)
