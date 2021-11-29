@@ -34,17 +34,13 @@ class EqualTest : FunSpec() {
          }.shouldHaveMessage(
             """At 'b' expected 'baz' but was 'bar'
 
-expected:
-{
+expected:<{
   "a": "foo",
   "b": "baz"
-}
-
-actual:
-{
+}> but was:<{
   "a": "foo",
   "b": "bar"
-}"""
+}>"""
          )
       }
 
@@ -60,17 +56,13 @@ actual:
          }.shouldHaveMessage(
             """At 'b' expected true but was false
 
-expected:
-{
+expected:<{
   "a": true,
   "b": true
-}
-
-actual:
-{
+}> but was:<{
   "a": true,
   "b": false
-}"""
+}>"""
          )
       }
 
@@ -89,17 +81,13 @@ actual:
          }.shouldHaveMessage(
             """At 'b' expected 326 but was 354
 
-expected:
-{
+expected:<{
   "a": 123,
   "b": 326
-}
-
-actual:
-{
+}> but was:<{
   "a": 123,
   "b": 354
-}"""
+}>"""
          )
       }
 
@@ -118,17 +106,13 @@ actual:
          }.shouldHaveMessage(
             """At 'b' expected 2222222222222222222 but was 3333333333333333333
 
-expected:
-{
+expected:<{
   "a": 2067120338512882656,
   "b": 2222222222222222222
-}
-
-actual:
-{
+}> but was:<{
   "a": 2067120338512882656,
   "b": 3333333333333333333
-}"""
+}>"""
          )
       }
 
@@ -146,17 +130,13 @@ actual:
          }.shouldHaveMessage(
             """At 'b' expected 2.99E8 but was 6.626E-34
 
-expected:
-{
+expected:<{
   "a": 6.02E23,
   "b": 2.99E8
-}
-
-actual:
-{
+}> but was:<{
   "a": 6.02E23,
   "b": 6.626E-34
-}"""
+}>"""
          )
       }
 
@@ -168,17 +148,13 @@ actual:
          }.shouldHaveMessage(
             """The top level object was missing expected field(s) [c]
 
-expected:
-{
+expected:<{
   "a": "foo",
   "c": "bar"
-}
-
-actual:
-{
+}> but was:<{
   "a": "foo",
   "b": "bar"
-}"""
+}>"""
          )
       }
 
@@ -190,18 +166,14 @@ actual:
          }.shouldHaveMessage(
             """The top level object was missing expected field(s) [c]
 
-expected:
-{
+expected:<{
   "a": "foo",
   "b": "bar"
-}
-
-actual:
-{
+}> but was:<{
   "a": "foo",
   "b": "bar",
   "c": "baz"
-}"""
+}>"""
          )
       }
 
@@ -213,19 +185,15 @@ actual:
          }.shouldHaveMessage(
             """The top level object was missing expected field(s) [c,d]
 
-expected:
-{
+expected:<{
   "a": "foo",
   "b": "bar"
-}
-
-actual:
-{
+}> but was:<{
   "a": "foo",
   "b": "bar",
   "c": "baz",
   "d": true
-}"""
+}>"""
          )
       }
 
@@ -237,18 +205,14 @@ actual:
          }.shouldHaveMessage(
             """The top level object has extra field(s) [c]
 
-expected:
-{
+expected:<{
   "a": "foo",
   "b": "bar",
   "c": "baz"
-}
-
-actual:
-{
+}> but was:<{
   "a": "foo",
   "b": "bar"
-}"""
+}>"""
          )
       }
 
@@ -260,19 +224,15 @@ actual:
          }.shouldHaveMessage(
             """The top level object has extra field(s) [c,d]
 
-expected:
-{
+expected:<{
   "a": "foo",
   "b": "bar",
   "c": "baz",
   "d": 123
-}
-
-actual:
-{
+}> but was:<{
   "a": "foo",
   "b": "bar"
-}"""
+}>"""
          )
       }
 
@@ -329,17 +289,13 @@ actual:
          }.shouldHaveMessage(
             """At 'b' expected null but was string
 
-expected:
-{
+expected:<{
   "a": "foo",
   "b": null
-}
-
-actual:
-{
+}> but was:<{
   "a": "foo",
   "b": "bar"
-}"""
+}>"""
          )
       }
 
@@ -351,17 +307,13 @@ actual:
          }.shouldHaveMessage(
             """At 'b' expected null but was boolean
 
-expected:
-{
+expected:<{
   "a": "foo",
   "b": null
-}
-
-actual:
-{
+}> but was:<{
   "a": "foo",
   "b": true
-}"""
+}>"""
          )
       }
 
@@ -373,17 +325,13 @@ actual:
          }.shouldHaveMessage(
             """At 'b' expected null but was number
 
-expected:
-{
+expected:<{
   "a": "foo",
   "b": null
-}
-
-actual:
-{
+}> but was:<{
   "a": "foo",
   "b": 234
-}"""
+}>"""
          )
       }
 
@@ -395,17 +343,13 @@ actual:
          }.shouldHaveMessage(
             """At 'b' expected null but was number
 
-expected:
-{
+expected:<{
   "a": "foo",
   "b": null
-}
-
-actual:
-{
+}> but was:<{
   "a": "foo",
   "b": 12.34
-}"""
+}>"""
          )
       }
 
@@ -417,19 +361,15 @@ actual:
          }.shouldHaveMessage(
             """At 'b' expected object type but was string
 
-expected:
-{
+expected:<{
   "a": "foo",
   "b": {
     "c": true
   }
-}
-
-actual:
-{
+}> but was:<{
   "a": "foo",
   "b": "bar"
-}"""
+}>"""
          )
       }
 
@@ -441,19 +381,15 @@ actual:
          }.shouldHaveMessage(
             """At 'b' expected object type but was boolean
 
-expected:
-{
+expected:<{
   "a": "foo",
   "b": {
     "c": true
   }
-}
-
-actual:
-{
+}> but was:<{
   "a": "foo",
   "b": true
-}"""
+}>"""
          )
       }
 
@@ -465,19 +401,15 @@ actual:
          }.shouldHaveMessage(
             """At 'b' expected object type but was number
 
-expected:
-{
+expected:<{
   "a": "foo",
   "b": {
     "c": true
   }
-}
-
-actual:
-{
+}> but was:<{
   "a": "foo",
   "b": 12.45
-}"""
+}>"""
          )
       }
 
@@ -489,23 +421,19 @@ actual:
          }.shouldHaveMessage(
             """At 'b' expected object type but was array
 
-expected:
-{
+expected:<{
   "a": "foo",
   "b": {
     "c": true
   }
-}
-
-actual:
-{
+}> but was:<{
   "a": "foo",
   "b": [
     1,
     2,
     3
   ]
-}"""
+}>"""
          )
       }
 
@@ -517,19 +445,15 @@ actual:
          }.shouldHaveMessage(
             """At 'b' expected boolean but was object
 
-expected:
-{
+expected:<{
   "a": "foo",
   "b": true
-}
-
-actual:
-{
+}> but was:<{
   "a": "foo",
   "b": {
     "c": true
   }
-}"""
+}>"""
          )
       }
 
@@ -541,19 +465,15 @@ actual:
          }.shouldHaveMessage(
             """At 'b' expected number but was object
 
-expected:
-{
+expected:<{
   "a": "foo",
   "b": 123
-}
-
-actual:
-{
+}> but was:<{
   "a": "foo",
   "b": {
     "c": true
   }
-}"""
+}>"""
          )
       }
 
@@ -565,19 +485,15 @@ actual:
          }.shouldHaveMessage(
             """At 'b' expected number but was object
 
-expected:
-{
+expected:<{
   "a": "foo",
   "b": 2067120338512882656
-}
-
-actual:
-{
+}> but was:<{
   "a": "foo",
   "b": {
     "c": true
   }
-}"""
+}>"""
          )
       }
 
@@ -589,19 +505,15 @@ actual:
          }.shouldHaveMessage(
             """At 'b' expected number but was object
 
-expected:
-{
+expected:<{
   "a": "foo",
   "b": 6.02f
-}
-
-actual:
-{
+}> but was:<{
   "a": "foo",
   "b": {
     "c": true
   }
-}"""
+}>"""
          )
       }
 
@@ -613,19 +525,15 @@ actual:
          }.shouldHaveMessage(
             """At 'b' expected number but was object
 
-expected:
-{
+expected:<{
   "a": "foo",
   "b": 6.02E23
-}
-
-actual:
-{
+}> but was:<{
   "a": "foo",
   "b": {
     "c": true
   }
-}"""
+}>"""
          )
       }
 
@@ -637,19 +545,15 @@ actual:
          }.shouldHaveMessage(
             """At 'b' expected string but was object
 
-expected:
-{
+expected:<{
   "a": "foo",
   "b": "werqe"
-}
-
-actual:
-{
+}> but was:<{
   "a": "foo",
   "b": {
     "c": true
   }
-}"""
+}>"""
          )
       }
 
@@ -661,25 +565,21 @@ actual:
          }.shouldHaveMessage(
             """At 'b.c.d' expected 534 but was 123
 
-expected:
-{
+expected:<{
   "a": "foo",
   "b": {
     "c": {
       "d": 534
     }
   }
-}
-
-actual:
-{
+}> but was:<{
   "a": "foo",
   "b": {
     "c": {
       "d": 123
     }
   }
-}"""
+}>"""
          )
       }
 
@@ -691,8 +591,7 @@ actual:
          }.shouldHaveMessage(
             """At 'b.c.d.[2]' expected 4 but was 3
 
-expected:
-{
+expected:<{
   "a": "foo",
   "b": {
     "c": {
@@ -703,10 +602,7 @@ expected:
       ]
     }
   }
-}
-
-actual:
-{
+}> but was:<{
   "a": "foo",
   "b": {
     "c": {
@@ -717,7 +613,7 @@ actual:
       ]
     }
   }
-}"""
+}>"""
          )
       }
 
@@ -729,8 +625,7 @@ actual:
          }.shouldHaveMessage(
             """At 'b.c.d' expected array length 3 but was 4
 
-expected:
-{
+expected:<{
   "a": "foo",
   "b": {
     "c": {
@@ -741,10 +636,7 @@ expected:
       ]
     }
   }
-}
-
-actual:
-{
+}> but was:<{
   "a": "foo",
   "b": {
     "c": {
@@ -756,7 +648,7 @@ actual:
       ]
     }
   }
-}"""
+}>"""
          )
       }
 
@@ -773,8 +665,7 @@ actual:
          }.message.shouldStartWith(
             """At 'products.[0].variants.[0]' object was missing expected field(s) [sku]
 
-expected:
-{
+expected:<{
   "products": [
     {
       "id": 4815869968463,
@@ -793,8 +684,7 @@ expected:
          }.message.shouldStartWith(
             """At 'products.[3].title' expected 'Love is RIND Tote Bageeee' but was 'Love is RIND Tote Bag'
 
-expected:
-{
+expected:<{
   "products": [
     {
       "id": 4815869968463,
@@ -812,8 +702,7 @@ expected:
          }.message.shouldStartWith(
             """At 'products.[1].variants.[0].id' expected 45715996239345 but was 32673115996239
 
-expected:
-{
+expected:<{
   "products": [
     {
       "id": 4815869968463,
@@ -852,25 +741,21 @@ expected:
             a.shouldEqualJson(b, CompareOrder.Strict)
          }.shouldHaveMessage("""The top level object expected field 0 to be 'sku' but was 'id'
 
-expected:
-{
+expected:<{
   "sku": "RIND-TOTEO-001-MCF",
   "id": 32672932069455,
   "title": "Default Title",
   "requires_shipping": true,
   "taxable": true,
   "featured_image": null
-}
-
-actual:
-{
+}> but was:<{
   "id": 32672932069455,
   "title": "Default Title",
   "sku": "RIND-TOTEO-001-MCF",
   "requires_shipping": true,
   "taxable": true,
   "featured_image": null
-}""")
+}>""")
       }
    }
 }

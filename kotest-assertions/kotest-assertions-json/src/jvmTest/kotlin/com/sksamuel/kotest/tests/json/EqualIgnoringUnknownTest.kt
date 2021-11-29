@@ -32,17 +32,13 @@ class EqualIgnoringUnknownTest : FunSpec(
          }.shouldHaveMessage(
             """At 'b' expected 'baz' but was 'bar'
 
-expected:
-{
+expected:<{
   "a": "foo",
   "b": "baz"
-}
-
-actual:
-{
+}> but was:<{
   "a": "foo",
   "b": "bar"
-}"""
+}>"""
          )
       }
 
@@ -55,16 +51,12 @@ actual:
          }.shouldHaveMessage(
             """The top level object was missing expected field(s) [b]
 
-expected:
-{
+expected:<{
   "a": "foo",
   "b": "bar"
-}
-
-actual:
-{
+}> but was:<{
   "a": "foo"
-}"""
+}>"""
          )
       }
 
@@ -89,21 +81,17 @@ actual:
             }.shouldHaveMessage(
                """At 'wrapper.b' expected 'baz' but was 'bar'
 
-expected:
-{
+expected:<{
   "wrapper": {
     "a": "foo",
     "b": "baz"
   }
-}
-
-actual:
-{
+}> but was:<{
   "wrapper": {
     "a": "foo",
     "b": "bar"
   }
-}"""
+}>"""
             )
          }
 
@@ -116,20 +104,16 @@ actual:
             }.shouldHaveMessage(
                """At 'wrapper' object was missing expected field(s) [b]
 
-expected:
-{
+expected:<{
   "wrapper": {
     "a": "foo",
     "b": "bar"
   }
-}
-
-actual:
-{
+}> but was:<{
   "wrapper": {
     "a": "foo"
   }
-}"""
+}>"""
             )
          }
 
@@ -156,25 +140,21 @@ actual:
             }.shouldHaveMessage(
                """At 'wrapper.[0].b' expected 'baz' but was 'bar'
 
-expected:
-{
+expected:<{
   "wrapper": [
     {
       "a": "foo",
       "b": "baz"
     }
   ]
-}
-
-actual:
-{
+}> but was:<{
   "wrapper": [
     {
       "a": "foo",
       "b": "bar"
     }
   ]
-}"""
+}>"""
             )
          }
 
@@ -187,24 +167,20 @@ actual:
             }.shouldHaveMessage(
                """At 'wrapper.[0]' object was missing expected field(s) [b]
 
-expected:
-{
+expected:<{
   "wrapper": [
     {
       "a": "foo",
       "b": "bar"
     }
   ]
-}
-
-actual:
-{
+}> but was:<{
   "wrapper": [
     {
       "a": "foo"
     }
   ]
-}"""
+}>"""
             )
          }
       }
