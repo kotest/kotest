@@ -27,19 +27,15 @@ class LenientOrderArrayTest : FunSpec(
             """
                At '[2]' has extra element '2' not found (or too few) in '[1,2,0]'
 
-               expected:
-               [
+               expected:<[
                  1,
                  2,
                  0
-               ]
-
-               actual:
-               [
+               ]> but was:<[
                  1,
                  2,
                  2
-               ]
+               ]>
             """.trimIndent()
          )
       }
@@ -113,8 +109,7 @@ class LenientOrderArrayTest : FunSpec(
             """
                At 'someList.[2]' has extra element '{"type": SOME_TYPE_3}' not found (or too few) in '[{"type": SOME_TYPE_1},{"type": SOME_TYPE_2},{"type": SOME_TYPE_2}]'
 
-               expected:
-               {
+               expected:<{
                  "someList": [
                    {
                      "type": "SOME_TYPE_1"
@@ -126,10 +121,7 @@ class LenientOrderArrayTest : FunSpec(
                      "type": "SOME_TYPE_2"
                    }
                  ]
-               }
-
-               actual:
-               {
+               }> but was:<{
                  "someList": [
                    {
                      "type": "SOME_TYPE_2"
@@ -141,7 +133,7 @@ class LenientOrderArrayTest : FunSpec(
                      "type": "SOME_TYPE_3"
                    }
                  ]
-               }
+               }>
             """.trimIndent()
          )
       }

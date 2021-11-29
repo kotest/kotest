@@ -1,5 +1,9 @@
 package io.kotest.assertions.json
 
+import io.kotest.assertions.Actual
+import io.kotest.assertions.Expected
+import io.kotest.assertions.intellijFormatError
+import io.kotest.assertions.print.printed
 import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
 import io.kotest.matchers.should
@@ -26,7 +30,12 @@ fun matchJsonResource(resource: String) = object : Matcher<String?> {
 
       return MatcherResult(
          actualJson == expectedJson,
-         { "expected: $expectedJson but was: $actualJson" },
+         {
+            intellijFormatError(
+               Expected(expectedJson.toString().printed()),
+               Actual(actualJson.toString().printed())
+            )
+         },
          {
             "expected not to match with: $expectedJson but match: $actualJson"
          })

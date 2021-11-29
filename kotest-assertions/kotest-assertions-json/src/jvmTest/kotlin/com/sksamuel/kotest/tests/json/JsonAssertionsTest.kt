@@ -39,95 +39,95 @@ const val json = """{
 
 class JsonAssertionsTest : StringSpec({
 
-  val json1 = """ { "name" : "sam", "location" : "london" } """
-  val json2 = """ { "location": "london", "name" : "sam" } """
-  val json3 = """ { "location": "chicago", "name" : "sam" } """
+   val json1 = """ { "name" : "sam", "location" : "london" } """
+   val json2 = """ { "location": "london", "name" : "sam" } """
+   val json3 = """ { "location": "chicago", "name" : "sam" } """
 
-  "should return correct error message on failure" {
-    shouldThrow<AssertionError> {
-      json1 shouldMatchJson json3
-    }.message shouldBe """expected: {"location":"chicago","name":"sam"} but was: {"name":"sam","location":"london"}"""
+   "should return correct error message on failure" {
+      shouldThrow<AssertionError> {
+         json1 shouldMatchJson json3
+      }.message shouldBe """expected:<{"location":"chicago","name":"sam"}> but was:<{"name":"sam","location":"london"}>"""
 
-    shouldThrow<AssertionError> {
-      json1 shouldNotMatchJson json2
-    }.message shouldBe """expected not to match with: {"location":"london","name":"sam"} but match: {"name":"sam","location":"london"}"""
-  }
+      shouldThrow<AssertionError> {
+         json1 shouldNotMatchJson json2
+      }.message shouldBe """expected not to match with: {"location":"london","name":"sam"} but match: {"name":"sam","location":"london"}"""
+   }
 
-  "test json path" {
-    json.shouldContainJsonKey("$.store.bicycle")
-    json.shouldContainJsonKey("$.store.book")
-    json.shouldContainJsonKey("$.store.book[0]")
-    json.shouldContainJsonKey("$.store.book[0].category")
-    json.shouldContainJsonKey("$.store.book[1].price")
+   "test json path" {
+      json.shouldContainJsonKey("$.store.bicycle")
+      json.shouldContainJsonKey("$.store.book")
+      json.shouldContainJsonKey("$.store.book[0]")
+      json.shouldContainJsonKey("$.store.book[0].category")
+      json.shouldContainJsonKey("$.store.book[1].price")
 
-    json.shouldNotContainJsonKey("$.store.table")
+      json.shouldNotContainJsonKey("$.store.table")
 
-    shouldThrow<AssertionError> {
-      json.shouldContainJsonKey("$.store.table")
-    }.message shouldBe """{
+      shouldThrow<AssertionError> {
+         json.shouldContainJsonKey("$.store.table")
+      }.message shouldBe """{
     "store": {
         "book": [
             {... should contain the path ${'$'}.store.table"""
 
-    shouldThrow<AssertionError> { null.shouldContainJsonKey("abc") }
+      shouldThrow<AssertionError> { null.shouldContainJsonKey("abc") }
 
-    "contract should work".asClue {
-      fun use(@Suppress("UNUSED_PARAMETER") json: String) {}
+      "contract should work".asClue {
+         fun use(@Suppress("UNUSED_PARAMETER") json: String) {}
 
-      val nullableJson = """{"data": "value"}"""
-      nullableJson.shouldContainJsonKey("data")
-      use(nullableJson)
-    }
-  }
+         val nullableJson = """{"data": "value"}"""
+         nullableJson.shouldContainJsonKey("data")
+         use(nullableJson)
+      }
+   }
 
-  "test json key value" {
-    json.shouldContainJsonKeyValue("$.store.bicycle.color", "red")
-    json.shouldContainJsonKeyValue("$.store.book[0].category", "reference")
-    json.shouldContainJsonKeyValue("$.store.book[0].price", 8.95)
-    json.shouldContainJsonKeyValue("$.store.book[1].author", "Evelyn Waugh")
-    json.shouldContainJsonKeyValue("$.store.book[1].author", "Evelyn Waugh")
-    json.shouldContainJsonKeyValue("$.store.bicycle.code", 1L)
+   "test json key value" {
+      json.shouldContainJsonKeyValue("$.store.bicycle.color", "red")
+      json.shouldContainJsonKeyValue("$.store.book[0].category", "reference")
+      json.shouldContainJsonKeyValue("$.store.book[0].price", 8.95)
+      json.shouldContainJsonKeyValue("$.store.book[1].author", "Evelyn Waugh")
+      json.shouldContainJsonKeyValue("$.store.book[1].author", "Evelyn Waugh")
+      json.shouldContainJsonKeyValue("$.store.bicycle.code", 1L)
 
-    json.shouldNotContainJsonKeyValue("$.store.book[1].author", "JK Rowling")
+      json.shouldNotContainJsonKeyValue("$.store.book[1].author", "JK Rowling")
 
-    shouldThrow<AssertionError> {
-      json.shouldContainJsonKeyValue("$.store.book[1].author", "JK Rowling")
-    }.message shouldBe """{
+      shouldThrow<AssertionError> {
+         json.shouldContainJsonKeyValue("$.store.book[1].author", "JK Rowling")
+      }.message shouldBe """{
     "store": {
         "book": [
             {... should contain the element ${'$'}.store.book[1].author = JK Rowling"""
 
-    shouldThrow<AssertionError> { null.shouldContainJsonKeyValue("ab", "cd") }
+      shouldThrow<AssertionError> { null.shouldContainJsonKeyValue("ab", "cd") }
 
-    "contract should work".asClue {
-      fun use(@Suppress("UNUSED_PARAMETER") json: String) {}
+      "contract should work".asClue {
+         fun use(@Suppress("UNUSED_PARAMETER") json: String) {}
 
-      val nullableJson = """{"data": "value"}"""
-      nullableJson.shouldContainJsonKeyValue("data", "value")
-      use(nullableJson)
-    }
-  }
+         val nullableJson = """{"data": "value"}"""
+         nullableJson.shouldContainJsonKeyValue("data", "value")
+         use(nullableJson)
+      }
+   }
 
-  "test json match by resource" {
+   "test json match by resource" {
 
-    val testJson1 = """ { "name" : "sam", "location" : "chicago" } """
-    val testJson2 = """ { "name" : "sam", "location" : "london" } """
+      val testJson1 = """ { "name" : "sam", "location" : "chicago" } """
+      val testJson2 = """ { "name" : "sam", "location" : "london" } """
 
-    testJson1.shouldMatchJsonResource("/json1.json")
-    testJson2.shouldNotMatchJsonResource("/json1.json")
+      testJson1.shouldMatchJsonResource("/json1.json")
+      testJson2.shouldNotMatchJsonResource("/json1.json")
 
-    shouldThrow<AssertionError> {
-      testJson2.shouldMatchJsonResource("/json1.json")
-    }.message shouldBe """expected: {"name":"sam","location":"chicago"} but was: {"name":"sam","location":"london"}"""
+      shouldThrow<AssertionError> {
+         testJson2.shouldMatchJsonResource("/json1.json")
+      }.message shouldBe """expected:<{"name":"sam","location":"chicago"}> but was:<{"name":"sam","location":"london"}>"""
 
-    shouldThrow<AssertionError> { null shouldMatchJsonResource "/json1.json" }
+      shouldThrow<AssertionError> { null shouldMatchJsonResource "/json1.json" }
 
-    "contract should work".asClue {
-      fun use(@Suppress("UNUSED_PARAMETER") json: String) {}
+      "contract should work".asClue {
+         fun use(@Suppress("UNUSED_PARAMETER") json: String) {}
 
-      val nullableJson = testJson1
-      nullableJson.shouldMatchJsonResource("/json1.json")
-      use(nullableJson)
-    }
-  }
+         val nullableJson = testJson1
+         nullableJson.shouldMatchJsonResource("/json1.json")
+         use(nullableJson)
+      }
+   }
 })

@@ -1,10 +1,15 @@
 package io.kotest.assertions.json
 
+import io.kotest.assertions.Actual
+import io.kotest.assertions.Expected
+import io.kotest.assertions.intellijFormatError
+import io.kotest.assertions.print.printed
 import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldNot
 import kotlinx.serialization.ExperimentalSerializationApi
+import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonElement
 
@@ -20,6 +25,7 @@ internal val pretty by lazy { Json { prettyPrint = true; prettyPrintIndent = "  
  */
 infix fun String?.shouldMatchJson(expected: String?) = this should matchJson(expected)
 infix fun String?.shouldNotMatchJson(expected: String?) = this shouldNot matchJson(expected)
+@OptIn(ExperimentalSerializationApi::class)
 fun matchJson(expected: String?) = object : Matcher<String?> {
    override fun test(value: String?): MatcherResult {
       val actualJson = try {
@@ -46,7 +52,12 @@ fun matchJson(expected: String?) = object : Matcher<String?> {
 
       return MatcherResult(
          actualJson == expectedJson,
-         { "expected: $expectedJson but was: $actualJson" },
+         {
+            intellijFormatError(
+               Expected(expectedJson.toString().printed()),
+               Actual(actualJson.toString().printed())
+            )
+         },
          {
             "expected not to match with: $expectedJson but match: $actualJson"
          })
