@@ -48,6 +48,14 @@ infix fun <T> Iterable<T>.shouldNotHaveSingleElement(t: T) = toList().shouldNotH
 infix fun <T> Array<T>.shouldNotHaveSingleElement(t: T) = asList().shouldNotHaveSingleElement(t)
 infix fun <T> Collection<T>.shouldNotHaveSingleElement(t: T) = this shouldNot singleElement(t)
 
+infix fun <T> Collection<T>.shouldMatchAll(p: (T) -> Boolean) = this should match(p)
+fun <T> match(p: (T) -> Boolean) = object : Matcher<Collection<T>> {
+   override fun test(value: Collection<T>) = MatcherResult(
+      value.all { p(it) },
+      "Collection should have all elements that match the predicate $p",
+      "Collection should not contain elements that match the predicate $p"
+   )
+}
 
 infix fun <T> Iterable<T>.shouldExist(p: (T) -> Boolean) = toList().shouldExist(p)
 infix fun <T> Array<T>.shouldExist(p: (T) -> Boolean) = asList().shouldExist(p)

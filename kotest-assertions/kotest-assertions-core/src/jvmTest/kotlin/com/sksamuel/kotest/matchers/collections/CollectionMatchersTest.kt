@@ -4,6 +4,7 @@ import io.kotest.assertions.shouldFail
 import io.kotest.assertions.throwables.shouldNotThrow
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.WordSpec
+import io.kotest.matchers.collections.shouldMatchAll
 import io.kotest.matchers.collections.atLeastSize
 import io.kotest.matchers.collections.atMostSize
 import io.kotest.matchers.collections.beLargerThan
@@ -448,6 +449,13 @@ class CollectionMatchersTest : WordSpec() {
          "test that a collection contains at least one element that matches a predicate" {
             val list = listOf(1, 2, 3)
             list.shouldExist { it == 2 }
+         }
+      }
+
+      "shouldMatchAll" should {
+         "test that a collection contains all elements that match a predicate" {
+            val list = listOf(2, 2, 2)
+            list.shouldMatchAll { it == 2 }
          }
       }
 
