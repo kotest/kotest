@@ -29,7 +29,9 @@ internal suspend fun Spec.invokeAfterSpec(): Try<Spec> = Try {
 
    registeredAutoCloseables().let { closeables ->
       log { "Closing ${closeables.size} autocloseables [$closeables]" }
-      closeables.forEach { it.value.close() }
+      closeables.forEach {
+         if (it.isInitialized()) it.value.close()
+      }
    }
 
    val listeners = resolvedTestListeners() + configuration.testListeners()
