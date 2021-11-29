@@ -9,10 +9,8 @@ import io.kotest.core.names.DisplayNameFormatter
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestType
-import io.kotest.engine.interceptors.EngineContext
 import io.kotest.engine.test.names.DefaultDisplayNameFormatter
 import io.kotest.engine.test.names.formatTestPath
-import io.kotest.engine.test.names.getDisplayNameFormatter
 import kotlin.reflect.KClass
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
@@ -21,7 +19,7 @@ import kotlin.time.Duration.Companion.milliseconds
  * Generates test output to the console in an enhanced, formatted, coloured, way.
  * For a more basic output, see [BasicConsoleTestEngineListener]
  */
-class EnhancedConsoleTestEngineListener(private val term: TermColors) : AbstractTestEngineListener() {
+class EnhancedConsoleTestEngineListener(private val term: TermColors) : TestEngineListener {
 
    private var errors = 0
    private var start = System.currentTimeMillis()
@@ -74,19 +72,40 @@ class EnhancedConsoleTestEngineListener(private val term: TermColors) : Abstract
       "I test code and chew bubblegum, and I'm all out of bubblegum"
    )
 
-   override suspend fun engineInitialized(context: EngineContext) {
+   override suspend fun executionStarted(node: Node) {
+      when (node) {
+         is Node.Engine -> engineStarted(node)
+         is Node.Spec -> TODO()
+         is Node.Test -> TODO()
+      }
+   }
 
-      formatter = getDisplayNameFormatter(context.configuration.registry, context.configuration)
+   override suspend fun executionFinished(node: Node, result: TestResult) {
+      when (node) {
+         is Node.Engine -> engineStarted(node)
+         is Node.Spec -> TODO()
+         is Node.Test -> TODO()
+      }
+   }
 
+   override suspend fun executionIgnored(node: Node, reason: String?) {
+      when (node) {
+         is Node.Engine -> engineStarted(node)
+         is Node.Spec -> TODO()
+         is Node.Test -> TODO()
+      }
+   }
+
+   private fun engineStarted(node: Node.Engine) {
       println(bold(">> Kotest"))
       println("- " + intros.shuffled().first())
       print("- Test plan has ")
-      print(greenBold(context.suite.specs.size.toString()))
+      print(greenBold(node.context.suite.specs.size.toString()))
       println(" specs")
       println()
    }
 
-   override suspend fun engineFinished(t: List<Throwable>) {
+   private suspend fun engineFinished(t: List<Throwable>) {
 
       if (specsSeen.isEmpty()) return
 
@@ -170,14 +189,14 @@ class EnhancedConsoleTestEngineListener(private val term: TermColors) : Abstract
       println("${testsPassed + testsFailed.size + testsIgnored} total")
    }
 
-   override suspend fun specStarted(kclass: KClass<*>) {
+   private suspend fun specStarted(kclass: KClass<*>) {
       specsSeen = specsSeen + kclass.toDescriptor()
       val specCount = specsSeen.size
       print(bold("$specCount. ".padEnd(4, ' ')))
       println(bold(formatter.format(kclass)))
    }
 
-   override suspend fun specFinished(kclass: KClass<*>, t: Throwable?) {
+   private suspend fun specFinished(kclass: KClass<*>, t: Throwable?) {
       if (t != null) {
          errors++
          specsFailed = specsFailed + kclass.toDescriptor()
@@ -186,7 +205,7 @@ class EnhancedConsoleTestEngineListener(private val term: TermColors) : Abstract
       println()
    }
 
-   override suspend fun testIgnored(testCase: TestCase, reason: String?) {
+   private suspend fun testIgnored(testCase: TestCase, reason: String?) {
       testsIgnored++
       print("".padEnd(testCase.descriptor.depth() * 4, ' '))
       print("- " + formatter.format(testCase))
@@ -201,7 +220,7 @@ class EnhancedConsoleTestEngineListener(private val term: TermColors) : Abstract
       }
    }
 
-   override suspend fun testFinished(testCase: TestCase, result: TestResult) {
+   private suspend fun testFinished(testCase: TestCase, result: TestResult) {
       // only leaf tests or failed containers contribute to the counts
       when (result) {
          is TestResult.Success -> if (testCase.type == TestType.Test) testsPassed++
@@ -237,7 +256,7 @@ class EnhancedConsoleTestEngineListener(private val term: TermColors) : Abstract
       }
    }
 
-   override suspend fun testStarted(testCase: TestCase) {
+   private suspend fun testStarted(testCase: TestCase) {
       // containers we display straight away without pass / fail message
       if (testCase.type == TestType.Container) {
          print("".padEnd(testCase.descriptor.depth() * 4, ' '))

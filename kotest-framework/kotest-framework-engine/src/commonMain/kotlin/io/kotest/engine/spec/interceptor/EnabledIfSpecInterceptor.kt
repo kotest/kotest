@@ -7,6 +7,7 @@ import io.kotest.core.config.ExtensionRegistry
 import io.kotest.core.spec.SpecRef
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
+import io.kotest.engine.listener.Node
 import io.kotest.engine.listener.TestEngineListener
 import io.kotest.engine.spec.SpecExtensions
 import io.kotest.mpp.annotation
@@ -39,7 +40,7 @@ internal class EnabledIfSpecInterceptor(
       return if (enabled) {
          fn(ref)
       } else {
-         runCatching { listener.specIgnored(ref.kclass, "Disabled by @EnabledIf") }
+         runCatching { listener.executionIgnored(Node.Spec(ref.kclass), "Disabled by @EnabledIf") }
             .flatMap { extensions.ignored(ref.kclass, "Disabled by @EnabledIf") }
             .map { emptyMap() }
       }

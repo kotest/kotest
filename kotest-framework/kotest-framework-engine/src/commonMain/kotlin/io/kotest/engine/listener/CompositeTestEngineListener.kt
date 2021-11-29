@@ -1,9 +1,6 @@
 package io.kotest.engine.listener
 
-import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
-import io.kotest.engine.interceptors.EngineContext
-import kotlin.reflect.KClass
 
 /**
  * A [TestEngineListener] that wraps one or more other test engine listeners,
@@ -15,39 +12,15 @@ class CompositeTestEngineListener(private val listeners: List<TestEngineListener
       require(listeners.isNotEmpty())
    }
 
-   override suspend fun engineStarted() {
-      listeners.forEach { it.engineStarted() }
+   override suspend fun executionIgnored(node: Node, reason: String?) {
+      listeners.forEach { it.executionIgnored(node, reason) }
    }
 
-   override suspend fun engineInitialized(context: EngineContext) {
-      listeners.forEach { it.engineInitialized(context) }
+   override suspend fun executionStarted(node: Node) {
+      listeners.forEach { it.executionStarted(node) }
    }
 
-   override suspend fun engineFinished(t: List<Throwable>) {
-      listeners.forEach { it.engineFinished(t) }
-   }
-
-   override suspend fun testStarted(testCase: TestCase) {
-      listeners.forEach { it.testStarted(testCase) }
-   }
-
-   override suspend fun testFinished(testCase: TestCase, result: TestResult) {
-      listeners.forEach { it.testFinished(testCase, result) }
-   }
-
-   override suspend fun testIgnored(testCase: TestCase, reason: String?) {
-      listeners.forEach { it.testIgnored(testCase, reason) }
-   }
-
-   override suspend fun specStarted(kclass: KClass<*>) {
-      listeners.forEach { it.specStarted(kclass) }
-   }
-
-   override suspend fun specFinished(kclass: KClass<*>, t: Throwable?) {
-      listeners.forEach { it.specFinished(kclass, t) }
-   }
-
-   override suspend fun specIgnored(kclass: KClass<*>, reason: String?) {
-      listeners.forEach { it.specIgnored(kclass, reason) }
+   override suspend fun executionFinished(node: Node, result: TestResult) {
+      listeners.forEach { it.executionFinished(node, result) }
    }
 }

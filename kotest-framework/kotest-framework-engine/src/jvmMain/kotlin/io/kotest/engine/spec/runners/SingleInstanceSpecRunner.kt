@@ -9,6 +9,7 @@ import io.kotest.core.test.NestedTest
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestScope
+import io.kotest.engine.listener.Node
 import io.kotest.engine.listener.TestEngineListener
 import io.kotest.engine.spec.Materializer
 import io.kotest.engine.spec.SpecExtensions
@@ -79,7 +80,7 @@ internal class SingleInstanceSpecRunner(
          val nestedTestCase = Materializer(configuration).materialize(nested, testCase)
          if (failedfast) {
             logger.log { Pair(testCase.name.testName, "Skipping test due to fail fast") }
-            listener.testIgnored(nestedTestCase, "Failfast enabled on parent test")
+            listener.executionIgnored(Node.Test(nestedTestCase), "Failfast enabled on parent test")
          } else {
             // if running this nested test results in an error, we won't launch anymore nested tests
             val result = runTest(nestedTestCase, coroutineContext)

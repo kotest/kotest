@@ -19,6 +19,7 @@ import io.kotest.engine.concurrency.NoopCoroutineDispatcherFactory
 import io.kotest.engine.extensions.ExtensionException
 import io.kotest.engine.interceptors.EngineContext
 import io.kotest.engine.listener.AbstractTestEngineListener
+import io.kotest.engine.listener.Node
 import io.kotest.engine.spec.SpecExecutor
 import io.kotest.matchers.throwable.shouldHaveMessage
 import io.kotest.matchers.types.shouldBeInstanceOf
@@ -108,7 +109,7 @@ class AfterTestExceptionTest : WordSpec({
    var error: Throwable? = null
 
    val listener = object : AbstractTestEngineListener() {
-      override suspend fun testFinished(testCase: TestCase, result: TestResult) {
+      override suspend fun executionFinished(node: Node, result: TestResult) {
          if (result is TestResult.Error)
             error = result.cause
       }

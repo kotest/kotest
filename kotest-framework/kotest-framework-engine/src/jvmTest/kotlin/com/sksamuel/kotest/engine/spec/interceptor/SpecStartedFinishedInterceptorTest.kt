@@ -2,11 +2,12 @@ package com.sksamuel.kotest.engine.spec.interceptor
 
 import io.kotest.core.spec.SpecRef
 import io.kotest.core.spec.style.FunSpec
+import io.kotest.core.test.TestResult
 import io.kotest.engine.listener.AbstractTestEngineListener
+import io.kotest.engine.listener.Node
 import io.kotest.engine.spec.interceptor.SpecFinishedInterceptor
 import io.kotest.engine.spec.interceptor.SpecStartedInterceptor
 import io.kotest.matchers.shouldBe
-import kotlin.reflect.KClass
 
 class SpecStartedFinishedInterceptorTest : FunSpec() {
    init {
@@ -14,8 +15,8 @@ class SpecStartedFinishedInterceptorTest : FunSpec() {
       test("SpecStartedInterceptor should call specStarted before invoking spec") {
          var result = ""
          val listener = object : AbstractTestEngineListener() {
-            override suspend fun specStarted(kclass: KClass<*>) {
-               result += "a"
+            override suspend fun executionStarted(node: Node) {
+               if (node is Node.Spec)  result += "a"
             }
          }
          SpecStartedInterceptor(listener)
@@ -27,18 +28,18 @@ class SpecStartedFinishedInterceptorTest : FunSpec() {
       }
 
       test("SpecFinishedInterceptor should call specFinished after invoking spec") {
-         var result = ""
+         var r = ""
          val listener = object : AbstractTestEngineListener() {
-            override suspend fun specFinished(kclass: KClass<*>, t: Throwable?) {
-               result += "a"
+            override suspend fun executionFinished(node: Node, result: TestResult) {
+               if (node is Node.Spec) r += "a"
             }
          }
          SpecFinishedInterceptor(listener)
             .intercept(SpecRef.Reference(FooSpec::class)) {
-               result += "b"
+               r += "b"
                Result.success(emptyMap())
             }
-         result shouldBe "ba"
+         r shouldBe "ba"
       }
    }
 }

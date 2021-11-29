@@ -25,6 +25,8 @@ sealed interface TestResult {
       fun error(error: Throwable, durationMillis: Long): Error = Error(durationMillis.milliseconds, error)
 
       val Ignored = Ignored(null)
+
+      val success = Success(Duration.ZERO)
    }
 
    /**

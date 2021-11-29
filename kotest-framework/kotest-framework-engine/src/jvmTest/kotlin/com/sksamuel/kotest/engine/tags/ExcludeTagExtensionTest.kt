@@ -3,13 +3,13 @@ package com.sksamuel.kotest.engine.tags
 import io.kotest.assertions.fail
 import io.kotest.core.Tag
 import io.kotest.core.TagExpression
-import io.kotest.core.extensions.TagExtension
 import io.kotest.core.annotation.Isolate
+import io.kotest.core.extensions.TagExtension
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.spec.style.StringSpec
-import io.kotest.core.test.TestCase
 import io.kotest.engine.TestEngineLauncher
 import io.kotest.engine.listener.AbstractTestEngineListener
+import io.kotest.engine.listener.Node
 
 object Exclude : Tag()
 
@@ -23,8 +23,8 @@ class ExcludeTagExtensionTest : FunSpec() {
       test("tag extensions should be applied to tests with tag inherited from spec") {
 
          val listener = object : AbstractTestEngineListener() {
-            override suspend fun testStarted(testCase: TestCase) {
-               fail(testCase.name.testName + " should not run")
+            override suspend fun executionStarted(node: Node) {
+               if (node is Node.Test) fail(testCase.name.testName + " should not run")
             }
          }
 

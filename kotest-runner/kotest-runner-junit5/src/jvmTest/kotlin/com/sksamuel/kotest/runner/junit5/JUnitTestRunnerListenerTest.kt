@@ -8,6 +8,8 @@ import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestType
+import io.kotest.engine.interceptors.EngineContext
+import io.kotest.engine.listener.Node
 import io.kotest.engine.test.createTestResult
 import io.kotest.matchers.shouldBe
 import io.kotest.runner.junit.platform.JUnitTestEngineListener
@@ -66,15 +68,14 @@ class JUnitTestRunnerListenerTest : DescribeSpec({
          )
 
          val listener = JUnitTestEngineListener(engineListener, root)
-         listener.engineStarted()
-         listener.specStarted(JUnitTestRunnerListenerTest::class)
-         listener.specStarted(JUnitTestRunnerListenerTest::class)
-         listener.testStarted(test1)
-         listener.testStarted(test2)
-         listener.testFinished(test2, createTestResult(0.milliseconds, AssertionError("boom")))
-         listener.testFinished(test1, TestResult.Success(0.milliseconds))
-         listener.specFinished(JUnitTestRunnerListenerTest::class, null)
-         listener.engineFinished(emptyList())
+         listener.executionStarted(Node.Engine(EngineContext.empty))
+         listener.executionStarted(Node.Spec(JUnitTestRunnerListenerTest::class))
+         listener.executionStarted(Node.Test(test1))
+         listener.executionStarted(Node.Test(test2))
+         listener.executionFinished(Node.Test(test2), createTestResult(0.milliseconds, AssertionError("boom")))
+         listener.executionFinished(Node.Test(test1), TestResult.Success(0.milliseconds))
+         listener.executionFinished(Node.Spec(JUnitTestRunnerListenerTest::class), TestResult.success)
+         listener.executionFinished(Node.Engine(EngineContext.empty), TestResult.success)
 
          finished.toMap() shouldBe mapOf(
             "test2" to TestExecutionResult.Status.FAILED,

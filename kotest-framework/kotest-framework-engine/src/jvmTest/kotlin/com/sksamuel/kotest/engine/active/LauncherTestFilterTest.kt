@@ -5,9 +5,9 @@ import io.kotest.core.descriptors.Descriptor
 import io.kotest.core.filter.TestFilter
 import io.kotest.core.filter.TestFilterResult
 import io.kotest.core.spec.style.FunSpec
-import io.kotest.core.test.TestCase
 import io.kotest.engine.TestEngineLauncher
 import io.kotest.engine.listener.AbstractTestEngineListener
+import io.kotest.engine.listener.Node
 
 private var counter = 0
 
@@ -18,7 +18,7 @@ private var counter = 0
 class LauncherTestFilterTest : FunSpec() {
    init {
       // disabled until filters can be added to one launcher independently
-      test("!filter added via launcher should filter test cases") {
+      test("filter added via launcher should filter test cases") {
 
          val filter = object : TestFilter {
             override fun filter(descriptor: Descriptor): TestFilterResult {
@@ -27,8 +27,8 @@ class LauncherTestFilterTest : FunSpec() {
          }
 
          val listener = object : AbstractTestEngineListener() {
-            override suspend fun testStarted(testCase: TestCase) {
-               if (testCase.descriptor.id.value == "b")
+            override suspend fun executionStarted(node: Node) {
+               if (node is Node.Test && node.testCase.descriptor.id.value == "b")
                   error("should not run")
             }
          }
@@ -39,7 +39,7 @@ class LauncherTestFilterTest : FunSpec() {
             .launch()
       }
 
-      test("!filter with test path added via launcher should filter test cases") {
+      test("filter with test path added via launcher should filter test cases") {
 
          val filter = object : TestFilter {
             override fun filter(descriptor: Descriptor): TestFilterResult {
@@ -48,8 +48,8 @@ class LauncherTestFilterTest : FunSpec() {
          }
 
          val listener = object : AbstractTestEngineListener() {
-            override suspend fun testStarted(testCase: TestCase) {
-               if (testCase.descriptor.id.value == "b")
+            override suspend fun executionStarted(node: Node) {
+               if (node is Node.Test && node.testCase.descriptor.id.value == "b")
                   error("should not run")
             }
          }

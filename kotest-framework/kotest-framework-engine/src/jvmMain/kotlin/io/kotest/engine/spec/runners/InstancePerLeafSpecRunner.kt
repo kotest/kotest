@@ -10,6 +10,7 @@ import io.kotest.core.test.NestedTest
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestScope
 import io.kotest.core.test.TestResult
+import io.kotest.engine.listener.Node
 import io.kotest.engine.listener.TestEngineListener
 import io.kotest.engine.spec.Materializer
 import io.kotest.engine.spec.SpecExtensions
@@ -136,18 +137,18 @@ internal class InstancePerLeafSpecRunner(
             object : TestCaseExecutionListener {
                override suspend fun testStarted(testCase: TestCase) {
                   if (started.add(testCase.descriptor)) {
-                     listener.testStarted(testCase)
+                     listener.executionStarted(Node.Test(testCase))
                   }
                }
 
                override suspend fun testIgnored(testCase: TestCase, reason: String?) {
                   if (ignored.add(testCase.descriptor))
-                     listener.testIgnored(testCase, reason)
+                     listener.executionIgnored(Node.Test(testCase), reason)
                }
 
                override suspend fun testFinished(testCase: TestCase, result: TestResult) {
                   if (!queue.any { it.testCase.descriptor.isDescendentOf(testCase.descriptor) }) {
-                     listener.testFinished(testCase, result)
+                     listener.executionFinished(Node.Test(testCase), result)
                   }
                }
             },

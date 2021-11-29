@@ -34,6 +34,7 @@ class TestEngineLauncher(
    private val configs: List<AbstractProjectConfig>,
    private val refs: List<SpecRef>,
    private val tagExpression: TagExpression?,
+   private val teamCityTestEngineListener: Boolean,
 ) {
 
    constructor() : this(
@@ -42,6 +43,7 @@ class TestEngineLauncher(
       emptyList(),
       emptyList(),
       null,
+      false,
    )
 
    constructor(listener: TestEngineListener) : this(
@@ -50,13 +52,21 @@ class TestEngineLauncher(
       emptyList(),
       emptyList(),
       null,
+      false,
    )
 
    /**
-    * Convenience function to be called by the native code gen to set up the TeamCity listener.
+    * Convenience function to be called by the native code gen to specify a TeamCityTestEngineListener.
     */
    fun withTeamCityListener(): TestEngineLauncher {
-      return withListener(TeamCityTestEngineListener())
+      return TestEngineLauncher(
+         listener = NoopTestEngineListener,
+         projectConfiguration = projectConfiguration,
+         configs = configs,
+         refs = refs,
+         tagExpression = tagExpression,
+         true,
+      )
    }
 
    /**
@@ -69,6 +79,7 @@ class TestEngineLauncher(
          configs = configs,
          refs = refs,
          tagExpression = tagExpression,
+         teamCityTestEngineListener,
       )
    }
 
@@ -79,6 +90,7 @@ class TestEngineLauncher(
          configs = configs,
          refs = specs.toList().map { SpecRef.Singleton(it) },
          tagExpression = tagExpression,
+         teamCityTestEngineListener,
       )
    }
 
@@ -90,6 +102,7 @@ class TestEngineLauncher(
          configs = configs,
          refs = specs.toList().map { SpecRef.Reference(it) },
          tagExpression = tagExpression,
+         teamCityTestEngineListener = teamCityTestEngineListener,
       )
    }
 
@@ -111,6 +124,7 @@ class TestEngineLauncher(
          configs = configs + projectConfig,
          refs = refs,
          tagExpression = tagExpression,
+         teamCityTestEngineListener = teamCityTestEngineListener,
       )
    }
 
@@ -121,6 +135,7 @@ class TestEngineLauncher(
          configs = configs,
          refs = refs,
          tagExpression = expression,
+         teamCityTestEngineListener = teamCityTestEngineListener,
       )
    }
 
@@ -150,6 +165,7 @@ class TestEngineLauncher(
          configs = configs,
          refs = refs,
          tagExpression = tagExpression,
+         teamCityTestEngineListener = teamCityTestEngineListener,
       )
    }
 
@@ -161,7 +177,7 @@ class TestEngineLauncher(
       return TestEngineConfig(
          listener = ThreadSafeTestEngineListener(
             PinnedSpecTestEngineListener(
-               listener
+               if (teamCityTestEngineListener) TeamCityTestEngineListener(configuration = projectConfiguration) else listener
             )
          ),
          interceptors = testEngineInterceptors(),

@@ -5,8 +5,10 @@ import io.kotest.core.project.ProjectContext
 import io.kotest.core.extensions.ProjectExtension
 import io.kotest.core.annotation.Isolate
 import io.kotest.core.spec.style.FunSpec
+import io.kotest.core.test.TestResult
 import io.kotest.engine.TestEngineLauncher
 import io.kotest.engine.listener.AbstractTestEngineListener
+import io.kotest.engine.listener.Node
 import io.kotest.matchers.shouldBe
 
 @Isolate
@@ -33,8 +35,8 @@ class ProjectExtensionEngineResultTest : FunSpec({
       val errors = mutableListOf<Throwable>()
 
       val listener = object : AbstractTestEngineListener() {
-         override suspend fun engineFinished(t: List<Throwable>) {
-            errors.addAll(t)
+         override suspend fun executionFinished(node: Node, result: TestResult) {
+            errors.addAll(listOfNotNull(result.errorOrNull))
          }
       }
 

@@ -8,6 +8,7 @@ import io.kotest.core.test.NestedTest
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestScope
+import io.kotest.engine.listener.Node
 import io.kotest.engine.listener.TestEngineListener
 import io.kotest.engine.spec.Materializer
 import io.kotest.engine.test.TestCaseExecutor
@@ -36,7 +37,7 @@ class InOrderTestScope(
 
       if (failed && testCase.config.failfast) {
          log { "InOrderTestScope: A previous nested test failed and failfast is enabled - will mark this as ignored" }
-         listener.testIgnored(nestedTestCase, "Failfast enabled on parent test")
+         listener.executionIgnored(Node.Test(nestedTestCase), "Failfast enabled on parent test")
       } else {
          val result = runTest(nestedTestCase, coroutineContext)
          if (result.isErrorOrFailure) {

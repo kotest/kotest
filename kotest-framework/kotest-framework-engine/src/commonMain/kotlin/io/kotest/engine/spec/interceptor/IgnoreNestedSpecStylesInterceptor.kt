@@ -10,6 +10,7 @@ import io.kotest.core.spec.style.ShouldSpec
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
+import io.kotest.engine.listener.Node
 import io.kotest.engine.listener.TestEngineListener
 import io.kotest.engine.spec.SpecExtensions
 import io.kotest.mpp.bestName
@@ -40,7 +41,7 @@ internal class IgnoreNestedSpecStylesInterceptor(
       } else {
          log { "IgnoreNestedSpecStylesInterceptor: Marking ${spec::class.bestName()} as inactive due to platform limitations" }
          println("WARN: kotest-js only supports top level tests due to underlying platform limitations. '${spec::class.bestName()}' has been marked as ignored")
-         runCatching { listener.specIgnored(spec::class, "Disabled due to platform limitations") }
+         runCatching { listener.executionIgnored(Node.Spec(spec::class), "Disabled due to platform limitations") }
             .flatMap { extensions.ignored(spec::class, "Disabled due to platform limitations") }
             .map { emptyMap() }
       }

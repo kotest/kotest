@@ -7,6 +7,7 @@ import io.kotest.core.spec.Spec
 import io.kotest.core.spec.SpecRef
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
+import io.kotest.engine.listener.Node
 import io.kotest.engine.listener.TestEngineListener
 import io.kotest.engine.spec.SpecExtensions
 import io.kotest.engine.tags.isPotentiallyActive
@@ -31,7 +32,7 @@ class TagsExcludedSpecInterceptor(
       return if (potentiallyActive) {
          fn(ref)
       } else {
-         runCatching { listener.specIgnored(ref.kclass, null) }
+         runCatching { listener.executionIgnored(Node.Spec(ref.kclass), null) }
             .flatMap { extensions.ignored(ref.kclass, "Skipped by tags") }
             .map { emptyMap() }
       }

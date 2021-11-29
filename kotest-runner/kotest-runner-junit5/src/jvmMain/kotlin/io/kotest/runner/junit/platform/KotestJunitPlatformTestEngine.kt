@@ -1,6 +1,5 @@
 package io.kotest.runner.junit.platform
 
-import io.kotest.common.KotestInternal
 import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.descriptors.toDescriptor
 import io.kotest.core.extensions.Extension
@@ -62,6 +61,7 @@ class KotestJunitPlatformTestEngine : TestEngine {
                   request.engineExecutionListener
                ),
                root,
+               configuration,
             )
          )
       )

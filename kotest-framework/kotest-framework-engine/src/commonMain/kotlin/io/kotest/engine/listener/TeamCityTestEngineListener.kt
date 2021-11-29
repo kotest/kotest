@@ -3,16 +3,13 @@ package io.kotest.engine.listener
 import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.descriptors.Descriptor
 import io.kotest.core.descriptors.toDescriptor
-import io.kotest.core.names.DisplayNameFormatter
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.isRootTest
 import io.kotest.engine.errors.ExtensionExceptionExtractor
 import io.kotest.engine.extensions.MultipleExceptions
-import io.kotest.engine.interceptors.EngineContext
 import io.kotest.engine.teamcity.Locations
 import io.kotest.engine.teamcity.TeamCityMessageBuilder
-import io.kotest.engine.test.names.DefaultDisplayNameFormatter
 import io.kotest.engine.test.names.getDisplayNameFormatter
 import io.kotest.mpp.bestName
 import kotlin.reflect.KClass
@@ -23,9 +20,10 @@ import kotlin.reflect.KClass
 class TeamCityTestEngineListener(
    private val prefix: String = TeamCityMessageBuilder.TeamCityPrefix,
    private val details: Boolean = true,
+   configuration: ProjectConfiguration = ProjectConfiguration(),
 ) : TestEngineListener {
 
-   private var formatter: DisplayNameFormatter = DefaultDisplayNameFormatter(ProjectConfiguration())
+   private var formatter = getDisplayNameFormatter(configuration.registry, configuration)
 
    // set to true if the spec has been started
    private var started = false
@@ -70,34 +68,50 @@ class TeamCityTestEngineListener(
       println(msg3)
    }
 
-   override suspend fun engineStarted() {}
-
-   override suspend fun engineInitialized(context: EngineContext) {
-      formatter = getDisplayNameFormatter(context.configuration.registry, context.configuration)
-   }
-
-   override suspend fun engineFinished(t: List<Throwable>) {
-      if (t.isNotEmpty()) {
-         t.withIndex().forEach { (index, error) ->
-            val testName = if (t.size == 1) "Engine exception" else "Engine exception ${index + 1}"
-            println(TeamCityMessageBuilder.testStarted(prefix, testName).build())
-            val message = error.message ?: t::class.bestName()
-            println(TeamCityMessageBuilder.testFailed(prefix, testName).message(message).build())
-            println(TeamCityMessageBuilder.testFinished(prefix, testName).build())
-         }
+   override suspend fun executionStarted(node: Node) {
+      when (node) {
+         is Node.Engine -> TODO()
+         is Node.Spec -> specStarted(node.kclass)
+         is Node.Test -> testStarted(node.testCase)
       }
    }
 
-   override suspend fun specStarted(kclass: KClass<*>) {
+   override suspend fun executionFinished(node: Node, result: TestResult) {
+      when (node) {
+         is Node.Engine -> engineFinished(result.errorOrNull)
+         is Node.Spec -> specFinished(node.kclass, result.errorOrNull)
+         is Node.Test -> testFinished(node.testCase, result)
+      }
+   }
+
+   override suspend fun executionIgnored(node: Node, reason: String?) {
+      when (node) {
+         is Node.Engine -> Unit
+         is Node.Spec -> specIgnored(node.kclass, reason)
+         is Node.Test -> testIgnored(node.testCase, reason)
+      }
+   }
+
+   private fun engineFinished(t: Throwable?) {
+      if (t != null) {
+         val (placeholder, cause) = ExtensionExceptionExtractor.resolve(t)
+         println(TeamCityMessageBuilder.testStarted(prefix, placeholder).build())
+         val message = cause.message ?: cause::class.bestName()
+         println(TeamCityMessageBuilder.testFailed(prefix, placeholder).message(message).build())
+         println(TeamCityMessageBuilder.testFinished(prefix, placeholder).build())
+      }
+   }
+
+   private fun specStarted(kclass: KClass<*>) {
       // we can output the spec name immediately so there is some feedback that something is happening
       // but all tests will only be output later once we have the full tree
       startSpec(kclass)
    }
 
    // ignored specs are completely hidden from output in team city
-   override suspend fun specIgnored(kclass: KClass<*>, reason: String?) {}
+   private fun specIgnored(kclass: KClass<*>, reason: String?) {}
 
-   override suspend fun specFinished(kclass: KClass<*>, t: Throwable?) {
+   private fun specFinished(kclass: KClass<*>, t: Throwable?) {
 
       // we must start the test if it wasn't already started
       if (!started)
@@ -164,12 +178,12 @@ class TeamCityTestEngineListener(
       }
    }
 
-   override suspend fun testStarted(testCase: TestCase) {
+   private fun testStarted(testCase: TestCase) {
       if (testCase.isRootTest()) rootTests.add(testCase)
       else addChild(testCase)
    }
 
-   override suspend fun testIgnored(testCase: TestCase, reason: String?) {
+   private fun testIgnored(testCase: TestCase, reason: String?) {
       if (testCase.isRootTest()) rootTests.add(testCase)
       else addChild(testCase)
       results[testCase.descriptor] = TestResult.Ignored(reason)
@@ -179,7 +193,7 @@ class TeamCityTestEngineListener(
       children.getOrPut(testCase.descriptor.parent) { mutableListOf() }.add(testCase)
    }
 
-   override suspend fun testFinished(testCase: TestCase, result: TestResult) {
+   private fun testFinished(testCase: TestCase, result: TestResult) {
       results[testCase.descriptor] = result
    }
 

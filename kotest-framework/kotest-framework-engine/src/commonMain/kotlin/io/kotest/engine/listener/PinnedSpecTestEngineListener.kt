@@ -32,77 +32,65 @@ class PinnedSpecTestEngineListener(val listener: TestEngineListener) : TestEngin
       _callbacks.forEach { it.invoke() }
    }
 
-   override suspend fun engineStarted() {
-      listener.engineStarted()
-   }
-
-   override suspend fun engineInitialized(context: EngineContext) {
-      listener.engineInitialized(context)
-   }
-
-   override suspend fun engineFinished(t: List<Throwable>) {
-      listener.engineFinished(t)
-   }
-
-   override suspend fun specStarted(kclass: KClass<*>) {
-      if (runningSpec == null) {
-         runningSpec = kclass.toDescriptor().path().value
-         listener.specStarted(kclass)
-      } else {
-         queue {
-            specStarted(kclass)
+   override suspend fun executionStarted(node: Node) {
+      when (node) {
+         is Node.Engine -> listener.executionStarted(node)
+         is Node.Spec -> if (runningSpec == null) {
+            runningSpec = node.kclass.toDescriptor().path().value
+            listener.executionStarted(node)
+         } else {
+            queue {
+               executionStarted(node)
+            }
+         }
+         is Node.Test ->  if (runningSpec == node.testCase.spec::class.toDescriptor().path().value) {
+            listener.executionStarted(node)
+         } else {
+            queue {
+               executionStarted(node)
+            }
          }
       }
    }
 
-   override suspend fun specFinished(kclass: KClass<*>, t: Throwable?) {
-      if (runningSpec == kclass.toDescriptor().path().value) {
-         listener.specFinished(kclass, t)
-         runningSpec = null
-         replay()
-      } else {
-         queue {
-            specFinished(kclass, t)
+   override suspend fun executionFinished(node: Node, result: TestResult) {
+      when (node) {
+         is Node.Engine -> listener.executionFinished(node, result)
+         is Node.Spec -> if (runningSpec == node.kclass.toDescriptor().path().value) {
+            listener.executionFinished(node, result)
+            runningSpec = null
+            replay()
+         } else {
+            queue {
+               executionFinished(node, result)
+            }
+         }
+         is Node.Test -> if (runningSpec == node.testCase.spec::class.toDescriptor().path().value) {
+            listener.executionFinished(node, result)
+         } else {
+            queue {
+               executionFinished(node, result)
+            }
          }
       }
    }
 
-   override suspend fun specIgnored(kclass: KClass<*>, reason: String?) {
-      if (runningSpec == kclass.toDescriptor().path().value) {
-         listener.specIgnored(kclass, reason)
-      } else {
-         queue {
-            specIgnored(kclass, reason)
+   override suspend fun executionIgnored(node: Node, reason: String?) {
+      when (node) {
+         is Node.Engine -> listener.executionIgnored(node, reason)
+         is Node.Spec ->  if (runningSpec == node.kclass.toDescriptor().path().value) {
+            listener.executionIgnored(node, reason)
+         } else {
+            queue {
+               executionIgnored(node, reason)
+            }
          }
-      }
-   }
-
-   override suspend fun testStarted(testCase: TestCase) {
-      if (runningSpec == testCase.spec::class.toDescriptor().path().value) {
-         listener.testStarted(testCase)
-      } else {
-         queue {
-            testStarted(testCase)
-         }
-      }
-   }
-
-   override suspend fun testFinished(testCase: TestCase, result: TestResult) {
-      if (runningSpec == testCase.spec::class.toDescriptor().path().value) {
-         listener.testFinished(testCase, result)
-      } else {
-         queue {
-            testFinished(testCase, result)
-         }
-      }
-   }
-
-   override suspend fun testIgnored(testCase: TestCase, reason: String?) {
-      if (runningSpec == testCase.spec::class.toDescriptor().path().value) {
-         listener.testIgnored(testCase, reason)
-      } else {
-         queue {
-            testIgnored(testCase, reason)
+         is Node.Test -> if (runningSpec == node.testCase.spec::class.toDescriptor().path().value) {
+            listener.executionIgnored(node, reason)
+         } else {
+            queue {
+               executionIgnored(node, reason)
+            }
          }
       }
    }

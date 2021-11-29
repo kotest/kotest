@@ -2,12 +2,16 @@ package io.kotest.engine.launcher
 
 import io.kotest.common.KotestInternal
 import io.kotest.common.runBlocking
+import io.kotest.core.test.TestResult
+import io.kotest.engine.interceptors.EngineContext
 import io.kotest.engine.listener.CollectingTestEngineListener
 import io.kotest.engine.listener.CompositeTestEngineListener
 import io.kotest.engine.listener.LoggingTestEngineListener
+import io.kotest.engine.listener.Node
 import io.kotest.engine.listener.PinnedSpecTestEngineListener
 import io.kotest.engine.listener.ThreadSafeTestEngineListener
 import kotlin.system.exitProcess
+import kotlin.time.Duration
 
 /**
  * The entry point for the launcher.
@@ -36,8 +40,8 @@ fun main(args: Array<String>) {
          { it.async() },
          {
             // if we couldn't create the launcher we'll display those errors
-            listener.engineStarted()
-            listener.engineFinished(listOf(it))
+            listener.executionStarted(Node.Engine(EngineContext.empty))
+            listener.executionFinished(Node.Engine(EngineContext.empty), TestResult.Error(Duration.ZERO, it))
          },
       )
    }

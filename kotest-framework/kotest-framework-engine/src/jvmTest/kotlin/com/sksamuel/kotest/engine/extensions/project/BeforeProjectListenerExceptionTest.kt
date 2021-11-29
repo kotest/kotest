@@ -4,9 +4,11 @@ import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.listeners.ProjectListener
 import io.kotest.core.annotation.Isolate
 import io.kotest.core.spec.style.FunSpec
+import io.kotest.core.test.TestResult
 import io.kotest.engine.TestEngineLauncher
 import io.kotest.engine.extensions.ExtensionException
 import io.kotest.engine.listener.AbstractTestEngineListener
+import io.kotest.engine.listener.Node
 import io.kotest.inspectors.forOne
 import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.throwable.shouldHaveMessage
@@ -20,8 +22,8 @@ class BeforeProjectListenerExceptionTest : FunSpec({
       val errors: MutableList<Throwable> = mutableListOf()
 
       val listener = object : AbstractTestEngineListener() {
-         override suspend fun engineFinished(t: List<Throwable>) {
-            errors.addAll(t)
+         override suspend fun executionFinished(node: Node, result: TestResult) {
+            errors.addAll(listOfNotNull(result.errorOrNull))
          }
       }
 
@@ -59,8 +61,8 @@ class BeforeProjectListenerExceptionTest : FunSpec({
       val errors: MutableList<Throwable> = mutableListOf()
 
       val listener = object : AbstractTestEngineListener() {
-         override suspend fun engineFinished(t: List<Throwable>) {
-            errors.addAll(t)
+         override suspend fun executionFinished(node: Node, result: TestResult) {
+            errors.addAll(listOfNotNull(result.errorOrNull))
          }
       }
 

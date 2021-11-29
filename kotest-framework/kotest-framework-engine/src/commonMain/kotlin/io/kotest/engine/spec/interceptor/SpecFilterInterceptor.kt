@@ -6,6 +6,7 @@ import io.kotest.core.filter.SpecFilterResult
 import io.kotest.core.spec.SpecRef
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
+import io.kotest.engine.listener.Node
 import io.kotest.engine.listener.TestEngineListener
 import io.kotest.engine.spec.SpecExtensions
 import io.kotest.mpp.Logger
@@ -37,7 +38,7 @@ class SpecFilterInterceptor(
          fn(ref)
       } else {
          val reason = excluded.reason ?: "Disabled by spec filter"
-         listener.specIgnored(ref.kclass, reason)
+         listener.executionIgnored(Node.Spec(ref.kclass), reason)
          extensions.ignored(ref.kclass, reason)
          Result.success(emptyMap())
       }

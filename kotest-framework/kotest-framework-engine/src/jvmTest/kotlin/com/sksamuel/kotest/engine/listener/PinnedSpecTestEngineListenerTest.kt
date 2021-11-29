@@ -1,6 +1,8 @@
 package com.sksamuel.kotest.engine.listener
 
 import io.kotest.core.spec.style.WordSpec
+import io.kotest.core.test.TestResult
+import io.kotest.engine.listener.Node
 import io.kotest.engine.listener.PinnedSpecTestEngineListener
 import io.kotest.engine.listener.TestEngineListener
 import io.kotest.engine.listener.ThreadSafeTestEngineListener
@@ -25,13 +27,13 @@ class PinnedSpecTestEngineListenerTest : WordSpec({
          val spec2 = IsolationTestSpec2()
          val spec3 = IsolationTestSpec3()
 
-         listener.specStarted(spec1::class)
-         listener.specStarted(spec2::class)
-         listener.specStarted(spec3::class)
+         listener.executionStarted(Node.Spec(spec1::class))
+         listener.executionStarted(Node.Spec(spec2::class))
+         listener.executionStarted(Node.Spec(spec3::class))
 
-         verify { runBlocking { mock.specStarted(spec1::class) } }
-         verify(exactly = 0) { runBlocking { mock.specStarted(spec2::class) } }
-         verify(exactly = 0) { runBlocking { mock.specStarted(spec3::class) } }
+         verify { runBlocking { mock.executionStarted(Node.Spec(spec1::class)) } }
+         verify(exactly = 0) { runBlocking { mock.executionStarted(Node.Spec(spec2::class)) } }
+         verify(exactly = 0) { runBlocking { mock.executionStarted(Node.Spec(spec3::class)) } }
       }
 
       "run queued callbacks for a single next spec when current spec completes" {
@@ -43,36 +45,36 @@ class PinnedSpecTestEngineListenerTest : WordSpec({
          val spec2 = IsolationTestSpec2()
          val spec3 = IsolationTestSpec3()
 
-         listener.specStarted(spec1::class)
-         listener.specStarted(spec2::class)
-         listener.specFinished(spec2::class, null)
-         listener.specFinished(spec3::class, null)
+         listener.executionStarted(Node.Spec(spec1::class))
+         listener.executionStarted(Node.Spec(spec2::class))
+         listener.executionFinished(Node.Spec(spec2::class), TestResult.success)
+         listener.executionFinished(Node.Spec(spec3::class), TestResult.success)
 
          verifyOrder {
             runBlocking {
-               mock.specStarted(spec1::class)
+               mock.executionStarted(Node.Spec(spec1::class))
             }
          }
 
          verify(exactly = 0) {
             runBlocking {
-               mock.specStarted(spec2::class)
+               mock.executionStarted(Node.Spec(spec2::class))
             }
          }
 
-         listener.specFinished(spec1::class, null)
+         listener.executionFinished(Node.Spec(spec1::class), TestResult.success)
 
          verifyOrder {
             runBlocking {
-               mock.specFinished(spec1::class, null)
-               mock.specStarted(spec2::class)
-               mock.specFinished(spec2::class, null)
+               mock.executionFinished(Node.Spec(spec1::class), TestResult.success)
+               mock.executionStarted(Node.Spec(spec2::class))
+               mock.executionFinished(Node.Spec(spec2::class), TestResult.success)
             }
          }
          verify(exactly = 0) {
             runBlocking {
-               mock.specStarted(spec3::class)
-               mock.specFinished(spec3::class, null)
+               mock.executionStarted(Node.Spec(spec3::class))
+               mock.executionFinished(Node.Spec(spec3::class), TestResult.success)
             }
          }
       }
@@ -92,31 +94,31 @@ class PinnedSpecTestEngineListenerTest : WordSpec({
          coroutineScope {
             launch(Dispatchers.IO) {
                delay(kotlin.random.Random.nextLong(1, 100))
-               listener.specStarted(spec1::class)
-               listener.specFinished(spec1::class, null)
+               listener.executionStarted(Node.Spec(spec1::class))
+               listener.executionFinished(Node.Spec(spec1::class), TestResult.success)
             }
             launch(Dispatchers.IO) {
                delay(kotlin.random.Random.nextLong(1, 100))
-               listener.specStarted(spec2::class)
-               listener.specFinished(spec2::class, null)
+               listener.executionStarted(Node.Spec(spec2::class))
+               listener.executionFinished(Node.Spec(spec2::class), TestResult.success)
             }
             launch(Dispatchers.IO) {
                delay(kotlin.random.Random.nextLong(1, 100))
-               listener.specStarted(spec3::class)
-               listener.specFinished(spec3::class, null)
+               listener.executionStarted(Node.Spec(spec3::class))
+               listener.executionFinished(Node.Spec(spec3::class), TestResult.success)
             }
             launch(Dispatchers.IO) {
                delay(kotlin.random.Random.nextLong(1, 100))
-               listener.specStarted(spec4::class)
-               listener.specFinished(spec4::class, null)
+               listener.executionStarted(Node.Spec(spec4::class))
+               listener.executionFinished(Node.Spec(spec4::class), TestResult.success)
 
-               listener.specStarted(spec5::class)
-               listener.specFinished(spec5::class, null)
+               listener.executionStarted(Node.Spec(spec5::class))
+               listener.executionFinished(Node.Spec(spec5::class), TestResult.success)
             }
             launch(Dispatchers.IO) {
                delay(kotlin.random.Random.nextLong(1, 100))
-               listener.specStarted(spec6::class)
-               listener.specFinished(spec6::class, null)
+               listener.executionStarted(Node.Spec(spec6::class))
+               listener.executionFinished(Node.Spec(spec6::class), TestResult.success)
             }
          }
 
@@ -125,35 +127,35 @@ class PinnedSpecTestEngineListenerTest : WordSpec({
 
          verifyOrder {
             runBlocking {
-               mock.specStarted(spec1::class)
-               mock.specFinished(spec1::class, null)
+               mock.executionStarted(Node.Spec(spec1::class))
+               mock.executionFinished(Node.Spec(spec1::class), TestResult.success)
             }
          }
          verifyOrder {
             runBlocking {
-               mock.specStarted(spec2::class)
-               mock.specFinished(spec2::class, null)
+               mock.executionStarted(Node.Spec(spec2::class))
+               mock.executionFinished(Node.Spec(spec2::class), TestResult.success)
             }
          }
          verifyOrder {
             runBlocking {
-               mock.specStarted(spec3::class)
-               mock.specFinished(spec3::class, null)
+               mock.executionStarted(Node.Spec(spec3::class))
+               mock.executionFinished(Node.Spec(spec3::class), TestResult.success)
             }
          }
          verifyOrder {
             runBlocking {
-               mock.specStarted(spec4::class)
-               mock.specFinished(spec4::class, null)
+               mock.executionStarted(Node.Spec(spec4::class))
+               mock.executionFinished(Node.Spec(spec4::class), TestResult.success)
 
-               mock.specStarted(spec5::class)
-               mock.specFinished(spec5::class, null)
+               mock.executionStarted(Node.Spec(spec5::class))
+               mock.executionFinished(Node.Spec(spec5::class), TestResult.success)
             }
          }
          verifyOrder {
             runBlocking {
-               mock.specStarted(spec6::class)
-               mock.specFinished(spec6::class, null)
+               mock.executionStarted(Node.Spec(spec6::class))
+               mock.executionFinished(Node.Spec(spec6::class), TestResult.success)
             }
          }
       }

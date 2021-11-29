@@ -1,88 +1,59 @@
 package io.kotest.engine.listener
 
 import io.kotest.common.KotestInternal
-import io.kotest.core.spec.Spec
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
-import io.kotest.engine.TestEngine
 import io.kotest.engine.interceptors.EngineContext
 import kotlin.reflect.KClass
 
 /**
- * Implementations of this interface will be notified of events
- * that occur as part of the [TestEngine] lifecycle.
+ * Listener that is notified of test engine execution events.
+ *
+ * Each callback method is provided a [Node].
  *
  * This is public but should be considered internal.
  */
 @KotestInternal
 interface TestEngineListener {
+   suspend fun executionStarted(node: Node)
 
    /**
-    * Invoked as soon as the engine has been created.
-    */
-   suspend fun engineStarted()
-
-   /**
-    * Invoked when the [TestEngine] has completed setup and is ready to begin
-    * executing specs.
+    * Must be called when the execution of a node of the test tree
+    * has been skipped.
     *
-    * @param context the final context that will be used.
-    */
-   suspend fun engineInitialized(context: EngineContext)
-
-   /**
-    * Is invoked when the [TestEngine] has finished execution of all tests.
+    * The [Node] may be a test case or a spec. Once a node is marked
+    * as ignored, then no events should be fired for sub nodes.
     *
-    * If any unexpected errors were detected during execution then they will be
-    * passed to this method.
+    * <p>A skipped test or subtree of tests must not be reported as
+    * {@linkplain #executionStarted started} or
+    * {@linkplain #executionFinished finished}.
+    *
+    * @param testDescriptor the descriptor of the skipped test or container
+    * @param reason a human-readable message describing why the execution
+    * has been skipped
     */
-   suspend fun engineFinished(t: List<Throwable>)
-
-   /**
-    * Invoked once per [Spec] to indicate that this spec will be instantiated
-    * and any active tests invoked.
-    */
-   suspend fun specStarted(kclass: KClass<*>)
-
-   /**
-    * Invoked when a spec is ignored. If the results map is empty, then this means
-    * the spec did not define any tests, or the spec was not instantiated.
-    */
-   suspend fun specIgnored(kclass: KClass<*>, reason: String?)
-
-   /**
-    * Is invoked once per [Spec] class to indicate this spec has completed.
-    */
-   suspend fun specFinished(kclass: KClass<*>, t: Throwable?)
-
-   /**
-    * Invoked if a [TestCase] is about to be executed.
-    * Will not be invoked if the test is ignored.
-    */
-   suspend fun testStarted(testCase: TestCase)
-
-   /**
-    * Invoked if a [TestCase] will be skipped.
-    */
-   suspend fun testIgnored(testCase: TestCase, reason: String?)
-
-   /**
-    * Invoked when all the invocations of a [TestCase] have completed.
-    * This function will only be invoked if a test case was enabled.
-    */
-   suspend fun testFinished(testCase: TestCase, result: TestResult)
+   suspend fun executionIgnored(node: Node, reason: String?)
+   suspend fun executionFinished(node: Node, result: TestResult)
 }
 
 abstract class AbstractTestEngineListener : TestEngineListener {
-   override suspend fun engineStarted() {}
-   override suspend fun engineFinished(t: List<Throwable>) {}
-   override suspend fun engineInitialized(context: EngineContext) {}
-   override suspend fun specStarted(kclass: KClass<*>) {}
-   override suspend fun specFinished(kclass: KClass<*>, t: Throwable?) {}
-   override suspend fun specIgnored(kclass: KClass<*>, reason: String?) {}
-   override suspend fun testFinished(testCase: TestCase, result: TestResult) {}
-   override suspend fun testIgnored(testCase: TestCase, reason: String?) {}
-   override suspend fun testStarted(testCase: TestCase) {}
+   override suspend fun executionFinished(node: Node, result: TestResult) {}
+   override suspend fun executionIgnored(node: Node, reason: String?) {}
+   override suspend fun executionStarted(node: Node) {}
 }
 
-val NoopTestEngineListener = object : AbstractTestEngineListener() {}
+
+@KotestInternal
+sealed interface Node {
+   // the root element in the test tree
+   data class Engine(val context: EngineContext) : Node
+   data class Spec(val kclass: KClass<*>) : Node
+   data class Test(val testCase: TestCase) : Node
+}
+
+@KotestInternal
+val NoopTestEngineListener = object : TestEngineListener {
+   override suspend fun executionStarted(node: Node) {}
+   override suspend fun executionFinished(node: Node, result: TestResult) {}
+   override suspend fun executionIgnored(node: Node, reason: String?) {}
+}

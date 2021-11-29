@@ -12,6 +12,8 @@ import io.kotest.core.test.TestType
 import io.kotest.engine.errors.ExtensionExceptionExtractor
 import io.kotest.engine.interceptors.EngineContext
 import io.kotest.engine.listener.AbstractTestEngineListener
+import io.kotest.engine.listener.Node
+import io.kotest.engine.listener.TestEngineListener
 import io.kotest.engine.test.names.DefaultDisplayNameFormatter
 import io.kotest.engine.test.names.getDisplayNameFormatter
 import io.kotest.mpp.Logger
@@ -75,11 +77,12 @@ import kotlin.time.Duration
 class JUnitTestEngineListener(
    private val listener: EngineExecutionListener,
    val root: EngineDescriptor,
-) : AbstractTestEngineListener() {
+   val configuration: ProjectConfiguration = ProjectConfiguration(),
+) : TestEngineListener {
 
    private val logger = Logger(JUnitTestEngineListener::class)
 
-   private var formatter: DisplayNameFormatter = DefaultDisplayNameFormatter(ProjectConfiguration())
+   private var formatter = getDisplayNameFormatter(configuration.registry, configuration)
 
    // contains a mapping of junit TestDescriptor's, so we can find previously registered tests
    private val descriptors = mutableMapOf<Descriptor, TestDescriptor>()
@@ -91,30 +94,47 @@ class JUnitTestEngineListener(
    // the root tests are our entry point when outputting results
    private val rootTests = mutableListOf<TestCase>()
 
-   private var failOnIgnoredTests = false
-
    private val children = mutableMapOf<Descriptor, MutableList<TestCase>>()
 
    private val results = mutableMapOf<Descriptor, TestResult>()
 
    private val dummies = hashSetOf<String>()
 
-   override suspend fun engineStarted() {
+   override suspend fun executionStarted(node: Node) {
+      when (node) {
+         is Node.Engine -> engineStarted()
+         is Node.Spec -> specStarted(node.kclass)
+         is Node.Test -> testStarted(node.testCase)
+      }
+   }
+
+   override suspend fun executionFinished(node: Node, result: TestResult) {
+      when (node) {
+         is Node.Engine -> engineFinished(listOfNotNull(result.errorOrNull))
+         is Node.Spec -> specFinished(node.kclass, result.errorOrNull)
+         is Node.Test -> testFinished(node.testCase, result)
+      }
+   }
+
+   override suspend fun executionIgnored(node: Node, reason: String?) {
+      when (node) {
+         is Node.Engine -> Unit
+         is Node.Spec -> specIgnored(node.kclass, reason)
+         is Node.Test -> testIgnored(node.testCase, reason)
+      }
+   }
+
+   private fun engineStarted() {
       logger.log { Pair(null, "Engine started") }
       listener.executionStarted(root)
    }
 
-   override suspend fun engineInitialized(context: EngineContext) {
-      failOnIgnoredTests = context.configuration.failOnIgnoredTests
-      formatter = getDisplayNameFormatter(context.configuration.registry, context.configuration)
-   }
-
-   override suspend fun engineFinished(t: List<Throwable>) {
+   private fun engineFinished(t: List<Throwable>) {
       logger.log { Pair(null, "Engine finished; throwables=[${t}]") }
 
       registerExceptionPlaceholders(t)
 
-      val result = if (failOnIgnoredTests && results.values.any { it.isIgnored }) {
+      val result = if (configuration.failOnIgnoredTests && results.values.any { it.isIgnored }) {
          TestExecutionResult.failed(RuntimeException("Build contained ignored test"))
       } else {
          TestExecutionResult.successful()
@@ -124,11 +144,11 @@ class JUnitTestEngineListener(
       listener.executionFinished(root, result)
    }
 
-   override suspend fun specStarted(kclass: KClass<*>) {
+   private suspend fun specStarted(kclass: KClass<*>) {
       markSpecStarted(kclass)
    }
 
-   override suspend fun specFinished(kclass: KClass<*>, t: Throwable?) {
+   private suspend fun specFinished(kclass: KClass<*>, t: Throwable?) {
       when {
          // if we have a spec error before we even started the spec, we will start the spec, add a placeholder
          // to hold the error, mark that test as failed, and then fail the spec as well
@@ -162,7 +182,7 @@ class JUnitTestEngineListener(
       reset()
    }
 
-   override suspend fun specIgnored(kclass: KClass<*>, reason: String?) {
+   private suspend fun specIgnored(kclass: KClass<*>, reason: String?) {
       logger.log { Pair(kclass.bestName(), "Spec is being flagged as ignored") }
       listener.executionSkipped(getSpecDescriptor(kclass), reason)
    }
@@ -211,7 +231,7 @@ class JUnitTestEngineListener(
       listener.executionFinished(descriptor, TestResult.Error(Duration.ZERO, cause).toTestExecutionResult())
    }
 
-   override suspend fun testStarted(testCase: TestCase) {
+   private suspend fun testStarted(testCase: TestCase) {
 
       // depending on the test type, we may want to wait to notify junit, this is because gradle doesn't work
       // properly with the junit test types. Ideally, we'd just set everything to CONTAINER_AND_TEST, which is
@@ -238,7 +258,7 @@ class JUnitTestEngineListener(
    }
 
    // this test can be output now it has completed as we have all we need to know to complete it
-   override suspend fun testFinished(testCase: TestCase, result: TestResult) {
+   private suspend fun testFinished(testCase: TestCase, result: TestResult) {
       logger.log { Pair(testCase.name.testName, "test finished $result") }
       results[testCase.descriptor] = result
 
@@ -252,7 +272,7 @@ class JUnitTestEngineListener(
       listener.executionFinished(descriptor, result.toTestExecutionResult())
    }
 
-   override suspend fun testIgnored(testCase: TestCase, reason: String?) {
+   private suspend fun testIgnored(testCase: TestCase, reason: String?) {
       logger.log { Pair(testCase.name.testName, "test ignored $reason") }
       if (testCase.parent == null) rootTests.add(testCase)
       addChild(testCase)

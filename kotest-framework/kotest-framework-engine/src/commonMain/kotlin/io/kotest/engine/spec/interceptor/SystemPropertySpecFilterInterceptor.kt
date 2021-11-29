@@ -9,6 +9,7 @@ import io.kotest.core.internal.KotestEngineProperties
 import io.kotest.core.spec.SpecRef
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
+import io.kotest.engine.listener.Node
 import io.kotest.engine.listener.TestEngineListener
 import io.kotest.engine.spec.SpecExtensions
 import io.kotest.mpp.bestName
@@ -48,7 +49,7 @@ internal class SystemPropertySpecFilterInterceptor(
       return if (included) {
          fn(ref)
       } else {
-         runCatching { listener.specIgnored(ref.kclass, "Filtered by spec filter system property") }
+         runCatching { listener.executionIgnored(Node.Spec(ref.kclass), "Filtered by spec filter system property") }
             .flatMap { extensions.ignored(ref.kclass, "Filtered by spec filter system property") }
             .map { emptyMap() }
       }

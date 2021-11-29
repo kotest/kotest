@@ -11,13 +11,14 @@ import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.spec.style.ShouldSpec
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.core.spec.style.WordSpec
+import io.kotest.core.test.TestResult
 import io.kotest.engine.concurrency.NoopCoroutineDispatcherFactory
 import io.kotest.engine.interceptors.EngineContext
 import io.kotest.engine.listener.AbstractTestEngineListener
+import io.kotest.engine.listener.Node
 import io.kotest.engine.spec.SpecExecutor
 import io.kotest.engine.spec.SpecInstantiationException
 import io.kotest.matchers.types.shouldBeInstanceOf
-import kotlin.reflect.KClass
 
 private class BehaviorSpecWithInitError : BehaviorSpec() {
    override fun isolationMode() = IsolationMode.InstancePerTest
@@ -96,8 +97,8 @@ class InitializerExceptionTest : WordSpec({
    var error: Throwable? = null
 
    val listener = object :  AbstractTestEngineListener() {
-      override suspend fun specFinished(kclass: KClass<*>, t: Throwable?) {
-         if (t != null) error = t
+      override suspend fun executionFinished(node: Node, result: TestResult) {
+         if (result.errorOrNull != null) error = result.errorOrNull
       }
    }
 

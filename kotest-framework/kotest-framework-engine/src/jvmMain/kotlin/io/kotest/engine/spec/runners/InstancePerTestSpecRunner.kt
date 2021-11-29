@@ -10,6 +10,7 @@ import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestScope
 import io.kotest.core.test.TestType
+import io.kotest.engine.listener.Node
 import io.kotest.engine.listener.TestEngineListener
 import io.kotest.engine.spec.Materializer
 import io.kotest.engine.spec.SpecExtensions
@@ -145,15 +146,15 @@ internal class InstancePerTestSpecRunner(
          val testExecutor = TestCaseExecutor(
             object : TestCaseExecutionListener {
                override suspend fun testStarted(testCase: TestCase) {
-                  if (isTarget) listener.testStarted(testCase)
+                  if (isTarget) listener.executionStarted(Node.Test(testCase))
                }
 
                override suspend fun testIgnored(testCase: TestCase, reason: String?) {
-                  if (isTarget) listener.testIgnored(testCase, reason)
+                  if (isTarget) listener.executionIgnored(Node.Test(testCase), reason)
                }
 
                override suspend fun testFinished(testCase: TestCase, result: TestResult) {
-                  if (isTarget) listener.testFinished(testCase, result)
+                  if (isTarget) listener.executionFinished(Node.Test(testCase), result)
                }
             },
             defaultCoroutineDispatcherFactory,

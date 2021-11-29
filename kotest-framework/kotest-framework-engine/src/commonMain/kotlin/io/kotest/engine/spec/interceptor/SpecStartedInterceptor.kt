@@ -4,6 +4,7 @@ import io.kotest.common.flatMap
 import io.kotest.core.spec.SpecRef
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
+import io.kotest.engine.listener.Node
 import io.kotest.engine.listener.TestEngineListener
 
 /**
@@ -15,7 +16,7 @@ internal class SpecStartedInterceptor(private val listener: TestEngineListener) 
       ref: SpecRef,
       fn: suspend (SpecRef) -> Result<Map<TestCase, TestResult>>
    ): Result<Map<TestCase, TestResult>> {
-      return runCatching { listener.specStarted(ref.kclass) }
+      return runCatching { listener.executionStarted(Node.Spec(ref.kclass)) }
          .flatMap { fn(ref) }
    }
 }
