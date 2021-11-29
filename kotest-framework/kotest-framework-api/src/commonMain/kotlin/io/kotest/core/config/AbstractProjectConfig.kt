@@ -238,6 +238,16 @@ abstract class AbstractProjectConfig {
    open var dispatcherAffinity: Boolean? = null
 
    /**
+    * If set to true then the test engine will install a [TestCoroutineDispatcher].
+    *
+    * This can be retrieved via `delayController` in your tests.
+    *
+    * @see https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-test/index.html
+    */
+   @ExperimentalKotest
+   var testCoroutineDispatcher: Boolean = Defaults.testCoroutineDispatcher
+
+   /**
     * Executed before the first test of the project, but after the
     * [ProjectListener.beforeProject] methods.
     */

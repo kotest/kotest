@@ -5,13 +5,9 @@ import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestScope
 import io.kotest.engine.test.scopes.withCoroutineContext
 import io.kotest.mpp.Logger
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.test.TestCoroutineDispatcher
 import kotlinx.coroutines.withContext
-import kotlinx.coroutines.withTimeoutOrNull
 
 /**
  * A [TestExecutionInterceptor] that uses a [TestCoroutineDispatcher] as the coroutine
@@ -35,25 +31,4 @@ actual class TestCoroutineDispatcherInterceptor : TestExecutionInterceptor {
          test(testCase, scope.withCoroutineContext(dispatcher))
       }
    }
-}
-
-suspend fun main() {
-   coroutineScope {
-      println("c")
-      val r = withContext(Dispatchers.IO) {
-         withTimeoutOrNull(10) {
-            println("d")
-            try {
-               delay(100)
-               "foo"
-            } catch (t: Throwable) {
-               println(t.message)
-               "bar"
-            }
-         }
-      }
-      println("Result=$r")
-      println("f")
-   }
-   println("g")
 }

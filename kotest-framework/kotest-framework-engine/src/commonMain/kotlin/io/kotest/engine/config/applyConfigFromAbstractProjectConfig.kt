@@ -46,8 +46,9 @@ internal fun applyConfigFromProjectConfig(config: AbstractProjectConfig, configu
    // config
    config.defaultTestCaseConfig?.let { configuration.defaultTestConfig = it }
 
-   // debug
+   // coroutines
    config.coroutineDebugProbes?.let { configuration.coroutineDebugProbes = it }
+   config.testCoroutineDispatcher?.let { configuration.testCoroutineDispatcher = it }
 
    // the project config object allows us to define project event methods, which we
    // wrap into a project listener and register as normal
