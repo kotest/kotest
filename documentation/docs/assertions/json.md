@@ -36,61 +36,51 @@ and
 The inverse of this matcher is `shouldNotEqualJson` which will error if two JSON strings
 _are_ considered equal.
 
-### CompareMode
+### compareJsonOptions
+`shouldEqualJson` supports an additional parameter of type `CompareJsonOptions` which supports the following flags to toggle behaviour of the JSON comparison:
 
-`shouldEqualJson` supports a parameter called `CompareMode` which can be used to guide comparison of types that contain
-compatible values.
+#### Usage:
 
-By setting this to `CompareMode.Lenient`, types that can be coerced to match are considered equal. For example,
-the string value `"true"` and the boolean value `true` will be considered equal if compare mode is lenient.
+Options can be specified inline, like:
+```kotlin
+a.shouldEqualJson(b, compareJsonOptions { arrayOrder = ArrayOrder.Strict })
+```
 
-Similarly, the string value `"123"` and the number value `123` will match in lenient mode.
+Another option is to define a compare function which suits your desires, like:
+```kotlin
+val myOptions = compareJsonOptions {
+   typeCoercion = TypeCoercion.Enabled
+   arrayOrder = ArrayOrder.Lenient
+}
 
-For example:
+infix fun String.lenientShouldEqualJson(other: String) = this.shouldEqualJson(other, myOptions)
+
+"[1, 2]" lenientShouldEqualJson "[2, 1]" // This will pass
+```
+
+#### Parameters
+| Name  | Purpose  | Possible values | Default value |
+|---|---|---|---|
+| `PropertyOrder`  | Determines if the order of properties in JSON objects are considered when comparing | `PropertyOrder.Strict`, `PropertyOrder.Lenient`  |  `PropertyOrder.Lenient`, i.e. order of properties *DON'T* matter  |
+| `ArrayOrder`  | Determines if the order of elements in JSON arrays are considered when comparing | `ArrayOrder.Strict`, `ArrayOrder.Lenient`  | `ArrayOrder.Strict`, i.e. order of elements *DO* matter |
+| `FieldComparison`  | Determines if comparison will fail if JSON objects `actual` contain extra properties, when compared to `expected`  | `FieldComparison.Strict`, `FieldComparison.Lenient` | `FieldComparison.Strict`, i.e. extra properties will cause inequality |
+| `NumberFormat`  | Determines if comparison of numbers are strict with regards to number format. For instance, if 100.0 and 100 are considered equal.  | `NumberFormat.Strict`, `NumberFormat.Lenient`  | `NumberFormat.Lenient`, i.e. number formats *DON'T* matter  |
+| `TypeCoercion` | Determines if types will try to be coerced, for instance when a string contains a number or boolean value  | `TypeCoercion.Enabled`, `TypeCoercion.Disabled`  | `TypeCoercion.Disabled`, i.e. types will *NOT* be coerced  |
+
+Targets: **JVM**, **JS**
+
+### shouldEqualSpecifiedJson
+Alias for `shouldEqualJson`, with default options except `FieldComparison` which is set to `FieldComparison.Lenient` instead.
 
 ```kotlin
-val a = """ { "a": "true", "b": "123" } """
-val b = """ { "a": true, "b": 123 } """
+val a = """ { "a": true, "date": "2019-11-03" } """
+val b = """ { "a": true } """
 
 // this would pass
-a.shouldEqualJson(b, CompareOrder.Lenient)
+a shouldEqualSpecifiedJson b
 
 // this would fail
-a.shouldEqualJson(b)
-```
-
-:::note
-Longs and doubles will always attempt to match regardless of this setting.
-:::
-
-The default is `CompareMode.Strict` which will consider any values unequal if they have different types.
-
-### CompareOrder
-
-`shouldEqualJson` additionally supports a parameter called `CompareOrder` which can be used to force object comparision
-to consider field order. By default, the order of fields in an object does not matter, and so
-
-```json
-{ "a": "foo", "b": "bar" }
-```
-
-and
-
-```json
-{ "b": "bar", "a": "foo" }
-```
-
-would be considered equal. Setting this parameter to `CompareOrder.Strict` means that the above example would fail. For example:
-
-```kotlin
-val a = """ { "a": "foo", "b": "bar" } """
-val b = """ { "b": "bar", "a": "foo" } """
-
-// this would fail
-a.shouldEqualJson(b, CompareOrder.Strict)
-
-// this would pass
-a.shouldEqualJson(b)
+a shouldEqualJson b
 ```
 
 Targets: **JVM**, **JS**
@@ -113,7 +103,7 @@ Targets: **JVM**
 
 ## shouldMatchJsonResource
 
-`json?.shouldContainJsonKey("$.json.path")` asserts that the JSON is equal to the existing `/file.json` ignoring properties' order and formatting.
+`json?.shouldMatchJsonResource("/file.json")` asserts that the JSON is equal to the existing test reosource `/file.json`, ignoring properties' order and formatting.
 
 Targets: **JVM**
 

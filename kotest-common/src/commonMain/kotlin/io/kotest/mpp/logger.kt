@@ -1,17 +1,41 @@
 package io.kotest.mpp
 
-@PublishedApi
-internal val isLoggingEnabled by lazy { sysprop("KOTEST_DEBUG") != null || env("KOTEST_DEBUG") != null }
+import kotlin.reflect.KClass
+import kotlin.time.ExperimentalTime
+import kotlin.time.TimeMark
+import kotlin.time.TimeSource
 
-inline fun log(f: () -> String) {
-   if (isLoggingEnabled) {
-      println(timeInMillis().toString() + " " + f())
+val start = TimeSource.Monotonic.markNow()
+
+@PublishedApi
+internal fun isLoggingEnabled() =
+   sysprop("KOTEST_DEBUG")?.uppercase() == "TRUE" || env("KOTEST_DEBUG")?.uppercase() == "TRUE"
+
+class Logger(private val kclass: KClass<*>) {
+   fun log(f: () -> Pair<String?, String>) {
+      log(null) {
+         val (testName, message) = f()
+         listOf(
+            (kclass.simpleName ?: "").padEnd(50, ' '),
+            (testName ?: "").padEnd(70, ' ').take(70),
+            message
+         ).joinToString("  ")
+      }
    }
 }
 
-inline fun log(t: Throwable?, f: () -> String) {
-   if (isLoggingEnabled) {
-      println(timeInMillis().toString() + " " + f())
+@OverloadResolutionByLambdaReturnType
+fun log(f: () -> String) {
+   log(null, f)
+}
+
+fun log(t: Throwable?, f: () -> String) {
+   if (isLoggingEnabled()) {
+      writeLog(start, t, f)
+      println(start.elapsedNow().inWholeMicroseconds.toString() + "  " + f())
       if (t != null) println(t)
    }
 }
+
+@ExperimentalTime
+expect fun writeLog(start: TimeMark, t: Throwable?, f: () -> String)

@@ -2,6 +2,7 @@
 
 package io.kotest.core
 
+import io.kotest.common.SoftDeprecated
 import io.kotest.core.extensions.Extension
 import io.kotest.core.extensions.TestCaseExtension
 import io.kotest.core.listeners.TestListener
@@ -17,16 +18,13 @@ import io.kotest.core.spec.BeforeContainer
 import io.kotest.core.spec.BeforeEach
 import io.kotest.core.spec.BeforeSpec
 import io.kotest.core.spec.BeforeTest
-import io.kotest.core.spec.PrepareSpec
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.TestCaseExtensionFn
 import io.kotest.core.test.AssertionMode
-import io.kotest.core.test.DescriptionName
 import io.kotest.core.test.TestCase
-import io.kotest.core.test.TestCaseConfig
-import io.kotest.core.test.TestContext
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestType
+import io.kotest.core.test.config.TestCaseConfig
 import kotlin.js.JsName
 
 /**
@@ -37,9 +35,6 @@ abstract class TestConfiguration {
    @JsName("_tags")
    internal var _tags: Set<Tag> = emptySet()
 
-   @JsName("_listeners")
-   internal var _listeners = emptyList<TestListener>()
-
    @JsName("_extensions")
    internal var _extensions = emptyList<Extension>()
 
@@ -47,35 +42,50 @@ abstract class TestConfiguration {
 
    /**
     * Config applied to each test case if not overridden per test case.
-    * If left null, then defaults to the project default.
+    * If null, then defaults to the project level default.
+    *
+    * Any test case config set a test itself will override any value here.
     */
+   @Deprecated("These settings should be specified individually to provide finer grain control. Deprecated since 5.0")
    var defaultTestConfig: TestCaseConfig? = null
 
    /**
     * Sets an assertion mode which is applied to every test.
-    * If null, then the the project default is used.
+    * If null, then the project default is used.
     */
    var assertions: AssertionMode? = null
+
+   var assertSoftly: Boolean? = null
 
    /**
     * Register a single [TestListener] of type T return that listener.
     */
+   @SoftDeprecated("Use register")
    fun <T : TestListener> listener(listener: T): T {
-      listeners(listener)
-      return listener
+      return register(listener)
    }
 
    /**
     * Register multiple [TestListener]s.
     */
+   @SoftDeprecated("Use register")
    fun listeners(listeners: List<TestListener>) {
-      _listeners += listeners
+      register(listeners)
    }
 
    /**
     * Register multiple [TestListener]s.
     */
-   fun listeners(vararg listener: TestListener) = listeners(listener.toList())
+   @SoftDeprecated("Use register")
+   fun listeners(vararg listeners: TestListener) = register(listeners.toList())
+
+   /**
+    * Register a single [TestListener] of type T return that listener.
+    */
+   fun <T : TestListener> register(extension: T): T {
+      register(listOf(extension))
+      return extension
+   }
 
    /**
     * Register a single [TestCaseExtension] of type T return that extension.
@@ -85,11 +95,26 @@ abstract class TestConfiguration {
       return extension
    }
 
+   fun register(vararg extensions: Extension) {
+      register(extensions.toList())
+   }
+
+   fun register(extensions: List<Extension>) {
+      _extensions = _extensions + extensions
+   }
+
    /**
-    * Register multiple [TestCaseExtension]s.
+    * Register multiple [Extension]s.
     */
    fun extensions(vararg extensions: Extension) {
-      _extensions += extensions.toList()
+      register(extensions.toList())
+   }
+
+   /**
+    * Register multiple [Extension]s.
+    */
+   fun extensions(extensions: List<Extension>) {
+      register(extensions)
    }
 
    /**
@@ -101,6 +126,8 @@ abstract class TestConfiguration {
    fun tags(vararg tags: Tag) {
       _tags = _tags + tags.toSet()
    }
+
+   fun appliedTags() = _tags
 
    /**
     * Registers an [AutoCloseable] to be closed when the spec is completed.
@@ -117,21 +144,14 @@ abstract class TestConfiguration {
       return closeable
    }
 
-   abstract fun addTest(
-      name: DescriptionName.TestName,
-      test: suspend TestContext.() -> Unit,
-      config: TestCaseConfig,
-      type: TestType
-   )
-
    /**
     * Registers a callback to be executed before every [TestCase].
     *
     * The [TestCase] about to be executed is provided as the parameter.
     */
-   fun beforeTest(f: BeforeTest) {
-      listener(object : TestListener {
-         override suspend fun beforeTest(testCase: TestCase) {
+   open fun beforeTest(f: BeforeTest) {
+      register(object : TestListener {
+         override suspend fun beforeAny(testCase: TestCase) {
             f(testCase)
          }
       })
@@ -143,9 +163,9 @@ abstract class TestConfiguration {
     * The callback provides two parameters - the test case that has just completed,
     * and the [TestResult] outcome of that test.
     */
-   fun afterTest(f: AfterTest) {
-      listener(object : TestListener {
-         override suspend fun afterTest(testCase: TestCase, result: TestResult) {
+   open fun afterTest(f: AfterTest) {
+      register(object : TestListener {
+         override suspend fun afterAny(testCase: TestCase, result: TestResult) {
             f(Tuple2(testCase, result))
          }
       })
@@ -158,7 +178,7 @@ abstract class TestConfiguration {
     * The [TestCase] about to be executed is provided as the parameter.
     */
    fun beforeContainer(f: BeforeContainer) {
-      listener(object : TestListener {
+      register(object : TestListener {
          override suspend fun beforeContainer(testCase: TestCase) {
             f(testCase)
          }
@@ -173,7 +193,7 @@ abstract class TestConfiguration {
     * and the [TestResult] outcome of that test.
     */
    fun afterContainer(f: AfterContainer) {
-      listener(object : TestListener {
+      register(object : TestListener {
          override suspend fun afterContainer(testCase: TestCase, result: TestResult) {
             f(Tuple2(testCase, result))
          }
@@ -187,7 +207,7 @@ abstract class TestConfiguration {
     * The [TestCase] about to be executed is provided as the parameter.
     */
    fun beforeEach(f: BeforeEach) {
-      listener(object : TestListener {
+      register(object : TestListener {
          override suspend fun beforeEach(testCase: TestCase) {
             f(testCase)
          }
@@ -202,7 +222,7 @@ abstract class TestConfiguration {
     * and the [TestResult] outcome of that test.
     */
    fun afterEach(f: AfterEach) {
-      listener(object : TestListener {
+      register(object : TestListener {
          override suspend fun afterEach(testCase: TestCase, result: TestResult) {
             f(Tuple2(testCase, result))
          }
@@ -216,7 +236,7 @@ abstract class TestConfiguration {
     * The [TestCase] about to be executed is provided as the parameter.
     */
    fun beforeAny(f: BeforeAny) {
-      listener(object : TestListener {
+      register(object : TestListener {
          override suspend fun beforeAny(testCase: TestCase) {
             f(testCase)
          }
@@ -231,7 +251,7 @@ abstract class TestConfiguration {
     * and the [TestResult] outcome of that test.
     */
    fun afterAny(f: AfterAny) {
-      listener(object : TestListener {
+      register(object : TestListener {
          override suspend fun afterAny(testCase: TestCase, result: TestResult) {
             f(Tuple2(testCase, result))
          }
@@ -243,7 +263,7 @@ abstract class TestConfiguration {
     * The spec instance is provided as a parameter.
     */
    fun beforeSpec(f: BeforeSpec) {
-      listener(object : TestListener {
+      register(object : TestListener {
          override suspend fun beforeSpec(spec: Spec) {
             f(spec)
          }
@@ -264,8 +284,8 @@ abstract class TestConfiguration {
     * Registers a callback to be executed after all tests in this spec.
     * The spec instance is provided as a parameter.
     */
-   fun afterSpec(f: AfterSpec) {
-      listener(object : TestListener {
+   open fun afterSpec(f: AfterSpec) {
+      register(object : TestListener {
          override suspend fun afterSpec(spec: Spec) {
             f(spec)
          }
@@ -281,22 +301,12 @@ abstract class TestConfiguration {
       })
    }
 
-   /**
-    * Returns any [TestListener] instances registered directly on this class.
-    */
-   fun registeredListeners() = _listeners
-
    fun registeredAutoCloseables(): List<Lazy<AutoCloseable>> = _autoCloseables.toList()
 
    /**
-    * Returns any [TestCaseExtension] instances registered directly on this class.
+    * Returns any [Extension] instances registered directly on this class.
     */
-   fun registeredExtensions() = _extensions
-
-   @Deprecated(
-      "Cannot use inline version of prepare spec since this must run before the spec is created. Create a TestListener instance and register that globally.",
-      level = DeprecationLevel.ERROR
-   )
-   fun prepareSpec(f: PrepareSpec) {
+   fun registeredExtensions(): List<Extension> {
+      return _extensions.toList()
    }
 }

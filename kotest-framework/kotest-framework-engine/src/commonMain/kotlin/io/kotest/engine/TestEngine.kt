@@ -1,74 +1,77 @@
 package io.kotest.engine
 
-import io.kotest.core.config.configuration
-import io.kotest.core.spec.Spec
-import io.kotest.engine.extensions.EmptyTestSuiteExtension
-import io.kotest.engine.extensions.EngineExtension
-import io.kotest.engine.extensions.SpecStyleValidationExtension
-import io.kotest.engine.extensions.TestDslStateExtensions
-import io.kotest.engine.listener.NoopTestEngineListener
+import io.kotest.common.ExperimentalKotest
+import io.kotest.common.KotestInternal
+import io.kotest.common.Platform
+import io.kotest.common.platform
+import io.kotest.core.TagExpression
+import io.kotest.core.config.ProjectConfiguration
+import io.kotest.core.project.TestSuite
+import io.kotest.engine.interceptors.EngineContext
+import io.kotest.engine.interceptors.EngineInterceptor
 import io.kotest.engine.listener.TestEngineListener
-import kotlin.reflect.KClass
+import io.kotest.engine.tags.runtimeTags
+import io.kotest.mpp.Logger
 
+data class EngineResult(val errors: List<Throwable>) {
+
+   companion object {
+      val empty = EngineResult(emptyList())
+   }
+
+   fun addError(t: Throwable): EngineResult {
+      return EngineResult(errors + t)
+   }
+}
+
+@KotestInternal
 data class TestEngineConfig(
    val listener: TestEngineListener,
-   val extensions: List<EngineExtension>,
-) {
-   companion object {
-      fun default(): TestEngineConfig {
-
-         val engineExtensions = listOfNotNull(
-            TestDslStateExtensions,
-            SpecStyleValidationExtension,
-            if (configuration.failOnEmptyTestSuite) EmptyTestSuiteExtension else null,
-         )
-
-         return TestEngineConfig(
-            listener = NoopTestEngineListener,
-            extensions = engineExtensions,
-         )
-      }
-   }
-}
-
-data class EngineResult(val errors: List<Throwable>)
+   val interceptors: List<EngineInterceptor>,
+   val configuration: ProjectConfiguration,
+   val explicitTags: TagExpression?,
+)
 
 /**
- * Contains the discovered specs that will be executed.
- *
- * On the platforms that lack reflective capability, the specs are pre-instantiated before
- * they are passed to the engine. On the JVM, the class definition is instead used.
+ * Multiplatform Kotest Test Engine.
  */
-data class TestSuite(val specs: List<Spec>, val classes: List<KClass<out Spec>>)
+@KotestInternal
+class TestEngine(private val config: TestEngineConfig) {
 
-class TestEngine(val config: TestEngineConfig) {
-
-   fun execute(suite: TestSuite) {
-      require(suite.specs.isNotEmpty()) { "Cannot invoke the engine with no specs" }
-
-      val innerExecute: (TestSuite, TestEngineListener) -> EngineResult =
-         { ts, tel -> execute(ts.specs, tel) }
-
-      val execute = config.extensions.foldRight(innerExecute) { extension, next ->
-         { ts, tel -> extension.intercept(ts, tel, next) }
-      }
-
-      execute(suite, config.listener)
-   }
-
-   private fun execute(specs: List<Spec>, listener: TestEngineListener): EngineResult {
-      if (specs.isNotEmpty()) {
-         val runner = SpecRunner()
-         runner.execute(specs.first()) { execute(specs.drop(1), listener) }
-      }
-      return EngineResult(emptyList())
-   }
-}
-
-expect class SpecRunner() {
+   private val logger = Logger(this::class)
 
    /**
-    * Execute the given [spec] and invoke the [onComplete] callback once finished.
+    * Starts execution of the given [TestSuite], intercepting calls via [EngineInterceptor]s.
+    *
+    * It is recommended that this method is not invoked, but instead the engine
+    * is launched via the [TestEngineLauncher].
     */
-   fun execute(spec: Spec, onComplete: suspend () -> Unit)
+   @OptIn(KotestInternal::class, ExperimentalKotest::class)
+   internal suspend fun execute(suite: TestSuite): EngineResult {
+      logger.log { Pair(null, "Executing test suite with ${suite.specs.size} specs") }
+
+      val innerExecute: suspend (EngineContext) -> EngineResult = { context ->
+         val scheduler = when (platform) {
+            Platform.JVM -> ConcurrentTestSuiteScheduler(
+               config.configuration.concurrentSpecs ?: config.configuration.parallelism,
+               context,
+            )
+            Platform.JS -> SequentialTestSuiteScheduler(context)
+            Platform.Native -> SequentialTestSuiteScheduler(context)
+         }
+         scheduler.schedule(context.suite, context.listener)
+      }
+
+      logger.log { Pair(null, "${config.interceptors.size} engine interceptors") }
+
+      val execute = config.interceptors.foldRight(innerExecute) { extension, next ->
+         { context -> extension.intercept(context, next) }
+      }
+
+      val tags = config.configuration.runtimeTags()
+      logger.log { Pair(null, "TestEngine: Active tags: ${tags.expression}") }
+
+      return execute(EngineContext(suite, config.listener, tags, config.configuration))
+   }
 }
+

@@ -70,7 +70,7 @@ inline fun <reified T : Throwable> shouldNotThrowUnit(block: () -> Unit) = shoul
  *
  * If you wish to test for a specific class strictly (excluding subclasses), use [shouldThrowExactly] instead.
  *
- * If you don't care about the thrown exception, use [shouldThrowAny].
+ * If you don't care about which exception is thrown, then use [shouldThrowAny].
  *
  * **Attention to assignment operations**:
  *

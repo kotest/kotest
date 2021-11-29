@@ -7,6 +7,7 @@ import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.collections.shouldNotBeEmpty
 import io.kotest.matchers.sequences.shouldBeEmpty
 import io.kotest.matchers.sequences.shouldNotBeEmpty
+import io.kotest.matchers.shouldBe
 
 class BeEmptyTest : WordSpec() {
    init {
@@ -31,43 +32,50 @@ class BeEmptyTest : WordSpec() {
          "fail for single element list" {
             shouldThrowAny {
                listOf(0).shouldBeEmpty()
-            }
+            }.message shouldBe "Collection should be empty but contained 0"
          }
 
          "fail for single element set" {
             shouldThrowAny {
                setOf(0).shouldBeEmpty()
-            }
+            }.message shouldBe "Collection should be empty but contained 0"
          }
 
          "fail for single element array" {
             shouldThrowAny {
                arrayOf(0).shouldBeEmpty()
-            }
+            }.message shouldBe "Array should be empty but contained 0"
          }
 
          "fail for single element sequence" {
             shouldThrowAny {
                sequenceOf(0).shouldBeEmpty()
-            }
+            }.message shouldBe "Sequence should be empty"
          }
 
-         "fail for nulls" {
+         "fail for sequence of nulls" {
             shouldThrowAny {
                sequenceOf<Int?>(null, null, null, null).shouldBeEmpty()
-            }
+            }.message shouldBe "Sequence should be empty"
          }
 
-         "fail for null reference" {
+         "fail for null list reference" {
             val maybeList: List<String>? = null
             shouldThrowAny {
                maybeList.shouldBeEmpty()
-            }
+            }.message shouldBe "Expected an array collection but was null"
          }
 
-         "chain for non-null nullable reference" {
+         "fail for null set reference" {
+            val maybeSet: Set<String>? = null
+            shouldThrowAny {
+               maybeSet.shouldBeEmpty()
+            }.message shouldBe "Expected an array collection but was null"
+         }
+
+         "return non nullable reference" {
             val maybeList: List<Int>? = listOf()
-            maybeList.shouldBeEmpty().shouldHaveSize(0)
+            maybeList.shouldBeEmpty().size
          }
       }
 

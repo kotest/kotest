@@ -1,33 +1,42 @@
 package io.kotest.engine.timeout
 
-import io.kotest.core.spec.TestCaseExtensionFn
+import io.kotest.core.internal.KotestEngineProperties
 import io.kotest.core.spec.style.FunSpec
-import io.kotest.core.test.TestResult
-import io.kotest.core.test.TestStatus
-import io.kotest.engine.test.toTestResult
+import io.kotest.engine.TestEngineLauncher
+import io.kotest.engine.listener.CollectingTestEngineListener
+import io.kotest.extensions.system.withSystemProperty
+import io.kotest.matchers.shouldBe
 import kotlinx.coroutines.delay
 
 class SystemPropertyTimeoutTest : FunSpec() {
    init {
-      extension(expectFailureExtension)
-      context("using system property timeouts") {
-         test("this test should timeout due to 2000 test timeout").config(invocations = 6) {
-            delay(500)
+
+      test("system properties can be used for test timeouts") {
+         withSystemProperty(KotestEngineProperties.timeout, "500") {
+            val collector = CollectingTestEngineListener()
+            TestEngineLauncher(collector)
+               .withClasses(TimeoutTest::class)
+               .launch()
+            collector.tests.mapKeys { it.key.name.testName }["a"]?.isError shouldBe true
          }
-         test("this test should timeout due to 1000 invocation timeout").config(invocations = 1) {
-            delay(1500)
+      }
+
+      test("system properties can be used for invocation timeouts") {
+         withSystemProperty(KotestEngineProperties.invocationTimeout, "10") {
+            val collector = CollectingTestEngineListener()
+            TestEngineLauncher(collector)
+               .withClasses(TimeoutTest::class)
+               .launch()
+            collector.tests.mapKeys { it.key.name.testName }["a"]?.isError shouldBe true
          }
       }
    }
 }
 
-/**
- * A Test Case extension that expects each test to fail, and will invert the test result.
- */
-val expectFailureExtension: TestCaseExtensionFn = { (testCase, execute) ->
-   val result = execute(testCase)
-   when (result.status) {
-      TestStatus.Failure, TestStatus.Error -> TestResult.success(0)
-      else -> AssertionError("${testCase.description.name.name} passed but should fail").toTestResult(0)
+private class TimeoutTest : FunSpec() {
+   init {
+      test("a").config(invocations = 1000000) {
+         delay(100)
+      }
    }
 }

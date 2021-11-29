@@ -7,10 +7,7 @@ sealed class JsonNode {
       is ArrayNode -> "array"
       is BooleanNode -> "boolean"
       is StringNode -> "string"
-      is LongNode -> "long"
-      is DoubleNode -> "double"
-      is IntNode -> "int"
-      is FloatNode -> "float"
+      is NumberNode -> "number"
       NullNode -> "null"
    }
 
@@ -22,15 +19,37 @@ sealed class JsonNode {
 
    data class BooleanNode(val value: Boolean) : JsonNode(), ValueNode
 
-   data class StringNode(val value: String) : JsonNode(), ValueNode
+   data class StringNode(val value: String) : JsonNode(), ValueNode {
 
-   data class FloatNode(val value: Float) : JsonNode(), ValueNode
+      companion object {
 
-   data class LongNode(val value: Long) : JsonNode(), ValueNode
+         private val numberRegex = """-?([1-9]\d*|0)(\.\d+)?([eE][+-]?\d+)?""".toRegex()
+      }
 
-   data class DoubleNode(val value: Double) : JsonNode(), ValueNode
+      internal fun contentIsNumber() = value.matches(numberRegex)
+      internal fun toNumberNode() = NumberNode(value)
+   }
 
-   data class IntNode(val value: Int) : JsonNode(), ValueNode
+   data class NumberNode(val content: String) : JsonNode(), ValueNode {
+
+      companion object {
+
+         private val exponentRegex = """.+[eE][+-]?\d+""".toRegex()
+      }
+
+      fun asString() = if (content.matches(exponentRegex)) content.toDouble().toString() else content
+   }
 
    object NullNode : JsonNode(), ValueNode
+}
+
+internal fun show(node: JsonNode): String {
+   return when (node) {
+      is JsonNode.ArrayNode -> "[${node.elements.joinToString(separator = ",") { show(it) }}]"
+      is JsonNode.BooleanNode -> node.value.toString()
+      JsonNode.NullNode -> "null"
+      is JsonNode.NumberNode -> node.content
+      is JsonNode.ObjectNode -> "{${node.elements.map { "\"${it.key}\": ${show(it.value)}" }.joinToString(separator = ",")}}"
+      is JsonNode.StringNode -> node.value
+   }
 }

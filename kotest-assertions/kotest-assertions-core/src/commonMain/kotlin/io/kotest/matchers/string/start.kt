@@ -1,6 +1,6 @@
 package io.kotest.matchers.string
 
-import io.kotest.assertions.show.show
+import io.kotest.assertions.print.print
 import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
 import io.kotest.matchers.neverNullMatcher
@@ -20,8 +20,8 @@ infix fun <A : CharSequence?> A.shouldNotStartWith(prefix: CharSequence): A {
 
 fun startWith(prefix: CharSequence): Matcher<CharSequence?> = neverNullMatcher { value ->
    val ok = value.startsWith(prefix)
-   var msg = "${value.show().value} should start with ${prefix.show().value}"
-   val notmsg = "${value.show().value} should not start with ${prefix.show().value}"
+   var msg = "${value.print().value} should start with ${prefix.print().value}"
+   val notmsg = "${value.print().value} should not start with ${prefix.print().value}"
    if (!ok) {
       for (k in 0 until min(value.length, prefix.length)) {
          if (value[k] != prefix[k]) {
@@ -30,5 +30,8 @@ fun startWith(prefix: CharSequence): Matcher<CharSequence?> = neverNullMatcher {
          }
       }
    }
-   MatcherResult(ok, msg, notmsg)
+   MatcherResult(
+      ok,
+      { msg },
+      { notmsg })
 }

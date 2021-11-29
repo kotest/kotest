@@ -1,7 +1,7 @@
 package io.kotest.mpp
 
 import io.kotest.core.annotation.Ignored
-import io.kotest.core.spec.Isolate
+import io.kotest.core.annotation.Isolate
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldBe

@@ -1,7 +1,7 @@
 package com.sksamuel.kotest.autoscan
 
 import io.kotest.core.listeners.ProjectListener
-import io.kotest.core.spec.AutoScan
+import io.kotest.core.annotation.AutoScan
 
 object Container {
    var results = ""

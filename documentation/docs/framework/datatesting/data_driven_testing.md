@@ -6,17 +6,10 @@ slug: data-driven-testing.html
 
 
 :::note
-This section covers the new and improved data test support that was released with Kotest 4.6.0. Before it can be used,
-you need to add the module `kotest-framework-datatest` to your build.
-
-This new module is currently under experimental stage and uses `ExperimentalKotest` annotation which means in your tests
-you might get warning regarding usage of `ExperimentalKotest`, in case you do not want this warning you will need to use
-either `@OptIn(ExperimentalKotest::class)` or `@ExperimentalKotest` annotation at your test method or test class.
-Along with that you will have to pass `-Xopt-in=kotlin.RequiresOptIn` compiler argument to your kotlin compiler using your build
-tool. In future release when this module will become more stable we will remove this `@ExperimentalKotest`.
+This section covers the new and improved data driven testing support that was released with Kotest 4.6.0.
+Before it can be used, you need to add the module `kotest-framework-datatest` to your build.
 
 To view the documentation for the previous data test support, [click here](data_driven_testing_4.2.0.md)
-
 :::
 
 
@@ -75,7 +68,7 @@ for each.
 
 ![data test example output](datatest1.png)
 
-The test names are generated from the data classes themselves but can be [customized](#custom-test-names).
+The test names are generated from the data classes themselves but can be [customized](test_names.md).
 
 If there is an error for any particular input row, then the test will fail and Kotest will output the values that
 failed. For example, if we change the previous example to include the row `PythagTriple(5, 4, 3)`
@@ -108,18 +101,6 @@ class MyTests : FunSpec({
 })
 ```
 
-
-## Stable Names
-
-When generating test names, Kotest needs a _stable_ test name. Otherwise, test reports can be messed up if the name used
-changes over the course of the test suite execution.
-
-Kotest will only use the `toString()` of the input class if it thinks the input class has a stable `toString()` value
-otherwise it will use the class name.
-
-You can force Kotest to use the `toString()` for test names by annotating your type with `@IsStableType`. Then
-the `toString()` will be used regardless.
-
-Alternatively, you can completely customize the display name of the test.
-See [customing test names](custom_test_names.md).
-
+:::caution
+Data tests can only be defined at the root or in container scopes. They cannot be defined inside leaf scopes.
+:::

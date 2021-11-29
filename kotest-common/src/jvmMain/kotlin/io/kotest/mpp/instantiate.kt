@@ -2,9 +2,10 @@
 
 package io.kotest.mpp
 
-import io.kotest.fp.Try
-
-fun <T> instantiate(klass: Class<T>): Try<T> = Try {
+/**
+ * Instantiates an instance of the given class, or if it is an object, returns that object instance
+ */
+fun <T> instantiateOrObject(klass: Class<T>): Result<T> = runCatching {
    when (val field = klass.declaredFields.find { it.name == "INSTANCE" }) {
       // if the static field for an object cannot be found, then instantiate
       null -> {

@@ -39,9 +39,10 @@ fun <T> containOnlyNulls() = object : Matcher<Collection<T>> {
    override fun test(value: Collection<T>) =
       MatcherResult(
          value.all { it == null },
-         "Collection should contain only nulls",
-         "Collection should not contain only nulls"
-      )
+         { "Collection should contain only nulls" },
+         {
+            "Collection should not contain only nulls"
+         })
 }
 
 fun <T> Iterable<T>.shouldContainNull(): Iterable<T> {
@@ -78,9 +79,8 @@ fun <T> containNull() = object : Matcher<Collection<T>> {
    override fun test(value: Collection<T>) =
       MatcherResult(
          value.any { it == null },
-         "Collection should contain at least one null",
-         "Collection should not contain any nulls"
-      )
+         { "Collection should contain at least one null" },
+         { "Collection should not contain any nulls" })
 }
 
 fun <T> Iterable<T>.shouldContainNoNulls(): Iterable<T> {

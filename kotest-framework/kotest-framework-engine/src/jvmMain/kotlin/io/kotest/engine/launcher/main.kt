@@ -1,31 +1,49 @@
 package io.kotest.engine.launcher
 
-import io.kotest.core.Tags
-import io.kotest.core.internal.KotestEngineProperties
-import io.kotest.engine.reporter.IsolatedReporter
+import io.kotest.common.KotestInternal
+import io.kotest.common.runBlocking
+import io.kotest.engine.listener.CollectingTestEngineListener
+import io.kotest.engine.listener.CompositeTestEngineListener
+import io.kotest.engine.listener.LoggingTestEngineListener
+import io.kotest.engine.listener.PinnedSpecTestEngineListener
+import io.kotest.engine.listener.ThreadSafeTestEngineListener
 import kotlin.system.exitProcess
 
 /**
  * The entry point for the launcher.
+ *
  * Parses the cli args, creates the reporter and passes them to the [execute] method.
+ *
+ * This is used by the kotest-intellij-plugin (and other third party clients).
+ * Therefore, the package name and args for this main method should remain backwards compatible.
  */
+@KotestInternal
 fun main(args: Array<String>) {
 
    val launcherArgs = parseLauncherArgs(args.toList())
-   val tags = Tags(launcherArgs.tagExpression)
 
-   val reporter = IsolatedReporter(createReporter(launcherArgs))
-   execute(
-      reporter,
-      launcherArgs.packageName,
-      launcherArgs.spec,
-      launcherArgs.testpath,
-      tags,
-      launcherArgs.dumpconfig ?: System.getProperty(KotestEngineProperties.dumpConfig) == "true"
+   val collector = CollectingTestEngineListener()
+   val listener = CompositeTestEngineListener(
+      listOf(
+         collector,
+         LoggingTestEngineListener,
+         ThreadSafeTestEngineListener(PinnedSpecTestEngineListener(createConsoleListener(launcherArgs))),
+      )
    )
 
+   runBlocking {
+      setupLauncher(launcherArgs, listener).fold(
+         { it.async() },
+         {
+            // if we couldn't create the launcher we'll display those errors
+            listener.engineStarted()
+            listener.engineFinished(listOf(it))
+         },
+      )
+   }
+
    // there could be threads in the background that will stop the launcher shutting down
-   // for example if a test keeps a thread running
+   // for example if a test keeps a thread running,
    // so we must force the exit
-   if (reporter.hasErrors()) exitProcess(-1) else exitProcess(0)
+   if (collector.errors) exitProcess(-1) else exitProcess(0)
 }

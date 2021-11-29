@@ -1,25 +1,14 @@
 plugins {
-   id("java")
-   id("kotlin-multiplatform")
-   id("java-library")
-   id("com.adarshr.test-logger")
-}
-
-repositories {
-   mavenCentral()
+   java
+   `java-library`
+   kotlin("multiplatform")
 }
 
 kotlin {
 
    targets {
 
-      jvm {
-         compilations.all {
-            kotlinOptions {
-               jvmTarget = "1.8"
-            }
-         }
-      }
+      jvm()
 
       js(BOTH) {
          browser()
@@ -31,16 +20,21 @@ kotlin {
       mingwX64()
 
       macosX64()
+      macosArm64()
+
       tvos()
+      tvosSimulatorArm64()
 
       watchosArm32()
       watchosArm64()
       watchosX86()
       watchosX64()
+      watchosSimulatorArm64()
 
       iosX64()
       iosArm64()
       iosArm32()
+      iosSimulatorArm64()
    }
 
    sourceSets {
@@ -50,7 +44,7 @@ kotlin {
             compileOnly(kotlin("stdlib"))
             implementation(kotlin("reflect"))
             api(project(Projects.Common))
-            api(project(Projects.AssertionsShared))
+            api(project(Projects.Assertions.Shared))
             implementation(Libs.Coroutines.coreCommon)
          }
       }
@@ -59,7 +53,15 @@ kotlin {
          dependsOn(commonMain)
          dependencies {
             implementation(Libs.Wumpz.diffutils)
-            implementation(Libs.rgxgen.rgxgen)
+            implementation(Libs.Rgxgen.rgxgen)
+            implementation(kotlin("reflect"))
+         }
+      }
+
+      val commonTest by getting {
+         dependencies {
+            implementation(project(Projects.Framework.engine))
+            implementation(project(Projects.Assertions.Core))
          }
       }
 
@@ -67,7 +69,6 @@ kotlin {
          dependsOn(jvmMain)
          dependencies {
             implementation(project(Projects.JunitRunner))
-            implementation(project(Projects.AssertionsCore))
          }
       }
 
@@ -75,7 +76,22 @@ kotlin {
          dependsOn(commonMain)
       }
 
+      val desktopTest by creating {
+         dependsOn(commonTest)
+         dependencies {
+            implementation(kotlin("test-common"))
+         }
+      }
+
+      val iosX64Test by getting {
+         dependsOn(desktopTest)
+      }
+
       val macosX64Main by getting {
+         dependsOn(desktopMain)
+      }
+
+      val macosArm64Main by getting {
          dependsOn(desktopMain)
       }
 
@@ -99,6 +115,10 @@ kotlin {
          dependsOn(desktopMain)
       }
 
+      val iosSimulatorArm64Main by getting {
+         dependsOn(desktopMain)
+      }
+
       val watchosArm32Main by getting {
          dependsOn(desktopMain)
       }
@@ -115,35 +135,23 @@ kotlin {
          dependsOn(desktopMain)
       }
 
+      val watchosSimulatorArm64Main by getting {
+         dependsOn(desktopMain)
+      }
+
       val tvosMain by getting {
          dependsOn(desktopMain)
       }
 
-      all {
-         languageSettings.useExperimentalAnnotation("kotlin.time.ExperimentalTime")
-         languageSettings.useExperimentalAnnotation("kotlin.experimental.ExperimentalTypeInference")
+      val tvosSimulatorArm64Main by getting {
+         dependsOn(desktopMain)
       }
-   }
-}
 
-tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
-   kotlinOptions.jvmTarget = "1.8"
-   kotlinOptions.apiVersion = "1.5"
-}
-
-tasks.named<Test>("jvmTest") {
-   useJUnitPlatform()
-   filter {
-      isFailOnNoMatchingTests = false
-   }
-   testLogging {
-      showExceptions = true
-      showStandardStreams = true
-      events = setOf(
-         org.gradle.api.tasks.testing.logging.TestLogEvent.FAILED,
-         org.gradle.api.tasks.testing.logging.TestLogEvent.PASSED
-      )
-      exceptionFormat = org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
+      all {
+         languageSettings.optIn("kotlin.time.ExperimentalTime")
+         languageSettings.optIn("kotlin.ExperimentalStdlibApi")
+         languageSettings.optIn("kotlin.experimental.ExperimentalTypeInference")
+      }
    }
 }
 

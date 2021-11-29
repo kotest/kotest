@@ -1,8 +1,10 @@
 package io.kotest.extensions.junit5
 
+import io.kotest.core.config.ProjectConfiguration
+import io.kotest.core.descriptors.toDescriptor
 import io.kotest.core.spec.Spec
 import io.kotest.core.test.TestCase
-import io.kotest.core.spec.toDescription
+import io.kotest.engine.test.names.getDisplayNameFormatter
 import org.junit.jupiter.api.TestInstance
 import org.junit.jupiter.api.extension.ExtensionContext
 import org.junit.jupiter.api.extension.TestInstances
@@ -13,17 +15,23 @@ import java.util.function.Function
 
 class KotestExtensionContext(
    private val spec: Spec,
-   private val test: TestCase?
+   private val testCase: TestCase?
 ) : ExtensionContext {
+
+   private val formatter = getDisplayNameFormatter(ProjectConfiguration().registry, ProjectConfiguration())
 
    override fun getParent(): Optional<ExtensionContext> = Optional.empty()
    override fun getRoot(): ExtensionContext = this
 
-   override fun getUniqueId(): String = spec::class.toDescription().id.value
+   override fun getUniqueId(): String = spec::class.toDescriptor().id.value
 
-   override fun getDisplayName(): String = when (test) {
-      null -> spec::class.toDescription().testDisplayPath().value
-      else -> test.displayName
+   override fun <T : Any?> getConfigurationParameter(key: String?, transformer: Function<String, T>?): Optional<T> {
+      return Optional.empty()
+   }
+
+   override fun getDisplayName(): String = when (testCase) {
+      null -> formatter.format(spec::class)
+      else -> formatter.format(testCase)
    }
 
    override fun getTags(): MutableSet<String> = spec.tags().map { it.name }.toMutableSet()
@@ -36,9 +44,9 @@ class KotestExtensionContext(
    override fun getTestInstanceLifecycle(): Optional<TestInstance.Lifecycle> =
       Optional.of(TestInstance.Lifecycle.PER_CLASS)
 
-   override fun getTestInstance(): Optional<Any> = when (test) {
+   override fun getTestInstance(): Optional<Any> = when (testCase) {
       null -> Optional.of(spec)
-      else -> Optional.of(test)
+      else -> Optional.of(testCase)
    }
 
    override fun getTestInstances(): Optional<TestInstances> = Optional.of(KotestTestInstances(spec))
@@ -58,7 +66,7 @@ class KotestTestInstances(private val instance: Spec) : TestInstances {
    override fun getInnermostInstance(): Any = instance
    override fun getEnclosingInstances(): MutableList<Any> = mutableListOf(instance)
    override fun getAllInstances(): MutableList<Any> = mutableListOf(instance)
-   override fun <T : Any?> findInstance(requiredType: Class<T>): Optional<T> =
+   override fun <T : Any> findInstance(requiredType: Class<T>): Optional<T> =
       when (requiredType.name) {
          instance::class.java.name -> Optional.of(instance as T)
          else -> Optional.empty()

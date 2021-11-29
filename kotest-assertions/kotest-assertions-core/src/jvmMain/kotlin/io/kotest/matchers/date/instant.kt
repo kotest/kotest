@@ -11,8 +11,8 @@ fun before(anotherInstant: Instant) = object : Matcher<Instant> {
    override fun test(value: Instant): MatcherResult {
       return MatcherResult(
          value.isBefore(anotherInstant),
-         {"Expected $value to be before $anotherInstant, but it's not."},
-         {"$anotherInstant is not expected to be before $value."}
+         { "Expected $value to be before $anotherInstant, but it's not." },
+         { "$anotherInstant is not expected to be before $value." }
       )
    }
 }
@@ -21,8 +21,8 @@ fun after(anotherInstant: Instant) = object : Matcher<Instant> {
    override fun test(value: Instant): MatcherResult {
       return MatcherResult(
          value.isAfter(anotherInstant),
-         {"Expected $value to be after $anotherInstant, but it's not."},
-         {"$anotherInstant is not expected to be after $value."}
+         { "Expected $value to be after $anotherInstant, but it's not." },
+         { "$anotherInstant is not expected to be after $value." }
       )
    }
 }

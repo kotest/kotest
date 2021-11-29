@@ -1,24 +1,13 @@
 plugins {
    id("java")
-   id("kotlin-multiplatform")
+   kotlin("multiplatform")
    id("java-library")
-   id("com.adarshr.test-logger")
-}
 
-repositories {
-   mavenCentral()
 }
 
 kotlin {
-
    targets {
-      jvm {
-         compilations.all {
-            kotlinOptions {
-               jvmTarget = "1.8"
-            }
-         }
-      }
+      jvm()
    }
 
    sourceSets {
@@ -32,8 +21,8 @@ kotlin {
       val jvmMain by getting {
          dependencies {
             implementation(project(Projects.Common))
-            implementation(project(Projects.Engine))
-            implementation(project(Projects.Api))
+            implementation(project(Projects.Framework.engine))
+            implementation(project(Projects.Framework.api))
             implementation(Libs.Coroutines.coreJvm)
             implementation(Libs.JUnitJupiter.api)
          }
@@ -47,25 +36,9 @@ kotlin {
       }
 
       all {
-         languageSettings.useExperimentalAnnotation("kotlin.time.ExperimentalTime")
-         languageSettings.useExperimentalAnnotation("kotlin.experimental.ExperimentalTypeInference")
+         languageSettings.optIn("kotlin.time.ExperimentalTime")
+         languageSettings.optIn("kotlin.experimental.ExperimentalTypeInference")
       }
-   }
-}
-
-tasks.named<Test>("jvmTest") {
-   useJUnitPlatform()
-   filter {
-      isFailOnNoMatchingTests = false
-   }
-   testLogging {
-      showExceptions = true
-      showStandardStreams = true
-      events = setOf(
-         org.gradle.api.tasks.testing.logging.TestLogEvent.FAILED,
-         org.gradle.api.tasks.testing.logging.TestLogEvent.PASSED
-      )
-      exceptionFormat = org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
    }
 }
 

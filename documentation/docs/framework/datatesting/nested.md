@@ -5,7 +5,7 @@ slug: nested-tests.html
 ---
 
 Kotest's data testing is extremely flexible and allows to unlimited nesting of data test constructs.
-Each extra nest will create another layer of nesting in the test output.
+Each extra nest will create another layer of nesting in the test output providing the cartesian join of all inputs.
 
 For example, in the following code snippet, we have two layers of nesting.
 
@@ -33,7 +33,7 @@ This would give output in intellij like:
 
 ![data test example output](datatest4.png)
 
-And then here is the same example, but this time with a custom test name on the second level:
+And then here is the same example, but this time with a [custom test name](test_names.md) on the second level:
 
 ```kotlin
 context("each service should support all http methods") {

@@ -15,7 +15,7 @@ Each test can be configured with various parameters. After the test name, invoke
 * `enabledIf` - A function which provides the same ability as `enabled` but is lazily evaluated when the test case is due for execution.
 * `timeout` - sets a timeout for this test. If the test has not finished in that time then the test fails. Useful for code that is non-deterministic and might not finish. Timeout is of type `kotlin.Duration` which can be instantiated like `2.seconds`, `3.minutes` and so on.
 * `tags` - a set of tags that can be used to group tests (see detailed description below).
-* `listeners` - register [test listeners](listeners.md) to run only on this test.
+* `listeners` - register [test listeners](extensions/extensions.md) to run only on this test.
 * `extensions` - register extensions to run only on this test.
 
 An example of setting config on a test:

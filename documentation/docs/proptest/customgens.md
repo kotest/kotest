@@ -23,22 +23,23 @@ val sillyArb = arbitrary { rs: RandomSource ->
 
 ```
 
-We can also use this random if we are composing other arbs when building ours.
+In addition to the `RandomSource` parameter, the arbitrary builder lambda also provides the `ArbitraryBuilderSyntax` context which we can leverage
+to compose other arbitraries when building ours.
 
 For example, here is an `Arbitrary` that supports a custom class called `Person`, delegating to a String arbitrary and an Int arbitrary.
 
 ```kotlin
 data class Person(val name: String, val age: Int)
 
-val personArb = arbitrary { rs ->
-   val name = Arb.string(10..12).next(rs)
-   val age = Arb.int(21, 150).next(rs)
+val personArb = arbitrary {
+   val name = Arb.string(10..12).bind()
+   val age = Arb.int(21, 150).bind()
    Person(name, age)
 }
 ```
 
-Although in the real world this type of arb would use [bind](genops.md#bind), it demonstrates the principle of composing.
-
+The resulting arbitrary produced using this syntax is equivalent to using [map](genops.md#map),
+[flatMap](genops.md#flatmap) and [bind](genops.md#bind).
 
 ### Exhaustive
 

@@ -36,5 +36,4 @@ class AssertionFailedError(
    cause: Throwable?,
    override val expectedValue: String,
    override val actualValue: String,
-) : org.opentest4j.AssertionFailedError(message, expectedValue, actualValue, cause),
-   ComparisonError
+) : org.opentest4j.AssertionFailedError(message, expectedValue, actualValue, cause), ComparisonError

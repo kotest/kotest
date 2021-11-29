@@ -439,7 +439,9 @@ class StringMatchersTest : FreeSpec() {
       "should have length between x and y" - {
          "should work when x == y" {
             "hello".shouldHaveLengthBetween(5, 5)
+            "hello".shouldHaveLengthBetween(5..5)
             "hello".shouldNotHaveLengthBetween(10, 12)
+            "hello".shouldNotHaveLengthBetween(10..12)
          }
 
          "should work when x != y" {

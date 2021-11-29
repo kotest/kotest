@@ -1,28 +1,28 @@
 package io.kotest.engine.test.status
 
-import io.kotest.core.config.configuration
+import io.kotest.core.config.ExtensionRegistry
 import io.kotest.core.filter.TestFilter
 import io.kotest.core.filter.TestFilterResult
 import io.kotest.core.test.Enabled
 import io.kotest.core.test.TestCase
-import io.kotest.mpp.log
 
 /**
  * This [TestEnabledExtension] disables tests if they are filtered by a [TestFilter].
  */
-object TestFilterEnabledExtension : TestEnabledExtension {
+internal class TestFilterEnabledExtension(private val registry: ExtensionRegistry) : TestEnabledExtension {
 
    override fun isEnabled(testCase: TestCase): Enabled {
 
-      val filters = configuration.filters().filterIsInstance<TestFilter>()
-      val includedByFilters = filters.all {
-         it.filter(testCase.description) == TestFilterResult.Include
-      }
-      if (!includedByFilters) {
-         return Enabled.disabled("${testCase.description.testPath()} is excluded by test case filters (${filters.size} filters found)")
-            .also { log { it.reason } }
-      }
+      val filters = registry.all().filterIsInstance<TestFilter>()
+      val excluded = filters
+         .map { it.filter(testCase.descriptor) }
+         .filterIsInstance<TestFilterResult.Exclude>()
+         .firstOrNull()
 
-      return Enabled.enabled
+      return when {
+         excluded == null -> Enabled.enabled
+         excluded.reason == null -> Enabled.disabled("${testCase.descriptor.path(false).value} is excluded by test filter(s)")
+         else -> Enabled.disabled("${testCase.descriptor.path(false).value} is excluded by test filter(s): ${excluded.reason}")
+      }
    }
 }

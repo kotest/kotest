@@ -6,6 +6,7 @@ import io.kotest.core.test.Enabled
 import io.kotest.matchers.shouldBe
 import java.util.concurrent.atomic.AtomicInteger
 import kotlin.time.Duration
+import kotlin.time.Duration.Companion.seconds
 
 /**
  * A test that just ensures the syntax for test configs does not break between releases.
@@ -21,7 +22,7 @@ class DescribeSpecConfigSyntaxTest : DescribeSpec() {
          counter.get() shouldBe 24
       }
 
-      describe("a describe with timeout").config(timeout = Duration.seconds(2)) {
+      describe("a describe with timeout").config(timeout = 2.seconds) {
           counter.incrementAndGet()
           it("an inner test") {
               counter.incrementAndGet()
@@ -61,7 +62,7 @@ class DescribeSpecConfigSyntaxTest : DescribeSpec() {
 
       context("a context") {
          counter.incrementAndGet()
-         describe("a describe with timeout").config(timeout = Duration.seconds(2)) {
+         describe("a describe with timeout").config(timeout = 2.seconds) {
              counter.incrementAndGet()
              it("an inner test") {
                  counter.incrementAndGet()
@@ -97,8 +98,8 @@ class DescribeSpecConfigSyntaxTest : DescribeSpec() {
          }
       }
 
-      context("a context with timeout").config(timeout = Duration.seconds(2)) {
-          context("a nested context with timeout").config(timeout = Duration.seconds(2)) {
+      context("a context with timeout").config(timeout = 2.seconds) {
+          context("a nested context with timeout").config(timeout = 2.seconds) {
               counter.incrementAndGet()
               describe("a describe") {
                   counter.incrementAndGet()

@@ -23,6 +23,7 @@ class ShouldContainExactlyTest : WordSpec() {
    init {
 
       "containExactly" should {
+
          "test that an array contains given elements exactly" {
             val actual = arrayOf(1, 2, 3)
             actual.shouldContainExactly(1, 2, 3)
@@ -95,7 +96,7 @@ Some elements were missing: [
 ] and some elements were unexpected: [
   1L,
   2L
-]"""
+]expected:<[1, 2]> but was:<[1L, 2L]>"""
             )
          }
 
@@ -119,7 +120,7 @@ Some elements were missing: [
 ]
 Some elements were unexpected: [
   Blonde(a=goo, b=true, c=51984, p=a${sep}b${sep}c)
-]""")
+]expected:<[Blonde(a=foo, b=true, c=23423, p=a/b/c), Blonde(a=woo, b=true, c=97821, p=a/b/c)]> but was:<[Blonde(a=foo, b=true, c=23423, p=a/b/c), Blonde(a=woo, b=true, c=97821, p=a/b/c), Blonde(a=goo, b=true, c=51984, p=a/b/c)]>""")
          }
 
          "include extras when too many" {
@@ -139,7 +140,7 @@ Some elements were unexpected: [
 ]
 Some elements were missing: [
   Blonde(a=woo, b=true, c=97821, p=a${sep}b${sep}c)
-]"""
+]expected:<[Blonde(a=foo, b=true, c=23423, p=a/b/c), Blonde(a=woo, b=true, c=97821, p=a/b/c)]> but was:<[Blonde(a=foo, b=true, c=23423, p=a/b/c)]>"""
                )
          }
 
@@ -162,7 +163,7 @@ Some elements were missing: [
 ] and some elements were unexpected: [
   Blonde(a=foo, b=true, c=23423, p=a${sep}b${sep}c),
   Blonde(a=hoo, b=true, c=96915, p=a${sep}b${sep}c)
-]""")
+]expected:<[Blonde(a=woo, b=true, c=97821, p=a/b/c)]> but was:<[Blonde(a=foo, b=true, c=23423, p=a/b/c), Blonde(a=hoo, b=true, c=96915, p=a/b/c)]>""")
          }
 
          "include missing and extras when not the right amount" {
@@ -187,7 +188,7 @@ Some elements were missing: [
 ] and some elements were unexpected: [
   Blonde(a=foo, b=true, c=23423, p=a${sep}b${sep}c),
   Blonde(a=hoo, b=true, c=96915, p=a${sep}b${sep}c)
-]"""
+]expected:<[Blonde(a=woo, b=true, c=97821, p=a/b/c), Blonde(a=goo, b=true, c=51984, p=a/b/c)]> but was:<[Blonde(a=foo, b=true, c=23423, p=a/b/c), Blonde(a=hoo, b=true, c=96915, p=a/b/c)]>"""
          }
       }
 
@@ -235,6 +236,12 @@ Some elements were missing: [
             shouldThrow<AssertionError> {
                listOf<Any>(1L, 2L).shouldContainExactlyInAnyOrder(listOf<Any>(1, 2))
             }.shouldHaveMessage("Collection should contain [1, 2] in any order, but was [1L, 2L]")
+         }
+
+         "disambiguate when using optional expected value" {
+            val actual: List<String> = listOf("A", "B", "C")
+            val expected: List<String>? = listOf("A", "B", "C")
+            actual.shouldContainExactlyInAnyOrder(expected)
          }
       }
    }

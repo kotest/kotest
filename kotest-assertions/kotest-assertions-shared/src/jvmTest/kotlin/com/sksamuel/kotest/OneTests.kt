@@ -2,12 +2,9 @@ package com.sksamuel.kotest
 
 import io.kotest.assertions.*
 import io.kotest.common.ExperimentalKotest
-import io.kotest.core.spec.Isolate
+import io.kotest.core.annotation.Isolate
 import io.kotest.core.spec.style.FunSpec
-import io.kotest.matchers.collections.shouldContainAll
-import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldBe
-import io.kotest.matchers.string.match
 import io.kotest.matchers.string.shouldContainOnlyOnce
 
 private fun matcherState() = Pair(errorCollector.errors(), assertionCounter.get())

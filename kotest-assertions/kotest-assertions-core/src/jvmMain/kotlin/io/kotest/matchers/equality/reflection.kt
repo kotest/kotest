@@ -1,6 +1,7 @@
 package io.kotest.matchers.equality
 
-import io.kotest.assertions.show.show
+import io.kotest.assertions.eq.eq
+import io.kotest.assertions.print.print
 import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
 import io.kotest.matchers.should
@@ -9,6 +10,7 @@ import kotlin.reflect.KProperty
 import kotlin.reflect.KVisibility
 import kotlin.reflect.full.memberProperties
 import kotlin.reflect.jvm.isAccessible
+import kotlin.reflect.jvm.javaField
 
 /**
  * Asserts that this is equal to [other] using specific fields
@@ -107,9 +109,10 @@ fun <T : Any> beEqualToUsingFields(other: T, vararg fields: KProperty<*>): Match
 
       return MatcherResult(
          failed.isEmpty(),
-         "$value should be equal to $other using fields $fieldsString; Failed for $failed",
-         "$value should not be equal to $other using fields $fieldsString"
-      )
+         { "$value should be equal to $other using fields $fieldsString; Failed for $failed" },
+         {
+            "$value should not be equal to $other using fields $fieldsString"
+         })
    }
 }
 
@@ -290,33 +293,50 @@ fun <T : Any> beEqualToIgnoringFields(
 
       return MatcherResult(
          failed.isEmpty(),
-         "$value should be equal to $other ignoring fields $fieldsString; Failed for $failed",
-         "$value should not be equal to $other ignoring fields $fieldsString"
-      )
+         { "$value should be equal to $other ignoring fields $fieldsString; Failed for $failed" },
+         {
+            "$value should not be equal to $other ignoring fields $fieldsString"
+         })
    }
 }
 
 
-fun <T : Any> T.shouldBeEqualToComparingFields(other: T, ignorePrivateFields: Boolean) {
-   this should beEqualComparingFields(other, ignorePrivateFields, emptyList())
+fun <T : Any> T.shouldBeEqualToComparingFields(
+   other: T,
+   ignorePrivateFields: Boolean = true,
+   ignoreComputedFields: Boolean = true
+) {
+   this should beEqualComparingFields(other, ignorePrivateFields, emptyList(), ignoreComputedFields)
 }
 
 fun <T : Any> T.shouldBeEqualToComparingFieldsExcept(
    other: T,
    ignorePrivateFields: Boolean,
    ignoreProperty: KProperty<*>,
-   vararg ignoreProperties: KProperty<*>
+   vararg ignoreProperties: KProperty<*>,
+   ignoreComputedFields: Boolean = true
 ) {
-   this should beEqualComparingFields(other, ignorePrivateFields, listOf(ignoreProperty) + ignoreProperties)
+   this should beEqualComparingFields(
+      other,
+      ignorePrivateFields,
+      listOf(ignoreProperty) + ignoreProperties,
+      ignoreComputedFields
+   )
 }
 
 fun <T : Any> T.shouldNotBeEqualToComparingFieldsExcept(
    other: T,
    ignorePrivateFields: Boolean,
    ignoreProperty: KProperty<*>,
-   vararg ignoreProperties: KProperty<*>
+   vararg ignoreProperties: KProperty<*>,
+   includeComputedProperties: Boolean = false
 ) {
-   this shouldNot beEqualComparingFields(other, ignorePrivateFields, listOf(ignoreProperty) + ignoreProperties)
+   this shouldNot beEqualComparingFields(
+      other,
+      ignorePrivateFields,
+      listOf(ignoreProperty) + ignoreProperties,
+      includeComputedProperties
+   )
 }
 
 fun <T : Any> T.shouldBeEqualToComparingFieldsExcept(
@@ -324,7 +344,7 @@ fun <T : Any> T.shouldBeEqualToComparingFieldsExcept(
    ignoreProperty: KProperty<*>,
    vararg ignoreProperties: KProperty<*>
 ) {
-   this should beEqualComparingFields(other, true, listOf(ignoreProperty) + ignoreProperties)
+   this should beEqualComparingFields(other, true, listOf(ignoreProperty) + ignoreProperties, true)
 }
 
 fun <T : Any> T.shouldNotBeEqualToComparingFieldsExcept(
@@ -332,7 +352,7 @@ fun <T : Any> T.shouldNotBeEqualToComparingFieldsExcept(
    ignoreProperty: KProperty<*>,
    vararg ignoreProperties: KProperty<*>
 ) {
-   this should beEqualComparingFields(other, true, listOf(ignoreProperty) + ignoreProperties)
+   this should beEqualComparingFields(other, true, listOf(ignoreProperty) + ignoreProperties, true)
 }
 
 infix fun <T : Any> T.shouldBeEqualToComparingFields(other: T) {
@@ -340,39 +360,60 @@ infix fun <T : Any> T.shouldBeEqualToComparingFields(other: T) {
 }
 
 infix fun <T : Any> T.shouldNotBeEqualToComparingFields(other: T) {
-   this shouldNot beEqualComparingFields(other, true, emptyList())
+   this shouldNot beEqualComparingFields(other, true, emptyList(), true)
 }
 
-fun <T : Any> T.shouldNotBeEqualToComparingFields(other: T, ignorePrivateFields: Boolean) {
-   this shouldNot beEqualComparingFields(other, ignorePrivateFields, emptyList())
+fun <T : Any> T.shouldNotBeEqualToComparingFields(
+   other: T,
+   ignorePrivateFields: Boolean = true,
+   ignoreComputedFields: Boolean = true
+) {
+   this shouldNot beEqualComparingFields(other, ignorePrivateFields, emptyList(), ignoreComputedFields)
 }
+
+private typealias PropertyPredicate = (KProperty<*>) -> Boolean
+
+// If no java field exists, it is a computed property which only has a getter
+private val nonComputed: PropertyPredicate = { it.javaField != null }
+private val nonPrivate: PropertyPredicate = { it.visibility != KVisibility.PRIVATE }
+
+private infix fun PropertyPredicate.and(other: PropertyPredicate) =
+   { property: KProperty<*> -> this(property) && other(property) }
 
 fun <T : Any> beEqualComparingFields(
    other: T,
    ignorePrivateFields: Boolean,
-   propertiesToExclude: List<KProperty<*>>
+   propertiesToExclude: List<KProperty<*>>,
+   ignoreComputedFields: Boolean,
 ) = object : Matcher<T> {
    override fun test(value: T): MatcherResult {
-      val allFields = if (ignorePrivateFields) {
-         value::class.memberProperties.filter { it.visibility == KVisibility.PUBLIC }
-      } else {
-         value::class.memberProperties.onEach { it.isAccessible = true }
-      }.toList().filterNot { propertiesToExclude.contains(it) }
+      val predicates = listOfNotNull(
+         if (ignorePrivateFields) nonPrivate else null,
+         if (ignoreComputedFields) nonComputed else null,
+         { it !in propertiesToExclude }
+      ).reduce { a, b -> a and b }
 
-      val failed = checkEqualityOfFields(allFields, value, other)
+      val fieldsToCompare = value::class.memberProperties
+         .asSequence()
+         .onEach { it.isAccessible = true }
+         .filter(predicates)
+         .sortedBy { it.name }
+         .toList()
+
+      val failed = checkEqualityOfFields(fieldsToCompare, value, other)
 
       return MatcherResult(
          failed.isEmpty(),
          {
-            """Expected ${value.show().value} to equal ${other.show().value}
-            | Using fields: ${allFields.joinToString(", ") { it.name }}
+            """Expected ${value.print().value} to equal ${other.print().value}
+            | Using fields: ${fieldsToCompare.joinToString(", ") { it.name }}
             | Value differ at:
             | ${failed.withIndex().joinToString("\n") { "${it.index + 1}) ${it.value}" }}
          """.trimMargin()
          },
          {
-            """Expected ${value.show().value} to not equal ${other.show().value}
-            | Using fields: ${allFields.joinToString(", ") { it.name }}
+            """Expected ${value.print().value} to not equal ${other.print().value}
+            | Using fields: ${fieldsToCompare.joinToString(", ") { it.name }}
          """.trimMargin()
          }
       )
@@ -383,8 +424,9 @@ private fun <T> checkEqualityOfFields(fields: List<KProperty<*>>, value: T, othe
    return fields.mapNotNull {
       val actual = it.getter.call(value)
       val expected = it.getter.call(other)
-      if (actual == expected) null else {
-         "${it.name}: ${actual.show().value} != ${expected.show().value}"
-      }
+
+      val isEqual = eq(actual, expected) == null
+
+      if (isEqual) null else "${it.name}: ${actual.print().value} != ${expected.print().value}"
    }
 }

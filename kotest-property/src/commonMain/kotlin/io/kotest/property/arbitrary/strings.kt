@@ -2,11 +2,12 @@ package io.kotest.property.arbitrary
 
 import io.kotest.property.Arb
 import io.kotest.property.Shrinker
+import io.kotest.property.arbitrary.strings.StringClassifier
 import kotlin.random.nextInt
 
 /**
  * Returns an [Arb] where each random value is a String of length between minSize and maxSize.
- * By default the arb uses a [ascii] codepoint generator, but this can be substituted
+ * By default, the arb uses a [ascii] codepoint generator, but this can be substituted
  * with any codepoint generator. There are many available, such as [katakana] and so on.
  *
  * The edge case values are a string of min length, using the first
@@ -19,23 +20,21 @@ fun Arb.Companion.string(
    codepoints: Arb<Codepoint> = Codepoint.ascii()
 ): Arb<String> {
 
-   return arbitrary(
-      edgecaseFn = { rs ->
-         if (minSize == maxSize) null else {
-            val lowCodePoint = codepoints.edgecase(rs)
-            val min = lowCodePoint?.let { cp -> List(minSize) { cp.asString() }.joinToString("") }
-            val minPlus1 = lowCodePoint?.let { cp -> List(minSize + 1) { cp.asString() }.joinToString("") }
-            val edgeCases = listOfNotNull(min, minPlus1)
-               .filter { it.length in minSize..maxSize }
-            if (edgeCases.isEmpty()) null else edgeCases.random(rs.random)
-         }
-      },
-      shrinker = StringShrinkerWithMin(minSize),
-      sampleFn = { rs ->
-         val size = rs.random.nextInt(minSize..maxSize)
-         codepoints.take(size, rs).joinToString("") { it.asString() }
+   return ArbitraryBuilder.create { rs ->
+      val size = rs.random.nextInt(minSize..maxSize)
+      codepoints.take(size, rs).joinToString("") { it.asString() }
+   }.withEdgecaseFn { rs ->
+      if (minSize == maxSize) null else {
+         val lowCodePoint = codepoints.edgecase(rs)
+         val min = lowCodePoint?.let { cp -> List(minSize) { cp.asString() }.joinToString("") }
+         val minPlus1 = lowCodePoint?.let { cp -> List(minSize + 1) { cp.asString() }.joinToString("") }
+         val edgeCases = listOfNotNull(min, minPlus1)
+            .filter { it.length in minSize..maxSize }
+         if (edgeCases.isEmpty()) null else edgeCases.random(rs.random)
       }
-   )
+   }.withShrinker(StringShrinkerWithMin(minSize))
+      .withClassifier(StringClassifier(minSize, maxSize))
+      .build()
 }
 
 /**
@@ -59,7 +58,7 @@ fun Arb.Companion.string(range: IntRange, codepoints: Arb<Codepoint> = Codepoint
 fun Arb.Companion.string(size: Int, codepoints: Arb<Codepoint> = Codepoint.ascii()): Arb<String> =
    Arb.string(size, size, codepoints)
 
-@Deprecated("This Shrinker does not take into account string lengths. Use StringShrinkerWithMin. This was deprecated in 4.5 and will be removed in 5.1")
+@Deprecated("This Shrinker does not take into account string lengths. Use StringShrinkerWithMin. This was deprecated in 4.5.")
 object StringShrinker : Shrinker<String> {
 
    override fun shrink(value: String): List<String> {

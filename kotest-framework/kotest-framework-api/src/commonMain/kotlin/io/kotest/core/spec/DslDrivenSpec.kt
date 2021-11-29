@@ -1,46 +1,48 @@
 package io.kotest.core.spec
 
 import io.kotest.core.Tuple2
-import io.kotest.core.config.configuration
-import io.kotest.core.test.Identifiers
+import io.kotest.core.extensions.Extension
 import io.kotest.core.extensions.SpecExtension
 import io.kotest.core.factory.TestFactory
-import io.kotest.core.factory.addPrefix
-import io.kotest.core.factory.createTestCases
+import io.kotest.core.listeners.FinalizeSpecListener
 import io.kotest.core.listeners.ProjectListener
-import io.kotest.core.listeners.TestListener
-import io.kotest.core.test.DescriptionName
+import io.kotest.core.spec.style.scopes.RootScope
 import io.kotest.core.test.TestCase
-import io.kotest.core.test.TestCaseConfig
-import io.kotest.core.test.TestContext
 import io.kotest.core.test.TestResult
-import io.kotest.core.test.TestType
-import io.kotest.core.test.createRootTestCase
-import io.kotest.core.test.createTestName
 import kotlin.reflect.KClass
 
 /**
  * Base class for specs that allow for registration of tests via the DSL.
  */
-abstract class DslDrivenSpec : Spec() {
+abstract class DslDrivenSpec : Spec(), RootScope {
 
    /**
-    * Contains the root [TestCase]s used in this spec.
+    * Contains the [RootTest]s that have been registered on this spec.
     */
-   private var rootTestCases = emptyList<TestCase>()
+   private var rootTests = emptyList<RootTest>()
 
-   override fun materializeRootTests(): List<RootTest> {
-      return rootTestCases.withIndex().map { RootTest(it.value, it.index) }
+   private val globalExtensions = mutableListOf<Extension>()
+
+   override fun rootTests(): List<RootTest> {
+      return rootTests
+   }
+
+   override fun globalExtensions(): List<Extension> {
+      return globalExtensions.toList()
+   }
+
+   override fun add(test: RootTest) {
+      rootTests = rootTests + test
    }
 
    /**
-    * Include the tests, listeners and extensions from the given [TestFactory] in this spec.
+    * Include the tests and extensions from the given [TestFactory] in this spec.
     * Tests are added in order from where this include was invoked using configuration and
     * settings at the time the method was invoked.
     */
    fun include(factory: TestFactory) {
-      factory.createTestCases(this::class.toDescription(), this).forEach { addRootTest(it) }
-      listeners(factory.listeners)
+      factory.tests.forEach { add(it.copy(factoryId = factory.factoryId)) }
+      register(factory.extensions)
    }
 
    /**
@@ -48,16 +50,21 @@ abstract class DslDrivenSpec : Spec() {
     * prefixed added to each of the test's name.
     */
    fun include(prefix: String, factory: TestFactory) {
-      include(factory.copy(tests = factory.tests.map { it.addPrefix(prefix) }))
+      val renamed = factory.tests.map { test ->
+         val name = test.name.copy(testName = prefix + " " + test.name.testName)
+         test.copy(name = name)
+      }
+      include(factory.copy(tests = renamed))
    }
 
    /**
     * Registers a callback that will execute after all tests in this spec have completed.
-    * This is a convenience method for creating a [TestListener] and registering it to only
-    * fire for this spec.
+    *
+    * This is a convenience method for creating a [FinalizeSpecListener] and constraining
+    * it to only fire for this spec.
     */
    fun finalizeSpec(f: FinalizeSpec) {
-      configuration.registerListener(object : TestListener {
+      globalExtensions.add(object : FinalizeSpecListener {
          override suspend fun finalizeSpec(kclass: KClass<out Spec>, results: Map<TestCase, TestResult>) {
             if (kclass == this@DslDrivenSpec::class) {
                f(Tuple2(kclass, results))
@@ -68,46 +75,24 @@ abstract class DslDrivenSpec : Spec() {
 
    /**
     * Registers a callback that will execute after all specs have completed.
-    * This is a convenience method for creating a [ProjectListener] and registering it.
+    *
+    * This is a convenience method for creating a [ProjectListener] and registering
+    * it with project configuration.
     */
    fun afterProject(f: AfterProject) {
-      configuration.registerListener(object : ProjectListener {
+      globalExtensions.add(object : ProjectListener {
          override suspend fun afterProject() {
             f()
          }
       })
    }
 
-   @Deprecated("this makes no sense")
+   @Deprecated("This has no effect and will be removed in 6.0", level = DeprecationLevel.ERROR)
    fun aroundSpec(aroundSpecFn: AroundSpecFn) {
       extension(object : SpecExtension {
          override suspend fun intercept(spec: KClass<out Spec>, process: suspend () -> Unit) {
             aroundSpecFn(Tuple2(spec, process))
          }
       })
-   }
-
-   /**
-    * Adds a new root-level [TestCase] to this [Spec].
-    */
-   override fun addTest(
-      name: DescriptionName.TestName,
-      test: suspend TestContext.() -> Unit,
-      config: TestCaseConfig,
-      type: TestType
-   ) {
-      addRootTest(createRootTestCase(this, name, test, config, type))
-   }
-
-   /**
-    * Adds a new root-level [TestCase] to this [Spec].
-    */
-   private fun addRootTest(testCase: TestCase) {
-      val uniqueName = Identifiers.uniqueTestName(
-         testCase.description.name.name,
-         rootTestCases.map { it.description.name.name }.toSet()
-      )
-      val description = testCase.description.copy(name = createTestName(uniqueName))
-      rootTestCases += if (uniqueName == testCase.description.name.name) testCase else testCase.copy(description = description)
    }
 }

@@ -1,6 +1,6 @@
 package io.kotest.matchers.string
 
-import io.kotest.assertions.show.show
+import io.kotest.assertions.print.print
 import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
 import io.kotest.matchers.neverNullMatcher
@@ -37,7 +37,7 @@ fun haveLineCount(count: Int): Matcher<CharSequence?> = neverNullMatcher<CharSeq
    val lines = if (value.isEmpty()) 0 else value.count { it == '\n' } + 1
    MatcherResult(
       lines == count,
-      { "${value.show().value} should have $count lines but had $lines" },
-      { "${value.show().value} should not have $count lines" }
+      { "${value.print().value} should have $count lines but had $lines" },
+      { "${value.print().value} should not have $count lines" }
    )
 }

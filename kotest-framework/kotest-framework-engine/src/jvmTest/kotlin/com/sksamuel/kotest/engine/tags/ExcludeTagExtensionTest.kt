@@ -2,37 +2,39 @@ package com.sksamuel.kotest.engine.tags
 
 import io.kotest.assertions.fail
 import io.kotest.core.Tag
-import io.kotest.core.Tags
-import io.kotest.core.config.configuration
+import io.kotest.core.TagExpression
 import io.kotest.core.extensions.TagExtension
-import io.kotest.core.spec.Isolate
+import io.kotest.core.annotation.Isolate
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.core.test.TestCase
-import io.kotest.engine.KotestEngineLauncher
-import io.kotest.engine.listener.TestEngineListener
+import io.kotest.engine.TestEngineLauncher
+import io.kotest.engine.listener.AbstractTestEngineListener
 
 object Exclude : Tag()
 
 private object ExcludeTagExtension : TagExtension {
-   override fun tags(): Tags = Tags.exclude(Exclude)
+   override fun tags(): TagExpression = TagExpression.exclude(Exclude)
 }
 
 @Isolate
 class ExcludeTagExtensionTest : FunSpec() {
    init {
       test("tag extensions should be applied to tests with tag inherited from spec") {
-         val listener = object : TestEngineListener {
+
+         val listener = object : AbstractTestEngineListener() {
             override suspend fun testStarted(testCase: TestCase) {
-               fail(testCase.displayName + " should not run")
+               fail(testCase.name.testName + " should not run")
             }
          }
-         configuration.registerExtension(ExcludeTagExtension)
-         KotestEngineLauncher()
-            .withListener(listener)
-            .withSpec(ExcludedSpec::class)
+
+         val conf = io.kotest.core.config.ProjectConfiguration()
+         conf.registry.add(ExcludeTagExtension)
+
+         TestEngineLauncher(listener)
+            .withClasses(ExcludedSpec::class)
+            .withConfiguration(conf)
             .launch()
-         configuration.deregisterExtension(ExcludeTagExtension)
       }
    }
 }

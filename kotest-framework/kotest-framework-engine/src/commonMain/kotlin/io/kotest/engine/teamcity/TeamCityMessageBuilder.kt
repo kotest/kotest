@@ -1,6 +1,8 @@
 package io.kotest.engine.teamcity
 
 import io.kotest.common.errors.ComparisonError
+import io.kotest.core.test.TestResult
+import kotlin.time.Duration
 
 /**
  * Creates a TeamCity message builder to be used for a single string.
@@ -19,8 +21,16 @@ import io.kotest.common.errors.ComparisonError
  * @param prefix Is the opening string used to signal that the line is a team city line.
  *               If unspecified this defaults to the team city format '##teamcity'.
  *               Can be overriden to help with testing.
+ *
+ * @param escapeColons team city uses colons in its format, and does not support colons inside messages properly,
+ *                      and there is no escape, so we have to mangle colons if the output is going to the console.
+ *                      See https://teamcity-support.jetbrains.com/hc/en-us/community/posts/206882875-Colons-in-test-service-messages-are-confusing-Team-City-
  */
-class TeamCityMessageBuilder(prefix: String, messageName: String) {
+class TeamCityMessageBuilder(
+   prefix: String,
+   messageName: String,
+   private val escapeColons: Boolean = false
+) {
 
    companion object {
       const val TeamCityPrefix = "##teamcity"
@@ -55,7 +65,10 @@ class TeamCityMessageBuilder(prefix: String, messageName: String) {
          return TeamCityMessageBuilder(prefix, Messages.TEST_STD_ERR).addAttribute(Attributes.NAME, name)
       }
 
+      // note it seems that not attaching a message renders test failed irrelevant
       fun testFailed(name: String): TeamCityMessageBuilder = testFailed(TeamCityPrefix, name)
+
+      // note it seems that not attaching a message renders test failed irrelevant
       fun testFailed(prefix: String, name: String): TeamCityMessageBuilder {
          return TeamCityMessageBuilder(prefix, Messages.TEST_FAILED).addAttribute(Attributes.NAME, name)
       }
@@ -77,7 +90,6 @@ class TeamCityMessageBuilder(prefix: String, messageName: String) {
       const val MESSAGE = "message"
       const val PARENT_ID = "parent_id"
       const val ID = "id"
-      const val TEST_TYPE = "test_type"
       const val RESULT_STATUS = "result_status"
    }
 
@@ -92,7 +104,7 @@ class TeamCityMessageBuilder(prefix: String, messageName: String) {
       const val TEST_FAILED = "testFailed"
    }
 
-   private val myText = StringBuilder(prefix ?: "##teamcity").append("[$messageName")
+   private val myText = StringBuilder(prefix).append("[$messageName")
 
    fun addAttribute(name: String, value: String): TeamCityMessageBuilder {
       myText
@@ -112,17 +124,20 @@ class TeamCityMessageBuilder(prefix: String, messageName: String) {
    fun type(value: String): TeamCityMessageBuilder = addAttribute(Attributes.TYPE, value.trim())
    fun actual(value: String): TeamCityMessageBuilder = addAttribute(Attributes.ACTUAL, value.trim())
    fun expected(value: String): TeamCityMessageBuilder = addAttribute(Attributes.EXPECTED, value.trim())
-   fun locationHint(value: String): TeamCityMessageBuilder = addAttribute(Attributes.LOCATION_HINT, value)
-   fun resultStatus(value: String): TeamCityMessageBuilder = addAttribute(Attributes.RESULT_STATUS, value)
+   fun result(value: TestResult): TeamCityMessageBuilder = addAttribute(Attributes.RESULT_STATUS, value.name)
 
-   fun withException(error: Throwable?): TeamCityMessageBuilder {
+   fun locationHint(value: String?): TeamCityMessageBuilder =
+      if (value != null) addAttribute(Attributes.LOCATION_HINT, value) else this
+
+   // note it seems that not attaching a message renders test failed irrelevant
+   fun withException(error: Throwable?, showDetails: Boolean = true): TeamCityMessageBuilder {
       if (error == null) return this
 
-      val line1 = error.message?.lines()?.firstOrNull()
+      val line1 = error.message?.trim()?.lines()?.firstOrNull()
       val message = if (line1.isNullOrBlank()) "Test failed" else line1
-      message(message)
-
-      details(error.stackTraceToString())
+      message(escapeColons(message))
+      if (showDetails)
+         details(escapeColons(error.stackTraceToString()))
 
       when (error) {
          is ComparisonError -> type("comparisonFailure").actual(error.actualValue).expected(error.expectedValue)
@@ -137,15 +152,14 @@ class TeamCityMessageBuilder(prefix: String, messageName: String) {
    // sets a unique parsable id for this test
    fun id(value: String): TeamCityMessageBuilder = addAttribute(Attributes.ID, value)
 
-   // adds a test-type flag to the message, indicating if this event is for a spec, container or test
-   fun testType(value: String): TeamCityMessageBuilder = addAttribute(Attributes.TEST_TYPE, value.trim().lowercase())
+   // workaround for TC colon issue, see main javadoc
+   fun escapeColons(value: String) = when (escapeColons) {
+      true -> value.replace(":", "\u02D0")
+      false -> value
+   }
 
-   fun container() = testType("container")
-   fun spec() = testType("spec")
-   fun test() = testType("test")
-
-   fun duration(durationInMillis: Long): TeamCityMessageBuilder =
-      addAttribute(Attributes.DURATION, durationInMillis.toString())
+   fun duration(duration: Duration): TeamCityMessageBuilder =
+      addAttribute(Attributes.DURATION, duration.inWholeMilliseconds.toString())
 
    /**
     * Returns the completed string.

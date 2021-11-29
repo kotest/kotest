@@ -21,9 +21,8 @@ fun <T> sortedWith(cmp: (T, T) -> Int): Matcher<List<T>> = object : Matcher<List
       }
       return MatcherResult(
          failure == null,
-         "List [$snippet] should be sorted$elementMessage",
-         "List [$snippet] should not be sorted"
-      )
+         { "List [$snippet] should be sorted$elementMessage" },
+         { "List [$snippet] should not be sorted" })
    }
 }
 

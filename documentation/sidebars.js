@@ -29,6 +29,7 @@ module.exports = {
       'extensions/kafka',
       'extensions/mockserver',
       'extensions/junit_xml',
+      'extensions/html_reporter',
       'extensions/allure',
       'extensions/instant',
       'extensions/koin',
@@ -78,23 +79,55 @@ module.exports = {
       'framework/index',
       'framework/writing_tests',
       'framework/styles',
-      'framework/conditional_evaluation',
+      {
+         type: "category",
+         label: "Conditional Evaluation",
+         collapsed: true,
+         items: [
+            'framework/conditional/enabled_config_flags',
+            'framework/conditional/focus_and_bang',
+            'framework/conditional/xmethods',
+            'framework/conditional/annotations',
+            'framework/conditional/gradle',
+         ]
+      },
       'framework/isolation_mode',
+      'framework/lifecycle_hooks',
+      {
+         type: "category",
+         label: "Extensions",
+         collapsed: true,
+         items: [
+            'framework/extensions/extensions_introduction',
+            'framework/extensions/simple_extensions',
+            'framework/extensions/advanced_extensions',
+            'framework/extensions/extension_examples',
+         ]
+      },
+      {
+         type: "category",
+         label: "Coroutines",
+         collapsed: true,
+         items: [
+            'framework/coroutines/test_coroutine_dispatcher',
+            'framework/coroutines/coroutine_debugging',
+         ]
+      },
       'framework/exceptions',
       {
          type: "category",
          label: "Data Driven Testing",
-         collapsed: false,
+         collapsed: true,
          items: [
             'framework/datatesting/introduction',
+            'framework/datatesting/test_names',
             'framework/datatesting/nested',
-            'framework/datatesting/custom-test-names',
          ]
       },
       {
          type: "category",
          label: "Non-deterministic Testing",
-         collapsed: false,
+         collapsed: true,
          items: [
             'framework/concurrency/eventually',
             'assertions/continually',
@@ -102,11 +135,10 @@ module.exports = {
             'assertions/retry',
          ]
       },
-      'framework/listeners',
       {
          type: "category",
          label: "Integrations",
-         collapsed: false,
+         collapsed: true,
          items: [
             'framework/integrations/mocks',
             'framework/integrations/jacoco',
@@ -115,7 +147,7 @@ module.exports = {
       {
          type: "category",
          label: "Ordering",
-         collapsed: false,
+         collapsed: true,
          items: [
             'framework/spec_ordering',
             'framework/test_ordering',
@@ -125,7 +157,7 @@ module.exports = {
       {
          type: "category",
          label: "Resources",
-         collapsed: false,
+         collapsed: true,
          items: [
             'framework/autoclose',
             'framework/tempfile',
@@ -134,15 +166,32 @@ module.exports = {
       {
          type: "category",
          label: "Configuration",
-         collapsed: false,
+         collapsed: true,
          items: [
             'framework/test_case_config',
             'framework/project_config',
             'framework/framework_config_props',
          ]
       },
-      'framework/test_extensions',
       'framework/test_factories',
-      'framework/timeout',
+      {
+         type: "category",
+         label: "Timeouts",
+         collapsed: true,
+         items: [
+            'framework/timeouts/test_timeouts',
+            'framework/timeouts/project_timeout',
+            'framework/timeouts/blocking_tests',
+         ]
+      },
+      {
+         type: "category",
+         label: "Other settings",
+         collapsed: true,
+         items: [
+            'framework/fail_fast',
+            'framework/fail_on_empty',
+         ]
+      },
    ],
 };

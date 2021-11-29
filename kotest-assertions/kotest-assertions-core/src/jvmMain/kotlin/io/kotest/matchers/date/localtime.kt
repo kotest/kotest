@@ -78,11 +78,11 @@ infix fun LocalTime.shouldNotHaveSameHoursAs(time: LocalTime) = this shouldNot h
  */
 fun haveSameHours(time: LocalTime): Matcher<LocalTime> = object : Matcher<LocalTime> {
   override fun test(value: LocalTime): MatcherResult =
-    MatcherResult(
-      value.hour == time.hour,
-      { "$value should have hours ${time.hour}" },
-      { "$value should not have hours ${time.hour}" }
-    )
+     MatcherResult(
+        value.hour == time.hour,
+        { "$value should have hours ${time.hour}" },
+        { "$value should not have hours ${time.hour}" }
+     )
 }
 
 /**
@@ -155,10 +155,10 @@ infix fun LocalTime.shouldNotHaveSameMinutesAs(time: LocalTime) = this shouldNot
  */
 fun haveSameMinutes(time: LocalTime): Matcher<LocalTime> = object : Matcher<LocalTime> {
   override fun test(value: LocalTime): MatcherResult =
-    MatcherResult(value.minute == time.minute,
-      { "$value should have minutes ${time.minute}" },
-      { "$value should not have minutes ${time.minute}" }
-    )
+     MatcherResult(value.minute == time.minute,
+        { "$value should have minutes ${time.minute}" },
+        { "$value should not have minutes ${time.minute}" }
+     )
 }
 
 /**
@@ -231,10 +231,10 @@ infix fun LocalTime.shouldNotHaveSameSecondsAs(time: LocalTime) = this shouldNot
  */
 fun haveSameSeconds(time: LocalTime): Matcher<LocalTime> = object : Matcher<LocalTime> {
   override fun test(value: LocalTime): MatcherResult =
-    MatcherResult(value.second == time.second,
-      { "$value should have seconds ${time.second}" },
-      { "$value should not have seconds ${time.second}" }
-    )
+     MatcherResult(value.second == time.second,
+        { "$value should have seconds ${time.second}" },
+        { "$value should not have seconds ${time.second}" }
+     )
 }
 
 /**
@@ -307,11 +307,11 @@ infix fun LocalTime.shouldNotHaveSameNanosAs(time: LocalTime) = this shouldNot h
  */
 fun haveSameNanos(time: LocalTime): Matcher<LocalTime> = object : Matcher<LocalTime> {
   override fun test(value: LocalTime): MatcherResult =
-    MatcherResult(
-      value.nano == time.nano,
-      { "$value should have nanos ${time.nano}" },
-      { "$value should not have nanos ${time.nano}" }
-    )
+     MatcherResult(
+        value.nano == time.nano,
+        { "$value should have nanos ${time.nano}" },
+        { "$value should not have nanos ${time.nano}" }
+     )
 }
 
 /**
@@ -388,11 +388,11 @@ infix fun LocalTime.shouldNotBeBefore(time: LocalTime) = this shouldNot before(t
  */
 fun before(time: LocalTime): Matcher<LocalTime> = object : Matcher<LocalTime> {
   override fun test(value: LocalTime): MatcherResult =
-    MatcherResult(
-      value.isBefore(time),
-      { "$value should be before $time" },
-      { "$value should not be before $time" }
-    )
+     MatcherResult(
+        value.isBefore(time),
+        { "$value should be before $time" },
+        { "$value should not be before $time" }
+     )
 }
 
 /**
@@ -469,11 +469,11 @@ infix fun LocalTime.shouldNotBeAfter(time: LocalTime) = this shouldNot after(tim
  */
 fun after(time: LocalTime): Matcher<LocalTime> = object : Matcher<LocalTime> {
   override fun test(value: LocalTime): MatcherResult =
-    MatcherResult(
-      value.isAfter(time),
-      { "$value should be after $time" },
-      { "$value should not be after $time" }
-    )
+     MatcherResult(
+        value.isAfter(time),
+        { "$value should be after $time" },
+        { "$value should not be after $time" }
+     )
 }
 
 /**
@@ -556,9 +556,9 @@ fun between(a: LocalTime, b: LocalTime): Matcher<LocalTime> = object : Matcher<L
   override fun test(value: LocalTime): MatcherResult {
     val passed = value.isAfter(a) && value.isBefore(b)
     return MatcherResult(
-      passed,
-      { "$value should be after $a and before $b" },
-      { "$value should not be be after $a and before $b" }
+       passed,
+       { "$value should be after $a and before $b" },
+       { "$value should not be be after $a and before $b" }
     )
   }
 }

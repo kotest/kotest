@@ -19,9 +19,10 @@ fun <A> haveTripleFirst(a: A) = object : Matcher<Triple<A, *, *>> {
    override fun test(value: Triple<A, *, *>): MatcherResult {
       return MatcherResult(
          value.first == a,
-         "Triple $value should have first value $a but was ${value.first}",
-         "Triple $value should not have first value $a"
-      )
+         { "Triple $value should have first value $a but was ${value.first}" },
+         {
+            "Triple $value should not have first value $a"
+         })
    }
 }
 
@@ -39,9 +40,10 @@ fun <B> haveTripleSecond(b: B) = object : Matcher<Triple<*, B, *>> {
    override fun test(value: Triple<*, B, *>): MatcherResult {
       return MatcherResult(
          value.second == b,
-         "Triple $value should have second value $b but was ${value.second}",
-         "Triple $value should not have second value $b"
-      )
+         { "Triple $value should have second value $b but was ${value.second}" },
+         {
+            "Triple $value should not have second value $b"
+         })
    }
 }
 
@@ -60,8 +62,9 @@ fun <C> haveTripleThird(c: C) = object : Matcher<Triple<*, *, C>> {
    override fun test(value: Triple<*, *, C>): MatcherResult {
       return MatcherResult(
          value.third == c,
-         "Triple $value should have third value $c but was ${value.third}",
-         "Triple $value should not have third value $c"
-      )
+         { "Triple $value should have third value $c but was ${value.third}" },
+         {
+            "Triple $value should not have third value $c"
+         })
    }
 }

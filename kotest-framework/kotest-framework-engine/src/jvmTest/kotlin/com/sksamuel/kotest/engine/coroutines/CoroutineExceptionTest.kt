@@ -1,12 +1,11 @@
 package com.sksamuel.kotest.engine.coroutines
 
-import io.kotest.core.spec.Isolate
+import io.kotest.core.annotation.Isolate
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
-import io.kotest.core.test.TestStatus
-import io.kotest.engine.KotestEngineLauncher
-import io.kotest.engine.listener.TestEngineListener
+import io.kotest.engine.TestEngineLauncher
+import io.kotest.engine.listener.AbstractTestEngineListener
 import io.kotest.matchers.shouldBe
 import kotlinx.coroutines.launch
 
@@ -17,19 +16,22 @@ import kotlinx.coroutines.launch
 class CoroutineExceptionTest : FunSpec({
 
    test("exception in coroutine") {
+
       var _result: TestResult? = null
-      val listener = object : TestEngineListener {
+
+      val listener = object : AbstractTestEngineListener() {
          override suspend fun testFinished(testCase: TestCase, result: TestResult) {
-            if (testCase.displayName == "exception in coroutine") {
+            if (testCase.name.testName == "exception in coroutine") {
                _result = result
             }
          }
       }
-      KotestEngineLauncher()
-         .withListener(listener)
-         .withSpec(FailingCoroutineTest::class)
+
+      TestEngineLauncher(listener)
+         .withClasses(FailingCoroutineTest::class)
          .launch()
-      _result?.status shouldBe TestStatus.Error
+
+      _result?.isError shouldBe true
    }
 })
 

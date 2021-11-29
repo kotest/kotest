@@ -2,6 +2,8 @@
 
 package io.kotest.matchers.sequences
 
+import io.kotest.assertions.eq.eq
+import io.kotest.assertions.print.print
 import io.kotest.matchers.*
 
 private fun <T> Sequence<T>.toString(limit: Int = 10) = this.joinToString(", ", limit = limit)
@@ -20,9 +22,10 @@ fun <T> containOnlyNulls() = object : Matcher<Sequence<T>> {
    override fun test(value: Sequence<T>) =
       MatcherResult(
          value.all { it == null },
-         "Sequence should contain only nulls",
-         "Sequence should not contain only nulls"
-      )
+         { "Sequence should contain only nulls" },
+         {
+            "Sequence should not contain only nulls"
+         })
 }
 
 fun <T> Sequence<T>.shouldContainNull() = this should containNull()
@@ -31,9 +34,10 @@ fun <T> containNull() = object : Matcher<Sequence<T>> {
    override fun test(value: Sequence<T>) =
       MatcherResult(
          value.any { it == null },
-         "Sequence should contain at least one null",
-         "Sequence should not contain any nulls"
-      )
+         { "Sequence should contain at least one null" },
+         {
+            "Sequence should not contain any nulls"
+         })
 }
 
 fun <T> Sequence<T>.shouldHaveElementAt(index: Int, element: T) = this should haveElementAt(index, element)
@@ -79,22 +83,36 @@ fun <T> containExactly(vararg expected: T): Matcher<Sequence<T>?> = containExact
 
 /** Assert that a sequence contains exactly the given values and nothing else, in order. */
 fun <T, C : Sequence<T>> containExactly(expected: C): Matcher<C?> = neverNullMatcher { value ->
-   var passed: Boolean = value.count() == expected.count()
-   var failMessage = "Sequence should contain exactly $expected but was $value"
-   if (passed) {
-      val diff = value.zip(expected) { a, b -> Triple(a, b, a == b) }.withIndex().find { !it.value.third }
-      if (diff != null) {
+   val actualIterator = value.withIndex().iterator()
+   val expectedIterator = expected.withIndex().iterator()
+
+   var passed = true
+   var failMessage = "Sequence should contain exactly $expected but was $value."
+   while (passed && actualIterator.hasNext() && expectedIterator.hasNext()) {
+      val actualElement = actualIterator.next()
+      val expectedElement = expectedIterator.next()
+      if (eq(actualElement.value, expectedElement.value) != null) {
+         failMessage += " (expected ${expectedElement.value.print().value} at ${expectedElement.index} but found ${actualElement.value.print().value})"
          passed = false
-         failMessage += " (expected ${diff.value.second} at ${diff.index} but found ${diff.value.first})"
       }
-   } else {
-      failMessage += " (expected ${expected.count()} elements but found ${value.count()})"
    }
+
+   if (passed && actualIterator.hasNext()) {
+      failMessage += "\nActual sequence has more element than Expected sequence"
+      passed = false
+   }
+
+   if (passed && expectedIterator.hasNext()) {
+      failMessage += "\nExpected sequence has more element than Actual sequence"
+      passed = false
+   }
+
    MatcherResult(
       passed,
-      failMessage,
-      "Sequence should not be exactly $expected"
-   )
+      { failMessage },
+      {
+         "Sequence should not be exactly $expected"
+      })
 }
 
 @Deprecated("use shouldNotContainAllInAnyOrder", ReplaceWith("shouldNotContainAllInAnyOrder"))

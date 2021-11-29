@@ -39,7 +39,7 @@ class ListTest : WordSpec({
          empty.size() shouldBe 0
          val plus1 = empty.add(1)
          plus1.size() shouldBe 1
-         val plus2 = plus2.add(2)
+         val plus2 = plus1.add(2)
          plus2.size() shouldBe 2
       }
       "contain an element after it is added" {

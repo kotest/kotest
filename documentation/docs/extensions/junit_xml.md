@@ -6,7 +6,7 @@ slug: junit_xml.html
 ---
 
 
-
+[![Latest Release](https://img.shields.io/maven-central/v/io.kotest/kotest-extensions-junitxml)](https://search.maven.org/artifact/io.kotest/kotest-extensions-junitxml)
 
 
 JUnit includes an XML report generator that it calls
@@ -18,8 +18,11 @@ orphans.
 To solve this, Kotest has it's own implementation of the same format, that is configurable on whether to include parent
 tests and/or collapse the names.
 
-To set this up, we need to add the `JunitXmlReporter` to our project
-through [project config](../framework/project_config.md).
+:::note
+The following module is needed: `io.kotest:kotest-extensions-junitxml` in your build. Search maven central for latest version [here](https://search.maven.org/search?q=kotest-extensions-junitxml).
+:::
+
+To configure in your project, you need to add the `JunitXmlReporter` using [project config](../framework/project_config.md).
 
 ```kotlin
 class MyConfig : AbstractProjectConfig() {
@@ -32,12 +35,16 @@ class MyConfig : AbstractProjectConfig() {
 }
 ```
 
-Additionally, the reporter needs to know where your build output folder is by setting a system property, so we configure
-that in the tests block in gradle.
+Additionally, the reporter needs to know where your build output folder is by setting a system property.
+Gradle also needs to know that it should not generate JUnit XML reports by itself.
+We configure that in the tests block in gradle.
 
 ```kotlin
 tasks.named<Test>("test") {
   useJUnitPlatform()
+  reports {
+    junitXml.required.set(false)
+  }
   systemProperty("gradle.build.dir", project.buildDir)
 }
 ```

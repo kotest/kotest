@@ -1,8 +1,8 @@
 package io.kotest.datatest
 
 import io.kotest.common.ExperimentalKotest
-import io.kotest.core.spec.style.scopes.RootContext
-import io.kotest.core.test.TestContext
+import io.kotest.core.spec.style.scopes.ContainerScope
+import io.kotest.core.spec.style.scopes.RootScope
 import io.kotest.matchers.collections.shouldContainExactly
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldHaveLength
@@ -10,7 +10,7 @@ import io.kotest.matchers.string.shouldHaveLength
 data class PythagTriple(val a: Int, val b: Int, val c: Int)
 
 @ExperimentalKotest
-fun RootContext.registerRootTests(): MutableList<String> {
+fun RootScope.registerRootTests(): MutableList<String> {
 
    val results = mutableListOf<String>()
 
@@ -29,6 +29,16 @@ fun RootContext.registerRootTests(): MutableList<String> {
       )
    ) { (a, b, c) ->
       a * a + b * b shouldBe c * c
+   }
+
+   withData(
+      mapOf(
+         "foo" to 2,
+         "foo" to 4,
+      )
+   ) { a ->
+      a % 2 shouldBe 0
+      if (a == 2) this.testCase.name.testName shouldBe "foo"
    }
 
    withData("a", "b") { a ->
@@ -52,10 +62,10 @@ fun RootContext.registerRootTests(): MutableList<String> {
          "a" to 2,
          "b" to 4,
       )
-   ) { a ->
-      a % 2 shouldBe 0
-      if (a == 2) this.testCase.displayName shouldBe "(2) a"
-      if (a == 4) this.testCase.displayName shouldBe "(2) b"
+   ) { arg ->
+      arg % 2 shouldBe 0
+      if (arg == 2) this.testCase.name.testName shouldBe "(2) a"
+      if (arg == 4) this.testCase.name.testName shouldBe "(2) b"
    }
 
    withData("p", "q") { a ->
@@ -71,7 +81,7 @@ fun RootContext.registerRootTests(): MutableList<String> {
 }
 
 @ExperimentalKotest
-suspend fun TestContext.registerContextTests(): MutableList<String> {
+suspend fun ContainerScope.registerContextTests(): MutableList<String> {
 
    val results = mutableListOf<String>()
 
@@ -97,8 +107,7 @@ suspend fun TestContext.registerContextTests(): MutableList<String> {
       )
    ) { a ->
       a % 2 shouldBe 0
-      if (a == 2) this.testCase.displayName shouldBe "foo"
-      //if (a == 4) this.testCase.displayName shouldBe "foo2"
+      if (a == 2) this.testCase.name.testName shouldBe "foo"
    }
 
    withData("a", "b") { a ->
@@ -122,10 +131,10 @@ suspend fun TestContext.registerContextTests(): MutableList<String> {
          "a" to 2,
          "b" to 4,
       )
-   ) { a ->
-      a % 2 shouldBe 0
-      if (a == 2) this.testCase.displayName shouldBe "(2) a"
-      if (a == 4) this.testCase.displayName shouldBe "(2) b"
+   ) { arg ->
+      arg % 2 shouldBe 0
+      if (arg == 2) this.testCase.name.testName shouldBe "(2) a"
+      if (arg == 4) this.testCase.name.testName shouldBe "(2) b"
    }
 
    withData("p", "q") { a ->

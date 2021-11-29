@@ -1,6 +1,6 @@
 package io.kotest.matchers.collections
 
-import io.kotest.assertions.show.show
+import io.kotest.assertions.print.print
 import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
 import io.kotest.matchers.invokeMatcher
@@ -15,7 +15,7 @@ fun <T> Iterable<T>?.shouldBeEmpty(): Iterable<T> {
 
 fun <T> Array<T>?.shouldBeEmpty(): Array<T> {
    if (this == null) fail()
-   asList().shouldBeEmpty()
+   this should beEmptyArray()
    return this
 }
 
@@ -46,12 +46,20 @@ fun <T> Collection<T>?.shouldNotBeEmpty(): Collection<T> {
 fun <T> beEmpty(): Matcher<Collection<T>> = object : Matcher<Collection<T>> {
    override fun test(value: Collection<T>): MatcherResult = MatcherResult(
       value.isEmpty(),
-      { "Collection should be empty but contained ${value.show().value}" },
+      { "Collection should be empty but contained ${value.first().print().value}" },
       { "Collection should not be empty" }
    )
 }
 
+fun <T> beEmptyArray(): Matcher<Array<T>> = object : Matcher<Array<T>> {
+   override fun test(value: Array<T>): MatcherResult = MatcherResult(
+      value.isEmpty(),
+      { "Array should be empty but contained ${value.first().print().value}" },
+      { "Array should not be empty" }
+   )
+}
+
 private fun fail(): Nothing {
-   invokeMatcher(null, Matcher.failure("Should be empty but was null"))
+   invokeMatcher(null, Matcher.failure("Expected an array collection but was null"))
    throw NotImplementedError()
 }

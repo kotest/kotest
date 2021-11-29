@@ -57,8 +57,13 @@ class ThrowableMatchersTest : FreeSpec() {
         shouldThrow<IOException> { throw FileNotFoundException("this_file.txt not found") } shouldHaveMessage "this_file.txt not found"
         shouldThrow<TestException> { throw TestException() } shouldHaveMessage "This is a test exception"
         shouldThrow<CompleteTestException> { throw CompleteTestException() } shouldHaveMessage "This is a complete test exception"
-        shouldThrow<AssertionError> { TestException() shouldHaveMessage "random message" }
-          .shouldHaveMessage("Throwable should have message:\n\"random message\"\n\nActual was:\n\"This is a test exception\"")
+        shouldThrow<AssertionError> { TestException() shouldHaveMessage "foo" }
+          .shouldHaveMessage("""Throwable should have message:
+"foo"
+
+Actual was:
+"This is a test exception"
+expected:<"foo"> but was:<"This is a test exception">""")
       }
       "shouldNotHaveMessage" {
         shouldThrow<IOException> { throw FileNotFoundException("this_file.txt not found") } shouldNotHaveMessage "random message"

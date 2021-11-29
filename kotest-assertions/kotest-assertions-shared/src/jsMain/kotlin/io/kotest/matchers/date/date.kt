@@ -163,9 +163,10 @@ fun before(date: Date): Matcher<Date> = object : Matcher<Date> {
    override fun test(value: Date): MatcherResult =
       MatcherResult(
          value.getTime() < date.getTime(),
-         "$value should be before $date",
-         "$value should not be before $date"
-      )
+         { "$value should be before $date" },
+         {
+            "$value should not be before $date"
+         })
 }
 
 /**
@@ -244,9 +245,10 @@ fun after(other: Date): Matcher<Date> = object : Matcher<Date> {
    override fun test(value: Date): MatcherResult =
       MatcherResult(
          value.getTime() > other.getTime(),
-         "$value should be after $other",
-         "$value should not be after $other"
-      )
+         { "$value should be after $other" },
+         {
+            "$value should not be after $other"
+         })
 }
 
 /**

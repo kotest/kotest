@@ -1,6 +1,6 @@
 package io.kotest.property.internal
 
-import io.kotest.assertions.show.show
+import io.kotest.assertions.print.print
 import io.kotest.mpp.stacktraces
 import io.kotest.property.PropertyTesting
 import io.kotest.property.RTree
@@ -29,7 +29,7 @@ suspend fun <A> doShrinking(
    val counter = Counter()
    val tested = mutableSetOf<A>()
    val sb = StringBuilder()
-   sb.append("Attempting to shrink arg ${initial.value().show().value}\n")
+   sb.append("Attempting to shrink arg ${initial.value().print().value}\n")
 
    val stepResult = doStep(initial, mode, tested, counter, test, sb)
    result(sb, stepResult, counter.count)
@@ -80,10 +80,10 @@ suspend fun <A> doStep(
          try {
             test(candidate)
             if (PropertyTesting.shouldPrintShrinkSteps)
-               sb.append("Shrink #${counter.count}: ${candidate.show().value} pass\n")
+               sb.append("Shrink #${counter.count}: ${candidate.print().value} pass\n")
          } catch (t: Throwable) {
             if (PropertyTesting.shouldPrintShrinkSteps)
-               sb.append("Shrink #${counter.count}: ${candidate.show().value} fail\n")
+               sb.append("Shrink #${counter.count}: ${candidate.print().value} fail\n")
             // this result failed, so we'll recurse in to find further failures otherwise return this candidate
             return doStep(a, mode, tested, counter, test, sb) ?: StepResult(candidate, t)
          }
@@ -105,7 +105,7 @@ private fun <A> result(sb: StringBuilder, result: StepResult<A>?, count: Int) {
    if (count == 0 || result == null) {
       sb.append("Arg was not shunk\n")
    } else {
-      sb.append("Shrink result (after $count shrinks) => ${result.failed.show().value}\n\n")
+      sb.append("Shrink result (after $count shrinks) => ${result.failed.print().value}\n\n")
       when (val location = stacktraces.throwableLocation(result.cause, 4)) {
          null -> sb.append("Caused by ${result.cause}\n")
          else -> {

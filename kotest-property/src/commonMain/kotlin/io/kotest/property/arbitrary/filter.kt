@@ -2,8 +2,10 @@ package io.kotest.property.arbitrary
 
 import io.kotest.property.Arb
 import io.kotest.property.PropertyTesting
+import io.kotest.property.RTree
 import io.kotest.property.RandomSource
 import io.kotest.property.Sample
+import io.kotest.property.filter
 
 /**
  * Returns a new [Arb] which takes its elements from the receiver and filters them using the supplied
@@ -18,7 +20,10 @@ fun <A> Arb<A>.filter(predicate: (A) -> Boolean): Arb<A> = object : Arb<A>() {
          .filter(predicate)
          .firstOrNull()
 
-   override fun sample(rs: RandomSource): Sample<A> = this@filter.samples(rs).filter { predicate(it.value) }.first()
+   override fun sample(rs: RandomSource): Sample<A> {
+      val sample = this@filter.samples(rs).filter { predicate(it.value) }.first()
+      return Sample(sample.value, sample.shrinks.filter(predicate) ?: RTree({ sample.value }))
+   }
 }
 
 /**

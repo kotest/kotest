@@ -1,5 +1,6 @@
 package io.kotest.core.test.names
 
+import io.kotest.core.names.TestName
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 
@@ -19,10 +20,14 @@ class TestNameTest : FunSpec({
    }
 
    test("parse with suffix") {
-      TestName("!foo", null, "s", true) shouldBe TestName("foo", false, true, null, "s", true)
+      TestName(null, "!foo", "s", true) shouldBe TestName("foo", false, true, null, "s", true)
+   }
+
+   test("parse with whitespace") {
+      TestName("    !foo") shouldBe TestName("foo", false, true, null, null, false)
    }
 
    test("parse with prefix") {
-      TestName("foo", "p", null, true) shouldBe TestName("foo", false, false, "p", null, true)
+      TestName("p", "foo", null, true) shouldBe TestName("foo", false, false, "p", null, true)
    }
 })

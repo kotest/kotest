@@ -2,6 +2,37 @@ package io.kotest.property.exhaustive
 
 import io.kotest.property.Exhaustive
 
+fun <A, B, C> Exhaustive<A>.cartesian(other: Exhaustive<B>, f: (A, B) -> C): Exhaustive<C> {
+   val cs = values.flatMap { _a ->
+      other.values.map { _b ->
+         f(_a, _b)
+      }
+   }
+   return cs.exhaustive()
+}
+
+
+fun <A, B> Exhaustive<A>.cartesianPairs(other: Exhaustive<B>): Exhaustive<Pair<A, B>> {
+   val pairs = values.flatMap { _a ->
+      other.values.map { _b ->
+         Pair(_a, _b)
+      }
+   }
+   return pairs.exhaustive()
+}
+
+/**
+ * Returns the cartesian join of this exhaustive with itself, with the results as pairs.
+ */
+fun <A> Exhaustive<A>.cartesianPairs(): Exhaustive<Pair<A, A>> {
+   val cs = values.flatMap { _a ->
+      values.map { _b ->
+         Pair(_a, _b)
+      }
+   }
+   return cs.exhaustive()
+}
+
 fun <A, B, C> Exhaustive.Companion.cartesian(a: Exhaustive<A>, b: Exhaustive<B>, f: (A, B) -> C): Exhaustive<C> {
    val cs = a.values.flatMap { _a ->
       b.values.map { _b ->
@@ -9,6 +40,15 @@ fun <A, B, C> Exhaustive.Companion.cartesian(a: Exhaustive<A>, b: Exhaustive<B>,
       }
    }
    return cs.exhaustive()
+}
+
+fun <A, B> Exhaustive.Companion.cartesianPairs(a: Exhaustive<A>, b: Exhaustive<B>): Exhaustive<Pair<A, B>> {
+   val pairs = a.values.flatMap { _a ->
+      b.values.map { _b ->
+         Pair(_a, _b)
+      }
+   }
+   return pairs.exhaustive()
 }
 
 fun <A, B, C, D> Exhaustive.Companion.cartesian(
