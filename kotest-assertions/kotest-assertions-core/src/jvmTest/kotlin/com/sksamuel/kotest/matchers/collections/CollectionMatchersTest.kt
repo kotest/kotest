@@ -14,6 +14,7 @@ import io.kotest.matchers.collections.containDuplicates
 import io.kotest.matchers.collections.containNoNulls
 import io.kotest.matchers.collections.containNull
 import io.kotest.matchers.collections.containOnlyNulls
+import io.kotest.matchers.collections.existInAssertedOrder
 import io.kotest.matchers.collections.existInOrder
 import io.kotest.matchers.collections.haveElementAt
 import io.kotest.matchers.collections.haveSize
@@ -549,6 +550,39 @@ class CollectionMatchersTest : WordSpec() {
             listOf(null, 1, 2, 3).shouldNotContainOnlyNulls()
             listOf(1, 2, 3).shouldNotContainOnlyNulls()
             listOf(null, null, null).shouldContainOnlyNulls()
+         }
+      }
+
+      "existInAssertedOrder" should {
+         "test that a collection matches the assertions in the given order, duplicates permitted" {
+            val col = listOf(1, 1, 2, 2, 3, 3)
+
+            col should existInAssertedOrder(
+               { it shouldBe 1 },
+               { it shouldBe 2 },
+               { it shouldBe 3 }
+            )
+            col should existInAssertedOrder({ it shouldBe 1 })
+
+            shouldThrow<AssertionError> {
+               col should existInAssertedOrder(
+                  { it shouldBe 1 },
+                  { it shouldBe 2 },
+                  { it shouldBe  6 }
+               )
+            }
+
+            shouldThrow<AssertionError> {
+               col should existInAssertedOrder({ it shouldBe  4 })
+            }
+
+            shouldThrow<AssertionError> {
+               col should existInAssertedOrder(
+                  { it shouldBe  2 },
+                  { it shouldBe  1 },
+                  { it shouldBe  3 }
+               )
+            }
          }
       }
 

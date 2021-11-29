@@ -61,6 +61,13 @@ fun <T> exist(p: (T) -> Boolean) = object : Matcher<Collection<T>> {
       })
 }
 
+fun <T> Iterable<T>.shouldExistInAssertedOrder(vararg assertions: (T) -> Unit) = toList().shouldExistInAssertedOrder(assertions.toList())
+fun <T> Array<T>.shouldExistInAssertedOrder(vararg assertions: (T) -> Unit) = asList().shouldExistInAssertedOrder(assertions.toList())
+fun <T> List<T>.shouldExistInAssertedOrder(vararg assertions: (T) -> Unit) = this.shouldExistInAssertedOrder(assertions.toList())
+infix fun <T> Iterable<T>.shouldExistInAssertedOrder(assertions: List<(T) -> Unit>) = toList().shouldExistInAssertedOrder(assertions)
+infix fun <T> Array<T>.shouldExistInAssertedOrder(assertions: List<(T) -> Unit>) = asList().shouldExistInAssertedOrder(assertions)
+infix fun <T> List<T>.shouldExistInAssertedOrder(assertions: List<(T) -> Unit>) = this should existInAssertedOrder(assertions.toList())
+
 fun <T> Iterable<T>.shouldExistInOrder(vararg ps: (T) -> Boolean) = toList().shouldExistInOrder(ps.toList())
 fun <T> Array<T>.shouldExistInOrder(vararg ps: (T) -> Boolean) = asList().shouldExistInOrder(ps.toList())
 fun <T> List<T>.shouldExistInOrder(vararg ps: (T) -> Boolean) = this.shouldExistInOrder(ps.toList())

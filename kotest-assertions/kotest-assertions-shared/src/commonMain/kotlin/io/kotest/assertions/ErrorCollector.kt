@@ -152,9 +152,20 @@ fun ErrorCollector.throwCollectedErrors() {
          failures[0]
       } else {
          MultiAssertionError(failures).also {
-            stacktraces.cleanStackTrace(it) //cleans the creation of MultiAssertionError
+            stacktraces.cleanStackTrace(it) // cleans the creation of MultiAssertionError
          }
       }
       throw t
+   }
+}
+
+fun ErrorCollector.runWithMode(mode: ErrorCollectionMode, block: () -> Unit) {
+   getCollectionMode().let { original ->
+      setCollectionMode(mode)
+      try {
+         block()
+      } finally {
+         setCollectionMode(original)
+      }
    }
 }

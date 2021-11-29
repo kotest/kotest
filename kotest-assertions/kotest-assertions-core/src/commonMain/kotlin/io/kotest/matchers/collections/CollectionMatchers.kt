@@ -1,11 +1,15 @@
 package io.kotest.matchers.collections
 
+import io.kotest.assertions.ErrorCollectionMode
+import io.kotest.assertions.errorCollector
 import io.kotest.assertions.print.print
+import io.kotest.assertions.runWithMode
 import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
 import io.kotest.matchers.neverNullMatcher
 
 fun <T> existInOrder(vararg ps: (T) -> Boolean): Matcher<Collection<T>?> = existInOrder(ps.asList())
+fun <T> existInAssertedOrder(vararg fns: (T) -> Unit): Matcher<Collection<T>?> = existInAssertedOrder(fns.asList())
 
 /**
  * Assert that a collections contains a subsequence that matches the given subsequence of predicates, possibly with
@@ -28,14 +32,37 @@ fun <T> existInOrder(predicates: List<(T) -> Boolean>): Matcher<Collection<T>?> 
    )
 }
 
+/**
+ * Assert that a collections contains a subsequence that matches the given subsequence of assertions, possibly with
+ * values in between.
+ */
+fun <T> existInAssertedOrder(assertions: List<(T) -> Unit>): Matcher<Collection<T>?> = neverNullMatcher { actual ->
+   require(assertions.isNotEmpty()) { "assertions must not be empty" }
+
+   var subsequenceIndex = 0
+   val actualIterator = actual.iterator()
+
+   errorCollector.runWithMode(ErrorCollectionMode.Hard) {
+      while (actualIterator.hasNext() && subsequenceIndex < assertions.size) {
+         if (runCatching { assertions[subsequenceIndex](actualIterator.next()) }.isSuccess) subsequenceIndex += 1
+      }
+   }
+
+   MatcherResult(
+      subsequenceIndex == assertions.size,
+      { "${actual.print().value} did not match the assertions in order" },
+      { "${actual.print().value} should not match the assertions in order" }
+   )
+}
+
 fun <T> haveSize(size: Int): Matcher<Collection<T>> = haveSizeMatcher(size)
 
 fun <T> singleElement(t: T): Matcher<Collection<T>> = object : Matcher<Collection<T>> {
-  override fun test(value: Collection<T>) = MatcherResult(
-     value.size == 1 && value.first() == t,
-     { "Collection should be a single element of $t but has ${value.size} elements: ${value.print().value}" },
-     { "Collection should not be a single element of $t" }
-  )
+   override fun test(value: Collection<T>) = MatcherResult(
+      value.size == 1 && value.first() == t,
+      { "Collection should be a single element of $t but has ${value.size} elements: ${value.print().value}" },
+      { "Collection should not be a single element of $t" }
+   )
 }
 
 fun <T> singleElement(p: (T) -> Boolean): Matcher<Collection<T>> = object : Matcher<Collection<T>> {
@@ -51,19 +78,16 @@ fun <T> singleElement(p: (T) -> Boolean): Matcher<Collection<T>> = object : Matc
 
 fun <T : Comparable<T>> beSorted(): Matcher<List<T>> = sorted()
 fun <T : Comparable<T>> sorted(): Matcher<List<T>> = object : Matcher<List<T>> {
-  override fun test(value: List<T>): MatcherResult {
-    val failure = value.withIndex().firstOrNull { (i, it) -> i != value.lastIndex && it > value[i + 1] }
-    val elementMessage = when (failure) {
-      null -> ""
-      else -> ". Element ${failure.value} at index ${failure.index} was greater than element ${value[failure.index + 1]}"
-    }
-    return MatcherResult(
-       failure == null,
-       { "List ${value.print().value} should be sorted$elementMessage" },
-       { "List ${value.print().value} should not be sorted" }
-    )
-  }
+   override fun test(value: List<T>): MatcherResult {
+      val failure = value.withIndex().firstOrNull { (i, it) -> i != value.lastIndex && it > value[i + 1] }
+      val elementMessage = when (failure) {
+         null -> ""
+         else -> ". Element ${failure.value} at index ${failure.index} was greater than element ${value[failure.index + 1]}"
+      }
+      return MatcherResult(
+         failure == null,
+         { "List ${value.print().value} should be sorted$elementMessage" },
+         { "List ${value.print().value} should not be sorted" }
+      )
+   }
 }
-
-
-
