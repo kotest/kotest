@@ -8,6 +8,7 @@ import io.kotest.core.names.DisplayNameFormatter
 import io.kotest.core.names.UniqueNames
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
+import io.kotest.core.test.TestType
 import io.kotest.engine.errors.ExtensionExceptionExtractor
 import io.kotest.engine.interceptors.EngineContext
 import io.kotest.engine.listener.AbstractTestEngineListener
@@ -123,55 +124,8 @@ class JUnitTestEngineListener(
       listener.executionFinished(root, result)
    }
 
-   private fun registerExceptionPlaceholders(ts: List<Throwable>) {
-      ts.forEach {
-         val (name, cause) = ExtensionExceptionExtractor.resolve(it)
-         val container = createAndRegisterDummySpec(name)
-         listener.executionStarted(container)
-         listener.executionFinished(container, TestExecutionResult.failed(cause))
-      }
-   }
-
    override suspend fun specStarted(kclass: KClass<*>) {
       markSpecStarted(kclass)
-   }
-
-   private fun markSpecStarted(kclass: KClass<*>): TestDescriptor {
-      return try {
-
-         val descriptor = getOrCreateSpecDescriptor(kclass)
-
-         logger.log { Pair(kclass.bestName(), "Registering dynamic spec $descriptor") }
-         listener.dynamicTestRegistered(descriptor)
-
-         logger.log { Pair(kclass.bestName(), "Spec executionStarted $descriptor") }
-         listener.executionStarted(descriptor)
-
-         started = true
-         descriptor
-
-      } catch (t: Throwable) {
-         logger.log { Pair(kclass.bestName(), "Error in JUnit Platform listener $t") }
-         throw t
-      }
-   }
-
-   private fun getOrCreateSpecDescriptor(kclass: KClass<*>): TestDescriptor {
-
-      val existing = descriptors[kclass.toDescriptor()]
-      if (existing != null) return existing
-
-      val descriptor = createDescriptorForSpec(kclass.toDescriptor(), formatter.format(kclass), root)
-      logger.log { Pair(kclass.bestName(), "Spec will use source: ${descriptor.source}")}
-      descriptors[kclass.toDescriptor()] = descriptor
-      return descriptor
-   }
-
-   override suspend fun specIgnored(kclass: KClass<*>, reason: String?) {
-      logger.log { Pair(kclass.bestName(), "Spec is being flagged as ignored") }
-      val descriptor: TestDescriptor =
-         createDescriptorForSpec(kclass.toDescriptor(), formatter.format(kclass), root)
-      listener.executionSkipped(descriptor, reason)
    }
 
    override suspend fun specFinished(kclass: KClass<*>, t: Throwable?) {
@@ -186,20 +140,13 @@ class JUnitTestEngineListener(
          }
          // if we had an error in the spec, and we had no tests, we'll add the dummy and return
          t != null && rootTests.isEmpty() -> {
-            val descriptor = descriptors[kclass.toDescriptor()]!!
+            val descriptor = getSpecDescriptor(kclass)
             addPlaceholderTest(descriptor, t, kclass)
             logger.log { Pair(kclass.bestName(), "execution failed: $descriptor $t") }
             listener.executionFinished(descriptor, TestExecutionResult.failed(t))
          }
          else -> {
-
-            val descriptor = descriptors[kclass.toDescriptor()]
-
-            if (descriptor == null) {
-               logger.log { Pair(kclass.bestName(), "Error retrieving descriptor") }
-               throw RuntimeException("Error retrieving description for spec ${kclass.qualifiedName}")
-            }
-
+            val descriptor = getSpecDescriptor(kclass)
             val result = when (t) {
                null -> TestExecutionResult.successful()
                else -> {
@@ -213,6 +160,31 @@ class JUnitTestEngineListener(
          }
       }
       reset()
+   }
+
+   override suspend fun specIgnored(kclass: KClass<*>, reason: String?) {
+      logger.log { Pair(kclass.bestName(), "Spec is being flagged as ignored") }
+      listener.executionSkipped(getSpecDescriptor(kclass), reason)
+   }
+
+   private fun markSpecStarted(kclass: KClass<*>): TestDescriptor {
+      return try {
+
+         val descriptor = getSpecDescriptor(root, kclass.toDescriptor(), formatter.format(kclass))
+
+         logger.log { Pair(kclass.bestName(), "Registering dynamic spec $descriptor") }
+         listener.dynamicTestRegistered(descriptor)
+
+         logger.log { Pair(kclass.bestName(), "Spec executionStarted $descriptor") }
+         listener.executionStarted(descriptor)
+
+         started = true
+         descriptor
+
+      } catch (t: Throwable) {
+         logger.log { Pair(kclass.bestName(), "Error in JUnit Platform listener $t") }
+         throw t
+      }
    }
 
    private fun reset() {
@@ -236,15 +208,33 @@ class JUnitTestEngineListener(
       parent.addChild(descriptor)
       listener.dynamicTestRegistered(descriptor)
       listener.executionStarted(descriptor)
-      listener.executionFinished(descriptor, TestResult.Error(Duration.ZERO, cause).testExecutionResult())
+      listener.executionFinished(descriptor, TestResult.Error(Duration.ZERO, cause).toTestExecutionResult())
    }
 
-   // we don't inform junit of a started test just yet, as we want to wait and see if it has nested tests
-   // this is so we can dynamically set junit's container/test type depending on the child count
    override suspend fun testStarted(testCase: TestCase) {
+
+      // depending on the test type, we may want to wait to notify junit, this is because gradle doesn't work
+      // properly with the junit test types. Ideally, we'd just set everything to CONTAINER_AND_TEST, which is
+      // supposed to mean a test can contain other tests as well as being a test itself, which is exactly how
+      // Kotest views tests, but unfortunately it doesn't work properly.
+      //
+      // Another approach is to wait until the spec finishes to see which tests contain children and which
+      // don't and set the test type appropriately, but junit doesn't give us a way to specify test duration
+      // (instead it just calculates it itself from the time between marking a test as started and marking
+      // it as finished), so this approach works but ends up having all tests as 0ms
+      //
+      // So the approach we will take is use the TestType from the test definition, unless it is dynamic,
+      // then for dynamic we will calculate it later, and accept the 0ms drawback
+
       logger.log { Pair(testCase.name.testName, "test started") }
       if (testCase.parent != null) rootTests.add(testCase)
       addChild(testCase)
+
+      when (testCase.type) {
+         TestType.Container -> startTestIfNotStarted(testCase, TestDescriptor.Type.CONTAINER)
+         TestType.Test -> startTestIfNotStarted(testCase, TestDescriptor.Type.TEST)
+         TestType.Dynamic -> Unit
+      }
    }
 
    // this test can be output now it has completed as we have all we need to know to complete it
@@ -252,14 +242,14 @@ class JUnitTestEngineListener(
       logger.log { Pair(testCase.name.testName, "test finished $result") }
       results[testCase.descriptor] = result
 
-      val descriptor = getOrCreateTestDescriptor(testCase)
+      val descriptor = getOrCreateTestDescriptor(testCase, null)
 
       // we need to ensure all parents have been started first
       startParents(testCase)
-      startTestIfNotStarted(testCase)
+      startTestIfNotStarted(testCase, null)
 
       logger.log { Pair(testCase.name.testName, "executionFinished: $descriptor") }
-      listener.executionFinished(descriptor, result.testExecutionResult())
+      listener.executionFinished(descriptor, result.toTestExecutionResult())
    }
 
    override suspend fun testIgnored(testCase: TestCase, reason: String?) {
@@ -271,7 +261,7 @@ class JUnitTestEngineListener(
       // we need to ensure all parents have been started first
       startParents(testCase)
 
-      val descriptor = getOrCreateTestDescriptor(testCase)
+      val descriptor = getOrCreateTestDescriptor(testCase, TestDescriptor.Type.TEST)
 
       logger.log { Pair(testCase.name.testName, "Registering dynamic test: $descriptor") }
       listener.dynamicTestRegistered(descriptor)
@@ -288,14 +278,14 @@ class JUnitTestEngineListener(
       val parent = testCase.parent
       if (parent != null) {
          startParents(parent)
-         startTestIfNotStarted(parent)
+         startTestIfNotStarted(parent, null)
       }
    }
 
-   private fun startTestIfNotStarted(testCase: TestCase) {
+   private fun startTestIfNotStarted(testCase: TestCase, type: TestDescriptor.Type?) {
       if (!startedTests.contains(testCase.descriptor)) {
 
-         val descriptor = getOrCreateTestDescriptor(testCase)
+         val descriptor = getOrCreateTestDescriptor(testCase, type)
 
          logger.log { Pair(testCase.name.testName, "Registering dynamic test: $descriptor") }
          listener.dynamicTestRegistered(descriptor)
@@ -307,21 +297,22 @@ class JUnitTestEngineListener(
       }
    }
 
-   private fun getOrCreateTestDescriptor(testCase: TestCase): TestDescriptor {
+   private fun getOrCreateTestDescriptor(testCase: TestCase, type: TestDescriptor.Type?): TestDescriptor {
 
       val existing = descriptors[testCase.descriptor]
       if (existing != null) return existing
 
       val parent = when (val p = testCase.parent) {
-         null -> getOrCreateSpecDescriptor(testCase.spec::class)
-         else -> getOrCreateTestDescriptor(p)
+         null -> getSpecDescriptor(testCase.spec::class)
+         else -> getOrCreateTestDescriptor(p, null)
       }
 
       val id = parent.uniqueId.append(testCase.descriptor)
 
-      // we dynamically work out the type by looking to see if this test had any children
+      // we dynamically work out the type if null by looking to see if this test had any children
       val c = children[testCase.descriptor]
-      val type = when {
+      val t = when {
+         type != null -> type
          c == null || c.isEmpty() -> TestDescriptor.Type.TEST
          else -> TestDescriptor.Type.CONTAINER
       }
@@ -329,7 +320,7 @@ class JUnitTestEngineListener(
       return createTestDescriptor(
          id,
          formatter.format(testCase),
-         type,
+         t,
          ClassSource.from(testCase.spec::class.java, null), // junit hides tests if we don't send this
          type == TestDescriptor.Type.CONTAINER
       ).apply {
@@ -338,12 +329,26 @@ class JUnitTestEngineListener(
       }
    }
 
+   private fun getSpecDescriptor(kclass: KClass<*>): TestDescriptor {
+      return getSpecDescriptor(root, kclass.toDescriptor(), formatter.format(kclass))
+   }
+
    private fun createAndRegisterDummySpec(name: String): TestDescriptor {
+
       val unique = UniqueNames.unique(name, dummies) { s, k -> "${s}_$k" } ?: name
       dummies.add(unique)
-      val descriptor =
-         createDescriptorForSpec(Descriptor.SpecDescriptor(DescriptorId(unique), this::class), unique, root)
+
+      val descriptor = getSpecDescriptor(root, Descriptor.SpecDescriptor(DescriptorId(unique), this::class), unique)
       listener.dynamicTestRegistered(descriptor)
       return descriptor
+   }
+
+   private fun registerExceptionPlaceholders(ts: List<Throwable>) {
+      ts.forEach {
+         val (name, cause) = ExtensionExceptionExtractor.resolve(it)
+         val container = createAndRegisterDummySpec(name)
+         listener.executionStarted(container)
+         listener.executionFinished(container, TestExecutionResult.failed(cause))
+      }
    }
 }

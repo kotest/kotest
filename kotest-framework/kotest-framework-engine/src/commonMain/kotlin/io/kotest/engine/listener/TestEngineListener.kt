@@ -31,7 +31,7 @@ interface TestEngineListener {
    suspend fun engineInitialized(context: EngineContext)
 
    /**
-    * Is invoked when the [TestEngine] has finished execution of all specs.
+    * Is invoked when the [TestEngine] has finished execution of all tests.
     *
     * If any unexpected errors were detected during execution then they will be
     * passed to this method.
@@ -62,14 +62,13 @@ interface TestEngineListener {
    suspend fun testStarted(testCase: TestCase)
 
    /**
-    * Invoked if a [TestCase] will not be executed because it is not enabled.
+    * Invoked if a [TestCase] will be skipped.
     */
    suspend fun testIgnored(testCase: TestCase, reason: String?)
 
    /**
     * Invoked when all the invocations of a [TestCase] have completed.
-    * This function will only be invoked if a test case was active.
-    * The result passed in here is the result directly from the test run, before any interception.
+    * This function will only be invoked if a test case was enabled.
     */
    suspend fun testFinished(testCase: TestCase, result: TestResult)
 }
