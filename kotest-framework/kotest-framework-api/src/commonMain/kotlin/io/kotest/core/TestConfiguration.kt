@@ -133,8 +133,10 @@ abstract class TestConfiguration {
     * Registers an [AutoCloseable] to be closed when the spec is completed.
     */
    @Suppress("PropertyName")
-   fun <T : AutoCloseable> autoClose(closeable: T): T =
-      autoClose(lazy { closeable }).value
+   fun <T : AutoCloseable> autoClose(closeable: T): T {
+      autoClose(lazy { closeable })
+      return closeable
+   }
 
    /**
     * Registers a lazy [AutoCloseable] to be closed when the spec is completed.
