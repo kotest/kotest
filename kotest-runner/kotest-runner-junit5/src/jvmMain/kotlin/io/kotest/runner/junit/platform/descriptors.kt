@@ -8,20 +8,34 @@ import org.junit.platform.engine.support.descriptor.AbstractTestDescriptor
 import org.junit.platform.engine.support.descriptor.ClassSource
 
 /**
- * Creates a new spec-level [TestDescriptor] from the given class, appending it to the
- * [engine] descriptor. The created descriptor will have segment type [Segment.Spec]
- * and will use [displayName].
+ * Creates a [TestDescriptor] from the given class, and attaches it to the engine,
+ * if one does not already exist.
+ *
+ * The created Test Descriptor will have segment type [Segment.Spec] and will use [displayName].
  */
-fun createDescriptorForSpec(
+fun getSpecDescriptor(
+   engine: TestDescriptor,
    descriptor: Descriptor.SpecDescriptor,
    displayName: String,
-   engine: TestDescriptor
 ): TestDescriptor {
+   val id = engine.uniqueId.append(Segment.Spec.value, descriptor.id.value)
+   return engine.findByUniqueId(id).orElseGet { null }
+      ?: createAndRegisterSpecDescription(engine, descriptor, displayName)
+}
+
+private fun createAndRegisterSpecDescription(
+   engine: TestDescriptor,
+   descriptor: Descriptor.SpecDescriptor,
+   displayName: String,
+): TestDescriptor {
+   val id = engine.uniqueId.append(Segment.Spec.value, descriptor.id.value)
    val source = ClassSource.from(descriptor.kclass.java)
-   val id = engine.uniqueId.append(descriptor)
-   return createTestDescriptor(id, displayName, TestDescriptor.Type.CONTAINER, source, true).apply {
-      engine.addChild(this)
+   val testDescriptor: TestDescriptor = object : AbstractTestDescriptor(id, displayName, source) {
+      override fun getType(): TestDescriptor.Type = TestDescriptor.Type.CONTAINER
+      override fun mayRegisterTests(): Boolean = true
    }
+   engine.addChild(testDescriptor)
+   return testDescriptor
 }
 
 /**
