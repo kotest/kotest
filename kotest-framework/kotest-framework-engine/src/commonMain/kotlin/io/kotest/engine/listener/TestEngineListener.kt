@@ -1,5 +1,6 @@
 package io.kotest.engine.listener
 
+import io.kotest.common.KotestInternal
 import io.kotest.core.spec.Spec
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
@@ -10,7 +11,10 @@ import kotlin.reflect.KClass
 /**
  * Implementations of this interface will be notified of events
  * that occur as part of the [TestEngine] lifecycle.
+ *
+ * This is public but should be considered internal.
  */
+@KotestInternal
 interface TestEngineListener {
 
    /**
