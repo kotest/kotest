@@ -4,12 +4,17 @@ sidebar_label: Changelog
 slug: changelog.html
 ---
 
-## 5.0.1 [Unreleased]
+## 5.0.1 November 2021
 
 ### Fixes
 
 * Display names now include affixes when configured
 * Fixed WordSpec to work with intellij plugin when used nested contexts
+* Added testCoroutineDispatcher override to project config #2693
+* Fixed compiler plugin multiplatform race condition #2687
+* Regression: Test times reported as zero in junit #2686
+* Dump coroutine debug output automatically after test finishes #2680
+* JSON Matchers does not offer "Click to see difference"
 
 
 
