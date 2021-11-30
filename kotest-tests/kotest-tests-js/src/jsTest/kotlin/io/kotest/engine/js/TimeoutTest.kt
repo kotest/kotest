@@ -2,6 +2,7 @@ package io.kotest.engine.js
 
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.test.TestResult
+import io.kotest.datatest.withData
 import kotlinx.coroutines.delay
 import kotlin.time.Duration.Companion.days
 import kotlin.time.Duration.Companion.milliseconds
@@ -34,6 +35,11 @@ class TimeoutTest : FunSpec() {
       // testing that we can set a very low timeout and capture it
       test("JS engine should capture timeouts").config(timeout = 1.milliseconds) {
          delay(10)
+      }
+
+      // tests timeouts with data testing in js
+      withData("foo", "bar") {
+         delay(3000)
       }
    }
 }
