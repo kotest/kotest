@@ -35,11 +35,8 @@ fun Arb.Companion.long(min: Long = Long.MIN_VALUE, max: Long = Long.MAX_VALUE) =
  */
 fun Arb.Companion.long(range: LongRange = Long.MIN_VALUE..Long.MAX_VALUE): Arb<Long> {
    val edgeCases = longArrayOf(range.first, -1, 0, 1, range.last).filter { it in range }.distinct()
-   return ArbitraryBuilder.create {
-      var value = it.random.nextLong(range)
-      while (value !in range) value = it.random.nextLong(range) // temporary workaround for KT-47304
-      value
-   }.withEdgecases(edgeCases)
+   return ArbitraryBuilder.create { it.random.nextLong(range) }
+      .withEdgecases(edgeCases)
       .withShrinker(LongShrinker(range))
       .withClassifier(LongClassifier(range))
       .build()
