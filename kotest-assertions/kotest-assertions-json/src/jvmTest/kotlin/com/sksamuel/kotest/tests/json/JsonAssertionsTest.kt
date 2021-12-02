@@ -46,7 +46,7 @@ class JsonAssertionsTest : StringSpec({
    "should return correct error message on failure" {
       shouldThrow<AssertionError> {
          json1 shouldMatchJson json3
-      }.message shouldBe """Expected JSON to match, but they differed
+      }.message shouldBe """expected json to match, but they differed
          |
          |expected:<{"location":"chicago","name":"sam"}> but was:<{"name":"sam","location":"london"}>""".trimMargin()
 

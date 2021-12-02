@@ -54,7 +54,7 @@ fun matchJson(expected: String?) = object : Matcher<String?> {
       return ComparableMatcherResult(
          actualJson == expectedJson,
          {
-            "Expected JSON to match, but they differed\n\n"
+            "expected json to match, but they differed\n\n"
          },
          {
             "expected not to match with: $expectedJson but match: $actualJson"
