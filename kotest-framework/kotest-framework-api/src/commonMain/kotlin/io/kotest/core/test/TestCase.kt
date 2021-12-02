@@ -73,3 +73,7 @@ fun TestCase.isFocused() = this.parent == null && name.focus
  * A root test case is one which is defined at the top level in a spec.
  */
 fun TestCase.isRootTest() = this.parent == null
+
+fun TestCase.parents(): List<TestCase> {
+   return if (parent == null) emptyList() else parent.parents() + parent
+}
