@@ -2,8 +2,8 @@ package io.kotest.assertions.json
 
 import io.kotest.assertions.Actual
 import io.kotest.assertions.Expected
-import io.kotest.assertions.intellijFormatError
 import io.kotest.assertions.print.printed
+import io.kotest.matchers.ComparableMatcherResult
 import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
 
@@ -37,10 +37,12 @@ fun equalJson(
             options,
          )?.asString()
 
-         return MatcherResult(
+         return ComparableMatcherResult(
             error == null,
-            { "$error\n\n${intellijFormatError(Expected(expected.raw.printed()), Actual(value.raw.printed()))}" },
-            { "Expected values to not match ${expected.raw}" }
+            { "$error\n\n" },
+            { "Expected values to not match\n\n" },
+            value.raw,
+            expected.raw,
          )
       }
    }
