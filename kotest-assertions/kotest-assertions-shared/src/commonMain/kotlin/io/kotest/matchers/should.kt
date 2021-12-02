@@ -9,6 +9,7 @@ import io.kotest.assertions.eq.eq
 import io.kotest.assertions.eq.expectedIsNull
 import io.kotest.assertions.errorCollector
 import io.kotest.assertions.failure
+import io.kotest.assertions.intellijFormatError
 import io.kotest.assertions.print.Printed
 import io.kotest.assertions.print.print
 
@@ -77,7 +78,7 @@ fun <T> equalityMatcher(expected: T) = object : Matcher<T> {
          {
             val e = Expected(expected.print())
             val a = Actual(value.print())
-            failure(e, a).message ?: "expected:<${e.value.toString()}> but was:<${e.value.toString()}>"
+            failure(e, a).message ?: intellijFormatError(e, a)
          },
          { "${expected.print().value} should not equal ${value.print().value}" }
       )

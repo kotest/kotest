@@ -2,7 +2,6 @@ package io.kotest.assertions.json
 
 import io.kotest.assertions.Actual
 import io.kotest.assertions.Expected
-import io.kotest.assertions.print.printed
 import io.kotest.matchers.ComparableMatcherResult
 import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
