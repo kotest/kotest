@@ -7,9 +7,7 @@ import io.kotest.engine.listener.CollectingTestEngineListener
 import io.kotest.matchers.shouldBe
 import kotlinx.coroutines.delay
 import kotlin.time.Duration.Companion.milliseconds
-import kotlin.time.ExperimentalTime
 
-@ExperimentalTime
 @ExperimentalKotest
 class ContainerTimeoutTest : FunSpec() {
    init {
@@ -26,7 +24,6 @@ class ContainerTimeoutTest : FunSpec() {
    }
 }
 
-@ExperimentalTime
 @ExperimentalKotest
 private class NestedTimeout : FunSpec() {
    init {

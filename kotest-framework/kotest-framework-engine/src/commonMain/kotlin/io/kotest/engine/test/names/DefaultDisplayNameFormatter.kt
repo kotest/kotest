@@ -29,6 +29,8 @@ class DefaultDisplayNameFormatter(
    private val configuration: ProjectConfiguration,
 ) : DisplayNameFormatter {
 
+   constructor() : this(ProjectConfiguration())
+
    override fun format(testCase: TestCase): String {
 
       val prefix = when (configuration.includeTestScopeAffixes ?: testCase.name.defaultAffixes) {

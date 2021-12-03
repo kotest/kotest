@@ -66,7 +66,9 @@ internal class SpecExtensions(private val registry: ExtensionRegistry) {
 
       spec.registeredAutoCloseables().let { closeables ->
          logger.log { Pair(spec::class.bestName(), "Closing ${closeables.size} autocloseables [$closeables]") }
-         closeables.forEach { it.value.close() }
+         closeables.forEach {
+            if(it.isInitialized()) it.value.close() else Unit
+         }
       }
 
       val errors = extensions(spec).filterIsInstance<AfterSpecListener>().mapNotNull { ext ->
