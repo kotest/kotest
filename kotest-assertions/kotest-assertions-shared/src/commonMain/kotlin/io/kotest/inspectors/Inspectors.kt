@@ -85,20 +85,30 @@ inline fun <T, C : Collection<T>> C.forNone(f: (T) -> Unit): C = apply {
    }
 }
 
-/** Checks that [Sequence] consists of a single element, which passes the given assertion block [fn] */
-fun <T> Sequence<T>.forSingle(fn: (T) -> Unit): Sequence<T> = apply { toList().forSingle(fn) }
-/** Checks that [Array] consists of a single element, which passes the given assertion block [fn] */
-fun <T> Array<T>.forSingle(fn: (T) -> Unit): Array<T> = apply { toList().forSingle(fn) }
-/** Checks that [Collection] consists of a single element, which passes the given assertion block [fn] */
-fun <T, C : Collection<T>> C.forSingle(f: (T) -> Unit): C = apply {
+/**
+ * Checks that [Sequence] consists of a single element, which passes the given assertion block [fn]
+ * and returns the element
+ * */
+fun <T> Sequence<T>.forSingle(fn: (T) -> Unit): T = toList().forSingle(fn)
+
+/**
+ * Checks that [Array] consists of a single element, which passes the given assertion block [fn]
+ * and returns the element
+ * */
+fun <T> Array<T>.forSingle(fn: (T) -> Unit): T = toList().forSingle(fn)
+
+/**
+ * Checks that [Collection] consists of a single element, which passes the given assertion block [fn]
+ * and returns the element
+ * */
+fun <T, C : Collection<T>> C.forSingle(f: (T) -> Unit): T = run {
    val results = runTests(this, f)
-   when(results.size) {
-      1 -> {
-         if (results[0] !is ElementPass<T>) {
-            buildAssertionError("Expected a single element to pass, but it failed.", results)
-         }
+   when (results.size) {
+      1 -> when (results[0]) {
+         is ElementPass<T> -> results[0].value()
+         else -> buildAssertionError("Expected a single element to pass, but it failed.", results)
       }
       0 -> throw failure("Expected a single element in the collection, but it was empty.")
-      else -> buildAssertionError("Expected a single element in the collection but found ${results.size}.", results)
+      else -> buildAssertionError("Expected a single element in the collection, but found ${results.size}.", results)
    }
 }

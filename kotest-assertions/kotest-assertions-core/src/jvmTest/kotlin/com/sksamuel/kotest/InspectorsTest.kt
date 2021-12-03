@@ -1,16 +1,21 @@
 package com.sksamuel.kotest
 
+import io.kotest.assertions.shouldFail
 import io.kotest.assertions.throwables.shouldThrow
+import io.kotest.assertions.throwables.shouldThrowAny
 import io.kotest.core.spec.style.WordSpec
 import io.kotest.inspectors.forAny
 import io.kotest.inspectors.forExactly
 import io.kotest.inspectors.forNone
 import io.kotest.inspectors.forOne
+import io.kotest.inspectors.forSingle
 import io.kotest.inspectors.forSome
 import io.kotest.matchers.comparables.beGreaterThan
 import io.kotest.matchers.comparables.beLessThan
+import io.kotest.matchers.comparables.shouldBeLessThan
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldBe
+import io.kotest.matchers.string.shouldStartWith
 
 class InspectorsTest : WordSpec() {
 
@@ -182,6 +187,32 @@ The following elements failed:
 5 => expected:<6> but was:<5>"""
       }
     }
+
+     "forSingle" should {
+        "pass list is singular, and the single element pass" {
+           listOf(1).forSingle {
+              it shouldBeLessThan 3
+           }
+        }
+
+        "return the single element on success" {
+           listOf(1).forSingle { it shouldBeLessThan 3 } shouldBe 1
+        }
+
+        "fail if list consists of multiple elements" {
+           shouldFail {
+              listOf(1, 1).forSingle {
+                 it shouldBe 1
+              }
+           }.message shouldStartWith "Expected a single element in the collection, but found 2"
+        }
+
+        "fail if the element does not pass" {
+           shouldFail {
+              listOf(2).forSingle { it shouldBe 1 }
+           }.message shouldStartWith "Expected a single element to pass, but it failed."
+        }
+     }
 
     "forExactly" should {
       "pass if exactly k elements pass"  {
