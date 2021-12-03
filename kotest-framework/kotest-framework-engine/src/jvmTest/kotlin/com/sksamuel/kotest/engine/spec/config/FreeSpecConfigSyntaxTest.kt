@@ -5,13 +5,11 @@ import io.kotest.core.spec.style.FreeSpec
 import io.kotest.matchers.shouldBe
 import java.util.concurrent.atomic.AtomicInteger
 import kotlin.time.Duration.Companion.seconds
-import kotlin.time.ExperimentalTime
 
 /**
  * A test that just ensures the syntax for test configs does not break between releases.
  * The actual functionality of things like tags and timeouts is tested elsewhere.
  */
-@ExperimentalTime
 @ExperimentalKotest
 class FreeSpecConfigSyntaxTest : FreeSpec() {
    init {
