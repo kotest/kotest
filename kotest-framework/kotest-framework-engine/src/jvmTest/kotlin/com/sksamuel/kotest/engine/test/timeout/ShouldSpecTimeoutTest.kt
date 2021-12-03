@@ -8,9 +8,7 @@ import kotlinx.coroutines.delay
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.minutes
-import kotlin.time.ExperimentalTime
 
-@ExperimentalTime
 @ExperimentalKotest
 class ShouldSpecTimeoutTest : ShouldSpec() {
    init {

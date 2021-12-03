@@ -6,9 +6,7 @@ import io.kotest.datatest.withData
 import kotlinx.coroutines.delay
 import kotlin.time.Duration.Companion.days
 import kotlin.time.Duration.Companion.milliseconds
-import kotlin.time.ExperimentalTime
 
-@ExperimentalTime
 class TimeoutTest : FunSpec() {
    init {
 

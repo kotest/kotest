@@ -6,7 +6,6 @@ import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 import java.util.concurrent.atomic.AtomicInteger
 import kotlin.time.Duration.Companion.seconds
-import kotlin.time.ExperimentalTime
 
 object Tag1 : Tag()
 object Tag2 : Tag()

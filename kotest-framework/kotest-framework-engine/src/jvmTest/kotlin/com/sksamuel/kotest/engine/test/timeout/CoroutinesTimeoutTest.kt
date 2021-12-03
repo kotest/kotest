@@ -11,9 +11,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlin.time.Duration.Companion.hours
 import kotlin.time.Duration.Companion.milliseconds
-import kotlin.time.ExperimentalTime
 
-@ExperimentalTime
 class TimeoutTest : FunSpec() {
 
    init {

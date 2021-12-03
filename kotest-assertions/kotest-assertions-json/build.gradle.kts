@@ -49,7 +49,6 @@ kotlin {
       }
 
       all {
-         languageSettings.optIn("kotlin.time.ExperimentalTime")
          languageSettings.optIn("kotlin.experimental.ExperimentalTypeInference")
          languageSettings.optIn("kotlin.contracts.ExperimentalContracts")
       }
