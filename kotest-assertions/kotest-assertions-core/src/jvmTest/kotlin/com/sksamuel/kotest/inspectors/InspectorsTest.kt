@@ -16,6 +16,7 @@ import io.kotest.inspectors.forSingle
 import io.kotest.inspectors.forSome
 import io.kotest.matchers.comparables.beGreaterThan
 import io.kotest.matchers.comparables.beLessThan
+import io.kotest.matchers.comparables.shouldBeLessThan
 import io.kotest.matchers.ints.shouldBeGreaterThan
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldBe
@@ -457,6 +458,16 @@ The following elements failed:
       }
 
       "forSingle" should {
+         "pass list is singular, and the single element pass" {
+            listOf(1).forSingle {
+               it shouldBeLessThan 3
+            }
+         }
+
+         "return the single element on success" {
+            listOf(1).forSingle { it shouldBeLessThan 3 } shouldBe 1
+         }
+
          "fail if collection consists of multiple elements" {
             shouldFail {
                listOf(
@@ -466,7 +477,7 @@ The following elements failed:
                   it.id shouldBe 1
                }
             }.message shouldBe """
-               Expected a single element in the collection but found 2.
+               Expected a single element in the collection, but found 2.
 
                The following elements passed:
                DummyEntry(id=1, name=first)

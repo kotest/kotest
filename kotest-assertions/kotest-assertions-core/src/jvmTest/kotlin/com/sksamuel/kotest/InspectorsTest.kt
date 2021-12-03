@@ -188,32 +188,6 @@ The following elements failed:
       }
     }
 
-     "forSingle" should {
-        "pass list is singular, and the single element pass" {
-           listOf(1).forSingle {
-              it shouldBeLessThan 3
-           }
-        }
-
-        "return the single element on success" {
-           listOf(1).forSingle { it shouldBeLessThan 3 } shouldBe 1
-        }
-
-        "fail if list consists of multiple elements" {
-           shouldFail {
-              listOf(1, 1).forSingle {
-                 it shouldBe 1
-              }
-           }.message shouldStartWith "Expected a single element in the collection, but found 2"
-        }
-
-        "fail if the element does not pass" {
-           shouldFail {
-              listOf(2).forSingle { it shouldBe 1 }
-           }.message shouldStartWith "Expected a single element to pass, but it failed."
-        }
-     }
-
     "forExactly" should {
       "pass if exactly k elements pass"  {
          list.forExactly(2) { t ->
