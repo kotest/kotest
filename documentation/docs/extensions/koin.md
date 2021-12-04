@@ -33,7 +33,7 @@ class KotestAndKoin : FunSpec(), KoinTest {
     val userService by inject<UserService>()
 
     init {
-      test("Use user service") {
+      test("use userService") {
         userService.getUser().username shouldBe "LeoColman"
       }
     }
@@ -41,21 +41,23 @@ class KotestAndKoin : FunSpec(), KoinTest {
 }
 ```
 
-In the default mode, the extension will start/stop the Koin context between root tests. If you are used a nested style, and want koin to start/stop between leaf tests, then you can specify the `KoinLifecycleMode`.
+In the default mode, the extension will start/stop the Koin context between leaf tests. If you are using a nested
+spec style (like DescribeSpec) and instead want the Koin context to be started between root tests, you can specify
+this in the KoinExtension constructor.
 
 ```kotlin
 class KotestAndKoin : DescribeSpec(), KoinTest {
 
-    override fun extensions() = listOf(KoinExtension(myKoinModule, KoinLifecycleMode.Test))
+    override fun extensions() = listOf(KoinExtension(myKoinModule, KoinLifecycleMode.Root))
 
     val userService by inject<UserService>()
 
     init {
-      describe("Use user service") {
+      describe("use userService") {
         it("inside a leaf test") {
           userService.getUser().username shouldBe "LeoColman"
         }
-        it("and again with a fresh application here") {
+        it("this shares the same context") {
           userService.getUser().username shouldBe "LeoColman"
         }
       }
