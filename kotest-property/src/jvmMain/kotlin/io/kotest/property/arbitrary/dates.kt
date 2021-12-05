@@ -3,16 +3,13 @@ package io.kotest.property.arbitrary
 import io.kotest.property.Arb
 import java.time.Instant
 import java.time.LocalDate
-import java.time.LocalDate.of
 import java.time.LocalDateTime
 import java.time.LocalTime
 import java.time.Period
-import java.time.Year
 import java.time.Year.isLeap
 import java.time.temporal.ChronoUnit
 import java.time.temporal.TemporalQueries.localDate
 import java.time.temporal.TemporalQueries.localTime
-import java.util.concurrent.TimeUnit
 import kotlin.random.Random
 
 /**
@@ -84,21 +81,47 @@ fun Arb.Companion.localTime(): Arb<LocalTime> = arbitrary(listOf(LocalTime.of(23
  * @see [localDateTime]
  * @see [localTime]
  */
-fun Arb.Companion.localDateTime(
+fun Arb.Companion.localDateTimeBetweenYears(
    minYear: Int = 1970,
    maxYear: Int = 2030
 ): Arb<LocalDateTime> {
 
+   return localDateTime(
+      minLocalDateTime = LocalDateTime.of(minYear, 1, 1, 0, 0),
+      maxLocalDateTime = LocalDateTime.of(maxYear, 12, 31, 23, 59)
+   )
+}
+
+/**
+ * Arberates a stream of random LocalDateTimes
+ *
+ * This generator creates randomly generated LocalDates, in the range [[minLocalDateTime, maxLocalDateTime]].
+ *
+ * If any of the years in the range contain a leap year, the date [29/02/YEAR] will always be a constant value of this
+ * generator.
+ *
+ * @see [localDateTime]
+ * @see [localTime]
+ */
+fun Arb.Companion.localDateTime(
+   minLocalDateTime: LocalDateTime = LocalDateTime.of(1970, 1, 1, 0, 0),
+   maxLocalDateTime: LocalDateTime = LocalDateTime.of(2030, 12, 31, 23, 59)
+): Arb<LocalDateTime> {
+
    return arbitrary(
       edgecaseFn = {
-         val date = localDate(LocalDate.of(minYear, 1, 1), LocalDate.of(maxYear, 12, 31)).edgecase(it)
-         val time = localTime().edgecase(it)
-         if (date == null || time == null) null else date.atTime(time)
+         generateSequence {
+            val date = localDate(minLocalDateTime.toLocalDate(), maxLocalDateTime.toLocalDate()).edgecase(it)
+            val time = localTime().edgecase(it)
+            if (date == null || time == null) null else date.atTime(time)
+         }.find { !it.isBefore(minLocalDateTime) && !it.isAfter(maxLocalDateTime) }
       },
       sampleFn = {
-         val date = localDate(LocalDate.of(minYear, 1, 1), LocalDate.of(maxYear, 12, 31)).single(it)
-         val time = localTime().single(it)
-         date.atTime(time)
+         generateSequence {
+            val date = localDate(minLocalDateTime.toLocalDate(), maxLocalDateTime.toLocalDate()).single(it)
+            val time = localTime().single(it)
+            date.atTime(time)
+         }.first { !it.isBefore(minLocalDateTime) && !it.isAfter(maxLocalDateTime) }
       }
    )
 }
