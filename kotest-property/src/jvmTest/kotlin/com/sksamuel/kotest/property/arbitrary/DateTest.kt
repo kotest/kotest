@@ -1,7 +1,10 @@
 package com.sksamuel.kotest.property.arbitrary
 
 import io.kotest.core.spec.style.WordSpec
+import io.kotest.inspectors.forAll
 import io.kotest.matchers.collections.shouldContain
+import io.kotest.matchers.date.shouldNotBeAfter
+import io.kotest.matchers.date.shouldNotBeBefore
 import io.kotest.matchers.shouldBe
 import io.kotest.property.Arb
 import io.kotest.property.RandomSource
@@ -74,37 +77,13 @@ class DateTest : WordSpec({
       }
    }
 
-   "Arb.localDateTime(minYear, maxYear)" should {
+   "Arb.localDateTime(minLocalDateTime, maxLocalDateTime)" should {
       "generate N valid LocalDateTimes(no exceptions)" {
          Arb.localDateTime().generate(RandomSource.default()).take(10_000).toList()
             .size shouldBe 10_000
       }
 
-      "generate LocalDateTimes between minYear and maxYear" {
-         val years = mutableSetOf<Int>()
-         val months = mutableSetOf<Int>()
-         val days = mutableSetOf<Int>()
-         val hours = mutableSetOf<Int>()
-         val minutes = mutableSetOf<Int>()
-         val seconds = mutableSetOf<Int>()
-
-         checkAll(5000, Arb.localDateTimeBetweenYears(1998, 1999)) {
-            years += it.year
-            months += it.monthValue
-            days += it.dayOfMonth
-            hours += it.hour
-            minutes += it.minute
-            seconds += it.second
-         }
-
-         years shouldBe setOf(1998, 1999)
-         months shouldBe (1..12).toSet()
-         days shouldBe (1..31).toSet()
-         hours shouldBe (0..23).toSet()
-         minutes shouldBe (0..59).toSet()
-      }
-
-      "generate LocalDateTimes between minLocalDateTime and maxLocalDateTime" {
+      "generate LocalDateTimes between minLocalDateTime and maxLocalDateTime (same year test)" {
          val years = mutableSetOf<Int>()
          val months = mutableSetOf<Int>()
          val days = mutableSetOf<Int>()
@@ -130,8 +109,75 @@ class DateTest : WordSpec({
          minutes shouldBe (0..59).toSet()
       }
 
+      "generate LocalDateTimes between minLocalDateTime and maxLocalDateTime (different years)" {
+         val years = mutableSetOf<Int>()
+         val months = mutableSetOf<Int>()
+         val days = mutableSetOf<Int>()
+         val hours = mutableSetOf<Int>()
+         val minutes = mutableSetOf<Int>()
+         val seconds = mutableSetOf<Int>()
+         val minLocalDateTime = LocalDateTime.of(1998, 1, 1, 0, 0)
+         val maxLocalDateTime = LocalDateTime.of(1999, 12, 31, 23, 59)
+
+         checkAll(5000, Arb.localDateTime(minLocalDateTime, maxLocalDateTime)) {
+            years += it.year
+            months += it.monthValue
+            days += it.dayOfMonth
+            hours += it.hour
+            minutes += it.minute
+            seconds += it.second
+         }
+
+         years shouldBe setOf(1998, 1999)
+         months shouldBe (1..12).toSet()
+         days shouldBe (1..31).toSet()
+         hours shouldBe (0..23).toSet()
+         minutes shouldBe (0..59).toSet()
+      }
+
+      "generate LocalDateTimes between minLocalDateTime and maxLocalDateTime (startTime and endTIme during the day)" {
+         val minLocalDateTime = LocalDateTime.of(1998, 1, 1, 12, 0)
+         val maxLocalDateTime = LocalDateTime.of(1998, 12, 31, 12, 0)
+         val localDateTimes = mutableSetOf<LocalDateTime>()
+
+         checkAll(5000, Arb.localDateTime(minLocalDateTime, maxLocalDateTime)) {
+            localDateTimes += it
+         }
+
+         localDateTimes.forAll {
+            it shouldNotBeBefore minLocalDateTime
+            it shouldNotBeAfter maxLocalDateTime
+         }
+      }
+
       "Be the default generator for LocalDateTime" {
          checkAll(10) { _: LocalDateTime -> /* No use. Won't reach here if unsupported */ }
+      }
+   }
+
+   "Arb.localDateTime(minYear, maxYear)" should {
+      "generate LocalDateTimes between minYear and maxYear" {
+         val years = mutableSetOf<Int>()
+         val months = mutableSetOf<Int>()
+         val days = mutableSetOf<Int>()
+         val hours = mutableSetOf<Int>()
+         val minutes = mutableSetOf<Int>()
+         val seconds = mutableSetOf<Int>()
+
+         checkAll(5000, Arb.localDateTimeBetweenYears(1998, 1999)) {
+            years += it.year
+            months += it.monthValue
+            days += it.dayOfMonth
+            hours += it.hour
+            minutes += it.minute
+            seconds += it.second
+         }
+
+         years shouldBe setOf(1998, 1999)
+         months shouldBe (1..12).toSet()
+         days shouldBe (1..31).toSet()
+         hours shouldBe (0..23).toSet()
+         minutes shouldBe (0..59).toSet()
       }
    }
 
