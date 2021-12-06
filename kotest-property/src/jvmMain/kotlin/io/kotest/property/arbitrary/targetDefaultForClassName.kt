@@ -3,7 +3,6 @@ package io.kotest.property.arbitrary
 import io.kotest.property.Arb
 import java.lang.reflect.ParameterizedType
 import java.lang.reflect.Type
-import java.lang.reflect.WildcardType
 import java.math.BigDecimal
 import java.time.LocalDate
 import java.time.LocalDateTime

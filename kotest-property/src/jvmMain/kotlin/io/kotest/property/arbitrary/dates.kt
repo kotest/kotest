@@ -81,9 +81,9 @@ fun Arb.Companion.localTime(): Arb<LocalTime> = arbitrary(listOf(LocalTime.of(23
  * @see [localDateTime]
  * @see [localTime]
  */
-fun Arb.Companion.localDateTimeBetweenYears(
-   minYear: Int = 1970,
-   maxYear: Int = 2030
+fun Arb.Companion.localDateTime(
+   minYear: Int,
+   maxYear: Int
 ): Arb<LocalDateTime> {
 
    return localDateTime(

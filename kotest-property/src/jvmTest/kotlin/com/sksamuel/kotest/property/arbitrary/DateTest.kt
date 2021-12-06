@@ -12,7 +12,6 @@ import io.kotest.property.arbitrary.edgecases
 import io.kotest.property.arbitrary.instant
 import io.kotest.property.arbitrary.localDate
 import io.kotest.property.arbitrary.localDateTime
-import io.kotest.property.arbitrary.localDateTimeBetweenYears
 import io.kotest.property.arbitrary.localTime
 import io.kotest.property.arbitrary.period
 import io.kotest.property.arbitrary.take
@@ -164,7 +163,7 @@ class DateTest : WordSpec({
          val minutes = mutableSetOf<Int>()
          val seconds = mutableSetOf<Int>()
 
-         checkAll(5000, Arb.localDateTimeBetweenYears(1998, 1999)) {
+         checkAll(5000, Arb.localDateTime(1998, 1999)) {
             years += it.year
             months += it.monthValue
             days += it.dayOfMonth
