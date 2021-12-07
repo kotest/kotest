@@ -72,7 +72,7 @@ class FunSpecContainerScope(
       return TestWithConfigBuilder(
          name = TestName(name),
          context = this,
-         xdisabled = true,
+         xdisabled = false,
       )
    }
 
