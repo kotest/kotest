@@ -5,7 +5,7 @@ import io.kotest.matchers.collections.shouldContainExactly
 import io.kotest.matchers.shouldBe
 import kotlinx.coroutines.delay
 
-// test we allow suspend functions in before / after DSL methods
+// Verifies fix for : https://github.com/kotest/kotest/issues/2710
 class FunSpecWithContextBlockTest : FunSpec({
    val messages = mutableListOf<String>()
 
