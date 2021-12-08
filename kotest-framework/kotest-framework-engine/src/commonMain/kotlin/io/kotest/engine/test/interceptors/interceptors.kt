@@ -10,6 +10,7 @@ import kotlin.time.TimeMark
  * Returns a [TestExecutionInterceptor] for switching coroutine dispatchers.
  */
 @JVMOnly
+@ExperimentalStdlibApi
 internal expect fun coroutineDispatcherFactoryInterceptor(
    defaultCoroutineDispatcherFactory: CoroutineDispatcherFactory
 ): TestExecutionInterceptor

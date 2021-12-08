@@ -14,5 +14,11 @@ class TestCoroutineDispatcherTest : FunSpec() {
          val currentTime2 = delayController.currentTime
          currentTime2 shouldBe 1234
       }
+
+      context("a context with a test dispatcher should be shared in nested tests") {
+         test("nest me!") {
+
+         }
+      }
    }
 }
