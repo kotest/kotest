@@ -17,6 +17,7 @@ import kotlinx.coroutines.withContext
 import java.util.concurrent.Executors
 import kotlin.time.Duration.Companion.milliseconds
 
+@ExperimentalStdlibApi
 class CoroutineDispatcherInterceptorTest : DescribeSpec() {
    init {
       describe("CoroutineDispatcherInterceptor") {
