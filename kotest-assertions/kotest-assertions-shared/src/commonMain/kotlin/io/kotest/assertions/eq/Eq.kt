@@ -1,6 +1,7 @@
 package io.kotest.assertions.eq
 
 import io.kotest.assertions.AssertionsConfig
+import io.kotest.assertions.failure
 import io.kotest.assertions.print.print
 import kotlin.js.JsName
 
@@ -53,9 +54,9 @@ private fun <T> shouldShowDataClassDiff(actual: T, expected: T) =
    AssertionsConfig.showDataClassDiff && isDataClassInstance(actual) && isDataClassInstance(expected)
 
 fun actualIsNull(expected: Any): AssertionError {
-   return AssertionError("Expected ${expected.print().value} but actual was null")
+   return failure("Expected ${expected.print().value} but actual was null")
 }
 
 fun expectedIsNull(actual: Any): AssertionError {
-   return AssertionError("Expected null but actual was ${actual.print().value}")
+   return failure("Expected null but actual was ${actual.print().value}")
 }
