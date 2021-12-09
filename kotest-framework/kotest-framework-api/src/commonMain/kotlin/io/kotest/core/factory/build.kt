@@ -1,5 +1,9 @@
 package io.kotest.core.factory
 
+import io.kotest.core.listeners.AfterContainerListener
+import io.kotest.core.listeners.AfterTestListener
+import io.kotest.core.listeners.BeforeContainerListener
+import io.kotest.core.listeners.BeforeTestListener
 import io.kotest.core.listeners.TestListener
 
 /**
@@ -12,6 +16,10 @@ internal fun TestFactoryConfiguration.build(): TestFactory {
       extensions = _extensions.map {
          when (it) {
             is TestListener -> FactoryConstrainedTestListener(factoryId, it)
+            is BeforeContainerListener -> FactoryConstrainedBeforeContainerListener(factoryId, it)
+            is AfterContainerListener -> FactoryConstrainedAfterContainerListener(factoryId, it)
+            is BeforeTestListener -> FactoryConstrainedBeforeTestListener(factoryId, it)
+            is AfterTestListener -> FactoryConstrainedAfterTestListener(factoryId, it)
             else -> it
          }
       },

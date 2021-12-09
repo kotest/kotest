@@ -5,6 +5,9 @@ package io.kotest.core
 import io.kotest.common.SoftDeprecated
 import io.kotest.core.extensions.Extension
 import io.kotest.core.extensions.TestCaseExtension
+import io.kotest.core.listeners.AfterContainerListener
+import io.kotest.core.listeners.AfterTestListener
+import io.kotest.core.listeners.BeforeContainerListener
 import io.kotest.core.listeners.TestListener
 import io.kotest.core.spec.AfterAny
 import io.kotest.core.spec.AfterContainer
@@ -164,7 +167,7 @@ abstract class TestConfiguration {
     * and the [TestResult] outcome of that test.
     */
    open fun afterTest(f: AfterTest) {
-      register(object : TestListener {
+      register(object : AfterTestListener {
          override suspend fun afterAny(testCase: TestCase, result: TestResult) {
             f(Tuple2(testCase, result))
          }
@@ -178,7 +181,7 @@ abstract class TestConfiguration {
     * The [TestCase] about to be executed is provided as the parameter.
     */
    fun beforeContainer(f: BeforeContainer) {
-      register(object : TestListener {
+      register(object : BeforeContainerListener {
          override suspend fun beforeContainer(testCase: TestCase) {
             f(testCase)
          }
@@ -193,7 +196,7 @@ abstract class TestConfiguration {
     * and the [TestResult] outcome of that test.
     */
    fun afterContainer(f: AfterContainer) {
-      register(object : TestListener {
+      register(object : AfterContainerListener {
          override suspend fun afterContainer(testCase: TestCase, result: TestResult) {
             f(Tuple2(testCase, result))
          }
