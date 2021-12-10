@@ -3,20 +3,25 @@ package com.sksamuel.kotest.property.shrinking
 import io.kotest.assertions.shouldFail
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.extensions.system.captureStandardOut
+import io.kotest.inspectors.forAll
 import io.kotest.inspectors.forAtLeastOne
+import io.kotest.matchers.collections.shouldBeIn
 import io.kotest.matchers.collections.shouldContain
 import io.kotest.matchers.comparables.shouldBeLessThan
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldContain
-import io.kotest.matchers.string.shouldEndWith
+import io.kotest.matchers.string.shouldContainOnlyDigits
 import io.kotest.matchers.string.shouldHaveLength
 import io.kotest.matchers.string.shouldNotContain
-import io.kotest.matchers.string.shouldStartWith
 import io.kotest.property.Arb
 import io.kotest.property.PropTestConfig
 import io.kotest.property.PropertyTesting
+import io.kotest.property.RTree
 import io.kotest.property.ShrinkingMode
+import io.kotest.property.arbitrary.Codepoint
 import io.kotest.property.arbitrary.StringShrinkerWithMin
+import io.kotest.property.arbitrary.arbitrary
+import io.kotest.property.arbitrary.of
 import io.kotest.property.arbitrary.string
 import io.kotest.property.checkAll
 import io.kotest.property.internal.doShrinking
@@ -117,25 +122,59 @@ class StringShrinkerWithMinTest : DescribeSpec({
          PropertyTesting.shouldPrintShrinkSteps = true
          val stdout = captureStandardOut {
             shouldFail {
-               checkAll(PropTestConfig(seed = 123123), Arb.string(4, 8)) { a ->
+               checkAll(PropTestConfig(seed = 123125), Arb.string(4, 8)) { a ->
                   // will cause the value to fail and shrinks be used, but nothing should be shrunk
                   // past the min value of 4, even though we fail on anything >= 2
                   a.shouldHaveLength(1)
                }
             }
          }
+         // '2' is the randomly selected 'simplest char', so expect the shrinker generates
+         // samples based on this simplest char.
          stdout.shouldContain(
             """
-Attempting to shrink arg "2v${'$'}>3uW"
-Shrink #1: "2v${'$'}>" fail
-Shrink #2: "av${'$'}>" fail
-Shrink #3: "aa${'$'}>" fail
-Shrink #4: "aaa>" fail
-Shrink #5: "aaaa" fail
-Shrink result (after 5 shrinks) => "aaaa"
+Attempting to shrink arg "`a,ONF/b"
+Shrink #1: "`a,O" fail
+Shrink #2: "2a,O" fail
+Shrink #3: "22,O" fail
+Shrink #4: "222O" fail
+Shrink #5: "2222" fail
+Shrink result (after 5 shrinks) => "2222"
             """.trim()
          )
          PropertyTesting.shouldPrintShrinkSteps = prt
+      }
+
+      it("generate samples that only contain numbers, given a numeric-codepoints Arb") {
+
+         val numericChars = '0'..'9'
+         val arbNumericCodepoints = Arb.of(numericChars.map { Codepoint(it.code) })
+         val arbNumericString = Arb.string(1..10, arbNumericCodepoints)
+
+         checkAll(arbNumericString) { numericString ->
+            StringShrinkerWithMin(codepoints = arbNumericCodepoints)
+               .shrink(numericString)
+               .forAll { it.shouldContainOnlyDigits() }
+         }
+      }
+
+      it("only generate samples with the same characters as used by the Arb") {
+
+         val arbCharacters: Set<Char> = """  `!"£$%^&*()_+=-[]{}:@~;'#<>?,./  """.trim().toSet()
+         val arbNumericCodepoints = Arb.of(arbCharacters.map { Codepoint(it.code) })
+
+         val arbSamples = arbitrary { rs ->
+            val stringArb = Arb.string(minSize = 4, maxSize = 10, codepoints = arbNumericCodepoints)
+            stringArb.sample(rs)
+         }
+
+         checkAll(arbSamples) { sample ->
+            sample.value.toList().forAll { it.shouldBeIn(arbCharacters) }
+            sample.shrinks.children.value.forAll { child: RTree<String> ->
+               child.value().toList().forAll { it.shouldBeIn(arbCharacters) }
+            }
+         }
+
       }
    }
 })

@@ -1,6 +1,7 @@
 package io.kotest.property.arbitrary
 
 import io.kotest.property.Arb
+import io.kotest.property.RandomSource
 import io.kotest.property.Shrinker
 import io.kotest.property.arbitrary.strings.StringClassifier
 import kotlin.random.nextInt
@@ -32,7 +33,7 @@ fun Arb.Companion.string(
             .filter { it.length in minSize..maxSize }
          if (edgeCases.isEmpty()) null else edgeCases.random(rs.random)
       }
-   }.withShrinker(StringShrinkerWithMin(minSize))
+   }.withShrinker(StringShrinkerWithMin(minSize, codepoints))
       .withClassifier(StringClassifier(minSize, maxSize))
       .build()
 }
@@ -86,10 +87,29 @@ object StringShrinker : Shrinker<String> {
    }
 }
 
+/**
+ * Shrinks a string. Shrunk variants will be shorter (reduced in length, until they are [minLength] in length),
+ * and simplified (characters will be replaced by [simplestChar]).
+ *
+ * Note: by default [simplestChar] is the character "`a`". If shrinking an `Arb<String>` that does not include "`a`",
+ * either provide a suitable alternative, or use the secondary constructor and provide a suitable [Codepoint] [Arb],
+ * and a suitable character will be randomly selected.
+ */
 class StringShrinkerWithMin(
    private val minLength: Int = 0,
    private val simplestChar: Char = 'a',
 ) : Shrinker<String> {
+
+   /**
+    * @see StringShrinkerWithMin
+    * @param[codepoints] Variants will be simplified using a random [Char] from this [Arb].
+    * @param[rs] Selects an arbitrary 'simplestChar' from [codepoints] - must be seeded for repeatability
+    */
+   constructor(
+      minLength: Int = 0,
+      codepoints: Arb<Codepoint>,
+      rs: RandomSource = RandomSource.seeded(minLength.toLong())
+   ) : this(minLength, codepoints.next(rs).value.toChar())
 
    override fun shrink(value: String): List<String> {
 
