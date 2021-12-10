@@ -9,6 +9,10 @@ slug: changelog.html
 
 ### Fixes
 
+* Fixed erroneous timeout reporting in tests [#2714](https://github.com/kotest/kotest/issues/2714)
+* Team City Listener should not be lazy for all tests [#2707](https://github.com/kotest/kotest/issues/2707)
+* Fix Test path filter vs whitespace in test names [#2725](https://github.com/kotest/kotest/issues/2725)
+* Support nulls in data driven testing [#2718](https://github.com/kotest/kotest/issues/2718)
 * Fixes clue not working were expected or actual is null [#2720](https://github.com/kotest/kotest/issues/2720)
 * Changed timeout defaults to use durations for clarity
 * Fixed after/before container not being extensions [#2721](https://github.com/kotest/kotest/issues/2721)
