@@ -6,7 +6,7 @@ import io.kotest.core.descriptors.toDescriptor
 import io.kotest.core.names.DisplayNameFormatter
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
-import io.kotest.core.test.isRootTest
+import io.kotest.core.test.TestType
 import io.kotest.engine.errors.ExtensionExceptionExtractor
 import io.kotest.engine.extensions.MultipleExceptions
 import io.kotest.engine.interceptors.EngineContext
@@ -27,16 +27,13 @@ class TeamCityTestEngineListener(
 
    private var formatter: DisplayNameFormatter = DefaultDisplayNameFormatter(ProjectConfiguration())
 
-   // set to true if the spec has been started
-   private var started = false
-
-   private val rootTests = mutableListOf<TestCase>()
-
    // once a spec has completed, we want to be able to check whether any given test is
    // a container or a leaf test, and so this map contains all test that have children
    private val children = mutableMapOf<Descriptor, MutableList<TestCase>>()
 
    private val results = mutableMapOf<Descriptor, TestResult>()
+
+   private val started = mutableSetOf<Descriptor.TestDescriptor>()
 
    // intellij has no method for failed suites, so if a container or spec fails we must insert
    // a dummy "test" in order to tag the error against that
@@ -89,22 +86,18 @@ class TeamCityTestEngineListener(
    }
 
    override suspend fun specStarted(kclass: KClass<*>) {
-      // we can output the spec name immediately so there is some feedback that something is happening
-      // but all tests will only be output later once we have the full tree
-      startSpec(kclass)
+      val msg = TeamCityMessageBuilder
+         .testSuiteStarted(prefix, formatter.format(kclass))
+         .id(kclass.toDescriptor().path().value)
+         .locationHint(Locations.location(kclass))
+         .build()
+      println(msg)
    }
 
    // ignored specs are completely hidden from output in team city
    override suspend fun specIgnored(kclass: KClass<*>, reason: String?) {}
 
    override suspend fun specFinished(kclass: KClass<*>, t: Throwable?) {
-
-      // we must start the test if it wasn't already started
-      if (!started)
-         startSpec(kclass)
-
-      // start by outputting each root test and then any nested children
-      rootTests.forEach { handleTest(it) }
 
       // if the spec itself has an error, we must insert a placeholder test
       when (t) {
@@ -115,19 +108,7 @@ class TeamCityTestEngineListener(
 
       finishSpec(kclass)
       results.clear()
-      rootTests.clear()
-      started = false
       children.clear()
-   }
-
-   private fun startSpec(kclass: KClass<*>) {
-      val msg = TeamCityMessageBuilder
-         .testSuiteStarted(prefix, formatter.format(kclass))
-         .id(kclass.toDescriptor().path().value)
-         .locationHint(Locations.location(kclass))
-         .build()
-      println(msg)
-      started = true
    }
 
    private fun finishSpec(kclass: KClass<*>) {
@@ -139,40 +120,17 @@ class TeamCityTestEngineListener(
       println(msg)
    }
 
-   private fun handleTest(testCase: TestCase) {
-      val result = results[testCase.descriptor] ?: return
-      when (result) {
-         is TestResult.Ignored -> ignoreTest(testCase, result)
-         else -> {
-            val nestedTests = children[testCase.descriptor] ?: emptyList()
-            if (nestedTests.isEmpty()) {
-               startTest(testCase)
-               if (result.isErrorOrFailure) failTest(testCase, result)
-               finishTest(testCase, result)
-            } else {
-               startTestSuite(testCase)
-               nestedTests.forEach { handleTest(it) }
-               // test suites cannot be in a failed state, so we must insert a placeholder to hold any error
-               when (val t = result.errorOrNull) {
-                  null -> Unit
-                  is MultipleExceptions -> t.causes.forEach { insertPlaceholder(it, testCase.descriptor) }
-                  else -> insertPlaceholder(t, testCase.descriptor)
-               }
-               finishTestSuite(testCase, result)
-            }
-         }
+   override suspend fun testStarted(testCase: TestCase) {
+      if (testCase.parent != null) addChild(testCase)
+      when (testCase.type) {
+         TestType.Container -> startTestSuite(testCase)
+         TestType.Test -> startTest(testCase)
+         TestType.Dynamic -> Unit
       }
    }
 
-   override suspend fun testStarted(testCase: TestCase) {
-      if (testCase.isRootTest()) rootTests.add(testCase)
-      else addChild(testCase)
-   }
-
    override suspend fun testIgnored(testCase: TestCase, reason: String?) {
-      if (testCase.isRootTest()) rootTests.add(testCase)
-      else addChild(testCase)
-      results[testCase.descriptor] = TestResult.Ignored(reason)
+      ignoreTest(testCase, TestResult.Ignored(reason))
    }
 
    private fun addChild(testCase: TestCase) {
@@ -181,7 +139,41 @@ class TeamCityTestEngineListener(
 
    override suspend fun testFinished(testCase: TestCase, result: TestResult) {
       results[testCase.descriptor] = result
+      when (testCase.type) {
+         TestType.Container -> {
+            failTestSuiteIfError(testCase, result)
+            finishTestSuite(testCase, result)
+         }
+         TestType.Test -> {
+            if (!started.contains(testCase.descriptor)) startTest(testCase)
+            if (result.isErrorOrFailure) failTest(testCase, result)
+            finishTest(testCase, result)
+         }
+         TestType.Dynamic -> {
+            if (isParent(testCase)) {
+               startTestSuite(testCase)
+               failTestSuiteIfError(testCase, result)
+               finishTestSuite(testCase, result)
+            } else {
+               startTest(testCase)
+               if (result.isErrorOrFailure) failTest(testCase, result)
+               finishTest(testCase, result)
+            }
+         }
+      }
    }
+
+   private fun failTestSuiteIfError(testCase: TestCase, result: TestResult) {
+      // test suites cannot be in a failed state, so we must insert a placeholder to hold any error
+      when (val t = result.errorOrNull) {
+         null -> Unit
+         is MultipleExceptions -> t.causes.forEach { insertPlaceholder(it, testCase.descriptor) }
+         else -> insertPlaceholder(t, testCase.descriptor)
+      }
+   }
+
+   // returns true if this test case is a parent
+   private fun isParent(testCase: TestCase) = children.getOrElse(testCase.descriptor) { mutableListOf() }.isNotEmpty()
 
    /**
     * For a given [TestCase] will output the "test ignored" message.
@@ -199,7 +191,7 @@ class TeamCityTestEngineListener(
    }
 
    /**
-    * For a given [TestCase] will output the "test started" message.
+    * For a [TestCase] will output the "test started" message.
     */
    private fun startTest(testCase: TestCase) {
       val msg = TeamCityMessageBuilder
@@ -209,6 +201,7 @@ class TeamCityTestEngineListener(
          .locationHint(Locations.location(testCase.source))
          .build()
       println(msg)
+      started.add(testCase.descriptor)
    }
 
    /**
@@ -253,6 +246,7 @@ class TeamCityTestEngineListener(
          .locationHint(Locations.location(testCase.source))
          .build()
       println(msg)
+      started.add(testCase.descriptor)
    }
 
    /**
