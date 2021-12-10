@@ -19,20 +19,20 @@ class TestPathTestCaseFilter(
    spec: KClass<out Spec>,
 ) : TestFilter {
 
-   private val target1 = testPath.split(TestDelimiter)
+   private val target1 = testPath.trim().split(TestDelimiter)
       .fold(spec.toDescriptor() as Descriptor) { desc, name ->
-         desc.append(name)
+         desc.append(name.trim())
       }
 
    // this is a hack where we append "should" to the first name, until 5.0 where we will
    // store names with affixes separately (right now word spec is adding them to the names at source)
    var should = true
-   private val target2 = testPath.split(TestDelimiter)
+   private val target2 = testPath.trim().split(TestDelimiter)
       .fold(spec.toDescriptor() as Descriptor) { desc, name ->
          if (should) {
             should = false
             desc.append("$name should")
-         } else desc.append(name)
+         } else desc.append(name.trim())
       }
 
    override fun filter(descriptor: Descriptor): TestFilterResult {

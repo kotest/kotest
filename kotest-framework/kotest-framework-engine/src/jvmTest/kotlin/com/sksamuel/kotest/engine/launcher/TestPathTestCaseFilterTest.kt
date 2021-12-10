@@ -85,6 +85,17 @@ class TestPathTestCaseFilterTest : FunSpec() {
             WordSpec2::class.toDescriptor().append("a when").append("a should").append("boo")
          ) shouldBe TestFilterResult.Exclude("Excluded by test path filter: 'a when -- a should -- a test'")
       }
+
+      test("filter should trim whitespace from names") {
+
+         TestPathTestCaseFilter("    a container   ", WordSpec1::class).filter(
+            WordSpec1::class.toDescriptor().append("a container should").append("pass a test")
+         ) shouldBe TestFilterResult.Include
+
+         TestPathTestCaseFilter("    a container -- pass a test", WordSpec1::class).filter(
+            WordSpec1::class.toDescriptor().append("a container should").append("pass a test")
+         ) shouldBe TestFilterResult.Include
+      }
    }
 }
 
