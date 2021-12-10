@@ -3,7 +3,9 @@ package com.sksamuel.kotest.engine.coroutines
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.test.delayController
 import io.kotest.matchers.shouldBe
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 
+@ExperimentalCoroutinesApi
 @ExperimentalStdlibApi
 class TestCoroutineDispatcherTest : FunSpec() {
    init {
