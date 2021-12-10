@@ -18,7 +18,7 @@ import org.jetbrains.kotlin.psi.psiUtil.getStrictParentOfType
 fun KtLightClass.toKtClass(): KtClass? = kotlinOrigin?.toKtClass()
 
 /**
- * Returns true if this [KtClass] is a descendent of the given class,
+ * Returns true if this [KtClassOrObject] is a descendent of the given class,
  */
 fun KtClassOrObject.isSubclass(fqn: FqName): Boolean = getAllSuperClasses().contains(fqn)
 

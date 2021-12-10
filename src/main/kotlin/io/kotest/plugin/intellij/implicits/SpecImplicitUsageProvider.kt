@@ -7,7 +7,7 @@ import org.jetbrains.kotlin.asJava.classes.KtLightClass
 import org.jetbrains.kotlin.psi.KtClass
 
 /**
- * Allows to disable highlighting of certain elements as unused when such elements are not referenced
+ * Allows disabling highlighting of certain elements as unused when such elements are not referenced
  * from the code but are referenced in some other way.
  *
  * This [ImplicitUsageProvider] will mark spec classes / objects as used, because a test class
