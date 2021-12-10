@@ -38,8 +38,19 @@ internal object InvocationTimeoutInterceptor : TestExecutionInterceptor {
 
          return try {
             withTimeout(timeout) {
-               test(testCase, scope.withCoroutineContext(coroutineContext))
+               // the test itself might throw a TimeoutCancellationException if the user
+               // has their own withTimeout. We don't want to add our own message if that is the case,
+               // so we must capture it separately and re-throw it, avoiding the catch that picks up
+               // Kotest's timeout exception
+               try {
+                  test(testCase, scope.withCoroutineContext(coroutineContext))
+               } catch (t: TimeoutCancellationException) {
+                  throw WrappedTimeoutCancellationException(t)
+               }
             }
+         } catch (t: WrappedTimeoutCancellationException) {
+            logger.log { Pair(testCase.name.testName, "Caught wrapped timeout $t") }
+            throw t.t
          } catch (t: TimeoutCancellationException) {
             logger.log { Pair(testCase.name.testName, "Caught invocation timeout $t") }
             throw TestTimeoutException(timeout, testCase.name.testName)
@@ -47,3 +58,5 @@ internal object InvocationTimeoutInterceptor : TestExecutionInterceptor {
       }
    }
 }
+
+class WrappedTimeoutCancellationException(val t: TimeoutCancellationException) : Exception(t)
