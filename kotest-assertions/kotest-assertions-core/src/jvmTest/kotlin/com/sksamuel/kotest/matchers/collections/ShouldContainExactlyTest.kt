@@ -16,7 +16,6 @@ import java.io.File
 import java.nio.file.Path
 import java.nio.file.Paths
 
-private val sep = File.separator
 
 class ShouldContainExactlyTest : WordSpec() {
 
@@ -103,92 +102,93 @@ Some elements were missing: [
          "print dataclasses" {
             shouldThrow<AssertionError> {
                listOf(
-                  Blonde("foo", true, 23423, Paths.get("a/b/c")),
-                  Blonde("woo", true, 97821, Paths.get("a/b/c")),
-                  Blonde("goo", true, 51984, Paths.get("a/b/c"))
+                  Blonde("foo", true, 23423, inputPath),
+                  Blonde("woo", true, 97821, inputPath),
+                  Blonde("goo", true, 51984, inputPath)
                ).shouldContainExactly(
-                  Blonde("foo", true, 23423, Paths.get("a/b/c")),
-                  Blonde("woo", true, 97821, Paths.get("a/b/c"))
+                  Blonde("foo", true, 23423, inputPath),
+                  Blonde("woo", true, 97821, inputPath)
                )
             }.message?.trim() shouldBe ("""Expecting: [
-  Blonde(a=foo, b=true, c=23423, p=a${sep}b${sep}c),
-  Blonde(a=woo, b=true, c=97821, p=a${sep}b${sep}c)
+  Blonde(a=foo, b=true, c=23423, p=$expectedPath),
+  Blonde(a=woo, b=true, c=97821, p=$expectedPath)
 ] but was: [
-  Blonde(a=foo, b=true, c=23423, p=a${sep}b${sep}c),
-  Blonde(a=woo, b=true, c=97821, p=a${sep}b${sep}c),
-  Blonde(a=goo, b=true, c=51984, p=a${sep}b${sep}c)
+  Blonde(a=foo, b=true, c=23423, p=$expectedPath),
+  Blonde(a=woo, b=true, c=97821, p=$expectedPath),
+  Blonde(a=goo, b=true, c=51984, p=$expectedPath)
 ]
 Some elements were unexpected: [
-  Blonde(a=goo, b=true, c=51984, p=a${sep}b${sep}c)
-]expected:<[Blonde(a=foo, b=true, c=23423, p=a/b/c), Blonde(a=woo, b=true, c=97821, p=a/b/c)]> but was:<[Blonde(a=foo, b=true, c=23423, p=a/b/c), Blonde(a=woo, b=true, c=97821, p=a/b/c), Blonde(a=goo, b=true, c=51984, p=a/b/c)]>""")
+  Blonde(a=goo, b=true, c=51984, p=$expectedPath)
+]expected:<[Blonde(a=foo, b=true, c=23423, p=$expectedPath), Blonde(a=woo, b=true, c=97821, p=$expectedPath)]> but was:<[Blonde(a=foo, b=true, c=23423, p=$expectedPath), Blonde(a=woo, b=true, c=97821, p=$expectedPath), Blonde(a=goo, b=true, c=51984, p=$expectedPath)]>""")
          }
 
          "include extras when too many" {
             shouldThrow<AssertionError> {
                listOf(
-                  Blonde("foo", true, 23423, Paths.get("a/b/c"))
+                  Blonde("foo", true, 23423, inputPath)
                ).shouldContainExactly(
-                  Blonde("foo", true, 23423, Paths.get("a/b/c")),
-                  Blonde("woo", true, 97821, Paths.get("a/b/c"))
+                  Blonde("foo", true, 23423, inputPath),
+                  Blonde("woo", true, 97821, inputPath)
                )
             }.message?.trim() shouldBe (
                """Expecting: [
-  Blonde(a=foo, b=true, c=23423, p=a${sep}b${sep}c),
-  Blonde(a=woo, b=true, c=97821, p=a${sep}b${sep}c)
+  Blonde(a=foo, b=true, c=23423, p=$expectedPath),
+  Blonde(a=woo, b=true, c=97821, p=$expectedPath)
 ] but was: [
-  Blonde(a=foo, b=true, c=23423, p=a${sep}b${sep}c)
+  Blonde(a=foo, b=true, c=23423, p=$expectedPath)
 ]
 Some elements were missing: [
-  Blonde(a=woo, b=true, c=97821, p=a${sep}b${sep}c)
-]expected:<[Blonde(a=foo, b=true, c=23423, p=a/b/c), Blonde(a=woo, b=true, c=97821, p=a/b/c)]> but was:<[Blonde(a=foo, b=true, c=23423, p=a/b/c)]>"""
+  Blonde(a=woo, b=true, c=97821, p=$expectedPath)
+]expected:<[Blonde(a=foo, b=true, c=23423, p=$expectedPath), Blonde(a=woo, b=true, c=97821, p=$expectedPath)]> but was:<[Blonde(a=foo, b=true, c=23423, p=$expectedPath)]>"""
                )
          }
 
          "include missing when too few" {
+
             shouldThrow<AssertionError> {
                listOf(
-                  Blonde("foo", true, 23423, Paths.get("a/b/c")),
-                  Blonde("hoo", true, 96915, Paths.get("a/b/c"))
+                  Blonde("foo", true, 23423, inputPath),
+                  Blonde("hoo", true, 96915, inputPath)
                ).shouldContainExactly(
-                  Blonde("woo", true, 97821, Paths.get("a/b/c"))
+                  Blonde("woo", true, 97821, inputPath)
                )
             }.message?.trim() shouldBe ("""Expecting: [
-  Blonde(a=woo, b=true, c=97821, p=a${sep}b${sep}c)
+  Blonde(a=woo, b=true, c=97821, p=$expectedPath)
 ] but was: [
-  Blonde(a=foo, b=true, c=23423, p=a${sep}b${sep}c),
-  Blonde(a=hoo, b=true, c=96915, p=a${sep}b${sep}c)
+  Blonde(a=foo, b=true, c=23423, p=$expectedPath),
+  Blonde(a=hoo, b=true, c=96915, p=$expectedPath)
 ]
 Some elements were missing: [
-  Blonde(a=woo, b=true, c=97821, p=a${sep}b${sep}c)
+  Blonde(a=woo, b=true, c=97821, p=$expectedPath)
 ] and some elements were unexpected: [
-  Blonde(a=foo, b=true, c=23423, p=a${sep}b${sep}c),
-  Blonde(a=hoo, b=true, c=96915, p=a${sep}b${sep}c)
-]expected:<[Blonde(a=woo, b=true, c=97821, p=a/b/c)]> but was:<[Blonde(a=foo, b=true, c=23423, p=a/b/c), Blonde(a=hoo, b=true, c=96915, p=a/b/c)]>""")
+  Blonde(a=foo, b=true, c=23423, p=$expectedPath),
+  Blonde(a=hoo, b=true, c=96915, p=$expectedPath)
+]expected:<[Blonde(a=woo, b=true, c=97821, p=$expectedPath)]> but was:<[Blonde(a=foo, b=true, c=23423, p=$expectedPath), Blonde(a=hoo, b=true, c=96915, p=$expectedPath)]>""")
          }
 
          "include missing and extras when not the right amount" {
             shouldThrow<AssertionError> {
                listOf(
-                  Blonde("foo", true, 23423, Paths.get("a/b/c")),
-                  Blonde("hoo", true, 96915, Paths.get("a/b/c"))
+                  Blonde("foo", true, 23423, inputPath),
+                  Blonde("hoo", true, 96915, inputPath)
                ).shouldContainExactly(
-                  Blonde("woo", true, 97821, Paths.get("a/b/c")),
-                  Blonde("goo", true, 51984, Paths.get("a/b/c"))
+                  Blonde("woo", true, 97821, inputPath),
+                  Blonde("goo", true, 51984, inputPath)
                )
             }.message?.trim() shouldBe """Expecting: [
-  Blonde(a=woo, b=true, c=97821, p=a${sep}b${sep}c),
-  Blonde(a=goo, b=true, c=51984, p=a${sep}b${sep}c)
+  Blonde(a=woo, b=true, c=97821, p=$expectedPath),
+  Blonde(a=goo, b=true, c=51984, p=$expectedPath)
 ] but was: [
-  Blonde(a=foo, b=true, c=23423, p=a${sep}b${sep}c),
-  Blonde(a=hoo, b=true, c=96915, p=a${sep}b${sep}c)
+  Blonde(a=foo, b=true, c=23423, p=$expectedPath),
+  Blonde(a=hoo, b=true, c=96915, p=$expectedPath)
 ]
 Some elements were missing: [
-  Blonde(a=woo, b=true, c=97821, p=a${sep}b${sep}c),
-  Blonde(a=goo, b=true, c=51984, p=a${sep}b${sep}c)
+  Blonde(a=woo, b=true, c=97821, p=$expectedPath),
+  Blonde(a=goo, b=true, c=51984, p=$expectedPath)
 ] and some elements were unexpected: [
-  Blonde(a=foo, b=true, c=23423, p=a${sep}b${sep}c),
-  Blonde(a=hoo, b=true, c=96915, p=a${sep}b${sep}c)
-]expected:<[Blonde(a=woo, b=true, c=97821, p=a/b/c), Blonde(a=goo, b=true, c=51984, p=a/b/c)]> but was:<[Blonde(a=foo, b=true, c=23423, p=a/b/c), Blonde(a=hoo, b=true, c=96915, p=a/b/c)]>"""
+  Blonde(a=foo, b=true, c=23423, p=$expectedPath),
+  Blonde(a=hoo, b=true, c=96915, p=$expectedPath)
+]expected:<[Blonde(a=woo, b=true, c=97821, p=$expectedPath), Blonde(a=goo, b=true, c=51984, p=$expectedPath)]> but was:<[Blonde(a=foo, b=true, c=23423, p=$expectedPath), Blonde(a=hoo, b=true, c=96915, p=$expectedPath)]>"""
          }
       }
 
@@ -244,6 +244,21 @@ Some elements were missing: [
             actual.shouldContainExactlyInAnyOrder(expected)
          }
       }
+   }
+
+   companion object {
+
+      /** Note: [Path.toString] is platform-dependent, as the path separator is
+       * `\` on Windows or `/` on Unix. There's no easy way to configure this.
+       *
+       * Tests in [ShouldContainExactlyTest] depends on result of `toString()`,
+       * so use [expectedPath] instead of expecting a raw String `a/b/c` (this
+       * will fail on Windows).
+       */
+      val inputPath: Path = Paths.get("a/b/c")
+      /** The expected result of [inputPath]`.toString()` (with Windows or Unix path separators) */
+      val expectedPath = listOf("a", "b", "c").joinToString(File.separator)
+
    }
 }
 
