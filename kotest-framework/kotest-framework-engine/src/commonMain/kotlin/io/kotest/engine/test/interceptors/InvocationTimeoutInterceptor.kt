@@ -7,7 +7,7 @@ import io.kotest.core.test.TestType
 import io.kotest.engine.test.scopes.withCoroutineContext
 import io.kotest.mpp.Logger
 import kotlinx.coroutines.TimeoutCancellationException
-import kotlinx.coroutines.withTimeout
+import kotlinx.coroutines.withTimeoutOrNull
 import kotlin.math.min
 import kotlin.time.Duration.Companion.milliseconds
 
@@ -37,26 +37,15 @@ internal object InvocationTimeoutInterceptor : TestExecutionInterceptor {
          logger.log { Pair(testCase.name.testName, "Switching context to add invocationTimeout $timeout") }
 
          return try {
-            withTimeout(timeout) {
-               // the test itself might throw a TimeoutCancellationException if the user
-               // has their own withTimeout. We don't want to add our own message if that is the case,
-               // so we must capture it separately and re-throw it, avoiding the catch that picks up
-               // Kotest's timeout exception
-               try {
-                  test(testCase, scope.withCoroutineContext(coroutineContext))
-               } catch (t: TimeoutCancellationException) {
-                  throw WrappedTimeoutCancellationException(t)
-               }
-            }
-         } catch (t: WrappedTimeoutCancellationException) {
-            logger.log { Pair(testCase.name.testName, "Caught wrapped timeout $t") }
-            throw t.t
+            // we use orNull because we want to disambiguate between our timeouts and user level timeouts
+            // user level timeouts will throw an exception, ours will return null
+            withTimeoutOrNull(timeout) {
+               test(testCase, scope.withCoroutineContext(coroutineContext))
+            } ?: throw TestTimeoutException(timeout, testCase.name.testName)
          } catch (t: TimeoutCancellationException) {
-            logger.log { Pair(testCase.name.testName, "Caught invocation timeout $t") }
-            throw TestTimeoutException(timeout, testCase.name.testName)
+            logger.log { Pair(testCase.name.testName, "Caught user timeout $t") }
+            throw t
          }
       }
    }
 }
-
-class WrappedTimeoutCancellationException(val t: TimeoutCancellationException) : Exception(t)
