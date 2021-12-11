@@ -82,6 +82,42 @@ fun Arb.Companion.localTime(): Arb<LocalTime> = arbitrary(listOf(LocalTime.of(23
  * @see [localTime]
  */
 fun Arb.Companion.localDateTime(
+   minYear: Int? = null,
+   maxYear: Int
+): Arb<LocalDateTime> {
+   return localDateTime(minYear ?: 1970, maxYear)
+}
+
+/**
+ * Arberates a stream of random LocalDateTimes
+ *
+ * This generator creates randomly generated LocalDates, in the range [[minYear, maxYear]].
+ *
+ * If any of the years in the range contain a leap year, the date [29/02/YEAR] will always be a constant value of this
+ * generator.
+ *
+ * @see [localDateTime]
+ * @see [localTime]
+ */
+fun Arb.Companion.localDateTime(
+   minYear: Int,
+   maxYear: Int? = null
+): Arb<LocalDateTime> {
+   return localDateTime(minYear, maxYear ?: 2030)
+}
+
+/**
+ * Arberates a stream of random LocalDateTimes
+ *
+ * This generator creates randomly generated LocalDates, in the range [[minYear, maxYear]].
+ *
+ * If any of the years in the range contain a leap year, the date [29/02/YEAR] will always be a constant value of this
+ * generator.
+ *
+ * @see [localDateTime]
+ * @see [localTime]
+ */
+fun Arb.Companion.localDateTime(
    minYear: Int,
    maxYear: Int
 ): Arb<LocalDateTime> {
