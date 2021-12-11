@@ -169,7 +169,7 @@ Shrink result (after 5 shrinks) => "2222"
 
          checkAll(arbSamples) { sample ->
             withClue("all samples should only contain chars used to create the Arb.string(): $arbCharacters") {
-               sample.value.toList().forAll { it.shouldBeIn("arbCharacters") }
+               sample.value.toList().forAll { it.shouldBeIn(arbCharacters) }
                sample.shrinks.children.value.forAll { child: RTree<String> ->
                   child.value().toList().forAll { it.shouldBeIn(arbCharacters) }
                }
