@@ -1,6 +1,7 @@
 package com.sksamuel.kotest.property.shrinking
 
 import io.kotest.assertions.shouldFail
+import io.kotest.assertions.withClue
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.extensions.system.captureStandardOut
 import io.kotest.inspectors.forAll
@@ -158,23 +159,22 @@ Shrink result (after 5 shrinks) => "2222"
          }
       }
 
-      it("only generate samples with the same characters as used by the Arb") {
+      it("only generate codepoint-compatible samples, when an Arb.string() is created") {
 
          val arbCharacters: Set<Char> = """  `!"£$%^&*()_+=-[]{}:@~;'#<>?,./  """.trim().toSet()
          val arbNumericCodepoints = Arb.of(arbCharacters.map { Codepoint(it.code) })
+         val stringArb = Arb.string(minSize = 4, maxSize = 10, codepoints = arbNumericCodepoints)
 
-         val arbSamples = arbitrary { rs ->
-            val stringArb = Arb.string(minSize = 4, maxSize = 10, codepoints = arbNumericCodepoints)
-            stringArb.sample(rs)
-         }
+         val arbSamples = arbitrary { rs -> stringArb.sample(rs) }
 
          checkAll(arbSamples) { sample ->
-            sample.value.toList().forAll { it.shouldBeIn(arbCharacters) }
-            sample.shrinks.children.value.forAll { child: RTree<String> ->
-               child.value().toList().forAll { it.shouldBeIn(arbCharacters) }
+            withClue("all samples should only contain chars used to create the Arb.string(): $arbCharacters") {
+               sample.value.toList().forAll { it.shouldBeIn("arbCharacters") }
+               sample.shrinks.children.value.forAll { child: RTree<String> ->
+                  child.value().toList().forAll { it.shouldBeIn(arbCharacters) }
+               }
             }
          }
-
       }
    }
 })
