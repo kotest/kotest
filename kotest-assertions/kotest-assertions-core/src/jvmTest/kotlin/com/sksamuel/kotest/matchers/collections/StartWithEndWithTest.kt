@@ -33,6 +33,20 @@ class StartWithEndWithTest : WordSpec() {
   2L
 ]""")
          }
+         "print errors unambiguously when the actual value is empty"  {
+            shouldThrow<AssertionError> {
+               emptyList<Long>() should startWith(listOf(1L, 3L))
+            }.shouldHaveMessage(
+               """
+                  |List should start with [
+                  |  1L,
+                  |  3L
+                  |] but was [
+                  |${"  "}
+                  |]
+               """.trimMargin()
+            )
+         }
       }
 
       "endWith" should {
@@ -54,6 +68,20 @@ class StartWithEndWithTest : WordSpec() {
   3L,
   4L
 ]""")
+         }
+         "print errors unambiguously when the actual value is empty"  {
+            shouldThrow<AssertionError> {
+               emptyList<Long>() should endWith(listOf(1L, 3L))
+            }.shouldHaveMessage(
+               """
+                  |List should end with [
+                  |  1L,
+                  |  3L
+                  |] but was [
+                  |${"  "}
+                  |]
+               """.trimMargin()
+            )
          }
       }
    }
