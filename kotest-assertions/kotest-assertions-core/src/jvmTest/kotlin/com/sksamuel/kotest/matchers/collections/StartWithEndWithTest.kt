@@ -46,13 +46,13 @@ class StartWithEndWithTest : WordSpec() {
          }
          "print errors unambiguously"  {
             shouldThrow<AssertionError> {
-               listOf(1L, 2L) should endWith(listOf(1L, 3L))
+               listOf(1L, 2L, 3L, 4L) should endWith(listOf(1L, 3L))
             }.shouldHaveMessage("""List should end with [
   1L,
   3L
 ] but was [
-  1L,
-  2L
+  3L,
+  4L
 ]""")
          }
       }

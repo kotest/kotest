@@ -63,7 +63,7 @@ fun <T> endWith(slice: Collection<T>) = object : Matcher<List<T>> {
    override fun test(value: List<T>) =
       MatcherResult(
          value.subList(value.size - slice.size, value.size) == slice,
-         { "List should end with ${slice.printed().value} but was ${value.take(slice.size).printed().value}" },
+         { "List should end with ${slice.printed().value} but was ${value.takeLast(slice.size).printed().value}" },
          { "List should not end with ${slice.printed().value}" }
       )
 }
