@@ -156,7 +156,9 @@ fun ErrorCollector.collectiveError(): AssertionError? {
    clear()
    return if (failures.isNotEmpty()) {
       if (failures.size == 1) {
-         AssertionError(failures[0])
+         AssertionError(failures[0].message).also {
+            stacktraces.cleanStackTrace(it)
+         }
       } else {
          MultiAssertionError(failures).also {
             stacktraces.cleanStackTrace(it) //cleans the creation of MultiAssertionError
