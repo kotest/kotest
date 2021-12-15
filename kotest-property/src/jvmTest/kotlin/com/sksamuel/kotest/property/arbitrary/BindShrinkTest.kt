@@ -5,7 +5,6 @@ import io.kotest.core.spec.style.StringSpec
 import io.kotest.extensions.system.captureStandardOut
 import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.comparables.shouldBeLessThan
-import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldContain
 import io.kotest.property.Arb
 import io.kotest.property.RandomSource
@@ -55,22 +54,7 @@ class BindShrinkTest : StringSpec(
             }
          }
 
-         stdout shouldContain """MaximumComponents(
-- a: 0
-- b: 0
-- c: 0
-- d: 0
-- e: 0
-- f: 0
-- g: 0
-- h: 0
-- i: 0
-- j: 0
-- k: 0
-- l: 0
-- m: 100
-- n: 0
-)"""
+         stdout shouldContain """MaximumComponents(a=1000, b=1000, c=1000, d=1000, e=1000, f=1000, g=1000, h=1000, i=1000, j=1000, k=1000, l=1000, m=1000, n=1000)"""
       }
    }
 )

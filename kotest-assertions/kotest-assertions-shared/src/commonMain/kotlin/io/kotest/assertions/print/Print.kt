@@ -2,6 +2,7 @@
 
 package io.kotest.assertions.print
 
+import io.kotest.mpp.reflection
 import kotlin.reflect.KClass
 
 /**
@@ -70,7 +71,7 @@ fun <A : Any> commonPrintFor(a: A): Print<A>? {
       return print as Print<A>
    }
    // this won't work in JS or native, so they'll get the boring old toString version
-   if (io.kotest.mpp.reflection.isDataClass(a::class)) return dataClassPrint()
+   if (io.kotest.mpp.reflection.isDataClass(a::class) && reflection.isPublic(a::class)) return dataClassPrint()
    return null
 }
 

@@ -1,6 +1,6 @@
 package io.kotest.assertions.print
 
-import kotlin.reflect.full.memberProperties
+import kotlin.reflect.full.declaredMemberProperties
 
 actual fun <A : Any> dataClassPrint(): Print<A> = object : Print<A> {
 
@@ -9,10 +9,11 @@ actual fun <A : Any> dataClassPrint(): Print<A> = object : Print<A> {
    override fun print(a: A, level: Int): Printed {
       if (level == 10) return Printed("<...>")
       require(a::class.isData) { "This instance of the Print typeclass only supports data classes" }
+      if (a::class.declaredMemberProperties.size <= 4) return Printed(a.toString())
       val str = buildString {
          append(a::class.simpleName)
          append("(")
-         a::class.memberProperties.forEach { property ->
+         a::class.declaredMemberProperties.forEach { property ->
             append(System.lineSeparator())
             append("- ${property.name}: ")
             val propertyValue = property.getter.call(a)
