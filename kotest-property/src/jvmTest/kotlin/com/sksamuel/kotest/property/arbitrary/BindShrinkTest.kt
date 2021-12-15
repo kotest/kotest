@@ -22,8 +22,6 @@ class BindShrinkTest : StringSpec(
          val k: Int, val l: Int, val m: Int, val n: Int
       )
 
-      val shrinker = IntShrinker(0..1000)
-
       fun createArb(shrinker: Shrinker<Int>): Arb<MaximumComponents> {
          val intArb = arbitrary(shrinker) { 1000 }
 
@@ -56,7 +54,7 @@ class BindShrinkTest : StringSpec(
             }
          }
 
-         stdout shouldContain "Shrink result (after 45 shrinks) => MaximumComponents(a=0, b=0, c=0, d=0, e=0, f=0, g=0, h=0, i=0, j=0, k=0, l=0, m=100, n=0)"
+         stdout shouldContain """Shrink result (after 45 shrinks) => MaximumComponents(a=0, b=0, c=0, d=0, e=0, f=0, g=0, h=0, i=0, j=0, k=0, l=0, m=100, n=0)"""
       }
    }
 )
