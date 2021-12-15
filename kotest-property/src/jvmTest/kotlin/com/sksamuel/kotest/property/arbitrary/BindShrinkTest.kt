@@ -54,7 +54,7 @@ class BindShrinkTest : StringSpec(
             }
          }
 
-         stdout shouldContain """MaximumComponents(a=1000, b=1000, c=1000, d=1000, e=1000, f=1000, g=1000, h=1000, i=1000, j=1000, k=1000, l=1000, m=1000, n=1000)"""
+         stdout shouldContain """Shrink result (after 45 shrinks) => MaximumComponents(a=0, b=0, c=0, d=0, e=0, f=0, g=0, h=0, i=0, j=0, k=0, l=0, m=100, n=0)"""
       }
    }
 )
