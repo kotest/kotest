@@ -191,7 +191,7 @@ module.exports = {
          items: [
             'framework/fail_fast',
             'framework/fail_on_empty',
-            'framework/config_dumpa',
+            'framework/config_dump',
          ]
       },
    ],
