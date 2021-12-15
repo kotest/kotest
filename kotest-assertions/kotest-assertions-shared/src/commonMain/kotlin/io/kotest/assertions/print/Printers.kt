@@ -40,5 +40,5 @@ object Printers {
       shows.remove(kclass)
    }
 
-   fun all() = shows.toMap()
+   fun all(): Map<KClass<*>, Print<*>> = shows.toMap()
 }

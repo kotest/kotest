@@ -2,7 +2,6 @@
 
 package io.kotest.assertions.print
 
-import io.kotest.mpp.reflection
 import kotlin.reflect.KClass
 
 /**
@@ -65,14 +64,15 @@ expect fun <A : Any> platformPrint(a: A): Print<A>?
  * Returns a [Print] instance if one exists in the common or registered [Print]s.
  */
 fun <A : Any> commonPrintFor(a: A): Print<A>? {
-   val kclass: KClass<*>? = Printers.all().keys.firstOrNull { it.isInstance(a) }
-   if (kclass != null) {
-      val print: Print<*>? = Printers.all()[kclass]
+   val key: KClass<*>? = Printers.all().keys.firstOrNull { it.isInstance(a) }
+   if (key != null) {
+      val print: Print<*>? = Printers.all()[key]
       return print as Print<A>
    }
-   // this won't work in JS or native, so they'll get the boring old toString version
-   if (io.kotest.mpp.reflection.isDataClass(a::class) && reflection.isPublic(a::class)) return dataClassPrint()
    return null
+   // this won't work in JS or native, so they'll get the boring old toString version
+//   if (io.kotest.mpp.reflection.isDataClass(a::class) && reflection.isPublic(a::class)) return dataClassPrint()
+//   return null
 }
 
 internal fun recursiveRepr(root: Any, node: Any?, level: Int): Printed {
