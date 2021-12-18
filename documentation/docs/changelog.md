@@ -8,8 +8,8 @@ slug: changelog.html
 
 ### Fixes
 
-* ShouldContainExactlyTest fails on Windows because of path separators assertions bug #2732 by aSemy was closed 37 minutes ago
-* shouldBe goes into an infinite loop, when generating diff message for data class with cyclic references assertions bug #2611
+* ShouldContainExactlyTest fails on Windows because of path separators assertions bug #2732
+* shouldBe goes into an infinite loop when generating diff message for data class with cyclic references #2611
 * Issues when using globalAssertSoftly assertions bug framework #2706
 * Fix issues in shouldStartWith and shouldEnd #2736
 
