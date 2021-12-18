@@ -14,6 +14,7 @@ module.exports = {
       'proptest/customgens',
       'proptest/globalconfig',
       'proptest/arrow',
+      'proptest/extra_arbs',
    ],
    intellij: [
       'intellij/index',
