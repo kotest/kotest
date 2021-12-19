@@ -10,7 +10,7 @@ kotlin {
 
    targets {
       jvm()
-      js(IR) {
+      js {
          browser()
          nodejs()
       }

@@ -80,7 +80,7 @@ For example:
 
 ```kotlin
 plugins {
-  id("io.kotest.multiplatform") version "5.0.2"
+  id("io.kotest.multiplatform") version "5.0.3"
 }
 ```
 
@@ -89,7 +89,7 @@ Add the engine dependency to your `commonTest` dependencies block:
 ```kotlin
 kotlin {
   targets {
-    js(IR) { // LEGACY or BOTH are unsupported
+    js {
       browser() // to compile for the web
       nodejs() // to compile against node
     }
@@ -104,11 +104,6 @@ kotlin {
   }
 }
 ```
-
-:::caution
-Only the new IR compiler backend for Kotlin/JS is supported. If you are compiling JS with the legacy compiler backend then you will not be
-able to use Kotest for testing.
-:::
 
 Write your tests using [FunSpec](framework/styles.md#fun-spec), [ShouldSpec](framework/styles.md#should-spec) or [StringSpec](framework/styles.md#string-spec).
       Tests can be placed in either `commonTest` or `jsTest`

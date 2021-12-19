@@ -11,7 +11,7 @@ kotlin {
 
       jvm()
 
-      js(BOTH) {
+      js {
          browser()
          nodejs()
       }
