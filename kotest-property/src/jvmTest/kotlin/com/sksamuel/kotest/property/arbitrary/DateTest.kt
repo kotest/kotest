@@ -180,12 +180,6 @@ class DateTest : WordSpec({
       }
    }
 
-   "Arb.instant()" should {
-      "generate N valid Instants(no exceptions)" {
-         Arb.instant().generate(RandomSource.default()).take(10_000).toList().size shouldBe 10_000
-      }
-   }
-
    "Gen.period(maxYears)" should {
       "Generate only periods with years <= maxYears" {
          checkAll(10_000, Arb.period(2)) {
