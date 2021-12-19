@@ -11,7 +11,7 @@ slug: test_containers.html
 
 :::note
 This documentation is for the latest release of the test containers module and is compatible with Kotest 5.0+.
-For earlier versions see docs [here](http://https://kotest.io/docs/extensions/test_containers_46.html)
+For earlier versions see docs [here](http://https://kotest.io/docs/extensions/test_containers_46x.html)
 :::
 
 The [testcontainers](https://github.com/testcontainers/testcontainers-java) project provides lightweight, ephemeral instances of common databases,
