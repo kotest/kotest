@@ -71,12 +71,10 @@ class FreeSpecConfigSyntaxTest : FreeSpec() {
 
       "an outer context disabled by an enabled flag".config(enabled = false) - {
          error("boom")
-         "an inner test" { error("boom") }
       }
 
       "an outer context disabled by an enabled function".config(enabledIf = { System.currentTimeMillis() == 0L }) - {
          error("boom")
-         "an inner test" { error("boom") }
       }
 
       "an outer context" - {
@@ -109,12 +107,10 @@ class FreeSpecConfigSyntaxTest : FreeSpec() {
 
          "an inner context disabled by an enabled flag".config(enabled = false) - {
             error("boom")
-            "an inner test" { error("boom") }
          }
 
          "an inner context disabled by an enabled function".config(enabledIf = { System.currentTimeMillis() == 0L }) - {
             error("boom")
-            "an inner test" { error("boom") }
          }
       }
    }

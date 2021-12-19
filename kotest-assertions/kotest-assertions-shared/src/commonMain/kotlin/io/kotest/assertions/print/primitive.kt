@@ -48,5 +48,6 @@ object BytePrint : Print<Byte> {
  * to object a [Printed] result.
  */
 object ToStringPrint : Print<Any> {
+   override fun print(a: Any, level: Int): Printed = a.toString().printed()
    override fun print(a: Any): Printed = a.toString().printed()
 }

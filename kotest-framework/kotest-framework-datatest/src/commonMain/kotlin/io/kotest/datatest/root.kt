@@ -13,11 +13,11 @@ import kotlin.jvm.JvmName
  *
  * The test name will be generated from the stable properties of the elements. See [Identifiers].
  */
-fun <T : Any> RootScope.withData(first: T, second: T, vararg rest: T, test: suspend ContainerScope.(T) -> Unit) {
+fun <T> RootScope.withData(first: T, second: T, vararg rest: T, test: suspend ContainerScope.(T) -> Unit) {
    withData(listOf(first, second) + rest, test)
 }
 
-fun <T : Any> RootScope.withData(
+fun <T> RootScope.withData(
    nameFn: (T) -> String,
    first: T,
    second: T,
@@ -30,7 +30,7 @@ fun <T : Any> RootScope.withData(
  *
  * The test name will be generated from the stable properties of the elements. See [Identifiers].
  */
-fun <T : Any> RootScope.withData(ts: Sequence<T>, test: suspend ContainerScope.(T) -> Unit) {
+fun <T> RootScope.withData(ts: Sequence<T>, test: suspend ContainerScope.(T) -> Unit) {
    withData(ts.toList(), test)
 }
 
@@ -39,7 +39,7 @@ fun <T : Any> RootScope.withData(ts: Sequence<T>, test: suspend ContainerScope.(
  *
  * The test name will be generated from the stable properties of the elements. See [Identifiers].
  */
-fun <T : Any> RootScope.withData(nameFn: (T) -> String, ts: Sequence<T>, test: suspend ContainerScope.(T) -> Unit) {
+fun <T> RootScope.withData(nameFn: (T) -> String, ts: Sequence<T>, test: suspend ContainerScope.(T) -> Unit) {
    withData(nameFn, ts.toList(), test)
 }
 
@@ -48,7 +48,7 @@ fun <T : Any> RootScope.withData(nameFn: (T) -> String, ts: Sequence<T>, test: s
  *
  * The test name will be generated from the stable properties of the elements. See [Identifiers].
  */
-fun <T : Any> RootScope.withData(ts: Collection<T>, test: suspend ContainerScope.(T) -> Unit) {
+fun <T> RootScope.withData(ts: Collection<T>, test: suspend ContainerScope.(T) -> Unit) {
    withData({ getStableIdentifier(it) }, ts, test)
 }
 
@@ -57,7 +57,7 @@ fun <T : Any> RootScope.withData(ts: Collection<T>, test: suspend ContainerScope
  *
  * The test name will be generated from the given [nameFn] function.
  */
-fun <T : Any> RootScope.withData(
+fun <T> RootScope.withData(
    nameFn: (T) -> String,
    ts: Collection<T>,
    test: suspend ContainerScope.(T) -> Unit
@@ -72,7 +72,7 @@ fun <T : Any> RootScope.withData(
  * used as the test name, and the second value passed to the test.
  */
 @JvmName("withDataMap")
-fun <T : Any> RootScope.withData(data: Map<String, T>, test: suspend ContainerScope.(T) -> Unit) {
+fun <T> RootScope.withData(data: Map<String, T>, test: suspend ContainerScope.(T) -> Unit) {
    data.forEach { (name, t) ->
       addTest(TestName(name), false, null, TestType.Dynamic) { test(t) }
    }

@@ -9,7 +9,7 @@ sidebar_label: Data Test Names
 By default, the name of each test is simply the `toString()` on the input row.
 This typically works well for data classes on the JVM but requires the input rows to be _stable_.
 
-However, we can specify how the test names are geenerated if we are not using stable data classes, or if we are
+However, we can specify how the test names are generated if we are not using stable data classes, or if we are
 executing on a non-JVM target, or simply wish to customize.
 
 ### Stable Names

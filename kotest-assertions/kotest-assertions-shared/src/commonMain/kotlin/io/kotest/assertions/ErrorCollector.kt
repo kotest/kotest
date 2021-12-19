@@ -145,16 +145,24 @@ fun ErrorCollector.collectOrThrow(errors: Collection<Throwable>) {
  * All errors currently collected in the [ErrorCollector] are throw as a single [MultiAssertionError].
  */
 fun ErrorCollector.throwCollectedErrors() {
+   collectiveError()?.let { throw it }
+}
+
+/**
+ * All errors currently collected in the [ErrorCollector] are returned as a single [MultiAssertionError].
+ */
+fun ErrorCollector.collectiveError(): AssertionError? {
    val failures = errors()
    clear()
-   if (failures.isNotEmpty()) {
-      val t = if (failures.size == 1) {
-         failures[0]
+   return if (failures.isNotEmpty()) {
+      if (failures.size == 1) {
+         AssertionError(failures[0].message).also {
+            stacktraces.cleanStackTrace(it)
+         }
       } else {
          MultiAssertionError(failures).also {
             stacktraces.cleanStackTrace(it) //cleans the creation of MultiAssertionError
          }
       }
-      throw t
-   }
+   } else null
 }

@@ -124,12 +124,12 @@ inline fun <T> shouldThrowMessage(message: String, block: () -> T) {
    }
 
    thrownException ?: throw failure(
-      "Expected a throwable with message ${StringPrint.print(message).value} but nothing was thrown".trimMargin()
+      "Expected a throwable with message ${StringPrint.print(message, 0).value} but nothing was thrown".trimMargin()
    )
 
    if (thrownException.message != message) {
       throw failure(
-         "Expected a throwable with message ${StringPrint.print(message).value} but got a throwable with message ${thrownException.message.print().value}".trimMargin(),
+         "Expected a throwable with message ${StringPrint.print(message, 0).value} but got a throwable with message ${thrownException.message.print().value}".trimMargin(),
          thrownException
       )
    }

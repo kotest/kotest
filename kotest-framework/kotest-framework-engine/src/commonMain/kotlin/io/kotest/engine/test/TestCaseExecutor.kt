@@ -1,3 +1,5 @@
+@file:OptIn(ExperimentalStdlibApi::class)
+
 package io.kotest.engine.test
 
 import io.kotest.common.ExperimentalKotest

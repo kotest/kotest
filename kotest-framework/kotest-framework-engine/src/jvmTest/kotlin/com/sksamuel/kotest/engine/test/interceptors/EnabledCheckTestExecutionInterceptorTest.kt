@@ -12,7 +12,7 @@ import io.kotest.core.test.TestType
 import io.kotest.engine.test.scopes.TerminalTestScope
 import io.kotest.engine.test.interceptors.EnabledCheckInterceptor
 import io.kotest.matchers.shouldBe
-import kotlin.time.seconds
+import kotlin.time.Duration.Companion.seconds
 
 class EnabledCheckTestExecutionInterceptorTest : FunSpec({
 
