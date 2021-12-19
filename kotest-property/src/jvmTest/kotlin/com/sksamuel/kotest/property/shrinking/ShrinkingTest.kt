@@ -45,19 +45,16 @@ Shrink #5: "2K" pass
 Shrink #6: "6i" pass
 Shrink #7: "K6i" pass
 Shrink #8: "2K6" pass
-Shrink #9: "aK6i" fail
-Shrink #10: "aK" pass
-Shrink #11: "aK6" pass
-Shrink #12: "aa6i" fail
-Shrink #13: "aa" pass
-Shrink #14: "a6i" pass
-Shrink #15: "aa6" pass
-Shrink #16: "aaai" fail
-Shrink #17: "ai" pass
-Shrink #18: "aai" pass
-Shrink #19: "aaa" pass
-Shrink #20: "aaaa" fail
-Shrink result (after 20 shrinks) => "aaaa"
+Shrink #9: "226i" fail
+Shrink #10: "22" pass
+Shrink #11: "26i" pass
+Shrink #12: "226" pass
+Shrink #13: "222i" fail
+Shrink #14: "2i" pass
+Shrink #15: "22i" pass
+Shrink #16: "222" pass
+Shrink #17: "2222" fail
+Shrink result (after 17 shrinks) => "2222"
             """.trim()
          )
       }

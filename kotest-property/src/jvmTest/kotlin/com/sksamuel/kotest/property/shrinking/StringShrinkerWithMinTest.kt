@@ -54,12 +54,12 @@ class StringShrinkerWithMinTest : DescribeSpec({
          }
       }
 
-      it("should replace first char with simplest") {
-         StringShrinkerWithMin(4).shrink("ttttt") shouldContain "atttt"
+      it("should use first char to replace the second char") {
+         StringShrinkerWithMin(4).shrink("atttt") shouldContain "aattt"
       }
 
       it("should replace last char with simplest") {
-         StringShrinkerWithMin(4).shrink("ttttt") shouldContain "tttta"
+         StringShrinkerWithMin(4).shrink("atttt") shouldContain "attta"
       }
 
       it("should drop first char") {
@@ -109,11 +109,11 @@ class StringShrinkerWithMinTest : DescribeSpec({
          val shrinks = StringShrinkerWithMin().rtree(a)
          doShrinking(shrinks, ShrinkingMode.Unbounded) {
             it.length.shouldBeLessThan(3)
-         }.shrink shouldBe "aaa"
+         }.shrink shouldBe "777"
 
          doShrinking(shrinks, ShrinkingMode.Unbounded) {
             it.length.shouldBeLessThan(8)
-         }.shrink shouldBe "aaaaaaaa"
+         }.shrink shouldBe "!!!!!!!!"
 
          PropertyTesting.shouldPrintShrinkSteps = prt
       }
@@ -130,17 +130,15 @@ class StringShrinkerWithMinTest : DescribeSpec({
                }
             }
          }
-         // '2' is the randomly selected 'simplest char', so expect the shrinker generates
-         // samples based on this simplest char.
+
          stdout.shouldContain(
             """
 Attempting to shrink arg "`a,ONF/b"
 Shrink #1: "`a,O" fail
-Shrink #2: "2a,O" fail
-Shrink #3: "22,O" fail
-Shrink #4: "222O" fail
-Shrink #5: "2222" fail
-Shrink result (after 5 shrinks) => "2222"
+Shrink #2: "``,O" fail
+Shrink #3: "```O" fail
+Shrink #4: "````" fail
+Shrink result (after 4 shrinks) => "````"
             """.trim()
          )
          PropertyTesting.shouldPrintShrinkSteps = prt
@@ -153,7 +151,7 @@ Shrink result (after 5 shrinks) => "2222"
          val arbNumericString = Arb.string(1..10, arbNumericCodepoints)
 
          checkAll(arbNumericString) { numericString ->
-            StringShrinkerWithMin(codepoints = arbNumericCodepoints)
+            StringShrinkerWithMin()
                .shrink(numericString)
                .forAll { it.shouldContainOnlyDigits() }
          }
