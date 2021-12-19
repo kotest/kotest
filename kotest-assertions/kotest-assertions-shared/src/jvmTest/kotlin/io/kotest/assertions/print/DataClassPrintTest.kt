@@ -1,10 +1,7 @@
 package io.kotest.assertions.print
 
-import io.kotest.assertions.throwables.shouldThrowAny
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
-import io.kotest.matchers.string.shouldContain
-import io.kotest.matchers.throwable.shouldHaveMessage
 
 class DataClassPrintTest : FunSpec() {
    init {
