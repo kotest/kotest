@@ -17,7 +17,7 @@ Ship(
   name          =  "HMS Queen Elizabeth"
   pennant       =  "R08"
 )
-""".trim()
+""".trim().replace("\n", System.lineSeparator())
       }
 
       test("data class print should format nested data class") {
@@ -36,7 +36,7 @@ Shipyard(
     pennant       =  "R08"
   )
 )
-""".trim()
+""".trim().replace("\n", System.lineSeparator())
       }
 
       test("print should default to basic data class output") {
