@@ -14,6 +14,7 @@ module.exports = {
       'proptest/customgens',
       'proptest/globalconfig',
       'proptest/arrow',
+      'proptest/extra_arbs',
    ],
    intellij: [
       'intellij/index',
@@ -191,6 +192,7 @@ module.exports = {
          items: [
             'framework/fail_fast',
             'framework/fail_on_empty',
+            'framework/config_dump',
          ]
       },
    ],

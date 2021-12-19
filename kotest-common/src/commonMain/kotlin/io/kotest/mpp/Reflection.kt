@@ -29,6 +29,8 @@ interface Reflection {
     */
    fun <T : Any> isDataClass(kclass: KClass<T>): Boolean
 
+   fun isPublic(kclass: KClass<out Any>): Boolean
+
    /**
     * Returns the names of the parameters if supported. Eg, for `fun foo(a: String, b: Boolean)` on the JVM
     * it would return a, b and on unsupported platforms an empty list.
@@ -56,6 +58,7 @@ object BasicReflection : Reflection {
    override fun annotations(kclass: KClass<*>, recursive: Boolean): List<Annotation> = emptyList()
    override fun <T : Any> isDataClass(kclass: KClass<T>): Boolean = false
    override fun <T : Any> isEnumClass(kclass: KClass<T>): Boolean = false
+   override fun isPublic(kclass: KClass<out Any>): Boolean = false
    override fun paramNames(fn: Function<*>): List<String>? = null
    override fun <T : Any> primaryConstructorMembers(klass: KClass<T>): List<Property> = emptyList()
    override fun <T : Any> newInstanceNoArgConstructor(klass: KClass<T>): T = error("Unsupported on this platform")

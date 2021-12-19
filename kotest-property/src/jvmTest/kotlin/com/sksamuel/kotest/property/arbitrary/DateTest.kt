@@ -1,19 +1,14 @@
 package com.sksamuel.kotest.property.arbitrary
 
-import io.kotest.assertions.fail
 import io.kotest.core.spec.style.WordSpec
 import io.kotest.matchers.collections.shouldContain
-import io.kotest.matchers.collections.shouldContainAll
-import io.kotest.matchers.date.shouldBeAfter
 import io.kotest.matchers.shouldBe
 import io.kotest.property.Arb
 import io.kotest.property.RandomSource
 import io.kotest.property.arbitrary.edgecases
-import io.kotest.property.arbitrary.instant
 import io.kotest.property.arbitrary.localDate
 import io.kotest.property.arbitrary.localDateTime
 import io.kotest.property.arbitrary.localTime
-import io.kotest.property.arbitrary.next
 import io.kotest.property.arbitrary.period
 import io.kotest.property.arbitrary.take
 import io.kotest.property.checkAll
@@ -109,12 +104,6 @@ class DateTest : WordSpec({
 
       "Be the default generator for LocalDateTime" {
          checkAll(10) { _: LocalDateTime -> /* No use. Won't reach here if unsupported */ }
-      }
-   }
-
-   "Arb.instant()" should {
-      "generate N valid Instants(no exceptions)" {
-         Arb.instant().generate(RandomSource.default()).take(10_000).toList().size shouldBe 10_000
       }
    }
 
