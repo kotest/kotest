@@ -114,31 +114,29 @@ class StringShrinkerWithMin(
       val simplestChar: Char? = simplestCharSelector(value)
       val isSimplest = value.all { it == simplestChar } || simplestChar == null
 
-      return when {
-         isShortest && isSimplest -> emptyList()
-         isShortest -> simplerVariants(value, simplestChar)
-         isSimplest -> shorterVariants(value)
-         else -> shorterVariants(value) + simplerVariants(value, simplestChar)
+      return buildList {
+         if (!isShortest) {
+            addAll(shorterVariants(value))
+         }
+         if (!isSimplest && simplestChar != null) {
+            addAll(simplerVariants(value, simplestChar))
+         }
       }.mapNotNull {
          // ensure the variants are at least minLength long
          when {
             simplestChar != null -> it.padEnd(minLength, simplestChar)
-            it.length < minLength -> null
-            else -> it
+            it.length >= minLength -> it
+            else -> null // this string is too short, so filter it out
          }
       }.distinct()
    }
 
-   private fun simplerVariants(value: String, simplestChar: Char?): List<String> =
-      if (simplestChar != null) {
-         listOfNotNull(
-            // replace the first and last chars that aren't simplestChar with simplestChar
-            replace(value, simplestChar, value.indexOfFirst { it != simplestChar }),
-            replace(value, simplestChar, value.indexOfLast { it != simplestChar }),
-         )
-      } else {
-         emptyList()
-      }
+   private fun simplerVariants(value: String, simplestChar: Char): List<String> =
+      listOfNotNull(
+         // replace the first and last chars that aren't simplestChar with simplestChar
+         replace(value, simplestChar, value.indexOfFirst { it != simplestChar }),
+         replace(value, simplestChar, value.indexOfLast { it != simplestChar }),
+      )
 
    private fun shorterVariants(value: String) =
       listOf(
