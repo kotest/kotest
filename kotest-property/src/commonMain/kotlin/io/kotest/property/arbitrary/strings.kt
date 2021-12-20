@@ -110,29 +110,33 @@ class StringShrinkerWithMin(
       val isShortest = value.length == minLength
 
       val simplestChar: Char? = simplestCharSelector(value)
-      val isSimplest = value.all { it == simplestChar }
+      val isSimplest = value.all { it == simplestChar } || simplestChar == null
 
-      return buildList {
-         if (!isShortest) {
-            addAll(shorterVariants(value))
-         }
-         if (!isSimplest && simplestChar != null) {
-            addAll(simplerVariants(value, simplestChar))
-         }
+      return when {
+         isShortest && isSimplest -> emptyList()
+         isShortest -> simplerVariants(value, simplestChar)
+         isSimplest -> shorterVariants(value)
+         else -> shorterVariants(value) + simplerVariants(value, simplestChar)
       }.mapNotNull {
+         // ensure the variants are at least minLength long
          when {
-            simplestChar != null  -> it.padEnd(minLength, simplestChar)
+            simplestChar != null -> it.padEnd(minLength, simplestChar)
             it.length < minLength -> null
-            else                  -> it
+            else -> it
          }
       }.distinct()
    }
 
-   private fun simplerVariants(value: String, simplestChar: Char): List<String> = listOfNotNull(
-      // replace the first and last chars that aren't simplestChar with simplestChar
-      replace(value, simplestChar, value.indexOfFirst { it != simplestChar }),
-      replace(value, simplestChar, value.indexOfLast { it != simplestChar }),
-   )
+   private fun simplerVariants(value: String, simplestChar: Char?): List<String> =
+      if (simplestChar != null) {
+         listOfNotNull(
+            // replace the first and last chars that aren't simplestChar with simplestChar
+            replace(value, simplestChar, value.indexOfFirst { it != simplestChar }),
+            replace(value, simplestChar, value.indexOfLast { it != simplestChar }),
+         )
+      } else {
+         emptyList()
+      }
 
    private fun shorterVariants(value: String) =
       listOf(
