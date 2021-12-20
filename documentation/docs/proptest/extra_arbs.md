@@ -12,6 +12,9 @@ then Kotest has such a [collection](https://github.com/kotest/kotest-property-ar
 To use, add `io.kotest.extensions:kotest-property-arbs:version` to your build.
 :::
 
+[<img src="https://img.shields.io/maven-central/v/io.kotest.extensions/kotest-property-arbs?label=latest%20release"/>](https://search.maven.org/search?q=g:io.kotest.extensions)
+
+
 | Arb  	                     | Details  	                                                                                                          |
 |----------------------------|---------------------------------------------------------------------------------------------------------------------|
 | Arb.firstName()            | Produces random english or hispanic first names                                                                     |

@@ -14,6 +14,7 @@ module.exports = {
       'proptest/customgens',
       'proptest/globalconfig',
       'proptest/arrow',
+      'proptest/date_gens',
       'proptest/extra_arbs',
    ],
    intellij: [

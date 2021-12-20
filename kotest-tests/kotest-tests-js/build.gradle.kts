@@ -9,7 +9,7 @@ buildscript {
 plugins {
    kotlin("multiplatform")
    // must be a published version and not one in the current build
-   id("io.kotest.multiplatform").version("5.0.0")
+   id("io.kotest.multiplatform").version("5.0.3")
 }
 
 kotlin {
@@ -34,7 +34,7 @@ kotlin {
 
 // must be a published version and not one in the current build
 configure<io.kotest.framework.multiplatform.gradle.KotestPluginExtension> {
-   compilerPluginVersion.set("5.0.0")
+   compilerPluginVersion.set("5.0.3")
 }
 
 apply(from = "../../nopublish.gradle")

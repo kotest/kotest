@@ -11,6 +11,8 @@ Kotest provides an optional module that provides generators for [Arrow](https://
 To use, add `io.kotest.extensions:kotest-property-arrow:version` to your build.
 :::
 
+[<img src="https://img.shields.io/maven-central/v/io.kotest.extensions/kotest-property-arrow?label=latest%20release"/>](https://search.maven.org/search?q=kotest-property-arrow)
+
 
 | Generator                          | Description                                                                                                                    |
 |------------------------------------|--------------------------------------------------------------------------------------------------------------------------------|
