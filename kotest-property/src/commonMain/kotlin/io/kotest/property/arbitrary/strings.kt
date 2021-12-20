@@ -63,10 +63,10 @@ object StringShrinker : Shrinker<String> {
 
    override fun shrink(value: String): List<String> {
       return when {
-         value == ""       -> emptyList()
-         value == "a"      -> listOf("")
+         value == "" -> emptyList()
+         value == "a" -> listOf("")
          value.length == 1 -> listOf("", "a")
-         else              -> {
+         else -> {
             val firstHalf = value.take(value.length / 2 + value.length % 2)
             val secondHalf = value.takeLast(value.length / 2)
             val secondHalfAs = firstHalf.padEnd(value.length, 'a')
@@ -93,6 +93,8 @@ object StringShrinker : Shrinker<String> {
  *
  * Simplified strings will have characters replaced by a character (selected by [simplestCharSelector])
  * of each pre-shrunk value. By default, this is the first character of the pre-shrunk string.
+ *
+ * When [simplestCharSelector] returns null, no simpler variants will be created.
  */
 class StringShrinkerWithMin(
    private val minLength: Int = 0,
