@@ -7,27 +7,22 @@ import io.kotest.assertions.print.print
 
 object IterableEq : Eq<Iterable<*>> {
 
-   /**
-    * Returns true if this [Iterable] is an iterable that is supported by this typeclass.
-    *
-    * There are many third party libs that use Iterable as a base type (Jackson's Json Node, JDK's Path type, to
-    * name but two) and we cannot safely compare these simply using the IterableEq.
-    *
-    * Therefore only explicit types are accepted by our IterableEq.
-    */
    fun isValidIterable(it: Any): Boolean {
       return when (it) {
-         is List<*>, is Set<*>, is Array<*>, is Collection<*> -> true
+         is String -> false
+         is List<*>, is Set<*>, is Array<*>, is Collection<*>, is Iterable<*> -> true
          else -> false
       }
    }
 
    fun asIterable(it: Any): Iterable<*> {
+      check(it !is String)
       return when (it) {
          is Array<*> -> it.asList()
          is List<*> -> it
          is Set<*> -> it
          is Collection<*> -> it
+         is Iterable<*> -> it
          else -> error("Cannot convert $it to Iterable<*>")
       }
    }
@@ -35,7 +30,10 @@ object IterableEq : Eq<Iterable<*>> {
    override fun equals(actual: Iterable<*>, expected: Iterable<*>, strictNumberEq: Boolean): Throwable? {
       return when {
          actual is Set<*> && expected is Set<*> -> checkSetEquality(actual, expected, strictNumberEq)
-         else -> checkEquality(actual, expected, strictNumberEq)
+         actual is Set<*> || expected is Set<*> -> errorWithTypeDetails(actual, expected)
+         else -> {
+            checkIterableCompatibility(actual, expected) ?: checkEquality(actual, expected, strictNumberEq)
+         }
       }
    }
 
@@ -43,6 +41,11 @@ object IterableEq : Eq<Iterable<*>> {
       return if (actual.size != expected.size || !equalsIgnoringOrder(actual, expected, strictNumberEq)) {
          generateError(actual, expected)
       } else null
+   }
+
+   private fun checkIterableCompatibility(actual: Iterable<*>, expected: Iterable<*>): Throwable? {
+      val isCompatible = (actual is Collection && expected is Collection) ||  (actual::class.isInstance(expected) && expected::class.isInstance(actual))
+      return if (isCompatible) null else errorWithTypeDetails(actual,expected)
    }
 
    // when comparing sets we need to consider that {1,2,3} is the same set as {3,2,1}.
@@ -62,6 +65,18 @@ object IterableEq : Eq<Iterable<*>> {
       }
    }
 
+   private fun errorWithTypeDetails(actual: Iterable<*>, expected: Iterable<*>): Throwable {
+      val tag = "${actual::class.simpleName?.let {it} ?: actual::class} with ${expected::class.simpleName?.let {it} ?: expected::class}} regardless of content\n"
+      val detailErrorMessage = when {
+         actual is Set<*> || expected is Set<*> -> "Set can be compared only to Set\nCannot compare $tag"
+         actual is Collection || expected is Collection -> "Collection can be compared only to Collection\nCannot compare $tag"
+         else -> "Promiscuous iterators\nCannot compare $tag"
+      }
+      return failure(Expected(expected.print()), Actual(actual.print()), detailErrorMessage)
+   }
+
+   private const val unim = "Unsupported nesting iterator"
+
    private fun checkEquality(actual: Iterable<*>, expected: Iterable<*>, strictNumberEq: Boolean): Throwable? {
       var index = 0
       val iter1 = actual.iterator()
@@ -69,17 +84,38 @@ object IterableEq : Eq<Iterable<*>> {
       val elementDifferAtIndex = mutableListOf<Int>()
       var unexpectedElementAtIndex: Int? = null
       var missingElementAt: Int? = null
+      var nestedIteratorError: String? = null
+      var accrueDetails = true
       while (iter1.hasNext()) {
          val a = iter1.next()
          if (iter2.hasNext()) {
             val b = iter2.next()
-            val t = eq(a, b, strictNumberEq)
-            if (t != null) {
+            val t: Throwable? = when {
+               a?.equals(b) == true -> null
+               (a is Iterable<*>) && (a !is Collection<*>) && (a::class.isInstance(actual) || actual::class.isInstance(a)) -> {
+                  nestedIteratorError = "$unim $a within $iter1 (must use custom code)"
+                  accrueDetails = false
+                  failure(nestedIteratorError)
+               }
+               (b is Iterable<*>) && (b !is Collection<*>) && (b::class.isInstance(expected) || expected::class.isInstance(
+                  b
+               )) -> {
+                  nestedIteratorError = "$unim $b within $iter2 (must use custom code)"
+                  accrueDetails = false
+                  failure(nestedIteratorError)
+               }
+               else -> eq(a, b, strictNumberEq)?.let {
+                  if (it.message?.startsWith(unim) == true) {
+                     nestedIteratorError = it.message
+                     accrueDetails = false
+                     failure(nestedIteratorError!!)
+                  } else it
+               }
+            }
+            if (t != null && accrueDetails) {
                elementDifferAtIndex.add(index)
             }
-         } else {
-            unexpectedElementAtIndex = index
-         }
+         } else if (accrueDetails) unexpectedElementAtIndex = index else break
          index++
       }
       if (iter2.hasNext()) {
@@ -87,20 +123,28 @@ object IterableEq : Eq<Iterable<*>> {
       }
       val detailErrorMessage = StringBuilder().apply {
          if (elementDifferAtIndex.isNotEmpty()) {
-            append("Element differ at index: ${elementDifferAtIndex.print().value}\n")
+            nestedIteratorError?.let {
+               append("$it at index: ${elementDifferAtIndex.print().value}\n")
+            } ?: append("Element differ at index: ${elementDifferAtIndex.print().value}\n")
+
          }
          if (unexpectedElementAtIndex != null) {
-            append("Unexpected elements from index $unexpectedElementAtIndex\n")
+            nestedIteratorError?.let {
+               append("$it at index: $unexpectedElementAtIndex\n")
+            } ?: append("Unexpected elements from index $unexpectedElementAtIndex\n")
          }
          if (missingElementAt != null) {
-            append("Missing elements from index $missingElementAt\n")
+            nestedIteratorError?.let {
+               append("$it at index: $missingElementAt\n")
+            } ?: append("Missing elements from index $missingElementAt\n")
          }
       }.toString()
 
-      return if (detailErrorMessage.isNotBlank()) {
+      return nestedIteratorError?.let { failure(it) } ?: if (detailErrorMessage.isNotBlank()) {
          failure(Expected(expected.print()), Actual(actual.print()), detailErrorMessage)
       } else null
    }
 
    private fun generateError(actual: Any, expected: Any) = failure(Expected(expected.print()), Actual(actual.print()))
+
 }
