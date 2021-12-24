@@ -8,7 +8,6 @@ import io.kotest.matchers.nulls.shouldBeNull
 import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
-import java.nio.file.Path
 import java.nio.file.Paths
 import java.util.concurrent.ConcurrentLinkedQueue
 import kotlin.time.Duration.Companion.seconds
@@ -84,7 +83,7 @@ class IterableEqTest : FunSpec({
    }
 
    test("should give null for matched iterables") {
-      IterableEq.equals(Paths.get("foo"), Path.of("foo")).shouldBeNull()
+      IterableEq.equals(Paths.get("foo"), Paths.get("foo")).shouldBeNull()
       IterableEq.equals(BareIterable(3,2), BareIterable(3,2)).shouldBeNull()
    }
 
@@ -108,7 +107,7 @@ class IterableEqTest : FunSpec({
    }
 
    test("should give unsupported error for nested iterables") {
-      val error = IterableEq.equals(Paths.get("foo"), Path.of("bar"))
+      val error = IterableEq.equals(Paths.get("foo"), Paths.get("bar"))
       assertSoftly {
          error.shouldNotBeNull()
          error.message?.startsWith("Disallowed nesting iterator") shouldBe true
