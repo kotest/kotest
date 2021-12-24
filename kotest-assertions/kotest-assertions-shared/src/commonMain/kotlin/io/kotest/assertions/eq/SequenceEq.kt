@@ -12,20 +12,6 @@ object SequenceEq : Eq<Sequence<*>> {
     * compared only with custom code.
     */
 
-   fun isValidSequence(it: Any): Boolean {
-      return when (it) {
-         is Sequence<*> -> true
-         else -> false
-      }
-   }
-
-   fun asSequence(it: Any): Sequence<*> {
-      return when (it) {
-         is Sequence<*> -> it
-         else -> error("Cannot convert $it to Sequence<*>")
-      }
-   }
-
    override fun equals(actual: Sequence<*>, expected: Sequence<*>, strictNumberEq: Boolean): Throwable? =
       failure(Expected(expected.print()), Actual(actual.print()), "Sequence type is not supported: use custom code")
 

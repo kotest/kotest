@@ -28,10 +28,10 @@ class SequenceEqTest : FunSpec({
       val seq2 = sequenceOf(1, 2, 3)
 
       seq1.equals(seq2) shouldBe /* true, but is */ false
-      (seq1.hashCode() == seq2.hashCode())  /* true, but is */ shouldBe false
+      (seq1.hashCode() == seq2.hashCode()) shouldBe /* true, but is */ false
 
       seq2.equals(seq1) shouldBe /* true, but is */ false
-      (seq2.hashCode() == seq1.hashCode())  /* true, but is */ shouldBe false
+      (seq2.hashCode() == seq1.hashCode()) shouldBe /* true, but is */ false
 
    }
 

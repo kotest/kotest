@@ -20,6 +20,7 @@ private class BareIterable(size: Int, offset: Int): Iterable<Int> {
       override fun hasNext(): Boolean = count < top
       override fun next(): Int = ++count
    }
+   override fun toString(): String = "${this::class.simpleName}@{$top,$count}"
 }
 
 private class BareRecursiveIterable(size: Int, offset: Int): Iterable<BareRecursiveIterable> {
@@ -29,6 +30,7 @@ private class BareRecursiveIterable(size: Int, offset: Int): Iterable<BareRecurs
       override fun hasNext(): Boolean = count < top
       override fun next(): BareRecursiveIterable = this@BareRecursiveIterable.apply { ++count }
    }
+   override fun toString(): String = "${this::class.simpleName}@{$top,$count}"
 }
 
 class IterableEqTest : FunSpec({
@@ -99,7 +101,7 @@ class IterableEqTest : FunSpec({
       val error = IterableEq.equals(Paths.get("foo"), BareIterable(1,0))
       assertSoftly {
          error.shouldNotBeNull()
-         error.message?.startsWith("Promiscuous iterators") shouldBe true
+         error.message?.startsWith("Unsupported promiscuous iterators") shouldBe true
       }
    }
 
@@ -125,9 +127,15 @@ class IterableEqTest : FunSpec({
       IterableEq.equals(array1.toList(), array2.toList()).shouldBeNull()
    }
 
-   test("should give null for equal iterables nested in arrays") {
-      val aut1 = arrayOf(1, arrayOf(BareIterable(3,3), BareIterable(4,4)), mapOf("a" to arrayOf(1, 2, 3))).toList()
-      val aut2 = arrayOf(1, arrayOf(BareIterable(3,3), BareIterable(4,4)), mapOf("a" to arrayOf(1, 2, 3))).toList()
+   test("should give null for equal iterables nested in ordered collection") {
+      val aut1 = listOf(1, arrayOf(BareIterable(3,3), BareIterable(4,4)), mapOf("a" to arrayOf(1, 2, 3)))
+      val aut2 = listOf(1, arrayOf(BareIterable(3,3), BareIterable(4,4)), mapOf("a" to arrayOf(1, 2, 3)))
+      IterableEq.equals(aut1, aut2).shouldBeNull()
+   }
+
+   test("should give null for equal iterables nested in Set") {
+      val aut1 = setOf(1, listOf(BareIterable(3,3), BareIterable(4,4)), mapOf("a" to listOf(1, 2, 3)))
+      val aut2 = setOf(mapOf("a" to listOf(1, 2, 3)), 1, listOf(BareIterable(3,3), BareIterable(4,4)))
       IterableEq.equals(aut1, aut2).shouldBeNull()
    }
 
@@ -144,9 +152,9 @@ class IterableEqTest : FunSpec({
       }
    }
 
-   test("should give error for recursive iterables nested in arrays") {
-      val aut1 = arrayOf(1, arrayOf(BareRecursiveIterable(3,3)), mapOf("a" to arrayOf(1, 2, 3))).toList()
-      val aut2 = arrayOf(1, arrayOf(BareRecursiveIterable(3,3)), mapOf("a" to arrayOf(1, 2, 3))).toList()
+   test("should give error for recursive iterables nested in ordered collection") {
+      val aut1 = listOf(1, listOf(BareRecursiveIterable(3,3)), mapOf("a" to listOf(1, 2, 3)))
+      val aut2 = listOf(1, listOf(BareRecursiveIterable(3,3)), mapOf("a" to listOf(1, 2, 3)))
 
       val error = IterableEq.equals(aut1, aut2)
       assertSoftly {
@@ -155,16 +163,37 @@ class IterableEqTest : FunSpec({
       }
    }
 
-   test("should give error for unequal iterables nested in arrays") {
-      val array1 = arrayOf(1, arrayOf(BareIterable(3,3), BareIterable(3,4)), mapOf("a" to arrayOf(1, 2, 3)))
-      val array2 = arrayOf(1, arrayOf(BareIterable(3,3), BareIterable(4,4)), mapOf("a" to arrayOf(1, 2, 3)))
+   test("should give error for recursive iterables nested in Set") {
+      val aut1 = setOf(1, listOf(BareRecursiveIterable(3,3)), mapOf("a" to listOf(1, 2, 3)))
+      val aut2 = setOf(1, mapOf("a" to listOf(1, 2, 3)), listOf(BareRecursiveIterable(3,3)))
 
-      val error = IterableEq.equals(array1.toList(), array2.toList())
+      val error = IterableEq.equals(aut1, aut2)
+      assertSoftly {
+         error.shouldNotBeNull()
+         error.message?.startsWith("Unsupported nesting iterator") shouldBe true
+      }
+   }
 
+   test("should give error for unequal iterables nested in ordered collection") {
+      val aut1 = listOf(1, listOf(BareIterable(3,3), BareIterable(3,4)), mapOf("a" to listOf(1, 2, 3)))
+      val aut2 = listOf(1, listOf(BareIterable(3,3), BareIterable(4,4)), mapOf("a" to listOf(1, 2, 3)))
+
+      val error = IterableEq.equals(aut1, aut2)
       assertSoftly {
          error.shouldNotBeNull()
          error.message shouldBe """Element differ at index: [1]
                                   |expected:<[1, [[], []], [("a", [1, 2, 3])]]> but was:<[1, [[], []], [("a", [1, 2, 3])]]>""".trimMargin()
+      }
+   }
+
+   test("should give error for unequal iterables nested in Set") {
+      val aut1 = setOf(1, listOf(BareIterable(3,3), BareIterable(3,4)), mapOf("a" to listOf(1, 2, 3)))
+      val aut2 = setOf(1, listOf(BareIterable(3,3), BareIterable(4,4)), mapOf("a" to listOf(1, 2, 3)))
+
+      val error = IterableEq.equals(aut1, aut2)
+      assertSoftly {
+         error.shouldNotBeNull()
+         error.message shouldBe """expected:<[1, [[], []], [("a", [1, 2, 3])]]> but was:<[1, [[], []], [("a", [1, 2, 3])]]>""".trimMargin()
       }
    }
 
