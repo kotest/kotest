@@ -164,10 +164,10 @@ object IterableEq : Eq<Iterable<*>> {
          if (elementDifferAtIndex.isNotEmpty()) {
             append("Element differ at index: ${elementDifferAtIndex.print().value}\n")
          }
-         if (unexpectedElementAtIndex != null && nestedIteratorError == null) {
+         if (unexpectedElementAtIndex != null) {
             append("Unexpected elements from index $unexpectedElementAtIndex\n")
          }
-         if (missingElementAt != null && nestedIteratorError == null) {
+         if (missingElementAt != null) {
             append("Missing elements from index $missingElementAt\n")
          }
       }.toString()
