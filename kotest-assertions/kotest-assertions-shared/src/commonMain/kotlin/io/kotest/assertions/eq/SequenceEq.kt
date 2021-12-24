@@ -13,6 +13,6 @@ object SequenceEq : Eq<Sequence<*>> {
     */
 
    override fun equals(actual: Sequence<*>, expected: Sequence<*>, strictNumberEq: Boolean): Throwable? =
-      failure(Expected(expected.print()), Actual(actual.print()), "Sequence type is not supported: use custom code")
+      failure(Expected(expected.print()), Actual(actual.print()), "Sequence type is not supported: use custom test code")
 
 }

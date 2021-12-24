@@ -35,7 +35,6 @@ private class BareRecursiveIterable(size: Int, offset: Int): Iterable<BareRecurs
 
 class IterableEqTest : FunSpec({
 
-
    test("should give null for two equal sets") {
       IterableEq.equals(setOf(1, 2, 3), setOf(2, 3, 1)).shouldBeNull()
    }
@@ -66,20 +65,21 @@ class IterableEqTest : FunSpec({
 
    test("should give error for set comparison with list") {
       val error = IterableEq.equals(setOf(1, 2, 3), listOf(1, 2, 3))
-
       assertSoftly {
          error.shouldNotBeNull()
-         error.message?.startsWith("Set can be compared only to Set") shouldBe true
+         error.message shouldBe """Disallowed: Set can be compared only to Set
+                                  |May not compare LinkedHashSet with ArrayList
+                                  |expected:<*> but was:<*>""".trimMargin()
       }
    }
 
    test("should give error for unmatched collection") {
-      val a = 7
-      print(a)
       val error = IterableEq.equals(BareIterable(3,1), listOf(1,2,3))
       assertSoftly {
          error.shouldNotBeNull()
-         error.message?.startsWith("Collection can be compared only to Collection") shouldBe true
+         error.message shouldBe """Disallowed typed contract
+                                  |May not compare BareIterable with ArrayList
+                                  |expected:<*> but was:<*>""".trimMargin()
       }
    }
 
@@ -101,7 +101,9 @@ class IterableEqTest : FunSpec({
       val error = IterableEq.equals(Paths.get("foo"), BareIterable(1,0))
       assertSoftly {
          error.shouldNotBeNull()
-         error.message?.startsWith("Unsupported promiscuous iterators") shouldBe true
+         error.message shouldBe """Disallowed promiscuous iterators
+                                  |May not compare UnixPath with BareIterable
+                                  |expected:<*> but was:<*>""".trimMargin()
       }
    }
 
@@ -109,7 +111,8 @@ class IterableEqTest : FunSpec({
       val error = IterableEq.equals(Paths.get("foo"), Path.of("bar"))
       assertSoftly {
          error.shouldNotBeNull()
-         error.message?.startsWith("Unsupported nesting iterator") shouldBe true
+         error.message?.startsWith("Disallowed nesting iterator") shouldBe true
+         error.message?.endsWith("; (use custom test code instead)") shouldBe true
       }
    }
 
@@ -117,7 +120,8 @@ class IterableEqTest : FunSpec({
       val error = IterableEq.equals(BareRecursiveIterable(1,1), BareRecursiveIterable(1,1))
       assertSoftly {
          error.shouldNotBeNull()
-         error.message?.startsWith("Unsupported nesting iterator") shouldBe true
+         error.message?.startsWith("Disallowed nesting iterator") shouldBe true
+         error.message?.endsWith("; (use custom test code instead)") shouldBe true
       }
    }
 
@@ -133,10 +137,33 @@ class IterableEqTest : FunSpec({
       IterableEq.equals(aut1, aut2).shouldBeNull()
    }
 
+   test("should give error for unequal iterables nested in ordered collection") {
+      val aut1 = listOf(1, listOf(BareIterable(3,3), BareIterable(3,4)), mapOf("a" to listOf(1, 2, 3)))
+      val aut2 = listOf(1, listOf(BareIterable(3,3), BareIterable(4,4)), mapOf("a" to listOf(1, 2, 3)))
+
+      val error = IterableEq.equals(aut1, aut2)
+      assertSoftly {
+         error.shouldNotBeNull()
+         error.message shouldBe """Element differ at index: [1]
+                                  |expected:<[1, [[], []], [("a", [1, 2, 3])]]> but was:<[1, [[], []], [("a", [1, 2, 3])]]>""".trimMargin()
+      }
+   }
+
    test("should give null for equal iterables nested in Set") {
-      val aut1 = setOf(1, listOf(BareIterable(3,3), BareIterable(4,4)), mapOf("a" to listOf(1, 2, 3)))
-      val aut2 = setOf(mapOf("a" to listOf(1, 2, 3)), 1, listOf(BareIterable(3,3), BareIterable(4,4)))
+      val aut1 = setOf(1, listOf(BareIterable(3,3), BareIterable(4,4)), mapOf("a" to arrayOf(1, 2, 3)))
+      val aut2 = setOf(mapOf("a" to listOf(1, 2, 3)), 1, arrayOf(BareIterable(3,3), BareIterable(4,4)))
       IterableEq.equals(aut1, aut2).shouldBeNull()
+   }
+
+   test("should give error for unequal iterables nested in Set") {
+      val aut1 = setOf(listOf(BareIterable(3,3), BareIterable(3,4)), mapOf("a" to listOf(1, 2, 3)), 1)
+      val aut2 = setOf(1, listOf(BareIterable(3,3), BareIterable(4,4)), mapOf("a" to listOf(1, 2, 3)))
+
+      val error = IterableEq.equals(aut1, aut2)
+      assertSoftly {
+         error.shouldNotBeNull()
+         error.message shouldBe """expected:<[1, [[], []], [("a", [1, 2, 3])]]> but was:<[[[], []], [("a", [1, 2, 3])], 1]>"""
+      }
    }
 
    test("should give error for unequal deeply nested arrays") {
@@ -159,41 +186,20 @@ class IterableEqTest : FunSpec({
       val error = IterableEq.equals(aut1, aut2)
       assertSoftly {
          error.shouldNotBeNull()
-         error.message?.startsWith("Unsupported nesting iterator") shouldBe true
+         error.message?.startsWith("Disallowed nesting iterator") shouldBe true
+         error.message?.endsWith("; (use custom test code instead)") shouldBe true
       }
    }
 
    test("should give error for recursive iterables nested in Set") {
-      val aut1 = setOf(1, listOf(BareRecursiveIterable(3,3)), mapOf("a" to listOf(1, 2, 3)))
+      val aut1 = setOf(1, arrayOf(BareRecursiveIterable(3,3)), mapOf("a" to listOf(1, 2, 3)))
       val aut2 = setOf(1, mapOf("a" to listOf(1, 2, 3)), listOf(BareRecursiveIterable(3,3)))
 
       val error = IterableEq.equals(aut1, aut2)
       assertSoftly {
          error.shouldNotBeNull()
-         error.message?.startsWith("Unsupported nesting iterator") shouldBe true
-      }
-   }
-
-   test("should give error for unequal iterables nested in ordered collection") {
-      val aut1 = listOf(1, listOf(BareIterable(3,3), BareIterable(3,4)), mapOf("a" to listOf(1, 2, 3)))
-      val aut2 = listOf(1, listOf(BareIterable(3,3), BareIterable(4,4)), mapOf("a" to listOf(1, 2, 3)))
-
-      val error = IterableEq.equals(aut1, aut2)
-      assertSoftly {
-         error.shouldNotBeNull()
-         error.message shouldBe """Element differ at index: [1]
-                                  |expected:<[1, [[], []], [("a", [1, 2, 3])]]> but was:<[1, [[], []], [("a", [1, 2, 3])]]>""".trimMargin()
-      }
-   }
-
-   test("should give error for unequal iterables nested in Set") {
-      val aut1 = setOf(1, listOf(BareIterable(3,3), BareIterable(3,4)), mapOf("a" to listOf(1, 2, 3)))
-      val aut2 = setOf(1, listOf(BareIterable(3,3), BareIterable(4,4)), mapOf("a" to listOf(1, 2, 3)))
-
-      val error = IterableEq.equals(aut1, aut2)
-      assertSoftly {
-         error.shouldNotBeNull()
-         error.message shouldBe """expected:<[1, [[], []], [("a", [1, 2, 3])]]> but was:<[1, [[], []], [("a", [1, 2, 3])]]>""".trimMargin()
+         error.message?.startsWith("Disallowed nesting iterator") shouldBe true
+         error.message?.endsWith("; (use custom test code instead)") shouldBe true
       }
    }
 
