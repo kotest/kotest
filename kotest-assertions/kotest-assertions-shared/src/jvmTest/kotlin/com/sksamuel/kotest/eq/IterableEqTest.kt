@@ -10,6 +10,7 @@ import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
 import java.nio.file.Paths
 import java.util.concurrent.ConcurrentLinkedQueue
+import kotlin.collections.HashSet
 import kotlin.time.Duration.Companion.seconds
 
 private class BareIterable(size: Int, offset: Int): Iterable<Int> {
@@ -62,12 +63,29 @@ class IterableEqTest : FunSpec({
       }
    }
 
-   test("should give error for set comparison with list") {
-      val error = IterableEq.equals(setOf(1, 2, 3), listOf(1, 2, 3))
+   test("should not give error for kotlin ordered set comparison with list") {
+      val error = IterableEq.equals(setOf(1, 2, 3), listOf(1, 2, 3)).shouldBeNull()
+   }
+
+   test("should give error for unordered set comparison with list") {
+      val hs = HashSet<Int>(3)
+      hs.addAll(setOf(1, 2, 3))
+      val error = IterableEq.equals(hs, listOf(1, 2, 3))
       assertSoftly {
          error.shouldNotBeNull()
          error.message shouldBe """Disallowed: Set can be compared only to Set
-                                  |May not compare LinkedHashSet with ArrayList
+                                  |May not compare HashSet with ArrayList
+                                  |expected:<*> but was:<*>""".trimMargin()
+      }
+   }
+
+   test("should give error for java-only set comparison with list") {
+      val hs = java.util.TreeSet(setOf(1, 2, 3))
+      val error = IterableEq.equals(hs, listOf(1, 2, 3))
+      assertSoftly {
+         error.shouldNotBeNull()
+         error.message shouldBe """Disallowed: Set can be compared only to Set
+                                  |May not compare TreeSet with ArrayList
                                   |expected:<*> but was:<*>""".trimMargin()
       }
    }

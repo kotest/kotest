@@ -28,9 +28,14 @@ object IterableEq : Eq<Iterable<*>> {
       }
    }
 
+   fun isOrderedSet(item: Iterable<*>): Boolean = item is LinkedHashSet || (item is Set<*> && item.size == 1)
+
    override fun equals(actual: Iterable<*>, expected: Iterable<*>, strictNumberEq: Boolean): Throwable? {
       return when {
          actual is Set<*> && expected is Set<*> -> checkSetEquality(actual, expected, strictNumberEq)
+         isOrderedSet(actual) || isOrderedSet(expected) -> {
+            checkIterableCompatibility(actual, expected) ?: checkEquality(actual, expected, strictNumberEq)
+         }
          actual is Set<*> || expected is Set<*> -> errorWithTypeDetails(actual, expected)
          else -> {
             checkIterableCompatibility(actual, expected) ?: checkEquality(actual, expected, strictNumberEq)
