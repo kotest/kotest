@@ -119,9 +119,9 @@ object IterableEq : Eq<Iterable<*>> {
       val iter2 = expected.iterator()
       val elementDifferAtIndex = mutableListOf<Int>()
 
-      fun <T> nestedIterator(item: T): String? = item?.let {
-         if ((it is Iterable<*>) && (it !is Collection<*>) && (it::class.isInstance(actual) || actual::class.isInstance(it))) {
-         """$disallowed $it (${it::class.simpleName ?: "anonymous" }) within $iter1 (${it::class.simpleName ?: "anonymous" }); (use custom test code instead)"""
+      fun <T> nestedIterator(item: T, oracle: Iterable<*>): String? = item?.let {
+         if ((it is Iterable<*>) && (it !is Collection<*>) && (it::class.isInstance(oracle) || oracle::class.isInstance(it))) {
+         """$disallowed $it (${it::class.simpleName ?: "anonymous" }) within $oracle (${oracle::class.simpleName ?: "anonymous" }); (use custom test code instead)"""
       } else null }
 
       var nestedIteratorError: String? = null
@@ -150,8 +150,8 @@ object IterableEq : Eq<Iterable<*>> {
             val b = iter2.next()
             val t: Throwable? = when {
                a?.equals(b) == true -> null
-               nestedIterator(a)?.let { setDisallowedState(it) } == true -> failure(nestedIteratorError!!)
-               nestedIterator(b)?.let { setDisallowedState(it) } == true -> failure(nestedIteratorError!!)
+               nestedIterator(a, actual)?.let { setDisallowedState(it) } == true -> failure(nestedIteratorError!!)
+               nestedIterator(b, expected)?.let { setDisallowedState(it) } == true -> failure(nestedIteratorError!!)
                else -> equalXorDisallowed(eq(a, b, strictNumberEq))
             }
             if (!accrueDetails) break

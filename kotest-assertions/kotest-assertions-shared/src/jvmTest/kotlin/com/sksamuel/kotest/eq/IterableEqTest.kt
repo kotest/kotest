@@ -124,6 +124,16 @@ class IterableEqTest : FunSpec({
       }
    }
 
+   test("should give error for promiscuous iterables when recursive") {
+      val error = IterableEq.equals(Paths.get("foo"), BareRecursiveIterable(1,0))
+      assertSoftly {
+         error.shouldNotBeNull()
+         error.message shouldBe """Disallowed promiscuous iterators
+                                  |May not compare UnixPath with BareRecursiveIterable
+                                  |expected:<*> but was:<*>""".trimMargin()
+      }
+   }
+
    test("should give unsupported error for nested iterables") {
       val error = IterableEq.equals(Paths.get("foo"), Paths.get("bar"))
       assertSoftly {
