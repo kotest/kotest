@@ -85,5 +85,5 @@ class BangExample : StringSpec({
 ```
 
 :::tip
-If you want to disable the use of ! and allow it to be used in test names then set the system property `kotest.bang.disable` to `true`.
+If you want to disable the use of ! (and allow it to be used as the first character in enabled test names) then set the system property `kotest.bang.disable` to `true`.
 :::
