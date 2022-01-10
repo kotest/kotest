@@ -1,10 +1,10 @@
 package com.sksamuel.kotest.engine.extensions.spec
 
+import io.kotest.core.annotation.Isolate
 import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.extensions.Extension
 import io.kotest.core.listeners.BeforeSpecListener
 import io.kotest.core.listeners.TestListener
-import io.kotest.core.annotation.Isolate
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.engine.TestEngineLauncher
@@ -19,7 +19,7 @@ import java.util.concurrent.atomic.AtomicInteger
 class BeforeSpecListenerTest : FunSpec() {
    init {
 
-      test("BeforeSpecListener's should be triggered for a spec with tests") {
+      test("BeforeSpecListeners should be triggered for a spec with tests") {
 
          val c = ProjectConfiguration()
          c.registry.add(MyBeforeSpecListener)
@@ -38,11 +38,10 @@ class BeforeSpecListenerTest : FunSpec() {
          counter.get() shouldBe 5
       }
 
-      test("BeforeSpecExtension's should be triggered for a spec without tests") {
+      test("BeforeSpecExtensions should NOT be triggered for a spec without tests") {
 
          val c = ProjectConfiguration()
          c.registry.add(MyBeforeSpecListener)
-
          counter.set(0)
 
          TestEngineLauncher(NoopTestEngineListener)
@@ -50,7 +49,7 @@ class BeforeSpecListenerTest : FunSpec() {
             .withConfiguration(c)
             .launch()
 
-         counter.get() shouldBe 1
+         counter.get() shouldBe 0
       }
 
       test("BeforeSpecListener's exceptions should be propagated to specExit") {
@@ -62,7 +61,6 @@ class BeforeSpecListenerTest : FunSpec() {
          listener.specs[MyErrorSpec3::class]!!.shouldBeInstanceOf<ExtensionException.BeforeSpecException>()
          listener.tests.size shouldBe 0
       }
-
 
    }
 }

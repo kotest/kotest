@@ -1,10 +1,10 @@
 package com.sksamuel.kotest.engine.extensions.spec
 
+import io.kotest.core.annotation.Isolate
 import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.extensions.Extension
 import io.kotest.core.listeners.AfterSpecListener
 import io.kotest.core.listeners.TestListener
-import io.kotest.core.annotation.Isolate
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.engine.TestEngineLauncher
@@ -20,7 +20,7 @@ import java.util.concurrent.atomic.AtomicInteger
 class AfterSpecListenerTest : FunSpec() {
    init {
 
-      test("AfterSpecListener's should be triggered for a spec with tests") {
+      test("AfterSpecListeners should be triggered for a spec with tests") {
 
          counter.set(0)
 
@@ -49,7 +49,7 @@ class AfterSpecListenerTest : FunSpec() {
          collector.tests.size shouldBe 1
       }
 
-      test("AfterSpecListener's should NOT be triggered for a spec without tests") {
+      test("AfterSpecListeners should NOT be triggered for a spec without tests") {
 
          val c = ProjectConfiguration()
          c.registry.add(MyAfterSpecListener)
@@ -70,7 +70,7 @@ class AfterSpecListenerTest : FunSpec() {
          inlineAfterSpec.shouldBeTrue()
       }
 
-      test("f:inline afterSpec function errors should be caught") {
+      test("inline afterSpec function errors should be caught") {
 
          val collector = CollectingTestEngineListener()
          TestEngineLauncher(collector)

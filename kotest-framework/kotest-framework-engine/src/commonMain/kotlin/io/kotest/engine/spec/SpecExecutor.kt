@@ -13,6 +13,7 @@ import io.kotest.core.test.TestResult
 import io.kotest.engine.interceptors.EngineContext
 import io.kotest.engine.interceptors.toProjectContext
 import io.kotest.engine.listener.TestEngineListener
+import io.kotest.engine.spec.interceptor.ActiveRootTestSpecInterceptor
 import io.kotest.engine.spec.interceptor.ApplyExtensionsInterceptor
 import io.kotest.engine.spec.interceptor.ConfigurationInContextInterceptor
 import io.kotest.engine.spec.interceptor.EnabledIfSpecInterceptor
@@ -97,6 +98,7 @@ class SpecExecutor(
          ProjectContextInterceptor(context.toProjectContext()),
          SpecExtensionInterceptor(context.configuration.registry),
          ConfigurationInContextInterceptor(context.configuration),
+         ActiveRootTestSpecInterceptor(context.configuration),
       )
 
       val initial: suspend (Spec) -> Result<Map<TestCase, TestResult>> = {
