@@ -19,12 +19,12 @@ class ResultMatchersTest : FreeSpec() {
     "with success result" - {
       "shouldBeSuccess" {
          shouldThrow<AssertionError> {
-            Result.runCatching { throw TestException() }.shouldBeSuccess<Unit>()
+            runCatching { throw TestException() }.shouldBeSuccess<Unit>()
          }
-         Result.runCatching { "Test 01" }.shouldBeSuccess { data ->
+         runCatching { "Test 01" }.shouldBeSuccess { data ->
             data shouldBe "Test 01"
          }
-         val r = Result.runCatching { "Test 01" }
+         val r = runCatching { "Test 01" }
          r.shouldBeSuccess("Test 01")
       }
       "shouldNotBeFailure" {
@@ -32,24 +32,24 @@ class ResultMatchersTest : FreeSpec() {
         Result.success(null).shouldNotBeFailure()
       }
       "shouldNotBeSuccess" {
-        Result.runCatching { "Test 01" } shouldNotBeSuccess "Test 02"
+        runCatching { "Test 01" } shouldNotBeSuccess "Test 02"
       }
     }
     "with error result" - {
       "shouldBeFailure" {
-        Result.runCatching { throw TestException() }.shouldBeFailure()
-        Result.runCatching { throw TestException() }.shouldBeFailure { error ->
+        runCatching { throw TestException() }.shouldBeFailure()
+        runCatching { throw TestException() }.shouldBeFailure { error ->
           error should beInstanceOf<TestException>()
         }
       }
       "shouldBeFailureOfType" {
-        Result.runCatching { throw TestException() }.shouldBeFailureOfType<TestException>()
+        runCatching { throw TestException() }.shouldBeFailureOfType<TestException>()
       }
       "shouldNotBeFailureOfType" {
-        Result.runCatching { throw TestException() }.shouldNotBeFailureOfType<IOException>()
+        runCatching { throw TestException() }.shouldNotBeFailureOfType<IOException>()
       }
       "shouldNotBeSuccess" {
-        Result.runCatching { throw TestException() }.shouldNotBeSuccess()
+        runCatching { throw TestException() }.shouldNotBeSuccess()
       }
     }
   }
