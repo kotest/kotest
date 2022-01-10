@@ -17,7 +17,7 @@ fun <T> Result<T>.shouldNotBeSuccess() = this shouldNot beSuccess()
 infix fun <T> Result<T>.shouldBeSuccess(expected: T) = this should beSuccess(expected)
 infix fun <T> Result<T>.shouldNotBeSuccess(expected: T) = this shouldNot beSuccess(expected)
 
-fun Result<Any?>.shouldBeFailure(block: ((Throwable?) -> Unit)? = null) {
+fun Result<Any?>.shouldBeFailure(block: ((Throwable) -> Unit)? = null) {
    this should BeFailure()
    block?.invoke(this.exceptionOrNull()!!)
 }
