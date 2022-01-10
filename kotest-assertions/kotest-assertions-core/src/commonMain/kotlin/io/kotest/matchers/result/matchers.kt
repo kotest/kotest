@@ -6,7 +6,7 @@ import io.kotest.matchers.should
 import io.kotest.matchers.shouldNot
 import kotlin.reflect.KClass
 
-fun <T> Result<T>.shouldBeSuccess(block: ((T?) -> Unit)? = null) {
+fun <T> Result<T>.shouldBeSuccess(block: ((T) -> Unit)? = null) {
    this should beSuccess()
    if (block != null)
       fold({ block(it) }, {})
