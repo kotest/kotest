@@ -38,6 +38,7 @@ object Defaults {
 
    const val failOnIgnoredTests: Boolean = false
    const val failfast: Boolean = false
+   const val projectWideFailFast: Boolean = false
    val defaultIncludeTestScopeAffixes: Boolean? = null
    const val writeSpecFailureFile = false
    const val globalAssertSoftly = false

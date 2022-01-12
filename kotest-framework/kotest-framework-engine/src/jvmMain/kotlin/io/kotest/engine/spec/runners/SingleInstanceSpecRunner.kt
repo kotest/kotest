@@ -83,7 +83,7 @@ internal class SingleInstanceSpecRunner(
          } else {
             // if running this nested test results in an error, we won't launch anymore nested tests
             val result = runTest(nestedTestCase, coroutineContext)
-            if (testCase.config.failfast) {
+            if (testCase.config.failfast || configuration.projectWideFailFast) {
                if (result.isErrorOrFailure) {
                   logger.log { Pair(testCase.name.testName, "Test failed - setting failedfast=true") }
                   failedfast = true

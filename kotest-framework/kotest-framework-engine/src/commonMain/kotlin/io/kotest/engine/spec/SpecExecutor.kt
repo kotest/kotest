@@ -46,13 +46,13 @@ import kotlin.reflect.KClass
  */
 @ExperimentalKotest
 class SpecExecutor(
-   private val listener: TestEngineListener,
    private val defaultCoroutineDispatcherFactory: CoroutineDispatcherFactory,
    private val context: EngineContext,
 ) {
 
    private val logger = Logger(SpecExecutorDelegate::class)
    private val extensions = SpecExtensions(context.configuration.registry)
+   private val listener = context.listener
 
    suspend fun execute(ref: SpecRef) {
       logger.log { Pair(ref.kclass.bestName(), "Received $ref") }

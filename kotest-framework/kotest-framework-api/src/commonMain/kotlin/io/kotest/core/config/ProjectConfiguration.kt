@@ -211,6 +211,8 @@ class ProjectConfiguration {
 
    var failfast: Boolean = Defaults.failfast
 
+   var projectWideFailFast: Boolean = Defaults.projectWideFailFast
+
    var blockingTest: Boolean = Defaults.blockingTest
 
    var severity: TestCaseSeverityLevel = Defaults.severity
