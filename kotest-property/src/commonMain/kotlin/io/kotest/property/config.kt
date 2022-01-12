@@ -46,6 +46,9 @@ object PropertyTesting {
    var defaultOutputClassifications: Boolean by AtomicProperty {
       sysprop("kotest.proptest.arb.output.classifications", false)
    }
+   var failOnSeed: Boolean by AtomicProperty {
+      sysprop("kotest.proptest.seed.fail-if-set", false)
+   }
 }
 
 fun EdgeConfig.Companion.default(): EdgeConfig = EdgeConfig(
