@@ -8,14 +8,16 @@ import io.kotest.mpp.Logger
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.TestCoroutineDispatcher
+import kotlinx.coroutines.test.StandardTestDispatcher
+import kotlinx.coroutines.test.TestDispatcher
 import kotlinx.coroutines.withContext
 import kotlin.coroutines.coroutineContext
 
 /**
- * A [TestExecutionInterceptor] that uses a [TestCoroutineDispatcher] as the coroutine
+ * A [TestExecutionInterceptor] that installs a [StandardTestDispatcher] as the coroutine
  * dispatcher for the test.
  *
+ * If the current dispatcher is already a [TestDispatcher] then this interceptor is a no-op.
  */
 @ExperimentalCoroutinesApi
 @ExperimentalStdlibApi
@@ -29,11 +31,11 @@ actual class TestCoroutineDispatcherInterceptor : TestExecutionInterceptor {
       test: suspend (TestCase, TestScope) -> TestResult
    ): TestResult {
       val currentDispatcher = coroutineContext[CoroutineDispatcher]
-      return if (currentDispatcher is TestCoroutineDispatcher) {
+      return if (currentDispatcher is TestDispatcher) {
          test(testCase, scope)
       } else {
-         val dispatcher = TestCoroutineDispatcher()
-         logger.log { Pair(testCase.name.testName, "Switching context to TestCoroutineDispatcher: $dispatcher") }
+         val dispatcher = StandardTestDispatcher()
+         logger.log { Pair(testCase.name.testName, "Switching context to StandardTestDispatcher: $dispatcher") }
          withContext(dispatcher + CoroutineName("wibble")) {
             test(testCase, scope.withCoroutineContext(dispatcher))
          }

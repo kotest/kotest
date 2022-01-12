@@ -62,6 +62,8 @@ kotlin {
             // used to install the debug probes for coroutines
             implementation(Libs.Coroutines.debug)
             implementation(Libs.Coroutines.coreCommon)
+            // used for the test scheduler
+            implementation(Libs.Coroutines.test)
          }
       }
 
