@@ -43,10 +43,18 @@ data class EngineContext(
     * Returns this [EngineContext] with the given [listener] added via a [CompositeTestEngineListener].
     */
    fun mergeListener(listener: TestEngineListener): EngineContext {
-      return EngineContext(suite, CompositeTestEngineListener(listOf(this.listener, listener)), tags, configuration)
+      val l = when (this.listener) {
+         NoopTestEngineListener -> this.listener
+         else -> CompositeTestEngineListener(listOf(this.listener, listener))
+      }
+      return EngineContext(suite, l, tags, configuration)
    }
 
    fun withTestSuite(suite: TestSuite): EngineContext {
+      return EngineContext(suite, listener, tags, configuration)
+   }
+
+   fun withListener(listener: TestEngineListener): EngineContext {
       return EngineContext(suite, listener, tags, configuration)
    }
 

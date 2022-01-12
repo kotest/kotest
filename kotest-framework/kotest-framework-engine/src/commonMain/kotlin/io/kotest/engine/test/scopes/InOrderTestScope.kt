@@ -34,7 +34,7 @@ class InOrderTestScope(
       log { "InOrderTestScope: Nested test case discovered $nested" }
       val nestedTestCase = Materializer(configuration).materialize(nested, testCase)
 
-      if (failed && testCase.config.failfast) {
+      if (failed && (testCase.config.failfast || configuration.projectWideFailFast)) {
          log { "InOrderTestScope: A previous nested test failed and failfast is enabled - will mark this as ignored" }
          listener.testIgnored(nestedTestCase, "Failfast enabled on parent test")
       } else {
