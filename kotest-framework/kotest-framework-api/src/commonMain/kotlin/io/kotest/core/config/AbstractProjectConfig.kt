@@ -245,7 +245,7 @@ abstract class AbstractProjectConfig {
     * @see https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-test/index.html
     */
    @ExperimentalKotest
-   var testCoroutineDispatcher: Boolean = Defaults.testCoroutineDispatcher
+   open var testCoroutineDispatcher: Boolean = Defaults.testCoroutineDispatcher
 
    /**
     * Executed before the first test of the project, but after the
