@@ -23,6 +23,7 @@ internal fun applyConfigFromProjectConfig(config: AbstractProjectConfig, configu
    config.testCaseOrder?.let { configuration.testCaseOrder = it }
    config.specExecutionOrder?.let { configuration.specExecutionOrder = it }
    config.writeSpecFailureFile?.let { configuration.writeSpecFailureFile = it }
+   config.projectWideFailFast?.let { configuration.projectWideFailFast = it }
 
    // concurrency
    config.parallelism?.let { configuration.parallelism = it }

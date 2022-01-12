@@ -17,7 +17,6 @@ class ProjectWideFailFastTest : FunSpec() {
          .withClasses(A::class, B::class)
          .launch()
       listener.result("a")!!.isError.shouldBeTrue()
-      listener.result("b")!!.isIgnored.shouldBeTrue()
       listener.names shouldBe listOf("a", "b")
    }
 }

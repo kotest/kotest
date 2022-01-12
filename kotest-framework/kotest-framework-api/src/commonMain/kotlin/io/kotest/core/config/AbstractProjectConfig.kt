@@ -79,6 +79,8 @@ abstract class AbstractProjectConfig {
     */
    open val invocationTimeout: Long? = null
 
+   open var projectWideFailFast: Boolean? = null
+
    /**
     * A timeout that is applied to the overall project if not null,
     * if the sum duration of all the tests exceeds this the suite will fail.
