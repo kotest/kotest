@@ -42,7 +42,7 @@ class SpecInitializationErrorTest : FunSpec({
       }
 
       val listener = JUnitTestEngineListener(engineListener, root)
-      val executor = SpecExecutor(listener, NoopCoroutineDispatcherFactory, EngineContext(ProjectConfiguration()))
+      val executor = SpecExecutor(NoopCoroutineDispatcherFactory, EngineContext(ProjectConfiguration()).mergeListener(listener))
       executor.execute(SpecRef.Reference(SpecWithFieldError::class))
 
       finished.toMap() shouldBe mapOf(
@@ -74,7 +74,7 @@ class SpecInitializationErrorTest : FunSpec({
       }
 
       val listener = JUnitTestEngineListener(engineListener, root)
-      val executor = SpecExecutor(listener, NoopCoroutineDispatcherFactory, EngineContext(ProjectConfiguration()))
+      val executor = SpecExecutor(NoopCoroutineDispatcherFactory, EngineContext(ProjectConfiguration()).mergeListener(listener))
       executor.execute(SpecRef.Reference(SpecWithInitError::class))
 
       finished.toMap() shouldBe mapOf(
