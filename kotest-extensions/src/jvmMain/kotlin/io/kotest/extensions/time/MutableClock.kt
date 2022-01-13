@@ -9,9 +9,9 @@ class MutableClock(
    private var instant: Instant,
    private var zone: ZoneId,
 ) : Clock(), Serializable {
-   fun withInstant(instant: Instant): Clock = MutableClock(instant, zone)
+   fun withInstant(instant: Instant): Clock = apply { this.instant = instant }
 
-   override fun withZone(zone: ZoneId): Clock = MutableClock(instant, zone)
+   override fun withZone(zone: ZoneId): Clock = apply { this.zone = zone }
 
    override fun getZone(): ZoneId = zone
 

@@ -1,5 +1,6 @@
 package com.sksamuel.kt.extensions.time
 
+import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.extensions.time.MutableClock
 import io.kotest.matchers.shouldBe
@@ -13,23 +14,22 @@ class MutableClockTest : StringSpec() {
    private val clock = MutableClock(instantNow, zoneId)
 
    init {
+      isolationMode = IsolationMode.InstancePerLeaf
+
       "Set instant for the future" {
          val modifiedClock = clock.withInstant(instantNow.plusSeconds(123))
-         modifiedClock shouldNotBe clock
-         modifiedClock.zone shouldBe clock.zone
-         modifiedClock.millis() shouldNotBe clock.millis()
+         modifiedClock.zone shouldBe zoneId
+         modifiedClock.millis() shouldNotBe instantNow.toEpochMilli()
       }
       "Set instant for the past" {
          val modifiedClock = clock.withInstant(instantNow.minusSeconds(123))
-         modifiedClock shouldNotBe clock
-         modifiedClock.zone shouldBe clock.zone
-         modifiedClock.millis() shouldNotBe clock.millis()
+         modifiedClock.zone shouldBe zoneId
+         modifiedClock.millis() shouldNotBe instantNow.toEpochMilli()
       }
       "Change time zone" {
          val modifiedClock = clock.withZone(ZoneId.of("Europe/Paris"))
-         modifiedClock shouldNotBe clock
-         modifiedClock.zone shouldNotBe clock.zone
-         modifiedClock.millis() shouldBe clock.millis()
+         modifiedClock.zone shouldNotBe zoneId
+         modifiedClock.millis() shouldBe instantNow.toEpochMilli()
       }
    }
 }
