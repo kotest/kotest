@@ -2,6 +2,7 @@ package com.sksamuel.kotest.property.arbitrary
 
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.inspectors.forAll
+import io.kotest.matchers.collections.shouldContain
 import io.kotest.matchers.collections.shouldContainExactly
 import io.kotest.matchers.shouldBe
 import io.kotest.property.Arb
@@ -20,6 +21,7 @@ class ReflectiveBindTest : StringSpec(
 
       data class Wobble(val a: String, val b: Boolean, val c: Int, val d: Pair<Double, Float>)
       data class WobbleWobble(val a: Wobble)
+      data class BubbleBobble(val a: String?, val b: Boolean?)
 
       "provided arb for type is used" {
          val wobble = Wobble("test", false, 0, 1.0 to 3.14f)
@@ -84,6 +86,12 @@ class ReflectiveBindTest : StringSpec(
       "Arb.reflectiveBind" {
          val arb = Arb.bind<Wobble>()
          arb.take(10).toList().size shouldBe 10
+      }
+
+      "Arb.reflectiveBind should inject nulls when applicable" {
+         val bubbles = Arb.bind<BubbleBobble>().take(1000).toList()
+         bubbles.map { it.a }.toSet().shouldContain(null)
+         bubbles.map { it.b }.toSet().shouldContain(null)
       }
 
       "Arb.reflectiveBind should generate probabilistic edge cases" {
