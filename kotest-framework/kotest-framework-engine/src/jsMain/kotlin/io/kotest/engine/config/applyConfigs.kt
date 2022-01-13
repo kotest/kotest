@@ -31,3 +31,5 @@ internal actual fun applyPlatformDefaults(configuration: ProjectConfiguration) {
  * Only applies on the JVM.
  */
 internal actual fun detectAbstractProjectConfigs(): List<AbstractProjectConfig> = emptyList()
+
+internal actual fun loadProjectConfigFromClassname(): AbstractProjectConfig? = null

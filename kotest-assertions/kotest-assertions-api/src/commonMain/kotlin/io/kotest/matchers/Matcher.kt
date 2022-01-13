@@ -26,6 +26,8 @@ interface Matcher<in T> {
       }
    }
 
+   fun <T> Matcher<T>.invertIf(invert: Boolean): Matcher<T> = if (invert) invert() else this
+
    infix fun <U> compose(fn: (U) -> T): Matcher<U> = Matcher { this@Matcher.test(fn(it)) }
 
    companion object {

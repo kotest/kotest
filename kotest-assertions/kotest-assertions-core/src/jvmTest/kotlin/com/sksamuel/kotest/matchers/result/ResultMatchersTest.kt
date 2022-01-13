@@ -11,45 +11,53 @@ import io.kotest.matchers.result.shouldNotBeFailureOfType
 import io.kotest.matchers.result.shouldNotBeSuccess
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldBe
+import io.kotest.matchers.shouldNotBe
 import java.io.IOException
 import java.lang.AssertionError
 
 class ResultMatchersTest : FreeSpec() {
-  init {
+   data class SuccessfulResultValue(val value: String)
+
+   init {
     "with success result" - {
       "shouldBeSuccess" {
          shouldThrow<AssertionError> {
-            Result.runCatching { throw TestException() }.shouldBeSuccess<Unit>()
+            runCatching { throw TestException() }.shouldBeSuccess<SuccessfulResultValue>()
          }
-         Result.runCatching { "Test 01" }.shouldBeSuccess { data ->
-            data shouldBe "Test 01"
+         runCatching { SuccessfulResultValue("Test 01") }.shouldBeSuccess { data ->
+            // "data" is not nullable here, and thus "value" can be directly accessed.
+            data.value shouldBe "Test 01"
          }
-         val r = Result.runCatching { "Test 01" }
-         r.shouldBeSuccess("Test 01")
+         runCatching { SuccessfulResultValue("Test 01").takeUnless { it.value == "Test 01" } }.shouldBeSuccess { data ->
+            // "data" is nullable here, and thus "value" access needs a safe call.
+            data?.value shouldNotBe "Test 01"
+         }
+         val r = runCatching { SuccessfulResultValue("Test 01") }
+         r.shouldBeSuccess(SuccessfulResultValue("Test 01"))
       }
       "shouldNotBeFailure" {
-        Result.success("Test 01").shouldNotBeFailure()
+        Result.success(SuccessfulResultValue("Test 01")).shouldNotBeFailure()
         Result.success(null).shouldNotBeFailure()
       }
       "shouldNotBeSuccess" {
-        Result.runCatching { "Test 01" } shouldNotBeSuccess "Test 02"
+        runCatching { SuccessfulResultValue("Test 01") } shouldNotBeSuccess SuccessfulResultValue("Test 02")
       }
     }
     "with error result" - {
       "shouldBeFailure" {
-        Result.runCatching { throw TestException() }.shouldBeFailure()
-        Result.runCatching { throw TestException() }.shouldBeFailure { error ->
+        runCatching { throw TestException() }.shouldBeFailure()
+        runCatching { throw TestException() }.shouldBeFailure { error ->
           error should beInstanceOf<TestException>()
         }
       }
       "shouldBeFailureOfType" {
-        Result.runCatching { throw TestException() }.shouldBeFailureOfType<TestException>()
+        runCatching { throw TestException() }.shouldBeFailureOfType<TestException>()
       }
       "shouldNotBeFailureOfType" {
-        Result.runCatching { throw TestException() }.shouldNotBeFailureOfType<IOException>()
+        runCatching { throw TestException() }.shouldNotBeFailureOfType<IOException>()
       }
       "shouldNotBeSuccess" {
-        Result.runCatching { throw TestException() }.shouldNotBeSuccess()
+        runCatching { throw TestException() }.shouldNotBeSuccess()
       }
     }
   }

@@ -50,6 +50,10 @@ data class EngineContext(
       return EngineContext(suite, listener, tags, configuration)
    }
 
+   fun withListener(listener: TestEngineListener): EngineContext {
+      return EngineContext(suite, listener, tags, configuration)
+   }
+
    fun withConfiguration(c: ProjectConfiguration): EngineContext {
       return EngineContext(suite, listener, tags, c)
    }

@@ -90,14 +90,15 @@ include("kotest-tests:kotest-tests-multiname-test-name-sysprop")
 include("kotest-tests:kotest-tests-native")
 include("kotest-tests:kotest-tests-js")
 include("kotest-tests:kotest-tests-project-configuration")
+include("kotest-tests:kotest-tests-config-classname")
 
 // BOM for whole kotest project
 include("kotest-bom")
 
 plugins {
-   id("com.gradle.enterprise") version "3.7.2"
+   id("com.gradle.enterprise") version "3.8"
    // See https://jmfayard.github.io/refreshVersions
-   id("de.fayard.refreshVersions") version "0.23.0"
+   id("de.fayard.refreshVersions") version "0.30.2"
 }
 
 gradleEnterprise {

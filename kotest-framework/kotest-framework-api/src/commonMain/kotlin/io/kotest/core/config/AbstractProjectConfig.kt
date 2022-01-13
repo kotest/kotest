@@ -79,6 +79,8 @@ abstract class AbstractProjectConfig {
     */
    open val invocationTimeout: Long? = null
 
+   open var projectWideFailFast: Boolean? = null
+
    /**
     * A timeout that is applied to the overall project if not null,
     * if the sum duration of all the tests exceeds this the suite will fail.
@@ -245,7 +247,7 @@ abstract class AbstractProjectConfig {
     * @see https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-test/index.html
     */
    @ExperimentalKotest
-   var testCoroutineDispatcher: Boolean = Defaults.testCoroutineDispatcher
+   open var testCoroutineDispatcher: Boolean = Defaults.testCoroutineDispatcher
 
    /**
     * Executed before the first test of the project, but after the

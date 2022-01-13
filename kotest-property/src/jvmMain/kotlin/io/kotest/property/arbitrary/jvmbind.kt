@@ -73,8 +73,9 @@ fun <T : Any> Arb.Companion.bind(providedArbs: Map<KClass<*>, Arb<*>>, kclass: K
    check(constructor.parameters.isNotEmpty()) { "${kclass.qualifiedName} constructor must contain at least 1 parameter" }
 
    val arbs: List<Arb<*>> = constructor.parameters.map { param ->
-      Arb.forType(providedArbs, param.type)
+      val arb = Arb.forType(providedArbs, param.type)
          ?: error("Could not locate generator for parameter ${kclass.qualifiedName}.${param.name}")
+      if (param.type.isMarkedNullable) arb.orNull() else arb
    }
 
    return Arb.bind(arbs) { params -> constructor.call(*params.toTypedArray()) }
