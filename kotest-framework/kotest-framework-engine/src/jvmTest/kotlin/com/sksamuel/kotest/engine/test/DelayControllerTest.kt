@@ -1,7 +1,7 @@
 package com.sksamuel.kotest.engine.test
 
 import io.kotest.core.spec.style.FunSpec
-import io.kotest.core.test.delayController
+import io.kotest.core.test.testCoroutineScheduler
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -17,7 +17,7 @@ class DelayControllerTest : FunSpec() {
             delay(duration.inWholeMilliseconds)
          }
          // if this isn't working, the above test will just take forever
-         delayController.advanceTimeBy(duration.inWholeMilliseconds)
+         testCoroutineScheduler.advanceTimeBy(duration.inWholeMilliseconds)
       }
    }
 }

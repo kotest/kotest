@@ -21,7 +21,7 @@ import io.kotest.engine.test.interceptors.LifecycleInterceptor
 import io.kotest.engine.test.interceptors.SoftAssertInterceptor
 import io.kotest.engine.test.interceptors.SupervisorScopeInterceptor
 import io.kotest.engine.test.interceptors.TestCaseExtensionInterceptor
-import io.kotest.engine.test.interceptors.TestCoroutineDispatcherInterceptor
+import io.kotest.engine.test.interceptors.TestDispatcherInterceptor
 import io.kotest.engine.test.interceptors.TestFinishedInterceptor
 import io.kotest.engine.test.interceptors.TimeoutInterceptor
 import io.kotest.engine.test.interceptors.blockedThreadTimeoutInterceptor
@@ -64,7 +64,7 @@ class TestCaseExecutor(
          TimeoutInterceptor(timeMark),
          TestInvocationInterceptor(configuration.registry, timeMark),
          InvocationTimeoutInterceptor,
-         if (platform == Platform.JVM && testCase.config.testCoroutineDispatcher) TestCoroutineDispatcherInterceptor() else null,
+         if (platform == Platform.JVM && testCase.config.testCoroutineDispatcher) TestDispatcherInterceptor() else null,
          CoroutineDebugProbeInterceptor,
       )
 

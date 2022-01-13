@@ -9,6 +9,7 @@ import io.kotest.engine.test.scopes.withCoroutineContext
 import io.kotest.mpp.Logger
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.test.TestCoroutineDispatcher
+import kotlinx.coroutines.test.TestDispatcher
 import kotlin.coroutines.coroutineContext
 
 @ExperimentalStdlibApi
@@ -35,7 +36,8 @@ internal class CoroutineDispatcherFactoryInterceptor(
    ): TestResult {
 
       val currentDispatcher = coroutineContext[CoroutineDispatcher]
-      return if (currentDispatcher is TestCoroutineDispatcher) {
+      // we don't override if we've set a test dispatcher on this already
+      return if (currentDispatcher is TestDispatcher) {
          test(testCase, scope)
       } else {
 
