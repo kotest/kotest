@@ -8,13 +8,12 @@ import io.kotest.engine.listener.CollectingTestEngineListener
 import io.kotest.matchers.shouldBe
 
 class AnnotationSpecIgnoresTest : DescribeSpec({
-
    describe("An AnnotationSpec") {
-
       it("should ignore banged tests") {
          val listener = CollectingTestEngineListener()
          TestEngineLauncher(listener).withClasses(AnnotationSpecWithBangTest::class).launch()
          listener.tests
+            .filterNot {  it.value.isSuccess }
             .mapKeys { it.key.name.testName }
             .mapValues { it.value.reasonOrNull } shouldBe mapOf("foo" to "Disabled by bang")
       }
@@ -23,6 +22,7 @@ class AnnotationSpecIgnoresTest : DescribeSpec({
          val listener = CollectingTestEngineListener()
          TestEngineLauncher(listener).withClasses(AnnotationSpecAtIgnoreTest::class).launch()
          listener.tests
+            .filterNot {  it.value.isSuccess }
             .mapKeys { it.key.name.testName }
             .mapValues { it.value.reasonOrNull } shouldBe mapOf("bar" to "Disabled by xmethod")
       }
@@ -31,12 +31,18 @@ class AnnotationSpecIgnoresTest : DescribeSpec({
 
 class AnnotationSpecWithBangTest : AnnotationSpec() {
    @Test
+   fun pass() { 1 shouldBe 1 }
+
+   @Test
    fun `!foo`() {
       fail("This should never execute as the test name starts with !")
    }
 }
 
 class AnnotationSpecAtIgnoreTest : AnnotationSpec() {
+   @Test
+   fun pass() { 1 shouldBe 1 }
+
    @Ignore
    @Test
    fun bar() {

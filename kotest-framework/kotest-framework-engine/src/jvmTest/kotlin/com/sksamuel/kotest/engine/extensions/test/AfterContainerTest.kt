@@ -41,7 +41,7 @@ class AfterContainerDescribeSpecTest : DescribeSpec() {
       }
 
       describe("container2") {
-         it("a")
+         it("a") {}
       }
 
       afterProject {

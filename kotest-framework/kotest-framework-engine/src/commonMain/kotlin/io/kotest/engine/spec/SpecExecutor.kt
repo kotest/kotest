@@ -98,7 +98,7 @@ class SpecExecutor(
          ProjectContextInterceptor(context.toProjectContext()),
          SpecExtensionInterceptor(context.configuration.registry),
          ConfigurationInContextInterceptor(context.configuration),
-         ActiveRootTestSpecInterceptor(context.configuration),
+         ActiveRootTestSpecInterceptor(listener, context.configuration),
       )
 
       val initial: suspend (Spec) -> Result<Map<TestCase, TestResult>> = {

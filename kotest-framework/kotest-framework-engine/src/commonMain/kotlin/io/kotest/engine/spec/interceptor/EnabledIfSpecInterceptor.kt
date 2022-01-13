@@ -29,7 +29,6 @@ internal class EnabledIfSpecInterceptor(
       ref: SpecRef,
       fn: suspend (SpecRef) -> Result<Map<TestCase, TestResult>>
    ): Result<Map<TestCase, TestResult>> {
-
       val enabled = ref.kclass
          .annotation<EnabledIf>()
          ?.wrapper

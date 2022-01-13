@@ -10,6 +10,7 @@ import io.kotest.core.spec.style.FunSpec
 import io.kotest.engine.listener.NoopTestEngineListener
 import io.kotest.engine.spec.interceptor.IgnoredSpecInterceptor
 import io.kotest.matchers.booleans.shouldBeTrue
+import io.kotest.matchers.shouldBe
 import kotlin.reflect.KClass
 
 @ExperimentalKotest
@@ -43,7 +44,9 @@ class IgnoredSpecInterceptorTest : FunSpec({
    }
 })
 
-private class NotIgnoredSpec : FunSpec()
+private class NotIgnoredSpec : FunSpec({
+   test("pass") { 1 shouldBe 1 }
+})
 
 @Ignored
 private class MyIgnoredSpec : FunSpec()
