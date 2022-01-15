@@ -109,10 +109,10 @@ class StringShrinkerWithMin(
 
    override fun shrink(value: String): List<String> {
 
-      val isShortest = value.length == minLength
-
       val simplestChar: Char? = simplestCharSelector(value)
-      val isSimplest = value.all { it == simplestChar } || simplestChar == null
+
+      val isShortest = value.length == minLength
+      val isSimplest = value.all { it == simplestChar }
 
       return buildList {
          if (!isShortest) {
