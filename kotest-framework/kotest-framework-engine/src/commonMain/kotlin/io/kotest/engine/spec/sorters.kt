@@ -29,8 +29,8 @@ object LexicographicSpecSorter : SpecSorter {
 /**
  * An implementation of [SpecExecutionOrder] which will order specs randomly.
  */
-object RandomSpecSorter : SpecSorter {
-   override fun compare(a: KClass<out Spec>, b: KClass<out Spec>): Int = Random.nextInt()
+class RandomSpecSorter(private val random: Random) : SpecSorter {
+   override fun compare(a: KClass<out Spec>, b: KClass<out Spec>): Int = random.nextInt()
 }
 
 /**
