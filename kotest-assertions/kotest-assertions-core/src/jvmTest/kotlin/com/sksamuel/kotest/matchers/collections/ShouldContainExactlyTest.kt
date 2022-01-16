@@ -57,7 +57,7 @@ class ShouldContainExactlyTest : WordSpec() {
             emptyList<Int>() should containExactly()
             actual should containExactly(1, 2, 3)
             actual.shouldContainExactly(1, 2, 3)
-            actual.shouldContainExactly(linkedSetOf(1, 2, 3))
+            actual.toSet().shouldContainExactly(linkedSetOf(1, 2, 3))
 
             actual shouldNot containExactly(1, 2)
             actual.shouldNotContainExactly(3, 2, 1)

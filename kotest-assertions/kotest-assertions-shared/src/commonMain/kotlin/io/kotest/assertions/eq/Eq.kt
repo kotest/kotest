@@ -38,6 +38,7 @@ fun <T : Any?> eq(actual: T, expected: T, strictNumberEq: Boolean): Throwable? {
          IterableEq.isValidIterable(actual) && IterableEq.isValidIterable(expected) -> {
             IterableEq.equals(IterableEq.asIterable(actual), IterableEq.asIterable(expected), strictNumberEq)
          }
+         actual is Sequence<*> && expected is Sequence<*> -> SequenceEq.equals(actual, expected, strictNumberEq)
          shouldShowDataClassDiff(actual, expected) -> DataClassEq.equals(actual as Any, expected as Any, strictNumberEq)
          actual is Throwable && expected is Throwable -> ThrowableEq.equals(actual, expected)
          else -> DefaultEq.equals(actual as Any, expected as Any,strictNumberEq)
