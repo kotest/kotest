@@ -56,16 +56,7 @@ jobs:
                fetch-depth: 0
 
          -  name: Run macos tests
-            run: ./gradlew macosX64Test --scan
-
-         -  name: Run ios tests
-            run: ./gradlew iosX64Test --scan
-
-         -  name: Run tvos tests
-            run: ./gradlew tvosX64Test --scan
-
-         -  name: Run watchos tests
-            run: ./gradlew watchosArm32TestKlibrary watchosArm64TestKlibrary watchosX86Test watchosX64Test watchosX86Test --scan
+            run: ./gradlew macosX64Test macosArm64Test --scan
 
          -  name: publish macos snapshots
             run: ./gradlew publishMacosX64PublicationToDeployRepository publishMacosArm64PublicationToDeployRepository
@@ -75,24 +66,90 @@ jobs:
                ORG_GRADLE_PROJECT_signingKey: ${{ secrets.SIGNING_KEY }}
                ORG_GRADLE_PROJECT_signingPassword: ${{ secrets.SIGNING_PASSWORD }}
 
+         -  name: Bundle the build report
+            if: failure()
+            run: find . -type d -name 'reports' | zip -@ -r build-reports.zip
+
+         -  name: Upload the build report
+            if: failure()
+            uses: actions/upload-artifact@master
+            with:
+               name: error-report
+               path: build-reports.zip
+
+   ios:
+      runs-on: macos-11
+      steps:
+         -  name: Checkout the repo
+            uses: actions/checkout@v2
+            with:
+               fetch-depth: 0
+
+         -  name: Run ios tests
+            run: ./gradlew iosX64Test iosSimulatorArm64Test iosArm64Test iosArm32Test --scan
+
          -  name: publish ios snapshots
-            run: ./gradlew publishIosX64PublicationToDeployRepository publishIosArm64PublicationToDeployRepository publishIosArm32PublicationToDeployRepository
+            run: ./gradlew publishIosX64PublicationToDeployRepository publishIosSimulatorArm64PublicationToDeployRepository publishIosArm64PublicationToDeployRepository publishIosArm32PublicationToDeployRepository
             env:
                OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
                OSSRH_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
                ORG_GRADLE_PROJECT_signingKey: ${{ secrets.SIGNING_KEY }}
                ORG_GRADLE_PROJECT_signingPassword: ${{ secrets.SIGNING_PASSWORD }}
 
-         -  name: publish watchos snapshots
-            run: ./gradlew publishWatchosX86PublicationToDeployRepository publishWatchosX64PublicationToDeployRepository publishWatchosArm32PublicationToDeployRepository publishWatchosArm64PublicationToDeployRepository
-            env:
-               OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
-               OSSRH_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
-               ORG_GRADLE_PROJECT_signingKey: ${{ secrets.SIGNING_KEY }}
-               ORG_GRADLE_PROJECT_signingPassword: ${{ secrets.SIGNING_PASSWORD }}
+         -  name: Bundle the build report
+            if: failure()
+            run: find . -type d -name 'reports' | zip -@ -r build-reports.zip
+
+         -  name: Upload the build report
+            if: failure()
+            uses: actions/upload-artifact@master
+            with:
+               name: error-report
+               path: build-reports.zip
+
+   tvos:
+      runs-on: macos-11
+      steps:
+         -  name: Checkout the repo
+            uses: actions/checkout@v2
+            with:
+               fetch-depth: 0
+
+         -  name: Run tvos tests
+            run: ./gradlew tvosX64Test tvosArm64Test --scan
 
          -  name: publish tvos snapshots
             run: ./gradlew publishTvosX64PublicationToDeployRepository publishTvosArm64PublicationToDeployRepository
+            env:
+               OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
+               OSSRH_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
+               ORG_GRADLE_PROJECT_signingKey: ${{ secrets.SIGNING_KEY }}
+               ORG_GRADLE_PROJECT_signingPassword: ${{ secrets.SIGNING_PASSWORD }}
+
+         -  name: Bundle the build report
+            if: failure()
+            run: find . -type d -name 'reports' | zip -@ -r build-reports.zip
+
+         -  name: Upload the build report
+            if: failure()
+            uses: actions/upload-artifact@master
+            with:
+               name: error-report
+               path: build-reports.zip
+
+   watchos:
+      runs-on: macos-11
+      steps:
+         -  name: Checkout the repo
+            uses: actions/checkout@v2
+            with:
+               fetch-depth: 0
+
+         -  name: Run watchos tests
+            run: ./gradlew watchosArm32TestKlibrary watchosArm64TestKlibrary watchosX86Test watchosX64Test --scan
+
+         -  name: publish watchos snapshots
+            run: ./gradlew publishWatchosX86PublicationToDeployRepository publishWatchosX64PublicationToDeployRepository publishWatchosArm32PublicationToDeployRepository publishWatchosArm64PublicationToDeployRepository
             env:
                OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
                OSSRH_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
