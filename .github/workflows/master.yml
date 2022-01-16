@@ -86,7 +86,7 @@ jobs:
                fetch-depth: 0
 
          -  name: Run ios tests
-            run: ./gradlew iosX64Test iosSimulatorArm64Test iosArm64Test iosArm32Test --scan
+            run: ./gradlew iosX64Test iosSimulatorArm64Test iosArm64TestKlibrary iosArm32TestKlibrary --scan
 
          -  name: publish ios snapshots
             run: ./gradlew publishIosX64PublicationToDeployRepository publishIosSimulatorArm64PublicationToDeployRepository publishIosArm64PublicationToDeployRepository publishIosArm32PublicationToDeployRepository
@@ -116,7 +116,7 @@ jobs:
                fetch-depth: 0
 
          -  name: Run tvos tests
-            run: ./gradlew tvosX64Test tvosArm64Test --scan
+            run: ./gradlew tvosX64Test tvosArm64TestKlibrary --scan
 
          -  name: publish tvos snapshots
             run: ./gradlew publishTvosX64PublicationToDeployRepository publishTvosArm64PublicationToDeployRepository
