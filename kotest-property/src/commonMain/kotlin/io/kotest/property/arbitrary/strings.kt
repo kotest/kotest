@@ -86,26 +86,57 @@ object StringShrinker : Shrinker<String> {
    }
 }
 
+/**
+ * Shrinks a string. Shrunk variants will be shorter and simplified.
+ *
+ * Shorter strings will be at least [minLength] in length.
+ *
+ * Simplified strings will have characters replaced by a character (selected by [simplestCharSelector])
+ * of each pre-shrunk value. By default, this is the first character of the pre-shrunk string.
+ *
+ * When [simplestCharSelector] returns null, no simpler variants will be created.
+ */
 class StringShrinkerWithMin(
    private val minLength: Int = 0,
-   private val simplestChar: Char = 'a',
+   private val simplestCharSelector: (preShrinkValue: String) -> Char? = CharSequence::firstOrNull
 ) : Shrinker<String> {
 
+//   @Deprecated("a static 'simplestChar' means invalid shrinks can be generated - use the alternative constructor instead, which allows for a dynamic 'simplestChar'")
+//   constructor (
+//      minLength: Int = 0,
+//      simplestChar: Char,
+//   ) : this(minLength, { simplestChar })
+
    override fun shrink(value: String): List<String> {
+
+      val simplestChar: Char? = simplestCharSelector(value)
 
       val isShortest = value.length == minLength
       val isSimplest = value.all { it == simplestChar }
 
-      return when {
-         isShortest && isSimplest -> emptyList()
-         isShortest -> simplerVariants(value)
-         isSimplest -> shorterVariants(value)
-         else -> shorterVariants(value) + simplerVariants(value)
-      }.map { it.padEnd(minLength, simplestChar) }.distinct()
+      return buildList {
+         if (!isShortest) {
+            addAll(shorterVariants(value))
+         }
+         if (!isSimplest && simplestChar != null) {
+            addAll(simplerVariants(value, simplestChar))
+         }
+      }.mapNotNull {
+         // ensure the variants are at least minLength long
+         when {
+            simplestChar != null -> it.padEnd(minLength, simplestChar)
+            it.length >= minLength -> it
+            else -> null // this string is too short, so filter it out
+         }
+      }.distinct()
    }
 
-   private fun simplerVariants(value: String) =
-      listOfNotNull(replaceFirst(value, simplestChar), replaceLast(value, simplestChar))
+   private fun simplerVariants(value: String, simplestChar: Char): List<String> =
+      listOfNotNull(
+         // replace the first and last chars that aren't simplestChar with simplestChar
+         replace(value, simplestChar, value.indexOfFirst { it != simplestChar }),
+         replace(value, simplestChar, value.indexOfLast { it != simplestChar }),
+      )
 
    private fun shorterVariants(value: String) =
       listOf(
@@ -114,12 +145,6 @@ class StringShrinkerWithMin(
          value.drop(1),
          value.dropLast(1),
       )
-
-   private fun replaceFirst(value: String, newChar: Char): String? =
-      replace(value, newChar, value.indexOfFirst { it != simplestChar })
-
-   private fun replaceLast(value: String, newChar: Char): String? =
-      replace(value, newChar, value.indexOfLast { it != simplestChar })
 
    private fun replace(value: String, newChar: Char, index: Int) =
       if (index == -1) null else value.replaceRange(index..index, newChar.toString())
