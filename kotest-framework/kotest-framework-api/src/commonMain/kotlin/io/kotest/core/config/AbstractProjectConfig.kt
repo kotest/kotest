@@ -135,6 +135,12 @@ abstract class AbstractProjectConfig {
    open val testCaseOrder: TestCaseOrder? = null
 
    /**
+    * Sets the seed that is used when randomizing specs and tests.
+    * Default is null, which will use the default random instance.
+    */
+   open var randomOrderSeed: Long? = null
+
+   /**
     * Override this value and set it to true if you want all tests to behave as if they
     * were operating in an [assertSoftly] block.
     */
