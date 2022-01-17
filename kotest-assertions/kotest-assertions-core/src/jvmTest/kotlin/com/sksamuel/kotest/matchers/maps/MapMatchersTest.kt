@@ -269,6 +269,7 @@ class MapMatchersTest : WordSpec() {
                val linkedList = LinkedList<Int>()
                linkedList.push(1)
                mapOf("a" to arrayList) shouldNot containExactly<String, List<Int>>(mapOf("a" to linkedList))
+               mapOf("a" to arrayList) shouldNot containExactly<String, List<Int>>("a" to linkedList)
             }
             e.message shouldBe """
           |
