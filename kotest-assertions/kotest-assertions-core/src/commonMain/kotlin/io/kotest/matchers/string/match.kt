@@ -22,6 +22,11 @@ infix fun <A : CharSequence> A?.shouldNotMatch(regex: String): A {
    return this!!
 }
 
+infix fun <A : CharSequence> A?.shouldNotMatch(regex: Regex): A {
+   this shouldNot match(regex)
+   return this!!
+}
+
 fun match(regex: Regex): Matcher<CharSequence?> = neverNullMatcher { value ->
    MatcherResult(
       value.matches(regex),

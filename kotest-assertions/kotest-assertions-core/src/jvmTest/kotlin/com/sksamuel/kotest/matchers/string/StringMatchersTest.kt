@@ -353,8 +353,13 @@ class StringMatchersTest : FreeSpec() {
             "foo" shouldMatch ".*"
             "foo" shouldMatch "foo"
             "foo" shouldMatch "f.."
+            "foo" shouldMatch Regex(".*")
+            "foo" shouldMatch Regex("foo")
+            "foo" shouldMatch Regex("f..")
             "boo" shouldNotMatch "foo"
             "boo" shouldNotMatch "f.."
+            "boo" shouldNotMatch Regex("foo")
+            "boo" shouldNotMatch Regex("f..")
          }
          "should fail if value is null" {
             shouldThrow<AssertionError> {
@@ -371,6 +376,14 @@ class StringMatchersTest : FreeSpec() {
 
             shouldThrow<AssertionError> {
                null shouldNotMatch ""
+            }.message shouldBe "Expecting actual not to be null"
+
+            shouldThrow<AssertionError> {
+               null shouldMatch Regex("")
+            }.message shouldBe "Expecting actual not to be null"
+
+            shouldThrow<AssertionError> {
+               null shouldNotMatch Regex("")
             }.message shouldBe "Expecting actual not to be null"
          }
       }
