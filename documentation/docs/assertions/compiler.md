@@ -17,7 +17,7 @@ This extension is a wrapper over [kotlin-compile-testing](https://github.com/tsc
 To add the compilation matcher, add the following dependency to your project
 
 ```groovy
-testImplementation("io.kotest:kotest-assertions-compiler:${version}")
+testImplementation("io.kotest.extensions:kotest-assertions-compiler:${version}")
 ```
 
 Usage:
