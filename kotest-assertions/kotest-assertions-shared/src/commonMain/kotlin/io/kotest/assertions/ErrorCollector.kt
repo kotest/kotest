@@ -73,9 +73,9 @@ object NoopErrorCollector : ErrorCollector {
 
 open class BasicErrorCollector : ErrorCollector {
 
-   private val failures = mutableListOf<Throwable>()
-   private var mode = ErrorCollectionMode.Hard
-   private val clues = mutableListOf<Clue>()
+   protected val failures = mutableListOf<Throwable>()
+   protected var mode = ErrorCollectionMode.Hard
+   protected val clues = mutableListOf<Clue>()
 
    override fun getCollectionMode(): ErrorCollectionMode = mode
 

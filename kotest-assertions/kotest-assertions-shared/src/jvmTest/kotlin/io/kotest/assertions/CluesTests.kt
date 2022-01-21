@@ -1,9 +1,13 @@
 package io.kotest.assertions
 
 import io.kotest.core.spec.style.FunSpec
+import io.kotest.matchers.collections.shouldHaveAtLeastSize
 import io.kotest.matchers.collections.shouldHaveSize
+import io.kotest.matchers.shouldBe
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class CluesTests : FunSpec({
@@ -16,6 +20,45 @@ class CluesTests : FunSpec({
             threadIds.add(Thread.currentThread().id)
          }
          threadIds shouldHaveSize 2
+      }
+   }
+
+   test("concurrent withClue invocations should be isolated from each other") {
+      withContext(Dispatchers.Default) {
+         val repetitionCount = 100
+         val parentCoroutineCount = 2
+         val childCoroutineCount = 10
+         val stepCount = 2
+
+         for (repetitionNumber in 1..repetitionCount) {
+            val threadIds = mutableSetOf<Long>()
+
+            coroutineScope {
+               for (parentCoroutineNumber in 1..parentCoroutineCount) {
+                  launch {
+                     val parentClue = "r=$repetitionNumber, p=$parentCoroutineNumber"
+                     withClue(parentClue) {
+                        for (childCoroutineNumber in 1..childCoroutineCount) {
+                           launch {
+                              for (stepNumber in 1..stepCount) {
+                                 val childClue = "r=$repetitionNumber, c=$childCoroutineNumber, s=$stepNumber"
+                                 withClue(childClue) {
+                                    clueContextAsString() shouldBe "$parentClue\n$childClue\n"
+                                    synchronized(threadIds) { threadIds.add(Thread.currentThread().id) }
+                                    delay(1L)
+                                    clueContextAsString() shouldBe "$parentClue\n$childClue\n"
+                                    synchronized(threadIds) { threadIds.add(Thread.currentThread().id) }
+                                 }
+                              }
+                           }
+                        }
+                     }
+                  }
+               }
+            }
+
+            threadIds shouldHaveAtLeastSize 2
+         }
       }
    }
 })
