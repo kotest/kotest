@@ -138,7 +138,6 @@ fun <T : Any> beEqualToUsingFields(other: T, vararg fields: KProperty<*>): Match
  * ```
  *
  */
-@Deprecated(message = "use ")
 fun <T : Any> T.shouldBeEqualToIgnoringFields(other: T, property: KProperty<*>, vararg others: KProperty<*>) {
    this should beEqualToIgnoringFields(other = other, ignorePrivateFields = true, property = property, others = others)
 }
