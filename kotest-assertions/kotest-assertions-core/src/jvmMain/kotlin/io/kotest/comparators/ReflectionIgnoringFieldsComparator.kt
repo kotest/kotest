@@ -9,6 +9,12 @@ class ReflectionIgnoringFieldsComparator<T : Any>(
    private val others: Array<out KProperty<*>>,
    private val ignorePrivateFields: Boolean = true,
 ) : Comparator<T> {
+   override fun name(): String {
+      val plural = if (others.isNotEmpty()) "s" else ""
+      val ignoringPrivate = if (ignorePrivateFields) "ignoring" else "not ignoring"
+      return "reflection comparison ignoring field$plural ${arrayOf(property) + others} and $ignoringPrivate private fields"
+   }
+
    fun includingPrivateFields(): ReflectionIgnoringFieldsComparator<T> {
       return withIgnorePrivateFields(false)
    }
