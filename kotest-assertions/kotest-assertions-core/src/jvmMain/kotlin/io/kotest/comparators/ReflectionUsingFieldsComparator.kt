@@ -13,6 +13,8 @@ class ReflectionUsingFieldsComparator<T : Any>(
 
    override fun matches(actual: T, expected: T): MatcherResult =
       beEqualToUsingFields(expected, *fields).test(actual)
+
+   override fun toString(): String = name()
 }
 
 fun <T : Any> Comparators.reflectionUsingFields(vararg fields: KProperty<*>) =

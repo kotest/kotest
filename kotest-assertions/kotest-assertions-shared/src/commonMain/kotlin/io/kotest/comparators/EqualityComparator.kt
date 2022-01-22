@@ -12,6 +12,8 @@ class EqualityComparator<T> : Comparator<T> {
          negatedFailureMessageFn = { "$actual should not be equal to $expected" }
       )
    }
+
+   override fun toString(): String = name()
 }
 
 fun <T> Comparators.equality(): EqualityComparator<T> = EqualityComparator()

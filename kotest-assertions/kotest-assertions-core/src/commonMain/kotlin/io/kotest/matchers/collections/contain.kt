@@ -26,13 +26,14 @@ fun <T> Array<T>.shouldNotContain(t: T, comparator: Comparator<T>): Array<T> = a
 
 // Should
 fun <T> Iterable<T>.shouldContain(t: T, comparator: Comparator<T>): Iterable<T> = apply {
-   toList() shouldNot contain(t, comparator)
+   toList() should contain(t, comparator)
 }
 
 fun <T> Array<T>.shouldContain(t: T, comparator: Comparator<T>): Array<T> = apply {
    asList().shouldContain(t, comparator)
 }
 
+// Matcher
 fun <T, C : Collection<T>> contain(t: T, comparator: Comparator<T> = Comparators.default()) = object : Matcher<C> {
    override fun test(value: C) = MatcherResult(
       value.any { comparator.matches(it, t).passed() },
