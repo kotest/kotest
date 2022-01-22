@@ -377,23 +377,15 @@ private fun compareNumbers(
    }
 }
 
-private val fractionalZeroesRegex =
-   """(\.\d*)0+""".toRegex()
 
 private fun compareNumberNodes(
    path: List<String>,
    expected: JsonNode.NumberNode,
    actual: JsonNode.NumberNode
 ): JsonError? {
-   /**
-    * Removes insignificant part of a number. e.g. 1.0 -> 1 or 3.1400 -> 3.14
-    */
-   fun trimInsignificant(value: String): String =
-      value.replace(fractionalZeroesRegex) { it.groupValues[1].trimEnd('0') }
-         .trimEnd('.')
 
    return when {
-      trimInsignificant(expected.asString()) == trimInsignificant(actual.asString()) -> null
+      expected.lenientEquals(actual) -> null
       else -> JsonError.UnequalValues(path, expected.content, actual.content)
    }
 }
