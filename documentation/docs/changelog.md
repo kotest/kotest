@@ -4,6 +4,50 @@ sidebar_label: Changelog
 slug: changelog.html
 ---
 
+
+
+## 5.1.0 January 2022
+
+### Fixes
+
+* Test fails because lhs of shouldBe is List, and rhs is a home-grown Iterable [#2746](https://github.com/kotest/kotest/issues/2746)
+* JUnit XML extension generates invalid XML [#2756](https://github.com/kotest/kotest/issues/2756)
+* Non-nullability gets lost with shouldBeSuccess matcher [#2759](https://github.com/kotest/kotest/issues/2759)
+* Arb.bind should detect nullables and inject null values [#2774](https://github.com/kotest/kotest/issues/2774)
+
+### Features and improvements
+
+* Update coroutines to 1.6 final [#2768](https://github.com/kotest/kotest/issues/2768)
+* Arb.string shrinking simplest character is always 'a' regardless of codepoint [#2646](https://github.com/kotest/kotest/issues/2646)
+* Add mutable test clock [#2655](https://github.com/kotest/kotest/issues/2655)
+* Inspectors for maps [#2656](https://github.com/kotest/kotest/issues/2656)
+* Add conditional invert function with parameter to conditionally invert [#2658](https://github.com/kotest/kotest/issues/2658)
+* Add project wide fail fast [#2684](https://github.com/kotest/kotest/issues/2684)
+* Allow setting the seed used for randomizing spec order [#2698](https://github.com/kotest/kotest/issues/2698)
+* Option to fail build if a seed is set on a property test [#2701](https://github.com/kotest/kotest/issues/2701)
+* LocalDateTime arb should accept localdatetimes as min and max [#2704](https://github.com/kotest/kotest/issues/2704)
+* System property to disable config scanning [#2766](https://github.com/kotest/kotest/issues/2766)
+* System property for config class [#2767](https://github.com/kotest/kotest/issues/2767)
+
+Thanks to all the contributors:
+
+* aSemy
+* Ashish Kumar Joy
+* Bart van Helvert
+* Benjamin Shults
+* Charles Korn
+* Emil Kantis
+* Imran Settuba
+* inquiribus
+* Łukasz Pięta
+* Max Rumpf
+* Ricardo Veguilla
+* Sebastian Schuberth
+* Simon Vergauwen
+* sksamuel
+
+
+
 ## 5.0.3 December 2021
 
 ### Fixes

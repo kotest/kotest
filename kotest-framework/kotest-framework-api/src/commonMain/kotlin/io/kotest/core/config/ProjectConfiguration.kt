@@ -312,6 +312,12 @@ class ProjectConfiguration {
     */
    var specExecutionOrder: SpecExecutionOrder = Defaults.specExecutionOrder
 
+   /**
+    * Sets the seed that is used when randomizing specs and tests.
+    * Default is null, which will use the default random instance.
+    */
+   var randomOrderSeed: Long? = null
+
    var removeTestNameWhitespace: Boolean = false
 
    var testNameAppendTags: Boolean = false

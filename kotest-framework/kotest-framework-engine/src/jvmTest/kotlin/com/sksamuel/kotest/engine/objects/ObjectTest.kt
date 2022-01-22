@@ -1,35 +1,22 @@
 package com.sksamuel.kotest.engine.objects
 
-import io.kotest.core.config.ProjectConfiguration
-import io.kotest.core.listeners.ProjectListener
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.engine.TestEngineLauncher
-import io.kotest.engine.listener.NoopTestEngineListener
+import io.kotest.engine.listener.CollectingTestEngineListener
 import io.kotest.matchers.shouldBe
 
 class ObjectSpecTest : FunSpec() {
    init {
       test("object specs should be supported") {
-
-         var fired = false
-
-         val c = ProjectConfiguration()
-         c.registry.add(object : ProjectListener {
-            override suspend fun afterProject() {
-               fired = true
-            }
-         })
-
-         TestEngineLauncher(NoopTestEngineListener)
-            .withClasses(DummyObjectSpec::class)
-            .withConfiguration(c)
+         val collector = CollectingTestEngineListener()
+         TestEngineLauncher(collector)
+            .withClasses(MyObjectSpec::class)
             .launch()
-
-         fired shouldBe true
+         collector.result("foo")!!.isSuccess shouldBe true
       }
    }
 }
 
-private class DummyObjectSpec : FunSpec({
+private class MyObjectSpec : FunSpec({
    test("foo") {}
 })

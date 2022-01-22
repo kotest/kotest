@@ -19,7 +19,7 @@ env:
    GRADLE_OPTS: -Dorg.gradle.configureondemand=true -Dorg.gradle.parallel=false -Dkotlin.incremental=false -Dorg.gradle.jvmargs="-Xmx3g -XX:MaxPermSize=2048m -XX:+HeapDumpOnOutOfMemoryError -Dfile.encoding=UTF-8"
 
 jobs:
-   publish_linux:
+   publish_base:
       runs-on: ubuntu-latest
 
       steps:
@@ -44,15 +44,30 @@ jobs:
          -  name: publish js release
             run: ./gradlew publishJsPublicationToDeployRepository
 
-         -  name: publish linux x64 release
-            run: ./gradlew publishLinuxX64PublicationToDeployRepository
-
          -  name: publish bom release
             run: ./gradlew publishKotestBomPublicationToDeployRepository
 
+   publish_linux:
+      runs-on: ubuntu-latest
+
+      steps:
+         -  name: Checkout the repo
+            uses: actions/checkout@v2
+            with:
+               fetch-depth: 0
+               ref: ${{ github.event.inputs.branch }}
+
+         -  name: Setup JDK
+            uses: actions/setup-java@v2
+            with:
+               distribution: 'zulu'
+               java-version: '8'
+
+         -  name: publish linux x64 release
+            run: ./gradlew publishLinuxX64PublicationToDeployRepository
+
    publish_macos:
       runs-on: macos-11
-      needs: publish_linux
 
       steps:
          -  name: Checkout the repo
@@ -72,14 +87,20 @@ jobs:
          -  name: publish macosArm64 release
             run: ./gradlew publishMacosArm64PublicationToDeployRepository
 
-         -  name: publish tvosX64 release
-            run: ./gradlew publishTvosX64PublicationToDeployRepository
+   publish_watchos:
+      runs-on: macos-11
 
-         -  name: publish tvosArm64 release
-            run: ./gradlew publishTvosArm64PublicationToDeployRepository
+      steps:
+         -  name: Checkout the repo
+            uses: actions/checkout@v2
+            with:
+               fetch-depth: 0
+               ref: ${{ github.event.inputs.branch }}
 
-         -  name: publish tvosSimulatorArm64 release
-            run: ./gradlew publishTvosSimulatorArm64PublicationToDeployRepository
+         -  name: Setup JDK
+            uses: actions/setup-java@v1
+            with:
+               java-version: '8'
 
          -  name: publish watchosX64 release
             run: ./gradlew publishWatchosX64PublicationToDeployRepository
@@ -96,6 +117,21 @@ jobs:
          -  name: publish watchosSimulatorArm64 release
             run: ./gradlew publishWatchosSimulatorArm64PublicationToDeployRepository
 
+   publish_ios:
+      runs-on: macos-11
+
+      steps:
+         -  name: Checkout the repo
+            uses: actions/checkout@v2
+            with:
+               fetch-depth: 0
+               ref: ${{ github.event.inputs.branch }}
+
+         -  name: Setup JDK
+            uses: actions/setup-java@v1
+            with:
+               java-version: '8'
+
          -  name: publish iosX64 release
             run: ./gradlew publishIosX64PublicationToDeployRepository
 
@@ -108,9 +144,32 @@ jobs:
          -  name: publish iosSimulatorArm64 release
             run: ./gradlew publishIosSimulatorArm64PublicationToDeployRepository
 
+   publish_tvos:
+      runs-on: macos-11
+
+      steps:
+         -  name: Checkout the repo
+            uses: actions/checkout@v2
+            with:
+               fetch-depth: 0
+               ref: ${{ github.event.inputs.branch }}
+
+         -  name: Setup JDK
+            uses: actions/setup-java@v1
+            with:
+               java-version: '8'
+
+         -  name: publish tvosX64 release
+            run: ./gradlew publishTvosX64PublicationToDeployRepository
+
+         -  name: publish tvosArm64 release
+            run: ./gradlew publishTvosArm64PublicationToDeployRepository
+
+         -  name: publish tvosSimulatorArm64 release
+            run: ./gradlew publishTvosSimulatorArm64PublicationToDeployRepository
+
    publish_windows:
       runs-on: windows-latest
-      needs: publish_macos
 
       steps:
          -  name: Checkout the repo

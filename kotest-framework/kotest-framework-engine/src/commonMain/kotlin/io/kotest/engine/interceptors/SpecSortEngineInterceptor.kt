@@ -21,7 +21,7 @@ internal object SpecSortEngineInterceptor : EngineInterceptor {
 
       // spec classes are ordered using SpecExecutionOrderExtension extensions
       val exts = context.configuration.registry.all().filterIsInstance<SpecExecutionOrderExtension>().ifEmpty {
-         listOf(DefaultSpecExecutionOrderExtension(context.configuration.specExecutionOrder))
+         listOf(DefaultSpecExecutionOrderExtension(context.configuration.specExecutionOrder, context.configuration))
       }
 
       log { "SpecSortEngineInterceptor: Sorting specs using extensions $exts" }
