@@ -1,5 +1,7 @@
 package io.kotest.comparators
 
+import io.kotest.equals.EqualityVerifier
+import io.kotest.equals.EqualityVerifiers
 import io.kotest.matchers.MatcherResult
 import io.kotest.matchers.equality.beEqualToIgnoringFields
 import kotlin.reflect.KProperty
@@ -8,7 +10,7 @@ class ReflectionIgnoringFieldsComparator<T : Any>(
    private val property: KProperty<*>,
    private val others: Array<out KProperty<*>>,
    private val ignorePrivateFields: Boolean = true,
-) : Comparator<T> {
+) : EqualityVerifier<T> {
    override fun name(): String {
       val plural = if (others.isNotEmpty()) "s" else ""
       val ignoringPrivate = if (ignorePrivateFields) "ignoring" else "not ignoring"
@@ -31,13 +33,13 @@ class ReflectionIgnoringFieldsComparator<T : Any>(
       )
    }
 
-   override fun matches(actual: T, expected: T): MatcherResult =
+   override fun areEqual(actual: T, expected: T): MatcherResult =
       beEqualToIgnoringFields(expected, ignorePrivateFields, property, *others).test(actual)
 
    override fun toString(): String = name()
 }
 
-fun <T : Any> Comparators.reflectionIgnoringFields(
+fun <T : Any> EqualityVerifiers.reflectionIgnoringFields(
    property: KProperty<*>,
    vararg others: KProperty<*>
 ) = ReflectionIgnoringFieldsComparator<T>(property, others)
