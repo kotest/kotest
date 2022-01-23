@@ -16,9 +16,16 @@ open class ObjectEqualsEqualityVerifier<T>(
 
       return when {
          actual === expected -> equal()
-         actual is String && expected is String -> stringEqualityVerifier().areEqual(actual, expected)
-         actual is Map<*, *> && expected is Map<*, *> -> mapEqualityVerifier().areEqual(actual, expected)
-         actual is Regex && expected is Regex -> regexEqualityVerifier().areEqual(actual, expected)
+         actual is String && expected is String ->
+            stringEqualityVerifier().areEqual(actual, expected)
+         actual is Map<*, *> && expected is Map<*, *> ->
+            mapEqualityVerifier().areEqual(actual, expected)
+         actual is Regex && expected is Regex ->
+            regexEqualityVerifier().areEqual(actual, expected)
+         actual is Iterable<*> && expected is Iterable<*> ->
+            iterableEqualityVerifier().areEqual(actual, expected)
+         actual is Array<*> && expected is Array<*> ->
+            iterableEqualityVerifier().areEqual(actual.toList(), expected.toList())
          actual == expected -> equal()
          else -> throw RuntimeException("")
       }
@@ -48,10 +55,14 @@ open class ObjectEqualsEqualityVerifier<T>(
       ignoreCase = ignoreCase
    )
 
+   protected fun iterableEqualityVerifier(): EqualityVerifier<Iterable<*>> = IterableEqualityVerifier(
+      strictNumberEquality = strictNumberEquality,
+      ignoreCase = ignoreCase,
+   )
+
    protected fun stringEqualityVerifier(): EqualityVerifier<String> = StringEqualityVerifier(ignoreCase = true)
 
    protected fun regexEqualityVerifier(): EqualityVerifier<Regex> = RegexEqualityVerifier()
-
 
    fun withStrictNumberEquality() = copy(strictNumberEquality = true)
    fun withoutStrictNumberEquality() = copy(strictNumberEquality = false)
@@ -64,7 +75,7 @@ open class ObjectEqualsEqualityVerifier<T>(
    ): ObjectEqualsEqualityVerifier<T> {
       return ObjectEqualsEqualityVerifier(
          strictNumberEquality = strictNumberEquality,
-         ignoreCase = ignoreCase
+         ignoreCase = ignoreCase,
       )
    }
 }
@@ -72,6 +83,8 @@ open class ObjectEqualsEqualityVerifier<T>(
 
 fun <T> EqualityVerifiers.objectEquality(
    strictNumberEquality: Boolean = false,
+   ignoreCase: Boolean = false,
 ): ObjectEqualsEqualityVerifier<T> = ObjectEqualsEqualityVerifier(
    strictNumberEquality = strictNumberEquality,
+   ignoreCase = ignoreCase,
 )

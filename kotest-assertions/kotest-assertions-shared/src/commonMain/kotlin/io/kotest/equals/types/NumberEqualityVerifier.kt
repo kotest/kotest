@@ -9,7 +9,11 @@ class NumberEqualityVerifier(
    override fun name(): String = "${if (strictNumberEquality) "strict " else ""} number equality"
 
    override fun areEqual(actual: Number, expected: Number): EqualityResult {
+      if (compare(actual, expected)) {
+         return EqualityResult.equal(actual, expected, this)
+      }
 
+      return EqualityResult.notEqual(actual, expected, this)
    }
 
    private fun compare(a: Number, b: Number): Boolean {
@@ -26,7 +30,7 @@ class NumberEqualityVerifier(
             else -> a == b // Unreachable
          }
          aFloating || bFloating -> {
-            val floatingOne = if(aFloating) a else b
+            val floatingOne = if (aFloating) a else b
             val decimalPart = floatingOne.toString().split(".")[1]
             // For 2.0 to equal 2, decimal part must be 0
             // 2.1 would not equal 2
