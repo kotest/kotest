@@ -1,10 +1,13 @@
 package io.kotest.equals.types
 
+import io.kotest.assertions.eq.MapEq
 import io.kotest.equals.EqualityResult
 import io.kotest.equals.EqualityVerifier
 import io.kotest.equals.EqualityVerifiers
 
-open class ObjectEqualsEqualityVerifier<T> : EqualityVerifier<T> {
+open class ObjectEqualsEqualityVerifier<T>(
+   private val strictNumberEquality: Boolean = false
+) : EqualityVerifier<T> {
    override fun name(): String = "object equals functions"
 
    override fun areEqual(actual: T, expected: T): EqualityResult {
@@ -15,6 +18,11 @@ open class ObjectEqualsEqualityVerifier<T> : EqualityVerifier<T> {
          actual === expected -> equal()
          actual == expected -> equal()
          else -> when {
+            actual is Map<*, *> && expected is Map<*, *> ->
+               MapEqualityVerifier(strictNumberEquality).areEqual(actual, expected)
+            actual is Regex && expected is Regex ->
+               RegexEqualityVerifier().areEqual(actual, expected)
+
             else -> throw RuntimeException("")
          }
       }
@@ -37,6 +45,14 @@ open class ObjectEqualsEqualityVerifier<T> : EqualityVerifier<T> {
 //      }
 //
 //      override fun toString(): String = name()
+   }
+
+   fun withStrictNumberEquality(): ObjectEqualsEqualityVerifier<T> {
+      return ObjectEqualsEqualityVerifier(true)
+   }
+
+   fun withoutStrictNumberEquality(): ObjectEqualsEqualityVerifier<T> {
+      return ObjectEqualsEqualityVerifier(false)
    }
 }
 

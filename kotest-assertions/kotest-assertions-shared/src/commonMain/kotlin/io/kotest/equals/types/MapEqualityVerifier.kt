@@ -5,7 +5,9 @@ import io.kotest.equals.EqualityVerifier
 import io.kotest.equals.EqualityVerifiers
 import io.kotest.equals.areNotEqual
 
-open class MapEqualityVerifier : EqualityVerifier<Map<*, *>> {
+open class MapEqualityVerifier(
+   private val strictNumberEquality: Boolean = false
+) : EqualityVerifier<Map<*, *>> {
    override fun name(): String = "map equality"
 
    override fun areEqual(actual: Map<*, *>, expected: Map<*, *>): EqualityResult {
@@ -50,6 +52,14 @@ open class MapEqualityVerifier : EqualityVerifier<Map<*, *>> {
       }
    }
 
+   fun withStrictNumberEquality(): MapEqualityVerifier {
+      return MapEqualityVerifier(true)
+   }
+
+   fun withoutStrictNumberEquality(): MapEqualityVerifier {
+      return MapEqualityVerifier(false)
+   }
+
    private fun printValues(collection: Collection<*>): String {
       val max = 10
       val extra = collection.size - max
@@ -60,3 +70,5 @@ open class MapEqualityVerifier : EqualityVerifier<Map<*, *>> {
       )
    }
 }
+
+fun EqualityVerifiers.mapEquality(): MapEqualityVerifier = MapEqualityVerifier()
