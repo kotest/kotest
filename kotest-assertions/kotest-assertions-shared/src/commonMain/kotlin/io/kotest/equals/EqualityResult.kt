@@ -62,7 +62,7 @@ data class SimpleEqualityResult(
       return copy(detailsValue = details)
    }
 
-   fun withDetails(explainFn: () -> String) : SimpleEqualityResult {
+   fun withDetails(explainFn: () -> String): SimpleEqualityResult {
       return withDetails(SimpleEqualityResultDetail(explainFn))
    }
 

@@ -1,8 +1,8 @@
 package io.kotest.equals
 
-import io.kotest.equals.types.ObjectEqualsEqualityVerifier
+import io.kotest.equals.types.objectEquality
 
 object EqualityVerifiers {
-   fun <T> default() = ObjectEqualsEqualityVerifier<T>()
+   fun <T> default() = objectEquality<T>()
 }
 

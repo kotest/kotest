@@ -6,13 +6,13 @@ import io.kotest.equals.EqualityVerifiers
 import io.kotest.equals.areNotEqual
 
 open class MapEqualityVerifier(
-   private val strictNumberEquality: Boolean = false
+   private val strictNumberEquality: Boolean
 ) : EqualityVerifier<Map<*, *>> {
    override fun name(): String = "map equality"
 
    override fun areEqual(actual: Map<*, *>, expected: Map<*, *>): EqualityResult {
       val equal = { EqualityResult.equal(actual, expected, this) }
-      val notEqual = { EqualityResult.equal(actual, expected, this) }
+      val notEqual = { EqualityResult.notEqual(actual, expected, this) }
 
       val actualKeys = actual.keys
       val expectedKeys = expected.keys
@@ -21,7 +21,10 @@ open class MapEqualityVerifier(
       val extraKeys = actualKeys.subtract(expectedKeys)
       val commonKeys = actualKeys.intersect(expectedKeys)
 
-      val valuesVerifier = EqualityVerifiers.default<Any?>()
+      val valuesVerifier = ObjectEqualsEqualityVerifier<Any?>(
+         strictNumberEquality = strictNumberEquality
+      )
+
       val differentValues = commonKeys.mapNotNull { key ->
          val actualValue = actual[key]
          val expectedValue = expected[key]
@@ -48,7 +51,7 @@ open class MapEqualityVerifier(
       )
 
       return notEqual().withDetails {
-         details.joinToString(separator = "\n")
+         (listOf("Map contents are not equal by ${name()})") + details).joinToString(separator = "\n")
       }
    }
 
@@ -71,4 +74,8 @@ open class MapEqualityVerifier(
    }
 }
 
-fun EqualityVerifiers.mapEquality(): MapEqualityVerifier = MapEqualityVerifier()
+fun EqualityVerifiers.mapEquality(
+   strictNumberEquality: Boolean = false
+): MapEqualityVerifier = MapEqualityVerifier(
+   strictNumberEquality = strictNumberEquality
+)
