@@ -16,7 +16,7 @@ open class StringEqualityVerifier(
 
    override fun name(): String = "string equality${if (ignoreCase) " ignoring case" else ""}"
 
-   override fun areEqual(actual: String, expected: String): EqualityResult {
+   override fun verify(actual: String, expected: String): EqualityResult {
       val equal = { EqualityResult.equal(actual, expected, this) }
       val notEqual = { EqualityResult.notEqual(actual, expected, this) }
 

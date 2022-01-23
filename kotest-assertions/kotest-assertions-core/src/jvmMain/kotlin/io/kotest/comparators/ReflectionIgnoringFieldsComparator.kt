@@ -33,7 +33,7 @@ class ReflectionIgnoringFieldsComparator<T : Any>(
       )
    }
 
-   override fun areEqual(actual: T, expected: T): MatcherResult =
+   override fun verify(actual: T, expected: T): MatcherResult =
       beEqualToIgnoringFields(expected, ignorePrivateFields, property, *others).test(actual)
 
    override fun toString(): String = name()

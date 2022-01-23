@@ -35,7 +35,7 @@ fun <T> Array<T>.shouldContain(t: T, comparator: EqualityVerifier<T>): Array<T> 
 // Matcher
 fun <T, C : Collection<T>> contain(t: T, comparator: EqualityVerifier<T> = EqualityVerifiers.default()) = object : Matcher<C> {
    override fun test(value: C) = MatcherResult(
-      value.any { comparator.areEqual(it, t).passed() },
+      value.any { comparator.verify(it, t).passed() },
       {
          "Collection should contain element ${t.print().value} based on ${comparator.name()}; " +
             "listing some elements ${value.take(5)}"

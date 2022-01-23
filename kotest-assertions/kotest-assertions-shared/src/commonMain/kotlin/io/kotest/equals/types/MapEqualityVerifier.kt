@@ -4,6 +4,7 @@ import io.kotest.equals.EqualityResult
 import io.kotest.equals.EqualityVerifier
 import io.kotest.equals.EqualityVerifiers
 import io.kotest.equals.areNotEqual
+import io.kotest.equals.types.utils.printValues
 
 open class MapEqualityVerifier(
    private val strictNumberEquality: Boolean,
@@ -11,7 +12,7 @@ open class MapEqualityVerifier(
 ) : EqualityVerifier<Map<*, *>> {
    override fun name(): String = "map equality"
 
-   override fun areEqual(actual: Map<*, *>, expected: Map<*, *>): EqualityResult {
+   override fun verify(actual: Map<*, *>, expected: Map<*, *>): EqualityResult {
       val equal = { EqualityResult.equal(actual, expected, this) }
       val notEqual = { EqualityResult.notEqual(actual, expected, this) }
 
@@ -30,7 +31,7 @@ open class MapEqualityVerifier(
       val differentValues = commonKeys.mapNotNull { key ->
          val actualValue = actual[key]
          val expectedValue = expected[key]
-         return@mapNotNull valuesVerifier.areEqual(actualValue, expectedValue).takeIf { it.areNotEqual() }?.let {
+         return@mapNotNull valuesVerifier.verify(actualValue, expectedValue).takeIf { it.areNotEqual() }?.let {
             Pair(key, it)
          }
       }
@@ -57,6 +58,11 @@ open class MapEqualityVerifier(
       }
    }
 
+   protected fun objectEqualityVerifier(): EqualityVerifier<Any?> = ObjectEqualsEqualityVerifier<Any?>(
+      strictNumberEquality = strictNumberEquality,
+      ignoreCase = ignoreCase,
+   )
+
    fun withStrictNumberEquality() = copy(strictNumberEquality = true)
    fun withoutStrictNumberEquality() = copy(strictNumberEquality = false)
    fun ignoringCase() = copy(ignoreCase = true)
@@ -69,16 +75,6 @@ open class MapEqualityVerifier(
       return MapEqualityVerifier(
          strictNumberEquality = strictNumberEquality,
          ignoreCase = ignoreCase
-      )
-   }
-
-   private fun printValues(collection: Collection<*>): String {
-      val max = 10
-      val extra = collection.size - max
-      return collection.joinToString(
-         prefix = "[",
-         separator = ", ",
-         postfix = "${if (extra > 0) "... and $extra more" else ""}]"
       )
    }
 }

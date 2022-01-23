@@ -13,7 +13,7 @@ class ReflectionUsingFieldsComparator<T : Any>(
       return "reflection comparison using fields $fields"
    }
 
-   override fun areEqual(actual: T, expected: T): MatcherResult =
+   override fun verify(actual: T, expected: T): MatcherResult =
       beEqualToUsingFields(expected, *fields).test(actual)
 
    override fun toString(): String = name()

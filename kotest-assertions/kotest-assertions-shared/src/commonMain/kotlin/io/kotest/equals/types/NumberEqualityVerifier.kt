@@ -8,7 +8,7 @@ class NumberEqualityVerifier(
 ) : EqualityVerifier<Number> {
    override fun name(): String = "${if (strictNumberEquality) "strict " else ""} number equality"
 
-   override fun areEqual(actual: Number, expected: Number): EqualityResult {
+   override fun verify(actual: Number, expected: Number): EqualityResult {
       if (compare(actual, expected)) {
          return EqualityResult.equal(actual, expected, this)
       }

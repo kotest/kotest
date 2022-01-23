@@ -5,6 +5,7 @@ import io.kotest.assertions.Expected
 import io.kotest.assertions.failure
 import io.kotest.assertions.print.Printed
 import io.kotest.assertions.print.print
+import kotlinx.coroutines.internal.LockFreeLinkedListHead
 
 object IterableEq : Eq<Iterable<*>> {
 
@@ -181,3 +182,4 @@ object IterableEq : Eq<Iterable<*>> {
 
    private fun generateError(actual: Any, expected: Any) = failure(Expected(expected.print()), Actual(actual.print()))
 }
+

@@ -7,25 +7,26 @@ import io.kotest.equals.EqualityVerifiers
 open class ObjectEqualsEqualityVerifier<T>(
    private val strictNumberEquality: Boolean,
    private val ignoreCase: Boolean,
+   private val ignoreOrder: Boolean,
 ) : EqualityVerifier<T> {
    override fun name(): String = "object equality"
 
-   override fun areEqual(actual: T, expected: T): EqualityResult {
+   override fun verify(actual: T, expected: T): EqualityResult {
       val equal = { EqualityResult.equal(actual = actual, expected = expected, verifier = this) }
       val notEqual = { EqualityResult.notEqual(actual = actual, expected = expected, verifier = this) }
 
       return when {
          actual === expected -> equal()
          actual is String && expected is String ->
-            stringEqualityVerifier().areEqual(actual, expected)
+            stringEqualityVerifier().verify(actual, expected)
          actual is Map<*, *> && expected is Map<*, *> ->
-            mapEqualityVerifier().areEqual(actual, expected)
+            mapEqualityVerifier().verify(actual, expected)
          actual is Regex && expected is Regex ->
-            regexEqualityVerifier().areEqual(actual, expected)
-         actual is Iterable<*> && expected is Iterable<*> ->
-            iterableEqualityVerifier().areEqual(actual, expected)
+            regexEqualityVerifier().verify(actual, expected)
          actual is Array<*> && expected is Array<*> ->
-            iterableEqualityVerifier().areEqual(actual.toList(), expected.toList())
+            iterableEqualityVerifier().verify(actual.toList(), expected.toList())
+         actual is Iterable<*> && expected is Iterable<*> ->
+            iterableEqualityVerifier().verify(actual, expected)
          actual == expected -> equal()
          else -> throw RuntimeException("")
       }
@@ -58,6 +59,7 @@ open class ObjectEqualsEqualityVerifier<T>(
    protected fun iterableEqualityVerifier(): EqualityVerifier<Iterable<*>> = IterableEqualityVerifier(
       strictNumberEquality = strictNumberEquality,
       ignoreCase = ignoreCase,
+      ignoreOrder = ignoreOrder,
    )
 
    protected fun stringEqualityVerifier(): EqualityVerifier<String> = StringEqualityVerifier(ignoreCase = true)
@@ -68,14 +70,18 @@ open class ObjectEqualsEqualityVerifier<T>(
    fun withoutStrictNumberEquality() = copy(strictNumberEquality = false)
    fun ignoringCase() = copy(ignoreCase = true)
    fun caseSensitive() = copy(ignoreCase = false)
+   fun ignoringOrder() = copy(ignoreOrder = true)
+   fun orderSensitive() = copy(ignoreOrder = false)
 
    private fun copy(
       strictNumberEquality: Boolean = this.strictNumberEquality,
       ignoreCase: Boolean = this.ignoreCase,
+      ignoreOrder: Boolean = this.ignoreOrder,
    ): ObjectEqualsEqualityVerifier<T> {
       return ObjectEqualsEqualityVerifier(
          strictNumberEquality = strictNumberEquality,
          ignoreCase = ignoreCase,
+         ignoreOrder = ignoreOrder,
       )
    }
 }
@@ -84,7 +90,9 @@ open class ObjectEqualsEqualityVerifier<T>(
 fun <T> EqualityVerifiers.objectEquality(
    strictNumberEquality: Boolean = false,
    ignoreCase: Boolean = false,
+   ignoreOrder: Boolean = false,
 ): ObjectEqualsEqualityVerifier<T> = ObjectEqualsEqualityVerifier(
    strictNumberEquality = strictNumberEquality,
    ignoreCase = ignoreCase,
+   ignoreOrder = false,
 )
