@@ -1,12 +1,7 @@
 package io.kotest.equals.types
 
-import io.kotest.assertions.Actual
 import io.kotest.assertions.AssertionsConfig
-import io.kotest.assertions.Expected
 import io.kotest.assertions.diffLargeString
-import io.kotest.assertions.failure
-import io.kotest.assertions.print.Printed
-import io.kotest.assertions.print.print
 import io.kotest.common.isIntellij
 import io.kotest.equals.EqualityResult
 import io.kotest.equals.EqualityVerifier
@@ -15,7 +10,7 @@ import io.kotest.equals.SimpleEqualityResult
 class StringEqualityVerifier(
    private val ignoreCase: Boolean,
 ) : EqualityVerifier<String> {
-   private val whiteSpaces = Regex("\r?\n|\r|\t")
+   private val whiteSpaces = Regex("[\n\r\t]")
 
    override fun name(): String = "string equality${if (ignoreCase) " ignoring case" else ""}"
 
@@ -70,7 +65,7 @@ class StringEqualityVerifier(
    private fun equalIgnoringWhitespace(actual: String, expected: String): Boolean {
       val a = whiteSpaces.replace(expected, "")
       val b = whiteSpaces.replace(actual, "")
-      return expected.equals(actual, ignoreCase = ignoreCase)
+      return a.equals(b, ignoreCase = ignoreCase)
    }
 
    private fun diff(expected: String, actual: String, result: SimpleEqualityResult): EqualityResult {
