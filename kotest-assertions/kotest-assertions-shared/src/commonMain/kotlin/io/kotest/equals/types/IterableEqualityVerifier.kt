@@ -46,7 +46,7 @@ open class IterableEqualityVerifier(
          return EqualityResult.equal(actual, expected, this)
       }
 
-
+#
    }
 
    private fun typeCompatibilityEquality(actual: Iterable<*>, expected: Iterable<*>): EqualityResult {
