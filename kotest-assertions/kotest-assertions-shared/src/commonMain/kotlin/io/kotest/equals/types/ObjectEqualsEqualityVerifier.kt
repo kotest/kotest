@@ -16,15 +16,12 @@ open class ObjectEqualsEqualityVerifier<T>(
 
       return when {
          actual === expected -> equal()
+         actual is Map<*, *> && expected is Map<*, *> ->
+            MapEqualityVerifier(strictNumberEquality).areEqual(actual, expected)
+         actual is Regex && expected is Regex ->
+            RegexEqualityVerifier().areEqual(actual, expected)
          actual == expected -> equal()
-         else -> when {
-            actual is Map<*, *> && expected is Map<*, *> ->
-               MapEqualityVerifier(strictNumberEquality).areEqual(actual, expected)
-            actual is Regex && expected is Regex ->
-               RegexEqualityVerifier().areEqual(actual, expected)
-
-            else -> throw RuntimeException("")
-         }
+         else -> throw RuntimeException("")
       }
 //         actual != null && expected != null -> when {
 //            actual is Map<*, *> && expected is Map<*, *> -> MapEq.equals(actual, expected, strictNumberEq)
