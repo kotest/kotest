@@ -6,7 +6,8 @@ import io.kotest.equals.EqualityVerifiers
 import io.kotest.equals.areNotEqual
 
 open class MapEqualityVerifier(
-   private val strictNumberEquality: Boolean
+   private val strictNumberEquality: Boolean,
+   private val ignoreCase: Boolean,
 ) : EqualityVerifier<Map<*, *>> {
    override fun name(): String = "map equality"
 
@@ -22,7 +23,8 @@ open class MapEqualityVerifier(
       val commonKeys = actualKeys.intersect(expectedKeys)
 
       val valuesVerifier = ObjectEqualsEqualityVerifier<Any?>(
-         strictNumberEquality = strictNumberEquality
+         strictNumberEquality = strictNumberEquality,
+         ignoreCase = ignoreCase,
       )
 
       val differentValues = commonKeys.mapNotNull { key ->
@@ -55,12 +57,19 @@ open class MapEqualityVerifier(
       }
    }
 
-   fun withStrictNumberEquality(): MapEqualityVerifier {
-      return MapEqualityVerifier(true)
-   }
+   fun withStrictNumberEquality() = copy(strictNumberEquality = true)
+   fun withoutStrictNumberEquality() = copy(strictNumberEquality = false)
+   fun ignoringCase() = copy(ignoreCase = true)
+   fun caseSensitive() = copy(ignoreCase = false)
 
-   fun withoutStrictNumberEquality(): MapEqualityVerifier {
-      return MapEqualityVerifier(false)
+   private fun copy(
+      strictNumberEquality: Boolean = this.strictNumberEquality,
+      ignoreCase: Boolean = this.ignoreCase,
+   ): MapEqualityVerifier {
+      return MapEqualityVerifier(
+         strictNumberEquality = strictNumberEquality,
+         ignoreCase = ignoreCase
+      )
    }
 
    private fun printValues(collection: Collection<*>): String {
@@ -75,7 +84,9 @@ open class MapEqualityVerifier(
 }
 
 fun EqualityVerifiers.mapEquality(
-   strictNumberEquality: Boolean = false
+   strictNumberEquality: Boolean = false,
+   ignoreCase: Boolean = false,
 ): MapEqualityVerifier = MapEqualityVerifier(
-   strictNumberEquality = strictNumberEquality
+   strictNumberEquality = strictNumberEquality,
+   ignoreCase = ignoreCase,
 )

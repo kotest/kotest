@@ -5,9 +5,10 @@ import io.kotest.equals.EqualityVerifier
 import io.kotest.equals.EqualityVerifiers
 
 open class ObjectEqualsEqualityVerifier<T>(
-   private val strictNumberEquality: Boolean
+   private val strictNumberEquality: Boolean,
+   private val ignoreCase: Boolean,
 ) : EqualityVerifier<T> {
-   override fun name(): String = "object equals functions"
+   override fun name(): String = "object equality"
 
    override fun areEqual(actual: T, expected: T): EqualityResult {
       val equal = { EqualityResult.equal(actual = actual, expected = expected, verifier = this) }
@@ -15,10 +16,9 @@ open class ObjectEqualsEqualityVerifier<T>(
 
       return when {
          actual === expected -> equal()
-         actual is Map<*, *> && expected is Map<*, *> ->
-            MapEqualityVerifier(strictNumberEquality).areEqual(actual, expected)
-         actual is Regex && expected is Regex ->
-            RegexEqualityVerifier().areEqual(actual, expected)
+         actual is String && expected is String -> stringEqualityVerifier().areEqual(actual, expected)
+         actual is Map<*, *> && expected is Map<*, *> -> mapEqualityVerifier().areEqual(actual, expected)
+         actual is Regex && expected is Regex -> regexEqualityVerifier().areEqual(actual, expected)
          actual == expected -> equal()
          else -> throw RuntimeException("")
       }
@@ -43,12 +43,29 @@ open class ObjectEqualsEqualityVerifier<T>(
 //      override fun toString(): String = name()
    }
 
-   fun withStrictNumberEquality(): ObjectEqualsEqualityVerifier<T> {
-      return ObjectEqualsEqualityVerifier(true)
-   }
+   protected fun mapEqualityVerifier(): EqualityVerifier<Map<*, *>> = MapEqualityVerifier(
+      strictNumberEquality = strictNumberEquality,
+      ignoreCase = ignoreCase
+   )
 
-   fun withoutStrictNumberEquality(): ObjectEqualsEqualityVerifier<T> {
-      return ObjectEqualsEqualityVerifier(false)
+   protected fun stringEqualityVerifier(): EqualityVerifier<String> = StringEqualityVerifier(ignoreCase = true)
+
+   protected fun regexEqualityVerifier(): EqualityVerifier<Regex> = RegexEqualityVerifier()
+
+
+   fun withStrictNumberEquality() = copy(strictNumberEquality = true)
+   fun withoutStrictNumberEquality() = copy(strictNumberEquality = false)
+   fun ignoringCase() = copy(ignoreCase = true)
+   fun caseSensitive() = copy(ignoreCase = false)
+
+   private fun copy(
+      strictNumberEquality: Boolean = this.strictNumberEquality,
+      ignoreCase: Boolean = this.ignoreCase,
+   ): ObjectEqualsEqualityVerifier<T> {
+      return ObjectEqualsEqualityVerifier(
+         strictNumberEquality = strictNumberEquality,
+         ignoreCase = ignoreCase
+      )
    }
 }
 

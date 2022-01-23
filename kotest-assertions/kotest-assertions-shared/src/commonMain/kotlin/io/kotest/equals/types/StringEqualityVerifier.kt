@@ -2,12 +2,14 @@ package io.kotest.equals.types
 
 import io.kotest.assertions.AssertionsConfig
 import io.kotest.assertions.diffLargeString
+import io.kotest.assertions.eq.StringEq
 import io.kotest.common.isIntellij
 import io.kotest.equals.EqualityResult
 import io.kotest.equals.EqualityVerifier
+import io.kotest.equals.EqualityVerifiers
 import io.kotest.equals.SimpleEqualityResult
 
-class StringEqualityVerifier(
+open class StringEqualityVerifier(
    private val ignoreCase: Boolean,
 ) : EqualityVerifier<String> {
    private val whiteSpaces = Regex("[\n\r\t]")
@@ -89,3 +91,7 @@ class StringEqualityVerifier(
          AssertionsConfig.multiLineDiff != "simple"
    }
 }
+
+fun EqualityVerifiers.stringEquality(ignoreCase: Boolean = false) = StringEqualityVerifier(
+   ignoreCase = ignoreCase
+)
