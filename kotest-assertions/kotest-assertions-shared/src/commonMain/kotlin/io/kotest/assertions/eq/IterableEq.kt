@@ -8,6 +8,37 @@ import io.kotest.assertions.print.print
 
 object IterableEq : Eq<Iterable<*>> {
 
+   /**
+    * Kotlin [Iterable] provides a traversal mechanism for structures with guaranteed unambiguous ordering (e.g. [List],
+    * [Array]) as well as for structures where ordering is absent or, if provided, is implementation dependent (e.g.
+    * [Set], [Map]).  In addition, all [Collection] implementations are [Iterable] by inheritance.  Equality between
+    * [Iterable] items is ambiguous on account of the uncertainty of the ordering contract on the ensuing traversal.
+    * It stands that [Iterable] equality between ordered and unordered structures, albeit allowed in Kotlin, is
+    * fragile and benefits from best-practice conventions.  For instance, in the case of [Set], optional ordering--if
+    * provided by the implementation--is semantically ambiguous, too.  Consider for instance [LinkedHashSet],
+    * the default implementation of [Set] in Kotlin, where ordering represents the arbitrary order of element
+    * insertion: at least the jvm environment provides an alternative for certain [Set] implementations where
+    * ordering is instead the collation order of the elements.  On account of fragility, and in the interest
+    * of deterministic test outcomes, Kotest allows equality testing between [Actual] and [Expected] [Iterable]s with
+    * guaranteed unambiguous ordering, between [Actual] and [Expected] [Iterable]s with no ordering guarantee (in which
+    * case, equality executes as an unordered containment test), and between ordered [Iterable]s and [LinkedHashSet]
+    * since the latter is ubiquitous and, by implementation, ordered by chronological insertion.  In addition,
+    * custom [Iterable]s may be compared if and only if they are of the same type exactly (i.e. not by inheritance).
+    * Since the ordering contract of custom [Iterable]s is unknown, best practices should be applied.  An equality
+    * comparison executed between disallowed types will result in a best-effort error message with some detail on
+    * the reason why it is disallowed. However, if type information is lost, the failure diagnostic may unfortunately
+    * become confusing.  If so (e.g. the equality test fails, but the error message seems to contradict the failure),
+    * check your types: failure in that case may be from an attempt to compare types for which the test is fragile.
+    * Alternatively, instead of
+    * ```
+    * lhs shouldBe rhs
+    * ```
+    * use your own specialization of  `equals()` as in
+    * ```
+    * lhs.equals(rhs) shouldBe true
+    * ```
+    * if your equality test has ordering requirements that are unique or different from Kotest defaults.
+    * */
    fun isValidIterable(it: Any): Boolean {
       return when (it) {
          is String -> false
