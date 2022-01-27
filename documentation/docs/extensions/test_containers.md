@@ -222,7 +222,7 @@ To do this, pass in a `LifecycleMode` parameter to the `TestContainerExtension` 
 For example:
 
 ```kotlin
-val ds = install(JdbcTestContainerExtension(mysql), LifecycleMode.Root) {
+val ds = install(JdbcTestContainerExtension(mysql, LifecycleMode.Root)) {
   poolName = "myconnectionpool"
   maximumPoolSize = 8
   idleTimeout = 10000
