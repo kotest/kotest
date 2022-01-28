@@ -13,8 +13,8 @@ class ReflectionIgnoringFieldsComparator<T : Any>(
 ) : EqualityVerifier<T> {
    override fun name(): String {
       val plural = if (others.isNotEmpty()) "s" else ""
-      val ignoringPrivate = if (ignorePrivateFields) "ignoring" else "not ignoring"
-      return "reflection comparison ignoring field$plural ${arrayOf(property) + others} and $ignoringPrivate private fields"
+      val ignoringPrivate = if (ignorePrivateFields) "ignoring" else "including"
+      return "reflection comparison ignoring field$plural ${(listOf(property) + others).map { it.name }} and $ignoringPrivate private fields"
    }
 
    fun includingPrivateFields(): ReflectionIgnoringFieldsComparator<T> {
@@ -36,7 +36,7 @@ class ReflectionIgnoringFieldsComparator<T : Any>(
    override fun verify(actual: T, expected: T): EqualityResult {
       val result = beEqualToIgnoringFields(expected, ignorePrivateFields, property, *others).test(actual)
       if(result.passed()) return EqualityResult.equal(actual, expected, this)
-      return EqualityResult.notEqual(actual, expected, this)
+      return EqualityResult.notEqual(actual, expected, this).withDetails { result.failureMessage() }
    }
 
    override fun toString(): String = name()
@@ -44,5 +44,10 @@ class ReflectionIgnoringFieldsComparator<T : Any>(
 
 fun <T : Any> EqualityVerifiers.reflectionIgnoringFields(
    property: KProperty<*>,
-   vararg others: KProperty<*>
-) = ReflectionIgnoringFieldsComparator<T>(property, others)
+   vararg others: KProperty<*>,
+   ignorePrivateFields: Boolean = true,
+) = ReflectionIgnoringFieldsComparator<T>(
+   property = property,
+   others = others,
+   ignorePrivateFields = ignorePrivateFields
+)

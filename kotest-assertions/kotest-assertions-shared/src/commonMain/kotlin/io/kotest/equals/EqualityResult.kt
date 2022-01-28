@@ -9,11 +9,11 @@ interface EqualityResult {
 
    companion object {
       fun <T> equal(actual: T, expected: T, verifier: EqualityVerifier<*>): SimpleEqualityResult {
-         return create(equal = true, actual = expected, expected = actual, verifier = verifier)
+         return create(equal = true, actual = actual, expected = expected, verifier = verifier)
       }
 
       fun <T> notEqual(actual: T, expected: T, verifier: EqualityVerifier<*>): SimpleEqualityResult {
-         return create(equal = false, actual = expected, expected = actual, verifier = verifier)
+         return create(equal = false, actual = actual, expected = expected, verifier = verifier)
       }
 
       private fun <T> create(
@@ -29,7 +29,7 @@ interface EqualityResult {
                   val expectedStr = expected.print().value
                   val actualStr = actual.print().value
                   return@SimpleEqualityResultDetail """
-                     | $expectedStr is ${if (equal) "" else "not"} equal to $actualStr by ${verifier.name()}
+                     | $expectedStr is ${if (equal) "" else "not"}equal to $actualStr by ${verifier.name()}
                      | Expected: $expectedStr
                      | Actual  : $actualStr
                   """.trimMargin()
