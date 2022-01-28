@@ -1,5 +1,6 @@
 package io.kotest.comparators
 
+import io.kotest.equals.EqualityResult
 import io.kotest.equals.EqualityVerifier
 import io.kotest.equals.EqualityVerifiers
 import io.kotest.matchers.MatcherResult
@@ -13,8 +14,11 @@ class ReflectionUsingFieldsComparator<T : Any>(
       return "reflection comparison using fields $fields"
    }
 
-   override fun verify(actual: T, expected: T): MatcherResult =
-      beEqualToUsingFields(expected, *fields).test(actual)
+   override fun verify(actual: T, expected: T): EqualityResult {
+      val result = beEqualToUsingFields(expected, *fields).test(actual)
+      if (result.passed()) return EqualityResult.equal(actual, expected, this)
+      return EqualityResult.notEqual(actual, expected, this)
+   }
 
    override fun toString(): String = name()
 }
