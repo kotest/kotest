@@ -46,6 +46,10 @@ class JsonLiteralsTest : FunSpec(
             "1000.0" shouldEqualJson "1000"
             "5E0" shouldEqualJson "5.0"
             "2E-1" shouldEqualJson "0.2"
+            shouldFail {
+               "1.0E-3" shouldEqualJson "0.0001"
+            }
+            "1.0E-4" shouldEqualJson "0.0001"
          }
 
          test("comparing high-precision floating point numbers") {

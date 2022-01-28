@@ -37,7 +37,27 @@ sealed class JsonNode {
          private val exponentRegex = """.+[eE][+-]?\d+""".toRegex()
       }
 
-      fun asString() = if (content.matches(exponentRegex)) content.toDouble().toString() else content
+      fun lenientEquals(other: NumberNode): Boolean {
+
+         if (other.content == content) return true
+
+         // if one or the other is exponent notation, we must compare by parsed value
+         if (content.matches(exponentRegex) xor other.content.matches(exponentRegex)) {
+            return content.toDouble() == other.content.toDouble()
+         }
+
+         val fractionalZeroesRegex = """(\.\d*)0+$""".toRegex()
+         /**
+          * Removes insignificant part of a number. e.g. 1.0 -> 1 or 3.1400 -> 3.14
+          */
+         fun trimInsignificant(value: String): String =
+            value.replace(fractionalZeroesRegex) { it.groupValues[1].trimEnd('0') }
+               .trimEnd('.')
+
+         return trimInsignificant(content) == trimInsignificant(other.content)
+
+      }
+
    }
 
    object NullNode : JsonNode(), ValueNode

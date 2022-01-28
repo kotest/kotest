@@ -5,7 +5,7 @@ import kotlin.time.ExperimentalTime
 import kotlin.time.TimeMark
 import kotlin.time.TimeSource
 
-val start = TimeSource.Monotonic.markNow()
+val start by lazy { TimeSource.Monotonic.markNow() }
 
 @PublishedApi
 internal fun isLoggingEnabled() =
