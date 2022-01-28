@@ -11,13 +11,13 @@ class ReflectionUsingFieldsComparator<T : Any>(
    private val fields: Array<out KProperty<*>>
 ) : EqualityVerifier<T> {
    override fun name(): String {
-      return "reflection comparison using fields $fields"
+      return "reflection comparison using fields ${fields.map { it.name }}"
    }
 
    override fun verify(actual: T, expected: T): EqualityResult {
       val result = beEqualToUsingFields(expected, *fields).test(actual)
       if (result.passed()) return EqualityResult.equal(actual, expected, this)
-      return EqualityResult.notEqual(actual, expected, this)
+      return EqualityResult.notEqual(actual, expected, this).withDetails { result.failureMessage() }
    }
 
    override fun toString(): String = name()
