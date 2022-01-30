@@ -218,7 +218,7 @@ class ProjectConfiguration {
    var severity: TestCaseSeverityLevel = Defaults.severity
 
    /**
-    * If set to true then the test engine will install a [TestCoroutineDispatcher].
+    * If set to true then the test engine will install a [TestDispatcher].
     *
     * This can be retrieved via `delayController` in your tests.
     *

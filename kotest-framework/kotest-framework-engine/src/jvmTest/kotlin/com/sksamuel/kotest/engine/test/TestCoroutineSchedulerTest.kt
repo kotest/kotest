@@ -9,7 +9,7 @@ import kotlin.time.Duration.Companion.days
 
 @ExperimentalCoroutinesApi
 @ExperimentalStdlibApi
-class DelayControllerTest : FunSpec() {
+class TestCoroutineSchedulerTest : FunSpec() {
    init {
       test("delay controller should control time").config(testCoroutineDispatcher = true) {
          val duration = 1.days

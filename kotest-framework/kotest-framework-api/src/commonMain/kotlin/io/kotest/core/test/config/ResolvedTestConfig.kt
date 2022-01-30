@@ -69,7 +69,7 @@ data class ResolvedTestConfig(
    val coroutineDebugProbes: Boolean,
 
    /**
-    * If set to true then the test engine will install a [TestCoroutineDispatcher].
+    * If set to true then the test engine will install a [TestDispatcher].
     * This can be retrieved via `delayController` in your tests.
     *
     * @see https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-test/index.html

@@ -30,23 +30,29 @@ class TestDispatcherTest : FunSpec() {
 }
 ```
 
-Inside this test, can you retrieve a handle to the dispatcher through the extension value `delayController`.
-Using this controller, you can then manipulate time:
+Inside this test, can you retrieve a handle to the scheduler through the extension val `testCoroutineScheduler`.
+Using this scheduler, you can then manipulate the time:
 
 ```kotlin
-import io.kotest.core.test.delayController
+import io.kotest.core.test.testCoroutineScheduler
 
 class TestDispatcherTest : FunSpec() {
    init {
-      test("foo").config(testCoroutineDispatcher = true) {
-        delayController.advanceTimeBy(1234)
-        val currentTime = delayController.currentTime
+      test("advance time").config(testCoroutineDispatcher = true) {
+        val duration = 1.days
+        // launch a coroutine that would normally sleep for 1 day
+        launch {
+          delay(duration.inWholeMilliseconds)
+        }
+        // move the clock on and the delay in the above coroutine will finish immediately.
+        testCoroutineScheduler.advanceTimeBy(duration.inWholeMilliseconds)
+        val currentTime = testCoroutineScheduler.currentTime
       }
    }
 }
 ```
 
-You can enable test dispatchers for all tests in a spec by setting `testCoroutineDispatcher` to true at the spec level:
+You can enable a test dispatcher for all tests in a spec by setting `testCoroutineDispatcher` to true at the spec level:
 
 
 ```kotlin

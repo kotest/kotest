@@ -246,7 +246,7 @@ abstract class AbstractProjectConfig {
    open var dispatcherAffinity: Boolean? = null
 
    /**
-    * If set to true then the test engine will install a [TestCoroutineDispatcher].
+    * If set to true then the test engine will install a [TestDispatcher].
     *
     * This can be retrieved via `delayController` in your tests.
     *
