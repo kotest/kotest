@@ -1,15 +1,13 @@
-package io.kotest.comparators
+package io.kotest.equals
 
-import io.kotest.equals.EqualityResult
-import io.kotest.equals.Equality
 import io.kotest.matchers.equality.beEqualToUsingFields
 import kotlin.reflect.KProperty
 
-class ReflectionUsingFieldsComparator<T : Any>(
+class ReflectionUsingFieldsEquality<T : Any>(
    private val fields: Array<out KProperty<*>>
 ) : Equality<T> {
    override fun name(): String {
-      return "reflection comparison using fields ${fields.map { it.name }}"
+      return "reflection equality using fields ${fields.map { it.name }}"
    }
 
    override fun verify(actual: T, expected: T): EqualityResult {
@@ -22,4 +20,4 @@ class ReflectionUsingFieldsComparator<T : Any>(
 }
 
 fun <T : Any> Equality.Companion.byReflectionUsingFields(vararg fields: KProperty<*>) =
-   ReflectionUsingFieldsComparator<T>(fields)
+   ReflectionUsingFieldsEquality<T>(fields)

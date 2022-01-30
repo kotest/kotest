@@ -1,26 +1,23 @@
-package io.kotest.comparators
+package io.kotest.equals
 
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.data.forAll
 import io.kotest.data.headers
 import io.kotest.data.row
 import io.kotest.data.table
-import io.kotest.equals.Equality
 import io.kotest.matchers.booleans.shouldBeFalse
 import io.kotest.matchers.booleans.shouldBeTrue
-import io.kotest.matchers.equality.shouldBeEqualToUsingFields
 import io.kotest.matchers.shouldBe
 import org.junit.jupiter.api.assertThrows
 import kotlin.reflect.KVisibility
 import kotlin.reflect.full.memberProperties
 
-class ReflectionUsingFieldsComparatorTest : FunSpec({
+class ReflectionUsingFieldsEqualityTest : FunSpec({
    data class Foo(val a: String, val b: Int, val c: Boolean)
 
    data class Car(val name: String, val price: Int, private val modelNumber: Int)
 
    test("reflection using field equality") {
-      Foo("sammy", 42, true).shouldBeEqualToUsingFields(Foo("sammy", 42, true))
       table(
          headers("actual", "expected", "ignored", "message"),
          row(

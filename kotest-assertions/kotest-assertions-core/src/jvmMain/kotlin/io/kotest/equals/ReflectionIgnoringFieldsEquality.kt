@@ -1,11 +1,9 @@
-package io.kotest.comparators
+package io.kotest.equals
 
-import io.kotest.equals.EqualityResult
-import io.kotest.equals.Equality
 import io.kotest.matchers.equality.beEqualToIgnoringFields
 import kotlin.reflect.KProperty
 
-class ReflectionIgnoringFieldsComparator<T : Any>(
+class ReflectionIgnoringFieldsEquality<T : Any>(
    private val property: KProperty<*>,
    private val others: Array<out KProperty<*>>,
    private val ignorePrivateFields: Boolean = true,
@@ -13,19 +11,19 @@ class ReflectionIgnoringFieldsComparator<T : Any>(
    override fun name(): String {
       val plural = if (others.isNotEmpty()) "s" else ""
       val ignoringPrivate = if (ignorePrivateFields) "ignoring" else "including"
-      return "reflection comparison ignoring field$plural ${(listOf(property) + others).map { it.name }} and $ignoringPrivate private fields"
+      return "reflection equality ignoring field$plural ${(listOf(property) + others).map { it.name }} and $ignoringPrivate private fields"
    }
 
-   fun includingPrivateFields(): ReflectionIgnoringFieldsComparator<T> {
+   fun includingPrivateFields(): ReflectionIgnoringFieldsEquality<T> {
       return withIgnorePrivateFields(false)
    }
 
-   fun ignoringPrivateFields(): ReflectionIgnoringFieldsComparator<T> {
+   fun ignoringPrivateFields(): ReflectionIgnoringFieldsEquality<T> {
       return withIgnorePrivateFields(true)
    }
 
-   private fun withIgnorePrivateFields(value: Boolean): ReflectionIgnoringFieldsComparator<T> {
-      return ReflectionIgnoringFieldsComparator(
+   private fun withIgnorePrivateFields(value: Boolean): ReflectionIgnoringFieldsEquality<T> {
+      return ReflectionIgnoringFieldsEquality(
          property = property,
          others = others,
          ignorePrivateFields = value,
@@ -45,7 +43,7 @@ fun <T : Any> Equality.Companion.byReflectionIgnoringFields(
    property: KProperty<*>,
    vararg others: KProperty<*>,
    ignorePrivateFields: Boolean = true,
-) = ReflectionIgnoringFieldsComparator<T>(
+) = ReflectionIgnoringFieldsEquality<T>(
    property = property,
    others = others,
    ignorePrivateFields = ignorePrivateFields
