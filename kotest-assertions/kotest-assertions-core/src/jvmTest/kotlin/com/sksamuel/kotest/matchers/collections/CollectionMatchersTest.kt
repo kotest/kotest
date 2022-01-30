@@ -4,8 +4,8 @@ import io.kotest.assertions.shouldFail
 import io.kotest.assertions.throwables.shouldNotThrow
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.WordSpec
-import io.kotest.equals.EqualityVerifiers
-import io.kotest.equals.types.objectEquality
+import io.kotest.equals.Equality
+import io.kotest.equals.types.byObjectEquality
 import io.kotest.matchers.collections.atLeastSize
 import io.kotest.matchers.collections.atMostSize
 import io.kotest.matchers.collections.beLargerThan
@@ -315,7 +315,7 @@ class CollectionMatchersTest : WordSpec() {
             val col = listOf(1, 2, 3.0)
 
 
-            val verifier = EqualityVerifiers.objectEquality<Number>(strictNumberEquality = true)
+            val verifier = Equality.byObjectEquality<Number>(strictNumberEquality = true)
 
             col should contain(2, verifier)
             col should contain(3.0, verifier)

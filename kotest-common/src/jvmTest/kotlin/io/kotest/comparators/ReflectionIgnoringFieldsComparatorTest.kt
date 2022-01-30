@@ -5,7 +5,7 @@ import io.kotest.data.forAll
 import io.kotest.data.headers
 import io.kotest.data.row
 import io.kotest.data.table
-import io.kotest.equals.EqualityVerifiers
+import io.kotest.equals.Equality
 import io.kotest.matchers.booleans.shouldBeFalse
 import io.kotest.matchers.booleans.shouldBeTrue
 import io.kotest.matchers.shouldBe
@@ -40,8 +40,8 @@ class ReflectionIgnoringFieldsComparatorTest : FunSpec({
             """.trimMargin()
          ),
       ).forAll { actual, expected, properties, message ->
-         val result = EqualityVerifiers
-            .reflectionIgnoringFields<Foo>(
+         val result = Equality
+            .byReflectionIgnoringFields<Foo>(
                properties.first(),
                *(properties.subList(1, properties.size).toTypedArray())
             )
@@ -68,8 +68,8 @@ class ReflectionIgnoringFieldsComparatorTest : FunSpec({
             "Foo(a=sammy, b=13, c=true) should be equal to Foo(a=stef, b=13, c=false) ignoring fields [b, c]; Failed for [a: \"sammy\" != \"stef\"]"
          ),
       ).forAll { actual, expected, properties, message ->
-         val result = EqualityVerifiers
-            .reflectionIgnoringFields<Foo>(
+         val result = Equality
+            .byReflectionIgnoringFields<Foo>(
                properties.first(),
                *(properties.subList(1, properties.size).toTypedArray())
             ).verify(actual, expected)
@@ -83,8 +83,8 @@ class ReflectionIgnoringFieldsComparatorTest : FunSpec({
       val car1 = Car("C1", 10000, 430)
       val car2 = Car("C1", 123423, 123)
 
-      EqualityVerifiers
-         .reflectionIgnoringFields<Car>(Car::price)
+      Equality
+         .byReflectionIgnoringFields<Car>(Car::price)
          .verify(car1, car2)
          .areEqual()
          .shouldBeTrue()
@@ -94,8 +94,8 @@ class ReflectionIgnoringFieldsComparatorTest : FunSpec({
       val car1 = Car("car", 10000, 707)
       val car2 = Car("car", 9000, 700)
 
-      EqualityVerifiers
-         .reflectionIgnoringFields<Car>(Car::price)
+      Equality
+         .byReflectionIgnoringFields<Car>(Car::price)
          .includingPrivateFields()
          .verify(car1, car2)
          .areEqual()

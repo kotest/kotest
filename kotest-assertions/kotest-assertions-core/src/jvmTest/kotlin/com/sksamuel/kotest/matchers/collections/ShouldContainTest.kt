@@ -2,8 +2,8 @@ package com.sksamuel.kotest.matchers.collections
 
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.WordSpec
-import io.kotest.equals.EqualityVerifiers
-import io.kotest.equals.types.objectEquality
+import io.kotest.equals.Equality
+import io.kotest.equals.types.byObjectEquality
 import io.kotest.matchers.collections.contain
 import io.kotest.matchers.collections.shouldContain
 import io.kotest.matchers.should
@@ -25,7 +25,7 @@ class ShouldContainTest : WordSpec({
 
       "test that a collection contains element with a custom verifier"  {
          val col = listOf(1, 2, 3)
-         val verifier = EqualityVerifiers.objectEquality<Number>(strictNumberEquality = true)
+         val verifier = Equality.byObjectEquality<Number>(strictNumberEquality = true)
 
          shouldThrow<AssertionError> {
             col.shouldContain(2.0, verifier)

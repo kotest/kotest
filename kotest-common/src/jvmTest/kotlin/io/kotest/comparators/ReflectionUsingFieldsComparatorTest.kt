@@ -5,7 +5,7 @@ import io.kotest.data.forAll
 import io.kotest.data.headers
 import io.kotest.data.row
 import io.kotest.data.table
-import io.kotest.equals.EqualityVerifiers
+import io.kotest.equals.Equality
 import io.kotest.matchers.booleans.shouldBeFalse
 import io.kotest.matchers.booleans.shouldBeTrue
 import io.kotest.matchers.equality.shouldBeEqualToUsingFields
@@ -59,8 +59,8 @@ class ReflectionUsingFieldsComparatorTest : FunSpec({
             """.trimMargin()
          ),
       ).forAll { actual, expected, properties, message ->
-         val result = EqualityVerifiers
-            .reflectionUsingFields<Foo>(*(properties.toTypedArray()))
+         val result = Equality
+            .byReflectionUsingFields<Foo>(*(properties.toTypedArray()))
             .verify(actual, expected)
 
          result.areEqual().shouldBeTrue()
@@ -84,8 +84,8 @@ class ReflectionUsingFieldsComparatorTest : FunSpec({
             "Foo(a=sammy, b=13, c=true) should be equal to Foo(a=stef, b=13, c=false) using fields [a, c]; Failed for [a: \"sammy\" != \"stef\", c: true != false]"
          ),
       ).forAll { actual, expected, properties, message ->
-         val result = EqualityVerifiers
-            .reflectionUsingFields<Foo>(*properties.toTypedArray())
+         val result = Equality
+            .byReflectionUsingFields<Foo>(*properties.toTypedArray())
             .verify(actual, expected)
 
          result.areEqual().shouldBeFalse()
@@ -99,8 +99,8 @@ class ReflectionUsingFieldsComparatorTest : FunSpec({
       val aPrivateField = Car::class.memberProperties.find { it.visibility == KVisibility.PRIVATE }!!
 
       assertThrows<IllegalArgumentException>("Fields of only public visibility are allowed to be use for used for checking equality") {
-         EqualityVerifiers
-            .reflectionUsingFields<Car>(aPrivateField)
+         Equality
+            .byReflectionUsingFields<Car>(aPrivateField)
             .verify(car1, car2)
       }
    }

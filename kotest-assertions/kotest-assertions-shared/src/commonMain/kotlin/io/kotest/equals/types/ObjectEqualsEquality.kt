@@ -2,12 +2,11 @@ package io.kotest.equals.types
 
 import io.kotest.assertions.eq.eq
 import io.kotest.equals.EqualityResult
-import io.kotest.equals.EqualityVerifier
-import io.kotest.equals.EqualityVerifiers
+import io.kotest.equals.Equality
 
-open class ObjectEqualsEqualityVerifier<T>(
+open class ObjectEqualsEquality<T>(
    private val strictNumberEquality: Boolean,
-) : EqualityVerifier<T> {
+) : Equality<T> {
    override fun name(): String = "object equality"
 
    override fun verify(actual: T, expected: T): EqualityResult {
@@ -21,9 +20,8 @@ open class ObjectEqualsEqualityVerifier<T>(
    }
 }
 
-
-fun <T> EqualityVerifiers.objectEquality(
+fun <T> Equality.Companion.byObjectEquality(
    strictNumberEquality: Boolean = false,
-): ObjectEqualsEqualityVerifier<T> = ObjectEqualsEqualityVerifier(
+) = ObjectEqualsEquality<T>(
    strictNumberEquality = strictNumberEquality,
 )

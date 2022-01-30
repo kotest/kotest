@@ -8,11 +8,11 @@ interface EqualityResult {
    fun details(): EqualityResultDetails
 
    companion object {
-      fun <T> equal(actual: T, expected: T, verifier: EqualityVerifier<*>): SimpleEqualityResult {
+      fun <T> equal(actual: T, expected: T, verifier: Equality<*>): SimpleEqualityResult {
          return create(equal = true, actual = actual, expected = expected, verifier = verifier)
       }
 
-      fun <T> notEqual(actual: T, expected: T, verifier: EqualityVerifier<*>): SimpleEqualityResult {
+      fun <T> notEqual(actual: T, expected: T, verifier: Equality<*>): SimpleEqualityResult {
          return create(equal = false, actual = actual, expected = expected, verifier = verifier)
       }
 
@@ -20,7 +20,7 @@ interface EqualityResult {
          equal: Boolean,
          actual: T,
          expected: T,
-         verifier: EqualityVerifier<*>
+         verifier: Equality<*>
       ): SimpleEqualityResult {
          return SimpleEqualityResult(
             equal = equal,
