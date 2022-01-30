@@ -19,21 +19,21 @@ class ReflectionIgnoringFieldsEqualityTest : FunSpec({
          headers("actual", "expected", "ignored", "message"),
          row(
             Foo("sammy", 1, true), Foo("sammy", 1, false), listOf(Foo::c), """
-                | Foo(a=sammy, b=1, c=false) is equal to Foo(a=sammy, b=1, c=true) by reflection comparison ignoring field [c] and ignoring private fields
+                | Foo(a=sammy, b=1, c=false) is equal to Foo(a=sammy, b=1, c=true) by reflection equality ignoring field [c] and ignoring private fields
                 | Expected: Foo(a=sammy, b=1, c=false)
                 | Actual  : Foo(a=sammy, b=1, c=true)
             """.trimMargin()
          ),
          row(
             Foo("sammy", 13, true), Foo("sammy", 345435, false), listOf(Foo::b, Foo::c), """
-                | Foo(a=sammy, b=345435, c=false) is equal to Foo(a=sammy, b=13, c=true) by reflection comparison ignoring fields [b, c] and ignoring private fields
+                | Foo(a=sammy, b=345435, c=false) is equal to Foo(a=sammy, b=13, c=true) by reflection equality ignoring fields [b, c] and ignoring private fields
                 | Expected: Foo(a=sammy, b=345435, c=false)
                 | Actual  : Foo(a=sammy, b=13, c=true)
             """.trimMargin()
          ),
          row(
             Foo("sammy", 13, true), Foo("sammy", 345435, true), listOf(Foo::b), """
-                | Foo(a=sammy, b=345435, c=true) is equal to Foo(a=sammy, b=13, c=true) by reflection comparison ignoring field [b] and ignoring private fields
+                | Foo(a=sammy, b=345435, c=true) is equal to Foo(a=sammy, b=13, c=true) by reflection equality ignoring field [b] and ignoring private fields
                 | Expected: Foo(a=sammy, b=345435, c=true)
                 | Actual  : Foo(a=sammy, b=13, c=true)
             """.trimMargin()

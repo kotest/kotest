@@ -22,35 +22,35 @@ class ReflectionUsingFieldsEqualityTest : FunSpec({
          headers("actual", "expected", "ignored", "message"),
          row(
             Foo("sammy", 1, true), Foo("sammy", 1, false), listOf(Foo::a, Foo::b), """
-               | Foo(a=sammy, b=1, c=false) is equal to Foo(a=sammy, b=1, c=true) by reflection comparison using fields [a, b]
+               | Foo(a=sammy, b=1, c=false) is equal to Foo(a=sammy, b=1, c=true) by reflection equality using fields [a, b]
                | Expected: Foo(a=sammy, b=1, c=false)
                | Actual  : Foo(a=sammy, b=1, c=true)
             """.trimMargin()
          ),
          row(
             Foo("sammy", 13, true), Foo("sammy", 345435, false), listOf(Foo::a), """
-               | Foo(a=sammy, b=345435, c=false) is equal to Foo(a=sammy, b=13, c=true) by reflection comparison using fields [a]
+               | Foo(a=sammy, b=345435, c=false) is equal to Foo(a=sammy, b=13, c=true) by reflection equality using fields [a]
                | Expected: Foo(a=sammy, b=345435, c=false)
                | Actual  : Foo(a=sammy, b=13, c=true)
             """.trimMargin()
          ),
          row(
             Foo("sammy", 13, true), Foo("sammy", 345435, true), listOf(Foo::a, Foo::c), """
-               | Foo(a=sammy, b=345435, c=true) is equal to Foo(a=sammy, b=13, c=true) by reflection comparison using fields [a, c]
+               | Foo(a=sammy, b=345435, c=true) is equal to Foo(a=sammy, b=13, c=true) by reflection equality using fields [a, c]
                | Expected: Foo(a=sammy, b=345435, c=true)
                | Actual  : Foo(a=sammy, b=13, c=true)
             """.trimMargin()
          ),
          row(
             Foo("sammy", 13, true), Foo("sammy", 345435, true), listOf(Foo::c, Foo::a), """
-               | Foo(a=sammy, b=345435, c=true) is equal to Foo(a=sammy, b=13, c=true) by reflection comparison using fields [c, a]
+               | Foo(a=sammy, b=345435, c=true) is equal to Foo(a=sammy, b=13, c=true) by reflection equality using fields [c, a]
                | Expected: Foo(a=sammy, b=345435, c=true)
                | Actual  : Foo(a=sammy, b=13, c=true)
             """.trimMargin()
          ),
          row(
             Foo("sammy", 42, true), Foo("sammy", 42, true), listOf(), """
-               | Foo(a=sammy, b=42, c=true) is equal to Foo(a=sammy, b=42, c=true) by reflection comparison using fields []
+               | Foo(a=sammy, b=42, c=true) is equal to Foo(a=sammy, b=42, c=true) by reflection equality using fields []
                | Expected: Foo(a=sammy, b=42, c=true)
                | Actual  : Foo(a=sammy, b=42, c=true)
             """.trimMargin()
