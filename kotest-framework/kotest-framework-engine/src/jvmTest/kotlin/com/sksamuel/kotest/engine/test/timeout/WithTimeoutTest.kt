@@ -6,8 +6,7 @@ import io.kotest.engine.listener.CollectingTestEngineListener
 import io.kotest.matchers.shouldBe
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.withTimeout
-import kotlin.time.Duration.Companion.minutes
-import kotlin.time.Duration.Companion.seconds
+import kotlin.time.Duration
 import kotlin.time.ExperimentalTime
 
 @ExperimentalTime
@@ -29,8 +28,8 @@ class WithTimeoutTest : FunSpec() {
 private class WithTimeoutSpec : FunSpec() {
    init {
       test("a") {
-         withTimeout(1.seconds) {
-            delay(1.minutes)
+         withTimeout(Duration.seconds(1)) {
+            delay(Duration.minutes(1))
          }
       }
    }

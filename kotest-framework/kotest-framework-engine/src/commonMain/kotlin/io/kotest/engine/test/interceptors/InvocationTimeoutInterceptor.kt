@@ -9,7 +9,7 @@ import io.kotest.mpp.Logger
 import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.withTimeoutOrNull
 import kotlin.math.min
-import kotlin.time.Duration.Companion.milliseconds
+import kotlin.time.Duration
 
 /**
  * Installs an invocation timeout.
@@ -29,10 +29,10 @@ internal object InvocationTimeoutInterceptor : TestExecutionInterceptor {
       } else {
 
          // note: the invocation timeout cannot be larger than the test case timeout
-         val timeout = min(
+         val timeout = Duration.milliseconds(min(
             testCase.config.timeout.inWholeMilliseconds,
             testCase.config.invocationTimeout.inWholeMilliseconds
-         ).milliseconds
+         ))
 
          logger.log { Pair(testCase.name.testName, "Switching context to add invocationTimeout $timeout") }
 
