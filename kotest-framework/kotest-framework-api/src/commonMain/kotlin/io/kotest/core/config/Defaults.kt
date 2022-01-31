@@ -8,7 +8,6 @@ import io.kotest.core.test.AssertionMode
 import io.kotest.core.test.TestCaseOrder
 import io.kotest.core.test.TestCaseSeverityLevel
 import io.kotest.core.test.config.TestCaseConfig
-import kotlin.time.Duration
 
 object Defaults {
 
@@ -33,8 +32,8 @@ object Defaults {
 
    const val parallelism: Int = 1
 
-   val defaultTimeout = Duration.minutes(10)
-   val defaultInvocationTimeout = Duration.minutes(10)
+   const val defaultTimeoutMillis = 10 * 60 * 1000L
+   const val defaultInvocationTimeoutMillis =  10 * 60 * 1000L
 
    const val failOnIgnoredTests: Boolean = false
    const val failfast: Boolean = false
