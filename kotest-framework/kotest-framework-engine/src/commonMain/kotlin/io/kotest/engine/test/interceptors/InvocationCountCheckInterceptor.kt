@@ -23,7 +23,7 @@ internal object InvocationCountCheckInterceptor : TestExecutionInterceptor {
       return when {
          testCase.type == TestType.Test || testCase.config.invocations <= 1 -> test(testCase, scope)
          else -> TestResult.Error(
-            Duration.Companion.ZERO,
+            Duration.ZERO,
             Exception("Cannot execute multiple invocations in parent tests")
          )
       }
