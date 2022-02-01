@@ -51,7 +51,7 @@ internal class BlockedThreadTimeoutInterceptor(
          val task = scheduler.schedule({
             logger.log { Pair(testCase.name.testName, "Scheduled timeout has hit") }
             executor.shutdownNow()
-         }, testCase.config.timeout.inWholeMilliseconds, TimeUnit.MILLISECONDS)
+         }, testCase.config.timeout?.inWholeMilliseconds ?: 10000000000L, TimeUnit.MILLISECONDS)
 
          try {
             withContext(executor.asCoroutineDispatcher()) {
@@ -61,7 +61,7 @@ internal class BlockedThreadTimeoutInterceptor(
             logger.log { Pair(testCase.name.testName, "Caught InterruptedException ${t.message}") }
             TestResult.Error(
                start.elapsedNow(),
-               BlockedThreadTestTimeoutException(testCase.config.timeout, testCase.name.testName)
+               BlockedThreadTestTimeoutException(testCase.config.timeout ?: Duration.INFINITE, testCase.name.testName)
             )
          } finally {
             // we should stop the scheduled task from running just to be tidy

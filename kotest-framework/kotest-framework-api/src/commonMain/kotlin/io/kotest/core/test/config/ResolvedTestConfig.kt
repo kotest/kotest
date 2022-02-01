@@ -30,13 +30,13 @@ data class ResolvedTestConfig(
     *
     * To set a timeout per invocation see [invocationTimeout].
     */
-   val timeout: Duration,
+   val timeout: Duration?,
 
    /**
     * This timeout applies to individual invocations of a test case. If invocations is 1, then this
     * has the same effect as timeout. To set a timeout across all invocations then see [timeout].
     */
-   val invocationTimeout: Duration,
+   val invocationTimeout: Duration?,
 
    /**
     * [Tag]s that are applied to this test case, in addition to any tags declared on
@@ -98,8 +98,8 @@ data class ResolvedTestConfig(
          assertSoftly = false,
          blockingTest = false,
          extensions = emptyList(),
-         timeout = Duration.INFINITE,
-         invocationTimeout = Duration.INFINITE,
+         timeout = null,
+         invocationTimeout = null,
          tags = emptySet(),
          severity = TestCaseSeverityLevel.TRIVIAL,
          failfast = false,

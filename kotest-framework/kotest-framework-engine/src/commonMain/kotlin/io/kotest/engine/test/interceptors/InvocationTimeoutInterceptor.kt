@@ -29,10 +29,10 @@ internal object InvocationTimeoutInterceptor : TestExecutionInterceptor {
       } else {
 
          // note: the invocation timeout cannot be larger than the test case timeout
-         val timeout = Duration.milliseconds(min(
-            testCase.config.timeout.inWholeMilliseconds,
-            testCase.config.invocationTimeout.inWholeMilliseconds
-         ))
+         val timeout = min(
+            testCase.config.timeout?.inWholeMilliseconds ?: 10000000,
+            testCase.config.invocationTimeout?.inWholeMilliseconds ?: 10000000
+         )
 
          logger.log { Pair(testCase.name.testName, "Switching context to add invocationTimeout $timeout") }
 
@@ -41,7 +41,7 @@ internal object InvocationTimeoutInterceptor : TestExecutionInterceptor {
             // user level timeouts will throw an exception, ours will return null
             withTimeoutOrNull(timeout) {
                test(testCase, scope.withCoroutineContext(coroutineContext))
-            } ?: throw TestTimeoutException(timeout, testCase.name.testName)
+            } ?: throw TestTimeoutException(Duration.milliseconds(timeout), testCase.name.testName)
          } catch (t: TimeoutCancellationException) {
             logger.log { Pair(testCase.name.testName, "Caught user timeout $t") }
             throw t
