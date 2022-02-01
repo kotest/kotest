@@ -26,6 +26,7 @@ class TestWithConfigBuilder(
       enabledIf: EnabledIf? = null,
       invocationTimeout: Duration? = null,
       severity: TestCaseSeverityLevel? = null,
+      blockingTest: Boolean? = null,
       test: suspend TestScope.() -> Unit
    ) {
 
@@ -40,7 +41,8 @@ class TestWithConfigBuilder(
          invocationTimeout = invocationTimeout,
          invocations = invocations,
          threads = threads,
-         severity = severity
+         severity = severity,
+         blockingTest = blockingTest,
       )
 
       context.registerTest(name, xdisabled, config, test)

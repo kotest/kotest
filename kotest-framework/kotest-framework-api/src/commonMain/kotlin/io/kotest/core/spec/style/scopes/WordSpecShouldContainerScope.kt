@@ -40,6 +40,7 @@ class WordSpecShouldContainerScope(
       enabledIf: EnabledIf? = null,
       invocationTimeout: Duration? = null,
       severity: TestCaseSeverityLevel? = null,
+      blockingTest: Boolean? = null,
       test: suspend TestScope.() -> Unit
    ) {
       TestWithConfigBuilder(
@@ -47,16 +48,17 @@ class WordSpecShouldContainerScope(
          context = this@WordSpecShouldContainerScope,
          xdisabled = false,
       ).config(
-         enabled,
-         invocations,
-         threads,
-         tags,
-         timeout,
-         extensions,
-         enabledIf,
-         invocationTimeout,
-         severity,
-         test
+         enabled = enabled,
+         invocations = invocations,
+         threads = threads,
+         tags = tags,
+         timeout = timeout,
+         extensions = extensions,
+         enabledIf = enabledIf,
+         invocationTimeout = invocationTimeout,
+         severity = severity,
+         blockingTest = blockingTest,
+         test = test
       )
    }
 
