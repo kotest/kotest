@@ -187,7 +187,7 @@ class ProjectConfiguration {
     *
     * Defaults to [Defaults.defaultTimeoutMillis].
     */
-   var timeout: Long = Defaults.defaultTimeoutMillis
+   var timeout: Long? = null
 
    /**
     * Returns the timeout for any single invocation of a test.
@@ -196,7 +196,7 @@ class ProjectConfiguration {
     *
     * Defaults to [Defaults.defaultInvocationTimeout].
     */
-   var invocationTimeout: Long = Defaults.defaultInvocationTimeoutMillis
+   var invocationTimeout: Long? = null
 
    /**
     * A timeout that is applied to the overall project if not null,

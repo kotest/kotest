@@ -39,12 +39,12 @@ internal fun resolveConfig(
       }
    }
 
-   val timeout = config?.timeout
+   val timeout: Duration? = config?.timeout
       ?: parent?.config?.timeout
       ?: spec.timeout?.toMillis()
       ?: spec.timeout()?.toMillis()
       ?: defaultTestConfig.timeout
-      ?: configuration.timeout.toMillis()
+      ?: configuration.timeout?.toMillis()
 
    val threads = config?.threads
       ?: spec.threads
@@ -54,12 +54,12 @@ internal fun resolveConfig(
    val invocations = config?.invocations
       ?: defaultTestConfig.invocations
 
-   val invocationTimeout = config?.invocationTimeout
+   val invocationTimeout: Duration? = config?.invocationTimeout
       ?: parent?.config?.invocationTimeout
       ?: spec.invocationTimeout?.toMillis()
       ?: spec.invocationTimeout()?.toMillis()
       ?: defaultTestConfig.invocationTimeout
-      ?: configuration.invocationTimeout.toMillis()
+      ?: configuration.invocationTimeout?.toMillis()
 
    val extensions = (config?.listeners ?: emptyList()) +
       (config?.extensions ?: emptyList()) +
@@ -84,5 +84,4 @@ internal fun resolveConfig(
    )
 }
 
-fun Long.toMillis(): Duration = Duration.milliseconds(this)
-fun Long?.toMillis(): Duration? = if (this == null) null else Duration.milliseconds(this)
+fun Long.toMillis(): Duration? = Duration.milliseconds(this)
