@@ -129,7 +129,7 @@ val container = install(TestContainerExtension("redis:5.0.3-alpine")) {
 And then using a strongly typed container:
 
 ```kotlin
-val kafka = install(TestContainerExtension(ElasticsearchContainer(ELASTICSEARCH_IMAGE) )) {
+val elasticsearch = install(TestContainerExtension(ElasticsearchContainer(ELASTICSEARCH_IMAGE) )) {
   withPassword(ELASTICSEARCH_PASSWORD)
 }
 ```
@@ -151,7 +151,7 @@ See #lifecycle
 For Kafka, this module provides convenient extension methods to create a consumer, producer or admin client from the container.
 
 ```kotlin
-val kafka = install(TestContainerExtension(KafkaContainer("confluentinc/cp-kafka:6.2.1"))) {
+val kafka = install(TestContainerExtension(KafkaContainer(DockerImageName.parse("confluentinc/cp-kafka:6.2.1")))) {
   withEmbeddedZookeeper()
 }
 ```
@@ -160,10 +160,19 @@ Inside the configuration lambda, we can specify options for the Kafka container,
 or kafka broker properties through env vars. For example, to enable dynamic topic creation:
 
 ```kotlin
-val kafka = install(TestContainerExtension(KafkaContainer("confluentinc/cp-kafka:6.2.1"))) {
+val kafka = install(TestContainerExtension(KafkaContainer(DockerImageName.parse("confluentinc/cp-kafka:6.2.1")))) {
   withEnv("KAFKA_AUTO_CREATE_TOPICS_ENABLE", "true")
 }
 ```
+:::caution Note for Apple Silicon/ARM Users
+Kafka only publishes a `linux/amd64` version of the container. If you're on an Apple Silicon/ARM architecture computer,
+you'll need to explicitly specify the platform with the following added to the configuration lambda outlined above:
+```kotlin
+withCreateContainerCmdModifier { it.withPlatform("linux/amd64") }
+```
+:::
+
+
 
 Once we have the container installed, we can create a client using the following methods:
 
@@ -183,7 +192,7 @@ lambda to set max poll to 1.
 class KafkaTestContainerExtensionTest : FunSpec() {
   init {
 
-    val kafka = install(KafkaTestContainerExtension("confluentinc/cp-kafka:6.2.1")) {
+    val kafka = install(TestContainerExtension(KafkaContainer(DockerImageName.parse("confluentinc/cp-kafka:6.2.1")))) {
       withEmbeddedZookeeper()
     }
 
