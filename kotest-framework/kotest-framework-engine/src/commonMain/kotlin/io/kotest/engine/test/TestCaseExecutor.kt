@@ -28,6 +28,7 @@ import io.kotest.engine.test.interceptors.blockedThreadTimeoutInterceptor
 import io.kotest.engine.test.interceptors.coroutineDispatcherFactoryInterceptor
 import io.kotest.engine.test.interceptors.coroutineErrorCollectorInterceptor
 import io.kotest.mpp.Logger
+import kotlin.time.Duration
 import kotlin.time.TimeSource
 
 /**
@@ -71,7 +72,11 @@ class TestCaseExecutor(
       val innerExecute: suspend (TestCase, TestScope) -> TestResult = { tc, scope ->
          logger.log { Pair(testCase.name.testName, "Executing test") }
          tc.test(scope)
-         TestResult.Success(timeMark.elapsedNow())
+         try {
+            TestResult.Success(timeMark.elapsedNow())
+         } catch (e: Throwable) {
+            TestResult.Success(Duration.ZERO) // workaround for kotlin 1.5
+         }
       }
 
       return interceptors.foldRight(innerExecute) { ext, fn ->
