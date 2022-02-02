@@ -39,14 +39,14 @@ class TestInvocationInterceptor(
          logger.log { Pair(testCase.name.testName, "Test returned without error") }
          try {
             TestResult.Success(timeMark.elapsedNow())
-         } catch (e: Exception) {
+         } catch (e: Throwable) {
             TestResult.Success(Duration.ZERO) // workaround for kotlin 1.5
          }
       } catch (t: Throwable) {
          logger.log { Pair(testCase.name.testName, "Test threw error $t") }
          try {
             createTestResult(timeMark.elapsedNow(), t)
-         } catch (e: Exception) {
+         } catch (e: Throwable) {
             TestResult.Error(Duration.ZERO, t) // workaround for kotlin 1.5
          }
       }
