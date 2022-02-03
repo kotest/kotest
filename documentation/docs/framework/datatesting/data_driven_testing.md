@@ -4,14 +4,15 @@ title: Introduction
 slug: data-driven-testing.html
 ---
 
+:::tip "Required Module"
+Before data-driven-testing can be used, you need to add the module `kotest-framework-datatest` to your build.
+:::
+
 
 :::note
 This section covers the new and improved data driven testing support that was released with Kotest 4.6.0.
-Before it can be used, you need to add the module `kotest-framework-datatest` to your build.
-
 To view the documentation for the previous data test support, [click here](data_driven_testing_4.2.0.md)
 :::
-
 
 
 When writing tests that are logic based, one or two specific code paths that work through particular scenarios make
