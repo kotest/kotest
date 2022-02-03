@@ -4,7 +4,7 @@ title: Introduction
 slug: data-driven-testing.html
 ---
 
-:::tip "Required Module"
+:::tip Required Module
 Before data-driven-testing can be used, you need to add the module `kotest-framework-datatest` to your build.
 :::
 
