@@ -109,6 +109,33 @@ This extension also supports the `LifecycleMode` flag to control when the contai
 See #lifecycle
 :::
 
+#### Initializing the Database Container
+There are two ways to initialize the database container: via a _single_ init script added to the TestContainer config,
+or via a list of scripts added to the JdbcTestContainerExtension config lambda.
+
+If adding a _**single**_ script, via the TestContainer config, simply add the script to the TestContainer's `withInitScript` config option, like so:
+```kotlin
+val mysql = MySQLContainer<Nothing>("mysql:8.0.26").apply {
+         withInitScript("init.sql")
+         startupAttempts = 1
+         withUrlParam("connectionTimeZone", "Z")
+         withUrlParam("zeroDateTimeBehavior", "convertToNull")
+      }
+```
+
+If you have multiple init scripts or sets of changesets, you can add them as a list to the `dbInitScripts` extension config lambda, like so:
+```kotlin
+val ds = install(JdbcTestContainerExtension(mysql, LifecycleMode.Leaf)) {
+      maximumPoolSize = 8
+      minimumIdle = 4
+      dbInitScripts = listOf("/init.sql", "/sql-changesets")
+   }
+```
+The list can contain absolute or relative paths, for files and folders on the filesystem or on the classpath.
+
+The extension will process the list provided in order. If the list item is a folder, it will process all `.sql` scripts in the folder,
+sorted lexicographically. These scripts run every time the container is started, so it supports the `LifecycleMode` flag.
+
 
 ### General Containers
 
