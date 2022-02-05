@@ -7,6 +7,10 @@ import org.jetbrains.kotlin.backend.common.ir.addChild
 import org.jetbrains.kotlin.backend.common.lower.DeclarationIrBuilder
 import org.jetbrains.kotlin.cli.common.messages.MessageCollector
 import org.jetbrains.kotlin.cli.common.toLogger
+import org.jetbrains.kotlin.ir.UNDEFINED_OFFSET
+import org.jetbrains.kotlin.ir.builders.IrBlockBuilder
+import org.jetbrains.kotlin.ir.builders.IrSingleStatementBuilder
+import org.jetbrains.kotlin.ir.builders.Scope
 import org.jetbrains.kotlin.ir.builders.declarations.addGetter
 import org.jetbrains.kotlin.ir.builders.declarations.buildField
 import org.jetbrains.kotlin.ir.builders.declarations.buildProperty
@@ -19,7 +23,9 @@ import org.jetbrains.kotlin.ir.declarations.IrFile
 import org.jetbrains.kotlin.ir.declarations.IrModuleFragment
 import org.jetbrains.kotlin.ir.declarations.name
 import org.jetbrains.kotlin.ir.util.constructors
+import org.jetbrains.kotlin.ir.util.file
 import org.jetbrains.kotlin.ir.util.getSimpleFunction
+import org.jetbrains.kotlin.ir.util.irCall
 import org.jetbrains.kotlin.ir.util.kotlinFqName
 import org.jetbrains.kotlin.name.FqName
 import org.jetbrains.kotlin.name.Name
@@ -58,10 +64,17 @@ class SpecIrGenerationExtension(private val messageCollector: MessageCollector) 
                launcherClass.getSimpleFunction(EntryPoint.WithTeamCityListenerMethodName)
                   ?: error("Cannot find function ${EntryPoint.WithTeamCityListenerMethodName}")
 
+            val eagerAnnotationName = FqName("kotlin.native.EagerInitialization")
+            val eagerAnnotation = pluginContext.referenceClass(eagerAnnotationName)
+               ?: error("Cannot find eager initialisation annotation class $eagerAnnotationName")
+
+            val eagerAnnotationConstructor = eagerAnnotation.constructors.single()
+
             val launcher = pluginContext.irFactory.buildProperty {
                name = Name.identifier(EntryPoint.LauncherValName)
             }.apply {
                parent = file
+               annotations += IrSingleStatementBuilder(pluginContext, Scope(this.symbol), UNDEFINED_OFFSET, UNDEFINED_OFFSET).build { irCall(eagerAnnotationConstructor) }
 
                backingField = pluginContext.irFactory.buildField {
                   type = pluginContext.irBuiltIns.unitType
