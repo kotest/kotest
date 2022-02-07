@@ -35,19 +35,19 @@ jobs:
             run: ./gradlew mingwX64Test --scan
 
          -  name: Run macOS tests
-            if: matrix.os == 'macOS-latest'
+            if: matrix.os == 'macos-11'
             run: ./gradlew macosX64Test macosArm64TestKlibrary --scan
 
          -  name: Run watchOS tests
-            if: matrix.os == 'macOS-latest'
+            if: matrix.os == 'macos-11'
             run: ./gradlew watchosArm32TestKlibrary watchosArm64TestKlibrary watchosSimulatorArm64TestKlibrary watchosX86Test watchosX64Test --scan
 
          -  name: Run tvOS tests
-            if: matrix.os == 'macOS-latest'
+            if: matrix.os == 'macos-11'
             run: ./gradlew tvosArm64TestKlibrary tvosSimulatorArm64TestKlibrary tvosX64Test --scan
 
          -  name: Run iOS tests
-            if: matrix.os == 'macOS-latest'
+            if: matrix.os == 'macos-11'
             run: ./gradlew iosArm32TestKlibrary iosArm64TestKlibrary iosSimulatorArm64TestKlibrary iosX64Test --scan
 
          -  name: Bundle the build report
