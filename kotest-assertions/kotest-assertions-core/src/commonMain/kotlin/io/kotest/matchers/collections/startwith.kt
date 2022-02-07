@@ -27,13 +27,16 @@ infix fun <T> Array<T>.shouldNotStartWith(slice: Array<T>) = asList().shouldNotS
 infix fun <T> List<T>.shouldNotStartWith(element: T) = this shouldNot startWith(listOf(element))
 infix fun <T> List<T>.shouldNotStartWith(slice: Collection<T>) = this shouldNot startWith(slice)
 
-fun <T> startWith(slice: Collection<T>) = object : Matcher<List<T>> {
-   override fun test(value: List<T>) =
-      MatcherResult(
-         value.subList(0, slice.size) == slice,
-         { "List should start with ${slice.printed().value} but was ${value.take(slice.size).printed().value}" },
-         { "List should not start with ${slice.printed().value}" }
+fun <T> startWith(expectedSlice: Collection<T>) = object : Matcher<List<T>> {
+   override fun test(value: List<T>): MatcherResult {
+      val valueSlice = value.take(expectedSlice.size)
+
+      return MatcherResult(
+         valueSlice == expectedSlice,
+         { "List should start with ${expectedSlice.printed().value} but was ${valueSlice.printed().value}" },
+         { "List should not start with ${expectedSlice.printed().value}" }
       )
+   }
 }
 
 infix fun <T> Iterable<T>.shouldEndWith(element: T) = toList().shouldEndWith(listOf(element))
@@ -59,11 +62,14 @@ infix fun <T> Array<T>.shouldNotEndWith(slice: Array<T>) = asList().shouldNotEnd
 infix fun <T> List<T>.shouldNotEndWith(element: T) = this shouldNot endWith(listOf(element))
 infix fun <T> List<T>.shouldNotEndWith(slice: Collection<T>) = this shouldNot endWith(slice)
 
-fun <T> endWith(slice: Collection<T>) = object : Matcher<List<T>> {
-   override fun test(value: List<T>) =
-      MatcherResult(
-         value.subList(value.size - slice.size, value.size) == slice,
-         { "List should end with ${slice.printed().value} but was ${value.take(slice.size).printed().value}" },
-         { "List should not end with ${slice.printed().value}" }
+fun <T> endWith(expectedSlice: Collection<T>) = object : Matcher<List<T>> {
+   override fun test(value: List<T>): MatcherResult {
+      val valueSlice = value.takeLast(expectedSlice.size)
+
+      return MatcherResult(
+         valueSlice == expectedSlice,
+         { "List should end with ${expectedSlice.printed().value} but was ${valueSlice.printed().value}" },
+         { "List should not end with ${expectedSlice.printed().value}" }
       )
+   }
 }

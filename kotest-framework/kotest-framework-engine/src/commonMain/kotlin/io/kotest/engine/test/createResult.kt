@@ -4,7 +4,6 @@ import io.kotest.core.test.TestResult
 import io.kotest.mpp.bestName
 import kotlin.jvm.JvmName
 import kotlin.time.Duration
-import kotlin.time.Duration.Companion.milliseconds
 
 /**
  * Returns a [TestResult] derived from a throwable.
@@ -19,7 +18,7 @@ import kotlin.time.Duration.Companion.milliseconds
    ReplaceWith("createTestResult(duration.milliseconds, error)")
 )
 fun createTestResult(duration: Long, error: Throwable?): TestResult =
-   createTestResult(duration.milliseconds, error)
+   createTestResult(Duration.milliseconds(duration), error)
 
 fun createTestResult(duration: Duration, error: Throwable?): TestResult = when {
    error == null -> TestResult.Success(duration)
@@ -33,7 +32,7 @@ fun createTestResult(duration: Duration, error: Throwable?): TestResult = when {
    "Replaced with Throwable.toTestResult(Duration)",
    ReplaceWith("createTestResult(duration.milliseconds, this)", "kotlin.time.milliseconds")
 )
-fun Throwable.toTestResult(duration: Long): TestResult = createTestResult(duration.milliseconds, this)
+fun Throwable.toTestResult(duration: Long): TestResult = createTestResult(Duration.milliseconds(duration), this)
 
 @JvmName("throwableToTestResult")
 fun Throwable.toTestResult(duration: Duration): TestResult = createTestResult(duration, this)

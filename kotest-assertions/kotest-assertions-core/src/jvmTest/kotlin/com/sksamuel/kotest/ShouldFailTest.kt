@@ -11,7 +11,7 @@ class ShouldFailTest : FreeSpec({
    "shouldFail" - {
       "Should throw an exception when code succeeds" {
          val t = catchThrowable { shouldFail { /* Code succeeds */ } }
-         t.shouldBeInstanceOf<AssertionError>()
+            t.shouldBeInstanceOf<AssertionError>()
          t.message shouldBe "Expected exception java.lang.AssertionError but no exception was thrown."
       }
 

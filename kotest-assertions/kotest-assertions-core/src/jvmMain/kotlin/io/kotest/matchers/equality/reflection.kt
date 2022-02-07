@@ -294,9 +294,8 @@ fun <T : Any> beEqualToIgnoringFields(
       return MatcherResult(
          failed.isEmpty(),
          { "$value should be equal to $other ignoring fields $fieldsString; Failed for $failed" },
-         {
-            "$value should not be equal to $other ignoring fields $fieldsString"
-         })
+         { "$value should not be equal to $other ignoring fields $fieldsString" }
+      )
    }
 }
 

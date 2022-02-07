@@ -13,14 +13,18 @@ internal object ProjectTimeoutEngineInterceptor : EngineInterceptor {
       context: EngineContext,
       execute: suspend (EngineContext) -> EngineResult
    ): EngineResult {
-      return try {
-         withTimeout(context.configuration.projectTimeout ?: Duration.INFINITE) {
-            execute(context)
+      return when (val timeout = context.configuration.projectTimeout) {
+         null -> execute(context)
+         else -> try {
+            withTimeout(timeout) {
+               execute(context)
+            }
+         } catch (e: TimeoutCancellationException) {
+            val ee = ProjectTimeoutException(timeout)
+            EngineResult(listOf(ee))
          }
-      } catch (e: TimeoutCancellationException) {
-         val ee = ProjectTimeoutException(context.configuration.projectTimeout ?: Duration.INFINITE)
-         EngineResult(listOf(ee))
       }
+
    }
 }
 

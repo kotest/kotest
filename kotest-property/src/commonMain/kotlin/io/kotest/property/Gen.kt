@@ -74,7 +74,7 @@ sealed class Gen<out A> {
  *
  * Edge cases are values that are a common source of bugs. For example, a function using ints is
  * more likely to fail for common edge cases like zero, minus 1, positive 1, [Int.MAX_VALUE] and [Int.MIN_VALUE]
- * rather than random values like 965489. Therefore it is useful that we try to include such values
+ * rather than random values like 965489. Therefore, it is useful that we try to include such values
  * rather than relying entirely on random values which are unlikely to generate these.
  *
  * Not all arbitraries will utilize edge cases. For example, if you define an integer generator

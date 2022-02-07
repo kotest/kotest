@@ -59,7 +59,7 @@ class TestEngine(private val config: TestEngineConfig) {
             Platform.JS -> SequentialTestSuiteScheduler(context)
             Platform.Native -> SequentialTestSuiteScheduler(context)
          }
-         scheduler.schedule(context.suite, context.listener)
+         scheduler.schedule(context.suite)
       }
 
       logger.log { Pair(null, "${config.interceptors.size} engine interceptors") }

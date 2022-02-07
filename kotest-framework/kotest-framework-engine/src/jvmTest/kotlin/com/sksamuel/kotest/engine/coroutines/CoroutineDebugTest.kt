@@ -33,7 +33,7 @@ private class Wibble : FunSpec() {
    init {
       coroutineDebugProbes = true
       test("a") {
-         val deferred = async { delay(1000) }
+         async { delay(1000) }
          error("qwe")
       }
    }

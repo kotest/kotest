@@ -79,6 +79,8 @@ abstract class AbstractProjectConfig {
     */
    open val invocationTimeout: Long? = null
 
+   open var projectWideFailFast: Boolean? = null
+
    /**
     * A timeout that is applied to the overall project if not null,
     * if the sum duration of all the tests exceeds this the suite will fail.
@@ -131,6 +133,12 @@ abstract class AbstractProjectConfig {
     * will be used.
     */
    open val testCaseOrder: TestCaseOrder? = null
+
+   /**
+    * Sets the seed that is used when randomizing specs and tests.
+    * Default is null, which will use the default random instance.
+    */
+   open var randomOrderSeed: Long? = null
 
    /**
     * Override this value and set it to true if you want all tests to behave as if they
@@ -238,14 +246,14 @@ abstract class AbstractProjectConfig {
    open var dispatcherAffinity: Boolean? = null
 
    /**
-    * If set to true then the test engine will install a [TestCoroutineDispatcher].
+    * If set to true then the test engine will install a [TestDispatcher].
     *
     * This can be retrieved via `delayController` in your tests.
     *
     * @see https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-test/index.html
     */
    @ExperimentalKotest
-   var testCoroutineDispatcher: Boolean = Defaults.testCoroutineDispatcher
+   open var testCoroutineDispatcher: Boolean = Defaults.testCoroutineDispatcher
 
    /**
     * Executed before the first test of the project, but after the

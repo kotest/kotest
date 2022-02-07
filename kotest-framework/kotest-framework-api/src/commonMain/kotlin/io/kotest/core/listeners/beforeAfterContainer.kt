@@ -1,10 +1,11 @@
 package io.kotest.core.listeners
 
+import io.kotest.core.extensions.Extension
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestType
 
-interface BeforeContainerListener {
+interface BeforeContainerListener : Extension {
 
    /**
     * Registers a new before-container callback to be executed before every [TestCase]
@@ -14,7 +15,7 @@ interface BeforeContainerListener {
    suspend fun beforeContainer(testCase: TestCase): Unit = Unit
 }
 
-interface AfterContainerListener {
+interface AfterContainerListener : Extension {
 
    /**
     * Registers a new after-container callback to be executed after every [TestCase]

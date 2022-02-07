@@ -8,6 +8,7 @@ import io.kotest.engine.test.interceptors.TestExecutionInterceptor
 import io.kotest.mpp.Logger
 import io.kotest.mpp.replay
 import kotlinx.coroutines.coroutineScope
+import kotlin.time.Duration
 import kotlin.time.TimeMark
 
 class TestInvocationInterceptor(
@@ -36,10 +37,18 @@ class TestInvocationInterceptor(
             }
          }
          logger.log { Pair(testCase.name.testName, "Test returned without error") }
-         TestResult.Success(timeMark.elapsedNow())
+         try {
+            TestResult.Success(timeMark.elapsedNow())
+         } catch (e: Throwable) {
+            TestResult.Success(Duration.ZERO) // workaround for kotlin 1.5
+         }
       } catch (t: Throwable) {
          logger.log { Pair(testCase.name.testName, "Test threw error $t") }
-         createTestResult(timeMark.elapsedNow(), t)
+         try {
+            createTestResult(timeMark.elapsedNow(), t)
+         } catch (e: Throwable) {
+            TestResult.Error(Duration.ZERO, t) // workaround for kotlin 1.5
+         }
       }
    }
 }

@@ -16,6 +16,7 @@ class IterableShouldBeTest : DescribeSpec() {
          }
          it("list / set") {
             listOf(1) shouldBe setOf(1)
+            listOf(1, 2) shouldBe setOf(1, 2)
             listOf(1, 2) shouldNotBe setOf(2, 1)
             emptySet<Int>() shouldBe setOf()
             listOf(1) shouldNotBe emptySet<Int>()

@@ -4,6 +4,8 @@ import io.kotest.assertions.shouldFail
 import io.kotest.assertions.throwables.shouldNotThrow
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.WordSpec
+import io.kotest.equals.Equality
+import io.kotest.equals.types.byObjectEquality
 import io.kotest.matchers.collections.atLeastSize
 import io.kotest.matchers.collections.atMostSize
 import io.kotest.matchers.collections.beLargerThan
@@ -301,12 +303,30 @@ class CollectionMatchersTest : WordSpec() {
             val col = listOf(1, 2, 3)
 
             col should contain(2)
+            col should contain(2.0) // uses strict num equality = false
 
             shouldThrow<AssertionError> {
                col should contain(4)
-            }.shouldHaveMessage("Collection should contain element 4; listing some elements [1, 2, 3]")
+            }.shouldHaveMessage("Collection should contain element 4 based on object equality; listing some elements [1, 2, 3]")
          }
       }
+
+      "should contain element based on a custom equality object" should {
+         "test that a collection contains an element"  {
+            val col = listOf(1, 2, 3.0)
+
+
+            val verifier = Equality.byObjectEquality<Number>(strictNumberEquality = true)
+
+            col should contain(2, verifier)
+            col should contain(3.0, verifier)
+
+            shouldThrow<AssertionError> {
+               col should contain(3, verifier)
+            }.shouldHaveMessage("Collection should contain element 3 based on object equality; listing some elements [1, 2, 3.0]")
+         }
+      }
+
 
       "shouldBeLargerThan" should {
          "test that a collection is larger than another collection"  {

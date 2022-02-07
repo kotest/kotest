@@ -185,18 +185,18 @@ class ProjectConfiguration {
     *
     * This value is used if a timeout is not specified in the test case itself.
     *
-    * Defaults to [Defaults.defaultTimeoutInMillis].
+    * Defaults to [Defaults.defaultTimeoutMillis].
     */
-   var timeout: Long = Defaults.defaultTimeoutInMillis
+   var timeout: Long? = null
 
    /**
     * Returns the timeout for any single invocation of a test.
     *
     * This value is used if a timeout is not specified in the test case itself.
     *
-    * Defaults to [Defaults.defaultInvocationTimeoutInMillis].
+    * Defaults to [Defaults.defaultInvocationTimeout].
     */
-   var invocationTimeout: Long = Defaults.defaultInvocationTimeoutInMillis
+   var invocationTimeout: Long? = null
 
    /**
     * A timeout that is applied to the overall project if not null,
@@ -211,12 +211,14 @@ class ProjectConfiguration {
 
    var failfast: Boolean = Defaults.failfast
 
+   var projectWideFailFast: Boolean = Defaults.projectWideFailFast
+
    var blockingTest: Boolean = Defaults.blockingTest
 
    var severity: TestCaseSeverityLevel = Defaults.severity
 
    /**
-    * If set to true then the test engine will install a [TestCoroutineDispatcher].
+    * If set to true then the test engine will install a [TestDispatcher].
     *
     * This can be retrieved via `delayController` in your tests.
     *
@@ -309,6 +311,12 @@ class ProjectConfiguration {
     * Defaults to [Defaults.specExecutionOrder]
     */
    var specExecutionOrder: SpecExecutionOrder = Defaults.specExecutionOrder
+
+   /**
+    * Sets the seed that is used when randomizing specs and tests.
+    * Default is null, which will use the default random instance.
+    */
+   var randomOrderSeed: Long? = null
 
    var removeTestNameWhitespace: Boolean = false
 

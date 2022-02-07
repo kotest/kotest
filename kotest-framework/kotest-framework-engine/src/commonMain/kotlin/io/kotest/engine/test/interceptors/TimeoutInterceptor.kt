@@ -29,13 +29,16 @@ internal class TimeoutInterceptor(
       // each test takes 300ms, and a timeout of 800ms, this would fail, becauase 3 x 300 > 800.
       logger.log { Pair(testCase.name.testName, "Switching context to add timeout ${testCase.config.timeout}") }
 
-      return try {
-         withTimeout(testCase.config.timeout) {
-            test(testCase, scope.withCoroutineContext(coroutineContext))
+      return when (val timeout = testCase.config.timeout) {
+         null -> test(testCase, scope)
+         else -> try {
+            withTimeout(timeout) {
+               test(testCase, scope.withCoroutineContext(coroutineContext))
+            }
+         } catch (t: Throwable) {
+            logger.log { Pair(testCase.name.testName, "Caught timeout $t") }
+            TestResult.Error(mark.elapsedNow(), TestTimeoutException(timeout, testCase.name.testName))
          }
-      } catch (t: Throwable) {
-         logger.log { Pair(testCase.name.testName, "Caught timeout $t") }
-         TestResult.Error(mark.elapsedNow(), TestTimeoutException(testCase.config.timeout, testCase.name.testName))
       }
    }
 }

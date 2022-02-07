@@ -9,8 +9,9 @@ This page lists all current matchers in the Kotest arrow matchers extension libr
 
 To use this library you need to add `io.kotest.extensions:kotest-assertions-arrow` to your build.
 
-Note: The maven group id differs from the main project as this is an optional extension module.
-
+:::note
+In the case `io.arrow-kt:arrow-core:arrow-version` is not in your classpath, please add it. To prevent Unresolved Reference errors.
+:::
 
 | Option | |
 | -------- | ---- |

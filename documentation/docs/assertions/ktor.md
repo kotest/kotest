@@ -5,6 +5,16 @@ slug: ktor-matchers.html
 sidebar_label: Ktor
 ---
 
+Code is kept on a [separate repository](https://github.com/kotest/kotest-assertions-ktor) and on a different group: `io.kotest.extensions`.
+
+**Full Dependency**
+
+[<img src="https://img.shields.io/maven-central/v/io.kotest.extensions/kotest-assertions-ktor.svg?label=latest%20release"/>](http://search.maven.org/#search|ga|1|kotest-assertions-ktor)
+[<img src="https://img.shields.io/nexus/s/https/oss.sonatype.org/io.kotest.extensions/kotest-assertions-ktor.svg?label=latest%20snapshot"/>](https://oss.sonatype.org/content/repositories/snapshots/io/kotest/extensions/kotest-assertions-ktor/)
+> 
+> ```implementation("io.kotest.extensions:kotest-assertions-ktor:version")```
+> 
+> ```implementation "io.kotest.extensions:kotest-assertions-ktor:version"```
 
 
 

@@ -15,7 +15,6 @@ import io.kotest.engine.test.names.formatTestPath
 import io.kotest.engine.test.names.getDisplayNameFormatter
 import kotlin.reflect.KClass
 import kotlin.time.Duration
-import kotlin.time.Duration.Companion.milliseconds
 
 /**
  * Generates test output to the console in an enhanced, formatted, coloured, way.
@@ -30,8 +29,8 @@ class EnhancedConsoleTestEngineListener(private val term: TermColors) : Abstract
    private var testsPassed = 0
    private var specsFailed = emptyList<Descriptor.SpecDescriptor>()
    private var specsSeen = emptyList<Descriptor>()
-   private var slow = 500.milliseconds
-   private var verySlow = 5000.milliseconds
+   private var slow = Duration.milliseconds(500)
+   private var verySlow = Duration.milliseconds(5000)
 
    private var formatter:DisplayNameFormatter = DefaultDisplayNameFormatter(ProjectConfiguration())
 

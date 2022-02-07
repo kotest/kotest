@@ -1,7 +1,7 @@
 package io.kotest.engine.config
 
-import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.config.LogLevel
+import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.internal.KotestEngineProperties
 import io.kotest.core.names.DuplicateTestNameMode
 import io.kotest.core.spec.IsolationMode
@@ -9,7 +9,6 @@ import io.kotest.core.test.AssertionMode
 import io.kotest.mpp.env
 import io.kotest.mpp.sysprop
 import kotlin.time.Duration
-import kotlin.time.Duration.Companion.milliseconds
 
 /**
  * Uses system properties to load configuration values onto the supplied [ProjectConfiguration] object.
@@ -65,8 +64,11 @@ internal fun testNameAppendTags(): Boolean? =
 internal fun duplicateTestNameMode(): DuplicateTestNameMode? =
    sysprop(KotestEngineProperties.duplicateTestNameMode)?.let { DuplicateTestNameMode.valueOf(it) }
 
-internal fun projectTimeout(): Duration? =
-   sysprop(KotestEngineProperties.projectTimeout)?.toLong()?.milliseconds
+internal fun projectTimeout(): Duration? {
+   val d = sysprop(KotestEngineProperties.projectTimeout)?.toLong() ?: return null
+   return Duration.milliseconds(d)
+}
+
 
 internal fun logLevel(): LogLevel {
    val levelProp = sysprop(KotestEngineProperties.logLevel)?.let { LogLevel.from(it) }

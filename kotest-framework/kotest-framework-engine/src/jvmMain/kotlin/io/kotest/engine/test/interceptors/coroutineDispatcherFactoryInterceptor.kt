@@ -7,15 +7,22 @@ import io.kotest.core.test.TestScope
 import io.kotest.engine.concurrency.FixedThreadCoroutineDispatcherFactory
 import io.kotest.engine.test.scopes.withCoroutineContext
 import io.kotest.mpp.Logger
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.test.TestCoroutineDispatcher
+import kotlinx.coroutines.test.TestDispatcher
 import kotlin.coroutines.coroutineContext
 
+@ExperimentalStdlibApi
 internal actual fun coroutineDispatcherFactoryInterceptor(
    defaultCoroutineDispatcherFactory: CoroutineDispatcherFactory
 ): TestExecutionInterceptor = CoroutineDispatcherFactoryInterceptor(defaultCoroutineDispatcherFactory)
 
 /**
  * Switches execution onto a dispatcher provided by a [CoroutineDispatcherFactory].
+ *
+ * If the coroutine is an instance of [TestDispatcher] then the coroutine will not be changed.
  */
+@ExperimentalStdlibApi
 internal class CoroutineDispatcherFactoryInterceptor(
    private val defaultCoroutineDispatcherFactory: CoroutineDispatcherFactory
 ) : TestExecutionInterceptor {
@@ -28,20 +35,27 @@ internal class CoroutineDispatcherFactoryInterceptor(
       test: suspend (TestCase, TestScope) -> TestResult
    ): TestResult {
 
-      val userFactory = testCase.spec.coroutineDispatcherFactory ?: testCase.spec.coroutineDispatcherFactory()
-      val threads = testCase.spec.threads ?: testCase.spec.threads() ?: 1
+      val currentDispatcher = coroutineContext[CoroutineDispatcher]
+      // we don't override if we've set a test dispatcher on this already
+      return if (currentDispatcher is TestDispatcher) {
+         test(testCase, scope)
+      } else {
 
-      logger.log { Pair(testCase.name.testName, "userFactory=$userFactory; threads=$threads") }
+         val userFactory = testCase.spec.coroutineDispatcherFactory ?: testCase.spec.coroutineDispatcherFactory()
+         val threads = testCase.spec.threads ?: testCase.spec.threads() ?: 1
 
-      val f = when {
-         userFactory != null -> userFactory
-         threads > 1 -> FixedThreadCoroutineDispatcherFactory(threads, false)
-         else -> defaultCoroutineDispatcherFactory
-      }
+         logger.log { Pair(testCase.name.testName, "userFactory=$userFactory; threads=$threads") }
 
-      logger.log { Pair(testCase.name.testName, "Switching dispatcher using factory $f") }
-      return f.withDispatcher(testCase) {
-         test(testCase, scope.withCoroutineContext(coroutineContext))
+         val f = when {
+            userFactory != null -> userFactory
+            threads > 1 -> FixedThreadCoroutineDispatcherFactory(threads, false)
+            else -> defaultCoroutineDispatcherFactory
+         }
+
+         logger.log { Pair(testCase.name.testName, "Switching dispatcher using factory $f") }
+         f.withDispatcher(testCase) {
+            test(testCase, scope.withCoroutineContext(coroutineContext))
+         }
       }
    }
 }

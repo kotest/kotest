@@ -1,14 +1,14 @@
 package io.kotest.engine.spec
 
 import io.kotest.core.config.ProjectConfiguration
-import io.kotest.engine.tags.tags
 import io.kotest.core.spec.Spec
 import io.kotest.core.test.Enabled
 import io.kotest.core.test.EnabledOrReasonIf
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.config.ResolvedTestConfig
 import io.kotest.core.test.config.UnresolvedTestConfig
-import kotlin.time.Duration.Companion.milliseconds
+import io.kotest.engine.tags.tags
+import kotlin.time.Duration
 
 /**
  * Accepts an [UnresolvedTestConfig] and returns a [ResolvedTestConfig] by completing
@@ -39,12 +39,12 @@ internal fun resolveConfig(
       }
    }
 
-   val timeout = config?.timeout
+   val timeout: Duration? = config?.timeout
       ?: parent?.config?.timeout
-      ?: spec.timeout?.milliseconds
-      ?: spec.timeout()?.milliseconds
+      ?: spec.timeout?.toMillis()
+      ?: spec.timeout()?.toMillis()
       ?: defaultTestConfig.timeout
-      ?: configuration.timeout.milliseconds
+      ?: configuration.timeout?.toMillis()
 
    val threads = config?.threads
       ?: spec.threads
@@ -54,12 +54,12 @@ internal fun resolveConfig(
    val invocations = config?.invocations
       ?: defaultTestConfig.invocations
 
-   val invocationTimeout = config?.invocationTimeout
+   val invocationTimeout: Duration? = config?.invocationTimeout
       ?: parent?.config?.invocationTimeout
-      ?: spec.invocationTimeout?.milliseconds
-      ?: spec.invocationTimeout()?.milliseconds
+      ?: spec.invocationTimeout?.toMillis()
+      ?: spec.invocationTimeout()?.toMillis()
       ?: defaultTestConfig.invocationTimeout
-      ?: configuration.invocationTimeout.milliseconds
+      ?: configuration.invocationTimeout?.toMillis()
 
    val extensions = (config?.listeners ?: emptyList()) +
       (config?.extensions ?: emptyList()) +
@@ -83,3 +83,5 @@ internal fun resolveConfig(
       blockingTest = config?.blockingTest ?: parent?.config?.blockingTest ?: spec.blockingTest ?: configuration.blockingTest,
    )
 }
+
+fun Long.toMillis(): Duration = Duration.milliseconds(this)

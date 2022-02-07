@@ -32,11 +32,12 @@ object Defaults {
 
    const val parallelism: Int = 1
 
-   const val defaultTimeoutInMillis: Long = 600 * 1000L
-   const val defaultInvocationTimeoutInMillis: Long = 600 * 1000L
+   const val defaultTimeoutMillis = 10 * 60 * 1000L
+   const val defaultInvocationTimeoutMillis =  10 * 60 * 1000L
 
    const val failOnIgnoredTests: Boolean = false
    const val failfast: Boolean = false
+   const val projectWideFailFast: Boolean = false
    val defaultIncludeTestScopeAffixes: Boolean? = null
    const val writeSpecFailureFile = false
    const val globalAssertSoftly = false

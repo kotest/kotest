@@ -4,6 +4,78 @@ sidebar_label: Changelog
 slug: changelog.html
 ---
 
+
+
+## 5.1.0 January 2022
+
+### Fixes
+
+* Test fails because lhs of shouldBe is List, and rhs is a home-grown Iterable [#2746](https://github.com/kotest/kotest/issues/2746)
+* JUnit XML extension generates invalid XML [#2756](https://github.com/kotest/kotest/issues/2756)
+* Non-nullability gets lost with shouldBeSuccess matcher [#2759](https://github.com/kotest/kotest/issues/2759)
+* Arb.bind should detect nullables and inject null values [#2774](https://github.com/kotest/kotest/issues/2774)
+
+### Features and improvements
+
+* Update coroutines to 1.6 final [#2768](https://github.com/kotest/kotest/issues/2768)
+* Arb.string shrinking simplest character is always 'a' regardless of codepoint [#2646](https://github.com/kotest/kotest/issues/2646)
+* Add mutable test clock [#2655](https://github.com/kotest/kotest/issues/2655)
+* Inspectors for maps [#2656](https://github.com/kotest/kotest/issues/2656)
+* Add conditional invert function with parameter to conditionally invert [#2658](https://github.com/kotest/kotest/issues/2658)
+* Add project wide fail fast [#2684](https://github.com/kotest/kotest/issues/2684)
+* Allow setting the seed used for randomizing spec order [#2698](https://github.com/kotest/kotest/issues/2698)
+* Option to fail build if a seed is set on a property test [#2701](https://github.com/kotest/kotest/issues/2701)
+* LocalDateTime arb should accept localdatetimes as min and max [#2704](https://github.com/kotest/kotest/issues/2704)
+* System property to disable config scanning [#2766](https://github.com/kotest/kotest/issues/2766)
+* System property for config class [#2767](https://github.com/kotest/kotest/issues/2767)
+
+Thanks to all the contributors:
+
+* aSemy
+* Ashish Kumar Joy
+* Bart van Helvert
+* Benjamin Shults
+* Charles Korn
+* Emil Kantis
+* Imran Settuba
+* inquiribus
+* Łukasz Pięta
+* Max Rumpf
+* Ricardo Veguilla
+* Sebastian Schuberth
+* Simon Vergauwen
+* sksamuel
+
+
+
+## 5.0.3 December 2021
+
+### Fixes
+
+* ShouldContainExactlyTest fails on Windows because of path separators assertions bug #2732
+* shouldBe goes into an infinite loop when generating diff message for data class with cyclic references #2611
+* Issues when using globalAssertSoftly assertions bug framework #2706
+* Fix issues in shouldStartWith and shouldEnd #2736
+
+
+
+## 5.0.2 December 2021
+
+### Fixes
+
+* Fixed erroneous timeout reporting in tests [#2714](https://github.com/kotest/kotest/issues/2714)
+* Team City Listener should not be lazy for all tests [#2707](https://github.com/kotest/kotest/issues/2707)
+* Fix Test path filter vs whitespace in test names [#2725](https://github.com/kotest/kotest/issues/2725)
+* Support nulls in data driven testing [#2718](https://github.com/kotest/kotest/issues/2718)
+* Fixes clue not working were expected or actual is null [#2720](https://github.com/kotest/kotest/issues/2720)
+* Changed timeout defaults to use durations for clarity
+* Fixed after/before container not being extensions [#2721](https://github.com/kotest/kotest/issues/2721)
+* Share TestCoroutineDispatcher in nested tests [#2703](https://github.com/kotest/kotest/issues/2703)
+* Fixes FunSpec contexts where tests are disabled [#2710](https://github.com/kotest/kotest/issues/2710)
+* Return ComparableMatcherResult from json assertions [#2620](https://github.com/kotest/kotest/issues/2620)
+* Remove @ExperimentalTime where Duration has gone stable [#2708](https://github.com/kotest/kotest/issues/2708)
+* Remove Arb#long workaround for incorrect randomly generated values [#2700](https://github.com/kotest/kotest/issues/2700)
+
 ## 5.0.1 November 2021
 
 ### Fixes
@@ -277,7 +349,7 @@ Ashish Kumar Joy, Jim Schneidereit, Łukasz Wasylkowski, sksamuel
 
 
 
-### 4.5.0 May 2021
+## 4.5.0 May 2021
 
 As part of this release, third party extensions were promoted to top level repositories instead of modules inside the main kotest repo.
 This allows the extensions to iterate quickly, without needing to wait for a full Kotest release.
@@ -383,11 +455,11 @@ See the full list of [extension modules](https://kotest.io/docs/extensions/exten
 * tbcs
 
 
-### 4.4.3 March 2021
+## 4.4.3 March 2021
 
 * Removed verbose debugging statements that were erroneously left in the 4.4.2 release.
 
-### 4.4.2 March 2021
+## 4.4.2 March 2021
 
 Note: Release 4.4.2 is compiled against Kotlin 1.4.31 and coroutines 1.4.3
 
@@ -401,7 +473,7 @@ Note: Release 4.4.2 is compiled against Kotlin 1.4.31 and coroutines 1.4.3
 * Improvement: Updates error message for `shouldContainKeys` matcher to includes keys which are not present in given map #2106
 * Improvement: `haveCauseOfType` shows exception type instead of cause type #2131
 
-### 4.4.1 February 2021
+## 4.4.1 February 2021
 
 Note: Release 4.4.1 bumps the minimum required version of Kotlin to 1.4.30
 
@@ -415,11 +487,11 @@ Note: Release 4.4.1 bumps the minimum required version of Kotlin to 1.4.30
 * Generation of larger sets via Arb.set throws an exception #2051
 * Avoid creating extra lambdas in blocking forAll #2036
 
-### 4.4.0 February 2021
+## 4.4.0 February 2021
 
 Note: Release 4.4.0 bumps the minimum required version of Kotlin to 1.4.21
 
-#### Features / Improvements
+### Features / Improvements
 
 * Add lazy property test generator #1651
 * New map assertions #1697
@@ -446,7 +518,7 @@ Note: Release 4.4.0 bumps the minimum required version of Kotlin to 1.4.21
 * Upgrade arrow matchers to 0.11.0 #1976
 * Add alphanumeric codepoint arb #1989
 
-#### Bugfixes
+### Bugfixes
 
 * Performance improvements for Exceptions on the JVM #1787
 * Using a symbol or Japanese etc in the test name will change the behavior #1828
@@ -457,7 +529,7 @@ Note: Release 4.4.0 bumps the minimum required version of Kotlin to 1.4.21
 * Output from reporters should be single threaded #1895
 * Arb.set with a range hangs the test if the given gen inside the set cannot produce enough values for the range #1931
 
-### 4.3.2 December 2020
+## 4.3.2 December 2020
 
 #### Features
 
@@ -478,7 +550,7 @@ Note: Release 4.4.0 bumps the minimum required version of Kotlin to 1.4.21
 * Fixed shouldContainJsonKeyValue to work with Long expected value and integer actual value #1790
 
 
-### 4.3.1 November 2020
+## 4.3.1 November 2020
 
 #### Features
 
@@ -499,7 +571,7 @@ Note: Release 4.4.0 bumps the minimum required version of Kotlin to 1.4.21
 * Arb.filter causing stackoverflow #1818
 * Arb.shuffle type signature change broken in 4.3.0 #1824
 
-### 4.3.0 October 2020 - [Blog](https://dev.to/kotest/kotest-release-4-3-2768)
+## 4.3.0 October 2020 - [Blog](https://dev.to/kotest/kotest-release-4-3-2768)
 
 #### Features
 
@@ -526,7 +598,7 @@ Note: Release 4.4.0 bumps the minimum required version of Kotlin to 1.4.21
 
 * The `kotest-extensions-junit5extensions` module is now called `kotest-extensions-junit5`
 
-### 4.2.6 October 2020
+## 4.2.6 October 2020
 
 #### Features
 
@@ -539,7 +611,7 @@ Note: Release 4.4.0 bumps the minimum required version of Kotlin to 1.4.21
 * Deprecate distinct #1730
 * Fixed the empty allure result for tests with the failed afterTest block #1724
 
-### 4.2.5 September 2020
+## 4.2.5 September 2020
 
 * Bugfix: Fixed performance issue when using 1000s of tests in gradle #1693
 * Feature: Added matchers for pair / triple components 1694
@@ -547,7 +619,7 @@ Note: Release 4.4.0 bumps the minimum required version of Kotlin to 1.4.21
 * Improvement: Added koin lifecycle mode #1710
 
 
-### 4.2.4 September 2020
+## 4.2.4 September 2020
 
 * Bugfix: Test time does not scale with number of tests #1685
 * Bugfix: Added spring listener lifecycle mode #1643
@@ -556,7 +628,7 @@ Note: Release 4.4.0 bumps the minimum required version of Kotlin to 1.4.21
 * Improvement: SpringListener to generate meaningful method names #1591
 
 
-### 4.2.3 September 2020
+## 4.2.3 September 2020
 
 * Bugfix: Throwables of `Error` in the engine should be reported to test engine listeners
 * Bugfix: Switched classgraph to api
@@ -574,7 +646,7 @@ Note: Release 4.4.0 bumps the minimum required version of Kotlin to 1.4.21
 * Docs: Update Gradle dependencies docs removing unnecessary -jvm suffix #1650
 * Docs: MockServer extension documentation #1446
 
-### 4.2.2 August 2020
+## 4.2.2 August 2020
 
 * Bugfix: Usage of a Kotlin 1.4 only method has been removed
 * Bugfix: KotlinReflectionInternalError fixed on java enums #1611
@@ -582,11 +654,11 @@ Note: Release 4.4.0 bumps the minimum required version of Kotlin to 1.4.21
 * Bugfix: Tags specified via inline tags dsl were not being picked up #1642
 * Improvement: Updated output of some collection matchers to format an element per line #1380
 
-### 4.2.1 August 2020
+## 4.2.1 August 2020
 
 * Feature: The assertion libraries are now also published for watchos, tvos, and ios in addition to the macos, windows, and linux targets previously.
 
-### 4.2.0 August 2020 - [Blog](blog/release_4.2.md)
+## 4.2.0 August 2020 - [Blog](blog/release_4.2.md)
 
 * Feature: Kotest upgraded to use Kotlin 1.4.0 #1511
 * Feature: Allow multiple project configs to be detected and merged #1632

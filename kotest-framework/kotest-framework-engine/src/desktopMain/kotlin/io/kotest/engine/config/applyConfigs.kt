@@ -10,3 +10,5 @@ internal actual fun applyConfigFromAutoScan(configuration: ProjectConfiguration)
 internal actual fun applyPlatformDefaults(configuration: ProjectConfiguration) {}
 
 internal actual fun detectAbstractProjectConfigs(): List<AbstractProjectConfig> = emptyList()
+
+internal actual fun loadProjectConfigFromClassname(): AbstractProjectConfig? = null

@@ -84,6 +84,12 @@ object KotestEngineProperties {
    const val disableConfigurationClassPathScanning = "kotest.framework.classpath.scanning.config.disable"
 
    /**
+    * Specify a fully qualified name to use for project config.
+    * This class will be instantiated via reflection.
+    */
+   const val configurationClassName = "kotest.framework.config.fqn"
+
+   /**
     * Disable scanning the classpath for listeners with @AutoScan by setting this property to true
     */
    const val disableAutoScanClassPathScanning = "kotest.framework.classpath.scanning.autoscan.disable"

@@ -1,6 +1,5 @@
 package io.kotest.engine.test.interceptors
 
-import io.kotest.assertions.ThreadLocalErrorCollector
 import io.kotest.assertions.errorCollectorContextElement
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
@@ -24,7 +23,7 @@ internal object CoroutineErrorCollectorInterceptor : TestExecutionInterceptor {
       scope: TestScope,
       test: suspend (TestCase, TestScope) -> TestResult
    ): TestResult {
-      logger.log { Pair(testCase.name.testName, "Adding ${ThreadLocalErrorCollector.instance} to coroutine context") }
+      logger.log { Pair(testCase.name.testName, "Adding $errorCollectorContextElement to coroutine context") }
       return withContext(errorCollectorContextElement) {
          test(testCase, scope)
       }

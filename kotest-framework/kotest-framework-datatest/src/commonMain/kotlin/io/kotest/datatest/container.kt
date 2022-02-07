@@ -12,7 +12,7 @@ import kotlin.jvm.JvmName
  *
  * The test name will be generated from the stable properties of the elements. See [Identifiers].
  */
-suspend fun <T : Any> ContainerScope.withData(
+suspend fun <T> ContainerScope.withData(
    first: T,
    second: T,
    vararg rest: T,
@@ -25,7 +25,7 @@ suspend fun <T : Any> ContainerScope.withData(
  *
  * The test names will be generated from the stable properties of the elements. See [Identifiers].
  */
-suspend fun <T : Any> ContainerScope.withData(
+suspend fun <T> ContainerScope.withData(
    ts: Sequence<T>,
    test: suspend ContainerScope.(T) -> Unit
 ) = withData(ts.toList(), test)
@@ -35,7 +35,7 @@ suspend fun <T : Any> ContainerScope.withData(
  *
  * The test names will be generated from the stable properties of the elements. See [Identifiers].
  */
-suspend fun <T : Any> ContainerScope.withData(
+suspend fun <T> ContainerScope.withData(
    ts: Iterable<T>,
    test: suspend ContainerScope.(T) -> Unit
 ) {
@@ -47,7 +47,7 @@ suspend fun <T : Any> ContainerScope.withData(
  *
  * The test name will be generated from the given [nameFn] function.
  */
-suspend fun <T : Any> ContainerScope.withData(
+suspend fun <T> ContainerScope.withData(
    nameFn: (T) -> String,
    ts: Sequence<T>,
    test: suspend ContainerScope.(T) -> Unit
@@ -58,7 +58,7 @@ suspend fun <T : Any> ContainerScope.withData(
  *
  * The test name will be generated from the stable properties of the elements. See [Identifiers].
  */
-suspend fun <T : Any> ContainerScope.withData(
+suspend fun <T> ContainerScope.withData(
    nameFn: (T) -> String,
    first: T,
    second: T,
@@ -71,7 +71,7 @@ suspend fun <T : Any> ContainerScope.withData(
  *
  * The test name will be generated from the stable properties of the elements. See [Identifiers].
  */
-suspend fun <T : Any> ContainerScope.withData(
+suspend fun <T> ContainerScope.withData(
    nameFn: (T) -> String,
    @BuilderInference ts: Iterable<T>,
    @BuilderInference test: suspend ContainerScope.(T) -> Unit
