@@ -6,19 +6,19 @@ import io.kotest.matchers.shouldBe
 class FeatureSpecBlockingTest : FeatureSpec() {
    init {
 
-      val threads = mutableSetOf<String>()
+      val threads = mutableSetOf<Long>()
 
       feature("not blocking context") {
-         threads.add(Thread.currentThread().name)
+         threads.add(Thread.currentThread().id)
          scenario("not blocking nested test") {
-            threads.add(Thread.currentThread().name)
+            threads.add(Thread.currentThread().id)
          }
       }
 
       feature("blocking context").config(blockingTest = true) {
-         threads.add(Thread.currentThread().name)
+         threads.add(Thread.currentThread().id)
          scenario("blocking nested test").config(blockingTest = true) {
-            threads.add(Thread.currentThread().name)
+            threads.add(Thread.currentThread().id)
          }
       }
 

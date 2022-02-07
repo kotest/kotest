@@ -6,28 +6,28 @@ import io.kotest.matchers.shouldBe
 class FreeSpecBlockingTest : FreeSpec() {
    init {
 
-      val threads = mutableSetOf<String>()
+      val threads = mutableSetOf<Long>()
 
       "not blocking context" - {
-         threads.add(Thread.currentThread().name)
+         threads.add(Thread.currentThread().id)
          "not blocking nested test" {
-            threads.add(Thread.currentThread().name)
+            threads.add(Thread.currentThread().id)
          }
       }
 
       "not blocking root test" {
-         threads.add(Thread.currentThread().name)
+         threads.add(Thread.currentThread().id)
       }
 
       "blocking context".config(blockingTest = true) - {
-         threads.add(Thread.currentThread().name)
+         threads.add(Thread.currentThread().id)
          "blocking nested test".config(blockingTest = true) {
-            threads.add(Thread.currentThread().name)
+            threads.add(Thread.currentThread().id)
          }
       }
 
       "blocking root test".config(blockingTest = true) {
-         threads.add(Thread.currentThread().name)
+         threads.add(Thread.currentThread().id)
       }
 
       afterSpec {

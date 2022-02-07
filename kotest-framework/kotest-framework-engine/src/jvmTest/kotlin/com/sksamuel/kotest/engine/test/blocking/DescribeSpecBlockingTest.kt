@@ -1,5 +1,6 @@
 package com.sksamuel.kotest.engine.test.blocking
 
+import io.kotest.assertions.withClue
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.matchers.shouldBe
 
@@ -31,7 +32,9 @@ class DescribeSpecBlockingTest : DescribeSpec() {
       }
 
       afterSpec {
-         threads.size.shouldBe(4)
+         withClue(threads) {
+            threads.size.shouldBe(4)
+         }
       }
    }
 }
