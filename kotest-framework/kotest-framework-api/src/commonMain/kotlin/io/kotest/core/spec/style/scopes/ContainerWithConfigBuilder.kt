@@ -24,6 +24,7 @@ class ContainerWithConfigBuilder<T>(
       tags: Set<Tag>? = null,
       timeout: Duration? = null,
       failfast: Boolean? = null,
+      blockingTest: Boolean? = null,
       test: suspend T.() -> Unit
    ) {
       val config = UnresolvedTestConfig(
@@ -33,6 +34,7 @@ class ContainerWithConfigBuilder<T>(
          tags = tags,
          timeout = timeout,
          failfast = failfast,
+         blockingTest = blockingTest,
       )
       context.registerContainer(name, xdisabled, config) { contextFn(this).test() }
    }

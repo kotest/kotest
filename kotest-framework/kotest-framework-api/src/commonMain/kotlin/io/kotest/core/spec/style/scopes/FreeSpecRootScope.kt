@@ -42,6 +42,7 @@ interface FreeSpecRootScope : RootScope {
       invocationTimeout: Duration? = null,
       severity: TestCaseSeverityLevel? = null,
       failfast: Boolean? = null,
+      blockingTest: Boolean? = null,
    ): FreeSpecContextConfigBuilder {
       val config = UnresolvedTestConfig(
          enabled = enabled,
@@ -54,6 +55,7 @@ interface FreeSpecRootScope : RootScope {
          threads = threads,
          severity = severity,
          failfast = failfast,
+         blockingTest = blockingTest,
       )
       return FreeSpecContextConfigBuilder(this, config)
    }
@@ -83,6 +85,7 @@ interface FreeSpecRootScope : RootScope {
       invocationTimeout: Duration? = null,
       severity: TestCaseSeverityLevel? = null,
       failfast: Boolean? = null,
+      blockingTest: Boolean? = null,
       test: suspend TestScope.() -> Unit,
    ) {
       val config = UnresolvedTestConfig(
@@ -95,7 +98,8 @@ interface FreeSpecRootScope : RootScope {
          invocations = invocations,
          threads = threads,
          severity = severity,
-         failfast = failfast
+         failfast = failfast,
+         blockingTest = blockingTest,
       )
       addTest(TestName(this), false, config, test)
    }
