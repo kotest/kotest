@@ -61,12 +61,26 @@ fun <T> exist(p: (T) -> Boolean) = object : Matcher<Collection<T>> {
       })
 }
 
-fun <T> Iterable<T>.shouldExistInAssertedOrder(vararg assertions: (T) -> Unit) = toList().shouldExistInAssertedOrder(assertions.toList())
-fun <T> Array<T>.shouldExistInAssertedOrder(vararg assertions: (T) -> Unit) = asList().shouldExistInAssertedOrder(assertions.toList())
-fun <T> List<T>.shouldExistInAssertedOrder(vararg assertions: (T) -> Unit) = this.shouldExistInAssertedOrder(assertions.toList())
-infix fun <T> Iterable<T>.shouldExistInAssertedOrder(assertions: List<(T) -> Unit>) = toList().shouldExistInAssertedOrder(assertions)
-infix fun <T> Array<T>.shouldExistInAssertedOrder(assertions: List<(T) -> Unit>) = asList().shouldExistInAssertedOrder(assertions)
-infix fun <T> List<T>.shouldExistInAssertedOrder(assertions: List<(T) -> Unit>) = this should existInAssertedOrder(assertions.toList())
+fun <T> Iterable<T>.shouldMatchInOrder(vararg assertions: (T) -> Unit) = toList().shouldMatchInOrder(assertions.toList())
+fun <T> Array<T>.shouldMatchInOrder(vararg assertions: (T) -> Unit) = asList().shouldMatchInOrder(assertions.toList())
+fun <T> List<T>.shouldMatchInOrder(vararg assertions: (T) -> Unit) = this.shouldMatchInOrder(assertions.toList())
+infix fun <T> Iterable<T>.shouldMatchInOrder(assertions: List<(T) -> Unit>) = toList().shouldMatchInOrder(assertions)
+infix fun <T> Array<T>.shouldMatchInOrder(assertions: List<(T) -> Unit>) = asList().shouldMatchInOrder(assertions)
+infix fun <T> List<T>.shouldMatchInOrder(assertions: List<(T) -> Unit>) = this should matchInOrder(assertions.toList())
+
+fun <T> Iterable<T>.shouldMatchInOrderSubset(vararg assertions: (T) -> Unit) = toList().shouldMatchInOrderSubset(assertions.toList())
+fun <T> Array<T>.shouldMatchInOrderSubset(vararg assertions: (T) -> Unit) = asList().shouldMatchInOrderSubset(assertions.toList())
+fun <T> List<T>.shouldMatchInOrderSubset(vararg assertions: (T) -> Unit) = this.shouldMatchInOrderSubset(assertions.toList())
+infix fun <T> Iterable<T>.shouldMatchInOrderSubset(assertions: List<(T) -> Unit>) = toList().shouldMatchInOrderSubset(assertions)
+infix fun <T> Array<T>.shouldMatchInOrderSubset(assertions: List<(T) -> Unit>) = asList().shouldMatchInOrderSubset(assertions)
+infix fun <T> List<T>.shouldMatchInOrderSubset(assertions: List<(T) -> Unit>) = this should matchInOrderSubset(assertions.toList())
+
+fun <T> Iterable<T>.shouldMatchEach(vararg assertions: (T) -> Unit) = toList().shouldMatchEach(assertions.toList())
+fun <T> Array<T>.shouldMatchEach(vararg assertions: (T) -> Unit) = asList().shouldMatchEach(assertions.toList())
+fun <T> List<T>.shouldMatchEach(vararg assertions: (T) -> Unit) = this.shouldMatchEach(assertions.toList())
+infix fun <T> Iterable<T>.shouldMatchEach(assertions: List<(T) -> Unit>) = toList().shouldMatchEach(assertions)
+infix fun <T> Array<T>.shouldMatchEach(assertions: List<(T) -> Unit>) = asList().shouldMatchEach(assertions)
+infix fun <T> List<T>.shouldMatchEach(assertions: List<(T) -> Unit>) = this should matchEach(assertions.toList())
 
 fun <T> Iterable<T>.shouldExistInOrder(vararg ps: (T) -> Boolean) = toList().shouldExistInOrder(ps.toList())
 fun <T> Array<T>.shouldExistInOrder(vararg ps: (T) -> Boolean) = asList().shouldExistInOrder(ps.toList())

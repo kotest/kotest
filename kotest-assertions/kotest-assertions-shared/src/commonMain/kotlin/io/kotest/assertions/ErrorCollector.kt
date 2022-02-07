@@ -167,7 +167,7 @@ fun ErrorCollector.collectiveError(): AssertionError? {
    } else null
 }
 
-fun ErrorCollector.runWithMode(mode: ErrorCollectionMode, block: () -> Unit) {
+inline fun <reified T> ErrorCollector.runWithMode(mode: ErrorCollectionMode, block: () -> T): T =
    getCollectionMode().let { original ->
       setCollectionMode(mode)
       try {
@@ -176,4 +176,3 @@ fun ErrorCollector.runWithMode(mode: ErrorCollectionMode, block: () -> Unit) {
          setCollectionMode(original)
       }
    }
-}
