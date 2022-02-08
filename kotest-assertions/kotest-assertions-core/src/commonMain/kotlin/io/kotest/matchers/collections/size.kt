@@ -1,9 +1,12 @@
 package io.kotest.matchers.collections
 
 import io.kotest.assertions.print.print
+import io.kotest.inspectors.forAny
 import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
+import io.kotest.matchers.sequences.shouldExist
 import io.kotest.matchers.should
+import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldHave
 import io.kotest.matchers.shouldNot
 

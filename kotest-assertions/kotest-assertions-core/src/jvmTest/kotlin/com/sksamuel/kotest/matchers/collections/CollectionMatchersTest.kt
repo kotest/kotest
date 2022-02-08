@@ -609,11 +609,11 @@ class CollectionMatchersTest : WordSpec() {
                   { it shouldBe 3 },
                )
             }.message shouldBe """
-               Expected all elements to pass the assertions, possibly with gaps between but failed to match all assertions
+               Expected a sequence of elements to pass the assertions, but failed to match all assertions
 
-               Best result when comparing from index [3], where 3 elements passed, but the following assertions failed:
+               Best result when comparing from index [3], where 3 elements passed, but the following elements failed:
 
-               - [6]: expected:<3> but was:<2>
+               6 => expected:<3> but was:<2>
             """.trimIndent()
          }
 
@@ -676,13 +676,13 @@ class CollectionMatchersTest : WordSpec() {
                   { it shouldBe 6 }
                )
             }.message shouldBe """
-               Expected all elements to pass the assertions, possibly with gaps between but failed to match all assertions
+               Expected a sequence of elements to pass the assertions, possibly with gaps between but failed to match all assertions
 
-               Best result when comparing from index [0], where 2 elements passed, but the following assertions failed:
+               Best result when comparing from index [0], where 2 elements passed, but the following elements failed:
 
-               - [3]: expected:<6> but was:<2>
-               - [4]: expected:<6> but was:<3>
-               - [5]: expected:<6> but was:<3>
+               3 => expected:<6> but was:<2>
+               4 => expected:<6> but was:<3>
+               5 => expected:<6> but was:<3>
             """.trimIndent()
          }
 

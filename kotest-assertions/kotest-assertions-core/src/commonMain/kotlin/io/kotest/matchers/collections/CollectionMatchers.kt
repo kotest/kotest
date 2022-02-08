@@ -137,13 +137,13 @@ fun <T> matchInOrder(assertions: List<(T) -> Unit>, allowGaps: Boolean): Matcher
          allPassed,
          {
             """
-            |Expected all elements to pass the assertions, possibly with gaps between but failed to match all assertions
+            |Expected a sequence of elements to pass the assertions, ${if (allowGaps) "possibly with gaps between " else ""}but failed to match all assertions
             |
-            |Best result when comparing from index [${bestResult?.startIndex}], where ${bestResult?.elementsPassed} elements passed, but the following assertions failed:
+            |Best result when comparing from index [${bestResult?.startIndex}], where ${bestResult?.elementsPassed} elements passed, but the following elements failed:
             |
             ${
                bestResult?.problems?.joinToString("\n") { problem ->
-                  "|- [${problem.atIndex}]: ${problem.problem}"
+                  "|${problem.atIndex} => ${problem.problem}"
                }
             }
             """.trimMargin()
