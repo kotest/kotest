@@ -53,6 +53,7 @@ import io.kotest.matchers.collections.shouldHaveAtMostSize
 import io.kotest.matchers.collections.shouldHaveElementAt
 import io.kotest.matchers.collections.shouldHaveSingleElement
 import io.kotest.matchers.collections.shouldHaveSize
+import io.kotest.matchers.collections.shouldMatchInOrder
 import io.kotest.matchers.collections.shouldNotBeIn
 import io.kotest.matchers.collections.shouldNotBeMonotonicallyDecreasing
 import io.kotest.matchers.collections.shouldNotBeMonotonicallyDecreasingWith
@@ -582,15 +583,38 @@ class CollectionMatchersTest : WordSpec() {
          val col = listOf(1, 1, 2, 2, 3, 3)
 
          "test that a collection matches the assertions in the given order, duplicates permitted" {
-            col should matchInOrder(
-               { it shouldBe 1 },
-               { it shouldBe 2 },
-               { it shouldBe 3 }
-            )
+            withClue("Gaps not allowed") {
+               shouldFail {
+                  col should matchInOrder(
+                     { it shouldBe 1 },
+                     { it shouldBe 2 },
+                     { it shouldBe 3 }
+                  )
+               }
+            }
 
             col should matchInOrder(
-               { it shouldBe 1 }
+               { it shouldBe 2 },
+               { it shouldBe 2 },
+               { it shouldBe 3 },
             )
+         }
+
+         "failure shows best result" {
+            shouldFail {
+               listOf(1, 2, 3, 1, 2, 1 ,2).shouldMatchInOrder(
+                  { it shouldBe 1 },
+                  { it shouldBe 2 },
+                  { it shouldBe 1 },
+                  { it shouldBe 3 },
+               )
+            }.message shouldBe """
+               Expected all elements to pass the assertions, possibly with gaps between but failed to match all assertions
+
+               Best result when comparing from index [3], where 3 elements passed, but the following assertions failed:
+
+               - [6]: expected:<3> but was:<2>
+            """.trimIndent()
          }
 
 
@@ -617,9 +641,9 @@ class CollectionMatchersTest : WordSpec() {
          "work with unsorted collections" {
             val actual = listOf(5, 3, 1, 2, 4, 2)
 
-            withClue("should match 2nd, 5th and 6th elements ([.., 3, .., 4, 2])") {
+            withClue("should match 4th, 5th and 6th elements ([.., 2, 4, 2])") {
                actual should matchInOrder(
-                  { it shouldBe 3 },
+                  { it shouldBe 2 },
                   { it shouldBeGreaterThan 3 },
                   { it shouldBeInRange 2..2 }
                )
@@ -654,7 +678,7 @@ class CollectionMatchersTest : WordSpec() {
             }.message shouldBe """
                Expected all elements to pass the assertions, possibly with gaps between but failed to match all assertions
 
-               Best result when comparing from index [0], where 2 elements passed, but the following errors occurred:
+               Best result when comparing from index [0], where 2 elements passed, but the following assertions failed:
 
                - [3]: expected:<6> but was:<2>
                - [4]: expected:<6> but was:<3>

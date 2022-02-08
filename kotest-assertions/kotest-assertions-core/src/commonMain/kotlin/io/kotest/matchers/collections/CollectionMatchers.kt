@@ -69,37 +69,14 @@ fun <T : Comparable<T>> sorted(): Matcher<List<T>> = object : Matcher<List<T>> {
 }
 
 fun <T> matchEach(vararg fns: (T) -> Unit): Matcher<Collection<T>?> = matchEach(fns.asList())
-fun <T> matchInOrder(vararg fns: (T) -> Unit): Matcher<Collection<T>?> = matchInOrder(fns.asList())
-fun <T> matchInOrderSubset(vararg fns: (T) -> Unit): Matcher<Collection<T>?> = matchInOrderSubset(fns.asList())
+fun <T> matchInOrder(vararg fns: (T) -> Unit): Matcher<Collection<T>?> = matchInOrder(fns.asList(), allowGaps = false)
+fun <T> matchInOrderSubset(vararg fns: (T) -> Unit): Matcher<Collection<T>?> = matchInOrder(fns.asList(), allowGaps = true)
 
 /**
- * Assert that a collection contains a subsequence that matches the given subsequence of assertions, possibly with
- * values in between.
+ * Assert that a [Collection] contains a subsequence that matches the given assertions. Failing elements may occur
+ * between passing ones, if [allowGaps] is set to true
  */
-fun <T> matchInOrder(assertions: List<(T) -> Unit>): Matcher<Collection<T>?> = neverNullMatcher { actual ->
-   require(assertions.isNotEmpty()) { "assertions must not be empty" }
-
-   var subsequenceIndex = 0
-   val actualIterator = actual.iterator()
-
-   errorCollector.runWithMode(ErrorCollectionMode.Hard) {
-      while (actualIterator.hasNext() && subsequenceIndex < assertions.size) {
-         if (runCatching { assertions[subsequenceIndex](actualIterator.next()) }.isSuccess) subsequenceIndex += 1
-      }
-   }
-
-   MatcherResult(
-      subsequenceIndex == assertions.size,
-      { "${actual.print().value} did not match the assertions in order" },
-      { "${actual.print().value} should not match the assertions in order" }
-   )
-}
-
-/**
- * Assert that a collection contains a subsequence that matches the given subsequence of assertions, with NO
- * values in between.
- */
-fun <T> matchInOrderSubset(assertions: List<(T) -> Unit>): Matcher<Collection<T>?> = neverNullMatcher { actual ->
+fun <T> matchInOrder(assertions: List<(T) -> Unit>, allowGaps: Boolean): Matcher<Collection<T>?> = neverNullMatcher { actual ->
    val originalMode = errorCollector.getCollectionMode()
    try {
       data class MatchInOrderSubsetProblem(
@@ -123,7 +100,13 @@ fun <T> matchInOrderSubset(assertions: List<(T) -> Unit>): Matcher<Collection<T>
          var elementsTested = 0
          val currentProblems = ArrayList<MatchInOrderSubsetProblem>()
 
-         while (true) {
+         while (startIndex + elementsTested < actual.size) {
+            if (bestResult == null || elementsPassed > bestResult.elementsPassed) {
+               bestResult = MatchInOrderSubsetResult(startIndex, elementsPassed, currentProblems)
+            }
+
+            if (!allowGaps && elementsTested > elementsPassed) break
+
             val elementResult = runCatching {
                assertions[elementsPassed](actualAsList[startIndex + elementsTested])
             }
@@ -145,12 +128,6 @@ fun <T> matchInOrderSubset(assertions: List<(T) -> Unit>): Matcher<Collection<T>
             }
 
             elementsTested++
-            if (startIndex + elementsTested >= actual.size) {
-               if (bestResult == null || elementsPassed > bestResult.elementsPassed) {
-                  bestResult = MatchInOrderSubsetResult(startIndex, elementsPassed, currentProblems)
-               }
-               break
-            }
          }
 
          if (allPassed) break
@@ -162,7 +139,7 @@ fun <T> matchInOrderSubset(assertions: List<(T) -> Unit>): Matcher<Collection<T>
             """
             |Expected all elements to pass the assertions, possibly with gaps between but failed to match all assertions
             |
-            |Best result when comparing from index [${bestResult?.startIndex}], where ${bestResult?.elementsPassed} elements passed, but the following errors occurred:
+            |Best result when comparing from index [${bestResult?.startIndex}], where ${bestResult?.elementsPassed} elements passed, but the following assertions failed:
             |
             ${
                bestResult?.problems?.joinToString("\n") { problem ->
