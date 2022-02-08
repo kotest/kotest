@@ -1,16 +1,17 @@
 package io.kotest.plugin.intellij.psi
 
-import com.intellij.psi.PsiClass
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import org.jetbrains.kotlin.asJava.classes.KtLightClass
-import org.jetbrains.kotlin.asJava.toLightClass
-import org.jetbrains.kotlin.idea.refactoring.fqName.getKotlinFqName
+import org.jetbrains.kotlin.idea.caches.resolve.analyze
 import org.jetbrains.kotlin.name.FqName
 import org.jetbrains.kotlin.psi.KtClass
 import org.jetbrains.kotlin.psi.KtClassOrObject
 import org.jetbrains.kotlin.psi.psiUtil.getChildrenOfType
 import org.jetbrains.kotlin.psi.psiUtil.getStrictParentOfType
+import org.jetbrains.kotlin.resolve.BindingContext
+import org.jetbrains.kotlin.resolve.descriptorUtil.classId
+import org.jetbrains.kotlin.types.typeUtil.supertypes
 
 /**
  * Returns the [KtClass] from this light class, otherwise null.
@@ -43,7 +44,18 @@ fun PsiElement.enclosingKtClass(): KtClass? = getStrictParentOfType()
  * Recursively returns the list of classes and interfaces extended or implemented by the class.
  */
 fun KtClassOrObject.getAllSuperClasses(): List<FqName> {
-   fun supers(psi: PsiClass): List<PsiClass> = listOf(psi) + psi.supers.flatMap { supers(it) }
-   val supers = toLightClass()?.supers?.flatMap { supers(it) } ?: emptyList()
-   return supers.mapNotNull { it.getKotlinFqName() }
+   return superTypeListEntries
+      .mapNotNull { it.typeReference }
+      .mapNotNull {
+         val bindingContext = it.analyze()
+         bindingContext.get(BindingContext.TYPE, it)
+      }.flatMap {
+         it.supertypes() + it
+      }.mapNotNull {
+         it.constructor.declarationDescriptor.classId
+      }.map {
+         val packageName = it.packageFqName
+         val simpleName = it.relativeClassName
+         FqName("$packageName.$simpleName")
+      }
 }

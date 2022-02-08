@@ -73,22 +73,29 @@ val plugins = listOf(
       deps = listOf("java", "org.jetbrains.plugins.gradle", "org.jetbrains.kotlin")
    ),
    plugin.PluginDescriptor(
-      since = "212.3116.43", // this version is 2021.3 EAP
+      since = "212.3116.43", // this version is 2021.2
       until = "212.*",
       sdkVersion = "IC-2021.2.3",
       sourceFolder = "IC-212",
       deps = listOf("java", "org.jetbrains.plugins.gradle", "org.jetbrains.kotlin")
    ),
    plugin.PluginDescriptor(
-      since = "213.3714", // this version is 2021.3 EAP
+      since = "213.3714", // this version is 2021.3
       until = "213.*",
       sdkVersion = "IC-213-EAP-SNAPSHOT",
       sourceFolder = "IC-213",
       deps = listOf("java", "org.jetbrains.plugins.gradle", "org.jetbrains.kotlin")
+   ),
+   plugin.PluginDescriptor(
+      since = "221.3427.89", // this version is 2022.1 EAP
+      until = "221.*",
+      sdkVersion = "IC-221-EAP-SNAPSHOT",
+      sourceFolder = "IC-221",
+      deps = listOf("java", "org.jetbrains.plugins.gradle", "org.jetbrains.kotlin")
    )
 )
 
-val productName = System.getenv("PRODUCT_NAME") ?: System.getenv("SOURCE_FOLDER") ?: "IC-212"
+val productName = System.getenv("PRODUCT_NAME") ?: System.getenv("SOURCE_FOLDER") ?: "IC-221"
 val descriptor = plugins.first { it.sourceFolder == productName }
 
 val jetbrainsToken: String by project
