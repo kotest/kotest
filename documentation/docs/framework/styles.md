@@ -54,7 +54,7 @@ class MyTests : FunSpec({
 Tests can be disabled using the `xcontext` and `xtest` variants (in addition to the [usual ways](conditional_evaluation.md))
 
 ```kotlin
-class MyTests : DescribeSpec({
+class MyTests : FunSpec({
     context("this outer block is enabled") {
         xtest("this test is disabled") {
             // test here
@@ -249,7 +249,7 @@ Note: `Then` scope doesn't have an `and` scope due to a Gradle bug. For more inf
 Tests can be disabled using the `xgiven`, `xwhen`, and `xthen` variants (in addition to the [usual ways](conditional_evaluation.md))
 
 ```kotlin
-class MyTests : DescribeSpec({
+class MyTests : BehaviorSpec({
     xgiven("this is disabled") {
         When("disabled by inheritance from the parent") {
             then("disabled by inheritance from its grandparent") {
@@ -408,7 +408,7 @@ class MyTests : ExpectSpec({
 Tests can be disabled using the `xcontext` and `xexpect` variants (in addition to the [usual ways](conditional_evaluation.md))
 
 ```kotlin
-class MyTests : DescribeSpec({
+class MyTests : ExpectSpec({
     context("this outer block is enabled") {
         xexpect("this test is disabled") {
             // test here
