@@ -54,6 +54,7 @@ import io.kotest.matchers.collections.shouldHaveElementAt
 import io.kotest.matchers.collections.shouldHaveSingleElement
 import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.collections.shouldMatchInOrder
+import io.kotest.matchers.collections.shouldMatchInOrderSubset
 import io.kotest.matchers.collections.shouldNotBeIn
 import io.kotest.matchers.collections.shouldNotBeMonotonicallyDecreasing
 import io.kotest.matchers.collections.shouldNotBeMonotonicallyDecreasingWith
@@ -73,6 +74,9 @@ import io.kotest.matchers.collections.shouldNotContainNull
 import io.kotest.matchers.collections.shouldNotContainOnlyNulls
 import io.kotest.matchers.collections.shouldNotHaveElementAt
 import io.kotest.matchers.collections.shouldNotHaveSize
+import io.kotest.matchers.collections.shouldNotMatchEach
+import io.kotest.matchers.collections.shouldNotMatchInOrder
+import io.kotest.matchers.collections.shouldNotMatchInOrderSubset
 import io.kotest.matchers.collections.singleElement
 import io.kotest.matchers.collections.sorted
 import io.kotest.matchers.collections.strictlyDecreasing
@@ -580,12 +584,10 @@ class CollectionMatchersTest : WordSpec() {
       }
 
       "matchInOrder" should {
-         val col = listOf(1, 1, 2, 2, 3, 3)
-
          "test that a collection matches the assertions in the given order, duplicates permitted" {
             withClue("Gaps not allowed") {
                shouldFail {
-                  col should matchInOrder(
+                  listOf(1, 2, 2, 3) should matchInOrder(
                      { it shouldBe 1 },
                      { it shouldBe 2 },
                      { it shouldBe 3 }
@@ -593,7 +595,7 @@ class CollectionMatchersTest : WordSpec() {
                }
             }
 
-            col should matchInOrder(
+            arrayOf(2, 2, 3).shouldMatchInOrder(
                { it shouldBe 2 },
                { it shouldBe 2 },
                { it shouldBe 3 },
@@ -602,7 +604,7 @@ class CollectionMatchersTest : WordSpec() {
 
          "failure shows best result" {
             shouldFail {
-               listOf(1, 2, 3, 1, 2, 1 ,2).shouldMatchInOrder(
+               listOf(1, 2, 3, 1, 2, 1, 2).shouldMatchInOrder(
                   { it shouldBe 1 },
                   { it shouldBe 2 },
                   { it shouldBe 1 },
@@ -620,7 +622,7 @@ class CollectionMatchersTest : WordSpec() {
 
          "Non existing element causes error" {
             shouldThrow<AssertionError> {
-               col should matchInOrder(
+               listOf(1, 2, 3).shouldMatchInOrder(
                   { it shouldBe 1 },
                   { it shouldBe 2 },
                   { it shouldBe 6 }
@@ -630,7 +632,7 @@ class CollectionMatchersTest : WordSpec() {
 
          "out-of-order elements cause error" {
             shouldThrow<AssertionError> {
-               col should matchInOrder(
+               listOf(1, 2, 3) should matchInOrder(
                   { it shouldBe 2 },
                   { it shouldBe 1 },
                   { it shouldBe 3 }
@@ -649,28 +651,57 @@ class CollectionMatchersTest : WordSpec() {
                )
             }
          }
+
+         "negation should work" {
+            shouldFail {
+               listOf(1, 2, 3, 4).shouldNotMatchInOrder(
+                  { it shouldBe 2 },
+                  { it shouldBe 3 },
+               )
+            }.message shouldBe """
+               Expected some assertion to fail but all passed
+            """.trimIndent()
+
+            listOf(1, 2, 3, 4).shouldNotMatchInOrder(
+               { it shouldBe 2 },
+               { it shouldBe 4 }
+            )
+         }
       }
 
       "matchInOrderSubset" should {
-         val col = listOf(1, 1, 2, 2, 3, 3)
-
          "test that a collection matches the assertions in the given order without gaps" {
-            col should matchInOrderSubset(
+            listOf(1, 1, 2, 2, 3, 3) should matchInOrderSubset(
                { it shouldBe 1 },
                { it shouldBe 2 },
                { it shouldBe 2 },
                { it shouldBe 3 }
             )
 
-            col should matchInOrderSubset(
+            arrayOf(1, 1, 1).shouldMatchInOrderSubset(
                { it shouldBe 1 }
             )
          }
 
+         "Negation should work" {
+            shouldFail {
+               listOf(1, 2, 3, 4).shouldNotMatchInOrderSubset(
+                  { it shouldBe 2 },
+                  { it shouldBe 4 },
+               )
+            }.message shouldBe """
+               Expected some assertion to fail but all passed
+            """.trimIndent()
+
+            arrayOf(1, 2, 3, 4).shouldNotMatchInOrder(
+               { it shouldBe 4 },
+               { it shouldBe 1 }
+            )
+         }
 
          "Non existing element causes error" {
             shouldThrow<AssertionError> {
-               col should matchInOrderSubset(
+               listOf(1, 1, 2, 2, 3, 3) should matchInOrderSubset(
                   { it shouldBe 1 },
                   { it shouldBe 2 },
                   { it shouldBe 6 }
@@ -688,7 +719,7 @@ class CollectionMatchersTest : WordSpec() {
 
          "out-of-order elements cause error" {
             shouldThrow<AssertionError> {
-               col should matchInOrderSubset(
+               listOf(1, 2, 3) should matchInOrderSubset(
                   { it shouldBe 2 },
                   { it shouldBe 1 },
                   { it shouldBe 3 }
@@ -718,32 +749,46 @@ class CollectionMatchersTest : WordSpec() {
       }
 
       "matchEach" should {
-         val col = listOf(1, 3, 7)
-
          "test that a collection matches the assertions in the given order without gaps" {
-            col should matchEach(
+            listOf(1, 3, 7) should matchEach(
                { it shouldBe 1 },
                { it shouldBeInRange 2..4 },
                { it shouldBeGreaterThan 2 }
             )
          }
 
+         "Negation should work" {
+            shouldFail{
+               listOf(1, 2).shouldNotMatchEach(
+                  { it shouldBe 1 },
+                  { it shouldBe 2 },
+               )
+            }.message shouldBe """
+               Expected some element to fail its assertion, but all passed.
+            """.trimIndent()
+
+            arrayOf(1, 2).shouldNotMatchEach(
+               { it shouldBe 2 },
+               { it shouldBe 1 }
+            )
+         }
+
          "No assertion exists for each element" {
             shouldFail {
-               col should matchEach(
+               listOf(1, -1, 999) should matchEach(
                   { it shouldBe 1 }
                )
             }.message shouldBe """
                Expected each element to pass its assertion, but found issues at indexes: [1, 2]
 
-               1 => Index 1 out of bounds for length 1
-               2 => Index 2 out of bounds for length 1
+               1 => Element has no corresponding assertion. Only 1 assertions provided
+               2 => Element has no corresponding assertion. Only 1 assertions provided
             """.trimIndent()
          }
 
          "Too many assertions cause error" {
             shouldFail {
-               col should matchEach(
+               listOf(1, 3, 7) should matchEach(
                   { it shouldBe 1 },
                   { it shouldBe 3 },
                   { it shouldBe 7 },
@@ -760,7 +805,7 @@ class CollectionMatchersTest : WordSpec() {
 
          "Non matching element causes error" {
             shouldFail {
-               col should matchEach(
+               listOf(1, 3, 7) should matchEach(
                   { it shouldBe 1 },
                   { it shouldBeInRange 2..4 },
                   { it shouldBeGreaterThan 7 }
