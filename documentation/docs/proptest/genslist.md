@@ -44,9 +44,9 @@ We also provide generators for [Arrow](arrow.md) as a separate module.
 | **Ints** |
 | `Arb.int(min, max)` | Returns an `Arb` that produces `Int`s from `min` to `max` (inclusive). The edge cases are `min`, -1, 0, 1 and `max` which are only included if they are in the provided range. | ✓ | ✓ | ✓ |
 | `Arb.positiveInt(min, max)` | Returns an `Arb` that produces positive `Int`s from `min` to `max` (inclusive). The edge cases are 1 and `max` which are only included if they are in the provided range. | ✓ | ✓ | ✓ |
-| `Arb.nonNegativeInts(min, max)` | Returns an `Arb` that produces non negative `Int`s from `min` to `max` (inclusive). The edge cases are 0, 1 and `max` which are only included if they are in the provided range. | ✓ | ✓ | ✓ |
+| `Arb.nonNegativeInt(min, max)` | Returns an `Arb` that produces non negative `Int`s from `min` to `max` (inclusive). The edge cases are 0, 1 and `max` which are only included if they are in the provided range. | ✓ | ✓ | ✓ |
 | `Arb.negativeInt(min, max)` | Returns an `Arb` that produces negative `Int`s from `min` to `max` (inclusive). The edge cases are `min` and -1 which are only included if they are in the provided range. | ✓ | ✓ | ✓ |
-| `Arb.nonPositiveInts(min, max)` | Returns an `Arb` that produces non positive `Int`s from `min` to `max` (inclusive). The edge cases are `min`, -1 and 0 which are only included if they are in the provided range. | ✓ | ✓ | ✓ |
+| `Arb.nonPositiveInt(min, max)` | Returns an `Arb` that produces non positive `Int`s from `min` to `max` (inclusive). The edge cases are `min`, -1 and 0 which are only included if they are in the provided range. | ✓ | ✓ | ✓ |
 | `Arb.intArray(length, content)` | Returns an `Arb` that produces `IntArray`s where `length` produces the length of the arrays and `content` produces the content of the arrays. | ✓ | ✓ | ✓ |
 | `Arb.uInt(min, max)` | Returns an `Arb` that produces `UInt`s from `min` to `max` (inclusive). The edge cases are `min`, 1 and `max` which are only included if they are in the provided range. | ✓ | ✓ | ✓ |
 | `Arb.uIntArray(length, content)` | Returns an `Arb` that produces `UIntArray`s where `length` produces the length of the arrays and `content` produces the content of the arrays. | ✓ | ✓ | ✓ |
