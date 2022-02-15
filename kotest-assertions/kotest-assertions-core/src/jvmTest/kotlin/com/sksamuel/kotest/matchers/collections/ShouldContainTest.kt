@@ -49,8 +49,8 @@ class ShouldContainTest : WordSpec({
 
       "print errors unambiguously"  {
          shouldThrow<AssertionError> {
-            listOf<Any>(1, 2).shouldContain(listOf<Any>(1L, 2L))
-         }.shouldHaveMessage("Collection should contain element [1L, 2L] based on object equality; listing some elements [1, 2]")
+            listOf<Any>(1, 2, 3, 4, 5, 6, 7).shouldContain(listOf<Any>(1L, 2L))
+         }.shouldHaveMessage("Collection should contain element [1L, 2L] based on object equality; but the collection is [1, 2, 3, 4, 5, 6, 7]")
       }
    }
 })
