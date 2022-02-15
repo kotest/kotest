@@ -165,10 +165,14 @@ fun <T> matchEach(assertions: List<(T) -> Unit>): Matcher<Collection<T>?> = neve
 
    val problems = errorCollector.runWithMode(ErrorCollectionMode.Hard) {
       actual.mapIndexedNotNull { index, element ->
-         runCatching {
-            assertions[index](element)
-         }.exceptionOrNull()?.let { exception ->
-            MatchEachProblem(index, exception.message)
+         if (index !in assertions.indices) {
+            MatchEachProblem(index, "Element has no corresponding assertion. Only ${assertions.size} assertions provided")
+         } else {
+            runCatching {
+               assertions[index](element)
+            }.exceptionOrNull()?.let { exception ->
+               MatchEachProblem(index, exception.message)
+            }
          }
       }
    } + (actual.size..assertions.size - 1).map {
@@ -182,7 +186,7 @@ fun <T> matchEach(assertions: List<(T) -> Unit>): Matcher<Collection<T>?> = neve
       problems.isEmpty(),
       {
          "Expected each element to pass its assertion, but found issues at indexes: [${problems.joinToString { it.atIndex.toString() }}]\n\n" +
-            "${problems.joinToString(separator = "\n") { "- [${it.atIndex}]: ${it.problem}" }}"
+            "${problems.joinToString(separator = "\n") { "${it.atIndex} => ${it.problem}" }}"
       },
       { "Expected some element to fail its assertion, but all passed." },
    )

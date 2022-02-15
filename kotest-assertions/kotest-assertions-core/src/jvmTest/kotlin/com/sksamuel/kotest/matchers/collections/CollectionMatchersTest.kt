@@ -736,8 +736,8 @@ class CollectionMatchersTest : WordSpec() {
             }.message shouldBe """
                Expected each element to pass its assertion, but found issues at indexes: [1, 2]
 
-               - [1]: Index 1 out of bounds for length 1
-               - [2]: Index 2 out of bounds for length 1
+               1 => Index 1 out of bounds for length 1
+               2 => Index 2 out of bounds for length 1
             """.trimIndent()
          }
 
@@ -753,8 +753,8 @@ class CollectionMatchersTest : WordSpec() {
             }.message shouldBe """
                Expected each element to pass its assertion, but found issues at indexes: [3, 4]
 
-               - [3]: No actual element for assertion at index 3
-               - [4]: No actual element for assertion at index 4
+               3 => No actual element for assertion at index 3
+               4 => No actual element for assertion at index 4
             """.trimIndent()
          }
 
@@ -768,7 +768,7 @@ class CollectionMatchersTest : WordSpec() {
             }.message shouldBe """
                Expected each element to pass its assertion, but found issues at indexes: [2]
 
-               - [2]: 7 should be > 7
+               2 => 7 should be > 7
             """.trimIndent()
          }
 
@@ -782,8 +782,8 @@ class CollectionMatchersTest : WordSpec() {
             }.message shouldBe """
                Expected each element to pass its assertion, but found issues at indexes: [1, 2]
 
-               - [1]: expected:<1> but was:<3>
-               - [2]: expected:<3> but was:<1>
+               1 => expected:<1> but was:<3>
+               2 => expected:<3> but was:<1>
             """.trimIndent()
          }
 
@@ -797,11 +797,11 @@ class CollectionMatchersTest : WordSpec() {
             }.message shouldBe """
                Expected each element to pass its assertion, but found issues at indexes: [1, 2, 3, 4, 5]
 
-               - [1]: expected:<2> but was:<1>
-               - [2]: expected:<3> but was:<2>
-               - [3]: Index 3 out of bounds for length 3
-               - [4]: Index 4 out of bounds for length 3
-               - [5]: Index 5 out of bounds for length 3
+               1 => expected:<2> but was:<1>
+               2 => expected:<3> but was:<2>
+               3 => Element has no corresponding assertion. Only 3 assertions provided
+               4 => Element has no corresponding assertion. Only 3 assertions provided
+               5 => Element has no corresponding assertion. Only 3 assertions provided
             """.trimIndent()
          }
       }
