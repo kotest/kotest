@@ -16,7 +16,7 @@ import kotlin.time.TimeSource
  * Runs a function until it doesn't throw as long as the specified duration hasn't passed
  */
 suspend fun <T> eventually(duration: Duration, f: suspend () -> T): T =
-   eventually(EventuallyConfig(duration = duration, exceptionClass = Throwable::class), f = f)
+   eventually(EventuallyConfig(duration = duration), f = f)
 
 suspend fun <T : Any> eventually(
    duration: Duration,
@@ -39,7 +39,7 @@ suspend fun <T> eventually(
 ): T = eventually(EventuallyConfig(duration = duration, interval), listener = listener, f = f)
 
 suspend fun <T> eventually(duration: Duration, poll: Duration, f: suspend () -> T): T =
-   eventually(EventuallyConfig(duration = duration, interval = poll.fixed(), exceptionClass = Throwable::class), f = f)
+   eventually(EventuallyConfig(duration = duration, interval = poll.fixed()), f = f)
 
 /**
  * Runs a function until it doesn't throw the specified exception as long as the specified duration hasn't passed
