@@ -7,6 +7,7 @@ import io.kotest.matchers.MatcherResult
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldNot
 import kotlin.reflect.KProperty
+import kotlin.reflect.KProperty1
 import kotlin.reflect.KVisibility
 import kotlin.reflect.full.memberProperties
 import kotlin.reflect.jvm.isAccessible
@@ -386,20 +387,13 @@ fun <T : Any> beEqualComparingFields(
    ignoreComputedFields: Boolean,
 ) = object : Matcher<T> {
    override fun test(value: T): MatcherResult {
-      val predicates = listOfNotNull(
-         if (ignorePrivateFields) nonPrivate else null,
-         if (ignoreComputedFields) nonComputed else null,
-         { it !in propertiesToExclude }
-      ).reduce { a, b -> a and b }
-
-      val fieldsToCompare = value::class.memberProperties
-         .asSequence()
-         .onEach { it.isAccessible = true }
-         .filter(predicates)
-         .sortedBy { it.name }
-         .toList()
-
-      val failed = checkEqualityOfFields(fieldsToCompare, value, other)
+      val (failed, fieldsToCompare) = checkEqualityOfFieldsRecursively(
+         value,
+         other,
+         ignorePrivateFields,
+         ignoreComputedFields,
+         propertiesToExclude
+      )
 
       return MatcherResult(
          failed.isEmpty(),
@@ -429,3 +423,58 @@ private fun <T> checkEqualityOfFields(fields: List<KProperty<*>>, value: T, othe
       if (isEqual) null else "${it.name}: ${actual.print().value} != ${expected.print().value}"
    }
 }
+
+private fun <T> checkEqualityOfFieldsRecursively(
+   value: T,
+   other: T,
+   ignorePrivateFields: Boolean,
+   ignoreComputedFields: Boolean,
+   propertiesToExclude: List<KProperty<*>>,
+   level: Int = 1
+): Pair<List<String>, List<KProperty1<out T, *>>> {
+   val predicates = listOfNotNull(
+      if (ignorePrivateFields) nonPrivate else null,
+      if (ignoreComputedFields) nonComputed else null,
+      { it !in propertiesToExclude }
+   ).reduce { a, b -> a and b }
+
+   val fields = value!!::class.memberProperties
+      .asSequence()
+      .onEach { it.isAccessible = true }
+      .filter(predicates)
+      .sortedBy { it.name }
+      .toList()
+
+   return fields.mapNotNull {
+      val actual = it.getter.call(value)
+      val expected = it.getter.call(other)
+      val typeName = it.returnType.toString()
+
+      if (typeName.startsWith("kotlin") || typeName.startsWith("java")) {
+         val throwable = eq(actual, expected)
+         if (throwable != null) {
+            val heading = it.name
+            "$heading\n${"\t".repeat(level + 1)}${throwable.message}"
+         } else {
+            null
+         }
+      } else {
+         val (errorMessage, _) = checkEqualityOfFieldsRecursively(
+            actual,
+            expected,
+            ignorePrivateFields,
+            ignoreComputedFields,
+            propertiesToExclude,
+            level + 1
+         )
+         if (errorMessage.isEmpty()) {
+            null
+         } else {
+            val innerErrorMessage = errorMessage.joinToString("\n") { msg -> "\t".repeat(level + 1) + msg }
+            val errorHeading = it.name
+            "$errorHeading${"\t".repeat(level)}\n$innerErrorMessage"
+         }
+      }
+   } to fields
+}
+
