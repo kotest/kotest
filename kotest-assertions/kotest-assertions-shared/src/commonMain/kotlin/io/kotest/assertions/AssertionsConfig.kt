@@ -5,10 +5,10 @@ import io.kotest.mpp.sysprop
 object AssertionsConfig {
 
    val showDataClassDiff: Boolean
-      get() = sysprop("kotest.assertions.show-data-class-diffs", "true").toBoolean()
+      get() = sysprop("kotest.assertions.show-data-class-diffs", true)
 
    val largeStringDiffMinSize: Int
-      get() = sysprop("kotest.assertions.multi-line-diff-size", "50").toInt()
+      get() = sysprop("kotest.assertions.multi-line-diff-size", 50)
 
    val multiLineDiff: String
       get() = sysprop("kotest.assertions.multi-line-diff", "")
