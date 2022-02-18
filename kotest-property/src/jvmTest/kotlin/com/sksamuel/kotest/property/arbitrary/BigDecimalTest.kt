@@ -1,14 +1,17 @@
 package com.sksamuel.kotest.property.arbitrary
 
-import io.kotest.assertions.assertSoftly
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.inspectors.forAll
 import io.kotest.matchers.collections.shouldContain
+import io.kotest.matchers.collections.shouldContainAll
+import io.kotest.matchers.collections.shouldContainExactly
+import io.kotest.matchers.collections.shouldContainExactlyInAnyOrder
 import io.kotest.matchers.concurrent.shouldCompleteWithin
 import io.kotest.matchers.shouldBe
 import io.kotest.property.Arb
 import io.kotest.property.arbitrary.bigDecimal
-import io.kotest.property.arbitrary.bigDecimalEdgecases
+import io.kotest.property.arbitrary.bigDecimalDefaultEdgecases
+import io.kotest.property.arbitrary.edgecases
 import io.kotest.property.arbitrary.take
 import java.math.BigDecimal
 import java.math.RoundingMode
@@ -38,8 +41,29 @@ class BigDecimalTest : FunSpec({
       }
    }
 
-   test("bigDecimalEdgecases should contain zeros with differing precision") {
-      bigDecimalEdgecases.shouldContain(BigDecimal("0.00"))
-      bigDecimalEdgecases.shouldContain(BigDecimal("0"))
+   test("bigDecimalDefaultEdgecases should contain zeros with differing precision") {
+      bigDecimalDefaultEdgecases.shouldContain(BigDecimal("0.00"))
+      bigDecimalDefaultEdgecases.shouldContain(BigDecimal("0"))
    }
+
+   test("Arb.bigDecimal(min, max) should always contain min as edgecase but not max") {
+      val min = BigDecimal.valueOf(123)
+      val max = BigDecimal.valueOf(555)
+
+      val actualEdgecases = Arb.bigDecimal(min = min, max = max).edgecases()
+      actualEdgecases.shouldContain(min)
+      actualEdgecases.shouldNotContain(max)
+   }
+
+   test("Arb.bigDecimal(min, max) should only include default edgecases that are in range [min, max)") {
+      val min = BigDecimal.valueOf(0)
+      val max = BigDecimal.valueOf(5)
+
+      val expectedEdgecases = bigDecimalDefaultEdgecases
+         .filter { min <= it && it < max }
+
+      Arb.bigDecimal(min = min, max = max).edgecases().shouldContainAll(expectedEdgecases)
+   }
+
+
 })
