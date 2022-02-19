@@ -188,7 +188,7 @@ class CollectionMatchersTest : WordSpec() {
 
             shouldThrow<AssertionError> {
                longList.shouldNotBeSorted()
-            }.shouldHaveMessage("List [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, ...] and 980 more should not be sorted")
+            }.shouldHaveMessage("List [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, ...and 980 more] should not be sorted")
          }
       }
 
@@ -306,7 +306,7 @@ class CollectionMatchersTest : WordSpec() {
 
             shouldThrow<AssertionError> {
                col should contain(4)
-            }.shouldHaveMessage("Collection should contain element 4 based on object equality; listing some elements [1, 2, 3]")
+            }.shouldHaveMessage("Collection should contain element 4 based on object equality; but the collection is [1, 2, 3]")
          }
       }
 
@@ -322,7 +322,7 @@ class CollectionMatchersTest : WordSpec() {
 
             shouldThrow<AssertionError> {
                col should contain(3, verifier)
-            }.shouldHaveMessage("Collection should contain element 3 based on object equality; listing some elements [1, 2, 3.0]")
+            }.shouldHaveMessage("Collection should contain element 3 based on object equality; but the collection is [1, 2, 3.0]")
          }
       }
 

@@ -1,5 +1,6 @@
 package io.kotest.matchers.collections
 
+import io.kotest.assertions.print.print
 import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
 import io.kotest.matchers.should
@@ -27,8 +28,8 @@ fun <T> containAll(ts: Collection<T>): Matcher<Collection<T>> = object : Matcher
       val passed = missing.isEmpty()
 
       val failure =
-         { "Collection should contain all of ${ts.printed().value} but was missing ${missing.printed().value}" }
-      val negFailure = { "Collection should not contain all of ${ts.printed().value}" }
+         { "Collection should contain all of ${ts.print().value} but was missing ${missing.print().value}" }
+      val negFailure = { "Collection should not contain all of ${ts.print().value}" }
 
       return MatcherResult(passed, failure, negFailure)
    }

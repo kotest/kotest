@@ -81,22 +81,12 @@ class ShouldContainExactlyTest : WordSpec() {
          "print errors unambiguously"  {
             shouldThrow<AssertionError> {
                listOf<Any>(1L, 2L).shouldContainExactly(listOf<Any>(1, 2))
-            }.shouldHaveMessage(
-               """Expecting: [
-  1,
-  2
-] but was: [
-  1L,
-  2L
-]
-Some elements were missing: [
-  1,
-  2
-] and some elements were unexpected: [
-  1L,
-  2L
-]expected:<[1, 2]> but was:<[1L, 2L]>"""
-            )
+            } shouldHaveMessage
+               """
+                  |Expecting: [1, 2] but was: [1L, 2L]
+                  |Some elements were missing: [1, 2] and some elements were unexpected: [1L, 2L]
+                  |expected:<[1, 2]> but was:<[1L, 2L]>
+               """.trimMargin()
          }
 
          "print dataclasses" {
@@ -109,17 +99,12 @@ Some elements were missing: [
                   Blonde("foo", true, 23423, inputPath),
                   Blonde("woo", true, 97821, inputPath)
                )
-            }.message?.trim() shouldBe ("""Expecting: [
-  Blonde(a=foo, b=true, c=23423, p=$expectedPath),
-  Blonde(a=woo, b=true, c=97821, p=$expectedPath)
-] but was: [
-  Blonde(a=foo, b=true, c=23423, p=$expectedPath),
-  Blonde(a=woo, b=true, c=97821, p=$expectedPath),
-  Blonde(a=goo, b=true, c=51984, p=$expectedPath)
-]
-Some elements were unexpected: [
-  Blonde(a=goo, b=true, c=51984, p=$expectedPath)
-]expected:<[Blonde(a=foo, b=true, c=23423, p=$expectedPath), Blonde(a=woo, b=true, c=97821, p=$expectedPath)]> but was:<[Blonde(a=foo, b=true, c=23423, p=$expectedPath), Blonde(a=woo, b=true, c=97821, p=$expectedPath), Blonde(a=goo, b=true, c=51984, p=$expectedPath)]>""")
+            }.message?.trim() shouldBe
+               """
+                  |Expecting: [Blonde(a=foo, b=true, c=23423, p=$expectedPath), Blonde(a=woo, b=true, c=97821, p=$expectedPath)] but was: [Blonde(a=foo, b=true, c=23423, p=$expectedPath), Blonde(a=woo, b=true, c=97821, p=$expectedPath), Blonde(a=goo, b=true, c=51984, p=$expectedPath)]
+                  |Some elements were unexpected: [Blonde(a=goo, b=true, c=51984, p=$expectedPath)]
+                  |expected:<[Blonde(a=foo, b=true, c=23423, p=$expectedPath), Blonde(a=woo, b=true, c=97821, p=$expectedPath)]> but was:<[Blonde(a=foo, b=true, c=23423, p=$expectedPath), Blonde(a=woo, b=true, c=97821, p=$expectedPath), Blonde(a=goo, b=true, c=51984, p=$expectedPath)]>
+               """.trimMargin()
          }
 
          "include extras when too many" {
@@ -130,17 +115,12 @@ Some elements were unexpected: [
                   Blonde("foo", true, 23423, inputPath),
                   Blonde("woo", true, 97821, inputPath)
                )
-            }.message?.trim() shouldBe (
-               """Expecting: [
-  Blonde(a=foo, b=true, c=23423, p=$expectedPath),
-  Blonde(a=woo, b=true, c=97821, p=$expectedPath)
-] but was: [
-  Blonde(a=foo, b=true, c=23423, p=$expectedPath)
-]
-Some elements were missing: [
-  Blonde(a=woo, b=true, c=97821, p=$expectedPath)
-]expected:<[Blonde(a=foo, b=true, c=23423, p=$expectedPath), Blonde(a=woo, b=true, c=97821, p=$expectedPath)]> but was:<[Blonde(a=foo, b=true, c=23423, p=$expectedPath)]>"""
-               )
+            }.message?.trim() shouldBe
+               """
+                  |Expecting: [Blonde(a=foo, b=true, c=23423, p=$expectedPath), Blonde(a=woo, b=true, c=97821, p=$expectedPath)] but was: [Blonde(a=foo, b=true, c=23423, p=$expectedPath)]
+                  |Some elements were missing: [Blonde(a=woo, b=true, c=97821, p=$expectedPath)]
+                  |expected:<[Blonde(a=foo, b=true, c=23423, p=$expectedPath), Blonde(a=woo, b=true, c=97821, p=$expectedPath)]> but was:<[Blonde(a=foo, b=true, c=23423, p=$expectedPath)]>
+               """.trimMargin()
          }
 
          "include missing when too few" {
@@ -152,18 +132,12 @@ Some elements were missing: [
                ).shouldContainExactly(
                   Blonde("woo", true, 97821, inputPath)
                )
-            }.message?.trim() shouldBe ("""Expecting: [
-  Blonde(a=woo, b=true, c=97821, p=$expectedPath)
-] but was: [
-  Blonde(a=foo, b=true, c=23423, p=$expectedPath),
-  Blonde(a=hoo, b=true, c=96915, p=$expectedPath)
-]
-Some elements were missing: [
-  Blonde(a=woo, b=true, c=97821, p=$expectedPath)
-] and some elements were unexpected: [
-  Blonde(a=foo, b=true, c=23423, p=$expectedPath),
-  Blonde(a=hoo, b=true, c=96915, p=$expectedPath)
-]expected:<[Blonde(a=woo, b=true, c=97821, p=$expectedPath)]> but was:<[Blonde(a=foo, b=true, c=23423, p=$expectedPath), Blonde(a=hoo, b=true, c=96915, p=$expectedPath)]>""")
+            }.message?.trim() shouldBe
+               """
+                  |Expecting: [Blonde(a=woo, b=true, c=97821, p=$expectedPath)] but was: [Blonde(a=foo, b=true, c=23423, p=$expectedPath), Blonde(a=hoo, b=true, c=96915, p=$expectedPath)]
+                  |Some elements were missing: [Blonde(a=woo, b=true, c=97821, p=$expectedPath)] and some elements were unexpected: [Blonde(a=foo, b=true, c=23423, p=$expectedPath), Blonde(a=hoo, b=true, c=96915, p=$expectedPath)]
+                  |expected:<[Blonde(a=woo, b=true, c=97821, p=$expectedPath)]> but was:<[Blonde(a=foo, b=true, c=23423, p=$expectedPath), Blonde(a=hoo, b=true, c=96915, p=$expectedPath)]>
+               """.trimMargin()
          }
 
          "include missing and extras when not the right amount" {
@@ -175,20 +149,12 @@ Some elements were missing: [
                   Blonde("woo", true, 97821, inputPath),
                   Blonde("goo", true, 51984, inputPath)
                )
-            }.message?.trim() shouldBe """Expecting: [
-  Blonde(a=woo, b=true, c=97821, p=$expectedPath),
-  Blonde(a=goo, b=true, c=51984, p=$expectedPath)
-] but was: [
-  Blonde(a=foo, b=true, c=23423, p=$expectedPath),
-  Blonde(a=hoo, b=true, c=96915, p=$expectedPath)
-]
-Some elements were missing: [
-  Blonde(a=woo, b=true, c=97821, p=$expectedPath),
-  Blonde(a=goo, b=true, c=51984, p=$expectedPath)
-] and some elements were unexpected: [
-  Blonde(a=foo, b=true, c=23423, p=$expectedPath),
-  Blonde(a=hoo, b=true, c=96915, p=$expectedPath)
-]expected:<[Blonde(a=woo, b=true, c=97821, p=$expectedPath), Blonde(a=goo, b=true, c=51984, p=$expectedPath)]> but was:<[Blonde(a=foo, b=true, c=23423, p=$expectedPath), Blonde(a=hoo, b=true, c=96915, p=$expectedPath)]>"""
+            }.message?.trim() shouldBe
+               """
+                  |Expecting: [Blonde(a=woo, b=true, c=97821, p=$expectedPath), Blonde(a=goo, b=true, c=51984, p=$expectedPath)] but was: [Blonde(a=foo, b=true, c=23423, p=$expectedPath), Blonde(a=hoo, b=true, c=96915, p=$expectedPath)]
+                  |Some elements were missing: [Blonde(a=woo, b=true, c=97821, p=$expectedPath), Blonde(a=goo, b=true, c=51984, p=$expectedPath)] and some elements were unexpected: [Blonde(a=foo, b=true, c=23423, p=$expectedPath), Blonde(a=hoo, b=true, c=96915, p=$expectedPath)]
+                  |expected:<[Blonde(a=woo, b=true, c=97821, p=$expectedPath), Blonde(a=goo, b=true, c=51984, p=$expectedPath)]> but was:<[Blonde(a=foo, b=true, c=23423, p=$expectedPath), Blonde(a=hoo, b=true, c=96915, p=$expectedPath)]>
+               """.trimMargin()
          }
       }
 

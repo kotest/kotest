@@ -50,23 +50,25 @@ fun <T, C : Collection<T>> containExactly(expected: C): Matcher<C?> = neverNullM
       val extra = actual.filterNot { expected.contains(it) }
 
       val sb = StringBuilder()
-      sb.append("Expecting: ${expected.printed().value} but was: ${actual.printed().value}")
+      sb.append("Expecting: ${expected.print().value} but was: ${actual.print().value}")
       sb.append("\n")
       if (missing.isNotEmpty()) {
          sb.append("Some elements were missing: ")
-         sb.append(missing.printed().value)
+         sb.append(missing.print().value)
          if (extra.isNotEmpty()) {
             sb.append(" and some elements were unexpected: ")
-            sb.append(extra.printed().value)
+            sb.append(extra.print().value)
          }
       } else if (extra.isNotEmpty()) {
          sb.append("Some elements were unexpected: ")
-         sb.append(extra.printed().value)
+         sb.append(extra.print().value)
       }
+
+      sb.appendLine()
       sb.toString()
    }
 
-   val negatedFailureMessage = { "Collection should not contain exactly ${expected.printed().value}" }
+   val negatedFailureMessage = { "Collection should not contain exactly ${expected.print().value}" }
 
    if (actual.size <= AssertionsConfig.maxCollectionEnumerateSize && expected.size <= AssertionsConfig.maxCollectionEnumerateSize) {
       ComparableMatcherResult(
@@ -96,9 +98,3 @@ fun <T> Array<T>?.shouldNotContainExactly(vararg expected: T) = this?.asList() s
 
 infix fun <T, C : Collection<T>> C?.shouldNotContainExactly(expected: C) = this shouldNot containExactly(expected)
 fun <T> Collection<T>?.shouldNotContainExactly(vararg expected: T) = this shouldNot containExactly(*expected)
-
-fun <T, C : Collection<T>> C.printed(): Printed {
-   val expectedPrinted = take(20).joinToString(",\n  ", prefix = "[\n  ", postfix = "\n]") { it.print().value }
-   val expectedMore = if (size > 20) " ... (plus ${size - 20} more)" else ""
-   return Printed("$expectedPrinted$expectedMore")
-}

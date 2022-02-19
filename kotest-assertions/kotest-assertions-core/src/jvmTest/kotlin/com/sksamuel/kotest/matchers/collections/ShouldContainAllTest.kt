@@ -50,13 +50,7 @@ class ShouldContainAllTest : WordSpec() {
          "print missing elements" {
             shouldThrow<AssertionError> {
                listOf<Number>(1, 2).shouldContainAll(listOf<Number>(1L, 2L))
-            }.shouldHaveMessage("""Collection should contain all of [
-  1L,
-  2L
-] but was missing [
-  1L,
-  2L
-]""")
+            }.shouldHaveMessage("""Collection should contain all of [1L, 2L] but was missing [1L, 2L]""")
          }
       }
    }

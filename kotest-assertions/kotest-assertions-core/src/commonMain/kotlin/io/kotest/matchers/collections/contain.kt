@@ -37,7 +37,7 @@ fun <T, C : Collection<T>> contain(t: T, verifier: Equality<T> = Equality.defaul
       value.any { verifier.verify(it, t).areEqual() },
       {
          "Collection should contain element ${t.print().value} based on ${verifier.name()}; " +
-            "listing some elements ${value.take(5)}"
+            "but the collection is ${value.print().value}"
       },
       { "Collection should not contain element ${t.print().value} based on ${verifier.name()}" }
    )

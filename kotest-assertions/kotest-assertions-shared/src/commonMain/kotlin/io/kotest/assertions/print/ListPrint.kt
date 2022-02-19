@@ -10,16 +10,12 @@ class ListPrint<T> : Print<List<T>> {
       return if (a.isEmpty()) Printed("[]") else {
          val remainingItems = a.size - maxCollectionSnippetSize
 
-         val suffix = when {
-            remainingItems <= 0 -> "]"
-            else -> "] and $remainingItems more"
-         }
-
          return a.joinToString(
             separator = ", ",
             prefix = "[",
-            postfix = suffix,
-            limit = maxCollectionSnippetSize
+            postfix = "]",
+            limit = maxCollectionSnippetSize,
+            truncated = "...and $remainingItems more"
          ) {
             when {
                it is Iterable<*> && it.toList() == a && a.size == 1 -> a[0].toString()
