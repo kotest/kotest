@@ -18,4 +18,32 @@ object AssertionsConfig {
 
    val maxCollectionEnumerateSize: Int
       get() = sysprop("kotest.assertions.collection.enumerate.size")?.toIntOrNull() ?: 20
+
+   val maxCollectionPrintSize: Configurable<Int> = Configurable<Int>("kotest.assertions.collection.print.size", 20, String::toInt)
 }
+
+class Configurable<T>(
+   private val name: String,
+   val defaultValue: T,
+   val converter: (String) -> T
+) {
+   val sourceDescription: String = ConfigurationLoader.getSourceDescription(name)
+   val value: T = loadValue()
+
+   private fun loadValue(): T {
+      val loaded = ConfigurationLoader.getValue(name) ?: return defaultValue
+
+      try {
+         return converter(loaded)
+      } catch (e: Exception) {
+         throw KotestConfigurationException("Could not load value from $sourceDescription: $e", e)
+      }
+   }
+}
+
+internal expect object ConfigurationLoader {
+   fun getValue(name: String): String?
+   fun getSourceDescription(name: String): String
+}
+
+class KotestConfigurationException(message: String, cause: Throwable?) : RuntimeException(message, cause)
