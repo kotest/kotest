@@ -87,9 +87,9 @@ infix fun <T> Collection<T>.shouldHaveAtLeastSize(n: Int): Collection<T> {
 fun <T> atLeastSize(n: Int) = object : Matcher<Collection<T>> {
    override fun test(value: Collection<T>) = MatcherResult(
       value.size >= n,
-      { "Collection should contain at least $n elements" },
+      { "Collection ${value.print().value} should contain at least $n elements" },
       {
-         "Collection should contain less than $n elements"
+         "Collection ${value.print().value} should contain less than $n elements"
       })
 }
 
@@ -111,9 +111,9 @@ infix fun <T> Collection<T>.shouldHaveAtMostSize(n: Int): Collection<T> {
 fun <T> atMostSize(n: Int) = object : Matcher<Collection<T>> {
    override fun test(value: Collection<T>) = MatcherResult(
       value.size <= n,
-      { "Collection should contain at most $n elements" },
+      { "Collection ${value.print().value} should contain at most $n elements" },
       {
-         "Collection should contain more than $n elements"
+         "Collection ${value.print().value} should contain more than $n elements"
       })
 }
 
