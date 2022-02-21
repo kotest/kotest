@@ -30,7 +30,8 @@ object LexicographicSpecSorter : SpecSorter {
  * An implementation of [SpecExecutionOrder] which will order specs randomly.
  */
 class RandomSpecSorter(private val random: Random) : SpecSorter {
-   override fun compare(a: KClass<out Spec>, b: KClass<out Spec>): Int = random.nextInt()
+   override fun compare(a: KClass<out Spec>, b: KClass<out Spec>): Int = 0
+   override fun sort(specs: List<SpecRef>): List<SpecRef> = specs.shuffled(random)
 }
 
 /**
@@ -41,7 +42,7 @@ class RandomSpecSorter(private val random: Random) : SpecSorter {
  * Note: Runtime annotations are not supported on Native or JS so on those platforms
  * this sort order is a no-op.
  */
-expect object AnnotatedSpecSorter :SpecSorter
+expect object AnnotatedSpecSorter : SpecSorter
 
 /**
  * An implementation of [SpecExecutionOrder] which will order specs that failed on the last run,
