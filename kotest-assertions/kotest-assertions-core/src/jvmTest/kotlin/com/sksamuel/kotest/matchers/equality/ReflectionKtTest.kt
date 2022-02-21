@@ -33,6 +33,14 @@ class ReflectionKtTest : FunSpec() {
       internal val age: Int = 123
    ): Person(name)
 
+   class DocMetadata(val field1: String)
+
+   class Doctor(val name: String, val age: Int, val metadata: List<DocMetadata>)
+
+   class Hospital(val name: String, val mainDoctor: Doctor)
+
+   class City(val name: String, val mainHospital: Hospital)
+
    init {
 
       test("shouldBeEqualToUsingFields") {
@@ -121,6 +129,20 @@ class ReflectionKtTest : FunSpec() {
          Person("foo") shouldBeEqualToComparingFields Person("foo")
       }
 
+      test("shouldBeEqualToComparingFieldByField check equality comparing field by field recursively") {
+         val city = City("test", Hospital("test-hospital", Doctor("doc", 50, listOf())))
+         val city2 = City("test", Hospital("test-hospital", Doctor("doc", 50, listOf())))
+
+         city.shouldBeEqualToComparingFields(city2)
+      }
+
+      test("shouldBeEqualToComparingFieldByField check equality comparing field by field recursively ignoring java or kotlin builtin types") {
+         val city = City("test", Hospital("test-hospital", Doctor("doc", 50, listOf(DocMetadata("f1")))))
+         val city2 = City("test", Hospital("test-hospital", Doctor("doc", 51, listOf(DocMetadata("f1")))))
+
+         city.shouldNotBeEqualToComparingFields(city2)
+      }
+
       test("shouldBeEqualToComparingFields check equality comparing field by field including private fields") {
          val person = Person("foo")
          person.setAddress("new address")
@@ -129,9 +151,10 @@ class ReflectionKtTest : FunSpec() {
             person.shouldBeEqualToComparingFields(Person("foo"), ignorePrivateFields = false)
          }.message
 
-         errorMessage shouldContain """ Using fields: address, isExhausted, name
-            | Value differ at:
-            | 1) address: "new address" != <empty string>""".trimMargin()
+         errorMessage shouldContain "Using fields: address, isExhausted, name"
+         errorMessage shouldContain "Value differ at:"
+         errorMessage shouldContain "1) address"
+         errorMessage shouldContain "expected:<<empty string>> but was:<\"new address\">"
       }
 
       test("shouldBeEqualToComparingFieldsExcept check equality comparing field by field excluding given fields and private fields") {
@@ -155,15 +178,18 @@ class ReflectionKtTest : FunSpec() {
          person.isExhausted = true
          person.setAddress("new address")
 
-         shouldThrow<AssertionError> {
+         val message = shouldThrow<AssertionError> {
             person.shouldBeEqualToComparingFieldsExcept(
                Person("foo"),
                false,
                Person::isExhausted
             )
-         }.message shouldContain """Using fields: address, name
-                                   | Value differ at:
-                                   | 1) address: "new address" != <empty string>""".trimMargin()
+         }.message
+         message shouldContain "Using fields: address, name"
+         message shouldContain "Value differ at"
+         message shouldContain "1) address"
+         message shouldContain "expected:<<empty string>> but was:<\"new address\">"
+
       }
 
       test("shouldNotBeEqualToComparingFields check all fields of expected and actual are not equal") {
