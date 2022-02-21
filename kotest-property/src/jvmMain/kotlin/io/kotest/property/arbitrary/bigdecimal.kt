@@ -33,6 +33,6 @@ fun Arb.Companion.bigDecimal(min: BigDecimal, max: BigDecimal): Arb<BigDecimal> 
       .plus(min)
 
    return arbitrary(boundedEdgecases) {
-      min.add(BigDecimal(Math.random()).multiply(max.subtract(min)))
+      min.add(BigDecimal(it.random.nextDouble()).multiply(max.subtract(min)))
    }
 }
