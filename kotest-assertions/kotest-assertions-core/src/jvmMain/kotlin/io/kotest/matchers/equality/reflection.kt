@@ -300,7 +300,20 @@ fun <T : Any> beEqualToIgnoringFields(
    }
 }
 
-
+/**
+ * Matcher that compares values without using field by field comparison.
+ *
+ * This matcher should be used to check equality of two class for which you want to consider there fields for equality
+ * instead of its equals method.
+ *
+ * This matcher recursively check equality of given values till we get a java or kotlin class. Once we get a java or kotlin
+ * class the equality of that fields will be same as that we get with shouldBe matcher.
+ *
+ * @param other the other class to which equality need to be checked.
+ * @param ignorePrivateFields specify whether private fields should be ignored in equality check or not, default value is true
+ * @param ignoreComputedFields specify whether computed fields should be ignored in equality check or not, default value is true
+ *
+ * */
 fun <T : Any> T.shouldBeEqualToComparingFields(
    other: T,
    ignorePrivateFields: Boolean = true,
@@ -309,6 +322,21 @@ fun <T : Any> T.shouldBeEqualToComparingFields(
    this should beEqualComparingFields(other, ignorePrivateFields, emptyList(), ignoreComputedFields)
 }
 
+/**
+ * Matcher that compares values without using field by field comparison.
+ *
+ * This matcher should be used to check equality of two class for which you want to consider there fields for equality
+ * instead of its equals method.
+ *
+ * This matcher recursively check equality of given values till we get a java or kotlin class. Once we get a java or kotlin
+ * class the equality of that fields will be same as that we get with shouldBe matcher.
+ *
+ * @param other the other class to which equality need to be checked.
+ * @param ignorePrivateFields specify whether private fields should be ignored in equality check or not, default value is true
+ * @param ignoreComputedFields specify whether computed fields should be ignored in equality check or not, default value is true
+ * @param ignoreProperty fields which should be ignored during equality check
+ * @param ignoreProperties fields which should be ignored during equality check
+ * */
 fun <T : Any> T.shouldBeEqualToComparingFieldsExcept(
    other: T,
    ignorePrivateFields: Boolean,
