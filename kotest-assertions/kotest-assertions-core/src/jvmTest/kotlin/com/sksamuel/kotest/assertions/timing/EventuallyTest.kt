@@ -46,14 +46,14 @@ class EventuallyTest : WordSpec() {
          }
          "pass tests that completed within the time allowed" {
             val end = System.currentTimeMillis() + 150
-            eventually(1.seconds) {
+            eventually(1.seconds, RuntimeException::class) {
                if (System.currentTimeMillis() < end)
                   throw RuntimeException("foo")
             }
          }
          "fail tests that do not complete within the time allowed" {
             shouldThrow<AssertionError> {
-                eventually(150.milliseconds) {
+                eventually(150.milliseconds, RuntimeException::class) {
                     throw RuntimeException("foo")
                 }
             }
@@ -80,14 +80,14 @@ class EventuallyTest : WordSpec() {
          }
          "fail tests throw unexpected exception type"  {
             shouldThrow<NullPointerException> {
-               eventually(2.seconds, exceptionClass = IOException::class) {
+               eventually(2.seconds, IOException::class) {
                   (null as String?)!!.length
                }
             }
          }
          "pass tests that throws FileNotFoundException for some time"  {
             val end = System.currentTimeMillis() + 150
-            eventually(5.days) {
+            eventually(5.days, FileNotFoundException::class) {
                if (System.currentTimeMillis() < end)
                   throw FileNotFoundException("foo")
             }
