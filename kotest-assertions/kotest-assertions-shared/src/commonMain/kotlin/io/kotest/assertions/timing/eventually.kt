@@ -152,7 +152,7 @@ data class EventuallyConfig(
    val duration: Duration = Duration.INFINITE,
    val interval: Interval = 25.milliseconds.fixed(),
    val retries: Int = Int.MAX_VALUE,
-   val exceptionClass: KClass<out Throwable>? = null,
+   val exceptionClass: KClass<out Throwable>? = Throwable::class,
 ) {
    init {
       require(retries > 0) { "Retries should not be less than one" }
