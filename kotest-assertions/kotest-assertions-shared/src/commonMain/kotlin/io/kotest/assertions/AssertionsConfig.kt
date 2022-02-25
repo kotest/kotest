@@ -23,7 +23,7 @@ object AssertionsConfig {
 }
 
 interface ConfigValue<T> {
-   val sourceDescription: String
+   val sourceDescription: String?
    val value: T
 }
 
@@ -32,7 +32,7 @@ class EnvironmentConfigValue<T>(
    private val defaultValue: T,
    val converter: (String) -> T
 ): ConfigValue<T> {
-   override val sourceDescription: String = ConfigurationLoader.getSourceDescription(name)
+   override val sourceDescription: String? = ConfigurationLoader.getSourceDescription(name)
    override val value: T = loadValue()
 
    private fun loadValue(): T {
@@ -48,7 +48,7 @@ class EnvironmentConfigValue<T>(
 
 internal expect object ConfigurationLoader {
    fun getValue(name: String): String?
-   fun getSourceDescription(name: String): String
+   fun getSourceDescription(name: String): String?
 }
 
 class KotestConfigurationException(message: String, cause: Throwable?) : RuntimeException(message, cause)

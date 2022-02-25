@@ -4,7 +4,7 @@ import io.kotest.mpp.env
 
 internal actual object ConfigurationLoader {
    actual fun getValue(name: String): String? = env(environmentVariableName(name))
-   actual fun getSourceDescription(name: String): String = "the '${environmentVariableName(name)}' environment variable"
+   actual fun getSourceDescription(name: String): String? = "the '${environmentVariableName(name)}' environment variable"
 
    private fun environmentVariableName(name: String): String = name.replace(".", "_")
 }
