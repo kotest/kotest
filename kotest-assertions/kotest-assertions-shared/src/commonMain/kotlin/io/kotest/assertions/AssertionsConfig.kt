@@ -19,16 +19,21 @@ object AssertionsConfig {
    val maxCollectionEnumerateSize: Int
       get() = sysprop("kotest.assertions.collection.enumerate.size")?.toIntOrNull() ?: 20
 
-   val maxCollectionPrintSize: Configurable<Int> = Configurable<Int>("kotest.assertions.collection.print.size", 20, String::toInt)
+   val maxCollectionPrintSize: ConfigValue<Int> = EnvironmentConfigValue<Int>("kotest.assertions.collection.print.size", 20, String::toInt)
 }
 
-class Configurable<T>(
+interface ConfigValue<T> {
+   val sourceDescription: String
+   val value: T
+}
+
+class EnvironmentConfigValue<T>(
    private val name: String,
-   val defaultValue: T,
+   private val defaultValue: T,
    val converter: (String) -> T
-) {
-   val sourceDescription: String = ConfigurationLoader.getSourceDescription(name)
-   val value: T = loadValue()
+): ConfigValue<T> {
+   override val sourceDescription: String = ConfigurationLoader.getSourceDescription(name)
+   override val value: T = loadValue()
 
    private fun loadValue(): T {
       val loaded = ConfigurationLoader.getValue(name) ?: return defaultValue
