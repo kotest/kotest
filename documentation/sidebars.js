@@ -12,7 +12,7 @@ module.exports = {
       'proptest/genops',
       'proptest/proptestconfig',
       'proptest/customgens',
-      'proptest/shrinking'
+      'proptest/shrinking',
       'proptest/globalconfig',
       'proptest/arrow',
       'proptest/date_gens',
