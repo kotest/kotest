@@ -306,7 +306,7 @@ object TimerListener : TestListener {
   }
 
   override fun afterTest(testCase: TestCase, result: TestResult): Unit {
-    println("Duration of ${testCase.description} = " + (System.currentTimeMillis() - started))
+    println("Duration of ${testCase.descriptor} = " + (System.currentTimeMillis() - started))
   }
 }
 ```
