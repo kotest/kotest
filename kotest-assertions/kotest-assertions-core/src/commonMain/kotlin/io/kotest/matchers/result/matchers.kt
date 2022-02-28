@@ -6,10 +6,9 @@ import io.kotest.matchers.should
 import io.kotest.matchers.shouldNot
 import kotlin.reflect.KClass
 
-fun <T> Result<T>.shouldBeSuccess(block: ((T) -> Unit)? = null) {
+fun <T> Result<T>.shouldBeSuccess(block: ((T) -> Unit)? = null): T {
    this should beSuccess()
-   if (block != null)
-      fold({ block(it) }, {})
+   return getOrNull()!!.also { block?.invoke(it) }
 }
 
 fun <T> Result<T>.shouldNotBeSuccess() = this shouldNot beSuccess()
@@ -17,9 +16,9 @@ fun <T> Result<T>.shouldNotBeSuccess() = this shouldNot beSuccess()
 infix fun <T> Result<T>.shouldBeSuccess(expected: T) = this should beSuccess(expected)
 infix fun <T> Result<T>.shouldNotBeSuccess(expected: T) = this shouldNot beSuccess(expected)
 
-fun Result<Any?>.shouldBeFailure(block: ((Throwable) -> Unit)? = null) {
+fun Result<Any?>.shouldBeFailure(block: ((Throwable) -> Unit)? = null): Throwable {
    this should BeFailure()
-   block?.invoke(this.exceptionOrNull()!!)
+   return exceptionOrNull()!!.also { block?.invoke(it) }
 }
 
 fun <T> Result<T>.shouldNotBeFailure() = this shouldNot BeFailure()
