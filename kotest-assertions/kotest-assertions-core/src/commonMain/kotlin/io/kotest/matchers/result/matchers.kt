@@ -8,12 +8,16 @@ import kotlin.reflect.KClass
 
 fun <T> Result<T>.shouldBeSuccess(block: ((T) -> Unit)? = null): T {
    this should beSuccess()
-   return getOrNull()!!.also { block?.invoke(it) }
+   return getOrThrow().also { block?.invoke(it) }
 }
 
 fun <T> Result<T>.shouldNotBeSuccess() = this shouldNot beSuccess()
 
-infix fun <T> Result<T>.shouldBeSuccess(expected: T) = this should beSuccess(expected)
+infix fun <T> Result<T>.shouldBeSuccess(expected: T): T {
+   this should beSuccess(expected)
+   return getOrThrow()
+}
+
 infix fun <T> Result<T>.shouldNotBeSuccess(expected: T) = this shouldNot beSuccess(expected)
 
 fun Result<Any?>.shouldBeFailure(block: ((Throwable) -> Unit)? = null): Throwable {
@@ -23,7 +27,11 @@ fun Result<Any?>.shouldBeFailure(block: ((Throwable) -> Unit)? = null): Throwabl
 
 fun <T> Result<T>.shouldNotBeFailure() = this shouldNot BeFailure()
 
-inline fun <reified A : Throwable> Result<Any?>.shouldBeFailureOfType() = this should BeFailureOfType(A::class)
+inline fun <reified A : Throwable> Result<Any?>.shouldBeFailureOfType(): A {
+   this should BeFailureOfType(A::class)
+   return exceptionOrNull() as A
+}
+
 inline fun <reified A : Throwable> Result<Any?>.shouldNotBeFailureOfType() = this shouldNot BeFailureOfType(A::class)
 
 fun <T> beSuccess(): Matcher<Result<T>> = object : Matcher<Result<T>> {
