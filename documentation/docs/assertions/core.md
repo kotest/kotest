@@ -72,7 +72,7 @@ Matchers provided by the `kotest-assertions-core` module.
 | `str.shouldHaveLineCount(count)` | Asserts that the string contains the given number of lines. Similar to `str.split("\n").length.shouldBe(n)` |
 | `str.shouldHaveMaxLength(max)` | Asserts that the string is no longer than the given max length. |
 | `str.shouldHaveMinLength(min)` | Asserts that the string is no shorter than the given min length. |
-| `str.shouldHaveSameLengthAs(length)` | Asserts that the string has the same length as another string. |
+| `str.shouldHaveSameLengthAs(anotherString)` | Asserts that the string has the same length as another string. |
 | `str.shouldMatch(regex)` | Asserts that the string fully matches the given regex. |
 | `str.shouldStartWith("prefix")` | Asserts that the string starts with the given prefix. The prefix can be equal to the string. This matcher is case sensitive. To make this case insensitive call `toLowerCase()` on the value before the matcher. |
 | `str.shouldBeEqualIgnoringCase(other)` | Asserts that the string is equal to another string ignoring case. |
