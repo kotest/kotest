@@ -39,7 +39,7 @@ Any extensions registered inside a `Spec` will be used for all tests in that spe
 To run an extension for every spec in the entire project you can either mark the listener with `@AutoScan`,
 or you can register the listener via project config.
 
-An example of `@Autoscan` on a project listener:
+An example of `@AutoScan` on a project listener:
 
 ```kotlin
 @AutoScan
