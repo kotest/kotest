@@ -1,6 +1,5 @@
 package io.kotest.runner.junit.platform
 
-import io.kotest.common.KotestInternal
 import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.descriptors.toDescriptor
 import io.kotest.core.extensions.Extension
@@ -12,17 +11,18 @@ import io.kotest.engine.listener.PinnedSpecTestEngineListener
 import io.kotest.engine.listener.ThreadSafeTestEngineListener
 import io.kotest.framework.discovery.Discovery
 import io.kotest.mpp.log
+import org.junit.platform.engine.DiscoverySelector
 import org.junit.platform.engine.EngineDiscoveryRequest
 import org.junit.platform.engine.ExecutionRequest
 import org.junit.platform.engine.TestEngine
 import org.junit.platform.engine.TestExecutionResult
 import org.junit.platform.engine.UniqueId
 import org.junit.platform.engine.discovery.MethodSelector
+import org.junit.platform.engine.discovery.UniqueIdSelector
 import org.junit.platform.engine.support.descriptor.EngineDescriptor
 import org.junit.platform.launcher.LauncherDiscoveryRequest
 import java.util.Optional
 import kotlin.reflect.KClass
-//import kotlin.script.templates.standard.ScriptTemplateWithArgs
 
 /**
  * A Kotest implementation of a Junit Platform [TestEngine].
@@ -109,9 +109,13 @@ class KotestJunitPlatformTestEngine : TestEngine {
       // a method selector is passed by intellij to run just a single method inside a test file
       // this happens for example, when trying to run a junit test alongside kotest tests,
       // and kotest will then run all other tests.
-      // therefore, the presence of a MethodSelector means we must run no tests in KT.
-      val descriptor = if (request.getSelectorsByType(MethodSelector::class.java).isEmpty()) {
-
+      // Some other engines run tests via uniqueId selectors
+      // therefore, the presence of a MethodSelector or a UniqueIdSelector means we must run no tests in KT.
+      val allSelectors = request.getSelectorsByType(DiscoverySelector::class.java)
+      val containsUnsupported = allSelectors.any {
+         it is MethodSelector || it is UniqueIdSelector
+      }
+      val descriptor = if (!containsUnsupported) {
          val discovery = Discovery(emptyList())
          val result = discovery.discover(request.toKotestDiscoveryRequest())
          val classes = result.specs.filter { spec ->

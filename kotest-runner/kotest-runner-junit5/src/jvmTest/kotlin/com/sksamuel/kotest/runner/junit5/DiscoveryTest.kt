@@ -30,6 +30,16 @@ class DiscoveryTest : FunSpec({
       val descriptor = engine.discover(req, UniqueId.forEngine("testengine"))
       descriptor.classes.size shouldBe 0
    }
+   test("kotest should return Nil for uniqueId selectors") {
+      val req = LauncherDiscoveryRequestBuilder.request().selectors(DiscoverySelectors.selectUniqueId("[engine:failgood]/[class:whatever]"))
+         .filters(
+            includeEngines(KotestJunitPlatformTestEngine.EngineId)
+         )
+         .build()
+      val engine = KotestJunitPlatformTestEngine()
+      val descriptor = engine.discover(req, UniqueId.forEngine("testengine"))
+      descriptor.classes.size shouldBe 0
+   }
 
    test("kotest should return classes if request includes kotest engine") {
       val req = LauncherDiscoveryRequestBuilder.request()
