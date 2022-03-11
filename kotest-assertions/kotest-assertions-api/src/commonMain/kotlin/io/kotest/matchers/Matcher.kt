@@ -8,7 +8,7 @@ import io.kotest.matchers.MatcherResult.Companion.invoke
  * Implementations contain a single function, called 'test', which
  * accepts a value of type T and returns an instance of [MatcherResult].
  * This [MatcherResult] return value contains the state of the assertion
- * after it has been evaluted.
+ * after it has been evaluated.
  *
  * A matcher will typically be invoked when used with the `should`
  * functions in the assertions DSL. For example, `2 should beLessThan(4)`
@@ -42,7 +42,7 @@ interface Matcher<in T> {
        *
        * @param tester The function that evaluates a value and returns a MatcherResult
        */
-      inline operator fun <T> invoke(crossinline tester: (T) -> MatcherResult) = object: Matcher<T> {
+      inline operator fun <T> invoke(crossinline tester: (T) -> MatcherResult) = object : Matcher<T> {
          override fun test(value: T) = tester(value)
       }
    }
@@ -88,7 +88,7 @@ internal abstract class NeverNullMatcher<T : Any?> : Matcher<T?> {
        *
        * @param tester The function that evaluates a value and returns a MatcherResult
        */
-      inline operator fun <T: Any> invoke(crossinline tester: (T) -> MatcherResult) = object: NeverNullMatcher<T>() {
+      inline operator fun <T : Any> invoke(crossinline tester: (T) -> MatcherResult) = object : NeverNullMatcher<T>() {
          override fun testNotNull(value: T) = tester(value)
       }
    }
