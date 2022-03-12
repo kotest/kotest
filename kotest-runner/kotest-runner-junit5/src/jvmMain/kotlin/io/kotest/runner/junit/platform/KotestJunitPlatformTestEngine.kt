@@ -111,9 +111,15 @@ class KotestJunitPlatformTestEngine : TestEngine {
       // and kotest will then run all other tests.
       // Some other engines run tests via uniqueId selectors
       // therefore, the presence of a MethodSelector or a UniqueIdSelector means we must run no tests in KT.
+      // if we get a uniqueid with kotest as engine we throw because that should never happen
       val allSelectors = request.getSelectorsByType(DiscoverySelector::class.java)
       val containsUnsupported = allSelectors.any {
-         it is MethodSelector || it is UniqueIdSelector
+         if (it is UniqueIdSelector)
+            if (it.uniqueId.engineId.get() == EngineId)
+               throw RuntimeException("Kotest does not allow running tests via uniqueId")
+            else true
+         else
+            it is MethodSelector
       }
       val descriptor = if (!containsUnsupported) {
          val discovery = Discovery(emptyList())
