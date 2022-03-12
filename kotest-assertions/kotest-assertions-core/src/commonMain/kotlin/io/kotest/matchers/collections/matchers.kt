@@ -18,8 +18,8 @@ fun <T, L : List<T>> haveElementAt(index: Int, element: T) = object : Matcher<L>
    override fun test(value: L) =
       MatcherResult(
          value[index] == element,
-         { "Collection should contain ${element.print().value} at index $index" },
-         { "Collection should not contain ${element.print().value} at index $index" }
+         { "Collection ${value.print().value} should contain ${element.print().value} at index $index" },
+         { "Collection ${value.print().value} should not contain ${element.print().value} at index $index" }
       )
 }
 
@@ -55,9 +55,9 @@ infix fun <T> Collection<T>.shouldExist(p: (T) -> Boolean) = this should exist(p
 fun <T> exist(p: (T) -> Boolean) = object : Matcher<Collection<T>> {
    override fun test(value: Collection<T>) = MatcherResult(
       value.any { p(it) },
-      { "Collection should contain an element that matches the predicate $p" },
+      { "Collection ${value.print().value} should contain an element that matches the predicate $p" },
       {
-         "Collection should not contain an element that matches the predicate $p"
+         "Collection ${value.print().value} should not contain an element that matches the predicate $p"
       })
 }
 
@@ -99,8 +99,8 @@ fun <T> containAnyOf(ts: Collection<T>) = object : Matcher<Collection<T>> {
       if (ts.isEmpty()) throwEmptyCollectionError()
       return MatcherResult(
          ts.any { it in value },
-         { "Collection should contain any of ${ts.joinToString(separator = ", ", limit = 10) { it.print().value }}" },
-         { "Collection should not contain any of ${ts.joinToString(separator = ", ", limit = 10) { it.print().value }}" }
+         { "Collection ${value.print().value} should contain any of ${ts.print().value}" },
+         { "Collection ${value.print().value} should not contain any of ${ts.print().value}" }
       )
    }
 }

@@ -35,13 +35,7 @@ class InOrderTest : WordSpec() {
          "print errors unambiguously"  {
             shouldThrow<AssertionError> {
                listOf<Number>(1L, 2L) should containsInOrder(listOf<Number>(1, 2))
-            }.shouldHaveMessage("""[
-  1L,
-  2L
-] did not contain the elements [
-  1,
-  2
-] in order""")
+            }.shouldHaveMessage("""[1L, 2L] did not contain the elements [1, 2] in order""")
          }
          "support iterables with vararg" {
             val actual = listOf(1, 2, 3, 4, 5).asIterable()

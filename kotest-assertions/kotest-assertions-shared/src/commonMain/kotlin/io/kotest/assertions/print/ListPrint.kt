@@ -1,25 +1,23 @@
 package io.kotest.assertions.print
 
-class ListPrint<T> : Print<List<T>> {
+import io.kotest.assertions.AssertionsConfig
+import io.kotest.assertions.ConfigValue
 
-   private val maxCollectionSnippetSize = 20
-
+class ListPrint<T>(private val limitConfigValue: ConfigValue<Int> = AssertionsConfig.maxCollectionPrintSize) : Print<List<T>> {
    override fun print(a: List<T>): Printed = print(a, 0)
 
    override fun print(a: List<T>, level: Int): Printed {
       return if (a.isEmpty()) Printed("[]") else {
-         val remainingItems = a.size - maxCollectionSnippetSize
-
-         val suffix = when {
-            remainingItems <= 0 -> "]"
-            else -> "] and $remainingItems more"
-         }
+         val limit = limitConfigValue.value
+         val remainingItems = a.size - limit
+         val limitHint = if (limitConfigValue.sourceDescription == null) "" else " (set ${limitConfigValue.sourceDescription} to see more / less items)"
 
          return a.joinToString(
             separator = ", ",
             prefix = "[",
-            postfix = suffix,
-            limit = maxCollectionSnippetSize
+            postfix = "]",
+            limit = limit,
+            truncated = "...and $remainingItems more$limitHint"
          ) {
             when {
                it is Iterable<*> && it.toList() == a && a.size == 1 -> a[0].toString()

@@ -25,31 +25,12 @@ class StartWithEndWithTest : WordSpec() {
          "print errors unambiguously"  {
             shouldThrow<AssertionError> {
                listOf(1L, 2L) should startWith(listOf(1L, 3L))
-            }.shouldHaveMessage(
-               """
-                  |List should start with [
-                  |  1L,
-                  |  3L
-                  |] but was [
-                  |  1L,
-                  |  2L
-                  |]
-               """.trimMargin()
-            )
+            }.shouldHaveMessage("List should start with [1L, 3L] but was [1L, 2L]")
          }
          "print errors unambiguously when the actual value is empty"  {
             shouldThrow<AssertionError> {
                emptyList<Long>() should startWith(listOf(1L, 3L))
-            }.shouldHaveMessage(
-               """
-                  |List should start with [
-                  |  1L,
-                  |  3L
-                  |] but was [
-                  |${"  "}
-                  |]
-               """.trimMargin()
-            )
+            }.shouldHaveMessage("List should start with [1L, 3L] but was []")
          }
       }
 
@@ -65,31 +46,12 @@ class StartWithEndWithTest : WordSpec() {
          "print errors unambiguously"  {
             shouldThrow<AssertionError> {
                listOf(1L, 2L, 3L, 4L) should endWith(listOf(1L, 3L))
-            }.shouldHaveMessage(
-               """
-                  |List should end with [
-                  |  1L,
-                  |  3L
-                  |] but was [
-                  |  3L,
-                  |  4L
-                  |]
-               """.trimMargin()
-            )
+            }.shouldHaveMessage("List should end with [1L, 3L] but was [3L, 4L]")
          }
          "print errors unambiguously when the actual value is empty"  {
             shouldThrow<AssertionError> {
                emptyList<Long>() should endWith(listOf(1L, 3L))
-            }.shouldHaveMessage(
-               """
-                  |List should end with [
-                  |  1L,
-                  |  3L
-                  |] but was [
-                  |${"  "}
-                  |]
-               """.trimMargin()
-            )
+            }.shouldHaveMessage("List should end with [1L, 3L] but was []")
          }
       }
    }

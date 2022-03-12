@@ -1,5 +1,6 @@
 package io.kotest.matchers.collections
 
+import io.kotest.assertions.print.print
 import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
 import io.kotest.matchers.should
@@ -33,8 +34,8 @@ fun <T> startWith(expectedSlice: Collection<T>) = object : Matcher<List<T>> {
 
       return MatcherResult(
          valueSlice == expectedSlice,
-         { "List should start with ${expectedSlice.printed().value} but was ${valueSlice.printed().value}" },
-         { "List should not start with ${expectedSlice.printed().value}" }
+         { "List should start with ${expectedSlice.print().value} but was ${valueSlice.print().value}" },
+         { "List should not start with ${expectedSlice.print().value}" }
       )
    }
 }
@@ -68,8 +69,8 @@ fun <T> endWith(expectedSlice: Collection<T>) = object : Matcher<List<T>> {
 
       return MatcherResult(
          valueSlice == expectedSlice,
-         { "List should end with ${expectedSlice.printed().value} but was ${valueSlice.printed().value}" },
-         { "List should not end with ${expectedSlice.printed().value}" }
+         { "List should end with ${expectedSlice.print().value} but was ${valueSlice.print().value}" },
+         { "List should not end with ${expectedSlice.print().value}" }
       )
    }
 }

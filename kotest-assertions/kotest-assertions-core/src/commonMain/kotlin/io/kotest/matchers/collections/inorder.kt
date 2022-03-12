@@ -1,5 +1,6 @@
 package io.kotest.matchers.collections
 
+import io.kotest.assertions.print.print
 import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
 import io.kotest.matchers.neverNullMatcher
@@ -22,8 +23,8 @@ fun <T> containsInOrder(subsequence: List<T>): Matcher<Collection<T>?> = neverNu
 
    MatcherResult(
       subsequenceIndex == subsequence.size,
-      { "${actual.printed().value} did not contain the elements ${subsequence.printed().value} in order" },
-      { "${actual.printed().value} should not contain the elements ${subsequence.printed().value} in order" }
+      { "${actual.print().value} did not contain the elements ${subsequence.print().value} in order" },
+      { "${actual.print().value} should not contain the elements ${subsequence.print().value} in order" }
    )
 }
 

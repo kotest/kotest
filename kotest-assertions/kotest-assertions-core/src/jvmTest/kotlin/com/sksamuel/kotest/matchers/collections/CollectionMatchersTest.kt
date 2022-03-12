@@ -188,7 +188,7 @@ class CollectionMatchersTest : WordSpec() {
 
             shouldThrow<AssertionError> {
                longList.shouldNotBeSorted()
-            }.shouldHaveMessage("List [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, ...] and 980 more should not be sorted")
+            }.shouldHaveMessage("List [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, ...and 980 more (set the 'kotest.assertions.collection.print.size' JVM property to see more / less items)] should not be sorted")
          }
       }
 
@@ -306,7 +306,7 @@ class CollectionMatchersTest : WordSpec() {
 
             shouldThrow<AssertionError> {
                col should contain(4)
-            }.shouldHaveMessage("Collection should contain element 4 based on object equality; listing some elements [1, 2, 3]")
+            }.shouldHaveMessage("Collection should contain element 4 based on object equality; but the collection is [1, 2, 3]")
          }
       }
 
@@ -322,7 +322,7 @@ class CollectionMatchersTest : WordSpec() {
 
             shouldThrow<AssertionError> {
                col should contain(3, verifier)
-            }.shouldHaveMessage("Collection should contain element 3 based on object equality; listing some elements [1, 2, 3.0]")
+            }.shouldHaveMessage("Collection should contain element 3 based on object equality; but the collection is [1, 2, 3.0]")
          }
       }
 
@@ -484,15 +484,15 @@ class CollectionMatchersTest : WordSpec() {
 
             shouldThrow<AssertionError> {
                list.shouldHaveAtLeastSize(4)
-            }.shouldHaveMessage("Collection should contain at least 4 elements")
+            }.shouldHaveMessage("Collection [1, 2, 3] should contain at least 4 elements")
 
             shouldThrow<AssertionError> {
                list shouldHave atLeastSize(4)
-            }.shouldHaveMessage("Collection should contain at least 4 elements")
+            }.shouldHaveMessage("Collection [1, 2, 3] should contain at least 4 elements")
 
             shouldThrow<AssertionError> {
                list shouldNotHave atLeastSize(2)
-            }.shouldHaveMessage("Collection should contain less than 2 elements")
+            }.shouldHaveMessage("Collection [1, 2, 3] should contain less than 2 elements")
          }
       }
 
@@ -515,15 +515,15 @@ class CollectionMatchersTest : WordSpec() {
 
             shouldThrow<AssertionError> {
                list.shouldHaveAtMostSize(2)
-            }.shouldHaveMessage("Collection should contain at most 2 elements")
+            }.shouldHaveMessage("Collection [1, 2, 3] should contain at most 2 elements")
 
             shouldThrow<AssertionError> {
                list shouldHave atMostSize(2)
-            }.shouldHaveMessage("Collection should contain at most 2 elements")
+            }.shouldHaveMessage("Collection [1, 2, 3] should contain at most 2 elements")
 
             shouldThrow<AssertionError> {
                list shouldNotHave atMostSize(4)
-            }.shouldHaveMessage("Collection should contain more than 4 elements")
+            }.shouldHaveMessage("Collection [1, 2, 3] should contain more than 4 elements")
          }
       }
 
@@ -631,7 +631,7 @@ class CollectionMatchersTest : WordSpec() {
          "Fail when no element is in the list" {
             shouldThrow<AssertionError> {
                listOf(1, 2, 3).shouldContainAnyOf(4)
-            }.shouldHaveMessage("Collection should contain any of 4")
+            }.shouldHaveMessage("Collection [1, 2, 3] should contain any of [4]")
          }
       }
 
@@ -649,13 +649,13 @@ class CollectionMatchersTest : WordSpec() {
          "Fail when one element is in the list" {
             shouldThrow<AssertionError> {
                listOf(1, 2, 3).shouldNotContainAnyOf(1)
-            }.shouldHaveMessage("Collection should not contain any of 1")
+            }.shouldHaveMessage("Collection [1, 2, 3] should not contain any of [1]")
          }
 
          "Fail when all elements are in the list" {
             shouldThrow<AssertionError> {
                listOf(1, 2, 3).shouldNotContainAnyOf(1, 2, 3)
-            }.shouldHaveMessage("Collection should not contain any of 1, 2, 3")
+            }.shouldHaveMessage("Collection [1, 2, 3] should not contain any of [1, 2, 3]")
          }
       }
 
