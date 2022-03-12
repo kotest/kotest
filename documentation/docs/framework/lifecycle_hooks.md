@@ -9,7 +9,7 @@ It is extremely common in tests to want to perform some action before and after 
 It is in these _lifecycle hooks_ that you would perform any setup/teardown logic required for a test.
 
 Kotest provides a rich assortment of hooks that can be defined directly inside a spec.
-For more advanced cases, such as writing distributable plugins or re-usuable hooks, one can use [extensions](extensions/extensions.md).
+For more advanced cases, such as writing distributable plugins or re-usable hooks, one can use [extensions](extensions/extensions.md).
 
 At the end of this section is a list of the available hooks and when they are executed.
 

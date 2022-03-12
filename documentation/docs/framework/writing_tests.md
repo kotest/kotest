@@ -38,7 +38,7 @@ but is essentially just a different keyword used for the outer tests.
 
 For example, in _Describe Spec_, the outer tests are created using the `describe` function and
 inner tests using the `it` function.
-Javascript and Ruby developers will instantly recongize this style as it is commonly used in testing frameworks
+JavaScript and Ruby developers will instantly recognize this style as it is commonly used in testing frameworks
 for those languages.
 
 ```kotlin
