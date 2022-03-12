@@ -15,8 +15,14 @@ fun <T : Any?> Matcher.Companion.compose(
 
       return MatcherResult(
          results.all { it.passed() },
-         { results.map { it.failureMessage() }.fold("") { acc: String, s: String -> acc + s + "\n" } },
-         { results.map { it.negatedFailureMessage() }.fold("") { acc: String, s: String -> acc + s + "\n" } },
+         {
+            results.map { it.failureMessage() }.fold("") { acc: String, s: String -> acc + s + "\n" }
+               .trimIndent()
+         },
+         {
+            results.map { it.negatedFailureMessage() }.fold("") { acc: String, s: String -> acc + s + "\n" }
+               .trimIndent()
+         },
       )
    }
 }
