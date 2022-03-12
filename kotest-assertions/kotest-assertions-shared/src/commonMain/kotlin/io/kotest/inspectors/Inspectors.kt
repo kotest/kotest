@@ -1,5 +1,7 @@
 package io.kotest.inspectors
 
+import io.kotest.assertions.failure
+
 inline fun <K, V, C : Map<K, V>> C.forAllValues(fn: (V) -> Unit): C = apply { values.forAll(fn) }
 inline fun <K, V, C : Map<K, V>> C.forAllKeys(fn: (K) -> Unit): C = apply { keys.forAll(fn) }
 inline fun <K, V, C : Map<K, V>> C.forAll(fn: (Map.Entry<K, V>) -> Unit): C = apply {
@@ -160,5 +162,33 @@ inline fun <T, C : Collection<T>> C.forNone(f: (T) -> Unit): C = apply {
    if (passed.isNotEmpty()) {
       val msg = "${passed.size} elements passed but expected ${0}"
       buildAssertionError(msg, results)
+   }
+}
+
+/**
+ * Checks that [Sequence] consists of a single element, which passes the given assertion block [fn]
+ * and returns the element
+ * */
+fun <T> Sequence<T>.forSingle(fn: (T) -> Unit): T = toList().forSingle(fn)
+
+/**
+ * Checks that [Array] consists of a single element, which passes the given assertion block [fn]
+ * and returns the element
+ * */
+fun <T> Array<T>.forSingle(fn: (T) -> Unit): T = toList().forSingle(fn)
+
+/**
+ * Checks that [Collection] consists of a single element, which passes the given assertion block [fn]
+ * and returns the element
+ * */
+fun <T, C : Collection<T>> C.forSingle(f: (T) -> Unit): T = run {
+   val results = runTests(this, f)
+   when (results.size) {
+      1 -> when (results[0]) {
+         is ElementPass<T> -> results[0].value()
+         else -> buildAssertionError("Expected a single element to pass, but it failed.", results)
+      }
+      0 -> throw failure("Expected a single element in the collection, but it was empty.")
+      else -> buildAssertionError("Expected a single element in the collection, but found ${results.size}.", results)
    }
 }

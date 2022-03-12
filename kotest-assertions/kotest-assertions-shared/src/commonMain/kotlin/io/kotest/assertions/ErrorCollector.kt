@@ -161,8 +161,18 @@ fun ErrorCollector.collectiveError(): AssertionError? {
          }
       } else {
          MultiAssertionError(failures).also {
-            stacktraces.cleanStackTrace(it) //cleans the creation of MultiAssertionError
+            stacktraces.cleanStackTrace(it) // cleans the creation of MultiAssertionError
          }
       }
    } else null
 }
+
+inline fun <reified T> ErrorCollector.runWithMode(mode: ErrorCollectionMode, block: () -> T): T =
+   getCollectionMode().let { original ->
+      setCollectionMode(mode)
+      try {
+         block()
+      } finally {
+         setCollectionMode(original)
+      }
+   }

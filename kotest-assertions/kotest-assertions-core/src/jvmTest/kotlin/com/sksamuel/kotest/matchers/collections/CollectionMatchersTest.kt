@@ -3,6 +3,7 @@ package com.sksamuel.kotest.matchers.collections
 import io.kotest.assertions.shouldFail
 import io.kotest.assertions.throwables.shouldNotThrow
 import io.kotest.assertions.throwables.shouldThrow
+import io.kotest.assertions.withClue
 import io.kotest.core.spec.style.WordSpec
 import io.kotest.equals.Equality
 import io.kotest.equals.types.byObjectEquality
@@ -16,9 +17,12 @@ import io.kotest.matchers.collections.containDuplicates
 import io.kotest.matchers.collections.containNoNulls
 import io.kotest.matchers.collections.containNull
 import io.kotest.matchers.collections.containOnlyNulls
+import io.kotest.matchers.collections.matchInOrder
 import io.kotest.matchers.collections.existInOrder
 import io.kotest.matchers.collections.haveElementAt
 import io.kotest.matchers.collections.haveSize
+import io.kotest.matchers.collections.matchEach
+import io.kotest.matchers.collections.matchInOrderSubset
 import io.kotest.matchers.collections.monotonicallyDecreasing
 import io.kotest.matchers.collections.monotonicallyDecreasingWith
 import io.kotest.matchers.collections.monotonicallyIncreasing
@@ -49,6 +53,8 @@ import io.kotest.matchers.collections.shouldHaveAtMostSize
 import io.kotest.matchers.collections.shouldHaveElementAt
 import io.kotest.matchers.collections.shouldHaveSingleElement
 import io.kotest.matchers.collections.shouldHaveSize
+import io.kotest.matchers.collections.shouldMatchInOrder
+import io.kotest.matchers.collections.shouldMatchInOrderSubset
 import io.kotest.matchers.collections.shouldNotBeIn
 import io.kotest.matchers.collections.shouldNotBeMonotonicallyDecreasing
 import io.kotest.matchers.collections.shouldNotBeMonotonicallyDecreasingWith
@@ -68,12 +74,17 @@ import io.kotest.matchers.collections.shouldNotContainNull
 import io.kotest.matchers.collections.shouldNotContainOnlyNulls
 import io.kotest.matchers.collections.shouldNotHaveElementAt
 import io.kotest.matchers.collections.shouldNotHaveSize
+import io.kotest.matchers.collections.shouldNotMatchEach
+import io.kotest.matchers.collections.shouldNotMatchInOrder
+import io.kotest.matchers.collections.shouldNotMatchInOrderSubset
 import io.kotest.matchers.collections.singleElement
 import io.kotest.matchers.collections.sorted
 import io.kotest.matchers.collections.strictlyDecreasing
 import io.kotest.matchers.collections.strictlyDecreasingWith
 import io.kotest.matchers.collections.strictlyIncreasing
 import io.kotest.matchers.collections.strictlyIncreasingWith
+import io.kotest.matchers.ints.shouldBeGreaterThan
+import io.kotest.matchers.ints.shouldBeInRange
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldHave
@@ -569,6 +580,274 @@ class CollectionMatchersTest : WordSpec() {
             listOf(null, 1, 2, 3).shouldNotContainOnlyNulls()
             listOf(1, 2, 3).shouldNotContainOnlyNulls()
             listOf(null, null, null).shouldContainOnlyNulls()
+         }
+      }
+
+      "matchInOrder" should {
+         "test that a collection matches the assertions in the given order, duplicates permitted" {
+            withClue("Gaps not allowed") {
+               shouldFail {
+                  listOf(1, 2, 2, 3) should matchInOrder(
+                     { it shouldBe 1 },
+                     { it shouldBe 2 },
+                     { it shouldBe 3 }
+                  )
+               }
+            }
+
+            arrayOf(2, 2, 3).shouldMatchInOrder(
+               { it shouldBe 2 },
+               { it shouldBe 2 },
+               { it shouldBe 3 },
+            )
+         }
+
+         "failure shows best result" {
+            shouldFail {
+               listOf(1, 2, 3, 1, 2, 1, 2).shouldMatchInOrder(
+                  { it shouldBe 1 },
+                  { it shouldBe 2 },
+                  { it shouldBe 1 },
+                  { it shouldBe 3 },
+               )
+            }.message shouldBe """
+               Expected a sequence of elements to pass the assertions, but failed to match all assertions
+
+               Best result when comparing from index [3], where 3 elements passed, but the following elements failed:
+
+               6 => expected:<3> but was:<2>
+            """.trimIndent()
+         }
+
+
+         "Non existing element causes error" {
+            shouldThrow<AssertionError> {
+               listOf(1, 2, 3).shouldMatchInOrder(
+                  { it shouldBe 1 },
+                  { it shouldBe 2 },
+                  { it shouldBe 6 }
+               )
+            }
+         }
+
+         "out-of-order elements cause error" {
+            shouldThrow<AssertionError> {
+               listOf(1, 2, 3) should matchInOrder(
+                  { it shouldBe 2 },
+                  { it shouldBe 1 },
+                  { it shouldBe 3 }
+               )
+            }
+         }
+
+         "work with unsorted collections" {
+            val actual = listOf(5, 3, 1, 2, 4, 2)
+
+            withClue("should match 4th, 5th and 6th elements ([.., 2, 4, 2])") {
+               actual should matchInOrder(
+                  { it shouldBe 2 },
+                  { it shouldBeGreaterThan 3 },
+                  { it shouldBeInRange 2..2 }
+               )
+            }
+         }
+
+         "negation should work" {
+            shouldFail {
+               listOf(1, 2, 3, 4).shouldNotMatchInOrder(
+                  { it shouldBe 2 },
+                  { it shouldBe 3 },
+               )
+            }.message shouldBe """
+               Expected some assertion to fail but all passed
+            """.trimIndent()
+
+            listOf(1, 2, 3, 4).shouldNotMatchInOrder(
+               { it shouldBe 2 },
+               { it shouldBe 4 }
+            )
+         }
+      }
+
+      "matchInOrderSubset" should {
+         "test that a collection matches the assertions in the given order without gaps" {
+            listOf(1, 1, 2, 2, 3, 3) should matchInOrderSubset(
+               { it shouldBe 1 },
+               { it shouldBe 2 },
+               { it shouldBe 2 },
+               { it shouldBe 3 }
+            )
+
+            arrayOf(1, 1, 1).shouldMatchInOrderSubset(
+               { it shouldBe 1 }
+            )
+         }
+
+         "Negation should work" {
+            shouldFail {
+               listOf(1, 2, 3, 4).shouldNotMatchInOrderSubset(
+                  { it shouldBe 2 },
+                  { it shouldBe 4 },
+               )
+            }.message shouldBe """
+               Expected some assertion to fail but all passed
+            """.trimIndent()
+
+            arrayOf(1, 2, 3, 4).shouldNotMatchInOrder(
+               { it shouldBe 4 },
+               { it shouldBe 1 }
+            )
+         }
+
+         "Non existing element causes error" {
+            shouldThrow<AssertionError> {
+               listOf(1, 1, 2, 2, 3, 3) should matchInOrderSubset(
+                  { it shouldBe 1 },
+                  { it shouldBe 2 },
+                  { it shouldBe 6 }
+               )
+            }.message shouldBe """
+               Expected a sequence of elements to pass the assertions, possibly with gaps between but failed to match all assertions
+
+               Best result when comparing from index [0], where 2 elements passed, but the following elements failed:
+
+               3 => expected:<6> but was:<2>
+               4 => expected:<6> but was:<3>
+               5 => expected:<6> but was:<3>
+            """.trimIndent()
+         }
+
+         "out-of-order elements cause error" {
+            shouldThrow<AssertionError> {
+               listOf(1, 2, 3) should matchInOrderSubset(
+                  { it shouldBe 2 },
+                  { it shouldBe 1 },
+                  { it shouldBe 3 }
+               )
+            }
+         }
+
+         "gaps should be ok" {
+            listOf(1, 1, 2, 2, 3, 3) should matchInOrderSubset(
+               { it shouldBe 1 },
+               { it shouldBe 2 },
+               { it shouldBe 3 }
+            )
+         }
+
+         "work with unsorted collections" {
+            val actual = listOf(5, 3, 1, 2, 4, 2)
+
+            withClue("should match 4th, 5th and 6th elements ([.., 2, 4, 2])") {
+               actual should matchInOrderSubset(
+                  { it shouldBe 2 },
+                  { it shouldBeGreaterThan 3 },
+                  { it shouldBeInRange 2..2 }
+               )
+            }
+         }
+      }
+
+      "matchEach" should {
+         "test that a collection matches the assertions in the given order without gaps" {
+            listOf(1, 3, 7) should matchEach(
+               { it shouldBe 1 },
+               { it shouldBeInRange 2..4 },
+               { it shouldBeGreaterThan 2 }
+            )
+         }
+
+         "Negation should work" {
+            shouldFail{
+               listOf(1, 2).shouldNotMatchEach(
+                  { it shouldBe 1 },
+                  { it shouldBe 2 },
+               )
+            }.message shouldBe """
+               Expected some element to fail its assertion, but all passed.
+            """.trimIndent()
+
+            arrayOf(1, 2).shouldNotMatchEach(
+               { it shouldBe 2 },
+               { it shouldBe 1 }
+            )
+         }
+
+         "No assertion exists for each element" {
+            shouldFail {
+               listOf(1, -1, 999) should matchEach(
+                  { it shouldBe 1 }
+               )
+            }.message shouldBe """
+               Expected each element to pass its assertion, but found issues at indexes: [1, 2]
+
+               1 => Element has no corresponding assertion. Only 1 assertions provided
+               2 => Element has no corresponding assertion. Only 1 assertions provided
+            """.trimIndent()
+         }
+
+         "Too many assertions cause error" {
+            shouldFail {
+               listOf(1, 3, 7) should matchEach(
+                  { it shouldBe 1 },
+                  { it shouldBe 3 },
+                  { it shouldBe 7 },
+                  { it shouldBe 7 },
+                  { it shouldBe 7 },
+               )
+            }.message shouldBe """
+               Expected each element to pass its assertion, but found issues at indexes: [3, 4]
+
+               3 => No actual element for assertion at index 3
+               4 => No actual element for assertion at index 4
+            """.trimIndent()
+         }
+
+         "Non matching element causes error" {
+            shouldFail {
+               listOf(1, 3, 7) should matchEach(
+                  { it shouldBe 1 },
+                  { it shouldBeInRange 2..4 },
+                  { it shouldBeGreaterThan 7 }
+               )
+            }.message shouldBe """
+               Expected each element to pass its assertion, but found issues at indexes: [2]
+
+               2 => 7 should be > 7
+            """.trimIndent()
+         }
+
+         "out-of-order elements cause error" {
+            shouldThrow<AssertionError> {
+               setOf(2, 3, 1) should matchEach(
+                  { it shouldBe 2 },
+                  { it shouldBe 1 },
+                  { it shouldBe 3 }
+               )
+            }.message shouldBe """
+               Expected each element to pass its assertion, but found issues at indexes: [1, 2]
+
+               1 => expected:<1> but was:<3>
+               2 => expected:<3> but was:<1>
+            """.trimIndent()
+         }
+
+         "gaps cause errors" {
+            shouldThrow<AssertionError> {
+               listOf(1, 1, 2, 2, 3, 3) should matchEach(
+                  { it shouldBe 1 },
+                  { it shouldBe 2 },
+                  { it shouldBe 3 }
+               )
+            }.message shouldBe """
+               Expected each element to pass its assertion, but found issues at indexes: [1, 2, 3, 4, 5]
+
+               1 => expected:<2> but was:<1>
+               2 => expected:<3> but was:<2>
+               3 => Element has no corresponding assertion. Only 3 assertions provided
+               4 => Element has no corresponding assertion. Only 3 assertions provided
+               5 => Element has no corresponding assertion. Only 3 assertions provided
+            """.trimIndent()
          }
       }
 
