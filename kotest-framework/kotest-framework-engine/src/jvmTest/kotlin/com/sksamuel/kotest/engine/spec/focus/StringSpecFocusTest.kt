@@ -8,7 +8,7 @@ class StringSpecFocusTest : StringSpec() {
 
    private var order = ""
 
-   override fun afterSpec(spec: Spec) {
+   override suspend fun afterSpec(spec: Spec) {
       order shouldBe "ac"
    }
 

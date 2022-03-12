@@ -58,11 +58,11 @@ class SecurityManagerTestListenerTest : StringSpec() {
 
   private var originalSecurityManager: SecurityManager? = null
 
-  override fun beforeTest(testCase: TestCase) {
+  override suspend fun beforeTest(testCase: TestCase) {
     originalSecurityManager = System.getSecurityManager()
   }
 
-  override fun afterTest(testCase: TestCase, result: TestResult) {
+  override suspend fun afterTest(testCase: TestCase, result: TestResult) {
     // Should reset to system default
     System.getSecurityManager() shouldBe originalSecurityManager
   }

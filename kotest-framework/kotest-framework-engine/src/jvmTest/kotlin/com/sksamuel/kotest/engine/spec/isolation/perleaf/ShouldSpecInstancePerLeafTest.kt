@@ -11,7 +11,7 @@ class ShouldSpecInstancePerLeafTest : ShouldSpec() {
 
    override fun isolationMode() = IsolationMode.InstancePerLeaf
 
-   override fun beforeSpec(spec: Spec) {
+   override suspend fun beforeSpec(spec: Spec) {
       buffer += "-init-"
    }
 

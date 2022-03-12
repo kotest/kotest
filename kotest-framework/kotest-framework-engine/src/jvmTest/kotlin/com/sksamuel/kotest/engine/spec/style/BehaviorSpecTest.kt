@@ -166,7 +166,7 @@ class BehaviorSpecTest : BehaviorSpec() {
       }
    }
 
-   override fun afterSpec(spec: Spec) {
+   override suspend fun afterSpec(spec: Spec) {
       counter.get() shouldBe 6
    }
 }

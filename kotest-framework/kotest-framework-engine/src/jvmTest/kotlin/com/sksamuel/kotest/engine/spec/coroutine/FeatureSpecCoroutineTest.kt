@@ -17,12 +17,12 @@ class FeatureSpecCoroutineTest : FeatureSpec() {
    private val threadnames = ConcurrentHashMap.newKeySet<String>()
    private var listenerThread = ""
 
-   override fun beforeTest(testCase: TestCase) {
+   override suspend fun beforeTest(testCase: TestCase) {
       // strip off the coroutine suffix
       listenerThread = currentThreadWithoutCoroutine()
    }
 
-   override fun afterTest(testCase: TestCase, result: TestResult) {
+   override suspend fun afterTest(testCase: TestCase, result: TestResult) {
       // strip off the coroutine suffix
       listenerThread shouldBe currentThreadWithoutCoroutine()
    }

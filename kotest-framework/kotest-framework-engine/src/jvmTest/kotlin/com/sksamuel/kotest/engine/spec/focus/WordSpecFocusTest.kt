@@ -8,7 +8,7 @@ class WordSpecFocusTest : WordSpec() {
 
    private var results = ""
 
-   override fun afterSpec(spec: Spec) {
+   override suspend fun afterSpec(spec: Spec) {
       results shouldBe "ab"
    }
 

@@ -109,7 +109,7 @@ private class MyErrorSpec2 : FunSpec() {
 
 private class MyPopulatedSpec2 : FunSpec() {
 
-   override fun afterSpec(spec: Spec) {
+   override suspend fun afterSpec(spec: Spec) {
       counter.incrementAndGet()
    }
 

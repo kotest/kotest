@@ -11,7 +11,7 @@ class FreeSpecTest : FreeSpec() {
 
    private var count = 0
 
-   override fun afterSpec(spec: Spec) {
+   override suspend fun afterSpec(spec: Spec) {
       count shouldBe 3
    }
 

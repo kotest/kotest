@@ -2,7 +2,6 @@ package io.kotest.core.spec
 
 import io.kotest.common.ExperimentalKotest
 import io.kotest.common.SoftDeprecated
-import io.kotest.core.source.SourceRef
 import io.kotest.core.Tag
 import io.kotest.core.TestConfiguration
 import io.kotest.core.Tuple2
@@ -17,6 +16,7 @@ import io.kotest.core.listeners.BeforeTestListener
 import io.kotest.core.listeners.TestListener
 import io.kotest.core.names.DuplicateTestNameMode
 import io.kotest.core.names.TestName
+import io.kotest.core.source.SourceRef
 import io.kotest.core.test.AssertionMode
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestCaseOrder
@@ -321,14 +321,14 @@ abstract class Spec : TestConfiguration() {
     *
     * For non-default isolation modes, this will run for every spec instance created.
     */
-   open fun beforeSpec(spec: Spec) {}
+   open suspend fun beforeSpec(spec: Spec) {}
 
    /**
     * Executed after the spec instance is complete.
     *
     * For non-default isolation modes, this will run for every spec instance created.
     */
-   open fun afterSpec(spec: Spec) {}
+   open suspend fun afterSpec(spec: Spec) {}
 
    /**
     * This function is invoked before every [TestCase] in this Spec.
@@ -336,7 +336,7 @@ abstract class Spec : TestConfiguration() {
     *
     * The [TestCase] about to be executed is provided as the parameter.
     */
-   open fun beforeTest(testCase: TestCase) {}
+   open suspend fun beforeTest(testCase: TestCase) {}
 
    /**
     * Registers a callback to be executed before every [TestCase] in this [Spec].
@@ -387,17 +387,17 @@ abstract class Spec : TestConfiguration() {
     *
     * The [TestCase] about to be executed is provided as the parameter.
     */
-   open fun afterTest(testCase: TestCase, result: TestResult) {}
+   open suspend fun afterTest(testCase: TestCase, result: TestResult) {}
 
-   open fun beforeContainer(testCase: TestCase) {}
+   open suspend fun beforeContainer(testCase: TestCase) {}
 
-   open fun afterContainer(testCase: TestCase, result: TestResult) {}
+   open suspend fun afterContainer(testCase: TestCase, result: TestResult) {}
 
-   open fun beforeEach(testCase: TestCase) {}
+   open suspend fun beforeEach(testCase: TestCase) {}
 
-   open fun afterEach(testCase: TestCase, result: TestResult) {}
+   open suspend fun afterEach(testCase: TestCase, result: TestResult) {}
 
-   open fun beforeAny(testCase: TestCase) {}
+   open suspend fun beforeAny(testCase: TestCase) {}
 
    /**
     * This function is invoked after every [TestCase] in this Spec.
@@ -405,7 +405,7 @@ abstract class Spec : TestConfiguration() {
     *
     * The [TestCase] and it's [TestResult] are provided as parameters.
     */
-   open fun afterAny(testCase: TestCase, result: TestResult) {}
+   open suspend fun afterAny(testCase: TestCase, result: TestResult) {}
 }
 
 /**

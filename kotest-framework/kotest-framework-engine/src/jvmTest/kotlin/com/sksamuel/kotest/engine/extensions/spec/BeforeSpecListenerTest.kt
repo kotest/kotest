@@ -79,7 +79,7 @@ private class MyEmptySpec3 : FunSpec()
 
 private class MyPopulatedSpec3 : FunSpec() {
 
-   override fun beforeSpec(spec: Spec) {
+   override suspend fun beforeSpec(spec: Spec) {
       counter.incrementAndGet()
    }
 
@@ -102,14 +102,14 @@ private class MyPopulatedSpec3 : FunSpec() {
 }
 
 private class BeforeSpecErrorNoTests : FunSpec() {
-   override fun beforeSpec(spec: Spec) {
+   override suspend fun beforeSpec(spec: Spec) {
       error("boom")
    }
 }
 
 
 private class MyErrorSpec3 : FunSpec() {
-   override fun beforeSpec(spec: Spec) {
+   override suspend fun beforeSpec(spec: Spec) {
       error("boom")
    }
 

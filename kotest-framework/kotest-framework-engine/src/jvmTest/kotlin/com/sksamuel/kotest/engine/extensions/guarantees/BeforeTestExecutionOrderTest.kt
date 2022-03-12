@@ -9,7 +9,7 @@ class BeforeTestExecutionOrderTest : FunSpec() {
 
    var order = ""
 
-   override fun beforeTest(testCase: TestCase) {
+   override suspend fun beforeTest(testCase: TestCase) {
       order += "!!"
    }
 

@@ -18,15 +18,15 @@ class ConcurrentSpecsSingleInstanceTest1 : FunSpec() {
    override fun isolationMode() = IsolationMode.SingleInstance
    override fun testCaseOrder() = TestCaseOrder.Sequential
 
-   override fun beforeTest(testCase: TestCase) {
+   override suspend fun beforeTest(testCase: TestCase) {
       befores += testCase.name.testName
    }
 
-   override fun afterTest(testCase: TestCase, result: TestResult) {
+   override suspend fun afterTest(testCase: TestCase, result: TestResult) {
       afters += testCase.name.testName
    }
 
-   override fun afterSpec(spec: Spec) {
+   override suspend fun afterSpec(spec: Spec) {
       befores shouldBe "ab"
       afters shouldBe "ab"
    }
@@ -49,15 +49,15 @@ class ConcurrentSpecsSingleInstanceTest2 : FunSpec() {
    override fun isolationMode() = IsolationMode.SingleInstance
    override fun testCaseOrder() = TestCaseOrder.Sequential
 
-   override fun beforeTest(testCase: TestCase) {
+   override suspend fun beforeTest(testCase: TestCase) {
       befores += testCase.name.testName
    }
 
-   override fun afterTest(testCase: TestCase, result: TestResult) {
+   override suspend fun afterTest(testCase: TestCase, result: TestResult) {
       afters += testCase.name.testName
    }
 
-   override fun afterSpec(spec: Spec) {
+   override suspend fun afterSpec(spec: Spec) {
       befores shouldBe "ab"
       afters shouldBe "ab"
    }
@@ -80,15 +80,15 @@ class ConcurrentSpecsSingleInstanceTest3 : FunSpec() {
    override fun isolationMode() = IsolationMode.SingleInstance
    override fun testCaseOrder() = TestCaseOrder.Sequential
 
-   override fun beforeTest(testCase: TestCase) {
+   override suspend fun beforeTest(testCase: TestCase) {
       befores += testCase.name.testName
    }
 
-   override fun afterTest(testCase: TestCase, result: TestResult) {
+   override suspend fun afterTest(testCase: TestCase, result: TestResult) {
       afters += testCase.name.testName
    }
 
-   override fun afterSpec(spec: Spec) {
+   override suspend fun afterSpec(spec: Spec) {
       befores shouldBe "ab"
       afters shouldBe "ab"
    }

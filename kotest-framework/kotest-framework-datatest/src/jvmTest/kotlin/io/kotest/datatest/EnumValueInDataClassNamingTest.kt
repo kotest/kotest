@@ -12,7 +12,7 @@ class EnumValueInDataClassNamingTest : FunSpec() {
 
    private val names = mutableListOf<String>()
 
-   override fun beforeSpec(spec: Spec) {
+   override suspend fun beforeSpec(spec: Spec) {
       names.clear()
    }
 
@@ -20,7 +20,7 @@ class EnumValueInDataClassNamingTest : FunSpec() {
       names.add(testCase.descriptor.id.value)
    }
 
-   override fun afterSpec(spec: Spec) {
+   override suspend fun afterSpec(spec: Spec) {
       names shouldBe listOf(
          "PythTriple(a=Three, b=Four, c=Five)",
          "PythTriple(a=Four, b=Three, c=Five)",

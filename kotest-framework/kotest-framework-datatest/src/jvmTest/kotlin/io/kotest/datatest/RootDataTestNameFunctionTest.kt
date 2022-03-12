@@ -57,7 +57,7 @@ class RootDataTestNameFunctionTest : FunSpec({
       DataTestNamesStore.names.add(testCase.descriptor.id.value)
    }
 
-   override fun afterSpec(spec: Spec) {
+   override suspend fun afterSpec(spec: Spec) {
       DataTestNamesStore.names shouldBe listOf(
          "(2, 1)",
          "(1, 2)",
@@ -76,7 +76,7 @@ class RootDataTestNameFunctionTest : FunSpec({
       )
    }
 
-   override fun beforeSpec(spec: Spec) {
+   override suspend fun beforeSpec(spec: Spec) {
       DataTestNamesStore.names.clear()
    }
 }
