@@ -9,6 +9,7 @@ import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestCaseOrder
 import io.kotest.core.test.TestResult
 import io.kotest.matchers.shouldBe
+import kotlinx.coroutines.delay
 import java.util.concurrent.atomic.AtomicInteger
 import kotlin.reflect.KClass
 
@@ -41,7 +42,10 @@ class AnnotationSpecBeforeAfterTest : AnnotationSpec() {
    fun beforeTest2() = counterBeforeEach.incrementAndGet()
 
    @Before
-   suspend fun beforeSuspendTest() = counterBeforeEach.incrementAndGet()
+   suspend fun beforeSuspendTest() {
+      delay(10)
+      counterBeforeEach.incrementAndGet()
+   }
 
    @AfterEach
    fun afterTest1() = counterAfterEach.incrementAndGet()
@@ -50,7 +54,10 @@ class AnnotationSpecBeforeAfterTest : AnnotationSpec() {
    fun afterTest2() = counterAfterEach.incrementAndGet()
 
    @After
-   suspend fun afterSuspendTest() = counterAfterEach.incrementAndGet()
+   suspend fun afterSuspendTest() {
+      delay(10)
+      counterAfterEach.incrementAndGet()
+   }
 
    @AfterAll // You're my wonderwall
    fun afterSpec1() {
