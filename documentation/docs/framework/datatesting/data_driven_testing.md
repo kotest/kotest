@@ -34,7 +34,7 @@ returns true if the input values are valid triples (_a squared + b squared = c s
 fun isPythagTriple(a: Int, b: Int, c: Int): Boolean = a * a + b * b == c * c
 ```
 
-Since we need more than one element per row (we need 3), we start by definining a data class that will hold a single _
+Since we need more than one element per row (we need 3), we start by defining a data class that will hold a single _
 row_ of values (in our case, the two inputs, and the expected result).
 
 ```kotlin
@@ -64,7 +64,7 @@ class MyTests : FunSpec({
 Notice that because we are using data classes, the input row can be destructured into the member properties.
 When this is executed, we will have 4 test cases in our input, one for each input row.
 
-Kotest will automatically generate a test case for each input row, as if you had manually written a seperate test case
+Kotest will automatically generate a test case for each input row, as if you had manually written a separate test case
 for each.
 
 ![data test example output](datatest1.png)

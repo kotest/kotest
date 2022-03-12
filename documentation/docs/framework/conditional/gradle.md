@@ -5,7 +5,7 @@ slug: conditional-tests-with-gradle.html
 sidebar_label: Gradle
 ---
 
-Kotest suports two ways to filter tests from the command line using Gradle. The first is the standard --tests flag
+Kotest supports two ways to filter tests from the command line using Gradle. The first is the standard --tests flag
 that gradle supports, and the second is a kotest specific system property.
 
 
