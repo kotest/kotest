@@ -107,6 +107,20 @@ Targets: **JVM**
 
 Targets: **JVM**
 
-:::note
-JSON matchers on the JVM are built using the Jackson library.
-:::
+## Basic JSON Validation
+There are a few matchers that simply validate that JSON is valid and optionally of a certain type.
+
+### shouldBeValidJson
+`shouldBeValidJson` simply verifies that a given string parses to valid json. The inverse is `shouldNotBeValidJson` which will error if the string is valid json.
+
+Targets: **JVM** Since: **5.2**
+
+### shouldBeJsonObject
+`shouldBeJsonObject` asserts that a string is a valid JSON **_object_**. The inverse is `shouldNotBeJsonObject` which will error if the string is an object.
+
+Targets: **JVM** Since: **5.2**
+
+### shouldBeJsonArray
+`shouldBeJsonArray` asserts that a string is a valid JSON **_array_**. The inverse is `shouldNotBeJsonArray` which will error if the string is an array.
+
+Targets: **JVM** Since: **5.2**
