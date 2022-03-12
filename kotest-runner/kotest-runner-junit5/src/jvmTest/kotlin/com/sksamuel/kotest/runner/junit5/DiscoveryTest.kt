@@ -1,5 +1,6 @@
 package com.sksamuel.kotest.runner.junit5
 
+import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.annotation.Isolate
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.framework.discovery.Discovery
@@ -30,7 +31,28 @@ class DiscoveryTest : FunSpec({
       val descriptor = engine.discover(req, UniqueId.forEngine("testengine"))
       descriptor.classes.size shouldBe 0
    }
+   test("kotest should return Nil for uniqueId selectors") {
+      val req = LauncherDiscoveryRequestBuilder.request().selectors(DiscoverySelectors.selectUniqueId("[engine:failgood]/[class:whatever]"))
+         .filters(
+            includeEngines(KotestJunitPlatformTestEngine.EngineId)
+         )
+         .build()
+      val engine = KotestJunitPlatformTestEngine()
+      val descriptor = engine.discover(req, UniqueId.forEngine("testengine"))
+      descriptor.classes.size shouldBe 0
+   }
 
+   test("kotest should throw for uniqueIds with kotest engine descriptor") {
+      val req = LauncherDiscoveryRequestBuilder.request().selectors(DiscoverySelectors.selectUniqueId("[engine:${KotestJunitPlatformTestEngine.EngineId}]/[class:whatever]"))
+         .filters(
+            includeEngines(KotestJunitPlatformTestEngine.EngineId)
+         )
+         .build()
+      val engine = KotestJunitPlatformTestEngine()
+      shouldThrow<RuntimeException> {
+         engine.discover(req, UniqueId.forEngine("testengine"))
+      }
+   }
    test("kotest should return classes if request includes kotest engine") {
       val req = LauncherDiscoveryRequestBuilder.request()
          .filters(
