@@ -8,12 +8,12 @@ import io.kotest.property.Sample
 
 /**
  * Returns a new [Arb] which will merge the values from this Arb and the values of
- * the supplied gen together, taking one from each in turn.
+ * the supplied gen together randomly, with roughly equal distribution.
  *
  * In other words, if genA provides 1,2,3 and genB provides 7,8,9 then the merged
- * gen would output 1,7,2,8,3,9.
+ * gen may output 1,7,2,8,9,3.
  *
- * The supplied gen must be a subtype of the type of this gen.
+ * The [other] gen must be a subtype of the type of the first Arb.
  *
  * Edgecases are generated from both inputs.
  *
