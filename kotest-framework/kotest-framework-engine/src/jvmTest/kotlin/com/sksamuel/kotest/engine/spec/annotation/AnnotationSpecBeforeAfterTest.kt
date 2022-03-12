@@ -67,7 +67,7 @@ class AnnotationSpecBeforeAfterTest : AnnotationSpec() {
    @Test
    fun test1() {
       counterBeforeAll.get() shouldBe 2 // Both BeforeSpec should be executed once
-      counterBeforeEach.get() shouldBe 3 // Both BeforeTest should be executed once
+      counterBeforeEach.get() shouldBe 3 // All 3 BeforeTest should be executed once
 
 
       // No tests finished executing yet, both should be 0
@@ -77,8 +77,8 @@ class AnnotationSpecBeforeAfterTest : AnnotationSpec() {
 
    @Test
    fun test2() {
-      counterBeforeAll.get() shouldBe 3 // BeforeSpecs should not be executed again
-      counterBeforeEach.get() shouldBe 4 // Before tests should be executed twice (test1 + test2)
+      counterBeforeAll.get() shouldBe 2 // BeforeSpecs should not be executed again
+      counterBeforeEach.get() shouldBe 6 // Before tests should be executed twice (test1 + test2)
 
       counterAfterAll.get() shouldBe 0  // Not all tests finished yet, it shouldn't have executed
       counterAfterEach.get() shouldBe 3 // AfterTest should be executed (after test1)
@@ -87,10 +87,10 @@ class AnnotationSpecBeforeAfterTest : AnnotationSpec() {
    @Test
    fun test3() {
       counterBeforeAll.get() shouldBe 2
-      counterBeforeEach.get() shouldBe 6
+      counterBeforeEach.get() shouldBe 9
 
       counterAfterAll.get() shouldBe 0
-      counterAfterEach.get() shouldBe 4
+      counterAfterEach.get() shouldBe 6 // three sets of after test executed for test1/test2
    }
 
    override fun isolationMode() = IsolationMode.SingleInstance
