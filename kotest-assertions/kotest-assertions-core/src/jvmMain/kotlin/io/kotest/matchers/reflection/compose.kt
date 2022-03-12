@@ -4,16 +4,19 @@ import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
 import kotlin.reflect.KProperty1
 
-fun <T : Any, V : Any> Matcher.Companion.compose(
-   vararg pairs: Pair<Matcher<V>, KProperty1<T, V>>
+@Suppress("UNCHECKED_CAST")
+fun <T : Any?> Matcher.Companion.compose(
+   vararg pairs: Pair<Matcher<*>, KProperty1<T, *>>
 ): Matcher<T> = object : Matcher<T> {
    override fun test(value: T): MatcherResult {
-      val all = pairs.toList()
-      val (firstMatcher, firstProp) = all.first()
-      val tail = all.drop(1)
-
-      return tail.fold(firstMatcher.test(firstProp.get(value))) { _, (matcher, prop) ->
-         matcher.test(prop.get(value))
+      val results = pairs.map { (matcher, prop) ->
+         (matcher as Matcher<Any?>).test(prop.get(value))
       }
+
+      return MatcherResult(
+         results.all { it.passed() },
+         { results.map { it.failureMessage() }.fold("") { acc: String, s: String -> acc + s + "\n" } },
+         { results.map { it.negatedFailureMessage() }.fold("") { acc: String, s: String -> acc + s + "\n" } },
+      )
    }
 }
