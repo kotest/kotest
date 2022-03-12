@@ -4,7 +4,6 @@ import io.kotest.matchers.ComparableMatcherResult
 import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
 import io.kotest.matchers.should
-import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNot
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
@@ -81,7 +80,7 @@ fun beValidJson() = object : Matcher<String?> {
 }
 
 @OptIn(ExperimentalSerializationApi::class)
-fun beElementOf(kClass: KClass<*>) = object : Matcher<String?> {
+fun beJsonType(kClass: KClass<*>) = object : Matcher<String?> {
 
    override fun test(value: String?): MatcherResult {
       val element = try {
@@ -135,22 +134,22 @@ fun String.shouldBeEmptyJsonObject(): String {
 }
 
 fun String.shouldBeJsonArray(): String {
-   this should beElementOf(JsonArray::class)
+   this should beJsonType(JsonArray::class)
    return this
 }
 
 fun String.shouldNotBeJsonArray(): String {
-   this shouldNot beElementOf(JsonArray::class)
+   this shouldNot beJsonType(JsonArray::class)
    return this
 }
 
 fun String.shouldBeJsonObject(): String {
-   this should beElementOf(JsonObject::class)
+   this should beJsonType(JsonObject::class)
    return this
 }
 
 fun String.shouldNotBeJsonObject(): String {
-   this shouldNot beElementOf(JsonObject::class)
+   this shouldNot beJsonType(JsonObject::class)
    return this
 }
 

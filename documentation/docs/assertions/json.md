@@ -10,6 +10,24 @@ They provide precise error messages when comparing json so that the error can be
 
 This module is available for JVM and JS targets.
 
+## Basic JSON Validation
+There are a few matchers that simply validate that JSON is valid and optionally of a certain type.
+
+### shouldBeValidJson
+`shouldBeValidJson` simply verifies that a given string parses to valid json. The inverse is `shouldNotBeValidJson` which will error if the string is valid json.
+
+Targets: **JVM**
+
+### shouldBeJsonObject
+`shouldBeJsonObject` asserts that a string is a valid JSON **_object_**. The inverse is `shouldNotBeJsonObject` which will error if the string is an object.
+
+Targets: **JVM**
+
+### shouldBeJsonArray
+`shouldBeJsonArray` asserts that a string is a valid JSON **_array_**. The inverse is `shouldNotBeJsonArray` which will error if the string is an array.
+
+Targets: **JVM**
+
 ## shouldEqualJson
 
 `json.shouldEqualJson(other)` asserts that the left-hand side represents the same
