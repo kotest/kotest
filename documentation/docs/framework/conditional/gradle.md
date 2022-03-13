@@ -41,7 +41,7 @@ Because gradle's test support is class.method based, we cannot filter tests down
 ### Kotest Specific Test Filtering
 
 To avoid the limitations with Gradle's `--tests` support, Kotest offers its own flags, `kotest.filter.tests` and `kotest.filter.specs`
-which are provided via system properties. These flags support wildcards via `*` and match either tests or specs.
+which are provided via **system properties** or **env vars**. These flags support wildcards via `*` and match either tests or specs.
 
 This example would execute all tests in the com.somepackage (and nested) packages:
 
