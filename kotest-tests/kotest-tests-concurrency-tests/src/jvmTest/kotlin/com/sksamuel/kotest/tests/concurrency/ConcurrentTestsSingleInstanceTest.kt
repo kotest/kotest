@@ -25,19 +25,19 @@ class ConcurrentTestsSingleInstanceTest : FunSpec() {
    override fun concurrency(): Int = ProjectConfiguration.MaxConcurrency
    override fun testCaseOrder() = TestCaseOrder.Sequential
 
-   override fun beforeTest(testCase: TestCase) {
+   override suspend fun beforeTest(testCase: TestCase) {
       befores += testCase.name.testName
    }
 
-   override fun afterTest(testCase: TestCase, result: TestResult) {
+   override suspend fun afterTest(testCase: TestCase, result: TestResult) {
       afters += testCase.name.testName
    }
 
-   override fun beforeSpec(spec: Spec) {
+   override suspend fun beforeSpec(spec: Spec) {
       start = System.currentTimeMillis()
    }
 
-   override fun afterSpec(spec: Spec) {
+   override suspend fun afterSpec(spec: Spec) {
       val end = System.currentTimeMillis()
       // total of delays is 1500 but should run concurrently
       (end - start).shouldBeLessThan(1499)

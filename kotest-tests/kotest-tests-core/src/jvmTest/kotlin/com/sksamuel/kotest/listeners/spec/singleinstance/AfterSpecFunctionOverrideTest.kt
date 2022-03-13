@@ -15,7 +15,7 @@ class AfterSpecFunctionOverrideTest : FunSpec() {
    override fun isolationMode(): IsolationMode = IsolationMode.SingleInstance
 
    // should be invoked once per whole Spec
-   override fun afterSpec(spec: Spec) {
+   override suspend fun afterSpec(spec: Spec) {
       counter.incrementAndGet()
    }
 
@@ -42,7 +42,7 @@ class AfterSpecFunctionOverrideTestWithNested : FunSpec() {
    override fun isolationMode(): IsolationMode = IsolationMode.SingleInstance
 
    // should be invoked once per whole Spec
-   override fun afterSpec(spec: Spec) {
+   override suspend fun afterSpec(spec: Spec) {
       counter.incrementAndGet()
    }
 

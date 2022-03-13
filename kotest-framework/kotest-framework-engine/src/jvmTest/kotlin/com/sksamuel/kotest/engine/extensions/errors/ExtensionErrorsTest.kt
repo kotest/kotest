@@ -133,7 +133,7 @@ class ExtensionErrorsTest : FunSpec() {
 }
 
 private class BeforeSpecFunctionOverrideError : FunSpec() {
-   override fun beforeSpec(spec: Spec) {
+   override suspend fun beforeSpec(spec: Spec) {
       error("foo")
    }
 
@@ -153,7 +153,7 @@ private class BeforeSpecDSLError : FunSpec() {
 
 private class MultipleBeforeSpecErrors : FunSpec() {
 
-   override fun beforeSpec(spec: Spec) {
+   override suspend fun beforeSpec(spec: Spec) {
       error("foo")
    }
 
@@ -170,7 +170,7 @@ private class MultipleBeforeSpecErrors : FunSpec() {
 
 
 private class AfterSpecFunctionOverrideError : FunSpec() {
-   override fun afterSpec(spec: Spec) {
+   override suspend fun afterSpec(spec: Spec) {
       error("foo")
    }
 
@@ -189,7 +189,7 @@ private class AfterSpecDSLError : FunSpec() {
 }
 
 private class MultipleAfterSpecErrors : FunSpec() {
-   override fun afterSpec(spec: Spec) {
+   override suspend fun afterSpec(spec: Spec) {
       error("foo")
    }
 
@@ -206,7 +206,7 @@ private class MultipleAfterSpecErrors : FunSpec() {
 
 private class BeforeTestFunctionOverrideError : FunSpec() {
 
-   override fun beforeTest(testCase: TestCase) {
+   override suspend fun beforeTest(testCase: TestCase) {
       error("foo")
    }
 
@@ -226,7 +226,7 @@ private class BeforeTestDSLError : FunSpec() {
 
 private class MultipleBeforeTestErrors : FunSpec() {
 
-   override fun beforeTest(testCase: TestCase) {
+   override suspend fun beforeTest(testCase: TestCase) {
       error("foo")
    }
 
@@ -243,7 +243,7 @@ private class MultipleBeforeTestErrors : FunSpec() {
 
 
 private class AfterTestFunctionOverrideError : FunSpec() {
-   override fun afterTest(testCase: TestCase, result: TestResult) {
+   override suspend fun afterTest(testCase: TestCase, result: TestResult) {
       error("foo")
    }
 
@@ -262,7 +262,7 @@ private class AfterTestDSLError : FunSpec() {
 }
 
 private class MultipleAfterTestErrors : FunSpec() {
-   override fun afterTest(testCase: TestCase, result: TestResult) {
+   override suspend fun afterTest(testCase: TestCase, result: TestResult) {
       error("foo")
    }
 

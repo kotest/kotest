@@ -17,7 +17,7 @@ class ShouldSpecInstancePerLeafTest : ShouldSpec() {
 
    override fun isolationMode() = IsolationMode.InstancePerLeaf
 
-   override fun beforeTest(testCase: TestCase) {
+   override suspend fun beforeTest(testCase: TestCase) {
       Counters2.specs.add(testCase.spec.hashCode())
    }
 

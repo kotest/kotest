@@ -8,7 +8,7 @@ class FocusTest : StringSpec() {
 
   private var focus = false
 
-  override fun afterSpec(spec: Spec) {
+  override suspend fun afterSpec(spec: Spec) {
     focus shouldBe true
   }
 

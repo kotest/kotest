@@ -19,7 +19,7 @@ class ThreadLocalHolder {
 
 class BeforeTestThreadsTest : FunSpec() {
 
-   override fun beforeTest(testCase: TestCase) {
+   override suspend fun beforeTest(testCase: TestCase) {
       println("spec " + Thread.currentThread().name)
       ThreadLocalHolder.threadLocal.set("test")
    }

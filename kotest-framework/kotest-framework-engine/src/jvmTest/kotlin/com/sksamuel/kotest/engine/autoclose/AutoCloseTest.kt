@@ -17,7 +17,7 @@ class AutoCloseTest : StringSpec() {
     }
   }
 
-   override fun afterSpec(spec: Spec) {
+   override suspend fun afterSpec(spec: Spec) {
       FirstAutoclose.closed shouldBe 3
       SecondAutoclose.closed shouldBe 2
       ThirdAutoclose.closed shouldBe 1

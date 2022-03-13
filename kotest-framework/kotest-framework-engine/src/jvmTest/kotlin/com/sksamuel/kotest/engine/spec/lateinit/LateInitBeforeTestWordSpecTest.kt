@@ -8,7 +8,7 @@ class LateInitBeforeTestWordSpecTest : WordSpec() {
 
    private lateinit var string: String
 
-   override fun beforeTest(testCase: TestCase) {
+   override suspend fun beforeTest(testCase: TestCase) {
       string = "Hello"
    }
 

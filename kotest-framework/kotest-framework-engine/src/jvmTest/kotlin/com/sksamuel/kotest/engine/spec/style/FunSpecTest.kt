@@ -69,7 +69,7 @@ class FunSpecTest : FunSpec() {
       }
    }
 
-   override fun afterSpec(spec: Spec) {
+   override suspend fun afterSpec(spec: Spec) {
       count.shouldBe(1)
    }
 }

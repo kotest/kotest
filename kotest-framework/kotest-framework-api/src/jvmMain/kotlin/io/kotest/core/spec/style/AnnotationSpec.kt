@@ -6,8 +6,8 @@ import io.kotest.core.source.sourceRef
 import io.kotest.core.spec.RootTest
 import io.kotest.core.spec.Spec
 import io.kotest.core.test.TestCase
-import io.kotest.core.test.TestScope
 import io.kotest.core.test.TestResult
+import io.kotest.core.test.TestScope
 import io.kotest.core.test.TestType
 import io.kotest.mpp.unwrapIfReflectionCall
 import kotlin.reflect.KClass
@@ -20,29 +20,37 @@ typealias Test = AnnotationSpec.Test
 
 abstract class AnnotationSpec : Spec() {
 
-   override fun beforeSpec(spec: Spec) {
+   override suspend fun beforeSpec(spec: Spec) {
       executeBeforeSpecFunctions()
    }
 
-   private fun executeBeforeSpecFunctions() = this::class.findBeforeSpecFunctions().forEach { it.call(this) }
+   private suspend fun executeBeforeSpecFunctions() = this::class.findBeforeSpecFunctions().forEach {
+      if (it.isSuspend) it.callSuspend(this) else it.call(this)
+   }
 
-   override fun beforeTest(testCase: TestCase) {
+   override suspend fun beforeTest(testCase: TestCase) {
       executeBeforeTestFunctions()
    }
 
-   private fun executeBeforeTestFunctions() = this::class.findBeforeTestFunctions().forEach { it.call(this) }
+   private suspend fun executeBeforeTestFunctions() = this::class.findBeforeTestFunctions().forEach {
+      if (it.isSuspend) it.callSuspend(this) else it.call(this)
+   }
 
-   override fun afterTest(testCase: TestCase, result: TestResult) {
+   override suspend fun afterTest(testCase: TestCase, result: TestResult) {
       executeAfterTestFunctions()
    }
 
-   private fun executeAfterTestFunctions() = this::class.findAfterTestFunctions().forEach { it.call(this) }
+   private suspend fun executeAfterTestFunctions() = this::class.findAfterTestFunctions().forEach {
+      if (it.isSuspend) it.callSuspend(this) else it.call(this)
+   }
 
-   override fun afterSpec(spec: Spec) {
+   override suspend fun afterSpec(spec: Spec) {
       executeAfterSpecFunctions()
    }
 
-   private fun executeAfterSpecFunctions() = this::class.findAfterSpecFunctions().forEach { it.call(this) }
+   private suspend fun executeAfterSpecFunctions() = this::class.findAfterSpecFunctions().forEach {
+      if (it.isSuspend) it.callSuspend(this) else it.call(this)
+   }
 
    private fun KFunction<*>.toIgnoredRootTest(): RootTest {
       return deriveRootTest(true)
@@ -274,7 +282,7 @@ internal fun KClass<*>.findTestFunctions(): List<KFunction<*>> =
 
 internal fun KFunction<*>.isIgnoredTest() = isFunctionAnnotatedWithAnyOf(AnnotationSpec.Ignore::class)
 
-internal fun KClass<*>.findFunctionAnnotatedWithAnyOf(vararg annotation: KClass<*>) =
+internal fun KClass<*>.findFunctionAnnotatedWithAnyOf(vararg annotation: KClass<*>): List<KFunction<*>> =
    memberFunctions.filter { it.isFunctionAnnotatedWithAnyOf(*annotation) }
 
 internal fun KFunction<*>.isFunctionAnnotatedWithAnyOf(vararg annotation: KClass<*>) =

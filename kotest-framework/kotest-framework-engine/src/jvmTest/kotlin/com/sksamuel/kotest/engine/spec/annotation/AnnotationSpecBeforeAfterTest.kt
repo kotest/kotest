@@ -1,7 +1,7 @@
 package com.sksamuel.kotest.engine.spec.annotation
 
-import io.kotest.core.listeners.TestListener
 import io.kotest.core.annotation.AutoScan
+import io.kotest.core.listeners.TestListener
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.style.AnnotationSpec
@@ -9,6 +9,7 @@ import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestCaseOrder
 import io.kotest.core.test.TestResult
 import io.kotest.matchers.shouldBe
+import kotlinx.coroutines.delay
 import java.util.concurrent.atomic.AtomicInteger
 import kotlin.reflect.KClass
 
@@ -40,11 +41,23 @@ class AnnotationSpecBeforeAfterTest : AnnotationSpec() {
    @Before
    fun beforeTest2() = counterBeforeEach.incrementAndGet()
 
+   @Before
+   suspend fun beforeSuspendTest() {
+      delay(10)
+      counterBeforeEach.incrementAndGet()
+   }
+
    @AfterEach
    fun afterTest1() = counterAfterEach.incrementAndGet()
 
    @After
    fun afterTest2() = counterAfterEach.incrementAndGet()
+
+   @After
+   suspend fun afterSuspendTest() {
+      delay(10)
+      counterAfterEach.incrementAndGet()
+   }
 
    @AfterAll // You're my wonderwall
    fun afterSpec1() {
@@ -61,7 +74,7 @@ class AnnotationSpecBeforeAfterTest : AnnotationSpec() {
    @Test
    fun test1() {
       counterBeforeAll.get() shouldBe 2 // Both BeforeSpec should be executed once
-      counterBeforeEach.get() shouldBe 2 // Both BeforeTest should be executed once
+      counterBeforeEach.get() shouldBe 3 // All 3 BeforeTest should be executed once
 
 
       // No tests finished executing yet, both should be 0
@@ -72,19 +85,19 @@ class AnnotationSpecBeforeAfterTest : AnnotationSpec() {
    @Test
    fun test2() {
       counterBeforeAll.get() shouldBe 2 // BeforeSpecs should not be executed again
-      counterBeforeEach.get() shouldBe 4 // Before tests should be executed twice (test1 + test2)
+      counterBeforeEach.get() shouldBe 6 // Before tests should be executed twice (test1 + test2)
 
       counterAfterAll.get() shouldBe 0  // Not all tests finished yet, it shouldn't have executed
-      counterAfterEach.get() shouldBe 2 // AfterTest should be executed (after test1)
+      counterAfterEach.get() shouldBe 3 // AfterTest should be executed (after test1)
    }
 
    @Test
    fun test3() {
       counterBeforeAll.get() shouldBe 2
-      counterBeforeEach.get() shouldBe 6
+      counterBeforeEach.get() shouldBe 9
 
       counterAfterAll.get() shouldBe 0
-      counterAfterEach.get() shouldBe 4
+      counterAfterEach.get() shouldBe 6 // three sets of after test executed for test1/test2
    }
 
    override fun isolationMode() = IsolationMode.SingleInstance

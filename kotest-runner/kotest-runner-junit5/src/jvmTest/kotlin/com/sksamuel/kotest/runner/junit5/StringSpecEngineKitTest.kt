@@ -475,7 +475,7 @@ private class StringSpecExceptionInBeforeSpecOverride : StringSpec() {
       }
    }
 
-   override fun beforeSpec(spec: Spec) {
+   override suspend fun beforeSpec(spec: Spec) {
       throw RuntimeException("zopp!!")
    }
 
@@ -509,7 +509,7 @@ private class StringSpecExceptionInAfterTest : StringSpec() {
       }
    }
 
-   override fun afterTest(testCase: TestCase, result: TestResult) {
+   override suspend fun afterTest(testCase: TestCase, result: TestResult) {
       throw RuntimeException("craack!!")
    }
 }
@@ -544,7 +544,7 @@ private class StringSpecExceptionInAfterSpec : StringSpec() {
 
    }
 
-   override fun afterSpec(spec: Spec) {
+   override suspend fun afterSpec(spec: Spec) {
       throw RuntimeException("splatt!!")
    }
 
@@ -579,7 +579,7 @@ private class StringSpecExceptionInBeforeTest : StringSpec() {
       }
    }
 
-   override fun beforeTest(testCase: TestCase) {
+   override suspend fun beforeTest(testCase: TestCase) {
       throw RuntimeException("oooff!!")
    }
 }
@@ -651,7 +651,7 @@ private class StringSpecExceptionInBeforeSpecForInstancePerLeaf : StringSpec({
 }) {
    override fun isolationMode(): IsolationMode = IsolationMode.InstancePerLeaf
 
-   override fun beforeSpec(spec: Spec) {
+   override suspend fun beforeSpec(spec: Spec) {
       throw RuntimeException("zopp!!")
    }
 }

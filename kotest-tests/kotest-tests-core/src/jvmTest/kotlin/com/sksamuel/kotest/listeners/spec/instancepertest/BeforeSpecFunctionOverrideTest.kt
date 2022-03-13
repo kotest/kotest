@@ -17,7 +17,7 @@ class BeforeSpecFunctionOverrideTest : FunSpec() {
 
    override fun isolationMode(): IsolationMode = IsolationMode.InstancePerTest
 
-   override fun beforeSpec(spec: Spec) {
+   override suspend fun beforeSpec(spec: Spec) {
       counter.incrementAndGet()
    }
 

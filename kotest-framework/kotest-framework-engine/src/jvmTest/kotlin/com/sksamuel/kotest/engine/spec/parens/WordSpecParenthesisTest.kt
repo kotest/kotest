@@ -8,7 +8,7 @@ class WordSpecParenthesisTest : WordSpec() {
 
    var names = mutableListOf<String>()
 
-   override fun afterSpec(spec: Spec) {
+   override suspend fun afterSpec(spec: Spec) {
       names.shouldBe(listOf("parenthesis (here)", "and (here)"))
    }
 

@@ -13,11 +13,11 @@ import io.kotest.property.arbitrary.IntShrinker
 
 class IntShrinkerTest : WordSpec() {
 
-   override fun afterSpec(spec: Spec) {
+   override suspend fun afterSpec(spec: Spec) {
       PropertyTesting.shouldPrintShrinkSteps = true
    }
 
-   override fun beforeSpec(spec: Spec) {
+   override suspend fun beforeSpec(spec: Spec) {
       PropertyTesting.shouldPrintShrinkSteps = false
    }
 

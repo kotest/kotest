@@ -8,7 +8,7 @@ class LateInitBeforeSpecStringSpecTest : StringSpec() {
 
   private lateinit var string: String
 
-  override fun beforeSpec(spec: Spec) {
+  override suspend fun beforeSpec(spec: Spec) {
     string = "Hello"
   }
 
