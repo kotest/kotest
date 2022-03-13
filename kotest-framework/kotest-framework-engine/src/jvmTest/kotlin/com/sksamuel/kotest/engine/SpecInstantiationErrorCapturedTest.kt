@@ -15,7 +15,7 @@ class SpecInstantiationErrorCapturedTest : FunSpec() {
             .withClasses(SpecInstantiationFailureSpec::class)
             .launch()
          listener.specs.shouldHaveSize(1)
-         listener.specs[SpecInstantiationFailureSpec::class].shouldBeInstanceOf<SpecInstantiationException>()
+         listener.specs[SpecInstantiationFailureSpec::class]!!.errorOrNull.shouldBeInstanceOf<SpecInstantiationException>()
       }
    }
 }
