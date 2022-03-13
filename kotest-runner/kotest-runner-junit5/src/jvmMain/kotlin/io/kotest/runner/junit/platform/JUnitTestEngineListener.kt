@@ -321,7 +321,7 @@ class JUnitTestEngineListener(
          id,
          formatter.format(testCase),
          t,
-         ClassSource.from(testCase.spec::class.java, null), // junit hides tests if we don't send this
+         ClassSource.from(testCase.spec::class.java, null), // gradle-junit-platform hides tests if we don't send this
          type == TestDescriptor.Type.CONTAINER
       ).apply {
          parent.addChild(this)
