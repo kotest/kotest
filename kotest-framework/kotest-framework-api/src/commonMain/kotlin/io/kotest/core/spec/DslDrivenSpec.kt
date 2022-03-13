@@ -42,7 +42,7 @@ abstract class DslDrivenSpec : Spec(), RootScope {
    }
 
    override fun add(test: RootTest) {
-      if (sealed) throw InvalidDslException("Cannot add a root tests after the spec has been instantiated")
+      if (sealed) throw InvalidDslException("Cannot add a root test after the spec has been instantiated: ${test.name.testName}")
       rootTests = rootTests + test
    }
 
