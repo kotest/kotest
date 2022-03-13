@@ -16,7 +16,7 @@ class EnumValueInDataClassNamingTest : FunSpec() {
       names.clear()
    }
 
-   override fun afterAny(testCase: TestCase, result: TestResult) {
+   override suspend fun afterAny(testCase: TestCase, result: TestResult) {
       names.add(testCase.descriptor.id.value)
    }
 

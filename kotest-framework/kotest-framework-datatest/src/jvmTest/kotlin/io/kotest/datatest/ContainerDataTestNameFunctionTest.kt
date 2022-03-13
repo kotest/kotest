@@ -67,7 +67,7 @@ class ContainerDataTestNameFunctionTest : FunSpec({
    }
 
 }) {
-   override fun afterAny(testCase: TestCase, result: TestResult) {
+   override suspend fun afterAny(testCase: TestCase, result: TestResult) {
       DataTestNamesStore.names.add(testCase.descriptor.id.value)
    }
 
