@@ -45,12 +45,12 @@ class ComposeTest : StringSpec() {
 
    init {
       "Person matcher compose test" {
+
          val matcherResult = Matcher.compose(
             nameMatcher to Person::name,
             ageMatcher to Person::age,
             addressMatcher to Person::address
-         )
-            .test(Person("John", 10, Address("Warsaw", "Test", "1/1")))
+         ).test(Person("John", 10, Address("Warsaw", "Test", "1/1")))
 
          matcherResult.passed() shouldBe true
          matcherResult.failureMessage() shouldBe """
