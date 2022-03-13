@@ -19,7 +19,7 @@ class ExtensionErrorsTest : FunSpec() {
          TestEngineLauncher(collector)
             .withClasses(BeforeSpecFunctionOverrideError::class)
             .launch()
-         val error = collector.specs.values.first()
+         val error = collector.specs.values.first().errorOrNull
          error.shouldBeInstanceOf<ExtensionException.BeforeSpecException>()
       }
 
@@ -28,7 +28,7 @@ class ExtensionErrorsTest : FunSpec() {
          TestEngineLauncher(collector)
             .withClasses(BeforeSpecDSLError::class)
             .launch()
-         val error = collector.specs.values.first()
+         val error = collector.specs.values.first().errorOrNull
          error.shouldBeInstanceOf<ExtensionException.BeforeSpecException>()
       }
 
@@ -37,7 +37,7 @@ class ExtensionErrorsTest : FunSpec() {
          TestEngineLauncher(collector)
             .withClasses(MultipleBeforeSpecErrors::class)
             .launch()
-         val error = collector.specs.values.first()
+         val error = collector.specs.values.first().errorOrNull
          error.shouldBeInstanceOf<MultipleExceptions>()
          error.causes.shouldHaveSize(3)
          error.causes.forAll { it.shouldBeInstanceOf<ExtensionException.BeforeSpecException>() }
@@ -48,7 +48,7 @@ class ExtensionErrorsTest : FunSpec() {
          TestEngineLauncher(collector)
             .withClasses(AfterSpecFunctionOverrideError::class)
             .launch()
-         val error = collector.specs.values.first()
+         val error = collector.specs.values.first().errorOrNull
          error.shouldBeInstanceOf<ExtensionException.AfterSpecException>()
       }
 
@@ -57,7 +57,7 @@ class ExtensionErrorsTest : FunSpec() {
          TestEngineLauncher(collector)
             .withClasses(AfterSpecDSLError::class)
             .launch()
-         val error = collector.specs.values.first()
+         val error = collector.specs.values.first().errorOrNull
          error.shouldBeInstanceOf<ExtensionException.AfterSpecException>()
       }
 
@@ -66,7 +66,7 @@ class ExtensionErrorsTest : FunSpec() {
          TestEngineLauncher(collector)
             .withClasses(MultipleAfterSpecErrors::class)
             .launch()
-         val error = collector.specs.values.first()
+         val error = collector.specs.values.first().errorOrNull
          error.shouldBeInstanceOf<MultipleExceptions>()
          error.causes.shouldHaveSize(3)
          error.causes.forAll { it.shouldBeInstanceOf<ExtensionException.AfterSpecException>() }

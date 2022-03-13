@@ -59,7 +59,7 @@ class BeforeSpecListenerTest : FunSpec() {
             .withClasses(MyErrorSpec3::class)
             .launch()
          listener.specs.size shouldBe 1
-         listener.specs[MyErrorSpec3::class]!!.shouldBeInstanceOf<ExtensionException.BeforeSpecException>()
+         listener.specs[MyErrorSpec3::class]!!.errorOrNull.shouldBeInstanceOf<ExtensionException.BeforeSpecException>()
          listener.tests.size shouldBe 0
       }
 
