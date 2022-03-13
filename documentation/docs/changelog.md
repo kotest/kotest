@@ -6,6 +6,65 @@ slug: changelog.html
 
 
 
+## 5.2.0 March 2022
+
+### Fixes
+
+* AnnotationSpec does not support suspend @Before function ([2868](https://github.com/kotest/kotest/pull/2868))
+* Fixed dependency scope for RgxGen in property tests ([2800](https://github.com/kotest/kotest/pull/2800))
+* BigDecimal arb can return edgecases outside min max limits ([2834](https://github.com/kotest/kotest/pull/2834))
+* Fix random spec sorter creating invalid comparator ([2840](https://github.com/kotest/kotest/pull/2840))
+* Fix withClue and assertSoftly interference with concurrent coroutines ([2791](https://github.com/kotest/kotest/pull/2791))
+* Fix handling the edge cases of lenient json number comparison ([2793](https://github.com/kotest/kotest/pull/2793))
+* Corrects group id for kotest assertion compiler module. ([2787](https://github.com/kotest/kotest/pull/2787))
+* Add workaround for issue where no tests are run when using new Kotlin/Native memory model. ([2812](https://github.com/kotest/kotest/pull/2812))
+
+### Features and improvements
+
+* Collection assertions ([2695](https://github.com/kotest/kotest/pull/2695))
+* JSON matchers for to confirm json is valid and is array or is object. ([2861](https://github.com/kotest/kotest/pull/2861))
+* Ignore UniqueId selectors in JUnit for better interop with other engines ([2862](https://github.com/kotest/kotest/pull/2862))
+* Easily compose matchers together ([2864](https://github.com/kotest/kotest/pull/2864))
+* Make length of collection snippet included in assertion errors configurable ([2836](https://github.com/kotest/kotest/pull/2836))
+* Smart cast shouldBeSuccess and shouldBeFailure ([2853](https://github.com/kotest/kotest/pull/2853))
+* Remove inconsistent exceptionClass default values ([2831](https://github.com/kotest/kotest/pull/2831))
+* Makes shouldBeEqualToComparingFields recursive ([2833](https://github.com/kotest/kotest/pull/2833))
+* Add blockingTest to the config options on FreeSpec [2805](https://github.com/kotest/kotest/pull/2805) ([2807](https://github.com/kotest/kotest/pull/2807))
+* Added EqualsVerifier contract for shouldBeEqualTo for greater customization ([2795](https://github.com/kotest/kotest/pull/2795))
+* MapMatchers: Add containExactly() that takes a vararg of pairs ([2781](https://github.com/kotest/kotest/pull/2781))
+* Update TestContainters to support dbInitScripts ([2811](https://github.com/kotest/kotest/pull/2811))
+
+### Breaking Changes
+
+* Disallow use of root scope methods inside container scope ([2870](https://github.com/kotest/kotest/pull/2870))
+
+Thanks to all the contributors:
+
+* Ashish Kumar Joy
+* BjornvdLaan
+* Charles Korn
+* Christoph Sturm
+* Emil Kantis
+* Imran Malic Settuba
+* Ing. Jan Kaláb
+* inquiribus
+* Kacper Lamparski
+* KIDANI Akito
+* Leonardo Colman
+* Louis CAD
+* Łukasz Pięta
+* luozejiaqun
+* Mervyn McCreight
+* Mitchell Yuwono
+* OliverO2
+* scottdfedorov
+* Sebastian Schuberth
+* sksamuel
+* Sondre Lefsaker
+* Sunny Pelletier
+* Zak Henry
+
+
 ## 5.1.0 January 2022
 
 ### Fixes
