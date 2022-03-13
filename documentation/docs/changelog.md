@@ -6,6 +6,15 @@ slug: changelog.html
 
 
 
+## 5.2.1 March 2022
+
+### Fixes
+
+* Fixes a regression in 5.2.0 which introduced a compiler error when trying to access root scope from test scope.
+* Trying to define root tests during execution of nested tests now errors correctly.
+
+
+
 ## 5.2.0 March 2022
 
 ### Fixes
