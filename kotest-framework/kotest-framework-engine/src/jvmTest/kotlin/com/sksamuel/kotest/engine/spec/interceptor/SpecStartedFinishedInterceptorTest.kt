@@ -2,6 +2,7 @@ package com.sksamuel.kotest.engine.spec.interceptor
 
 import io.kotest.core.spec.SpecRef
 import io.kotest.core.spec.style.FunSpec
+import io.kotest.core.test.TestResult
 import io.kotest.engine.listener.AbstractTestEngineListener
 import io.kotest.engine.spec.interceptor.SpecFinishedInterceptor
 import io.kotest.engine.spec.interceptor.SpecStartedInterceptor
@@ -27,18 +28,18 @@ class SpecStartedFinishedInterceptorTest : FunSpec() {
       }
 
       test("SpecFinishedInterceptor should call specFinished after invoking spec") {
-         var result = ""
+         var r = ""
          val listener = object : AbstractTestEngineListener() {
-            override suspend fun specFinished(kclass: KClass<*>, t: Throwable?) {
-               result += "a"
+            override suspend fun specFinished(kclass: KClass<*>, result: TestResult) {
+               r += "a"
             }
          }
          SpecFinishedInterceptor(listener)
             .intercept(SpecRef.Reference(FooSpec::class)) {
-               result += "b"
+               r += "b"
                Result.success(emptyMap())
             }
-         result shouldBe "ba"
+         r shouldBe "ba"
       }
    }
 }

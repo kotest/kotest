@@ -11,6 +11,7 @@ import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.spec.style.ShouldSpec
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.core.spec.style.WordSpec
+import io.kotest.core.test.TestResult
 import io.kotest.engine.concurrency.NoopCoroutineDispatcherFactory
 import io.kotest.engine.interceptors.EngineContext
 import io.kotest.engine.listener.AbstractTestEngineListener
@@ -96,8 +97,8 @@ class InitializerExceptionTest : WordSpec({
    var error: Throwable? = null
 
    val listener = object :  AbstractTestEngineListener() {
-      override suspend fun specFinished(kclass: KClass<*>, t: Throwable?) {
-         if (t != null) error = t
+      override suspend fun specFinished(kclass: KClass<*>, result: TestResult) {
+         result.errorOrNull?.let { error = it }
       }
    }
 
