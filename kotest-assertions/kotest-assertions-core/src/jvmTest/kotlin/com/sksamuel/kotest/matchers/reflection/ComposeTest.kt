@@ -21,25 +21,25 @@ class ComposeTest : StringSpec() {
 
    private val nameMatcher = Matcher<String> {
       MatcherResult(
-         value == "John",
-         { "Name $value should be John" },
-         { "Name $value should not be John" }
+         it == "John",
+         { "Name $it should be John" },
+         { "Name $it should not be John" }
       )
    }
 
    private val ageMatcher = Matcher<Int> {
       MatcherResult(
-         value == 10,
-         { "Age $value should be 10" },
-         { "Age $value should not be 10" }
+         it == 10,
+         { "Age $it should be 10" },
+         { "Age $it should not be 10" }
       )
    }
 
    private val addressMatcher = Matcher<Address> {
       MatcherResult(
-         value == Address("Warsaw", "Test", "1/1"),
-         { "Address $value should be Test 1/1 Warsaw" },
-         { "Address $value should not be Test 1/1 Warsaw" }
+         it == Address("Warsaw", "Test", "1/1"),
+         { "Address $it should be Test 1/1 Warsaw" },
+         { "Address $it should not be Test 1/1 Warsaw" }
       )
    }
 

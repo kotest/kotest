@@ -14,7 +14,6 @@ typealias RootContext = RootScope
 /**
  * A [RootScope] allows for [RootTest]s to be registered via a DSL.
  */
-@KotestTestScope
 interface RootScope {
    /**
     * Register a new [RootTest].
