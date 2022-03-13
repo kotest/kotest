@@ -34,23 +34,23 @@ Or via the command line:
 See full Gradle documentation [here](https://docs.gradle.org/6.2.2/userguide/java_testing.html#test_filtering).
 
 :::caution
-Because gradle's test support is method/class based, we cannot filter tests down to the individual test level, only the class level.
+Because gradle's test support is class.method based, we cannot filter tests down to the individual test level, only the class level.
 :::
 
 
 ### Kotest Specific Test Filtering
 
-To avoid the limitations with Gradle's --tests support, Kotest offers its own flags, `kotest.filter.tests` and `kotest.filter.specs`
+To avoid the limitations with Gradle's `--tests` support, Kotest offers its own flags, `kotest.filter.tests` and `kotest.filter.specs`
 which are provided via system properties. These flags support wildcards via `*` and match either tests or specs.
 
 This example would execute all tests in the com.somepackage (and nested) packages:
 
-```gradle test -Dkotest.filter.specs 'com.somepackage.*'```
+```gradle test -Dkotest.filter.specs='com.somepackage.*'```
 
 This example would execute only tests that contain `Foo` in the com.somepackage (and nested) packages:
 
-```gradle test -Dkotest.filter.specs 'com.somepackage.*' -Dkotest.filter.tests '*Foo*'```
+```gradle test -Dkotest.filter.specs='com.somepackage.*' -Dkotest.filter.tests='*Foo*'```
 
 This example would execute only tests that start with `Foo` in any package:
 
-```gradle test -Dkotest.filter.tests 'Foo*'```
+```gradle test -Dkotest.filter.tests='Foo*'```
