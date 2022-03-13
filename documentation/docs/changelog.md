@@ -10,7 +10,7 @@ slug: changelog.html
 
 ### Fixes
 
-* Fixes a regression in 5.2.0 which introduced a compiler error when trying to access root scope from test scope.
+* Fixes a regression in 5.2.0 which introduced a compile time error when trying to access root scope from test scope.
 * Trying to define root tests during execution of nested tests now errors correctly.
 
 
