@@ -95,51 +95,9 @@ Read about [inspectors here](inspectors.md)
 
 
 
+## Custom Matchers
 
+It is easy to add your own matchers by extending the `Matcher<T>` interface, where T is the type you wish to match against. Custom matchers can compose existing matchers or be completely standalone.
 
-### Custom Matchers
-
-It is easy to add your own matchers. Simply extend the `Matcher<T>` interface, where T is the type you wish to match against.
-The Matcher interface specifies one method, `test`, which you must implement returning an instance of Result.
-The Result contains a boolean to indicate if the test passed or failed, and two messages.
-
-```kotlin
-interface Matcher<in T> {
-   fun test(value: T): MatcherResult
-}
-```
-
-Matcher is _contravariant_ so a matcher for Number can be used to test an Int, for example.
-
-The first message should always be in the positive, ie, indicate what "should" happen, and the second message
-is used when the matcher is used with _not_.
-
-For example to create a matcher that checks that a string contains the substring "foo", we can do the following:
-
-```kotlin
-fun containFoo() = object : Matcher<String> {
-  override fun test(value: String) = MatcherResult(value.contains("foo"), "String $value should include foo", "String $value should not include foo")
-}
-```
-This matcher could then be used as follows:
-
-```kotlin
-"hello foo" should containFoo()
-"hello bar" shouldNot containFoo()
-```
-
-And we should then create an extension function version, like this:
-
-```kotlin
-fun String.shouldContainFoo() = this should containFoo()
-fun String.shouldNotContainFoo() = this shouldNot containFoo()
-```
-
-
-
-
-
-
-
-
+See a [full worked example](custom.md).
 

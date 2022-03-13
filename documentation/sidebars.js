@@ -43,6 +43,8 @@ module.exports = {
    assertions: [
       'assertions/index',
       'assertions/matchers',
+      'assertions/custom_matchers',
+      'assertions/data_class_matchers',
       'assertions/exceptions',
       'assertions/clues',
       'assertions/soft_assertions',

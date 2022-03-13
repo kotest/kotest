@@ -19,31 +19,28 @@ class ComposeTest : StringSpec() {
       val buildingNumber: String
    )
 
-   private val nameMatcher = object : Matcher<String> {
-      override fun test(value: String) =
-         MatcherResult(
-            value == "John",
-            { "Name $value should be John" },
-            { "Name $value should not be John" }
-         )
+   private val nameMatcher = Matcher<String> {
+      MatcherResult(
+         value == "John",
+         { "Name $value should be John" },
+         { "Name $value should not be John" }
+      )
    }
 
-   private val ageMatcher = object : Matcher<Int> {
-      override fun test(value: Int) =
-         MatcherResult(
-            value == 10,
-            { "Age $value should be 10" },
-            { "Age $value should not be 10" }
-         )
+   private val ageMatcher = Matcher<Int> {
+      MatcherResult(
+         value == 10,
+         { "Age $value should be 10" },
+         { "Age $value should not be 10" }
+      )
    }
 
-   private val addressMatcher = object : Matcher<Address> {
-      override fun test(value: Address) =
-         MatcherResult(
-            value == Address("Warsaw", "Test", "1/1"),
-            { "Address $value should be Test 1/1 Warsaw" },
-            { "Address $value should not be Test 1/1 Warsaw" }
-         )
+   private val addressMatcher = Matcher<Address> {
+      MatcherResult(
+         value == Address("Warsaw", "Test", "1/1"),
+         { "Address $value should be Test 1/1 Warsaw" },
+         { "Address $value should not be Test 1/1 Warsaw" }
+      )
    }
 
    init {
