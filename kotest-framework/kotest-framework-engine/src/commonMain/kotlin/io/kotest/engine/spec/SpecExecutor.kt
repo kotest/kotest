@@ -6,6 +6,7 @@ import io.kotest.common.flatMap
 import io.kotest.common.platform
 import io.kotest.core.concurrency.CoroutineDispatcherFactory
 import io.kotest.core.config.ProjectConfiguration
+import io.kotest.core.spec.DslDrivenSpec
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.SpecRef
 import io.kotest.core.test.TestCase
@@ -119,11 +120,14 @@ class SpecExecutor(
    /**
     * Creates an instance of the given [SpecRef], notifies users of the instantiation event
     * or instantiation failure, and returns a Result with the error or spec.
+    *
+    * After this method is called the spec is sealed.
     */
    private suspend fun createInstance(ref: SpecRef): Result<Spec> =
       ref.instance(context.configuration.registry)
          .onFailure { extensions.specInstantiationError(ref.kclass, it) }
          .flatMap { spec -> extensions.specInstantiated(spec).map { spec } }
+         .onSuccess { if (it is DslDrivenSpec) it.seal() }
 }
 
 interface SpecExecutorDelegate {

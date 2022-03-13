@@ -21,7 +21,17 @@ abstract class DslDrivenSpec : Spec(), RootScope {
     */
    private var rootTests = emptyList<RootTest>()
 
+   private var sealed = false
+
    private val globalExtensions = mutableListOf<Extension>()
+
+   /**
+    * Marks that this spec has been instantiated and all root tests have been registered.
+    * After this point, no further root tests are allowed to be defined.
+    */
+   fun seal() {
+      sealed = true
+   }
 
    override fun rootTests(): List<RootTest> {
       return rootTests
@@ -32,6 +42,7 @@ abstract class DslDrivenSpec : Spec(), RootScope {
    }
 
    override fun add(test: RootTest) {
+      if (sealed) throw InvalidDslException("Cannot add a root test after the spec has been instantiated: ${test.name.testName}")
       rootTests = rootTests + test
    }
 
@@ -96,3 +107,5 @@ abstract class DslDrivenSpec : Spec(), RootScope {
       })
    }
 }
+
+class InvalidDslException(message: String) : Exception(message)

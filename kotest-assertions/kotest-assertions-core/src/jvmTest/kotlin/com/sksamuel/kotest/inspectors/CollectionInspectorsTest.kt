@@ -92,23 +92,23 @@ class CollectionInspectorsTest : WordSpec() {
                "4 => java.lang.NullPointerException\n" +
                "5 => java.lang.NullPointerException"
          }
+      }
 
-         "forNone" should {
-            "pass if no elements pass fn test for a list" {
-               list.forNone {
-                  it shouldBe 10
-               }
+      "forNone" should {
+         "pass if no elements pass fn test for a list" {
+            list.forNone {
+               it shouldBe 10
             }
-            "pass if no elements pass fn test for an array" {
-               array.forNone {
-                  it shouldBe 10
-               }
+         }
+         "pass if no elements pass fn test for an array" {
+            array.forNone {
+               it shouldBe 10
             }
-            "pass if an element throws an exception" {
-               val items = listOf(1, 2, 3)
-               items.forNone {
-                  if (true) throw NullPointerException()
-               }
+         }
+         "pass if an element throws an exception" {
+            val items = listOf(1, 2, 3)
+            items.forNone {
+               if (true) throw NullPointerException()
             }
          }
          "return itself" {
@@ -169,37 +169,38 @@ The following elements failed:
                }
             }
          }
+      }
 
-         "forSome" should {
-            "pass if one elements pass test"  {
-               list.forSome {
-                  it shouldBe 3
-               }
+      "forSome" should {
+         "pass if one elements pass test"  {
+            list.forSome {
+               it shouldBe 3
             }
-            "pass if size-1 elements pass test"  {
-               list.forSome {
-                  it should beGreaterThan(1)
-               }
+         }
+         "pass if size-1 elements pass test"  {
+            list.forSome {
+               it should beGreaterThan(1)
             }
-            "return itself" {
-               list.forSome {
-                  it shouldBe 3
-               }.forSome {
-                  it shouldBe 3
-               }
+         }
+         "return itself" {
+            list.forSome {
+               it shouldBe 3
+            }.forSome {
+               it shouldBe 3
+            }
 
+            array.forSome {
+               it shouldBe 3
+            }.forSome {
+               it shouldBe 3
+            }
+         }
+         "fail if no elements pass test"  {
+            shouldThrow<AssertionError> {
                array.forSome {
-                  it shouldBe 3
-               }.forSome {
-                  it shouldBe 3
+                  it should beLessThan(0)
                }
-            }
-            "fail if no elements pass test"  {
-               shouldThrow<AssertionError> {
-                  array.forSome {
-                     it should beLessThan(0)
-                  }
-               }.message shouldBe """No elements passed but expected at least one
+            }.message shouldBe """No elements passed but expected at least one
 
 The following elements passed:
 --none--
@@ -210,13 +211,13 @@ The following elements failed:
 3 => 3 should be < 0
 4 => 4 should be < 0
 5 => 5 should be < 0"""
-            }
-            "fail if all elements pass test"  {
-               shouldThrow<AssertionError> {
-                  list.forSome {
-                     it should beGreaterThan(0)
-                  }
-               }.message shouldBe """All elements passed but expected < 5
+         }
+         "fail if all elements pass test"  {
+            shouldThrow<AssertionError> {
+               list.forSome {
+                  it should beGreaterThan(0)
+               }
+            }.message shouldBe """All elements passed but expected < 5
 
 The following elements passed:
 1
@@ -227,48 +228,48 @@ The following elements passed:
 
 The following elements failed:
 --none--"""
-            }
-            "work inside assertSoftly block" {
-               val dummyEntries = listOf(
-                  DummyEntry(id = 1, name = "first"),
-                  DummyEntry(id = 1, name = "first"),
-                  DummyEntry(id = 2, name = "second"),
-               )
+         }
+         "work inside assertSoftly block" {
+            val dummyEntries = listOf(
+               DummyEntry(id = 1, name = "first"),
+               DummyEntry(id = 1, name = "first"),
+               DummyEntry(id = 2, name = "second"),
+            )
 
-               assertSoftly(dummyEntries) {
-                  forSome {
-                     it.id shouldBe 1
-                     it.name shouldBe "first"
-                  }
+            assertSoftly(dummyEntries) {
+               forSome {
+                  it.id shouldBe 1
+                  it.name shouldBe "first"
                }
             }
          }
+      }
 
-         "forOne" should {
-            "pass if one elements pass test"  {
-               list.forOne {
-                  it shouldBe 3
-               }
+      "forOne" should {
+         "pass if one elements pass test"  {
+            list.forOne {
+               it shouldBe 3
             }
-            "return itself" {
-               list.forOne {
-                  it shouldBe 3
-               }.forOne {
-                  it shouldBe 3
-               }
+         }
+         "return itself" {
+            list.forOne {
+               it shouldBe 3
+            }.forOne {
+               it shouldBe 3
+            }
 
-               array.forOne {
-                  it shouldBe 3
-               }.forOne {
-                  it shouldBe 3
-               }
+            array.forOne {
+               it shouldBe 3
+            }.forOne {
+               it shouldBe 3
             }
-            "fail if > 1 elements pass test"  {
-               shouldThrow<AssertionError> {
-                  list.forOne {
-                     it should beGreaterThan(2)
-                  }
-               }.message shouldBe """3 elements passed but expected 1
+         }
+         "fail if > 1 elements pass test"  {
+            shouldThrow<AssertionError> {
+               list.forOne {
+                  it should beGreaterThan(2)
+               }
+            }.message shouldBe """3 elements passed but expected 1
 
 The following elements passed:
 3
@@ -278,13 +279,13 @@ The following elements passed:
 The following elements failed:
 1 => 1 should be > 2
 2 => 2 should be > 2"""
-            }
-            "fail if no elements pass test"  {
-               shouldThrow<AssertionError> {
-                  array.forOne {
-                     it shouldBe 22
-                  }
-               }.message shouldBe """0 elements passed but expected 1
+         }
+         "fail if no elements pass test"  {
+            shouldThrow<AssertionError> {
+               array.forOne {
+                  it shouldBe 22
+               }
+            }.message shouldBe """0 elements passed but expected 1
 
 The following elements passed:
 --none--
@@ -295,52 +296,52 @@ The following elements failed:
 3 => expected:<22> but was:<3>
 4 => expected:<22> but was:<4>
 5 => expected:<22> but was:<5>"""
-            }
-            "work inside assertSoftly block" {
-               val dummyEntries = listOf(
-                  DummyEntry(id = 1, name = "first"),
-                  DummyEntry(id = 2, name = "second"),
-               )
+         }
+         "work inside assertSoftly block" {
+            val dummyEntries = listOf(
+               DummyEntry(id = 1, name = "first"),
+               DummyEntry(id = 2, name = "second"),
+            )
 
-               assertSoftly(dummyEntries) {
-                  forOne {
-                     it.id shouldBe 1
-                     it.name shouldBe "first"
-                  }
+            assertSoftly(dummyEntries) {
+               forOne {
+                  it.id shouldBe 1
+                  it.name shouldBe "first"
                }
             }
          }
+      }
 
-         "forAny" should {
-            "pass if one elements pass test"  {
-               list.forAny {
-                  it shouldBe 3
-               }
+      "forAny" should {
+         "pass if one elements pass test"  {
+            list.forAny {
+               it shouldBe 3
             }
-            "pass if at least elements pass test"  {
-               list.forAny {
-                  it should beGreaterThan(2)
-               }
+         }
+         "pass if at least elements pass test"  {
+            list.forAny {
+               it should beGreaterThan(2)
             }
-            "return itself" {
-               list.forAny {
-                  it shouldBe 3
-               }.forAny {
-                  it shouldBe 3
-               }
+         }
+         "return itself" {
+            list.forAny {
+               it shouldBe 3
+            }.forAny {
+               it shouldBe 3
+            }
 
+            array.forAny {
+               it shouldBe 3
+            }.forAny {
+               it shouldBe 3
+            }
+         }
+         "fail if no elements pass test"  {
+            shouldThrow<AssertionError> {
                array.forAny {
-                  it shouldBe 3
-               }.forAny {
-                  it shouldBe 3
+                  it shouldBe 6
                }
-            }
-            "fail if no elements pass test"  {
-               shouldThrow<AssertionError> {
-                  array.forAny {
-                     it shouldBe 6
-                  }
-               }.message shouldBe """0 elements passed but expected at least 1
+            }.message shouldBe """0 elements passed but expected at least 1
 
 The following elements passed:
 --none--
@@ -351,34 +352,34 @@ The following elements failed:
 3 => expected:<6> but was:<3>
 4 => expected:<6> but was:<4>
 5 => expected:<6> but was:<5>"""
-            }
-            "work inside assertSoftly block" {
-               val dummyEntries = listOf(
-                  DummyEntry(id = 1, name = "first"),
-                  DummyEntry(id = 2, name = "second"),
-               )
+         }
+         "work inside assertSoftly block" {
+            val dummyEntries = listOf(
+               DummyEntry(id = 1, name = "first"),
+               DummyEntry(id = 2, name = "second"),
+            )
 
-               assertSoftly(dummyEntries) {
-                  forAny {
-                     it.id shouldBe 1
-                     it.name shouldBe "first"
-                  }
+            assertSoftly(dummyEntries) {
+               forAny {
+                  it.id shouldBe 1
+                  it.name shouldBe "first"
                }
             }
          }
+      }
 
-         "forExactly" should {
-            "pass if exactly k elements pass"  {
-               list.forExactly(2) {
-                  it should beLessThan(3)
-               }
+      "forExactly" should {
+         "pass if exactly k elements pass"  {
+            list.forExactly(2) {
+               it should beLessThan(3)
             }
-            "fail if more elements pass test"  {
-               shouldThrow<AssertionError> {
-                  list.forExactly(2) {
-                     it should beGreaterThan(2)
-                  }
-               }.message shouldBe """3 elements passed but expected 2
+         }
+         "fail if more elements pass test"  {
+            shouldThrow<AssertionError> {
+               list.forExactly(2) {
+                  it should beGreaterThan(2)
+               }
+            }.message shouldBe """3 elements passed but expected 2
 
 The following elements passed:
 3
@@ -388,13 +389,13 @@ The following elements passed:
 The following elements failed:
 1 => 1 should be > 2
 2 => 2 should be > 2"""
-            }
-            "fail if less elements pass test"  {
-               shouldThrow<AssertionError> {
-                  array.forExactly(2) {
-                     it should beLessThan(2)
-                  }
-               }.message shouldBe """1 elements passed but expected 2
+         }
+         "fail if less elements pass test"  {
+            shouldThrow<AssertionError> {
+               array.forExactly(2) {
+                  it should beLessThan(2)
+               }
+            }.message shouldBe """1 elements passed but expected 2
 
 The following elements passed:
 1
@@ -404,13 +405,13 @@ The following elements failed:
 3 => 3 should be < 2
 4 => 4 should be < 2
 5 => 5 should be < 2"""
-            }
-            "fail if no elements pass test"  {
-               shouldThrow<AssertionError> {
-                  array.forExactly(2) {
-                     it shouldBe 33
-                  }
-               }.message shouldBe """0 elements passed but expected 2
+         }
+         "fail if no elements pass test"  {
+            shouldThrow<AssertionError> {
+               array.forExactly(2) {
+                  it shouldBe 33
+               }
+            }.message shouldBe """0 elements passed but expected 2
 
 The following elements passed:
 --none--
@@ -421,58 +422,58 @@ The following elements failed:
 3 => expected:<33> but was:<3>
 4 => expected:<33> but was:<4>
 5 => expected:<33> but was:<5>"""
+         }
+      }
+
+      "forAtMostOne" should {
+         "pass if one elements pass test" {
+            list.forAtMostOne {
+               it shouldBe 3
             }
          }
-
-         "forAtMostOne" should {
-            "pass if one elements pass test"  {
-               list.forAtMostOne {
-                  it shouldBe 3
+         "fail if 2 elements pass test" {
+            shouldThrow<AssertionError> {
+               array.forAtMostOne {
+                  it should beGreaterThan(3)
                }
-            }
-            "fail if 2 elements pass test"  {
-               shouldThrow<AssertionError> {
-                  array.forAtMostOne {
-                     it should beGreaterThan(3)
-                  }
-               }.message shouldBe """2 elements passed but expected at most 1
+            }.message shouldBe """2 elements passed but expected at most 1
 
 The following elements passed:
 4
 5
 
 The following elements failed:
-1 => expected:<22> but was:<1>
-2 => expected:<22> but was:<2>
-3 => expected:<22> but was:<3>"""
-            }
-            "work inside assertSoftly block" {
-               val dummyEntries = listOf(
-                  DummyEntry(id = 1, name = "first"),
-                  DummyEntry(id = 2, name = "second"),
-               )
+1 => 1 should be > 3
+2 => 2 should be > 3
+3 => 3 should be > 3"""
+         }
+         "work inside assertSoftly block" {
+            val dummyEntries = listOf(
+               DummyEntry(id = 1, name = "first"),
+               DummyEntry(id = 2, name = "second"),
+            )
 
-               assertSoftly(dummyEntries) {
-                  forAtMostOne {
-                     it.id shouldBe 1
-                     it.name shouldBe "first"
-                  }
+            assertSoftly(dummyEntries) {
+               forAtMostOne {
+                  it.id shouldBe 1
+                  it.name shouldBe "first"
                }
             }
          }
+      }
 
-         "forAtLeastOne" should {
-            "pass if one elements pass test"  {
-               list.forAtLeastOne {
-                  it shouldBe 3
-               }
+      "forAtLeastOne" should {
+         "pass if one elements pass test"  {
+            list.forAtLeastOne {
+               it shouldBe 3
             }
-            "fail if no elements pass test"  {
-               shouldThrow<AssertionError> {
-                  array.forAtLeastOne {
-                     it shouldBe 22
-                  }
-               }.message shouldBe """0 elements passed but expected at least 1
+         }
+         "fail if no elements pass test"  {
+            shouldThrow<AssertionError> {
+               array.forAtLeastOne {
+                  it shouldBe 22
+               }
+            }.message shouldBe """0 elements passed but expected at least 1
 
 The following elements passed:
 --none--
@@ -483,42 +484,42 @@ The following elements failed:
 3 => expected:<22> but was:<3>
 4 => expected:<22> but was:<4>
 5 => expected:<22> but was:<5>"""
-            }
-            "work inside assertSoftly block" {
-               val dummyEntries = listOf(
-                  DummyEntry(id = 1, name = "first"),
-                  DummyEntry(id = 2, name = "second"),
-               )
+         }
+         "work inside assertSoftly block" {
+            val dummyEntries = listOf(
+               DummyEntry(id = 1, name = "first"),
+               DummyEntry(id = 2, name = "second"),
+            )
 
-               assertSoftly(dummyEntries) {
-                  forAtLeastOne {
-                     it.id shouldBe 1
-                     it.name shouldBe "first"
-                  }
+            assertSoftly(dummyEntries) {
+               forAtLeastOne {
+                  it.id shouldBe 1
+                  it.name shouldBe "first"
                }
             }
          }
+      }
 
-         "forSingle" should {
-            "pass list is singular, and the single element pass" {
-               listOf(1).forSingle {
-                  it shouldBeLessThan 3
+      "forSingle" should {
+         "pass list is singular, and the single element pass" {
+            listOf(1).forSingle {
+               it shouldBeLessThan 3
+            }
+         }
+
+         "return the single element on success" {
+            listOf(1).forSingle { it shouldBeLessThan 3 } shouldBe 1
+         }
+
+         "fail if collection consists of multiple elements" {
+            shouldFail {
+               listOf(
+                  DummyEntry(id = 1, name = "first"),
+                  DummyEntry(id = 2, name = "second"),
+               ).forSingle {
+                  it.id shouldBe 1
                }
-            }
-
-            "return the single element on success" {
-               listOf(1).forSingle { it shouldBeLessThan 3 } shouldBe 1
-            }
-
-            "fail if collection consists of multiple elements" {
-               shouldFail {
-                  listOf(
-                     DummyEntry(id = 1, name = "first"),
-                     DummyEntry(id = 2, name = "second"),
-                  ).forSingle {
-                     it.id shouldBe 1
-                  }
-               }.message shouldBe """
+            }.message shouldBe """
                Expected a single element in the collection, but found 2.
 
                The following elements passed:
@@ -527,24 +528,24 @@ The following elements failed:
                The following elements failed:
                DummyEntry(id=2, name=second) => expected:<1> but was:<2>
             """.trimIndent()
-            }
+         }
 
-            "fail for empty collection" {
-               shouldFail {
-                  arrayOf<Int>().forSingle {
-                     it shouldBe 3
-                  }
-               }.message shouldBe """
+         "fail for empty collection" {
+            shouldFail {
+               arrayOf<Int>().forSingle {
+                  it shouldBe 3
+               }
+            }.message shouldBe """
                Expected a single element in the collection, but it was empty.
             """.trimIndent()
-            }
+         }
 
-            "fail if single element doesn't match" {
-               shouldFail {
-                  arrayOf(2).forSingle {
-                     it shouldBe 3
-                  }
-               }.message shouldBe """
+         "fail if single element doesn't match" {
+            shouldFail {
+               arrayOf(2).forSingle {
+                  it shouldBe 3
+               }
+            }.message shouldBe """
                Expected a single element to pass, but it failed.
 
                The following elements passed:
@@ -553,18 +554,17 @@ The following elements failed:
                The following elements failed:
                2 => expected:<3> but was:<2>
             """.trimIndent()
-            }
+         }
 
-            "work inside assertSoftly block" {
-               val dummyEntries = listOf(
-                  DummyEntry(id = 1, name = "first"),
-               )
+         "work inside assertSoftly block" {
+            val dummyEntries = listOf(
+               DummyEntry(id = 1, name = "first"),
+            )
 
-               assertSoftly(dummyEntries) {
-                  forSingle {
-                     it.id shouldBe 1
-                     it.name shouldBe "first"
-                  }
+            assertSoftly(dummyEntries) {
+               forSingle {
+                  it.id shouldBe 1
+                  it.name shouldBe "first"
                }
             }
          }
