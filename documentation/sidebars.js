@@ -177,6 +177,7 @@ module.exports = {
          ]
       },
       'framework/test_factories',
+      'framework/test_output',
       {
          type: "category",
          label: "Timeouts",
