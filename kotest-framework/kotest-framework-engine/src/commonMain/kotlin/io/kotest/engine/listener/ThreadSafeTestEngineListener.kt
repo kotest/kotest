@@ -50,9 +50,9 @@ class ThreadSafeTestEngineListener(private val listener: TestEngineListener) : T
       }
    }
 
-   override suspend fun specFinished(kclass: KClass<*>, t: Throwable?) {
+   override suspend fun specFinished(kclass: KClass<*>, result: TestResult) {
       mutex.withLock {
-         listener.specFinished(kclass, t)
+         listener.specFinished(kclass, result)
       }
    }
 

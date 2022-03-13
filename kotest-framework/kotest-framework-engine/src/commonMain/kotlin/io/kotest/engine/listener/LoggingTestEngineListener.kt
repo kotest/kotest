@@ -19,7 +19,7 @@ object LoggingTestEngineListener : AbstractTestEngineListener() {
       logger.log { Pair(kclass.bestName(), "specStarted") }
    }
 
-   override suspend fun specFinished(kclass: KClass<*>, t: Throwable?) {
+   override suspend fun specFinished(kclass: KClass<*>, result: TestResult) {
       logger.log { Pair(kclass.bestName(), "specFinished") }
    }
 

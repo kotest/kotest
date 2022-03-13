@@ -8,7 +8,7 @@ import kotlin.reflect.KClass
 
 class CollectingTestEngineListener : AbstractTestEngineListener() {
 
-   val specs = concurrentHashMap<KClass<*>, Throwable?>()
+   val specs = concurrentHashMap<KClass<*>, TestResult>()
    val tests = concurrentHashMap<TestCase, TestResult>()
    val names = mutableListOf<String>()
    var errors = false
@@ -16,9 +16,9 @@ class CollectingTestEngineListener : AbstractTestEngineListener() {
    fun result(descriptor: Descriptor.TestDescriptor): TestResult? = tests.mapKeys { it.key.descriptor }[descriptor]
    fun result(testname: String): TestResult? = tests.mapKeys { it.key.name.testName }[testname]
 
-   override suspend fun specFinished(kclass: KClass<*>, t: Throwable?) {
-      specs[kclass] = t
-      if (t != null) errors = true
+   override suspend fun specFinished(kclass: KClass<*>, result: TestResult) {
+      specs[kclass] = result
+      if (result.isErrorOrFailure) errors = true
    }
 
    override suspend fun testIgnored(testCase: TestCase, reason: String?) {

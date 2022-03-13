@@ -85,6 +85,7 @@ class TeamCityMessageBuilder(
       const val LOCATION_HINT = "locationHint"
       const val NAME = "name"
       const val DURATION = "duration"
+      const val TIMESTAMP = "timestamp"
       const val TYPE = "type"
       const val DETAILS = "details"
       const val MESSAGE = "message"
@@ -165,4 +166,6 @@ class TeamCityMessageBuilder(
     * Returns the completed string.
     */
    fun build(): String = "$myText]"
+
+   fun timestamp(ts: String) = addAttribute(Attributes.TIMESTAMP, ts)
 }
