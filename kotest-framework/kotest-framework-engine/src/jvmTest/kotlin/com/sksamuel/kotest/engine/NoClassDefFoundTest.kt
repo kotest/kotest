@@ -14,8 +14,8 @@ class NoClassDefFoundTest : FunSpec() {
          val listener = CollectingTestEngineListener()
          TestEngineLauncher(listener).withClasses(SomeSpec1::class, SomeSpec2::class).launch()
          listener.specs.shouldHaveSize(2)
-         listener.specs[SomeSpec1::class].shouldBeInstanceOf<SpecInstantiationException>()
-         listener.specs[SomeSpec2::class].shouldBeInstanceOf<SpecInstantiationException>()
+         listener.specs[SomeSpec1::class]!!.errorOrNull.shouldBeInstanceOf<SpecInstantiationException>()
+         listener.specs[SomeSpec2::class]!!.errorOrNull.shouldBeInstanceOf<SpecInstantiationException>()
       }
    }
 }

@@ -97,10 +97,10 @@ class TeamCityTestEngineListener(
    // ignored specs are completely hidden from output in team city
    override suspend fun specIgnored(kclass: KClass<*>, reason: String?) {}
 
-   override suspend fun specFinished(kclass: KClass<*>, t: Throwable?) {
+   override suspend fun specFinished(kclass: KClass<*>, result: TestResult) {
 
       // if the spec itself has an error, we must insert a placeholder test
-      when (t) {
+      when (val t = result.errorOrNull) {
          null -> Unit
          is MultipleExceptions -> t.causes.forEach { insertPlaceholder(it, kclass.toDescriptor()) }
          else -> insertPlaceholder(t, kclass.toDescriptor())

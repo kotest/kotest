@@ -18,6 +18,7 @@ import io.kotest.extensions.system.captureStandardOut
 import io.kotest.matchers.shouldBe
 import java.io.FileNotFoundException
 import kotlin.time.Duration.Companion.milliseconds
+import kotlin.time.Duration.Companion.seconds
 
 class TeamCityTestEngineListenerTest : FunSpec() {
 
@@ -61,7 +62,7 @@ class TeamCityTestEngineListenerTest : FunSpec() {
             listener.testFinished(c, TestResult.Success(123.milliseconds))
             listener.testFinished(b, TestResult.Success(324.milliseconds))
             listener.testFinished(a, TestResult.Success(653.milliseconds))
-            listener.specFinished(TeamCityTestEngineListenerTest::class, null)
+            listener.specFinished(TeamCityTestEngineListenerTest::class, TestResult.Success(0.seconds))
             listener.engineFinished(emptyList())
          }
          output shouldBe """a[testSuiteStarted name='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest' id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest' locationHint='kotest:class://com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest:1']
@@ -86,7 +87,7 @@ a[testSuiteFinished name='com.sksamuel.kotest.engine.listener.TeamCityTestEngine
             listener.testFinished(c, TestResult.Error(653.milliseconds, Exception("boom")))
             listener.testFinished(b, TestResult.Success(123.milliseconds))
             listener.testFinished(a, TestResult.Success(324.milliseconds))
-            listener.specFinished(TeamCityTestEngineListenerTest::class, null)
+            listener.specFinished(TeamCityTestEngineListenerTest::class, TestResult.Success(0.seconds))
             listener.engineFinished(emptyList())
          }
          output shouldBe """a[testSuiteStarted name='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest' id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest' locationHint='kotest:class://com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest:1']
@@ -111,7 +112,7 @@ a[testSuiteFinished name='com.sksamuel.kotest.engine.listener.TeamCityTestEngine
             listener.testIgnored(c, "don't like it")
             listener.testFinished(b, TestResult.Success(123.milliseconds))
             listener.testFinished(a, TestResult.Success(324.milliseconds))
-            listener.specFinished(TeamCityTestEngineListenerTest::class, null)
+            listener.specFinished(TeamCityTestEngineListenerTest::class, TestResult.Success(0.seconds))
             listener.engineFinished(emptyList())
          }
          output shouldBe """a[testSuiteStarted name='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest' id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest' locationHint='kotest:class://com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest:1']
@@ -135,7 +136,7 @@ a[testSuiteFinished name='com.sksamuel.kotest.engine.listener.TeamCityTestEngine
             listener.testFinished(c, TestResult.Success(123.milliseconds))
             listener.testFinished(b, TestResult.Error(653.milliseconds, Exception("boom")))
             listener.testFinished(a, TestResult.Success(324.milliseconds))
-            listener.specFinished(TeamCityTestEngineListenerTest::class, null)
+            listener.specFinished(TeamCityTestEngineListenerTest::class, TestResult.Success(0.seconds))
             listener.engineFinished(emptyList())
          }
          output shouldBe """a[testSuiteStarted name='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest' id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest' locationHint='kotest:class://com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest:1']
@@ -163,7 +164,7 @@ a[testSuiteFinished name='com.sksamuel.kotest.engine.listener.TeamCityTestEngine
             listener.testFinished(c, TestResult.Success(123.milliseconds))
             listener.testFinished(b, TestResult.Success(555.milliseconds))
             listener.testFinished(a, TestResult.Success(324.milliseconds))
-            listener.specFinished(TeamCityTestEngineListenerTest::class, Exception("wobble"))
+            listener.specFinished(TeamCityTestEngineListenerTest::class, TestResult.Error(0.seconds, Exception("wobble")))
             listener.engineFinished(emptyList())
          }
          output shouldBe """a[testSuiteStarted name='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest' id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest' locationHint='kotest:class://com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest:1']
@@ -201,7 +202,7 @@ a[testSuiteFinished name='com.sksamuel.kotest.engine.listener.TeamCityTestEngine
             )
             listener.testFinished(b, TestResult.Success(555.milliseconds))
             listener.testFinished(a, TestResult.Success(324.milliseconds))
-            listener.specFinished(TeamCityTestEngineListenerTest::class, null)
+            listener.specFinished(TeamCityTestEngineListenerTest::class, TestResult.Success(0.seconds))
             listener.engineFinished(emptyList())
          }
          output shouldBe """a[testSuiteStarted name='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest' id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest' locationHint='kotest:class://com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest:1']
@@ -227,7 +228,7 @@ a[testSuiteFinished name='com.sksamuel.kotest.engine.listener.TeamCityTestEngine
             listener.testFinished(c, TestResult.Success(555.milliseconds))
             listener.testFinished(b, TestResult.Success(555.milliseconds))
             listener.testFinished(a, TestResult.Success(324.milliseconds))
-            listener.specFinished(TeamCityTestEngineListenerTest::class, null)
+            listener.specFinished(TeamCityTestEngineListenerTest::class, TestResult.Success(0.seconds))
             listener.engineFinished(listOf(Exception("big whoop")))
          }
          output shouldBe """a[testSuiteStarted name='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest' id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest' locationHint='kotest:class://com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest:1']
@@ -255,7 +256,7 @@ a[testFinished name='Engine exception']
             listener.testFinished(c, TestResult.Success(555.milliseconds))
             listener.testFinished(b, TestResult.Success(555.milliseconds))
             listener.testFinished(a, TestResult.Success(324.milliseconds))
-            listener.specFinished(TeamCityTestEngineListenerTest::class, null)
+            listener.specFinished(TeamCityTestEngineListenerTest::class, TestResult.Success(0.seconds))
             listener.engineFinished(listOf(Exception("big whoop"), Exception("big whoop 2")))
          }
          output shouldBe """a[testSuiteStarted name='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest' id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest' locationHint='kotest:class://com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest:1']
@@ -292,7 +293,7 @@ a[testFinished name='Engine exception 2']
             )
             listener.testFinished(b, TestResult.Success(555.milliseconds))
             listener.testFinished(a, TestResult.Success(324.milliseconds))
-            listener.specFinished(TeamCityTestEngineListenerTest::class, null)
+            listener.specFinished(TeamCityTestEngineListenerTest::class, TestResult.Success(0.seconds))
             listener.engineFinished(emptyList())
          }
          output shouldBe """a[testSuiteStarted name='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest' id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest' locationHint='kotest:class://com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest:1']
@@ -314,11 +315,11 @@ a[testSuiteFinished name='com.sksamuel.kotest.engine.listener.TeamCityTestEngine
             listener.specStarted(TeamCityTestEngineListenerTest::class)
             listener.testStarted(a)
             listener.testFinished(a, TestResult.Success(124.milliseconds))
-            listener.specFinished(TeamCityTestEngineListenerTest::class, null)
+            listener.specFinished(TeamCityTestEngineListenerTest::class, TestResult.Success(0.seconds))
             listener.specStarted(TeamCityTestEngineListenerTest::class)
             listener.testStarted(a)
             listener.testFinished(a, TestResult.Success(523.milliseconds))
-            listener.specFinished(TeamCityTestEngineListenerTest::class, null)
+            listener.specFinished(TeamCityTestEngineListenerTest::class, TestResult.Success(0.seconds))
             listener.engineFinished(emptyList())
          }
          output shouldBe """a[testSuiteStarted name='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest' id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest' locationHint='kotest:class://com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest:1']

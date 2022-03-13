@@ -22,7 +22,7 @@ class ConstructorExtensionTest : FunSpec() {
          .withConfiguration(c)
          .launch()
 
-      collector.specs[Dummy::class] shouldBe IllegalStateException("THWACK!")
+      collector.specs[Dummy::class]!!.errorOrNull shouldBe IllegalStateException("THWACK!")
    }
 }
 

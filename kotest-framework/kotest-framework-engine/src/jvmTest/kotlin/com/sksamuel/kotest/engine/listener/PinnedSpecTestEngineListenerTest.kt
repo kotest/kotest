@@ -1,6 +1,7 @@
 package com.sksamuel.kotest.engine.listener
 
 import io.kotest.core.spec.style.WordSpec
+import io.kotest.core.test.TestResult
 import io.kotest.engine.listener.PinnedSpecTestEngineListener
 import io.kotest.engine.listener.TestEngineListener
 import io.kotest.engine.listener.ThreadSafeTestEngineListener
@@ -12,6 +13,7 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import kotlin.time.Duration.Companion.seconds
 
 class PinnedSpecTestEngineListenerTest : WordSpec({
 
@@ -45,8 +47,8 @@ class PinnedSpecTestEngineListenerTest : WordSpec({
 
          listener.specStarted(spec1::class)
          listener.specStarted(spec2::class)
-         listener.specFinished(spec2::class, null)
-         listener.specFinished(spec3::class, null)
+         listener.specFinished(spec2::class, TestResult.Success(0.seconds))
+         listener.specFinished(spec3::class, TestResult.Success(0.seconds))
 
          verifyOrder {
             runBlocking {
@@ -60,19 +62,19 @@ class PinnedSpecTestEngineListenerTest : WordSpec({
             }
          }
 
-         listener.specFinished(spec1::class, null)
+         listener.specFinished(spec1::class, TestResult.Success(0.seconds))
 
          verifyOrder {
             runBlocking {
-               mock.specFinished(spec1::class, null)
+               mock.specFinished(spec1::class, TestResult.Success(0.seconds))
                mock.specStarted(spec2::class)
-               mock.specFinished(spec2::class, null)
+               mock.specFinished(spec2::class, TestResult.Success(0.seconds))
             }
          }
          verify(exactly = 0) {
             runBlocking {
                mock.specStarted(spec3::class)
-               mock.specFinished(spec3::class, null)
+               mock.specFinished(spec3::class, TestResult.Success(0.seconds))
             }
          }
       }
@@ -93,30 +95,30 @@ class PinnedSpecTestEngineListenerTest : WordSpec({
             launch(Dispatchers.IO) {
                delay(kotlin.random.Random.nextLong(1, 100))
                listener.specStarted(spec1::class)
-               listener.specFinished(spec1::class, null)
+               listener.specFinished(spec1::class, TestResult.Success(0.seconds))
             }
             launch(Dispatchers.IO) {
                delay(kotlin.random.Random.nextLong(1, 100))
                listener.specStarted(spec2::class)
-               listener.specFinished(spec2::class, null)
+               listener.specFinished(spec2::class, TestResult.Success(0.seconds))
             }
             launch(Dispatchers.IO) {
                delay(kotlin.random.Random.nextLong(1, 100))
                listener.specStarted(spec3::class)
-               listener.specFinished(spec3::class, null)
+               listener.specFinished(spec3::class, TestResult.Success(0.seconds))
             }
             launch(Dispatchers.IO) {
                delay(kotlin.random.Random.nextLong(1, 100))
                listener.specStarted(spec4::class)
-               listener.specFinished(spec4::class, null)
+               listener.specFinished(spec4::class, TestResult.Success(0.seconds))
 
                listener.specStarted(spec5::class)
-               listener.specFinished(spec5::class, null)
+               listener.specFinished(spec5::class, TestResult.Success(0.seconds))
             }
             launch(Dispatchers.IO) {
                delay(kotlin.random.Random.nextLong(1, 100))
                listener.specStarted(spec6::class)
-               listener.specFinished(spec6::class, null)
+               listener.specFinished(spec6::class, TestResult.Success(0.seconds))
             }
          }
 
@@ -126,34 +128,34 @@ class PinnedSpecTestEngineListenerTest : WordSpec({
          verifyOrder {
             runBlocking {
                mock.specStarted(spec1::class)
-               mock.specFinished(spec1::class, null)
+               mock.specFinished(spec1::class, TestResult.Success(0.seconds))
             }
          }
          verifyOrder {
             runBlocking {
                mock.specStarted(spec2::class)
-               mock.specFinished(spec2::class, null)
+               mock.specFinished(spec2::class, TestResult.Success(0.seconds))
             }
          }
          verifyOrder {
             runBlocking {
                mock.specStarted(spec3::class)
-               mock.specFinished(spec3::class, null)
+               mock.specFinished(spec3::class, TestResult.Success(0.seconds))
             }
          }
          verifyOrder {
             runBlocking {
                mock.specStarted(spec4::class)
-               mock.specFinished(spec4::class, null)
+               mock.specFinished(spec4::class, TestResult.Success(0.seconds))
 
                mock.specStarted(spec5::class)
-               mock.specFinished(spec5::class, null)
+               mock.specFinished(spec5::class, TestResult.Success(0.seconds))
             }
          }
          verifyOrder {
             runBlocking {
                mock.specStarted(spec6::class)
-               mock.specFinished(spec6::class, null)
+               mock.specFinished(spec6::class, TestResult.Success(0.seconds))
             }
          }
       }

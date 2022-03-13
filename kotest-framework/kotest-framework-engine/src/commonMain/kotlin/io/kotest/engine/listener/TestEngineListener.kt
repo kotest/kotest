@@ -53,7 +53,7 @@ interface TestEngineListener {
    /**
     * Is invoked once per [Spec] class to indicate this spec has completed.
     */
-   suspend fun specFinished(kclass: KClass<*>, t: Throwable?)
+   suspend fun specFinished(kclass: KClass<*>, result: TestResult)
 
    /**
     * Invoked if a [TestCase] is about to be executed.
@@ -78,7 +78,7 @@ abstract class AbstractTestEngineListener : TestEngineListener {
    override suspend fun engineFinished(t: List<Throwable>) {}
    override suspend fun engineInitialized(context: EngineContext) {}
    override suspend fun specStarted(kclass: KClass<*>) {}
-   override suspend fun specFinished(kclass: KClass<*>, t: Throwable?) {}
+   override suspend fun specFinished(kclass: KClass<*>, result: TestResult) {}
    override suspend fun specIgnored(kclass: KClass<*>, reason: String?) {}
    override suspend fun testFinished(testCase: TestCase, result: TestResult) {}
    override suspend fun testIgnored(testCase: TestCase, reason: String?) {}

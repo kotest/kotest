@@ -128,7 +128,8 @@ class JUnitTestEngineListener(
       markSpecStarted(kclass)
    }
 
-   override suspend fun specFinished(kclass: KClass<*>, t: Throwable?) {
+   override suspend fun specFinished(kclass: KClass<*>, result: TestResult) {
+      val t = result.errorOrNull
       when {
          // if we have a spec error before we even started the spec, we will start the spec, add a placeholder
          // to hold the error, mark that test as failed, and then fail the spec as well

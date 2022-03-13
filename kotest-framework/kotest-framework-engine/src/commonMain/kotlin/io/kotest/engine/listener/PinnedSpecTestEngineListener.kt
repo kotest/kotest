@@ -55,14 +55,14 @@ class PinnedSpecTestEngineListener(val listener: TestEngineListener) : TestEngin
       }
    }
 
-   override suspend fun specFinished(kclass: KClass<*>, t: Throwable?) {
+   override suspend fun specFinished(kclass: KClass<*>, result: TestResult) {
       if (runningSpec == kclass.toDescriptor().path().value) {
-         listener.specFinished(kclass, t)
+         listener.specFinished(kclass, result)
          runningSpec = null
          replay()
       } else {
          queue {
-            specFinished(kclass, t)
+            specFinished(kclass, result)
          }
       }
    }

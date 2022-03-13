@@ -45,7 +45,7 @@ class AfterSpecListenerTest : FunSpec() {
             .withClasses(MyErrorSpec2::class)
             .launch()
          collector.specs.size shouldBe 1
-         collector.specs[MyErrorSpec2::class]!!.shouldBeInstanceOf<ExtensionException.AfterSpecException>()
+         collector.specs[MyErrorSpec2::class]!!.errorOrNull.shouldBeInstanceOf<ExtensionException.AfterSpecException>()
          collector.tests.size shouldBe 1
       }
 
@@ -77,7 +77,7 @@ class AfterSpecListenerTest : FunSpec() {
             .withClasses(InlineAfterSpecError::class)
             .launch()
          collector.specs.size.shouldBe(1)
-         collector.specs[InlineAfterSpecError::class]!!.shouldBeInstanceOf<ExtensionException.AfterSpecException>()
+         collector.specs[InlineAfterSpecError::class]!!.errorOrNull.shouldBeInstanceOf<ExtensionException.AfterSpecException>()
       }
    }
 }
