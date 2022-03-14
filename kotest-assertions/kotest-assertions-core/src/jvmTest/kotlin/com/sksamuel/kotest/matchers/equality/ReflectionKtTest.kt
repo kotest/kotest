@@ -19,6 +19,8 @@ class ReflectionKtTest : FunSpec() {
 
    data class Car(val name: String, val price: Int, private val modelNumber: Int)
 
+   class Society(val name: String, val headPerson: Person?, val hospital: Hospital)
+
    open class Person(val name: String) {
       var isExhausted: Boolean = false
       private var address: String = ""
@@ -37,7 +39,7 @@ class ReflectionKtTest : FunSpec() {
 
    class Doctor(val name: String, val age: Int, val metadata: List<DocMetadata>)
 
-   class Hospital(val name: String, val mainDoctor: Doctor)
+   class Hospital(val name: String, val mainDoctor: Doctor?)
 
    class City(val name: String, val mainHospital: Hospital)
 
@@ -134,6 +136,13 @@ class ReflectionKtTest : FunSpec() {
          val city2 = City("test", Hospital("test-hospital", Doctor("doc", 50, listOf())))
 
          city.shouldBeEqualToComparingFields(city2)
+      }
+
+      test("shouldBeEqualToComparingFieldByField check equality comparing field by field recursively handling nullable fields") {
+         val jasmineSociety = Society("Jasmine", Person("Andrew"), Hospital("Wellness", null))
+         val roseSociety = Society("Rose", null, Hospital("Wellness", Doctor("Marco", 45, emptyList())))
+
+         jasmineSociety.shouldNotBeEqualToComparingFields(roseSociety)
       }
 
       test("shouldBeEqualToComparingFieldByField check equality comparing field by field recursively ignoring java or kotlin builtin types") {

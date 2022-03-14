@@ -477,11 +477,11 @@ private fun <T> checkEqualityOfFieldsRecursively(
       val actual = it.getter.call(value)
       val expected = it.getter.call(other)
       val typeName = it.returnType.toString()
+      val heading = "${it.name}:"
 
-      if (typeName.startsWith("kotlin") || typeName.startsWith("java")) {
+      if (actual == null || expected == null || typeName.startsWith("kotlin") || typeName.startsWith("java") ) {
          val throwable = eq(actual, expected)
          if (throwable != null) {
-            val heading = it.name
             "$heading\n${"\t".repeat(level + 1)}${throwable.message}"
          } else {
             null
@@ -499,8 +499,7 @@ private fun <T> checkEqualityOfFieldsRecursively(
             null
          } else {
             val innerErrorMessage = errorMessage.joinToString("\n") { msg -> "\t".repeat(level + 1) + msg }
-            val errorHeading = it.name
-            "$errorHeading${"\t".repeat(level)}\n$innerErrorMessage"
+            "$heading${"\t".repeat(level)}\n$innerErrorMessage"
          }
       }
    } to fields
