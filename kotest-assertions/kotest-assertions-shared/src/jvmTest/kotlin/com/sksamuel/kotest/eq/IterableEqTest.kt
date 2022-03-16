@@ -9,6 +9,7 @@ import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
 import java.nio.file.Paths
+import java.util.TreeSet
 import java.util.concurrent.ConcurrentLinkedQueue
 import kotlin.collections.HashSet
 import kotlin.time.Duration.Companion.seconds
@@ -79,15 +80,9 @@ class IterableEqTest : FunSpec({
       }
    }
 
-   test("should give error for java-only set comparison with list") {
-      val hs = java.util.TreeSet(setOf(1, 2, 3))
-      val error = IterableEq.equals(hs, listOf(1, 2, 3))
-      assertSoftly {
-         error.shouldNotBeNull()
-         error.message shouldBe """Disallowed: Set can be compared only to Set
-                                  |May not compare TreeSet with ArrayList
-                                  |expected:<*> but was:<*>""".trimMargin()
-      }
+   test("should give null for java-only TreeSet comparison with list") {
+      val hs = TreeSet(setOf(1, 2, 3))
+      IterableEq.equals(hs, listOf(1, 2, 3)).shouldBeNull()
    }
 
    test("should give error for unmatched collection") {
