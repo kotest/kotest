@@ -34,8 +34,10 @@ fun Arb.Companion.float(min: Float = -Float.MAX_VALUE, max: Float = Float.MAX_VA
  */
 fun Arb.Companion.float(range: ClosedFloatingPointRange<Float> = -Float.MAX_VALUE..Float.MAX_VALUE): Arb<Float> =
    arbitrary(
-      (numericEdgeCases.filter { it in range } + nonFiniteEdgeCases + listOf(range.start, range.endInclusive))
-         .distinct(),
+      (numericEdgeCases.filter { it in range } +
+         listOf(-1.0F, -0.0F, 0.0F, 1.0F).filter { it in range }.map { it / 0.0F } +
+         listOf(range.start, range.endInclusive)
+         ).distinct(),
       FloatShrinker
    ) {
       it.random.nextDouble(range.start.toDouble(), range.endInclusive.toDouble()).toFloat()
