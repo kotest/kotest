@@ -1,5 +1,6 @@
 package com.sksamuel.kotest.matchers.collections
 
+import io.kotest.assertions.shouldFail
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.WordSpec
 import io.kotest.matchers.collections.containExactly
@@ -87,6 +88,16 @@ class ShouldContainExactlyTest : WordSpec() {
                   |Some elements were missing: [1, 2] and some elements were unexpected: [1L, 2L]
                   |expected:<[1, 2]> but was:<[1L, 2L]>
                """.trimMargin()
+         }
+
+         "informs user of illegal comparisons" {
+            shouldFail {
+               HashSet(setOf(1, 2, 3)) shouldContainExactly listOf(1, 2, 3)
+            }.message shouldBe """Disallowed: Set can be compared only to Set
+                           |May not compare HashSet with ArrayList
+                           |expected:<*> but was:<*>
+                           |
+                           |""".trimMargin()
          }
 
          "print dataclasses" {
@@ -222,6 +233,7 @@ class ShouldContainExactlyTest : WordSpec() {
        * will fail on Windows).
        */
       val inputPath: Path = Paths.get("a/b/c")
+
       /** The expected result of [inputPath]`.toString()` (with Windows or Unix path separators) */
       val expectedPath = listOf("a", "b", "c").joinToString(File.separator)
 
