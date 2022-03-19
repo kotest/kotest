@@ -13,17 +13,20 @@ on:
 jobs:
    linux:
       runs-on: ubuntu-latest
+      if: github.repository == 'kotest/kotest'
       steps:
          -  name: Checkout the repo
-            uses: actions/checkout@v2
+            uses: actions/checkout@v3
             with:
                fetch-depth: 0
 
          -  name: Setup JDK
-            uses: actions/setup-java@v2
+            uses: actions/setup-java@v3
             with:
                distribution: 'zulu'
                java-version: '8'
+
+         -  uses: gradle/gradle-build-action@v2
 
          -  name: Run tests
             run: ./gradlew check --scan
@@ -42,18 +45,21 @@ jobs:
 
          -  name: Upload the build report
             if: failure()
-            uses: actions/upload-artifact@master
+            uses: actions/upload-artifact@v3
             with:
                name: error-report
                path: build-reports.zip
 
    macos:
       runs-on: macos-11
+      if: github.repository == 'kotest/kotest'
       steps:
          -  name: Checkout the repo
-            uses: actions/checkout@v2
+            uses: actions/checkout@v3
             with:
                fetch-depth: 0
+
+         -  uses: gradle/gradle-build-action@v2
 
          -  name: Run macos tests
             run: ./gradlew macosX64Test macosArm64Test --scan
@@ -72,18 +78,21 @@ jobs:
 
          -  name: Upload the build report
             if: failure()
-            uses: actions/upload-artifact@master
+            uses: actions/upload-artifact@v3
             with:
                name: error-report
                path: build-reports.zip
 
    ios:
       runs-on: macos-11
+      if: github.repository == 'kotest/kotest'
       steps:
          -  name: Checkout the repo
-            uses: actions/checkout@v2
+            uses: actions/checkout@v3
             with:
                fetch-depth: 0
+
+         -  uses: gradle/gradle-build-action@v2
 
          -  name: Run ios tests
             run: ./gradlew iosX64Test iosSimulatorArm64Test iosArm64TestKlibrary iosArm32TestKlibrary --scan
@@ -102,18 +111,21 @@ jobs:
 
          -  name: Upload the build report
             if: failure()
-            uses: actions/upload-artifact@master
+            uses: actions/upload-artifact@v3
             with:
                name: error-report
                path: build-reports.zip
 
    tvos:
       runs-on: macos-11
+      if: github.repository == 'kotest/kotest'
       steps:
          -  name: Checkout the repo
-            uses: actions/checkout@v2
+            uses: actions/checkout@v3
             with:
                fetch-depth: 0
+
+         -  uses: gradle/gradle-build-action@v2
 
          -  name: Run tvos tests
             run: ./gradlew tvosX64Test tvosArm64TestKlibrary --scan
@@ -132,18 +144,21 @@ jobs:
 
          -  name: Upload the build report
             if: failure()
-            uses: actions/upload-artifact@master
+            uses: actions/upload-artifact@v3
             with:
                name: error-report
                path: build-reports.zip
 
    watchos:
       runs-on: macos-11
+      if: github.repository == 'kotest/kotest'
       steps:
          -  name: Checkout the repo
-            uses: actions/checkout@v2
+            uses: actions/checkout@v3
             with:
                fetch-depth: 0
+
+         -  uses: gradle/gradle-build-action@v2
 
          -  name: Run watchos tests
             run: ./gradlew watchosArm32TestKlibrary watchosArm64TestKlibrary watchosX86Test watchosX64Test --scan
@@ -162,18 +177,21 @@ jobs:
 
          -  name: Upload the build report
             if: failure()
-            uses: actions/upload-artifact@master
+            uses: actions/upload-artifact@v3
             with:
                name: error-report
                path: build-reports.zip
 
    windows:
       runs-on: windows-latest
+      if: github.repository == 'kotest/kotest'
       steps:
          -  name: Checkout the repo
-            uses: actions/checkout@v2
+            uses: actions/checkout@v3
             with:
                fetch-depth: 0
+
+         -  uses: gradle/gradle-build-action@v2
 
          -  name: Run tests
             run: ./gradlew mingwX64Test --scan
@@ -192,7 +210,7 @@ jobs:
 
          -  name: Upload the build report
             if: failure()
-            uses: actions/upload-artifact@master
+            uses: actions/upload-artifact@v3
             with:
                name: error-report
                path: build-reports.zip
