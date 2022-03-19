@@ -36,7 +36,7 @@ jobs:
                distribution: 'zulu'
                java-version: '8'
 
-         - uses: gradle/gradle-build-action@v2
+         -  uses: gradle/gradle-build-action@v2
 
          -  name: publish multiplatform release
             run: ./gradlew publishKotlinMultiplatformPublicationToDeployRepository
@@ -67,7 +67,7 @@ jobs:
                distribution: 'zulu'
                java-version: '8'
 
-         - uses: gradle/gradle-build-action@v2
+         -  uses: gradle/gradle-build-action@v2
 
          -  name: publish linux x64 release
             run: ./gradlew publishLinuxX64PublicationToDeployRepository
@@ -88,7 +88,7 @@ jobs:
             with:
                java-version: '8'
 
-         - uses: gradle/gradle-build-action@v2
+         -  uses: gradle/gradle-build-action@v2
 
          -  name: publish macosx64 release
             run: ./gradlew publishMacosX64PublicationToDeployRepository
@@ -112,7 +112,7 @@ jobs:
             with:
                java-version: '8'
 
-         - uses: gradle/gradle-build-action@v2
+         -  uses: gradle/gradle-build-action@v2
 
          -  name: publish watchosX64 release
             run: ./gradlew publishWatchosX64PublicationToDeployRepository
@@ -145,7 +145,7 @@ jobs:
             with:
                java-version: '8'
 
-         - uses: gradle/gradle-build-action@v2
+         -  uses: gradle/gradle-build-action@v2
 
          -  name: publish iosX64 release
             run: ./gradlew publishIosX64PublicationToDeployRepository
@@ -175,7 +175,7 @@ jobs:
             with:
                java-version: '8'
 
-         - uses: gradle/gradle-build-action@v2
+         -  uses: gradle/gradle-build-action@v2
 
          -  name: publish tvosX64 release
             run: ./gradlew publishTvosX64PublicationToDeployRepository
@@ -202,7 +202,7 @@ jobs:
             with:
                java-version: '8'
 
-         - uses: gradle/gradle-build-action@v2
+         -  uses: gradle/gradle-build-action@v2
 
          -  name: publish mingwX64 release
             run: ./gradlew publishMingwX64PublicationToDeployRepository

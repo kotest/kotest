@@ -26,7 +26,7 @@ jobs:
                distribution: 'zulu'
                java-version: '8'
 
-         - uses: gradle/gradle-build-action@v2
+         -  uses: gradle/gradle-build-action@v2
 
          -  name: Run tests
             run: ./gradlew check --scan
@@ -59,7 +59,7 @@ jobs:
             with:
                fetch-depth: 0
 
-         - uses: gradle/gradle-build-action@v2
+         -  uses: gradle/gradle-build-action@v2
 
          -  name: Run macos tests
             run: ./gradlew macosX64Test macosArm64Test --scan
@@ -92,7 +92,7 @@ jobs:
             with:
                fetch-depth: 0
 
-         - uses: gradle/gradle-build-action@v2
+         -  uses: gradle/gradle-build-action@v2
 
          -  name: Run ios tests
             run: ./gradlew iosX64Test iosSimulatorArm64Test iosArm64TestKlibrary iosArm32TestKlibrary --scan
@@ -125,7 +125,7 @@ jobs:
             with:
                fetch-depth: 0
 
-         - uses: gradle/gradle-build-action@v2
+         -  uses: gradle/gradle-build-action@v2
 
          -  name: Run tvos tests
             run: ./gradlew tvosX64Test tvosArm64TestKlibrary --scan
@@ -158,7 +158,7 @@ jobs:
             with:
                fetch-depth: 0
 
-         - uses: gradle/gradle-build-action@v2
+         -  uses: gradle/gradle-build-action@v2
 
          -  name: Run watchos tests
             run: ./gradlew watchosArm32TestKlibrary watchosArm64TestKlibrary watchosX86Test watchosX64Test --scan
@@ -191,7 +191,7 @@ jobs:
             with:
                fetch-depth: 0
 
-         - uses: gradle/gradle-build-action@v2
+         -  uses: gradle/gradle-build-action@v2
 
          -  name: Run tests
             run: ./gradlew mingwX64Test --scan
