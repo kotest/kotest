@@ -26,6 +26,8 @@ jobs:
                distribution: 'zulu'
                java-version: '8'
 
+         - uses: gradle/gradle-build-action@v2
+
          -  name: Run Ubuntu tests
             if: matrix.os == 'ubuntu-latest'
             run: ./gradlew check --scan
