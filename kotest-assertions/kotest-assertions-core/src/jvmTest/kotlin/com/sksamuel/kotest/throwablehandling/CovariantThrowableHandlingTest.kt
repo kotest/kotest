@@ -165,7 +165,7 @@ class CovariantThrowableHandlingTest : FreeSpec() {
          }
       }
 
-      "should throw with message, wrong" {
+      "should throw with message" {
          val exception = Exception("bar")
          onShouldThrowWithMessageMatcher<FooRuntimeException>("foo") { shouldThrowMatcher ->
             verifyThrowsWrongExceptionMessage(exception, "foo", "bar") { shouldThrowMatcher { throw exception } }
