@@ -24,7 +24,7 @@ jobs:
 
       steps:
          -  name: Checkout the repo
-            uses: actions/checkout@v2
+            uses: actions/checkout@v3
             with:
                fetch-depth: 0
                ref: ${{ github.event.inputs.branch }}
@@ -52,7 +52,7 @@ jobs:
 
       steps:
          -  name: Checkout the repo
-            uses: actions/checkout@v2
+            uses: actions/checkout@v3
             with:
                fetch-depth: 0
                ref: ${{ github.event.inputs.branch }}
@@ -71,7 +71,7 @@ jobs:
 
       steps:
          -  name: Checkout the repo
-            uses: actions/checkout@v2
+            uses: actions/checkout@v3
             with:
                fetch-depth: 0
                ref: ${{ github.event.inputs.branch }}
@@ -92,7 +92,7 @@ jobs:
 
       steps:
          -  name: Checkout the repo
-            uses: actions/checkout@v2
+            uses: actions/checkout@v3
             with:
                fetch-depth: 0
                ref: ${{ github.event.inputs.branch }}
@@ -122,7 +122,7 @@ jobs:
 
       steps:
          -  name: Checkout the repo
-            uses: actions/checkout@v2
+            uses: actions/checkout@v3
             with:
                fetch-depth: 0
                ref: ${{ github.event.inputs.branch }}
@@ -149,7 +149,7 @@ jobs:
 
       steps:
          -  name: Checkout the repo
-            uses: actions/checkout@v2
+            uses: actions/checkout@v3
             with:
                fetch-depth: 0
                ref: ${{ github.event.inputs.branch }}
@@ -173,7 +173,7 @@ jobs:
 
       steps:
          -  name: Checkout the repo
-            uses: actions/checkout@v2
+            uses: actions/checkout@v3
             with:
                fetch-depth: 0
                ref: ${{ github.event.inputs.branch }}
