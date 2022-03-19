@@ -21,6 +21,7 @@ env:
 jobs:
    publish_base:
       runs-on: ubuntu-latest
+      if: github.repository == 'kotest/kotest'
 
       steps:
          -  name: Checkout the repo
@@ -51,6 +52,7 @@ jobs:
 
    publish_linux:
       runs-on: ubuntu-latest
+      if: github.repository == 'kotest/kotest'
 
       steps:
          -  name: Checkout the repo
@@ -72,6 +74,7 @@ jobs:
 
    publish_macos:
       runs-on: macos-11
+      if: github.repository == 'kotest/kotest'
 
       steps:
          -  name: Checkout the repo
@@ -95,6 +98,7 @@ jobs:
 
    publish_watchos:
       runs-on: macos-11
+      if: github.repository == 'kotest/kotest'
 
       steps:
          -  name: Checkout the repo
@@ -127,6 +131,7 @@ jobs:
 
    publish_ios:
       runs-on: macos-11
+      if: github.repository == 'kotest/kotest'
 
       steps:
          -  name: Checkout the repo
@@ -156,6 +161,7 @@ jobs:
 
    publish_tvos:
       runs-on: macos-11
+      if: github.repository == 'kotest/kotest'
 
       steps:
          -  name: Checkout the repo
@@ -182,6 +188,7 @@ jobs:
 
    publish_windows:
       runs-on: windows-latest
+      if: github.repository == 'kotest/kotest'
 
       steps:
          -  name: Checkout the repo

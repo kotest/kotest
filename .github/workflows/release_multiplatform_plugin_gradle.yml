@@ -14,6 +14,7 @@ env:
 jobs:
    release-plugin:
       runs-on: ubuntu-latest
+      if: github.repository == 'kotest/kotest'
 
       steps:
          -  name: Checkout the repo
