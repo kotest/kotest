@@ -165,10 +165,23 @@ class CovariantThrowableHandlingTest : FreeSpec() {
          }
       }
 
-      "should throw with message" {
-         val exception = Exception("bar")
-         onShouldThrowWithMessageMatcher<FooRuntimeException>("foo") { shouldThrowMatcher ->
-            verifyThrowsWrongExceptionMessage(exception, "foo", "bar") { shouldThrowMatcher { throw exception } }
+      "should throw with message" - {
+         "When the correct exception is thrown, but the message is wrong" {
+            onShouldThrowWithMessageMatcher<Exception>("foo") { shouldThrowMatcher ->
+               verifyThrowsWrongExceptionMessage("foo", "bar") {
+                  shouldThrowMatcher { throw Exception("bar") }
+               }
+            }
+         }
+         "Exception class type should have priority in assertion" {
+            val instanceToThrow = Exception("foo")
+
+            runCatching {
+               shouldThrowWithMessage<RuntimeException>("bar") {
+                  throw instanceToThrow
+               }
+            }
+               .exceptionOrNull() shouldBe AssertionError("Expected exception java.lang.RuntimeException but a Exception was thrown instead.")
          }
       }
    }
@@ -209,7 +222,6 @@ class CovariantThrowableHandlingTest : FreeSpec() {
    }
 
    private fun verifyThrowsWrongExceptionMessage(
-      thrownInstance: Throwable,
       expectedMessage: String,
       actualMessage: String,
       block: () -> Unit
@@ -218,7 +230,6 @@ class CovariantThrowableHandlingTest : FreeSpec() {
 
       throwable.shouldBeInstanceOf<AssertionError>()
       throwable.message shouldBe "Expected exception message $expectedMessage but was $actualMessage instead."
-      (throwable.cause === thrownInstance).shouldBeTrue()
    }
 
    private fun verifyReturnsExactly(thrownException: Throwable, block: () -> Any?) {

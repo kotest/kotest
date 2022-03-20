@@ -170,7 +170,7 @@ inline fun <reified T : Throwable> shouldThrowWithMessage(message: String, block
    shouldThrow<T>(block).let {
       when (it.message) {
          message -> it
-         else -> throw failure("Expected exception message $message but was ${it.message} instead.", it.cause)
+         else -> throw failure("Expected exception message $message but was ${it.message} instead.", it)
       }
    }
 
