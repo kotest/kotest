@@ -54,23 +54,27 @@ val dependentArbs: Arb<String> = Arb.of("foo", "bar").flatMap { prefix ->
 
 ## Merging
 
-Two generators can be merged together, so that elements 0, 2, 4, ... are taken from the first generator, and elements 1, 3, 5, ... are taken from the second generator.
+Two generators can be merged together, so that the resulting elements are equally sampled from both generators.
 
 ```kotlin
 val merged = arbA.merge(arbB)
 ```
 
-So with the following example:
+So with the following example would have an equal chance to yield either `"a"` or `"b"` on each random sample:
 
 ```kotlin
 val a = arbitrary { "a" }
 val b = arbitrary { "b" }
 val ab = a.merge(b)
-ab.take(10).forEach { println(it) }
+
+println(ab.take(1000).groupingBy { it }.eachCount())
+// {a=493, b=507}
 ```
 
-Would ouput `ababababab`
-
+For merging more than two arbitraries, `Arb.choice` or `Arb.choose` might be more appropriate. For instance we can use:
+- `Arb.choice(arbA, arbB, arbC)` for uniform sampling between `arbA`, `arbB` and `arbC`,
+- or `Arb.choose(4 to arbA, 1 to arbB, 5 to arbC)` for a more granular control of frequency of each arbitrary.
+  In this example `arbA`, `arbB`, and `arbC` will be sampled 40%, 10%, and 50% of the time, respectively.
 
 ## Bind
 
