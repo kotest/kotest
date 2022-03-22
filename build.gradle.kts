@@ -167,4 +167,11 @@ tasks {
       sinceBuild.set(descriptor.since)
       untilBuild.set(descriptor.until)
    }
+
+   test {
+      isScanForTestClasses = false
+      // Only run tests from classes that end with "Test"
+      include("**/*Test.class")
+      include("**/*Tests.class")
+   }
 }
