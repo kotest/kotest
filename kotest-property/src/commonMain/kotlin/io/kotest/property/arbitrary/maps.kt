@@ -14,15 +14,37 @@ import io.kotest.property.Shrinker
  * removing elements from the failed case until it is empty.
  *
  * @see MapShrinker
+ *
+ * @param arb the arbitrary to populate the map entries
+ * @param minSize the desired minimum size of the generated map
+ * @param maxSize the desired maximum size of the generated map
+ * @param slippage when generating keys, we may have repeats if the underlying gen is random.
+ *        The slippage factor determines how many times we continue after retrieving a duplicate key.
+ *        The total acceptable number of misses is the slippage factor multiplied by the target set size.
+ *        If this value is not specified, then the default slippage value of 10 will be used.
  */
 fun <K, V> Arb.Companion.map(
    arb: Arb<Pair<K, V>>,
    minSize: Int = 1,
-   maxSize: Int = 100
-): Arb<Map<K, V>> = arbitrary(MapShrinker()) { random ->
-   val size = random.random.nextInt(minSize, maxSize)
-   val pairs = List(size) { arb.single(random) }
-   pairs.toMap()
+   maxSize: Int = 100,
+   slippage: Int = 10
+): Arb<Map<K, V>> = arbitrary(MapShrinker(minSize)) { random ->
+   val targetSize = random.random.nextInt(minSize, maxSize)
+   val maxMisses = targetSize * slippage
+   val map = mutableMapOf<K, V>()
+   var iterations = 0
+   while (iterations < maxMisses && map.size < targetSize) {
+      val initialSize = map.size
+      val (key, value) = arb.single(random)
+      map[key] = value
+      if (map.size == initialSize) iterations++
+   }
+
+   require(map.size >= minSize) {
+      "the minimum size requirement of $minSize could not be satisfied after $iterations consecutive samples"
+   }
+
+   map
 }
 
 /**
@@ -37,28 +59,47 @@ fun <K, V> Arb.Companion.map(
  *
  * @see MapShrinker
  *
+ * @param keyArb the arbitrary to populate the keys
+ * @param valueArb the arbitrary to populate the values
+ * @param minSize the desired minimum size of the generated map
+ * @param maxSize the desired maximum size of the generated map
+ * @param slippage when generating keys, we may have repeats if the underlying gen is random.
+ *        The slippage factor determines how many times we continue after retrieving a duplicate key.
+ *        The total acceptable number of misses is the slippage factor multiplied by the target set size.
+ *        If this value is not specified, then the default slippage value of 10 will be used.
  */
 fun <K, V> Arb.Companion.map(
    keyArb: Arb<K>,
    valueArb: Arb<V>,
    minSize: Int = 1,
-   maxSize: Int = 100
+   maxSize: Int = 100,
+   slippage: Int = 10
 ): Arb<Map<K, V>> {
    require(minSize >= 0) { "minSize must be positive" }
    require(maxSize >= 0) { "maxSize must be positive" }
 
-   return arbitrary(MapShrinker()) { random ->
-      val size = random.random.nextInt(minSize, maxSize)
-      val pairs = List(size) {
-         keyArb.single(random) to valueArb.single(random)
+   return arbitrary(MapShrinker(minSize)) { random ->
+      val targetSize = random.random.nextInt(minSize, maxSize)
+      val maxMisses = targetSize * slippage
+      val map = mutableMapOf<K, V>()
+      var iterations = 0
+      while (iterations < maxMisses && map.size < targetSize) {
+         val initialSize = map.size
+         map[keyArb.single(random)] = valueArb.single(random)
+         if (map.size == initialSize) iterations++
       }
-      pairs.toMap()
+
+      require(map.size >= minSize) {
+         "the minimum size requirement of $minSize could not be satisfied after $iterations consecutive samples"
+      }
+
+      map
    }
 }
 
-class MapShrinker<K, V> : Shrinker<Map<K, V>> {
+class MapShrinker<K, V>(private val minSize: Int) : Shrinker<Map<K, V>> {
    override fun shrink(value: Map<K, V>): List<Map<K, V>> {
-      return when (value.size) {
+      val shrinks = when (value.size) {
          0 -> emptyList()
          1 -> listOf(emptyMap())
          else -> listOf(
@@ -66,6 +107,8 @@ class MapShrinker<K, V> : Shrinker<Map<K, V>> {
             value.toList().drop(1).toMap()
          )
       }
+
+      return shrinks.filter { it.size >= minSize }
    }
 }
 
@@ -74,8 +117,8 @@ class MapShrinker<K, V> : Shrinker<Map<K, V>> {
  * Edgecases will be derived from [k] and [v].
  */
 fun <K, V> Arb.Companion.pair(k: Arb<K>, v: Arb<V>): Arb<Pair<K, V>> {
-   val arbPairWithoutKeyEdges:Arb<Pair<K, V>> = Arb.bind(k.removeEdgecases(), v, ::Pair)
-   val arbPairWithoutValueEdges:Arb<Pair<K, V>> = Arb.bind(k, v.removeEdgecases(), ::Pair)
+   val arbPairWithoutKeyEdges: Arb<Pair<K, V>> = Arb.bind(k.removeEdgecases(), v, ::Pair)
+   val arbPairWithoutValueEdges: Arb<Pair<K, V>> = Arb.bind(k, v.removeEdgecases(), ::Pair)
    val arbPair: Arb<Pair<K, V>> = Arb.bind(k, v, ::Pair)
    return Arb.choice(arbPair, arbPairWithoutKeyEdges, arbPairWithoutValueEdges)
 }
