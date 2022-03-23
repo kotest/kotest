@@ -5,6 +5,7 @@ import io.kotest.assertions.Expected
 import io.kotest.matchers.ComparableMatcherResult
 import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
+import kotlinx.serialization.json.JsonNull
 
 /**
  * Returns a [Matcher] that verifies json trees are equal.
@@ -46,7 +47,30 @@ fun equalJson(
       }
    }
 
-data class JsonTree(val root: JsonNode, val raw: String)
+data class JsonTree(val root: JsonNode, val raw: String) {
+   internal operator fun iterator() = iterator<Pair<String, JsonNode.ValueNode>> {
+      yieldAll(sequenceFor(node = root))
+   }
+
+   private fun sequenceFor(currentPath: String = "$", node: JsonNode): Sequence<Pair<String, JsonNode.ValueNode>> =
+      sequence<Pair<String, JsonNode.ValueNode>> {
+         when (node) {
+            is JsonNode.ArrayNode -> node.elements.flatMapIndexed { i, child ->
+               sequenceFor("$currentPath[$i]", child).toList()
+            }.let { yieldAll(it) }
+
+            is JsonNode.ObjectNode ->
+               node.elements.flatMap { (key, child) ->
+                  sequenceFor("$currentPath.$key", child).toList()
+               }.let { yieldAll(it) }
+
+            is JsonNode.BooleanNode -> yield(currentPath to node)
+            is JsonNode.NumberNode -> yield(currentPath to node)
+            is JsonNode.StringNode -> yield(currentPath to node)
+            JsonNode.NullNode -> yield(currentPath to JsonNode.NullNode)
+         }
+      }
+}
 
 infix fun String.shouldEqualJson(expected: String): Unit =
    this.shouldEqualJson(expected, defaultCompareJsonOptions)
