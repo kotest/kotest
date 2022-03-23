@@ -13,14 +13,6 @@ import io.kotest.matchers.should
 import io.kotest.matchers.shouldNot
 import kotlin.jvm.JvmName
 
-/**
- * Verifies that this collection contains the sub collections provided in the exact given order.
- *
- * So, for example, listOf(1,2,3) contains exactly the sub collections:
- *
- * [], [1], [2], [3], [1,2], [2,3] and [1,2,3].
- *
- */
 @JvmName("shouldContainExactly_iterable")
 infix fun <T> Iterable<T>?.shouldContainExactly(expected: Iterable<T>) =
    this?.toList() should containExactly(expected.toList())
