@@ -2,6 +2,7 @@ package com.sksamuel.kotest.tests.json
 
 import io.kotest.assertions.json.JsonNode
 import io.kotest.assertions.json.JsonTree
+import io.kotest.assertions.json.schema.iterator
 import io.kotest.assertions.json.toJsonTree
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.collections.shouldContainAll

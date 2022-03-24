@@ -6,11 +6,11 @@ import io.kotest.matchers.shouldBe
 import org.intellij.lang.annotations.Language
 
 
-class MatchObjectSchemaTest : FunSpec(
+class ObjectSchemaTest : FunSpec(
    {
       fun json(@Language("JSON") raw: String) = raw
 
-      val personSchema = jsonSchema {
+      val personSchema = jsonSchema(allowExtraProperties = false) {
          obj {
             withProperty("name") { string() }
             withProperty("age") { decimal() }
@@ -25,15 +25,33 @@ class MatchObjectSchemaTest : FunSpec(
          shouldFail {
             json("""{ "name": "John", "age": "twentyseven" }""") shouldMatchSchema personSchema
          }.message shouldBe """
-            $.age => Expected decimal but was a string
+            $.age => Expected decimal, but was string
          """.trimIndent()
       }
 
-      test("Missing schema element causes failure") {
+      test("primitive instead of object causes failure") {
+         shouldFail {
+            "\"hello\"" shouldMatchSchema personSchema
+         }.message shouldBe """
+            $ => Expected object, but was string
+            $.name => Expected string, but was undefined
+            $.age => Expected decimal, but was undefined
+         """.trimIndent()
+      }
+
+      test("Extra property causes failure") {
+         shouldFail {
+            json("""{ "name": "John", "age": 27.2, "profession": "T800" }""") shouldMatchSchema personSchema
+         }.message shouldBe """
+            $.profession => Key undefined in schema, and schema is set to disallow extra keys
+         """.trimIndent()
+      }
+
+      test("Property undefined in schema causes failure") {
          shouldFail {
             json("""{ "name": "John" }""") shouldMatchSchema personSchema
          }.message shouldBe """
-            $.age => Expected to find decimal, but it was undefined
+            $.age => Expected decimal, but was undefined
          """.trimIndent()
       }
 
@@ -41,8 +59,8 @@ class MatchObjectSchemaTest : FunSpec(
          shouldFail {
             json("""{ "name": 5, "age": "twentyseven" }""") shouldMatchSchema personSchema
          }.message shouldBe """
-            $.name => Expected string but was an integer
-            $.age => Expected decimal but was a string
+            $.name => Expected string, but was integer
+            $.age => Expected decimal, but was string
          """.trimIndent()
       }
 
@@ -68,7 +86,7 @@ class MatchObjectSchemaTest : FunSpec(
                json("""{ "owner": { "name": 5, "age": 34.1 }, "employees": [] }""") shouldMatchSchema
                   companySchema
             }.message shouldBe """
-               $.owner.name => Expected string but was an integer
+               $.owner.name => Expected string, but was integer
             """.trimIndent()
          }
       }

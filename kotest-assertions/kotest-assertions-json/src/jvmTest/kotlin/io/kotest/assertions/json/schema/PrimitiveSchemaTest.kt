@@ -12,7 +12,8 @@ class PrimitiveMatchSchemaTest : FunSpec(
          shouldFail {
             "[" shouldMatchSchema jsonSchema { obj() }
          }.message shouldBe """
-            $ => Tried to parse actual as JSON, but it failed
+Failed to parse actual as JSON: Expected end of the array ']', but had 'EOF' instead
+JSON input: [
          """.trimIndent()
       }
 
@@ -30,7 +31,7 @@ class PrimitiveMatchSchemaTest : FunSpec(
             shouldFail {
                "0" shouldMatchSchema boolSchema
             }.message shouldBe """
-               $ => Expected boolean but was an integer
+               $ => Expected boolean, but was integer
             """.trimIndent()
          }
       }
@@ -44,7 +45,13 @@ class PrimitiveMatchSchemaTest : FunSpec(
 
          test("boolean does not match string schema") {
             shouldFail { "false" shouldMatchSchema schema }.message shouldBe """
-               $ => Expected string but was a boolean
+               $ => Expected string, but was boolean
+            """.trimIndent()
+         }
+
+         test("object does not match string schema") {
+            shouldFail { """{ "greeting": "hello" }""" shouldMatchSchema schema }.message shouldBe """
+               $ => Expected string but was an object
             """.trimIndent()
          }
       }
@@ -60,7 +67,7 @@ class PrimitiveMatchSchemaTest : FunSpec(
 
          test("Non-number causes failure") {
             shouldFail { "false" shouldMatchSchema intSchema }.message shouldBe """
-               $ => Expected integer but was a boolean
+               $ => Expected integer, but was boolean
             """.trimIndent()
          }
 
@@ -68,7 +75,7 @@ class PrimitiveMatchSchemaTest : FunSpec(
             shouldFail {
                "3.7" shouldMatchSchema intSchema
             }.message shouldBe """
-               $ => Expected integer but was a decimal
+               $ => Expected integer, but was decimal
             """.trimIndent()
          }
 
@@ -76,7 +83,7 @@ class PrimitiveMatchSchemaTest : FunSpec(
             shouldFail {
                "\"5\"" shouldMatchSchema intSchema
             }.message shouldBe """
-               $ => Expected integer but was a string
+               $ => Expected integer, but was string
             """.trimIndent()
          }
 
