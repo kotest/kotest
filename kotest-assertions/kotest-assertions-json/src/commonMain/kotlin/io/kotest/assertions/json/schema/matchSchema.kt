@@ -1,20 +1,12 @@
 package io.kotest.assertions.json.schema
 
 import io.kotest.assertions.json.JsonNode
-import io.kotest.assertions.json.JsonTree
 import io.kotest.assertions.json.toJsonTree
 import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldNot
-import kotlinx.serialization.SerializationException
 import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.JsonElement
-import kotlinx.serialization.json.JsonPrimitive
-import kotlinx.serialization.json.booleanOrNull
-import kotlinx.serialization.json.doubleOrNull
-import kotlinx.serialization.json.jsonPrimitive
-import kotlinx.serialization.json.longOrNull
 
 class SchemaViolation(
    val path: String,
@@ -24,6 +16,24 @@ class SchemaViolation(
 
 infix fun String.shouldNotMatchSchema(schema: JsonSchema<*>) = this shouldNot matchSchema(schema)
 infix fun String.shouldMatchSchema(schema: JsonSchema<*>) = this should matchSchema(schema)
+
+private fun isCompatible(actual: JsonNode, schema: JsonSchemaElement<*>) =
+   (actual is JsonNode.BooleanNode && schema is JsonSchema.JsonBoolean) ||
+      (actual is JsonNode.StringNode && schema is JsonSchema.JsonString) ||
+      (actual is JsonNode.NumberNode && actual.content.contains(".") && schema is JsonSchema.JsonDecimal) ||
+      (actual is JsonNode.NumberNode && !actual.content.contains(".") && schema is JsonSchema.JsonInteger)
+
+/**
+ * Expands upon [JsonNode.type] and adds the ability of differentiating between integer and decimal numbers
+ */
+private fun JsonNode.numberAwareTypeName() =
+   when (this) {
+      is JsonNode.NumberNode -> {
+         if (this.content.contains(".")) "decimal"
+         else "integer"
+      }
+      else -> this.type()
+   }
 
 fun matchSchema(schema: JsonSchema<*>) = object : Matcher<String?> {
    override fun test(value: String?): MatcherResult {
@@ -51,55 +61,29 @@ fun matchSchema(schema: JsonSchema<*>) = object : Matcher<String?> {
       for ((path, actual) in tree) {
          try {
 
+            /** The JsonSchemaElement at [path], or [null] if undefined in schema */
             val expected = schema.root[path.replace("$", "")]
 
             if (expected == null) {
                if (!schema.allowExtraProperties) {
                   violations.add(
-                     SchemaViolation(
-                        path,
-                        "Key undefined in schema, and schema is set to disallow extra keys"
-                     )
+                     SchemaViolation(path, "Key undefined in schema, and schema is set to disallow extra keys")
                   )
                }
             } else {
                visitedNodes.add(expected)
-
-               when (actual) {
-                  is JsonNode.NumberNode -> {
-                     if (actual.content.contains(".")) {
-                        if (expected !is JsonSchema.JsonDecimal) {
-                           violations.add(SchemaViolation(path, "Expected ${expected.name()}, but was decimal"))
-                        }
-                     } else {
-                        if (expected !is JsonSchema.JsonInteger) {
-                           violations.add(SchemaViolation(path, "Expected ${expected.name()}, but was integer"))
-                        }
-                     }
-                  }
-
-                  is JsonNode.BooleanNode -> {
-                     if (expected !is JsonSchema.JsonBoolean) {
-                        violations.add(SchemaViolation(path, "Expected ${expected.name()}, but was boolean"))
-                     }
-                  }
-
-                  is JsonNode.StringNode -> {
-                     if (expected !is JsonSchema.JsonString) {
-                        violations.add(SchemaViolation(path, "Expected ${expected.name()}, but was string"))
-                     }
-                  }
-               }
+               if (!isCompatible(actual, expected))
+                  violations.add(SchemaViolation(path, "Expected ${expected.typeName()}, but was ${actual.numberAwareTypeName()}"))
             }
          } catch (e: JsonSchemaException) {
-            violations.add(SchemaViolation(e.path, e.message ?: ""))
+            violations.add(SchemaViolation(path, e.message ?: ""))
          }
       }
 
       schema.root.iterator().asSequence()
          .filterNot { it.second in visitedNodes }
          .forEach { (path, element) ->
-            violations.add(SchemaViolation(path, "Expected ${element.name()}, but was undefined"))
+            violations.add(SchemaViolation(path, "Expected ${element.typeName()}, but was undefined"))
          }
 
       return MatcherResult(

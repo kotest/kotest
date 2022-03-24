@@ -10,8 +10,7 @@ internal operator fun JsonSchemaElement<*>.get(path: String): JsonSchemaElement<
    fun valueNodeOrException() =
       when {
          path == "" -> this
-         path.startsWith(".") -> throw JsonSchemaException(path, "Expected ${this.name()}, but was an object")
-         else -> throw JsonSchemaException(path, "Expected ${this.name()}, but was an array")
+         else -> null
       }
 
    return when (this) {

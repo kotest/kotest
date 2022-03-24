@@ -1,8 +1,6 @@
 package io.kotest.assertions.json.schema
 
 import io.kotest.matchers.Matcher
-import kotlinx.serialization.json.JsonArray
-import kotlinx.serialization.json.JsonObject
 
 @DslMarker
 annotation class JsonSchemaMarker
@@ -15,7 +13,7 @@ sealed interface JsonSchemaElement<in T> {
    val matcher: Matcher<T>?
       get() = null
 
-   fun name(): String
+   fun typeName(): String
 }
 
 /**
@@ -37,11 +35,11 @@ data class JsonSchema<in T>(
 ) {
 
    object Builder : JsonSchemaElement<Nothing> {
-      override fun name() = "JsonSchema.Builder"
+      override fun typeName() = "JsonSchema.Builder"
    }
 
    class JsonArray<S, T : JsonSchemaElement<S>>(val elementType: T) : JsonSchemaElement<T> {
-      override fun name() = "array"
+      override fun typeName() = "array"
    }
 
    class JsonObject : JsonSchemaElement<JsonObject> {
@@ -53,27 +51,27 @@ data class JsonSchema<in T>(
 
       operator fun get(name: String) = properties.get(name)
 
-      override fun name() = "object"
+      override fun typeName() = "object"
    }
 
    class JsonString(override val matcher: Matcher<String>?) : JsonSchemaElement<String> {
-      override fun name() = "string"
+      override fun typeName() = "string"
    }
 
    class JsonInteger(override val matcher: Matcher<Int>?) : JsonSchemaElement<Int> {
-      override fun name() = "integer"
+      override fun typeName() = "integer"
    }
 
    object JsonDecimal : JsonSchemaElement<Double> {
-      override fun name() = "decimal"
+      override fun typeName() = "decimal"
    }
 
    object JsonBoolean : JsonSchemaElement<Boolean> {
-      override fun name() = "boolean"
+      override fun typeName() = "boolean"
    }
 
    object Null : JsonSchemaElement<Nothing> {
-      override fun name() = "null"
+      override fun typeName() = "null"
    }
 }
 
