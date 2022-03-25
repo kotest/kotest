@@ -10,8 +10,8 @@ class ObjectSchemaTest : FunSpec(
    {
       fun json(@Language("JSON") raw: String) = raw
 
-      val personSchema = jsonSchema(allowExtraProperties = false) {
-         obj {
+      val personSchema = jsonSchema {
+         jsonObject {
             withProperty("name") { string() }
             withProperty("age") { decimal() }
          }
@@ -66,10 +66,10 @@ class ObjectSchemaTest : FunSpec(
 
       context("nested objects") {
          val companySchema = jsonSchema {
-            obj {
+            jsonObject {
                withProperty("owner") { personSchema.root }
                withProperty("employees") {
-                  array {
+                  jsonArray {
                      personSchema.root // TODO: Should be possible to compose schemas without explicitly unpacking boxing element
                   }
                }

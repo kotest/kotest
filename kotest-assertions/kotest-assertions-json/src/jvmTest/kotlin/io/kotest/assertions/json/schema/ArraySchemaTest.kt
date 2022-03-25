@@ -8,8 +8,8 @@ import org.intellij.lang.annotations.Language
 class ArraySchemaTest : FunSpec(
    {
       fun json(@Language("JSON") raw: String) = raw
-      val intArray = jsonSchema { array { integer() } }
-      val decimalArray = jsonSchema { array { decimal() } }
+      val intArray = jsonSchema { jsonArray { integer() } }
+      val decimalArray = jsonSchema { jsonArray { decimal() } }
 
       test("Array with correct elements match") {
          """[1, 2]""" shouldMatchSchema intArray

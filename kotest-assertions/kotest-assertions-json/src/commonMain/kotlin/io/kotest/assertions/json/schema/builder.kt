@@ -1,19 +1,24 @@
+@file:OptIn(ExperimentalSerializationApi::class)
+
 package io.kotest.assertions.json.schema
 
 import io.kotest.matchers.Matcher
+import kotlinx.serialization.ExperimentalSerializationApi
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
 @DslMarker
 annotation class JsonSchemaMarker
 
 @JsonSchemaMarker
-sealed interface JsonSchemaElement<in T> {
-   /**
-    * TODO: Matcher to match this element against when testing schema. Will allow for advanced schema definitions.
-    */
+@Serializable(with = SchemaDeserializer::class)
+sealed interface JsonSchemaElement {
+   fun typeName(): String
+}
+
+interface ValueNode<T> {
    val matcher: Matcher<T>?
       get() = null
-
-   fun typeName(): String
 }
 
 /**
@@ -29,23 +34,31 @@ sealed interface JsonSchemaElement<in T> {
  * val personSchema = jsonSchema { obj { withProperty("name") { string() } }
  * ```
  */
-data class JsonSchema<in T>(
+data class JsonSchema(
    val allowExtraProperties: Boolean = false,
-   val root: JsonSchemaElement<T>
+   val root: JsonSchemaElement
 ) {
 
-   object Builder : JsonSchemaElement<Nothing> {
+   object Builder : JsonSchemaElement {
       override fun typeName() = "JsonSchema.Builder"
    }
 
-   class JsonArray<S, T : JsonSchemaElement<S>>(val elementType: T) : JsonSchemaElement<T> {
+   @SerialName("array")
+   @Serializable
+   data class JsonArray(val elementType: JsonSchemaElement) : JsonSchemaElement {
       override fun typeName() = "array"
    }
 
-   class JsonObject : JsonSchemaElement<JsonObject> {
-      internal var properties: MutableMap<String, JsonSchemaElement<*>> = mutableMapOf()
+   @SerialName("object")
+   @Serializable
+   data class JsonObject(
+      val properties: MutableMap<
+         String,
+         JsonSchemaElement
+      > = mutableMapOf()
+   ) : JsonSchemaElement {
 
-      fun withProperty(name: String, elementBuilder: JsonSchema.Builder.() -> JsonSchemaElement<*>) {
+      fun withProperty(name: String, elementBuilder: JsonSchema.Builder.() -> JsonSchemaElement) {
          properties[name] = JsonSchema.Builder.elementBuilder()
       }
 
@@ -54,23 +67,29 @@ data class JsonSchema<in T>(
       override fun typeName() = "object"
    }
 
-   class JsonString(override val matcher: Matcher<String>?) : JsonSchemaElement<String> {
+   @SerialName("string")
+   @Serializable
+   data class JsonString(override val matcher: Matcher<String>? = null) : JsonSchemaElement, ValueNode<String> {
       override fun typeName() = "string"
    }
 
-   class JsonInteger(override val matcher: Matcher<Int>?) : JsonSchemaElement<Int> {
+   data class JsonInteger(override val matcher: Matcher<Int>? = null) : JsonSchemaElement, ValueNode<Int> {
       override fun typeName() = "integer"
    }
 
-   object JsonDecimal : JsonSchemaElement<Double> {
+   @SerialName("number")
+   @Serializable
+   object JsonDecimal : JsonSchemaElement, ValueNode<Double> {
       override fun typeName() = "decimal"
    }
 
-   object JsonBoolean : JsonSchemaElement<Boolean> {
+   @SerialName("boolean")
+   @Serializable
+   object JsonBoolean : JsonSchemaElement, ValueNode<Boolean> {
       override fun typeName() = "boolean"
    }
 
-   object Null : JsonSchemaElement<Nothing> {
+   object Null : JsonSchemaElement {
       override fun typeName() = "null"
    }
 }
@@ -84,19 +103,19 @@ fun JsonSchema.Builder.integer(matcherBuilder: () -> Matcher<Int>? = { null }) =
 fun JsonSchema.Builder.decimal() =
    JsonSchema.JsonDecimal
 
-fun JsonSchema.Builder.obj(dsl: JsonSchema.JsonObject.() -> Unit = {}) =
+fun JsonSchema.Builder.jsonObject(dsl: JsonSchema.JsonObject.() -> Unit = {}) =
    JsonSchema.JsonObject().apply(dsl)
 
 fun JsonSchema.Builder.boolean() =
    JsonSchema.JsonBoolean
 
-fun JsonSchema.Builder.array(typeBuilder: () -> JsonSchemaElement<*>) =
+fun JsonSchema.Builder.jsonArray(typeBuilder: () -> JsonSchemaElement) =
    JsonSchema.JsonArray(typeBuilder())
 
-fun <T> jsonSchema(
+fun jsonSchema(
    allowExtraProperties: Boolean = false,
-   rootBuilder: JsonSchema.Builder.() -> JsonSchemaElement<T>
-): JsonSchema<T> =
+   rootBuilder: JsonSchema.Builder.() -> JsonSchemaElement
+): JsonSchema =
    JsonSchema(
       allowExtraProperties,
       JsonSchema.Builder.rootBuilder()

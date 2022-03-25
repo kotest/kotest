@@ -3,14 +3,13 @@ package io.kotest.assertions.json.schema
 import io.kotest.assertions.shouldFail
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.ints.beEven
-import io.kotest.matchers.should
 import io.kotest.matchers.shouldBe
 
 class PrimitiveMatchSchemaTest : FunSpec(
    {
       test("invalid json") {
          shouldFail {
-            "[" shouldMatchSchema jsonSchema { obj() }
+            "[" shouldMatchSchema jsonSchema { jsonObject() }
          }.message shouldBe """
 Failed to parse actual as JSON: Expected end of the array ']', but had 'EOF' instead
 JSON input: [
@@ -97,7 +96,7 @@ JSON input: [
 
 fun main() {
    val petSchema = jsonSchema {
-      obj {
+      jsonObject {
          withProperty("name") { string() }
          withProperty("age") {
             integer {
@@ -108,12 +107,12 @@ fun main() {
    }
 
    val personSchema = jsonSchema {
-      obj {
+      jsonObject {
          withProperty("name") { string() }
          withProperty("age") { integer() }
-         withProperty("pets") { array { petSchema.root } }
+         withProperty("pets") { jsonArray { petSchema.root } }
       }
    }
 
-   val personList = jsonSchema { array { personSchema.root } }
+   val personList = jsonSchema { jsonArray { personSchema.root } }
 }

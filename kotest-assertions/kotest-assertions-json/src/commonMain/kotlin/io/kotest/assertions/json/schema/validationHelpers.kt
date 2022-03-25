@@ -6,7 +6,7 @@ import io.kotest.assertions.json.JsonTree
 internal class JsonSchemaException(val path: String, message: String) : AssertionError(message)
 
 
-internal operator fun JsonSchemaElement<*>.get(path: String): JsonSchemaElement<*>? {
+internal operator fun JsonSchemaElement.get(path: String): JsonSchemaElement? {
    fun valueNodeOrException() =
       when {
          path == "" -> this
@@ -16,7 +16,7 @@ internal operator fun JsonSchemaElement<*>.get(path: String): JsonSchemaElement<
    return when (this) {
       JsonSchema.Builder -> error("should never occur.. JsonSchema.Builder is just a marker token for Schema DSL")
 
-      is JsonSchema.JsonArray<*, *> ->
+      is JsonSchema.JsonArray ->
          if (path.matches(arrayIndexRegex)) {
             this.elementType[path.substringAfter(']')]
          } else throw JsonSchemaException(path, "Found unexpected array")
@@ -85,19 +85,19 @@ private fun sequenceFor(currentPath: String = "$", node: JsonNode): Sequence<Pai
       }
    }
 
-internal operator fun JsonSchemaElement<*>.iterator() = iterator<Pair<String, JsonSchemaElement<*>>> {
+internal operator fun JsonSchemaElement.iterator() = iterator<Pair<String, JsonSchemaElement>> {
    yieldAll(sequenceForSchema("$", node = this@iterator))
 }
 
 private fun sequenceForSchema(
    currentPath: String = "$",
-   node: JsonSchemaElement<*>
-): Sequence<Pair<String, JsonSchemaElement<*>>> =
+   node: JsonSchemaElement
+): Sequence<Pair<String, JsonSchemaElement>> =
    sequence {
       when (node) {
          JsonSchema.Builder -> error("should not happen..") // figure out how to get rid of me please
 
-         is JsonSchema.JsonArray<*, *> -> yieldAll(sequenceForSchema("$currentPath[]", node.elementType))
+         is JsonSchema.JsonArray -> yieldAll(sequenceForSchema("$currentPath[]", node.elementType))
 
          is JsonSchema.JsonObject -> node.properties.flatMap { (name, element) ->
             sequenceForSchema("$currentPath.$name", element)

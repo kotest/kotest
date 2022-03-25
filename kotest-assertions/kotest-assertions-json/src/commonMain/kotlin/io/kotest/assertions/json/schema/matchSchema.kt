@@ -14,10 +14,10 @@ class SchemaViolation(
    cause: Throwable? = null
 ) : RuntimeException(message, cause)
 
-infix fun String.shouldNotMatchSchema(schema: JsonSchema<*>) = this shouldNot matchSchema(schema)
-infix fun String.shouldMatchSchema(schema: JsonSchema<*>) = this should matchSchema(schema)
+infix fun String.shouldNotMatchSchema(schema: JsonSchema) = this shouldNot matchSchema(schema)
+infix fun String.shouldMatchSchema(schema: JsonSchema) = this should matchSchema(schema)
 
-private fun isCompatible(actual: JsonNode, schema: JsonSchemaElement<*>) =
+private fun isCompatible(actual: JsonNode, schema: JsonSchemaElement) =
    (actual is JsonNode.BooleanNode && schema is JsonSchema.JsonBoolean) ||
       (actual is JsonNode.StringNode && schema is JsonSchema.JsonString) ||
       (actual is JsonNode.NumberNode && actual.content.contains(".") && schema is JsonSchema.JsonDecimal) ||
@@ -35,7 +35,7 @@ private fun JsonNode.numberAwareTypeName() =
       else -> this.type()
    }
 
-fun matchSchema(schema: JsonSchema<*>) = object : Matcher<String?> {
+fun matchSchema(schema: JsonSchema) = object : Matcher<String?> {
    override fun test(value: String?): MatcherResult {
       // TODO: Improve nullability handling..
       if (value == null) return MatcherResult(
@@ -54,8 +54,10 @@ fun matchSchema(schema: JsonSchema<*>) = object : Matcher<String?> {
          { "Failed to parse actual as JSON: ${parsed.exceptionOrNull()?.message}" },
       )
 
+      data class SchemaNode(val path: String, val element: JsonSchemaElement)
+
       val violations = mutableListOf<SchemaViolation>()
-      val visitedNodes = mutableSetOf<JsonSchemaElement<*>>()
+      val visitedNodes = mutableSetOf<String>()
       val tree = toJsonTree(parsed.getOrThrow())
 
       for ((path, actual) in tree) {
@@ -71,7 +73,7 @@ fun matchSchema(schema: JsonSchema<*>) = object : Matcher<String?> {
                   )
                }
             } else {
-               visitedNodes.add(expected)
+               visitedNodes.add(path)
                if (!isCompatible(actual, expected))
                   violations.add(SchemaViolation(path, "Expected ${expected.typeName()}, but was ${actual.numberAwareTypeName()}"))
             }
@@ -81,7 +83,7 @@ fun matchSchema(schema: JsonSchema<*>) = object : Matcher<String?> {
       }
 
       schema.root.iterator().asSequence()
-         .filterNot { it.second in visitedNodes }
+         .filterNot { it.first in visitedNodes }
          .forEach { (path, element) ->
             violations.add(SchemaViolation(path, "Expected ${element.typeName()}, but was undefined"))
          }
