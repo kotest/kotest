@@ -22,7 +22,7 @@ After doing that, we need to inform Pitest that we're going to use `Kotest` as a
 ```kotlin
 // Assuming that you have already configured the Gradle/Maven extension
 configure<PitestPluginExtension> {
-    testPlugin.set("Kotest")    // <-- Telling Pitest that we're using Kotest
+    // testPlugin.set("Kotest")    // needed only with old PIT <1.6.7, otherwise having kotest-extensions-pitest on classpath is enough
     targetClasses.set(listOf("my.company.package.*"))
 }
 ```
