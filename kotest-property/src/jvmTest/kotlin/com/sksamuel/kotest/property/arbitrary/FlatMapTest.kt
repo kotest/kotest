@@ -4,6 +4,7 @@ import io.kotest.assertions.throwables.shouldNotThrowAny
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.collections.shouldContainExactly
 import io.kotest.matchers.shouldBe
+import io.kotest.matchers.types.shouldNotBeSameInstanceAs
 import io.kotest.property.Arb
 import io.kotest.property.EdgeConfig
 import io.kotest.property.RandomSource
@@ -100,6 +101,20 @@ class FlatMapTest : FunSpec() {
          }
          val result = shouldNotThrowAny { arb.single(RandomSource.seeded(1234L)) }
          result shouldBe 49
+      }
+
+      test("should yield a new immutable arb") {
+         val firstArb: Arb<Int> =  Arb.int(-3..3)
+         val secondArb: Arb<Int> = firstArb.flatMap { Arb.int(10..30) }
+         val thirdArb: Arb<String> = secondArb.flatMap { Arb.string(3, Codepoint.alphanumeric()) }
+
+         firstArb shouldNotBeSameInstanceAs secondArb
+         firstArb shouldNotBeSameInstanceAs thirdArb
+         secondArb shouldNotBeSameInstanceAs thirdArb
+
+         firstArb.single(RandomSource.seeded(1234L)) shouldBe 3
+         secondArb.single(RandomSource.seeded(1234L)) shouldBe 28
+         thirdArb.single(RandomSource.seeded(1234L)) shouldBe "tID"
       }
    }
 }

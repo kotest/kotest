@@ -29,7 +29,7 @@ fun <A, B> Arb<A>.flatMap(fn: (A) -> Arb<B>): Arb<B> = trampoline { fn(it.value)
  * using a trampoline method. This allows [next] function to be executed without exhausting call stack.
  */
 internal fun <A, B> Arb<A>.trampoline(next: (Sample<A>) -> Arb<B>): Arb<B> = when (this) {
-   is TrampolineArb -> thunk(next)
+   is TrampolineArb -> this.thunk(next)
    else -> TrampolineArb(this).thunk(next)
 }
 
@@ -45,32 +45,32 @@ internal fun <A, B> Arb<A>.trampoline(next: (Sample<A>) -> Arb<B>): Arb<B> = whe
  * The extension function will provide some type-guardrails to workaround the loss of types within this Arb.
  */
 @Suppress("UNCHECKED_CAST")
-internal class TrampolineArb<A>(val first: Arb<A>) : Arb<A>() {
-   private val commandList: MutableList<(Sample<Any>) -> Arb<Any>> = mutableListOf()
+internal class TrampolineArb<A> private constructor(
+   private val first: Arb<A>,
+   commands: List<(Sample<Any>) -> Arb<Any>>
+) : Arb<A>() {
+   constructor(first: Arb<A>) : this(first, emptyList())
 
-   fun <A, B> thunk(fn: (Sample<A>) -> Arb<B>): TrampolineArb<B> {
-      val nextFn: (Sample<A>) -> Arb<B> = { fn(it) }
-      commandList.add(nextFn as (Sample<Any>) -> Arb<Any>)
-      return this as TrampolineArb<B>
-   }
+   private val commandList: MutableList<(Sample<Any>) -> Arb<Any>> = commands.toMutableList()
 
-   override fun edgecase(rs: RandomSource): A? {
-      var currentArb = first as Arb<Any>
-      for (command in commandList) {
-         val currentEdge = currentArb.edgecase(rs) ?: currentArb.sample(rs).value
-         currentArb = command(Sample(currentEdge))
-      }
+   fun <A, B> thunk(fn: (Sample<A>) -> Arb<B>): TrampolineArb<B> =
+      TrampolineArb(
+         first,
+         commandList.toList() + (fn as (Sample<Any>) -> Arb<Any>)
+      ) as TrampolineArb<B>
 
-      return currentArb.edgecase(rs) as A?
-   }
+   override fun edgecase(rs: RandomSource): A? =
+      commandList
+         .fold(first as Arb<Any>) { currentArb, next ->
+            val currentEdge = currentArb.edgecase(rs) ?: currentArb.sample(rs).value
+            next(Sample(currentEdge))
+         }
+         .edgecase(rs) as A?
 
-   override fun sample(rs: RandomSource): Sample<A> {
-      var currentArb = first as Arb<Any>
-      for (command in commandList) {
-         val currentSample = currentArb.sample(rs)
-         currentArb = command(currentSample)
-      }
-
-      return currentArb.sample(rs) as Sample<A>
-   }
+   override fun sample(rs: RandomSource): Sample<A> =
+      commandList
+         .fold(first as Arb<Any>) { currentArb, next ->
+            next(currentArb.sample(rs))
+         }
+         .sample(rs) as Sample<A>
 }
