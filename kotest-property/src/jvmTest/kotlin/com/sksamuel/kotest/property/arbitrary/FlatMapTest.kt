@@ -1,7 +1,9 @@
 package com.sksamuel.kotest.property.arbitrary
 
+import io.kotest.assertions.throwables.shouldNotThrowAny
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.collections.shouldContainExactly
+import io.kotest.matchers.shouldBe
 import io.kotest.property.Arb
 import io.kotest.property.EdgeConfig
 import io.kotest.property.RandomSource
@@ -85,6 +87,19 @@ class FlatMapTest : FunSpec() {
                3,
                22
             )
+      }
+
+      test("Arb.flatMap composition should not exhaust call stack") {
+         var arb: Arb<Int> = Arb.int(-3..3)
+         repeat(10000) {
+            arb = arb.flatMap { value ->
+               Arb.int(-3..3).flatMap {
+                  Arb.of(value + it)
+               }
+            }
+         }
+         val result = shouldNotThrowAny { arb.single(RandomSource.seeded(1234L)) }
+         result shouldBe 49
       }
    }
 }

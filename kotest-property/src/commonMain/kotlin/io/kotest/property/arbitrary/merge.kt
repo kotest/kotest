@@ -20,20 +20,21 @@ import io.kotest.property.Sample
  * @param other the arg to merge with this one
  * @return the merged arg.
  */
-fun <A, B : A> Arb<A>.merge(other: Gen<B>): Arb<A> = object : Arb<A>() {
-
-   override fun edgecase(rs: RandomSource): A? = when (other) {
-      is Arb -> listOf(this@merge, other).random(rs.random).edgecase(rs)
-      is Exhaustive -> this@merge.edgecase(rs)
-   }
-
-   override fun sample(rs: RandomSource): Sample<A> =
-      if (rs.random.nextBoolean()) {
-         this@merge.sample(rs)
-      } else {
-         when (other) {
-            is Arb -> other.sample(rs)
-            is Exhaustive -> other.toArb().sample(rs)
-         }
+fun <A, B : A> Arb<A>.merge(other: Gen<B>): Arb<A> = trampoline { sampleA ->
+   object : Arb<A>() {
+      override fun edgecase(rs: RandomSource): A? = when (other) {
+         is Arb -> if (rs.random.nextBoolean()) sampleA.value else other.edgecase(rs)
+         is Exhaustive -> sampleA.value
       }
+
+      override fun sample(rs: RandomSource): Sample<A> =
+         if (rs.random.nextBoolean()) {
+            sampleA
+         } else {
+            when (other) {
+               is Arb -> other.sample(rs)
+               is Exhaustive -> other.toArb().sample(rs)
+            }
+         }
+   }
 }
