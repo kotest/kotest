@@ -33,8 +33,8 @@ repositories {
 // for the sdk version we can use IC-2021.1 if the product is released
 // or IC-213-EAP-SNAPSHOT if not
 
-// for since we can use an early build number without eap/snapshot eg 213.5281.15
-// and until we can use 213.*
+// for 'since' we can use an early build number without eap/snapshot eg 213.5281.15
+// and 'until' we can use 213.*
 
 val plugins = listOf(
    plugin.PluginDescriptor(
@@ -95,7 +95,7 @@ val plugins = listOf(
    )
 )
 
-val productName = System.getenv("PRODUCT_NAME") ?: System.getenv("SOURCE_FOLDER") ?: "IC-221"
+val productName = System.getenv("PRODUCT_NAME") ?: "IC-221"
 val descriptor = plugins.first { it.sourceFolder == productName }
 
 val jetbrainsToken: String by project

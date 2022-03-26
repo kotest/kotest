@@ -57,5 +57,5 @@ fun KtClassOrObject.getAllSuperClasses(): List<FqName> {
          val packageName = it.packageFqName
          val simpleName = it.relativeClassName
          FqName("$packageName.$simpleName")
-      }
+      }.filterNot { it.toString() == "kotlin.Any" }
 }

@@ -2,19 +2,17 @@ package io.kotest.plugin.intellij.psi
 
 import com.intellij.openapi.projectRoots.Sdk
 import com.intellij.pom.java.LanguageLevel
-import com.intellij.psi.impl.source.tree.LeafPsiElement
 import com.intellij.testFramework.IdeaTestUtil
 import com.intellij.testFramework.LightProjectDescriptor
 import com.intellij.testFramework.fixtures.LightJavaCodeInsightFixtureTestCase
 import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldBe
-import org.jetbrains.kotlin.name.FqName
 import java.nio.file.Paths
 
 class ClassTests : LightJavaCodeInsightFixtureTestCase() {
 
    private val descriptor = object : ProjectDescriptor(LanguageLevel.HIGHEST) {
-      override fun getSdk(): Sdk? {
+      override fun getSdk(): Sdk {
          return IdeaTestUtil.getMockJdk17()
       }
 
@@ -55,7 +53,8 @@ class ClassTests : LightJavaCodeInsightFixtureTestCase() {
          "/io/kotest/core/spec/style/specs.kt"
       )[0]
       val supers = psiFile.elementAtLine(11)?.enclosingKtClass()!!.getAllSuperClasses().map { it.asString() }
-      supers shouldBe listOf("io.kotest.plugin.intellij.MyParentSpec", "io.kotest.core.spec.style.FunSpec")
+      // the order varies depending on the intellij version, so using set to compare
+      supers.toSet() shouldBe setOf("io.kotest.plugin.intellij.MyParentSpec", "io.kotest.core.spec.style.FunSpec")
    }
 
    fun testClasses() {

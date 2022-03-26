@@ -15,7 +15,7 @@ jobs:
       strategy:
          matrix:
             product: [ "IC-193", "IC-201", "IC-202", "IC-203", "IC-211", "IC-212", "IC-213", "IC-221" ]
-         max-parallel: 10
+         max-parallel: 6
 
       steps:
          -  uses: actions/checkout@v2
