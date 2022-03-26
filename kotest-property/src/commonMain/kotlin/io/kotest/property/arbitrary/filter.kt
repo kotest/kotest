@@ -12,17 +12,19 @@ import io.kotest.property.filter
  * predicate. This gen will continue to request elements from the underlying gen until one satisfies
  * the predicate.
  */
-fun <A> Arb<A>.filter(predicate: (A) -> Boolean): Arb<A> = object : Arb<A>() {
+fun <A> Arb<A>.filter(predicate: (A) -> Boolean): Arb<A> = trampoline { sampleA ->
+   object : Arb<A>() {
+      override fun edgecase(rs: RandomSource): A? =
+         sequenceOf(sampleA.value)
+            .plus(generateSequence { this@filter.edgecase(rs) })
+            .take(PropertyTesting.maxFilterAttempts)
+            .filter(predicate)
+            .firstOrNull()
 
-   override fun edgecase(rs: RandomSource): A? =
-      generateSequence { this@filter.edgecase(rs) }
-         .take(PropertyTesting.maxFilterAttempts)
-         .filter(predicate)
-         .firstOrNull()
-
-   override fun sample(rs: RandomSource): Sample<A> {
-      val sample = this@filter.samples(rs).filter { predicate(it.value) }.first()
-      return Sample(sample.value, sample.shrinks.filter(predicate) ?: RTree({ sample.value }))
+      override fun sample(rs: RandomSource): Sample<A> {
+         val sample = sequenceOf(sampleA).plus(this@filter.samples(rs)).filter { predicate(it.value) }.first()
+         return Sample(sample.value, sample.shrinks.filter(predicate) ?: RTree({ sample.value }))
+      }
    }
 }
 

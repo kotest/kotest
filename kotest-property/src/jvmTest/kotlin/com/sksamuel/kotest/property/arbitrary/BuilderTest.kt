@@ -1,5 +1,6 @@
 package com.sksamuel.kotest.property.arbitrary
 
+import io.kotest.assertions.throwables.shouldNotThrowAny
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.collections.shouldContainExactly
@@ -55,6 +56,17 @@ class BuilderTest : FunSpec() {
       }
 
       context("arbitrary builder using restricted continuation") {
+         test("should be stack safe") {
+            val arb: Arb<Int> = arbitrary {
+               (1..100000).map {
+                  Arb.int().bind()
+               }.last()
+            }
+
+            val result = shouldNotThrowAny { arb.single(RandomSource.seeded(1234)) }
+            result shouldBe -1486934023
+         }
+
          test("should be equivalent to chaining flatMaps") {
             val arbFlatMaps: Arb<String> =
                Arb.string(5, Codepoint.alphanumeric()).withEdgecases("edge1", "edge2").flatMap { first ->

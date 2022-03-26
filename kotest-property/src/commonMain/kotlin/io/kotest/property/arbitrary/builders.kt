@@ -10,7 +10,6 @@ import kotlin.coroutines.Continuation
 import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.EmptyCoroutineContext
 import kotlin.coroutines.RestrictsSuspension
-import kotlin.coroutines.intrinsics.COROUTINE_SUSPENDED
 import kotlin.coroutines.intrinsics.startCoroutineUninterceptedOrReturn
 import kotlin.coroutines.intrinsics.suspendCoroutineUninterceptedOrReturn
 import kotlin.coroutines.resume
@@ -213,8 +212,8 @@ fun <A> arbitraryBuilder(
    edgecaseFn: EdgecaseFn<A>? = null,
    builderFn: suspend ArbitraryBuilderContext.(RandomSource) -> A
 ): Arb<A> = object : Arb<A>() {
-   override fun edgecase(rs: RandomSource): A? = singleShotArb().edgecase(rs)
-   override fun sample(rs: RandomSource): Sample<A> = singleShotArb().sample(rs)
+   override fun edgecase(rs: RandomSource): A? = singleShotArb(SingleShotGenerationMode.Edgecase, rs).edgecase(rs)
+   override fun sample(rs: RandomSource): Sample<A> = singleShotArb(SingleShotGenerationMode.Sample, rs).sample(rs)
    override val classifier: Classifier<out A>? = classifier
 
    /**
@@ -228,13 +227,13 @@ fun <A> arbitraryBuilder(
     * will provide another single shot Arb. Hence the reason why this function is invoked
     * on every call to [sample] / [edgecase].
     */
-   private fun singleShotArb(): Arb<A> {
-      val restrictedContinuation = SingleShotArbContinuation.Restricted {
+   private fun singleShotArb(mode: SingleShotGenerationMode, rs: RandomSource): Arb<A> {
+      val restrictedContinuation = SingleShotArbContinuation.Restricted(mode, rs) {
          /**
           * At the end of the suspension we got a generated value [A] as a comprehension result.
           * This value can either be a sample, or an edgecase.
           */
-         val value: A = builderFn(randomSource.bind())
+         val value: A = builderFn(rs)
 
          /**
           * Here we point A into an Arb<A> with the appropriate enrichments including
@@ -263,8 +262,8 @@ suspend fun <A> suspendArbitraryBuilder(
    fn: suspend GenerateArbitraryBuilderContext.(RandomSource) -> A
 ): Arb<A> = suspendCoroutineUninterceptedOrReturn { cont ->
    val arb = object : Arb<A>() {
-      override fun edgecase(rs: RandomSource): A? = singleShotArb().edgecase(rs)
-      override fun sample(rs: RandomSource): Sample<A> = singleShotArb().sample(rs)
+      override fun edgecase(rs: RandomSource): A? = singleShotArb(SingleShotGenerationMode.Edgecase, rs).edgecase(rs)
+      override fun sample(rs: RandomSource): Sample<A> = singleShotArb(SingleShotGenerationMode.Sample, rs).sample(rs)
       override val classifier: Classifier<out A>? = classifier
 
       /**
@@ -278,13 +277,13 @@ suspend fun <A> suspendArbitraryBuilder(
        * will provide another single shot Arb. Hence the reason why this function is invoked
        * on every call to [sample] / [edgecase].
        */
-      private fun singleShotArb(): Arb<A> {
-         val suspendableContinuation = SingleShotArbContinuation.Suspendedable(cont.context) {
+      private fun singleShotArb(genMode: SingleShotGenerationMode, rs: RandomSource): Arb<A> {
+         val suspendableContinuation = SingleShotArbContinuation.Suspendedable(genMode, rs, cont.context) {
             /**
              * At the end of the suspension we got a generated value [A] as a comprehension result.
              * This value can either be a sample, or an edgecase.
              */
-            val value: A = fn(randomSource.bind())
+            val value: A = fn(rs)
 
             /**
              * Here we point A into an Arb<A> with the appropriate enrichments including
@@ -302,13 +301,6 @@ suspend fun <A> suspendArbitraryBuilder(
 
    cont.resume(arb)
 }
-
-/**
- * passthrough arb to extract the propagated RandomSource. It's important to pass rs through both the
- * sample and the edgecases to ensure that flatMap can evaluate on both [sample] and [edgecase]
- * regardless of any absence of edgecases in the firstly bound arb.
- */
-private val randomSource: Arb<RandomSource> = ArbitraryBuilder.create { it }.withEdgecaseFn { it }.build()
 
 typealias SampleFn<A> = (RandomSource) -> A
 typealias EdgecaseFn<A> = (RandomSource) -> A?
@@ -352,18 +344,29 @@ interface ArbitraryBuilderContext : BaseArbitraryBuilderSyntax
 
 interface GenerateArbitraryBuilderContext : BaseArbitraryBuilderSyntax
 
+enum class SingleShotGenerationMode { Edgecase, Sample }
+
 sealed class SingleShotArbContinuation<F : BaseArbitraryBuilderSyntax, A>(
    override val context: CoroutineContext,
+   private val generationMode: SingleShotGenerationMode,
+   private val randomSource: RandomSource,
    private val fn: suspend F.() -> Arb<A>
 ) : Continuation<Arb<A>>, BaseArbitraryBuilderSyntax {
+
    class Restricted<A>(
+      genMode: SingleShotGenerationMode,
+      rs: RandomSource,
       fn: suspend ArbitraryBuilderContext.() -> Arb<A>
-   ) : SingleShotArbContinuation<ArbitraryBuilderContext, A>(EmptyCoroutineContext, fn), ArbitraryBuilderContext
+   ) : SingleShotArbContinuation<ArbitraryBuilderContext, A>(EmptyCoroutineContext, genMode, rs, fn),
+      ArbitraryBuilderContext
 
    class Suspendedable<A>(
+      genMode: SingleShotGenerationMode,
+      rs: RandomSource,
       override val context: CoroutineContext,
       fn: suspend GenerateArbitraryBuilderContext.() -> Arb<A>
-   ) : SingleShotArbContinuation<GenerateArbitraryBuilderContext, A>(context, fn), GenerateArbitraryBuilderContext
+   ) : SingleShotArbContinuation<GenerateArbitraryBuilderContext, A>(context, genMode, rs, fn),
+      GenerateArbitraryBuilderContext
 
    private lateinit var returnedArb: Arb<A>
    private var hasExecuted: Boolean = false
@@ -373,24 +376,9 @@ sealed class SingleShotArbContinuation<F : BaseArbitraryBuilderSyntax, A>(
       result.map { resultArb -> returnedArb = resultArb }.getOrThrow()
    }
 
-   override suspend fun <T> Arb<T>.bind(): T = suspendCoroutineUninterceptedOrReturn { c ->
-      // we call flatMap on the bound arb, and then returning the `returnedArb`, without modification
-      returnedArb = this.flatMap { value: T ->
-         /**
-          * we resume the suspension with the value passed inside the flatMap function.
-          * this [value] can be either sample or edgecases. This is important
-          * because from the point of view of a user of kotest, when we talk about transformation,
-          * we care about transforming the generated value of this arb for both sample and edgecases.
-          */
-         c.resume(value)
-         returnedArb
-      }
-      /**
-       * Notice this block returns the special COROUTINE_SUSPENDED value
-       * this means the Continuation provided to the block shall be resumed by invoking [resumeWith]
-       * at some moment in the future when the result becomes available to resume the computation.
-       */
-      COROUTINE_SUSPENDED
+   override suspend fun <T> Arb<T>.bind(): T = when (generationMode) {
+      SingleShotGenerationMode.Edgecase -> this.edgecase(randomSource) ?: this.sample(randomSource).value
+      SingleShotGenerationMode.Sample -> this.sample(randomSource).value
    }
 
    /**
@@ -404,7 +392,10 @@ sealed class SingleShotArbContinuation<F : BaseArbitraryBuilderSyntax, A>(
     */
    fun F.createSingleShotArb(): Arb<A> {
       require(!hasExecuted) { "continuation has already been executed, if you see this error please raise a bug report" }
-      fn.startCoroutineUninterceptedOrReturn(this@createSingleShotArb, this@SingleShotArbContinuation)
+      val result = fn.startCoroutineUninterceptedOrReturn(this@createSingleShotArb, this@SingleShotArbContinuation)
+
+      @Suppress("UNCHECKED_CAST")
+      returnedArb = result as Arb<A>
       return returnedArb
    }
 }
