@@ -18,17 +18,16 @@ jobs:
          max-parallel: 6
 
       steps:
-         -  uses: actions/checkout@v2
+         -  uses: actions/checkout@v3
             with:
                fetch-depth: 0
 
-         -  uses: actions/setup-java@v1
+         -  uses: actions/setup-java@v2
             with:
+               distribution: 'temurin'
                java-version: '11'
-               java-package: jdk
-               architecture: x64
 
-         -  name: Run ubuntu tests
+         -  name: Run tests
             run: ./gradlew check
             env:
                PRODUCT_NAME: ${{ matrix.product }}
