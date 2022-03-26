@@ -8,8 +8,17 @@ import org.intellij.lang.annotations.Language
 class ArraySchemaTest : FunSpec(
    {
       fun json(@Language("JSON") raw: String) = raw
-      val intArray = jsonSchema { jsonArray { integer() } }
-      val decimalArray = jsonSchema { jsonArray { decimal() } }
+
+      val intArray = jsonSchema { array { integer() } }
+      val decimalArray = jsonSchema { array { decimal() } }
+      val personArray = jsonSchema {
+         array {
+            obj {
+               withProperty("name") { string() }
+               withProperty("age") { integer() }
+            }
+         }
+      }
 
       test("Array with correct elements match") {
          """[1, 2]""" shouldMatchSchema intArray
@@ -20,6 +29,16 @@ class ArraySchemaTest : FunSpec(
             $[0] => Expected decimal, but was integer
             $[1] => Expected decimal, but was integer
          """.trimIndent()
+      }
+
+      test("empty array is ok") {
+         "[]" shouldMatchSchema personArray
+      }
+
+      test("array with partial inner match is not ok") {
+         """
+            [ { "name": "bob" } ]
+         """.trimIndent() shouldNotMatchSchema personArray
       }
    }
 )

@@ -9,7 +9,7 @@ class PrimitiveMatchSchemaTest : FunSpec(
    {
       test("invalid json") {
          shouldFail {
-            "[" shouldMatchSchema jsonSchema { jsonObject() }
+            "[" shouldMatchSchema jsonSchema { obj() }
          }.message shouldBe """
 Failed to parse actual as JSON: Expected end of the array ']', but had 'EOF' instead
 JSON input: [
@@ -96,7 +96,7 @@ JSON input: [
 
 fun main() {
    val petSchema = jsonSchema {
-      jsonObject {
+      obj {
          withProperty("name") { string() }
          withProperty("age") {
             integer {
@@ -107,12 +107,12 @@ fun main() {
    }
 
    val personSchema = jsonSchema {
-      jsonObject {
+      obj {
          withProperty("name") { string() }
          withProperty("age") { integer() }
-         withProperty("pets") { jsonArray { petSchema.root } }
+         withProperty("pets") { array { petSchema.root } }
       }
    }
 
-   val personList = jsonSchema { jsonArray { personSchema.root } }
+   val personList = jsonSchema { array { personSchema.root } }
 }

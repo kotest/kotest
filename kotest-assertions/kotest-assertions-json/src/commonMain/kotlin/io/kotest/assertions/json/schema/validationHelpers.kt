@@ -14,8 +14,6 @@ internal operator fun JsonSchemaElement.get(path: String): JsonSchemaElement? {
       }
 
    return when (this) {
-      JsonSchema.Builder -> error("should never occur.. JsonSchema.Builder is just a marker token for Schema DSL")
-
       is JsonSchema.JsonArray ->
          if (path.matches(arrayIndexRegex)) {
             this.elementType[path.substringAfter(']')]
@@ -95,8 +93,6 @@ private fun sequenceForSchema(
 ): Sequence<Pair<String, JsonSchemaElement>> =
    sequence {
       when (node) {
-         JsonSchema.Builder -> error("should not happen..") // figure out how to get rid of me please
-
          is JsonSchema.JsonArray -> yieldAll(sequenceForSchema("$currentPath[]", node.elementType))
 
          is JsonSchema.JsonObject -> node.properties.flatMap { (name, element) ->

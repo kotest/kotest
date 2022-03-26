@@ -4,9 +4,11 @@ import io.kotest.assertions.json.JsonNode
 import io.kotest.assertions.json.toJsonTree
 import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
+import io.kotest.matchers.and
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldNot
 import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonElement
 
 class SchemaViolation(
    val path: String,
@@ -14,8 +16,11 @@ class SchemaViolation(
    cause: Throwable? = null
 ) : RuntimeException(message, cause)
 
-infix fun String.shouldNotMatchSchema(schema: JsonSchema) = this shouldNot matchSchema(schema)
-infix fun String.shouldMatchSchema(schema: JsonSchema) = this should matchSchema(schema)
+infix fun String?.shouldMatchSchema(schema: JsonSchema) = this should parseToJson.and(matchSchema(schema).contramap<String?> { it?.let(Json::parseToJsonElement) })
+infix fun String?.shouldNotMatchSchema(schema: JsonSchema) = this shouldNot parseToJson.and(matchSchema(schema).contramap<String?> { it?.let(Json::parseToJsonElement) })
+
+infix fun JsonElement.shouldMatchSchema(schema: JsonSchema) = this should matchSchema(schema)
+infix fun JsonElement.shouldNotMatchSchema(schema: JsonSchema) = this shouldNot matchSchema(schema)
 
 private fun isCompatible(actual: JsonNode, schema: JsonSchemaElement) =
    (actual is JsonNode.BooleanNode && schema is JsonSchema.JsonBoolean) ||
@@ -35,9 +40,8 @@ private fun JsonNode.numberAwareTypeName() =
       else -> this.type()
    }
 
-fun matchSchema(schema: JsonSchema) = object : Matcher<String?> {
+val parseToJson = object: Matcher<String?> {
    override fun test(value: String?): MatcherResult {
-      // TODO: Improve nullability handling..
       if (value == null) return MatcherResult(
          false,
          { "expected null to match schema: " },
@@ -48,17 +52,25 @@ fun matchSchema(schema: JsonSchema) = object : Matcher<String?> {
          Json.parseToJsonElement(value)
       }
 
-      if (parsed.isFailure) return MatcherResult(
-         false,
+      return MatcherResult(
+         parsed.isSuccess,
          { "Failed to parse actual as JSON: ${parsed.exceptionOrNull()?.message}" },
          { "Failed to parse actual as JSON: ${parsed.exceptionOrNull()?.message}" },
       )
+   }
+}
 
-      data class SchemaNode(val path: String, val element: JsonSchemaElement)
+fun matchSchema(schema: JsonSchema) = object : Matcher<JsonElement?> {
+   override fun test(value: JsonElement?): MatcherResult {
+      if (value == null) return MatcherResult(
+         false,
+         { "expected null to match schema: " },
+         { "expected not to match schema, but null matched JsonNull schema" }
+      )
 
       val violations = mutableListOf<SchemaViolation>()
       val visitedNodes = mutableSetOf<String>()
-      val tree = toJsonTree(parsed.getOrThrow())
+      val tree = toJsonTree(value)
 
       for ((path, actual) in tree) {
          try {
@@ -73,7 +85,7 @@ fun matchSchema(schema: JsonSchema) = object : Matcher<String?> {
                   )
                }
             } else {
-               visitedNodes.add(path)
+               visitedNodes.add(path.replace("""\[\d+\]""".toRegex(), "[]"))
                if (!isCompatible(actual, expected))
                   violations.add(SchemaViolation(path, "Expected ${expected.typeName()}, but was ${actual.numberAwareTypeName()}"))
             }
@@ -95,3 +107,4 @@ fun matchSchema(schema: JsonSchema) = object : Matcher<String?> {
       )
    }
 }
+

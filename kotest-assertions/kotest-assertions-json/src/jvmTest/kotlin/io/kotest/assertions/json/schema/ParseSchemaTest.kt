@@ -37,12 +37,12 @@ class ParseSchemaTest : FunSpec(
 
          test("correctly parses a proper JSON schema") {
             schema shouldBe jsonSchema {
-               jsonObject {
+               obj {
                   withProperty("first_name") { string() }
                   withProperty("last_name") { string() }
                   withProperty("birthday") { string() } // TODO: Once matchers are implemented, this node should have some sort of date format matcher
                   withProperty("address") {
-                     jsonObject {
+                     obj {
                         withProperty("street_address") { string() }
                         withProperty("city") { string() }
                         withProperty("state") { string() }
@@ -82,14 +82,14 @@ class ParseSchemaTest : FunSpec(
             mismatchingSample shouldNotMatchSchema schema
 
             shouldFail { mismatchingSample shouldMatchSchema schema }.message shouldBe """
-${'$'}.name => Key undefined in schema, and schema is set to disallow extra keys
-${'$'}.address => Expected object, but was string
-${'$'}.first_name => Expected string, but was undefined
-${'$'}.last_name => Expected string, but was undefined
-${'$'}.address.street_address => Expected string, but was undefined
-${'$'}.address.city => Expected string, but was undefined
-${'$'}.address.state => Expected string, but was undefined
-${'$'}.address.country => Expected string, but was undefined
+               $.name => Key undefined in schema, and schema is set to disallow extra keys
+               $.address => Expected object, but was string
+               $.first_name => Expected string, but was undefined
+               $.last_name => Expected string, but was undefined
+               $.address.street_address => Expected string, but was undefined
+               $.address.city => Expected string, but was undefined
+               $.address.state => Expected string, but was undefined
+               $.address.country => Expected string, but was undefined
             """.trimIndent()
          }
       }

@@ -1,5 +1,3 @@
-@file:OptIn(ExperimentalSerializationApi::class)
-
 package io.kotest.assertions.json.schema
 
 import io.kotest.matchers.Matcher
@@ -39,9 +37,7 @@ data class JsonSchema(
    val root: JsonSchemaElement
 ) {
 
-   object Builder : JsonSchemaElement {
-      override fun typeName() = "JsonSchema.Builder"
-   }
+   object Builder
 
    @SerialName("array")
    @Serializable
@@ -103,13 +99,13 @@ fun JsonSchema.Builder.integer(matcherBuilder: () -> Matcher<Int>? = { null }) =
 fun JsonSchema.Builder.decimal() =
    JsonSchema.JsonDecimal
 
-fun JsonSchema.Builder.jsonObject(dsl: JsonSchema.JsonObject.() -> Unit = {}) =
+fun JsonSchema.Builder.obj(dsl: JsonSchema.JsonObject.() -> Unit = {}) =
    JsonSchema.JsonObject().apply(dsl)
 
 fun JsonSchema.Builder.boolean() =
    JsonSchema.JsonBoolean
 
-fun JsonSchema.Builder.jsonArray(typeBuilder: () -> JsonSchemaElement) =
+fun JsonSchema.Builder.array(typeBuilder: () -> JsonSchemaElement) =
    JsonSchema.JsonArray(typeBuilder())
 
 fun jsonSchema(
