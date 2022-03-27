@@ -30,7 +30,7 @@ JSON input: [
             shouldFail {
                "0" shouldMatchSchema boolSchema
             }.message shouldBe """
-               $ => Expected boolean, but was integer
+               $ => Expected boolean, but was number
             """.trimIndent()
          }
       }
@@ -55,39 +55,32 @@ JSON input: [
          }
       }
 
-      context("integer schemas") {
-         val intSchema = jsonSchema { integer() }
+      context("numbers") {
+         val numberSchema = jsonSchema { number() }
 
          test("integers match int schema") {
-            "5" shouldMatchSchema intSchema
-            "0" shouldMatchSchema intSchema
-            "-1" shouldMatchSchema intSchema
+            "5" shouldMatchSchema numberSchema
+            "3.14" shouldMatchSchema numberSchema
+            "0" shouldMatchSchema numberSchema
+            "-1" shouldMatchSchema numberSchema
          }
 
          test("Non-number causes failure") {
-            shouldFail { "false" shouldMatchSchema intSchema }.message shouldBe """
-               $ => Expected integer, but was boolean
-            """.trimIndent()
-         }
-
-         test("Decimals cause failure") {
-            shouldFail {
-               "3.7" shouldMatchSchema intSchema
-            }.message shouldBe """
-               $ => Expected integer, but was decimal
+            shouldFail { "false" shouldMatchSchema numberSchema }.message shouldBe """
+               $ => Expected number, but was boolean
             """.trimIndent()
          }
 
          test("String cause failure" ){
             shouldFail {
-               "\"5\"" shouldMatchSchema intSchema
+               "\"5\"" shouldMatchSchema numberSchema
             }.message shouldBe """
-               $ => Expected integer, but was string
+               $ => Expected number, but was string
             """.trimIndent()
          }
 
          test("negated assertion works") {
-            "false" shouldNotMatchSchema intSchema
+            "false" shouldNotMatchSchema numberSchema
          }
       }
    }
@@ -98,7 +91,7 @@ fun main() {
       obj {
          withProperty("name") { string() }
          withProperty("age") {
-            integer {
+            number {
                beEven()
             }
          }
@@ -108,7 +101,7 @@ fun main() {
    val personSchema = jsonSchema {
       obj {
          withProperty("name") { string() }
-         withProperty("age") { integer() }
+         withProperty("age") { number() }
          withProperty("pets") { array { petSchema.root } }
       }
    }

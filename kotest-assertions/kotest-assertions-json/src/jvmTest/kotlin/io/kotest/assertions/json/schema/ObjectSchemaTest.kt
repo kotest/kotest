@@ -13,7 +13,7 @@ class ObjectSchemaTest : FunSpec(
       val personSchema = jsonSchema {
          obj {
             withProperty("name") { string() }
-            withProperty("age") { decimal() }
+            withProperty("age") { number() }
          }
       }
 
@@ -25,7 +25,7 @@ class ObjectSchemaTest : FunSpec(
          shouldFail {
             json("""{ "name": "John", "age": "twentyseven" }""") shouldMatchSchema personSchema
          }.message shouldBe """
-            $.age => Expected decimal, but was string
+            $.age => Expected number, but was string
          """.trimIndent()
       }
 
@@ -49,7 +49,7 @@ class ObjectSchemaTest : FunSpec(
          shouldFail {
             json("""{ "name": "John" }""") shouldMatchSchema personSchema
          }.message shouldBe """
-            $.age => Expected decimal, but was undefined
+            $.age => Expected number, but was undefined
          """.trimIndent()
       }
 
@@ -57,8 +57,8 @@ class ObjectSchemaTest : FunSpec(
          shouldFail {
             json("""{ "name": 5, "age": "twentyseven" }""") shouldMatchSchema personSchema
          }.message shouldBe """
-            $.name => Expected string, but was integer
-            $.age => Expected decimal, but was string
+            $.name => Expected string, but was number
+            $.age => Expected number, but was string
          """.trimIndent()
       }
 
@@ -84,7 +84,7 @@ class ObjectSchemaTest : FunSpec(
                json("""{ "owner": { "name": 5, "age": 34.1 }, "employees": [] }""") shouldMatchSchema
                   companySchema
             }.message shouldBe """
-               $.owner.name => Expected string, but was integer
+               $.owner.name => Expected string, but was number
             """.trimIndent()
          }
       }

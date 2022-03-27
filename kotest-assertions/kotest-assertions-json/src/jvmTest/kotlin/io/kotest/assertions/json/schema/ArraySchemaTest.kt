@@ -9,26 +9,25 @@ class ArraySchemaTest : FunSpec(
    {
       fun json(@Language("JSON") raw: String) = raw
 
-      val intArray = jsonSchema { array { integer() } }
-      val decimalArray = jsonSchema { array { decimal() } }
+      val numberArray = jsonSchema { array { number() } }
 
       val person = jsonSchema {
          obj {
             withProperty("name") { string() }
-            withProperty("age") { integer() }
+            withProperty("age") { number() }
          }
       }
 
       val personArray = jsonSchema { array { person() } }
 
       test("Array with correct elements match") {
-         """[1, 2]""" shouldMatchSchema intArray
+         """[1, 2]""" shouldMatchSchema numberArray
       }
 
       test("Problems compound") {
-         shouldFail { """[1, 2]""" shouldMatchSchema decimalArray }.message shouldBe """
-            $[0] => Expected decimal, but was integer
-            $[1] => Expected decimal, but was integer
+         shouldFail { """["one", "two"]""" shouldMatchSchema numberArray }.message shouldBe """
+            $[0] => Expected number, but was string
+            $[1] => Expected number, but was string
          """.trimIndent()
       }
 
@@ -49,8 +48,8 @@ class ArraySchemaTest : FunSpec(
          missingAge shouldNotMatchSchema personArray
 
          shouldFail { missingAge shouldMatchSchema personArray }.message shouldBe """
-            $[0].age => Expected integer, but was undefined
-            $[2].age => Expected integer, but was undefined
+            $[0].age => Expected number, but was undefined
+            $[2].age => Expected number, but was undefined
          """.trimIndent()
       }
    }

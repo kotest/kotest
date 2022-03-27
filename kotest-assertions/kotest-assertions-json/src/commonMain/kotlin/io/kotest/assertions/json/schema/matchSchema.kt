@@ -48,7 +48,6 @@ fun matchSchema(schema: JsonSchema) = object : Matcher<JsonElement?> {
          { "expected not to match schema, but null matched JsonNull schema" }
       )
 
-      val visitedNodes = mutableSetOf<String>()
       val tree = toJsonTree(value)
       val violations = validate("$", tree.root, schema.root, schema.allowExtraProperties)
 
@@ -103,12 +102,12 @@ private fun validate(
          } else violation("Expected ${expected.typeName()}, but was object")
       }
 
-      is JsonNode.NullNode -> TODO()
+      is JsonNode.NullNode -> TODO("Check how Json schema handles null")
       is JsonNode.BooleanNode,
       is JsonNode.NumberNode,
       is JsonNode.StringNode ->
          if (!isCompatible(tree, expected))
-            violation("Expected ${expected.typeName()}, but was ${tree.numberAwareTypeName()}")
+            violation("Expected ${expected.typeName()}, but was ${tree.type()}")
          else emptyList()
    }
 }
@@ -122,18 +121,5 @@ private class SchemaViolation(
 private fun isCompatible(actual: JsonNode, schema: JsonSchemaElement) =
    (actual is JsonNode.BooleanNode && schema is JsonSchema.JsonBoolean) ||
       (actual is JsonNode.StringNode && schema is JsonSchema.JsonString) ||
-      (actual is JsonNode.NumberNode && actual.content.contains(".") && schema is JsonSchema.JsonDecimal) ||
-      (actual is JsonNode.NumberNode && !actual.content.contains(".") && schema is JsonSchema.JsonInteger)
-
-/**
- * Expands upon [JsonNode.type] and adds the ability of differentiating between integer and decimal numbers
- */
-private fun JsonNode.numberAwareTypeName() =
-   when (this) {
-      is JsonNode.NumberNode -> {
-         if (this.content.contains(".")) "decimal"
-         else "integer"
-      }
-      else -> this.type()
-   }
+      (actual is JsonNode.NumberNode &&  schema is JsonSchema.JsonNumber)
 

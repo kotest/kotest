@@ -70,14 +70,10 @@ data class JsonSchema(
       override fun typeName() = "string"
    }
 
-   data class JsonInteger(override val matcher: Matcher<Int>? = null) : JsonSchemaElement, ValueNode<Int> {
-      override fun typeName() = "integer"
-   }
-
    @SerialName("number")
    @Serializable
-   object JsonDecimal : JsonSchemaElement, ValueNode<Double> {
-      override fun typeName() = "decimal"
+   object JsonNumber : JsonSchemaElement, ValueNode<Number> {
+      override fun typeName() = "number"
    }
 
    @SerialName("boolean")
@@ -94,11 +90,8 @@ data class JsonSchema(
 fun JsonSchema.Builder.string(matcherBuilder: () -> Matcher<String>? = { null }) =
    JsonSchema.JsonString(matcherBuilder())
 
-fun JsonSchema.Builder.integer(matcherBuilder: () -> Matcher<Int>? = { null }) =
-   JsonSchema.JsonInteger(matcherBuilder())
-
-fun JsonSchema.Builder.decimal() =
-   JsonSchema.JsonDecimal
+fun JsonSchema.Builder.number(matcherBuilder: () -> Matcher<Int>? = { null }) =
+   JsonSchema.JsonNumber
 
 fun JsonSchema.Builder.obj(dsl: JsonSchema.JsonObject.() -> Unit = {}) =
    JsonSchema.JsonObject().apply(dsl)

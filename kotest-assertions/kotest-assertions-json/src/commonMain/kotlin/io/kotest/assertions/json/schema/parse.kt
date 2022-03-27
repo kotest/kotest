@@ -24,7 +24,7 @@ object SchemaDeserializer : JsonContentPolymorphicSerializer<JsonSchemaElement>(
    override fun selectDeserializer(element: JsonElement): DeserializationStrategy<out JsonSchemaElement> {
       return when (val type = element.jsonObject.get("type")?.jsonPrimitive?.content) {
          "string" -> JsonSchema.JsonString.serializer()
-         "number" -> JsonSchema.JsonDecimal.serializer()
+         "number" -> JsonSchema.JsonNumber.serializer()
          "boolean" -> JsonSchema.JsonBoolean.serializer()
          "array" -> JsonSchema.JsonArray.serializer()
          "object" -> JsonSchema.JsonObject.serializer()
