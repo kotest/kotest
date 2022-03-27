@@ -47,20 +47,18 @@ internal fun <A, B> Arb<A>.trampoline(next: (Sample<A>) -> Arb<B>): Arb<B> = whe
 @Suppress("UNCHECKED_CAST")
 internal class TrampolineArb<A> private constructor(
    private val first: Arb<A>,
-   commands: List<(Sample<Any>) -> Arb<Any>>
+   private val commands: List<(Sample<Any>) -> Arb<Any>>
 ) : Arb<A>() {
    constructor(first: Arb<A>) : this(first, emptyList())
-
-   private val commandList: MutableList<(Sample<Any>) -> Arb<Any>> = commands.toMutableList()
 
    fun <A, B> thunk(fn: (Sample<A>) -> Arb<B>): TrampolineArb<B> =
       TrampolineArb(
          first,
-         commandList.toList() + (fn as (Sample<Any>) -> Arb<Any>)
+         commands + (fn as (Sample<Any>) -> Arb<Any>)
       ) as TrampolineArb<B>
 
    override fun edgecase(rs: RandomSource): A? =
-      commandList
+      commands
          .fold(first as Arb<Any>) { currentArb, next ->
             val currentEdge = currentArb.edgecase(rs) ?: currentArb.sample(rs).value
             next(Sample(currentEdge))
@@ -68,7 +66,7 @@ internal class TrampolineArb<A> private constructor(
          .edgecase(rs) as A?
 
    override fun sample(rs: RandomSource): Sample<A> =
-      commandList
+      commands
          .fold(first as Arb<Any>) { currentArb, next ->
             next(currentArb.sample(rs))
          }
