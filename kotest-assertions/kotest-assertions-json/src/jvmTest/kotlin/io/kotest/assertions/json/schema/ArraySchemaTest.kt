@@ -11,14 +11,15 @@ class ArraySchemaTest : FunSpec(
 
       val intArray = jsonSchema { array { integer() } }
       val decimalArray = jsonSchema { array { decimal() } }
-      val personArray = jsonSchema {
-         array {
-            obj {
-               withProperty("name") { string() }
-               withProperty("age") { integer() }
-            }
+
+      val person = jsonSchema {
+         obj {
+            withProperty("name") { string() }
+            withProperty("age") { integer() }
          }
       }
+
+      val personArray = jsonSchema { array { person() } }
 
       test("Array with correct elements match") {
          """[1, 2]""" shouldMatchSchema intArray
@@ -36,9 +37,21 @@ class ArraySchemaTest : FunSpec(
       }
 
       test("array with partial inner match is not ok") {
+         val missingAge =
          """
-            [ { "name": "bob" } ]
-         """.trimIndent() shouldNotMatchSchema personArray
+            [
+               { "name": "bob" },
+               { "name": "bob", "age": 3 },
+               { "name": "bob" }
+            ]
+         """.trimIndent()
+
+         missingAge shouldNotMatchSchema personArray
+
+         shouldFail { missingAge shouldMatchSchema personArray }.message shouldBe """
+            $[0].age => Expected integer, but was undefined
+            $[2].age => Expected integer, but was undefined
+         """.trimIndent()
       }
    }
 )

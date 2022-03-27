@@ -83,13 +83,9 @@ class ParseSchemaTest : FunSpec(
 
             shouldFail { mismatchingSample shouldMatchSchema schema }.message shouldBe """
                $.name => Key undefined in schema, and schema is set to disallow extra keys
-               $.address => Expected object, but was string
                $.first_name => Expected string, but was undefined
                $.last_name => Expected string, but was undefined
-               $.address.street_address => Expected string, but was undefined
-               $.address.city => Expected string, but was undefined
-               $.address.state => Expected string, but was undefined
-               $.address.country => Expected string, but was undefined
+               $.address => Expected object, but was string
             """.trimIndent()
          }
       }

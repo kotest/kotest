@@ -50,8 +50,7 @@ JSON input: [
 
          test("object does not match string schema") {
             shouldFail { """{ "greeting": "hello" }""" shouldMatchSchema schema }.message shouldBe """
-               $.greeting => Key undefined in schema, and schema is set to disallow extra keys
-               $ => Expected string, but was undefined
+               $ => Expected string, but was object
             """.trimIndent()
          }
       }

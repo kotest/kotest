@@ -34,8 +34,6 @@ class ObjectSchemaTest : FunSpec(
             "\"hello\"" shouldMatchSchema personSchema
          }.message shouldBe """
             $ => Expected object, but was string
-            $.name => Expected string, but was undefined
-            $.age => Expected decimal, but was undefined
          """.trimIndent()
       }
 

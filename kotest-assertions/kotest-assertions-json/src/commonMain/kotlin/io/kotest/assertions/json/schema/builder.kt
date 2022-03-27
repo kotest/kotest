@@ -36,6 +36,7 @@ data class JsonSchema(
    val allowExtraProperties: Boolean = false,
    val root: JsonSchemaElement
 ) {
+   operator fun invoke() = root
 
    object Builder
 
