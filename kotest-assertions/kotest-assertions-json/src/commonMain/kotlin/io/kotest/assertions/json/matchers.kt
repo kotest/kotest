@@ -5,7 +5,6 @@ import io.kotest.assertions.Expected
 import io.kotest.matchers.ComparableMatcherResult
 import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
-import kotlinx.serialization.json.JsonNull
 
 /**
  * Returns a [Matcher] that verifies json trees are equal.

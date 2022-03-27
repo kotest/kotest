@@ -49,7 +49,7 @@ fun matchSchema(schema: JsonSchema) = object : Matcher<JsonElement?> {
       )
 
       val tree = toJsonTree(value)
-      val violations = validate("$", tree.root, schema.root, schema.allowExtraProperties)
+      val violations = validate("$", tree.root, schema.root)
 
       return MatcherResult(
          violations.isEmpty(),
@@ -63,7 +63,6 @@ private fun validate(
    currentPath: String,
    tree: JsonNode,
    expected: JsonSchemaElement,
-   allowExtraKeys: Boolean
 ): List<SchemaViolation> {
    fun propertyViolation(propertyName: String, message: String) =
       listOf(SchemaViolation("$currentPath.$propertyName", message))
@@ -75,29 +74,31 @@ private fun validate(
       is JsonNode.ArrayNode -> {
          if (expected is JsonSchema.JsonArray)
             tree.elements.flatMapIndexed { i, node ->
-               validate("$currentPath[$i]", node, expected.elementType, allowExtraKeys)
+               validate("$currentPath[$i]", node, expected.elementType)
             }
          else violation("Expected ${expected.typeName()}, but was array")
       }
       is JsonNode.ObjectNode -> {
          if (expected is JsonSchema.JsonObject) {
             val extraKeyViolations =
-               if (!allowExtraKeys)
+               if (!expected.additionalProperties)
                   tree.elements.keys
                      .filterNot { it in expected.properties.keys }
                      .flatMap {
                         propertyViolation(it, "Key undefined in schema, and schema is set to disallow extra keys")
                      }
-               else
-                  emptyList<SchemaViolation>()
+               else emptyList()
 
             extraKeyViolations + expected.properties.flatMap { (propertyName, schema) ->
                val actual = tree.elements[propertyName]
 
-               if (actual == null)
-                  propertyViolation(propertyName, "Expected ${schema.typeName()}, but was undefined")
-               else
-                  validate("$currentPath.$propertyName", actual, schema, allowExtraKeys)
+               if (actual == null) {
+                  if (expected.requiredProperties.contains(propertyName)) {
+                     propertyViolation(propertyName, "Expected ${schema.typeName()}, but was undefined")
+                  } else {
+                     emptyList()
+                  }
+               } else validate("$currentPath.$propertyName", actual, schema)
             }
          } else violation("Expected ${expected.typeName()}, but was object")
       }
@@ -106,14 +107,8 @@ private fun validate(
       is JsonNode.NumberNode ->
          if (expected is JsonSchema.JsonNumber) {
             expected.matcher?.let {
-               val matcherResult = it.test(
-                  tree.content.toIntOrNull()
-                     ?: tree.content.toLongOrNull()
-                     ?: tree.content.toFloatOrNull()
-                     ?: tree.content.toDouble()
-               )
-               if (matcherResult.passed()) emptyList()
-               else violation(matcherResult.failureMessage())
+               val matcherResult = it.test(tree.content.toDouble())
+               if (matcherResult.passed()) emptyList() else violation(matcherResult.failureMessage())
             } ?: emptyList()
          } else {
             violation("Expected ${expected.typeName()}, but was ${tree.type()}")

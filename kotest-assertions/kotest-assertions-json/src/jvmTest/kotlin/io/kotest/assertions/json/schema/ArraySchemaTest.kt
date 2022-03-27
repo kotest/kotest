@@ -13,8 +13,8 @@ class ArraySchemaTest : FunSpec(
 
       val person = jsonSchema {
          obj {
-            withProperty("name") { string() }
-            withProperty("age") { number() }
+            withProperty("name", required = true) { string() }
+            withProperty("age", required = true) { number() }
          }
       }
 

@@ -1,8 +1,14 @@
 package io.kotest.assertions.json.schema
 
+import io.kotest.datatest.withData
+import io.kotest.matchers.and
 import io.kotest.assertions.shouldFail
 import io.kotest.core.spec.style.FunSpec
+import io.kotest.data.row
 import io.kotest.matchers.shouldBe
+import io.kotest.matchers.string.haveMaxLength
+import io.kotest.matchers.string.haveMinLength
+import io.kotest.matchers.string.match
 
 class ParseSchemaTest : FunSpec(
    {
@@ -19,7 +25,12 @@ class ParseSchemaTest : FunSpec(
             """{
               "type": "object",
               "properties": {
-                "first_name": { "type": "string" },
+                "first_name": {
+                   "type": "string",
+                   "minLength": 3,
+                   "maxLength": 10,
+                   "pattern": "[A-Z][a-z]+"
+                 },
                 "last_name": { "type": "string" },
                 "birthday": { "type": "string", "format": "date" },
                 "address": {
@@ -35,21 +46,29 @@ class ParseSchemaTest : FunSpec(
             }"""
          )
 
-         test("correctly parses a proper JSON schema") {
-            schema shouldBe jsonSchema {
-               obj {
-                  withProperty("first_name") { string() }
-                  withProperty("last_name") { string() }
-                  withProperty("birthday") { string() } // TODO: Once matchers are implemented, this node should have some sort of date format matcher
-                  withProperty("address") {
-                     obj {
-                        withProperty("street_address") { string() }
-                        withProperty("city") { string() }
-                        withProperty("state") { string() }
-                        withProperty("country") { string() }
-                     }
+         context("String constraints are applied") {
+            withData(
+               "e" to """"e" should have minimum length of 3""",
+               "george" to """"george" should match regex [A-Z][a-z]+""",
+               "Helmut-Alexander" to """"Helmut-Alexander" should have maximum length of 10""",
+            ) { (name, expectedMessage) ->
+               shouldFail {
+                  """
+                  {
+                    "first_name": "$name",
+                    "last_name": "Washington",
+                    "birthday": "1732-02-22",
+                    "address": {
+                      "street_address": "3200 Mount Vernon Memorial Highway",
+                      "city": "Mount Vernon",
+                      "state": "Virginia",
+                      "country": "United States"
+                    }
                   }
-               }
+               """.trimIndent() shouldMatchSchema schema
+               }.message shouldBe """
+                  $.first_name => $expectedMessage
+               """.trimIndent()
             }
          }
 
@@ -71,7 +90,7 @@ class ParseSchemaTest : FunSpec(
 
          test("mismatch against sample schema") {
             val mismatchingSample =
-            """
+               """
                {
                  "name": "George Washington",
                  "birthday": "February 22, 1732",
@@ -82,9 +101,6 @@ class ParseSchemaTest : FunSpec(
             mismatchingSample shouldNotMatchSchema schema
 
             shouldFail { mismatchingSample shouldMatchSchema schema }.message shouldBe """
-               $.name => Key undefined in schema, and schema is set to disallow extra keys
-               $.first_name => Expected string, but was undefined
-               $.last_name => Expected string, but was undefined
                $.address => Expected object, but was string
             """.trimIndent()
          }

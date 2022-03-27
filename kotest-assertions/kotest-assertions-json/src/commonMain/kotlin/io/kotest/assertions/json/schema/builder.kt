@@ -34,7 +34,6 @@ interface ValueNode<T> {
  * ```
  */
 data class JsonSchema(
-   val allowExtraProperties: Boolean = false,
    val root: JsonSchemaElement
 ) {
    operator fun invoke() = root
@@ -46,20 +45,58 @@ data class JsonSchema(
       override fun typeName() = "array"
    }
 
-   @Serializable
-   data class JsonObject(
-      val properties: MutableMap<
-         String,
-         JsonSchemaElement
-      > = mutableMapOf()
-   ) : JsonSchemaElement {
+   class JsonObjectBuilder {
+      var additionalProperties: Boolean = true
+      var minProperties: Int = 0
+      var maxProperties: Int? = null
+      var properties: MutableMap<String, JsonSchemaElement> = mutableMapOf()
 
-      fun withProperty(name: String, elementBuilder: JsonSchema.Builder.() -> JsonSchemaElement) {
+      /**
+       * https://json-schema.org/understanding-json-schema/reference/object.html#required-properties
+       */
+      var requiredProperties: MutableList<String> = mutableListOf()
+
+      /**
+       * By default, properties are not required, however by setting [required] to true you can specify that it must be
+       * included
+       */
+      fun withProperty(
+         name: String,
+         required: Boolean = false,
+         elementBuilder: JsonSchema.Builder.() -> JsonSchemaElement
+      ) {
          properties[name] = JsonSchema.Builder.elementBuilder()
+         if (required) requiredProperties.add(name)
       }
 
-      operator fun get(name: String) = properties.get(name)
+      fun build() = JsonObject(
+         additionalProperties = additionalProperties,
+         minProperties = minProperties,
+         maxProperties = maxProperties,
+         properties = properties,
+         requiredProperties = requiredProperties.toTypedArray()
+      )
+   }
 
+   @Serializable
+   data class JsonObject(
+      /**
+       * Controls whether this node allows additional properties to be defined or not.
+       * By default, additional properties are _allowed_
+       *
+       * https://json-schema.org/understanding-json-schema/reference/object.html#additional-properties
+       */
+      val additionalProperties: Boolean = true,
+      val minProperties: Int = 0,
+      val maxProperties: Int? = null,
+      val properties: Map<String, JsonSchemaElement>,
+
+      /**
+       * https://json-schema.org/understanding-json-schema/reference/object.html#required-properties
+       */
+      val requiredProperties: Array<String> = emptyArray(),
+   ) : JsonSchemaElement {
+      operator fun get(name: String) = properties.get(name)
       override fun typeName() = "object"
    }
 
@@ -69,7 +106,7 @@ data class JsonSchema(
    }
 
    @Serializable
-   data class JsonNumber(override val matcher: Matcher<@Contextual Number>?) : JsonSchemaElement, ValueNode<Number> {
+   data class JsonNumber(override val matcher: Matcher<@Contextual Double>?) : JsonSchemaElement, ValueNode<Double> {
       override fun typeName() = "number"
    }
 
@@ -86,11 +123,11 @@ data class JsonSchema(
 fun JsonSchema.Builder.string(matcherBuilder: () -> Matcher<String>? = { null }) =
    JsonSchema.JsonString(matcherBuilder())
 
-fun JsonSchema.Builder.number(matcherBuilder: () -> Matcher<Number>? = { null }) =
+fun JsonSchema.Builder.number(matcherBuilder: () -> Matcher<Double>? = { null }) =
    JsonSchema.JsonNumber(matcherBuilder())
 
-fun JsonSchema.Builder.obj(dsl: JsonSchema.JsonObject.() -> Unit = {}) =
-   JsonSchema.JsonObject().apply(dsl)
+fun JsonSchema.Builder.obj(dsl: JsonSchema.JsonObjectBuilder.() -> Unit = {}) =
+   JsonSchema.JsonObjectBuilder().apply(dsl).build()
 
 fun JsonSchema.Builder.boolean() =
    JsonSchema.JsonBoolean
@@ -99,10 +136,8 @@ fun JsonSchema.Builder.array(typeBuilder: () -> JsonSchemaElement) =
    JsonSchema.JsonArray(typeBuilder())
 
 fun jsonSchema(
-   allowExtraProperties: Boolean = false,
    rootBuilder: JsonSchema.Builder.() -> JsonSchemaElement
 ): JsonSchema =
    JsonSchema(
-      allowExtraProperties,
       JsonSchema.Builder.rootBuilder()
    )

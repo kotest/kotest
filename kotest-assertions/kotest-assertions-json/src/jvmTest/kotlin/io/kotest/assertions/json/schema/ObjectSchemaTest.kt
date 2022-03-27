@@ -10,12 +10,30 @@ class ObjectSchemaTest : FunSpec(
    {
       fun json(@Language("JSON") raw: String) = raw
 
-      val personSchema = jsonSchema {
+      val personSchemaAllowingExtraProperties = jsonSchema {
          obj {
-            withProperty("name") { string() }
-            withProperty("age") { number() }
+            withProperty("name", required = true) { string() }
+            withProperty("initials", required = false) { string() }
+            withProperty("age", required = true) { number() }
          }
       }
+
+      val personSchema = parseSchema(
+         json(
+            """
+            {
+              "type": "object",
+              "properties": {
+                "name": { "type": "string" },
+                "initials": { "type": "string" },
+                "age": { "type": "number" }
+              },
+             "requiredProperties": [ "name", "age" ],
+             "additionalProperties": false
+           }
+         """
+         )
+      )
 
       test("matching object passes") {
          """{ "name": "John", "age": 27.2 }""" shouldMatchSchema personSchema
@@ -45,12 +63,24 @@ class ObjectSchemaTest : FunSpec(
          """.trimIndent()
       }
 
-      test("Property undefined in schema causes failure") {
+      test("Missing required property causes failure") {
          shouldFail {
             json("""{ "name": "John" }""") shouldMatchSchema personSchema
          }.message shouldBe """
             $.age => Expected number, but was undefined
          """.trimIndent()
+      }
+
+      test("Extra property causes failure for scheam disallowing it") {
+         shouldFail {
+            json("""{ "name": "John", "favorite_pet": "Cat", "age": 2 }""") shouldMatchSchema personSchema
+         }.message shouldBe """
+            $.favorite_pet => Key undefined in schema, and schema is set to disallow extra keys
+         """.trimIndent()
+      }
+
+      test("Extra property is OK when schema allows it") {
+         json("""{ "name": "John", "favorite_pet": "Cat", "age": 2 }""") shouldMatchSchema personSchemaAllowingExtraProperties
       }
 
       test("Problems compound") {

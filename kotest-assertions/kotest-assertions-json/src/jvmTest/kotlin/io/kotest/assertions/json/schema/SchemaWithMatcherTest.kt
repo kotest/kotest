@@ -3,6 +3,9 @@ package io.kotest.assertions.json.schema
 import io.kotest.assertions.shouldFail
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.and
+import io.kotest.matchers.doubles.beGreaterThanOrEqualTo
+import io.kotest.matchers.doubles.beLessThanOrEqualTo
+import io.kotest.matchers.doubles.beMultipleOf
 import io.kotest.matchers.ints.beEven
 import io.kotest.matchers.ints.beInRange
 import io.kotest.matchers.longs.beInRange
@@ -14,13 +17,13 @@ import io.kotest.matchers.types.beInstanceOf
 class SchemaWithMatcherTest : FunSpec(
    {
       test("Even numbers") {
-         val evenNumbers = jsonSchema { number { beInstanceOf<Int>() and beEven().contramap { it as Int } } }
+         val evenNumbers = jsonSchema { number { beMultipleOf(2.0) } }
 
          "2" shouldMatchSchema evenNumbers
 
          shouldFail { "3" shouldMatchSchema evenNumbers }
             .message shouldBe """
-               $ => 3 should be even
+               $ => 3.0 should be multiple of 2.0
             """.trimIndent()
       }
 
@@ -29,7 +32,7 @@ class SchemaWithMatcherTest : FunSpec(
             array {
                obj {
                   withProperty("name") { string { haveMinLength(3) and haveMaxLength(20) } }
-                  withProperty("age") { number { beInRange(0..120).contramap { it as Int } } }
+                  withProperty("age") { number { beGreaterThanOrEqualTo(0.0) and beLessThanOrEqualTo(120.0) } }
                }
             }
          }
@@ -59,7 +62,7 @@ class SchemaWithMatcherTest : FunSpec(
                """ shouldMatchSchema schema
             }.message shouldBe """
                $[0].name => "bo" should have minimum length of 3
-               $[2].age => -1 should be in range 0..120
+               $[2].age => -1.0 should be >= 0.0
                $[3].name => "alexander the extremely great" should have maximum length of 20
             """.trimIndent()
          }
