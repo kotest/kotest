@@ -1,6 +1,7 @@
 package io.kotest.assertions.json.schema
 
 import io.kotest.matchers.Matcher
+import kotlinx.serialization.Contextual
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -40,13 +41,11 @@ data class JsonSchema(
 
    object Builder
 
-   @SerialName("array")
    @Serializable
    data class JsonArray(val elementType: JsonSchemaElement) : JsonSchemaElement {
       override fun typeName() = "array"
    }
 
-   @SerialName("object")
    @Serializable
    data class JsonObject(
       val properties: MutableMap<
@@ -64,19 +63,16 @@ data class JsonSchema(
       override fun typeName() = "object"
    }
 
-   @SerialName("string")
    @Serializable
    data class JsonString(override val matcher: Matcher<String>? = null) : JsonSchemaElement, ValueNode<String> {
       override fun typeName() = "string"
    }
 
-   @SerialName("number")
    @Serializable
-   object JsonNumber : JsonSchemaElement, ValueNode<Number> {
+   data class JsonNumber(override val matcher: Matcher<@Contextual Number>?) : JsonSchemaElement, ValueNode<Number> {
       override fun typeName() = "number"
    }
 
-   @SerialName("boolean")
    @Serializable
    object JsonBoolean : JsonSchemaElement, ValueNode<Boolean> {
       override fun typeName() = "boolean"
@@ -90,8 +86,8 @@ data class JsonSchema(
 fun JsonSchema.Builder.string(matcherBuilder: () -> Matcher<String>? = { null }) =
    JsonSchema.JsonString(matcherBuilder())
 
-fun JsonSchema.Builder.number(matcherBuilder: () -> Matcher<Int>? = { null }) =
-   JsonSchema.JsonNumber
+fun JsonSchema.Builder.number(matcherBuilder: () -> Matcher<Number>? = { null }) =
+   JsonSchema.JsonNumber(matcherBuilder())
 
 fun JsonSchema.Builder.obj(dsl: JsonSchema.JsonObject.() -> Unit = {}) =
    JsonSchema.JsonObject().apply(dsl)

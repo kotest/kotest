@@ -103,9 +103,29 @@ private fun validate(
       }
 
       is JsonNode.NullNode -> TODO("Check how Json schema handles null")
-      is JsonNode.BooleanNode,
-      is JsonNode.NumberNode,
+      is JsonNode.NumberNode ->
+         if (expected is JsonSchema.JsonNumber) {
+            expected.matcher?.let {
+               val matcherResult = it.test(
+                  tree.content.toIntOrNull()
+                     ?: tree.content.toLongOrNull()
+                     ?: tree.content.toFloatOrNull()
+                     ?: tree.content.toDouble()
+               )
+               if (matcherResult.passed()) emptyList()
+               else violation(matcherResult.failureMessage())
+            } ?: emptyList()
+         } else {
+            violation("Expected ${expected.typeName()}, but was ${tree.type()}")
+         }
       is JsonNode.StringNode ->
+         if (expected is JsonSchema.JsonString) {
+            expected.matcher?.let {
+               val matcherResult = it.test(tree.value)
+               if (matcherResult.passed()) emptyList() else violation(matcherResult.failureMessage())
+            } ?: emptyList()
+         } else violation("Expected ${expected.typeName()}, but was ${tree.type()}")
+      is JsonNode.BooleanNode ->
          if (!isCompatible(tree, expected))
             violation("Expected ${expected.typeName()}, but was ${tree.type()}")
          else emptyList()
@@ -121,5 +141,5 @@ private class SchemaViolation(
 private fun isCompatible(actual: JsonNode, schema: JsonSchemaElement) =
    (actual is JsonNode.BooleanNode && schema is JsonSchema.JsonBoolean) ||
       (actual is JsonNode.StringNode && schema is JsonSchema.JsonString) ||
-      (actual is JsonNode.NumberNode &&  schema is JsonSchema.JsonNumber)
+      (actual is JsonNode.NumberNode && schema is JsonSchema.JsonNumber)
 

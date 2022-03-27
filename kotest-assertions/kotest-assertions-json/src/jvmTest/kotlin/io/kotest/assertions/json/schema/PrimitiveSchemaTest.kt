@@ -85,26 +85,3 @@ JSON input: [
       }
    }
 )
-
-fun main() {
-   val petSchema = jsonSchema {
-      obj {
-         withProperty("name") { string() }
-         withProperty("age") {
-            number {
-               beEven()
-            }
-         }
-      }
-   }
-
-   val personSchema = jsonSchema {
-      obj {
-         withProperty("name") { string() }
-         withProperty("age") { number() }
-         withProperty("pets") { array { petSchema.root } }
-      }
-   }
-
-   val personList = jsonSchema { array { personSchema.root } }
-}
