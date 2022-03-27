@@ -21,6 +21,7 @@ kotlin {
       val commonMain by getting {
          dependencies {
             implementation(Libs.Serialization.json)
+            implementation(project(Projects.Common))
             implementation(project(Projects.Assertions.Shared))
             implementation(project(Projects.Assertions.Core))
             implementation(Libs.Jayway.jsonpath)
@@ -52,6 +53,7 @@ kotlin {
       all {
          languageSettings.optIn("kotlin.experimental.ExperimentalTypeInference")
          languageSettings.optIn("kotlin.contracts.ExperimentalContracts")
+         languageSettings.optIn("kotlin.RequiresOptIn")
       }
    }
 }

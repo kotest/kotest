@@ -1,5 +1,6 @@
 package com.sksamuel.kotest.matchers.doubles
 
+import io.kotest.assertions.shouldFail
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.FreeSpec
 import io.kotest.matchers.doubles.beGreaterThan
@@ -21,6 +22,7 @@ import io.kotest.matchers.doubles.shouldBeGreaterThan
 import io.kotest.matchers.doubles.shouldBeGreaterThanOrEqual
 import io.kotest.matchers.doubles.shouldBeLessThan
 import io.kotest.matchers.doubles.shouldBeLessThanOrEqual
+import io.kotest.matchers.doubles.shouldBeMultipleOf
 import io.kotest.matchers.doubles.shouldBeNaN
 import io.kotest.matchers.doubles.shouldBeNegative
 import io.kotest.matchers.doubles.shouldBeNegativeInfinity
@@ -351,6 +353,18 @@ class DoubleMatchersTest : FreeSpec() {
         }
       }
     }
+
+     "MultipleOf matcher" - {
+        "Matches a simple multiple" {
+           300.0 shouldBeMultipleOf 1.0
+        }
+
+        "Fails due to precision problems" {
+           shouldFail {
+              3.6e300 shouldBeMultipleOf 1.2
+           }
+        }
+     }
 
     "Less than or equal matcher" - {
       "Every numeric double" - {

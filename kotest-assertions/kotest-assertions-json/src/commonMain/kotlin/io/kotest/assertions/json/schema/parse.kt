@@ -1,5 +1,6 @@
 package io.kotest.assertions.json.schema
 
+import io.kotest.common.ExperimentalKotest
 import io.kotest.matchers.Matcher
 import io.kotest.matchers.and
 import io.kotest.matchers.doubles.beGreaterThan
@@ -7,6 +8,11 @@ import io.kotest.matchers.doubles.beGreaterThanOrEqualTo
 import io.kotest.matchers.doubles.beLessThan
 import io.kotest.matchers.doubles.beLessThanOrEqualTo
 import io.kotest.matchers.doubles.beMultipleOf
+import io.kotest.matchers.longs.beGreaterThan
+import io.kotest.matchers.longs.beGreaterThanOrEqualTo
+import io.kotest.matchers.longs.beLessThan
+import io.kotest.matchers.longs.beLessThanOrEqualTo
+import io.kotest.matchers.longs.beMultipleOf
 import io.kotest.matchers.string.haveMaxLength
 import io.kotest.matchers.string.haveMinLength
 import io.kotest.matchers.string.match
@@ -23,6 +29,7 @@ import kotlinx.serialization.encoding.decodeStructure
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonContentPolymorphicSerializer
 import kotlinx.serialization.json.JsonElement
+import kotlinx.serialization.json.JsonNull
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
@@ -42,11 +49,13 @@ fun parseSchema(jsonSchema: String): JsonSchema =
 object SchemaDeserializer : JsonContentPolymorphicSerializer<JsonSchemaElement>(JsonSchemaElement::class) {
    override fun selectDeserializer(element: JsonElement): DeserializationStrategy<out JsonSchemaElement> {
       return when (val type = element.jsonObject.get("type")?.jsonPrimitive?.content) {
-         "string" -> JsonSchemaStringSerializer
-         "number" -> JsonSchemaNumberSerializer
-         "boolean" -> JsonSchema.JsonBoolean.serializer()
          "array" -> JsonSchema.JsonArray.serializer()
          "object" -> JsonSchema.JsonObject.serializer()
+         "string" -> JsonSchemaStringSerializer
+         "integer" -> JsonSchemaIntegerSerializer
+         "number" -> JsonSchemaNumberSerializer
+         "boolean" -> JsonSchema.JsonBoolean.serializer()
+         "null" -> JsonSchema.Null.serializer()
          else -> error("Unknown type: $type")
       }
    }
@@ -88,16 +97,47 @@ object JsonSchemaStringSerializer : KSerializer<JsonSchema.JsonString> {
    }
 }
 
-object JsonSchemaNumberSerializer : KSerializer<JsonSchema.JsonNumber> {
-   override fun deserialize(decoder: Decoder): JsonSchema.JsonNumber =
+object JsonSchemaIntegerSerializer : KSerializer<JsonSchema.JsonInteger> {
+   override fun deserialize(decoder: Decoder): JsonSchema.JsonInteger =
+      decoder.decodeStructure(descriptor) {
+         var matcher: Matcher<Long>? = null
+
+         while (true) {
+            when (val index = decodeElementIndex(descriptor)) {
+               1 -> matcher = matcher and beMultipleOf(decodeLongElement(descriptor, index))
+               2 -> matcher = matcher and beGreaterThanOrEqualTo(decodeLongElement(descriptor, index))
+               3 -> matcher = matcher and beGreaterThan(decodeLongElement(descriptor, index))
+               4 -> matcher = matcher and beLessThanOrEqualTo(decodeLongElement(descriptor, index))
+               5 -> matcher = matcher and beLessThan(decodeLongElement(descriptor, index))
+               CompositeDecoder.DECODE_DONE -> break
+            }
+         }
+
+         JsonSchema.JsonInteger(matcher)
+      }
+
+   override val descriptor = buildClassSerialDescriptor("JsonSchema.JsonInteger") {
+      element<String>("type")
+      element<Long>("multipleOf", isOptional = true)
+      element<Long>("minimum", isOptional = true)
+      element<Long>("exclusiveMinimum", isOptional = true)
+      element<Long>("maximum", isOptional = true)
+      element<Long>("exclusiveMaximum", isOptional = true)
+   }
+
+   override fun serialize(encoder: Encoder, value: JsonSchema.JsonInteger) {
+      TODO("Not yet implemented")
+   }
+}
+
+@OptIn(ExperimentalKotest::class)
+object JsonSchemaNumberSerializer : KSerializer<JsonSchema.JsonDecimal> {
+   override fun deserialize(decoder: Decoder): JsonSchema.JsonDecimal =
       decoder.decodeStructure(descriptor) {
          var matcher: Matcher<Double>? = null
 
          while (true) {
             when (val index = decodeElementIndex(descriptor)) {
-               0 -> matcher =
-                  if (decodeStringElement(descriptor, index) == "integer") matcher and beMultipleOf(1.0)
-                  else matcher
                1 -> matcher = matcher and beMultipleOf(decodeDoubleElement(descriptor, index))
                2 -> matcher = matcher and beGreaterThanOrEqualTo(decodeDoubleElement(descriptor, index))
                3 -> matcher = matcher and beGreaterThan(decodeDoubleElement(descriptor, index))
@@ -107,10 +147,10 @@ object JsonSchemaNumberSerializer : KSerializer<JsonSchema.JsonNumber> {
             }
          }
 
-         JsonSchema.JsonNumber(matcher)
+         JsonSchema.JsonDecimal(matcher)
       }
 
-   override val descriptor = buildClassSerialDescriptor("JsonSchema.JsonNumber") {
+   override val descriptor = buildClassSerialDescriptor("JsonSchema.JsonDecimal") {
       element<String>("type")
       element<Double>("multipleOf", isOptional = true)
       element<Double>("minimum", isOptional = true)
@@ -119,7 +159,7 @@ object JsonSchemaNumberSerializer : KSerializer<JsonSchema.JsonNumber> {
       element<Double>("exclusiveMaximum", isOptional = true)
    }
 
-   override fun serialize(encoder: Encoder, value: JsonSchema.JsonNumber) {
+   override fun serialize(encoder: Encoder, value: JsonSchema.JsonDecimal) {
       TODO("Not yet implemented")
    }
 }

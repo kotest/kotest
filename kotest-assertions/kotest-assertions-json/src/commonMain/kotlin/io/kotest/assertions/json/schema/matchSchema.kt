@@ -104,15 +104,27 @@ private fun validate(
       }
 
       is JsonNode.NullNode -> TODO("Check how Json schema handles null")
+
       is JsonNode.NumberNode ->
-         if (expected is JsonSchema.JsonNumber) {
-            expected.matcher?.let {
-               val matcherResult = it.test(tree.content.toDouble())
-               if (matcherResult.passed()) emptyList() else violation(matcherResult.failureMessage())
-            } ?: emptyList()
-         } else {
-            violation("Expected ${expected.typeName()}, but was ${tree.type()}")
+         when (expected) {
+            is JsonSchema.JsonInteger -> {
+               if (tree.content.contains(".")) violation("Expected integer, but was number")
+               else expected.matcher?.let {
+                  val matcherResult = it.test(tree.content.toLong())
+                  if (matcherResult.passed()) emptyList() else violation(matcherResult.failureMessage())
+               } ?: emptyList()
+            }
+
+            is JsonSchema.JsonDecimal -> {
+               expected.matcher?.let {
+                  val matcherResult = it.test(tree.content.toDouble())
+                  if (matcherResult.passed()) emptyList() else violation(matcherResult.failureMessage())
+               } ?: emptyList()
+            }
+
+            else -> violation("Expected ${expected.typeName()}, but was ${tree.type()}")
          }
+
       is JsonNode.StringNode ->
          if (expected is JsonSchema.JsonString) {
             expected.matcher?.let {

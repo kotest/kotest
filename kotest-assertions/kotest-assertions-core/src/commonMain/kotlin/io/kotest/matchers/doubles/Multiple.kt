@@ -1,11 +1,24 @@
 package io.kotest.matchers.doubles
 
+import io.kotest.common.ExperimentalKotest
 import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
+import io.kotest.matchers.should
+import kotlin.math.abs
 
-fun beMultipleOf(other: Double) = Matcher<Double> { value ->
+/**
+ * Beware, has no tolerance handling so will fail for numbers where the orders of magnitude vary greatly.
+ */
+@ExperimentalKotest
+infix fun Double?.shouldBeMultipleOf(other: Double) = this should beMultipleOf(other)
+
+/**
+ * Beware, has no tolerance handling so will fail for numbers where the orders of magnitude vary greatly.
+ */
+@ExperimentalKotest
+fun beMultipleOf(other: Double) = Matcher<Double?> { value ->
    MatcherResult(
-      value.rem(other) == 0.0,
+      value != null && value % other == 0.0,
       { "${value} should be multiple of ${other}" },
       { "${value} should not be multiple of ${other}" }
    )

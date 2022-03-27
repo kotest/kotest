@@ -15,30 +15,37 @@ sealed interface JsonSchemaElement {
    fun typeName(): String
 }
 
-interface ValueNode<T> {
+internal interface ValueNode<T> {
    val matcher: Matcher<T>?
       get() = null
 }
 
-/**
- * Delegates element implementation to root to make itself composable, e.g. you can define a schema in multiple steps:
- * ```kotlin
- * val addressSchema = jsonSchema {
- *   obj {
- *     withProperty("street") { string() }
- *     withProperty("zipCode") { integer { beEven() } }
- *   }
- * }
- *
- * val personSchema = jsonSchema { obj { withProperty("name") { string() } }
- * ```
- */
 data class JsonSchema(
    val root: JsonSchemaElement
 ) {
+
+   /**
+    * Provides a way to access pre-defined schemas in a conventional way (e.g. `type()`). Example:
+    * ```kotlin
+    * val addressSchema = jsonSchema {
+    *   obj {
+    *     withProperty("street") { string() }
+    *     withProperty("zipCode") { integer { beEven() } }
+    *   }
+    * }
+    *
+    * val personSchema = jsonSchema {
+    *   obj {
+    *     withProperty("name") { string() }
+    *     withProperty("address") { addressSchema() }
+    *   }
+    * }
+    * ```
+    */
    operator fun invoke() = root
 
    object Builder
+   internal interface JsonNumber
 
    @Serializable
    data class JsonArray(val elementType: JsonSchemaElement) : JsonSchemaElement {
@@ -57,8 +64,8 @@ data class JsonSchema(
       var requiredProperties: MutableList<String> = mutableListOf()
 
       /**
-       * By default, properties are not required, however by setting [required] to true you can specify that it must be
-       * included
+       * By default properties are optional.
+       * Using [required], you can specify that it must be included.
        */
       fun withProperty(
          name: String,
@@ -100,13 +107,19 @@ data class JsonSchema(
       override fun typeName() = "object"
    }
 
-   @Serializable
    data class JsonString(override val matcher: Matcher<String>? = null) : JsonSchemaElement, ValueNode<String> {
       override fun typeName() = "string"
    }
 
-   @Serializable
-   data class JsonNumber(override val matcher: Matcher<@Contextual Double>?) : JsonSchemaElement, ValueNode<Double> {
+   data class JsonInteger(
+      override val matcher: Matcher<Long>? = null
+   ) : JsonSchemaElement, JsonNumber, ValueNode<Long> {
+      override fun typeName() = "integer"
+   }
+
+   data class JsonDecimal(
+      override val matcher: Matcher<Double>? = null
+   ) : JsonSchemaElement, JsonNumber, ValueNode<Double> {
       override fun typeName() = "number"
    }
 
@@ -115,23 +128,76 @@ data class JsonSchema(
       override fun typeName() = "boolean"
    }
 
+   @Serializable
    object Null : JsonSchemaElement {
       override fun typeName() = "null"
    }
 }
 
+
+/**
+ * Creates a [JsonSchema.JsonString] node, which is a leaf node that will hold a [String] value.
+ * Optionally, you can provide a [matcherBuilder] that constructs a [Matcher] which the node will be tested with.
+ */
 fun JsonSchema.Builder.string(matcherBuilder: () -> Matcher<String>? = { null }) =
    JsonSchema.JsonString(matcherBuilder())
 
+/**
+ * Creates a [JsonSchema.JsonInteger] node, which is a leaf node that will hold a [Long] value.
+ * Optionally, you can provide a [matcherBuilder] that constructs a [Matcher] which the node will be tested with.
+ */
+fun JsonSchema.Builder.integer(matcherBuilder: () -> Matcher<Long>? = { null }) =
+   JsonSchema.JsonInteger(matcherBuilder())
+
+/**
+ * Creates a [JsonSchema.JsonDecimal] node, which is a leaf node that will hold a [Double] value.
+ * Optionally, you can provide a [matcherBuilder] that constructs a [Matcher] which the node will be tested with.
+ */
 fun JsonSchema.Builder.number(matcherBuilder: () -> Matcher<Double>? = { null }) =
-   JsonSchema.JsonNumber(matcherBuilder())
+   JsonSchema.JsonDecimal(matcherBuilder())
 
-fun JsonSchema.Builder.obj(dsl: JsonSchema.JsonObjectBuilder.() -> Unit = {}) =
-   JsonSchema.JsonObjectBuilder().apply(dsl).build()
+/**
+ * Alias for [number]
+ *
+ * Creates a [JsonSchema.JsonDecimal] node, which is a leaf node that will hold a [Double] value.
+ * Optionally, you can provide a [matcherBuilder] that constructs a [Matcher] which the node will be tested with.
+ */
+fun JsonSchema.Builder.decimal(matcherBuilder: () -> Matcher<Double>? = { null }) =
+   JsonSchema.JsonDecimal(matcherBuilder())
 
+/**
+ * Creates a [JsonSchema.JsonBoolean] node, which is a leaf node that will hold a [Boolean] value.
+ * It supports no further configuration. The actual value must always be either true or false.
+ */
 fun JsonSchema.Builder.boolean() =
    JsonSchema.JsonBoolean
 
+/**
+ * Creates a [JsonSchema.Null] node, which is a leaf node that must always be null, if present.
+ */
+fun JsonSchema.Builder.`null`() =
+   JsonSchema.Null
+
+/**
+ * Creates a [JsonSchema.JsonObject] node. Expand on the object configuration using the [dsl] which lets you specify
+ * properties using [withProperty]
+ *
+ * Example:
+ * ```kotlin
+ * val personSchema = jsonSchema {
+ *   obj {
+ *     withProperty("name") { string() }
+ *     withProperty("age") { number() }
+ *   }
+ * }
+ * ```
+ */
+fun JsonSchema.Builder.obj(dsl: JsonSchema.JsonObjectBuilder.() -> Unit = {}) =
+   JsonSchema.JsonObjectBuilder().apply(dsl).build()
+
+/**
+ * Defines a [JsonSchema.JsonArray] node where the elements are of the type provided by [typeBuilder].
+ */
 fun JsonSchema.Builder.array(typeBuilder: () -> JsonSchemaElement) =
    JsonSchema.JsonArray(typeBuilder())
 

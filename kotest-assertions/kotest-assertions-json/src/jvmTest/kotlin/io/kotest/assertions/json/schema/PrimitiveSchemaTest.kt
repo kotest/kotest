@@ -2,7 +2,6 @@ package io.kotest.assertions.json.schema
 
 import io.kotest.assertions.shouldFail
 import io.kotest.core.spec.style.FunSpec
-import io.kotest.matchers.ints.beEven
 import io.kotest.matchers.shouldBe
 
 class PrimitiveMatchSchemaTest : FunSpec(
@@ -11,8 +10,8 @@ class PrimitiveMatchSchemaTest : FunSpec(
          shouldFail {
             "[" shouldMatchSchema jsonSchema { obj() }
          }.message shouldBe """
-Failed to parse actual as JSON: Expected end of the array ']', but had 'EOF' instead
-JSON input: [
+            Failed to parse actual as JSON: Expected end of the array ']', but had 'EOF' instead
+            JSON input: [
          """.trimIndent()
       }
 
@@ -58,7 +57,7 @@ JSON input: [
       context("numbers") {
          val numberSchema = jsonSchema { number() }
 
-         test("integers match int schema") {
+         test("all numbers match number schema") {
             "5" shouldMatchSchema numberSchema
             "3.14" shouldMatchSchema numberSchema
             "0" shouldMatchSchema numberSchema
@@ -81,6 +80,40 @@ JSON input: [
 
          test("negated assertion works") {
             "false" shouldNotMatchSchema numberSchema
+         }
+      }
+
+      context("integers") {
+         val intSchema = jsonSchema { integer() }
+
+         test("integers match int schema") {
+            "5" shouldMatchSchema intSchema
+            "0" shouldMatchSchema intSchema
+            "-1" shouldMatchSchema intSchema
+         }
+
+         test("decimals cause failures") {
+            shouldFail { "5.2" shouldMatchSchema intSchema }.message shouldBe """
+               $ => Expected integer, but was number
+            """.trimIndent()
+         }
+
+         test("Non-number causes failure") {
+            shouldFail { "false" shouldMatchSchema intSchema }.message shouldBe """
+               $ => Expected integer, but was boolean
+            """.trimIndent()
+         }
+
+         test("String cause failure" ){
+            shouldFail {
+               "\"5\"" shouldMatchSchema intSchema
+            }.message shouldBe """
+               $ => Expected integer, but was string
+            """.trimIndent()
+         }
+
+         test("negated assertion works") {
+            "false" shouldNotMatchSchema intSchema
          }
       }
    }
