@@ -1,5 +1,6 @@
 package com.sksamuel.kotest.property.arbitrary
 
+import io.kotest.assertions.throwables.shouldNotThrowAny
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.collections.shouldContainExactly
 import io.kotest.matchers.shouldBe
@@ -10,6 +11,7 @@ import io.kotest.property.arbitrary.IntShrinker
 import io.kotest.property.arbitrary.arbitrary
 import io.kotest.property.arbitrary.int
 import io.kotest.property.arbitrary.map
+import io.kotest.property.arbitrary.of
 import io.kotest.property.arbitrary.single
 import io.kotest.property.arbitrary.withEdgecases
 import java.util.concurrent.atomic.AtomicInteger
@@ -46,5 +48,14 @@ class MapTest : FunSpec({
          "119",
          "120"
       )
+   }
+
+   test("Arb.map composition should not exhaust call stack") {
+      var arb: Arb<Int> = Arb.of(0)
+      repeat(10000) {
+         arb = arb.map { value -> value + 1 }
+      }
+      val result = shouldNotThrowAny { arb.single(RandomSource.seeded(1234L)) }
+      result shouldBe 10000
    }
 })

@@ -1,7 +1,13 @@
 package com.sksamuel.kotest.property.exhaustive
 
+import io.kotest.assertions.throwables.shouldNotThrowAny
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
+import io.kotest.property.Arb
+import io.kotest.property.RandomSource
+import io.kotest.property.arbitrary.merge
+import io.kotest.property.arbitrary.of
+import io.kotest.property.arbitrary.single
 import io.kotest.property.exhaustive.exhaustive
 import io.kotest.property.exhaustive.merge
 
@@ -26,5 +32,14 @@ class MergeTest : FunSpec({
          Common.Foo(3),
          Common.Bar(6)
       )
+   }
+
+   test("Arb.merge composition should not exhaust call stack") {
+      var arb: Arb<Int> = Arb.of(0)
+      repeat(100) {
+         arb = arb.merge(Arb.of(1))
+      }
+      val result = shouldNotThrowAny { arb.single(RandomSource.seeded(1234L)) }
+      result shouldBe 1
    }
 })
