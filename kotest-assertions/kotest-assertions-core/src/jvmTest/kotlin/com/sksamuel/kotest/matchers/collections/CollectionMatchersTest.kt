@@ -148,6 +148,7 @@ class CollectionMatchersTest : WordSpec() {
             listOf("a", "b", "c") should haveElementAt(1, "b")
             listOf("a", "b", "c") shouldNot haveElementAt(1, "c")
             listOf("a", "b", null) should haveElementAt(2, null)
+            listOf("a", "b", null) shouldNot haveElementAt(3, null)
 
             listOf("a", "b", "c").shouldHaveElementAt(1, "b")
             listOf("a", "b", "c").shouldNotHaveElementAt(1, "c")
