@@ -41,18 +41,9 @@ internal suspend fun test(
       fn()
       context.markSuccess()
       coroutineContext[AfterPropertyContextElement]?.after?.invoke()
-   } catch (e: AssertionError) { // we track assertion errors and try to shrink them
+   } catch (e: Throwable) {  // we track any throwables and try to shrink them
       context.markFailure()
       handleException(context, shrinkfn, inputs, seed, e, config)
-   } catch (e: Exception) {
-      context.markFailure()
-      when (e::class.simpleName) {
-         "AssertionError",
-         "AssertionFailedError",
-         "ComparisonFailure" -> handleException(context, shrinkfn, inputs, seed, e, config)
-         // any other non assertion error exception is an immediate fail without shrink
-         else -> throwPropertyTestAssertionError(e, context.attempts(), seed)
-      }
    }
 }
 
