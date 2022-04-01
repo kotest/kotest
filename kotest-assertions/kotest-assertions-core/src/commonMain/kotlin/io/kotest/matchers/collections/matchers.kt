@@ -17,7 +17,7 @@ fun <T> List<T>.shouldNotHaveElementAt(index: Int, element: T) = this shouldNot 
 fun <T, L : List<T>> haveElementAt(index: Int, element: T) = object : Matcher<L> {
    override fun test(value: L) =
       MatcherResult(
-         value[index] == element,
+         index < value.size && value[index] == element,
          { "Collection ${value.print().value} should contain ${element.print().value} at index $index" },
          { "Collection ${value.print().value} should not contain ${element.print().value} at index $index" }
       )
