@@ -33,9 +33,6 @@ private class CoroutineLocalErrorCollector : BasicErrorCollector() {
       result.clues.addAll(clues)
       return result
    }
-
-   override fun merge(errorCollector: ErrorCollector): CoroutineLocalErrorCollector =
-      super.merge(errorCollector) as CoroutineLocalErrorCollector
 }
 
 
@@ -60,8 +57,6 @@ private class ErrorCollectorContextElement(private val coroutineLocalErrorCollec
    override fun copyForChild(): CopyableThreadContextElement<CoroutineLocalErrorCollector> =
       ErrorCollectorContextElement(threadLocalErrorCollector.get().copy())
 
-   override fun mergeForChild(overwritingElement: CoroutineContext.Element): CoroutineContext {
-      overwritingElement as ErrorCollectorContextElement
-      return ErrorCollectorContextElement(coroutineLocalErrorCollector.merge(overwritingElement.coroutineLocalErrorCollector))
-   }
+   override fun mergeForChild(overwritingElement: CoroutineContext.Element): CoroutineContext =
+      copyForChild()
 }

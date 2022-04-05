@@ -46,7 +46,6 @@ interface ErrorCollector {
     */
    fun clueContext(): List<Clue>
 
-   fun merge(errorCollector: ErrorCollector): ErrorCollector
 }
 
 object NoopErrorCollector : ErrorCollector {
@@ -72,8 +71,6 @@ object NoopErrorCollector : ErrorCollector {
 
    override fun clueContext(): List<Clue> = emptyList()
 
-   override fun merge(errorCollector: ErrorCollector): ErrorCollector =
-      this
 }
 
 open class BasicErrorCollector : ErrorCollector {
@@ -105,17 +102,6 @@ open class BasicErrorCollector : ErrorCollector {
    override fun errors(): List<Throwable> = failures.toList()
 
    override fun clear() = failures.clear()
-
-   override fun merge(errorCollector: ErrorCollector): BasicErrorCollector =
-      apply {
-         if (errorCollector.getCollectionMode() == ErrorCollectionMode.Hard) {
-            setCollectionMode(ErrorCollectionMode.Hard)
-         }
-
-         errorCollector.clueContext().forEach { pushClue(it) }
-
-         errorCollector.errors().forEach { pushError(it) }
-      }
 }
 
 internal fun ErrorCollector.getAndReplace(errors: Collection<Throwable>): List<Throwable> {
