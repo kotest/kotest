@@ -2,6 +2,7 @@
 
 package io.kotest.assertions
 
+import jdk.vm.ci.code.CodeUtil.K
 import kotlinx.coroutines.CopyableThreadContextElement
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlin.coroutines.CoroutineContext
@@ -33,6 +34,9 @@ private class CoroutineLocalErrorCollector : BasicErrorCollector() {
       result.clues.addAll(clues)
       return result
    }
+
+   override fun merge(errorCollector: ErrorCollector): CoroutineLocalErrorCollector =
+      super.merge(errorCollector) as CoroutineLocalErrorCollector
 }
 
 
@@ -52,9 +56,13 @@ private class ErrorCollectorContextElement(private val coroutineLocalErrorCollec
       threadLocalErrorCollector.set(oldState)
    }
 
-   override fun copyForChildCoroutine(): CopyableThreadContextElement<CoroutineLocalErrorCollector> {
-      return ErrorCollectorContextElement(threadLocalErrorCollector.get().copy())
-   }
-
    companion object Key : CoroutineContext.Key<ErrorCollectorContextElement>
+
+   override fun copyForChild(): CopyableThreadContextElement<CoroutineLocalErrorCollector> =
+      ErrorCollectorContextElement(threadLocalErrorCollector.get().copy())
+
+   override fun mergeForChild(overwritingElement: CoroutineContext.Element): CoroutineContext {
+      overwritingElement as ErrorCollectorContextElement
+      return ErrorCollectorContextElement(coroutineLocalErrorCollector.merge(overwritingElement.coroutineLocalErrorCollector))
+   }
 }
