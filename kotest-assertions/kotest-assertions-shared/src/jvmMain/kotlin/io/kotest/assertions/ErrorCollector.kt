@@ -3,6 +3,7 @@
 package io.kotest.assertions
 
 import kotlinx.coroutines.CopyableThreadContextElement
+import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlin.coroutines.CoroutineContext
 
@@ -36,7 +37,7 @@ private class CoroutineLocalErrorCollector : BasicErrorCollector() {
 }
 
 
-@OptIn(ExperimentalCoroutinesApi::class)
+@OptIn(ExperimentalCoroutinesApi::class, DelicateCoroutinesApi::class)
 private class ErrorCollectorContextElement(private val coroutineLocalErrorCollector: CoroutineLocalErrorCollector) :
    CopyableThreadContextElement<CoroutineLocalErrorCollector> {
 
