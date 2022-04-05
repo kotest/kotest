@@ -45,7 +45,6 @@ interface ErrorCollector {
     * That is all the clues nested to this point.
     */
    fun clueContext(): List<Clue>
-
 }
 
 object NoopErrorCollector : ErrorCollector {
@@ -70,7 +69,6 @@ object NoopErrorCollector : ErrorCollector {
    }
 
    override fun clueContext(): List<Clue> = emptyList()
-
 }
 
 open class BasicErrorCollector : ErrorCollector {
