@@ -2,7 +2,6 @@
 
 package io.kotest.assertions
 
-import jdk.vm.ci.code.CodeUtil.K
 import kotlinx.coroutines.CopyableThreadContextElement
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlin.coroutines.CoroutineContext
