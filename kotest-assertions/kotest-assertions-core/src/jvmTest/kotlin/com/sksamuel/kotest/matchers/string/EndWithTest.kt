@@ -8,6 +8,8 @@ import io.kotest.matchers.shouldNot
 import io.kotest.matchers.string.endWith
 import io.kotest.matchers.string.shouldEndWith
 import io.kotest.matchers.string.shouldNotEndWith
+import io.kotest.matchers.string.shouldStartWith
+import io.kotest.matchers.string.startWith
 
 @Suppress("RedundantNullableReturnType")
 class EndWithTest : FreeSpec() {
@@ -22,12 +24,16 @@ class EndWithTest : FreeSpec() {
             "hello" shouldEndWith "lo"
             "hello" shouldEndWith "o"
             "hello" shouldNotEndWith "w"
+            "hello" shouldEndWith "(lo|sa)".toRegex()
             "" should endWith("")
             shouldThrow<AssertionError> {
                "" should endWith("h")
             }
             shouldThrow<AssertionError> {
                "hello" should endWith("goodbye")
+            }
+            shouldThrow<AssertionError> {
+               "hello" should endWith("(el|lol)".toRegex())
             }
          }
          "work with char seqs" {
@@ -64,6 +70,11 @@ class EndWithTest : FreeSpec() {
             shouldThrow<AssertionError> {
                null shouldEndWith "o"
             }.message shouldBe "Expecting actual not to be null"
+         }
+         "should show should end with regex in error message" {
+            shouldThrow<AssertionError> {
+               "hello" should endWith("(e|ol)".toRegex())
+            }.message shouldBe "\"hello\" should end with regex (e|ol)"
          }
       }
    }
