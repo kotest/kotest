@@ -10,6 +10,9 @@ on:
       branches:
          - master
 
+permissions:
+  contents: read
+
 jobs:
    linux_tests:
       if: github.repository == 'kotest/kotest'
