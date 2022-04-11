@@ -12,8 +12,8 @@ const features = [
       imageUrl: 'img/undraw_docusaurus_mountain.svg',
       description: (
          <>
-            The Kotest test framework enables test to be laid out in a fluid way and execute them on the JVM or
-            Javascript.
+            The Kotest test framework enables test to be laid out in a fluid way and execute them on JVM, Javascript,
+            or native platforms.
 
             <br/><br/>
 
