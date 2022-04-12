@@ -25,3 +25,18 @@ fun endWith(suffix: CharSequence): Matcher<CharSequence?> = neverNullMatcher { v
          "${value.print().value} should not end with ${suffix.print().value}"
       })
 }
+
+infix fun <A : CharSequence?> A.shouldEndWith(regex: Regex): A {
+   this should endWith(regex)
+   return this
+}
+
+fun endWith(regex: Regex): Matcher<CharSequence?> = neverNullMatcher { value ->
+   val endWithRegex = ".*${regex.pattern}$".toRegex()
+   MatcherResult(
+      value matches endWithRegex,
+      { "${value.print().value} should end with regex ${regex.pattern}" },
+      {
+         "${value.print().value} should not end with regex ${regex.pattern}"
+      })
+}
