@@ -21,7 +21,7 @@ If your project specifies more than one project config, they will be merged, but
 
 Any configuration set at the Spec level or directly on a test will override the config specified at the project level.
 
-Some configuration options available in `ProjectConfig` include parallelism of tests, failing specs with ignored tests, global `AssertSoftly`, and reusable listeners or extensions.
+Some configuration options available in `KotestProjectConfig` include parallelism of tests, failing specs with ignored tests, global `AssertSoftly`, and reusable listeners or extensions.
 
 
 
@@ -36,7 +36,7 @@ The number set is the number of concurrently executing specs. For example.
 
 
 ```kotlin
-object ProjectConfig : AbstractProjectConfig() {
+object KotestProjectConfig : AbstractProjectConfig() {
     override val parallelism = 3
 }
 ```
@@ -64,7 +64,7 @@ An alternative way to enable this is the system property `kotest.framework.asser
 
 
 ```kotlin
-object ProjectConfig : AbstractProjectConfig {
+object KotestProjectConfig : AbstractProjectConfig() {
     override val assertionMode = AssertionMode.Error
 }
 ```
@@ -83,7 +83,7 @@ Assert softly is very useful to batch up errors into a single failure. If we wan
 An alternative way to enable this is by setting system property `kotest.framework.assertion.globalassertsoftly` to `true` which will always (if defined) take priority over the value here.
 
 ```kotlin
-object ProjectConfig : AbstractProjectConfig {
+object KotestProjectConfig : AbstractProjectConfig() {
     override val globalAssertSoftly = true
 }
 ```
@@ -97,7 +97,7 @@ You may wish to consider an ignored test as a failure.
 To enable this feature, set `failOnIgnoredTests` to true inside your project config. For example.
 
 ```kotlin
-object ProjectConfig : AbstractProjectConfig {
+object KotestProjectConfig : AbstractProjectConfig() {
     override val failOnIgnoredTests = true
 }
 ```
@@ -152,7 +152,7 @@ then this name will be trimmed to `this is my test case`.
 An alternative way to enable this is by setting system property `kotest.framework.testname.multiline` to `true` which will always (if defined) take priority over the value here.
 
 ```kotlin
-object ProjectConfig : AbstractProjectConfig {
+object KotestProjectConfig : AbstractProjectConfig() {
     override val testNameRemoveWhitespace = true
 }
 ```
