@@ -25,15 +25,13 @@ class ProjectConfig : AbstractProjectConfig() {
 
    override val specExecutionOrder = SpecExecutionOrder.Annotated
 
-   override fun listeners(): List<Listener> {
-      return listOf(
-         JunitXmlReporter(
+    override fun extensions(): List<Extension> = listOf(
+        JunitXmlReporter(
             includeContainers = false,
-            useTestPathAsName = true
-         ),
-         HtmlReporter()
-      )
-   }
+            useTestPathAsName = true,
+        ),
+        HtmlReporter()
+    )
 }
 ```
 
