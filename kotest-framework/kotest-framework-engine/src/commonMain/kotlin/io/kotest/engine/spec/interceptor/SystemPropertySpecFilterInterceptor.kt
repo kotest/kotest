@@ -18,8 +18,7 @@ import io.kotest.mpp.sysprop
 import kotlin.reflect.KClass
 
 /**
- * Applies test and spec filters using sysprop or env vars from [KotestEngineProperties.filterTests]
- * and [KotestEngineProperties.filterSpecs].
+ * Applies spec filters using sysprop or env vars from [KotestEngineProperties.filterSpecs].
  *
  * These work similarly to gradle filters in --tests described at:
  * https://docs.gradle.org/current/userguide/java_testing.html#full_qualified_name_pattern
