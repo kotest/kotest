@@ -70,7 +70,7 @@ class AfterSpecListenerTest : FunSpec() {
          inlineAfterSpec.shouldBeTrue()
       }
 
-      test("f:inline afterSpec function errors should be caught") {
+      test("inline afterSpec function errors should be caught") {
 
          val collector = CollectingTestEngineListener()
          TestEngineLauncher(collector)

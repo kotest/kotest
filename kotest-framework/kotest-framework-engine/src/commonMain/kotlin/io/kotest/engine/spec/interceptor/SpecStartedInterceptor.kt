@@ -12,10 +12,10 @@ import io.kotest.engine.listener.TestEngineListener
 internal class SpecStartedInterceptor(private val listener: TestEngineListener) : SpecRefInterceptor {
 
    override suspend fun intercept(
-      ref: SpecRef,
-      fn: suspend (SpecRef) -> Result<Map<TestCase, TestResult>>
-   ): Result<Map<TestCase, TestResult>> {
-      return runCatching { listener.specStarted(ref.kclass) }
+      ref: SpecRefContainer,
+      fn: suspend (SpecRefContainer) -> Result<Pair<SpecRefContainer, Map<TestCase, TestResult>>>
+   ): Result<Pair<SpecRefContainer, Map<TestCase, TestResult>>> {
+      return runCatching { listener.specStarted(ref.specRef.kclass) }
          .flatMap { fn(ref) }
    }
 }

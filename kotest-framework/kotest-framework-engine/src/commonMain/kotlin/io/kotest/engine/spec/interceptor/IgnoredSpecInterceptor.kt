@@ -27,17 +27,17 @@ internal class IgnoredSpecInterceptor(
    private val extensions = SpecExtensions(registry)
 
    override suspend fun intercept(
-      ref: SpecRef,
-      fn: suspend (SpecRef) -> Result<Map<TestCase, TestResult>>
-   ): Result<Map<TestCase, TestResult>> {
+      ref: SpecRefContainer,
+      fn: suspend (SpecRefContainer) -> Result<Pair<SpecRefContainer, Map<TestCase, TestResult>>>
+   ): Result<Pair<SpecRefContainer, Map<TestCase, TestResult>>> {
 
-      val isIgnored = ref.kclass.hasAnnotation<Ignored>()
-      logger.log { Pair(ref.kclass.bestName(), "@Ignored == $isIgnored") }
+      val isIgnored = ref.specRef.kclass.hasAnnotation<Ignored>()
+      logger.log { Pair(ref.specRef.kclass.bestName(), "@Ignored == $isIgnored") }
 
       return if (isIgnored) {
-         runCatching { listener.specIgnored(ref.kclass, "Disabled by @Ignored") }
-            .flatMap { extensions.ignored(ref.kclass, "Disabled by @Ignored") }
-            .map { emptyMap() }
+         runCatching { listener.specIgnored(ref.specRef.kclass, "Disabled by @Ignored") }
+            .flatMap { extensions.ignored(ref.specRef.kclass, "Disabled by @Ignored") }
+            .map { ref.disable() to emptyMap() }
       } else {
          fn(ref)
       }

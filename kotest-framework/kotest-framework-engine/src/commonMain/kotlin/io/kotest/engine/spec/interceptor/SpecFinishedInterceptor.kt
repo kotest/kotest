@@ -13,12 +13,12 @@ import kotlin.time.measureTimedValue
 internal class SpecFinishedInterceptor(private val listener: TestEngineListener) : SpecRefInterceptor {
 
    override suspend fun intercept(
-      ref: SpecRef,
-      fn: suspend (SpecRef) -> Result<Map<TestCase, TestResult>>
-   ): Result<Map<TestCase, TestResult>> {
+      ref: SpecRefContainer,
+      fn: suspend (SpecRefContainer) -> Result<Pair<SpecRefContainer, Map<TestCase, TestResult>>>
+   ): Result<Pair<SpecRefContainer, Map<TestCase, TestResult>>> {
       val (value, duration) = measureTimedValue { fn(ref) }
       return value
-         .onSuccess { listener.specFinished(ref.kclass, TestResult.Success(duration)) }
-         .onFailure { listener.specFinished(ref.kclass, TestResult.Error(duration, it)) }
+         .onSuccess { listener.specFinished(ref.specRef.kclass, TestResult.Success(duration)) }
+         .onFailure { listener.specFinished(ref.specRef.kclass, TestResult.Error(duration, it)) }
    }
 }

@@ -26,23 +26,23 @@ internal class IgnoreNestedSpecStylesInterceptor(
    private val extensions = SpecExtensions(registry)
 
    override suspend fun intercept(
-      spec: Spec,
-      fn: suspend (Spec) -> Result<Map<TestCase, TestResult>>
-   ): Result<Map<TestCase, TestResult>> {
+      spec: SpecContainer,
+      fn: suspend (SpecContainer) -> Result<Pair<SpecContainer, Map<TestCase, TestResult>>>
+   ): Result<Pair<SpecContainer, Map<TestCase, TestResult>>> {
 
       fun isValid(spec: Spec) = when (spec) {
          is FunSpec, is ExpectSpec, is FeatureSpec, is ShouldSpec, is StringSpec -> true
          else -> false
       }
 
-      return if (isValid(spec)) {
+      return if (isValid(spec.spec)) {
          fn(spec)
       } else {
-         log { "IgnoreNestedSpecStylesInterceptor: Marking ${spec::class.bestName()} as inactive due to platform limitations" }
-         println("WARN: kotest-js only supports top level tests due to underlying platform limitations. '${spec::class.bestName()}' has been marked as ignored")
-         runCatching { listener.specIgnored(spec::class, "Disabled due to platform limitations") }
-            .flatMap { extensions.ignored(spec::class, "Disabled due to platform limitations") }
-            .map { emptyMap() }
+         log { "IgnoreNestedSpecStylesInterceptor: Marking ${spec.spec::class.bestName()} as inactive due to platform limitations" }
+         println("WARN: kotest-js only supports top level tests due to underlying platform limitations. '${spec.spec::class.bestName()}' has been marked as ignored")
+         runCatching { listener.specIgnored(spec.spec::class, "Disabled due to platform limitations") }
+            .flatMap { extensions.ignored(spec.spec::class, "Disabled due to platform limitations") }
+            .map { spec.disable() to emptyMap() }
       }
    }
 }

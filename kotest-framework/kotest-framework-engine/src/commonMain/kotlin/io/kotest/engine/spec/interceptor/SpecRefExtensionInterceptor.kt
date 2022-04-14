@@ -13,18 +13,18 @@ import io.kotest.mpp.log
 class SpecRefExtensionInterceptor(private val registry: ExtensionRegistry) : SpecRefInterceptor {
 
    override suspend fun intercept(
-      ref: SpecRef,
-      fn: suspend (SpecRef) -> Result<Map<TestCase, TestResult>>
-   ): Result<Map<TestCase, TestResult>> {
+      ref: SpecRefContainer,
+      fn: suspend (SpecRefContainer) -> Result<Pair<SpecRefContainer, Map<TestCase, TestResult>>>
+   ): Result<Pair<SpecRefContainer, Map<TestCase, TestResult>>> {
 
       log { "SpecReferenceExtensionInterceptor: Intercepting spec" }
 
       val exts = registry.all().filterIsInstance<SpecRefExtension>()
-      var results: Result<Map<TestCase, TestResult>> = Result.success(emptyMap())
+      var results: Result<Pair<SpecRefContainer, Map<TestCase, TestResult>>> = Result.success(ref to emptyMap())
       val inner: suspend (SpecRef) -> Unit = { results = fn(ref) }
 
-      val chain = exts.foldRight(inner) { op, acc -> { op.interceptRef(ref) { acc(ref) } } }
-      chain.invoke(ref)
+      val chain = exts.foldRight(inner) { op, acc -> { op.interceptRef(ref.specRef) { acc(ref.specRef) } } }
+      chain.invoke(ref.specRef)
 
       return results
    }

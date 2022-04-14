@@ -34,23 +34,23 @@ internal class SystemPropertySpecFilterInterceptor(
    private fun syspropOrEnv(name: String) = sysprop(name) ?: env(name) ?: ""
 
    override suspend fun intercept(
-      ref: SpecRef,
-      fn: suspend (SpecRef) -> Result<Map<TestCase, TestResult>>
-   ): Result<Map<TestCase, TestResult>> {
+      ref: SpecRefContainer,
+      fn: suspend (SpecRefContainer) -> Result<Pair<SpecRefContainer, Map<TestCase, TestResult>>>
+   ): Result<Pair<SpecRefContainer, Map<TestCase, TestResult>>> {
 
       val included = syspropOrEnv(KotestEngineProperties.filterSpecs)
          .propertyToRegexes()
          .map { it.toSpecFilter() }
-         .all { it.filter(ref.kclass) == SpecFilterResult.Include }
+         .all { it.filter(ref.specRef.kclass) == SpecFilterResult.Include }
 
-      log { "SystemPropertySpecFilterInterceptor: ${ref.kclass} included = $included" }
+      log { "SystemPropertySpecFilterInterceptor: ${ref.specRef.kclass} included = $included" }
 
       return if (included) {
          fn(ref)
       } else {
-         runCatching { listener.specIgnored(ref.kclass, "Filtered by spec filter system property") }
-            .flatMap { extensions.ignored(ref.kclass, "Filtered by spec filter system property") }
-            .map { emptyMap() }
+         runCatching { listener.specIgnored(ref.specRef.kclass, "Filtered by spec filter system property") }
+            .flatMap { extensions.ignored(ref.specRef.kclass, "Filtered by spec filter system property") }
+            .map { ref.disable() to emptyMap() }
       }
    }
 }

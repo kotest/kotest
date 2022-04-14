@@ -12,11 +12,11 @@ class PrepareSpecInterceptor(registry: ExtensionRegistry) : SpecRefInterceptor {
    private val extensions = SpecExtensions(registry)
 
    override suspend fun intercept(
-      ref: SpecRef,
-      fn: suspend (SpecRef) -> Result<Map<TestCase, TestResult>>,
-   ): Result<Map<TestCase, TestResult>> {
+      ref: SpecRefContainer,
+      fn: suspend (SpecRefContainer) -> Result<Pair<SpecRefContainer, Map<TestCase, TestResult>>>
+   ): Result<Pair<SpecRefContainer, Map<TestCase, TestResult>>> {
       return extensions
-         .prepareSpec(ref.kclass)
+         .prepareSpec(ref.specRef.kclass)
          .flatMap { fn(ref) }
    }
 }

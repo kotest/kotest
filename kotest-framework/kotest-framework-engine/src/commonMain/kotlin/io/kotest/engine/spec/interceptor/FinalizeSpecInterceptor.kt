@@ -13,11 +13,11 @@ internal class FinalizeSpecInterceptor(
    private val extensions = SpecExtensions(registry)
 
    override suspend fun intercept(
-      ref: SpecRef,
-      fn: suspend (SpecRef) -> Result<Map<TestCase, TestResult>>
-   ): Result<Map<TestCase, TestResult>> {
+      ref: SpecRefContainer,
+      fn: suspend (SpecRefContainer) -> Result<Pair<SpecRefContainer, Map<TestCase, TestResult>>>
+   ): Result<Pair<SpecRefContainer, Map<TestCase, TestResult>>> {
       return fn(ref)
-         .onSuccess { extensions.finalizeSpec(ref.kclass, it, null) }
-         .onFailure { extensions.finalizeSpec(ref.kclass, emptyMap(), it) }
+         .onSuccess { extensions.finalizeSpec(ref.specRef.kclass, it.second, null) }
+         .onFailure { extensions.finalizeSpec(ref.specRef.kclass, emptyMap(), it) }
    }
 }

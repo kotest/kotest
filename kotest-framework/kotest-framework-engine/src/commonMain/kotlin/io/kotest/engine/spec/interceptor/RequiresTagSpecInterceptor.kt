@@ -28,10 +28,10 @@ internal class RequiresTagSpecInterceptor(
 ) : SpecRefInterceptor {
 
    override suspend fun intercept(
-      ref: SpecRef,
-      fn: suspend (SpecRef) -> Result<Map<TestCase, TestResult>>
-   ): Result<Map<TestCase, TestResult>> {
-      return when (val annotation = ref.kclass.annotation<RequiresTag>()) {
+      ref: SpecRefContainer,
+      fn: suspend (SpecRefContainer) -> Result<Pair<SpecRefContainer, Map<TestCase, TestResult>>>
+   ): Result<Pair<SpecRefContainer, Map<TestCase, TestResult>>> {
+      return when (val annotation = ref.specRef.kclass.annotation<RequiresTag>()) {
          null -> fn(ref)
          else -> {
             val requiredTags = annotation.wrapper.map { NamedTag(it) }.toSet()
@@ -39,9 +39,9 @@ internal class RequiresTagSpecInterceptor(
             if (requiredTags.isEmpty() || expr.isActive(requiredTags)) {
                fn(ref)
             } else {
-               runCatching { listener.specIgnored(ref.kclass, "Disabled by @RequiresTag") }
-                  .flatMap { SpecExtensions(registry).ignored(ref.kclass, "Disabled by @RequiresTag") }
-                  .map { emptyMap() }
+               runCatching { listener.specIgnored(ref.specRef.kclass, "Disabled by @RequiresTag") }
+                  .flatMap { SpecExtensions(registry).ignored(ref.specRef.kclass, "Disabled by @RequiresTag") }
+                  .map { ref.disable() to emptyMap() }
             }
          }
       }

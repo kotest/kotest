@@ -14,9 +14,9 @@ internal class ProjectContextInterceptor(
    private val context: ProjectContext,
 ) : SpecInterceptor {
    override suspend fun intercept(
-      spec: Spec,
-      fn: suspend (Spec) -> Result<Map<TestCase, TestResult>>
-   ): Result<Map<TestCase, TestResult>> {
+      spec: SpecContainer,
+      fn: suspend (SpecContainer) -> Result<Pair<SpecContainer, Map<TestCase, TestResult>>>
+   ): Result<Pair<SpecContainer, Map<TestCase, TestResult>>> {
       return withContext(ProjectContextElement(context)) {
          fn(spec)
       }

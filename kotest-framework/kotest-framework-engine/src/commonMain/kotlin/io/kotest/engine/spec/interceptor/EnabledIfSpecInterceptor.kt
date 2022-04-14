@@ -26,22 +26,22 @@ internal class EnabledIfSpecInterceptor(
    private val extensions = SpecExtensions(registry)
 
    override suspend fun intercept(
-      ref: SpecRef,
-      fn: suspend (SpecRef) -> Result<Map<TestCase, TestResult>>
-   ): Result<Map<TestCase, TestResult>> {
+      ref: SpecRefContainer,
+      fn: suspend (SpecRefContainer) -> Result<Pair<SpecRefContainer, Map<TestCase, TestResult>>>
+   ): Result<Pair<SpecRefContainer, Map<TestCase, TestResult>>> {
 
-      val enabled = ref.kclass
+      val enabled = ref.specRef.kclass
          .annotation<EnabledIf>()
          ?.wrapper
          ?.newInstanceNoArgConstructor()
-         ?.enabled(ref.kclass) ?: true
+         ?.enabled(ref.specRef.kclass) ?: true
 
       return if (enabled) {
          fn(ref)
       } else {
-         runCatching { listener.specIgnored(ref.kclass, "Disabled by @EnabledIf") }
-            .flatMap { extensions.ignored(ref.kclass, "Disabled by @EnabledIf") }
-            .map { emptyMap() }
+         runCatching { listener.specIgnored(ref.specRef.kclass, "Disabled by @EnabledIf") }
+            .flatMap { extensions.ignored(ref.specRef.kclass, "Disabled by @EnabledIf") }
+            .map { ref.disable() to emptyMap() }
       }
    }
 }

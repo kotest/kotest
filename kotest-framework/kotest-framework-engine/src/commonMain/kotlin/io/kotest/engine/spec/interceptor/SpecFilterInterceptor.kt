@@ -23,23 +23,23 @@ class SpecFilterInterceptor(
    private val logger = Logger(SpecFilterInterceptor::class)
 
    override suspend fun intercept(
-      ref: SpecRef,
-      fn: suspend (SpecRef) -> Result<Map<TestCase, TestResult>>
-   ): Result<Map<TestCase, TestResult>> {
+      ref: SpecRefContainer,
+      fn: suspend (SpecRefContainer) -> Result<Pair<SpecRefContainer, Map<TestCase, TestResult>>>
+   ): Result<Pair<SpecRefContainer, Map<TestCase, TestResult>>> {
 
       val excluded = registry.all().filterIsInstance<SpecFilter>().mapNotNull {
-         val result = it.filter(ref.kclass)
+         val result = it.filter(ref.specRef.kclass)
          if (result is SpecFilterResult.Exclude) result else null
       }.firstOrNull()
-      logger.log { Pair(ref.kclass.bestName(), "excludedByFilters == $excluded") }
+      logger.log { Pair(ref.specRef.kclass.bestName(), "excludedByFilters == $excluded") }
 
       return if (excluded == null) {
          fn(ref)
       } else {
          val reason = excluded.reason ?: "Disabled by spec filter"
-         listener.specIgnored(ref.kclass, reason)
-         extensions.ignored(ref.kclass, reason)
-         Result.success(emptyMap())
+         listener.specIgnored(ref.specRef.kclass, reason)
+         extensions.ignored(ref.specRef.kclass, reason)
+         Result.success(ref.disable() to emptyMap())
       }
    }
 }

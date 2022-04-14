@@ -22,13 +22,13 @@ import io.kotest.mpp.newInstanceNoArgConstructorOrObjectInstance
 internal class ApplyExtensionsInterceptor(private val registry: ExtensionRegistry) : SpecRefInterceptor {
 
    override suspend fun intercept(
-      ref: SpecRef,
-      fn: suspend (SpecRef) -> Result<Map<TestCase, TestResult>>
-   ): Result<Map<TestCase, TestResult>> {
+      ref: SpecRefContainer,
+      fn: suspend (SpecRefContainer) -> Result<Pair<SpecRefContainer, Map<TestCase, TestResult>>>
+   ): Result<Pair<SpecRefContainer, Map<TestCase, TestResult>>> {
       return runCatching {
-         ref.kclass.annotation<ApplyExtension>()?.wrapper?.map { extensionClass ->
+         ref.specRef.kclass.annotation<ApplyExtension>()?.wrapper?.map { extensionClass ->
             val extension = extensionClass.newInstanceNoArgConstructorOrObjectInstance()
-            SpecWrapperExtension(extension, ref.kclass)
+            SpecWrapperExtension(extension, ref.specRef.kclass)
          } ?: emptyList()
       }.flatMap { exts ->
          exts.forEach { registry.add(it) }

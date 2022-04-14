@@ -24,16 +24,16 @@ class TagsExcludedSpecInterceptor(
    private val extensions = SpecExtensions(conf.registry)
 
    override suspend fun intercept(
-      ref: SpecRef,
-      fn: suspend (SpecRef) -> Result<Map<TestCase, TestResult>>
-   ): Result<Map<TestCase, TestResult>> {
-      val potentiallyActive = conf.runtimeTags().parse().isPotentiallyActive(ref.kclass)
+      ref: SpecRefContainer,
+      fn: suspend (SpecRefContainer) -> Result<Pair<SpecRefContainer, Map<TestCase, TestResult>>>
+   ): Result<Pair<SpecRefContainer, Map<TestCase, TestResult>>> {
+      val potentiallyActive = conf.runtimeTags().parse().isPotentiallyActive(ref.specRef.kclass)
       return if (potentiallyActive) {
          fn(ref)
       } else {
-         runCatching { listener.specIgnored(ref.kclass, null) }
-            .flatMap { extensions.ignored(ref.kclass, "Skipped by tags") }
-            .map { emptyMap() }
+         runCatching { listener.specIgnored(ref.specRef.kclass, null) }
+            .flatMap { extensions.ignored(ref.specRef.kclass, "Skipped by tags") }
+            .map { ref.disable() to emptyMap() }
       }
    }
 }

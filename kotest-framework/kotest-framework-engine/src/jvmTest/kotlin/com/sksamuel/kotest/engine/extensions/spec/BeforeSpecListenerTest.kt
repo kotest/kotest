@@ -38,7 +38,7 @@ class BeforeSpecListenerTest : FunSpec() {
          counter.get() shouldBe 5
       }
 
-      test("BeforeSpecExtension's should be triggered for a spec without tests") {
+      test("BeforeSpecExtension's should NOT be triggered for a spec without tests") {
 
          val c = ProjectConfiguration()
          c.registry.add(MyBeforeSpecListener)
@@ -50,7 +50,7 @@ class BeforeSpecListenerTest : FunSpec() {
             .withConfiguration(c)
             .launch()
 
-         counter.get() shouldBe 1
+         counter.get() shouldBe 0
       }
 
       test("BeforeSpecListener's exceptions should be propagated to specExit") {

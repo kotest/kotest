@@ -10,9 +10,9 @@ import io.kotest.core.test.TestResult
  */
 internal interface SpecRefInterceptor {
    suspend fun intercept(
-      ref: SpecRef,
-      fn: suspend (SpecRef) -> Result<Map<TestCase, TestResult>>,
-   ): Result<Map<TestCase, TestResult>>
+      ref: SpecRefContainer,
+      fn: suspend (SpecRefContainer) -> Result<Pair<SpecRefContainer, Map<TestCase, TestResult>>>,
+   ): Result<Pair<SpecRefContainer, Map<TestCase, TestResult>>>
 }
 
 /**
@@ -20,7 +20,44 @@ internal interface SpecRefInterceptor {
  */
 internal interface SpecInterceptor {
    suspend fun intercept(
-      spec: Spec,
-      fn: suspend (Spec) -> Result<Map<TestCase, TestResult>>
-   ): Result<Map<TestCase, TestResult>>
+      spec: SpecContainer,
+      fn: suspend (SpecContainer) -> Result<Pair<SpecContainer, Map<TestCase, TestResult>>>,
+   ): Result<Pair<SpecContainer, Map<TestCase, TestResult>>>
 }
+
+sealed class ActiveRootContainer {
+   abstract val active: Boolean
+
+}
+
+sealed class SpecContainer : ActiveRootContainer() {
+   abstract val spec: Spec
+   abstract fun disable(): SpecContainer
+
+}
+
+sealed class SpecRefContainer : ActiveRootContainer() {
+   abstract val specRef: SpecRef
+   abstract fun disable(): SpecRefContainer
+}
+
+data class ActiveSpec(override val spec: Spec) : SpecContainer() {
+   override val active = true
+   override fun disable() = InactiveSpec(spec)
+}
+
+data class ActiveSpecRef(override val specRef: SpecRef) : SpecRefContainer() {
+   override val active = true
+   override fun disable()= InactiveSpecRef(specRef)
+}
+
+data class InactiveSpec internal constructor(override val spec: Spec) : SpecContainer() {
+   override val active = false
+   override fun disable() = this
+}
+
+data class InactiveSpecRef internal constructor(override val specRef: SpecRef) : SpecRefContainer() {
+   override val active = false
+   override fun disable() = this
+}
+
