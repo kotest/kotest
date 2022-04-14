@@ -28,7 +28,7 @@ internal actual fun applyConfigFromSystemProperties(configuration: ProjectConfig
    testNameAppendTags()?.let { configuration.testNameAppendTags = it }
    duplicateTestNameMode()?.let { configuration.duplicateTestNameMode = it }
    projectTimeout()?.let { configuration.projectTimeout = it }
-   logLevel().let { configuration.logLevel = it }
+   logLevel(configuration.logLevel).let { configuration.logLevel = it }
 }
 
 internal fun isolationMode(): IsolationMode? =
@@ -70,9 +70,9 @@ internal fun projectTimeout(): Duration? {
 }
 
 
-internal fun logLevel(): LogLevel {
+internal fun logLevel(fromConfiguration: LogLevel): LogLevel {
    val levelProp = sysprop(KotestEngineProperties.logLevel)?.let { LogLevel.from(it) }
    val levelEnv = env(KotestEngineProperties.logLevel)?.let { LogLevel.from(it) }
 
-   return levelProp ?: levelEnv ?: LogLevel.Off
+   return levelProp ?: levelEnv ?: fromConfiguration
 }
