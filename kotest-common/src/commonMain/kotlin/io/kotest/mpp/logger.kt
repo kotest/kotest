@@ -9,7 +9,7 @@ val start by lazy { TimeSource.Monotonic.markNow() }
 
 @PublishedApi
 internal fun isLoggingEnabled() =
-   sysprop("KOTEST_DEBUG")?.uppercase() == "TRUE" || env("KOTEST_DEBUG")?.uppercase() == "TRUE"
+   syspropOrEnv("KOTEST_DEBUG")?.uppercase() == "TRUE"
 
 class Logger(private val kclass: KClass<*>) {
    fun log(f: () -> Pair<String?, String>) {

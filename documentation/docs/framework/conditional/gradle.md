@@ -40,12 +40,31 @@ Because gradle's test support is class.method based, we cannot filter tests down
 
 ### Kotest Specific Test Filtering
 
-To avoid the limitations with Gradle's `--tests` support, Kotest offers its own flags, `kotest.filter.tests` and `kotest.filter.specs`
-which are provided via **system properties** or **env vars**. These flags support wildcards via `*` and match either tests or specs.
+To avoid the limitations with Gradle's `--tests` support, Kotest offers its own flags which are provided via **system properties** or **environment variables**.
+These flags support wildcards via `*` and match either tests or specs:
 
-This example would execute all tests in the com.somepackage (and nested) packages:
+| System property (JVM)  | Environment variable (JVM or Native) | Scope              |
+|------------------------|--------------------------------------|--------------------|
+| `kotest.filter.specs`  | `kotest_filter_specs`                | Spec (class) names |
+| `kotest.filter.tests`  | `kotest_filter_tests`                | Test names         |
+
+:::caution
+System properties are only supported when targeting Kotlin/JVM.
+Environment variables are only supported when targeting Kotlin/JVM and Kotlin/Native.
+:::
+
+This example would execute all tests in the com.somepackage (and nested) packages by setting the `kotest.filter.specs` system property:
 
 ```gradle test -Dkotest.filter.specs='com.somepackage.*'```
+
+This example would do the same, but uses the environment variable and so works for both Kotlin/JVM and Kotlin/Native:
+
+```kotest_filter_specs='com.somepackage.*' gradle test```
+
+:::caution
+Regardless of whether you use a system property or an environment variable, it's best to enclose the value in single quotes
+rather than double quotes to avoid your shell performing globbing on any `*` characters.
+:::
 
 This example would execute only tests that contain `Foo` in the com.somepackage (and nested) packages:
 

@@ -10,14 +10,13 @@ import io.kotest.core.test.Enabled
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestType
 import io.kotest.engine.test.status.SystemPropertyTestFilterEnabledExtension
+import io.kotest.extensions.system.withEnvironment
 import io.kotest.extensions.system.withSystemProperty
 import io.kotest.matchers.shouldBe
 
 class SystemPropertyTestFilterEnabledExtensionTest : FunSpec() {
    init {
-
-      test("should include tests when no filter sysprop or env is specified") {
-
+      test("should include tests when no filter system property or environment variable is specified") {
          val tc = TestCase(
             SystemPropertyTestFilterEnabledExtensionTest::class.toDescriptor().append("foo"),
             TestName("foo"),
@@ -30,8 +29,7 @@ class SystemPropertyTestFilterEnabledExtensionTest : FunSpec() {
          SystemPropertyTestFilterEnabledExtension.isEnabled(tc).shouldBe(Enabled.enabled)
       }
 
-      test("should include tests that match regex") {
-
+      test("should include tests that match pattern in system property") {
          val tc = TestCase(
             SystemPropertyTestFilterEnabledExtensionTest::class.toDescriptor().append("foo"),
             TestName("foo"),
@@ -54,8 +52,7 @@ class SystemPropertyTestFilterEnabledExtensionTest : FunSpec() {
          }
       }
 
-      test("should exclude tests that do not match regex") {
-
+      test("should exclude tests that do not match pattern in system property") {
          val tc = TestCase(
             SystemPropertyTestFilterEnabledExtensionTest::class.toDescriptor().append("foo"),
             TestName("foo"),
@@ -67,17 +64,115 @@ class SystemPropertyTestFilterEnabledExtensionTest : FunSpec() {
 
          withSystemProperty(KotestEngineProperties.filterTests, "goo") {
             SystemPropertyTestFilterEnabledExtension.isEnabled(tc)
-               .shouldBe(Enabled.disabled("Excluded by --kotest.filter.tests: goo"))
+               .shouldBe(Enabled.disabled("Excluded by kotest.filter.tests test filter: goo"))
          }
 
          withSystemProperty(KotestEngineProperties.filterTests, "g*") {
             SystemPropertyTestFilterEnabledExtension.isEnabled(tc)
-               .shouldBe(Enabled.disabled("Excluded by --kotest.filter.tests: g.*?"))
+               .shouldBe(Enabled.disabled("Excluded by kotest.filter.tests test filter: g.*?"))
          }
 
          withSystemProperty(KotestEngineProperties.filterTests, "*p") {
             SystemPropertyTestFilterEnabledExtension.isEnabled(tc)
-               .shouldBe(Enabled.disabled("Excluded by --kotest.filter.tests: .*?p"))
+               .shouldBe(Enabled.disabled("Excluded by kotest.filter.tests test filter: .*?p"))
+         }
+      }
+
+      test("should include tests that match pattern in environment variable") {
+         val tc = TestCase(
+            SystemPropertyTestFilterEnabledExtensionTest::class.toDescriptor().append("foo"),
+            TestName("foo"),
+            SystemPropertyTestFilterEnabledExtensionTest(),
+            {},
+            sourceRef(),
+            TestType.Test
+         )
+
+         withEnvironment(KotestEngineProperties.filterTests, "foo") {
+            SystemPropertyTestFilterEnabledExtension.isEnabled(tc).shouldBe(Enabled.enabled)
+         }
+
+         withEnvironment(KotestEngineProperties.filterTests, "f*") {
+            SystemPropertyTestFilterEnabledExtension.isEnabled(tc).shouldBe(Enabled.enabled)
+         }
+
+         withEnvironment(KotestEngineProperties.filterTests, "*o") {
+            SystemPropertyTestFilterEnabledExtension.isEnabled(tc).shouldBe(Enabled.enabled)
+         }
+      }
+
+      test("should exclude tests that do not match pattern in environment variable") {
+         val tc = TestCase(
+            SystemPropertyTestFilterEnabledExtensionTest::class.toDescriptor().append("foo"),
+            TestName("foo"),
+            SystemPropertyTestFilterEnabledExtensionTest(),
+            {},
+            sourceRef(),
+            TestType.Test
+         )
+
+         withEnvironment(KotestEngineProperties.filterTests, "goo") {
+            SystemPropertyTestFilterEnabledExtension.isEnabled(tc)
+               .shouldBe(Enabled.disabled("Excluded by kotest.filter.tests test filter: goo"))
+         }
+
+         withEnvironment(KotestEngineProperties.filterTests, "g*") {
+            SystemPropertyTestFilterEnabledExtension.isEnabled(tc)
+               .shouldBe(Enabled.disabled("Excluded by kotest.filter.tests test filter: g.*?"))
+         }
+
+         withEnvironment(KotestEngineProperties.filterTests, "*p") {
+            SystemPropertyTestFilterEnabledExtension.isEnabled(tc)
+               .shouldBe(Enabled.disabled("Excluded by kotest.filter.tests test filter: .*?p"))
+         }
+      }
+
+      test("should include tests that match pattern in environment variable with underscores") {
+         val tc = TestCase(
+            SystemPropertyTestFilterEnabledExtensionTest::class.toDescriptor().append("foo"),
+            TestName("foo"),
+            SystemPropertyTestFilterEnabledExtensionTest(),
+            {},
+            sourceRef(),
+            TestType.Test
+         )
+
+         withEnvironment(KotestEngineProperties.filterTests.replace('.', '_'), "foo") {
+            SystemPropertyTestFilterEnabledExtension.isEnabled(tc).shouldBe(Enabled.enabled)
+         }
+
+         withEnvironment(KotestEngineProperties.filterTests.replace('.', '_'), "f*") {
+            SystemPropertyTestFilterEnabledExtension.isEnabled(tc).shouldBe(Enabled.enabled)
+         }
+
+         withEnvironment(KotestEngineProperties.filterTests.replace('.', '_'), "*o") {
+            SystemPropertyTestFilterEnabledExtension.isEnabled(tc).shouldBe(Enabled.enabled)
+         }
+      }
+
+      test("should exclude tests that do not match pattern in environment variable with underscores") {
+         val tc = TestCase(
+            SystemPropertyTestFilterEnabledExtensionTest::class.toDescriptor().append("foo"),
+            TestName("foo"),
+            SystemPropertyTestFilterEnabledExtensionTest(),
+            {},
+            sourceRef(),
+            TestType.Test
+         )
+
+         withEnvironment(KotestEngineProperties.filterTests.replace('.', '_'), "goo") {
+            SystemPropertyTestFilterEnabledExtension.isEnabled(tc)
+               .shouldBe(Enabled.disabled("Excluded by kotest.filter.tests test filter: goo"))
+         }
+
+         withEnvironment(KotestEngineProperties.filterTests.replace('.', '_'), "g*") {
+            SystemPropertyTestFilterEnabledExtension.isEnabled(tc)
+               .shouldBe(Enabled.disabled("Excluded by kotest.filter.tests test filter: g.*?"))
+         }
+
+         withEnvironment(KotestEngineProperties.filterTests.replace('.', '_'), "*p") {
+            SystemPropertyTestFilterEnabledExtension.isEnabled(tc)
+               .shouldBe(Enabled.disabled("Excluded by kotest.filter.tests test filter: .*?p"))
          }
       }
    }

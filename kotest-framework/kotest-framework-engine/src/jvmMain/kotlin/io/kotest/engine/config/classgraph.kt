@@ -2,8 +2,7 @@ package io.kotest.engine.config
 
 import io.github.classgraph.ClassGraph
 import io.kotest.core.internal.KotestEngineProperties
-import io.kotest.mpp.env
-import io.kotest.mpp.sysprop
+import io.kotest.mpp.syspropOrEnv
 
 /**
  * Creates a [ClassGraph] builder for scanning configs.
@@ -28,9 +27,7 @@ internal fun classgraph(): ClassGraph {
          "org.jetbrains.kotlin.*",
          "org.junit.*"
       ).apply {
-         if (env(KotestEngineProperties.disableJarDiscovery) == "true" ||
-            sysprop(KotestEngineProperties.disableJarDiscovery) == "true"
-         ) {
+         if (syspropOrEnv(KotestEngineProperties.disableJarDiscovery) == "true") {
             disableJarScanning()
          }
       }

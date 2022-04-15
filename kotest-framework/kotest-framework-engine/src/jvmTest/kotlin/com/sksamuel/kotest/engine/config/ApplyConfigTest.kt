@@ -32,13 +32,26 @@ class ApplyConfigTest : FunSpec({
       config.logLevel shouldBe expected
    }
 
-   test("log level can come from env vars") {
+   test("log level can come from env vars with dots in name") {
       val expected = LogLevel.Info
       val config = ProjectConfiguration()
 
       config.logLevel shouldBe LogLevel.Off
 
       withEnvironment(key, expected.name, OverrideMode.SetOrOverride) {
+         applyConfigFromSystemProperties(config)
+      }
+
+      config.logLevel shouldBe expected
+   }
+
+   test("log level can come from env vars with underscores in name") {
+      val expected = LogLevel.Info
+      val config = ProjectConfiguration()
+
+      config.logLevel shouldBe LogLevel.Off
+
+      withEnvironment(key.replace('.', '_'), expected.name, OverrideMode.SetOrOverride) {
          applyConfigFromSystemProperties(config)
       }
 
