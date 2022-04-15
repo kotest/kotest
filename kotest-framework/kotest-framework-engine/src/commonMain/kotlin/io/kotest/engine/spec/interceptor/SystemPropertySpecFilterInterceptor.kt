@@ -12,14 +12,12 @@ import io.kotest.core.test.TestResult
 import io.kotest.engine.listener.TestEngineListener
 import io.kotest.engine.spec.SpecExtensions
 import io.kotest.mpp.bestName
-import io.kotest.mpp.env
 import io.kotest.mpp.log
-import io.kotest.mpp.sysprop
+import io.kotest.mpp.syspropOrEnv
 import kotlin.reflect.KClass
 
 /**
- * Applies test and spec filters using sysprop or env vars from [KotestEngineProperties.filterTests]
- * and [KotestEngineProperties.filterSpecs].
+ * Applies spec filters using sysprop or env vars from [KotestEngineProperties.filterSpecs].
  *
  * These work similarly to gradle filters in --tests described at:
  * https://docs.gradle.org/current/userguide/java_testing.html#full_qualified_name_pattern
@@ -31,14 +29,14 @@ internal class SystemPropertySpecFilterInterceptor(
 ) : SpecRefInterceptor {
 
    private val extensions = SpecExtensions(registry)
-   private fun syspropOrEnv(name: String) = sysprop(name) ?: env(name) ?: ""
 
    override suspend fun intercept(
       ref: SpecRef,
       fn: suspend (SpecRef) -> Result<Map<TestCase, TestResult>>
    ): Result<Map<TestCase, TestResult>> {
+      val filter = syspropOrEnv(KotestEngineProperties.filterSpecs) ?: ""
 
-      val included = syspropOrEnv(KotestEngineProperties.filterSpecs)
+      val included = filter
          .propertyToRegexes()
          .map { it.toSpecFilter() }
          .all { it.filter(ref.kclass) == SpecFilterResult.Include }
@@ -48,8 +46,8 @@ internal class SystemPropertySpecFilterInterceptor(
       return if (included) {
          fn(ref)
       } else {
-         runCatching { listener.specIgnored(ref.kclass, "Filtered by spec filter system property") }
-            .flatMap { extensions.ignored(ref.kclass, "Filtered by spec filter system property") }
+         runCatching { listener.specIgnored(ref.kclass, "Filtered by ${KotestEngineProperties.filterSpecs} spec filter") }
+            .flatMap { extensions.ignored(ref.kclass, "Filtered by ${KotestEngineProperties.filterSpecs} spec filter") }
             .map { emptyMap() }
       }
    }

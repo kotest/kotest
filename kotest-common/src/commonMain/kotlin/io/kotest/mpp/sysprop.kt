@@ -7,5 +7,7 @@ fun sysprop(key: String, default: Double): Double = sysprop(key, default) { it.t
 fun sysprop(key: String, default: Boolean): Boolean = sysprop(key, default) { it == "true" }
 
 expect fun sysprop(name: String): String?
-
 expect fun env(name: String): String?
+
+fun syspropOrEnv(name: String): String? = sysprop(name) ?: env(name) ?: env(syspropNameToSafeEnvironmentVariableName(name))
+private fun syspropNameToSafeEnvironmentVariableName(name: String): String = name.replace('.', '_')

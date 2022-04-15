@@ -6,8 +6,8 @@ import io.kotest.core.internal.KotestEngineProperties
 import io.kotest.core.names.DuplicateTestNameMode
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.test.AssertionMode
-import io.kotest.mpp.env
 import io.kotest.mpp.sysprop
+import io.kotest.mpp.syspropOrEnv
 import kotlin.time.Duration
 
 /**
@@ -71,8 +71,7 @@ internal fun projectTimeout(): Duration? {
 
 
 internal fun logLevel(fromConfiguration: LogLevel): LogLevel {
-   val levelProp = sysprop(KotestEngineProperties.logLevel)?.let { LogLevel.from(it) }
-   val levelEnv = env(KotestEngineProperties.logLevel)?.let { LogLevel.from(it) }
+   val levelProp = syspropOrEnv(KotestEngineProperties.logLevel)?.let { LogLevel.from(it) }
 
-   return levelProp ?: levelEnv ?: fromConfiguration
+   return levelProp ?: fromConfiguration
 }

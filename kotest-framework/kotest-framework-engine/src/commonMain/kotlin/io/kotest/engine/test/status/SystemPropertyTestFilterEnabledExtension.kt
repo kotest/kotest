@@ -7,8 +7,7 @@ import io.kotest.core.internal.KotestEngineProperties
 import io.kotest.core.test.Enabled
 import io.kotest.core.test.TestCase
 import io.kotest.mpp.Logger
-import io.kotest.mpp.env
-import io.kotest.mpp.sysprop
+import io.kotest.mpp.syspropOrEnv
 
 /**
  * Applies test and spec filters using sysprop or env vars from [KotestEngineProperties.filterTests]
@@ -21,11 +20,10 @@ internal object SystemPropertyTestFilterEnabledExtension : TestEnabledExtension 
 
    private val logger = Logger(SystemPropertyTestFilterEnabledExtension::class)
 
-   private fun syspropOrEnv(name: String) = sysprop(name) ?: env(name) ?: ""
-
    override fun isEnabled(testCase: TestCase): Enabled {
+      val filter = syspropOrEnv(KotestEngineProperties.filterTests) ?: ""
 
-      val excluded = syspropOrEnv(KotestEngineProperties.filterTests)
+      val excluded = filter
          .propertyToRegexes()
          .map { it.toTestFilter().filter(testCase.descriptor) }
          .filterIsInstance<TestFilterResult.Exclude>()
@@ -42,7 +40,7 @@ private fun Regex.toTestFilter(): TestFilter = object : TestFilter {
       return if (this@toTestFilter.matches(name))
          TestFilterResult.Include
       else
-         TestFilterResult.Exclude("Excluded by --kotest.filter.tests: ${this@toTestFilter}")
+         TestFilterResult.Exclude("Excluded by kotest.filter.tests test filter: ${this@toTestFilter}")
    }
 }
 
