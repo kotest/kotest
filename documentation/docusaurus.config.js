@@ -53,6 +53,11 @@ module.exports = {
                position: 'left'
             },
             {
+               type: 'docsVersionDropdown',
+               position: 'right',
+               dropdownActiveClassDisabled: true,
+            },
+            {
                href: 'https://github.com/kotest/kotest/issues',
                label: 'Issue Tracker',
                position: 'right'
@@ -103,6 +108,11 @@ module.exports = {
                anonymizeIP: true, // Should IPs be anonymized?
             },
             docs: {
+               versions: {
+                  current: {
+                     label: `5.3 🚧`,
+                  },
+               },
                sidebarPath: require.resolve('./sidebars.js'),
                editUrl: 'https://github.com/kotest/kotest/blob/master/documentation',
             }
