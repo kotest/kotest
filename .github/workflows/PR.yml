@@ -8,6 +8,9 @@ on:
          - '*.md'
          - '*.yml'
 
+permissions:
+  contents: read
+
 jobs:
    build:
       strategy:
