@@ -9,11 +9,6 @@ module.exports = {
    organizationName: 'kotest', // Usually your GitHub org/user name.
    projectName: 'kotest.io', // Usually your repo name.
    themeConfig: {
-      googleAnalytics: {
-         trackingID: 'UA-177425497-1',
-         // Optional fields.
-         anonymizeIP: true, // Should IPs be anonymized?
-      },
       navbar: {
          title: 'Kotest',
          logo: {
@@ -102,6 +97,11 @@ module.exports = {
       [
          '@docusaurus/preset-classic',
          {
+            googleAnalytics: {
+               trackingID: 'UA-177425497-1',
+               // Optional fields.
+               anonymizeIP: true, // Should IPs be anonymized?
+            },
             docs: {
                sidebarPath: require.resolve('./sidebars.js'),
                editUrl: 'https://github.com/kotest/kotest/blob/master/documentation',
