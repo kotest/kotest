@@ -1,6 +1,8 @@
 Klock Matchers
 ==============
 
+## ⛔️ [This page has moved](https://kotest.io/docs/assertions/klock-matchers.html) ⛔ ️
+
 Matchers for the [Klock](https://github.com/korlibs/klock) library, provided by the `kotest-assertions-klock` module.
 
 | Matcher | Description    |

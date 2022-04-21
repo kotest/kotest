@@ -1,6 +1,8 @@
 Core Matchers
 =============
 
+## ⛔️ [This page has moved](https://kotest.io/docs/assertions/core-matchers.html) ⛔ ️
+
 Matchers provided by the `kotest-assertions-core` module.
 
 | General | |

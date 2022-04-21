@@ -1,6 +1,7 @@
 Json Matchers
 =============
 
+## ⛔️ [This page has moved](https://kotest.io/docs/assertions/json-matchers.html) ⛔ ️
 
 
 | JSON | For convenience, JSONs are simply strings |
