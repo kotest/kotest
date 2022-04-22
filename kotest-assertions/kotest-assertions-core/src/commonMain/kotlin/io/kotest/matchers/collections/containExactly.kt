@@ -1,6 +1,7 @@
 package io.kotest.matchers.collections
 
 import io.kotest.assertions.AssertionsConfig
+import io.kotest.assertions.eq.IterableEq
 import io.kotest.assertions.eq.eq
 import io.kotest.assertions.print.Printed
 import io.kotest.assertions.print.print
@@ -12,14 +13,6 @@ import io.kotest.matchers.should
 import io.kotest.matchers.shouldNot
 import kotlin.jvm.JvmName
 
-/**
- * Verifies that this collection contains the sub collections provided in the exact given order.
- *
- * So, for example, listOf(1,2,3) contains exactly the sub collections:
- *
- * [], [1], [2], [3], [1,2], [2,3] and [1,2,3].
- *
- */
 @JvmName("shouldContainExactly_iterable")
 infix fun <T> Iterable<T>?.shouldContainExactly(expected: Iterable<T>) =
    this?.toList() should containExactly(expected.toList())
@@ -41,8 +34,11 @@ fun <T> containExactly(vararg expected: T): Matcher<Collection<T>?> = containExa
 
 /** Assert that a collection contains exactly the given values and nothing else, in order. */
 fun <T, C : Collection<T>> containExactly(expected: C): Matcher<C?> = neverNullMatcher { actual ->
+   fun Throwable?.isDisallowedIterableComparisonFailure() =
+      this?.message?.startsWith(IterableEq.trigger) == true
 
-   val passed = eq(actual, expected, strictNumberEq = true) == null
+   val failureReason = eq(actual, expected, strictNumberEq = true)
+   val passed = failureReason == null
 
    val failureMessage = {
 
@@ -50,7 +46,13 @@ fun <T, C : Collection<T>> containExactly(expected: C): Matcher<C?> = neverNullM
       val extra = actual.filterNot { expected.contains(it) }
 
       val sb = StringBuilder()
-      sb.append("Expecting: ${expected.print().value} but was: ${actual.print().value}")
+
+      if (failureReason.isDisallowedIterableComparisonFailure()) {
+         sb.append(failureReason?.message)
+      } else {
+         sb.append("Expecting: ${expected.print().value} but was: ${actual.print().value}")
+      }
+
       sb.append("\n")
       if (missing.isNotEmpty()) {
          sb.append("Some elements were missing: ")
@@ -70,7 +72,11 @@ fun <T, C : Collection<T>> containExactly(expected: C): Matcher<C?> = neverNullM
 
    val negatedFailureMessage = { "Collection should not contain exactly ${expected.print().value}" }
 
-   if (actual.size <= AssertionsConfig.maxCollectionEnumerateSize && expected.size <= AssertionsConfig.maxCollectionEnumerateSize) {
+   if (
+      actual.size <= AssertionsConfig.maxCollectionEnumerateSize &&
+      expected.size <= AssertionsConfig.maxCollectionEnumerateSize &&
+      !failureReason.isDisallowedIterableComparisonFailure()
+   ) {
       ComparableMatcherResult(
          passed,
          failureMessage,

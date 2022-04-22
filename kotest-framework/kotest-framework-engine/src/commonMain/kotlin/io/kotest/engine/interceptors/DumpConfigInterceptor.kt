@@ -5,8 +5,7 @@ import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.internal.KotestEngineProperties
 import io.kotest.engine.EngineResult
 import io.kotest.engine.config.dumpProjectConfig
-import io.kotest.mpp.env
-import io.kotest.mpp.sysprop
+import io.kotest.mpp.syspropOrEnv
 
 /**
  * Outputs a given [ProjectConfiguration] to the console.
@@ -25,5 +24,5 @@ internal object DumpConfigInterceptor : EngineInterceptor {
    }
 
    private fun syspropEnabled() =
-      sysprop(KotestEngineProperties.dumpConfig) != null || env(KotestEngineProperties.dumpConfig) != null
+      syspropOrEnv(KotestEngineProperties.dumpConfig) != null
 }

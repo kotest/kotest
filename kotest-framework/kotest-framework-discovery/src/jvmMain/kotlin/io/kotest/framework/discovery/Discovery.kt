@@ -7,9 +7,8 @@ import io.github.classgraph.ClassInfo
 import io.kotest.core.extensions.DiscoveryExtension
 import io.kotest.core.internal.KotestEngineProperties
 import io.kotest.core.spec.Spec
-import io.kotest.mpp.env
 import io.kotest.mpp.log
-import io.kotest.mpp.sysprop
+import io.kotest.mpp.syspropOrEnv
 import java.lang.management.ManagementFactory
 import java.util.concurrent.ConcurrentHashMap
 import kotlin.reflect.KClass
@@ -206,9 +205,7 @@ class Discovery(private val discoveryExtensions: List<DiscoveryExtension> = empt
             "org.jetbrains.kotlin.*",
             "org.junit.*"
          ).apply {
-            if (env(KotestEngineProperties.disableJarDiscovery) == "true" ||
-               sysprop(KotestEngineProperties.disableJarDiscovery) == "true"
-            ) {
+            if (syspropOrEnv(KotestEngineProperties.disableJarDiscovery) == "true") {
                disableJarScanning()
             }
          }

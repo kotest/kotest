@@ -10,31 +10,32 @@ on:
       branches:
          - master
 
+permissions:
+  contents: read
+
 jobs:
-   linux:
+   linux_tests:
+      if: github.repository == 'kotest/kotest'
       runs-on: ubuntu-latest
       steps:
          -  name: Checkout the repo
-            uses: actions/checkout@v2
+            uses: actions/checkout@v3
             with:
                fetch-depth: 0
 
          -  name: Setup JDK
-            uses: actions/setup-java@v2
+            uses: actions/setup-java@v3
             with:
                distribution: 'zulu'
                java-version: '8'
+
+         -  uses: gradle/gradle-build-action@v2
 
          -  name: Run tests
             run: ./gradlew check --scan
 
          -  name: publish snapshots
             run: ./gradlew publish
-            env:
-               OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
-               OSSRH_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
-               ORG_GRADLE_PROJECT_signingKey: ${{ secrets.SIGNING_KEY }}
-               ORG_GRADLE_PROJECT_signingPassword: ${{ secrets.SIGNING_PASSWORD }}
 
          -  name: Bundle the build report
             if: failure()
@@ -42,29 +43,46 @@ jobs:
 
          -  name: Upload the build report
             if: failure()
-            uses: actions/upload-artifact@master
+            uses: actions/upload-artifact@v3
             with:
                name: error-report
                path: build-reports.zip
 
-   macos:
+   mac_tests:
+      if: github.repository == 'kotest/kotest'
       runs-on: macos-11
+      strategy:
+         matrix:
+            target:
+               - macosX64Test publishMacosX64PublicationToDeployRepository
+               - macosArm64Test publishMacosArm64PublicationToDeployRepository
+               - iosX64Test publishIosX64PublicationToDeployRepository
+               - iosSimulatorArm64Test publishIosSimulatorArm64PublicationToDeployRepository
+               - iosArm64TestKlibrary publishIosArm64PublicationToDeployRepository
+               - iosArm32TestKlibrary publishIosArm32PublicationToDeployRepository
+               - tvosX64Test publishTvosX64PublicationToDeployRepository
+               - tvosArm64TestKlibrary publishTvosArm64PublicationToDeployRepository
+               - watchosArm32TestKlibrary publishWatchosArm32PublicationToDeployRepository
+               - watchosArm64TestKlibrary publishWatchosArm64PublicationToDeployRepository
+               - watchosX86Test publishWatchosX86PublicationToDeployRepository
+               - watchosX64Test publishWatchosX64PublicationToDeployRepository
+
       steps:
          -  name: Checkout the repo
-            uses: actions/checkout@v2
+            uses: actions/checkout@v3
             with:
                fetch-depth: 0
 
-         -  name: Run macos tests
-            run: ./gradlew macosX64Test macosArm64Test --scan
+         -  name: Setup JDK
+            uses: actions/setup-java@v3
+            with:
+               distribution: 'zulu'
+               java-version: '8'
 
-         -  name: publish macos snapshots
-            run: ./gradlew publishMacosX64PublicationToDeployRepository publishMacosArm64PublicationToDeployRepository
-            env:
-               OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
-               OSSRH_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
-               ORG_GRADLE_PROJECT_signingKey: ${{ secrets.SIGNING_KEY }}
-               ORG_GRADLE_PROJECT_signingPassword: ${{ secrets.SIGNING_PASSWORD }}
+         -  uses: gradle/gradle-build-action@v2
+
+         -  name: Run tests
+            run: ./gradlew ${{ matrix.target }} --scan
 
          -  name: Bundle the build report
             if: failure()
@@ -72,119 +90,27 @@ jobs:
 
          -  name: Upload the build report
             if: failure()
-            uses: actions/upload-artifact@master
-            with:
-               name: error-report
-               path: build-reports.zip
-
-   ios:
-      runs-on: macos-11
-      steps:
-         -  name: Checkout the repo
-            uses: actions/checkout@v2
-            with:
-               fetch-depth: 0
-
-         -  name: Run ios tests
-            run: ./gradlew iosX64Test iosSimulatorArm64Test iosArm64TestKlibrary iosArm32TestKlibrary --scan
-
-         -  name: publish ios snapshots
-            run: ./gradlew publishIosX64PublicationToDeployRepository publishIosSimulatorArm64PublicationToDeployRepository publishIosArm64PublicationToDeployRepository publishIosArm32PublicationToDeployRepository
-            env:
-               OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
-               OSSRH_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
-               ORG_GRADLE_PROJECT_signingKey: ${{ secrets.SIGNING_KEY }}
-               ORG_GRADLE_PROJECT_signingPassword: ${{ secrets.SIGNING_PASSWORD }}
-
-         -  name: Bundle the build report
-            if: failure()
-            run: find . -type d -name 'reports' | zip -@ -r build-reports.zip
-
-         -  name: Upload the build report
-            if: failure()
-            uses: actions/upload-artifact@master
-            with:
-               name: error-report
-               path: build-reports.zip
-
-   tvos:
-      runs-on: macos-11
-      steps:
-         -  name: Checkout the repo
-            uses: actions/checkout@v2
-            with:
-               fetch-depth: 0
-
-         -  name: Run tvos tests
-            run: ./gradlew tvosX64Test tvosArm64TestKlibrary --scan
-
-         -  name: publish tvos snapshots
-            run: ./gradlew publishTvosX64PublicationToDeployRepository publishTvosArm64PublicationToDeployRepository
-            env:
-               OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
-               OSSRH_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
-               ORG_GRADLE_PROJECT_signingKey: ${{ secrets.SIGNING_KEY }}
-               ORG_GRADLE_PROJECT_signingPassword: ${{ secrets.SIGNING_PASSWORD }}
-
-         -  name: Bundle the build report
-            if: failure()
-            run: find . -type d -name 'reports' | zip -@ -r build-reports.zip
-
-         -  name: Upload the build report
-            if: failure()
-            uses: actions/upload-artifact@master
-            with:
-               name: error-report
-               path: build-reports.zip
-
-   watchos:
-      runs-on: macos-11
-      steps:
-         -  name: Checkout the repo
-            uses: actions/checkout@v2
-            with:
-               fetch-depth: 0
-
-         -  name: Run watchos tests
-            run: ./gradlew watchosArm32TestKlibrary watchosArm64TestKlibrary watchosX86Test watchosX64Test --scan
-
-         -  name: publish watchos snapshots
-            run: ./gradlew publishWatchosX86PublicationToDeployRepository publishWatchosX64PublicationToDeployRepository publishWatchosArm32PublicationToDeployRepository publishWatchosArm64PublicationToDeployRepository
-            env:
-               OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
-               OSSRH_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
-               ORG_GRADLE_PROJECT_signingKey: ${{ secrets.SIGNING_KEY }}
-               ORG_GRADLE_PROJECT_signingPassword: ${{ secrets.SIGNING_PASSWORD }}
-
-         -  name: Bundle the build report
-            if: failure()
-            run: find . -type d -name 'reports' | zip -@ -r build-reports.zip
-
-         -  name: Upload the build report
-            if: failure()
-            uses: actions/upload-artifact@master
+            uses: actions/upload-artifact@v3
             with:
                name: error-report
                path: build-reports.zip
 
    windows:
       runs-on: windows-latest
+      if: github.repository == 'kotest/kotest'
       steps:
          -  name: Checkout the repo
-            uses: actions/checkout@v2
+            uses: actions/checkout@v3
             with:
                fetch-depth: 0
+
+         -  uses: gradle/gradle-build-action@v2
 
          -  name: Run tests
             run: ./gradlew mingwX64Test --scan
 
          -  name: publish mingw64 and mingw86 snapshot
             run: ./gradlew publishMingwX64PublicationToDeployRepository
-            env:
-               OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
-               OSSRH_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
-               ORG_GRADLE_PROJECT_signingKey: ${{ secrets.SIGNING_KEY }}
-               ORG_GRADLE_PROJECT_signingPassword: ${{ secrets.SIGNING_PASSWORD }}
 
          -  name: Bundle the build report
             if: failure()
@@ -192,7 +118,7 @@ jobs:
 
          -  name: Upload the build report
             if: failure()
-            uses: actions/upload-artifact@master
+            uses: actions/upload-artifact@v3
             with:
                name: error-report
                path: build-reports.zip
@@ -200,3 +126,7 @@ jobs:
 
 env:
    GRADLE_OPTS: -Dorg.gradle.configureondemand=true -Dorg.gradle.parallel=false -Dkotlin.incremental=false -Dorg.gradle.jvmargs="-Xmx3g -XX:MaxPermSize=2048m -XX:+HeapDumpOnOutOfMemoryError -Dfile.encoding=UTF-8"
+   OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
+   OSSRH_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
+   ORG_GRADLE_PROJECT_signingKey: ${{ secrets.SIGNING_KEY }}
+   ORG_GRADLE_PROJECT_signingPassword: ${{ secrets.SIGNING_PASSWORD }}

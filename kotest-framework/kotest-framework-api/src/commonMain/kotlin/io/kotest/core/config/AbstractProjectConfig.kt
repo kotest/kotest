@@ -26,7 +26,7 @@ import kotlin.time.Duration
  *
  * For example, you could create this object and place the source in `src/main/kotlin/my/test/package`.
  *
- * object ProjectConfig : AbstractProjectConfig {
+ * object KotestProjectConfig : AbstractProjectConfig() {
  *    override val failOnEmptyTestSuite = true
  *    override val testCaseOrder = TestCaseOrder.Random
  * }

@@ -1,16 +1,21 @@
 package com.sksamuel.kotest.property.arbitrary
 
 import io.kotest.assertions.throwables.shouldNotThrow
+import io.kotest.assertions.throwables.shouldNotThrowAny
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.inspectors.forAll
 import io.kotest.matchers.collections.shouldContainExactly
 import io.kotest.matchers.collections.shouldNotBeIn
+import io.kotest.matchers.shouldBe
 import io.kotest.property.Arb
 import io.kotest.property.EdgeConfig
 import io.kotest.property.RandomSource
 import io.kotest.property.Sample
 import io.kotest.property.arbitrary.filter
 import io.kotest.property.arbitrary.int
+import io.kotest.property.arbitrary.map
+import io.kotest.property.arbitrary.of
+import io.kotest.property.arbitrary.single
 import io.kotest.property.arbitrary.take
 import io.kotest.property.arbitrary.withEdgecases
 
@@ -53,5 +58,14 @@ class FilterTest : FunSpec({
             it.value() shouldNotBeIn oddNumbers
          }
       }
+   }
+
+   test("Arb.filter composition should not exhaust call stack") {
+      var arb: Arb<Int> = Arb.of(0, 1)
+      repeat(10000) {
+         arb = arb.filter { it == 0 }
+      }
+      val result = shouldNotThrowAny { arb.single(RandomSource.seeded(1234L)) }
+      result shouldBe 0
    }
 })

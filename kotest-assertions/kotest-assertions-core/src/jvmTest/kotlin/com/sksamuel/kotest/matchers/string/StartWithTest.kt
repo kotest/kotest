@@ -19,6 +19,7 @@ class StartWithTest : FreeSpec() {
             "hello" shouldStartWith ""
             "hello" shouldStartWith "h"
             "hello" shouldStartWith "he"
+            "hello" shouldStartWith "(he|hi)".toRegex()
             "hello" shouldNotStartWith "w"
             "hello" shouldNotStartWith "wo"
             "" should startWith("")
@@ -27,6 +28,9 @@ class StartWithTest : FreeSpec() {
             }
             shouldThrow<AssertionError> {
                "hello" should startWith("goodbye")
+            }
+            shouldThrow<AssertionError> {
+               "hello" should startWith("(el|lo)".toRegex())
             }
          }
          "work with char seqs" {
@@ -52,6 +56,11 @@ class StartWithTest : FreeSpec() {
                "la tour eiffel" should startWith("la tour tower london")
             }.message shouldBe "\"la tour eiffel\" should start with \"la tour tower london\" (diverged at index 8)"
          }
+         "should show should start with regex in error message" {
+            shouldThrow<AssertionError> {
+               "hello" should startWith("(e|lo)".toRegex())
+            }.message shouldBe "\"hello\" should start with regex (e|lo)"
+         }
          "should fail if value is null" {
             shouldThrow<AssertionError> {
                null should startWith("h")
@@ -69,5 +78,6 @@ class StartWithTest : FreeSpec() {
                null shouldNotStartWith "w"
             }.message shouldBe "Expecting actual not to be null"
          }
-      }   }
+      }
+   }
 }

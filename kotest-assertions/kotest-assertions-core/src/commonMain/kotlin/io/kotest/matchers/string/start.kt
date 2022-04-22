@@ -35,3 +35,19 @@ fun startWith(prefix: CharSequence): Matcher<CharSequence?> = neverNullMatcher {
       { msg },
       { notmsg })
 }
+
+infix fun <A : CharSequence?> A.shouldStartWith(regex: Regex): A {
+   this should startWith(regex)
+   return this
+}
+
+@OptIn(ExperimentalStdlibApi::class)
+fun startWith(regex: Regex): Matcher<CharSequence?> = neverNullMatcher { value ->
+   val ok = regex.matchesAt(value, 0)
+   MatcherResult(
+      ok,
+      { "${value.print().value} should start with regex ${regex.pattern}" },
+      {
+         "${value.print().value} should not start with regex ${regex.pattern}"
+      })
+}

@@ -9,11 +9,6 @@ module.exports = {
    organizationName: 'kotest', // Usually your GitHub org/user name.
    projectName: 'kotest.io', // Usually your repo name.
    themeConfig: {
-      googleAnalytics: {
-         trackingID: 'UA-177425497-1',
-         // Optional fields.
-         anonymizeIP: true, // Should IPs be anonymized?
-      },
       navbar: {
          title: 'Kotest',
          logo: {
@@ -56,6 +51,11 @@ module.exports = {
                docId: 'intellij/index',
                label: 'Intellij Plugin',
                position: 'left'
+            },
+            {
+               type: 'docsVersionDropdown',
+               position: 'right',
+               dropdownActiveClassDisabled: true,
             },
             {
                href: 'https://github.com/kotest/kotest/issues',
@@ -102,7 +102,17 @@ module.exports = {
       [
          '@docusaurus/preset-classic',
          {
+            googleAnalytics: {
+               trackingID: 'UA-177425497-1',
+               // Optional fields.
+               anonymizeIP: true, // Should IPs be anonymized?
+            },
             docs: {
+               versions: {
+                  current: {
+                     label: `5.3 🚧`,
+                  },
+               },
                sidebarPath: require.resolve('./sidebars.js'),
                editUrl: 'https://github.com/kotest/kotest/blob/master/documentation',
             }
