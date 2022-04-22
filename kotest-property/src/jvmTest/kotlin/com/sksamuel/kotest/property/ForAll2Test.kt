@@ -8,12 +8,14 @@ import io.kotest.property.Arb
 import io.kotest.property.Exhaustive
 import io.kotest.property.PropTestConfig
 import io.kotest.property.ShrinkingMode
+import io.kotest.property.arbitrary.Codepoint
+import io.kotest.property.arbitrary.alphanumeric
 import io.kotest.property.arbitrary.int
 import io.kotest.property.arbitrary.map
+import io.kotest.property.arbitrary.string
 import io.kotest.property.arbitrary.withEdgecases
 import io.kotest.property.exhaustive.constant
 import io.kotest.property.exhaustive.ints
-import io.kotest.property.exhaustive.longs
 import io.kotest.property.forAll
 
 class ForAll2Test : FunSpec({
@@ -102,5 +104,21 @@ Last error was caused by args:
 Repeat this test by using seed 1921315
 
 Caused by: Property passed 8 times (minSuccess rate was 9)"""
+   }
+
+   test("forAll with a test function that throws should print inputs and perform shrinks") {
+      shouldThrowAny {
+         forAll(PropTestConfig(1234L), Arb.int(1..10), Arb.string(1..3, Codepoint.alphanumeric())) { number, _ ->
+            require(number > 4) { "something unexpected happened" }
+            true
+         }
+      }.message shouldBe """Property failed after 1 attempts
+
+	Arg 0: 1 (shrunk from 2)
+	Arg 1: "r" (shrunk from rDi)
+
+Repeat this test by using seed 1234
+
+Caused by IllegalArgumentException: something unexpected happened"""
    }
 })
