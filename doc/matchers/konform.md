@@ -1,6 +1,7 @@
 Konform Matchers
 ================
 
+## ⛔️ [This page has moved](https://kotest.io/docs/assertions/konform-matchers.html) ⛔ ️
 
 
 Kotest provides various matchers for use with [Konform](https://github.com/konform-kt/konform).

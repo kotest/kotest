@@ -1,6 +1,8 @@
 Kotlinx Datetime
 ===========
 
+## ⛔️ [This page has moved](https://kotest.io/docs/assertions/kotlinx-datetime-matchers.html) ⛔ ️
+
 Matchers for the [Kotlinx Datetime](https://github.com/Kotlin/kotlinx-datetime) library are provided by the `kotest-assertions-kotlinx-time` module.
 
 

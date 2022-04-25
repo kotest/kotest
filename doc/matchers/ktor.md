@@ -1,6 +1,8 @@
 Ktor Matchers
 =============
 
+## ⛔️ [This page has moved](https://kotest.io/docs/assertions/ktor-matchers.html) ⛔ ️
+
 Matchers for [Ktor](https://ktor.io/) are provided by the `kotest-assertions-ktor` module.
 
 

@@ -1,6 +1,8 @@
 Arrow Matchers
 ==========
 
+## ⛔️ [This page has moved](https://kotest.io/docs/assertions/arrow.html) ⛔ ️
+
 This page lists all current matchers in the Kotest arrow matchers extension library. To use this library
  you need to add `kotest-assertions-arrow` to your build.
 

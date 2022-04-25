@@ -1,6 +1,8 @@
 Data-driven Testing
 --------------------
 
+## ⛔️ [This page has moved](https://kotest.io/docs/framework/datatesting/data-driven-testing.html) ⛔ ️
+
 To test your code with different parameter combinations, you can use a table of values as input for your test
 cases. This is called _data driven testing_ also known as _table driven testing_.
 
