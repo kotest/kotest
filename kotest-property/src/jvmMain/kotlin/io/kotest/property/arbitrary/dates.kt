@@ -7,6 +7,7 @@ import java.time.LocalDateTime
 import java.time.LocalTime
 import java.time.Period
 import java.time.Year.isLeap
+import java.time.YearMonth
 import java.time.temporal.ChronoUnit
 import java.time.temporal.TemporalQueries.localDate
 import java.time.temporal.TemporalQueries.localTime
@@ -160,6 +161,28 @@ fun Arb.Companion.localDateTime(
          }.first { !it.isBefore(minLocalDateTime) && !it.isAfter(maxLocalDateTime) }
       }
    )
+}
+
+/**
+ * Arberates a stream of random YearMonth
+ *
+ * If any of the years in the range contain a leap year, the date [02/YEAR] will always be a constant value of this
+ * generator.
+ *
+ * This generator creates randomly generated YearMonth, in the range [[minYearMonth, maxYearMonth]].
+ *
+ * @see [yearMonth]
+ */
+fun Arb.Companion.yearMonth(
+   minYearMonth: YearMonth = YearMonth.of(1970, 1),
+   maxYearMonth: YearMonth = YearMonth.of(2030, 12)
+): Arb<YearMonth> {
+   val leapYears = (minYearMonth.year..maxYearMonth.year).filter { isLeap(it.toLong()) }
+   val february = leapYears.map { YearMonth.of(it, 2) }
+
+   return arbitrary(february + minYearMonth + maxYearMonth) {
+      minYearMonth.plusMonths(it.random.nextLong(ChronoUnit.MONTHS.between(minYearMonth, maxYearMonth)))
+   }.filter { it in minYearMonth..maxYearMonth }
 }
 
 typealias InstantRange = ClosedRange<Instant>
