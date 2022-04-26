@@ -26,7 +26,7 @@ To configure in your project, you need to add the `JunitXmlReporter` using [proj
 
 ```kotlin
 class MyConfig : AbstractProjectConfig() {
-  override fun extensions(): List<Extension> = listOf(
+  override fun listeners(): List<Listener> = listOf(
     JunitXmlReporter(
       includeContainers = false,
       useTestPathAsName = true
