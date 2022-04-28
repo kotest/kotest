@@ -1,9 +1,11 @@
 Jsoup Matchers
 ==========
 
+## ⛔️ [This page has moved](https://kotest.io/docs/assertions/jsoup-matchers.html) ⛔ ️
+
 This page lists all current matchers in the KotlinTest jsoup matchers extension library. To use this library
  you need to add `kotlintest-assertions-jsoup` to your build.
- 
+
 | Element | |
 | --- | --- |
 | `element.shouldHaveChildWithTag(tag)` | Asserts that the element has a child with the given tag  |

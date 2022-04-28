@@ -9,6 +9,30 @@ module.exports = {
    organizationName: 'kotest', // Usually your GitHub org/user name.
    projectName: 'kotest.io', // Usually your repo name.
    themeConfig: {
+      algolia: {
+         // The application ID provided by Algolia
+         appId: 'UGZ6V0USY6',
+
+         // Public API key: it is safe to commit it
+         apiKey: 'f170b39d801f28d7bf2deb2a4a731908',
+
+         indexName: 'kotest',
+
+         // Contextual search is enabled by default.
+         // It ensures that search results are relevant to the current language and version.
+         // contextualSearch: true,
+
+         // Optional: Specify domains where the navigation should occur through window.location instead on history.push. Useful when our Algolia config crawls multiple documentation sites and we want to navigate with window.location.href to them.
+         // externalUrlRegex: 'external\\.com|domain\\.com',
+
+         // Optional: Algolia search parameters
+         searchParameters: {},
+
+         // Optional: path for search page that enabled by default (`false` to disable it)
+         searchPagePath: 'search',
+
+         //... other Algolia params
+      },
       navbar: {
          title: 'Kotest',
          logo: {
@@ -51,6 +75,10 @@ module.exports = {
                docId: 'intellij/index',
                label: 'Intellij Plugin',
                position: 'left'
+            },
+            {
+               type:'search',
+               position: 'right'
             },
             {
                type: 'docsVersionDropdown',
