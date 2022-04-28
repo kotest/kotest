@@ -4,8 +4,6 @@ slug: json-schema-matchers.html
 sidebar_label: Schema matchers
 ---
 
-## Matchers
-
 | Matcher             | Description                                                                                                                                         | Targets       |
 |---------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------|:--------------|
 | `shouldMatchSchema` | Validates that a `String` or `kotlinx.serialization.JsonElement` matches a `JsonSchema`. See description below for details on constructing schemas. | Multiplatform |

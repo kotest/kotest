@@ -25,3 +25,6 @@ For more details, see [here](content-json-matchers.html) or follow matcher-speci
 | [shouldMatchJsonResource](content-json-matchers.html#shouldcontainjsonkey)      | Verifies that a String is matches the JSON content of a given test resource                          | JVM           |
 
 ## Schema validation
+| Matcher                                        | Description                                                                                                                                         | Targets       |
+|------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------|:--------------|
+| [shouldMatchSchema](json-schema-matchers.html) | Validates that a `String` or `kotlinx.serialization.JsonElement` matches a `JsonSchema`. See description below for details on constructing schemas. | Multiplatform |
