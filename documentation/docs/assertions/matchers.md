@@ -32,13 +32,13 @@ For the extension function style, each function has an equivalent negated versio
 These modules provide the core matcher experience. They are hosted in the main Kotest repo, and are released on the same cadence as the
 Kotest framework.
 
-| Module | Description | Type |
-| -------- | ---- | ---- |
-| [kotest-assertions-core](core.md) | Provides matchers for standard libary types. | Multiplatform |
-| [kotest-assertions-json](json.md) | Provides matchers for testing json objects. | JVM |
-| [kotest-assertions-kotlinx-time](kotlinx-datetime.md) | Provides matchers for Kotlin's date / time library. | Multiplatform |
-| [kotest-assertions-sql](sql.md) | Provides matchers for JDBC. | JVM |
-| [kotest-assertions-ktor](ktor.md) | Provides matchers for Ktor server test and client libraries. | Multiplatform |
+| Module                                                | Description                                                  | Type          |
+|-------------------------------------------------------|--------------------------------------------------------------|---------------|
+| [kotest-assertions-core](core.md)                     | Provides matchers for standard libary types.                 | Multiplatform |
+| [kotest-assertions-json](json/overview.md)            | Provides matchers for testing json objects.                  | JVM           |
+| [kotest-assertions-kotlinx-time](kotlinx-datetime.md) | Provides matchers for Kotlin's date / time library.          | Multiplatform |
+| [kotest-assertions-sql](sql.md)                       | Provides matchers for JDBC.                                  | JVM           |
+| [kotest-assertions-ktor](ktor.md)                     | Provides matchers for Ktor server test and client libraries. | Multiplatform |
 
 
 
