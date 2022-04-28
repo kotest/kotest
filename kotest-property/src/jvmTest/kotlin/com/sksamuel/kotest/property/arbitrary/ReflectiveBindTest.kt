@@ -2,6 +2,7 @@ package com.sksamuel.kotest.property.arbitrary
 
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.inspectors.forAll
+import io.kotest.inspectors.forAtLeastOne
 import io.kotest.matchers.collections.shouldContain
 import io.kotest.matchers.collections.shouldContainExactly
 import io.kotest.matchers.shouldBe
@@ -22,6 +23,17 @@ class ReflectiveBindTest : StringSpec(
       data class Wobble(val a: String, val b: Boolean, val c: Int, val d: Pair<Double, Float>)
       data class WobbleWobble(val a: Wobble)
       data class BubbleBobble(val a: String?, val b: Boolean?)
+
+      "binds enums" {
+         data class Hobble(val shape: Shape)
+
+         val items = Arb.bind<Hobble>().take(100).toList()
+
+         items
+            .forAtLeastOne { it.shape shouldBe Shape.Diamond }
+            .forAtLeastOne { it.shape shouldBe Shape.Square }
+            .forAtLeastOne { it.shape shouldBe Shape.Triangle }
+      }
 
       "provided arb for type is used" {
          val wobble = Wobble("test", false, 0, 1.0 to 3.14f)
@@ -112,4 +124,12 @@ class ReflectiveBindTest : StringSpec(
       }
 
    }
-)
+) {
+   companion object {
+      private enum class Shape {
+         Square,
+         Triangle,
+         Diamond
+      }
+   }
+}

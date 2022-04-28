@@ -64,8 +64,9 @@ inline fun <reified T : Any> Arb.Companion.data(providedArbs: Map<KClass<*>, Arb
  * - Data classes, where all properties also fall into this category
  * - Pair, where 1st and 2nd fall into this category
  * - Primitives
- * - LocalDate, LocalDateTime, LocalTime, Period
- * - BigDecimal
+ * - Enums
+ * - LocalDate, LocalDateTime, LocalTime, Period, Instant
+ * - BigDecimal, BigInteger
  * - Collections (Set, List, Map)
  */
 fun <T : Any> Arb.Companion.bind(providedArbs: Map<KClass<*>, Arb<*>>, kclass: KClass<T>): Arb<T> {
