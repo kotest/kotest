@@ -17,6 +17,7 @@ module.exports = {
       'proptest/arrow',
       'proptest/date_gens',
       'proptest/extra_arbs',
+      'proptest/reflective_arbs',
    ],
    intellij: [
       'intellij/index',
