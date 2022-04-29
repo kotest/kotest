@@ -53,9 +53,12 @@ fun <T> singleElement(p: (T) -> Boolean): Matcher<Collection<T>> = object : Matc
 }
 
 fun <T : Comparable<T>> beSorted(): Matcher<List<T>> = sorted()
-fun <T : Comparable<T>> sorted(): Matcher<List<T>> = object : Matcher<List<T>> {
+fun <T : Comparable<T>> sorted(): Matcher<List<T>> = sortedBy { it }
+
+fun <T, E : Comparable<E>> beSortedBy(transform: (T) -> E): Matcher<List<T>> = sortedBy(transform)
+fun <T, E : Comparable<E>> sortedBy(transform: (T) -> E): Matcher<List<T>> = object : Matcher<List<T>> {
    override fun test(value: List<T>): MatcherResult {
-      val failure = value.withIndex().firstOrNull { (i, it) -> i != value.lastIndex && it > value[i + 1] }
+      val failure = value.withIndex().firstOrNull { (i, it) -> i != value.lastIndex && transform(it) > transform(value[i + 1]) }
       val elementMessage = when (failure) {
          null -> ""
          else -> ". Element ${failure.value} at index ${failure.index} was greater than element ${value[failure.index + 1]}"

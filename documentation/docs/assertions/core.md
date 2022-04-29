@@ -166,6 +166,7 @@ Matchers provided by the `kotest-assertions-core` module.
 | `collection.shouldHaveAtLeastSize(n)`           | Asserts that the collection has at least size n.                                                                                                                  |
 | `collection.shouldHaveAtMostSize(n)`            | Asserts that the collection has at most size n.                                                                                                                   |
 | `list.shouldBeSorted()`                         | Asserts that the list is sorted.                                                                                                                                  |
+| `list.shouldBeSortedBy { transform }`           | Asserts that the list is sorted by the value after applying the transform.                                                                                        |
 | `list.shouldContainInOrder(other)`              | Asserts that this list contains the given list in order. Other elements may appear either side of the given list.                                                 |
 | `list.shouldExistInOrder({ element }, ...)`     | Asserts that this list contains elements matching the predicates in order. Other elements may appear around or between the elements matching the predicates.      |
 | `list.shouldHaveElementAt(index, element)`      | Asserts that this list contains the given element at the given position.                                                                                          |
