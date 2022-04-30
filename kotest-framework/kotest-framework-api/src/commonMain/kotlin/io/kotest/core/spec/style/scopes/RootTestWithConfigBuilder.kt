@@ -30,6 +30,7 @@ class RootTestWithConfigBuilder(
       coroutineDebugProbes: Boolean? = null,
       blockingTest: Boolean? = null,
       testCoroutineDispatcher: Boolean? = null,
+      coroutineTestScope: Boolean? = null,
       test: suspend TestScope.() -> Unit,
    ) {
       val config = UnresolvedTestConfig(
@@ -46,6 +47,7 @@ class RootTestWithConfigBuilder(
          coroutineDebugProbes = coroutineDebugProbes,
          blockingTest = blockingTest,
          testCoroutineDispatcher = testCoroutineDispatcher,
+         coroutineTestScope = coroutineTestScope,
       )
       context.addTest(name, xdisabled, config, test)
    }

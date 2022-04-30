@@ -80,6 +80,7 @@ internal fun resolveConfig(
       assertionMode = config?.assertionMode ?: parent?.config?.assertionMode ?: spec.assertions ?: spec.assertionMode() ?: configuration.assertionMode,
       coroutineDebugProbes = config?.coroutineDebugProbes ?: parent?.config?.coroutineDebugProbes ?:spec.coroutineDebugProbes ?: configuration.coroutineDebugProbes,
       testCoroutineDispatcher = config?.testCoroutineDispatcher ?: parent?.config?.testCoroutineDispatcher ?: spec.testCoroutineDispatcher ?: configuration.testCoroutineDispatcher,
+      coroutineTestScope = config?.coroutineTestScope ?: parent?.config?.coroutineTestScope ?: spec.coroutineTestScope ?: configuration.coroutineTestScope,
       blockingTest = config?.blockingTest ?: parent?.config?.blockingTest ?: spec.blockingTest ?: configuration.blockingTest,
    )
 }

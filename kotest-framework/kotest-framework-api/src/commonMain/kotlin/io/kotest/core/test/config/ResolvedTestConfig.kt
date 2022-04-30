@@ -74,7 +74,10 @@ data class ResolvedTestConfig(
     *
     * @see https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-test/index.html
     */
-   var testCoroutineDispatcher: Boolean,
+   @Deprecated("Replaced with coroutineTestScope. Deprecated since 5.3")
+   val testCoroutineDispatcher: Boolean,
+
+   val coroutineTestScope: Boolean,
 
    // When set to true, execution will switch to a dedicated thread for each test case in this spec,
    // therefore allowing the test engine to safely interrupt tests via Thread.interrupt when they time out.
@@ -94,6 +97,7 @@ data class ResolvedTestConfig(
          threads = 1,
          coroutineDebugProbes = false,
          testCoroutineDispatcher = false,
+         coroutineTestScope = false,
          assertionMode = AssertionMode.None,
          assertSoftly = false,
          blockingTest = false,
