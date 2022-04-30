@@ -12,32 +12,9 @@ permissions:
   contents: read
 
 jobs:
-   test_base:
-      runs-on: ubuntu-latest
-      if: github.repository == 'kotest/kotest'
-
-      steps:
-         -  name: Checkout the repo
-            uses: actions/checkout@v3
-            with:
-               fetch-depth: 0
-               ref: ${{ github.event.inputs.branch }}
-
-         -  name: Setup JDK
-            uses: actions/setup-java@v3
-            with:
-               distribution: 'zulu'
-               java-version: '8'
-
-         -  uses: gradle/gradle-build-action@v2
-
-         -  name: check
-            run: ./gradlew check
-
    test_linux:
       runs-on: ubuntu-latest
       if: github.repository == 'kotest/kotest'
-
       steps:
          -  name: Checkout the repo
             uses: actions/checkout@v3
@@ -53,12 +30,38 @@ jobs:
 
          -  uses: gradle/gradle-build-action@v2
 
-         -  name: test linux x64
-            run: ./gradlew linuxX64Test
+         -  name: Run tests
+            run: ./gradlew check --scan
 
-   test_macos:
+         -  name: Bundle the build report
+            if: failure()
+            run: find . -type d -name 'reports' | zip -@ -r build-reports.zip
+
+         -  name: Upload the build report
+            if: failure()
+            uses: actions/upload-artifact@v3
+            with:
+               name: error-report
+               path: build-reports.zip
+
+   test_mac:
       runs-on: macos-11
       if: github.repository == 'kotest/kotest'
+      strategy:
+         matrix:
+            target:
+               - macosX64Test
+               - macosArm64Test
+               - iosX64Test
+               - iosSimulatorArm64Test
+               - iosArm64TestKlibrary
+               - iosArm32TestKlibrary
+               - tvosX64Test
+               - tvosArm64TestKlibrary
+               - watchosArm32TestKlibrary
+               - watchosArm64TestKlibrary
+               - watchosX86Test
+               - watchosX64Test
 
       steps:
          -  name: Checkout the repo
@@ -74,76 +77,27 @@ jobs:
 
          -  uses: gradle/gradle-build-action@v2
 
-         -  name: test macos
-            run: ./gradlew macosX64Test macosArm64TestKlibrary
+         -  name: Run tests
+            run: ./gradlew ${{ matrix.target }} --scan
 
-   test_watchos:
-      runs-on: macos-11
-      if: github.repository == 'kotest/kotest'
+         -  name: Bundle the build report
+            if: failure()
+            run: find . -type d -name 'reports' | zip -@ -r build-reports.zip
 
-      steps:
-         -  name: Checkout the repo
-            uses: actions/checkout@v3
+         -  name: Upload the build report
+            if: failure()
+            uses: actions/upload-artifact@v3
             with:
-               fetch-depth: 0
-               ref: ${{ github.event.inputs.branch }}
-
-         -  name: Setup JDK
-            uses: actions/setup-java@v1
-            with:
-               java-version: '8'
-
-         -  uses: gradle/gradle-build-action@v2
-
-         -  name: test watchos
-            run: ./gradlew watchosArm32TestKlibrary watchosArm64TestKlibrary watchosSimulatorArm64TestKlibrary watchosX86Test watchosX64Test
-
-   test_ios:
-      runs-on: macos-11
-      if: github.repository == 'kotest/kotest'
-
-      steps:
-         -  name: Checkout the repo
-            uses: actions/checkout@v3
-            with:
-               fetch-depth: 0
-               ref: ${{ github.event.inputs.branch }}
-
-         -  name: Setup JDK
-            uses: actions/setup-java@v1
-            with:
-               java-version: '8'
-
-         -  uses: gradle/gradle-build-action@v2
-
-         -  name: test ios
-            run: ./gradlew iosArm32TestKlibrary iosArm64TestKlibrary iosSimulatorArm64TestKlibrary iosX64Test
-
-   test_tvos:
-      runs-on: macos-11
-      if: github.repository == 'kotest/kotest'
-
-      steps:
-         -  name: Checkout the repo
-            uses: actions/checkout@v3
-            with:
-               fetch-depth: 0
-               ref: ${{ github.event.inputs.branch }}
-
-         -  name: Setup JDK
-            uses: actions/setup-java@v1
-            with:
-               java-version: '8'
-
-         -  uses: gradle/gradle-build-action@v2
-
-         -  name: test tvos
-            run: ./gradlew tvosArm64TestKlibrary tvosSimulatorArm64TestKlibrary tvosX64Test
+               name: error-report
+               path: build-reports.zip
 
    test_windows:
       runs-on: windows-latest
       if: github.repository == 'kotest/kotest'
-
+      strategy:
+         matrix:
+            target:
+               - mingwX64Test
       steps:
          -  name: Checkout the repo
             uses: actions/checkout@v3
@@ -158,7 +112,18 @@ jobs:
 
          -  uses: gradle/gradle-build-action@v2
 
-         -  name: test mingwX64
-            run: ./gradlew mingwX64Test
+         -  name: Run tests
+            run: ./gradlew ${{ matrix.target }} --scan
+
+         -  name: Bundle the build report
+            if: failure()
+            run: find . -type d -name 'reports' | zip -@ -r build-reports.zip
+
+         -  name: Upload the build report
+            if: failure()
+            uses: actions/upload-artifact@v3
+            with:
+               name: error-report
+               path: build-reports.zip
 env:
    GRADLE_OPTS: -Dorg.gradle.configureondemand=true -Dorg.gradle.parallel=false -Dkotlin.incremental=false -Dorg.gradle.jvmargs="-Xmx3g -XX:MaxPermSize=2048m -XX:+HeapDumpOnOutOfMemoryError -Dfile.encoding=UTF-8"
