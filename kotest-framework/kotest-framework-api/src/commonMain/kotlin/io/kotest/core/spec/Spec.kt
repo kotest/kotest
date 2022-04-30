@@ -287,7 +287,10 @@ abstract class Spec : TestConfiguration() {
     * @see https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-test/index.html
     */
    @ExperimentalKotest
+   @Deprecated("Replaced with coroutineTestScope. Deprecated since 5.3")
    var testCoroutineDispatcher: Boolean? = null
+
+   var coroutineTestScope: Boolean? = null
 
    /**
     * Sets the number of threads that will be used for executing root tests in this spec.

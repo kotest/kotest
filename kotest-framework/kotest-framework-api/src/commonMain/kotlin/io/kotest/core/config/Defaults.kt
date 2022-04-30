@@ -22,6 +22,7 @@ object Defaults {
 
    const val coroutineDebugProbes: Boolean = false
    const val testCoroutineDispatcher: Boolean = false
+   const val coroutineTestScope: Boolean = false
    const val blockingTest: Boolean = false
 
    const val displaySpecIfNoActiveTests: Boolean = true

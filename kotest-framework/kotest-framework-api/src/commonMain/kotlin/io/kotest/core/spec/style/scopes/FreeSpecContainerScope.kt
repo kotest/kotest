@@ -49,6 +49,7 @@ class FreeSpecContainerScope(val testScope: TestScope) : AbstractContainerScope(
       invocationTimeout: Duration? = null,
       severity: TestCaseSeverityLevel? = null,
       blockingTest: Boolean? = null,
+      coroutineTestScope: Boolean? = null,
       test: suspend TestScope.() -> Unit,
    ) {
       TestWithConfigBuilder(
@@ -66,6 +67,7 @@ class FreeSpecContainerScope(val testScope: TestScope) : AbstractContainerScope(
          invocationTimeout = invocationTimeout,
          severity = severity,
          blockingTest = blockingTest,
+         coroutineTestScope = coroutineTestScope,
          test = test
       )
    }

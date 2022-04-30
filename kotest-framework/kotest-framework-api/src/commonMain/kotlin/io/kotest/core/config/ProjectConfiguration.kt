@@ -225,7 +225,10 @@ class ProjectConfiguration {
     * @see https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-test/index.html
     */
    @ExperimentalKotest
+   @Deprecated("Replaced with coroutineTestScope. Deprecated since 5.3")
    var testCoroutineDispatcher: Boolean = Defaults.testCoroutineDispatcher
+
+   var coroutineTestScope: Boolean = Defaults.coroutineTestScope
 
    /**
     * Contains the default [ResolvedTestConfig] to be used by tests when not specified in either
