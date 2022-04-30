@@ -143,3 +143,15 @@ fun TestDescriptor.spec(): SpecDescriptor = when (parent) {
    is SpecDescriptor -> parent
    is TestDescriptor -> parent.spec()
 }
+
+/**
+ * Returns the [TestDescriptor] that is the root for this [TestDescriptor].
+ * This may be the same descriptor that this method is invoked on, if that descriptor
+ * is a root test.
+ */
+fun TestDescriptor.root(): TestDescriptor {
+   return when (parent) {
+      is SpecDescriptor -> this // if my parent is a spec, then I am a root
+      is TestDescriptor -> parent.root()
+   }
+}

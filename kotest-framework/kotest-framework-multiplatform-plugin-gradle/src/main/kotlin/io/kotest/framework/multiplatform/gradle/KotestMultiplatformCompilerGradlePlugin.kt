@@ -16,9 +16,9 @@ class KotestMultiplatformCompilerGradlePlugin : KotlinCompilerPluginSupportPlugi
 
    companion object {
       const val compilerPluginId = "io.kotest.multiplatform"
-      const val groupId = "io.kotest"
-      const val artifactId = "kotest-framework-multiplatform-plugin-js-jvm"
-      const val nativeArtifactId = "kotest-framework-multiplatform-plugin-native-jvm"
+      const val KotestGroupId = "io.kotest"
+      const val KotestJsArtifactId = "kotest-framework-multiplatform-plugin-js-jvm"
+      const val KotestNativeArtifactId = "kotest-framework-multiplatform-plugin-native-jvm"
       const val missingProjectValError = "Project is not initialized"
       const val engineDepPrefix = "kotest-framework-engine"
    }
@@ -35,7 +35,7 @@ class KotestMultiplatformCompilerGradlePlugin : KotlinCompilerPluginSupportPlugi
    /**
     * Returns the version to use for the compiler plugins.
     *
-    * Takes the version from the extension configuration first, or if not
+    * Takes the version from the gradle extension configuration first, or if not
     * specified, then defaults to using the same version as the engine dependency.
     */
    private fun version(): String? {
@@ -54,16 +54,19 @@ class KotestMultiplatformCompilerGradlePlugin : KotlinCompilerPluginSupportPlugi
       return version
    }
 
-   private fun engineDeps(project: Project) = project.configurations.flatMap { it.all }.flatMap { it.dependencies }
-      .filter { it.group == groupId && it.name.startsWith(engineDepPrefix) }
+   private fun engineDeps(project: Project) =
+      project.configurations
+         .flatMap { it.all }
+         .flatMap { it.dependencies }
+         .filter { it.group == KotestGroupId && it.name.startsWith(engineDepPrefix) }
 
    override fun getCompilerPluginId() = compilerPluginId
 
    override fun getPluginArtifact(): SubpluginArtifact =
-      SubpluginArtifact(groupId, artifactId, version())
+      SubpluginArtifact(KotestGroupId, KotestJsArtifactId, version())
 
    override fun getPluginArtifactForNative(): SubpluginArtifact =
-      SubpluginArtifact(groupId, nativeArtifactId, version())
+      SubpluginArtifact(KotestGroupId, KotestNativeArtifactId, version())
 
    override fun isApplicable(kotlinCompilation: KotlinCompilation<*>): Boolean {
       return when {

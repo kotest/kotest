@@ -15,7 +15,7 @@ class KotestJsComponentRegistrar : ComponentRegistrar {
       configuration: CompilerConfiguration
    ) {
       val messageCollector = configuration.get(CLIConfigurationKeys.MESSAGE_COLLECTOR_KEY, MessageCollector.NONE)
-      messageCollector.toLogger().log("Installing SpecIrGenerationExtension")
+      messageCollector.toLogger().log("Installing Kotest SpecIrGenerationExtension")
       IrGenerationExtension.registerExtension(project, SpecIrGenerationExtension(messageCollector))
    }
 }

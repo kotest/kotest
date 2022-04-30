@@ -43,6 +43,7 @@ internal fun applyConfigFromProjectConfig(config: AbstractProjectConfig, configu
    config.testNameAppendTags?.let { configuration.testNameAppendTags = it }
    config.duplicateTestNameMode?.let { configuration.duplicateTestNameMode = it }
    config.testNameCase?.let { configuration.testNameCase = it }
+   config.displayFullTestPath?.let { configuration.displayFullTestPath = it }
 
    // config
    config.defaultTestCaseConfig?.let { configuration.defaultTestConfig = it }

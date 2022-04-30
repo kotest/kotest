@@ -4,6 +4,8 @@ import io.kotest.property.Arb
 import java.lang.reflect.ParameterizedType
 import java.lang.reflect.Type
 import java.math.BigDecimal
+import java.math.BigInteger
+import java.time.Instant
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
@@ -11,6 +13,7 @@ import java.time.Period
 import kotlin.reflect.KClass
 import kotlin.reflect.KType
 import kotlin.reflect.full.isSubclassOf
+import kotlin.reflect.full.superclasses
 import kotlin.reflect.typeOf
 
 @Suppress("UNCHECKED_CAST")
@@ -38,11 +41,16 @@ fun targetDefaultForType(providedArbs: Map<KClass<*>, Arb<*>> = emptyMap(), type
          val second = type.arguments[1].type ?: error("No bound for second type parameter of Map<K, V>")
          Arb.map(Arb.forType(providedArbs, first)!!, Arb.forType(providedArbs, second)!!)
       }
+      clazz?.isSubclassOf(Enum::class) == true -> {
+         Arb.of(Class.forName(clazz.java.name).enumConstants.map { it as Enum<*> })
+      }
+      type == typeOf<Instant>() -> Arb.instant()
       type == typeOf<LocalDate>() -> Arb.localDate()
       type == typeOf<LocalDateTime>() -> Arb.localDateTime()
       type == typeOf<LocalTime>() -> Arb.localTime()
       type == typeOf<Period>() -> Arb.period()
       type == typeOf<BigDecimal>() -> Arb.bigDecimal()
+      type == typeOf<BigInteger>() -> Arb.bigInt(maxNumBits = 256)
       clazz?.isData == true -> {
          val k = clazz as KClass<Any>
          Arb.bind(providedArbs, k)
