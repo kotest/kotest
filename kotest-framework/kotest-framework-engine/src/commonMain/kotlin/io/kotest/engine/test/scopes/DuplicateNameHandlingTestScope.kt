@@ -5,6 +5,10 @@ import io.kotest.core.test.NestedTest
 import io.kotest.core.test.TestScope
 import io.kotest.engine.test.names.DuplicateTestNameHandler
 
+/**
+ * Wraps a [TestScope] to add support for detecting duplicate test names in a scope, and handling
+ * them via a [DuplicateTestNameHandler].
+ */
 class DuplicateNameHandlingTestScope(
    mode: DuplicateTestNameMode,
    private val delegate: TestScope

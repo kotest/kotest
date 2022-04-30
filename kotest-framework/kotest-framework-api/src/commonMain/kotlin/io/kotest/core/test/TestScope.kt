@@ -13,11 +13,11 @@ typealias TestContext = TestScope
  * A test in Kotest is simply a function `suspend TestScope.() -> Unit`
  *
  * The [TestScope] receiver allows the test function to interact with the test engine at runtime.
- * For instance fetching details of the executing test case (such as timeouts, tags),
- * registering a dynamic nested test, or adding a test lifecycle callback.
+ * For instance fetching details of the executing [TestCase] (such as timeouts, tags) or by
+ * registering a dynamic nested test
  *
- * This context extends [CoroutineScope] giving the ability for any test function to launch
- * coroutines directly, without requiring them to supply a coroutine scope, and to retrieve
+ * This context extends [CoroutineScope] giving the ability for any test to launch
+ * coroutines directly, without requiring the user to supply a coroutine scope, and to retrieve
  * elements from the current [CoroutineContext] via [CoroutineContext.get]
  */
 @KotestTestScope
