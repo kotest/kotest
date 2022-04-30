@@ -14,7 +14,7 @@ permissions:
   contents: read
 
 jobs:
-   linux_tests:
+   linux:
       if: github.repository == 'kotest/kotest'
       runs-on: ubuntu-latest
       steps:
@@ -48,7 +48,7 @@ jobs:
                name: error-report
                path: build-reports.zip
 
-   mac_tests:
+   mac:
       if: github.repository == 'kotest/kotest'
       runs-on: macos-11
       strategy:
