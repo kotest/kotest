@@ -38,7 +38,7 @@ internal abstract class SpecRunner(
    abstract suspend fun execute(spec: Spec): Result<Map<TestCase, TestResult>>
 
    /**
-    * Executes all the tests in this spec.
+    * Schedules all the tests in this spec.
     */
    protected suspend fun launch(spec: Spec, run: suspend (TestCase) -> Unit) {
       val rootTests = materializer.materialize(spec)

@@ -5,9 +5,10 @@ import io.kotest.core.spec.style.FunSpec
 import io.kotest.engine.TestEngineLauncher
 import io.kotest.engine.listener.CollectingTestEngineListener
 import io.kotest.matchers.maps.shouldNotContainKey
+import io.kotest.matchers.nulls.shouldBeNull
 import io.kotest.matchers.shouldBe
 
-class FailFastTestTest : FunSpec() {
+class FailFastTest : FunSpec() {
    init {
 
       test("support fail fast on fun spec") {
@@ -52,7 +53,7 @@ class FailFastTestTest : FunSpec() {
          results.shouldNotContainKey("x")
       }
 
-      test("fail fast should propagate down") {
+      test("fail fast should propagate to all levels") {
 
          val listener = CollectingTestEngineListener()
 
@@ -67,6 +68,8 @@ class FailFastTestTest : FunSpec() {
          results["d"]?.isSuccess shouldBe true
          results["e"]?.isError shouldBe true
          results["f"]?.isIgnored shouldBe true
+         results["g"]?.isIgnored shouldBe true
+         results["h"].shouldBeNull()
       }
    }
 }
@@ -117,7 +120,7 @@ private class FailFastFreeSpec() : FreeSpec() {
    }
 }
 
-private class GrandfatherFailFastFreeSpec() : FreeSpec() {
+class GrandfatherFailFastFreeSpec() : FreeSpec() {
    init {
       "a".config(failfast = true) - {
          "b" {} // pass
@@ -125,6 +128,9 @@ private class GrandfatherFailFastFreeSpec() : FreeSpec() {
             "d" {} // pass
             "e" { error("boom") }
             "f" {} // will be skipped
+         }
+         "g" - {
+            "h" {} // should fail because c has failed
          }
       }
    }

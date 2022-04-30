@@ -5,8 +5,8 @@ import io.kotest.core.names.TestName
 import io.kotest.core.names.UniqueNames
 
 /**
- * Tracks test names for a context, and reports on duplicates, or modifies names
- * to be unique based on the value of the given [DuplicateTestNameMode].
+ * Tracks test names for a context, and based on the given [DuplicateTestNameMode] either fails
+ * on duplicates, warns on duplicates, or modifies names to be unique.
  */
 internal class DuplicateTestNameHandler(private val mode: DuplicateTestNameMode) {
 

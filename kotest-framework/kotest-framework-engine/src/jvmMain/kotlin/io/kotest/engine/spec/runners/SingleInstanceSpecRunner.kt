@@ -43,12 +43,12 @@ internal class SingleInstanceSpecRunner(
    override suspend fun execute(spec: Spec): Result<Map<TestCase, TestResult>> {
       logger.log { Pair(spec::class.bestName(), "executing spec $spec") }
 
-      suspend fun interceptAndRun(context: CoroutineContext) = kotlin.runCatching {
+      suspend fun interceptAndRun(context: CoroutineContext) = runCatching {
          val rootTests = materializer.materialize(spec)
          logger.log { Pair(spec::class.bestName(), "Materialized root tests: ${rootTests.size}") }
          launch(spec) {
             logger.log { Pair(it.name.testName, "Executing test $it") }
-            runTest(it, context)
+            runTest(it, context, null)
          }
       }
 
@@ -65,28 +65,36 @@ internal class SingleInstanceSpecRunner(
       }
    }
 
-   inner class Context(
+   /**
+    * A [TestScope] that runs discovered tests as soon as they are registered in the same spec instance.
+    *
+    * This implementation tracks fail fast if configured via TestCase config or globally.
+    */
+   inner class SingleInstanceTestScope(
       override val testCase: TestCase,
       override val coroutineContext: CoroutineContext,
+      private val parentScope: SingleInstanceTestScope?,
    ) : TestScope {
 
-      private var failedfast = false
+      // set to true if we failed fast and should ignore further tests
+      private var skipRemaining = false
 
       // in the single instance runner we execute each nested test as soon as they are registered
       override suspend fun registerTestCase(nested: NestedTest) {
          logger.log { Pair(testCase.name.testName, "Nested test case discovered '${nested}") }
 
          val nestedTestCase = Materializer(configuration).materialize(nested, testCase)
-         if (failedfast) {
+         if (skipRemaining) {
             logger.log { Pair(testCase.name.testName, "Skipping test due to fail fast") }
-            listener.testIgnored(nestedTestCase, "Failfast enabled on parent test")
+            listener.testIgnored(nestedTestCase, "Skipping test due to fail fast")
          } else {
             // if running this nested test results in an error, we won't launch anymore nested tests
-            val result = runTest(nestedTestCase, coroutineContext)
-            if (testCase.config.failfast || configuration.projectWideFailFast) {
-               if (result.isErrorOrFailure) {
-                  logger.log { Pair(testCase.name.testName, "Test failed - setting failedfast=true") }
-                  failedfast = true
+            val result = runTest(nestedTestCase, coroutineContext, this@SingleInstanceTestScope)
+            if (result.isErrorOrFailure) {
+               if (testCase.config.failfast || configuration.projectWideFailFast) {
+                  logger.log { Pair(testCase.name.testName, "Test failed - setting skipRemaining = true") }
+                  skipRemaining = true
+                  parentScope?.skipRemaining = true
                }
             }
          }
@@ -96,6 +104,7 @@ internal class SingleInstanceSpecRunner(
    private suspend fun runTest(
       testCase: TestCase,
       coroutineContext: CoroutineContext,
+      parentScope: SingleInstanceTestScope?,
    ): TestResult {
 
       val testExecutor = TestCaseExecutor(
@@ -106,7 +115,7 @@ internal class SingleInstanceSpecRunner(
 
       val scope = DuplicateNameHandlingTestScope(
          configuration.duplicateTestNameMode,
-         Context(testCase, coroutineContext)
+         SingleInstanceTestScope(testCase, coroutineContext, parentScope)
       )
 
       val result = testExecutor.execute(testCase, scope)
