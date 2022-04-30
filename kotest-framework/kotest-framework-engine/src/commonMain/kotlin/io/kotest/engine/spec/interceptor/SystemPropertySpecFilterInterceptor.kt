@@ -11,8 +11,8 @@ import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.engine.listener.TestEngineListener
 import io.kotest.engine.spec.SpecExtensions
+import io.kotest.mpp.Logger
 import io.kotest.mpp.bestName
-import io.kotest.mpp.log
 import io.kotest.mpp.syspropOrEnv
 import kotlin.reflect.KClass
 
@@ -28,6 +28,7 @@ internal class SystemPropertySpecFilterInterceptor(
    registry: ExtensionRegistry
 ) : SpecRefInterceptor {
 
+   private val logger = Logger(SystemPropertySpecFilterInterceptor::class)
    private val extensions = SpecExtensions(registry)
 
    override suspend fun intercept(
@@ -41,7 +42,7 @@ internal class SystemPropertySpecFilterInterceptor(
          .map { it.toSpecFilter() }
          .all { it.filter(ref.kclass) == SpecFilterResult.Include }
 
-      log { "SystemPropertySpecFilterInterceptor: ${ref.kclass} included = $included" }
+      logger.log { Pair(ref.kclass.bestName(), "included = $included") }
 
       return if (included) {
          fn(ref)
