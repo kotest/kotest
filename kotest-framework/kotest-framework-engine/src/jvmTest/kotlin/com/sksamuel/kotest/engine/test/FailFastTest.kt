@@ -120,7 +120,7 @@ private class FailFastFreeSpec() : FreeSpec() {
    }
 }
 
-class GrandfatherFailFastFreeSpec() : FreeSpec() {
+private class GrandfatherFailFastFreeSpec() : FreeSpec() {
    init {
       "a".config(failfast = true) - {
          "b" {} // pass
