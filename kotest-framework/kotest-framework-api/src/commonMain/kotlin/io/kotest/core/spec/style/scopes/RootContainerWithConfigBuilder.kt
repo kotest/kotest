@@ -26,6 +26,7 @@ class RootContainerWithConfigBuilder<T>(
       timeout: Duration? = null,
       failfast: Boolean? = null,
       blockingTest: Boolean? = null,
+      coroutineTestScope: Boolean? = null,
       test: suspend T.() -> Unit
    ) {
       val config = UnresolvedTestConfig(
@@ -36,6 +37,7 @@ class RootContainerWithConfigBuilder<T>(
          timeout = timeout,
          failfast = failfast,
          blockingTest = blockingTest,
+         coroutineTestScope = coroutineTestScope,
       )
       context.addContainer(name, xdisabled, config) { contextFn(this).test() }
    }
