@@ -56,6 +56,36 @@ fun <T : Comparable<T>> List<T>.shouldNotBeSorted(): List<T> {
    return this
 }
 
+fun <T, E : Comparable<E>> Iterable<T>.shouldBeSortedBy(transform: (T) -> E): Iterable<T> {
+   toList().shouldBeSortedBy(transform)
+   return this
+}
+
+fun <T, E : Comparable<E>> Array<T>.shouldBeSortedBy(transform: (T) -> E): Array<T> {
+   asList().shouldBeSortedBy(transform)
+   return this
+}
+
+fun <T, E : Comparable<E>> List<T>.shouldBeSortedBy(transform: (T) -> E): List<T> {
+   this should beSortedBy(transform)
+   return this
+}
+
+fun <T, E : Comparable<E>> Iterable<T>.shouldNotBeSortedBy(transform: (T) -> E): Iterable<T> {
+   toList().shouldNotBeSortedBy(transform)
+   return this
+}
+
+fun <T, E : Comparable<E>> Array<T>.shouldNotBeSortedBy(transform: (T) -> E): Array<T> {
+   asList().shouldNotBeSortedBy(transform)
+   return this
+}
+
+fun <T, E : Comparable<E>> List<T>.shouldNotBeSortedBy(transform: (T) -> E): List<T> {
+   this shouldNot beSortedBy(transform)
+   return this
+}
+
 infix fun <T> Iterable<T>.shouldBeSortedWith(comparator: Comparator<in T>): Iterable<T> {
    toList().shouldBeSortedWith(comparator)
    return this

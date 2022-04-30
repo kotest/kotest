@@ -37,6 +37,7 @@ import io.kotest.matchers.collections.shouldBeSameSizeAs
 import io.kotest.matchers.collections.shouldBeSingleton
 import io.kotest.matchers.collections.shouldBeSmallerThan
 import io.kotest.matchers.collections.shouldBeSorted
+import io.kotest.matchers.collections.shouldBeSortedBy
 import io.kotest.matchers.collections.shouldBeSortedWith
 import io.kotest.matchers.collections.shouldBeStrictlyDecreasing
 import io.kotest.matchers.collections.shouldBeStrictlyDecreasingWith
@@ -62,6 +63,7 @@ import io.kotest.matchers.collections.shouldNotBeMonotonicallyIncreasing
 import io.kotest.matchers.collections.shouldNotBeMonotonicallyIncreasingWith
 import io.kotest.matchers.collections.shouldNotBeSingleton
 import io.kotest.matchers.collections.shouldNotBeSorted
+import io.kotest.matchers.collections.shouldNotBeSortedBy
 import io.kotest.matchers.collections.shouldNotBeSortedWith
 import io.kotest.matchers.collections.shouldNotBeStrictlyDecreasing
 import io.kotest.matchers.collections.shouldNotBeStrictlyDecreasingWith
@@ -178,6 +180,8 @@ class CollectionMatchersTest : WordSpec() {
 
       "sorted" should {
          "test that a collection is sorted" {
+            emptyList<Int>() shouldBe sorted<Int>()
+            listOf(1) shouldBe sorted<Int>()
             listOf(1, 2, 3, 4) shouldBe sorted<Int>()
 
             shouldThrow<AssertionError> {
@@ -201,6 +205,23 @@ class CollectionMatchersTest : WordSpec() {
             shouldThrow<AssertionError> {
                longList.shouldNotBeSorted()
             }.shouldHaveMessage("List [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, ...and 980 more (set the 'kotest.assertions.collection.print.size' JVM property to see more / less items)] should not be sorted")
+         }
+      }
+
+      "sortedBy" should {
+         val items = listOf(
+            1 to "I",
+            2 to "II",
+            4 to "IV",
+            5 to "V",
+            6 to "VI",
+            9 to "IX",
+            10 to "X"
+         )
+
+         "compare by the tranformed value" {
+            items.shouldBeSortedBy { it.first }
+            items.shouldNotBeSortedBy { it.second }
          }
       }
 
