@@ -46,65 +46,65 @@ data class PluginDescriptor(
 // and 'until' we can use 213.*
 
 val plugins = listOf(
-   plugin.PluginDescriptor(
+   PluginDescriptor(
       since = "193.4099.13",
       until = "193.*",
       sdkVersion = "IC-2019.3",
       sourceFolder = "IC-193",
       deps = listOf("java", "org.jetbrains.plugins.gradle", "org.jetbrains.kotlin:1.3.72-release-IJ2019.3-5")
    ),
-   plugin.PluginDescriptor(
+   PluginDescriptor(
       since = "201.6487",
       until = "201.*",
       sdkVersion = "IC-2020.1",
       sourceFolder = "IC-201",
       deps = listOf("java", "org.jetbrains.plugins.gradle", "org.jetbrains.kotlin:1.3.72-release-IJ2020.1-5")
    ),
-   plugin.PluginDescriptor(
+   PluginDescriptor(
       since = "202.1",
       until = "202.*",
       sdkVersion = "IC-2020.2",
       sourceFolder = "IC-202",
       deps = listOf("java", "org.jetbrains.plugins.gradle", "org.jetbrains.kotlin:1.4.10-release-IJ2020.2-1")
    ),
-   plugin.PluginDescriptor(
+   PluginDescriptor(
       since = "203.5981.155", // this version is 2020.3.1 final
       until = "203.*",
       sdkVersion = "IC-2020.3",
       sourceFolder = "IC-203",
       deps = listOf("java", "org.jetbrains.plugins.gradle", "org.jetbrains.kotlin:1.4.10-release-IJ2020.2-1")
    ),
-   plugin.PluginDescriptor(
+   PluginDescriptor(
       since = "211.6693.111", // this version is 2021.1
       until = "211.*",
       sdkVersion = "IC-2021.1",
       sourceFolder = "IC-211",
       deps = listOf("java", "org.jetbrains.plugins.gradle", "org.jetbrains.kotlin")
    ),
-   plugin.PluginDescriptor(
+   PluginDescriptor(
       since = "212.3116.43", // this version is 2021.2
       until = "212.*",
       sdkVersion = "IC-2021.2.3",
       sourceFolder = "IC-212",
       deps = listOf("java", "org.jetbrains.plugins.gradle", "org.jetbrains.kotlin")
    ),
-   plugin.PluginDescriptor(
+   PluginDescriptor(
       since = "213.3714", // this version is 2021.3
       until = "213.*",
-      sdkVersion = "IC-213-EAP-SNAPSHOT",
+      sdkVersion = "IC-2021.3",
       sourceFolder = "IC-213",
       deps = listOf("java", "org.jetbrains.plugins.gradle", "org.jetbrains.kotlin")
    ),
-   plugin.PluginDescriptor(
-      since = "221.3427.89", // this version is 2022.1 EAP
+   PluginDescriptor(
+      since = "221.3427.89", // this version is 2022.1
       until = "221.*",
-      sdkVersion = "IC-221-EAP-SNAPSHOT",
+      sdkVersion = "IC-2022.1",
       sourceFolder = "IC-221",
       deps = listOf("java", "org.jetbrains.plugins.gradle", "org.jetbrains.kotlin")
    )
 )
 
-val productName = System.getenv("PRODUCT_NAME") ?: "IC-221"
+val productName = System.getenv("PRODUCT_NAME") ?: "IC-213"
 val descriptor = plugins.first { it.sourceFolder == productName }
 
 val jetbrainsToken: String by project
