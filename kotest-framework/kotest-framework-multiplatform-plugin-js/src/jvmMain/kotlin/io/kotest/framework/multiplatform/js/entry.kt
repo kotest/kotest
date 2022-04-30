@@ -1,10 +1,12 @@
 package io.kotest.framework.multiplatform.js
 
 object EntryPoint {
-   // we use a public val to register each spec
-   const val LauncherValName = "launcher"
 
-   // the method invoked to start the tests, must exist on TestEngineLauncher
+   // we use a public val to register each spec
+   //   const val LauncherValName = "kotest_launcher"
+
+   // the method invoked on TestEngineLauncher to start the tests
+   // in JS we use promise() which ultimately calls into GlobalScope.promise on JS platforms
    const val PromiseMethodName = "promise"
 
    // the FQN for the class used to launch the MPP engine
