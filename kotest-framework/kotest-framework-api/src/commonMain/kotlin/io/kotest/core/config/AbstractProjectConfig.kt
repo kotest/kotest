@@ -245,6 +245,8 @@ abstract class AbstractProjectConfig {
 
    open var dispatcherAffinity: Boolean? = null
 
+   open var displayFullTestPath: Boolean? = null
+
    /**
     * If set to true then the test engine will install a [TestDispatcher].
     *
