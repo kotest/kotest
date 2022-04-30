@@ -8,8 +8,8 @@ buildscript {
 
 plugins {
    java
-   kotlin("jvm")
-   id("org.jetbrains.intellij") version "1.3.0"
+   kotlin("jvm").version("1.6.21")
+   id("org.jetbrains.intellij") version "1.5.3"
 }
 
 repositories {
@@ -104,7 +104,7 @@ val plugins = listOf(
    )
 )
 
-val productName = System.getenv("PRODUCT_NAME") ?: "IC-213"
+val productName = System.getenv("PRODUCT_NAME") ?: "IC-203"
 val descriptor = plugins.first { it.sourceFolder == productName }
 
 val jetbrainsToken: String by project
@@ -122,8 +122,8 @@ intellij {
 }
 
 dependencies {
-   implementation("javax.xml.bind:jaxb-api:_")
-   implementation("javax.activation:activation:_")
+   implementation("javax.xml.bind:jaxb-api:2.3.0")
+   implementation("javax.activation:activation:1.1.1")
 
    // we bundle this for 4.1 support
    // in kotest 4.2.0 the launcher has moved to a stand alone module
@@ -134,8 +134,8 @@ dependencies {
    implementation("io.kotest:kotest-framework-launcher-jvm:4.2.0")
 
    // needed for the resource files which are loaded into java light tests
-   testImplementation("io.kotest:kotest-framework-api:_")
-   testImplementation("io.kotest:kotest-assertions-core-jvm:_")
+   testImplementation("io.kotest:kotest-framework-api:4.6.3")
+   testImplementation("io.kotest:kotest-assertions-core-jvm:4.6.3")
 }
 
 sourceSets {
