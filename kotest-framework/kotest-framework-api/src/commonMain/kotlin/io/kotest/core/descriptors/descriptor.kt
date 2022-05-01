@@ -1,5 +1,6 @@
 package io.kotest.core.descriptors
 
+import io.kotest.common.KotestInternal
 import io.kotest.core.descriptors.Descriptor.SpecDescriptor
 import io.kotest.core.descriptors.Descriptor.TestDescriptor
 import io.kotest.core.names.TestName
@@ -55,6 +56,12 @@ sealed interface Descriptor {
          }
          is TestDescriptor -> TestPath(this.parent.path(includeSpec).value + TestDelimiter + this.id.value)
       }
+   }
+
+   @KotestInternal
+   fun parts(): List<String> = when (this) {
+      is SpecDescriptor -> emptyList()
+      is TestDescriptor -> parent.parts() + listOf(this.id.value)
    }
 
    /**

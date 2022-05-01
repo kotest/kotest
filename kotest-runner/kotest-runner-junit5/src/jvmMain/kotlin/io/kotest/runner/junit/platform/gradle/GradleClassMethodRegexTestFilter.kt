@@ -19,9 +19,9 @@ class GradleClassMethodRegexTestFilter(private val patterns: List<String>) : Tes
    }
 
    fun match(pattern: String, descriptor: Descriptor): Boolean {
-      val (pck, classname, path) = GradleTestPattern.parse(pattern) ?: return true
+      val (pck, classname, path) = GradleTestPattern.parse(pattern)
       return when (descriptor) {
-         is Descriptor.TestDescriptor -> path?.startsWith(descriptor.path(false).value) ?: true
+         is Descriptor.TestDescriptor -> descriptor.parts().take(path.size) == path
          is Descriptor.SpecDescriptor -> when {
             pck != null && classname != null -> descriptor.kclass.qualifiedName == "$pck.$classname"
             pck != null -> descriptor.kclass.qualifiedName?.startsWith(pck) ?: true
@@ -32,7 +32,7 @@ class GradleClassMethodRegexTestFilter(private val patterns: List<String>) : Tes
    }
 }
 
-data class GradleTestPattern(val pckage: String?, val classname: String?, val testPath: String?) {
+data class GradleTestPattern(val pckage: String?, val classname: String?, val path: List<String>) {
    companion object {
 
       // if the regex starts with a lower case character, then we assume it is in the format package.Class.testpath
@@ -44,13 +44,13 @@ data class GradleTestPattern(val pckage: String?, val classname: String?, val te
          val classIndex = tokens.indexOfFirst { it.first().isUpperCase() }
 
          // if class is not specified, then we assume the entire string is a package
-         if (classIndex == -1) return GradleTestPattern(pattern, null, null)
+         if (classIndex == -1) return GradleTestPattern(pattern, null, emptyList())
 
          // if the class is the first part, then no package is specified
          val pck = if (classIndex == 0) null else tokens.take(classIndex).joinToString(".")
 
          val pathParts = tokens.drop(classIndex + 1)
-         val path = if (pathParts.isEmpty()) null else pathParts.joinToString(".")
+         val path = if (pathParts.isEmpty()) emptyList() else pathParts.joinToString(".").split(Descriptor.TestDelimiter)
 
          return GradleTestPattern(pck, tokens[classIndex], path)
       }
