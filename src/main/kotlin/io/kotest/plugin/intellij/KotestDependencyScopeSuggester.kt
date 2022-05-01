@@ -13,7 +13,7 @@ class KotestDependencyScopeSuggester : LibraryDependencyScopeSuggester() {
 
    override fun getDefaultDependencyScope(library: Library): DependencyScope? {
       val files = library.getFiles(OrderRootType.CLASSES)
-      val testJars = files.filter { isTestJarRoot(it) }.count()
+      val testJars = files.count { isTestJarRoot(it) }
       val regularJars = files.size - testJars
       return if (testJars > regularJars) DependencyScope.TEST else null
    }
