@@ -5,18 +5,18 @@ import com.intellij.execution.lineMarker.RunLineMarkerContributor
 import com.intellij.icons.AllIcons
 import com.intellij.psi.PsiElement
 import com.intellij.psi.impl.source.tree.LeafPsiElement
+import com.intellij.util.Function
+import io.kotest.plugin.intellij.Test
 import io.kotest.plugin.intellij.psi.enclosingKtClass
 import io.kotest.plugin.intellij.psi.specStyle
-import io.kotest.plugin.intellij.Test
 import org.jetbrains.kotlin.psi.KtAnnotationEntry
 import org.jetbrains.kotlin.psi.KtDeclarationModifierList
 import org.jetbrains.kotlin.psi.KtImportDirective
 import org.jetbrains.kotlin.psi.KtImportList
 import org.jetbrains.kotlin.psi.KtPackageDirective
-import com.intellij.util.Function
 
 /**
- * Given an element, returns a [RunLineMarkerContributor.Info] if the element is a test case.
+ * Returns a [RunLineMarkerContributor.Info] if the element is a test case.
  */
 class TestRunLineMarkerContributor : RunLineMarkerContributor() {
 
