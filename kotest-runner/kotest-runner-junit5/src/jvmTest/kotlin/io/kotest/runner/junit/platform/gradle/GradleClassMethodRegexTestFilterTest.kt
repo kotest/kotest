@@ -8,18 +8,37 @@ import io.kotest.matchers.shouldBe
 
 class GradleClassMethodRegexTestFilterTest : FunSpec({
 
-   test("includes") {
+   test("include classes") {
 
       val spec = GradleClassMethodRegexTestFilterTest::class.toDescriptor()
 
       GradleClassMethodRegexTestFilter(listOf("GradleClassMethodRegexTestFilterTest")).filter(spec) shouldBe TestFilterResult.Include
       GradleClassMethodRegexTestFilter(listOf("GradleClassMethodRegexTestFilterTest2")).filter(spec) shouldBe
          TestFilterResult.Exclude(null)
+      GradleClassMethodRegexTestFilter(listOf("GradleClassMethodRegexTestFilterTes")).filter(spec) shouldBe
+         TestFilterResult.Exclude(null)
 
       GradleClassMethodRegexTestFilter(listOf("io.kotest.runner.junit.platform.gradle.GradleClassMethodRegexTestFilterTest"))
          .filter(spec) shouldBe TestFilterResult.Include
 
       GradleClassMethodRegexTestFilter(listOf("io.kotest.runner.junit.platform.GradleClassMethodRegexTestFilterTest"))
+         .filter(spec) shouldBe TestFilterResult.Exclude(null)
+   }
+
+   test("include packages") {
+
+      val spec = GradleClassMethodRegexTestFilterTest::class.toDescriptor()
+
+      GradleClassMethodRegexTestFilter(listOf("io.kotest.runner.junit.platform.gradle"))
+         .filter(spec) shouldBe TestFilterResult.Include
+
+      GradleClassMethodRegexTestFilter(listOf("io.kotest.runner.junit.platform.gra"))
+         .filter(spec) shouldBe TestFilterResult.Include
+
+      GradleClassMethodRegexTestFilter(listOf("io.kotest.runner.junit"))
+         .filter(spec) shouldBe TestFilterResult.Include
+
+      GradleClassMethodRegexTestFilter(listOf("io.kotest.runner.junit2"))
          .filter(spec) shouldBe TestFilterResult.Exclude(null)
    }
 
