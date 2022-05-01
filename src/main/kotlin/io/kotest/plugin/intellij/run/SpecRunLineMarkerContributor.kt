@@ -9,7 +9,7 @@ import io.kotest.plugin.intellij.psi.getSpecEntryPoint
 import org.jetbrains.kotlin.psi.KtClassOrObject
 
 /**
- * Adds a 'run' icon marker if an element is the entry point to a spec.
+ * Returns a [RunLineMarkerContributor.Info] for a spec class.
  *
  * The entry point is the 'class' or 'object' keyword that is part of the spec's
  * definition in code. In psi terms, this is a leaf element whose element type is KTK, and context
@@ -18,7 +18,7 @@ import org.jetbrains.kotlin.psi.KtClassOrObject
 class SpecRunLineMarkerContributor : RunLineMarkerContributor() {
 
    // icons list https://jetbrains.design/intellij/resources/icons_list/
-   private val icon = AllIcons.RunConfigurations.TestState.Run
+   private val icon = AllIcons.RunConfigurations.TestState.Run_run
 
    override fun getInfo(element: PsiElement): Info? {
       when (element) {
