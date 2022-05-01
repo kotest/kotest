@@ -11,6 +11,7 @@ import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.engine.listener.TestEngineListener
 import io.kotest.engine.spec.SpecExtensions
+import io.kotest.engine.test.status.SystemPropertyTestFilterEnabledExtension
 import io.kotest.mpp.Logger
 import io.kotest.mpp.bestName
 import io.kotest.mpp.syspropOrEnv
@@ -36,6 +37,7 @@ internal class SystemPropertySpecFilterInterceptor(
       fn: suspend (SpecRef) -> Result<Map<TestCase, TestResult>>
    ): Result<Map<TestCase, TestResult>> {
       val filter = syspropOrEnv(KotestEngineProperties.filterSpecs) ?: ""
+      logger.log { Pair(ref.kclass.bestName(), "Filter specs syspropOrEnv=$filter") }
 
       val included = filter
          .propertyToRegexes()
