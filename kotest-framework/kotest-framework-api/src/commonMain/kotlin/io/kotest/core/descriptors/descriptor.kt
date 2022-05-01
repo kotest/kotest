@@ -1,5 +1,6 @@
 package io.kotest.core.descriptors
 
+import io.kotest.common.KotestInternal
 import io.kotest.core.descriptors.Descriptor.SpecDescriptor
 import io.kotest.core.descriptors.Descriptor.TestDescriptor
 import io.kotest.core.names.TestName
@@ -55,6 +56,12 @@ sealed interface Descriptor {
          }
          is TestDescriptor -> TestPath(this.parent.path(includeSpec).value + TestDelimiter + this.id.value)
       }
+   }
+
+   @KotestInternal
+   fun parts(): List<String> = when (this) {
+      is SpecDescriptor -> emptyList()
+      is TestDescriptor -> parent.parts() + listOf(this.id.value)
    }
 
    /**
@@ -121,6 +128,15 @@ sealed interface Descriptor {
     */
    fun isOnPath(description: Descriptor): Boolean =
       this.path() == description.path() || this.isAncestorOf(description)
+
+   /**
+    * Returns the [SpecDescriptor] parent for this [Descriptor].
+    * If this is already a spec descriptor, then returns itself.
+    */
+   fun spec(): SpecDescriptor = when (this) {
+      is SpecDescriptor -> this
+      is TestDescriptor -> this.parent.spec()
+   }
 }
 
 data class DescriptorId(val value: String)
@@ -135,14 +151,6 @@ fun TestDescriptor.append(name: TestName): TestDescriptor =
 
 fun Descriptor.append(name: String): TestDescriptor =
    TestDescriptor(this, DescriptorId(name))
-
-/**
- * Returns the [SpecDescriptor] parent for this [TestDescriptor].
- */
-fun TestDescriptor.spec(): SpecDescriptor = when (parent) {
-   is SpecDescriptor -> parent
-   is TestDescriptor -> parent.spec()
-}
 
 /**
  * Returns the [TestDescriptor] that is the root for this [TestDescriptor].
