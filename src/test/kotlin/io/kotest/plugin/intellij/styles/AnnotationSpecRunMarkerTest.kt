@@ -24,7 +24,7 @@ class AnnotationSpecRunMarkerTest : LightJavaCodeInsightFixtureTestCase() {
       println(gutters.map { it.tooltipText }.joinToString("\n"))
       gutters.size shouldBe 3
 
-      gutters[0].icon shouldBe AllIcons.RunConfigurations.TestState.Run
+      gutters[0].icon shouldBe AllIcons.RunConfigurations.TestState.Run_run
       gutters[0].tooltipText shouldBe "Run AnnotationSpecExample"
       (gutters[0] as LineMarkerInfo.LineMarkerGutterIconRenderer<*>).lineMarkerInfo.startOffset shouldBe 84
 

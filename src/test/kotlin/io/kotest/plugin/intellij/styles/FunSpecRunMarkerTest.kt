@@ -24,7 +24,7 @@ class FunSpecRunMarkerTest : LightJavaCodeInsightFixtureTestCase() {
       val gutters = myFixture.findAllGutters()
 
       val expected = listOf(
-         Gutter("Run FunSpecExampleTest", 76),
+         Gutter("Run FunSpecExampleTest", 76, AllIcons.RunConfigurations.TestState.Run_run),
          Gutter("Run a test", 132),
          Gutter("Run a test with config", 169),
          Gutter("Disabled - an xtest", 222, AllIcons.RunConfigurations.TestIgnored),

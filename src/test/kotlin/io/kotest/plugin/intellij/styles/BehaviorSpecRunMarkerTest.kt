@@ -26,7 +26,7 @@ class BehaviorSpecRunMarkerTest : LightJavaCodeInsightFixtureTestCase() {
       gutters.size shouldBe 27
 
       val expected = listOf(
-         Gutter("Run BehaviorSpecExample", 91),
+         Gutter("Run BehaviorSpecExample", 91, AllIcons.RunConfigurations.TestState.Run_run),
          Gutter("Run a given", 170),
          Gutter("Run a given a when", 198),
          Gutter("Run a given a when a test", 227),

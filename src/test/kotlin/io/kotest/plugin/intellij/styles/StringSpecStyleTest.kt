@@ -1,6 +1,7 @@
 package io.kotest.plugin.intellij.styles
 
 import com.intellij.codeInsight.daemon.LineMarkerInfo
+import com.intellij.icons.AllIcons
 import com.intellij.testFramework.fixtures.LightJavaCodeInsightFixtureTestCase
 import io.kotest.assertions.assertSoftly
 import io.kotest.matchers.shouldBe
@@ -24,7 +25,7 @@ class StringSpecStyleTest : LightJavaCodeInsightFixtureTestCase() {
       gutters.size shouldBe 3
 
       val expected = listOf(
-         Gutter("Run StringSpecExample", 91),
+         Gutter("Run StringSpecExample", 91, AllIcons.RunConfigurations.TestState.Run_run),
          Gutter("Run test", 145),
          Gutter("Run test with config", 201),
       )

@@ -26,7 +26,7 @@ class ShouldSpecStyleTest : LightJavaCodeInsightFixtureTestCase() {
       gutters.size shouldBe 15
 
       val expected = listOf(
-         Gutter("Run ShouldSpecExample", 91),
+         Gutter("Run ShouldSpecExample", 91, AllIcons.RunConfigurations.TestState.Run_run),
          Gutter("Run top level test", 173),
          Gutter("Run top level test with config", 247),
          Gutter("Run some context", 333),

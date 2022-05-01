@@ -31,7 +31,7 @@ class DescribeSpecRunMarkerTest : LightJavaCodeInsightFixtureTestCase() {
       val gutters = myFixture.findAllGutters()
 
       val expected = listOf(
-         Gutter("Run DescribeSpecExample", 91),
+         Gutter("Run DescribeSpecExample", 91, AllIcons.RunConfigurations.TestState.Run_run),
          Gutter("Run describe block", 179),
          Gutter("Run describe block it block", 205),
          Gutter("Disabled - describe block xit block", 269, AllIcons.RunConfigurations.TestIgnored),
