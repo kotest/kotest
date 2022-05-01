@@ -11,7 +11,6 @@ import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.engine.listener.TestEngineListener
 import io.kotest.engine.spec.SpecExtensions
-import io.kotest.engine.test.status.SystemPropertyTestFilterEnabledExtension
 import io.kotest.mpp.Logger
 import io.kotest.mpp.bestName
 import io.kotest.mpp.syspropOrEnv
