@@ -43,7 +43,7 @@ data class PluginDescriptor(
 // or IC-213-EAP-SNAPSHOT if not
 
 // for 'since' we can use an early build number without eap/snapshot eg 213.5281.15
-// and 'until' we can use 213.*
+// and 'until' we can use a wildcard eg 213.*
 
 val plugins = listOf(
    PluginDescriptor(
@@ -93,7 +93,7 @@ val plugins = listOf(
       until = "213.*",
       sdkVersion = "IC-2021.3",
       sourceFolder = "IC-213",
-      deps = listOf("java", "org.jetbrains.plugins.gradle", "org.jetbrains.kotlin")
+      deps = listOf("java", "org.jetbrains.plugins.gradle", "org.jetbrains.kotlin:213-1.6.10-release-923-IJ5744.223")
    ),
    PluginDescriptor(
       since = "221.3427.89", // this version is 2022.1
@@ -104,7 +104,7 @@ val plugins = listOf(
    )
 )
 
-val productName = System.getenv("PRODUCT_NAME") ?: "IC-203"
+val productName = System.getenv("PRODUCT_NAME") ?: "IC-213"
 val descriptor = plugins.first { it.sourceFolder == productName }
 
 val jetbrainsToken: String by project
@@ -112,7 +112,7 @@ val jetbrainsToken: String by project
 version = "1.1." + (System.getenv("GITHUB_RUN_NUMBER") ?: "0-SNAPSHOT")
 
 intellij {
-   sandboxDir.set(project.property("sandbox").toString())
+   sandboxDir.set("./sandbox")
    version.set(descriptor.sdkVersion)
    pluginName.set("kotest-plugin-intellij")
    plugins.addAll(*descriptor.deps.toTypedArray())
