@@ -2,9 +2,11 @@ package io.kotest.plugin.intellij.run
 
 import io.kotest.plugin.intellij.Test
 import org.jetbrains.kotlin.name.FqName
-import org.jetbrains.kotlin.psi.KtClass
 import org.jetbrains.kotlin.psi.KtClassOrObject
 
+/**
+ * Holds state for generating suggested names for our config.
+ */
 data class RunData(
    val specName: String?,
    val testPath: String?,
@@ -42,14 +44,5 @@ fun RunData.suggestedName(): String? {
          val readableTestPath = testPath.replace(" -- ", " ")
          "$simpleName: $readableTestPath"
       }
-   }
-}
-
-fun RunData.actionName(): String? {
-   return when {
-      packageName != null && packageName.isNotBlank() -> "All tests in '$packageName'"
-      testPath != null && testPath.isNotBlank() -> testPath.split(" -- ".toRegex()).last()
-      specName != null && specName.isNotBlank() -> specName.split('.').last()
-      else -> "Test" // shouldn't happen
    }
 }
