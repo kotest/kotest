@@ -40,12 +40,7 @@ class KotestJunitPlatformTestEngine : TestEngine {
    override fun getGroupId(): Optional<String> = Optional.of("io.kotest")
 
    override fun execute(request: ExecutionRequest) {
-      logger.log {
-         Pair(
-            null,
-            "ExecutionRequest[${request::class.java.name}] [configurationParameters=${request.configurationParameters}; rootTestDescriptor=${request.rootTestDescriptor}]"
-         )
-      }
+      logger.log { Pair(null, "ExecutionRequest[${request::class.java.name}] [configurationParameters=${request.configurationParameters}; rootTestDescriptor=${request.rootTestDescriptor}]") }
       val root = request.rootTestDescriptor as KotestEngineDescriptor
       when (root.error) {
          null -> execute(request, root)
