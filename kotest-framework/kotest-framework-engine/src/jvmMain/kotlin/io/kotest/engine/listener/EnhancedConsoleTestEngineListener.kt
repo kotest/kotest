@@ -3,7 +3,6 @@ package io.kotest.engine.listener
 import com.github.ajalt.mordant.TermColors
 import io.kotest.core.config.ProjectConfiguration
 import io.kotest.core.descriptors.Descriptor
-import io.kotest.core.descriptors.spec
 import io.kotest.core.descriptors.toDescriptor
 import io.kotest.core.names.DisplayNameFormatter
 import io.kotest.core.test.TestCase
