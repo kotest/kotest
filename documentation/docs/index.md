@@ -2,10 +2,10 @@
 id: home
 ---
 
-<img src="images/logo_with_text.png" alt="kotest logo" width="700"/>
+<img src="/img/logo_with_text.png" alt="kotest logo" width="700"/>
 
 
-<img src="docs/images/intro_gif.gif"/>
+<img src="/img/intro_gif.gif"/>
 
 **Kotest is a flexible and comprehensive testing project for Kotlin with multiplatform support.**
 
