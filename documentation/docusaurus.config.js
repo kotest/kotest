@@ -86,11 +86,6 @@ module.exports = {
                dropdownActiveClassDisabled: true,
             },
             {
-               href: 'https://github.com/kotest/kotest/issues',
-               label: 'Issue Tracker',
-               position: 'right'
-            },
-            {
                href: 'https://github.com/kotest/kotest',
                className: 'header-github-link',
                'aria-label': 'GitHub repository',
