@@ -92,7 +92,8 @@ module.exports = {
             },
             {
                href: 'https://github.com/kotest/kotest',
-               label: 'GitHub',
+               className: 'header-github-link',
+               'aria-label': 'GitHub repository',
                position: 'right',
             },
          ],
@@ -130,6 +131,9 @@ module.exports = {
       [
          '@docusaurus/preset-classic',
          {
+            theme: {
+               customCss: [require.resolve('./src/css/custom.css')],
+            },
             googleAnalytics: {
                trackingID: 'UA-177425497-1',
                // Optional fields.
