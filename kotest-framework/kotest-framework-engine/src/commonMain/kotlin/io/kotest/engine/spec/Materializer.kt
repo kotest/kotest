@@ -11,9 +11,7 @@ import io.kotest.core.test.TestCaseOrder
 import io.kotest.engine.test.names.DuplicateTestNameHandler
 
 /**
- *
- * Materializes tests at runtime from test definitions.
- *
+ * Materializes [TestCase] at runtime from [RootTest] and [NestedTest] definitions.
  */
 class Materializer(private val configuration: ProjectConfiguration) {
 

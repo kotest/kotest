@@ -1,10 +1,10 @@
-package io.kotest.runner.junit.platform
+package io.kotest.runner.junit.platform.gradle
 
 import io.kotest.core.descriptors.Descriptor
-import io.kotest.core.descriptors.spec
 import io.kotest.core.filter.TestFilter
 import io.kotest.core.filter.TestFilterResult
 import io.kotest.core.filter.toTestFilterResult
+import io.kotest.runner.junit.platform.append
 import org.junit.platform.engine.TestDescriptor
 import org.junit.platform.engine.TestSource
 import org.junit.platform.engine.UniqueId
@@ -49,7 +49,13 @@ class PostDiscoveryFilterAdapter(
          is Descriptor.TestDescriptor -> MethodSource.from(descriptor.spec().kclass.java.name, descriptor.path().value)
       }
 
-      return createTestDescriptor(id, displayName, TestDescriptor.Type.CONTAINER, source, false)
+      return io.kotest.runner.junit.platform.createTestDescriptor(
+         id,
+         displayName,
+         TestDescriptor.Type.CONTAINER,
+         source,
+         false
+      )
    }
 
 }

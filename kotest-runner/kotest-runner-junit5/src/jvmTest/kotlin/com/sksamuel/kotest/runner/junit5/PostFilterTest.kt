@@ -13,7 +13,7 @@ import kotlin.reflect.jvm.jvmName
 
 class PostFilterTest : StringSpec({
 
-   "KotestJunitPlatformTestEngine should apply post filters from a LauncherDiscoveryRequest" {
+   "!KotestJunitPlatformTestEngine should apply post filters from a LauncherDiscoveryRequest" {
       val request = LauncherDiscoveryRequestBuilder()
          .selectors(DiscoverySelectors.selectClass(SpecToBeExcluded::class.java))
          .selectors(DiscoverySelectors.selectClass(SpecToBeIncluded::class.java))

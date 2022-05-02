@@ -36,6 +36,7 @@ internal class SystemPropertySpecFilterInterceptor(
       fn: suspend (SpecRef) -> Result<Map<TestCase, TestResult>>
    ): Result<Map<TestCase, TestResult>> {
       val filter = syspropOrEnv(KotestEngineProperties.filterSpecs) ?: ""
+      logger.log { Pair(ref.kclass.bestName(), "Filter specs syspropOrEnv=$filter") }
 
       val included = filter
          .propertyToRegexes()
