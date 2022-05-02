@@ -1,5 +1,6 @@
 package io.kotest.assertions.json.schema
 
+import io.kotest.common.ExperimentalKotest
 import io.kotest.matchers.Matcher
 import kotlinx.serialization.Contextual
 import kotlinx.serialization.ExperimentalSerializationApi
@@ -10,6 +11,7 @@ import kotlinx.serialization.Serializable
 annotation class JsonSchemaMarker
 
 @JsonSchemaMarker
+@ExperimentalKotest
 @Serializable(with = SchemaDeserializer::class)
 sealed interface JsonSchemaElement {
    fun typeName(): String
@@ -20,6 +22,7 @@ internal interface ValueNode<T> {
       get() = null
 }
 
+@ExperimentalKotest
 data class JsonSchema(
    val root: JsonSchemaElement
 ) {
@@ -42,6 +45,7 @@ data class JsonSchema(
     * }
     * ```
     */
+   @ExperimentalKotest
    operator fun invoke() = root
 
    object Builder
@@ -139,6 +143,7 @@ data class JsonSchema(
  * Creates a [JsonSchema.JsonString] node, which is a leaf node that will hold a [String] value.
  * Optionally, you can provide a [matcherBuilder] that constructs a [Matcher] which the node will be tested with.
  */
+@ExperimentalKotest
 fun JsonSchema.Builder.string(matcherBuilder: () -> Matcher<String>? = { null }) =
    JsonSchema.JsonString(matcherBuilder())
 
@@ -146,6 +151,7 @@ fun JsonSchema.Builder.string(matcherBuilder: () -> Matcher<String>? = { null })
  * Creates a [JsonSchema.JsonInteger] node, which is a leaf node that will hold a [Long] value.
  * Optionally, you can provide a [matcherBuilder] that constructs a [Matcher] which the node will be tested with.
  */
+@ExperimentalKotest
 fun JsonSchema.Builder.integer(matcherBuilder: () -> Matcher<Long>? = { null }) =
    JsonSchema.JsonInteger(matcherBuilder())
 
@@ -153,6 +159,7 @@ fun JsonSchema.Builder.integer(matcherBuilder: () -> Matcher<Long>? = { null }) 
  * Creates a [JsonSchema.JsonDecimal] node, which is a leaf node that will hold a [Double] value.
  * Optionally, you can provide a [matcherBuilder] that constructs a [Matcher] which the node will be tested with.
  */
+@ExperimentalKotest
 fun JsonSchema.Builder.number(matcherBuilder: () -> Matcher<Double>? = { null }) =
    JsonSchema.JsonDecimal(matcherBuilder())
 
@@ -162,6 +169,7 @@ fun JsonSchema.Builder.number(matcherBuilder: () -> Matcher<Double>? = { null })
  * Creates a [JsonSchema.JsonDecimal] node, which is a leaf node that will hold a [Double] value.
  * Optionally, you can provide a [matcherBuilder] that constructs a [Matcher] which the node will be tested with.
  */
+@ExperimentalKotest
 fun JsonSchema.Builder.decimal(matcherBuilder: () -> Matcher<Double>? = { null }) =
    JsonSchema.JsonDecimal(matcherBuilder())
 
@@ -169,12 +177,14 @@ fun JsonSchema.Builder.decimal(matcherBuilder: () -> Matcher<Double>? = { null }
  * Creates a [JsonSchema.JsonBoolean] node, which is a leaf node that will hold a [Boolean] value.
  * It supports no further configuration. The actual value must always be either true or false.
  */
+@ExperimentalKotest
 fun JsonSchema.Builder.boolean() =
    JsonSchema.JsonBoolean
 
 /**
  * Creates a [JsonSchema.Null] node, which is a leaf node that must always be null, if present.
  */
+@ExperimentalKotest
 fun JsonSchema.Builder.`null`() =
    JsonSchema.Null
 
@@ -192,15 +202,18 @@ fun JsonSchema.Builder.`null`() =
  * }
  * ```
  */
+@ExperimentalKotest
 fun JsonSchema.Builder.obj(dsl: JsonSchema.JsonObjectBuilder.() -> Unit = {}) =
    JsonSchema.JsonObjectBuilder().apply(dsl).build()
 
 /**
  * Defines a [JsonSchema.JsonArray] node where the elements are of the type provided by [typeBuilder].
  */
+@ExperimentalKotest
 fun JsonSchema.Builder.array(typeBuilder: () -> JsonSchemaElement) =
    JsonSchema.JsonArray(typeBuilder())
 
+@ExperimentalKotest
 fun jsonSchema(
    rootBuilder: JsonSchema.Builder.() -> JsonSchemaElement
 ): JsonSchema =

@@ -34,7 +34,7 @@ import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
 
-val schemaJsonConfig = Json {
+private val schemaJsonConfig = Json {
    ignoreUnknownKeys = true
    classDiscriminator = "type"
 }
@@ -43,10 +43,12 @@ val schemaJsonConfig = Json {
  * Parses a subset of JSON Schema into [JsonSchemaElement] which can be used to verify a json document with
  * [shouldMatchSchema]
  */
+@ExperimentalKotest
 fun parseSchema(jsonSchema: String): JsonSchema =
    JsonSchema(root = schemaJsonConfig.decodeFromString(SchemaDeserializer, jsonSchema))
 
-object SchemaDeserializer : JsonContentPolymorphicSerializer<JsonSchemaElement>(JsonSchemaElement::class) {
+@ExperimentalKotest
+internal object SchemaDeserializer : JsonContentPolymorphicSerializer<JsonSchemaElement>(JsonSchemaElement::class) {
    override fun selectDeserializer(element: JsonElement): DeserializationStrategy<out JsonSchemaElement> {
       return when (val type = element.jsonObject.get("type")?.jsonPrimitive?.content) {
          "array" -> JsonSchema.JsonArray.serializer()
@@ -64,7 +66,8 @@ object SchemaDeserializer : JsonContentPolymorphicSerializer<JsonSchemaElement>(
 private infix fun <T> Matcher<T>?.and(other: Matcher<T>) =
    if (this != null) this and other else other
 
-object JsonSchemaStringSerializer : KSerializer<JsonSchema.JsonString> {
+@ExperimentalKotest
+internal object JsonSchemaStringSerializer : KSerializer<JsonSchema.JsonString> {
    override fun deserialize(decoder: Decoder): JsonSchema.JsonString =
       decoder.decodeStructure(descriptor) {
          var matcher: Matcher<String>? = null
@@ -97,7 +100,8 @@ object JsonSchemaStringSerializer : KSerializer<JsonSchema.JsonString> {
    }
 }
 
-object JsonSchemaIntegerSerializer : KSerializer<JsonSchema.JsonInteger> {
+@ExperimentalKotest
+internal object JsonSchemaIntegerSerializer : KSerializer<JsonSchema.JsonInteger> {
    override fun deserialize(decoder: Decoder): JsonSchema.JsonInteger =
       decoder.decodeStructure(descriptor) {
          var matcher: Matcher<Long>? = null
@@ -130,8 +134,8 @@ object JsonSchemaIntegerSerializer : KSerializer<JsonSchema.JsonInteger> {
    }
 }
 
-@OptIn(ExperimentalKotest::class)
-object JsonSchemaNumberSerializer : KSerializer<JsonSchema.JsonDecimal> {
+@ExperimentalKotest
+internal object JsonSchemaNumberSerializer : KSerializer<JsonSchema.JsonDecimal> {
    override fun deserialize(decoder: Decoder): JsonSchema.JsonDecimal =
       decoder.decodeStructure(descriptor) {
          var matcher: Matcher<Double>? = null

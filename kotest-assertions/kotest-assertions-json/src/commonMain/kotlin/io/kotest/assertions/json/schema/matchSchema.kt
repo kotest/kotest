@@ -3,6 +3,7 @@ package io.kotest.assertions.json.schema
 import io.kotest.assertions.json.JsonNode
 import io.kotest.assertions.json.JsonTree
 import io.kotest.assertions.json.toJsonTree
+import io.kotest.common.ExperimentalKotest
 import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
 import io.kotest.matchers.and
@@ -11,13 +12,17 @@ import io.kotest.matchers.shouldNot
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonElement
 
+@ExperimentalKotest
 infix fun String?.shouldMatchSchema(schema: JsonSchema) =
    this should parseToJson.and(matchSchema(schema).contramap<String?> { it?.let(Json::parseToJsonElement) })
 
+@ExperimentalKotest
 infix fun String?.shouldNotMatchSchema(schema: JsonSchema) =
    this shouldNot parseToJson.and(matchSchema(schema).contramap<String?> { it?.let(Json::parseToJsonElement) })
 
+@ExperimentalKotest
 infix fun JsonElement.shouldMatchSchema(schema: JsonSchema) = this should matchSchema(schema)
+@ExperimentalKotest
 infix fun JsonElement.shouldNotMatchSchema(schema: JsonSchema) = this shouldNot matchSchema(schema)
 
 val parseToJson = object : Matcher<String?> {
@@ -40,6 +45,7 @@ val parseToJson = object : Matcher<String?> {
    }
 }
 
+@ExperimentalKotest
 fun matchSchema(schema: JsonSchema) = object : Matcher<JsonElement?> {
    override fun test(value: JsonElement?): MatcherResult {
       if (value == null) return MatcherResult(
@@ -59,6 +65,7 @@ fun matchSchema(schema: JsonSchema) = object : Matcher<JsonElement?> {
    }
 }
 
+@ExperimentalKotest
 private fun validate(
    currentPath: String,
    tree: JsonNode,
