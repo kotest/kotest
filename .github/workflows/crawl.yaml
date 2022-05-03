@@ -1,0 +1,20 @@
+name: Trigger crawl of docs
+on:
+   workflow_dispatch:
+   push:
+      branches:
+         - master
+      paths:
+         - 'documentation/versions.json'
+env:
+   CRAWLER_ID: '3b78c51b-bf3c-401e-9546-7fa9fb0d61f4'
+   ALGOLIA_USERID: ${{ secrets.ALGOLIA_USERID }}
+   ALGOLIA_API_KEY: ${{ secrets.ALGOLIA_API_KEY }}
+
+jobs:
+   trigger:
+      runs-on: ubuntu-latest
+      steps:
+         -  name: Trigger Algolia crawler
+            run: |
+               curl -X POST -H "Content-Type: application/json" --user $ALGOLIA_USERID:$ALGOLIA_API_KEY "https://crawler.algolia.com/api/1/crawlers/$CRAWLER/reindex"
