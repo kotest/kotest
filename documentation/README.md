@@ -1,5 +1,7 @@
 ## Cutting docs for a new version
 
+use `./cut-docs.sh` to automate steps 1-4
+
 1. Add the version to [versions.json](./versions.json)
    1. Note: The versions are shown in the listed order, with the first element being default version.
 2. Create the directory `./versioned_docs/version-<RELEASED_VERSION>`
