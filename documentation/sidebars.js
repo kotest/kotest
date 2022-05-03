@@ -2,7 +2,7 @@ module.exports = {
    "docs": [
       "quickstart",
       "changelog",
-      "blogs",
+      "blogs"
    ],
    "proptest": [
       "proptest/index",
@@ -17,12 +17,12 @@ module.exports = {
       "proptest/arrow",
       "proptest/date_gens",
       "proptest/extra_arbs",
-      "proptest/reflective_arbs",
+      "proptest/reflective_arbs"
    ],
    "intellij": [
       "intellij/index",
       "intellij/test_explorer",
-      "intellij/props",
+      "intellij/props"
    ],
    "extensions": [
       "extensions/index",
@@ -39,7 +39,7 @@ module.exports = {
       "extensions/koin",
       "extensions/wiremock",
       "extensions/robolectric",
-      "extensions/pitest",
+      "extensions/pitest"
    ],
    "assertions": [
       "assertions/index",
@@ -57,7 +57,7 @@ module.exports = {
             "assertions/eventually",
             "assertions/continually",
             "assertions/until",
-            "assertions/retry",
+            "assertions/retry"
          ]
       },
       "assertions/inspectors",
@@ -90,7 +90,7 @@ module.exports = {
             "assertions/konform",
             "assertions/klock",
             "assertions/compiler",
-            "assertions/jsoup",
+            "assertions/jsoup"
          ]
       }
    ],
@@ -107,7 +107,7 @@ module.exports = {
             "framework/conditional/focus_and_bang",
             "framework/conditional/xmethods",
             "framework/conditional/annotations",
-            "framework/conditional/gradle",
+            "framework/conditional/gradle"
          ]
       },
       "framework/isolation_mode",
@@ -120,7 +120,7 @@ module.exports = {
             "framework/extensions/extensions_introduction",
             "framework/extensions/simple_extensions",
             "framework/extensions/advanced_extensions",
-            "framework/extensions/extension_examples",
+            "framework/extensions/extension_examples"
          ]
       },
       {
@@ -129,7 +129,7 @@ module.exports = {
          "collapsed": true,
          "items": [
             "framework/coroutines/test_coroutine_dispatcher",
-            "framework/coroutines/coroutine_debugging",
+            "framework/coroutines/coroutine_debugging"
          ]
       },
       "framework/exceptions",
@@ -140,7 +140,7 @@ module.exports = {
          "items": [
             "framework/datatesting/introduction",
             "framework/datatesting/test_names",
-            "framework/datatesting/nested",
+            "framework/datatesting/nested"
          ]
       },
       {
@@ -151,7 +151,7 @@ module.exports = {
             "framework/concurrency/eventually",
             "assertions/continually",
             "assertions/until",
-            "assertions/retry",
+            "assertions/retry"
          ]
       },
       {
@@ -160,7 +160,7 @@ module.exports = {
          "collapsed": true,
          "items": [
             "framework/integrations/mocks",
-            "framework/integrations/jacoco",
+            "framework/integrations/jacoco"
          ]
       },
       {
@@ -169,7 +169,7 @@ module.exports = {
          "collapsed": true,
          "items": [
             "framework/spec_ordering",
-            "framework/test_ordering",
+            "framework/test_ordering"
          ]
       },
       "framework/tags",
@@ -179,7 +179,7 @@ module.exports = {
          "collapsed": true,
          "items": [
             "framework/autoclose",
-            "framework/tempfile",
+            "framework/tempfile"
          ]
       },
       {
@@ -189,7 +189,7 @@ module.exports = {
          "items": [
             "framework/test_case_config",
             "framework/project_config",
-            "framework/framework_config_props",
+            "framework/framework_config_props"
          ]
       },
       "framework/test_factories",
@@ -201,7 +201,7 @@ module.exports = {
          "items": [
             "framework/timeouts/test_timeouts",
             "framework/timeouts/project_timeout",
-            "framework/timeouts/blocking_tests",
+            "framework/timeouts/blocking_tests"
          ]
       },
       {
@@ -211,8 +211,8 @@ module.exports = {
          "items": [
             "framework/fail_fast",
             "framework/fail_on_empty",
-            "framework/config_dump",
+            "framework/config_dump"
          ]
-      },
-   ],
+      }
+   ]
 };
