@@ -1,5 +1,6 @@
 package com.sksamuel.kotest.property.arbitrary
 
+import io.kotest.assertions.throwables.shouldNotThrowAny
 import io.kotest.core.spec.style.WordSpec
 import io.kotest.inspectors.forAll
 import io.kotest.matchers.collections.shouldContain
@@ -14,6 +15,7 @@ import io.kotest.property.arbitrary.localDateTime
 import io.kotest.property.arbitrary.localTime
 import io.kotest.property.arbitrary.period
 import io.kotest.property.arbitrary.take
+import io.kotest.property.arbitrary.yearMonth
 import io.kotest.property.checkAll
 import io.kotest.property.forAll
 import java.time.LocalDate
@@ -21,12 +23,15 @@ import java.time.LocalDate.of
 import java.time.LocalDateTime
 import java.time.LocalTime
 import java.time.Period
+import java.time.YearMonth
 
 class DateTest : WordSpec({
 
    "Arb.localDate(minYear, maxYear)" should {
       "generate valid LocalDates (no exceptions)" {
-         Arb.localDate().take(10_000).toList()
+         shouldNotThrowAny {
+            Arb.localDate().take(10_000).toList()
+         }
       }
 
       "generate LocalDates between minYear and maxYear" {
@@ -210,6 +215,35 @@ class DateTest : WordSpec({
 
       "Be the default generator for Duration" {
          checkAll(10) { _: Period -> /* No use. Won't reach here if unsupported */ }
+      }
+   }
+
+   "Arb.yearMonth(minYearMonth, maxYearMonth)" should {
+      "generate valid YearMonths (no exceptions)" {
+         shouldNotThrowAny {
+            Arb.yearMonth().take(10_000).toList()
+         }
+      }
+
+      "generate YearMonths between minYearMonth and maxYearMonth" {
+         val years = mutableSetOf<Int>()
+         val months = mutableSetOf<Int>()
+
+         checkAll(10_000, Arb.yearMonth(YearMonth.of(1998, 2), YearMonth.of(1998, 8))) {
+            years += it.year
+            months += it.monthValue
+         }
+
+         years shouldBe setOf(1998)
+         months shouldBe (2..8).toSet()
+      }
+
+      "Contain Feb if leap year" {
+         val leapYear = 2016
+         Arb.yearMonth(YearMonth.of(leapYear, 1), YearMonth.of(leapYear, 12)).edgecases() shouldContain YearMonth.of(
+            2016,
+            2
+         )
       }
    }
 })
