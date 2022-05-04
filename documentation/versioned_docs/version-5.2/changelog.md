@@ -5,6 +5,32 @@ slug: changelog.html
 ---
 
 
+## 5.2.3 April 2022
+
+### Fixes
+
+* Update to fix error with kotlinx-coroutines 1.6.1 (#2912)
+* Fixes haveElementAt Matcher throw ArrayIndexOutOfBoundsException (#2895)
+
+
+
+## 5.2.2 March 2022
+
+### Fixes
+
+* Adjust PIT gradle plugin configuration (#2903)
+* implement trampolines for flatmap, map, filter, merge. (#2900)
+* fix Arb.map to honor minSize parameter in both generation and shrinks (#2890)
+* Made isOrderedSet platform-specific, to allow TreeSet eq. Fixes #2879
+* Fix negativeFloat and positiveFloat edgecases (#2880) Mitchell Yuwono* 16 Mar 2022, 21:56 b40de793
+* Fixes shouldBeEqualToComparingFields failure when nested field contains null (#2874)
+
+### Features
+
+* Implement ShouldThrowWithMessage (#2847)
+* Implement CharSequence Inspectors (#2886)
+
+
 
 ## 5.2.1 March 2022
 
@@ -1135,7 +1161,7 @@ Assuming you have gradle 4.6 or above, then setup your test block like this:
 
 ```groovy
 test {
-    useJUnitPlatform()
+  useJUnitPlatform()
 }
 ```
 

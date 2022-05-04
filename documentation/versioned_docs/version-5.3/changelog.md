@@ -6,6 +6,74 @@ slug: changelog.html
 
 
 
+## 5.3.0 May 2022
+
+### Fixes
+
+* Fail fast should nest to any level #2773
+* Fix Repeating Container Descriptions Break the Execution #2884
+* Fix JS code generation for 1.6.21 by using main (#2947)
+* AbstractProjectConfig is missing displayFullTestPath #2941
+
+### Features
+
+* Support gradle class method filters (#2954)
+* Offer coroutines runTest mode (#2950)
+* Added sortedBy matcher (#2944)
+* Automatic binding of enums. Closes #2937
+* Make it easier to configure options through environment variables by also supporting variable names with underscores instead of dots. (#2925)
+* EndsWith and startsWith matcher support regex for (#2892)
+
+Thanks to all the contributors:
+
+* Ashish Kumar Joy
+* Charles Korn
+* coffee-and-tea
+* dependabot[bot]
+* Emil Kantis
+* Goooler
+* Imran Malic Settuba
+* Jim Schneidereit
+* Łukasz Pięta
+* Marcin Zajączkowski
+* Michał Gutowski
+* Mitchell Yuwono
+* Naveen
+* Niklas Lochschmidt
+* Norbert Nowak
+* Rüdiger Schulz
+* sksamuel
+* Vitor Hugo Schwaab
+
+
+
+## 5.2.3 April 2022
+
+### Fixes
+
+* Update to fix error with kotlinx-coroutines 1.6.1 (#2912)
+* Fixes haveElementAt Matcher throw ArrayIndexOutOfBoundsException (#2895)
+
+
+
+## 5.2.2 March 2022
+
+### Fixes
+
+* Adjust PIT gradle plugin configuration (#2903)
+* implement trampolines for flatmap, map, filter, merge. (#2900)
+* fix Arb.map to honor minSize parameter in both generation and shrinks (#2890)
+* Made isOrderedSet platform-specific, to allow TreeSet eq. Fixes #2879
+* Fix negativeFloat and positiveFloat edgecases (#2880) Mitchell Yuwono* 16 Mar 2022, 21:56 b40de793
+* Fixes shouldBeEqualToComparingFields failure when nested field contains null (#2874)
+
+### Features
+
+* Implement ShouldThrowWithMessage (#2847)
+* Implement CharSequence Inspectors (#2886)
+
+
+
 ## 5.2.1 March 2022
 
 ### Fixes
@@ -1135,7 +1203,7 @@ Assuming you have gradle 4.6 or above, then setup your test block like this:
 
 ```groovy
 test {
-    useJUnitPlatform()
+  useJUnitPlatform()
 }
 ```
 
@@ -1143,10 +1211,10 @@ You can additionally enable extra test logging:
 
 ```groovy
 test {
-    useJUnitPlatform()
-    testLogging {
-        events "FAILED", "SKIPPED", "STANDARD_OUT", "STANDARD_ERROR"
-    }
+  useJUnitPlatform()
+  testLogging {
+    events "FAILED", "SKIPPED", "STANDARD_OUT", "STANDARD_ERROR"
+  }
 }
 ```
 
@@ -1387,8 +1455,8 @@ if the predicate fails. For example:
 
 ```kotlin
 assertAll(Gen.string()) { a ->
-    classify(a.contains(" "), "has whitespace", "no whitespace")
-    // some test
+  classify(a.contains(" "), "has whitespace", "no whitespace")
+  // some test
 }
 ```
 
@@ -1406,9 +1474,9 @@ classification. For example:
 
 ```kotlin
 forAll(Gen.int()) { a ->
-    classify(a == 0, "zero")
-    classify(a % 2 == 0, "even number", "odd number")
-    a + a == 2 * a
+  classify(a == 0, "zero")
+  classify(a % 2 == 0, "even number", "odd number")
+  a + a == 2 * a
 }
 ```
 
@@ -1437,7 +1505,7 @@ object Hadoop : Tag()
 
 object HadoopTagExtension : TagExtension {
   override fun tags(): Tags =
-      if (System.getenv().containsKey("HADOOP_HOME")) Tags.include(Hadoop) else Tags.exclude(Hadoop)
+    if (System.getenv().containsKey("HADOOP_HOME")) Tags.include(Hadoop) else Tags.exclude(Hadoop)
 }
 
 object MyProjectConfig : AbstractProjectConfig() {
@@ -1583,16 +1651,16 @@ You need to include the following in your plugins:
 
 ```xml
 <plugin>
-    <groupId>org.apache.maven.plugins</groupId>
-    <artifactId>maven-surefire-plugin</artifactId>
-    <version>2.19.1</version>
-    <dependencies>
-        <dependency>
-            <groupId>org.junit.platform</groupId>
-            <artifactId>junit-platform-surefire-provider</artifactId>
-            <version>1.1.0</version>
-        </dependency>
-    </dependencies>
+  <groupId>org.apache.maven.plugins</groupId>
+  <artifactId>maven-surefire-plugin</artifactId>
+  <version>2.19.1</version>
+  <dependencies>
+    <dependency>
+      <groupId>org.junit.platform</groupId>
+      <artifactId>junit-platform-surefire-provider</artifactId>
+      <version>1.1.0</version>
+    </dependency>
+  </dependencies>
 </plugin>
 ```
 
@@ -1600,11 +1668,11 @@ And you must include
 
 ```xml
         <dependency>
-            <groupId>io.kotlintest</groupId>
-            <artifactId>kotlintest-runner-junit5</artifactId>
-            <version>${kotlintest.version}</version>
-            <scope>test</scope>
-        </dependency>
+  <groupId>io.kotlintest</groupId>
+  <artifactId>kotlintest-runner-junit5</artifactId>
+  <version>${kotlintest.version}</version>
+  <scope>test</scope>
+</dependency>
 ```
 
 as a regular dependency.
@@ -1634,11 +1702,11 @@ Here is an example of a migrated interceptor.
 
 ```kotlin
 val mySpecExtension = object : SpecExtension {
-    override fun intercept(spec: Spec, process: () -> Unit) {
-      println("Before spec!")
-      process()
-      println("After spec!")
-    }
+  override fun intercept(spec: Spec, process: () -> Unit) {
+    println("Before spec!")
+    process()
+    println("After spec!")
+  }
 }
 ```
 
@@ -1735,7 +1803,7 @@ provides a `JUnitXmlListener` which you can register with your project to autowi
 
 ```kotlin
 class ProjectConfig : AbstractProjectConfig() {
-    override fun listeners() = listOf(JUnitXmlListener)
+  override fun listeners() = listOf(JUnitXmlListener)
 }
 ```
 
@@ -1747,7 +1815,7 @@ by overriding the `listeners()` function inside your spec, for example:
 
 ```kotlin
 class MySpec : ParentSpec() {
-    override fun listeners() = listOf(SpringListener)
+  override fun listeners() = listOf(SpringListener)
 }
 ```
 
@@ -1910,8 +1978,8 @@ class CsvDataSourceTest : WordSpec() {
         val source = CsvDataSource(javaClass.getResourceAsStream("/user_data.csv"), CsvFormat())
 
         val table = source.createTable<Long, String, String>(
-            { it: Record -> Row3(it.getLong("id"), it.getString("name"), it.getString("location")) },
-            { it: Array<String> -> Headers3(it[0], it[1], it[2]) }
+          { it: Record -> Row3(it.getLong("id"), it.getString("name"), it.getString("location")) },
+          { it: Array<String> -> Headers3(it[0], it[1], it[2]) }
         )
 
         forAll(table) { a, b, c ->
@@ -1953,11 +2021,11 @@ class StringSpecExample : StringSpec({
 
 ```kotlin
 val table = table(
-    headers("a", "b"),
-    row(0L, 2L),
-    row(2L, 2L),
-    row(4L, 5L),
-    row(4L, 6L)
+  headers("a", "b"),
+  row(0L, 2L),
+  row(2L, 2L),
+  row(4L, 5L),
+  row(4L, 6L)
 )
 
 forNone(table) { a, b ->
@@ -2054,10 +2122,10 @@ class TableExample : StringSpec(), TableTesting {
   init {
     "numbers should be prime" {
       val table = table(
-          headers("a", "b"),
-          row(5, 5),
-          row(4, 6),
-          row(3, 7)
+        headers("a", "b"),
+        row(5, 5),
+        row(4, 6),
+        row(3, 7)
       )
       forAll(table) { a, b ->
         a + b == 10
