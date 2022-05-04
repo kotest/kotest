@@ -6,6 +6,74 @@ slug: changelog.html
 
 
 
+## 5.3.0 May 2022
+
+### Fixes
+
+* Fail fast should nest to any level #2773
+* Fix Repeating Container Descriptions Break the Execution #2884
+* Fix JS code generation for 1.6.21 by using main (#2947)
+* AbstractProjectConfig is missing displayFullTestPath #2941
+
+### Features
+
+* Support gradle class method filters (#2954)
+* Offer coroutines runTest mode (#2950)
+* Added sortedBy matcher (#2944)
+* Automatic binding of enums. Closes #2937
+* Make it easier to configure options through environment variables by also supporting variable names with underscores instead of dots. (#2925)
+* EndsWith and startsWith matcher support regex for (#2892)
+
+Thanks to all the contributors:
+
+* Ashish Kumar Joy
+* Charles Korn
+* coffee-and-tea
+* dependabot[bot]
+* Emil Kantis
+* Goooler
+* Imran Malic Settuba
+* Jim Schneidereit
+* Łukasz Pięta
+* Marcin Zajączkowski
+* Michał Gutowski
+* Mitchell Yuwono
+* Naveen
+* Niklas Lochschmidt
+* Norbert Nowak
+* Rüdiger Schulz
+* sksamuel
+* Vitor Hugo Schwaab
+
+
+
+## 5.2.3 April 2022
+
+### Fixes
+
+* Update to fix error with kotlinx-coroutines 1.6.1 (#2912)
+* Fixes haveElementAt Matcher throw ArrayIndexOutOfBoundsException (#2895)
+
+
+
+## 5.2.2 March 2022
+
+### Fixes
+
+* Adjust PIT gradle plugin configuration (#2903)
+* implement trampolines for flatmap, map, filter, merge. (#2900)
+* fix Arb.map to honor minSize parameter in both generation and shrinks (#2890)
+* Made isOrderedSet platform-specific, to allow TreeSet eq. Fixes #2879
+* Fix negativeFloat and positiveFloat edgecases (#2880) Mitchell Yuwono* 16 Mar 2022, 21:56 b40de793
+* Fixes shouldBeEqualToComparingFields failure when nested field contains null (#2874)
+
+### Features
+
+* Implement ShouldThrowWithMessage (#2847)
+* Implement CharSequence Inspectors (#2886)
+
+
+
 ## 5.2.1 March 2022
 
 ### Fixes
