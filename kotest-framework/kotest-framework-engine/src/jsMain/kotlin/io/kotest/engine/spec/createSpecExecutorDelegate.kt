@@ -7,7 +7,6 @@ import io.kotest.core.spec.Spec
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.engine.PromiseTestCaseExecutionListener
-import io.kotest.engine.concurrency.NoopCoroutineDispatcherFactory
 import io.kotest.engine.describe
 import io.kotest.engine.it
 import io.kotest.engine.listener.TestEngineListener
@@ -28,7 +27,7 @@ internal actual fun createSpecExecutorDelegate(
    listener: TestEngineListener,
    defaultCoroutineDispatcherFactory: CoroutineDispatcherFactory,
    configuration: ProjectConfiguration,
-): SpecExecutorDelegate = JavascriptSpecExecutorDelegate(listener, configuration)
+): SpecExecutorDelegate = JavascriptSpecExecutorDelegate(listener, defaultCoroutineDispatcherFactory, configuration)
 
 /**
  * Note: we need to use this: https://youtrack.jetbrains.com/issue/KT-22228
@@ -36,6 +35,7 @@ internal actual fun createSpecExecutorDelegate(
 @ExperimentalKotest
 internal class JavascriptSpecExecutorDelegate(
    private val testEngineListener: TestEngineListener,
+   private val defaultCoroutineDispatcherFactory: CoroutineDispatcherFactory,
    private val configuration: ProjectConfiguration
 ) : SpecExecutorDelegate {
 
@@ -69,12 +69,12 @@ internal class JavascriptSpecExecutorDelegate(
                         cc,
                         configuration.duplicateTestNameMode,
                         testEngineListener,
-                        NoopCoroutineDispatcherFactory,
+                        defaultCoroutineDispatcherFactory,
                         configuration
                      )
                      TestCaseExecutor(
                         PromiseTestCaseExecutionListener(done),
-                        NoopCoroutineDispatcherFactory,
+                        defaultCoroutineDispatcherFactory,
                         configuration
                      ).execute(root, DuplicateNameHandlingTestScope(configuration.duplicateTestNameMode, scope))
                   }
