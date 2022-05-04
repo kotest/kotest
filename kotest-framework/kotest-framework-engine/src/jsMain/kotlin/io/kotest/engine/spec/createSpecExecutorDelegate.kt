@@ -12,9 +12,10 @@ import io.kotest.engine.describe
 import io.kotest.engine.it
 import io.kotest.engine.listener.TestEngineListener
 import io.kotest.engine.test.TestCaseExecutor
-import io.kotest.engine.test.scopes.TerminalTestScope
 import io.kotest.engine.test.interceptors.testNameEscape
 import io.kotest.engine.test.names.getDisplayNameFormatter
+import io.kotest.engine.test.scopes.DuplicateNameHandlingTestScope
+import io.kotest.engine.test.scopes.InOrderTestScope
 import io.kotest.engine.test.status.isEnabledInternal
 import io.kotest.engine.xit
 import io.kotest.mpp.bestName
@@ -27,13 +28,16 @@ internal actual fun createSpecExecutorDelegate(
    listener: TestEngineListener,
    defaultCoroutineDispatcherFactory: CoroutineDispatcherFactory,
    configuration: ProjectConfiguration,
-): SpecExecutorDelegate = JavascriptSpecExecutorDelegate(configuration)
+): SpecExecutorDelegate = JavascriptSpecExecutorDelegate(listener, configuration)
 
 /**
  * Note: we need to use this: https://youtrack.jetbrains.com/issue/KT-22228
  */
 @ExperimentalKotest
-internal class JavascriptSpecExecutorDelegate(private val configuration: ProjectConfiguration) : SpecExecutorDelegate {
+internal class JavascriptSpecExecutorDelegate(
+   private val testEngineListener: TestEngineListener,
+   private val configuration: ProjectConfiguration
+) : SpecExecutorDelegate {
 
    private val formatter = getDisplayNameFormatter(
       configuration.registry,
@@ -60,11 +64,19 @@ internal class JavascriptSpecExecutorDelegate(private val configuration: Project
                   // but we can't launch a promise inside the describe and have it resolve the "it"
                   // this means we must duplicate the isEnabled check outside of the executor
                   GlobalScope.promise {
+                     val scope = InOrderTestScope(
+                        root,
+                        cc,
+                        configuration.duplicateTestNameMode,
+                        testEngineListener,
+                        NoopCoroutineDispatcherFactory,
+                        configuration
+                     )
                      TestCaseExecutor(
                         PromiseTestCaseExecutionListener(done),
                         NoopCoroutineDispatcherFactory,
                         configuration
-                     ).execute(root, TerminalTestScope(root, cc))
+                     ).execute(root, DuplicateNameHandlingTestScope(configuration.duplicateTestNameMode, scope))
                   }
 
                   // we don't want to return the promise as the js frameworks will use that for test resolution
