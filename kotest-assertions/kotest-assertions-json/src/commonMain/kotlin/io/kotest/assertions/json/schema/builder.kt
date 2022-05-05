@@ -80,12 +80,58 @@ data class JsonSchema(
          if (required) requiredProperties.add(name)
       }
 
+      fun string(
+         name: String,
+         required: Boolean = false,
+         matcherBuilder: () -> Matcher<String>? = { null }
+      ) = withProperty(name, required) { string(matcherBuilder) }
+
+      fun integer(
+         name: String,
+         required: Boolean = false,
+         matcherBuilder: () -> Matcher<Long>? = { null }
+      ) = withProperty(name, required) { integer(matcherBuilder) }
+
+      fun decimal(
+         name: String,
+         required: Boolean = false,
+         matcherBuilder: () -> Matcher<Double>? = { null }
+      ) = withProperty(name, required) { decimal(matcherBuilder) }
+
+      fun number(
+         name: String,
+         required: Boolean = false,
+         matcherBuilder: () -> Matcher<Double>? = { null }
+      ) = withProperty(name, required) { number(matcherBuilder)}
+
+      fun array(
+         name: String,
+         required: Boolean = false,
+         typeBuilder: () -> JsonSchemaElement
+      ) = withProperty(name, required) { array(typeBuilder) }
+
+      fun obj(
+         name: String,
+         required: Boolean = false,
+         dsl: JsonSchema.JsonObjectBuilder.() -> Unit = {}
+      ) = withProperty(name, required) { obj(dsl) }
+
+      fun boolean(
+         name: String,
+         required: Boolean = false,
+      ) = withProperty(name, required) { boolean() }
+
+      fun `null`(
+         name: String,
+         required: Boolean = false,
+      ) = withProperty(name, required) { `null`() }
+
       fun build() = JsonObject(
          additionalProperties = additionalProperties,
          minProperties = minProperties,
          maxProperties = maxProperties,
          properties = properties,
-         requiredProperties = requiredProperties.toTypedArray()
+         requiredProperties = requiredProperties
       )
    }
 
@@ -105,7 +151,7 @@ data class JsonSchema(
       /**
        * https://json-schema.org/understanding-json-schema/reference/object.html#required-properties
        */
-      val requiredProperties: Array<String> = emptyArray(),
+      val requiredProperties: List<String> = emptyList(),
    ) : JsonSchemaElement {
       operator fun get(name: String) = properties.get(name)
       override fun typeName() = "object"
