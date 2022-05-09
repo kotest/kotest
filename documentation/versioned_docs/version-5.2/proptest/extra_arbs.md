@@ -28,7 +28,7 @@ To use, add `io.kotest.extensions:kotest-property-arbs:version` to your build.
 | Arb.continent()            | Produces random continents from the list of seven                                                                   |
 | Arb.zipcode()              | Random zipcodes from 01000 to 99999, without validating they are exant                                              |
 | 	                          | 	                                                                                                                   |
-| Arb.harryPotterCharacter() | Combines wine producer and adds in random review scores and usernames                                               |
+| Arb.harryPotterCharacter() | Produces random first and last names from the Harry Potter series                                                   |
 | 	                          | 	                                                                                                                   |
 | Arb.color()                | Produces random named colours, eg, midnight blue                                                                    |
 | Arb.brand()                | Produces random brand names, eg Betty Crocker                                                                       |
