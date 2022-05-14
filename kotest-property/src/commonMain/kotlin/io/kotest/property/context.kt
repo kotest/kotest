@@ -1,15 +1,24 @@
 package io.kotest.property
 
+import kotlin.math.roundToInt
+
 /**
  * A [PropertyContext] is used when executing a propery test.
  * It allows feedback and tracking of the state of the property test.
  */
-class PropertyContext {
+class PropertyContext(val config: PropTestConfig = PropTestConfig()) {
 
    private var successes = 0
    private var failures = 0
+   private var attempts = 0
+   private var assumptionPredicatesTrue = 0
+   private var assumptionPredicatesFalse = 0
    private val classifications = mutableMapOf<String, Int>()
    private val autoclassifications = mutableMapOf<String, MutableMap<String, Int>>()
+
+   fun start() {
+      attempts++
+   }
 
    fun markSuccess() {
       successes++
@@ -19,10 +28,27 @@ class PropertyContext {
       failures++
    }
 
+   fun assumptionPredicateTrue() {
+      assumptionPredicatesTrue++
+   }
+
+   fun assumptionPredicateFalse() {
+      assumptionPredicatesFalse++
+   }
+
    fun successes() = successes
    fun failures() = failures
 
-   fun attempts(): Int = successes + failures
+   fun attempts(): Int = attempts
+
+   fun discards() = assumptionPredicatesFalse
+
+   /**
+    * Returns an Int that is the rounded percentage of discarded inputs (failed assumptions) from all inputs.
+    */
+   fun discardPercentage(): Int {
+      return if (discards() == 0 || attempts() == 0) 0 else (discards() / attempts().toDouble() * 100.0).roundToInt()
+   }
 
    fun classifications(): Map<String, Int> = classifications.toMap()
    fun autoclassifications(): Map<String, Map<String, Int>> = autoclassifications.toMap()

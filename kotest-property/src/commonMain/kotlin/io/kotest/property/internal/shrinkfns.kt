@@ -1,5 +1,6 @@
 package io.kotest.property.internal
 
+import io.kotest.property.PropTestConfig
 import io.kotest.property.PropertyContext
 import io.kotest.property.Sample
 import io.kotest.property.ShrinkingMode

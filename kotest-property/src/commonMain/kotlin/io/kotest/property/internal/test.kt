@@ -26,6 +26,8 @@ internal suspend fun test(
    fn: suspend () -> Any
 ) {
    require(inputs.size == classifiers.size)
+   context.start()
+
    try {
 
       inputs.indices.forEach { k ->

@@ -8,6 +8,7 @@ import io.kotest.property.PropTestConfig
 import io.kotest.property.PropertyContext
 import io.kotest.property.PropertyTesting
 import io.kotest.property.RandomSource
+import io.kotest.property.checkMaxDiscards
 import io.kotest.property.classifications.outputClassifications
 import io.kotest.property.random
 
@@ -24,7 +25,7 @@ suspend fun <A> proptest(
       ?: config.iterations?.let { Constraints.iterations(it) }
       ?: Constraints.iterations(PropertyTesting.defaultIterationCount)
 
-   val context = PropertyContext()
+   val context = PropertyContext(config)
    val random = config.seed?.random() ?: RandomSource.default()
 
    when (genA) {
@@ -84,7 +85,7 @@ suspend fun <A, B> proptest(
       ?: config.iterations?.let { Constraints.iterations(it) }
       ?: Constraints.iterations(PropertyTesting.defaultIterationCount)
 
-   val context = PropertyContext()
+   val context = PropertyContext(config)
    val random = config.seed?.random() ?: RandomSource.default()
 
    if (genA is Exhaustive && genB is Exhaustive) {
@@ -127,6 +128,7 @@ suspend fun <A, B> proptest(
 
    context.outputClassifications(2, config, random.seed)
    context.checkMaxSuccess(config, random.seed)
+   context.checkMaxDiscards()
    return context
 }
 
@@ -145,7 +147,7 @@ suspend fun <A, B, C> proptest(
       ?: config.iterations?.let { Constraints.iterations(it) }
       ?: Constraints.iterations(PropertyTesting.defaultIterationCount)
 
-   val context = PropertyContext()
+   val context = PropertyContext(config)
    val random = config.seed?.random() ?: RandomSource.default()
 
    if (genA is Exhaustive && genB is Exhaustive && genC is Exhaustive) {
@@ -192,6 +194,7 @@ suspend fun <A, B, C> proptest(
 
    context.outputClassifications(3, config, random.seed)
    context.checkMaxSuccess(config, random.seed)
+   context.checkMaxDiscards()
    return context
 }
 
@@ -211,7 +214,7 @@ suspend fun <A, B, C, D> proptest(
       ?: config.iterations?.let { Constraints.iterations(it) }
       ?: Constraints.iterations(PropertyTesting.defaultIterationCount)
 
-   val context = PropertyContext()
+   val context = PropertyContext(config)
    val random = config.seed?.random() ?: RandomSource.default()
 
    if (genA is Exhaustive && genB is Exhaustive && genC is Exhaustive && genD is Exhaustive) {
@@ -257,6 +260,7 @@ suspend fun <A, B, C, D> proptest(
 
    context.outputClassifications(4, config, random.seed)
    context.checkMaxSuccess(config, random.seed)
+   context.checkMaxDiscards()
    return context
 }
 
@@ -277,7 +281,7 @@ suspend fun <A, B, C, D, E> proptest(
       ?: config.iterations?.let { Constraints.iterations(it) }
       ?: Constraints.iterations(PropertyTesting.defaultIterationCount)
 
-   val context = PropertyContext()
+   val context = PropertyContext(config)
    val random = config.seed?.random() ?: RandomSource.default()
 
    if (genA is Exhaustive && genB is Exhaustive && genC is Exhaustive && genD is Exhaustive && genE is Exhaustive) {
@@ -344,6 +348,7 @@ suspend fun <A, B, C, D, E> proptest(
 
    context.outputClassifications(5, config, random.seed)
    context.checkMaxSuccess(config, random.seed)
+   context.checkMaxDiscards()
    return context
 }
 
@@ -365,7 +370,7 @@ suspend fun <A, B, C, D, E, F> proptest(
       ?: config.iterations?.let { Constraints.iterations(it) }
       ?: Constraints.iterations(PropertyTesting.defaultIterationCount)
 
-   val context = PropertyContext()
+   val context = PropertyContext(config)
    val random = config.seed?.random() ?: RandomSource.default()
 
    genA.generate(random, config.edgeConfig)
@@ -404,6 +409,7 @@ suspend fun <A, B, C, D, E, F> proptest(
 
    context.outputClassifications(6, config, random.seed)
    context.checkMaxSuccess(config, random.seed)
+   context.checkMaxDiscards()
    return context
 }
 
@@ -426,7 +432,7 @@ suspend fun <A, B, C, D, E, F, G> proptest(
       ?: config.iterations?.let { Constraints.iterations(it) }
       ?: Constraints.iterations(PropertyTesting.defaultIterationCount)
 
-   val context = PropertyContext()
+   val context = PropertyContext(config)
    val random = config.seed?.random() ?: RandomSource.default()
 
    genA.generate(random, config.edgeConfig)
@@ -468,6 +474,7 @@ suspend fun <A, B, C, D, E, F, G> proptest(
 
    context.outputClassifications(7, config, random.seed)
    context.checkMaxSuccess(config, random.seed)
+   context.checkMaxDiscards()
    return context
 }
 
@@ -491,7 +498,7 @@ suspend fun <A, B, C, D, E, F, G, H> proptest(
       ?: config.iterations?.let { Constraints.iterations(it) }
       ?: Constraints.iterations(PropertyTesting.defaultIterationCount)
 
-   val context = PropertyContext()
+   val context = PropertyContext(config)
    val random = config.seed?.random() ?: RandomSource.default()
 
    genA.generate(random, config.edgeConfig)
@@ -536,6 +543,7 @@ suspend fun <A, B, C, D, E, F, G, H> proptest(
 
    context.outputClassifications(8, config, random.seed)
    context.checkMaxSuccess(config, random.seed)
+   context.checkMaxDiscards()
    return context
 }
 
@@ -560,7 +568,7 @@ suspend fun <A, B, C, D, E, F, G, H, I> proptest(
       ?: config.iterations?.let { Constraints.iterations(it) }
       ?: Constraints.iterations(PropertyTesting.defaultIterationCount)
 
-   val context = PropertyContext()
+   val context = PropertyContext(config)
    val random = config.seed?.random() ?: RandomSource.default()
 
    genA.generate(random, config.edgeConfig)
@@ -608,6 +616,7 @@ suspend fun <A, B, C, D, E, F, G, H, I> proptest(
 
    context.outputClassifications(9, config, random.seed)
    context.checkMaxSuccess(config, random.seed)
+   context.checkMaxDiscards()
    return context
 }
 
@@ -633,7 +642,7 @@ suspend fun <A, B, C, D, E, F, G, H, I, J> proptest(
       ?: config.iterations?.let { Constraints.iterations(it) }
       ?: Constraints.iterations(PropertyTesting.defaultIterationCount)
 
-   val context = PropertyContext()
+   val context = PropertyContext(config)
    val random = config.seed?.random() ?: RandomSource.default()
 
    genA.generate(random, config.edgeConfig)
@@ -684,6 +693,7 @@ suspend fun <A, B, C, D, E, F, G, H, I, J> proptest(
 
    context.outputClassifications(10, config, random.seed)
    context.checkMaxSuccess(config, random.seed)
+   context.checkMaxDiscards()
    return context
 }
 
@@ -710,7 +720,7 @@ suspend fun <A, B, C, D, E, F, G, H, I, J, K> proptest(
       ?: config.iterations?.let { Constraints.iterations(it) }
       ?: Constraints.iterations(PropertyTesting.defaultIterationCount)
 
-   val context = PropertyContext()
+   val context = PropertyContext(config)
    val random = config.seed?.random() ?: RandomSource.default()
 
    genA.generate(random, config.edgeConfig)
@@ -776,6 +786,7 @@ suspend fun <A, B, C, D, E, F, G, H, I, J, K> proptest(
 
    context.outputClassifications(11, config, random.seed)
    context.checkMaxSuccess(config, random.seed)
+   context.checkMaxDiscards()
    return context
 }
 
@@ -803,7 +814,7 @@ suspend fun <A, B, C, D, E, F, G, H, I, J, K, L> proptest(
       ?: config.iterations?.let { Constraints.iterations(it) }
       ?: Constraints.iterations(PropertyTesting.defaultIterationCount)
 
-   val context = PropertyContext()
+   val context = PropertyContext(config)
    val random = config.seed?.random() ?: RandomSource.default()
 
    genA.generate(random, config.edgeConfig)
@@ -886,5 +897,6 @@ suspend fun <A, B, C, D, E, F, G, H, I, J, K, L> proptest(
 
    context.outputClassifications(12, config, random.seed)
    context.checkMaxSuccess(config, random.seed)
+   context.checkMaxDiscards()
    return context
 }
