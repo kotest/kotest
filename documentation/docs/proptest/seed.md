@@ -10,6 +10,9 @@ When a property test is executed, the values are generated using a random source
 default this seed value is itself randomly chosen (using the default `kotlin.random.Random` instance). However, there
 are times when this value needs to be fixed or repeated.
 
+You can change the default used by all tests, unless overriden through the options listed below, by changing the
+configuration value `PropertyTesting.defaultSeed`.
+
 ### Manually specifying the seed
 
 To manually set the seed, pass an instance of `PropTestConfig` to your prop test methods. You might want to do this if
