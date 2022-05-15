@@ -2,7 +2,6 @@ package com.sksamuel.kotest.property.seed
 
 import io.kotest.assertions.throwables.shouldThrowAny
 import io.kotest.core.spec.style.FunSpec
-import io.kotest.matchers.collections.shouldBeEmpty
 import io.kotest.matchers.paths.shouldBeEmptyDirectory
 import io.kotest.matchers.shouldBe
 import io.kotest.property.PropTestConfig
