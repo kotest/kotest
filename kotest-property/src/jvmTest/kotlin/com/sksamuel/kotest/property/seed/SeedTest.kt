@@ -1,4 +1,4 @@
-package com.sksamuel.kotest.property
+package com.sksamuel.kotest.property.seed
 
 import io.kotest.assertions.throwables.shouldThrowAny
 import io.kotest.core.spec.style.FunSpec

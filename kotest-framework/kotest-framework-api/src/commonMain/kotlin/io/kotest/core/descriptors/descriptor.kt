@@ -6,6 +6,8 @@ import io.kotest.core.descriptors.Descriptor.TestDescriptor
 import io.kotest.core.names.TestName
 import kotlin.reflect.KClass
 
+typealias TestPath = io.kotest.framework.shared.test.TestPath
+
 /**
  * A parseable, stable, consistent identifer for a test element.
  *
@@ -140,8 +142,6 @@ sealed interface Descriptor {
 }
 
 data class DescriptorId(val value: String)
-
-data class TestPath(val value: String)
 
 fun SpecDescriptor.append(name: TestName): TestDescriptor =
    TestDescriptor(this, DescriptorId(name.testName))

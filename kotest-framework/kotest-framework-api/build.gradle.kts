@@ -45,6 +45,7 @@ kotlin {
             implementation(kotlin("reflect"))
             api(Libs.Coroutines.coreCommon)
 //            implementation(Libs.Kotlin.kotlinScriptRuntime)
+            api(project(Projects.Framework.shared))
             implementation(project(Projects.Common))
             api(project(Projects.Assertions.Shared))
          }

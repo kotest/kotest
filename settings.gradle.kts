@@ -10,6 +10,8 @@ val isIntelliJ = ideaPlatformPrefix.equals("idea", ignoreCase = true)
 
 include("kotest-common")
 
+include("kotest-framework:kotest-framework-shared")
+
 // defines data classes and the spec styles; all classes needed to define specs/testcases live here
 include("kotest-framework:kotest-framework-api")
 

@@ -17,8 +17,7 @@ suspend fun <A> proptest(
    property: suspend PropertyContext.(A) -> Unit
 ): PropertyContext {
 
-   if (config.seed != null && PropertyTesting.failOnSeed)
-      error("A seed is specified on this property-test and failOnSeed is true")
+   config.checkFailOnSeed()
 
    val constraints = config.constraints
       ?: config.iterations?.let { Constraints.iterations(it) }
@@ -77,8 +76,7 @@ suspend fun <A, B> proptest(
    property: suspend PropertyContext.(A, B) -> Unit
 ): PropertyContext {
 
-   if (config.seed != null && PropertyTesting.failOnSeed)
-      error("A seed is specified on this property-test and failOnSeed is true")
+   config.checkFailOnSeed()
 
    val constraints = config.constraints
       ?: config.iterations?.let { Constraints.iterations(it) }
@@ -138,8 +136,7 @@ suspend fun <A, B, C> proptest(
    property: suspend PropertyContext.(A, B, C) -> Unit
 ): PropertyContext {
 
-   if (config.seed != null && PropertyTesting.failOnSeed)
-      error("A seed is specified on this property-test and failOnSeed is true")
+   config.checkFailOnSeed()
 
    val constraints = config.constraints
       ?: config.iterations?.let { Constraints.iterations(it) }
@@ -204,8 +201,7 @@ suspend fun <A, B, C, D> proptest(
    property: suspend PropertyContext.(A, B, C, D) -> Unit
 ): PropertyContext {
 
-   if (config.seed != null && PropertyTesting.failOnSeed)
-      error("A seed is specified on this property-test and failOnSeed is true")
+   config.checkFailOnSeed()
 
    val constraints = config.constraints
       ?: config.iterations?.let { Constraints.iterations(it) }
@@ -270,8 +266,7 @@ suspend fun <A, B, C, D, E> proptest(
    property: suspend PropertyContext.(A, B, C, D, E) -> Unit
 ): PropertyContext {
 
-   if (config.seed != null && PropertyTesting.failOnSeed)
-      error("A seed is specified on this property-test and failOnSeed is true")
+   config.checkFailOnSeed()
 
    val constraints = config.constraints
       ?: config.iterations?.let { Constraints.iterations(it) }
@@ -358,8 +353,7 @@ suspend fun <A, B, C, D, E, F> proptest(
    property: suspend PropertyContext.(A, B, C, D, E, F) -> Unit
 ): PropertyContext {
 
-   if (config.seed != null && PropertyTesting.failOnSeed)
-      error("A seed is specified on this property-test and failOnSeed is true")
+   config.checkFailOnSeed()
 
    val constraints = config.constraints
       ?: config.iterations?.let { Constraints.iterations(it) }
@@ -419,8 +413,7 @@ suspend fun <A, B, C, D, E, F, G> proptest(
    property: suspend PropertyContext.(A, B, C, D, E, F, G) -> Unit
 ): PropertyContext {
 
-   if (config.seed != null && PropertyTesting.failOnSeed)
-      error("A seed is specified on this property-test and failOnSeed is true")
+   config.checkFailOnSeed()
 
    val constraints = config.constraints
       ?: config.iterations?.let { Constraints.iterations(it) }
@@ -484,8 +477,7 @@ suspend fun <A, B, C, D, E, F, G, H> proptest(
    property: suspend PropertyContext.(A, B, C, D, E, F, G, H) -> Unit
 ): PropertyContext {
 
-   if (config.seed != null && PropertyTesting.failOnSeed)
-      error("A seed is specified on this property-test and failOnSeed is true")
+   config.checkFailOnSeed()
 
    val constraints = config.constraints
       ?: config.iterations?.let { Constraints.iterations(it) }
@@ -553,8 +545,7 @@ suspend fun <A, B, C, D, E, F, G, H, I> proptest(
    property: suspend PropertyContext.(A, B, C, D, E, F, G, H, I) -> Unit
 ): PropertyContext {
 
-   if (config.seed != null && PropertyTesting.failOnSeed)
-      error("A seed is specified on this property-test and failOnSeed is true")
+   config.checkFailOnSeed()
 
    val constraints = config.constraints
       ?: config.iterations?.let { Constraints.iterations(it) }
@@ -626,8 +617,7 @@ suspend fun <A, B, C, D, E, F, G, H, I, J> proptest(
    property: suspend PropertyContext.(A, B, C, D, E, F, G, H, I, J) -> Unit
 ): PropertyContext {
 
-   if (config.seed != null && PropertyTesting.failOnSeed)
-      error("A seed is specified on this property-test and failOnSeed is true")
+   config.checkFailOnSeed()
 
    val constraints = config.constraints
       ?: config.iterations?.let { Constraints.iterations(it) }
@@ -703,8 +693,7 @@ suspend fun <A, B, C, D, E, F, G, H, I, J, K> proptest(
    property: suspend PropertyContext.(A, B, C, D, E, F, G, H, I, J, K) -> Unit
 ): PropertyContext {
 
-   if (config.seed != null && PropertyTesting.failOnSeed)
-      error("A seed is specified on this property-test and failOnSeed is true")
+   config.checkFailOnSeed()
 
    val constraints = config.constraints
       ?: config.iterations?.let { Constraints.iterations(it) }
@@ -796,8 +785,7 @@ suspend fun <A, B, C, D, E, F, G, H, I, J, K, L> proptest(
    property: suspend PropertyContext.(A, B, C, D, E, F, G, H, I, J, K, L) -> Unit
 ): PropertyContext {
 
-   if (config.seed != null && PropertyTesting.failOnSeed)
-      error("A seed is specified on this property-test and failOnSeed is true")
+   config.checkFailOnSeed()
 
    val constraints = config.constraints
       ?: config.iterations?.let { Constraints.iterations(it) }

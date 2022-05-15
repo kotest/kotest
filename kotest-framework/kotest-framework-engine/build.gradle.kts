@@ -58,6 +58,7 @@ kotlin {
             // this is API because we want people to be able to use the functionality in their tests
             // without needing to declare this dependency as well
             api(project(Projects.Framework.api))
+            api(project(Projects.Framework.shared))
 
             // used to install the debug probes for coroutines
             implementation(Libs.Coroutines.debug)
