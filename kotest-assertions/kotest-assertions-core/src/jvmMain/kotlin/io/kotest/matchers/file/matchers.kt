@@ -123,7 +123,7 @@ fun beSmaller(other: File): Matcher<File> = object : Matcher<File> {
       return MatcherResult(
          value.length() < other.length(),
          { "File $value ($sizea bytes) should be smaller than $other ($sizeb bytes)" },
-         { "File $value ($sizea bytes) should not be smaller than $other ($sizeb bytes)"}
+         { "File $value ($sizea bytes) should not be smaller than $other ($sizeb bytes)" }
       )
    }
 }
@@ -140,7 +140,7 @@ fun beLarger(other: File): Matcher<File> = object : Matcher<File> {
       return MatcherResult(
          value.length() > other.length(),
          { "File $value ($sizea bytes) should be larger than $other ($sizeb bytes)" },
-         { "File $value ($sizea bytes) should not be larger than $other ($sizeb bytes)"}
+         { "File $value ($sizea bytes) should not be larger than $other ($sizeb bytes)" }
       )
    }
 }
@@ -151,7 +151,7 @@ fun beCanonicalPath(): Matcher<File> = object : Matcher<File> {
    override fun test(value: File): MatcherResult = MatcherResult(
       value.canonicalPath == value.path,
       { "File $value should be canonical" },
-      { "File $value should not be canonical"}
+      { "File $value should not be canonical" }
    )
 }
 
@@ -181,7 +181,7 @@ fun haveFileSize(size: Long): Matcher<File> = object : Matcher<File> {
    override fun test(value: File): MatcherResult = MatcherResult(
       value.length() == size,
       { "File $value should have size $size" },
-      { "File $value should not have size $size"}
+      { "File $value should not have size $size" }
    )
 }
 
@@ -201,7 +201,7 @@ fun beExecutable(): Matcher<File> = object : Matcher<File> {
    override fun test(value: File): MatcherResult = MatcherResult(
       value.canExecute(),
       { "File $value should be executable" },
-      { "File $value should not be executable"}
+      { "File $value should not be executable" }
    )
 }
 
@@ -243,7 +243,7 @@ fun startWithPath(prefix: String) = object : Matcher<File> {
    override fun test(value: File): MatcherResult = MatcherResult(
       value.toString().startsWith(prefix),
       { "File $value should start with $prefix" },
-      { "File $value should not start with $prefix"}
+      { "File $value should not start with $prefix" }
    )
 }
 
