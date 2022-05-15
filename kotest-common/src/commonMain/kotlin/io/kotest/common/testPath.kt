@@ -1,6 +1,5 @@
-package io.kotest.framework.shared.test
+package io.kotest.common
 
-import io.kotest.common.ExperimentalKotest
 import kotlin.coroutines.AbstractCoroutineContextElement
 import kotlin.coroutines.CoroutineContext
 

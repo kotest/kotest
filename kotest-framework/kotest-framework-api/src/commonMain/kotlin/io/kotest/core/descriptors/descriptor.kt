@@ -6,7 +6,7 @@ import io.kotest.core.descriptors.Descriptor.TestDescriptor
 import io.kotest.core.names.TestName
 import kotlin.reflect.KClass
 
-typealias TestPath = io.kotest.framework.shared.test.TestPath
+typealias TestPath = io.kotest.common.TestPath
 
 /**
  * A parseable, stable, consistent identifer for a test element.

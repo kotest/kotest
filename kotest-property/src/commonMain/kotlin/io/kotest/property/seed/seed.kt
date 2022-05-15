@@ -1,8 +1,8 @@
 package io.kotest.property.seed
 
 import io.kotest.common.ExperimentalKotest
-import io.kotest.framework.shared.test.TestPath
-import io.kotest.framework.shared.test.TestPathContextElement
+import io.kotest.common.TestPath
+import io.kotest.common.TestPathContextElement
 import io.kotest.property.PropTestConfig
 import io.kotest.property.PropertyTesting
 import io.kotest.property.RandomSource
@@ -11,7 +11,7 @@ import kotlinx.coroutines.currentCoroutineContext
 
 @ExperimentalKotest
 suspend fun createRandom(config: PropTestConfig): RandomSource {
-   return getFailedSeedIfEnabled()?.random() ?: config.seed?.random() ?: RandomSource.default()
+   return config.seed?.random() ?: getFailedSeedIfEnabled()?.random() ?: RandomSource.default()
 }
 
 suspend fun getFailedSeedIfEnabled(): Long? {
@@ -36,5 +36,12 @@ suspend fun writeFailedSeed(seed: Long) {
    writeSeed(path, seed)
 }
 
+@ExperimentalKotest
+suspend fun clearFailedSeed() {
+   val path = currentCoroutineContext()[TestPathContextElement]?.testPath ?: return
+   clearSeed(path)
+}
+
 expect fun readSeed(path: TestPath): Long?
 expect fun writeSeed(path: TestPath, seed: Long)
+expect fun clearSeed(path: TestPath)

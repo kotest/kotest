@@ -9,7 +9,6 @@ object Projects {
       const val datatest = ":kotest-framework:kotest-framework-datatest"
       const val engine = ":kotest-framework:kotest-framework-engine"
       const val mppshared = ":kotest-framework:kotest-framework-multiplatform-plugin-shared"
-      const val shared = ":kotest-framework:kotest-framework-shared"
    }
 
    object Assertions {

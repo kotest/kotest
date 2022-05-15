@@ -7,6 +7,7 @@ import io.kotest.property.BeforePropertyContextElement
 import io.kotest.property.Classifier
 import io.kotest.property.PropTestConfig
 import io.kotest.property.PropertyContext
+import io.kotest.property.seed.clearFailedSeed
 import io.kotest.property.seed.writeFailedSeedIfEnabled
 import kotlin.coroutines.coroutineContext
 
@@ -46,6 +47,7 @@ internal suspend fun test(
       context.markFailure()
       handleException(context, shrinkfn, inputs, seed, e, config)
    }
+   clearFailedSeed()
 }
 
 internal suspend fun handleException(

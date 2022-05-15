@@ -1,6 +1,6 @@
 package io.kotest.property.seed
 
-import io.kotest.framework.shared.test.TestPath
+import io.kotest.common.TestPath
 import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.Paths
@@ -22,4 +22,9 @@ actual fun writeSeed(path: TestPath, seed: Long) {
    val f = seedPath(path)
    f.parent.toFile().mkdirs()
    Files.write(f, seed.toString().encodeToByteArray())
+}
+
+actual fun clearSeed(path: TestPath) {
+   val f = seedPath(path)
+   f.toFile().deleteRecursively()
 }

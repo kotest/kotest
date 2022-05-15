@@ -7,9 +7,8 @@ import io.kotest.property.Gen
 import io.kotest.property.PropTestConfig
 import io.kotest.property.PropertyContext
 import io.kotest.property.PropertyTesting
-import io.kotest.property.RandomSource
 import io.kotest.property.classifications.outputClassifications
-import io.kotest.property.random
+import io.kotest.property.seed.createRandom
 
 suspend fun <A> proptest(
    genA: Gen<A>,
@@ -24,7 +23,7 @@ suspend fun <A> proptest(
       ?: Constraints.iterations(PropertyTesting.defaultIterationCount)
 
    val context = PropertyContext()
-   val random = config.seed?.random() ?: RandomSource.default()
+   val random = createRandom(config)
 
    when (genA) {
       is Arb -> {
@@ -83,7 +82,7 @@ suspend fun <A, B> proptest(
       ?: Constraints.iterations(PropertyTesting.defaultIterationCount)
 
    val context = PropertyContext()
-   val random = config.seed?.random() ?: RandomSource.default()
+   val random = createRandom(config)
 
    if (genA is Exhaustive && genB is Exhaustive) {
       genA.values.forEach { a ->
@@ -143,7 +142,7 @@ suspend fun <A, B, C> proptest(
       ?: Constraints.iterations(PropertyTesting.defaultIterationCount)
 
    val context = PropertyContext()
-   val random = config.seed?.random() ?: RandomSource.default()
+   val random = createRandom(config)
 
    if (genA is Exhaustive && genB is Exhaustive && genC is Exhaustive) {
       genA.values.forEach { a ->
@@ -208,7 +207,7 @@ suspend fun <A, B, C, D> proptest(
       ?: Constraints.iterations(PropertyTesting.defaultIterationCount)
 
    val context = PropertyContext()
-   val random = config.seed?.random() ?: RandomSource.default()
+   val random = createRandom(config)
 
    if (genA is Exhaustive && genB is Exhaustive && genC is Exhaustive && genD is Exhaustive) {
       genA.values.forEach { a ->
@@ -273,7 +272,7 @@ suspend fun <A, B, C, D, E> proptest(
       ?: Constraints.iterations(PropertyTesting.defaultIterationCount)
 
    val context = PropertyContext()
-   val random = config.seed?.random() ?: RandomSource.default()
+   val random = createRandom(config)
 
    if (genA is Exhaustive && genB is Exhaustive && genC is Exhaustive && genD is Exhaustive && genE is Exhaustive) {
       genA.values.forEach { a ->
@@ -360,7 +359,7 @@ suspend fun <A, B, C, D, E, F> proptest(
       ?: Constraints.iterations(PropertyTesting.defaultIterationCount)
 
    val context = PropertyContext()
-   val random = config.seed?.random() ?: RandomSource.default()
+   val random = createRandom(config)
 
    genA.generate(random, config.edgeConfig)
       .zip(genB.generate(random, config.edgeConfig))
@@ -420,7 +419,7 @@ suspend fun <A, B, C, D, E, F, G> proptest(
       ?: Constraints.iterations(PropertyTesting.defaultIterationCount)
 
    val context = PropertyContext()
-   val random = config.seed?.random() ?: RandomSource.default()
+   val random = createRandom(config)
 
    genA.generate(random, config.edgeConfig)
       .zip(genB.generate(random, config.edgeConfig))
@@ -484,7 +483,7 @@ suspend fun <A, B, C, D, E, F, G, H> proptest(
       ?: Constraints.iterations(PropertyTesting.defaultIterationCount)
 
    val context = PropertyContext()
-   val random = config.seed?.random() ?: RandomSource.default()
+   val random = createRandom(config)
 
    genA.generate(random, config.edgeConfig)
       .zip(genB.generate(random, config.edgeConfig))
@@ -552,7 +551,7 @@ suspend fun <A, B, C, D, E, F, G, H, I> proptest(
       ?: Constraints.iterations(PropertyTesting.defaultIterationCount)
 
    val context = PropertyContext()
-   val random = config.seed?.random() ?: RandomSource.default()
+   val random = createRandom(config)
 
    genA.generate(random, config.edgeConfig)
       .zip(genB.generate(random, config.edgeConfig))
@@ -624,7 +623,7 @@ suspend fun <A, B, C, D, E, F, G, H, I, J> proptest(
       ?: Constraints.iterations(PropertyTesting.defaultIterationCount)
 
    val context = PropertyContext()
-   val random = config.seed?.random() ?: RandomSource.default()
+   val random = createRandom(config)
 
    genA.generate(random, config.edgeConfig)
       .zip(genB.generate(random, config.edgeConfig))
@@ -700,7 +699,7 @@ suspend fun <A, B, C, D, E, F, G, H, I, J, K> proptest(
       ?: Constraints.iterations(PropertyTesting.defaultIterationCount)
 
    val context = PropertyContext()
-   val random = config.seed?.random() ?: RandomSource.default()
+   val random = createRandom(config)
 
    genA.generate(random, config.edgeConfig)
       .zip(genB.generate(random, config.edgeConfig))
@@ -792,7 +791,7 @@ suspend fun <A, B, C, D, E, F, G, H, I, J, K, L> proptest(
       ?: Constraints.iterations(PropertyTesting.defaultIterationCount)
 
    val context = PropertyContext()
-   val random = config.seed?.random() ?: RandomSource.default()
+   val random = createRandom(config)
 
    genA.generate(random, config.edgeConfig)
       .zip(genB.generate(random, config.edgeConfig))

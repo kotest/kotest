@@ -37,4 +37,13 @@ class PersistSeedsTest : FunSpec({
       seedDirectory().shouldBeEmptyDirectory()
    }
 
+   test("a successful test should not write seed") {
+      seedDirectory().apply {
+         toFile().listFiles().forEach { it.deleteRecursively() }
+      }
+      checkAll<Int, Int> { a, b ->
+      }
+      seedDirectory().shouldBeEmptyDirectory()
+   }
+
 })
