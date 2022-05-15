@@ -21,7 +21,8 @@ checkAll<String, String> { a, b ->
 }
 ```
 
-This will periodically fail - whenever two equal strings are generated. One approach would be to just wrap the tests in an
+This will periodically fail - whenever two equal strings are generated. One approach would be to just wrap the tests in
+an
 if/else block and avoid those undesired inputs.
 
 ```kotlin
@@ -36,16 +37,36 @@ But in more complicated scenarios we could easily introduce a bug and filter _al
 Kotest provides a feature called _assumptions_ that will filter out unwanted combinations, while tracking that we
 are not filtering too many.
 
-An assumption is just a boolean value passed to the `withAssumption` function, that if true, will allow the property
+An assumption accepts a boolean value passed to the `withAssumptions` function, that if true, will allow the property
 test to continue, but if false, that particular iteration is skipped. For example, the previous example will now pass:
 
 ```kotlin
 checkAll<String, String> { a, b ->
-  withAssumption(a != b) {
+  withAssumptions(a != b) {
     levenshtein(a, b) shouldBeGreaterThan 0
   }
 }
 ```
+
+### Assertions
+
+Kotest expands on basic boolean assumptions by allowing you to specify any assertion in the assumption predicate, in
+addition to supporting an arbitrary number of assumptions.
+
+For example, building on the previous example:
+
+```kotlin
+checkAll(Arb.string(3..4, Codepoint.az()), Arb.string(3..4, Codepoint.az())) { a, b ->
+  withAssumptions(
+     { a shouldNotBe b },
+     { a shouldHaveLength (b.length) },
+  ) {
+     a.compareTo(b) shouldNotBe 0
+  }
+}
+```
+
+Here we are ensuring that all inputs are not equal, and that the inputs have the same length. Any assertion that throws `AssertionError` can be used here, including all the assertions provided by Kotest.
 
 ### Max Discard Percentage
 
@@ -56,7 +77,7 @@ For example, the following would fail by default because we would be filtering ~
 
 ```kotlin
 checkAll<Int, Int> { a, b ->
-  withAssumption(a % 2 == 0) {
+  withAssumptions(a % 2 == 0) {
     ..
   }
 }
@@ -66,7 +87,7 @@ But if we wanted to allow this regardless, we can use the `maxDiscardPercentage`
 
 ```kotlin
 checkAll<Int, Int>(PropTestConfig(maxDiscardPercentage = 55)) { a, b ->
-  withAssumption(a % 2 == 0) {
+  withAssumptions(a % 2 == 0) {
     ..
   }
 }

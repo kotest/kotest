@@ -1,13 +1,27 @@
 package io.kotest.property
 
-suspend fun PropertyContext.withAssumption(
+import io.kotest.matchers.shouldBe
+
+fun interface Assume {
+   operator fun invoke()
+}
+
+suspend fun PropertyContext.withAssumptions(
    predicate: Boolean,
    test: suspend () -> Unit,
+): Unit = withAssumptions(assumptions = arrayOf(Assume { predicate shouldBe true }), test)
+
+suspend fun PropertyContext.withAssumptions(
+   vararg assumptions: Assume,
+   test: suspend () -> Unit,
 ) {
-   if (predicate) {
+   try {
+      assumptions.forEach {
+         it.invoke()
+      }
       assumptionPredicateTrue()
       test()
-   } else {
+   } catch (e: AssertionError) {
       assumptionPredicateFalse()
    }
 }

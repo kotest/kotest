@@ -98,7 +98,7 @@ data class PropTestConfig(
    val outputClassifications: Boolean = PropertyTesting.defaultOutputClassifications,
    val labelsReporter: LabelsReporter = StandardLabelsReporter,
    val constraints: Constraints? = null,
-   val maxDiscardPercentage: Int = 10,
+   val maxDiscardPercentage: Int = 20,
 )
 
 interface PropTestListener {
