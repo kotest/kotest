@@ -44,8 +44,6 @@ kotlin {
             compileOnly(kotlin("stdlib"))
             implementation(kotlin("reflect"))
             api(Libs.Coroutines.coreCommon)
-            implementation(project(Projects.Common))
-            api(project(Projects.Assertions.Shared))
          }
       }
 
