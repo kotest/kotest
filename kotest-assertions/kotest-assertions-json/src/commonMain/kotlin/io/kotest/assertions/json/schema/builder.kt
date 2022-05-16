@@ -52,7 +52,11 @@ data class JsonSchema(
    internal interface JsonNumber
 
    @Serializable
-   data class JsonArray(val elementType: JsonSchemaElement) : JsonSchemaElement {
+   data class JsonArray(
+      val minItems: Int = 0,
+      val maxItems: Int = Int.MAX_VALUE,
+      val elementType: JsonSchemaElement
+   ) : JsonSchemaElement {
       override fun typeName() = "array"
    }
 
@@ -208,10 +212,14 @@ fun JsonSchema.Builder.obj(dsl: JsonSchema.JsonObjectBuilder.() -> Unit = {}) =
 
 /**
  * Defines a [JsonSchema.JsonArray] node where the elements are of the type provided by [typeBuilder].
+iI * The length of the array can be specified using the [minItems] and [maxItems] keywords.
+ *
+ * @param minItems - minimum array length, default value is 0
+ * @param maxItems - maximum array length, default value is [Int.MAX_VALUE]
  */
 @ExperimentalKotest
-fun JsonSchema.Builder.array(typeBuilder: () -> JsonSchemaElement) =
-   JsonSchema.JsonArray(typeBuilder())
+fun JsonSchema.Builder.array(minItems: Int = 0, maxItems: Int = Int.MAX_VALUE, typeBuilder: () -> JsonSchemaElement) =
+   JsonSchema.JsonArray(minItems, maxItems, typeBuilder())
 
 @ExperimentalKotest
 fun jsonSchema(

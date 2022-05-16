@@ -1,7 +1,6 @@
 package io.kotest.assertions.json.schema
 
 import io.kotest.assertions.json.JsonNode
-import io.kotest.assertions.json.JsonTree
 import io.kotest.assertions.json.toJsonTree
 import io.kotest.common.ExperimentalKotest
 import io.kotest.matchers.Matcher
@@ -77,13 +76,17 @@ private fun validate(
    fun violation(message: String) =
       listOf(SchemaViolation(currentPath, message))
 
+   fun violationIf(conditionResult: Boolean, message: String) = if(conditionResult) violation(message) else emptyList()
+
    return when (tree) {
       is JsonNode.ArrayNode -> {
-         if (expected is JsonSchema.JsonArray)
-            tree.elements.flatMapIndexed { i, node ->
+         if (expected is JsonSchema.JsonArray) {
+            val sizeViolation = violationIf(tree.elements.size < expected.minItems || tree.elements.size > expected.maxItems,
+               "Expected items between ${expected.minItems} and ${expected.maxItems}, but was ${tree.elements.size}")
+            sizeViolation + tree.elements.flatMapIndexed { i, node ->
                validate("$currentPath[$i]", node, expected.elementType)
             }
-         else violation("Expected ${expected.typeName()}, but was array")
+         } else violation("Expected ${expected.typeName()}, but was array")
       }
       is JsonNode.ObjectNode -> {
          if (expected is JsonSchema.JsonObject) {

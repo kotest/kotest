@@ -8,7 +8,7 @@ sidebar_label: Schema matchers
 |---------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------|:--------------|
 | `shouldMatchSchema` | Validates that a `String` or `kotlinx.serialization.JsonElement` matches a `JsonSchema`. See description below for details on constructing schemas. | Multiplatform |
 
-## Defining Schemas
+## Parsing Schema
 
 A subset of [JSON Schemas](https://json-schema.org/) can be defined either by parsing a textual schema. Example:
 
@@ -62,7 +62,23 @@ val personSchema = jsonSchema {
 }
 ```
 
-⚠️ Note that Kotest only supports a subset of JSON schema currently. Currently missing support for:
+## Building Schema
+
+### Array
+
+Arrays are used for ordered elements. In JSON, each element in an array may be of a different type.
+
+#### Length (minItems and maxItems)
+
+The length of the array can be specified using the `minItems` and `maxItems` keywords. The value of each keyword must be a
+non-negative number and defaults are 0 and Int.MAX_VALUE
+```kotlin
+val lengthBoundedSchema = jsonSchema {
+  array(minItems = 0, maxItems = 1) { number() }
+}
+```
+
+⚠️ Note that Kotest only supports a subset of JSON schema currently. Currently, missing support for:
 
 * $defs and $refs
 * Recursive schemas

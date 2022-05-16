@@ -52,5 +52,27 @@ class ArraySchemaTest : FunSpec(
             $[2].age => Expected number, but was undefined
          """.trimIndent()
       }
+
+      test("Array size smaller than minItems") {
+         val array = "[1]"
+         val sizeBoundedArray = jsonSchema {
+            array(minItems = 2, maxItems = 3) { number() }
+         }
+         array shouldNotMatchSchema sizeBoundedArray
+         shouldFail { array shouldMatchSchema sizeBoundedArray }.message shouldBe """
+            $ => Expected items between 2 and 3, but was 1
+         """.trimIndent()
+      }
+
+      test("Array size larger than maxItems") {
+         val array = "[1,2]"
+         val sizeBoundedArray = jsonSchema {
+            array(minItems = 0, maxItems = 1) { number() }
+         }
+         array shouldNotMatchSchema sizeBoundedArray
+         shouldFail { array shouldMatchSchema sizeBoundedArray }.message shouldBe """
+            $ => Expected items between 0 and 1, but was 2
+         """.trimIndent()
+      }
    }
 )
