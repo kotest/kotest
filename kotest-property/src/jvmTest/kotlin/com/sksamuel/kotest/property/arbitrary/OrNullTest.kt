@@ -10,6 +10,7 @@ import io.kotest.matchers.shouldBe
 import io.kotest.property.Arb
 import io.kotest.property.RandomSource
 import io.kotest.property.Sample
+import io.kotest.property.arbitrary.constant
 import io.kotest.property.arbitrary.int
 import io.kotest.property.arbitrary.long
 import io.kotest.property.arbitrary.orNull
@@ -60,5 +61,19 @@ class OrNullTest : FunSpec({
 
          allNull shouldBe isNextNull
       }
+   }
+
+   test("orNull has a shrink to null"){
+      val iterations = 1000
+      val rs = RandomSource.default()
+      val classifications =
+         forAll(iterations, Arb.constant(Arb.int().orNull())) { orNullArb ->
+            val sample = orNullArb.sample(rs)
+            val hasNullShrink = sample.shrinks.children.value.map{it.value()}.any{it == null}
+            classify(hasNullShrink, "nullShrink", "noNullShrink")
+            true
+         }.classifications()
+      classifications["nullShrink"]?.shouldBeBetween(800, 1000)
+      classifications["noNullShrink"]?.shouldBeBetween(0, 200)
    }
 })
