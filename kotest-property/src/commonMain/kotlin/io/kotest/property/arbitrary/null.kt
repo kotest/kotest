@@ -1,7 +1,9 @@
 package io.kotest.property.arbitrary
 
 import io.kotest.property.Arb
+import io.kotest.property.RTree
 import io.kotest.property.RandomSource
+import io.kotest.property.Sample
 
 /**
  * Creates an [Arb] which will produce null values.
@@ -32,7 +34,15 @@ fun <A> Arb<A>.orNull(nullProbability: Double): Arb<A?> {
  * @returns an Arb<A?> that can produce null values.
  */
 fun <A> Arb<A>.orNull(isNextNull: (RandomSource) -> Boolean = { it.random.nextBoolean() }): Arb<A?> =
-   arbitrary(
-      edgecaseFn = { this@orNull.edgecase(it) },
-      sampleFn = { if (isNextNull(it)) null else this@orNull.next(it) }
-   )
+   object : Arb<A?>() {
+      override fun edgecase(rs: RandomSource): A? = this@orNull.edgecase(rs)
+
+      override fun sample(rs: RandomSource): Sample<A?> {
+         val baseSample = if (isNextNull(rs)) Sample(null) else this@orNull.sample(rs)
+         return baseSample.copy(
+            shrinks = RTree(
+               baseSample.shrinks.value,
+               kotlin.lazy { listOf(RTree({ null })) + baseSample.shrinks.children.value })
+         )
+      }
+   }
