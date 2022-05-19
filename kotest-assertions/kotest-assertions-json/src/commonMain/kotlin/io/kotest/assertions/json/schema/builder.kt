@@ -214,8 +214,8 @@ fun JsonSchema.Builder.obj(dsl: JsonSchema.JsonObjectBuilder.() -> Unit = {}) =
  * Defines a [JsonSchema.JsonArray] node where the elements are of the type provided by [typeBuilder].
  * The length of the array can be specified using the [minItems] and [maxItems] keywords.
  *
- * [minItems] - minimum array length, default value is 0
- * [maxItems] - maximum array length, default value is [Int.MAX_VALUE]
+ * @param minItems - minimum array length, default value is 0
+ * @param maxItems - maximum array length, default value is [Int.MAX_VALUE]
  */
 @ExperimentalKotest
 fun JsonSchema.Builder.array(minItems: Int = 0, maxItems: Int = Int.MAX_VALUE, typeBuilder: () -> JsonSchemaElement) =
