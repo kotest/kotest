@@ -21,6 +21,7 @@ infix fun String?.shouldNotMatchSchema(schema: JsonSchema) =
 
 @ExperimentalKotest
 infix fun JsonElement.shouldMatchSchema(schema: JsonSchema) = this should matchSchema(schema)
+
 @ExperimentalKotest
 infix fun JsonElement.shouldNotMatchSchema(schema: JsonSchema) = this shouldNot matchSchema(schema)
 
@@ -76,14 +77,20 @@ private fun validate(
    fun violation(message: String) =
       listOf(SchemaViolation(currentPath, message))
 
-   fun violationIf(conditionResult: Boolean, message: String) = if(conditionResult) violation(message) else emptyList()
+   fun violationIf(conditionResult: Boolean, message: String) = if (conditionResult) violation(message) else emptyList()
 
    return when (tree) {
       is JsonNode.ArrayNode -> {
          if (expected is JsonSchema.JsonArray) {
-            val sizeViolation = violationIf(tree.elements.size < expected.minItems || tree.elements.size > expected.maxItems,
-               "Expected items between ${expected.minItems} and ${expected.maxItems}, but was ${tree.elements.size}")
-            sizeViolation + tree.elements.flatMapIndexed { i, node ->
+            val sizeViolation = violationIf(
+               tree.elements.size < expected.minItems || tree.elements.size > expected.maxItems,
+               "Expected items between ${expected.minItems} and ${expected.maxItems}, but was ${tree.elements.size}"
+            )
+            val matcherViolation: List<SchemaViolation> = expected.matcher?.let {
+               val matcherResult = it.test(tree.elements.asSequence())
+               if (matcherResult.passed()) emptyList() else violation(matcherResult.failureMessage())
+            } ?: emptyList()
+            matcherViolation + sizeViolation + tree.elements.flatMapIndexed { i, node ->
                validate("$currentPath[$i]", node, expected.elementType)
             }
          } else violation("Expected ${expected.typeName()}, but was array")

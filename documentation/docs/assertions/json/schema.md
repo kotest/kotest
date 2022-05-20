@@ -78,6 +78,15 @@ val lengthBoundedSchema = jsonSchema {
 }
 ```
 
+#### Uniqueness
+
+A schema can ensure that each of the items in an array is unique. Simply set the `uniqueItems` keyword to true.
+```kotlin
+val uniqueArray = jsonSchema {
+  array(uniqueItems = true) { number() }
+}
+```
+
 ⚠️ Note that Kotest only supports a subset of JSON schema currently. Currently, missing support for:
 
 * $defs and $refs
