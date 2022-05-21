@@ -1,10 +1,14 @@
 package io.kotest.assertions.json.schema
 
+import ContainsSpec
 import io.kotest.assertions.json.JsonNode
 import io.kotest.assertions.json.JsonNode.*
 import io.kotest.common.ExperimentalKotest
 import io.kotest.matchers.Matcher
+import io.kotest.matchers.collections.containAnyOf
 import io.kotest.matchers.sequences.beUnique
+import io.kotest.matchers.should
+import io.kotest.matchers.shouldBe
 import kotlinx.serialization.Serializable
 
 @DslMarker
@@ -56,6 +60,7 @@ data class JsonSchema(
       val minItems: Int = 0,
       val maxItems: Int = Int.MAX_VALUE,
       val matcher: Matcher<Sequence<JsonNode>>? = null,
+      val contains: ContainsSpec? = null,
       val elementType: JsonSchemaElement,
    ) : JsonSchemaElement {
       override fun typeName() = "array"
@@ -218,10 +223,14 @@ fun JsonSchema.Builder.obj(dsl: JsonSchema.JsonObjectBuilder.() -> Unit = {}) =
  */
 @ExperimentalKotest
 fun JsonSchema.Builder.array(
-   minItems: Int = 0, maxItems: Int = Int.MAX_VALUE, uniqueItems: Boolean = false, typeBuilder: () -> JsonSchemaElement
+   minItems: Int = 0,
+   maxItems: Int = Int.MAX_VALUE,
+   uniqueItems: Boolean = false,
+   contains: ContainsSpec? = null,
+   typeBuilder: () -> JsonSchemaElement
 ): JsonSchema.JsonArray {
    val matcher: Matcher<Sequence<JsonNode>>? = if (uniqueItems) beUnique() else null
-   return JsonSchema.JsonArray(minItems, maxItems, matcher, typeBuilder())
+   return JsonSchema.JsonArray(minItems, maxItems, matcher, contains, typeBuilder())
 }
 
 @ExperimentalKotest
@@ -230,3 +239,5 @@ fun jsonSchema(
 ): JsonSchema = JsonSchema(
    JsonSchema.Builder.rootBuilder()
 )
+
+fun JsonSchema.Builder.containsSpec(schema: JsonSchema.Builder.() -> JsonSchemaElement) = ContainsSpec(schema())

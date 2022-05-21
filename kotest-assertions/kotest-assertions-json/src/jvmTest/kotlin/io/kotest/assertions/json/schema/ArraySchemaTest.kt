@@ -37,7 +37,7 @@ class ArraySchemaTest : FunSpec(
 
       test("array with partial inner match is not ok") {
          val missingAge =
-         """
+            """
             [
                { "name": "bob" },
                { "name": "bob", "age": 3 },
@@ -84,6 +84,25 @@ class ArraySchemaTest : FunSpec(
          shouldFail { array shouldMatchSchema uniqueArray }.message shouldBe """
             $ => Sequence should be Unique
          """.trimIndent()
+      }
+
+      test("Array not contains string") {
+         val array = "[1,1]"
+         val containsStringArray = jsonSchema {
+            array(contains = containsSpec { string() }) { number() }
+         }
+         array shouldNotMatchSchema containsStringArray
+         shouldFail { array shouldMatchSchema containsStringArray }.message shouldBe """
+            $ => Expected any item of type string
+         """.trimIndent()
+      }
+
+      test("Array contains strings and numbers") {
+         val array = "[\"life\", \"universe\", \"everything\", 42]\n"
+         val containsStringArray = jsonSchema {
+            array(contains = containsSpec { number() }) { number() }
+         }
+         array shouldMatchSchema containsStringArray
       }
    }
 )

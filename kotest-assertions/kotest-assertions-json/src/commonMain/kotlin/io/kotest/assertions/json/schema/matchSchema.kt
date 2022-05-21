@@ -10,6 +10,7 @@ import io.kotest.matchers.should
 import io.kotest.matchers.shouldNot
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonElement
+import kotlin.math.exp
 
 @ExperimentalKotest
 infix fun String?.shouldMatchSchema(schema: JsonSchema) =
@@ -82,6 +83,13 @@ private fun validate(
    return when (tree) {
       is JsonNode.ArrayNode -> {
          if (expected is JsonSchema.JsonArray) {
+            val containsViolations = expected.contains?.let { contains ->
+               val containsType = contains.schema.typeName()
+               val foundElements = tree.elements.count { it.type() == containsType }
+               violationIf(foundElements == 0, "Expected any item of type $containsType")
+            } ?: tree.elements.flatMapIndexed { i, node ->
+               validate("$currentPath[$i]", node, expected.elementType)
+            }
             val sizeViolation = violationIf(
                tree.elements.size < expected.minItems || tree.elements.size > expected.maxItems,
                "Expected items between ${expected.minItems} and ${expected.maxItems}, but was ${tree.elements.size}"
@@ -90,9 +98,7 @@ private fun validate(
                val matcherResult = it.test(tree.elements.asSequence())
                if (matcherResult.passed()) emptyList() else violation(matcherResult.failureMessage())
             } ?: emptyList()
-            matcherViolation + sizeViolation + tree.elements.flatMapIndexed { i, node ->
-               validate("$currentPath[$i]", node, expected.elementType)
-            }
+            containsViolations + matcherViolation + sizeViolation
          } else violation("Expected ${expected.typeName()}, but was array")
       }
       is JsonNode.ObjectNode -> {
