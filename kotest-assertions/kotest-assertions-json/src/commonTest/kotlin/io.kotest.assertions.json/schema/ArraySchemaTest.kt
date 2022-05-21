@@ -100,5 +100,42 @@ class ArraySchemaTest : FunSpec(
             $ => Sequence should be Unique
          """.trimIndent()
       }
+
+      test("Array not contains string") {
+         val array = "[1,1]"
+         val containsStringArray = jsonSchema {
+            array(contains = containsSpec { string() })
+         }
+         array shouldNotMatchSchema containsStringArray
+         shouldFail { array shouldMatchSchema containsStringArray }.message shouldBe """
+            $ => Expected any item of type string
+         """.trimIndent()
+      }
+
+      test("Should parse schema with contains") {
+         val schema = parseSchema(
+            """
+               { "type": "array", "contains": {"type": "number"} }
+            """.trimIndent()
+         )
+         "[\"life\", \"universe\", \"everything\"]" shouldNotMatchSchema schema
+      }
+
+      test("Array contains strings and numbers") {
+         val array = "[\"life\", \"universe\", \"everything\", 42]"
+         val containsStringArray = jsonSchema {
+            array(contains = containsSpec { number() })
+         }
+         array shouldMatchSchema containsStringArray
+      }
+
+      test("Array without contains and elementType") {
+         val array = jsonSchema {
+            array()
+         }
+         shouldFail { "[1]" shouldMatchSchema array }.message shouldBe """
+            $ => Expected contains or elementType.
+         """.trimIndent()
+      }
    }
 )

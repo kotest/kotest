@@ -1,5 +1,6 @@
 package io.kotest.assertions.json.schema
 
+import ContainsSpec
 import io.kotest.assertions.json.JsonNode
 import io.kotest.common.ExperimentalKotest
 import io.kotest.matchers.Matcher
@@ -73,18 +74,19 @@ internal object JsonSchemaArraySerializer : KSerializer<JsonSchema.JsonArray> {
    override fun deserialize(decoder: Decoder): JsonSchema.JsonArray =
       decoder.decodeStructure(descriptor) {
          var matcher: Matcher<Sequence<JsonNode>>? = null
-         var minItems = 1
-         var maxItems = Int.MAX_VALUE
-         val elementType = decodeSerializableElement(descriptor, 4, SchemaDeserializer, null)
+         val minItems = kotlin.runCatching { decodeIntElement(descriptor, 1) }.getOrDefault(1)
+         val maxItems = kotlin.runCatching { decodeIntElement(descriptor, 2) }.getOrDefault(Int.MAX_VALUE)
+         val elementType =
+            kotlin.runCatching { decodeSerializableElement(descriptor, 4, SchemaDeserializer, null) }.getOrNull()
+         val containsSpec =
+            kotlin.runCatching { decodeSerializableElement(descriptor, 5, ContainsSpec.serializer()) }.getOrNull()
          while (true) {
             when (val index = decodeElementIndex(descriptor)) {
-               1 -> minItems = kotlin.runCatching { decodeIntElement(descriptor, index) }.getOrDefault(minItems)
-               2 -> maxItems = kotlin.runCatching { decodeIntElement(descriptor, index) }.getOrDefault(maxItems)
                3 -> matcher = if (decodeBooleanElement(descriptor, index)) matcher and beUnique() else matcher
                CompositeDecoder.DECODE_DONE -> break
             }
          }
-         JsonSchema.JsonArray(minItems, maxItems, matcher, elementType)
+         JsonSchema.JsonArray(minItems, maxItems, matcher, containsSpec, elementType)
       }
 
    override val descriptor = buildClassSerialDescriptor("JsonSchema.JsonArray") {
@@ -92,7 +94,8 @@ internal object JsonSchemaArraySerializer : KSerializer<JsonSchema.JsonArray> {
       element<Int>("minItems", isOptional = true)
       element<Int>("maxItems", isOptional = true)
       element<Boolean>("uniqueItems", isOptional = true)
-      element<String>("elementType")
+      element<String>("elementType", isOptional = true)
+      element<String>("contains", isOptional = true)
    }
 
    override fun serialize(encoder: Encoder, value: JsonSchema.JsonArray) {

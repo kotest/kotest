@@ -1,5 +1,6 @@
 package io.kotest.assertions.json.schema
 
+import ContainsSpec
 import io.kotest.assertions.json.JsonNode
 import io.kotest.assertions.json.JsonNode.*
 import io.kotest.common.ExperimentalKotest
@@ -55,7 +56,8 @@ data class JsonSchema(
       val minItems: Int = 0,
       val maxItems: Int = Int.MAX_VALUE,
       val matcher: Matcher<Sequence<JsonNode>>? = null,
-      val elementType: JsonSchemaElement,
+      val contains: ContainsSpec? = null,
+      val elementType: JsonSchemaElement? = null,
    ) : JsonSchemaElement {
       override fun typeName() = "array"
    }
@@ -76,9 +78,7 @@ data class JsonSchema(
        * Using [required], you can specify that it must be included.
        */
       fun withProperty(
-         name: String,
-         required: Boolean = false,
-         elementBuilder: JsonSchema.Builder.() -> JsonSchemaElement
+         name: String, required: Boolean = false, elementBuilder: JsonSchema.Builder.() -> JsonSchemaElement
       ) {
          properties[name] = JsonSchema.Builder.elementBuilder()
          if (required) requiredProperties.add(name)
@@ -182,15 +182,13 @@ fun JsonSchema.Builder.decimal(matcherBuilder: () -> Matcher<Double>? = { null }
  * It supports no further configuration. The actual value must always be either true or false.
  */
 @ExperimentalKotest
-fun JsonSchema.Builder.boolean() =
-   JsonSchema.JsonBoolean
+fun JsonSchema.Builder.boolean() = JsonSchema.JsonBoolean
 
 /**
  * Creates a [JsonSchema.Null] node, which is a leaf node that must always be null, if present.
  */
 @ExperimentalKotest
-fun JsonSchema.Builder.`null`() =
-   JsonSchema.Null
+fun JsonSchema.Builder.`null`() = JsonSchema.Null
 
 /**
  * Creates a [JsonSchema.JsonObject] node. Expand on the object configuration using the [dsl] which lets you specify
@@ -221,16 +219,21 @@ fun JsonSchema.Builder.obj(dsl: JsonSchema.JsonObjectBuilder.() -> Unit = {}) =
  */
 @ExperimentalKotest
 fun JsonSchema.Builder.array(
-   minItems: Int = 0, maxItems: Int = Int.MAX_VALUE, uniqueItems: Boolean = false, typeBuilder: () -> JsonSchemaElement
+   minItems: Int = 0,
+   maxItems: Int = Int.MAX_VALUE,
+   uniqueItems: Boolean = false,
+   contains: ContainsSpec? = null,
+   typeBuilder: (() -> JsonSchemaElement?)? = null
 ): JsonSchema.JsonArray {
    val matcher: Matcher<Sequence<JsonNode>>? = if (uniqueItems) beUnique() else null
-   return JsonSchema.JsonArray(minItems, maxItems, matcher, typeBuilder())
+   return JsonSchema.JsonArray(minItems, maxItems, matcher, contains, typeBuilder?.invoke())
 }
 
 @ExperimentalKotest
 fun jsonSchema(
    rootBuilder: JsonSchema.Builder.() -> JsonSchemaElement
-): JsonSchema =
-   JsonSchema(
-      JsonSchema.Builder.rootBuilder()
-   )
+): JsonSchema = JsonSchema(
+   JsonSchema.Builder.rootBuilder()
+)
+
+fun JsonSchema.Builder.containsSpec(schema: JsonSchema.Builder.() -> JsonSchemaElement) = ContainsSpec(schema())

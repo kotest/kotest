@@ -1,5 +1,6 @@
 package io.kotest.assertions.json.schema
 
+import ContainsSpec
 import io.kotest.assertions.json.JsonNode
 import io.kotest.assertions.json.toJsonTree
 import io.kotest.common.ExperimentalKotest
@@ -9,7 +10,6 @@ import io.kotest.matchers.and
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldNot
 import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.JsonArray
 import kotlinx.serialization.json.JsonElement
 
 @ExperimentalKotest
@@ -84,17 +84,29 @@ private fun validate(
       violationIf(!matcherResult.passed(), matcherResult.failureMessage())
    } ?: emptyList()
 
+   fun ContainsSpec.violation(tree: JsonNode.ArrayNode): List<SchemaViolation> {
+      val containsType = schema.typeName()
+      val foundElements = tree.elements.count { it.type() == containsType }
+      return violationIf(foundElements == 0, "Expected any item of type $containsType")
+   }
+
+   fun JsonSchemaElement.violation(tree: JsonNode.ArrayNode): List<SchemaViolation> =
+      tree.elements.flatMapIndexed { i, node ->
+         validate("$currentPath[$i]", node, this)
+      }
+
    return when (tree) {
       is JsonNode.ArrayNode -> {
          if (expected is JsonSchema.JsonArray) {
+            val typeViolation = expected.elementType?.violation(tree)
+               ?: expected.contains?.violation(tree)
+               ?: violation("Expected contains or elementType.")
             val sizeViolation = violationIf(
                tree.elements.size < expected.minItems || tree.elements.size > expected.maxItems,
                "Expected items between ${expected.minItems} and ${expected.maxItems}, but was ${tree.elements.size}"
             )
             val matcherViolation = violation(expected.matcher, tree.elements.asSequence())
-            matcherViolation + sizeViolation + tree.elements.flatMapIndexed { i, node ->
-               validate("$currentPath[$i]", node, expected.elementType)
-            }
+            typeViolation + matcherViolation + sizeViolation
          } else violation("Expected ${expected.typeName()}, but was array")
       }
       is JsonNode.ObjectNode -> {
