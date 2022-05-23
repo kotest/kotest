@@ -7,7 +7,6 @@ plugins {
    id("maven-publish")
    signing
    id("com.adarshr.test-logger") version "3.2.0"
-   id("org.jetbrains.dokka") version "1.6.21"
 }
 
 tasks {
