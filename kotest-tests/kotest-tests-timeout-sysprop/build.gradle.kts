@@ -1,7 +1,5 @@
 plugins {
-   id("java")
    kotlin("multiplatform")
-   id("java-library")
 }
 
 kotlin {
@@ -17,7 +15,7 @@ kotlin {
             implementation(project(Projects.Framework.engine))
             implementation(project(Projects.Assertions.Shared))
             implementation(project(Projects.JunitRunner))
-            implementation(Libs.Coroutines.coreJvm)
+            implementation(libs.kotlinx.coroutines.core)
          }
       }
 

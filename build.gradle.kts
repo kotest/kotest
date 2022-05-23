@@ -1,21 +1,13 @@
-buildscript {
-
-   repositories {
-      mavenCentral()
-      mavenLocal()
-      google()
-      gradlePluginPortal()
-   }
-}
-
 plugins {
    java
-   kotlin("multiplatform").version(Libs.Kotlin.version)
+   kotlin("multiplatform") version "1.6.21"
+   kotlin("plugin.serialization") version "1.6.21" apply false
+   kotlin("plugin.spring") version "1.6.21" apply false
    id("java-library")
    id("maven-publish")
    signing
-   id("com.adarshr.test-logger")
-   id("org.jetbrains.dokka")
+   id("com.adarshr.test-logger") version "3.2.0"
+   id("org.jetbrains.dokka") version "1.6.21"
 }
 
 tasks {
