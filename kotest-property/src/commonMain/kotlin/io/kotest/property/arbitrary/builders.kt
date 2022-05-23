@@ -1,5 +1,6 @@
 package io.kotest.property.arbitrary
 
+import io.kotest.common.runBlocking
 import io.kotest.property.Arb
 import io.kotest.property.Classifier
 import io.kotest.property.RandomSource
@@ -252,6 +253,11 @@ fun <A> arbitraryBuilder(
 /**
  * Creates a new suspendable [Arb] using [Continuation] using a stateless [fn].
  *
+ * Note: Due to https://github.com/kotest/kotest/issues/2993 we need to sadly use [runBlocking]
+ * in order to make [suspendArbitraryBuilder] work. This is required since both Arb<A>.sample
+ * and Arb<A>.edgecase is non-suspend. Unfortunately, this means the [Arb] produced
+ * by this builder function DOES NOT WORK IN JS as it does not support runBlocking.
+ *
  * This function accepts an optional [shrinker], [classifier], and [edgecaseFn]. These parameters
  * will be passed to [ArbitraryBuilder].
  */
@@ -282,8 +288,11 @@ suspend fun <A> suspendArbitraryBuilder(
             /**
              * At the end of the suspension we got a generated value [A] as a comprehension result.
              * This value can either be a sample, or an edgecase.
+             *
+             * Note: this function DOES NOT WORK IN JS as this requires converting suspension to blocking call.
+             * This runBlocking is required since both Arb<A>.sample and Arb<A>.edgecase is non-suspend.
              */
-            val value: A = fn(rs)
+            val value: A = runBlocking { fn(rs) }
 
             /**
              * Here we point A into an Arb<A> with the appropriate enrichments including

@@ -29,9 +29,12 @@ import io.kotest.property.arbitrary.single
 import io.kotest.property.arbitrary.string
 import io.kotest.property.arbitrary.take
 import io.kotest.property.arbitrary.withEdgecases
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
 import kotlin.coroutines.CoroutineContext
 import kotlin.random.nextInt
+import kotlin.time.Duration.Companion.nanoseconds
 
 class BuilderTest : FunSpec() {
    init {
@@ -201,7 +204,10 @@ class BuilderTest : FunSpec() {
       }
 
       context("suspend arbitrary builder with unrestricted continuation") {
-         suspend fun combineAsString(vararg values: Any?): String = values.joinToString(" ")
+         suspend fun combineAsString(vararg values: Any?): String = withContext(Dispatchers.IO) {
+            delay(1.nanoseconds)
+            values.joinToString(" ")
+         }
 
          test("should build arb on the parent coroutine context") {
             val arb = withContext(Foo("hello")) {
