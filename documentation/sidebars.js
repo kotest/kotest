@@ -11,6 +11,7 @@ module.exports = {
       "proptest/genslist",
       "proptest/genops",
       "proptest/assumptions",
+      "proptest/seeds",
       "proptest/proptestconfig",
       "proptest/customgens",
       "proptest/shrinking",

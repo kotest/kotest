@@ -49,6 +49,9 @@ object PropertyTesting {
    var failOnSeed: Boolean by AtomicProperty {
       sysprop("kotest.proptest.seed.fail-if-set", false)
    }
+   var writeFailedSeed: Boolean by AtomicProperty {
+      sysprop("kotest.proptest.seed.write-failed", true)
+   }
 }
 
 fun EdgeConfig.Companion.default(): EdgeConfig = EdgeConfig(

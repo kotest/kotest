@@ -30,7 +30,7 @@ class TestDispatcherTest : FunSpec() {
 }
 ```
 
-Inside this test, can you retrieve a handle to the scheduler through the extension val `testCoroutineScheduler`.
+Inside this test, you can retrieve a handle to the scheduler through the extension val `testCoroutineScheduler`.
 Using this scheduler, you can then manipulate the time:
 
 ```kotlin

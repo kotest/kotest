@@ -24,6 +24,7 @@ import io.kotest.engine.test.interceptors.TestCaseExtensionInterceptor
 import io.kotest.engine.test.interceptors.TestCoroutineInterceptor
 import io.kotest.engine.test.interceptors.TestDispatcherInterceptor
 import io.kotest.engine.test.interceptors.TestFinishedInterceptor
+import io.kotest.engine.test.interceptors.TestPathContextInterceptor
 import io.kotest.engine.test.interceptors.TimeoutInterceptor
 import io.kotest.engine.test.interceptors.blockedThreadTimeoutInterceptor
 import io.kotest.engine.test.interceptors.coroutineDispatcherFactoryInterceptor
@@ -51,6 +52,7 @@ class TestCaseExecutor(
       val timeMark = TimeSource.Monotonic.markNow()
 
       val interceptors = listOfNotNull(
+         TestPathContextInterceptor,
          TestFinishedInterceptor(listener),
          InvocationCountCheckInterceptor,
          SupervisorScopeInterceptor,

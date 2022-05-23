@@ -10,7 +10,7 @@ import io.kotest.property.PropertyTesting
 import io.kotest.property.RandomSource
 import io.kotest.property.checkMaxDiscards
 import io.kotest.property.classifications.outputClassifications
-import io.kotest.property.random
+import io.kotest.property.seed.createRandom
 
 suspend fun <A> proptest(
    genA: Gen<A>,
@@ -18,15 +18,14 @@ suspend fun <A> proptest(
    property: suspend PropertyContext.(A) -> Unit
 ): PropertyContext {
 
-   if (config.seed != null && PropertyTesting.failOnSeed)
-      error("A seed is specified on this property-test and failOnSeed is true")
+   config.checkFailOnSeed()
 
    val constraints = config.constraints
       ?: config.iterations?.let { Constraints.iterations(it) }
       ?: Constraints.iterations(PropertyTesting.defaultIterationCount)
 
    val context = PropertyContext(config)
-   val random = config.seed?.random() ?: RandomSource.default()
+   val random = createRandom(config)
 
    when (genA) {
       is Arb -> {
@@ -78,15 +77,14 @@ suspend fun <A, B> proptest(
    property: suspend PropertyContext.(A, B) -> Unit
 ): PropertyContext {
 
-   if (config.seed != null && PropertyTesting.failOnSeed)
-      error("A seed is specified on this property-test and failOnSeed is true")
+   config.checkFailOnSeed()
 
    val constraints = config.constraints
       ?: config.iterations?.let { Constraints.iterations(it) }
       ?: Constraints.iterations(PropertyTesting.defaultIterationCount)
 
    val context = PropertyContext(config)
-   val random = config.seed?.random() ?: RandomSource.default()
+   val random = createRandom(config)
 
    if (genA is Exhaustive && genB is Exhaustive) {
       genA.values.forEach { a ->
@@ -140,15 +138,14 @@ suspend fun <A, B, C> proptest(
    property: suspend PropertyContext.(A, B, C) -> Unit
 ): PropertyContext {
 
-   if (config.seed != null && PropertyTesting.failOnSeed)
-      error("A seed is specified on this property-test and failOnSeed is true")
+   config.checkFailOnSeed()
 
    val constraints = config.constraints
       ?: config.iterations?.let { Constraints.iterations(it) }
       ?: Constraints.iterations(PropertyTesting.defaultIterationCount)
 
    val context = PropertyContext(config)
-   val random = config.seed?.random() ?: RandomSource.default()
+   val random = createRandom(config)
 
    if (genA is Exhaustive && genB is Exhaustive && genC is Exhaustive) {
       genA.values.forEach { a ->
@@ -207,15 +204,14 @@ suspend fun <A, B, C, D> proptest(
    property: suspend PropertyContext.(A, B, C, D) -> Unit
 ): PropertyContext {
 
-   if (config.seed != null && PropertyTesting.failOnSeed)
-      error("A seed is specified on this property-test and failOnSeed is true")
+   config.checkFailOnSeed()
 
    val constraints = config.constraints
       ?: config.iterations?.let { Constraints.iterations(it) }
       ?: Constraints.iterations(PropertyTesting.defaultIterationCount)
 
    val context = PropertyContext(config)
-   val random = config.seed?.random() ?: RandomSource.default()
+   val random = createRandom(config)
 
    if (genA is Exhaustive && genB is Exhaustive && genC is Exhaustive && genD is Exhaustive) {
       genA.values.forEach { a ->
@@ -274,15 +270,14 @@ suspend fun <A, B, C, D, E> proptest(
    property: suspend PropertyContext.(A, B, C, D, E) -> Unit
 ): PropertyContext {
 
-   if (config.seed != null && PropertyTesting.failOnSeed)
-      error("A seed is specified on this property-test and failOnSeed is true")
+   config.checkFailOnSeed()
 
    val constraints = config.constraints
       ?: config.iterations?.let { Constraints.iterations(it) }
       ?: Constraints.iterations(PropertyTesting.defaultIterationCount)
 
    val context = PropertyContext(config)
-   val random = config.seed?.random() ?: RandomSource.default()
+   val random = createRandom(config)
 
    if (genA is Exhaustive && genB is Exhaustive && genC is Exhaustive && genD is Exhaustive && genE is Exhaustive) {
       genA.values.forEach { a ->
@@ -363,15 +358,14 @@ suspend fun <A, B, C, D, E, F> proptest(
    property: suspend PropertyContext.(A, B, C, D, E, F) -> Unit
 ): PropertyContext {
 
-   if (config.seed != null && PropertyTesting.failOnSeed)
-      error("A seed is specified on this property-test and failOnSeed is true")
+   config.checkFailOnSeed()
 
    val constraints = config.constraints
       ?: config.iterations?.let { Constraints.iterations(it) }
       ?: Constraints.iterations(PropertyTesting.defaultIterationCount)
 
    val context = PropertyContext(config)
-   val random = config.seed?.random() ?: RandomSource.default()
+   val random = createRandom(config)
 
    genA.generate(random, config.edgeConfig)
       .zip(genB.generate(random, config.edgeConfig))
@@ -425,15 +419,14 @@ suspend fun <A, B, C, D, E, F, G> proptest(
    property: suspend PropertyContext.(A, B, C, D, E, F, G) -> Unit
 ): PropertyContext {
 
-   if (config.seed != null && PropertyTesting.failOnSeed)
-      error("A seed is specified on this property-test and failOnSeed is true")
+   config.checkFailOnSeed()
 
    val constraints = config.constraints
       ?: config.iterations?.let { Constraints.iterations(it) }
       ?: Constraints.iterations(PropertyTesting.defaultIterationCount)
 
    val context = PropertyContext(config)
-   val random = config.seed?.random() ?: RandomSource.default()
+   val random = createRandom(config)
 
    genA.generate(random, config.edgeConfig)
       .zip(genB.generate(random, config.edgeConfig))
@@ -491,15 +484,14 @@ suspend fun <A, B, C, D, E, F, G, H> proptest(
    property: suspend PropertyContext.(A, B, C, D, E, F, G, H) -> Unit
 ): PropertyContext {
 
-   if (config.seed != null && PropertyTesting.failOnSeed)
-      error("A seed is specified on this property-test and failOnSeed is true")
+   config.checkFailOnSeed()
 
    val constraints = config.constraints
       ?: config.iterations?.let { Constraints.iterations(it) }
       ?: Constraints.iterations(PropertyTesting.defaultIterationCount)
 
    val context = PropertyContext(config)
-   val random = config.seed?.random() ?: RandomSource.default()
+   val random = createRandom(config)
 
    genA.generate(random, config.edgeConfig)
       .zip(genB.generate(random, config.edgeConfig))
@@ -561,15 +553,14 @@ suspend fun <A, B, C, D, E, F, G, H, I> proptest(
    property: suspend PropertyContext.(A, B, C, D, E, F, G, H, I) -> Unit
 ): PropertyContext {
 
-   if (config.seed != null && PropertyTesting.failOnSeed)
-      error("A seed is specified on this property-test and failOnSeed is true")
+   config.checkFailOnSeed()
 
    val constraints = config.constraints
       ?: config.iterations?.let { Constraints.iterations(it) }
       ?: Constraints.iterations(PropertyTesting.defaultIterationCount)
 
    val context = PropertyContext(config)
-   val random = config.seed?.random() ?: RandomSource.default()
+   val random = createRandom(config)
 
    genA.generate(random, config.edgeConfig)
       .zip(genB.generate(random, config.edgeConfig))
@@ -635,15 +626,14 @@ suspend fun <A, B, C, D, E, F, G, H, I, J> proptest(
    property: suspend PropertyContext.(A, B, C, D, E, F, G, H, I, J) -> Unit
 ): PropertyContext {
 
-   if (config.seed != null && PropertyTesting.failOnSeed)
-      error("A seed is specified on this property-test and failOnSeed is true")
+   config.checkFailOnSeed()
 
    val constraints = config.constraints
       ?: config.iterations?.let { Constraints.iterations(it) }
       ?: Constraints.iterations(PropertyTesting.defaultIterationCount)
 
    val context = PropertyContext(config)
-   val random = config.seed?.random() ?: RandomSource.default()
+   val random = createRandom(config)
 
    genA.generate(random, config.edgeConfig)
       .zip(genB.generate(random, config.edgeConfig))
@@ -713,15 +703,14 @@ suspend fun <A, B, C, D, E, F, G, H, I, J, K> proptest(
    property: suspend PropertyContext.(A, B, C, D, E, F, G, H, I, J, K) -> Unit
 ): PropertyContext {
 
-   if (config.seed != null && PropertyTesting.failOnSeed)
-      error("A seed is specified on this property-test and failOnSeed is true")
+   config.checkFailOnSeed()
 
    val constraints = config.constraints
       ?: config.iterations?.let { Constraints.iterations(it) }
       ?: Constraints.iterations(PropertyTesting.defaultIterationCount)
 
    val context = PropertyContext(config)
-   val random = config.seed?.random() ?: RandomSource.default()
+   val random = createRandom(config)
 
    genA.generate(random, config.edgeConfig)
       .zip(genB.generate(random, config.edgeConfig))
@@ -807,15 +796,14 @@ suspend fun <A, B, C, D, E, F, G, H, I, J, K, L> proptest(
    property: suspend PropertyContext.(A, B, C, D, E, F, G, H, I, J, K, L) -> Unit
 ): PropertyContext {
 
-   if (config.seed != null && PropertyTesting.failOnSeed)
-      error("A seed is specified on this property-test and failOnSeed is true")
+   config.checkFailOnSeed()
 
    val constraints = config.constraints
       ?: config.iterations?.let { Constraints.iterations(it) }
       ?: Constraints.iterations(PropertyTesting.defaultIterationCount)
 
    val context = PropertyContext(config)
-   val random = config.seed?.random() ?: RandomSource.default()
+   val random = createRandom(config)
 
    genA.generate(random, config.edgeConfig)
       .zip(genB.generate(random, config.edgeConfig))

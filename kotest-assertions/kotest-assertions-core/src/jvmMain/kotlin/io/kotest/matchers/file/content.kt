@@ -36,9 +36,8 @@ fun File.shouldHaveSameContentAs(other: File, charset: Charset = Charset.forName
          return MatcherResult(
             passed,
             { "Files $value and $other should have the same content.\n$diff" },
-            {
-               "Files $value and $other should not have the same content"
-            })
+            { "Files $value and $other should not have the same content" }
+         )
       }
    }
 
