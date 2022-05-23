@@ -19,11 +19,14 @@ private fun File.safeListFiles(filter: FileFilter): List<File> = this.listFiles(
 fun File.shouldBeEmptyDirectory() = this should beEmptyDirectory()
 fun File.shouldNotBeEmptyDirectory() = this shouldNot beEmptyDirectory()
 fun beEmptyDirectory(): Matcher<File> = object : Matcher<File> {
-   override fun test(value: File): MatcherResult = MatcherResult(
-      value.isDirectory && value.safeList().isEmpty(),
-      { "$value should be a non empty directory" },
-      { "$value should not be a non empty directory" }
-   )
+   override fun test(value: File): MatcherResult {
+      val contents = if (value.isDirectory) value.safeList() else emptyList()
+      return MatcherResult(
+         contents.isEmpty(),
+         { "$value should be an empty directory but contained ${contents.size} file(s) [${contents.joinToString(", ")}]" },
+         { "$value should not be a non empty directory" }
+      )
+   }
 }
 
 infix fun File.shouldContainNFiles(n: Int) = this shouldBe containNFiles(n)
@@ -43,7 +46,8 @@ fun emptyFile(): Matcher<File> = object : Matcher<File> {
       MatcherResult(
          value.length() == 0L,
          { "File $value should be empty" },
-         { "File $value should not be empty" })
+         { "File $value should not be empty" }
+      )
 }
 
 fun File.shouldExist() = this should exist()
@@ -53,7 +57,8 @@ fun exist() = object : Matcher<File> {
       MatcherResult(
          value.exists(),
          { "File $value should exist" },
-         { "File $value should not exist" })
+         { "File $value should not exist" }
+      )
 }
 
 infix fun File.shouldContainFile(name: String) = this should containFile(name)
