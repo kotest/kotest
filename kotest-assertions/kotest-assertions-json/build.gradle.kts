@@ -1,9 +1,7 @@
 plugins {
-   id("java")
+   `java-library`
    kotlin("multiplatform")
    kotlin("plugin.serialization")
-   id("java-library")
-
 }
 
 kotlin {
@@ -20,11 +18,10 @@ kotlin {
 
       val commonMain by getting {
          dependencies {
-            implementation(Libs.Serialization.json)
+            implementation(libs.kotlinx.serialization.json)
             implementation(project(Projects.Common))
             implementation(project(Projects.Assertions.Shared))
             implementation(project(Projects.Assertions.Core))
-            implementation(Libs.Jayway.jsonpath)
          }
       }
 
@@ -38,7 +35,7 @@ kotlin {
 
       val jvmMain by getting {
          dependencies {
-            implementation(Libs.Jayway.jsonpath)
+            implementation(libs.jayway.json.path)
          }
       }
 

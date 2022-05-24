@@ -1,16 +1,9 @@
 plugins {
-   id("java")
+   `java-library`
    kotlin("multiplatform")
-   id("java-library")
-}
-
-repositories {
-   mavenCentral()
-   mavenLocal()
 }
 
 kotlin {
-
    targets {
       jvm()
    }
@@ -19,7 +12,7 @@ kotlin {
       val jvmMain by getting {
          dependencies {
             implementation(kotlin("stdlib"))
-            compileOnly(Libs.Kotlin.compiler)
+            compileOnly(libs.kotlin.compiler)
          }
       }
    }

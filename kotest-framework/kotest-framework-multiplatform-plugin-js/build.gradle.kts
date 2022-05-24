@@ -1,12 +1,6 @@
 plugins {
-   id("java")
+   `java-library`
    kotlin("multiplatform")
-   id("java-library")
-}
-
-repositories {
-   mavenCentral()
-   mavenLocal()
 }
 
 kotlin {
@@ -17,12 +11,10 @@ kotlin {
       val jvmMain by getting {
          dependencies {
             implementation(kotlin("stdlib"))
-            compileOnly(Libs.Kotlin.compilerEmbeddable)
+            compileOnly(libs.kotlin.compiler.embeddable)
          }
       }
    }
 }
-
-
 
 apply(from = "../../publish-mpp.gradle.kts")

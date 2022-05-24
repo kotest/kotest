@@ -1,7 +1,5 @@
 plugins {
-   id("java")
    kotlin("multiplatform")
-   id("java-library")
 }
 
 kotlin {
@@ -11,13 +9,6 @@ kotlin {
    }
 
    sourceSets {
-
-      val commonMain by getting {
-         dependencies {
-            compileOnly(kotlin("stdlib"))
-         }
-      }
-
       val jvmTest by getting {
          dependencies {
             implementation(project(Projects.Framework.engine))
@@ -25,7 +16,7 @@ kotlin {
             implementation(project(Projects.JunitRunner))
             implementation(project(Projects.JunitXmlExtension))
             implementation(project(Projects.HtmlReporter))
-            implementation(Libs.Jdom.jdom2)
+            implementation(libs.jdom2)
          }
       }
    }

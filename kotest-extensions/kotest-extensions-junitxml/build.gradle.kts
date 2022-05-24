@@ -1,9 +1,7 @@
 plugins {
-   id("java")
+   `java-library`
    kotlin("multiplatform")
-   id("java-library")
-   id("org.jetbrains.kotlin.plugin.spring")
-
+   id("org.jetbrains.kotlin.plugin.spring") // TODO: Should be possible to remove?
 }
 
 kotlin {
@@ -25,7 +23,7 @@ kotlin {
          dependencies {
             implementation(project(Projects.Framework.engine))
             implementation(project(Projects.Framework.api))
-            implementation(Libs.Jdom.jdom2)
+            implementation(libs.jdom2)
          }
       }
 

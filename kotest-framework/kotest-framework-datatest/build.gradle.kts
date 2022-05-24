@@ -1,8 +1,6 @@
 plugins {
-   id("java")
+   `java-library`
    kotlin("multiplatform")
-   id("java-library")
-
 }
 
 kotlin {
@@ -41,7 +39,7 @@ kotlin {
       val commonMain by getting {
          dependencies {
             compileOnly(kotlin("stdlib"))
-            implementation(Libs.Coroutines.coreCommon)
+            implementation(libs.kotlinx.coroutines.core)
             implementation(project(Projects.Common))
             implementation(project(Projects.Framework.api))
          }
