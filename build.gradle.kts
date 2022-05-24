@@ -2,7 +2,6 @@ plugins {
    java
    kotlin("multiplatform") version "1.6.21"
    kotlin("plugin.serialization") version "1.6.21" apply false
-   kotlin("plugin.spring") version "1.6.21" apply false
    id("java-library")
    id("maven-publish")
    signing

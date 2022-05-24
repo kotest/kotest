@@ -1,7 +1,6 @@
 plugins {
    `java-library`
    kotlin("multiplatform")
-   id("org.jetbrains.kotlin.plugin.spring") // TODO: Should be possible to remove?
 }
 
 kotlin {
