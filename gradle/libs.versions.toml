@@ -15,7 +15,7 @@ jayway-json-path = { module = "com.jayway.jsonpath:json-path", version = "2.7.0"
 jdom2 = { module = "org.jdom:jdom2", version = "2.0.6.1" }
 junit4 = { module = "junit:junit", version = "4.13.2" }
 mockk = { module = "io.mockk:mockk", version = "1.12.4" }
-mockserver-netty = { module = "org.mock-server:mockserver-netty", version = "5.11.2" }
+mockserver-netty = { module = "org.mock-server:mockserver-netty", version = "5.13.2" }
 mordant = { module = "com.github.ajalt:mordant", version = "1.2.1" }
 opentest4j = { module = "org.opentest4j:opentest4j", version = "1.2.0" }
 rgxgen = { module = "com.github.curious-odd-man:rgxgen", version = "1.3" }
