@@ -74,6 +74,7 @@ jobs:
             uses: actions/setup-java@v3
             with:
                java-version: '8'
+               distribution: 'zulu'
 
          -  uses: gradle/gradle-build-action@v2
 
@@ -109,6 +110,7 @@ jobs:
             uses: actions/setup-java@v3
             with:
                java-version: '8'
+               distribution: 'zulu'
 
          -  uses: gradle/gradle-build-action@v2
 
