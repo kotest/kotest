@@ -1,11 +1,3 @@
-buildscript {
-   repositories {
-      mavenCentral()
-      mavenLocal()
-      gradlePluginPortal()
-   }
-}
-
 plugins {
    kotlin("multiplatform")
    // must be a published version and not one in the current build

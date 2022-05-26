@@ -1,7 +1,6 @@
 plugins {
-   id("java")
+   `java-library`
    kotlin("multiplatform")
-   id("java-library")
 }
 
 kotlin {
@@ -18,8 +17,8 @@ kotlin {
             implementation(project(Projects.Framework.api))
             implementation(project(Projects.Framework.engine))
             implementation(project(Projects.Common))
-            implementation(Libs.Apache.commonsio)
-            implementation(Libs.Mocking.mockk)
+            implementation(libs.apache.commons.io)
+            implementation(libs.mockk)
          }
       }
 
@@ -28,7 +27,7 @@ kotlin {
          dependencies {
             implementation(project(Projects.JunitRunner))
             implementation(project(Projects.Assertions.Core))
-            implementation(Libs.Coroutines.coreJvm)
+            implementation(libs.kotlinx.coroutines.core)
          }
       }
    }

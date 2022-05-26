@@ -26,7 +26,6 @@ kotlin {
             implementation(project(Projects.Assertions.Core))
             implementation(project(Projects.JunitRunner))
             implementation(project(Projects.Property))
-            implementation(Libs.Coroutines.coreJvm)
          }
       }
 

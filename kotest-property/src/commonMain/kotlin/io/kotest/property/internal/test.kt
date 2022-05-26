@@ -7,6 +7,8 @@ import io.kotest.property.BeforePropertyContextElement
 import io.kotest.property.Classifier
 import io.kotest.property.PropTestConfig
 import io.kotest.property.PropertyContext
+import io.kotest.property.seed.clearFailedSeed
+import io.kotest.property.seed.writeFailedSeedIfEnabled
 import kotlin.coroutines.coroutineContext
 
 /**
@@ -45,6 +47,7 @@ internal suspend fun test(
       context.markFailure()
       handleException(context, shrinkfn, inputs, seed, e, config)
    }
+   clearFailedSeed()
 }
 
 internal suspend fun handleException(
@@ -72,6 +75,7 @@ internal suspend fun handleException(
          }
       }
       println()
+      writeFailedSeedIfEnabled(seed)
       throwPropertyTestAssertionError(shrinkfn(), e, context.attempts(), seed)
    } else if (context.failures() > config.maxFailure) {
       var error = "Property failed ${context.failures()} times (maxFailure rate was ${config.maxFailure})\n"
@@ -79,6 +83,7 @@ internal suspend fun handleException(
       inputs.withIndex().forEach { (index, value) ->
          error += "  $index) ${value.print().value}\n"
       }
+      writeFailedSeedIfEnabled(seed)
       throwPropertyTestAssertionError(shrinkfn(), AssertionError(error), context.attempts(), seed)
    }
 }

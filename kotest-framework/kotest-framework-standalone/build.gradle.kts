@@ -1,19 +1,10 @@
-buildscript {
-   repositories {
-      mavenCentral()
-      mavenLocal()
-   }
-}
-
+@Suppress("DSL_SCOPE_VIOLATION")
 plugins {
-   java
    `java-library`
    kotlin("multiplatform")
    application
-   id("com.github.johnrengelman.shadow")
+   alias(libs.plugins.shadowjar)
 }
-
-apply(plugin = "com.github.johnrengelman.shadow")
 
 kotlin {
    targets {

@@ -25,7 +25,7 @@ kotlin {
             compileOnly(project(Projects.Framework.api))
 
             // needed to scan the classpath for classes
-            implementation(Libs.Classgraph.classgraph)
+            implementation(libs.classgraph)
          }
       }
 

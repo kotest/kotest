@@ -1,16 +1,6 @@
-buildscript {
-   repositories {
-      mavenCentral()
-      mavenLocal()
-      google()
-      gradlePluginPortal()
-   }
-}
-
 plugins {
-   id("java")
+   `java-library`
    kotlin("multiplatform")
-   id("java-library")
 }
 
 kotlin {
@@ -60,10 +50,10 @@ kotlin {
             api(project(Projects.Framework.api))
 
             // used to install the debug probes for coroutines
-            implementation(Libs.Coroutines.debug)
-            implementation(Libs.Coroutines.coreCommon)
+            implementation(libs.kotlinx.coroutines.debug)
+            implementation(libs.kotlinx.coroutines.core)
             // used for the test scheduler
-            implementation(Libs.Coroutines.test)
+            implementation(libs.kotlinx.coroutines.test)
          }
       }
 
@@ -77,18 +67,18 @@ kotlin {
 //            api(Libs.Kotlin.kotlinScriptRuntime)
 //            implementation(Libs.Kotlin.kotlinScriptUtil)
 //            implementation(Libs.Kotlin.kotlinScriptJvm)
-            implementation(Libs.Coroutines.test)
+            implementation(libs.kotlinx.coroutines.test)
 
-            api(Libs.Classgraph.classgraph)
+            api(libs.classgraph)
 
             // needed to scan for spec classes
             api(project(Projects.Discovery))
 
             // we use AssertionFailedError from opentest4j
-            implementation(Libs.OpenTest4j.opentest4j)
+            implementation(libs.opentest4j)
 
             // used to write to the console with fancy colours!
-            api(Libs.Ajalt.mordant)
+            api(libs.mordant)
          }
       }
 
@@ -96,8 +86,8 @@ kotlin {
          dependencies {
             implementation(project(Projects.Assertions.Core))
             implementation(project(Projects.JunitRunner))
-            implementation(Libs.Coroutines.coreJvm)
-            implementation(Libs.Mocking.mockk)
+            implementation(libs.kotlinx.coroutines.core)
+            implementation(libs.mockk)
          }
       }
 
