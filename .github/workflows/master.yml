@@ -26,7 +26,7 @@ jobs:
          -  name: Setup JDK
             uses: actions/setup-java@v3
             with:
-               distribution: 'zulu'
+               distribution: 'temurin'
                java-version: '8'
 
          -  uses: gradle/gradle-build-action@v2
@@ -76,7 +76,7 @@ jobs:
          -  name: Setup JDK
             uses: actions/setup-java@v3
             with:
-               distribution: 'zulu'
+               distribution: 'temurin'
                java-version: '8'
 
          -  uses: gradle/gradle-build-action@v2
