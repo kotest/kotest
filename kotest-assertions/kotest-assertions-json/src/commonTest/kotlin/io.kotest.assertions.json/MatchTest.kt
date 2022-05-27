@@ -1,4 +1,4 @@
-package com.sksamuel.kotest.tests.json
+package io.kotest.assertions.json
 
 import io.kotest.assertions.json.shouldMatchJson
 import io.kotest.assertions.json.shouldNotMatchJson

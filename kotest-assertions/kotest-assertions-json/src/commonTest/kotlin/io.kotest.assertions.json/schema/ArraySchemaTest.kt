@@ -3,11 +3,10 @@ package io.kotest.assertions.json.schema
 import io.kotest.assertions.shouldFail
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
-import org.intellij.lang.annotations.Language
 
 class ArraySchemaTest : FunSpec(
    {
-      fun json(@Language("JSON") raw: String) = raw
+      fun json(raw: String) = raw
 
       val numberArray = jsonSchema { array { number() } }
 

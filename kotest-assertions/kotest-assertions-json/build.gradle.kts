@@ -28,6 +28,7 @@ kotlin {
       val commonTest by getting {
          dependencies {
             implementation(project(Projects.Framework.api))
+            implementation(project(Projects.Framework.datatest))
             implementation(project(Projects.Framework.engine))
             implementation(project(Projects.Property))
          }
@@ -42,7 +43,6 @@ kotlin {
       val jvmTest by getting {
          dependsOn(jvmMain)
          dependencies {
-            implementation(project(Projects.Framework.datatest))
             implementation(project(Projects.JunitRunner))
          }
       }
