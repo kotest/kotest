@@ -6,8 +6,6 @@ import io.kotest.matchers.shouldBe
 
 class ArraySchemaTest : FunSpec(
    {
-      fun json(raw: String) = raw
-
       val numberArray = jsonSchema { array { number() } }
 
       val person = jsonSchema {
