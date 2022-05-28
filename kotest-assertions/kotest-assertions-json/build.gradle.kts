@@ -12,6 +12,27 @@ kotlin {
          browser()
          nodejs()
       }
+
+      linuxX64()
+
+      mingwX64()
+
+      macosX64()
+      macosArm64()
+
+      tvos()
+      tvosSimulatorArm64()
+
+      watchosArm32()
+      watchosArm64()
+      watchosX86()
+      watchosX64()
+      watchosSimulatorArm64()
+
+      iosX64()
+      iosArm64()
+      iosArm32()
+      iosSimulatorArm64()
    }
 
    sourceSets {
@@ -28,6 +49,7 @@ kotlin {
       val commonTest by getting {
          dependencies {
             implementation(project(Projects.Framework.api))
+            implementation(project(Projects.Framework.datatest))
             implementation(project(Projects.Framework.engine))
             implementation(project(Projects.Property))
          }
@@ -42,7 +64,6 @@ kotlin {
       val jvmTest by getting {
          dependsOn(jvmMain)
          dependencies {
-            implementation(project(Projects.Framework.datatest))
             implementation(project(Projects.JunitRunner))
          }
       }
