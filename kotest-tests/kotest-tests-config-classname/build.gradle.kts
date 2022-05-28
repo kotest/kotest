@@ -1,8 +1,5 @@
 plugins {
-   id("java")
-   kotlin("multiplatform")
-   id("java-library")
-
+id("kotlin-conventions")
 }
 
 kotlin {
@@ -35,5 +32,3 @@ kotlin {
       }
    }
 }
-
-apply(from = "../../nopublish.gradle")

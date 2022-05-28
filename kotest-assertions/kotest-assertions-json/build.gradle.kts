@@ -1,18 +1,11 @@
+@Suppress("DSL_SCOPE_VIOLATION")
 plugins {
-   `java-library`
-   kotlin("multiplatform")
-   kotlin("plugin.serialization")
+   id("kotest-js-conventions")
+   id("kotest-jvm-conventions")
+   alias(libs.plugins.kotlin.serialization)
 }
 
 kotlin {
-
-   targets {
-      jvm()
-      js(IR) {
-         browser()
-         nodejs()
-      }
-   }
 
    sourceSets {
 
@@ -54,5 +47,3 @@ kotlin {
       }
    }
 }
-
-apply(from = "../../publish-mpp.gradle.kts")

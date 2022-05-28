@@ -1,18 +1,3 @@
-plugins {
-   java
-   kotlin("multiplatform") version "1.6.21"
-   kotlin("plugin.serialization") version "1.6.21" apply false
-   id("java-library")
-   id("maven-publish")
-   signing
-   id("com.adarshr.test-logger") version "3.2.0"
-}
-
-tasks {
-   javadoc {
-   }
-}
-
 allprojects {
    apply(plugin = "com.adarshr.test-logger")
 
@@ -36,43 +21,7 @@ allprojects {
    }
 
    tasks.withType<Test> {
-      useJUnitPlatform()
-      filter {
-         isFailOnNoMatchingTests = false
-      }
-      testLogging {
-         showExceptions = true
-         showStandardStreams = true
-         events = setOf(
-            org.gradle.api.tasks.testing.logging.TestLogEvent.FAILED,
-            org.gradle.api.tasks.testing.logging.TestLogEvent.PASSED,
-            org.gradle.api.tasks.testing.logging.TestLogEvent.SKIPPED,
-            org.gradle.api.tasks.testing.logging.TestLogEvent.STANDARD_OUT,
-            org.gradle.api.tasks.testing.logging.TestLogEvent.STANDARD_ERROR,
-         )
-         exceptionFormat = org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
-      }
    }
-}
-
-kotlin {
-   targets {
-      jvm {
-         compilations.all {
-            kotlinOptions {
-               jvmTarget = "1.8"
-            }
-         }
-      }
-   }
-}
-
-val publications: PublicationContainer = (extensions.getByName("publishing") as PublishingExtension).publications
-
-signing {
-   useGpgCmd()
-   if (Ci.isRelease)
-      sign(publications)
 }
 
 // TODO: Remove me after https://youtrack.jetbrains.com/issue/KT-49109 is fixed

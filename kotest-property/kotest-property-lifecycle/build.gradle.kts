@@ -1,18 +1,9 @@
 plugins {
-   `java-library`
-   kotlin("multiplatform")
+   id("kotest-jvm-conventions")
+   id("kotest-js-conventions")
 }
 
 kotlin {
-
-   targets {
-      jvm()
-      js(IR) {
-         browser()
-         nodejs()
-      }
-   }
-
    sourceSets {
 
       val commonMain by getting {
@@ -44,5 +35,3 @@ kotlin {
       }
    }
 }
-
-apply(from = "../../publish-mpp.gradle.kts")

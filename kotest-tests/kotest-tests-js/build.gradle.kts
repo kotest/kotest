@@ -1,5 +1,5 @@
 plugins {
-   kotlin("multiplatform")
+   id("kotlin-conventions")
    // must be a published version and not one in the current build
    id("io.kotest.multiplatform").version("5.0.3")
 }
@@ -28,5 +28,3 @@ kotlin {
 configure<io.kotest.framework.multiplatform.gradle.KotestPluginExtension> {
    compilerPluginVersion.set("5.0.3")
 }
-
-apply(from = "../../nopublish.gradle")

@@ -1,20 +1,9 @@
 plugins {
-   `java-library`
-   kotlin("multiplatform")
+  id("kotest-jvm-conventions")
 }
 
 kotlin {
-   targets {
-      jvm()
-   }
-
    sourceSets {
-
-      val commonMain by getting {
-         dependencies {
-            compileOnly(kotlin("stdlib"))
-         }
-      }
 
       val jvmMain by getting {
          dependencies {
@@ -38,5 +27,3 @@ kotlin {
       }
    }
 }
-
-apply(from = "../../publish-mpp.gradle.kts")

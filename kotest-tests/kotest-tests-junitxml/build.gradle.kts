@@ -1,5 +1,5 @@
 plugins {
-   kotlin("multiplatform")
+   id("kotlin-conventions")
 }
 
 kotlin {
@@ -20,5 +20,3 @@ kotlin {
       }
    }
 }
-
-apply(from = "../../nopublish.gradle")

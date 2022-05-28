@@ -1,9 +1,8 @@
 plugins {
-   kotlin("multiplatform")
+   id("kotlin-conventions")
 }
 
 kotlin {
-
    targets {
       jvm()
    }
@@ -23,5 +22,3 @@ kotlin {
       }
    }
 }
-
-apply(from = "../../nopublish.gradle")

@@ -1,13 +1,9 @@
 plugins {
-   `java-library`
-   kotlin("multiplatform")
+   id("kotest-jvm-conventions")
+   id("kotest-publishing-conventions")
 }
 
 kotlin {
-
-   targets {
-      jvm()
-   }
 
    sourceSets {
 
@@ -32,5 +28,3 @@ kotlin {
       }
    }
 }
-
-apply(from = "../publish-mpp.gradle.kts")

@@ -1,41 +1,8 @@
 plugins {
-   `java-library`
-   kotlin("multiplatform")
+   id("kotest-multiplatform-library-conventions")
 }
 
 kotlin {
-
-   targets {
-
-      jvm()
-
-      js(IR) {
-         browser()
-         nodejs()
-      }
-
-      linuxX64()
-
-      mingwX64()
-
-      macosX64()
-      macosArm64()
-
-      tvos()
-      tvosSimulatorArm64()
-
-      watchosArm32()
-      watchosArm64()
-      watchosX86()
-      watchosX64()
-      watchosSimulatorArm64()
-
-      iosX64()
-      iosArm64()
-      iosArm32()
-      iosSimulatorArm64()
-   }
-
    sourceSets {
 
       val commonMain by getting {
@@ -150,7 +117,7 @@ kotlin {
 }
 
 tasks.create("buildConfigDocs") {
-   //find config files
+   // find config files
    val fileNames = listOf("KotestEngineProperties.kt")
 
    val foundFiles = File(project.rootDir.absolutePath).walk().maxDepth(25).map { file ->
@@ -165,7 +132,7 @@ tasks.create("buildConfigDocs") {
    if (foundFiles.size != fileNames.size)
       throw RuntimeException("Fail to find files -> {$fileNames} in project, found only these files -> {$foundFiles}")
 
-   //replace in docs
+   // replace in docs
 
    val docName = "config_props.md"
    val docsFolder = File(project.rootDir.absolutePath, "documentation/docs/framework")
@@ -205,5 +172,3 @@ slug: framework-config-props.html
 }
 
 tasks["jvmTest"].mustRunAfter(tasks["buildConfigDocs"].path)
-
-apply(from = "../../publish-mpp.gradle.kts")

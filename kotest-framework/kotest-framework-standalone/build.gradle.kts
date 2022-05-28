@@ -39,5 +39,3 @@ dependencies {
    implementation(kotlin("reflect"))
    implementation(project(Projects.Framework.engine))
 }
-
-apply(from = "../../publish-mpp.gradle.kts")
