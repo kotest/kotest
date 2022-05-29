@@ -52,6 +52,7 @@ jobs:
       if: github.repository == 'kotest/kotest'
       runs-on: macos-11
       strategy:
+         fail-fast: false
          matrix:
             target:
                - macosX64Test publishMacosX64PublicationToDeployRepository
