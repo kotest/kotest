@@ -51,7 +51,6 @@ data class JsonSchema(
    object Builder
    internal interface JsonNumber
 
-   @Serializable
    data class JsonArray(
       val minItems: Int = 0,
       val maxItems: Int = Int.MAX_VALUE,
