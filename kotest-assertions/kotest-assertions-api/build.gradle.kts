@@ -1,8 +1,6 @@
 plugins {
-   id("java")
+   `java-library`
    kotlin("multiplatform")
-   id("java-library")
-
 }
 
 kotlin {

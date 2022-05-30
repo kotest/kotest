@@ -98,9 +98,8 @@ fun beReadable(): Matcher<Path> = object : Matcher<Path> {
       MatcherResult(
          Files.isReadable(value),
          { "Path $value should be readable" },
-         {
-            "Path $value should not be readable"
-         })
+         { "Path $value should not be readable" }
+      )
 }
 
 fun Path.shouldBeWriteable() = this should beWriteable()
@@ -110,7 +109,8 @@ fun beWriteable(): Matcher<Path> = object : Matcher<Path> {
       MatcherResult(
          Files.isWritable(value),
          { "Path $value should be writeable" },
-         { "Path $value should not be writeable" })
+         { "Path $value should not be writeable" }
+      )
 }
 
 fun Path.shouldBeExecutable() = this should beExecutable()
@@ -119,7 +119,8 @@ fun beExecutable(): Matcher<Path> = object : Matcher<Path> {
    override fun test(value: Path): MatcherResult = MatcherResult(
       Files.isExecutable(value),
       { "Path $value should be executable" },
-      { "Path $value should not be executable" })
+      { "Path $value should not be executable" }
+   )
 }
 
 infix fun Path.shouldContainNFiles(n: Int) = this.toFile() shouldBe containNFiles(n)

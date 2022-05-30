@@ -1,17 +1,7 @@
-buildscript {
-   repositories {
-      mavenCentral()
-      mavenLocal()
-   }
-}
-
+@Suppress("DSL_SCOPE_VIOLATION")
 plugins {
-   id("java")
-   id("kotlin")
-   id("java-library")
-   id("maven-publish")
-   id("java-gradle-plugin")
-   id("com.gradle.plugin-publish")
+   `java-gradle-plugin`
+   alias(libs.plugins.gradle.plugin.publish)
 }
 
 version = Ci.gradleVersion
@@ -28,7 +18,7 @@ repositories {
 
 dependencies {
    compileOnly(gradleApi())
-   compileOnly("org.jetbrains.kotlin:kotlin-gradle-plugin:_")
+   compileOnly(libs.kotlin.gradle.plugin)
 }
 
 tasks {

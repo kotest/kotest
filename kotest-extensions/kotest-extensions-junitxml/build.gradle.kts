@@ -1,9 +1,6 @@
 plugins {
-   id("java")
+   `java-library`
    kotlin("multiplatform")
-   id("java-library")
-   id("org.jetbrains.kotlin.plugin.spring")
-
 }
 
 kotlin {
@@ -25,7 +22,7 @@ kotlin {
          dependencies {
             implementation(project(Projects.Framework.engine))
             implementation(project(Projects.Framework.api))
-            implementation(Libs.Jdom.jdom2)
+            implementation(libs.jdom2)
          }
       }
 

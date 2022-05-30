@@ -1,8 +1,6 @@
 plugins {
-   id("java")
+   `java-library`
    kotlin("multiplatform")
-   id("java-library")
-
 }
 
 kotlin {
@@ -23,8 +21,8 @@ kotlin {
             implementation(project(Projects.Common))
             implementation(project(Projects.Framework.engine))
             implementation(project(Projects.Framework.api))
-            implementation(Libs.Coroutines.coreJvm)
-            implementation(Libs.JUnitJupiter.api)
+            implementation(libs.kotlinx.coroutines.core)
+            implementation(libs.junit.jupiter.api)
          }
       }
 
