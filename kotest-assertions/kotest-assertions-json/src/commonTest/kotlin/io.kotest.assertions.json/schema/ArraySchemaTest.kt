@@ -80,5 +80,25 @@ class ArraySchemaTest : FunSpec(
             $ => Expected items between 0 and 1, but was 2
          """.trimIndent()
       }
+
+      test("Should parse schema with matcher unique") {
+         val schema = parseSchema(
+            """
+               { "type": "array", "uniqueItems": true, "elementType": {"type": "number"} }
+            """.trimIndent()
+         )
+         "[1,1]" shouldNotMatchSchema schema
+      }
+
+      test("Array not unique") {
+         val array = "[1,1]"
+         val uniqueArray = jsonSchema {
+            array(uniqueItems = true) { number() }
+         }
+         array shouldNotMatchSchema uniqueArray
+         shouldFail { array shouldMatchSchema uniqueArray }.message shouldBe """
+            $ => Sequence should be Unique
+         """.trimIndent()
+      }
    }
 )
