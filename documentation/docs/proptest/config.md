@@ -26,28 +26,12 @@ class PropertyExample: StringSpec({
 
 ### Seed
 
-The most common configuration option is specifying the seed for the random instance. This is used when you want to
-reliably create the same values each time the test is run. You might want to do this if you find a test failure,
-and you want to ensure that that particular set of values continues to be executed in the future as a kind of regression
+A commonly used configuration option is specifying the seed used by the random source. This is used when you want to
+repeat the same values each time the test is run. You might want to do this if you find a test failure,
+and you want to ensure that that particular set of values continues to be executed in the future as a regression
 test.
 
-
-:::tip
-Whenever a property test fails, Kotest will output the seed that was used. You can duplicate the test, setting it to use
-this seed so you have permanent regression test for those values.
-:::
-
-For example:
-
-```kotlin
-class PropertyExample: StringSpec({
-   "String size" {
-      forAll<String, String>(PropTestConfig(seed = 127305235)) { a,b ->
-         (a + b).length == a.length + b.length
-      }
-   }
-})
-```
+For full details on how the seed is used [click here](seed.md).
 
 ### Min Failure
 

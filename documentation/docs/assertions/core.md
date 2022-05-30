@@ -76,6 +76,8 @@ Matchers provided by the `kotest-assertions-core` module.
 | `str.shouldMatch(regex)`                    | Asserts that the string fully matches the given regex. |
 | `str.shouldStartWith("prefix")`             | Asserts that the string starts with the given prefix. The prefix can be equal to the string. This matcher is case sensitive. To make this case insensitive call `toLowerCase()` on the value before the matcher. |
 | `str.shouldBeEqualIgnoringCase(other)`      | Asserts that the string is equal to another string ignoring case. |
+| `str.shouldBeTruthy()`                      | Asserts that the string is truthy. Truthy is one of the followings: ["true", "yes", "y", "1"] |
+| `str.shouldBeFalsy()`                       | Asserts that the string is falsy. Falsy is one of the followings: ["false", "no", "n", "0"] |
 
 | Integers                            ||
 |-------------------------------------| ---- |

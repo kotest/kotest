@@ -3,12 +3,9 @@ package io.kotest.assertions.json.schema
 import io.kotest.assertions.shouldFail
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
-import org.intellij.lang.annotations.Language
 
 class ArraySchemaTest : FunSpec(
    {
-      fun json(@Language("JSON") raw: String) = raw
-
       val numberArray = jsonSchema { array { number() } }
 
       val person = jsonSchema {
@@ -37,7 +34,7 @@ class ArraySchemaTest : FunSpec(
 
       test("array with partial inner match is not ok") {
          val missingAge =
-         """
+            """
             [
                { "name": "bob" },
                { "name": "bob", "age": 3 },
@@ -51,6 +48,15 @@ class ArraySchemaTest : FunSpec(
             $[0].age => Expected number, but was undefined
             $[2].age => Expected number, but was undefined
          """.trimIndent()
+      }
+
+      test("Should parse schema with min,max values") {
+         val schema = parseSchema(
+            """
+               { "type": "array", "minItems": 2, "maxItems": 3, "elementType": {"type": "number"} }
+            """.trimIndent()
+         )
+         "[1]" shouldNotMatchSchema schema
       }
 
       test("Array size smaller than minItems") {
@@ -74,7 +80,6 @@ class ArraySchemaTest : FunSpec(
             $ => Expected items between 0 and 1, but was 2
          """.trimIndent()
       }
-
       test("Array not unique") {
          val array = "[1,1]"
          val uniqueArray = jsonSchema {

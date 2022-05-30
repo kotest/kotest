@@ -1,5 +1,4 @@
 plugins {
-   java
    `java-library`
    kotlin("multiplatform")
 }
@@ -45,15 +44,15 @@ kotlin {
             implementation(kotlin("reflect"))
             api(project(Projects.Common))
             api(project(Projects.Assertions.Shared))
-            implementation(Libs.Coroutines.coreCommon)
+            implementation(libs.kotlinx.coroutines.core)
          }
       }
 
       val jvmMain by getting {
          dependsOn(commonMain)
          dependencies {
-            implementation(Libs.Wumpz.diffutils)
-            api(Libs.Rgxgen.rgxgen)
+            implementation(libs.diffutils)
+            api(libs.rgxgen)
             implementation(kotlin("reflect"))
          }
       }

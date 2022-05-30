@@ -1,8 +1,6 @@
 plugins {
-   id("java")
+   `java-library`
    kotlin("multiplatform")
-   id("java-library")
-
 }
 
 kotlin {
@@ -42,7 +40,7 @@ kotlin {
          dependencies {
             compileOnly(kotlin("stdlib"))
             implementation(kotlin("reflect"))
-            implementation(Libs.Coroutines.coreCommon)
+            implementation(libs.kotlinx.coroutines.core)
          }
       }
 

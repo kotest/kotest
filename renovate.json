@@ -1,0 +1,13 @@
+{
+   "extends": [
+      "config:base", "github>kotest/renovate-config:automerge"
+   ],
+   "packageRules": [
+      {
+         "matchPackagePrefixes": [
+            "org.junit"
+         ],
+         "dependencyDashboardApproval": true
+      }
+   ]
+}

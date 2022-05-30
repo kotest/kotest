@@ -22,7 +22,6 @@ infix fun String?.shouldNotMatchSchema(schema: JsonSchema) =
 
 @ExperimentalKotest
 infix fun JsonElement.shouldMatchSchema(schema: JsonSchema) = this should matchSchema(schema)
-
 @ExperimentalKotest
 infix fun JsonElement.shouldNotMatchSchema(schema: JsonSchema) = this shouldNot matchSchema(schema)
 
