@@ -9,7 +9,7 @@ junit-jupiter = "5.7.2"
 [libraries]
 apache-commons-io = { module = "commons-io:commons-io", version = "2.11.0" }
 apache-commons-lang = { module = "org.apache.commons:commons-lang3", version = "3.12.0" }
-classgraph = { module = "io.github.classgraph:classgraph", version = "4.8.146" }
+classgraph = { module = "io.github.classgraph:classgraph", version = "4.8.147" }
 diffutils = { module = "io.github.java-diff-utils:java-diff-utils", version = "4.11" }
 jayway-json-path = { module = "com.jayway.jsonpath:json-path", version = "2.7.0" }
 jdom2 = { module = "org.jdom:jdom2", version = "2.0.6.1" }
@@ -40,7 +40,7 @@ ktor-client-core = { module = "io.ktor:ktor-client-core", version.ref = "ktor" }
 ktor-client-js = { module = "io.ktor:ktor-client-js", version.ref = "ktor" }
 ktor-client-apache = { module = "io.ktor:ktor-client-apache", version.ref = "ktor" }
 
-kotest-extensions-mockserver = { module = "io.kotest.extensions:kotest-extensions-mockserver", version = "1.1.2" }
+kotest-extensions-mockserver = { module = "io.kotest.extensions:kotest-extensions-mockserver", version = "1.2.0" }
 
 kotlin-compiler = { module = "org.jetbrains.kotlin:kotlin-compiler", version.ref = "kotlin" }
 kotlin-compiler-embeddable = { module = "org.jetbrains.kotlin:kotlin-compiler-embeddable", version.ref = "kotlin" }
