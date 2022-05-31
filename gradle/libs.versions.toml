@@ -1,0 +1,55 @@
+[versions]
+kotlin = "1.6.21"
+kotlinx-coroutines = "1.6.1"
+kotlinx-serialization = "1.3.3"
+ktor = "1.6.8"
+junit-platform = "1.7.2"
+junit-jupiter = "5.7.2"
+
+[libraries]
+apache-commons-io = { module = "commons-io:commons-io", version = "2.11.0" }
+apache-commons-lang = { module = "org.apache.commons:commons-lang3", version = "3.12.0" }
+classgraph = { module = "io.github.classgraph:classgraph", version = "4.8.147" }
+diffutils = { module = "io.github.java-diff-utils:java-diff-utils", version = "4.11" }
+jayway-json-path = { module = "com.jayway.jsonpath:json-path", version = "2.7.0" }
+jdom2 = { module = "org.jdom:jdom2", version = "2.0.6.1" }
+junit4 = { module = "junit:junit", version = "4.13.2" }
+mockk = { module = "io.mockk:mockk", version = "1.12.4" }
+mockserver-netty = { module = "org.mock-server:mockserver-netty", version = "5.13.2" }
+mordant = { module = "com.github.ajalt:mordant", version = "1.2.1" }
+opentest4j = { module = "org.opentest4j:opentest4j", version = "1.2.0" }
+rgxgen = { module = "com.github.curious-odd-man:rgxgen", version = "1.3" }
+
+junit-platform-testkit = { module = "org.junit.platform:junit-platform-testkit", version.ref = "junit-platform" }
+junit-platform-engine = { module = "org.junit.platform:junit-platform-engine", version.ref = "junit-platform" }
+junit-platform-launcher = { module = "org.junit.platform:junit-platform-launcher", version.ref = "junit-platform" }
+junit-platform-api = { module = "org.junit.platform:junit-platform-suite-api", version.ref = "junit-platform" }
+junit-platform-commons = { module = "org.junit.platform:junit-platform-commons", version.ref = "junit-platform" }
+
+junit-jupiter-api = { module = "org.junit.jupiter:junit-jupiter-api", version.ref = "junit-jupiter" }
+junit-jupiter-engine = { module = "org.junit.jupiter:junit-jupiter-engine", version.ref = "junit-jupiter" }
+
+kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinx-coroutines" }
+kotlinx-coroutines-jdk8 = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-jdk8", version.ref = "kotlinx-coroutines" }
+kotlinx-coroutines-debug = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-debug", version.ref = "kotlinx-coroutines" }
+kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "kotlinx-coroutines" }
+
+kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinx-serialization" }
+
+ktor-client-core = { module = "io.ktor:ktor-client-core", version.ref = "ktor" }
+ktor-client-js = { module = "io.ktor:ktor-client-js", version.ref = "ktor" }
+ktor-client-apache = { module = "io.ktor:ktor-client-apache", version.ref = "ktor" }
+
+kotest-extensions-mockserver = { module = "io.kotest.extensions:kotest-extensions-mockserver", version = "1.2.0" }
+
+kotlin-compiler = { module = "org.jetbrains.kotlin:kotlin-compiler", version.ref = "kotlin" }
+kotlin-compiler-embeddable = { module = "org.jetbrains.kotlin:kotlin-compiler-embeddable", version.ref = "kotlin" }
+kotlin-gradle-plugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
+
+[bundles]
+junit-jupiter = ["junit-jupiter-api", "junit-jupiter-engine"]
+
+[plugins]
+gradle-plugin-publish = { id = "com.gradle.plugin-publish", version = "0.21.0" }
+shadowjar = { id = "com.github.johnrengelman.shadow", version = "7.1.2" }
+

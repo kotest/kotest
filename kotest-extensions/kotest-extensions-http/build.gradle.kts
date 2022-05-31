@@ -20,22 +20,22 @@ kotlin {
       val commonMain by getting {
          dependencies {
             compileOnly(kotlin("stdlib"))
-            implementation(Libs.Coroutines.coreCommon)
-            implementation(Libs.Ktor.clientCore)
+            implementation(libs.kotlinx.coroutines.core)
+            implementation(libs.ktor.client.core)
          }
       }
 
       val jsMain by getting {
          dependsOn(commonMain)
          dependencies {
-            implementation(Libs.Ktor.clientJs)
+            implementation(libs.ktor.client.js)
          }
       }
 
       val jvmMain by getting {
          dependsOn(commonMain)
          dependencies {
-            implementation(Libs.Ktor.clientApache)
+            implementation(libs.ktor.client.apache)
          }
       }
 
@@ -44,8 +44,8 @@ kotlin {
          dependencies {
             implementation(project(Projects.JunitRunner))
             implementation(project(Projects.Assertions.Core))
-            implementation(Libs.MockServer.netty)
-            implementation(Libs.Kotest.Extensions.MockServer)
+            implementation(libs.mockserver.netty)
+            implementation(libs.kotest.extensions.mockserver)
          }
       }
 

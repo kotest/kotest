@@ -1,8 +1,6 @@
 plugins {
-   id("java")
+   `java-library`
    kotlin("multiplatform")
-   id("java-library")
-
 }
 
 kotlin {
@@ -46,16 +44,16 @@ kotlin {
             implementation(kotlin("reflect"))
             api(project(Projects.Assertions.Api))
             implementation(project(Projects.Common))
-            implementation(Libs.Coroutines.coreCommon)
+            implementation(libs.kotlinx.coroutines.core)
          }
       }
 
       val jvmMain by getting {
          dependsOn(commonMain)
          dependencies {
-            implementation(Libs.Coroutines.jdk8)
-            implementation(Libs.Wumpz.diffutils)
-            implementation(Libs.OpenTest4j.opentest4j)
+            implementation(libs.kotlinx.coroutines.jdk8)
+            implementation(libs.diffutils)
+            implementation(libs.opentest4j)
          }
       }
 

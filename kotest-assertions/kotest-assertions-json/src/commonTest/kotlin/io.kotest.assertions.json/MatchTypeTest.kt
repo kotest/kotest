@@ -1,4 +1,4 @@
-package com.sksamuel.kotest.tests.json
+package io.kotest.assertions.json
 
 import io.kotest.assertions.json.shouldBeJsonArray
 import io.kotest.assertions.json.shouldBeJsonObject

@@ -3,18 +3,15 @@ package io.kotest.assertions.json.schema
 import io.kotest.assertions.shouldFail
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
+import io.kotest.matchers.string.shouldContain
 
 class PrimitiveMatchSchemaTest : FunSpec(
    {
       test("invalid json") {
          shouldFail {
             "[" shouldMatchSchema jsonSchema { obj() }
-         }.message shouldBe """
-            Failed to parse actual as JSON: Expected end of the array ']', but had 'EOF' instead
-            JSON input: [
-         """.trimIndent()
+         }.message shouldContain "Failed to parse actual as JSON"
       }
-
 
       context("boolean schemas") {
          val boolSchema = jsonSchema { boolean() }
@@ -70,7 +67,7 @@ class PrimitiveMatchSchemaTest : FunSpec(
             """.trimIndent()
          }
 
-         test("String cause failure" ){
+         test("String cause failure") {
             shouldFail {
                "\"5\"" shouldMatchSchema numberSchema
             }.message shouldBe """
@@ -104,7 +101,7 @@ class PrimitiveMatchSchemaTest : FunSpec(
             """.trimIndent()
          }
 
-         test("String cause failure" ){
+         test("String cause failure") {
             shouldFail {
                "\"5\"" shouldMatchSchema intSchema
             }.message shouldBe """

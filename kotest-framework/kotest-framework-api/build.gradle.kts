@@ -1,7 +1,6 @@
 plugins {
-   id("java")
+   `java-library`
    kotlin("multiplatform")
-   id("java-library")
 }
 
 kotlin {
@@ -43,7 +42,7 @@ kotlin {
          dependencies {
             compileOnly(kotlin("stdlib"))
             implementation(kotlin("reflect"))
-            api(Libs.Coroutines.coreCommon)
+            api(libs.kotlinx.coroutines.core)
 //            implementation(Libs.Kotlin.kotlinScriptRuntime)
             implementation(project(Projects.Common))
             api(project(Projects.Assertions.Shared))
@@ -57,7 +56,7 @@ kotlin {
       val jvmMain by getting {
          dependsOn(commonMain)
          dependencies {
-            api(Libs.Coroutines.test)
+            api(libs.kotlinx.coroutines.test)
          }
       }
 
@@ -132,14 +131,14 @@ kotlin {
             implementation(project(Projects.Assertions.Core))
             // we use the internals of the JVM project in the tests
             implementation(project(Projects.JunitRunner))
-            implementation(Libs.Coroutines.coreJvm)
-            implementation(Libs.Mocking.mockk)
-            implementation(Libs.JUnitPlatform.engine)
-            implementation(Libs.JUnitPlatform.api)
-            implementation(Libs.JUnitPlatform.launcher)
-            implementation(Libs.JUnitJupiter.api)
+            implementation(libs.kotlinx.coroutines.core)
+            implementation(libs.mockk)
+            implementation(libs.junit.platform.engine)
+            implementation(libs.junit.platform.api)
+            implementation(libs.junit.platform.launcher)
+            implementation(libs.junit.jupiter.api)
             // this is here to test that the intellij marker 'dummy' test doesn't appear in intellij
-            implementation(Libs.JUnitJupiter.engine)
+            implementation(libs.junit.jupiter.engine)
          }
       }
 

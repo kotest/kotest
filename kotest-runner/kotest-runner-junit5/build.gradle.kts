@@ -1,9 +1,8 @@
 plugins {
-   id("java")
+   java
+   `java-library`
+   `maven-publish`
    kotlin("multiplatform")
-   id("java-library")
-   id("maven-publish")
-
 }
 
 kotlin {
@@ -31,11 +30,11 @@ kotlin {
             api(project(Projects.Assertions.Core))
             api(project(Projects.Extensions))
             api(project(Projects.Framework.concurrency))
-            api(Libs.Coroutines.coreJvm)
-            api(Libs.JUnitPlatform.engine)
-            api(Libs.JUnitPlatform.api)
-            api(Libs.JUnitPlatform.launcher)
-            api(Libs.JUnitJupiter.api)
+            api(libs.kotlinx.coroutines.core)
+            api(libs.junit.platform.engine)
+            api(libs.junit.platform.api)
+            api(libs.junit.platform.launcher)
+            api(libs.junit.jupiter.api)
          }
       }
 
@@ -44,8 +43,8 @@ kotlin {
          dependencies {
             implementation(project(Projects.JunitRunner))
             implementation(project(Projects.Assertions.Core))
-            implementation(Libs.JUnitPlatform.testkit)
-            implementation(Libs.Mocking.mockk)
+            implementation(libs.junit.platform.testkit)
+            implementation(libs.mockk)
          }
       }
 

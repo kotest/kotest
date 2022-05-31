@@ -1,9 +1,8 @@
 plugins {
-   id("java")
+   java
+   `java-library`
+   `maven-publish`
    kotlin("multiplatform")
-   id("java-library")
-   id("maven-publish")
-
 }
 
 kotlin {
@@ -27,8 +26,8 @@ kotlin {
             api(project(Projects.Assertions.Shared))
             api(project(Projects.Framework.engine))
             api(project(Projects.Extensions))
-            api(Testing.junit4)
-            api(Libs.Coroutines.coreJvm)
+            api(libs.junit4)
+            api(libs.kotlinx.coroutines.core)
          }
       }
 
@@ -36,7 +35,7 @@ kotlin {
          dependsOn(jvmMain)
          dependencies {
             implementation(project(Projects.Assertions.Core))
-            implementation(Libs.JUnitPlatform.testkit)
+            implementation(libs.junit.platform.testkit)
          }
       }
 

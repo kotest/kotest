@@ -1,8 +1,6 @@
 plugins {
-   id("java")
+   `java-library`
    kotlin("multiplatform")
-   id("java-library")
-
 }
 
 kotlin {
@@ -18,7 +16,7 @@ kotlin {
             compileOnly(kotlin("stdlib"))
             implementation(project(Projects.Framework.engine))
             implementation(project(Projects.Framework.api))
-            implementation(Libs.Jdom.jdom2)
+            implementation(libs.jdom2)
          }
       }
 

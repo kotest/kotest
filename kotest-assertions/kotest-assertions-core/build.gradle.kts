@@ -1,8 +1,6 @@
 plugins {
-   id("java")
+   `java-library`
    kotlin("multiplatform")
-   id("java-library")
-
 }
 
 kotlin {
@@ -42,9 +40,9 @@ kotlin {
          dependencies {
             compileOnly(kotlin("stdlib"))
             implementation(kotlin("reflect"))
-            implementation(Libs.Coroutines.coreCommon)
             implementation(project(Projects.Common))
             implementation(project(Projects.Assertions.Api))
+            implementation(libs.kotlinx.coroutines.core)
             // this is api because we want to expose `shouldBe` etc
             api(project(Projects.Assertions.Shared))
          }
@@ -53,7 +51,7 @@ kotlin {
       val jvmMain by getting {
          dependsOn(commonMain)
          dependencies {
-            implementation(Libs.Coroutines.jdk8)
+            implementation(libs.kotlinx.coroutines.jdk8)
          }
       }
 
@@ -62,10 +60,10 @@ kotlin {
          dependencies {
             implementation(project(Projects.Property))
             implementation(project(Projects.JunitRunner))
-            implementation(Libs.Coroutines.coreJvm)
-            implementation(Libs.OpenTest4j.opentest4j)
-            implementation(Libs.Apache.commonslang)
-            implementation(Libs.Mocking.mockk)
+            implementation(libs.kotlinx.coroutines.core)
+            implementation(libs.opentest4j)
+            implementation(libs.apache.commons.lang)
+            implementation(libs.mockk)
          }
       }
 
