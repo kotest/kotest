@@ -22,6 +22,7 @@ infix fun String?.shouldNotMatchSchema(schema: JsonSchema) =
 
 @ExperimentalKotest
 infix fun JsonElement.shouldMatchSchema(schema: JsonSchema) = this should matchSchema(schema)
+
 @ExperimentalKotest
 infix fun JsonElement.shouldNotMatchSchema(schema: JsonSchema) = this shouldNot matchSchema(schema)
 
@@ -98,15 +99,15 @@ private fun validate(
    return when (tree) {
       is JsonNode.ArrayNode -> {
          if (expected is JsonSchema.JsonArray) {
-            val typeViolation = expected.elementType?.violation(tree)
-               ?: expected.contains?.violation(tree)
-               ?: violation("Expected contains or elementType.")
             val sizeViolation = violationIf(
                tree.elements.size < expected.minItems || tree.elements.size > expected.maxItems,
                "Expected items between ${expected.minItems} and ${expected.maxItems}, but was ${tree.elements.size}"
             )
             val matcherViolation = violation(expected.matcher, tree.elements.asSequence())
-            typeViolation + matcherViolation + sizeViolation
+            matcherViolation + sizeViolation +
+               (expected.elementType?.violation(tree)
+                  ?: expected.contains?.violation(tree)
+                  ?: violation("Expected contains or elementType."))
          } else violation("Expected ${expected.typeName()}, but was array")
       }
       is JsonNode.ObjectNode -> {
