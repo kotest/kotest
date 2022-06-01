@@ -3,13 +3,10 @@ package io.kotest.assertions.json.schema
 import io.kotest.assertions.shouldFail
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
-import org.intellij.lang.annotations.Language
 
 
 class ObjectSchemaTest : FunSpec(
    {
-      fun json(@Language("JSON") raw: String) = raw
-
       val personSchemaAllowingExtraProperties = jsonSchema {
          obj {
             withProperty("name", required = true) { string() }
@@ -19,20 +16,18 @@ class ObjectSchemaTest : FunSpec(
       }
 
       val personSchema = parseSchema(
-         json(
-            """
-            {
-              "type": "object",
-              "properties": {
-                "name": { "type": "string" },
-                "initials": { "type": "string" },
-                "age": { "type": "number" }
-              },
-             "requiredProperties": [ "name", "age" ],
-             "additionalProperties": false
-           }
          """
-         )
+         {
+           "type": "object",
+           "properties": {
+             "name": { "type": "string" },
+             "initials": { "type": "string" },
+             "age": { "type": "number" }
+           },
+          "requiredProperties": [ "name", "age" ],
+          "additionalProperties": false
+        }
+      """
       )
 
       test("matching object passes") {
@@ -41,7 +36,7 @@ class ObjectSchemaTest : FunSpec(
 
       test("mismatching property type causes failure") {
          shouldFail {
-            json("""{ "name": "John", "age": "twentyseven" }""") shouldMatchSchema personSchema
+            """{ "name": "John", "age": "twentyseven" }""" shouldMatchSchema personSchema
          }.message shouldBe """
             $.age => Expected number, but was string
          """.trimIndent()
@@ -57,7 +52,7 @@ class ObjectSchemaTest : FunSpec(
 
       test("Extra property causes failure") {
          shouldFail {
-            json("""{ "name": "John", "age": 27.2, "profession": "T800" }""") shouldMatchSchema personSchema
+            """{ "name": "John", "age": 27.2, "profession": "T800" }""" shouldMatchSchema personSchema
          }.message shouldBe """
             $.profession => Key undefined in schema, and schema is set to disallow extra keys
          """.trimIndent()
@@ -65,7 +60,7 @@ class ObjectSchemaTest : FunSpec(
 
       test("Missing required property causes failure") {
          shouldFail {
-            json("""{ "name": "John" }""") shouldMatchSchema personSchema
+            """{ "name": "John" }""" shouldMatchSchema personSchema
          }.message shouldBe """
             $.age => Expected number, but was undefined
          """.trimIndent()
@@ -73,19 +68,19 @@ class ObjectSchemaTest : FunSpec(
 
       test("Extra property causes failure for scheam disallowing it") {
          shouldFail {
-            json("""{ "name": "John", "favorite_pet": "Cat", "age": 2 }""") shouldMatchSchema personSchema
+            """{ "name": "John", "favorite_pet": "Cat", "age": 2 }""" shouldMatchSchema personSchema
          }.message shouldBe """
             $.favorite_pet => Key undefined in schema, and schema is set to disallow extra keys
          """.trimIndent()
       }
 
       test("Extra property is OK when schema allows it") {
-         json("""{ "name": "John", "favorite_pet": "Cat", "age": 2 }""") shouldMatchSchema personSchemaAllowingExtraProperties
+         """{ "name": "John", "favorite_pet": "Cat", "age": 2 }""" shouldMatchSchema personSchemaAllowingExtraProperties
       }
 
       test("Problems compound") {
          shouldFail {
-            json("""{ "name": 5, "age": "twentyseven" }""") shouldMatchSchema personSchema
+            """{ "name": 5, "age": "twentyseven" }""" shouldMatchSchema personSchema
          }.message shouldBe """
             $.name => Expected string, but was number
             $.age => Expected number, but was string
@@ -105,13 +100,13 @@ class ObjectSchemaTest : FunSpec(
          }
 
          test("matching object passes") {
-            json("""{ "owner": { "name": "Emil", "age": 34.1 }, "employees": [] }""") shouldMatchSchema
+            """{ "owner": { "name": "Emil", "age": 34.1 }, "employees": [] }""" shouldMatchSchema
                companySchema
          }
 
          test("Mismatch gives good message") {
             shouldFail {
-               json("""{ "owner": { "name": 5, "age": 34.1 }, "employees": [] }""") shouldMatchSchema
+               """{ "owner": { "name": 5, "age": 34.1 }, "employees": [] }""" shouldMatchSchema
                   companySchema
             }.message shouldBe """
                $.owner.name => Expected string, but was number

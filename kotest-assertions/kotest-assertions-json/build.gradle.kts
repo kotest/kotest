@@ -1,8 +1,6 @@
 @Suppress("DSL_SCOPE_VIOLATION")
 plugins {
-   id("kotest-js-conventions")
-   id("kotest-jvm-conventions")
-   id("kotest-publishing-conventions")
+   id("kotest-multiplatform-library-conventions")
    alias(libs.plugins.kotlin.serialization)
 }
 
@@ -22,6 +20,7 @@ kotlin {
       val commonTest by getting {
          dependencies {
             implementation(project(Projects.Framework.api))
+            implementation(project(Projects.Framework.datatest))
             implementation(project(Projects.Framework.engine))
             implementation(project(Projects.Property))
          }
@@ -36,7 +35,6 @@ kotlin {
       val jvmTest by getting {
          dependsOn(jvmMain)
          dependencies {
-            implementation(project(Projects.Framework.datatest))
             implementation(project(Projects.JunitRunner))
          }
       }
