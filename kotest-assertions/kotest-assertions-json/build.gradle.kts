@@ -2,6 +2,7 @@
 plugins {
    id("kotest-js-conventions")
    id("kotest-jvm-conventions")
+   id("kotest-publishing-conventions")
    alias(libs.plugins.kotlin.serialization)
 }
 

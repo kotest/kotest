@@ -1,3 +1,3 @@
 plugins {
-   id("kotest-publishing-conventions")
+   id("kotest-multiplatform-library-conventions")
 }
