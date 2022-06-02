@@ -10,6 +10,7 @@ kotlin {
 
       val commonMain by getting {
          dependencies {
+            implementation(project(Projects.Common))
             implementation(libs.kotlinx.serialization.json)
             implementation(project(Projects.Assertions.Shared))
             implementation(project(Projects.Assertions.Core))

@@ -5,16 +5,16 @@ stateDiagram-v2
   state "kotlin-conventions" as base
   state "kotest-jvm-conventions" as jvm
   state "kotest-js-conventions" as js
-  state "kotest-multiplatform-conventions" as multiplatform
+  state "kotest-native-conventions" as native
   state "kotest-publishing-conventions" as publishing
   state "kotest-multiplatform-library-conventions" as mpplib
 
   jvm --> base
   js --> base
-  multiplatform --> base
-  multiplatform --> js
-  multiplatform --> jvm
-  mpplib --> multiplatform
+  native --> base
+  mpplib --> native
+  mpplib --> jvm
+  mpplib --> js
   mpplib --> publishing
 ```
 
@@ -31,8 +31,8 @@ Adds a JVM target and sets basic JVM options
 ## Kotest JS conventions
 Adds JS targets
 
-## Kotest Multiplatform conventions
-Adds _all_ multiplatform targets
+## Kotest native conventions
+Adds native targets and creates a common native source set (desktopMain / desktopTest)
 
 ## Kotest publishing conventions
 Adds everything related to signing and publishing the libraries

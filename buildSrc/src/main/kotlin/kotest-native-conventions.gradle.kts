@@ -1,7 +1,11 @@
+@file:Suppress("UNUSED_VARIABLE")
+
+import org.gradle.kotlin.dsl.dependencies
+import org.gradle.kotlin.dsl.kotlin
+import org.gradle.kotlin.dsl.project
+
 plugins {
    id("kotlin-conventions")
-   id("kotest-jvm-conventions")
-   id("kotest-js-conventions")
 }
 
 kotlin {
@@ -31,6 +35,7 @@ kotlin {
 
    sourceSets {
 
+      // Main source sets
       val commonMain by getting {}
 
       val desktopMain by creating {
@@ -95,6 +100,73 @@ kotlin {
 
       val tvosSimulatorArm64Main by getting {
          dependsOn(desktopMain)
+      }
+
+      // Test sourcesets
+      val commonTest by getting
+
+      val nativeTest by creating {
+         dependsOn(commonTest)
+      }
+
+      val macosX64Test by getting {
+         dependsOn(nativeTest)
+      }
+
+      val macosArm64Test by getting {
+         dependsOn(nativeTest)
+      }
+
+      val mingwX64Test by getting {
+         dependsOn(nativeTest)
+      }
+
+      val linuxX64Test by getting {
+         dependsOn(nativeTest)
+      }
+
+      val iosX64Test by getting {
+         dependsOn(nativeTest)
+      }
+
+      val iosArm64Test by getting {
+         dependsOn(nativeTest)
+      }
+
+      val iosArm32Test by getting {
+         dependsOn(nativeTest)
+      }
+
+      val iosSimulatorArm64Test by getting {
+         dependsOn(nativeTest)
+      }
+
+      val watchosArm32Test by getting {
+         dependsOn(nativeTest)
+      }
+
+      val watchosArm64Test by getting {
+         dependsOn(nativeTest)
+      }
+
+      val watchosX86Test by getting {
+         dependsOn(nativeTest)
+      }
+
+      val watchosX64Test by getting {
+         dependsOn(nativeTest)
+      }
+
+      val watchosSimulatorArm64Test by getting {
+         dependsOn(nativeTest)
+      }
+
+      val tvosTest by getting {
+         dependsOn(nativeTest)
+      }
+
+      val tvosSimulatorArm64Test by getting {
+         dependsOn(nativeTest)
       }
 
    }

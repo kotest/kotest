@@ -1,4 +1,6 @@
 plugins {
-   id("kotest-multiplatform-conventions")
+   id("kotest-jvm-conventions")
+   id("kotest-js-conventions")
+   id("kotest-native-conventions")
    id("kotest-publishing-conventions")
 }
