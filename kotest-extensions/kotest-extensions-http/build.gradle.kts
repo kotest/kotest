@@ -14,12 +14,6 @@ kotlin {
          }
       }
 
-      val jsMain by getting {
-         dependencies {
-            implementation(libs.ktor.client.js)
-         }
-      }
-
       val jvmMain by getting {
          dependencies {
             implementation(libs.ktor.client.apache)
@@ -31,6 +25,14 @@ kotlin {
             implementation(project(Projects.Assertions.Core))
             implementation(libs.mockserver.netty)
             implementation(libs.kotest.extensions.mockserver)
+         }
+      }
+
+      if (!project.hasProperty(Ci.JVM_ONLY)) {
+         val jsMain by getting {
+            dependencies {
+               implementation(libs.ktor.client.js)
+            }
          }
       }
    }

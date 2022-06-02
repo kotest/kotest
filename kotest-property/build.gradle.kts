@@ -29,16 +29,5 @@ kotlin {
          }
       }
 
-      val desktopTest by creating {
-         dependsOn(commonTest)
-         dependencies {
-            implementation(kotlin("test-common"))
-         }
-      }
-
-      val iosX64Test by getting {
-         dependsOn(desktopTest)
-      }
-
    }
 }
