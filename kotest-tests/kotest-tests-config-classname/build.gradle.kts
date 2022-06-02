@@ -1,21 +1,10 @@
 plugins {
-id("kotlin-conventions")
+   id("kotest-jvm-conventions")
 }
 
 kotlin {
 
-   targets {
-      jvm()
-   }
-
    sourceSets {
-
-      val commonMain by getting {
-         dependencies {
-            compileOnly(kotlin("stdlib"))
-            implementation(kotlin("reflect"))
-         }
-      }
 
       val jvmTest by getting {
          dependencies {
@@ -24,11 +13,6 @@ kotlin {
             implementation(project(Projects.JunitRunner))
             implementation(project(Projects.Property))
          }
-      }
-
-      all {
-         languageSettings.optIn("kotlin.time.ExperimentalTime")
-         languageSettings.optIn("kotlin.experimental.ExperimentalTypeInference")
       }
    }
 }

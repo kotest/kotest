@@ -5,13 +5,6 @@ plugins {
 
 kotlin {
    sourceSets {
-
-      val commonMain by getting {
-         dependencies {
-            compileOnly(kotlin("stdlib"))
-         }
-      }
-
       val jvmMain by getting {
          dependencies {
             api(project(Projects.Common))
@@ -25,16 +18,10 @@ kotlin {
       }
 
       val jvmTest by getting {
-         dependsOn(jvmMain)
          dependencies {
             implementation(project(Projects.Assertions.Core))
             implementation(libs.junit.platform.testkit)
          }
-      }
-
-      all {
-         languageSettings.optIn("kotlin.time.ExperimentalTime")
-         languageSettings.optIn("kotlin.experimental.ExperimentalTypeInference")
       }
    }
 }

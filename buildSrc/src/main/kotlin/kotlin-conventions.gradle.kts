@@ -35,3 +35,13 @@ tasks.withType<KotlinCompile>().configureEach {
       languageVersion = "1.6"
    }
 }
+
+kotlin {
+   sourceSets {
+      all {
+         languageSettings.optIn("kotlin.time.ExperimentalTime")
+         languageSettings.optIn("kotlin.experimental.ExperimentalTypeInference")
+         languageSettings.optIn("kotlin.contracts.ExperimentalContracts")
+      }
+   }
+}

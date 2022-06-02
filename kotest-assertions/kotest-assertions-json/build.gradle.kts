@@ -11,7 +11,6 @@ kotlin {
       val commonMain by getting {
          dependencies {
             implementation(libs.kotlinx.serialization.json)
-            implementation(project(Projects.Common))
             implementation(project(Projects.Assertions.Shared))
             implementation(project(Projects.Assertions.Core))
          }
@@ -30,19 +29,6 @@ kotlin {
          dependencies {
             implementation(libs.jayway.json.path)
          }
-      }
-
-      val jvmTest by getting {
-         dependsOn(jvmMain)
-         dependencies {
-            implementation(project(Projects.JunitRunner))
-         }
-      }
-
-      all {
-         languageSettings.optIn("kotlin.experimental.ExperimentalTypeInference")
-         languageSettings.optIn("kotlin.contracts.ExperimentalContracts")
-         languageSettings.optIn("kotlin.RequiresOptIn")
       }
    }
 }

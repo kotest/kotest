@@ -8,7 +8,6 @@ kotlin {
 
       val jvmMain by getting {
          dependencies {
-            compileOnly(kotlin("stdlib"))
             implementation(kotlin("reflect"))
 //            implementation(Libs.Kotlin.kotlinScriptRuntime)
 
@@ -20,11 +19,6 @@ kotlin {
             // needed to scan the classpath for classes
             implementation(libs.classgraph)
          }
-      }
-
-      all {
-         languageSettings.optIn("kotlin.time.ExperimentalTime")
-         languageSettings.optIn("kotlin.experimental.ExperimentalTypeInference")
       }
    }
 }

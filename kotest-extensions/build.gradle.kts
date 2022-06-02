@@ -19,9 +19,7 @@ kotlin {
       }
 
       val jvmTest by getting {
-         dependsOn(jvmMain)
          dependencies {
-            implementation(project(Projects.JunitRunner))
             implementation(project(Projects.Assertions.Core))
             implementation(libs.kotlinx.coroutines.core)
          }

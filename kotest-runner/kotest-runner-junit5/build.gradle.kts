@@ -9,14 +9,12 @@ kotlin {
 
       val commonMain by getting {
          dependencies {
-            compileOnly(kotlin("stdlib"))
             implementation(kotlin("reflect"))
          }
       }
 
       val jvmMain by getting {
          dependencies {
-//            implementation(Libs.Kotlin.kotlinScriptRuntime)
             api(project(Projects.Framework.api))
             api(project(Projects.Common))
             api(project(Projects.Framework.engine))
@@ -33,7 +31,6 @@ kotlin {
       }
 
       val jvmTest by getting {
-         dependsOn(jvmMain)
          dependencies {
             implementation(project(Projects.JunitRunner))
             implementation(project(Projects.Assertions.Core))
@@ -42,9 +39,5 @@ kotlin {
          }
       }
 
-      all {
-         languageSettings.optIn("kotlin.time.ExperimentalTime")
-         languageSettings.optIn("kotlin.experimental.ExperimentalTypeInference")
-      }
    }
 }

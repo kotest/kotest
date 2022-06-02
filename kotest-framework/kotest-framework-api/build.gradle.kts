@@ -7,88 +7,17 @@ kotlin {
 
       val commonMain by getting {
          dependencies {
-            compileOnly(kotlin("stdlib"))
-            implementation(kotlin("reflect"))
             api(libs.kotlinx.coroutines.core)
-//            implementation(Libs.Kotlin.kotlinScriptRuntime)
-            implementation(project(Projects.Common))
             api(project(Projects.Assertions.Shared))
+            implementation(kotlin("reflect"))
+            implementation(project(Projects.Common))
          }
-      }
-
-      val jsMain by getting {
-         dependsOn(commonMain)
       }
 
       val jvmMain by getting {
-         dependsOn(commonMain)
          dependencies {
             api(libs.kotlinx.coroutines.test)
          }
-      }
-
-      val desktopMain by creating {
-         dependsOn(commonMain)
-      }
-
-      val macosX64Main by getting {
-         dependsOn(desktopMain)
-      }
-
-      val macosArm64Main by getting {
-         dependsOn(desktopMain)
-      }
-
-      val mingwX64Main by getting {
-         dependsOn(desktopMain)
-      }
-
-      val linuxX64Main by getting {
-         dependsOn(desktopMain)
-      }
-
-      val iosX64Main by getting {
-         dependsOn(desktopMain)
-      }
-
-      val iosArm64Main by getting {
-         dependsOn(desktopMain)
-      }
-
-      val iosArm32Main by getting {
-         dependsOn(desktopMain)
-      }
-
-      val iosSimulatorArm64Main by getting {
-         dependsOn(desktopMain)
-      }
-
-      val watchosArm32Main by getting {
-         dependsOn(desktopMain)
-      }
-
-      val watchosArm64Main by getting {
-         dependsOn(desktopMain)
-      }
-
-      val watchosX86Main by getting {
-         dependsOn(desktopMain)
-      }
-
-      val watchosX64Main by getting {
-         dependsOn(desktopMain)
-      }
-
-      val watchosSimulatorArm64Main by getting {
-         dependsOn(desktopMain)
-      }
-
-      val tvosMain by getting {
-         dependsOn(desktopMain)
-      }
-
-      val tvosSimulatorArm64Main by getting {
-         dependsOn(desktopMain)
       }
 
       val jvmTest by getting {
@@ -96,8 +25,6 @@ kotlin {
             implementation(kotlin("reflect"))
             implementation(project(Projects.Framework.engine))
             implementation(project(Projects.Assertions.Core))
-            // we use the internals of the JVM project in the tests
-            implementation(project(Projects.JunitRunner))
             implementation(libs.kotlinx.coroutines.core)
             implementation(libs.mockk)
             implementation(libs.junit.platform.engine)
@@ -107,11 +34,6 @@ kotlin {
             // this is here to test that the intellij marker 'dummy' test doesn't appear in intellij
             implementation(libs.junit.jupiter.engine)
          }
-      }
-
-      all {
-         languageSettings.optIn("kotlin.time.ExperimentalTime")
-         languageSettings.optIn("kotlin.experimental.ExperimentalTypeInference")
       }
    }
 }

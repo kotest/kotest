@@ -1,5 +1,5 @@
 plugins {
-  id("kotest-jvm-conventions")
+   id("kotest-jvm-conventions")
    id("kotest-publishing-conventions")
 }
 
@@ -14,17 +14,6 @@ kotlin {
             implementation(libs.kotlinx.coroutines.core)
             implementation(libs.junit.jupiter.api)
          }
-      }
-
-      val jvmTest by getting {
-         dependsOn(jvmMain)
-         dependencies {
-            implementation(project(Projects.JunitRunner))
-         }
-      }
-
-      all {
-         languageSettings.optIn("kotlin.experimental.ExperimentalTypeInference")
       }
    }
 }
