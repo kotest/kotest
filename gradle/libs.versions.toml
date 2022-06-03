@@ -44,7 +44,10 @@ kotest-extensions-mockserver = { module = "io.kotest.extensions:kotest-extension
 
 kotlin-compiler = { module = "org.jetbrains.kotlin:kotlin-compiler", version.ref = "kotlin" }
 kotlin-compiler-embeddable = { module = "org.jetbrains.kotlin:kotlin-compiler-embeddable", version.ref = "kotlin" }
+
+# Gradle plugins
 kotlin-gradle-plugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
+testlogger-gradle-plugin = { module = "com.adarshr:gradle-test-logger-plugin", version = "3.2.0"}
 
 [bundles]
 junit-jupiter = ["junit-jupiter-api", "junit-jupiter-engine"]
@@ -52,4 +55,5 @@ junit-jupiter = ["junit-jupiter-api", "junit-jupiter-engine"]
 [plugins]
 gradle-plugin-publish = { id = "com.gradle.plugin-publish", version = "0.21.0" }
 shadowjar = { id = "com.github.johnrengelman.shadow", version = "7.1.2" }
+kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 

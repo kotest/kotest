@@ -21,4 +21,9 @@ object Ci {
    val isRelease = releaseVersion != null
    val publishVersion = releaseVersion ?: snapshotVersion
    val gradleVersion = releaseVersion ?: snapshotGradleVersion
+
+   /**
+    * Property to flag the build as JVM only, can be used to run checks on local machine much faster.
+    */
+   const val JVM_ONLY = "jvmOnly"
 }

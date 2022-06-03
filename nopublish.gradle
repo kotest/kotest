@@ -1,5 +1,0 @@
-apply plugin: "java"
-apply plugin: "maven-publish"
-apply plugin: "java-library"
-
-publish.enabled = false
