@@ -1,7 +1,7 @@
 @Suppress("DSL_SCOPE_VIOLATION")
 plugins {
    `java-library`
-   kotlin("multiplatform")
+   id("kotest-jvm-conventions")
    application
    alias(libs.plugins.shadowjar)
 }
@@ -35,9 +35,6 @@ tasks {
 }
 
 dependencies {
-   implementation(kotlin("stdlib"))
    implementation(kotlin("reflect"))
    implementation(project(Projects.Framework.engine))
 }
-
-apply(from = "../../publish-mpp.gradle.kts")

@@ -1,23 +1,14 @@
 plugins {
-   `java-library`
-   kotlin("multiplatform")
+   id("kotest-jvm-conventions")
+   id("kotest-js-conventions")
+   id("kotest-publishing-conventions")
 }
 
 kotlin {
-
-   targets {
-      jvm()
-      js(IR) {
-         browser()
-         nodejs()
-      }
-   }
-
    sourceSets {
 
       val commonMain by getting {
          dependencies {
-            compileOnly(kotlin("stdlib"))
             api(project(Projects.Property))
             api(project(Projects.Framework.api))
             implementation(libs.kotlinx.coroutines.core)
@@ -31,18 +22,5 @@ kotlin {
             implementation(project(Projects.Assertions.Core))
          }
       }
-
-      val jvmTest by getting {
-         dependencies {
-            implementation(project(Projects.JunitRunner))
-         }
-      }
-
-      all {
-         languageSettings.optIn("kotlin.time.ExperimentalTime")
-         languageSettings.optIn("kotlin.experimental.ExperimentalTypeInference")
-      }
    }
 }
-
-apply(from = "../../publish-mpp.gradle.kts")
