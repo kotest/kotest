@@ -106,7 +106,7 @@ class ArraySchemaTest : FunSpec(
          val containsStringArray = jsonSchema {
             array(contains = containsSpec { string() })
          }
-         array shouldNotMatchSchema containsStringArray
+         "[\"bob\"]" shouldMatchSchema  containsStringArray
          shouldFail { array shouldMatchSchema containsStringArray }.message shouldBe """
             $ => Expected any item of type string
          """.trimIndent()
@@ -115,10 +115,24 @@ class ArraySchemaTest : FunSpec(
       test("Should parse schema with contains") {
          val schema = parseSchema(
             """
-               { "type": "array", "contains": {"type": "number"} }
+               { "type": "array", "contains": {"elementType": {"type": "number"} } }
             """.trimIndent()
          )
-         "[\"life\", \"universe\", \"everything\"]" shouldNotMatchSchema schema
+         shouldFail { "[\"bob\"]" shouldMatchSchema schema }.message shouldBe """
+            $ => Expected any item of type number
+         """.trimIndent()
+      }
+
+      test("Should parse schema with non primitive contains") {
+         val schema = parseSchema(
+            """
+               { "type": "array", "contains": {"elementType" : {"type": "object", "properties": { "name": { "type": "string" }}}}}
+            """.trimIndent()
+         )
+         shouldFail { "[\"bob\"]" shouldMatchSchema schema }.message shouldBe """
+            $ => Expected any item of type object
+         """.trimIndent()
+         "[\"life\", \"universe\", \"everything\", {\"name\": \"bob\"}]" shouldMatchSchema schema
       }
 
       test("Array contains strings and numbers") {
@@ -133,9 +147,7 @@ class ArraySchemaTest : FunSpec(
          val array = jsonSchema {
             array()
          }
-         shouldFail { "[1]" shouldMatchSchema array }.message shouldBe """
-            $ => Expected contains or elementType.
-         """.trimIndent()
+         "[1, \"bob\"]" shouldMatchSchema array
       }
    }
 )

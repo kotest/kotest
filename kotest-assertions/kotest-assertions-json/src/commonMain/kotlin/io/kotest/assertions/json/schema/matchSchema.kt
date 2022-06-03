@@ -86,9 +86,10 @@ private fun validate(
    } ?: emptyList()
 
    fun ContainsSpec.violation(tree: JsonNode.ArrayNode): List<SchemaViolation> {
-      val containsType = schema.typeName()
-      val foundElements = tree.elements.count { it.type() == containsType }
-      return violationIf(foundElements == 0, "Expected any item of type $containsType")
+      val foundElements = tree.elements.mapIndexed { i, node ->
+         validate("$currentPath.contains[$i]", node, schema).isEmpty()
+      }.count { it }
+      return violationIf(foundElements == 0, "Expected any item of type ${schema.typeName()}")
    }
 
    fun JsonSchemaElement.violation(tree: JsonNode.ArrayNode): List<SchemaViolation> =
@@ -107,7 +108,7 @@ private fun validate(
             matcherViolation + sizeViolation +
                (expected.elementType?.violation(tree)
                   ?: expected.contains?.violation(tree)
-                  ?: violation("Expected contains or elementType."))
+                  ?: emptyList())
          } else violation("Expected ${expected.typeName()}, but was array")
       }
       is JsonNode.ObjectNode -> {
