@@ -73,8 +73,8 @@ publishing {
          name = "deploy"
          url = if (Ci.isRelease) releasesRepoUrl else snapshotsRepoUrl
          credentials {
-            username = java.lang.System.getenv("OSSRH_USERNAME") ?: ossrhUsername
-            password = java.lang.System.getenv("OSSRH_PASSWORD") ?: ossrhPassword
+            username = System.getenv("OSSRH_USERNAME") ?: ossrhUsername
+            password = System.getenv("OSSRH_PASSWORD") ?: ossrhPassword
          }
       }
    }
