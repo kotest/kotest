@@ -103,7 +103,7 @@ val plugins = listOf(
       deps = listOf("java", "org.jetbrains.plugins.gradle", "org.jetbrains.kotlin")
    ),
    PluginDescriptor(
-      since = "222.2680", // this version is 2022.2 EAP 2
+      since = "222.2270.16", // this version is 2022.2 EAP 2
       until = "222.*",
       sdkVersion = "IC-222-EAP-SNAPSHOT",
       sourceFolder = "IC-222",
@@ -161,13 +161,13 @@ tasks {
 
    compileKotlin {
       kotlinOptions {
-         jvmTarget = "1.8"
+         jvmTarget = "11"
       }
    }
 
    withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
       kotlinOptions {
-         jvmTarget = "1.8"
+         jvmTarget = "11"
       }
    }
 
