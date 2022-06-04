@@ -112,7 +112,8 @@ val jetbrainsToken: String by project
 version = "1.1." + (System.getenv("GITHUB_RUN_NUMBER") ?: "0-SNAPSHOT")
 
 intellij {
-   sandboxDir.set("./sandbox")
+   sandboxDir.set(project.property("sandbox").toString())
+//   sandboxDir.set("./sandbox")
    version.set(descriptor.sdkVersion)
    pluginName.set("kotest-plugin-intellij")
    plugins.addAll(*descriptor.deps.toTypedArray())
